@@ -792,7 +792,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.insert(i,s)
             w.seeInsertPoint()
             self.endCommand()
-            c.redraw_after_icons_changed(all=False)
+            c.redraw_after_icons_changed(all=False) ####
     #@nonl
     #@-node:ekr.20050920084036.37:insertToBuffer
     #@+node:ekr.20050920084036.38:killBuffer
@@ -2486,7 +2486,7 @@ class editCommandsClass (baseEditCommandsClass):
         if aList:
             self.setIconList(p, aList[:-1])
             c.setChanged(True)
-            c.redraw_after_icons_changed(p) ####
+            c.redraw_after_icons_changed(all=False) ####
     #@nonl
     #@-node:ekr.20071114085054:deleteLastIcon
     #@+node:ekr.20071114082418.1:deleteNodeIcons

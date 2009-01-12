@@ -1455,7 +1455,7 @@ class baseFileCommands:
             self.setDefaultDirectoryForNewFiles(fileName)
             self.write_Leo_file(fileName,False) # outlineOnlyFlag
             self.putSavedMessage(fileName)
-            # c.redraw()
+            #### c.redraw()
             self.redraw_after_icons_changed(all=True)
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)

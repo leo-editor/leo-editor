@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -411,6 +411,7 @@
 <v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
 <v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
 </v>
+<v t="ekr.20090112082210.1"><vh>abc</vh></v>
 <v t="ekr.20081202140932.1"><vh>pythoscope &amp; lib2to3</vh>
 <v t="ekr.20081202141453.1"><vh>@path c:\leo.repo\pythoscope\pythoscope</vh>
 <v t="ekr.20081202141210.1"><vh>@@auto\pythoscope\astvisitor.py</vh>
@@ -1052,7 +1053,7 @@
 <v t="ekr.20090102095951.2"><vh>node a</vh></v>
 <v t="ekr.20090102095951.3"><vh>node b</vh></v>
 </v>
-<v t="ekr.20090105152652.2" a="E"><vh>@path ~</vh>
+<v t="ekr.20090105152652.2"><vh>@path ~</vh>
 <v t="ekr.20090105152652.1" tnodeList="ekr.20090105152652.1"><vh>@nosent homeTest.txt</vh></v>
 </v>
 <v t="ekr.20090107082739.1"><vh>replace redirectScriptOutput</vh></v>
@@ -11217,5 +11218,6 @@ print('script output now goes to the console')
 
 print c.vnode2position(p.v)
 </t>
+<t tx="ekr.20090112082210.1">a</t>
 </tnodes>
 </leo_file>

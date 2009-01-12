@@ -601,6 +601,288 @@ def allAncestorsExpanded (self,p):
     # return item in self.item2vnodeDict
 #@-node:ekr.20081209064740.1:Item dict getters (OLD)
 #@-node:ekr.20081208155215.12:Unused
+#@+node:ekr.20090110154843.10:Crash because of bad edit_widget
+#@+node:ekr.20081121105001.156:editLabel (override)
+def editLabel (self,p,selectAll=False):
+
+    """Start editing p's headline."""
+
+    trace = False ; verbose = False
+    c = self.c ; w = self.treeWidget
+
+    if self.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+    if self._editWidget:
+        # Not an error, because of key weirdness.
+        if trace: g.trace('already editing')
+        return
+
+    if trace: g.trace('***',p and p.headString(),g.callers(4))
+
+    c.outerUpdate() # Do any scheduled redraw.
+
+    item = self.position2item(p)
+
+    if item:
+        w.setCurrentItem(item) # Must do this first.
+        w.editItem(item)
+        e = w.itemWidget(item,0) # A QLineEdit
+        if e:
+            s = e.text() ; len_s = len(s)
+            # Hook up the widget to Leo's core.
+            self._editWidgetPosition = p.copy()
+            self._editWidget = e
+            self._editWidgetWrapper = leoQtHeadlineWidget(
+                widget=e,name='head',c=c)
+            start,n = g.choose(selectAll,
+                tuple([0,len_s]),tuple([len_s,0]))
+            e.setObjectName('headline')
+            e.setSelection(start,n)
+            e.setFocus()
+        else: self.oops('no edit widget')
+    else:
+        self.killEditing()
+        e = None
+        self.oops('no item: %s' % p)
+
+    # A nice hack: just set the focus request.
+    if e: c.requestedFocusWidget = e
+#@-node:ekr.20081121105001.156:editLabel (override)
+#@+node:ekr.20081121105001.160:edit_widget
+def edit_widget (self,p):
+
+    """Returns the Qt.Edit widget for position p."""
+
+    w = self._editWidgetWrapper
+
+    if p and p == self._editWidgetPosition:
+        return w
+    else:
+        return None
+
+    # Decouple all of the core's headline code.
+    # Except for over-ridden methods.
+#@-node:ekr.20081121105001.160:edit_widget
+#@+node:ekr.20081121105001.163:onHeadChanged
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None):
+
+    '''Officially change a headline.'''
+
+    trace = False ; verbose = True
+    c = self.c ; u = c.undoer
+    e = self._editWidget
+    p = self._editWidgetPosition
+    w = g.app.gui.get_focus()
+
+    # These are not errors: sig_itemChanged may
+    # have been called first.
+    if trace and verbose:
+        if not e:  g.trace('No e',g.callers(4))
+        if e != w: g.trace('e != w',e,w,g.callers(4))
+        if not p:  g.trace('No p')
+
+    if e and e == w and p:
+        s = e.text() ; len_s = len(s)
+        s = g.app.gui.toUnicode(s)
+        oldHead = p.headString()
+        changed = s != oldHead
+        if trace: g.trace('changed',changed,repr(s),g.callers(4))
+        if changed:
+            p.initHeadString(s)
+            undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+            if not c.changed: c.setChanged(True)
+            # New in Leo 4.4.5: we must recolor the body because
+            # the headline may contain directives.
+            c.frame.body.recolor(p,incremental=True)
+            dirtyVnodeList = p.setDirty()
+            u.afterChangeNodeContents(p,undoType,undoData,
+                dirtyVnodeList=dirtyVnodeList)
+
+    # End the editing!
+    self.killEditing()
+
+    # This is a crucial shortcut.
+    if g.unitTesting: return
+
+    #### c.redraw(scroll=False)
+    if self.stayInTree:
+        c.treeWantsFocus()
+    else:
+        c.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20081121105001.163:onHeadChanged
+#@+node:ekr.20090110154843.11:killEditing
+def killEditing (self):
+
+    self._editWidgetPosition = None
+    self._editWidget = None
+    self._editWidgetWrapper = None
+#@-node:ekr.20090110154843.11:killEditing
+#@-node:ekr.20090110154843.10:Crash because of bad edit_widget
+#@+node:ekr.20090112065600.11:Problems with redraw_after_icons_changed
+#@+node:ekr.20081121105001.443:sig_itemChanged
+def sig_itemChanged(self, item, col):
+
+    '''Handle a change event in a headline.
+    This only gets called when the user hits return.'''
+
+    # Ignore changes when redrawing.
+    if self.redrawing:
+        return
+
+    p = self.item2position(item)
+    if p:
+        # so far, col is always 0
+        s = g.app.gui.toUnicode(item.text(col))
+        p.setHeadString(s)
+        p.setDirty()
+        self.redraw_after_icons_changed(all=False)
+
+    # Make sure to end editing.
+    self.killEditing()
+#@-node:ekr.20081121105001.443:sig_itemChanged
+#@+node:ekr.20090109110752.16:redraw_after_icons_changed
+def redraw_after_icons_changed (self,all=False):
+
+    if self.redrawing: return
+
+    self.redrawCount += 1 # To keep a unit test happy.
+
+    c = self.c
+
+    # Suppress call to setHeadString in sig_itemChanged!
+    self.redrawing = True
+    try:
+        if all:
+            for p in c.rootPosition().self_and_siblings_iter():
+                self.updateVisibleIcons(p)
+        else:
+            p = c.currentPosition()
+            self.updateIcon(p,force=True)
+    finally:
+        self.redrawing = False
+
+#@-node:ekr.20090109110752.16:redraw_after_icons_changed
+#@+node:ekr.20081209064740.2:Icons
+#@+node:ekr.20081121105001.417:drawIcon
+def drawIcon (self,p):
+
+    '''Redraw the icon at p.'''
+
+    w = self.treeWidget
+    itemOrTree = self.position2item(p) or w
+    item = QtGui.QTreeWidgetItem(itemOrTree)
+    icon = self.getIcon(p)
+    if icon and item:
+        item.setIcon(0,icon)
+#@-node:ekr.20081121105001.417:drawIcon
+#@+node:ekr.20081211115412.12:drawItemIcon
+def drawItemIcon (self,p,item):
+
+    '''Set the item's icon to p's icon.'''
+
+    icon = self.getIcon(p)
+    if icon and item:
+        item.setIcon(0,icon)
+#@-node:ekr.20081211115412.12:drawItemIcon
+#@+node:ekr.20081121105001.418:getIcon & getIconImage
+def getIcon(self,p):
+
+    '''Return the proper icon for position p.'''
+
+    p.v.iconVal = val = p.v.computeIcon()
+
+    return self.getCompositeIconImage(p, val)
+
+def getVnodeIcon(self,p):
+
+    '''Return the proper icon for position p.'''
+
+    v.iconVal = val = v.computeIcon()
+    return self.getIconImage(val)
+
+def getIconImage(self,val):
+
+    return g.app.gui.getIconImage(
+        "box%02d.GIF" % val)
+
+def getCompositeIconImage(self, p, val):
+
+    userIcons = self.c.editCommands.getIconList(p)
+    statusIcon = self.getIconImage(val)
+
+    if not userIcons:
+        return statusIcon
+
+    hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
+    hash.append(str(val))
+    hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
+    hash = ':'.join(hash)
+
+    if hash in g.app.gui.iconimages:
+        return g.app.gui.iconimages[hash]
+
+    images = [g.app.gui.getImageImage(i['file']) for i in userIcons
+             if i['where'] == 'beforeIcon']
+    images.append(g.app.gui.getImageImage("box%02d.GIF" % val))
+    images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
+                  if i['where'] == 'beforeHeadline'])
+    width = sum([i.width() for i in images])
+    height = max([i.height() for i in images])
+
+    pix = QtGui.QPixmap(width,height)
+    pix.fill()
+    pix.setAlphaChannel(pix)
+    painter = QtGui.QPainter(pix)
+    x = 0
+    for i in images:
+        painter.drawPixmap(x,(height-i.height())//2,i)
+        x += i.width()
+    painter.end()
+
+    g.app.gui.iconimages[hash] = QtGui.QIcon(pix)
+
+    return g.app.gui.iconimages[hash]
+#@-node:ekr.20081121105001.418:getIcon & getIconImage
+#@+node:ekr.20081121105001.431:updateIcon
+def updateIcon (self,p,force=False):
+
+    '''Update p's icon.'''
+
+    if not p: return
+
+    val = p.v.computeIcon()
+
+    # The force arg is needed:
+    # Leo's core may have updated p.v.iconVal.
+    if p.v.iconVal == val and not force:
+        return
+
+    p.v.iconVal = val
+    icon = self.getIconImage(val)
+    # Update all cloned/joined items.
+    items = self.tnode2items(p.v.t)
+    for item in items:
+        if self.isValidItem(item):
+            item.setIcon(0,icon)
+#@-node:ekr.20081121105001.431:updateIcon
+#@+node:ekr.20090112065600.10:updateVisibleIcons
+def updateVisibleIcons (self,p):
+
+    '''Update the icon for p and the icons
+    for all visible descendants of p.'''
+
+    self.updateIcon(p,force=True)
+
+    if p.hasChildren() and p.isExpanded():
+        for child in p.children_iter():
+            self.updateVisibleIcons(child)
+#@-node:ekr.20090112065600.10:updateVisibleIcons
+#@-node:ekr.20081209064740.2:Icons
+#@-node:ekr.20090112065600.11:Problems with redraw_after_icons_changed
 #@-all
 #@nonl
 #@-node:ekr.20081121105001.147:@thin qtNotes.txt

@@ -2313,8 +2313,8 @@ class leoTree:
 
     # Drawing & scrolling.
     def drawIcon(self,v,x=None,y=None):             self.oops()
-    def redraw(self,scroll=True,forceDraw=False):   self.oops()
-    def redraw_now(self,scroll=True,forceDraw=False):self.oops()
+    def redraw(self,forceDraw=False):               self.oops()
+    def redraw_now(self,forceDraw=False):           self.oops()
     def scrollTo(self,p):                           self.oops()
     idle_scrollTo = scrollTo # For compatibility.
 
@@ -2681,6 +2681,7 @@ class leoTree:
     def redraw_after_icons_changed(self,all=False):         self.c.redraw()
     def redraw_after_clone(self):                           self.c.redraw()
     def redraw_after_contract(self,p=None,setFocus=False):  self.c.redraw()
+    def redraw_after_expand(self,p=None,setFocus=False):    self.c.redraw()
     def redraw_after_select(self):                          self.c.redraw()
 
 
@@ -2688,7 +2689,7 @@ class leoTree:
     #@+node:ekr.20040803072955.128:leoTree.select & helper
     tree_select_lockout = False
 
-    def select (self,p,scroll=True):
+    def select (self,p):
 
         '''Select a node.  Never redraws outline, but may change coloring of individual headlines.'''
 
@@ -2699,7 +2700,7 @@ class leoTree:
             val = 'break'
             self.tree_select_lockout = True
             c.frame.tree.beforeSelectHint(p,old_p)
-            val = self.treeSelectHelper(p,scroll)
+            val = self.treeSelectHelper(p)
         finally:
             self.tree_select_lockout = False
             c.frame.tree.afterSelectHint(p,old_p)
@@ -2708,7 +2709,7 @@ class leoTree:
     #@+node:ekr.20070423101911:treeSelectHelper
     #  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
 
-    def treeSelectHelper (self,p,scroll):
+    def treeSelectHelper (self,p,scroll=True):
 
         c = self.c ; frame = c.frame ; trace = False
         body = w = frame.body.bodyCtrl
@@ -3323,7 +3324,7 @@ class nullTree (leoTree):
 
     #@-node:ekr.20070228173611:printWidgets
     #@+node:ekr.20031218072017.2236:Overrides
-    def select (self,p,scroll=True):
+    def select (self,p):
         pass
     #@nonl
     #@+node:ekr.20070228163350:Colors & fonts
@@ -3346,7 +3347,7 @@ class nullTree (leoTree):
     def beginUpdate (self):
         self.updateCount += 1
 
-    def endUpdate (self,flag,scroll=False):
+    def endUpdate (self,flag):
         self.updateCount -= 1
         if flag and self.updateCount <= 0:
             self.redraw_now()
@@ -3354,11 +3355,11 @@ class nullTree (leoTree):
     def drawIcon(self,v,x=None,y=None):
         pass
 
-    def redraw(self,p,scroll=True,forceDraw=False):
+    def redraw(self,p,forceDraw=False):
         self.redrawCount += 1
         # g.trace('nullTree')
 
-    def redraw_now(self,p,scroll=True,forceDraw=False):
+    def redraw_now(self,p,forceDraw=False):
         self.redrawCount += 1
         # g.trace('nullTree')
 

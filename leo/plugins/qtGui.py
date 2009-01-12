@@ -3709,9 +3709,11 @@ class leoQtTree (leoFrame.leoTree):
 
     #@+node:ekr.20090109110752.21:Entry points (qtTree)
     #@+node:ekr.20081121105001.414:full_redraw & helpers
-    def full_redraw (self,p=None,scroll=False):
+    def full_redraw (self,p=None,scroll=True):
 
-        '''Redraw all visible nodes of the tree'''
+        '''Redraw all visible nodes of the tree.
+
+        Preserve the vertical scrolling unless scroll is True.'''
 
         trace = False
         c = self.c ; w = self.treeWidget
@@ -3736,8 +3738,11 @@ class leoQtTree (leoFrame.leoTree):
         self.redrawing = True
         self.fullDrawing = True # To suppress some traces.
         try:
-            vScroll = w.horizontalScrollBar()
-            pos = vScroll.sliderPosition()
+            hScroll = w.horizontalScrollBar()
+            vScroll = w.verticalScrollBar()
+            hPos = hScroll.sliderPosition()
+            vPos = vScroll.sliderPosition()
+            # g.trace(hPos,vPos)
             w.clear()
             # Draw all top-level nodes and their visible descendants.
             if c.hoistStack:
@@ -3758,7 +3763,9 @@ class leoQtTree (leoFrame.leoTree):
         finally:
             if not self.selecting:
                 self.setCurrentItem()
-            vScroll.setSliderPosition(pos)
+            hScroll.setSliderPosition(hPos)
+            if not scroll:
+                vScroll.setSliderPosition(vPos)
 
             # Necessary to get the tree drawn initially.
             w.repaint()
@@ -3769,9 +3776,8 @@ class leoQtTree (leoFrame.leoTree):
             if trace:
                 theTime = tstop()
                 if False or not g.app.unitTesting:
-                    g.trace('%s: drew %3s nodes in %s' % (
-                        self.redrawCount,self.nodeDrawCount,theTime),
-                        g.callers(4))
+                    g.trace('%s: scroll: %s, drew %3s nodes in %s' % (
+                        self.redrawCount,scroll,self.nodeDrawCount,theTime))
 
     # Compatibility
     redraw = full_redraw 
@@ -3889,6 +3895,11 @@ class leoQtTree (leoFrame.leoTree):
             g.trace('*** no item for %s' % p)
             self.full_redraw()
     #@-node:ekr.20090110133205.1:redraw_after_contract
+    #@+node:ekr.20090112093625.10:redraw_after_expand
+    def redraw_after_expand (self,p):
+
+        self.full_redraw (p,scroll=False)
+    #@-node:ekr.20090112093625.10:redraw_after_expand
     #@+node:ekr.20090109110752.19:redraw_after_head_changed
     def redraw_after_head_changed (self):
 
@@ -3897,22 +3908,36 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20090109110752.16:redraw_after_icons_changed
     def redraw_after_icons_changed (self,all=False):
 
+        if self.redrawing: return
+
         self.redrawCount += 1 # To keep a unit test happy.
 
         c = self.c
 
-        if all:
-            for p in c.rootPosition().self_and_siblings_iter():
-                self.updateVisibleIcons(p)
-        else:
-            p = c.currentPosition()
-            self.updateIcon(p,force=True)
+        # Suppress call to setHeadString in sig_itemChanged!
+        self.redrawing = True
+        try:
+            if all:
+                for p in c.rootPosition().self_and_siblings_iter():
+                    self.updateVisibleIcons(p)
+            else:
+                p = c.currentPosition()
+                self.updateIcon(p,force=True)
+        finally:
+            self.redrawing = False
 
     #@-node:ekr.20090109110752.16:redraw_after_icons_changed
     #@+node:ekr.20081208072750.19:redraw_after_select
+    # Important: this can not replace before/afterSelectHint.
+
     def redraw_after_select (self,p):
 
         if self.redrawing: return
+
+        # g.trace(p.headString())
+
+        # Don't set self.redrawing here.
+        # It will be set by self.afterSelectHint.
 
         item = self.position2item(p)
 
@@ -3920,9 +3945,9 @@ class leoQtTree (leoFrame.leoTree):
         if not item:
             self.full_redraw(p)
 
-        # Call the base leoTree.select method.
-        # This will call before/after_select_hint.
-        self.select(p)
+        # c.redraw_after_select calls tree.select indirectly.
+        # Do not call it again here.
+    #@nonl
     #@-node:ekr.20081208072750.19:redraw_after_select
     #@-node:ekr.20090109110752.21:Entry points (qtTree)
     #@+node:ekr.20090109110752.23:Helpers
@@ -4133,15 +4158,16 @@ class leoQtTree (leoFrame.leoTree):
         if not p: return
 
         val = p.v.computeIcon()
+
+        # The force arg is needed:
+        # Leo's core may have updated p.v.iconVal.
         if p.v.iconVal == val and not force:
             return
 
+        p.v.iconVal = val
         icon = self.getIconImage(val)
-
+        # Update all cloned/joined items.
         items = self.tnode2items(p.v.t)
-
-        # g.trace(len(items),p.headString())
-
         for item in items:
             if self.isValidItem(item):
                 item.setIcon(0,icon)
@@ -4160,51 +4186,6 @@ class leoQtTree (leoFrame.leoTree):
     #@-node:ekr.20090112065600.10:updateVisibleIcons
     #@-node:ekr.20081209064740.2:Icons
     #@-node:ekr.20090109110752.23:Helpers
-    #@+node:ekr.20081213093110.1:Unit tests
-    # These must be run with alt-4, because external unit tests use a null tree.
-    # This means that we have to reload this file if a test fails.
-
-    if 0: # Prevent the unit test code from being executed on startup.
-        #@    @+others
-        #@+node:ekr.20081213093110.2:@test position2Item
-        p = c.rootPosition()
-        tree = c.frame.tree
-
-        while p:
-            item = tree.position2item(p)
-            print item and id(item) or '**none**', p.headString()
-            v = tree.item2vnode(item)
-            assert v == p.v, 'item2: %s, p.v: %s' % (item2,p.v)
-            p.moveToVisNext(c)
-        #@nonl
-        #@-node:ekr.20081213093110.2:@test position2Item
-        #@+node:ekr.20081213093110.3:@test item2position
-        def test_sibs(parent_p,parent_item):
-
-            tree = c.frame.tree
-            sib_items = tree.childItems(parent_item)
-            sibs = [z for z in parent_p.self_and_siblings_iter(copy=True)]
-
-            assert len(sib_items) == len(sibs),(
-                'child_items: %s, children: %s' % (
-                    g.listToString(sib_items),g.listToString(sibs)))
-
-            for item,p in zip(sib_items,sibs):
-                p2 = tree.item2position(item)
-                # print id(item),p2 and p2.headString() or not p2 and '**None**'
-                assert p == p2, 'item: %s, p: %s, p2: %s' % (id(item),p,p2)
-
-                # Recursively test.
-                child = p.firstChild()
-                if child.isVisible(c):
-                    test_sibs(child,parent_item=item)
-
-        # print '='*10
-        test_sibs(c.rootPosition(),None)
-        #@-node:ekr.20081213093110.3:@test item2position
-        #@-others
-    #@nonl
-    #@-node:ekr.20081213093110.1:Unit tests
     #@-node:ekr.20081121105001.412:Drawing... (qtTree)
     #@+node:ekr.20081121105001.432:Event handlers... (qtTree)
     #@+node:ekr.20081121105001.433:Click Box...
@@ -4432,12 +4413,10 @@ class leoQtTree (leoFrame.leoTree):
         if item != item2:
             if trace and verbose: g.trace('item',item,'old item',item2)
             self.selecting = True
-            self.traceSelect()
             try:
                 w.setCurrentItem(item)
             finally:
                 self.selecting = False
-                self.traceSelect()
         return item
     #@-node:ekr.20081121105001.442:setCurrentItem
     #@+node:ekr.20081121105001.443:sig_itemChanged
@@ -4455,10 +4434,11 @@ class leoQtTree (leoFrame.leoTree):
             # so far, col is always 0
             s = g.app.gui.toUnicode(item.text(col))
             p.setHeadString(s)
+            p.setDirty()
+            self.redraw_after_icons_changed(all=False)
 
         # Make sure to end editing.
         self.killEditing()
-    #@nonl
     #@-node:ekr.20081121105001.443:sig_itemChanged
     #@+node:ekr.20081121105001.444:sig_itemCollapsed
     def sig_itemCollapsed (self,item):
@@ -4738,7 +4718,7 @@ class leoQtTree (leoFrame.leoTree):
 
         # Disable onTextChanged.
         self.selecting = True
-        self.traceSelect()
+    #@nonl
     #@-node:ekr.20081121105001.455:beforeSelectHint
     #@+node:ekr.20081121105001.456:afterSelectHint
     def afterSelectHint (self,p,old_p):
@@ -4747,7 +4727,6 @@ class leoQtTree (leoFrame.leoTree):
         c = self.c
 
         self.selecting = False
-        self.traceSelect()
 
         if not p:
             return g.trace('Error: no p')
@@ -4756,7 +4735,7 @@ class leoQtTree (leoFrame.leoTree):
         if self.redrawing:
             return g.trace('Error: already redrawing')
 
-        if trace: g.trace(p and p.headString())
+        if trace: g.trace(p and p.headString(),g.callers(4))
 
         c.outerUpdate() # Bring the tree up to date.
 

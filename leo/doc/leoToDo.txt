@@ -1921,8 +1921,8 @@ def save (self,event=None):
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
 
-    #### c.redraw()
-    c.redraw_after_icons_changed(all=True)
+    # Done in fileCommands.save.
+    # c.redraw_after_icons_changed(all=True)
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
@@ -1959,8 +1959,8 @@ def saveAs (self,event=None):
         c.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
 
-    #### c.redraw()
-    c.redraw_after_icons_changed(all=True)
+    # Done in fileCommands.saveAs.
+    # c.redraw_after_icons_changed(all=True)
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
@@ -2015,8 +2015,8 @@ def saveTo (self,event=None):
         c.updateRecentFiles(fileName)
         g.chdir(fileName)
 
-    #### c.redraw()
-    c.redraw_after_icons_changed(all=True)
+    # Does not change icons status.
+    # c.redraw_after_icons_changed(all=True)
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2837:revert

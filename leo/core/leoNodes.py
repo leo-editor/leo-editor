@@ -1636,7 +1636,7 @@ class basePosition (object):
 
         p = self ; dirtyVnodeList = []
 
-        # g.trace(p.headString(),g.callers())
+        # g.trace(p.headString(),g.callers(4))
 
         if not p.v.t.isDirty():
             p.v.t.setDirty()

@@ -1352,25 +1352,31 @@ class leoFind:
         Returns self.dummy_vnode, c.edit_widget(p) or c.frame.body.bodyCtrl with
         "insert" and "sel" points set properly."""
 
-        c = self.c ; p = self.p
+        c = self.c ; p = self.p ; current = c.currentPosition()
         sparseFind = c.config.getBool('collapse_nodes_during_finds')
         c.frame.bringToFront() # Needed on the Mac
-        redraw = not p.isVisible(c)
-        if sparseFind and not c.currentPosition().isAncestorOf(p):
+        redraw1 = not p.isVisible(c)
+        if sparseFind:
             # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
             for p2 in c.currentPosition().self_and_parents_iter():
+                if p2.isAncestorOf(p):
+                    break
+                # g.trace('contract',p.headString())
                 p2.contract()
                 redraw = True
-        for p in self.p.parents_iter():
-            if not p.isExpanded():
-                p.expand()
-                redraw = True
+
+        redraw2 = c.expandAllAncestors(self.p)
         p = self.p
         if not p: g.trace('can not happen: self.p is None')
 
-        c.selectPosition(p)
-        if redraw or self.inHeadline:
+        # g.trace('redraw2',redraw1,redraw2)
+
+        #### c.selectPosition(p)
+        redraw = redraw1 or redraw2
+        if redraw or (self.in_headline and p != current):
             c.redraw(p)
+        else:
+            c.selectPosition(p)
         if self.in_headline:
             c.editPosition(p) # Must follow c.redraw(p)
         # Set the focus
@@ -1385,7 +1391,6 @@ class leoFind:
         w.seeInsertPoint()
         if self.wrap and not self.wrapPosition:
             self.wrapPosition = self.p
-    #@nonl
     #@-node:ekr.20031218072017.3091:showSuccess
     #@+node:ekr.20031218072017.1460:update_ivars (leoFind)
     # New in Leo 4.4.3: This is now gui-independent code.

@@ -16420,32 +16420,7 @@ if not g.os_path_exists(s):
     g.pr('created chinese file')
     
 </t>
-<t tx="ekr.20070114140212"># Remove any previous children.
-while p.hasChildren():
-    p.firstChild().doDelete()
-# Create two cloned children.
-c.selectPosition(p)
-c.insertHeadline()
-p2 = c.currentPosition()
-p2.moveToFirstChildOf(p)
-p2.setHeadString('aClone')
-c.selectPosition(p2)
-c.clone()
-assert 2 == p.numberOfChildren()
-
-try:
-    # Select the first clone and demote (it should be illegal)
-    c.selectPosition(p2)
-    c.demote() # This should do nothing.
-    assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
-    assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
-    assert 2 == p.numberOfChildren(), 'fail 3'
-    # Delete the children, but only if there are no errors.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-finally:
-    c.redraw()
-</t>
+<t tx="ekr.20070114140212"></t>
 <t tx="ekr.20070131162935">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070131162935.1">first line

@@ -75,7 +75,6 @@ class baseCommands:
 
         self.requestedFocusWidget = None
         self.requestRedrawFlag = False
-        self.requestRedrawScrollFlag = False
         self.requestedIconify = '' # 'iconify','deiconify'
         self.requestRecolorFlag = False
 
@@ -100,6 +99,7 @@ class baseCommands:
         self.nodeHistory = nodeHistory(c)
 
         self.contractVisitedNodes = c.config.getBool('contractVisitedNodes')
+        self.sparse_goto_parent = c.config.getBool('sparse_goto_parent')
         self.showMinibuffer = c.config.getBool('useMinibuffer')
         self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
         self.fixed = c.config.getBool('fixedWindow',False)
@@ -888,8 +888,8 @@ class baseCommands:
                 c.updateRecentFiles(c.mFileName)
                 g.chdir(c.mFileName)
 
-        #### c.redraw()
-        c.redraw_after_icons_changed(all=True)
+        # Done in fileCommands.save.
+        # c.redraw_after_icons_changed(all=True)
         c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2834:save (commands)
     #@+node:ekr.20031218072017.2835:saveAs
@@ -926,8 +926,8 @@ class baseCommands:
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
 
-        #### c.redraw()
-        c.redraw_after_icons_changed(all=True)
+        # Done in fileCommands.saveAs.
+        # c.redraw_after_icons_changed(all=True)
         c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2835:saveAs
     #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
@@ -982,8 +982,8 @@ class baseCommands:
             c.updateRecentFiles(fileName)
             g.chdir(fileName)
 
-        #### c.redraw()
-        c.redraw_after_icons_changed(all=True)
+        # Does not change icons status.
+        # c.redraw_after_icons_changed(all=True)
         c.widgetWantsFocusNow(w)
     #@-node:ekr.20031218072017.2836:saveTo
     #@+node:ekr.20031218072017.2837:revert
@@ -4517,8 +4517,15 @@ class baseCommands:
             # g.trace('contract',p.headString())
             c.contractNode()
         elif p.hasParent() and p.parent().isVisible(c):
+            if self.sparse_goto_parent:
+                redraw = False
+                for child in p.parent().children_iter():
+                    if child.isExpanded():
+                        child.contract()
+                        redraw = True
             # g.trace('goto parent',p.headString())
             c.goToParent()
+            if redraw: c.redraw()
 
         c.treeFocusHelper()
     #@nonl
@@ -4550,7 +4557,7 @@ class baseCommands:
             c.expandSubtree(p)
             p.moveToNext()
 
-        c.redraw(p=c.rootPosition(),setFocus=True)
+        c.redraw_after_expand(p=c.rootPosition(),setFocus=True)
 
         c.expansionLevel = 0 # Reset expansion level.
     #@-node:ekr.20031218072017.2903:expandAllHeadlines
@@ -4632,7 +4639,7 @@ class baseCommands:
 
         p.expand()
 
-        c.redraw(p,setFocus=True)  #### should be redraw_after_expand.
+        c.redraw_after_expand(p,setFocus=True)
 
     #@-node:ekr.20031218072017.2907:expandNode
     #@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
@@ -4646,9 +4653,7 @@ class baseCommands:
             return
 
         if not p.isExpanded():
-            c.expandNode()
-
-        c.redraw(p.firstChild(),setFocus=True) #### should be redraw_after_expand.
+            c.expandNode() # Calls redraw_after_expand.
 
     def expandNodeOrGoToFirstChild (self,event=None):
 
@@ -4657,9 +4662,9 @@ class baseCommands:
         c = self ; p = c.currentPosition()
         if p.hasChildren():
             if not p.isExpanded():
-                c.expandNode() # Calls c.redraw (or redraw_after_expand)
+                c.expandNode() # Calls redraw_after_expand.
             else:
-                c.redraw(p.firstChild(),setFocus=True)  #### Should be redraw_after_select.
+                c.redraw_after_expand(p.firstChild(),setFocus=True)
     #@nonl
     #@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
     #@+node:ekr.20060928062431:expandOnlyAncestorsOfNode
@@ -4792,7 +4797,7 @@ class baseCommands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        # c.redraw()
+        #### c.redraw()
         c.redraw_after_icons_changed(all=True)
 
     #@-node:ekr.20031218072017.2925:markAllAtFileNodesDirty
@@ -5513,10 +5518,11 @@ class baseCommands:
         if not p: return
         if not c.canSelectVisNext(): return
 
+        # g.trace(p.headString())
+
         p.moveToVisNext(c)
         c.redraw_after_select(p)
         c.treeSelectHelper(p,redraw=False)
-    #@nonl
     #@-node:ekr.20031218072017.2996:selectVisNext
     #@+node:ekr.20070417112650:utils
     #@+node:ekr.20070226121510: treeFocusHelper
@@ -5539,7 +5545,8 @@ class baseCommands:
             flag = c.expandAllAncestors(p)
             if redraw or flag:
                 c.redraw_after_select(p)
-            else:
+            elif p != current:
+                g.trace('*** should not happen')
                 c.selectPosition(p)
 
         c.treeFocusHelper()
@@ -6082,7 +6089,7 @@ class baseCommands:
         g.trace('***** c.beginUpdate is deprecated',g.callers())
         if g.app.unitTesting: assert(False)
 
-    def endUpdate(self,flag=True,scroll=True):
+    def endUpdate(self,flag=True):
 
         '''Request a redraw of the screen if flag is True.'''
 
@@ -6092,7 +6099,6 @@ class baseCommands:
         c = self
         if flag:
             c.requestRedrawFlag = True
-            c.requestRedrawScrollFlag = scroll
             # g.trace('flag is True',c.shortFileName(),g.callers())
 
     BeginUpdate = beginUpdate # Compatibility with old scripts
@@ -6118,11 +6124,10 @@ class baseCommands:
         # inChapter = cc and cc.inChapter()
 
         for p in p.parents_iter():
-            # g.trace('testing',p)
             if cc and p.headString().startswith('@chapter'):
                 break
             if not p.isExpanded():
-                # g.trace('inChapter',inChapter,'p',p,g.callers())
+                # g.trace(p.headString())
                 p.expand()
                 redraw_flag = True
 
@@ -6179,9 +6184,7 @@ class baseCommands:
 
         # Suppress any requested redraw until we have iconified or diconified.
         redrawFlag = c.requestRedrawFlag
-        scrollFlag = c.requestRedrawScrollFlag
         c.requestRedrawFlag = False
-        c.requestRedrawScrollFlag = False
 
         # The iconify requests are made only by c.bringToFront.
         if c.requestedIconify == 'iconify':
@@ -6195,8 +6198,8 @@ class baseCommands:
         if redrawFlag:
             g.trace('****','tree.drag_p',c.frame.tree.drag_p)
             # A hack: force the redraw, even if we are dragging.
-            aList.append('*** redraw') # : scroll: %s' % (c.requestRedrawScrollFlag))
-            c.frame.tree.redraw_now(scroll=scrollFlag,forceDraw=True)
+            aList.append('*** redraw')
+            c.frame.tree.redraw_now(forceDraw=True)
 
         if c.requestRecolorFlag:
             if verbose: aList.append('%srecolor' % (
@@ -6222,7 +6225,6 @@ class baseCommands:
         c.requestRedrawFlag = False
         c.requestedFocusWidget = None
         c.requestedIconify = ''
-        c.requestedRedrawScrollFlag = False
 
         # g.trace('after')
     #@-node:ekr.20080514131122.20:c.outerUpdate
@@ -6237,7 +6239,7 @@ class baseCommands:
     #@-node:ekr.20080514131122.12:c.recolor & requestRecolor
     #@+node:ekr.20080514131122.14:c.redrawing...
     #@+node:ekr.20090110073010.1:c.redraw
-    def redraw (self,p=None,setFocus=False,scroll=True):
+    def redraw (self,p=None,setFocus=False):
         '''Redraw the screen immediately.'''
 
         c = self
@@ -6248,7 +6250,7 @@ class baseCommands:
             p = c.currentPosition()
 
         c.expandAllAncestors(p)
-        c.frame.tree.redraw(p,scroll=scroll)
+        c.frame.tree.redraw(p)
         if setFocus: c.treeFocusHelper()
 
     # Compatibility with old scripts
@@ -6271,6 +6273,21 @@ class baseCommands:
         if setFocus:
             c.treeFocusHelper()
     #@-node:ekr.20090110131802.2:c.redraw_after_contract
+    #@+node:ekr.20090112065525.1:c.redraw_after_expand
+    def redraw_after_expand (self,p=None,setFocus=False):
+
+        c = self
+
+        if p:
+            c.setCurrentPosition(p)
+        else:
+            p = c.currentPosition()
+
+        c.frame.tree.redraw_after_expand(p)
+
+        if setFocus:
+            c.treeFocusHelper()
+    #@-node:ekr.20090112065525.1:c.redraw_after_expand
     #@+node:ekr.20090110073010.2:c.redraw_after_head_changed
     def redraw_after_head_changed(self):
 
@@ -6296,8 +6313,14 @@ class baseCommands:
         if it is visible, and to completely redraw the screen otherwise.'''
 
         c = self
-        c.setCurrentPosition(p)
+
         c.expandAllAncestors(p)
+        c.selectPosition(p)
+            # Required to update body pane.
+            # Will call tree.before/afterSelect hint.
+
+        # This will be redundant if tree.before/afterSelectHint are functional,
+        # but this redundancy does not hurt.
         c.frame.tree.redraw_after_select(p)
         if setFocus: c.treeFocusHelper()
     #@-node:ekr.20090110073010.4:c.redraw_after_select
