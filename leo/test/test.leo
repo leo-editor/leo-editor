@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1053,6 +1053,7 @@
 <v t="ekr.20090102095951.2"><vh>node a</vh></v>
 <v t="ekr.20090102095951.3"><vh>node b</vh></v>
 </v>
+<v t="ekr.20090113101004.1"><vh>@test c.vnode2position</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -11181,6 +11182,21 @@ g.funcToMethod(undirect,c,name='unredirectScriptOutput')
 
 print('script output now goes to the console')
 
+</t>
+<t tx="ekr.20090113101004.1">trace = False
+if trace: print '=' * 20
+
+for p in c.allNodes_iter():
+    p2 = c.vnode2position(p.v)
+
+    if trace: print p2.level(), p2.headString()
+
+    # We can *not* assert that p == p2, only that
+    # p2.v == p.v and c.positionExists(p2)
+    assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
+    assert c.positionExists(p2),'does not exist: %s' % p2
+
+if True or trace: print 'passed'
 </t>
 </tnodes>
 </leo_file>

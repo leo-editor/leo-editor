@@ -4203,8 +4203,8 @@ class leoQtTree (leoFrame.leoTree):
             self.redrawing = True
             self.fullDrawing = True # To suppress some traces.
             try:
-                vScroll = w.horizontalScrollBar()
-                pos = vScroll.sliderPosition()
+                hScroll = w.horizontalScrollBar()
+                hPos = hScroll.sliderPosition()
                 w.clear()
                 # Draw all top-level nodes and their visible descendants.
                 if c.hoistStack:
@@ -4225,7 +4225,7 @@ class leoQtTree (leoFrame.leoTree):
             finally:
                 if not self.selecting:
                     self.setCurrentItem()
-                vScroll.setSliderPosition(pos)
+                hScroll.setSliderPosition(hPos)
 
                 # Necessary to get the tree drawn initially.
                 w.repaint()
