@@ -250,7 +250,7 @@ def init ():
 #@+node:EKR.20040517075715.11:open_in_vim
 def open_in_vim (tag,keywords,val=None):
 
-    g.trace(keywords)
+    # g.trace(keywords)
     c = keywords.get('c')
     p = keywords.get("p")
     if not c or not p: return
