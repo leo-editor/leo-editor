@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -3404,7 +3404,7 @@ nodenavigator.py
 image.py
 leo_to_html.py
 
-vim.py
+# vim.py
 # print_cp.py
 </t>
 <t tx="ekr.20071026102420.2"></t>
