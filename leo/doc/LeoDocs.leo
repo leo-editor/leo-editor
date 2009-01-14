@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="73" left="10" height="946" width="1263"/>
+	<global_window_position top="69" left="292" height="946" width="919"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -2949,7 +2949,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20050831195331.4"></v>
 <v t="ekr.20081205084002.2"></v>
-<v t="ekr.20090101095717.1" a="E"><vh>Stories</vh>
+<v t="ekr.20090101095717.1"><vh>Stories</vh>
 <v t="ekr.20090101095717.2"><vh>Introduction (iLeo, revised)</vh></v>
 <v t="ekr.20090101095717.3" rst_http_attribute="5d71002855443c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3122206e616d653d22687474702d6e6f64652d6d61726b65722d31223e710155043c2f613e71025d710328553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710455063c2f6469763e71055d71062855063c626f64793e710755073c2f626f64793e71085d71092855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710a55073c2f68746d6c3e710b4e65656555243c64697620636c6173733d2273656374696f6e222069643d226f76657276696577223e0a710c55493c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643122206e616d653d226f76657276696577223e4f766572766965773c2f613e3c2f68313e0a710d652e"><vh>Commonly used classes (scripting intro, revised)</vh></v>
 <v t="ekr.20090101095717.4"><vh>Intro to scripting Leo</vh></v>
@@ -26248,20 +26248,51 @@ The actual settings are specified in the body text.  At present, there are ten k
 - ``@enabled-plugins``
 
   The body text of the @enabled plugins node contains a list of enabled plugins, one per line.
-  Comment lines are ignored.
- 
-  Notes:
+  Comment lines starting with '#' are ignored.
+  Leo loads plugins in the order they appear.
 
-    A) Leo attempts to load all plugins every time an @enabled-plugins node is seen.
-       If the plugin has already been loaded, Leo silently ignores the
-       request to re-enable the plugin.
-       Leo never attempts to disable a plugin while processing enabled plugin
-       strings. Thus, plugins enabled in an @enabled-plugins node in leoSettings.leo
-       *will* be enabled regardless of the contents of any other @enabled-plugins node.
-       
-    B) g.app.gui.getEnabledPlugins contains the last value last processed @enabled-plugins node.
-       
-    C) Leo no longer uses the pluginsManager.txt file.
+  There has been considerable confusion in the past about just how this works.
+  Please read the following carefully.
+  
+  Let us distinguish two different situations.
+  First, what Leo does when loading a file, say x.leo initially.
+  Second, what Leo does when loading a second file, say y.leo, *from x.leo*.
+
+  In the first case, Leo will use the *last* found @enabled-plugins node from
+  the list list of settings files.  As always, the search order for settings is:
+  
+  1. leo/config/leoSettings.leo
+  2. ~/.leo/leoSettings.leo
+  3. leo/config/myLeoSettings.leo
+  4. ~/.leo/myLeoSettings.leo
+  5.  x.leo
+  
+  In the first case, it *is* possible to disable any or all plugins.
+  For example, you could put an empty @enabled-plugins node in x.leo.
+  If x.leo contains no @enabled-plugins node,
+  you could put an empty @enabled-plugins node in myLeoSettings.leo.
+
+  In the second case, plugins have *already* been loaded and enabled.
+  In this case, there is *no way* to disable already-loaded-and-enabled plugins.
+  All you can do is enable more plugins.
+
+  y.leo can enable more plugins if it contains an @enabled-plugins node that mentions more plugins.
+  If y.leo contains no @enabled-plugins node,
+  loading y.leo might cause myLeoSettings.leo to enable more plugins if
+  
+  a) x.leo contained an @enabled-plugins node and
+  b) myLeoSettings.leo mentions plugins not mentioned x.leo
+  
+  To summarize, Leo enables plugins in a (relatively) straightforward way when it loads x.leo.
+  Leo also enables plugins (in the same way) when loading y.leo.
+  But things might get confusing, depending on whether x.leo or y.leo (or both or neither)
+  contain @enabled-plugins nodes.
+  This simply can't be helped, and it is emphatically *not* a bug in Leo.
+  
+  Leo acts in a reasonable manner, but it is still possible to get confused even if you know the rules.
+  This suggests that you refrain from putting @enabled-plugins nodes in any .leo file except myLeoSettings.leo.
+  That way all your .leo files will use the same plugins.
+  If you do put @enabled-plugins nodes in x.leo, be prepared for confusion from time to time. 
 
 - ``@font``
 

@@ -6988,7 +6988,6 @@ class baseCommands:
         # v.parents includes the hidden root node.
         v,n = stack.pop()
         p = leoNodes.position(v,n,stack)
-        # assert c.positionExists(p),p
         return p
 
     #@-node:ekr.20090107113956.1:c.vnode2position
