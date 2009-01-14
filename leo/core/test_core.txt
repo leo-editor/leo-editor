@@ -1,0 +1,27 @@
+#@+leo-ver=4-thin
+#@+node:ekr.20090113083258.1:@thin test_core.txt
+# Contains all test code for Leo's core.
+
+#@+all
+#@+node:ekr.20090113083258.2:@test c.vnode2position
+trace = True ; verbose = False
+if trace and verbose: print '=' * 20
+
+count = 0
+for p in c.allNodes_iter():
+
+    count += 1
+    p2 = c.vnode2position(p.v)
+
+    if trace and verbose: print p2.level(), p2.headString()
+
+    # We can *not* assert that p == p2.
+    assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
+    assert c.positionExists(p2),p2
+
+if trace: print 'pass. tested %s positions' % count
+#@-node:ekr.20090113083258.2:@test c.vnode2position
+#@-all
+#@nonl
+#@-node:ekr.20090113083258.1:@thin test_core.txt
+#@-leo

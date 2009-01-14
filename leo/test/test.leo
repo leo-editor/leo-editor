@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="453" height="853" width="822"/>
+	<global_window_position top="49" left="287" height="853" width="988"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -28,6 +28,7 @@
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20090114100446.1"><vh>@@enabled-plugins (minimal)</vh></v>
 <v t="ekr.20080811112727.1"><vh>@@@bool suppress_import_parsing = True</vh></v>
 <v t="ekr.20080529111617.1"><vh>plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
@@ -58,7 +59,7 @@
 </v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
 </v>
-<v t="ekr.20041001211817" a="E"><vh>Buttons</vh>
+<v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
 <v t="ekr.20061030041356"><vh>@url c:\prog\IronPython-1.0.1\Doc\IronPythonApiReference.chm</vh></v>
 </v>
@@ -137,8 +138,9 @@
 </v>
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"></v>
+<v t="ekr.20070305085403"></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
-<v t="ekr.20070929062147" a="E"><vh>Prototype of networkx graph tools</vh>
+<v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
 <v t="ekr.20070929122956"><vh>Data trees</vh>
 <v t="ekr.20070929114617"><vh>@graph-target</vh></v>
 <v t="ekr.20070929072043"><vh>@networkx</vh>
@@ -1053,6 +1055,7 @@
 <v t="ekr.20090102095951.2"><vh>node a</vh></v>
 <v t="ekr.20090102095951.3"><vh>node b</vh></v>
 </v>
+<v t="ekr.20090113101004.1"><vh>@test c.vnode2position</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -2742,11 +2745,7 @@ g.es("done",color="blue")
     return child
 </t>
 <t tx="ekr.20070224123943"></t>
-<t tx="ekr.20070305085403">For MacOS X (darwin) the following are typical defaults:
-
-vim_cmd = /Applications/gvim.app/Contents/MacOS/gvim --servername LEO
-vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
-</t>
+<t tx="ekr.20070305085403"></t>
 <t tx="ekr.20070305085403.1"></t>
 <t tx="ekr.20070305085403.2"></t>
 <t tx="ekr.20070410063214"></t>
@@ -11182,5 +11181,23 @@ g.funcToMethod(undirect,c,name='unredirectScriptOutput')
 print('script output now goes to the console')
 
 </t>
+<t tx="ekr.20090113101004.1">trace = False
+if trace: print '=' * 20
+
+for p in c.allNodes_iter():
+    p2 = c.vnode2position(p.v)
+
+    if trace: print p2.level(), p2.headString()
+
+    # We can *not* assert that p == p2, only that
+    # p2.v == p.v and c.positionExists(p2)
+    assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
+    assert c.positionExists(p2),'does not exist: %s' % p2
+
+if True or trace: print 'passed'
+</t>
+<t tx="ekr.20090114100446.1">plugins_menu.py
+
+vim.py</t>
 </tnodes>
 </leo_file>

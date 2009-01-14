@@ -461,20 +461,45 @@ Lines starting with '#' are ignored.</p>
 </li>
 <li><p class="first"><tt class="docutils literal"><span class="pre">&#64;enabled-plugins</span></tt></p>
 <p>The body text of the &#64;enabled plugins node contains a list of enabled plugins, one per line.
-Comment lines are ignored.</p>
-<p>Notes:</p>
-<blockquote>
-<ol class="upperalpha simple">
-<li>Leo attempts to load all plugins every time an &#64;enabled-plugins node is seen.
-If the plugin has already been loaded, Leo silently ignores the
-request to re-enable the plugin.
-Leo never attempts to disable a plugin while processing enabled plugin
-strings. Thus, plugins enabled in an &#64;enabled-plugins node in leoSettings.leo
-<em>will</em> be enabled regardless of the contents of any other &#64;enabled-plugins node.</li>
-<li>g.app.gui.getEnabledPlugins contains the last value last processed &#64;enabled-plugins node.</li>
-<li>Leo no longer uses the pluginsManager.txt file.</li>
+Comment lines starting with '#' are ignored.
+Leo loads plugins in the order they appear.</p>
+<p>There has been considerable confusion in the past about just how this works.
+Please read the following carefully.</p>
+<p>Let us distinguish two different situations.
+First, what Leo does when loading a file, say x.leo initially.
+Second, what Leo does when loading a second file, say y.leo, <em>from x.leo</em>.</p>
+<p>In the first case, Leo will use the <em>last</em> found &#64;enabled-plugins node from
+the list list of settings files.  As always, the search order for settings is:</p>
+<ol class="arabic simple">
+<li>leo/config/leoSettings.leo</li>
+<li>~/.leo/leoSettings.leo</li>
+<li>leo/config/myLeoSettings.leo</li>
+<li>~/.leo/myLeoSettings.leo</li>
+<li>x.leo</li>
 </ol>
-</blockquote>
+<p>In the first case, it <em>is</em> possible to disable any or all plugins.
+For example, you could put an empty &#64;enabled-plugins node in x.leo.
+If x.leo contains no &#64;enabled-plugins node,
+you could put an empty &#64;enabled-plugins node in myLeoSettings.leo.</p>
+<p>In the second case, plugins have <em>already</em> been loaded and enabled.
+In this case, there is <em>no way</em> to disable already-loaded-and-enabled plugins.
+All you can do is enable more plugins.</p>
+<p>y.leo can enable more plugins if it contains an &#64;enabled-plugins node that mentions more plugins.
+If y.leo contains no &#64;enabled-plugins node,
+loading y.leo might cause myLeoSettings.leo to enable more plugins if</p>
+<ol class="loweralpha simple">
+<li>x.leo contained an &#64;enabled-plugins node and</li>
+<li>myLeoSettings.leo mentions plugins not mentioned x.leo</li>
+</ol>
+<p>To summarize, Leo enables plugins in a (relatively) straightforward way when it loads x.leo.
+Leo also enables plugins (in the same way) when loading y.leo.
+But things might get confusing, depending on whether x.leo or y.leo (or both or neither)
+contain &#64;enabled-plugins nodes.
+This simply can't be helped, and it is emphatically <em>not</em> a bug in Leo.</p>
+<p>Leo acts in a reasonable manner, but it is still possible to get confused even if you know the rules.
+This suggests that you refrain from putting &#64;enabled-plugins nodes in any .leo file except myLeoSettings.leo.
+That way all your .leo files will use the same plugins.
+If you do put &#64;enabled-plugins nodes in x.leo, be prepared for confusion from time to time.</p>
 </li>
 <li><p class="first"><tt class="docutils literal"><span class="pre">&#64;font</span></tt></p>
 <p>The body text contains a list of settings for a font.  For example:</p>

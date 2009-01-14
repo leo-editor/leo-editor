@@ -6974,6 +6974,10 @@ class baseCommands:
         '''
 
         c = self
+        context = v.context # v's commander.
+        root = c.hiddenRootNode
+        assert (c == context)
+
         stack = []
         while v.parents:
             parent = v.parents[0]
@@ -6981,11 +6985,11 @@ class baseCommands:
             stack.insert(0,(v,n),)
             v = parent
 
+        # v.parents includes the hidden root node.
         v,n = stack.pop()
         p = leoNodes.position(v,n,stack)
-        assert c.positionExists(p)
         return p
-    #@nonl
+
     #@-node:ekr.20090107113956.1:c.vnode2position
     #@-node:ekr.20060906211747:Getters
     #@+node:ekr.20060906211747.1:Setters
