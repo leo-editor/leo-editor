@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -27,7 +27,7 @@
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
-<v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20071025193940"><vh>@@enabled-plugins</vh></v>
 <v t="ekr.20080811112727.1"><vh>@@@bool suppress_import_parsing = True</vh></v>
 <v t="ekr.20080529111617.1"><vh>plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
@@ -1058,7 +1058,7 @@
 </v>
 <v t="ekr.20090107082739.1"><vh>replace redirectScriptOutput</vh></v>
 <v t="ekr.20090107091043.1"><vh>test redirected output</vh></v>
-<v t="ekr.20090107111908.1"><vh>@button vnode2position</vh></v>
+<v t="ekr.20090114084803.1"><vh>b</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -11193,31 +11193,7 @@ print('script output now goes to the console')
 
 </t>
 <t tx="ekr.20090107091043.1">print 1/0</t>
-<t tx="ekr.20090107111908.1">import leo.core.leoNodes as leoNodes
-
-# def vnode2position (self,v):
-
-    # '''Given a vnode, create a valid position p such that p.v = v.
-
-    # Many such positions may exist. The constructed position will be
-    # the first such position in the tree.
-    # '''
-
-    # c = self
-    # stack = []
-    # while v.parents:
-        # parent = v.parents[0]
-        # n = parent.t.children.index(v)
-        # stack.insert(0,(v,n),)
-        # v = parent
-
-    # v,n = stack.pop()
-    # p = leoNodes.position(v,n,stack)
-    # assert c.positionExists(p)
-    # return p
-
-print c.vnode2position(p.v)
-</t>
 <t tx="ekr.20090112082210.1">a</t>
+<t tx="ekr.20090114084803.1"></t>
 </tnodes>
 </leo_file>

@@ -631,6 +631,7 @@ def editLabel (self,p,selectAll=False):
         if e:
             s = e.text() ; len_s = len(s)
             # Hook up the widget to Leo's core.
+            self._editItem = item
             self._editWidgetPosition = p.copy()
             self._editWidget = e
             self._editWidgetWrapper = leoQtHeadlineWidget(
@@ -726,6 +727,7 @@ def killEditing (self):
 
     # g.trace(g.callers(4))
 
+    self._editItem = None
     self._editWidgetPosition = None
     self._editWidget = None
     self._editWidgetWrapper = None

@@ -3473,6 +3473,7 @@ class leoQtTree (leoFrame.leoTree):
 
         # Status ivars.
         self.dragging = False
+        self._editItem = None
         self._editWidgetPosition = None
         self._editWidget = None
         self._editWidgetWrapper = None
@@ -4694,53 +4695,6 @@ class leoQtTree (leoFrame.leoTree):
             g.trace('*** %s, %s' % (s,g.callers(4)))
     #@-node:ekr.20081209103009.11:oops
     #@+node:ekr.20081121105001.454:Selecting & editing... (qtTree)
-    #@+node:ekr.20081124113700.11:editPosition
-    def editPosition(self):
-
-        p = self._editWidgetPosition
-
-        return p
-    #@-node:ekr.20081124113700.11:editPosition
-    #@+node:ekr.20081121105001.160:edit_widget
-    def edit_widget (self,p):
-
-        """Returns the Qt.Edit widget for position p."""
-
-        w = self._editWidgetWrapper
-
-        if p and p == self._editWidgetPosition:
-            w2 = g.app.gui.get_focus()
-            # g.trace(w2,w,w and w.widget)
-            if w.widget == w2:
-                return w
-            else:
-                # g.trace('no match.  killing')
-                self.killEditing()
-                return None
-        else:
-            return None
-
-        # Decouple all of the core's headline code.
-        # Except for over-ridden methods.
-    #@-node:ekr.20081121105001.160:edit_widget
-    #@+node:ekr.20081121105001.455:beforeSelectHint
-    def beforeSelectHint (self,p,old_p):
-
-        trace = False
-
-        if self.selecting:
-            return g.trace('*** Error: already selecting',g.callers(4))
-
-        if self.redrawing:
-            if trace: g.trace('already redrawing')
-            return
-
-        if trace: g.trace(p and p.headString())
-
-        # Disable onTextChanged.
-        self.selecting = True
-    #@nonl
-    #@-node:ekr.20081121105001.455:beforeSelectHint
     #@+node:ekr.20081121105001.456:afterSelectHint
     def afterSelectHint (self,p,old_p):
 
@@ -4763,27 +4717,46 @@ class leoQtTree (leoFrame.leoTree):
         # setCurrentItem sets & clears .selecting ivar
         self.setCurrentItem()
     #@-node:ekr.20081121105001.456:afterSelectHint
-    #@+node:ekr.20081121105001.457:setHeadline
-    def setHeadline (self,p,s):
+    #@+node:ekr.20081121105001.455:beforeSelectHint
+    def beforeSelectHint (self,p,old_p):
 
-        '''Set the actual text of the headline widget.
+        trace = False
 
-        This is called from the undo/redo logic to change the text before redrawing.'''
+        if self.selecting:
+            return g.trace('*** Error: already selecting',g.callers(4))
 
-        # g.trace(p,s)
+        if self.redrawing:
+            if trace: g.trace('already redrawing')
+            return
 
-        # w = self.edit_widget(p)
-        # if w:
-            # w.configure(state='normal')
-            # w.delete(0,'end')
-            # if s.endswith('\n') or s.endswith('\r'):
-                # s = s[:-1]
-            # w.insert(0,s)
-            # self.revertHeadline = s
-            # # g.trace(repr(s),w.getAllText())
-        # else:
-            # g.trace('-'*20,'oops')
-    #@-node:ekr.20081121105001.457:setHeadline
+        if trace: g.trace(p and p.headString())
+
+        # Disable onTextChanged.
+        self.selecting = True
+    #@nonl
+    #@-node:ekr.20081121105001.455:beforeSelectHint
+    #@+node:ekr.20081121105001.160:edit_widget
+    def edit_widget (self,p):
+
+        """Returns the Qt.Edit widget for position p."""
+
+        w = self._editWidgetWrapper
+
+        if p and p == self._editWidgetPosition:
+            w2 = g.app.gui.get_focus()
+            # g.trace(w2,w,w and w.widget)
+            if w.widget == w2:
+                return w
+            else:
+                # g.trace('no match.  killing')
+                self.killEditing()
+                return None
+        else:
+            return None
+
+        # Decouple all of the core's headline code.
+        # Except for over-ridden methods.
+    #@-node:ekr.20081121105001.160:edit_widget
     #@+node:ekr.20081121105001.156:editLabel (override)
     def editLabel (self,p,selectAll=False):
 
@@ -4813,6 +4786,7 @@ class leoQtTree (leoFrame.leoTree):
             if e:
                 s = e.text() ; len_s = len(s)
                 # Hook up the widget to Leo's core.
+                self._editItem = item
                 self._editWidgetPosition = p.copy()
                 self._editWidget = e
                 self._editWidgetWrapper = leoQtHeadlineWidget(
@@ -4836,11 +4810,37 @@ class leoQtTree (leoFrame.leoTree):
 
         '''A helper shared by editLabel and onItemDoubleClicked.'''
     #@-node:ekr.20081121105001.458:editLabelHelper
+    #@+node:ekr.20081124113700.11:editPosition
+    def editPosition(self):
+
+        p = self._editWidgetPosition
+
+        return p
+    #@-node:ekr.20081124113700.11:editPosition
+    #@+node:ekr.20090114072115.12:endEditLabel
+    def endEditLabel (self):
+
+        '''Override leoTree.endEditLabel.
+
+        End editing of the presently-selected headline.'''
+
+        c = self.c ; p = c.currentPosition()
+        e = self._editWidget
+        w = self.treeWidget
+
+        if e:
+            s = e.text()
+            p.setHeadString(s)
+            item = self._editItem
+            item.setText(0,p.headString())
+            self.killEditing()
+    #@-node:ekr.20090114072115.12:endEditLabel
     #@+node:ekr.20090110154843.11:killEditing
     def killEditing (self):
 
         # g.trace(g.callers(4))
 
+        self._editItem = None
         self._editWidgetPosition = None
         self._editWidget = None
         self._editWidgetWrapper = None
@@ -4895,6 +4895,27 @@ class leoQtTree (leoFrame.leoTree):
             c.bodyWantsFocus()
     #@nonl
     #@-node:ekr.20081121105001.163:onHeadChanged
+    #@+node:ekr.20081121105001.457:setHeadline
+    def setHeadline (self,p,s):
+
+        '''Set the actual text of the headline widget.
+
+        This is called from the undo/redo logic to change the text before redrawing.'''
+
+        # g.trace(p,s)
+
+        # w = self.edit_widget(p)
+        # if w:
+            # w.configure(state='normal')
+            # w.delete(0,'end')
+            # if s.endswith('\n') or s.endswith('\r'):
+                # s = s[:-1]
+            # w.insert(0,s)
+            # self.revertHeadline = s
+            # # g.trace(repr(s),w.getAllText())
+        # else:
+            # g.trace('-'*20,'oops')
+    #@-node:ekr.20081121105001.457:setHeadline
     #@+node:ekr.20081214061352.10:traceSelect
     def traceSelect (self):
 
