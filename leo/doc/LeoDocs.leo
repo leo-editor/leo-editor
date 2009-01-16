@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5,0,1,2"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="5,0,1,6,3"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -435,7 +435,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070317043727"><vh>Organizer nodes</vh></v>
 <v t="ekr.20080411111008.1"><vh>\@ignore and \@if nodes</vh></v>
 <v t="ekr.20070317043727.2"><vh>Simple settings nodes</vh></v>
-<v t="ekr.20070317043727.3"><vh>Complex settings nodes</vh>
+<v t="ekr.20070317043727.3" a="E"><vh>Complex settings nodes</vh>
 <v t="ekr.20090116094356.5"><vh>\@button</vh></v>
 <v t="ekr.20090116094356.6"><vh>\@commands</vh></v>
 <v t="ekr.20090116094356.7"><vh>\@data</vh></v>
@@ -3632,7 +3632,7 @@ bracket matching the leftmost bracket. If a match is found, the entire range of
 characters delimited by the brackets is highlighted and the cursor is placed
 just to the left of the matching characters. Thus, executing this command twice
 highlights the range of matched characters without changing the cursor.</t>
-<t tx="EKR.20040524104904.140">Leo stores options in **@settings`` trees**, outlines whose headline is
+<t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is
 @settings. When opening a .leo file, Leo looks for @settings trees not only
 in the outline being opened but also in various leoSettings.leo files.
 This scheme allows for the following kinds of settings:
@@ -32334,10 +32334,10 @@ As always, Leo looks for @enabled-plugins nodes in settings files in the order
 specified by `Search order for settings files`_. Leo will enable all plugins
 found in the @enabled-plugins node it finds *last* in the search order. Leo does
 *not* enable plugins found in any other @enabled-plugins node. In particular,
-you *can not* specify a list of default plugins by placing that list in a
-settings file that appears early in the search list. Instead, the last
-@enabled-plugins node found in the search list specifies exactly the desired
-plugins.
+**you can not specify a list of default plugins by placing that list in a
+settings file that appears early in the search list**. Instead, the last
+@enabled-plugins node found in the search list specifies all and *only* the plugins
+that will be enabled.
 
 Let us distinguish two different situations. First, what Leo does when loading a
 file, say x.leo. Second, what Leo does when loading a second file, say y.leo,

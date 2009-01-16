@@ -294,7 +294,7 @@ See <a class="reference" href="commands.html#specifying-settings">Specifying set
 <!-- WARNING: image targets may not have upper case letters! -->
 <div class="section" id="id1">
 <h2><a class="toc-backref" href="#id3">Specifying settings</a></h2>
-<p>Leo stores options in <strong>&#64;settings`` trees</strong>, outlines whose headline is
+<p>Leo stores options in <strong>&#64;settings trees</strong>, outlines whose headline is
 &#64;settings. When opening a .leo file, Leo looks for &#64;settings trees not only
 in the outline being opened but also in various leoSettings.leo files.
 This scheme allows for the following kinds of settings:</p>
@@ -566,10 +566,10 @@ of settings. To avoid confusion, <strong>please read the following carefully</st
 specified by <a class="reference" href="#search-order-for-settings-files">Search order for settings files</a>. Leo will enable all plugins
 found in the &#64;enabled-plugins node it finds <em>last</em> in the search order. Leo does
 <em>not</em> enable plugins found in any other &#64;enabled-plugins node. In particular,
-you <em>can not</em> specify a list of default plugins by placing that list in a
-settings file that appears early in the search list. Instead, the last
-&#64;enabled-plugins node found in the search list specifies exactly the desired
-plugins.</p>
+<strong>you can not specify a list of default plugins by placing that list in a
+settings file that appears early in the search list</strong>. Instead, the last
+&#64;enabled-plugins node found in the search list specifies all and <em>only</em> the plugins
+that will be enabled.</p>
 <p>Let us distinguish two different situations. First, what Leo does when loading a
 file, say x.leo. Second, what Leo does when loading a second file, say y.leo,
 <em>from x.leo</em>. When loading the first .leo file, Leo enables plugins from the
