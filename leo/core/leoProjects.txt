@@ -5197,7 +5197,8 @@ def readSettingsFiles (self,fileName,verbose=True):
     self.inited = True
     self.setIvarsFromSettings(None)
 #@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-# This can't be done in initSettingsFiles because the local directory does not exits.
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
 localDirectory = g.os_path_dirname(fileName)
 
 #  Set the local leoSettings.leo file.
@@ -5918,7 +5919,8 @@ def readSettingsFiles (self,fileName,verbose=True):
     self.inited = True
     self.setIvarsFromSettings(None)
 #@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-# This can't be done in initSettingsFiles because the local directory does not exits.
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
 localDirectory = g.os_path_dirname(fileName)
 
 #  Set the local leoSettings.leo file.
@@ -10146,7 +10148,8 @@ def readSettingsFiles (self,fileName,verbose=True):
     self.inited = True
     self.setIvarsFromSettings(None)
 #@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-# This can't be done in initSettingsFiles because the local directory does not exits.
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
 localDirectory = g.os_path_dirname(fileName)
 
 #  Set the local leoSettings.leo file.
@@ -15387,6 +15390,621 @@ def backToIndentation (self,event):
     # self.endCommand(changed=True,setLabel=True)
 #@-node:ekr.20050920084036.75:backToIndentation
 #@-node:ekr.20081204091750.5:back-to-home/indentation now save state
+#@+node:ekr.20090114103308.2:vnode2position tests
+#@+node:ekr.20040312090934:c.iterators
+#@+node:EKR.20040529091232:c.all_positions_iter == allNodes_iter
+def allNodes_iter (self,copy=False):
+
+    r = self.rootPosition()
+    if copy:
+        cp = lambda p: p.copy()
+    else:
+        cp = lambda p: p
+    return r.iter_class(r, cp)
+
+all_positions_iter = allNodes_iter
+#@nonl
+#@-node:EKR.20040529091232:c.all_positions_iter == allNodes_iter
+#@+node:EKR.20040529091232.1:c.all_tnodes_iter
+def all_tnodes_iter (self):
+
+    return self.rootPosition().tnodes_iter()
+#@-node:EKR.20040529091232.1:c.all_tnodes_iter
+#@+node:EKR.20040529091232.2:c.all_unique_tnodes_iter
+def all_unique_tnodes_iter (self):
+
+    return self.rootPosition().unique_tnodes_iter()
+#@-node:EKR.20040529091232.2:c.all_unique_tnodes_iter
+#@+node:EKR.20040529091232.3:c.all_vnodes_iter
+def all_vnodes_iter (self):
+    return self.rootPosition().vnodes_iter()
+#@-node:EKR.20040529091232.3:c.all_vnodes_iter
+#@+node:EKR.20040529091232.4:c.all_unique_vnodes_iter
+def all_unique_vnodes_iter (self):
+
+    return self.rootPosition().unique_vnodes_iter()
+#@-node:EKR.20040529091232.4:c.all_unique_vnodes_iter
+#@+node:sps.20080317144948.3:c.all_positions_with_unique_tnodes_iter
+def all_positions_with_unique_tnodes_iter (self):
+
+    r = self.rootPosition()
+    return r.unique_iter_class(r, lambda p: p)
+#@-node:sps.20080317144948.3:c.all_positions_with_unique_tnodes_iter
+#@+node:sps.20080327174748.4:c.all_positions_with_unique_vnodes_iter
+def all_positions_with_unique_vnodes_iter (self):
+
+    r = self.rootPosition()
+    return r.unique_iter_class(r, lambda p: p, lambda u: u.v)
+#@-node:sps.20080327174748.4:c.all_positions_with_unique_vnodes_iter
+#@-node:ekr.20040312090934:c.iterators
+#@+node:ekr.20040305162628.1:p.Iterators
+@ A crucial optimization:
+
+Iterators make no copies at all if they would return an empty sequence.
+@c
+
+@others
+#@+node:sps.20080331123552.3:p.iter
+class iter_class:
+
+    """Returns a list of mappings of positions in a subtree, possibly including the root of the subtree."""
+
+    @others
+
+def tnodes_iter (self):
+
+    return self.iter_class(self, lambda p: p.v.t)
+
+def vnodes_iter (self):
+
+    return self.iter_class(self, lambda p: p.v)
+#@+node:sps.20080331123552.1:__init__ & __iter__ (p.iter)
+def __init__(self,p,mapping):
+
+    # g.trace('p.tnodes_iter.__init','p',p)
+
+    self.first = p.copy()
+    self.p = None
+    self.mapping = mapping
+
+def __iter__(self):
+
+    return self
+#@-node:sps.20080331123552.1:__init__ & __iter__ (p.iter)
+#@+node:sps.20080331123552.2:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+    elif self.p:
+        self.p.moveToThreadNext()
+
+    if self.p:
+        return self.mapping(self.p)
+
+    raise StopIteration
+
+__next__ = next
+#@nonl
+#@-node:sps.20080331123552.2:next
+#@-node:sps.20080331123552.3:p.iter
+#@+node:sps.20080331123552.8:p.unique_iter
+class unique_iter_class:
+
+    """Returns a list of positions in a subtree, possibly including the root of the subtree."""
+
+    @others
+
+def unique_tnodes_iter (self):
+
+    return self.unique_iter_class(self, lambda p: p.v.t)
+
+def unique_vnodes_iter (self):
+
+    return self.unique_iter_class(self, lambda p: p.v)
+#@+node:sps.20080331123552.4:__init__ & __iter__ (p.unique_tnodes_iter)
+def __init__(self,p,mapping,unique=lambda p: p.v.t):
+
+    # g.trace('p.unique_tnodes_iter.__init','p',p,)
+
+    self.d = {}
+    self.first = p.copy()
+    self.p = None
+    self.mapping = mapping
+    self.unique=unique
+
+def __iter__(self):
+
+    return self
+#@-node:sps.20080331123552.4:__init__ & __iter__ (p.unique_tnodes_iter)
+#@+node:sps.20080331123552.5:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.moveToThreadNextUnique()
+
+    if self.p:
+        return self.mapping(self.p)
+
+    raise StopIteration
+
+__next__ = next
+#@-node:sps.20080331123552.5:next
+#@+node:sps.20080331123552.7:moveToThreadNextUnique
+def moveToThreadNextUnique (self):
+
+    """Move a position to threadNext position."""
+
+    p = self.p
+    u = self.unique
+
+    if p:
+        # We've been visited
+        self.d[u(p)]=True
+
+        # First, try to find an unmarked child
+        if p.v.t.children:
+            p.moveToFirstChild()
+            while p and self.d.get(u(p)):
+                if p.hasNext():
+                    p.moveToNext()
+                else:
+                    p.moveToParent()
+
+        # If we didn't find an unmarked child,
+        # try to find an unmarked sibling
+        if p and self.d.get(u(p)):
+            while p.hasNext():
+                p.moveToNext()
+                if not self.d.get(u(p)):
+                    break
+
+        # If we didn't find an unmarked sibling,
+        # find a parent with an unmarked sibling
+        if p and self.d.get(u(p)):
+            p.moveToParent()
+            while p:
+                while p.hasNext():
+                    p.moveToNext()
+                    if not self.d.get(u(p)):
+                        break
+                # if we run out of siblings, go to parent
+                if self.d.get(u(p)):
+                    p.moveToParent()
+                else:
+                    break # found
+            # At this point, either (not p.d[p.v.t]) and found
+            # or (not p) and we're finished
+
+    return p 
+#@-node:sps.20080331123552.7:moveToThreadNextUnique
+#@-node:sps.20080331123552.8:p.unique_iter
+#@+node:ekr.20040305173559:p.subtree_iter
+class subtree_iter_class:
+
+    """Returns a list of positions in a subtree, possibly including the root of the subtree."""
+
+    @others
+
+def subtree_iter (self,copy=False):
+
+    return self.subtree_iter_class(self,copy,includeSelf=False)
+
+def self_and_subtree_iter (self,copy=False):
+
+    return self.subtree_iter_class(self,copy,includeSelf=True)
+#@+node:ekr.20040305173559.1:__init__ & __iter__
+def __init__(self,p,copy,includeSelf):
+
+    if includeSelf:
+        self.first = p.copy()
+        self.after = p.nodeAfterTree()
+    elif p.hasChildren():
+        self.first = p.copy().moveToFirstChild() 
+        self.after = p.nodeAfterTree()
+    else:
+        self.first = None
+        self.after = None
+
+    self.p = None
+    self.copy = copy
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20040305173559.1:__init__ & __iter__
+#@+node:ekr.20040305173559.2:next
+def next(self):
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToThreadNext()
+
+    if self.p and self.p != self.after:
+        if self.copy: return self.p.copy()
+        else:         return self.p
+    else:
+        raise StopIteration
+
+__next__ = next
+#@nonl
+#@-node:ekr.20040305173559.2:next
+#@-node:ekr.20040305173559:p.subtree_iter
+#@+node:sps.20080331123552.12:p.subtree_unique_iter
+class subtree_unique_iter_class:
+
+    """Returns a list of positions in a subtree, possibly including the root of the subtree."""
+
+    @others
+
+def subtree_with_unique_tnodes_iter (self,copy=False):
+
+    if copy:
+        cp = lambda p: p.copy()
+    else:
+        cp = lambda p: p
+
+    return self.subtree_unique_iter_class(self,
+        cp,
+        lambda p: p.v.t,
+        includeSelf=False)
+
+def subtree_with_unique_vnodes_iter (self,copy=False):
+
+    if copy:
+        cp = lambda p: p.copy()
+    else:
+        cp = lambda p: p
+
+    return self.subtree_unique_iter_class(self,
+        cp,
+        lambda p: p.v,
+        includeSelf=False)
+#@+node:sps.20080331123552.9:__init__ & __iter__
+def __init__(self,p,mapping,unique,includeSelf):
+
+    if includeSelf:
+        self.first = p.copy()
+        self.after = p.nodeAfterTree()
+    elif p.hasChildren():
+        self.first = p.copy().moveToFirstChild() 
+        self.after = p.nodeAfterTree()
+    else:
+        self.first = None
+        self.after = None
+
+    self.p = None
+    self.mapping = mapping
+    self.unique = unique
+    self.d = {}
+
+def __iter__(self):
+
+    return self
+#@-node:sps.20080331123552.9:__init__ & __iter__
+#@+node:sps.20080331123552.10:next
+# moveToThreadNextUnique raises StopIteration
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.moveToThreadNextUnique()
+
+    return self.mapping(self.p)
+
+__next__ = next
+#@nonl
+#@-node:sps.20080331123552.10:next
+#@+node:sps.20080331123552.11:moveToThreadNextUnique
+def moveToThreadNextUnique (self):
+
+    """Move a position to threadNext position."""
+
+    p = self.p
+    u = self.unique
+
+    if p:
+        # We've been visited
+        self.d[u(p)]=True
+
+        # First, try to find an unmarked child
+        if p.v.t.children:
+            p.moveToFirstChild()
+            if p == self.after:
+                raise StopIteration
+            while p and self.d.get(u(p)):
+                if p.hasNext():
+                    p.moveToNext()
+                else:
+                    p.moveToParent()
+                if p == self.after:
+                    raise StopIteration
+
+        # If we didn't find an unmarked child,
+        # try to find an unmarked sibling
+        if p and self.d.get(u(p)):
+            while p.hasNext():
+                p.moveToNext()
+                if p == self.after:
+                    raise StopIteration
+                if not self.d.get(u(p)):
+                    break
+
+        # If we didn't find an unmarked sibling,
+        # find a parent with an unmarked sibling
+        if p and self.d.get(u(p)):
+            p.moveToParent()
+            # if p.equal(self.after):
+            if p == self.after:
+                raise StopIteration
+            while p:
+                while p.hasNext():
+                    p.moveToNext()
+                    if p == self.after:
+                        raise StopIteration
+                    if not self.d.get(u(p)):
+                        break
+                # if we run out of siblings, go to parent
+                if self.d.get(u(p)):
+                    p.moveToParent()
+                    if p == self.after:
+                        raise StopIteration
+                else:
+                    break # found
+            # At this point, either (not p.d[p.v.t]) and found
+            # or (not p) and we're finished
+
+    return p 
+#@-node:sps.20080331123552.11:moveToThreadNextUnique
+#@-node:sps.20080331123552.12:p.subtree_unique_iter
+#@+node:ekr.20040305172211.1:p.children_iter
+class children_iter_class:
+
+    """Returns a list of children of a position."""
+
+    @others
+
+def children_iter (self,copy=False):
+
+    return self.children_iter_class(self,copy)
+#@+node:ekr.20040305172211.2:__init__ & __iter__
+def __init__(self,p,copy):
+
+    if p.hasChildren():
+        self.first = p.copy().moveToFirstChild()
+    else:
+        self.first = None
+
+    self.p = None
+    self.copy = copy
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20040305172211.2:__init__ & __iter__
+#@+node:ekr.20040305172211.3:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToNext()
+
+    if self.p:
+        if self.copy: return self.p.copy()
+        else:         return self.p
+    else: raise StopIteration
+
+__next__ = next
+#@nonl
+#@-node:ekr.20040305172211.3:next
+#@-node:ekr.20040305172211.1:p.children_iter
+#@+node:ekr.20040305172855:p.parents_iter
+class parents_iter_class:
+
+    """Returns a list of positions of a position."""
+
+    @others
+
+def parents_iter (self,copy=False):
+
+    return self.parents_iter_class(self,copy,includeSelf=False)
+
+def self_and_parents_iter(self,copy=False):
+
+    return self.parents_iter_class(self,copy,includeSelf=True)
+#@+node:ekr.20040305172855.1:__init__ & __iter__
+def __init__(self,p,copy,includeSelf):
+
+    if includeSelf:
+        self.first = p.copy()
+    elif p.hasParent():
+        self.first = p.copy().moveToParent()
+    else:
+        self.first = None
+
+    self.p = None
+    self.copy = copy
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20040305172855.1:__init__ & __iter__
+#@+node:ekr.20040305172855.2:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToParent()
+
+    if self.p:
+        if self.copy: return self.p.copy()
+        else:         return self.p
+    else:
+        raise StopIteration
+
+__next__ = next
+#@nonl
+#@-node:ekr.20040305172855.2:next
+#@-node:ekr.20040305172855:p.parents_iter
+#@+node:ekr.20040305173343:p.siblings_iter
+class siblings_iter_class:
+
+    '''Returns a list of siblings of a position, including the position itself!'''
+
+    @others
+
+def siblings_iter (self,copy=False,following=False):
+
+    return self.siblings_iter_class(self,copy,following)
+
+self_and_siblings_iter = siblings_iter
+
+def following_siblings_iter (self,copy=False):
+
+    return self.siblings_iter_class(self,copy,following=True)
+#@+node:ekr.20040305173343.1:__init__ & __iter__
+def __init__(self,p,copy,following):
+
+    # We always include p, even if following is True.
+
+    if following:
+        self.first = p.copy()
+    else:
+        p = p.copy()
+        while p.hasBack():
+            p.moveToBack()
+        self.first = p
+
+    self.p = None
+    self.copy = copy
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20040305173343.1:__init__ & __iter__
+#@+node:ekr.20040305173343.2:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToNext()
+
+    if self.p:
+        if self.copy: return self.p.copy()
+        else:         return self.p
+    else: raise StopIteration
+
+__next__ = next
+#@nonl
+#@-node:ekr.20040305173343.2:next
+#@-node:ekr.20040305173343:p.siblings_iter
+#@-node:ekr.20040305162628.1:p.Iterators
+#@+node:ekr.20080416161551.207:p.moveToParent
+def moveToParent (self):
+
+    """Move a position to its parent position."""
+
+    p = self
+
+    if p.v and p.stack:
+        p.v,p._childIndex = p.stack.pop()
+    else:
+        p.v = None
+
+    return p
+#@-node:ekr.20080416161551.207:p.moveToParent
+#@+node:ekr.20090107113956.1:c.vnode2position
+def vnode2position (self,v):
+
+    '''Given a vnode v, construct a valid position p such that p.v = v.
+    '''
+
+    c = self
+    context = v.context # v's commander.
+    root = c.hiddenRootNode
+    assert (c == context)
+
+    stack = []
+    while v.parents:
+        parent = v.parents[0]
+        n = parent.t.children.index(v)
+        stack.insert(0,(v,n),)
+        v = parent
+
+    # v.parents includes the hidden root node.
+    v,n = stack.pop()
+    p = leoNodes.position(v,n,stack)
+    return p
+
+#@-node:ekr.20090107113956.1:c.vnode2position
+#@+node:ekr.20090113083258.3:Tests
+@nocolor-node
+
+@
+Whenever possible, it is good to run these tests with alt-5,
+run-unit-tests, rather than alt-4, run-unit-tests locallay.
+This will run the test last saved code.
+#@nonl
+#@+node:ekr.20090113083258.15:Unit tests
+#@+node:ekr.20090113083258.1:@thin test_core.txt
+# Contains all test code for Leo's core.
+
+@all
+#@nonl
+#@+node:ekr.20090113083258.2:@test c.vnode2position
+trace = True ; verbose = False
+if trace and verbose: print '=' * 20
+
+count = 0
+for p in c.allNodes_iter():
+
+    count += 1
+    p2 = c.vnode2position(p.v)
+
+    if trace and verbose: print p2.level(), p2.headString()
+
+    # We can *not* assert that p == p2.
+    assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
+    assert c.positionExists(p2),p2
+
+if trace: print 'pass. tested %s positions' % count
+#@-node:ekr.20090113083258.2:@test c.vnode2position
+#@-node:ekr.20090113083258.1:@thin test_core.txt
+#@-node:ekr.20090113083258.15:Unit tests
+#@+node:ekr.20090113083258.16:Local tests
+@nocolor-node
+
+# Run these tests with Ctrl-B, execute-script.
+#@nonl
+#@+node:ekr.20090113083258.17:test vnode2position
+for p in c.allNodes_iter():
+    p2 = c.vnode2position(p.v)
+    print p2.level() * ' ',p2.headString()
+    assert p == p2,'p: %s, p2: %s' % (p,p2)
+#@nonl
+#@-node:ekr.20090113083258.17:test vnode2position
+#@-node:ekr.20090113083258.16:Local tests
+#@-node:ekr.20090113083258.3:Tests
+#@-node:ekr.20090114103308.2:vnode2position tests
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080930072519.8:New options
 #@+node:ekr.20080910054558.2:Added -c option to specify config files
@@ -15554,7 +16172,8 @@ def readSettingsFiles (self,fileName,verbose=True):
     self.inited = True
     self.setIvarsFromSettings(None)
 #@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-# This can't be done in initSettingsFiles because the local directory does not exits.
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
 localDirectory = g.os_path_dirname(fileName)
 
 #  Set the local leoSettings.leo file.
