@@ -340,7 +340,7 @@ socket.gethostname() if neither environment variable exists.</li>
 </div>
 <div class="section" id="search-order-for-settings-files">
 <h3><a class="toc-backref" href="#id5">Search order for settings files</a></h3>
-<p>When Leo reads a .leo file, Leo looks for settings in default settings
+<p>When reading a .leo file, Leo looks for settings in default settings
 files first, then settings in personal settings files, and finally
 settings in local settings files.  The exact search order is:</p>
 <ol class="arabic simple">
@@ -380,6 +380,8 @@ configuration scheme that could possibly work&quot;.  Something like:</p>
 <li>Use a single myLeoSettings.leo files for personal defaults.</li>
 <li>Use local settings sparingly.</li>
 </ul>
+<p><strong>Important</strong>: it is good style to limit settings placed in
+myLeoSettings.leo to those settings that differ from default settings.</p>
 </div>
 <div class="section" id="safe-rules-for-local-settings">
 <h3><a class="toc-backref" href="#id6">Safe rules for local settings</a></h3>

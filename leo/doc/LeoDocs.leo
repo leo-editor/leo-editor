@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5,0,1,6,3"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="5,0,1,1"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -32256,7 +32256,7 @@ Leo was born in an attempt to understand a relatively obscure programming techni
 Using Leo is fun.  Fun because it gives control, and because programming occurs in an expanded context.
 
 </t>
-<t tx="ekr.20090116094356.2">When Leo reads a .leo file, Leo looks for settings in default settings
+<t tx="ekr.20090116094356.2">When reading a .leo file, Leo looks for settings in default settings
 files first, then settings in personal settings files, and finally
 settings in local settings files.  The exact search order is:
 
@@ -32294,7 +32294,10 @@ configuration scheme that could possibly work".  Something like:
     
 - Use a single leoSettings.leo file for installation-wide defaults.
 - Use a single myLeoSettings.leo files for personal defaults.
-- Use local settings sparingly.</t>
+- Use local settings sparingly.
+
+**Important**: it is good style to limit settings placed in 
+myLeoSettings.leo to those settings that differ from default settings.</t>
 <t tx="ekr.20090116094356.3">You should use special care when placing default or personal settings files in
 **local** directories, that is, directories other than homeDir, configDir or
 machineDir. In particular, the value of localDir can change when Leo reads
