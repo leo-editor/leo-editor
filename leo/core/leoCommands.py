@@ -6986,6 +6986,9 @@ class baseCommands:
             v = parent
 
         # v.parents includes the hidden root node.
+        if not stack:
+            # a vnode not in the tree
+            return c.nullPosition()
         v,n = stack.pop()
         p = leoNodes.position(v,n,stack)
         return p
