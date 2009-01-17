@@ -4,10 +4,6 @@
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
 #@+node:ekr.20090103054019.1:Urgent
-#@+node:ekr.20090105132011.4:Make sure $Home works for @nosent
-http://groups.google.com/group/leo-editor/browse_thread/thread/f27e3514310a5c90
-#@nonl
-#@-node:ekr.20090105132011.4:Make sure $Home works for @nosent
 #@+node:ekr.20090103070824.8:move match_h into Leo's core
 @nocolor-node
 
@@ -43,6 +39,26 @@ to require people to install IPython (and enable ipython.py plugin) to
 access this functionality.
 #@nonl
 #@-node:ekr.20090103070824.8:move match_h into Leo's core
+#@+node:ekr.20090109092314.1:Create a "minimal standards for bug reports"
+@nocolor-node
+
+The bug report must report *all* of the
+following:
+
+1. The version or versions of Leo used.
+
+2. The version or versions of Python used.
+
+3. The platform or platforms used: Linux, Windows, MacOs.
+
+4. A clear description of the problem.
+
+5. Information sufficient to recreate the problem.
+
+Furthermore, the bug report must be self contained.  It must be
+possible, six weeks or six months after the report was first file, to
+understand the report as it stands.
+#@-node:ekr.20090109092314.1:Create a "minimal standards for bug reports"
 #@+node:ekr.20090105083748.3:Make sure g.pr never throws unicode exception
 
 sys.stdout.write(s+'\n')
@@ -147,6 +163,8 @@ Using r1372 and the Qt plugin, I get strange results with the recent-files menu 
 4. repeat step 2.  Now window 1's recent-files list is duplicated twice...
 #@nonl
 #@-node:ekr.20090103070824.7:Recent files menu is duplicated in qt gui
+#@+node:ekr.20090109092314.2:Get rClick plugin working with qt gui.
+#@-node:ekr.20090109092314.2:Get rClick plugin working with qt gui.
 #@+node:ekr.20081215070651.1:@shortcuts nodes in myLeoSettings.leo should override defaults
 @nocolor-node
 
@@ -1154,6 +1172,8 @@ for p in c.allNodes_iter():
 http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
 #@nonl
 #@-node:ekr.20081004102201.2:Log file for @shadow
+#@+node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
+#@-node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
 #@+node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
 @nocolor
 

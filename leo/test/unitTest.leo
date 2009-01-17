@@ -1141,7 +1141,7 @@
 </v>
 </v>
 <v t="ekr.20071113145804.10"><vh>@test c.contractAllHeadlines</vh></v>
-<v t="ekr.20090104053806.1"><vh>@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
+<v t="ekr.20090104053806.1"><vh>@@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
 <v t="ekr.20061106114738"><vh>@test c.findMatchingBracket</vh></v>
 <v t="ekr.20060211135917"><vh>@test c.getTime</vh></v>
 <v t="ekr.20061106112522"><vh>@test c.insertBodyTime</vh></v>
@@ -22129,7 +22129,9 @@ assert not c.positionExists(child)</t>
 
 for p in c.allNodes_iter():
     assert c.positionExists(p,root)</t>
-<t tx="ekr.20090104053806.1">import os
+<t tx="ekr.20090104053806.1"># Disabled because modifying errorTest.py creates annoying bzr conflicts.
+
+import os
 
 path = g.os_path_finalize_join(g.app.testDir,'unittest','errorTest.py')
 assert g.os_path_exists(path),path

@@ -1813,7 +1813,8 @@ class configClass:
         self.write_recent_files_as_needed = False # Will be set later.
         #@    << define localDirectory, localConfigFile & myLocalConfigFile >>
         #@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-        # This can't be done in initSettingsFiles because the local directory does not exits.
+        # This can't be done in initSettingsFiles because
+        # the local directory does not yet exist.
         localDirectory = g.os_path_dirname(fileName)
 
         #  Set the local leoSettings.leo file.

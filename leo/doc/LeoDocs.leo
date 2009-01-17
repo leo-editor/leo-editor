@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="73" left="10" height="946" width="1263"/>
+	<global_window_position top="69" left="165" height="946" width="1046"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="8,5"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="5,0,1"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -426,13 +426,27 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.211"><vh>Chapter 8: Customizing Leo</vh>
-<v t="ekr.20050901101608.4"><vh>@rst html\customizing.html</vh>
+<v t="ekr.20050901101608.4" a="E"><vh>@rst html\customizing.html</vh>
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
-<v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
+<v t="EKR.20040524104904.140" a="E"><vh>Specifying settings</vh>
+<v t="ekr.20090116130002.1"><vh>Configuration directories</vh></v>
+<v t="ekr.20090116094356.2"><vh>Search order for settings files</vh></v>
+<v t="ekr.20090116094356.3"><vh>Safe rules for local settings</vh></v>
 <v t="ekr.20070317043727"><vh>Organizer nodes</vh></v>
 <v t="ekr.20080411111008.1"><vh>\@ignore and \@if nodes</vh></v>
 <v t="ekr.20070317043727.2"><vh>Simple settings nodes</vh></v>
-<v t="ekr.20070317043727.3"><vh>Complex settings nodes</vh></v>
+<v t="ekr.20070317043727.3" a="E"><vh>Complex settings nodes</vh>
+<v t="ekr.20090116094356.5"><vh>\@button</vh></v>
+<v t="ekr.20090116094356.6"><vh>\@commands</vh></v>
+<v t="ekr.20090116094356.7"><vh>\@data</vh></v>
+<v t="ekr.20090116094356.8"><vh>\@enabled-plugins</vh></v>
+<v t="ekr.20090116094356.11"><vh>\@font</vh></v>
+<v t="ekr.20090116094356.10"><vh>\@menuat</vh></v>
+<v t="ekr.20090116094356.9"><vh>\@menus</vh></v>
+<v t="ekr.20090116094356.14"><vh>\@mode</vh></v>
+<v t="ekr.20090116094356.13"><vh>\@recentfiles</vh></v>
+<v t="ekr.20090116094356.12"><vh>\@shortcuts</vh></v>
+</v>
 </v>
 <v t="ekr.20060105214753"><vh>Input modes</vh></v>
 <v t="ekr.20050306090601"><vh>Adding extensible attributes to nodes and .leo files</vh></v>
@@ -1191,6 +1205,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
+<v t="EKR.20040524104904.211" a="E"></v>
 <v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
@@ -2947,9 +2962,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.4"></v>
-<v t="ekr.20081205084002.2"></v>
-<v t="ekr.20090101095717.1" a="E"><vh>Stories</vh>
+<v t="ekr.20090101095717.1"><vh>Stories</vh>
 <v t="ekr.20090101095717.2"><vh>Introduction (iLeo, revised)</vh></v>
 <v t="ekr.20090101095717.3" rst_http_attribute="5d71002855443c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3122206e616d653d22687474702d6e6f64652d6d61726b65722d31223e710155043c2f613e71025d710328553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710455063c2f6469763e71055d71062855063c626f64793e710755073c2f626f64793e71085d71092855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710a55073c2f68746d6c3e710b4e65656555243c64697620636c6173733d2273656374696f6e222069643d226f76657276696577223e0a710c55493c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643122206e616d653d226f76657276696577223e4f766572766965773c2f613e3c2f68313e0a710d652e"><vh>Commonly used classes (scripting intro, revised)</vh></v>
 <v t="ekr.20090101095717.4"><vh>Intro to scripting Leo</vh></v>
@@ -3619,39 +3632,38 @@ bracket matching the leftmost bracket. If a match is found, the entire range of
 characters delimited by the brackets is highlighted and the cursor is placed
 just to the left of the matching characters. Thus, executing this command twice
 highlights the range of matched characters without changing the cursor.</t>
-<t tx="EKR.20040524104904.140">Leo stores options in ``@settings`` trees, that is, outlines whose headline is
-``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only
+<t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is
+@settings. When opening a .leo file, Leo looks for @settings trees not only
 in the outline being opened but also in various leoSettings.leo files.
-The key design goal of ``@settings`` trees was that Leo's user options must be
-infinitely flexible. That goal has been accomplished. Indeed, users can create
-arbitrarily complex user options with ``@settings`` trees. Leo settings outlines
-are, in fact, much more flexible and powerful than any scheme based on
-flat text.
+This scheme allows for the following kinds of settings:
 
-The ``myLeoSettings.leo`` file is a way of ensuring that your
-customized settings are not altered when updating Leo from cvs or while
-installing a new version of Leo. The myLeoSettings.leo acts much like Python's
-site-customize.py file. The ``myLeoSettings.leo`` file will never be part of any Leo
-distribution, and it will never exist in Leo's cvs repository. This solution is
-*much* better than trying to update leoSettings.leo with scripts.
+- Per-installation or per-machine settings.
+- Per-user settings.
+- Per-folder settings.
+- Per-file settings.
 
-The ``Settings`` command opens the file leoSettings.leo.
+There are four kinds of settings files:
+    
+1. **Default settings files**, named **leoSettings.leo**.
+   Although they can be used in other ways, they typically contain default settings.
 
-Leo stores options in ``@settings`` trees, that is, parts of Leo outlines whose root
-node has the headline ``@settings``. When opening a .leo file, Leo looks for
-``@settings`` trees in the following places:
+2. **Personal settings files**, named **myLeoSettings.leo**. They provide a way
+   of ensuring that your customized settings are not altered when updating Leo
+   from bzr or while installing a new version of Leo. The myLeoSettings.leo acts
+   much like Python's site-customize.py file. myLeoSettings.leo will never be
+   part of any Leo distribution, and it will never exist in Leo's cvs
+   repository. This solution is *much* better than trying to update
+   leoSettings.leo with scripts.
 
-- The file ``leoSettings.leo`` in the leo/config directory.
-- The file ``leoSettings.leo`` in the user's home/.leo directory.
-- The file ``myLeoSettings.leo`` in the leo/config directory.
-- The file ``myLeoSettings.leo`` in the user's home/.leo directory.
-- The file being loaded.
+3. **Machine settings files**, named **LeoSettings.leo** (note the capital 'L'),
+   and appearing in a unique directory.
 
-Settings that appear later in the above list override settings found earlier. For
-example, any setting specified in an ``@settings`` tree in the file being loaded
-overrides any setting seen in any ``leoSettings.leo`` file.
+4. **Command-line settings files**, specified using Leo's -c command-line
+   option. Any .leo file may be used, provided it has an @settings tree. These
+   files typically provide a common set of settings for files scattered in
+   various places on the file system.
 
-The following sections describe the kinds of nodes in ``@settings`` trees.
+The following sections describe the kinds of nodes in @settings trees.
 </t>
 <t tx="EKR.20040524104904.143"></t>
 <t tx="EKR.20040524104904.144">-   The ``Check Outline`` command checks the outline for consistency.
@@ -7079,7 +7091,9 @@ future changes to the internals of these classes.
 	p.following_siblings_iter  # returns all siblings following p.
 	p.subtree_iter             # returns all positions in p's subtree, excluding p.
 	p.self_and_subtree_iter    # returns all positions in p's subtree, including p.</t>
-<t tx="ekr.20040414161647">@language rest
+<t tx="ekr.20040414161647">@nocolor-node
+
+@language rest
 
 These are the sources for the html version of Leo's users guide,
 as well as the documentation for the rst3 plugin used to create the actual html files.
@@ -26222,152 +26236,8 @@ The type may be one of the following:
 \@shortcuts         Body text contains a list of shortcut specifies.
 =================== =====================================================================
 
-The actual settings are specified in the body text.  At present, there are ten kinds of complex settings nodes:
-    
-- ``@buttons``
-
-  An @buttons tree in a settings file defines global buttons that
-  are created in the icon area of all .leo files.
-  All @button nodes in the @commands tree create global buttons.
-  All @button nodes outside the commands tree create buttons local to the settings file.
- 
-  
-- ``@commands``
-
-  An @commands tree in a settings file defines global commands.
-  All @command nodes in the @commands tree create global commands.
-  All @command nodes outside the commands tree create commands local to the settings file.
-  
-- ``@data``
-
-  The body text contains a list of strings, one per line.
-  Lines starting with '#' are ignored.
-    
-- ``@enabled-plugins``
-
-  The body text of the @enabled plugins node contains a list of enabled plugins, one per line.
-  Comment lines are ignored.
- 
-  Notes:
-
-    A) Leo attempts to load all plugins every time an @enabled-plugins node is seen.
-       If the plugin has already been loaded, Leo silently ignores the
-       request to re-enable the plugin.
-       Leo never attempts to disable a plugin while processing enabled plugin
-       strings. Thus, plugins enabled in an @enabled-plugins node in leoSettings.leo
-       *will* be enabled regardless of the contents of any other @enabled-plugins node.
-       
-    B) g.app.gui.getEnabledPlugins contains the last value last processed @enabled-plugins node.
-       
-    C) Leo no longer uses the pluginsManager.txt file.
-
-- ``@font``
-
-  The body text contains a list of settings for a font.  For example::
-
-    body_text_font_family = Courier New
-    body_text_font_size = None
-    body_text_font_slant = None
-    body_text_font_weight = None
-
-  **Important**: you can use the show-fonts minibuffer command to guide you in making these settings.
-  
-- ``@menus``
-
-  Leo creates its menus from the @menu, @item and @popup nodes in the @menus tree.
-  Within @menus trees, @menu nodes create menus and @item nodes create menu items. 
- 
-  The menu name always follows @menu. If the menu name is 'Plugins', Leo will
-  create the Plugins menu and populate the menu by calling the
-  'create-optional-menus' hook. This creates the Plugins menu as usual. Nested
-  @menu nodes define submenus.
- 
-  The command name follows @item. If the body text of an @item node exists, this
-  body text is the menu name. Otherwise, the menu name is the command name.
-  However, if the command name starts with a ``'*'``, hyphens are removed from the
-  menu name. Menu names and command names may contain a single ampersand (&amp;). If
-  present, the following character is underlined in the name. If the command
-  name in an @item node is just a hyphen (-), the item represents a menu
-  separator.
-  
-  ``@popup`` *&lt;widget-name&gt;* creates a popup menu for use by the rClick plugin.
-   The children of this node should be @menu and @item nodes, used as with
-   @menus.
-   
-- ``@menuat`` *&lt;path&gt;* *&lt;action&gt;* *[&lt;source&gt;]*
-
-  The @menuat setting has 2-3 parameters in its head text, its children are @menu and
-  @item nodes as for the @menu setting.  @menuat modifies the menu tree created by @menus.
-  It is intended to be used in myLeoSettings.leo to modify the menu tree created in
-  leoSettings.leo.  This allows you to change the menus without having to re-create the
-  entire menu tree from leoSettings.leo, and ensures you don't miss out when new things are
-  added in the @menus in leoSettings.leo, as you would if you replaced the @menus in
-  leoSettings.leo with one in myLeoSettings.leo.  @menuat should occur in a @settings tree,
-  but not as a descendant of a @menus tree.  There is an example of the use of the
-  @menuat setting in the file .../leo/core/test/menuAtTest.leo.
-  
-  - path
-  
-    This specifies a target location in the menu tree as defined by @menus and modified
-    by earlier @menuat settings.  The path takes the form /entry1/entry2/entry3 where
-    each entry is the name of a menu or item with all text except a-z and 0-9 removed.
-    Upper case letters are converted to lower case.  So for example to use the 
-    `Outline-&gt;Move-&gt;Move Down` menu item as a target, you would specify a path as
-    `/outline/move/movedown`.
-    
-  - action
-  
-    There are 5 available actions:
-    
-    - before
-    
-      The supplied items and sub menus will be inserted immediately before the target
-      menu or item.
-
-    - after
-    
-      The supplied items and sub menus will be inserted immediately after the target
-      menu or item.
-
-    - append
-    
-      The supplied items and sub menus will be appended at the end of the menu
-      containing the target menu or item.
-    
-    - cut
-    
-      The target menu or item will be removed from the menu tree and saved to
-      an internal clipboard.  This can be used for deleting menus or items.
-      Descendants of the @menuat setting are ignored.
-    
-    - copy
-    
-      The target menu or item will be copied and saved to
-      an internal clipboard.  Descendants of the @menuat setting are ignored.
-    
-  - source
-    
-    By default the before, after, and append actions insert the menus and items
-    supplied as descendants of the @menuat setting.  If you specify
-    "clipboard" (without the quotes) as the source, the contents of the clipboard
-    from a previous cut or copy action will be used instead.  This parameter is optional
-    and can be left blank.
-
-- ``@mode`` *&lt;mode name&gt;*
-
-  The body text contains a list of shortcut specifiers.
-  ``@mode`` nodes work just like ``@shortcuts`` nodes,
-  but in addition they have the side effect of creating the ``enter-&lt;mode name&gt;-mode`` command.
-
-- ``@recentfiles``
-
-  The body text contains a list of paths of recently opened files, one path per line.
-  Leo writes the list of recent files to ``.leoRecentFiles.txt`` in Leo's ``config`` directory,
-  again one file per line.
-
-- ``@shortcuts``
-
-  The body text contains a list of shortcut specifiers.</t>
+Complex nodes specify settings in their body text.
+See the following sections for details.</t>
 <t tx="ekr.20070317044545">The __wx_gui.py plugin is now minimally functional. All significant unit tests
 pass with this plugin in effect. However, problems remain. See the bug list in
 the plugin for details.
@@ -32387,6 +32257,209 @@ Leo was born in an attempt to understand a relatively obscure programming techni
 Using Leo is fun.  Fun because it gives control, and because programming occurs in an expanded context.
 
 </t>
+<t tx="ekr.20090116094356.2">When reading a .leo file, Leo looks for settings in default settings
+files first, then settings in personal settings files, and finally
+settings in local settings files.  The exact search order is:
+
+1. Default settings files:
+
+   a. configDir/leoSettings.leo
+   b. homeDir/leoSettings.leo
+   c. localDir/leoSettings.leo
+
+2. Personal settings files:
+
+   a. configDir/myLeoSettings.leo
+   b. homeDir/myLeoSettings.leo
+   c. homeDir/&lt;machine-name&gt;LeoSettings.leo (note capitalization)
+   d. localDir/myLeoSettings.leo
+
+3. Local settings files:
+
+   a. The file specified by the -c command-line option.
+   b. The file being loaded.
+   
+Settings that appear later in this list override settings that
+appear earlier in this list.  This happens on a setting-by-setting
+basis, *not* on a file-by-file basis.  In other words, each individual
+setting overrides only the *corresponding* setting in previously-read
+files.  Reading a setting file does *not* reset all previous settings.
+Note that the same file might appear several times in the search list.
+Leo detects such duplicate file names and only loads each settings file once.
+Leo remembers all the settings in settings files and does not reread those
+settings when reading another .leo file.
+
+**Caution**: This search order offers almost too much flexibilty. This can be
+confusing, even for power users. It's important to choose the "simplest
+configuration scheme that could possibly work".  Something like:
+    
+- Use a single leoSettings.leo file for installation-wide defaults.
+- Use a single myLeoSettings.leo files for personal defaults.
+- Use local settings sparingly.
+
+**Important**: it is good style to limit settings placed in 
+myLeoSettings.leo to those settings that differ from default settings.</t>
+<t tx="ekr.20090116094356.3">You should use special care when placing default or personal settings files in
+**local** directories, that is, directories other than homeDir, configDir or
+machineDir. In particular, the value of localDir can change when Leo reads
+additional files. This can result in Leo finding new default and personal
+settings files. The values of these newly-read settings files will, as always,
+override any previously-read settings.
+
+Let us say that a setting is **volatile** if it is different from a default
+setting. Let us say that settings file A.leo **covers** settings file if B.leo
+if all volatile settings in B.leo occur in A.leo. With these definitions, the
+**safe rule** for placing settings files in local directories is::
+
+   Settings files in local directories should
+   cover all other settings files.
+
+Following this rule will ensure that the per-directory defaults specified in the
+local settings file will take precedence over all previously-read default and
+personal settings files. Ignore this principle at your peril.</t>
+<t tx="ekr.20090116094356.5">An @buttons tree in a settings file defines global buttons that
+are created in the icon area of all .leo files.
+All @button nodes in the @commands tree create global buttons.
+All @button nodes outside the commands tree create buttons local to the settings file.
+</t>
+<t tx="ekr.20090116094356.6">An @commands tree in a settings file defines global commands.
+All @command nodes in the @commands tree create global commands.
+All @command nodes outside the commands tree create commands local to the settings file.
+</t>
+<t tx="ekr.20090116094356.7">The body text contains a list of strings, one per line.
+Lines starting with '#' are ignored.</t>
+<t tx="ekr.20090116094356.8">The body text of the @enabled plugins node contains a list of enabled plugins,
+one per line. Comment lines starting with '#' are ignored. Leo loads plugins in
+the order they appear.
+**Important**: Leo handles @enabled-plugins nodes a differently from other kinds
+of settings. To avoid confusion, **please read the following carefully**.
+
+As always, Leo looks for @enabled-plugins nodes in settings files in the order
+specified by `Search order for settings files`_. Leo will enable all plugins
+found in the @enabled-plugins node it finds *last* in the search order. Leo does
+*not* enable plugins found in any other @enabled-plugins node. In particular,
+**you can not specify a list of default plugins by placing that list in a
+settings file that appears early in the search list**. Instead, the last
+@enabled-plugins node found in the search list specifies all and *only* the plugins
+that will be enabled.
+
+Let us distinguish two different situations. First, what Leo does when loading a
+file, say x.leo. Second, what Leo does when loading a second file, say y.leo,
+*from x.leo*. When loading the first .leo file, Leo enables plugins from the
+@enabled-plugins node it finds *last* in the search order. But after plugins
+have *already* been loaded and enabled, there is no way to disable previously
+loaded-and-enabled plugins. But local settings files can enable additional
+plugins.
+
+To avoid confusion, I highly recommend following another kind of safe rule.
+We say that an @enabled-plugin node in file A.leo **covers** an @enabled-plugin
+node in file B.leo if all plugins specified in B's @enabled-plugin node appear
+A's @enabled-plugin node. The safe rule for plugins is::
+
+  @enabled-plugin nodes in settings files in local directories
+  should cover @enabled-plugins nodes in all other settings files.</t>
+<t tx="ekr.20090116094356.9">Leo creates its menus from the @menu, @item and @popup nodes in the @menus tree.
+Within @menus trees, @menu nodes create menus and @item nodes create menu items. 
+
+The menu name always follows @menu. If the menu name is 'Plugins', Leo will
+create the Plugins menu and populate the menu by calling the
+'create-optional-menus' hook. This creates the Plugins menu as usual. Nested
+@menu nodes define submenus.
+
+The command name follows @item. If the body text of an @item node exists, this
+body text is the menu name. Otherwise, the menu name is the command name.
+However, if the command name starts with a ``'*'``, hyphens are removed from the
+menu name. Menu names and command names may contain a single ampersand (&amp;). If
+present, the following character is underlined in the name. If the command
+name in an @item node is just a hyphen (-), the item represents a menu
+separator.
+
+``@popup`` *&lt;widget-name&gt;* creates a popup menu for use by the rClick plugin.
+The children of this node should be @menu and @item nodes, used as with
+@menus.</t>
+<t tx="ekr.20090116094356.10">The form of this node is::
+    
+    @menuat *&lt;path&gt;* *&lt;action&gt;* *[clipboard]*
+
+The @menuat setting has 2-3 parameters in its head text, its children are @menu and
+@item nodes as for the @menu setting.  @menuat modifies the menu tree created by @menus.
+It is intended to be used in myLeoSettings.leo to modify the menu tree created
+in leoSettings.leo. This allows you to change the menus without having to
+re-create the entire menu tree from leoSettings.leo, and ensures you don't miss
+out when new things are added in the @menus in leoSettings.leo, as you would if
+you replaced the @menus in leoSettings.leo with one in myLeoSettings.leo.
+@menuat should occur in a @settings tree, but not as a descendant of a @menus
+tree. There is an example of the use of the
+@menuat setting in the file .../leo/core/test/menuAtTest.leo.
+
+The **path** argument specifies a target location in the menu tree as defined by
+@menus and modified by earlier @menuat settings. The path takes the form
+/entry1/entry2/entry3 where each entry is the name of a menu or item with all
+text except a-z and 0-9 removed. Upper case letters are converted to lower case.
+So for example to use the `Outline-&gt;Move-&gt;Move Down` menu item as a target, you
+would specify a path as `/outline/move/movedown`.
+
+The **action** argument specifies what the menu item does.
+There are 5 available actions:
+
+- **before**: The supplied items and sub menus will be inserted immediately
+  before the target menu or item.
+
+- **after**: The supplied items and sub menus will be inserted immediately after
+  the target menu or item.
+
+- **append**: The supplied items and sub menus will be appended at the end of
+  the menu containing the target menu or item.
+
+- **cut**: The target menu or item will be removed from the menu tree and saved
+  to an internal clipboard. This can be used for deleting menus or items.
+  Descendants of the @menuat setting are ignored.
+
+- **copy**: The target menu or item will be copied and saved to
+  an internal clipboard.  Descendants of the @menuat setting are ignored.
+  
+The optional **clipboard** argument modifies the action of the before, after,
+and append actions. By default these actions insert the menus and items supplied
+as descendants of the @menuat setting. If you specify "clipboard" (without the
+quotes) as the source, the contents of the clipboard from a previous cut or copy
+action will be used instead. This parameter is optional and can be left blank.</t>
+<t tx="ekr.20090116094356.11">The body text contains a list of settings for a font.  For example::
+
+    body_text_font_family = Courier New
+    body_text_font_size = None
+    body_text_font_slant = None
+    body_text_font_weight = None
+
+**Important**: you can use the show-fonts minibuffer command to guide you in making these settings.
+
+</t>
+<t tx="ekr.20090116094356.12">The body text contains a list of shortcut specifiers.</t>
+<t tx="ekr.20090116094356.13">The body text contains a list of paths of recently opened files, one path per
+line. Leo writes the list of recent files to ``.leoRecentFiles.txt`` in Leo's
+``config`` directory, again one file per line.</t>
+<t tx="ekr.20090116094356.14">The form of this node is::
+    
+    @mode *&lt;mode name&gt;*
+
+The body text contains a list of shortcut specifiers. ``@mode`` nodes work just
+like ``@shortcuts`` nodes, but in addition they have the side effect of creating
+the ``enter-&lt;mode name&gt;-mode`` command.</t>
+<t tx="ekr.20090116130002.1">Settings files can be found in the following directories:
+
+- **homeDir**, the HOME/.leo directory. HOME is given by Python's HOME
+  environment variable, or by os.expanduser('~') if no HOME environment variable
+  exists.
+
+- **configDir**, Leo's configuration directory: leo/config.
+
+- **machineDir**, the HOME/.leo/MACHINE directory. MACHINE is given by Python's
+  HOSTNAME environment variable, or by Python's COMPUTERNAME environment
+  variable if there is no HOSTNAME variable, or by the value returned by
+  socket.gethostname() if neither environment variable exists.
+
+- **localDir**, the directory containing the .leo file being loaded.
+
+In addition, Leo's -c command-line option can specify any .leo file anywhere.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?

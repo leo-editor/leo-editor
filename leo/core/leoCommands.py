@@ -1699,6 +1699,8 @@ class baseCommands:
 
         c = self
 
+        # g.trace('original')
+
         if c.config.redirect_execute_script_output_to_log_pane:
 
             g.redirectStdout() # Redirect stdout
@@ -1708,6 +1710,8 @@ class baseCommands:
     def unredirectScriptOutput (self):
 
         c = self
+
+        # g.trace('original')
 
         if c.exists and c.config.redirect_execute_script_output_to_log_pane:
 
@@ -5801,7 +5805,7 @@ class baseCommands:
 
         '''Scan aList for @path directives.'''
 
-        c = self ; trace = False ; verbose = False
+        c = self ; trace = False ; verbose = True
 
         # Step 1: Compute the starting path.
         # The correct fallback directory is the absolute path to the base.
@@ -5909,11 +5913,17 @@ class baseCommands:
 
         Return None if p is no kind of @file node.'''
 
-        c = self
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        filename = p.isAnyAtFileNode()
-        return filename and g.os_path_finalize_join(path,filename) or None
+        d = self.scanAllDirectives(p)
+        path = d.get('path')
+
+        name = ''
+        for p in p.self_and_parents_iter():
+            name = p.anyAtFileNodeName()
+            if name: break
+
+        if name:
+            name = g.os_path_finalize_join(path,name)
+        return name
     #@-node:ekr.20081006100835.1:c.getNodePath & c.getNodeFileName
     #@-node:ekr.20080901124540.1:c.Directive scanning
     #@+node:ekr.20031218072017.2945:Dragging (commands)
@@ -6892,22 +6902,6 @@ class baseCommands:
             else: break
         return p
     #@-node:ekr.20031218072017.4146:c.lastVisible
-    #@+node:ekr.20070609122713:c.visLimit
-    def visLimit (self):
-
-        '''Return the topmost visible node.
-        This is affected by chapters and hoists.'''
-
-        c = self ; cc = c.chapterController
-
-        if c.hoistStack:
-            bunch = c.hoistStack[-1]
-            p = bunch.p
-            limitIsVisible = not cc or not p.headString().startswith('@chapter')
-            return p,limitIsVisible
-        else:
-            return None,None
-    #@-node:ekr.20070609122713:c.visLimit
     #@+node:ekr.20040311094927:c.nullPosition
     def nullPosition (self):
 
@@ -6957,6 +6951,49 @@ class baseCommands:
     rootVnode = rootPosition
     #@nonl
     #@-node:ekr.20040803140033.2:c.rootPosition
+    #@+node:ekr.20070609122713:c.visLimit
+    def visLimit (self):
+
+        '''Return the topmost visible node.
+        This is affected by chapters and hoists.'''
+
+        c = self ; cc = c.chapterController
+
+        if c.hoistStack:
+            bunch = c.hoistStack[-1]
+            p = bunch.p
+            limitIsVisible = not cc or not p.headString().startswith('@chapter')
+            return p,limitIsVisible
+        else:
+            return None,None
+    #@-node:ekr.20070609122713:c.visLimit
+    #@+node:ekr.20090107113956.1:c.vnode2position
+    def vnode2position (self,v):
+
+        '''Given a vnode v, construct a valid position p such that p.v = v.
+        '''
+
+        c = self
+        context = v.context # v's commander.
+        root = c.hiddenRootNode
+        assert (c == context)
+
+        stack = []
+        while v.parents:
+            parent = v.parents[0]
+            n = parent.t.children.index(v)
+            stack.insert(0,(v,n),)
+            v = parent
+
+        # v.parents includes the hidden root node.
+        if not stack:
+            # a vnode not in the tree
+            return c.nullPosition()
+        v,n = stack.pop()
+        p = leoNodes.position(v,n,stack)
+        return p
+
+    #@-node:ekr.20090107113956.1:c.vnode2position
     #@-node:ekr.20060906211747:Getters
     #@+node:ekr.20060906211747.1:Setters
     #@+node:ekr.20040315032503:c.appendStringToBody

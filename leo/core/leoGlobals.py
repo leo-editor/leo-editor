@@ -3265,7 +3265,7 @@ def os_path_expanduser(path,encoding=None):
 
     return result
 #@-node:ekr.20080921060401.13:os_path_expanduser
-#@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@+node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 def os_path_finalize (path,**keys):
 
     '''
@@ -3291,7 +3291,7 @@ def os_path_finalize_join (*args,**keys):
 
     return os.path.normpath(os.path.abspath(
         g.os_path_join(*args,**keys))) # Handles expanduser
-#@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2150:os_path_getmtime
 def os_path_getmtime(path,encoding=None):
 
@@ -5068,16 +5068,20 @@ class fileLikeObject:
 #@nonl
 # The following is taken from page 188 of the Python Cookbook.
 # 
-# The following method allows you to add a function as a method of any class.  
-# That is, it converts the function to a method of the class.  The method just 
-# added is available instantly to all existing instances of the class, and to 
-# all instances created in the future.
+# The following method allows you to add a function as a method of any class. 
+# That
+# is, it converts the function to a method of the class. The method just added 
+# is
+# available instantly to all existing instances of the class, and to all 
+# instances
+# created in the future.
 # 
 # The function's first argument should be self.
 # 
 # The newly created method has the same name as the function unless the 
-# optional name argument is supplied, in which case that name is used as the 
-# method name.
+# optional
+# name argument is supplied, in which case that name is used as the method 
+# name.
 #@-at
 #@@c
 

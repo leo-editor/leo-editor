@@ -259,7 +259,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     '''Scan aList for @path directives.'''
 
-    c = self ; trace = False ; verbose = False
+    c = self ; trace = False ; verbose = True
 
     # Step 1: Compute the starting path.
     # The correct fallback directory is the absolute path to the base.
@@ -367,7 +367,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     '''Scan aList for @path directives.'''
 
-    c = self ; trace = False ; verbose = False
+    c = self ; trace = False ; verbose = True
 
     # Step 1: Compute the starting path.
     # The correct fallback directory is the absolute path to the base.
@@ -1879,6 +1879,7 @@ def write (self,root,
 
     if nosentinels and not scriptWrite and not toString:
         fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
+        # g.trace('fileName',fileName,'at.targetFileName',at.targetFileName)
         exists = g.os_path_exists(fileName)
         if not self.shouldWriteAtNosentNode(root,exists):
             return
@@ -2958,6 +2959,427 @@ def positionExists(self,p,root=None):
     return False
 #@-node:ekr.20040307104131.3:c.positionExists
 #@-node:ekr.20090105132011.5:Fixed new bug in positionExists
+#@+node:ekr.20090105132011.4:Made sure $Home works for @nosent
+http://groups.google.com/group/leo-editor/browse_thread/thread/f27e3514310a5c90
+#@nonl
+#@+node:ekr.20041005105605.144:write & helper
+# This is the entry point to the write code.  root should be an @file vnode.
+
+def write (self,root,
+    nosentinels = False,
+    thinFile = False,
+    scriptWrite = False,
+    toString = False,
+    write_strips_blank_lines = None,
+):
+
+    """Write a 4.x derived file."""
+
+    at = self ; c = at.c
+    c.endEditing() # Capture the current headline.
+
+    # g.trace(root.headString())
+
+    if hasattr(root.v.t,'tnodeList'):# 2008/10/3
+        has_list,old_list = True,root.v.t.tnodeList[:]
+    else:
+        has_list,old_list = False,[]
+
+    << set at.targetFileName >>
+    at.initWriteIvars(root,at.targetFileName,
+        nosentinels = nosentinels, thinFile = thinFile,
+        scriptWrite = scriptWrite, toString = toString,
+        write_strips_blank_lines = write_strips_blank_lines)
+
+    if nosentinels and not scriptWrite and not toString:
+        fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
+        # g.trace('fileName',fileName,'at.targetFileName',at.targetFileName)
+        exists = g.os_path_exists(fileName)
+        if not self.shouldWriteAtNosentNode(root,exists):
+            return
+
+    if not at.openFileForWriting(root,at.targetFileName,toString):
+        # openFileForWriting calls root.setDirty() if there are errors.
+        return
+
+    try:
+        at.writeOpenFile(root,nosentinels=nosentinels,toString=toString)
+        if toString:
+            at.closeWriteFile() # sets self.stringOutput
+            # Major bug: failure to clear this wipes out headlines!
+            # Minor bug: sometimes this causes slight problems...
+            at.root.v.t.tnodeList = []
+            at.root.v.t._p_changed = True
+        else:
+            at.closeWriteFile()
+            if at.errors > 0 or at.root.isOrphan():
+                << set dirty and orphan bits >>
+                g.es("not written:",at.outputFileName)
+            else:
+                at.replaceTargetFileIfDifferent(root)
+                    # Sets/clears dirty and orphan bits.
+            if has_list: root.v.t.tnodeList = old_list # 2008/10/3
+    except Exception:
+        if toString:
+            at.exception("exception preprocessing script")
+            at.root.v.t.tnodeList = []
+            at.root.v.t._p_changed = True
+        else:
+            at.writeException() # Sets dirty and orphan bits.
+            if has_list: root.v.t.tnodeList = old_list # 2008/10/3
+#@+node:ekr.20041005105605.145:<< set at.targetFileName >>
+if toString:
+    at.targetFileName = "<string-file>"
+elif nosentinels:
+    at.targetFileName = root.atNoSentFileNodeName()
+elif thinFile:
+    at.targetFileName = root.atThinFileNodeName()
+else:
+    at.targetFileName = root.atFileNodeName()
+#@-node:ekr.20041005105605.145:<< set at.targetFileName >>
+#@+node:ekr.20041005105605.146:<< set dirty and orphan bits >>
+# Setting the orphan and dirty flags tells Leo to write the tree..
+root.setOrphan()
+root.setDirty()
+# Delete the temp file.
+self.remove(at.outputFileName) 
+
+#@-node:ekr.20041005105605.146:<< set dirty and orphan bits >>
+#@+node:ekr.20080620095343.1:shouldWriteAtNosentNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.That ' s too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @auto x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @auto node which will be populated the next time the.leo file is opened.
+- We don ' t want minor import imperfections to be written to the @auto file.
+- The explicit commands that read and write @auto trees must always be honored.
+@c
+
+def shouldWriteAtNosentNode (self,p,exists):
+
+    '''Return True if we should write the @auto node at p.'''
+
+    if not exists: # We can write a non-existent file without danger.
+        return True
+    elif self.isSignificantTree(p):
+        return True # Assume the tree contains what should be written.
+    else:
+        g.es_print(p.headString(),'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
+        return False
+#@-node:ekr.20080620095343.1:shouldWriteAtNosentNode
+#@-node:ekr.20041005105605.144:write & helper
+#@+node:ekr.20041005105605.15:initWriteIvars
+def initWriteIvars(self,root,targetFileName,
+    nosentinels=False,
+    thinFile=False,
+    scriptWrite=False,
+    toString=False,
+    forcePythonSentinels=None,
+    write_strips_blank_lines=None,
+):
+
+    self.initCommonIvars()
+    << init ivars for writing >>
+
+    if write_strips_blank_lines is None:
+        self.write_strips_blank_lines = self.c.config.getBool('write_strips_blank_lines')
+    else:
+        self.write_strips_blank_lines = write_strips_blank_lines
+
+    if forcePythonSentinels is None:
+        forcePythonSentinels = scriptWrite
+
+    if root:
+        self.scanAllDirectives(root,
+            scripting=scriptWrite,
+            forcePythonSentinels=forcePythonSentinels)
+
+    # g.trace(forcePythonSentinels,self.startSentinelComment,self.endSentinelComment)
+
+    if forcePythonSentinels:
+        # Force Python comment delims for g.getScript.
+        self.startSentinelComment = "#"
+        self.endSentinelComment = None
+
+    # Init state from arguments.
+    self.targetFileName = targetFileName
+    self.sentinels = not nosentinels
+    self.thinFile = thinFile
+    self.toString = toString
+    self.root = root
+
+    # Ignore config settings for unit testing.
+    if toString and g.app.unitTesting: self.output_newline = '\n'
+
+    # Init all other ivars even if there is an error.
+    if not self.errors and self.root:
+        self.root.v.t.tnodeList = []
+        self.root.v.t._p_changed = True
+#@+node:ekr.20041005105605.16:<< init ivars for writing >>>
+@
+When tangling, we first write to a temporary output file. After tangling is
+temporary file. Otherwise we delete the old target file and rename the temporary
+file to be the target file.
+@c
+
+self.docKind = None
+self.explicitLineEnding = False # True: an @lineending directive specifies the ending.
+self.fileChangedFlag = False # True: the file has actually been updated.
+self.shortFileName = "" # short version of file name used for messages.
+self.thinFile = False
+self.force_newlines_in_at_nosent_bodies = self.c.config.getBool('force_newlines_in_at_nosent_bodies')
+
+if toString:
+    self.outputFile = g.fileLikeObject()
+    self.stringOutput = ""
+    self.targetFileName = self.outputFileName = "<string-file>"
+else:
+    self.outputFile = None # The temporary output file.
+    self.stringOutput = None
+
+    if g.isPython3:
+        self.targetFileName = self.outputFileName = ''
+    else:
+        self.targetFileName = self.outputFileName = unicode('')
+#@-node:ekr.20041005105605.16:<< init ivars for writing >>>
+#@-node:ekr.20041005105605.15:initWriteIvars
+#@+node:ekr.20080923070954.4:atFile.scanAllDirectives
+def scanAllDirectives(self,p,
+    scripting=False,importing=False,
+    reading=False,forcePythonSentinels=False,
+):
+
+    '''Scan p and p's ancestors looking for directives,
+    setting corresponding atFile ivars.'''
+
+    at = self ; c = self.c
+
+    << set ivars >>
+
+    lang_dict = {'language':at.language,'delims':delims,}
+
+    table = (
+        ('encoding',    at.encoding,    g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process.
+    lang_dict       = d.get('lang-dict')
+    delims          = lang_dict.get('delims')
+    lineending      = d.get('lineending')
+    if lineending:
+        at.explicitLineEnding = True
+        at.output_newline = lineending
+    else:
+        at.output_newline = g.getOutputNewline(c=c) # Init from config settings.
+
+    at.encoding             = d.get('encoding')
+    at.language             = lang_dict.get('language')
+    at.page_width           = d.get('pagewidth')
+    at.default_directory    = d.get('path')
+    at.tab_width            = d.get('tabwidth')
+
+    if not importing and not reading:
+        # Don't override comment delims when reading!
+        << set comment strings from delims >>
+
+    # For unit testing.
+    return {
+        "encoding"  : at.encoding,
+        "language"  : at.language,
+        "lineending": at.output_newline,
+        "pagewidth" : at.page_width,
+        "path"      : at.default_directory,
+        "tabwidth"  : at.tab_width,
+    }
+#@+node:ekr.20080923070954.14:<< Set ivars >>
+self.page_width = self.c.page_width
+self.tab_width  = self.c.tab_width
+
+self.default_directory = None # 8/2: will be set later.
+
+# g.trace(c.target_language)
+
+if c.target_language:
+    c.target_language = c.target_language.lower()
+
+delims = g.set_delims_from_language(c.target_language)
+at.language = c.target_language
+
+at.encoding = c.config.default_derived_file_encoding
+at.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
+#@-node:ekr.20080923070954.14:<< Set ivars >>
+#@+node:ekr.20080923070954.13:<< Set comment strings from delims >>
+if forcePythonSentinels:
+    # Force Python language.
+    delim1,delim2,delim3 = g.set_delims_from_language("python")
+    self.language = "python"
+else:
+    delim1,delim2,delim3 = delims ### g.set_delims_from_language(at.language)
+
+# Use single-line comments if we have a choice.
+# delim1,delim2,delim3 now correspond to line,start,end
+if delim1:
+    at.startSentinelComment = delim1
+    at.endSentinelComment = "" # Must not be None.
+elif delim2 and delim3:
+    at.startSentinelComment = delim2
+    at.endSentinelComment = delim3
+else: # Emergency!
+    # assert(0)
+    if not g.app.unitTesting:
+        g.es_print("unknown language: using Python comment delimiters")
+        g.es_print("c.target_language:",c.target_language)
+        g.es_print('','delim1,delim2,delim3:','',delim1,'',delim2,'',delim3)
+    at.startSentinelComment = "#" # This should never happen!
+    at.endSentinelComment = ""
+
+# g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
+#@-node:ekr.20080923070954.13:<< Set comment strings from delims >>
+#@-node:ekr.20080923070954.4:atFile.scanAllDirectives
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives
+
+def scanAtPathDirectives(self,aList,force=False):
+
+    '''Scan aList for @path directives.'''
+
+    c = self ; trace = False ; verbose = True
+
+    # Step 1: Compute the starting path.
+    # The correct fallback directory is the absolute path to the base.
+    if c.openDirectory:  # Bug fix: 2008/9/18
+        base = c.openDirectory
+    else:
+        base = g.app.config.relative_path_base_directory
+        if base and base == "!":    base = g.app.loadDir
+        elif base and base == ".":  base = c.openDirectory
+
+    if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
+
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+    if trace and verbose: g.trace('absbase',absbase)
+
+    # Step 2: look for @path directives.
+    paths = [] ; fileName = None
+    for d in aList:
+        # Look for @path directives.
+        path = d.get('path')
+        if path:
+            # Convert "path" or <path> to path.
+            path = g.computeRelativePath(path)
+            if path: paths.append(path)
+
+    # Add absbase and reverse the list.
+    paths.append(absbase)
+    paths.reverse()
+
+    if trace and verbose: g.trace('paths',paths)
+
+    # Step 3: Compute the full, effective, absolute path.
+    if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+    path = c.os_path_finalize_join(*paths)
+    if trace and verbose: g.trace('joined path:',path)
+
+    # Step 4: Make the path if necessary.
+    if path and not g.os_path_exists(path):
+        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
+        if not ok:
+            if force:
+                g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+            path = absbase # Bug fix: 2008/9/18
+
+    if trace: g.trace('returns',path)
+
+    return path
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives
+#@+node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
+def os_path_finalize (self,path,**keys):
+
+    c = self
+
+    keys['c'] = c
+
+    return g.os_path_finalize(path,**keys)
+
+def os_path_finalize_join (self,*args,**keys):
+
+    c = self
+
+    keys['c'] = c
+
+    return g.os_path_finalize_join(*args,**keys)
+#@-node:ekr.20080922124033.5:c.os_path_finalize and c.os_path_finalize_join
+#@+node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
+def os_path_finalize (path,**keys):
+
+    '''
+    Expand '~', then return os.path.normpath, os.path.abspath of the path.
+
+    There is no corresponding os.path method'''
+
+    c,encoding = keys.get('c'),keys.get('encoding')
+
+    if c: path = g.os_path_expandExpression(path,**keys)
+
+    path = g.os_path_expanduser(path,encoding=encoding)
+    return os.path.normpath(os.path.abspath(path))
+
+def os_path_finalize_join (*args,**keys):
+
+    '''Do os.path.join(*args), then finalize the result.'''
+
+    c,encoding = keys.get('c'),keys.get('encoding')
+
+    if c: args = [g.os_path_expandExpression(path,**keys)
+        for path in args if path]
+
+    return os.path.normpath(os.path.abspath(
+        g.os_path_join(*args,**keys))) # Handles expanduser
+#@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
+#@+node:ekr.20080922124033.6:os_path_expandExpression
+def os_path_expandExpression (s,**keys):
+
+    '''Expand {{anExpression}} in c's context.'''
+
+    c = keys.get('c')
+    if not c:
+        g.trace('can not happen: no c',g.callers())
+        return s
+
+    i = s.find('{{')
+    j = s.find('}}')
+    if -1 < i < j:
+        exp = s[i+2:j].strip()
+        if exp:
+            try:
+                import os
+                import sys
+                p = c.currentPosition()
+                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
+                val = eval(exp,d)
+                s = s[:i] + str(val) + s[j+2:]
+            except Exception:
+                g.trace(g.callers())
+                g.es_exception(full=True, c=c, color='red')
+
+    return s
+#@-node:ekr.20080922124033.6:os_path_expandExpression
+#@-node:ekr.20090105132011.4:Made sure $Home works for @nosent
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
@@ -4775,7 +5197,8 @@ def readSettingsFiles (self,fileName,verbose=True):
     self.inited = True
     self.setIvarsFromSettings(None)
 #@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-# This can't be done in initSettingsFiles because the local directory does not exits.
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
 localDirectory = g.os_path_dirname(fileName)
 
 #  Set the local leoSettings.leo file.
@@ -5496,7 +5919,8 @@ def readSettingsFiles (self,fileName,verbose=True):
     self.inited = True
     self.setIvarsFromSettings(None)
 #@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-# This can't be done in initSettingsFiles because the local directory does not exits.
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
 localDirectory = g.os_path_dirname(fileName)
 
 #  Set the local leoSettings.leo file.
@@ -6818,7 +7242,7 @@ def os_path_expanduser(path,encoding=None):
 
     return result
 #@-node:ekr.20080921060401.13:os_path_expanduser
-#@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@+node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 def os_path_finalize (path,**keys):
 
     '''
@@ -6844,7 +7268,7 @@ def os_path_finalize_join (*args,**keys):
 
     return os.path.normpath(os.path.abspath(
         g.os_path_join(*args,**keys))) # Handles expanduser
-#@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2154:os_path_join
 def os_path_join(*args,**keys):
 
@@ -6967,7 +7391,7 @@ def os_path_expanduser(path,encoding=None):
 
     return result
 #@-node:ekr.20080921060401.13:os_path_expanduser
-#@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@+node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 def os_path_finalize (path,**keys):
 
     '''
@@ -6993,7 +7417,7 @@ def os_path_finalize_join (*args,**keys):
 
     return os.path.normpath(os.path.abspath(
         g.os_path_join(*args,**keys))) # Handles expanduser
-#@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2150:os_path_getmtime
 def os_path_getmtime(path,encoding=None):
 
@@ -7174,7 +7598,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     '''Scan aList for @path directives.'''
 
-    c = self ; trace = False ; verbose = False
+    c = self ; trace = False ; verbose = True
 
     # Step 1: Compute the starting path.
     # The correct fallback directory is the absolute path to the base.
@@ -7363,7 +7787,7 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
                 return None
     return dir1 # All have been created.
 #@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
-#@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@+node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 def os_path_finalize (path,**keys):
 
     '''
@@ -7389,7 +7813,7 @@ def os_path_finalize_join (*args,**keys):
 
     return os.path.normpath(os.path.abspath(
         g.os_path_join(*args,**keys))) # Handles expanduser
-#@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2154:os_path_join
 def os_path_join(*args,**keys):
 
@@ -7537,7 +7961,7 @@ def scanAtPathDirectives(self,aList,force=False):
 
     '''Scan aList for @path directives.'''
 
-    c = self ; trace = False ; verbose = False
+    c = self ; trace = False ; verbose = True
 
     # Step 1: Compute the starting path.
     # The correct fallback directory is the absolute path to the base.
@@ -7645,11 +8069,17 @@ def getNodeFileName (self,p):
 
     Return None if p is no kind of @file node.'''
 
-    c = self
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList)
-    filename = p.isAnyAtFileNode()
-    return filename and g.os_path_finalize_join(path,filename) or None
+    d = self.scanAllDirectives(p)
+    path = d.get('path')
+
+    name = ''
+    for p in p.self_and_parents_iter():
+        name = p.anyAtFileNodeName()
+        if name: break
+
+    if name:
+        name = g.os_path_finalize_join(path,name)
+    return name
 #@-node:ekr.20081006100835.1:c.getNodePath & c.getNodeFileName
 #@-node:ekr.20080901124540.1:c.Directive scanning
 #@+node:ekr.20031218072017.1380:g.Directive utils...
@@ -9718,7 +10148,8 @@ def readSettingsFiles (self,fileName,verbose=True):
     self.inited = True
     self.setIvarsFromSettings(None)
 #@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-# This can't be done in initSettingsFiles because the local directory does not exits.
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
 localDirectory = g.os_path_dirname(fileName)
 
 #  Set the local leoSettings.leo file.
@@ -12027,11 +12458,17 @@ def getNodeFileName (self,p):
 
     Return None if p is no kind of @file node.'''
 
-    c = self
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList)
-    filename = p.isAnyAtFileNode()
-    return filename and g.os_path_finalize_join(path,filename) or None
+    d = self.scanAllDirectives(p)
+    path = d.get('path')
+
+    name = ''
+    for p in p.self_and_parents_iter():
+        name = p.anyAtFileNodeName()
+        if name: break
+
+    if name:
+        name = g.os_path_finalize_join(path,name)
+    return name
 #@-node:ekr.20081006100835.1:c.getNodePath & c.getNodeFileName
 #@-node:ekr.20081006100835.2:Added c.getNodePath and c.getNodeFileName
 #@+node:ekr.20081022080424.1:Added support for meta keys
@@ -12256,6 +12693,8 @@ def redirectScriptOutput (self):
 
     c = self
 
+    # g.trace('original')
+
     if c.config.redirect_execute_script_output_to_log_pane:
 
         g.redirectStdout() # Redirect stdout
@@ -12265,6 +12704,8 @@ def redirectScriptOutput (self):
 def unredirectScriptOutput (self):
 
     c = self
+
+    # g.trace('original')
 
     if c.exists and c.config.redirect_execute_script_output_to_log_pane:
 
@@ -14023,6 +14464,7 @@ def write (self,root,
 
     if nosentinels and not scriptWrite and not toString:
         fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
+        # g.trace('fileName',fileName,'at.targetFileName',at.targetFileName)
         exists = g.os_path_exists(fileName)
         if not self.shouldWriteAtNosentNode(root,exists):
             return
@@ -14948,6 +15390,621 @@ def backToIndentation (self,event):
     # self.endCommand(changed=True,setLabel=True)
 #@-node:ekr.20050920084036.75:backToIndentation
 #@-node:ekr.20081204091750.5:back-to-home/indentation now save state
+#@+node:ekr.20090114103308.2:vnode2position tests
+#@+node:ekr.20040312090934:c.iterators
+#@+node:EKR.20040529091232:c.all_positions_iter == allNodes_iter
+def allNodes_iter (self,copy=False):
+
+    r = self.rootPosition()
+    if copy:
+        cp = lambda p: p.copy()
+    else:
+        cp = lambda p: p
+    return r.iter_class(r, cp)
+
+all_positions_iter = allNodes_iter
+#@nonl
+#@-node:EKR.20040529091232:c.all_positions_iter == allNodes_iter
+#@+node:EKR.20040529091232.1:c.all_tnodes_iter
+def all_tnodes_iter (self):
+
+    return self.rootPosition().tnodes_iter()
+#@-node:EKR.20040529091232.1:c.all_tnodes_iter
+#@+node:EKR.20040529091232.2:c.all_unique_tnodes_iter
+def all_unique_tnodes_iter (self):
+
+    return self.rootPosition().unique_tnodes_iter()
+#@-node:EKR.20040529091232.2:c.all_unique_tnodes_iter
+#@+node:EKR.20040529091232.3:c.all_vnodes_iter
+def all_vnodes_iter (self):
+    return self.rootPosition().vnodes_iter()
+#@-node:EKR.20040529091232.3:c.all_vnodes_iter
+#@+node:EKR.20040529091232.4:c.all_unique_vnodes_iter
+def all_unique_vnodes_iter (self):
+
+    return self.rootPosition().unique_vnodes_iter()
+#@-node:EKR.20040529091232.4:c.all_unique_vnodes_iter
+#@+node:sps.20080317144948.3:c.all_positions_with_unique_tnodes_iter
+def all_positions_with_unique_tnodes_iter (self):
+
+    r = self.rootPosition()
+    return r.unique_iter_class(r, lambda p: p)
+#@-node:sps.20080317144948.3:c.all_positions_with_unique_tnodes_iter
+#@+node:sps.20080327174748.4:c.all_positions_with_unique_vnodes_iter
+def all_positions_with_unique_vnodes_iter (self):
+
+    r = self.rootPosition()
+    return r.unique_iter_class(r, lambda p: p, lambda u: u.v)
+#@-node:sps.20080327174748.4:c.all_positions_with_unique_vnodes_iter
+#@-node:ekr.20040312090934:c.iterators
+#@+node:ekr.20040305162628.1:p.Iterators
+@ A crucial optimization:
+
+Iterators make no copies at all if they would return an empty sequence.
+@c
+
+@others
+#@+node:sps.20080331123552.3:p.iter
+class iter_class:
+
+    """Returns a list of mappings of positions in a subtree, possibly including the root of the subtree."""
+
+    @others
+
+def tnodes_iter (self):
+
+    return self.iter_class(self, lambda p: p.v.t)
+
+def vnodes_iter (self):
+
+    return self.iter_class(self, lambda p: p.v)
+#@+node:sps.20080331123552.1:__init__ & __iter__ (p.iter)
+def __init__(self,p,mapping):
+
+    # g.trace('p.tnodes_iter.__init','p',p)
+
+    self.first = p.copy()
+    self.p = None
+    self.mapping = mapping
+
+def __iter__(self):
+
+    return self
+#@-node:sps.20080331123552.1:__init__ & __iter__ (p.iter)
+#@+node:sps.20080331123552.2:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+    elif self.p:
+        self.p.moveToThreadNext()
+
+    if self.p:
+        return self.mapping(self.p)
+
+    raise StopIteration
+
+__next__ = next
+#@nonl
+#@-node:sps.20080331123552.2:next
+#@-node:sps.20080331123552.3:p.iter
+#@+node:sps.20080331123552.8:p.unique_iter
+class unique_iter_class:
+
+    """Returns a list of positions in a subtree, possibly including the root of the subtree."""
+
+    @others
+
+def unique_tnodes_iter (self):
+
+    return self.unique_iter_class(self, lambda p: p.v.t)
+
+def unique_vnodes_iter (self):
+
+    return self.unique_iter_class(self, lambda p: p.v)
+#@+node:sps.20080331123552.4:__init__ & __iter__ (p.unique_tnodes_iter)
+def __init__(self,p,mapping,unique=lambda p: p.v.t):
+
+    # g.trace('p.unique_tnodes_iter.__init','p',p,)
+
+    self.d = {}
+    self.first = p.copy()
+    self.p = None
+    self.mapping = mapping
+    self.unique=unique
+
+def __iter__(self):
+
+    return self
+#@-node:sps.20080331123552.4:__init__ & __iter__ (p.unique_tnodes_iter)
+#@+node:sps.20080331123552.5:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.moveToThreadNextUnique()
+
+    if self.p:
+        return self.mapping(self.p)
+
+    raise StopIteration
+
+__next__ = next
+#@-node:sps.20080331123552.5:next
+#@+node:sps.20080331123552.7:moveToThreadNextUnique
+def moveToThreadNextUnique (self):
+
+    """Move a position to threadNext position."""
+
+    p = self.p
+    u = self.unique
+
+    if p:
+        # We've been visited
+        self.d[u(p)]=True
+
+        # First, try to find an unmarked child
+        if p.v.t.children:
+            p.moveToFirstChild()
+            while p and self.d.get(u(p)):
+                if p.hasNext():
+                    p.moveToNext()
+                else:
+                    p.moveToParent()
+
+        # If we didn't find an unmarked child,
+        # try to find an unmarked sibling
+        if p and self.d.get(u(p)):
+            while p.hasNext():
+                p.moveToNext()
+                if not self.d.get(u(p)):
+                    break
+
+        # If we didn't find an unmarked sibling,
+        # find a parent with an unmarked sibling
+        if p and self.d.get(u(p)):
+            p.moveToParent()
+            while p:
+                while p.hasNext():
+                    p.moveToNext()
+                    if not self.d.get(u(p)):
+                        break
+                # if we run out of siblings, go to parent
+                if self.d.get(u(p)):
+                    p.moveToParent()
+                else:
+                    break # found
+            # At this point, either (not p.d[p.v.t]) and found
+            # or (not p) and we're finished
+
+    return p 
+#@-node:sps.20080331123552.7:moveToThreadNextUnique
+#@-node:sps.20080331123552.8:p.unique_iter
+#@+node:ekr.20040305173559:p.subtree_iter
+class subtree_iter_class:
+
+    """Returns a list of positions in a subtree, possibly including the root of the subtree."""
+
+    @others
+
+def subtree_iter (self,copy=False):
+
+    return self.subtree_iter_class(self,copy,includeSelf=False)
+
+def self_and_subtree_iter (self,copy=False):
+
+    return self.subtree_iter_class(self,copy,includeSelf=True)
+#@+node:ekr.20040305173559.1:__init__ & __iter__
+def __init__(self,p,copy,includeSelf):
+
+    if includeSelf:
+        self.first = p.copy()
+        self.after = p.nodeAfterTree()
+    elif p.hasChildren():
+        self.first = p.copy().moveToFirstChild() 
+        self.after = p.nodeAfterTree()
+    else:
+        self.first = None
+        self.after = None
+
+    self.p = None
+    self.copy = copy
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20040305173559.1:__init__ & __iter__
+#@+node:ekr.20040305173559.2:next
+def next(self):
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToThreadNext()
+
+    if self.p and self.p != self.after:
+        if self.copy: return self.p.copy()
+        else:         return self.p
+    else:
+        raise StopIteration
+
+__next__ = next
+#@nonl
+#@-node:ekr.20040305173559.2:next
+#@-node:ekr.20040305173559:p.subtree_iter
+#@+node:sps.20080331123552.12:p.subtree_unique_iter
+class subtree_unique_iter_class:
+
+    """Returns a list of positions in a subtree, possibly including the root of the subtree."""
+
+    @others
+
+def subtree_with_unique_tnodes_iter (self,copy=False):
+
+    if copy:
+        cp = lambda p: p.copy()
+    else:
+        cp = lambda p: p
+
+    return self.subtree_unique_iter_class(self,
+        cp,
+        lambda p: p.v.t,
+        includeSelf=False)
+
+def subtree_with_unique_vnodes_iter (self,copy=False):
+
+    if copy:
+        cp = lambda p: p.copy()
+    else:
+        cp = lambda p: p
+
+    return self.subtree_unique_iter_class(self,
+        cp,
+        lambda p: p.v,
+        includeSelf=False)
+#@+node:sps.20080331123552.9:__init__ & __iter__
+def __init__(self,p,mapping,unique,includeSelf):
+
+    if includeSelf:
+        self.first = p.copy()
+        self.after = p.nodeAfterTree()
+    elif p.hasChildren():
+        self.first = p.copy().moveToFirstChild() 
+        self.after = p.nodeAfterTree()
+    else:
+        self.first = None
+        self.after = None
+
+    self.p = None
+    self.mapping = mapping
+    self.unique = unique
+    self.d = {}
+
+def __iter__(self):
+
+    return self
+#@-node:sps.20080331123552.9:__init__ & __iter__
+#@+node:sps.20080331123552.10:next
+# moveToThreadNextUnique raises StopIteration
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.moveToThreadNextUnique()
+
+    return self.mapping(self.p)
+
+__next__ = next
+#@nonl
+#@-node:sps.20080331123552.10:next
+#@+node:sps.20080331123552.11:moveToThreadNextUnique
+def moveToThreadNextUnique (self):
+
+    """Move a position to threadNext position."""
+
+    p = self.p
+    u = self.unique
+
+    if p:
+        # We've been visited
+        self.d[u(p)]=True
+
+        # First, try to find an unmarked child
+        if p.v.t.children:
+            p.moveToFirstChild()
+            if p == self.after:
+                raise StopIteration
+            while p and self.d.get(u(p)):
+                if p.hasNext():
+                    p.moveToNext()
+                else:
+                    p.moveToParent()
+                if p == self.after:
+                    raise StopIteration
+
+        # If we didn't find an unmarked child,
+        # try to find an unmarked sibling
+        if p and self.d.get(u(p)):
+            while p.hasNext():
+                p.moveToNext()
+                if p == self.after:
+                    raise StopIteration
+                if not self.d.get(u(p)):
+                    break
+
+        # If we didn't find an unmarked sibling,
+        # find a parent with an unmarked sibling
+        if p and self.d.get(u(p)):
+            p.moveToParent()
+            # if p.equal(self.after):
+            if p == self.after:
+                raise StopIteration
+            while p:
+                while p.hasNext():
+                    p.moveToNext()
+                    if p == self.after:
+                        raise StopIteration
+                    if not self.d.get(u(p)):
+                        break
+                # if we run out of siblings, go to parent
+                if self.d.get(u(p)):
+                    p.moveToParent()
+                    if p == self.after:
+                        raise StopIteration
+                else:
+                    break # found
+            # At this point, either (not p.d[p.v.t]) and found
+            # or (not p) and we're finished
+
+    return p 
+#@-node:sps.20080331123552.11:moveToThreadNextUnique
+#@-node:sps.20080331123552.12:p.subtree_unique_iter
+#@+node:ekr.20040305172211.1:p.children_iter
+class children_iter_class:
+
+    """Returns a list of children of a position."""
+
+    @others
+
+def children_iter (self,copy=False):
+
+    return self.children_iter_class(self,copy)
+#@+node:ekr.20040305172211.2:__init__ & __iter__
+def __init__(self,p,copy):
+
+    if p.hasChildren():
+        self.first = p.copy().moveToFirstChild()
+    else:
+        self.first = None
+
+    self.p = None
+    self.copy = copy
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20040305172211.2:__init__ & __iter__
+#@+node:ekr.20040305172211.3:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToNext()
+
+    if self.p:
+        if self.copy: return self.p.copy()
+        else:         return self.p
+    else: raise StopIteration
+
+__next__ = next
+#@nonl
+#@-node:ekr.20040305172211.3:next
+#@-node:ekr.20040305172211.1:p.children_iter
+#@+node:ekr.20040305172855:p.parents_iter
+class parents_iter_class:
+
+    """Returns a list of positions of a position."""
+
+    @others
+
+def parents_iter (self,copy=False):
+
+    return self.parents_iter_class(self,copy,includeSelf=False)
+
+def self_and_parents_iter(self,copy=False):
+
+    return self.parents_iter_class(self,copy,includeSelf=True)
+#@+node:ekr.20040305172855.1:__init__ & __iter__
+def __init__(self,p,copy,includeSelf):
+
+    if includeSelf:
+        self.first = p.copy()
+    elif p.hasParent():
+        self.first = p.copy().moveToParent()
+    else:
+        self.first = None
+
+    self.p = None
+    self.copy = copy
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20040305172855.1:__init__ & __iter__
+#@+node:ekr.20040305172855.2:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToParent()
+
+    if self.p:
+        if self.copy: return self.p.copy()
+        else:         return self.p
+    else:
+        raise StopIteration
+
+__next__ = next
+#@nonl
+#@-node:ekr.20040305172855.2:next
+#@-node:ekr.20040305172855:p.parents_iter
+#@+node:ekr.20040305173343:p.siblings_iter
+class siblings_iter_class:
+
+    '''Returns a list of siblings of a position, including the position itself!'''
+
+    @others
+
+def siblings_iter (self,copy=False,following=False):
+
+    return self.siblings_iter_class(self,copy,following)
+
+self_and_siblings_iter = siblings_iter
+
+def following_siblings_iter (self,copy=False):
+
+    return self.siblings_iter_class(self,copy,following=True)
+#@+node:ekr.20040305173343.1:__init__ & __iter__
+def __init__(self,p,copy,following):
+
+    # We always include p, even if following is True.
+
+    if following:
+        self.first = p.copy()
+    else:
+        p = p.copy()
+        while p.hasBack():
+            p.moveToBack()
+        self.first = p
+
+    self.p = None
+    self.copy = copy
+
+def __iter__(self):
+
+    return self
+#@-node:ekr.20040305173343.1:__init__ & __iter__
+#@+node:ekr.20040305173343.2:next
+def next(self):
+
+    if self.first:
+        self.p = self.first
+        self.first = None
+
+    elif self.p:
+        self.p.moveToNext()
+
+    if self.p:
+        if self.copy: return self.p.copy()
+        else:         return self.p
+    else: raise StopIteration
+
+__next__ = next
+#@nonl
+#@-node:ekr.20040305173343.2:next
+#@-node:ekr.20040305173343:p.siblings_iter
+#@-node:ekr.20040305162628.1:p.Iterators
+#@+node:ekr.20080416161551.207:p.moveToParent
+def moveToParent (self):
+
+    """Move a position to its parent position."""
+
+    p = self
+
+    if p.v and p.stack:
+        p.v,p._childIndex = p.stack.pop()
+    else:
+        p.v = None
+
+    return p
+#@-node:ekr.20080416161551.207:p.moveToParent
+#@+node:ekr.20090107113956.1:c.vnode2position
+def vnode2position (self,v):
+
+    '''Given a vnode v, construct a valid position p such that p.v = v.
+    '''
+
+    c = self
+    context = v.context # v's commander.
+    root = c.hiddenRootNode
+    assert (c == context)
+
+    stack = []
+    while v.parents:
+        parent = v.parents[0]
+        n = parent.t.children.index(v)
+        stack.insert(0,(v,n),)
+        v = parent
+
+    # v.parents includes the hidden root node.
+    v,n = stack.pop()
+    p = leoNodes.position(v,n,stack)
+    return p
+
+#@-node:ekr.20090107113956.1:c.vnode2position
+#@+node:ekr.20090113083258.3:Tests
+@nocolor-node
+
+@
+Whenever possible, it is good to run these tests with alt-5,
+run-unit-tests, rather than alt-4, run-unit-tests locallay.
+This will run the test last saved code.
+#@nonl
+#@+node:ekr.20090113083258.15:Unit tests
+#@+node:ekr.20090113083258.1:@thin test_core.txt
+# Contains all test code for Leo's core.
+
+@all
+#@nonl
+#@+node:ekr.20090113083258.2:@test c.vnode2position
+trace = True ; verbose = False
+if trace and verbose: print '=' * 20
+
+count = 0
+for p in c.allNodes_iter():
+
+    count += 1
+    p2 = c.vnode2position(p.v)
+
+    if trace and verbose: print p2.level(), p2.headString()
+
+    # We can *not* assert that p == p2.
+    assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
+    assert c.positionExists(p2),p2
+
+if trace: print 'pass. tested %s positions' % count
+#@-node:ekr.20090113083258.2:@test c.vnode2position
+#@-node:ekr.20090113083258.1:@thin test_core.txt
+#@-node:ekr.20090113083258.15:Unit tests
+#@+node:ekr.20090113083258.16:Local tests
+@nocolor-node
+
+# Run these tests with Ctrl-B, execute-script.
+#@nonl
+#@+node:ekr.20090113083258.17:test vnode2position
+for p in c.allNodes_iter():
+    p2 = c.vnode2position(p.v)
+    print p2.level() * ' ',p2.headString()
+    assert p == p2,'p: %s, p2: %s' % (p,p2)
+#@nonl
+#@-node:ekr.20090113083258.17:test vnode2position
+#@-node:ekr.20090113083258.16:Local tests
+#@-node:ekr.20090113083258.3:Tests
+#@-node:ekr.20090114103308.2:vnode2position tests
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080930072519.8:New options
 #@+node:ekr.20080910054558.2:Added -c option to specify config files
@@ -15115,7 +16172,8 @@ def readSettingsFiles (self,fileName,verbose=True):
     self.inited = True
     self.setIvarsFromSettings(None)
 #@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-# This can't be done in initSettingsFiles because the local directory does not exits.
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
 localDirectory = g.os_path_dirname(fileName)
 
 #  Set the local leoSettings.leo file.

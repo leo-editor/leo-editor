@@ -168,7 +168,7 @@ if g.app.gui.guiName() == "tkinter":
                     linkType, other = links[i]
                     otherV = self.vnode[other]
                     otherP = self.vnodePosition(otherV)
-                    if not otherP:
+                    if not self.c.positionExists(otherP):
                         self.showMessage('Lost link(s) deleted', color='red')
                         del links[i]
                     else:
@@ -485,7 +485,7 @@ class backlinkController(object):
 
                 otherV = self.vnode[other]
                 otherP = self.vnodePosition(otherV)
-                if not otherP:
+                if not self.c.positionExists(otherP):
                     g.es('Deleting lost link')
                     del links[i]
                 else:
@@ -530,7 +530,7 @@ class backlinkController(object):
                 linkType, other = links[i]
                 otherV = self.vnode[other]
                 otherP = self.vnodePosition(otherV)
-                if not otherP:
+                if not self.c.positionExists(otherP):
                     g.es('Deleting lost link')
                     del links[i]
                 else:
@@ -586,7 +586,7 @@ class backlinkController(object):
         c = self.c
         p = c.currentPosition()
         v = p.v
-    
+
         self.messageUsed = False
 
         self.ui.enableDelete(False)
@@ -603,7 +603,7 @@ class backlinkController(object):
                 linkType, other = links[i]
                 otherV = self.vnode[other]
                 otherP = self.vnodePosition(otherV)
-                if not otherP:
+                if not self.c.positionExists(otherP):
                     self.showMessage('Lost link(s) deleted', color='red')
                     del links[i]
                 else:
@@ -619,6 +619,10 @@ class backlinkController(object):
         self.ui.loadList(texts) 
     def vnodePosition(self, v):
         """Return a position for vnode v, if there is one"""
+
+        return self.c.vnode2position(v)
+
+        # rest for historical interest
 
         search_from = self.c.allNodes_iter
 
@@ -648,6 +652,8 @@ class backlinkController(object):
         failure to check p._childIndex bug is fixed, that fixing
         doesn't make backlink.py search more of the tree than it
         needs to"""
+
+        # used by vnodePosition, not needed node there's c.vnode2position
 
         c = self.c ; p = p.copy()
 
