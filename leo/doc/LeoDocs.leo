@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5,0,1,1"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="5,0,1"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -3644,10 +3644,10 @@ This scheme allows for the following kinds of settings:
 
 There are four kinds of settings files:
     
-1. **Default settings files**, named leoSettings.leo.
+1. **Default settings files**, named **leoSettings.leo**.
    Although they can be used in other ways, they typically contain default settings.
 
-2. **Personal settings files**, named myLeoSettings.leo. They provide a way
+2. **Personal settings files**, named **myLeoSettings.leo**. They provide a way
    of ensuring that your customized settings are not altered when updating Leo
    from bzr or while installing a new version of Leo. The myLeoSettings.leo acts
    much like Python's site-customize.py file. myLeoSettings.leo will never be
@@ -3655,7 +3655,8 @@ There are four kinds of settings files:
    repository. This solution is *much* better than trying to update
    leoSettings.leo with scripts.
 
-3. **Machine settings files**, named LeoSettings.leo (note the capital 'L').
+3. **Machine settings files**, named **LeoSettings.leo** (note the capital 'L'),
+   and appearing in a unique directory.
 
 4. **Command-line settings files**, specified using Leo's -c command-line
    option. Any .leo file may be used, provided it has an @settings tree. These

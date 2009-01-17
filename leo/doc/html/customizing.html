@@ -306,16 +306,17 @@ This scheme allows for the following kinds of settings:</p>
 </ul>
 <p>There are four kinds of settings files:</p>
 <ol class="arabic simple">
-<li><strong>Default settings files</strong>, named leoSettings.leo.
+<li><strong>Default settings files</strong>, named <strong>leoSettings.leo</strong>.
 Although they can be used in other ways, they typically contain default settings.</li>
-<li><strong>Personal settings files</strong>, named myLeoSettings.leo. They provide a way
+<li><strong>Personal settings files</strong>, named <strong>myLeoSettings.leo</strong>. They provide a way
 of ensuring that your customized settings are not altered when updating Leo
 from bzr or while installing a new version of Leo. The myLeoSettings.leo acts
 much like Python's site-customize.py file. myLeoSettings.leo will never be
 part of any Leo distribution, and it will never exist in Leo's cvs
 repository. This solution is <em>much</em> better than trying to update
 leoSettings.leo with scripts.</li>
-<li><strong>Machine settings files</strong>, named LeoSettings.leo (note the capital 'L').</li>
+<li><strong>Machine settings files</strong>, named <strong>LeoSettings.leo</strong> (note the capital 'L'),
+and appearing in a unique directory.</li>
 <li><strong>Command-line settings files</strong>, specified using Leo's -c command-line
 option. Any .leo file may be used, provided it has an &#64;settings tree. These
 files typically provide a common set of settings for files scattered in
