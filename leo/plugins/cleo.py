@@ -26,8 +26,58 @@ For full documentation see:
 #@+node:tbrown.20060903121429.2:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
+import os
 
-Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
+Qt = None
+Tk = None
+if g.app.gui.guiName() == "tkinter":
+    Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
+elif g.app.gui.guiName() == "qt":
+    from PyQt4 import QtCore, QtGui, uic
+    Qt = QtCore.Qt
+
+    class cleoQtUI(QtGui.QWidget):
+
+        def __init__(self, owner):
+
+            self.owner = owner
+
+            QtGui.QWidget.__init__(self)
+            uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Cleo.ui')
+            form_class, base_class = uic.loadUiType(uiPath)
+            self.owner.c.frame.log.createTab('Task', widget = self) 
+            self.UI = form_class()
+            self.UI.setupUi(self)
+
+            u = self.UI
+            o = self.owner
+
+            self.menu = QtGui.QMenu()
+            m = self.menu.addMenu("Priority")
+            m = self.menu.addMenu("Time")
+            m = self.menu.addMenu("Progress")
+            m = self.menu.addMenu("Misc.")
+            getattr(u, "butMenu").setMenu(self.menu)
+
+            "butHelp"
+            "butClrProg"
+            "butClrTime"
+            "butPriClr"
+
+            for but in ["butPri1", "butPri6", "butPriChk", "butPri2",
+                "butPri4", "butPri5", "butPri8", "butPri9", "butPri0",
+                "butPriToDo", "butPriXgry", "butPriBang", "butPriX",
+                "butPriQuery", "butPriBullet", "butPri7", 
+                "butPri3"]:
+
+                w = getattr(u, but)
+                pri = w.property('priority').toInt()[0]
+                def setter(pri=pri): o.setPri(pri)
+                self.connect(w, QtCore.SIGNAL("clicked()"), setter)
+
+        def postMenu(self):
+            self.menu.popup(self.mapToGlobal(self.pos()))
+
 #@-node:tbrown.20060903121429.2:<< imports >>
 #@nl
 __version__ = "0.25.2"
@@ -116,11 +166,9 @@ __version__ = "0.25.2"
 #@-node:tbrown.20060903121429.3:<< version history >>
 #@nl
 
-ok = Tk is not None
-
 #@+others
 #@+node:tbrown.20060903121429.11:class TkPickleVar(Tk.Variable)
-if ok: # Don't define this if import Tkinter failed.
+if Tk: # Don't define this if import Tkinter failed.
 
     class TkPickleVar (Tk.Variable):
         "Required as target for Tk menu functions to write back into"
@@ -137,19 +185,26 @@ if ok: # Don't define this if import Tkinter failed.
 #@+node:tbrown.20060903121429.12:init
 def init():
 
-    if Tk is None: return False
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    ok = g.app.gui.guiName() == "tkinter"
-
-    if ok:
-        leoPlugins.registerHandler(('open2','new'), onCreate)
+    if Qt:
+        leoPlugins.registerHandler('after-create-leo-frame',onCreate)
+        # can't use before-create-leo-frame because Qt dock's not ready
         g.plugin_signon(__name__)
 
-    return ok
-#@nonl
+        return True
+    else:
+
+        if Tk is None: return False
+
+        if g.app.gui is None:
+            g.app.createTkGui(__file__)
+
+        ok = g.app.gui.guiName() == "tkinter"
+
+        if ok:
+            leoPlugins.registerHandler(('open2','new'), onCreate)
+            g.plugin_signon(__name__)
+
+        return ok
 #@-node:tbrown.20060903121429.12:init
 #@+node:tbrown.20060903121429.13:onCreate
 def onCreate (tag,key):
@@ -192,11 +247,8 @@ class cleoController:
 
         self.c = c
         c.cleo = self
-        self.menu = None
         self.donePriority = 100
         self.smiley = None
-
-        self.marks = []   # list of marks made on canvas
 
         #@    << set / read default values >>
         #@+node:tbrown.20060913151952:<< set / read default values >>
@@ -228,80 +280,89 @@ class cleoController:
         #@-node:tbrown.20060913151952:<< set / read default values >>
         #@nl
 
-        # image ids should be a property of the node
-        # use {marking,image id} as the kv pair.
-        self.images = {}
+        self.handlers = [("close-frame",self.close)]
 
-        #@    << define colors >>
-        #@+node:tbrown.20060903121429.16:<< define colors >>
+        if Qt:
+            owd = os.getcwd()
+            os.chdir(os.path.split(__file__)[0])
+            self.ui = cleoQtUI(self)
+            os.chdir(owd)
+        elif Tk:
+            self.marks = []   # list of marks made on canvas
+            self.menu = None
+            #@        << define colors >>
+            #@+node:tbrown.20060903121429.16:<< define colors >>
 
-        # see docstring for related @settings
+            # see docstring for related @settings
 
-        self.colours = [
-            'Black',
-            'Brown', 'Purple', 'Red', 'Pink',
-            'Yellow', 'Orange', 'Khaki', 'Gold',
-            'DarkGreen', 'Green', 'OliveDrab2',
-            'Blue', 'Lightblue', 'SteelBlue2',
-            'White',
-        ]
+            self.colours = [
+                'Black',
+                'Brown', 'Purple', 'Red', 'Pink',
+                'Yellow', 'Orange', 'Khaki', 'Gold',
+                'DarkGreen', 'Green', 'OliveDrab2',
+                'Blue', 'Lightblue', 'SteelBlue2',
+                'White',
+            ]
 
-        self.archetype_colours = {
-            'Data' : 'Purple',
-            'Thing' : 'Green3',
-            'Logic' : 'Blue',
-            'Interface': 'DarkOrange',
-            'Moment-Interval' : 'Red',
-        }
+            self.archetype_colours = {
+                'Data' : 'Purple',
+                'Thing' : 'Green3',
+                'Logic' : 'Blue',
+                'Interface': 'DarkOrange',
+                'Moment-Interval' : 'Red',
+            }
 
-        self.node_colours = {
-            'file' : 'lightgreen',
-            'Major Branch' : 'SandyBrown',
-            'Feature' : 'peachpuff',
-            'Comments': 'lightblue',
-            'Sel. File' : 'PaleGreen4',
-            'Sel. Major Branch' : 'tan4',
-            'Sel. Feature' : 'PeachPuff4',
-            'Sel. Comments': 'LightBlue4',
-        }
+            self.node_colours = {
+                'file' : 'lightgreen',
+                'Major Branch' : 'SandyBrown',
+                'Feature' : 'peachpuff',
+                'Comments': 'lightblue',
+                'Sel. File' : 'PaleGreen4',
+                'Sel. Major Branch' : 'tan4',
+                'Sel. Feature' : 'PeachPuff4',
+                'Sel. Comments': 'LightBlue4',
+            }
 
-        self.file_nodes = ["@file", "@thin", "@nosent", "@asis", "@root"]
-        if g.app.config.exists(self.c, 'cleo_color_file_node_list', 'data'):
-            self.file_nodes = self.c.config.getData('cleo_color_file_node_list')
+            self.file_nodes = ["@file", "@thin", "@nosent", "@asis", "@root"]
+            if g.app.config.exists(self.c, 'cleo_color_file_node_list', 'data'):
+                self.file_nodes = self.c.config.getData('cleo_color_file_node_list')
 
-        self.priority_colours = {
-            1 : 'red',
-            2 : 'orange',
-            3 : 'yellow',
-            4 : 'green',
-            5 : 'background-colour'
-        }
+            self.priority_colours = {
+                1 : 'red',
+                2 : 'orange',
+                3 : 'yellow',
+                4 : 'green',
+                5 : 'background-colour'
+            }
 
-        for pri in self.priority_colours.iterkeys():
-            if self.c.config.getColor('cleo_color_pri_'+str(pri)):
-                self.priority_colours[pri] = self.c.config.getColor('cleo_color_pri_'+str(pri))
+            for pri in self.priority_colours.iterkeys():
+                if self.c.config.getColor('cleo_color_pri_'+str(pri)):
+                    self.priority_colours[pri] = self.c.config.getColor('cleo_color_pri_'+str(pri))
 
-        self.red, self.green = ('red', 'green')
-        for i in ('red', 'green'):
-            if self.c.config.getColor('cleo_color_prog_'+i):
-                self.__dict__[i] = self.c.config.getColor('cleo_color_prog_'+i)
+            self.red, self.green = ('red', 'green')
+            for i in ('red', 'green'):
+                if self.c.config.getColor('cleo_color_prog_'+i):
+                    self.__dict__[i] = self.c.config.getColor('cleo_color_prog_'+i)
 
-        if c.frame and c.frame.tree and c.frame.tree.canvas:
-            self.background_colour = c.frame.tree.canvas.cget('background')
-        else:
-            self.background_color = 'black'
-        #@nonl
-        #@-node:tbrown.20060903121429.16:<< define colors >>
-        #@nl
+            if c.frame and c.frame.tree and c.frame.tree.canvas:
+                self.background_colour = c.frame.tree.canvas.cget('background')
+            else:
+                self.background_color = 'black'
+            #@nonl
+            #@-node:tbrown.20060903121429.16:<< define colors >>
+            #@nl
 
-        self.install_drawing_overrides()
+            # image ids should be a property of the node
+            # use {marking,image id} as the kv pair.
+            self.images = {}  # FIXME does what?
 
-        self.handlers = [
-            ("draw-outline-text-box",self.draw),
-            ("redraw-entire-outline",self.clear_canvas),
-            ("iconrclick1",self.show_menu),
-            ("close-frame",self.close),
-        ]
+            self.install_drawing_overrides()
+
+            self.handlers.extend([
+                ("draw-outline-text-box",self.draw),
+                ("redraw-entire-outline",self.clear_canvas),
+                ("iconrclick1",self.show_menu)])
+
         for i in self.handlers:
             leoPlugins.registerHandler(i[0], i[1])
 
@@ -432,7 +493,7 @@ class cleoController:
                 return ""
 
         x = node.unknownAttributes["annotate"][attrib]
-        if isinstance(x, TkPickleVar):
+        if Tk and isinstance(x, TkPickleVar):
             node.unknownAttributes["annotate"][attrib] = x.get()
             return x.get()
         else:
@@ -634,29 +695,35 @@ class cleoController:
     def redraw(self):
         "redraw after menu used"
 
-        g.trace(g.callers())
+        if Tk:
 
-        # IMPORTANT ASSUMPTION: called only after menu used
+            g.trace(g.callers())
 
-        # read updates from menu choice
+            # IMPORTANT ASSUMPTION: called only after menu used
 
-        # Tk seems to use menu label when '' is used as value?
-        # note, keys not present if coming via clear_all
-        if self.pickles.has_key('node'):
-            if self.pickles['node'].get() == 'CLEO_BLANK': self.pickles['node'].set('')
-        if self.pickles.has_key('archetype'):
-            if self.pickles['archetype'].get() == 'CLEO_BLANK': self.pickles['archetype'].set('')
+            # read updates from menu choice
 
-        for ky, vl in self.pickles.iteritems():
-            self.setat(self.pickleV, ky, vl.get())
+            # Tk seems to use menu label when '' is used as value?
+            # note, keys not present if coming via clear_all
+            if self.pickles.has_key('node'):
+                if self.pickles['node'].get() == 'CLEO_BLANK': self.pickles['node'].set('')
+            if self.pickles.has_key('archetype'):
+                if self.pickles['archetype'].get() == 'CLEO_BLANK': self.pickles['archetype'].set('')
 
-        self.loadIcons(self.pickleP)
+            for ky, vl in self.pickles.iteritems():
+                self.setat(self.pickleV, ky, vl.get())
 
-        self.clear_marks(self.c.frame.tree.canvas)
-        self.update_project(self.pickleP)
-        c = self.c
-        c.setChanged(True)
-        c.redraw_now()
+            self.loadIcons(self.pickleP)
+
+            self.clear_marks(self.c.frame.tree.canvas)
+            self.update_project(self.pickleP)
+            c = self.c
+            c.setChanged(True)
+            c.redraw_now()
+        elif Qt:
+            self.loadIcons(self.c.currentPosition())
+            self.c.setChanged(True)
+            self.c.redraw_now()
     #@-node:tbrown.20060903121429.32:redraw
     #@+node:tbrown.20060903121429.33:clear_all
     def clear_all(self,v):
@@ -1236,6 +1303,13 @@ class cleoController:
         self.redraw()
     #@nonl
     #@-node:tbrown.20060903121429.54:priority_clear
+    #@+node:tbrown.20090117102927.5:setPri
+    def setPri(self,pri):
+
+        self.setat(self.c.currentPosition().v, 'priority', pri)
+        self.redraw()
+    #@nonl
+    #@-node:tbrown.20090117102927.5:setPri
     #@+node:tbrown.20060912221139:progress_clear
     def progress_clear(self,v):
 
