@@ -283,6 +283,7 @@ class cleoController:
         self.handlers = [("close-frame",self.close)]
 
         if Qt:
+            # chdir so the Icons can be located
             owd = os.getcwd()
             os.chdir(os.path.split(__file__)[0])
             self.ui = cleoQtUI(self)
