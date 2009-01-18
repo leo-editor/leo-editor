@@ -54,15 +54,34 @@ elif g.app.gui.guiName() == "qt":
 
             self.menu = QtGui.QMenu()
             m = self.menu.addMenu("Priority")
+            m.addAction('Sort', self.STUB)
+            m.addAction('Mark children todo', self.STUB)
+            m.addAction('Show distribution', self.STUB)
+            m.addAction('Redistribute', self.STUB)
             m = self.menu.addMenu("Time")
-            m = self.menu.addMenu("Progress")
+            m.addAction('Show times', lambda:o.show_times(show=True))
+            m.addAction('Hide times', lambda:o.show_times(show=False))
+            m.addAction('Re-calc. derived times', o.local_recalc)
+            m.addAction('Clear derived times', o.local_clear)
             m = self.menu.addMenu("Misc.")
-            getattr(u, "butMenu").setMenu(self.menu)
+            m.addAction('Clear cleo from node', self.STUB)
+            u.butMenu.setMenu(self.menu)
 
-            "butHelp"
-            "butClrProg"
-            "butClrTime"
-            "butPriClr"
+            self.connect(u.butHelp, QtCore.SIGNAL("clicked()"), 
+                self.STUB)  # should be o.showHelp
+
+            self.connect(u.butClrProg, QtCore.SIGNAL("clicked()"),
+                o.progress_clear)
+            self.connect(u.butClrTime, QtCore.SIGNAL("clicked()"),
+                o.clear_time_req)
+            self.connect(u.butPriClr, QtCore.SIGNAL("clicked()"),
+                o.priority_clear)
+
+            # if live update is too slow change valueChanged(*) to editingFinished()
+            self.connect(u.spinTime, QtCore.SIGNAL("valueChanged(double)"),
+                lambda v: o.set_time_req(val=u.spinTime.value()))
+            self.connect(u.spinProg, QtCore.SIGNAL("valueChanged(int)"),
+                lambda v: o.set_progress(val=u.spinProg.value()))
 
             for but in ["butPri1", "butPri6", "butPriChk", "butPri2",
                 "butPri4", "butPri5", "butPri8", "butPri9", "butPri0",
@@ -75,9 +94,17 @@ elif g.app.gui.guiName() == "qt":
                 def setter(pri=pri): o.setPri(pri)
                 self.connect(w, QtCore.SIGNAL("clicked()"), setter)
 
-        def postMenu(self):
-            self.menu.popup(self.mapToGlobal(self.pos()))
+        def STUB(self):
+            g.es("NOT CONNECTED")
 
+        def setProgress(self, prgr):
+            self.UI.spinProg.blockSignals(True)
+            self.UI.spinProg.setValue(prgr)
+            self.UI.spinProg.blockSignals(False)
+        def setTime(self, timeReq):
+            self.UI.spinTime.blockSignals(True)
+            self.UI.spinTime.setValue(timeReq)
+            self.UI.spinTime.blockSignals(False)
 #@-node:tbrown.20060903121429.2:<< imports >>
 #@nl
 __version__ = "0.25.2"
@@ -288,6 +315,7 @@ class cleoController:
             os.chdir(os.path.split(__file__)[0])
             self.ui = cleoQtUI(self)
             os.chdir(owd)
+            leoPlugins.registerHandler('select3', self.updateUI)
         elif Tk:
             self.marks = []   # list of marks made on canvas
             self.menu = None
@@ -564,8 +592,9 @@ class cleoController:
 
             isDefault = True
             for ky, vl in node.unknownAttributes["annotate"].iteritems():
-                if isinstance(vl, TkPickleVar):
-                    node.unknownAttributes["annotate"][ky] = vl = vl.get()
+                if Tk:
+                    if isinstance(vl, TkPickleVar):
+                        node.unknownAttributes["annotate"][ky] = vl = vl.get()
                 if not self.testDefault(ky, vl):
                     isDefault = False
                     break
@@ -723,7 +752,9 @@ class cleoController:
             c.redraw_now()
         elif Qt:
             self.loadIcons(self.c.currentPosition())
+            self.update_project()
             self.c.setChanged(True)
+            self.updateUI()
             self.c.redraw_now()
     #@-node:tbrown.20060903121429.32:redraw
     #@+node:tbrown.20060903121429.33:clear_all
@@ -1227,24 +1258,23 @@ class cleoController:
         c.add_command(menu,label='Hide times',
             underline=0,command=lambda:self.show_times(p, show=False))
 
-        def local_recalc():
-            self.recalc_time(p)
-            self.pickles['progress'].set(self.getat(v, 'progress'))
-            self.redraw()
-
         c.add_command(menu,label='Re-calc. time required',
-            underline=0,command=local_recalc)
-
-        def local_clear():
-            self.recalc_time(p, clear=True)
-            self.pickles['progress'].set(self.getat(v, 'progress'))
-            self.redraw()
+            underline=0,command=lambda:self.local_recalc(p))
 
         c.add_command(menu,label='Clear derived times',
-            underline=0,command=local_clear)
+            underline=0,command=lambda:self.local_clear(p))
 
         return menu
-    #@nonl
+    def local_recalc(self, p=None):
+        self.recalc_time(p)
+        if Tk:
+            self.pickles['progress'].set(self.getat(v, 'progress'))
+        self.redraw()
+    def local_clear(self, p=None):
+        self.recalc_time(p, clear=True)
+        if Tk:
+            self.pickles['progress'].set(self.getat(v, 'progress'))
+        self.redraw()
     #@-node:tbrown.20060913212017:time_menu
     #@+node:tbrown.20060903121429.53:show_menu
     def show_menu (self,tag,k):
@@ -1297,10 +1327,13 @@ class cleoController:
     #@-node:tbrown.20060903121429.53:show_menu
     #@-node:tbrown.20060903121429.47:menus...
     #@+node:tbrown.20060903121429.54:priority_clear
-    def priority_clear(self,v):
+    def priority_clear(self,v=None):
 
+        if v is None:
+            v = self.c.currentPosition().v
         self.setat(v, 'priority', 9999)
-        self.safe_del(self.pickles, 'priority')
+        if Tk:
+            self.safe_del(self.pickles, 'priority')
         self.redraw()
     #@nonl
     #@-node:tbrown.20060903121429.54:priority_clear
@@ -1312,41 +1345,72 @@ class cleoController:
     #@nonl
     #@-node:tbrown.20090117102927.5:setPri
     #@+node:tbrown.20060912221139:progress_clear
-    def progress_clear(self,v):
+    def progress_clear(self,v=None):
 
+        if v is None:
+            v = self.c.currentPosition().v
         self.setat(v, 'progress', '')
-        self.safe_del(self.pickles, 'progress')
+        if Tk:
+            self.safe_del(self.pickles, 'progress')
         self.redraw()
     #@nonl
     #@-node:tbrown.20060912221139:progress_clear
-    #@+node:tbrown.20060913153851:set_time_req
-    def set_time_req(self,p):
+    #@+node:tbrown.20060913153851:set_progress
+    def set_progress(self,p=None, val=None):
+        if p is None:
+            p = self.c.currentPosition()
         v = p.v
-        tkSimpleDialog = g.importExtension('tkSimpleDialog',pluginName=__name__)
-        initialvalue = str(self.time_init)
-        if self.getat(v, 'time_req') != '':
-            initialvalue = self.getat(v, 'time_req')
-        prompt = '%s required' % self.time_name
-        tr = tkSimpleDialog.askfloat(prompt, prompt, parent = self.c.frame.tree.canvas,
-                                     initialvalue = str(initialvalue))
+        if Tk:
+            tkSimpleDialog = g.importExtension('tkSimpleDialog',pluginName=__name__)
+            initialvalue = str(self.time_init)
+            if self.getat(v, 'time_req') != '':
+                initialvalue = self.getat(v, 'time_req')
+            prompt = '%s required' % self.time_name
+            val = tkSimpleDialog.askfloat(prompt, prompt, parent = self.c.frame.tree.canvas,
+                                         initialvalue = str(initialvalue))
 
-        if tr == None: return
+        if val == None: return
 
-        self.setat(v, 'time_req', tr)
-
-        if self.getat(v, 'progress') == '':
-            self.setat(v, 'progress', 0)
-            self.pickles['progress'].set(0)
+        self.setat(v, 'progress', val)
 
         self.redraw()
     #@nonl
-    #@-node:tbrown.20060913153851:set_time_req
+    #@-node:tbrown.20060913153851:set_progress
+    #@+node:tbrown.20090118135723.2:set_time_req
+    def set_time_req(self,p=None, val=None):
+        if p is None:
+            p = self.c.currentPosition()
+        v = p.v
+        if Tk:
+            tkSimpleDialog = g.importExtension('tkSimpleDialog',pluginName=__name__)
+            initialvalue = str(self.time_init)
+            if self.getat(v, 'time_req') != '':
+                initialvalue = self.getat(v, 'time_req')
+            prompt = '%s required' % self.time_name
+            val = tkSimpleDialog.askfloat(prompt, prompt, parent = self.c.frame.tree.canvas,
+                                         initialvalue = str(initialvalue))
+
+        if val == None: return
+
+        self.setat(v, 'time_req', val)
+
+        if self.getat(v, 'progress') == '':
+            self.setat(v, 'progress', 0)
+            if Tk:
+                self.pickles['progress'].set(0)
+
+        self.redraw()
+    #@nonl
+    #@-node:tbrown.20090118135723.2:set_time_req
     #@+node:tbrown.20060913204451:show_times
-    def show_times(self, p, show=False):
+    def show_times(self, p=None, show=False):
 
         import re
 
         def rnd(x): return re.sub('.0$', '', '%.1f' % x)
+
+        if p is None:
+            p = self.c.currentPosition()
 
         for nd in p.self_and_subtree_iter():
             if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
@@ -1376,7 +1440,11 @@ class cleoController:
                         self.c.setHeadString(nd, nd.headString()+ans)
     #@-node:tbrown.20060913204451:show_times
     #@+node:tbrown.20060913133338:recalc_time
-    def recalc_time(self, p, clear=False):
+    def recalc_time(self, p=None, clear=False):
+
+        if p is None:
+            p = self.c.currentPosition()
+
         v = p.v
         time_totl = None
         time_done = None
@@ -1433,19 +1501,24 @@ class cleoController:
         return (time_totl, time_done)
     #@-node:tbrown.20060913133338:recalc_time
     #@+node:tbrown.20060913104504.1:clear_time_req
-    def clear_time_req(self,p):
+    def clear_time_req(self, p=None):
 
+        if p is None:
+            p = self.c.currentPosition()
         v = p.v
         self.setat(v, 'time_req', '')
-        self.safe_del(self.pickles, 'time_req')
+        if Tk:
+            self.safe_del(self.pickles, 'time_req')
         self.redraw()
     #@nonl
     #@-node:tbrown.20060913104504.1:clear_time_req
     #@+node:tbrown.20060914134553.376:update_project
-    def update_project(self, p):
+    def update_project(self, p=None):
         """Find highest parent with '@project' in headline and run recalc_time
         and maybe show_times (if headline has '@project time')"""
 
+        if p is None:
+            p = self.c.currentPosition()
         project = None
 
         for nd in p.self_and_parents_iter():
@@ -1489,6 +1562,15 @@ class cleoController:
 
         return False
     #@-node:tbrown.20060919160306:find_todo
+    #@+node:tbrown.20090118135723.1:updateUI
+    def updateUI(self,tag=None,k=None):
+        if k and k['c'] != self.c:
+            return  # wrong number
+
+        v = self.c.currentPosition().v
+        self.ui.setProgress(int(self.getat(v, 'progress') or 0 ))
+        self.ui.setTime(float(self.getat(v, 'time_req') or 0 ))
+    #@-node:tbrown.20090118135723.1:updateUI
     #@-others
 #@nonl
 #@-node:tbrown.20060903121429.14:class cleoController
