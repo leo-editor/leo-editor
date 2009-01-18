@@ -40,3 +40,4 @@ leo/core/scriptFile.py
 leoGuiPlugins.leo
 leo/doc/html/ed.hup
 .pythoscope
+leo/test/unicode-ä-test
