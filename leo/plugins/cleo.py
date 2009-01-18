@@ -304,6 +304,10 @@ class cleoController:
         self.icon_location = 'beforeIcon'
         if c.config.getString('cleo_icon_location'):
             self.icon_location = c.config.getString('cleo_icon_location')
+
+        self.prog_location = 'beforeHeadline'
+        if c.config.getString('cleo_prog_location'):
+            self.icon_location = c.config.getString('cleo_prog_location')
         #@-node:tbrown.20060913151952:<< set / read default values >>
         #@nl
 
@@ -420,6 +424,7 @@ class cleoController:
         com = self.c.editCommands
         allIcons = com.getIconList(p)
         icons = [i for i in allIcons if 'cleoIcon' not in i]
+
         pri = self.getat(p.v, 'priority')
         if pri: pri = int(pri)
         if pri in self.priorities:
@@ -433,9 +438,28 @@ class cleoController:
                 # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
                 # Note: 'beforeBox' and 'afterHeadline' collide with other elements on the line.
             com.setIconList(p, icons)
-        else:
-            if len(allIcons) != len(icons):  # something to remove
-                com.setIconList(p, icons)
+
+
+        prog = self.getat(p.v, 'progress')
+        if prog is not '':
+            prog = int(prog)
+            use = prog//10*10
+            use = 'prg%03d.png' % use
+
+            iconDir = g.os_path_abspath(
+              g.os_path_normpath(
+                g.os_path_join(g.app.loadDir,"..","Icons")))
+
+            com.appendImageDictToList(icons, iconDir,
+                g.os_path_join('cleo',use),
+                2, on='vnode', cleoIcon='1', where=self.prog_location)
+                # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
+                # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
+                # Note: 'beforeBox' and 'afterHeadline' collide with other elements on the line.
+            com.setIconList(p, icons)
+
+        if len(allIcons) != len(icons):  # something to add / remove
+            com.setIconList(p, icons)
 
     #@-node:tbrown.20080303232514:loadIcons
     #@+node:tbrown.20060903121429.18:close
@@ -1434,10 +1458,12 @@ class cleoController:
                     if pr != '':
                         ans += rnd(pr) + '%'  # pr may be non-integer if set by recalc_time
                     ans += '>'
-                    if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
-                        nd.setHeadStringOrHeadline(nd.headString()+ans)
-                    else:
-                        self.c.setHeadString(nd, nd.headString()+ans)
+                    #X if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
+                    #X     nd.setHeadStringOrHeadline(nd.headString()+ans)
+                    #X else:
+                    self.c.setHeadString(nd, nd.headString()+ans)
+                    if Qt:
+                        self.loadIcons(nd)  # update progress icon
     #@-node:tbrown.20060913204451:show_times
     #@+node:tbrown.20060913133338:recalc_time
     def recalc_time(self, p=None, clear=False):
