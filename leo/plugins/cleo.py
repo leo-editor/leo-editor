@@ -54,17 +54,21 @@ elif g.app.gui.guiName() == "qt":
 
             self.menu = QtGui.QMenu()
             m = self.menu.addMenu("Priority")
-            m.addAction('Sort', self.STUB)
-            m.addAction('Mark children todo', self.STUB)
-            m.addAction('Show distribution', self.STUB)
-            m.addAction('Redistribute', self.STUB)
+            m.addAction('Sort', o.priSort)
+            m.addAction('Mark children todo', o.childrenTodo)
+            m.addAction('Show distribution', o.showDist)
+            m.addAction('Redistribute', o.reclassify)
             m = self.menu.addMenu("Time")
             m.addAction('Show times', lambda:o.show_times(show=True))
             m.addAction('Hide times', lambda:o.show_times(show=False))
             m.addAction('Re-calc. derived times', o.local_recalc)
             m.addAction('Clear derived times', o.local_clear)
             m = self.menu.addMenu("Misc.")
-            m.addAction('Clear cleo from node', self.STUB)
+            m.addAction('Clear all leo icons', lambda:o.loadAllIcons(clear=True))
+            m.addAction('Show all leo icons', o.loadAllIcons)
+            m.addAction('Clear cleo from node', o.clear_all)
+            m.addAction('Clear cleo from subtree', lambda:o.clear_all(recurse=True))
+            m.addAction('Clear cleo from all', lambda:o.clear_all(all=True))
             u.butMenu.setMenu(self.menu)
 
             self.connect(u.butHelp, QtCore.SIGNAL("clicked()"), 
@@ -307,7 +311,11 @@ class cleoController:
 
         self.prog_location = 'beforeHeadline'
         if c.config.getString('cleo_prog_location'):
-            self.icon_location = c.config.getString('cleo_prog_location')
+            self.prog_location = c.config.getString('cleo_prog_location')
+
+        self.icon_order = 'pri-first'
+        if c.config.getString('cleo_icon_order'):
+            self.icon_order = c.config.getString('cleo_icon_order')
         #@-node:tbrown.20060913151952:<< set / read default values >>
         #@nl
 
@@ -413,50 +421,53 @@ class cleoController:
     #@-node:tbrown.20060903121429.17:install_drawing_overrides
     #@-node:tbrown.20060903121429.15:birth
     #@+node:tbrown.20080303214305:loadAllIcons
-    def loadAllIcons(self):
+    def loadAllIcons(self, clear=False):
         """Load icons to represent cleo state"""
 
         for p in self.c.allNodes_iter():
-            self.loadIcons(p)
+            self.loadIcons(p, clear=clear)
     #@-node:tbrown.20080303214305:loadAllIcons
     #@+node:tbrown.20080303232514:loadIcons
-    def loadIcons(self, p):
+    def loadIcons(self, p, clear=False):
         com = self.c.editCommands
         allIcons = com.getIconList(p)
         icons = [i for i in allIcons if 'cleoIcon' not in i]
 
-        pri = self.getat(p.v, 'priority')
-        if pri: pri = int(pri)
-        if pri in self.priorities:
-            iconDir = g.os_path_abspath(
-              g.os_path_normpath(
-                g.os_path_join(g.app.loadDir,"..","Icons")))
-            com.appendImageDictToList(icons, iconDir,
-                g.os_path_join('cleo',self.priorities[pri]['icon']),
-                2, on='vnode', cleoIcon='1', where=self.icon_location)
-                # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
-                # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
-                # Note: 'beforeBox' and 'afterHeadline' collide with other elements on the line.
-            com.setIconList(p, icons)
+        if clear:
+            iterations = []
+        else:
+            iterations = [True, False]
 
+        for which in iterations:
 
-        prog = self.getat(p.v, 'progress')
-        if prog is not '':
-            prog = int(prog)
-            use = prog//10*10
-            use = 'prg%03d.png' % use
+            if which == (self.icon_order == 'pri-first'):
+                pri = self.getat(p.v, 'priority')
+                if pri: pri = int(pri)
+                if pri in self.priorities:
+                    iconDir = g.os_path_abspath(
+                      g.os_path_normpath(
+                        g.os_path_join(g.app.loadDir,"..","Icons")))
+                    com.appendImageDictToList(icons, iconDir,
+                        g.os_path_join('cleo',self.priorities[pri]['icon']),
+                        2, on='vnode', cleoIcon='1', where=self.icon_location)
+                        # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
+                        # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
+                    com.setIconList(p, icons)
+            else:
+                prog = self.getat(p.v, 'progress')
+                if prog is not '':
+                    prog = int(prog)
+                    use = prog//10*10
+                    use = 'prg%03d.png' % use
 
-            iconDir = g.os_path_abspath(
-              g.os_path_normpath(
-                g.os_path_join(g.app.loadDir,"..","Icons")))
+                    iconDir = g.os_path_abspath(
+                      g.os_path_normpath(
+                        g.os_path_join(g.app.loadDir,"..","Icons")))
 
-            com.appendImageDictToList(icons, iconDir,
-                g.os_path_join('cleo',use),
-                2, on='vnode', cleoIcon='1', where=self.prog_location)
-                # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
-                # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
-                # Note: 'beforeBox' and 'afterHeadline' collide with other elements on the line.
-            com.setIconList(p, icons)
+                    com.appendImageDictToList(icons, iconDir,
+                        g.os_path_join('cleo',use),
+                        2, on='vnode', cleoIcon='1', where=self.prog_location)
+                    com.setIconList(p, icons)
 
         if len(allIcons) != len(icons):  # something to add / remove
             com.setIconList(p, icons)
@@ -473,10 +484,6 @@ class cleoController:
     #@-node:tbrown.20060903121429.18:close
     #@+node:tbrown.20060903121429.19:attributes...
     #@+at
-    # These methods should really be part of vnode in accordance with the 
-    # principles
-    # of encapsulation and information hiding.
-    # 
     # annotate was the previous name of this plugin, which is why the default 
     # values
     # for several keyword args is 'annotate'.
@@ -487,11 +494,10 @@ class cleoController:
 
         ''' Remove our dict from the node'''
 
-        if hasattr(node,"unknownAttributes" ) and \
-               node.unknownAttributes.has_key(udict):
+        if (hasattr(node,"unknownAttributes" )
+            and node.unknownAttributes.has_key(udict)):
 
             del node.unknownAttributes[udict]
-    #@nonl
     #@-node:tbrown.20060903121429.20:delUD
     #@+node:tbrown.20060903121429.21:hasUD
     def hasUD (self,node,udict="annotate"):
@@ -782,12 +788,32 @@ class cleoController:
             self.c.redraw_now()
     #@-node:tbrown.20060903121429.32:redraw
     #@+node:tbrown.20060903121429.33:clear_all
-    def clear_all(self,v):
+    def clear_all(self,v=None, recurse=False, all=False):
 
-        self.delUD(v)
-        self.pickles = {}
+        if Tk:
+            self.pickles = {}
+
+        if not recurse and not all:
+            if v is None:  # Qt version
+                p = self.c.currentPosition()
+                v = p.v
+                self.delUD(v)
+                self.loadIcons(p)
+                self.show_times(p)
+            else:
+                self.delUD(v)
+        else:
+            if all:
+                what = self.c.allNodes_iter
+            else:
+                what = self.c.currentPosition().self_and_subtree_iter
+
+            for p in what():
+                self.delUD(p.v)
+                self.loadIcons(p)
+                self.show_times(p)
+
         self.redraw()
-    #@nonl
     #@-node:tbrown.20060903121429.33:clear_all
     #@+node:tbrown.20060903121429.34:clear_canvas
     def clear_canvas(self,tag,key):
@@ -1126,21 +1152,37 @@ class cleoController:
 
         return cmp(pa,pb)
 
-    def priSort(self):
-        self.c.selectPosition(self.pickleP)
+    def priSort(self, p=None):
+        if p is None:
+            if Tk:
+                p = self.pickleP
+            if Qt:
+                p = self.c.currentPosition()
+        self.c.selectPosition(p)
         self.c.sortSiblings(cmp=self.pricmp)
+        self.redraw()
 
-    def childrenTodo(self):
-        for p in self.pickleP.children_iter():
+    def childrenTodo(self, p=None):
+        if p is None:
+            if Tk:
+                p = self.pickleP
+            if Qt:
+                p = self.c.currentPosition()
+        for p in p.children_iter():
             if self.getat(p.v, 'priority') != 9999: continue
             self.setat(p.v, 'priority', 19)
             self.loadIcons(p)
-        self.c.redraw()
+        self.redraw()
 
-    def showDist(self):
+    def showDist(self, p=None):
         """show distribution of priority levels in subtree"""
+        if p is None:
+            if Tk:
+                p = self.pickleP
+            if Qt:
+                p = self.c.currentPosition()
         pris = {}
-        for p in self.pickleP.subtree_iter():
+        for p in p.subtree_iter():
             pri = int(self.getat(p.v, 'priority'))
             if pri not in pris:
                 pris[pri] = 1
@@ -1152,15 +1194,27 @@ class cleoController:
                 g.es('%s\t%d\t%s' % (self.priorities[pri[0]]['short'], pri[1],
                     self.priorities[pri[0]]['long']))
 
-    def reclassify(self):
+    def reclassify(self, p=None):
         """change priority codes"""
 
+        if p is None:
+            if Tk:
+                p = self.pickleP
+            if Qt:
+                p = self.c.currentPosition()
         g.es('\n Current distribution:')
         self.showDist()
         dat = {}
         for end in 'from', 'to':
-            x0 = g.app.gui.runAskOkCancelStringDialog(
-                self.c,'Reclassify priority' ,'%s priorities (1-7,19)' % end.upper())
+            if Qt:
+                x0,ok = QtGui.QInputDialog.getText(None, 'Reclassify priority' ,'%s priorities (1-9,19)'%end)
+                if not ok:
+                    x0 = None
+                else:
+                    x0 = str(x0)
+            else:
+                x0 = g.app.gui.runAskOkCancelStringDialog(
+                    self.c,'Reclassify priority' ,'%s priorities (1-7,19)' % end.upper())
             try:
                 x0 = [int(i) for i in x0.replace(',',' ').split()
                       if int(i) in self.todo_priorities]
@@ -1177,7 +1231,7 @@ class cleoController:
             return
 
         cnt = 0
-        for p in self.pickleP.subtree_iter():
+        for p in p.subtree_iter():
             pri = int(self.getat(p.v, 'priority'))
             if pri in dat['from']:
                 self.setat(p.v, 'priority', dat['to'][dat['from'].index(pri)])
@@ -1186,7 +1240,7 @@ class cleoController:
         g.es('\n%d priorities reclassified, new distribution:' % cnt)
         self.showDist()
         if cnt:
-            self.c.redraw_now()
+            self.redraw()
 
     def priority_menu(self,parent,p):
 
@@ -1437,10 +1491,10 @@ class cleoController:
             p = self.c.currentPosition()
 
         for nd in p.self_and_subtree_iter():
-            if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
-                nd.setHeadStringOrHeadline(re.sub(' <[^>]*>$', '', nd.headString()))
-            else:
-                self.c.setHeadString(nd, re.sub(' <[^>]*>$', '', nd.headString()))
+            #X if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
+            #X     nd.setHeadStringOrHeadline(re.sub(' <[^>]*>$', '', nd.headString()))
+            #X else:
+            self.c.setHeadString(nd, re.sub(' <[^>]*>$', '', nd.headString()))
                 # nd.setHeadString(re.sub(' <[^>]*>$', '', nd.headString()))
             if show:
                 tr = self.getat(nd.v, 'time_req')
@@ -1464,6 +1518,8 @@ class cleoController:
                     self.c.setHeadString(nd, nd.headString()+ans)
                     if Qt:
                         self.loadIcons(nd)  # update progress icon
+
+        self.c.redraw_now()
     #@-node:tbrown.20060913204451:show_times
     #@+node:tbrown.20060913133338:recalc_time
     def recalc_time(self, p=None, clear=False):

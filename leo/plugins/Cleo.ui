@@ -389,6 +389,9 @@
      </item>
      <item row="3" column="5" >
       <widget class="QPushButton" name="butPriClr" >
+       <property name="toolTip" >
+        <string>Clear priority setting</string>
+       </property>
        <property name="text" >
         <string/>
        </property>
@@ -451,6 +454,9 @@
      </item>
      <item row="1" column="3" >
       <widget class="QPushButton" name="butClrTime" >
+       <property name="toolTip" >
+        <string>Clear time required</string>
+       </property>
        <property name="text" >
         <string/>
        </property>
@@ -468,6 +474,9 @@
      </item>
      <item row="2" column="3" >
       <widget class="QPushButton" name="butClrProg" >
+       <property name="toolTip" >
+        <string>Clear progress</string>
+       </property>
        <property name="text" >
         <string/>
        </property>
