@@ -280,6 +280,7 @@ class cleoController:
         c.cleo = self
         self.donePriority = 100
         self.smiley = None
+        self.redrawLevels = 0
 
         #@    << set / read default values >>
         #@+node:tbrown.20060913151952:<< set / read default values >>
@@ -329,6 +330,9 @@ class cleoController:
             os.chdir(owd)
             leoPlugins.registerHandler('select3', self.updateUI)
         elif Tk:
+            self.pickles = {}
+            self.pickleP = self.c.currentPosition().copy()
+            self.pickleV = self.pickleP.v
             self.marks = []   # list of marks made on canvas
             self.menu = None
             #@        << define colors >>
@@ -420,7 +424,34 @@ class cleoController:
     #@nonl
     #@-node:tbrown.20060903121429.17:install_drawing_overrides
     #@-node:tbrown.20060903121429.15:birth
+    #@+node:tbrown.20090119112125.1:redrawer
+    def redrawer(fn):
+        """decorator for methods which create the need for a redraw"""
+        def new(self, *args, **kargs):
+            self.redrawLevels += 1
+            try:
+                ans = fn(self,*args, **kargs)
+            finally:
+                self.redrawLevels -= 1
+
+                if self.redrawLevels == 0:
+                    self.redraw()
+
+            return ans
+        return new
+    #@-node:tbrown.20090119112125.1:redrawer
+    #@+node:tbrown.20090119112125.2:projectChanger
+    def projectChanger(fn):
+        """decorator for methods which change projects"""
+        def new(self, *args, **kargs):
+            ans = fn(self,*args, **kargs)
+            self.update_project()
+            return ans
+        return new
+    #@nonl
+    #@-node:tbrown.20090119112125.2:projectChanger
     #@+node:tbrown.20080303214305:loadAllIcons
+    @redrawer
     def loadAllIcons(self, clear=False):
         """Load icons to represent cleo state"""
 
@@ -428,6 +459,7 @@ class cleoController:
             self.loadIcons(p, clear=clear)
     #@-node:tbrown.20080303214305:loadAllIcons
     #@+node:tbrown.20080303232514:loadIcons
+    @redrawer
     def loadIcons(self, p, clear=False):
         com = self.c.editCommands
         allIcons = com.getIconList(p)
@@ -454,6 +486,7 @@ class cleoController:
                         # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
                     com.setIconList(p, icons)
             else:
+
                 prog = self.getat(p.v, 'progress')
                 if prog is not '':
                     prog = int(prog)
@@ -645,16 +678,16 @@ class cleoController:
     #@-node:tbrown.20060903121429.23:safe_del
     #@+node:tbrown.20060903121429.24:colours...
     #@+node:tbrown.20060903121429.25:remove_colours
+    @redrawer
     def remove_colours(self,v):
 
         self.setat(v, 'fg', '')
         self.setat(v, 'bg', '')
         self.safe_del(self.pickles, 'fg')
         self.safe_del(self.pickles, 'bg')
-        self.c.redraw()
-    #@nonl
     #@-node:tbrown.20060903121429.25:remove_colours
     #@+node:tbrown.20071008150126:subtree_colours
+    @redrawer
     def subtree_colours(self,p):
 
         fg = self.getat(p.v, 'fg')
@@ -662,7 +695,6 @@ class cleoController:
         for n in p.subtree_iter():
             self.setat(n.v, 'fg', fg)
             self.setat(n.v, 'bg', bg)
-        self.c.redraw()
     #@-node:tbrown.20071008150126:subtree_colours
     #@+node:tbrown.20060912130940:add_colour
     def add_colour(self):
@@ -773,21 +805,22 @@ class cleoController:
             for ky, vl in self.pickles.iteritems():
                 self.setat(self.pickleV, ky, vl.get())
 
-            self.loadIcons(self.pickleP)
-
+            # self.loadIcons(self.pickleP)
+            # self.update_project(self.pickleP)
             self.clear_marks(self.c.frame.tree.canvas)
-            self.update_project(self.pickleP)
+
             c = self.c
-            c.setChanged(True)
+            # c.setChanged(True)
             c.redraw_now()
         elif Qt:
-            self.loadIcons(self.c.currentPosition())
-            self.update_project()
-            self.c.setChanged(True)
+            # self.loadIcons(self.c.currentPosition())
+            # self.update_project()
+            # self.c.setChanged(True)
             self.updateUI()
             self.c.redraw_now()
     #@-node:tbrown.20060903121429.32:redraw
     #@+node:tbrown.20060903121429.33:clear_all
+    @redrawer
     def clear_all(self,v=None, recurse=False, all=False):
 
         if Tk:
@@ -813,7 +846,6 @@ class cleoController:
                 self.loadIcons(p)
                 self.show_times(p)
 
-        self.redraw()
     #@-node:tbrown.20060903121429.33:clear_all
     #@+node:tbrown.20060903121429.34:clear_canvas
     def clear_canvas(self,tag,key):
@@ -922,6 +954,8 @@ class cleoController:
     #@+node:tbrown.20060912215129:draw_prog
     def draw_prog (self, v, prop, progWidth):
 
+        return  # icons used instead
+
         canvas = self.c.frame.tree.canvas
 
         XpointA = v.iconx+1
@@ -939,7 +973,6 @@ class cleoController:
         self.marks.append(
             canvas.create_line(XpointB,YpointB,XpointC,YpointC,fill=self.red,width=2)
         )
-    #@nonl
     #@-node:tbrown.20060912215129:draw_prog
     #@+node:tbrown.20060903121429.42:draw_invertedT
     def draw_invertedT (self,v,color,canvas):
@@ -1130,9 +1163,11 @@ class cleoController:
         for pri in self.priorities:
             value,label = pri, self.priorities[pri]['short']
             s = '%s' % (label)
+            def np(pri=pri):
+                self.setPri(pri)
             menu.add_radiobutton(
                 label=s,variable=self.pickles['priority'],value=value,
-                command=self.redraw,underline=0)
+                command=np,underline=0)
     #@nonl
     #@-node:tbrown.20061020145804:left_priority_menu
     #@+node:tbrown.20060903121429.52:priority_menu
@@ -1151,7 +1186,7 @@ class cleoController:
             pb = -1
 
         return cmp(pa,pb)
-
+    @redrawer
     def priSort(self, p=None):
         if p is None:
             if Tk:
@@ -1160,8 +1195,8 @@ class cleoController:
                 p = self.c.currentPosition()
         self.c.selectPosition(p)
         self.c.sortSiblings(cmp=self.pricmp)
-        self.redraw()
 
+    @redrawer
     def childrenTodo(self, p=None):
         if p is None:
             if Tk:
@@ -1172,7 +1207,6 @@ class cleoController:
             if self.getat(p.v, 'priority') != 9999: continue
             self.setat(p.v, 'priority', 19)
             self.loadIcons(p)
-        self.redraw()
 
     def showDist(self, p=None):
         """show distribution of priority levels in subtree"""
@@ -1194,6 +1228,7 @@ class cleoController:
                 g.es('%s\t%d\t%s' % (self.priorities[pri[0]]['short'], pri[1],
                     self.priorities[pri[0]]['long']))
 
+    @redrawer
     def reclassify(self, p=None):
         """change priority codes"""
 
@@ -1239,8 +1274,6 @@ class cleoController:
                 cnt += 1
         g.es('\n%d priorities reclassified, new distribution:' % cnt)
         self.showDist()
-        if cnt:
-            self.redraw()
 
     def priority_menu(self,parent,p):
 
@@ -1256,9 +1289,11 @@ class cleoController:
         for pri in self.priorities:
             value,label = pri, self.priorities[pri]['long']
             s = '%d %s' % (value,label)
+            def np(pri=pri):
+                self.setPri(pri)
             menu.add_radiobutton(
                 label=s,variable=self.pickles['priority'],value=value,
-                command=self.redraw,underline=0)
+                command=np,underline=0)
 
         menu.add_separator()
 
@@ -1290,9 +1325,11 @@ class cleoController:
         # Instead of just redraw, set changed too.
         for value in range(0,11):
             s = '%d%%' % (value*10)
+            def np(prog=value*10):
+                self.set_progress(val=prog)
             menu.add_radiobutton(
                 label=s,variable=self.pickles['progress'],value=value*10,
-                command=self.redraw,underline=0)
+                command=np,underline=0)
 
         menu.add_separator()
 
@@ -1343,16 +1380,18 @@ class cleoController:
             underline=0,command=lambda:self.local_clear(p))
 
         return menu
+    @redrawer
     def local_recalc(self, p=None):
         self.recalc_time(p)
         if Tk:
             self.pickles['progress'].set(self.getat(v, 'progress'))
-        self.redraw()
+
+    @redrawer
     def local_clear(self, p=None):
         self.recalc_time(p, clear=True)
         if Tk:
             self.pickles['progress'].set(self.getat(v, 'progress'))
-        self.redraw()
+
     #@-node:tbrown.20060913212017:time_menu
     #@+node:tbrown.20060903121429.53:show_menu
     def show_menu (self,tag,k):
@@ -1405,6 +1444,7 @@ class cleoController:
     #@-node:tbrown.20060903121429.53:show_menu
     #@-node:tbrown.20060903121429.47:menus...
     #@+node:tbrown.20060903121429.54:priority_clear
+    @redrawer
     def priority_clear(self,v=None):
 
         if v is None:
@@ -1412,17 +1452,17 @@ class cleoController:
         self.setat(v, 'priority', 9999)
         if Tk:
             self.safe_del(self.pickles, 'priority')
-        self.redraw()
-    #@nonl
     #@-node:tbrown.20060903121429.54:priority_clear
     #@+node:tbrown.20090117102927.5:setPri
+    @redrawer
     def setPri(self,pri):
-
-        self.setat(self.c.currentPosition().v, 'priority', pri)
-        self.redraw()
-    #@nonl
+        p = self.c.currentPosition()
+        self.setat(p.v, 'priority', pri)
+        self.loadIcons(p)
     #@-node:tbrown.20090117102927.5:setPri
     #@+node:tbrown.20060912221139:progress_clear
+    @redrawer
+    @projectChanger
     def progress_clear(self,v=None):
 
         if v is None:
@@ -1430,10 +1470,10 @@ class cleoController:
         self.setat(v, 'progress', '')
         if Tk:
             self.safe_del(self.pickles, 'progress')
-        self.redraw()
-    #@nonl
     #@-node:tbrown.20060912221139:progress_clear
     #@+node:tbrown.20060913153851:set_progress
+    @redrawer
+    @projectChanger
     def set_progress(self,p=None, val=None):
         if p is None:
             p = self.c.currentPosition()
@@ -1450,11 +1490,10 @@ class cleoController:
         if val == None: return
 
         self.setat(v, 'progress', val)
-
-        self.redraw()
-    #@nonl
     #@-node:tbrown.20060913153851:set_progress
     #@+node:tbrown.20090118135723.2:set_time_req
+    @redrawer
+    @projectChanger
     def set_time_req(self,p=None, val=None):
         if p is None:
             p = self.c.currentPosition()
@@ -1476,11 +1515,9 @@ class cleoController:
             self.setat(v, 'progress', 0)
             if Tk:
                 self.pickles['progress'].set(0)
-
-        self.redraw()
-    #@nonl
     #@-node:tbrown.20090118135723.2:set_time_req
     #@+node:tbrown.20060913204451:show_times
+    @redrawer
     def show_times(self, p=None, show=False):
 
         import re
@@ -1496,30 +1533,29 @@ class cleoController:
             #X else:
             self.c.setHeadString(nd, re.sub(' <[^>]*>$', '', nd.headString()))
                 # nd.setHeadString(re.sub(' <[^>]*>$', '', nd.headString()))
-            if show:
-                tr = self.getat(nd.v, 'time_req')
-                pr = self.getat(nd.v, 'progress')
-                try: pr = float(pr)
-                except: pr = ''
-                if tr != '' or pr != '':
-                    ans = ' <'
-                    if tr != '':
-                        if pr == '' or pr == 0 or pr == 100:
-                            ans += rnd(tr) + ' ' + self.time_name
-                        else:
-                            ans += '%s+%s=%s %s' % (rnd(pr/100.*tr), rnd((1-pr/100.)*tr), rnd(tr), self.time_name)
-                        if pr != '': ans += ', '
-                    if pr != '':
-                        ans += rnd(pr) + '%'  # pr may be non-integer if set by recalc_time
-                    ans += '>'
-                    #X if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
-                    #X     nd.setHeadStringOrHeadline(nd.headString()+ans)
-                    #X else:
-                    self.c.setHeadString(nd, nd.headString()+ans)
-                    if Qt:
-                        self.loadIcons(nd)  # update progress icon
 
-        self.c.redraw_now()
+            tr = self.getat(nd.v, 'time_req')
+            pr = self.getat(nd.v, 'progress')
+            try: pr = float(pr)
+            except: pr = ''
+            if tr != '' or pr != '':
+                ans = ' <'
+                if tr != '':
+                    if pr == '' or pr == 0 or pr == 100:
+                        ans += rnd(tr) + ' ' + self.time_name
+                    else:
+                        ans += '%s+%s=%s %s' % (rnd(pr/100.*tr), rnd((1-pr/100.)*tr), rnd(tr), self.time_name)
+                    if pr != '': ans += ', '
+                if pr != '':
+                    ans += rnd(pr) + '%'  # pr may be non-integer if set by recalc_time
+                ans += '>'
+                #X if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
+                #X     nd.setHeadStringOrHeadline(nd.headString()+ans)
+                #X else:
+                if show:
+                    self.c.setHeadString(nd, nd.headString()+ans)
+                self.loadIcons(nd)  # update progress icon
+
     #@-node:tbrown.20060913204451:show_times
     #@+node:tbrown.20060913133338:recalc_time
     def recalc_time(self, p=None, clear=False):
@@ -1583,6 +1619,8 @@ class cleoController:
         return (time_totl, time_done)
     #@-node:tbrown.20060913133338:recalc_time
     #@+node:tbrown.20060913104504.1:clear_time_req
+    @redrawer
+    @projectChanger
     def clear_time_req(self, p=None):
 
         if p is None:
@@ -1591,10 +1629,9 @@ class cleoController:
         self.setat(v, 'time_req', '')
         if Tk:
             self.safe_del(self.pickles, 'time_req')
-        self.redraw()
-    #@nonl
     #@-node:tbrown.20060913104504.1:clear_time_req
     #@+node:tbrown.20060914134553.376:update_project
+    @redrawer
     def update_project(self, p=None):
         """Find highest parent with '@project' in headline and run recalc_time
         and maybe show_times (if headline has '@project time')"""
@@ -1611,8 +1648,11 @@ class cleoController:
             self.recalc_time(project)
             if project.headString().find('@project time') > -1:
                 self.show_times(project, show=True)
+            else:
+                self.show_times(p, show=True)
     #@-node:tbrown.20060914134553.376:update_project
     #@+node:tbrown.20060919160306:find_todo
+    @redrawer
     def find_todo(self, p, stage = 0):
         """Recursively find the next todo"""
 
@@ -1628,7 +1668,6 @@ class cleoController:
                 self.c.selectPosition(p.getParent())
                 self.c.expandNode()
             self.c.selectPosition(p)
-            self.c.redraw()
             return True
 
         for nd in p.children_iter():
