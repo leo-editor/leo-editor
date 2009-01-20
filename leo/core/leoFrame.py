@@ -3332,7 +3332,7 @@ class nullTree (leoTree):
 
     #@-node:ekr.20070228173611:printWidgets
     #@+node:ekr.20031218072017.2236:Overrides
-    def select (self,p):
+    def select (self,p,scroll=True):
         pass
     #@nonl
     #@+node:ekr.20070228163350:Colors & fonts
