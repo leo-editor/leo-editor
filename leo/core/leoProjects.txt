@@ -6639,10 +6639,12 @@ def os (self,s):
 
     if s and f:
         try:
-            s = g.toEncodedString(s,at.encoding,reportErrors=True)
+            #### s = g.toEncodedString(s,at.encoding,reportErrors=True)
             if trace: g.trace(repr(s),g.callers(4))
             if s.startswith(tag):
                 junk,s = self.parseUnderindentTag(s)
+            # Bug fix: this must be done last.
+            s = g.toEncodedString(s,at.encoding,reportErrors=True)
             f.write(s)
         except Exception:
             at.exception("exception writing:" + s)
@@ -14089,10 +14091,12 @@ def os (self,s):
 
     if s and f:
         try:
-            s = g.toEncodedString(s,at.encoding,reportErrors=True)
+            #### s = g.toEncodedString(s,at.encoding,reportErrors=True)
             if trace: g.trace(repr(s),g.callers(4))
             if s.startswith(tag):
                 junk,s = self.parseUnderindentTag(s)
+            # Bug fix: this must be done last.
+            s = g.toEncodedString(s,at.encoding,reportErrors=True)
             f.write(s)
         except Exception:
             at.exception("exception writing:" + s)
@@ -15951,6 +15955,9 @@ def vnode2position (self,v):
         v = parent
 
     # v.parents includes the hidden root node.
+    if not stack:
+        # a vnode not in the tree
+        return c.nullPosition()
     v,n = stack.pop()
     p = leoNodes.position(v,n,stack)
     return p

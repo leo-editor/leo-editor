@@ -3862,10 +3862,12 @@ class atFile:
 
         if s and f:
             try:
-                s = g.toEncodedString(s,at.encoding,reportErrors=True)
+                #### s = g.toEncodedString(s,at.encoding,reportErrors=True)
                 if trace: g.trace(repr(s),g.callers(4))
                 if s.startswith(tag):
                     junk,s = self.parseUnderindentTag(s)
+                # Bug fix: this must be done last.
+                s = g.toEncodedString(s,at.encoding,reportErrors=True)
                 f.write(s)
             except Exception:
                 at.exception("exception writing:" + s)
