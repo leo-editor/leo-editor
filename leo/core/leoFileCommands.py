@@ -1412,7 +1412,7 @@ class baseFileCommands:
         ok = g.doHook("save1",c=c,p=v,v=v,fileName=fileName)
 
         if ok is None:
-            c.endEditing()# Set the current headline text.
+            c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
             ok = c.checkFileTimeStamp(fileName)
             if ok:

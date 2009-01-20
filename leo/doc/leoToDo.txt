@@ -3234,7 +3234,7 @@ def masterKeyHandler (self,event,stroke=None):
     '''This is the handler for almost all key bindings.'''
 
     << define vars >>
-    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    trace = False and (g.app.unitTesting or self.trace_masterKeyHandler)
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
     verbose = True
 
@@ -4013,7 +4013,7 @@ def masterKeyHandler (self,event,stroke=None):
     '''This is the handler for almost all key bindings.'''
 
     << define vars >>
-    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    trace = False and (g.app.unitTesting or self.trace_masterKeyHandler)
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
     verbose = True
 
@@ -5178,7 +5178,7 @@ def masterKeyHandler (self,event,stroke=None):
     '''This is the handler for almost all key bindings.'''
 
     << define vars >>
-    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    trace = False and (g.app.unitTesting or self.trace_masterKeyHandler)
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
     verbose = True
 

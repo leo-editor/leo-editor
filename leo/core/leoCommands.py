@@ -3534,8 +3534,8 @@ class baseCommands:
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
         c.setChanged(True)
         u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
-        c.redraw(p)
-        c.editPosition(p,selectAll=True) # Must follow c.redraw(p)
+        #### c.redraw(p)
+        c.redrawAndEdit(p,selectAll=True)
 
         return p # for mod_labels plugin.
     #@-node:ekr.20031218072017.1761:c.insertHeadline
@@ -6155,8 +6155,10 @@ class baseCommands:
 
     def set_focus (self,w,force=False):
 
+        trace = False and g.unitTesting
         c = self
-        if w and g.app.gui and c.requestedFocusWidget:
+        if w and g.app.gui: #### and (force or c.requestedFocusWidget):
+            if trace: print('c.set_focus',repr(w))
             g.app.gui.set_focus(c,w)
 
         c.requestedFocusWidget = None
@@ -6181,7 +6183,8 @@ class baseCommands:
     #@+node:ekr.20080514131122.20:c.outerUpdate
     def outerUpdate (self):
 
-        trace = True ; verbose = False
+        trace = False and g.unitTesting
+        verbose = True
         c = self ; aList = []
         if not c.exists or not c.k:
             return
@@ -7276,29 +7279,37 @@ class baseCommands:
     #@-node:ekr.20060906211747.1:Setters
     #@-node:ekr.20031218072017.2982:Getters & Setters
     #@+node:ekr.20031218072017.2990:Selecting & Updating (commands)
-    #@+node:ekr.20031218072017.2991:c.editPosition
+    #@+node:ekr.20031218072017.2991:c.redrawAndEdit
     # Sets the focus to p and edits p.
 
-    def editPosition(self,p,selectAll=False):
+    def redrawAndEdit(self,p,selectAll=False):
 
-        '''Select position p and start editing the headline.
-        This method must follow a call to c.redraw(p).'''
+        '''Redraw the screen and start editing the headline at position p.'''
 
         c = self ; k = c.k
 
-        if p:
-            c.selectPosition(p)
+        c.redraw(p)
 
+        if p:
             c.frame.tree.editLabel(p,selectAll=selectAll)
 
             if k:
+                # Setting the input state has no effect on focus.
                 if selectAll:
                     k.setInputState('insert')
                 else:
                     k.setDefaultInputState()
 
+                # This *does* affect focus.
                 k.showStateAndMode()
-    #@-node:ekr.20031218072017.2991:c.editPosition
+
+            w = c.edit_widget(p)
+            if w: c.widgetWantsFocus(w)
+            else: g.trace ('*** ERROR *** no edit widget')
+
+        #### New in Leo 4.6: make sure to honor the focus immediately.
+        c.outerUpdate()
+    #@-node:ekr.20031218072017.2991:c.redrawAndEdit
     #@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
     # Ends the editing in the outline.
 
@@ -7344,8 +7355,7 @@ class baseCommands:
 
         # c = self
         # if editFlag:
-            # c.redraw(p)
-            # c.editPosition(p) # Must follow c.redraw(p)
+            # c.redrawAndEdit(p)
         # else:
             # c.selectPosition(p)
 

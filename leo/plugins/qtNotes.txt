@@ -660,7 +660,7 @@ def edit_widget (self,p):
     if p and p == self._editWidgetPosition:
         w2 = g.app.gui.get_focus()
         # g.trace(w2,w,w and w.widget)
-        if w.widget == w2:
+        if w.widget and w.widget == w2:
             return w
         else:
             # g.trace('no match.  killing')
@@ -682,6 +682,7 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
     trace = False ; verbose = True
     c = self.c ; u = c.undoer
     e = self._editWidget
+    item = self._editItem
     p = self._editWidgetPosition
     w = g.app.gui.get_focus()
 
@@ -692,7 +693,7 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
         if e != w: g.trace('e != w',e,w,g.callers(4))
         if not p:  g.trace('No p')
 
-    if e and e == w and p:
+    if e and e == w and item and p:
         s = e.text() ; len_s = len(s)
         s = g.app.gui.toUnicode(s)
         oldHead = p.headString()
@@ -700,6 +701,7 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
         if trace: g.trace('changed',changed,repr(s),g.callers(4))
         if changed:
             p.initHeadString(s)
+            item.setText(0,s) # Required to avoid full redraw.
             undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
             if not c.changed: c.setChanged(True)
             # New in Leo 4.4.5: we must recolor the body because

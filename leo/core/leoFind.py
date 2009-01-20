@@ -11,51 +11,69 @@ import re
 
 #@<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414:<< Theory of operation of find/change >>
-#@+at 
-#@nonl
-# The find and change commands are tricky; there are many details that must be 
-# handled properly. This documentation describes the leo.py code. Previous 
-# versions of Leo used an inferior scheme.  The following principles govern 
-# the leoFind class:
+#@@nocolor-node
+#@+at
+# The find and change commands are tricky; there are many details that must be
+# handled properly. This documentation describes the leo.py code. Previous
+# versions of Leo used an inferior scheme. The following principles govern the
+# leoFind class:
 # 
 # 1. Find and Change commands initialize themselves using only the state of 
-# the present Leo window. In particular, the Find class must not save internal 
-# state information from one invocation to the next. This means that when the 
-# user changes the nodes, or selects new text in headline or body text, those 
-# changes will affect the next invocation of any Find or Change command. 
-# Failure to follow this principle caused all kinds of problems in the Borland 
-# and Macintosh codes. There is one exception to this rule: we must remember 
-# where interactive wrapped searches start. This principle simplifies the code 
-# because most ivars do not persist. However, each command must ensure that 
-# the Leo window is left in a state suitable for restarting the incremental 
-# (interactive) Find and Change commands. Details of initialization are 
-# discussed below.
+# the
+#    present Leo window. In particular, the Find class must not save internal
+#    state information from one invocation to the next. This means that when 
+# the
+#    user changes the nodes, or selects new text in headline or body text, 
+# those
+#    changes will affect the next invocation of any Find or Change command.
+#    Failure to follow this principle caused all kinds of problems in the 
+# Borland
+#    and Macintosh codes. There is one exception to this rule: we must 
+# remember
+#    where interactive wrapped searches start. This principle simplifies the 
+# code
+#    because most ivars do not persist. However, each command must ensure that 
+# the
+#    Leo window is left in a state suitable for restarting the incremental
+#    (interactive) Find and Change commands. Details of initialization are
+#    discussed below.
 # 
 # 2. The Find and Change commands must not change the state of the outline or 
-# body pane during execution. That would cause severe flashing and slow down 
-# the commands a great deal. In particular, c.selectVnode and c.editPosition 
-# methods must not be called while looking for matches.
+# body
+#    pane during execution. That would cause severe flashing and slow down the
+#    commands a great deal. In particular, c.selectVnode and c.editPosition
+#    methods must not be called while looking for matches.
 # 
-# 3. When incremental Find or Change commands succeed they must leave the Leo 
-# window in the proper state to execute another incremental command. We 
-# restore the Leo window as it was on entry whenever an incremental search 
-# fails and after any Find All and Change All command.
+# 3. When incremental Find or Change commands succeed they must leave the Leo
+#    window in the proper state to execute another incremental command. We 
+# restore
+#    the Leo window as it was on entry whenever an incremental search fails 
+# and
+#    after any Find All and Change All command.
 # 
-# Initialization involves setting the c, p, in_headline, wrapping and s_ctrl 
+# Initialization involves setting the c, p, in_headline, wrapping and s_ctrl
 # ivars. Setting in_headline is tricky; we must be sure to retain the state of 
-# the outline pane until initialization is complete. Initializing the Find All 
-# and Change All commands is much easier because such initialization does not 
-# depend on the state of the Leo window.
+# the
+# outline pane until initialization is complete. Initializing the Find All and
+# Change All commands is much easier because such initialization does not 
+# depend
+# on the state of the Leo window.
 # 
-# Using Tk.Text widgets for both headlines and body text results in a huge 
+# Using Tk.Text widgets for both headlines and body text results in a huge
 # simplification of the code. Indeed, the searching code does not know whether 
-# it is searching headline or body text. The search code knows only that 
-# s_ctrl is a Tk.Text widget that contains the text to be searched or changed 
-# and the insert and sel Tk attributes of self.search_text indicate the range 
-# of text to be searched. Searching headline and body text simultaneously is 
-# complicated. The selectNextPosition() method handles the many details 
-# involved by setting s_ctrl and its insert and sel attributes.
+# it
+# is searching headline or body text. The search code knows only that s_ctrl 
+# is a
+# Tk.Text widget that contains the text to be searched or changed and the 
+# insert
+# and sel Tk attributes of self.search_text indicate the range of text to be
+# searched. Searching headline and body text simultaneously is complicated. 
+# The
+# selectNextPosition() method handles the many details involved by setting 
+# s_ctrl
+# and its insert and sel attributes.
 #@-at
+#@nonl
 #@-node:ekr.20031218072017.2414:<< Theory of operation of find/change >>
 #@nl
 
@@ -1374,8 +1392,8 @@ class leoFind:
         # #### c.selectPosition(p)
         redraw = redraw1 or redraw2
         if self.in_headline:
-            c.redraw(p)
-            c.editPosition(p) # Must follow c.redraw(p)
+            #### c.redraw(p)
+            c.redrawAndEdit(p)
         elif redraw:
             c.redraw(p)
         else:

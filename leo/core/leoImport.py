@@ -1075,8 +1075,8 @@ class leoImportCommands (scanUtility):
         if p:
             c.endEditing()
             c.validateOutline()
-            c.redraw(p)
-            c.editPosition(p) # Must follow redraw(p)
+            #### c.redraw(p)
+            c.redrawAndEdit(p)
             p.setDirty()
             c.setChanged(True)
             u.afterInsertNode(p,'Import',undoData)

@@ -230,15 +230,16 @@ class baseTextWidget:
         i,j = self.getSelectionRange()
         self.delete(i,j)
     #@-node:ekr.20070228074312.14:deleteTextSelection
-    #@+node:ekr.20070228074312.15:event_generate
+    #@+node:ekr.20070228074312.15:event_generate (baseTextWidget)
     def event_generate(self,stroke):
 
+        trace = False
         w = self ; c = self.c ; char = stroke
 
         # Canonicalize the setting.
         stroke = c.k.shortcutFromSetting(stroke)
 
-        # g.trace('baseTextWidget','char',char,'stroke',stroke,'w',w)
+        if trace: g.trace('baseTextWidget','char',char,'stroke',stroke,'w',w)
 
         class eventGenerateEvent:
             def __init__ (self,c,w,char,keysym):
@@ -251,7 +252,7 @@ class baseTextWidget:
         event = eventGenerateEvent(c,w,char,stroke)
         c.k.masterKeyHandler(event,stroke=stroke)
         c.outerUpdate()
-    #@-node:ekr.20070228074312.15:event_generate
+    #@-node:ekr.20070228074312.15:event_generate (baseTextWidget)
     #@+node:ekr.20070228102413:getName & GetName
     def GetName(self):
 
@@ -1791,8 +1792,9 @@ class leoFrame:
         '''Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.'''
 
+        trace = False
         f = self ; c = f.c ; w = event and event.widget
-        # g.trace('isText',g.app.gui.isTextWidget(w),w)
+        if trace: g.trace(w)
         if not w or not g.app.gui.isTextWidget(w): return
 
         wname = c.widget_name(w)
@@ -1907,8 +1909,8 @@ class leoFrame:
             c.notValidInBatchMode("Insert Headline Time")
             return
 
-        c.redraw(p)
-        c.editPosition(p) # Must follow c.redraw(p)
+        #### c.redraw(p)
+        c.redrawAndEdit(p)
         c.frame.tree.setEditLabelState(p)
         w = c.edit_widget(p)
         if w:
@@ -2348,11 +2350,13 @@ class leoTree:
         '''Officially change a headline.
         Set the old undo text to the previous revert point.'''
 
-        c = self.c ; u = c.undoer ; trace = False
+        trace = False and g.unitTesting
+        c = self.c ; u = c.undoer
         w = c.edit_widget(p)
+
         if c.suppressHeadChanged: return
         if not w:
-            if trace: g.trace('no w for p: %s',repr(p))
+            if trace: g.trace('****** no w for p: %s',repr(p))
             return
 
         ch = '\n' # New in 4.4: we only report the final keystroke.
@@ -2360,6 +2364,7 @@ class leoTree:
             return # The hook claims to have handled the event.
 
         if s is None: s = w.getAllText()
+        if trace: g.trace('w',repr(w),'s',repr(s))
         #@    << truncate s if it has multiple lines >>
         #@+node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
         # Remove one or two trailing newlines before warning of truncation.
@@ -2467,9 +2472,10 @@ class leoTree:
 
         '''End editing of a headline and update p.headString().'''
 
+        trace = False and g.unitTesting
         c = self.c ; k = c.k ; p = c.currentPosition()
 
-        # g.trace('leoTree',p and p.headString(),g.callers(4))
+        if trace: g.trace('leoTree',p and p.headString(),g.callers(4))
 
         self.setEditPosition(None) # That is, self._editPosition = None
 

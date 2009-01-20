@@ -353,7 +353,7 @@ class leoGui:
         return event and event.keysym
 
     def eventWidget (self,event,c=None):
-        '''Return the widget field of an event.'''   
+        '''Return the widget field of an event.'''
         return event and event.widget
 
     def eventXY (self,event,c=None):

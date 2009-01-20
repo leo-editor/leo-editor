@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="24" left="535" height="930" width="744"/>
+	<global_window_position top="24" left="417" height="930" width="862"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -708,9 +708,9 @@
 <v t="ekr.20070926095117"><vh>mungeKey</vh></v>
 </v>
 <v t="ekr.20080514113943.1"><vh>Fail when command mode is the default</vh>
-<v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
+<v t="ekr.20051107115231.17"><vh>@@@test typing and undo in headline - at end</vh></v>
 <v t="ekr.20060208072307"><vh>@test paste from menu into body sticks</vh></v>
-<v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
+<v t="ekr.20051107115231.21"><vh>@@@test selecting new node retains typing in headline</vh></v>
 </v>
 </v>
 </v>
@@ -748,11 +748,7 @@
 <v t="ekr.20051104081502.109"></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
-<v t="ekr.20060205165937"><vh>Doctests</vh>
-<v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
-</v>
-<v t="ekr.20040712101754.2" annotate="7d71002e"><vh>Unit tests for  .leo files</vh>
+<v t="ekr.20040712101754.2" annotate="7d71002e"><vh>Load tests for .leo files</vh>
 <v t="ekr.20040712101754.3"><vh>@test test.leo</vh></v>
 <v t="ekr.20040803090901"><vh>@test leoDist.leo</vh></v>
 <v t="ekr.20081121164135.1"><vh>@test leoGuiPluginsRef.leo</vh></v>
@@ -762,6 +758,10 @@
 <v t="ekr.20040730181601"><vh>@test minimalLeoFile.leo</vh></v>
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
+</v>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20060205165937"><vh>Doctests</vh>
+<v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
 <v t="ekr.20050120095423" annotate="7d71002e"><vh>Unit tests for plugins</vh>
 <v t="ekr.20080309193654.1"><vh>@ignore</vh>
@@ -1748,7 +1748,7 @@
 <v t="ekr.20060208072307" annotate="7d71002e"></v>
 <v t="ekr.20060208072331" annotate="7d71002e"><vh>@test paste from menu into headline sticks</vh></v>
 <v t="ekr.20051107115231.24" annotate="7d71002e"><vh>@test paste from menu to body recolors the body</vh></v>
-<v t="ekr.20051107115231.25" annotate="7d71002e"><vh>@test typing in headline recomputes width</vh></v>
+<v t="ekr.20051107115231.25" annotate="7d71002e"><vh>@@@test typing in headline recomputes width</vh></v>
 <v t="ekr.20051107115231.28" annotate="7d71002e"><vh>@test selecting new node retains paste in headline</vh></v>
 <v t="ekr.20060208072358" annotate="7d71002e"><vh>@test typing in empty body text redraws the screen (and icon)</vh></v>
 <v t="ekr.20051109091731" annotate="7d71002e"><vh>@test typing in non-empty body text does not redraw the screen</vh></v>
@@ -13026,36 +13026,47 @@ if selectAll:
 else:
     assert i == len(s) and j == len(s),'oops2: i: %d, j: %d' % (i,j)
 </t>
-<t tx="ekr.20051107115231.16">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.16">trace = False ; verbose = False
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
-trace = False
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
-c.redraw(p) # To make node visible
 if trace: print('='*20)
-if trace: print('1',g.app.gui.get_focus(c))
-tree.editLabel(p)
-if trace: print('2',g.app.gui.get_focus(c))
+c.redrawAndEdit(p) # To make node visible
 w = c.edit_widget(p)
-if trace: print('3',g.app.gui.get_focus(c))
+g.app.gui.set_focus(c,w)
 w2 = g.app.gui.get_focus(c)
+if trace: print ('focus 1',w2)
+if trace: print ('*** w ***',w)
+if 0: # The tkGui.set_focus now does an update to force the focus.
+    w2 = g.app.gui.get_focus(c)
+    if w != w2:
+        print ('*** FAIL ***\nw: %s\nw2: %s' % (w,w2))
+    assert w == w2 or hasattr(w,'widget') and w.widget == w2,'w: %s\nw2: %s' % (w,w2)
+    if trace: print('focus',w2)
 # For the qt gui w is a wrapper and w.widget is the actual widget.
 
 try:
-    # assert w==w2 or w.widget==w2,'w: %s, w2: %s' % (w,w2)
-    assert w,w
+    assert w
     paste = 'ABC'
     g.app.gui.replaceClipboardWith(paste)
+    g.app.gui.set_focus(c,w)
+    w2 = g.app.gui.get_focus(c)
+    if trace: print ('focus 1',w2)
     w.setSelectionRange('end','end')
     k.manufactureKeyPressForCommandName(w,'paste-text')
-    if trace: print('before',p.headString())
-    w.event_generate('&lt;Return&gt;')
-    if trace: print('after',p.headString())
-    assert p.headString() == h + paste,'Expected: %s, got %s' % (
-        h + paste,p.headString())
+    if 0: # Easiest.
+        c.endEditing()
+    else: # More thorough test.
+        w.event_generate('&lt;Return&gt;')
+        w.update()
+    if 1:
+        assert p.headString() == h + paste,'Expected: %s, got %s' % (
+            h + paste,p.headString())
 finally:
+    if trace: print('-'*20)
     if 1:
         p.initHeadString(h)
         c.frame.tree.setHeadline(p,h)
@@ -13068,8 +13079,7 @@ if k.defaultUnboundKeyAction == 'insert':
     h = 'Test headline abc'
     p = u.findNodeAnywhere(h,breakOnError=True)
     assert p,'node not found: %s' % h
-    c.redraw(p) # To make node visible
-    c.editPosition(p)
+    c.redrawAndEdit(p) # To make the node visible.
     w = c.edit_widget(p)
     # print('guiName',g.app.gui.guiName())
     try:
@@ -13095,7 +13105,7 @@ if k.defaultUnboundKeyAction == 'insert':
     finally:
         if 1:
             p.initHeadString(h)
-            c.frame.tree.setHeadline(p,h)
+            # c.frame.tree.setHeadline(p,h)
             c.redraw(p)</t>
 <t tx="ekr.20051107115231.18">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
@@ -13103,9 +13113,7 @@ frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h,breakOnError=True)
 assert p,'node not found: %s' % h
-c.redraw(p) # To make node visible
-# c.editPosition(p)
-tree.editLabel(p)
+c.redrawAndEdit(p) # To make node visible
 w = c.edit_widget(p)
 try:
     assert w,'oops1'
@@ -13203,7 +13211,7 @@ if k.defaultUnboundKeyAction == 'insert':
     finally:
         if 1:
             p.initHeadString(h)
-            c.frame.tree.setHeadline(p,h)
+            # c.frame.tree.setHeadline(p,h)
             c.redraw(p)</t>
 <t tx="ekr.20051107115231.24"># Should be a comment# Should be a comment# Should be a comment# Should be a comment
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
@@ -13243,15 +13251,20 @@ c.frame.tree.editLabel(p)
 w = c.edit_widget(p)
 try:
     assert w
+    g.app.gui.set_focus(c,w)
+    w2 = g.app.gui.get_focus(c)
+    # assert w == w2 or hasattr(w,'widget') and w.widget == w2,'w: %s\nw2: %s' % (w,w2)
     w.setSelectionRange('end','end')
     n = w.getWidth()
     w.event_generate('X')
     w.event_generate('Y')
     w.event_generate('Z')
-    w.event_generate('&lt;Return&gt;')
-    c.outerUpdate()
-    # c.redraw()
-    # w = c.edit_widget(p)
+    w.update()
+    if 1: # Easiest.
+        c.endEditing()
+    else: # More thorough test.
+        w.event_generate('&lt;Return&gt;')
+        w.update()
     assert w, 'fail 2'
     n2 = w.getWidth()
     if g.app.gui.guiName() == 'tkinter':
@@ -13260,7 +13273,7 @@ try:
 finally:
     if 1:
         p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
+        # c.frame.tree.setHeadline(p,h)
         c.redraw(p)</t>
 <t tx="ekr.20051107115231.26">import leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
@@ -13409,7 +13422,7 @@ finally:
 <t tx="ekr.20051125155134">n = c.frame.tree.redrawCount
 # print ('before')
 c.insertHeadline()
-c.outerUpdate()
+c.outerUpdate() # Not actually needed, but should not matter.
 # print ('after')
 
 try:
