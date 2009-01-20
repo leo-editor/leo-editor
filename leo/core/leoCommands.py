@@ -7348,20 +7348,6 @@ class baseCommands:
 
     selectVnode = selectPosition
     #@-node:ekr.20031218072017.2997:c.selectPosition
-    #@+node:ekr.20031218072017.2998:c.selectPositioniWithEditing
-    # Selects the given node and enables editing of the headline if editFlag is True.
-
-    # def selectPositionWithEditing(self,p,editFlag):
-
-        # c = self
-        # if editFlag:
-            # c.redrawAndEdit(p)
-        # else:
-            # c.selectPosition(p)
-
-    # Deprecated compatibility.
-    # selectVnodeWithEditing = selectPositionWithEditing
-    #@-node:ekr.20031218072017.2998:c.selectPositioniWithEditing
     #@+node:ekr.20060923202156:c.onCanvasKey
     def onCanvasKey (self,event):
 

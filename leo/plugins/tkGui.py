@@ -7085,13 +7085,13 @@ class leoTkinterTree (leoFrame.leoTree):
     #@-node:ekr.20081121110412.471:tree.begin/endUpdate
     #@+node:ekr.20081121110412.472:tree.redraw_now & helper
     # New in 4.4b2: suppress scrolling by default.
+    # New in 4.6: enable scrolling by default.
 
-    def redraw_now (self,
-        p=None,edit=None,editAll=None,
-        scroll=False,forceDraw=False
-    ):
+    def redraw_now (self,p=None,scroll=True,forceDraw=False):
+        #### edit=None,editAll=None,
 
-        '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
+        '''Redraw immediately.
+        forceDraw is used to eliminate draws while dragging.'''
 
         trace = False and g.unitTesting
         c = self.c
@@ -7100,6 +7100,11 @@ class leoTkinterTree (leoFrame.leoTree):
             return
         if self.drag_p and not forceDraw:
             return
+
+        if p is None:
+            p = c.currentPosition()
+        else:
+            c.setCurrentPosition(p)
 
         if trace: g.trace(self.redrawCount,g.callers(4))
 
@@ -7124,16 +7129,21 @@ class leoTkinterTree (leoFrame.leoTree):
             self.endUpdate(False)
 
         # Do the actual redraw.
-        c.expandAllAncestors(c.currentPosition())
+
+        #### Now done in c.redraw.
+        #### c.expandAllAncestors(c.currentPosition())
+
         if self.idle_redraw:
             def idleRedrawCallback(event=None,self=self,scroll=scroll):
                 self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
             self.canvas.after_idle(idleRedrawCallback)
         else:
             self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
+
         if g.app.unitTesting:
             self.canvas.update_idletasks() # Important for unit tests.
-        c.masterFocusHandler()
+
+        #### c.masterFocusHandler()
 
     redraw = redraw_now # Compatibility
     #@+node:ekr.20081121110412.473:redrawHelper

@@ -2695,9 +2695,11 @@ class leoTree:
     #@+node:ekr.20040803072955.128:leoTree.select & helper
     tree_select_lockout = False
 
-    def select (self,p):
+    def select (self,p,scroll=True):
 
-        '''Select a node.  Never redraws outline, but may change coloring of individual headlines.'''
+        '''Select a node.
+        Never redraws outline, but may change coloring of individual headlines.
+        The scroll argument is used by tk to suppress scrolling while dragging.'''
 
         if g.app.killed or self.tree_select_lockout: return None
 
@@ -2706,7 +2708,7 @@ class leoTree:
             val = 'break'
             self.tree_select_lockout = True
             c.frame.tree.beforeSelectHint(p,old_p)
-            val = self.treeSelectHelper(p)
+            val = self.treeSelectHelper(p,scroll=scroll)
         finally:
             self.tree_select_lockout = False
             c.frame.tree.afterSelectHint(p,old_p)
@@ -2715,7 +2717,7 @@ class leoTree:
     #@+node:ekr.20070423101911:treeSelectHelper
     #  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
 
-    def treeSelectHelper (self,p,scroll=True):
+    def treeSelectHelper (self,p,scroll):
 
         c = self.c ; frame = c.frame ; trace = False
         body = w = frame.body.bodyCtrl

@@ -3380,6 +3380,20 @@ if 0: # Set to 1 for lint-like testing.
     except Exception:
         print('\nCan not import pychecker\n')
 #@-node:ekr.20031218072017.2606:<< Import pychecker >>
+#@+node:ekr.20031218072017.2998:c.selectPositioniWithEditing
+# Selects the given node and enables editing of the headline if editFlag is True.
+
+# def selectPositionWithEditing(self,p,editFlag):
+
+    # c = self
+    # if editFlag:
+        # c.redrawAndEdit(p)
+    # else:
+        # c.selectPosition(p)
+
+# Deprecated compatibility.
+# selectVnodeWithEditing = selectPositionWithEditing
+#@-node:ekr.20031218072017.2998:c.selectPositioniWithEditing
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl
