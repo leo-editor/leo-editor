@@ -34,7 +34,7 @@ if g.app.gui.guiName() == "qt":
     Qt = QtCore.Qt
 #@-node:tbrown.20090119215428.4:<< imports >>
 #@nl
-__version__ = "0.25.2"
+__version__ = "0.30"
 #@<< version history >>
 #@+node:tbrown.20090119215428.5:<< version history >>
 #@@killcolor
