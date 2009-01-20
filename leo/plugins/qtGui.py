@@ -1690,7 +1690,7 @@ class leoQtFrame (leoFrame.leoFrame):
         frame.log.setFontFromConfig()
         frame.log.setColorFromConfig()
 
-        c.redraw_now()
+        c.redraw()
     #@-node:ekr.20081121105001.282:reconfigureFromConfig (qtFrame)
     #@+node:ekr.20081121105001.283:setInitialWindowGeometry (qtFrame)
     def setInitialWindowGeometry(self):
@@ -3710,7 +3710,9 @@ class leoQtTree (leoFrame.leoTree):
 
     #@+node:ekr.20090109110752.21:Entry points (qtTree)
     #@+node:ekr.20081121105001.414:full_redraw & helpers
-    def full_redraw (self,p=None,scroll=True):
+    # forceDraw not used in Qt.  It is used in the Tk code.
+
+    def full_redraw (self,p=None,scroll=True,forceDraw=False):
 
         '''Redraw all visible nodes of the tree.
 

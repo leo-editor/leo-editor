@@ -7088,7 +7088,6 @@ class leoTkinterTree (leoFrame.leoTree):
     # New in 4.6: enable scrolling by default.
 
     def redraw_now (self,p=None,scroll=True,forceDraw=False):
-        #### edit=None,editAll=None,
 
         '''Redraw immediately.
         forceDraw is used to eliminate draws while dragging.'''

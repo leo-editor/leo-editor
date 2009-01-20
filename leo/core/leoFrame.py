@@ -2315,8 +2315,8 @@ class leoTree:
 
     # Drawing & scrolling.
     def drawIcon(self,v,x=None,y=None):             self.oops()
-    def redraw(self,forceDraw=False):               self.oops()
-    def redraw_now(self,forceDraw=False):           self.oops()
+    def redraw(self,p=None,scroll=True,forceDraw=False):        self.oops()
+    def redraw_now(self,p=None,scroll=True,forceDraw=False):    self.oops()
     def scrollTo(self,p):                           self.oops()
     idle_scrollTo = scrollTo # For compatibility.
 
@@ -3352,22 +3352,22 @@ class nullTree (leoTree):
         pass
     #@-node:ekr.20070228163350:Colors & fonts
     #@+node:ekr.20070228163350.1:Drawing & scrolling
-    def beginUpdate (self):
-        self.updateCount += 1
+    # def beginUpdate (self):
+        # self.updateCount += 1
 
-    def endUpdate (self,flag):
-        self.updateCount -= 1
-        if flag and self.updateCount <= 0:
-            self.redraw_now()
+    # def endUpdate (self,flag):
+        # self.updateCount -= 1
+        # if flag and self.updateCount <= 0:
+            # self.redraw_now()
 
     def drawIcon(self,v,x=None,y=None):
         pass
 
-    def redraw(self,p,forceDraw=False):
+    def redraw(self,p=None,scroll=True,forceDraw=False):
         self.redrawCount += 1
         # g.trace('nullTree')
 
-    def redraw_now(self,p,forceDraw=False):
+    def redraw_now(self,p=None,scroll=True,forceDraw=False):
         self.redrawCount += 1
         # g.trace('nullTree')
 
