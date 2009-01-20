@@ -92,7 +92,10 @@ rClick menu generator commands
 #@+node:ekr.20050219114353:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-import leo.core.leoTkinterDialog as leoTkinterDialog
+
+import leo.plugins.tkGui as tkGui
+leoTkinterDialog = tkGui.leoTkinterDialog
+tkinterListBoxDialog = tkGui.tkinterListBoxDialog
 
 try:
     import Tkinter as Tk
@@ -102,7 +105,7 @@ except ImportError:
 import os
 #@-node:ekr.20050219114353:<< imports >>
 #@nl
-__version__ = "1.14" # EKR: Don't touch this code without my permission!
+__version__ = "1.15" # EKR: Don't touch this code without my permission!
 #@<< version history >>
 #@+node:ekr.20050219114353.1:<< version history >>
 #@@killcolor
@@ -153,6 +156,7 @@ __version__ = "1.14" # EKR: Don't touch this code without my permission!
 # 1.13 EKR: Reverted to organization used in Leo 4.4.5, while retaining latest 
 # code.
 # 1.14 EKR: Added guards for c.nodeHistory.
+# 1.15 EKR: Import from tkGui as needed.
 #@-at
 #@nonl
 #@-node:ekr.20050219114353.1:<< version history >>
@@ -244,7 +248,7 @@ class imageClass:
     #@-others
 #@-node:ekr.20050219115859:class imageClass
 #@+node:edream.110203113231.775:class marksDialog (listBoxDialog)
-class marksDialog (leoTkinterDialog.tkinterListBoxDialog):
+class marksDialog (tkinterListBoxDialog):
 
     """A class to create the marks dialog."""
 
@@ -261,7 +265,7 @@ class marksDialog (leoTkinterDialog.tkinterListBoxDialog):
         self.title = 'Marks for %s' % g.shortFileName(c.mFileName) # c.frame.title
 
         # Init the base class and call self.createFrame.
-        leoTkinterDialog.tkinterListBoxDialog.__init__(self,c,self.title,self.label)
+        tkinterListBoxDialog.__init__(self,c,self.title,self.label)
 
         # Create the show-marks-dialog command.
         self.addCommand()
@@ -367,7 +371,7 @@ class marksDialog (leoTkinterDialog.tkinterListBoxDialog):
 
         """Create the frame for a Marks listbox dialog."""
 
-        leoTkinterDialog.tkinterListBoxDialog.createFrame(self)
+        tkinterListBoxDialog.createFrame(self)
 
         f = Tk.Frame(self.outerFrame)
         f.pack()
@@ -434,7 +438,7 @@ class marksDialog (leoTkinterDialog.tkinterListBoxDialog):
 #@nonl
 #@-node:edream.110203113231.775:class marksDialog (listBoxDialog)
 #@+node:edream.110203113231.780:class recentSectionsDialog (tkinterListBoxDialog)
-class recentSectionsDialog (leoTkinterDialog.tkinterListBoxDialog):
+class recentSectionsDialog (tkinterListBoxDialog):
 
     """A class to create the recent sections dialog"""
 
@@ -458,7 +462,7 @@ class recentSectionsDialog (leoTkinterDialog.tkinterListBoxDialog):
 
         # Init the base class. (calls createFrame)
         # N.B.  The base class contains positionList ivar.
-        leoTkinterDialog.tkinterListBoxDialog.__init__(self,c,self.title,self.label)
+        tkinterListBoxDialog.__init__(self,c,self.title,self.label)
 
         self.fillbox() # Must be done initially.
 
@@ -724,7 +728,7 @@ class recentSectionsDialog (leoTkinterDialog.tkinterListBoxDialog):
 
         """Create the frame of a Recent Sections listbox dialog."""
 
-        leoTkinterDialog.tkinterListBoxDialog.createFrame(self)
+        tkinterListBoxDialog.createFrame(self)
         self.addFrameButtons()
     #@nonl
     #@-node:edream.110203113231.784:createFrame

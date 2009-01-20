@@ -227,7 +227,7 @@ See the compound widgets and drag handles howto in test/testToolbar.leo
 #@-node:bobjack.20080424190906.12:<< docstring >>
 #@nl
 
-__version__ = "0.13" # EKR
+__version__ = "0.14" # EKR
 __plugin_name__ = 'Toolbar Manager'
 __plugin_id__ = 'Toolbar'
 
@@ -273,6 +273,7 @@ controllers = {}
 # 0.12 EKR: add 'font' to list of allowed keys so that font settings are 
 # honored.
 # 0.13 EKR: added support for @args list.
+# 0.14 EKR: import tkGui as needed.
 #@-at
 #@-node:bobjack.20080424190906.13:<< version history >>
 #@nl
@@ -292,7 +293,9 @@ controllers = {}
 #@+node:bobjack.20080424190906.15:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-import leo.core.leoTkinterFrame as leoTkinterFrame
+
+import leo.plugins.tkGui as tkGui
+leoTkinterFrame = tkGui.leoTkinterFrame
 
 # import re
 # import sys
@@ -308,9 +311,6 @@ Pmw = g.importExtension("Pmw",pluginName=__name__,verbose=True,required=True)
     # Image = ImageTk = None
 
 mod_scripting = g.importExtension('mod_scripting',pluginName=__name__,verbose=True,required=True)
-
-import leo.core.leoTkinterFrame as leoTkinterFrame
-# import leo.core.leoTkinterTree as leoTkinterTree
 
 import rClickBasePluginClasses as baseClasses
 #@-node:bobjack.20080424190906.15:<< imports >>
@@ -367,8 +367,7 @@ def init ():
         r('after-create-leo-frame', onCreate)
         r('close-frame', onClose)
 
-        leoTkinterFrame.leoTkinterFrame = ToolbarTkinterFrame
-
+        tkGui.leoTkinterFrame = ToolbarTkinterFrame
         g.plugin_signon(__name__)
 
     return ok
@@ -384,7 +383,8 @@ def onPreCreate (tag, keys):
     g.app.gui.ScriptingControllerClass = ToolbarScriptingController
     c.frame.iconBarClass = ToolbarTkIconBarClass
     c.frame.toolbarClass = ToolbarTkToolbarClass
-    leoTkinterFrame.leoTkinterTreeTab = ToolbarTkinterTreeTab
+
+    tkGui.leoTkinterFram.leoTkinterTreeTab = ToolbarTkinterTreeTab
 
     c.frame.iconBars= {}
     c.frame.toolbar = None
@@ -471,7 +471,7 @@ class ToolbarTkinterTreeTab (leoTkinterFrame.leoTkinterTreeTab):
 #@nonl
 #@-node:bobjack.20080501055450.5:class ToolbarTkinterTreeTab
 #@+node:bobjack.20080428114659.2:class ToolbarTkinterFrame
-class ToolbarTkinterFrame(leoTkinterFrame.leoTkinterFrame, object):
+class ToolbarTkinterFrame(leoTkinterFrame, object):
 
     #@    @+others
     #@+node:bobjack.20080429153129.29:Icon area convenience methods
@@ -1486,7 +1486,8 @@ class ToolbarScriptingController(mod_scripting.scriptingController, object):
     #@-others
 #@-node:bobjack.20080425135232.6:class ToolbarScriptingController
 #@+node:bobjack.20080426064755.66:class ToolbarTkIconBarClass
-iconbar = leoTkinterFrame.leoTkinterFrame.tkIconBarClass
+iconbar = leoTkinterFrame.tkIconBarClass
+
 class ToolbarTkIconBarClass(iconbar, object):
 
     '''A class representing an iconBar.'''

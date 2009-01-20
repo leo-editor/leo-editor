@@ -134,7 +134,8 @@ def onCreate (tag, keywords):
     Showing how to define a global hook that affects all commanders.
     """
 
-    import leo.core.leoTkinterFrame as leoTkinterFrame
+    import leo.plugins.tkGui as tkGui
+    leoTkinterFrame = tkGui.leoTkinterFrame
     log = leoTkinterFrame.leoTkinterLog
 
     # Ensure that the templates folder is there

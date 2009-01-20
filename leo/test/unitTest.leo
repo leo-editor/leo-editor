@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,2"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -759,11 +759,30 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
-<v t="ekr.20050120095423" annotate="7d71002e"><vh>Unit tests for plugins</vh>
+<v t="ekr.20071113193438"><vh>General</vh>
+<v t="ekr.20061109172511"><vh>Check base classes &amp; ivars</vh>
+<v t="ekr.20061109172511.3"><vh>@test leoBody is subset of leoTkBody</vh></v>
+<v t="ekr.20061109172511.1"><vh>@test leoFrame is subset of leoTkFrame</vh></v>
+<v t="ekr.20061109210659"><vh>@test leoGui is subset of leoTkGui</vh></v>
+<v t="ekr.20061109172511.4"><vh>@test leoTree is subset of leoTkTree</vh></v>
+<v t="ekr.20050105082500"><vh>@test official commander ivars</vh></v>
+<v t="ekr.20050105080048.1"><vh>@test official frame ivars</vh></v>
+<v t="ekr.20050105084757"><vh>@test official g.app directories</vh></v>
+<v t="ekr.20050105090632"><vh>@test official g.app ivars</vh></v>
+</v>
+<v t="ekr.20040712101754.186"><vh>@test batch mode</vh>
+<v t="ekr.20041012084201"><vh>removeFile</vh></v>
+</v>
+<v t="ekr.20040712101813"><vh>@@test checkAllPythonCode</vh></v>
+<v t="ekr.20060131101806"><vh>@test all commands have an event arg</vh></v>
+<v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
+<v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+</v>
+<v t="ekr.20050120095423" annotate="7d71002e"><vh>Plugins</vh>
 <v t="ekr.20080309193654.1"><vh>@ignore</vh>
 <v t="ekr.20050120095423.21"><vh>print all loaded plugins</vh></v>
 <v t="ekr.20050218015346"><vh>@suite run all plugin test routines</vh>
@@ -812,25 +831,6 @@
 <v t="ekr.20061110112507"><vh>@test mnplugins.insertBodystamp</vh></v>
 <v t="ekr.20061110115517"><vh>@test macros.parameterize</vh></v>
 <v t="ekr.20060203201949" annotate="7d71002e"><vh>@test restore the screen</vh></v>
-</v>
-<v t="ekr.20061109172511"><vh>Check base classes &amp; ivars</vh>
-<v t="ekr.20061109172511.3"><vh>@test leoBody is subset of leoTkBody</vh></v>
-<v t="ekr.20061109172511.1"><vh>@test leoFrame is subset of leoTkFrame</vh></v>
-<v t="ekr.20061109210659"><vh>@test leoGui is subset of leoTkGui</vh></v>
-<v t="ekr.20061109172511.4"><vh>@test leoTree is subset of leoTkTree</vh></v>
-<v t="ekr.20050105082500"><vh>@test official commander ivars</vh></v>
-<v t="ekr.20050105080048.1"><vh>@test official frame ivars</vh></v>
-<v t="ekr.20050105084757"><vh>@test official g.app directories</vh></v>
-<v t="ekr.20050105090632"><vh>@test official g.app ivars</vh></v>
-</v>
-<v t="ekr.20071113193438"><vh>General</vh>
-<v t="ekr.20040712101754.186"><vh>@test batch mode</vh>
-<v t="ekr.20041012084201"><vh>removeFile</vh></v>
-</v>
-<v t="ekr.20040712101813"><vh>@@test checkAllPythonCode</vh></v>
-<v t="ekr.20060131101806"><vh>@test all commands have an event arg</vh></v>
-<v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
-<v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
@@ -5709,8 +5709,7 @@ else:
     result = ''.join(result)
     return result</t>
 <t tx="ekr.20050112095306.1"></t>
-<t tx="ekr.20050120095423"># These are now compatible with the other unit tests.
-# It may be a bit off-putting to run the two sets together, however...</t>
+<t tx="ekr.20050120095423"></t>
 <t tx="ekr.20050120095423.6"># N.B.  We don't import the files: multiple imports might cause problems.
 import unittest
 import leo.core.leoTest as leoTest

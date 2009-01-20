@@ -20,7 +20,9 @@ attributes of one another.'''
 # import leo.core.leoPlugins as leoPlugins
 
 import leo.core.leoGlobals as g
-import leo.core.leoTkinterFrame as leoTkinterFrame    
+
+import leo.plugins.tkGui as tkGui
+leoTkinterFrame = tkGui.leoTkinterFrame   
 
 Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True,required=True)
 #@nonl
@@ -170,7 +172,7 @@ class AttrEditor:
     #@-others
 #@-node:mork.20041018162155.3:class AttrEditor
 #@+node:mork.20041018193158:newCreateCanvas
-olCreateCanvas = leoTkinterFrame.leoTkinterFrame.createCanvas
+olCreateCanvas = leoTkinterFrame.createCanvas
 
 def newCreateCanvas (self,parentFrame,pageName=None):
 
@@ -207,7 +209,7 @@ def newCreateCanvas (self,parentFrame,pageName=None):
 
     return can
 
-leoTkinterFrame.leoTkinterFrame.createCanvas = newCreateCanvas
+tkGui.leoTkinterFrame.createCanvas = newCreateCanvas
 
 #@-node:mork.20041018193158:newCreateCanvas
 #@-others

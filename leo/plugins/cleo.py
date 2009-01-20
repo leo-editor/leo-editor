@@ -311,7 +311,7 @@ class cleoController:
 
         # g.pr("Cleo plugin: installing overrides for",self.c.shortFileName())
 
-        tree = self.c.frame.tree # NOT leoTkinterTree.leoTkinterTree
+        tree = self.c.frame.tree # NOT tkGui.leoTkinterTree
 
         g.funcToMethod(self.setUnselectedHeadlineColors,tree)
         g.funcToMethod(self.setDisabledHeadlineColors,tree)

@@ -5,12 +5,16 @@
 #@@language python
 #@@tabwidth -4
 
+__version__ = ".29"
+
 #@<< pie_menus imports >>
 #@+node:ekr.20040828122150.1:<< pie_menus imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoTkinterTree as leoTkinterTree
-import leo.core.leoTkinterFrame as leoTkinterFrame
 import leo.core.leoPlugins as leoPlugins
+
+import leo.plugins.tkGui as tkGui
+leoTkinterTree  = tkGui.leoTkinterTree
+leoTkinterFrame = tkGui.leoTkinterFrame
 
 Tk     = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 tkFont = g.importExtension('tkFont', pluginName=__name__,verbose=True)
@@ -24,6 +28,7 @@ import weakref
 #@+at
 # 
 # .28 EKR: Added import for tkFont.
+# .29 EKR: import tkGui as needed.
 #@-at
 #@nonl
 #@-node:ekr.20050518065635:<< version history >>
@@ -32,7 +37,7 @@ import weakref
 timeids = weakref.WeakKeyDictionary()
 fas = weakref.WeakKeyDictionary()
 
-createCanvas = leoTkinterFrame.leoTkinterFrame.createCanvas
+createCanvas = leoTkinterFrame.createCanvas
 
 #@+others
 #@+node:ekr.20040828122150.2:moving
@@ -495,8 +500,8 @@ def addPMenu( self, parentFrame ):
 #@-others
 
 if Tk and not g.app.unitTesting:  # Changes Leo's core.
-    leoTkinterFrame.leoTkinterFrame.createCanvas = addPMenu
-    __version__ = ".28"
+
+    tkGui.leoTkinterFrame.createCanvas = addPMenu
     g.plugin_signon( __name__ )
 #@nonl
 #@-node:ekr.20040828122150:@thin pie_menus.py
