@@ -538,6 +538,9 @@ class nullGui(leoGui):
             g.trace("nullGui",g.callers(4))
     #@-node:ekr.20031218072017.2230:oops
     #@+node:ekr.20070301171901:do nothings
+    def alert (self,message):
+        pass
+
     def attachLeoIcon (self,w):
         pass
 
@@ -551,6 +554,9 @@ class nullGui(leoGui):
         pass
 
     def getIconImage (self, name):
+        return None
+
+    def getTreeImage(self,c,path):
         return None
 
     def getTextFromClipboard (self):
