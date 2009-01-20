@@ -3652,7 +3652,7 @@ class baseCommands:
                 p = leoNodes.position(parent_v.t.children[0])
             while p and p.v != p_v:
                 p.moveToNext()
-            p = p or paretn
+            p = p or parent
 
         return p
     #@-node:ekr.20080503055349.1:c.setPositionAfterSort
