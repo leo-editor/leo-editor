@@ -1441,7 +1441,7 @@ class baseFileCommands:
                 c.setChanged(False) # Clears all dirty bits.
                 self.putSavedMessage(fileName)
             #### c.redraw()
-            self.redraw_after_icons_changed(all=True)
+            c.redraw_after_icons_changed(all=True)
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
     #@-node:ekr.20031218072017.3043:saveAs
@@ -1456,7 +1456,7 @@ class baseFileCommands:
             self.write_Leo_file(fileName,False) # outlineOnlyFlag
             self.putSavedMessage(fileName)
             #### c.redraw()
-            self.redraw_after_icons_changed(all=True)
+            c.redraw_after_icons_changed(all=True)
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
     #@-node:ekr.20031218072017.3044:saveTo
