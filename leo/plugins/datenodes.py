@@ -46,7 +46,6 @@ __version__ = "0.7"
 # 0.6: Removed @c from most nodes: this is not needed.  Also removed .ini file 
 # from cvs.
 # 0.7 bobjack:
-#     - removed c.beginUpdate/c.endUpdate wrappers
 #     - added plugin init method
 #     - exposed the pluginController as c.theDateNodesController
 #     - added support for settings:
