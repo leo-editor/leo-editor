@@ -26,89 +26,8 @@ For full documentation see:
 #@+node:tbrown.20060903121429.2:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-import os
 
-Qt = None
-Tk = None
-if g.app.gui.guiName() == "tkinter":
-    Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-elif g.app.gui.guiName() == "qt":
-    from PyQt4 import QtCore, QtGui, uic
-    Qt = QtCore.Qt
-
-    class cleoQtUI(QtGui.QWidget):
-
-        def __init__(self, owner):
-
-            self.owner = owner
-
-            QtGui.QWidget.__init__(self)
-            uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Cleo.ui')
-            form_class, base_class = uic.loadUiType(uiPath)
-            self.owner.c.frame.log.createTab('Task', widget = self) 
-            self.UI = form_class()
-            self.UI.setupUi(self)
-
-            u = self.UI
-            o = self.owner
-
-            self.menu = QtGui.QMenu()
-            m = self.menu.addMenu("Priority")
-            m.addAction('Sort', o.priSort)
-            m.addAction('Mark children todo', o.childrenTodo)
-            m.addAction('Show distribution', o.showDist)
-            m.addAction('Redistribute', o.reclassify)
-            m = self.menu.addMenu("Time")
-            m.addAction('Show times', lambda:o.show_times(show=True))
-            m.addAction('Hide times', lambda:o.show_times(show=False))
-            m.addAction('Re-calc. derived times', o.local_recalc)
-            m.addAction('Clear derived times', o.local_clear)
-            m = self.menu.addMenu("Misc.")
-            m.addAction('Clear all leo icons', lambda:o.loadAllIcons(clear=True))
-            m.addAction('Show all leo icons', o.loadAllIcons)
-            m.addAction('Clear cleo from node', o.clear_all)
-            m.addAction('Clear cleo from subtree', lambda:o.clear_all(recurse=True))
-            m.addAction('Clear cleo from all', lambda:o.clear_all(all=True))
-            u.butMenu.setMenu(self.menu)
-
-            self.connect(u.butHelp, QtCore.SIGNAL("clicked()"), 
-                self.STUB)  # should be o.showHelp
-
-            self.connect(u.butClrProg, QtCore.SIGNAL("clicked()"),
-                o.progress_clear)
-            self.connect(u.butClrTime, QtCore.SIGNAL("clicked()"),
-                o.clear_time_req)
-            self.connect(u.butPriClr, QtCore.SIGNAL("clicked()"),
-                o.priority_clear)
-
-            # if live update is too slow change valueChanged(*) to editingFinished()
-            self.connect(u.spinTime, QtCore.SIGNAL("valueChanged(double)"),
-                lambda v: o.set_time_req(val=u.spinTime.value()))
-            self.connect(u.spinProg, QtCore.SIGNAL("valueChanged(int)"),
-                lambda v: o.set_progress(val=u.spinProg.value()))
-
-            for but in ["butPri1", "butPri6", "butPriChk", "butPri2",
-                "butPri4", "butPri5", "butPri8", "butPri9", "butPri0",
-                "butPriToDo", "butPriXgry", "butPriBang", "butPriX",
-                "butPriQuery", "butPriBullet", "butPri7", 
-                "butPri3"]:
-
-                w = getattr(u, but)
-                pri = w.property('priority').toInt()[0]
-                def setter(pri=pri): o.setPri(pri)
-                self.connect(w, QtCore.SIGNAL("clicked()"), setter)
-
-        def STUB(self):
-            g.es("NOT CONNECTED")
-
-        def setProgress(self, prgr):
-            self.UI.spinProg.blockSignals(True)
-            self.UI.spinProg.setValue(prgr)
-            self.UI.spinProg.blockSignals(False)
-        def setTime(self, timeReq):
-            self.UI.spinTime.blockSignals(True)
-            self.UI.spinTime.setValue(timeReq)
-            self.UI.spinTime.blockSignals(False)
+Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@-node:tbrown.20060903121429.2:<< imports >>
 #@nl
 __version__ = "0.25.2"
@@ -197,9 +116,11 @@ __version__ = "0.25.2"
 #@-node:tbrown.20060903121429.3:<< version history >>
 #@nl
 
+ok = Tk is not None
+
 #@+others
 #@+node:tbrown.20060903121429.11:class TkPickleVar(Tk.Variable)
-if Tk: # Don't define this if import Tkinter failed.
+if ok: # Don't define this if import Tkinter failed.
 
     class TkPickleVar (Tk.Variable):
         "Required as target for Tk menu functions to write back into"
@@ -216,26 +137,19 @@ if Tk: # Don't define this if import Tkinter failed.
 #@+node:tbrown.20060903121429.12:init
 def init():
 
-    if Qt:
-        leoPlugins.registerHandler('after-create-leo-frame',onCreate)
-        # can't use before-create-leo-frame because Qt dock's not ready
+    if Tk is None: return False
+
+    if g.app.gui is None:
+        g.app.createTkGui(__file__)
+
+    ok = g.app.gui.guiName() == "tkinter"
+
+    if ok:
+        leoPlugins.registerHandler(('open2','new'), onCreate)
         g.plugin_signon(__name__)
 
-        return True
-    else:
-
-        if Tk is None: return False
-
-        if g.app.gui is None:
-            g.app.createTkGui(__file__)
-
-        ok = g.app.gui.guiName() == "tkinter"
-
-        if ok:
-            leoPlugins.registerHandler(('open2','new'), onCreate)
-            g.plugin_signon(__name__)
-
-        return ok
+    return ok
+#@nonl
 #@-node:tbrown.20060903121429.12:init
 #@+node:tbrown.20060903121429.13:onCreate
 def onCreate (tag,key):
@@ -278,9 +192,11 @@ class cleoController:
 
         self.c = c
         c.cleo = self
+        self.menu = None
         self.donePriority = 100
         self.smiley = None
-        self.redrawLevels = 0
+
+        self.marks = []   # list of marks made on canvas
 
         #@    << set / read default values >>
         #@+node:tbrown.20060913151952:<< set / read default values >>
@@ -309,105 +225,83 @@ class cleoController:
         self.icon_location = 'beforeIcon'
         if c.config.getString('cleo_icon_location'):
             self.icon_location = c.config.getString('cleo_icon_location')
-
-        self.prog_location = 'beforeHeadline'
-        if c.config.getString('cleo_prog_location'):
-            self.prog_location = c.config.getString('cleo_prog_location')
-
-        self.icon_order = 'pri-first'
-        if c.config.getString('cleo_icon_order'):
-            self.icon_order = c.config.getString('cleo_icon_order')
         #@-node:tbrown.20060913151952:<< set / read default values >>
         #@nl
 
-        self.handlers = [("close-frame",self.close)]
+        # image ids should be a property of the node
+        # use {marking,image id} as the kv pair.
+        self.images = {}
 
-        if Qt:
-            # chdir so the Icons can be located
-            owd = os.getcwd()
-            os.chdir(os.path.split(__file__)[0])
-            self.ui = cleoQtUI(self)
-            os.chdir(owd)
-            leoPlugins.registerHandler('select3', self.updateUI)
-        elif Tk:
-            self.pickles = {}
-            self.pickleP = self.c.currentPosition().copy()
-            self.pickleV = self.pickleP.v
-            self.marks = []   # list of marks made on canvas
-            self.menu = None
-            #@        << define colors >>
-            #@+node:tbrown.20060903121429.16:<< define colors >>
+        #@    << define colors >>
+        #@+node:tbrown.20060903121429.16:<< define colors >>
 
-            # see docstring for related @settings
+        # see docstring for related @settings
 
-            self.colours = [
-                'Black',
-                'Brown', 'Purple', 'Red', 'Pink',
-                'Yellow', 'Orange', 'Khaki', 'Gold',
-                'DarkGreen', 'Green', 'OliveDrab2',
-                'Blue', 'Lightblue', 'SteelBlue2',
-                'White',
-            ]
+        self.colours = [
+            'Black',
+            'Brown', 'Purple', 'Red', 'Pink',
+            'Yellow', 'Orange', 'Khaki', 'Gold',
+            'DarkGreen', 'Green', 'OliveDrab2',
+            'Blue', 'Lightblue', 'SteelBlue2',
+            'White',
+        ]
 
-            self.archetype_colours = {
-                'Data' : 'Purple',
-                'Thing' : 'Green3',
-                'Logic' : 'Blue',
-                'Interface': 'DarkOrange',
-                'Moment-Interval' : 'Red',
-            }
+        self.archetype_colours = {
+            'Data' : 'Purple',
+            'Thing' : 'Green3',
+            'Logic' : 'Blue',
+            'Interface': 'DarkOrange',
+            'Moment-Interval' : 'Red',
+        }
 
-            self.node_colours = {
-                'file' : 'lightgreen',
-                'Major Branch' : 'SandyBrown',
-                'Feature' : 'peachpuff',
-                'Comments': 'lightblue',
-                'Sel. File' : 'PaleGreen4',
-                'Sel. Major Branch' : 'tan4',
-                'Sel. Feature' : 'PeachPuff4',
-                'Sel. Comments': 'LightBlue4',
-            }
+        self.node_colours = {
+            'file' : 'lightgreen',
+            'Major Branch' : 'SandyBrown',
+            'Feature' : 'peachpuff',
+            'Comments': 'lightblue',
+            'Sel. File' : 'PaleGreen4',
+            'Sel. Major Branch' : 'tan4',
+            'Sel. Feature' : 'PeachPuff4',
+            'Sel. Comments': 'LightBlue4',
+        }
 
-            self.file_nodes = ["@file", "@thin", "@nosent", "@asis", "@root"]
-            if g.app.config.exists(self.c, 'cleo_color_file_node_list', 'data'):
-                self.file_nodes = self.c.config.getData('cleo_color_file_node_list')
+        self.file_nodes = ["@file", "@thin", "@nosent", "@asis", "@root"]
+        if g.app.config.exists(self.c, 'cleo_color_file_node_list', 'data'):
+            self.file_nodes = self.c.config.getData('cleo_color_file_node_list')
 
-            self.priority_colours = {
-                1 : 'red',
-                2 : 'orange',
-                3 : 'yellow',
-                4 : 'green',
-                5 : 'background-colour'
-            }
+        self.priority_colours = {
+            1 : 'red',
+            2 : 'orange',
+            3 : 'yellow',
+            4 : 'green',
+            5 : 'background-colour'
+        }
 
-            for pri in self.priority_colours.iterkeys():
-                if self.c.config.getColor('cleo_color_pri_'+str(pri)):
-                    self.priority_colours[pri] = self.c.config.getColor('cleo_color_pri_'+str(pri))
+        for pri in self.priority_colours.iterkeys():
+            if self.c.config.getColor('cleo_color_pri_'+str(pri)):
+                self.priority_colours[pri] = self.c.config.getColor('cleo_color_pri_'+str(pri))
 
-            self.red, self.green = ('red', 'green')
-            for i in ('red', 'green'):
-                if self.c.config.getColor('cleo_color_prog_'+i):
-                    self.__dict__[i] = self.c.config.getColor('cleo_color_prog_'+i)
+        self.red, self.green = ('red', 'green')
+        for i in ('red', 'green'):
+            if self.c.config.getColor('cleo_color_prog_'+i):
+                self.__dict__[i] = self.c.config.getColor('cleo_color_prog_'+i)
 
-            if c.frame and c.frame.tree and c.frame.tree.canvas:
-                self.background_colour = c.frame.tree.canvas.cget('background')
-            else:
-                self.background_color = 'black'
-            #@nonl
-            #@-node:tbrown.20060903121429.16:<< define colors >>
-            #@nl
+        if c.frame and c.frame.tree and c.frame.tree.canvas:
+            self.background_colour = c.frame.tree.canvas.cget('background')
+        else:
+            self.background_color = 'black'
+        #@nonl
+        #@-node:tbrown.20060903121429.16:<< define colors >>
+        #@nl
 
-            # image ids should be a property of the node
-            # use {marking,image id} as the kv pair.
-            self.images = {}  # FIXME does what?
+        self.install_drawing_overrides()
 
-            self.install_drawing_overrides()
-
-            self.handlers.extend([
-                ("draw-outline-text-box",self.draw),
-                ("redraw-entire-outline",self.clear_canvas),
-                ("iconrclick1",self.show_menu)])
-
+        self.handlers = [
+            ("draw-outline-text-box",self.draw),
+            ("redraw-entire-outline",self.clear_canvas),
+            ("iconrclick1",self.show_menu),
+            ("close-frame",self.close),
+        ]
         for i in self.handlers:
             leoPlugins.registerHandler(i[0], i[1])
 
@@ -424,86 +318,34 @@ class cleoController:
     #@nonl
     #@-node:tbrown.20060903121429.17:install_drawing_overrides
     #@-node:tbrown.20060903121429.15:birth
-    #@+node:tbrown.20090119112125.1:redrawer
-    def redrawer(fn):
-        """decorator for methods which create the need for a redraw"""
-        def new(self, *args, **kargs):
-            self.redrawLevels += 1
-            try:
-                ans = fn(self,*args, **kargs)
-            finally:
-                self.redrawLevels -= 1
-
-                if self.redrawLevels == 0:
-                    self.redraw()
-
-            return ans
-        return new
-    #@-node:tbrown.20090119112125.1:redrawer
-    #@+node:tbrown.20090119112125.2:projectChanger
-    def projectChanger(fn):
-        """decorator for methods which change projects"""
-        def new(self, *args, **kargs):
-            ans = fn(self,*args, **kargs)
-            self.update_project()
-            return ans
-        return new
-    #@nonl
-    #@-node:tbrown.20090119112125.2:projectChanger
     #@+node:tbrown.20080303214305:loadAllIcons
-    @redrawer
-    def loadAllIcons(self, clear=False):
+    def loadAllIcons(self):
         """Load icons to represent cleo state"""
 
         for p in self.c.allNodes_iter():
-            self.loadIcons(p, clear=clear)
+            self.loadIcons(p)
     #@-node:tbrown.20080303214305:loadAllIcons
     #@+node:tbrown.20080303232514:loadIcons
-    @redrawer
-    def loadIcons(self, p, clear=False):
+    def loadIcons(self, p):
         com = self.c.editCommands
         allIcons = com.getIconList(p)
         icons = [i for i in allIcons if 'cleoIcon' not in i]
-
-        if clear:
-            iterations = []
-        else:
-            iterations = [True, False]
-
-        for which in iterations:
-
-            if which == (self.icon_order == 'pri-first'):
-                pri = self.getat(p.v, 'priority')
-                if pri: pri = int(pri)
-                if pri in self.priorities:
-                    iconDir = g.os_path_abspath(
-                      g.os_path_normpath(
-                        g.os_path_join(g.app.loadDir,"..","Icons")))
-                    com.appendImageDictToList(icons, iconDir,
-                        g.os_path_join('cleo',self.priorities[pri]['icon']),
-                        2, on='vnode', cleoIcon='1', where=self.icon_location)
-                        # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
-                        # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
-                    com.setIconList(p, icons)
-            else:
-
-                prog = self.getat(p.v, 'progress')
-                if prog is not '':
-                    prog = int(prog)
-                    use = prog//10*10
-                    use = 'prg%03d.png' % use
-
-                    iconDir = g.os_path_abspath(
-                      g.os_path_normpath(
-                        g.os_path_join(g.app.loadDir,"..","Icons")))
-
-                    com.appendImageDictToList(icons, iconDir,
-                        g.os_path_join('cleo',use),
-                        2, on='vnode', cleoIcon='1', where=self.prog_location)
-                    com.setIconList(p, icons)
-
-        if len(allIcons) != len(icons):  # something to add / remove
+        pri = self.getat(p.v, 'priority')
+        if pri: pri = int(pri)
+        if pri in self.priorities:
+            iconDir = g.os_path_abspath(
+              g.os_path_normpath(
+                g.os_path_join(g.app.loadDir,"..","Icons")))
+            com.appendImageDictToList(icons, iconDir,
+                g.os_path_join('cleo',self.priorities[pri]['icon']),
+                2, on='vnode', cleoIcon='1', where=self.icon_location)
+                # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
+                # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
+                # Note: 'beforeBox' and 'afterHeadline' collide with other elements on the line.
             com.setIconList(p, icons)
+        else:
+            if len(allIcons) != len(icons):  # something to remove
+                com.setIconList(p, icons)
 
     #@-node:tbrown.20080303232514:loadIcons
     #@+node:tbrown.20060903121429.18:close
@@ -517,6 +359,10 @@ class cleoController:
     #@-node:tbrown.20060903121429.18:close
     #@+node:tbrown.20060903121429.19:attributes...
     #@+at
+    # These methods should really be part of vnode in accordance with the 
+    # principles
+    # of encapsulation and information hiding.
+    # 
     # annotate was the previous name of this plugin, which is why the default 
     # values
     # for several keyword args is 'annotate'.
@@ -527,10 +373,11 @@ class cleoController:
 
         ''' Remove our dict from the node'''
 
-        if (hasattr(node,"unknownAttributes" )
-            and node.unknownAttributes.has_key(udict)):
+        if hasattr(node,"unknownAttributes" ) and \
+               node.unknownAttributes.has_key(udict):
 
             del node.unknownAttributes[udict]
+    #@nonl
     #@-node:tbrown.20060903121429.20:delUD
     #@+node:tbrown.20060903121429.21:hasUD
     def hasUD (self,node,udict="annotate"):
@@ -585,7 +432,7 @@ class cleoController:
                 return ""
 
         x = node.unknownAttributes["annotate"][attrib]
-        if Tk and isinstance(x, TkPickleVar):
+        if isinstance(x, TkPickleVar):
             node.unknownAttributes["annotate"][attrib] = x.get()
             return x.get()
         else:
@@ -655,9 +502,8 @@ class cleoController:
 
             isDefault = True
             for ky, vl in node.unknownAttributes["annotate"].iteritems():
-                if Tk:
-                    if isinstance(vl, TkPickleVar):
-                        node.unknownAttributes["annotate"][ky] = vl = vl.get()
+                if isinstance(vl, TkPickleVar):
+                    node.unknownAttributes["annotate"][ky] = vl = vl.get()
                 if not self.testDefault(ky, vl):
                     isDefault = False
                     break
@@ -678,16 +524,16 @@ class cleoController:
     #@-node:tbrown.20060903121429.23:safe_del
     #@+node:tbrown.20060903121429.24:colours...
     #@+node:tbrown.20060903121429.25:remove_colours
-    @redrawer
     def remove_colours(self,v):
 
         self.setat(v, 'fg', '')
         self.setat(v, 'bg', '')
         self.safe_del(self.pickles, 'fg')
         self.safe_del(self.pickles, 'bg')
+        self.c.redraw()
+    #@nonl
     #@-node:tbrown.20060903121429.25:remove_colours
     #@+node:tbrown.20071008150126:subtree_colours
-    @redrawer
     def subtree_colours(self,p):
 
         fg = self.getat(p.v, 'fg')
@@ -695,6 +541,7 @@ class cleoController:
         for n in p.subtree_iter():
             self.setat(n.v, 'fg', fg)
             self.setat(n.v, 'bg', bg)
+        self.c.redraw()
     #@-node:tbrown.20071008150126:subtree_colours
     #@+node:tbrown.20060912130940:add_colour
     def add_colour(self):
@@ -787,65 +634,37 @@ class cleoController:
     def redraw(self):
         "redraw after menu used"
 
-        if Tk:
+        g.trace(g.callers())
 
-            g.trace(g.callers())
+        # IMPORTANT ASSUMPTION: called only after menu used
 
-            # IMPORTANT ASSUMPTION: called only after menu used
+        # read updates from menu choice
 
-            # read updates from menu choice
+        # Tk seems to use menu label when '' is used as value?
+        # note, keys not present if coming via clear_all
+        if self.pickles.has_key('node'):
+            if self.pickles['node'].get() == 'CLEO_BLANK': self.pickles['node'].set('')
+        if self.pickles.has_key('archetype'):
+            if self.pickles['archetype'].get() == 'CLEO_BLANK': self.pickles['archetype'].set('')
 
-            # Tk seems to use menu label when '' is used as value?
-            # note, keys not present if coming via clear_all
-            if self.pickles.has_key('node'):
-                if self.pickles['node'].get() == 'CLEO_BLANK': self.pickles['node'].set('')
-            if self.pickles.has_key('archetype'):
-                if self.pickles['archetype'].get() == 'CLEO_BLANK': self.pickles['archetype'].set('')
+        for ky, vl in self.pickles.iteritems():
+            self.setat(self.pickleV, ky, vl.get())
 
-            for ky, vl in self.pickles.iteritems():
-                self.setat(self.pickleV, ky, vl.get())
+        self.loadIcons(self.pickleP)
 
-            # self.loadIcons(self.pickleP)
-            # self.update_project(self.pickleP)
-            self.clear_marks(self.c.frame.tree.canvas)
-
-            c = self.c
-            # c.setChanged(True)
-            c.redraw_now()
-        elif Qt:
-            # self.loadIcons(self.c.currentPosition())
-            # self.update_project()
-            # self.c.setChanged(True)
-            self.updateUI()
-            self.c.redraw_now()
+        self.clear_marks(self.c.frame.tree.canvas)
+        self.update_project(self.pickleP)
+        c = self.c
+        c.setChanged(True)
+        c.redraw_now()
     #@-node:tbrown.20060903121429.32:redraw
     #@+node:tbrown.20060903121429.33:clear_all
-    @redrawer
-    def clear_all(self,v=None, recurse=False, all=False):
+    def clear_all(self,v):
 
-        if Tk:
-            self.pickles = {}
-
-        if not recurse and not all:
-            if v is None:  # Qt version
-                p = self.c.currentPosition()
-                v = p.v
-                self.delUD(v)
-                self.loadIcons(p)
-                self.show_times(p)
-            else:
-                self.delUD(v)
-        else:
-            if all:
-                what = self.c.allNodes_iter
-            else:
-                what = self.c.currentPosition().self_and_subtree_iter
-
-            for p in what():
-                self.delUD(p.v)
-                self.loadIcons(p)
-                self.show_times(p)
-
+        self.delUD(v)
+        self.pickles = {}
+        self.redraw()
+    #@nonl
     #@-node:tbrown.20060903121429.33:clear_all
     #@+node:tbrown.20060903121429.34:clear_canvas
     def clear_canvas(self,tag,key):
@@ -954,8 +773,6 @@ class cleoController:
     #@+node:tbrown.20060912215129:draw_prog
     def draw_prog (self, v, prop, progWidth):
 
-        return  # icons used instead
-
         canvas = self.c.frame.tree.canvas
 
         XpointA = v.iconx+1
@@ -973,6 +790,7 @@ class cleoController:
         self.marks.append(
             canvas.create_line(XpointB,YpointB,XpointC,YpointC,fill=self.red,width=2)
         )
+    #@nonl
     #@-node:tbrown.20060912215129:draw_prog
     #@+node:tbrown.20060903121429.42:draw_invertedT
     def draw_invertedT (self,v,color,canvas):
@@ -1163,11 +981,9 @@ class cleoController:
         for pri in self.priorities:
             value,label = pri, self.priorities[pri]['short']
             s = '%s' % (label)
-            def np(pri=pri):
-                self.setPri(pri)
             menu.add_radiobutton(
                 label=s,variable=self.pickles['priority'],value=value,
-                command=np,underline=0)
+                command=self.redraw,underline=0)
     #@nonl
     #@-node:tbrown.20061020145804:left_priority_menu
     #@+node:tbrown.20060903121429.52:priority_menu
@@ -1186,37 +1002,22 @@ class cleoController:
             pb = -1
 
         return cmp(pa,pb)
-    @redrawer
-    def priSort(self, p=None):
-        if p is None:
-            if Tk:
-                p = self.pickleP
-            if Qt:
-                p = self.c.currentPosition()
-        self.c.selectPosition(p)
+
+    def priSort(self):
+        self.c.selectPosition(self.pickleP)
         self.c.sortSiblings(cmp=self.pricmp)
 
-    @redrawer
-    def childrenTodo(self, p=None):
-        if p is None:
-            if Tk:
-                p = self.pickleP
-            if Qt:
-                p = self.c.currentPosition()
-        for p in p.children_iter():
+    def childrenTodo(self):
+        for p in self.pickleP.children_iter():
             if self.getat(p.v, 'priority') != 9999: continue
             self.setat(p.v, 'priority', 19)
             self.loadIcons(p)
+        self.c.redraw()
 
-    def showDist(self, p=None):
+    def showDist(self):
         """show distribution of priority levels in subtree"""
-        if p is None:
-            if Tk:
-                p = self.pickleP
-            if Qt:
-                p = self.c.currentPosition()
         pris = {}
-        for p in p.subtree_iter():
+        for p in self.pickleP.subtree_iter():
             pri = int(self.getat(p.v, 'priority'))
             if pri not in pris:
                 pris[pri] = 1
@@ -1228,28 +1029,15 @@ class cleoController:
                 g.es('%s\t%d\t%s' % (self.priorities[pri[0]]['short'], pri[1],
                     self.priorities[pri[0]]['long']))
 
-    @redrawer
-    def reclassify(self, p=None):
+    def reclassify(self):
         """change priority codes"""
 
-        if p is None:
-            if Tk:
-                p = self.pickleP
-            if Qt:
-                p = self.c.currentPosition()
         g.es('\n Current distribution:')
         self.showDist()
         dat = {}
         for end in 'from', 'to':
-            if Qt:
-                x0,ok = QtGui.QInputDialog.getText(None, 'Reclassify priority' ,'%s priorities (1-9,19)'%end)
-                if not ok:
-                    x0 = None
-                else:
-                    x0 = str(x0)
-            else:
-                x0 = g.app.gui.runAskOkCancelStringDialog(
-                    self.c,'Reclassify priority' ,'%s priorities (1-7,19)' % end.upper())
+            x0 = g.app.gui.runAskOkCancelStringDialog(
+                self.c,'Reclassify priority' ,'%s priorities (1-7,19)' % end.upper())
             try:
                 x0 = [int(i) for i in x0.replace(',',' ').split()
                       if int(i) in self.todo_priorities]
@@ -1266,7 +1054,7 @@ class cleoController:
             return
 
         cnt = 0
-        for p in p.subtree_iter():
+        for p in self.pickleP.subtree_iter():
             pri = int(self.getat(p.v, 'priority'))
             if pri in dat['from']:
                 self.setat(p.v, 'priority', dat['to'][dat['from'].index(pri)])
@@ -1274,6 +1062,8 @@ class cleoController:
                 cnt += 1
         g.es('\n%d priorities reclassified, new distribution:' % cnt)
         self.showDist()
+        if cnt:
+            self.c.redraw_now()
 
     def priority_menu(self,parent,p):
 
@@ -1289,11 +1079,9 @@ class cleoController:
         for pri in self.priorities:
             value,label = pri, self.priorities[pri]['long']
             s = '%d %s' % (value,label)
-            def np(pri=pri):
-                self.setPri(pri)
             menu.add_radiobutton(
                 label=s,variable=self.pickles['priority'],value=value,
-                command=np,underline=0)
+                command=self.redraw,underline=0)
 
         menu.add_separator()
 
@@ -1325,11 +1113,9 @@ class cleoController:
         # Instead of just redraw, set changed too.
         for value in range(0,11):
             s = '%d%%' % (value*10)
-            def np(prog=value*10):
-                self.set_progress(val=prog)
             menu.add_radiobutton(
                 label=s,variable=self.pickles['progress'],value=value*10,
-                command=np,underline=0)
+                command=self.redraw,underline=0)
 
         menu.add_separator()
 
@@ -1373,25 +1159,24 @@ class cleoController:
         c.add_command(menu,label='Hide times',
             underline=0,command=lambda:self.show_times(p, show=False))
 
+        def local_recalc():
+            self.recalc_time(p)
+            self.pickles['progress'].set(self.getat(v, 'progress'))
+            self.redraw()
+
         c.add_command(menu,label='Re-calc. time required',
-            underline=0,command=lambda:self.local_recalc(p))
+            underline=0,command=local_recalc)
+
+        def local_clear():
+            self.recalc_time(p, clear=True)
+            self.pickles['progress'].set(self.getat(v, 'progress'))
+            self.redraw()
 
         c.add_command(menu,label='Clear derived times',
-            underline=0,command=lambda:self.local_clear(p))
+            underline=0,command=local_clear)
 
         return menu
-    @redrawer
-    def local_recalc(self, p=None):
-        self.recalc_time(p)
-        if Tk:
-            self.pickles['progress'].set(self.getat(v, 'progress'))
-
-    @redrawer
-    def local_clear(self, p=None):
-        self.recalc_time(p, clear=True)
-        if Tk:
-            self.pickles['progress'].set(self.getat(v, 'progress'))
-
+    #@nonl
     #@-node:tbrown.20060913212017:time_menu
     #@+node:tbrown.20060903121429.53:show_menu
     def show_menu (self,tag,k):
@@ -1444,125 +1229,79 @@ class cleoController:
     #@-node:tbrown.20060903121429.53:show_menu
     #@-node:tbrown.20060903121429.47:menus...
     #@+node:tbrown.20060903121429.54:priority_clear
-    @redrawer
-    def priority_clear(self,v=None):
+    def priority_clear(self,v):
 
-        if v is None:
-            v = self.c.currentPosition().v
         self.setat(v, 'priority', 9999)
-        if Tk:
-            self.safe_del(self.pickles, 'priority')
+        self.safe_del(self.pickles, 'priority')
+        self.redraw()
+    #@nonl
     #@-node:tbrown.20060903121429.54:priority_clear
-    #@+node:tbrown.20090117102927.5:setPri
-    @redrawer
-    def setPri(self,pri):
-        p = self.c.currentPosition()
-        self.setat(p.v, 'priority', pri)
-        self.loadIcons(p)
-    #@-node:tbrown.20090117102927.5:setPri
     #@+node:tbrown.20060912221139:progress_clear
-    @redrawer
-    @projectChanger
-    def progress_clear(self,v=None):
+    def progress_clear(self,v):
 
-        if v is None:
-            v = self.c.currentPosition().v
         self.setat(v, 'progress', '')
-        if Tk:
-            self.safe_del(self.pickles, 'progress')
+        self.safe_del(self.pickles, 'progress')
+        self.redraw()
+    #@nonl
     #@-node:tbrown.20060912221139:progress_clear
-    #@+node:tbrown.20060913153851:set_progress
-    @redrawer
-    @projectChanger
-    def set_progress(self,p=None, val=None):
-        if p is None:
-            p = self.c.currentPosition()
+    #@+node:tbrown.20060913153851:set_time_req
+    def set_time_req(self,p):
         v = p.v
-        if Tk:
-            tkSimpleDialog = g.importExtension('tkSimpleDialog',pluginName=__name__)
-            initialvalue = str(self.time_init)
-            if self.getat(v, 'time_req') != '':
-                initialvalue = self.getat(v, 'time_req')
-            prompt = '%s required' % self.time_name
-            val = tkSimpleDialog.askfloat(prompt, prompt, parent = self.c.frame.tree.canvas,
-                                         initialvalue = str(initialvalue))
+        tkSimpleDialog = g.importExtension('tkSimpleDialog',pluginName=__name__)
+        initialvalue = str(self.time_init)
+        if self.getat(v, 'time_req') != '':
+            initialvalue = self.getat(v, 'time_req')
+        prompt = '%s required' % self.time_name
+        tr = tkSimpleDialog.askfloat(prompt, prompt, parent = self.c.frame.tree.canvas,
+                                     initialvalue = str(initialvalue))
 
-        if val == None: return
+        if tr == None: return
 
-        self.setat(v, 'progress', val)
-    #@-node:tbrown.20060913153851:set_progress
-    #@+node:tbrown.20090118135723.2:set_time_req
-    @redrawer
-    @projectChanger
-    def set_time_req(self,p=None, val=None):
-        if p is None:
-            p = self.c.currentPosition()
-        v = p.v
-        if Tk:
-            tkSimpleDialog = g.importExtension('tkSimpleDialog',pluginName=__name__)
-            initialvalue = str(self.time_init)
-            if self.getat(v, 'time_req') != '':
-                initialvalue = self.getat(v, 'time_req')
-            prompt = '%s required' % self.time_name
-            val = tkSimpleDialog.askfloat(prompt, prompt, parent = self.c.frame.tree.canvas,
-                                         initialvalue = str(initialvalue))
-
-        if val == None: return
-
-        self.setat(v, 'time_req', val)
+        self.setat(v, 'time_req', tr)
 
         if self.getat(v, 'progress') == '':
             self.setat(v, 'progress', 0)
-            if Tk:
-                self.pickles['progress'].set(0)
-    #@-node:tbrown.20090118135723.2:set_time_req
+            self.pickles['progress'].set(0)
+
+        self.redraw()
+    #@nonl
+    #@-node:tbrown.20060913153851:set_time_req
     #@+node:tbrown.20060913204451:show_times
-    @redrawer
-    def show_times(self, p=None, show=False):
+    def show_times(self, p, show=False):
 
         import re
 
         def rnd(x): return re.sub('.0$', '', '%.1f' % x)
 
-        if p is None:
-            p = self.c.currentPosition()
-
         for nd in p.self_and_subtree_iter():
-            #X if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
-            #X     nd.setHeadStringOrHeadline(re.sub(' <[^>]*>$', '', nd.headString()))
-            #X else:
-            self.c.setHeadString(nd, re.sub(' <[^>]*>$', '', nd.headString()))
+            if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
+                nd.setHeadStringOrHeadline(re.sub(' <[^>]*>$', '', nd.headString()))
+            else:
+                self.c.setHeadString(nd, re.sub(' <[^>]*>$', '', nd.headString()))
                 # nd.setHeadString(re.sub(' <[^>]*>$', '', nd.headString()))
-
-            tr = self.getat(nd.v, 'time_req')
-            pr = self.getat(nd.v, 'progress')
-            try: pr = float(pr)
-            except: pr = ''
-            if tr != '' or pr != '':
-                ans = ' <'
-                if tr != '':
-                    if pr == '' or pr == 0 or pr == 100:
-                        ans += rnd(tr) + ' ' + self.time_name
+            if show:
+                tr = self.getat(nd.v, 'time_req')
+                pr = self.getat(nd.v, 'progress')
+                try: pr = float(pr)
+                except: pr = ''
+                if tr != '' or pr != '':
+                    ans = ' <'
+                    if tr != '':
+                        if pr == '' or pr == 0 or pr == 100:
+                            ans += rnd(tr) + ' ' + self.time_name
+                        else:
+                            ans += '%s+%s=%s %s' % (rnd(pr/100.*tr), rnd((1-pr/100.)*tr), rnd(tr), self.time_name)
+                        if pr != '': ans += ', '
+                    if pr != '':
+                        ans += rnd(pr) + '%'  # pr may be non-integer if set by recalc_time
+                    ans += '>'
+                    if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
+                        nd.setHeadStringOrHeadline(nd.headString()+ans)
                     else:
-                        ans += '%s+%s=%s %s' % (rnd(pr/100.*tr), rnd((1-pr/100.)*tr), rnd(tr), self.time_name)
-                    if pr != '': ans += ', '
-                if pr != '':
-                    ans += rnd(pr) + '%'  # pr may be non-integer if set by recalc_time
-                ans += '>'
-                #X if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
-                #X     nd.setHeadStringOrHeadline(nd.headString()+ans)
-                #X else:
-                if show:
-                    self.c.setHeadString(nd, nd.headString()+ans)
-                self.loadIcons(nd)  # update progress icon
-
+                        self.c.setHeadString(nd, nd.headString()+ans)
     #@-node:tbrown.20060913204451:show_times
     #@+node:tbrown.20060913133338:recalc_time
-    def recalc_time(self, p=None, clear=False):
-
-        if p is None:
-            p = self.c.currentPosition()
-
+    def recalc_time(self, p, clear=False):
         v = p.v
         time_totl = None
         time_done = None
@@ -1619,25 +1358,19 @@ class cleoController:
         return (time_totl, time_done)
     #@-node:tbrown.20060913133338:recalc_time
     #@+node:tbrown.20060913104504.1:clear_time_req
-    @redrawer
-    @projectChanger
-    def clear_time_req(self, p=None):
+    def clear_time_req(self,p):
 
-        if p is None:
-            p = self.c.currentPosition()
         v = p.v
         self.setat(v, 'time_req', '')
-        if Tk:
-            self.safe_del(self.pickles, 'time_req')
+        self.safe_del(self.pickles, 'time_req')
+        self.redraw()
+    #@nonl
     #@-node:tbrown.20060913104504.1:clear_time_req
     #@+node:tbrown.20060914134553.376:update_project
-    @redrawer
-    def update_project(self, p=None):
+    def update_project(self, p):
         """Find highest parent with '@project' in headline and run recalc_time
         and maybe show_times (if headline has '@project time')"""
 
-        if p is None:
-            p = self.c.currentPosition()
         project = None
 
         for nd in p.self_and_parents_iter():
@@ -1648,11 +1381,8 @@ class cleoController:
             self.recalc_time(project)
             if project.headString().find('@project time') > -1:
                 self.show_times(project, show=True)
-            else:
-                self.show_times(p, show=True)
     #@-node:tbrown.20060914134553.376:update_project
     #@+node:tbrown.20060919160306:find_todo
-    @redrawer
     def find_todo(self, p, stage = 0):
         """Recursively find the next todo"""
 
@@ -1668,6 +1398,7 @@ class cleoController:
                 self.c.selectPosition(p.getParent())
                 self.c.expandNode()
             self.c.selectPosition(p)
+            self.c.redraw()
             return True
 
         for nd in p.children_iter():
@@ -1683,15 +1414,6 @@ class cleoController:
 
         return False
     #@-node:tbrown.20060919160306:find_todo
-    #@+node:tbrown.20090118135723.1:updateUI
-    def updateUI(self,tag=None,k=None):
-        if k and k['c'] != self.c:
-            return  # wrong number
-
-        v = self.c.currentPosition().v
-        self.ui.setProgress(int(self.getat(v, 'progress') or 0 ))
-        self.ui.setTime(float(self.getat(v, 'time_req') or 0 ))
-    #@-node:tbrown.20090118135723.1:updateUI
     #@-others
 #@nonl
 #@-node:tbrown.20060903121429.14:class cleoController
