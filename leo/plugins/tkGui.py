@@ -5355,6 +5355,7 @@ class leoTkinterLog (leoFrame.leoLog):
 
             w.see('end')
             self.forceLogUpdate(s)
+            #@nonl
             #@-node:ekr.20081121110412.266:<< put s to log control >>
             #@nl
             self.logCtrl.update_idletasks()

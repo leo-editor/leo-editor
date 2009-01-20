@@ -816,7 +816,7 @@ def getVnodeIcon(self,p):
 
     '''Return the proper icon for position p.'''
 
-    v.iconVal = val = v.computeIcon()
+    p.v.iconVal = val = p.v.computeIcon()
     return self.getIconImage(val)
 
 def getIconImage(self,val):

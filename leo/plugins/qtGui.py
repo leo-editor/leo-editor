@@ -3788,7 +3788,7 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081210075843.10:contractItem & expandItem
     def contractItem (self,item):
 
-       self.treeWidget.collapseItem(item)
+        self.treeWidget.collapseItem(item)
 
     def expandItem (self,item):
 
@@ -3878,7 +3878,7 @@ class leoQtTree (leoFrame.leoTree):
         for d,key in table:
             aList = d.get(key,[])
             if item in aList:
-                self.error('item already in list: %s, %s' % (item,aList))
+                g.trace('*** ERROR *** item already in list: %s, %s' % (item,aList))
             else:
                 aList.append(item)
             d[key] = aList
@@ -4111,7 +4111,7 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Return the proper icon for position p.'''
 
-        v.iconVal = val = v.computeIcon()
+        p.v.iconVal = val = p.v.computeIcon()
         return self.getIconImage(val)
 
     def getIconImage(self,val):
@@ -5354,7 +5354,11 @@ class leoQtGui(leoGui.leoGui):
         if not c or not c.exists:
             #@        << no c error>>
             #@+node:leohag.20081205043707.12:<< no c error>>
-            g.es_print_error("The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c' as a keyword argument.\n\t%s"% g,callers())
+            g.es_print_error('%s\n%s\n\t%s' % (
+                "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
+                "as a keyword argument",
+                g.callers()
+            ))
             #@nonl
             #@-node:leohag.20081205043707.12:<< no c error>>
             #@nl
@@ -6372,6 +6376,7 @@ class jEditColorizer:
         # Used by recolor and helpers...
         self.actualColorDict = {} # Used only by setTag.
         self.global_i,self.global_j = 0,0 # The global bounds of colorizing.
+        self.hyperCount = 0
         self.nextState = 1 # Dont use 0.
         self.stateDict = {} # Keys are state numbers, values are data.
 
@@ -7209,7 +7214,8 @@ class jEditColorizer:
                     tagName = "hyper" + str(self.hyperCount)
                     self.hyperCount += 1
                     w.tag_delete(tagName)
-                    self.tag(tagName,i+2,j)
+
+                    self.tag_add(tagName,i+2,j)
 
                     ref.tagName = tagName
                     c.tag_bind(w,tagName,"<Control-1>",ref.OnHyperLinkControlClick)
@@ -8307,11 +8313,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         val = self.configDict.get(tag)
         if val:
             self.colorSelection(x1,x2,val)
-
-        # elif tag == 'comment1':
-            # self.colorSelection(x1,x2,'firebrick')
-        # else:
-            # g.trace(tag)
     #@-node:ekr.20081124102726.10:tag_add
     #@+node:ekr.20081124102726.11:tag_config/ure
     def tag_config (self,*args,**keys):
