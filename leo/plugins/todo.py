@@ -8,7 +8,7 @@
 
 todo adds time required, progress and priority settings for nodes.
 With the @project tag a branch can display progress and time
-required with dynamic updates.
+required with dynamic hierachical updates.
 
 For full documentation see:
 
@@ -25,12 +25,13 @@ For full documentation see:
 #@<< imports >>
 #@+node:tbrown.20090119132609.67:<< imports >>
 import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
-import os
 
+if g.app.gui.guiName() == "qt":
+    import leo.core.leoPlugins as leoPlugins
+    import os
 
-from PyQt4 import QtCore, QtGui, uic
-Qt = QtCore.Qt
+    from PyQt4 import QtCore, QtGui, uic
+    Qt = QtCore.Qt
 #@-node:tbrown.20090119132609.67:<< imports >>
 #@nl
 __version__ = "0.25.2"
@@ -42,86 +43,20 @@ __version__ = "0.25.2"
 #@nonl
 # Use and distribute under the same terms as leo itself.
 # 
-# Original code by Mark Ng <z3r0.00@gmail.com>
-# 
-# 0.5  Priority arrows and Archetype-based colouring of headline texts.
-# 0.6  Arbitary headline colouring.
-# 0.7  Colouring for node types. Added "Others" type option
-# 0.8  Added "Clear Priority" option
-# 0.8.1  Fixed popup location
-# 0.8.2  Fixed unposting
-# 0.9  Automatically colour @file and @ignore nodes
-# 0.10 EKR:
-# - Repackaged for leoPlugins.leo.
-#     - Define g.  Eliminate from x import *.
-# - Made code work with 4.3 code base:
-#     - Override tree.setUnselectedHeadlineColors instead of 
-# tree.setUnselectedLabelState
-# - Create per-commander instances of cleoController in onCreate.
-# - Converted some c/java style to python style.
-# - Replaced string.find(s,...) by s.find(...) & removed import string.
-# - show_menu now returns 'break':  fixes the 'popup menu is not unposting 
-# bug)
-# 0.11 EKR:
-# - hasUD and getUD now make sure that the dict is actually a dict.
-# 0.12 EKR:
-# - Changed 'new_c' logic to 'c' logic.
-# 0.13 EKR:
-# - Installed patch roughly following code at 
-# http://sourceforge.net/forum/message.php?msg_id=3517080
-# - custom_colours now returns None for default.
-# - Added override of setDisabledHeadlineColors so that color changes in 
-# headlines happen immediately.
-# - Removed checkmark menu item because there is no easy way to clear it.
-# 0.14 EKR: Installed further patch to clear checkmark.
-# 0.15 TNB:
-# - Use dictionary of lists of canvas objects to allow removal
-# - Removed code for painting over things
-# - Try to track which commander/frame/tree is being used when more than
-#   one Leo window open.  Not quite working, redraws are missed if you change
-#   Leo windows by right clicking on the icon box, but all changes occur and
-#   appear when a left click on the tree occurs.
-# - Added rich_ries patch to darken colour of selected auto-colored headlines
-# 0.16 TNB:
-# - finally seem to have resolved all issues with multiple Leo windows
-# - handlers now unregister when window closes
-# 0.17 TNB:
-# - don't write cleo.TkPickleVars into .leo file (but handle legacies)
-# - don't write empty / all default value dictionaries into .leo file
-# - added menu option to strip empty / all default value dictionaries from 
-# .leo file
-# 0.17.1 TNB:
-# - added DanR's custom colour selection idea and progress bars
-# 0.18 TNB:
-# - added time required and recursive time/progress calc.
-#   thanks again to DanR for pointers.
-# 0.19 TNB:
-# - added @project nodes for automatic display updates
-# - added Show time to show times on nodes
-# - added Find next todo
-# 0.20 EKR: applied patch by mstarzyk.
-# 0.21 EKR: protect access to c.frame.tree.canvas.  It may not exist during 
-# dynamic unit tests.
-# 0.22 EKR: fixed crasher in custom_colours.
-# 0.23 EKR: added 'c' arg to p.isVisible (v.isVisible no longer exists).
-# 0.24 EKR: removed bugs section.
-# 0.25 TNB:
-# - added priority sort, tag all children 'todo'
-# - switched to leo icons for priority display
-# 0.25.1 bobjack
-# - make leo play nice with rclick and standard tree popup on linux
-#     - post menu with g.app.postPopupMenu
-#     - destroy menu with g.app.killPopupMenu
-# 0.25.2 TNB: highlight all nodes with altered background colors, minor bug 
-# fixes
+# 0.30 TNB
+#   - fork from cleo.py to todo.py
+#   - Qt interface in a tab
 #@-at
-#@nonl
 #@-node:tbrown.20090119132609.68:<< version history >>
 #@nl
 
 #@+others
 #@+node:tbrown.20090119132609.69:init
 def init():
+
+    if g.app.gui.guiName() != "qt":
+        print 'todo.py plugin not loading because gui is not Qt'
+        return False
 
     leoPlugins.registerHandler('after-create-leo-frame',onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
@@ -138,81 +73,77 @@ def onCreate (tag,key):
     todoController(c)
 #@-node:tbrown.20090119132609.70:onCreate
 #@+node:tbrown.20090119132609.71:class todoQtUI
-class cleoQtUI(QtGui.QWidget):
+if g.app.gui.guiName() == "qt":
+    class cleoQtUI(QtGui.QWidget):
 
-    def __init__(self, owner):
+        def __init__(self, owner):
 
-        self.owner = owner
+            self.owner = owner
 
-        QtGui.QWidget.__init__(self)
-        uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Cleo.ui')
-        form_class, base_class = uic.loadUiType(uiPath)
-        self.owner.c.frame.log.createTab('Task', widget = self) 
-        self.UI = form_class()
-        self.UI.setupUi(self)
+            QtGui.QWidget.__init__(self)
+            uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Cleo.ui')
+            form_class, base_class = uic.loadUiType(uiPath)
+            self.owner.c.frame.log.createTab('Task', widget = self) 
+            self.UI = form_class()
+            self.UI.setupUi(self)
 
-        u = self.UI
-        o = self.owner
+            u = self.UI
+            o = self.owner
 
-        self.menu = QtGui.QMenu()
-        self.menu.addAction('Find next ToDo', o.find_todo)
-        m = self.menu.addMenu("Priority")
-        m.addAction('Sort', o.priSort)
-        m.addAction('Mark children todo', o.childrenTodo)
-        m.addAction('Show distribution', o.showDist)
-        m.addAction('Redistribute', o.reclassify)
-        m = self.menu.addMenu("Time")
-        m.addAction('Show times', lambda:o.show_times(show=True))
-        m.addAction('Hide times', lambda:o.show_times(show=False))
-        m.addAction('Re-calc. derived times', o.local_recalc)
-        m.addAction('Clear derived times', o.local_clear)
-        m = self.menu.addMenu("Misc.")
-        m.addAction('Clear all todo icons', lambda:o.loadAllIcons(clear=True))
-        m.addAction('Show all todo icons', o.loadAllIcons)
-        m.addAction('Clear todo from node', o.clear_all)
-        m.addAction('Clear todo from subtree', lambda:o.clear_all(recurse=True))
-        m.addAction('Clear todo from all', lambda:o.clear_all(all=True))
-        u.butMenu.setMenu(self.menu)
+            self.menu = QtGui.QMenu()
+            self.menu.addAction('Find next ToDo', o.find_todo)
+            m = self.menu.addMenu("Priority")
+            m.addAction('Sort', o.priSort)
+            m.addAction('Mark children todo', o.childrenTodo)
+            m.addAction('Show distribution', o.showDist)
+            m.addAction('Redistribute', o.reclassify)
+            m = self.menu.addMenu("Time")
+            m.addAction('Show times', lambda:o.show_times(show=True))
+            m.addAction('Hide times', lambda:o.show_times(show=False))
+            m.addAction('Re-calc. derived times', o.local_recalc)
+            m.addAction('Clear derived times', o.local_clear)
+            m = self.menu.addMenu("Misc.")
+            m.addAction('Clear all todo icons', lambda:o.loadAllIcons(clear=True))
+            m.addAction('Show all todo icons', o.loadAllIcons)
+            m.addAction('Clear todo from node', o.clear_all)
+            m.addAction('Clear todo from subtree', lambda:o.clear_all(recurse=True))
+            m.addAction('Clear todo from all', lambda:o.clear_all(all=True))
+            u.butMenu.setMenu(self.menu)
 
-        self.connect(u.butHelp, QtCore.SIGNAL("clicked()"), 
-            self.STUB)  # should be o.showHelp
+            self.connect(u.butHelp, QtCore.SIGNAL("clicked()"), o.showHelp)
 
-        self.connect(u.butClrProg, QtCore.SIGNAL("clicked()"),
-            o.progress_clear)
-        self.connect(u.butClrTime, QtCore.SIGNAL("clicked()"),
-            o.clear_time_req)
-        self.connect(u.butPriClr, QtCore.SIGNAL("clicked()"),
-            o.priority_clear)
+            self.connect(u.butClrProg, QtCore.SIGNAL("clicked()"),
+                o.progress_clear)
+            self.connect(u.butClrTime, QtCore.SIGNAL("clicked()"),
+                o.clear_time_req)
+            self.connect(u.butPriClr, QtCore.SIGNAL("clicked()"),
+                o.priority_clear)
 
-        # if live update is too slow change valueChanged(*) to editingFinished()
-        self.connect(u.spinTime, QtCore.SIGNAL("valueChanged(double)"),
-            lambda v: o.set_time_req(val=u.spinTime.value()))
-        self.connect(u.spinProg, QtCore.SIGNAL("valueChanged(int)"),
-            lambda v: o.set_progress(val=u.spinProg.value()))
+            # if live update is too slow change valueChanged(*) to editingFinished()
+            self.connect(u.spinTime, QtCore.SIGNAL("valueChanged(double)"),
+                lambda v: o.set_time_req(val=u.spinTime.value()))
+            self.connect(u.spinProg, QtCore.SIGNAL("valueChanged(int)"),
+                lambda v: o.set_progress(val=u.spinProg.value()))
 
-        for but in ["butPri1", "butPri6", "butPriChk", "butPri2",
-            "butPri4", "butPri5", "butPri8", "butPri9", "butPri0",
-            "butPriToDo", "butPriXgry", "butPriBang", "butPriX",
-            "butPriQuery", "butPriBullet", "butPri7", 
-            "butPri3"]:
+            for but in ["butPri1", "butPri6", "butPriChk", "butPri2",
+                "butPri4", "butPri5", "butPri8", "butPri9", "butPri0",
+                "butPriToDo", "butPriXgry", "butPriBang", "butPriX",
+                "butPriQuery", "butPriBullet", "butPri7", 
+                "butPri3"]:
 
-            w = getattr(u, but)
-            pri = w.property('priority').toInt()[0]
-            def setter(pri=pri): o.setPri(pri)
-            self.connect(w, QtCore.SIGNAL("clicked()"), setter)
+                w = getattr(u, but)
+                pri, ok = w.property('priority').toInt()
+                def setter(pri=pri): o.setPri(pri)
+                self.connect(w, QtCore.SIGNAL("clicked()"), setter)
 
-    def STUB(self):
-        g.es("NOT CONNECTED")
-
-    def setProgress(self, prgr):
-        self.UI.spinProg.blockSignals(True)
-        self.UI.spinProg.setValue(prgr)
-        self.UI.spinProg.blockSignals(False)
-    def setTime(self, timeReq):
-        self.UI.spinTime.blockSignals(True)
-        self.UI.spinTime.setValue(timeReq)
-        self.UI.spinTime.blockSignals(False)
-#@nonl
+        def setProgress(self, prgr):
+            self.UI.spinProg.blockSignals(True)
+            self.UI.spinProg.setValue(prgr)
+            self.UI.spinProg.blockSignals(False)
+        def setTime(self, timeReq):
+            self.UI.spinTime.blockSignals(True)
+            self.UI.spinTime.setValue(timeReq)
+            self.UI.spinTime.blockSignals(False)
 #@-node:tbrown.20090119132609.71:class todoQtUI
 #@+node:tbrown.20090119132609.72:class todoController
 class todoController:
@@ -379,7 +310,7 @@ class todoController:
     #@-node:tbrown.20090119132609.80:close
     #@+node:tbrown.20090119134723.16:showHelp
     def showHelp(self):
-        pass
+        g.es('Check the Plugins menu todo entry')
     #@nonl
     #@-node:tbrown.20090119134723.16:showHelp
     #@+node:tbrown.20090119132609.81:attributes...
