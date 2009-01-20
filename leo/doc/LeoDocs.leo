@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5,0,1"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -426,16 +426,16 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.211"><vh>Chapter 8: Customizing Leo</vh>
-<v t="ekr.20050901101608.4" a="E"><vh>@rst html\customizing.html</vh>
+<v t="ekr.20050901101608.4"><vh>@rst html\customizing.html</vh>
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
-<v t="EKR.20040524104904.140" a="E"><vh>Specifying settings</vh>
+<v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
 <v t="ekr.20090116130002.1"><vh>Configuration directories</vh></v>
 <v t="ekr.20090116094356.2"><vh>Search order for settings files</vh></v>
 <v t="ekr.20090116094356.3"><vh>Safe rules for local settings</vh></v>
 <v t="ekr.20070317043727"><vh>Organizer nodes</vh></v>
 <v t="ekr.20080411111008.1"><vh>\@ignore and \@if nodes</vh></v>
 <v t="ekr.20070317043727.2"><vh>Simple settings nodes</vh></v>
-<v t="ekr.20070317043727.3" a="E"><vh>Complex settings nodes</vh>
+<v t="ekr.20070317043727.3"><vh>Complex settings nodes</vh>
 <v t="ekr.20090116094356.5"><vh>\@button</vh></v>
 <v t="ekr.20090116094356.6"><vh>\@commands</vh></v>
 <v t="ekr.20090116094356.7"><vh>\@data</vh></v>
@@ -1205,7 +1205,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="EKR.20040524104904.211" a="E"></v>
+<v t="EKR.20040524104904.211"></v>
 <v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
