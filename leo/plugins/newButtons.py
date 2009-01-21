@@ -134,8 +134,9 @@ def onCreate (tag, keywords):
     Showing how to define a global hook that affects all commanders.
     """
 
-    import leo.core.leoTkinterFrame as leoTkinterFrame
-    log = leoTkinterFrame.leoTkinterLog
+    import leo.plugins.tkGui as tkGui
+    leoTkinterFrame = tkGui.leoTkinterFrame
+    log = tkGui.leoTkinterLog
 
     # Ensure that the templates folder is there
     folder = g.os_path_join(g.app.loadDir,"..","plugins", "templates")
@@ -382,7 +383,9 @@ class HelperForm:
         self.c = c
         self.root = root = g.app.root
         self.callback = callback
-        self.getResult = lambda None:None
+
+        def doNothing(): pass
+        self.getResult = doNothing
             # Set to a function in subclasses.
             # This definition removes a pylint complaint.
 

@@ -5411,7 +5411,7 @@ if wx:
             try:
                 self.editWidgetDict = {} # Bug fix.
                 self.idDict = {}
-                self.expandAllAncestors(c.currentPosition())
+                c.expandAllAncestors(c.currentPosition())
                 if sys.platform.startswith('win') and not g.app.unitTesting:
                     self.cleverRedraw() # Slow, but eliminates flash.
                 else:
@@ -6095,7 +6095,7 @@ if wx:
             tree_id = self.getIdDict(p)
             # g.trace('editPosition',self.editPosition(),'id',id(tree_id))
 
-            expandFlag = self.expandAllAncestors(p)
+            expandFlag = c.expandAllAncestors(p)
             idFlag = not tree_id or not tree_id.IsOk()
             switchFlag = p != self.editPosition()
             # g.trace('expand',expandFlag,'id',idFlag,'switch',switchFlag)

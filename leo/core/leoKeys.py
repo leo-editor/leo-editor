@@ -1077,7 +1077,7 @@ class autoCompleterClass:
         w.setSelectionRange(i,j,insert=j)
 
         # New in Leo 4.4.2: recolor immediately to preserve the new selection in the new colorizer.
-        c.frame.body.recolor_now(c.currentPosition(),incremental=True)
+        c.frame.body.recolor(c.currentPosition(),incremental=True)
         # Usually this call will have no effect because the body text has not changed.
         c.frame.body.onBodyChanged('Typing')
     #@-node:ekr.20061031131434.45:setSelection
@@ -3025,6 +3025,7 @@ class keyHandlerClass:
 
         if stroke and w:
             # g.trace(stroke)
+            g.app.gui.set_focus(c,w)
             g.app.gui.event_generate(w,stroke)
         else:
             g.trace('no shortcut for %s' % (commandName),color='red')
@@ -3293,7 +3294,7 @@ class keyHandlerClass:
         #@nonl
         #@-node:ekr.20061031131434.147:<< define vars >>
         #@nl
-        trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+        trace = False and (g.app.unitTesting or self.trace_masterKeyHandler)
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
         verbose = True
 
@@ -3702,16 +3703,18 @@ class keyHandlerClass:
     #@+node:ekr.20061031170011.8:setLabel
     def setLabel (self,s,protect=False):
 
+        trace = (False or self.trace_minibuffer) and g.app.unitTesting
         k = self ; c = k.c ; w = self.widget
         if not w: return
-        trace = False or self.trace_minibuffer and not g.app.unitTesting
 
-        if trace: g.trace('protect',protect,s)
+        if trace: g.trace('w',w)
 
         w.setAllText(s)
         n = len(s)
         w.setSelectionRange(n,n,insert=n)
-        c.masterFocusHandler() # Restore to the previously requested focus.
+
+        #### This no longer does anything!!!
+        # c.masterFocusHandler() # Restore to the previously requested focus.
 
         if protect:
             k.mb_prefix = s

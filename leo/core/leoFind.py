@@ -11,51 +11,69 @@ import re
 
 #@<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414:<< Theory of operation of find/change >>
-#@+at 
-#@nonl
-# The find and change commands are tricky; there are many details that must be 
-# handled properly. This documentation describes the leo.py code. Previous 
-# versions of Leo used an inferior scheme.  The following principles govern 
-# the leoFind class:
+#@@nocolor-node
+#@+at
+# The find and change commands are tricky; there are many details that must be
+# handled properly. This documentation describes the leo.py code. Previous
+# versions of Leo used an inferior scheme. The following principles govern the
+# leoFind class:
 # 
 # 1. Find and Change commands initialize themselves using only the state of 
-# the present Leo window. In particular, the Find class must not save internal 
-# state information from one invocation to the next. This means that when the 
-# user changes the nodes, or selects new text in headline or body text, those 
-# changes will affect the next invocation of any Find or Change command. 
-# Failure to follow this principle caused all kinds of problems in the Borland 
-# and Macintosh codes. There is one exception to this rule: we must remember 
-# where interactive wrapped searches start. This principle simplifies the code 
-# because most ivars do not persist. However, each command must ensure that 
-# the Leo window is left in a state suitable for restarting the incremental 
-# (interactive) Find and Change commands. Details of initialization are 
-# discussed below.
+# the
+#    present Leo window. In particular, the Find class must not save internal
+#    state information from one invocation to the next. This means that when 
+# the
+#    user changes the nodes, or selects new text in headline or body text, 
+# those
+#    changes will affect the next invocation of any Find or Change command.
+#    Failure to follow this principle caused all kinds of problems in the 
+# Borland
+#    and Macintosh codes. There is one exception to this rule: we must 
+# remember
+#    where interactive wrapped searches start. This principle simplifies the 
+# code
+#    because most ivars do not persist. However, each command must ensure that 
+# the
+#    Leo window is left in a state suitable for restarting the incremental
+#    (interactive) Find and Change commands. Details of initialization are
+#    discussed below.
 # 
 # 2. The Find and Change commands must not change the state of the outline or 
-# body pane during execution. That would cause severe flashing and slow down 
-# the commands a great deal. In particular, c.selectVnode and c.editPosition 
-# methods must not be called while looking for matches.
+# body
+#    pane during execution. That would cause severe flashing and slow down the
+#    commands a great deal. In particular, c.selectVnode and c.editPosition
+#    methods must not be called while looking for matches.
 # 
-# 3. When incremental Find or Change commands succeed they must leave the Leo 
-# window in the proper state to execute another incremental command. We 
-# restore the Leo window as it was on entry whenever an incremental search 
-# fails and after any Find All and Change All command.
+# 3. When incremental Find or Change commands succeed they must leave the Leo
+#    window in the proper state to execute another incremental command. We 
+# restore
+#    the Leo window as it was on entry whenever an incremental search fails 
+# and
+#    after any Find All and Change All command.
 # 
-# Initialization involves setting the c, p, in_headline, wrapping and s_ctrl 
+# Initialization involves setting the c, p, in_headline, wrapping and s_ctrl
 # ivars. Setting in_headline is tricky; we must be sure to retain the state of 
-# the outline pane until initialization is complete. Initializing the Find All 
-# and Change All commands is much easier because such initialization does not 
-# depend on the state of the Leo window.
+# the
+# outline pane until initialization is complete. Initializing the Find All and
+# Change All commands is much easier because such initialization does not 
+# depend
+# on the state of the Leo window.
 # 
-# Using Tk.Text widgets for both headlines and body text results in a huge 
+# Using Tk.Text widgets for both headlines and body text results in a huge
 # simplification of the code. Indeed, the searching code does not know whether 
-# it is searching headline or body text. The search code knows only that 
-# s_ctrl is a Tk.Text widget that contains the text to be searched or changed 
-# and the insert and sel Tk attributes of self.search_text indicate the range 
-# of text to be searched. Searching headline and body text simultaneously is 
-# complicated. The selectNextPosition() method handles the many details 
-# involved by setting s_ctrl and its insert and sel attributes.
+# it
+# is searching headline or body text. The search code knows only that s_ctrl 
+# is a
+# Tk.Text widget that contains the text to be searched or changed and the 
+# insert
+# and sel Tk attributes of self.search_text indicate the range of text to be
+# searched. Searching headline and body text simultaneously is complicated. 
+# The
+# selectNextPosition() method handles the many details involved by setting 
+# s_ctrl
+# and its insert and sel attributes.
 #@-at
+#@nonl
 #@-node:ekr.20031218072017.2414:<< Theory of operation of find/change >>
 #@nl
 
@@ -523,7 +541,7 @@ class leoFind:
         p = c.currentPosition()
         u.afterChangeGroup(p,undoType,reportFlag=True)
         g.es("changed:",count,"instances")
-        c.redraw()
+        c.redraw(p)
         self.restore(saveData)
     #@-node:ekr.20031218072017.3069:changeAll
     #@+node:ekr.20031218072017.3070:changeSelection
@@ -715,7 +733,7 @@ class leoFind:
             c.setChanged(True)
 
         self.restore(data)
-        c.redraw_now()
+        c.redraw()
         g.es("found",count,"matches")
     #@-node:ekr.20031218072017.3073:findAll
     #@+node:ekr.20031218072017.3074:findNext
@@ -1057,7 +1075,8 @@ class leoFind:
 
     def selectNextPosition(self):
 
-        c = self.c ; p = self.p ; trace = False
+        trace = False
+        c = self.c ; p = self.p
 
         # Start suboutline only searches.
         if self.suboutline_only and not self.onlyPosition:
@@ -1133,7 +1152,8 @@ class leoFind:
 
         c = self.c ; w = self.find_ctrl
 
-        # g.trace(g.callers())
+        g.trace(g.callers(4))
+
         c.widgetWantsFocusNow(w)
         # g.app.gui.selectAllText(w)
         w.selectAllText()
@@ -1203,8 +1223,13 @@ class leoFind:
     # Call this routine when moving to the next node when a search fails.
     # Same as above except we don't reset wrapping flag.
     def initNextText(self,ins=None):
-        p = self.p
+        c,p = self.c,self.p
         s = g.choose(self.in_headline,p.headString(), p.bodyString())
+        # g.trace(self.in_headline,len(s),p.headString())
+        if not self.in_headline:
+            tree = c.frame.tree
+            if hasattr(tree,'killEditing'):
+                tree.killEditing() # Support for Qt tree.
         self.init_s_ctrl(s,ins)
 
     def init_s_ctrl (self,s,ins):
@@ -1307,19 +1332,21 @@ class leoFind:
             t.setInsertPoint(insert)
             t.seeInsertPoint()
 
-        #g.trace(c.widget_name(t))
-
         if 1: # I prefer always putting the focus in the body.
             c.invalidateFocus()
             c.bodyWantsFocusNow()
             c.k.showStateAndMode(c.frame.body.bodyCtrl)
         else:
             c.widgetWantsFocusNow(t)
+    #@nonl
     #@-node:ekr.20031218072017.3089:restore
     #@+node:ekr.20031218072017.3090:save
     def save (self):
 
         c = self.c ; p = self.p
+
+        # g.trace(p.headString(),c.edit_widget(p))
+
         w = g.choose(self.in_headline,c.edit_widget(p),c.frame.body.bodyCtrl)
 
         # 2007/10/24: defensive programming for unit tests.
@@ -1343,40 +1370,46 @@ class leoFind:
         Returns self.dummy_vnode, c.edit_widget(p) or c.frame.body.bodyCtrl with
         "insert" and "sel" points set properly."""
 
-        c = self.c ; p = self.p
+        c = self.c ; p = self.p ; current = c.currentPosition()
         sparseFind = c.config.getBool('collapse_nodes_during_finds')
         c.frame.bringToFront() # Needed on the Mac
-        redraw = not p.isVisible(c)
-        if sparseFind and not c.currentPosition().isAncestorOf(p):
+        redraw1 = not p.isVisible(c)
+        if sparseFind:
             # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
             for p2 in c.currentPosition().self_and_parents_iter():
+                if p2.isAncestorOf(p):
+                    break
+                # g.trace('contract',p.headString())
                 p2.contract()
                 redraw = True
-        for p in self.p.parents_iter():
-            if not p.isExpanded():
-                p.expand()
-                redraw = True
+
+        redraw2 = c.expandAllAncestors(self.p)
         p = self.p
         if not p: g.trace('can not happen: self.p is None')
 
-        c.selectPosition(p)
-        if redraw:
-            c.redraw_now() # was c.redraw.
+        # g.trace('redraw2',redraw1,redraw2)
+
+        # #### c.selectPosition(p)
+        redraw = redraw1 or redraw2
         if self.in_headline:
-            c.editPosition(p)
-        # Set the focus and selection after the redraw.
+            #### c.redraw(p)
+            c.redrawAndEdit(p)
+        elif redraw:
+            c.redraw(p)
+        else:
+            c.selectPosition(p)
+        # Set the focus
         w = g.choose(self.in_headline,c.edit_widget(p),c.frame.body.bodyCtrl)
         if not w: return
         c.widgetWantsFocusNow(w)
         c.k.showStateAndMode(w)
-        # New in 4.4a3: a much better way to ensure progress in backward searches.
+        # Ensure progress in backward searches.
         insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
         #g.trace('reverse,pos,newpos,insert',self.reverse,pos,newpos,insert)
         w.setSelectionRange(pos,newpos,insert=insert)
         w.seeInsertPoint()
         if self.wrap and not self.wrapPosition:
             self.wrapPosition = self.p
-    #@nonl
     #@-node:ekr.20031218072017.3091:showSuccess
     #@+node:ekr.20031218072017.1460:update_ivars (leoFind)
     # New in Leo 4.4.3: This is now gui-independent code.

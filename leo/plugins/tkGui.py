@@ -542,6 +542,8 @@ class tkinterGui(leoGui.leoGui):
         try:
             return c.frame.top.focus_displayof()
         except Exception:
+            if g.unitTesting:
+                g.es_exception()
             return None
     #@-node:ekr.20081121110412.383:tkGui.get_focus
     #@+node:ekr.20081121110412.384:tk.Gui.set_focus
@@ -550,6 +552,8 @@ class tkinterGui(leoGui.leoGui):
     def set_focus(self,c,w):
 
         """Put the focus on the widget."""
+
+        trace = False and g.unitTesting
 
         if not g.app.unitTesting and c and c.config.getBool('trace_g.app.gui.set_focus'):
             self.set_focus_count += 1
@@ -560,20 +564,26 @@ class tkinterGui(leoGui.leoGui):
 
         if w:
             try:
-                if 0: # No longer needed.
+                if 0:
+                    # No longer needed.
                     # A call to findTab.bringToFront caused
                     # the focus problems with Pmw.Notebook.
                     w.update()
 
                 # It's possible that the widget doesn't exist now.
+                if trace: g.trace('tkGui',w,g.callers(5))
                 w.focus_set()
+
+                if g.unitTesting:
+                    # This forces the focus immediately.
+                    w.update()
 
                 # This often fails.  The focus will be delayed until later...
                 # if not w != w.focus_get():
                     # g.trace('*** can not happen:',repr(w),repr(w.focus_get()))
                 return True
             except Exception:
-                # g.es_exception()
+                if trace or g.unitTesting: g.es_exception()
                 return False
     #@-node:ekr.20081121110412.384:tk.Gui.set_focus
     #@-node:ekr.20081121110412.382:Focus
@@ -2216,7 +2226,7 @@ class tkinterListBoxDialog (leoTkinterDialog):
         if items:
             n = items[0]
             p = self.positionList[n]
-            c.frame.tree.expandAllAncestors(p)
+            c.expandAllAncestors(p)
             c.selectPosition(p)
             c.redraw()
     #@-node:ekr.20081121110412.79:go
@@ -5345,6 +5355,7 @@ class leoTkinterLog (leoFrame.leoLog):
 
             w.see('end')
             self.forceLogUpdate(s)
+            #@nonl
             #@-node:ekr.20081121110412.266:<< put s to log control >>
             #@nl
             self.logCtrl.update_idletasks()
@@ -7055,6 +7066,7 @@ class leoTkinterTree (leoFrame.leoTree):
     #@-node:ekr.20081121110412.469:traceIds (Not used)
     #@-node:ekr.20081121110412.467:Debugging...
     #@+node:ekr.20081121110412.470:Drawing... (tkTree)
+    #@+node:ekr.20090110073024.10:Entry points (tkTree)
     #@+node:ekr.20081121110412.471:tree.begin/endUpdate
     def beginUpdate (self):
 
@@ -7074,17 +7086,27 @@ class leoTkinterTree (leoFrame.leoTree):
     #@-node:ekr.20081121110412.471:tree.begin/endUpdate
     #@+node:ekr.20081121110412.472:tree.redraw_now & helper
     # New in 4.4b2: suppress scrolling by default.
+    # New in 4.6: enable scrolling by default.
 
-    def redraw_now (self,scroll=False,forceDraw=False):
+    def redraw_now (self,p=None,scroll=True,forceDraw=False):
 
-        '''Redraw immediately: used by Find so a redraw doesn't mess up selections in headlines.'''
+        '''Redraw immediately.
+        forceDraw is used to eliminate draws while dragging.'''
+
+        trace = False and g.unitTesting
+        c = self.c
 
         if g.app.quitting or self.frame not in g.app.windowList:
             return
         if self.drag_p and not forceDraw:
             return
 
-        c = self.c
+        if p is None:
+            p = c.currentPosition()
+        else:
+            c.setCurrentPosition(p)
+
+        if trace: g.trace(self.redrawCount,g.callers(4))
 
         if not g.app.unitTesting:
             if self.gc_before_redraw:
@@ -7107,16 +7129,21 @@ class leoTkinterTree (leoFrame.leoTree):
             self.endUpdate(False)
 
         # Do the actual redraw.
-        self.expandAllAncestors(c.currentPosition())
+
+        #### Now done in c.redraw.
+        #### c.expandAllAncestors(c.currentPosition())
+
         if self.idle_redraw:
             def idleRedrawCallback(event=None,self=self,scroll=scroll):
                 self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
             self.canvas.after_idle(idleRedrawCallback)
         else:
             self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
+
         if g.app.unitTesting:
             self.canvas.update_idletasks() # Important for unit tests.
-        c.masterFocusHandler()
+
+        #### c.masterFocusHandler()
 
     redraw = redraw_now # Compatibility
     #@+node:ekr.20081121110412.473:redrawHelper
@@ -7156,6 +7183,32 @@ class leoTkinterTree (leoFrame.leoTree):
         self.canvas['cursor'] = oldcursor
     #@-node:ekr.20081121110412.473:redrawHelper
     #@-node:ekr.20081121110412.472:tree.redraw_now & helper
+    #@+node:ekr.20090110134111.11:redraw_after_contract
+    def redraw_after_contract (self,p):
+
+        self.redraw_now()
+    #@-node:ekr.20090110134111.11:redraw_after_contract
+    #@+node:ekr.20090110073024.11:redraw_after_head_changed
+    def redraw_after_head_changed (self):
+
+        if 0: g.trace('doing nothing')
+        ##### self.redraw_now()
+    #@-node:ekr.20090110073024.11:redraw_after_head_changed
+    #@+node:ekr.20090110073024.13:redraw_after_icons_changed
+    def redraw_after_icons_changed (self,all=False):
+
+        if g.unitTesting:
+            # A terrible hack.  Don't switch edit widget.
+            pass
+        else:
+            self.redraw_now()
+    #@-node:ekr.20090110073024.13:redraw_after_icons_changed
+    #@+node:ekr.20090110073024.12:redraw_after_select
+    def redraw_after_select (self,p,edit=False,editAll=False):
+
+        self.redraw_now()
+    #@-node:ekr.20090110073024.12:redraw_after_select
+    #@-node:ekr.20090110073024.10:Entry points (tkTree)
     #@+node:ekr.20081121110412.474:idle_second_redraw
     def idle_second_redraw (self):
 
@@ -8241,7 +8294,7 @@ class leoTkinterTree (leoFrame.leoTree):
                 self.active = True
             else:
                 if trace: g.trace("not current")
-                self.select(p,scroll=False)
+                self.select(p)
                 w  = c.frame.body.bodyCtrl
                 if c.frame.findPanel:
                     c.frame.findPanel.handleUserClick(p)
@@ -8680,37 +8733,38 @@ class leoTkinterTree (leoFrame.leoTree):
         p = self.c.currentPosition()
         self.setSelectedLabelState(p)
     #@-node:ekr.20081121110412.551:dimEditLabel, undimEditLabel
-    #@+node:ekr.20081121110412.552:tree.editLabel
+    #@+node:ekr.20081121110412.552:tree.editLabel (tkTree)
     def editLabel (self,p,selectAll=False):
 
         """Start editing p's headline."""
 
+        trace = (False or self.trace_edit) and g.unitTesting
         c = self.c
-        trace = (False or self.trace_edit)
 
         if p and p != self.editPosition():
 
-            if trace:
-                g.trace('leoTree',p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
-
             self.endEditLabel()
-            # This redraw *is* required so the c.edit_widget(p) will exist.
-            c.redraw()
-            c.outerUpdate()
+            # This redraw was formerly needed so that c.edit_widget(p)
+            # would exist.  However, Leo's core now guarantees a redraw
+            # before each call to c.editPosition.
+            if 0:
+                c.redraw()
+                c.outerUpdate()
 
         self.setEditPosition(p) # That is, self._editPosition = p
         w = c.edit_widget(p)
 
-        if trace: g.trace('1','w',w,'focus',g.app.gui.get_focus(c))
-
         if p and w:
+            if trace: g.trace('w',w,p)
             self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
             self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
-            c.headlineWantsFocus(p) # Make sure the focus sticks.
+            ### c.headlineWantsFocus(p) # Make sure the focus sticks.
+            c.widgetWantsFocus(w)
             c.k.showStateAndMode(w)
-
-        if trace: g.trace('w',w,'focus',g.app.gui.get_focus(c))
-    #@-node:ekr.20081121110412.552:tree.editLabel
+        else:
+            if trace: g.trace('*** ERROR *** no edit widget for %s' % p)
+    #@nonl
+    #@-node:ekr.20081121110412.552:tree.editLabel (tkTree)
     #@+node:ekr.20081121110412.553:tree.set...LabelState
     #@+node:ekr.20081121110412.554:setEditLabelState
     def setEditLabelState (self,p,selectAll=False): # selected, editing

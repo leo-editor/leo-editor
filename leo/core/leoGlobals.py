@@ -2334,7 +2334,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
     else:
         c.bodyWantsFocusNow()
 
-    # c.redraw_now() # Only needed by menu commands.
+    # c.redraw() # Only needed by menu commands.
     return c,frame
 #@-node:ekr.20080921154026.1:g.openWrapperLeoFile
 #@+node:ekr.20031218072017.3120:g.readlineForceUnixNewline (Steven P. Schaefer)

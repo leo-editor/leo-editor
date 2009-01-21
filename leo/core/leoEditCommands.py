@@ -740,8 +740,8 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.setInsertPoint('end')
             w.seeInsertPoint()
             self.endCommand()
-            c.redraw()
-            c.recolor_now()
+            c.redraw_after_icons_changed(all=False) ####
+            c.recolor()
     #@nonl
     #@-node:ekr.20050920084036.35:appendToBuffer
     #@+node:ekr.20050920084036.36:copyToBuffer
@@ -766,8 +766,8 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.insert('end',s)
             w.setInsertPoint('end')
             self.endCommand()
-            c.redraw()
-            c.recolor_now()
+            c.redraw_after_icons_changed(all=False) ####
+            c.recolor()
     #@-node:ekr.20050920084036.36:copyToBuffer
     #@+node:ekr.20050920084036.37:insertToBuffer
     def insertToBuffer (self,event):
@@ -792,7 +792,8 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.insert(i,s)
             w.seeInsertPoint()
             self.endCommand()
-            c.redraw()
+            c.redraw_after_icons_changed(all=False) ####
+    #@nonl
     #@-node:ekr.20050920084036.37:insertToBuffer
     #@+node:ekr.20050920084036.38:killBuffer
     def killBuffer (self,event):
@@ -863,8 +864,8 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.setInsertPoint(0)
             w.seeInsertPoint()
             self.endCommand()
-            c.redraw()
-            c.recolor_now()
+            c.redraw_after_icons_changed(all=False)
+            c.recolor()
     #@-node:ekr.20050920084036.39:prependToBuffer
     #@+node:ekr.20050920084036.43:renameBuffer
     def renameBuffer (self,event):
@@ -886,7 +887,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         if p:
             c.endEditing()
             c.setHeadString(p,name)
-            c.redraw()
+            c.redraw(p)
     #@-node:ekr.20050920084036.43:renameBuffer
     #@+node:ekr.20050920084036.40:switchToBuffer
     def switchToBuffer (self,event):
@@ -900,8 +901,9 @@ class bufferCommandsClass (baseEditCommandsClass):
 
         c = self.c ; p = self.findBuffer(name)
         if p:
-            c.selectPosition(p)
-            c.redraw()
+            #### c.selectPosition(p)
+            #### c.redraw()
+            c.redraw_after_select(p)
 
     #@-node:ekr.20050920084036.40:switchToBuffer
     #@-node:ekr.20050920084036.34:Entry points
@@ -1316,7 +1318,7 @@ class debugCommandsClass (baseEditCommandsClass):
         c = self.c
 
         c.frame.tree.destroyWidgets()
-        c.redraw_now()
+        c.redraw()
     #@-node:ekr.20060202154734:freeTreeWidgets
     #@+node:ekr.20060210100432:printFocus
     # Doesn't work if the focus isn't in a pane with bindings!
@@ -2438,7 +2440,7 @@ class editCommandsClass (baseEditCommandsClass):
         if aList:
             self.setIconList(p, aList[1:])
             c.setChanged(True)
-            c.redraw()
+            c.redraw_after_icons_changed(all=False)
     #@nonl
     #@-node:ekr.20071114082418:deleteFirstIcon
     #@+node:ekr.20071114092622:deleteIconByName
@@ -2465,7 +2467,7 @@ class editCommandsClass (baseEditCommandsClass):
         if len(newList) != len(aList):
             self.setIconList(p, newList)       
             c.setChanged(True)
-            c.redraw()
+            c.redraw_after_icons_changed(all=False)
         else:
             g.trace('not found',name)
 
@@ -2484,7 +2486,7 @@ class editCommandsClass (baseEditCommandsClass):
         if aList:
             self.setIconList(p, aList[:-1])
             c.setChanged(True)
-            c.redraw()
+            c.redraw_after_icons_changed(all=False) ####
     #@nonl
     #@-node:ekr.20071114085054:deleteLastIcon
     #@+node:ekr.20071114082418.1:deleteNodeIcons
@@ -2499,7 +2501,7 @@ class editCommandsClass (baseEditCommandsClass):
             a["lineYOffset"] = 0
             p.setDirty()
             c.setChanged(True)
-            c.redraw()
+            c.redraw_after_icons_changed(all=False)
     #@-node:ekr.20071114082418.1:deleteNodeIcons
     #@+node:ekr.20071114081313.1:insertIcon
     def insertIcon (self,event=None):
@@ -2525,7 +2527,7 @@ class editCommandsClass (baseEditCommandsClass):
         aList2.extend(aList)
         self.setIconList(p, aList2)
         c.setChanged(True)
-        c.redraw()
+        c.redraw_after_icons_changed(all=False) ####
     #@-node:ekr.20071114081313.1:insertIcon
     #@+node:ekr.20080108090719:insertIconFromFile
     def insertIconFromFile (self,path,p=None,pos=None,**kargs):
@@ -2544,7 +2546,7 @@ class editCommandsClass (baseEditCommandsClass):
         aList2.insert(pos,aList[0])
         self.setIconList(p, aList2)
         c.setChanged(True)
-        c.redraw()
+        c.redraw_after_icons_changed(all=False)
     #@-node:ekr.20080108090719:insertIconFromFile
     #@-node:ekr.20071114081313:icons...
     #@+node:ekr.20050920084036.74:indent...
@@ -4205,9 +4207,8 @@ class editCommandsClass (baseEditCommandsClass):
                 w.delete(i,j)
                 c.setBodyString(p,w.getAllText())
                 p = p.threadNext()
-                c.selectPosition(p)
-                c.redraw()
-
+                ####c.selectPosition(p)
+                c.redraw(p)
 
                 s = w.getAllText()
                 w.insert(0,lines)
@@ -4253,8 +4254,8 @@ class editCommandsClass (baseEditCommandsClass):
                 w.delete(i,j)
                 c.setBodyString(p,w.getAllText())
                 p = p.threadBack()
-                c.selectPosition(p)
-                c.redraw()
+                #### c.selectPosition(p)
+                c.redraw(p)
 
                 s = w.getAllText()
                 if not s.endswith('\n'): w.insert('end','\n')
@@ -4890,7 +4891,7 @@ class editFileCommandsClass (baseEditCommandsClass):
         c.selectPosition(parent)
         u.afterChangeGroup(parent,undoType,reportFlag=True) 
 
-        c.redraw_now()
+        c.redraw()
     #@nonl
     #@+node:ekr.20070921074410:createCompareClones
     def createCompareClones (self,d,kind,parent):
@@ -8492,7 +8493,6 @@ class spellTabHandler (leoFind.leoFind):
                         if not p2.isExpanded():
                             p2.expand()
                             redraw = True
-                    # c.frame.tree.expandAllAncestors(p)
                     c.selectPosition(p)
                     if redraw:
                         c.redraw()

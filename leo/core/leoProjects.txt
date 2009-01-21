@@ -909,9 +909,7 @@ def goto_showResults(self,found,p,n,n2,lines):
     c = self ; w = c.frame.body.bodyCtrl
 
     # Select p and make it visible.
-    c.frame.tree.expandAllAncestors(p)
-    c.selectPosition(p)
-    c.redraw()
+    c.redraw(p)
 
     # Put the cursor on line n2 of the body text.
     s = w.getAllText()
@@ -927,6 +925,7 @@ def goto_showResults(self,found,p,n,n2,lines):
     w.setInsertPoint(ins)
     c.bodyWantsFocusNow()
     w.seeInsertPoint()
+#@nonl
 #@-node:ekr.20080904071003.14:goto_showResults
 #@+node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
@@ -1826,9 +1825,7 @@ def importFilesCommand (self,files=None,treeType=None):
             c.setChanged(True)
     c.validateOutline()
     current.expand()
-    c.redraw()
-
-    c.selectVnode(current)
+    c.redraw(current)
 #@+node:ekr.20031218072017.3213:<< Create a parent for two files having a common prefix >>
 @ The two filenames have a common prefix everything before the last period is the same.  For example, x.h and x.cpp.
 @c
@@ -2054,7 +2051,7 @@ def new (self,event=None,gui=None):
     # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
     p._linkAsRoot(oldRoot=None)
     c.setRootVnode(v) # New in Leo 4.4.2.
-    c.editPosition(p)
+    c.selectPosition(p)
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
     p = c.currentPosition()
     if not g.doHook("menu1",c=c,p=p,v=p):
@@ -2074,7 +2071,7 @@ def new (self,event=None,gui=None):
         c.bodyWantsFocusNow()
     # Force a call to c.outerUpdate.
     # This is needed when we execute this command from a menu.
-    c.redraw_now()
+    c.redraw()
     c.frame.tree.initAfterLoad()
     c.initAfterLoad()
     c.frame.initCompleteHint()
@@ -4424,7 +4421,7 @@ def setSelection (self,s):
     w.setSelectionRange(i,j,insert=j)
 
     # New in Leo 4.4.2: recolor immediately to preserve the new selection in the new colorizer.
-    c.frame.body.recolor_now(c.currentPosition(),incremental=True)
+    c.frame.body.recolor(c.currentPosition(),incremental=True)
     # Usually this call will have no effect because the body text has not changed.
     c.frame.body.onBodyChanged('Typing')
 #@-node:ekr.20061031131434.45:setSelection
@@ -5664,7 +5661,7 @@ def initFocusAndDraw(c,fileName):
     w = g.app.gui.get_focus(c)
 
     if not fileName:
-        c.redraw_now()
+        c.redraw()
 
     # Respect c's focus wishes if posssible.
     if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
@@ -6341,7 +6338,7 @@ def initFocusAndDraw(c,fileName):
     w = g.app.gui.get_focus(c)
 
     if not fileName:
-        c.redraw_now()
+        c.redraw()
 
     # Respect c's focus wishes if posssible.
     if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
@@ -9111,7 +9108,7 @@ def initFocusAndDraw(c,fileName):
     w = g.app.gui.get_focus(c)
 
     if not fileName:
-        c.redraw_now()
+        c.redraw()
 
     # Respect c's focus wishes if posssible.
     if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
@@ -9322,7 +9319,7 @@ def initFocusAndDraw(c,fileName):
     w = g.app.gui.get_focus(c)
 
     if not fileName:
-        c.redraw_now()
+        c.redraw()
 
     # Respect c's focus wishes if posssible.
     if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
@@ -9996,7 +9993,7 @@ def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
     if ok and readAtFileNodesFlag:
         # Redraw before reading the @file nodes so the screen isn't blank.
         # This is important for big files like LeoPy.leo.
-        c.redraw_now()
+        c.redraw()
         c.setFileTimeStamp(fileName)
         c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
 
@@ -10495,7 +10492,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
     else:
         c.bodyWantsFocusNow()
 
-    # c.redraw_now() # Only needed by menu commands.
+    # c.redraw() # Only needed by menu commands.
     return c,frame
 #@-node:ekr.20080921154026.1:g.openWrapperLeoFile
 #@-node:ekr.20080921154026.5:Changed
@@ -11548,7 +11545,7 @@ def setSelection (self,s):
     w.setSelectionRange(i,j,insert=j)
 
     # New in Leo 4.4.2: recolor immediately to preserve the new selection in the new colorizer.
-    c.frame.body.recolor_now(c.currentPosition(),incremental=True)
+    c.frame.body.recolor(c.currentPosition(),incremental=True)
     # Usually this call will have no effect because the body text has not changed.
     c.frame.body.onBodyChanged('Typing')
 #@-node:ekr.20061031131434.45:setSelection
@@ -14276,7 +14273,7 @@ def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
     if ok and readAtFileNodesFlag:
         # Redraw before reading the @file nodes so the screen isn't blank.
         # This is important for big files like LeoPy.leo.
-        c.redraw_now()
+        c.redraw()
         c.setFileTimeStamp(fileName)
         c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
 
@@ -14489,7 +14486,7 @@ def save(self,fileName):
     ok = g.doHook("save1",c=c,p=v,v=v,fileName=fileName)
 
     if ok is None:
-        c.endEditing()# Set the current headline text.
+        c.endEditing() # Set the current headline text.
         self.setDefaultDirectoryForNewFiles(fileName)
         ok = c.checkFileTimeStamp(fileName)
         if ok:
@@ -14500,7 +14497,8 @@ def save(self,fileName):
             if c.config.save_clears_undo_buffer:
                 g.es("clearing undo")
                 c.undoer.clearUndoState()
-        c.redraw()
+        #### c.redraw()
+        c.redraw_after_icons_changed(all=True)
 
     g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
     return ok
@@ -16814,9 +16812,7 @@ def goPrevVisitedNode (self,event=None):
     p = c.nodeHistory.goPrev()
 
     if p:
-        c.frame.tree.expandAllAncestors(p)
-        c.selectPosition(p)
-        c.redraw()
+        c.redraw(p) #### Should be redraw_after_select.
 
 #@-node:ekr.20031218072017.1627:goPrevVisitedNode
 #@+node:ekr.20031218072017.1628:goNextVisitedNode
@@ -16829,9 +16825,7 @@ def goNextVisitedNode (self,event=None):
     p = c.nodeHistory.goNext()
 
     if p:
-        c.frame.tree.expandAllAncestors(p)
-        c.selectPosition(p)
-        c.redraw()
+        c.redraw_after_select(p)
 
 #@-node:ekr.20031218072017.1628:goNextVisitedNode
 #@+node:ekr.20070615131604:class nodeHistory
@@ -17043,7 +17037,7 @@ def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
     if ok and readAtFileNodesFlag:
         # Redraw before reading the @file nodes so the screen isn't blank.
         # This is important for big files like LeoPy.leo.
-        c.redraw_now()
+        c.redraw()
         c.setFileTimeStamp(fileName)
         c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
 

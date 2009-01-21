@@ -890,11 +890,10 @@ class leoImportCommands (scanUtility):
             p.contract()
             u.afterInsertNode(p,command,undoData)
         current.expand()
-        ### c.redraw_after_expand()
-        c.selectPosition(current)
+        ### c.selectPosition(current)
         c.setChanged(True)
         u.afterChangeGroup(p,command)
-        c.redraw()
+        c.redraw(current)
     #@+node:ekr.20051208100903.1:forceGnxOnPosition
     def forceGnxOnPosition (self,p):
 
@@ -944,9 +943,7 @@ class leoImportCommands (scanUtility):
                 c.setChanged(True)
         c.validateOutline()
         current.expand()
-        c.redraw()
-
-        c.selectVnode(current)
+        c.redraw(current)
     #@-node:ekr.20031218072017.3212:importFilesCommand
     #@+node:ekr.20031218072017.3214:importFlattenedOutline & allies
     #@+node:ekr.20031218072017.3215:convertMoreString/StringsToOutlineAfter
@@ -1078,7 +1075,8 @@ class leoImportCommands (scanUtility):
         if p:
             c.endEditing()
             c.validateOutline()
-            c.editPosition(p)
+            #### c.redraw(p)
+            c.redrawAndEdit(p)
             p.setDirty()
             c.setChanged(True)
             u.afterInsertNode(p,'Import',undoData)
@@ -1156,7 +1154,7 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20031218072017.3226:importWebCommand
     def importWebCommand (self,files,webType):
 
-        c = self.c ; current = c.currentVnode()
+        c = self.c ; current = c.currentPosition()
         if current == None: return
         if not files: return
         self.tab_width = self.getTabWidth() # New in 4.3.
@@ -1164,12 +1162,12 @@ class leoImportCommands (scanUtility):
 
         for fileName in files:
             g.setGlobalOpenDir(fileName)
-            v = self.createOutlineFromWeb(fileName,current)
-            v.contract()
-            v.setDirty()
+            p = self.createOutlineFromWeb(fileName,current)
+            p.contract()
+            p.setDirty()
             c.setChanged(True)
-        c.selectVnode(current)
-        c.redraw()
+        #### c.selectVnode(current)
+        c.redraw(current)
     #@-node:ekr.20031218072017.3226:importWebCommand
     #@+node:ekr.20031218072017.3227:findFunctionDef
     def findFunctionDef (self,s,i):
@@ -1529,8 +1527,8 @@ class leoImportCommands (scanUtility):
             while old_root.hasChildren():
                 old_root.firstChild().doDelete()
             c.setChanged(oldChanged)
-        c.selectPosition(old_root)
-        c.redraw()
+        #### c.selectPosition(old_root)
+        c.redraw(old_root)
 
         if g.app.unitTesting:
             assert ok

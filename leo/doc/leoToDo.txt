@@ -688,9 +688,7 @@ def goto_showResults(self,found,p,n,n2,lines):
     c = self ; w = c.frame.body.bodyCtrl
 
     # Select p and make it visible.
-    c.frame.tree.expandAllAncestors(p)
-    c.selectPosition(p)
-    c.redraw()
+    c.redraw(p)
 
     # Put the cursor on line n2 of the body text.
     s = w.getAllText()
@@ -706,6 +704,7 @@ def goto_showResults(self,found,p,n,n2,lines):
     w.setInsertPoint(ins)
     c.bodyWantsFocusNow()
     w.seeInsertPoint()
+#@nonl
 #@-node:ekr.20080904071003.14:goto_showResults
 #@+node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
@@ -1610,7 +1609,7 @@ def new (self,event=None,gui=None):
     # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
     p._linkAsRoot(oldRoot=None)
     c.setRootVnode(v) # New in Leo 4.4.2.
-    c.editPosition(p)
+    c.selectPosition(p)
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
     p = c.currentPosition()
     if not g.doHook("menu1",c=c,p=p,v=p):
@@ -1630,7 +1629,7 @@ def new (self,event=None,gui=None):
         c.bodyWantsFocusNow()
     # Force a call to c.outerUpdate.
     # This is needed when we execute this command from a menu.
-    c.redraw_now()
+    c.redraw()
     c.frame.tree.initAfterLoad()
     c.initAfterLoad()
     c.frame.initCompleteHint()
@@ -1950,7 +1949,8 @@ def save (self,event=None):
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
 
-    c.redraw()
+    # Done in fileCommands.save.
+    # c.redraw_after_icons_changed(all=True)
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
@@ -1986,7 +1986,9 @@ def saveAs (self,event=None):
         c.fileCommands.saveAs(c.mFileName)
         c.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
-    c.redraw()
+
+    # Done in fileCommands.saveAs.
+    # c.redraw_after_icons_changed(all=True)
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
@@ -2041,7 +2043,8 @@ def saveTo (self,event=None):
         c.updateRecentFiles(fileName)
         g.chdir(fileName)
 
-    c.redraw()
+    # Does not change icons status.
+    # c.redraw_after_icons_changed(all=True)
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2837:revert
@@ -3259,7 +3262,7 @@ def masterKeyHandler (self,event,stroke=None):
     '''This is the handler for almost all key bindings.'''
 
     << define vars >>
-    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    trace = False and (g.app.unitTesting or self.trace_masterKeyHandler)
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
     verbose = True
 
@@ -4038,7 +4041,7 @@ def masterKeyHandler (self,event,stroke=None):
     '''This is the handler for almost all key bindings.'''
 
     << define vars >>
-    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    trace = False and (g.app.unitTesting or self.trace_masterKeyHandler)
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
     verbose = True
 
@@ -5203,7 +5206,7 @@ def masterKeyHandler (self,event,stroke=None):
     '''This is the handler for almost all key bindings.'''
 
     << define vars >>
-    trace = (False or self.trace_masterKeyHandler) and not g.app.unitTesting
+    trace = False and (g.app.unitTesting or self.trace_masterKeyHandler)
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
     verbose = True
 

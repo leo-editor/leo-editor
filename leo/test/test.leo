@@ -3369,43 +3369,41 @@ leoTest.doTests (c,all=False)</t>
 <t tx="ekr.20071025193940"># Caution: you will have to disable cursesGui in an external editor
 # if you enable the cursesGui plugin it here
 
-# qtGui.py
-# tkGui.py
-
 plugins_menu.py
 
-# setHomeDirectory.py
+# leoOPML.py
+# graphed.py
 
-leoOPML.py
-graphed.py
-# base64Packager.py
+# not normally enabled by default.  Recently changed.
+# EditAttributes.py
+# UASearch.py
+# active_path.py
+# cleo.py
+# datenodes.py
+# mod_labels.py
+# newButtons.py
 # searchbox.py
 
-# active_path.py
+# This works only with tk.  It is not needed for qt.
+# threading_colorizer.py
+
 # open_shell.py
 # ipython.py
-# cleo.py
 # open_with.py
 rClick.py
 toolbar.py
-# autotrees.py
 
 # add_directives.py # scan-directives hook not ready.
 # color_markup.py # Does not work with threading colorizer.
-#threading_colorizer.py
 rst3.py
 UNL.py
 open_with.py
 mod_scripting.py
-
 nav_buttons.py
 nodenavigator.py
-# hoist.py
 image.py
 leo_to_html.py
-
 # vim.py
-# print_cp.py
 </t>
 <t tx="ekr.20071026102420.2"></t>
 <t tx="ekr.20071026102420.3"></t>

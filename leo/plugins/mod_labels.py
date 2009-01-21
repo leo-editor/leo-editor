@@ -42,7 +42,9 @@ import leo.core.leoAtFile as leoAtFile
 import leo.core.leoCommands as leoCommands
 import leo.core.leoPlugins as leoPlugins
 
-from leoTkinterDialog import tkinterListBoxDialog, leoTkinterDialog
+import leo.plugins.tkGui as tkGui
+leoTkinterDialog = tkGui.leoTkinterDialog
+tkinterListBoxDialog = tkGui.tkinterListBoxDialog
 
 if 0: # Not anymore
     from leoGlobals import * # required by read :-(.
@@ -56,7 +58,7 @@ import pickle
 #@nonl
 #@-node:ekr.20050301095332.2:<<imports>>
 #@nl
-__version__ = "1.5"
+__version__ = "1.6"
 #@<< version history >>
 #@+node:ekr.20050301103957:<< version history >>
 #@@killcolor
@@ -88,6 +90,7 @@ __version__ = "1.5"
 # - Replaced self.iterator by self.c.allNodes_iter
 # 1.4 EKR: Removed call to Pmw.initialise.  This is now done in Leo's core.
 # 1.5 EKR: Added event=None to argument list for all commands in the menu.
+# 1.6 EKR: Import tkGui as needed.
 #@-at
 #@nonl
 #@-node:ekr.20050301103957:<< version history >>

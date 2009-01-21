@@ -57,7 +57,17 @@ active_path is a rewrite of the at_directory plugin to use @path directives (whi
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import os
-__version__ = "0.1"
+__version__ = "0.2"
+
+#@<< version history >>
+#@+node:ekr.20090120065737.1:<< version history >>
+#@@nocolor-node
+#@+at
+# 
+# 0.2 EKR: replaced begin/endUpdate with c.redraw(p)
+#@-at
+#@-node:ekr.20090120065737.1:<< version history >>
+#@nl
 
 #@+others
 #@+node:tbrown.20080613095157.4:onSelect
@@ -263,16 +273,13 @@ def cmd_UpdateRecursive(c):
     """Recursive update, no new expansions."""
     p = c.currentPosition()
 
-    c.beginUpdate()
-    try:
-        for s in p.self_and_subtree_iter():
-            path = getPath(s)
+    for s in p.self_and_subtree_iter():
+        path = getPath(s)
 
-            if path:
-                sync_node_to_folder(c,s,path,updateOnly=True)
+        if path:
+            sync_node_to_folder(c,s,path,updateOnly=True)
 
-    finally:
-        c.endUpdate()
+    c.redraw(p)
 
 #@-node:tbrown.20080619080950.16:cmd_UpdateRecursive
 #@+node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
@@ -298,24 +305,16 @@ def dtor(p):
 def cmd_PurgeVanishedFilesHere(c):
     """Remove files no longer present, i.e. "*filename*" entries."""
     p = c.currentPosition().getParent()
-
-    c.beginUpdate()
-    try:
-        n = deleteChildren(p, cond, dtor=dtor)
-        g.es('Deleted %d nodes' % n)
-    finally:
-        c.endUpdate()
+    n = deleteChildren(p, cond, dtor=dtor)
+    g.es('Deleted %d nodes' % n)
+    c.redraw(p)
 
 def cmd_PurgeVanishedFilesRecursive(c):
     """Remove files no longer present, i.e. "*filename*" entries."""
     p = c.currentPosition()
-
-    c.beginUpdate()
-    try:
-        n = deleteDescendents(p, cond, dtor=dtor)
-        g.es('Deleted at least %d nodes' % n)
-    finally:
-        c.endUpdate()
+    n = deleteDescendents(p, cond, dtor=dtor)
+    g.es('Deleted at least %d nodes' % n)
+    c.redraw(p)
 
 def deleteChildren(p, cond, dtor=None):
 

@@ -13,16 +13,22 @@ REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
 
-REM goto errors
+goto errors
 goto all
 
 :errors
 
-echo leoFrame.py
-call pylint.bat leo\core\leoFrame.py         --rcfile=leo\test\pylint-leo-rc.txt
-
 echo qtGui.py
 call pylint.bat leo\plugins\qtGui.py         --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
+
+echo toolbar.py
+rem doesn't help: cd c:\leo.repo\trunk\leo\plugins
+rem call pylint.bat toolbar.py     --rcfile=c:\leo.repo\trunk\leo\test\pylint-leo-rc.txt
+rem cd c:\leo.repo\trunk
+rem Dangerous: many erroneous E1101 errors
+rem Harmless: W0221: Arguments number differs from overridden method
+rem Harmless: W0511: Fixme and to-do.
+call pylint.bat leo\plugins\toolbar.py     --disable-msg=E1101,W0221,W0511 --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 
@@ -84,28 +90,17 @@ call pylint.bat leo\core\leoTangle.py        --rcfile=leo\test\pylint-leo-rc.txt
 echo leoUndo.py
 call pylint.bat leo\core\leoUndo.py          --rcfile=leo\test\pylint-leo-rc.txt
 
-echo leoTkinterDialog.py
-call pylint.bat leo\core\leoTkinterDialog.py --rcfile=leo\test\pylint-leo-rc.txt
-
-echo leoTkinterFind.py
-call pylint.bat leo\core\leoTkinterFind.py   --rcfile=leo\test\pylint-leo-rc.txt
-
-echo leoTkinterGui.py
-call pylint.bat leo\core\leoTkinterGui.py    --rcfile=leo\test\pylint-leo-rc.txt
-
-echo leoTkinterFrame.py
+REM These have been moved into tkGui plugin
+REM call pylint.bat leo\core\leoTkinterDialog.py --rcfile=leo\test\pylint-leo-rc.txt
+REM call pylint.bat leo\core\leoTkinterFind.py   --rcfile=leo\test\pylint-leo-rc.txt
+REM call pylint.bat leo\core\leoTkinterGui.py    --rcfile=leo\test\pylint-leo-rc.txt
+REM echo leoTkinterFrame.py
 rem  Harmless: 				     W0221: mismatch between Tk.Text methods and overridden methods.
-call pylint.bat leo\core\leoTkinterFrame.py  --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
-
-echo leoTkinterKeys.py
-call pylint.bat leo\core\leoTkinterKeys.py   --rcfile=leo\test\pylint-leo-rc.txt
-
-echo leoTkinterMenu.py
+REM call pylint.bat leo\core\leoTkinterFrame.py  --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
+REM call pylint.bat leo\core\leoTkinterKeys.py   --rcfile=leo\test\pylint-leo-rc.txt
 rem  Harmless: 				     W0221: mismatch between Tk.Text methods and overridden methods.
-call pylint.bat leo\core\leoTkinterMenu.py   --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
-
-echo leoTkinterTree.py
-call pylint.bat leo\core\leoTkinterTree.py   --rcfile=leo\test\pylint-leo-rc.txt
+REM call pylint.bat leo\core\leoTkinterMenu.py   --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
+REM call pylint.bat leo\core\leoTkinterTree.py   --rcfile=leo\test\pylint-leo-rc.txt
 
 :essential_plugins
 

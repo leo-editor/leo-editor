@@ -230,15 +230,16 @@ class baseTextWidget:
         i,j = self.getSelectionRange()
         self.delete(i,j)
     #@-node:ekr.20070228074312.14:deleteTextSelection
-    #@+node:ekr.20070228074312.15:event_generate
+    #@+node:ekr.20070228074312.15:event_generate (baseTextWidget)
     def event_generate(self,stroke):
 
+        trace = False
         w = self ; c = self.c ; char = stroke
 
         # Canonicalize the setting.
         stroke = c.k.shortcutFromSetting(stroke)
 
-        # g.trace('baseTextWidget','char',char,'stroke',stroke,'w',w)
+        if trace: g.trace('baseTextWidget','char',char,'stroke',stroke,'w',w)
 
         class eventGenerateEvent:
             def __init__ (self,c,w,char,keysym):
@@ -251,7 +252,7 @@ class baseTextWidget:
         event = eventGenerateEvent(c,w,char,stroke)
         c.k.masterKeyHandler(event,stroke=stroke)
         c.outerUpdate()
-    #@-node:ekr.20070228074312.15:event_generate
+    #@-node:ekr.20070228074312.15:event_generate (baseTextWidget)
     #@+node:ekr.20070228102413:getName & GetName
     def GetName(self):
 
@@ -793,6 +794,7 @@ class leoBody:
         return self.colorizer.updateSyntaxColorer(p.copy())
 
     def recolor(self,p,incremental=False):
+
         self.c.requestRecolorFlag = True
         self.c.incrementalRecolorFlag = incremental
 
@@ -1028,11 +1030,10 @@ class leoBody:
                 hasattr(w,'leo_p') and w.leo_p and w.leo_p.headString())
 
         # g.trace('expanding ancestors of ',w.leo_p.headString(),g.callers())
-        c.frame.tree.expandAllAncestors(w.leo_p)
-        c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
-        c.redraw()
-
-        c.recolor_now()
+        c.expandAllAncestors(w.leo_p)
+        #### c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
+        c.redraw(w.leo_p)
+        c.recolor()
         #@    << restore the selection, insertion point and the scrollbar >>
         #@+node:ekr.20061017083312.1:<< restore the selection, insertion point and the scrollbar >>
         # g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
@@ -1152,7 +1153,6 @@ class leoBody:
         # Save.
         c.frame.body.bodyCtrl = w
         try:
-            # c.recolor_now(interruptable=False) # Force a complete recoloring.
             c.frame.body.colorizer.colorize(p,incremental=False,interruptable=False)
         finally:
             # Restore.
@@ -1223,7 +1223,7 @@ class leoBody:
         #@+node:ekr.20051026083733.6:<< recolor the body >>
         body.colorizer.interrupt()
         c.frame.scanForTabWidth(p)
-        body.recolor_now(p,incremental=not self.forceFullRecolorFlag)
+        body.recolor(p,incremental=not self.forceFullRecolorFlag)
         self.forceFullRecolorFlag = False
 
         if g.app.unitTesting:
@@ -1232,8 +1232,8 @@ class leoBody:
         #@nl
         if not c.changed: c.setChanged(True)
         self.updateEditors()
-        #@    << redraw the screen if necessary >>
-        #@+node:ekr.20051026083733.7:<< redraw the screen if necessary >>
+        #@    << update icons if necessary >>
+        #@+node:ekr.20051026083733.7:<< update icons if necessary >>
 
         redraw_flag = False
         # Update dirty bits.
@@ -1247,8 +1247,10 @@ class leoBody:
         if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
             p.v.iconVal = val
             redraw_flag = True
-        if redraw_flag: c.redraw()
-        #@-node:ekr.20051026083733.7:<< redraw the screen if necessary >>
+
+        if redraw_flag:
+            c.redraw_after_icons_changed(all=False)
+        #@-node:ekr.20051026083733.7:<< update icons if necessary >>
         #@nl
     #@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)
     #@+node:ekr.20061109095450.8:onClick
@@ -1790,8 +1792,9 @@ class leoFrame:
         '''Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.'''
 
+        trace = False
         f = self ; c = f.c ; w = event and event.widget
-        # g.trace('isText',g.app.gui.isTextWidget(w),w)
+        if trace: g.trace(w)
         if not w or not g.app.gui.isTextWidget(w): return
 
         wname = c.widget_name(w)
@@ -1871,8 +1874,8 @@ class leoFrame:
             w.insert("end",tree.revertHeadline)
             p.initHeadString(tree.revertHeadline)
             c.endEditing()
-            c.selectPosition(p)
-            c.redraw()
+            #### c.selectPosition(p)
+            c.redraw(p)
     #@-node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
     #@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
     def endEditLabelCommand (self,event=None):
@@ -1906,7 +1909,8 @@ class leoFrame:
             c.notValidInBatchMode("Insert Headline Time")
             return
 
-        c.editPosition(p)
+        #### c.redraw(p)
+        c.redrawAndEdit(p)
         c.frame.tree.setEditLabelState(p)
         w = c.edit_widget(p)
         if w:
@@ -2272,7 +2276,7 @@ class leoTree:
         'setEditPosition',
         # Others.
         'endEditLabel',
-        'expandAllAncestors',
+        # 'expandAllAncestors', # Now defined in Commands class.
         'injectCallbacks',
         'OnIconDoubleClick',
         'onHeadChanged',
@@ -2311,7 +2315,8 @@ class leoTree:
 
     # Drawing & scrolling.
     def drawIcon(self,v,x=None,y=None):             self.oops()
-    def redraw_now(self,scroll=True,forceDraw=False):   self.oops()
+    def redraw(self,p=None,scroll=True,forceDraw=False):        self.oops()
+    def redraw_now(self,p=None,scroll=True,forceDraw=False):    self.oops()
     def scrollTo(self,p):                           self.oops()
     idle_scrollTo = scrollTo # For compatibility.
 
@@ -2345,11 +2350,13 @@ class leoTree:
         '''Officially change a headline.
         Set the old undo text to the previous revert point.'''
 
-        c = self.c ; u = c.undoer ; trace = False
+        trace = False and g.unitTesting
+        c = self.c ; u = c.undoer
         w = c.edit_widget(p)
+
         if c.suppressHeadChanged: return
         if not w:
-            if trace: g.trace('no w for p: %s',repr(p))
+            if trace: g.trace('****** no w for p: %s',repr(p))
             return
 
         ch = '\n' # New in 4.4: we only report the final keystroke.
@@ -2357,6 +2364,7 @@ class leoTree:
             return # The hook claims to have handled the event.
 
         if s is None: s = w.getAllText()
+        if trace: g.trace('w',repr(w),'s',repr(s))
         #@    << truncate s if it has multiple lines >>
         #@+node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
         # Remove one or two trailing newlines before warning of truncation.
@@ -2397,7 +2405,7 @@ class leoTree:
             u.afterChangeNodeContents(p,undoType,undoData,
                 dirtyVnodeList=dirtyVnodeList)
         if changed:
-            c.redraw(scroll=False)
+            c.redraw_after_head_changed()
             if self.stayInTree:
                 c.treeWantsFocus()
             else:
@@ -2464,9 +2472,10 @@ class leoTree:
 
         '''End editing of a headline and update p.headString().'''
 
+        trace = False and g.unitTesting
         c = self.c ; k = c.k ; p = c.currentPosition()
 
-        # g.trace('leoTree',p and p.headString(),g.callers(4))
+        if trace: g.trace('leoTree',p and p.headString(),g.callers(4))
 
         self.setEditPosition(None) # That is, self._editPosition = None
 
@@ -2481,27 +2490,6 @@ class leoTree:
             c.bodyWantsFocus()
     #@-node:ekr.20040803072955.126:endEditLabel
     #@-node:ekr.20040803072955.90:head key handlers (leoTree)
-    #@+node:ekr.20040803072955.143:tree.expandAllAncestors
-    def expandAllAncestors (self,p):
-
-        '''Expand all ancestors without redrawing.
-
-        Return a flag telling whether a redraw is needed.'''
-
-        c = self.c ; cc = c.chapterController ; redraw_flag = False
-        # inChapter = cc and cc.inChapter()
-
-        for p in p.parents_iter():
-            # g.trace('testing',p)
-            if cc and p.headString().startswith('@chapter'):
-                break
-            if not p.isExpanded():
-                # g.trace('inChapter',inChapter,'p',p,g.callers())
-                p.expand()
-                redraw_flag = True
-
-        return redraw_flag
-    #@-node:ekr.20040803072955.143:tree.expandAllAncestors
     #@+node:ekr.20040803072955.21:tree.injectCallbacks
     def injectCallbacks(self):
 
@@ -2688,23 +2676,19 @@ class leoTree:
 
     def afterSelectHint(self,p,old_p):
         '''Called at end of tree.select.'''
+        pass
 
     def beforeSelectHint (self,p,old_p):
         '''Called at start of tree.select.'''
+        pass
 
     # These are hints for optimization.
     # The proper default is c.redraw()
-    def redraw_after_icons_changed(self,all=False): self.c.redraw()
-    def redraw_after_clone(self):                   self.c.redraw()
-    def redraw_after_contract(self):                self.c.redraw()
-    def redraw_after_delete(self):                  self.c.redraw()
-    def redraw_after_expand(self):                  self.c.redraw()
-    def redraw_after_insert(self):                  self.c.redraw()
-    def redraw_after_move_down(self):               self.c.redraw()
-    def redraw_after_move_left(self):               self.c.redraw()
-    def redraw_after_move_right(self):              self.c.redraw()
-    def redraw_after_move_up(self):                 self.c.redraw()
-    def redraw_after_select(self):                  self.c.redraw()
+    def redraw_after_icons_changed(self,all=False):         self.c.redraw()
+    def redraw_after_clone(self):                           self.c.redraw()
+    def redraw_after_contract(self,p=None,setFocus=False):  self.c.redraw()
+    def redraw_after_expand(self,p=None,setFocus=False):    self.c.redraw()
+    def redraw_after_select(self):                          self.c.redraw()
 
 
     #@-node:ekr.20081005065934.8:May be defined in subclasses
@@ -2713,7 +2697,9 @@ class leoTree:
 
     def select (self,p,scroll=True):
 
-        '''Select a node.  Never redraws outline, but may change coloring of individual headlines.'''
+        '''Select a node.
+        Never redraws outline, but may change coloring of individual headlines.
+        The scroll argument is used by tk to suppress scrolling while dragging.'''
 
         if g.app.killed or self.tree_select_lockout: return None
 
@@ -2722,7 +2708,7 @@ class leoTree:
             val = 'break'
             self.tree_select_lockout = True
             c.frame.tree.beforeSelectHint(p,old_p)
-            val = self.treeSelectHelper(p,scroll)
+            val = self.treeSelectHelper(p,scroll=scroll)
         finally:
             self.tree_select_lockout = False
             c.frame.tree.afterSelectHint(p,old_p)
@@ -2789,7 +2775,7 @@ class leoTree:
             else:
                 # This destroys all color tags, so do a full recolor.
                 w.setAllText(s)
-                self.frame.body.recolor_now(p) # recolor now uses p.copy(), so this is safe.
+                self.frame.body.recolor(p) # recolor now uses p.copy(), so this is safe.
 
             if p.v and p.v.t.scrollBarSpot != None:
                 first,last = p.v.t.scrollBarSpot
@@ -3366,18 +3352,22 @@ class nullTree (leoTree):
         pass
     #@-node:ekr.20070228163350:Colors & fonts
     #@+node:ekr.20070228163350.1:Drawing & scrolling
-    def beginUpdate (self):
-        self.updateCount += 1
+    # def beginUpdate (self):
+        # self.updateCount += 1
 
-    def endUpdate (self,flag,scroll=False):
-        self.updateCount -= 1
-        if flag and self.updateCount <= 0:
-            self.redraw_now()
+    # def endUpdate (self,flag):
+        # self.updateCount -= 1
+        # if flag and self.updateCount <= 0:
+            # self.redraw_now()
 
     def drawIcon(self,v,x=None,y=None):
         pass
 
-    def redraw_now(self,scroll=True,forceDraw=False):
+    def redraw(self,p=None,scroll=True,forceDraw=False):
+        self.redrawCount += 1
+        # g.trace('nullTree')
+
+    def redraw_now(self,p=None,scroll=True,forceDraw=False):
         self.redrawCount += 1
         # g.trace('nullTree')
 

@@ -321,7 +321,7 @@ def match_section_ref (self,s,i):
                 tagName = "hyper" + str(self.hyperCount)
                 self.hyperCount += 1
                 w.tag_delete(tagName)
-                self.tag(tagName,i+2,j)
+                self.tag_add(tagName,i+2,j)
 
                 ref.tagName = tagName
                 c.tag_bind(w,tagName,"<Control-1>",ref.OnHyperLinkControlClick)

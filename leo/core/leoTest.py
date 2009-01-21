@@ -106,9 +106,7 @@ def doTests(c,all,verbosity=1):
     finally:
         c.setChanged(changed) # Restore changed state.
         if g.app.unitTestDict.get('restoreSelectedNode',True):
-            c.selectPosition(p1)
-            # g.trace('redrawing')
-            c.redraw()
+            c.redraw(p1)
         g.unitTesting = g.app.unitTesting = False
 #@+node:ekr.20051104075904.5:class generalTestCase
 class generalTestCase(unittest.TestCase):

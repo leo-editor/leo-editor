@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20081121105001.1076" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20081121105001.1076" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20081121105001.1077"><vh>@chapters</vh></v>
 <v t="ekr.20081121105001.1078"><vh>@settings</vh>
 <v t="ekr.20081121105001.1079"><vh>@page http plugin</vh>
@@ -48,7 +48,7 @@
 <v t="ekr.20081121105001.1098"><vh>@auto qt_quicksearch.ui</vh></v>
 </v>
 <v t="ekr.20081121105001.188"
-marks="ekr.20081209210556.2,"><vh>@thin qtGui.py</vh></v>
+marks="ekr.20081121105001.443,ekr.20081121105001.156,"><vh>@thin qtGui.py</vh></v>
 </v>
 </vnodes>
 <tnodes>

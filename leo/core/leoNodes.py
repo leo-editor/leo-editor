@@ -1571,6 +1571,7 @@ class basePosition (object):
         # Add nodes until no more are added.
         while newNodes:
             addedNodes = []
+            # g.trace(len(newNodes))
             nodes.extend(newNodes)
             for v in newNodes:
                 for v2 in v.t.vnodeList:
@@ -1585,7 +1586,7 @@ class basePosition (object):
         if c.hiddenRootNode in nodes:
             nodes.remove(c.hiddenRootNode)
 
-        # g.trace(len(nodes))
+        # g.trace('done',len(nodes))
         # g.trace(g.listToString(nodes))
         return nodes
     #@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
@@ -1627,7 +1628,6 @@ class basePosition (object):
             v.t.setDirty() # Do not call v.setDirty here!
 
         return dirtyVnodeList
-    #@nonl
     #@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
     #@+node:ekr.20040303163330:p.setDirty
     def setDirty (self,setDescendentsDirty=True):
@@ -1636,7 +1636,7 @@ class basePosition (object):
 
         p = self ; dirtyVnodeList = []
 
-        # g.trace(p.headString(),g.callers())
+        # g.trace(p.headString(),g.callers(4))
 
         if not p.v.t.isDirty():
             p.v.t.setDirty()

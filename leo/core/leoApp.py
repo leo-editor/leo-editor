@@ -289,7 +289,7 @@ class LeoApp:
             frame.deiconify()
             frame.lift()
             frame.c.setLog()
-            frame.c.bodyWantsFocusNow()
+            frame.c.bodyWantsFocus() ### Was now.
             frame.c.outerUpdate()
         elif not g.app.unitTesting:
             g.app.finishQuit()

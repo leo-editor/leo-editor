@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="1" left="449" height="987" width="910"/>
+	<global_window_position top="51" left="264" height="987" width="910"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20041211035618" str_leo_pos="1,25,0,0"><vh>Startup</vh>
+<v t="ekr.20041211035618" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070718131416"><vh>@chapters</vh></v>
 <v t="ekr.20050217093214"><vh>@settings</vh>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
@@ -28,7 +28,7 @@
 <v t="ekr.20080515173014.1"><vh>regex: replace w.bind by c.bind(w...)</vh></v>
 <v t="ekr.20080519084304.2"><vh>@@button change leo imports</vh></v>
 </v>
-<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
 <v t="ekr.20041114102139"><vh>Notes</vh>
@@ -320,7 +320,8 @@
 <v t="ekr.20040108095351"><vh>@thin rowcol.py</vh></v>
 <v t="ekr.20040107092135.2"><vh>@thin searchbox.py</vh></v>
 <v t="ekr.20060601151845"><vh>@thin shortcut_button.py</vh></v>
-<v t="bobjack.20080424190315.2"><vh>@thin toolbar.py</vh></v>
+<v t="bobjack.20080424190315.2"
+expanded="bobjack.20080502134903.8,"><vh>@thin toolbar.py</vh></v>
 </v>
 <v t="ekr.20080203083146"><vh>IPython bridge</vh>
 <v t="ekr.20080201143145"><vh>@thin ipython.py</vh></v>
@@ -953,8 +954,7 @@
 </v>
 <v t="rogererens.20041013082304"><vh>@thin UNL.py</vh></v>
 </v>
-<v t="ekr.20040915073259" a="E"><vh>Windows</vh>
-<v t="tbrown.20090119215428.2" a="E"><vh>@thin todo.py</vh></v>
+<v t="ekr.20040915073259"><vh>Windows</vh>
 <v t="ekr.20050227071948" annotate="5404010000376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333464306632373632353530343665366636343635373130353238363830323666373130363535303734363635363137343735373236353731303736323535303236323637373130383238363830323666373130393535303037313061363235353039363137323633363836353734373937303635373130623238363830323666373130633638306136323535303236363637373130643238363830323666373130653638306136323735326571002e"><vh> cleo</vh>
 <v t="ekr.20050227072121"><vh>Notes</vh>
 <v t="ekr.20050227071948.1" annotate="7d71002e"><vh>TODO</vh>
@@ -1008,7 +1008,6 @@
 <v t="ekr.20060506070443.1"></v>
 </v>
 </v>
-<v t="ekr.20081214160729.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040517075715"></t>

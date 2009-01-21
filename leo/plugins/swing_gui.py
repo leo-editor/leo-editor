@@ -905,7 +905,7 @@ class swingListBoxDialog (leoSwingDialog):
             p = self.positionList[n]
             c.beginUpdate()
             try:
-                c.frame.tree.expandAllAncestors(p)
+                c.expandAllAncestors(p)
                 c.selectPosition(p,updateBeadList=True)
                     # A case could be made for updateBeadList=False
             finally:
@@ -5944,7 +5944,7 @@ class leoSwingTree (leoFrame.leoTree):
             self.endUpdate(False)
 
         # Do the actual redraw.
-        self.expandAllAncestors(c.currentPosition())
+        c.expandAllAncestors(c.currentPosition())
         if self.idle_redraw:
             def idleRedrawCallback(event=None,self=self,scroll=scroll):
                 self.redrawHelper(scroll=scroll)

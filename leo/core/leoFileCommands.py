@@ -756,7 +756,7 @@ class baseFileCommands:
         if ok and readAtFileNodesFlag:
             # Redraw before reading the @file nodes so the screen isn't blank.
             # This is important for big files like LeoPy.leo.
-            c.redraw_now()
+            c.redraw()
             c.setFileTimeStamp(fileName)
             c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
 
@@ -1412,7 +1412,7 @@ class baseFileCommands:
         ok = g.doHook("save1",c=c,p=v,v=v,fileName=fileName)
 
         if ok is None:
-            c.endEditing()# Set the current headline text.
+            c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
             ok = c.checkFileTimeStamp(fileName)
             if ok:
@@ -1423,7 +1423,8 @@ class baseFileCommands:
                 if c.config.save_clears_undo_buffer:
                     g.es("clearing undo")
                     c.undoer.clearUndoState()
-            c.redraw()
+            #### c.redraw()
+            c.redraw_after_icons_changed(all=True)
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
         return ok
@@ -1439,7 +1440,8 @@ class baseFileCommands:
             if self.write_Leo_file(fileName,False): # outlineOnlyFlag
                 c.setChanged(False) # Clears all dirty bits.
                 self.putSavedMessage(fileName)
-            c.redraw()
+            #### c.redraw()
+            c.redraw_after_icons_changed(all=True)
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
     #@-node:ekr.20031218072017.3043:saveAs
@@ -1453,7 +1455,8 @@ class baseFileCommands:
             self.setDefaultDirectoryForNewFiles(fileName)
             self.write_Leo_file(fileName,False) # outlineOnlyFlag
             self.putSavedMessage(fileName)
-            c.redraw()
+            #### c.redraw()
+            c.redraw_after_icons_changed(all=True)
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
     #@-node:ekr.20031218072017.3044:saveTo
