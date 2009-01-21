@@ -686,7 +686,7 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
     p = self._editWidgetPosition
     w = g.app.gui.get_focus()
 
-    # These are not errors: sig_itemChanged may
+    # These are not errors: onItemChanged may
     # have been called first.
     if trace and verbose:
         if not e:  g.trace('No e',g.callers(4))
@@ -736,14 +736,16 @@ def killEditing (self):
 #@-node:ekr.20090110154843.11:killEditing
 #@-node:ekr.20090110154843.10:Crash because of bad edit_widget
 #@+node:ekr.20090112065600.11:Problems with redraw_after_icons_changed
-#@+node:ekr.20081121105001.443:sig_itemChanged
-def sig_itemChanged(self, item, col):
+#@+node:ekr.20081121105001.443:onItemChanged
+def onItemChanged(self, item, col):
 
     '''Handle a change event in a headline.
     This only gets called when the user hits return.'''
 
     # Ignore changes when redrawing.
     if self.redrawing:
+        return
+    if self.redrawingIcons:
         return
 
     p = self.item2position(item)
@@ -757,7 +759,7 @@ def sig_itemChanged(self, item, col):
     else:
         # Make sure to end editing.
         self.killEditing()
-#@-node:ekr.20081121105001.443:sig_itemChanged
+#@-node:ekr.20081121105001.443:onItemChanged
 #@+node:ekr.20090109110752.16:redraw_after_icons_changed
 def redraw_after_icons_changed (self,all=False):
 
@@ -767,7 +769,7 @@ def redraw_after_icons_changed (self,all=False):
 
     c = self.c
 
-    # Suppress call to setHeadString in sig_itemChanged!
+    # Suppress call to setHeadString in onItemChanged!
     self.redrawing = True
     try:
         if all:
@@ -791,8 +793,8 @@ def drawIcon (self,p):
     itemOrTree = self.position2item(p) or w
     item = QtGui.QTreeWidgetItem(itemOrTree)
     icon = self.getIcon(p)
-    if icon and item:
-        item.setIcon(0,icon)
+    self.setItemIcon(item,icon)
+#@nonl
 #@-node:ekr.20081121105001.417:drawIcon
 #@+node:ekr.20081211115412.12:drawItemIcon
 def drawItemIcon (self,p,item):
@@ -800,8 +802,7 @@ def drawItemIcon (self,p,item):
     '''Set the item's icon to p's icon.'''
 
     icon = self.getIcon(p)
-    if icon and item:
-        item.setIcon(0,icon)
+    self.setItemIcon(item,icon)
 #@-node:ekr.20081211115412.12:drawItemIcon
 #@+node:ekr.20081121105001.418:getIcon & getIconImage
 def getIcon(self,p):
@@ -862,6 +863,27 @@ def getCompositeIconImage(self, p, val):
 
     return g.app.gui.iconimages[hash]
 #@-node:ekr.20081121105001.418:getIcon & getIconImage
+#@+node:ekr.20090121065245.10:setItemIcon
+def setItemIcon (self,item,icon):
+
+    trace = True
+
+    valid = item and self.isValidItem(item)
+
+    if icon and valid:
+        try:
+            # Suppress onItemChanged.
+            self.redrawingIcons = True
+            item.setIcon(0,icon)
+        except Exception:
+            self.redrawingIcons = False
+    elif trace:
+        # Apparently, icon can be None due to recent icon changes.
+        if icon:
+            g.trace('** item %s, valid: %s, icon: %s' % (
+                item and id(item) or '<no item>',valid,icon),
+                g.callers(4))
+#@-node:ekr.20090121065245.10:setItemIcon
 #@+node:ekr.20081121105001.431:updateIcon
 def updateIcon (self,p,force=False):
 
@@ -881,8 +903,8 @@ def updateIcon (self,p,force=False):
     # Update all cloned/joined items.
     items = self.tnode2items(p.v.t)
     for item in items:
-        if self.isValidItem(item):
-            item.setIcon(0,icon)
+        self.setItemIcon(item,icon)
+#@nonl
 #@-node:ekr.20081121105001.431:updateIcon
 #@+node:ekr.20090112065600.10:updateVisibleIcons
 def updateVisibleIcons (self,p):
