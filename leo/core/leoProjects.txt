@@ -3380,6 +3380,74 @@ def os_path_expandExpression (s,**keys):
     return s
 #@-node:ekr.20080922124033.6:os_path_expandExpression
 #@-node:ekr.20090105132011.4:Made sure $Home works for @nosent
+#@+node:ekr.20090120115450.1:Fixed atFile unicode bug
+#@+node:ekr.20041005105605.204:os
+def os (self,s):
+
+    """Write a string to the output stream.
+
+    All output produced by leoAtFile module goes here."""
+
+    trace = False
+    at = self ; tag = self.underindentEscapeString
+    f = at.outputFile
+
+    if s and f:
+        try:
+            #### s = g.toEncodedString(s,at.encoding,reportErrors=True)
+            if trace: g.trace(repr(s),g.callers(4))
+            if s.startswith(tag):
+                junk,s = self.parseUnderindentTag(s)
+            # Bug fix: this must be done last.
+            s = g.toEncodedString(s,at.encoding,reportErrors=True)
+            f.write(s)
+        except Exception:
+            at.exception("exception writing:" + s)
+#@-node:ekr.20041005105605.204:os
+#@+node:ekr.20041005105605.210:putIndent
+def putIndent(self,n,s=''):
+
+    """Put tabs and spaces corresponding to n spaces,
+    assuming that we are at the start of a line.
+
+    Remove extra blanks if the line starts with the underindentEscapeString"""
+
+    # g.trace(repr(s))
+    tag = self.underindentEscapeString
+
+    if s.startswith(tag):
+        n2,s2 = self.parseUnderindentTag(s)
+        if n2 >= n: return
+        elif n > 0: n -= n2
+        else:       n += n2
+
+    if n != 0:
+        w = self.tab_width
+        if w > 1:
+            q,r = divmod(n,w) 
+            self.otabs(q) 
+            self.oblanks(r)
+        else:
+            self.oblanks(n)
+#@-node:ekr.20041005105605.210:putIndent
+#@+node:ekr.20081216090156.4:parseUnderindentTag
+def parseUnderindentTag (self,s):
+
+    tag = self.underindentEscapeString
+    s2 = s[len(tag):]
+
+    # To be valid, the escape must be followed by at least one digit.
+    i = 0
+    while i < len(s2) and s2[i].isdigit():
+        i += 1
+
+    if i > 0:
+        n = int(s2[:i])
+        return n,s2[i:]
+    else:
+        return 0,s
+#@-node:ekr.20081216090156.4:parseUnderindentTag
+#@-node:ekr.20090120115450.1:Fixed atFile unicode bug
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
