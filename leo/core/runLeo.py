@@ -251,7 +251,6 @@ def completeFileName (fileName):
     except Exception: pass
 
     relativeFileName = fileName
-    ### fileName = g.os_path_finalize_join(os.getcwd(),fileName)
     fileName = g.os_path_finalize(fileName)
 
     junk,ext = g.os_path_splitext(fileName)

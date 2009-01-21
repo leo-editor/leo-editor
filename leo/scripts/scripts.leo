@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070615131954" str_leo_pos="3,1,3"><vh>Startup</vh>
+<v t="ekr.20070615131954" str_leo_pos="0"><vh>Startup</vh>
 <v t="ekr.20070427110751"><vh>@chapters</vh></v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20051020124457"><vh>Disabled buttons</vh>
@@ -997,9 +997,9 @@
 </v>
 </v>
 <v t="ekr.20060824111500"></v>
-<v t="edward.20081226095234.1" a="E"><vh>@button lispCall @key=alt+6</vh>
+<v t="edward.20081226095234.1"><vh>@button lispCall @key=alt+6</vh>
 <v t="edward.20081226095234.2"><vh>ctor</vh></v>
-<v t="edward.20081226101808.1" a="E"><vh>run &amp; helpers</vh>
+<v t="edward.20081226101808.1"><vh>run &amp; helpers</vh>
 <v t="edward.20081227122708.3"><vh>findCalls</vh></v>
 <v t="edward.20081227122708.2"><vh>findDefs</vh></v>
 <v t="edward.20081227122708.1"><vh>stripComments</vh></v>
@@ -1009,7 +1009,7 @@
 <v t="edward.20081226101808.4"><vh>class token</vh></v>
 <v t="edward.20081226101808.5"><vh>choose</vh></v>
 <v t="edward.20081226101808.6"><vh>dumpList</vh></v>
-<v t="edward.20081226101808.7" a="E"><vh>Parsing...</vh>
+<v t="edward.20081226101808.7"><vh>Parsing...</vh>
 <v t="edward.20081226101808.8"><vh>parse</vh></v>
 <v t="edward.20081226101808.9" a="E"><vh>scan &amp; helpers</vh>
 <v t="edward.20081226101808.10"><vh>skipComment</vh></v>
@@ -2155,7 +2155,9 @@ c.frame.tree.verbose = True</t>
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@count 10000
+@verbatim
 @verbatim
 @verbatim
 @verbatim

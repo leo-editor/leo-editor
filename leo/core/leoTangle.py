@@ -2964,7 +2964,7 @@ class baseTangleCommands:
         c.setChanged(True)
         p.setDirty()
         p.setMarked()
-        #### c.redraw()
+
         c.update_after_icons_changed()
     #@-node:ekr.20031218072017.3575:update_current_vnode
     #@-node:ekr.20031218072017.3544:untangle

@@ -15,7 +15,7 @@
 import leo.core.leoGlobals as g
 
 if g.app and g.app.use_psyco:
-    # g.pr("enabled psyco classes",__file__)
+    # print("enabled psyco classes",__file__)
     try: from psyco.classes import *
     except ImportError: pass
 
@@ -2616,9 +2616,9 @@ class atFile:
 
         if at.errors == 0 and not toString:
             ### It may be better to compute the public file by removing sentinels from at.private_s
-            ### by calling x.copy_file_removing_sentinels. This would ensure that the (dubious!!)
-            ### x.isSentinel logic is used consistently by the @shadow read/write logic.
-            ### OTOH, Leo's write logic should actually dominate x.isSentinel.
+            # by calling x.copy_file_removing_sentinels. This would ensure that the (dubious!!)
+            # x.isSentinel logic is used consistently by the @shadow read/write logic.
+            # OTOH, Leo's write logic should actually dominate x.isSentinel.
 
             # Write the public and private files.
             private_fn = x.shadowPathName(fn)
@@ -3862,7 +3862,6 @@ class atFile:
 
         if s and f:
             try:
-                #### s = g.toEncodedString(s,at.encoding,reportErrors=True)
                 if trace: g.trace(repr(s),g.callers(4))
                 if s.startswith(tag):
                     junk,s = self.parseUnderindentTag(s)
@@ -4383,7 +4382,7 @@ class atFile:
                 delim1,delim2,delim3 = g.set_delims_from_language("python")
                 self.language = "python"
             else:
-                delim1,delim2,delim3 = delims ### g.set_delims_from_language(at.language)
+                delim1,delim2,delim3 = delims
 
             # Use single-line comments if we have a choice.
             # delim1,delim2,delim3 now correspond to line,start,end

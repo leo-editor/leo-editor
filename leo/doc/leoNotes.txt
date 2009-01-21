@@ -3394,6 +3394,41 @@ if 0: # Set to 1 for lint-like testing.
 # Deprecated compatibility.
 # selectVnodeWithEditing = selectPositionWithEditing
 #@-node:ekr.20031218072017.2998:c.selectPositioniWithEditing
+#@+node:ekr.20080514131122.11:c.masterFocusHandler
+def masterFocusHandler (self):
+
+    pass # No longer used.
+
+restoreRequestedFocus = masterFocusHandler
+#@-node:ekr.20080514131122.11:c.masterFocusHandler
+#@+node:ekr.20080514131122.15:c.restoreFocus
+def restoreFocus (self):
+
+    '''Ensure that the focus eventually gets restored.'''
+    pass
+    # g.trace(g.callers(5))
+
+    # c =self
+    # trace = not g.app.unitTesting and c.config.getBool('trace_focus')
+
+    # if c.requestedFocusWidget:
+        # c.hasFocusWidget = None # Force an update
+    # elif c.hasFocusWidget:
+        # c.requestedFocusWidget = c.hasFocusWidget
+        # c.hasFocusWidget = None # Force an update
+    # else:
+        # # Should not happen, except during unit testing.
+        # # c.masterFocusHandler sets c.hasFocusWidget,
+        # # so if it is not set here it is because this method cleared it.
+        # if not g.app.unitTesting: g.trace('oops: no requested or present widget.',g.callers())
+        # c.bodyWantsFocusNow()
+
+    # if c.inCommand:
+        # if trace: g.trace('expecting later call to c.masterFocusHandler')
+        # # A call to c.masterFocusHandler will surely happen.
+    # else:
+        # c.masterFocusHandler() # Do it now.
+#@-node:ekr.20080514131122.15:c.restoreFocus
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

@@ -1225,11 +1225,6 @@ class leoFind:
     def initNextText(self,ins=None):
         c,p = self.c,self.p
         s = g.choose(self.in_headline,p.headString(), p.bodyString())
-        # g.trace(self.in_headline,len(s),p.headString())
-        if not self.in_headline:
-            tree = c.frame.tree
-            if hasattr(tree,'killEditing'):
-                tree.killEditing() # Support for Qt tree.
         self.init_s_ctrl(s,ins)
 
     def init_s_ctrl (self,s,ins):
@@ -1238,7 +1233,7 @@ class leoFind:
         w.setAllText(s)
         if ins is None:
             ins = g.choose(self.reverse,len(s),0)
-            # g.pr(g.choose(self.reverse,'.','*'),)
+            # print(g.choose(self.reverse,'.','*'),)
         else:
             pass # g.trace('ins',ins)
         w.setInsertPoint(ins)
@@ -1389,10 +1384,8 @@ class leoFind:
 
         # g.trace('redraw2',redraw1,redraw2)
 
-        # #### c.selectPosition(p)
         redraw = redraw1 or redraw2
         if self.in_headline:
-            #### c.redraw(p)
             c.redrawAndEdit(p)
         elif redraw:
             c.redraw(p)

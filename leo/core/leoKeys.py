@@ -3583,7 +3583,6 @@ class keyHandlerClass:
         if event and func:
             if trace: g.trace(func.__name__)
             val = func(event) # Don't even *think* of overriding this.
-            c.masterFocusHandler()
             if trace: g.trace('val:',val,g.callers())
             return val
         else:
@@ -3674,7 +3673,6 @@ class keyHandlerClass:
         w.setAllText(s)
         n = len(s)
         w.setSelectionRange(n,n,insert=n)
-        c.masterFocusHandler() # Restore to the previously requested focus.
 
         if protect:
             k.mb_prefix = s
@@ -3712,9 +3710,6 @@ class keyHandlerClass:
         w.setAllText(s)
         n = len(s)
         w.setSelectionRange(n,n,insert=n)
-
-        #### This no longer does anything!!!
-        # c.masterFocusHandler() # Restore to the previously requested focus.
 
         if protect:
             k.mb_prefix = s

@@ -182,8 +182,8 @@ def computeHomeDir():
     home = os.path.expanduser("~")
         # Windows searches the HOME, HOMEPATH and HOMEDRIVE environment vars, then gives up.
 
-    # print('computeHomeDir: %s' % repr(home))
-    # print("computeHomeDir: os.path.expanduser('~'): %s" % os.path.expanduser('~'))
+    # g.pr('computeHomeDir: %s' % repr(home))
+    # g.pr("computeHomeDir: os.path.expanduser('~'): %s" % os.path.expanduser('~'))
 
     if home and len(home) > 1 and home[0]=='%' and home[-1]=='%':
         # Get the indirect reference to the true home.

@@ -289,7 +289,7 @@ class LeoApp:
             frame.deiconify()
             frame.lift()
             frame.c.setLog()
-            frame.c.bodyWantsFocus() ### Was now.
+            frame.c.bodyWantsFocus()
             frame.c.outerUpdate()
         elif not g.app.unitTesting:
             g.app.finishQuit()
@@ -350,9 +350,9 @@ class LeoApp:
         if path and g.os_path_exists(path):
             try:
                 os.remove(path)
-                g.pr("deleting temp file:", g.shortFileName(path))
+                g.pr("deleting temp file: %s" % g.shortFileName(path))
             except:
-                g.pr("can not delete temp file:", path)
+                g.pr("can not delete temp file: %s" % path)
 
         # Remove theDict from the list so the gc can recycle the Leo window!
         g.app.openWithFiles.remove(theDict)
@@ -384,7 +384,7 @@ class LeoApp:
             g.app.gui.destroySelf()
 
         # Don't use g.trace!
-        # g.pr('app.finishQuit: setting g.app.killed',g.callers())
+        # print('app.finishQuit: setting g.app.killed',g.callers())
 
         g.app.killed = True
             # Disable all further hooks and events.
@@ -392,7 +392,7 @@ class LeoApp:
 
         if g.app.afterHandler:
             # TK bug: This appears to have no effect, at least on Windows.
-            # g.pr("finishQuit: cancelling",g.app.afterHandler)
+            # print("finishQuit: cancelling",g.app.afterHandler)
             if g.app.gui and g.app.gui.guiName() == "tkinter":
                 self.root.after_cancel(g.app.afterHandler)
             g.app.afterHandler = None
@@ -579,7 +579,7 @@ class LeoApp:
 
         """set the frame to which log messages will go"""
 
-        # g.pr("setLog:",tag,"locked:",self.logIsLocked,log)
+        # print("setLog:",tag,"locked:",self.logIsLocked,log)
         if not self.logIsLocked:
             self.log = log
 
@@ -602,7 +602,7 @@ class LeoApp:
                     g.es('',s,color=color,newline=0) # The caller must write the newlines.
                 self.logWaiting = []
         else:
-            g.pr('writeWaitingLog: still no log!')
+            print('writeWaitingLog: still no log!')
     #@-node:ekr.20031218072017.2619:app.writeWaitingLog
     #@+node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
     def newLeoCommanderAndFrame(self,

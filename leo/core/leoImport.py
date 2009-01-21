@@ -890,7 +890,6 @@ class leoImportCommands (scanUtility):
             p.contract()
             u.afterInsertNode(p,command,undoData)
         current.expand()
-        ### c.selectPosition(current)
         c.setChanged(True)
         u.afterChangeGroup(p,command)
         c.redraw(current)
@@ -1075,7 +1074,6 @@ class leoImportCommands (scanUtility):
         if p:
             c.endEditing()
             c.validateOutline()
-            #### c.redraw(p)
             c.redrawAndEdit(p)
             p.setDirty()
             c.setChanged(True)
@@ -1166,7 +1164,7 @@ class leoImportCommands (scanUtility):
             p.contract()
             p.setDirty()
             c.setChanged(True)
-        #### c.selectVnode(current)
+
         c.redraw(current)
     #@-node:ekr.20031218072017.3226:importWebCommand
     #@+node:ekr.20031218072017.3227:findFunctionDef
@@ -1527,7 +1525,7 @@ class leoImportCommands (scanUtility):
             while old_root.hasChildren():
                 old_root.firstChild().doDelete()
             c.setChanged(oldChanged)
-        #### c.selectPosition(old_root)
+
         c.redraw(old_root)
 
         if g.app.unitTesting:

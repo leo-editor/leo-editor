@@ -495,7 +495,7 @@ while line >= 0:
     if g.match(s,i,delim):
         << handle delim while scanning backward >>
     else:
-        ### offset += 1 # Assume the line is real.  A dubious assumption.
+        # offset += 1 # Assume the line is real.  A dubious assumption.
         line -= 1
     assert line < progress
 #@+node:ekr.20031218072017.2880:<< handle delim while scanning backward >>

@@ -1590,32 +1590,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         '''Create bindings for the minibuffer..'''
 
-        # return ###
-
-        # f = self ; c = f.c ; k = c.k ; w = f.miniBufferWidget
-
-        # table = [
-            # ('<Key>',           k.masterKeyHandler),
-            # ('<Button-1>',      k.masterClickHandler),
-            # ('<Button-3>',      k.masterClick3Handler),
-            # ('<Double-1>',      k.masterDoubleClickHandler),
-            # ('<Double-3>',      k.masterDoubleClick3Handler),
-        # ]
-
-        # table2 = (
-            # ('<Button-2>',      k.masterClickHandler),
-        # )
-
-        # if c.config.getBool('allow_middle_button_paste'):
-            # table.extend(table2)
-
-        # for kind,callback in table:
-            # c.bind(w,kind,callback)
-
-        # if 0:
-            # if sys.platform.startswith('win'):
-                # # Support Linux middle-button paste easter egg.
-                # c.bind(w,"<Button-2>",f.OnPaste)
+        pass
     #@-node:ekr.20081121105001.278:f.setMinibufferBindings
     #@-node:ekr.20081121105001.275:Minibuffer methods
     #@+node:ekr.20081121105001.279:Configuration (qtFrame)
@@ -4219,31 +4194,32 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081121105001.434:onClickBoxClick
     def onClickBoxClick (self,event,p=None):
 
-        c = self.c ; p1 = c.currentPosition()
+        c = self.c
+        if self.redrawing or self.selecting: return
 
-        # Unlike in Tk, the user can't override.
-        # All the work is done in onItemCollapsed/Expanded.
         g.doHook("boxclick1",c=c,p=p,v=p,event=event)
         g.doHook("boxclick2",c=c,p=p,v=p,event=event)
 
         self.killEditing()
-        c.outerUpdate() ####
+        c.outerUpdate()
     #@-node:ekr.20081121105001.434:onClickBoxClick
     #@+node:ekr.20081121105001.435:onClickBoxRightClick
     def onClickBoxRightClick(self, event, p=None):
 
-        # Unlike in Tk, the user can't override.
-        # All the work is done in onItemCollapsed/Expanded.
+        c = self.c
+        if self.redrawing or self.selecting: return
+
         g.doHook("boxrclick1",c=c,p=p,v=p,event=event)
         g.doHook("boxrclick2",c=c,p=p,v=p,event=event)
 
         self.killEditing()
-        c.outerUpdate() ####
+        c.outerUpdate()
     #@-node:ekr.20081121105001.435:onClickBoxRightClick
     #@+node:ekr.20081121105001.436:onPlusBoxRightClick
     def onPlusBoxRightClick (self,event,p=None):
 
         c = self.c
+        if self.redrawing or self.selecting: return
 
         g.doHook('rclick-popup',c=c,p=p,event=event,context_menu='plusbox')
 
@@ -4265,82 +4241,40 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081121105001.439:onIconBoxClick
     def onIconBoxClick (self,event,p=None):
 
-        c = self.c ; tree = self
+        c = self.c
+        if self.redrawing or self.selecting: return
+
+        g.doHook("iconclick1",c=c,p=p,v=p,event=event)
+        g.doHook("iconclick2",c=c,p=p,v=p,event=event)
+
         self.killEditing()
-
-        # if not p: p = self.eventToPosition(event)
-        # if not p:
-            # return
-
-        # c.setLog()
-
-        # if not g.doHook("iconclick1",c=c,p=p,v=p,event=event):
-            # if event:
-                # self.onDrag(event)
-            # tree.endEditLabel()
-            # tree.select(p,scroll=False)
-            # if c.frame.findPanel:
-                # c.frame.findPanel.handleUserClick(p)
-        # g.doHook("iconclick2",c=c,p=p,v=p,event=event)
-
-        # return "break" # disable expanded box handling.
+        c.outerUpdate()
     #@-node:ekr.20081121105001.439:onIconBoxClick
     #@+node:ekr.20081121105001.440:onIconBoxRightClick
     def onIconBoxRightClick (self,event,p=None):
 
         """Handle a right click in any outline widget."""
 
+        c = self.c
+        if self.redrawing or self.selecting: return
+
+        g.doHook("iconrclick1",c=c,p=p,v=p,event=event)
+        g.doHook("iconrclick2",c=c,p=p,v=p,event=event)
+
         self.killEditing()
-
-        #g.trace()
-
-        # c = self.c
-
-        # if not p: p = self.eventToPosition(event)
-        # if not p:
-            # c.outerUpdate()
-            # return
-
-        # c.setLog()
-
-        # try:
-            # if not g.doHook("iconrclick1",c=c,p=p,v=p,event=event):
-                # self.OnActivateHeadline(p)
-                # self.endEditLabel()
-                # if not g.doHook('rclick-popup', c=c, p=p, event=event, context_menu='iconbox'):
-                    # self.OnPopup(p,event)
-            # g.doHook("iconrclick2",c=c,p=p,v=p,event=event)
-        # except:
-            # g.es_event_exception("iconrclick")
-
-        # self._block_canvas_menu = True
-
-        # c.outerUpdate()
-        # return 'break'
+        c.outerUpdate()
     #@-node:ekr.20081121105001.440:onIconBoxRightClick
     #@+node:ekr.20081121105001.441:onIconBoxDoubleClick
     def onIconBoxDoubleClick (self,event,p=None):
 
         c = self.c
+        if self.redrawing or self.selecting: return
+
+        g.doHook("icondclick1",c=c,p=p,v=p,event=event)
+        g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+
         self.killEditing()
-
-        # if not p: p = self.eventToPosition(event)
-        # if not p:
-            # c.outerUpdate()
-            # return
-
-        # c.setLog()
-
-        # try:
-            # if not g.doHook("icondclick1",c=c,p=p,v=p,event=event):
-                # self.endEditLabel() # Bug fix: 11/30/05
-                # self.OnIconDoubleClick(p) # Call the method in the base class.
-            # g.doHook("icondclick2",c=c,p=p,v=p,event=event)
-        # except:
-            # g.es_event_exception("icondclick")
-
-        # c.outerUpdate()
-        # return 'break'
+        self.outerUpdate()
     #@-node:ekr.20081121105001.441:onIconBoxDoubleClick
     #@-node:ekr.20081121105001.438:Icon Box...
     #@+node:ekr.20081121105001.443:onItemChanged
@@ -4366,7 +4300,7 @@ class leoQtTree (leoFrame.leoTree):
         else:
             # Make sure to end editing.
             self.killEditing()
-        c.outerUpdate() ####
+        c.outerUpdate()
     #@-node:ekr.20081121105001.443:onItemChanged
     #@+node:ekr.20081121105001.444:onItemCollapsed
     def onItemCollapsed (self,item):
@@ -4395,12 +4329,14 @@ class leoQtTree (leoFrame.leoTree):
             self.killEditing()
         else:
             g.trace('Error: no p2')
-        c.outerUpdate() ####
+        c.outerUpdate()
     #@-node:ekr.20081121105001.444:onItemCollapsed
     #@+node:ekr.20081121105001.161:onItemDoubleClicked
     def onItemDoubleClicked (self,item,col):
 
         c = self.c ; w = self.treeWidget
+        if self.redrawing or self.selecting: return
+
         w.setCurrentItem(item) # Must do this first.
         w.editItem(item)
         e = w.itemWidget(item,0)
@@ -4418,7 +4354,7 @@ class leoQtTree (leoFrame.leoTree):
         self._editWidgetWrapper = leoQtHeadlineWidget(
             widget=e,name='head',c=c)
         e.setObjectName('headline')
-        c.outerUpdate() ####
+        c.outerUpdate()
     #@-node:ekr.20081121105001.161:onItemDoubleClicked
     #@+node:ekr.20081121105001.445:onItemExpanded
     def onItemExpanded (self,item):
@@ -4456,7 +4392,7 @@ class leoQtTree (leoFrame.leoTree):
         finally:
             self.expanding = False
             self.setCurrentItem()
-            c.outerUpdate() ####
+            c.outerUpdate()
     #@-node:ekr.20081121105001.445:onItemExpanded
     #@+node:ekr.20081121105001.162:onTreeSelect
     def onTreeSelect(self):
@@ -4485,7 +4421,7 @@ class leoQtTree (leoFrame.leoTree):
         else:
             # An error.
             g.trace('no p for item: %s' % item,g.callers(4))
-            c.outerUpdate() ####
+            c.outerUpdate()
     #@nonl
     #@-node:ekr.20081121105001.162:onTreeSelect
     #@+node:ekr.20081121105001.442:setCurrentItem
@@ -4895,7 +4831,6 @@ class leoQtTree (leoFrame.leoTree):
         # This is a crucial shortcut.
         if g.unitTesting: return
 
-        #### c.redraw(scroll=False)
         if self.stayInTree:
             c.treeWantsFocus()
         else:
@@ -5084,10 +5019,8 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20081121105001.475:createKeyHandlerClass (qtGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
 
-        ### Use the base class
+        # Use the base class
         return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
-
-        ### return qtKeyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
     #@-node:ekr.20081121105001.475:createKeyHandlerClass (qtGui)
     #@+node:ekr.20081121105001.476:runMainLoop (qtGui)
     def runMainLoop(self):
@@ -7926,7 +7859,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.configDict = {} # Keys are tags, values are colors (names or values).
         self.useScintilla = False # This is used!
 
-        if not c: return ### Can happen.
+        if not c: return # Can happen.
 
         # Hook up qt events.
         self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
@@ -7955,10 +7888,10 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         w.leo_active = True
 
         # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
-        w.leo_bodyBar = None ### bodyBar
-        w.leo_bodyXBar = None ### bodyXBar
+        w.leo_bodyBar = None
+        w.leo_bodyXBar = None
         w.leo_chapter = None
-        w.leo_frame = None ### parentFrame
+        w.leo_frame = None
         w.leo_name = name
         w.leo_label = None
         w.leo_label_s = None

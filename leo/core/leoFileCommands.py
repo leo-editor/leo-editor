@@ -153,10 +153,10 @@ if sys.platform != 'cli':
             attrs: an Attributes item passed to startElement.'''
 
             ### if 0: # check for non-unicode attributes.
-                ### for name in attrs.getNames():
-                    ### val = attrs.getValue(name)
-                    ### if type(val) != type(u''):
-                    ###    g.trace('Non-unicode attribute',name,val)
+                # for name in attrs.getNames():
+                    # val = attrs.getValue(name)
+                    # if type(val) != type(u''):
+                    #    g.trace('Non-unicode attribute',name,val)
 
             # g.trace(g.listToString([repr(z) for z in attrs.getNames()]))
 
@@ -1423,7 +1423,7 @@ class baseFileCommands:
                 if c.config.save_clears_undo_buffer:
                     g.es("clearing undo")
                     c.undoer.clearUndoState()
-            #### c.redraw()
+
             c.redraw_after_icons_changed(all=True)
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
@@ -1440,7 +1440,7 @@ class baseFileCommands:
             if self.write_Leo_file(fileName,False): # outlineOnlyFlag
                 c.setChanged(False) # Clears all dirty bits.
                 self.putSavedMessage(fileName)
-            #### c.redraw()
+
             c.redraw_after_icons_changed(all=True)
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
@@ -1455,7 +1455,7 @@ class baseFileCommands:
             self.setDefaultDirectoryForNewFiles(fileName)
             self.write_Leo_file(fileName,False) # outlineOnlyFlag
             self.putSavedMessage(fileName)
-            #### c.redraw()
+
             c.redraw_after_icons_changed(all=True)
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)

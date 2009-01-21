@@ -330,9 +330,6 @@ class baseCommands:
                 else:
                     g.es_print("exception executing command")
                     g.es_exception(c=c)
-                    #### This should no longer be done automatically.
-                    #### if c and c.exists and hasattr(c,'frame'):
-                    ####    c.redraw()
 
             if c and c.exists:
                 if c.requestCloseWindow:
@@ -2038,7 +2035,7 @@ class baseCommands:
                 #@-node:ekr.20031218072017.2880:<< handle delim while scanning backward >>
                 #@nl
             else:
-                ### offset += 1 # Assume the line is real.  A dubious assumption.
+                # offset += 1 # Assume the line is real.  A dubious assumption.
                 line -= 1
             assert line < progress
         #@-node:ekr.20031218072017.2879:<< scan back to  @+node, setting offset,nodeSentinelLine >>
@@ -3534,7 +3531,6 @@ class baseCommands:
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
         c.setChanged(True)
         u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
-        #### c.redraw(p)
         c.redrawAndEdit(p,selectAll=True)
 
         return p # for mod_labels plugin.
@@ -4756,7 +4752,7 @@ class baseCommands:
         u.afterChangeGroup(current,undoType)
         if not g.unitTesting:
             g.es("done",color="blue")
-        #### c.redraw()
+
         c.redraw_after_icons_changed(all=True)
     #@-node:ekr.20031218072017.2923:markChangedHeadlines
     #@+node:ekr.20031218072017.2924:markChangedRoots
@@ -4780,9 +4776,9 @@ class baseCommands:
         u.afterChangeGroup(current,undoType)
         if not g.unitTesting:
             g.es("done",color="blue")
-        #### c.redraw()
-        c.redraw_after_icons_changed(all=True)
 
+        c.redraw_after_icons_changed(all=True)
+    #@nonl
     #@-node:ekr.20031218072017.2924:markChangedRoots
     #@+node:ekr.20031218072017.2925:markAllAtFileNodesDirty
     def markAllAtFileNodesDirty (self,event=None):
@@ -4798,7 +4794,7 @@ class baseCommands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        #### c.redraw()
+
         c.redraw_after_icons_changed(all=True)
 
     #@-node:ekr.20031218072017.2925:markAllAtFileNodesDirty
@@ -4819,7 +4815,7 @@ class baseCommands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        #### c.redraw()
+
         c.redraw_after_icons_changed(all=True)
 
     #@-node:ekr.20031218072017.2926:markAtFileNodesDirty
@@ -4845,9 +4841,9 @@ class baseCommands:
                 dirtyVnodeList.extend(dirtyVnodeList2)
                 u.afterMark(p,undoType,bunch)
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
-        #### c.redraw()
-        c.redraw_after_icons_changed(all=True)
 
+        c.redraw_after_icons_changed(all=True)
+    #@nonl
     #@-node:ekr.20031218072017.2927:markClones
     #@+node:ekr.20031218072017.2928:markHeadline
     def markHeadline (self,event=None):
@@ -4866,9 +4862,9 @@ class baseCommands:
         dirtyVnodeList = p.setDirty()
         c.setChanged(True)
         u.afterMark(p,undoType,bunch,dirtyVnodeList=dirtyVnodeList)
-        #### c.redraw()
-        c.redraw_after_icons_changed(all=False)
 
+        c.redraw_after_icons_changed(all=False)
+    #@nonl
     #@-node:ekr.20031218072017.2928:markHeadline
     #@+node:ekr.20031218072017.2929:markSubheads
     def markSubheads (self,event=None):
@@ -4890,9 +4886,9 @@ class baseCommands:
                 c.setChanged(True)
                 u.afterMark(p,undoType,bunch)
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
-        #### c.redraw()
-        c.redraw_after_icons_changed(all=True)
 
+        c.redraw_after_icons_changed(all=True)
+    #@nonl
     #@-node:ekr.20031218072017.2929:markSubheads
     #@+node:ekr.20031218072017.2930:unmarkAll
     def unmarkAll (self,event=None):
@@ -4918,9 +4914,9 @@ class baseCommands:
             g.doHook("clear-all-marks",c=c,p=p,v=p)
             c.setChanged(True)
         u.afterChangeGroup(current,undoType,dirtyVnodeList=dirtyVnodeList)
-        ### c.redraw()
-        c.redraw_after_icons_changed(all=True)
 
+        c.redraw_after_icons_changed(all=True)
+    #@nonl
     #@-node:ekr.20031218072017.2930:unmarkAll
     #@-node:ekr.20031218072017.2922:Mark...
     #@+node:ekr.20031218072017.1766:Move... (Commands)
@@ -5261,8 +5257,7 @@ class baseCommands:
         p = c.nodeHistory.goPrev()
 
         if p:
-            c.redraw(p) #### Should be redraw_after_select.
-
+            c.redraw_after_select(p)
     #@-node:ekr.20031218072017.1627:goPrevVisitedNode
     #@+node:ekr.20031218072017.2914:goToFirstNode
     def goToFirstNode (self,event=None):
@@ -5391,7 +5386,7 @@ class baseCommands:
             if cc:
                 name = cc.findChapterNameForPosition(p)
                 cc.selectChapterByName(name)
-            c.redraw(p) #### Should be redraw_after_select.
+            c.redraw_after_select(p)
         else:
             g.es('no more clones',color='blue')
     #@-node:ekr.20071213123942:findNextClone
@@ -6020,9 +6015,8 @@ class baseCommands:
         else:
             # g.trace("invalid clone drag")
             clone.doDelete(newNode=p)
-        #### c.selectPosition(p) # Also sets root position.
-        c.redraw(p)
 
+        c.redraw(p)
         c.updateSyntaxColorer(clone) # Dragging can change syntax coloring.
     #@nonl
     #@-node:ekr.20031218072017.2948:c.dragCloneAfter
@@ -6163,8 +6157,8 @@ class baseCommands:
 
         trace = False and g.unitTesting
         c = self
-        if w and g.app.gui: #### and (force or c.requestedFocusWidget):
-            if trace: print('c.set_focus',repr(w))
+        if w and g.app.gui:
+            if trace: g.pr('c.set_focus',repr(w))
             g.app.gui.set_focus(c,w)
 
         c.requestedFocusWidget = None
@@ -6179,13 +6173,6 @@ class baseCommands:
         pass
     #@nonl
     #@-node:ekr.20080514131122.10:c.invalidateFocus
-    #@+node:ekr.20080514131122.11:c.masterFocusHandler
-    def masterFocusHandler (self):
-
-        pass # No longer used.
-
-    restoreRequestedFocus = masterFocusHandler
-    #@-node:ekr.20080514131122.11:c.masterFocusHandler
     #@+node:ekr.20080514131122.20:c.outerUpdate
     def outerUpdate (self):
 
@@ -6258,18 +6245,18 @@ class baseCommands:
         c = self
         if p:
             # Update body pane and set c._currentPosition.
+            c.expandAllAncestors(p) # Redundant, but safe.
             c.selectPosition(p)
         else:
             p = c.currentPosition()
+            c.expandAllAncestors(p)
 
-        c.expandAllAncestors(p)
         c.frame.tree.redraw(p)
         if setFocus: c.treeFocusHelper()
 
     # Compatibility with old scripts
     force_redraw = redraw
     redraw_now = redraw
-    #@nonl
     #@-node:ekr.20090110073010.1:c.redraw
     #@+node:ekr.20090110131802.2:c.redraw_after_contract
     def redraw_after_contract (self,p=None,setFocus=False):
@@ -6350,34 +6337,6 @@ class baseCommands:
         c.frame.body.colorizer.colorize(p,
             incremental=incremental,interruptable=interruptable)
     #@-node:ekr.20080514131122.13:c.recolor_now
-    #@+node:ekr.20080514131122.15:c.restoreFocus
-    def restoreFocus (self):
-
-        '''Ensure that the focus eventually gets restored.'''
-        pass
-        # g.trace(g.callers(5))
-
-        # c =self
-        # trace = not g.app.unitTesting and c.config.getBool('trace_focus')
-
-        # if c.requestedFocusWidget:
-            # c.hasFocusWidget = None # Force an update
-        # elif c.hasFocusWidget:
-            # c.requestedFocusWidget = c.hasFocusWidget
-            # c.hasFocusWidget = None # Force an update
-        # else:
-            # # Should not happen, except during unit testing.
-            # # c.masterFocusHandler sets c.hasFocusWidget,
-            # # so if it is not set here it is because this method cleared it.
-            # if not g.app.unitTesting: g.trace('oops: no requested or present widget.',g.callers())
-            # c.bodyWantsFocusNow()
-
-        # if c.inCommand:
-            # if trace: g.trace('expecting later call to c.masterFocusHandler')
-            # # A call to c.masterFocusHandler will surely happen.
-        # else:
-            # c.masterFocusHandler() # Do it now.
-    #@-node:ekr.20080514131122.15:c.restoreFocus
     #@+node:ekr.20080514131122.16:c.traceFocus
     trace_focus_count = 0
 
@@ -7318,10 +7277,13 @@ class baseCommands:
 
             w = c.edit_widget(p)
             if w: c.widgetWantsFocus(w)
-            else: g.trace ('*** ERROR *** no edit widget')
+            else:
+                if not g.unitTesting:
+                    g.trace ('*** ERROR *** no edit widget')
 
-        #### New in Leo 4.6: make sure to honor the focus immediately.
+        # New in Leo 4.6: honor the focus immediately.
         c.outerUpdate()
+    #@nonl
     #@-node:ekr.20031218072017.2991:c.redrawAndEdit
     #@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
     # Ends the editing in the outline.
@@ -7352,6 +7314,7 @@ class baseCommands:
 
         # g.trace(p.headString(),g.callers())
 
+        c.expandAllAncestors(p) ####
         c.frame.tree.select(p)
 
         # New in Leo 4.4.2.
