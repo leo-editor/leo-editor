@@ -7558,25 +7558,6 @@ class leoSwingTree (leoFrame.leoTree):
             g.es_exception()
     #@-node:ekr.20081121105001.1028:setUnselectedHeadlineColors
     #@-node:ekr.20081121105001.1022:tree.set...LabelState
-    #@+node:ekr.20081121105001.1029:tree.setHeadline (swingTree)
-    def setHeadline (self,p,s):
-
-        '''Set the actual text of the headline widget.
-
-        This is called from the undo/redo logic to change the text before redrawing.'''
-
-        w = self.edit_widget(p)
-        if w:
-            w.configure(state='normal')
-            w.delete(0,'end')
-            if s.endswith('\n') or s.endswith('\r'):
-                s = s[:-1]
-            w.insert(0,s)
-            self.revertHeadline = s
-            # g.trace(repr(s),w.getAllText())
-        else:
-            g.trace('-'*20,'oops')
-    #@-node:ekr.20081121105001.1029:tree.setHeadline (swingTree)
     #@-node:ekr.20081121105001.1019:Selecting & editing... (swingTree)
     #@-others
 #@-node:ekr.20081121105001.909:class leoSwingTree (REWRITE)

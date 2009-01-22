@@ -1608,7 +1608,9 @@ class undoer:
 
         # Restore the headline.
         u.p.initHeadString(u.newHead)
-        c.frame.tree.setHeadline(u.p,u.newHead) # New in 4.4b2.
+
+        #### This will be done by c.redraw
+        #### c.frame.tree.setHeadline(u.p,u.newHead) # New in 4.4b2.
 
         # g.trace('newHead',u.newHead,'revert',c.frame.tree.revertHeadline)
 
@@ -1926,7 +1928,8 @@ class undoer:
         c.frame.body.recolor(u.p,incremental=False)
 
         u.p.initHeadString(u.oldHead)
-        c.frame.tree.setHeadline(u.p,u.oldHead)
+        #### This will be done by c.redraw
+        #### c.frame.tree.setHeadline(u.p,u.oldHead)
 
         if u.groupCount == 0 and u.oldSel:
             u.c.frame.body.setSelectionRange(u.oldSel)

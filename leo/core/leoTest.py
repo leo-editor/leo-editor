@@ -822,7 +822,7 @@ def runTestsExternally (c,all):
                 g.es_print('no @test or @suite nodes in selected outline')
         #@-node:ekr.20070627140344.2:runTests
         #@+node:ekr.20070627135336.11:runLeoDynamicTest
-        def runLeoDynamicTest (self):
+        def runLeoDynamicTest (self,gui='nullGui'):
 
             '''Run test/leoDynamicTest.py in a pristine environment.'''
 
@@ -833,7 +833,7 @@ def runTestsExternally (c,all):
             if ' ' in path and sys.platform.startswith('win'): 
                 path = '"' + path + '"'
 
-            args = [sys.executable, path, '--silent']  
+            args = [sys.executable, path, '--silent' '--gui=%s' % (gui)]  
 
             # srcDir = g.os_path_finalize_join(g.app.loadDir,'..','src')
             # srcDir = g.os_path_finalize_join(g.app.loadDir,'..')
@@ -1206,7 +1206,7 @@ class importExportTestCase(unittest.TestCase):
         child = temp_p.insertAsLastChild()
         assert(child)
         c.setHeadString(child,"import test: " + self.p.headString())
-        c.selectVnode(child)
+        c.selectPosition(child)
 
         assert(d)
         s = d.bodyString()

@@ -1858,21 +1858,26 @@ class leoFrame:
         '''End editing of a headline and revert to its previous value.'''
 
         frame = self ; c = frame.c ; tree = frame.tree
-        p = c.currentPosition() ; w = c.edit_widget(p)
+        p = c.currentPosition()
+        #### w = c.edit_widget(p)
 
         if g.app.batchMode:
             c.notValidInBatchMode("Abort Edit Headline")
             return
 
-        # g.trace('isEditing',p == tree.editPosition(),'revertHeadline',repr(tree.revertHeadline))
+        # Revert the headline text.
+        ### c.endEditing()
+        ### p.initHeadString(tree.revertHeadline)
+        c.setHeadString(p,tree.revertHeadline)
+        c.redraw(p)
 
-        if w and p == tree.editPosition():
-            # Revert the headline text.
-            w.delete(0,"end")
-            w.insert("end",tree.revertHeadline)
-            p.initHeadString(tree.revertHeadline)
-            c.endEditing()
-            c.redraw(p)
+        # if w and p == tree.editPosition():
+            # # Revert the headline text.
+            # w.delete(0,"end")
+            # w.insert("end",tree.revertHeadline)
+            # p.initHeadString(tree.revertHeadline)
+            # c.endEditing()
+            # c.redraw(p)
     #@-node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
     #@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
     def endEditLabelCommand (self,event=None):
@@ -1906,19 +1911,12 @@ class leoFrame:
             c.notValidInBatchMode("Insert Headline Time")
             return
 
-        c.redrawAndEdit(p)
-        c.frame.tree.setEditLabelState(p)
-        w = c.edit_widget(p)
-        if w:
-            time = c.getTime(body=False)
-            if 1: # We can't know if we were already editing, so insert at end.
-                w.setSelectionRange('end','end')
-                w.insert('end',time)
-            else:
-                i, j = w.getSelectionRange()
-                if i != j: w.delete(i,j)
-                w.insert("insert",time)
-            c.frame.tree.onHeadChanged(p,'Insert Headline Time')
+        c.endEditing()
+        time = c.getTime(body=False)
+        s = p.headString().rstrip()
+        c.setHeadString(p,'%s %s' % (s,time))
+        c.redrawAndEdit(p,selectAll=True)
+    #@nonl
     #@-node:ekr.20031218072017.3983:insertHeadlineTime
     #@-node:ekr.20031218072017.3980:Edit Menu... (leoFrame)
     #@-node:ekr.20061109125528.1:Must be defined in base class
@@ -2028,8 +2026,8 @@ class leoFrame:
     def bodyWantsFocus(self):
         return self.c.bodyWantsFocus()
 
-    def headlineWantsFocus(self,p):
-        return self.c.headlineWantsFocus(p)
+    # def headlineWantsFocus(self,p):
+        # return self.c.headlineWantsFocus(p)
 
     def logWantsFocus(self):
         return self.c.logWantsFocus()
@@ -2294,7 +2292,7 @@ class leoTree:
         'scrollTo',
         # Headlines.
         'editLabel',
-        'setEditLabelState',
+        # 'setEditLabelState',
         # Selecting.
         # 'select', # Defined in base class, may be overridden in do-nothing subclasses.
     )
@@ -2338,7 +2336,7 @@ class leoTree:
         self._editPosition = p
     #@-node:ekr.20031218072017.3716:Getters/Setters (tree)
     #@+node:ekr.20040803072955.90:head key handlers (leoTree)
-    #@+node:ekr.20040803072955.91:onHeadChanged
+    #@+node:ekr.20040803072955.91:onHeadChanged (leoTree)
     # Tricky code: do not change without careful thought and testing.
 
     def onHeadChanged (self,p,undoType='Typing',s=None):
@@ -2348,7 +2346,9 @@ class leoTree:
 
         trace = False and g.unitTesting
         c = self.c ; u = c.undoer
-        w = c.edit_widget(p)
+        #### Edit widgets are known *only* to tree widgets!
+        #### w = c.edit_widget(p)
+        w = self.edit_widget(p)
 
         if c.suppressHeadChanged: return
         if not w:
@@ -2410,7 +2410,7 @@ class leoTree:
             c.frame.tree.setSelectedLabelState(p)
 
         g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
-    #@-node:ekr.20040803072955.91:onHeadChanged
+    #@-node:ekr.20040803072955.91:onHeadChanged (leoTree)
     #@+node:ekr.20040803072955.88:onHeadlineKey
     def onHeadlineKey (self,event):
 
@@ -3370,7 +3370,7 @@ class nullTree (leoTree):
     def scrollTo(self,p):
         pass
     #@-node:ekr.20070228163350.1:Drawing & scrolling
-    #@+node:ekr.20070228163350.2:Headlines
+    #@+node:ekr.20070228163350.2:Headlines (nullTree)
     def edit_widget (self,p):
         d = self.editWidgetsDict ; w = d.get(p.v.t)
         if not w:
@@ -3392,27 +3392,28 @@ class nullTree (leoTree):
 
     def setUnselectedLabelState(self,p):
         pass
-    #@+node:ekr.20070228164730:editLabel (nullTree) same as tkTree)
+    #@+node:ekr.20070228164730:editLabel (nullTree)
     def editLabel (self,p,selectAll=False):
 
         """Start editing p's headline."""
 
         c = self.c
 
-        if self.editPosition() and p != self.editPosition():
-            self.endEditLabel()
+        #### if self.editPosition() and p != self.editPosition():
+        self.endEditLabel()
 
         self.setEditPosition(p) # That is, self._editPosition = p
 
-        if self.trace_edit and not g.app.unitTesting:
-            g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
+        ####
+        # if self.trace_edit and not g.app.unitTesting:
+            # g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
 
-        if p and c.edit_widget(p):
+        if p: #### and c.edit_widget(p):
             # g.trace('selectAll',selectAll,g.callers())
             self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
-            self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
-            c.headlineWantsFocus(p) # Make sure the focus sticks.
-    #@-node:ekr.20070228164730:editLabel (nullTree) same as tkTree)
+            #### self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
+    #@nonl
+    #@-node:ekr.20070228164730:editLabel (nullTree)
     #@+node:ekr.20070228160345:setHeadline (nullTree)
     def setHeadline (self,p,s):
 
@@ -3433,7 +3434,7 @@ class nullTree (leoTree):
         else:
             g.trace('-'*20,'oops')
     #@-node:ekr.20070228160345:setHeadline (nullTree)
-    #@-node:ekr.20070228163350.2:Headlines
+    #@-node:ekr.20070228163350.2:Headlines (nullTree)
     #@-node:ekr.20031218072017.2236:Overrides
     #@-others
 #@-node:ekr.20031218072017.2233:class nullTree

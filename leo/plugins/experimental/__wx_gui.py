@@ -6084,7 +6084,7 @@ if wx:
         #@-node:ekr.20081121105001.2057:onChar (leoTree)
         #@+node:ekr.20081121105001.2074:Selection (leoTree)
         #@+node:ekr.20081121105001.2075:editLabel
-        def editLabel (self,p,selectAll=False):
+        def editLabel (self,p,selectAll=False,selection=None):
 
             '''The edit-label command.'''
 
@@ -6117,7 +6117,10 @@ if wx:
                 # Important: this sets the 'virtual' selection (so, e.g., unit tests will pass)
                 # but it does *not* clear the actual selection (there is no way to do this programatically)
                 selectAll = c.config.getBool('select_all_text_when_editing_headlines')
-                if selectAll:
+                if selection:
+                    i,j,ins = selection
+                    w.setSelectionRange(i,j,insert=ins)
+                elif selectAll:
                     w.setSelectionRange(0,'end',insert='end')
                 else:
                     w.setSelectionRange('end','end',insert='end')
@@ -6159,22 +6162,6 @@ if wx:
             self.idDict[p.v] = aList
         #@-node:ekr.20081121105001.2077:get/setIdDict
         #@-node:ekr.20081121105001.2074:Selection (leoTree)
-        #@+node:ekr.20081121105001.2078:tree.setHeadline (new in 4.4b2)
-        def setHeadline (self,p,s):
-
-            '''Set the actual text of the headline widget.
-
-            This is called from the undo/redo logic to change the text before redrawing.'''
-
-            w = self.c.edit_widget(p)
-            if w:
-                w.setAllText(s)
-                self.revertHeadline = s
-            elif g.app.killed or self.c.frame.killed:
-                return
-            else:
-                g.trace('-'*20,'oops')
-        #@-node:ekr.20081121105001.2078:tree.setHeadline (new in 4.4b2)
         #@+node:ekr.20081121105001.2079:do nothings
         def headWidth (self,p=None,s=''): return 0
 

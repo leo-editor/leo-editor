@@ -185,14 +185,15 @@ class bridgeController:
             import leo.core.leoGui as leoGui
             import leo.core.leoFrame as leoFrame
             g.app.gui = leoGui.nullGui("nullGui")
-            # g.pr('createGui:','g.app:',id(g.app),g.app)
-            # g.pr('createGui:','g.app.gui',g.app.gui)
             g.app.log = g.app.gui.log = log = leoFrame.nullLog()
             log.isNull = False
             log.enabled = True # Allow prints from nullLog.
-            # g.app.writeWaitingLog()
+        elif self.guiName == 'qt':
+            import leo.plugins.qtGui as qtGui
+            g.app.gui = qtGui.leoQtGui()
+            print 'qtGui created'
         else:
-            assert False,'leoBridge.py must run with nullGui'
+            assert False,'leoBridge.py: unsupported gui: %s' % self.guiName
 
     #@-node:ekr.20070227095743:createGui
     #@+node:ekr.20070227093629.4:isValidPython

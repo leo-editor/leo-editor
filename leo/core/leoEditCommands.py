@@ -4879,7 +4879,7 @@ class editFileCommandsClass (baseEditCommandsClass):
         u.beforeChangeGroup(c.currentPosition(),undoType)
         undoData = u.beforeInsertNode(c.currentPosition())
         parent = c.currentPosition().insertAfter()
-        c.setHeadString(parent,undoType)
+        parent.setHeadString(undoType)
         u.afterInsertNode(parent,undoType,undoData,dirtyVnodeList=[])
         for d,kind in (
             (deleted,'deleted'),(inserted,'inserted'),(changed,'changed')
@@ -4897,7 +4897,7 @@ class editFileCommandsClass (baseEditCommandsClass):
 
         if d:
             parent = parent.insertAsLastChild()
-            c.setHeadString(parent,kind)
+            parent.setHeadString(kind)
 
             for key in d:
                 p = d.get(key)

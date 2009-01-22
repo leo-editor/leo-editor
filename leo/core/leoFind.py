@@ -551,7 +551,13 @@ class leoFind:
     def changeSelection(self):
 
         c = self.c ; p = self.p
-        w = g.choose(self.in_headline,c.edit_widget(p),c.frame.body.bodyCtrl) # 2007:10/25
+        bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
+        w = g.choose(self.in_headline,c.edit_widget(p),bodyCtrl)
+        if not w:
+            self.in_headline = False
+            w = bodyCtrl
+        if not w: return
+
         oldSel = sel = w.getSelectionRange()
         start,end = sel
         if start > end: start,end = end,start
@@ -1225,6 +1231,11 @@ class leoFind:
     def initNextText(self,ins=None):
         c,p = self.c,self.p
         s = g.choose(self.in_headline,p.headString(), p.bodyString())
+        if True:
+            tree = c.frame and c.frame.tree
+            if tree and hasattr(tree,'killEditing'):
+                # g.trace('kill editing before find')
+                tree.killEditing()
         self.init_s_ctrl(s,ins)
 
     def init_s_ctrl (self,s,ins):
@@ -1270,7 +1281,11 @@ class leoFind:
     def initInteractiveCommands(self):
 
         c = self.c ; p = self.p
-        w = g.choose(self.in_headline,c.edit_widget(p),c.frame.body.bodyCtrl)
+        bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
+        w = g.choose(self.in_headline,c.edit_widget(p),bodyCtrl)
+        if not w:
+            self.in_headline = False
+            w = bodyCtrl
         if not w: return
 
         self.errors = 0
@@ -1335,16 +1350,13 @@ class leoFind:
             c.widgetWantsFocusNow(t)
     #@nonl
     #@-node:ekr.20031218072017.3089:restore
-    #@+node:ekr.20031218072017.3090:save
+    #@+node:ekr.20031218072017.3090:save (leoFind)
     def save (self):
 
         c = self.c ; p = self.p
 
-        # g.trace(p.headString(),c.edit_widget(p))
-
         w = g.choose(self.in_headline,c.edit_widget(p),c.frame.body.bodyCtrl)
 
-        # 2007/10/24: defensive programming for unit tests.
         if w:
             insert = w.getInsertPoint()
             sel = w.getSelectionRange()
@@ -1356,54 +1368,54 @@ class leoFind:
             insert,start,end = None,None,None
 
         return (self.in_headline,p,w,insert,start,end)
-    #@-node:ekr.20031218072017.3090:save
-    #@+node:ekr.20031218072017.3091:showSuccess
+    #@-node:ekr.20031218072017.3090:save (leoFind)
+    #@+node:ekr.20031218072017.3091:showSuccess (test)
     def showSuccess(self,pos,newpos):
 
-        """Displays the final result.
+        '''Display the result of a successful find operation.'''
 
-        Returns self.dummy_vnode, c.edit_widget(p) or c.frame.body.bodyCtrl with
-        "insert" and "sel" points set properly."""
-
-        c = self.c ; p = self.p ; current = c.currentPosition()
+        c = self.c ; p = self.p
+        if not p:
+            return g.trace('can not happen: self.p is None')
+        current = c.currentPosition()
         sparseFind = c.config.getBool('collapse_nodes_during_finds')
         c.frame.bringToFront() # Needed on the Mac
+
+        # Expand ancestors and set redraw if a redraw is needed.
         redraw1 = not p.isVisible(c)
         if sparseFind:
-            # New in Leo 4.4.2: show only the 'sparse' tree when redrawing.
+            # Show only the 'sparse' tree when redrawing.
             for p2 in c.currentPosition().self_and_parents_iter():
                 if p2.isAncestorOf(p):
                     break
-                # g.trace('contract',p.headString())
                 p2.contract()
-                redraw = True
-
+                redraw1 = True #### Bug fix: was redraw = True.
         redraw2 = c.expandAllAncestors(self.p)
-        p = self.p
-        if not p: g.trace('can not happen: self.p is None')
+        redraw = redraw1 or reraw2
 
-        # g.trace('redraw2',redraw1,redraw2)
-
-        redraw = redraw1 or redraw2
-        if self.in_headline:
-            c.redrawAndEdit(p)
-        elif redraw:
-            c.redraw(p)
-        else:
-            c.selectPosition(p)
-        # Set the focus
-        w = g.choose(self.in_headline,c.edit_widget(p),c.frame.body.bodyCtrl)
-        if not w: return
-        c.widgetWantsFocusNow(w)
-        c.k.showStateAndMode(w)
-        # Ensure progress in backward searches.
+        # Set state vars.
+        # Ensure progress in backwards searches.
         insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
-        #g.trace('reverse,pos,newpos,insert',self.reverse,pos,newpos,insert)
-        w.setSelectionRange(pos,newpos,insert=insert)
-        w.seeInsertPoint()
         if self.wrap and not self.wrapPosition:
             self.wrapPosition = self.p
-    #@-node:ekr.20031218072017.3091:showSuccess
+
+        # g.trace(pos,newpos,insert)
+        if self.in_headline:
+            selection = pos,newpos,insert
+            c.redrawAndEdit(p,selection=selection)
+        else:
+            w = c.frame.body.bodyCtrl
+            if redraw:
+                c.redraw(p)
+            else:
+                c.redraw_after_select(p)
+            c.bodyWantsFocus()
+            c.k.showStateAndMode(w)
+            w.setSelectionRange(pos,newpos,insert=insert)
+            w.seeInsertPoint()
+            c.outerUpdate()
+    #@nonl
+    #@-node:ekr.20031218072017.3091:showSuccess (test)
     #@+node:ekr.20031218072017.1460:update_ivars (leoFind)
     # New in Leo 4.4.3: This is now gui-independent code.
 

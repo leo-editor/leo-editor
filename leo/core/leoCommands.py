@@ -3153,15 +3153,15 @@ class baseCommands:
 
         '''Add or remove double angle brackets from the headline of the selected node.'''
 
-        c = self ; v = c.currentVnode()
+        c = self ; p = c.currentPosition()
 
         if g.app.batchMode:
             c.notValidInBatchMode("Toggle Angle Brackets")
             return
 
         c.endEditing()
+        s = p.headString().strip()
 
-        s = v.headString().strip()
         if (s[0:2] == "<<"
             or s[-2:] == ">>"): # Must be on separate line.
             if s[0:2] == "<<": s = s[2:]
@@ -3170,11 +3170,9 @@ class baseCommands:
         else:
             s = g.angleBrackets(' ' + s + ' ')
 
-        c.frame.tree.editLabel(v)
-        w = c.edit_widget(v)
-        if w:
-            w.setAllText(s)
-            c.frame.tree.onHeadChanged(v,'Toggle Angle Brackets')
+        p.setHeadString(s)
+        c.redrawAndEdit(p, selectAll=True)
+    #@nonl
     #@-node:ekr.20031218072017.2290:toggleAngleBrackets
     #@-node:ekr.20031218072017.2885:Edit Headline submenu
     #@+node:ekr.20031218072017.2887:Find submenu (frame methods)
@@ -3734,11 +3732,6 @@ class baseCommands:
                     if p.hasBack():
                         assert p.back().parent() == p.parent(), "back.parent==parent"
                     #@-node:ekr.20040314035615.2:assert consistency of parent and child links
-                    #@+node:ekr.20040323162707:assert that clones actually share subtrees
-                    if p.isCloned() and p.hasChildren():
-                        for z in p.v.t.vnodeList:
-                            assert z.t == p.v.t
-                    #@-node:ekr.20040323162707:assert that clones actually share subtrees
                     #@+node:ekr.20040314043623:assert consistency of vnodeList
                     vnodeList = p.v.t.vnodeList
 
@@ -3761,16 +3754,11 @@ class baseCommands:
                             assert not v.isCloned(), "not v.isCloned"
                             assert len(vnodeList) == 1, "len(vnodeList) == 1"
                     #@-node:ekr.20040314043623:assert consistency of vnodeList
-                    #@+node:ekr.20040731053740:assert that p.headString() matches p.edit_text.get
-                    # Not a great test: it only tests visible nodes.
-                    # This test may fail if a joined node is being editred.
-
-                    if isTkinter:
-                        t = c.edit_widget(p)
-                        if t:
-                            s = t.getAllText()
-                            assert p.headString().strip() == s.strip(), "May fail if joined node is being edited"
-                    #@-node:ekr.20040731053740:assert that p.headString() matches p.edit_text.get
+                    #@+node:ekr.20040323162707:assert that clones actually share subtrees
+                    if p.isCloned() and p.hasChildren():
+                        for z in p.v.t.vnodeList:
+                            assert z.t == p.v.t
+                    #@-node:ekr.20040323162707:assert that clones actually share subtrees
                     #@+node:ekr.20080426051658.1:assert consistency of t.parent and t.children arrays
                     #@+at
                     # Every nodes gets visited, so we only check consistency
@@ -6361,9 +6349,9 @@ class baseCommands:
         c = self ; body = c.frame.body
         c.request_focus(body and body.bodyCtrl)
 
-    def headlineWantsFocus(self,p):
-        c = self
-        c.request_focus(p and c.edit_widget(p))
+    # def headlineWantsFocus(self,p):
+        # c = self
+        # c.request_focus(p and c.edit_widget(p))
 
     def logWantsFocus(self):
         c = self ; log = c.frame.log
@@ -6391,7 +6379,7 @@ class baseCommands:
 
     # All other "Now" methods wait.
     bodyWantsFocusNow = bodyWantsFocus
-    headlineWantsFocusNow = headlineWantsFocus
+    # headlineWantsFocusNow = headlineWantsFocus
     logWantsFocusNow = logWantsFocus
     minibufferWantsFocusNow = minibufferWantsFocus
     treeWantsFocusNow = treeWantsFocus
@@ -7134,19 +7122,28 @@ class baseCommands:
     #@+node:ekr.20040305223225:c.setHeadString
     def setHeadString (self,p,s,encoding="utf-8"):
 
+        '''Set the p's headline and the corresponding tree widget to s.
+
+        This is used in by unit tests to restore the outline.'''
+
         c = self
-        w = c.edit_widget(p) # w only exists for the Tk gui.
 
         p.initHeadString(s,encoding)
-
-        if w:
-            s = g.toUnicode(s,encoding)
-            w.setAllText(s)
-            width = c.frame.tree.headWidth(p=None,s=s)
-            w.setWidth(width)
-
         p.setDirty()
-    #@nonl
+
+        # Change the actual tree widget so
+        # A later call to c.endEditing or c.redraw will use 
+        c.frame.tree.setHeadline(p,s)
+
+        ####
+        # w = c.edit_widget(p) # w only exists for the Tk gui.
+        # if w:
+            # s = g.toUnicode(s,encoding)
+            # w.setAllText(s)
+            # width = c.frame.tree.headWidth(p=None,s=s)
+            # w.setWidth(width)
+
+
     #@-node:ekr.20040305223225:c.setHeadString
     #@+node:ekr.20060109164136:c.setLog
     def setLog (self):
@@ -7254,7 +7251,7 @@ class baseCommands:
     #@+node:ekr.20031218072017.2991:c.redrawAndEdit
     # Sets the focus to p and edits p.
 
-    def redrawAndEdit(self,p,selectAll=False):
+    def redrawAndEdit(self,p,selectAll=False,selection=None):
 
         '''Redraw the screen and start editing the headline at position p.'''
 
@@ -7263,7 +7260,7 @@ class baseCommands:
         c.redraw(p)
 
         if p:
-            c.frame.tree.editLabel(p,selectAll=selectAll)
+            c.frame.tree.editLabel(p,selectAll=selectAll,selection=selection)
 
             if k:
                 # Setting the input state has no effect on focus.
@@ -7275,11 +7272,9 @@ class baseCommands:
                 # This *does* affect focus.
                 k.showStateAndMode()
 
-            w = c.edit_widget(p)
-            if w: c.widgetWantsFocus(w)
-            else:
-                if not g.unitTesting:
-                    g.trace ('*** ERROR *** no edit widget')
+            #### editLabel should request focus.
+            # w = c.edit_widget(p)
+            # if w: c.widgetWantsFocus(w)
 
         # New in Leo 4.6: honor the focus immediately.
         c.outerUpdate()
@@ -7314,7 +7309,7 @@ class baseCommands:
 
         # g.trace(p.headString(),g.callers())
 
-        c.expandAllAncestors(p) ####
+        c.expandAllAncestors(p)
         c.frame.tree.select(p)
 
         # New in Leo 4.4.2.

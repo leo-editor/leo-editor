@@ -1978,21 +1978,6 @@ for s in d:
 
 #@-node:ekr.20050123160215.1:Put all files in alpha order in ExamDiff
 #@-node:ekr.20050123161408:ExamDiff files & scripts
-#@+node:ekr.20070515083528:Focus notes
-@nocolor
-
-Focus issues create some of the most difficult programming problems in Leo.  The following are notes to myself about the issues involved.
-
-- BringToFront can ruin a carefully set focus.
-
-- There is no perfect place to set focus.
-
-- The find code must be especially careful to set focus properly in headlines.
-
-- The setEditLabelState method shows the *minimum* needed to set focus properly in a headline.
-  It
-#@nonl
-#@-node:ekr.20070515083528:Focus notes
 #@+node:ekr.20031218072017.365:How to...
 #@+node:ekr.20060208112908:CVS stuff...
 #@+node:ekr.20060331094112:How to generate keys using putty
@@ -3429,6 +3414,16 @@ def restoreFocus (self):
     # else:
         # c.masterFocusHandler() # Do it now.
 #@-node:ekr.20080514131122.15:c.restoreFocus
+#@+node:ekr.20040731053740:assert that p.headString() matches p.edit_text.get
+# Not a great test: it only tests visible nodes.
+# This test may fail if a joined node is being editred.
+
+if isTkinter:
+    t = c.edit_widget(p)
+    if t:
+        s = t.getAllText()
+        assert p.headString().strip() == s.strip(), "May fail if joined node is being edited"
+#@-node:ekr.20040731053740:assert that p.headString() matches p.edit_text.get
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

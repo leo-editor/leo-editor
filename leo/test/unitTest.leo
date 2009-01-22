@@ -1150,7 +1150,9 @@
 </v>
 <v t="ekr.20070611105423.1"><vh>@test contract all</vh></v>
 <v t="ekr.20071113105654.1"><vh>@test hoist with no children</vh></v>
-<v t="ekr.20070611105728"><vh>@test illegal clone demote LOOPS</vh></v>
+<v t="ekr.20070611105728"><vh>@test illegal clone demote LOOPS</vh>
+<v t="ekr.20090122112354.1"><vh>aClone</vh></v>
+</v>
 <v t="ekr.20071113201833" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194216"><vh>leoConfig</vh>
@@ -1742,8 +1744,8 @@
 <v t="ekr.20051107115231.15" annotate="7d71002e"><vh>@test editLabel selects entire headline</vh></v>
 <v t="ekr.20051107115231.16" annotate="7d71002e"><vh>@test paste at end of headline</vh></v>
 <v t="ekr.20051107115231.17" annotate="7d71002e"></v>
-<v t="ekr.20051107115231.18" annotate="7d71002e"><vh>@test paste and undo in headline - at end</vh></v>
-<v t="ekr.20051107115231.20" annotate="7d71002e"><vh>@test paste and undo in headline - with selection</vh></v>
+<v t="ekr.20051107115231.18" annotate="7d71002e"><vh>@@@test paste and undo in headline - at end</vh></v>
+<v t="ekr.20051107115231.20" annotate="7d71002e"><vh>@@@test paste and undo in headline - with selection</vh></v>
 <v t="ekr.20051107115231.21" annotate="7d71002e"></v>
 <v t="ekr.20060208072307" annotate="7d71002e"></v>
 <v t="ekr.20060208072331" annotate="7d71002e"><vh>@test paste from menu into headline sticks</vh></v>
@@ -1919,7 +1921,13 @@
 <v t="ekr.20040712101754.7" annotate="7d71002e"><vh> Export tests</vh>
 <v t="ekr.20040712101754.9" annotate="7d71002e"><vh>@suite Export tests</vh></v>
 <v t="ekr.20040712101754.24" annotate="7d71002e"><vh>exportTests</vh>
-<v t="ekr.20040712101754.25"><vh>tempNode</vh></v>
+<v t="ekr.20040712101754.25"><vh>tempNode</vh>
+<v t="ekr.20090122112354.2"><vh>import test: exportHeadlines</vh></v>
+<v t="ekr.20090122112354.3"><vh>import test: flattenOutline</vh></v>
+<v t="ekr.20090122112354.4"><vh>import test: weave</vh></v>
+<v t="ekr.20090122112354.5"><vh>import test: outlineToNoweb</vh></v>
+<v t="ekr.20090122112354.6"><vh>import test: outlineToCWEB</vh></v>
+</v>
 <v t="ekr.20040712101754.26"><vh>exportHeadlines</vh>
 <v t="ekr.20040712101754.27"><vh>dialog</vh></v>
 </v>
@@ -1940,7 +1948,15 @@
 <v t="ekr.20070711063849"><vh> Import tests</vh>
 <v t="ekr.20040712101754.8" annotate="7d71002e"><vh>@suite Import tests</vh></v>
 <v t="ekr.20040712101754.10" annotate="7d71002e"><vh>importTests</vh>
-<v t="ekr.20040712101754.11" annotate="7d71002e"><vh>tempNode</vh></v>
+<v t="ekr.20040712101754.11" annotate="7d71002e"><vh>tempNode</vh>
+<v t="ekr.20090122112354.7"><vh>import test: importAtRoot</vh></v>
+<v t="ekr.20090122112354.8"><vh>import test: importDerivedFile</vh></v>
+<v t="ekr.20090122112354.9"><vh>import test: importNowebFiles</vh></v>
+<v t="ekr.20090122112354.10"><vh>import test: importFlattenedOutline</vh></v>
+<v t="ekr.20090122112354.11"><vh>import test: importCWEBFiles</vh></v>
+<v t="ekr.20090122112354.12"><vh>import test: removeSentinels</vh></v>
+<v t="ekr.20090122112354.13"><vh>import test: importAtFile</vh></v>
+</v>
 <v t="ekr.20040712101754.12" annotate="7d71002e"><vh>importAtRoot</vh>
 <v t="ekr.20040712101754.13"><vh>dialog</vh></v>
 </v>
@@ -12990,7 +13006,12 @@ try:
 finally:
     c2.setChanged(False)
     c2.close()</t>
-<t tx="ekr.20051107115231.13"></t>
+<t tx="ekr.20051107115231.13">@
+Important: these unit tests must call c.setHeadString(p,h)
+to restores the tree's edit widget before calling c.redraw().
+
+Without this call, tree.onHeadChanged would make the
+test's changes permanent.</t>
 <t tx="ekr.20051107115231.14">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 h = '@test return ends editing of headline'
@@ -13067,8 +13088,7 @@ try:
 finally:
     if trace: print('-'*20)
     if 1:
-        p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
+        c.setHeadString(p,h)
         c.redraw(p)</t>
 <t tx="ekr.20051107115231.17">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.k
@@ -13103,8 +13123,7 @@ if k.defaultUnboundKeyAction == 'insert':
             p.headString(),h)
     finally:
         if 1:
-            p.initHeadString(h)
-            # c.frame.tree.setHeadline(p,h)
+            c.setHeadString(p,h)
             c.redraw(p)</t>
 <t tx="ekr.20051107115231.18">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
@@ -13127,9 +13146,8 @@ try:
     assert p.headString() == h,'oops3 got: %s' % p.headString()
 finally:
     if 1:
-        p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
-        c.redraw_now(p)</t>
+        c.setHeadString(p,h)
+        c.redraw(p)</t>
 <t tx="ekr.20051107115231.19"># Totally weird.
 
 import leoTest ; u = leoTest.testUtils(c)
@@ -13183,8 +13201,7 @@ try:
     assert p.headString() == h, 'head mismatch'
 finally:
     if 1:
-        p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
+        c.setHeadString(p,h)
         c.redraw(p)</t>
 <t tx="ekr.20051107115231.21">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.k
@@ -13209,8 +13226,7 @@ if k.defaultUnboundKeyAction == 'insert':
         assert p.headString() == h
     finally:
         if 1:
-            p.initHeadString(h)
-            # c.frame.tree.setHeadline(p,h)
+            c.setHeadString(p,h)
             c.redraw(p)</t>
 <t tx="ekr.20051107115231.24"># Should be a comment# Should be a comment# Should be a comment# Should be a comment
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
@@ -13271,8 +13287,7 @@ try:
     # g.trace(n,n2)
 finally:
     if 1:
-        p.initHeadString(h)
-        # c.frame.tree.setHeadline(p,h)
+        c.setHeadString(p,h)
         c.redraw(p)</t>
 <t tx="ekr.20051107115231.26">import leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
@@ -13318,8 +13333,7 @@ try:
         h,p.headString())
 finally:
     if 1:
-        p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
+        c.setHeadString(p,h)
         c.redraw(p)</t>
 <t tx="ekr.20051107115231.29">import leo.core.leoEditCommands as leoEditCommands
 s = 'foo' ; bodyCtrl = c.frame.body.bodyCtrl
@@ -13442,8 +13456,7 @@ try:
     # w.event_generate('X')
 finally:
     if 1:
-        p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
+        c.setHeadString(p,h)
         c.redraw(p)</t>
 <t tx="ekr.20051130080047"></t>
 <t tx="ekr.20051202100844"></t>
@@ -13458,7 +13471,12 @@ assert g.app.positions == n</t>
 assert c.isRootPosition(None) is False
 assert c.isRootPosition(p) is False
 assert g.app.positions == n</t>
-<t tx="ekr.20060127120604"></t>
+<t tx="ekr.20060127120604">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after</t>
 <t tx="ekr.20060130151716.1">table = (
     # 'toggle-find-clone-find-all-option',
     'toggle-find-ignore-case-option',
@@ -13628,7 +13646,6 @@ try:
 finally:
     if 1:
         c.setHeadString(p,h)
-        c.frame.tree.setHeadline(p,h)
         c.redraw(p)</t>
 <t tx="ekr.20060208072358"># This test is too flaky for Tk.
 if g.app.gui.guiName() != 'tkinter':
@@ -22126,5 +22143,18 @@ c.setFileTimeStamp(path)
 val = c.checkFileTimeStamp(path)
 assert val,repr(val)
 </t>
+<t tx="ekr.20090122112354.1">4</t>
+<t tx="ekr.20090122112354.2"></t>
+<t tx="ekr.20090122112354.3"></t>
+<t tx="ekr.20090122112354.4"></t>
+<t tx="ekr.20090122112354.5"></t>
+<t tx="ekr.20090122112354.6"></t>
+<t tx="ekr.20090122112354.7"></t>
+<t tx="ekr.20090122112354.8"></t>
+<t tx="ekr.20090122112354.9"></t>
+<t tx="ekr.20090122112354.10"></t>
+<t tx="ekr.20090122112354.11"></t>
+<t tx="ekr.20090122112354.12"></t>
+<t tx="ekr.20090122112354.13"></t>
 </tnodes>
 </leo_file>

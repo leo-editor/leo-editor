@@ -8557,7 +8557,7 @@ if wx:
         #@-node:ekr.20081121105001.1624:Mouse Events
         #@-node:ekr.20081121105001.1611:== Event handlers ==
         #@+node:ekr.20081121105001.1651:editLabel
-        def editLabel (self,p,selectAll=False):
+        def editLabel (self,p,selectAll=False,selection=None):
             '''The edit-label command.'''
 
             #g.trace(g.callers())
@@ -8583,7 +8583,10 @@ if wx:
                 entry.setAllText(s)
 
                 selectAll = selectAll or self.select_all_text_when_editing_headlines
-                if selectAll:
+                if selection:
+                    i,j,ins = selection
+                    entry.ctrl.setSelection(i,j,insert=ins)
+                elif selectAll:
                     entry.ctrl.SetSelection(-1, -1)
                 else:
                     entry.ctrl.SetInsertionPointEnd()
@@ -8630,24 +8633,6 @@ if wx:
             if event:
                 event.Skip()
         #@-node:ekr.20081121105001.1652:endEditLabel
-        #@+node:ekr.20081121105001.1653:tree.setHeadline (new in 4.4b2)
-        def setHeadline (self,p,s):
-
-            '''Set the actual text of the headline widget.
-
-            This is called from the undo/redo logic to change the text before redrawing.'''
-
-            w = self.editPosition() and self.headlineTextWidget
-
-            w = self.edit_widget(p)
-            if w:
-                w.setAllText(s)
-                self.revertHeadline = s
-            elif g.app.killed or self.c.frame.killed:
-                return
-            else:
-                g.trace('#'*20,'oops')
-        #@-node:ekr.20081121105001.1653:tree.setHeadline (new in 4.4b2)
         #@+node:ekr.20081121105001.1654:tree.set...LabelState
         #@+node:ekr.20081121105001.1655:setEditLabelState
         def setEditLabelState(self, p, selectAll=False):

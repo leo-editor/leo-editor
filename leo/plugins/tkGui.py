@@ -8734,7 +8734,7 @@ class leoTkinterTree (leoFrame.leoTree):
         self.setSelectedLabelState(p)
     #@-node:ekr.20081121110412.551:dimEditLabel, undimEditLabel
     #@+node:ekr.20081121110412.552:tree.editLabel (tkTree)
-    def editLabel (self,p,selectAll=False):
+    def editLabel (self,p,selectAll=False,selection=None):
 
         """Start editing p's headline."""
 
@@ -8757,7 +8757,7 @@ class leoTkinterTree (leoFrame.leoTree):
         if p and w:
             if trace: g.trace('w',w,p)
             self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
-            self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
+            self.setEditLabelState(p,selectAll=selectAll,selection=selection) # Sets the focus immediately.
             ### c.headlineWantsFocus(p) # Make sure the focus sticks.
             c.widgetWantsFocus(w)
             c.k.showStateAndMode(w)
@@ -8767,7 +8767,7 @@ class leoTkinterTree (leoFrame.leoTree):
     #@-node:ekr.20081121110412.552:tree.editLabel (tkTree)
     #@+node:ekr.20081121110412.553:tree.set...LabelState
     #@+node:ekr.20081121110412.554:setEditLabelState
-    def setEditLabelState (self,p,selectAll=False): # selected, editing
+    def setEditLabelState (self,p,selectAll=False,selection=None): # selected, editing
 
         c = self.c ; w = c.edit_widget(p)
 
@@ -8775,7 +8775,10 @@ class leoTkinterTree (leoFrame.leoTree):
             c.widgetWantsFocusNow(w)
             self.setEditHeadlineColors(p)
             selectAll = selectAll or self.select_all_text_when_editing_headlines
-            if selectAll:
+            if selection:
+                i,j,ins = selection
+                w.setSelectionRange(i,j,insert=ins)
+            elif selectAll:
                 w.setSelectionRange(0,'end',insert='end')
             else:
                 w.setInsertPoint('end') # Clears insert point.
@@ -8876,7 +8879,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         '''Set the actual text of the headline widget.
 
-        This is called from the undo/redo logic to change the text before redrawing.'''
+        This is called from unit tests to restore the text before redrawing.'''
 
         w = self.edit_widget(p)
         if w:
@@ -8886,9 +8889,8 @@ class leoTkinterTree (leoFrame.leoTree):
                 s = s[:-1]
             w.insert(0,s)
             self.revertHeadline = s
-            # g.trace(repr(s),w.getAllText())
-        else:
-            g.trace('-'*20,'oops')
+
+        # else: g.trace('-'*20,'oops')
     #@-node:ekr.20081121110412.560:tree.setHeadline (tkTree)
     #@-node:ekr.20081121110412.550:Selecting & editing... (tkTree)
     #@-others
