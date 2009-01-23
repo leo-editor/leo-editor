@@ -3443,6 +3443,1222 @@ def parseUnderindentTag (self,s):
         return 0,s
 #@-node:ekr.20081216090156.4:parseUnderindentTag
 #@-node:ekr.20090120115450.1:Fixed atFile unicode bug
+#@+node:ekr.20090121112441.1:Removed redundant calls to expandAllAncestors
+# Both c.redraw and c.redraw_after_select call c.expandAllAncestors.
+#@nonl
+#@+node:ekr.20031218072017.2991:c.redrawAndEdit
+# Sets the focus to p and edits p.
+
+def redrawAndEdit(self,p,selectAll=False,selection=None):
+
+    '''Redraw the screen and start editing the headline at position p.'''
+
+    c = self ; k = c.k
+
+    c.redraw(p)
+
+    if p:
+        # This should request focus.
+        c.frame.tree.editLabel(p,selectAll=selectAll,selection=selection)
+
+        if k:
+            # Setting the input state has no effect on focus.
+            if selectAll:
+                k.setInputState('insert')
+            else:
+                k.setDefaultInputState()
+
+            # This *does* affect focus.
+            k.showStateAndMode()
+
+    # Update the focus immediately.
+    c.outerUpdate()
+#@nonl
+#@-node:ekr.20031218072017.2991:c.redrawAndEdit
+#@+node:ekr.20090110073010.1:c.redraw
+def redraw (self,p=None,setFocus=False):
+    '''Redraw the screen immediately.'''
+
+    c = self
+    if p:
+        # Update body pane and set c._currentPosition.
+        c.expandAllAncestors(p) # Redundant, but safe.
+        c.selectPosition(p)
+    else:
+        p = c.currentPosition()
+        c.expandAllAncestors(p)
+
+    c.frame.tree.redraw(p)
+    if setFocus: c.treeFocusHelper()
+
+# Compatibility with old scripts
+force_redraw = redraw
+redraw_now = redraw
+#@-node:ekr.20090110073010.1:c.redraw
+#@+node:ekr.20090110073010.4:c.redraw_after_select
+def redraw_after_select(self,p,setFocus=False):
+
+    '''Redraw the screen after node p has been selected.
+
+    The intention is for the gui to just select the node
+    if it is visible, and to completely redraw the screen otherwise.'''
+
+    c = self
+
+    c.expandAllAncestors(p)
+    c.selectPosition(p)
+        # Required to update body pane.
+        # Will call tree.before/afterSelect hint.
+
+    # This will be redundant if tree.before/afterSelectHint are functional,
+    # but this redundancy does not hurt.
+    c.frame.tree.redraw_after_select(p)
+    if setFocus: c.treeFocusHelper()
+#@-node:ekr.20090110073010.4:c.redraw_after_select
+#@+node:ekr.20031218072017.2997:c.selectPosition
+def selectPosition(self,p):
+
+    """Select a new position."""
+
+    c = self ; cc = c.chapterController
+
+    if cc:
+        cc.selectChapterForPosition(p)
+
+    # g.trace(p.headString(),g.callers())
+
+    c.expandAllAncestors(p)
+    c.frame.tree.select(p)
+
+    # New in Leo 4.4.2.
+    c.setCurrentPosition(p)
+        # Do *not* test whether the position exists!
+        # We may be in the midst of an undo.
+
+selectVnode = selectPosition
+#@-node:ekr.20031218072017.2997:c.selectPosition
+#@+node:ekr.20040803072955.128:leoTree.select & helper
+tree_select_lockout = False
+
+def select (self,p,scroll=True):
+
+    '''Select a node.
+    Never redraws outline, but may change coloring of individual headlines.
+    The scroll argument is used by tk to suppress scrolling while dragging.'''
+
+    if g.app.killed or self.tree_select_lockout: return None
+
+    try:
+        c = self.c ; old_p = c.currentPosition()
+        val = 'break'
+        self.tree_select_lockout = True
+        c.frame.tree.beforeSelectHint(p,old_p)
+        val = self.treeSelectHelper(p,scroll=scroll)
+    finally:
+        self.tree_select_lockout = False
+        c.frame.tree.afterSelectHint(p,old_p)
+
+    return val  # Don't put a return in a finally clause.
+#@+node:ekr.20070423101911:treeSelectHelper
+#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+
+def treeSelectHelper (self,p,scroll):
+
+    c = self.c ; frame = c.frame ; trace = False
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.currentPosition()
+
+    if not p:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    if trace: g.trace(
+        '\nold:',old_p and old_p.headString(),
+        '\nnew:',p and p.headString())
+
+    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        if old_p:
+            << unselect the old node >>
+
+    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        << select the new node >>
+        if p and p != old_p: # Suppress duplicate call.
+            try: # may fail during initialization.
+                # p is NOT c.currentPosition() here!
+                if 0: # Interferes with new colorizer.
+                    self.canvas.update_idletasks()
+                    self.scrollTo(p)
+                if scroll and g.app.gui.guiName() == 'tkinter':
+                    def scrollCallback(self=self,p=p):
+                        self.scrollTo(p)
+                    self.canvas.after(100,scrollCallback)
+            except Exception: pass
+        c.nodeHistory.update(p) # Remember this position.
+    c.setCurrentPosition(p)
+    << set the current node >>
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    return 'break' # Supresses unwanted selection.
+#@+node:ekr.20040803072955.129:<< unselect the old node >>
+# Remember the position of the scrollbar before making any changes.
+if body:
+    yview = body.getYScrollPosition()
+    insertSpot = c.frame.body.getInsertPoint()
+else:
+    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+    yview,insertSpot = None,0
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+
+if old_p:
+    old_p.v.t.scrollBarSpot = yview
+    old_p.v.t.insertSpot = insertSpot
+#@-node:ekr.20040803072955.129:<< unselect the old node >>
+#@+node:ekr.20040803072955.130:<< select the new node >>
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.headString()
+frame.setWrap(p)
+
+# Always do this.  Otherwise there can be problems with trailing newlines.
+
+s = g.toUnicode(p.v.t._bodyString,"utf-8")
+old_s = w.getAllText()
+
+if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+    pass
+else:
+    # This destroys all color tags, so do a full recolor.
+    w.setAllText(s)
+    self.frame.body.recolor(p) # recolor now uses p.copy(), so this is safe.
+
+if p.v and p.v.t.scrollBarSpot != None:
+    first,last = p.v.t.scrollBarSpot
+    w.setYScrollPosition(first)
+
+if p.v and p.v.t.insertSpot != None:
+    spot = p.v.t.insertSpot
+    w.setInsertPoint(spot)
+    w.see(spot)
+else:
+    w.setInsertPoint(0)
+
+# g.trace("select:",p.headString())
+#@-node:ekr.20040803072955.130:<< select the new node >>
+#@+node:ekr.20040803072955.133:<< set the current node >>
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+if self.use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.headString())
+
+if self.stayInTree:
+    c.treeWantsFocus()
+else:
+    c.bodyWantsFocus()
+#@-node:ekr.20040803072955.133:<< set the current node >>
+#@-node:ekr.20070423101911:treeSelectHelper
+#@-node:ekr.20040803072955.128:leoTree.select & helper
+#@-node:ekr.20090121112441.1:Removed redundant calls to expandAllAncestors
+#@+node:ekr.20090122080402.4:Removed most calls to edit_widget
+@nocolor-node
+
+It's not possible to remove edit_widget entirely.
+The base find code uses it to init and complete the search.
+
+What I did:
+
+- removed c.headlineWantsFocus.  It was only used in the nullGui(!)
+- qtTree.edit_label does *not* use remembered widget;
+  it computes it, and returns None if not editing!
+- Replaced edit_widget by p.setHeadline in several places.
+#@nonl
+#@+node:ekr.20090122075649.1:Found: edit_widget
+#@+node:ekr.20090122075649.2:Tests
+#@+node:ekr.20090121163905.757:@test return ends editing of headline
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+
+h = '@test return ends editing of headline'
+p = u.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.redraw(p) # To make node visible
+c.frame.tree.editLabel(p)
+w = c.edit_widget(p)
+guiName = g.app.gui.guiName()
+wName = g.app.gui.widget_name(w)
+assert wName.startswith('head'),'w.name:%s' % wName
+w.event_generate('<Return>')
+c.outerUpdate()
+assert w != c.get_focus(),'oops2: focus in headline'
+#@nonl
+#@-node:ekr.20090121163905.757:@test return ends editing of headline
+#@+node:ekr.20090121163905.758:@test editLabel selects entire headline
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+
+k = c.keyHandler
+frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+h = '@test editLabel selects entire headline'
+p = u.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.redraw(p) # To make node visible
+tree.editLabel(p)
+w = c.edit_widget(p)
+assert w
+s = w.getAllText()
+selectAll = c.config.getBool('select_all_text_when_editing_headlines')
+# g.trace('editLabel selects entire headline',selectAll)
+i,j = w.getSelectionRange()
+if selectAll:
+    assert i == 0 and j == len(s),'oops1: i: %d, j: %d' % (i,j)
+else:
+    assert i == len(s) and j == len(s),'oops2: i: %d, j: %d' % (i,j)
+#@-node:ekr.20090121163905.758:@test editLabel selects entire headline
+#@+node:ekr.20090121163905.759:@test paste at end of headline
+trace = False ; verbose = False
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+k = c.keyHandler
+frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+h = 'Test headline abc'
+p = u.findNodeAnywhere(h,breakOnError=True)
+assert p,'node not found: %s' % h
+if trace: print('='*20)
+c.redrawAndEdit(p) # To make node visible
+w = c.edit_widget(p)
+g.app.gui.set_focus(c,w)
+w2 = g.app.gui.get_focus(c)
+if trace: print ('focus 1',w2)
+if trace: print ('*** w ***',w)
+if 0: # The tkGui.set_focus now does an update to force the focus.
+    w2 = g.app.gui.get_focus(c)
+    if w != w2:
+        print ('*** FAIL ***\nw: %s\nw2: %s' % (w,w2))
+    assert w == w2 or hasattr(w,'widget') and w.widget == w2,'w: %s\nw2: %s' % (w,w2)
+    if trace: print('focus',w2)
+# For the qt gui w is a wrapper and w.widget is the actual widget.
+
+try:
+    assert w
+    paste = 'ABC'
+    g.app.gui.replaceClipboardWith(paste)
+    g.app.gui.set_focus(c,w)
+    w2 = g.app.gui.get_focus(c)
+    if trace: print ('focus 1',w2)
+    w.setSelectionRange('end','end')
+    k.manufactureKeyPressForCommandName(w,'paste-text')
+    if 0: # Easiest.
+        c.endEditing()
+    else: # More thorough test.
+        w.event_generate('<Return>')
+        w.update()
+    if 1:
+        assert p.headString() == h + paste,'Expected: %s, got %s' % (
+            h + paste,p.headString())
+finally:
+    if trace: print('-'*20)
+    if 1:
+        c.setHeadline(p,h) # Essential.
+        c.redraw(p)
+#@nonl
+#@-node:ekr.20090121163905.759:@test paste at end of headline
+#@+node:ekr.20090121163905.760:@@@test typing and undo in headline - at end
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+k = c.k
+
+if k.defaultUnboundKeyAction == 'insert':
+    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+    h = 'Test headline abc'
+    p = u.findNodeAnywhere(h,breakOnError=True)
+    assert p,'node not found: %s' % h
+    c.redrawAndEdit(p) # To make the node visible.
+    w = c.edit_widget(p)
+    # print('guiName',g.app.gui.guiName())
+    try:
+        assert w, 'oops1'
+        wName = g.app.gui.widget_name(w)
+        assert wName.startswith('head'),'w.name:%s' % wName
+        w.setSelectionRange('end','end')
+        w.event_generate('X')
+        w.event_generate('Y')
+        w.event_generate('Z')
+        w.event_generate('<Return>')
+        assert p.headString() == h + 'XYZ',(
+            'oops2: expected: %s, got: %s' % (
+                h + 'XYZ',p.headString()))
+        if g.app.gui.guiName() != 'nullGui':
+            assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
+                c.undoer.undoMenuLabel)
+        k.manufactureKeyPressForCommandName(w,'undo')
+        if g.app.gui.guiName() != 'nullGui':
+            assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
+        assert p.headString() == h,'oops5 got: %s, expected: %s' % (
+            p.headString(),h)
+    finally:
+        if 1:
+            c.setHeadline(p,h) # Essential.
+            c.redraw(p)
+#@nonl
+#@-node:ekr.20090121163905.760:@@@test typing and undo in headline - at end
+#@+node:ekr.20090121163905.761:@test paste and undo in headline - at end
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+k = c.keyHandler
+frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+h = 'Test headline abc'
+p = u.findNodeAnywhere(h,breakOnError=True)
+assert p,'node not found: %s' % h
+c.redrawAndEdit(p) # To make node visible
+w = c.edit_widget(p)
+try:
+    assert w,'oops1'
+    w.setSelectionRange('end','end')
+    paste = 'ABC'
+    g.app.gui.replaceClipboardWith(paste)
+    w.setSelectionRange('end','end')
+    k.manufactureKeyPressForCommandName(w,'paste-text')
+    w.event_generate('<Return>')
+    assert p.headString() == h + paste,'oops2 got: %s' % p.headString()
+    k.manufactureKeyPressForCommandName(w,'undo')
+    assert p.headString() == h,'oops3 got: %s' % p.headString()
+finally:
+    if 1:
+        c.setHeadline(p,h) # Essential.
+        c.redraw(p)
+#@nonl
+#@-node:ekr.20090121163905.761:@test paste and undo in headline - at end
+#@+node:ekr.20090121163905.762:@test paste and undo in headline - with selection
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+k = c.keyHandler
+frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+h = 'Test headline abc'
+p = u.findNodeAnywhere(h,breakOnError=True)
+assert p,'node not found: %s' % h
+c.redraw(p) # To make node visible
+tree.editLabel(p)
+w = c.edit_widget(p)
+try:
+    assert w, 'Null w'
+    paste = 'ABC'
+    g.app.gui.replaceClipboardWith(paste)
+    w.setSelectionRange('1.1','1.2')
+    k.manufactureKeyPressForCommandName(w,'paste-text')
+    w.event_generate('<Return>')
+    assert p.headString() == h[0] + paste + h[2:]
+    k.manufactureKeyPressForCommandName(w,'undo')
+    assert p.headString() == h, 'head mismatch'
+finally:
+    if 1:
+        c.setHeadline(p,h) # Essential.
+        c.redraw(p)
+#@nonl
+#@-node:ekr.20090121163905.762:@test paste and undo in headline - with selection
+#@+node:ekr.20090121163905.763:@@@test selecting new node retains typing in headline
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+k = c.k
+
+if k.defaultUnboundKeyAction == 'insert':
+    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+    h = 'Test headline abc'
+    p = u.findNodeAnywhere(h,breakOnError=True)
+    assert p,'node not found: %s' % h
+    c.redraw(p) # To make node visible
+    tree.editLabel(p)
+    w = c.edit_widget(p)
+    try:
+        assert w
+        w.setSelectionRange('end','end')
+        w.event_generate('X')
+        w.event_generate('Y')
+        w.event_generate('Z')
+        w.event_generate('<Return>')
+        assert p.headString() == h + 'XYZ'
+        k.manufactureKeyPressForCommandName(w,'undo')
+        assert p.headString() == h
+    finally:
+        if 1:
+            c.setHeadline(p,h) # Essential.
+            c.redraw(p)
+#@nonl
+#@-node:ekr.20090121163905.763:@@@test selecting new node retains typing in headline
+#@+node:ekr.20090121163905.765:@test paste from menu into headline sticks
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+h = 'Test headline abc'
+p = u.findNodeAnywhere(h,breakOnError=True)
+assert p,'node not found: %s' % h
+c.selectPosition(p)
+c.frame.tree.editLabel(p)
+w = c.edit_widget(p)
+w.setSelectionRange('end','end',insert='end')
+paste = 'ABC'
+g.app.gui.replaceClipboardWith(paste)
+if 1: # New code calls pasteText directly.
+    event = g.Bunch(widget=w)
+    c.frame.pasteText(event)
+else:
+    menu = c.frame.menu.getMenu('Edit')
+    i = menu.index('Paste')
+    menu.invoke(i)
+# Move around and and make sure it doesn't change.
+try:
+    # g.trace('before select',w,w.getAllText())
+    c.selectPosition(p.threadBack())
+    assert p.headString() == h + paste,'oops1: expected: %s, got %s' % (h + paste,p.headString())
+    c.selectPosition(p)
+    assert p.headString() == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.headString())
+finally:
+    if 1:
+        c.setHeadline(p,h) # Essential.
+        c.redraw(p)
+#@nonl
+#@-node:ekr.20090121163905.765:@test paste from menu into headline sticks
+#@+node:ekr.20090121163905.767:@@@test typing in headline recomputes width
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+k = c.keyHandler
+h = 'Test headline abc'
+p = u.findNodeAnywhere(h,breakOnError=True)
+assert p,'node not found: %s' % h
+c.redraw(p) # To make node visible
+c.frame.tree.editLabel(p)
+w = c.edit_widget(p)
+try:
+    assert w
+    g.app.gui.set_focus(c,w)
+    w2 = g.app.gui.get_focus(c)
+    # assert w == w2 or hasattr(w,'widget') and w.widget == w2,'w: %s\nw2: %s' % (w,w2)
+    w.setSelectionRange('end','end')
+    n = w.getWidth()
+    w.event_generate('X')
+    w.event_generate('Y')
+    w.event_generate('Z')
+    w.update()
+    if 1: # Easiest.
+        c.endEditing()
+    else: # More thorough test.
+        w.event_generate('<Return>')
+        w.update()
+    assert w, 'fail 2'
+    n2 = w.getWidth()
+    if g.app.gui.guiName() == 'tkinter':
+        assert n2 > n, '%s %s' % (n2,n)
+    # g.trace(n,n2)
+finally:
+    if 1:
+        c.setHeadline(p,h) # Essential.
+        c.redraw(p)
+#@nonl
+#@-node:ekr.20090121163905.767:@@@test typing in headline recomputes width
+#@+node:ekr.20090121163905.768:@test selecting new node retains paste in headline
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+k = c.keyHandler
+frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+h = 'Test headline abc'
+p = u.findNodeAnywhere(h,breakOnError=True)
+assert p,'node not found: %s' % h
+c.redraw(p) # To make node visible
+tree.editLabel(p)
+w = c.edit_widget(p)
+try:
+    assert w,'oops1'
+    w.setSelectionRange('end','end')
+    paste = 'ABC'
+    g.app.gui.replaceClipboardWith(paste)
+    w.setSelectionRange('end','end')
+    k.manufactureKeyPressForCommandName(w,'paste-text')
+    c.selectPosition(p.visBack(c))
+    assert p.headString() == h + paste
+    k.manufactureKeyPressForCommandName(w,'undo')
+    assert p.headString() == h,'expected: %s, got: %s' % (
+        h,p.headString())
+finally:
+    if 1:
+        c.setHeadline(p,h) # Essential.
+        c.redraw(p)
+#@nonl
+#@-node:ekr.20090121163905.768:@test selecting new node retains paste in headline
+#@+node:ekr.20090121163905.775:@test <Delete> key sticks in headline
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+h = 'Test headline abc'
+p = u.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.redraw(p) # To make node visible
+c.frame.tree.editLabel(p)
+w = c.edit_widget(p)
+try:
+    assert w
+    w.setSelectionRange('end','end')
+    # w.event_generate('X')
+finally:
+    if 1:
+        c.setHeadline(p,h) # Essential.
+        c.redraw(p)
+#@nonl
+#@-node:ekr.20090121163905.775:@test <Delete> key sticks in headline
+#@+node:ekr.20090121163905.791:@test Select a node when file is first loaded
+c.redraw(p) # To make node visible
+
+c2 = c.new()
+p2 = c2.currentPosition()
+
+try:
+    # This fails, but it is possible to edit the headline.
+    # assert c2.edit_widget(p2),'c2.edit_widget(p2) failed: %s' % repr(p2)
+    assert p2,'p2 failed: %s' % repr(p2)
+    # assert c.edit_widget(p),'c.edit_widget(p) failed: %s' % repr(p)
+finally:
+    c2.setChanged(False)
+    c2.close()
+#@nonl
+#@-node:ekr.20090121163905.791:@test Select a node when file is first loaded
+#@+node:ekr.20090121163905.1006:@test k.registerCommand
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+k = c.k ; p = c.currentPosition() ; w = c.edit_widget(p)
+commandName = 'test-registerCommand'
+
+def callback (event=None,c=c): # Must have an event param to pass later unit test.
+    g.app.unitTestDict[commandName] = True
+
+# Test 1
+g.app.unitTestDict[commandName] = False
+k.registerCommand(commandName,'Alt-Ctrl-Shift-z',callback,pane='all',verbose=True)
+k.simulateCommand(commandName)
+assert g.app.unitTestDict.get(commandName)
+
+if 0: # Test 2
+    g.app.unitTestDict[commandName] = False
+    k.manufactureKeyPressForCommandName(w,commandName)
+    assert g.app.unitTestDict.get(commandName)
+#@nonl
+#@-node:ekr.20090121163905.1006:@test k.registerCommand
+#@-node:ekr.20090122075649.2:Tests
+#@+node:ekr.20090122080402.3:Can't be changed, but may possibly be eliminated
+# However, the qt version of onHeadChanged can recompute e, the edit widget!
+#@nonl
+#@+node:ekr.20040306220230.1:c.edit_widget
+def edit_widget (self,p):
+
+    c = self
+
+    return p and c.frame.tree.edit_widget(p)
+#@nonl
+#@-node:ekr.20040306220230.1:c.edit_widget
+#@+node:ekr.20040803072955.91:onHeadChanged (leoTree)
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None):
+
+    '''Officially change a headline.
+    Set the old undo text to the previous revert point.'''
+
+    trace = False and g.unitTesting
+    c = self.c ; u = c.undoer
+    w = self.edit_widget(p)
+
+    if c.suppressHeadChanged: return
+    if not w:
+        if trace: g.trace('****** no w for p: %s',repr(p))
+        return
+
+    ch = '\n' # New in 4.4: we only report the final keystroke.
+    if g.doHook("headkey1",c=c,p=p,v=p,ch=ch):
+        return # The hook claims to have handled the event.
+
+    if s is None: s = w.getAllText()
+    if trace: g.trace('w',repr(w),'s',repr(s))
+    << truncate s if it has multiple lines >>
+    # Make the change official, but undo to the *old* revert point.
+    oldRevert = self.revertHeadline
+    changed = s != oldRevert
+    self.revertHeadline = s
+    p.initHeadString(s)
+    if trace: g.trace('changed',changed,'new',repr(s))
+    if changed:
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.scanForTabWidth(p)
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+    if changed:
+        c.redraw_after_head_changed()
+        if self.stayInTree:
+            c.treeWantsFocus()
+        else:
+            c.bodyWantsFocus()
+    else:
+        c.frame.tree.setSelectedLabelState(p)
+
+    g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
+#@+node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
+# Remove one or two trailing newlines before warning of truncation.
+for i in (0,1):
+    if s and s[-1] == '\n':
+        if len(s) > 1: s = s[:-1]
+        else: s = ''
+
+# Warn if there are multiple lines.
+i = s.find('\n')
+if i > -1:
+    # g.trace(i,len(s),repr(s))
+    g.es("truncating headline to one line",color="blue")
+    s = s[:i]
+
+limit = 1000
+if len(s) > limit:
+    g.es("truncating headline to",limit,"characters",color="blue")
+    s = s[:limit]
+
+s = g.toUnicode(s or '',g.app.tkEncoding)
+#@-node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
+#@-node:ekr.20040803072955.91:onHeadChanged (leoTree)
+#@-node:ekr.20090122080402.3:Can't be changed, but may possibly be eliminated
+#@+node:ekr.20090122080402.1:Changed
+#@+node:ekr.20031218072017.2290:toggleAngleBrackets
+def toggleAngleBrackets (self,event=None):
+
+    '''Add or remove double angle brackets from the headline of the selected node.'''
+
+    c = self ; p = c.currentPosition()
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("Toggle Angle Brackets")
+        return
+
+    c.endEditing()
+    s = p.headString().strip()
+
+    if (s[0:2] == "<<"
+        or s[-2:] == ">>"): # Must be on separate line.
+        if s[0:2] == "<<": s = s[2:]
+        if s[-2:] == ">>": s = s[:-2]
+        s = s.strip()
+    else:
+        s = g.angleBrackets(' ' + s + ' ')
+
+    p.setHeadString(s)
+    c.redrawAndEdit(p, selectAll=True)
+#@nonl
+#@-node:ekr.20031218072017.2290:toggleAngleBrackets
+#@+node:ekr.20031218072017.3983:insertHeadlineTime
+def insertHeadlineTime (self,event=None):
+
+    '''Insert a date/time stamp in the headline of the selected node.'''
+
+    frame = self ; c = frame.c ; p = c.currentPosition()
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("Insert Headline Time")
+        return
+
+    c.endEditing()
+    time = c.getTime(body=False)
+    s = p.headString().rstrip()
+    c.setHeadString(p,'%s %s' % (s,time))
+    c.redrawAndEdit(p,selectAll=True)
+#@nonl
+#@-node:ekr.20031218072017.3983:insertHeadlineTime
+#@clone 2
+#@+node:ekr.20031218072017.2991:c.redrawAndEdit
+# Sets the focus to p and edits p.
+
+def redrawAndEdit(self,p,selectAll=False,selection=None):
+
+    '''Redraw the screen and start editing the headline at position p.'''
+
+    c = self ; k = c.k
+
+    c.redraw(p)
+
+    if p:
+        # This should request focus.
+        c.frame.tree.editLabel(p,selectAll=selectAll,selection=selection)
+
+        if k:
+            # Setting the input state has no effect on focus.
+            if selectAll:
+                k.setInputState('insert')
+            else:
+                k.setDefaultInputState()
+
+            # This *does* affect focus.
+            k.showStateAndMode()
+
+    # Update the focus immediately.
+    c.outerUpdate()
+#@nonl
+#@-node:ekr.20031218072017.2991:c.redrawAndEdit
+#@+node:ekr.20031218072017.3091:showSuccess (test)
+def showSuccess(self,pos,newpos):
+
+    '''Display the result of a successful find operation.'''
+
+    c = self.c ; p = self.p
+    if not p:
+        return g.trace('can not happen: self.p is None')
+    current = c.currentPosition()
+    sparseFind = c.config.getBool('collapse_nodes_during_finds')
+    c.frame.bringToFront() # Needed on the Mac
+
+    # Expand ancestors and set redraw if a redraw is needed.
+    redraw1 = not p.isVisible(c)
+    if sparseFind:
+        # Show only the 'sparse' tree when redrawing.
+        for p2 in c.currentPosition().self_and_parents_iter():
+            if p2.isAncestorOf(p):
+                break
+            p2.contract()
+            redraw1 = True # Important bug fix. Was redraw = True.
+    redraw2 = c.expandAllAncestors(self.p)
+    redraw = redraw1 or reraw2
+
+    # Set state vars.
+    # Ensure progress in backwards searches.
+    insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
+    if self.wrap and not self.wrapPosition:
+        self.wrapPosition = self.p
+
+    # g.trace(pos,newpos,insert)
+    if self.in_headline:
+        selection = pos,newpos,insert
+        c.redrawAndEdit(p,selection=selection)
+    else:
+        w = c.frame.body.bodyCtrl
+        if redraw:
+            c.redraw(p)
+        else:
+            c.redraw_after_select(p)
+        c.bodyWantsFocus()
+        c.k.showStateAndMode(w)
+        w.setSelectionRange(pos,newpos,insert=insert)
+        w.seeInsertPoint()
+        c.outerUpdate()
+#@nonl
+#@-node:ekr.20031218072017.3091:showSuccess (test)
+#@+node:ekr.20080514131122.18:c.xWantsFocus
+
+def bodyWantsFocus(self):
+    c = self ; body = c.frame.body
+    c.request_focus(body and body.bodyCtrl)
+
+# def headlineWantsFocus(self,p):
+    # c = self
+    # c.request_focus(p and c.edit_widget(p))
+
+def logWantsFocus(self):
+    c = self ; log = c.frame.log
+    c.request_focus(log and log.logCtrl)
+
+def minibufferWantsFocus(self):
+    c = self ; k = c.k
+    if k: k.minibufferWantsFocus()
+
+def treeWantsFocus(self):
+    c = self ; tree = c.frame.tree
+    c.request_focus(tree and tree.canvas)
+
+def widgetWantsFocus(self,w):
+    c = self ; c.request_focus(w)
+#@-node:ekr.20080514131122.18:c.xWantsFocus
+#@+node:ekr.20031218072017.3087:initInteractiveCommands
+def initInteractiveCommands(self):
+
+    c = self.c ; p = self.p
+    bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
+    w = g.choose(self.in_headline,c.edit_widget(p),bodyCtrl)
+    if not w:
+        self.in_headline = False
+        w = bodyCtrl
+    if not w: return
+
+    self.errors = 0
+
+    # We only use the insert point, *never* the selection range.
+    ins = w.getInsertPoint()
+    # g.trace('ins',ins)
+    self.debugCount = 0
+    self.initNextText(ins=ins)
+    c.widgetWantsFocus(w)
+
+    self.wrapping = self.wrap
+    if self.wrap and self.wrapPosition == None:
+        self.wrapPos = ins
+        # Do not set self.wrapPosition here: that must be done after the first search.
+#@-node:ekr.20031218072017.3087:initInteractiveCommands
+#@+node:ekr.20040305223225:c.setHeadString
+def setHeadString (self,p,s,encoding="utf-8"):
+
+    '''Set the p's headline and the corresponding tree widget to s.
+
+    This is used in by unit tests to restore the outline.'''
+
+    c = self
+
+    p.initHeadString(s,encoding)
+    p.setDirty()
+
+    # Change the actual tree widget so
+    # A later call to c.endEditing or c.redraw will use 
+    c.frame.tree.setHeadline(p,s)
+#@-node:ekr.20040305223225:c.setHeadString
+#@+node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
+def abortEditLabelCommand (self,event=None):
+
+    '''End editing of a headline and revert to its previous value.'''
+
+    frame = self ; c = frame.c ; tree = frame.tree
+    p = c.currentPosition()
+
+    if g.app.batchMode:
+        c.notValidInBatchMode("Abort Edit Headline")
+        return
+
+    # Revert the headline text.
+    # Calling c.setHeadString is required.
+    # Otherwise c.redraw would undo the change!
+    c.setHeadString(p,tree.revertHeadline)
+    c.redraw(p)
+#@-node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
+#@+node:ekr.20031218072017.3070:changeSelection
+# Replace selection with self.change_text.
+# If no selection, insert self.change_text at the cursor.
+
+def changeSelection(self):
+
+    c = self.c ; p = self.p
+    bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
+    w = g.choose(self.in_headline,c.edit_widget(p),bodyCtrl)
+    if not w:
+        self.in_headline = False
+        w = bodyCtrl
+    if not w: return
+
+    oldSel = sel = w.getSelectionRange()
+    start,end = sel
+    if start > end: start,end = end,start
+    if start == end:
+        g.es("no text selected") ; return False
+
+    # g.trace(start,end)
+
+    # Replace the selection in _both_ controls.
+    start,end = oldSel
+    change_text = self.change_text
+
+    # Perform regex substitutions of \1, \2, ...\9 in the change text.
+    if self.pattern_match and self.match_obj:
+        groups = self.match_obj.groups()
+        if groups:
+            change_text = self.makeRegexSubs(change_text,groups)
+    # change_text = change_text.replace('\\n','\n').replace('\\t','\t')
+    change_text = self.replaceBackSlashes(change_text)
+
+    for w2 in (w,self.s_ctrl):
+        if start != end: w2.delete(start,end)
+        w2.insert(start,change_text)
+        w2.setInsertPoint(g.choose(self.reverse,start,start+len(change_text)))
+
+    # Update the selection for the next match.
+    w.setSelectionRange(start,start+len(change_text))
+    c.widgetWantsFocus(w)
+
+    # No redraws here: they would destroy the headline selection.
+    if self.mark_changes:
+        p.setMarked()
+    if self.in_headline:
+        c.frame.tree.onHeadChanged(p,'Change')
+    else:
+        c.frame.body.onBodyChanged('Change',oldSel=oldSel)
+
+    c.frame.tree.drawIcon(p) # redraw only the icon.
+
+    return True
+#@+node:ekr.20060526201951:makeRegexSubs
+def makeRegexSubs(self,s,groups):
+
+    '''Carefully substitute group[i-1] for \i strings in s.
+    The group strings may contain \i strings: they are *not* substituted.'''
+
+    digits = '123456789'
+    result = [] ; n = len(s)
+    i = j = 0 # s[i:j] is the text between \i markers.
+    while j < n:
+        k = s.find('\\',j)
+        if k == -1 or k + 1 >= n:
+            break
+        j = k + 1 ; ch = s[j]
+        if ch in digits:
+            j += 1
+            result.append(s[i:k]) # Append up to \i
+            i = j
+            gn = int(ch)-1
+            if gn < len(groups):
+                result.append(groups[gn]) # Append groups[i-1]
+            else:
+                result.append('\\%s' % ch) # Append raw '\i'
+    result.append(s[i:])
+    return ''.join(result)
+#@-node:ekr.20060526201951:makeRegexSubs
+#@-node:ekr.20031218072017.3070:changeSelection
+#@-node:ekr.20090122080402.1:Changed
+#@+node:ekr.20090122080402.5:Unchanged
+#@+node:ekr.20070228163350.2:Headlines (nullTree)
+def edit_widget (self,p):
+    d = self.editWidgetsDict ; w = d.get(p.v.t)
+    if not w:
+        d[p.v.t] = w = stringTextWidget(
+            c=self.c,
+            name='head-%d' % (1 + len(d.keys())))
+        w.setAllText(p.headString())
+    # g.trace('w',w,'p',p.headString())
+    return w
+
+def headWidth(self,p=None,s=''):
+    return len(s)
+
+def setEditLabelState(self,v,selectAll=False):
+    pass
+
+def setSelectedLabelState(self,p):
+    pass
+
+def setUnselectedLabelState(self,p):
+    pass
+#@+node:ekr.20070228164730:editLabel (nullTree)
+def editLabel (self,p,selectAll=False):
+
+    """Start editing p's headline."""
+
+    c = self.c
+
+    self.endEditLabel()
+    self.setEditPosition(p)
+        # That is, self._editPosition = p
+
+    if p:
+        self.revertHeadline = p.headString()
+            # New in 4.4b2: helps undo.
+#@nonl
+#@-node:ekr.20070228164730:editLabel (nullTree)
+#@+node:ekr.20070228160345:setHeadline (nullTree)
+def setHeadline (self,p,s):
+
+    '''Set the actual text of the headline widget.
+
+    This is called from the undo/redo logic to change the text before redrawing.'''
+
+    # g.trace('p',p.headString(),'s',repr(s),g.callers())
+
+    w = self.edit_widget(p)
+    if w:
+        w.delete(0,'end')
+        if s.endswith('\n') or s.endswith('\r'):
+            s = s[:-1]
+        w.insert(0,s)
+        self.revertHeadline = s
+        # g.trace(repr(s),w.getAllText())
+    else:
+        g.trace('-'*20,'oops')
+#@-node:ekr.20070228160345:setHeadline (nullTree)
+#@-node:ekr.20070228163350.2:Headlines (nullTree)
+#@+node:ekr.20031218072017.3706: Must be defined in subclasses
+# Bidings.
+def setBindings (self):                         self.oops()
+
+# Fonts.
+def getFont(self):                              self.oops()
+def setFont(self,font=None,fontName=None):      self.oops()
+def setFontFromConfig (self):                   self.oops()
+
+# Drawing & scrolling.
+def drawIcon(self,v,x=None,y=None):             self.oops()
+def redraw(self,p=None,scroll=True,forceDraw=False):        self.oops()
+def redraw_now(self,p=None,scroll=True,forceDraw=False):    self.oops()
+def scrollTo(self,p):                           self.oops()
+idle_scrollTo = scrollTo # For compatibility.
+
+# Headlines.
+def editLabel(self,v,selectAll=False):          self.oops()
+def edit_widget (self,p):                       self.oops() ; return None
+def headWidth(self,p=None,s=''):                self.oops() ; return 0
+def setEditLabelState(self,v,selectAll=False):  self.oops()
+def setSelectedLabelState(self,p):              self.oops()
+def setUnselectedLabelState(self,p):            self.oops()
+#@nonl
+#@-node:ekr.20031218072017.3706: Must be defined in subclasses
+#@+node:ekr.20031218072017.3705:  tree.__init__ (base class)
+def __init__ (self,frame):
+
+    self.frame = frame
+    self.c = frame.c
+
+    self.edit_text_dict = {}
+        # New in 3.12: keys vnodes, values are edit_widget (Tk.Text widgets)
+        # New in 4.2: keys are vnodes, values are pairs (p,Tk.Text).
+
+    # "public" ivars: correspond to setters & getters.
+    self._editPosition = None
+    self.redrawCount = 0 # For traces
+    self.revertHeadline = None
+    self.use_chapters = False # May be overridden in subclasses.
+
+    # Define these here to keep pylint happy.
+    self.canvas = None
+    self.stayInTree = True
+    self.trace_select = None
+#@+node:ekr.20081005065934.7:leoTree.mustBeDefined
+# List of methods that must be defined either in the base class or a subclass.
+
+mustBeDefined = (
+    'initAfterLoad', # New in Leo 4.6.
+    'treeSelectHint', # New in Leo 4.6.
+)
+#@nonl
+#@-node:ekr.20081005065934.7:leoTree.mustBeDefined
+#@+node:ekr.20061109164512:leoTree.mustBeDefinedOnlyInBaseClass
+mustBeDefinedOnlyInBaseClass = (
+    # Getters & setters.
+    'editPosition',
+    'getEditTextDict',
+    'setEditPosition',
+    # Others.
+    'endEditLabel',
+    # 'expandAllAncestors', # Now defined in Commands class.
+    'injectCallbacks',
+    'OnIconDoubleClick',
+    'onHeadChanged',
+    'onHeadlineKey',
+    'updateHead',
+    'oops',
+)
+#@nonl
+#@-node:ekr.20061109164512:leoTree.mustBeDefinedOnlyInBaseClass
+#@+node:ekr.20061109164610:leoTree.mustBeDefinedInSubclasses
+mustBeDefinedInSubclasses = (
+    # Colors & fonts.
+    'getFont',
+    'setFont',
+    'setFontFromConfig ',
+    # Drawing & scrolling.
+    'drawIcon',
+    'redraw_now',
+    'scrollTo',
+    # Headlines.
+    'editLabel',
+    # 'setEditLabelState',
+    # Selecting.
+    # 'select', # Defined in base class, may be overridden in do-nothing subclasses.
+)
+#@-node:ekr.20061109164610:leoTree.mustBeDefinedInSubclasses
+#@-node:ekr.20031218072017.3705:  tree.__init__ (base class)
+#@+node:ekr.20031218072017.3090:save (leoFind)
+def save (self):
+
+    c = self.c ; p = self.p
+
+    w = g.choose(self.in_headline,c.edit_widget(p),c.frame.body.bodyCtrl)
+
+    if w:
+        insert = w.getInsertPoint()
+        sel = w.getSelectionRange()
+        if len(sel) == 2:
+            start,end = sel
+        else:
+            start,end = None,None
+    else:
+        insert,start,end = None,None,None
+
+    return (self.in_headline,p,w,insert,start,end)
+#@-node:ekr.20031218072017.3090:save (leoFind)
+#@-node:ekr.20090122080402.5:Unchanged
+#@-node:ekr.20090122075649.1:Found: edit_widget
+#@+node:ekr.20040803072955.91:onHeadChanged (leoTree)
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None):
+
+    '''Officially change a headline.
+    Set the old undo text to the previous revert point.'''
+
+    trace = False and g.unitTesting
+    c = self.c ; u = c.undoer
+    w = self.edit_widget(p)
+
+    if c.suppressHeadChanged: return
+    if not w:
+        if trace: g.trace('****** no w for p: %s',repr(p))
+        return
+
+    ch = '\n' # New in 4.4: we only report the final keystroke.
+    if g.doHook("headkey1",c=c,p=p,v=p,ch=ch):
+        return # The hook claims to have handled the event.
+
+    if s is None: s = w.getAllText()
+    if trace: g.trace('w',repr(w),'s',repr(s))
+    << truncate s if it has multiple lines >>
+    # Make the change official, but undo to the *old* revert point.
+    oldRevert = self.revertHeadline
+    changed = s != oldRevert
+    self.revertHeadline = s
+    p.initHeadString(s)
+    if trace: g.trace('changed',changed,'new',repr(s))
+    if changed:
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldRevert)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.scanForTabWidth(p)
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+    if changed:
+        c.redraw_after_head_changed()
+        if self.stayInTree:
+            c.treeWantsFocus()
+        else:
+            c.bodyWantsFocus()
+    else:
+        c.frame.tree.setSelectedLabelState(p)
+
+    g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
+#@+node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
+# Remove one or two trailing newlines before warning of truncation.
+for i in (0,1):
+    if s and s[-1] == '\n':
+        if len(s) > 1: s = s[:-1]
+        else: s = ''
+
+# Warn if there are multiple lines.
+i = s.find('\n')
+if i > -1:
+    # g.trace(i,len(s),repr(s))
+    g.es("truncating headline to one line",color="blue")
+    s = s[:i]
+
+limit = 1000
+if len(s) > limit:
+    g.es("truncating headline to",limit,"characters",color="blue")
+    s = s[:limit]
+
+s = g.toUnicode(s or '',g.app.tkEncoding)
+#@-node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
+#@-node:ekr.20040803072955.91:onHeadChanged (leoTree)
+#@-node:ekr.20090122080402.4:Removed most calls to edit_widget
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs

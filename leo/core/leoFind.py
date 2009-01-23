@@ -1389,7 +1389,7 @@ class leoFind:
                 if p2.isAncestorOf(p):
                     break
                 p2.contract()
-                redraw1 = True #### Bug fix: was redraw = True.
+                redraw1 = True # Important bug fix. Was redraw = True.
         redraw2 = c.expandAllAncestors(self.p)
         redraw = redraw1 or reraw2
 

@@ -7134,16 +7134,6 @@ class baseCommands:
         # Change the actual tree widget so
         # A later call to c.endEditing or c.redraw will use 
         c.frame.tree.setHeadline(p,s)
-
-        ####
-        # w = c.edit_widget(p) # w only exists for the Tk gui.
-        # if w:
-            # s = g.toUnicode(s,encoding)
-            # w.setAllText(s)
-            # width = c.frame.tree.headWidth(p=None,s=s)
-            # w.setWidth(width)
-
-
     #@-node:ekr.20040305223225:c.setHeadString
     #@+node:ekr.20060109164136:c.setLog
     def setLog (self):
@@ -7260,6 +7250,7 @@ class baseCommands:
         c.redraw(p)
 
         if p:
+            # This should request focus.
             c.frame.tree.editLabel(p,selectAll=selectAll,selection=selection)
 
             if k:
@@ -7272,11 +7263,7 @@ class baseCommands:
                 # This *does* affect focus.
                 k.showStateAndMode()
 
-            #### editLabel should request focus.
-            # w = c.edit_widget(p)
-            # if w: c.widgetWantsFocus(w)
-
-        # New in Leo 4.6: honor the focus immediately.
+        # Update the focus immediately.
         c.outerUpdate()
     #@nonl
     #@-node:ekr.20031218072017.2991:c.redrawAndEdit

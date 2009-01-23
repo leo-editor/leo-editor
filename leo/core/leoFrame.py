@@ -1859,25 +1859,16 @@ class leoFrame:
 
         frame = self ; c = frame.c ; tree = frame.tree
         p = c.currentPosition()
-        #### w = c.edit_widget(p)
 
         if g.app.batchMode:
             c.notValidInBatchMode("Abort Edit Headline")
             return
 
         # Revert the headline text.
-        ### c.endEditing()
-        ### p.initHeadString(tree.revertHeadline)
+        # Calling c.setHeadString is required.
+        # Otherwise c.redraw would undo the change!
         c.setHeadString(p,tree.revertHeadline)
         c.redraw(p)
-
-        # if w and p == tree.editPosition():
-            # # Revert the headline text.
-            # w.delete(0,"end")
-            # w.insert("end",tree.revertHeadline)
-            # p.initHeadString(tree.revertHeadline)
-            # c.endEditing()
-            # c.redraw(p)
     #@-node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
     #@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
     def endEditLabelCommand (self,event=None):
@@ -2346,8 +2337,6 @@ class leoTree:
 
         trace = False and g.unitTesting
         c = self.c ; u = c.undoer
-        #### Edit widgets are known *only* to tree widgets!
-        #### w = c.edit_widget(p)
         w = self.edit_widget(p)
 
         if c.suppressHeadChanged: return
@@ -3399,19 +3388,13 @@ class nullTree (leoTree):
 
         c = self.c
 
-        #### if self.editPosition() and p != self.editPosition():
         self.endEditLabel()
+        self.setEditPosition(p)
+            # That is, self._editPosition = p
 
-        self.setEditPosition(p) # That is, self._editPosition = p
-
-        ####
-        # if self.trace_edit and not g.app.unitTesting:
-            # g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
-
-        if p: #### and c.edit_widget(p):
-            # g.trace('selectAll',selectAll,g.callers())
-            self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
-            #### self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
+        if p:
+            self.revertHeadline = p.headString()
+                # New in 4.4b2: helps undo.
     #@nonl
     #@-node:ekr.20070228164730:editLabel (nullTree)
     #@+node:ekr.20070228160345:setHeadline (nullTree)
