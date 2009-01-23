@@ -2303,12 +2303,16 @@ class leoQtLog (leoFrame.leoLog):
         self.logDict = {} # Keys are tab names text widgets.  Values are the widgets.
         self.menu = None # A menu that pops up on right clicks in the hull or in tabs.
 
-        self.tabWidget = c.frame.top.ui.tabWidget # The Qt.TabWidget that holds all the tabs.
+        self.tabWidget = tw = c.frame.top.ui.tabWidget
+            # The Qt.TabWidget that holds all the tabs.
         self.wrap = g.choose(c.config.getBool('log_pane_wraps'),"word","none")
 
-        if 0: # Does not work
-            theFilter = leoQtEventFilter(c,w=c.frame,tag='log')
-            self.tabWidget.installEventFilter(theFilter)
+        # g.trace('qtLog.__init__',self.tabWidget)
+
+        if 0: # Not needed to make onActivateEvent work.
+            # Works only for .tabWidget, *not* the individual tabs!
+            theFilter = leoQtEventFilter(c,w=tw,tag='tabWidget')
+            tw.installEventFilter(theFilter)
 
         self.setFontFromConfig()
         self.setColorFromConfig()
@@ -2482,6 +2486,8 @@ class leoQtLog (leoFrame.leoLog):
             contents.setWordWrapMode(QtGui.QTextOption.NoWrap)
             self.logDict[tabName] = contents
             if tabName == 'Log': self.logCtrl = contents
+            theFilter = leoQtEventFilter(c,w=contents,tag='tab')
+            contents.installEventFilter(theFilter)
         else:
             contents = widget
 
@@ -4895,7 +4901,7 @@ class leoQtGui(leoGui.leoGui):
         # Initialize the base class.
         leoGui.leoGui.__init__(self,'qt')
 
-        self.qtApp = QtGui.QApplication(sys.argv)
+        self.qtApp = app = QtGui.QApplication(sys.argv)
 
         self.bodyTextWidget  = leoQtBaseTextWidget
         self.plainTextWidget = leoQtBaseTextWidget
@@ -4910,6 +4916,23 @@ class leoQtGui(leoGui.leoGui):
         # Use the base class
         return leoKeys.keyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
     #@-node:ekr.20081121105001.475:createKeyHandlerClass (qtGui)
+    #@+node:ekr.20090123150451.11:onActivateEvent (qtGui)
+    def onActivateEvent (self,event,c,obj,tag):
+
+        '''Put the focus in the body pane when the Leo window is
+        activated, say as the result of an Alt-tab or click.'''
+
+        # This is called several times for each window activation.
+        # We only need to set the focus once.
+
+        if c.exists and tag == 'body':
+
+            # g.trace('Activate',tag,g.callers(5))
+
+            # Putting focus in the body is clearest.
+            c.bodyWantsFocus()
+            c.outerUpdate()
+    #@-node:ekr.20090123150451.11:onActivateEvent (qtGui)
     #@+node:ekr.20081121105001.476:runMainLoop (qtGui)
     def runMainLoop(self):
 
@@ -5686,6 +5709,23 @@ class leoQtEventFilter(QtCore.QObject):
     #@nl
 
     #@    @+others
+    #@+node:ekr.20081121105001.180: ctor
+    def __init__(self,c,w,tag=''):
+
+        # Init the base class.
+        QtCore.QObject.__init__(self)
+
+        self.c = c
+        self.w = w      # A leoQtX object, *not* a Qt object.
+        self.tag = tag
+
+        # Pretend there is a binding for these characters.
+        close_flashers = c.config.getString('close_flash_brackets') or ''
+        open_flashers  = c.config.getString('open_flash_brackets') or ''
+        self.flashers = open_flashers + close_flashers
+
+
+    #@-node:ekr.20081121105001.180: ctor
     #@+node:ekr.20081121105001.168:eventFilter
     def eventFilter(self, obj, event):
 
@@ -5697,15 +5737,22 @@ class leoQtEventFilter(QtCore.QObject):
         kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
         if traceFocus:
             table = (
-                (ev.FocusIn, 'focus-in '),
-                (ev.FocusOut,'focus-out'))
+                (ev.FocusIn,        'focus-in '),
+                (ev.FocusOut,       'focus-out'),
+                (ev.WindowActivate, 'activate '))
             for evKind,kind in table:
                 if eventType == evKind:
                     g.trace('%s %s %s' % (
                         (kind,id(obj),
+                        # event.reason(),
                         g.app.gui.widget_name(obj) or obj)))
+            # else: g.trace('unknown kind: %s' % eventType)
 
-        if eventType in kinds:
+        if eventType == ev.WindowActivate:
+            g.app.gui.onActivateEvent(event,c,obj,self.tag)
+            override = False
+            # g.trace(g.app.gui.get_focus(c))
+        elif eventType in kinds:
             tkKey,ch,ignore = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
 
@@ -5736,6 +5783,45 @@ class leoQtEventFilter(QtCore.QObject):
 
         return override
     #@-node:ekr.20081121105001.168:eventFilter
+    #@+node:ekr.20081121105001.181:isDangerous
+    def isDangerous (self,tkKey,ch):
+
+        c = self.c
+
+        if not c.frame.body.useScintilla: return False
+
+        arrows = ('home','end','left','right','up','down')
+        special = ('tab','backspace','period','parenright','parenleft')
+
+        key = tkKey.lower()
+        ch = ch.lower()
+        isAlt = key.find('alt') > -1
+        w = g.app.gui.get_focus()
+        inTree = w == self.c.frame.tree.treeWidget
+
+        val = (
+            key in special or
+            ch in arrows and not inTree and not isAlt or
+            key == 'return' and not inTree # Just barely works.
+        )
+
+        # g.trace(tkKey,ch,val)
+        return val
+    #@-node:ekr.20081121105001.181:isDangerous
+    #@+node:ekr.20081121105001.182:isSpecialOverride
+    def isSpecialOverride (self,tkKey,ch):
+
+        # g.trace(repr(tkKey),repr(ch))
+
+        if tkKey == 'Tab':
+            return True
+        elif len(tkKey) == 1:
+            return True # Must process all ascii keys.
+        elif ch in self.flashers:
+            return True
+        else:
+            return False
+    #@-node:ekr.20081121105001.182:isSpecialOverride
     #@+node:ekr.20081121105001.169:toStroke
     def toStroke (self,tkKey,ch):
 
@@ -6013,62 +6099,6 @@ class leoQtEventFilter(QtCore.QObject):
         if False and eventType not in ignore:
             g.trace('%3s:%s' % (eventType,'unknown'))
     #@-node:ekr.20081121105001.179:traceEvent
-    #@+node:ekr.20081121105001.180: ctor
-    def __init__(self,c,w,tag=''):
-
-        # Init the base class.
-        QtCore.QObject.__init__(self)
-
-        self.c = c
-        self.w = w      # A leoQtX object, *not* a Qt object.
-        self.tag = tag
-
-        # Pretend there is a binding for these characters.
-        close_flashers = c.config.getString('close_flash_brackets') or ''
-        open_flashers  = c.config.getString('open_flash_brackets') or ''
-        self.flashers = open_flashers + close_flashers
-
-
-    #@-node:ekr.20081121105001.180: ctor
-    #@+node:ekr.20081121105001.181:isDangerous
-    def isDangerous (self,tkKey,ch):
-
-        c = self.c
-
-        if not c.frame.body.useScintilla: return False
-
-        arrows = ('home','end','left','right','up','down')
-        special = ('tab','backspace','period','parenright','parenleft')
-
-        key = tkKey.lower()
-        ch = ch.lower()
-        isAlt = key.find('alt') > -1
-        w = g.app.gui.get_focus()
-        inTree = w == self.c.frame.tree.treeWidget
-
-        val = (
-            key in special or
-            ch in arrows and not inTree and not isAlt or
-            key == 'return' and not inTree # Just barely works.
-        )
-
-        # g.trace(tkKey,ch,val)
-        return val
-    #@-node:ekr.20081121105001.181:isDangerous
-    #@+node:ekr.20081121105001.182:isSpecialOverride
-    def isSpecialOverride (self,tkKey,ch):
-
-        # g.trace(repr(tkKey),repr(ch))
-
-        if tkKey == 'Tab':
-            return True
-        elif len(tkKey) == 1:
-            return True # Must process all ascii keys.
-        elif ch in self.flashers:
-            return True
-        else:
-            return False
-    #@-node:ekr.20081121105001.182:isSpecialOverride
     #@-others
 #@-node:ekr.20081121105001.166:class leoQtEventFilter
 #@-node:ekr.20081121105001.513:Key handling

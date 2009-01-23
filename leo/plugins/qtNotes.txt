@@ -12,8 +12,106 @@ First:
 * Disabling searches of body pane can cause hard crashes.
     - initInteractiveCommands expects c.edit_widget(p)to exist.
 #@nonl
-#@+node:ekr.20090123073723.13:** onApplicationEnabled plugin sets focus
-#@-node:ekr.20090123073723.13:** onApplicationEnabled plugin sets focus
+#@+node:ekr.20090123073723.13:Set focus in window activate events
+#@+node:ekr.20081121105001.168:eventFilter
+def eventFilter(self, obj, event):
+
+    trace = False ; verbose = True
+    traceFocus = False and not g.unitTesting
+    c = self.c ; k = c.k 
+    eventType = event.type()
+    ev = QtCore.QEvent
+    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
+    if traceFocus:
+        table = (
+            (ev.FocusIn,        'focus-in '),
+            (ev.FocusOut,       'focus-out'),
+            (ev.WindowActivate, 'activate '))
+        for evKind,kind in table:
+            if eventType == evKind:
+                g.trace('%s %s %s' % (
+                    (kind,id(obj),
+                    # event.reason(),
+                    g.app.gui.widget_name(obj) or obj)))
+        # else: g.trace('unknown kind: %s' % eventType)
+
+    if eventType == ev.WindowActivate:
+        g.app.gui.onActivateEvent(event,c,obj,self.tag)
+        override = False
+        # g.trace(g.app.gui.get_focus(c))
+    elif eventType in kinds:
+        tkKey,ch,ignore = self.toTkKey(event)
+        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+
+        if ignore:
+            override = False
+        elif self.isSpecialOverride(tkKey,ch):
+            override = True
+        elif k.inState():
+            override = not ignore # allow all keystrokes.
+        elif safe_mode:
+            override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
+        else:
+            override = len(aList) > 0
+    else:
+        override = False ; tkKey = '<no key>'
+
+    if eventType == ev.KeyPress:
+        if override:
+            w = self.w # Pass the wrapper class, not the wrapped widget.
+            stroke = self.toStroke(tkKey,ch)
+            leoEvent = leoKeyEvent(event,c,w,ch) # ch was stroke
+            ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+            c.outerUpdate()
+        else:
+            if trace: g.trace(self.tag,'unbound',tkKey)
+
+    if trace: self.traceEvent(obj,event,tkKey,override)
+
+    return override
+#@-node:ekr.20081121105001.168:eventFilter
+#@+node:ekr.20090123150451.11:onActivateEvent (qtGui)
+def onActivateEvent (self,event,c,obj,tag):
+
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
+
+    # This is called several times for each window activation.
+    # We only need to set the focus once.
+
+    if c.exists and tag == 'body':
+
+        # g.trace('Activate',tag,g.callers(5))
+
+        # Putting focus in the body is clearest.
+        c.bodyWantsFocus()
+        c.outerUpdate()
+#@-node:ekr.20090123150451.11:onActivateEvent (qtGui)
+#@+node:ekr.20081121105001.330:createTab
+def createTab (self,tabName,widget=None,wrap='none'):
+    """ Create a new tab in tab widget
+
+    if widget is None, Create a QTextBrowser,
+    suitable for log functionality.
+    """
+    c = self.c ; w = self.tabWidget
+
+    if widget is None:
+        contents = QtGui.QTextBrowser()
+        contents.setWordWrapMode(QtGui.QTextOption.NoWrap)
+        self.logDict[tabName] = contents
+        if tabName == 'Log': self.logCtrl = contents
+        theFilter = leoQtEventFilter(c,w=contents,tag='tab')
+        contents.installEventFilter(theFilter)
+    else:
+        contents = widget
+
+    self.contentsDict[tabName] = contents
+    w.addTab(contents,tabName)
+    return contents
+
+#@-node:ekr.20081121105001.330:createTab
+#@-node:ekr.20090123073723.13:Set focus in window activate events
 #@+node:ekr.20081215074704.14:** Fix flash characters problems
 Ask Qt people.
 #@nonl
