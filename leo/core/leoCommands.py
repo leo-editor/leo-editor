@@ -4501,8 +4501,8 @@ class baseCommands:
             # g.trace('contract',p.headString())
             c.contractNode()
         elif p.hasParent() and p.parent().isVisible(c):
+            redraw = False
             if self.sparse_goto_parent:
-                redraw = False
                 for child in p.parent().children_iter():
                     if child.isExpanded():
                         child.contract()

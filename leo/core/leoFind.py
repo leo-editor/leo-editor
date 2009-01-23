@@ -1391,7 +1391,7 @@ class leoFind:
                 p2.contract()
                 redraw1 = True # Important bug fix. Was redraw = True.
         redraw2 = c.expandAllAncestors(self.p)
-        redraw = redraw1 or reraw2
+        redraw = redraw1 or redraw2
 
         # Set state vars.
         # Ensure progress in backwards searches.

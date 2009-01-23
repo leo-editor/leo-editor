@@ -4194,7 +4194,7 @@ class leoQtTree (leoFrame.leoTree):
         g.doHook("icondclick1",c=c,p=p,v=p,event=event)
         g.doHook("icondclick2",c=c,p=p,v=p,event=event)
 
-        self.outerUpdate()
+        c.outerUpdate()
     #@-node:ekr.20081121105001.441:onIconBoxDoubleClick
     #@-node:ekr.20081121105001.438:Icon Box...
     #@+node:ekr.20081121105001.443:onItemChanged
@@ -4202,6 +4202,8 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Handle a change event in a headline.
         This only gets called when the user hits return.'''
+
+        c = self.c
 
         # Ignore changes when redrawing.
         if self.redrawing:

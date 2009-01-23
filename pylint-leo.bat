@@ -18,8 +18,8 @@ goto all
 
 :errors
 
-echo qtGui.py
-call pylint.bat leo\plugins\qtGui.py         --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
+echo leoFind.py
+call pylint.bat leo\core\leoFind.py          --rcfile=leo\test\pylint-leo-rc.txt
 
 echo toolbar.py
 rem doesn't help: cd c:\leo.repo\trunk\leo\plugins

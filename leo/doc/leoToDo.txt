@@ -219,6 +219,19 @@ Bernie Pursley
 Simsbury, CT
 #@-node:ekr.20090123073710.4:Fix rst3 bug
 #@+node:ekr.20090123073710.6:Fix Mark Edgington's @shadow bug
+@nocolor-node
+
+To reproduce:
+
+1. open .leo file: 'leo a3_report.leo'
+2. turn the top 10 non-directive lines of the file into a <<test>> section
+3. save the file (ctrl-s)
+4. close leo
+5. start leo
+6. open the a3_report.leo file again.
+
+now you should see the problem in the log window.
+#@nonl
 #@-node:ekr.20090123073710.6:Fix Mark Edgington's @shadow bug
 #@+node:ekr.20090103070824.7:Recent files menu is duplicated in qt gui
 Using r1372 and the Qt plugin, I get strange results with the recent-
