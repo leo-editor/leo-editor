@@ -124,8 +124,6 @@ class tkinterGui(leoGui.leoGui):
     #@+node:ekr.20081121110412.357:createKeyHandlerClass (tkGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
 
-        ### import leo.core.leoTkinterKeys as leoTkinterKeys # Do this here to break any circular dependency.
-
         return tkinterKeyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
     #@nonl
     #@-node:ekr.20081121110412.357:createKeyHandlerClass (tkGui)
@@ -7128,11 +7126,7 @@ class leoTkinterTree (leoFrame.leoTree):
         finally:
             self.endUpdate(False)
 
-        # Do the actual redraw.
-
-        #### Now done in c.redraw.
-        #### c.expandAllAncestors(c.currentPosition())
-
+        # Do the actual redraw. (c.redraw has called c.expandAllAncestors.)
         if self.idle_redraw:
             def idleRedrawCallback(event=None,self=self,scroll=scroll):
                 self.redrawHelper(scroll=scroll,forceDraw=forceDraw)
@@ -7142,8 +7136,6 @@ class leoTkinterTree (leoFrame.leoTree):
 
         if g.app.unitTesting:
             self.canvas.update_idletasks() # Important for unit tests.
-
-        #### c.masterFocusHandler()
 
     redraw = redraw_now # Compatibility
     #@+node:ekr.20081121110412.473:redrawHelper
@@ -7191,8 +7183,7 @@ class leoTkinterTree (leoFrame.leoTree):
     #@+node:ekr.20090110073024.11:redraw_after_head_changed
     def redraw_after_head_changed (self):
 
-        if 0: g.trace('doing nothing')
-        ##### self.redraw_now()
+        pass
     #@-node:ekr.20090110073024.11:redraw_after_head_changed
     #@+node:ekr.20090110073024.13:redraw_after_icons_changed
     def redraw_after_icons_changed (self,all=False):
@@ -8757,12 +8748,12 @@ class leoTkinterTree (leoFrame.leoTree):
         if p and w:
             if trace: g.trace('w',w,p)
             self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
-            self.setEditLabelState(p,selectAll=selectAll,selection=selection) # Sets the focus immediately.
-            ### c.headlineWantsFocus(p) # Make sure the focus sticks.
+            self.setEditLabelState(p,selectAll=selectAll,selection=selection)
+                # Sets the focus immediately.
             c.widgetWantsFocus(w)
             c.k.showStateAndMode(w)
         else:
-            if trace: g.trace('*** ERROR *** no edit widget for %s' % p)
+            if trace: g.trace('*** Error: no edit widget for %s' % p)
     #@nonl
     #@-node:ekr.20081121110412.552:tree.editLabel (tkTree)
     #@+node:ekr.20081121110412.553:tree.set...LabelState

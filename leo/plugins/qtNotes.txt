@@ -8,27 +8,11 @@
 - Get rClick plugin working.
 
 Bugs: See child nodes for details.
-#@+node:ekr.20081215162017.1:Urgent bugs 4
-#@+node:ekr.20081215162017.2:Headline doesn't stick after ctrl-L
-#@-node:ekr.20081215162017.2:Headline doesn't stick after ctrl-L
-#@+node:ekr.20081215074704.17:Fix focus problems
-@nocolor-node
-
-- Add traces for focus.
-    - Is the "cute hack" causing problems?
-
-- Can key strokes be handled in log pane?
-
-Alt-tab sometimes loses focus
-
-The focus doesn't go to any pane that supports key bindings.
-
-This may be a result of the F-key lock not being down.  Or something.
+#@+node:ekr.20081215074704.13:Bugs 5
+* Disabling searches of body pane can cause hard crashes.
+    - initInteractiveCommands expects c.edit_widget(p)to exist.
 #@nonl
-#@-node:ekr.20081215074704.17:Fix focus problems
-#@+node:ekr.20081215162017.3:Find can crash when search-headline is off
-#@-node:ekr.20081215162017.3:Find can crash when search-headline is off
-#@+node:ekr.20081215074704.15:Cut/paste work erratically
+#@+node:ekr.20081215074704.15:** Cut/paste work erratically
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/58af715355227ec
@@ -54,12 +38,7 @@ for these facts but with no luck.
 
 Vicent 
 #@nonl
-#@-node:ekr.20081215074704.15:Cut/paste work erratically
-#@-node:ekr.20081215162017.1:Urgent bugs 4
-#@+node:ekr.20081215074704.13:Bugs 4
-* Disabling searches of body pane can cause hard crashes.
-    - initInteractiveCommands expects c.edit_widget(p)to exist.
-#@nonl
+#@-node:ekr.20081215074704.15:** Cut/paste work erratically
 #@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
 http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
 #@nonl
@@ -128,7 +107,7 @@ robustly dynamic.  Or maybe I'm missing something, but I've only seen
 functions which find a menu based on knowing it exists before hand.
 #@nonl
 #@-node:ekr.20081215074704.18:Finish qt gui delete_range method
-#@-node:ekr.20081215074704.13:Bugs 4
+#@-node:ekr.20081215074704.13:Bugs 5
 #@+node:ekr.20081215074704.19:Features 5
 #@+node:ekr.20081215162017.4:Allow coloring of script buttons
 #@-node:ekr.20081215162017.4:Allow coloring of script buttons
@@ -252,6 +231,20 @@ bracketright: ']'
 #@-node:ekr.20081121105001.187:dump guiBindNamesInverseDict
 #@-node:ekr.20081121105001.185:Scripts
 #@+node:ekr.20081208155215.12:Unused
+#@+node:ekr.20090110154843.11:killEditing
+def killEditing (self):
+
+    trace = False
+
+    if trace:
+        c = self.c ; p = c.currentPosition()
+        if p: g.trace(p.headString(),g.callers(4))
+
+    # self._editItem = None
+    # self._editWidgetPosition = None
+    # self._editWidget = None
+    # self._editWidgetWrapper = None
+#@-node:ekr.20090110154843.11:killEditing
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl

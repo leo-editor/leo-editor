@@ -3448,15 +3448,7 @@ class leoQtTree (leoFrame.leoTree):
 
         # Status ivars.
         self.dragging = False
-
-        #### To be removed.
-        # self._editItem = None
-        # self._editWidgetPosition = None
-        # self._editWidget = None
-        # self._editWidgetWrapper = None
         self.expanding = False
-        self.fullDrawing = False
-        self.generation = 0
         self.prev_p = None
         self.redrawing = False
         self.redrawingIcons = False
@@ -3515,19 +3507,7 @@ class leoQtTree (leoFrame.leoTree):
 
         '''Create master bindings for all headlines.'''
 
-        tree = self ; k = self.c.k
-
-
-        # # g.trace('self',self,'canvas',self.canvas)
-
-        # tree.setBindingsHelper()
-
-        # tree.setCanvasBindings(self.canvas)
-
-        # k.completeAllBindingsForWidget(self.canvas)
-
-        # k.completeAllBindingsForWidget(self.bindingWidget)
-
+        pass
     #@+node:ekr.20081121105001.404:qtTree.setBindingsHelper
     def setBindingsHelper (self):
 
@@ -3557,49 +3537,8 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20081121105001.405:qtTree.setCanvasBindings
     def setCanvasBindings (self,canvas):
 
-        c = self.c ; k = c.k
-
-        # c.bind(canvas,'<Key>',k.masterKeyHandler)
-        # c.bind(canvas,'<Button-1>',self.onTreeClick)
-        # c.bind(canvas,'<Button-3>',self.onTreeRightClick)
-        # # c.bind(canvas,'<FocusIn>',self.onFocusIn)
-
-        #@    << make bindings for tagged items on the canvas >>
-        #@+node:ekr.20081121105001.406:<< make bindings for tagged items on the canvas >>
-        # where = g.choose(self.expanded_click_area,'clickBox','plusBox')
-
-        # table = (
-            # (where,    '<Button-1>',self.onClickBoxClick),
-            # ('iconBox','<Button-1>',self.onIconBoxClick),
-            # ('iconBox','<Double-1>',self.onIconBoxDoubleClick),
-            # ('iconBox','<Button-3>',self.onIconBoxRightClick),
-            # ('iconBox','<Double-3>',self.onIconBoxRightClick),
-            # ('iconBox','<B1-Motion>',self.onDrag),
-            # ('iconBox','<Any-ButtonRelease-1>',self.onEndDrag),
-
-            # ('plusBox','<Button-3>', self.onPlusBoxRightClick),
-            # ('plusBox','<Button-1>', self.onClickBoxClick),
-            # ('clickBox','<Button-3>',  self.onClickBoxRightClick),
-        # )
-        # for tag,event_kind,callback in table:
-            # c.tag_bind(canvas,tag,event_kind,callback)
-        #@-node:ekr.20081121105001.406:<< make bindings for tagged items on the canvas >>
-        #@nl
-        #@    << create baloon bindings for tagged items on the canvas >>
-        #@+node:ekr.20081121105001.407:<< create baloon bindings for tagged items on the canvas >>
-        # if 0: # I find these very irritating.
-            # for tag,text in (
-                # # ('plusBox','plusBox'),
-                # ('iconBox','Icon Box'),
-                # ('selectBox','Click to select'),
-                # ('clickBox','Click to expand or contract'),
-                # # ('textBox','Headline'),
-            # ):
-                # # A fairly long wait is best.
-                # balloon = Pmw.Balloon(self.canvas,initwait=700)
-                # balloon.tagbind(self.canvas,tag,balloonHelp=text)
-        #@-node:ekr.20081121105001.407:<< create baloon bindings for tagged items on the canvas >>
-        #@nl
+        pass
+    #@nonl
     #@-node:ekr.20081121105001.405:qtTree.setCanvasBindings
     #@+node:ekr.20081121105001.408:get_name (qtTree)
     def getName (self):
@@ -3635,10 +3574,12 @@ class leoQtTree (leoFrame.leoTree):
         c = self.c
 
         self.allow_clone_drags          = c.config.getBool('allow_clone_drags')
-        # self.center_selected_tree_node  = c.config.getBool('center_selected_tree_node')
         self.enable_drag_messages       = c.config.getBool("enable_drag_messages")
-        # self.expanded_click_area        = c.config.getBool('expanded_click_area')
-        # self.gc_before_redraw           = c.config.getBool('gc_before_redraw')
+
+        # self.center_selected_tree_node = c.config.getBool('center_selected_tree_node')
+
+        # self.expanded_click_area  = c.config.getBool('expanded_click_area')
+        # self.gc_before_redraw     = c.config.getBool('gc_before_redraw')
 
         # self.headline_text_editing_foreground_color = c.config.getColor(
             # 'headline_text_editing_foreground_color')
@@ -3661,7 +3602,6 @@ class leoQtTree (leoFrame.leoTree):
         # self.headline_text_unselected_background_color = c.config.getColor(
             # 'headline_text_unselected_background_color')
 
-        # self.idle_redraw = c.config.getBool('idle_redraw')
         # self.initialClickExpandsOrContractsNode = c.config.getBool(
             # 'initialClickExpandsOrContractsNode')
         # self.look_for_control_drag_on_mouse_down = c.config.getBool(
@@ -3671,17 +3611,7 @@ class leoQtTree (leoFrame.leoTree):
             'select_all_text_when_editing_headlines')
 
         self.stayInTree     = c.config.getBool('stayInTreeAfterSelect')
-
         self.use_chapters   = c.config.getBool('use_chapters')
-
-        # Debugging.
-            # self.trace_alloc    = c.config.getBool('trace_tree_alloc')
-            # self.trace_chapters = c.config.getBool('trace_chapters')
-            # self.trace_edit     = c.config.getBool('trace_tree_edit')
-            # self.trace_gc       = c.config.getBool('trace_tree_gc')
-            # self.trace_redraw   = c.config.getBool('trace_tree_redraw')
-            # self.trace_select   = c.config.getBool('trace_select')
-            # self.trace_stats    = c.config.getBool('show_tree_stats')
     #@-node:ekr.20081121105001.411:setConfigIvars
     #@-node:ekr.20081121105001.409:Config... (qtTree)
     #@+node:ekr.20081121105001.412:Drawing... (qtTree)
@@ -3717,7 +3647,6 @@ class leoQtTree (leoFrame.leoTree):
         self.initData()
         self.nodeDrawCount = 0
         self.redrawing = True
-        self.fullDrawing = True # To suppress some traces.
         try:
             hScroll = w.horizontalScrollBar()
             vScroll = w.verticalScrollBar()
@@ -3753,7 +3682,6 @@ class leoQtTree (leoFrame.leoTree):
 
             c.requestRedrawFlag= False
             self.redrawing = False
-            self.fullDrawing = False
             if trace:
                 theTime = tstop()
                 if True and not g.app.unitTesting:
@@ -3834,8 +3762,6 @@ class leoQtTree (leoFrame.leoTree):
         self.item2vnodeDict = {}
         self.tnode2itemsDict = {}
         self.vnode2itemsDict = {}
-
-        self.killEditing()
     #@-node:ekr.20081121105001.415:initData
     #@+node:ekr.20090110140239.1:rememberItem & rememberVnodeItem (from clever-redraw)
     def rememberItem (self,p,item):
@@ -3871,7 +3797,6 @@ class leoQtTree (leoFrame.leoTree):
 
         if item:
             self.contractItem(item)
-            self.killEditing()
         else:
             # This is not an error.
             # We may have contracted a node that was not, in fact, visible.
@@ -3885,7 +3810,7 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20090109110752.19:redraw_after_head_changed
     def redraw_after_head_changed (self):
 
-        self.killEditing()
+        pass
     #@-node:ekr.20090109110752.19:redraw_after_head_changed
     #@+node:ekr.20090109110752.16:redraw_after_icons_changed
     def redraw_after_icons_changed (self,all=False):
@@ -3905,7 +3830,6 @@ class leoQtTree (leoFrame.leoTree):
             else:
                 p = c.currentPosition()
                 self.updateIcon(p,force=True)
-            self.killEditing()
         finally:
             self.redrawing = False
 
@@ -3928,10 +3852,9 @@ class leoQtTree (leoFrame.leoTree):
         if not item:
             self.full_redraw(p)
 
-        self.killEditing()
-
         # c.redraw_after_select calls tree.select indirectly.
         # Do not call it again here.
+    #@nonl
     #@-node:ekr.20081208072750.19:redraw_after_select
     #@-node:ekr.20090109110752.21:Entry points (qtTree)
     #@+node:ekr.20090109110752.23:Helpers
@@ -4202,7 +4125,6 @@ class leoQtTree (leoFrame.leoTree):
         g.doHook("boxclick1",c=c,p=p,v=p,event=event)
         g.doHook("boxclick2",c=c,p=p,v=p,event=event)
 
-        self.killEditing()
         c.outerUpdate()
     #@-node:ekr.20081121105001.434:onClickBoxClick
     #@+node:ekr.20081121105001.435:onClickBoxRightClick
@@ -4214,7 +4136,6 @@ class leoQtTree (leoFrame.leoTree):
         g.doHook("boxrclick1",c=c,p=p,v=p,event=event)
         g.doHook("boxrclick2",c=c,p=p,v=p,event=event)
 
-        self.killEditing()
         c.outerUpdate()
     #@-node:ekr.20081121105001.435:onClickBoxRightClick
     #@+node:ekr.20081121105001.436:onPlusBoxRightClick
@@ -4225,7 +4146,6 @@ class leoQtTree (leoFrame.leoTree):
 
         g.doHook('rclick-popup',c=c,p=p,event=event,context_menu='plusbox')
 
-        self.killEditing()
         c.outerUpdate()
     #@-node:ekr.20081121105001.436:onPlusBoxRightClick
     #@-node:ekr.20081121105001.433:Click Box...
@@ -4249,7 +4169,6 @@ class leoQtTree (leoFrame.leoTree):
         g.doHook("iconclick1",c=c,p=p,v=p,event=event)
         g.doHook("iconclick2",c=c,p=p,v=p,event=event)
 
-        self.killEditing()
         c.outerUpdate()
     #@-node:ekr.20081121105001.439:onIconBoxClick
     #@+node:ekr.20081121105001.440:onIconBoxRightClick
@@ -4263,7 +4182,6 @@ class leoQtTree (leoFrame.leoTree):
         g.doHook("iconrclick1",c=c,p=p,v=p,event=event)
         g.doHook("iconrclick2",c=c,p=p,v=p,event=event)
 
-        self.killEditing()
         c.outerUpdate()
     #@-node:ekr.20081121105001.440:onIconBoxRightClick
     #@+node:ekr.20081121105001.441:onIconBoxDoubleClick
@@ -4275,7 +4193,6 @@ class leoQtTree (leoFrame.leoTree):
         g.doHook("icondclick1",c=c,p=p,v=p,event=event)
         g.doHook("icondclick2",c=c,p=p,v=p,event=event)
 
-        self.killEditing()
         self.outerUpdate()
     #@-node:ekr.20081121105001.441:onIconBoxDoubleClick
     #@-node:ekr.20081121105001.438:Icon Box...
@@ -4297,11 +4214,8 @@ class leoQtTree (leoFrame.leoTree):
             s = g.app.gui.toUnicode(item.text(col))
             p.setHeadString(s)
             p.setDirty()
-            self.killEditing()
             self.redraw_after_icons_changed(all=False)
-        else:
-            # Make sure to end editing.
-            self.killEditing()
+
         c.outerUpdate()
     #@-node:ekr.20081121105001.443:onItemChanged
     #@+node:ekr.20081121105001.444:onItemCollapsed
@@ -4331,7 +4245,6 @@ class leoQtTree (leoFrame.leoTree):
         else:
             g.trace('Error: no p2')
 
-        self.killEditing()
         c.outerUpdate()
     #@-node:ekr.20081121105001.444:onItemCollapsed
     #@+node:ekr.20081121105001.161:onItemDoubleClicked
@@ -4395,7 +4308,6 @@ class leoQtTree (leoFrame.leoTree):
         finally:
             self.expanding = False
             self.setCurrentItem()
-            self.killEditing()
             c.outerUpdate()
     #@nonl
     #@-node:ekr.20081121105001.445:onItemExpanded
@@ -4420,13 +4332,11 @@ class leoQtTree (leoFrame.leoTree):
 
         if p:
             if trace: g.trace(p and p.headString())
-            self.killEditing() #### New
             c.frame.tree.select(p)
                 # The crucial hook. Calls before/AfterSelectHint.
         else: # An error.
             g.trace('no p for item: %s' % item,g.callers(4))
 
-        self.killEditing() #### New
         c.outerUpdate()
     #@nonl
     #@-node:ekr.20081121105001.162:onTreeSelect
@@ -4455,13 +4365,11 @@ class leoQtTree (leoFrame.leoTree):
             # This is not necessarily an error.
             # We often attempt to select an item before redrawing it.
             if trace: g.trace('** no item for',p)
-            self.killEditing() #### New
             return None
 
         item2 = w.currentItem()
         if item != item2:
             if trace and verbose: g.trace('item',item,'old item',item2)
-            self.killEditing() #### New
             self.selecting = True
             try:
                 w.setCurrentItem(item)
@@ -4674,18 +4582,15 @@ class leoQtTree (leoFrame.leoTree):
 
         if self.selecting:
             return g.trace('*** Error: already selecting',g.callers(4))
-
         if self.redrawing:
             if trace: g.trace('already redrawing')
             return
 
         if trace: g.trace(p and p.headString())
 
-        if p != old_p:
-            self.killEditing() #### New
-
         # Disable onTextChanged.
         self.selecting = True
+    #@nonl
     #@-node:ekr.20081121105001.455:beforeSelectHint
     #@+node:ekr.20081121105001.160:edit_widget
     def edit_widget (self,p):
@@ -4707,26 +4612,9 @@ class leoQtTree (leoFrame.leoTree):
                 if trace: g.trace('no e for %s' % (p),g.callers(4))
                 return None
         else:
-            ### g.trace('can not happen: not item for %s' % (p),g.callers(4))
+            if trace: g.trace('no item for %s' % (p),g.callers(4))
             return None
-
-        # trace = True
-        # w = self._editWidgetWrapper
-
-        # if p and p == self._editWidgetPosition:
-            # w2 = g.app.gui.get_focus()
-            # if w.widget and w.widget == w2:
-                # if trace: g.trace(w and w.widget, p and p.headString())
-                # return w
-            # else:
-                # # g.trace('no match.  killing')
-                # self.killEditing()
-                # return None
-        # else:
-            # return None
-
-        # # Decouple all of the core's headline code.
-        # # Except for over-ridden methods.
+    #@nonl
     #@-node:ekr.20081121105001.160:edit_widget
     #@+node:ekr.20081121105001.156:editLabel (override)
     def editLabel (self,p,selectAll=False,selection=None):
@@ -4739,36 +4627,21 @@ class leoQtTree (leoFrame.leoTree):
         if self.redrawing:
             if trace and verbose: g.trace('redrawing')
             return
-
-        ####
-        # if self._editWidget:
-            # # Not an error, because of key weirdness.
-            # if trace: g.trace('already editing')
-            # return
-
         if trace: g.trace('***',p and p.headString(),g.callers(4))
 
-        c.outerUpdate() # Do any scheduled redraw.
+        c.outerUpdate()
+            # Do any scheduled redraw.
+            # This won't do anything in the new redraw scheme.
 
         item = self.position2item(p)
 
         if item:
             w.setCurrentItem(item) # Must do this first.
-            w.editItem(item) # Generates focus-in event that tree doesn't report.
+            w.editItem(item)
+                # Generates focus-in event that tree doesn't report.
             e = w.itemWidget(item,0) # A QLineEdit
             if e:
                 s = e.text() ; len_s = len(s)
-
-                ####
-                # Hook up the widget to Leo's core.
-                # self._editItem = item
-                # self._editWidgetPosition = p.copy()
-                # self._editWidget = e
-                # self._editWidgetWrapper = leoQtHeadlineWidget(
-                    # widget=e,name='head',c=c)
-
-                # start,n = g.choose(selectAll,
-                    # tuple([0,len_s]),tuple([len_s,0]))
                 if selection:
                     i,j,ins = selection
                     start,n = i,abs(i-j)
@@ -4777,11 +4650,10 @@ class leoQtTree (leoFrame.leoTree):
                 else:           start,n,ins = len_s,0,len_s
                 e.setObjectName('headline')
                 e.setSelection(start,n)
-                # e.setCursorPosition(ins)
+                # e.setCursorPosition(ins) # Does not work.
                 e.setFocus()
             else: self.oops('no edit widget')
         else:
-            self.killEditing()
             e = None
             self.oops('no item: %s' % p)
 
@@ -4810,33 +4682,12 @@ class leoQtTree (leoFrame.leoTree):
 
         ew = self.edit_widget(p)
         e = ew and ew.widget
-        # e = self._editWidget
-        # w = self.treeWidget
 
         if e:
             s = e.text()
-            # g.trace(e,'old',p and p.headString(),'new',s)
             if s != p.headString():
-                # Do *not* change the item here.
-                # It must be done in onHeadChanged to handle undo properly.
                 self.onHeadChanged(p)
-
-        self.killEditing()
     #@-node:ekr.20090114072115.12:endEditLabel
-    #@+node:ekr.20090110154843.11:killEditing
-    def killEditing (self):
-
-        trace = False
-
-        if trace:
-            c = self.c ; p = c.currentPosition()
-            if p: g.trace(p.headString(),g.callers(4))
-
-        # self._editItem = None
-        # self._editWidgetPosition = None
-        # self._editWidget = None
-        # self._editWidgetWrapper = None
-    #@-node:ekr.20090110154843.11:killEditing
     #@+node:ekr.20081121105001.163:onHeadChanged (qtTree)
     # Tricky code: do not change without careful thought and testing.
 
@@ -4850,10 +4701,6 @@ class leoQtTree (leoFrame.leoTree):
         if ew: e = ew.widget
         item = self.position2item(p)
 
-        ####
-        # e = self._editWidget
-        # item = self._editItem
-        # p = self._editWidgetPosition
         w = g.app.gui.get_focus()
 
         # These are not errors: onItemChanged may
@@ -4881,9 +4728,6 @@ class leoQtTree (leoFrame.leoTree):
                 u.afterChangeNodeContents(p,undoType,undoData,
                     dirtyVnodeList=dirtyVnodeList)
 
-        # End the editing!
-        self.killEditing()
-
         # This is a crucial shortcut.
         if g.unitTesting: return
 
@@ -4891,10 +4735,8 @@ class leoQtTree (leoFrame.leoTree):
             c.treeWantsFocus()
         else:
             c.bodyWantsFocus()
-
-        #### This is an event handler!
-        #### Should it call c.outerUpdate?
-        #### Should it return False ?
+        c.outerUpdate()
+    #@nonl
     #@-node:ekr.20081121105001.163:onHeadChanged (qtTree)
     #@+node:ekr.20081121105001.457:setHeadline (qtTree)
     def setHeadline (self,p,s):
