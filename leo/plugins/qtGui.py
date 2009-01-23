@@ -4261,14 +4261,11 @@ class leoQtTree (leoFrame.leoTree):
         p = self.item2position(item)
         if not p:
             return g.trace('*** no p')
-        # Hook up the widget to Leo's core.
-        e.connect(e,
-            QtCore.SIGNAL("textEdited(QTreeWidgetItem*,int)"),
+
+        # Hook up the widget.
+        e.connect(e,QtCore.SIGNAL(
+            "textEdited(QTreeWidgetItem*,int)"),
             self.onHeadChanged)
-        # self._editWidgetPosition = p.copy()
-        # self._editWidget = e
-        # self._editWidgetWrapper = leoQtHeadlineWidget(
-            # widget=e,name='head',c=c)
         e.setObjectName('headline')
         c.outerUpdate()
     #@-node:ekr.20081121105001.161:onItemDoubleClicked
@@ -4666,10 +4663,6 @@ class leoQtTree (leoFrame.leoTree):
         c = self.c ; p = c.currentPosition()
         ew = self.edit_widget(p)
         return ew and p or None
-
-
-        # p = self._editWidgetPosition
-        # return p
     #@-node:ekr.20081124113700.11:editPosition
     #@+node:ekr.20090114072115.12:endEditLabel
     def endEditLabel (self):
