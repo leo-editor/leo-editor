@@ -6251,6 +6251,8 @@ class baseCommands:
 
         c = self
 
+        c.endEditing()
+
         if p:
             c.setCurrentPosition(p)
         else:
@@ -6265,6 +6267,8 @@ class baseCommands:
     def redraw_after_expand (self,p=None,setFocus=False):
 
         c = self
+
+        c.endEditing()
 
         if p:
             c.setCurrentPosition(p)

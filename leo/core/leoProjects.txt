@@ -4798,6 +4798,320 @@ def setBodyString (self,p,s,encoding="utf-8"):
             c.setChanged(True)
 #@-node:ekr.20090122201952.4:appendStringToBody & setBodyString (baseScannerClass)
 #@-node:ekr.20090122201952.2:Fixed Kent's @auto bug
+#@+node:ekr.20090123073710.1:Retain headline changes when expanding/contracting nodes
+@nocolor-node
+
+@
+This is the expand-and-go-right command.
+
+Adding a call to c.endEditing to c.redraw_after_expand/contract seems to work.
+#@nonl
+#@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+# Ends the editing in the outline.
+
+def endEditing(self):
+
+    c = self ; k = c.k
+
+    c.frame.tree.endEditLabel()
+
+    c.frame.tree.setSelectedLabelState(p=c.currentPosition())
+
+    # The following code would be wrong; c.endEditing is a utility method.
+    # if k:
+        # k.setDefaultInputState()
+        # # Recolor the *body* text, **not** the headline.
+        # k.showStateAndMode(w=c.frame.body.bodyCtrl)
+#@-node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+#@+node:ekr.20080514131122.14:c.redrawing...
+#@+node:ekr.20090110073010.1:c.redraw
+def redraw (self,p=None,setFocus=False):
+    '''Redraw the screen immediately.'''
+
+    c = self
+    if p:
+        # Update body pane and set c._currentPosition.
+        c.expandAllAncestors(p) # Redundant, but safe.
+        c.selectPosition(p)
+    else:
+        p = c.currentPosition()
+        c.expandAllAncestors(p)
+
+    c.frame.tree.redraw(p)
+    if setFocus: c.treeFocusHelper()
+
+# Compatibility with old scripts
+force_redraw = redraw
+redraw_now = redraw
+#@-node:ekr.20090110073010.1:c.redraw
+#@+node:ekr.20090110131802.2:c.redraw_after_contract
+def redraw_after_contract (self,p=None,setFocus=False):
+
+    c = self
+
+    c.endEditing()
+
+    if p:
+        c.setCurrentPosition(p)
+    else:
+        p = c.currentPosition()
+
+    c.frame.tree.redraw_after_contract(p)
+
+    if setFocus:
+        c.treeFocusHelper()
+#@-node:ekr.20090110131802.2:c.redraw_after_contract
+#@+node:ekr.20090112065525.1:c.redraw_after_expand
+def redraw_after_expand (self,p=None,setFocus=False):
+
+    c = self
+
+    c.endEditing()
+
+    if p:
+        c.setCurrentPosition(p)
+    else:
+        p = c.currentPosition()
+
+    c.frame.tree.redraw_after_expand(p)
+
+    if setFocus:
+        c.treeFocusHelper()
+#@-node:ekr.20090112065525.1:c.redraw_after_expand
+#@+node:ekr.20090110073010.2:c.redraw_after_head_changed
+def redraw_after_head_changed(self):
+
+    '''Redraw the screen (if needed) when editing ends.
+    This may be a do-nothing for some gui's.'''
+
+    return self.frame.tree.redraw_after_head_changed()
+#@-node:ekr.20090110073010.2:c.redraw_after_head_changed
+#@+node:ekr.20090110073010.3:c.redraw_afer_icons_changed
+def redraw_after_icons_changed(self,all=False):
+
+    '''Update the icon for the presently selected node,
+    or all icons if the 'all' flag is true.'''
+
+    return self.frame.tree.redraw_after_icons_changed(all)
+#@-node:ekr.20090110073010.3:c.redraw_afer_icons_changed
+#@+node:ekr.20090110073010.4:c.redraw_after_select
+def redraw_after_select(self,p,setFocus=False):
+
+    '''Redraw the screen after node p has been selected.
+
+    The intention is for the gui to just select the node
+    if it is visible, and to completely redraw the screen otherwise.'''
+
+    c = self
+
+    c.expandAllAncestors(p)
+    c.selectPosition(p)
+        # Required to update body pane.
+        # Will call tree.before/afterSelect hint.
+
+    # This will be redundant if tree.before/afterSelectHint are functional,
+    # but this redundancy does not hurt.
+    c.frame.tree.redraw_after_select(p)
+    if setFocus: c.treeFocusHelper()
+#@-node:ekr.20090110073010.4:c.redraw_after_select
+#@-node:ekr.20080514131122.14:c.redrawing...
+#@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+def expandNodeAndGoToFirstChild (self,event=None):
+
+    """If a node has children, expand it if needed and go to the first child."""
+
+    c = self ; p = c.currentPosition()
+    if not p.hasChildren():
+        c.treeFocusHelper()
+        return
+
+    if not p.isExpanded():
+        c.expandNode() # Calls redraw_after_expand.
+
+def expandNodeOrGoToFirstChild (self,event=None):
+
+    """Simulate the Right Arrow Key in folder of Windows Explorer."""
+
+    c = self ; p = c.currentPosition()
+    if p.hasChildren():
+        if not p.isExpanded():
+            c.expandNode() # Calls redraw_after_expand.
+        else:
+            c.redraw_after_expand(p.firstChild(),setFocus=True)
+#@nonl
+#@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+#@+node:ekr.20031218072017.2907:expandNode
+def expandNode (self,event=None):
+
+    '''Expand the presently selected node.'''
+
+    c = self ; p = c.currentPosition()
+
+    p.expand()
+
+    c.redraw_after_expand(p,setFocus=True)
+
+#@-node:ekr.20031218072017.2907:expandNode
+#@+node:ekr.20031218072017.2997:c.selectPosition
+def selectPosition(self,p):
+
+    """Select a new position."""
+
+    c = self ; cc = c.chapterController
+
+    if cc:
+        cc.selectChapterForPosition(p)
+
+    # g.trace(p.headString(),g.callers())
+
+    c.expandAllAncestors(p)
+    c.frame.tree.select(p)
+
+    # New in Leo 4.4.2.
+    c.setCurrentPosition(p)
+        # Do *not* test whether the position exists!
+        # We may be in the midst of an undo.
+
+selectVnode = selectPosition
+#@-node:ekr.20031218072017.2997:c.selectPosition
+#@+node:ekr.20040803072955.128:leoTree.select & helper
+tree_select_lockout = False
+
+def select (self,p,scroll=True):
+
+    '''Select a node.
+    Never redraws outline, but may change coloring of individual headlines.
+    The scroll argument is used by tk to suppress scrolling while dragging.'''
+
+    if g.app.killed or self.tree_select_lockout: return None
+
+    try:
+        c = self.c ; old_p = c.currentPosition()
+        val = 'break'
+        self.tree_select_lockout = True
+        c.frame.tree.beforeSelectHint(p,old_p)
+        val = self.treeSelectHelper(p,scroll=scroll)
+    finally:
+        self.tree_select_lockout = False
+        c.frame.tree.afterSelectHint(p,old_p)
+
+    return val  # Don't put a return in a finally clause.
+#@+node:ekr.20070423101911:treeSelectHelper
+#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+
+def treeSelectHelper (self,p,scroll):
+
+    c = self.c ; frame = c.frame ; trace = False
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.currentPosition()
+
+    if not p:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    if trace: g.trace(
+        '\nold:',old_p and old_p.headString(),
+        '\nnew:',p and p.headString())
+
+    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        if old_p:
+            << unselect the old node >>
+
+    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        << select the new node >>
+        if p and p != old_p: # Suppress duplicate call.
+            try: # may fail during initialization.
+                # p is NOT c.currentPosition() here!
+                if 0: # Interferes with new colorizer.
+                    self.canvas.update_idletasks()
+                    self.scrollTo(p)
+                if scroll and g.app.gui.guiName() == 'tkinter':
+                    def scrollCallback(self=self,p=p):
+                        self.scrollTo(p)
+                    self.canvas.after(100,scrollCallback)
+            except Exception: pass
+        c.nodeHistory.update(p) # Remember this position.
+    c.setCurrentPosition(p)
+    << set the current node >>
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    return 'break' # Supresses unwanted selection.
+#@+node:ekr.20040803072955.129:<< unselect the old node >>
+# Remember the position of the scrollbar before making any changes.
+if body:
+    yview = body.getYScrollPosition()
+    insertSpot = c.frame.body.getInsertPoint()
+else:
+    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+    yview,insertSpot = None,0
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+
+if old_p:
+    old_p.v.t.scrollBarSpot = yview
+    old_p.v.t.insertSpot = insertSpot
+#@-node:ekr.20040803072955.129:<< unselect the old node >>
+#@+node:ekr.20040803072955.130:<< select the new node >>
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.headString()
+frame.setWrap(p)
+
+# Always do this.  Otherwise there can be problems with trailing newlines.
+
+s = g.toUnicode(p.v.t._bodyString,"utf-8")
+old_s = w.getAllText()
+
+if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+    pass
+else:
+    # This destroys all color tags, so do a full recolor.
+    w.setAllText(s)
+    self.frame.body.recolor(p) # recolor now uses p.copy(), so this is safe.
+
+if p.v and p.v.t.scrollBarSpot != None:
+    first,last = p.v.t.scrollBarSpot
+    w.setYScrollPosition(first)
+
+if p.v and p.v.t.insertSpot != None:
+    spot = p.v.t.insertSpot
+    w.setInsertPoint(spot)
+    w.see(spot)
+else:
+    w.setInsertPoint(0)
+
+# g.trace("select:",p.headString())
+#@-node:ekr.20040803072955.130:<< select the new node >>
+#@+node:ekr.20040803072955.133:<< set the current node >>
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+if self.use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.headString())
+
+if self.stayInTree:
+    c.treeWantsFocus()
+else:
+    c.bodyWantsFocus()
+#@-node:ekr.20040803072955.133:<< set the current node >>
+#@-node:ekr.20070423101911:treeSelectHelper
+#@-node:ekr.20040803072955.128:leoTree.select & helper
+#@-node:ekr.20090123073710.1:Retain headline changes when expanding/contracting nodes
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
