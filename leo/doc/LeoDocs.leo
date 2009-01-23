@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -1205,7 +1205,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="EKR.20040524104904.211"></v>
 <v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
@@ -6898,7 +6897,7 @@ from within scripts.  See ``leoFindScript.py`` in ``LeoPy.leo`` for full details
 The findall function returns a list of tuples ``(v,pos)`` describing matches in
 ``c``'s entire tree::
 
-    import leo.core.leoFindScript as leoFindScript
+    import leo.scripts.leoFindScript as leoFindScript
 
     pattern="import leo.core.leoGlobals as g"
     result = leoFindScript.findAll(c,pattern,bodyFlag=1)
@@ -6913,7 +6912,7 @@ The findall function returns a list of tuples ``(v,pos)`` describing matches in
 The ``reFindall`` function returns a list of tuples ``(v,mo,pos)``, where ``mo``
 is a ``MatchObject``. The ``reFlags`` argument are flags to ``re.search``::
 
-    import leo.core.leoFindScript as leoFindScript
+    import leo.scripts.leoFindScript as leoFindScript
 
     pattern="from .* import"
     result = leoFindScript.reFindAll(c,pattern,bodyFlag=1,reFlags=None)

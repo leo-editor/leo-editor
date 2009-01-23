@@ -8,10 +8,29 @@ First:
 
 - Make sure cut/paste always works.
 - Get rClick plugin working.
-#@+node:ekr.20081215074704.13:Bugs 5
+#@+node:ekr.20081215074704.13:Bugs
 * Disabling searches of body pane can cause hard crashes.
     - initInteractiveCommands expects c.edit_widget(p)to exist.
 #@nonl
+#@+node:ekr.20090123073723.11:Fix image plugin with qt gui
+@nocolor-node
+
+After the qt-plugin merge (rev 1251 ), the image plugin no longer works. I
+couldn't find any mention of gsimage in the diff.
+
+ # Erase image if it was previously displayed
+             a = g.app ; c = keywords.get("c")
+
+-            if a.gsimage:
++            if getattr(a, 'gsimage', None):
+                 try:
+                     c.frame.body.bodyCtrl.delete(a.gsimage)
+                 except:
+#@-node:ekr.20090123073723.11:Fix image plugin with qt gui
+#@+node:ekr.20090123073723.12:Fix php section coloring
+http://groups.google.com/group/leo-editor/browse_thread/thread/41870d58718b7b7a#
+#@nonl
+#@-node:ekr.20090123073723.12:Fix php section coloring
 #@+node:ekr.20081215074704.15:** Cut/paste work erratically
 @nocolor-node
 
@@ -107,7 +126,7 @@ robustly dynamic.  Or maybe I'm missing something, but I've only seen
 functions which find a menu based on knowing it exists before hand.
 #@nonl
 #@-node:ekr.20081215074704.18:Finish qt gui delete_range method
-#@-node:ekr.20081215074704.13:Bugs 5
+#@-node:ekr.20081215074704.13:Bugs
 #@+node:ekr.20081215074704.19:Features 5
 #@+node:ekr.20081215162017.4:Allow coloring of script buttons
 #@-node:ekr.20081215162017.4:Allow coloring of script buttons

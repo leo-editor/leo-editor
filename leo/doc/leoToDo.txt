@@ -135,7 +135,91 @@ causing me to attempt to run code with imbalanced parentheses.
 - Leo as a filing cabinet (DOM)
 #@-node:ekr.20090105083748.5:Write first draft of new Leo intro using stories
 #@-node:ekr.20090103054019.1:Urgent
-#@+node:ekr.20081215070651.4:Bugs 9
+#@+node:ekr.20081215070651.4:Bugs
+#@+node:ekr.20090123073710.5:Fix recent rst3 problem
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/11e39245e0a4191f/2c92fa7f1a9684f4#2c92fa7f1a9684f4
+
+today I've updated my leo installation and downloaded leo from trunk.
+When trying to generate a pdf document with the rst3 plugin the
+following error appears in the log pane:
+
+Traceback (most recent call last):
+
+  File "/usr/local/src/leo-editor/leo/plugins/rst3.py", line 1244, in
+writeSpecialTree
+    output = self.writeToDocutils(self.source)
+
+  File "/usr/local/src/leo-editor/leo/plugins/rst3.py", line 1344, in
+writeToDocutils
+    overrides.update(args)     # MWC add args to settings
+
+ValueError: dictionary update sequence element #0 has length 13; 2 is
+required
+
+It seems that the problem comes from the node containing my
+@rst_options:
+
+@nocolor
+
+@ @rst-options
+default_path=./latex
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+write_intermediate_file = False
+verbose=True
+publish_argv_for_missing_stylesheets=--language=ca,--use-latex-toc,--
+output-encoding=utf-8,--stylesheet=/home/vmas/.leo/custom_style.sty
+@c
+
+In rst3.py, inserting a g.es_print line just before the
+overrides.update(args) one can see that the arguments passed to option
+publish_argv_for_missing_stylesheets are passed to the overrides
+dictionary as a list:
+
+[u'--language=ca', u'--use-latex-toc', u'--output-encoding=utf-8', u'--
+stylesheet=/home/vmas/.leo/custom_style.sty']
+
+which is neither a dictionary nor an iterable of key/value pairs so
+the error is raised. Hope it helps to fix the problem. 
+#@nonl
+#@-node:ekr.20090123073710.5:Fix recent rst3 problem
+#@+node:ekr.20090123073710.4:Fix rst3 bug
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/50c1d4dc5695414e/aa061a6c1f9b3ecd?lnk=gst&q=rst+option#aa061a6c1f9b3ecd
+
+Thank you for the link, but I do not believe that Docutils is the
+culprit in my case.  My node header appears as:
+
+        @rst test/source/.templates/layout.rst
+
+The rst3.py code section dealing with writing to Docutils for the
+above case appears to fall between lines 1129 and 1200.  Docutils is
+employed when :
+
+        line 1155       if h.startswith('@rst')
+        line 1187       if self.ext in ('.htm','.html','.tex','.pdf'):
+
+Otherwise, I believe that rst3.py computes the first line and writes
+the output file itself.  In my referenced usage cases, I am simply
+employing Leo to concatenate "body" code to create Jinja2 templates
+and css files.  I love the way that Leo makes the most tedious
+documentation efforts less painful.  I have not fully explored other
+ways of generating the output within Leo without the added first two
+lines, but was hoping for a quick fix or alternate Leo setup rather
+than scripting a solution to strip the extra lines.
+
+Bernie Pursley
+Simsbury, CT
+#@-node:ekr.20090123073710.4:Fix rst3 bug
+#@+node:ekr.20090123073710.6:Fix Mark Edgington's @shadow bug
+#@-node:ekr.20090123073710.6:Fix Mark Edgington's @shadow bug
 #@+node:ekr.20090103070824.7:Recent files menu is duplicated in qt gui
 Using r1372 and the Qt plugin, I get strange results with the recent-
 files menu item.  To reproduce:
@@ -735,7 +819,7 @@ def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
 #@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 #@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
-#@-node:ekr.20081215070651.4:Bugs 9
+#@-node:ekr.20081215070651.4:Bugs
 #@+node:ekr.20081215070651.5:Features 6
 #@+node:ekr.20081211085314.1:Smart Alt-RtArrow/Alt-LtArrow keys
 @nocolor-node
