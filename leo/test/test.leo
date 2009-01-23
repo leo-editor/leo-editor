@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -310,11 +310,15 @@
 <v t="ekr.20080929112400.1"><vh>qt proto</vh></v>
 <v t="ekr.20081202095209.1"><vh>Put minibuffer in a toolbar</vh></v>
 <v t="ekr.20090107082739.1"><vh>replace redirectScriptOutput</vh></v>
+<v t="ekr.20090102095951.1"><vh>posList</vh>
+<v t="ekr.20090102095951.2"><vh>node a</vh></v>
+<v t="ekr.20090102095951.3"><vh>node b</vh></v>
 </v>
-<v t="ekr.20071105085941" a="E"><vh>Tests</vh>
+</v>
+<v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20081216091605.2"><vh>@@auto under_indent.py</vh>
-<v t="ekr.20090122210645.1"><vh>class test</vh>
-<v t="ekr.20090122210645.2"><vh>spam</vh></v>
+<v t="ekr.20090122211549.1"><vh>class test</vh>
+<v t="ekr.20090122211549.2"><vh>spam</vh></v>
 </v>
 </v>
 <v t="edward.20081127113749.1"><vh>@commands</vh>
@@ -410,10 +414,7 @@
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
 <v t="ekr.20080610144233.1"><vh>Wrap test</vh></v>
-</v>
-<v t="ekr.20081213091503.1"><vh>Unit tests</vh>
-<v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
-<v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
+<v t="ekr.20090113101004.1"><vh>@test c.vnode2position</vh></v>
 </v>
 <v t="ekr.20081202140932.1"><vh>pythoscope &amp; lib2to3</vh>
 <v t="ekr.20081202141453.1"><vh>@path c:\leo.repo\pythoscope\pythoscope</vh>
@@ -1051,11 +1052,10 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090102095951.1"><vh>posList</vh>
-<v t="ekr.20090102095951.2"><vh>node a</vh></v>
-<v t="ekr.20090102095951.3"><vh>node b</vh></v>
+<v t="ekr.20081213091503.1"><vh>Unit tests</vh>
+<v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
+<v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
 </v>
-<v t="ekr.20090113101004.1"><vh>@test c.vnode2position</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -11182,14 +11182,14 @@ if True or trace: print 'passed'
 <t tx="ekr.20090114100446.1">plugins_menu.py
 
 vim.py</t>
-<t tx="ekr.20090122210645.1">
+<t tx="ekr.20090122211549.1">
 class test:
     
     '''Class docstring
 test line 2'''
     @others
 </t>
-<t tx="ekr.20090122210645.2">
+<t tx="ekr.20090122211549.2">
 def spam (self):
 
     '''Spam docstring.

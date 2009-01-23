@@ -4655,6 +4655,149 @@ s = g.toUnicode(s or '',g.app.tkEncoding)
 #@-node:ekr.20040803072955.94:<< truncate s if it has multiple lines >>
 #@-node:ekr.20040803072955.91:onHeadChanged (leoTree)
 #@-node:ekr.20090122080402.4:Removed most calls to edit_widget
+#@+node:ekr.20090122201952.2:Fixed Kent's @auto bug
+#@+node:ekr.20070807084545:readOneAtAutoNode (leoImport)
+def readOneAtAutoNode(self,p):
+
+    '''Read the @auto node at p'''
+
+    c = self.c
+
+    self.createOutline(
+        fileName=p.atAutoNodeName(),
+        parent=p.copy(),
+        atAuto=True)
+
+    # Force an update of the body pane.
+    self.setBodyString(p,p.bodyString())
+    c.frame.body.onBodyChanged(undoType=None)
+#@-node:ekr.20070807084545:readOneAtAutoNode (leoImport)
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    if not g.unitTesting:
+        g.es("reading:",p.headString())
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        #c.setBodyString(p,'')
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20040315032503:c.appendStringToBody
+def appendStringToBody (self,p,s,encoding="utf-8"):
+
+    c = self
+    if not s: return
+
+    body = p.bodyString()
+    assert(g.isUnicode(body))
+    s = g.toUnicode(s,encoding)
+
+    c.setBodyString(p,body + s,encoding)
+#@-node:ekr.20040315032503:c.appendStringToBody
+#@+node:ekr.20040305223522:c.setBodyString
+def setBodyString (self,p,s,encoding="utf-8"):
+
+    c = self ; v = p.v
+    if not c or not v: return
+
+    s = g.toUnicode(s,encoding)
+    current = c.currentPosition()
+    # 1/22/05: Major change: the previous test was: 'if p == current:'
+    # This worked because commands work on the presently selected node.
+    # But setRecentFiles may change a _clone_ of the selected node!
+    if current and p.v.t==current.v.t:
+        # Revert to previous code, but force an empty selection.
+        c.frame.body.setSelectionAreas(s,None,None)
+        w = c.frame.body.bodyCtrl
+        i = w.getInsertPoint()
+        w.setSelectionRange(i,i)
+        # This code destoys all tags, so we must recolor.
+        c.recolor()
+
+    # Keep the body text in the tnode up-to-date.
+    if v.t._bodyString != s:
+        v.setBodyString(s)
+        v.t.setSelection(0,0)
+        p.setDirty()
+        if not c.isChanged():
+            c.setChanged(True)
+        c.redraw_after_icons_changed(all=False)
+#@nonl
+#@-node:ekr.20040305223522:c.setBodyString
+#@+node:ekr.20031218072017.4037:setSelectionAreas
+def setSelectionAreas (self,before,sel,after):
+
+    """Replace the body text by before + sel + after and
+    set the selection so that the sel text is selected."""
+
+    body = self ; w = body.bodyCtrl
+    s = w.getAllText()
+    before = before or ''
+    sel = sel or ''
+    after = after or ''
+    w.delete(0,len(s))
+    w.insert(0,before+sel+after)
+    i = len(before)
+    j = max(i,len(before)+len(sel)-1)
+    # g.trace(i,j,repr(sel))
+    w.setSelectionRange(i,j,insert=j)
+    return i,j
+#@-node:ekr.20031218072017.4037:setSelectionAreas
+#@+node:ekr.20090122201952.4:appendStringToBody & setBodyString (baseScannerClass)
+def appendStringToBody (self,p,s,encoding="utf-8"):
+
+    '''Similar to c.appendStringToBody,
+    but does not recolor the text or redraw the screen.'''
+
+    if s:
+        body = p.bodyString()
+        assert(g.isUnicode(body))
+        s = g.toUnicode(s,encoding)
+        self.setBodyString(p,body + s,encoding)
+
+def setBodyString (self,p,s,encoding="utf-8"):
+
+    '''Similar to c.setBodyString,
+    but does not recolor the text or redraw the screen.'''
+
+    c = self.c ; v = p.v
+    if not c or not p: return
+
+    s = g.toUnicode(s,encoding)
+    current = c.currentPosition()
+    if current and p.v.t==current.v.t:
+        c.frame.body.setSelectionAreas(s,None,None)
+        w = c.frame.body.bodyCtrl
+        i = w.getInsertPoint()
+        w.setSelectionRange(i,i)
+
+    # Keep the body text in the tnode up-to-date.
+    if v.t._bodyString != s:
+        v.setBodyString(s)
+        v.t.setSelection(0,0)
+        p.setDirty()
+        if not c.isChanged():
+            c.setChanged(True)
+#@-node:ekr.20090122201952.4:appendStringToBody & setBodyString (baseScannerClass)
+#@-node:ekr.20090122201952.2:Fixed Kent's @auto bug
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
