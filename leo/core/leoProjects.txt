@@ -4255,10 +4255,6 @@ def bodyWantsFocus(self):
     c = self ; body = c.frame.body
     c.request_focus(body and body.bodyCtrl)
 
-# def headlineWantsFocus(self,p):
-    # c = self
-    # c.request_focus(p and c.edit_widget(p))
-
 def logWantsFocus(self):
     c = self ; log = c.frame.log
     c.request_focus(log and log.logCtrl)
@@ -14884,12 +14880,27 @@ def addRef (self,parent):
     # g.trace(parent.headString())
 
     if self.treeType == '@file':
-        c.appendStringToBody(parent,'@others\n')
+        self.appendStringToBody(parent,'@others\n')
 
     if self.treeType == '@root' and self.methodsSeen:
-        c.appendStringToBody(parent,
+        self.appendStringToBody(parent,
             g.angleBrackets(' ' + self.methodName + ' methods ') + '\n\n')
 #@-node:ekr.20070707073044.1:addRef
+#@+node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
+def appendStringToBody (self,p,s,encoding="utf-8"):
+
+    '''Similar to c.appendStringToBody,
+    but does not recolor the text or redraw the screen.'''
+
+    return self.importCommands.appendStringToBody(p,s,encoding)
+
+def setBodyString (self,p,s,encoding="utf-8"):
+
+    '''Similar to c.setBodyString,
+    but does not recolor the text or redraw the screen.'''
+
+    return self.importCommands.setBodyString(p,s,encoding)
+#@-node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
 #@+node:ekr.20070705144309:createDeclsNode
 def createDeclsNode (self,parent,s):
 
@@ -14925,7 +14936,7 @@ def createHeadline (self,parent,body,headline):
 
     # Set the body.
     if body:
-        self.c.setBodyString(p,body,self.encoding)
+        self.setBodyString(p,body,self.encoding)
     return p
 #@-node:ekr.20070703122141.77:createHeadline
 #@+node:ekr.20070703122141.79:getLeadingIndent
@@ -14971,7 +14982,7 @@ def indentBody (self,s,lws=None):
 #@+node:ekr.20070705085335:insertIgnoreDirective
 def insertIgnoreDirective (self,parent):
 
-    self.c.appendStringToBody(parent,'@ignore')
+    self.appendStringToBody(parent,'@ignore')
 
     if not g.unitTesting:
         g.es_print('inserting @ignore',color='blue')
@@ -15044,7 +15055,7 @@ def appendTextToClassNode (self,class_node,s):
 
     c = self.c
 
-    c.appendStringToBody(class_node,s) 
+    self.appendStringToBody(class_node,s) 
 #@-node:ekr.20070707190351:appendTextToClassNode
 #@+node:ekr.20070703122141.105:createClassNodePrefix
 def createClassNodePrefix (self):
@@ -15158,9 +15169,11 @@ def putRootText (self,p):
 
     c = self.c
 
-    c.appendStringToBody(p,'%s@language %s\n@tabwidth %d\n' % (
+    self.appendStringToBody(p,'%s@language %s\n@tabwidth %d\n' % (
         self.rootLine,self.language,self.tab_width))
 #@-node:ekr.20070705094630:putRootText
+#@+node:ekr.20090122201952.5:setBodyString
+#@-node:ekr.20090122201952.5:setBodyString
 #@+node:ekr.20070703122141.88:undentBody
 def undentBody (self,s,ignoreComments=True):
 

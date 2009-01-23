@@ -7082,7 +7082,7 @@ class leoTkinterTree (leoFrame.leoTree):
             if self.updateCount < 0:
                 g.trace("Can't happen: negative updateCount",g.callers())
     #@-node:ekr.20081121110412.471:tree.begin/endUpdate
-    #@+node:ekr.20081121110412.472:tree.redraw_now & helper
+    #@+node:ekr.20081121110412.472:tree.redraw_now & helper (tkTree)
     # New in 4.4b2: suppress scrolling by default.
     # New in 4.6: enable scrolling by default.
 
@@ -7091,7 +7091,7 @@ class leoTkinterTree (leoFrame.leoTree):
         '''Redraw immediately.
         forceDraw is used to eliminate draws while dragging.'''
 
-        trace = False and g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
 
         if g.app.quitting or self.frame not in g.app.windowList:
@@ -7104,7 +7104,7 @@ class leoTkinterTree (leoFrame.leoTree):
         else:
             c.setCurrentPosition(p)
 
-        if trace: g.trace(self.redrawCount,g.callers(4))
+        if trace: g.trace(self.redrawCount,g.callers(8))
 
         if not g.app.unitTesting:
             if self.gc_before_redraw:
@@ -7174,7 +7174,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         self.canvas['cursor'] = oldcursor
     #@-node:ekr.20081121110412.473:redrawHelper
-    #@-node:ekr.20081121110412.472:tree.redraw_now & helper
+    #@-node:ekr.20081121110412.472:tree.redraw_now & helper (tkTree)
     #@+node:ekr.20090110134111.11:redraw_after_contract
     def redraw_after_contract (self,p):
 

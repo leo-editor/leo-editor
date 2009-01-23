@@ -2017,9 +2017,6 @@ class leoFrame:
     def bodyWantsFocus(self):
         return self.c.bodyWantsFocus()
 
-    # def headlineWantsFocus(self,p):
-        # return self.c.headlineWantsFocus(p)
-
     def logWantsFocus(self):
         return self.c.logWantsFocus()
 

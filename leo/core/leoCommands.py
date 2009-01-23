@@ -6349,10 +6349,6 @@ class baseCommands:
         c = self ; body = c.frame.body
         c.request_focus(body and body.bodyCtrl)
 
-    # def headlineWantsFocus(self,p):
-        # c = self
-        # c.request_focus(p and c.edit_widget(p))
-
     def logWantsFocus(self):
         c = self ; log = c.frame.log
         c.request_focus(log and log.logCtrl)
@@ -6379,7 +6375,6 @@ class baseCommands:
 
     # All other "Now" methods wait.
     bodyWantsFocusNow = bodyWantsFocus
-    # headlineWantsFocusNow = headlineWantsFocus
     logWantsFocusNow = logWantsFocus
     minibufferWantsFocusNow = minibufferWantsFocus
     treeWantsFocusNow = treeWantsFocus

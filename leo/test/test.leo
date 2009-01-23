@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -311,10 +311,10 @@
 <v t="ekr.20081202095209.1"><vh>Put minibuffer in a toolbar</vh></v>
 <v t="ekr.20090107082739.1"><vh>replace redirectScriptOutput</vh></v>
 </v>
-<v t="ekr.20071105085941"><vh>Tests</vh>
+<v t="ekr.20071105085941" a="E"><vh>Tests</vh>
 <v t="ekr.20081216091605.2"><vh>@@auto under_indent.py</vh>
-<v t="ekr.20081216114116.1"><vh>class test</vh>
-<v t="ekr.20081216114116.2"><vh>spam</vh></v>
+<v t="ekr.20090122210645.1"><vh>class test</vh>
+<v t="ekr.20090122210645.2"><vh>spam</vh></v>
 </v>
 </v>
 <v t="edward.20081127113749.1"><vh>@commands</vh>
@@ -11129,21 +11129,6 @@ test_sibs(c.rootPosition(),None)
 @tabwidth -4
 @others
 </t>
-<t tx="ekr.20081216114116.1">
-class test:
-    
-    '''Class docstring
-test line 2'''
-    @others
-</t>
-<t tx="ekr.20081216114116.2">
-def spam (self):
-
-    '''Spam docstring.
-\\-4spam line 2'''
-
-    pass
-</t>
 <t tx="ekr.20090102095951.1">import re
 
 class PosList(list):
@@ -11197,5 +11182,20 @@ if True or trace: print 'passed'
 <t tx="ekr.20090114100446.1">plugins_menu.py
 
 vim.py</t>
+<t tx="ekr.20090122210645.1">
+class test:
+    
+    '''Class docstring
+test line 2'''
+    @others
+</t>
+<t tx="ekr.20090122210645.2">
+def spam (self):
+
+    '''Spam docstring.
+\\-4spam line 2'''
+
+    pass
+</t>
 </tnodes>
 </leo_file>

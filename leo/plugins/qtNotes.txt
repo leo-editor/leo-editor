@@ -4,10 +4,10 @@
 #@+node:ekr.20081121105001.148: qt To do
 @nocolor-node
 
-- Support hoist in redraw code.
-- Get rClick plugin working.
+First:
 
-Bugs: See child nodes for details.
+- Make sure cut/paste always works.
+- Get rClick plugin working.
 #@+node:ekr.20081215074704.13:Bugs 5
 * Disabling searches of body pane can cause hard crashes.
     - initInteractiveCommands expects c.edit_widget(p)to exist.

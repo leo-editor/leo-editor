@@ -3686,7 +3686,8 @@ class leoQtTree (leoFrame.leoTree):
                 theTime = tstop()
                 if True and not g.app.unitTesting:
                     g.trace('%s: scroll: %s, drew %3s nodes in %s' % (
-                        self.redrawCount,scroll,self.nodeDrawCount,theTime))
+                        self.redrawCount,scroll,self.nodeDrawCount,theTime),
+                        g.callers(4))
 
     # Compatibility
     redraw = full_redraw 

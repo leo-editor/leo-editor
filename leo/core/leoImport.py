@@ -585,6 +585,42 @@ class leoImportCommands (scanUtility):
     #@-node:ekr.20031218072017.1464:weave
     #@-node:ekr.20031218072017.3289:Export
     #@+node:ekr.20031218072017.3305:Utilities
+    #@+node:ekr.20090122201952.4:appendStringToBody & setBodyString (baseScannerClass)
+    def appendStringToBody (self,p,s,encoding="utf-8"):
+
+        '''Similar to c.appendStringToBody,
+        but does not recolor the text or redraw the screen.'''
+
+        if s:
+            body = p.bodyString()
+            assert(g.isUnicode(body))
+            s = g.toUnicode(s,encoding)
+            self.setBodyString(p,body + s,encoding)
+
+    def setBodyString (self,p,s,encoding="utf-8"):
+
+        '''Similar to c.setBodyString,
+        but does not recolor the text or redraw the screen.'''
+
+        c = self.c ; v = p.v
+        if not c or not p: return
+
+        s = g.toUnicode(s,encoding)
+        current = c.currentPosition()
+        if current and p.v.t==current.v.t:
+            c.frame.body.setSelectionAreas(s,None,None)
+            w = c.frame.body.bodyCtrl
+            i = w.getInsertPoint()
+            w.setSelectionRange(i,i)
+
+        # Keep the body text in the tnode up-to-date.
+        if v.t._bodyString != s:
+            v.setBodyString(s)
+            v.t.setSelection(0,0)
+            p.setDirty()
+            if not c.isChanged():
+                c.setChanged(True)
+    #@-node:ekr.20090122201952.4:appendStringToBody & setBodyString (baseScannerClass)
     #@+node:ekr.20031218072017.3306:createHeadline
     def createHeadline (self,parent,body,headline):
 
@@ -594,7 +630,7 @@ class leoImportCommands (scanUtility):
         v.initHeadString(headline,self.encoding)
         # Set the body.
         if len(body) > 0:
-            self.c.setBodyString(v,body,self.encoding)
+            self.setBodyString(v,body,self.encoding)
         return v
     #@-node:ekr.20031218072017.3306:createHeadline
     #@+node:ekr.20031218072017.3307:error
@@ -838,7 +874,7 @@ class leoImportCommands (scanUtility):
         g.es(message,color='blue')
         c.redraw()
 
-    #@+node:ekr.20070807084545:readOneAtAutoNode
+    #@+node:ekr.20070807084545:readOneAtAutoNode (leoImport)
     def readOneAtAutoNode(self,p):
 
         '''Read the @auto node at p'''
@@ -851,9 +887,9 @@ class leoImportCommands (scanUtility):
             atAuto=True)
 
         # Force an update of the body pane.
-        c.setBodyString(p,p.bodyString())
+        self.setBodyString(p,p.bodyString())
         c.frame.body.onBodyChanged(undoType=None)
-    #@-node:ekr.20070807084545:readOneAtAutoNode
+    #@-node:ekr.20070807084545:readOneAtAutoNode (leoImport)
     #@-node:ekr.20070806111212:readAtAutoNodes (importCommands) & helper
     #@+node:ekr.20031218072017.1810:importDerivedFiles
     def importDerivedFiles (self,parent=None,paths=None):
@@ -1140,7 +1176,7 @@ class leoImportCommands (scanUtility):
         p = parent.insertAsLastChild()
         p.initHeadString(fileName)
         if self.webType=="cweb":
-            c.setBodyString(p,"@ignore\n" + self.rootLine + "@language cweb")
+            self.setBodyString(p,"@ignore\n" + self.rootLine + "@language cweb")
 
         # Scan the file, creating one section for each function definition.
         self.scanWebFile(path,p)
@@ -1622,7 +1658,7 @@ class leoImportCommands (scanUtility):
             language = self.languageForExtension(ext)
             if language: body += '@language %s\n' % language
 
-        c.setBodyString(p,body + self.rootLine + self.escapeFalseSectionReferences(s))
+        self.setBodyString(p,body + self.rootLine + self.escapeFalseSectionReferences(s))
         if atAuto:
             for p in p.self_and_subtree_iter():
                 p.clearDirty()
@@ -1936,12 +1972,27 @@ class baseScannerClass (scanUtility):
         # g.trace(parent.headString())
 
         if self.treeType == '@file':
-            c.appendStringToBody(parent,'@others\n')
+            self.appendStringToBody(parent,'@others\n')
 
         if self.treeType == '@root' and self.methodsSeen:
-            c.appendStringToBody(parent,
+            self.appendStringToBody(parent,
                 g.angleBrackets(' ' + self.methodName + ' methods ') + '\n\n')
     #@-node:ekr.20070707073044.1:addRef
+    #@+node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
+    def appendStringToBody (self,p,s,encoding="utf-8"):
+
+        '''Similar to c.appendStringToBody,
+        but does not recolor the text or redraw the screen.'''
+
+        return self.importCommands.appendStringToBody(p,s,encoding)
+
+    def setBodyString (self,p,s,encoding="utf-8"):
+
+        '''Similar to c.setBodyString,
+        but does not recolor the text or redraw the screen.'''
+
+        return self.importCommands.setBodyString(p,s,encoding)
+    #@-node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
     #@+node:ekr.20070705144309:createDeclsNode
     def createDeclsNode (self,parent,s):
 
@@ -1977,7 +2028,7 @@ class baseScannerClass (scanUtility):
 
         # Set the body.
         if body:
-            self.c.setBodyString(p,body,self.encoding)
+            self.setBodyString(p,body,self.encoding)
         return p
     #@-node:ekr.20070703122141.77:createHeadline
     #@+node:ekr.20070703122141.79:getLeadingIndent
@@ -2023,7 +2074,7 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20070705085335:insertIgnoreDirective
     def insertIgnoreDirective (self,parent):
 
-        self.c.appendStringToBody(parent,'@ignore')
+        self.appendStringToBody(parent,'@ignore')
 
         if not g.unitTesting:
             g.es_print('inserting @ignore',color='blue')
@@ -2096,7 +2147,7 @@ class baseScannerClass (scanUtility):
 
         c = self.c
 
-        c.appendStringToBody(class_node,s) 
+        self.appendStringToBody(class_node,s) 
     #@-node:ekr.20070707190351:appendTextToClassNode
     #@+node:ekr.20070703122141.105:createClassNodePrefix
     def createClassNodePrefix (self):
@@ -2210,9 +2261,11 @@ class baseScannerClass (scanUtility):
 
         c = self.c
 
-        c.appendStringToBody(p,'%s@language %s\n@tabwidth %d\n' % (
+        self.appendStringToBody(p,'%s@language %s\n@tabwidth %d\n' % (
             self.rootLine,self.language,self.tab_width))
     #@-node:ekr.20070705094630:putRootText
+    #@+node:ekr.20090122201952.5:setBodyString
+    #@-node:ekr.20090122201952.5:setBodyString
     #@+node:ekr.20070703122141.88:undentBody
     def undentBody (self,s,ignoreComments=True):
 
@@ -2364,7 +2417,7 @@ class baseScannerClass (scanUtility):
         # Finish adding to the parent's body text.
         self.addRef(parent)
         if start < len(s):
-            self.c.appendStringToBody(parent,s[start:]) 
+            self.appendStringToBody(parent,s[start:]) 
     #@+node:ekr.20071018084830:scanHelper
     def scanHelper(self,s,i,end,parent,kind):
 
