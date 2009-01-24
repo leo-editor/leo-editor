@@ -3421,7 +3421,7 @@ class leoQtSpellTab:
     #@-node:ekr.20081121105001.394:Helpers
     #@-others
 #@-node:ekr.20081121105001.379:class leoQtSpellTab
-#@+node:ekr.20081121105001.400:class leoQtTree
+#@+node:ekr.20081121105001.400:class leoQtTree (leoTree)
 class leoQtTree (leoFrame.leoTree):
 
     """Leo qt tree class."""
@@ -4773,7 +4773,7 @@ class leoQtTree (leoFrame.leoTree):
     #@-node:ekr.20081214061352.10:traceSelect
     #@-node:ekr.20081121105001.454:Selecting & editing... (qtTree)
     #@-others
-#@-node:ekr.20081121105001.400:class leoQtTree
+#@-node:ekr.20081121105001.400:class leoQtTree (leoTree)
 #@+node:ekr.20081121105001.459:class leoQtTreeTab
 class leoQtTreeTab (leoFrame.leoTreeTab):
 
@@ -8227,7 +8227,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@-node:ekr.20081121105001.543: Must be overridden in subclasses
     #@-others
 #@-node:ekr.20081121105001.516: class leoQtBaseTextWidget
-#@+node:ekr.20081121105001.544: class leoQLineEditWidget
+#@+node:ekr.20081121105001.544: class leoQLineEditWidget (leoQtBaseTextWidget)
 class leoQLineEditWidget (leoQtBaseTextWidget):
 
     #@    @+others
@@ -8410,7 +8410,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
     #@-node:ekr.20081121105001.558:setSelectionRangeHelper
     #@-node:ekr.20081121105001.550:Widget-specific overrides (QLineEdit)
     #@-others
-#@-node:ekr.20081121105001.544: class leoQLineEditWidget
+#@-node:ekr.20081121105001.544: class leoQLineEditWidget (leoQtBaseTextWidget)
 #@+node:ekr.20081121105001.559: class leoQScintillaWidget
 class leoQScintillaWidget (leoQtBaseTextWidget):
 

@@ -4488,7 +4488,7 @@ class baseCommands:
         c = self ; p = c.currentPosition()
 
         p.contract()
-        c.redraw_after_contract(setFocus=True)
+        c.redraw_after_contract(p=p,setFocus=True)
     #@-node:ekr.20031218072017.2901:contractNode
     #@+node:ekr.20040930064232:contractNodeOrGoToParent
     def contractNodeOrGoToParent (self,event=None):
@@ -4525,7 +4525,7 @@ class baseCommands:
         if not parent: return
 
         parent.contract()
-        c.redraw_after_contract(parent)
+        c.redraw_after_contract(p=parent)
 
         # c.treeSelectHelper(parent)
     #@-node:ekr.20031218072017.2902:contractParent

@@ -4435,7 +4435,7 @@ def setSelectedLabelState(self,p):
 def setUnselectedLabelState(self,p):
     pass
 #@+node:ekr.20070228164730:editLabel (nullTree)
-def editLabel (self,p,selectAll=False):
+def editLabel (self,p,selectAll=False,selection=None):
 
     """Start editing p's headline."""
 
@@ -4481,14 +4481,14 @@ def setFont(self,font=None,fontName=None):      self.oops()
 def setFontFromConfig (self):                   self.oops()
 
 # Drawing & scrolling.
-def drawIcon(self,v,x=None,y=None):             self.oops()
+def drawIcon(self,p):                                       self.oops()
 def redraw(self,p=None,scroll=True,forceDraw=False):        self.oops()
 def redraw_now(self,p=None,scroll=True,forceDraw=False):    self.oops()
-def scrollTo(self,p):                           self.oops()
+def scrollTo(self,p):                                       self.oops()
 idle_scrollTo = scrollTo # For compatibility.
 
 # Headlines.
-def editLabel(self,v,selectAll=False):          self.oops()
+def editLabel(self,v,selectAll=False,selection=None): self.oops()
 def edit_widget (self,p):                       self.oops() ; return None
 def headWidth(self,p=None,s=''):                self.oops() ; return 0
 def setEditLabelState(self,v,selectAll=False):  self.oops()
@@ -4845,7 +4845,7 @@ force_redraw = redraw
 redraw_now = redraw
 #@-node:ekr.20090110073010.1:c.redraw
 #@+node:ekr.20090110131802.2:c.redraw_after_contract
-def redraw_after_contract (self,p=None,setFocus=False):
+def redraw_after_contract (self,p=None):
 
     c = self
 
