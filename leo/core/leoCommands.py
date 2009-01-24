@@ -3551,6 +3551,7 @@ class baseCommands:
         if not p: return
 
         undoData = c.undoer.beforeCloneNode(p)
+        c.endEditing() # Capture any changes to the headline.
         clone = p.clone()
         dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
         c.setChanged(True)
@@ -6231,6 +6232,11 @@ class baseCommands:
         '''Redraw the screen immediately.'''
 
         c = self
+
+        # It's possible to do this now that c.redrawAndEdit exists.
+        # However, it would be a major change...
+        # c.endEditing()
+
         if p:
             # Update body pane and set c._currentPosition.
             c.expandAllAncestors(p) # Redundant, but safe.

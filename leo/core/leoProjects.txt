@@ -3480,6 +3480,11 @@ def redraw (self,p=None,setFocus=False):
     '''Redraw the screen immediately.'''
 
     c = self
+
+    # It's possible to do this now that c.redrawAndEdit exists.
+    # However, it would be a major change...
+    # c.endEditing()
+
     if p:
         # Update body pane and set c._currentPosition.
         c.expandAllAncestors(p) # Redundant, but safe.
@@ -4829,6 +4834,11 @@ def redraw (self,p=None,setFocus=False):
     '''Redraw the screen immediately.'''
 
     c = self
+
+    # It's possible to do this now that c.redrawAndEdit exists.
+    # However, it would be a major change...
+    # c.endEditing()
+
     if p:
         # Update body pane and set c._currentPosition.
         c.expandAllAncestors(p) # Redundant, but safe.
@@ -4845,7 +4855,7 @@ force_redraw = redraw
 redraw_now = redraw
 #@-node:ekr.20090110073010.1:c.redraw
 #@+node:ekr.20090110131802.2:c.redraw_after_contract
-def redraw_after_contract (self,p=None):
+def redraw_after_contract (self,p=None,setFocus=False):
 
     c = self
 
@@ -5112,6 +5122,94 @@ else:
 #@-node:ekr.20070423101911:treeSelectHelper
 #@-node:ekr.20040803072955.128:leoTree.select & helper
 #@-node:ekr.20090123073710.1:Retain headline changes when expanding/contracting nodes
+#@+node:ekr.20090124143324.1:Changed to headlines do not stick after clone
+#@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+# Ends the editing in the outline.
+
+def endEditing(self):
+
+    c = self ; k = c.k
+
+    c.frame.tree.endEditLabel()
+
+    c.frame.tree.setSelectedLabelState(p=c.currentPosition())
+
+    # The following code would be wrong; c.endEditing is a utility method.
+    # if k:
+        # k.setDefaultInputState()
+        # # Recolor the *body* text, **not** the headline.
+        # k.showStateAndMode(w=c.frame.body.bodyCtrl)
+#@-node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+#@+node:ekr.20031218072017.1762:c.clone
+def clone (self,event=None):
+
+    '''Create a clone of the selected outline.'''
+
+    c = self ; u = c.undoer ; p = c.currentPosition()
+    if not p: return
+
+    undoData = c.undoer.beforeCloneNode(p)
+    c.endEditing() # Capture any changes to the headline.
+    clone = p.clone()
+    dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
+    c.setChanged(True)
+    if c.validateOutline():
+        u.afterCloneNode(clone,'Clone Node',undoData,dirtyVnodeList=dirtyVnodeList)
+        c.redraw(clone)
+        return clone # For mod_labels and chapters plugins.
+    else:
+        clone.doDelete()
+        c.setCurrentPosition(p)
+        return None
+#@-node:ekr.20031218072017.1762:c.clone
+#@+node:ekr.20090110073010.1:c.redraw
+def redraw (self,p=None,setFocus=False):
+    '''Redraw the screen immediately.'''
+
+    c = self
+
+    # It's possible to do this now that c.redrawAndEdit exists.
+    # However, it would be a major change...
+    # c.endEditing()
+
+    if p:
+        # Update body pane and set c._currentPosition.
+        c.expandAllAncestors(p) # Redundant, but safe.
+        c.selectPosition(p)
+    else:
+        p = c.currentPosition()
+        c.expandAllAncestors(p)
+
+    c.frame.tree.redraw(p)
+    if setFocus: c.treeFocusHelper()
+
+# Compatibility with old scripts
+force_redraw = redraw
+redraw_now = redraw
+#@-node:ekr.20090110073010.1:c.redraw
+#@+node:ekr.20031218072017.2997:c.selectPosition
+def selectPosition(self,p):
+
+    """Select a new position."""
+
+    c = self ; cc = c.chapterController
+
+    if cc:
+        cc.selectChapterForPosition(p)
+
+    # g.trace(p.headString(),g.callers())
+
+    c.expandAllAncestors(p)
+    c.frame.tree.select(p)
+
+    # New in Leo 4.4.2.
+    c.setCurrentPosition(p)
+        # Do *not* test whether the position exists!
+        # We may be in the midst of an undo.
+
+selectVnode = selectPosition
+#@-node:ekr.20031218072017.2997:c.selectPosition
+#@-node:ekr.20090124143324.1:Changed to headlines do not stick after clone
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
