@@ -5224,7 +5224,6 @@ if wx:
             self.drawing = False # A lockout that prevents event handlers from firing during redraws.
             self.editWidgetDict = {} # Keys are tnodes, values are leoHeadlineTextWidgets.
             self.effects = wx.Effects()
-            self.idDict = {} # Keys are vnodes, values are wxTree id's.
             self.imageList = None
             self.keyDownModifiers = None
             self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
@@ -5233,7 +5232,15 @@ if wx:
             self.updateCount = 0
             self.use_paint = False # Paint & background erase events are flakey!
 
+            # Debugging
             self.trace_select = c.config.getBool('trace_select')
+
+            # Associating items with vnodes...
+            #### self.idDict = {} # Keys are vnodes, values are wxTree id's.
+
+            self.item2vnodeDict = {}
+            self.tnode2itemsDict = {} # values are lists of items.
+            self.vnode2itemsDict = {} # values are lists of items.
 
             self.treeCtrl = self.createControl(parentFrame)
             self.createBindings()
@@ -5332,29 +5339,8 @@ if wx:
         #@nonl
         #@-node:ekr.20081121105001.2034:setBindings
         #@-node:ekr.20081121105001.2030:wxTree.__init__
-        #@+node:ekr.20081121105001.2035:Drawing
-        #@+node:ekr.20081121105001.2036:onEraseBackground
-        backgroundEraseCount = 0
-
-        def onEraseBackground (self,event):
-
-            if 0: # Alas, this doesn't quite work.
-                if self.paintLockout:
-                    return
-            # g.trace(self.backgroundEraseCount,g.callers())
-            self.backgroundEraseCount += 1
-
-            if 0:
-                tree = self.treeCtrl
-                dc = event.GetDC() or wx.ClientDC(tree)
-                sz = tree.GetClientSize()
-                color = wx.Color(253,245,230) # for some reason, 'leo yellow' doesn't work here.
-                brush = wx.Brush(color,wx.SOLID)
-                dc.SetBrush(brush)
-                dc.Clear()
-            elif 1:
-               event.Skip() # Causes flash.
-        #@-node:ekr.20081121105001.2036:onEraseBackground
+        #@+node:ekr.20081121105001.2035:Drawing (wxTree)
+        #@+node:ekr.20090123181335.34:Entries (wxTree)
         #@+node:ekr.20081121105001.2037:onPaint
         paintCount = 0
         paintLockout = False
@@ -5395,10 +5381,181 @@ if wx:
                     g.trace("Can't happen: negative updateCount",g.callers())
         #@-node:ekr.20081121105001.2039:endUpdate
         #@-node:ekr.20081121105001.2037:onPaint
-        #@+node:ekr.20081121105001.2040:redraw & redraw_now & helpers
+        #@+node:ekr.20090123181335.1:full_redraw & helpers (from qtTree)
+        # forceDraw not used in Qt.  It is used in the Tk code.
+
+        def full_redraw (self,p=None,scroll=True,forceDraw=False):
+
+            '''Redraw all visible nodes of the tree.
+
+            Preserve the vertical scrolling unless scroll is True.'''
+
+            trace = False
+            c = self.c ; w = self.treeWidget
+            if not w: return
+            if self.redrawing:
+                g.trace('***** already drawing',g.callers(5))
+                return
+
+            if p is None:
+                p = c.currentPosition()
+            else:
+                c.setCurrentPosition(p)
+
+            self.redrawCount += 1
+            if trace:
+                # g.trace(self.redrawCount,g.callers())
+                tstart()
+
+            # Init the data structures.
+            self.initData()
+            self.nodeDrawCount = 0
+            self.redrawing = True
+            try:
+                hScroll = w.horizontalScrollBar()
+                vScroll = w.verticalScrollBar()
+                hPos = hScroll.sliderPosition()
+                vPos = vScroll.sliderPosition()
+                # g.trace(hPos,vPos)
+                w.clear()
+                # Draw all top-level nodes and their visible descendants.
+                if c.hoistStack:
+                    bunch = c.hoistStack[-1]
+                    p = bunch.p ; h = p.headString()
+                    if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
+                        p = p.firstChild()
+                        while p:
+                            self.drawTree(p)
+                            p.moveToNext()
+                    else:
+                        self.drawTree(p)
+                else:
+                    p = c.rootPosition()
+                    while p:
+                        self.drawTree(p)
+                        p.moveToNext()
+            finally:
+                if not self.selecting:
+                    self.setCurrentItem()
+                hScroll.setSliderPosition(hPos)
+                if not scroll:
+                    vScroll.setSliderPosition(vPos)
+
+                # Necessary to get the tree drawn initially.
+                w.repaint()
+
+                c.requestRedrawFlag= False
+                self.redrawing = False
+                if trace:
+                    theTime = tstop()
+                    if True and not g.app.unitTesting:
+                        g.trace('%s: scroll: %s, drew %3s nodes in %s' % (
+                            self.redrawCount,scroll,self.nodeDrawCount,theTime),
+                            g.callers(4))
+
+        # Compatibility
+        redraw = full_redraw 
+        redraw_now = full_redraw
+        #@+node:ekr.20090123181335.2:contractItem & expandItem
+        def contractItem (self,item):
+
+            self.treeWidget.collapseItem(item)
+
+        def expandItem (self,item):
+
+            self.treeWidget.expandItem(item)
+        #@-node:ekr.20090123181335.2:contractItem & expandItem
+        #@+node:ekr.20090123181335.3:drawChildren
+        def drawChildren (self,p,parent_item):
+
+            if not p:
+                return g.trace('can not happen: no p')
+
+            if p.hasChildren():
+                if p.isExpanded():
+                    self.expandItem(parent_item)
+                    child = p.firstChild()
+                    while child:
+                        self.drawTree(child,parent_item)
+                        child.moveToNext()
+                else:
+                    # Draw the hidden children.
+                    child = p.firstChild()
+                    while child:
+                        self.drawNode(child,parent_item)
+                        child.moveToNext()
+                    self.contractItem(parent_item)
+            else:
+                self.contractItem(parent_item)
+        #@-node:ekr.20090123181335.3:drawChildren
+        #@+node:ekr.20090123181335.4:drawNode
+        def drawNode (self,p,parent_item):
+
+            c = self.c ; w = self.treeWidget
+            self.nodeDrawCount += 1
+
+            # Allocate the QTreeWidget item.
+            itemOrTree = parent_item or w
+            item = QtGui.QTreeWidgetItem(itemOrTree)
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+
+            # Do this now, so self.isValidItem will be true in setItemIcon.
+            self.rememberItem(p,item)
+
+            # Set the headline and maybe the icon.
+            item.setText(0,p.headString())
+            if p:
+                icon = self.getIcon(p)
+                self.setItemIcon(item,icon)
+
+            return item
+        #@-node:ekr.20090123181335.4:drawNode
+        #@+node:ekr.20090123181335.5:drawTree
+        def drawTree (self,p,parent_item=None):
+
+            # Draw the (visible) parent node.
+            item = self.drawNode(p,parent_item)
+
+            # Draw all the visible children.
+            self.drawChildren(p,parent_item=item)
+
+
+        #@-node:ekr.20090123181335.5:drawTree
+        #@+node:ekr.20090123181335.6:initData
+        def initData (self):
+
+            self.item2vnodeDict = {}
+            self.tnode2itemsDict = {}
+            self.vnode2itemsDict = {}
+        #@-node:ekr.20090123181335.6:initData
+        #@+node:ekr.20090123181335.7:rememberItem & rememberVnodeItem
+        def rememberItem (self,p,item):
+
+            self.rememberVnodeItem(p.v,item)
+
+        def rememberVnodeItem (self,v,item):
+
+            # Update item2vnodeDict.
+            self.item2vnodeDict[item] = v
+
+            # Update tnode2itemsDict & vnode2itemsDict.
+            table = (
+                (self.tnode2itemsDict,v.t),
+                (self.vnode2itemsDict,v))
+
+            for d,key in table:
+                aList = d.get(key,[])
+                if item in aList:
+                    g.trace('*** ERROR *** item already in list: %s, %s' % (item,aList))
+                else:
+                    aList.append(item)
+                d[key] = aList
+        #@-node:ekr.20090123181335.7:rememberItem & rememberVnodeItem
+        #@-node:ekr.20090123181335.1:full_redraw & helpers (from qtTree)
+        #@+node:ekr.20081121105001.2040:OLDredraw & redraw_now & helpers
         redrawCount = 0
 
-        def redraw (self):
+        def OLDredraw (self):
             c = self.c ;  tree = self.treeCtrl
             if c is None or self.drawing: return
             p = c.rootPosition()
@@ -5686,24 +5843,6 @@ if wx:
                     tree.SelectItem(node_id) # Generates call to onTreeChanged.
         #@-node:ekr.20081121105001.2050:redraw_partial_subtree
         #@-node:ekr.20081121105001.2049:partialRedraw & helpers
-        #@-node:ekr.20081121105001.2040:redraw & redraw_now & helpers
-        #@+node:ekr.20081121105001.2051:assignIcon
-        def assignIcon (self,p):
-
-            val = p.v.computeIcon()
-            assert(0 <= val <= 15)
-            p.v.iconVal = val
-            return val
-        #@-node:ekr.20081121105001.2051:assignIcon
-        #@+node:ekr.20081121105001.2052:tree.edit_widget
-        def edit_widget (self,p):
-
-            '''Return a widget (compatible with leoTextWidget) used for editing the headline.'''
-
-            w = self.editWidgetDict.get(p.v)
-
-            return w
-        #@-node:ekr.20081121105001.2052:tree.edit_widget
         #@+node:ekr.20081121105001.2053:updateVisibleIcons
         def updateVisibleIcons (self,p):
 
@@ -5727,7 +5866,275 @@ if wx:
             else:
                 g.trace('can not happen: no id',p.headString())
         #@-node:ekr.20081121105001.2053:updateVisibleIcons
-        #@-node:ekr.20081121105001.2035:Drawing
+        #@-node:ekr.20081121105001.2040:OLDredraw & redraw_now & helpers
+        #@-node:ekr.20090123181335.34:Entries (wxTree)
+        #@+node:ekr.20090123181335.17:Helpers (wxTree)
+        #@+node:ekr.20090123181335.18:Associating items and nodes (FROM qtTree)
+        #@+node:ekr.20090123181335.19:item dict getters
+        def item2tnode (self,item):
+            v = self.item2vnodeDict.get(item)
+            return v and v.t
+
+        def item2vnode (self,item):
+            return self.item2vnodeDict.get(item)
+
+        def tnode2items(self,t):
+            return self.tnode2itemsDict.get(t,[])
+
+        def vnode2items(self,v):
+            return self.vnode2itemsDict.get(v,[])
+
+        def isValidItem (self,item):
+            return item in self.item2vnodeDict
+        #@-node:ekr.20090123181335.19:item dict getters
+        #@+node:ekr.20090123181335.20:item2position & position2item & helpers
+        #@@nocolor-node
+        #@+at
+        # 
+        # These two methods allow the drawing code to avoid storing any 
+        # positions,
+        # a crucial simplification. Indeed, without the burden of keeping 
+        # position
+        # up-to-date, or worse, recalculating them all whenever the outline 
+        # changes,
+        # the tree code becomes straightforward.
+        #@-at
+        #@nonl
+        #@+node:ekr.20090123181335.21:childItems
+        def childItems (self,parent_item):
+
+            '''Return the list of child items of the parent item,
+            or the top-level items if parent_item is None.'''
+
+            if parent_item:
+                n = parent_item.childCount()
+                items = [parent_item.child(z) for z in range(n)]
+            else:
+                w = self.treeWidget
+                n = w.topLevelItemCount()
+                items = [w.topLevelItem(z) for z in range(n)]
+
+            return items
+        #@-node:ekr.20090123181335.21:childItems
+        #@+node:ekr.20090123181335.22:childIndexOfItem
+        def childIndexOfItem (self,item):
+
+            parent = item.parent()
+
+            if parent:
+                n = parent.indexOfChild(item)
+            else:
+                w = self.treeWidget
+                n = w.indexOfTopLevelItem(item)
+
+            return n
+
+        #@-node:ekr.20090123181335.22:childIndexOfItem
+        #@+node:ekr.20090123181335.23:item2position
+        def item2position (self,item):
+
+            '''Reconstitute a position given an item.'''
+
+            stack = []
+            childIndex = self.childIndexOfItem(item)
+            v = self.item2vnode(item)
+
+            item = item.parent()
+            while item:
+                n2 = self.childIndexOfItem(item)
+                v2 = self.item2vnode(item)
+                data = v2,n2
+                stack.insert(0,data)
+                item = item.parent()
+
+            p = leoNodes.position(v,childIndex,stack)
+
+            if not p:
+                self.oops('item2position failed. p: %s, v: %s, childIndex: %s stack: %s' % (
+                    p,v,childIndex,stack))
+
+            return p
+        #@-node:ekr.20090123181335.23:item2position
+        #@+node:ekr.20090123181335.24:nthChildItem
+        def nthChildItem (self,n,parent_item):
+
+            children = self.childItems(parent_item)
+
+            if n < len(children):
+                item = children[n]
+            else:
+                # self.oops('itemCount: %s, n: %s' % (len(children),n))
+
+                # This is **not* an error.
+                # It simply means that we need to redraw the tree.
+                item = None
+
+            return item
+        #@-node:ekr.20090123181335.24:nthChildItem
+        #@+node:ekr.20090123181335.25:position2item
+        def position2item (self,p):
+
+            '''Return the unique tree item associated with position p.
+
+            Return None if there no such tree item.  This is *not* an error.'''
+
+            parent_item = None
+
+            for v,n in p.stack:
+                parent_item = self.nthChildItem(n,parent_item)
+
+            item = self.nthChildItem(p.childIndex(),parent_item)
+
+            return item
+        #@-node:ekr.20090123181335.25:position2item
+        #@-node:ekr.20090123181335.20:item2position & position2item & helpers
+        #@-node:ekr.20090123181335.18:Associating items and nodes (FROM qtTree)
+        #@+node:ekr.20090123181335.26:Icons (FROM qt tree)
+        #@+node:ekr.20090123181335.27:drawIcon
+        def drawIcon (self,p):
+
+            '''Redraw the icon at p.'''
+
+            w = self.treeWidget
+            itemOrTree = self.position2item(p) or w
+            item = QtGui.QTreeWidgetItem(itemOrTree)
+            icon = self.getIcon(p)
+            self.setItemIcon(item,icon)
+        #@nonl
+        #@-node:ekr.20090123181335.27:drawIcon
+        #@+node:ekr.20090123181335.28:drawItemIcon
+        def drawItemIcon (self,p,item):
+
+            '''Set the item's icon to p's icon.'''
+
+            icon = self.getIcon(p)
+            self.setItemIcon(item,icon)
+        #@-node:ekr.20090123181335.28:drawItemIcon
+        #@+node:ekr.20090123181335.29:getIcon & getIconImage
+        def getIcon(self,p):
+
+            '''Return the proper icon for position p.'''
+
+            p.v.iconVal = val = p.v.computeIcon()
+
+            return self.getCompositeIconImage(p, val)
+
+        def getVnodeIcon(self,p):
+
+            '''Return the proper icon for position p.'''
+
+            p.v.iconVal = val = p.v.computeIcon()
+            return self.getIconImage(val)
+
+        def getIconImage(self,val):
+
+            return g.app.gui.getIconImage(
+                "box%02d.GIF" % val)
+
+        def getCompositeIconImage(self, p, val):
+
+            userIcons = self.c.editCommands.getIconList(p)
+            statusIcon = self.getIconImage(val)
+
+            if not userIcons:
+                return statusIcon
+
+            hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
+            hash.append(str(val))
+            hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
+            hash = ':'.join(hash)
+
+            if hash in g.app.gui.iconimages:
+                return g.app.gui.iconimages[hash]
+
+            images = [g.app.gui.getImageImage(i['file']) for i in userIcons
+                     if i['where'] == 'beforeIcon']
+            images.append(g.app.gui.getImageImage("box%02d.GIF" % val))
+            images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
+                          if i['where'] == 'beforeHeadline'])
+            width = sum([i.width() for i in images])
+            height = max([i.height() for i in images])
+
+            pix = QtGui.QPixmap(width,height)
+            pix.fill()
+            pix.setAlphaChannel(pix)
+            painter = QtGui.QPainter(pix)
+            x = 0
+            for i in images:
+                painter.drawPixmap(x,(height-i.height())//2,i)
+                x += i.width()
+            painter.end()
+
+            g.app.gui.iconimages[hash] = QtGui.QIcon(pix)
+
+            return g.app.gui.iconimages[hash]
+        #@-node:ekr.20090123181335.29:getIcon & getIconImage
+        #@+node:ekr.20090123181335.30:setItemIcon
+        def setItemIcon (self,item,icon):
+
+            trace = True
+
+            valid = item and self.isValidItem(item)
+
+            if icon and valid:
+                try:
+                    # Suppress onItemChanged.
+                    self.redrawingIcons = True
+                    item.setIcon(0,icon)
+                except Exception:
+                    self.redrawingIcons = False
+            elif trace:
+                # Apparently, icon can be None due to recent icon changes.
+                if icon:
+                    g.trace('** item %s, valid: %s, icon: %s' % (
+                        item and id(item) or '<no item>',valid,icon),
+                        g.callers(4))
+        #@-node:ekr.20090123181335.30:setItemIcon
+        #@+node:ekr.20090123181335.31:updateIcon
+        def updateIcon (self,p,force=False):
+
+            '''Update p's icon.'''
+
+            if not p: return
+
+            val = p.v.computeIcon()
+
+            # The force arg is needed:
+            # Leo's core may have updated p.v.iconVal.
+            if p.v.iconVal == val and not force:
+                return
+
+            p.v.iconVal = val
+            icon = self.getIconImage(val)
+            # Update all cloned/joined items.
+            items = self.tnode2items(p.v.t)
+            for item in items:
+                self.setItemIcon(item,icon)
+        #@nonl
+        #@-node:ekr.20090123181335.31:updateIcon
+        #@+node:ekr.20090123181335.32:updateVisibleIcons
+        def updateVisibleIcons (self,p):
+
+            '''Update the icon for p and the icons
+            for all visible descendants of p.'''
+
+            self.updateIcon(p,force=True)
+
+            if p.hasChildren() and p.isExpanded():
+                for child in p.children_iter():
+                    self.updateVisibleIcons(child)
+        #@-node:ekr.20090123181335.32:updateVisibleIcons
+        #@-node:ekr.20090123181335.26:Icons (FROM qt tree)
+        #@+node:ekr.20081121105001.2051:assignIcon (same as getIcon)
+        # def assignIcon (self,p):
+
+            # val = p.v.computeIcon()
+            # assert(0 <= val <= 15)
+            # p.v.iconVal = val
+            # return val
+        #@-node:ekr.20081121105001.2051:assignIcon (same as getIcon)
+        #@-node:ekr.20090123181335.17:Helpers (wxTree)
+        #@-node:ekr.20081121105001.2035:Drawing (wxTree)
         #@+node:ekr.20081121105001.2054:Event handlers (wxTree)
         # These event handlers work on both XP and Ubuntu.
         #@+node:ekr.20081121105001.2055:setSelectedLabelState
@@ -5777,32 +6184,6 @@ if wx:
                 return p
         #@nonl
         #@-node:ekr.20081121105001.2056:get_p
-        #@+node:ekr.20081121105001.2057:onChar (leoTree)
-        standardTreeKeys = []
-        if sys.platform.startswith('win'):
-            for mod in ('Alt+','Alt+Ctrl+','Ctrl+','',):
-                for base in ('Right','Left','Up','Down'):
-                    standardTreeKeys.append(mod+base)
-            for key in string.ascii_letters + string.digits + string.punctuation:
-                standardTreeKeys.append(key)
-
-        def onChar (self,event):
-
-            if g.app.killed or self.c.frame.killed: return
-
-            c = self.c
-            # Convert from tree event to key event.
-            keyEvent = event.GetKeyEvent()
-            keyEvent.leoWidget = self
-            keysym = g.app.gui.eventKeysym(keyEvent)
-            # if keysym: g.trace('keysym',repr(keysym))
-            if keysym in self.standardTreeKeys:
-                pass
-                # g.trace('standard key',keysym)
-            else:
-                c.k.masterKeyHandler(keyEvent,stroke=keysym)
-                # keyEvent.Skip(False) # Try to kill the default key handling.
-        #@-node:ekr.20081121105001.2057:onChar (leoTree)
         #@+node:ekr.20081121105001.2058:onHeadlineKey
         # k.handleDefaultChar calls onHeadlineKey.
         def onHeadlineKey (self,event):
@@ -6055,8 +6436,29 @@ if wx:
             finally:
                 self.frame.lockout = False
         #@-node:ekr.20081121105001.2060:selectHelper
-        #@-node:ekr.20081121105001.2054:Event handlers (wxTree)
-        #@+node:ekr.20081121105001.2057:onChar (leoTree)
+        #@+node:ekr.20081121105001.2036:onEraseBackground
+        backgroundEraseCount = 0
+
+        def onEraseBackground (self,event):
+
+            if 0: # Alas, this doesn't quite work.
+                if self.paintLockout:
+                    return
+            # g.trace(self.backgroundEraseCount,g.callers())
+            self.backgroundEraseCount += 1
+
+            if 0:
+                tree = self.treeCtrl
+                dc = event.GetDC() or wx.ClientDC(tree)
+                sz = tree.GetClientSize()
+                color = wx.Color(253,245,230) # for some reason, 'leo yellow' doesn't work here.
+                brush = wx.Brush(color,wx.SOLID)
+                dc.SetBrush(brush)
+                dc.Clear()
+            elif 1:
+               event.Skip() # Causes flash.
+        #@-node:ekr.20081121105001.2036:onEraseBackground
+        #@+node:ekr.20081121105001.2057:onChar (wxTree)
         standardTreeKeys = []
         if sys.platform.startswith('win'):
             for mod in ('Alt+','Alt+Ctrl+','Ctrl+','',):
@@ -6081,8 +6483,262 @@ if wx:
             else:
                 c.k.masterKeyHandler(keyEvent,stroke=keysym)
                 # keyEvent.Skip(False) # Try to kill the default key handling.
-        #@-node:ekr.20081121105001.2057:onChar (leoTree)
-        #@+node:ekr.20081121105001.2074:Selection (leoTree)
+        #@-node:ekr.20081121105001.2057:onChar (wxTree)
+        #@-node:ekr.20081121105001.2054:Event handlers (wxTree)
+        #@+node:ekr.20081121105001.2077:get/setIdDict
+        # def getIdDict (self,p):
+
+            # '''Return the unique wx.Tree id for position p.'''
+            # aList = self.idDict.get(p.v,[])
+            # for p2,tree_id in aList:
+                # if p.equal(p2):
+                    # return tree_id
+            # else:
+                # # g.trace('No tree_id for position %s',p.headString()) # Not an error.
+                # return None
+
+        # def setIdDict (self,p,tree_id):
+
+            # '''Associate the wx.Tree id with a position p.'''
+
+            # # Keys are vnodes, values are lists of position/tree_id pairs.
+            # aList = self.idDict.get(p.v,[])
+            # data = p.copy(),tree_id
+            # aList.append(data)
+            # self.idDict[p.v] = aList
+        #@-node:ekr.20081121105001.2077:get/setIdDict
+        #@+node:ekr.20081121105001.2079:do nothings
+        def headWidth (self,p=None,s=''): return 0
+
+        # Colors.
+        def setDisabledHeadlineColors (self,p):             pass
+        def setEditHeadlineColors (self,p):                 pass
+        def setUnselectedHeadlineColors (self,p):           pass
+
+        # State.
+        def setEditLabelState (self,p,selectAll=False):     pass
+        def setUnselectedLabelState (self,p):               pass
+
+        # Focus
+        def focus_get (self):   return self.FindFocus()
+        def setFocus (self):    self.treeCtrl.SetFocus()
+
+        SetFocus = setFocus
+
+        # For compatibility.
+        setNormalLabelState = setEditLabelState 
+        #@-node:ekr.20081121105001.2079:do nothings
+        #@+node:ekr.20090123181335.35:Selecting & editing... (FROM qtTree)
+        #@+node:ekr.20090123181335.36:afterSelectHint
+        def afterSelectHint (self,p,old_p):
+
+            trace = False
+            c = self.c
+
+            self.selecting = False
+
+            if not p:
+                return g.trace('Error: no p')
+            if p != c.currentPosition():
+                return g.trace('Error: p is not c.currentPosition()')
+            if self.redrawing:
+                return g.trace('Error: already redrawing')
+
+            if trace: g.trace(p and p.headString(),g.callers(4))
+
+            c.outerUpdate() # Bring the tree up to date.
+
+            # setCurrentItem sets & clears .selecting ivar
+            self.setCurrentItem()
+        #@-node:ekr.20090123181335.36:afterSelectHint
+        #@+node:ekr.20090123181335.37:beforeSelectHint
+        def beforeSelectHint (self,p,old_p):
+
+            trace = False
+
+            if self.selecting:
+                return g.trace('*** Error: already selecting',g.callers(4))
+            if self.redrawing:
+                if trace: g.trace('already redrawing')
+                return
+
+            if trace: g.trace(p and p.headString())
+
+            # Disable onTextChanged.
+            self.selecting = True
+        #@nonl
+        #@-node:ekr.20090123181335.37:beforeSelectHint
+        #@+node:ekr.20090123181335.38:edit_widget
+        def edit_widget (self,p):
+
+            """Returns the Qt.Edit widget for position p."""
+
+            trace = False
+            c = self.c ; treeWidget = self.treeWidget
+            item = self.position2item(p)
+            if item:
+                e = treeWidget.itemWidget(item,0) # A QLineEdit
+                if e:
+                    # Create a wrapper widget for Leo's core.
+                    w = leoQtHeadlineWidget(widget=e,name='head',c=c)
+                    if trace: g.trace(w,p and p.headString())
+                    return w
+                else:
+                    # This is not an error
+                    if trace: g.trace('no e for %s' % (p),g.callers(4))
+                    return None
+            else:
+                if trace: g.trace('no item for %s' % (p),g.callers(4))
+                return None
+        #@nonl
+        #@-node:ekr.20090123181335.38:edit_widget
+        #@+node:ekr.20090123181335.39:editLabel (override)
+        def editLabel (self,p,selectAll=False,selection=None):
+
+            """Start editing p's headline."""
+
+            trace = False ; verbose = False
+            c = self.c ; w = self.treeWidget
+
+            if self.redrawing:
+                if trace and verbose: g.trace('redrawing')
+                return
+            if trace: g.trace('***',p and p.headString(),g.callers(4))
+
+            c.outerUpdate()
+                # Do any scheduled redraw.
+                # This won't do anything in the new redraw scheme.
+
+            item = self.position2item(p)
+
+            if item:
+                w.setCurrentItem(item) # Must do this first.
+                w.editItem(item)
+                    # Generates focus-in event that tree doesn't report.
+                e = w.itemWidget(item,0) # A QLineEdit
+                if e:
+                    s = e.text() ; len_s = len(s)
+                    if selection:
+                        i,j,ins = selection
+                        start,n = i,abs(i-j)
+                            # Not right for backward searches.
+                    elif selectAll: start,n,ins = 0,len_s,len_s
+                    else:           start,n,ins = len_s,0,len_s
+                    e.setObjectName('headline')
+                    e.setSelection(start,n)
+                    # e.setCursorPosition(ins) # Does not work.
+                    e.setFocus()
+                else: self.oops('no edit widget')
+            else:
+                e = None
+                self.oops('no item: %s' % p)
+
+            # A nice hack: just set the focus request.
+            if e: c.requestedFocusWidget = e
+        #@-node:ekr.20090123181335.39:editLabel (override)
+        #@+node:ekr.20090123181335.40:editPosition
+        def editPosition(self):
+
+            c = self.c ; p = c.currentPosition()
+            ew = self.edit_widget(p)
+            return ew and p or None
+        #@-node:ekr.20090123181335.40:editPosition
+        #@+node:ekr.20090123181335.41:endEditLabel
+        def endEditLabel (self):
+
+            '''Override leoTree.endEditLabel.
+
+            End editing of the presently-selected headline.'''
+
+            c = self.c ; p = c.currentPosition()
+
+            ew = self.edit_widget(p)
+            e = ew and ew.widget
+
+            if e:
+                s = e.text()
+                if s != p.headString():
+                    self.onHeadChanged(p)
+        #@-node:ekr.20090123181335.41:endEditLabel
+        #@+node:ekr.20090123181335.42:onHeadChanged (qtTree)
+        # Tricky code: do not change without careful thought and testing.
+
+        def onHeadChanged (self,p,undoType='Typing',s=None):
+
+            '''Officially change a headline.'''
+
+            trace = False ; verbose = True
+            c = self.c ; u = c.undoer
+            ew = self.edit_widget(p)
+            if ew: e = ew.widget
+            item = self.position2item(p)
+
+            w = g.app.gui.get_focus()
+
+            # These are not errors: onItemChanged may
+            # have been called first.
+            if trace and verbose:
+                if not e:  g.trace('No e',g.callers(4))
+                if e != w: g.trace('e != w',e,w,g.callers(4))
+                if not p:  g.trace('No p')
+
+            if e and e == w and item and p:
+                s = e.text() ; len_s = len(s)
+                s = g.app.gui.toUnicode(s)
+                oldHead = p.headString()
+                changed = s != oldHead
+                if trace: g.trace('changed',changed,repr(s),g.callers(4))
+                if changed:
+                    p.initHeadString(s)
+                    item.setText(0,s) # Required to avoid full redraw.
+                    undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+                    if not c.changed: c.setChanged(True)
+                    # New in Leo 4.4.5: we must recolor the body because
+                    # the headline may contain directives.
+                    c.frame.body.recolor(p,incremental=True)
+                    dirtyVnodeList = p.setDirty()
+                    u.afterChangeNodeContents(p,undoType,undoData,
+                        dirtyVnodeList=dirtyVnodeList)
+
+            # This is a crucial shortcut.
+            if g.unitTesting: return
+
+            if self.stayInTree:
+                c.treeWantsFocus()
+            else:
+                c.bodyWantsFocus()
+            c.outerUpdate()
+        #@nonl
+        #@-node:ekr.20090123181335.42:onHeadChanged (qtTree)
+        #@+node:ekr.20090123181335.43:setHeadline (qtTree)
+        def setHeadline (self,p,s):
+
+            '''Set the actual text of the headline widget.
+
+            This is called from unit tests to change the text before redrawing.'''
+
+            p.setHeadString(s)
+            w = self.edit_widget(p)
+            if w:
+                w.setAllText(s)
+        #@-node:ekr.20090123181335.43:setHeadline (qtTree)
+        #@+node:ekr.20090123181335.44:traceSelect
+        def traceSelect (self):
+
+            if 0:
+                g.trace(self.selecting,g.callers(5))
+        #@-node:ekr.20090123181335.44:traceSelect
+        #@-node:ekr.20090123181335.35:Selecting & editing... (FROM qtTree)
+        #@+node:ekr.20081121105001.2074:Selection (wxTree)
+        #@+node:ekr.20081121105001.2052:tree.edit_widget (wxTree)
+        def edit_widget (self,p):
+
+            '''Return a widget (compatible with leoTextWidget) used for editing the headline.'''
+
+            w = self.editWidgetDict.get(p.v)
+
+            return w
+        #@-node:ekr.20081121105001.2052:tree.edit_widget (wxTree)
         #@+node:ekr.20081121105001.2075:editLabel
         def editLabel (self,p,selectAll=False,selection=None):
 
@@ -6139,50 +6795,7 @@ if wx:
             self.editWidgetDict[p.v] = w
 
         #@-node:ekr.20081121105001.2076:setEditWidget
-        #@+node:ekr.20081121105001.2077:get/setIdDict
-        def getIdDict (self,p):
-
-            '''Return the unique wx.Tree id for position p.'''
-            aList = self.idDict.get(p.v,[])
-            for p2,tree_id in aList:
-                if p.equal(p2):
-                    return tree_id
-            else:
-                # g.trace('No tree_id for position %s',p.headString()) # Not an error.
-                return None
-
-        def setIdDict (self,p,tree_id):
-
-            '''Associate the wx.Tree id with a position p.'''
-
-            # Keys are vnodes, values are lists of position/tree_id pairs.
-            aList = self.idDict.get(p.v,[])
-            data = p.copy(),tree_id
-            aList.append(data)
-            self.idDict[p.v] = aList
-        #@-node:ekr.20081121105001.2077:get/setIdDict
-        #@-node:ekr.20081121105001.2074:Selection (leoTree)
-        #@+node:ekr.20081121105001.2079:do nothings
-        def headWidth (self,p=None,s=''): return 0
-
-        # Colors.
-        def setDisabledHeadlineColors (self,p):             pass
-        def setEditHeadlineColors (self,p):                 pass
-        def setUnselectedHeadlineColors (self,p):           pass
-
-        # State.
-        def setEditLabelState (self,p,selectAll=False):     pass
-        def setUnselectedLabelState (self,p):               pass
-
-        # Focus
-        def focus_get (self):   return self.FindFocus()
-        def setFocus (self):    self.treeCtrl.SetFocus()
-
-        SetFocus = setFocus
-
-        # For compatibility.
-        setNormalLabelState = setEditLabelState 
-        #@-node:ekr.20081121105001.2079:do nothings
+        #@-node:ekr.20081121105001.2074:Selection (wxTree)
         #@-others
     #@nonl
     #@-node:ekr.20081121105001.2029:wxLeoTree class (leoFrame.leoTree):

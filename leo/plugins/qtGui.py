@@ -3770,7 +3770,7 @@ class leoQtTree (leoFrame.leoTree):
         self.tnode2itemsDict = {}
         self.vnode2itemsDict = {}
     #@-node:ekr.20081121105001.415:initData
-    #@+node:ekr.20090110140239.1:rememberItem & rememberVnodeItem (from clever-redraw)
+    #@+node:ekr.20090110140239.1:rememberItem & rememberVnodeItem
     def rememberItem (self,p,item):
 
         self.rememberVnodeItem(p.v,item)
@@ -3792,7 +3792,7 @@ class leoQtTree (leoFrame.leoTree):
             else:
                 aList.append(item)
             d[key] = aList
-    #@-node:ekr.20090110140239.1:rememberItem & rememberVnodeItem (from clever-redraw)
+    #@-node:ekr.20090110140239.1:rememberItem & rememberVnodeItem
     #@-node:ekr.20081121105001.414:full_redraw & helpers
     #@+node:ekr.20090110133205.1:redraw_after_contract
     def redraw_after_contract (self,p):
@@ -3817,7 +3817,18 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20090109110752.19:redraw_after_head_changed
     def redraw_after_head_changed (self):
 
-        pass
+        # g.trace(g.callers(4))
+
+        c = self.c ; p = c.currentPosition()
+
+        if p:
+            h = p.headString()
+            for item in self.tnode2items(p.v.t):
+                if self.isValidItem(item):
+                    item.setText(0,h)
+
+        #### self.full_redraw()
+    #@nonl
     #@-node:ekr.20090109110752.19:redraw_after_head_changed
     #@+node:ekr.20090109110752.16:redraw_after_icons_changed
     def redraw_after_icons_changed (self,all=False):
@@ -3864,9 +3875,9 @@ class leoQtTree (leoFrame.leoTree):
     #@nonl
     #@-node:ekr.20081208072750.19:redraw_after_select
     #@-node:ekr.20090109110752.21:Entry points (qtTree)
-    #@+node:ekr.20090109110752.23:Helpers
+    #@+node:ekr.20090109110752.23:Helpers (qtTree)
     #@+node:ekr.20090109110752.24:Associating items and nodes
-    #@+node:ekr.20090110140239.11:item dict getters (from clever redraw)
+    #@+node:ekr.20090110140239.11:item dict getters
     def item2tnode (self,item):
         v = self.item2vnodeDict.get(item)
         return v and v.t
@@ -3882,7 +3893,7 @@ class leoQtTree (leoFrame.leoTree):
 
     def isValidItem (self,item):
         return item in self.item2vnodeDict
-    #@-node:ekr.20090110140239.11:item dict getters (from clever redraw)
+    #@-node:ekr.20090110140239.11:item dict getters
     #@+node:ekr.20081213123819.10:item2position & position2item & helpers
     #@@nocolor-node
     #@+at
@@ -4119,7 +4130,7 @@ class leoQtTree (leoFrame.leoTree):
                 self.updateVisibleIcons(child)
     #@-node:ekr.20090112065600.10:updateVisibleIcons
     #@-node:ekr.20081209064740.2:Icons
-    #@-node:ekr.20090109110752.23:Helpers
+    #@-node:ekr.20090109110752.23:Helpers (qtTree)
     #@-node:ekr.20081121105001.412:Drawing... (qtTree)
     #@+node:ekr.20081121105001.432:Event handlers... (qtTree)
     #@+node:ekr.20081121105001.433:Click Box...
@@ -4733,12 +4744,13 @@ class leoQtTree (leoFrame.leoTree):
         # This is a crucial shortcut.
         if g.unitTesting: return
 
+        self.redraw_after_head_changed()
+
         if self.stayInTree:
             c.treeWantsFocus()
         else:
             c.bodyWantsFocus()
         c.outerUpdate()
-    #@nonl
     #@-node:ekr.20081121105001.163:onHeadChanged (qtTree)
     #@+node:ekr.20081121105001.457:setHeadline (qtTree)
     def setHeadline (self,p,s):
