@@ -4077,7 +4077,7 @@ class leoQtTree (leoFrame.leoTree):
     #@+node:ekr.20090121065245.10:setItemIcon
     def setItemIcon (self,item,icon):
 
-        trace = True
+        trace = False
 
         valid = item and self.isValidItem(item)
 
@@ -4090,6 +4090,7 @@ class leoQtTree (leoFrame.leoTree):
                 self.redrawingIcons = False
         elif trace:
             # Apparently, icon can be None due to recent icon changes.
+            # Also, item can be invalid when editing a headline.
             if icon:
                 g.trace('** item %s, valid: %s, icon: %s' % (
                     item and id(item) or '<no item>',valid,icon),
@@ -5743,7 +5744,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         trace = False ; verbose = True
         traceFocus = False and not g.unitTesting
-        c = self.c ; k = c.k 
+        c = self.c ; k = c.k
         eventType = event.type()
         ev = QtCore.QEvent
         kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
@@ -5762,7 +5763,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         if eventType == ev.WindowActivate:
             g.app.gui.onActivateEvent(event,c,obj,self.tag)
-            override = False
+            override = False ; tkKey = None
             # g.trace(g.app.gui.get_focus(c))
         elif eventType in kinds:
             tkKey,ch,ignore = self.toTkKey(event)
@@ -5781,7 +5782,18 @@ class leoQtEventFilter(QtCore.QObject):
         else:
             override = False ; tkKey = '<no key>'
 
-        if eventType == ev.KeyPress:
+        # A hack. QLineEdit generates ev.KeyRelease only.
+        if eventType in (ev.KeyPress,ev.KeyRelease):
+            p = c.currentPosition()
+            isEditWidget = obj == c.frame.tree.edit_widget(p)
+            keyIsActive = g.choose(
+                isEditWidget,
+                eventType == ev.KeyRelease,
+                eventType == ev.KeyPress)
+        else:
+            keyIsActive = False
+
+        if keyIsActive:
             if override:
                 w = self.w # Pass the wrapper class, not the wrapped widget.
                 stroke = self.toStroke(tkKey,ch)
@@ -6098,10 +6110,10 @@ class leoQtEventFilter(QtCore.QObject):
 
         for val,kind in show:
             if eventType == val:
-                g.trace(
-                'c',c,
-                'tag: %s, kind: %s, in-state: %s, key: %s, override: %s' % (
-                self.tag,kind,repr(c.k.inState()),tkKey,override))
+                if override:
+                    g.trace(
+                        'tag: %s, kind: %s, in-state: %s, key: %s, override: %s' % (
+                        self.tag,kind,repr(c.k.inState()),tkKey,override))
                 return
 
         # if trace: g.trace(self.tag,
