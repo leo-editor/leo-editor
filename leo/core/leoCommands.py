@@ -6144,7 +6144,7 @@ class baseCommands:
 
     def set_focus (self,w,force=False):
 
-        trace = False and g.unitTesting
+        trace = False # and g.unitTesting
         c = self
         if w and g.app.gui:
             if trace: g.pr('c.set_focus',repr(w))
@@ -6235,7 +6235,7 @@ class baseCommands:
 
         # It's possible to do this now that c.redrawAndEdit exists.
         # However, it would be a major change...
-        # c.endEditing()
+        c.endEditing()
 
         if p:
             # Update body pane and set c._currentPosition.

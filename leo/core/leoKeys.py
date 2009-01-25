@@ -3294,7 +3294,7 @@ class keyHandlerClass:
         #@nonl
         #@-node:ekr.20061031131434.147:<< define vars >>
         #@nl
-        trace = False and (g.app.unitTesting or self.trace_masterKeyHandler)
+        trace = False # or (not g.app.unitTesting or self.trace_masterKeyHandler)
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
         verbose = True
 
@@ -3308,6 +3308,8 @@ class keyHandlerClass:
             # g.trace('callers',g.callers(5))
                 # 'state.kind:',k.state.kind),'\n',g.callers())
             # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+        # if stroke == 'Return': g.pdb()
 
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:

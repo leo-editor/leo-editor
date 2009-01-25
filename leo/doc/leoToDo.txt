@@ -3358,7 +3358,7 @@ def masterKeyHandler (self,event,stroke=None):
     '''This is the handler for almost all key bindings.'''
 
     << define vars >>
-    trace = False and (g.app.unitTesting or self.trace_masterKeyHandler)
+    trace = False # or (not g.app.unitTesting or self.trace_masterKeyHandler)
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
     verbose = True
 
@@ -3372,6 +3372,8 @@ def masterKeyHandler (self,event,stroke=None):
         # g.trace('callers',g.callers(5))
             # 'state.kind:',k.state.kind),'\n',g.callers())
         # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    # if stroke == 'Return': g.pdb()
 
     # Handle keyboard-quit first.
     if k.abortAllModesKey and stroke == k.abortAllModesKey:
@@ -4137,7 +4139,7 @@ def masterKeyHandler (self,event,stroke=None):
     '''This is the handler for almost all key bindings.'''
 
     << define vars >>
-    trace = False and (g.app.unitTesting or self.trace_masterKeyHandler)
+    trace = False # or (not g.app.unitTesting or self.trace_masterKeyHandler)
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
     verbose = True
 
@@ -4151,6 +4153,8 @@ def masterKeyHandler (self,event,stroke=None):
         # g.trace('callers',g.callers(5))
             # 'state.kind:',k.state.kind),'\n',g.callers())
         # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    # if stroke == 'Return': g.pdb()
 
     # Handle keyboard-quit first.
     if k.abortAllModesKey and stroke == k.abortAllModesKey:
@@ -5302,7 +5306,7 @@ def masterKeyHandler (self,event,stroke=None):
     '''This is the handler for almost all key bindings.'''
 
     << define vars >>
-    trace = False and (g.app.unitTesting or self.trace_masterKeyHandler)
+    trace = False # or (not g.app.unitTesting or self.trace_masterKeyHandler)
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
     verbose = True
 
@@ -5316,6 +5320,8 @@ def masterKeyHandler (self,event,stroke=None):
         # g.trace('callers',g.callers(5))
             # 'state.kind:',k.state.kind),'\n',g.callers())
         # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    # if stroke == 'Return': g.pdb()
 
     # Handle keyboard-quit first.
     if k.abortAllModesKey and stroke == k.abortAllModesKey:

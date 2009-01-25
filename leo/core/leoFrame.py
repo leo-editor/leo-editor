@@ -3332,31 +3332,24 @@ class nullTree (leoTree):
         pass
     #@-node:ekr.20070228163350:Colors & fonts
     #@+node:ekr.20070228163350.1:Drawing & scrolling
-    # def beginUpdate (self):
-        # self.updateCount += 1
-
-    # def endUpdate (self,flag):
-        # self.updateCount -= 1
-        # if flag and self.updateCount <= 0:
-            # self.redraw_now()
-
     def drawIcon(self,p):
         pass
 
     def redraw(self,p=None,scroll=True,forceDraw=False):
         self.redrawCount += 1
-        # g.trace('nullTree')
 
     def redraw_now(self,p=None,scroll=True,forceDraw=False):
         self.redrawCount += 1
-        # g.trace('nullTree')
 
     def scrollTo(self,p):
         pass
     #@-node:ekr.20070228163350.1:Drawing & scrolling
     #@+node:ekr.20070228163350.2:Headlines (nullTree)
     def edit_widget (self,p):
-        d = self.editWidgetsDict ; w = d.get(p.v.t)
+        d = self.editWidgetsDict
+        if not p.v or not p.v.t:
+            return None
+        w = d.get(p.v.t)
         if not w:
             d[p.v.t] = w = stringTextWidget(
                 c=self.c,

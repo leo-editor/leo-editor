@@ -1282,6 +1282,7 @@ class leoFind:
 
         c = self.c ; p = self.p
         bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
+
         w = g.choose(self.in_headline,c.edit_widget(p),bodyCtrl)
         if not w:
             self.in_headline = False
@@ -1374,9 +1375,11 @@ class leoFind:
 
         '''Display the result of a successful find operation.'''
 
+        trace = True
         c = self.c ; p = self.p
         if not p:
             return g.trace('can not happen: self.p is None')
+
         current = c.currentPosition()
         sparseFind = c.config.getBool('collapse_nodes_during_finds')
         c.frame.bringToFront() # Needed on the Mac
@@ -1414,7 +1417,6 @@ class leoFind:
             w.setSelectionRange(pos,newpos,insert=insert)
             w.seeInsertPoint()
             c.outerUpdate()
-    #@nonl
     #@-node:ekr.20031218072017.3091:showSuccess (test)
     #@+node:ekr.20031218072017.1460:update_ivars (leoFind)
     # New in Leo 4.4.3: This is now gui-independent code.

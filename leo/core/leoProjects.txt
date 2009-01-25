@@ -3483,7 +3483,7 @@ def redraw (self,p=None,setFocus=False):
 
     # It's possible to do this now that c.redrawAndEdit exists.
     # However, it would be a major change...
-    # c.endEditing()
+    c.endEditing()
 
     if p:
         # Update body pane and set c._currentPosition.
@@ -4212,9 +4212,11 @@ def showSuccess(self,pos,newpos):
 
     '''Display the result of a successful find operation.'''
 
+    trace = True
     c = self.c ; p = self.p
     if not p:
         return g.trace('can not happen: self.p is None')
+
     current = c.currentPosition()
     sparseFind = c.config.getBool('collapse_nodes_during_finds')
     c.frame.bringToFront() # Needed on the Mac
@@ -4252,7 +4254,6 @@ def showSuccess(self,pos,newpos):
         w.setSelectionRange(pos,newpos,insert=insert)
         w.seeInsertPoint()
         c.outerUpdate()
-#@nonl
 #@-node:ekr.20031218072017.3091:showSuccess (test)
 #@+node:ekr.20080514131122.18:c.xWantsFocus
 
@@ -4280,6 +4281,7 @@ def initInteractiveCommands(self):
 
     c = self.c ; p = self.p
     bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
+
     w = g.choose(self.in_headline,c.edit_widget(p),bodyCtrl)
     if not w:
         self.in_headline = False
@@ -4419,7 +4421,10 @@ def makeRegexSubs(self,s,groups):
 #@+node:ekr.20090122080402.5:Unchanged
 #@+node:ekr.20070228163350.2:Headlines (nullTree)
 def edit_widget (self,p):
-    d = self.editWidgetsDict ; w = d.get(p.v.t)
+    d = self.editWidgetsDict
+    if not p.v or not p.v.t:
+        return None
+    w = d.get(p.v.t)
     if not w:
         d[p.v.t] = w = stringTextWidget(
             c=self.c,
@@ -4837,7 +4842,7 @@ def redraw (self,p=None,setFocus=False):
 
     # It's possible to do this now that c.redrawAndEdit exists.
     # However, it would be a major change...
-    # c.endEditing()
+    c.endEditing()
 
     if p:
         # Update body pane and set c._currentPosition.
@@ -5170,7 +5175,7 @@ def redraw (self,p=None,setFocus=False):
 
     # It's possible to do this now that c.redrawAndEdit exists.
     # However, it would be a major change...
-    # c.endEditing()
+    c.endEditing()
 
     if p:
         # Update body pane and set c._currentPosition.

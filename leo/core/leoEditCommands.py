@@ -151,8 +151,6 @@ class baseEditCommandsClass:
         else:
             self.w = self.c.frame.body and self.c.frame.body.bodyCtrl
 
-        # g.trace(self.w)
-
         if self.w:
             c.widgetWantsFocusNow(self.w)
 
