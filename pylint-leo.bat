@@ -13,13 +13,16 @@ REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
 
-REM goto errors
+goto errors
 goto all
 
 :errors
 
-echo leoFrame.py
-call pylint.bat leo\core\leoFrame.py         --rcfile=leo\test\pylint-leo-rc.txt
+echo qtGui.py
+call pylint.bat leo\plugins\qtGui.py                --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
+
+echo baseNativeTree.py
+call pylint.bat leo\plugins\baseNativeTree.py       --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 

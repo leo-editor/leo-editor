@@ -9,7 +9,9 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
+import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
+import leo.core.leoNodes as leoNodes
 
 class baseNativeTreeWidget (leoFrame.leoTree):
 
@@ -26,7 +28,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def __init__(self,c,frame):
 
         # Init the base class.
-        leoTree.__init__(self,frame)
+        leoFrame.leoTree.__init__(self,frame)
 
         # Components.
         self.c = c
@@ -80,6 +82,19 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         return name
     #@-node:ekr.20090124174652.11:get_name (nativeTree)
+    #@+node:ekr.20090124174652.121:Called from Leo's core
+    def initAfterLoad (self):
+        pass
+
+    def setBindings (self):
+        '''Create master bindings for all headlines.'''
+        pass
+
+    def setCanvasBindings (self,canvas):
+        '''Create master tree bindings.'''
+        pass
+    #@nonl
+    #@-node:ekr.20090124174652.121:Called from Leo's core
     #@-node:ekr.20090124174652.9: Birth... (nativeTree)
     #@+node:ekr.20090124174652.12:Config... (nativeTree)
     #@+node:ekr.20090124174652.13:do-nothin config methods
@@ -109,49 +124,16 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         self.allow_clone_drags    = c.config.getBool('allow_clone_drags')
         self.enable_drag_messages = c.config.getBool("enable_drag_messages")
-
-        # self.center_selected_tree_node = c.config.getBool('center_selected_tree_node')
-
-        # self.expanded_click_area  = c.config.getBool('expanded_click_area')
-        # self.gc_before_redraw     = c.config.getBool('gc_before_redraw')
-
-        # self.headline_text_editing_foreground_color = c.config.getColor(
-            # 'headline_text_editing_foreground_color')
-        # self.headline_text_editing_background_color = c.config.getColor(
-            # 'headline_text_editing_background_color')
-        # self.headline_text_editing_selection_foreground_color = c.config.getColor(
-            # 'headline_text_editing_selection_foreground_color')
-        # self.headline_text_editing_selection_background_color = c.config.getColor(
-            # 'headline_text_editing_selection_background_color')
-        # self.headline_text_selected_foreground_color = c.config.getColor(
-            # "headline_text_selected_foreground_color")
-        # self.headline_text_selected_background_color = c.config.getColor(
-            # "headline_text_selected_background_color")
-        # self.headline_text_editing_selection_foreground_color = c.config.getColor(
-            # "headline_text_editing_selection_foreground_color")
-        # self.headline_text_editing_selection_background_color = c.config.getColor(
-            # "headline_text_editing_selection_background_color")
-        # self.headline_text_unselected_foreground_color = c.config.getColor(
-            # 'headline_text_unselected_foreground_color')
-        # self.headline_text_unselected_background_color = c.config.getColor(
-            # 'headline_text_unselected_background_color')
-
-        # self.initialClickExpandsOrContractsNode = c.config.getBool(
-            # 'initialClickExpandsOrContractsNode')
-        # self.look_for_control_drag_on_mouse_down = c.config.getBool(
-            # 'look_for_control_drag_on_mouse_down')
-
         self.select_all_text_when_editing_headlines = c.config.getBool(
             'select_all_text_when_editing_headlines')
-
         self.stayInTree     = c.config.getBool('stayInTreeAfterSelect')
         self.use_chapters   = c.config.getBool('use_chapters')
+    #@nonl
     #@-node:ekr.20090124174652.14:setConfigIvars
     #@-node:ekr.20090124174652.12:Config... (nativeTree)
     #@+node:ekr.20090124174652.15:Drawing... (nativeTree)
-
     #@+node:ekr.20090124174652.16:Entry points (nativeTree)
-    #@+node:ekr.20090124174652.17:full_redraw & helpers (REVISE)
+    #@+node:ekr.20090124174652.17:full_redraw & helpers (test)
     # forceDraw not used. It is used in the Tk code.
 
     def full_redraw (self,p=None,scroll=True,forceDraw=False):
@@ -174,22 +156,18 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         self.redrawCount += 1
 
-        ####
-        # if trace:
-            # # g.trace(self.redrawCount,g.callers())
-            # tstart()
+        if trace:
+            # g.trace(self.redrawCount,g.callers())
+            self.tstart() ####
 
         # Init the data structures.
         self.initData()
         self.nodeDrawCount = 0
         self.redrawing = True
         try:
-            hScroll = w.horizontalScrollBar()
-            vScroll = w.verticalScrollBar()
-            hPos = hScroll.sliderPosition()
-            vPos = vScroll.sliderPosition()
-            # g.trace(hPos,vPos)
-            w.clear()
+            hPos,vPos = self.getScroll() ####
+            #### w.clear()
+            self.clear()
             # Draw all top-level nodes and their visible descendants.
             if c.hoistStack:
                 bunch = c.hoistStack[-1]
@@ -209,18 +187,22 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         finally:
             if not self.selecting:
                 self.setCurrentItem()
-            hScroll.setSliderPosition(hPos)
-            if not scroll:
-                vScroll.setSliderPosition(vPos)
+
+            ####
+            # hScroll.setSliderPosition(hPos)
+            # if not scroll:
+                # vScroll.setSliderPosition(vPos)
+            self.setHScroll(hPos)
+            if not scroll: self.setVScroll(vPos)
 
             # Necessary to get the tree drawn initially.
-            w.repaint()
+            #### w.repaint()
+            self.repaint()
 
             c.requestRedrawFlag= False
             self.redrawing = False
             if trace:
-                #### theTime = tstop()
-                theTime = '?? sec'
+                theTime = self.tstop() ####
                 if True and not g.app.unitTesting:
                     g.trace('%s: scroll: %s, drew %3s nodes in %s' % (
                         self.redrawCount,scroll,self.nodeDrawCount,theTime),
@@ -274,7 +256,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.rememberItem(p,item)
 
         # Set the headline and maybe the icon.
-        self.setItemText(p.headString()) ####
+        self.setItemText(item,p.headString()) ####
         if p:
             self.drawItemIcon(p,item) ####
 
@@ -321,7 +303,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 aList.append(item)
             d[key] = aList
     #@-node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
-    #@-node:ekr.20090124174652.17:full_redraw & helpers (REVISE)
+    #@-node:ekr.20090124174652.17:full_redraw & helpers (test)
     #@+node:ekr.20090124174652.24:redraw_after_contract
     def redraw_after_contract (self,p=None):
 
@@ -353,7 +335,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             h = p.headString()
             for item in self.tnode2items(p.v.t):
                 if self.isValidItem(item):
-                    self.setItemText(h)
+                    self.setItemText(item,h)
     #@nonl
     #@-node:ekr.20090124174652.26:redraw_after_head_changed
     #@+node:ekr.20090124174652.27:redraw_after_icons_changed
@@ -1193,150 +1175,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                     item and id(item) or '<no item>',valid,icon),
                     g.callers(4))
     #@-node:ekr.20090124174652.76:setItemIcon
-    #@-node:ekr.20090124174652.72:Icons
-    #@+node:ekr.20090124174652.77:oops
-    def oops(self):
-
-        g.pr("leoTree oops: should be overridden in subclass",
-            g.callers(4))
-    #@-node:ekr.20090124174652.77:oops
-    #@-node:ekr.20090124174652.62:Widget-independent helpers
-    #@+node:ekr.20090124174652.78:Widget-dependent helpers
-    # These must be overridden in subclasses.
-    #@nonl
-    #@+node:ekr.20090124174652.79:createTreeItem
-    def createTreeItem(self,p,parentItem):
-
-        self.oops()
-
-        # w = self.treeWidget
-        # itemOrTree = parent_item or w
-        # item = QtGui.QTreeWidgetItem(itemOrTree)
-        # item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
-    #@-node:ekr.20090124174652.79:createTreeItem
-    #@+node:ekr.20090124174652.80:createTreeEditorForItem
-    def createTreeEditorForItem(self,item):
-
-        self.oops()
-
-        # w.setCurrentItem(item) # Must do this first.
-        # w.editItem(item)
-        # e = w.itemWidget(item,0)
-
-
-        # Hook up the widget.
-        # e.connect(e,QtCore.SIGNAL(
-            # "textEdited(QTreeWidgetItem*,int)"),
-            # self.onHeadChanged)
-        # e.setObjectName('headline')
-
-        # return e
-    #@-node:ekr.20090124174652.80:createTreeEditorForItem
-    #@+node:ekr.20090124174652.81:getCurrentItem
-    def getCurrentItem (self):
-
-        self.oops()
-
-        # w = self.treeWidget
-        # return w.currentItem()
-    #@-node:ekr.20090124174652.81:getCurrentItem
-    #@+node:ekr.20090124174652.82:getTreeEditorForItem
-    def getTreeEditorForItem(self,item):
-
-        '''Return the edit widget if it exists.
-        Do *not* create one if it does not exist.'''
-
-        self.oops()
-
-        # w = self.treeWidget
-        # e = w.itemWidget(item,0)
-        # return e
-    #@-node:ekr.20090124174652.82:getTreeEditorForItem
-    #@+node:ekr.20090124174652.83:setCurrentItemHelper
-    def setCurrentItemHelper(self,item):
-
-        self.oops()
-
-        # w = self.treeWidget
-        # w.setCurrentItem(item)
-    #@-node:ekr.20090124174652.83:setCurrentItemHelper
-    #@+node:ekr.20090124174652.84:setItemText
-    def setItemText (self,item,s):
-
-        self.oops()
-
-        # item.setText(0,s)
-    #@-node:ekr.20090124174652.84:setItemText
-    #@+node:ekr.20090124174652.85:Icons
-    #@+node:ekr.20090124174652.86:drawIcon
-    def drawIcon (self,p):
-
-        '''Redraw the icon at p.'''
-
-        self.oops()
-
-        # w = self.treeWidget
-        # itemOrTree = self.position2item(p) or w
-        # item = QtGui.QTreeWidgetItem(itemOrTree)
-        # icon = self.getIcon(p)
-        # self.setItemIcon(item,icon)
-    #@-node:ekr.20090124174652.86:drawIcon
-    #@+node:ekr.20090124174652.87:getIcon
-    def getIcon(self,p):
-
-        '''Return the proper icon for position p.'''
-
-        self.oops()
-
-        # p.v.iconVal = val = p.v.computeIcon()
-        # return self.getCompositeIconImage(p, val)
-
-    # def getCompositeIconImage(self, p, val):
-
-        # userIcons = self.c.editCommands.getIconList(p)
-        # statusIcon = self.getIconImage(val)
-
-        # if not userIcons:
-            # return statusIcon
-
-        # hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
-        # hash.append(str(val))
-        # hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
-        # hash = ':'.join(hash)
-
-        # if hash in g.app.gui.iconimages:
-            # return g.app.gui.iconimages[hash]
-
-        # images = [g.app.gui.getImageImage(i['file']) for i in userIcons
-                 # if i['where'] == 'beforeIcon']
-        # images.append(g.app.gui.getImageImage("box%02d.GIF" % val))
-        # images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
-                      # if i['where'] == 'beforeHeadline'])
-        # width = sum([i.width() for i in images])
-        # height = max([i.height() for i in images])
-
-        # pix = QtGui.QPixmap(width,height)
-        # pix.fill()
-        # pix.setAlphaChannel(pix)
-        # painter = QtGui.QPainter(pix)
-        # x = 0
-        # for i in images:
-            # painter.drawPixmap(x,(height-i.height())//2,i)
-            # x += i.width()
-        # painter.end()
-
-        # g.app.gui.iconimages[hash] = QtGui.QIcon(pix)
-
-        # return g.app.gui.iconimages[hash]
-    #@-node:ekr.20090124174652.87:getIcon
-    #@+node:ekr.20090124174652.88:setItemIconHelper
-    def setItemIconHelper (self,item,icon):
-
-        self.oops()
-
-        # item.setIcon(0,icon)
-    #@-node:ekr.20090124174652.88:setItemIconHelper
-    #@+node:ekr.20090124174652.89:updateIcon
+    #@+node:ekr.20090124174652.113:updateIcon
     def updateIcon (self,p,force=False):
 
         '''Update p's icon.'''
@@ -1357,8 +1196,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         for item in items:
             self.setItemIcon(item,icon)
     #@nonl
-    #@-node:ekr.20090124174652.89:updateIcon
-    #@+node:ekr.20090124174652.90:updateVisibleIcons
+    #@-node:ekr.20090124174652.113:updateIcon
+    #@+node:ekr.20090124174652.114:updateVisibleIcons
     def updateVisibleIcons (self,p):
 
         '''Update the icon for p and the icons
@@ -1369,8 +1208,130 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if p.hasChildren() and p.isExpanded():
             for child in p.children_iter():
                 self.updateVisibleIcons(child)
-    #@-node:ekr.20090124174652.90:updateVisibleIcons
+    #@-node:ekr.20090124174652.114:updateVisibleIcons
+    #@-node:ekr.20090124174652.72:Icons
+    #@+node:ekr.20090124174652.77:oops
+    def oops(self):
+
+        g.pr("leoTree oops: should be overridden in subclass",
+            g.callers(4))
+    #@-node:ekr.20090124174652.77:oops
+    #@-node:ekr.20090124174652.62:Widget-independent helpers
+    #@+node:ekr.20090124174652.78:Widget-dependent helpers
+    # These must be overridden in subclasses
+
+    def clear (self):
+        '''Clear all widgets in the tree.'''
+        self.oops()
+
+    def repaint (self):
+        '''Repaint the widget.'''
+        self.oops()
+    #@nonl
+    #@+node:ekr.20090124174652.85:Icons
+    #@+node:ekr.20090124174652.86:drawIcon
+    def drawIcon (self,p):
+
+        '''Redraw the icon at p.'''
+
+        self.oops()
+    #@-node:ekr.20090124174652.86:drawIcon
+    #@+node:ekr.20090124174652.87:getIcon
+    def getIcon(self,p):
+
+        '''Return the proper icon for position p.'''
+
+        self.oops()
+    #@-node:ekr.20090124174652.87:getIcon
+    #@+node:ekr.20090124174652.88:setItemIconHelper
+    def setItemIconHelper (self,item,icon):
+
+        '''Set the icon for the given item.'''
+
+        self.oops()
+    #@-node:ekr.20090124174652.88:setItemIconHelper
     #@-node:ekr.20090124174652.85:Icons
+    #@+node:ekr.20090124174652.116:Items
+    #@+node:ekr.20090124174652.79:createTreeItem
+    def createTreeItem(self,p,parent_item):
+
+        '''Create a tree item for position p whose parent tree item is given.'''
+
+        self.oops()
+    #@-node:ekr.20090124174652.79:createTreeItem
+    #@+node:ekr.20090124174652.80:createTreeEditorForItem
+    def createTreeEditorForItem(self,item):
+
+        '''Create an editor widget for the given tree item.'''
+
+        self.oops()
+
+        # w.setCurrentItem(item) # Must do this first.
+        # w.editItem(item)
+        # e = w.itemWidget(item,0)
+
+
+        # Hook up the widget.
+        # e.connect(e,QtCore.SIGNAL(
+            # "textEdited(QTreeWidgetItem*,int)"),
+            # self.onHeadChanged)
+        # e.setObjectName('headline')
+
+        # return e
+    #@-node:ekr.20090124174652.80:createTreeEditorForItem
+    #@+node:ekr.20090124174652.81:getCurrentItem
+    def getCurrentItem (self):
+
+        '''Return the currently selected tree item.'''
+
+        self.oops()
+    #@-node:ekr.20090124174652.81:getCurrentItem
+    #@+node:ekr.20090124174652.82:getTreeEditorForItem
+    def getTreeEditorForItem(self,item):
+
+        '''Return the edit widget if it exists.
+
+        Do *not* create one if it does not exist.'''
+
+        self.oops()
+    #@nonl
+    #@-node:ekr.20090124174652.82:getTreeEditorForItem
+    #@+node:ekr.20090124174652.83:setCurrentItemHelper
+    def setCurrentItemHelper(self,item):
+
+
+        '''Select the given item.'''
+
+        self.oops()
+    #@-node:ekr.20090124174652.83:setCurrentItemHelper
+    #@+node:ekr.20090124174652.84:setItemText
+    def setItemText (self,item,s):
+
+        '''Set the headline text for the given item.'''
+
+        self.oops()
+    #@-node:ekr.20090124174652.84:setItemText
+    #@-node:ekr.20090124174652.116:Items
+    #@+node:ekr.20090124174652.123:Scroll bars
+    def getScroll (self):
+
+        '''Return the hPos,vPos for the tree's scrollbars.'''
+
+        return 0,0
+
+    def setHScroll (self,hPos):
+        pass
+
+    def setVScroll (self,vPos):
+        pass
+    #@-node:ekr.20090124174652.123:Scroll bars
+    #@+node:ekr.20090124174652.124:Timing
+    def tstart (self):
+        pass
+
+    def tstop (self):
+        return '?? sec'
+    #@-node:ekr.20090124174652.124:Timing
     #@-node:ekr.20090124174652.78:Widget-dependent helpers
     #@-others
 #@-node:ekr.20090124174652.7:@thin baseNativeTree.py

@@ -32,7 +32,11 @@ import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
 
 if native_tree:
-    import leo.plugins.baseNativeTree as baseNativeTree
+    try:
+        import leo.plugins.baseNativeTree as baseNativeTree
+    except ImportError:
+        print('can not import leo.plugins.baseNativeTree')
+        native_tree = False
 
 import re
 import string
@@ -3427,7 +3431,7 @@ class leoQtSpellTab:
     #@-others
 #@-node:ekr.20081121105001.379:class leoQtSpellTab
 #@+node:ekr.20081121105001.400:class leoQtTree (leoTree)
-if False and native_tree:
+if True and native_tree:
 
     class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
@@ -3437,6 +3441,216 @@ if False and native_tree:
         #@        << class leoQtTree (baseNativeTree) >>
         #@+node:ekr.20090124174652.100:<< class leoQtTree (baseNativeTree) >>
         #@+others
+        #@+node:ekr.20090124174652.118: Birth (subclass of nativeTree)
+        #@+node:ekr.20090124174652.119:ctor
+        def __init__(self,c,frame):
+
+            # Init the base class.
+            baseNativeTree.baseNativeTreeWidget.__init__(self,c,frame)
+
+            # Components.
+            self.headlineWrapper = leoQtHeadlineWidget # This is a class.
+            self.treeWidget = w = frame.top.ui.treeWidget # An internal ivar.
+
+            # Early inits...
+            try: w.headerItem().setHidden(True)
+            except Exception: pass
+
+            w.setIconSize(QtCore.QSize(160,16))
+        #@-node:ekr.20090124174652.119:ctor
+        #@+node:ekr.20090124174652.120:qtTree.initAfterLoad
+        def initAfterLoad (self):
+
+            '''Do late-state inits.'''
+
+            # Called by Leo's core.
+
+            c = self.c ; frame = c.frame
+            w = c.frame.top ; tw = self.treeWidget
+
+            if not leoQtTree.callbacksInjected:
+                leoQtTree.callbacksInjected = True
+                self.injectCallbacks() # A base class method.
+
+            w.connect(self.treeWidget,QtCore.SIGNAL(
+                    "itemDoubleClicked(QTreeWidgetItem*, int)"),
+                self.onItemDoubleClicked)
+
+            w.connect(self.treeWidget,QtCore.SIGNAL(
+                    "itemSelectionChanged()"),
+                self.onTreeSelect)
+
+            w.connect(self.treeWidget,QtCore.SIGNAL(
+                    "itemChanged(QTreeWidgetItem*, int)"),
+                self.onItemChanged)
+
+            w.connect(self.treeWidget,QtCore.SIGNAL(
+                    "itemCollapsed(QTreeWidgetItem*)"),
+                self.onItemCollapsed)
+
+            w.connect(self.treeWidget,QtCore.SIGNAL(
+                    "itemExpanded(QTreeWidgetItem*)"),
+                self.onItemExpanded)
+
+            self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+            tw.installEventFilter(self.ev_filter)
+
+            c.setChanged(False)
+        #@-node:ekr.20090124174652.120:qtTree.initAfterLoad
+        #@-node:ekr.20090124174652.118: Birth (subclass of nativeTree)
+        #@+node:ekr.20090124174652.102:Widget-dependent helpers (subclass of nativeTree)
+        # These are over-rides of the corresponding base-class methods.
+
+        def clear (self):
+            '''Clear all widgets in the tree.'''
+            w = self.treeWidget
+            w.clear()
+
+        def repaint (self):
+            '''Repaint the widget.'''
+            w = self.treeWidget
+            w.repaint()
+        #@nonl
+        #@+node:ekr.20090124174652.109:Icons
+        #@+node:ekr.20090124174652.110:drawIcon
+        def drawIcon (self,p):
+
+            '''Redraw the icon at p.'''
+
+            w = self.treeWidget
+            itemOrTree = self.position2item(p) or w
+            item = QtGui.QTreeWidgetItem(itemOrTree)
+            icon = self.getIcon(p)
+            self.setItemIcon(item,icon)
+        #@-node:ekr.20090124174652.110:drawIcon
+        #@+node:ekr.20090124174652.111:getIcon
+        def getIcon(self,p):
+
+            '''Return the proper icon for position p.'''
+
+            p.v.iconVal = val = p.v.computeIcon()
+            return self.getCompositeIconImage(p, val)
+
+        def getCompositeIconImage(self, p, val):
+
+            userIcons = self.c.editCommands.getIconList(p)
+            statusIcon = self.getIconImage(val)
+
+            if not userIcons:
+                return statusIcon
+
+            hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
+            hash.append(str(val))
+            hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
+            hash = ':'.join(hash)
+
+            if hash in g.app.gui.iconimages:
+                return g.app.gui.iconimages[hash]
+
+            images = [g.app.gui.getImageImage(i['file']) for i in userIcons
+                     if i['where'] == 'beforeIcon']
+            images.append(g.app.gui.getImageImage("box%02d.GIF" % val))
+            images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
+                          if i['where'] == 'beforeHeadline'])
+            width = sum([i.width() for i in images])
+            height = max([i.height() for i in images])
+
+            pix = QtGui.QPixmap(width,height)
+            pix.fill()
+            pix.setAlphaChannel(pix)
+            painter = QtGui.QPainter(pix)
+            x = 0
+            for i in images:
+                painter.drawPixmap(x,(height-i.height())//2,i)
+                x += i.width()
+            painter.end()
+
+            g.app.gui.iconimages[hash] = QtGui.QIcon(pix)
+
+            return g.app.gui.iconimages[hash]
+        #@-node:ekr.20090124174652.111:getIcon
+        #@+node:ekr.20090124174652.112:setItemIconHelper
+        def setItemIconHelper (self,item,icon):
+
+            item.setIcon(0,icon)
+        #@-node:ekr.20090124174652.112:setItemIconHelper
+        #@-node:ekr.20090124174652.109:Icons
+        #@+node:ekr.20090124174652.115:Items
+        #@+node:ekr.20090124174652.103:createTreeItem
+        def createTreeItem(self,p,parent_item):
+
+            w = self.treeWidget
+            itemOrTree = parent_item or w
+            item = QtGui.QTreeWidgetItem(itemOrTree)
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+            return item
+        #@-node:ekr.20090124174652.103:createTreeItem
+        #@+node:ekr.20090124174652.104:createTreeEditorForItem
+        def createTreeEditorForItem(self,item):
+
+            w = self.treeWidget
+            w.setCurrentItem(item) # Must do this first.
+            w.editItem(item)
+            e = w.itemWidget(item,0)
+
+            # Hook up the widget.
+            e.connect(e,QtCore.SIGNAL(
+                "textEdited(QTreeWidgetItem*,int)"),
+                self.onHeadChanged)
+            e.setObjectName('headline')
+
+            return e
+        #@-node:ekr.20090124174652.104:createTreeEditorForItem
+        #@+node:ekr.20090124174652.105:getCurrentItem
+        def getCurrentItem (self):
+
+            w = self.treeWidget
+            return w.currentItem()
+        #@-node:ekr.20090124174652.105:getCurrentItem
+        #@+node:ekr.20090124174652.106:getTreeEditorForItem
+        def getTreeEditorForItem(self,item):
+
+            '''Return the edit widget if it exists.
+            Do *not* create one if it does not exist.'''
+
+            w = self.treeWidget
+            e = w.itemWidget(item,0)
+            return e
+        #@nonl
+        #@-node:ekr.20090124174652.106:getTreeEditorForItem
+        #@+node:ekr.20090124174652.107:setCurrentItemHelper
+        def setCurrentItemHelper(self,item):
+
+            w = self.treeWidget
+            w.setCurrentItem(item)
+        #@-node:ekr.20090124174652.107:setCurrentItemHelper
+        #@+node:ekr.20090124174652.108:setItemText
+        def setItemText (self,item,s):
+
+            item.setText(0,s)
+        #@-node:ekr.20090124174652.108:setItemText
+        #@-node:ekr.20090124174652.115:Items
+        #@+node:ekr.20090124174652.122:Scroll bars
+        def getScroll (self):
+
+            '''Return the hPos,vPos for the tree's scrollbars.'''
+
+            w = self.treeWidget
+            hScroll = w.horizontalScrollBar()
+            vScroll = w.verticalScrollBar()
+            hPos = hScroll.sliderPosition()
+            vPos = vScroll.sliderPosition()
+            return hPos,vPos
+
+        def setHScroll (self,hPos):
+            w = self.treeWidget
+            hScroll = w.horizontalScrollBar()
+
+        def setVScroll (self,vPos):
+            w = self.treeWidget
+        #@nonl
+        #@-node:ekr.20090124174652.122:Scroll bars
+        #@-node:ekr.20090124174652.102:Widget-dependent helpers (subclass of nativeTree)
         #@-others
         #@nonl
         #@-node:ekr.20090124174652.100:<< class leoQtTree (baseNativeTree) >>
@@ -3537,31 +3751,6 @@ else:
             '''Create master bindings for all headlines.'''
 
             pass
-        #@+node:ekr.20081121105001.404:qtTree.setBindingsHelper
-        def setBindingsHelper (self):
-
-            tree = self ; c = tree.c ; k = c.k
-
-            # self.bindingWidget = w = g.app.gui.plainTextWidget(
-                # self.canvas,name='bindingWidget')
-
-            # c.bind(w,'<Key>',k.masterKeyHandler)
-
-            # table = [
-                # ('<Button-1>',       k.masterClickHandler,          tree.onHeadlineClick),
-                # ('<Button-3>',       k.masterClick3Handler,         tree.onHeadlineRightClick),
-                # ('<Double-Button-1>',k.masterDoubleClickHandler,    tree.onHeadlineClick),
-                # ('<Double-Button-3>',k.masterDoubleClick3Handler,   tree.onHeadlineRightClick),
-            # ]
-
-            # for a,handler,func in table:
-                # def treeBindingCallback(event,handler=handler,func=func):
-                    # # g.trace('func',func)
-                    # return handler(event,func)
-                # c.bind(w,a,treeBindingCallback)
-
-            # self.textBindings = w.bindtags()
-        #@-node:ekr.20081121105001.404:qtTree.setBindingsHelper
         #@-node:ekr.20081121105001.403:qtTree.setBindings & helper
         #@+node:ekr.20081121105001.405:qtTree.setCanvasBindings
         def setCanvasBindings (self,canvas):
@@ -3818,7 +4007,7 @@ else:
         #@-node:ekr.20090110140239.1:rememberItem & rememberVnodeItem
         #@-node:ekr.20081121105001.414:full_redraw & helpers
         #@+node:ekr.20090110133205.1:redraw_after_contract
-        def redraw_after_contract (self,p):
+        def redraw_after_contract (self,p=None):
 
             if self.redrawing:
                 return
@@ -3833,7 +4022,7 @@ else:
                 self.full_redraw()
         #@-node:ekr.20090110133205.1:redraw_after_contract
         #@+node:ekr.20090112093625.10:redraw_after_expand
-        def redraw_after_expand (self,p):
+        def redraw_after_expand (self,p=None):
 
             self.full_redraw (p,scroll=False)
         #@-node:ekr.20090112093625.10:redraw_after_expand
@@ -3878,7 +4067,7 @@ else:
         #@+node:ekr.20081208072750.19:redraw_after_select
         # Important: this can not replace before/afterSelectHint.
 
-        def redraw_after_select (self,p):
+        def redraw_after_select (self,p=None):
 
             if self.redrawing: return
 

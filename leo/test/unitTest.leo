@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="24" left="417" height="930" width="862"/>
+	<global_window_position top="75" left="296" height="930" width="862"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1151,7 +1151,7 @@
 <v t="ekr.20070611105423.1"><vh>@test contract all</vh></v>
 <v t="ekr.20071113105654.1"><vh>@test hoist with no children</vh></v>
 <v t="ekr.20070611105728"><vh>@test illegal clone demote LOOPS</vh>
-<v t="ekr.20090122112354.1"><vh>aClone</vh></v>
+<v t="ekr.20090124192423.1"><vh>aClone</vh></v>
 </v>
 <v t="ekr.20071113201833" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
@@ -1927,6 +1927,11 @@
 <v t="ekr.20090122112354.4"><vh>import test: weave</vh></v>
 <v t="ekr.20090122112354.5"><vh>import test: outlineToNoweb</vh></v>
 <v t="ekr.20090122112354.6"><vh>import test: outlineToCWEB</vh></v>
+<v t="ekr.20090124192423.2"><vh>import test: exportHeadlines</vh></v>
+<v t="ekr.20090124192423.3"><vh>import test: flattenOutline</vh></v>
+<v t="ekr.20090124192423.4"><vh>import test: weave</vh></v>
+<v t="ekr.20090124192423.5"><vh>import test: outlineToNoweb</vh></v>
+<v t="ekr.20090124192423.6"><vh>import test: outlineToCWEB</vh></v>
 </v>
 <v t="ekr.20040712101754.26"><vh>exportHeadlines</vh>
 <v t="ekr.20040712101754.27"><vh>dialog</vh></v>
@@ -1956,6 +1961,13 @@
 <v t="ekr.20090122112354.11"><vh>import test: importCWEBFiles</vh></v>
 <v t="ekr.20090122112354.12"><vh>import test: removeSentinels</vh></v>
 <v t="ekr.20090122112354.13"><vh>import test: importAtFile</vh></v>
+<v t="ekr.20090124192423.7"><vh>import test: importAtRoot</vh></v>
+<v t="ekr.20090124192423.8"><vh>import test: importDerivedFile</vh></v>
+<v t="ekr.20090124192423.9"><vh>import test: importNowebFiles</vh></v>
+<v t="ekr.20090124192423.10"><vh>import test: importFlattenedOutline</vh></v>
+<v t="ekr.20090124192423.11"><vh>import test: importCWEBFiles</vh></v>
+<v t="ekr.20090124192423.12"><vh>import test: removeSentinels</vh></v>
+<v t="ekr.20090124192423.13"><vh>import test: importAtFile</vh></v>
 </v>
 <v t="ekr.20040712101754.12" annotate="7d71002e"><vh>importAtRoot</vh>
 <v t="ekr.20040712101754.13"><vh>dialog</vh></v>
@@ -22143,7 +22155,6 @@ c.setFileTimeStamp(path)
 val = c.checkFileTimeStamp(path)
 assert val,repr(val)
 </t>
-<t tx="ekr.20090122112354.1">4</t>
 <t tx="ekr.20090122112354.2"></t>
 <t tx="ekr.20090122112354.3"></t>
 <t tx="ekr.20090122112354.4"></t>
@@ -22156,5 +22167,18 @@ assert val,repr(val)
 <t tx="ekr.20090122112354.11"></t>
 <t tx="ekr.20090122112354.12"></t>
 <t tx="ekr.20090122112354.13"></t>
+<t tx="ekr.20090124192423.1">4</t>
+<t tx="ekr.20090124192423.2"></t>
+<t tx="ekr.20090124192423.3"></t>
+<t tx="ekr.20090124192423.4"></t>
+<t tx="ekr.20090124192423.5"></t>
+<t tx="ekr.20090124192423.6"></t>
+<t tx="ekr.20090124192423.7"></t>
+<t tx="ekr.20090124192423.8"></t>
+<t tx="ekr.20090124192423.9"></t>
+<t tx="ekr.20090124192423.10"></t>
+<t tx="ekr.20090124192423.11"></t>
+<t tx="ekr.20090124192423.12"></t>
+<t tx="ekr.20090124192423.13"></t>
 </tnodes>
 </leo_file>
