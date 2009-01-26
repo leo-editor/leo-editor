@@ -7223,6 +7223,37 @@ class minibufferFind (baseEditCommandsClass):
         # g.trace('replaceStringShortcut',s)
         self.replaceStringShortcut = s
     #@-node:ekr.20060123125317.2: ctor (minibufferFind)
+    #@+node:ekr.20090126063121.1:editWidget (minibufferFind)
+    def editWidget (self,event):
+
+        '''An override of baseEditCommands.editWidget
+
+        that does *not* set focus when using anything other than the tk gui.
+
+        This prevents this class from caching an edit widget
+        that is about to be deallocated.'''
+
+        c = self.c ; w = event and event.widget
+        bodyCtrl = self.c.frame.body and self.c.frame.body.bodyCtrl
+
+        # g.trace('isText',g.app.gui.isTextWidget(w),'w',w,g.app.gui.widget_name(w))
+
+        if g.app.gui.guiName() == 'tkinter':
+
+            # New in Leo 4.5: single-line editing commands apply to minibuffer widget.
+            if w and g.app.gui.isTextWidget(w):
+                self.w = w
+            else:
+                self.w = bodyCtrl
+            if self.w:
+                c.widgetWantsFocusNow(self.w)
+        else:
+            # Do not cache a pointer to a headline!
+            # It will die when the minibuffer is selected.
+            self.w = bodyCtrl
+
+        return self.w
+    #@-node:ekr.20090126063121.1:editWidget (minibufferFind)
     #@+node:ekr.20060124140114: Options (minibufferFind)
     #@+node:ekr.20060124123133:setFindScope
     def setFindScope(self,where):
@@ -7427,6 +7458,7 @@ class minibufferFind (baseEditCommandsClass):
 
         self.setupSearchPattern(find_pattern)
         self.setupChangePattern(change_pattern)
+
         c.widgetWantsFocusNow(self.w)
 
         self.finder.p = self.c.currentPosition()
@@ -7447,6 +7479,7 @@ class minibufferFind (baseEditCommandsClass):
         c = self.c
 
         self.setupSearchPattern(pattern)
+
         c.widgetWantsFocusNow(self.w)
 
         self.finder.p = self.c.currentPosition()

@@ -1758,6 +1758,40 @@ def traceSelect (self):
 #@-node:ekr.20081214061352.10:traceSelect
 #@-node:ekr.20081121105001.454:Selecting & editing... (qtTree)
 #@-node:ekr.20090124174652.101:class leoQtTree (leoTree)
+#@+node:ekr.20090125123037.1:class editWidgetSafePointer
+# A very bad idea.
+# The proper thing to do is not to cache QLineEdit headline widgets.
+# This can be done by overriding baseEditCommands.editWidget.
+
+class editWidgetSafePointer (QtCore.QObject):
+
+    '''A class to protect references to edit widgets.'''
+
+    def __init__ (self,item,e,w):
+
+        # g.trace('editWidgetSafePointer.__init__',w)
+        self._item = item
+        self._e = e
+        self._w = w
+
+    def __nonzero__ (self):
+
+        item,e,w = self._item,self._e,self._w
+        item2 = w.currentItem()
+        e2 = w.itemWidget(item,0)
+        val = item2 == item and e2 and e2 == e
+        return g.choose(val,1,0)
+
+    def __getattr__ (self,name):
+        return getattr(self._e,name)
+
+    def __setattr__ (self,name,val):
+        if name in ('_item','_e','_w'): 
+            QtCore.QObject.__setattr__(self, name, val)
+        else:
+            setattr(self._e,name,val)
+
+#@-node:ekr.20090125123037.1:class editWidgetSafePointer
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl
