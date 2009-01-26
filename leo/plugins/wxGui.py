@@ -4297,19 +4297,22 @@ class wxLeoStatusLine:
     #@-node:ekr.20090126093408.322:update (statusLine)
     #@-others
 #@-node:ekr.20090126093408.312:wxLeoStatusLine
-#@+node:ekr.20090126093408.323:wxLeoTree class (baseNativeTree.baseNativeTreeWidget)
+#@+node:ekr.20090126093408.323:wxLeoTree class (baseNativeTree)
 class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
 
     #@    @+others
     #@+node:ekr.20090126093408.324:wxTree.__init__
     def __init__ (self,frame,parentFrame):
 
-
         self.c = frame.c
 
         # Init the base class.
         baseNativeTree.baseNativeTreeWidget.__init__(self,self.c,frame)
 
+        # Ivars.
+        self.hiddenRootItem = None # set by self.clear.
+
+        # Options...
         self.use_paint = False # Paint & background erase events are flakey!
 
         self.treeWidget = self.createControl(parentFrame)
@@ -4432,12 +4435,12 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
         if 0:
             g.trace(
                 'lockout',self.frame.lockout,
-                'drawing',self.drawing,
+                'redrawing',self.redrawing,
                 'id.IsOk',id.IsOk(),
                 'p',p and p.headString(),
                 g.callers(9))
 
-        if self.frame.lockout or self.drawing or not p:
+        if self.frame.lockout or self.redrawing or not p:
             return None
         else:
             # g.trace(p.headString(),g.callers())
@@ -4737,21 +4740,31 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
 
     #@-node:ekr.20090126093408.883:onTreeSelChanging
     #@+node:ekr.20090126093408.868:selectHelper
-    def selectHelper (self,item,scroll):
+    def selectHelper (self,event):
+
+        pass
+
+        # g.trace()
+
+
+    #@-node:ekr.20090126093408.868:selectHelper
+    #@+node:ekr.20090126120517.10:selectHelper
+    def selectItemHelper (self,item,scroll):
 
         if self.frame.lockout:
             return
 
         w = self.treeWidget
-        if item and w.IsOk(item):
+        if item and item.IsOk():
 
             self.frame.lockout = True
             try:
                 w.SelectItem(item)
-                w.ScrollTo(item)
+                if scroll:
+                    w.ScrollTo(item)
             finally:
                 self.frame.lockout = False
-    #@-node:ekr.20090126093408.868:selectHelper
+    #@-node:ekr.20090126120517.10:selectHelper
     #@+node:ekr.20090126093408.884:setSelectedLabelState
     def setSelectedLabelState (self,p):
 
@@ -4759,121 +4772,112 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
         if self.frame.lockout: return
 
         item = self.position2item(p)
-        self.selectHelper(item,scroll=False)
+        self.selectItemHelper(item,scroll=False)
     #@-node:ekr.20090126093408.884:setSelectedLabelState
     #@-node:ekr.20090126093408.869:Event handlers (wxTree)
-    #@+node:ekr.20090126093408.841:Widget-dependent helpers (leoQtTree)
-    # These are over-rides of the corresponding base-class methods.
-
+    #@+node:ekr.20090126093408.841:Widget-dependent helpers (wxTree)
+    #@+node:ekr.20090126093408.885:Drawing
     def clear (self):
         '''Clear all widgets in the tree.'''
+        c = self.c
         w = self.treeWidget
         w.DeleteAllItems()
+        self.hiddenRootItem = w.AddRoot('Hidden root node')
 
     def repaint (self):
         '''Repaint the widget.'''
         w = self.treeWidget
-        #### w.repaint() ####
         w.Refresh()
     #@nonl
+    #@-node:ekr.20090126093408.885:Drawing
     #@+node:ekr.20090126093408.842:Icons
+    #@+node:ekr.20090126120517.12:assignIcon
+    # def assignIcon (self,p):
+
+        # val = p.v.computeIcon()
+        # p.v.iconVal = val
+        # return val
+    #@-node:ekr.20090126120517.12:assignIcon
     #@+node:ekr.20090126093408.843:drawIcon
-    def drawIcon (self,p):
+    # def drawIcon (self,p):
 
-        '''Redraw the icon at p.'''
+        # '''Redraw the icon at p.'''
 
-        w = self.treeWidget
-        itemOrTree = self.position2item(p) or w
-        item = QtGui.QTreeWidgetItem(itemOrTree)
-        icon = self.getIcon(p)
-        self.setItemIcon(item,icon)
+        # w = self.treeWidget
+        # itemOrTree = self.position2item(p) or w
+        # item = QtGui.QTreeWidgetItem(itemOrTree)
+        # icon = self.getIcon(p)
+        # self.setItemIcon(item,icon)
     #@-node:ekr.20090126093408.843:drawIcon
     #@+node:ekr.20090126093408.844:getIcon
     def getIcon(self,p):
 
-        '''Return the proper icon for position p.'''
+        '''Return the icon number for position p.'''
 
         p.v.iconVal = val = p.v.computeIcon()
-        return self.getCompositeIconImage(p, val)
-
-    def getCompositeIconImage(self, p, val):
-
-        userIcons = self.c.editCommands.getIconList(p)
-        statusIcon = self.getIconImage(val)
-
-        if not userIcons:
-            return statusIcon
-
-        hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
-        hash.append(str(val))
-        hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
-        hash = ':'.join(hash)
-
-        if hash in g.app.gui.iconimages:
-            return g.app.gui.iconimages[hash]
-
-        images = [g.app.gui.getImageImage(i['file']) for i in userIcons
-                 if i['where'] == 'beforeIcon']
-        images.append(g.app.gui.getImageImage("box%02d.GIF" % val))
-        images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
-                      if i['where'] == 'beforeHeadline'])
-        width = sum([i.width() for i in images])
-        height = max([i.height() for i in images])
-
-        pix = QtGui.QPixmap(width,height)
-        pix.fill()
-        pix.setAlphaChannel(pix)
-        painter = QtGui.QPainter(pix)
-        x = 0
-        for i in images:
-            painter.drawPixmap(x,(height-i.height())//2,i)
-            x += i.width()
-        painter.end()
-
-        g.app.gui.iconimages[hash] = QtGui.QIcon(pix)
-
-        return g.app.gui.iconimages[hash]
+        return val
     #@-node:ekr.20090126093408.844:getIcon
     #@+node:ekr.20090126093408.845:setItemIconHelper
     def setItemIconHelper (self,item,icon):
 
-        item.setIcon(0,icon)
+        w = self.treeWidget
+
+        if not 0 <= icon <= 15:
+            # wx Assigns icons by number.
+            g.trace('bad icon number: %s' % icon)
+            return
+
+        if item and item.IsOk():
+            w.SetItemImage(item,icon)
     #@-node:ekr.20090126093408.845:setItemIconHelper
     #@-node:ekr.20090126093408.842:Icons
     #@+node:ekr.20090126093408.846:Items
-    #@+node:ekr.20090126093408.847:childIndexOfItem
-    def childIndexOfItem (self,item):
+    #@+node:ekr.20090126093408.847:childIndexOfItem (not used)
+    # def childIndexOfItem (self,item):
 
-        # parent = item.parent()
+        # w = self.treeWidget
 
+        # if not item:
+            # return None
+
+        # n = 0
+        # parent = w.GetItemParent(item)
+        # assert parent,'no parent!'
         # if parent:
-            # n = parent.indexOfChild(item)
+            # item2,cookie = tree.GetFirstChild(parent)
         # else:
-            # w = self.treeWidget
-            # n = w.indexOfTopLevelItem(item)
+            # item2 = w.GetRootItem()
 
+        # while item2:
+            # if item2 == item:
+                # return n
+            # else:
+                # n += 1
+                # item2 = w.GetNextSibling(item2)
+
+        # g.trace(n)
         # return n
-
-        return 0 ####
-
-    #@-node:ekr.20090126093408.847:childIndexOfItem
+    #@-node:ekr.20090126093408.847:childIndexOfItem (not used)
     #@+node:ekr.20090126093408.848:childItems
     def childItems (self,parent_item):
 
         '''Return the list of child items of the parent item,
         or the top-level items if parent_item is None.'''
 
-        # if parent_item:
-            # n = parent_item.childCount()
-            # items = [parent_item.child(z) for z in range(n)]
-        # else:
-            # w = self.treeWidget
-            # n = w.topLevelItemCount()
-            # items = [w.topLevelItem(z) for z in range(n)]
+        trace = False
+        w = self.treeWidget
+        result = []
+        ok = parent_item and parent_item.IsOk()
+        assert self.hiddenRootItem
 
-        # return items
+        if not ok: parent_item = self.hiddenRootItem
+        item,cookie = w.GetFirstChild(parent_item)
+        while item and item.IsOk():
+            result.append(item)
+            item,cookie = w.GetNextChild(parent_item,cookie)
 
-        return [] ####
+        if trace: g.trace('parent_item',parent_item,'result',result)
+        return result
     #@-node:ekr.20090126093408.848:childItems
     #@+node:ekr.20090126093408.849:contractItem & expandItem
     def contractItem (self,item):
@@ -4887,32 +4891,53 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
             self.treeWidget.Expand(item)
     #@nonl
     #@-node:ekr.20090126093408.849:contractItem & expandItem
-    #@+node:ekr.20090126093408.850:createTreeEditorForItem
+    #@+node:ekr.20090126093408.850:createTreeEditorForItem (to do)
     def createTreeEditorForItem(self,item):
 
-        w = self.treeWidget
-        w.setCurrentItem(item) # Must do this first.
-        w.editItem(item)
-        e = w.itemWidget(item,0)
-        e.setObjectName('headline')
+        pass
 
-        # Hook up the widget.
-        e.connect(e,QtCore.SIGNAL(
-            "textEdited(QTreeWidgetItem*,int)"),
-            self.onHeadChanged)
+        # w = self.treeWidget
+        # w.setCurrentItem(item) # Must do this first.
+        # w.editItem(item)
+        # e = w.itemWidget(item,0)
+        # e.setObjectName('headline')
 
-        return e
-    #@-node:ekr.20090126093408.850:createTreeEditorForItem
+        # # Hook up the widget.
+        # e.connect(e,QtCore.SIGNAL(
+            # "textEdited(QTreeWidgetItem*,int)"),
+            # self.onHeadChanged)
+
+        # return e
+    #@-node:ekr.20090126093408.850:createTreeEditorForItem (to do)
     #@+node:ekr.20090126093408.851:createTreeItem
     def createTreeItem(self,p,parent_item):
 
-        # w = self.treeWidget
-        # itemOrTree = parent_item or w
-        # item = QtGui.QTreeWidgetItem(itemOrTree)
-        # item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
-        # return item
+        trace = False
+        w = self.treeWidget ; h = p.headString()
 
-        return None
+        if parent_item is None:
+            parent_item = self.hiddenRootItem
+
+        n = len(self.childItems(parent_item))
+
+        if trace: g.trace(h,
+            'parent_item',parent_item,
+            'IsOk',parent_item and parent_item.IsOk())
+
+        prev_item = self.nthChildItem(n,parent_item)
+
+        if prev_item:
+            item = w.InsertItem(parent_item,prev_item,text=h)
+                # image=image,selImage=image,data=data,
+        else:
+            item = w.InsertItemBefore(parent_item,0,text=h)
+                # image=image,selImage=image,data=data,
+
+        icon = self.getIcon(p)
+        self.setItemIconHelper(item,icon)
+
+        if trace: g.trace('item',item,'IsOk',item and item.IsOk())
+        return item
     #@-node:ekr.20090126093408.851:createTreeItem
     #@+node:ekr.20090126093408.852:getCurrentItem
     def getCurrentItem (self):
@@ -4933,20 +4958,18 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
     #@+node:ekr.20090126093408.854:nthChildItem
     def nthChildItem (self,n,parent_item):
 
-        # children = self.childItems(parent_item)
+        children = self.childItems(parent_item)
 
-        # if n < len(children):
-            # item = children[n]
-        # else:
-            # # self.oops('itemCount: %s, n: %s' % (len(children),n))
+        if n < len(children):
+            item = children[n]
+        else:
+            # self.oops('itemCount: %s, n: %s' % (len(children),n))
 
-            # # This is **not* an error.
-            # # It simply means that we need to redraw the tree.
-            # item = None
+            # This is **not* an error.
+            # It simply means that we need to redraw the tree.
+            item = None
 
-        # return item
-
-        return None ####
+        return item
     #@-node:ekr.20090126093408.854:nthChildItem
     #@+node:ekr.20090126093408.855:setCurrentItemHelper
     def setCurrentItemHelper(self,item):
@@ -4958,11 +4981,12 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
     def setItemText (self,item,s):
 
         w = self.treeWidget
+
         if item:
             w.SetItemText(item,s)
     #@-node:ekr.20090126093408.856:setItemText
     #@-node:ekr.20090126093408.846:Items
-    #@+node:ekr.20090126093408.857:Scroll bars
+    #@+node:ekr.20090126093408.857:Scroll bars (to do)
     def getScroll (self):
 
         '''Return the hPos,vPos for the tree's scrollbars.'''
@@ -4985,11 +5009,11 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
         #### vScroll = w.verticalScrollBar()
         #### vScroll.setSliderPosition(vPos)
     #@nonl
-    #@-node:ekr.20090126093408.857:Scroll bars
-    #@-node:ekr.20090126093408.841:Widget-dependent helpers (leoQtTree)
+    #@-node:ekr.20090126093408.857:Scroll bars (to do)
+    #@-node:ekr.20090126093408.841:Widget-dependent helpers (wxTree)
     #@-others
 #@nonl
-#@-node:ekr.20090126093408.323:wxLeoTree class (baseNativeTree.baseNativeTreeWidget)
+#@-node:ekr.20090126093408.323:wxLeoTree class (baseNativeTree)
 #@-node:ekr.20090126093408.858:Frame and component classes
 #@+node:ekr.20090126093408.128:class wxGui
 class wxGui(leoGui.leoGui):

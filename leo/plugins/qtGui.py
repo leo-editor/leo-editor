@@ -3489,8 +3489,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
     #@-node:ekr.20090124174652.120:qtTree.initAfterLoad
     #@-node:ekr.20090124174652.118: Birth (leoQtTree)
     #@+node:ekr.20090124174652.102:Widget-dependent helpers (leoQtTree)
-    # These are over-rides of the corresponding base-class methods.
-
+    #@+node:ekr.20090126120517.11:Drawing
     def clear (self):
         '''Clear all widgets in the tree.'''
         w = self.treeWidget
@@ -3501,6 +3500,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w = self.treeWidget
         w.repaint()
     #@nonl
+    #@-node:ekr.20090126120517.11:Drawing
     #@+node:ekr.20090124174652.109:Icons
     #@+node:ekr.20090124174652.110:drawIcon
     def drawIcon (self,p):

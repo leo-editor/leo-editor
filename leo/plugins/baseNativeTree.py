@@ -121,7 +121,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@-node:ekr.20090124174652.12:Config... (nativeTree)
     #@+node:ekr.20090124174652.15:Drawing... (nativeTree)
     #@+node:ekr.20090124174652.16:Entry points (nativeTree)
-    #@+node:ekr.20090124174652.17:full_redraw & helpers (test)
+    #@+node:ekr.20090124174652.17:full_redraw & helpers
     # forceDraw not used. It is used in the Tk code.
 
     def full_redraw (self,p=None,scroll=True,forceDraw=False):
@@ -130,7 +130,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         Preserve the vertical scrolling unless scroll is True.'''
 
-        trace = False
+        trace = True
         c = self.c
         if self.redrawing:
             g.trace('***** already drawing',g.callers(5))
@@ -213,9 +213,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         else:
             self.contractItem(parent_item)
     #@-node:ekr.20090124174652.19:drawChildren
-    #@+node:ekr.20090124174652.20:drawNode (changed)
+    #@+node:ekr.20090124174652.20:drawNode
     def drawNode (self,p,parent_item):
 
+        trace = False
         c = self.c 
         self.nodeDrawCount += 1
 
@@ -230,8 +231,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if p:
             self.drawItemIcon(p,item)
 
+        if trace: g.trace(p.headString(),id(item))
+
         return item
-    #@-node:ekr.20090124174652.20:drawNode (changed)
+    #@-node:ekr.20090124174652.20:drawNode
     #@+node:ekr.20090124174652.21:drawTree
     def drawTree (self,p,parent_item=None):
 
@@ -273,7 +276,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 aList.append(item)
             d[key] = aList
     #@-node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
-    #@-node:ekr.20090124174652.17:full_redraw & helpers (test)
+    #@-node:ekr.20090124174652.17:full_redraw & helpers
     #@+node:ekr.20090124174652.24:redraw_after_contract
     def redraw_after_contract (self,p=None):
 
@@ -1229,7 +1232,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.76:setItemIcon
     def setItemIcon (self,item,icon):
 
-        trace = True
+        trace = False
 
         valid = item and self.isValidItem(item)
 
