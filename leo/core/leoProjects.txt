@@ -3482,7 +3482,7 @@ def redraw (self,p=None,setFocus=False):
     c = self
 
     # It's possible to do this now that c.redrawAndEdit exists.
-    # However, it would be a major change...
+    # However, it is a major change...
     c.endEditing()
 
     if p:
@@ -4841,7 +4841,7 @@ def redraw (self,p=None,setFocus=False):
     c = self
 
     # It's possible to do this now that c.redrawAndEdit exists.
-    # However, it would be a major change...
+    # However, it is a major change...
     c.endEditing()
 
     if p:
@@ -5174,7 +5174,7 @@ def redraw (self,p=None,setFocus=False):
     c = self
 
     # It's possible to do this now that c.redrawAndEdit exists.
-    # However, it would be a major change...
+    # However, it is a major change...
     c.endEditing()
 
     if p:
@@ -5215,6 +5215,71 @@ def selectPosition(self,p):
 selectVnode = selectPosition
 #@-node:ekr.20031218072017.2997:c.selectPosition
 #@-node:ekr.20090124143324.1:Changed to headlines do not stick after clone
+#@+node:ekr.20090125063447.1:Fixed hard crasher in minibuffer find
+# The fix was to create minibufferFind.editWidget,
+# an override of baseEditCommandsClass.editWidget.
+#@nonl
+#@+node:ekr.20090126063121.1:editWidget (minibufferFind)
+def editWidget (self,event):
+
+    '''An override of baseEditCommands.editWidget
+
+    that does *not* set focus when using anything other than the tk gui.
+
+    This prevents this class from caching an edit widget
+    that is about to be deallocated.'''
+
+    c = self.c ; w = event and event.widget
+    bodyCtrl = self.c.frame.body and self.c.frame.body.bodyCtrl
+
+    # g.trace('isText',g.app.gui.isTextWidget(w),'w',w,g.app.gui.widget_name(w))
+
+    if g.app.gui.guiName() == 'tkinter':
+
+        # New in Leo 4.5: single-line editing commands apply to minibuffer widget.
+        if w and g.app.gui.isTextWidget(w):
+            self.w = w
+        else:
+            self.w = bodyCtrl
+        if self.w:
+            c.widgetWantsFocusNow(self.w)
+    else:
+        # Do not cache a pointer to a headline!
+        # It will die when the minibuffer is selected.
+        self.w = bodyCtrl
+
+    return self.w
+#@-node:ekr.20090126063121.1:editWidget (minibufferFind)
+#@-node:ekr.20090125063447.1:Fixed hard crasher in minibuffer find
+#@+node:ekr.20090126063121.2:c.redraw now calls c.endEditing
+# It's not clear whether this is a good idea.
+#@nonl
+#@+node:ekr.20090110073010.1:c.redraw
+def redraw (self,p=None,setFocus=False):
+    '''Redraw the screen immediately.'''
+
+    c = self
+
+    # It's possible to do this now that c.redrawAndEdit exists.
+    # However, it is a major change...
+    c.endEditing()
+
+    if p:
+        # Update body pane and set c._currentPosition.
+        c.expandAllAncestors(p) # Redundant, but safe.
+        c.selectPosition(p)
+    else:
+        p = c.currentPosition()
+        c.expandAllAncestors(p)
+
+    c.frame.tree.redraw(p)
+    if setFocus: c.treeFocusHelper()
+
+# Compatibility with old scripts
+force_redraw = redraw
+redraw_now = redraw
+#@-node:ekr.20090110073010.1:c.redraw
+#@-node:ekr.20090126063121.2:c.redraw now calls c.endEditing
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs

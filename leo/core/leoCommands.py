@@ -6236,7 +6236,7 @@ class baseCommands:
         c = self
 
         # It's possible to do this now that c.redrawAndEdit exists.
-        # However, it would be a major change...
+        # However, it is a major change...
         c.endEditing()
 
         if p:

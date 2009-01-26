@@ -4867,9 +4867,14 @@ class leoQtEventFilter(QtCore.QObject):
 
         k = self.c.k ; trace = False ; verbose = True
 
+        # Thanks to Jesse Aldridge for additional entries.
         special = {
-            'Backspace':'BackSpace',
-            'Esc':'Escape',
+           'Backspace': 'BackSpace',
+           'Esc':       'Escape',
+           'Del':       'Delete',
+           'Ins':       'Insert',
+           'PgDown':    'PgDn',
+           'PgUp':      'PgUp', # The entry must exist.
         }
 
         # Convert '&' to 'ampersand', for example.
