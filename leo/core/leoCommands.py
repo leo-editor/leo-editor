@@ -6147,8 +6147,10 @@ class baseCommands:
         trace = False # and g.unitTesting
         c = self
         if w and g.app.gui:
-            if trace: g.pr('c.set_focus',repr(w))
+            if trace: print('c.set_focus:',repr(w))
             g.app.gui.set_focus(c,w)
+        else:
+            if trace: print('c.set_focus: no w')
 
         c.requestedFocusWidget = None
     #@-node:ekr.20080514131122.9:c.get/request/set_focus

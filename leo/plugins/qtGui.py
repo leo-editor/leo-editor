@@ -3501,6 +3501,36 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w = self.treeWidget
         w.repaint()
     #@nonl
+    #@+node:ekr.20090125123037.1:class editWidgetSafePointer
+    class editWidgetSafePointer (QtCore.QObject):
+
+        '''A class to protect references to edit widgets.'''
+
+        def __init__ (self,item,e,w):
+
+            # g.trace('editWidgetSafePointer.__init__',w)
+            self._item = item
+            self._e = e
+            self._w = w
+
+        def __nonzero__ (self):
+
+            item,e,w = self._item,self._e,self._w
+            item2 = w.currentItem()
+            e2 = w.itemWidget(item,0)
+            val = item2 == item and e2 and e2 == e
+            return g.choose(val,1,0)
+
+        def __getattr__ (self,name):
+            return getattr(self._e,name)
+
+        def __setattr__ (self,name,val):
+            if name in ('_item','_e','_w'): 
+                QtCore.QObject.__setattr__(self, name, val)
+            else:
+                setattr(self._e,name,val)
+
+    #@-node:ekr.20090125123037.1:class editWidgetSafePointer
     #@+node:ekr.20090124174652.109:Icons
     #@+node:ekr.20090124174652.110:drawIcon
     def drawIcon (self,p):
@@ -3612,17 +3642,17 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w.setCurrentItem(item) # Must do this first.
         w.editItem(item)
         e = w.itemWidget(item,0)
+        e.setObjectName('headline')
 
-        # e_raw = w.itemWidget(item,0)
-        # e = QtCore.QPointer(e_raw)
+        # Return a safe pointer to the item.
+        # e2 = self.editWidgetSafePointer(item,e,w)
 
         # Hook up the widget.
         e.connect(e,QtCore.SIGNAL(
             "textEdited(QTreeWidgetItem*,int)"),
             self.onHeadChanged)
-        e.setObjectName('headline')
 
-        return e
+        return e #### forget about the wrapper for now...
     #@-node:ekr.20090124174652.104:createTreeEditorForItem
     #@+node:ekr.20090124174652.103:createTreeItem
     def createTreeItem(self,p,parent_item):
@@ -3647,11 +3677,10 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         w = self.treeWidget
         e = w.itemWidget(item,0)
-        # e_raw = w.itemWidget(item,0)
-        # e = QtCore.QPointer(e_raw)
 
-        return e
-    #@nonl
+        # e2 = self.editWidgetSafePointer(item,e,w)
+
+        return e #### forget about the wrapper for now...
     #@-node:ekr.20090124174652.106:getTreeEditorForItem
     #@+node:ekr.20090124174652.69:nthChildItem
     def nthChildItem (self,n,parent_item):
