@@ -826,7 +826,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             return None
     #@nonl
     #@-node:ekr.20090124174652.55:edit_widget
-    #@+node:ekr.20090124174652.56:editLabel (override) (REVISE)
+    #@+node:ekr.20090124174652.56:editLabel (subclasses should override this)
     def editLabel (self,p,selectAll=False,selection=None):
 
         """Start editing p's headline."""
@@ -869,7 +869,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         # A nice hack: just set the focus request.
         if e: c.requestedFocusWidget = e
-    #@-node:ekr.20090124174652.56:editLabel (override) (REVISE)
+    #@-node:ekr.20090124174652.56:editLabel (subclasses should override this)
     #@+node:ekr.20090124174652.57:editPosition
     def editPosition(self):
 

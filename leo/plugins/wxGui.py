@@ -4417,6 +4417,50 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
     #@-node:ekr.20090126093408.324:wxTree.__init__
     #@+node:ekr.20090126093408.869:Event handlers (wxTree)
     # These event handlers work on both XP and Ubuntu.
+    #@+node:ekr.20090126120517.13:editLabel (wxTree)
+    def editLabel (self,p,selectAll=False,selection=None):
+
+        """Start editing p's headline."""
+
+        trace = False ; verbose = False
+        c = self.c ; w = self.treeWidget
+
+        if self.redrawing:
+            if trace and verbose: g.trace('redrawing')
+            return
+        if trace: g.trace('***',p and p.headString(),g.callers(4))
+
+        c.outerUpdate()
+            # Do any scheduled redraw.
+            # This won't do anything in the new redraw scheme.
+
+        item = self.position2item(p)
+
+        if item:
+            w.EditLabel(item)
+            e = w.GetEditControl()
+            g.trace(e)
+            if e:
+                if 0: #### Not ready yet.
+                    s = e.text() ; len_s = len(s)
+                    if selection:
+                        i,j,ins = selection
+                        start,n = i,abs(i-j)
+                            # Not right for backward searches.
+                    elif selectAll: start,n,ins = 0,len_s,len_s
+                    else:           start,n,ins = len_s,0,len_s
+                    e.setObjectName('headline')
+                    e.setSelection(start,n)
+                    # e.setCursorPosition(ins) # Does not work.
+                    e.setFocus()
+            else: self.oops('no edit widget')
+        else:
+            e = None
+            self.oops('no item: %s' % p)
+
+        # A nice hack: just set the focus request.
+        if e: c.requestedFocusWidget = e
+    #@-node:ekr.20090126120517.13:editLabel (wxTree)
     #@+node:ekr.20090126093408.870:get_p
     def get_p (self,event):
 
@@ -4693,16 +4737,13 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
 
         if g.app.killed or self.c.frame.killed: return
 
-        c = self.c ; tree = self.treeWidget
-        id = event.GetItem()
-        s = event.GetLabel()
-        p = self.treeWidget.GetItemData(id).GetData()
-        h = p.headString()
+        c = self.c ; p = c.currentPosition()
 
-        # g.trace('old:',h,'new:',s)
+        # item = event.GetItem()
+        s = event.GetLabel()
 
         # Don't clear the headline by default.
-        if s and s != h:
+        if s and s != p.headString():
             # Call the base-class method.
             self.onHeadChanged (p,undoType='Typing',s=s)
     #@nonl
@@ -4894,20 +4935,16 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
     #@+node:ekr.20090126093408.850:createTreeEditorForItem (to do)
     def createTreeEditorForItem(self,item):
 
-        pass
-
-        # w = self.treeWidget
-        # w.setCurrentItem(item) # Must do this first.
-        # w.editItem(item)
-        # e = w.itemWidget(item,0)
-        # e.setObjectName('headline')
+        w = self.treeWidget
+        w.EditLabel()
+        e = w.GetEditControl()
 
         # # Hook up the widget.
         # e.connect(e,QtCore.SIGNAL(
             # "textEdited(QTreeWidgetItem*,int)"),
             # self.onHeadChanged)
 
-        # return e
+        return e
     #@-node:ekr.20090126093408.850:createTreeEditorForItem (to do)
     #@+node:ekr.20090126093408.851:createTreeItem
     def createTreeItem(self,p,parent_item):
@@ -4919,19 +4956,7 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
             parent_item = self.hiddenRootItem
 
         n = len(self.childItems(parent_item))
-
-        if trace: g.trace(h,
-            'parent_item',parent_item,
-            'IsOk',parent_item and parent_item.IsOk())
-
-        prev_item = self.nthChildItem(n,parent_item)
-
-        if prev_item:
-            item = w.InsertItem(parent_item,prev_item,text=h)
-                # image=image,selImage=image,data=data,
-        else:
-            item = w.InsertItemBefore(parent_item,0,text=h)
-                # image=image,selImage=image,data=data,
+        item = w.InsertItemBefore(parent_item,n,text=h)
 
         icon = self.getIcon(p)
         self.setItemIconHelper(item,icon)
@@ -4956,6 +4981,8 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
         return w.GetEditControl()
     #@-node:ekr.20090126093408.853:getTreeEditorForItem
     #@+node:ekr.20090126093408.854:nthChildItem
+    # This is called from the leoTree class.
+
     def nthChildItem (self,n,parent_item):
 
         children = self.childItems(parent_item)
@@ -4963,8 +4990,6 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
         if n < len(children):
             item = children[n]
         else:
-            # self.oops('itemCount: %s, n: %s' % (len(children),n))
-
             # This is **not* an error.
             # It simply means that we need to redraw the tree.
             item = None
