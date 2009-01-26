@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=4-thin
-#@+node:ekr.20081121105001.1707:@thin experimental/__wx_gui.py
+#@+node:ekr.20090126093408.416:@thin experimental/__wx_gui.py
 #@@first
 
 """A plugin to use wxWidgets as Leo's gui."""
@@ -11,7 +11,7 @@
 __version__ = '0.7.2'
 
 #@<< version history >>
-#@+node:ekr.20081121105001.1708:<< version history >>
+#@+node:ekr.20090126093408.417:<< version history >>
 #@@nocolor
 #@+at
 # 
@@ -22,10 +22,10 @@ __version__ = '0.7.2'
 # 0.7.2 EKR: Put a bad hack in redraw_partial_subtree.
 #@-at
 #@nonl
-#@-node:ekr.20081121105001.1708:<< version history >>
+#@-node:ekr.20090126093408.417:<< version history >>
 #@nl
 #@<< bug list & to-do >>
-#@+node:ekr.20081121105001.1709:<< bug list & to-do >>
+#@+node:ekr.20090126093408.418:<< bug list & to-do >>
 #@@nocolor
 #@+at
 # 
@@ -54,10 +54,10 @@ __version__ = '0.7.2'
 # - Support user-colorizer in the stc.
 #@-at
 #@nonl
-#@-node:ekr.20081121105001.1709:<< bug list & to-do >>
+#@-node:ekr.20090126093408.418:<< bug list & to-do >>
 #@nl
 #@<< imports >>
-#@+node:ekr.20081121105001.1710:<< imports >>
+#@+node:ekr.20090126093408.419:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -94,15 +94,14 @@ try:
 except ImportError:
     stc = None
 #@nonl
-#@-node:ekr.20081121105001.1710:<< imports >>
+#@-node:ekr.20090126093408.419:<< imports >>
 #@nl
 #@<< define module level functions >>
-#@+node:ekr.20081121105001.1711:<< define module level functions >>
+#@+node:ekr.20090126093408.420:<< define module level functions >>
 #@+others
-#@+node:ekr.20081121105001.1712: init
+#@+node:ekr.20090126093408.421: init
 def init ():
 
-    return False
     if not wx: return False
 
     aList = wx.version().split('.')
@@ -125,8 +124,8 @@ def init ():
         g.es_print(s,color="red")
 
     return ok
-#@-node:ekr.20081121105001.1712: init
-#@+node:ekr.20081121105001.1713:name2color
+#@-node:ekr.20090126093408.421: init
+#@+node:ekr.20090126093408.422:name2color
 def name2color (name,default='white'):
 
     # A hack: these names are *not* part of the color list!
@@ -140,23 +139,23 @@ def name2color (name,default='white'):
 
     g.trace('color name not found',name)
     return default
-#@-node:ekr.20081121105001.1713:name2color
+#@-node:ekr.20090126093408.422:name2color
 #@-others
 #@nonl
-#@-node:ekr.20081121105001.1711:<< define module level functions >>
+#@-node:ekr.20090126093408.420:<< define module level functions >>
 #@nl
 
 if wx:
 
     #@    @+others
-    #@+node:ekr.20081121105001.1714:Find/Spell classes
-    #@+node:ekr.20081121105001.1715:wxSearchWidget
+    #@+node:ekr.20090126093408.423:Find/Spell classes
+    #@+node:ekr.20090126093408.424:wxSearchWidget
     class wxSearchWidget:
 
         """A dummy widget class to pass to Leo's core find code."""
 
         #@    @+others
-        #@+node:ekr.20081121105001.1716:wxSearchWidget.__init__
+        #@+node:ekr.20090126093408.425:wxSearchWidget.__init__
         def __init__ (self):
 
             self.insertPoint = 0
@@ -165,8 +164,8 @@ if wx:
             self.body = self
             self.text = None
         #@nonl
-        #@-node:ekr.20081121105001.1716:wxSearchWidget.__init__
-        #@+node:ekr.20081121105001.1717:Insert point (deleted)
+        #@-node:ekr.20090126093408.425:wxSearchWidget.__init__
+        #@+node:ekr.20090126093408.426:Insert point (deleted)
         # Simulating wxWindows calls (upper case)
         # def GetInsertionPoint (self):
             # return self.insertPoint
@@ -195,8 +194,8 @@ if wx:
         # def setInsertPointToStartOfLine (self,lineNumber):
             # g.trace()
         #@nonl
-        #@-node:ekr.20081121105001.1717:Insert point (deleted)
-        #@+node:ekr.20081121105001.1718:Selection (deleted)
+        #@-node:ekr.20090126093408.426:Insert point (deleted)
+        #@+node:ekr.20090126093408.427:Selection (deleted)
         # Simulating wxWindows calls (upper case)
         # def SetSelection(self,n1,n2):
             # self.selection = n1,n2
@@ -222,14 +221,14 @@ if wx:
             # except:
                 # self.selection = sel,sel
         #@nonl
-        #@-node:ekr.20081121105001.1718:Selection (deleted)
+        #@-node:ekr.20090126093408.427:Selection (deleted)
         #@-others
     #@nonl
-    #@-node:ekr.20081121105001.1715:wxSearchWidget
-    #@+node:ekr.20081121105001.1719:wxFindFrame class
+    #@-node:ekr.20090126093408.424:wxSearchWidget
+    #@+node:ekr.20090126093408.428:wxFindFrame class
     class wxFindFrame (wx.Frame,leoFind.leoFind):
         #@    @+others
-        #@+node:ekr.20081121105001.1720:FindFrame.__init__
+        #@+node:ekr.20090126093408.429:FindFrame.__init__
         def __init__ (self,c):
 
             # Init the base classes
@@ -247,7 +246,7 @@ if wx:
             self.s_text = wxSearchWidget() # Working text widget.
 
             #@    << resize the frame to fit the panel >>
-            #@+node:ekr.20081121105001.1721:<< resize the frame to fit the panel >>
+            #@+node:ekr.20090126093408.430:<< resize the frame to fit the panel >>
             sizer = wx.BoxSizer(wx.VERTICAL)
             sizer.Add(self.findPanel)
             self.SetAutoLayout(True)# tell dialog to use sizer
@@ -255,7 +254,7 @@ if wx:
             sizer.Fit(self)# set size to minimum size as calculated by the sizer
             sizer.SetSizeHints(self)# set size hints to honour mininum size
             #@nonl
-            #@-node:ekr.20081121105001.1721:<< resize the frame to fit the panel >>
+            #@-node:ekr.20090126093408.430:<< resize the frame to fit the panel >>
             #@nl
 
             # Set the window icon.
@@ -266,11 +265,11 @@ if wx:
             self.findPanel.findText.SetFocus()
 
             #@    << define event handlers >>
-            #@+node:ekr.20081121105001.1722:<< define event handlers >>
+            #@+node:ekr.20090126093408.431:<< define event handlers >>
             wx.EVT_CLOSE(self,self.onCloseFindFrame)
 
             #@<< create event handlers for buttons >>
-            #@+node:ekr.20081121105001.1723:<< create event handlers for buttons >>
+            #@+node:ekr.20090126093408.432:<< create event handlers for buttons >>
             for name,command in (
                 ("changeButton",self.changeButton),
                 ("changeAllButton",self.changeAllButton),
@@ -286,11 +285,11 @@ if wx:
                 assert(id)
                 wx.EVT_BUTTON(self,id,eventHandler)
             #@nonl
-            #@-node:ekr.20081121105001.1723:<< create event handlers for buttons >>
+            #@-node:ekr.20090126093408.432:<< create event handlers for buttons >>
             #@nl
 
             #@<< create event handlers for check boxes and text >>
-            #@+node:ekr.20081121105001.1724:<< create event handlers for check boxes and text >>
+            #@+node:ekr.20090126093408.433:<< create event handlers for check boxes and text >>
             textKeys = ["find_text","change_text"]
             keys = textKeys[:]
             for item in self.intKeys:
@@ -314,13 +313,13 @@ if wx:
                     else:
                         wx.EVT_CHECKBOX(self,id,eventHandler)
             #@nonl
-            #@-node:ekr.20081121105001.1724:<< create event handlers for check boxes and text >>
+            #@-node:ekr.20090126093408.433:<< create event handlers for check boxes and text >>
             #@nl
             #@nonl
-            #@-node:ekr.20081121105001.1722:<< define event handlers >>
+            #@-node:ekr.20090126093408.431:<< define event handlers >>
             #@nl
-        #@-node:ekr.20081121105001.1720:FindFrame.__init__
-        #@+node:ekr.20081121105001.1725:bringToFront
+        #@-node:ekr.20090126093408.429:FindFrame.__init__
+        #@+node:ekr.20090126093408.434:bringToFront
         def bringToFront (self):
 
             g.app.gui.bringToFront(self)
@@ -328,22 +327,22 @@ if wx:
             self.findPanel.findText.SetFocus()
             self.findPanel.findText.SetSelection(-1,-1)
         #@nonl
-        #@-node:ekr.20081121105001.1725:bringToFront
-        #@+node:ekr.20081121105001.1726:destroySelf
+        #@-node:ekr.20090126093408.434:bringToFront
+        #@+node:ekr.20090126093408.435:destroySelf
         def destroySelf (self):
 
             self.Destroy()
         #@nonl
-        #@-node:ekr.20081121105001.1726:destroySelf
-        #@+node:ekr.20081121105001.1727:onCloseFindFrame
+        #@-node:ekr.20090126093408.435:destroySelf
+        #@+node:ekr.20090126093408.436:onCloseFindFrame
         def onCloseFindFrame (self,event):
 
             if event.CanVeto():
                 event.Veto()
                 self.Hide()
         #@nonl
-        #@-node:ekr.20081121105001.1727:onCloseFindFrame
-        #@+node:ekr.20081121105001.1728:set_ivars
+        #@-node:ekr.20090126093408.436:onCloseFindFrame
+        #@+node:ekr.20090126093408.437:set_ivars
         def set_ivars (self,c):
 
             """Init the commander ivars from the find panel."""
@@ -365,8 +364,8 @@ if wx:
             c.find_text = fp.findText.GetValue()
             c.change_text = fp.changeText.GetValue()
         #@nonl
-        #@-node:ekr.20081121105001.1728:set_ivars
-        #@+node:ekr.20081121105001.1729:init_s_ctrl
+        #@-node:ekr.20090126093408.437:set_ivars
+        #@+node:ekr.20090126093408.438:init_s_ctrl
         def init_s_ctrl (self,s):
 
             c = self.c
@@ -382,8 +381,8 @@ if wx:
                 t.SetInsertionPoint(0)
             return t
         #@nonl
-        #@-node:ekr.20081121105001.1729:init_s_ctrl
-        #@+node:ekr.20081121105001.1730:gui_search
+        #@-node:ekr.20090126093408.438:init_s_ctrl
+        #@+node:ekr.20090126093408.439:gui_search
         # def gui_search (self,t,find_text,index,
             # stopindex,backwards,regexp,nocase):
 
@@ -401,8 +400,8 @@ if wx:
 
             # return pos
         #@nonl
-        #@-node:ekr.20081121105001.1730:gui_search
-        #@+node:ekr.20081121105001.1731:init
+        #@-node:ekr.20090126093408.439:gui_search
+        #@+node:ekr.20090126093408.440:init
         def init (self,c):
 
             """Init the find panel from c.
@@ -422,14 +421,14 @@ if wx:
             self.findPanel.findText.SetValue(c.find_text)
             self.findPanel.changeText.SetValue(c.change_text)
         #@nonl
-        #@-node:ekr.20081121105001.1731:init
+        #@-node:ekr.20090126093408.440:init
         #@-others
     #@nonl
-    #@-node:ekr.20081121105001.1719:wxFindFrame class
-    #@+node:ekr.20081121105001.1732:wxFindPanel class
+    #@-node:ekr.20090126093408.428:wxFindFrame class
+    #@+node:ekr.20090126093408.441:wxFindPanel class
     class wxFindPanel (wx.Panel):
         #@    @+others
-        #@+node:ekr.20081121105001.1733:FindPanel.__init__
+        #@+node:ekr.20090126093408.442:FindPanel.__init__
         def __init__(self,frame):
 
             g.trace('wxFindPanel not ready yet')
@@ -443,7 +442,7 @@ if wx:
             topSizer.Add(0,10)
 
             #@    << Create the find text box >>
-            #@+node:ekr.20081121105001.1734:<< Create the find text box >>
+            #@+node:ekr.20090126093408.443:<< Create the find text box >>
             findSizer = wx.BoxSizer(wx.HORIZONTAL)
             findSizer.Add(5,5)# Extra space.
 
@@ -468,10 +467,10 @@ if wx:
 
             self.frame.dict["find_text"] = self.findText,id
             #@nonl
-            #@-node:ekr.20081121105001.1734:<< Create the find text box >>
+            #@-node:ekr.20090126093408.443:<< Create the find text box >>
             #@nl
             #@    << Create the change text box >>
-            #@+node:ekr.20081121105001.1735:<< Create the change text box >>
+            #@+node:ekr.20090126093408.444:<< Create the change text box >>
             changeSizer = wx.BoxSizer(wx.HORIZONTAL)
             changeSizer.Add(5,5)# Extra space.
 
@@ -497,13 +496,13 @@ if wx:
 
             self.frame.dict["change_text"] = self.findText,id
             #@nonl
-            #@-node:ekr.20081121105001.1735:<< Create the change text box >>
+            #@-node:ekr.20090126093408.444:<< Create the change text box >>
             #@nl
             #@    << Create all the find check boxes >>
-            #@+node:ekr.20081121105001.1736:<< Create all the find check boxes >>
+            #@+node:ekr.20090126093408.445:<< Create all the find check boxes >>
             col1Sizer = wx.BoxSizer(wx.VERTICAL)
             #@<< Create the first column of widgets >>
-            #@+node:ekr.20081121105001.1737:<< Create the first column of widgets >>
+            #@+node:ekr.20090126093408.446:<< Create the first column of widgets >>
             # The var names must match the names in leoFind class.
             table = (
                 ("plain-search-flag","Plain Search",wx.RB_GROUP),
@@ -535,12 +534,12 @@ if wx:
                 col1Sizer.Add(box,0,wx.BORDER | wx.LEFT,60)
                 self.frame.dict[var] = box,id
             #@nonl
-            #@-node:ekr.20081121105001.1737:<< Create the first column of widgets >>
+            #@-node:ekr.20090126093408.446:<< Create the first column of widgets >>
             #@nl
 
             col2Sizer = wx.BoxSizer(wx.VERTICAL)
             #@<< Create the second column of widgets >>
-            #@+node:ekr.20081121105001.1738:<< Create the second column of widgets >>
+            #@+node:ekr.20090126093408.447:<< Create the second column of widgets >>
             # The var names must match the names in leoFind class.
             table = (
                 ("whole_word_flag","Whole Word"),
@@ -558,12 +557,12 @@ if wx:
                 col2Sizer.Add(box,0,wx.BORDER | wx.LEFT,20)
                 self.frame.dict[var] = box,id
             #@nonl
-            #@-node:ekr.20081121105001.1738:<< Create the second column of widgets >>
+            #@-node:ekr.20090126093408.447:<< Create the second column of widgets >>
             #@nl
 
             col3Sizer = wx.BoxSizer(wx.VERTICAL)
             #@<< Create the third column of widgets >>
-            #@+node:ekr.20081121105001.1739:<< Create the third column of widgets >>
+            #@+node:ekr.20090126093408.448:<< Create the third column of widgets >>
             # The var names must match the names in leoFind class.
             table = (
                 ("Entire Outline","entire-outline",wx.RB_GROUP),
@@ -582,12 +581,12 @@ if wx:
 
                 self.frame.dict[var] = box,id
             #@nonl
-            #@-node:ekr.20081121105001.1739:<< Create the third column of widgets >>
+            #@-node:ekr.20090126093408.448:<< Create the third column of widgets >>
             #@nl
 
             col4Sizer = wx.BoxSizer(wx.VERTICAL)
             #@<< Create the fourth column of widgets >>
-            #@+node:ekr.20081121105001.1740:<< Create the fourth column of widgets >>
+            #@+node:ekr.20090126093408.449:<< Create the fourth column of widgets >>
             # The var names must match the names in leoFind class.
             table = (
                 ("search_headline_flag","Search Headline Text"),
@@ -605,7 +604,7 @@ if wx:
                 col4Sizer.Add(box,0,wx.BORDER | wx.LEFT,20)
                 self.frame.dict[var] = box,id
             #@nonl
-            #@-node:ekr.20081121105001.1740:<< Create the fourth column of widgets >>
+            #@-node:ekr.20090126093408.449:<< Create the fourth column of widgets >>
             #@nl
 
             # Pack the columns
@@ -618,15 +617,15 @@ if wx:
             topSizer.Add(columnSizer)
             topSizer.Add(0,10)
             #@nonl
-            #@-node:ekr.20081121105001.1736:<< Create all the find check boxes >>
+            #@-node:ekr.20090126093408.445:<< Create all the find check boxes >>
             #@nl
             #@    << Create all the find buttons >>
-            #@+node:ekr.20081121105001.1741:<< Create all the find buttons >>
+            #@+node:ekr.20090126093408.450:<< Create all the find buttons >>
             # The row sizers are a bit dim:  they should distribute the buttons automatically.
 
             row1Sizer = wx.BoxSizer(wx.HORIZONTAL)
             #@<< Create the first row of buttons >>
-            #@+node:ekr.20081121105001.1742:<< Create the first row of buttons >>
+            #@+node:ekr.20090126093408.451:<< Create the first row of buttons >>
             row1Sizer.Add(90,0)
 
             table = (
@@ -651,12 +650,12 @@ if wx:
                 row1Sizer.Add(widget)
                 row1Sizer.Add((25,0),)
             #@nonl
-            #@-node:ekr.20081121105001.1742:<< Create the first row of buttons >>
+            #@-node:ekr.20090126093408.451:<< Create the first row of buttons >>
             #@nl
 
             row2Sizer = wx.BoxSizer(wx.HORIZONTAL)
             #@<< Create the second row of buttons >>
-            #@+node:ekr.20081121105001.1743:<< Create the second row of buttons >>
+            #@+node:ekr.20090126093408.452:<< Create the second row of buttons >>
             row2Sizer.Add(90,0)
 
             table = (
@@ -674,7 +673,7 @@ if wx:
                 row2Sizer.Add(button)
                 row2Sizer.Add((25,0),)
             #@nonl
-            #@-node:ekr.20081121105001.1743:<< Create the second row of buttons >>
+            #@-node:ekr.20090126093408.452:<< Create the second row of buttons >>
             #@nl
 
             # Pack the two rows
@@ -686,7 +685,7 @@ if wx:
             topSizer.Add(buttonSizer)
             topSizer.Add(0,10)
             #@nonl
-            #@-node:ekr.20081121105001.1741:<< Create all the find buttons >>
+            #@-node:ekr.20090126093408.450:<< Create all the find buttons >>
             #@nl
 
             self.SetAutoLayout(True) # tell dialog to use sizer
@@ -694,18 +693,18 @@ if wx:
             topSizer.Fit(self)# set size to minimum size as calculated by the sizer
             topSizer.SetSizeHints(self)# set size hints to honour mininum size
         #@nonl
-        #@-node:ekr.20081121105001.1733:FindPanel.__init__
+        #@-node:ekr.20090126093408.442:FindPanel.__init__
         #@-others
     #@nonl
-    #@-node:ekr.20081121105001.1732:wxFindPanel class
-    #@+node:ekr.20081121105001.1744:wxFindTab class (leoFind.findTab)
+    #@-node:ekr.20090126093408.441:wxFindPanel class
+    #@+node:ekr.20090126093408.453:wxFindTab class (leoFind.findTab)
     class wxFindTab (leoFind.findTab):
 
         '''A subclass of the findTab class containing all wxGui code.'''
 
         #@    @+others
-        #@+node:ekr.20081121105001.1745:Birth
-        #@+node:ekr.20081121105001.1746:wxFindTab.ctor
+        #@+node:ekr.20090126093408.454:Birth
+        #@+node:ekr.20090126093408.455:wxFindTab.ctor
         if 0: # We can use the base-class ctor.
 
             def __init__ (self,c,parentFrame):
@@ -713,8 +712,8 @@ if wx:
                 leoFind.findTab.__init__(self,c,parentFrame)
                     # Init the base class.
                     # Calls initGui, createFrame, createBindings & init(c), in that order.
-        #@-node:ekr.20081121105001.1746:wxFindTab.ctor
-        #@+node:ekr.20081121105001.1747:initGui
+        #@-node:ekr.20090126093408.455:wxFindTab.ctor
+        #@+node:ekr.20090126093408.456:initGui
         # Called from leoFind.findTab.ctor.
 
         def initGui (self):
@@ -728,8 +727,8 @@ if wx:
 
             for key in self.newStringKeys:
                 self.svarDict[key] = self.svar()
-        #@-node:ekr.20081121105001.1747:initGui
-        #@+node:ekr.20081121105001.1748:init (wxFindTab)
+        #@-node:ekr.20090126093408.456:initGui
+        #@+node:ekr.20090126093408.457:init (wxFindTab)
         # Called from leoFind.findTab.ctor.
         # We must override leoFind.init to init the checkboxes 'by hand' here. 
 
@@ -746,7 +745,7 @@ if wx:
                 #g.trace(key,val)
 
             #@    << set find/change widgets >>
-            #@+node:ekr.20081121105001.1749:<< set find/change widgets >>
+            #@+node:ekr.20090126093408.458:<< set find/change widgets >>
             self.find_ctrl.delete(0,"end")
             self.change_ctrl.delete(0,"end")
 
@@ -758,10 +757,10 @@ if wx:
                 s = c.config.getString(setting)
                 if not s: s = defaultText
                 w.insert("end",s)
-            #@-node:ekr.20081121105001.1749:<< set find/change widgets >>
+            #@-node:ekr.20090126093408.458:<< set find/change widgets >>
             #@nl
             #@    << set radio buttons from ivars >>
-            #@+node:ekr.20081121105001.1750:<< set radio buttons from ivars >>
+            #@+node:ekr.20090126093408.459:<< set radio buttons from ivars >>
             # In Tk, setting the var also sets the widget.
             # Here, we do so explicitly.
             d = self.widgetsDict
@@ -792,10 +791,10 @@ if wx:
                 self.svarDict["radio-search-scope"].set(key)
                 w = self.widgetsDict.get(key)
                 if w: w.SetValue(True)
-            #@-node:ekr.20081121105001.1750:<< set radio buttons from ivars >>
+            #@-node:ekr.20090126093408.459:<< set radio buttons from ivars >>
             #@nl
             #@    << set checkboxes from ivars >>
-            #@+node:ekr.20081121105001.1751:<< set checkboxes from ivars >>
+            #@+node:ekr.20090126093408.460:<< set checkboxes from ivars >>
             for ivar in (
                 'ignore_case',
                 'mark_changes',
@@ -811,11 +810,11 @@ if wx:
                 if svar:
                     w = self.widgetsDict.get(ivar)
                     if w: w.SetValue(True)
-            #@-node:ekr.20081121105001.1751:<< set checkboxes from ivars >>
+            #@-node:ekr.20090126093408.460:<< set checkboxes from ivars >>
             #@nl
-        #@-node:ekr.20081121105001.1748:init (wxFindTab)
-        #@-node:ekr.20081121105001.1745:Birth
-        #@+node:ekr.20081121105001.1752:class svar
+        #@-node:ekr.20090126093408.457:init (wxFindTab)
+        #@-node:ekr.20090126093408.454:Birth
+        #@+node:ekr.20090126093408.461:class svar
         class svar:
             '''A class like Tk's IntVar and StringVar classes.'''
             def __init__(self):
@@ -824,8 +823,8 @@ if wx:
                 return self.val
             def set (self,val):
                 self.val = val
-        #@-node:ekr.20081121105001.1752:class svar
-        #@+node:ekr.20081121105001.1753:createFrame (wxFindTab)
+        #@-node:ekr.20090126093408.461:class svar
+        #@+node:ekr.20090126093408.462:createFrame (wxFindTab)
         def createFrame (self,parentFrame):
 
             self.parentFrame = self.top = parentFrame
@@ -835,7 +834,7 @@ if wx:
             self.createButtons()
             self.layout()
             self.createBindings()
-        #@+node:ekr.20081121105001.1754:createFindChangeAreas
+        #@+node:ekr.20090126093408.463:createFindChangeAreas
         def createFindChangeAreas (self):
 
             f = self.top
@@ -845,8 +844,8 @@ if wx:
 
             self.find_ctrl = plainTextWidget(self.c,f,name='find-text',  size=(300,-1))
             self.change_ctrl = plainTextWidget(self.c,f,name='change-text',size=(300,-1))
-        #@-node:ekr.20081121105001.1754:createFindChangeAreas
-        #@+node:ekr.20081121105001.1755:layout
+        #@-node:ekr.20090126093408.463:createFindChangeAreas
+        #@+node:ekr.20090126093408.464:layout
         def layout (self):
 
             f = self.top
@@ -885,8 +884,8 @@ if wx:
 
             f.SetSizer(sizer)
         #@nonl
-        #@-node:ekr.20081121105001.1755:layout
-        #@+node:ekr.20081121105001.1756:createBoxes
+        #@-node:ekr.20090126093408.464:layout
+        #@+node:ekr.20090126093408.465:createBoxes
         def createBoxes (self):
 
             '''Create two columns of radio buttons & check boxes.'''
@@ -936,8 +935,8 @@ if wx:
                     w.Bind(wx.EVT_CHECKBOX,checkBoxCallback)
                 self.boxes.append(w)
         #@nonl
-        #@-node:ekr.20081121105001.1756:createBoxes
-        #@+node:ekr.20081121105001.1757:createBindings TO DO
+        #@-node:ekr.20090126093408.465:createBoxes
+        #@+node:ekr.20090126093408.466:createBindings TO DO
         def createBindings (self):
 
             return ### not ready yet
@@ -965,8 +964,8 @@ if wx:
             ctxt.bind("<Tab>",toFind)
             ftxt.bind("<Control-Tab>",insertFindTab)
             ctxt.bind("<Control-Tab>",insertChangeTab)
-        #@-node:ekr.20081121105001.1757:createBindings TO DO
-        #@+node:ekr.20081121105001.1758:createButtons (does nothing)
+        #@-node:ekr.20090126093408.466:createBindings TO DO
+        #@+node:ekr.20090126093408.467:createButtons (does nothing)
         def createButtons (self):
 
             '''Create two columns of buttons.'''
@@ -998,9 +997,9 @@ if wx:
                 # elif boxKind != 'check':
                     # w.button.configure(width=width)
                 # w.button.pack(side='top',anchor='w',pady=2,padx=2)
-        #@-node:ekr.20081121105001.1758:createButtons (does nothing)
-        #@-node:ekr.20081121105001.1753:createFrame (wxFindTab)
-        #@+node:ekr.20081121105001.1759:createBindings (wsFindTab) TO DO
+        #@-node:ekr.20090126093408.467:createButtons (does nothing)
+        #@-node:ekr.20090126093408.462:createFrame (wxFindTab)
+        #@+node:ekr.20090126093408.468:createBindings (wsFindTab) TO DO
         def createBindings (self):
 
             return ### not ready yet.
@@ -1028,11 +1027,11 @@ if wx:
             for w in (self.find_ctrl,self.change_ctrl):
                 for event, callback in table:
                     w.bind(event,callback)
-        #@-node:ekr.20081121105001.1759:createBindings (wsFindTab) TO DO
-        #@+node:ekr.20081121105001.1760:Support for minibufferFind class (wxFindTab)
+        #@-node:ekr.20090126093408.468:createBindings (wsFindTab) TO DO
+        #@+node:ekr.20090126093408.469:Support for minibufferFind class (wxFindTab)
         # This is the same as the Tk code because we simulate Tk svars.
         #@nonl
-        #@+node:ekr.20081121105001.1761:getOption
+        #@+node:ekr.20090126093408.470:getOption
         def getOption (self,ivar):
 
             var = self.svarDict.get(ivar)
@@ -1044,8 +1043,8 @@ if wx:
             else:
                 g.trace('bad ivar name: %s' % ivar)
                 return None
-        #@-node:ekr.20081121105001.1761:getOption
-        #@+node:ekr.20081121105001.1762:setOption
+        #@-node:ekr.20090126093408.470:getOption
+        #@+node:ekr.20090126093408.471:setOption
         def setOption (self,ivar,val):
 
             if ivar in self.intKeys:
@@ -1056,8 +1055,8 @@ if wx:
 
             elif not g.app.unitTesting:
                 g.trace('oops: bad find ivar %s' % ivar)
-        #@-node:ekr.20081121105001.1762:setOption
-        #@+node:ekr.20081121105001.1763:toggleOption
+        #@-node:ekr.20090126093408.471:setOption
+        #@+node:ekr.20090126093408.472:toggleOption
         def toggleOption (self,ivar):
 
             if ivar in self.intKeys:
@@ -1067,16 +1066,16 @@ if wx:
                 # g.trace('%s = %s' % (ivar,val),var)
             else:
                 g.trace('oops: bad find ivar %s' % ivar)
-        #@-node:ekr.20081121105001.1763:toggleOption
-        #@-node:ekr.20081121105001.1760:Support for minibufferFind class (wxFindTab)
+        #@-node:ekr.20090126093408.472:toggleOption
+        #@-node:ekr.20090126093408.469:Support for minibufferFind class (wxFindTab)
         #@-others
     #@nonl
-    #@-node:ekr.20081121105001.1744:wxFindTab class (leoFind.findTab)
-    #@+node:ekr.20081121105001.1764:class wxSpellTab TO DO
+    #@-node:ekr.20090126093408.453:wxFindTab class (leoFind.findTab)
+    #@+node:ekr.20090126093408.473:class wxSpellTab TO DO
     class wxSpellTab:
 
         #@    @+others
-        #@+node:ekr.20081121105001.1765:wxSpellTab.__init__
+        #@+node:ekr.20090126093408.474:wxSpellTab.__init__
         def __init__ (self,c,tabName):
 
             self.c = c
@@ -1085,8 +1084,8 @@ if wx:
             self.createFrame()
             self.createBindings()
             ###self.fillbox([])
-        #@-node:ekr.20081121105001.1765:wxSpellTab.__init__
-        #@+node:ekr.20081121105001.1766:createBindings TO DO
+        #@-node:ekr.20090126093408.474:wxSpellTab.__init__
+        #@+node:ekr.20090126093408.475:createBindings TO DO
         def createBindings (self):
 
             return ### 
@@ -1117,8 +1116,8 @@ if wx:
             self.listBox.bind("<Button-1>",self.onSelectListBox)
             self.listBox.bind("<Map>",self.onMap)
         #@nonl
-        #@-node:ekr.20081121105001.1766:createBindings TO DO
-        #@+node:ekr.20081121105001.1767:createFrame TO DO
+        #@-node:ekr.20090126093408.475:createBindings TO DO
+        #@+node:ekr.20090126093408.476:createFrame TO DO
         def createFrame (self):
 
             return ###
@@ -1133,7 +1132,7 @@ if wx:
             bg = c.config.getColor('log_pane_Spell_tab_background_color') or 'LightSteelBlue2'
 
             #@    << Create the outer frames >>
-            #@+node:ekr.20081121105001.1768:<< Create the outer frames >>
+            #@+node:ekr.20090126093408.477:<< Create the outer frames >>
             self.outerScrolledFrame = Pmw.ScrolledFrame(
                 parentFrame,usehullsize = 1)
 
@@ -1143,10 +1142,10 @@ if wx:
             for z in ('borderframe','clipper','frame','hull'):
                 self.outerScrolledFrame.component(z).configure(
                     relief='flat',background=bg)
-            #@-node:ekr.20081121105001.1768:<< Create the outer frames >>
+            #@-node:ekr.20090126093408.477:<< Create the outer frames >>
             #@nl
             #@    << Create the text and suggestion panes >>
-            #@+node:ekr.20081121105001.1769:<< Create the text and suggestion panes >>
+            #@+node:ekr.20090126093408.478:<< Create the text and suggestion panes >>
             f2 = Tk.Frame(outer,bg=bg)
             f2.pack(side='top',expand=0,fill='x')
 
@@ -1167,10 +1166,10 @@ if wx:
             txt ['yscrollcommand'] = bar.set
             bar ['command'] = txt.yview
             bar.pack(side='right',fill='y')
-            #@-node:ekr.20081121105001.1769:<< Create the text and suggestion panes >>
+            #@-node:ekr.20090126093408.478:<< Create the text and suggestion panes >>
             #@nl
             #@    << Create the spelling buttons >>
-            #@+node:ekr.20081121105001.1770:<< Create the spelling buttons >>
+            #@+node:ekr.20090126093408.479:<< Create the spelling buttons >>
             # Create the alignment panes
             buttons1 = Tk.Frame(outer,bd=1,bg=bg)
             buttons2 = Tk.Frame(outer,bd=1,bg=bg)
@@ -1195,20 +1194,20 @@ if wx:
             (self.findButton,self.addButton,
              self.changeButton, self.changeFindButton,
              self.ignoreButton, self.hideButton) = buttonList
-            #@-node:ekr.20081121105001.1770:<< Create the spelling buttons >>
+            #@-node:ekr.20090126093408.479:<< Create the spelling buttons >>
             #@nl
 
             # Pack last so buttons don't get squished.
             self.outerScrolledFrame.pack(expand=1,fill='both',padx=2,pady=2)
-        #@-node:ekr.20081121105001.1767:createFrame TO DO
-        #@+node:ekr.20081121105001.1771:Event handlers
-        #@+node:ekr.20081121105001.1772:onAddButton
+        #@-node:ekr.20090126093408.476:createFrame TO DO
+        #@+node:ekr.20090126093408.480:Event handlers
+        #@+node:ekr.20090126093408.481:onAddButton
         def onAddButton(self):
             """Handle a click in the Add button in the Check Spelling dialog."""
 
             self.handler.add()
-        #@-node:ekr.20081121105001.1772:onAddButton
-        #@+node:ekr.20081121105001.1773:onChangeButton & onChangeThenFindButton
+        #@-node:ekr.20090126093408.481:onAddButton
+        #@+node:ekr.20090126093408.482:onChangeButton & onChangeThenFindButton
         def onChangeButton(self,event=None):
 
             """Handle a click in the Change button in the Spell tab."""
@@ -1224,8 +1223,8 @@ if wx:
             if self.change():
                 self.find()
             self.updateButtons()
-        #@-node:ekr.20081121105001.1773:onChangeButton & onChangeThenFindButton
-        #@+node:ekr.20081121105001.1774:onFindButton
+        #@-node:ekr.20090126093408.482:onChangeButton & onChangeThenFindButton
+        #@+node:ekr.20090126093408.483:onFindButton
         def onFindButton(self):
 
             """Handle a click in the Find button in the Spell tab."""
@@ -1235,43 +1234,43 @@ if wx:
             self.updateButtons()
             c.invalidateFocus()
             c.bodyWantsFocusNow()
-        #@-node:ekr.20081121105001.1774:onFindButton
-        #@+node:ekr.20081121105001.1775:onHideButton
+        #@-node:ekr.20090126093408.483:onFindButton
+        #@+node:ekr.20090126093408.484:onHideButton
         def onHideButton(self):
 
             """Handle a click in the Hide button in the Spell tab."""
 
             self.handler.hide()
-        #@-node:ekr.20081121105001.1775:onHideButton
-        #@+node:ekr.20081121105001.1776:onIgnoreButton
+        #@-node:ekr.20090126093408.484:onHideButton
+        #@+node:ekr.20090126093408.485:onIgnoreButton
         def onIgnoreButton(self,event=None):
 
             """Handle a click in the Ignore button in the Check Spelling dialog."""
 
             self.handler.ignore()
-        #@-node:ekr.20081121105001.1776:onIgnoreButton
-        #@+node:ekr.20081121105001.1777:onMap
+        #@-node:ekr.20090126093408.485:onIgnoreButton
+        #@+node:ekr.20090126093408.486:onMap
         def onMap (self, event=None):
             """Respond to a Tk <Map> event."""
 
             self.update(show= False, fill= False)
-        #@-node:ekr.20081121105001.1777:onMap
-        #@+node:ekr.20081121105001.1778:onSelectListBox
+        #@-node:ekr.20090126093408.486:onMap
+        #@+node:ekr.20090126093408.487:onSelectListBox
         def onSelectListBox(self, event=None):
             """Respond to a click in the selection listBox."""
 
             c = self.c
             self.updateButtons()
             c.bodyWantsFocus()
-        #@-node:ekr.20081121105001.1778:onSelectListBox
-        #@-node:ekr.20081121105001.1771:Event handlers
-        #@+node:ekr.20081121105001.1779:Helpers
-        #@+node:ekr.20081121105001.1780:bringToFront
+        #@-node:ekr.20090126093408.487:onSelectListBox
+        #@-node:ekr.20090126093408.480:Event handlers
+        #@+node:ekr.20090126093408.488:Helpers
+        #@+node:ekr.20090126093408.489:bringToFront
         def bringToFront (self):
 
             self.c.frame.log.selectTab('Spell')
-        #@-node:ekr.20081121105001.1780:bringToFront
-        #@+node:ekr.20081121105001.1781:fillbox
+        #@-node:ekr.20090126093408.489:bringToFront
+        #@+node:ekr.20090126093408.490:fillbox
         def fillbox(self, alts, word=None):
             """Update the suggestions listBox in the Check Spelling dialog."""
 
@@ -1283,14 +1282,14 @@ if wx:
             self.wordLabel.configure(text= "Suggestions for: " + word)
             self.listBox.delete(0, "end")
 
-            for i in range(len(self.suggestions)):
+            for i in xrange(len(self.suggestions)):
                 self.listBox.insert(i, self.suggestions[i])
 
             # This doesn't show up because we don't have focus.
             if len(self.suggestions):
                 self.listBox.select_set(1)
-        #@-node:ekr.20081121105001.1781:fillbox
-        #@+node:ekr.20081121105001.1782:getSuggestion
+        #@-node:ekr.20090126093408.490:fillbox
+        #@+node:ekr.20090126093408.491:getSuggestion
         def getSuggestion(self):
             """Return the selected suggestion from the listBox."""
 
@@ -1306,8 +1305,8 @@ if wx:
                 return suggestion
             else:
                 return None
-        #@-node:ekr.20081121105001.1782:getSuggestion
-        #@+node:ekr.20081121105001.1783:update
+        #@-node:ekr.20090126093408.491:getSuggestion
+        #@+node:ekr.20090126093408.492:update
         def update(self,show=True,fill=False):
 
             """Update the Spell Check dialog."""
@@ -1322,8 +1321,8 @@ if wx:
             if show:
                 self.bringToFront()
                 c.bodyWantsFocus()
-        #@-node:ekr.20081121105001.1783:update
-        #@+node:ekr.20081121105001.1784:updateButtons (spellTab)
+        #@-node:ekr.20090126093408.492:update
+        #@+node:ekr.20090126093408.493:updateButtons (spellTab)
         def updateButtons (self):
 
             """Enable or disable buttons in the Check Spelling dialog."""
@@ -1343,14 +1342,14 @@ if wx:
 
             self.addButton.configure(state='normal')
             self.ignoreButton.configure(state='normal')
-        #@-node:ekr.20081121105001.1784:updateButtons (spellTab)
-        #@-node:ekr.20081121105001.1779:Helpers
+        #@-node:ekr.20090126093408.493:updateButtons (spellTab)
+        #@-node:ekr.20090126093408.488:Helpers
         #@-others
-    #@-node:ekr.20081121105001.1764:class wxSpellTab TO DO
-    #@-node:ekr.20081121105001.1714:Find/Spell classes
-    #@+node:ekr.20081121105001.1785:Text widgets
+    #@-node:ekr.20090126093408.473:class wxSpellTab TO DO
+    #@-node:ekr.20090126093408.423:Find/Spell classes
+    #@+node:ekr.20090126093408.494:Text widgets
     #@<< baseTextWidget class >>
-    #@+node:ekr.20081121105001.1786:<< baseTextWidget class >>
+    #@+node:ekr.20090126093408.495:<< baseTextWidget class >>
     # Subclassing from wx.EvtHandler allows methods of this and derived class to be event handlers.
 
     class baseTextWidget (wx.EvtHandler,leoFrame.baseTextWidget):
@@ -1358,7 +1357,7 @@ if wx:
         '''The base class for all wrapper classes for the Tk.Text widget.'''
 
         #@    @+others
-        #@+node:ekr.20081121105001.1787:Birth & special methods (baseText)
+        #@+node:ekr.20090126093408.496:Birth & special methods (baseText)
         def __init__ (self,c,baseClassName,name,widget):
 
             self.baseClassName = baseClassName # For repr.
@@ -1375,8 +1374,8 @@ if wx:
 
         def GetName(self):
             return self.name
-        #@-node:ekr.20081121105001.1787:Birth & special methods (baseText)
-        #@+node:ekr.20081121105001.1788:baseTextWidget.onChar
+        #@-node:ekr.20090126093408.496:Birth & special methods (baseText)
+        #@+node:ekr.20090126093408.497:baseTextWidget.onChar
         # Don't even think of using key up/down events.
         # They don't work reliably and don't support auto-repeat.
 
@@ -1390,25 +1389,25 @@ if wx:
             if keysym:
                 c.k.masterKeyHandler(event,stroke=keysym)
         #@nonl
-        #@-node:ekr.20081121105001.1788:baseTextWidget.onChar
-        #@+node:ekr.20081121105001.1789:oops
+        #@-node:ekr.20090126093408.497:baseTextWidget.onChar
+        #@+node:ekr.20090126093408.498:oops
         def oops (self):
 
             print('wxGui baseTextWidget oops:',self,g.callers(),
                 'must be overridden in subclass')
-        #@-node:ekr.20081121105001.1789:oops
+        #@-node:ekr.20090126093408.498:oops
         #@-others
-    #@-node:ekr.20081121105001.1786:<< baseTextWidget class >>
+    #@-node:ekr.20090126093408.495:<< baseTextWidget class >>
     #@nl
 
     #@+others
-    #@+node:ekr.20081121105001.1790:headlineWidget class (baseTextWidget)
+    #@+node:ekr.20090126093408.499:headlineWidget class (baseTextWidget)
     class headlineWidget (baseTextWidget):
 
         '''A class to make a wxWidgets headline look like a plainTextWidget.'''
 
         #@    @+others
-        #@+node:ekr.20081121105001.1791:Birth & special methods
+        #@+node:ekr.20090126093408.500:Birth & special methods
         def __init__ (self,c,treeCtrl,id):
 
             self.c = c
@@ -1426,8 +1425,8 @@ if wx:
             self.ins = 0
             self.sel = 0,0
         #@nonl
-        #@-node:ekr.20081121105001.1791:Birth & special methods
-        #@+node:ekr.20081121105001.1792:wx widget bindings
+        #@-node:ekr.20090126093408.500:Birth & special methods
+        #@+node:ekr.20090126093408.501:wx widget bindings
         def _appendText(self,s):
             # g.trace(s)
             s1 = self.tree.GetItemText(self.id)
@@ -1482,16 +1481,16 @@ if wx:
             # g.trace(i,j)
             self.sel = i,j
             if i == j: self.ins = i
-        #@-node:ekr.20081121105001.1792:wx widget bindings
+        #@-node:ekr.20090126093408.501:wx widget bindings
         #@-others
-    #@-node:ekr.20081121105001.1790:headlineWidget class (baseTextWidget)
-    #@+node:ekr.20081121105001.1793:plainTextWidget (baseTextWidget)
+    #@-node:ekr.20090126093408.499:headlineWidget class (baseTextWidget)
+    #@+node:ekr.20090126093408.502:plainTextWidget (baseTextWidget)
     class plainTextWidget (baseTextWidget):
 
         '''A class wrapping wx.TextCtrl widgets.'''
 
         #@    @+others
-        #@+node:ekr.20081121105001.1794:plainTextWidget.__init__
+        #@+node:ekr.20090126093408.503:plainTextWidget.__init__
         def __init__ (self,c,parent,multiline=True,*args,**keys):
 
             w = self
@@ -1516,8 +1515,8 @@ if wx:
                 family = wx.FONTFAMILY_TELETYPE, # wx.FONTFAMILY_ROMAN,
                 style  = wx.FONTSTYLE_NORMAL,
                 weight = wx.FONTWEIGHT_NORMAL,)
-        #@-node:ekr.20081121105001.1794:plainTextWidget.__init__
-        #@+node:ekr.20081121105001.1795:bindings (TextCtrl)
+        #@-node:ekr.20090126093408.503:plainTextWidget.__init__
+        #@+node:ekr.20090126093408.504:bindings (TextCtrl)
         # Specify the names of widget-specific methods.
         # These particular names are the names of wx.TextCtrl methods.
 
@@ -1538,17 +1537,17 @@ if wx:
         def _setFocus(self):                return self.widget.SetFocus()
         def _setInsertPoint(self,i):        return self.widget.SetInsertionPoint(i)
         def _setSelectionRange(self,i,j):   return self.widget.SetSelection(i,j)
-        #@-node:ekr.20081121105001.1795:bindings (TextCtrl)
+        #@-node:ekr.20090126093408.504:bindings (TextCtrl)
         #@-others
     #@nonl
-    #@-node:ekr.20081121105001.1793:plainTextWidget (baseTextWidget)
-    #@+node:ekr.20081121105001.1796:richTextWidget (baseTextWidget)
+    #@-node:ekr.20090126093408.502:plainTextWidget (baseTextWidget)
+    #@+node:ekr.20090126093408.505:richTextWidget (baseTextWidget)
     class richTextWidget (baseTextWidget):
 
         '''A class wrapping wx.richtext.RichTextCtrl widgets.'''
 
         #@    @+others
-        #@+node:ekr.20081121105001.1797:richTextWidget.__init__
+        #@+node:ekr.20090126093408.506:richTextWidget.__init__
         def __init__ (self,c,parent,*args,**keys):
 
             w = self
@@ -1575,8 +1574,8 @@ if wx:
                 style  = wx.FONTSTYLE_NORMAL,
                 weight = wx.FONTWEIGHT_NORMAL,
             )
-        #@-node:ekr.20081121105001.1797:richTextWidget.__init__
-        #@+node:ekr.20081121105001.1798:bindings (RichTextCtrl)
+        #@-node:ekr.20090126093408.506:richTextWidget.__init__
+        #@+node:ekr.20090126093408.507:bindings (RichTextCtrl)
         def _appendText(self,s):            return self.widget.AppendText(s)
         def _get(self,i,j):                 return self.widget.GetRange(i,j)
         def _getAllText(self):              return self.widget.GetValue()
@@ -1597,11 +1596,11 @@ if wx:
         def _setSelectionRange(self,i,j):   return self.widget.SetSelection(i,j)
         def _setYScrollPosition(self,i):    pass
         #@nonl
-        #@-node:ekr.20081121105001.1798:bindings (RichTextCtrl)
+        #@-node:ekr.20090126093408.507:bindings (RichTextCtrl)
         #@-others
     #@nonl
-    #@-node:ekr.20081121105001.1796:richTextWidget (baseTextWidget)
-    #@+node:ekr.20081121105001.1799:stcWidget (baseTextWidget)
+    #@-node:ekr.20090126093408.505:richTextWidget (baseTextWidget)
+    #@+node:ekr.20090126093408.508:stcWidget (baseTextWidget)
     class stcWidget (baseTextWidget):
 
         '''A class to wrap the Tk.Text widget.
@@ -1610,9 +1609,10 @@ if wx:
         This class inherits almost all tkText methods: you call use them as usual.'''
 
         # The signatures of tag_add and insert are different from the Tk.Text signatures.
+        __pychecker__ = '--no-override' # suppress warning about changed signature.
 
         #@    @+others
-        #@+node:ekr.20081121105001.1800:stcWidget.__init__
+        #@+node:ekr.20090126093408.509:stcWidget.__init__
         def __init__ (self,c,parent,*args,**keys):
 
             self.c = c
@@ -1638,8 +1638,8 @@ if wx:
             baseTextWidget.__init__(self,c,baseClassName='stcWidget',name=name,widget=w)
 
             self.initStc()
-        #@-node:ekr.20081121105001.1800:stcWidget.__init__
-        #@+node:ekr.20081121105001.1801:initStc
+        #@-node:ekr.20090126093408.509:stcWidget.__init__
+        #@+node:ekr.20090126093408.510:initStc
         # Code copied from wxPython demo.
 
         def initStc (self):
@@ -1759,8 +1759,8 @@ if wx:
 
             w.SetSelBackground(True, wx.SystemSettings_GetColour(wx.SYS_COLOUR_HIGHLIGHT))
             w.SetSelForeground(True, wx.SystemSettings_GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT))
-        #@-node:ekr.20081121105001.1801:initStc
-        #@+node:ekr.20081121105001.1802:onMarginClick & helpers
+        #@-node:ekr.20090126093408.510:initStc
+        #@+node:ekr.20090126093408.511:onMarginClick & helpers
         def onMarginClick(self, evt):
 
             if g.app.killed or self.c.frame.killed: return
@@ -1788,7 +1788,7 @@ if wx:
                         else:
                             self.ToggleFold(lineClicked)
         #@nonl
-        #@+node:ekr.20081121105001.1803:FoldAll
+        #@+node:ekr.20090126093408.512:FoldAll
         def FoldAll(self):
             lineCount = self.GetLineCount()
             expanding = True
@@ -1817,8 +1817,8 @@ if wx:
                             self.HideLines(lineNum+1, lastChild)
                 lineNum += 1
         #@nonl
-        #@-node:ekr.20081121105001.1803:FoldAll
-        #@+node:ekr.20081121105001.1804:Expand
+        #@-node:ekr.20090126093408.512:FoldAll
+        #@+node:ekr.20090126093408.513:Expand
         def Expand (self,line,doExpand,force=False,visLevels=0,level=-1):
             lastChild = self.GetLastChild(line,level)
             line = line + 1
@@ -1852,10 +1852,10 @@ if wx:
 
             return line
         #@nonl
-        #@-node:ekr.20081121105001.1804:Expand
-        #@-node:ekr.20081121105001.1802:onMarginClick & helpers
-        #@+node:ekr.20081121105001.1805:Wrapper methods
-        #@+node:ekr.20081121105001.1806:bindings (stc)
+        #@-node:ekr.20090126093408.513:Expand
+        #@-node:ekr.20090126093408.511:onMarginClick & helpers
+        #@+node:ekr.20090126093408.514:Wrapper methods
+        #@+node:ekr.20090126093408.515:bindings (stc)
         # Specify the names of widget-specific methods.
         # These particular names are the names of wx.TextCtrl methods.
 
@@ -1878,9 +1878,9 @@ if wx:
         def _setInsertPoint(self,i):        g.trace('oops',i) # Should not be called.
         def _setSelectionRange(self,i,j):   g.trace('oops',i,j) # Should not be called.
         def _setYScrollPosition(self,i):    pass
-        #@-node:ekr.20081121105001.1806:bindings (stc)
-        #@+node:ekr.20081121105001.1807:Overrides of baseTextWidget methods
-        #@+node:ekr.20081121105001.1808:see & seeInsertPoint
+        #@-node:ekr.20090126093408.515:bindings (stc)
+        #@+node:ekr.20090126093408.516:Overrides of baseTextWidget methods
+        #@+node:ekr.20090126093408.517:see & seeInsertPoint
         def see(self,index):
 
             w = self
@@ -1895,8 +1895,8 @@ if wx:
             i = w.getInsertPoint()
             row,col = g.convertPythonIndexToRowCol(s,i)
             w.widget.ScrollToLine(row)
-        #@-node:ekr.20081121105001.1808:see & seeInsertPoint
-        #@+node:ekr.20081121105001.1809:insert
+        #@-node:ekr.20090126093408.517:see & seeInsertPoint
+        #@+node:ekr.20090126093408.518:insert
         def insert(self,i,s):
 
             '''Override the baseTextWidget insert method.
@@ -1908,8 +1908,8 @@ if wx:
             s2 = w.getAllText()
             w.setAllText(s2[:i] + s + s2[i:])
             # w.setInsertPoint(i+len(s))
-        #@-node:ekr.20081121105001.1809:insert
-        #@+node:ekr.20081121105001.1810:stc.setInsertPoint
+        #@-node:ekr.20090126093408.518:insert
+        #@+node:ekr.20090126093408.519:stc.setInsertPoint
         def setInsertPoint (self,i):
 
             w = self
@@ -1919,9 +1919,11 @@ if wx:
 
             w.widget.SetSelection(i,i)
             w.widget.SetCurrentPos(i)
-        #@-node:ekr.20081121105001.1810:stc.setInsertPoint
-        #@+node:ekr.20081121105001.1811:stc.setSelectionRange
+        #@-node:ekr.20090126093408.519:stc.setInsertPoint
+        #@+node:ekr.20090126093408.520:stc.setSelectionRange
         def setSelectionRange (self,i,j,insert=None):
+
+            __pychecker__ = '--no-argsused' #  insert not used.
 
             w = self ; i1,j1,insert1=i,j,insert
             i = w.toGuiIndex(i)
@@ -1944,16 +1946,16 @@ if wx:
                 w.widget.SetCurrentPos(i)
 
             # g.trace(self,'stc,new sel',w.widget.GetCurrentPos(),'new range',w.widget.GetSelection())
-        #@-node:ekr.20081121105001.1811:stc.setSelectionRange
-        #@+node:ekr.20081121105001.1812:yview (to do)
+        #@-node:ekr.20090126093408.520:stc.setSelectionRange
+        #@+node:ekr.20090126093408.521:yview (to do)
         def yview (self,*args):
 
             '''w.yview('moveto',y) or w.yview()'''
 
             return 0,0
         #@nonl
-        #@-node:ekr.20081121105001.1812:yview (to do)
-        #@+node:ekr.20081121105001.1813:xyToGui/PythonIndex (to do)
+        #@-node:ekr.20090126093408.521:yview (to do)
+        #@+node:ekr.20090126093408.522:xyToGui/PythonIndex (to do)
         def xyToPythonIndex (self,x,y):
 
             w = self
@@ -1963,16 +1965,16 @@ if wx:
             # g.trace('data',data)
 
             return 0 ### Non-zero value may loop.
-        #@-node:ekr.20081121105001.1813:xyToGui/PythonIndex (to do)
-        #@-node:ekr.20081121105001.1807:Overrides of baseTextWidget methods
-        #@-node:ekr.20081121105001.1805:Wrapper methods
+        #@-node:ekr.20090126093408.522:xyToGui/PythonIndex (to do)
+        #@-node:ekr.20090126093408.516:Overrides of baseTextWidget methods
+        #@-node:ekr.20090126093408.514:Wrapper methods
         #@-others
     #@nonl
-    #@-node:ekr.20081121105001.1799:stcWidget (baseTextWidget)
+    #@-node:ekr.20090126093408.508:stcWidget (baseTextWidget)
     #@-others
     #@nonl
-    #@-node:ekr.20081121105001.1785:Text widgets
-    #@+node:ekr.20081121105001.1814:wxComparePanel class (not ready yet)
+    #@-node:ekr.20090126093408.494:Text widgets
+    #@+node:ekr.20090126093408.523:wxComparePanel class (not ready yet)
     """Leo's base compare class."""
 
     #@@language python
@@ -1987,8 +1989,8 @@ if wx:
         """A class that creates Leo's compare panel."""
 
         #@    @+others
-        #@+node:ekr.20081121105001.1815:Birth...
-        #@+node:ekr.20081121105001.1816:wxComparePanel.__init__
+        #@+node:ekr.20090126093408.524:Birth...
+        #@+node:ekr.20090126093408.525:wxComparePanel.__init__
         def __init__ (self,c):
 
             # Init the base class.
@@ -2001,7 +2003,7 @@ if wx:
 
             if 0:
                 #@        << init tkinter compare ivars >>
-                #@+node:ekr.20081121105001.1817:<< init tkinter compare ivars >>
+                #@+node:ekr.20090126093408.526:<< init tkinter compare ivars >>
                 # Ivars pointing to Tk elements.
                 self.browseEntries = []
                 self.extensionEntry = None
@@ -2029,7 +2031,7 @@ if wx:
                 self.printMismatchesVar          = Tk.IntVar()
                 self.printTrailingMismatchesVar  = Tk.IntVar()
                 self.stopAfterMismatchVar        = Tk.IntVar()
-                #@-node:ekr.20081121105001.1817:<< init tkinter compare ivars >>
+                #@-node:ekr.20090126093408.526:<< init tkinter compare ivars >>
                 #@nl
 
             # These ivars are set from Entry widgets.
@@ -2042,8 +2044,8 @@ if wx:
             if 0:
                 self.createTopFrame()
                 self.createFrame()
-        #@-node:ekr.20081121105001.1816:wxComparePanel.__init__
-        #@+node:ekr.20081121105001.1818:finishCreate (tkComparePanel)
+        #@-node:ekr.20090126093408.525:wxComparePanel.__init__
+        #@+node:ekr.20090126093408.527:finishCreate (tkComparePanel)
         # Initialize ivars from config parameters.
 
         def finishCreate (self):
@@ -2147,14 +2149,14 @@ if wx:
                 b = c.config.getBool("make_whitespace_visible")
                 if b == None: b = 0
                 self.makeWhitespaceVisibleVar.set(b)
-        #@-node:ekr.20081121105001.1818:finishCreate (tkComparePanel)
-        #@+node:ekr.20081121105001.1819:createFrame (tkComparePanel)
+        #@-node:ekr.20090126093408.527:finishCreate (tkComparePanel)
+        #@+node:ekr.20090126093408.528:createFrame (tkComparePanel)
         def createFrame (self):
 
             gui = g.app.gui ; top = self.top
 
             #@    << create the organizer frames >>
-            #@+node:ekr.20081121105001.1820:<< create the organizer frames >>
+            #@+node:ekr.20090126093408.529:<< create the organizer frames >>
             outer = Tk.Frame(self.frame, bd=2,relief="groove")
             outer.pack(pady=4)
 
@@ -2181,10 +2183,10 @@ if wx:
 
             lower = Tk.Frame(outer)
             lower.pack(pady=6)
-            #@-node:ekr.20081121105001.1820:<< create the organizer frames >>
+            #@-node:ekr.20090126093408.529:<< create the organizer frames >>
             #@nl
             #@    << create the browser rows >>
-            #@+node:ekr.20081121105001.1821:<< create the browser rows >>
+            #@+node:ekr.20090126093408.530:<< create the browser rows >>
             for row,text,text2,command,var in (
                 (row1,"Compare path 1:","Ignore first line",self.onBrowse1,self.ignoreFirstLine1Var),
                 (row2,"Compare path 2:","Ignore first line",self.onBrowse2,self.ignoreFirstLine2Var),
@@ -2202,10 +2204,10 @@ if wx:
 
                 b = Tk.Checkbutton(row,text=text2,anchor="w",variable=var,width=15)
                 b.pack(side="left")
-            #@-node:ekr.20081121105001.1821:<< create the browser rows >>
+            #@-node:ekr.20090126093408.530:<< create the browser rows >>
             #@nl
             #@    << create the extension row >>
-            #@+node:ekr.20081121105001.1822:<< create the extension row >>
+            #@+node:ekr.20090126093408.531:<< create the extension row >>
             b = Tk.Checkbutton(row4,anchor="w",var=self.limitToExtensionVar,
                 text="Limit directory compares to type:")
             b.pack(side="left",padx=4)
@@ -2216,10 +2218,10 @@ if wx:
             b = Tk.Checkbutton(row4,anchor="w",var=self.appendOutputVar,
                 text="Append output to output file")
             b.pack(side="left",padx=4)
-            #@-node:ekr.20081121105001.1822:<< create the extension row >>
+            #@-node:ekr.20090126093408.531:<< create the extension row >>
             #@nl
             #@    << create the whitespace options frame >>
-            #@+node:ekr.20081121105001.1823:<< create the whitespace options frame >>
+            #@+node:ekr.20090126093408.532:<< create the whitespace options frame >>
             w,f = gui.create_labeled_frame(ws,caption="Whitespace options",relief="groove")
 
             for text,var in (
@@ -2234,10 +2236,10 @@ if wx:
 
             spacer = Tk.Frame(f)
             spacer.pack(padx="1i")
-            #@-node:ekr.20081121105001.1823:<< create the whitespace options frame >>
+            #@-node:ekr.20090126093408.532:<< create the whitespace options frame >>
             #@nl
             #@    << create the print options frame >>
-            #@+node:ekr.20081121105001.1824:<< create the print options frame >>
+            #@+node:ekr.20090126093408.533:<< create the print options frame >>
             w,f = gui.create_labeled_frame(pr,caption="Print options",relief="groove")
 
             row = Tk.Frame(f)
@@ -2269,24 +2271,24 @@ if wx:
 
             spacer = Tk.Frame(f)
             spacer.pack(padx="1i")
-            #@-node:ekr.20081121105001.1824:<< create the print options frame >>
+            #@-node:ekr.20090126093408.533:<< create the print options frame >>
             #@nl
             #@    << create the compare buttons >>
-            #@+node:ekr.20081121105001.1825:<< create the compare buttons >>
+            #@+node:ekr.20090126093408.534:<< create the compare buttons >>
             for text,command in (
                 ("Compare files",      self.onCompareFiles),
                 ("Compare directories",self.onCompareDirectories) ):
 
                 b = Tk.Button(lower,text=text,command=command,width=18)
                 b.pack(side="left",padx=6)
-            #@-node:ekr.20081121105001.1825:<< create the compare buttons >>
+            #@-node:ekr.20090126093408.534:<< create the compare buttons >>
             #@nl
 
             gui.center_dialog(top) # Do this _after_ building the dialog!
             self.finishCreate()
             top.protocol("WM_DELETE_WINDOW", self.onClose)
-        #@-node:ekr.20081121105001.1819:createFrame (tkComparePanel)
-        #@+node:ekr.20081121105001.1826:setIvarsFromWidgets
+        #@-node:ekr.20090126093408.528:createFrame (tkComparePanel)
+        #@+node:ekr.20090126093408.535:setIvarsFromWidgets
         def setIvarsFromWidgets (self):
 
             # File paths: checks for valid file name.
@@ -2344,15 +2346,15 @@ if wx:
                 except: self.limitCount = 0
             else:
                 self.limitCount = 0
-        #@-node:ekr.20081121105001.1826:setIvarsFromWidgets
-        #@-node:ekr.20081121105001.1815:Birth...
-        #@+node:ekr.20081121105001.1827:bringToFront
+        #@-node:ekr.20090126093408.535:setIvarsFromWidgets
+        #@-node:ekr.20090126093408.524:Birth...
+        #@+node:ekr.20090126093408.536:bringToFront
         def bringToFront(self):
 
             self.top.deiconify()
             self.top.lift()
-        #@-node:ekr.20081121105001.1827:bringToFront
-        #@+node:ekr.20081121105001.1828:browser
+        #@-node:ekr.20090126093408.536:bringToFront
+        #@+node:ekr.20090126093408.537:browser
         def browser (self,n):
 
             types = [
@@ -2380,9 +2382,9 @@ if wx:
             else: fileName = None
 
             return fileName
-        #@-node:ekr.20081121105001.1828:browser
-        #@+node:ekr.20081121105001.1829:Event handlers...
-        #@+node:ekr.20081121105001.1830:onBrowse...
+        #@-node:ekr.20090126093408.537:browser
+        #@+node:ekr.20090126093408.538:Event handlers...
+        #@+node:ekr.20090126093408.539:onBrowse...
         def onBrowse1 (self):
 
             fileName = self.browser("1")
@@ -2415,13 +2417,13 @@ if wx:
                 e = self.browseEntries[2]
                 e.delete(0,"end")
                 e.insert(0,fileName)
-        #@-node:ekr.20081121105001.1830:onBrowse...
-        #@+node:ekr.20081121105001.1831:onClose
+        #@-node:ekr.20090126093408.539:onBrowse...
+        #@+node:ekr.20090126093408.540:onClose
         def onClose (self):
 
             self.top.withdraw()
-        #@-node:ekr.20081121105001.1831:onClose
-        #@+node:ekr.20081121105001.1832:onCompare...
+        #@-node:ekr.20090126093408.540:onClose
+        #@+node:ekr.20090126093408.541:onCompare...
         def onCompareDirectories (self):
 
             self.setIvarsFromWidgets()
@@ -2431,24 +2433,24 @@ if wx:
 
             self.setIvarsFromWidgets()
             self.compare_files(self.fileName1,self.fileName2)
-        #@-node:ekr.20081121105001.1832:onCompare...
-        #@+node:ekr.20081121105001.1833:onPrintMatchedLines
+        #@-node:ekr.20090126093408.541:onCompare...
+        #@+node:ekr.20090126093408.542:onPrintMatchedLines
         def onPrintMatchedLines (self):
 
             v = self.printMatchesVar.get()
             b = self.printButtons[1]
             state = g.choose(v,"normal","disabled")
             b.configure(state=state)
-        #@-node:ekr.20081121105001.1833:onPrintMatchedLines
-        #@-node:ekr.20081121105001.1829:Event handlers...
+        #@-node:ekr.20090126093408.542:onPrintMatchedLines
+        #@-node:ekr.20090126093408.538:Event handlers...
         #@-others
-    #@-node:ekr.20081121105001.1814:wxComparePanel class (not ready yet)
-    #@+node:ekr.20081121105001.1834:wxGui class
+    #@-node:ekr.20090126093408.523:wxComparePanel class (not ready yet)
+    #@+node:ekr.20090126093408.543:wxGui class
     class wxGui(leoGui.leoGui):
 
         #@    @+others
-        #@+node:ekr.20081121105001.1835:gui birth & death
-        #@+node:ekr.20081121105001.1836: wxGui.__init__
+        #@+node:ekr.20090126093408.544:gui birth & death
+        #@+node:ekr.20090126093408.545: wxGui.__init__
         def __init__ (self):
 
             # g.trace("wxGui")
@@ -2470,14 +2472,14 @@ if wx:
 
             self.findTabHandler = None
             self.spellTabHandler = None
-        #@-node:ekr.20081121105001.1836: wxGui.__init__
-        #@+node:ekr.20081121105001.1837:createKeyHandlerClass
+        #@-node:ekr.20090126093408.545: wxGui.__init__
+        #@+node:ekr.20090126093408.546:createKeyHandlerClass
         def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
 
             return wxKeyHandlerClass(c,useGlobalKillbuffer,useGlobalRegisters)
         #@nonl
-        #@-node:ekr.20081121105001.1837:createKeyHandlerClass
-        #@+node:ekr.20081121105001.1838:createRootWindow
+        #@-node:ekr.20090126093408.546:createKeyHandlerClass
+        #@+node:ekr.20090126093408.547:createRootWindow
         def createRootWindow(self):
 
             self.wxApp = wxLeoApp(None)
@@ -2491,36 +2493,36 @@ if wx:
 
             return self.wxFrame
         #@nonl
-        #@-node:ekr.20081121105001.1838:createRootWindow
-        #@+node:ekr.20081121105001.1839:createLeoFrame
+        #@-node:ekr.20090126093408.547:createRootWindow
+        #@+node:ekr.20090126093408.548:createLeoFrame
         def createLeoFrame(self,title):
 
             """Create a new Leo frame."""
 
             return wxLeoFrame(title)
         #@nonl
-        #@-node:ekr.20081121105001.1839:createLeoFrame
-        #@+node:ekr.20081121105001.1840:destroySelf
+        #@-node:ekr.20090126093408.548:createLeoFrame
+        #@+node:ekr.20090126093408.549:destroySelf
         def destroySelf(self):
 
             pass # Nothing more needs to be done once all windows have been destroyed.
         #@nonl
-        #@-node:ekr.20081121105001.1840:destroySelf
-        #@+node:ekr.20081121105001.1841:finishCreate
+        #@-node:ekr.20090126093408.549:destroySelf
+        #@+node:ekr.20090126093408.550:finishCreate
         def finishCreate (self):
 
            pass
            # g.trace('gui',g.callers())
-        #@-node:ekr.20081121105001.1841:finishCreate
-        #@+node:ekr.20081121105001.1842:killGui
+        #@-node:ekr.20090126093408.550:finishCreate
+        #@+node:ekr.20090126093408.551:killGui
         def killGui(self,exitFlag=True):
 
             """Destroy a gui and terminate Leo if exitFlag is True."""
 
             pass # Not ready yet.
 
-        #@-node:ekr.20081121105001.1842:killGui
-        #@+node:ekr.20081121105001.1843:recreateRootWindow
+        #@-node:ekr.20090126093408.551:killGui
+        #@+node:ekr.20090126093408.552:recreateRootWindow
         def recreateRootWindow(self):
 
             """A do-nothing base class to create the hidden root window of a gui
@@ -2528,8 +2530,8 @@ if wx:
             after a previous gui has terminated with killGui(False)."""
 
             # g.trace('wx gui')
-        #@-node:ekr.20081121105001.1843:recreateRootWindow
-        #@+node:ekr.20081121105001.1844:runMainLoop
+        #@-node:ekr.20090126093408.552:recreateRootWindow
+        #@+node:ekr.20090126093408.553:runMainLoop
         def runMainLoop(self):
 
             """Run tkinter's main loop."""
@@ -2538,10 +2540,10 @@ if wx:
             self.wxApp.MainLoop()
             # g.trace("done")
         #@nonl
-        #@-node:ekr.20081121105001.1844:runMainLoop
-        #@-node:ekr.20081121105001.1835:gui birth & death
-        #@+node:ekr.20081121105001.1845:gui dialogs
-        #@+node:ekr.20081121105001.1846:runAboutLeoDialog
+        #@-node:ekr.20090126093408.553:runMainLoop
+        #@-node:ekr.20090126093408.544:gui birth & death
+        #@+node:ekr.20090126093408.554:gui dialogs
+        #@+node:ekr.20090126093408.555:runAboutLeoDialog
         def runAboutLeoDialog(self,c,version,copyright,url,email):
 
             """Create and run a wxPython About Leo dialog."""
@@ -2553,8 +2555,8 @@ if wx:
 
             wx.MessageBox(message,"About Leo",wx.Center,self.root)
         #@nonl
-        #@-node:ekr.20081121105001.1846:runAboutLeoDialog
-        #@+node:ekr.20081121105001.1847:runAskOkDialog
+        #@-node:ekr.20090126093408.555:runAboutLeoDialog
+        #@+node:ekr.20090126093408.556:runAskOkDialog
         def runAskOkDialog(self,c,title,message=None,text="Ok"):
 
             """Create and run a wxPython askOK dialog ."""
@@ -2565,8 +2567,8 @@ if wx:
             d.ShowModal()
             return "ok"
         #@nonl
-        #@-node:ekr.20081121105001.1847:runAskOkDialog
-        #@+node:ekr.20081121105001.1848:runAskLeoIDDialog
+        #@-node:ekr.20090126093408.556:runAskOkDialog
+        #@+node:ekr.20090126093408.557:runAskLeoIDDialog
         def runAskLeoIDDialog(self):
 
             """Create and run a dialog to get g.app.LeoID."""
@@ -2575,8 +2577,8 @@ if wx:
 
             ### to do
         #@nonl
-        #@-node:ekr.20081121105001.1848:runAskLeoIDDialog
-        #@+node:ekr.20081121105001.1849:runAskOkCancelNumberDialog (to do)
+        #@-node:ekr.20090126093408.557:runAskLeoIDDialog
+        #@+node:ekr.20090126093408.558:runAskOkCancelNumberDialog (to do)
         def runAskOkCancelNumberDialog(self,c,title,message):
 
             """Create and run a wxPython askOkCancelNumber dialog ."""
@@ -2585,8 +2587,8 @@ if wx:
 
             ### to do.
         #@nonl
-        #@-node:ekr.20081121105001.1849:runAskOkCancelNumberDialog (to do)
-        #@+node:ekr.20081121105001.1850:runAskOkCancelStringDialog (to do)
+        #@-node:ekr.20090126093408.558:runAskOkCancelNumberDialog (to do)
+        #@+node:ekr.20090126093408.559:runAskOkCancelStringDialog (to do)
         def runAskOkCancelStringDialog(self,c,title,message):
 
             """Create and run a wxPython askOkCancelNumber dialog ."""
@@ -2594,8 +2596,8 @@ if wx:
             if  g.app.unitTesting: return 'xyzzy'
 
             # to do
-        #@-node:ekr.20081121105001.1850:runAskOkCancelStringDialog (to do)
-        #@+node:ekr.20081121105001.1851:runAskYesNoDialog
+        #@-node:ekr.20090126093408.559:runAskOkCancelStringDialog (to do)
+        #@+node:ekr.20090126093408.560:runAskYesNoDialog
         def runAskYesNoDialog(self,c,title,message=None):
 
             """Create and run a wxPython askYesNo dialog."""
@@ -2607,8 +2609,8 @@ if wx:
 
             return g.choose(answer==wx.YES,"yes","no")
         #@nonl
-        #@-node:ekr.20081121105001.1851:runAskYesNoDialog
-        #@+node:ekr.20081121105001.1852:runAskYesNoCancelDialog
+        #@-node:ekr.20090126093408.560:runAskYesNoDialog
+        #@+node:ekr.20090126093408.561:runAskYesNoCancelDialog
         def runAskYesNoCancelDialog(self,c,title,
             message=None,yesMessage="Yes",noMessage="No",defaultButton="Yes"):
 
@@ -2627,16 +2629,16 @@ if wx:
                 assert(answer == wx.ID_CANCEL)
                 return "cancel"
         #@nonl
-        #@-node:ekr.20081121105001.1852:runAskYesNoCancelDialog
-        #@+node:ekr.20081121105001.1853:runCompareDialog
+        #@-node:ekr.20090126093408.561:runAskYesNoCancelDialog
+        #@+node:ekr.20090126093408.562:runCompareDialog
         def runCompareDialog (self,c):
 
             if  g.app.unitTesting: return
 
             # To do
         #@nonl
-        #@-node:ekr.20081121105001.1853:runCompareDialog
-        #@+node:ekr.20081121105001.1854:runOpenFileDialog
+        #@-node:ekr.20090126093408.562:runCompareDialog
+        #@+node:ekr.20090126093408.563:runOpenFileDialog
         def runOpenFileDialog(self,title,filetypes,defaultextension):
 
             """Create and run a wxPython open file dialog ."""
@@ -2657,8 +2659,8 @@ if wx:
                 return file
             else:
                 return None 
-        #@-node:ekr.20081121105001.1854:runOpenFileDialog
-        #@+node:ekr.20081121105001.1855:runSaveFileDialog
+        #@-node:ekr.20090126093408.563:runOpenFileDialog
+        #@+node:ekr.20090126093408.564:runSaveFileDialog
         def runSaveFileDialog(self,initialfile,title,filetypes,defaultextension):
 
             """Create and run a wxPython save file dialog ."""
@@ -2680,14 +2682,14 @@ if wx:
             else:
                 return None
         #@nonl
-        #@-node:ekr.20081121105001.1855:runSaveFileDialog
-        #@+node:ekr.20081121105001.1856:simulateDialog
+        #@-node:ekr.20090126093408.564:runSaveFileDialog
+        #@+node:ekr.20090126093408.565:simulateDialog
         def simulateDialog (self,key,defaultVal=None):
 
             return defaultVal
         #@nonl
-        #@-node:ekr.20081121105001.1856:simulateDialog
-        #@+node:ekr.20081121105001.1857:getWildcardList
+        #@-node:ekr.20090126093408.565:simulateDialog
+        #@+node:ekr.20090126093408.566:getWildcardList
         def getWildcardList (self,filetypes):
 
             """Create a wxWindows wildcard string for open/save dialogs."""
@@ -2707,15 +2709,15 @@ if wx:
                 g.trace(wildcard)
                 return wildcard
         #@nonl
-        #@-node:ekr.20081121105001.1857:getWildcardList
-        #@-node:ekr.20081121105001.1845:gui dialogs
-        #@+node:ekr.20081121105001.1858:gui events
-        #@+node:ekr.20081121105001.1859:event_generate
+        #@-node:ekr.20090126093408.566:getWildcardList
+        #@-node:ekr.20090126093408.554:gui dialogs
+        #@+node:ekr.20090126093408.567:gui events
+        #@+node:ekr.20090126093408.568:event_generate
         def event_generate(self,w,kind,*args,**keys):
             '''Generate an event.'''
             return w.event_generate(kind,*args,**keys)
-        #@-node:ekr.20081121105001.1859:event_generate
-        #@+node:ekr.20081121105001.1860:class leoKeyEvent (wxGui)
+        #@-node:ekr.20090126093408.568:event_generate
+        #@+node:ekr.20090126093408.569:class leoKeyEvent (wxGui)
         class leoKeyEvent:
 
             '''A gui-independent wrapper for gui events.'''
@@ -2733,8 +2735,8 @@ if wx:
             def __repr__ (self):
                 return 'leoKeyEvent char: %s keysym: %s widget: %s' % (
                     repr(self.char),self.keysym,self.widget)
-        #@-node:ekr.20081121105001.1860:class leoKeyEvent (wxGui)
-        #@+node:ekr.20081121105001.1861:wxKeyDict
+        #@-node:ekr.20090126093408.569:class leoKeyEvent (wxGui)
+        #@+node:ekr.20090126093408.570:wxKeyDict
         wxKeyDict = {
             # Keys are wxWidgets key codes.  Values are the standard (Tk) names.
             wx.WXK_DECIMAL  : '.',
@@ -2876,8 +2878,8 @@ if wx:
         # WXK_SPECIAL20
         #@-at
         #@nonl
-        #@-node:ekr.20081121105001.1861:wxKeyDict
-        #@+node:ekr.20081121105001.1862:eventChar & eventKeysym & helper
+        #@-node:ekr.20090126093408.570:wxKeyDict
+        #@+node:ekr.20090126093408.571:eventChar & eventKeysym & helper
         def eventChar (self,event):
 
             '''Return the char field of an event, either a wx event or a converted Leo event.'''
@@ -2893,7 +2895,7 @@ if wx:
                 return event.keysym # A leoKeyEvent: we have already computed the result.
             else:
                 return self.keysymHelper(event,kind='keysym')
-        #@+node:ekr.20081121105001.1863:keysymHelper & helpers
+        #@+node:ekr.20090126093408.572:keysymHelper & helpers
         # Modified from LogKeyEvent in wxPython demo.
         # However, the stc widget apparently generates different key events from the demo!
 
@@ -2957,7 +2959,7 @@ if wx:
                     'uchar',repr(uchar),'keyname',repr(keyname),'val',repr(val))
             return val
         #@nonl
-        #@+node:ekr.20081121105001.1864:getMods
+        #@+node:ekr.20090126093408.573:getMods
         def getMods (self,event):
 
             mods = event.GetModifiers()
@@ -2969,8 +2971,8 @@ if wx:
             shift = event.ShiftDown() or mods == wx.MOD_SHIFT
 
             return alt,cmd,ctrl,meta,shift
-        #@-node:ekr.20081121105001.1864:getMods
-        #@+node:ekr.20081121105001.1865:shift
+        #@-node:ekr.20090126093408.573:getMods
+        #@+node:ekr.20090126093408.574:shift
         # A helper for 'the terrible hack' in keysymHelper.
 
         def shift (self,keycode,uchar):
@@ -2992,8 +2994,8 @@ if wx:
                     91:u'{',92:u'|',93:u'}',
                 }
                 return d.get(keycode,unichr(keycode))
-        #@-node:ekr.20081121105001.1865:shift
-        #@+node:ekr.20081121105001.1866:unshift
+        #@-node:ekr.20090126093408.574:shift
+        #@+node:ekr.20090126093408.575:unshift
         # A helper for 'the terrible hack' in keysymHelper.
 
         def unshift (self,keycode,uchar):
@@ -3016,10 +3018,10 @@ if wx:
                 }
                 return d.get(keycode,unichr(keycode))
         #@nonl
-        #@-node:ekr.20081121105001.1866:unshift
-        #@-node:ekr.20081121105001.1863:keysymHelper & helpers
-        #@-node:ekr.20081121105001.1862:eventChar & eventKeysym & helper
-        #@+node:ekr.20081121105001.1867:eventWidget
+        #@-node:ekr.20090126093408.575:unshift
+        #@-node:ekr.20090126093408.572:keysymHelper & helpers
+        #@-node:ekr.20090126093408.571:eventChar & eventKeysym & helper
+        #@+node:ekr.20090126093408.576:eventWidget
         def eventWidget (self,event):
 
             '''Return the widget field of an event.
@@ -3054,8 +3056,8 @@ if wx:
             else:
                 g.trace('no event widget',event)
                 return None
-        #@-node:ekr.20081121105001.1867:eventWidget
-        #@+node:ekr.20081121105001.1868:eventXY
+        #@-node:ekr.20090126093408.576:eventWidget
+        #@+node:ekr.20090126093408.577:eventXY
         def eventXY (self,event,c=None):
 
             if hasattr(event,'x') and hasattr(event,'y'):
@@ -3064,34 +3066,34 @@ if wx:
                 return event.GetX(),event.GetY()
             else:
                 return 0,0
-        #@-node:ekr.20081121105001.1868:eventXY
-        #@-node:ekr.20081121105001.1858:gui events
-        #@+node:ekr.20081121105001.1869:gui panels (to do)
-        #@+node:ekr.20081121105001.1870:createColorPanel
+        #@-node:ekr.20090126093408.577:eventXY
+        #@-node:ekr.20090126093408.567:gui events
+        #@+node:ekr.20090126093408.578:gui panels (to do)
+        #@+node:ekr.20090126093408.579:createColorPanel
         def createColorPanel(self,c):
 
             """Create Color panel."""
 
             g.trace("not ready yet")
         #@nonl
-        #@-node:ekr.20081121105001.1870:createColorPanel
-        #@+node:ekr.20081121105001.1871:createComparePanel
+        #@-node:ekr.20090126093408.579:createColorPanel
+        #@+node:ekr.20090126093408.580:createComparePanel
         def createComparePanel(self,c):
 
             """Create Compare panel."""
 
             g.trace("not ready yet")
         #@nonl
-        #@-node:ekr.20081121105001.1871:createComparePanel
-        #@+node:ekr.20081121105001.1872:createFindPanel
+        #@-node:ekr.20090126093408.580:createComparePanel
+        #@+node:ekr.20090126093408.581:createFindPanel
         def createFindPanel(self):
 
             """Create a hidden Find panel."""
 
             return wxFindFrame()
         #@nonl
-        #@-node:ekr.20081121105001.1872:createFindPanel
-        #@+node:ekr.20081121105001.1873:createFindTab
+        #@-node:ekr.20090126093408.581:createFindPanel
+        #@+node:ekr.20090126093408.582:createFindTab
         def createFindTab (self,c,parentFrame):
 
             '''Create a wxWidgets find tab in the indicated frame.'''
@@ -3102,16 +3104,16 @@ if wx:
                 self.findTabHandler = wxFindTab(c,parentFrame)
 
             return self.findTabHandler
-        #@-node:ekr.20081121105001.1873:createFindTab
-        #@+node:ekr.20081121105001.1874:createFontPanel
+        #@-node:ekr.20090126093408.582:createFindTab
+        #@+node:ekr.20090126093408.583:createFontPanel
         def createFontPanel(self,c):
 
             """Create a Font panel."""
 
             g.trace("not ready yet")
         #@nonl
-        #@-node:ekr.20081121105001.1874:createFontPanel
-        #@+node:ekr.20081121105001.1875:createSpellTab
+        #@-node:ekr.20090126093408.583:createFontPanel
+        #@+node:ekr.20090126093408.584:createSpellTab
         def createSpellTab (self,c,parentFrame):
 
             '''Create a wxWidgets spell tab in the indicated frame.'''
@@ -3120,16 +3122,16 @@ if wx:
                 self.spellTabHandler = wxSpellTab(c,parentFrame)
 
             return self.findTabHandler
-        #@-node:ekr.20081121105001.1875:createSpellTab
-        #@+node:ekr.20081121105001.1876:destroyLeoFrame (NOT USED)
+        #@-node:ekr.20090126093408.584:createSpellTab
+        #@+node:ekr.20090126093408.585:destroyLeoFrame (NOT USED)
         def destroyLeoFrame (self,frame):
 
             frame.Close()
         #@nonl
-        #@-node:ekr.20081121105001.1876:destroyLeoFrame (NOT USED)
-        #@-node:ekr.20081121105001.1869:gui panels (to do)
-        #@+node:ekr.20081121105001.1877:gui utils (must add several)
-        #@+node:ekr.20081121105001.1878:Clipboard
+        #@-node:ekr.20090126093408.585:destroyLeoFrame (NOT USED)
+        #@-node:ekr.20090126093408.578:gui panels (to do)
+        #@+node:ekr.20090126093408.586:gui utils (must add several)
+        #@+node:ekr.20090126093408.587:Clipboard
         def replaceClipboardWith (self,s):
 
             cb = wx.TheClipboard
@@ -3148,17 +3150,17 @@ if wx:
                 return ok and data.GetText() or ''
             else:
                 return ''
-        #@-node:ekr.20081121105001.1878:Clipboard
-        #@+node:ekr.20081121105001.1879:Constants
+        #@-node:ekr.20090126093408.587:Clipboard
+        #@+node:ekr.20090126093408.588:Constants
         # g.es calls gui.color to do the translation,
         # so most code in Leo's core can simply use Tk color names.
 
         def color (self,color):
             '''Return the gui-specific color corresponding to the Tk color name.'''
             return color # Do not call oops: this method is essential for the config classes.
-        #@-node:ekr.20081121105001.1879:Constants
-        #@+node:ekr.20081121105001.1880:Dialog
-        #@+node:ekr.20081121105001.1881:bringToFront
+        #@-node:ekr.20090126093408.588:Constants
+        #@+node:ekr.20090126093408.589:Dialog
+        #@+node:ekr.20090126093408.590:bringToFront
         def bringToFront (self,window):
 
             if window.IsIconized():
@@ -3166,8 +3168,8 @@ if wx:
             window.Raise()
             window.Show(True)
         #@nonl
-        #@-node:ekr.20081121105001.1881:bringToFront
-        #@+node:ekr.20081121105001.1882:get_window_info
+        #@-node:ekr.20090126093408.590:bringToFront
+        #@+node:ekr.20090126093408.591:get_window_info
         def get_window_info(self,window):
 
             # Get the information about top and the screen.
@@ -3176,15 +3178,15 @@ if wx:
 
             return w,h,x,y
         #@nonl
-        #@-node:ekr.20081121105001.1882:get_window_info
-        #@+node:ekr.20081121105001.1883:center_dialog
+        #@-node:ekr.20090126093408.591:get_window_info
+        #@+node:ekr.20090126093408.592:center_dialog
         def center_dialog(window):
 
             window.Center()
         #@nonl
-        #@-node:ekr.20081121105001.1883:center_dialog
-        #@-node:ekr.20081121105001.1880:Dialog
-        #@+node:ekr.20081121105001.1884:Focus (gui)
+        #@-node:ekr.20090126093408.592:center_dialog
+        #@-node:ekr.20090126093408.589:Dialog
+        #@+node:ekr.20090126093408.593:Focus (gui)
         def get_focus(self,c):
 
             return c.frame.body.bodyCtrl.findFocus()
@@ -3192,9 +3194,9 @@ if wx:
         def set_focus(self,c,w):
 
             c.frame.setFocus(w)
-        #@-node:ekr.20081121105001.1884:Focus (gui)
-        #@+node:ekr.20081121105001.1885:Font (wxGui) (to do)
-        #@+node:ekr.20081121105001.1886:getFontFromParams
+        #@-node:ekr.20090126093408.593:Focus (gui)
+        #@+node:ekr.20090126093408.594:Font (wxGui) (to do)
+        #@+node:ekr.20090126093408.595:getFontFromParams
         def getFontFromParams(self,family,size,slant,weight):
 
             # g.trace(g.app.config.defaultFont)
@@ -3215,10 +3217,10 @@ if wx:
                 g.es_exception()
                 return g.app.config.defaultFont
         #@nonl
-        #@-node:ekr.20081121105001.1886:getFontFromParams
-        #@-node:ekr.20081121105001.1885:Font (wxGui) (to do)
-        #@+node:ekr.20081121105001.1887:Icons (wxGui) (to do)
-        #@+node:ekr.20081121105001.1888:attachLeoIcon
+        #@-node:ekr.20090126093408.595:getFontFromParams
+        #@-node:ekr.20090126093408.594:Font (wxGui) (to do)
+        #@+node:ekr.20090126093408.596:Icons (wxGui) (to do)
+        #@+node:ekr.20090126093408.597:attachLeoIcon
         def attachLeoIcon (self,w):
 
             """Try to attach a Leo icon to the Leo Window.
@@ -3236,7 +3238,7 @@ if wx:
             if self.bitmap == None:
                 try:
                     #@            << try to use the PIL and tkIcon packages to draw the icon >>
-                    #@+node:ekr.20081121105001.1889:<< try to use the PIL and tkIcon packages to draw the icon >>
+                    #@+node:ekr.20090126093408.598:<< try to use the PIL and tkIcon packages to draw the icon >>
                     #@+at 
                     #@nonl
                     # This code requires Fredrik Lundh's PIL and tkIcon 
@@ -3270,14 +3272,14 @@ if wx:
                         else: # Assumes 64x64
                             self.leoIcon = tkIcon.Icon(icon_image)
                     #@nonl
-                    #@-node:ekr.20081121105001.1889:<< try to use the PIL and tkIcon packages to draw the icon >>
+                    #@-node:ekr.20090126093408.598:<< try to use the PIL and tkIcon packages to draw the icon >>
                     #@nl
                 except:
                     # traceback.print_exc()
                     self.leoIcon = None
         #@nonl
-        #@-node:ekr.20081121105001.1888:attachLeoIcon
-        #@+node:ekr.20081121105001.1890:createLeoIcon
+        #@-node:ekr.20090126093408.597:attachLeoIcon
+        #@+node:ekr.20090126093408.599:createLeoIcon
         # This code is adapted from tkIcon.__init__
         # Unlike the tkIcon code, this code does _not_ resize the icon file.
 
@@ -3308,23 +3310,23 @@ if wx:
             except:
                 return None
         #@nonl
-        #@-node:ekr.20081121105001.1890:createLeoIcon
-        #@-node:ekr.20081121105001.1887:Icons (wxGui) (to do)
-        #@+node:ekr.20081121105001.1891:Idle time (wxGui) (to do)
-        #@+node:ekr.20081121105001.1892:setIdleTimeHook
+        #@-node:ekr.20090126093408.599:createLeoIcon
+        #@-node:ekr.20090126093408.596:Icons (wxGui) (to do)
+        #@+node:ekr.20090126093408.600:Idle time (wxGui) (to do)
+        #@+node:ekr.20090126093408.601:setIdleTimeHook
         def setIdleTimeHook (self,idleTimeHookHandler,*args,**keys):
 
             pass # g.trace(idleTimeHookHandler)
 
-        #@-node:ekr.20081121105001.1892:setIdleTimeHook
-        #@+node:ekr.20081121105001.1893:setIdleTimeHookAfterDelay
+        #@-node:ekr.20090126093408.601:setIdleTimeHook
+        #@+node:ekr.20090126093408.602:setIdleTimeHookAfterDelay
         def setIdleTimeHookAfterDelay (self,idleTimeHookHandler,*args,**keys):
 
             g.trace(idleTimeHookHandler)
         #@nonl
-        #@-node:ekr.20081121105001.1893:setIdleTimeHookAfterDelay
-        #@-node:ekr.20081121105001.1891:Idle time (wxGui) (to do)
-        #@+node:ekr.20081121105001.1894:isTextWidget
+        #@-node:ekr.20090126093408.602:setIdleTimeHookAfterDelay
+        #@-node:ekr.20090126093408.600:Idle time (wxGui) (to do)
+        #@+node:ekr.20090126093408.603:isTextWidget
         def isTextWidget (self,w):
 
             return w and hasattr(w,'__class__') and issubclass(w.__class__,baseTextWidget)
@@ -3333,8 +3335,8 @@ if wx:
                 # stc and issubclass(w.__class__,stc.StyledTextCtrl) or
                 # richtext and issubclass(w.__class__.richtext.RichTextCtrl)))
         #@nonl
-        #@-node:ekr.20081121105001.1894:isTextWidget
-        #@+node:ekr.20081121105001.1895:widget_name
+        #@-node:ekr.20090126093408.603:isTextWidget
+        #@+node:ekr.20090126093408.604:widget_name
         def widget_name (self,w):
 
             # First try the wxWindow.GetName method.
@@ -3344,18 +3346,18 @@ if wx:
             else:
                 name = repr(w)
             return name
-        #@-node:ekr.20081121105001.1895:widget_name
-        #@-node:ekr.20081121105001.1877:gui utils (must add several)
+        #@-node:ekr.20090126093408.604:widget_name
+        #@-node:ekr.20090126093408.586:gui utils (must add several)
         #@-others
     #@nonl
-    #@-node:ekr.20081121105001.1834:wxGui class
-    #@+node:ekr.20081121105001.1896:wxKeyHandlerClass (keyHandlerClass)
+    #@-node:ekr.20090126093408.543:wxGui class
+    #@+node:ekr.20090126093408.605:wxKeyHandlerClass (keyHandlerClass)
     class wxKeyHandlerClass (leoKeys.keyHandlerClass):
 
         '''wxWidgets overrides of base keyHandlerClass.'''
 
         #@    @+others
-        #@+node:ekr.20081121105001.1897: wxKey.__init__
+        #@+node:ekr.20090126093408.606: wxKey.__init__
         def __init__(self,c,useGlobalKillbuffer=False,useGlobalRegisters=False):
 
             # g.trace('wxKeyHandlerClass',g.callers())
@@ -3364,8 +3366,8 @@ if wx:
 
             # Init the base class.
             leoKeys.keyHandlerClass.__init__(self,c,useGlobalKillbuffer,useGlobalRegisters)
-        #@-node:ekr.20081121105001.1897: wxKey.__init__
-        #@+node:ekr.20081121105001.1898:wxKey.finishCreate
+        #@-node:ekr.20090126093408.606: wxKey.__init__
+        #@+node:ekr.20090126093408.607:wxKey.finishCreate
         def finishCreate (self):
 
             k = self ; c = k.c
@@ -3381,8 +3383,8 @@ if wx:
 
             self.setLabelGrey()
         #@nonl
-        #@-node:ekr.20081121105001.1898:wxKey.finishCreate
-        #@+node:ekr.20081121105001.1899:wxKey.minibufferWantsFocus/Now
+        #@-node:ekr.20090126093408.607:wxKey.finishCreate
+        #@+node:ekr.20090126093408.608:wxKey.minibufferWantsFocus/Now
         def minibufferWantsFocus(self):
 
             self.widget.setFocus()
@@ -3390,14 +3392,14 @@ if wx:
         def minibufferWantsFocusNow(self):
 
             self.widget.setFocus()
-        #@-node:ekr.20081121105001.1899:wxKey.minibufferWantsFocus/Now
+        #@-node:ekr.20090126093408.608:wxKey.minibufferWantsFocus/Now
         #@-others
     #@nonl
-    #@-node:ekr.20081121105001.1896:wxKeyHandlerClass (keyHandlerClass)
-    #@+node:ekr.20081121105001.1900:wxLeoApp class
+    #@-node:ekr.20090126093408.605:wxKeyHandlerClass (keyHandlerClass)
+    #@+node:ekr.20090126093408.609:wxLeoApp class
     class wxLeoApp (wx.App):
         #@    @+others
-        #@+node:ekr.20081121105001.1901:OnInit  (wxLeoApp)
+        #@+node:ekr.20090126093408.610:OnInit  (wxLeoApp)
         def OnInit(self):
 
             self.SetAppName("Leo")
@@ -3410,22 +3412,22 @@ if wx:
 
             return True
         #@nonl
-        #@-node:ekr.20081121105001.1901:OnInit  (wxLeoApp)
-        #@+node:ekr.20081121105001.1902:OnExit
+        #@-node:ekr.20090126093408.610:OnInit  (wxLeoApp)
+        #@+node:ekr.20090126093408.611:OnExit
         def OnExit(self):
 
             return True
-        #@-node:ekr.20081121105001.1902:OnExit
+        #@-node:ekr.20090126093408.611:OnExit
         #@-others
-    #@-node:ekr.20081121105001.1900:wxLeoApp class
-    #@+node:ekr.20081121105001.1903:wxLeoBody class (leoBody)
+    #@-node:ekr.20090126093408.609:wxLeoApp class
+    #@+node:ekr.20090126093408.612:wxLeoBody class (leoBody)
     class wxLeoBody (leoFrame.leoBody):
 
         """A class to create a wxPython body pane."""
 
         #@    @+others
-        #@+node:ekr.20081121105001.1904:Birth & death (wxLeoBody)
-        #@+node:ekr.20081121105001.1905:wxBody.__init__
+        #@+node:ekr.20090126093408.613:Birth & death (wxLeoBody)
+        #@+node:ekr.20090126093408.614:wxBody.__init__
         def __init__ (self,frame,parentFrame):
 
             # Init the base class: calls createControl.
@@ -3438,8 +3440,8 @@ if wx:
             self.keyDownModifiers = None
             self.forceFullRecolorFlag = False
         #@nonl
-        #@-node:ekr.20081121105001.1905:wxBody.__init__
-        #@+node:ekr.20081121105001.1906:wxBody.createControl
+        #@-node:ekr.20090126093408.614:wxBody.__init__
+        #@+node:ekr.20090126093408.615:wxBody.createControl
         def createControl (self,frame,parentFrame):
 
             w = g.app.gui.bodyTextWidget(
@@ -3451,8 +3453,8 @@ if wx:
             )
 
             return w
-        #@-node:ekr.20081121105001.1906:wxBody.createControl
-        #@+node:ekr.20081121105001.1907:wxBody.createBindings NOT USED AT PRESENT
+        #@-node:ekr.20090126093408.615:wxBody.createControl
+        #@+node:ekr.20090126093408.616:wxBody.createBindings NOT USED AT PRESENT
         def createBindings (self,w=None):
 
             '''(wxBody) Create gui-dependent bindings.
@@ -3479,14 +3481,14 @@ if wx:
 
                 w.bind(kind,bodyClickCallback)
         #@nonl
-        #@-node:ekr.20081121105001.1907:wxBody.createBindings NOT USED AT PRESENT
-        #@+node:ekr.20081121105001.1908:wxBody.setEditorColors
+        #@-node:ekr.20090126093408.616:wxBody.createBindings NOT USED AT PRESENT
+        #@+node:ekr.20090126093408.617:wxBody.setEditorColors
         def setEditorColors (self,bg,fg):
             pass
         #@nonl
-        #@-node:ekr.20081121105001.1908:wxBody.setEditorColors
-        #@-node:ekr.20081121105001.1904:Birth & death (wxLeoBody)
-        #@+node:ekr.20081121105001.1909:Tk wrappers (wxBody)
+        #@-node:ekr.20090126093408.617:wxBody.setEditorColors
+        #@-node:ekr.20090126093408.613:Birth & death (wxLeoBody)
+        #@+node:ekr.20090126093408.618:Tk wrappers (wxBody)
         def cget(self,*args,**keys):            pass # to be removed from Leo's core.
         def configure (self,*args,**keys):      pass # to be removed from Leo's core.
 
@@ -3497,6 +3499,9 @@ if wx:
         SetFocus = setFocus
         getFocus = hasFocus
 
+        def getBodyPaneHeight (self):           return self.bodyCtrl.GetCharHeight() # widget specific
+        def getBodyPaneWidth (self):            return self.bodyCtrl.GetCharWidth()  # widget specific
+
         def scheduleIdleTimeRoutine (self,function,*args,**keys):   g.trace()
 
         def tag_add (self,*args,**keys):        return self.bodyCtrl.tag_add(*args,**keys)
@@ -3504,8 +3509,8 @@ if wx:
         def tag_configure (self,*args,**keys):  return self.bodyCtrl.tag_configure(*args,**keys)
         def tag_delete (self,*args,**keys):     return self.bodyCtrl.tag_delete(*args,**keys)
         def tag_remove (self,*args,**keys):     return self.bodyCtrl.tag_remove(*args,**keys)
-        #@-node:ekr.20081121105001.1909:Tk wrappers (wxBody)
-        #@+node:ekr.20081121105001.1910:onBodyChanged (wxBody: calls leoBody.onBodyChanged)
+        #@-node:ekr.20090126093408.618:Tk wrappers (wxBody)
+        #@+node:ekr.20090126093408.619:onBodyChanged (wxBody: calls leoBody.onBodyChanged)
         def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
 
             if g.app.killed or self.c.frame.killed: return
@@ -3525,24 +3530,24 @@ if wx:
             finally:
                 self.frame.lockout -= 1
         #@nonl
-        #@-node:ekr.20081121105001.1910:onBodyChanged (wxBody: calls leoBody.onBodyChanged)
-        #@+node:ekr.20081121105001.1911:wxBody.forceFullRecolor
+        #@-node:ekr.20090126093408.619:onBodyChanged (wxBody: calls leoBody.onBodyChanged)
+        #@+node:ekr.20090126093408.620:wxBody.forceFullRecolor
         def forceFullRecolor (self):
 
             self.forceFullRecolorFlag = True
         #@nonl
-        #@-node:ekr.20081121105001.1911:wxBody.forceFullRecolor
+        #@-node:ekr.20090126093408.620:wxBody.forceFullRecolor
         #@-others
     #@nonl
-    #@-node:ekr.20081121105001.1903:wxLeoBody class (leoBody)
-    #@+node:ekr.20081121105001.1912:wxLeoFrame class (leoFrame)
+    #@-node:ekr.20090126093408.612:wxLeoBody class (leoBody)
+    #@+node:ekr.20090126093408.621:wxLeoFrame class (leoFrame)
     class wxLeoFrame(leoFrame.leoFrame):
 
         """A class to create a wxPython from for the main Leo window."""
 
         #@    @+others
-        #@+node:ekr.20081121105001.1913:Birth & death (wxLeoFrame)
-        #@+node:ekr.20081121105001.1914:__init__ (wxLeoFrame)
+        #@+node:ekr.20090126093408.622:Birth & death (wxLeoFrame)
+        #@+node:ekr.20090126093408.623:__init__ (wxLeoFrame)
         def __init__ (self,title):
 
             # Init the base classes.
@@ -3571,14 +3576,14 @@ if wx:
             self.startupWindow=False
             self.statusLineClass = wxLeoStatusLine
             self.use_coloring = False # set True to enable coloring
-        #@-node:ekr.20081121105001.1914:__init__ (wxLeoFrame)
-        #@+node:ekr.20081121105001.1915:__repr__
+        #@-node:ekr.20090126093408.623:__init__ (wxLeoFrame)
+        #@+node:ekr.20090126093408.624:__repr__
         def __repr__ (self):
 
             return "wxLeoFrame: " + self.title
         #@nonl
-        #@-node:ekr.20081121105001.1915:__repr__
-        #@+node:ekr.20081121105001.1916:finishCreate (wxLeoFrame)
+        #@-node:ekr.20090126093408.624:__repr__
+        #@+node:ekr.20090126093408.625:finishCreate (wxLeoFrame)
         def finishCreate (self,c):
 
             # g.trace('wxLeoFrame')
@@ -3653,7 +3658,7 @@ if wx:
                 c.config.getBool('outline_pane_has_initial_focus'),
                 self.tree.treeCtrl,self.bodyCtrl))
 
-        #@+node:ekr.20081121105001.1917:setWindowIcon
+        #@+node:ekr.20090126093408.626:setWindowIcon
         def setWindowIcon(self):
 
             if wx.Platform == "__WXMSW__":
@@ -3661,8 +3666,8 @@ if wx:
                 path = os.path.join(g.app.loadDir,"..","Icons","LeoApp16.ico")
                 icon = wx.Icon(path,wx.BITMAP_TYPE_ICO,16,16)
                 self.top.SetIcon(icon)
-        #@-node:ekr.20081121105001.1917:setWindowIcon
-        #@+node:ekr.20081121105001.1918:setEventHandlers
+        #@-node:ekr.20090126093408.626:setWindowIcon
+        #@+node:ekr.20090126093408.627:setEventHandlers
         def setEventHandlers (self):
 
             w = self.top
@@ -3684,9 +3689,9 @@ if wx:
             w.Bind(wx.EVT_CLOSE,self.onCloseLeoFrame)
 
             w.Bind(wx.EVT_MENU_OPEN,self.updateAllMenus) 
-        #@-node:ekr.20081121105001.1918:setEventHandlers
-        #@-node:ekr.20081121105001.1916:finishCreate (wxLeoFrame)
-        #@+node:ekr.20081121105001.1919:initialRatios
+        #@-node:ekr.20090126093408.627:setEventHandlers
+        #@-node:ekr.20090126093408.625:finishCreate (wxLeoFrame)
+        #@+node:ekr.20090126093408.628:initialRatios
         def initialRatios (self):
 
             config = g.app.config
@@ -3707,8 +3712,8 @@ if wx:
 
             return verticalFlag,r,r2
         #@nonl
-        #@-node:ekr.20081121105001.1919:initialRatios
-        #@+node:ekr.20081121105001.1920:injectCallbacks
+        #@-node:ekr.20090126093408.628:initialRatios
+        #@+node:ekr.20090126093408.629:injectCallbacks
         def injectCallbacks(self):
 
             import leo.core.leoNodes as leoNodes
@@ -3726,8 +3731,8 @@ if wx:
                 # g.trace(f)
                 g.funcToMethod(doNothingCallback,leoNodes.vnode,name=name)
         #@nonl
-        #@-node:ekr.20081121105001.1920:injectCallbacks
-        #@+node:ekr.20081121105001.1921:signOnWithVersion
+        #@-node:ekr.20090126093408.629:injectCallbacks
+        #@+node:ekr.20090126093408.630:signOnWithVersion
         def signOnWithVersion (self):
 
             c = self.c
@@ -3740,25 +3745,25 @@ if wx:
             g.es("Python %d.%d.%d wxWindows %s" % (n1,n2,n3,wx.VERSION_STRING))
             g.enl()
         #@nonl
-        #@-node:ekr.20081121105001.1921:signOnWithVersion
-        #@+node:ekr.20081121105001.1922:setMinibufferBindings
+        #@-node:ekr.20090126093408.630:signOnWithVersion
+        #@+node:ekr.20090126093408.631:setMinibufferBindings
         def setMinibufferBindings(self):
 
             pass
 
             # g.trace('to do')
         #@nonl
-        #@-node:ekr.20081121105001.1922:setMinibufferBindings
-        #@+node:ekr.20081121105001.1923:destroySelf
+        #@-node:ekr.20090126093408.631:setMinibufferBindings
+        #@+node:ekr.20090126093408.632:destroySelf
         def destroySelf(self):
 
             self.killed = True
             self.top.Destroy()
         #@nonl
-        #@-node:ekr.20081121105001.1923:destroySelf
-        #@-node:ekr.20081121105001.1913:Birth & death (wxLeoFrame)
-        #@+node:ekr.20081121105001.1924:event handlers
-        #@+node:ekr.20081121105001.1925:onActivate & OnSetFocus
+        #@-node:ekr.20090126093408.632:destroySelf
+        #@-node:ekr.20090126093408.622:Birth & death (wxLeoFrame)
+        #@+node:ekr.20090126093408.633:event handlers
+        #@+node:ekr.20090126093408.634:onActivate & OnSetFocus
         if wx.Platform == '__WXMSW__':
 
             def onActivate(self,event):
@@ -3774,8 +3779,8 @@ if wx:
                 self.activeFrame = self
                 if self.c:
                     self.c.checkAllFileDates()
-        #@-node:ekr.20081121105001.1925:onActivate & OnSetFocus
-        #@+node:ekr.20081121105001.1926:onCloseLeoFrame
+        #@-node:ekr.20090126093408.634:onActivate & OnSetFocus
+        #@+node:ekr.20090126093408.635:onCloseLeoFrame
         def onCloseLeoFrame(self,event):
 
             frame = self
@@ -3785,8 +3790,8 @@ if wx:
                 if event.CanVeto():
                     event.Veto()
         #@nonl
-        #@-node:ekr.20081121105001.1926:onCloseLeoFrame
-        #@+node:ekr.20081121105001.1927:onResize
+        #@-node:ekr.20090126093408.635:onCloseLeoFrame
+        #@+node:ekr.20090126093408.636:onResize
         def onResize(self,event):
 
             if mIniting or g.app.killed or self.killed:
@@ -3808,9 +3813,9 @@ if wx:
                 self.splitter2.SetSashPosition((3*w)/5,True)
             else:
                 self.splitter2.SetSashPosition((3*h)/5,True)
-        #@-node:ekr.20081121105001.1927:onResize
-        #@-node:ekr.20081121105001.1924:event handlers
-        #@+node:ekr.20081121105001.1928:wxFrame dummy routines: (to do: minor)
+        #@-node:ekr.20090126093408.636:onResize
+        #@-node:ekr.20090126093408.633:event handlers
+        #@+node:ekr.20090126093408.637:wxFrame dummy routines: (to do: minor)
         def after_idle(*args):
             pass
 
@@ -3842,29 +3847,29 @@ if wx:
         def update (self):
             pass
         #@nonl
-        #@-node:ekr.20081121105001.1928:wxFrame dummy routines: (to do: minor)
-        #@+node:ekr.20081121105001.1929:Externally visible routines...
-        #@+node:ekr.20081121105001.1930:deiconify
+        #@-node:ekr.20090126093408.637:wxFrame dummy routines: (to do: minor)
+        #@+node:ekr.20090126093408.638:Externally visible routines...
+        #@+node:ekr.20090126093408.639:deiconify
         def deiconify (self):
 
             self.top.Iconize(False)
         #@nonl
-        #@-node:ekr.20081121105001.1930:deiconify
-        #@+node:ekr.20081121105001.1931:getTitle
+        #@-node:ekr.20090126093408.639:deiconify
+        #@+node:ekr.20090126093408.640:getTitle
         def getTitle (self):
 
             return self.title
-        #@-node:ekr.20081121105001.1931:getTitle
-        #@+node:ekr.20081121105001.1932:setTitle
+        #@-node:ekr.20090126093408.640:getTitle
+        #@+node:ekr.20090126093408.641:setTitle
         def setTitle (self,title):
 
             self.title = title
             self.top.SetTitle(title) # Call the wx code.
         #@nonl
-        #@-node:ekr.20081121105001.1932:setTitle
-        #@-node:ekr.20081121105001.1929:Externally visible routines...
-        #@+node:ekr.20081121105001.1933:Gui-dependent commands (to do)
-        #@+node:ekr.20081121105001.1934:setFocus (wxFrame)
+        #@-node:ekr.20090126093408.641:setTitle
+        #@-node:ekr.20090126093408.638:Externally visible routines...
+        #@+node:ekr.20090126093408.642:Gui-dependent commands (to do)
+        #@+node:ekr.20090126093408.643:setFocus (wxFrame)
         def setFocus (self,w):
 
             # g.trace('frame',w)
@@ -3873,9 +3878,9 @@ if wx:
 
         SetFocus = setFocus
         #@nonl
-        #@-node:ekr.20081121105001.1934:setFocus (wxFrame)
-        #@+node:ekr.20081121105001.1935:Minibuffer commands... (wxFrame)
-        #@+node:ekr.20081121105001.1936:contractPane
+        #@-node:ekr.20090126093408.643:setFocus (wxFrame)
+        #@+node:ekr.20090126093408.644:Minibuffer commands... (wxFrame)
+        #@+node:ekr.20090126093408.645:contractPane
         def contractPane (self,event=None):
 
             '''Contract the selected pane.'''
@@ -3893,8 +3898,8 @@ if wx:
                 f.contractLogPane()
             elif wname.startswith('head') or wname.startswith('canvas'):
                 f.contractOutlinePane()
-        #@-node:ekr.20081121105001.1936:contractPane
-        #@+node:ekr.20081121105001.1937:expandPane
+        #@-node:ekr.20090126093408.645:contractPane
+        #@+node:ekr.20090126093408.646:expandPane
         def expandPane (self,event=None):
 
             '''Expand the selected pane.'''
@@ -3913,8 +3918,8 @@ if wx:
                 f.expandLogPane()
             elif wname.startswith('head') or wname.startswith('canvas'):
                 f.expandOutlinePane()
-        #@-node:ekr.20081121105001.1937:expandPane
-        #@+node:ekr.20081121105001.1938:fullyExpandPane
+        #@-node:ekr.20090126093408.646:expandPane
+        #@+node:ekr.20090126093408.647:fullyExpandPane
         def fullyExpandPane (self,event=None):
 
             '''Fully expand the selected pane.'''
@@ -3933,8 +3938,8 @@ if wx:
                 f.fullyExpandLogPane()
             elif wname.startswith('head') or wname.startswith('canvas'):
                 f.fullyExpandOutlinePane()
-        #@-node:ekr.20081121105001.1938:fullyExpandPane
-        #@+node:ekr.20081121105001.1939:hidePane
+        #@-node:ekr.20090126093408.647:fullyExpandPane
+        #@+node:ekr.20090126093408.648:hidePane
         def hidePane (self,event=None):
 
             '''Completely contract the selected pane.'''
@@ -3955,8 +3960,8 @@ if wx:
             elif wname.startswith('head') or wname.startswith('canvas'):
                 f.hideOutlinePane()
                 c.bodyWantsFocusNow()
-        #@-node:ekr.20081121105001.1939:hidePane
-        #@+node:ekr.20081121105001.1940:expand/contract/hide...Pane
+        #@-node:ekr.20090126093408.648:hidePane
+        #@+node:ekr.20090126093408.649:expand/contract/hide...Pane
         #@+at 
         #@nonl
         # The first arg to divideLeoSplitter means the following:
@@ -3993,8 +3998,8 @@ if wx:
         def expandOutlinePane (self,event=None):
             '''Expand the outline pane.'''
             self.contractBodyPane()
-        #@-node:ekr.20081121105001.1940:expand/contract/hide...Pane
-        #@+node:ekr.20081121105001.1941:fullyExpand/hide...Pane
+        #@-node:ekr.20090126093408.649:expand/contract/hide...Pane
+        #@+node:ekr.20090126093408.650:fullyExpand/hide...Pane
         def fullyExpandBodyPane (self,event=None):
             '''Fully expand the body pane.'''
             f = self ; f.divideLeoSplitter(f.splitVerticalFlag,0.0)
@@ -4018,10 +4023,10 @@ if wx:
         def hideOutlinePane (self,event=None):
             '''Completely contract the outline pane.'''
             f = self ; f.divideLeoSplitter(f.splitVerticalFlag,0.0)
-        #@-node:ekr.20081121105001.1941:fullyExpand/hide...Pane
-        #@-node:ekr.20081121105001.1935:Minibuffer commands... (wxFrame)
-        #@+node:ekr.20081121105001.1942:Window Menu
-        #@+node:ekr.20081121105001.1943:cascade
+        #@-node:ekr.20090126093408.650:fullyExpand/hide...Pane
+        #@-node:ekr.20090126093408.644:Minibuffer commands... (wxFrame)
+        #@+node:ekr.20090126093408.651:Window Menu
+        #@+node:ekr.20090126093408.652:cascade
         def cascade(self,event=None):
 
             g.es("cascade not ready yet")
@@ -4044,8 +4049,8 @@ if wx:
                     x = 10 + delta ; y = 40 + delta
                     delta += 10
         #@nonl
-        #@-node:ekr.20081121105001.1943:cascade
-        #@+node:ekr.20081121105001.1944:equalSizedPanes
+        #@-node:ekr.20090126093408.652:cascade
+        #@+node:ekr.20090126093408.653:equalSizedPanes
         def equalSizedPanes(self,event=None):
 
             g.es("equalSizedPanes not ready yet")
@@ -4053,8 +4058,8 @@ if wx:
 
             frame = self
             frame.resizePanesToRatio(0.5,frame.secondary_ratio)
-        #@-node:ekr.20081121105001.1944:equalSizedPanes
-        #@+node:ekr.20081121105001.1945:hideLogWindow
+        #@-node:ekr.20090126093408.653:equalSizedPanes
+        #@+node:ekr.20090126093408.654:hideLogWindow
         def hideLogWindow (self,event=None):
 
             g.es("hideLogWindow not ready yet")
@@ -4063,8 +4068,8 @@ if wx:
             frame = self
             frame.divideLeoSplitter2(0.99, not frame.splitVerticalFlag)
         #@nonl
-        #@-node:ekr.20081121105001.1945:hideLogWindow
-        #@+node:ekr.20081121105001.1946:minimizeAll
+        #@-node:ekr.20090126093408.654:hideLogWindow
+        #@+node:ekr.20090126093408.655:minimizeAll
         def minimizeAll(self,event=None):
 
             g.es("minimizeAll not ready yet")
@@ -4080,8 +4085,8 @@ if wx:
             if frame:
                 frame.Show(False)
         #@nonl
-        #@-node:ekr.20081121105001.1946:minimizeAll
-        #@+node:ekr.20081121105001.1947:toggleActivePane
+        #@-node:ekr.20090126093408.655:minimizeAll
+        #@+node:ekr.20090126093408.656:toggleActivePane
         def toggleActivePane(self,event=None): # wxFrame.
 
             w = self.focusWidget or self.body.bodyCtrl
@@ -4091,8 +4096,8 @@ if wx:
             w.SetFocus()
             self.focusWidget = w
         #@nonl
-        #@-node:ekr.20081121105001.1947:toggleActivePane
-        #@+node:ekr.20081121105001.1948:toggleSplitDirection
+        #@-node:ekr.20090126093408.656:toggleActivePane
+        #@+node:ekr.20090126093408.657:toggleSplitDirection
         # The key invariant: self.splitVerticalFlag tells the alignment of the main splitter.
         def toggleSplitDirection(self,event=None):
 
@@ -4122,10 +4127,10 @@ if wx:
             vflag,ratio,secondary_ratio = frame.initialRatios()
             self.resizePanesToRatio(ratio,secondary_ratio)
         #@nonl
-        #@-node:ekr.20081121105001.1948:toggleSplitDirection
-        #@-node:ekr.20081121105001.1942:Window Menu
-        #@+node:ekr.20081121105001.1949:Help Menu...
-        #@+node:ekr.20081121105001.1950:leoHelp
+        #@-node:ekr.20090126093408.657:toggleSplitDirection
+        #@-node:ekr.20090126093408.651:Window Menu
+        #@+node:ekr.20090126093408.658:Help Menu...
+        #@+node:ekr.20090126093408.659:leoHelp
         def leoHelp (self,event=None):
 
             g.es("leoHelp not ready yet")
@@ -4161,29 +4166,29 @@ if wx:
                         g.es("exception dowloading sbooks.chm")
                         g.es_exception()
         #@nonl
-        #@+node:ekr.20081121105001.1951:showProgressBar
+        #@+node:ekr.20090126093408.660:showProgressBar
         def showProgressBar (self,count,size,total):
 
             # g.trace("count,size,total:" + `count` + "," + `size` + "," + `total`)
             if self.scale == None:
                 #@        << create the scale widget >>
-                #@+node:ekr.20081121105001.1952:<< create the scale widget >>
+                #@+node:ekr.20090126093408.661:<< create the scale widget >>
                 top = Tk.Toplevel()
                 top.title("Download progress")
                 self.scale = scale = Tk.Scale(top,state="normal",orient="horizontal",from_=0,to=total)
                 scale.pack()
                 top.lift()
                 #@nonl
-                #@-node:ekr.20081121105001.1952:<< create the scale widget >>
+                #@-node:ekr.20090126093408.661:<< create the scale widget >>
                 #@nl
             self.scale.set(count*size)
             self.scale.update_idletasks()
         #@nonl
-        #@-node:ekr.20081121105001.1951:showProgressBar
-        #@-node:ekr.20081121105001.1950:leoHelp
-        #@-node:ekr.20081121105001.1949:Help Menu...
-        #@-node:ekr.20081121105001.1933:Gui-dependent commands (to do)
-        #@+node:ekr.20081121105001.1953:updateAllMenus (wxFrame)
+        #@-node:ekr.20090126093408.660:showProgressBar
+        #@-node:ekr.20090126093408.659:leoHelp
+        #@-node:ekr.20090126093408.658:Help Menu...
+        #@-node:ekr.20090126093408.642:Gui-dependent commands (to do)
+        #@+node:ekr.20090126093408.662:updateAllMenus (wxFrame)
         def updateAllMenus(self,event):
 
             """Called whenever any menu is pulled down."""
@@ -4192,17 +4197,17 @@ if wx:
 
             self.menu.updateAllMenus()
         #@nonl
-        #@-node:ekr.20081121105001.1953:updateAllMenus (wxFrame)
+        #@-node:ekr.20090126093408.662:updateAllMenus (wxFrame)
         #@-others
     #@nonl
-    #@-node:ekr.20081121105001.1912:wxLeoFrame class (leoFrame)
-    #@+node:ekr.20081121105001.1954:wxLeoIconBar class
+    #@-node:ekr.20090126093408.621:wxLeoFrame class (leoFrame)
+    #@+node:ekr.20090126093408.663:wxLeoIconBar class
     class wxLeoIconBar:
 
         '''An adaptor class that uses a wx.ToolBar for Leo's icon area.'''
 
         #@    @+others
-        #@+node:ekr.20081121105001.1955:__init__ wxLeoIconBar
+        #@+node:ekr.20090126093408.664:__init__ wxLeoIconBar
         def __init__ (self,c,parentFrame): # wxLeoIconBar
 
             self.c = c
@@ -4220,8 +4225,8 @@ if wx:
 
             # Set the official ivar.
             c.frame.iconFrame = self.iconFrame
-        #@-node:ekr.20081121105001.1955:__init__ wxLeoIconBar
-        #@+node:ekr.20081121105001.1956:add
+        #@-node:ekr.20090126093408.664:__init__ wxLeoIconBar
+        #@+node:ekr.20090126093408.665:add
         def add(self,*args,**keys):
 
             """Add a button containing text or a picture to the icon bar.
@@ -4255,7 +4260,7 @@ if wx:
                 # < < create a picture > >
             # elif text:
                 # b = Tk.Button(f,text=text,relief="groove",bd=2,command=command)
-        #@+node:ekr.20081121105001.1957:create a picture
+        #@+node:ekr.20090126093408.666:create a picture
         # try:
             # if imagefile:
                 # # Create the image.  Throws an exception if file not found
@@ -4281,9 +4286,9 @@ if wx:
         # except:
             # g.es_exception()
             # return None
-        #@-node:ekr.20081121105001.1957:create a picture
-        #@-node:ekr.20081121105001.1956:add
-        #@+node:ekr.20081121105001.1958:clear
+        #@-node:ekr.20090126093408.666:create a picture
+        #@-node:ekr.20090126093408.665:add
+        #@+node:ekr.20090126093408.667:clear
         def clear(self):
 
             """Destroy all the widgets in the icon bar"""
@@ -4291,18 +4296,18 @@ if wx:
             for w in self.widgets:
                 self.toolbar.RemoveTool(w.GetId())
             self.widgets = []
-        #@-node:ekr.20081121105001.1958:clear
-        #@+node:ekr.20081121105001.1959:deleteButton
+        #@-node:ekr.20090126093408.667:clear
+        #@+node:ekr.20090126093408.668:deleteButton
         def deleteButton (self,w):
 
             self.toolbar.RemoveTool(w.GetId())
-        #@-node:ekr.20081121105001.1959:deleteButton
-        #@+node:ekr.20081121105001.1960:getFrame
+        #@-node:ekr.20090126093408.668:deleteButton
+        #@+node:ekr.20090126093408.669:getFrame
         def getFrame (self):
 
             return self.iconFrame
-        #@-node:ekr.20081121105001.1960:getFrame
-        #@+node:ekr.20081121105001.1961:setCommandForButton
+        #@-node:ekr.20090126093408.669:getFrame
+        #@+node:ekr.20090126093408.670:setCommandForButton
         def setCommandForButton(self,b,command):
 
             c = self.c
@@ -4314,22 +4319,22 @@ if wx:
                     c.outerUpdate()
 
                 self.toolbar.Bind(wx.EVT_BUTTON,onClickCallback,b)
-        #@-node:ekr.20081121105001.1961:setCommandForButton
-        #@+node:ekr.20081121105001.1962:show/hide (do nothings)
+        #@-node:ekr.20090126093408.670:setCommandForButton
+        #@+node:ekr.20090126093408.671:show/hide (do nothings)
         def pack (self):    pass  
         def unpack (self):  pass 
         show = pack   
         hide = unpack
-        #@-node:ekr.20081121105001.1962:show/hide (do nothings)
+        #@-node:ekr.20090126093408.671:show/hide (do nothings)
         #@-others
-    #@-node:ekr.20081121105001.1954:wxLeoIconBar class
-    #@+node:ekr.20081121105001.1963:wxLeoLog class (leoLog)
+    #@-node:ekr.20090126093408.663:wxLeoIconBar class
+    #@+node:ekr.20090126093408.672:wxLeoLog class (leoLog)
     class wxLeoLog (leoFrame.leoLog):
 
         """The base class for the log pane in Leo windows."""
 
         #@    @+others
-        #@+node:ekr.20081121105001.1964:leoLog.__init__
+        #@+node:ekr.20090126093408.673:leoLog.__init__
         def __init__ (self,c,nb):
 
             self.c = c
@@ -4343,7 +4348,7 @@ if wx:
 
             self.createInitialTabs()
             self.setFontFromConfig()
-        #@+node:ekr.20081121105001.1965:leoLog.createInitialTabs
+        #@+node:ekr.20090126093408.674:leoLog.createInitialTabs
         def createInitialTabs (self):
 
             c = self.c ;  nb = self.nb
@@ -4365,8 +4370,8 @@ if wx:
 
             # Make sure the Log is selected.
             self.selectTab('Log')
-        #@-node:ekr.20081121105001.1965:leoLog.createInitialTabs
-        #@+node:ekr.20081121105001.1966:leoLog.setTabBindings
+        #@-node:ekr.20090126093408.674:leoLog.createInitialTabs
+        #@+node:ekr.20090126093408.675:leoLog.setTabBindings
         def setTabBindings (self,tag=None):
 
             pass # g.trace('wxLeoLog')
@@ -4376,28 +4381,28 @@ if wx:
             # No need to do this: we can set the master binding by hand.
             pass # g.trace('wxLeoLog',args,keys)
         #@nonl
-        #@-node:ekr.20081121105001.1966:leoLog.setTabBindings
-        #@-node:ekr.20081121105001.1964:leoLog.__init__
-        #@+node:ekr.20081121105001.1967:Config
-        #@+node:ekr.20081121105001.1968:leoLog.configure
+        #@-node:ekr.20090126093408.675:leoLog.setTabBindings
+        #@-node:ekr.20090126093408.673:leoLog.__init__
+        #@+node:ekr.20090126093408.676:Config
+        #@+node:ekr.20090126093408.677:leoLog.configure
         def configure (self,*args,**keys):
 
             g.trace(args,keys)
         #@nonl
-        #@-node:ekr.20081121105001.1968:leoLog.configure
-        #@+node:ekr.20081121105001.1969:leoLog.configureBorder
+        #@-node:ekr.20090126093408.677:leoLog.configure
+        #@+node:ekr.20090126093408.678:leoLog.configureBorder
         def configureBorder(self,border):
 
             g.trace(border)
-        #@-node:ekr.20081121105001.1969:leoLog.configureBorder
-        #@+node:ekr.20081121105001.1970:leoLog.setLogFontFromConfig
+        #@-node:ekr.20090126093408.678:leoLog.configureBorder
+        #@+node:ekr.20090126093408.679:leoLog.setLogFontFromConfig
         def setFontFromConfig (self):
 
             pass # g.trace()
         #@nonl
-        #@-node:ekr.20081121105001.1970:leoLog.setLogFontFromConfig
-        #@-node:ekr.20081121105001.1967:Config
-        #@+node:ekr.20081121105001.1971:wxLog.put & putnl
+        #@-node:ekr.20090126093408.679:leoLog.setLogFontFromConfig
+        #@-node:ekr.20090126093408.676:Config
+        #@+node:ekr.20090126093408.680:wxLog.put & putnl
         # All output to the log stream eventually comes here.
 
         def put (self,s,color=None,tabName=None):
@@ -4415,9 +4420,9 @@ if wx:
                 self.logCtrl.appendText('\n')
                 self.logCtrl.scrollLines(1)
         #@nonl
-        #@-node:ekr.20081121105001.1971:wxLog.put & putnl
-        #@+node:ekr.20081121105001.1972:Tab (wxLog)
-        #@+node:ekr.20081121105001.1973:createTab
+        #@-node:ekr.20090126093408.680:wxLog.put & putnl
+        #@+node:ekr.20090126093408.681:Tab (wxLog)
+        #@+node:ekr.20090126093408.682:createTab
         def createTab (self,tabName,createText=True,wrap='none'): # wxLog.
 
             nb = self.nb
@@ -4452,8 +4457,8 @@ if wx:
                 self.frameDict [tabName] = win
                 nb.AddPage(win,tabName)
                 return win
-        #@-node:ekr.20081121105001.1973:createTab
-        #@+node:ekr.20081121105001.1974:selectTab
+        #@-node:ekr.20090126093408.682:createTab
+        #@+node:ekr.20090126093408.683:selectTab
         def selectTab (self,tabName,createText=True,wrap='none'):
 
             '''Create the tab if necessary and make it active.'''
@@ -4469,28 +4474,28 @@ if wx:
             self.tabFrame = self.frameDict.get(tabName)
 
             nb = self.nb
-            for i in range(nb.GetPageCount()):
+            for i in xrange(nb.GetPageCount()):
                 s = nb.GetPageText(i)
                 if s == tabName:
                     nb.SetSelection(i)
                     assert nb.GetPage(i) == self.tabFrame
 
             return self.tabFrame
-        #@-node:ekr.20081121105001.1974:selectTab
-        #@+node:ekr.20081121105001.1975:clearTab
+        #@-node:ekr.20090126093408.683:selectTab
+        #@+node:ekr.20090126093408.684:clearTab
         def clearTab (self,tabName,wrap='none'):
 
             self.selectTab(tabName,wrap=wrap)
             w = self.logCtrl
             w and w.setAllText('')
-        #@-node:ekr.20081121105001.1975:clearTab
-        #@+node:ekr.20081121105001.1976:deleteTab
+        #@-node:ekr.20090126093408.684:clearTab
+        #@+node:ekr.20090126093408.685:deleteTab
         def deleteTab (self,tabName):
 
             c = self.c ; nb = self.nb
 
             if tabName not in ('Log','Find','Spell'):
-                for i in range(nb.GetPageCount()):
+                for i in xrange(nb.GetPageCount()):
                     s = nb.GetPageText(i)
                     if s == tabName:
                         nb.DeletePage(i)
@@ -4502,26 +4507,28 @@ if wx:
             self.selectTab('Log')
             c.invalidateFocus()
             c.bodyWantsFocus()
-        #@-node:ekr.20081121105001.1976:deleteTab
-        #@+node:ekr.20081121105001.1977:getSelectedTab
+        #@-node:ekr.20090126093408.685:deleteTab
+        #@+node:ekr.20090126093408.686:getSelectedTab
         def getSelectedTab (self):
 
             return self.tabName
-        #@-node:ekr.20081121105001.1977:getSelectedTab
-        #@+node:ekr.20081121105001.1978:hideTab
+        #@-node:ekr.20090126093408.686:getSelectedTab
+        #@+node:ekr.20090126093408.687:hideTab
         def hideTab (self,tabName):
 
+            __pychecker__ = '--no-argsused' # tabName
+
             self.selectTab('Log')
-        #@-node:ekr.20081121105001.1978:hideTab
-        #@+node:ekr.20081121105001.1979:numberOfVisibleTabs
+        #@-node:ekr.20090126093408.687:hideTab
+        #@+node:ekr.20090126093408.688:numberOfVisibleTabs
         def numberOfVisibleTabs (self):
 
             return self.nb.GetPageCount()
-        #@-node:ekr.20081121105001.1979:numberOfVisibleTabs
-        #@+node:ekr.20081121105001.1980:Not used yet
+        #@-node:ekr.20090126093408.688:numberOfVisibleTabs
+        #@+node:ekr.20090126093408.689:Not used yet
         if 0:
             #@    @+others
-            #@+node:ekr.20081121105001.1981:cycleTabFocus
+            #@+node:ekr.20090126093408.690:cycleTabFocus
             def cycleTabFocus (self,event=None,stop_w = None):
 
                 '''Cycle keyboard focus between the tabs in the log pane.'''
@@ -4537,8 +4544,8 @@ if wx:
                     self.selectTab(tabName)
                     return 
             #@nonl
-            #@-node:ekr.20081121105001.1981:cycleTabFocus
-            #@+node:ekr.20081121105001.1982:lower/raiseTab
+            #@-node:ekr.20090126093408.690:cycleTabFocus
+            #@+node:ekr.20090126093408.691:lower/raiseTab
             def lowerTab (self,tabName):
 
                 if tabName:
@@ -4554,14 +4561,14 @@ if wx:
                     b.config(bg='LightSteelBlue1')
                 self.c.invalidateFocus()
                 self.c.bodyWantsFocus()
-            #@-node:ekr.20081121105001.1982:lower/raiseTab
-            #@+node:ekr.20081121105001.1983:renameTab
+            #@-node:ekr.20090126093408.691:lower/raiseTab
+            #@+node:ekr.20090126093408.692:renameTab
             def renameTab (self,oldName,newName):
 
                 label = self.nb.tab(oldName)
                 label.configure(text=newName)
-            #@-node:ekr.20081121105001.1983:renameTab
-            #@+node:ekr.20081121105001.1984:setTabBindings
+            #@-node:ekr.20090126093408.692:renameTab
+            #@+node:ekr.20090126093408.693:setTabBindings
             def setTabBindings (self,tabName):
 
                 c = self.c ; k = c.k
@@ -4587,11 +4594,11 @@ if wx:
                 tab.bind('<Button-3>',tabMenuRightClickCallback)
 
                 k.completeAllBindingsForWidget(w)
-            #@-node:ekr.20081121105001.1984:setTabBindings
-            #@+node:ekr.20081121105001.1985:Tab menu callbacks & helpers (not ready yet)
+            #@-node:ekr.20090126093408.693:setTabBindings
+            #@+node:ekr.20090126093408.694:Tab menu callbacks & helpers (not ready yet)
             if 0:
                 #@    @+others
-                #@+node:ekr.20081121105001.1986:onRightClick & onClick
+                #@+node:ekr.20090126093408.695:onRightClick & onClick
                 def onRightClick (self,event,menu):
 
                     c = self.c
@@ -4601,8 +4608,8 @@ if wx:
                 def onClick (self,event,tabName):
 
                     self.selectTab(tabName)
-                #@-node:ekr.20081121105001.1986:onRightClick & onClick
-                #@+node:ekr.20081121105001.1987:newTabFromMenu
+                #@-node:ekr.20090126093408.695:onRightClick & onClick
+                #@+node:ekr.20090126093408.696:newTabFromMenu
                 def newTabFromMenu (self,tabName='Log'):
 
                     self.selectTab(tabName)
@@ -4612,8 +4619,8 @@ if wx:
                         return self.selectTab(newName)
 
                     self.getTabName(selectTabCallback)
-                #@-node:ekr.20081121105001.1987:newTabFromMenu
-                #@+node:ekr.20081121105001.1988:renameTabFromMenu
+                #@-node:ekr.20090126093408.696:newTabFromMenu
+                #@+node:ekr.20090126093408.697:renameTabFromMenu
                 def renameTabFromMenu (self,tabName):
 
                     if tabName in ('Log','Completions'):
@@ -4623,8 +4630,8 @@ if wx:
                             return self.renameTab(tabName,newName)
 
                         self.getTabName(renameTabCallback)
-                #@-node:ekr.20081121105001.1988:renameTabFromMenu
-                #@+node:ekr.20081121105001.1989:getTabName
+                #@-node:ekr.20090126093408.697:renameTabFromMenu
+                #@+node:ekr.20090126093408.698:getTabName
                 def getTabName (self,exitCallback):
 
                     canvas = self.nb.component('hull')
@@ -4659,22 +4666,22 @@ if wx:
 
                     e.focus_force()
                     e.bind('<Return>',getNameCallback)
-                #@-node:ekr.20081121105001.1989:getTabName
+                #@-node:ekr.20090126093408.698:getTabName
                 #@-others
             #@nonl
-            #@-node:ekr.20081121105001.1985:Tab menu callbacks & helpers (not ready yet)
+            #@-node:ekr.20090126093408.694:Tab menu callbacks & helpers (not ready yet)
             #@-others
         #@nonl
-        #@-node:ekr.20081121105001.1980:Not used yet
-        #@-node:ekr.20081121105001.1972:Tab (wxLog)
+        #@-node:ekr.20090126093408.689:Not used yet
+        #@-node:ekr.20090126093408.681:Tab (wxLog)
         #@-others
     #@nonl
-    #@-node:ekr.20081121105001.1963:wxLeoLog class (leoLog)
-    #@+node:ekr.20081121105001.1990:wxLeoMenu class (leoMenu)
+    #@-node:ekr.20090126093408.672:wxLeoLog class (leoLog)
+    #@+node:ekr.20090126093408.699:wxLeoMenu class (leoMenu)
     class wxLeoMenu (leoMenu.leoMenu):
 
         #@    @+others
-        #@+node:ekr.20081121105001.1991:  wxLeoMenu.__init__
+        #@+node:ekr.20090126093408.700:  wxLeoMenu.__init__
         def __init__ (self,frame):
 
             # Init the base class.
@@ -4688,15 +4695,15 @@ if wx:
                 # Keys are menus, values are list of tuples used to create wx accelerator tables.
             self.menuDict = {}
         #@nonl
-        #@-node:ekr.20081121105001.1991:  wxLeoMenu.__init__
-        #@+node:ekr.20081121105001.1992:Accelerators
+        #@-node:ekr.20090126093408.700:  wxLeoMenu.__init__
+        #@+node:ekr.20090126093408.701:Accelerators
         #@+at
         # Accelerators are NOT SHOWN when the user opens the menu with the 
         # mouse!
         # This is a wx bug.
         #@-at
         #@nonl
-        #@+node:ekr.20081121105001.1993:createAccelLabel
+        #@+node:ekr.20090126093408.702:createAccelLabel
         def createAccelLabel (self,keys):
 
             '''Create the menu label by inserting '&' at the underline spot.'''
@@ -4718,8 +4725,8 @@ if wx:
 
             # g.trace(label)
             return ch,label
-        #@-node:ekr.20081121105001.1993:createAccelLabel
-        #@+node:ekr.20081121105001.1994:createAccelData (not needed)
+        #@-node:ekr.20090126093408.702:createAccelLabel
+        #@+node:ekr.20090126093408.703:createAccelData (not needed)
         def createAccelData (self,menu,ch,accel,id,label):
 
             d = self.acceleratorDict
@@ -4727,8 +4734,8 @@ if wx:
             data = ch,accel,id,label
             aList.append(data)
             d [menu] = aList
-        #@-node:ekr.20081121105001.1994:createAccelData (not needed)
-        #@+node:ekr.20081121105001.1995:createAcceleratorTables (not needed)
+        #@-node:ekr.20090126093408.703:createAccelData (not needed)
+        #@+node:ekr.20090126093408.704:createAcceleratorTables (not needed)
         def createAcceleratorTables (self):
 
             return ###
@@ -4745,10 +4752,10 @@ if wx:
                         entries.append(entry)
             table = wx.AcceleratorTable(entries)
             self.menuBar.SetAcceleratorTable(table)
-        #@-node:ekr.20081121105001.1995:createAcceleratorTables (not needed)
-        #@-node:ekr.20081121105001.1992:Accelerators
-        #@+node:ekr.20081121105001.1996:Menu methods (Tk names)
-        #@+node:ekr.20081121105001.1997:Not called
+        #@-node:ekr.20090126093408.704:createAcceleratorTables (not needed)
+        #@-node:ekr.20090126093408.701:Accelerators
+        #@+node:ekr.20090126093408.705:Menu methods (Tk names)
+        #@+node:ekr.20090126093408.706:Not called
         def bind (self,bind_shortcut,callback):
 
             g.trace(bind_shortcut,callback)
@@ -4760,8 +4767,8 @@ if wx:
         def destroy (self,menu):
 
             g.trace(menu)
-        #@-node:ekr.20081121105001.1997:Not called
-        #@+node:ekr.20081121105001.1998:add_cascade
+        #@-node:ekr.20090126093408.706:Not called
+        #@+node:ekr.20090126093408.707:add_cascade
         def add_cascade (self,parent,label,menu,underline):
 
             """Create a menu with the given parent menu."""
@@ -4778,8 +4785,8 @@ if wx:
                 # Create a top-level menu.
                 self.menuBar.Append(menu,label)
 
-        #@-node:ekr.20081121105001.1998:add_cascade
-        #@+node:ekr.20081121105001.1999:add_command
+        #@-node:ekr.20090126093408.707:add_cascade
+        #@+node:ekr.20090126093408.708:add_command
         def add_command (self,menu,**keys):
 
             if not menu:
@@ -4801,8 +4808,8 @@ if wx:
             if ch:
                 self.createAccelData(menu,ch,accel,id,label)
 
-        #@-node:ekr.20081121105001.1999:add_command
-        #@+node:ekr.20081121105001.2000:add_separator
+        #@-node:ekr.20090126093408.708:add_command
+        #@+node:ekr.20090126093408.709:add_separator
         def add_separator(self,menu):
 
             if menu:
@@ -4810,8 +4817,8 @@ if wx:
             else:
                 g.trace("null menu")
         #@nonl
-        #@-node:ekr.20081121105001.2000:add_separator
-        #@+node:ekr.20081121105001.2001:delete_range (wxMenu) (does not work)
+        #@-node:ekr.20090126093408.709:add_separator
+        #@+node:ekr.20090126093408.710:delete_range (wxMenu) (does not work)
         # The wxWindows menu code has problems:  changes do not take effect immediately.
 
         def delete_range (self,menu,n1,n2):
@@ -4841,8 +4848,8 @@ if wx:
                     menu.Delete(id)
                     i += 1
         #@nonl
-        #@-node:ekr.20081121105001.2001:delete_range (wxMenu) (does not work)
-        #@+node:ekr.20081121105001.2002:index & invoke
+        #@-node:ekr.20090126093408.710:delete_range (wxMenu) (does not work)
+        #@+node:ekr.20090126093408.711:index & invoke
         # It appears wxWidgets can't invoke a menu programmatically.
         # The workaround is to change the unit test.
 
@@ -4852,14 +4859,14 @@ if wx:
 
             def invoke (self,i):
                 '''Invoke the menu whose index is i'''
-        #@-node:ekr.20081121105001.2002:index & invoke
-        #@+node:ekr.20081121105001.2003:insert (TO DO)
+        #@-node:ekr.20090126093408.711:index & invoke
+        #@+node:ekr.20090126093408.712:insert (TO DO)
         def insert (self,*args,**keys):
 
             pass # g.trace('wxMenu: to do',args,keys)
         #@nonl
-        #@-node:ekr.20081121105001.2003:insert (TO DO)
-        #@+node:ekr.20081121105001.2004:insert_cascade
+        #@-node:ekr.20090126093408.712:insert (TO DO)
+        #@+node:ekr.20090126093408.713:insert_cascade
         def insert_cascade (self,parent,index,label,menu,underline):
 
             if not parent:
@@ -4869,16 +4876,16 @@ if wx:
                 id = wx.NewId()
                 accel = None
                 if ch: self.createAccelData(menu,ch,accel,id,label)
-        #@-node:ekr.20081121105001.2004:insert_cascade
-        #@+node:ekr.20081121105001.2005:new_menu
+        #@-node:ekr.20090126093408.713:insert_cascade
+        #@+node:ekr.20090126093408.714:new_menu
         def new_menu(self,parent,tearoff=0):
 
             return wx.Menu()
         #@nonl
-        #@-node:ekr.20081121105001.2005:new_menu
-        #@-node:ekr.20081121105001.1996:Menu methods (Tk names)
-        #@+node:ekr.20081121105001.2006:Menu methods (non-Tk names)
-        #@+node:ekr.20081121105001.2007:createMenuBar
+        #@-node:ekr.20090126093408.714:new_menu
+        #@-node:ekr.20090126093408.705:Menu methods (Tk names)
+        #@+node:ekr.20090126093408.715:Menu methods (non-Tk names)
+        #@+node:ekr.20090126093408.716:createMenuBar
         def createMenuBar(self,frame):
 
             self.menuBar = menuBar = wx.MenuBar()
@@ -4890,8 +4897,8 @@ if wx:
             frame.top.SetMenuBar(menuBar)
 
             # menuBar.SetAcceleratorTable(wx.NullAcceleratorTable)
-        #@-node:ekr.20081121105001.2007:createMenuBar
-        #@+node:ekr.20081121105001.2008:createOpenWithMenuFromTable (not ready yet)
+        #@-node:ekr.20090126093408.716:createMenuBar
+        #@+node:ekr.20090126093408.717:createOpenWithMenuFromTable (not ready yet)
         #@+at 
         #@nonl
         # Entries in the table passed to createOpenWithMenuFromTable are
@@ -4946,8 +4953,8 @@ if wx:
 
             # for i in shortcut_table: g.pr(i)
             self.createMenuItemsFromTable("Open &With...",shortcut_table,openWith=1)
-        #@-node:ekr.20081121105001.2008:createOpenWithMenuFromTable (not ready yet)
-        #@+node:ekr.20081121105001.2009:defineMenuCallback
+        #@-node:ekr.20090126093408.717:createOpenWithMenuFromTable (not ready yet)
+        #@+node:ekr.20090126093408.718:defineMenuCallback
         def defineMenuCallback(self,command,name):
 
             # The first parameter must be event, and it must default to None.
@@ -4956,8 +4963,8 @@ if wx:
 
             return callback
         #@nonl
-        #@-node:ekr.20081121105001.2009:defineMenuCallback
-        #@+node:ekr.20081121105001.2010:defineOpenWithMenuCallback
+        #@-node:ekr.20090126093408.718:defineMenuCallback
+        #@+node:ekr.20090126093408.719:defineOpenWithMenuCallback
         def defineOpenWithMenuCallback (self,command):
 
             # The first parameter must be event, and it must default to None.
@@ -4967,8 +4974,8 @@ if wx:
 
             return wxOpenWithMenuCallback
         #@nonl
-        #@-node:ekr.20081121105001.2010:defineOpenWithMenuCallback
-        #@+node:ekr.20081121105001.2011:disableMenu
+        #@-node:ekr.20090126093408.719:defineOpenWithMenuCallback
+        #@+node:ekr.20090126093408.720:disableMenu
         def disableMenu (self,menu,name):
 
             if not menu:
@@ -4984,8 +4991,8 @@ if wx:
             else:
                 g.trace("no item",name,val)
         #@nonl
-        #@-node:ekr.20081121105001.2011:disableMenu
-        #@+node:ekr.20081121105001.2012:enableMenu
+        #@-node:ekr.20090126093408.720:disableMenu
+        #@+node:ekr.20090126093408.721:enableMenu
         def enableMenu (self,menu,name,val):
 
             if not menu:
@@ -5002,8 +5009,8 @@ if wx:
             else:
                 g.trace("no item",name,val)
         #@nonl
-        #@-node:ekr.20081121105001.2012:enableMenu
-        #@+node:ekr.20081121105001.2013:getMenu
+        #@-node:ekr.20090126093408.721:enableMenu
+        #@+node:ekr.20090126093408.722:getMenu
         def getMenu (self,name):
 
             # Get the actual menu from the base class.
@@ -5021,8 +5028,8 @@ if wx:
 
             return menu
         #@nonl
-        #@-node:ekr.20081121105001.2013:getMenu
-        #@+node:ekr.20081121105001.2014:setMenuLabel
+        #@-node:ekr.20090126093408.722:getMenu
+        #@+node:ekr.20090126093408.723:setMenuLabel
         def setMenuLabel (self,menu,name,label,underline=-1):
 
             if not menu:
@@ -5049,16 +5056,16 @@ if wx:
             else:
                 g.trace("no item",name,label)
         #@nonl
-        #@-node:ekr.20081121105001.2014:setMenuLabel
-        #@-node:ekr.20081121105001.2006:Menu methods (non-Tk names)
+        #@-node:ekr.20090126093408.723:setMenuLabel
+        #@-node:ekr.20090126093408.715:Menu methods (non-Tk names)
         #@-others
     #@nonl
-    #@-node:ekr.20081121105001.1990:wxLeoMenu class (leoMenu)
-    #@+node:ekr.20081121105001.2015:wxLeoMinibuffer class
+    #@-node:ekr.20090126093408.699:wxLeoMenu class (leoMenu)
+    #@+node:ekr.20090126093408.724:wxLeoMinibuffer class
     class wxLeoMinibuffer:
 
         #@    @+others
-        #@+node:ekr.20081121105001.2016:minibuffer.__init__
+        #@+node:ekr.20090126093408.725:minibuffer.__init__
         def __init__ (self,c,parentFrame):
 
             self.c = c
@@ -5069,8 +5076,8 @@ if wx:
             # Set the official ivars.
             c.frame.miniBufferWidget = self
             c.miniBufferWidget = self
-        #@-node:ekr.20081121105001.2016:minibuffer.__init__
-        #@+node:ekr.20081121105001.2017:minibuffer.createControl
+        #@-node:ekr.20090126093408.725:minibuffer.__init__
+        #@+node:ekr.20090126093408.726:minibuffer.createControl
         def createControl (self,parentFrame):
 
             font = wx.Font(pointSize=10,
@@ -5093,17 +5100,17 @@ if wx:
 
             return w
         #@nonl
-        #@-node:ekr.20081121105001.2017:minibuffer.createControl
+        #@-node:ekr.20090126093408.726:minibuffer.createControl
         #@-others
     #@nonl
-    #@-node:ekr.20081121105001.2015:wxLeoMinibuffer class
-    #@+node:ekr.20081121105001.2018:wxLeoStatusLine
+    #@-node:ekr.20090126093408.724:wxLeoMinibuffer class
+    #@+node:ekr.20090126093408.727:wxLeoStatusLine
     class wxLeoStatusLine:
 
         '''A class representing the status line.'''
 
         #@    @+others
-        #@+node:ekr.20081121105001.2019: ctor
+        #@+node:ekr.20090126093408.728: ctor
         def __init__ (self,c,top):
 
             self.c = c
@@ -5115,14 +5122,14 @@ if wx:
 
             # Create the actual status line.
             self.w = top.CreateStatusBar(1,wx.ST_SIZEGRIP) # A wxFrame method.
-        #@-node:ekr.20081121105001.2019: ctor
-        #@+node:ekr.20081121105001.2020:clear
+        #@-node:ekr.20090126093408.728: ctor
+        #@+node:ekr.20090126093408.729:clear
         def clear (self):
 
             if not self.c.frame.killed:
                 self.w.SetStatusText('')
-        #@-node:ekr.20081121105001.2020:clear
-        #@+node:ekr.20081121105001.2021:enable, disable & isEnabled
+        #@-node:ekr.20090126093408.729:clear
+        #@+node:ekr.20090126093408.730:enable, disable & isEnabled
         def disable (self,background=None):
 
             # c = self.c ; w = self.textWidget
@@ -5144,49 +5151,49 @@ if wx:
         def isEnabled(self):
             return self.enabled
         #@nonl
-        #@-node:ekr.20081121105001.2021:enable, disable & isEnabled
-        #@+node:ekr.20081121105001.2022:get
+        #@-node:ekr.20090126093408.730:enable, disable & isEnabled
+        #@+node:ekr.20090126093408.731:get
         def get (self):
 
             if self.c.frame.killed:
                 return ''
             else:
                 return self.w.GetStatusText()
-        #@-node:ekr.20081121105001.2022:get
-        #@+node:ekr.20081121105001.2023:getFrame
+        #@-node:ekr.20090126093408.731:get
+        #@+node:ekr.20090126093408.732:getFrame
         def getFrame (self):
 
             if self.c.frame.killed:
                 return None
             else:
                 return self.statusFrame
-        #@-node:ekr.20081121105001.2023:getFrame
-        #@+node:ekr.20081121105001.2024:onActivate
+        #@-node:ekr.20090126093408.732:getFrame
+        #@+node:ekr.20090126093408.733:onActivate
         def onActivate (self,event=None):
 
             pass
-        #@-node:ekr.20081121105001.2024:onActivate
-        #@+node:ekr.20081121105001.2025:pack & show
+        #@-node:ekr.20090126093408.733:onActivate
+        #@+node:ekr.20090126093408.734:pack & show
         def pack (self):
             pass
 
         show = pack
-        #@-node:ekr.20081121105001.2025:pack & show
-        #@+node:ekr.20081121105001.2026:put (leoTkinterFrame:statusLineClass)
+        #@-node:ekr.20090126093408.734:pack & show
+        #@+node:ekr.20090126093408.735:put (leoTkinterFrame:statusLineClass)
         def put(self,s,color=None):
 
             w = self.w
 
             if not self.c.frame.killed:
                 w.SetStatusText(w.GetStatusText() + s)
-        #@-node:ekr.20081121105001.2026:put (leoTkinterFrame:statusLineClass)
-        #@+node:ekr.20081121105001.2027:unpack & hide
+        #@-node:ekr.20090126093408.735:put (leoTkinterFrame:statusLineClass)
+        #@+node:ekr.20090126093408.736:unpack & hide
         def unpack (self):
             pass
 
         hide = unpack
-        #@-node:ekr.20081121105001.2027:unpack & hide
-        #@+node:ekr.20081121105001.2028:update (statusLine)
+        #@-node:ekr.20090126093408.736:unpack & hide
+        #@+node:ekr.20090126093408.737:update (statusLine)
         def update (self):
 
             if g.app.killed: return
@@ -5206,14 +5213,14 @@ if wx:
             self.w.SetStatusText(text="line %d, col %d" % (row,col))
             self.lastRow = row
             self.lastCol = col
-        #@-node:ekr.20081121105001.2028:update (statusLine)
+        #@-node:ekr.20090126093408.737:update (statusLine)
         #@-others
-    #@-node:ekr.20081121105001.2018:wxLeoStatusLine
-    #@+node:ekr.20081121105001.2029:wxLeoTree class (leoFrame.leoTree):
+    #@-node:ekr.20090126093408.727:wxLeoStatusLine
+    #@+node:ekr.20090126093408.738:wxLeoTree class (leoFrame.leoTree):
     class wxLeoTree (leoFrame.leoTree):
 
         #@    @+others
-        #@+node:ekr.20081121105001.2030:wxTree.__init__
+        #@+node:ekr.20090126093408.739:wxTree.__init__
         def __init__ (self,frame,parentFrame):
 
             # Init the base class.
@@ -5224,6 +5231,7 @@ if wx:
             self.drawing = False # A lockout that prevents event handlers from firing during redraws.
             self.editWidgetDict = {} # Keys are tnodes, values are leoHeadlineTextWidgets.
             self.effects = wx.Effects()
+            self.idDict = {} # Keys are vnodes, values are wxTree id's.
             self.imageList = None
             self.keyDownModifiers = None
             self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
@@ -5232,19 +5240,11 @@ if wx:
             self.updateCount = 0
             self.use_paint = False # Paint & background erase events are flakey!
 
-            # Debugging
             self.trace_select = c.config.getBool('trace_select')
-
-            # Associating items with vnodes...
-            #### self.idDict = {} # Keys are vnodes, values are wxTree id's.
-
-            self.item2vnodeDict = {}
-            self.tnode2itemsDict = {} # values are lists of items.
-            self.vnode2itemsDict = {} # values are lists of items.
 
             self.treeCtrl = self.createControl(parentFrame)
             self.createBindings()
-        #@+node:ekr.20081121105001.2031:wxTree.createBindings
+        #@+node:ekr.20090126093408.740:wxTree.createBindings
         def createBindings (self): # wxLeoTree
 
             w = self.treeCtrl ; id = self.tree_id
@@ -5268,8 +5268,8 @@ if wx:
 
             wx.EVT_RIGHT_DOWN           (w,self.onRightDown)
             wx.EVT_RIGHT_UP             (w,self.onRightUp)
-        #@-node:ekr.20081121105001.2031:wxTree.createBindings
-        #@+node:ekr.20081121105001.2032:wxTree.createControl
+        #@-node:ekr.20090126093408.740:wxTree.createBindings
+        #@+node:ekr.20090126093408.741:wxTree.createControl
         def createControl (self,parentFrame):
 
             style = (
@@ -5304,14 +5304,14 @@ if wx:
             w.AssignImageList(self.imageList)
 
             return w
-        #@-node:ekr.20081121105001.2032:wxTree.createControl
-        #@+node:ekr.20081121105001.2033:wxTree.createImageList
+        #@-node:ekr.20090126093408.741:wxTree.createControl
+        #@+node:ekr.20090126093408.742:wxTree.createImageList
         def createImageList (self): # wxTree.
 
             self.imageList = imageList = wx.ImageList(21,11)
             theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','Icons'))
 
-            for i in range(16):
+            for i in xrange(16):
 
                 # Get the original bitmap.
                 fileName = g.os_path_join(theDir,'box%02d.bmp' % i)
@@ -5327,8 +5327,8 @@ if wx:
                 imageList.Add(bitmap)
 
             return imageList
-        #@-node:ekr.20081121105001.2033:wxTree.createImageList
-        #@+node:ekr.20081121105001.2034:setBindings
+        #@-node:ekr.20090126093408.742:wxTree.createImageList
+        #@+node:ekr.20090126093408.743:setBindings
         def setBindings(self):
 
             pass # g.trace('wxLeoTree: to do')
@@ -5337,11 +5337,32 @@ if wx:
 
             pass # g.trace('wxLeoTree',args,keys)
         #@nonl
-        #@-node:ekr.20081121105001.2034:setBindings
-        #@-node:ekr.20081121105001.2030:wxTree.__init__
-        #@+node:ekr.20081121105001.2035:Drawing (wxTree)
-        #@+node:ekr.20090123181335.34:Entries (wxTree)
-        #@+node:ekr.20081121105001.2037:onPaint
+        #@-node:ekr.20090126093408.743:setBindings
+        #@-node:ekr.20090126093408.739:wxTree.__init__
+        #@+node:ekr.20090126093408.744:Drawing
+        #@+node:ekr.20090126093408.745:onEraseBackground
+        backgroundEraseCount = 0
+
+        def onEraseBackground (self,event):
+
+            if 0: # Alas, this doesn't quite work.
+                if self.paintLockout:
+                    return
+            # g.trace(self.backgroundEraseCount,g.callers())
+            self.backgroundEraseCount += 1
+
+            if 0:
+                tree = self.treeCtrl
+                dc = event.GetDC() or wx.ClientDC(tree)
+                sz = tree.GetClientSize()
+                color = wx.Color(253,245,230) # for some reason, 'leo yellow' doesn't work here.
+                brush = wx.Brush(color,wx.SOLID)
+                dc.SetBrush(brush)
+                dc.Clear()
+            elif 1:
+               event.Skip() # Causes flash.
+        #@-node:ekr.20090126093408.745:onEraseBackground
+        #@+node:ekr.20090126093408.746:onPaint
         paintCount = 0
         paintLockout = False
 
@@ -5363,13 +5384,13 @@ if wx:
             finally:
                 self.paintLockout = False
             event.Skip()
-        #@+node:ekr.20081121105001.2038:beginUpdate
+        #@+node:ekr.20090126093408.747:beginUpdate
         def beginUpdate (self):
 
             self.updateCount += 1
         #@nonl
-        #@-node:ekr.20081121105001.2038:beginUpdate
-        #@+node:ekr.20081121105001.2039:endUpdate
+        #@-node:ekr.20090126093408.747:beginUpdate
+        #@+node:ekr.20090126093408.748:endUpdate
         def endUpdate (self,flag=True,scroll=False):
 
             assert(self.updateCount > 0)
@@ -5379,183 +5400,12 @@ if wx:
                 self.redraw()
                 if self.updateCount < 0:
                     g.trace("Can't happen: negative updateCount",g.callers())
-        #@-node:ekr.20081121105001.2039:endUpdate
-        #@-node:ekr.20081121105001.2037:onPaint
-        #@+node:ekr.20090123181335.1:full_redraw & helpers (from qtTree)
-        # forceDraw not used in Qt.  It is used in the Tk code.
-
-        def full_redraw (self,p=None,scroll=True,forceDraw=False):
-
-            '''Redraw all visible nodes of the tree.
-
-            Preserve the vertical scrolling unless scroll is True.'''
-
-            trace = False
-            c = self.c ; w = self.treeWidget
-            if not w: return
-            if self.redrawing:
-                g.trace('***** already drawing',g.callers(5))
-                return
-
-            if p is None:
-                p = c.currentPosition()
-            else:
-                c.setCurrentPosition(p)
-
-            self.redrawCount += 1
-            if trace:
-                # g.trace(self.redrawCount,g.callers())
-                tstart()
-
-            # Init the data structures.
-            self.initData()
-            self.nodeDrawCount = 0
-            self.redrawing = True
-            try:
-                hScroll = w.horizontalScrollBar()
-                vScroll = w.verticalScrollBar()
-                hPos = hScroll.sliderPosition()
-                vPos = vScroll.sliderPosition()
-                # g.trace(hPos,vPos)
-                w.clear()
-                # Draw all top-level nodes and their visible descendants.
-                if c.hoistStack:
-                    bunch = c.hoistStack[-1]
-                    p = bunch.p ; h = p.headString()
-                    if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
-                        p = p.firstChild()
-                        while p:
-                            self.drawTree(p)
-                            p.moveToNext()
-                    else:
-                        self.drawTree(p)
-                else:
-                    p = c.rootPosition()
-                    while p:
-                        self.drawTree(p)
-                        p.moveToNext()
-            finally:
-                if not self.selecting:
-                    self.setCurrentItem()
-                hScroll.setSliderPosition(hPos)
-                if not scroll:
-                    vScroll.setSliderPosition(vPos)
-
-                # Necessary to get the tree drawn initially.
-                w.repaint()
-
-                c.requestRedrawFlag= False
-                self.redrawing = False
-                if trace:
-                    theTime = tstop()
-                    if True and not g.app.unitTesting:
-                        g.trace('%s: scroll: %s, drew %3s nodes in %s' % (
-                            self.redrawCount,scroll,self.nodeDrawCount,theTime),
-                            g.callers(4))
-
-        # Compatibility
-        redraw = full_redraw 
-        redraw_now = full_redraw
-        #@+node:ekr.20090123181335.2:contractItem & expandItem
-        def contractItem (self,item):
-
-            self.treeWidget.collapseItem(item)
-
-        def expandItem (self,item):
-
-            self.treeWidget.expandItem(item)
-        #@-node:ekr.20090123181335.2:contractItem & expandItem
-        #@+node:ekr.20090123181335.3:drawChildren
-        def drawChildren (self,p,parent_item):
-
-            if not p:
-                return g.trace('can not happen: no p')
-
-            if p.hasChildren():
-                if p.isExpanded():
-                    self.expandItem(parent_item)
-                    child = p.firstChild()
-                    while child:
-                        self.drawTree(child,parent_item)
-                        child.moveToNext()
-                else:
-                    # Draw the hidden children.
-                    child = p.firstChild()
-                    while child:
-                        self.drawNode(child,parent_item)
-                        child.moveToNext()
-                    self.contractItem(parent_item)
-            else:
-                self.contractItem(parent_item)
-        #@-node:ekr.20090123181335.3:drawChildren
-        #@+node:ekr.20090123181335.4:drawNode
-        def drawNode (self,p,parent_item):
-
-            c = self.c ; w = self.treeWidget
-            self.nodeDrawCount += 1
-
-            # Allocate the QTreeWidget item.
-            itemOrTree = parent_item or w
-            item = QtGui.QTreeWidgetItem(itemOrTree)
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
-
-            # Do this now, so self.isValidItem will be true in setItemIcon.
-            self.rememberItem(p,item)
-
-            # Set the headline and maybe the icon.
-            item.setText(0,p.headString())
-            if p:
-                icon = self.getIcon(p)
-                self.setItemIcon(item,icon)
-
-            return item
-        #@-node:ekr.20090123181335.4:drawNode
-        #@+node:ekr.20090123181335.5:drawTree
-        def drawTree (self,p,parent_item=None):
-
-            # Draw the (visible) parent node.
-            item = self.drawNode(p,parent_item)
-
-            # Draw all the visible children.
-            self.drawChildren(p,parent_item=item)
-
-
-        #@-node:ekr.20090123181335.5:drawTree
-        #@+node:ekr.20090123181335.6:initData
-        def initData (self):
-
-            self.item2vnodeDict = {}
-            self.tnode2itemsDict = {}
-            self.vnode2itemsDict = {}
-        #@-node:ekr.20090123181335.6:initData
-        #@+node:ekr.20090123181335.7:rememberItem & rememberVnodeItem
-        def rememberItem (self,p,item):
-
-            self.rememberVnodeItem(p.v,item)
-
-        def rememberVnodeItem (self,v,item):
-
-            # Update item2vnodeDict.
-            self.item2vnodeDict[item] = v
-
-            # Update tnode2itemsDict & vnode2itemsDict.
-            table = (
-                (self.tnode2itemsDict,v.t),
-                (self.vnode2itemsDict,v))
-
-            for d,key in table:
-                aList = d.get(key,[])
-                if item in aList:
-                    g.trace('*** ERROR *** item already in list: %s, %s' % (item,aList))
-                else:
-                    aList.append(item)
-                d[key] = aList
-        #@-node:ekr.20090123181335.7:rememberItem & rememberVnodeItem
-        #@-node:ekr.20090123181335.1:full_redraw & helpers (from qtTree)
-        #@+node:ekr.20081121105001.2040:OLDredraw & redraw_now & helpers
+        #@-node:ekr.20090126093408.748:endUpdate
+        #@-node:ekr.20090126093408.746:onPaint
+        #@+node:ekr.20090126093408.749:redraw & redraw_now & helpers
         redrawCount = 0
 
-        def OLDredraw (self):
+        def redraw (self):
             c = self.c ;  tree = self.treeCtrl
             if c is None or self.drawing: return
             p = c.rootPosition()
@@ -5568,7 +5418,7 @@ if wx:
             try:
                 self.editWidgetDict = {} # Bug fix.
                 self.idDict = {}
-                c.expandAllAncestors(c.currentPosition())
+                self.expandAllAncestors(c.currentPosition())
                 if sys.platform.startswith('win') and not g.app.unitTesting:
                     self.cleverRedraw() # Slow, but eliminates flash.
                 else:
@@ -5580,7 +5430,7 @@ if wx:
         def redraw_now(self,scroll=True):
             self.redraw()
         #@nonl
-        #@+node:ekr.20081121105001.2041:cleverRedraw & helpers
+        #@+node:ekr.20090126093408.750:cleverRedraw & helpers
         initial_draw = True
 
         def cleverRedraw (self):
@@ -5597,7 +5447,7 @@ if wx:
                 child_id,cookie = tree.GetFirstChild(root_id)
                 self.update_siblings(root_id,child_id,root_p)
         #@nonl
-        #@+node:ekr.20081121105001.2042:insertTreeAfter
+        #@+node:ekr.20090126093408.751:insertTreeAfter
         def insertTreeAfter (self,parent_id,prev_id,p):
 
             tree = self.treeCtrl
@@ -5609,8 +5459,8 @@ if wx:
                 self.redraw_subtree(ins_id,child)
                 child.moveToNext()
             return ins_id
-        #@-node:ekr.20081121105001.2042:insertTreeAfter
-        #@+node:ekr.20081121105001.2043:insert_node
+        #@-node:ekr.20090126093408.751:insertTreeAfter
+        #@+node:ekr.20090126093408.752:insert_node
         def insert_node(self,parent_id,prev_id,p):
 
             tree = self.treeCtrl
@@ -5633,8 +5483,8 @@ if wx:
             self.expandAndSelect(node_id,p)
 
             return node_id
-        #@-node:ekr.20081121105001.2043:insert_node
-        #@+node:ekr.20081121105001.2044:update_node
+        #@-node:ekr.20090126093408.752:insert_node
+        #@+node:ekr.20090126093408.753:update_node
         def update_node(self,node_id,p):
 
             tree = self.treeCtrl
@@ -5661,8 +5511,8 @@ if wx:
             self.setEditWidget(p,node_id)
             assert (p == tree.GetItemData(node_id).GetData())
             return node_id
-        #@-node:ekr.20081121105001.2044:update_node
-        #@+node:ekr.20081121105001.2045:update_siblings
+        #@-node:ekr.20090126093408.753:update_node
+        #@+node:ekr.20090126093408.754:update_siblings
         def update_siblings(self,parent_id,node_id,p):
 
             tree = self.treeCtrl ; trace = False
@@ -5722,8 +5572,8 @@ if wx:
                 next_id = tree.GetNextSibling(node_id)
                 tree.Delete(node_id)
                 node_id = next_id
-        #@-node:ekr.20081121105001.2045:update_siblings
-        #@+node:ekr.20081121105001.2046:expandAndSelect
+        #@-node:ekr.20090126093408.754:update_siblings
+        #@+node:ekr.20090126093408.755:expandAndSelect
         # This should be called after drawing so the +- box is drawn properly.
 
         def expandAndSelect (self,node_id,p,force=False):
@@ -5744,8 +5594,8 @@ if wx:
             elif p == self.c.currentPosition():
                 # g.trace('selecting',p.headString())
                 tree.SelectItem(node_id) # Generates call to onTreeChanged.
-        #@-node:ekr.20081121105001.2046:expandAndSelect
-        #@+node:ekr.20081121105001.2047:redraw_subtree
+        #@-node:ekr.20090126093408.755:expandAndSelect
+        #@+node:ekr.20090126093408.756:redraw_subtree
         def redraw_subtree(self,parent_id,p,trace=False):
 
             tree = self.treeCtrl
@@ -5768,9 +5618,9 @@ if wx:
             if p == self.c.currentPosition():
                 tree.SelectItem(node_id) # Generates call to onTreeChanged.
         #@nonl
-        #@-node:ekr.20081121105001.2047:redraw_subtree
-        #@-node:ekr.20081121105001.2041:cleverRedraw & helpers
-        #@+node:ekr.20081121105001.2048:redraw_node
+        #@-node:ekr.20090126093408.756:redraw_subtree
+        #@-node:ekr.20090126093408.750:cleverRedraw & helpers
+        #@+node:ekr.20090126093408.757:redraw_node
         def redraw_node(self,parent_id,p):
 
             tree = self.treeCtrl
@@ -5789,8 +5639,8 @@ if wx:
             self.setEditWidget(p,node_id)
             assert (p == tree.GetItemData(node_id).GetData())
             return node_id
-        #@-node:ekr.20081121105001.2048:redraw_node
-        #@+node:ekr.20081121105001.2049:partialRedraw & helpers
+        #@-node:ekr.20090126093408.757:redraw_node
+        #@+node:ekr.20090126093408.758:partialRedraw & helpers
         partialRedrawCount = 0
 
         def partialRedraw (self):
@@ -5807,7 +5657,7 @@ if wx:
                 self.redraw_partial_subtree(root_id,p,level=50)
                 p.moveToNext()
         #@nonl
-        #@+node:ekr.20081121105001.2050:redraw_partial_subtree
+        #@+node:ekr.20090126093408.759:redraw_partial_subtree
         def redraw_partial_subtree(self,parent_id,p,level,trace=False):
 
             c = self.c ; tree = self.treeCtrl
@@ -5841,9 +5691,27 @@ if wx:
             if 1: # May be changed later, but useful here.
                 if p == c.currentPosition():
                     tree.SelectItem(node_id) # Generates call to onTreeChanged.
-        #@-node:ekr.20081121105001.2050:redraw_partial_subtree
-        #@-node:ekr.20081121105001.2049:partialRedraw & helpers
-        #@+node:ekr.20081121105001.2053:updateVisibleIcons
+        #@-node:ekr.20090126093408.759:redraw_partial_subtree
+        #@-node:ekr.20090126093408.758:partialRedraw & helpers
+        #@-node:ekr.20090126093408.749:redraw & redraw_now & helpers
+        #@+node:ekr.20090126093408.760:assignIcon
+        def assignIcon (self,p):
+
+            val = p.v.computeIcon()
+            assert(0 <= val <= 15)
+            p.v.iconVal = val
+            return val
+        #@-node:ekr.20090126093408.760:assignIcon
+        #@+node:ekr.20090126093408.761:tree.edit_widget
+        def edit_widget (self,p):
+
+            '''Return a widget (compatible with leoTextWidget) used for editing the headline.'''
+
+            w = self.editWidgetDict.get(p.v)
+
+            return w
+        #@-node:ekr.20090126093408.761:tree.edit_widget
+        #@+node:ekr.20090126093408.762:updateVisibleIcons
         def updateVisibleIcons (self,p):
 
             '''Update all visible icons joined to p.'''
@@ -5859,285 +5727,16 @@ if wx:
 
         def updateIcon(self,p):
             val = p.v.computeIcon()
-            g.trace(val,p.headString())
             tree_id = self.getIdDict(p)
             if tree_id:
                 self.treeCtrl.SetItemImage(tree_id,val)
             else:
                 g.trace('can not happen: no id',p.headString())
-        #@-node:ekr.20081121105001.2053:updateVisibleIcons
-        #@-node:ekr.20081121105001.2040:OLDredraw & redraw_now & helpers
-        #@-node:ekr.20090123181335.34:Entries (wxTree)
-        #@+node:ekr.20090123181335.17:Helpers (wxTree)
-        #@+node:ekr.20090123181335.18:Associating items and nodes (FROM qtTree)
-        #@+node:ekr.20090123181335.19:item dict getters
-        def item2tnode (self,item):
-            v = self.item2vnodeDict.get(item)
-            return v and v.t
-
-        def item2vnode (self,item):
-            return self.item2vnodeDict.get(item)
-
-        def tnode2items(self,t):
-            return self.tnode2itemsDict.get(t,[])
-
-        def vnode2items(self,v):
-            return self.vnode2itemsDict.get(v,[])
-
-        def isValidItem (self,item):
-            return item in self.item2vnodeDict
-        #@-node:ekr.20090123181335.19:item dict getters
-        #@+node:ekr.20090123181335.20:item2position & position2item & helpers
-        #@@nocolor-node
-        #@+at
-        # 
-        # These two methods allow the drawing code to avoid storing any 
-        # positions,
-        # a crucial simplification. Indeed, without the burden of keeping 
-        # position
-        # up-to-date, or worse, recalculating them all whenever the outline 
-        # changes,
-        # the tree code becomes straightforward.
-        #@-at
-        #@nonl
-        #@+node:ekr.20090123181335.21:childItems
-        def childItems (self,parent_item):
-
-            '''Return the list of child items of the parent item,
-            or the top-level items if parent_item is None.'''
-
-            if parent_item:
-                n = parent_item.childCount()
-                items = [parent_item.child(z) for z in range(n)]
-            else:
-                w = self.treeWidget
-                n = w.topLevelItemCount()
-                items = [w.topLevelItem(z) for z in range(n)]
-
-            return items
-        #@-node:ekr.20090123181335.21:childItems
-        #@+node:ekr.20090123181335.22:childIndexOfItem
-        def childIndexOfItem (self,item):
-
-            parent = item.parent()
-
-            if parent:
-                n = parent.indexOfChild(item)
-            else:
-                w = self.treeWidget
-                n = w.indexOfTopLevelItem(item)
-
-            return n
-
-        #@-node:ekr.20090123181335.22:childIndexOfItem
-        #@+node:ekr.20090123181335.23:item2position
-        def item2position (self,item):
-
-            '''Reconstitute a position given an item.'''
-
-            stack = []
-            childIndex = self.childIndexOfItem(item)
-            v = self.item2vnode(item)
-
-            item = item.parent()
-            while item:
-                n2 = self.childIndexOfItem(item)
-                v2 = self.item2vnode(item)
-                data = v2,n2
-                stack.insert(0,data)
-                item = item.parent()
-
-            p = leoNodes.position(v,childIndex,stack)
-
-            if not p:
-                self.oops('item2position failed. p: %s, v: %s, childIndex: %s stack: %s' % (
-                    p,v,childIndex,stack))
-
-            return p
-        #@-node:ekr.20090123181335.23:item2position
-        #@+node:ekr.20090123181335.24:nthChildItem
-        def nthChildItem (self,n,parent_item):
-
-            children = self.childItems(parent_item)
-
-            if n < len(children):
-                item = children[n]
-            else:
-                # self.oops('itemCount: %s, n: %s' % (len(children),n))
-
-                # This is **not* an error.
-                # It simply means that we need to redraw the tree.
-                item = None
-
-            return item
-        #@-node:ekr.20090123181335.24:nthChildItem
-        #@+node:ekr.20090123181335.25:position2item
-        def position2item (self,p):
-
-            '''Return the unique tree item associated with position p.
-
-            Return None if there no such tree item.  This is *not* an error.'''
-
-            parent_item = None
-
-            for v,n in p.stack:
-                parent_item = self.nthChildItem(n,parent_item)
-
-            item = self.nthChildItem(p.childIndex(),parent_item)
-
-            return item
-        #@-node:ekr.20090123181335.25:position2item
-        #@-node:ekr.20090123181335.20:item2position & position2item & helpers
-        #@-node:ekr.20090123181335.18:Associating items and nodes (FROM qtTree)
-        #@+node:ekr.20090123181335.26:Icons (FROM qt tree)
-        #@+node:ekr.20090123181335.27:drawIcon
-        def drawIcon (self,p):
-
-            '''Redraw the icon at p.'''
-
-            w = self.treeWidget
-            itemOrTree = self.position2item(p) or w
-            item = QtGui.QTreeWidgetItem(itemOrTree)
-            icon = self.getIcon(p)
-            self.setItemIcon(item,icon)
-        #@nonl
-        #@-node:ekr.20090123181335.27:drawIcon
-        #@+node:ekr.20090123181335.28:drawItemIcon
-        def drawItemIcon (self,p,item):
-
-            '''Set the item's icon to p's icon.'''
-
-            icon = self.getIcon(p)
-            self.setItemIcon(item,icon)
-        #@-node:ekr.20090123181335.28:drawItemIcon
-        #@+node:ekr.20090123181335.29:getIcon & getIconImage
-        def getIcon(self,p):
-
-            '''Return the proper icon for position p.'''
-
-            p.v.iconVal = val = p.v.computeIcon()
-
-            return self.getCompositeIconImage(p, val)
-
-        def getVnodeIcon(self,p):
-
-            '''Return the proper icon for position p.'''
-
-            p.v.iconVal = val = p.v.computeIcon()
-            return self.getIconImage(val)
-
-        def getIconImage(self,val):
-
-            return g.app.gui.getIconImage(
-                "box%02d.GIF" % val)
-
-        def getCompositeIconImage(self, p, val):
-
-            userIcons = self.c.editCommands.getIconList(p)
-            statusIcon = self.getIconImage(val)
-
-            if not userIcons:
-                return statusIcon
-
-            hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
-            hash.append(str(val))
-            hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
-            hash = ':'.join(hash)
-
-            if hash in g.app.gui.iconimages:
-                return g.app.gui.iconimages[hash]
-
-            images = [g.app.gui.getImageImage(i['file']) for i in userIcons
-                     if i['where'] == 'beforeIcon']
-            images.append(g.app.gui.getImageImage("box%02d.GIF" % val))
-            images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
-                          if i['where'] == 'beforeHeadline'])
-            width = sum([i.width() for i in images])
-            height = max([i.height() for i in images])
-
-            pix = QtGui.QPixmap(width,height)
-            pix.fill()
-            pix.setAlphaChannel(pix)
-            painter = QtGui.QPainter(pix)
-            x = 0
-            for i in images:
-                painter.drawPixmap(x,(height-i.height())//2,i)
-                x += i.width()
-            painter.end()
-
-            g.app.gui.iconimages[hash] = QtGui.QIcon(pix)
-
-            return g.app.gui.iconimages[hash]
-        #@-node:ekr.20090123181335.29:getIcon & getIconImage
-        #@+node:ekr.20090123181335.30:setItemIcon
-        def setItemIcon (self,item,icon):
-
-            trace = True
-
-            valid = item and self.isValidItem(item)
-
-            if icon and valid:
-                try:
-                    # Suppress onItemChanged.
-                    self.redrawingIcons = True
-                    item.setIcon(0,icon)
-                except Exception:
-                    self.redrawingIcons = False
-            elif trace:
-                # Apparently, icon can be None due to recent icon changes.
-                if icon:
-                    g.trace('** item %s, valid: %s, icon: %s' % (
-                        item and id(item) or '<no item>',valid,icon),
-                        g.callers(4))
-        #@-node:ekr.20090123181335.30:setItemIcon
-        #@+node:ekr.20090123181335.31:updateIcon
-        def updateIcon (self,p,force=False):
-
-            '''Update p's icon.'''
-
-            if not p: return
-
-            val = p.v.computeIcon()
-
-            # The force arg is needed:
-            # Leo's core may have updated p.v.iconVal.
-            if p.v.iconVal == val and not force:
-                return
-
-            p.v.iconVal = val
-            icon = self.getIconImage(val)
-            # Update all cloned/joined items.
-            items = self.tnode2items(p.v.t)
-            for item in items:
-                self.setItemIcon(item,icon)
-        #@nonl
-        #@-node:ekr.20090123181335.31:updateIcon
-        #@+node:ekr.20090123181335.32:updateVisibleIcons
-        def updateVisibleIcons (self,p):
-
-            '''Update the icon for p and the icons
-            for all visible descendants of p.'''
-
-            self.updateIcon(p,force=True)
-
-            if p.hasChildren() and p.isExpanded():
-                for child in p.children_iter():
-                    self.updateVisibleIcons(child)
-        #@-node:ekr.20090123181335.32:updateVisibleIcons
-        #@-node:ekr.20090123181335.26:Icons (FROM qt tree)
-        #@+node:ekr.20081121105001.2051:assignIcon (same as getIcon)
-        # def assignIcon (self,p):
-
-            # val = p.v.computeIcon()
-            # assert(0 <= val <= 15)
-            # p.v.iconVal = val
-            # return val
-        #@-node:ekr.20081121105001.2051:assignIcon (same as getIcon)
-        #@-node:ekr.20090123181335.17:Helpers (wxTree)
-        #@-node:ekr.20081121105001.2035:Drawing (wxTree)
-        #@+node:ekr.20081121105001.2054:Event handlers (wxTree)
+        #@-node:ekr.20090126093408.762:updateVisibleIcons
+        #@-node:ekr.20090126093408.744:Drawing
+        #@+node:ekr.20090126093408.763:Event handlers (wxTree)
         # These event handlers work on both XP and Ubuntu.
-        #@+node:ekr.20081121105001.2055:setSelectedLabelState
+        #@+node:ekr.20090126093408.764:setSelectedLabelState
         def setSelectedLabelState (self,p):
 
             c = self.c ; tree = self.treeCtrl
@@ -6153,8 +5752,8 @@ if wx:
                     # tree.ScrollTo(tree_id)
                 finally:
                     self.frame.lockout = False
-        #@-node:ekr.20081121105001.2055:setSelectedLabelState
-        #@+node:ekr.20081121105001.2056:get_p
+        #@-node:ekr.20090126093408.764:setSelectedLabelState
+        #@+node:ekr.20090126093408.765:get_p
         def get_p (self,event):
 
             '''Return the position associated with an event.
@@ -6183,282 +5782,8 @@ if wx:
                 # g.trace(p.headString(),g.callers())
                 return p
         #@nonl
-        #@-node:ekr.20081121105001.2056:get_p
-        #@+node:ekr.20081121105001.2058:onHeadlineKey
-        # k.handleDefaultChar calls onHeadlineKey.
-        def onHeadlineKey (self,event):
-            # g.trace(event)
-            if g.app.killed or self.c.frame.killed: return
-            if event and event.keysym:
-                self.updateHead(event,event.widget)
-        #@-node:ekr.20081121105001.2058:onHeadlineKey
-        #@+node:ekr.20081121105001.2059:Clicks
-        #@+node:ekr.20081121105001.2060:selectHelper
-        def selectHelper (self,event):
-
-            '''Scroll so the presently selected node is in view.'''
-
-            p = self.get_p(event)
-            if not p: return
-
-            # We can make this assertion because get_p has done the check.
-            tree_id = event.GetItem()
-            assert (tree_id.IsOk() and not self.frame.lockout)
-
-            # g.trace(p.headString(),g.callers())
-            tree = self.treeCtrl
-            self.frame.lockout = True
-            try:
-                tree.SelectItem(tree_id)
-                tree.ScrollTo(tree_id)
-            finally:
-                self.frame.lockout = False
-        #@-node:ekr.20081121105001.2060:selectHelper
-        #@+node:ekr.20081121105001.2061:Collapse...
-        def onTreeCollapsing(self,event):
-
-            '''Handle a pre-collapse event due to a click in the +- box.'''
-
-            p = self.get_p(event)
-            if not p: return
-
-            # p will be None while redrawing, so this is the outermost click event.
-            # Set the selection before redrawing so the tree is drawn properly.
-            c = self.c ; tree = self.treeCtrl
-            c.selectPosition(p)
-            p.contract()
-
-        def onTreeCollapsed(self,event):
-
-            '''Handle a post-collapse event due to a click in the +- box.'''
-
-            self.selectHelper(event)
-        #@-node:ekr.20081121105001.2061:Collapse...
-        #@+node:ekr.20081121105001.2062:Expand...
-        def onTreeExpanding (self,event):
-
-            '''Handle a pre-expand event due to a click in the +- box.'''
-
-            p = self.get_p(event)
-            if not p: return
-
-            # p will be None while redrawing, so this is the outermost click event.
-            # Set the selection before redrawing so the tree is drawn properly.
-            c = self.c ; tree = self.treeCtrl
-            c.selectPosition(p)
-            p.expand()
-
-        def onTreeExpanded (self,event):
-
-            '''Handle a post-collapse event due to a click in the +- box.'''
-
-            self.selectHelper(event)
-        #@-node:ekr.20081121105001.2062:Expand...
-        #@+node:ekr.20081121105001.2063:Change selection
-        def onTreeSelChanging(self,event):
-
-            p = self.get_p(event)
-            if not p: return
-
-            # p will be None while redrawing, so this is the outermost click event.
-            # Set the selection before redrawing so the tree is drawn properly.
-            c = self.c
-            c.selectPosition(p)
-
-        #@-node:ekr.20081121105001.2063:Change selection
-        #@+node:ekr.20081121105001.2064:onRightDown/Up
-        def onRightDown (self,event):
-
-            if g.app.killed or self.c.frame.killed: return
-            tree = self.treeCtrl
-            pt = event.GetPosition()
-            item, flags = tree.HitTest(pt)
-            if item:
-                tree.SelectItem(item)
-
-        def onRightUp (self,event):
-
-            if g.app.killed or self.c.frame.killed: return
-            tree = self.treeCtrl
-            pt = event.GetPosition()
-            item, flags = tree.HitTest(pt)
-            if item:
-                tree.EditLabel(item)
-        #@-node:ekr.20081121105001.2064:onRightDown/Up
-        #@-node:ekr.20081121105001.2059:Clicks
-        #@+node:ekr.20081121105001.2065:Dragging
-        #@+node:ekr.20081121105001.2066:onTreeBeginDrag
-        def onTreeBeginDrag(self,event):
-
-            if g.app.killed or self.c.frame.killed: return
-
-            g.trace() ; return
-
-            if event.GetItem() != self.treeCtrl.GetRootItem():
-                mDraggedItem = event.GetItem()
-                event.Allow()
-        #@-node:ekr.20081121105001.2066:onTreeBeginDrag
-        #@+node:ekr.20081121105001.2067:onTreeEndDrag (NOT READY YET)
-        def onTreeEndDrag(self,event):
-
-            if g.app.killed or self.c.frame.killed: return
-
-            g.trace() ; return
-
-            #@    << Define onTreeEndDrag vars >>
-            #@+node:ekr.20081121105001.2068:<< Define onTreeEndDrag vars >>
-            assert(self.tree)
-            assert(self.c)
-
-            dst = event.GetItem()
-            src = mDraggedItem
-            mDraggedItem = 0
-
-            if not dst.IsOk() or not src.IsOk():
-                return
-
-            src_v = self.tree.GetItemData(src)
-            if src_v == None:
-                return
-
-            dst_v =self.tree.GetItemData(dst)
-            if dst_v == None:
-                return
-
-            parent = self.tree.GetParent(dst)
-            parent_v = None
-            #@nonl
-            #@-node:ekr.20081121105001.2068:<< Define onTreeEndDrag vars >>
-            #@nl
-            if  src == 0 or dst == 0:  return
-            cookie = None
-            if (
-                # dst is the root
-                not parent.IsOk()or
-                # dst has visible children and dst isn't the first child.
-                self.tree.ItemHasChildren(dst)and self.tree.IsExpanded(dst)and
-                self.tree.GetFirstChild(dst,cookie) != src or
-                # back(src)== dst(would otherwise be a do-nothing)
-                self.tree.GetPrevSibling(src) == dst):
-                #@        << Insert src as the first child of dst >>
-                #@+node:ekr.20081121105001.2069:<< Insert src as the first child of dst >>
-                # Make sure the drag will be valid.
-                parent_v = self.tree.GetItemData(dst)
-
-                if not self.c.checkMoveWithParentWithWarning(src_v,parent_v,True):
-                    return
-
-                src_v.moveToNthChildOf(dst_v,0)
-                #@nonl
-                #@-node:ekr.20081121105001.2069:<< Insert src as the first child of dst >>
-                #@nl
-            else:
-                # Not the root and no visible children.
-                #@        << Insert src after dst >>
-                #@+node:ekr.20081121105001.2070:<< Insert src after dst >>
-                # Do nothing if dst is a child of src.
-                p = parent
-                while p.IsOk():
-                    if p == src:
-                        return
-                    p = self.tree.GetParent(p)
-
-                # Do nothing if dst is joined to src.
-                if dst_v.isJoinedTo(src_v):
-                    return
-
-                # Make sure the drag will be valid.
-                parent_v = self.tree.GetItemData(parent)
-                if not self.c.checkMoveWithParentWithWarning(src_v,parent_v,True):
-                    return
-
-                src_v.moveAfter(dst_v)
-                #@nonl
-                #@-node:ekr.20081121105001.2070:<< Insert src after dst >>
-                #@nl
-            self.c.selectVnode(src_v)
-            self.c.setChanged(True)
-        #@-node:ekr.20081121105001.2067:onTreeEndDrag (NOT READY YET)
-        #@-node:ekr.20081121105001.2065:Dragging
-        #@+node:ekr.20081121105001.2071:Editing labels
-        #@+node:ekr.20081121105001.2072:onTreeBeginLabelEdit
-        # Editing is allowed only if this routine exists.
-
-        def onTreeBeginLabelEdit(self,event):
-
-            if g.app.killed or self.c.frame.killed: return
-
-            p = self.c.currentPosition()
-
-            # Used by the base classes onHeadChanged method.
-            self.revertHeadline = p.headString()
-        #@-node:ekr.20081121105001.2072:onTreeBeginLabelEdit
-        #@+node:ekr.20081121105001.2073:onTreeEndLabelEdit
-        # Editing will be allowed only if this routine exists.
-
-        def onTreeEndLabelEdit(self,event):
-
-            if g.app.killed or self.c.frame.killed: return
-
-            c = self.c ; tree = self.treeCtrl
-            id = event.GetItem()
-            s = event.GetLabel()
-            p = self.treeCtrl.GetItemData(id).GetData()
-            h = p.headString()
-
-            # g.trace('old:',h,'new:',s)
-
-            # Don't clear the headline by default.
-            if s and s != h:
-                # Call the base-class method.
-                self.onHeadChanged (p,undoType='Typing',s=s)
-        #@nonl
-        #@-node:ekr.20081121105001.2073:onTreeEndLabelEdit
-        #@-node:ekr.20081121105001.2071:Editing labels
-        #@+node:ekr.20081121105001.2060:selectHelper
-        def selectHelper (self,event):
-
-            '''Scroll so the presently selected node is in view.'''
-
-            p = self.get_p(event)
-            if not p: return
-
-            # We can make this assertion because get_p has done the check.
-            tree_id = event.GetItem()
-            assert (tree_id.IsOk() and not self.frame.lockout)
-
-            # g.trace(p.headString(),g.callers())
-            tree = self.treeCtrl
-            self.frame.lockout = True
-            try:
-                tree.SelectItem(tree_id)
-                tree.ScrollTo(tree_id)
-            finally:
-                self.frame.lockout = False
-        #@-node:ekr.20081121105001.2060:selectHelper
-        #@+node:ekr.20081121105001.2036:onEraseBackground
-        backgroundEraseCount = 0
-
-        def onEraseBackground (self,event):
-
-            if 0: # Alas, this doesn't quite work.
-                if self.paintLockout:
-                    return
-            # g.trace(self.backgroundEraseCount,g.callers())
-            self.backgroundEraseCount += 1
-
-            if 0:
-                tree = self.treeCtrl
-                dc = event.GetDC() or wx.ClientDC(tree)
-                sz = tree.GetClientSize()
-                color = wx.Color(253,245,230) # for some reason, 'leo yellow' doesn't work here.
-                brush = wx.Brush(color,wx.SOLID)
-                dc.SetBrush(brush)
-                dc.Clear()
-            elif 1:
-               event.Skip() # Causes flash.
-        #@-node:ekr.20081121105001.2036:onEraseBackground
-        #@+node:ekr.20081121105001.2057:onChar (wxTree)
+        #@-node:ekr.20090126093408.765:get_p
+        #@+node:ekr.20090126093408.766:onChar (leoTree)
         standardTreeKeys = []
         if sys.platform.startswith('win'):
             for mod in ('Alt+','Alt+Ctrl+','Ctrl+','',):
@@ -6483,264 +5808,289 @@ if wx:
             else:
                 c.k.masterKeyHandler(keyEvent,stroke=keysym)
                 # keyEvent.Skip(False) # Try to kill the default key handling.
-        #@-node:ekr.20081121105001.2057:onChar (wxTree)
-        #@-node:ekr.20081121105001.2054:Event handlers (wxTree)
-        #@+node:ekr.20081121105001.2077:get/setIdDict
-        # def getIdDict (self,p):
+        #@-node:ekr.20090126093408.766:onChar (leoTree)
+        #@+node:ekr.20090126093408.767:onHeadlineKey
+        # k.handleDefaultChar calls onHeadlineKey.
+        def onHeadlineKey (self,event):
+            # g.trace(event)
+            if g.app.killed or self.c.frame.killed: return
+            if event and event.keysym:
+                self.updateHead(event,event.widget)
+        #@-node:ekr.20090126093408.767:onHeadlineKey
+        #@+node:ekr.20090126093408.768:Clicks
+        #@+node:ekr.20090126093408.769:selectHelper
+        def selectHelper (self,event):
 
-            # '''Return the unique wx.Tree id for position p.'''
-            # aList = self.idDict.get(p.v,[])
-            # for p2,tree_id in aList:
-                # if p.equal(p2):
-                    # return tree_id
-            # else:
-                # # g.trace('No tree_id for position %s',p.headString()) # Not an error.
-                # return None
+            '''Scroll so the presently selected node is in view.'''
 
-        # def setIdDict (self,p,tree_id):
+            p = self.get_p(event)
+            if not p: return
 
-            # '''Associate the wx.Tree id with a position p.'''
+            # We can make this assertion because get_p has done the check.
+            tree_id = event.GetItem()
+            assert (tree_id.IsOk() and not self.frame.lockout)
 
-            # # Keys are vnodes, values are lists of position/tree_id pairs.
-            # aList = self.idDict.get(p.v,[])
-            # data = p.copy(),tree_id
-            # aList.append(data)
-            # self.idDict[p.v] = aList
-        #@-node:ekr.20081121105001.2077:get/setIdDict
-        #@+node:ekr.20081121105001.2079:do nothings
-        def headWidth (self,p=None,s=''): return 0
+            # g.trace(p.headString(),g.callers())
+            tree = self.treeCtrl
+            self.frame.lockout = True
+            try:
+                tree.SelectItem(tree_id)
+                tree.ScrollTo(tree_id)
+            finally:
+                self.frame.lockout = False
+        #@-node:ekr.20090126093408.769:selectHelper
+        #@+node:ekr.20090126093408.770:Collapse...
+        def onTreeCollapsing(self,event):
 
-        # Colors.
-        def setDisabledHeadlineColors (self,p):             pass
-        def setEditHeadlineColors (self,p):                 pass
-        def setUnselectedHeadlineColors (self,p):           pass
+            '''Handle a pre-collapse event due to a click in the +- box.'''
 
-        # State.
-        def setEditLabelState (self,p,selectAll=False):     pass
-        def setUnselectedLabelState (self,p):               pass
+            p = self.get_p(event)
+            if not p: return
 
-        # Focus
-        def focus_get (self):   return self.FindFocus()
-        def setFocus (self):    self.treeCtrl.SetFocus()
+            # p will be None while redrawing, so this is the outermost click event.
+            # Set the selection before redrawing so the tree is drawn properly.
+            c = self.c ; tree = self.treeCtrl
+            c.selectPosition(p)
+            p.contract()
 
-        SetFocus = setFocus
+        def onTreeCollapsed(self,event):
 
-        # For compatibility.
-        setNormalLabelState = setEditLabelState 
-        #@-node:ekr.20081121105001.2079:do nothings
-        #@+node:ekr.20090123181335.35:Selecting & editing... (FROM qtTree)
-        #@+node:ekr.20090123181335.36:afterSelectHint
-        def afterSelectHint (self,p,old_p):
+            '''Handle a post-collapse event due to a click in the +- box.'''
 
-            trace = False
+            self.selectHelper(event)
+        #@-node:ekr.20090126093408.770:Collapse...
+        #@+node:ekr.20090126093408.771:Expand...
+        def onTreeExpanding (self,event):
+
+            '''Handle a pre-expand event due to a click in the +- box.'''
+
+            p = self.get_p(event)
+            if not p: return
+
+            # p will be None while redrawing, so this is the outermost click event.
+            # Set the selection before redrawing so the tree is drawn properly.
+            c = self.c ; tree = self.treeCtrl
+            c.selectPosition(p)
+            p.expand()
+
+        def onTreeExpanded (self,event):
+
+            '''Handle a post-collapse event due to a click in the +- box.'''
+
+            self.selectHelper(event)
+        #@-node:ekr.20090126093408.771:Expand...
+        #@+node:ekr.20090126093408.772:Change selection
+        def onTreeSelChanging(self,event):
+
+            p = self.get_p(event)
+            if not p: return
+
+            # p will be None while redrawing, so this is the outermost click event.
+            # Set the selection before redrawing so the tree is drawn properly.
             c = self.c
+            c.selectPosition(p)
 
-            self.selecting = False
+        #@-node:ekr.20090126093408.772:Change selection
+        #@+node:ekr.20090126093408.773:onRightDown/Up
+        def onRightDown (self,event):
 
-            if not p:
-                return g.trace('Error: no p')
-            if p != c.currentPosition():
-                return g.trace('Error: p is not c.currentPosition()')
-            if self.redrawing:
-                return g.trace('Error: already redrawing')
+            if g.app.killed or self.c.frame.killed: return
+            tree = self.treeCtrl
+            pt = event.GetPosition()
+            item, flags = tree.HitTest(pt)
+            if item:
+                tree.SelectItem(item)
 
-            if trace: g.trace(p and p.headString(),g.callers(4))
+        def onRightUp (self,event):
 
-            c.outerUpdate() # Bring the tree up to date.
+            if g.app.killed or self.c.frame.killed: return
+            tree = self.treeCtrl
+            pt = event.GetPosition()
+            item, flags = tree.HitTest(pt)
+            if item:
+                tree.EditLabel(item)
+        #@-node:ekr.20090126093408.773:onRightDown/Up
+        #@-node:ekr.20090126093408.768:Clicks
+        #@+node:ekr.20090126093408.774:Dragging
+        #@+node:ekr.20090126093408.775:onTreeBeginDrag
+        def onTreeBeginDrag(self,event):
 
-            # setCurrentItem sets & clears .selecting ivar
-            self.setCurrentItem()
-        #@-node:ekr.20090123181335.36:afterSelectHint
-        #@+node:ekr.20090123181335.37:beforeSelectHint
-        def beforeSelectHint (self,p,old_p):
+            if g.app.killed or self.c.frame.killed: return
 
-            trace = False
+            g.trace() ; return
 
-            if self.selecting:
-                return g.trace('*** Error: already selecting',g.callers(4))
-            if self.redrawing:
-                if trace: g.trace('already redrawing')
+            if event.GetItem() != self.treeCtrl.GetRootItem():
+                mDraggedItem = event.GetItem()
+                event.Allow()
+        #@-node:ekr.20090126093408.775:onTreeBeginDrag
+        #@+node:ekr.20090126093408.776:onTreeEndDrag (NOT READY YET)
+        def onTreeEndDrag(self,event):
+
+            if g.app.killed or self.c.frame.killed: return
+
+            g.trace() ; return
+
+            #@    << Define onTreeEndDrag vars >>
+            #@+node:ekr.20090126093408.777:<< Define onTreeEndDrag vars >>
+            assert(self.tree)
+            assert(self.c)
+
+            dst = event.GetItem()
+            src = mDraggedItem
+            mDraggedItem = 0
+
+            if not dst.IsOk() or not src.IsOk():
                 return
 
-            if trace: g.trace(p and p.headString())
-
-            # Disable onTextChanged.
-            self.selecting = True
-        #@nonl
-        #@-node:ekr.20090123181335.37:beforeSelectHint
-        #@+node:ekr.20090123181335.38:edit_widget
-        def edit_widget (self,p):
-
-            """Returns the Qt.Edit widget for position p."""
-
-            trace = False
-            c = self.c ; treeWidget = self.treeWidget
-            item = self.position2item(p)
-            if item:
-                e = treeWidget.itemWidget(item,0) # A QLineEdit
-                if e:
-                    # Create a wrapper widget for Leo's core.
-                    w = leoQtHeadlineWidget(widget=e,name='head',c=c)
-                    if trace: g.trace(w,p and p.headString())
-                    return w
-                else:
-                    # This is not an error
-                    if trace: g.trace('no e for %s' % (p),g.callers(4))
-                    return None
-            else:
-                if trace: g.trace('no item for %s' % (p),g.callers(4))
-                return None
-        #@nonl
-        #@-node:ekr.20090123181335.38:edit_widget
-        #@+node:ekr.20090123181335.39:editLabel (override)
-        def editLabel (self,p,selectAll=False,selection=None):
-
-            """Start editing p's headline."""
-
-            trace = False ; verbose = False
-            c = self.c ; w = self.treeWidget
-
-            if self.redrawing:
-                if trace and verbose: g.trace('redrawing')
+            src_v = self.tree.GetItemData(src)
+            if src_v == None:
                 return
-            if trace: g.trace('***',p and p.headString(),g.callers(4))
 
-            c.outerUpdate()
-                # Do any scheduled redraw.
-                # This won't do anything in the new redraw scheme.
+            dst_v =self.tree.GetItemData(dst)
+            if dst_v == None:
+                return
 
-            item = self.position2item(p)
+            parent = self.tree.GetParent(dst)
+            parent_v = None
+            #@nonl
+            #@-node:ekr.20090126093408.777:<< Define onTreeEndDrag vars >>
+            #@nl
+            if  src == 0 or dst == 0:  return
+            cookie = None
+            if (
+                # dst is the root
+                not parent.IsOk()or
+                # dst has visible children and dst isn't the first child.
+                self.tree.ItemHasChildren(dst)and self.tree.IsExpanded(dst)and
+                self.tree.GetFirstChild(dst,cookie) != src or
+                # back(src)== dst(would otherwise be a do-nothing)
+                self.tree.GetPrevSibling(src) == dst):
+                #@        << Insert src as the first child of dst >>
+                #@+node:ekr.20090126093408.778:<< Insert src as the first child of dst >>
+                # Make sure the drag will be valid.
+                parent_v = self.tree.GetItemData(dst)
 
-            if item:
-                w.setCurrentItem(item) # Must do this first.
-                w.editItem(item)
-                    # Generates focus-in event that tree doesn't report.
-                e = w.itemWidget(item,0) # A QLineEdit
-                if e:
-                    s = e.text() ; len_s = len(s)
-                    if selection:
-                        i,j,ins = selection
-                        start,n = i,abs(i-j)
-                            # Not right for backward searches.
-                    elif selectAll: start,n,ins = 0,len_s,len_s
-                    else:           start,n,ins = len_s,0,len_s
-                    e.setObjectName('headline')
-                    e.setSelection(start,n)
-                    # e.setCursorPosition(ins) # Does not work.
-                    e.setFocus()
-                else: self.oops('no edit widget')
+                if not self.c.checkMoveWithParentWithWarning(src_v,parent_v,True):
+                    return
+
+                src_v.moveToNthChildOf(dst_v,0)
+                #@nonl
+                #@-node:ekr.20090126093408.778:<< Insert src as the first child of dst >>
+                #@nl
             else:
-                e = None
-                self.oops('no item: %s' % p)
+                # Not the root and no visible children.
+                #@        << Insert src after dst >>
+                #@+node:ekr.20090126093408.779:<< Insert src after dst >>
+                # Do nothing if dst is a child of src.
+                p = parent
+                while p.IsOk():
+                    if p == src:
+                        return
+                    p = self.tree.GetParent(p)
 
-            # A nice hack: just set the focus request.
-            if e: c.requestedFocusWidget = e
-        #@-node:ekr.20090123181335.39:editLabel (override)
-        #@+node:ekr.20090123181335.40:editPosition
-        def editPosition(self):
+                # Do nothing if dst is joined to src.
+                if dst_v.isJoinedTo(src_v):
+                    return
 
-            c = self.c ; p = c.currentPosition()
-            ew = self.edit_widget(p)
-            return ew and p or None
-        #@-node:ekr.20090123181335.40:editPosition
-        #@+node:ekr.20090123181335.41:endEditLabel
-        def endEditLabel (self):
+                # Make sure the drag will be valid.
+                parent_v = self.tree.GetItemData(parent)
+                if not self.c.checkMoveWithParentWithWarning(src_v,parent_v,True):
+                    return
 
-            '''Override leoTree.endEditLabel.
+                src_v.moveAfter(dst_v)
+                #@nonl
+                #@-node:ekr.20090126093408.779:<< Insert src after dst >>
+                #@nl
+            self.c.selectVnode(src_v)
+            self.c.setChanged(True)
+        #@-node:ekr.20090126093408.776:onTreeEndDrag (NOT READY YET)
+        #@-node:ekr.20090126093408.774:Dragging
+        #@+node:ekr.20090126093408.780:Editing labels
+        #@+node:ekr.20090126093408.781:onTreeBeginLabelEdit
+        # Editing is allowed only if this routine exists.
 
-            End editing of the presently-selected headline.'''
+        def onTreeBeginLabelEdit(self,event):
 
-            c = self.c ; p = c.currentPosition()
+            if g.app.killed or self.c.frame.killed: return
 
-            ew = self.edit_widget(p)
-            e = ew and ew.widget
+            p = self.c.currentPosition()
 
-            if e:
-                s = e.text()
-                if s != p.headString():
-                    self.onHeadChanged(p)
-        #@-node:ekr.20090123181335.41:endEditLabel
-        #@+node:ekr.20090123181335.42:onHeadChanged (qtTree)
-        # Tricky code: do not change without careful thought and testing.
+            # Used by the base classes onHeadChanged method.
+            self.revertHeadline = p.headString()
+        #@-node:ekr.20090126093408.781:onTreeBeginLabelEdit
+        #@+node:ekr.20090126093408.782:onTreeEndLabelEdit
+        # Editing will be allowed only if this routine exists.
 
-        def onHeadChanged (self,p,undoType='Typing',s=None):
+        def onTreeEndLabelEdit(self,event):
 
-            '''Officially change a headline.'''
+            if g.app.killed or self.c.frame.killed: return
 
-            trace = False ; verbose = True
-            c = self.c ; u = c.undoer
-            ew = self.edit_widget(p)
-            if ew: e = ew.widget
-            item = self.position2item(p)
+            c = self.c ; tree = self.treeCtrl
+            id = event.GetItem()
+            s = event.GetLabel()
+            p = self.treeCtrl.GetItemData(id).GetData()
+            h = p.headString()
 
-            w = g.app.gui.get_focus()
+            # g.trace('old:',h,'new:',s)
 
-            # These are not errors: onItemChanged may
-            # have been called first.
-            if trace and verbose:
-                if not e:  g.trace('No e',g.callers(4))
-                if e != w: g.trace('e != w',e,w,g.callers(4))
-                if not p:  g.trace('No p')
-
-            if e and e == w and item and p:
-                s = e.text() ; len_s = len(s)
-                s = g.app.gui.toUnicode(s)
-                oldHead = p.headString()
-                changed = s != oldHead
-                if trace: g.trace('changed',changed,repr(s),g.callers(4))
-                if changed:
-                    p.initHeadString(s)
-                    item.setText(0,s) # Required to avoid full redraw.
-                    undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
-                    if not c.changed: c.setChanged(True)
-                    # New in Leo 4.4.5: we must recolor the body because
-                    # the headline may contain directives.
-                    c.frame.body.recolor(p,incremental=True)
-                    dirtyVnodeList = p.setDirty()
-                    u.afterChangeNodeContents(p,undoType,undoData,
-                        dirtyVnodeList=dirtyVnodeList)
-
-            # This is a crucial shortcut.
-            if g.unitTesting: return
-
-            if self.stayInTree:
-                c.treeWantsFocus()
-            else:
-                c.bodyWantsFocus()
-            c.outerUpdate()
+            # Don't clear the headline by default.
+            if s and s != h:
+                # Call the base-class method.
+                self.onHeadChanged (p,undoType='Typing',s=s)
         #@nonl
-        #@-node:ekr.20090123181335.42:onHeadChanged (qtTree)
-        #@+node:ekr.20090123181335.43:setHeadline (qtTree)
-        def setHeadline (self,p,s):
+        #@-node:ekr.20090126093408.782:onTreeEndLabelEdit
+        #@-node:ekr.20090126093408.780:Editing labels
+        #@+node:ekr.20090126093408.769:selectHelper
+        def selectHelper (self,event):
 
-            '''Set the actual text of the headline widget.
+            '''Scroll so the presently selected node is in view.'''
 
-            This is called from unit tests to change the text before redrawing.'''
+            p = self.get_p(event)
+            if not p: return
 
-            p.setHeadString(s)
-            w = self.edit_widget(p)
-            if w:
-                w.setAllText(s)
-        #@-node:ekr.20090123181335.43:setHeadline (qtTree)
-        #@+node:ekr.20090123181335.44:traceSelect
-        def traceSelect (self):
+            # We can make this assertion because get_p has done the check.
+            tree_id = event.GetItem()
+            assert (tree_id.IsOk() and not self.frame.lockout)
 
-            if 0:
-                g.trace(self.selecting,g.callers(5))
-        #@-node:ekr.20090123181335.44:traceSelect
-        #@-node:ekr.20090123181335.35:Selecting & editing... (FROM qtTree)
-        #@+node:ekr.20081121105001.2074:Selection (wxTree)
-        #@+node:ekr.20081121105001.2052:tree.edit_widget (wxTree)
-        def edit_widget (self,p):
+            # g.trace(p.headString(),g.callers())
+            tree = self.treeCtrl
+            self.frame.lockout = True
+            try:
+                tree.SelectItem(tree_id)
+                tree.ScrollTo(tree_id)
+            finally:
+                self.frame.lockout = False
+        #@-node:ekr.20090126093408.769:selectHelper
+        #@-node:ekr.20090126093408.763:Event handlers (wxTree)
+        #@+node:ekr.20090126093408.766:onChar (leoTree)
+        standardTreeKeys = []
+        if sys.platform.startswith('win'):
+            for mod in ('Alt+','Alt+Ctrl+','Ctrl+','',):
+                for base in ('Right','Left','Up','Down'):
+                    standardTreeKeys.append(mod+base)
+            for key in string.ascii_letters + string.digits + string.punctuation:
+                standardTreeKeys.append(key)
 
-            '''Return a widget (compatible with leoTextWidget) used for editing the headline.'''
+        def onChar (self,event):
 
-            w = self.editWidgetDict.get(p.v)
+            if g.app.killed or self.c.frame.killed: return
 
-            return w
-        #@-node:ekr.20081121105001.2052:tree.edit_widget (wxTree)
-        #@+node:ekr.20081121105001.2075:editLabel
-        def editLabel (self,p,selectAll=False,selection=None):
+            c = self.c
+            # Convert from tree event to key event.
+            keyEvent = event.GetKeyEvent()
+            keyEvent.leoWidget = self
+            keysym = g.app.gui.eventKeysym(keyEvent)
+            # if keysym: g.trace('keysym',repr(keysym))
+            if keysym in self.standardTreeKeys:
+                pass
+                # g.trace('standard key',keysym)
+            else:
+                c.k.masterKeyHandler(keyEvent,stroke=keysym)
+                # keyEvent.Skip(False) # Try to kill the default key handling.
+        #@-node:ekr.20090126093408.766:onChar (leoTree)
+        #@+node:ekr.20090126093408.783:Selection (leoTree)
+        #@+node:ekr.20090126093408.784:editLabel
+        def editLabel (self,p,selectAll=False):
 
             '''The edit-label command.'''
 
@@ -6751,7 +6101,7 @@ if wx:
             tree_id = self.getIdDict(p)
             # g.trace('editPosition',self.editPosition(),'id',id(tree_id))
 
-            expandFlag = c.expandAllAncestors(p)
+            expandFlag = self.expandAllAncestors(p)
             idFlag = not tree_id or not tree_id.IsOk()
             switchFlag = p != self.editPosition()
             # g.trace('expand',expandFlag,'id',idFlag,'switch',switchFlag)
@@ -6773,16 +6123,13 @@ if wx:
                 # Important: this sets the 'virtual' selection (so, e.g., unit tests will pass)
                 # but it does *not* clear the actual selection (there is no way to do this programatically)
                 selectAll = c.config.getBool('select_all_text_when_editing_headlines')
-                if selection:
-                    i,j,ins = selection
-                    w.setSelectionRange(i,j,insert=ins)
-                elif selectAll:
+                if selectAll:
                     w.setSelectionRange(0,'end',insert='end')
                 else:
                     w.setSelectionRange('end','end',insert='end')
                 c.headlineWantsFocus(p) # Make sure the focus sticks.
-        #@-node:ekr.20081121105001.2075:editLabel
-        #@+node:ekr.20081121105001.2076:setEditWidget
+        #@-node:ekr.20090126093408.784:editLabel
+        #@+node:ekr.20090126093408.785:setEditWidget
         # Called only from wxTree.redraw_node,
         # so creating a new headlineWidget each time is correct.
 
@@ -6794,11 +6141,70 @@ if wx:
             p.edit_widget = w = headlineWidget(self.c,self.treeCtrl,tree_id)
             self.editWidgetDict[p.v] = w
 
-        #@-node:ekr.20081121105001.2076:setEditWidget
-        #@-node:ekr.20081121105001.2074:Selection (wxTree)
+        #@-node:ekr.20090126093408.785:setEditWidget
+        #@+node:ekr.20090126093408.786:get/setIdDict
+        def getIdDict (self,p):
+
+            '''Return the unique wx.Tree id for position p.'''
+            aList = self.idDict.get(p.v,[])
+            for p2,tree_id in aList:
+                if p.equal(p2):
+                    return tree_id
+            else:
+                # g.trace('No tree_id for position %s',p.headString()) # Not an error.
+                return None
+
+        def setIdDict (self,p,tree_id):
+
+            '''Associate the wx.Tree id with a position p.'''
+
+            # Keys are vnodes, values are lists of position/tree_id pairs.
+            aList = self.idDict.get(p.v,[])
+            data = p.copy(),tree_id
+            aList.append(data)
+            self.idDict[p.v] = aList
+        #@-node:ekr.20090126093408.786:get/setIdDict
+        #@-node:ekr.20090126093408.783:Selection (leoTree)
+        #@+node:ekr.20090126093408.787:tree.setHeadline (new in 4.4b2)
+        def setHeadline (self,p,s):
+
+            '''Set the actual text of the headline widget.
+
+            This is called from the undo/redo logic to change the text before redrawing.'''
+
+            w = self.c.edit_widget(p)
+            if w:
+                w.setAllText(s)
+                self.revertHeadline = s
+            elif g.app.killed or self.c.frame.killed:
+                return
+            else:
+                g.trace('-'*20,'oops')
+        #@-node:ekr.20090126093408.787:tree.setHeadline (new in 4.4b2)
+        #@+node:ekr.20090126093408.788:do nothings
+        def headWidth (self,p=None,s=''): return 0
+
+        # Colors.
+        def setDisabledHeadlineColors (self,p):             pass
+        def setEditHeadlineColors (self,p):                 pass
+        def setUnselectedHeadlineColors (self,p):           pass
+
+        # State.
+        def setEditLabelState (self,p,selectAll=False):     pass
+        def setUnselectedLabelState (self,p):               pass
+
+        # Focus
+        def focus_get (self):   return self.FindFocus()
+        def setFocus (self):    self.treeCtrl.SetFocus()
+
+        SetFocus = setFocus
+
+        # For compatibility.
+        setNormalLabelState = setEditLabelState 
+        #@-node:ekr.20090126093408.788:do nothings
         #@-others
     #@nonl
-    #@-node:ekr.20081121105001.2029:wxLeoTree class (leoFrame.leoTree):
+    #@-node:ekr.20090126093408.738:wxLeoTree class (leoFrame.leoTree):
     #@-others
-#@-node:ekr.20081121105001.1707:@thin experimental/__wx_gui.py
+#@-node:ekr.20090126093408.416:@thin experimental/__wx_gui.py
 #@-leo

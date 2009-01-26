@@ -192,6 +192,9 @@ def createSpecialGui(gui,pymacs,script,windowFlag):
         leoPlugins.loadOnePlugin ('qtGui',verbose=True)
     elif gui == 'tk':
         g.app.createTkGui()
+    elif gui == 'wx':
+        g.app.createWxGui()
+#@nonl
 #@+node:ekr.20031218072017.1938:createNullGuiWithScript
 def createNullGuiWithScript (script):
 
@@ -495,9 +498,9 @@ def scanOptions():
     # -- gui
     gui = options.gui
     if gui: gui = gui.lower()
-    if gui not in ('tk','qt'):
+    if gui not in ('tk','qt','wx'):
+        g.trace('unknown gui: %s' % gui)
         gui = None
-    # g.trace('gui',gui)
 
     # --script
     script_path = options.script
