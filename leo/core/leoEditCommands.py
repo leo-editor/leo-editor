@@ -5031,7 +5031,8 @@ class editFileCommandsClass (baseEditCommandsClass):
 
             txt = f.read()
             f.close()
-            w.insert('insert',txt)
+            i = w.getInsertPoint()
+            w.insert(i,txt)
             w.seeInsertPoint()
 
             self.endCommand(changed=True,setLabel=True)

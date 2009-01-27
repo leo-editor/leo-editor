@@ -5,10 +5,11 @@
 
 """A plugin to use wxWidgets as Leo's gui."""
 
-# This plugin has multiple problems and is not recommended.
-# See comments at http://leo.zwiki.org/WxWidgetsSummary
+# Important: this plugin is largely unfinished.
+# Do not use thi plugin for production work!
+# See the "bug list & to-do" section for more details.
 
-__version__ = '0.7.2'
+__version__ = '0.1'
 
 #@<< version history >>
 #@+node:ekr.20090126093408.2:<< version history >>
@@ -25,11 +26,7 @@ __version__ = '0.7.2'
 #@+at
 # 
 # First:
-# 
 # * Arrow keys do not work
-# - Recycle widgets at the start of redraw.
-# - (Maybe) Call cleverRedraw only if outlineChanged keyword arg to 
-# c.endUpdate is True.
 # - Add dummy transaction so ctrl-v works initially.
 # - Don't redraw the entire screen to add/remove text box in the icon.
 # - Add color to Log pane text.

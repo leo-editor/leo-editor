@@ -6825,11 +6825,16 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         else:
             # g.trace(repr(index))
             s = w.getAllText()
-            row,col = index.split('.')
-            row,col = int(row),int(col)
-            i = g.convertRowColToPythonIndex(s,row-1,col)
-            # g.trace(index,row,col,i,g.callers(6))
-            return i
+            data = index.split('.')
+            if len(data) == 2:
+                row,col = data
+                row,col = int(row),int(col)
+                i = g.convertRowColToPythonIndex(s,row-1,col)
+                # g.trace(index,row,col,i,g.callers(6))
+                return i
+            else:
+                g.trace('bad string index: %s' % index)
+                return 0
 
     toGuiIndex = toPythonIndex
     #@-node:ekr.20081121105001.523: Indices
