@@ -4422,11 +4422,18 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
 
         w = self.treeWidget
         v = self.getItemData(item)
+        s = self.getItemText(item)
 
-        return 'item %s: %s vnode: %s %s' % (
-            id(item),self.getItemText(item),
-            id(v),repr(v and v.headString()))
-
+        if v:
+            if s == v.headString():
+                return 'item %s: %s' % (
+                    id(item),s)
+            else:
+                return '*** item %s: %s, mismatched vnode: %s %s' % (
+                    id(item),s,id(node),v.headString())
+        else:
+            return '*** item %s: %s, *** no v' % (
+                id(item),s)
     #@-node:ekr.20090126120517.28:traceItem (over-ride)
     #@+node:ekr.20090126093408.869:Event handlers (wxTree)
     # These event handlers work on both XP and Ubuntu.
@@ -4838,20 +4845,24 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
     #@-node:ekr.20090126093408.884:setSelectedLabelState
     #@-node:ekr.20090126120517.17:Tree events
     #@+node:ekr.20090126120517.14:Event handler wrappers (wxTree)
+    # These all call the base-class event handlers.
+
     def onTreeCollapsed(self,event):
+
         item = self.getCurrentItem()
-        g.trace(self.traceItem(item))
-        self.onItemCollapsed(item) # Call the nativeTree method.
+        # g.trace(self.traceItem(item))
+        self.onItemCollapsed(item) 
 
     def onTreeExpanded(self,event):
+
         item = self.getCurrentItem()
-        g.trace(self.traceItem(item))
-        self.onItemExpanded(item) # Call the nativeTree method.
+        # g.trace(self.traceItem(item))
+        self.onItemExpanded(item)
 
     def onTreeSelChanged(self,event):
-        item = self.getCurrentItem()
-        g.trace(self.traceItem(item))
-        self.onTreeSelect() # Call the nativeTree method.
+
+        # g.trace(self.traceItem(self.getCurrentItem()))
+        self.onTreeSelect()
     #@nonl
     #@-node:ekr.20090126120517.14:Event handler wrappers (wxTree)
     #@-node:ekr.20090126093408.869:Event handlers (wxTree)
@@ -4968,14 +4979,21 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
     #@+node:ekr.20090126093408.849:contractItem & expandItem
     def contractItem (self,item):
 
+        # g.trace(self.traceItem(item))
+
         if item:
-            self.treeWidget.Collapse(item)
+            w = self.treeWidget
+            w.SelectItem(item) # necessary
+            w.Collapse(item)
 
     def expandItem (self,item):
 
+        # g.trace(self.traceItem(item))
+
         if item:
-            self.treeWidget.Expand(item)
-    #@nonl
+            w = self.treeWidget
+            w.SelectItem(item) # necessary
+            w.Expand(item)
     #@-node:ekr.20090126093408.849:contractItem & expandItem
     #@+node:ekr.20090126093408.850:createTreeEditorForItem
     def createTreeEditorForItem(self,item):
