@@ -84,6 +84,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@nonl
     #@-node:ekr.20090124174652.121:Called from Leo's core
     #@-node:ekr.20090124174652.9: Birth... (nativeTree)
+    #@+node:ekr.20090126120517.26:Debugging & tracing
+    def error (self,s):
+        g.trace('*** %s' % (s),g.callers(5))
+
+    def traceItem(self,item):
+        return 'item %s: %s' % (id(item),self.getItemText(item))
+    #@-node:ekr.20090126120517.26:Debugging & tracing
     #@+node:ekr.20090124174652.12:Config... (nativeTree)
     #@+node:ekr.20090124174652.13:do-nothin config methods
     # These can be over-ridden if desired,
@@ -216,7 +223,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.20:drawNode
     def drawNode (self,p,parent_item):
 
-        trace = False
+        trace = True
         c = self.c 
         self.nodeDrawCount += 1
 
@@ -231,7 +238,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if p:
             self.drawItemIcon(p,item)
 
-        if trace: g.trace(p.headString(),id(item))
+        if trace: g.trace(self.traceItem(item))
 
         return item
     #@-node:ekr.20090124174652.20:drawNode
@@ -248,6 +255,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@-node:ekr.20090124174652.21:drawTree
     #@+node:ekr.20090124174652.22:initData
     def initData (self):
+
+        g.trace('*****')
 
         self.item2vnodeDict = {}
         self.tnode2itemsDict = {}
@@ -275,6 +284,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             else:
                 aList.append(item)
             d[key] = aList
+    #@nonl
     #@-node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
     #@-node:ekr.20090124174652.17:full_redraw & helpers
     #@+node:ekr.20090124174652.24:redraw_after_contract
@@ -545,7 +555,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             c.outerUpdate()
     #@nonl
     #@-node:ekr.20090124174652.42:onItemExpanded
-    #@+node:ekr.20090124174652.43:onTreeSelect (revise)
+    #@+node:ekr.20090124174652.43:onTreeSelect
     def onTreeSelect(self):
 
         '''Select the proper position when a tree node is selected.'''
@@ -572,7 +582,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         c.outerUpdate()
     #@nonl
-    #@-node:ekr.20090124174652.43:onTreeSelect (revise)
+    #@-node:ekr.20090124174652.43:onTreeSelect
     #@+node:ekr.20090124174652.44:setCurrentItem
     def setCurrentItem (self):
 
@@ -862,10 +872,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 e.setSelection(start,n)
                 # e.setCursorPosition(ins) # Does not work.
                 e.setFocus()
-            else: self.oops('no edit widget')
+            else: self.error('no edit widget')
         else:
             e = None
-            self.oops('no item: %s' % p)
+            self.error('no item: %s' % p)
 
         # A nice hack: just set the focus request.
         if e: c.requestedFocusWidget = e
@@ -1017,12 +1027,14 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         '''Return the child index of item in item's parent.'''
 
         self.oops()
+
         return 0
     #@-node:ekr.20090125063447.12:childIndexOfItem
     #@+node:ekr.20090125063447.13:nthChildItem
     def nthChildItem (self,n,parent_item):
 
         '''Return the item that is the n'th child of parent_item'''
+
         self.oops()
 
     #@-node:ekr.20090125063447.13:nthChildItem
@@ -1047,19 +1059,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         '''Create an editor widget for the given tree item.'''
 
         self.oops()
-
-        # w.setCurrentItem(item) # Must do this first.
-        # w.editItem(item)
-        # e = w.itemWidget(item,0)
-
-
-        # Hook up the widget.
-        # e.connect(e,QtCore.SIGNAL(
-            # "textEdited(QTreeWidgetItem*,int)"),
-            # self.onHeadChanged)
-        # e.setObjectName('headline')
-
-        # return e
     #@-node:ekr.20090124174652.80:createTreeEditorForItem
     #@+node:ekr.20090124174652.81:getCurrentItem
     def getCurrentItem (self):
@@ -1068,6 +1067,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         self.oops()
     #@-node:ekr.20090124174652.81:getCurrentItem
+    #@+node:ekr.20090126120517.23:getParentItem
+    def getParentItem (self,item):
+
+        '''Return the parent of the given item.'''
+
+        self.oops()
+    #@-node:ekr.20090126120517.23:getParentItem
     #@+node:ekr.20090124174652.82:getTreeEditorForItem
     def getTreeEditorForItem(self,item):
 
@@ -1080,7 +1086,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@-node:ekr.20090124174652.82:getTreeEditorForItem
     #@+node:ekr.20090124174652.83:setCurrentItemHelper
     def setCurrentItemHelper(self,item):
-
 
         '''Select the given item.'''
 
@@ -1146,31 +1151,37 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def isValidItem (self,item):
         return item in self.item2vnodeDict
     #@-node:ekr.20090124174652.64:item dict getters
-    #@+node:ekr.20090124174652.68:item2position
+    #@+node:ekr.20090124174652.68:item2position (baseNativeTree)
     def item2position (self,item):
 
         '''Reconstitute a position given an item.'''
 
+        trace = False
         stack = []
         childIndex = self.childIndexOfItem(item)
         v = self.item2vnode(item)
+        if trace: g.trace(self.traceItem(item),repr(v))
+        if not v:
+            return self.error('no v for item')
 
-        item = item.parent()
+        item = self.getParentItem(item)
         while item:
             n2 = self.childIndexOfItem(item)
             v2 = self.item2vnode(item)
             data = v2,n2
+            if trace: g.trace(self.traceItem(item),n2,
+                v2 and repr(v2 and v2.headString()))
             stack.insert(0,data)
-            item = item.parent()
+            item = self.getParentItem(item)
 
         p = leoNodes.position(v,childIndex,stack)
 
         if not p:
-            self.oops('item2position failed. p: %s, v: %s, childIndex: %s stack: %s' % (
+            self.error('item2position failed. p: %s, v: %s, childIndex: %s stack: %s' % (
                 p,v,childIndex,stack))
 
         return p
-    #@-node:ekr.20090124174652.68:item2position
+    #@-node:ekr.20090124174652.68:item2position (baseNativeTree)
     #@+node:ekr.20090124174652.70:position2item
     def position2item (self,p):
 
