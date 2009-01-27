@@ -18,11 +18,11 @@ goto all
 
 :errors
 
-echo qtGui.py
-call pylint.bat leo\plugins\qtGui.py                --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
-
 echo baseNativeTree.py
 call pylint.bat leo\plugins\baseNativeTree.py       --rcfile=leo\test\pylint-leo-rc.txt
+
+echo qtGui.py
+call pylint.bat leo\plugins\qtGui.py                --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 

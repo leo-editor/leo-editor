@@ -1053,13 +1053,18 @@ class controlCommandsClass (baseEditCommandsClass):
             process.wait()
             efile.seek(0)
             errinfo = efile.read()
-            if errinfo: w.insert('insert',errinfo)
+            if errinfo:
+                i = w.getInsertPoint()
+                w.insert(i,errinfo)
             ofile.seek(0)
             okout = ofile.read()
-            if okout: w.insert('insert',okout)
+            if okout:
+                i = w.getInsertPoint()
+                w.insert(i,okout)
         except Exception:
             junk, x, junk = sys.exc_info()
-            w.insert('insert',x)
+            i = w.getInsertPoint()
+            w.insert(i,x)
 
         k.setLabelGrey('finished shell-command: %s' % command)
     #@-node:ekr.20050920084036.160:executeSubprocess
@@ -1993,7 +1998,8 @@ class editCommandsClass (baseEditCommandsClass):
                 ok = False
                 result = eval(expression,{},{})
                 result = str(result)
-                w.insert('insert',result)
+                i = w.getInsertPoint()
+                w.insert(i,result)
                 ok = True
             finally:
                 k.keyboardQuit(event)
@@ -4253,7 +4259,9 @@ class editCommandsClass (baseEditCommandsClass):
                 c.redraw(p)
 
                 s = w.getAllText()
-                if not s.endswith('\n'): w.insert('end','\n')
+                if not s.endswith('\n'):
+                    i = w.getInsertPoint()
+                    w.insert(i,'\n')
                 w.insert('end',lines)
                 s = w.getAllText()
                 ins = len(s)-len(lines)+n
@@ -6463,7 +6471,8 @@ class queryReplaceCommandsClass (baseEditCommandsClass):
 
         i = w.tag_ranges('qR')
         w.delete(i[0],i[1])
-        w.insert('insert',self.qR)
+        ins = w.getInsertPoint()
+        w.insert(ins,self.qR)
         self.replaced += 1
     #@-node:ekr.20050920084036.212:doOneReplace
     #@+node:ekr.20050920084036.219:findNextMatch (query-replace)
@@ -6490,7 +6499,8 @@ class queryReplaceCommandsClass (baseEditCommandsClass):
                 self.quitSearch(event,'Illegal regular expression')
                 return False
 
-            txt = w.get('insert','end')
+            i = w.getInsertPoint()
+            txt = w.get(i,'end')
             match = regex.search(txt)
 
             if match:
@@ -6501,7 +6511,8 @@ class queryReplaceCommandsClass (baseEditCommandsClass):
                 w.setInsertPoint(i+start)
                 w.tag_add('qR','insert','insert +%sc' % length)
                 w.tag_config('qR',background='lightblue')
-                txt = w.get('insert','insert +%sc' % length)
+                i = w.getInsertPoint()
+                txt = w.get(i,i+length)
                 return True
             else:
                 self.quitSearch(event)
@@ -7085,7 +7096,8 @@ class registerCommandsClass (baseEditCommandsClass):
                     if type(val)==type([]):
                         c.rectangleCommands.yankRectangle(val)
                     else:
-                        w.insert('insert',val)
+                        i = w.getInsertPoint()
+                        w.insert(i,val)
                     k.setLabelGrey('Inserted register %s' % key)
                 else:
                     k.setLabelGrey('Register %s is empty' % key)

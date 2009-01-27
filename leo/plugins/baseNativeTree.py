@@ -1100,6 +1100,14 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         self.oops()
     #@-node:ekr.20090124174652.81:getCurrentItem
+    #@+node:ekr.20090127141022.10:getItemText
+    def getItemText (self,item):
+
+        '''Return the text of the item.'''
+
+        self.oops()
+    #@nonl
+    #@-node:ekr.20090127141022.10:getItemText
     #@+node:ekr.20090126120517.23:getParentItem
     def getParentItem (self,item):
 
