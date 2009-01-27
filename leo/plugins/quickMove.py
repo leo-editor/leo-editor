@@ -21,7 +21,7 @@ first child of the target node.
 #@-node:tbrown.20070117104409.1:<< docstring >>
 #@nl
 
-__version__ = '0.5'
+__version__ = '0.6'
 #@<< version history >>
 #@+node:tbrown.20070117104409.6:<< version history >>
 #@+at
@@ -35,6 +35,7 @@ __version__ = '0.5'
 # 0.3 EKR: Various small mods suggested by Terry.
 # 0.4 EKR: Added checkMove method.
 # 0.5 EKR: Added c arg to p.visNext & p.visBack.
+# 0.6 TNB: Store vnodes rather than positions, vnodes are more durable
 #@-at
 #@nonl
 #@-node:tbrown.20070117104409.6:<< version history >>
@@ -124,7 +125,7 @@ class quickMoveButton:
 
         self.c = owner.c
         self.owner = owner
-        self.target = target
+        self.target = target.v
         self.targetHeadString = target.headString()
         self.first = first
     #@-node:ekr.20070117121326:ctor
@@ -135,17 +136,12 @@ class quickMoveButton:
 
         c = self.c
         p = c.currentPosition()
-        p2 = self.target
+        p2 = c.vnode2position(self.target)
         u = c.undoer
 
         if not c.positionExists(p2):
-            for z in c.allNodes_iter():
-                if z.v == p:
-                    p2 = z
-                    break
-            else:
-                g.es('Target no longer exists: %s' % self.targetHeadString,color='red')
-                return
+            g.es('Target no longer exists: %s' % self.targetHeadString,color='red')
+            return
 
         if p.v.t == p2.v.t or not self.checkMove(p,p2):
             g.es('Invalid move: %s' % (self.targetHeadString),color='red')
@@ -154,9 +150,13 @@ class quickMoveButton:
         bunch = c.undoer.beforeMoveNode(p)
         p2.expand()
         nxt = p.visNext(c) or p.visBack(c)
+        nxt = nxt.v
+        # store a vnode instead of position as positions are too easily lost
         if self.first:  p.moveToFirstChildOf(p2)
         else:           p.moveToLastChildOf(p2)
-        c.selectPosition(nxt)
+        nxt = c.vnode2position(nxt)
+        if c.positionExists(nxt):
+            c.selectPosition(nxt)
         c.undoer.afterMoveNode(p,'Quick Move', bunch)
         c.redraw()
     #@-node:ekr.20070117121326.1:moveCurrentNodeToTarget
