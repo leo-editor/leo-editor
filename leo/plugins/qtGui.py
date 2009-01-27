@@ -84,7 +84,8 @@ def init():
         g.app.gui = leoQtGui()
 
         # Override g.pdb
-        def qtPdb():
+        def qtPdb(message=''):
+            if message: print message
             import pdb
             QtCore.pyqtRemoveInputHook()
             pdb.set_trace()
@@ -2883,7 +2884,7 @@ class leoQtMenu (leoMenu.leoMenu):
         # Init the base class.
         leoMenu.leoMenu.__init__(self,frame)
 
-        # g.trace('leoQtMenu',g.callers(4))
+        # g.pr('leoQtMenu.__init__',g.callers(4))
 
         self.frame = frame
         self.c = c = frame.c
@@ -2966,7 +2967,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         return menu
     #@-node:ekr.20081121105001.361:add_cascade
-    #@+node:ekr.20081121105001.362:add_command
+    #@+node:ekr.20081121105001.362:add_command (qt)
     def add_command (self,**keys):
 
         """Wrapper for the Tkinter add_command menu method."""
@@ -2984,6 +2985,8 @@ class leoQtMenu (leoMenu.leoMenu):
         if accel:
             label = '%s\t%s' % (label,accel)
 
+        if menu.leo_label == 'File': g.trace(label,g.callers(4))
+
         action = menu.addAction(label)
 
         if command:
@@ -2992,7 +2995,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
             QtCore.QObject.connect(action,
                 QtCore.SIGNAL("triggered()"),add_command_callback)
-    #@-node:ekr.20081121105001.362:add_command
+    #@-node:ekr.20081121105001.362:add_command (qt)
     #@+node:ekr.20081121105001.363:add_separator
     def add_separator(self,menu):
 
@@ -3059,21 +3062,21 @@ class leoQtMenu (leoMenu.leoMenu):
 
         return menu
     #@-node:ekr.20081121105001.368:insert_cascade
-    #@+node:ekr.20081121105001.369:new_menu
-    def new_menu(self,parent,tearoff=False):
+    #@+node:ekr.20081121105001.369:new_menu (qt)
+    def new_menu(self,parent,tearoff=False,label=''): # label is for debugging.
 
         """Wrapper for the Tkinter new_menu menu method."""
 
         c = self.c ; leoFrame = self.frame
 
-        # g.trace(parent)
+        # g.trace(parent,label)
 
         # Parent can be None, in which case it will be added to the menuBar.
         menu = qtMenuWrapper(c,leoFrame,parent)
 
         return menu
     #@nonl
-    #@-node:ekr.20081121105001.369:new_menu
+    #@-node:ekr.20081121105001.369:new_menu (qt)
     #@-node:ekr.20081121105001.360:Methods with Tk spellings
     #@+node:ekr.20081121105001.370:Methods with other spellings (Qtmenu)
     #@+node:ekr.20081121105001.371:clearAccel

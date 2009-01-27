@@ -6139,7 +6139,7 @@ class leoTkinterMenu (leoMenu.leoMenu):
                 menu=menu,underline=underline)
     #@-node:ekr.20081121110412.424:insert_cascade
     #@+node:ekr.20081121110412.425:new_menu
-    def new_menu(self,parent,tearoff=False):
+    def new_menu(self,parent,tearoff=False,label=''): # label is for debugging.
 
         """Wrapper for the Tkinter new_menu menu method."""
 

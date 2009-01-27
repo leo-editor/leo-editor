@@ -3847,10 +3847,12 @@ class wxLeoMenu (leoMenu.leoMenu):
 
         g.trace(menu)
     #@-node:ekr.20090126093408.291:Not called
-    #@+node:ekr.20090126093408.292:add_cascade
+    #@+node:ekr.20090126093408.292:add_cascade (wx)
     def add_cascade (self,parent,label,menu,underline):
 
         """Create a menu with the given parent menu."""
+
+        # g.trace(label,parent)
 
         if parent:
             # Create a submenu of the parent menu.
@@ -3864,30 +3866,34 @@ class wxLeoMenu (leoMenu.leoMenu):
             # Create a top-level menu.
             self.menuBar.Append(menu,label)
 
-    #@-node:ekr.20090126093408.292:add_cascade
-    #@+node:ekr.20090126093408.293:add_command
-    def add_command (self,menu,**keys):
+    #@-node:ekr.20090126093408.292:add_cascade (wx)
+    #@+node:ekr.20090126093408.293:add_command (wx)
+    def add_command (self,**keys):
 
-        if not menu:
-            return g.trace('Can not happen.  No menu')
-
+        accel = keys.get('accelerator') or ''
         callback = keys.get('command')
+        n = keys.get('underline')
+        menu = keys.get('menu') or self
         accel = keys.get('accelerator')
         ch,label = self.createAccelLabel(keys)
+        if not label: return
+        if not callback: return
+
+        # g.trace(menu,label)
 
         def wxMenuCallback (event,callback=callback):
             # g.trace('event',event)
             return callback() # All args were bound when the callback was created.
 
-        id = wx.NewId()
-        menu.Append(id,label,label)
+        item = wx.NewId()
+        menu.Append(item,label,label)
         key = (menu,label),
-        self.menuDict[key] = id # Remember id 
-        wx.EVT_MENU(self.frame.top,id,wxMenuCallback)
+        self.menuDict[key] = item
+        wx.EVT_MENU(self.frame.top,item,wxMenuCallback)
         if ch:
-            self.createAccelData(menu,ch,accel,id,label)
+            self.createAccelData(menu,ch,accel,item,label)
 
-    #@-node:ekr.20090126093408.293:add_command
+    #@-node:ekr.20090126093408.293:add_command (wx)
     #@+node:ekr.20090126093408.294:add_separator
     def add_separator(self,menu):
 
@@ -3956,29 +3962,35 @@ class wxLeoMenu (leoMenu.leoMenu):
             accel = None
             if ch: self.createAccelData(menu,ch,accel,id,label)
     #@-node:ekr.20090126093408.298:insert_cascade
-    #@+node:ekr.20090126093408.299:new_menu
-    def new_menu(self,parent,tearoff=0):
+    #@+node:ekr.20090126093408.299:new_menu (wx)
+    def new_menu(self,parent,tearoff=0,label=''):
 
-        return wx.Menu()
-    #@nonl
-    #@-node:ekr.20090126093408.299:new_menu
+        """Wrapper for the Tkinter new_menu menu method."""
+
+        c = self.c ; leoFrame = self.frame
+
+        # g.trace(g.callers(4))
+
+        # Parent can be None, in which case it will be added to the menuBar.
+        menu = wxMenuWrapper(c,leoFrame,parent,label)
+
+        return menu
+    #@-node:ekr.20090126093408.299:new_menu (wx)
     #@-node:ekr.20090126093408.290:Menu methods (Tk names)
     #@+node:ekr.20090126093408.300:Menu methods (non-Tk names)
-    #@+node:ekr.20090126093408.301:createMenuBar
+    #@+node:ekr.20090126093408.301:createMenuBar (wx)
     def createMenuBar(self,frame):
 
         self.menuBar = menuBar = wx.MenuBar()
 
-        if 0: ####
+        self.createMenusFromTables()
 
-            self.createMenusFromTables()
+        self.createAcceleratorTables()
 
-            self.createAcceleratorTables()
+        frame.top.SetMenuBar(menuBar)
 
-            frame.top.SetMenuBar(menuBar)
-
-        # menuBar.SetAcceleratorTable(wx.NullAcceleratorTable)
-    #@-node:ekr.20090126093408.301:createMenuBar
+        menuBar.SetAcceleratorTable(wx.NullAcceleratorTable)
+    #@-node:ekr.20090126093408.301:createMenuBar (wx)
     #@+node:ekr.20090126093408.302:createOpenWithMenuFromTable (not ready yet)
     #@+at 
     #@nonl
@@ -5149,6 +5161,26 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
     #@-others
 #@nonl
 #@-node:ekr.20090126093408.323:wxLeoTree class (baseNativeTree)
+#@+node:ekr.20090127083941.10:wxMenuWrapper class (WxMenu,wxLeoMenu)
+class wxMenuWrapper (wx.Menu,wxLeoMenu):
+
+    def __init__ (self,c,frame,parent,label):
+
+        assert c
+        assert frame
+        # Init the base classes.
+        # The actual menu name will be set later.
+        wx.Menu.__init__(self,label)
+        wxLeoMenu.__init__(self,frame)
+        self.leo_label = label # for debugging.
+
+        # if label == '&File': g.pr('wxMenuWrapper',label)
+
+    def __repr__(self):
+
+        return '<wxMenuWrapper %s>' % (
+            self.leo_label)
+#@-node:ekr.20090127083941.10:wxMenuWrapper class (WxMenu,wxLeoMenu)
 #@-node:ekr.20090126093408.858:Frame and component classes
 #@+node:ekr.20090126093408.128:class wxGui
 class wxGui(leoGui.leoGui):

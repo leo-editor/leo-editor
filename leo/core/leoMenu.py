@@ -1476,7 +1476,7 @@ class leoMenu:
             if menu:
                 g.es("menu already exists:",menuName,color="red")
             else:
-                menu = self.new_menu(parent,tearoff=0)
+                menu = self.new_menu(parent,tearoff=0,label=menuName)
                 self.setMenu(menuName,menu)
                 label = self.getRealMenuName(menuName)
                 amp_index = label.find("&")

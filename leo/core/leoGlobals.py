@@ -1029,12 +1029,14 @@ def _callerName (n=1,files=False):
 #@-node:ekr.20031218072017.3107:_callerName
 #@-node:ekr.20051023083258:callers & _callerName
 #@+node:ekr.20041105091148:g.pdb
-def pdb ():
+def pdb (message=''):
 
     """Fall into pdb."""
 
     import pdb # Required: we have just defined pdb as a function!
 
+    if message:
+        print message
     pdb.set_trace()
 #@-node:ekr.20041105091148:g.pdb
 #@+node:ekr.20031218072017.3108:Dumps

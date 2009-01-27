@@ -497,10 +497,11 @@ def scanOptions():
 
     # -- gui
     gui = options.gui
-    if gui: gui = gui.lower()
-    if gui not in ('tk','qt','wx'):
-        g.trace('unknown gui: %s' % gui)
-        gui = None
+    if gui:
+        gui = gui.lower()
+        if gui not in ('tk','qt','wx'):
+            g.trace('unknown gui: %s' % gui)
+            gui = None
 
     # --script
     script_path = options.script
