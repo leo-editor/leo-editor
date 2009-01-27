@@ -3636,6 +3636,20 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w = self.treeWidget
         return w.currentItem()
     #@-node:ekr.20090124174652.105:getCurrentItem
+    #@+node:ekr.20090126120517.22:getItemText (debugging only)
+    def getItemText (self,item):
+
+        '''Return the text of the item.'''
+
+        return item.text(0)
+    #@nonl
+    #@-node:ekr.20090126120517.22:getItemText (debugging only)
+    #@+node:ekr.20090126120517.19:getParentItem
+    def getParentItem(self,item):
+
+        return item.parent()
+    #@nonl
+    #@-node:ekr.20090126120517.19:getParentItem
     #@+node:ekr.20090124174652.106:getTreeEditorForItem
     def getTreeEditorForItem(self,item):
 
@@ -3654,8 +3668,6 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         if n < len(children):
             item = children[n]
         else:
-            # self.oops('itemCount: %s, n: %s' % (len(children),n))
-
             # This is **not* an error.
             # It simply means that we need to redraw the tree.
             item = None
