@@ -3,11 +3,12 @@
 #@+node:ekr.20090126093408.1:@thin wxGui.py
 #@@first
 
-"""A plugin to use wxWidgets as Leo's gui."""
+'''A plugin to use wxWidgets as Leo's gui.
 
-# Important: this plugin is largely unfinished.
-# Do not use thi plugin for production work!
-# See the "bug list & to-do" section for more details.
+**Important**: this plugin is largely unfinished.
+Do not use thi plugin for production work!
+See the "bug list & to-do" section for more details.
+'''
 
 __version__ = '0.1'
 
