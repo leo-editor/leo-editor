@@ -137,7 +137,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         Preserve the vertical scrolling unless scroll is True.'''
 
-        trace = True
+        trace = False
         c = self.c
         if self.redrawing:
             g.trace('***** already drawing',g.callers(5))
@@ -223,7 +223,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.20:drawNode
     def drawNode (self,p,parent_item):
 
-        trace = True
+        trace = False
         c = self.c 
         self.nodeDrawCount += 1
 
@@ -256,7 +256,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.22:initData
     def initData (self):
 
-        g.trace('*****')
+        # g.trace('*****')
 
         self.item2vnodeDict = {}
         self.tnode2itemsDict = {}
