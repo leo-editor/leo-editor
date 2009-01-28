@@ -3912,7 +3912,7 @@ class leoQtGui(leoGui.leoGui):
 
         '''Replace the clipboard with the string s.'''
 
-        trace = True
+        trace = False
         cb = self.qtApp.clipboard()
         if cb:
             cb.clear()
@@ -3926,7 +3926,7 @@ class leoQtGui(leoGui.leoGui):
 
         '''Get a unicode string from the clipboard.'''
 
-        trace = True
+        trace = False
         cb = self.qtApp.clipboard()
         if cb:
             s = cb.text()
@@ -4366,10 +4366,11 @@ class leoQtGui(leoGui.leoGui):
         if g.isPython3:
             return str(s)
         else:
-            if type(s) == type('a'):
-                return g.toUnicode(s,'utf-8',reportErrors=True)
+            if type(s) == type(u'a'):
+                return s
             else:
-                return unicode(s)
+                return g.toUnicode(s,'utf-8',reportErrors=True)
+    #@nonl
     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
     #@+node:ekr.20081121105001.503:widget_name (qtGui)
     def widget_name (self,w):
