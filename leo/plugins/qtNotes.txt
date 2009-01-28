@@ -4,19 +4,12 @@
 #@+node:ekr.20081121105001.148: qt To do
 @nocolor-node
 
-First:
+Urgent:
 
 - Make sure cut/paste always works.
-- Get rClick plugin working.
 #@+node:ekr.20081215074704.13:Bugs
-* Disabling searches of body pane can cause hard crashes.
-    - initInteractiveCommands expects c.edit_widget(p)to exist.
-#@nonl
-#@+node:ekr.20081215074704.14:** Fix flash characters problems
-Ask Qt people.
-#@nonl
-#@-node:ekr.20081215074704.14:** Fix flash characters problems
-#@+node:ekr.20081215074704.15:** Cut/paste work erratically
+#@+node:ekr.20081215074704.15:Cut/paste work erratically
+#@+node:ekr.20090128083504.11:Report
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/58af715355227ec
@@ -42,22 +35,50 @@ for these facts but with no luck.
 
 Vicent 
 #@nonl
-#@-node:ekr.20081215074704.15:** Cut/paste work erratically
-#@+node:ekr.20090123073723.11:Fix image plugin with qt gui
-@nocolor-node
+#@-node:ekr.20090128083504.11:Report
+#@+node:ekr.20081121105001.502:toUnicode (qtGui)
+def toUnicode (self,s):
 
-After the qt-plugin merge (rev 1251 ), the image plugin no longer works. I
-couldn't find any mention of gsimage in the diff.
+    if g.isPython3:
+        return str(s)
+    else:
+        if type(s) == type('a'):
+            return g.toUnicode(s,'utf-8',reportErrors=True)
+        else:
+            return unicode(s)
+#@-node:ekr.20081121105001.502:toUnicode (qtGui)
+#@+node:ekr.20081121105001.183:Clipboard (qtGui)
+def replaceClipboardWith (self,s):
 
- # Erase image if it was previously displayed
-             a = g.app ; c = keywords.get("c")
+    '''Replace the clipboard with the string s.'''
 
--            if a.gsimage:
-+            if getattr(a, 'gsimage', None):
-                 try:
-                     c.frame.body.bodyCtrl.delete(a.gsimage)
-                 except:
-#@-node:ekr.20090123073723.11:Fix image plugin with qt gui
+    trace = True
+    cb = self.qtApp.clipboard()
+    if cb:
+        cb.clear()
+        s = g.app.gui.toUnicode(s)
+        cb.setText(s)
+        if trace: g.trace(len(s),type(s))
+    else:
+        g.trace('no clipboard!')
+
+def getTextFromClipboard (self):
+
+    '''Get a unicode string from the clipboard.'''
+
+    trace = True
+    cb = self.qtApp.clipboard()
+    if cb:
+        s = cb.text()
+        if trace: g.trace (len(s),type(s))
+        s = g.app.gui.toUnicode(s)
+        return s
+    else:
+        g.trace('no clipboard!')
+        return ''
+#@nonl
+#@-node:ekr.20081121105001.183:Clipboard (qtGui)
+#@-node:ekr.20081215074704.15:Cut/paste work erratically
 #@+node:ekr.20090123073723.12:Fix php section coloring
 http://groups.google.com/group/leo-editor/browse_thread/thread/41870d58718b7b7a#
 #@nonl
@@ -127,6 +148,24 @@ functions which find a menu based on knowing it exists before hand.
 #@nonl
 #@-node:ekr.20081215074704.18:Finish qt gui delete_range method
 #@-node:ekr.20081215074704.13:Bugs
+#@+node:ekr.20090128083504.1:Fix plugins 2
+@nocolor-node
+
+rClick
+
+
+After the qt-plugin merge (rev 1251 ), the image plugin no longer works. I
+couldn't find any mention of gsimage in the diff.
+
+ # Erase image if it was previously displayed
+             a = g.app ; c = keywords.get("c")
+
+-            if a.gsimage:
++            if getattr(a, 'gsimage', None):
+                 try:
+                     c.frame.body.bodyCtrl.delete(a.gsimage)
+                 except:
+#@-node:ekr.20090128083504.1:Fix plugins 2
 #@+node:ekr.20081215074704.19:Features 5
 #@+node:ekr.20081215162017.4:Allow coloring of script buttons
 #@-node:ekr.20081215162017.4:Allow coloring of script buttons

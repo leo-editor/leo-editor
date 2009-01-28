@@ -3907,29 +3907,37 @@ class leoQtGui(leoGui.leoGui):
     #@nonl
     #@-node:ekr.20081121105001.477:destroySelf
     #@-node:ekr.20081121105001.473:  Birth & death (qtGui)
-    #@+node:ekr.20081121105001.183:Clipboard
+    #@+node:ekr.20081121105001.183:Clipboard (qtGui)
     def replaceClipboardWith (self,s):
 
         '''Replace the clipboard with the string s.'''
 
+        trace = True
         cb = self.qtApp.clipboard()
         if cb:
             cb.clear()
             s = g.app.gui.toUnicode(s)
             cb.setText(s)
-            # g.trace(len(s),type(s))
+            if trace: g.trace(len(s),type(s))
+        else:
+            g.trace('no clipboard!')
 
     def getTextFromClipboard (self):
 
         '''Get a unicode string from the clipboard.'''
 
+        trace = True
         cb = self.qtApp.clipboard()
-        s = cb and cb.text() or ''
-        s = g.app.gui.toUnicode(s)
-        # g.trace (len(s),type(s))
-        return s
+        if cb:
+            s = cb.text()
+            if trace: g.trace (len(s),type(s))
+            s = g.app.gui.toUnicode(s)
+            return s
+        else:
+            g.trace('no clipboard!')
+            return ''
     #@nonl
-    #@-node:ekr.20081121105001.183:Clipboard
+    #@-node:ekr.20081121105001.183:Clipboard (qtGui)
     #@+node:ekr.20081121105001.478:Do nothings
     def color (self,color):
         return None
@@ -4352,7 +4360,7 @@ class leoQtGui(leoGui.leoGui):
         )
 
     #@-node:ekr.20081121105001.501:isTextWidget
-    #@+node:ekr.20081121105001.502:toUnicode
+    #@+node:ekr.20081121105001.502:toUnicode (qtGui)
     def toUnicode (self,s):
 
         if g.isPython3:
@@ -4362,7 +4370,7 @@ class leoQtGui(leoGui.leoGui):
                 return g.toUnicode(s,'utf-8',reportErrors=True)
             else:
                 return unicode(s)
-    #@-node:ekr.20081121105001.502:toUnicode
+    #@-node:ekr.20081121105001.502:toUnicode (qtGui)
     #@+node:ekr.20081121105001.503:widget_name (qtGui)
     def widget_name (self,w):
 
@@ -7635,11 +7643,13 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081121105001.579:flashCharacter
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
 
+        return ### Kill this feature until it is not dangerous.
+
         # This causes problems during unit tests.
         # The selection point isn't restored in time.
         if g.app.unitTesting: return
 
-        c = self.c ; w = self.widget
+        w = self.widget
 
         # Reduce the flash time to the minimum.
         # flashes = max(1,min(2,flashes))
