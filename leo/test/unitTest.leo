@@ -691,26 +691,8 @@
 <v t="ekr.20071113143523.25"><vh>Posting: document unit test bug &amp; describe coming new scheme</vh></v>
 </v>
 <v t="ekr.20070524080435"><vh>@@test Run all @test nodes in leoPy.leo</vh></v>
-<v t="ekr.20051108141141" annotate="7d71002e"><vh>Not ready yet (typing)</vh>
-<v t="ekr.20051107115231.19"><vh>@@test typing and undo in headline - with selection</vh></v>
-<v t="ekr.20051107115231.32"><vh>@@test plugins manager stays in front</vh></v>
-<v t="ekr.20051109091333"><vh>@@test deleting the last body character text redraws the screen (and icon)</vh></v>
-<v t="ekr.20051107115231.31"><vh>@test return in minibuffer after tab</vh></v>
-<v t="ekr.20051107115231.34"><vh>@test scrolling at bottom of window</vh></v>
-<v t="ekr.20051130080047"><vh>@test head changes stick after click in icon box</vh></v>
-<v t="ekr.20051120110536"><vh>@test paste into body sticks</vh></v>
-<v t="ekr.20051202100844"><vh>@test edit headline, then insert node</vh></v>
-<v t="ekr.20051202100844.1"><vh>@test &lt;Delete&gt; key</vh></v>
-<v t="ekr.20051202100844.2"><vh>@test arrow keys</vh></v>
-<v t="ekr.20051107115231.26"><vh>@@test paste in headline recomputes width</vh></v>
-</v>
 <v t="ekr.20060208195054"><vh>@@test k.inverseCommandsDict is inverse of c.commandsDict</vh>
 <v t="ekr.20070926095117"><vh>mungeKey</vh></v>
-</v>
-<v t="ekr.20080514113943.1"><vh>Fail when command mode is the default</vh>
-<v t="ekr.20051107115231.17"><vh>@@@test typing and undo in headline - at end</vh></v>
-<v t="ekr.20060208072307"><vh>@test paste from menu into body sticks</vh></v>
-<v t="ekr.20051107115231.21"><vh>@@@test selecting new node retains typing in headline</vh></v>
 </v>
 </v>
 </v>
@@ -1743,14 +1725,14 @@
 <v t="ekr.20051107115231.14" annotate="7d71002e"><vh>@test return ends editing of headline</vh></v>
 <v t="ekr.20051107115231.15" annotate="7d71002e"><vh>@test editLabel selects entire headline</vh></v>
 <v t="ekr.20051107115231.16" annotate="7d71002e"><vh>@test paste at end of headline</vh></v>
-<v t="ekr.20051107115231.17" annotate="7d71002e"></v>
-<v t="ekr.20051107115231.18" annotate="7d71002e"><vh>@@@test paste and undo in headline - at end</vh></v>
-<v t="ekr.20051107115231.20" annotate="7d71002e"><vh>@@@test paste and undo in headline - with selection</vh></v>
-<v t="ekr.20051107115231.21" annotate="7d71002e"></v>
-<v t="ekr.20060208072307" annotate="7d71002e"></v>
+<v t="ekr.20051107115231.17" annotate="7d71002e"><vh>@test typing and undo in headline - at end</vh></v>
+<v t="ekr.20051107115231.18" annotate="7d71002e"><vh>@test paste and undo in headline - at end</vh></v>
+<v t="ekr.20051107115231.20" annotate="7d71002e"><vh>@test paste and undo in headline - with selection</vh></v>
+<v t="ekr.20051107115231.21" annotate="7d71002e"><vh>@test selecting new node retains typing in headline</vh></v>
+<v t="ekr.20060208072307" annotate="7d71002e"><vh>@test paste from menu into body sticks</vh></v>
 <v t="ekr.20060208072331" annotate="7d71002e"><vh>@test paste from menu into headline sticks</vh></v>
 <v t="ekr.20051107115231.24" annotate="7d71002e"><vh>@test paste from menu to body recolors the body</vh></v>
-<v t="ekr.20051107115231.25" annotate="7d71002e"><vh>@@@test typing in headline recomputes width</vh></v>
+<v t="ekr.20051107115231.25" annotate="7d71002e"><vh>@test typing in headline recomputes width</vh></v>
 <v t="ekr.20051107115231.28" annotate="7d71002e"><vh>@test selecting new node retains paste in headline</vh></v>
 <v t="ekr.20060208072358" annotate="7d71002e"><vh>@test typing in empty body text redraws the screen (and icon)</vh></v>
 <v t="ekr.20051109091731" annotate="7d71002e"><vh>@test typing in non-empty body text does not redraw the screen</vh></v>
@@ -2505,6 +2487,27 @@
 </v>
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
+</v>
+<v t="ekr.20051108141141" annotate="7d71002e"><vh>Not ready yet (typing)</vh>
+<v t="ekr.20051107115231.19"><vh>@@test typing and undo in headline - with selection</vh></v>
+<v t="ekr.20051107115231.32"><vh>@@test plugins manager stays in front</vh></v>
+<v t="ekr.20051109091333"><vh>@@test deleting the last body character text redraws the screen (and icon)</vh></v>
+<v t="ekr.20051107115231.31"><vh>@test return in minibuffer after tab</vh></v>
+<v t="ekr.20051107115231.34"><vh>@test scrolling at bottom of window</vh></v>
+<v t="ekr.20051130080047"><vh>@test head changes stick after click in icon box</vh></v>
+<v t="ekr.20051120110536"><vh>@test paste into body sticks</vh></v>
+<v t="ekr.20051202100844"><vh>@test edit headline, then insert node</vh></v>
+<v t="ekr.20051202100844.1"><vh>@test &lt;Delete&gt; key</vh></v>
+<v t="ekr.20051202100844.2"><vh>@test arrow keys</vh></v>
+<v t="ekr.20051107115231.26"><vh>@@test paste in headline recomputes width</vh></v>
+</v>
+<v t="ekr.20051107115231"></v>
+<v t="ekr.20090128092653.2"><vh>Failed tests</vh>
+<v t="ekr.20051107115231.17"></v>
+<v t="ekr.20051107115231.18"></v>
+<v t="ekr.20051107115231.20"></v>
+<v t="ekr.20051107115231.21"></v>
+<v t="ekr.20051107115231.25"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -20640,7 +20643,6 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now()</t>
-<t tx="ekr.20080514113943.1"># The 'solution' is just to disable these when command mode is the default.</t>
 <t tx="ekr.20080529114722.1">import leo.core.leoTest as leoTest
 leoTest.runTimerOnNode(c,p,count=100)</t>
 <t tx="ekr.20080529115911.1">import leo.core.leoTest as leoTest
@@ -22180,5 +22182,6 @@ assert val,repr(val)
 <t tx="ekr.20090124192423.11"></t>
 <t tx="ekr.20090124192423.12"></t>
 <t tx="ekr.20090124192423.13"></t>
+<t tx="ekr.20090128092653.2"></t>
 </tnodes>
 </leo_file>
