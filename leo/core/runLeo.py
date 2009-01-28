@@ -444,17 +444,23 @@ def profile_leo ():
     import cProfile as profile
     import pstats
     import leo.core.leoGlobals as g
+    import os
 
     # name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
-    name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
+    # name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
+    theDir = os.getcwd()
 
+    # On Windows, name must be a plain string. An apparent cProfile bug.
+    name = str(g.os_path_normpath(g.os_path_join(theDir,'leoProfile.txt')))
+    print ('profiling to %s' % name)
     profile.run('leo.run()',name)
-
     p = pstats.Stats(name)
     p.strip_dirs()
     p.sort_stats('module','calls','time','name')
     reFiles='leoAtFile.py:|leoFileCommands.py:|leoGlobals.py|leoNodes.py:'
     p.print_stats(reFiles)
+
+prof = profile_leo
 #@-node:ekr.20031218072017.2607:profile_leo
 #@+node:ekr.20041130093254:reportDirectories
 def reportDirectories(verbose):
