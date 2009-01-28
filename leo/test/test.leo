@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1056,7 +1056,8 @@
 <v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
 <v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
 </v>
-<v t="ekr.20090128112453.1"><vh>Property testszz</vh></v>
+<v t="ekr.20090128112453.1"><vh>Property tests</vh></v>
+<v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -11201,5 +11202,12 @@ def spam (self):
 <t tx="ekr.20090128112453.1">print p.b
 p.b = p.b + '\n# new'
 p.h = p.h + 'z'</t>
+<t tx="ekr.20090128131130.1">aList = g.posList(c) # Start with all positions
+print len(aList)
+aList2 = aList.select('plugin',regex=False,removeClones=True)
+print aList2.dump(sort=True)
+aList3 = aList2.select('http')
+print aList3.dump()
+</t>
 </tnodes>
 </leo_file>

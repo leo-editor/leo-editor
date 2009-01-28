@@ -2933,13 +2933,36 @@ def plugin_signon(module_name,verbose=False):
 #@-node:ekr.20031218072017.3139:Hooks & plugins (leoGlobals)
 #@+node:ekr.20031218072017.3145:Most common functions...
 # These are guaranteed always to exist for scripts.
-#@+node:ekr.20031218072017.3147:choose
+#@+node:ekr.20031218072017.3147:g.choose
 def choose(cond, a, b): # warning: evaluates all arguments
 
     if cond: return a
     else: return b
-#@-node:ekr.20031218072017.3147:choose
-#@+node:ekr.20031218072017.1474:enl, ecnl & ecnls
+#@-node:ekr.20031218072017.3147:g.choose
+#@+node:ekr.20080821073134.2:g.doKeywordArgs
+def doKeywordArgs (keys,d=None):
+
+    '''Return a result dict that is a copy of the keys dict
+    with missing items replaced by defaults in d dict.'''
+
+    if d is None: d = {}
+
+    result = {}
+    for key,default_val in d.items():
+        isBool = default_val in (True,False)
+        val = keys.get(key)
+        if isBool and val in (True,'True','true'):
+            result[key] = True
+        elif isBool and val in (False,'False','false'):
+            result[key] = False
+        elif val is None:
+            result[key] = default_val
+        else:
+            result[key] = val
+
+    return result 
+#@-node:ekr.20080821073134.2:g.doKeywordArgs
+#@+node:ekr.20031218072017.1474:g.enl, ecnl & ecnls
 def ecnl(tabName='Log'):
     g.ecnls(1,tabName)
 
@@ -2954,8 +2977,8 @@ def enl(tabName='Log'):
     if log and not log.isNull:
         log.newlines += 1
         log.putnl(tabName)
-#@-node:ekr.20031218072017.1474:enl, ecnl & ecnls
-#@+node:ekr.20070626132332:es & minitest
+#@-node:ekr.20031218072017.1474:g.enl, ecnl & ecnls
+#@+node:ekr.20070626132332:g.es & minitest
 def es(*args,**keys):
 
     '''Put all non-keyword args to the log pane.
@@ -3015,8 +3038,8 @@ def es(*args,**keys):
 #     g.es_print(s)
 #@-at
 #@-node:ekr.20071024101611:mini test of es
-#@-node:ekr.20070626132332:es & minitest
-#@+node:ekr.20050707064040:es_print
+#@-node:ekr.20070626132332:g.es & minitest
+#@+node:ekr.20050707064040:g.es_print
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
 def es_print(*args,**keys):
@@ -3030,30 +3053,61 @@ def es_print(*args,**keys):
 
     if not g.app.unitTesting:
         g.es(*args,**keys)
-#@-node:ekr.20050707064040:es_print
-#@+node:ekr.20080821073134.2:doKeywordArgs
-def doKeywordArgs (keys,d=None):
+#@-node:ekr.20050707064040:g.es_print
+#@+node:ekr.20050707065530:g.es_trace
+def es_trace(*args,**keys):
 
-    '''Return a result dict that is a copy of the keys dict
-    with missing items replaced by defaults in d dict.'''
+    if args:
+        try:
+            s = args[0]
+            g.trace(g.toEncodedString(s,'ascii'))
+        except Exception:
+            pass
 
-    if d is None: d = {}
-
-    result = {}
-    for key,default_val in d.items():
-        isBool = default_val in (True,False)
-        val = keys.get(key)
-        if isBool and val in (True,'True','true'):
-            result[key] = True
-        elif isBool and val in (False,'False','false'):
-            result[key] = False
-        elif val is None:
-            result[key] = default_val
+    g.es(*args,**keys)
+#@-node:ekr.20050707065530:g.es_trace
+#@+node:ekr.20090128083459.82:g.posList
+class posList(list):
+    '''A subclass of list that defines a select method.'''
+    def __init__ (self,c,aList=None):
+        self.c = c
+        list.__init__(self) # Init the base class
+        if aList is None:
+            for p in c.allNodes_iter():
+                self.append(p.copy())
         else:
-            result[key] = val
+            for p in aList:
+                self.append(p.copy())
 
-    return result 
-#@-node:ekr.20080821073134.2:doKeywordArgs
+    def dump (self,sort=False,verbose=False):
+        if verbose: return g.listToString(self,sort=sort)
+        else: return g.listToString([p.h for p in self],sort=sort)
+
+    def select(self,pat,regex=False,removeClones=True):
+        '''Return a new posList containing all positions
+        in self that match the given pattern.'''
+        c = self.c ; aList = []
+        if regex:
+            for p in self:
+               if re.match(pat,p.h):
+                   aList.append(p.copy())
+        else:
+            for p in self:
+               if p.h.find(pat) != -1:
+                   aList.append(p.copy())
+        if removeClones:
+            aList = self.removeClones(aList)
+        return posList(c,aList)
+
+    def removeClones(self,aList):
+        seen = {} ; aList2 = []
+        for p in aList:
+            if p.v.t not in seen:
+                seen[p.v.t] = p.v.t
+                aList2.append(p)
+        return aList2
+#@nonl
+#@-node:ekr.20090128083459.82:g.posList
 #@+node:ekr.20080710101653.1:g.pr
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
@@ -3084,19 +3138,7 @@ def pr(*args,**keys):
         g.es_exception()
         g.trace(g.callers())
 #@-node:ekr.20080710101653.1:g.pr
-#@+node:ekr.20050707065530:es_trace
-def es_trace(*args,**keys):
-
-    if args:
-        try:
-            s = args[0]
-            g.trace(g.toEncodedString(s,'ascii'))
-        except Exception:
-            pass
-
-    g.es(*args,**keys)
-#@-node:ekr.20050707065530:es_trace
-#@+node:ekr.20080220111323:translateArgs
+#@+node:ekr.20080220111323:g.translateArgs
 def translateArgs(args,d):
 
     '''Return the concatenation of s and all args,
@@ -3130,8 +3172,8 @@ def translateArgs(args,d):
             result.append(arg)
 
     return ''.join(result)
-#@-node:ekr.20080220111323:translateArgs
-#@+node:ekr.20060810095921:translateString & tr
+#@-node:ekr.20080220111323:g.translateArgs
+#@+node:ekr.20060810095921:g.translateString & tr
 def translateString (s):
 
     '''Return the translated text of s.'''
@@ -3151,26 +3193,11 @@ def translateString (s):
             return gettext.gettext(s)
 
 tr = translateString
-#@-node:ekr.20060810095921:translateString & tr
-#@+node:ekr.20031218072017.3148:top
-if 0: # An extremely dangerous function.
-
-    def top():
-
-        """Return the commander of the topmost window"""
-
-        # Warning: may be called during startup or shutdown when nothing exists.
-        try:
-            return app.log.c
-        except Exception:
-            return None
-#@-node:ekr.20031218072017.3148:top
-#@+node:ekr.20031218072017.3149:trace is defined below
-#@-node:ekr.20031218072017.3149:trace is defined below
-#@+node:ekr.20031218072017.3150:windows
+#@-node:ekr.20060810095921:g.translateString & tr
+#@+node:ekr.20031218072017.3150:g.windows
 def windows():
     return app.windowList
-#@-node:ekr.20031218072017.3150:windows
+#@-node:ekr.20031218072017.3150:g.windows
 #@-node:ekr.20031218072017.3145:Most common functions...
 #@+node:ekr.20031218072017.2145:os.path wrappers (leoGlobals.py)
 #@+at 
