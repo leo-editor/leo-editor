@@ -995,8 +995,7 @@ class nodeIndices (object):
 #@nl
 
 # Positions should *never* be saved by the ZOBD.
-
-class basePosition (object):
+class position (object):
     #@    @+others
     #@+node:ekr.20040228094013: p.ctor & other special methods...
     #@+node:ekr.20080416161551.190: p.__init__
@@ -1176,6 +1175,43 @@ class basePosition (object):
         )
     #@-node:ekr.20080416161551.191:p.key
     #@-node:ekr.20040228094013: p.ctor & other special methods...
+    #@+node:ekr.20090128083459.74:p.Properties
+    #@+node:ekr.20090128083459.75:b property
+    def __get_b(self):
+
+        p = self
+        return p.bodyString()
+
+    def __set_b(self,val):
+
+        p = self ; c = p.v and p.v.context
+        if c:
+            c.setBodyString(p, val)
+            c.redraw_after_icons_changed()
+
+    b = property(
+        __get_b, __set_b,
+        doc = "Node body string")
+    #@nonl
+    #@-node:ekr.20090128083459.75:b property
+    #@+node:ekr.20090128083459.76:h property
+    def __get_h(self):
+
+        p = self
+        return p.headString()
+
+    def __set_h(self,val):
+
+        p = self ; c = p.v and p.v.context
+        if c:
+            c.setHeadString(p,val)
+            c.redraw_after_head_changed()
+
+    h = property(
+        __get_h, __set_h,
+        doc = "Node headline string")  
+    #@-node:ekr.20090128083459.76:h property
+    #@-node:ekr.20090128083459.74:p.Properties
     #@+node:ekr.20040306212636:p.Getters
     #@+node:ekr.20040306210951:p.vnode proxies
     #@+node:ekr.20040306211032:p.Comparisons
@@ -2936,10 +2972,6 @@ class basePosition (object):
     #@-node:ekr.20080416161551.217:p._unlink
     #@-node:ekr.20080423062035.1:p.Low level methods
     #@-others
-
-class position (basePosition):
-    pass
-#@nonl
 #@-node:ekr.20031218072017.889:class position
 #@-others
 #@nonl

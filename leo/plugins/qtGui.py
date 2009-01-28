@@ -3916,7 +3916,9 @@ class leoQtGui(leoGui.leoGui):
         cb = self.qtApp.clipboard()
         if cb:
             cb.clear()
-            s = g.app.gui.toUnicode(s)
+            s = g.app.gui.toUnicode(s,
+                encoding=g.app.tkEncoding,
+                reportErrors=True)
             cb.setText(s)
             if trace: g.trace(len(s),type(s))
         else:
@@ -3931,12 +3933,13 @@ class leoQtGui(leoGui.leoGui):
         if cb:
             s = cb.text()
             if trace: g.trace (len(s),type(s))
-            s = g.app.gui.toUnicode(s)
+            s = g.app.gui.toUnicode(s,
+                encoding=g.app.tkEncoding,
+                reportErrors=True)
             return s
         else:
             g.trace('no clipboard!')
             return ''
-    #@nonl
     #@-node:ekr.20081121105001.183:Clipboard (qtGui)
     #@+node:ekr.20081121105001.478:Do nothings
     def color (self,color):
@@ -4361,7 +4364,7 @@ class leoQtGui(leoGui.leoGui):
 
     #@-node:ekr.20081121105001.501:isTextWidget
     #@+node:ekr.20081121105001.502:toUnicode (qtGui)
-    def toUnicode (self,s):
+    def toUnicode (self,s,encoding='utf-8',reportErrors=True):
 
         if g.isPython3:
             return str(s)
@@ -4369,7 +4372,8 @@ class leoQtGui(leoGui.leoGui):
             if type(s) == type(u'a'):
                 return s
             else:
-                return g.toUnicode(s,'utf-8',reportErrors=True)
+                return g.toUnicode(
+                    s,encoding=encoding,reportErrors=reportErrors)
     #@nonl
     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
     #@+node:ekr.20081121105001.503:widget_name (qtGui)
