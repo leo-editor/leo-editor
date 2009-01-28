@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="43" left="373" height="961" width="906"/>
+	<global_window_position top="43" left="328" height="961" width="951"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20051031040240" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
 <v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
@@ -72,7 +72,8 @@
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.3"><vh>Projects</vh>
-<v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d71002855013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c680675735509302e302e342e342e30710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@thin leoProjects.txt</vh></v>
+<v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d71002855013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c680675735509302e302e342e342e30710d7d710e5808000000616e6e6f74617465710f7d711073752e"
+marks="ekr.20090110131802.2,ekr.20080521132317.2,"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="ekr.20090113083258.3"><vh>Unit tests &amp; local tests</vh>
 <v t="ekr.20090121163905.1326"><vh>Unit tests</vh>
@@ -87,6 +88,7 @@
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
+<v t="ekr.20090128070032.1"><vh>  How to profile Leo</vh></v>
 <v t="ekr.20081013084332.1"><vh>  Leo's MVC architecture</vh></v>
 <v t="ekr.20040629121554.1"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
 <v t="ekr.20031218072017.2606"><vh>&lt;&lt; Import pychecker &gt;&gt;</vh></v>
@@ -96,7 +98,8 @@
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
-<v t="ekr.20031218072017.2810"><vh>@thin leoCommands.py</vh></v>
+<v t="ekr.20031218072017.2810"
+marks="ekr.20090110131802.2,"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20041117062700"><vh>@thin leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@thin leoFileCommands.py</vh></v>
@@ -108,7 +111,8 @@
 <v t="ekr.20080708094444.1"><vh>@thin leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@thin leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@thin leoUndo.py</vh></v>
-<v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
+<v t="ekr.20031218072017.2605"
+marks="ekr.20080521132317.2,"><vh>@thin runLeo.py </vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui Base classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
@@ -133,7 +137,8 @@
 <t tx="ekr.20031218072017.2406">@tabwidth -4
 @pagewidth 80
 
-@ This section contains all the source code of leo.py.
+@ 
+This section contains all the source code of leo.py.
 
 Leo's code uses the following conventions throughout:
 
@@ -825,5 +830,20 @@ This will run the test last saved code.</t>
     print p2.level() * ' ',p2.headString()
     assert p == p2,'p: %s, p2: %s' % (p,p2)</t>
 <t tx="ekr.20090121163905.1326"></t>
+<t tx="ekr.20090128070032.1">@
+@nocolor-node
+
+To gather statistics, do the following in a console window, not idle:
+
+    &gt; python
+    &gt;&gt;&gt; import leo
+    &gt;&gt;&gt; import leo.core.runLeo as r
+    &gt;&gt;&gt; r.prof()  (this runs leo)
+    load any .leo file from Leo
+    quit Leo
+
+Intermediate data is written to cwd.leoProfile.txt.
+The statistics are written to stdout.
+</t>
 </tnodes>
 </leo_file>
