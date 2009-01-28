@@ -17340,6 +17340,44 @@ def backToIndentation (self,event):
     # self.endCommand(changed=True,setLabel=True)
 #@-node:ekr.20050920084036.75:backToIndentation
 #@-node:ekr.20081204091750.5:back-to-home/indentation now save state
+#@+node:ekr.20090128083459.77:Added .b and .h properties to leoNodes.py
+#@+node:ekr.20090128083459.74:p.Properties
+#@+node:ekr.20090128083459.75:b property
+def __get_b(self):
+
+    p = self
+    return p.bodyString()
+
+def __set_b(self,val):
+
+    p = self ; c = p.v and p.v.context
+    if c:
+        c.setBodyString(p, val)
+        c.redraw_after_icons_changed()
+
+b = property(
+    __get_b, __set_b,
+    doc = "Node body string")
+#@-node:ekr.20090128083459.75:b property
+#@+node:ekr.20090128083459.76:h property
+def __get_h(self):
+
+    p = self
+    return p.headString()
+
+def __set_h(self,val):
+
+    p = self ; c = p.v and p.v.context
+    if c:
+        c.setHeadString(p,val)
+        c.redraw_after_head_changed()
+
+h = property(
+    __get_h, __set_h,
+    doc = "Node headline string")  
+#@-node:ekr.20090128083459.76:h property
+#@-node:ekr.20090128083459.74:p.Properties
+#@-node:ekr.20090128083459.77:Added .b and .h properties to leoNodes.py
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080930072519.8:New options
 #@+node:ekr.20080910054558.2:Added -c option to specify config files

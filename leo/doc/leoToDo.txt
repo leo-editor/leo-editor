@@ -3,7 +3,7 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
-#@+node:ekr.20090103054019.1:Urgent
+#@+node:ekr.20090103054019.1:Urgent 5
 #@+node:ekr.20090109092314.1:Create a "minimal standards for bug reports"
 @nocolor-node
 
@@ -24,6 +24,21 @@ Furthermore, the bug report must be self contained.  It must be
 possible, six weeks or six months after the report was first file, to
 understand the report as it stands.
 #@-node:ekr.20090109092314.1:Create a "minimal standards for bug reports"
+#@+node:ekr.20090123073710.6:Fix Mark Edgington's @shadow bug
+@nocolor-node
+
+To reproduce:
+
+1. open .leo file: 'leo a3_report.leo'
+2. turn the top 10 non-directive lines of the file into a <<test>> section
+3. save the file (ctrl-s)
+4. close leo
+5. start leo
+6. open the a3_report.leo file again.
+
+now you should see the problem in the log window.
+#@nonl
+#@-node:ekr.20090123073710.6:Fix Mark Edgington's @shadow bug
 #@+node:ekr.20090105083748.3:Make sure g.pr never throws unicode exception
 
 sys.stdout.write(s+'\n')
@@ -77,27 +92,8 @@ of the nodes would load from the file.
 #@-node:ekr.20090105083748.1:** Fix xml write bug
 #@+node:ekr.20090105132011.2:** Fix whitespace problems with @auto/@shadow
 #@-node:ekr.20090105132011.2:** Fix whitespace problems with @auto/@shadow
-#@+node:ekr.20090105083748.4:Ask Qt people how to fix the flashing brackets bug
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/492582912994b65d
-
-leo-qt disables (I think) the text editor widget when it flashes the
-matching bracket / parenthesis.  I'm guessing this is because it moves
-the cursor there while flashing and wants to prevent you from entering
-text there.  However, at least on my slower (1.8 GHz / 1 GB) machine
-when I type "))" the second ")" is lost because of this, ironically
-causing me to attempt to run code with imbalanced parentheses.
-#@nonl
-#@-node:ekr.20090105083748.4:Ask Qt people how to fix the flashing brackets bug
-#@+node:ekr.20090105083748.5:Write first draft of new Leo intro using stories
-@nocolor-node
-
-* Why Leo is fun.
-- Leo as a filing cabinet (DOM)
-#@-node:ekr.20090105083748.5:Write first draft of new Leo intro using stories
-#@-node:ekr.20090103054019.1:Urgent
-#@+node:ekr.20081215070651.4:Bugs
+#@-node:ekr.20090103054019.1:Urgent 5
+#@+node:ekr.20081215070651.4:Bugs 11
 #@+node:ekr.20090123073710.5:Fix recent rst3 problem
 @nocolor-node
 
@@ -180,51 +176,6 @@ than scripting a solution to strip the extra lines.
 Bernie Pursley
 Simsbury, CT
 #@-node:ekr.20090123073710.4:Fix rst3 bug
-#@+node:ekr.20090123073710.6:Fix Mark Edgington's @shadow bug
-@nocolor-node
-
-To reproduce:
-
-1. open .leo file: 'leo a3_report.leo'
-2. turn the top 10 non-directive lines of the file into a <<test>> section
-3. save the file (ctrl-s)
-4. close leo
-5. start leo
-6. open the a3_report.leo file again.
-
-now you should see the problem in the log window.
-#@nonl
-#@-node:ekr.20090123073710.6:Fix Mark Edgington's @shadow bug
-#@+node:ekr.20090103070824.7:Recent files menu is duplicated in qt gui
-Using r1372 and the Qt plugin, I get strange results with the recent-
-files menu item.  To reproduce:
-
-1. open a leo window (call this window 1)
-2. open an existing .leo file using file->open... (this opens a new window, window 2)
-3. go to the file->Recent-files menu item of window 1.  The file-list is duplicated.
-4. repeat step 2.  Now window 1's recent-files list is duplicated twice...
-
-** Affects: leo-editor
-    Importance: Undecided
-        Status: New
-
---
-recent-files menu item list is duplicated
-https://bugs.launchpad.net/bugs/313320
-You received this bug notification because you are a member of The Leo
-editor team, which is subscribed to leo-editor.
-
-Status in Leo: a programmer's editor and more: New
-
-Bug description:
-Using r1372 and the Qt plugin, I get strange results with the recent-files menu item.  To reproduce:
-
-1. open a leo window (call this window 1)
-2. open an existing .leo file using file->open... (this opens a new window, window 2)
-3. go to the file->Recent-files menu item of window 1.  The file-list is duplicated.
-4. repeat step 2.  Now window 1's recent-files list is duplicated twice...
-#@nonl
-#@-node:ekr.20090103070824.7:Recent files menu is duplicated in qt gui
 #@+node:ekr.20090109092314.2:Get rClick plugin working with qt gui.
 #@-node:ekr.20090109092314.2:Get rClick plugin working with qt gui.
 #@+node:ekr.20081215070651.1:@shortcuts nodes in myLeoSettings.leo should override defaults
@@ -794,7 +745,7 @@ def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
 #@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 #@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
-#@-node:ekr.20081215070651.4:Bugs
+#@-node:ekr.20081215070651.4:Bugs 11
 #@+node:ekr.20081215070651.5:Features 6
 #@+node:ekr.20081211085314.1:Smart Alt-RtArrow/Alt-LtArrow keys
 @nocolor-node
@@ -1469,6 +1420,12 @@ TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
 #@nonl
 #@-node:ekr.20081028060510.1:Fix @shadow crasher
 #@-node:ekr.20080922115725.1:Finish @shadow
+#@+node:ekr.20090105083748.5:Write first draft of new Leo intro using stories
+@nocolor-node
+
+* Why Leo is fun.
+- Leo as a filing cabinet (DOM)
+#@-node:ekr.20090105083748.5:Write first draft of new Leo intro using stories
 #@-node:ekr.20080915112342.1:First
 #@+node:ekr.20080517102922.1:Files stuff 8
 #@+node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files

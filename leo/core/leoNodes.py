@@ -1192,7 +1192,6 @@ class position (object):
     b = property(
         __get_b, __set_b,
         doc = "Node body string")
-    #@nonl
     #@-node:ekr.20090128083459.75:b property
     #@+node:ekr.20090128083459.76:h property
     def __get_h(self):
