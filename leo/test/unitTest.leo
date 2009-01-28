@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -66,7 +66,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070303143846.1"></v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -1722,25 +1721,26 @@
 <v t="ekr.20051122095426" annotate="7d71002e"><vh>@test make sure the window is visible (Make this the first test)</vh></v>
 <v t="ekr.20051216171321" annotate="7d71002e"><vh>Test headline abc</vh></v>
 <v t="ekr.20051107115231.13" annotate="7d71002e"><vh>Typing and undo tests</vh>
-<v t="ekr.20051107115231.14" annotate="7d71002e"><vh>@test return ends editing of headline</vh></v>
+<v t="ekr.20060208072415" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in body</vh></v>
+<v t="ekr.20051125170139" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in headline</vh></v>
+<v t="ekr.20051109091333"><vh>@test deleting the last body character text redraws the screen (and icon)</vh></v>
 <v t="ekr.20051107115231.15" annotate="7d71002e"><vh>@test editLabel selects entire headline</vh></v>
-<v t="ekr.20051107115231.16" annotate="7d71002e"><vh>@test paste at end of headline</vh></v>
-<v t="ekr.20051107115231.17" annotate="7d71002e"><vh>@test typing and undo in headline - at end</vh></v>
+<v t="ekr.20051120110335" annotate="7d71002e"><vh>@test inserting a new node can be undone and redone</vh></v>
+<v t="ekr.20051125155134" annotate="7d71002e"><vh>@test inserting a new node draws the screen exactly once</vh></v>
 <v t="ekr.20051107115231.18" annotate="7d71002e"><vh>@test paste and undo in headline - at end</vh></v>
 <v t="ekr.20051107115231.20" annotate="7d71002e"><vh>@test paste and undo in headline - with selection</vh></v>
-<v t="ekr.20051107115231.21" annotate="7d71002e"><vh>@test selecting new node retains typing in headline</vh></v>
+<v t="ekr.20051107115231.16" annotate="7d71002e"><vh>@test paste at end of headline</vh></v>
 <v t="ekr.20060208072307" annotate="7d71002e"><vh>@test paste from menu into body sticks</vh></v>
 <v t="ekr.20060208072331" annotate="7d71002e"><vh>@test paste from menu into headline sticks</vh></v>
 <v t="ekr.20051107115231.24" annotate="7d71002e"><vh>@test paste from menu to body recolors the body</vh></v>
-<v t="ekr.20051107115231.25" annotate="7d71002e"><vh>@test typing in headline recomputes width</vh></v>
+<v t="ekr.20051107115231.14" annotate="7d71002e"><vh>@test return ends editing of headline</vh></v>
 <v t="ekr.20051107115231.28" annotate="7d71002e"><vh>@test selecting new node retains paste in headline</vh></v>
+<v t="ekr.20051107115231.21" annotate="7d71002e"><vh>@test selecting new node retains typing in headline</vh></v>
+<v t="ekr.20051107115231.17" annotate="7d71002e"><vh>@test typing and undo in headline - at end</vh></v>
 <v t="ekr.20060208072358" annotate="7d71002e"><vh>@test typing in empty body text redraws the screen (and icon)</vh></v>
+<v t="ekr.20051107115231.25" annotate="7d71002e"><vh>@test typing in headline recomputes width</vh></v>
 <v t="ekr.20051109091731" annotate="7d71002e"><vh>@test typing in non-empty body text does not redraw the screen</vh></v>
-<v t="ekr.20051120110335" annotate="7d71002e"><vh>@test inserting a new node can be undone and redone</vh></v>
-<v t="ekr.20051125155134" annotate="7d71002e"><vh>@test inserting a new node draws the screen exactly once</vh></v>
 <v t="ekr.20051120115046" annotate="7d71002e"><vh>@test undoing insert node restores previous node's body text</vh></v>
-<v t="ekr.20060208072415" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in body</vh></v>
-<v t="ekr.20051125170139" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in headline</vh></v>
 <v t="ekr.20060131102450"><vh>print end of typing and undo tests</vh></v>
 </v>
 <v t="ekr.20051109143831" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
@@ -2487,27 +2487,6 @@
 </v>
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-</v>
-<v t="ekr.20051108141141" annotate="7d71002e"><vh>Not ready yet (typing)</vh>
-<v t="ekr.20051107115231.19"><vh>@@test typing and undo in headline - with selection</vh></v>
-<v t="ekr.20051107115231.32"><vh>@@test plugins manager stays in front</vh></v>
-<v t="ekr.20051109091333"><vh>@@test deleting the last body character text redraws the screen (and icon)</vh></v>
-<v t="ekr.20051107115231.31"><vh>@test return in minibuffer after tab</vh></v>
-<v t="ekr.20051107115231.34"><vh>@test scrolling at bottom of window</vh></v>
-<v t="ekr.20051130080047"><vh>@test head changes stick after click in icon box</vh></v>
-<v t="ekr.20051120110536"><vh>@test paste into body sticks</vh></v>
-<v t="ekr.20051202100844"><vh>@test edit headline, then insert node</vh></v>
-<v t="ekr.20051202100844.1"><vh>@test &lt;Delete&gt; key</vh></v>
-<v t="ekr.20051202100844.2"><vh>@test arrow keys</vh></v>
-<v t="ekr.20051107115231.26"><vh>@@test paste in headline recomputes width</vh></v>
-</v>
-<v t="ekr.20051107115231"></v>
-<v t="ekr.20090128092653.2"><vh>Failed tests</vh>
-<v t="ekr.20051107115231.17"></v>
-<v t="ekr.20051107115231.18"></v>
-<v t="ekr.20051107115231.20"></v>
-<v t="ekr.20051107115231.21"></v>
-<v t="ekr.20051107115231.25"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -13163,38 +13142,6 @@ finally:
     if 1:
         c.setHeadString(p,h)
         c.redraw(p)</t>
-<t tx="ekr.20051107115231.19"># Totally weird.
-
-import leoTest ; u = leoTest.testUtils(c)
-k = c.keyHandler
-frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
-tree.editLabel(p) # Sets focus.
-w = c.edit_widget(p)
-try:
-    assert w
-    w.update()
-    w.setSelectionRange('1.1','1.2',insert='1.1')
-    w.event_generate('X')
-    w.event_generate('Y')
-    w.event_generate('Z')
-    w.event_generate('&lt;Return&gt;')
-    g.pr('after',repr(w.get('1.0','end')))
-    g.pr('end edit')
-    expected = h[0] + 'XYZ' + h[2:]
-    assert p.headString() == expected,'fail 1: expected "%s" got "%s"' % (
-        expected,repr(p.headString()))
-    k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.headString() == h,'fail 2'
-finally:
-    if 1:
-        p.initHeadString(h)
-        c.redraw_now()
-</t>
 <t tx="ekr.20051107115231.20">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
@@ -13304,27 +13251,6 @@ finally:
     if 1:
         c.setHeadString(p,h)
         c.redraw(p)</t>
-<t tx="ekr.20051107115231.26">import leoTest ; u = leoTest.testUtils(c)
-k = c.keyHandler
-h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
-c.frame.tree.editLabel(p)
-w = c.edit_widget(p)
-paste = 'ABC'
-g.app.gui.replaceClipboardWith(paste)
-try:
-    assert w, 'no w'
-    w.setSelectionRange('end','end')
-    g.app.unitTestDict = {}
-    k.manufactureKeyPressForCommandName(w,'paste-text')
-    assert g.app.unitTestDict.get('headWidth') == True
-finally:
-    if 1:
-        p.initHeadString(h)
-        c.redraw_now()</t>
 <t tx="ekr.20051107115231.28">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
@@ -13366,18 +13292,6 @@ wName = g.app.gui.widget_name(w)
 # in wxPython w != bodyCtrl (it's a proxy)
 assert 'body' in wName, 'focus: %s = %s, expected %s = %s' % (
     w,wName,bodyCtrl,g.app.gui.widget_name(bodyCtrl))</t>
-<t tx="ekr.20051107115231.31"></t>
-<t tx="ekr.20051107115231.32"># Not so easy to do.
-import plugin_manager
-n = g.app.dialogs
-pm = plugin_manager.ManagerDialog()
-try:
-    assert g.app.dialogs == n
-finally:
-    if 1:
-        pass</t>
-<t tx="ekr.20051107115231.34"></t>
-<t tx="ekr.20051108141141"></t>
 <t tx="ekr.20051109091333"># Not ready yet: generating a backspace seems impossible!
 
 import leoTest ; u = leoTest.testUtils(c)
@@ -13430,7 +13344,6 @@ c.insertHeadline()
 assert u.undoMenuLabel == 'Undo Insert Node',repr(c.undoMenuLabel)
 c.undoer.undo()
 assert u.redoMenuLabel == 'Redo Insert Node',repr(u.undoMenuLabel)</t>
-<t tx="ekr.20051120110536"></t>
 <t tx="ekr.20051120115046">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
@@ -13473,10 +13386,6 @@ finally:
     if 1:
         c.setHeadString(p,h)
         c.redraw(p)</t>
-<t tx="ekr.20051130080047"></t>
-<t tx="ekr.20051202100844"></t>
-<t tx="ekr.20051202100844.1"></t>
-<t tx="ekr.20051202100844.2"></t>
 <t tx="ekr.20051216171321"></t>
 <t tx="ekr.20060106211922">n = g.app.positions
 assert c.isCurrentPosition(None) is False
@@ -22182,6 +22091,5 @@ assert val,repr(val)
 <t tx="ekr.20090124192423.11"></t>
 <t tx="ekr.20090124192423.12"></t>
 <t tx="ekr.20090124192423.13"></t>
-<t tx="ekr.20090128092653.2"></t>
 </tnodes>
 </leo_file>

@@ -3,45 +3,7 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
-#@+node:ekr.20090122201952.3:Get all @@@test nodes working
-
-#@-node:ekr.20090122201952.3:Get all @@@test nodes working
 #@+node:ekr.20090103054019.1:Urgent
-#@+node:ekr.20090103070824.8:move match_h into Leo's core
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/88ce9e21ffeb6ba1#
-http://groups.google.com/group/leo-editor/browse_thread/thread/d8362a15c05697ff/0ac35582a28f329a
-
-> Ville, how much of ipy_leo.py do you think should migrate to Leo's
-> core?  My naive opinion is that it could all go into either
-> leoNodes.py or leoCommands.py.  What do you think?
-
-Most critical parts are not ipython specific, so they could well go to leo core.
-
-Regarding LeoNode class - most of the methods are probably too
-"special" to actually add to position class. For now, I'd only add .h
-and .b attributes.
-
-> Would moving these methods into Leo's core make it possible to remove
-> them from ipy_leo.py?
-
-The parts that are moved, yes. I can make LeoNode a subclass of
-position and make monkeypatch WorkBook to return those instead of
-standard positions in ipy_leo, to provide for the "special"
-functionality.
-
-> Is this something that you would be willing to do?
-
-Yes. That's something that has been on my mind for a while, since it
-has appeared that ILeo tries to solve a problem that is not IPython
-specific for most parts at all (ILeo and alt+I is just a more
-convenient way to do ctrl+B, if you are looking it from Leo side).
-Moving the stuff to Leo core just makes sense, and there is no reason
-to require people to install IPython (and enable ipython.py plugin) to
-access this functionality.
-#@nonl
-#@-node:ekr.20090103070824.8:move match_h into Leo's core
 #@+node:ekr.20090109092314.1:Create a "minimal standards for bug reports"
 @nocolor-node
 
