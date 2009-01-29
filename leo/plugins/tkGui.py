@@ -7190,7 +7190,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         if g.unitTesting:
             # A terrible hack.  Don't switch edit widget.
-            pass
+            self.redrawCount += 1
         else:
             self.redraw_now()
     #@-node:ekr.20090110073024.13:redraw_after_icons_changed

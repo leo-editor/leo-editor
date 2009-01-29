@@ -27,7 +27,6 @@ import leo.core.leoFind as leoFind
 import leo.core.leoGui as leoGui
 import leo.core.leoKeys as leoKeys
 import leo.core.leoMenu as leoMenu
-import leo.core.leoNodes as leoNodes
 
 import leo.plugins.baseNativeTree as baseNativeTree
 

@@ -3089,12 +3089,12 @@ class posList(list):
         c = self.c ; aList = []
         if regex:
             for p in self:
-               if re.match(pat,p.h):
-                   aList.append(p.copy())
+                if re.match(pat,p.h):
+                    aList.append(p.copy())
         else:
             for p in self:
-               if p.h.find(pat) != -1:
-                   aList.append(p.copy())
+                if p.h.find(pat) != -1:
+                    aList.append(p.copy())
         if removeClones:
             aList = self.removeClones(aList)
         return posList(c,aList)
