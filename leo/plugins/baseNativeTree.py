@@ -352,8 +352,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.27:redraw_after_icons_changed
     def redraw_after_icons_changed (self,all=False):
 
-        #### if self.busy(): return
-        if self.redrawing: return
+        if self.busy(): return ####
+        #### if self.redrawing: return
 
         self.redrawCount += 1 # To keep a unit test happy.
 
@@ -484,46 +484,16 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         c.outerUpdate()
     #@-node:ekr.20090124174652.38:onIconBoxDoubleClick
     #@-node:ekr.20090124174652.35:Icon Box...
-    #@+node:ekr.20090124174652.39:onItemChanged (nativeTree)
-    def onItemChanged(self, item, col):
-
-        '''Handle a change event in a headline.
-        This only gets called when the user hits return.'''
-
-        return ####
-
-        trace = False or self.traceEvents
-        verbose = False or self.verbose
-
-        #### if self.busy(): return
-        if self.redrawing or self.redrawingIcons:
-            return
-
-        try:
-            ### self.changingHeadline = True
-            c = self.c
-            p = self.item2position(item)
-            if p:
-                s = g.app.gui.toUnicode(item.text(col))
-                if trace: g.trace(p.h,s)
-                p.setHeadString(s)
-                p.setDirty()
-        finally:
-            self.changingHeadline = False
-            self.redraw_after_icons_changed(all=False)
-            c.outerUpdate()
-    #@nonl
-    #@-node:ekr.20090124174652.39:onItemChanged (nativeTree)
     #@+node:ekr.20090124174652.40:onItemCollapsed
     def onItemCollapsed (self,item):
 
         trace = False or self.traceEvents
         verbose = False or self.verbose
 
-        #### if self.busy(): return
+        if self.busy(): return ####
 
-        if self.redrawing or self.expanding or self.selecting:
-            return
+        # if self.redrawing or self.expanding or self.selecting:
+            # return
 
 
         c = self.c ; p = c.currentPosition()
@@ -579,10 +549,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         trace = False or self.traceEvents
         verbose = False or self.verbose
 
-        #### if self.busy(): return
+        if self.busy(): return ####
 
-        if self.redrawing or self.expanding or self.selecting:
-            return
+        # if self.redrawing or self.expanding or self.selecting:
+            # return
 
         c = self.c ; p = c.currentPosition()
 
@@ -612,18 +582,18 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         trace = False or self.traceEvents
         verbose = False or self.verbose
 
-        ##### if self.busy(): return
+        if self.busy(): return ####
 
         c = self.c ; p = c.currentPosition()
 
-        if self.selecting:
-            if trace and verbose:
-                g.trace('already selecting',p and p.headString())
-            return
-        if self.redrawing:
-            if trace and verbose:
-                g.trace('already drawing',p and p.headString())
-            return
+        # if self.selecting:
+            # if trace and verbose:
+                # g.trace('already selecting',p and p.headString())
+            # return
+        # if self.redrawing:
+            # if trace and verbose:
+                # g.trace('already drawing',p and p.headString())
+            # return
 
         item = self.getCurrentItem()
         p = self.item2position(item)
@@ -846,13 +816,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         trace = False
 
-        #### if self.busy(): return
+        if self.busy(): return ####
 
-        if self.selecting:
-            return g.trace('*** Error: already selecting',g.callers(4))
-        if self.redrawing:
-            if trace: g.trace('already redrawing')
-            return
+        # if self.selecting:
+            # return g.trace('*** Error: already selecting',g.callers(4))
+        # if self.redrawing:
+            # if trace: g.trace('already redrawing')
+            # return
 
         if trace: g.trace(p and p.headString())
 
@@ -891,7 +861,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         trace = False ; verbose = False
 
-        ### if self.busy(): return
+        #### if self.busy(): return
 
         c = self.c
 

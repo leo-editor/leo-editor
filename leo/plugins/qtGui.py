@@ -3472,9 +3472,10 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
                 "itemSelectionChanged()"),
             self.onTreeSelect)
 
-        w.connect(self.treeWidget,QtCore.SIGNAL(
-                "itemChanged(QTreeWidgetItem*, int)"),
-            self.onItemChanged)
+        #### We don't need this.  Hooray!
+        # w.connect(self.treeWidget,QtCore.SIGNAL(
+                # "itemChanged(QTreeWidgetItem*, int)"),
+            # self.onItemChanged)
 
         w.connect(self.treeWidget,QtCore.SIGNAL(
                 "itemCollapsed(QTreeWidgetItem*)"),

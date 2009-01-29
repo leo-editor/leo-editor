@@ -1314,6 +1314,35 @@ def updateIcon(self,p):
         g.trace('can not happen: no id',p.headString())
 #@-node:ekr.20090126093408.813:updateVisibleIcons
 #@-node:ekr.20090126093408.789:OLDwxLeoTree
+#@+node:ekr.20090124174652.39:onItemChanged (nativeTree) (no longer used)
+def onItemChanged(self, item, col):
+
+    '''Handle a change event in a headline.
+    This only gets called when the user hits return.'''
+
+    return ####
+
+    trace = False or self.traceEvents
+    verbose = False or self.verbose
+
+    if self.redrawing or self.redrawingIcons:
+        return
+
+    try:
+        ### self.changingHeadline = True
+        c = self.c
+        p = self.item2position(item)
+        if p:
+            s = g.app.gui.toUnicode(item.text(col))
+            if trace: g.trace(p.h,s)
+            p.setHeadString(s)
+            p.setDirty()
+    finally:
+        self.changingHeadline = False
+        self.redraw_after_icons_changed(all=False)
+        c.outerUpdate()
+#@nonl
+#@-node:ekr.20090124174652.39:onItemChanged (nativeTree) (no longer used)
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl
