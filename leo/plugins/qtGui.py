@@ -3564,6 +3564,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
     #@+node:ekr.20090124174652.112:setItemIconHelper
     def setItemIconHelper (self,item,icon):
 
+        # Generates an item-changed event.
         item.setIcon(0,icon)
     #@-node:ekr.20090124174652.112:setItemIconHelper
     #@-node:ekr.20090124174652.109:Icons
@@ -3623,6 +3624,35 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         return e
     #@-node:ekr.20090124174652.104:createTreeEditorForItem
+    #@+node:ekr.20090129062500.13:editLabelHelper
+    def editLabelHelper (self,item,selectAll,selection):
+
+        '''Called by nativeTree.editLabel to do
+        gui-specific stuff.'''
+
+        w = self.treeWidget
+        w.setCurrentItem(item) # Must do this first.
+        w.editItem(item)
+            # Generates focus-in event that tree doesn't report.
+        e = w.itemWidget(item,0) # A QLineEdit
+
+        if e:
+            s = e.text() ; len_s = len(s)
+            if selection:
+                i,j,ins = selection
+                start,n = i,abs(i-j)
+                    # Not right for backward searches.
+            elif selectAll: start,n,ins = 0,len_s,len_s
+            else:           start,n,ins = len_s,0,len_s
+            e.setObjectName('headline')
+            e.setSelection(start,n)
+            # e.setCursorPosition(ins) # Does not work.
+            e.setFocus()
+        else:
+            self.error('no edit widget')
+
+        return e
+    #@-node:ekr.20090129062500.13:editLabelHelper
     #@+node:ekr.20090124174652.103:createTreeItem
     def createTreeItem(self,p,parent_item):
 
@@ -3643,9 +3673,12 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         '''Return the text of the item.'''
 
-        s = item.text(0)
-        s = g.toUnicode(s,'utf-8')
-        return s
+        if item:
+            s = item.text(0)
+            s = g.toUnicode(s,'utf-8')
+            return s
+        else:
+            return '<no item>'
     #@nonl
     #@-node:ekr.20090126120517.22:getItemText (debugging only)
     #@+node:ekr.20090126120517.19:getParentItem
