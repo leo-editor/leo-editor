@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1052,7 +1052,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081213091503.1"><vh>Unit tests</vh>
+<v t="ekr.20081213091503.1" a="E"><vh>Unit tests</vh>
 <v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
 <v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
 </v>
@@ -2751,35 +2751,7 @@ g.es("done",color="blue")
 <t tx="ekr.20070305085403.1"></t>
 <t tx="ekr.20070305085403.2"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121">def test_sibs(p,parent_item):
-
-    tree = c.frame.tree
-    sib_items = tree.childItems(parent_item)
-    sibs = [z for z in p.self_and_siblings_iter(copy=True)]
-    
-    assert len(sib_items) == len(sibs),(
-        'sib_items:\n%s\n\nsibs: %s' % (
-            g.listToString(child_items),g.listToString(children)))
-    
-    child_items = tree.childItems(parent_item)
-    sibs = [z for z in parent_p.self_and_siblings_iter(copy=True)]
-
-    assert len(child_items) == len(children),(
-        'child_items:\n%s\n\nchildren: %s' % (
-            g.listToString(child_items),g.listToString(children)))
-
-    for item,p in zip(child_items,children):
-        p2 = tree.item2position(item)
-        print id(item),p2 and p2.headString() or not p2 and '**None**'
-        assert p == p2, 'item: %s, p: %s, p2: %s' % (id(item),p,p2)
-
-        # Recursively test.
-        test_sibs(p,parent_item=item)
-
-sibs = [z for z in c.rootPosition().self_and_siblings_iter(copy=True)]
-for sib in sibs:
-    test_sibs(sib,None)
-</t>
+<t tx="ekr.20070416075121"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070504080933">This option applies to directories specified in filenames in all kinds of @file trees, and to filenames specified in the @path directive.
 
