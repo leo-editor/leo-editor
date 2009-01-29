@@ -3107,6 +3107,7 @@ class keyHandlerClass:
             #@nl
             # Set the states.
             bodyCtrl = c.frame.body.bodyCtrl
+            #### c.endEditing() #### A major change.
             c.widgetWantsFocus(bodyCtrl)
             k.afterGetArgState=returnKind,returnState,handler
             k.setState('getArg',1,k.getArg)

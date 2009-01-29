@@ -1718,9 +1718,10 @@
 <v t="ekr.20061104172236.4"><vh>@test setMoveCol</vh></v>
 </v>
 <v t="ekr.20051107115231" annotate="7d71002e"><vh> Typing</vh>
-<v t="ekr.20051122095426" annotate="7d71002e"><vh>@test make sure the window is visible (Make this the first test)</vh></v>
-<v t="ekr.20051216171321" annotate="7d71002e"><vh>Test headline abc</vh></v>
-<v t="ekr.20051107115231.13" annotate="7d71002e"><vh>Typing and undo tests</vh>
+<v t="ekr.20051122095426" annotate="7d71002e"><vh>Doctests</vh></v>
+<v t="ekr.20051216171321" annotate="7d71002e"><vh>General</vh></v>
+<v t="ekr.20051107115231.13" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20090128184952.3"><vh>Test headline abc</vh></v>
 <v t="ekr.20060208072415" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in body</vh></v>
 <v t="ekr.20051125170139" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in headline</vh></v>
 <v t="ekr.20051109091333"><vh>@test deleting the last body character text redraws the screen (and icon)</vh></v>
@@ -2065,11 +2066,11 @@
 <v t="ekr.20071113194424.1"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
-<v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
+<v t="ekr.20040712101754.183"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.182"></v>
 </v>
-<v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
+<v t="ekr.20040712101754.187" a="E" annotate="7d71002e"><vh> Position tests</vh>
 <v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
 <v t="ekr.20040712101754.184"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
 <v t="ekr.20040712101754.208" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
@@ -2111,18 +2112,18 @@
 </v>
 <v t="ekr.20090102061858.2"><vh>@test c.positionExists</vh></v>
 <v t="ekr.20090102062037.2"><vh>@test c.positionExists for all nodes</vh></v>
-<v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
-<v t="ekr.20040802071519.1"><vh>child</vh></v>
+<v t="ekr.20040802071519" a="E" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
 <v t="ekr.20040712101754.200" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
-<v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
+<v t="ekr.20080503132221.1"><vh>Startup</vh></v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
 <v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
 <v t="ekr.20080503082625.5"><vh>@test demote</vh></v>
@@ -2153,7 +2154,7 @@
 <v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
 </v>
 </v>
-<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -13000,12 +13001,7 @@ try:
 finally:
     c2.setChanged(False)
     c2.close()</t>
-<t tx="ekr.20051107115231.13">@
-Important: these unit tests must call c.setHeadString(p,h)
-to restores the tree's edit widget before calling c.redraw().
-
-Without this call, tree.onHeadChanged would make the
-test's changes permanent.</t>
+<t tx="ekr.20051107115231.13"></t>
 <t tx="ekr.20051107115231.14">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 h = '@test return ends editing of headline'
@@ -13045,7 +13041,7 @@ import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 if trace: print('='*20)
 c.redrawAndEdit(p) # To make node visible
@@ -13082,7 +13078,7 @@ try:
 finally:
     if trace: print('-'*20)
     if 1:
-        c.setHeadString(p,h)
+        c.setHeadString(p,h) # Essential
         c.redraw(p)</t>
 <t tx="ekr.20051107115231.17">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.k
@@ -13090,7 +13086,7 @@ k = c.k
 if k.defaultUnboundKeyAction == 'insert':
     frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h,breakOnError=True)
+    p = u.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.redrawAndEdit(p) # To make the node visible.
     w = c.edit_widget(p)
@@ -13117,13 +13113,13 @@ if k.defaultUnboundKeyAction == 'insert':
             p.headString(),h)
     finally:
         if 1:
-            c.setHeadString(p,h)
+            c.setHeadString(p,h) # Essential
             c.redraw(p)</t>
 <t tx="ekr.20051107115231.18">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redrawAndEdit(p) # To make node visible
 w = c.edit_widget(p)
@@ -13140,13 +13136,13 @@ try:
     assert p.headString() == h,'oops3 got: %s' % p.headString()
 finally:
     if 1:
-        c.setHeadString(p,h)
+        c.setHeadString(p,h) # Essential
         c.redraw(p)</t>
 <t tx="ekr.20051107115231.20">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redraw(p) # To make node visible
 tree.editLabel(p)
@@ -13163,7 +13159,7 @@ try:
     assert p.headString() == h, 'head mismatch'
 finally:
     if 1:
-        c.setHeadString(p,h)
+        c.setHeadString(p,h) # Essential
         c.redraw(p)</t>
 <t tx="ekr.20051107115231.21">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.k
@@ -13171,7 +13167,7 @@ k = c.k
 if k.defaultUnboundKeyAction == 'insert':
     frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h,breakOnError=True)
+    p = u.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.redraw(p) # To make node visible
     tree.editLabel(p)
@@ -13188,12 +13184,12 @@ if k.defaultUnboundKeyAction == 'insert':
         assert p.headString() == h
     finally:
         if 1:
-            c.setHeadString(p,h)
+            c.setHeadString(p,h) # Essential
             c.redraw(p)</t>
 <t tx="ekr.20051107115231.24"># Should be a comment# Should be a comment# Should be a comment# Should be a comment
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.bodyWantsFocusNow()
@@ -13221,7 +13217,7 @@ finally:
 <t tx="ekr.20051107115231.25">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redraw(p) # To make node visible
 c.frame.tree.editLabel(p)
@@ -13249,13 +13245,13 @@ try:
     # g.trace(n,n2)
 finally:
     if 1:
-        c.setHeadString(p,h)
+        c.setHeadString(p,h) # Essential
         c.redraw(p)</t>
 <t tx="ekr.20051107115231.28">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redraw(p) # To make node visible
 tree.editLabel(p)
@@ -13274,7 +13270,7 @@ try:
         h,p.headString())
 finally:
     if 1:
-        c.setHeadString(p,h)
+        c.setHeadString(p,h) # Essential
         c.redraw(p)</t>
 <t tx="ekr.20051107115231.29">import leo.core.leoEditCommands as leoEditCommands
 s = 'foo' ; bodyCtrl = c.frame.body.bodyCtrl
@@ -13384,7 +13380,7 @@ try:
     # w.event_generate('X')
 finally:
     if 1:
-        c.setHeadString(p,h)
+        c.setHeadString(p,h) # Essential
         c.redraw(p)</t>
 <t tx="ekr.20051216171321"></t>
 <t tx="ekr.20060106211922">n = g.app.positions
@@ -13545,7 +13541,7 @@ if c.k.defaultUnboundKeyAction == 'insert':
 </t>
 <t tx="ekr.20060208072331">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.frame.tree.editLabel(p)
@@ -13569,7 +13565,7 @@ try:
     assert p.headString() == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.headString())
 finally:
     if 1:
-        c.setHeadString(p,h)
+        c.setHeadString(p,h) # Essential
         c.redraw(p)</t>
 <t tx="ekr.20060208072358"># This test is too flaky for Tk.
 if g.app.gui.guiName() != 'tkinter':
@@ -13577,7 +13573,7 @@ if g.app.gui.guiName() != 'tkinter':
     import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
     
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h,breakOnError=True)
+    p = u.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.selectPosition(p)
     c.bodyWantsFocusNow()
@@ -20089,14 +20085,14 @@ while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
     
 child = p.insertAsNthChild(0)
-child.setHeadString('child')
-assert child, 'no child'
+c.setHeadString(child,'child') # Force the headline to update.
 
 try:
+    assert child, 'no child'
     c.selectPosition(child)
-    c.clone()
-    clone = c.currentPosition()
-    assert clone.headString() == 'child','fail headstring'
+    clone = c.clone()
+    assert clone == c.currentPosition()
+    assert clone.h == 'child','fail headstring: %s' % clone.h
     assert child.isCloned(), 'fail 1'
     assert clone.isCloned(), 'fail 2'
     assert child.isCloned(), 'fail 3'
@@ -20200,7 +20196,7 @@ try:
     c.setCurrentPosition(p3)
     c.moveOutlineDown()
     moved = c.currentPosition()
-    assert moved.headString() == 'B', 'fail 1'
+    assert moved.headString() == 'B', 'fail 1: %s' % moved.h
     assert moved.back().headString() == 'C', 'fail 2'
     assert moved.next().headString() == 'D', 'fail 3'
     # This assert fails because p4._childIndex != moved.back()._childIndex.
@@ -20212,7 +20208,7 @@ try:
     assert moved.next() == p4, 'fail 5'
     c.undoer.redo()
     moved = c.currentPosition()
-    assert moved.headString() == 'B', 'fail 1-2'
+    assert moved.headString() == 'B', 'fail 1-2: %s' % moved.h
     assert moved.back().headString() == 'C', 'fail 2-2'
     assert moved.next().headString() == 'D', 'fail 3-2'
     c.undoer.undo()
@@ -20535,7 +20531,7 @@ while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
     
 child = p.insertAsNthChild(0)
-child.setHeadString('child')
+c.setHeadString(child,'child') # Force the headline to update.
 c.selectPosition(child)
 
 try:
@@ -22091,5 +22087,6 @@ assert val,repr(val)
 <t tx="ekr.20090124192423.11"></t>
 <t tx="ekr.20090124192423.12"></t>
 <t tx="ekr.20090124192423.13"></t>
+<t tx="ekr.20090128184952.3"></t>
 </tnodes>
 </leo_file>

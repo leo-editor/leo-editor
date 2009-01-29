@@ -1062,8 +1062,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1080,8 +1082,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1096,8 +1100,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@file
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1127,8 +1133,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1145,6 +1153,7 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
 @verbatim
@@ -1153,8 +1162,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@file
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1183,8 +1194,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1201,6 +1214,7 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
 @verbatim
@@ -1209,8 +1223,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@file
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1252,8 +1268,10 @@ unnamed node line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1275,6 +1293,7 @@ last line
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@nonl
 @verbatim
@@ -1283,8 +1302,10 @@ last line
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@noref
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1300,6 +1321,7 @@ section line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@nonl
 @verbatim
@@ -1308,8 +1330,10 @@ section line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:<< section >>
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1325,6 +1349,7 @@ unnamed node line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@nonl
 @verbatim
@@ -1333,8 +1358,10 @@ unnamed node line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:unnamed node
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1390,8 +1417,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4-thin
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1408,8 +1437,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1424,8 +1455,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:ekr.20040707141957.13:#@thin
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -8981,7 +9014,7 @@ import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 if trace: print('='*20)
 c.redrawAndEdit(p) # To make node visible
@@ -9018,7 +9051,7 @@ try:
 finally:
     if trace: print('-'*20)
     if 1:
-        c.setHeadline(p,h) # Essential.
+        c.setHeadString(p,h) # Essential.
         c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.759:@test paste at end of headline
@@ -9029,7 +9062,7 @@ k = c.k
 if k.defaultUnboundKeyAction == 'insert':
     frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h,breakOnError=True)
+    p = u.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.redrawAndEdit(p) # To make the node visible.
     w = c.edit_widget(p)
@@ -9056,7 +9089,7 @@ if k.defaultUnboundKeyAction == 'insert':
             p.headString(),h)
     finally:
         if 1:
-            c.setHeadline(p,h) # Essential.
+            c.setHeadString(p,h) # Essential.
             c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.760:@@@test typing and undo in headline - at end
@@ -9065,7 +9098,7 @@ import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redrawAndEdit(p) # To make node visible
 w = c.edit_widget(p)
@@ -9082,7 +9115,7 @@ try:
     assert p.headString() == h,'oops3 got: %s' % p.headString()
 finally:
     if 1:
-        c.setHeadline(p,h) # Essential.
+        c.setHeadString(p,h) # Essential.
         c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.761:@test paste and undo in headline - at end
@@ -9091,7 +9124,7 @@ import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redraw(p) # To make node visible
 tree.editLabel(p)
@@ -9108,7 +9141,7 @@ try:
     assert p.headString() == h, 'head mismatch'
 finally:
     if 1:
-        c.setHeadline(p,h) # Essential.
+        c.setHeadString(p,h) # Essential.
         c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.762:@test paste and undo in headline - with selection
@@ -9119,7 +9152,7 @@ k = c.k
 if k.defaultUnboundKeyAction == 'insert':
     frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h,breakOnError=True)
+    p = u.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.redraw(p) # To make node visible
     tree.editLabel(p)
@@ -9136,7 +9169,7 @@ if k.defaultUnboundKeyAction == 'insert':
         assert p.headString() == h
     finally:
         if 1:
-            c.setHeadline(p,h) # Essential.
+            c.setHeadString(p,h) # Essential.
             c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.763:@@@test selecting new node retains typing in headline
@@ -9174,7 +9207,7 @@ if c.k.defaultUnboundKeyAction == 'insert':
 #@+node:ekr.20090121163905.765:@test paste from menu into headline sticks
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.frame.tree.editLabel(p)
@@ -9198,7 +9231,7 @@ try:
     assert p.headString() == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.headString())
 finally:
     if 1:
-        c.setHeadline(p,h) # Essential.
+        c.setHeadString(p,h) # Essential.
         c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.765:@test paste from menu into headline sticks
@@ -9206,7 +9239,7 @@ finally:
 # Should be a comment# Should be a comment# Should be a comment# Should be a comment
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.bodyWantsFocusNow()
@@ -9237,7 +9270,7 @@ finally:
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redraw(p) # To make node visible
 c.frame.tree.editLabel(p)
@@ -9265,7 +9298,7 @@ try:
     # g.trace(n,n2)
 finally:
     if 1:
-        c.setHeadline(p,h) # Essential.
+        c.setHeadString(p,h) # Essential.
         c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.767:@@@test typing in headline recomputes width
@@ -9274,7 +9307,7 @@ import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redraw(p) # To make node visible
 tree.editLabel(p)
@@ -9293,7 +9326,7 @@ try:
         h,p.headString())
 finally:
     if 1:
-        c.setHeadline(p,h) # Essential.
+        c.setHeadString(p,h) # Essential.
         c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.768:@test selecting new node retains paste in headline
@@ -9304,7 +9337,7 @@ if g.app.gui.guiName() != 'tkinter':
     import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h,breakOnError=True)
+    p = u.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.selectPosition(p)
     c.bodyWantsFocusNow()
@@ -9425,7 +9458,7 @@ try:
     # w.event_generate('X')
 finally:
     if 1:
-        c.setHeadline(p,h) # Essential.
+        c.setHeadString(p,h) # Essential.
         c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.775:@test <Delete> key sticks in headline
@@ -13969,6 +14002,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 line 1 line 3
@@ -14012,6 +14046,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 node 2 line 2
@@ -14043,6 +14078,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 line 1 line 3
@@ -14060,6 +14096,7 @@ node 2 line 3
 #@nonl
 #@+node:ekr.20090121163905.1227:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -14085,6 +14122,7 @@ node 2 line 3
 #@nonl
 #@+node:ekr.20090121163905.1231:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -14135,6 +14173,7 @@ node 2 line 2
 #@nonl
 #@+node:ekr.20090121163905.1241:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim

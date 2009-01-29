@@ -459,13 +459,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         c.outerUpdate()
     #@-node:ekr.20090124174652.38:onIconBoxDoubleClick
     #@-node:ekr.20090124174652.35:Icon Box...
-    #@+node:ekr.20090124174652.39:onItemChanged
+    #@+node:ekr.20090124174652.39:onItemChanged (nativeTree)
     def onItemChanged(self, item, col):
 
         '''Handle a change event in a headline.
         This only gets called when the user hits return.'''
 
-        trace = False or self.traceEvents
+        trace = True or self.traceEvents
         verbose = False or self.verbose
         c = self.c
 
@@ -483,12 +483,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if p:
             # so far, col is always 0
             s = g.app.gui.toUnicode(item.text(col))
+            if trace: g.trace(p.h,s)
             p.setHeadString(s)
             p.setDirty()
             self.redraw_after_icons_changed(all=False)
 
         c.outerUpdate()
-    #@-node:ekr.20090124174652.39:onItemChanged
+    #@-node:ekr.20090124174652.39:onItemChanged (nativeTree)
     #@+node:ekr.20090124174652.40:onItemCollapsed
     def onItemCollapsed (self,item):
 
@@ -889,15 +890,11 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         End editing of the presently-selected headline.'''
 
+        # Let onHeadChanged do all the work.
         c = self.c ; p = c.currentPosition()
 
-        ew = self.edit_widget(p)
-        e = ew and ew.widget
-
-        if e:
-            s = e.text()
-            if s != p.headString():
-                self.onHeadChanged(p)
+        self.onHeadChanged(p)
+    #@nonl
     #@-node:ekr.20090124174652.58:endEditLabel (nativeTree)
     #@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
     # Tricky code: do not change without careful thought and testing.
@@ -906,40 +903,47 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         '''Officially change a headline.'''
 
-        trace = False ; verbose = True
+        trace = False and not g.unitTesting
+        verbose = False
         c = self.c ; u = c.undoer
+        if not p:
+            if trace: g.trace('*** no p')
+            return
         ew = self.edit_widget(p)
         if ew: e = ew.widget
+        else: e = None
         item = self.position2item(p)
-
         w = g.app.gui.get_focus()
 
-        # These are not errors: onItemChanged may
-        # have been called first.
+        # These are not errors: focus may have been lost.
         if trace and verbose:
             if not e:  g.trace('No e',g.callers(4))
             if e != w: g.trace('e != w',e,w,g.callers(4))
             if not p:  g.trace('No p')
 
-        if e and e == w and item and p:
+        if e and e == w:
             s = e.text() ; len_s = len(s)
             s = g.app.gui.toUnicode(s)
-            oldHead = p.headString()
-            changed = s != oldHead
-            if trace: g.trace('changed',changed,repr(s),g.callers(4))
-            if changed:
-                p.initHeadString(s)
-                item.setText(0,s) # Required to avoid full redraw.
-                undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
-                if not c.changed: c.setChanged(True)
-                # New in Leo 4.4.5: we must recolor the body because
-                # the headline may contain directives.
-                c.frame.body.recolor(p,incremental=True)
-                dirtyVnodeList = p.setDirty()
-                u.afterChangeNodeContents(p,undoType,undoData,
-                    dirtyVnodeList=dirtyVnodeList)
+        elif item:
+            s = self.getItemText(item)
         else:
-            pass #### What happens if w != e???
+            if trace and verbose: g.trace('no item for %s' % (p and p.h))
+            return 
+
+        oldHead = p.h
+        changed = s != oldHead
+        if changed:
+            if trace: g.trace('changed',repr(s),p.h)
+            p.initHeadString(s)
+            item.setText(0,s) # Required to avoid full redraw.
+            undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+            if not c.changed: c.setChanged(True)
+            # New in Leo 4.4.5: we must recolor the body because
+            # the headline may contain directives.
+            c.frame.body.recolor(p,incremental=True)
+            dirtyVnodeList = p.setDirty()
+            u.afterChangeNodeContents(p,undoType,undoData,
+                dirtyVnodeList=dirtyVnodeList)
 
         # This is a crucial shortcut.
         if g.unitTesting: return
@@ -993,15 +997,28 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.60:setHeadline (nativeTree)
     def setHeadline (self,p,s):
 
-        '''Set the actual text of the headline widget.
+        '''Force the actual text of the headline widget to p.h.'''
 
-        This is called from unit tests to change the text before redrawing.'''
+        trace = False and not g.unitTesting
 
-        #### Is this used?
-        p.setHeadString(s)
-        w = self.edit_widget(p)
-        if w:
-            w.setAllText(s)
+        # This is used by unit tests to force the headline and p into alignment.
+        if not p:
+            if trace: g.trace('*** no p')
+            return
+
+        #### Don't do this here: the caller should do it.
+        #### p.setHeadString(s)
+        e = self.edit_widget(p)
+        if e:
+            if trace: g.trace('e',s)
+            e.setAllText(s)
+        else:
+            item = self.position2item(p)
+            if item:
+                if trace: g.trace('item',s)
+                self.setItemText(item,s)
+            else:
+                if trace: g.trace('*** failed. no item for %s' % p.h)
     #@-node:ekr.20090124174652.60:setHeadline (nativeTree)
     #@+node:ekr.20090124174652.61:traceSelect
     # def traceSelect (self):

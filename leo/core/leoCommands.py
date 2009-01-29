@@ -6237,7 +6237,7 @@ class baseCommands:
 
         # It's possible to do this now that c.redrawAndEdit exists.
         # However, it is a major change...
-        c.endEditing()
+        #### c.endEditing()
 
         if p:
             # Update body pane and set c._currentPosition.
@@ -7139,7 +7139,7 @@ class baseCommands:
         p.setDirty()
 
         # Change the actual tree widget so
-        # A later call to c.endEditing or c.redraw will use 
+        # A later call to c.endEditing or c.redraw will use s.
         c.frame.tree.setHeadline(p,s)
     #@-node:ekr.20040305223225:c.setHeadString
     #@+node:ekr.20060109164136:c.setLog
@@ -7281,9 +7281,13 @@ class baseCommands:
 
         c = self ; k = c.k
 
-        c.frame.tree.endEditLabel()
+        p = c.currentPosition()
 
-        c.frame.tree.setSelectedLabelState(p=c.currentPosition())
+        if p:
+
+            c.frame.tree.endEditLabel()
+
+            c.frame.tree.setSelectedLabelState(p)
 
         # The following code would be wrong; c.endEditing is a utility method.
         # if k:

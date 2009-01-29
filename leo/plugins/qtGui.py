@@ -3644,7 +3644,9 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         '''Return the text of the item.'''
 
-        return item.text(0)
+        s = item.text(0)
+        s = g.toUnicode(s,'utf-8')
+        return s
     #@nonl
     #@-node:ekr.20090126120517.22:getItemText (debugging only)
     #@+node:ekr.20090126120517.19:getParentItem

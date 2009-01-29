@@ -1871,7 +1871,7 @@ class leoFrame:
         c.redraw(p)
     #@-node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
     #@+node:ekr.20031218072017.3982:frame.endEditLabelCommand
-    def endEditLabelCommand (self,event=None):
+    def endEditLabelCommand (self,event=None,p=None):
 
         '''End editing of a headline and move focus to the body pane.'''
 

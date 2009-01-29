@@ -3106,7 +3106,6 @@ class posList(list):
                 seen[p.v.t] = p.v.t
                 aList2.append(p)
         return aList2
-#@nonl
 #@-node:ekr.20090128083459.82:g.posList
 #@+node:ekr.20080710101653.1:g.pr
 # see: http://www.diveintopython.org/xml_processing/unicode.html

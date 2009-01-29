@@ -3483,7 +3483,7 @@ def redraw (self,p=None,setFocus=False):
 
     # It's possible to do this now that c.redrawAndEdit exists.
     # However, it is a major change...
-    c.endEditing()
+    #### c.endEditing()
 
     if p:
         # Update body pane and set c._currentPosition.
@@ -3739,7 +3739,7 @@ import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 if trace: print('='*20)
 c.redrawAndEdit(p) # To make node visible
@@ -3776,7 +3776,7 @@ try:
 finally:
     if trace: print('-'*20)
     if 1:
-        c.setHeadline(p,h) # Essential.
+        c.setHeadString(p,h) # Essential.
         c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.759:@test paste at end of headline
@@ -3787,7 +3787,7 @@ k = c.k
 if k.defaultUnboundKeyAction == 'insert':
     frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h,breakOnError=True)
+    p = u.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.redrawAndEdit(p) # To make the node visible.
     w = c.edit_widget(p)
@@ -3814,7 +3814,7 @@ if k.defaultUnboundKeyAction == 'insert':
             p.headString(),h)
     finally:
         if 1:
-            c.setHeadline(p,h) # Essential.
+            c.setHeadString(p,h) # Essential.
             c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.760:@@@test typing and undo in headline - at end
@@ -3823,7 +3823,7 @@ import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redrawAndEdit(p) # To make node visible
 w = c.edit_widget(p)
@@ -3840,7 +3840,7 @@ try:
     assert p.headString() == h,'oops3 got: %s' % p.headString()
 finally:
     if 1:
-        c.setHeadline(p,h) # Essential.
+        c.setHeadString(p,h) # Essential.
         c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.761:@test paste and undo in headline - at end
@@ -3849,7 +3849,7 @@ import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redraw(p) # To make node visible
 tree.editLabel(p)
@@ -3866,7 +3866,7 @@ try:
     assert p.headString() == h, 'head mismatch'
 finally:
     if 1:
-        c.setHeadline(p,h) # Essential.
+        c.setHeadString(p,h) # Essential.
         c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.762:@test paste and undo in headline - with selection
@@ -3877,7 +3877,7 @@ k = c.k
 if k.defaultUnboundKeyAction == 'insert':
     frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
     h = 'Test headline abc'
-    p = u.findNodeAnywhere(h,breakOnError=True)
+    p = u.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
     c.redraw(p) # To make node visible
     tree.editLabel(p)
@@ -3894,14 +3894,14 @@ if k.defaultUnboundKeyAction == 'insert':
         assert p.headString() == h
     finally:
         if 1:
-            c.setHeadline(p,h) # Essential.
+            c.setHeadString(p,h) # Essential.
             c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.763:@@@test selecting new node retains typing in headline
 #@+node:ekr.20090121163905.765:@test paste from menu into headline sticks
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.selectPosition(p)
 c.frame.tree.editLabel(p)
@@ -3925,7 +3925,7 @@ try:
     assert p.headString() == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.headString())
 finally:
     if 1:
-        c.setHeadline(p,h) # Essential.
+        c.setHeadString(p,h) # Essential.
         c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.765:@test paste from menu into headline sticks
@@ -3933,7 +3933,7 @@ finally:
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redraw(p) # To make node visible
 c.frame.tree.editLabel(p)
@@ -3961,7 +3961,7 @@ try:
     # g.trace(n,n2)
 finally:
     if 1:
-        c.setHeadline(p,h) # Essential.
+        c.setHeadString(p,h) # Essential.
         c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.767:@@@test typing in headline recomputes width
@@ -3970,7 +3970,7 @@ import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
-p = u.findNodeAnywhere(h,breakOnError=True)
+p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
 c.redraw(p) # To make node visible
 tree.editLabel(p)
@@ -3989,7 +3989,7 @@ try:
         h,p.headString())
 finally:
     if 1:
-        c.setHeadline(p,h) # Essential.
+        c.setHeadString(p,h) # Essential.
         c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.768:@test selecting new node retains paste in headline
@@ -4007,7 +4007,7 @@ try:
     # w.event_generate('X')
 finally:
     if 1:
-        c.setHeadline(p,h) # Essential.
+        c.setHeadString(p,h) # Essential.
         c.redraw(p)
 #@nonl
 #@-node:ekr.20090121163905.775:@test <Delete> key sticks in headline
@@ -4315,7 +4315,7 @@ def setHeadString (self,p,s,encoding="utf-8"):
     p.setDirty()
 
     # Change the actual tree widget so
-    # A later call to c.endEditing or c.redraw will use 
+    # A later call to c.endEditing or c.redraw will use s.
     c.frame.tree.setHeadline(p,s)
 #@-node:ekr.20040305223225:c.setHeadString
 #@+node:ekr.20031218072017.3981:abortEditLabelCommand (leoFrame)
@@ -4823,9 +4823,13 @@ def endEditing(self):
 
     c = self ; k = c.k
 
-    c.frame.tree.endEditLabel()
+    p = c.currentPosition()
 
-    c.frame.tree.setSelectedLabelState(p=c.currentPosition())
+    if p:
+
+        c.frame.tree.endEditLabel()
+
+        c.frame.tree.setSelectedLabelState(p)
 
     # The following code would be wrong; c.endEditing is a utility method.
     # if k:
@@ -4842,7 +4846,7 @@ def redraw (self,p=None,setFocus=False):
 
     # It's possible to do this now that c.redrawAndEdit exists.
     # However, it is a major change...
-    c.endEditing()
+    #### c.endEditing()
 
     if p:
         # Update body pane and set c._currentPosition.
@@ -5135,9 +5139,13 @@ def endEditing(self):
 
     c = self ; k = c.k
 
-    c.frame.tree.endEditLabel()
+    p = c.currentPosition()
 
-    c.frame.tree.setSelectedLabelState(p=c.currentPosition())
+    if p:
+
+        c.frame.tree.endEditLabel()
+
+        c.frame.tree.setSelectedLabelState(p)
 
     # The following code would be wrong; c.endEditing is a utility method.
     # if k:
@@ -5175,7 +5183,7 @@ def redraw (self,p=None,setFocus=False):
 
     # It's possible to do this now that c.redrawAndEdit exists.
     # However, it is a major change...
-    c.endEditing()
+    #### c.endEditing()
 
     if p:
         # Update body pane and set c._currentPosition.
@@ -5262,7 +5270,7 @@ def redraw (self,p=None,setFocus=False):
 
     # It's possible to do this now that c.redrawAndEdit exists.
     # However, it is a major change...
-    c.endEditing()
+    #### c.endEditing()
 
     if p:
         # Update body pane and set c._currentPosition.
