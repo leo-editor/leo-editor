@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -415,6 +415,10 @@
 </v>
 <v t="ekr.20080610144233.1"><vh>Wrap test</vh></v>
 <v t="ekr.20090113101004.1"><vh>@test c.vnode2position</vh></v>
+<v t="ekr.20081213091503.1"><vh>Unit tests</vh>
+<v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
+<v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
+</v>
 </v>
 <v t="ekr.20081202140932.1"><vh>pythoscope &amp; lib2to3</vh>
 <v t="ekr.20081202141453.1"><vh>@path c:\leo.repo\pythoscope\pythoscope</vh>
@@ -1051,10 +1055,6 @@
 <v t="ekr.20081203092030.175"><vh>__init__ declarations</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20081213091503.1" a="E"><vh>Unit tests</vh>
-<v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
-<v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
 </v>
 <v t="ekr.20090128112453.1"><vh>Property tests</vh></v>
 <v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
@@ -11171,9 +11171,15 @@ def spam (self):
 
     pass
 </t>
-<t tx="ekr.20090128112453.1">print p.b
-p.b = p.b + '\n# new'
-p.h = p.h + 'z'</t>
+<t tx="ekr.20090128112453.1"># print p.b
+# p.b = p.b + '\n# new'
+# p.h = p.h + 'z'
+
+print p.v.u.get('key')
+
+p.v.u.set('key','abc')
+
+print p.v.u.get('key')</t>
 <t tx="ekr.20090128131130.1">aList = g.posList(c) # Start with all positions
 print len(aList)
 aList2 = aList.select('plugin',regex=False,removeClones=True)

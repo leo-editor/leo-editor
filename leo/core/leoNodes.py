@@ -220,6 +220,30 @@ if not g.unified_nodes:
         #@-node:EKR.20040503094727.1:setWriteBit
         #@-node:ekr.20031218072017.3332:t.Status bits
         #@-node:ekr.20031218072017.3331:t.Setters
+        #@+node:ekr.20090130065000.2:t.u Property
+        class uAaccessor (object):
+            '''A class providing get/set access to uA's'''
+            def __init__ (self,t):
+                self.t = t
+            def get (self,key):
+                t = self.t
+                if hasattr(t,'unknownAttributes'):
+                    return t.unknownAttributes.get(key)
+                else: return None
+            def set (self,key,val):
+                t = self.t
+                if not hasattr(t,'unknownAttributes'):
+                    t.unknownAttributes = {}
+                t.unknownAttributes[key] = val
+
+        def __get_u(self):
+            t = self
+            return self.uAaccessor(t)
+
+        u = property(
+            __get_u, # No setter.
+            doc = "tnode unknownAttribute property")
+        #@-node:ekr.20090130065000.2:t.u Property
         #@-others
 #@-node:ekr.20031218072017.3321:class tnode
 #@+node:ekr.20031218072017.3341:class vnode
@@ -839,6 +863,30 @@ class vnode (baseVnode):
                     child.parents.append(v2)
     #@-node:ekr.20080427062528.10:v._computeParentsOfChildren
     #@-node:ekr.20080427062528.9:v.Low level methods
+    #@+node:ekr.20090130065000.1:v.u Property
+    class uAaccessor (object):
+        '''A class providing get/set access to uA's'''
+        def __init__ (self,v):
+            self.v = v
+        def get (self,key):
+            v = self.v
+            if hasattr(v,'unknownAttributes'):
+                return v.unknownAttributes.get(key)
+            else: return None
+        def set (self,key,val):
+            v = self.v
+            if not hasattr(v,'unknownAttributes'):
+                v.unknownAttributes = {}
+            v.unknownAttributes[key] = val
+
+    def __get_u(self):
+        v = self
+        return self.uAaccessor(v)
+
+    u = property(
+        __get_u, # No setter.
+        doc = "vnode unknownAttribute property")
+    #@-node:ekr.20090130065000.1:v.u Property
     #@-others
 #@nonl
 #@-node:ekr.20031218072017.3341:class vnode
@@ -1176,7 +1224,7 @@ class position (object):
     #@-node:ekr.20080416161551.191:p.key
     #@-node:ekr.20040228094013: p.ctor & other special methods...
     #@+node:ekr.20090128083459.74:p.Properties
-    #@+node:ekr.20090128083459.75:b property
+    #@+node:ekr.20090128083459.75:p.b property
     def __get_b(self):
 
         p = self
@@ -1187,13 +1235,14 @@ class position (object):
         p = self ; c = p.v and p.v.context
         if c:
             c.setBodyString(p, val)
-            c.redraw_after_icons_changed()
+            # Don't redraw the screen: p.b must be fast.
+            # c.redraw_after_icons_changed()
 
     b = property(
         __get_b, __set_b,
         doc = "Node body string")
-    #@-node:ekr.20090128083459.75:b property
-    #@+node:ekr.20090128083459.76:h property
+    #@-node:ekr.20090128083459.75:p.b property
+    #@+node:ekr.20090128083459.76:p.h property
     def __get_h(self):
 
         p = self
@@ -1204,12 +1253,13 @@ class position (object):
         p = self ; c = p.v and p.v.context
         if c:
             c.setHeadString(p,val)
-            c.redraw_after_head_changed()
+            # Don't redraw the screen: p.h must be fast.
+            # c.redraw_after_head_changed()
 
     h = property(
         __get_h, __set_h,
         doc = "Node headline string")  
-    #@-node:ekr.20090128083459.76:h property
+    #@-node:ekr.20090128083459.76:p.h property
     #@-node:ekr.20090128083459.74:p.Properties
     #@+node:ekr.20040306212636:p.Getters
     #@+node:ekr.20040306210951:p.vnode proxies
