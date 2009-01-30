@@ -1727,10 +1727,15 @@ class baseCommands:
         c = self
         path = c.config.getString('script_file_path')
         if path:
+            isAbsPath = os.path.isabs(path)
+            driveSpec, path = os.path.splitdrive(path)
             parts = path.split('/')
             path = g.app.loadDir
-            for part in parts:
-                path = c.os_path_finalize_join(path,part)
+            if isAbsPath:
+                # make the first element absolute
+                parts[0] = driveSpec + os.sep + parts[0]
+            allParts = [path] + parts
+            path = c.os_path_finalize_join(*allParts)
         else:
             path = c.os_path_finalize_join(
                 g.app.loadDir,'..','test','scriptFile.py')
