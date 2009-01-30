@@ -352,7 +352,7 @@ while p:
                 h = p2.h
                 for tag in ('@test','@suite'):
                     if h.startswith(tag):
-                        s = p2.bodyString()
+                        s = p2.b
                         lines = g.splitLines(s)
                         for line in lines:
                             # print('line',line)
@@ -765,7 +765,7 @@ if 0:
 def quickConvertRowColToPythonIndex(row,col):
     return lineIndices[row-1] + col
 
-s = p.bodyString()
+s = p.b
 lines = g.splitLines(s)
 lineIndices = [0]
 for i in xrange(1,len(lines)):
@@ -807,7 +807,7 @@ def fail(kind,expected,got):
         n,kind,expected,kind,got,last_row,last_col)
 
 # This is fast because we never look at characters more than once.
-s = p.bodyString()
+s = p.b
 print('-'*40)
 last_col = 0 ; last_row = 0 ; last_i = 0 ; n = 0
 while n < len(s):
@@ -1064,8 +1064,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1086,8 +1088,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1106,8 +1110,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@file
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1141,8 +1147,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1163,6 +1171,7 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
 @verbatim
@@ -1173,8 +1182,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@file
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1207,8 +1218,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1229,6 +1242,7 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
 @verbatim
@@ -1239,8 +1253,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@file
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1286,8 +1302,10 @@ unnamed node line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1313,6 +1331,7 @@ last line
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@nonl
 @verbatim
@@ -1323,8 +1342,10 @@ last line
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@noref
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1344,6 +1365,7 @@ section line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@nonl
 @verbatim
@@ -1354,8 +1376,10 @@ section line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:<< section >>
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1375,6 +1399,7 @@ unnamed node line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@nonl
 @verbatim
@@ -1385,8 +1410,10 @@ unnamed node line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:unnamed node
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1446,8 +1473,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4-thin
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1468,8 +1497,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1488,8 +1519,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:ekr.20040707141957.13:#@thin
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1736,7 +1769,7 @@ for s in (s1,s2):
 at = c.atFileCommands
 child = p.firstChild()
 child2 = child.next()
-result = str(child2.bodyString())
+result = str(child2.b)
 at.write(child,nosentinels=False,thinFile=False,scriptWrite=False,toString=True)
 s = str(at.stringOutput)
 
@@ -3658,7 +3691,7 @@ def copyTree(self,root):
     # Replace all tnodes in v by copies.
     assert(v.nodeAfterTree() == None)
     while v:
-        v.t = leoNodes.tnode(0, v.bodyString())
+        v.t = leoNodes.tnode(0, v.b)
         v = v.threadNext()
     return result
 #@nonl
@@ -4213,7 +4246,7 @@ test2 = p.firstChild().next()
 
 c.prettyPrintPythonCode(p=test2,dump=False)
 
-assert(test2.bodyString()==test1.bodyString())
+assert(test2.b==test1.b)
 #@nonl
 #@+node:ekr.20090121163905.192:Original
 """
@@ -4250,9 +4283,9 @@ else:
     c.setBodyString(temp,"")
     before = u.findNodeInTree(p,"before")
     after = u.findNodeInTree(p,"after")
-    temp.scriptSetBodyString(before.bodyString())
+    temp.scriptSetBodyString(before.b)
     c.prettyPrintPythonCode(p=temp,dump=dump)
-    assert temp.bodyString() == after.bodyString(),"Pretty Print Test failed"
+    assert temp.b == after.b,"Pretty Print Test failed"
 #@nonl
 #@+node:ekr.20090121163905.195:tempNode
 @ This is a test of stuff.in doc parts.
@@ -8459,7 +8492,7 @@ finally:
 #@+node:ekr.20090121163905.690:@test set-fill-prefix
 # xxxx.yyyy
 
-s = p.bodyString()
+s = p.b
 w = c.frame.body.bodyCtrl
 w.setSelectionRange(2,11)
 c.editCommands.setFillPrefix(event=None)
@@ -9227,11 +9260,11 @@ if c.k.defaultUnboundKeyAction == 'insert':
         menu.invoke(i)
     # Move around and and make sure it doesn't change.
     try:
-        assert p.bodyString() == paste, 'paste1 failed'
+        assert p.b == paste, 'paste1 failed'
         c.selectPosition(p.threadBack())
-        assert p.bodyString() == paste, 'stick failed'
+        assert p.b == paste, 'stick failed'
         c.selectPosition(p)
-        assert p.bodyString() == paste, 'revisit failed'
+        assert p.b == paste, 'revisit failed'
     finally:
         if 1:
             c.setBodyString(p,'')
@@ -9376,12 +9409,12 @@ if g.app.gui.guiName() != 'tkinter':
     c.bodyWantsFocusNow()
     c.redraw(p) # To make node visible
     n = c.frame.tree.redrawCount
-    assert not p.bodyString(), 'oops1'
+    assert not p.b, 'oops1'
     try:
         # print('before insert a',c.currentPosition())
         assert p == c.currentPosition(),'position has changed!'
         c.frame.body.bodyCtrl.event_generate('a')
-        assert p.bodyString() == 'a', 'expected "a", got: %s' % repr(p.bodyString())
+        assert p.b == 'a', 'expected "a", got: %s' % repr(p.b)
         if g.app.gui.guiName() != 'nullGui':
             n2 = c.frame.tree.redrawCount
             c.outerUpdate() # Force the coloring before doing the test.
@@ -9445,10 +9478,10 @@ body = 'This is a test'
 c.setBodyString(p,body)
 
 try:
-    assert p.bodyString() == body
+    assert p.b == body
     c.insertHeadline()
     c.undoer.undo()
-    assert p.bodyString() == body
+    assert p.b == body
 finally:
     c.setBodyString(p,'')
 #@nonl
@@ -9467,10 +9500,10 @@ try:
     w.setInsertPoint(2)
     c.outerUpdate() # This fixed the problem.
     w.event_generate('<Delete>') # Calls c.outerUpdate()
-    assert p.bodyString() == s[:-1],'oops1: expected "AB", got %s' % p.bodyString()
+    assert p.b == s[:-1],'oops1: expected "AB", got %s' % p.b
     c.selectPosition(p.threadBack())
     c.selectPosition(p)
-    assert p.bodyString() == s[:-1],'oops2: expected "AB", got %s' % p.bodyString()
+    assert p.b == s[:-1],'oops2: expected "AB", got %s' % p.b
 finally:
     if 1:
         c.setBodyString(p,'')
@@ -9634,7 +9667,7 @@ finally:
 #@-node:ekr.20090121163905.791:@test Select a node when file is first loaded
 #@+node:ekr.20090121163905.792:@test write .leo file with @ignore node
 assert p.firstChild(), 'no child node'
-assert p.firstChild().bodyString().startswith('@ignore'), 'No @ignore in child'
+assert p.firstChild().b.startswith('@ignore'), 'No @ignore in child'
 ok = c.fileCommands.write_Leo_file(
     'file-name',outlineOnlyFlag=True,toString=True,toOPML=False)
 assert ok, 'error writing file'
@@ -9956,9 +9989,9 @@ finally:
 try:
     w = c.frame.body.bodyCtrl
     # print((w))
-    s2 = p.bodyString()
+    s2 = p.b
     s = w.getAllText()
-    assert s == s2, 'w.getAllText() != p.bodyString(): len(w)=%d, len(p)=%d' % (len(s),len(s2))
+    assert s == s2, 'w.getAllText() != p.b: len(w)=%d, len(p)=%d' % (len(s),len(s2))
     w.setInsertPoint(len(s))
     c.k.previousSelection = 2,8
     event = g.Bunch(widget=w)
@@ -12670,7 +12703,7 @@ h = p.h
 
 try:
     child = p.firstChild()
-    before = child.bodyString()
+    before = child.b
     after = "after"
     c.setBodyString(child,"after")
     c.selectPosition(child)
@@ -13356,7 +13389,7 @@ def moreBody (self):
     p = self ; list = []
 
     # Only escape the first non-blank character of the line.
-    s =  p.bodyString() ; result = []
+    s =  p.b ; result = []
     lines = string.split(s,'\n')
     for s in lines:
         i = g.skip_ws(s,0)
@@ -14037,6 +14070,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 line 1 line 3
@@ -14082,6 +14116,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 node 2 line 2
@@ -14115,6 +14150,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 line 1 line 3
@@ -14132,6 +14168,7 @@ node 2 line 3
 #@nonl
 #@+node:ekr.20090121163905.1227:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -14159,6 +14196,7 @@ node 2 line 3
 #@nonl
 #@+node:ekr.20090121163905.1231:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -14211,6 +14249,7 @@ node 2 line 2
 #@nonl
 #@+node:ekr.20090121163905.1241:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -14462,7 +14501,7 @@ x = c.shadowController
 
 changed = c.changed
 child = p.firstChild()
-s = child.bodyString()
+s = child.b
 
 try:
     fn = 'unittest/read_test.py'
@@ -14504,7 +14543,7 @@ at = c.atFileCommands
 x = c.shadowController
 changed = c.changed
 child = p.firstChild()
-s = child.bodyString()
+s = child.b
 
 try:
     child.setHeadString('@shadow unittest/test_1.py')

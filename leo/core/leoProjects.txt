@@ -480,7 +480,7 @@ def goToLineNumber (self,n,p=None,scriptData=None):
     if n==1:
         p = root ; n2 = 1 ; found = True
     elif n >= len(lines):
-        p = root ; n2 = root.bodyString().count('\n') ; found = False
+        p = root ; n2 = root.b.count('\n') ; found = False
     elif isRaw:
         p,n2,found = c.goto_countLines(root,n)
     else:
@@ -524,7 +524,7 @@ def goto_countLines (self,root,n):
 
     for p in p.self_and_subtree_iter():
         lastv = p.copy()
-        s = p.bodyString()
+        s = p.b
         if isNosent or isAuto:
             s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
         n_lines = s.count('\n')
@@ -4679,7 +4679,7 @@ def readOneAtAutoNode(self,p):
         atAuto=True)
 
     # Force an update of the body pane.
-    self.setBodyString(p,p.bodyString())
+    self.setBodyString(p,p.b)
     c.frame.body.onBodyChanged(undoType=None)
 #@-node:ekr.20070807084545:readOneAtAutoNode (leoImport)
 #@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
@@ -4716,7 +4716,7 @@ def appendStringToBody (self,p,s,encoding="utf-8"):
     c = self
     if not s: return
 
-    body = p.bodyString()
+    body = p.b
     assert(g.isUnicode(body))
     s = g.toUnicode(s,encoding)
 
@@ -4778,7 +4778,7 @@ def appendStringToBody (self,p,s,encoding="utf-8"):
     but does not recolor the text or redraw the screen.'''
 
     if s:
-        body = p.bodyString()
+        body = p.b
         assert(g.isUnicode(body))
         s = g.toUnicode(s,encoding)
         self.setBodyString(p,body + s,encoding)
@@ -6679,7 +6679,7 @@ for v in c.all_unique_vnodes_iter():
     t = v.t
     if t not in tnodeInfoDict:
         tnodeInfoDict[t] = g.Bunch(
-            t=t,head=v.headString(),body=v.bodyString())
+            t=t,head=v.headString(),body=v.b)
 #@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
 #@+node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
 # Create a dict containing only copied tnodes.
@@ -7787,7 +7787,7 @@ def scanOutline (self,verbose=True):
             if (count % 200) == 0: g.es('','.',newline=False)
         language = g.scanForAtLanguage(c,p)
         # g.trace('language',language,p.h)
-        s = p.bodyString()
+        s = p.b
         if k.enable_autocompleter:
             self.scanForAutoCompleter(s)
         if k.enable_calltips:
@@ -8120,7 +8120,7 @@ def findParentClass (self,root):
 #@+node:ekr.20061031131434.70:findClass & helpers
 def findClass (self,p):
 
-    lines = g.splitLines(p.bodyString())
+    lines = g.splitLines(p.b)
     inDoc = self.start_in_doc
     # g.trace(p.h)
     for s in lines:
@@ -8377,7 +8377,7 @@ def doItems (self,p,aList):
                     else:
                         kind = tag
                         head = itemName
-                        body = p.bodyString()
+                        body = p.b
                         aList.append((kind,head,body),)
                         p.moveToThreadNext()
                         break
@@ -8433,7 +8433,7 @@ def doItems (self,p,aList):
                     else:
                         kind = tag
                         head = itemName
-                        body = p.bodyString()
+                        body = p.b
                         aList.append((kind,head,body),)
                         p.moveToThreadNext()
                         break
@@ -10477,7 +10477,7 @@ def doItems (self,p,aList):
                     else:
                         kind = tag
                         head = itemName
-                        body = p.bodyString()
+                        body = p.b
                         aList.append((kind,head,body),)
                         p.moveToThreadNext()
                         break
@@ -12142,7 +12142,7 @@ def scanAllDirectives(self,p,require_path_flag,issue_error_flag):
     print_mode_changed = False
     self.init_directive_ivars()
     if p:
-        s = p.bodyString()
+        s = p.b
         << Collect @first attributes >>
 
     # delims = (self.single_comment_string,self.start_comment_string,self.end_comment_string)
@@ -14940,7 +14940,7 @@ def scanOutline (self,verbose=True):
             if (count % 200) == 0: g.es('','.',newline=False)
         language = g.scanForAtLanguage(c,p)
         # g.trace('language',language,p.h)
-        s = p.bodyString()
+        s = p.b
         if k.enable_autocompleter:
             self.scanForAutoCompleter(s)
         if k.enable_calltips:
@@ -15273,7 +15273,7 @@ def findParentClass (self,root):
 #@+node:ekr.20061031131434.70:findClass & helpers
 def findClass (self,p):
 
-    lines = g.splitLines(p.bodyString())
+    lines = g.splitLines(p.b)
     inDoc = self.start_in_doc
     # g.trace(p.h)
     for s in lines:

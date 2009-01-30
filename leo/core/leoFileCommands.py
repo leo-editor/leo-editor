@@ -601,7 +601,7 @@ class baseFileCommands:
         fc = self ; c = fc.c ; p = c.currentPosition()
 
         # Put the body (minus the @nocolor) into the file buffer.
-        s = p.bodyString() ; tag = '@nocolor\n'
+        s = p.b ; tag = '@nocolor\n'
         if s.startswith(tag): s = s[len(tag):]
 
         # Do a trial read.
@@ -836,7 +836,7 @@ class baseFileCommands:
         c.redraw()
 
         # Force an update of the body pane.
-        c.setBodyString(p,p.bodyString())
+        c.setBodyString(p,p.b)
         c.frame.body.onBodyChanged(undoType=None)
     #@-node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
     #@+node:ekr.20031218072017.2297:open (leoFileCommands)

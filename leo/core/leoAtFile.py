@@ -381,7 +381,7 @@ class atFile:
     #@+node:ekr.20070919133659:checkDerivedFile (atFile)
     def checkDerivedFile (self, event=None):
 
-        at = self ; c = at.c ; p = c.currentPosition() ; s = p.bodyString()
+        at = self ; c = at.c ; p = c.currentPosition() ; s = p.b
 
         # Create a dummy vnode as the root.
         fileName='check-derived-file'
@@ -1706,12 +1706,12 @@ class atFile:
         for p in root.self_and_subtree_iter():
             try: s = p.v.t.tempBodyString
             except Exception: s = ""
-            old_body = p.bodyString()
+            old_body = p.b
             if s != old_body:
                 if 0: # For debugging.
                     g.pr("\nchanged: " + p.h)
                     g.pr("\nnew:",s)
-                    g.pr("\nold:",p.bodyString())
+                    g.pr("\nold:",p.b)
                 if thinFile:
                     p.v.setBodyString(s)
                     if p.v.isDirty():
@@ -2015,7 +2015,7 @@ class atFile:
                 #@+node:ekr.20041005105605.140:<< Write p's node >>
                 at.putOpenNodeSentinel(p)
 
-                s = p.bodyString()
+                s = p.b
 
                 if self.write_strips_blank_lines:
                     s = self.cleanLines(p,s)
@@ -2822,7 +2822,7 @@ class atFile:
                 #@nl
                 #@            << Write p's body >>
                 #@+node:ekr.20041005105605.156:<< Write p's body >>
-                s = p.bodyString()
+                s = p.b
 
                 if self.write_strips_blank_lines:
                     s = self.cleanLines(p,s)
@@ -2878,7 +2878,7 @@ class atFile:
         at = self
 
         # New in 4.3 b2: get s from fromString if possible.
-        s = g.choose(fromString,fromString,p.bodyString())
+        s = g.choose(fromString,fromString,p.b)
 
         p.v.t.setVisited() # Suppress orphans check.
         p.v.setVisited() # Make sure v is never expanded again.
@@ -3005,7 +3005,7 @@ class atFile:
 
         """ Generate the body enclosed in sentinel lines."""
 
-        at = self ; s = p.bodyString()
+        at = self ; s = p.b
 
         p.v.setVisited()   # Make sure v is never expanded again.
         p.v.t.setVisited() # Use the tnode for the orphans check.
@@ -3791,7 +3791,7 @@ class atFile:
 
         '''Return True if p's tree has a significant amount of information.'''
 
-        s = p.bodyString()
+        s = p.b
 
         # Remove all blank lines and all Leo directives.
         lines = []

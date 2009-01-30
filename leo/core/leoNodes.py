@@ -1592,7 +1592,7 @@ class position (object):
             parent = cursor.parent()
             if parent == None: # root reached
                 break
-            parent_bodyString = parent.bodyString()
+            parent_bodyString = parent.b
             if parent_bodyString == '': # organizer node
                 continue
             parent_lines = parent_bodyString.split('\n')
@@ -1848,7 +1848,7 @@ class position (object):
         Inserts a backslash before any leading plus, minus or backslash."""
 
         p = self ; array = []
-        lines = p.bodyString().split('\n')
+        lines = p.b.split('\n')
         for s in lines:
             i = g.skip_ws(s,0)
             if i < len(s) and s[i] in ('+','-','\\'):
@@ -2390,7 +2390,7 @@ class position (object):
     def copyTreeFromSelfTo(self,p2):
         p = self
         p2.v.t._headString = p.h
-        p2.v.t._bodyString = p.bodyString()
+        p2.v.t._bodyString = p.b
         for child in p.children_iter(copy=True):
             child2 = p2.insertAsLastChild()
             child.copyTreeFromSelfTo(child2)

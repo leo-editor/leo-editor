@@ -670,7 +670,7 @@ class baseCommands:
 
                     encoding = theDict.get("encoding")
                     old_body = theDict.get("body")
-                    new_body = p.bodyString()
+                    new_body = p.b
                     new_body = g.toEncodedString(new_body,encoding,reportErrors=True)
 
                     old_time = theDict.get("time")
@@ -786,7 +786,7 @@ class baseCommands:
                 g.es("creating:  ",g.shortFileName(path),color="blue")
             theFile = open(path,"w")
             # Convert s to whatever encoding is in effect.
-            s = p.bodyString()
+            s = p.b
             theDict = c.scanAllDirectives(p)
             encoding = theDict.get("encoding",None)
             if encoding == None:
@@ -1286,7 +1286,7 @@ class baseCommands:
 
         c = self ; p = c.currentPosition()
         h = p.h.rstrip()
-        s = p.bodyString()
+        s = p.b
         tag = '@read-file-into-node'
 
         if h.startswith(tag):
@@ -1769,7 +1769,7 @@ class baseCommands:
         if n==1:
             p = root ; n2 = 1 ; found = True
         elif n >= len(lines):
-            p = root ; n2 = root.bodyString().count('\n') ; found = False
+            p = root ; n2 = root.b.count('\n') ; found = False
         elif isRaw:
             p,n2,found = c.goto_countLines(root,n)
         else:
@@ -1814,7 +1814,7 @@ class baseCommands:
 
         for p in p.self_and_subtree_iter():
             lastv = p.copy()
-            s = p.bodyString()
+            s = p.b
             if isNosent or isAuto:
                 s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
             n_lines = s.count('\n')
@@ -3330,7 +3330,7 @@ class baseCommands:
                 t = v.t
                 if t not in tnodeInfoDict:
                     tnodeInfoDict[t] = g.Bunch(
-                        t=t,head=v.headString(),body=v.bodyString())
+                        t=t,head=v.headString(),body=v.b)
             #@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
             #@nl
         # create a *position* to be pasted.
@@ -4168,7 +4168,7 @@ class baseCommands:
 
             c = self.c
             h = p.h
-            s = p.bodyString()
+            s = p.b
             if not s: return
 
             readlines = g.readLinesClass(s).next
@@ -4419,7 +4419,7 @@ class baseCommands:
 
             c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
             sel = c.frame.body.getInsertPoint()
-            oldBody = p.bodyString()
+            oldBody = p.b
             body = ''.join(lines)
 
             if oldBody != body:
@@ -4761,7 +4761,7 @@ class baseCommands:
         u.beforeChangeGroup(current,undoType)
         for p in c.all_positions_with_unique_vnodes_iter():
             if p.isDirty()and not p.isMarked():
-                s = p.bodyString()
+                s = p.b
                 flag, i = g.is_special(s,0,"@root")
                 if flag:
                     bunch = u.beforeMark(p,undoType)
@@ -7013,7 +7013,7 @@ class baseCommands:
         c = self
         if not s: return
 
-        body = p.bodyString()
+        body = p.b
         assert(g.isUnicode(body))
         s = g.toUnicode(s,encoding)
 
@@ -7231,7 +7231,7 @@ class baseCommands:
         It is surprising difficult to do this during Untangle."""
 
         c = self
-        body = p.bodyString()
+        body = p.b
         lines = body.split('\n')
         i = len(lines) - 1 ; changed = False
         while i >= 0:

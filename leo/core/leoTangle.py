@@ -625,7 +625,7 @@ class baseTangleCommands:
         self.initTangleCommand()
         any_marked = False
         while p:
-            is_ignore, i = g.is_special(p.bodyString(),0,"@ignore")
+            is_ignore, i = g.is_special(p.b,0,"@ignore")
             # Only tangle marked and unvisited nodes.
             if is_ignore:
                 p.moveToNodeAfterTree()
@@ -815,7 +815,7 @@ class baseTangleCommands:
         c = self.c
         #@    << Set path & root_name to the file specified in the @root directive >>
         #@+node:ekr.20031218072017.3483:<< Set path & root_name to the file specified in the @root directive >>
-        s = root.bodyString()
+        s = root.b
         i = 0
         while i < len(s):
             code, junk = self.token_type(s,i,report_errors)
@@ -933,7 +933,7 @@ class baseTangleCommands:
 
                         end = p.threadNext()
                         while end and end != afterUnit:
-                            flag, i = g.is_special(end.bodyString(),0,"@root")
+                            flag, i = g.is_special(end.b,0,"@root")
                             if flag and not p.isAncestorOf(end):
                                 break
                             end.moveToThreadNext()
@@ -1021,7 +1021,7 @@ class baseTangleCommands:
 
         # g.trace(p)
         c = self.c
-        s = p.bodyString()
+        s = p.b
         code_seen = False ; code = doc = None ; i = 0
         anyChanged = False
 
@@ -2892,7 +2892,7 @@ class baseTangleCommands:
     def update_def (self,name,part_number,head,code,tail,is_root_flag): # Doc parts are never updated!
 
         # g.trace(name,part_number,code)
-        p = self.p ; body = p.bodyString()
+        p = self.p ; body = p.b
         if not head: head = ""
         if not tail: tail = ""
         if not code: code = ""
@@ -3417,7 +3417,7 @@ class baseTangleCommands:
         print_mode_changed = False
         self.init_directive_ivars()
         if p:
-            s = p.bodyString()
+            s = p.b
             #@        << Collect @first attributes >>
             #@+node:ekr.20080923124254.17:<< Collect @first attributes >>
             #@+at 

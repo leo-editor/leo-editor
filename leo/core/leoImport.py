@@ -270,7 +270,7 @@ class leoImportCommands (scanUtility):
         if not v or not c: return ""
         startInCode = not c.config.at_root_bodies_start_in_doc_mode
         nl = self.output_newline
-        s = v.bodyString()
+        s = v.b
         lb = g.choose(self.webType=="cweb","@<","<<")
         i = 0 ; result = "" ; docSeen = False
         while i < len(s):
@@ -421,7 +421,7 @@ class leoImportCommands (scanUtility):
         self.treeType = "@file"
         # Set self.treeType to @root if p or an ancestor is an @root node.
         for p in current.parents_iter():
-            flag,junk = g.is_special(p.bodyString(),0,"@root")
+            flag,junk = g.is_special(p.b,0,"@root")
             if flag:
                 self.treeType = "@root"
                 break
@@ -553,7 +553,7 @@ class leoImportCommands (scanUtility):
         #@-node:ekr.20031218072017.1150:<< open filename to f, or return >>
         #@nl
         for p in p.self_and_subtree_iter():
-            s = p.bodyString()
+            s = p.b
             s2 = s.strip()
             if s2 and len(s2) > 0:
                 f.write("-" * 60) ; f.write(nl)
@@ -592,7 +592,7 @@ class leoImportCommands (scanUtility):
         but does not recolor the text or redraw the screen.'''
 
         if s:
-            body = p.bodyString()
+            body = p.b
             assert(g.isUnicode(body))
             s = g.toUnicode(s,encoding)
             self.setBodyString(p,body + s,encoding)
@@ -887,7 +887,7 @@ class leoImportCommands (scanUtility):
             atAuto=True)
 
         # Force an update of the body pane.
-        self.setBodyString(p,p.bodyString())
+        self.setBodyString(p,p.b)
         c.frame.body.onBodyChanged(undoType=None)
     #@-node:ekr.20070807084545:readOneAtAutoNode (leoImport)
     #@-node:ekr.20070806111212:readAtAutoNodes (importCommands) & helper

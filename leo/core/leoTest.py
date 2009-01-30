@@ -228,7 +228,7 @@ def makeTestCase (c,p):
 
     p = p.copy()
 
-    if p.bodyString().strip():
+    if p.b.strip():
         return generalTestCase(c,p)
     else:
         return None
@@ -239,7 +239,7 @@ def makeTestCase (c,p):
 
 def runProfileOnNode (p,outputPath=None):
 
-    s = p.bodyString().rstrip() + '\n'
+    s = p.b.rstrip() + '\n'
 
     if outputPath is None:
         outputPath = g.os_path_finalize_join(
@@ -258,7 +258,7 @@ def runProfileOnNode (p,outputPath=None):
 
 def runTimerOnNode (c,p,count):
 
-    s = p.bodyString().rstrip() + '\n'
+    s = p.b.rstrip() + '\n'
 
     # A kludge so we the statement below can get c and p.
     g.app.unitTestDict = {'c':c,'p':p and p.copy()}
@@ -445,7 +445,7 @@ class testUtils:
                 p1 and p2 and
                 p1.numberOfChildren() == p2.numberOfChildren() and
                 (not compareHeadlines or (p1.h == p2.h)) and
-                p1.bodyString() == p2.bodyString() and
+                p1.b == p2.b and
                 p1.isCloned()   == p2.isCloned()
             )
             if not ok: break
@@ -475,11 +475,11 @@ class testUtils:
             if compareHeadlines and (p1.h != p2.h):
                 g.pr('p1.head', p1.h)
                 g.pr('p2.head', p2.h)
-            if p1.bodyString() != p2.bodyString():
+            if p1.b != p2.b:
                 g.pr('p1.body')
-                g.pr(repr(p1.bodyString()))
+                g.pr(repr(p1.b))
                 g.pr('p2.body')
-                g.pr(repr(p2.bodyString()))
+                g.pr(repr(p2.b))
             if p1.isCloned() != p2.isCloned():
                 g.pr('p1.isCloned() == p2.isCloned()')
 
@@ -892,7 +892,7 @@ def runAtFileTest(c,p):
     h2 = child2.h.lower().strip()
     assert(g.match(h1,0,"#@"))
     assert(g.match(h2,0,"output"))
-    expected = child2.bodyString()
+    expected = child2.b
 
     # Compute the type from child1's headline.
     j = g.skip_c_id(h1,2)
@@ -1035,7 +1035,7 @@ class editBodyTestCase(unittest.TestCase):
             commandName = commandName[:i] 
         # g.trace(commandName)
 
-        # Compute the result in tempNode.bodyString()
+        # Compute the result in tempNode.b
         command = getattr(c,commandName)
         command()
 
@@ -1073,19 +1073,19 @@ class editBodyTestCase(unittest.TestCase):
         while tempNode.firstChild():
             tempNode.firstChild().doDelete()
 
-        text = self.before.bodyString()
+        text = self.before.b
 
         tempNode.setBodyString(text,g.app.tkEncoding)
         c.selectPosition(self.tempNode)
 
         w = c.frame.body.bodyCtrl
         if self.sel:
-            s = str(self.sel.bodyString()) # Can't be unicode.
+            s = str(self.sel.b) # Can't be unicode.
             lines = s.split('\n')
             w.setSelectionRange(lines[0],lines[1])
 
         if self.ins:
-            s = str(self.ins.bodyString()) # Can't be unicode.
+            s = str(self.ins.b) # Can't be unicode.
             lines = s.split('\n')
             g.trace(lines)
             w.setInsertPoint(lines[0])
@@ -1366,8 +1366,8 @@ class reformatParagraphTest:
     #@+node:ekr.20051104075904.51:checkText
     def checkText(self):
 
-        new_text = self.tempChild.bodyString()
-        ref_text = self.after.bodyString()
+        new_text = self.tempChild.b
+        ref_text = self.after.b
         newLines = new_text.splitlines(1)
         refLines = ref_text.splitlines(1)
         newLinesCount = len(newLines)
@@ -1394,7 +1394,7 @@ class reformatParagraphTest:
             tempNode.firstChild().doDelete()
 
         # Copy the before node text to the temp node.
-        text = self.before.bodyString()
+        text = self.before.b
         tempNode.setBodyString(text,g.app.tkEncoding)
 
         # create the child node that holds the text.
@@ -1402,7 +1402,7 @@ class reformatParagraphTest:
         self.tempChild.setHeadString('tempChildNode')
 
         # copy the before text to the temp text.
-        text = self.before.bodyString()
+        text = self.before.b
         self.tempChild.setBodyString(text,g.app.tkEncoding)
 
         # Make the temp child node current, and put the cursor at the beginning.
@@ -1630,11 +1630,11 @@ def runEditCommandTest (c,p):
     #g.trace(repr(sels))
 
     c.selectPosition(work)
-    c.setBodyString(work,before.bodyString())
+    c.setBodyString(work,before.b)
     #g.trace(repr(sel1[0]),repr(sel1[1]))
     w.setSelectionRange(sel1[0],sel1[1],insert=sel1[1])
     c.k.simulateCommand(commandName)
-    s1 = work.bodyString() ; s2 = after.bodyString()
+    s1 = work.b ; s2 = after.b
     assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
     sel3 = w.getSelectionRange()
     ins = w.toGuiIndex(w.getInsertPoint())

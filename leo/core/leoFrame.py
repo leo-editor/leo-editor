@@ -836,7 +836,7 @@ class leoBody:
         #@+node:ekr.20060528110922:<< create text widget w >>
         w = self.createTextWidget(f,name=name,p=p)
         w.delete(0,'end')
-        w.insert('end',p.bodyString())
+        w.insert('end',p.b)
         w.see(0)
 
         self.setFontFromConfig(w=w)
@@ -1073,7 +1073,7 @@ class leoBody:
             v = w.leo_v
             if v and v == p.v and w != c.frame.body.bodyCtrl:
                 w.delete(0,'end')
-                w.insert('end',p.bodyString())
+                w.insert('end',p.b)
                 # g.trace('update',w,v)
                 self.recolorWidget(p,w)
         c.bodyWantsFocus()
@@ -1208,7 +1208,7 @@ class leoBody:
         newText = w.getAllText() # Note: getAllText converts to unicode.
         newSel = w.getSelectionRange()
         if not oldText:
-            oldText = p.bodyString() ; changed = True
+            oldText = p.b ; changed = True
         else:
             changed = oldText != newText
         if trace: g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
@@ -2549,7 +2549,7 @@ class leoTree:
             url = s[4:].strip()
             if url.lstrip().startswith('--'):
                 # Get the url from the first body line.
-                lines = p.bodyString().split('\n')
+                lines = p.b.split('\n')
                 url = lines and lines[0] or ''
             else:
                 #@            << stop the url after any whitespace >>

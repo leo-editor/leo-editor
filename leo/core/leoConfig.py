@@ -143,7 +143,7 @@ class parserBaseClass:
     def doAbbrev (self,p,kind,name,val):
 
         d = {}
-        s = p.bodyString()
+        s = p.b
         lines = g.splitLines(s)
         for line in lines:
             line = line.strip()
@@ -217,7 +217,7 @@ class parserBaseClass:
     #@+node:ekr.20071214140900:doData
     def doData (self,p,kind,name,val):
 
-        s = p.bodyString()
+        s = p.b
         lines = g.splitLines(s)
         data = [z.strip() for z in lines if z.strip() and not z.startswith('#')]
 
@@ -235,7 +235,7 @@ class parserBaseClass:
     def doEnabledPlugins (self,p,kind,name,val):
 
         c = self.c
-        s = p.bodyString()
+        s = p.b
 
         # This setting is handled differently from all other settings,
         # because the last setting must be retrieved before any commander exists.
@@ -461,7 +461,7 @@ class parserBaseClass:
                         else:
                             kind = tag
                             head = itemName
-                            body = p.bodyString()
+                            body = p.b
                             aList.append((kind,head,body),)
                             p.moveToThreadNext()
                             break
@@ -497,7 +497,7 @@ class parserBaseClass:
         old_d = self.shortcutsDict
         d = self.shortcutsDict = {}
 
-        s = p.bodyString()
+        s = p.b
         lines = g.splitLines(s)
         for line in lines:
             line = line.strip()
@@ -565,7 +565,7 @@ class parserBaseClass:
         c = self.c ; d = self.shortcutsDict ; k = c.k
         trace = False or c.config.getBool('trace_bindings_verbose')
         munge = k.shortcutFromSetting
-        if s is None: s = p.bodyString()
+        if s is None: s = p.b
         lines = g.splitLines(s)
         for line in lines:
             line = line.strip()
@@ -657,7 +657,7 @@ class parserBaseClass:
                         if tag == '@menu':
                             aList2 = []
                             kind = '%s' % itemName
-                            body = p.bodyString()
+                            body = p.b
                             self.doPopupItems(p,aList2)
                             aList.append((kind + '\n' + body, aList2),)
                             p.moveToNodeAfterTree()
@@ -665,7 +665,7 @@ class parserBaseClass:
                         else:
                             kind = tag
                             head = itemName
-                            body = p.bodyString()
+                            body = p.b
                             aList.append((head,body),)
                             p.moveToThreadNext()
                             break
@@ -816,7 +816,7 @@ class parserBaseClass:
             'weight': None,
         }
 
-        s = p.bodyString()
+        s = p.b
         lines = g.splitLines(s)
 
         for line in lines:
@@ -887,7 +887,7 @@ class parserBaseClass:
 
         d = {'command': None,}
 
-        s = p.bodyString()
+        s = p.b
         lines = g.splitLines(s)
 
         for line in lines:

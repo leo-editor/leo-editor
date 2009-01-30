@@ -288,7 +288,7 @@ def goToLineNumber (self,n,p=None,scriptData=None):
     if n==1:
         p = root ; n2 = 1 ; found = True
     elif n >= len(lines):
-        p = root ; n2 = root.bodyString().count('\n') ; found = False
+        p = root ; n2 = root.b.count('\n') ; found = False
     elif isRaw:
         p,n2,found = c.goto_countLines(root,n)
     else:
@@ -332,7 +332,7 @@ def goto_countLines (self,root,n):
 
     for p in p.self_and_subtree_iter():
         lastv = p.copy()
-        s = p.bodyString()
+        s = p.b
         if isNosent or isAuto:
             s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
         n_lines = s.count('\n')
@@ -817,7 +817,7 @@ while p:
     i = txt.rfind(word, 0, start)
     if i == -1:
         p.moveToThreadBack()
-        if p:self.chunk = txt = p.bodyString()
+        if p:self.chunk = txt = p.b
         start = -1
     else:
         if self.acceptable_word(i, txt, word):
@@ -842,7 +842,7 @@ while p:
     i = txt.find(word, start)
     if i == -1:
         p.moveToThreadNext()
-        if p:self.chunk = txt = p.bodyString()
+        if p:self.chunk = txt = p.b
         start = 0
     else:
         if self.acceptable_word(i, txt, word):
@@ -880,7 +880,7 @@ def acceptable_word(self, i, txt, word):
             self.tried[nword] = 1
             u = self.c.undoer
             bunch = u.createCommonBunch(p)
-            bunch.oldBody = p.bodyString()
+            bunch.oldBody = p.b
             bunch.insertPos = self.pos
             # Set the type & helpers.
             bunch.kind = 'node'
@@ -934,7 +934,7 @@ def adjust(self, p, pos):
     if p != self.p or pos != self.pos:
         self.p = p.copy()
         self.pos = pos
-        bs = p.bodyString()
+        bs = p.b
         word = getCurrentWord(bs, pos)
         self.word = word
         self.before = bs[:pos-len(word)]
@@ -1001,7 +1001,7 @@ while p:
     i = txt.rfind(word, 0, start)
     if i == -1:
         p.moveToThreadBack()
-        if p:self.chunk = txt = p.bodyString()
+        if p:self.chunk = txt = p.b
         start = -1
     else:
         if self.acceptable_word(i, txt, word):
@@ -1026,7 +1026,7 @@ while p:
     i = txt.find(word, start)
     if i == -1:
         p.moveToThreadNext()
-        if p:self.chunk = txt = p.bodyString()
+        if p:self.chunk = txt = p.b
         start = 0
     else:
         if self.acceptable_word(i, txt, word):
@@ -1064,7 +1064,7 @@ def acceptable_word(self, i, txt, word):
             self.tried[nword] = 1
             u = self.c.undoer
             bunch = u.createCommonBunch(p)
-            bunch.oldBody = p.bodyString()
+            bunch.oldBody = p.b
             bunch.insertPos = self.pos
             # Set the type & helpers.
             bunch.kind = 'node'
@@ -1118,7 +1118,7 @@ def adjust(self, p, pos):
     if p != self.p or pos != self.pos:
         self.p = p.copy()
         self.pos = pos
-        bs = p.bodyString()
+        bs = p.b
         word = getCurrentWord(bs, pos)
         self.word = word
         self.before = bs[:pos-len(word)]
@@ -1786,7 +1786,7 @@ if g.os_path_exists(searchPath):
 
 encoding = theDict.get("encoding")
 old_body = theDict.get("body")
-new_body = p.bodyString()
+new_body = p.b
 new_body = g.toEncodedString(new_body,encoding,reportErrors=True)
 
 old_time = theDict.get("time")
@@ -1886,7 +1886,7 @@ def createOpenWithTempFile (self,p,ext):
             g.es("creating:  ",g.shortFileName(path),color="blue")
         theFile = open(path,"w")
         # Convert s to whatever encoding is in effect.
-        s = p.bodyString()
+        s = p.b
         theDict = c.scanAllDirectives(p)
         encoding = theDict.get("encoding",None)
         if encoding == None:
@@ -5699,7 +5699,7 @@ def doShortcuts(self,p,kind,name,val,s=None):
     c = self.c ; d = self.shortcutsDict ; k = c.k
     trace = False or c.config.getBool('trace_bindings_verbose')
     munge = k.shortcutFromSetting
-    if s is None: s = p.bodyString()
+    if s is None: s = p.b
     lines = g.splitLines(s)
     for line in lines:
         line = line.strip()

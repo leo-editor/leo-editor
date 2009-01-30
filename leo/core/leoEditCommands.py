@@ -95,7 +95,7 @@ class baseEditCommandsClass:
 
         if name.startswith('body'):
             oldSel =  w.getSelectionRange()
-            oldText = p.bodyString()
+            oldText = p.b
             self.undoData = b = g.Bunch()
             # To keep pylint happy.
             b.ch=ch
@@ -430,7 +430,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         items = []
         if self.globalDynamicAbbrevs:
             for p in self.c.allNodes_iter():
-                s = p.bodyString()
+                s = p.b
                 if s:
                     items.extend(self.dynaregex.findall(s))
         else:
@@ -2979,7 +2979,7 @@ class editCommandsClass (baseEditCommandsClass):
             ch = '\t'
         name = c.widget_name(w)
         oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
-        oldText = name.startswith('body') and p.bodyString() or ''
+        oldText = name.startswith('body') and p.b or ''
         undoType = 'Typing'
         trace = c.config.getBool('trace_masterCommand')
         brackets = self.openBracketsList + self.closeBracketsList
@@ -4871,7 +4871,7 @@ class editFileCommandsClass (baseEditCommandsClass):
             if d2.get(key):
                 p1 = d1.get(key)
                 p2 = d2.get(key)
-                if p1.h != p2.h or p1.bodyString() != p2.bodyString():
+                if p1.h != p2.h or p1.b != p2.b:
                     changed[key] = p1
 
         return inserted, deleted, changed
@@ -8572,7 +8572,7 @@ class spellTabHandler (leoFind.leoFind):
                 p.moveToThreadNext()
                 if not p: break
                 self.workCtrl.delete(0,'end')
-                self.workCtrl.insert(0,p.bodyString())
+                self.workCtrl.insert(0,p.b)
                 for w in (self.workCtrl,c.frame.body.bodyCtrl):
                     c.widgetWantsFocusNow(w)
                     w.setSelectionRange(0,0,insert=0)

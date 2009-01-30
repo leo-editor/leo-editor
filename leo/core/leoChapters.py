@@ -558,7 +558,7 @@ class chapterController:
             if h == s:
                 return p
             # elif h.startswith('@chapter '):
-                # body = p.bodyString()
+                # body = p.b
                 # if body:
                     # lines = g.splitLines(body)
                     # line = lines[0].strip()

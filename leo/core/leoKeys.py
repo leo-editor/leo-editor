@@ -1189,7 +1189,7 @@ class autoCompleterClass:
                     if (count % 200) == 0: g.es('','.',newline=False)
                 language = g.scanForAtLanguage(c,p)
                 # g.trace('language',language,p.h)
-                s = p.bodyString()
+                s = p.b
                 if k.enable_autocompleter:
                     self.scanForAutoCompleter(s)
                 if k.enable_calltips:
@@ -1524,7 +1524,7 @@ class autoCompleterClass:
         #@+node:ekr.20061031131434.70:findClass & helpers
         def findClass (self,p):
 
-            lines = g.splitLines(p.bodyString())
+            lines = g.splitLines(p.b)
             inDoc = self.start_in_doc
             # g.trace(p.h)
             for s in lines:

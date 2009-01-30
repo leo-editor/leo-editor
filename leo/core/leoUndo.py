@@ -598,7 +598,7 @@ class undoer:
 
         bunch.dirtyVnodeList = dirtyVnodeList
 
-        bunch.newBody = p.bodyString()
+        bunch.newBody = p.b
         bunch.newChanged = u.c.isChanged()
         bunch.newDirty = p.isDirty()
         bunch.newHead = p.h
@@ -909,7 +909,7 @@ class undoer:
 
         bunch = u.createCommonBunch(p)
 
-        bunch.oldBody = oldBody or p.bodyString()
+        bunch.oldBody = oldBody or p.b
         bunch.oldHead = oldHead or p.h
 
         return bunch
@@ -1197,8 +1197,7 @@ class undoer:
         # Undo: Given newText, recreate oldText.
         # Redo: Given oldText, recreate oldText.
         # 
-        # The "given" texts for the undo and redo routines are simply 
-        # p.bodyString().
+        # The "given" texts for the undo and redo routines are simply p.b.
         #@-at
         #@@c
 
@@ -1978,7 +1977,7 @@ class undoer:
         #@    << Compute the result using p's body text >>
         #@+node:ekr.20061106105812.1:<< Compute the result using p's body text >>
         # Recreate the text using the present body text.
-        body = p.bodyString()
+        body = p.b
         body = g.toUnicode(body,"utf-8")
         body_lines = body.split('\n')
         s = []
@@ -2024,7 +2023,7 @@ class undoer:
 
         # Replace data in tree with old data.
         u.restoreTree(old_data)
-        c.setBodyString(p,p.bodyString())
+        c.setBodyString(p,p.b)
 
         return p # Nothing really changes.
     #@-node:ekr.20050408100042:undoRedoTree

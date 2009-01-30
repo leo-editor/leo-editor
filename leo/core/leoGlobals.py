@@ -4259,7 +4259,7 @@ def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
     u = leoTest.testUtils(c)
     find_p = u.findNodeInTree(p,findHeadline)
     if find_p:
-        find_text = find_p.bodyString()
+        find_text = find_p.b
     else:
         g.es("no Find script node",color="red")
         return
@@ -4268,7 +4268,7 @@ def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
     else:
         change_p = None
     if change_p:
-        change_text = change_p.bodyString()
+        change_text = change_p.b
     else:
         change_text = ""
     # g.pr(find_p,change_p)
@@ -5153,16 +5153,16 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
         p = c.currentPosition()
     try:
         if g.app.inBridge:
-            s = p.bodyString()
+            s = p.b
         elif p1:
-            s = p.bodyString() # Bug fix: Leo 8.8.4.
+            s = p.b # Bug fix: Leo 8.8.4.
         elif p == c.currentPosition():
             if useSelectedText and w.hasSelection():
                 s = w.getSelectedText()
             else:
                 s = w.getAllText()
         else:
-            s = p.bodyString()
+            s = p.b
         # Remove extra leading whitespace so the user may execute indented code.
         s = g.removeExtraLws(s,c.tab_width)
         if s.strip():

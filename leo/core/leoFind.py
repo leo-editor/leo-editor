@@ -493,7 +493,7 @@ class leoFind:
             #@+node:ekr.20031218072017.2295:<< change body >>
             if len(s) > 0 and s[-1]=='\n': s = s[:-1]
 
-            if s != p.bodyString():
+            if s != p.b:
 
                 undoData = u.beforeChangeNodeContents(p)
 
@@ -1223,14 +1223,14 @@ class leoFind:
     def initBatchText(self,ins=None):
         p = self.p
         self.wrapping = False # Only interactive commands allow wrapping.
-        s = g.choose(self.in_headline,p.h, p.bodyString())
+        s = g.choose(self.in_headline,p.h, p.b)
         self.init_s_ctrl(s,ins)
 
     # Call this routine when moving to the next node when a search fails.
     # Same as above except we don't reset wrapping flag.
     def initNextText(self,ins=None):
         c,p = self.c,self.p
-        s = g.choose(self.in_headline,p.h, p.bodyString())
+        s = g.choose(self.in_headline,p.h, p.b)
         if True:
             tree = c.frame and c.frame.tree
             if tree and hasattr(tree,'killEditing'):
