@@ -1090,7 +1090,7 @@ class baseFileCommands:
         self.handleTnodeSaxAttributes(sax_node,t)
 
         return v
-
+    #@nonl
     #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
     def handleTnodeSaxAttributes (self,sax_node,t):
 
@@ -2394,9 +2394,8 @@ class baseFileCommands:
             g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
             return ''
         else:
-
             val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
-            # g.trace(torv,attrDict,g.callers())
+            # g.trace(torv,attrDict)
             return val
     #@-node:EKR.20040526202501:putUnknownAttributes
     #@+node:ekr.20031218072017.3045:setDefaultDirectoryForNewFiles

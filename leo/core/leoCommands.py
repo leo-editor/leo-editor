@@ -3338,6 +3338,7 @@ class baseCommands:
             pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
         else:
             pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
+
         if not pasted: return
 
         copiedBunchList = []
@@ -3362,7 +3363,7 @@ class baseCommands:
             #@nl
         undoData = u.beforeInsertNode(current,
             pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
-        c.endEditing()
+
         c.validateOutline()
         c.selectPosition(pasted)
         pasted.setDirty()

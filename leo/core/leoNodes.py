@@ -221,27 +221,24 @@ if not g.unified_nodes:
         #@-node:ekr.20031218072017.3332:t.Status bits
         #@-node:ekr.20031218072017.3331:t.Setters
         #@+node:ekr.20090130065000.2:t.u Property
-        class uAaccessor (object):
-            '''A class providing get/set access to uA's'''
-            def __init__ (self,t):
-                self.t = t
-            def get (self,key):
-                t = self.t
-                if hasattr(t,'unknownAttributes'):
-                    return t.unknownAttributes.get(key)
-                else: return None
-            def set (self,key,val):
-                t = self.t
-                if not hasattr(t,'unknownAttributes'):
-                    t.unknownAttributes = {}
-                t.unknownAttributes[key] = val
-
-        def __get_u(self):
+        def __get_t(self):
             t = self
-            return self.uAaccessor(t)
+            if not hasattr(t,'unknownAttributes'):
+                t.unknownAttributes = {}
+            return t.unknownAttributes
+
+        def __set_t(self,val):
+            t = self
+            if val is None:
+                if hasattr(t,'unknownAttributes'):
+                    delattr(t,'unknownAttributes')
+            elif type(val) == type({}):
+                t.unknownAttributes = val
+            else:
+                raise ValueError
 
         u = property(
-            __get_u, # No setter.
+            __get_t, __set_t,
             doc = "tnode unknownAttribute property")
         #@-node:ekr.20090130065000.2:t.u Property
         #@-others
@@ -864,27 +861,24 @@ class vnode (baseVnode):
     #@-node:ekr.20080427062528.10:v._computeParentsOfChildren
     #@-node:ekr.20080427062528.9:v.Low level methods
     #@+node:ekr.20090130065000.1:v.u Property
-    class uAaccessor (object):
-        '''A class providing get/set access to uA's'''
-        def __init__ (self,v):
-            self.v = v
-        def get (self,key):
-            v = self.v
-            if hasattr(v,'unknownAttributes'):
-                return v.unknownAttributes.get(key)
-            else: return None
-        def set (self,key,val):
-            v = self.v
-            if not hasattr(v,'unknownAttributes'):
-                v.unknownAttributes = {}
-            v.unknownAttributes[key] = val
-
     def __get_u(self):
         v = self
-        return self.uAaccessor(v)
+        if not hasattr(v,'unknownAttributes'):
+            v.unknownAttributes = {}
+        return v.unknownAttributes
+
+    def __set_u(self,val):
+        v = self
+        if val is None:
+            if hasattr(v,'unknownAttributes'):
+                delattr(v,'unknownAttributes')
+        elif type(val) == type({}):
+            v.unknownAttributes = val
+        else:
+            raise ValueError
 
     u = property(
-        __get_u, # No setter.
+        __get_u, __set_u,
         doc = "vnode unknownAttribute property")
     #@-node:ekr.20090130065000.1:v.u Property
     #@-others

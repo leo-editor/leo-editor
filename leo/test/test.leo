@@ -1056,7 +1056,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090128112453.1"><vh>Property tests</vh></v>
+<v t="ekr.20090128112453.1" key="550378797a71002e"><vh>Property tests</vh></v>
 <v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
 </vnodes>
 <tnodes>
@@ -11171,15 +11171,27 @@ def spam (self):
 
     pass
 </t>
-<t tx="ekr.20090128112453.1"># print p.b
+<t tx="ekr.20090128112453.1" t-key="550370647171002e"># print p.b
 # p.b = p.b + '\n# new'
 # p.h = p.h + 'z'
 
-print p.v.u.get('key')
+if 0:
+    print p.v.u
+    print p.v.u.get('key')
+    p.v.u['key'] = 'abc'
+    print p.v.u.get('key')
+    p.v.u = {'key':'xyz'}
+    # p.v.u = 'abc'
+    print p.v.u
 
-p.v.u.set('key','abc')
-
-print p.v.u.get('key')</t>
+if 1:
+    print p.v.t.u
+    print p.v.t.u.get('t-key')
+    p.v.t.u['t-key'] = 'pdq'
+    print p.v.t.u.get('t-key')
+    # p.v.t.u = {'key':'pdq'}
+    # # p.v.t.u = 'pdq'
+    # print p.v.t.u</t>
 <t tx="ekr.20090128131130.1">aList = g.posList(c) # Start with all positions
 print len(aList)
 aList2 = aList.select('plugin',regex=False,removeClones=True)
