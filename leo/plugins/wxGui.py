@@ -4338,14 +4338,14 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
 
         wx.EVT_TREE_SEL_CHANGED    (w,theId,self.onTreeSelChanged)
 
-        #### Not ready yet, and maybe never.
+        ### Not ready yet, and maybe never.
         # wx.EVT_TREE_BEGIN_DRAG      (w,theId,self.onTreeBeginDrag)
         # wx.EVT_TREE_END_DRAG        (w,theId,self.onTreeEndDrag)
 
         wx.EVT_TREE_BEGIN_LABEL_EDIT(w,theId,self.onTreeBeginLabelEdit)
         wx.EVT_TREE_END_LABEL_EDIT  (w,theId,self.onTreeEndLabelEdit)
 
-        #### We want to trigger as early as possible.
+        ### We want to trigger as early as possible.
         # wx.EVT_TREE_ITEM_COLLAPSED  (w,theId,self.onTreeCollapsed)
         # wx.EVT_TREE_ITEM_EXPANDED   (w,theId,self.onTreeExpanded)
 
@@ -4769,7 +4769,7 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
             e = w.GetEditControl()
             g.trace(e)
             if e:
-                if 0: #### Not ready yet.
+                if 0: ### Not ready yet.
                     s = e.text() ; len_s = len(s)
                     if selection:
                         i,j,ins = selection
@@ -5141,18 +5141,18 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
         # vScroll = w.verticalScrollBar()
         # hPos = hScroll.sliderPosition()
         # vPos = vScroll.sliderPosition()
-        hPos,vPos = 0,0 #### Not ready yet.
+        hPos,vPos = 0,0 ### Not ready yet.
         return hPos,vPos
 
     def setHScroll (self,hPos):
         w = self.treeWidget
-        #### hScroll = w.horizontalScrollBar()
-        #### hScroll.setSliderPosition(hPos)
+        ### hScroll = w.horizontalScrollBar()
+        ### hScroll.setSliderPosition(hPos)
 
     def setVScroll (self,vPos):
         w = self.treeWidget
-        #### vScroll = w.verticalScrollBar()
-        #### vScroll.setSliderPosition(vPos)
+        ### vScroll = w.verticalScrollBar()
+        ### vScroll.setSliderPosition(vPos)
     #@nonl
     #@-node:ekr.20090126093408.857:Scroll bars (to do)
     #@-node:ekr.20090126093408.841:Widget-dependent helpers (wxTree)

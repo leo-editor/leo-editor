@@ -243,186 +243,6 @@ bracketright: ']'
 #@-node:ekr.20081121105001.187:dump guiBindNamesInverseDict
 #@-node:ekr.20081121105001.185:Scripts
 #@+node:ekr.20090124101344.1:Recent
-#@+node:ekr.20090123073723.13:Set focus in window activate events
-#@+node:ekr.20081121105001.168:eventFilter
-def eventFilter(self, obj, event):
-
-    trace = False ; verbose = True
-    traceFocus = False and not g.unitTesting
-    c = self.c ; k = c.k
-    eventType = event.type()
-    ev = QtCore.QEvent
-    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
-    if traceFocus:
-        table = (
-            (ev.FocusIn,        'focus-in '),
-            (ev.FocusOut,       'focus-out'),
-            (ev.WindowActivate, 'activate '))
-        for evKind,kind in table:
-            if eventType == evKind:
-                g.trace('%s %s %s' % (
-                    (kind,id(obj),
-                    # event.reason(),
-                    g.app.gui.widget_name(obj) or obj)))
-        # else: g.trace('unknown kind: %s' % eventType)
-
-    if eventType == ev.WindowActivate:
-        g.app.gui.onActivateEvent(event,c,obj,self.tag)
-        override = False ; tkKey = None
-        # g.trace(g.app.gui.get_focus(c))
-    elif eventType in kinds:
-        tkKey,ch,ignore = self.toTkKey(event)
-        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-
-        if ignore:
-            override = False
-        elif self.isSpecialOverride(tkKey,ch):
-            override = True
-        elif k.inState():
-            override = not ignore # allow all keystrokes.
-        elif safe_mode:
-            override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
-        else:
-            override = len(aList) > 0
-    else:
-        override = False ; tkKey = '<no key>'
-
-    # A hack. QLineEdit generates ev.KeyRelease only.
-    if eventType in (ev.KeyPress,ev.KeyRelease):
-        p = c.currentPosition()
-        isEditWidget = obj == c.frame.tree.edit_widget(p)
-        keyIsActive = g.choose(
-            isEditWidget,
-            eventType == ev.KeyRelease,
-            eventType == ev.KeyPress)
-    else:
-        keyIsActive = False
-
-    if keyIsActive:
-        if override:
-            w = self.w # Pass the wrapper class, not the wrapped widget.
-            stroke = self.toStroke(tkKey,ch)
-            leoEvent = leoKeyEvent(event,c,w,ch) # ch was stroke
-            ret = k.masterKeyHandler(leoEvent,stroke=stroke)
-            c.outerUpdate()
-        else:
-            if trace: g.trace(self.tag,'unbound',tkKey)
-
-    if trace: self.traceEvent(obj,event,tkKey,override)
-
-    return override
-#@-node:ekr.20081121105001.168:eventFilter
-#@+node:ekr.20090123150451.11:onActivateEvent (qtGui)
-def onActivateEvent (self,event,c,obj,tag):
-
-    '''Put the focus in the body pane when the Leo window is
-    activated, say as the result of an Alt-tab or click.'''
-
-    # This is called several times for each window activation.
-    # We only need to set the focus once.
-
-    if c.exists and tag == 'body':
-
-        # g.trace('Activate',tag,g.callers(5))
-
-        # Putting focus in the body is clearest.
-        c.bodyWantsFocus()
-        c.outerUpdate()
-#@-node:ekr.20090123150451.11:onActivateEvent (qtGui)
-#@+node:ekr.20081121105001.330:createTab
-def createTab (self,tabName,widget=None,wrap='none'):
-    """ Create a new tab in tab widget
-
-    if widget is None, Create a QTextBrowser,
-    suitable for log functionality.
-    """
-    c = self.c ; w = self.tabWidget
-
-    if widget is None:
-        contents = QtGui.QTextBrowser()
-        contents.setWordWrapMode(QtGui.QTextOption.NoWrap)
-        self.logDict[tabName] = contents
-        if tabName == 'Log': self.logCtrl = contents
-        theFilter = leoQtEventFilter(c,w=contents,tag='tab')
-        contents.installEventFilter(theFilter)
-    else:
-        contents = widget
-
-    self.contentsDict[tabName] = contents
-    w.addTab(contents,tabName)
-    return contents
-
-#@-node:ekr.20081121105001.330:createTab
-#@-node:ekr.20090123073723.13:Set focus in window activate events
-#@+node:ekr.20090123181335.45:Fixed bug: cloned headlines not updated properly
-#@+node:ekr.20081121105001.163:onHeadChanged (qtTree)
-# Tricky code: do not change without careful thought and testing.
-
-def onHeadChanged (self,p,undoType='Typing',s=None):
-
-    '''Officially change a headline.'''
-
-    trace = False ; verbose = True
-    c = self.c ; u = c.undoer
-    ew = self.edit_widget(p)
-    if ew: e = ew.widget
-    item = self.position2item(p)
-
-    w = g.app.gui.get_focus()
-
-    # These are not errors: onItemChanged may
-    # have been called first.
-    if trace and verbose:
-        if not e:  g.trace('No e',g.callers(4))
-        if e != w: g.trace('e != w',e,w,g.callers(4))
-        if not p:  g.trace('No p')
-
-    if e and e == w and item and p:
-        s = e.text() ; len_s = len(s)
-        s = g.app.gui.toUnicode(s)
-        oldHead = p.headString()
-        changed = s != oldHead
-        if trace: g.trace('changed',changed,repr(s),g.callers(4))
-        if changed:
-            p.initHeadString(s)
-            item.setText(0,s) # Required to avoid full redraw.
-            undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
-            if not c.changed: c.setChanged(True)
-            # New in Leo 4.4.5: we must recolor the body because
-            # the headline may contain directives.
-            c.frame.body.recolor(p,incremental=True)
-            dirtyVnodeList = p.setDirty()
-            u.afterChangeNodeContents(p,undoType,undoData,
-                dirtyVnodeList=dirtyVnodeList)
-
-    # This is a crucial shortcut.
-    if g.unitTesting: return
-
-    self.redraw_after_head_changed()
-
-    if self.stayInTree:
-        c.treeWantsFocus()
-    else:
-        c.bodyWantsFocus()
-    c.outerUpdate()
-#@-node:ekr.20081121105001.163:onHeadChanged (qtTree)
-#@+node:ekr.20090109110752.19:redraw_after_head_changed
-def redraw_after_head_changed (self):
-
-    # g.trace(g.callers(4))
-
-    c = self.c ; p = c.currentPosition()
-
-    if p:
-        h = p.headString()
-        for item in self.tnode2items(p.v.t):
-            if self.isValidItem(item):
-                item.setText(0,h)
-
-    #### self.full_redraw()
-#@nonl
-#@-node:ekr.20090109110752.19:redraw_after_head_changed
-#@-node:ekr.20090123181335.45:Fixed bug: cloned headlines not updated properly
 #@+node:ekr.20081215074704.15:Cut/paste work erratically
 # I tweaked the clipboard code, and leoQtGui.toUnicode.
 # That's all I can see to do.
@@ -502,6 +322,545 @@ def getTextFromClipboard (self):
         return ''
 #@-node:ekr.20081121105001.183:Clipboard (qtGui)
 #@-node:ekr.20081215074704.15:Cut/paste work erratically
+#@+node:ekr.20090128173959.1:Fixed headline reversion
+#@+node:ekr.20090126120517.22:getItemText (debugging only)
+def getItemText (self,item):
+
+    '''Return the text of the item.'''
+
+    if item:
+        s = item.text(0)
+        s = g.toUnicode(s,'utf-8')
+        return s
+    else:
+        return '<no item>'
+#@nonl
+#@-node:ekr.20090126120517.22:getItemText (debugging only)
+#@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None):
+
+    '''Officially change a headline.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    c = self.c ; u = c.undoer
+    if not p:
+        if trace: g.trace('*** no p')
+        return
+
+    ew = self.edit_widget(p)
+    if ew: e = ew.widget
+    else: e = None
+    item = self.position2item(p)
+    w = g.app.gui.get_focus()
+
+    # These are not errors: focus may have been lost.
+    if trace and verbose:
+        if not e:  g.trace('No e',g.callers(4))
+        if e != w: g.trace('e != w',e,w,g.callers(4))
+        if not p:  g.trace('No p')
+
+    if e and e == w:
+        s = e.text() ; len_s = len(s)
+        s = g.app.gui.toUnicode(s)
+    elif item:
+        s = self.getItemText(item)
+    else:
+        if trace and verbose: g.trace('no item for %s' % (p and p.h))
+        return 
+
+    oldHead = p.h
+    changed = s != oldHead
+    if changed:
+        if trace: g.trace('changed',repr(s),p.h)
+        p.initHeadString(s)
+        item.setText(0,s) # Required to avoid full redraw.
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+
+    # This is a crucial shortcut.
+    if g.unitTesting: return
+
+    self.redraw_after_head_changed()
+
+    if self.stayInTree:
+        c.treeWantsFocus()
+    else:
+        c.bodyWantsFocus()
+    c.outerUpdate()
+#@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+#@+node:ekr.20090124174652.58:endEditLabel (nativeTree)
+def endEditLabel (self):
+
+    '''Override leoTree.endEditLabel.
+
+    End editing of the presently-selected headline.'''
+
+    # Let onHeadChanged do all the work.
+    c = self.c ; p = c.currentPosition()
+
+    self.onHeadChanged(p)
+#@nonl
+#@-node:ekr.20090124174652.58:endEditLabel (nativeTree)
+#@+node:ekr.20090124174652.60:setHeadline (nativeTree)
+def setHeadline (self,p,s):
+
+    '''Force the actual text of the headline widget to p.h.'''
+
+    trace = False and not g.unitTesting
+
+    # This is used by unit tests to force the headline and p into alignment.
+    if not p:
+        if trace: g.trace('*** no p')
+        return
+
+    # Don't do this here: the caller should do it.
+    # p.setHeadString(s)
+    e = self.edit_widget(p)
+    if e:
+        if trace: g.trace('e',s)
+        e.setAllText(s)
+    else:
+        item = self.position2item(p)
+        if item:
+            if trace: g.trace('item',s)
+            self.setItemText(item,s)
+        else:
+            if trace: g.trace('*** failed. no item for %s' % p.h)
+#@-node:ekr.20090124174652.60:setHeadline (nativeTree)
+#@-node:ekr.20090128173959.1:Fixed headline reversion
+#@+node:ekr.20090129125507.10:Fixed (??) body pane corruption
+#@+node:ekr.20090124174652.10:__init__ (nativeTree)
+def __init__(self,c,frame):
+
+    # Init the base class.
+    leoFrame.leoTree.__init__(self,frame)
+
+    # Components.
+    self.c = c
+    self.canvas = self # An official ivar used by Leo's core.
+
+    # Subclasses should define headline wrappers to
+    # be a subclass of leoFrame.baseTextWidget.
+    self.headlineWrapper = leoFrame.baseTextWidget
+
+    # Subclasses should define .treeWidget to be the underlying
+    # native tree widget.
+    self.treeWidget = None
+
+    # Widget independent status ivars...
+    self.contracting = False
+    self.dragging = False
+    self.expanding = False
+    self.prev_p = None
+    self.redrawing = False
+    self.redrawCount = 0 # Count for debugging.
+    self.revertHeadline = None # Previous headline text for abortEditLabel.
+    self.selecting = False
+
+    # Debugging...
+    self.nodeDrawCount = 0
+    self.traceEvents = False # Enable tracing of events.
+    self.traceCallersFlag = False # Enable traceCallers method.
+    self.verbose = False # Enable verbose traces.
+
+    # Associating items with vnodes...
+    self.item2vnodeDict = {}
+    self.tnode2itemsDict = {} # values are lists of items.
+    self.vnode2itemsDict = {} # values are lists of items.
+
+    self.setConfigIvars()
+    self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
+#@-node:ekr.20090124174652.10:__init__ (nativeTree)
+#@+node:ekr.20090129062500.10:busy (nativeTree)
+def busy (self):
+
+    '''Return True (actually, a debugging string)
+    if any lockout is set.'''
+
+    trace = False
+    table = (
+        (self.contracting,  'contracting'),
+        (self.expanding,    'expanding'),
+        (self.redrawing,    'redrawing'),
+        (self.selecting,    'selecting'))
+
+    item = self.getCurrentItem()
+
+    aList = []
+    for ivar,kind in table:
+        if ivar: aList.append(kind)
+    kinds = ','.join(aList)
+
+    if aList and trace:
+        g.trace(self.traceItem(item),kinds,g.callers(4))
+
+    return kinds # Return the string for debugging
+#@-node:ekr.20090129062500.10:busy (nativeTree)
+#@+node:ekr.20090124174652.53:afterSelectHint (nativeTree)
+def afterSelectHint (self,p,old_p):
+
+    trace = False
+    c = self.c
+
+    self.selecting = False
+
+    if self.busy():
+        self.error('afterSelectHint busy!: %s' % self.busy())
+
+    if not p:
+        return self.error('no p')
+    if p != c.currentPosition():
+        return self.error('p is not c.currentPosition()')
+
+    if trace: g.trace(p and p.headString(),g.callers(4))
+
+    c.outerUpdate() # Bring the tree up to date.
+
+    self.setItemForCurrentPosition()
+#@-node:ekr.20090124174652.53:afterSelectHint (nativeTree)
+#@+node:ekr.20090124174652.56:editLabel (nativeTree)
+def editLabel (self,p,selectAll=False,selection=None):
+
+    """Start editing p's headline."""
+
+    trace = False ; verbose = False
+
+    if self.busy():
+        return
+
+    c = self.c
+
+    if trace: g.trace('***',p and p.headString(),g.callers(4))
+
+    c.outerUpdate()
+        # Do any scheduled redraw.
+        # This won't do anything in the new redraw scheme.
+
+    item = self.position2item(p)
+    if item:
+        e = self.editLabelHelper(item,selectAll,selection)
+    else:
+        e = None
+        self.error('no item for %s' % p)
+
+    # A nice hack: just set the focus request.
+    if e: c.requestedFocusWidget = e
+#@-node:ekr.20090124174652.56:editLabel (nativeTree)
+#@+node:ekr.20090124174652.40:onItemCollapsed (nativeTree)
+def onItemCollapsed (self,item):
+
+    trace = False or self.traceEvents
+    verbose = False or self.verbose
+
+    if self.busy(): return
+
+    c = self.c
+    if trace: g.trace(self.traceItem(item))
+    p = self.item2position(item)
+
+    if p:
+        # Important: do not set lockouts here.
+        # Only methods that actually generate events should set lockouts.
+        p.contract()
+        self.select(p) # Calls before/afterSelectHint.    
+    else:
+        self.error('no p')
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.40:onItemCollapsed (nativeTree)
+#@+node:ekr.20090124174652.42:onItemExpanded (nativeTree)
+def onItemExpanded (self,item):
+
+    '''Handle and tree-expansion event.'''
+
+    trace = False or self.traceEvents
+    verbose = False or self.verbose
+
+    if self.busy(): return
+
+    c = self.c
+    if trace: g.trace(self.traceItem(item))
+    p = self.item2position(item)
+
+    if p:
+        # Important: do not set lockouts here.
+        # Only methods that actually generate events should set lockouts.
+        if not p.isExpanded():
+            p.expand()
+            self.select(p) # Calls before/afterSelectHint.
+            self.full_redraw()
+        else:
+            self.select(p)
+    else:
+        self.error('no p')
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.42:onItemExpanded (nativeTree)
+#@+node:ekr.20090124174652.43:onTreeSelect (nativeTree)
+def onTreeSelect(self):
+
+    '''Select the proper position when a tree node is selected.'''
+
+    trace = True or self.traceEvents
+    verbose = False or self.verbose
+
+    if self.busy(): return
+
+    c = self.c
+
+    item = self.getCurrentItem()
+    p = self.item2position(item)
+
+    if p:
+        # Important: do not set lockouts here.
+        # Only methods that actually generate events should set lockouts.
+        if trace: g.trace(self.traceItem(item))
+        self.select(p) # Calls before/afterSelectHint.
+    else:
+        self.error('no p for item: %s' % item,g.callers(4))
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.43:onTreeSelect (nativeTree)
+#@+node:ekr.20090124174652.44:setItemForCurrentPosition (nativeTree)
+def setItemForCurrentPosition (self):
+
+    '''Select the item for c.currentPosition()'''
+
+    trace = False or self.traceEvents
+    verbose = False or self.verbose
+
+    c = self.c ; p = c.currentPosition()
+
+    if self.busy(): return
+
+    # if self.contracting:
+        # if trace and verbose: g.trace('already contracting')
+        # return None
+    # if self.expanding:
+        # if trace and verbose: g.trace('already expanding')
+        # return None
+    # if self.selecting:
+        # if trace and verbose: g.trace('already selecting')
+        # return None
+
+    if not p:
+        if trace and verbose: g.trace('** no p')
+        return None
+
+    item = self.position2item(p)
+
+    if not item:
+        # This is not necessarily an error.
+        # We often attempt to select an item before redrawing it.
+        if trace and verbose: g.trace('** no item for',p)
+        return None
+
+    item2 = self.getCurrentItem()
+    if item == item2:
+        if trace and verbose: g.trace('no change',self.traceItem(item))
+    else:
+        if trace: g.trace(self.traceItem(item))
+        try:
+            self.selecting = True
+            # This generates gui events, so we must use a lockout.
+            self.setCurrentItemHelper(item)
+        finally:
+            self.selecting = False
+
+    return item
+#@-node:ekr.20090124174652.44:setItemForCurrentPosition (nativeTree)
+#@+node:ekr.20090124174652.76:setItemIcon (nativeTree)
+def setItemIcon (self,item,icon):
+
+    trace = False
+
+    valid = item and self.isValidItem(item)
+
+    if icon and valid:
+        # Important: do not set lockouts here.
+        # This will generate changed events,
+        # but there is no itemChanged event handler.
+        self.setItemIconHelper(item,icon)
+    elif trace:
+        # Apparently, icon can be None due to recent icon changes.
+        if icon:
+            g.trace('** item %s, valid: %s, icon: %s' % (
+                item and id(item) or '<no item>',valid,icon),
+                g.callers(4))
+#@-node:ekr.20090124174652.76:setItemIcon (nativeTree)
+#@+node:ekr.20090124174652.17:full_redraw & helpers
+# forceDraw not used. It is used in the Tk code.
+
+def full_redraw (self,p=None,scroll=True,forceDraw=False):
+
+    '''Redraw all visible nodes of the tree.
+
+    Preserve the vertical scrolling unless scroll is True.'''
+
+    trace = False or self.traceEvents
+    c = self.c
+
+    if self.busy():
+        g.trace('*** full_redraw: busy!',g.callers(5))
+        return
+
+    if p is None:   p = c.currentPosition()
+    else:           c.setCurrentPosition(p)
+
+    self.redrawCount += 1
+    if trace: self.tstart()
+    self.initData()
+    self.nodeDrawCount = 0
+    try:
+        self.redrawing = True
+        self.drawTopTree(p,scroll)
+    finally:
+        self.redrawing = False
+
+    self.setItemForCurrentPosition()
+    c.requestRedrawFlag= False
+
+    if trace:
+        theTime = self.tstop()
+        if True and not g.app.unitTesting:
+            g.trace('%s: scroll: %s, drew %3s nodes in %s' % (
+                self.redrawCount,scroll,self.nodeDrawCount,theTime),
+                g.callers(4))
+
+# Compatibility
+redraw = full_redraw 
+redraw_now = full_redraw
+#@+node:ekr.20090124174652.19:drawChildren
+def drawChildren (self,p,parent_item):
+
+    if not p:
+        return g.trace('can not happen: no p')
+
+    if p.hasChildren():
+        if p.isExpanded():
+            self.expandItem(parent_item)
+            child = p.firstChild()
+            while child:
+                self.drawTree(child,parent_item)
+                child.moveToNext()
+        else:
+            # Draw the hidden children.
+            child = p.firstChild()
+            while child:
+                self.drawNode(child,parent_item)
+                child.moveToNext()
+            self.contractItem(parent_item)
+    else:
+        self.contractItem(parent_item)
+#@-node:ekr.20090124174652.19:drawChildren
+#@+node:ekr.20090124174652.20:drawNode
+def drawNode (self,p,parent_item):
+
+    trace = False
+    c = self.c 
+    self.nodeDrawCount += 1
+
+    # Allocate the item.
+    item = self.createTreeItem(p,parent_item) 
+
+    # Do this now, so self.isValidItem will be true in setItemIcon.
+    self.rememberItem(p,item)
+
+    # Set the headline and maybe the icon.
+    self.setItemText(item,p.headString())
+    if p:
+        self.drawItemIcon(p,item)
+
+    if trace: g.trace(self.traceItem(item))
+
+    return item
+#@-node:ekr.20090124174652.20:drawNode
+#@+node:ekr.20090129062500.12:drawTopTree
+def drawTopTree (self,p,scroll):
+
+    c = self.c
+    hPos,vPos = self.getScroll()
+    self.clear()
+    # Draw all top-level nodes and their visible descendants.
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        p = bunch.p ; h = p.headString()
+        if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
+            p = p.firstChild()
+            while p:
+                self.drawTree(p)
+                p.moveToNext()
+        else:
+            self.drawTree(p)
+    else:
+        p = c.rootPosition()
+        while p:
+            self.drawTree(p)
+            p.moveToNext()
+
+    self.setHScroll(hPos)
+    if not scroll:
+        self.setVScroll(vPos)
+
+    self.repaint()
+#@nonl
+#@-node:ekr.20090129062500.12:drawTopTree
+#@+node:ekr.20090124174652.21:drawTree
+def drawTree (self,p,parent_item=None):
+
+    # Draw the (visible) parent node.
+    item = self.drawNode(p,parent_item)
+
+    # Draw all the visible children.
+    self.drawChildren(p,parent_item=item)
+
+
+#@-node:ekr.20090124174652.21:drawTree
+#@+node:ekr.20090124174652.22:initData
+def initData (self):
+
+    # g.trace('*****')
+
+    self.item2vnodeDict = {}
+    self.tnode2itemsDict = {}
+    self.vnode2itemsDict = {}
+#@-node:ekr.20090124174652.22:initData
+#@+node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
+def rememberItem (self,p,item):
+
+    self.rememberVnodeItem(p.v,item)
+
+def rememberVnodeItem (self,v,item):
+
+    # Update item2vnodeDict.
+    self.item2vnodeDict[item] = v
+
+    # Update tnode2itemsDict & vnode2itemsDict.
+    table = (
+        (self.tnode2itemsDict,v.t),
+        (self.vnode2itemsDict,v))
+
+    for d,key in table:
+        aList = d.get(key,[])
+        if item in aList:
+            g.trace('*** ERROR *** item already in list: %s, %s' % (item,aList))
+        else:
+            aList.append(item)
+        d[key] = aList
+#@nonl
+#@-node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
+#@-node:ekr.20090124174652.17:full_redraw & helpers
+#@-node:ekr.20090129125507.10:Fixed (??) body pane corruption
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20090124174652.39:onItemChanged (nativeTree)
@@ -509,8 +868,6 @@ def getTextFromClipboard (self):
 
     # '''Handle a change event in a headline.
     # This only gets called when the user hits return.'''
-
-    # return ####
 
     # trace = False or self.traceEvents
     # verbose = False or self.verbose

@@ -3472,7 +3472,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
                 "itemSelectionChanged()"),
             self.onTreeSelect)
 
-        #### We don't need this.  Hooray!
+        # We don't need this.  Hooray!
         # w.connect(self.treeWidget,QtCore.SIGNAL(
                 # "itemChanged(QTreeWidgetItem*, int)"),
             # self.onItemChanged)
@@ -7683,7 +7683,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081121105001.579:flashCharacter
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
 
-        return ### Kill this feature until it is not dangerous.
+        return #### Kill this feature until it is not dangerous.
 
         # This causes problems during unit tests.
         # The selection point isn't restored in time.

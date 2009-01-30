@@ -152,34 +152,25 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         trace = False or self.traceEvents
         c = self.c
-        if self.redrawing:
-            g.trace('***** already drawing',g.callers(5))
+
+        if self.busy():
+            g.trace('*** full_redraw: busy!',g.callers(5))
             return
 
-        if p is None:
-            p = c.currentPosition()
-        else:
-            c.setCurrentPosition(p)
+        if p is None:   p = c.currentPosition()
+        else:           c.setCurrentPosition(p)
 
         self.redrawCount += 1
-
-        if trace:
-            # g.trace(self.redrawCount,g.callers())
-            self.tstart()
-
-        # Init the data structures.
+        if trace: self.tstart()
         self.initData()
         self.nodeDrawCount = 0
-
         try:
             self.redrawing = True
             self.drawTopTree(p,scroll)
         finally:
             self.redrawing = False
 
-        if not self.selecting:
-            self.setItemForCurrentPosition()
-
+        self.setItemForCurrentPosition()
         c.requestRedrawFlag= False
 
         if trace:
@@ -417,7 +408,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             g.trace(self.traceItem(item),kinds,g.callers(4))
 
         return kinds # Return the string for debugging
-    #@nonl
     #@-node:ekr.20090129062500.10:busy (nativeTree)
     #@+node:ekr.20090124174652.30:Click Box... (nativeTree)
     #@+node:ekr.20090124174652.31:onClickBoxClick
@@ -504,20 +494,17 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         if self.busy(): return
 
-        # if self.redrawing or self.expanding or self.selecting:
-            # return
+        c = self.c
+        if trace: g.trace(self.traceItem(item))
+        p = self.item2position(item)
 
-        c = self.c ; p = c.currentPosition()
-        if trace: g.trace(p.headString() or "<no p>",g.callers(4))
-
-        p2 = self.item2position(item)
-        if p2:
+        if p:
             # Important: do not set lockouts here.
             # Only methods that actually generate events should set lockouts.
-            p2.contract()
-            self.select(p2) # Calls before/afterSelectHint.    
+            p.contract()
+            self.select(p) # Calls before/afterSelectHint.    
         else:
-            self.error('no p2')
+            self.error('no p')
 
         c.outerUpdate()
     #@-node:ekr.20090124174652.40:onItemCollapsed (nativeTree)
@@ -546,32 +533,26 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         '''Handle and tree-expansion event.'''
 
-        # The difficult case is when the user clicks the expansion box.
-
         trace = False or self.traceEvents
         verbose = False or self.verbose
 
         if self.busy(): return
 
-        # if self.redrawing or self.expanding or self.selecting:
-            # return
+        c = self.c
+        if trace: g.trace(self.traceItem(item))
+        p = self.item2position(item)
 
-        c = self.c ; p = c.currentPosition()
-
-        if trace: g.trace(p.headString(),self.traceItem(item))
-
-        p2 = self.item2position(item)
-        if p2:
+        if p:
             # Important: do not set lockouts here.
             # Only methods that actually generate events should set lockouts.
-            if not p2.isExpanded():
-                p2.expand()
-                self.select(p2) # Calls before/afterSelectHint.
+            if not p.isExpanded():
+                p.expand()
+                self.select(p) # Calls before/afterSelectHint.
                 self.full_redraw()
             else:
-                self.select(p2)
+                self.select(p)
         else:
-            g.trace('Error no p2')
+            self.error('no p')
 
         c.outerUpdate()
     #@-node:ekr.20090124174652.42:onItemExpanded (nativeTree)
@@ -580,21 +561,12 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         '''Select the proper position when a tree node is selected.'''
 
-        trace = False or self.traceEvents
+        trace = True or self.traceEvents
         verbose = False or self.verbose
 
         if self.busy(): return
 
-        c = self.c ; p = c.currentPosition()
-
-        # if self.selecting:
-            # if trace and verbose:
-                # g.trace('already selecting',p and p.headString())
-            # return
-        # if self.redrawing:
-            # if trace and verbose:
-                # g.trace('already drawing',p and p.headString())
-            # return
+        c = self.c
 
         item = self.getCurrentItem()
         p = self.item2position(item)
@@ -604,11 +576,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             # Only methods that actually generate events should set lockouts.
             if trace: g.trace(self.traceItem(item))
             self.select(p) # Calls before/afterSelectHint.
-        else: # An error.
+        else:
             self.error('no p for item: %s' % item,g.callers(4))
 
         c.outerUpdate()
-    #@nonl
     #@-node:ekr.20090124174652.43:onTreeSelect (nativeTree)
     #@+node:ekr.20090124174652.45:tree.OnPopup & allies (nativeTree)
     def OnPopup (self,p,event):
@@ -791,13 +762,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         trace = False
 
-        if self.busy(): return ####
-
-        # if self.selecting:
-            # return g.trace('*** Error: already selecting',g.callers(4))
-        # if self.redrawing:
-            # if trace: g.trace('already redrawing')
-            # return
+        if self.busy(): return
 
         if trace: g.trace(p and p.headString())
 
@@ -811,6 +776,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         trace = False or self.traceEvents
         verbose = False or self.verbose
+
         c = self.c
         item = self.position2item(p)
         if item:
@@ -838,10 +804,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         if self.busy():
             return
-
-        # if self.redrawing:
-            # if trace and verbose: g.trace('redrawing')
-            # return
 
         c = self.c
 
@@ -1003,8 +965,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if trace: g.trace('*** no p')
             return
 
-        #### Don't do this here: the caller should do it.
-        #### p.setHeadString(s)
+        # Don't do this here: the caller should do it.
+        # p.setHeadString(s)
         e = self.edit_widget(p)
         if e:
             if trace: g.trace('e',s)
@@ -1147,6 +1109,14 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         self.oops()
     #@-node:ekr.20090124174652.84:setItemText
+    #@+node:ekr.20090129164840.11:editLabelHelper
+    def editLabelHelper(self,item,selectAll=False,selection=None):
+
+        '''Called by nativeTree.editLabel to do gui-specific stuff
+        relating to editing a headline.'''
+
+        self.oops()
+    #@-node:ekr.20090129164840.11:editLabelHelper
     #@-node:ekr.20090124174652.116:Items
     #@+node:ekr.20090124174652.123:Scroll bars
     def getScroll (self):
