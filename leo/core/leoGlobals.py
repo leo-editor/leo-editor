@@ -3068,7 +3068,30 @@ def es_trace(*args,**keys):
 #@-node:ekr.20050707065530:g.es_trace
 #@+node:ekr.20090128083459.82:g.posList
 class posList(list):
-    '''A subclass of list that defines a select method.'''
+    #@    << docstring for posList >>
+    #@+node:ekr.20090130114732.2:<< docstring for posList >>
+    '''A subclass of list for creating and selecting lists of positions.
+
+        aList = g.posList(c)
+            # Creates a posList containing all positions in c.
+
+        aList = g.posList(c,aList2)
+            # Creates a posList from aList2.
+
+        aList2 = aList.select(pattern,regex=False,removeClones=True)
+            # Creates a posList containing all positions p in aList
+            # such that p.h matches the pattern.
+            # The pattern is a regular expression if regex is True.
+            # if removeClones is True, all positions p2 are removed
+            # if a position p is already in the list and p2.v.t == p.v.t.
+
+        aList.dump(sort=False,verbose=False)
+            # Prints all positions in aList, sorted if sort is True.
+            # Prints p.h, or repr(p) if verbose is True.
+    '''
+    #@nonl
+    #@-node:ekr.20090130114732.2:<< docstring for posList >>
+    #@nl
     def __init__ (self,c,aList=None):
         self.c = c
         list.__init__(self) # Init the base class

@@ -6611,6 +6611,94 @@ def redraw_after_select(self,p,setFocus=False):
     if setFocus: c.treeFocusHelper()
 #@-node:ekr.20090110073010.4:c.redraw_after_select
 #@-node:ekr.20090129060837.2:Fixed (?) body corruption
+#@+node:ekr.20090130065000.5:Fixed cut/paste outline bug
+# The bug was due to a duplicate call to c.endEditing.
+# It only affected the qt gui.
+#@nonl
+#@+node:ekr.20031218072017.1551:pasteOutline
+# To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
+
+def pasteOutline(self,event=None,reassignIndices=True):
+
+    '''Paste an outline into the present outline from the clipboard.
+    Nodes do *not* retain their original identify.'''
+
+    c = self ; u = c.undoer ; current = c.currentPosition()
+    s = g.app.gui.getTextFromClipboard()
+    pasteAsClone = not reassignIndices
+    undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
+
+    c.endEditing()
+
+    if not s or not c.canPasteOutline(s):
+        return # This should never happen.
+
+    isLeo = g.match(s,0,g.app.prolog_prefix_string)
+    tnodeInfoDict = {}
+    if pasteAsClone:
+        << remember all data for undo/redo Paste As Clone >>
+    # create a *position* to be pasted.
+    if isLeo:
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
+    else:
+        pasted = c.importCommands.convertMoreStringToOutlineAfter(s,current)
+
+    if not pasted: return
+
+    copiedBunchList = []
+    if pasteAsClone:
+        << put only needed info in copiedBunchList >>
+    undoData = u.beforeInsertNode(current,
+        pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
+
+    c.validateOutline()
+    c.selectPosition(pasted)
+    pasted.setDirty()
+    c.setChanged(True)
+    # paste as first child if back is expanded.
+    back = pasted.back()
+    if back and back.isExpanded():
+        pasted.moveToNthChildOf(back,0)
+    c.setRootPosition(c.findRootPosition(pasted)) # New in 4.4.2.
+    u.afterInsertNode(pasted,undoType,undoData)
+    c.redraw(pasted)
+    c.recolor()
+#@+node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
+@
+
+We don't know yet which nodes will be affected by the paste, so we remember
+everything. This is expensive, but foolproof.
+
+The alternative is to try to remember the 'before' values of tnodes in the
+fileCommands read logic. Several experiments failed, and the code is very ugly.
+In short, it seems wise to do things the foolproof way.
+
+@c
+
+for v in c.all_unique_vnodes_iter():
+    t = v.t
+    if t not in tnodeInfoDict:
+        tnodeInfoDict[t] = g.Bunch(
+            t=t,head=v.headString(),body=v.bodyString())
+#@-node:ekr.20050418084539:<< remember all data for undo/redo Paste As Clone >>
+#@+node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+# Create a dict containing only copied tnodes.
+copiedTnodeDict = {}
+for p in pasted.self_and_subtree_iter():
+    if p.v.t not in copiedTnodeDict:
+        copiedTnodeDict[p.v.t] = p.v.t
+
+# g.trace(copiedTnodeDict.keys())
+
+for t in tnodeInfoDict:
+    bunch = tnodeInfoDict.get(t)
+    if copiedTnodeDict.get(t):
+        copiedBunchList.append(bunch)
+
+# g.trace('copiedBunchList',copiedBunchList)
+#@-node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
+#@-node:ekr.20031218072017.1551:pasteOutline
+#@-node:ekr.20090130065000.5:Fixed cut/paste outline bug
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
@@ -15981,10 +16069,15 @@ def writeScriptFile (self,script):
     c = self
     path = c.config.getString('script_file_path')
     if path:
+        isAbsPath = os.path.isabs(path)
+        driveSpec, path = os.path.splitdrive(path)
         parts = path.split('/')
         path = g.app.loadDir
-        for part in parts:
-            path = c.os_path_finalize_join(path,part)
+        if isAbsPath:
+            # make the first element absolute
+            parts[0] = driveSpec + os.sep + parts[0]
+        allParts = [path] + parts
+        path = c.os_path_finalize_join(*allParts)
     else:
         path = c.os_path_finalize_join(
             g.app.loadDir,'..','test','scriptFile.py')
@@ -18671,6 +18764,71 @@ def backToIndentation (self,event):
     # self.endCommand(changed=True,setLabel=True)
 #@-node:ekr.20050920084036.75:backToIndentation
 #@-node:ekr.20081204091750.5:back-to-home/indentation now save state
+#@+node:ekr.20090130114732.1:Added g.posList
+#@+node:ekr.20090128083459.82:g.posList
+class posList(list):
+    << docstring for posList >>
+    def __init__ (self,c,aList=None):
+        self.c = c
+        list.__init__(self) # Init the base class
+        if aList is None:
+            for p in c.allNodes_iter():
+                self.append(p.copy())
+        else:
+            for p in aList:
+                self.append(p.copy())
+
+    def dump (self,sort=False,verbose=False):
+        if verbose: return g.listToString(self,sort=sort)
+        else: return g.listToString([p.h for p in self],sort=sort)
+
+    def select(self,pat,regex=False,removeClones=True):
+        '''Return a new posList containing all positions
+        in self that match the given pattern.'''
+        c = self.c ; aList = []
+        if regex:
+            for p in self:
+                if re.match(pat,p.h):
+                    aList.append(p.copy())
+        else:
+            for p in self:
+                if p.h.find(pat) != -1:
+                    aList.append(p.copy())
+        if removeClones:
+            aList = self.removeClones(aList)
+        return posList(c,aList)
+
+    def removeClones(self,aList):
+        seen = {} ; aList2 = []
+        for p in aList:
+            if p.v.t not in seen:
+                seen[p.v.t] = p.v.t
+                aList2.append(p)
+        return aList2
+#@+node:ekr.20090130114732.2:<< docstring for posList >>
+'''A subclass of list for creating and selecting lists of positions.
+
+    aList = g.posList(c)
+        # Creates a posList containing all positions in c.
+
+    aList = g.posList(c,aList2)
+        # Creates a posList from aList2.
+
+    aList2 = aList.select(pattern,regex=False,removeClones=True)
+        # Creates a posList containing all positions p in aList
+        # such that p.h matches the pattern.
+        # The pattern is a regular expression if regex is True.
+        # if removeClones is True, all positions p2 are removed
+        # if a position p is already in the list and p2.v.t == p.v.t.
+
+    aList.dump(sort=False,verbose=False)
+        # Prints all positions in aList, sorted if sort is True.
+        # Prints p.h, or repr(p) if verbose is True.
+'''
+#@nonl
+#@-node:ekr.20090130114732.2:<< docstring for posList >>
+#@-node:ekr.20090128083459.82:g.posList
+#@-node:ekr.20090130114732.1:Added g.posList
 #@+node:ekr.20090128083459.77:Added properties to leoNodes.py
 #@+node:ekr.20040305223225:c.setHeadString
 def setHeadString (self,p,s,encoding="utf-8"):

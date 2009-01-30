@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -11171,7 +11171,7 @@ def spam (self):
 
     pass
 </t>
-<t tx="ekr.20090128112453.1" t-key="550370647171002e"># print p.b
+<t tx="ekr.20090128112453.1"># print p.b
 # p.b = p.b + '\n# new'
 # p.h = p.h + 'z'
 
@@ -11198,6 +11198,8 @@ aList2 = aList.select('plugin',regex=False,removeClones=True)
 print aList2.dump(sort=True)
 aList3 = aList2.select('http')
 print aList3.dump()
-</t>
+
+# To see the docstring, enable auto-completion and type g.posList?
+# g.posList</t>
 </tnodes>
 </leo_file>

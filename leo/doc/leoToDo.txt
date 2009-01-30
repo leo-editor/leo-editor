@@ -93,7 +93,27 @@ of the nodes would load from the file.
 #@+node:ekr.20090105132011.2:** Fix whitespace problems with @auto/@shadow
 #@-node:ekr.20090105132011.2:** Fix whitespace problems with @auto/@shadow
 #@-node:ekr.20090103054019.1:Urgent 5
-#@+node:ekr.20081215070651.4:Bugs 11
+#@+node:ekr.20081215070651.4:Bugs 12
+#@+node:ekr.20090130065000.3:t.uA's are not persistent
+@nocolor-node
+
+They are written to the <t> element, but sax does not seem to get them.
+#@nonl
+#@+node:EKR.20040526202501:putUnknownAttributes
+def putUnknownAttributes (self,torv):
+
+    """Put pickleable values for all keys in torv.unknownAttributes dictionary."""
+
+    attrDict = torv.unknownAttributes
+    if type(attrDict) != type({}):
+        g.es("ignoring non-dictionary unknownAttributes for",torv,color="blue")
+        return ''
+    else:
+        val = ''.join([self.putUaHelper(torv,key,val) for key,val in attrDict.items()])
+        # g.trace(torv,attrDict)
+        return val
+#@-node:EKR.20040526202501:putUnknownAttributes
+#@-node:ekr.20090130065000.3:t.uA's are not persistent
 #@+node:ekr.20090123073710.5:Fix recent rst3 problem
 @nocolor-node
 
@@ -745,7 +765,7 @@ def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
 #@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 #@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
-#@-node:ekr.20081215070651.4:Bugs 11
+#@-node:ekr.20081215070651.4:Bugs 12
 #@+node:ekr.20081215070651.5:Features 6
 #@+node:ekr.20081211085314.1:Smart Alt-RtArrow/Alt-LtArrow keys
 @nocolor-node
