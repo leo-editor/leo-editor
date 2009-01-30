@@ -64,7 +64,7 @@ import token    # for Check Python command
 
 #@+others
 #@+node:ekr.20041118104831:class commands
-class baseCommands:
+class baseCommands (object):
     """The base class for Leo's main commander."""
     #@    @+others
     #@+node:ekr.20031218072017.2811: c.Birth & death
