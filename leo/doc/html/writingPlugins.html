@@ -360,7 +360,7 @@ c.k.simulateCommand('print-cp')
 <li><p class="first">Define the print_cp method as follows:</p>
 <pre class="literal-block">
 def print_cp (self,event=None):
-    c = self.c ; p = c.currentPosition()
+    c = self.c ; p = c.p
     g.es_print('c: %s' % (c.fileName()),color='red')
     g.es_print('p: %s' % (p.h),color='red')
 </pre>
@@ -432,7 +432,7 @@ def onLoadFile():
 Leo is a repository of source code, so any text operation is potentially malicious.
 For example, consider the following script, which is valid in rexec mode:</p>
 <pre class="literal-block">
-badNode = c.currentPosition()
+badNode = c.p
 for p in c.allNodes_iter():
     &lt;&lt; change `rexec` to `exec` in p's body &gt;&gt;
 &lt;&lt; delete badNode &gt;&gt;

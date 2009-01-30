@@ -368,7 +368,7 @@ By convention, variables named <tt class="docutils literal"><span class="pre">p<
 For any <tt class="docutils literal"><span class="pre">position</span></tt> <tt class="docutils literal"><span class="pre">p</span></tt>, <tt class="docutils literal"><span class="pre">p.v</span></tt> is the vnode at that position and
 <tt class="docutils literal"><span class="pre">p.v.t</span></tt> is the tnode at that position.
 <strong>Positions are the primary way to access data.</strong>
-<tt class="docutils literal"><span class="pre">c.currentPosition</span></tt> and <tt class="docutils literal"><span class="pre">c.rootPosition</span></tt> return positions.
+<tt class="docutils literal"><span class="pre">c.currentPosition</span></tt> (aka <tt class="docutils literal"><span class="pre">c.p</span></tt>) and <tt class="docutils literal"><span class="pre">c.rootPosition</span></tt> return positions.
 From those starting point, it is possible to access the data in any node.</p>
 <p><strong>Important</strong>:
 Positions can become <em>invalid</em> when the structure of the outline changes.
@@ -408,7 +408,7 @@ future changes to the internals of these classes.</p>
 outline containing the script. <tt class="docutils literal"><span class="pre">g</span></tt> and <tt class="docutils literal"><span class="pre">p</span></tt> are predefined as follows:</p>
 <pre class="literal-block">
 import leo.core.leoGlobals as g
-p = c.currentPosition()
+p = c.p
 </pre>
 <p>These definitions provide an easy way to access or change any
 information in a Leo outline. For example, as discussed below, the following
@@ -465,7 +465,7 @@ for f in windows:
 <p>Here is how to access the data of a Leo window:</p>
 <pre class="literal-block">
 g.es(p) # p is already defined.
-p = c.currentPosition() # get the current position.
+p = c.p # get the current position.
 g.es(p)
 g.es(&quot;head:&quot;,p.h)
 g.es(&quot;body:&quot;,p.b)
@@ -596,14 +596,14 @@ for p in current.self_and_parents_iter():
 <h3><a class="toc-backref" href="#id13">p.siblings_iter &amp; p.following_siblings_iter</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">p.siblings_iter</span></tt> iterator returns a list of all siblings of position <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
-current = c.currentPosition()
+current = c.p
 g.es(&quot;all siblings of %s&quot; % current.h,color=&quot;purple&quot;)
 for p in current.self_and_siblings_iter():
     g.es(p.h)
 </pre>
 <p>The <tt class="docutils literal"><span class="pre">p.following_siblings_iter</span></tt> iterator returns a list of all siblings that follow position <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
-current = c.currentPosition()
+current = c.p
 g.es(&quot;following siblings of %s&quot; % current.h,color=&quot;purple&quot;)
 for p in current.following_siblings_iter():
     g.es(p.h)
@@ -1300,8 +1300,7 @@ app().realMenuNameDict['Open...'] = 'Ouvre'.
 <li>new_c:      (deprecated: use 'c' instead) The commander of the newly opened window.</li>
 <li>fileName:   The name of the file being opened.</li>
 </ul>
-<p>You can use <tt class="docutils literal"><span class="pre">old_c.currentPosition()</span></tt> and <tt class="docutils literal"><span class="pre">c.currentPosition()</span></tt> to get the current
-position in the old and new windows.
+<p>You can use <tt class="docutils literal"><span class="pre">old_c.p</span></tt> and <tt class="docutils literal"><span class="pre">c.p</span></tt> to get the current position in the old and new windows.
 Leo calls the 'open1' and 'open2' hooks only if the file is not already open. Leo
 will also call the 'open1' and 'open2' hooks if: a) a file is opened using the
 Recent Files menu and b) the file is not already open.</p>

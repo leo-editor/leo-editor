@@ -153,6 +153,8 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060822111759"><vh>How can I reuse @button nodes in multiple files?</vh></v>
 </v>
 <v t="ekr.20050830115714.76"><vh>Trouble shooting</vh>
+<v t="ekr.20090130144433.1"><vh>How do I get help?</vh></v>
+<v t="ekr.20090130144433.2"><vh>How do I report bugs?</vh></v>
 <v t="ekr.20080813064908.2"><vh>My old .leo files won't load using Leo 4.5 or later. What should I do?</vh></v>
 <v t="ekr.20060210070421"><vh>@rst-ignore I can't run Leo from a cvs sandbox.  What's going on?</vh></v>
 <v t="ekr.20050908113904"><vh>Can I scroll the outline pane with the mouse wheel?</vh></v>
@@ -3517,7 +3519,7 @@ follows:
 
 - ``c`` is the commander of the outline containing the script.
 - ``g`` is the leoGlobals modules.
-- ``p`` is ``c.currentPosition()``.
+- ``p`` is ``c.p``, that is, ``c.currentPosition()``.
 
 **Important**: Body text may contain Leo directives and section references. You
 can now use all of Leo's features to organize scripts that you execute
@@ -3964,7 +3966,7 @@ Executing this kind of code is typically an intolerable security risk.
 Leo is a repository of source code, so any text operation is potentially malicious.
 For example, consider the following script, which is valid in rexec mode::
 
-    badNode = c.currentPosition()
+    badNode = c.p
     for p in c.allNodes_iter():
         &lt;&lt; change `rexec` to `exec` in p's body &gt;&gt;
     &lt;&lt; delete badNode &gt;&gt;
@@ -6740,7 +6742,7 @@ controls where output for each stream goes.
 <t tx="ekr.20040403173920.6">Here is how to access the data of a Leo window::
 
     g.es(p) # p is already defined.
-    p = c.currentPosition() # get the current position.
+    p = c.p # get the current position.
     g.es(p)
     g.es("head:",p.h)
     g.es("body:",p.b)
@@ -6804,14 +6806,14 @@ The ``p.self_and_parents_iter`` iterator returns a list of all parents of positi
         g.es(p.h)    </t>
 <t tx="ekr.20040403173920.15">The ``p.siblings_iter`` iterator returns a list of all siblings of position ``p``::
 
-    current = c.currentPosition()
+    current = c.p
     g.es("all siblings of %s" % current.h,color="purple")
     for p in current.self_and_siblings_iter():
         g.es(p.h)
 
 The ``p.following_siblings_iter`` iterator returns a list of all siblings that follow position ``p``::
 
-    current = c.currentPosition()
+    current = c.p
     g.es("following siblings of %s" % current.h,color="purple")
     for p in current.following_siblings_iter():
         g.es(p.h)</t>
@@ -7043,7 +7045,7 @@ for that frame::
     For any ``position`` ``p``, ``p.v`` is the vnode at that position and
     ``p.v.t`` is the tnode at that position.
     **Positions are the primary way to access data.**
-    ``c.currentPosition`` and ``c.rootPosition`` return positions.
+    ``c.currentPosition`` (aka ``c.p``) and ``c.rootPosition`` return positions.
     From those starting point, it is possible to access the data in any node.
 
     **Important**:
@@ -15443,8 +15445,7 @@ Event name (tag argument)     Stop?    When called                         Keys 
     - new_c:      (deprecated: use 'c' instead) The commander of the newly opened window.
     - fileName:   The name of the file being opened.
 
-    You can use ``old_c.currentPosition()`` and ``c.currentPosition()`` to get the current
-    position in the old and new windows.
+    You can use ``old_c.p`` and ``c.p`` to get the current position in the old and new windows.
     Leo calls the 'open1' and 'open2' hooks only if the file is not already open. Leo
     will also call the 'open1' and 'open2' hooks if: a) a file is opened using the
     Recent Files menu and b) the file is not already open.
@@ -17006,16 +17007,19 @@ A **position** (an instance of the position class) is the state of some traversa
 <t tx="ekr.20050916184158.9">When executing scripts Leo predefines the following three symbols:
 **c** is the commander of the outline in which the script is defined,
 **g** is the leoGlobals module and
-**p** is the position of the selected node in c’s outline, i.e., ``c.currentPosition()``.
+**p** is the position of the selected node in c’s outline, i.e., ``c.p``.
 </t>
 <t tx="ekr.20050916184158.10">Scripts should get and set data using high-level access methods. Here are some important getters::
 
     g.app                The application object. Its ivars are Leo’s global variables.
     g.app.windowList     The list of all open frames.
-    c.currentPosition()  The position of the selected node.
+    c.p                  The position of the selected node.
+    c.currentPosition()  A longer name for c.p.
     c.rootPosition()     The position of the first node in the outline.
     p.h                  The headline of position p.
+    p.headString()       A longer name for p.h
     p.b                  The body text of position p.
+    p.bodyString()       A longer name for p.b
     p.childIndex()       The number of siblings that precede p.
     p.numberOfChildren() The number of p’s children.
     p.level()            The number of p’s ancestors.
@@ -17055,7 +17059,7 @@ window. The ``Run Script`` button executes the script in the selected node just
 like the ``Execute Script`` command. The ``Script Button`` button creates a new
 button whose headline is the headline of the presently selected node, call it
 node N. Pressing this button executes the script in node N with p predefined as
-``c.currentPosition()`` at the time the script is executed. This clever trick
+``c.p`` at the time the script is executed. This clever trick
 brings the script to the data in the selected outline.
 </t>
 <t tx="ekr.20050916184158.14">``test.leo`` contains all of Leo’s unit tests. An ``@button node`` in test.leo
@@ -21342,7 +21346,7 @@ def findButton(self):
 def setup_button(self):
     
     c = self.c
-    self.p = c.currentPosition()
+    self.p = c.p
 
     c.bringToFront()
     if 0: # We _must_ retain the editing status for incremental searches!
@@ -21504,7 +21508,7 @@ if s != p.b:
 <t tx="ekr.20060608111953.29">def changeAll(self):
 
     c = self.c ; u = c.undoer ; undoType = 'Change All'
-    current = c.currentPosition()
+    current = c.p
     st = self.s_ctrl ; gui = g.app.gui
     if not self.checkArgs(): return
     self.initInHeadline()
@@ -21521,7 +21525,7 @@ if s != p.b:
             self.batchChange(pos1,pos2)
             line = gui.getLineContainingIndex(st,pos1)
             self.printLine(line,allFlag=True)
-        p = c.currentPosition()
+        p = c.p
         u.afterChangeGroup(p,undoType,reportFlag=True)
         g.es("changed: %d instances" % (count))
     finally:
@@ -21683,12 +21687,12 @@ def runFindScript (self):
             &lt;&lt; create a clone of p under the find node &gt;&gt;
     if self.clone_find_all and clones:
         c.setChanged(True)
-        u.afterChangeGroup(c.currentPosition(),undoType,reportFlag=True)   
+        u.afterChangeGroup(c.p,undoType,reportFlag=True)   
     c.redraw_now()
     g.es("found: %d matches" % (count))
     self.restore(data)</t>
-<t tx="ekr.20060608111953.36">u.beforeChangeGroup(c.currentPosition(),undoType)
-undoData = u.beforeInsertNode(c.currentPosition())
+<t tx="ekr.20060608111953.36">u.beforeChangeGroup(c.p,undoType)
+undoData = u.beforeInsertNode(c.p)
 oldRoot = c.rootPosition()
 found = oldRoot.insertAfter()
 found.moveToRoot(oldRoot)
@@ -21981,7 +21985,7 @@ def initBatchCommands (self):
 
     # Select the first node.
     if self.suboutline_only or self.node_only or self.selection_only:
-        self.p = c.currentPosition()
+        self.p = c.p
         if self.selection_only: self.selStart,self.selEnd = c.frame.body.getTextSelection()
         else:                   self.selStart,self.selEnd = None,None
     else:
@@ -23310,7 +23314,7 @@ Plugins--&gt; Templates: these show recommended ways of defining plugins.--&gt;T
 7. Define the print_cp method as follows::
     
     def print_cp (self,event=None):
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         g.es_print('c: %s' % (c.fileName()),color='red')
         g.es_print('p: %s' % (p.h),color='red')
         
@@ -23841,7 +23845,7 @@ Notes:
   For example, either of the following would be reasonable::
   
     root[aKey] = c.rootPosition().v
-    root[aKey] = c.currentPosition().v
+    root[aKey] = c.p.v
 
 - To write a single vnode without writing any of its children you can use v.detach.
   For example::
@@ -25214,7 +25218,7 @@ This chapter several topics relating to the Emacs editor.
 
   Executes a script in the context of a commander ``c`` returned by the leoPymacs.open.
   c may be None, in which case a dummy commander is created in which to run the script.
-  In the executed script, p is set to c.currentPosition() if no p argument is specified.
+  In the executed script, p is set to c.p if no p argument is specified.
   Returns g.app.scriptResult, where g.app is the hidden app.
 </t>
 <t tx="ekr.20061025081359">Leo's leoPymacs module is a simple 'server' for the pymacs_ package.
@@ -25316,7 +25320,7 @@ Here are step-by-step instructions for executing Python scripts in Emacs:
    For example::
 
         (setq c (leo-open fileName)
-        (csetq script "print 'c',c,'h',c.currentPosition().h")
+        (csetq script "print 'c',c,'h',c.p.h")
         (leo-run-script c script)
     
 Putting this all together, we get::
@@ -25337,7 +25341,7 @@ Putting this all together, we get::
         
         ; Step 3: execute a script in ut.leo.
         (setq c (leo-open fileName))
-        (setq script "print 'c',c.shortFileName() ,'current:',c.currentPosition().h")
+        (setq script "print 'c',c.shortFileName() ,'current:',c.p.h")
         (leo-run-script c script)</t>
 <t tx="ekr.20061025142434">Leo's mini-buffer is a text area at the bottom of the body pane.
 You use Leo's minibuffer like the Emacs mini-buffer to invoke commands by their so-called *long name*.
@@ -25616,7 +25620,7 @@ headlines of any future node joined to p.v.</t>
 outline containing the script. ``g`` and ``p`` are predefined as follows::
 
     import leo.core.leoGlobals as g
-    p = c.currentPosition()
+    p = c.p
     
 These definitions provide an easy way to access or change any
 information in a Leo outline. For example, as discussed below, the following
@@ -32459,6 +32463,28 @@ the ``enter-&lt;mode name&gt;-mode`` command.</t>
 - **localDir**, the directory containing the .leo file being loaded.
 
 In addition, Leo's -c command-line option can specify any .leo file anywhere.</t>
+<t tx="ekr.20090130144433.1">All questions are welcome at http://groups.google.com/group/leo-editor</t>
+<t tx="ekr.20090130144433.2">You can discuss possible bugs at
+http://groups.google.com/group/leo-editor
+
+Please report bugs at
+http://bugs.launchpad.net/leo-editor
+
+When reporting a bug, please include *all* of the following:
+
+- The version of Leo used.
+
+- The version of Python used.
+
+- The platform or platforms used: Linux, Windows, MacOs.
+
+- A clear description of the problem.
+
+- Information sufficient to recreate the problem.
+
+It's polite to make the bug report self contained, so that six weeks later
+somebody will be able to understand the report as it stands.
+</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
