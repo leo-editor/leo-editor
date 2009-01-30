@@ -723,7 +723,7 @@ def scanForAtSettings(p):
     """Scan position p and its ancestors looking for @settings nodes."""
 
     for p in p.self_and_parents_iter():
-        h = p.headString()
+        h = p.h
         h = g.app.config.canonicalizeSettingName(h)
         if h.startswith("@settings"):
             return True
@@ -3089,7 +3089,6 @@ class posList(list):
             # Prints all positions in aList, sorted if sort is True.
             # Prints p.h, or repr(p) if verbose is True.
     '''
-    #@nonl
     #@-node:ekr.20090130114732.2:<< docstring for posList >>
     #@nl
     def __init__ (self,c,aList=None):
@@ -4294,7 +4293,7 @@ def findNodeInChildren(c,p,headline):
     """Search for a node in v's tree matching the given headline."""
 
     for p in p.children_iter():
-        if p.headString().strip() == headline.strip():
+        if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
 
@@ -4303,21 +4302,21 @@ def findNodeInTree(c,p,headline):
     """Search for a node in v's tree matching the given headline."""
 
     for p in p.subtree_iter():
-        if p.headString().strip() == headline.strip():
+        if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
 
 def findNodeAnywhere(c,headline):
 
     for p in c.all_positions_with_unique_tnodes_iter():
-        if p.headString().strip() == headline.strip():
+        if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
 
 def findTopLevelNode(c,headline):
 
     for p in c.rootPosition().self_and_siblings_iter():
-        if p.headString().strip() == headline.strip():
+        if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
 #@-node:ekr.20040321065415:g.findNode... &,findTopLevelNode

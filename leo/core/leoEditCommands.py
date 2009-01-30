@@ -733,7 +733,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         if s and p:
             w = self.w
             c.selectPosition(p)
-            self.beginCommand('append-to-buffer: %s' % p.headString())
+            self.beginCommand('append-to-buffer: %s' % p.h)
             w.insert('end',s)
             w.setInsertPoint('end')
             w.seeInsertPoint()
@@ -760,7 +760,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         p = self.findBuffer(name)
         if s and p:
             c.selectPosition(p)
-            self.beginCommand('copy-to-buffer: %s' % p.headString())
+            self.beginCommand('copy-to-buffer: %s' % p.h)
             w.insert('end',s)
             w.setInsertPoint('end')
             self.endCommand()
@@ -785,7 +785,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         p = self.findBuffer(name)
         if s and p:
             c.selectPosition(p)
-            self.beginCommand('insert-to-buffer: %s' % p.headString())
+            self.beginCommand('insert-to-buffer: %s' % p.h)
             i = w.getInsertPoint()
             w.insert(i,s)
             w.seeInsertPoint()
@@ -808,7 +808,7 @@ class bufferCommandsClass (baseEditCommandsClass):
 
         c = self.c ; p = self.findBuffer(name)
         if p:
-            h = p.headString()
+            h = p.h
             current = c.currentPosition()
             c.selectPosition(p)
             c.deleteOutline (op_name='kill-buffer: %s' % h)
@@ -857,7 +857,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         p = self.findBuffer(name)
         if s and p:
             c.selectPosition(p)
-            self.beginCommand('prepend-to-buffer: %s' % p.headString())
+            self.beginCommand('prepend-to-buffer: %s' % p.h)
             w.insert(0,s)
             w.setInsertPoint(0)
             w.seeInsertPoint()
@@ -911,12 +911,12 @@ class bufferCommandsClass (baseEditCommandsClass):
         self.names = {} ; self.tnodes = {}
 
         for p in self.c.all_positions_with_unique_tnodes_iter():
-            h = p.headString().strip()
+            h = p.h.strip()
             t = p.v.t
             nameList = self.names.get(h,[])
             if nameList:
                 if p.parent():
-                    key = '%s, parent: %s' % (h,p.parent().headString())
+                    key = '%s, parent: %s' % (h,p.parent().h)
                 else:
                     key = '%s, child index: %d' % (h,p.childIndex())
             else:
@@ -2397,7 +2397,7 @@ class editCommandsClass (baseEditCommandsClass):
             if not hasattr(uaLoc,'unknownAttributes'):
                 uaLoc.unknownAttributes = {}
             uaLoc.unknownAttributes['icons'] = list(subl)
-            # g.es((p.headString(),uaLoc.unknownAttributes['icons']))
+            # g.es((p.h,uaLoc.unknownAttributes['icons']))
             uaLoc.unknownAttributes["lineYOffset"] = 3
             uaLoc._p_changed = 1
             p.setDirty()
@@ -4871,7 +4871,7 @@ class editFileCommandsClass (baseEditCommandsClass):
             if d2.get(key):
                 p1 = d1.get(key)
                 p2 = d2.get(key)
-                if p1.headString() != p2.headString() or p1.bodyString() != p2.bodyString():
+                if p1.h != p2.h or p1.bodyString() != p2.bodyString():
                     changed[key] = p1
 
         return inserted, deleted, changed
@@ -4959,9 +4959,9 @@ class editFileCommandsClass (baseEditCommandsClass):
             for key in d:
                 p = d.get(key)
                 if g.isPython3:
-                    g.pr('%-32s %s' % (key,p.headString()))
+                    g.pr('%-32s %s' % (key,p.h))
                 else:
-                    g.pr('%-32s %s' % (key,g.toEncodedString(p.headString(),'ascii')))
+                    g.pr('%-32s %s' % (key,g.toEncodedString(p.h,'ascii')))
     #@-node:ekr.20070921072608.1:dumpCompareNodes
     #@-node:ekr.20070920104110:compareLeoFiles
     #@+node:ekr.20050920084036.164:deleteFile
@@ -8499,7 +8499,7 @@ class spellTabHandler (leoFind.leoFind):
         try:
             while 1:
                 i,j,p,word = self.findNextWord(p)
-                # g.trace(i,j,p and p.headString() or '<no p>')
+                # g.trace(i,j,p and p.h or '<no p>')
                 if not p or not word:
                     alts = None
                     break
@@ -8522,7 +8522,7 @@ class spellTabHandler (leoFind.leoFind):
                 #@-node:ekr.20051025071455.46:<< Skip word if ignored or in local dictionary >>
                 #@nl
                 alts = aspell.processWord(word)
-                if trace: g.trace('alts',alts and len(alts) or 0,i,j,word,p and p.headString() or 'None')
+                if trace: g.trace('alts',alts and len(alts) or 0,i,j,word,p and p.h or 'None')
                 if alts:
                     redraw = not p.isVisible(c)
                     # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
@@ -8553,7 +8553,7 @@ class spellTabHandler (leoFind.leoFind):
             i = self.workCtrl.getInsertPoint()
             while i < len(s) and not g.isWordChar1(s[i]):
                 i += 1
-            # g.trace('p',p and p.headString(),'i',i,'len(s)',len(s))
+            # g.trace('p',p and p.h,'i',i,'len(s)',len(s))
             if i < len(s):
                 # A non-empty word has been found.
                 j = i
@@ -8565,7 +8565,7 @@ class spellTabHandler (leoFind.leoFind):
                 for w in (self.workCtrl,c.frame.body.bodyCtrl):
                     c.widgetWantsFocusNow(w)
                     w.setSelectionRange(i,j,insert=j)
-                if trace: g.trace(i,j,word,p.headString())
+                if trace: g.trace(i,j,word,p.h)
                 return i,j,p,word
             else:
                 # End of the body text.
@@ -8576,7 +8576,7 @@ class spellTabHandler (leoFind.leoFind):
                 for w in (self.workCtrl,c.frame.body.bodyCtrl):
                     c.widgetWantsFocusNow(w)
                     w.setSelectionRange(0,0,insert=0)
-                if trace: g.trace(0,0,'-->',p.headString())
+                if trace: g.trace(0,0,'-->',p.h)
 
         return None,None,None,None
     #@nonl

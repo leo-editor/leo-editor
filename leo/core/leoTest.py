@@ -51,15 +51,15 @@ else:
 #@+node:ekr.20051104075904.2:Support @profile, @suite, @test, @timer
 #@+node:ekr.20051104075904.3:isSuiteNode and isTestNode
 def isSuiteNode (p):
-    h = p.headString().lower()
+    h = p.h.lower()
     return g.match_word(h,0,"@suite")
 
 def isTestNode (p):
-    h = p.headString().lower()
+    h = p.h.lower()
     return g.match_word(h,0,"@test")
 
 # def isTestCaseNode (p):
-    # h = p.headString().lower()
+    # h = p.h.lower()
     # return g.match_word(h,0,"@testcase") or g.match_word(h,0,"@test-case")
 #@-node:ekr.20051104075904.3:isSuiteNode and isTestNode
 #@+node:ekr.20051104075904.4:doTests...
@@ -86,7 +86,7 @@ def doTests(c,all,verbosity=1):
         if all: last = None
         else:   last = p.nodeAfterTree()
         while p and p != last:
-            h = p.headString()
+            h = p.h
             if g.match_word(h,0,'@ignore'):
                 p.moveToNodeAfterTree()
             elif isTestNode(p): # @test
@@ -94,7 +94,7 @@ def doTests(c,all,verbosity=1):
                 if test: suite.addTest(test)
                 p.moveToThreadNext()
             elif isSuiteNode(p): # @suite
-                # g.trace(p.headString())
+                # g.trace(p.h)
                 test = makeTestSuite(c,p)
                 if test: suite.addTest(test)
                 p.moveToThreadNext()
@@ -186,7 +186,7 @@ class generalTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.11:shortDescription
     def shortDescription (self):
 
-        return self.p.headString() + '\n'
+        return self.p.h + '\n'
     #@-node:ekr.20051104075904.11:shortDescription
     #@-others
 #@-node:ekr.20051104075904.5:class generalTestCase
@@ -206,7 +206,7 @@ def makeTestSuite (c,p):
     # import leo.core.leoGlobals as g
     p = p.copy()
 
-    h = p.headString()
+    h = p.h
     script = g.getScript(c,p).strip()
     if not script:
         g.pr("no script in %s" % h)
@@ -219,7 +219,7 @@ def makeTestSuite (c,p):
             g.pr("%s script did not set g.app.scriptDict" % h)
         return suite
     except Exception:
-        g.trace('Exception creating test cases for %s' % p.headString())
+        g.trace('Exception creating test cases for %s' % p.h)
         g.es_exception()
         return None
 #@-node:ekr.20051104075904.12:makeTestSuite
@@ -273,7 +273,7 @@ def runTimerOnNode (c,p,count):
             count = 1000000
         result = t.timeit(count)
         ratio = "%f" % (float(result)/float(count))
-        g.es_print("count:",count,"time/count:",ratio,'',p.headString())
+        g.es_print("count:",count,"time/count:",ratio,'',p.h)
     except Exception:
         t.print_exc()
 #@-node:ekr.20051104075904.15:runTimerOnNode
@@ -444,7 +444,7 @@ class testUtils:
             ok = (
                 p1 and p2 and
                 p1.numberOfChildren() == p2.numberOfChildren() and
-                (not compareHeadlines or (p1.headString() == p2.headString())) and
+                (not compareHeadlines or (p1.h == p2.h)) and
                 p1.bodyString() == p2.bodyString() and
                 p1.isCloned()   == p2.isCloned()
             )
@@ -472,9 +472,9 @@ class testUtils:
             if p1.numberOfChildren() != p2.numberOfChildren():
                 g.pr('p1.numberOfChildren()=%d, p2.numberOfChildren()=%d' % (
                     p1.numberOfChildren(),p2.numberOfChildren()))
-            if compareHeadlines and (p1.headString() != p2.headString()):
-                g.pr('p1.head', p1.headString())
-                g.pr('p2.head', p2.headString())
+            if compareHeadlines and (p1.h != p2.h):
+                g.pr('p1.head', p1.h)
+                g.pr('p2.head', p2.h)
             if p1.bodyString() != p2.bodyString():
                 g.pr('p1.body')
                 g.pr(repr(p1.bodyString()))
@@ -513,7 +513,7 @@ class testUtils:
         c = self.c
         h = headline.strip().lower()
         for p in p.subtree_iter():
-            h2 = p.headString().strip().lower()
+            h2 = p.h.strip().lower()
             if h2 == h or startswith and h2.startswith(h):
                 return p.copy()
         return c.nullPosition()
@@ -525,7 +525,7 @@ class testUtils:
         c = self.c
         for p in c.all_positions_with_unique_tnodes_iter():
             h = headline.strip().lower()
-            if p.headString().strip().lower() == h:
+            if p.h.strip().lower() == h:
                 return p.copy()
 
         if False and breakOnError: # useful for debugging.
@@ -724,7 +724,7 @@ def runTestsExternally (c,all):
                 # The second pass looks in the selected tree for everything except @mark-for-unit-tests.
                 # There is no second pass if the present node is an @mark-for-unit-test node.
                 p = c.currentPosition()
-                if p.headString().startswith(markTag):
+                if p.h.startswith(markTag):
                     p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
                 else:
                     p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
@@ -738,7 +738,7 @@ def runTestsExternally (c,all):
                 (p2,limit2,lookForMark2,lookForNodes2),
             ):
                 while p and p != limit:
-                    h = p.headString()
+                    h = p.h
                     if p.v.t in self.seen:
                         p.moveToNodeAfterTree()
                     elif lookForMark and h.startswith(markTag):
@@ -753,7 +753,7 @@ def runTestsExternally (c,all):
         #@+node:ekr.20070705080413:addMarkTree
         def addMarkTree (self,p):
 
-            # g.trace(len(self.seen),p.headString())
+            # g.trace(len(self.seen),p.h)
 
             self.seen.append(p.v.t)
 
@@ -768,7 +768,7 @@ def runTestsExternally (c,all):
             Add an @test, @suite or an @unit-tests tree as the last child of self.copyRoot.
             '''
 
-            # g.trace(len(self.seen),p.headString())
+            # g.trace(len(self.seen),p.h)
 
             p2 = p.copyTreeAfter()
             p2.moveToLastChildOf(self.copyRoot)
@@ -778,7 +778,7 @@ def runTestsExternally (c,all):
         #@+node:ekr.20070705075604.3:isUnitTestNode
         def isUnitTestNode (self,p):
 
-            h = p.headString()
+            h = p.h
             for tag in self.tags:
                 if h.startswith(tag):
                     return True
@@ -849,7 +849,7 @@ def runTestsExternally (c,all):
 
             # First, look down the tree.
             for p in iter():
-                h = p.headString()
+                h = p.h
                 for s in self.tags:
                     if h.startswith(s):
                         self.root = c.currentPosition()
@@ -858,7 +858,7 @@ def runTestsExternally (c,all):
             # Next, look up the tree.
             if not self.all:   
                 for p in c.currentPosition().parents_iter():
-                    h = p.headString()
+                    h = p.h
                     for s in self.tags:
                         if h.startswith(s):
                             c.selectPosition(p)
@@ -867,7 +867,7 @@ def runTestsExternally (c,all):
 
             # Finally, look for all @mark-for-unit-test nodes.
             for p in c.all_positions_with_unique_tnodes_iter():
-                if p.headString().startswith('@mark-for-unit-test'):
+                if p.h.startswith('@mark-for-unit-test'):
                     return True
 
             return False
@@ -888,8 +888,8 @@ def runAtFileTest(c,p):
     at = c.atFileCommands
     child1 = p.firstChild()
     child2 = child1.next()
-    h1 = child1.headString().lower().strip()
-    h2 = child2.headString().lower().strip()
+    h1 = child1.h.lower().strip()
+    h2 = child2.h.lower().strip()
     assert(g.match(h1,0,"#@"))
     assert(g.match(h2,0,"output"))
     expected = child2.bodyString()
@@ -971,7 +971,7 @@ def makeEditBodySuite(c,p):
     suite = unittest.makeSuite(unittest.TestCase)
 
     for p in data_p.children_iter():
-        if p.headString()=="tempNode": continue # TempNode now in data tree.
+        if p.h=="tempNode": continue # TempNode now in data tree.
         before = u.findNodeInTree(p,"before")
         after  = u.findNodeInTree(p,"after")
         sel    = u.findNodeInTree(p,"selection")
@@ -980,7 +980,7 @@ def makeEditBodySuite(c,p):
             test = editBodyTestCase(c,p,before,after,sel,ins,temp_p)
             suite.addTest(test)
         else:
-            g.pr('missing "before" or "after" for', p.headString())
+            g.pr('missing "before" or "after" for', p.h)
 
     return suite
 #@-node:ekr.20051104075904.69: makeEditBodySuite
@@ -1029,7 +1029,7 @@ class editBodyTestCase(unittest.TestCase):
         if not g.app.enableUnitTest: return
 
         # Blank stops the command name.
-        commandName = self.parent.headString()
+        commandName = self.parent.h
         i = commandName.find(' ')
         if i > -1:
             commandName = commandName[:i] 
@@ -1181,7 +1181,7 @@ class importExportTestCase(unittest.TestCase):
 
         g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
 
-        commandName = p.headString()
+        commandName = p.h
         command = getattr(c,commandName) # Will fail if command does not exist.
         command(event=None)
 
@@ -1205,7 +1205,7 @@ class importExportTestCase(unittest.TestCase):
         # Create a node under temp_p.
         child = temp_p.insertAsLastChild()
         assert(child)
-        c.setHeadString(child,"import test: " + self.p.headString())
+        c.setHeadString(child,"import test: " + self.p.h)
         c.selectPosition(child)
 
         assert(d)
@@ -1236,7 +1236,7 @@ class importExportTestCase(unittest.TestCase):
     def shortDescription (self):
 
         try:
-            return "ImportExportTestCase: %s %s" % (self.p.headString(),self.fileName)
+            return "ImportExportTestCase: %s %s" % (self.p.h,self.fileName)
         except Exception:
             return "ImportExportTestCase"
     #@-node:ekr.20051104075904.85:shortDescription
@@ -1604,7 +1604,7 @@ def runEditCommandTest (c,p):
     u = testUtils(c) ; atTest = p.copy()
     w = c.frame.body.bodyCtrl
 
-    h = atTest.headString()
+    h = atTest.h
     assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
     commandName = h[6:].strip()
     # Ignore everything after the actual command name.
@@ -1618,12 +1618,12 @@ def runEditCommandTest (c,p):
     before_h = 'before sel='
     after_h = 'after sel='
     for node,h in ((work,'work'),(before,before_h),(after,after_h)):
-        h2 = node.headString()
+        h2 = node.h
         assert h2.startswith(h),'expected head: %s, got: %s' % (h,h2)
 
     sels = []
     for node,h in ((before,before_h),(after,after_h)):
-        sel = node.headString()[len(h):].strip()
+        sel = node.h[len(h):].strip()
         aList = [str(z) for z in sel.split(',')]
         sels.append(tuple(aList))
     sel1,sel2 = sels

@@ -601,7 +601,7 @@ class undoer:
         bunch.newBody = p.bodyString()
         bunch.newChanged = u.c.isChanged()
         bunch.newDirty = p.isDirty()
-        bunch.newHead = p.headString()
+        bunch.newHead = p.h
         bunch.newMarked = p.isMarked()
         bunch.newSel = w.getSelectionRange()
 
@@ -910,14 +910,14 @@ class undoer:
         bunch = u.createCommonBunch(p)
 
         bunch.oldBody = oldBody or p.bodyString()
-        bunch.oldHead = oldHead or p.headString()
+        bunch.oldHead = oldHead or p.h
 
         return bunch
     #@-node:ekr.20050315133212.2:beforeChangeNodeContents
     #@+node:ekr.20050315134017.6:beforeChangeTree
     def beforeChangeTree (self,p):
 
-        # g.trace(p.headString())
+        # g.trace(p.h)
 
         u = self ; c = u.c ; w = c.frame.body.bodyCtrl
 

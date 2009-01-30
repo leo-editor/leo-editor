@@ -474,7 +474,7 @@ class leoFind:
             #@+node:ekr.20031218072017.2294:<< change headline >>
             if len(s) > 0 and s[-1]=='\n': s = s[:-1]
 
-            if s != p.headString():
+            if s != p.h:
 
                 undoData = u.beforeChangeNodeContents(p)
 
@@ -713,7 +713,7 @@ class leoFind:
             if not self.clone_find_all:
                 self.printLine(line,allFlag=True)
             if self.clone_find_all and self.p.v.t not in clones:
-                # g.trace(self.p.v.t,self.p.headString())
+                # g.trace(self.p.v.t,self.p.h)
                 if not clones:
                     undoData = u.beforeInsertNode(c.currentPosition())
                     #@                << create the found node >>
@@ -804,7 +804,7 @@ class leoFind:
 
         while p:
             pos, newpos = self.search()
-            if trace: g.trace('attempt','pos',pos,'p',p.headString())
+            if trace: g.trace('attempt','pos',pos,'p',p.h)
             if pos is not None:
                 if self.mark_finds:
                     p.setMarked()
@@ -969,13 +969,13 @@ class leoFind:
             if debug:
                 self.debugCount += 1
                 if self.debugCount < 50:
-                    g.trace(i,j,'len(s)',len(s),self.p.headString())
+                    g.trace(i,j,'len(s)',len(s),self.p.h)
             return -1,-1
 
         if word:
             while 1:
                 k = s.rfind(pattern,i,j)
-                if debug: g.trace('**word** %3s %3s %5s -> %s %s' % (i,j,g.choose(j==len(s),'(end)',''),k,self.p.headString()))
+                if debug: g.trace('**word** %3s %3s %5s -> %s %s' % (i,j,g.choose(j==len(s),'(end)',''),k,self.p.h))
                 if k == -1: return -1, -1
                 if self.matchWord(s,k,pattern):
                     return k,k+n
@@ -983,7 +983,7 @@ class leoFind:
                     j = max(0,k-1)
         else:
             k = s.rfind(pattern,i,j)
-            if debug: g.trace('%3s %3s %5s -> %s %s' % (i,j,g.choose(j==len(s),'(end)',''),k,self.p.headString()))
+            if debug: g.trace('%3s %3s %5s -> %s %s' % (i,j,g.choose(j==len(s),'(end)',''),k,self.p.h))
             if k == -1:
                 return -1, -1
             else:
@@ -1107,7 +1107,7 @@ class leoFind:
         if self.reverse: p = p.threadBack()
         else:            p = p.threadNext()
 
-        # if trace: g.trace(p and p.headString() or 'None')
+        # if trace: g.trace(p and p.h or 'None')
 
         # New in 4.3: restrict searches to hoisted area.
         # End searches outside hoisted area.
@@ -1223,14 +1223,14 @@ class leoFind:
     def initBatchText(self,ins=None):
         p = self.p
         self.wrapping = False # Only interactive commands allow wrapping.
-        s = g.choose(self.in_headline,p.headString(), p.bodyString())
+        s = g.choose(self.in_headline,p.h, p.bodyString())
         self.init_s_ctrl(s,ins)
 
     # Call this routine when moving to the next node when a search fails.
     # Same as above except we don't reset wrapping flag.
     def initNextText(self,ins=None):
         c,p = self.c,self.p
-        s = g.choose(self.in_headline,p.headString(), p.bodyString())
+        s = g.choose(self.in_headline,p.h, p.bodyString())
         if True:
             tree = c.frame and c.frame.tree
             if tree and hasattr(tree,'killEditing'):
@@ -1272,7 +1272,7 @@ class leoFind:
                     focus != c.frame.body.bodyCtrl)
                 if trace: g.trace(
                     '** p: %s, editPosition: %s, focus: %s, bodyCtrl: %s' % (
-                    p and p.headString(),editPosition,focus, c.frame.body.bodyCtrl))
+                    p and p.h,editPosition,focus, c.frame.body.bodyCtrl))
         else:
             self.in_headline = self.search_headline
     #@nonl
@@ -1310,12 +1310,12 @@ class leoFind:
         context = self.batch # "batch" now indicates context
 
         if allFlag and both and context:
-            g.es('','-' * 20,'',self.p.headString())
+            g.es('','-' * 20,'',self.p.h)
             theType = g.choose(self.in_headline,"head: ","body: ")
             g.es('',theType + line)
         elif allFlag and context and not self.p.isVisited():
             # We only need to print the context once.
-            g.es('','-' * 20,'',self.p.headString())
+            g.es('','-' * 20,'',self.p.h)
             g.es('',line)
             self.p.setVisited()
         else:

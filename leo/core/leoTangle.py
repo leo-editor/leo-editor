@@ -1319,7 +1319,7 @@ class baseTangleCommands:
 
     def skip_headline(self,p):
 
-        self.header = s = p.headString()
+        self.header = s = p.h
         # Set self.header_name.
         j = i = g.skip_ws(s,0)
         i, kind, end = self.is_section_name(s,i)
@@ -2939,7 +2939,7 @@ class baseTangleCommands:
         if code and self.forgiving_compare(name,part,code,ucode):
             return false_ret # Not an error.
         # Update the body.
-        g.es("***Updating:",p.headString())
+        g.es("***Updating:",p.h)
         i = g.skip_blank_lines(ucode,0)
         ucode = ucode[i:]
         ucode = ucode.rstrip()
@@ -3234,7 +3234,7 @@ class baseTangleCommands:
     #@+node:ekr.20031218072017.3594:setRootFromHeadline
     def setRootFromHeadline (self,p):
 
-        s = p.headString()
+        s = p.h
 
         if s[0:5] == "@root":
             i,self.start_mode = g.scanAtRootOptions(s,0)

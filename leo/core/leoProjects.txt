@@ -497,8 +497,8 @@ def goToLineNumber (self,n,p=None,scriptData=None):
 g.trace(
     '\n  found',found,'n2',n2,'gnx',gnx,'delim',repr(delim),
     '\n  vnodeName',vnodeName,
-    '\n  p        ',p and p.headString(),
-    '\n  root     ',root and root.headString())
+    '\n  p        ',p and p.h,
+    '\n  root     ',root and root.h)
 #@-node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
 #@+node:ekr.20080708094444.65:goto_applyLineNumberMapping
 def goto_applyLineNumberMapping(self, n):
@@ -529,7 +529,7 @@ def goto_countLines (self,root,n):
             s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
         n_lines = s.count('\n')
         if len(s) > 0 and s[-1] != '\n': n_lines += 1
-        # g.trace(n,prev,n_lines,p.headString())
+        # g.trace(n,prev,n_lines,p.h)
         if prev + n_lines >= n:
             found = True ; break
         prev += n_lines
@@ -586,7 +586,7 @@ def goto_scanTnodeList (self,root,delim,lines,n,vnodeName):
         tnodeIndex = max(0,tnodeIndex)
         << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
     else:
-        g.es_print("no child index for",root.headString(),color="red")
+        g.es_print("no child index for",root.h,color="red")
 
     if not ok:
         # Fall back to the old logic.
@@ -627,9 +627,9 @@ if tnodeIndex < len(tnodeList):
     if not found:
         s = "tnode not found for " + vnodeName
         g.es_print(s, color="red") ; ok = False
-    elif p.headString().strip() != vnodeName:
+    elif p.h.strip() != vnodeName:
         if 0: # Apparently this error doesn't prevent a later scan for working properly.
-            s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.headString(),vnodeName)
+            s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.h,vnodeName)
             g.es_print(s, color="red")
         ok = False
 else:
@@ -662,14 +662,14 @@ def goto_findVnode (self,root,lines,n,ignoreSentinels):
     gnx = None
     << set delim, leoLine from the @+leo line >>
     if not delim:
-        g.es('no sentinels in:',root.headString())
+        g.es('no sentinels in:',root.h)
         return None,None,None,None
 
     << scan back to @+node, setting offset,nodeSentinelLine >>
     if nodeSentinelLine == -1:
         # The line precedes the first @+node sentinel
         g.trace('no @+node!!')
-        return root.headString(),gnx,1,delim
+        return root.h,gnx,1,delim
 
     s = lines[nodeSentinelLine]
 
@@ -920,7 +920,7 @@ def goto_showResults(self,found,p,n,n2,lines):
         if len(lines) < n and not g.unitTesting:
             g.es('only',len(lines),'lines',color="blue")
 
-    # g.trace(p.headString(),g.callers())
+    # g.trace(p.h,g.callers())
 
     w.setInsertPoint(ins)
     c.bodyWantsFocusNow()
@@ -1611,7 +1611,7 @@ def reportMismatch (self,lines1,lines2,bad_i):
 
     self.error(
         '%s did not import %s perfectly\nfirst mismatched line: %d\n%s' % (
-            kind,self.root.headString(),bad_i,repr(lines2[bad_i-1])))
+            kind,self.root.h,bad_i,repr(lines2[bad_i-1])))
 
     if len(lines1) < 100:
         pr('input...')
@@ -1688,7 +1688,7 @@ def importExport (self):
 
     g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
 
-    commandName = p.headString()
+    commandName = p.h
     command = getattr(c,commandName) # Will fail if command does not exist.
     command(event=None)
 
@@ -1712,7 +1712,7 @@ def setUp(self):
     # Create a node under temp_p.
     child = temp_p.insertAsLastChild()
     assert(child)
-    c.setHeadString(child,"import test: " + self.p.headString())
+    c.setHeadString(child,"import test: " + self.p.h)
     c.selectPosition(child)
 
     assert(d)
@@ -1743,7 +1743,7 @@ def setUp(self):
 def shortDescription (self):
 
     try:
-        return "ImportExportTestCase: %s %s" % (self.p.headString(),self.fileName)
+        return "ImportExportTestCase: %s %s" % (self.p.h,self.fileName)
     except Exception:
         return "ImportExportTestCase"
 #@-node:ekr.20051104075904.85:shortDescription
@@ -1860,7 +1860,7 @@ def write (self,root,
     at = self ; c = at.c
     c.endEditing() # Capture the current headline.
 
-    # g.trace(root.headString())
+    # g.trace(root.h)
 
     if hasattr(root.v.t,'tnodeList'):# 2008/10/3
         has_list,old_list = True,root.v.t.tnodeList[:]
@@ -1948,7 +1948,7 @@ def shouldWriteAtNosentNode (self,p,exists):
     elif self.isSignificantTree(p):
         return True # Assume the tree contains what should be written.
     else:
-        g.es_print(p.headString(),'not written:',color='red')
+        g.es_print(p.h,'not written:',color='red')
         g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
         return False
 #@-node:ekr.20080620095343.1:shouldWriteAtNosentNode
@@ -1979,7 +1979,7 @@ def clean_file(p):
         'clean',
         g.os_path_basename(p.anyAtFileNodeName())))
 
-    # g.trace(p.headString(),len(at.stringOutput),fileName)
+    # g.trace(p.h,len(at.stringOutput),fileName)
 
     # Adapted from at.openFileForWritingHelper
     path = g.os_path_dirname(fileName)
@@ -2974,7 +2974,7 @@ def write (self,root,
     at = self ; c = at.c
     c.endEditing() # Capture the current headline.
 
-    # g.trace(root.headString())
+    # g.trace(root.h)
 
     if hasattr(root.v.t,'tnodeList'):# 2008/10/3
         has_list,old_list = True,root.v.t.tnodeList[:]
@@ -3062,7 +3062,7 @@ def shouldWriteAtNosentNode (self,p,exists):
     elif self.isSignificantTree(p):
         return True # Assume the tree contains what should be written.
     else:
-        g.es_print(p.headString(),'not written:',color='red')
+        g.es_print(p.h,'not written:',color='red')
         g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
         return False
 #@-node:ekr.20080620095343.1:shouldWriteAtNosentNode
@@ -3530,7 +3530,7 @@ def selectPosition(self,p):
     if cc:
         cc.selectChapterForPosition(p)
 
-    # g.trace(p.headString(),g.callers())
+    # g.trace(p.h,g.callers())
 
     c.expandAllAncestors(p)
     c.frame.tree.select(p)
@@ -3581,8 +3581,8 @@ def treeSelectHelper (self,p,scroll):
         return None # Not an error.
 
     if trace: g.trace(
-        '\nold:',old_p and old_p.headString(),
-        '\nnew:',p and p.headString())
+        '\nold:',old_p and old_p.h,
+        '\nnew:',p and p.h)
 
     if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
         if old_p:
@@ -3632,7 +3632,7 @@ if old_p:
 #@-node:ekr.20040803072955.129:<< unselect the old node >>
 #@+node:ekr.20040803072955.130:<< select the new node >>
 # Bug fix: we must always set this, even if we never edit the node.
-self.revertHeadline = p.headString()
+self.revertHeadline = p.h
 frame.setWrap(p)
 
 # Always do this.  Otherwise there can be problems with trailing newlines.
@@ -3658,7 +3658,7 @@ if p.v and p.v.t.insertSpot != None:
 else:
     w.setInsertPoint(0)
 
-# g.trace("select:",p.headString())
+# g.trace("select:",p.h)
 #@-node:ekr.20040803072955.130:<< select the new node >>
 #@+node:ekr.20040803072955.133:<< set the current node >>
 self.setSelectedLabelState(p)
@@ -3670,7 +3670,7 @@ if self.use_chapters:
     theChapter = cc and cc.getSelectedChapter()
     if theChapter:
         theChapter.p = p.copy()
-        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.headString())
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
 
 if self.stayInTree:
     c.treeWantsFocus()
@@ -3771,8 +3771,8 @@ try:
         w.event_generate('<Return>')
         w.update()
     if 1:
-        assert p.headString() == h + paste,'Expected: %s, got %s' % (
-            h + paste,p.headString())
+        assert p.h == h + paste,'Expected: %s, got %s' % (
+            h + paste,p.h)
 finally:
     if trace: print('-'*20)
     if 1:
@@ -3801,17 +3801,17 @@ if k.defaultUnboundKeyAction == 'insert':
         w.event_generate('Y')
         w.event_generate('Z')
         w.event_generate('<Return>')
-        assert p.headString() == h + 'XYZ',(
+        assert p.h == h + 'XYZ',(
             'oops2: expected: %s, got: %s' % (
-                h + 'XYZ',p.headString()))
+                h + 'XYZ',p.h))
         if g.app.gui.guiName() != 'nullGui':
             assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
                 c.undoer.undoMenuLabel)
         k.manufactureKeyPressForCommandName(w,'undo')
         if g.app.gui.guiName() != 'nullGui':
             assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
-        assert p.headString() == h,'oops5 got: %s, expected: %s' % (
-            p.headString(),h)
+        assert p.h == h,'oops5 got: %s, expected: %s' % (
+            p.h,h)
     finally:
         if 1:
             c.setHeadString(p,h) # Essential.
@@ -3835,9 +3835,9 @@ try:
     w.setSelectionRange('end','end')
     k.manufactureKeyPressForCommandName(w,'paste-text')
     w.event_generate('<Return>')
-    assert p.headString() == h + paste,'oops2 got: %s' % p.headString()
+    assert p.h == h + paste,'oops2 got: %s' % p.h
     k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.headString() == h,'oops3 got: %s' % p.headString()
+    assert p.h == h,'oops3 got: %s' % p.h
 finally:
     if 1:
         c.setHeadString(p,h) # Essential.
@@ -3861,9 +3861,9 @@ try:
     w.setSelectionRange('1.1','1.2')
     k.manufactureKeyPressForCommandName(w,'paste-text')
     w.event_generate('<Return>')
-    assert p.headString() == h[0] + paste + h[2:]
+    assert p.h == h[0] + paste + h[2:]
     k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.headString() == h, 'head mismatch'
+    assert p.h == h, 'head mismatch'
 finally:
     if 1:
         c.setHeadString(p,h) # Essential.
@@ -3889,9 +3889,9 @@ if k.defaultUnboundKeyAction == 'insert':
         w.event_generate('Y')
         w.event_generate('Z')
         w.event_generate('<Return>')
-        assert p.headString() == h + 'XYZ'
+        assert p.h == h + 'XYZ'
         k.manufactureKeyPressForCommandName(w,'undo')
-        assert p.headString() == h
+        assert p.h == h
     finally:
         if 1:
             c.setHeadString(p,h) # Essential.
@@ -3920,9 +3920,9 @@ else:
 try:
     # g.trace('before select',w,w.getAllText())
     c.selectPosition(p.threadBack())
-    assert p.headString() == h + paste,'oops1: expected: %s, got %s' % (h + paste,p.headString())
+    assert p.h == h + paste,'oops1: expected: %s, got %s' % (h + paste,p.h)
     c.selectPosition(p)
-    assert p.headString() == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.headString())
+    assert p.h == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.h)
 finally:
     if 1:
         c.setHeadString(p,h) # Essential.
@@ -3983,10 +3983,10 @@ try:
     w.setSelectionRange('end','end')
     k.manufactureKeyPressForCommandName(w,'paste-text')
     c.selectPosition(p.visBack(c))
-    assert p.headString() == h + paste
+    assert p.h == h + paste
     k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.headString() == h,'expected: %s, got: %s' % (
-        h,p.headString())
+    assert p.h == h,'expected: %s, got: %s' % (
+        h,p.h)
 finally:
     if 1:
         c.setHeadString(p,h) # Essential.
@@ -4145,7 +4145,7 @@ def toggleAngleBrackets (self,event=None):
         return
 
     c.endEditing()
-    s = p.headString().strip()
+    s = p.h.strip()
 
     if (s[0:2] == "<<"
         or s[-2:] == ">>"): # Must be on separate line.
@@ -4172,7 +4172,7 @@ def insertHeadlineTime (self,event=None):
 
     c.endEditing()
     time = c.getTime(body=False)
-    s = p.headString().rstrip()
+    s = p.h.rstrip()
     c.setHeadString(p,'%s %s' % (s,time))
     c.redrawAndEdit(p,selectAll=True)
 #@nonl
@@ -4429,8 +4429,8 @@ def edit_widget (self,p):
         d[p.v.t] = w = stringTextWidget(
             c=self.c,
             name='head-%d' % (1 + len(d.keys())))
-        w.setAllText(p.headString())
-    # g.trace('w',w,'p',p.headString())
+        w.setAllText(p.h)
+    # g.trace('w',w,'p',p.h)
     return w
 
 def headWidth(self,p=None,s=''):
@@ -4456,7 +4456,7 @@ def editLabel (self,p,selectAll=False,selection=None):
         # That is, self._editPosition = p
 
     if p:
-        self.revertHeadline = p.headString()
+        self.revertHeadline = p.h
             # New in 4.4b2: helps undo.
 #@nonl
 #@-node:ekr.20070228164730:editLabel (nullTree)
@@ -4467,7 +4467,7 @@ def setHeadline (self,p,s):
 
     This is called from the undo/redo logic to change the text before redrawing.'''
 
-    # g.trace('p',p.headString(),'s',repr(s),g.callers())
+    # g.trace('p',p.h,'s',repr(s),g.callers())
 
     w = self.edit_widget(p)
     if w:
@@ -4692,7 +4692,7 @@ def readOneAtAutoNode (self,fileName,p):
     fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
     if not g.unitTesting:
-        g.es("reading:",p.headString())
+        g.es("reading:",p.h)
 
     # Delete all children.
     while p.hasChildren():
@@ -4981,7 +4981,7 @@ def selectPosition(self,p):
     if cc:
         cc.selectChapterForPosition(p)
 
-    # g.trace(p.headString(),g.callers())
+    # g.trace(p.h,g.callers())
 
     c.expandAllAncestors(p)
     c.frame.tree.select(p)
@@ -5032,8 +5032,8 @@ def treeSelectHelper (self,p,scroll):
         return None # Not an error.
 
     if trace: g.trace(
-        '\nold:',old_p and old_p.headString(),
-        '\nnew:',p and p.headString())
+        '\nold:',old_p and old_p.h,
+        '\nnew:',p and p.h)
 
     if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
         if old_p:
@@ -5083,7 +5083,7 @@ if old_p:
 #@-node:ekr.20040803072955.129:<< unselect the old node >>
 #@+node:ekr.20040803072955.130:<< select the new node >>
 # Bug fix: we must always set this, even if we never edit the node.
-self.revertHeadline = p.headString()
+self.revertHeadline = p.h
 frame.setWrap(p)
 
 # Always do this.  Otherwise there can be problems with trailing newlines.
@@ -5109,7 +5109,7 @@ if p.v and p.v.t.insertSpot != None:
 else:
     w.setInsertPoint(0)
 
-# g.trace("select:",p.headString())
+# g.trace("select:",p.h)
 #@-node:ekr.20040803072955.130:<< select the new node >>
 #@+node:ekr.20040803072955.133:<< set the current node >>
 self.setSelectedLabelState(p)
@@ -5121,7 +5121,7 @@ if self.use_chapters:
     theChapter = cc and cc.getSelectedChapter()
     if theChapter:
         theChapter.p = p.copy()
-        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.headString())
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
 
 if self.stayInTree:
     c.treeWantsFocus()
@@ -5210,7 +5210,7 @@ def selectPosition(self,p):
     if cc:
         cc.selectChapterForPosition(p)
 
-    # g.trace(p.headString(),g.callers())
+    # g.trace(p.h,g.callers())
 
     c.expandAllAncestors(p)
     c.frame.tree.select(p)
@@ -6492,8 +6492,8 @@ def treeSelectHelper (self,p,scroll):
         return None # Not an error.
 
     if trace: g.trace(
-        '\nold:',old_p and old_p.headString(),
-        '\nnew:',p and p.headString())
+        '\nold:',old_p and old_p.h,
+        '\nnew:',p and p.h)
 
     if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
         if old_p:
@@ -6543,7 +6543,7 @@ if old_p:
 #@-node:ekr.20040803072955.129:<< unselect the old node >>
 #@+node:ekr.20040803072955.130:<< select the new node >>
 # Bug fix: we must always set this, even if we never edit the node.
-self.revertHeadline = p.headString()
+self.revertHeadline = p.h
 frame.setWrap(p)
 
 # Always do this.  Otherwise there can be problems with trailing newlines.
@@ -6569,7 +6569,7 @@ if p.v and p.v.t.insertSpot != None:
 else:
     w.setInsertPoint(0)
 
-# g.trace("select:",p.headString())
+# g.trace("select:",p.h)
 #@-node:ekr.20040803072955.130:<< select the new node >>
 #@+node:ekr.20040803072955.133:<< set the current node >>
 self.setSelectedLabelState(p)
@@ -6581,7 +6581,7 @@ if self.use_chapters:
     theChapter = cc and cc.getSelectedChapter()
     if theChapter:
         theChapter.p = p.copy()
-        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.headString())
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
 
 if self.stayInTree:
     c.treeWantsFocus()
@@ -7786,7 +7786,7 @@ def scanOutline (self,verbose=True):
             count += 1 ;
             if (count % 200) == 0: g.es('','.',newline=False)
         language = g.scanForAtLanguage(c,p)
-        # g.trace('language',language,p.headString())
+        # g.trace('language',language,p.h)
         s = p.bodyString()
         if k.enable_autocompleter:
             self.scanForAutoCompleter(s)
@@ -8029,7 +8029,7 @@ def forgivingParser (self,p):
                 g.es_print('syntax error in class node: can not continue')
                 s = None ; break
             else:
-                # g.es_print('syntax error: deleting',p.headString())
+                # g.es_print('syntax error: deleting',p.h)
                 self.excludedTnodesList.append(p.v.t)
                 s = g.getScript(c,root,useSelectedText=False)
     return s or ''
@@ -8058,7 +8058,7 @@ def newPutBody (self,p,oneNodeOnly=False,fromString=''):
 
     if p.v.t in self.excludedTnodesList:
         pass
-        # g.trace('ignoring',p.headString())
+        # g.trace('ignoring',p.h)
     else:
         self.old_putBody(p,oneNodeOnly,fromString)
 #@-node:ekr.20061031131434.65:newPutBody
@@ -8104,7 +8104,7 @@ def findParentClass (self,root):
     for p in root.self_and_parents_iter():
         obj = autoCompleter.selfTnodesDict.get(p.v.t)
         if obj:
-            # g.trace('found',obj,'in',p.headString())
+            # g.trace('found',obj,'in',p.h)
             return None,obj,p
 
     # Next, do a much slower scan.
@@ -8112,7 +8112,7 @@ def findParentClass (self,root):
     for p in root.self_and_parents_iter():
         className = self.findClass(p)
         if className:
-            # g.trace('found',className,'in',p.headString())
+            # g.trace('found',className,'in',p.h)
             return className,None,p
 
     return None,None,None
@@ -8122,7 +8122,7 @@ def findClass (self,p):
 
     lines = g.splitLines(p.bodyString())
     inDoc = self.start_in_doc
-    # g.trace(p.headString())
+    # g.trace(p.h)
     for s in lines:
         if inDoc:
             if self.endsDoc(s):
@@ -8305,16 +8305,16 @@ def doMenus (self,p,kind,name,val):
 
     c = self.c ; aList = [] ; tag = '@menu' ; trace = False and g.isPython3
     p = p.copy() ; after = p.nodeAfterTree()
-    if trace: g.trace('******',p.headString(),'after',after and after.headString())
+    if trace: g.trace('******',p.h,'after',after and after.h)
     while p and p != after:
         self.debug_count += 1
-        h = p.headString()
+        h = p.h
         # if trace:
-            # if p.headString()==after.headString():
+            # if p.h==after.h:
                 # val = p != after
                 # g.trace('*' * 10, 'terminating via headString',p,after)
                 # return
-            # g.trace('***',self.debug_count,p.headString())
+            # g.trace('***',self.debug_count,p.h)
             # if self.debug_count >= 1000:
                 # g.trace('*'*10,'terminating!') ; return
         if g.match_word(h,0,tag):
@@ -8347,16 +8347,16 @@ def doMenus (self,p,kind,name,val):
 def doItems (self,p,aList):
 
     trace = False and g.isPython3
-    if trace: g.trace(p.headString())
+    if trace: g.trace(p.h)
     p = p.copy()
     after = p.nodeAfterTree()
     p.moveToThreadNext()
-    if trace: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
+    if trace: g.trace(self.debug_count,p.h,'after',after and after.h)
     while p and p != after:
         self.debug_count += 1
-        h = p.headString()
+        h = p.h
         # if trace:
-            # if p.headString()==after.headString():
+            # if p.h==after.h:
                 # val = p != after
                 # g.trace('*' * 10, 'terminating via headString',p,after)
                 # return
@@ -8382,7 +8382,7 @@ def doItems (self,p,aList):
                         p.moveToThreadNext()
                         break
         else:
-            # g.trace('***skipping***',p.headString())
+            # g.trace('***skipping***',p.h)
             p.moveToThreadNext()
 #@-node:ekr.20070926141716:doItems
 #@+node:ekr.20070926142312:dumpMenuList
@@ -8403,16 +8403,16 @@ def dumpMenuList (self,aList,level=0):
 def doItems (self,p,aList):
 
     trace = False and g.isPython3
-    if trace: g.trace(p.headString())
+    if trace: g.trace(p.h)
     p = p.copy()
     after = p.nodeAfterTree()
     p.moveToThreadNext()
-    if trace: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
+    if trace: g.trace(self.debug_count,p.h,'after',after and after.h)
     while p and p != after:
         self.debug_count += 1
-        h = p.headString()
+        h = p.h
         # if trace:
-            # if p.headString()==after.headString():
+            # if p.h==after.h:
                 # val = p != after
                 # g.trace('*' * 10, 'terminating via headString',p,after)
                 # return
@@ -8438,7 +8438,7 @@ def doItems (self,p,aList):
                         p.moveToThreadNext()
                         break
         else:
-            # g.trace('***skipping***',p.headString())
+            # g.trace('***skipping***',p.h)
             p.moveToThreadNext()
 #@-node:ekr.20070926141716:doItems
 #@+node:ekr.20041119204700.1:traverse (parserBaseClass)
@@ -8457,10 +8457,10 @@ def traverse (self):
     while p and p != after:
         result = self.visitNode(p)
         # if g.isPython3:
-            # g.trace(result,p.headString())
-            # if p.headString() == 'Menus': g.pdb()
+            # g.trace(result,p.h)
+            # if p.h == 'Menus': g.pdb()
         if result == "skip":
-            # g.es_print('skipping settings in',p.headString(),color='blue')
+            # g.es_print('skipping settings in',p.h,color='blue')
             p.moveToNodeAfterTree()
         else:
             p.moveToThreadNext()
@@ -10258,7 +10258,7 @@ def __eq__(self,p2):
 
     # Don't use g.trace: it might call p.__eq__ or p.__ne__.
     # print ('p.__eq__: %s %s' % (
-        # p1 and p1.v and p1.headString(),p2 and p2.v and p2.headString()))
+        # p1 and p1.v and p1.h,p2 and p2.v and p2.h))
 
     if p2 is None or p2.v is None:
         return p1.v is None
@@ -10405,16 +10405,16 @@ def doMenus (self,p,kind,name,val):
 
     c = self.c ; aList = [] ; tag = '@menu' ; trace = False and g.isPython3
     p = p.copy() ; after = p.nodeAfterTree()
-    if trace: g.trace('******',p.headString(),'after',after and after.headString())
+    if trace: g.trace('******',p.h,'after',after and after.h)
     while p and p != after:
         self.debug_count += 1
-        h = p.headString()
+        h = p.h
         # if trace:
-            # if p.headString()==after.headString():
+            # if p.h==after.h:
                 # val = p != after
                 # g.trace('*' * 10, 'terminating via headString',p,after)
                 # return
-            # g.trace('***',self.debug_count,p.headString())
+            # g.trace('***',self.debug_count,p.h)
             # if self.debug_count >= 1000:
                 # g.trace('*'*10,'terminating!') ; return
         if g.match_word(h,0,tag):
@@ -10447,16 +10447,16 @@ def doMenus (self,p,kind,name,val):
 def doItems (self,p,aList):
 
     trace = False and g.isPython3
-    if trace: g.trace(p.headString())
+    if trace: g.trace(p.h)
     p = p.copy()
     after = p.nodeAfterTree()
     p.moveToThreadNext()
-    if trace: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
+    if trace: g.trace(self.debug_count,p.h,'after',after and after.h)
     while p and p != after:
         self.debug_count += 1
-        h = p.headString()
+        h = p.h
         # if trace:
-            # if p.headString()==after.headString():
+            # if p.h==after.h:
                 # val = p != after
                 # g.trace('*' * 10, 'terminating via headString',p,after)
                 # return
@@ -10482,7 +10482,7 @@ def doItems (self,p,aList):
                         p.moveToThreadNext()
                         break
         else:
-            # g.trace('***skipping***',p.headString())
+            # g.trace('***skipping***',p.h)
             p.moveToThreadNext()
 #@-node:ekr.20070926141716:doItems
 #@+node:ekr.20070926142312:dumpMenuList
@@ -11196,7 +11196,7 @@ def readOneAtShadowNode (self,fn,p):
         # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
         at.read(p,thinFile=True,atShadow=True)
     else:
-        if not g.unitTesting: g.es("reading:",p.headString())
+        if not g.unitTesting: g.es("reading:",p.h)
         ok = at.importAtShadowNode(fn,p)
         if ok:
             # Create the private file automatically.
@@ -11806,7 +11806,7 @@ def scanForAtSettings(p):
     """Scan position p and its ancestors looking for @settings nodes."""
 
     for p in p.self_and_parents_iter():
-        h = p.headString()
+        h = p.h
         h = g.app.config.canonicalizeSettingName(h)
         if h.startswith("@settings"):
             return True
@@ -14939,7 +14939,7 @@ def scanOutline (self,verbose=True):
             count += 1 ;
             if (count % 200) == 0: g.es('','.',newline=False)
         language = g.scanForAtLanguage(c,p)
-        # g.trace('language',language,p.headString())
+        # g.trace('language',language,p.h)
         s = p.bodyString()
         if k.enable_autocompleter:
             self.scanForAutoCompleter(s)
@@ -15182,7 +15182,7 @@ def forgivingParser (self,p):
                 g.es_print('syntax error in class node: can not continue')
                 s = None ; break
             else:
-                # g.es_print('syntax error: deleting',p.headString())
+                # g.es_print('syntax error: deleting',p.h)
                 self.excludedTnodesList.append(p.v.t)
                 s = g.getScript(c,root,useSelectedText=False)
     return s or ''
@@ -15211,7 +15211,7 @@ def newPutBody (self,p,oneNodeOnly=False,fromString=''):
 
     if p.v.t in self.excludedTnodesList:
         pass
-        # g.trace('ignoring',p.headString())
+        # g.trace('ignoring',p.h)
     else:
         self.old_putBody(p,oneNodeOnly,fromString)
 #@-node:ekr.20061031131434.65:newPutBody
@@ -15257,7 +15257,7 @@ def findParentClass (self,root):
     for p in root.self_and_parents_iter():
         obj = autoCompleter.selfTnodesDict.get(p.v.t)
         if obj:
-            # g.trace('found',obj,'in',p.headString())
+            # g.trace('found',obj,'in',p.h)
             return None,obj,p
 
     # Next, do a much slower scan.
@@ -15265,7 +15265,7 @@ def findParentClass (self,root):
     for p in root.self_and_parents_iter():
         className = self.findClass(p)
         if className:
-            # g.trace('found',className,'in',p.headString())
+            # g.trace('found',className,'in',p.h)
             return className,None,p
 
     return None,None,None
@@ -15275,7 +15275,7 @@ def findClass (self,p):
 
     lines = g.splitLines(p.bodyString())
     inDoc = self.start_in_doc
-    # g.trace(p.headString())
+    # g.trace(p.h)
     for s in lines:
         if inDoc:
             if self.endsDoc(s):
@@ -16502,7 +16502,7 @@ def reportMismatch (self,lines1,lines2,bad_i):
 
     self.error(
         '%s did not import %s perfectly\nfirst mismatched line: %d\n%s' % (
-            kind,self.root.headString(),bad_i,repr(lines2[bad_i-1])))
+            kind,self.root.h,bad_i,repr(lines2[bad_i-1])))
 
     if len(lines1) < 100:
         pr('input...')
@@ -16960,7 +16960,7 @@ def addRef (self,parent):
 
     c = self.c
 
-    # g.trace(parent.headString())
+    # g.trace(parent.h)
 
     if self.treeType == '@file':
         self.appendStringToBody(parent,'@others\n')
@@ -17011,7 +17011,7 @@ def createFunctionNode (self,headline,body,parent):
 #@+node:ekr.20070703122141.77:createHeadline
 def createHeadline (self,parent,body,headline):
 
-    # g.trace('parent,headline:',parent.headString(),headline)
+    # g.trace('parent,headline:',parent.h,headline)
 
     # Create the node.
     p = parent.insertAsLastChild()
@@ -17656,7 +17656,7 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     else:
         return False
     if not g.unitTesting:
-        g.es("reading:",root.headString())
+        g.es("reading:",root.h)
     root.clearVisitedInTree()
     at.scanAllDirectives(root,importing=at.importing,reading=True)
     at.readOpenFile(root,at.inputFile,fileName)
@@ -17689,7 +17689,7 @@ resurrected = 0
 for p in root.self_and_subtree_iter():
 
     if not p.v.t.isVisited():
-        g.es('resurrected node:',p.headString(),color='blue')
+        g.es('resurrected node:',p.h,color='blue')
         g.es('in file:',fileName,color='blue')
         resurrected += 1
 
@@ -17823,7 +17823,7 @@ def write (self,root,
     at = self ; c = at.c
     c.endEditing() # Capture the current headline.
 
-    # g.trace(root.headString())
+    # g.trace(root.h)
 
     if hasattr(root.v.t,'tnodeList'):# 2008/10/3
         has_list,old_list = True,root.v.t.tnodeList[:]
@@ -17911,7 +17911,7 @@ def shouldWriteAtNosentNode (self,p,exists):
     elif self.isSignificantTree(p):
         return True # Assume the tree contains what should be written.
     else:
-        g.es_print(p.headString(),'not written:',color='red')
+        g.es_print(p.h,'not written:',color='red')
         g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
         return False
 #@-node:ekr.20080620095343.1:shouldWriteAtNosentNode
@@ -18825,7 +18825,6 @@ class posList(list):
         # Prints all positions in aList, sorted if sort is True.
         # Prints p.h, or repr(p) if verbose is True.
 '''
-#@nonl
 #@-node:ekr.20090130114732.2:<< docstring for posList >>
 #@-node:ekr.20090128083459.82:g.posList
 #@-node:ekr.20090130114732.1:Added g.posList
@@ -18863,7 +18862,7 @@ def __set_b(self,val):
 
 b = property(
     __get_b, __set_b,
-    doc = "Node body string")
+    doc = "position body string property")
 #@-node:ekr.20090128083459.75:p.b property
 #@+node:ekr.20090128083459.76:p.h property
 def __get_h(self):
@@ -18881,10 +18880,41 @@ def __set_h(self,val):
 
 h = property(
     __get_h, __set_h,
-    doc = "Node headline string")  
+    doc = "position headline string property")  
 #@-node:ekr.20090128083459.76:p.h property
 #@-node:ekr.20090128083459.74:p.Properties
-#@+node:ekr.20090130065000.1:v.u Property
+#@+node:ekr.20090130065000.1:v.Properties
+#@+node:ekr.20090130114732.5:v.b Property
+def __get_b(self):
+
+    v = self
+    return v.bodyString()
+
+def __set_b(self,val):
+
+    v = self
+    v.setBodyString(val)
+
+b = property(
+    __get_b, __set_b,
+    doc = "vnode body string property")
+#@-node:ekr.20090130114732.5:v.b Property
+#@+node:ekr.20090130125002.1:v.h property
+def __get_h(self):
+
+    v = self
+    return v.headString()
+
+def __set_h(self,val):
+
+    v = self
+    v.setHeadString(val)
+
+h = property(
+    __get_h, __set_h,
+    doc = "vnode headline string property")  
+#@-node:ekr.20090130125002.1:v.h property
+#@+node:ekr.20090130114732.6:v.u Property
 def __get_u(self):
     v = self
     if not hasattr(v,'unknownAttributes'):
@@ -18904,8 +18934,40 @@ def __set_u(self,val):
 u = property(
     __get_u, __set_u,
     doc = "vnode unknownAttribute property")
-#@-node:ekr.20090130065000.1:v.u Property
-#@+node:ekr.20090130065000.2:t.u Property
+#@-node:ekr.20090130114732.6:v.u Property
+#@-node:ekr.20090130065000.1:v.Properties
+#@+node:ekr.20090130065000.2:t Property
+#@+node:ekr.20090130125002.2:t.b Property
+def __get_b(self):
+
+    t = self
+    return t.bodyString()
+
+def __set_b(self,val):
+
+    t = self
+    t.setBodyString(val)
+
+b = property(
+    __get_b, __set_b,
+    doc = "tnode body string property")
+#@-node:ekr.20090130125002.2:t.b Property
+#@+node:ekr.20090130125002.3:t.h property
+def __get_h(self):
+
+    t = self
+    return t.headString()
+
+def __set_h(self,val):
+
+    t = self
+    t.setHeadString(val)
+
+h = property(
+    __get_h, __set_h,
+    doc = "tnode headline string property")  
+#@-node:ekr.20090130125002.3:t.h property
+#@+node:ekr.20090130125002.4:t.u Property
 def __get_t(self):
     t = self
     if not hasattr(t,'unknownAttributes'):
@@ -18925,7 +18987,8 @@ def __set_t(self,val):
 u = property(
     __get_t, __set_t,
     doc = "tnode unknownAttribute property")
-#@-node:ekr.20090130065000.2:t.u Property
+#@-node:ekr.20090130125002.4:t.u Property
+#@-node:ekr.20090130065000.2:t Property
 #@-node:ekr.20090128083459.77:Added properties to leoNodes.py
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080930072519.8:New options
@@ -19758,8 +19821,8 @@ def remove (self,p):
         self.beadPointer = max(0,self.beadPointer-1)
 
     if self.trace:
-        g.trace('bead list',p.headString())
-        g.pr([z[0].headString() for z in self.beadList])
+        g.trace('bead list',p.h)
+        g.pr([z[0].h for z in self.beadList])
 #@-node:ekr.20070615132939.1:remove
 #@+node:ekr.20070615140032:selectChapter
 def selectChapter (self,chapter):
@@ -19789,8 +19852,8 @@ def update (self,p):
         self.beadPointer = len(self.beadList)-1
 
     if self.trace:
-        g.trace('bead list',p.headString())
-        g.pr([z[0].headString() for z in self.beadList])
+        g.trace('bead list',p.h)
+        g.pr([z[0].h for z in self.beadList])
 
 #@-node:ekr.20070615131604.2:update
 #@+node:ekr.20070615140655:visitedPositions
@@ -19956,7 +20019,7 @@ def checkDrag (self,root,target):
 
     message = "Can not drag a node into its descendant tree."
 
-    # g.trace('root',root.headString(),'target',target.headString())
+    # g.trace('root',root.h,'target',target.h)
 
     for z in root.subtree_iter():
         if z == target:

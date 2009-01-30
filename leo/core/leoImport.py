@@ -564,7 +564,7 @@ class leoImportCommands (scanUtility):
                 while i < 3:
                     i += 1
                     if not p2: break
-                    context.append(p2.headString())
+                    context.append(p2.h)
                     p2.moveToParent()
 
                 context.reverse()
@@ -862,7 +862,7 @@ class leoImportCommands (scanUtility):
         while p and p != after:
             if p.isAtAutoNode():
                 if p.isAtIgnoreNode():
-                    g.es_print('ignoring',p.headString(),color='blue')
+                    g.es_print('ignoring',p.h,color='blue')
                     p.moveToThreadNext()
                 else:
                     self.readOneAtAutoNode(p)
@@ -1524,7 +1524,7 @@ class leoImportCommands (scanUtility):
         '''Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.'''
 
-        c = self.c ; h = p.headString() ; old_root = p.copy()
+        c = self.c ; h = p.h ; old_root = p.copy()
         oldChanged = c.changed
         d = g.app.unitTestDict
         expectedErrors = d.get('expectedErrors')
@@ -1535,7 +1535,7 @@ class leoImportCommands (scanUtility):
             'expectedErrorMessage':expectedErrorMessage,
             'expectedMismatchLine':expectedMismatchLine,
         }
-        if not fileName: fileName = p.headString()
+        if not fileName: fileName = p.h
         if not s: s = self.removeSentinelsCommand([fileName],toString=True)
         title = g.choose(h.startswith('@test'),h[5:],h)
         self.createOutline(title.strip(),p.copy(),atAuto=atAuto,s=s,ext=ext)
@@ -1943,7 +1943,7 @@ class baseScannerClass (scanUtility):
 
         self.error(
             '%s did not import %s perfectly\nfirst mismatched line: %d\n%s' % (
-                kind,self.root.headString(),bad_i,repr(lines2[bad_i-1])))
+                kind,self.root.h,bad_i,repr(lines2[bad_i-1])))
 
         if len(lines1) < 100:
             pr('input...')
@@ -1969,7 +1969,7 @@ class baseScannerClass (scanUtility):
 
         c = self.c
 
-        # g.trace(parent.headString())
+        # g.trace(parent.h)
 
         if self.treeType == '@file':
             self.appendStringToBody(parent,'@others\n')
@@ -2020,7 +2020,7 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20070703122141.77:createHeadline
     def createHeadline (self,parent,body,headline):
 
-        # g.trace('parent,headline:',parent.headString(),headline)
+        # g.trace('parent,headline:',parent.h,headline)
 
         # Create the node.
         p = parent.insertAsLastChild()

@@ -872,7 +872,7 @@ class leoBody:
         self.updateInjectedIvars(w,p)
         self.selectLabel(w)
 
-        # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.headString())
+        # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.h)
     #@-node:ekr.20060528132829:assignPositionToEditor
     #@+node:ekr.20060528170438:cycleEditorFocus
     def cycleEditorFocus (self,event=None):
@@ -931,17 +931,17 @@ class leoBody:
                     hasattr(w,'leo_chapter') and w.leo_chapter == chapter and
                     hasattr(w,'leo_p') and w.leo_p and w.leo_p == p
                 ):
-                    # g.trace('***',id(w),'match chapter and p',p.headString())
+                    # g.trace('***',id(w),'match chapter and p',p.h)
                     return w
 
         # Next, try to match just the chapter.
         for w in values:
             if hasattr(w,'leo_chapter') and w.leo_chapter == chapter:
-                # g.trace('***',id(w),'match only chapter',p.headString())
+                # g.trace('***',id(w),'match only chapter',p.h)
                 return w
 
         # As a last resort, return the present editor widget.
-        # g.trace('***',id(self.bodyCtrl),'no match',p.headString())
+        # g.trace('***',id(self.bodyCtrl),'no match',p.h)
         return c.frame.body.bodyCtrl
     #@-node:ekr.20070425180705:findEditorForChapter (leoBody)
     #@+node:ekr.20060530210057:select/unselectLabel
@@ -1009,7 +1009,7 @@ class leoBody:
         if trace:
             g.trace('==1',id(w),
                 hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
-                hasattr(w,'leo_p') and w.leo_p and w.leo_p.headString())
+                hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
 
         self.inactivateActiveEditor(w)
 
@@ -1027,9 +1027,9 @@ class leoBody:
         if trace:
             g.trace('==2',id(w),
                 hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
-                hasattr(w,'leo_p') and w.leo_p and w.leo_p.headString())
+                hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
 
-        # g.trace('expanding ancestors of ',w.leo_p.headString(),g.callers())
+        # g.trace('expanding ancestors of ',w.leo_p.h,g.callers())
         c.redraw(w.leo_p)
         c.recolor()
         #@    << restore the selection, insertion point and the scrollbar >>
@@ -1146,7 +1146,7 @@ class leoBody:
 
         c = self.c ; old_w = c.frame.body.bodyCtrl
 
-        # g.trace('w',id(w),p.headString(),len(w.getAllText()))
+        # g.trace('w',id(w),p.h,len(w.getAllText()))
 
         # Save.
         c.frame.body.bodyCtrl = w
@@ -1186,9 +1186,9 @@ class leoBody:
 
         w.leo_p = p.copy()
         w.leo_v = w.leo_p.v
-        w.leo_label_s = p.headString()
+        w.leo_label_s = p.h
 
-        # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.headString())
+        # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.h)
     #@-node:ekr.20070424092855:updateInjectedIvars
     #@-node:ekr.20070424053629.1:utils
     #@-node:ekr.20060528100747:Editors (leoBody)
@@ -1904,7 +1904,7 @@ class leoFrame:
 
         c.endEditing()
         time = c.getTime(body=False)
-        s = p.headString().rstrip()
+        s = p.h.rstrip()
         c.setHeadString(p,'%s %s' % (s,time))
         c.redrawAndEdit(p,selectAll=True)
     #@nonl
@@ -2452,12 +2452,12 @@ class leoTree:
     #@+node:ekr.20040803072955.126:endEditLabel
     def endEditLabel (self):
 
-        '''End editing of a headline and update p.headString().'''
+        '''End editing of a headline and update p.h.'''
 
         trace = False and g.unitTesting
         c = self.c ; k = c.k ; p = c.currentPosition()
 
-        if trace: g.trace('leoTree',p and p.headString(),g.callers(4))
+        if trace: g.trace('leoTree',p and p.h,g.callers(4))
 
         self.setEditPosition(None) # That is, self._editPosition = None
 
@@ -2544,7 +2544,7 @@ class leoTree:
         # Note: "icondclick" hooks handled by vnode callback routine.
 
         c = self.c
-        s = p.headString().strip()
+        s = p.h.strip()
         if g.match_word(s,0,"@url"):
             url = s[4:].strip()
             if url.lstrip().startswith('--'):
@@ -2711,8 +2711,8 @@ class leoTree:
             return None # Not an error.
 
         if trace: g.trace(
-            '\nold:',old_p and old_p.headString(),
-            '\nnew:',p and p.headString())
+            '\nold:',old_p and old_p.h,
+            '\nnew:',p and p.h)
 
         if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
             if old_p:
@@ -2742,7 +2742,7 @@ class leoTree:
             #@        << select the new node >>
             #@+node:ekr.20040803072955.130:<< select the new node >>
             # Bug fix: we must always set this, even if we never edit the node.
-            self.revertHeadline = p.headString()
+            self.revertHeadline = p.h
             frame.setWrap(p)
 
             # Always do this.  Otherwise there can be problems with trailing newlines.
@@ -2768,7 +2768,7 @@ class leoTree:
             else:
                 w.setInsertPoint(0)
 
-            # g.trace("select:",p.headString())
+            # g.trace("select:",p.h)
             #@-node:ekr.20040803072955.130:<< select the new node >>
             #@nl
             if p and p != old_p: # Suppress duplicate call.
@@ -2795,7 +2795,7 @@ class leoTree:
             theChapter = cc and cc.getSelectedChapter()
             if theChapter:
                 theChapter.p = p.copy()
-                # g.trace('tkTree',theChapter.name,'v',id(p.v),p.headString())
+                # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
 
         if self.stayInTree:
             c.treeWantsFocus()
@@ -3354,8 +3354,8 @@ class nullTree (leoTree):
             d[p.v.t] = w = stringTextWidget(
                 c=self.c,
                 name='head-%d' % (1 + len(d.keys())))
-            w.setAllText(p.headString())
-        # g.trace('w',w,'p',p.headString())
+            w.setAllText(p.h)
+        # g.trace('w',w,'p',p.h)
         return w
 
     def headWidth(self,p=None,s=''):
@@ -3381,7 +3381,7 @@ class nullTree (leoTree):
             # That is, self._editPosition = p
 
         if p:
-            self.revertHeadline = p.headString()
+            self.revertHeadline = p.h
                 # New in 4.4b2: helps undo.
     #@nonl
     #@-node:ekr.20070228164730:editLabel (nullTree)
@@ -3392,7 +3392,7 @@ class nullTree (leoTree):
 
         This is called from the undo/redo logic to change the text before redrawing.'''
 
-        # g.trace('p',p.headString(),'s',repr(s),g.callers())
+        # g.trace('p',p.h,'s',repr(s),g.callers())
 
         w = self.edit_widget(p)
         if w:

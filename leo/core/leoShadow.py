@@ -340,7 +340,7 @@ class shadowController:
 
             sep1 = '=' * 10 ; sep2 = '-' * 20
 
-            g.pr('\n',sep1,message,sep1,p and p.headString())
+            g.pr('\n',sep1,message,sep1,p and p.h)
 
             g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
 
@@ -833,7 +833,7 @@ class shadowController:
 
             '''Write p's tree to a string, as if to a file.'''
 
-            h = p.headString()
+            h = p.h
             p2 = root.insertAsLastChild()
             p2.setHeadString(h + '-sentinels')
             return p2
@@ -853,7 +853,7 @@ class shadowController:
 
             s = at.stringOutput
 
-            # g.trace(p.headString(),'\n',s)
+            # g.trace(p.h,'\n',s)
 
             return g.splitLines(s)
         #@-node:ekr.20080709062932.21:makePrivateLines
@@ -933,7 +933,7 @@ class shadowController:
         #@+node:ekr.20080709062932.11:shortDescription
         def shortDescription (self):
 
-            return self.p and self.p.headString() or '@test-shadow: no self.p'
+            return self.p and self.p.h or '@test-shadow: no self.p'
         #@-node:ekr.20080709062932.11:shortDescription
         #@-others
 

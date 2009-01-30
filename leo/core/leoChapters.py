@@ -54,7 +54,7 @@ class chapterController:
 
         tag = '@chapter'
         for p in c.all_positions_with_unique_tnodes_iter():
-            h = p.v.headString()
+            h = p.h
             if h.startswith(tag) and not h.startswith('@chapters'):
                 tabName = h[len(tag):].strip()
                 if tabName and tabName not in ('main',):
@@ -97,7 +97,7 @@ class chapterController:
     def cloneNodeToChapterHelper (self,toChapterName):
 
         cc = self ; c = cc.c ;  u = c.undoer ; undoType = 'Clone Node To Chapter'
-        p = c.currentPosition() ; h = p.headString()
+        p = c.currentPosition() ; h = p.h
         fromChapter = cc.getSelectedChapter()
         toChapter = cc.getChapter(toChapterName)
         if not toChapter:
@@ -143,7 +143,7 @@ class chapterController:
         state = k.getState(tag)
 
         p = c.currentPosition()
-        if p.headString().startswith('@chapter'):
+        if p.h.startswith('@chapter'):
             cc.error('Can not create a new chapter from from an @chapter or @chapters node.')
             return
 
@@ -182,7 +182,7 @@ class chapterController:
     def copyNodeToChapterHelper (self,toChapterName):
 
         cc = self ; c = cc.c ; u = c.undoer ; undoType = 'Copy Node To Chapter'
-        p = c.currentPosition() ; h = p.headString()
+        p = c.currentPosition() ; h = p.h
         fromChapter = cc.getSelectedChapter()
         toChapter = cc.getChapter(toChapterName)
         if not toChapter:
@@ -271,7 +271,7 @@ class chapterController:
         state = k.getState(tag)
 
         p = c.currentPosition()
-        if p.headString().startswith('@chapter'):
+        if p.h.startswith('@chapter'):
             cc.error('Can not create a new chapter from from an @chapter or @chapters node.')
             return
 
@@ -317,7 +317,7 @@ class chapterController:
             return cc.error('chapter "%s" does not exist' % toChapterName)
 
         if 1: # Defensive code: should never happen.
-            if fromChapter.name == 'main' and p.headString().startswith('@chapter'):
+            if fromChapter.name == 'main' and p.h.startswith('@chapter'):
                 return cc.error('can not move @chapter node')
 
         if toChapter.name == 'main':
@@ -554,7 +554,7 @@ class chapterController:
 
         s = '@chapter ' + chapterName
         for p in cc.chaptersNode.children_iter():
-            h = p.headString()
+            h = p.h
             if h == s:
                 return p
             # elif h.startswith('@chapter '):
@@ -578,7 +578,7 @@ class chapterController:
         cc = self ; c = cc.c
 
         for p in c.all_positions_with_unique_tnodes_iter():
-            if p.headString() == '@chapters':
+            if p.h == '@chapters':
                 cc.chaptersNode = p.copy()
                 return p
 
@@ -861,7 +861,7 @@ class chapter:
         return '<chapter id: %s name: %s p: %s>' % (
             id(self),
             self.name,
-            self.p and self.p.headString() or '<no p>')
+            self.p and self.p.h or '<no p>')
 
     __repr__ = __str__
     #@-node:ekr.20070317085708.2:__str__ and __repr__(chapter)
@@ -1001,7 +1001,7 @@ class chapter:
         c = self.c ; cc = self.cc
         self.hoistStack = c.hoistStack[:]
         self.p = c.currentPosition()
-        if self.trace: g.trace('chapter',self.name,'p',self.p.headString())
+        if self.trace: g.trace('chapter',self.name,'p',self.p.h)
     #@-node:ekr.20070320091806.1:chapter.unselect
     #@-others
 #@nonl

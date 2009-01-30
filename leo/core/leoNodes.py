@@ -220,7 +220,38 @@ if not g.unified_nodes:
         #@-node:EKR.20040503094727.1:setWriteBit
         #@-node:ekr.20031218072017.3332:t.Status bits
         #@-node:ekr.20031218072017.3331:t.Setters
-        #@+node:ekr.20090130065000.2:t.u Property
+        #@+node:ekr.20090130065000.2:t Property
+        #@+node:ekr.20090130125002.2:t.b Property
+        def __get_b(self):
+
+            t = self
+            return t.bodyString()
+
+        def __set_b(self,val):
+
+            t = self
+            t.setBodyString(val)
+
+        b = property(
+            __get_b, __set_b,
+            doc = "tnode body string property")
+        #@-node:ekr.20090130125002.2:t.b Property
+        #@+node:ekr.20090130125002.3:t.h property
+        def __get_h(self):
+
+            t = self
+            return t.headString()
+
+        def __set_h(self,val):
+
+            t = self
+            t.setHeadString(val)
+
+        h = property(
+            __get_h, __set_h,
+            doc = "tnode headline string property")  
+        #@-node:ekr.20090130125002.3:t.h property
+        #@+node:ekr.20090130125002.4:t.u Property
         def __get_t(self):
             t = self
             if not hasattr(t,'unknownAttributes'):
@@ -240,7 +271,8 @@ if not g.unified_nodes:
         u = property(
             __get_t, __set_t,
             doc = "tnode unknownAttribute property")
-        #@-node:ekr.20090130065000.2:t.u Property
+        #@-node:ekr.20090130125002.4:t.u Property
+        #@-node:ekr.20090130065000.2:t Property
         #@-others
 #@-node:ekr.20031218072017.3321:class tnode
 #@+node:ekr.20031218072017.3341:class vnode
@@ -860,7 +892,38 @@ class vnode (baseVnode):
                     child.parents.append(v2)
     #@-node:ekr.20080427062528.10:v._computeParentsOfChildren
     #@-node:ekr.20080427062528.9:v.Low level methods
-    #@+node:ekr.20090130065000.1:v.u Property
+    #@+node:ekr.20090130065000.1:v.Properties
+    #@+node:ekr.20090130114732.5:v.b Property
+    def __get_b(self):
+
+        v = self
+        return v.bodyString()
+
+    def __set_b(self,val):
+
+        v = self
+        v.setBodyString(val)
+
+    b = property(
+        __get_b, __set_b,
+        doc = "vnode body string property")
+    #@-node:ekr.20090130114732.5:v.b Property
+    #@+node:ekr.20090130125002.1:v.h property
+    def __get_h(self):
+
+        v = self
+        return v.headString()
+
+    def __set_h(self,val):
+
+        v = self
+        v.setHeadString(val)
+
+    h = property(
+        __get_h, __set_h,
+        doc = "vnode headline string property")  
+    #@-node:ekr.20090130125002.1:v.h property
+    #@+node:ekr.20090130114732.6:v.u Property
     def __get_u(self):
         v = self
         if not hasattr(v,'unknownAttributes'):
@@ -880,7 +943,8 @@ class vnode (baseVnode):
     u = property(
         __get_u, __set_u,
         doc = "vnode unknownAttribute property")
-    #@-node:ekr.20090130065000.1:v.u Property
+    #@-node:ekr.20090130114732.6:v.u Property
+    #@-node:ekr.20090130065000.1:v.Properties
     #@-others
 #@nonl
 #@-node:ekr.20031218072017.3341:class vnode
@@ -1072,7 +1136,7 @@ class position (object):
 
         # Don't use g.trace: it might call p.__eq__ or p.__ne__.
         # print ('p.__eq__: %s %s' % (
-            # p1 and p1.v and p1.headString(),p2 and p2.v and p2.headString()))
+            # p1 and p1.v and p1.h,p2 and p2.v and p2.h))
 
         if p2 is None or p2.v is None:
             return p1.v is None
@@ -1234,7 +1298,7 @@ class position (object):
 
     b = property(
         __get_b, __set_b,
-        doc = "Node body string")
+        doc = "position body string property")
     #@-node:ekr.20090128083459.75:p.b property
     #@+node:ekr.20090128083459.76:p.h property
     def __get_h(self):
@@ -1252,7 +1316,7 @@ class position (object):
 
     h = property(
         __get_h, __set_h,
-        doc = "Node headline string")  
+        doc = "position headline string property")  
     #@-node:ekr.20090128083459.76:p.h property
     #@-node:ekr.20090128083459.74:p.Properties
     #@+node:ekr.20040306212636:p.Getters
@@ -1474,7 +1538,7 @@ class position (object):
         limit,limitIsVisible = c.visLimit()
         limit_v = limit and limit.v or None
         if p.v == limit_v:
-            if trace: g.trace('*** at limit','limitIsVisible',limitIsVisible,p.v.headString())
+            if trace: g.trace('*** at limit','limitIsVisible',limitIsVisible,p.h)
             return limitIsVisible
 
         # It's much easier with a full stack.
@@ -1492,7 +1556,7 @@ class position (object):
                 else: # Ignore the expansion state of @chapter nodes.
                     return True
             if not v.isExpanded():
-                if trace: g.trace('*** non-limit parent is not expanded:',v.t._headString,p.headString())
+                if trace: g.trace('*** non-limit parent is not expanded:',v.t._headString,p.h)
                 return False
             n -= 1
             assert progress > n
@@ -1534,7 +1598,7 @@ class position (object):
             parent_lines = parent_bodyString.split('\n')
             # check out if the cursor node is a section
             cursor_is_section = False
-            cursor_headString = cursor.headString()
+            cursor_headString = cursor.h
             if cursor_headString.startswith('<<'):
                 cursor_is_section = True # section node
             for line in parent_lines:
@@ -1715,7 +1779,7 @@ class position (object):
 
         p = self ; dirtyVnodeList = []
 
-        # g.trace(p.headString(),g.callers(4))
+        # g.trace(p.h,g.callers(4))
 
         if not p.v.t.isDirty():
             p.v.t.setDirty()
@@ -1763,7 +1827,7 @@ class position (object):
         level = self.level() - firstLevel
         plusMinus = g.choose(p.hasChildren(), "+", "-")
 
-        return "%s%s %s" % ('\t'*level,plusMinus,p.headString())
+        return "%s%s %s" % ('\t'*level,plusMinus,p.h)
     #@-node:ekr.20040315023430.2:p.moreHead
     #@+node:ekr.20040315023430.3:p.moreBody
     #@+at 
@@ -2325,7 +2389,7 @@ class position (object):
 
     def copyTreeFromSelfTo(self,p2):
         p = self
-        p2.v.t._headString = p.headString()
+        p2.v.t._headString = p.h
         p2.v.t._bodyString = p.bodyString()
         for child in p.children_iter(copy=True):
             child2 = p2.insertAsLastChild()
@@ -2743,7 +2807,7 @@ class position (object):
             else:
                 p.moveToThreadBack()
             if p:
-                if trace: g.trace('*p',p.headString())
+                if trace: g.trace('*p',p.h)
                 done,val = checkLimit(p)
                 if done:
                     if trace: g.trace('done')
@@ -2780,14 +2844,14 @@ class position (object):
             if trace: g.trace(
                 'hasChildren',p.hasChildren(),
                 'isExpanded',p.isExpanded(),
-                p.headString())
+                p.h)
             # Short-circuit if possible.
             if p.hasNext() and (not p.hasChildren() or not p.isExpanded()):
                 p.moveToNext()
             else:
                 p.moveToThreadNext()
             if p:
-                if trace: g.trace('*p',p.headString())
+                if trace: g.trace('*p',p.h)
                 done,val = checkLimit(p)
                 if done: return val
                 if p.isVisible(c):
@@ -2843,7 +2907,7 @@ class position (object):
 
         # Delete p.v from the its own vnodeList.
         if p.v in p.v.t.vnodeList:
-            # g.trace('**** remove p.v from %s' % p.headString())
+            # g.trace('**** remove p.v from %s' % p.h)
             p.v.t.vnodeList.remove(p.v)
             p.v.t._p_changed = 1
             assert(p.v not in p.v.t.vnodeList)

@@ -344,12 +344,12 @@ ok = True
 p = c.rootPosition()
 while p:
     if p.isAnyAtFileNode():
-        h = p.headString()
+        h = p.h
         if h.endswith('.py'):
-            # print('checking',p.headString())
+            # print('checking',p.h)
             # Check all the descendant nodes.
             for p2 in p.subtree_iter():
-                h = p2.headString()
+                h = p2.h
                 for tag in ('@test','@suite'):
                     if h.startswith(tag):
                         s = p2.bodyString()
@@ -361,7 +361,7 @@ while p:
                             elif line.startswith('if g.unitTesting:'):
                                 break
                             else:
-                                print('in',p.headString())
+                                print('in',p.h)
                                 print('missing "if g.unitTesting:"',h)
                                 ok = False ; break
         p.moveToNodeAfterTree()
@@ -1063,8 +1063,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1083,8 +1085,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1101,8 +1105,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@file
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1134,8 +1140,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1154,6 +1162,7 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
 @verbatim
@@ -1163,8 +1172,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@file
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1195,8 +1206,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1215,6 +1228,7 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
 @verbatim
@@ -1224,8 +1238,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@file
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1269,8 +1285,10 @@ unnamed node line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1294,6 +1312,7 @@ last line
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@nonl
 @verbatim
@@ -1303,8 +1322,10 @@ last line
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@noref
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1322,6 +1343,7 @@ section line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@nonl
 @verbatim
@@ -1331,8 +1353,10 @@ section line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:<< section >>
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1350,6 +1374,7 @@ unnamed node line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@nonl
 @verbatim
@@ -1359,8 +1384,10 @@ unnamed node line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:unnamed node
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1418,8 +1445,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4-thin
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1438,8 +1467,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1456,8 +1487,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:ekr.20040707141957.13:#@thin
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1785,7 +1818,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.108:Test
 @language plain
 @comment # /* */
@@ -1808,7 +1841,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.110:Actionscript
 @language actionscript
 
@@ -1875,7 +1908,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.112:C
 @language c
 @comment /* */
@@ -1902,7 +1935,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.114:C#
 @language csharp
 @ comment
@@ -1943,7 +1976,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.116:css
 @language css
 /* New in 4.2. */
@@ -2021,7 +2054,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.118:CWEB
 @language cweb
 
@@ -2061,7 +2094,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.121:elisp
 @language elisp
 
@@ -2092,7 +2125,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.123:erlang
 @language erlang
 
@@ -2107,7 +2140,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.125:forth
 @language forth
 
@@ -2149,7 +2182,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.127:String bug in html
 @language html
 
@@ -2162,7 +2195,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.129:HTML1
 @language html
 
@@ -2265,7 +2298,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.131:HTML2
 @language html
 
@@ -2281,7 +2314,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.133:Java
 @ doc part
 @c
@@ -2303,7 +2336,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.135:LaTex
 @language latex
 
@@ -2336,7 +2369,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.137:lisp
 @language lisp
 
@@ -2367,7 +2400,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.139:perl
 @language perl
 
@@ -2432,7 +2465,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.141:PHP
 @language php
 @ doc
@@ -2456,7 +2489,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.143:plsql
 @language plsql
 
@@ -2845,7 +2878,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.145:python.xml
 @language html
 
@@ -3219,7 +3252,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.156:Python1
 @language plsql
 
@@ -3609,7 +3642,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.158:Python2
 """This creates a free-floating copy of v's tree for undo.
 The copied trees must use different tnodes than the original."""
@@ -3636,7 +3669,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.160:r
 @language r
 
@@ -3654,7 +3687,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.162:rapidq
 ' New in 4.2.
 @language rapidq
@@ -3694,7 +3727,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.164:Rebol
 @language rebol
 
@@ -3770,7 +3803,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.166:rest
 @language rest
 
@@ -3844,7 +3877,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.168:shell
 # New in 4.2.
 
@@ -3875,7 +3908,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.170:shellscript
 @language shellscript
 
@@ -3904,7 +3937,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.172:tex.xml
 @language html
 
@@ -4013,7 +4046,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.176:wikiTest1
 # both color_markup & add_directives plugins must be enabled.
 
@@ -4062,7 +4095,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.178:wikiTest2
 # both color_markup & add_directives plugins must be enabled.
 @markup wiki
@@ -4103,7 +4136,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.180:wikiTest3
 # both color_markup & add_directives plugins must be enabled.
 
@@ -4147,7 +4180,7 @@ p = c.currentPosition().firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 #@+node:ekr.20090121163905.186:vbscript
 @language vbscript
 
@@ -5101,7 +5134,7 @@ for p in c.allNodes_iter():
     count += 1
     p2 = c.vnode2position(p.v)
 
-    if trace and verbose: print p2.level(), p2.headString()
+    if trace and verbose: print p2.level(), p2.h
 
     # We can *not* assert that p == p2.
     assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
@@ -5111,12 +5144,12 @@ if trace: print 'pass. tested %s positions' % count
 #@-node:ekr.20090113083258.2:@test c.vnode2position
 #@+node:ekr.20090121163905.285:@test changing headline marks descendent @thin nodes dirty
 # Make sure that changing this headline marks descendant @thin nodes dirty.
-h = p.headString()
+h = p.h
 
 try:
     child = p.firstChild()
     child.initHeadString("@thin bogus")
-    assert child.headString() == "@thin bogus", "setting headline failed"
+    assert child.h == "@thin bogus", "setting headline failed"
     child.clearDirty()
     assert not child.isDirty(), "clearing dirty failed"
     c.setHeadString(p,"changed")
@@ -5367,7 +5400,7 @@ assert target,'not found: %s' % h
 p,n,found = c.goto_countLines (target,3)
 assert found,found
 assert n == 3,n
-assert p.headString() == 'at_auto_child',p.headString()
+assert p.h == 'at_auto_child',p.h
 #@-node:ekr.20090121163905.315:@test goto_countlines n = 3
 #@+node:ekr.20090121163905.316:@test goto_countlines n = 20
 h = '@auto ../test/unittest/at-auto-line-number-test.py'
@@ -5376,7 +5409,7 @@ assert root,'not found: %s' % h
 
 p,n,found = c.goto_countLines (root,20)
 assert not found
-assert p.headString() == 'at_auto_child'
+assert p.h == 'at_auto_child'
 # print ('p:%s, n:%s, found: %s' % (p,n,found))
 #@nonl
 #@-node:ekr.20090121163905.316:@test goto_countlines n = 20
@@ -5393,7 +5426,7 @@ assert root == root1
 
 if 0:
     print ('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
-        root and root.headString(),isRaw,n,len(lines)))
+        root and root.h,isRaw,n,len(lines)))
 #@nonl
 #@-node:ekr.20090121163905.317:@test goto_setup n = 3
 #@+node:ekr.20090121163905.318:@test goto_setup with scriptData
@@ -5412,7 +5445,7 @@ assert n == 2,n
 
 if 0:
     print ('root:%s, n:%s, len(lines): %s' % (
-        root and root.headString(),n,len(lines)))
+        root and root.h,n,len(lines)))
 #@nonl
 #@-node:ekr.20090121163905.318:@test goto_setup with scriptData
 #@-node:ekr.20090121163905.314:Tests with @auto as the root
@@ -5465,7 +5498,7 @@ assert root == root1
 
 if 0:
     print ('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
-        root and root.headString(),isRaw,n,len(lines)))
+        root and root.h,isRaw,n,len(lines)))
 #@nonl
 #@-node:ekr.20090121163905.323:@test goto_setup n = 3 (@shadow)
 #@-node:ekr.20090121163905.322:Tests with @shadow as the root
@@ -5484,7 +5517,7 @@ assert root == root1
 
 if 0:
     print ('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
-        root and root.headString(),isRaw,n,len(lines)))
+        root and root.h,isRaw,n,len(lines)))
 #@nonl
 #@-node:ekr.20090121163905.325:@test goto_setup n = 3 (@nosent)
 #@-node:ekr.20090121163905.324:Tests with @nosent as the root
@@ -5495,10 +5528,10 @@ target = g.findNodeAnywhere(c,h)
 assert target,'not found: %s' % h
 
 child = target.firstChild()
-assert child.headString() == 'at_auto_child'
+assert child.h == 'at_auto_child'
 p,found = c.goto_findRoot(child)
 
-assert p == target,p and p.headString()
+assert p == target,p and p.h
 assert found,found
 #@-node:ekr.20090121163905.327:@test goto_findRoot (root in ancestors)
 #@+node:ekr.20090121163905.328:@test goto_findRoot (root not in ancestors)
@@ -5507,12 +5540,12 @@ h = 'goto-line-number tests: clones'
 clones = g.findNodeAnywhere(c,h)
 assert clones,'not found: %s' % h
 child = g.findNodeInTree(c,clones,'at-file-child')
-assert child and child.headString() == 'at-file-child',child
+assert child and child.h == 'at-file-child',child
 
 h = '@file unittest/at-file-line-number-test.py'
 p,found = c.goto_findRoot(child)
 
-assert p and p.headString()==h,p and p.headString()
+assert p and p.h==h,p and p.h
 assert found,found
 #@-node:ekr.20090121163905.328:@test goto_findRoot (root not in ancestors)
 #@+node:ekr.20090121163905.329:@test goto_showResults found
@@ -9046,8 +9079,8 @@ try:
         w.event_generate('<Return>')
         w.update()
     if 1:
-        assert p.headString() == h + paste,'Expected: %s, got %s' % (
-            h + paste,p.headString())
+        assert p.h == h + paste,'Expected: %s, got %s' % (
+            h + paste,p.h)
 finally:
     if trace: print('-'*20)
     if 1:
@@ -9076,17 +9109,17 @@ if k.defaultUnboundKeyAction == 'insert':
         w.event_generate('Y')
         w.event_generate('Z')
         w.event_generate('<Return>')
-        assert p.headString() == h + 'XYZ',(
+        assert p.h == h + 'XYZ',(
             'oops2: expected: %s, got: %s' % (
-                h + 'XYZ',p.headString()))
+                h + 'XYZ',p.h))
         if g.app.gui.guiName() != 'nullGui':
             assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
                 c.undoer.undoMenuLabel)
         k.manufactureKeyPressForCommandName(w,'undo')
         if g.app.gui.guiName() != 'nullGui':
             assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
-        assert p.headString() == h,'oops5 got: %s, expected: %s' % (
-            p.headString(),h)
+        assert p.h == h,'oops5 got: %s, expected: %s' % (
+            p.h,h)
     finally:
         if 1:
             c.setHeadString(p,h) # Essential.
@@ -9110,9 +9143,9 @@ try:
     w.setSelectionRange('end','end')
     k.manufactureKeyPressForCommandName(w,'paste-text')
     w.event_generate('<Return>')
-    assert p.headString() == h + paste,'oops2 got: %s' % p.headString()
+    assert p.h == h + paste,'oops2 got: %s' % p.h
     k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.headString() == h,'oops3 got: %s' % p.headString()
+    assert p.h == h,'oops3 got: %s' % p.h
 finally:
     if 1:
         c.setHeadString(p,h) # Essential.
@@ -9136,9 +9169,9 @@ try:
     w.setSelectionRange('1.1','1.2')
     k.manufactureKeyPressForCommandName(w,'paste-text')
     w.event_generate('<Return>')
-    assert p.headString() == h[0] + paste + h[2:]
+    assert p.h == h[0] + paste + h[2:]
     k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.headString() == h, 'head mismatch'
+    assert p.h == h, 'head mismatch'
 finally:
     if 1:
         c.setHeadString(p,h) # Essential.
@@ -9164,9 +9197,9 @@ if k.defaultUnboundKeyAction == 'insert':
         w.event_generate('Y')
         w.event_generate('Z')
         w.event_generate('<Return>')
-        assert p.headString() == h + 'XYZ'
+        assert p.h == h + 'XYZ'
         k.manufactureKeyPressForCommandName(w,'undo')
-        assert p.headString() == h
+        assert p.h == h
     finally:
         if 1:
             c.setHeadString(p,h) # Essential.
@@ -9226,9 +9259,9 @@ else:
 try:
     # g.trace('before select',w,w.getAllText())
     c.selectPosition(p.threadBack())
-    assert p.headString() == h + paste,'oops1: expected: %s, got %s' % (h + paste,p.headString())
+    assert p.h == h + paste,'oops1: expected: %s, got %s' % (h + paste,p.h)
     c.selectPosition(p)
-    assert p.headString() == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.headString())
+    assert p.h == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.h)
 finally:
     if 1:
         c.setHeadString(p,h) # Essential.
@@ -9320,10 +9353,10 @@ try:
     w.setSelectionRange('end','end')
     k.manufactureKeyPressForCommandName(w,'paste-text')
     c.selectPosition(p.visBack(c))
-    assert p.headString() == h + paste
+    assert p.h == h + paste
     k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.headString() == h,'expected: %s, got: %s' % (
-        h,p.headString())
+    assert p.h == h,'expected: %s, got: %s' % (
+        h,p.h)
 finally:
     if 1:
         c.setHeadString(p,h) # Essential.
@@ -9705,8 +9738,8 @@ trace = False
 
 if 0: # Set the uA's.
     for p2 in root.self_and_subtree_iter():
-        p2.v.unknownAttributes = {tag: p2.headString()}
-        p2.v.t.unknownAttributes = {ttag: p2.headString()}
+        p2.v.unknownAttributes = {tag: p2.h}
+        p2.v.t.unknownAttributes = {ttag: p2.h}
 else: # Test the uA's.
     # The root is a special case.
     v = root.v
@@ -9716,13 +9749,13 @@ else: # Test the uA's.
         v = p2.v
         assert hasattr(v,uA),'no v.uA for %s' % v
         a = getattr(v,uA)
-        d = {tag: v.headString()}
+        d = {tag: v.h}
         if trace: print(d)
         assert a == d, 'expected v.uA: "%s", got "%s"' % (d,a)
         t = p2.v.t
-        assert hasattr(t,uA),'no t.uA for %s' % p.headString()
+        assert hasattr(t,uA),'no t.uA for %s' % p.h
         a = getattr(t,uA)
-        d = {ttag: v.headString()}
+        d = {ttag: v.h}
         if trace: print(d)
         assert a == d, 'expected t.uA: "%s", got "%s"' % (d,a)
 #@nonl
@@ -9751,8 +9784,8 @@ trace = False
 
 if 0: # Set the uA's.
     for p2 in root.self_and_subtree_iter():
-        p2.v.unknownAttributes = {tag: p2.headString()}
-        p2.v.t.unknownAttributes = {ttag: p2.headString()}
+        p2.v.unknownAttributes = {tag: p2.h}
+        p2.v.t.unknownAttributes = {ttag: p2.h}
 else: # Test the uA's.
     # The root is a special case.
     v = root.v
@@ -9762,13 +9795,13 @@ else: # Test the uA's.
         v = p2.v
         assert hasattr(v,uA),'no v.uA for %s' % v
         a = getattr(v,uA)
-        d = {tag: v.headString()}
+        d = {tag: v.h}
         if trace: print(d)
         assert a == d, 'expected v.uA: "%s", got "%s"' % (d,a)
         t = p2.v.t
-        assert hasattr(t,uA),'no t.uA for %s' % p.headString()
+        assert hasattr(t,uA),'no t.uA for %s' % p.h
         a = getattr(t,uA)
-        d = {ttag: v.headString()}
+        d = {ttag: v.h}
         if trace: print(d)
         assert a == d, 'expected t.uA: "%s", got "%s"' % (d,a)
 #@nonl
@@ -10929,7 +10962,7 @@ test\\unittest\\perfectImport\\formatter.py
 #@nonl
 #@+node:ekr.20090121163905.933:C tests
 #@+node:ekr.20090121163905.934:@test c class 1
-fileName = p.headString()
+fileName = p.h
 
 s = '''\
 class cTestClass1 {
@@ -10947,7 +10980,7 @@ class cTestClass1 {
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 #@-node:ekr.20090121163905.934:@test c class 1
 #@+node:ekr.20090121163905.935:@test c class--underindented line
-fileName = p.headString()
+fileName = p.h
 
 s = '''\
 class cTestClass1 {
@@ -10970,7 +11003,7 @@ g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 #@-node:ekr.20090121163905.935:@test c class--underindented line
 #@+node:ekr.20090121163905.936:@test defaultImporter
-fileName = p.headString()
+fileName = p.h
 
 s = '''\
 class cTestClass1 {
@@ -10988,7 +11021,7 @@ class cTestClass1 {
 c.importCommands.defaultImporterUnitTest(p,s=s,showTree=False)
 #@-node:ekr.20090121163905.936:@test defaultImporter
 #@+node:ekr.20090121163905.937:@test c test--comment follows arg list
-fileName = p.headString()
+fileName = p.h
 
 s = '''\
 void
@@ -11013,7 +11046,7 @@ aaa::bbb::dothat
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 #@-node:ekr.20090121163905.937:@test c test--comment follows arg list
 #@+node:ekr.20090121163905.938:@test c test--comment follows block delim
-fileName = p.headString()
+fileName = p.h
 
 s = '''\
 void
@@ -11038,7 +11071,7 @@ aaa::bbb::dothat
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 #@-node:ekr.20090121163905.938:@test c test--comment follows block delim
 #@+node:ekr.20090121163905.939:@test c test--intermixed blanks and tabs
-fileName = p.headString()
+fileName = p.h
 
 s = '''
 void
@@ -11057,7 +11090,7 @@ g.app.unitTestDict ['expectedErrors'] = 0 # Intermixed blanks and tabs are ok fo
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 #@-node:ekr.20090121163905.939:@test c test--intermixed blanks and tabs
 #@+node:ekr.20090121163905.940:@test c old-style decl 1
-fileName = p.headString()
+fileName = p.h
 
 s = '''\
 static void
@@ -11076,7 +11109,7 @@ g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 #@-node:ekr.20090121163905.940:@test c old-style decl 1
 #@+node:ekr.20090121163905.941:@test c old-style decl 2
-fileName = p.headString()
+fileName = p.h
 
 s = '''\
 Tcl_Obj *
@@ -11093,7 +11126,7 @@ g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 #@-node:ekr.20090121163905.941:@test c old-style decl 2
 #@+node:ekr.20090121163905.942:@test c extern
-fileName = p.headString()
+fileName = p.h
 
 s = '''\
 extern  "C"
@@ -11633,7 +11666,7 @@ if showTree:
         assert n == 2, 'expected 2 children, got %s' % n
     finally:
         if keepTree:
-            h = child.headString()
+            h = child.h
             print 'h',h
             child.setHeadString('@'+h)
         else:
@@ -12633,7 +12666,7 @@ for p in c.allNodes_iter():
 #@-node:ekr.20090121163905.1047:@test c.positionExists for all nodes
 #@+node:ekr.20090121163905.1048:@test p.setBodyStringOrPane
 # Tests that c.setBodyString works immediately.
-h = p.headString()
+h = p.h
 
 try:
     child = p.firstChild()
@@ -12729,7 +12762,7 @@ try:
     c.selectPosition(child)
     c.clone()
     clone = c.currentPosition()
-    assert clone.headString() == 'child','fail headstring'
+    assert clone.h == 'child','fail headstring'
     assert child.isCloned(), 'fail 1'
     assert clone.isCloned(), 'fail 2'
     assert child.isCloned(), 'fail 3'
@@ -12801,8 +12834,8 @@ try:
     c.deleteOutline()
     c.outerUpdate()
     p = c.currentPosition()
-    assert p.headString() == 'A', 'fail 1: got %s' % p.headString()
-    assert p.next().headString() == 'C', 'fail 2'
+    assert p.h == 'A', 'fail 1: got %s' % p.h
+    assert p.next().h == 'C', 'fail 2'
     c.undoer.undo()
     c.outerUpdate()
     p = c.currentPosition()
@@ -12811,8 +12844,8 @@ try:
     c.undoer.redo()
     c.outerUpdate()
     p = c.currentPosition()
-    assert p.headString() == 'A', 'fail 1-2'
-    assert p.next().headString() == 'C', 'fail 2-2'
+    assert p.h == 'A', 'fail 1-2'
+    assert p.next().h == 'C', 'fail 2-2'
     c.undoer.undo()
     c.outerUpdate()
     p = c.currentPosition()
@@ -12821,8 +12854,8 @@ try:
     c.undoer.redo()
     c.outerUpdate()
     p = c.currentPosition()
-    assert p.headString() == 'A', 'fail 1-3'
-    assert p.next().headString() == 'C', 'fail 2-3'
+    assert p.h == 'A', 'fail 1-3'
+    assert p.next().h == 'C', 'fail 2-3'
 
 finally:
     if 1:
@@ -12845,9 +12878,9 @@ try:
     child.moveToRoot(oldRoot=oldRoot) # Does not change child position.
     c.setRootPosition(child)
     assert c.positionExists(child)
-    assert c.rootPosition().headString() == 'child', 'fail 1'
+    assert c.rootPosition().h == 'child', 'fail 1'
     next = c.rootPosition().next()
-    assert next.headString() == 'Startup', 'fail 2: next: %s' % next
+    assert next.h == 'Startup', 'fail 2: next: %s' % next
     c.rootPosition().doDelete(newNode=next)
     c.setRootPosition(next)
 finally:
@@ -12876,10 +12909,10 @@ try:
     c.demote()
     p = c.currentPosition()
     assert p == p3,                                     'fail 1'
-    assert p.headString() == 'B',                       'fail 2'
+    assert p.h == 'B',                       'fail 2'
     assert not p.next(),                                'fail 3'
-    assert p.firstChild().headString() == 'C',          'fail child 1'
-    assert p.firstChild().next().headString() == 'D',   'fail child 2'
+    assert p.firstChild().h == 'C',          'fail child 1'
+    assert p.firstChild().next().h == 'D',   'fail child 2'
     c.undoer.undo()
     p = c.currentPosition()
     assert p == p3
@@ -12887,20 +12920,20 @@ try:
     assert p.next() == p4, 'fail 6'
     c.undoer.redo()
     assert p == p3,                                     'fail 1-2'
-    assert p.headString() == 'B',                       'fail 2-2'
+    assert p.h == 'B',                       'fail 2-2'
     assert not p.next(),                                'fail 3-2'
-    assert p.firstChild().headString() == 'C',          'fail child 1-2'
-    assert p.firstChild().next().headString() == 'D',   'fail child 2-2'
+    assert p.firstChild().h == 'C',          'fail child 1-2'
+    assert p.firstChild().next().h == 'D',   'fail child 2-2'
     c.undoer.undo()
     p = c.currentPosition()
     assert p.back() == p2, 'fail 4-2'
     assert p.next() == p4, 'fail 5-2'
     c.undoer.redo()
     assert p == p3,                                     'fail 1-3'
-    assert p.headString() == 'B',                       'fail 2-3'
+    assert p.h == 'B',                       'fail 2-3'
     assert not p.next(),                                'fail 3-3'
-    assert p.firstChild().headString() == 'C',          'fail child 1-3'
-    assert p.firstChild().next().headString() == 'D',   'fail child 2-3'
+    assert p.firstChild().h == 'C',          'fail child 1-3'
+    assert p.firstChild().next().h == 'D',   'fail child 2-3'
 
 finally:
     if 1:
@@ -12924,24 +12957,24 @@ try:
     c.insertHeadline()
     p = c.currentPosition()
     p.setHeadString('inserted')
-    assert p.back().headString() == 'A', 'fail 1'
-    assert p.next().headString() == 'B', 'fail 2'
+    assert p.back().h == 'A', 'fail 1'
+    assert p.next().h == 'B', 'fail 2'
     c.undoer.undo()
     p = c.currentPosition()
     assert p == p2,        'fail 3'
     assert p.next() == p3, 'fail 4'
     c.undoer.redo()
     p = c.currentPosition()
-    assert p.back().headString() == 'A', 'fail 1-2'
-    assert p.next().headString() == 'B', 'fail 2-2'
+    assert p.back().h == 'A', 'fail 1-2'
+    assert p.next().h == 'B', 'fail 2-2'
     c.undoer.undo()
     p = c.currentPosition()
     assert p == p2,        'fail 3-2'
     assert p.next() == p3, 'fail 3-2'
     c.undoer.redo()
     p = c.currentPosition()
-    assert p.back().headString() == 'A', 'fail 1-3'
-    assert p.next().headString() == 'B', 'fail 2-3'
+    assert p.back().h == 'A', 'fail 1-3'
+    assert p.next().h == 'B', 'fail 2-3'
 
 finally:
     if 1:
@@ -12967,9 +13000,9 @@ try:
     c.setCurrentPosition(p3)
     c.moveOutlineDown()
     moved = c.currentPosition()
-    assert moved.headString() == 'B', 'fail 1'
-    assert moved.back().headString() == 'C', 'fail 2'
-    assert moved.next().headString() == 'D', 'fail 3'
+    assert moved.h == 'B', 'fail 1'
+    assert moved.back().h == 'C', 'fail 2'
+    assert moved.next().h == 'D', 'fail 3'
     # This assert fails because p4._childIndex != moved.back()._childIndex.
     # assert moved.back() == p4, 'fail 4: %s != %s' % (moved.back(),p4)
     assert moved.next() == p5, 'fail 5: %s != %s' % (moved.next(),p5)
@@ -12979,18 +13012,18 @@ try:
     assert moved.next() == p4, 'fail 5'
     c.undoer.redo()
     moved = c.currentPosition()
-    assert moved.headString() == 'B', 'fail 1-2'
-    assert moved.back().headString() == 'C', 'fail 2-2'
-    assert moved.next().headString() == 'D', 'fail 3-2'
+    assert moved.h == 'B', 'fail 1-2'
+    assert moved.back().h == 'C', 'fail 2-2'
+    assert moved.next().h == 'D', 'fail 3-2'
     c.undoer.undo()
     moved = c.currentPosition()
     assert moved.back() == p2, 'fail 4-2'
     assert moved.next() == p4, 'fail 5-2'
     c.undoer.redo()
     moved = c.currentPosition()
-    assert moved.headString() == 'B', 'fail 1-3'
-    assert moved.back().headString() == 'C', 'fail 2-3'
-    assert moved.next().headString() == 'D', 'fail 3-3'
+    assert moved.h == 'B', 'fail 1-3'
+    assert moved.back().h == 'C', 'fail 2-3'
+    assert moved.next().h == 'D', 'fail 3-3'
 
 finally:
     if 1:
@@ -13010,7 +13043,7 @@ try:
     c.setCurrentPosition(p2)
     c.moveOutlineLeft()
     moved = c.currentPosition()
-    assert moved.headString() == 'A','fail 1'
+    assert moved.h == 'A','fail 1'
     # This assert fails because p4._childIndex != moved.back()._childIndex.
     assert moved.back() == p, 'fail 2: %s != %s' % (moved.back(),p4)
     c.undoer.undo()
@@ -13044,7 +13077,7 @@ try:
     c.setCurrentPosition(p3)
     c.moveOutlineRight()
     moved = c.currentPosition()
-    assert moved.headString() == 'B', 'fail 1'
+    assert moved.h == 'B', 'fail 1'
     assert moved.parent() == p2
     c.undoer.undo()
     c.undoer.redo()
@@ -13075,9 +13108,9 @@ try:
     c.setCurrentPosition(p4)
     c.moveOutlineUp()
     moved = c.currentPosition()
-    assert moved.headString() == 'C', 'fail 1'
-    assert moved.back().headString() == 'A', 'fail 2'
-    assert moved.next().headString() == 'B', 'fail 3'
+    assert moved.h == 'C', 'fail 1'
+    assert moved.back().h == 'A', 'fail 2'
+    assert moved.next().h == 'B', 'fail 3'
     assert moved.back() == p2, 'fail 4: %s != %s' % (moved.back(),p2)
     # This assert fails because p4._childIndex != moved.back()._childIndex.
     # assert moved.next() == p3, 'fail 5: %s != %s' % (moved.next(),p3)
@@ -13181,38 +13214,38 @@ try:
     c.promote()
     p = c.currentPosition()
     assert p == p3,                                     'fail 1'
-    assert p.headString() == 'B',                       'fail 2'
-    assert p.next().headString()=='child 1',            'fail 3'
-    assert p.next().next().headString() == 'child 2',   'fail child 1'
-    assert p.next().next().next().headString() == 'C',  'fail child 2'
+    assert p.h == 'B',                       'fail 2'
+    assert p.next().h=='child 1',            'fail 3'
+    assert p.next().next().h == 'child 2',   'fail child 1'
+    assert p.next().next().next().h == 'C',  'fail child 2'
     c.undoer.undo()
     p = c.currentPosition()
     assert p == p3
     assert p.back() == p2,                              'fail 5'
     assert p.next() == p6,                              'fail 6'
-    assert p.firstChild().headString()=='child 1',          'fail child 3'
-    assert p.firstChild().next().headString() == 'child 2', 'fail child 4'
+    assert p.firstChild().h=='child 1',          'fail child 3'
+    assert p.firstChild().next().h == 'child 2', 'fail child 4'
     c.undoer.redo()
     p = c.currentPosition()
     assert p == p3,                                     'fail 1-2'
-    assert p.headString() == 'B',                       'fail 2-2'
-    assert p.next().headString()=='child 1',            'fail 3-2'
-    assert p.next().next().headString() == 'child 2',   'fail child 1-2'
-    assert p.next().next().next().headString() == 'C',  'fail child 2-2'
+    assert p.h == 'B',                       'fail 2-2'
+    assert p.next().h=='child 1',            'fail 3-2'
+    assert p.next().next().h == 'child 2',   'fail child 1-2'
+    assert p.next().next().next().h == 'C',  'fail child 2-2'
     c.undoer.undo()
     p = c.currentPosition()
     assert p == p3
     assert p.back() == p2,                                  'fail 5-2'
     assert p.next() == p6,                                  'fail 6-2'
-    assert p.firstChild().headString()=='child 1',          'fail child 3-2'
-    assert p.firstChild().next().headString() == 'child 2', 'fail child 4-2'
+    assert p.firstChild().h=='child 1',          'fail child 3-2'
+    assert p.firstChild().next().h == 'child 2', 'fail child 4-2'
     c.undoer.redo()
     p = c.currentPosition()
     assert p == p3,                                     'fail 1-3'
-    assert p.headString() == 'B',                       'fail 2-3'
-    assert p.next().headString()=='child 1',            'fail 3-3'
-    assert p.next().next().headString() == 'child 2',   'fail child 1-3'
-    assert p.next().next().next().headString() == 'C',  'fail child 2-3'
+    assert p.h == 'B',                       'fail 2-3'
+    assert p.next().h=='child 1',            'fail 3-3'
+    assert p.next().next().h == 'child 2',   'fail child 1-3'
+    assert p.next().next().next().h == 'C',  'fail child 2-3'
 
 
 finally:
@@ -13237,10 +13270,10 @@ c2 = b.firstChild()
 limit = a.next()
 d = limit.firstChild()
 e = limit.next()
-assert e.headString() == 'e'
+assert e.h == 'e'
 for p2,h in ((a,'a'),(b,'b'),(c2,'c2'),(d,'d'),(limit,'limit')):
     p2.expand()
-    assert p2.headString()==h,'headString mismatch'
+    assert p2.h==h,'headString mismatch'
 
 try: # Tests without hoist...
     p1.expand()
@@ -13283,7 +13316,7 @@ finally:
 #@-node:ekr.20090121163905.1070:@@test visback
 #@+node:ekr.20090121163905.1077:@test convertTreeToString and allies
 p = p.firstChild()
-assert(p.headString()=="File Conversion")
+assert(p.h=="File Conversion")
 p.convertTreeToString()
 #@nonl
 #@+node:ekr.20090121163905.1078:File Conversion
@@ -13300,7 +13333,7 @@ def moreHead (self, firstLevel,useVerticalBar=False):
     level = self.level() - firstLevel
     plusMinus = g.choose(p.hasChildren(), "+", "-")
 
-    return "%s%s %s" % ('\t'*level,plusMinus,p.headString())
+    return "%s%s %s" % ('\t'*level,plusMinus,p.h)
 #@nonl
 #@-node:ekr.20090121163905.1079:moreHead
 #@+node:ekr.20090121163905.1080:moreBody
@@ -13476,7 +13509,7 @@ assert root, 'Node not found: @shadow-tests'
 
 trace = False ; vrbose = False
 for p in root.children_iter():
-    h = p.headString().strip()
+    h = p.h.strip()
     if h.startswith('@shadow-test-lax'):
         test = x.atShadowTestCase(c,p,x,lax=True)
     elif h.startswith('@shadow-test'):
@@ -14003,6 +14036,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 line 1 line 3
@@ -14047,6 +14081,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 node 2 line 2
@@ -14079,6 +14114,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 line 1 line 3
@@ -14096,6 +14132,7 @@ node 2 line 3
 #@nonl
 #@+node:ekr.20090121163905.1227:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -14122,6 +14159,7 @@ node 2 line 3
 #@nonl
 #@+node:ekr.20090121163905.1231:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -14173,6 +14211,7 @@ node 2 line 2
 #@nonl
 #@+node:ekr.20090121163905.1241:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim

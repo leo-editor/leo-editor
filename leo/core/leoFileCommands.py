@@ -693,7 +693,7 @@ class baseFileCommands:
 
         for p in p.self_and_subtree_iter():
             for z in parents:
-                # g.trace(p.headString(),id(p.v.t),id(z.v.t))
+                # g.trace(p.h,id(p.v.t),id(z.v.t))
                 if p.v.t == z.v.t:
                     g.es('Invalid paste: nodes may not descend from themselves',color="blue")
                     return False
@@ -1389,12 +1389,12 @@ class baseFileCommands:
                     p.moveToNext()
                     i -= 1
                 else:
-                    # g.trace('oops: bad archived position. no sibling:',aList,p.headString(),c)
+                    # g.trace('oops: bad archived position. no sibling:',aList,p.h,c)
                     return None
             level += 1
             if level < len(aList):
                 p.moveToFirstChild()
-                # g.trace('level',level,'index',aList[level],p.headString())
+                # g.trace('level',level,'index',aList[level],p.h)
         return p
     #@nonl
     #@-node:ekr.20061006104837.1:archivedPositionToPosition
@@ -1817,7 +1817,7 @@ class baseFileCommands:
                 if isThin or isShadow: # Never issue warning for @auto.
                     if g.app.unitTesting:
                         g.app.unitTestDict["warning"] = True
-                    g.es("deleting tnode list for",p.headString(),color="blue")
+                    g.es("deleting tnode list for",p.h,color="blue")
                 # This is safe: cloning can't change the type of this node!
                 delattr(v.t,"tnodeList")
             else:
@@ -1848,7 +1848,7 @@ class baseFileCommands:
                 #@            << issue informational messages >>
                 #@+node:ekr.20040702085529:<< issue informational messages >>
                 if isOrphan and isThin:
-                    g.es("writing erroneous:",p.headString(),color="blue")
+                    g.es("writing erroneous:",p.h,color="blue")
                     p.clearOrphan()
                 #@-node:ekr.20040702085529:<< issue informational messages >>
                 #@nl
@@ -2207,7 +2207,7 @@ class baseFileCommands:
                     ok = self.pickle(torv=torv,val=d.get(key),tag=None)
                     if not ok:
                         del d[key]
-                        g.es("ignoring bad unknownAttributes key",key,"in",p.headString(),color="blue")
+                        g.es("ignoring bad unknownAttributes key",key,"in",p.h,color="blue")
 
                 if d:
                     result.append((torv,d),)
@@ -2265,7 +2265,7 @@ class baseFileCommands:
                     gnx = t.fileIndex
                     sList.append("%s," % nodeIndices.toString(gnx))
                 s = ''.join(sList)
-                # g.trace(tag,[str(p.headString()) for p in theList])
+                # g.trace(tag,[str(p.h) for p in theList])
                 result.append('\n%s="%s"' % (tag,s))
 
         return ''.join(result)
@@ -2274,7 +2274,7 @@ class baseFileCommands:
     def putDescendentTnodeUas (self,p):
 
         trace = False
-        if trace: g.trace(p.headString())
+        if trace: g.trace(p.h)
 
         # Create a list of all tnodes having a valid unknownAttributes dict.
         tnodes = [] ; aList = []
@@ -2282,7 +2282,7 @@ class baseFileCommands:
             t = p2.v.t
             if hasattr(t,"unknownAttributes"):
                 if t not in tnodes :
-                    # g.trace(p2.headString(),t)
+                    # g.trace(p2.h,t)
                     tnodes.append(t)
                     aList.append((p2.copy(),t),)
 
@@ -2313,7 +2313,7 @@ class baseFileCommands:
         suitable for reconstituting uA's for anonymous vnodes.'''
 
         trace = False
-        if trace: g.trace(p.headString())
+        if trace: g.trace(p.h)
 
         # Create aList of tuples (p,v) having a valid unknownAttributes dict.
         # Create dictionary: keys are vnodes, values are corresonding archived positions.
@@ -2335,7 +2335,7 @@ class baseFileCommands:
             key = '.'.join(aList2)
             d[key]=d2
 
-        if trace: g.trace(p.headString(),g.dictToString(d))
+        if trace: g.trace(p.h,g.dictToString(d))
 
         # Pickle and hexlify d
         return d and self.pickle(
@@ -2419,7 +2419,7 @@ class baseFileCommands:
         if p:
             import leo.core.leoConfig as leoConfig
             parser = leoConfig.settingsTreeParser(c)
-            kind,name,val = parser.parseHeadline(p.headString())
+            kind,name,val = parser.parseHeadline(p.h)
             if val and val.lower() in ('true','1'):
                 val = True
             else:

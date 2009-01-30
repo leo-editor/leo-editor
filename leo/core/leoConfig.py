@@ -170,11 +170,11 @@ class parserBaseClass:
 
         aList = [] ; c = self.c ; tag = '@button'
         for p in p.subtree_with_unique_tnodes_iter():
-            h = p.headString()
+            h = p.h
             if g.match_word(h,0,tag):
                 # We can not assume that p will be valid when it is used.
                 script = g.getScript(c,p,useSelectedText=False,forcePythonSentinels=True,useSentinels=True)
-                aList.append((p.headString(),script),)
+                aList.append((p.h,script),)
 
         # g.trace(g.listToString([h for h,script in aList]))
 
@@ -191,11 +191,11 @@ class parserBaseClass:
 
         aList = [] ; c = self.c ; tag = '@command'
         for p in p.subtree_iter():
-            h = p.headString()
+            h = p.h
             if g.match_word(h,0,tag):
                 # We can not assume that p will be valid when it is used.
                 script = g.getScript(c,p,useSelectedText=False,forcePythonSentinels=True,useSentinels=True)
-                aList.append((p.headString(),script),)
+                aList.append((p.h,script),)
 
         # g.trace(g.listToString(aList))
 
@@ -260,7 +260,7 @@ class parserBaseClass:
 
         trace = False
 
-        if trace: g.trace(p and p.headString(),kind,name,self.c.mFileName)
+        if trace: g.trace(p and p.h,kind,name,self.c.mFileName)
 
         d = self.parseFont(p)
 
@@ -389,16 +389,16 @@ class parserBaseClass:
 
         c = self.c ; aList = [] ; tag = '@menu' ; trace = False and g.isPython3
         p = p.copy() ; after = p.nodeAfterTree()
-        if trace: g.trace('******',p.headString(),'after',after and after.headString())
+        if trace: g.trace('******',p.h,'after',after and after.h)
         while p and p != after:
             self.debug_count += 1
-            h = p.headString()
+            h = p.h
             # if trace:
-                # if p.headString()==after.headString():
+                # if p.h==after.h:
                     # val = p != after
                     # g.trace('*' * 10, 'terminating via headString',p,after)
                     # return
-                # g.trace('***',self.debug_count,p.headString())
+                # g.trace('***',self.debug_count,p.h)
                 # if self.debug_count >= 1000:
                     # g.trace('*'*10,'terminating!') ; return
             if g.match_word(h,0,tag):
@@ -431,16 +431,16 @@ class parserBaseClass:
     def doItems (self,p,aList):
 
         trace = False and g.isPython3
-        if trace: g.trace(p.headString())
+        if trace: g.trace(p.h)
         p = p.copy()
         after = p.nodeAfterTree()
         p.moveToThreadNext()
-        if trace: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
+        if trace: g.trace(self.debug_count,p.h,'after',after and after.h)
         while p and p != after:
             self.debug_count += 1
-            h = p.headString()
+            h = p.h
             # if trace:
-                # if p.headString()==after.headString():
+                # if p.h==after.h:
                     # val = p != after
                     # g.trace('*' * 10, 'terminating via headString',p,after)
                     # return
@@ -466,7 +466,7 @@ class parserBaseClass:
                             p.moveToThreadNext()
                             break
             else:
-                # g.trace('***skipping***',p.headString())
+                # g.trace('***skipping***',p.h)
                 p.moveToThreadNext()
     #@-node:ekr.20070926141716:doItems
     #@+node:ekr.20070926142312:dumpMenuList
@@ -649,7 +649,7 @@ class parserBaseClass:
         p = p.copy() ; after = p.nodeAfterTree()
         p.moveToThreadNext()
         while p and p != after:
-            h = p.headString()
+            h = p.h
             for tag in ('@menu','@item'):
                 if g.match_word(h,0,tag):
                     itemName = h[len(tag):].strip()
@@ -670,7 +670,7 @@ class parserBaseClass:
                             p.moveToThreadNext()
                             break
             else:
-                # g.trace('***skipping***',p.headString())
+                # g.trace('***skipping***',p.h)
                 p.moveToThreadNext()
     #@nonl
     #@-node:bobjack.20080324141020.5:doPopupItems
@@ -1045,10 +1045,10 @@ class parserBaseClass:
         while p and p != after:
             result = self.visitNode(p)
             # if g.isPython3:
-                # g.trace(result,p.headString())
-                # if p.headString() == 'Menus': g.pdb()
+                # g.trace(result,p.h)
+                # if p.h == 'Menus': g.pdb()
             if result == "skip":
-                # g.es_print('skipping settings in',p.headString(),color='blue')
+                # g.es_print('skipping settings in',p.h,color='blue')
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -1378,7 +1378,7 @@ class configClass:
 
         for p in root.subtree_iter():
             #BJ munge will return None if a headstring is empty
-            h = munge(p.headString()) or ''
+            h = munge(p.h) or ''
             if h.startswith(setting):
                 return p.copy()
 
@@ -1718,7 +1718,7 @@ class configClass:
         # g.trace(c,c.rootPosition())
 
         for p in c.all_positions_with_unique_tnodes_iter():
-            if p.headString().rstrip() == "@settings":
+            if p.h.rstrip() == "@settings":
                 return p.copy()
         else:
             return c.nullPosition()
@@ -2215,11 +2215,11 @@ class settingsTreeParser (parserBaseClass):
 
         """Init any settings found in node p."""
 
-        # g.trace(p.headString())
+        # g.trace(p.h)
 
         munge = g.app.config.munge
 
-        kind,name,val = self.parseHeadline(p.headString())
+        kind,name,val = self.parseHeadline(p.h)
         kind = munge(kind)
 
         if g.isPython3:

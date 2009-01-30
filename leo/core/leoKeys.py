@@ -1188,7 +1188,7 @@ class autoCompleterClass:
                     count += 1 ;
                     if (count % 200) == 0: g.es('','.',newline=False)
                 language = g.scanForAtLanguage(c,p)
-                # g.trace('language',language,p.headString())
+                # g.trace('language',language,p.h)
                 s = p.bodyString()
                 if k.enable_autocompleter:
                     self.scanForAutoCompleter(s)
@@ -1432,7 +1432,7 @@ class autoCompleterClass:
                         g.es_print('syntax error in class node: can not continue')
                         s = None ; break
                     else:
-                        # g.es_print('syntax error: deleting',p.headString())
+                        # g.es_print('syntax error: deleting',p.h)
                         self.excludedTnodesList.append(p.v.t)
                         s = g.getScript(c,root,useSelectedText=False)
             return s or ''
@@ -1461,7 +1461,7 @@ class autoCompleterClass:
 
             if p.v.t in self.excludedTnodesList:
                 pass
-                # g.trace('ignoring',p.headString())
+                # g.trace('ignoring',p.h)
             else:
                 self.old_putBody(p,oneNodeOnly,fromString)
         #@-node:ekr.20061031131434.65:newPutBody
@@ -1508,7 +1508,7 @@ class autoCompleterClass:
             for p in root.self_and_parents_iter():
                 obj = autoCompleter.selfTnodesDict.get(p.v.t)
                 if obj:
-                    # g.trace('found',obj,'in',p.headString())
+                    # g.trace('found',obj,'in',p.h)
                     return None,obj,p
 
             # Next, do a much slower scan.
@@ -1516,7 +1516,7 @@ class autoCompleterClass:
             for p in root.self_and_parents_iter():
                 className = self.findClass(p)
                 if className:
-                    # g.trace('found',className,'in',p.headString())
+                    # g.trace('found',className,'in',p.h)
                     return className,None,p
 
             return None,None,None
@@ -1526,7 +1526,7 @@ class autoCompleterClass:
 
             lines = g.splitLines(p.bodyString())
             inDoc = self.start_in_doc
-            # g.trace(p.headString())
+            # g.trace(p.h)
             for s in lines:
                 if inDoc:
                     if self.endsDoc(s):

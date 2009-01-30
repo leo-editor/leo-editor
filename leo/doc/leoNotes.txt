@@ -148,7 +148,7 @@ The rest is from Leo's Chapter 18::
 
     ; Step 3: execute a script in ut.leo.
     (setq c (leo-open fileName))
-    (setq script "print 'c',c.shortFileName() ,'current:',c.currentPosition().headString()")
+    (setq script "print 'c',c.shortFileName() ,'current:',c.currentPosition().h")
     (leo-run-script c script)
 #@nonl
 #@-node:ekr.20071102191642.1:xemacs/pymacs install notes
@@ -1965,7 +1965,7 @@ print '-' * 20
 d = []
 
 for p in c.allNodes_iter():
-    s = p.headString()
+    s = p.h
     if s.startswith('@thin'):
         d.append(s[5:].strip())
 

@@ -305,8 +305,8 @@ def goToLineNumber (self,n,p=None,scriptData=None):
 g.trace(
     '\n  found',found,'n2',n2,'gnx',gnx,'delim',repr(delim),
     '\n  vnodeName',vnodeName,
-    '\n  p        ',p and p.headString(),
-    '\n  root     ',root and root.headString())
+    '\n  p        ',p and p.h,
+    '\n  root     ',root and root.h)
 #@-node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
 #@+node:ekr.20080708094444.65:goto_applyLineNumberMapping
 def goto_applyLineNumberMapping(self, n):
@@ -337,7 +337,7 @@ def goto_countLines (self,root,n):
             s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
         n_lines = s.count('\n')
         if len(s) > 0 and s[-1] != '\n': n_lines += 1
-        # g.trace(n,prev,n_lines,p.headString())
+        # g.trace(n,prev,n_lines,p.h)
         if prev + n_lines >= n:
             found = True ; break
         prev += n_lines
@@ -394,7 +394,7 @@ def goto_scanTnodeList (self,root,delim,lines,n,vnodeName):
         tnodeIndex = max(0,tnodeIndex)
         << set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = False >>
     else:
-        g.es_print("no child index for",root.headString(),color="red")
+        g.es_print("no child index for",root.h,color="red")
 
     if not ok:
         # Fall back to the old logic.
@@ -435,9 +435,9 @@ if tnodeIndex < len(tnodeList):
     if not found:
         s = "tnode not found for " + vnodeName
         g.es_print(s, color="red") ; ok = False
-    elif p.headString().strip() != vnodeName:
+    elif p.h.strip() != vnodeName:
         if 0: # Apparently this error doesn't prevent a later scan for working properly.
-            s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.headString(),vnodeName)
+            s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.h,vnodeName)
             g.es_print(s, color="red")
         ok = False
 else:
@@ -470,14 +470,14 @@ def goto_findVnode (self,root,lines,n,ignoreSentinels):
     gnx = None
     << set delim, leoLine from the @+leo line >>
     if not delim:
-        g.es('no sentinels in:',root.headString())
+        g.es('no sentinels in:',root.h)
         return None,None,None,None
 
     << scan back to @+node, setting offset,nodeSentinelLine >>
     if nodeSentinelLine == -1:
         # The line precedes the first @+node sentinel
         g.trace('no @+node!!')
-        return root.headString(),gnx,1,delim
+        return root.h,gnx,1,delim
 
     s = lines[nodeSentinelLine]
 
@@ -728,7 +728,7 @@ def goto_showResults(self,found,p,n,n2,lines):
         if len(lines) < n and not g.unitTesting:
             g.es('only',len(lines),'lines',color="blue")
 
-    # g.trace(p.headString(),g.callers())
+    # g.trace(p.h,g.callers())
 
     w.setInsertPoint(ins)
     c.bodyWantsFocusNow()
@@ -1287,7 +1287,7 @@ def print_tags(tag, old_i, old_j, new_i, new_j, message):
 
     sep1 = '=' * 10 ; sep2 = '-' * 20
 
-    g.pr('\n',sep1,message,sep1,p and p.headString())
+    g.pr('\n',sep1,message,sep1,p and p.h)
 
     g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
 
@@ -1917,7 +1917,7 @@ def createOpenWithTempFile (self,p,ext):
 for d in g.app.openWithFiles[:]:
     p2 = d.get("p")
     if p.v.t == p2.v.t:
-        # g.pr("removing previous entry in g.app.openWithFiles for",p.headString())
+        # g.pr("removing previous entry in g.app.openWithFiles for",p.h)
         g.app.openWithFiles.remove(d)
 #@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
 #@-node:ekr.20031218072017.2830:createOpenWithTempFile
@@ -1928,7 +1928,7 @@ def openWithTempFilePath (self,p,ext):
 
     name = "LeoTemp_%s_%s%s" % (
         str(id(p.v.t)),
-        g.sanitize_filename(p.headString()),
+        g.sanitize_filename(p.h),
         ext)
 
     name = g.toUnicode(name,g.app.tkEncoding)

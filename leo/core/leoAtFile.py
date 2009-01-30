@@ -467,7 +467,7 @@ class atFile:
         else:
             return False
         if not g.unitTesting:
-            g.es("reading:",root.headString())
+            g.es("reading:",root.h)
         root.clearVisitedInTree()
         at.scanAllDirectives(root,importing=at.importing,reading=True)
         at.readOpenFile(root,at.inputFile,fileName)
@@ -480,7 +480,7 @@ class atFile:
             for p in root.self_and_subtree_iter():
 
                 if not p.v.t.isVisited():
-                    g.es('resurrected node:',p.headString(),color='blue')
+                    g.es('resurrected node:',p.h,color='blue')
                     g.es('in file:',fileName,color='blue')
                     resurrected += 1
 
@@ -520,8 +520,8 @@ class atFile:
         if partialFlag: after = p.nodeAfterTree()
         else: after = c.nullPosition()
         while p and p != after:
-            # g.trace(p.headString())
-            if not p.headString().startswith('@'):
+            # g.trace(p.h)
+            if not p.h.startswith('@'):
                 p.moveToThreadNext()
             elif p.isAtIgnoreNode():
                 p.moveToNodeAfterTree()
@@ -568,7 +568,7 @@ class atFile:
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
         if not g.unitTesting:
-            g.es("reading:",p.headString())
+            g.es("reading:",p.h)
 
         # Delete all children.
         while p.hasChildren():
@@ -609,7 +609,7 @@ class atFile:
             else:
                 at.error('can not read 3.x derived file',fileName)
                 g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
-                g.trace('root',root and root.headString(),fileName)
+                g.trace('root',root and root.h,fileName)
 
         if root:
             root.v.t.setVisited() # Disable warning about set nodes.
@@ -682,7 +682,7 @@ class atFile:
             # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
             at.read(p,thinFile=True,atShadow=True)
         else:
-            if not g.unitTesting: g.es("reading:",p.headString())
+            if not g.unitTesting: g.es("reading:",p.h)
             ok = at.importAtShadowNode(fn,p)
             if ok:
                 # Create the private file automatically.
@@ -1218,7 +1218,7 @@ class atFile:
                         if not at.updateWarningGiven:
                             at.updateWarningGiven = True
                             # g.pr("***",at.t,at.root.t)
-                            g.es("warning: updating changed text in",at.root.headString(),color="blue")
+                            g.es("warning: updating changed text in",at.root.h,color="blue")
                     # Just set the dirty bit. Ancestors will be marked dirty later.
                     at.t.setDirty()
                     if 1: # We must avoid the full setChanged logic here!
@@ -1709,7 +1709,7 @@ class atFile:
             old_body = p.bodyString()
             if s != old_body:
                 if 0: # For debugging.
-                    g.pr("\nchanged: " + p.headString())
+                    g.pr("\nchanged: " + p.h)
                     g.pr("\nnew:",s)
                     g.pr("\nold:",p.bodyString())
                 if thinFile:
@@ -1725,7 +1725,7 @@ class atFile:
                         c.mod_label_controller.add_label(p,"before change:",old_body)
                     except Exception:
                         pass
-                    g.es("changed:",p.headString(),color="blue")
+                    g.es("changed:",p.h,color="blue")
                     p.setMarked()
     #@-node:ekr.20050301105854:copyAllTempBodyStringsToTnodes
     #@+node:ekr.20041005105605.119:createImportedNode
@@ -2184,7 +2184,7 @@ class atFile:
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
 
-        # g.trace(root.headString())
+        # g.trace(root.h)
 
         if hasattr(root.v.t,'tnodeList'):# 2008/10/3
             has_list,old_list = True,root.v.t.tnodeList[:]
@@ -2283,7 +2283,7 @@ class atFile:
         elif self.isSignificantTree(p):
             return True # Assume the tree contains what should be written.
         else:
-            g.es_print(p.headString(),'not written:',color='red')
+            g.es_print(p.h,'not written:',color='red')
             g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
             return False
     #@-node:ekr.20080620095343.1:shouldWriteAtNosentNode
@@ -2498,7 +2498,7 @@ class atFile:
         elif not p.isDirty(): # There is nothing new to write.
             return False
         elif not self.isSignificantTree(p): # There is noting of value to write.
-            g.es_print(p.headString(),'not written:',color='red')
+            g.es_print(p.h,'not written:',color='red')
             g.es_print('no children and less than 10 characters (excluding directives)',color='red')
             return False
         else: # The @auto tree is dirty and contains significant info.
@@ -2562,7 +2562,7 @@ class atFile:
 
         fn = p.atShadowFileNodeName()
         if not fn:
-            g.es_print('can not happen: not an @shadow node',p.headString(),color='red')
+            g.es_print('can not happen: not an @shadow node',p.h,color='red')
             return False
 
         # A hack to support unknown extensions.
@@ -2668,7 +2668,7 @@ class atFile:
         elif not p.isDirty(): # There is nothing new to write.
             return False
         elif not self.isSignificantTree(p): # There is noting of value to write.
-            g.es_print(p.headString(),'not written:',color='red')
+            g.es_print(p.h,'not written:',color='red')
             g.es_print('no children and less than 10 characters (excluding directives)',color='red')
             return False
         else: # The @shadow tree is dirty and contains significant info.
@@ -2811,7 +2811,7 @@ class atFile:
             for p in root.self_and_subtree_iter():
                 #@            << Write p's headline if it starts with @@ >>
                 #@+node:ekr.20041005105605.155:<< Write p's headline if it starts with @@ >>
-                s = p.headString()
+                s = p.h
 
                 if g.match(s,0,"@@"):
                     s = s[2:]
@@ -3091,7 +3091,7 @@ class atFile:
             return False
 
         # Return False if this is a definition node.
-        h = p.headString() ; i = g.skip_ws(h,0)
+        h = p.h ; i = g.skip_ws(h,0)
         isSection,junk = self.isSectionName(h,i)
         if isSection:
             # g.trace("is section",p)
@@ -3226,7 +3226,7 @@ class atFile:
             if not g.unitTesting:
                 at.writeError(
                     "undefined section: %s\n\treferenced from: %s" %
-                        ( name,p.headString()))
+                        ( name,p.h))
             return None
 
         # Expand the ref.
@@ -3485,7 +3485,7 @@ class atFile:
 
         """Return the text of a @+node or @-node sentinel for p."""
 
-        at = self ; h = p.headString()
+        at = self ; h = p.h
         #@    << remove comment delims from h if necessary >>
         #@+node:ekr.20041005105605.189:<< remove comment delims from h if necessary >>
         #@+at 
@@ -3584,7 +3584,7 @@ class atFile:
         at = self
 
         if not inAtAll and p.isAtFileNode() and p != at.root:
-            at.writeError("@file not valid in: " + p.headString())
+            at.writeError("@file not valid in: " + p.h)
             return
 
         # g.trace(at.thinFile,p)
@@ -4233,11 +4233,11 @@ class atFile:
 
         for p in root.self_and_subtree_iter():
             if not p.v.t.isVisited(): # Check tnode bit, not vnode bit.
-                at.writeError("Orphan node:  " + p.headString())
+                at.writeError("Orphan node:  " + p.h)
                 if p.hasParent():
-                    g.es("parent node:",p.parent().headString(),color="blue")
+                    g.es("parent node:",p.parent().h,color="blue")
                 if not at.thinFile and p.isAtIgnoreNode():
-                    at.writeError("@ignore node: " + p.headString())
+                    at.writeError("@ignore node: " + p.h)
 
         if at.thinFile:
             p = root.copy() ; after = p.nodeAfterTree()
@@ -4246,7 +4246,7 @@ class atFile:
                     p.moveToNodeAfterTree()
                 else:
                     if p.isAtIgnoreNode():
-                        at.writeError("@ignore node: " + p.headString())
+                        at.writeError("@ignore node: " + p.h)
                     p.moveToThreadNext()
     #@-node:ekr.20041005105605.216:warnAboutOrpanAndIgnoredNodes
     #@+node:ekr.20041005105605.217:writeError
@@ -4304,7 +4304,7 @@ class atFile:
     #@+node:ekr.20051219122720:atFile.forceGnxOnPosition
     def forceGnxOnPosition (self,p):
 
-        # g.trace(p.headString())
+        # g.trace(p.h)
 
         self._forcedGnxPositionList.append(p.v)
     #@-node:ekr.20051219122720:atFile.forceGnxOnPosition

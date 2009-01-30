@@ -14,7 +14,7 @@ REM goto good_plugins
 REM goto bad_plugins
 
 goto errors
-REM goto all
+goto all
 
 :errors
 

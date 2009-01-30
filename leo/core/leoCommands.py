@@ -808,7 +808,7 @@ class baseCommands:
             for d in g.app.openWithFiles[:]:
                 p2 = d.get("p")
                 if p.v.t == p2.v.t:
-                    # g.pr("removing previous entry in g.app.openWithFiles for",p.headString())
+                    # g.pr("removing previous entry in g.app.openWithFiles for",p.h)
                     g.app.openWithFiles.remove(d)
             #@-node:ekr.20031218072017.2831:<< remove previous entry from app.openWithFiles if it exists >>
             #@nl
@@ -829,7 +829,7 @@ class baseCommands:
 
         name = "LeoTemp_%s_%s%s" % (
             str(id(p.v.t)),
-            g.sanitize_filename(p.headString()),
+            g.sanitize_filename(p.h),
             ext)
 
         name = g.toUnicode(name,g.app.tkEncoding)
@@ -1285,7 +1285,7 @@ class baseCommands:
         # Otherwise, prompt for a file name.
 
         c = self ; p = c.currentPosition()
-        h = p.headString().rstrip()
+        h = p.h.rstrip()
         s = p.bodyString()
         tag = '@read-file-into-node'
 
@@ -1785,8 +1785,8 @@ class baseCommands:
             g.trace(
                 '\n  found',found,'n2',n2,'gnx',gnx,'delim',repr(delim),
                 '\n  vnodeName',vnodeName,
-                '\n  p        ',p and p.headString(),
-                '\n  root     ',root and root.headString())
+                '\n  p        ',p and p.h,
+                '\n  root     ',root and root.h)
             #@-node:ekr.20080905130513.40:<< trace gotoLineNumber results >>
             #@nl
         c.goto_showResults(found,p or root,n,n2,lines)
@@ -1819,7 +1819,7 @@ class baseCommands:
                 s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
             n_lines = s.count('\n')
             if len(s) > 0 and s[-1] != '\n': n_lines += 1
-            # g.trace(n,prev,n_lines,p.headString())
+            # g.trace(n,prev,n_lines,p.h)
             if prev + n_lines >= n:
                 found = True ; break
             prev += n_lines
@@ -1922,9 +1922,9 @@ class baseCommands:
                 if not found:
                     s = "tnode not found for " + vnodeName
                     g.es_print(s, color="red") ; ok = False
-                elif p.headString().strip() != vnodeName:
+                elif p.h.strip() != vnodeName:
                     if 0: # Apparently this error doesn't prevent a later scan for working properly.
-                        s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.headString(),vnodeName)
+                        s = "Mismatched vnodeName\nExpecting: %s\n got: %s" % (p.h,vnodeName)
                         g.es_print(s, color="red")
                     ok = False
             else:
@@ -1935,7 +1935,7 @@ class baseCommands:
             #@-node:ekr.20080904071003.9:<< set p to the first vnode whose tnode is tnodeList[tnodeIndex] or set ok = false >>
             #@nl
         else:
-            g.es_print("no child index for",root.headString(),color="red")
+            g.es_print("no child index for",root.h,color="red")
 
         if not ok:
             # Fall back to the old logic.
@@ -1985,7 +1985,7 @@ class baseCommands:
         #@-node:ekr.20031218072017.2878:<< set delim, leoLine from the @+leo line >>
         #@nl
         if not delim:
-            g.es('no sentinels in:',root.headString())
+            g.es('no sentinels in:',root.h)
             return None,None,None,None
 
         #@    << scan back to @+node, setting offset,nodeSentinelLine >>
@@ -2048,7 +2048,7 @@ class baseCommands:
         if nodeSentinelLine == -1:
             # The line precedes the first @+node sentinel
             g.trace('no @+node!!')
-            return root.headString(),gnx,1,delim
+            return root.h,gnx,1,delim
 
         s = lines[nodeSentinelLine]
 
@@ -2234,7 +2234,7 @@ class baseCommands:
             if len(lines) < n and not g.unitTesting:
                 g.es('only',len(lines),'lines',color="blue")
 
-        # g.trace(p.headString(),g.callers())
+        # g.trace(p.h,g.callers())
 
         w.setInsertPoint(ins)
         c.bodyWantsFocusNow()
@@ -2359,7 +2359,7 @@ class baseCommands:
         count = 0 ; dirtyVnodeList = []
         u.beforeChangeGroup(current,undoType)
         for p in current.self_and_subtree_iter():
-            # g.trace(p.headString(),tabWidth)
+            # g.trace(p.h,tabWidth)
             innerUndoData = u.beforeChangeNodeContents(p)
             if p == current:
                 changed,dirtyVnodeList2 = c.convertBlanks(event)
@@ -3165,7 +3165,7 @@ class baseCommands:
             return
 
         c.endEditing()
-        s = p.headString().strip()
+        s = p.h.strip()
 
         if (s[0:2] == "<<"
             or s[-2:] == ">>"): # Must be on separate line.
@@ -3403,7 +3403,7 @@ class baseCommands:
             c.frame.clearStatusLine()
             if c.hoistStack:
                 bunch = c.hoistStack[-1]
-                c.frame.putStatusLine("Hoist: " + bunch.p.headString())
+                c.frame.putStatusLine("Hoist: " + bunch.p.h)
             else:
                 c.frame.putStatusLine("No hoist")
             c.undoer.afterDehoist(p,'DeHoist')
@@ -3422,7 +3422,7 @@ class baseCommands:
             c.redraw(p)
 
             c.frame.clearStatusLine()
-            c.frame.putStatusLine("Hoist: " + p.headString())
+            c.frame.putStatusLine("Hoist: " + p.h)
             c.undoer.afterHoist(p,'Hoist')
             g.doHook('hoist-changed',c=c)
     #@-node:ekr.20031218072017.2028:Hoist & dehoist
@@ -3462,7 +3462,7 @@ class baseCommands:
 
         message = "Can not drag a node into its descendant tree."
 
-        # g.trace('root',root.headString(),'target',target.headString())
+        # g.trace('root',root.h,'target',target.h)
 
         for z in root.subtree_iter():
             if z == target:
@@ -3492,7 +3492,7 @@ class baseCommands:
 
         if cc: # Special cases for @chapter and @chapters nodes.
             chapter = '@chapter ' ; chapters = '@chapters ' 
-            h = p.headString()
+            h = p.h
             if h.startswith(chapters):
                 if p.hasChildren():
                     return cc.error('Can not delete @chapters node with children.')
@@ -3616,7 +3616,7 @@ class baseCommands:
         newChildren = parent_v.t.children[:]
 
         def key (self):
-            return (self.headString().lower(), self)
+            return (self.h.lower(), self)
 
         if cmp: newChildren.sort(cmp,key=key)
         else:   newChildren.sort(key=key)
@@ -3902,7 +3902,7 @@ class baseCommands:
 
         c = self
 
-        h = p.headString()
+        h = p.h
         # We must call getScript so that we can ignore directives and section references.
         body = g.getScript(c,p.copy())
         if not body: return
@@ -4167,7 +4167,7 @@ class baseCommands:
         def prettyPrintNode(self,p,dump):
 
             c = self.c
-            h = p.headString()
+            h = p.h
             s = p.bodyString()
             if not s: return
 
@@ -4505,7 +4505,7 @@ class baseCommands:
         c = self ; p = c.currentPosition()
 
         if p.hasChildren() and p.isExpanded():
-            # g.trace('contract',p.headString())
+            # g.trace('contract',p.h)
             c.contractNode()
         elif p.hasParent() and p.parent().isVisible(c):
             redraw = False
@@ -4514,7 +4514,7 @@ class baseCommands:
                     if child.isExpanded():
                         child.contract()
                         redraw = True
-            # g.trace('goto parent',p.headString())
+            # g.trace('goto parent',p.h)
             c.goToParent()
             if redraw: c.redraw()
 
@@ -4918,7 +4918,7 @@ class baseCommands:
     #@+node:ekr.20070420092425:cantMoveMessage
     def cantMoveMessage (self):
 
-        c = self ; h = c.rootPosition().headString()
+        c = self ; h = c.rootPosition().h
         kind = g.choose(h.startswith('@chapter'),'chapter','hoist')
         g.es("can't move node out of",kind,color="blue")
     #@-node:ekr.20070420092425:cantMoveMessage
@@ -5334,7 +5334,7 @@ class baseCommands:
         c = self ; cc = c.chapterController ; p = c.currentPosition()
         if not p: return
         if not p.isCloned():
-            g.es('not a clone:',p.headString(),color='blue')
+            g.es('not a clone:',p.h,color='blue')
             return
 
         t = p.v.t
@@ -5509,7 +5509,7 @@ class baseCommands:
         if not p: return
         if not c.canSelectVisNext(): return
 
-        # g.trace(p.headString())
+        # g.trace(p.h)
 
         p.moveToVisNext(c)
         c.redraw_after_select(p)
@@ -5532,7 +5532,7 @@ class baseCommands:
 
         c = self ; current = c.currentPosition()
 
-        # g.trace(p and p.headString(),g.callers(4))
+        # g.trace(p and p.h,g.callers(4))
 
         if not p: p = current
 
@@ -5959,7 +5959,7 @@ class baseCommands:
         current = c.currentPosition()
         inAtIgnoreRange = p.inAtIgnoreRange()
 
-        # g.trace("p,parent,n:",p.headString(),parent.headString(),n)
+        # g.trace("p,parent,n:",p.h,parent.h,n)
         clone = p.clone() # Creates clone & dependents, does not set undo.
         if (
             not c.checkDrag(p,parent) or
@@ -6123,10 +6123,10 @@ class baseCommands:
         # inChapter = cc and cc.inChapter()
 
         for p in p.parents_iter():
-            if cc and p.headString().startswith('@chapter'):
+            if cc and p.h.startswith('@chapter'):
                 break
             if not p.isExpanded():
-                # g.trace(p.headString())
+                # g.trace(p.h)
                 p.expand()
                 redraw_flag = True
 
@@ -6338,7 +6338,7 @@ class baseCommands:
         if p is None:
             p = c.currentPosition()
 
-        # g.trace(p and p.headString(),g.callers(4))
+        # g.trace(p and p.h,g.callers(4))
 
         c.frame.body.colorizer.colorize(p,
             incremental=incremental,interruptable=interruptable)
@@ -6818,12 +6818,12 @@ class baseCommands:
 
         while p and p.hasParent():
             p.moveToParent()
-            # g.trace(p.headString(),g.callers())
+            # g.trace(p.h,g.callers())
 
         while p and p.hasBack():
             p.moveToBack()
 
-        # g.trace(p and p.headString())
+        # g.trace(p and p.h)
 
         return p
     #@nonl
@@ -6973,7 +6973,7 @@ class baseCommands:
         if c.hoistStack:
             bunch = c.hoistStack[-1]
             p = bunch.p
-            limitIsVisible = not cc or not p.headString().startswith('@chapter')
+            limitIsVisible = not cc or not p.h.startswith('@chapter')
             return p,limitIsVisible
         else:
             return None,None
@@ -7109,7 +7109,7 @@ class baseCommands:
 
         c = self ; cc = c.chapterController
 
-        # g.trace(p.headString(),g.callers())
+        # g.trace(p.h,g.callers())
 
         if p:
             # Important: p.equal requires c._currentPosition to be non-None.
@@ -7175,7 +7175,7 @@ class baseCommands:
 
         c = self
 
-        # g.trace(p and p.headString(),g.callers())
+        # g.trace(p and p.h,g.callers())
 
         if p:
             # Important: p.equal requires c._rootPosition to be non-None.
@@ -7311,7 +7311,7 @@ class baseCommands:
         if cc:
             cc.selectChapterForPosition(p)
 
-        # g.trace(p.headString(),g.callers())
+        # g.trace(p.h,g.callers())
 
         c.expandAllAncestors(p)
         c.frame.tree.select(p)
@@ -7364,7 +7364,7 @@ class baseCommands:
             c.selectPosition(p)
             c.navTime = time.clock()
             c.navPrefix = newPrefix
-            # g.trace('extend',extend,'extend2',extend2,'navPrefix',c.navPrefix,'p',p.headString())
+            # g.trace('extend',extend,'extend2',extend2,'navPrefix',c.navPrefix,'p',p.h)
         else:
             c.navTime = None
             c.navPrefix = ''
@@ -7391,7 +7391,7 @@ class baseCommands:
     #@+node:ekr.20061002095711:c.navHelper
     def navHelper (self,p,ch,extend):
 
-        c = self ; h = p.headString().lower()
+        c = self ; h = p.h.lower()
 
         if extend:
             prefix = c.navPrefix + ch
@@ -7733,8 +7733,8 @@ class nodeHistory:
             self.beadPointer = max(0,self.beadPointer-1)
 
         if self.trace:
-            g.trace('bead list',p.headString())
-            g.pr([z[0].headString() for z in self.beadList])
+            g.trace('bead list',p.h)
+            g.pr([z[0].h for z in self.beadList])
     #@-node:ekr.20070615132939.1:remove
     #@+node:ekr.20070615140032:selectChapter
     def selectChapter (self,chapter):
@@ -7764,8 +7764,8 @@ class nodeHistory:
             self.beadPointer = len(self.beadList)-1
 
         if self.trace:
-            g.trace('bead list',p.headString())
-            g.pr([z[0].headString() for z in self.beadList])
+            g.trace('bead list',p.h)
+            g.pr([z[0].h for z in self.beadList])
 
     #@-node:ekr.20070615131604.2:update
     #@+node:ekr.20070615140655:visitedPositions
