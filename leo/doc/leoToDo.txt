@@ -577,7 +577,7 @@ def goto_setup (self,n,p=None,scriptData=None):
         root,fileName = c.goto_findRoot(p)
     else:
         # p is for unit testing only!
-        if not p: p = c.currentPosition()
+        if not p: p = c.p
         root,fileName = c.goto_findRoot(p)
         if root and fileName:
             c.shadowController.line_mapping = [] # Set by goto_open.
@@ -594,7 +594,7 @@ def goto_setup (self,n,p=None,scriptData=None):
     if scriptData:
         if not root: root = p.copy()
     else:
-        if not root: root = c.currentPosition()
+        if not root: root = c.p
 
     return fileName,ignoreSentinels,isRaw,lines,n,root
 #@+node:ekr.20080904071003.25:goto_findRoot
@@ -1626,7 +1626,7 @@ def new (self,event=None,gui=None):
     c.setRootVnode(v) # New in Leo 4.4.2.
     c.selectPosition(p)
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.currentPosition()
+    p = c.p
     if not g.doHook("menu1",c=c,p=p,v=p):
         frame.menu.createMenuBar(frame)
         c.updateRecentFiles(fileName=None)
@@ -1705,7 +1705,7 @@ def openWith(self,event=None,data=None):
     openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
     """
 
-    c = self ; p = c.currentPosition()
+    c = self ; p = c.p
     n = data and len(data) or 0
     if n != 3:
         g.trace('bad data, length must be 3, got %d' % n)
@@ -2314,7 +2314,7 @@ def extendHelper (self,w,extend,spot,upOrDown=False):
     extend: Clear the selection unless this is True.
     spot:   The *new* insert point.
     '''
-    c = self.c ; p = c.currentPosition()
+    c = self.c ; p = c.p
     extend = extend or self.extendMode
     ins = w.getInsertPoint()
     i,j = w.getSelectionRange()
@@ -2590,7 +2590,7 @@ def setMoveCol (self,w,spot):
 
     '''Set the column to which an up or down arrow will attempt to move.'''
 
-    c = self.c ; p = c.currentPosition()
+    c = self.c ; p = c.p
     s = w.getAllText()
     i = w.toPythonIndex(spot)
     junk,col = g.convertPythonIndexToRowCol(s,i)

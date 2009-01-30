@@ -810,7 +810,7 @@ class leoBody:
 
         '''Add another editor to the body pane.'''
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
 
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
@@ -982,7 +982,7 @@ class leoBody:
             return
 
         if w and w == self.c.frame.body.bodyCtrl:
-            if w.leo_p and w.leo_p != c.currentPosition():
+            if w.leo_p and w.leo_p != c.p:
                 c.selectPosition(w.leo_p)
                 c.bodyWantsFocusNow()
             return
@@ -1064,7 +1064,7 @@ class leoBody:
 
     def updateEditors (self):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         d = self.editorWidgets
         if len(d.keys()) < 2: return # There is only the main widget.
 
@@ -1118,7 +1118,7 @@ class leoBody:
                     return True
             else:
                  # This *can* happen when selecting a deleted node.
-                w.leo_p = c.currentPosition()
+                w.leo_p = c.p
                 return False
     #@-node:ekr.20070424084651:ensurePositionExists
     #@+node:ekr.20070424080640:inactivateActiveEditor
@@ -1201,7 +1201,7 @@ class leoBody:
         trace = False
         body = self ; c = self.c
         bodyCtrl = w = body.bodyCtrl
-        p = c.currentPosition()
+        p = c.p
         insert = w.getInsertPoint()
         ch = g.choose(insert==0,'',w.get(insert-1))
         ch = g.toUnicode(ch,g.app.tkEncoding)
@@ -1257,7 +1257,7 @@ class leoBody:
         c = self.c ; k = c.k ; w = event and event.widget
         wname = c.widget_name(w)
 
-        if not c.currentPosition(): return
+        if not c.p: return
 
         if wname.startswith('body'):
             # A hack to support middle-button pastes: remember the previous selection.
@@ -1858,7 +1858,7 @@ class leoFrame:
         '''End editing of a headline and revert to its previous value.'''
 
         frame = self ; c = frame.c ; tree = frame.tree
-        p = c.currentPosition()
+        p = c.p
 
         if g.app.batchMode:
             c.notValidInBatchMode("Abort Edit Headline")
@@ -1896,7 +1896,7 @@ class leoFrame:
 
         '''Insert a date/time stamp in the headline of the selected node.'''
 
-        frame = self ; c = frame.c ; p = c.currentPosition()
+        frame = self ; c = frame.c ; p = c.p
 
         if g.app.batchMode:
             c.notValidInBatchMode("Insert Headline Time")
@@ -2455,7 +2455,7 @@ class leoTree:
         '''End editing of a headline and update p.h.'''
 
         trace = False and g.unitTesting
-        c = self.c ; k = c.k ; p = c.currentPosition()
+        c = self.c ; k = c.k ; p = c.p
 
         if trace: g.trace('leoTree',p and p.h,g.callers(4))
 
@@ -2684,7 +2684,7 @@ class leoTree:
         if g.app.killed or self.tree_select_lockout: return None
 
         try:
-            c = self.c ; old_p = c.currentPosition()
+            c = self.c ; old_p = c.p
             val = 'break'
             self.tree_select_lockout = True
             c.frame.tree.beforeSelectHint(p,old_p)
@@ -2703,7 +2703,7 @@ class leoTree:
         body = w = frame.body.bodyCtrl
         if not w: return # Defensive.
 
-        old_p = c.currentPosition()
+        old_p = c.p
 
         if not p:
             # Do *not* test c.positionExists(p) here.
@@ -2773,7 +2773,7 @@ class leoTree:
             #@nl
             if p and p != old_p: # Suppress duplicate call.
                 try: # may fail during initialization.
-                    # p is NOT c.currentPosition() here!
+                    # p is NOT c.p here!
                     if 0: # Interferes with new colorizer.
                         self.canvas.update_idletasks()
                         self.scrollTo(p)

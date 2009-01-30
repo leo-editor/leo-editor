@@ -381,7 +381,7 @@ class atFile:
     #@+node:ekr.20070919133659:checkDerivedFile (atFile)
     def checkDerivedFile (self, event=None):
 
-        at = self ; c = at.c ; p = c.currentPosition() ; s = p.b
+        at = self ; c = at.c ; p = c.p ; s = p.b
 
         # Create a dummy vnode as the root.
         fileName='check-derived-file'
@@ -2303,7 +2303,7 @@ class atFile:
 
         if writeAtFileNodesFlag:
             # Write all nodes in the selected tree.
-            p = c.currentPosition()
+            p = c.p
             after = p.nodeAfterTree()
         else:
             # Write dirty nodes in the entire outline.
@@ -2404,7 +2404,7 @@ class atFile:
         """Write @auto nodes in the selected outline"""
 
         at = self ; c = at.c
-        p = c.currentPosition() ; after = p.nodeAfterTree()
+        p = c.p ; after = p.nodeAfterTree()
         found = False
 
         while p and p != after:
@@ -2527,7 +2527,7 @@ class atFile:
         """Write @shadow nodes in the selected outline"""
 
         at = self ; c = at.c
-        p = c.currentPosition() ; after = p.nodeAfterTree()
+        p = c.p ; after = p.nodeAfterTree()
         found = False
 
         while p and p != after:

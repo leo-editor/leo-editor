@@ -247,7 +247,7 @@ class baseCommands:
 
         Important: this is the last step in the startup process.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         c.miniBufferWidget = c.frame.miniBufferWidget
         # g.trace('Commands',c.fileName())
 
@@ -292,7 +292,7 @@ class baseCommands:
         g.doHook("command1") returns False.
         This provides a simple mechanism for overriding commands."""
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         commandName = command and command.__name__
         c.setLog()
 
@@ -341,7 +341,7 @@ class baseCommands:
 
         # Be careful: the command could destroy c.
         if c and c.exists:
-            p = c.currentPosition()
+            p = c.p
             g.doHook("command2",c=c,p=p,v=p,label=label)
 
         return "break" # Inhibit all other handlers.
@@ -503,6 +503,16 @@ class baseCommands:
     #fix bobjacks spelling error
     universallCallback = universalCallback
     #@-node:bobjack.20080509080123.2:c.universalCallback
+    #@+node:ekr.20090130135126.1:c.Properties
+    def __get_p(self):
+
+        c = self
+        return c.currentPosition()
+
+    p = property(
+        __get_p, # No setter.
+        doc = "commander current position property")
+    #@-node:ekr.20090130135126.1:c.Properties
     #@+node:ekr.20031218072017.2818:Command handlers...
     #@+node:ekr.20031218072017.2819:File Menu
     #@+node:ekr.20031218072017.2820:top level (file menu)
@@ -528,7 +538,7 @@ class baseCommands:
         c.setRootVnode(v) # New in Leo 4.4.2.
         c.selectPosition(p)
         # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-        p = c.currentPosition()
+        p = c.p
         if not g.doHook("menu1",c=c,p=p,v=p):
             frame.menu.createMenuBar(frame)
             c.updateRecentFiles(fileName=None)
@@ -614,7 +624,7 @@ class baseCommands:
         openWith("os.spawnv", ["c:/prog.exe","--parm1","frog","--switch2"], None)
         """
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         n = data and len(data) or 0
         if n != 3:
             g.trace('bad data, length must be 3, got %d' % n)
@@ -1219,7 +1229,7 @@ class baseCommands:
 
         '''Read all @auto nodes in the presently selected outline.'''
 
-        c = self ; u = c.undoer ; p = c.currentPosition()
+        c = self ; u = c.undoer ; p = c.p
 
         undoData = u.beforeChangeTree(p)
         c.importCommands.readAtAutoNodes()
@@ -1231,7 +1241,7 @@ class baseCommands:
 
         '''Read all @file nodes in the presently selected outline.'''
 
-        c = self ; u = c.undoer ; p = c.currentPosition()
+        c = self ; u = c.undoer ; p = c.p
 
         undoData = u.beforeChangeTree(p)
         c.fileCommands.readAtFileNodes()
@@ -1243,7 +1253,7 @@ class baseCommands:
 
         '''Read all @shadow nodes in the presently selected outline.'''
 
-        c = self ; u = c.undoer ; p = c.currentPosition()
+        c = self ; u = c.undoer ; p = c.p
 
         undoData = u.beforeChangeTree(p)
         c.atFileCommands.readAtShadowNodes(p)
@@ -1255,7 +1265,7 @@ class baseCommands:
 
         """Create a new outline from a 4.0 derived file."""
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         types = [
             ("All files","*"),
@@ -1284,7 +1294,7 @@ class baseCommands:
         # If node starts with @read-file-into-node, use the full path name in the headline.
         # Otherwise, prompt for a file name.
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         h = p.h.rstrip()
         s = p.b
         tag = '@read-file-into-node'
@@ -1667,7 +1677,7 @@ class baseCommands:
                 script += '\n' # Make sure we end the script properly.
                 # g.pr('*** script',script)
                 try:
-                    p = c.currentPosition()
+                    p = c.p
                     d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
                     if define_name: d['__name__'] = define_name
                     if args:
@@ -2103,7 +2113,7 @@ class baseCommands:
             root,fileName = c.goto_findRoot(p)
         else:
             # p is for unit testing only!
-            if not p: p = c.currentPosition()
+            if not p: p = c.p
             root,fileName = c.goto_findRoot(p)
             if root and fileName:
                 c.shadowController.line_mapping = [] # Set by goto_open.
@@ -2120,7 +2130,7 @@ class baseCommands:
         if scriptData:
             if not root: root = p.copy()
         else:
-            if not root: root = c.currentPosition()
+            if not root: root = c.p
 
         return fileName,ignoreSentinels,isRaw,lines,n,root
     #@+node:ekr.20080904071003.25:goto_findRoot
@@ -2319,7 +2329,7 @@ class baseCommands:
         c.showInvisiblesHelper(val)
 
     def showInvisiblesHelper (self,val):
-        c = self ; frame = c.frame ; p = c.currentPosition()
+        c = self ; frame = c.frame ; p = c.p
         colorizer = frame.body.getColorizer()
         colorizer.showInvisibles = val
 
@@ -2348,7 +2358,7 @@ class baseCommands:
         '''Convert all blanks to tabs in the selected outline.'''
 
         c = self ; u = c.undoer ; undoType = 'Convert All Blanks'
-        current = c.currentPosition()
+        current = c.p
 
         if g.app.batchMode:
             c.notValidInBatchMode(undoType)
@@ -2396,7 +2406,7 @@ class baseCommands:
         '''Convert all tabs to blanks in the selected outline.'''
 
         c = self ; u = c.undoer ; undoType = 'Convert All Tabs'
-        current = c.currentPosition()
+        current = c.p
 
         if g.app.batchMode:
             c.notValidInBatchMode(undoType)
@@ -2510,7 +2520,7 @@ class baseCommands:
 
         '''Remove one tab's worth of indentation from all presently selected lines.'''
 
-        c = self ; current = c.currentPosition() ; undoType='Unindent'
+        c = self ; current = c.p ; undoType='Unindent'
 
         d = c.scanAllDirectives(current) # Support @tab_width directive properly.
         tab_width = d.get("tabwidth",c.tab_width)
@@ -2535,7 +2545,7 @@ class baseCommands:
         The body text of the new child node contains all selected lines that follow the section reference line.'''
 
         c = self ; u = c.undoer ; undoType = 'Extract'
-        current = c.currentPosition()
+        current = c.p
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
         if lines:
             headline = lines[0].strip()
@@ -2569,7 +2579,7 @@ class baseCommands:
         The body text of the new child node contains all selected lines that follow the section reference line.'''
 
         c = self ; u = c.undoer ; undoType='Extract Section'
-        current = c.currentPosition()
+        current = c.p
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
         if not lines: return
 
@@ -2620,7 +2630,7 @@ class baseCommands:
         The body of each child node is empty.'''
 
         c = self ; u = c.undoer ; undoType = 'Extract Section Names'
-        body = c.frame.body ; current = c.currentPosition()
+        body = c.frame.body ; current = c.p
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
         if not lines: return
 
@@ -2840,7 +2850,7 @@ class baseCommands:
         in effect determines amount of indentation. (not yet) A numeric argument
         specifies the column to indent to.'''
 
-        c = self ; current = c.currentPosition() ; undoType='Indent Region'
+        c = self ; current = c.p ; undoType='Indent Region'
         d = c.scanAllDirectives(current) # Support @tab_width directive properly.
         tab_width = d.get("tabwidth",c.tab_width)
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
@@ -2913,7 +2923,7 @@ class baseCommands:
 
         '''Convert all selected lines in the body text to comment lines.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         d = c.scanAllDirectives(p)
         d1,d2,d3 = d.get('delims') # d1 is the line delim.
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
@@ -2942,7 +2952,7 @@ class baseCommands:
 
         '''Remove one level of comment delimiters from all selected lines in the body text.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         d = c.scanAllDirectives(p)
         # d1 is the line delim.
         d1,d2,d3 = d.get('delims')
@@ -3098,7 +3108,7 @@ class baseCommands:
     #@+node:ekr.20031218072017.1838:updateBodyPane (handles changeNodeContents)
     def updateBodyPane (self,head,middle,tail,undoType,oldSel,oldYview):
 
-        c = self ; body = c.frame.body ; p = c.currentPosition()
+        c = self ; body = c.frame.body ; p = c.p
 
         # Update the text and notify the event handler.
         body.setSelectionAreas(head,middle,tail)
@@ -3151,14 +3161,14 @@ class baseCommands:
             k.setDefaultInputState()
             k.showStateAndMode()
 
-        tree.editLabel(c.currentPosition())
+        tree.editLabel(c.p)
     #@-node:ekr.20031218072017.2886:c.editHeadline
     #@+node:ekr.20031218072017.2290:toggleAngleBrackets
     def toggleAngleBrackets (self,event=None):
 
         '''Add or remove double angle brackets from the headline of the selected node.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         if g.app.batchMode:
             c.notValidInBatchMode("Toggle Angle Brackets")
@@ -3296,7 +3306,7 @@ class baseCommands:
         '''Paste an outline into the present outline from the clipboard.
         Nodes do *not* retain their original identify.'''
 
-        c = self ; u = c.undoer ; current = c.currentPosition()
+        c = self ; u = c.undoer ; current = c.p
         s = g.app.gui.getTextFromClipboard()
         pasteAsClone = not reassignIndices
         undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
@@ -3393,7 +3403,7 @@ class baseCommands:
 
         '''Undo a previous hoist of an outline.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         if p and c.canDehoist():
             bunch = c.hoistStack.pop()
             if bunch.expanded: p.expand()
@@ -3413,7 +3423,7 @@ class baseCommands:
 
         '''Make only the selected outline visible.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         if p and c.canHoist():
             # Remember the expansion state.
             bunch = g.Bunch(p=p.copy(),expanded=p.isExpanded())
@@ -3481,7 +3491,7 @@ class baseCommands:
         """Deletes the selected outline."""
 
         c = self ; cc = c.chapterController ; u = c.undoer
-        p = c.currentPosition()
+        p = c.p
         if not p: return
 
         if p.hasVisBack(c): newNode = p.visBack(c)
@@ -3516,7 +3526,7 @@ class baseCommands:
         '''Insert a node after the presently selected node.'''
 
         c = self ; u = c.undoer
-        current = c.currentPosition()
+        current = c.p
 
         if not current: return
 
@@ -3553,7 +3563,7 @@ class baseCommands:
 
         '''Create a clone of the selected outline.'''
 
-        c = self ; u = c.undoer ; p = c.currentPosition()
+        c = self ; u = c.undoer ; p = c.p
         if not p: return
 
         undoData = c.undoer.beforeCloneNode(p)
@@ -3595,7 +3605,7 @@ class baseCommands:
 
         '''Sort the children of a node.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         if p and p.hasChildren():
             c.sortSiblings(p=p.firstChild(),sortChildren=True)
@@ -3606,7 +3616,7 @@ class baseCommands:
         '''Sort the siblings of a node.'''
 
         c = self ; u = c.undoer
-        if p is None: p = c.currentPosition()
+        if p is None: p = c.p
         if not p: return
 
         undoType = g.choose(sortChildren,'Sort Children','Sort Siblings')
@@ -3639,7 +3649,7 @@ class baseCommands:
     def setPositionAfterSort (self,sortChildren):
 
         c = self
-        p = c.currentPosition()
+        p = c.p
         p_v = p.v
         parent = p.parent()
         parent_v = p._parentVnode()
@@ -3866,7 +3876,7 @@ class baseCommands:
         if not unittest:
             g.es("checking Python code   ")
 
-        for p in c.currentPosition().self_and_subtree_iter():
+        for p in c.p.self_and_subtree_iter():
 
             count += 1
             if not unittest:
@@ -4005,7 +4015,7 @@ class baseCommands:
         c = self
 
         if p: root = p.copy()
-        else: root = c.currentPosition()
+        else: root = c.p
 
         pp = c.prettyPrinter(c)
 
@@ -4029,7 +4039,7 @@ class baseCommands:
         c = self
 
         if not p:
-            p = c.currentPosition()
+            p = c.p
 
         pp = c.prettyPrinter(c)
 
@@ -4044,7 +4054,7 @@ class baseCommands:
 
         '''Reformat all Python code in the outline to make it look more beautiful.'''
 
-        c = self ; p = c.currentPosition() ; pp = c.prettyPrinter(c)
+        c = self ; p = c.p ; pp = c.prettyPrinter(c)
 
         for p in p.self_and_subtree_iter():
 
@@ -4080,7 +4090,7 @@ class baseCommands:
             self.lineParenLevel = 0
             self.lines = [] # List of lines.
             self.name = None
-            self.p = c.currentPosition()
+            self.p = c.p
             self.parenLevel = 0
             self.prevName = None
             self.s = None # The string containing the line.
@@ -4148,7 +4158,7 @@ class baseCommands:
         def endUndo (self):
 
             c = self.c ; u = c.undoer ; undoType = 'Pretty Print'
-            current = c.currentPosition()
+            current = c.p
 
             if self.changed:
                 # Tag the end of the command.
@@ -4450,7 +4460,7 @@ class baseCommands:
         for p in c.all_positions_with_unique_vnodes_iter():
             p.contract()
         # Select the topmost ancestor of the presently selected node.
-        p = c.currentPosition()
+        p = c.p
         while p and p.hasParent():
             p.moveToParent()
 
@@ -4464,7 +4474,7 @@ class baseCommands:
         '''Contract all nodes except those needed to make the
         presently selected node visible.'''
 
-        c = self ; leaveOpen = c.currentPosition()
+        c = self ; leaveOpen = c.p
 
         for p in c.rootPosition().self_and_siblings_iter():
             c.contractIfNotCurrent(p,leaveOpen)
@@ -4492,7 +4502,7 @@ class baseCommands:
 
         '''Contract the presently selected node.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         p.contract()
         c.redraw_after_contract(p=p,setFocus=True)
@@ -4502,7 +4512,7 @@ class baseCommands:
 
         """Simulate the left Arrow Key in folder of Windows Explorer."""
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         if p.hasChildren() and p.isExpanded():
             # g.trace('contract',p.h)
@@ -4526,7 +4536,7 @@ class baseCommands:
 
         '''Contract the parent of the presently selected node.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         parent = p.parent()
         if not parent: return
@@ -4558,7 +4568,7 @@ class baseCommands:
 
         '''Expand all children of the presently selected node.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         if not p: return
 
         child = p.firstChild()
@@ -4627,7 +4637,7 @@ class baseCommands:
 
         '''Expand the presently selected node.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         p.expand()
 
@@ -4639,7 +4649,7 @@ class baseCommands:
 
         """If a node has children, expand it if needed and go to the first child."""
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         if not p.hasChildren():
             c.treeFocusHelper()
             return
@@ -4651,7 +4661,7 @@ class baseCommands:
 
         """Simulate the Right Arrow Key in folder of Windows Explorer."""
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         if p.hasChildren():
             if not p.isExpanded():
                 c.expandNode() # Calls redraw_after_expand.
@@ -4668,7 +4678,7 @@ class baseCommands:
 
         for p in c.all_positions_with_unique_vnodes_iter():
             p.contract()
-        for p in c.currentPosition().parents_iter():
+        for p in c.p.parents_iter():
             p.expand()
             level += 1
 
@@ -4715,7 +4725,7 @@ class baseCommands:
     def expandToLevel (self,level):
 
         c = self
-        current = c.currentPosition()
+        current = c.p
         n = current.level()
         for p in current.self_and_subtree_iter():
             if p.level() - n + 1 < level:
@@ -4723,7 +4733,7 @@ class baseCommands:
             else:
                 p.contract()
         c.expansionLevel = level
-        c.expansionNode = c.currentPosition()
+        c.expansionNode = c.p
         c.redraw()
     #@-node:ekr.20031218072017.2912:expandToLevel (rewritten in 4.4)
     #@-node:ekr.20031218072017.2909:Utilities
@@ -4735,7 +4745,7 @@ class baseCommands:
         '''Mark all nodes that have been changed.'''
 
         c = self ; u = c.undoer ; undoType = 'Mark Changed'
-        current = c.currentPosition()
+        current = c.p
 
         u.beforeChangeGroup(current,undoType)
         for p in c.all_positions_with_unique_vnodes_iter():
@@ -4756,7 +4766,7 @@ class baseCommands:
         '''Mark all changed @root nodes.'''
 
         c = self ; u = c.undoer ; undoType = 'Mark Changed'
-        current = c.currentPosition()
+        current = c.p
 
         u.beforeChangeGroup(current,undoType)
         for p in c.all_positions_with_unique_vnodes_iter():
@@ -4799,7 +4809,7 @@ class baseCommands:
         '''Mark all @file nodes in the selected tree as changed.'''
 
         c = self
-        p = c.currentPosition()
+        p = c.p
         if not p: return
 
         after = p.nodeAfterTree()
@@ -4820,7 +4830,7 @@ class baseCommands:
         '''Mark all clones of the selected node.'''
 
         c = self ; u = c.undoer ; undoType = 'Mark Clones'
-        current = c.currentPosition()
+        current = c.p
         if not current or not current.isCloned():
             g.es('the current node is not a clone',color='blue')
             return
@@ -4845,7 +4855,7 @@ class baseCommands:
 
         '''Toggle the mark of the selected node.'''
 
-        c = self ; u = c.undoer ; p = c.currentPosition()
+        c = self ; u = c.undoer ; p = c.p
         if not p: return
 
         undoType = g.choose(p.isMarked(),'Unmark','Mark')
@@ -4867,7 +4877,7 @@ class baseCommands:
         '''Mark all children of the selected node as changed.'''
 
         c = self ; u = c.undoer ; undoType = 'Mark Subheads'
-        current = c.currentPosition()
+        current = c.p
         if not current: return
 
         u.beforeChangeGroup(current,undoType)
@@ -4891,7 +4901,7 @@ class baseCommands:
         '''Unmark all nodes in the entire outline.'''
 
         c = self ; u = c.undoer ; undoType = 'Unmark All'
-        current = c.currentPosition()
+        current = c.p
         if not current: return
 
         u.beforeChangeGroup(current,undoType)
@@ -4928,7 +4938,7 @@ class baseCommands:
         '''Make all following siblings children of the selected node.'''
 
         c = self ; u = c.undoer
-        p = c.currentPosition()
+        p = c.p
         if not p or not p.hasNext():
             c.treeFocusHelper() ; return
 
@@ -4973,7 +4983,7 @@ class baseCommands:
 
         '''Move the selected node down.'''
 
-        c = self ; u = c.undoer ; p = c.currentPosition()
+        c = self ; u = c.undoer ; p = c.p
         if not p: return
 
         if not c.canMoveOutlineDown():
@@ -5033,7 +5043,7 @@ class baseCommands:
 
         '''Move the selected node left if possible.'''
 
-        c = self ; u = c.undoer ; p = c.currentPosition()
+        c = self ; u = c.undoer ; p = c.p
         if not p: return
         if not c.canMoveOutlineLeft():
             if c.hoistStack: self.cantMoveMessage()
@@ -5069,7 +5079,7 @@ class baseCommands:
 
         '''Move the selected node right if possible.'''
 
-        c = self ; u = c.undoer ; p = c.currentPosition()
+        c = self ; u = c.undoer ; p = c.p
         if not p: return
         if not c.canMoveOutlineRight(): # 11/4/03: Support for hoist.
             if c.hoistStack: self.cantMoveMessage()
@@ -5104,7 +5114,7 @@ class baseCommands:
 
         '''Move the selected node up if possible.'''
 
-        c = self ; u = c.undoer ; p = c.currentPosition()
+        c = self ; u = c.undoer ; p = c.p
         if not p: return
         if not c.canMoveOutlineUp(): # Support for hoist.
             if c.hoistStack: self.cantMoveMessage()
@@ -5184,7 +5194,7 @@ class baseCommands:
 
         '''Make all children of the selected nodes siblings of the selected node.'''
 
-        c = self ; u = c.undoer ; p = c.currentPosition()
+        c = self ; u = c.undoer ; p = c.p
         command = 'Promote'
         if not p or not p.hasChildren():
             # c.treeWantsFocusNow()
@@ -5220,7 +5230,7 @@ class baseCommands:
     #@+node:ekr.20071213185710:c.toggleSparseMove
     def toggleSparseMove (self,event=None):
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         tag = 'sparse_move_outline_left'
 
         sparseMove = not c.config.getBool(tag)
@@ -5268,7 +5278,7 @@ class baseCommands:
 
         '''Select the first sibling of the selected node.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         if p.hasBack():
             while p.hasBack():
@@ -5305,7 +5315,7 @@ class baseCommands:
 
         '''Select the last sibling of the selected node.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         if p.hasNext():
             while p.hasNext():
@@ -5331,7 +5341,7 @@ class baseCommands:
 
         '''Select the next node that is a clone of the selected node.'''
 
-        c = self ; cc = c.chapterController ; p = c.currentPosition()
+        c = self ; cc = c.chapterController ; p = c.p
         if not p: return
         if not p.isCloned():
             g.es('not a clone:',p.h,color='blue')
@@ -5364,7 +5374,7 @@ class baseCommands:
 
         '''Select the next cloned node.'''
 
-        c = self ; p = c.currentPosition() ; flag = False
+        c = self ; p = c.p ; flag = False
         if not p: return
 
         if p.isCloned():
@@ -5390,7 +5400,7 @@ class baseCommands:
 
         '''Select the node that is marked as changed.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         if not p: return
 
         p.moveToThreadNext()
@@ -5414,7 +5424,7 @@ class baseCommands:
 
         '''Select the next marked node.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         if not p: return
 
         p.moveToThreadNext()
@@ -5438,7 +5448,7 @@ class baseCommands:
 
         '''Select the next sibling of the selected node.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         c.treeSelectHelper(p and p.next())
     #@-node:ekr.20031218072017.2919:goToNextSibling
@@ -5447,7 +5457,7 @@ class baseCommands:
 
         '''Select the parent of the selected node.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         c.treeSelectHelper(p and p.parent())
     #@-node:ekr.20031218072017.2920:goToParent
@@ -5456,7 +5466,7 @@ class baseCommands:
 
         '''Select the previous sibling of the selected node.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         c.treeSelectHelper(p and p.back())
     #@-node:ekr.20031218072017.2921:goToPrevSibling
@@ -5465,7 +5475,7 @@ class baseCommands:
 
         '''Select the node preceding the selected node in outline order.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         if not p: return
 
         p.moveToThreadBack()
@@ -5477,7 +5487,7 @@ class baseCommands:
 
         '''Select the node following the selected node in outline order.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         if not p: return
 
         p.moveToThreadNext()
@@ -5492,7 +5502,7 @@ class baseCommands:
 
         '''Select the visible node preceding the presently selected node.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         if not p: return
         if not c.canSelectVisBack(): return
 
@@ -5505,7 +5515,7 @@ class baseCommands:
 
         '''Select the visible node following the presently selected node.'''
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         if not p: return
         if not c.canSelectVisNext(): return
 
@@ -5530,7 +5540,7 @@ class baseCommands:
     #@+node:ekr.20070226113916: treeSelectHelper
     def treeSelectHelper (self,p,redraw=True):
 
-        c = self ; current = c.currentPosition()
+        c = self ; current = c.p
 
         # g.trace(p and p.h,g.callers(4))
 
@@ -5731,7 +5741,7 @@ class baseCommands:
 
         Returns a dict containing the results, including defaults.'''
 
-        c = self ; p = p or c.currentPosition()
+        c = self ; p = p or c.p
 
         # Set defaults
         language = c.target_language and c.target_language.lower()
@@ -5906,7 +5916,7 @@ class baseCommands:
     def dragAfter(self,p,after):
 
         c = self ; u = self.undoer ; undoType = 'Drag'
-        current = c.currentPosition()
+        current = c.p
         inAtIgnoreRange = p.inAtIgnoreRange()
         if not c.checkDrag(p,after): return
         if not c.checkMoveWithParentWithWarning(p,after.parent(),True): return
@@ -5931,7 +5941,7 @@ class baseCommands:
     def dragToNthChildOf(self,p,parent,n):
 
         c = self ; u = c.undoer ; undoType = 'Drag'
-        current = c.currentPosition()
+        current = c.p
         inAtIgnoreRange = p.inAtIgnoreRange()
         if not c.checkDrag(p,parent): return
         if not c.checkMoveWithParentWithWarning(p,parent,True): return
@@ -5956,7 +5966,7 @@ class baseCommands:
     def dragCloneToNthChildOf (self,p,parent,n):
 
         c = self ; u = c.undoer ; undoType = 'Clone Drag'
-        current = c.currentPosition()
+        current = c.p
         inAtIgnoreRange = p.inAtIgnoreRange()
 
         # g.trace("p,parent,n:",p.h,parent.h,n)
@@ -5988,7 +5998,7 @@ class baseCommands:
     def dragCloneAfter (self,p,after):
 
         c = self ; u = c.undoer ; undoType = 'Clone Drag'
-        current = c.currentPosition()
+        current = c.p
 
         clone = p.clone() # Creates clone.  Does not set undo.
         if c.checkDrag(p,after) and c.checkMoveWithParentWithWarning(clone,after.parent(),True):
@@ -6250,7 +6260,7 @@ class baseCommands:
             c.expandAllAncestors(p) # Redundant, but safe.
             c.selectPosition(p)
         else:
-            p = c.currentPosition()
+            p = c.p
             c.expandAllAncestors(p)
 
         c.frame.tree.redraw(p)
@@ -6336,7 +6346,7 @@ class baseCommands:
 
         c = self
         if p is None:
-            p = c.currentPosition()
+            p = c.p
 
         # g.trace(p and p.h,g.callers(4))
 
@@ -6403,7 +6413,7 @@ class baseCommands:
     #@+node:ekr.20031218072017.2966:canGoToNextDirtyHeadline (slow)
     def canGoToNextDirtyHeadline (self):
 
-        c = self ; current = c.currentPosition()
+        c = self ; current = c.p
 
         for p in c.all_positions_with_unique_vnodes_iter():
             if p != current and p.isDirty():
@@ -6414,7 +6424,7 @@ class baseCommands:
     #@+node:ekr.20031218072017.2967:canGoToNextMarkedHeadline (slow)
     def canGoToNextMarkedHeadline (self):
 
-        c = self ; current = c.currentPosition()
+        c = self ; current = c.p
 
         for p in c.all_positions_with_unique_vnodes_iter():
             if p != current and p.isMarked():
@@ -6451,7 +6461,7 @@ class baseCommands:
         c = self
 
         if c.hoistStack:
-            current = c.currentPosition()
+            current = c.p
             bunch = c.hoistStack[-1]
             return current != bunch.p
         else:
@@ -6471,7 +6481,7 @@ class baseCommands:
     #@+node:ekr.20031218072017.2957:canContractAllSubheads
     def canContractAllSubheads (self):
 
-        c = self ; current = c.currentPosition()
+        c = self ; current = c.p
 
         for p in current.subtree_iter():
             if p != current and p.isExpanded():
@@ -6483,12 +6493,12 @@ class baseCommands:
     def canContractParent (self):
 
         c = self
-        return c.currentPosition().parent()
+        return c.p.parent()
     #@-node:ekr.20031218072017.2958:canContractParent
     #@+node:ekr.20031218072017.2959:canContractSubheads
     def canContractSubheads (self):
 
-        c = self ; current = c.currentPosition()
+        c = self ; current = c.p
 
         for child in current.children_iter():
             if child.isExpanded():
@@ -6499,7 +6509,7 @@ class baseCommands:
     #@+node:ekr.20031218072017.2960:canCutOutline & canDeleteHeadline
     def canDeleteHeadline (self):
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         if c.hoistStack:
             bunch = c.hoistStack[0]
@@ -6513,7 +6523,7 @@ class baseCommands:
     def canDemote (self):
 
         c = self
-        return c.currentPosition().hasNext()
+        return c.p.hasNext()
     #@-node:ekr.20031218072017.2961:canDemote
     #@+node:ekr.20031218072017.2962:canExpandAllHeadlines
     def canExpandAllHeadlines (self):
@@ -6531,7 +6541,7 @@ class baseCommands:
 
         c = self
 
-        for p in c.currentPosition().subtree_iter():
+        for p in c.p.subtree_iter():
             if not p.isExpanded():
                 return True
 
@@ -6540,7 +6550,7 @@ class baseCommands:
     #@+node:ekr.20031218072017.2964:canExpandSubheads
     def canExpandSubheads (self):
 
-        c = self ; current = c.currentPosition()
+        c = self ; current = c.p
 
         for p in current.children_iter():
             if p != current and not p.isExpanded():
@@ -6614,14 +6624,14 @@ class baseCommands:
     #@+node:ekr.20031218072017.2970:canMoveOutlineDown
     def canMoveOutlineDown (self):
 
-        c = self ; current = c.currentPosition()
+        c = self ; current = c.p
 
         return current and current.visNext(c)
     #@-node:ekr.20031218072017.2970:canMoveOutlineDown
     #@+node:ekr.20031218072017.2971:canMoveOutlineLeft
     def canMoveOutlineLeft (self):
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         if c.hoistStack:
             bunch = c.hoistStack[-1]
@@ -6636,7 +6646,7 @@ class baseCommands:
     #@+node:ekr.20031218072017.2972:canMoveOutlineRight
     def canMoveOutlineRight (self):
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         if c.hoistStack:
             bunch = c.hoistStack[-1]
@@ -6647,7 +6657,7 @@ class baseCommands:
     #@+node:ekr.20031218072017.2973:canMoveOutlineUp
     def canMoveOutlineUp (self):
 
-        c = self ; current = c.currentPosition()
+        c = self ; current = c.p
 
         visBack = current and current.visBack(c)
 
@@ -6696,19 +6706,19 @@ class baseCommands:
     #@-node:ekr.20031218072017.2976:canRevert
     #@+node:ekr.20031218072017.2977:canSelect....
     def canSelectThreadBack (self):
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         return p.hasThreadBack()
 
     def canSelectThreadNext (self):
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         return p.hasThreadNext()
 
     def canSelectVisBack (self):
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         return p.visBack(c)
 
     def canSelectVisNext (self):
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         return p.visNext(c)
     #@-node:ekr.20031218072017.2977:canSelect....
     #@+node:ekr.20031218072017.2978:canShiftBodyLeft/Right
@@ -6722,12 +6732,12 @@ class baseCommands:
     #@+node:ekr.20031218072017.2979:canSortChildren, canSortSiblings
     def canSortChildren (self):
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         return p and p.hasChildren()
 
     def canSortSiblings (self):
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
         return p and (p.hasNext() or p.hasBack())
     #@-node:ekr.20031218072017.2979:canSortChildren, canSortSiblings
     #@+node:ekr.20031218072017.2980:canUndo & canRedo
@@ -6833,7 +6843,7 @@ class baseCommands:
 
         """Move to the first visible node of the present chapter or hoist."""
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         while 1:
             back = p.visBack(c)
@@ -6903,7 +6913,7 @@ class baseCommands:
 
         """Move to the last visible node of the present chapter or hoist."""
 
-        c = self ; p = c.currentPosition()
+        c = self ; p = c.p
 
         while 1:
             next = p.visNext(c)
@@ -7052,7 +7062,7 @@ class baseCommands:
         if not c or not v: return
 
         s = g.toUnicode(s,encoding)
-        current = c.currentPosition()
+        current = c.p
         # 1/22/05: Major change: the previous test was: 'if p == current:'
         # This worked because commands work on the presently selected node.
         # But setRecentFiles may change a _clone_ of the selected node!
@@ -7287,7 +7297,7 @@ class baseCommands:
 
         c = self ; k = c.k
 
-        p = c.currentPosition()
+        p = c.p
 
         if p:
 
@@ -7334,7 +7344,7 @@ class baseCommands:
 
         if not event or not event.char or not event.keysym.isalnum():
             return
-        c  = self ; p = c.currentPosition() ; p1 = p.copy()
+        c  = self ; p = c.p ; p1 = p.copy()
         invisible = c.config.getBool('invisible_outline_navigation')
         ch = event.char
         allFlag = ch.isupper() and invisible # all is a global (!?)

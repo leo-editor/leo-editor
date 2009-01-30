@@ -1065,8 +1065,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1089,8 +1091,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1111,8 +1115,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@file
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1148,8 +1154,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1172,6 +1180,7 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
 @verbatim
@@ -1183,8 +1192,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@file
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1219,8 +1230,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1243,6 +1256,7 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
 @verbatim
@@ -1254,8 +1268,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@file
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1303,8 +1319,10 @@ unnamed node line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1332,6 +1350,7 @@ last line
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@nonl
 @verbatim
@@ -1343,8 +1362,10 @@ last line
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:#@noref
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1366,6 +1387,7 @@ section line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@nonl
 @verbatim
@@ -1377,8 +1399,10 @@ section line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:<< section >>
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1400,6 +1424,7 @@ unnamed node line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@nonl
 @verbatim
@@ -1411,8 +1436,10 @@ unnamed node line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:unnamed node
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1474,8 +1501,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo-ver=4-thin
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1498,8 +1527,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@last
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1520,8 +1551,10 @@ Line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:ekr.20040707141957.13:#@thin
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -9653,7 +9686,7 @@ assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
 c.redraw(p) # To make node visible
 
 c2 = c.new()
-p2 = c2.currentPosition()
+p2 = c2.p
 
 try:
     # This fails, but it is possible to edit the headline.
@@ -14071,6 +14104,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 line 1 line 3
@@ -14117,6 +14151,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 node 2 line 2
@@ -14142,6 +14177,7 @@ node 2 line 2
 #@nonl
 #@+node:ekr.20090121163905.1224:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -14177,6 +14213,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 line 1 line 3
@@ -14196,6 +14233,7 @@ node 2 line 3
 #@nonl
 #@+node:ekr.20090121163905.1231:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -14249,6 +14287,7 @@ node 2 line 2
 #@nonl
 #@+node:ekr.20090121163905.1241:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim

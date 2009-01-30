@@ -68,7 +68,7 @@ def doTests(c,all,verbosity=1):
     if all:
         p = c.rootPosition()
     else:
-        p = c.currentPosition()
+        p = c.p
     p1 = p.copy()
 
     try:
@@ -529,7 +529,7 @@ class testUtils:
                 return p.copy()
 
         if False and breakOnError: # useful for debugging.
-            aList = [repr(z) for z in c.currentPosition().parent().
+            aList = [repr(z) for z in c.p.parent().
                 self_and_siblings_iter(copy=True)]
             print '\n'.join(aList)
             g.pdb()
@@ -723,7 +723,7 @@ def runTestsExternally (c,all):
                 p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,False
                 # The second pass looks in the selected tree for everything except @mark-for-unit-tests.
                 # There is no second pass if the present node is an @mark-for-unit-test node.
-                p = c.currentPosition()
+                p = c.p
                 if p.h.startswith(markTag):
                     p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
                 else:
@@ -798,7 +798,7 @@ def runTestsExternally (c,all):
             kind = g.choose(self.all,'all ','')
             g.es('running',kind,'unit tests',color='blue')
             g.pr('creating: %s' % (self.fileName))
-            c = self.c ; p = c.currentPosition()
+            c = self.c ; p = c.p
             if trace: t1 = time.time()
             found = self.searchOutline(p.copy())
             if trace:
@@ -844,7 +844,7 @@ def runTestsExternally (c,all):
         #@+node:ekr.20070627135336.8:searchOutline
         def searchOutline (self,p):
 
-            c = self.c ; p = c.currentPosition()
+            c = self.c ; p = c.p
             iter = g.choose(self.all,c.all_positions_with_unique_tnodes_iter,p.self_and_subtree_iter)
 
             # First, look down the tree.
@@ -852,12 +852,12 @@ def runTestsExternally (c,all):
                 h = p.h
                 for s in self.tags:
                     if h.startswith(s):
-                        self.root = c.currentPosition()
+                        self.root = c.p
                         return True
 
             # Next, look up the tree.
             if not self.all:   
-                for p in c.currentPosition().parents_iter():
+                for p in c.p.parents_iter():
                     h = p.h
                     for s in self.tags:
                         if h.startswith(s):
@@ -959,7 +959,6 @@ def makeEditBodySuite(c,p):
 
     """Create an Edit Body test for every descendant of testParentHeadline.."""
 
-    # p = c.currentPosition()
     u = testUtils(c)
     assert c.positionExists(p)
     data_p = u.findNodeInTree(p,"editBodyTests")   
@@ -1163,7 +1162,7 @@ class importExportTestCase(unittest.TestCase):
         self.fileName = ""
         self.doImport = doImport
 
-        self.old_p = c.currentPosition()
+        self.old_p = c.p
     #@-node:ekr.20051104075904.80:__init__
     #@+node:ekr.20051104075904.81: fail
     def fail (self,msg=None):

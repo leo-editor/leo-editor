@@ -66,7 +66,7 @@ class leoMenu:
 
         if c and c.exists:
             c.setLog()
-            p = c.currentPosition()
+            p = c.p
 
             if not g.doHook("menu-update",c=c,p=p,v=p):
                 self.updateFileMenu()
@@ -140,7 +140,7 @@ class leoMenu:
         c = self.c ; frame = c.frame
         if not c: return
 
-        p = c.currentPosition()
+        p = c.p
         hasParent = p.hasParent()
         hasBack = p.hasBack()
         hasNext = p.hasNext()

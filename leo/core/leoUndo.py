@@ -931,7 +931,7 @@ class undoer:
     #@+node:ekr.20050424161505.1:beforeClearRecentFiles
     def beforeClearRecentFiles (self):
 
-        u = self ; p = u.c.currentPosition()
+        u = self ; p = u.c.p
 
         bunch = u.createCommonBunch(p)
         bunch.oldRecentFiles = g.app.config.recentFiles[:]
@@ -1386,7 +1386,7 @@ class undoer:
             return
         if not u.getBead(u.bead+1):
             g.trace('no bead') ; return
-        if not c.currentPosition():
+        if not c.p:
             g.trace('no current position') ; return
 
         if trace: g.trace(u.dumpBead(u.bead))
@@ -1400,9 +1400,9 @@ class undoer:
         c.frame.body.updateEditors() # New in Leo 4.4.8.
         if 0: # Don't do this: it interferes with selection ranges.
             # This strange code forces a recomputation of the root position.
-            c.selectPosition(c.currentPosition())
+            c.selectPosition(c.p)
         else:
-            c.setCurrentPosition(c.currentPosition())
+            c.setCurrentPosition(c.p)
         c.setChanged(True)
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
         c.redraw()
@@ -1668,7 +1668,7 @@ class undoer:
     #@+node:EKR.20040526075238.5:redoTyping
     def redoTyping (self):
 
-        u = self ; c = u.c ; current = c.currentPosition()
+        u = self ; c = u.c ; current = c.p
         w = c.frame.body.bodyCtrl
 
         # selectPosition causes recoloring, so avoid if possible.
@@ -1709,7 +1709,7 @@ class undoer:
             return
         if not u.getBead(u.bead):
             g.trace('no bead') ; return
-        if not c.currentPosition():
+        if not c.p:
             g.trace('no current position') ; return
 
         if trace: g.trace(u.dumpBead(u.bead))
@@ -1723,9 +1723,9 @@ class undoer:
         c.frame.body.updateEditors() # New in Leo 4.4.8.
         if 0: # Don't do this: it interferes with selection ranges.
             # This strange code forces a recomputation of the root position.
-            c.selectPosition(c.currentPosition())
+            c.selectPosition(c.p)
         else:
-            c.setCurrentPosition(c.currentPosition())
+            c.setCurrentPosition(c.p)
         c.setChanged(True)
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
         c.redraw()
@@ -2053,7 +2053,7 @@ class undoer:
     #@+node:EKR.20040526090701.4:undoTyping
     def undoTyping (self):
 
-        u = self ; c = u.c ; current = c.currentPosition()
+        u = self ; c = u.c ; current = c.p
         w = c.frame.body.bodyCtrl
 
         # selectPosition causes recoloring, so don't do this unless needed.

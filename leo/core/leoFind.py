@@ -349,7 +349,7 @@ class leoFind:
     def setup_button(self):
 
         c = self.c
-        self.p = c.currentPosition()
+        self.p = c.p
 
         c.bringToFront()
         if 0: # We _must_ retain the editing status for incremental searches!
@@ -521,7 +521,7 @@ class leoFind:
         # g.trace(g.callers())
 
         c = self.c ; u = c.undoer ; undoType = 'Change All'
-        current = c.currentPosition()
+        current = c.p
         w = self.s_ctrl
         if not self.checkArgs(): return
         self.initInHeadline()
@@ -538,7 +538,7 @@ class leoFind:
             i,j = g.getLine(s,pos1)
             line = s[i:j]
             # self.printLine(line,allFlag=True)
-        p = c.currentPosition()
+        p = c.p
         u.afterChangeGroup(p,undoType,reportFlag=True)
         g.es("changed:",count,"instances")
         c.redraw(p)
@@ -715,7 +715,7 @@ class leoFind:
             if self.clone_find_all and self.p.v.t not in clones:
                 # g.trace(self.p.v.t,self.p.h)
                 if not clones:
-                    undoData = u.beforeInsertNode(c.currentPosition())
+                    undoData = u.beforeInsertNode(c.p)
                     #@                << create the found node >>
                     #@+node:ekr.20051113110735:<< create the found node >>
                     oldRoot = c.rootPosition()
@@ -1206,7 +1206,7 @@ class leoFind:
 
         # Select the first node.
         if self.suboutline_only or self.node_only:
-            self.p = c.currentPosition()
+            self.p = c.p
         else:
             p = c.rootPosition()
             if self.reverse:
@@ -1380,7 +1380,7 @@ class leoFind:
         if not p:
             return g.trace('can not happen: self.p is None')
 
-        current = c.currentPosition()
+        current = c.p
         sparseFind = c.config.getBool('collapse_nodes_during_finds')
         c.frame.bringToFront() # Needed on the Mac
 
@@ -1388,7 +1388,7 @@ class leoFind:
         redraw1 = not p.isVisible(c)
         if sparseFind:
             # Show only the 'sparse' tree when redrawing.
-            for p2 in c.currentPosition().self_and_parents_iter():
+            for p2 in c.p.self_and_parents_iter():
                 if p2.isAncestorOf(p):
                     break
                 p2.contract()
@@ -1425,7 +1425,7 @@ class leoFind:
 
         """Called just before doing a find to update ivars from the find panel."""
 
-        self.p = self.c.currentPosition()
+        self.p = self.c.p
         self.v = self.p.v
 
         for key in self.intKeys:

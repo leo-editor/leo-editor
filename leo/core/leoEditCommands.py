@@ -90,7 +90,7 @@ class baseEditCommandsClass:
 
     def beginCommandHelper (self,ch,undoType,w):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         name = c.widget_name(w)
 
         if name.startswith('body'):
@@ -809,7 +809,7 @@ class bufferCommandsClass (baseEditCommandsClass):
         c = self.c ; p = self.findBuffer(name)
         if p:
             h = p.h
-            current = c.currentPosition()
+            current = c.p
             c.selectPosition(p)
             c.deleteOutline (op_name='kill-buffer: %s' % h)
             c.selectPosition(current)
@@ -1201,7 +1201,7 @@ class debugCommandsClass (baseEditCommandsClass):
         '''Start an external debugger in another process to debug a script.
         The script is the presently selected text or then entire tree's script.'''
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         python = sys.executable
         script = g.getScript(c,p)
         winpdb = self.findDebugger()
@@ -1826,7 +1826,7 @@ class editCommandsClass (baseEditCommandsClass):
 
     def clickHeadline (self,event=None):
         '''Simulate a click in the headline of the presently selected node.'''
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         c.frame.tree.onHeadlineClick(event,p=p)
 
     def doubleClickHeadline (self,event=None):
@@ -1835,7 +1835,7 @@ class editCommandsClass (baseEditCommandsClass):
 
     def rightClickHeadline (self,event=None):
         '''Simulate a right click in the headline of the presently selected node.'''
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         c.frame.tree.onHeadlineRightClick(event,p=p)
     #@-node:ekr.20060211063744.1:clicks in the headline
     #@+node:ekr.20060211055455:clicks in the icon box
@@ -1843,18 +1843,18 @@ class editCommandsClass (baseEditCommandsClass):
 
     def clickIconBox (self,event=None):
         '''Simulate a click in the icon box of the presently selected node.'''
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         c.frame.tree.onIconBoxClick(event,p=p)
 
     def doubleClickIconBox (self,event=None):
         '''Simulate a double-click in the icon box of the presently selected node.'''
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         c.frame.tree.onIconBoxDoubleClick(event,p=p)
 
     def rightClickIconBox (self,event=None):
 
         '''Simulate a right click in the icon box of the presently selected node.'''
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         c.frame.tree.onIconBoxRightClick(event,p=p)
     #@-node:ekr.20060211055455:clicks in the icon box
     #@+node:ekr.20060211062025:clickClickBox
@@ -1864,7 +1864,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Simulate a click in the click box (+- box) of the presently selected node.'''
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         c.frame.tree.onClickBoxClick(event,p=p)
     #@-node:ekr.20060211062025:clickClickBox
     #@+node:ekr.20060211063744.2:simulate...Drag
@@ -1873,7 +1873,7 @@ class editCommandsClass (baseEditCommandsClass):
     def simulateBeginDrag (self,event=None):
 
         '''Simulate the start of a drag in the presently selected node.'''
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         c.frame.tree.startDrag(event,p=p)
 
     def simulateEndDrag (self,event=None):
@@ -2435,7 +2435,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20071114082418:deleteFirstIcon
     def deleteFirstIcon (self,event=None):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
 
         aList = self.getIconList(p)
 
@@ -2448,7 +2448,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20071114092622:deleteIconByName
     def deleteIconByName (self,t,name,relPath):
         """for use by the right-click remove icon callback"""
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
 
         aList = self.getIconList(p)
         if not aList: return
@@ -2479,9 +2479,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20071114085054:deleteLastIcon
     def deleteLastIcon (self,event=None):
 
-        c = self.c ;  p = c.currentPosition()
-
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
 
         aList = self.getIconList(p)
 
@@ -2494,7 +2492,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20071114082418.1:deleteNodeIcons
     def deleteNodeIcons (self,event=None):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
 
         if hasattr(p.v.t,"unknownAttributes"):
             a = p.v.t.unknownAttributes
@@ -2508,7 +2506,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20071114081313.1:insertIcon
     def insertIcon (self,event=None):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
 
         iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
         os.chdir(iconDir)
@@ -2535,7 +2533,7 @@ class editCommandsClass (baseEditCommandsClass):
     def insertIconFromFile (self,path,p=None,pos=None,**kargs):
 
         c = self.c
-        if p is None: p = c.currentPosition()
+        if p is None: p = c.p
 
         iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
         os.chdir(iconDir)
@@ -2682,7 +2680,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Delete the character to the left of the cursor.'''
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         w = self.editWidget(event)
         if not w: return
 
@@ -2752,7 +2750,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Clean all lines in the selected tree.'''
 
-        c = self.c ; current = c.currentPosition()
+        c = self.c ; current = c.p
         w = c.frame.body.bodyCtrl
         if not w: return
 
@@ -2899,7 +2897,7 @@ class editCommandsClass (baseEditCommandsClass):
         '''Insert a newline and tab at the cursor.'''
 
         c = self.c ; k = c.k
-        w = self.editWidget(event) ; p = c.currentPosition()
+        w = self.editWidget(event) ; p = c.p
         if not w: return
 
         assert g.app.gui.isTextWidget(w)
@@ -2969,7 +2967,7 @@ class editCommandsClass (baseEditCommandsClass):
         #@    << set local vars >>
         #@+node:ekr.20061103114242:<< set local vars >>
         c = self.c
-        p = c.currentPosition()
+        p = c.p
         gui = g.app.gui
         ch = gui.eventChar(event)
         keysym = gui.eventKeysym(event)
@@ -3034,7 +3032,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051026171121:insertNewlineHelper
     def insertNewlineHelper (self,w,oldSel,undoType):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         i,j = oldSel ; ch = '\n'
 
         if i != j:
@@ -3372,7 +3370,7 @@ class editCommandsClass (baseEditCommandsClass):
         extend: Clear the selection unless this is True.
         spot:   The *new* insert point.
         '''
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         extend = extend or self.extendMode
         ins = w.getInsertPoint()
         i,j = w.getSelectionRange()
@@ -3648,7 +3646,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Set the column to which an up or down arrow will attempt to move.'''
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         s = w.getAllText()
         i = w.toPythonIndex(spot)
         junk,col = g.convertPythonIndexToRowCol(s,i)
@@ -4024,7 +4022,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         # New in Leo 4.4.4: just use reformat-paragraph logic.
 
-        c = self.c ; p = c.currentPosition() ; undoType = 'fill-region'
+        c = self.c ; p = c.p ; undoType = 'fill-region'
         w = self.editWidget(event)
         i,j = w.getSelectionRange()
         c.undoer.beforeChangeGroup(p,undoType)
@@ -4204,7 +4202,7 @@ class editCommandsClass (baseEditCommandsClass):
                 w.setSelectionRange(i+n2,i+n2+n,insert=i+n2+n)
                 changed = True
             elif g.app.gui.widget_name(w).startswith('body'):
-                p = c.currentPosition()
+                p = c.p
                 if not p.hasThreadNext(): return
                 w.delete(i,j)
                 c.setBodyString(p,w.getAllText())
@@ -4250,7 +4248,7 @@ class editCommandsClass (baseEditCommandsClass):
                 w.setSelectionRange(prev_i,prev_i+n,insert=prev_i+n)
                 changed = True
             elif g.app.gui.widget_name(w).startswith('body'):
-                p = c.currentPosition()
+                p = c.p
                 if not p.hasThreadBack(): return
                 w.delete(i,j)
                 c.setBodyString(p,w.getAllText())
@@ -4882,9 +4880,9 @@ class editFileCommandsClass (baseEditCommandsClass):
         c = self.c # Always use the visible commander
         # Create parent node at the start of the outline.
         u = c.undoer ; undoType = 'Compare .leo Files'
-        u.beforeChangeGroup(c.currentPosition(),undoType)
-        undoData = u.beforeInsertNode(c.currentPosition())
-        parent = c.currentPosition().insertAfter()
+        u.beforeChangeGroup(c.p,undoType)
+        undoData = u.beforeInsertNode(c.p)
+        parent = c.p.insertAfter()
         parent.setHeadString(undoType)
         u.afterInsertNode(parent,undoType,undoData,dirtyVnodeList=[])
         for d,kind in (
@@ -5891,7 +5889,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
 
         c = self.c ; w = self.editWidget(event)
         if not w: return
-        current = c.currentPosition()
+        current = c.p
         if not current: return
         text = w.getAllText()
         i, j = w.getSelectionRange()
@@ -7440,7 +7438,7 @@ class minibufferFind (baseEditCommandsClass):
 
         f = self.finder
 
-        f.p = self.c.currentPosition()
+        f.p = self.c.p
         f.v = self.finder.p.v
 
         # This handles the reverse option.
@@ -7474,7 +7472,7 @@ class minibufferFind (baseEditCommandsClass):
 
         c.widgetWantsFocusNow(self.w)
 
-        self.finder.p = self.c.currentPosition()
+        self.finder.p = self.c.p
         self.finder.v = self.finder.p.v
 
         # Bug fix: 2007-12-14: remove call to self.finder.findNextCommand.
@@ -7495,7 +7493,7 @@ class minibufferFind (baseEditCommandsClass):
 
         c.widgetWantsFocusNow(self.w)
 
-        self.finder.p = self.c.currentPosition()
+        self.finder.p = self.c.p
         self.finder.v = self.finder.p.v
 
         if findAll:
@@ -7650,7 +7648,7 @@ class minibufferFind (baseEditCommandsClass):
             if val is not None:
                 self.setOption(ivar,val)
 
-        h.p = p = self.c.currentPosition()
+        h.p = p = self.c.p
         h.v = p.v
         h.update_ivars()
         self.showFindOptions()
@@ -7902,7 +7900,7 @@ class searchCommandsClass (baseEditCommandsClass):
     def toggleFindCollapesNodes(self,event):
         '''Toggle the 'Collapse Nodes' checkbox in the find tab.'''
         # return self.toggleOption('collapse_nodes')
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         val = c.config.getBool('collapse_nodes_during_finds')
         c.config.set(p,'collapse_nodes_during_finds',not val)
         g.es('collapse_nodes_during_finds',c.config.getBool('collapse_nodes_during_finds'))
@@ -8166,7 +8164,7 @@ class searchCommandsClass (baseEditCommandsClass):
         isearches do not cross node boundaries.'''
 
         c = self.c ; gui = g.app.gui ; k = self.k ; w = self.w
-        p = c.currentPosition()
+        p = c.p
         self.searchString = pattern = k.getLabel(ignorePrompt=True)
         if not pattern: return
         s = w.getAllText()
@@ -8491,7 +8489,7 @@ class spellTabHandler (leoFind.leoFind):
     def findNextMisspelledWord(self):
         """Find the next unknown word."""
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         w = c.frame.body.bodyCtrl
         aspell = self.aspell ; alts = None ; word = None
         sparseFind = c.config.getBool('collapse_nodes_while_spelling')
@@ -8526,8 +8524,8 @@ class spellTabHandler (leoFind.leoFind):
                 if alts:
                     redraw = not p.isVisible(c)
                     # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
-                    if sparseFind and not c.currentPosition().isAncestorOf(p):
-                        for p2 in c.currentPosition().self_and_parents_iter():
+                    if sparseFind and not c.p.isAncestorOf(p):
+                        for p2 in c.p.self_and_parents_iter():
                             p2.contract()
                             redraw = True
                     for p2 in p.parents_iter():

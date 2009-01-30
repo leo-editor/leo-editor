@@ -318,7 +318,7 @@ def scanAllDirectives(self,p=None):
 
     Returns a dict containing the results, including defaults.'''
 
-    c = self ; p = p or c.currentPosition()
+    c = self ; p = p or c.p
 
     # Set defaults
     language = c.target_language and c.target_language.lower()
@@ -789,7 +789,7 @@ def goto_setup (self,n,p=None,scriptData=None):
         root,fileName = c.goto_findRoot(p)
     else:
         # p is for unit testing only!
-        if not p: p = c.currentPosition()
+        if not p: p = c.p
         root,fileName = c.goto_findRoot(p)
         if root and fileName:
             c.shadowController.line_mapping = [] # Set by goto_open.
@@ -806,7 +806,7 @@ def goto_setup (self,n,p=None,scriptData=None):
     if scriptData:
         if not root: root = p.copy()
     else:
-        if not root: root = c.currentPosition()
+        if not root: root = c.p
 
     return fileName,ignoreSentinels,isRaw,lines,n,root
 #@+node:ekr.20080904071003.25:goto_findRoot
@@ -1670,7 +1670,7 @@ def __init__ (self,c,p,dialog,temp_p,doImport):
     self.fileName = ""
     self.doImport = doImport
 
-    self.old_p = c.currentPosition()
+    self.old_p = c.p
 #@-node:ekr.20051104075904.80:__init__
 #@+node:ekr.20051104075904.81: fail
 def fail (self,msg=None):
@@ -2052,7 +2052,7 @@ def new (self,event=None,gui=None):
     c.setRootVnode(v) # New in Leo 4.4.2.
     c.selectPosition(p)
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.currentPosition()
+    p = c.p
     if not g.doHook("menu1",c=c,p=p,v=p):
         frame.menu.createMenuBar(frame)
         c.updateRecentFiles(fileName=None)
@@ -2143,7 +2143,7 @@ def extendHelper (self,w,extend,spot,upOrDown=False):
     extend: Clear the selection unless this is True.
     spot:   The *new* insert point.
     '''
-    c = self.c ; p = c.currentPosition()
+    c = self.c ; p = c.p
     extend = extend or self.extendMode
     ins = w.getInsertPoint()
     i,j = w.getSelectionRange()
@@ -2419,7 +2419,7 @@ def setMoveCol (self,w,spot):
 
     '''Set the column to which an up or down arrow will attempt to move.'''
 
-    c = self.c ; p = c.currentPosition()
+    c = self.c ; p = c.p
     s = w.getAllText()
     i = w.toPythonIndex(spot)
     junk,col = g.convertPythonIndexToRowCol(s,i)
@@ -3365,7 +3365,7 @@ def os_path_expandExpression (s,**keys):
             try:
                 import os
                 import sys
-                p = c.currentPosition()
+                p = c.p
                 d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
                 val = eval(exp,d)
                 s = s[:i] + str(val) + s[j+2:]
@@ -3490,7 +3490,7 @@ def redraw (self,p=None,setFocus=False):
         c.expandAllAncestors(p) # Redundant, but safe.
         c.selectPosition(p)
     else:
-        p = c.currentPosition()
+        p = c.p
         c.expandAllAncestors(p)
 
     c.frame.tree.redraw(p)
@@ -3554,7 +3554,7 @@ def select (self,p,scroll=True):
     if g.app.killed or self.tree_select_lockout: return None
 
     try:
-        c = self.c ; old_p = c.currentPosition()
+        c = self.c ; old_p = c.p
         val = 'break'
         self.tree_select_lockout = True
         c.frame.tree.beforeSelectHint(p,old_p)
@@ -3573,7 +3573,7 @@ def treeSelectHelper (self,p,scroll):
     body = w = frame.body.bodyCtrl
     if not w: return # Defensive.
 
-    old_p = c.currentPosition()
+    old_p = c.p
 
     if not p:
         # Do *not* test c.positionExists(p) here.
@@ -3594,7 +3594,7 @@ def treeSelectHelper (self,p,scroll):
         << select the new node >>
         if p and p != old_p: # Suppress duplicate call.
             try: # may fail during initialization.
-                # p is NOT c.currentPosition() here!
+                # p is NOT c.p here!
                 if 0: # Interferes with new colorizer.
                     self.canvas.update_idletasks()
                     self.scrollTo(p)
@@ -4015,7 +4015,7 @@ finally:
 c.redraw(p) # To make node visible
 
 c2 = c.new()
-p2 = c2.currentPosition()
+p2 = c2.p
 
 try:
     # This fails, but it is possible to edit the headline.
@@ -4138,7 +4138,7 @@ def toggleAngleBrackets (self,event=None):
 
     '''Add or remove double angle brackets from the headline of the selected node.'''
 
-    c = self ; p = c.currentPosition()
+    c = self ; p = c.p
 
     if g.app.batchMode:
         c.notValidInBatchMode("Toggle Angle Brackets")
@@ -4164,7 +4164,7 @@ def insertHeadlineTime (self,event=None):
 
     '''Insert a date/time stamp in the headline of the selected node.'''
 
-    frame = self ; c = frame.c ; p = c.currentPosition()
+    frame = self ; c = frame.c ; p = c.p
 
     if g.app.batchMode:
         c.notValidInBatchMode("Insert Headline Time")
@@ -4217,7 +4217,7 @@ def showSuccess(self,pos,newpos):
     if not p:
         return g.trace('can not happen: self.p is None')
 
-    current = c.currentPosition()
+    current = c.p
     sparseFind = c.config.getBool('collapse_nodes_during_finds')
     c.frame.bringToFront() # Needed on the Mac
 
@@ -4225,7 +4225,7 @@ def showSuccess(self,pos,newpos):
     redraw1 = not p.isVisible(c)
     if sparseFind:
         # Show only the 'sparse' tree when redrawing.
-        for p2 in c.currentPosition().self_and_parents_iter():
+        for p2 in c.p.self_and_parents_iter():
             if p2.isAncestorOf(p):
                 break
             p2.contract()
@@ -4324,7 +4324,7 @@ def abortEditLabelCommand (self,event=None):
     '''End editing of a headline and revert to its previous value.'''
 
     frame = self ; c = frame.c ; tree = frame.tree
-    p = c.currentPosition()
+    p = c.p
 
     if g.app.batchMode:
         c.notValidInBatchMode("Abort Edit Headline")
@@ -4729,7 +4729,7 @@ def setBodyString (self,p,s,encoding="utf-8"):
     if not c or not v: return
 
     s = g.toUnicode(s,encoding)
-    current = c.currentPosition()
+    current = c.p
     # 1/22/05: Major change: the previous test was: 'if p == current:'
     # This worked because commands work on the presently selected node.
     # But setRecentFiles may change a _clone_ of the selected node!
@@ -4792,7 +4792,7 @@ def setBodyString (self,p,s,encoding="utf-8"):
     if not c or not p: return
 
     s = g.toUnicode(s,encoding)
-    current = c.currentPosition()
+    current = c.p
     if current and p.v.t==current.v.t:
         c.frame.body.setSelectionAreas(s,None,None)
         w = c.frame.body.bodyCtrl
@@ -4823,7 +4823,7 @@ def endEditing(self):
 
     c = self ; k = c.k
 
-    p = c.currentPosition()
+    p = c.p
 
     if p:
 
@@ -4853,7 +4853,7 @@ def redraw (self,p=None,setFocus=False):
         c.expandAllAncestors(p) # Redundant, but safe.
         c.selectPosition(p)
     else:
-        p = c.currentPosition()
+        p = c.p
         c.expandAllAncestors(p)
 
     c.frame.tree.redraw(p)
@@ -4939,7 +4939,7 @@ def expandNodeAndGoToFirstChild (self,event=None):
 
     """If a node has children, expand it if needed and go to the first child."""
 
-    c = self ; p = c.currentPosition()
+    c = self ; p = c.p
     if not p.hasChildren():
         c.treeFocusHelper()
         return
@@ -4951,7 +4951,7 @@ def expandNodeOrGoToFirstChild (self,event=None):
 
     """Simulate the Right Arrow Key in folder of Windows Explorer."""
 
-    c = self ; p = c.currentPosition()
+    c = self ; p = c.p
     if p.hasChildren():
         if not p.isExpanded():
             c.expandNode() # Calls redraw_after_expand.
@@ -4964,7 +4964,7 @@ def expandNode (self,event=None):
 
     '''Expand the presently selected node.'''
 
-    c = self ; p = c.currentPosition()
+    c = self ; p = c.p
 
     p.expand()
 
@@ -5005,7 +5005,7 @@ def select (self,p,scroll=True):
     if g.app.killed or self.tree_select_lockout: return None
 
     try:
-        c = self.c ; old_p = c.currentPosition()
+        c = self.c ; old_p = c.p
         val = 'break'
         self.tree_select_lockout = True
         c.frame.tree.beforeSelectHint(p,old_p)
@@ -5024,7 +5024,7 @@ def treeSelectHelper (self,p,scroll):
     body = w = frame.body.bodyCtrl
     if not w: return # Defensive.
 
-    old_p = c.currentPosition()
+    old_p = c.p
 
     if not p:
         # Do *not* test c.positionExists(p) here.
@@ -5045,7 +5045,7 @@ def treeSelectHelper (self,p,scroll):
         << select the new node >>
         if p and p != old_p: # Suppress duplicate call.
             try: # may fail during initialization.
-                # p is NOT c.currentPosition() here!
+                # p is NOT c.p here!
                 if 0: # Interferes with new colorizer.
                     self.canvas.update_idletasks()
                     self.scrollTo(p)
@@ -5139,7 +5139,7 @@ def endEditing(self):
 
     c = self ; k = c.k
 
-    p = c.currentPosition()
+    p = c.p
 
     if p:
 
@@ -5158,7 +5158,7 @@ def clone (self,event=None):
 
     '''Create a clone of the selected outline.'''
 
-    c = self ; u = c.undoer ; p = c.currentPosition()
+    c = self ; u = c.undoer ; p = c.p
     if not p: return
 
     undoData = c.undoer.beforeCloneNode(p)
@@ -5190,7 +5190,7 @@ def redraw (self,p=None,setFocus=False):
         c.expandAllAncestors(p) # Redundant, but safe.
         c.selectPosition(p)
     else:
-        p = c.currentPosition()
+        p = c.p
         c.expandAllAncestors(p)
 
     c.frame.tree.redraw(p)
@@ -5277,7 +5277,7 @@ def redraw (self,p=None,setFocus=False):
         c.expandAllAncestors(p) # Redundant, but safe.
         c.selectPosition(p)
     else:
-        p = c.currentPosition()
+        p = c.p
         c.expandAllAncestors(p)
 
     c.frame.tree.redraw(p)
@@ -5550,7 +5550,7 @@ def findAgain (self,event):
 
     f = self.finder
 
-    f.p = self.c.currentPosition()
+    f.p = self.c.p
     f.v = self.finder.p.v
 
     # This handles the reverse option.
@@ -5584,7 +5584,7 @@ def generalChangeHelper (self,find_pattern,change_pattern,changeAll=False):
 
     c.widgetWantsFocusNow(self.w)
 
-    self.finder.p = self.c.currentPosition()
+    self.finder.p = self.c.p
     self.finder.v = self.finder.p.v
 
     # Bug fix: 2007-12-14: remove call to self.finder.findNextCommand.
@@ -5605,7 +5605,7 @@ def generalSearchHelper (self,pattern,cloneFindAll=False,findAll=False):
 
     c.widgetWantsFocusNow(self.w)
 
-    self.finder.p = self.c.currentPosition()
+    self.finder.p = self.c.p
     self.finder.v = self.finder.p.v
 
     if findAll:
@@ -5760,7 +5760,7 @@ def setupArgs (self,forward=False,regexp=False,word=False):
         if val is not None:
             self.setOption(ivar,val)
 
-    h.p = p = self.c.currentPosition()
+    h.p = p = self.c.p
     h.v = p.v
     h.update_ivars()
     self.showFindOptions()
@@ -6011,7 +6011,7 @@ def showFindOptions (self,event):
 def toggleFindCollapesNodes(self,event):
     '''Toggle the 'Collapse Nodes' checkbox in the find tab.'''
     # return self.toggleOption('collapse_nodes')
-    c = self.c ; p = c.currentPosition()
+    c = self.c ; p = c.p
     val = c.config.getBool('collapse_nodes_during_finds')
     c.config.set(p,'collapse_nodes_during_finds',not val)
     g.es('collapse_nodes_during_finds',c.config.getBool('collapse_nodes_during_finds'))
@@ -6275,7 +6275,7 @@ def iSearchHelper (self,event):
     isearches do not cross node boundaries.'''
 
     c = self.c ; gui = g.app.gui ; k = self.k ; w = self.w
-    p = c.currentPosition()
+    p = c.p
     self.searchString = pattern = k.getLabel(ignorePrompt=True)
     if not pattern: return
     s = w.getAllText()
@@ -6421,7 +6421,7 @@ def endEditing(self):
 
     c = self ; k = c.k
 
-    p = c.currentPosition()
+    p = c.p
 
     if p:
 
@@ -6465,7 +6465,7 @@ def select (self,p,scroll=True):
     if g.app.killed or self.tree_select_lockout: return None
 
     try:
-        c = self.c ; old_p = c.currentPosition()
+        c = self.c ; old_p = c.p
         val = 'break'
         self.tree_select_lockout = True
         c.frame.tree.beforeSelectHint(p,old_p)
@@ -6484,7 +6484,7 @@ def treeSelectHelper (self,p,scroll):
     body = w = frame.body.bodyCtrl
     if not w: return # Defensive.
 
-    old_p = c.currentPosition()
+    old_p = c.p
 
     if not p:
         # Do *not* test c.positionExists(p) here.
@@ -6505,7 +6505,7 @@ def treeSelectHelper (self,p,scroll):
         << select the new node >>
         if p and p != old_p: # Suppress duplicate call.
             try: # may fail during initialization.
-                # p is NOT c.currentPosition() here!
+                # p is NOT c.p here!
                 if 0: # Interferes with new colorizer.
                     self.canvas.update_idletasks()
                     self.scrollTo(p)
@@ -6623,7 +6623,7 @@ def pasteOutline(self,event=None,reassignIndices=True):
     '''Paste an outline into the present outline from the clipboard.
     Nodes do *not* retain their original identify.'''
 
-    c = self ; u = c.undoer ; current = c.currentPosition()
+    c = self ; u = c.undoer ; current = c.p
     s = g.app.gui.getTextFromClipboard()
     pasteAsClone = not reassignIndices
     undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
@@ -6792,7 +6792,7 @@ def defineClassesDict (self):
 #@+node:ekr.20061031131434.7:defineObjectDict
 def defineObjectDict (self):
 
-    c = self.c ; k = c.k ; p = c.currentPosition()
+    c = self.c ; k = c.k ; p = c.p
 
     table = [
         # Python globals...
@@ -6864,7 +6864,7 @@ def autoComplete (self,event=None,force=False):
 
     # Don't allow autocompletion in headlines.
     if not c.widget_name(w).startswith('head'):
-        self.language = g.scanForAtLanguage(c,c.currentPosition())
+        self.language = g.scanForAtLanguage(c,c.p)
         if w and self.language == 'python' and (k.enable_autocompleter or force):
             self.start(event=event,w=w)
 
@@ -6925,7 +6925,7 @@ def getExternalCompletions (self,s,p=None,language='python'):
     - completions is the list of valid completions.'''
 
     c = self.c ; k = c.k
-    if not p: p = c.currentPosition()
+    if not p: p = c.p
 
     # Use a separate widget containing just s.
     self.widget = w = leoFrame.stringTextWidget(c,'compute-completions-widget')
@@ -7675,7 +7675,7 @@ def setSelection (self,s):
     w.setSelectionRange(i,j,insert=j)
 
     # New in Leo 4.4.2: recolor immediately to preserve the new selection in the new colorizer.
-    c.frame.body.recolor(c.currentPosition(),incremental=True)
+    c.frame.body.recolor(c.p,incremental=True)
     # Usually this call will have no effect because the body text has not changed.
     c.frame.body.onBodyChanged('Typing')
 #@-node:ekr.20061031131434.45:setSelection
@@ -8084,7 +8084,7 @@ def scan (self):
 
     c = self.c
 
-    className,obj,p = self.findParentClass(c.currentPosition())
+    className,obj,p = self.findParentClass(c.p)
     # g.trace(className,obj,p)
 
     if p and not obj:
@@ -8743,7 +8743,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     c,frame = createFrame(fileName,relativeFileName,script)
     if not frame: return
     finishInitApp(c)
-    p = c.currentPosition()
+    p = c.p
     g.app.initComplete = True
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
     if c.config.getBool('allow_idle_time_hook'): g.enableIdleTimeHook()
@@ -8796,7 +8796,7 @@ def createFrame (fileName,relativeFileName,script):
     g.doHook("new",old_c=None,c=c,new_c=c)
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.currentPosition()
+    p = c.p
     if not g.doHook("menu1",c=frame.c,p=p,v=p):
         frame.menu.createMenuBar(frame)
         c.updateRecentFiles(relativeFileName or fileName)
@@ -9429,7 +9429,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     c,frame = createFrame(fileName,relativeFileName,script)
     if not frame: return
     finishInitApp(c)
-    p = c.currentPosition()
+    p = c.p
     g.app.initComplete = True
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
     if c.config.getBool('allow_idle_time_hook'): g.enableIdleTimeHook()
@@ -9482,7 +9482,7 @@ def createFrame (fileName,relativeFileName,script):
     g.doHook("new",old_c=None,c=c,new_c=c)
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.currentPosition()
+    p = c.p
     if not g.doHook("menu1",c=frame.c,p=p,v=p):
         frame.menu.createMenuBar(frame)
         c.updateRecentFiles(relativeFileName or fileName)
@@ -10706,7 +10706,7 @@ def os_path_expandExpression (s,**keys):
             try:
                 import os
                 import sys
-                p = c.currentPosition()
+                p = c.p
                 d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
                 val = eval(exp,d)
                 s = s[:i] + str(val) + s[j+2:]
@@ -11250,7 +11250,7 @@ def scanAllDirectives(self,p=None):
 
     Returns a dict containing the results, including defaults.'''
 
-    c = self ; p = p or c.currentPosition()
+    c = self ; p = p or c.p
 
     # Set defaults
     language = c.target_language and c.target_language.lower()
@@ -12420,7 +12420,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     c,frame = createFrame(fileName,relativeFileName,script)
     if not frame: return
     finishInitApp(c)
-    p = c.currentPosition()
+    p = c.p
     g.app.initComplete = True
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
     if c.config.getBool('allow_idle_time_hook'): g.enableIdleTimeHook()
@@ -12473,7 +12473,7 @@ def createFrame (fileName,relativeFileName,script):
     g.doHook("new",old_c=None,c=c,new_c=c)
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.currentPosition()
+    p = c.p
     if not g.doHook("menu1",c=frame.c,p=p,v=p):
         frame.menu.createMenuBar(frame)
         c.updateRecentFiles(relativeFileName or fileName)
@@ -13044,7 +13044,7 @@ def openWithFileName(fileName,old_c,
     # Bug fix in 4.4.
     frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-    p = c.currentPosition()
+    p = c.p
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
     if not g.doHook("menu1",c=c,p=p,v=p):
         frame.menu.createMenuBar(frame)
@@ -13108,7 +13108,7 @@ def createFrame (fileName,relativeFileName,script):
     g.doHook("new",old_c=None,c=c,new_c=c)
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.currentPosition()
+    p = c.p
     if not g.doHook("menu1",c=frame.c,p=p,v=p):
         frame.menu.createMenuBar(frame)
         c.updateRecentFiles(relativeFileName or fileName)
@@ -13286,7 +13286,7 @@ def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
         self.restoreDescendentAttributes()
 
     self.setPositionsFromVnodes()
-    c.selectVnode(c.currentPosition()) # load body pane
+    c.selectVnode(c.p) # load body pane
 
     self.initAllParents()
 
@@ -13436,7 +13436,7 @@ def createFrame (fileName,relativeFileName,script):
     g.doHook("new",old_c=None,c=c,new_c=c)
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.currentPosition()
+    p = c.p
     if not g.doHook("menu1",c=frame.c,p=p,v=p):
         frame.menu.createMenuBar(frame)
         c.updateRecentFiles(relativeFileName or fileName)
@@ -13683,7 +13683,7 @@ def openWithFileName(fileName,old_c,
     # Bug fix in 4.4.
     frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-    p = c.currentPosition()
+    p = c.p
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
     if not g.doHook("menu1",c=c,p=p,v=p):
         frame.menu.createMenuBar(frame)
@@ -13747,20 +13747,20 @@ def openWrapperLeoFile (old_c,fileName,gui):
         except IOError:
             g.es_print("can not open: ",fileName,color='red')
             return None,None
-        p = c.currentPosition()
+        p = c.p
         if p:
             p.setHeadString(fileName)
             p.setBodyString(s)
     else:  # Import the file into the new outline.
         junk,ext = g.os_path_splitext(fileName)
-        p = c.currentPosition()
+        p = c.p
         p = c.importCommands.createOutline(fileName,parent=p,atAuto=False,ext=ext)
         c.setCurrentPosition(p)
         c.moveOutlineLeft()
-        p = c.currentPosition()
+        p = c.p
         c.setCurrentPosition(p.back())
         c.deleteOutline(op_name=None)
-        p = c.currentPosition()
+        p = c.p
         p.expand()
 
     # chapterController.finishCreate must be called after the first real redraw
@@ -13945,7 +13945,7 @@ def defineClassesDict (self):
 #@+node:ekr.20061031131434.7:defineObjectDict
 def defineObjectDict (self):
 
-    c = self.c ; k = c.k ; p = c.currentPosition()
+    c = self.c ; k = c.k ; p = c.p
 
     table = [
         # Python globals...
@@ -14017,7 +14017,7 @@ def autoComplete (self,event=None,force=False):
 
     # Don't allow autocompletion in headlines.
     if not c.widget_name(w).startswith('head'):
-        self.language = g.scanForAtLanguage(c,c.currentPosition())
+        self.language = g.scanForAtLanguage(c,c.p)
         if w and self.language == 'python' and (k.enable_autocompleter or force):
             self.start(event=event,w=w)
 
@@ -14078,7 +14078,7 @@ def getExternalCompletions (self,s,p=None,language='python'):
     - completions is the list of valid completions.'''
 
     c = self.c ; k = c.k
-    if not p: p = c.currentPosition()
+    if not p: p = c.p
 
     # Use a separate widget containing just s.
     self.widget = w = leoFrame.stringTextWidget(c,'compute-completions-widget')
@@ -14828,7 +14828,7 @@ def setSelection (self,s):
     w.setSelectionRange(i,j,insert=j)
 
     # New in Leo 4.4.2: recolor immediately to preserve the new selection in the new colorizer.
-    c.frame.body.recolor(c.currentPosition(),incremental=True)
+    c.frame.body.recolor(c.p,incremental=True)
     # Usually this call will have no effect because the body text has not changed.
     c.frame.body.onBodyChanged('Typing')
 #@-node:ekr.20061031131434.45:setSelection
@@ -15237,7 +15237,7 @@ def scan (self):
 
     c = self.c
 
-    className,obj,p = self.findParentClass(c.currentPosition())
+    className,obj,p = self.findParentClass(c.p)
     # g.trace(className,obj,p)
 
     if p and not obj:
@@ -15384,7 +15384,7 @@ def defineClassesDict (self):
 #@+node:ekr.20061031131434.7:defineObjectDict
 def defineObjectDict (self):
 
-    c = self.c ; k = c.k ; p = c.currentPosition()
+    c = self.c ; k = c.k ; p = c.p
 
     table = [
         # Python globals...
@@ -15573,7 +15573,7 @@ def getExternalCompletions (self,s,p=None,language='python'):
     - completions is the list of valid completions.'''
 
     c = self.c ; k = c.k
-    if not p: p = c.currentPosition()
+    if not p: p = c.p
 
     # Use a separate widget containing just s.
     self.widget = w = leoFrame.stringTextWidget(c,'compute-completions-widget')
@@ -16009,7 +16009,7 @@ def executeScript(self,event=None,args=None,p=None,script=None,
             script += '\n' # Make sure we end the script properly.
             # g.pr('*** script',script)
             try:
-                p = c.currentPosition()
+                p = c.p
                 d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
                 if define_name: d['__name__'] = define_name
                 if args:
@@ -17587,7 +17587,7 @@ def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
         self.restoreDescendentAttributes()
 
     self.setPositionsFromVnodes()
-    c.selectVnode(c.currentPosition()) # load body pane
+    c.selectVnode(c.p) # load body pane
 
     self.initAllParents()
 
@@ -18085,7 +18085,7 @@ def extendHelper (self,w,extend,spot,upOrDown=False):
     extend: Clear the selection unless this is True.
     spot:   The *new* insert point.
     '''
-    c = self.c ; p = c.currentPosition()
+    c = self.c ; p = c.p
     extend = extend or self.extendMode
     ins = w.getInsertPoint()
     i,j = w.getSelectionRange()
@@ -18361,7 +18361,7 @@ def setMoveCol (self,w,spot):
 
     '''Set the column to which an up or down arrow will attempt to move.'''
 
-    c = self.c ; p = c.currentPosition()
+    c = self.c ; p = c.p
     s = w.getAllText()
     i = w.toPythonIndex(spot)
     junk,col = g.convertPythonIndexToRowCol(s,i)
@@ -18828,7 +18828,6 @@ class posList(list):
 #@-node:ekr.20090130114732.2:<< docstring for posList >>
 #@-node:ekr.20090128083459.82:g.posList
 #@-node:ekr.20090130114732.1:Added g.posList
-#@clone 2
 #@+node:ekr.20090128083459.77:Added properties to leoNodes.py
 #@+node:ekr.20040305223225:c.setHeadString
 def setHeadString (self,p,s,encoding="utf-8"):
@@ -19960,7 +19959,7 @@ def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
         self.restoreDescendentAttributes()
 
     self.setPositionsFromVnodes()
-    c.selectVnode(c.currentPosition()) # load body pane
+    c.selectVnode(c.p) # load body pane
 
     self.initAllParents()
 

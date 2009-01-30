@@ -598,7 +598,7 @@ class baseFileCommands:
 
         '''The check-leo-file command.'''
 
-        fc = self ; c = fc.c ; p = c.currentPosition()
+        fc = self ; c = fc.c ; p = c.p
 
         # Put the body (minus the @nocolor) into the file buffer.
         s = p.b ; tag = '@nocolor\n'
@@ -629,7 +629,7 @@ class baseFileCommands:
 
         '''Read a Leo outline from string s in clipboard format.'''
 
-        c = self.c ; current = c.currentPosition() ; check = not reassignIndices
+        c = self.c ; current = c.p ; check = not reassignIndices
 
         # Save the hidden root's children.
         children = c.hiddenRootNode.t.children
@@ -766,7 +766,7 @@ class baseFileCommands:
             self.restoreDescendentAttributes()
 
         self.setPositionsFromVnodes()
-        c.selectVnode(c.currentPosition()) # load body pane
+        c.selectVnode(c.p) # load body pane
 
         self.initAllParents()
 
@@ -830,7 +830,7 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.3029:readAtFileNodes (fileCommands)
     def readAtFileNodes (self):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
 
         c.atFileCommands.readAll(p,partialFlag=True)
         c.redraw()
@@ -1538,7 +1538,7 @@ class baseFileCommands:
             #@+node:ekr.20031218072017.1972:<< count the number of tnodes >>
             c.clearAllVisited()
 
-            for p in c.currentPosition().self_and_subtree_iter():
+            for p in c.p.self_and_subtree_iter():
                 t = p.v.t
                 if t and not t.isWriteBit():
                     t.setWriteBit()
@@ -1714,7 +1714,7 @@ class baseFileCommands:
         #@    << write only those tnodes that were referenced >>
         #@+node:ekr.20031218072017.1576:<< write only those tnodes that were referenced >>
         if self.usingClipboard: # write the current tree.
-            theIter = c.currentPosition().self_and_subtree_iter()
+            theIter = c.p.self_and_subtree_iter()
         else: # write everything
             theIter = c.all_positions_with_unique_tnodes_iter()
 
@@ -1877,7 +1877,7 @@ class baseFileCommands:
         self.put("<vnodes>\n")
 
         # Make only one copy for all calls.
-        self.currentPosition = c.currentPosition() 
+        self.currentPosition = c.p 
         self.rootPosition    = c.rootPosition()
         # self.topPosition     = c.topPosition()
         self.vnodesDict = {}
@@ -2157,7 +2157,7 @@ class baseFileCommands:
 
         '''Write all missing @file nodes.'''
 
-        c = self.c ; at = c.atFileCommands ; p = c.currentPosition()
+        c = self.c ; at = c.atFileCommands ; p = c.p
 
         if p:
             changedFiles = at.writeMissing(p)

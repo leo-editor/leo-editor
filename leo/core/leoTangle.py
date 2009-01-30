@@ -577,7 +577,7 @@ class baseTangleCommands:
     def tangle(self,event=None,p=None):
 
         c = self.c
-        if not p: p = c.currentPosition()
+        if not p: p = c.p
         self.initTangleCommand()
 
         # Paul Paterson's patch.
@@ -737,7 +737,7 @@ class baseTangleCommands:
     #@+node:ekr.20031218072017.3478:untangle
     def untangle(self,event=None):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         self.initUntangleCommand()
 
         self.untangleTree(p,report_errors)

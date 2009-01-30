@@ -134,13 +134,13 @@ class baseLeoPlugin(object):
                 self.setMenuItem('Cmds', 'Ciao baby', self.ciao)
 
             def hello(self, event):
-                g.pr("hello from node %s" % self.c.currentPosition().h)
+                g.pr("hello from node %s" % self.c.p.h)
 
             def hola(self, event):
-                g.pr("hola from node %s" % self.c.currentPosition().h)
+                g.pr("hola from node %s" % self.c.p.h)
 
             def ciao(self, event):
-                g.pr("ciao baby (%s)" % self.c.currentPosition().h)
+                g.pr("ciao baby (%s)" % self.c.p.h)
 
 
         leoPlugins.registerHandler("after-create-leo-frame", Hello)

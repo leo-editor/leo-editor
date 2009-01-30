@@ -2223,7 +2223,7 @@ def openWithFileName(fileName,old_c,
     # Bug fix in 4.4.
     frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-    p = c.currentPosition()
+    p = c.p
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
     if not g.doHook("menu1",c=c,p=p,v=p):
         frame.menu.createMenuBar(frame)
@@ -2308,20 +2308,20 @@ def openWrapperLeoFile (old_c,fileName,gui):
         except IOError:
             g.es_print("can not open: ",fileName,color='red')
             return None,None
-        p = c.currentPosition()
+        p = c.p
         if p:
             p.setHeadString(fileName)
             p.setBodyString(s)
     else:  # Import the file into the new outline.
         junk,ext = g.os_path_splitext(fileName)
-        p = c.currentPosition()
+        p = c.p
         p = c.importCommands.createOutline(fileName,parent=p,atAuto=False,ext=ext)
         c.setCurrentPosition(p)
         c.moveOutlineLeft()
-        p = c.currentPosition()
+        p = c.p
         c.setCurrentPosition(p.back())
         c.deleteOutline(op_name=None)
-        p = c.currentPosition()
+        p = c.p
         p.expand()
 
     # chapterController.finishCreate must be called after the first real redraw
@@ -3292,7 +3292,7 @@ def os_path_expandExpression (s,**keys):
             try:
                 import os
                 import sys
-                p = c.currentPosition()
+                p = c.p
                 d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
                 val = eval(exp,d)
                 s = s[:i] + str(val) + s[j+2:]
@@ -4255,7 +4255,7 @@ def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
     import leo.core.leoGlobals as g
 
     # Find the scripts.
-    p = c.currentPosition()
+    p = c.p
     u = leoTest.testUtils(c)
     find_p = u.findNodeInTree(p,findHeadline)
     if find_p:
@@ -5150,13 +5150,13 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
     at = c.atFileCommands ; w = c.frame.body.bodyCtrl
     p1 = p and p.copy()
     if not p:
-        p = c.currentPosition()
+        p = c.p
     try:
         if g.app.inBridge:
             s = p.b
         elif p1:
             s = p.b # Bug fix: Leo 8.8.4.
-        elif p == c.currentPosition():
+        elif p == c.p:
             if useSelectedText and w.hasSelection():
                 s = w.getSelectedText()
             else:

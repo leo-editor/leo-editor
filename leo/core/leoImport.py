@@ -353,7 +353,7 @@ class leoImportCommands (scanUtility):
     def exportHeadlines (self,fileName):
 
         c = self.c ; nl = self.output_newline
-        p = c.currentPosition()
+        p = c.p
         if not p: return
         self.setEncoding()
         firstLevel = p.level()
@@ -404,7 +404,7 @@ class leoImportCommands (scanUtility):
     def outlineToWeb (self,fileName,webType):
 
         c = self.c ; nl = self.output_newline
-        current = c.currentPosition()
+        current = c.p
         if not current: return
         self.setEncoding()
         self.webType = webType
@@ -535,7 +535,7 @@ class leoImportCommands (scanUtility):
     def weave (self,filename):
 
         c = self.c ; nl = self.output_newline
-        p = c.currentPosition()
+        p = c.p
         if not p: return
         self.setEncoding()
         #@    << open filename to f, or return >>
@@ -606,7 +606,7 @@ class leoImportCommands (scanUtility):
         if not c or not p: return
 
         s = g.toUnicode(s,encoding)
-        current = c.currentPosition()
+        current = c.p
         if current and p.v.t==current.v.t:
             c.frame.body.setSelectionAreas(s,None,None)
             w = c.frame.body.bodyCtrl
@@ -757,7 +757,7 @@ class leoImportCommands (scanUtility):
 
         # c.scanAllDirectives checks the encoding: may return None.
         c = self.c
-        if p is None: p = c.currentPosition()
+        if p is None: p = c.p
         theDict = c.scanAllDirectives(p)
         encoding = theDict.get("encoding")
         if encoding and g.isValidEncoding(encoding):
@@ -856,7 +856,7 @@ class leoImportCommands (scanUtility):
     def readAtAutoNodes (self):
 
         c = self.c
-        p = c.currentPosition() ; after = p.nodeAfterTree()
+        p = c.p ; after = p.nodeAfterTree()
 
         found = False
         while p and p != after:
@@ -896,7 +896,7 @@ class leoImportCommands (scanUtility):
         # Not a command.  It must *not* have an event arg.
 
         c = self.c ; u = c.undoer ; command = 'Import'
-        at = c.atFileCommands ; current = c.currentPosition()
+        at = c.atFileCommands ; current = c.p
         self.tab_width = self.getTabWidth()
         if not paths: return
         u.beforeChangeGroup(current,command)
@@ -1081,7 +1081,7 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20031218072017.3220:importFlattenedOutline
     def importFlattenedOutline (self,files): # Not a command, so no event arg.
 
-        c = self.c ; u = c.undoer ; current = c.currentPosition()
+        c = self.c ; u = c.undoer ; current = c.p
         if current == None: return
         if len(files) < 1: return
 
@@ -1188,7 +1188,7 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20031218072017.3226:importWebCommand
     def importWebCommand (self,files,webType):
 
-        c = self.c ; current = c.currentPosition()
+        c = self.c ; current = c.p
         if current == None: return
         if not files: return
         self.tab_width = self.getTabWidth() # New in 4.3.

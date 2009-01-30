@@ -104,7 +104,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     c,frame = createFrame(fileName,relativeFileName,script)
     if not frame: return
     finishInitApp(c)
-    p = c.currentPosition()
+    p = c.p
     g.app.initComplete = True
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
     if c.config.getBool('allow_idle_time_hook'): g.enableIdleTimeHook()
@@ -157,7 +157,7 @@ def createFrame (fileName,relativeFileName,script):
     g.doHook("new",old_c=None,c=c,new_c=c)
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.currentPosition()
+    p = c.p
     if not g.doHook("menu1",c=frame.c,p=p,v=p):
         frame.menu.createMenuBar(frame)
         c.updateRecentFiles(relativeFileName or fileName)

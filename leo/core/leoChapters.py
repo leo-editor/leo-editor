@@ -63,10 +63,10 @@ class chapterController:
                     else:
                         cc.chaptersDict[tabName] = chapter(c=c,chapterController=cc,name=tabName,root=p)
 
-        p = c.currentPosition()
+        p = c.p
         if c.positionExists(p):
             name = cc.findChapterNameForPosition(p) or 'main'
-            # g.trace('chapterController',name,c.currentPosition())
+            # g.trace('chapterController',name,c.p)
             cc.selectChapterByName(name)
         else:
             cc.selectChapterByName('main')
@@ -97,7 +97,7 @@ class chapterController:
     def cloneNodeToChapterHelper (self,toChapterName):
 
         cc = self ; c = cc.c ;  u = c.undoer ; undoType = 'Clone Node To Chapter'
-        p = c.currentPosition() ; h = p.h
+        p = c.p ; h = p.h
         fromChapter = cc.getSelectedChapter()
         toChapter = cc.getChapter(toChapterName)
         if not toChapter:
@@ -142,7 +142,7 @@ class chapterController:
         cc = self ; c = cc.c ; k = c.k ; tag = 'convert-node-to-chapter'
         state = k.getState(tag)
 
-        p = c.currentPosition()
+        p = c.p
         if p.h.startswith('@chapter'):
             cc.error('Can not create a new chapter from from an @chapter or @chapters node.')
             return
@@ -155,7 +155,7 @@ class chapterController:
             k.clearState()
             k.resetLabel()
             if k.arg:
-                cc.createChapterByName(k.arg,p=c.currentPosition(),
+                cc.createChapterByName(k.arg,p=c.p,
                     undoType='Convert Node To Chapter')
     #@-node:ekr.20070608072116:cc.convertNodeToChapter
     #@+node:ekr.20070317085437.51:cc.copyNodeToChapter & helper
@@ -182,7 +182,7 @@ class chapterController:
     def copyNodeToChapterHelper (self,toChapterName):
 
         cc = self ; c = cc.c ; u = c.undoer ; undoType = 'Copy Node To Chapter'
-        p = c.currentPosition() ; h = p.h
+        p = c.p ; h = p.h
         fromChapter = cc.getSelectedChapter()
         toChapter = cc.getChapter(toChapterName)
         if not toChapter:
@@ -241,7 +241,7 @@ class chapterController:
         if theChapter:
             return cc.error('Duplicate chapter name: %s' % name)
 
-        bunch = cc.beforeCreateChapter(c.currentPosition(),oldChapter.name,name,undoType)
+        bunch = cc.beforeCreateChapter(c.p,oldChapter.name,name,undoType)
         if undoType == 'Convert Node To Chapter':
             root = p.insertAfter()
             root.initHeadString('@chapter %s' % name)
@@ -255,7 +255,7 @@ class chapterController:
 
         cc.chaptersDict[name] = chapter(c=c,chapterController=cc,name=name,root=root)
         cc.selectChapterByName(name)
-        cc.afterCreateChapter(bunch,c.currentPosition())
+        cc.afterCreateChapter(bunch,c.p)
 
         # g.es('created chapter',name,color='blue')
         return True
@@ -270,7 +270,7 @@ class chapterController:
         cc = self ; c = cc.c ; k = c.k ; tag = 'create-chapter-from-node'
         state = k.getState(tag)
 
-        p = c.currentPosition()
+        p = c.p
         if p.h.startswith('@chapter'):
             cc.error('Can not create a new chapter from from an @chapter or @chapters node.')
             return
@@ -310,7 +310,7 @@ class chapterController:
     def moveNodeToChapterHelper (self,toChapterName):
 
         cc = self ; c = cc.c ; u = c.undoer ; undoType = 'Move Node To Chapter'
-        p = c.currentPosition()
+        p = c.p
         fromChapter = cc.getSelectedChapter()
         toChapter = cc.getChapter(toChapterName)
         if not toChapter:
@@ -378,12 +378,12 @@ class chapterController:
         if not theChapter: return
 
         savedRoot = theChapter.root
-        bunch = cc.beforeRemoveChapter(c.currentPosition(),name,savedRoot)
+        bunch = cc.beforeRemoveChapter(c.p,name,savedRoot)
         cc.deleteChapterNode(name)
         del cc.chaptersDict[name] # Do this after calling deleteChapterNode.
         if tt:tt.destroyTab(name)
         cc.selectChapterByName('main')
-        cc.afterRemoveChapter(bunch,c.currentPosition())
+        cc.afterRemoveChapter(bunch,c.p)
         c.redraw()
     #@nonl
     #@-node:ekr.20070606075434:cc.removeChapterByName
@@ -489,7 +489,7 @@ class chapterController:
         Use p for the first child, or create a first child if p is None.'''
 
         cc = self ; c = cc.c
-        current = c.currentPosition() or c.rootPosition()
+        current = c.p or c.rootPosition()
 
         # Create the node with a postion method
         # so we don't involve the undo logic.
@@ -843,7 +843,7 @@ class chapter:
 
         # State variables: saved/restored when the chapter is unselected/selected.
         if self.name == 'main':
-            self.p = c.currentPosition() or c.rootPosition()
+            self.p = c.p or c.rootPosition()
             self.root = None # Not used.
         else:
             self.p = None # Set later.
@@ -1000,7 +1000,7 @@ class chapter:
 
         c = self.c ; cc = self.cc
         self.hoistStack = c.hoistStack[:]
-        self.p = c.currentPosition()
+        self.p = c.p
         if self.trace: g.trace('chapter',self.name,'p',self.p.h)
     #@-node:ekr.20070320091806.1:chapter.unselect
     #@-others

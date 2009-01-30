@@ -188,7 +188,7 @@ class autoCompleterClass:
     #@+node:ekr.20061031131434.7:defineObjectDict
     def defineObjectDict (self):
 
-        c = self.c ; k = c.k ; p = c.currentPosition()
+        c = self.c ; k = c.k ; p = c.p
 
         table = [
             # Python globals...
@@ -260,7 +260,7 @@ class autoCompleterClass:
 
         # Don't allow autocompletion in headlines.
         if not c.widget_name(w).startswith('head'):
-            self.language = g.scanForAtLanguage(c,c.currentPosition())
+            self.language = g.scanForAtLanguage(c,c.p)
             if w and self.language == 'python' and (k.enable_autocompleter or force):
                 self.start(event=event,w=w)
 
@@ -321,7 +321,7 @@ class autoCompleterClass:
         - completions is the list of valid completions.'''
 
         c = self.c ; k = c.k
-        if not p: p = c.currentPosition()
+        if not p: p = c.p
 
         # Use a separate widget containing just s.
         self.widget = w = leoFrame.stringTextWidget(c,'compute-completions-widget')
@@ -1077,7 +1077,7 @@ class autoCompleterClass:
         w.setSelectionRange(i,j,insert=j)
 
         # New in Leo 4.4.2: recolor immediately to preserve the new selection in the new colorizer.
-        c.frame.body.recolor(c.currentPosition(),incremental=True)
+        c.frame.body.recolor(c.p,incremental=True)
         # Usually this call will have no effect because the body text has not changed.
         c.frame.body.onBodyChanged('Typing')
     #@-node:ekr.20061031131434.45:setSelection
@@ -1488,7 +1488,7 @@ class autoCompleterClass:
 
             c = self.c
 
-            className,obj,p = self.findParentClass(c.currentPosition())
+            className,obj,p = self.findParentClass(c.p)
             # g.trace(className,obj,p)
 
             if p and not obj:

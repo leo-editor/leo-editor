@@ -148,7 +148,7 @@ The rest is from Leo's Chapter 18::
 
     ; Step 3: execute a script in ut.leo.
     (setq c (leo-open fileName))
-    (setq script "print 'c',c.shortFileName() ,'current:',c.currentPosition().h")
+    (setq script "print 'c',c.shortFileName() ,'current:',c.p.h")
     (leo-run-script c script)
 #@nonl
 #@-node:ekr.20071102191642.1:xemacs/pymacs install notes
@@ -2270,8 +2270,7 @@ The general plan is this:
 
 The beforeCommand method creates a g.Bunch that contains all the information needed to
 restore the outline to its previous state. Typically, the beforeCommand method
-will call c.undoer.createCommonBunch(p), where p is, as usual,
-c.currentPosition().
+will call c.undoer.createCommonBunch(p), where p is, as usual, c.p.
 
 2. After changing the outline the command handler calls an **afterCommand** method.
 
