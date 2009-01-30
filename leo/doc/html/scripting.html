@@ -415,8 +415,8 @@ information in a Leo outline. For example, as discussed below, the following
 script will print every headline in the Leo outline in which the script occurs.</p>
 <blockquote>
 <dl class="docutils">
-<dt>for z in c.allNodes_iter():</dt>
-<dd>print z.headString()</dd>
+<dt>for p in c.allNodes_iter():</dt>
+<dd>print p.h</dd>
 </dl>
 </blockquote>
 </div>
@@ -467,16 +467,16 @@ for f in windows:
 g.es(p) # p is already defined.
 p = c.currentPosition() # get the current position.
 g.es(p)
-g.es(&quot;head:&quot;,p.headString())
-g.es(&quot;body:&quot;,p.bodyString())
+g.es(&quot;head:&quot;,p.h)
+g.es(&quot;body:&quot;,p.b)
 </pre>
 <p>Here is how to access data at position <tt class="docutils literal"><span class="pre">p</span></tt>.
 <strong>Note</strong>: these methods work whether or not <tt class="docutils literal"><span class="pre">p</span></tt> is the current position:</p>
 <pre class="literal-block">
-body = p.bodyString()
-head = p.headString()
-c.setBodyString(p,body) # set body text of p to body.
-c.setHeadString(p,head) # set headline text of p to head.
+body = p.b # get the body text.
+head = p.h # get the headline text.
+p.b = body # set body text of p to body.
+p.h = head # set headline text of p to head.
 </pre>
 <p><strong>Note</strong>: Sometimes you want to use text that <em>looks</em> like a section reference, but isn't.
 In such cases, you can use g.angleBrackets.  For example:</p>
@@ -570,9 +570,9 @@ g.es(&quot;%8s vnodes&quot; % len(tnodes.keys()))
 <p>The <tt class="docutils literal"><span class="pre">p.children_iter</span></tt> iterator returns a list of all children of position <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
 parent = p.parent()
-g.es(&quot;children of %s&quot; % parent.headString(),color=&quot;purple&quot;)
+g.es(&quot;children of %s&quot; % parent.h,color=&quot;purple&quot;)
 for p in parent.children_iter():
-    g.es(p.headString())
+    g.es(p.h)
 </pre>
 </div>
 <div class="section" id="p-parents-iter-p-self-and-parents-iter">
@@ -580,16 +580,16 @@ for p in parent.children_iter():
 <p>The <tt class="docutils literal"><span class="pre">p.parents_iter</span></tt> iterator returns a list of all parents of position <tt class="docutils literal"><span class="pre">p</span></tt>, excluding <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
 current = p.copy()
-g.es(&quot;exclusive of %s&quot; % current.headString(),color=&quot;purple&quot;)
+g.es(&quot;exclusive of %s&quot; % current.h,color=&quot;purple&quot;)
 for p in current.parents_iter():
-    g.es(p.headString())
+    g.es(p.h)
 </pre>
 <p>The <tt class="docutils literal"><span class="pre">p.self_and_parents_iter</span></tt> iterator returns a list of all parents of position <tt class="docutils literal"><span class="pre">p</span></tt>, including <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
 current = p.copy()
-g.es(&quot;inclusive parents of %s&quot; % current.headString(),color=&quot;purple&quot;)
+g.es(&quot;inclusive parents of %s&quot; % current.h,color=&quot;purple&quot;)
 for p in current.self_and_parents_iter():
-    g.es(p.headString())
+    g.es(p.h)
 </pre>
 </div>
 <div class="section" id="p-siblings-iter-p-following-siblings-iter">
@@ -597,16 +597,16 @@ for p in current.self_and_parents_iter():
 <p>The <tt class="docutils literal"><span class="pre">p.siblings_iter</span></tt> iterator returns a list of all siblings of position <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
 current = c.currentPosition()
-g.es(&quot;all siblings of %s&quot; % current.headString(),color=&quot;purple&quot;)
+g.es(&quot;all siblings of %s&quot; % current.h,color=&quot;purple&quot;)
 for p in current.self_and_siblings_iter():
-    g.es(p.headString())
+    g.es(p.h)
 </pre>
 <p>The <tt class="docutils literal"><span class="pre">p.following_siblings_iter</span></tt> iterator returns a list of all siblings that follow position <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
 current = c.currentPosition()
-g.es(&quot;following siblings of %s&quot; % current.headString(),color=&quot;purple&quot;)
+g.es(&quot;following siblings of %s&quot; % current.h,color=&quot;purple&quot;)
 for p in current.following_siblings_iter():
-    g.es(p.headString())
+    g.es(p.h)
 </pre>
 </div>
 <div class="section" id="p-subtree-iter-p-self-and-subtree-iter">
@@ -614,16 +614,16 @@ for p in current.following_siblings_iter():
 <p>The p.subtree_iter iterator returns a list of all positions in <tt class="docutils literal"><span class="pre">p</span></tt>'s subtree, excluding <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
 parent = p.parent()
-g.es(&quot;exclusive subtree of %s&quot; % parent.headString(),color=&quot;purple&quot;)
+g.es(&quot;exclusive subtree of %s&quot; % parent.h,color=&quot;purple&quot;)
 for p in parent.subtree_iter():
-    g.es(p.headString())
+    g.es(p.h)
 </pre>
 <p>The p.self_and_subtree_iter iterator returns a list of all positions in <tt class="docutils literal"><span class="pre">p</span></tt>'s subtree, including <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
 parent = p.parent()
-g.es(&quot;inclusive subtree of %s&quot; % parent.headString(),color=&quot;purple&quot;)
+g.es(&quot;inclusive subtree of %s&quot; % parent.h,color=&quot;purple&quot;)
 for p in parent.self_and_subtree_iter():
-    g.es(p.headString())
+    g.es(p.h)
 </pre>
 </div>
 <div class="section" id="testing-whether-a-position-is-valid">
@@ -656,11 +656,11 @@ trees:</p>
 d = {}
 for p in c.allNodes_iter():
     if p.v.t not in d:
-        print p.headString()
+        print p.h
         d[p.v.t] = p.v.t
 </pre>
 <p>As mentioned in the introduction, joined nodes share the same tnode. Thus, when
-we visit a position p we print p.headString() only if p.v.t is not already in
+we visit a position p we print p.h only if p.v.t is not already in
 the dictionary. We then enter p.v.t in the dictionary to prevent printing the
 headlines of any future node joined to p.v.</p>
 </div>
@@ -784,8 +784,8 @@ result = leoFindScript.findAll(c,pattern,bodyFlag=1)
 g.es(&quot;%-3d instances of: '%s'...\n&quot; % (len(result),pattern),color=&quot;purple&quot;)
 
 for v,pos in result:
-    body = v.bodyString()
-    g.es('\n%-4d %s' % (pos,v.headString()))
+    body = v.b
+    g.es('\n%-4d %s' % (pos,v.h))
     g.es(g.get_line_after(body,pos))
 </pre>
 <p>The <tt class="docutils literal"><span class="pre">reFindall</span></tt> function returns a list of tuples <tt class="docutils literal"><span class="pre">(v,mo,pos)</span></tt>, where <tt class="docutils literal"><span class="pre">mo</span></tt>
@@ -798,8 +798,8 @@ result = leoFindScript.reFindAll(c,pattern,bodyFlag=1,reFlags=None)
 
 g.es(&quot;%-3d instances of: '%s'...\n&quot; % (len(result),pattern),color=&quot;purple&quot;)
 for v,mo,pos in result:
-    body = v.bodyString()
-    g.es('\n%-4d %s' % (pos,v.headString()))
+    body = v.b
+    g.es('\n%-4d %s' % (pos,v.h))
     g.es(g.get_line_after(body,pos))
 </pre>
 </div>
@@ -1652,8 +1652,8 @@ p.self_and_subtree_iter    # returns all positions in p's subtree, including p.
 <p>Here are the most useful getters of the <tt class="docutils literal"><span class="pre">vnode</span></tt> and <tt class="docutils literal"><span class="pre">position</span></tt> classes.</p>
 <p>Returning strings:</p>
 <pre class="literal-block">
-p.bodyString() # the body string of p.
-p.headString() # the headline string of p.
+p.b # the body string of p.
+p.h # the headline string of p. A property.
 </pre>
 <p>Returning ints:</p>
 <pre class="literal-block">
@@ -1727,7 +1727,7 @@ if rst3: # already loaded.
     controller = rst3.controllers.get(c)
     if controller:
         for p in p.self_and_parents_iter():
-            if p.headString().startswith('&#64;rst '):
+            if p.h.startswith('&#64;rst '):
                 controller.processTree(p)
                 break
 else: # Just load the plugin.
@@ -1775,7 +1775,7 @@ flag,newFrame = g.openWithFileName(path,None)
 g.app.log.enable() # re-enable the log.
 
 for p in newFrame.c.allNodes_iter():
-    g.es(g.toEncodedString(p.headString(),&quot;utf-8&quot;))
+    g.es(g.toEncodedString(p.h,&quot;utf-8&quot;))
 </pre>
 </div>
 <div class="section" id="getting-interactive-input-from-scripts">

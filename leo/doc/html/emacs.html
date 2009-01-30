@@ -369,7 +369,7 @@ We can execute that script in the hidden Leo application as follows:</p>
 <p>For example:</p>
 <pre class="literal-block">
 (setq c (leo-open fileName)
-(csetq script &quot;print 'c',c,'h',c.currentPosition().headString()&quot;)
+(csetq script &quot;print 'c',c,'h',c.currentPosition().h&quot;)
 (leo-run-script c script)
 </pre>
 </blockquote>
@@ -391,7 +391,7 @@ We can execute that script in the hidden Leo application as follows:</p>
 
 ; Step 3: execute a script in ut.leo.
 (setq c (leo-open fileName))
-(setq script &quot;print 'c',c.shortFileName() ,'current:',c.currentPosition().headString()&quot;)
+(setq script &quot;print 'c',c.shortFileName() ,'current:',c.currentPosition().h&quot;)
 (leo-run-script c script)
 </pre>
 </div>

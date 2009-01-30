@@ -3,27 +3,7 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
-#@+node:ekr.20090103054019.1:Urgent 5
-#@+node:ekr.20090109092314.1:Create a "minimal standards for bug reports"
-@nocolor-node
-
-The bug report must report *all* of the
-following:
-
-1. The version or versions of Leo used.
-
-2. The version or versions of Python used.
-
-3. The platform or platforms used: Linux, Windows, MacOs.
-
-4. A clear description of the problem.
-
-5. Information sufficient to recreate the problem.
-
-Furthermore, the bug report must be self contained.  It must be
-possible, six weeks or six months after the report was first file, to
-understand the report as it stands.
-#@-node:ekr.20090109092314.1:Create a "minimal standards for bug reports"
+#@+node:ekr.20090103054019.1:Urgent 4
 #@+node:ekr.20090123073710.6:Fix Mark Edgington's @shadow bug
 @nocolor-node
 
@@ -92,7 +72,7 @@ of the nodes would load from the file.
 #@-node:ekr.20090105083748.1:** Fix xml write bug
 #@+node:ekr.20090105132011.2:** Fix whitespace problems with @auto/@shadow
 #@-node:ekr.20090105132011.2:** Fix whitespace problems with @auto/@shadow
-#@-node:ekr.20090103054019.1:Urgent 5
+#@-node:ekr.20090103054019.1:Urgent 4
 #@+node:ekr.20081215070651.4:Bugs 12
 #@+node:ekr.20090130065000.3:t.uA's are not persistent
 @nocolor-node

@@ -18828,6 +18828,7 @@ class posList(list):
 #@-node:ekr.20090130114732.2:<< docstring for posList >>
 #@-node:ekr.20090128083459.82:g.posList
 #@-node:ekr.20090130114732.1:Added g.posList
+#@clone 2
 #@+node:ekr.20090128083459.77:Added properties to leoNodes.py
 #@+node:ekr.20040305223225:c.setHeadString
 def setHeadString (self,p,s,encoding="utf-8"):

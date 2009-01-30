@@ -3950,9 +3950,9 @@ In Python it is very easy to write a script that will blindly execute other scri
     # Execute the body text of all nodes that start with `@script`.
     def onLoadFile():
         for p in c.allNodes_iter():
-            h = p.headString().lower()
+            h = p.h.lower()
             if g.match_word(h,0,"@script"):
-                s = p.bodyString()
+                s = p.b
                 if s and len(s) &gt; 0:
                     try: # SECURITY BREACH: s may be malicious!
                         exec(s + '\n')
@@ -6742,16 +6742,16 @@ controls where output for each stream goes.
     g.es(p) # p is already defined.
     p = c.currentPosition() # get the current position.
     g.es(p)
-    g.es("head:",p.headString())
-    g.es("body:",p.bodyString())
+    g.es("head:",p.h)
+    g.es("body:",p.b)
 
 Here is how to access data at position ``p``.
 **Note**: these methods work whether or not ``p`` is the current position::
 
-    body = p.bodyString()
-    head = p.headString()
-    c.setBodyString(p,body) # set body text of p to body.
-    c.setHeadString(p,head) # set headline text of p to head.
+    body = p.b # get the body text.
+    head = p.h # get the headline text.
+    p.b = body # set body text of p to body.
+    p.h = head # set headline text of p to head.
     
 **Note**: Sometimes you want to use text that *looks* like a section reference, but isn't.
 In such cases, you can use g.angleBrackets.  For example::
@@ -6786,48 +6786,48 @@ Here is a way to count the *distinct* vnodes of an outline::
 <t tx="ekr.20040403173920.13">The ``p.children_iter`` iterator returns a list of all children of position ``p``::
 
     parent = p.parent()
-    g.es("children of %s" % parent.headString(),color="purple")
+    g.es("children of %s" % parent.h,color="purple")
     for p in parent.children_iter():
-        g.es(p.headString())</t>
+        g.es(p.h)</t>
 <t tx="ekr.20040403173920.14">The ``p.parents_iter`` iterator returns a list of all parents of position ``p``, excluding ``p``::
 
     current = p.copy()
-    g.es("exclusive of %s" % current.headString(),color="purple")
+    g.es("exclusive of %s" % current.h,color="purple")
     for p in current.parents_iter():
-        g.es(p.headString())
+        g.es(p.h)
 
 The ``p.self_and_parents_iter`` iterator returns a list of all parents of position ``p``, including ``p``::
 
     current = p.copy()
-    g.es("inclusive parents of %s" % current.headString(),color="purple")
+    g.es("inclusive parents of %s" % current.h,color="purple")
     for p in current.self_and_parents_iter():
-        g.es(p.headString())    </t>
+        g.es(p.h)    </t>
 <t tx="ekr.20040403173920.15">The ``p.siblings_iter`` iterator returns a list of all siblings of position ``p``::
 
     current = c.currentPosition()
-    g.es("all siblings of %s" % current.headString(),color="purple")
+    g.es("all siblings of %s" % current.h,color="purple")
     for p in current.self_and_siblings_iter():
-        g.es(p.headString())
+        g.es(p.h)
 
 The ``p.following_siblings_iter`` iterator returns a list of all siblings that follow position ``p``::
 
     current = c.currentPosition()
-    g.es("following siblings of %s" % current.headString(),color="purple")
+    g.es("following siblings of %s" % current.h,color="purple")
     for p in current.following_siblings_iter():
-        g.es(p.headString())</t>
+        g.es(p.h)</t>
 <t tx="ekr.20040403173920.16">The p.subtree_iter iterator returns a list of all positions in ``p``'s subtree, excluding ``p``::
 
     parent = p.parent()
-    g.es("exclusive subtree of %s" % parent.headString(),color="purple")
+    g.es("exclusive subtree of %s" % parent.h,color="purple")
     for p in parent.subtree_iter():
-        g.es(p.headString())
+        g.es(p.h)
 
 The p.self_and_subtree_iter iterator returns a list of all positions in ``p``'s subtree, including ``p``::
 
     parent = p.parent()
-    g.es("inclusive subtree of %s" % parent.headString(),color="purple")
+    g.es("inclusive subtree of %s" % parent.h,color="purple")
     for p in parent.self_and_subtree_iter():
-        g.es(p.headString())</t>
+        g.es(p.h)</t>
 <t tx="ekr.20040403173920.17">You can use ``c.redraw_now`` to redraw the entire screen immediately::
 
     c.redraw_now()
@@ -6905,8 +6905,8 @@ The findall function returns a list of tuples ``(v,pos)`` describing matches in
     g.es("%-3d instances of: '%s'...\n" % (len(result),pattern),color="purple")
     
     for v,pos in result:
-        body = v.bodyString()
-        g.es('\n%-4d %s' % (pos,v.headString()))
+        body = v.b
+        g.es('\n%-4d %s' % (pos,v.h))
         g.es(g.get_line_after(body,pos))
 
 The ``reFindall`` function returns a list of tuples ``(v,mo,pos)``, where ``mo``
@@ -6919,8 +6919,8 @@ is a ``MatchObject``. The ``reFlags`` argument are flags to ``re.search``::
 
     g.es("%-3d instances of: '%s'...\n" % (len(result),pattern),color="purple")
     for v,mo,pos in result:
-        body = v.bodyString()
-        g.es('\n%-4d %s' % (pos,v.headString()))
+        body = v.b
+        g.es('\n%-4d %s' % (pos,v.h))
         g.es(g.get_line_after(body,pos))</t>
 <t tx="ekr.20040403173920.24">On startup, Leo looks for two arguments of the form::
 
@@ -6944,7 +6944,7 @@ headlines in that file::
     g.app.log.enable() # re-enable the log.
     
     for p in newFrame.c.allNodes_iter():
-        g.es(g.toEncodedString(p.headString(),"utf-8"))
+        g.es(g.toEncodedString(p.h,"utf-8"))
 </t>
 <t tx="ekr.20040403173920.25">``leoGlobals.py`` contains many utility functions and constants.
 The following script prints all the names defined in ``leoGlobals.py``::
@@ -6962,8 +6962,8 @@ scripts can use. For a complete list, see the ``leoNodes.py`` in of ``LeoPy.leo`
     
 Returning strings::
 
-    p.bodyString() # the body string of p.
-    p.headString() # the headline string of p.
+    p.b # the body string of p.
+    p.h # the headline string of p. A property.
     
 Returning ints::
 
@@ -10673,7 +10673,7 @@ This allows you to use all of Leo's normal capabilities to organize your scripts
 Your Python scripts can easily access data in an outline.  For example, the following script will print all the headlines in an outline::
 
     for p in c.allNodes_iter():
-        print ' '*p.level(),p.headString()
+        print ' '*p.level(),p.h
 
 Your scripts can use outline structure to avoid having to parse data.
 With a little forethought you can arrange outlines to make scripts easier to write.
@@ -15540,7 +15540,7 @@ script calls the `rst3 plugin`_ to format it. I don't have to select the actual
         controller = rst3.controllers.get(c)
         if controller:
             for p in p.self_and_parents_iter():
-                if p.headString().startswith('@rst '):
+                if p.h.startswith('@rst '):
                     controller.processTree(p)
                     break
     else: # Just load the plugin.
@@ -17014,8 +17014,8 @@ A **position** (an instance of the position class) is the state of some traversa
     g.app.windowList     The list of all open frames.
     c.currentPosition()  The position of the selected node.
     c.rootPosition()     The position of the first node in the outline.
-    p.headString()       The headline of position p.
-    p.bodyString()       The body text of position p.
+    p.h                  The headline of position p.
+    p.b                  The body text of position p.
     p.childIndex()       The number of siblings that precede p.
     p.numberOfChildren() The number of p’s children.
     p.level()            The number of p’s ancestors.
@@ -17029,8 +17029,8 @@ A **position** (an instance of the position class) is the state of some traversa
 
 And here are some important setters::
 
-    c.setBodyString(p,s) Set body text of p to s.
-    c.setHeadString(p,s) Set headline of p to s.</t>
+    p.b = s     Set body text of p to s.
+    p.h = s     Set headline of p to s.</t>
 <t tx="ekr.20050916184158.11">Scripts can visit some or all of the nodes of a Leo outline using the following iterators::
 
     c.allNodes_iter             # All positions in the outline, in outline order.
@@ -17042,7 +17042,7 @@ And here are some important setters::
 For example, the following prints all the nodes of an outline, properly indented::
 
     for p in c.allNodes_iter():
-        print ' '*p.level(), p.headString()</t>
+        print ' '*p.level(), p.h</t>
 <t tx="ekr.20050916184158.12">Scripts may open other Leo outlines, or execute any of Leo’s commands.  Here are some examples::
 
     ok,frame = g.openWithFileName(path,c)	# Opens the .leo file found at path.
@@ -19211,8 +19211,8 @@ outline in which the script is embedded::
 
     for p in c.allNodes_iter():
         indent = ' '*p.level()
-        print '%s + %s' % (indent,p.headString()) # print the node's headline.
-        print p.bodyString() # print the node's body.
+        print '%s + %s' % (indent,p.h) # print the node's headline.
+        print p.b # print the node's body.
 
 For that matter, scripts can access any data anywhere on your hard drive, or all
 the data available on the web, for that matter. You knew that, but this
@@ -21470,7 +21470,7 @@ def batchChange (self,pos1,pos2):
         &lt;&lt; change body &gt;&gt;</t>
 <t tx="ekr.20060608111953.26">if len(s) &gt; 0 and s[-1]=='\n': s = s[:-1]
 
-if s != p.headString():
+if s != p.h:
     
     undoData = u.beforeChangeNodeContents(p)
 
@@ -21484,7 +21484,7 @@ if s != p.headString():
     u.afterChangeNodeContents(p,'Change Headline',undoData)</t>
 <t tx="ekr.20060608111953.27">if len(s) &gt; 0 and s[-1]=='\n': s = s[:-1]
 
-if s != p.bodyString():
+if s != p.b:
     
     undoData = u.beforeChangeNodeContents(p)
 
@@ -21998,14 +21998,14 @@ def initBatchCommands (self):
 def initBatchText(self):
     p = self.p
     self.wrapping = False # Only interactive commands allow wrapping.
-    s = g.choose(self.in_headline,p.headString(), p.bodyString())
+    s = g.choose(self.in_headline,p.h, p.b)
     return self.init_s_ctrl(s)
 
 # Call this routine when moving to the next node when a search fails.
 # Same as above except we don't reset wrapping flag.
 def initNextText(self):
     p = self.p
-    s = g.choose(self.in_headline,p.headString(), p.bodyString())
+    s = g.choose(self.in_headline,p.h, p.b)
     return self.init_s_ctrl(s)</t>
 <t tx="ekr.20060608111953.53"># Guesses which pane to start in for incremental searches and changes.
 # This must not alter the current "insert" or "sel" marks.
@@ -22058,12 +22058,12 @@ def initInteractiveCommands(self):
     context = self.batch # "batch" now indicates context
 
     if allFlag and both and context:
-        g.es('-' * 20,self.p.headString())
+        g.es('-' * 20,self.p.h)
         theType = g.choose(self.in_headline,"head: ","body: ")
         g.es(theType + line)
     elif allFlag and context and not self.p.isVisited():
         # We only need to print the context once.
-        g.es('-' * 20,self.p.headString())
+        g.es('-' * 20,self.p.h)
         g.es(line)
         self.p.setVisited()
     else:
@@ -23259,7 +23259,7 @@ The plugin will define a minibuffer command that does the same thing as pressing
 We shall start with a script button whose script is::
     
     g.es_print('c: %s' % (c.fileName()),color='red')
-    g.es_print('p: %s' % (p.headString()),color='red')
+    g.es_print('p: %s' % (p.h),color='red')
     
 Not very exciting, but it uses the predefined ``c`` and ``p`` constants.
 Our plugin will create a minibuffer command called print-cp.
@@ -23312,7 +23312,7 @@ Plugins--&gt; Templates: these show recommended ways of defining plugins.--&gt;T
     def print_cp (self,event=None):
         c = self.c ; p = c.currentPosition()
         g.es_print('c: %s' % (c.fileName()),color='red')
-        g.es_print('p: %s' % (p.headString()),color='red')
+        g.es_print('p: %s' % (p.h),color='red')
         
    The print_cp method must have the event argument as shown because it implements a minibuffer command.
    The print_cp method gets the proper commander from the ``c`` ivar (instance variable) and computes
@@ -25316,7 +25316,7 @@ Here are step-by-step instructions for executing Python scripts in Emacs:
    For example::
 
         (setq c (leo-open fileName)
-        (csetq script "print 'c',c,'h',c.currentPosition().headString()")
+        (csetq script "print 'c',c,'h',c.currentPosition().h")
         (leo-run-script c script)
     
 Putting this all together, we get::
@@ -25337,7 +25337,7 @@ Putting this all together, we get::
         
         ; Step 3: execute a script in ut.leo.
         (setq c (leo-open fileName))
-        (setq script "print 'c',c.shortFileName() ,'current:',c.currentPosition().headString()")
+        (setq script "print 'c',c.shortFileName() ,'current:',c.currentPosition().h")
         (leo-run-script c script)</t>
 <t tx="ekr.20061025142434">Leo's mini-buffer is a text area at the bottom of the body pane.
 You use Leo's minibuffer like the Emacs mini-buffer to invoke commands by their so-called *long name*.
@@ -25605,11 +25605,11 @@ trees::
     d = {}
     for p in c.allNodes_iter():
         if p.v.t not in d:
-            print p.headString()
+            print p.h
             d[p.v.t] = p.v.t
             
 As mentioned in the introduction, joined nodes share the same tnode. Thus, when
-we visit a position p we print p.headString() only if p.v.t is not already in
+we visit a position p we print p.h only if p.v.t is not already in
 the dictionary. We then enter p.v.t in the dictionary to prevent printing the
 headlines of any future node joined to p.v.</t>
 <t tx="ekr.20070120075236">Leo's ``Execute Script`` command predefines ``c`` to be the commander of the
@@ -25622,8 +25622,8 @@ These definitions provide an easy way to access or change any
 information in a Leo outline. For example, as discussed below, the following
 script will print every headline in the Leo outline in which the script occurs.
     
-    for z in c.allNodes_iter():
-        print z.headString()
+    for p in c.allNodes_iter():
+        print p.h
 </t>
 <t tx="ekr.20070122070619">Leo 4.4.3 alpha 1                                  January 26, 2006
 
@@ -27154,7 +27154,7 @@ headlines in that file::
     g.app.log.enable() # re-enable the log.
     
     for p in newFrame.c.allNodes_iter():
-        g.es(g.toEncodedString(p.headString(),"utf-8"))
+        g.es(g.toEncodedString(p.h,"utf-8"))
 </t>
 <t tx="ekr.20070701090840">Leo is not your ordinary text editor, class browser, project manager or database manager,
 though it resembles these programs in some respects.

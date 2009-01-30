@@ -307,7 +307,7 @@ The plugin will define a minibuffer command that does the same thing as pressing
 <p>We shall start with a script button whose script is:</p>
 <pre class="literal-block">
 g.es_print('c: %s' % (c.fileName()),color='red')
-g.es_print('p: %s' % (p.headString()),color='red')
+g.es_print('p: %s' % (p.h),color='red')
 </pre>
 <p>Not very exciting, but it uses the predefined <tt class="docutils literal"><span class="pre">c</span></tt> and <tt class="docutils literal"><span class="pre">p</span></tt> constants.
 Our plugin will create a minibuffer command called print-cp.</p>
@@ -362,7 +362,7 @@ c.k.simulateCommand('print-cp')
 def print_cp (self,event=None):
     c = self.c ; p = c.currentPosition()
     g.es_print('c: %s' % (c.fileName()),color='red')
-    g.es_print('p: %s' % (p.headString()),color='red')
+    g.es_print('p: %s' % (p.h),color='red')
 </pre>
 <p>The print_cp method must have the event argument as shown because it implements a minibuffer command.
 The print_cp method gets the proper commander from the <tt class="docutils literal"><span class="pre">c</span></tt> ivar (instance variable) and computes
@@ -418,9 +418,9 @@ Still, the potential for abuse exists anywhere.</p>
 # Execute the body text of all nodes that start with `&#64;script`.
 def onLoadFile():
     for p in c.allNodes_iter():
-        h = p.headString().lower()
+        h = p.h.lower()
         if g.match_word(h,0,&quot;&#64;script&quot;):
-            s = p.bodyString()
+            s = p.b
             if s and len(s) &gt; 0:
                 try: # SECURITY BREACH: s may be malicious!
                     exec(s + '\n')
