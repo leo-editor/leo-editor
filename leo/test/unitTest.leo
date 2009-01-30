@@ -156,7 +156,6 @@
 <v t="ekr.20051104081502.24"><vh>Test of using an iterator inside a list comprehension</vh></v>
 <v t="ekr.20051104081502.25"><vh>Test of using c.allNodes_iter to create a list of all positions</vh></v>
 <v t="ekr.20051104081502.26"><vh>Creating a list of distinct vnodes</vh></v>
-<v t="ekr.20051104081502.27"><vh>Test that back quotes are not needed in es</vh></v>
 <v t="ekr.20051104081502.28"><vh>test of list comparisons</vh></v>
 <v t="ekr.20051104081502.29"><vh>test that childIndex doesn't mess with p</vh></v>
 <v t="ekr.20051104081502.30"><vh>Test of __cmp__ vrs equal</vh></v>
@@ -2723,7 +2722,7 @@ Line 1
 #@-leo
 last line 1: two trailing newlines
 </t>
-<t tx="ekr.20040712101754.116">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.116">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -2742,7 +2741,7 @@ More plain text.
 continues */
 
 More plain text.</t>
-<t tx="ekr.20040712101754.118">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.118">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -2805,7 +2804,7 @@ _width
 _x, _xmouse, _xscale
 _y, _ymouse, _yscale
 and, add, eq, ge, gt, le, lt, ne, not, or, Array, Boolean, Color, Date, Key, Math, MovieClip, Mouse, Number, Object, Selection, Sound, String, XML, XMLSocket</t>
-<t tx="ekr.20040712101754.120">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.120">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -2828,7 +2827,7 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 #include "eeprom.h"
 #include &lt;hpc_ram.h&gt;
 #include &lt;rlydef.h&gt;</t>
-<t tx="ekr.20040712101754.122">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.122">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -2865,7 +2864,7 @@ uint ulong unchecked unsafe ushort using
 value virtual void volatile 
 where while
 yield</t>
-<t tx="ekr.20040712101754.124">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.124">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -2939,7 +2938,7 @@ pitch, range, pitch-during, cue-after, pause-after, cue-before, pause-before, sp
 /*aural values*/
 stress, azimuth, elevation, pitch, richness, volume,
 page-break, page-after, page-inside</t>
-<t tx="ekr.20040712101754.126">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.126">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -2972,7 +2971,7 @@ if else, while, do // C keywords.</t>
 
     my \c code goes here // This is \LaTeX text
     /* This is also \LaTeX text */</t>
-<t tx="ekr.20040712101754.129">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.129">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -2999,7 +2998,7 @@ set setq
 t type-of 
 unless 
 when while</t>
-<t tx="ekr.20040712101754.131">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.131">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -3010,7 +3009,7 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 b = "cd"
 d
 </t>
-<t tx="ekr.20040712101754.133">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.133">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -3109,7 +3108,7 @@ HEIGHT="32" ALIGN="left" NATURALSIZEFLAG="3"&gt;
 
 &lt;/BODY&gt;
 &lt;/HTML&gt;</t>
-<t tx="ekr.20040712101754.135">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.135">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -3121,7 +3120,7 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 &lt;!-- test --&gt;
 &lt;project name="Converter" default="dist"&gt;
 &lt;/project&gt;"""</t>
-<t tx="ekr.20040712101754.137">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.137">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -3150,7 +3149,7 @@ The following 2-letter words should be colored, regardless of what follows:
 
 \(\)\{\}\@
 \(abc\)abc\{abc\}abc\@abc</t>
-<t tx="ekr.20040712101754.141">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.141">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -3170,7 +3169,7 @@ this is a test.
 __CLASS__
 &lt;?php and or array() ?&gt;
 &lt;?PHP and or array() ?&gt;</t>
-<t tx="ekr.20040712101754.143">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.143">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -3515,7 +3514,7 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 &lt;KEYWORD3&gt;__truediv__&lt;/KEYWORD3&gt;
 &lt;KEYWORD3&gt;__version__&lt;/KEYWORD3&gt;
 &lt;KEYWORD3&gt;__xor__&lt;/KEYWORD3&gt;</t>
-<t tx="ekr.20040712101754.154">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.154">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -3901,7 +3900,7 @@ with,
 work,
 write,
 xor</t>
-<t tx="ekr.20040712101754.156">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.156">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -3924,7 +3923,7 @@ def copyTree(self,root):
         v.t = leoNodes.tnode(0, v.b)
         v = v.threadNext()
     return result</t>
-<t tx="ekr.20040712101754.158">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.158">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -3960,7 +3959,7 @@ SPACE$,SQR,STACK,STATIC,STEP,STR$,STRF$,STRING,STRING$,
 SUB,SUBI,SWAP,TALLY,TAN,THEN,TIME$,TIMER,TO,TYPE,UBOUND,
 UCASE$,UNLOADLIBRARY,UNTIL,VAL,VARIANT,VARPTR,VARPTR$,VARTYPE,
 WEND,WHILE,WITH,WORD,XOR</t>
-<t tx="ekr.20040712101754.160">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.160">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -4032,7 +4031,7 @@ unset? url?
 value? view? 
 within? word?  
 zero?</t>
-<t tx="ekr.20040712101754.162">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.162">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -4059,7 +4058,7 @@ cd,chdir,eval,exec,
 exit,kill,newgrp,pwd,read,readonly,
 shift,test,trap,ulimit,
 umask,wait</t>
-<t tx="ekr.20040712101754.164">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.164">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -4158,7 +4157,7 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 
 &lt;!-- comments --&gt;
 &lt;EOL_SPAN TYPE="COMMENT1"&gt;%&lt;/EOL_SPAN&gt;</t>
-<t tx="ekr.20040712101754.168">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.168">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -4203,7 +4202,7 @@ if 1 and 2:
     pass
 
 print g.app().loadDir</t>
-<t tx="ekr.20040712101754.170">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.170">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -4242,7 +4241,7 @@ if 1 and 2:
 
 print g.app().loadDir
 </t>
-<t tx="ekr.20040712101754.172">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.172">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -4399,7 +4398,7 @@ assert(g.os_path_exists(test_file))</t>
 <t tx="ekr.20040712101754.187"></t>
 <t tx="ekr.20040712101754.188">import leo.core.leoNodes as leoNodes
 
-current = c.currentPosition()
+current = c.p
 child = current.firstChild()
 
 allList = [p.v for p in c.all_positions_iter()]
@@ -5134,7 +5133,7 @@ last linesection line 1unnamed node line 1</t>
 last line</t>
 <t tx="ekr.20041021065903.1">section line 1</t>
 <t tx="ekr.20041021065903.2">unnamed node line 1</t>
-<t tx="ekr.20041107105213">p = c.currentPosition().firstChild()
+<t tx="ekr.20041107105213">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -5435,7 +5434,7 @@ os.remove(at.targetFileName)</t>
 import inspect
 import unittest
 
-changed = c.isChanged() ; p1 = c.currentPosition()
+changed = c.isChanged() ; p1 = c.p
 &lt;&lt; class testRoutineTestCase &gt;&gt;
 @others
 
@@ -5493,7 +5492,7 @@ g.pr('\nEnd of test routines')</t>
     self.f = f
     self.g = g
     self.code = code
-    self.p = c.currentPosition().copy()
+    self.p = c.p.copy()
     self.verbose = verbose
 </t>
 <t tx="ekr.20050106080318.3">def fail (self,msg=None):
@@ -6005,7 +6004,7 @@ g.app.gui = oldGui</t>
 import inspect
 import unittest
 
-changed = c.isChanged() ; p1 = c.currentPosition()
+changed = c.isChanged() ; p1 = c.p
 &lt;&lt; class testRoutineTestCase &gt;&gt;
 @others
 
@@ -6047,7 +6046,7 @@ if 1:
     self.f = f
     self.g = g
     self.code = code
-    self.p = c.currentPosition().copy()
+    self.p = c.p.copy()
     self.verbose = verbose
 </t>
 <t tx="ekr.20050218015346.13">def fail (self,msg=None):
@@ -6875,7 +6874,7 @@ after</t>
         sec line 2 indented
 sec line 3
 after</t>
-<t tx="ekr.20050618053006">p = c.currentPosition().firstChild()
+<t tx="ekr.20050618053006">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -7604,8 +7603,6 @@ g.pr(len(positions),len(vnodes))
 
 for v in vnodes:
     g.pr(v)</t>
-<t tx="ekr.20051104081502.27">g.es("v",g.top().currentPosition())
-g.es(1,2)</t>
 <t tx="ekr.20051104081502.28">stack1 = ["a","b","c"]
 stack2 = ["a","b","c"]
 stack3 = ["a","b","d"]
@@ -7945,7 +7942,7 @@ position = leoNodes.position
 
 @others
 
-current = pos = c.currentPosition()
+current = pos = c.p
 child1 = current.firstChild()
 child2 = child1.firstChild()
 
@@ -12992,7 +12989,7 @@ g.app.unitTestDict ['unit-test-command1'] = True</t>
 <t tx="ekr.20051107115231.9">c.redraw(p) # To make node visible
 
 c2 = c.new()
-p2 = c2.currentPosition()
+p2 = c2.p
 
 try:
     # This fails, but it is possible to edit the headline.
@@ -13582,8 +13579,8 @@ if g.app.gui.guiName() != 'tkinter':
     n = c.frame.tree.redrawCount
     assert not p.b, 'oops1'
     try:
-        # print('before insert a',c.currentPosition())
-        assert p == c.currentPosition(),'position has changed!'
+        # print('before insert a',c.p)
+        assert p == c.p,'position has changed!'
         c.frame.body.bodyCtrl.event_generate('a')
         assert p.b == 'a', 'expected "a", got: %s' % repr(p.b)
         if g.app.gui.guiName() != 'nullGui':
@@ -13724,7 +13721,7 @@ if guiname == 'wxWindows':
 <t tx="ekr.20060325072919.2"></t>
 <t tx="ekr.20060325072919.3"></t>
 <t tx="ekr.20060328091154">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-k = c.k ; p = c.currentPosition() ; w = c.edit_widget(p)
+k = c.k ; p = c.p ; w = c.edit_widget(p)
 commandName = 'test-registerCommand'
 
 def callback (event=None,c=c): # Must have an event param to pass later unit test.
@@ -13791,7 +13788,7 @@ assert s == result</t>
 /*@-node:root*/
 /*@-leo*/
 </t>
-<t tx="ekr.20060829092306">p = c.currentPosition().firstChild()
+<t tx="ekr.20060829092306">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -13802,7 +13799,7 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 halt()
 
 -module()</t>
-<t tx="ekr.20060829092306.2">p = c.currentPosition().firstChild()
+<t tx="ekr.20060829092306.2">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -13820,7 +13817,7 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 /** &lt;!-- comment --&gt; tag = comment1. */
 
 /** @see tag = label */</t>
-<t tx="ekr.20060829092306.4">p = c.currentPosition().firstChild()
+<t tx="ekr.20060829092306.4">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -13834,7 +13831,7 @@ vv &lt;- function(z) return(z)
  
 def python_funct(uu): 
 return uu</t>
-<t tx="ekr.20060829092306.6">p = c.currentPosition().firstChild()
+<t tx="ekr.20060829092306.6">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -16735,15 +16732,15 @@ threading_colorizer.py
 rClick.py
 </t>
 <t tx="ekr.20070303143951"></t>
-<t tx="ekr.20070305095401">p = c.currentPosition().copy()
+<t tx="ekr.20070305095401">p = c.p.copy()
 c.selectPosition(p.threadBack())
-p1 = c.currentPosition()
+p1 = c.p
 # print(p1)
 c.goPrevVisitedNode()
-p2 = c.currentPosition()
+p2 = c.p
 # print(p2)
 c.goNextVisitedNode()
-p3 = c.currentPosition()
+p3 = c.p
 # print(p3)
 # assert p == p3
 </t>
@@ -16858,7 +16855,7 @@ while p.hasChildren():
 # Create two cloned children.
 c.selectPosition(p)
 c.insertHeadline()
-p2 = c.currentPosition()
+p2 = c.p
 p2.moveToFirstChildOf(p)
 p2.setHeadString('aClone')
 c.selectPosition(p2)
@@ -18165,7 +18162,7 @@ if g.unitTesting:
     return 'break'
 </t>
 <t tx="ekr.20071113143523.7">c = self.c
-p = c.currentPosition()
+p = c.p
 gui = g.app.gui
 ch = gui.eventChar(event)
 keysym = gui.eventKeysym(event)
@@ -18183,7 +18180,7 @@ inBrackets = ch and g.toUnicode(ch,g.app.tkEncoding) in brackets
 if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
 <t tx="ekr.20071113143523.8">def insertNewlineHelper (self,w,oldSel,undoType):
 
-    c = self.c ; p = c.currentPosition()
+    c = self.c ; p = c.p
     i,j = oldSel ; ch = '\n'
 
     if i != j:
@@ -18387,7 +18384,7 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
 
     '''Set the column to which an up or down arrow will attempt to move.'''
 
-    c = self.c ; p = c.currentPosition()
+    c = self.c ; p = c.p
     s = w.getAllText()
     i = w.toPythonIndex(spot)
     junk,col = g.convertPythonIndexToRowCol(s,i)
@@ -19816,7 +19813,7 @@ config.macros.br.handler = function(place)
 	createTiddlyElement(place,"br");
 };
 </t>
-<t tx="ekr.20071219170354">p = c.currentPosition().firstChild()
+<t tx="ekr.20071219170354">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -19877,7 +19874,7 @@ sub inside
 	($a =~ /$b/ || $b =~ /$a/);	# Is $b inside $a
 					#   or $a inside $b?
 }</t>
-<t tx="ekr.20071219172126">p = c.currentPosition().firstChild()
+<t tx="ekr.20071219172126">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -19904,7 +19901,7 @@ set setq
 t type-of 
 unless 
 when while</t>
-<t tx="ekr.20071219172615">p = c.currentPosition().firstChild()
+<t tx="ekr.20071219172615">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -19993,7 +19990,7 @@ please ask for help on Leo's help forum:
 -------------
 
 |back| |leo| |next|</t>
-<t tx="ekr.20071219184852">p = c.currentPosition().firstChild()
+<t tx="ekr.20071219184852">p = c.p.firstChild()
 
 c.selectVnode(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
@@ -20095,7 +20092,7 @@ try:
     assert child, 'no child'
     c.selectPosition(child)
     clone = c.clone()
-    assert clone == c.currentPosition()
+    assert clone == c.p
     assert clone.h == 'child','fail headstring: %s' % clone.h
     assert child.isCloned(), 'fail 1'
     assert clone.isCloned(), 'fail 2'
@@ -20140,9 +20137,9 @@ try:
     c.copyOutline()
     oldTnodes = [p2.v.t for p2 in child.self_and_subtree_iter()]
     c.selectPosition(child)
-    c.currentPosition().contract() # Essential
+    c.p.contract() # Essential
     c.pasteOutline()
-    current = c.currentPosition()
+    current = c.p
     assert current != child, 'fail 2'
     newTnodes = [p2.v.t for p2 in current.self_and_subtree_iter()]
     for t in newTnodes:
@@ -20171,9 +20168,9 @@ try:
     c.selectPosition(child)
     c.copyOutline()
     oldTnodes = [p2.v.t for p2 in child.self_and_subtree_iter()]
-    c.currentPosition().contract() # Essential
+    c.p.contract() # Essential
     c.pasteOutlineRetainingClones()
-    current = c.currentPosition()
+    current = c.p
     assert current != child, 'fail 2'
     newTnodes = [p2.v.t for p2 in current.self_and_subtree_iter()]
     for t in newTnodes:
@@ -20199,7 +20196,7 @@ try:
     p.expand()
     c.setCurrentPosition(p3)
     c.moveOutlineDown()
-    moved = c.currentPosition()
+    moved = c.p
     assert moved.h == 'B',          'fail 1: %s' % moved.h
     assert moved.back().h == 'C',   'fail 2'
     assert moved.next().h == 'D',   'fail 3'
@@ -20207,20 +20204,20 @@ try:
     # assert moved.back() == p4, 'fail 4: %s != %s' % (moved.back(),p4)
     assert moved.next() == p5,      'fail 5: %s != %s' % (moved.next(),p5)
     c.undoer.undo()
-    moved = c.currentPosition()
+    moved = c.p
     assert moved.back() == p2,      'fail 4'
     assert moved.next() == p4,      'fail 5'
     c.undoer.redo()
-    moved = c.currentPosition()
+    moved = c.p
     assert moved.h == 'B',          'fail 1-2: %s' % moved.h
     assert moved.back().h == 'C',   'fail 2-2'
     assert moved.next().h == 'D',   'fail 3-2'
     c.undoer.undo()
-    moved = c.currentPosition()
+    moved = c.p
     assert moved.back() == p2,      'fail 4-2'
     assert moved.next() == p4,      'fail 5-2'
     c.undoer.redo()
-    moved = c.currentPosition()
+    moved = c.p
     assert moved.h == 'B',          'fail 1-3'
     assert moved.back().h == 'C',   'fail 2-3'
     assert moved.next().h == 'D',   'fail 3-3'
@@ -20245,7 +20242,7 @@ try:
     p.expand()
     c.setCurrentPosition(p4)
     c.moveOutlineUp()
-    moved = c.currentPosition()
+    moved = c.p
     assert moved.h == 'C',          'fail 1'
     assert moved.back().h == 'A',   'fail 2'
     assert moved.next().h == 'B',   'fail 3'
@@ -20298,24 +20295,24 @@ try:
     p.expand()
     c.setCurrentPosition(p2)
     c.insertHeadline()
-    p = c.currentPosition()
+    p = c.p
     p.setHeadString('inserted')
     assert p.back().h == 'A', 'fail 1'
     assert p.next().h == 'B', 'fail 2'
     c.undoer.undo()
-    p = c.currentPosition()
+    p = c.p
     assert p == p2,         'fail 3'
     assert p.next() == p3,  'fail 4'
     c.undoer.redo()
-    p = c.currentPosition()
+    p = c.p
     assert p.back().h == 'A', 'fail 1-2'
     assert p.next().h == 'B', 'fail 2-2'
     c.undoer.undo()
-    p = c.currentPosition()
+    p = c.p
     assert p == p2,         'fail 3-2'
     assert p.next() == p3,  'fail 3-2'
     c.undoer.redo()
-    p = c.currentPosition()
+    p = c.p
     assert p.back().h == 'A', 'fail 1-3'
     assert p.next().h == 'B', 'fail 2-3'
 
@@ -20333,7 +20330,7 @@ try:
     p.expand()
     c.setCurrentPosition(p2)
     c.moveOutlineLeft()
-    moved = c.currentPosition()
+    moved = c.p
     assert moved.h == 'A','fail 1'
     # This assert fails because p4._childIndex != moved.back()._childIndex.
     assert moved.back() == p, 'fail 2: %s != %s' % (moved.back(),p4)
@@ -20364,7 +20361,7 @@ try:
     p.expand()
     c.setCurrentPosition(p3)
     c.moveOutlineRight()
-    moved = c.currentPosition()
+    moved = c.p
     assert moved.h == 'B', 'fail 1'
     assert moved.parent() == p2
     c.undoer.undo()
@@ -20393,27 +20390,27 @@ try:
     c.setCurrentPosition(p3)
     c.deleteOutline()
     c.outerUpdate()
-    p = c.currentPosition()
+    p = c.p
     assert p.h == 'A', 'fail 1: got %s' % p.h
     assert p.next().h == 'C', 'fail 2'
     c.undoer.undo()
     c.outerUpdate()
-    p = c.currentPosition()
+    p = c.p
     assert p.back() == p2, 'fail 4'
     assert p.next() == p4, 'fail 5'
     c.undoer.redo()
     c.outerUpdate()
-    p = c.currentPosition()
+    p = c.p
     assert p.h == 'A',          'fail 1-2'
     assert p.next().h == 'C',   'fail 2-2'
     c.undoer.undo()
     c.outerUpdate()
-    p = c.currentPosition()
+    p = c.p
     assert p.back() == p2,  'fail 4-2'
     assert p.next() == p4,  'fail 5-2'
     c.undoer.redo()
     c.outerUpdate()
-    p = c.currentPosition()
+    p = c.p
     assert p.h == 'A',          'fail 1-3'
     assert p.next().h == 'C',   'fail 2-3'
 
@@ -20440,35 +20437,35 @@ try:
     p6.setHeadString('C')
     c.setCurrentPosition(p3)
     c.promote()
-    p = c.currentPosition()
+    p = c.p
     assert p == p3,         'fail 1'
     assert p.h == 'B',      'fail 2'
     assert p.next().h=='child 1',            'fail 3'
     assert p.next().next().h == 'child 2',   'fail child 1'
     assert p.next().next().next().h == 'C',  'fail child 2'
     c.undoer.undo()
-    p = c.currentPosition()
+    p = c.p
     assert p == p3
     assert p.back() == p2,  'fail 5'
     assert p.next() == p6,  'fail 6'
     assert p.firstChild().h=='child 1',          'fail child 3'
     assert p.firstChild().next().h == 'child 2', 'fail child 4'
     c.undoer.redo()
-    p = c.currentPosition()
+    p = c.p
     assert p == p3,         'fail 1-2'
     assert p.h == 'B',      'fail 2-2'
     assert p.next().h=='child 1',            'fail 3-2'
     assert p.next().next().h == 'child 2',   'fail child 1-2'
     assert p.next().next().next().h == 'C',  'fail child 2-2'
     c.undoer.undo()
-    p = c.currentPosition()
+    p = c.p
     assert p == p3
     assert p.back() == p2,                      'fail 5-2'
     assert p.next() == p6,                      'fail 6-2'
     assert p.firstChild().h=='child 1',         'fail child 3-2'
     assert p.firstChild().next().h == 'child 2','fail child 4-2'
     c.undoer.redo()
-    p = c.currentPosition()
+    p = c.p
     assert p == p3,     'fail 1-3'
     assert p.h == 'B',  'fail 2-3'
     assert p.next().h=='child 1',            'fail 3-3'
@@ -20496,14 +20493,14 @@ try:
     p.expand()
     c.setCurrentPosition(p3)
     c.demote()
-    p = c.currentPosition()
+    p = c.p
     assert p == p3,         'fail 1'
     assert p.h == 'B',      'fail 2'
     assert not p.next(),    'fail 3'
     assert p.firstChild().h == 'C',          'fail child 1'
     assert p.firstChild().next().h == 'D',   'fail child 2'
     c.undoer.undo()
-    p = c.currentPosition()
+    p = c.p
     assert p == p3
     assert p.back() == p2, 'fail 5'
     assert p.next() == p4, 'fail 6'
@@ -20514,7 +20511,7 @@ try:
     assert p.firstChild().h == 'C',         'fail child 1-2'
     assert p.firstChild().next().h == 'D',  'fail child 2-2'
     c.undoer.undo()
-    p = c.currentPosition()
+    p = c.p
     assert p.back() == p2, 'fail 4-2'
     assert p.next() == p4, 'fail 5-2'
     c.undoer.redo()
