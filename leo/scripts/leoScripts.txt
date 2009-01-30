@@ -55,12 +55,12 @@ put = g.es_print
 for p in c.allNodes_iter():
     if hasattr(p.v,"unknownAttributes"):
         put("deleting v.unknownAttributes:",
-            p.headString(),
+            p.h,
             g.listToString(p.v.unknownAttributes.keys()))
         delattr(p.v,"unknownAttributes")
     if hasattr(p.v.t,"unknownAttributes"):
         put("deleting t.unknownAttributes:",
-            p.headString(),
+            p.h,
             g.listToString(p.v.t.unknownAttributes.keys()))
         delattr(p.v.t,"unknownAttributes")
 put('done') 
@@ -133,7 +133,7 @@ def displayClones(self,c):
     cp = c.currentPosition()
 
     # "Title" is the headline of the current node
-    self.title.configure(text=cp.headString())
+    self.title.configure(text=cp.h)
 
     # Initialize listbox and clone list
     clones = self.getAllClones(cp)
@@ -145,7 +145,7 @@ def displayClones(self,c):
 # Add the headlines of all the clone parents to the listbox
 for p in clones:
     if p.parent():
-        text = p.parent().headString()
+        text = p.parent().h
     else:
         text = "<root>"
     self.lb.insert(self.lb.size(),text)
@@ -189,7 +189,7 @@ f.write("<BODY>")
 
 for p in c.allNodes_iter():
     myLevel = str(p.level() + 1)
-    myHeadline = p.headString()
+    myHeadline = p.h
     # Check for node with LeoToHTML and ignore it
     if not myHeadline.upper() == "LEOTOHTML":
         if myHeadline[:5] != "@file" and not flagIgnoreFiles:
@@ -197,7 +197,7 @@ for p in c.allNodes_iter():
             f.write("<H" + myLevel + ">" + myHeadline + "</H" + myLevel + ">")
             # If including body text, convert it to HTML usable format
             if not flagJustHeadlines:
-                myBody = p.bodyString().encode( "utf-8" )
+                myBody = p.b.encode( "utf-8" )
                 f.write("<P>" + myBody)
 
 # Write closing HTML info
@@ -250,7 +250,7 @@ f.write("{\\*\\generator LEOtoRTF;}\\viewkind4\\uc1\\pard\\f0\\fs20")
 
 for p in c.allNodes_iter():
     myLevel = str(p.level() + 1)
-    myHeadline = p.headString()
+    myHeadline = p.h
     # Check for node with LeoToHTML and ignore it
     if not myHeadline.upper() == "LEOTORTF":
         if not (myHeadline[:5] == "@file" and flagIgnoreFiles):
@@ -260,7 +260,7 @@ for p in c.allNodes_iter():
             f.write(myOutput)
             # If including outline body text, convert it to RTF usable format
             if not flagJustHeadlines:
-                myBody = p.bodyString().encode( "utf-8" ) 
+                myBody = p.b.encode( "utf-8" ) 
                 f.write("\\tab"*int(myLevel) + " " + myBody + "\\par")
 
 # Write RTF close
@@ -308,7 +308,7 @@ if not shadow_subdir: assert False,'No shadow_subdir setting'
 prefix = c.config.getString("shadow_prefix")
 
 for p in p.self_and_subtree_iter():
-   h = p.headString().strip()
+   h = p.h.strip()
    if h.startswith("@thin"):
        start = h.find("@thin") + len("@thin")
        leofiledir = os.path.split(c.mFileName)[0]
@@ -368,7 +368,7 @@ def findFunctionsInTree(p):
 
     nameList = []
     for p in p.self_and_subtree_iter():
-        names = findDefs(p.bodyString())
+        names = findDefs(p.b)
         if names:
             for name in names:
                 if name not in nameList:
@@ -408,7 +408,7 @@ def prependNamesInTree(p,nameList,prefix,replace=False):
     prefix_n = len(prefix)
     total = 0
     for p in p.self_and_subtree_iter():
-        count = 0 ; s = p.bodyString()
+        count = 0 ; s = p.b
         printFlag = False
         if s:
             for name in nameList:
@@ -420,7 +420,7 @@ def prependNamesInTree(p,nameList,prefix,replace=False):
                     << print before and after >>
                 c.setBodyString(p,s)
                 p.setDirty()
-        g.es("%3d %s" % (count,p.headString()))
+        g.es("%3d %s" % (count,p.h))
         total += count
     c.redraw()
 
@@ -452,14 +452,14 @@ else:
         if 1:
             if not printFlag:
                 printFlag = True
-                # print p.headString()
+                # print p.h
             print g.get_line(s,i-n)
 #@nonl
 #@-node:<< look for name followed by '(' >>
 #@+node:<< print before and after >>
-print "-"*10,count,p.headString()
+print "-"*10,count,p.h
 print "before..."
-print p.bodyString()
+print p.b
 print "-"*10,"after..."
 print s
 #@nonl
@@ -639,7 +639,7 @@ if 0:
     count = 0
     while v and v != after:
         while 1:
-            s = v.bodyString()
+            s = v.b
             if not s: break
             i = s.find("c.On")
             if i == -1: break
@@ -656,7 +656,7 @@ if 0: # Script to change OnXxx to xxx in all headlines
     v = c.currentVnode()
     after = v.nodeAfterTree()
     while v and v != after:
-        h = v.headString()
+        h = v.h
         if g.match(h,0,"On") and len(h) > 2:
             h = h[2].lower() + h[3:]
             print h
@@ -668,13 +668,13 @@ if 0:
     v = c.currentVnode()
     after = v.nodeAfterTree()
     while v and v != after:
-        s = v.bodyString()
+        s = v.b
         if s:
             i = s.find("def ")
             if i > -1:
                 c = s[i+6].lower()
                 s = s[:i] + "def " + c + s[i+7:]
-                print v.headString()
+                print v.h
                 c.setBodyString(v,s)
         v = v.threadNext()
 #@nonl
@@ -724,11 +724,11 @@ def headfind():
             # @ char, followed by alpha,some alphanum or dash chars, then space ...matches Leo special nodes
         for p in c.allNodes_iter():
             srch="(^%s%s|^%s%s|^%s| %s%s)" % (sMyOwnPrefix,s,sAllowablePrefixRe,s,s,s,sUseLogTrigger) #all re
-            if re.findall(srch,p.headString().lower()):
+            if re.findall(srch,p.h.lower()):
                 g.es("found " + s)
                 sUseLogTrigger_srch="(^| )%s%s" % (s,sUseLogTrigger) #first just Log trigger re
-                if re.findall(sUseLogTrigger_srch,p.headString().lower()):
-                    body2=p.bodyString()
+                if re.findall(sUseLogTrigger_srch,p.h.lower()):
+                    body2=p.b
                     c.frame.log.logCtrl.delete("1.0","end"); # clear Log pane before message
                     # g.es(body2,color="orange")
                     return
@@ -768,11 +768,11 @@ keys.sort()
 h = ' tkKeys.defineSpecialKeys'
 for key in keys:
     for p in c.allNodes_iter():
-        if p.headString() != h and p.headString().find('keywords') == -1:
-            s = p.bodyString()
+        if p.h != h and p.h.find('keywords') == -1:
+            s = p.b
             for z in ('"%s"' % (key), "'%s'" % (key)):
                 if s.find(z) != -1:
-                    print '%20s %s' % (z,p.headString())
+                    print '%20s %s' % (z,p.h)
 #@nonl
 #@-node:Find entries in k.guiBindNamesDict
 #@+node:find w.xxx
@@ -788,7 +788,7 @@ seen = {}
 for p in p.self_and_subtree_iter():
     if seen.get(p.v.t): continue # search clones once.
     seen[p.v.t] = True
-    s = p.bodyString()
+    s = p.b
     i = 0
     while 1:
         j = s.find('w.',i)
@@ -807,7 +807,7 @@ keys = words.keys()
 keys.sort()
 aList = ['%3d %s' % (words.get(key),str(key)) for key in keys]
 print g.listToString(aList)
-g.es('searched %s' % p1.headString())
+g.es('searched %s' % p1.h)
 #@nonl
 #@-node:find w.xxx
 #@-node:Find scripts
@@ -1022,9 +1022,9 @@ def run (c):
     print ; print '*' * 60
     e = e2py(dumping=False)
     for p in input.children_iter():
-        print ; print '-' * 10, p.headString()
-        print p.bodyString()
-        result = e.doOuterBlock(p.bodyString())
+        print ; print '-' * 10, p.h
+        print p.b
+        result = e.doOuterBlock(p.b)
         print '-' * 20
         print result
 #@nonl
@@ -1366,9 +1366,9 @@ for p in input_node.children_iter():
 
     if 0: # No need for child node yet.
         root = output_node.insertAsLastChild()
-        root.initHeadString(p.headString())
+        root.initHeadString(p.h)
 
-    s = p.bodyString()
+    s = p.b
     scanner = elispScanner()
     aList = scanner.parse(s)
     if 1:
@@ -3326,7 +3326,7 @@ def scanIdChain (self,s,i,outer):
 def scanNode(self,p):
 
     tags = ('g.es','g.es_print',)
-    s,h = p.bodyString(), p.headString()
+    s,h = p.b, p.h
     print_h = True
 
     if h.startswith('@thin'):
@@ -3467,7 +3467,7 @@ tag = 'import leo' ; n = len('import ')
 
 for p in p.self_and_subtree_iter():
     result = []
-    for s in g.splitlines(p.bodyString()):
+    for s in g.splitlines(p.b):
         i = s.find(tag,0)
         if i > -1:
             # Do nothing if we have already done the translation.
@@ -3482,12 +3482,12 @@ for p in p.self_and_subtree_iter():
                 else:
                     s = s[:i] + 'leo.core.' + word + ' as ' + word + rest
                 if trace:
-                    print p.headString()
+                    print p.h
                     j,k=g.getLine(s,i) ; print s[j:k]
         result.append(s)
     result = ''.join(result)
 
-    if change and result != p.bodyString():
+    if change and result != p.b:
         c.setBodyString(p,result)
 
 #@-node:@@button change leo imports
@@ -3776,8 +3776,8 @@ def convertLeo1to2(v,c):
 
     after=v.nodeAfterTree()
     while v and v != after:
-        s=v.bodyString()
-        print "converting:", v.headString()
+        s=v.b
+        print "converting:", v.h
         s=convertStringLeo1to2(s)
         c.setBodyString(v,s)
         v=v.threadNext()
@@ -3850,8 +3850,8 @@ def convertLeoTree(v,c):
 
     after=v.nodeAfterTree()
     while v and v != after:
-        s=v.bodyString()
-        print "converting:", v.headString()
+        s=v.b
+        print "converting:", v.h
         s=convertCStringToPython(s, doLeoTranslations )
         c.setBodyString(v,s)
         v=v.threadNext()
@@ -5068,7 +5068,7 @@ def findFunctionCalls (names,p,showEmptyArgs=False):
     - s1 is the function name.
     - s2 is the argument list.'''
 
-    result = [] ; start = 0 ; body = p.bodyString()
+    result = [] ; start = 0 ; body = p.b
     while start < len(body):
         mo = function_call_re.search(body,start)
         if not mo: return result
@@ -5202,9 +5202,9 @@ try:
     for p in p.copy().self_and_subtree_iter():
         theFile.write("dt=text" + nl)
         theFile.write("<node>" + nl)
-        theFile.write(p.headString() + nl)
+        theFile.write(p.h + nl)
         theFile.write(repr(p.level() - topLevel) + nl)
-        theFile.write(p.bodyString() + nl)
+        theFile.write(p.b + nl)
         theFile.write("<end node> 5P9i0s8y19Z" + nl)
     theFile.close()
     g.es("Wrote to file " + fileName,color="blue")
@@ -5223,8 +5223,8 @@ import pstats
 path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','leoProfile.txt'))
 path = str(path)
 
-if p.bodyString().rstrip():
-    s = p.bodyString().rstrip() + '\n'
+if p.b.rstrip():
+    s = p.b.rstrip() + '\n'
     profile.run(s,path)
     print '-' * 40
     print "Profiling info sent to %s" % path
@@ -5246,8 +5246,8 @@ except ImportError:
     timeit = None
     print "Can not import timeit"
 
-if timeit and p.bodyString().strip():
-    s = p.bodyString().rstrip() + '\n'
+if timeit and p.b.strip():
+    s = p.b.rstrip() + '\n'
     << scan for #@count >>
     << put setup code in s1 and everything else in s2 >>
     t = timeit.Timer(stmt=s2,setup=s1)
@@ -5257,7 +5257,7 @@ if timeit and p.bodyString().strip():
         else: # better results.
             result = min(t.repeat(3, count))  
         print "count: %d : %f %s" % (
-            count, result, p.headString().strip())
+            count, result, p.h.strip())
     except:
         t.print_exc()
 #@+node:<< scan for #@count >>
@@ -5328,8 +5328,10 @@ import string
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@count 10000
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -5594,11 +5596,11 @@ def htmlize(c,p):
     lang = str(lang).lower()
     source = g.getScript(c,p)
     timestring = hopts['timestring']
-    # title = "%s Leo %s script %s" % (p.headString()[:75],lang,timestring)
-    title = "%s %s" % (p.headString()[:75],timestring)
+    # title = "%s Leo %s script %s" % (p.h[:75],lang,timestring)
+    title = "%s %s" % (p.h[:75],timestring)
     try:
         if not source: raise ValueError
-        g.es('output', lang, p.headString())
+        g.es('output', lang, p.h)
         theParser = Parser(lang,source,title)
         sys.stdout = open(filename,'wb') 
         if lang == 'python':
@@ -5610,7 +5612,7 @@ def htmlize(c,p):
         webbrowser.open(filename, new= 1)
     except ValueError:
         g.es('no @path set, unsupported lang or empty script',color='tomato')
-        g.es(lang, p.headString())
+        g.es(lang, p.h)
     except Exception:
         g.es('htmlize malfunction?', color='tomato')
         g.es_exception(full= True)
@@ -5690,7 +5692,7 @@ def showHtml(html):
     webbrowser.open(fileName)
 
 # Display the selected node in the browser.
-showHtml('<pre>%s</pre>' % c.currentPosition().bodyString())
+showHtml('<pre>%s</pre>' % c.currentPosition().b)
 
 # To do: use a stylesheet to colorize the code.
 #@nonl
@@ -13245,8 +13247,8 @@ range of the work in the headline of the before node.
 
 sel = getSel(c)
 top,work,before,after = findNodes(p)
-if top and work.bodyString():
-    c.setBodyString(before,work.bodyString())
+if top and work.b:
+    c.setBodyString(before,work.b)
     c.setBodyString(after,'')
     putSelectionInHeadline(c,before,'before',sel)
     c.redraw()
@@ -13272,16 +13274,16 @@ def findNodes(p):
     'work', 'before' and 'after' children.'''
 
     for p in p.self_and_parents_iter():
-        if p.headString().startswith('@test '):
+        if p.h.startswith('@test '):
             break
     top    = p and p.copy()
     work   = top and top.firstChild() 
     before = work and work.next()     
     after  = before and before.next()
     if (
-        work   and work.headString().startswith('work') and
-        before and before.headString().startswith('before') and
-        after  and after.headString().startswith('after')
+        work   and work.h.startswith('work') and
+        before and before.h.startswith('before') and
+        after  and after.h.startswith('after')
     ):
         return top,work,before,after
     else:
@@ -13291,7 +13293,7 @@ def findNodes(p):
 #@+node:putSelectionInHeadline
 def putSelectionInHeadline (c,p,prefix,sel):
 
-    # g.trace(p.headString(),repr(sel))
+    # g.trace(p.h,repr(sel))
 
     if not sel:
         sel = ('1.0','1.0')
@@ -13314,7 +13316,7 @@ and represent the selection range of the work node in the headline of the after 
 sel = getSel(c)
 top,work,before,after = findNodes(p)
 if top:
-    c.setBodyString(after,work.bodyString())
+    c.setBodyString(after,work.b)
     putSelectionInHeadline(c,after,'after',sel)
     c.redraw()
 else:
@@ -13339,16 +13341,16 @@ def findNodes(p):
     'work', 'before' and 'after' children.'''
 
     for p in p.self_and_parents_iter():
-        if p.headString().startswith('@test '):
+        if p.h.startswith('@test '):
             break
     top    = p and p.copy()
     work   = top and top.firstChild()
     before = work and work.next()
     after  = before and before.next()
     if (
-        work   and work.headString().startswith('work') and
-        before and before.headString().startswith('before') and
-        after  and after.headString().startswith('after')
+        work   and work.h.startswith('work') and
+        before and before.h.startswith('before') and
+        after  and after.h.startswith('after')
     ):
         return top,work,before,after
     else:
@@ -13358,7 +13360,7 @@ def findNodes(p):
 #@+node:putSelectionInHeadline
 def putSelectionInHeadline (c,p,prefix,sel):
 
-    # g.trace(p.headString(),repr(sel))
+    # g.trace(p.h,repr(sel))
 
     if not sel:
         sel = ('1.0','1.0')
@@ -13427,7 +13429,7 @@ def clean_file(p):
         'clean',
         g.os_path_basename(p.anyAtFileNodeName())))
 
-    # g.trace(p.headString(),len(at.stringOutput),fileName)
+    # g.trace(p.h,len(at.stringOutput),fileName)
 
     # Adapted from at.openFileForWritingHelper
     path = g.os_path_dirname(fileName)
@@ -13470,7 +13472,7 @@ connection = db.open()
 try:
     fileName = c.fileName()
     root = connection.root()
-    key = 'vnode: %s' % p.headString()
+    key = 'vnode: %s' % p.h
     v = root.get(key)
     if v:
         g.es_print('get-node %s: %s' % (key,repr(v)))
@@ -13502,8 +13504,8 @@ try:
     fileName = c.fileName()
     root = connection.root()
     v = p.v.detach()
-    key = 'vnode: %s' % v.headString()
-    g.es_print('put-node %s :%s' % (v.headString(),repr(v)))
+    key = 'vnode: %s' % v.h
+    g.es_print('put-node %s :%s' % (v.h,repr(v)))
     root[key] = v
 finally:
     get_transaction().commit()
@@ -13618,7 +13620,7 @@ The address children contained the actual data (removed for privacy)
 #@nonl
 #@+node:Scipt to remove rejected entries
 p = p.firstChild().firstChild()
-s = p.bodyString()
+s = p.b
 lines = g.splitLines(s)
 reject = 'reason=Rejected before registration'
 result = []
@@ -13648,7 +13650,7 @@ print 'done!'
 #@-node:Scipt to remove rejected entries
 #@+node:Script to clean address
 p = p.firstChild().firstChild()
-s = p.bodyString()
+s = p.b
 lines = g.splitLines(s)
 prefixes = (
     'access=',
@@ -13697,7 +13699,7 @@ result_p = p.firstChild().next()
 result = []
 entries = []
 for child in address_p.children_iter():
-    s = child.bodyString()
+    s = child.b
     lines = g.splitLines(s)
     for line in lines:
         if line.startswith('['):
@@ -14432,7 +14434,7 @@ def tnodeRepr(t):
 
 def vnodeRepr(v):
 
-    return "v_%d_%s" % (id(v),dotId(v.headString()))
+    return "v_%d_%s" % (id(v),dotId(v.h))
 #@nonl
 #@-node:tnode/vnodeRepr
 #@-node:<< code >>
@@ -14559,7 +14561,7 @@ def doatest():
     sys.stdout = sys.__stdout__ = g.fileLikeObject()
     sys.stderr = sys.__stderr__ = g.fileLikeObject()
 
-    h = p.headString()
+    h = p.h
     if h.startswith('@suite') or h.startswith('@test'):
         leoTest.doTests(all= False,verbosity=2)
     else: # Try to run an @file unittest.
@@ -14653,7 +14655,7 @@ def filter(c,e):
     newRoot = c.rootVnode().insertAfter(t)
     p = c.rootVnode()
     while p:
-        if pat.search(p.bodyString()):
+        if pat.search(p.b):
             clone = p.clone(p)
             clone.moveToLastChildOf(newRoot)
         p = p.threadNext()
@@ -14941,11 +14943,11 @@ print "***** Leo installed successfully - type 'leo filename.leo' to use it."
 # Find longest body text
 
 pmax = p.copy()
-n = len(p.bodyString())
+n = len(p.b)
 
 for p in p.self_and_subtree_iter():
-    if len(p.bodyString()) > n:
-        n = len(p.bodyString())
+    if len(p.b) > n:
+        n = len(p.b)
         pmax = p.copy()
 
 c.selectPosition(pmax)
@@ -14966,10 +14968,10 @@ def tags(p):
     return total
 
 pmax = p.copy()
-n = tags(p) # len(p.bodyString())
+n = tags(p) # len(p.b)
 
 for p in p.self_and_subtree_iter():
-    # if len(p.bodyString()) > n:
+    # if len(p.b) > n:
     n2 = tags(p)
     if n2 > n:
         n = n2
@@ -15104,7 +15106,7 @@ else:
     shell = LeoShell('shell')
     # g.redirectStdout()
     g.es_print('-'*40)
-    body = p.bodyString()
+    body = p.b
     for line in g.splitLines(body):
         g.es(str(shell.prefilter(line,None)))
     #g.restoreStdout()
@@ -16167,7 +16169,7 @@ for p in c.allNodes_iter():
     if not p.v.t.isVisited():
         p.v.t.setVisited()
         nodes += 1
-        lines += len(g.splitLines(p.bodyString()))
+        lines += len(g.splitLines(p.b))
 
 pages = ((nodes * 10) + lines) / 50
 s = "%d nodes,  %d lines, %d pages" % (nodes,lines,pages)
@@ -16216,11 +16218,11 @@ for p in c.allNodes_iter():
 #@-node:Dump fileIndex
 #@+node:Print all headlines, properly indented
 for p in c.allNodes_iter():
-    print p.level()*' ',p.headString()
+    print p.level()*' ',p.h
 #@-node:Print all headlines, properly indented
 #@+node:Print all uAs (unknown attributes)
 for p in c.allNodes_iter():
-    h = p.headString()
+    h = p.h
     if hasattr(p.v,'unknownAttributes'):   print 'v',h,p.v.unknownAttributes
     if hasattr(p.v.t,'unknownAttributes'): print 't',h,p.v.t.unknownAttributes
 #@nonl
@@ -16232,7 +16234,7 @@ print font.cget("family"), font.cget("weight")
 #@nonl
 #@-node:Print default font
 #@+node:Print gnx
-print "gnx", p.v.t.fileIndex, p.headString()
+print "gnx", p.v.t.fileIndex, p.h
 #@nonl
 #@-node:Print gnx
 #@+node:Print sys.path
@@ -16412,7 +16414,7 @@ if last_v and v == last_v:
     v = v.threadNext()
 found = False
 while v:
-    lines = v.bodyString().split('\n')
+    lines = v.b.split('\n')
     for s in lines:
         i = g.skip_ws(s,0)
         leading = s[0:i]
@@ -16425,7 +16427,7 @@ while v:
                     tabs += 1 ; break
             if blanks > 0 and tabs > 0:
                 # g.trace(leading)
-                g.es("blanks precede leading tab: " + v.headString())
+                g.es("blanks precede leading tab: " + v.h)
                 found = True ; break
     if found: break
     v = v.threadNext()
@@ -16465,12 +16467,12 @@ else:
 
 found = False ; count = 0
 while v and v != after and not found:
-    s = v.bodyString()
+    s = v.b
     lines = s.split('\n')
     for line in lines:
         if line and not line.strip():
             if findAll:
-                g.es(v.headString()) ; count += 1
+                g.es(v.h) ; count += 1
             else:
                 c.frame.tree.expandAllAncestors(v)
                 c.selectVnode(v)
@@ -16507,14 +16509,14 @@ else:
     v = c.currentVnode()
 
 if v:
-    s = oldText = v.bodyString()
+    s = oldText = v.b
     lines = s.split('\n')
     lines = [line.rstrip() for line in lines]
     s = '\n'.join(lines)
     if s != oldText:
         c.setBodyString(v,s,encoding=g.app.tkEncoding)
         if changeAll:
-            g.es(v.headString()) ; d["count"] = count + 1
+            g.es(v.h) ; d["count"] = count + 1
         else:
             c.frame.body.onBodyChanged(v,"Change",oldText=oldText) # Handles undo.
             c.frame.body.setInsertPointToStartOfLine(0)
@@ -16552,7 +16554,7 @@ if last_v:
     d["v"] = None
 d["m"] = None ; d["c"] = c
 while v:
-    m = docPart.match(v.bodyString())
+    m = docPart.match(v.b)
     if m:
         d["m"] = m ; d["v"] = v
         c.frame.tree.expandAllAncestors(v)
@@ -16591,7 +16593,7 @@ def replaceDocPart(m,body):
 d = g.app.searchDict ; c = d.get("c") ; v = d.get("v") ; m = d.get("m")
 if c and v and m:
     body = c.frame.body
-    oldText = v.bodyString()
+    oldText = v.b
     s = replaceDocPart(m,body)
     if s: # Don't make a replacement if there was an error.
         c.setBodyString(v,s,encoding=g.app.tkEncoding)
@@ -16696,12 +16698,12 @@ def changeNext ( v, pos, findPat, changePat, bodyFlag = 1 ):
     if v == None:
         return None, 0
     if bodyFlag:
-        s = v.bodyString()
+        s = v.b
         # s[pos:pos+n] = changePat
         s = s[:pos] + changePat + s[pos+n:]
         c.setBodyString(v,s)
     else:
-        s = v.headString()
+        s = v.h
         # s[pos:pos+n] = changePat
         s = s[:pos] + changePat + s[pos+n:]
         c.setHeadString(v,s)
@@ -16732,12 +16734,12 @@ def changePrev ( v, pos, findPat, changePat, bodyFlag = 1 ):
     if v == None:
         return None, 0
     if bodyFlag:
-        s = v.bodyString()
+        s = v.b
         # s[pos:pos+n] = changePat
         s = s[:pos] + changePat + s[pos+n:]
         c.setBodyString(v,s)
     else:
-        s = v.headString()
+        s = v.h
         #s[pos:pos+n] = changePat
         s = s[:pos] + changePat + s[pos+n:]
         c.setHeadString(v,s)
@@ -16785,9 +16787,9 @@ def findNext ( v, pos, pattern, bodyFlag = 1 ):
     """
     while v != None:
         if bodyFlag:
-            s = v.bodyString()
+            s = v.b
         else:
-            s = v.headString()
+            s = v.h
         pos = s.find(pattern,pos )
         if pos != -1:
             return v, pos
@@ -16814,9 +16816,9 @@ def findPrev ( v, pos, pattern, bodyFlag = 1 ):
     """
     while v != None:
         if bodyFlag:
-            s = v.bodyString()
+            s = v.b
         else:
-            s = v.headString()
+            s = v.h
         pos = s.rfind(pattern,0,pos)
         if pos != -1:
             return v, pos
@@ -16869,13 +16871,13 @@ def reChangeNext ( v, pos, findPat, changePat, bodyFlag, reFlags = None ):
     if v == None:
         return None, None, 0
     if bodyFlag:
-        s = v.bodyString()
+        s = v.b
         print s, findPat, changePat
         # s[pos:pos+n] = changePat
         s = s[:pos] + changePat + s[pos+n:]
         c.setBodyString(v,s)
     else:
-        s = v.headString()
+        s = v.h
         # s[pos:pos+n] = changePat
         s = s[:pos] + changePat + s[pos+n:]
         c.setHeadString(v,s)
@@ -16906,12 +16908,12 @@ def reChangePrev ( v, pos, findPat, changePat, bodyFlag, reFlags = None ):
     if v == None:
         return None, None, 0
     if bodyFlag:
-        s = v.bodyString()
+        s = v.b
         # s[pos:pos+n] = changePat
         s = s[:pos] + changePat + s[pos+n:]
         c.setBodString(v,s)
     else:
-        s = v.headString()
+        s = v.h
         # s[pos:pos+n] = changePat
         s = s[:pos] + changePat + s[pos+n:]
         c.setHeadString(v,s)
@@ -16962,9 +16964,9 @@ def reFindNext ( v, pos, pattern, bodyFlag, reFlags = None ):
     """
     while v != None:
         if bodyFlag:
-            s = v.bodyString()
+            s = v.b
         else:
-            s = v.headString()
+            s = v.h
         if reFlags == None:
             mo = re.search ( pattern, s[pos:] )
         else:
@@ -16998,9 +17000,9 @@ def reFindPrev ( v, pos, pattern, bodyFlag, reFlags = None ):
     """
     while v != None:
         if bodyFlag:
-            s = v.bodyString()
+            s = v.b
         else:
-            s = v.headString()
+            s = v.h
         # Forward search through text...
         if reFlags == None:
             mo = re.search ( pattern, s[pos:] )
@@ -17051,9 +17053,9 @@ def printFindList( findList, bodyFlag = 1 ):
     for v,pos in findList:
         if v != None:
             if bodyFlag:
-                s = v.bodyString()
+                s = v.b
             else:
-                s = v.headString()
+                s = v.h
             print lineAtPos(s, pos)
 #@nonl
 #@-node:printFindList
@@ -17063,7 +17065,7 @@ def printFindList( findList, bodyFlag = 1 ):
 #@+node:Text editing scripts
 #@+node:@@button Create headlines from body
 # Create child nodes whose headline are all lines in the body.
-s = p.bodyString()
+s = p.b
 lines = g.splitLines(s)
 lines = [z.strip() for z in lines if z.strip()]
 
@@ -17084,7 +17086,7 @@ c.redraw()
 #@+node:add tab after each :
 @color
 
-s = p.bodyString()
+s = p.b
 
 result = []
 lines = g.splitLines(s)
@@ -17102,7 +17104,7 @@ c.setBodyString(p,s)
 #@+node:add tab before each =
 @color
 
-s = p.bodyString()
+s = p.b
 
 result = []
 lines = g.splitLines(s)
@@ -17122,15 +17124,15 @@ g.trace(s)
 # Clone all nodes specified in the child node called 'to be cloned'
 root = p.copy()
 child = p.firstChild()
-assert(child.headString().lower().strip() == 'to be cloned')
-s = child.bodyString()
+assert(child.h.lower().strip() == 'to be cloned')
+s = child.b
 lines = g.splitLines(s)
 
 seen = {}
 for p in c.allNodes_iter():
     if not seen.get(p.v.t):
         seen[p.v.t] = True
-        h = p.headString().strip()
+        h = p.h.strip()
         for line in lines:
             if h == line.strip():
                 print 'found',h
@@ -17180,7 +17182,7 @@ c.redraw()
 #@+node:delete from ':' to end (script)
 @color
 
-s = p.bodyString()
+s = p.b
 
 result = []
 lines = g.splitLines(s)
@@ -17200,7 +17202,7 @@ c.setBodyString(p,s)
 #@+node:delete from first blank
 @color
 
-s = p.bodyString()
+s = p.b
 
 result = []
 lines = g.splitLines(s)
@@ -17250,18 +17252,18 @@ u.afterChangeNodeContents(p,'add-begin/endUpdate',b)
 #@-node:insert begin/endUpdate
 #@+node:Remove blank trailing lines
 for p in p.self_and_subtree_iter():
-    s = p.bodyString()
+    s = p.b
     target = s.rstrip()
     if s != target:
         c.setBodyString(p,target)
-        g.es(p.headString())
+        g.es(p.h)
 #@nonl
 #@-node:Remove blank trailing lines
 #@+node:Remove all @test nodes
 count = 0
 p = c.rootVnode()
 while p:
-    h = p.headString()
+    h = p.h
     if h.startswith('@test '):
         next = p.nodeAfterTree()
         print 'deleting',h
@@ -17279,7 +17281,7 @@ print '%d @test nodes deleted' % count
 #@+node:replace =.* with = None
 @color
 
-s = p.bodyString()
+s = p.b
 
 result = []
 lines = g.splitLines(s)
@@ -17317,7 +17319,7 @@ def pass1(root):
     count = 0 ; seen = {}
     for p in root.self_and_subtree_iter():
         if seen.get(p.v.t): continue
-        s = p.bodyString()
+        s = p.b
         if s:
             s2 = s.rstrip() + '\n'
             if s2 != s:
@@ -17362,7 +17364,7 @@ def createChild (parent,body,line):
     p.setHeadString(h2)
     p.setTnodeText(''.join(body))
 
-s = p.bodyString()
+s = p.b
 if s.strip():
     b = c.undoer.beforeChangeTree(p)
     lines = g.splitLines(s) ; body = [] ; changed = False ; lastDefLine = ''
@@ -17391,7 +17393,7 @@ c.undoer.setUndoParams("Change All",c.currentPosition())
 n = 0 ; total = 0
 for p in c.currentPosition().self_and_subtree_iter():
     total += 1
-    body = p.bodyString()
+    body = p.b
     s = g.stripBlankLines(body)
     if s != body:
         n += 1
