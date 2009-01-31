@@ -1898,6 +1898,7 @@ class atFile:
         new_df            is True if we are reading a new-format derived file.
         isThinDerivedFile is True if the file is an @thin file."""
 
+        trace = False
         at = self
         firstLines = [] # The lines before @+leo.
         tag = "@+leo"
@@ -1906,18 +1907,24 @@ class atFile:
         #@+node:ekr.20041005105605.130:<< skip any non @+leo lines >>
         #@+at 
         #@nonl
-        # Queue up the lines before the @+leo.  These will be used to add as 
-        # parameters to the @first directives, if any.  Empty lines are 
-        # ignored (because empty @first directives are ignored). NOTE: the 
-        # function now returns a list of the lines before @+leo.
+        # Queue up the lines before the @+leo.
         # 
-        # We can not call sentinelKind here because that depends on the 
-        # comment delimiters we set here.  @first lines are written 
-        # "verbatim", so nothing more needs to be done!
+        # These will be used to add as parameters to the @first directives, if 
+        # any.
+        # Empty lines are ignored (because empty @first directives are 
+        # ignored).
+        # NOTE: the function now returns a list of the lines before @+leo.
+        # 
+        # We can not call sentinelKind here because that depends on
+        # the comment delimiters we set here.
+        # 
+        # at-first lines are written "verbatim", so nothing more needs to be 
+        # done!
         #@-at
         #@@c
 
         s = at.readLine(theFile)
+        if trace: g.trace('first line',repr(s))
         while len(s) > 0:
             j = s.find(tag)
             if j != -1: break
@@ -1935,7 +1942,7 @@ class atFile:
             at.endSentinelComment = end
             # g.trace('start',repr(start),'end',repr(end))
         else:
-            at.error("Bad @+leo sentinel in: %s" % fileName)
+            at.error("No @+leo sentinel in: %s" % fileName)
         # g.trace("start,end",repr(at.startSentinelComment),repr(at.endSentinelComment))
         return firstLines,new_df,isThinDerivedFile
     #@-node:ekr.20041005105605.129:scanHeader  (3.x and 4.x)

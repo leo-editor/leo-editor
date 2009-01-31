@@ -140,6 +140,7 @@ class LeoApp:
             "ruby"          : "#",  # thyrsus 2008-11-05
             "shell"         : "#",  # shell scripts
             "tcltk"         : "#",
+            "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
             "unknown"       : "#", # Set when @comment is seen.
             "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
             "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
