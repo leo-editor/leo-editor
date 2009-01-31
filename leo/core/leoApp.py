@@ -104,7 +104,7 @@ class LeoApp:
         #@-node:ekr.20031218072017.1417:<< define global constants >>
         #@nl
         #@    << Define global data structures >>
-        #@+node:ekr.20031218072017.368:<< define global data structures >> app
+        #@+node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
         # Internally, lower case is used for all language names.
         self.language_delims_dict = {
             # Keys are languages, values are 1,2 or 3-tuples of delims.
@@ -128,6 +128,7 @@ class LeoApp:
             "kshell"        : "#", # Leo 4.5.1.
             "latex"         : "%",
             "lua"           : "--",  # ddm 13/02/06
+            "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
             "pascal"        : "// { }",
             "perl"          : "#",
             "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
@@ -191,6 +192,7 @@ class LeoApp:
             # Keys are extensions, values are languages.
             "ada"   : "ada",
             "adb"   : "ada",
+            "ahk"   : "autohotkey",  # EKR: 2009-01-30.
             "as"    : "actionscript",
             "bas"   : "rapidq",
             "bat"   : "batch",
@@ -249,7 +251,7 @@ class LeoApp:
             'w'     : 'none', # cweb
         }
         #@nonl
-        #@-node:ekr.20031218072017.368:<< define global data structures >> app
+        #@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
         #@nl
     #@-node:ekr.20031218072017.1416:app.__init__
     #@+node:ekr.20031218072017.2609:app.closeLeoWindow

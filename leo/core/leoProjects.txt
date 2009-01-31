@@ -6699,6 +6699,235 @@ for t in tnodeInfoDict:
 #@-node:ekr.20050418084539.2:<< put only needed info in copiedBunchList >>
 #@-node:ekr.20031218072017.1551:pasteOutline
 #@-node:ekr.20090130065000.5:Fixed cut/paste outline bug
+#@+node:ekr.20090123073710.6:Fixed Mark Edgington's @shadow bug
+@nocolor-node
+
+To reproduce:
+
+1. open .leo file: 'leo a3_report.leo'
+2. turn the top 10 non-directive lines of the file into a <<test>> section
+3. save the file (ctrl-s)
+4. close leo
+5. start leo
+6. open the a3_report.leo file again.
+
+now you should see the problem in the log window.
+
+===============
+
+base directory: c:\prog\leo_shadow_problem
+
+
+updated private .leo_shadow\xa3-report.tex from public a3-report.tex
+
+Bad @+leo sentinel in: .leo_shadow\xa3-report.tex
+
+readOpenFile: run,createFrame,openWithFileName,open,getLeoFile,readAll,readOneAtShadowNode,read
+readOpenFile: invalid @shadow private file .leo_shadow\xa3-report.tex
+
+invalid @shadow private file .leo_shadow\xa3-report.tex
+#@+node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM", # Leo 4.5.1
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lua"           : "--",  # ddm 13/02/06
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran90", # or fortran ?
+    "h"     : "c",
+    "html"  : "html",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "w"     : "cweb",
+    "xml"   : "xml",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+#@nonl
+#@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
+#@+node:ekr.20041005105605.129:scanHeader  (3.x and 4.x)
+def scanHeader(self,theFile,fileName):
+
+    """Scan the @+leo sentinel.
+
+    Sets self.encoding, and self.start/endSentinelComment.
+
+    Returns (firstLines,new_df,isThinDerivedFile) where:
+    firstLines        contains all @first lines,
+    new_df            is True if we are reading a new-format derived file.
+    isThinDerivedFile is True if the file is an @thin file."""
+
+    trace = False
+    at = self
+    firstLines = [] # The lines before @+leo.
+    tag = "@+leo"
+    valid = True ; new_df = False ; isThinDerivedFile = False
+    << skip any non @+leo lines >>
+    if valid:
+        valid,new_df,start,end,isThinDerivedFile = at.parseLeoSentinel(s)
+    if valid:
+        at.startSentinelComment = start
+        at.endSentinelComment = end
+        # g.trace('start',repr(start),'end',repr(end))
+    else:
+        at.error("No @+leo sentinel in: %s" % fileName)
+    # g.trace("start,end",repr(at.startSentinelComment),repr(at.endSentinelComment))
+    return firstLines,new_df,isThinDerivedFile
+#@+node:ekr.20041005105605.130:<< skip any non @+leo lines >>
+@ Queue up the lines before the @+leo.
+
+These will be used to add as parameters to the @first directives, if any.
+Empty lines are ignored (because empty @first directives are ignored).
+NOTE: the function now returns a list of the lines before @+leo.
+
+We can not call sentinelKind here because that depends on
+the comment delimiters we set here.
+
+at-first lines are written "verbatim", so nothing more needs to be done!
+@c
+
+s = at.readLine(theFile)
+if trace: g.trace('first line',repr(s))
+while len(s) > 0:
+    j = s.find(tag)
+    if j != -1: break
+    firstLines.append(s) # Queue the line
+    s = at.readLine(theFile)
+
+n = len(s)
+valid = n > 0
+#@-node:ekr.20041005105605.130:<< skip any non @+leo lines >>
+#@-node:ekr.20041005105605.129:scanHeader  (3.x and 4.x)
+#@-node:ekr.20090123073710.6:Fixed Mark Edgington's @shadow bug
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
@@ -20242,6 +20471,160 @@ def createWxGui (self,fileName=None):
 #@-node:ekr.20090126063121.3:app.createWxGui
 #@-node:ekr.20090126063121.4:Added support for wx gui plugin
 #@-node:ekr.20081001140516.16:Plugins
+#@+node:ekr.20090131101152.2:Testing
+#@+node:ekr.20090131101152.1:Added @test consistency of leoApp tables
+# This was the cause of Mark Edgington's bug.
+#@nonl
+#@+node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM", # Leo 4.5.1
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lua"           : "--",  # ddm 13/02/06
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+}
+
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran90", # or fortran ?
+    "h"     : "c",
+    "html"  : "html",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "w"     : "cweb",
+    "xml"   : "xml",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
+#@nonl
+#@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
+#@-node:ekr.20090131101152.1:Added @test consistency of leoApp tables
+#@-node:ekr.20090131101152.2:Testing
 #@+node:ekr.20081205084002.1:Leo and Python 2.6
 #@+node:ekr.20081204112758.1:Failed unit tests with Python 2.6
 #@+node:EKR.20040504150046.4:g.comment_delims_from_extension

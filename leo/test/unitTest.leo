@@ -813,6 +813,9 @@
 <v t="ekr.20060203201949" annotate="7d71002e"><vh>@test restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20090131113752.2"><vh>leoApp</vh>
+<v t="ekr.20090131113752.3"><vh>@test consistency of leoApp tables</vh></v>
+</v>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -21356,7 +21359,7 @@ for ext in g.app.extension_dict.keys():
         if language2 in ('None','none'):  continue
         if language2: language = language2
         # Made-up languages do not have mode files.
-        if not language.endswith('_language'):
+        if not language.endswith('_language') and language not in ('autohotkey',):
             path = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
             assert g.os_path_exists(path), 'for ext=%s does not exist: %s' % (ext,path)
         
@@ -22113,5 +22116,26 @@ for p in c.allNodes_iter():
     assert p.h == p.headString()
     assert p.v.h == p.v.headString()
     assert p.v.t.h == p.v.t.headString()</t>
+<t tx="ekr.20090131113752.2"></t>
+<t tx="ekr.20090131113752.3">@
+language_delims_dict 
+    # Keys are languages, values are 1,2 or 3-tuples of delims. 
+language_extension_dict
+    # Keys are languages, values are extensions.
+extension_dict = {
+    # Keys are extensions, values are languages.
+@c
+
+delims_d    = g.app.language_delims_dict
+lang_d      = g.app.language_extension_dict
+ext_d       = g.app.extension_dict
+
+for lang in lang_d:
+    ext = lang_d.get(lang)
+    assert lang in delims_d,'fail 1: %s' % lang
+    assert ext in ext_d,'fail 2: %s' % ext
+for ext in ext_d:
+    lang = ext_d.get(ext)
+    assert lang in lang_d,'fail 3: %s' % lang</t>
 </tnodes>
 </leo_file>
