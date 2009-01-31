@@ -1133,7 +1133,7 @@
 </v>
 <v t="ekr.20070611105423.1"><vh>@test contract all</vh></v>
 <v t="ekr.20071113105654.1"><vh>@test hoist with no children</vh></v>
-<v t="ekr.20070611105728"><vh>@test illegal clone demote LOOPS</vh>
+<v t="ekr.20070611105728"><vh>@test illegal clone demote</vh>
 <v t="ekr.20090124192423.1"><vh>aClone</vh></v>
 </v>
 <v t="ekr.20071113201833" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
@@ -4405,8 +4405,8 @@ current = c.p
 child = current.firstChild()
 
 allList = [p.v for p in c.all_positions_iter()]
-vList1 = [v for v in current.vnodes_iter()]
-vList2 = [v for v in current.unique_vnodes_iter()]
+vList1 = [v for v in c.p.vnodes_iter()]
+vList2 = [v for v in c.p.unique_vnodes_iter()]
 
 if 0:
     for v in vList1: print(v)
@@ -17415,7 +17415,7 @@ class test:
 
         c = self.c
         if c == None: return
-        v = current = c.currentVnode()
+        p = c.currentPosition()
 
     # Used by paste logic.
 
@@ -20128,6 +20128,8 @@ finally:
     
 child = p.insertAsNthChild(0)
 child.setHeadString('child')
+child2 = p.insertAsNthChild(1)
+child2.setHeadString('child2')
 grandChild = child.insertAsNthChild(0)
 grandChild.setHeadString('grand child')
 c.selectPosition(grandChild)
@@ -20137,16 +20139,17 @@ c.selectPosition(child)
 try:
     p.expand()
     c.selectPosition(child)
+    assert c.p.h == 'child','fail 1'
     c.copyOutline()
     oldTnodes = [p2.v.t for p2 in child.self_and_subtree_iter()]
     c.selectPosition(child)
     c.p.contract() # Essential
     c.pasteOutline()
-    current = c.p
-    assert current != child, 'fail 2'
-    newTnodes = [p2.v.t for p2 in current.self_and_subtree_iter()]
+    assert c.p != child, 'fail 2'
+    assert c.p.h == 'child','fail 3'
+    newTnodes = [p2.v.t for p2 in c.p.self_and_subtree_iter()]
     for t in newTnodes:
-        assert t not in oldTnodes, 'fail 3'
+        assert t not in oldTnodes, 'fail 4'
     c.undoer.undo()
     c.undoer.redo()
     c.undoer.undo()
@@ -20173,9 +20176,8 @@ try:
     oldTnodes = [p2.v.t for p2 in child.self_and_subtree_iter()]
     c.p.contract() # Essential
     c.pasteOutlineRetainingClones()
-    current = c.p
-    assert current != child, 'fail 2'
-    newTnodes = [p2.v.t for p2 in current.self_and_subtree_iter()]
+    assert c.p != child, 'fail 2'
+    newTnodes = [p2.v.t for p2 in c.p.self_and_subtree_iter()]
     for t in newTnodes:
         assert t in oldTnodes, 'fail 3'
 finally:

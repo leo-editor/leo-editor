@@ -2,7 +2,10 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20081215074704.13:Bugs 5
+#@+node:ekr.20081215074704.13:Bugs 6
+#@+node:ekr.20090131123901.2:Sometime a plug box appears wrongly
+# It may happen after a paste?
+#@-node:ekr.20090131123901.2:Sometime a plug box appears wrongly
 #@+node:ekr.20090128113654.1:Recent files menu is duplicated in qt gui
 Using r1372 and the Qt plugin, I get strange results with the recent-
 files menu item.  To reproduce:
@@ -101,7 +104,7 @@ robustly dynamic.  Or maybe I'm missing something, but I've only seen
 functions which find a menu based on knowing it exists before hand.
 #@nonl
 #@-node:ekr.20081215074704.18:Finish qt gui delete_range method
-#@-node:ekr.20081215074704.13:Bugs 5
+#@-node:ekr.20081215074704.13:Bugs 6
 #@+node:ekr.20090128083504.1:Fix plugins 2
 @nocolor-node
 

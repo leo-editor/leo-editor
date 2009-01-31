@@ -3,7 +3,15 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
-#@+node:ekr.20090103054019.1:Urgent 2
+#@+node:ekr.20090103054019.1:Urgent 3
+#@+node:ekr.20090131101152.5:tree.onHeadChanged should be careful
+@nocolor-node
+
+This is causing trouble, for example, with unit tests.
+
+What happens if c.p != tree.item2position ??
+
+#@-node:ekr.20090131101152.5:tree.onHeadChanged should be careful
 #@+node:ekr.20090105083748.1:Fix xml write bug
 @nocolor-node
 
@@ -52,7 +60,7 @@ of the nodes would load from the file.
 #@-node:ekr.20090105083748.1:Fix xml write bug
 #@+node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
 #@-node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
-#@-node:ekr.20090103054019.1:Urgent 2
+#@-node:ekr.20090103054019.1:Urgent 3
 #@+node:ekr.20081215070651.4:Bugs 9
 #@+node:ekr.20090130065000.3:t.uA's are not persistent
 @nocolor-node

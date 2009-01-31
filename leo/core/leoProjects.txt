@@ -20624,6 +20624,8 @@ self.extra_extension_dict = {
 #@nonl
 #@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
 #@-node:ekr.20090131101152.1:Added @test consistency of leoApp tables
+#@+node:ekr.20090131101152.4:Improved @test paste-node
+#@-node:ekr.20090131101152.4:Improved @test paste-node
 #@-node:ekr.20090131101152.2:Testing
 #@+node:ekr.20081205084002.1:Leo and Python 2.6
 #@+node:ekr.20081204112758.1:Failed unit tests with Python 2.6
