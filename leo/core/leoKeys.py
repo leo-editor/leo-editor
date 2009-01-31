@@ -2154,9 +2154,11 @@ class keyHandlerClass:
                     if b2.commandName != commandName and pane in ('button','all',b2.pane)
                         and not b2.pane.endswith('-mode')]
                 for z in redefs:
-                    g.es_print('redefining','shortcut %20s' % (shortcut),
-                        'from',z,'(%s)' % (pane),
-                        'to',commandName,'(%s)' % (pane),color='red')
+                    g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
+                        shortcut,z,commandName,pane),color='red')
+                    # g.es_print('redefining','shortcut %20s' % (shortcut),
+                        # 'from',z,'(%s)' % (pane),
+                        # 'to',commandName,'(%s)' % (pane),color='red')
 
             if not modeFlag:
                 bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]

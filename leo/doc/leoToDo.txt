@@ -3,7 +3,7 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs, cleanups
 #@+node:ekr.20080915112342.1:First
-#@+node:ekr.20090103054019.1:Urgent 4
+#@+node:ekr.20090103054019.1:Urgent 3
 #@+node:ekr.20090123073710.6:Fix Mark Edgington's @shadow bug
 @nocolor-node
 
@@ -19,12 +19,7 @@ To reproduce:
 now you should see the problem in the log window.
 #@nonl
 #@-node:ekr.20090123073710.6:Fix Mark Edgington's @shadow bug
-#@+node:ekr.20090105083748.3:Make sure g.pr never throws unicode exception
-
-sys.stdout.write(s+'\n')
-#@nonl
-#@-node:ekr.20090105083748.3:Make sure g.pr never throws unicode exception
-#@+node:ekr.20090105083748.1:** Fix xml write bug
+#@+node:ekr.20090105083748.1:Fix xml write bug
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/2b3b621b36760579
@@ -69,11 +64,11 @@ Fortunately my outline was small enough to find the problem character,
 but in larger files it would have been very hard to find because none
 of the nodes would load from the file. 
 #@nonl
-#@-node:ekr.20090105083748.1:** Fix xml write bug
-#@+node:ekr.20090105132011.2:** Fix whitespace problems with @auto/@shadow
-#@-node:ekr.20090105132011.2:** Fix whitespace problems with @auto/@shadow
-#@-node:ekr.20090103054019.1:Urgent 4
-#@+node:ekr.20081215070651.4:Bugs 12
+#@-node:ekr.20090105083748.1:Fix xml write bug
+#@+node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
+#@-node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
+#@-node:ekr.20090103054019.1:Urgent 3
+#@+node:ekr.20081215070651.4:Bugs 9
 #@+node:ekr.20090130065000.3:t.uA's are not persistent
 @nocolor-node
 
@@ -176,16 +171,12 @@ than scripting a solution to strip the extra lines.
 Bernie Pursley
 Simsbury, CT
 #@-node:ekr.20090123073710.4:Fix rst3 bug
-#@+node:ekr.20090109092314.2:Get rClick plugin working with qt gui.
-#@-node:ekr.20090109092314.2:Get rClick plugin working with qt gui.
 #@+node:ekr.20081215070651.1:@shortcuts nodes in myLeoSettings.leo should override defaults
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/346d103641b0bd6a
 
 #@-node:ekr.20081215070651.1:@shortcuts nodes in myLeoSettings.leo should override defaults
-#@+node:ekr.20081215070651.7:** Use myLeoSettings when opening leoSettings.leo
-#@-node:ekr.20081215070651.7:** Use myLeoSettings when opening leoSettings.leo
 #@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
 @nocolor-node
 
@@ -238,10 +229,6 @@ get deleted whenever you save a file named somedoc.leo.
 @color
 #@nonl
 #@-node:ekr.20080406075855.2:Fix problem with already-existing .leo.bak files
-#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
-#@nonl
-#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
 @nocolor
 
@@ -745,8 +732,128 @@ def goto_skipToMatchingNodeSentinel (self,lines,n,delim):
 #@-node:ekr.20031218072017.2882:goto_skipToMatchingNodeSentinel
 #@-node:ekr.20080710082231.10:c.gotoLineNumber and helpers
 #@-node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
-#@-node:ekr.20081215070651.4:Bugs 12
-#@+node:ekr.20081215070651.5:Features 6
+#@-node:ekr.20081215070651.4:Bugs 9
+#@+node:ekr.20090130144433.3:Minor/invalid bugs 1
+#@+node:ekr.20090105083748.3:(Invalid?) Make sure g.pr never throws an exception
+
+sys.stdout.write(s+'\n')
+#@nonl
+#@+node:ekr.20061031131434.89:bindKey
+def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
+
+    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
+
+    No actual gui bindings are made: only entries in k.masterBindingsDict.'''
+
+    k = self ; c = k.c
+
+    # g.trace(pane,shortcut,commandName)
+    if not shortcut:
+        # g.trace('No shortcut for %s' % commandName)
+        return False
+    << give warning and return if we try to bind to Enter or Leave >>
+    if pane.endswith('-mode'):
+        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
+        return False
+    bunchList = k.bindingsDict.get(shortcut,[])
+    << trace bindings >>
+    try:
+        k.bindKeyToDict(pane,shortcut,callback,commandName)
+        b = g.bunch(pane=pane,func=callback,commandName=commandName)
+        << remove previous conflicting definitions from bunchList >>
+        bunchList.append(b)
+        shortcut = g.stripBrackets(shortcut.strip())
+        k.bindingsDict [shortcut] = bunchList
+        return True
+    except Exception: # Could be a user error.
+        if not g.app.menuWarningsGiven:
+            g.es_print('exception binding',shortcut,'to',commandName)
+            g.es_exception()
+            g.app.menuWarningsGiven = True
+        return False
+
+bindShortcut = bindKey # For compatibility
+#@+node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
+if shortcut:
+    for s in ('enter','leave'):
+        if -1 != shortcut.lower().find(s):
+            g.es_print('ignoring invalid key binding:','%s = %s' % (
+                commandName,shortcut),color='blue')
+            return
+#@-node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
+#@+node:ekr.20061031131434.91:<< trace bindings >>
+if c.config.getBool('trace_bindings_verbose'):
+    theFilter = c.config.getString('trace_bindings_filter') or ''
+    # g.trace(repr(theFilter))
+    if not theFilter or shortcut.find(theFilter) != -1:
+        pane_filter = c.config.getString('trace_bindings_pane_filter')
+        if not pane_filter or pane_filter.lower() == pane:
+            g.trace(pane,shortcut,commandName)
+#@-node:ekr.20061031131434.91:<< trace bindings >>
+#@+node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
+if not modeFlag and self.warn_about_redefined_shortcuts:
+    redefs = [str(b2.commandName) for b2 in bunchList
+        if b2.commandName != commandName and pane in ('button','all',b2.pane)
+            and not b2.pane.endswith('-mode')]
+    for z in redefs:
+        g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
+            shortcut,z,commandName,pane),color='red')
+        # g.es_print('redefining','shortcut %20s' % (shortcut),
+            # 'from',z,'(%s)' % (pane),
+            # 'to',commandName,'(%s)' % (pane),color='red')
+
+if not modeFlag:
+    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
+#@-node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
+#@-node:ekr.20061031131434.89:bindKey
+#@+node:ekr.20050707064040:g.es_print
+# see: http://www.diveintopython.org/xml_processing/unicode.html
+
+def es_print(*args,**keys):
+
+    '''Print all non-keyword args, and put them to the log pane.
+    The first, third, fifth, etc. arg translated by g.translateString.
+    Supports color, comma, newline, spaces and tabName keyword arguments.
+    '''
+
+    g.pr(*args,**keys)
+
+    if not g.app.unitTesting:
+        g.es(*args,**keys)
+#@-node:ekr.20050707064040:g.es_print
+#@+node:ekr.20080710101653.1:g.pr
+# see: http://www.diveintopython.org/xml_processing/unicode.html
+
+def pr(*args,**keys):
+
+    '''Print all non-keyword args, and put them to the log pane.
+    The first, third, fifth, etc. arg translated by g.translateString.
+    Supports color, comma, newline, spaces and tabName keyword arguments.
+    '''
+
+    # Compute the effective args.
+    d = {'commas':False,'newline':True,'spaces':True}
+    d = g.doKeywordArgs(keys,d)
+
+    # Important:  Python's print statement *can* handle unicode.
+    # However, the following must appear in Python\Lib\sitecustomize.py:
+    #    sys.setdefaultencoding('utf-8')
+    s = g.translateArgs(args,d) # Translates everything to unicode.
+
+    try: # We can't use any print keyword args in Python 2.x!
+        # print(s) # Not quite right.
+        if d.get('newline'):
+            sys.stdout.write(s+'\n')
+        else:
+            sys.stdout.write(s)
+    except Exception:
+        print('unexpected Exception in g.pr')
+        g.es_exception()
+        g.trace(g.callers())
+#@-node:ekr.20080710101653.1:g.pr
+#@-node:ekr.20090105083748.3:(Invalid?) Make sure g.pr never throws an exception
+#@-node:ekr.20090130144433.3:Minor/invalid bugs 1
+#@+node:ekr.20081215070651.5:Features 7
 #@+node:ekr.20081211085314.1:Smart Alt-RtArrow/Alt-LtArrow keys
 @nocolor-node
 
@@ -1171,7 +1278,11 @@ for p in c.allNodes_iter():
 #@-node:ekr.20070624135822:Templates for common code fragments
 #@+node:ekr.20081119132758.2:Support @ifgui in settings trees
 #@-node:ekr.20081119132758.2:Support @ifgui in settings trees
-#@-node:ekr.20081215070651.5:Features 6
+#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
+#@nonl
+#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+#@-node:ekr.20081215070651.5:Features 7
 #@+node:ekr.20080922115725.1:Finish @shadow
 # Allow block comments in private shadow files.
 # Compute delims using the private shadow file, not the file extension!
@@ -4472,9 +4583,11 @@ if not modeFlag and self.warn_about_redefined_shortcuts:
         if b2.commandName != commandName and pane in ('button','all',b2.pane)
             and not b2.pane.endswith('-mode')]
     for z in redefs:
-        g.es_print('redefining','shortcut %20s' % (shortcut),
-            'from',z,'(%s)' % (pane),
-            'to',commandName,'(%s)' % (pane),color='red')
+        g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
+            shortcut,z,commandName,pane),color='red')
+        # g.es_print('redefining','shortcut %20s' % (shortcut),
+            # 'from',z,'(%s)' % (pane),
+            # 'to',commandName,'(%s)' % (pane),color='red')
 
 if not modeFlag:
     bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
@@ -5868,9 +5981,11 @@ if not modeFlag and self.warn_about_redefined_shortcuts:
         if b2.commandName != commandName and pane in ('button','all',b2.pane)
             and not b2.pane.endswith('-mode')]
     for z in redefs:
-        g.es_print('redefining','shortcut %20s' % (shortcut),
-            'from',z,'(%s)' % (pane),
-            'to',commandName,'(%s)' % (pane),color='red')
+        g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
+            shortcut,z,commandName,pane),color='red')
+        # g.es_print('redefining','shortcut %20s' % (shortcut),
+            # 'from',z,'(%s)' % (pane),
+            # 'to',commandName,'(%s)' % (pane),color='red')
 
 if not modeFlag:
     bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]

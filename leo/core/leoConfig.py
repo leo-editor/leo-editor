@@ -1411,7 +1411,10 @@ class configClass:
 
         """Get the setting and make sure its type matches the expected type."""
 
-        if c:
+        isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+
+        # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+        if c and not isLeoSettings:
             d = self.localOptionsDict.get(c.hash())
             if d:
                 val,junk = self.getValFromDict(d,setting,kind)
@@ -1435,6 +1438,16 @@ class configClass:
                 # if setting == 'targetlanguage':
                     # g.trace(kind,setting,val,g.callers())
                 return val
+
+        # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+        if c and isLeoSettings:
+            d = self.localOptionsDict.get(c.hash())
+            if d:
+                val,junk = self.getValFromDict(d,setting,kind)
+                if val is not None:
+                    # if setting == 'targetlanguage':
+                        # g.trace(c.shortFileName(),setting,val,g.callers())
+                    return val
 
         return None
     #@+node:ekr.20041121143823:getValFromDict

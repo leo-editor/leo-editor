@@ -148,7 +148,7 @@ class DynamicWindow(QtGui.QMainWindow):
         '''Create Leo's main window, c.frame.top'''
 
         self.c = c ; top = c.frame.top
-        # g.trace('DynamicWindow')
+        # g.pr('DynamicWindow.__init__',c)
 
         # Init both base classes.
 
@@ -242,11 +242,16 @@ class DynamicWindow(QtGui.QMainWindow):
 
     def setStyleSheets(self):
 
+        trace = False
         c = self.c
 
         sheet = c.config.getData('qt-gui-plugin-style-sheet')
-        if sheet: sheet = '\n'.join(sheet)
-        self.ui.setStyleSheet(sheet or self.default_sheet())
+        if sheet:
+            sheet = '\n'.join(sheet)
+            if trace: g.trace(len(sheet))
+            self.ui.setStyleSheet(sheet or self.default_sheet())
+        else:
+            if trace: g.trace('no style sheet')
     #@nonl
     #@+node:ekr.20081121105001.204:defaultStyleSheet
     def defaultStyleSheet (self):
