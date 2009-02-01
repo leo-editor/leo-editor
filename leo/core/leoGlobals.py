@@ -147,7 +147,7 @@ def computeGlobalConfigDir():
 
     encoding = g.startupEncoding()
 
-    # To avoid pychecker/pylint complaints that sys.leo_config_directory does not exist.
+    # To avoid pylint complaints that sys.leo_config_directory does not exist.
     leo_config_dir = (
         hasattr(sys,'leo_config_directory') and
         getattr(sys,'leo_config_directory'))
@@ -1810,8 +1810,6 @@ def stat (name=None):
 #@-node:ekr.20031218072017.3136:stat
 #@-node:ekr.20031218072017.3133:Statistics
 #@+node:ekr.20031218072017.3137:Timing
-# pychecker bug: pychecker complains that there is no attribute time.clock
-
 def getTime():
     return time.clock()
 
@@ -4475,7 +4473,7 @@ except Exception:
     else:
         #@        << define getpreferredencoding for *nix >>
         #@+node:ekr.20031218072017.1505:<< define getpreferredencoding for *nix >>
-        # Avoid pychecker & pylint complaints about CODESET, LC_CTYPE and nl_langinfo.
+        # Avoid pylint complaints about CODESET, LC_CTYPE and nl_langinfo.
         if (
             hasattr(locale,'CODESET') and
             hasattr(locale,'LC_CTYPE') and

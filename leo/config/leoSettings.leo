@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,14,11,2"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -97,7 +97,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -548,8 +548,8 @@
 <v t="ekr.20070925144534.100"><vh>@item *isearch-forward-rege&amp;xp</vh></v>
 <v t="ekr.20070925144534.101"><vh>@item *isearch-backward-regex&amp;p</vh></v>
 <v t="ekr.20070925144534.102"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.103"><vh>@item *&amp;query-replace</vh></v>
-<v t="ekr.20070925144534.104"><vh>@item *q&amp;uery-replace-regex</vh></v>
+<v t="ekr.20070925144534.103"><vh>@@item *&amp;query-replace</vh></v>
+<v t="ekr.20070925144534.104"><vh>@@item *q&amp;uery-replace-regex</vh></v>
 </v>
 <v t="ekr.20070925144534.105"><vh>@item *&amp;goto-global-line</vh></v>
 <v t="ekr.20070925144534.106"><vh>@item *&amp;execute-script</vh></v>
@@ -999,7 +999,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1061,7 +1061,7 @@
 <v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
-<v t="ekr.20081018053140.11" a="E"><vh>qtGui plugin</vh>
+<v t="ekr.20081018053140.11"><vh>qtGui plugin</vh>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
 <v t="ekr.20081018053140.12"><vh>@data qt-gui-plugin-style-sheet</vh></v>
@@ -1238,9 +1238,9 @@
 <v t="TL.20090102130719.9"><vh>@mode tree-double-click-node</vh></v>
 <v t="TL.20090102130719.10"><vh>@mode focus-to-tree</vh></v>
 <v t="TL.20090102130719.11"><vh>@mode focus-to-body</vh></v>
-<v t="TL.20090102130719.12" a="E"><vh>@mode body-command-line</vh>
+<v t="TL.20090102130719.12"><vh>@mode body-command-line</vh>
 <v t="TL.20090102130719.13"><vh>@mode body-command-revert</vh></v>
-<v t="TL.20090102130719.14" a="E"><vh>@mode body-command-save</vh>
+<v t="TL.20090102130719.14"><vh>@mode body-command-save</vh>
 <v t="TL.20090102130719.15"><vh>@mode body-command-save-quit</vh>
 <v t="TL.20090102130719.16"><vh>@mode body-command-save-quit-return</vh></v>
 </v>
@@ -1301,7 +1301,7 @@
 <v t="TL.20090102130719.62"><vh>@mode body-search-all-nodes</vh></v>
 <v t="TL.20090102130719.63"><vh>@mode body-search-toggle-headline</vh></v>
 <v t="TL.20090102130719.64"><vh>@mode body-search-toggle-body</vh></v>
-<v t="TL.20090102130719.65" a="E"><vh>@mode body-search-toggle-mark</vh>
+<v t="TL.20090102130719.65"><vh>@mode body-search-toggle-mark</vh>
 <v t="TL.20090102130719.66"><vh>@mode body-search-toggle-mark-finds</vh></v>
 <v t="TL.20090102130719.67"><vh>@mode body-search-toggle-mark-changes</vh></v>
 </v>
@@ -1326,7 +1326,7 @@
 <v t="TL.20090102130719.84"><vh>@mode body-delete-to-beginning-of-sentence</vh></v>
 <v t="TL.20090102130719.85"><vh>@mode body-delete-to-end-of-paragraph</vh></v>
 <v t="TL.20090102130719.86"><vh>@mode body-delete-to-beginning-of-paragraph</vh></v>
-<v t="TL.20090102130719.87" a="E"><vh>@mode body-delete-to-g-object</vh>
+<v t="TL.20090102130719.87"><vh>@mode body-delete-to-g-object</vh>
 <v t="TL.20090102130719.88"><vh>@mode body-delete-to-beginning-of-buffer</vh></v>
 </v>
 <v t="TL.20090102130719.89"><vh>@mode body-delete-to-end-of-buffer</vh></v>
@@ -4842,8 +4842,8 @@ previous-line-extend-selection  = None
 print-bindings                  = None
 print-commands                  = None
 promote                         = Ctrl-{            
-query-replace                   = Alt-percent
-query-replace-regex             = None
+# query-replace                   = Alt-percent
+# query-replace-regex             = None
 quick-command                   = Ctrl-c
 re-search-backward              = None
 re-search-forward               = None
@@ -5152,8 +5152,8 @@ print-gc-summary                    = None
 print-stats                         = None
 promote                             = None
 propagate-key-event                 = None
-query-replace                       = None
-query-replace-regex                 = None
+# query-replace                       = None
+# query-replace-regex                 = None
 quick-command                       = None
 re-search-backward                  = None
 re-search-forward                   = None
@@ -5809,8 +5809,8 @@ isearch-backward-regexp
 isearch-forward
 isearch-forward-regexp
 open-find-tab
-query-replace
-query-replace-regex
+# query-replace
+# query-replace-regex
 replace-string
 search-again
 search-backward
@@ -5908,8 +5908,8 @@ isearch-backward-regexp             = None
 isearch-forward                     = Alt-S
 isearch-forward-regexp              = None
 # isearch-with-present-options      = Alt-i
-query-replace                       = None
-query-replace-regex                 = None
+# query-replace                       = None
+# query-replace-regex                 = None
 search-backward                     = None
 search-forward                      = None
 word-search-backward                = None 

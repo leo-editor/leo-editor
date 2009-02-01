@@ -490,7 +490,7 @@ class LeoApp:
         #@+node:ekr.20031218072017.1979:<< return if we can set leoID from sys.leoID>>
         # This would be set by in Python's sitecustomize.py file.
 
-        # 7/2/04: Use hasattr & getattr to suppress pychecker warning.
+        # Use hasattr & getattr to suppress pylint warning.
         # We also have to use a "non-constant" attribute to suppress another warning!
 
         nonConstantAttr = "leoID"

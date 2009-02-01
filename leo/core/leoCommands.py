@@ -82,7 +82,7 @@ class baseCommands (object):
         self.exists = True # Indicate that this class exists and has not been destroyed.
             # Do this early in the startup process so we can call hooks.
 
-        # Init ivars with self.x instead of c.x to keep Pychecker happy
+        # Init ivars with self.x instead of c.x to keep pylint happy
         self.chapterController = None
         self.frame = frame
 

@@ -123,8 +123,6 @@ class atFile:
     #@+node:ekr.20041005105605.8:atFile.__init__ & initIvars
     def __init__(self,c):
 
-        # Note: Pychecker complains if we assign to at.x instead of self.x.
-
         # **Warning**: all these ivars must **also** be inited in initCommonIvars.
         self.c = c
         self.debug = False
@@ -182,8 +180,6 @@ class atFile:
         """Init ivars common to both reading and writing.
 
         The defaults set here may be changed later."""
-
-        # Note: Pychecker complains if about module attributes if we assign at.x instead of self.x.
 
         c = self.c
 
@@ -3607,7 +3603,6 @@ class atFile:
             # Append the n'th tnode to the root's tnode list.
             # It may not exist when executing scripts.
             try:
-                # Pychecker doesn't like so many references in a row...
                 t = at.root.v.t
                 t.tnodeList.append(p.v.t)
                 t._p_changed = True

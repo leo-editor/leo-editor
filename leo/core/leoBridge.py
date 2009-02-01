@@ -250,7 +250,7 @@ class bridgeController:
         #@+node:ekr.20070227094232.1:<< try to get leoID from sys.leoID>>
         # This would be set by in Python's sitecustomize.py file.
 
-        # Use hasattr & getattr to suppress pychecker warning.
+        # Use hasattr & getattr to suppress pylint warning.
         # We also have to use a "non-constant" attribute to suppress another warning!
 
         nonConstantAttr = "leoID"

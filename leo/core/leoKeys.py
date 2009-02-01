@@ -2694,8 +2694,6 @@ class keyHandlerClass:
         Never changes the minibuffer label: individual commands must do that.
         '''
 
-        # pychecker complains about initAllEditCommanders.
-
         k = self ; c = k.c
         # The command may have closed the window.
         if g.app.quitting or not c.exists: return

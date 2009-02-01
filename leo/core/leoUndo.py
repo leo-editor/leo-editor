@@ -108,7 +108,7 @@ class undoer:
         # New in 4.2...
         self.optionalIvars = []
 
-        # Set the following ivars to keep pychecker happy.
+        # Set the following ivars to keep pylint happy.
         self.afterTree = None
         self.beforeTree = None
         self.children = None

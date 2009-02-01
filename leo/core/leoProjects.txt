@@ -17525,8 +17525,6 @@ def underindentedLine (self,line):
 #@+node:ekr.20041005105605.8:atFile.__init__ & initIvars
 def __init__(self,c):
 
-    # Note: Pychecker complains if we assign to at.x instead of self.x.
-
     # **Warning**: all these ivars must **also** be inited in initCommonIvars.
     self.c = c
     self.debug = False
@@ -20025,6 +20023,31 @@ def createControl (self):
 #@-node:ekr.20080930072519.1:Added support for @int icon_bar_widgets_per_row setting
 #@+node:ekr.20081119132758.5:Added support for --gui option
 #@-node:ekr.20081119132758.5:Added support for --gui option
+#@+node:ekr.20090201051233.2:removed query-replace
+# It didn't work and there are plenty of good alternatives.
+#@nonl
+#@+node:ekr.20050922104213:<< define classesList >>
+classesList = [
+    ('abbrevCommands',      abbrevCommandsClass),
+    ('bufferCommands',      bufferCommandsClass),
+    ('editCommands',        editCommandsClass),
+    ('chapterCommands',     chapterCommandsClass),
+    ('controlCommands',     controlCommandsClass),
+    ('debugCommands',       debugCommandsClass),
+    ('editFileCommands',    editFileCommandsClass),
+    ('helpCommands',        helpCommandsClass),
+    ('keyHandlerCommands',  keyHandlerCommandsClass),
+    ('killBufferCommands',  killBufferCommandsClass),
+    ('leoCommands',         leoCommandsClass),
+    ('macroCommands',       macroCommandsClass),
+    # ('queryReplaceCommands',queryReplaceCommandsClass),
+    ('rectangleCommands',   rectangleCommandsClass),
+    ('registerCommands',    registerCommandsClass),
+    ('searchCommands',      searchCommandsClass),
+    ('spellCommands',       spellCommandsClass),
+]
+#@-node:ekr.20050922104213:<< define classesList >>
+#@-node:ekr.20090201051233.2:removed query-replace
 #@-node:ekr.20080930072519.8:New options
 #@+node:ekr.20081001140516.16:Plugins
 #@+node:ekr.20081001140516.1:Improved nav_buttons plugin and corresponding nodeHistory class

@@ -2392,21 +2392,6 @@ returns, to be different :-)
 #@+node:ekr.20061023153133:How to run patch
 patch -p1 < patchfile
 #@-node:ekr.20061023153133:How to run patch
-#@+node:ekr.20031218072017.390:How to run Pychecker
-Do the following in Idle:
-
-import pychecker.checker ; import leo
-
-To run Idle(Python2.3 version) directly:
-
-cd c:\prog\leoCvs\leo\src
-c:\python23\python c:\python23\Lib\idlelib\idle.py
-
-The HOME var must be set to c:\prog\leoCVS for .pycheckrc to be effective.
-
-To suppress warnings from the standard library set ignoreStandardLibrary=1 in .pycheckrc
-#@nonl
-#@-node:ekr.20031218072017.390:How to run Pychecker
 #@+node:ekr.20050510071834:How to use a temp file with pdb
 @killcolor
 
@@ -3348,6 +3333,187 @@ Brian Theado
 @language python
 @color
 #@nonl
+#@+node:ekr.20050920084036.207:queryReplaceCommandsClass (limited to single node)
+class queryReplaceCommandsClass (baseEditCommandsClass):
+
+    '''A class to handle query replace commands.'''
+
+    @others
+#@+node:ekr.20050920084036.208: ctor & init
+def __init__ (self,c):
+
+    baseEditCommandsClass.__init__(self,c) # init the base class.
+    self.regexp = False # True: do query-replace-regexp.  Set in stateHandler.
+
+def init (self):
+
+    self.qQ = None
+    self.qR = None
+    self.replaced = 0 # The number of replacements.
+#@-node:ekr.20050920084036.208: ctor & init
+#@+node:ekr.20050920084036.209: getPublicCommands
+def getPublicCommands (self):
+
+    return {
+        'query-replace':        self.queryReplace,
+        'query-replace-regex':  self.queryReplaceRegex,
+    }
+#@-node:ekr.20050920084036.209: getPublicCommands
+#@+node:ekr.20050920084036.210:Entry points
+def queryReplace (self,event):
+
+    '''Interactively find and replace text.
+    This is not recommended: Leo's other find and change commands are more capable.'''
+    self.regexp = False
+    self.stateHandler(event)
+
+def queryReplaceRegex (self,event):
+    '''Interactively find and replace text using regular expressions.
+    This is not recommended: Leo's other find and change commands are more capable.'''
+    self.regexp = True
+    self.stateHandler(event)
+#@-node:ekr.20050920084036.210:Entry points
+#@+node:ekr.20051005151838:Helpers
+#@+node:ekr.20050920084036.212:doOneReplace
+def doOneReplace (self,event):
+
+    w = self.editWidget(event)
+    if not w: return
+
+    i = w.tag_ranges('qR')
+    w.delete(i[0],i[1])
+    ins = w.getInsertPoint()
+    w.insert(ins,self.qR)
+    self.replaced += 1
+#@-node:ekr.20050920084036.212:doOneReplace
+#@+node:ekr.20050920084036.219:findNextMatch (query-replace)
+def findNextMatch (self,event):
+
+    '''Find the next match and select it.
+    Return True if a match was found.
+    Otherwise, call quitSearch and return False.'''
+
+    k = self.k
+    w = self.editWidget(event)
+    if not w: return
+
+    if g.app.gui.guiName() != 'tkinter':
+        return g.es('command not ready yet',color='blue')
+
+    w.tag_delete('qR')
+    if self.regexp:
+        << handle regexp >>
+    else:
+        << handle plain search >>
+#@+node:ekr.20051005155611:<< handle regexp >>
+try:
+    regex = re.compile(self.qQ)
+except Exception:
+    self.quitSearch(event,'Illegal regular expression')
+    return False
+
+i = w.getInsertPoint()
+txt = w.get(i,'end')
+match = regex.search(txt)
+
+if match:
+    start = match.start()
+    end = match.end()
+    length = end - start
+    i = w.getInsertPoint()
+    w.setInsertPoint(i+start)
+    w.tag_add('qR','insert','insert +%sc' % length)
+    w.tag_config('qR',background='lightblue')
+    i = w.getInsertPoint()
+    txt = w.get(i,i+length)
+    return True
+else:
+    self.quitSearch(event)
+    return False
+#@-node:ekr.20051005155611:<< handle regexp >>
+#@+node:ekr.20051005160923:<< handle plain search >> (tag_add & tag_config) LATER
+i = w.search(self.qQ,'insert',stopindex='end')
+
+if i:
+    w.setInsertPoint(i)
+    w.tag_add('qR','insert','insert +%sc' % len(self.qQ))
+    w.tag_config('qR',background='lightblue')
+    return True
+else:
+    self.quitSearch(event)
+    return False
+#@-node:ekr.20051005160923:<< handle plain search >> (tag_add & tag_config) LATER
+#@-node:ekr.20050920084036.219:findNextMatch (query-replace)
+#@+node:ekr.20050920084036.211:getUserResponse
+def getUserResponse (self,event):
+
+    w = self.editWidget(event)
+    if not w or not hasattr(event,'keysym'): return
+
+    # g.trace(event.keysym)
+    if event.keysym == 'y':
+        self.doOneReplace(event)
+        if not self.findNextMatch(event):
+            self.quitSearch(event)
+    elif event.keysym in ('q','Return'):
+        self.quitSearch(event)
+    elif event.keysym == '!':
+        while self.findNextMatch(event):
+            self.doOneReplace(event)
+    elif event.keysym in ('n','Delete'):
+        # Skip over the present match.
+        i = w.getInsertPoint()
+        w.setInsertPoint(i + len(self.qQ))
+        if not self.findNextMatch(event):
+            self.quitSearch(event)
+
+    w.seeInsertPoint()
+#@-node:ekr.20050920084036.211:getUserResponse
+#@+node:ekr.20050920084036.220:quitSearch
+def quitSearch (self,event,message=None):
+
+    k = self.k
+    w = self.editWidget(event)
+    if not w: return
+
+    w.tag_delete('qR')
+    k.clearState()
+    if message is None:
+        message = 'Replaced %d occurences' % self.replaced
+    k.setLabelGrey(message)
+#@-node:ekr.20050920084036.220:quitSearch
+#@+node:ekr.20050920084036.215:stateHandler
+def stateHandler (self,event):
+
+    k = self.k ; state = k.getState('query-replace')
+
+    prompt = g.choose(self.regexp,'Query replace regexp','Query replace')
+
+    if state == 0: # Get the first arg.
+        self.init()
+        k.setLabelBlue(prompt + ': ',protect=True)
+        k.getArg(event,'query-replace',1,self.stateHandler)
+    elif state == 1: # Get the second arg.
+        self.qQ = k.arg
+        if len(k.arg) > 0:
+            prompt = '%s %s with: ' % (prompt,k.arg)
+            k.setLabelBlue(prompt)
+            k.getArg(event,'query-replace',2,self.stateHandler)
+        else:
+            k.resetLabel()
+            k.clearState()
+    elif state == 2: # Set the prompt and find the first match.
+        self.qR = k.arg # Null replacement arg is ok.
+        k.setLabelBlue('Query replacing %s with %s\n' % (self.qQ,self.qR) +
+            'y: replace, (n or Delete): skip, !: replace all, (q or Return): quit',
+            protect=True)
+        k.setState('query-replace',3,self.stateHandler)
+        self.findNextMatch(event)
+    elif state == 3:
+        self.getUserResponse(event)
+#@-node:ekr.20050920084036.215:stateHandler
+#@-node:ekr.20051005151838:Helpers
+#@-node:ekr.20050920084036.207:queryReplaceCommandsClass (limited to single node)
 #@+node:ekr.20031218072017.2606:<< Import pychecker >>
 @color
 
@@ -3364,65 +3530,6 @@ if 0: # Set to 1 for lint-like testing.
     except Exception:
         print('\nCan not import pychecker\n')
 #@-node:ekr.20031218072017.2606:<< Import pychecker >>
-#@+node:ekr.20031218072017.2998:c.selectPositioniWithEditing
-# Selects the given node and enables editing of the headline if editFlag is True.
-
-# def selectPositionWithEditing(self,p,editFlag):
-
-    # c = self
-    # if editFlag:
-        # c.redrawAndEdit(p)
-    # else:
-        # c.selectPosition(p)
-
-# Deprecated compatibility.
-# selectVnodeWithEditing = selectPositionWithEditing
-#@-node:ekr.20031218072017.2998:c.selectPositioniWithEditing
-#@+node:ekr.20080514131122.11:c.masterFocusHandler
-def masterFocusHandler (self):
-
-    pass # No longer used.
-
-restoreRequestedFocus = masterFocusHandler
-#@-node:ekr.20080514131122.11:c.masterFocusHandler
-#@+node:ekr.20080514131122.15:c.restoreFocus
-def restoreFocus (self):
-
-    '''Ensure that the focus eventually gets restored.'''
-    pass
-    # g.trace(g.callers(5))
-
-    # c =self
-    # trace = not g.app.unitTesting and c.config.getBool('trace_focus')
-
-    # if c.requestedFocusWidget:
-        # c.hasFocusWidget = None # Force an update
-    # elif c.hasFocusWidget:
-        # c.requestedFocusWidget = c.hasFocusWidget
-        # c.hasFocusWidget = None # Force an update
-    # else:
-        # # Should not happen, except during unit testing.
-        # # c.masterFocusHandler sets c.hasFocusWidget,
-        # # so if it is not set here it is because this method cleared it.
-        # if not g.app.unitTesting: g.trace('oops: no requested or present widget.',g.callers())
-        # c.bodyWantsFocusNow()
-
-    # if c.inCommand:
-        # if trace: g.trace('expecting later call to c.masterFocusHandler')
-        # # A call to c.masterFocusHandler will surely happen.
-    # else:
-        # c.masterFocusHandler() # Do it now.
-#@-node:ekr.20080514131122.15:c.restoreFocus
-#@+node:ekr.20040731053740:assert that p.headString() matches p.edit_text.get
-# Not a great test: it only tests visible nodes.
-# This test may fail if a joined node is being editred.
-
-if isTkinter:
-    t = c.edit_widget(p)
-    if t:
-        s = t.getAllText()
-        assert p.headString().strip() == s.strip(), "May fail if joined node is being edited"
-#@-node:ekr.20040731053740:assert that p.headString() matches p.edit_text.get
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl
