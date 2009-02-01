@@ -1700,7 +1700,14 @@ class baseFileCommands:
         # New in Leo 4.4.2 b2: call put just once.
         gnx = g.app.nodeIndices.toString(t.fileIndex)
         ua = hasattr(t,'unknownAttributes') and self.putUnknownAttributes(t) or ''
-        body = t._bodyString and xml.sax.saxutils.escape(t._bodyString) or ''
+        b = t.b
+        if b:
+            #### Convert to encoded string ????
+            #### b = g.toEncodedString(b,self.leo_file_encoding,reportErrors=True)
+            body = xml.sax.saxutils.escape(b)
+        else:
+            body = ''
+
         self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
     #@-node:ekr.20031218072017.1577:putTnode
     #@+node:ekr.20031218072017.1575:putTnodes
