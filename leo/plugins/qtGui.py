@@ -3717,6 +3717,15 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         return item
     #@-node:ekr.20090124174652.69:nthChildItem
+    #@+node:ekr.20090201080444.12:scrollToItem
+    def scrollToItem (self,item):
+
+        w = self.treeWidget
+
+        # g.trace(self.traceItem(item))
+
+        w.scrollToItem(item,w.PositionAtCenter)
+    #@-node:ekr.20090201080444.12:scrollToItem
     #@+node:ekr.20090124174652.107:setCurrentItemHelper
     def setCurrentItemHelper(self,item):
 
@@ -5072,7 +5081,7 @@ class leoQtEventFilter(QtCore.QObject):
                 mods.remove('Shift')
             else:
                 pass
-            g.trace('ch',ch,'ch2',ch2,mods)
+            # g.trace('ch',ch,'ch2',ch2,mods)
         else:
             ch3 = self.keyboardUpperLong(ch)
             if ch3: ch = ch3

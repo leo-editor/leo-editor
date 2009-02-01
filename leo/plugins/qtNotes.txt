@@ -648,16 +648,6 @@ def setItemForCurrentPosition (self):
 
     if self.busy(): return
 
-    # if self.contracting:
-        # if trace and verbose: g.trace('already contracting')
-        # return None
-    # if self.expanding:
-        # if trace and verbose: g.trace('already expanding')
-        # return None
-    # if self.selecting:
-        # if trace and verbose: g.trace('already selecting')
-        # return None
-
     if not p:
         if trace and verbose: g.trace('** no p')
         return None
@@ -679,6 +669,7 @@ def setItemForCurrentPosition (self):
             self.selecting = True
             # This generates gui events, so we must use a lockout.
             self.setCurrentItemHelper(item)
+            self.scrollToItem(item)
         finally:
             self.selecting = False
 
@@ -716,8 +707,7 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
     c = self.c
 
     if self.busy():
-        g.trace('*** full_redraw: busy!',g.callers(5))
-        return
+        return g.trace('*** full_redraw: busy!',g.callers(5))
 
     if p is None:   p = c.currentPosition()
     else:           c.setCurrentPosition(p)
@@ -728,7 +718,7 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
     self.nodeDrawCount = 0
     try:
         self.redrawing = True
-        self.drawTopTree(p,scroll)
+        self.drawTopTree(p,scroll=True)
     finally:
         self.redrawing = False
 
@@ -814,7 +804,9 @@ def drawTopTree (self,p,scroll):
             p.moveToNext()
 
     self.setHScroll(hPos)
-    if not scroll:
+    if scroll:
+        pass
+    else:
         self.setVScroll(vPos)
 
     self.repaint()

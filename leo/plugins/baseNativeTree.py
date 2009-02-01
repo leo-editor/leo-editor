@@ -154,8 +154,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         c = self.c
 
         if self.busy():
-            g.trace('*** full_redraw: busy!',g.callers(5))
-            return
+            return g.trace('*** full_redraw: busy!',g.callers(5))
 
         if p is None:   p = c.currentPosition()
         else:           c.setCurrentPosition(p)
@@ -166,7 +165,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.nodeDrawCount = 0
         try:
             self.redrawing = True
-            self.drawTopTree(p,scroll)
+            self.drawTopTree(p,scroll=True)
         finally:
             self.redrawing = False
 
@@ -252,7 +251,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 p.moveToNext()
 
         self.setHScroll(hPos)
-        if not scroll:
+        if scroll:
+            pass
+        else:
             self.setVScroll(vPos)
 
         self.repaint()
@@ -919,16 +920,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         if self.busy(): return
 
-        # if self.contracting:
-            # if trace and verbose: g.trace('already contracting')
-            # return None
-        # if self.expanding:
-            # if trace and verbose: g.trace('already expanding')
-            # return None
-        # if self.selecting:
-            # if trace and verbose: g.trace('already selecting')
-            # return None
-
         if not p:
             if trace and verbose: g.trace('** no p')
             return None
@@ -950,6 +941,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 self.selecting = True
                 # This generates gui events, so we must use a lockout.
                 self.setCurrentItemHelper(item)
+                self.scrollToItem(item)
             finally:
                 self.selecting = False
 
@@ -1097,6 +1089,12 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.oops()
     #@nonl
     #@-node:ekr.20090124174652.82:getTreeEditorForItem
+    #@+node:ekr.20090201080444.11:scrollToItem
+    def scrollToItem (self,item):
+
+        self.oops()
+    #@nonl
+    #@-node:ekr.20090201080444.11:scrollToItem
     #@+node:ekr.20090124174652.83:setCurrentItemHelper
     def setCurrentItemHelper(self,item):
 

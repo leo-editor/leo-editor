@@ -184,6 +184,7 @@ class leoFind:
 
         #@    << init the gui-independent ivars >>
         #@+node:ekr.20031218072017.3054:<< init the gui-independent ivars >>
+        self.backwardAttempts = 0
         self.wrapPosition = None
         self.onlyPosition = None
         self.find_text = ""
