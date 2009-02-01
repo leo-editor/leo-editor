@@ -858,26 +858,28 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if trace: g.trace('*** no p')
             return
 
+        item = self.position2item(p)
+        if not item:
+            # This is not an error.
+            # g.trace('no item for p: %s' % (p))
+            return
+
+        w = g.app.gui.get_focus()
         ew = self.edit_widget(p)
         if ew: e = ew.widget
         else: e = None
-        item = self.position2item(p)
-        w = g.app.gui.get_focus()
 
         # These are not errors: focus may have been lost.
-        if trace and verbose:
-            if not e:  g.trace('No e',g.callers(4))
-            if e != w: g.trace('e != w',e,w,g.callers(4))
-            if not p:  g.trace('No p')
+        # if trace and verbose:
+            # if not e:  g.trace('No e',g.callers(4))
+            # if e != w: g.trace('e != w',e,w,g.callers(4))
+            # if not p:  g.trace('No p')
 
         if e and e == w:
             s = e.text() ; len_s = len(s)
             s = g.app.gui.toUnicode(s)
-        elif item:
-            s = self.getItemText(item)
         else:
-            if trace and verbose: g.trace('no item for %s' % (p and p.h))
-            return 
+            s = self.getItemText(item)
 
         oldHead = p.h
         changed = s != oldHead
