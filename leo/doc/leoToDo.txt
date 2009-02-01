@@ -299,7 +299,7 @@ the error is raised. Hope it helps to fix the problem.
 #@+node:ekr.20090201122309.2:Allow ctrl-p for more commands
 #@-node:ekr.20090201122309.2:Allow ctrl-p for more commands
 #@-node:ekr.20090103054019.1:First
-#@+node:ekr.20081215070651.4:Bugs 4
+#@+node:ekr.20081215070651.4:Bugs 5
 #@+node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
 @nocolor-node
 
@@ -1599,7 +1599,9 @@ def moveUpOrDownHelper (self,event,direction,extend):
 #@nonl
 #@-node:ekr.20060113105246.1:moveUpOrDownHelper
 #@-node:ekr.20080519062109.2:Improve how Leo handles long lines
-#@-node:ekr.20081215070651.4:Bugs 4
+#@+node:ekr.20090201134906.1:Huge cuts hang Leo
+#@-node:ekr.20090201134906.1:Huge cuts hang Leo
+#@-node:ekr.20081215070651.4:Bugs 5
 #@+node:ekr.20080517102922.1:Files bugs 8
 #@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
 @nocolor-node
