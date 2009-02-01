@@ -674,6 +674,8 @@ class leoBody:
         'after_idle',
         'forceFullRecolor', # The base-class method is usually good enough.
         'initAfterLoad',
+
+        # These *are* used by various colorizers, not just in leoColor.py.
         'tag_add',
         'tag_bind',
         'tag_config',
@@ -740,12 +742,12 @@ class leoBody:
     #@-node:ekr.20061109102912:define leoBody.mustBeDefinedOnlyInBaseClass
     #@-node:ekr.20031218072017.3657:leoBody.__init__
     #@+node:ekr.20081005065934.5:leoBody.mustBeDefined
-    # All of these are optional.
+    # These are optional.
     def after_idle (self,idle_handler,thread_count):
         pass
 
     def tag_add (self,tagName,index1,index2):
-        pass
+            pass
 
     def tag_bind (self,tagName,event,callback):
         pass
@@ -2299,7 +2301,12 @@ class leoTree:
     def drawIcon(self,p):                                       self.oops()
     def redraw(self,p=None,scroll=True,forceDraw=False):        self.oops()
     def redraw_now(self,p=None,scroll=True,forceDraw=False):    self.oops()
-    def scrollTo(self,p):                                       self.oops()
+    def redraw_after_contract(self,p=None):         self.oops()
+    def redraw_after_expand(self,p=None):           self.oops()
+    def redraw_after_head_changed(self):            self.oops()
+    def redraw_after_icons_changed(self,all=False): self.oops()
+    def redraw_after_select(self,p=None):           self.oops()
+    def scrollTo(self,p):                           self.oops()
     idle_scrollTo = scrollTo # For compatibility.
 
     # Headlines.
@@ -2955,11 +2962,7 @@ class nullBody (leoBody):
     # Low-level gui...
     def hasFocus (self):                        pass
     def setFocus (self):                        pass
-    def tag_add (self,tagName,index1,index2):   pass
-    def tag_bind (self,tagName,event,callback): pass
-    def tag_configure (self,colorName,**keys):  pass
-    def tag_delete(self,tagName):               pass
-    def tag_remove (self,tagName,index1,index2):pass
+    #@nonl
     #@-node:ekr.20031218072017.2197:nullBody: leoBody interface
     #@-others
 #@-node:ekr.20031218072017.2191:class nullBody (leoBody)
@@ -3312,10 +3315,7 @@ class nullTree (leoTree):
 
     #@-node:ekr.20070228173611:printWidgets
     #@+node:ekr.20031218072017.2236:Overrides
-    def select (self,p,scroll=True):
-        pass
-    #@nonl
-    #@+node:ekr.20070228163350:Colors & fonts
+    #@+node:ekr.20070228163350:Colors & fonts (nullTree)
     def getFont(self):
         return self.font
 
@@ -3330,8 +3330,8 @@ class nullTree (leoTree):
 
     def setFontFromConfig (self):
         pass
-    #@-node:ekr.20070228163350:Colors & fonts
-    #@+node:ekr.20070228163350.1:Drawing & scrolling
+    #@-node:ekr.20070228163350:Colors & fonts (nullTree)
+    #@+node:ekr.20070228163350.1:Drawing & scrolling (nullTree)
     def drawIcon(self,p):
         pass
 
@@ -3341,9 +3341,19 @@ class nullTree (leoTree):
     def redraw_now(self,p=None,scroll=True,forceDraw=False):
         self.redrawCount += 1
 
+    def redraw_after_contract(self,p=None):         self.redraw()
+    def redraw_after_expand(self,p=None):           self.redraw()
+    def redraw_after_head_changed(self):            self.redraw()
+    def redraw_after_icons_changed(self,all=False): self.redraw()
+    def redraw_after_select(self,p=None):           self.redraw()
+
     def scrollTo(self,p):
         pass
-    #@-node:ekr.20070228163350.1:Drawing & scrolling
+
+    def select (self,p,scroll=True):
+        pass
+    #@nonl
+    #@-node:ekr.20070228163350.1:Drawing & scrolling (nullTree)
     #@+node:ekr.20070228163350.2:Headlines (nullTree)
     def edit_widget (self,p):
         d = self.editWidgetsDict

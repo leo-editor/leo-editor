@@ -15,10 +15,7 @@
 #@+node:ekr.20090131200406.11:Remove remaining tk-isms from Leo's core
 @nocolor-node
 
-tag_add/bind/configure, etc, are used in leoColor.py.
-We may as well keep them,
-
-We do want to eliminate all tk-indices from leoEditCommands.py
+Eliminate all tk-indices from leoEditCommands.py
 
 (found) wordend, wordstart
 (found) lineend, linestart

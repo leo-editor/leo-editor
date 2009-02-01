@@ -13,6 +13,238 @@
 
 
 #@+all
+#@+node:ekr.20090201135500.1:Check base classes & ivars
+#@+node:ekr.20090201135500.2:@test leoBody is subset of leoTkBody
+if g.app.gui.guiName() == 'tkinter':
+
+    import leo.core.leoPlugins as leoPlugins
+    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+
+    import leo.core.leoFrame as leoFrame
+    import inspect,sys
+
+    baseClass = leoFrame.leoBody
+    subClasses  = (tkGui.leoTkinterBody,leoFrame.nullBody)
+    baseObject = c.frame.body
+
+    methods = inspect.getmembers(baseClass,inspect.ismethod)
+    methodNames = [z[0] for z in methods]
+
+    for name in baseObject.mustBeDefinedOnlyInBaseClass:
+        try:
+            assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
+        except AssertionError:
+            exctype, value = sys.exc_info()[:2]
+            print(value)
+            raise
+
+    for subClass in subClasses:
+        subclassName = subClass.__name__
+        for name in methodNames:
+            base_func = getattr(baseClass,name)
+            sub_func =  getattr(subClass,name)
+            try:
+                if name in baseObject.mustBeDefinedOnlyInBaseClass:
+                    assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
+                if name in baseObject.mustBeDefinedInSubclasses:
+                    assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
+            except AssertionError:
+                #raise
+                exctype, value = sys.exc_info()[:2]
+                print(value)
+#@nonl
+#@-node:ekr.20090201135500.2:@test leoBody is subset of leoTkBody
+#@+node:ekr.20090201135500.3:@test leoFrame is subset of leoTkFrame
+if g.app.gui.guiName() == 'tkinter':
+
+    import leo.core.leoPlugins as leoPlugins
+    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+
+    import leo.core.leoFrame as leoFrame
+    import inspect
+
+    baseClass = leoFrame.leoFrame
+    subClasses  = (tkGui.leoTkinterFrame,leoFrame.nullFrame)
+    baseObject = c.frame
+
+    methods = inspect.getmembers(baseClass,inspect.ismethod)
+    methodNames = [z[0] for z in methods]
+
+    for name in baseObject.mustBeDefinedOnlyInBaseClass:
+        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
+
+    for subClass in subClasses:
+        subclassName = subClass.__name__
+        for name in methodNames:
+            base_func = getattr(baseClass,name)
+            sub_func =  getattr(subClass,name)
+            if name in baseObject.mustBeDefinedOnlyInBaseClass:
+                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
+            if name in baseObject.mustBeDefinedInSubclasses:
+                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
+#@-node:ekr.20090201135500.3:@test leoFrame is subset of leoTkFrame
+#@+node:ekr.20090201135500.4:@test leoGui is subset of leoTkGui
+if g.app.gui.guiName() == 'tkinter':
+
+    import leo.core.leoPlugins as leoPlugins
+    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+
+    import leo.core.leoGui as leoGui
+    import inspect
+
+    baseClass = leoGui.leoGui
+    subClasses  = (tkGui.tkinterGui,) # nullGui can inherit almost all leoGui dummy methods.
+    baseObject = g.app.gui
+
+    methods = inspect.getmembers(baseClass,inspect.ismethod)
+    methodNames = [z[0] for z in methods]
+
+    for name in baseObject.mustBeDefinedOnlyInBaseClass:
+        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
+
+    for subClass in subClasses:
+        subclassName = subClass.__name__
+        for name in methodNames:
+            base_func = getattr(baseClass,name)
+            sub_func =  getattr(subClass,name)
+            try:
+                if name in baseObject.mustBeDefinedOnlyInBaseClass:
+                    assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
+                if name in baseObject.mustBeDefinedInSubclasses:
+                    assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
+            except AssertionError:
+                raise
+#@-node:ekr.20090201135500.4:@test leoGui is subset of leoTkGui
+#@+node:ekr.20090201135500.5:@test leoTree is subset of leoTkTree
+if g.app.gui.guiName() == 'tkinter':
+
+    import leo.core.leoPlugins as leoPlugins
+    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+
+    import leo.core.leoFrame as leoFrame
+    import inspect
+
+    baseClass = leoFrame.leoTree
+    subClasses  = (tkGui.leoTkinterTree,leoFrame.nullTree)
+    baseObject = c.frame.tree
+
+    methods = inspect.getmembers(baseClass,inspect.ismethod)
+    methodNames = [z[0] for z in methods]
+
+    for name in baseObject.mustBeDefinedOnlyInBaseClass:
+        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
+
+    for subClass in subClasses:
+        subclassName = subClass.__name__
+        for name in methodNames:
+            base_func = getattr(baseClass,name)
+            sub_func =  getattr(subClass,name)
+            if name in baseObject.mustBeDefinedOnlyInBaseClass:
+                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
+            if name in baseObject.mustBeDefinedInSubclasses:
+                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
+#@-node:ekr.20090201135500.5:@test leoTree is subset of leoTkTree
+#@+node:ekr.20090201135500.6:@test official commander ivars
+f = c.frame
+assert(f.c==c)
+assert(c.frame==f)
+
+ivars = (
+    # Subcommanders...
+    'atFileCommands','fileCommands','importCommands','tangleCommands','undoer',
+    # Positions...
+    '_currentPosition','_rootPosition','_topPosition',
+    # Data structures...
+    'hoistStack','recentFiles',
+    # Args...
+    'output_doc_flag','page_width','tab_width',
+    'tangle_directory','tangle_errors','tangle_batch_flag','target_language',
+    'untangle_batch_flag','use_header_flag',
+    # Others...
+    'mFileName',
+)
+
+for ivar in ivars:
+    assert hasattr(c,ivar), 'missing commander ivar: %s' % ivar
+    val = getattr(c,ivar)
+    assert val is not None,'null commander ivar: %s'% ivar
+#@nonl
+#@-node:ekr.20090201135500.6:@test official commander ivars
+#@+node:ekr.20090201135500.7:@test official frame ivars
+f = c.frame
+assert(f.c==c)
+assert(c.frame==f)
+
+if g.app.gui.guiName() == 'tkinter':
+    ivars = (
+        'bar1','bar2',
+        'body',
+        #'bodyBar','bodyXBar', # 2007: 10/31: There are now injected in c.frame.body.bodyCtrl.
+        #'bodyCtrl', # 2007/10/27: this ivar is evil and has been removed.
+        'canvas',
+        'f1','f2',
+        'iconBar','iconFrame',
+        'log','outerFrame',
+        'statusLine','statusFrame','statusLabel','statusText',
+        'title','top','tree',
+        #'treeBar', # leo_treeBar is now injected into frame.canvas.
+    )
+else: ivars = ()
+
+for ivar in ivars:
+    assert hasattr(f,ivar), 'missing frame ivar: %s' % ivar
+    val = getattr(f,ivar)
+    assert val is not None,'null frame ivar: %s'% ivar
+
+# These do not have to be initied.
+for ivar in ('findPanel',):
+    assert hasattr(f,ivar), 'missing frame ivar: %s' % ivar
+#@nonl
+#@-node:ekr.20090201135500.7:@test official frame ivars
+#@+node:ekr.20090201135500.8:@test official g.app directories
+ivars = ('extensionsDir','globalConfigDir','loadDir','testDir')
+
+for ivar in ivars:
+    assert hasattr(g.app,ivar), 'missing g.app directory: %s' % ivar
+    val = getattr(g.app,ivar)
+    assert val is not None, 'null g.app directory: %s'% ivar
+    assert g.os_path_exists(g.os_path_abspath(val)), 'non-existent g.app directory: %s' % ivar
+
+assert hasattr(g.app,'homeDir') # May well be None.
+#@nonl
+#@-node:ekr.20090201135500.8:@test official g.app directories
+#@+node:ekr.20090201135500.9:@test official g.app ivars
+
+ivars = (
+    # These are non-official and might be removed...
+        # 'afterHandler','count','positions',
+        # 'menuWarningsGiven','unicodeErrorGiven',
+    'batchMode','config',
+    'debug','debugSwitch','disableSave',
+    'gui','hasOpenWithMenu','hookError','hookFunction',
+    'idle_imported','idleTimeDelay','idleTimeHook','initing','killed',
+    'leoID','loadedPlugins','log','logIsLocked','logWaiting',
+    'nodeIndices','numberOfWindows',
+    'quitting','realMenuNameDict','searchDict','scriptDict',
+    'trace','tracePositions','trace_list','tkEncoding',
+    'unitTestDict','unitTesting','use_psyco','windowList',
+)
+
+for ivar in ivars:
+    assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar
+    val = getattr(g.app,ivar)
+    assert val is not None, 'null app ivar: %s'% ivar
+
+# These do not have to be initied.
+for ivar in (
+    'commandName',
+    'openWithFiles','openWithFileNum','openWithTable',
+    'root',
+):
+    assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar
+#@nonl
+#@-node:ekr.20090201135500.9:@test official g.app ivars
+#@-node:ekr.20090201135500.1:Check base classes & ivars
 #@-all
 #@nonl
 #@-node:ekr.20090113083258.1:@thin test_core.txt

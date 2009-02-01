@@ -153,6 +153,7 @@ class generalTestCase(unittest.TestCase):
 
         c = self.c ; p = self.p.copy()
         script = g.getScript(c,p).strip()
+        # print ('p',p,'len(script)',len(script))
         self.assert_(script)
         writeScriptFile = c.config.getBool('write_script_file')
 

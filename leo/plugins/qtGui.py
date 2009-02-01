@@ -7186,6 +7186,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # self.widget.after_idle(function,*args,**keys)
     #@-node:ekr.20081121105001.540:Idle time
     #@+node:ekr.20081121105001.541:Coloring (baseTextWidget)
+    # These *are* used.
+
     def removeAllTags(self):
         s = self.getAllText()
         self.colorSelection(0,len(s),'black')
@@ -7194,6 +7196,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         return []
     #@+node:ekr.20081121105001.542:colorSelection
     def colorSelection (self,i,j,colorName):
+
+        g.trace()
 
         w = self.widget
         if not colorName: return
@@ -7224,11 +7228,13 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20081124102726.10:tag_add
     def tag_add(self,tag,x1,x2):
 
+        g.trace(tag)
+
         val = self.configDict.get(tag)
         if val:
             self.colorSelection(x1,x2,val)
     #@-node:ekr.20081124102726.10:tag_add
-    #@+node:ekr.20081124102726.11:tag_config/ure
+    #@+node:ekr.20081124102726.11:tag_config & tag_configure
     def tag_config (self,*args,**keys):
 
         if len(args) == 1:
@@ -7242,8 +7248,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             g.trace('oops',args,keys)
 
     tag_configure = tag_config
-    #@nonl
-    #@-node:ekr.20081124102726.11:tag_config/ure
+    #@-node:ekr.20081124102726.11:tag_config & tag_configure
     #@-node:ekr.20081121105001.541:Coloring (baseTextWidget)
     #@-node:ekr.20081121105001.538: May be overridden in subclasses
     #@+node:ekr.20081121105001.543: Must be overridden in subclasses

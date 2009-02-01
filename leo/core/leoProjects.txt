@@ -4494,7 +4494,12 @@ def setFontFromConfig (self):                   self.oops()
 def drawIcon(self,p):                                       self.oops()
 def redraw(self,p=None,scroll=True,forceDraw=False):        self.oops()
 def redraw_now(self,p=None,scroll=True,forceDraw=False):    self.oops()
-def scrollTo(self,p):                                       self.oops()
+def redraw_after_contract(self,p=None):         self.oops()
+def redraw_after_expand(self,p=None):           self.oops()
+def redraw_after_head_changed(self):            self.oops()
+def redraw_after_icons_changed(self,all=False): self.oops()
+def redraw_after_select(self,p=None):           self.oops()
+def scrollTo(self,p):                           self.oops()
 idle_scrollTo = scrollTo # For compatibility.
 
 # Headlines.
