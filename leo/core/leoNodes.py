@@ -220,12 +220,12 @@ if not g.unified_nodes:
         #@-node:EKR.20040503094727.1:setWriteBit
         #@-node:ekr.20031218072017.3332:t.Status bits
         #@-node:ekr.20031218072017.3331:t.Setters
-        #@+node:ekr.20090130065000.2:t Property
+        #@+node:ekr.20090130065000.2:t Properties
         #@+node:ekr.20090130125002.2:t.b Property
         def __get_b(self):
 
             t = self
-            return t.bodyString()
+            return t._bodyString # Faster.
 
         def __set_b(self,val):
 
@@ -272,7 +272,7 @@ if not g.unified_nodes:
             __get_t, __set_t,
             doc = "tnode unknownAttribute property")
         #@-node:ekr.20090130125002.4:t.u Property
-        #@-node:ekr.20090130065000.2:t Property
+        #@-node:ekr.20090130065000.2:t Properties
         #@-others
 #@-node:ekr.20031218072017.3321:class tnode
 #@+node:ekr.20031218072017.3341:class vnode
