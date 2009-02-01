@@ -99,16 +99,16 @@ def addMenu( tag, keywords ):
 #@+node:mork.20041020082907:base64Export
 def base64Export( c ):
 
-    pos = c.currentPosition()
-    hS = pos.headString()
+    pos = c.p
+    hS = pos.h
     payload = pos.nthChild( 0 )
-    if hS.startswith( b64 ) and payload.headString()== pload:
+    if hS.startswith( b64 ) and payload.h== pload:
         f = tkFileDialog.askdirectory()
         hS2 = hS.split()
         if hS2[ -1 ] == b64: return
         f = '%s/%s' %( f, hS2[ - 1 ] )
         nfile = open( f, 'wb' )
-        pdata = payload.bodyString()
+        pdata = payload.b
         pdata = base64.decodestring( pdata )
         nfile.write( pdata )
         nfile.close()
@@ -116,7 +116,7 @@ def base64Export( c ):
 #@+node:mork.20041020082653:base64Import
 def base64Import( c ):
 
-    pos = c.currentPosition()
+    pos = c.p
     f = tkFileDialog.askopenfile()
     if f:
         data = f.read()
@@ -162,18 +162,18 @@ def init ():
 #@+node:mork.20041020092429:viewAsGif
 def viewAsGif (c):
 
-    pos = c.currentPosition()
-    hS = pos.headString()
+    pos = c.p
+    hS = pos.h
     if not hS.startswith(b64): return None
     data = pos.nthChild(0)
-    if data.headString() != pload: return None
+    if data.h != pload: return None
 
     d = Pmw.Dialog(title=hS,buttons=['Close',])
     sc = Pmw.ScrolledCanvas(d.interior(),hscrollmode='static',vscrollmode='static')
     sc.pack(expand=1,fill='both')
 
     try:
-        pi = Tk.PhotoImage(data=str(data.bodyString()))
+        pi = Tk.PhotoImage(data=str(data.b))
         tag = sc.interior().create_image(0,0,image=pi)
         d.activate()
     except Exception:

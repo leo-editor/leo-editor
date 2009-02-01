@@ -427,7 +427,7 @@ class Leo_to_HTML(object):
         self.xhtml = xhtml = []
 
         if node:
-            root = self.c.currentPosition()
+            root = self.c.p
         else:
             root = self.c.rootPosition()
 
@@ -498,7 +498,7 @@ class Leo_to_HTML(object):
     def doHeadline(self, p, level=None):
         """Append wrapped headstring to ouput stream."""
 
-        headline = safe(p.headString()).replace(' ', '&nbsp;')
+        headline = safe(p.h).replace(' ', '&nbsp;')
 
         if level is None:
             self.xhtml.append(headline)
@@ -515,7 +515,7 @@ class Leo_to_HTML(object):
 
         self.xhtml.append(
             self.openBodyString \
-            + '<pre>' + safe(pp.bodyString()) + '</pre>' \
+            + '<pre>' + safe(pp.b) + '</pre>' \
             + self.closeBodyString
         )
 
@@ -530,7 +530,7 @@ class Leo_to_HTML(object):
 
         """
 
-        s = p.headString()
+        s = p.h
         if not self.flagIgnoreFiles or s[:len('@file')] != '@file':
             return True 
     #@-node:bob.20080107175336:showSubtree

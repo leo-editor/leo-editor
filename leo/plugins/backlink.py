@@ -148,7 +148,7 @@ if g.app.gui.guiName() == "tkinter":
         def updateTkTabInt(self):
             # deprecated
             c = self.c
-            p = c.currentPosition()
+            p = c.p
             v = p.v
 
             self.listbox.delete(0,Tk.END)
@@ -179,7 +179,7 @@ if g.app.gui.guiName() == "tkinter":
                     self.showMessage('Click a link to follow it', optional=True)
                     for i in dests:
                         def goThere(where = i[1]): c.selectPosition(where)
-                        txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + i[1].headString()
+                        txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + i[1].h
                         self.listbox.insert(Tk.END, txt)
                         def delLink(on=v,
                             to=i[1].v.unknownAttributes['_bklnk']['id'],
@@ -351,7 +351,7 @@ class backlinkController(object):
 
         elif self.deleteMode:
             self.deleteLink(
-                self.c.currentPosition().v,
+                self.c.p.v,
                 self.dests[selected][1].v.unknownAttributes['_bklnk']['id'],
                 self.dests[selected][0]
             )
@@ -362,7 +362,7 @@ class backlinkController(object):
             self.showMessage('Link destination not specified or no longer valid', color='red')
             return
 
-        self.link(self.c.currentPosition(), self.linkDestination)
+        self.link(self.c.p, self.linkDestination)
 
         self.updateTabInt()
     def linkSrc(self):
@@ -372,7 +372,7 @@ class backlinkController(object):
             self.showMessage('Link source not specified or no longer valid', color='red')
             return
 
-        self.link(self.linkSource, self.c.currentPosition())
+        self.link(self.linkSource, self.c.p)
 
         self.updateTabInt()
     def linkUnd(self):
@@ -388,7 +388,7 @@ class backlinkController(object):
         else:
             source = self.linkDestination
 
-        self.link(source, self.c.currentPosition(), type_='undirected')
+        self.link(source, self.c.p, type_='undirected')
 
         self.updateTabInt()
     def loadLinks(self, tag, keywords):
@@ -448,7 +448,7 @@ class backlinkController(object):
                         lt = ('from', 'to')
                     # use g.es rather than showMessage here
                     g.es('backlink: link %s %s %s ??? lost' % (
-                        lt[0], self.vnode[vnode].headString(), lt[1]), color='red')
+                        lt[0], self.vnode[vnode].h, lt[1]), color='red')
                     continue
                 for x in rvid[link[1]]:
                     nl.append((link[0], x.unknownAttributes['_bklnk']['id']))
@@ -457,11 +457,11 @@ class backlinkController(object):
         self.showMessage('Link info. loaded on %d nodes' % len(self.vnode))
     def markDst(self):
         """Mark current position as 'destination' (called by UI)"""
-        self.linkDestination = self.c.currentPosition().copy()
+        self.linkDestination = self.c.p.copy()
         self.showMessage('Dest. marked')
     def markSrc(self):
         """Mark current position as 'source' (called by UI)"""
-        self.linkSource = self.c.currentPosition().copy()
+        self.linkSource = self.c.p.copy()
         self.showMessage('Source marked')
     def showLinksLog(self,tag,k):
 
@@ -495,7 +495,7 @@ class backlinkController(object):
                 g.es("- link info -")
                 for i in dests:
                     g.es("%s %s" %({'S':'->','D':'<-','U':'--'}[i[0]],
-                        i[1].headString()))
+                        i[1].h))
     def showMenu(self,tag,k):
 
         # deprecated
@@ -541,13 +541,13 @@ class backlinkController(object):
                 for i in dests:
                     def goThere(where = i[1]): c.selectPosition(where)
                     c.add_command(menu,label={'S':'->','D':'<-','U':'--'}[i[0]]
-                        + i[1].headString(),
+                        + i[1].h,
                         underline=0,command=goThere)
                     def delLink(on=v,
                         to=i[1].v.unknownAttributes['_bklnk']['id'],
                         type_=i[0]): self.deleteLink(on,to,type_)
                     c.add_command(smenu,label={'S':'->','D':'<-','U':'--'}[i[0]]
-                        + i[1].headString(),
+                        + i[1].h,
                         underline=0,command=delLink)
                 menu.add_cascade(label='Delete link', menu=smenu,underline=1)
                 menu.add_separator()
@@ -584,7 +584,7 @@ class backlinkController(object):
     def updateTabInt(self):
         """called on new position (leo hook) and when links added / deleted"""
         c = self.c
-        p = c.currentPosition()
+        p = c.p
         v = p.v
 
         self.messageUsed = False
@@ -614,7 +614,7 @@ class backlinkController(object):
                 self.showMessage('Click a link to follow it', optional=True)
                 for i in dests:
                     def goThere(where = i[1]): c.selectPosition(where)
-                    txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + i[1].headString()
+                    txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + i[1].h
                     texts.append(txt)
         self.ui.loadList(texts) 
     def vnodePosition(self, v):

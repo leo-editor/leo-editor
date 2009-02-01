@@ -1301,7 +1301,7 @@ class ToolbarScriptingController(mod_scripting.scriptingController, object):
         '''
         c = self.c ; k = c.k
 
-        item_data = self.getItemData(p.bodyString())
+        item_data = self.getItemData(p.b)
 
         buttonText = self.cleanButtonText(h)
         args = self.getArgs(h)
@@ -1463,8 +1463,8 @@ class ToolbarScriptingController(mod_scripting.scriptingController, object):
 
         c = self.c
         frame = c.frame
-        p = c.currentPosition()
-        h = p.headString()
+        p = c.p
+        h = p.h
 
         buttonText = self.getButtonText(h)
         shortcut = self.getShortcut(h)

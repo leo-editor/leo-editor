@@ -50,7 +50,7 @@ class RSS(BaseTreeHandler):
 
     def initFrom(self,c,parameter):
         """Initialize the tree"""
-        node_body = self.node.bodyString().strip()
+        node_body = self.node.b.strip()
         self.c = c
         self.children = []
         #

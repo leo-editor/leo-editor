@@ -86,7 +86,7 @@ class chapterHoist:
     def createSaveHoistButton(self,sc,c):
 
         def saveHoistCallback(event=None,self=self,sc=sc,c=c):
-            self.createChapterHoistButton(sc,c,c.currentPosition())
+            self.createChapterHoistButton(sc,c,c.p)
             c.hoist()
             return 'break'
 
@@ -121,7 +121,7 @@ class chapterHoist:
     def createChapterHoistButton (self,sc,c,p):
 
         '''Generates a hoist button for the headline at the given position'''    
-        h = p.headString()
+        h = p.h
         buttonText = sc.getButtonText(h)
         statusLine = "Hoist %s" % h
 

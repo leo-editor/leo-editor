@@ -30,7 +30,7 @@ def newMoreHead (self,firstLevel,useVerticalBar=True):
     else:
         s = ""
     s += g.choose(v.hasChildren(), "+ ", "- ")
-    s += v.headString()
+    s += v.h
     return s
 #@-node:edream.110203113231.721:newMoreHead
 #@-others

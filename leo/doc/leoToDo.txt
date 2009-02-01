@@ -12,52 +12,6 @@ This is causing trouble, for example, with unit tests.
 What happens if c.p != tree.item2position ??
 
 #@-node:ekr.20090131101152.5:tree.onHeadChanged should be careful
-#@+node:ekr.20090105083748.1:Fix xml write bug
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/2b3b621b36760579
-
-I am a new user of leo and find it most powerful and useful. I did run
-into a XML parsing problem that was able to track down and figure out
-and I thought to post what I found.
-
-The problem came from pasting in a block of text from a PDF file into
-a a node text window and the text happened to have an  'unprintable'
-character. After saving the .leo file and reading back the file the
-next day, in the whole outline and file became unusable until I
-manually tracked down and deleted the bad character in the XML file.
-
-The log ( python ) error was:
-
-reading: C:\x2.leo
-error parsing C:\x2.leo
-Traceback (most recent call last):
-  File "C:\Leo-4-5-1-final\leo\core\leoFileCommands.py", line 1266, in
-parse_leo_file
-    parser.parse(theFile) # expat does not support parseString
-  File "C:\Python24\lib\xml\sax\expatreader.py", line 107, in parse
-    xmlreader.IncrementalParser.parse(self, source)
-  File "C:\Python24\lib\xml\sax\xmlreader.py", line 123, in parse
-    self.feed(buffer)
-  File "C:\Python24\lib\xml\sax\expatreader.py", line 211, in feed
-    self._err_handler.fatalError(exc)
-  File "C:\Python24\lib\xml\sax\handler.py", line 38, in fatalError
-    raise exception
-SAXParseException: <unknown>:51:55: not well-formed (invalid token)
-
-I can attach leo files with the error if anyone wants to look at it.
-The character does show in Notepad but not the leo text window.
-
-At least this showed the value of plain text XML for leo files for
-finding and correcting the problem. And the problem could be called a
-python SAX xmlreader problem, and I am not sure if it is possible to
-fix in leo code, but my suggestion is to add a .leo reading step that
-shows the exact location of characters that can not be translated.
-Fortunately my outline was small enough to find the problem character,
-but in larger files it would have been very hard to find because none
-of the nodes would load from the file. 
-#@nonl
-#@-node:ekr.20090105083748.1:Fix xml write bug
 #@+node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
 #@-node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
 #@-node:ekr.20090103054019.1:Urgent 3

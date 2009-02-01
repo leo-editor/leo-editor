@@ -126,16 +126,16 @@ def OnBodyKey(tag,keywords):
 
     c=keywords.get('c')
     if not c or not c.exists: return
-    p=c.currentPosition()
-    h=p.headString()
+    p=c.p
+    h=p.h
     ch=keywords.get("ch")
 
     # handle the @run "\r" body key	
     if ch == "\r" and g.match_word(h,0,"@run") and RunNode != None and RunNode==p:
         try:
-            In.write(p.bodyString().encode(Encoding))
+            In.write(p.b.encode(Encoding))
             In.flush()
-            g.es(p.bodyString())
+            g.es(p.b)
         except IOError,ioerr:
             g.es("[@run] IOError: "+str(ioerr),color="red")
             return
@@ -149,9 +149,9 @@ def OnIconDoubleClick(tag,keywords):
 
     c=keywords.get('c')
     if not c or not c.exists: return
-    p = c.currentPosition()
+    p = c.p
 
-    h = p.headString()
+    h = p.h
     if g.match_word(h,0,"@run"):
         if RunNode or RunList:
             g.es("@run already running!",color="red")
@@ -161,7 +161,7 @@ def OnIconDoubleClick(tag,keywords):
             RunList = []
 
             for p2 in p.self_and_subtree_iter(copy=True):
-                if g.match_word(p2.headString(),0,"@run"):
+                if g.match_word(p2.h,0,"@run"):
                     # g.trace(p2)
                     RunList.append(p2)	
 
@@ -175,7 +175,7 @@ def OnIconDoubleClick(tag,keywords):
         if RunNode:
             #@            << handle double click in @in icon >>
             #@+node:ekr.20040910102554.1:<< handle double click in @in icon >>
-            b = p.bodyString()
+            b = p.b
 
             try:
                 In.write(b.encode(Encoding)+"\n")
@@ -293,7 +293,7 @@ def FindRunChildren(p):
     global RunList
 
     for child in p.children_iter():
-        if g.match_word(child.headString(),0,"@run"):
+        if g.match_word(child.h,0,"@run"):
             RunList.append(child)	
         FindRunChildren(child)
 #@nonl
@@ -304,7 +304,7 @@ def OpenProcess(p):
     global RunNode,WorkDir
     global In,OutThread,ErrThread,ExitCode
 
-    command = p.headString()[4:].strip() # Remove @run
+    command = p.h[4:].strip() # Remove @run
     if not command: return
     #@    << set the working directory or return >>
     #@+node:ekr.20040910094754:<< set the working directory or return >>
@@ -344,7 +344,7 @@ def OpenProcess(p):
     #@    << append arguments from child nodes to command >>
     #@+node:ekr.20040910095147:<< append arguments from child nodes to command >>
     for child in p.children_iter():
-        h = child.headString()
+        h = child.h
         if g.match_word(h,0,"@arg"):
             arg = h[4:].strip()
             args.append(arg)
@@ -354,7 +354,7 @@ def OpenProcess(p):
                 not g.match_word(h,0,"@in") and
                 not g.match_word(h,0,"@input")
             ):
-                args.append(child.bodyString().strip())
+                args.append(child.b.strip())
     #@nonl
     #@-node:ekr.20040910095147:<< append arguments from child nodes to command >>
     #@nl

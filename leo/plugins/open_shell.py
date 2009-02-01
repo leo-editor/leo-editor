@@ -134,7 +134,7 @@ class pluginController:
     def _getCurrentNodePath(self):
 
         c = self.c
-        p = c.currentPosition()
+        p = c.p
         d = self._getpath(p)
         return d
     #@nonl

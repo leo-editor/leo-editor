@@ -143,7 +143,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=[0], maxp=[None]):
 
     for i in nds:
 
-        if unlList[depth] == i.headString():
+        if unlList[depth] == i.h:
 
             if depth+1 == len(unlList):  # found it
                 moveToP(c, i)
@@ -152,7 +152,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=[0], maxp=[None]):
                 if maxdepth[0] < depth+1:
                     maxdepth[0] = depth+1
                     maxp[0] = i.copy()
-                    g.es(i.headString())
+                    g.es(i.h)
                 if recursiveUNLSearch(unlList, c, depth+1, i, maxdepth, maxp):
                     return True
                 # else keep looking through nds
@@ -269,12 +269,12 @@ def onSelect2 (tag,keywords):
 
     c = keywords.get("c")
 
-    # c.currentPosition() is not valid while using the settings panel.
+    # c.p is not valid while using the settings panel.
     new_p = keywords.get('new_p')
     if not new_p: return    
 
     c.frame.clearStatusLine()
-    myList = [p.headString() for p in new_p.self_and_parents_iter()]
+    myList = [p.h for p in new_p.self_and_parents_iter()]
     myList.reverse()
 
     # Rich has reported using ::

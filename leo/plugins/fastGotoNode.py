@@ -247,14 +247,14 @@ def pop (event,c):
 #@+node:ekr.20060110203946.1:Menus
 #@+node:mork.20041018091414.5:getSectionReferenceMenu
 def getSectionReferenceMenu (pmenu,c):
-    p = c.currentPosition()
+    p = c.p
     nc = p.numberOfChildren()
     import re
     reg = re.compile("^<"+"<.+?>"+">$")
     srefs = []
     for z in range(nc):
         chi = p.nthChild(z)
-        hl = chi.headString()
+        hl = chi.h
         if reg.match(hl):
             srefs.append(hl)
 
@@ -292,7 +292,7 @@ def getWindowMenu (pmenu,c):
 #@-node:mork.20041018091414.6:getWindowMenu
 #@+node:mork.20041018091414.7:getChildrenMenu
 def getChildrenMenu (pmenu,c):
-    p = c.currentPosition()
+    p = c.p
     nchildren = p.numberOfChildren()
     chimenu = None
     if nchildren > 0:
@@ -302,7 +302,7 @@ def getChildrenMenu (pmenu,c):
         children = {}
         for z in range(p.numberOfChildren()):
             child = p.nthChild(z)
-            hs = child.headString()
+            hs = child.h
             childnames.append(hs)
             children [hs] = child
         childnames.sort()
@@ -320,19 +320,19 @@ def getChildrenMenu (pmenu,c):
 #@+node:mork.20041018091414.8:getSiblingsMenu
 def getSiblingsMenu (pmenu,c):
     siblings = []
-    p = c.currentPosition()
+    p = c.p
     siblings = getSiblingList(p)
     sibmenu = None
     def sorSibs (a,b):
-        if a.headString() > b.headString(): return 1
-        elif a.headString() < b.headString(): return-1
+        if a.h > b.h: return 1
+        elif a.h < b.h: return-1
         return 0
     siblings.sort(sorSibs)
     if len(siblings) != 0:
         sibmenu = Tkinter.Menu(pmenu,tearoff=0)
         sb = shouldBreak()
         for z in siblings:
-            hs = z.headString()
+            hs = z.h
             c.add_command(sibmenu,
                 label = hs,
                 command = lambda p = z, c = c:
@@ -360,12 +360,12 @@ def getSiblingList (p):
 #@+node:mork.20041018091414.9:getAncestorsMenu
 def getAncestorsMenu (pmenu,c):
         ancmenu = None
-        alist = getAncestorList(c.currentPosition())
+        alist = getAncestorList(c.p)
         if alist:
             ancmenu = Tkinter.Menu(pmenu,tearoff=0)
             sb = shouldBreak()
             for z in alist:
-                hs = z.headString()
+                hs = z.h
                 c.add_command(ancmenu,
                     label = hs,
                     command = lambda parent = z, c = c:
@@ -427,14 +427,14 @@ def getMoveAMenu (pmenu,c):
         p.moveToNthChildOf(p2,0)
         c.redraw()
 
-    p = c.currentPosition()
+    p = c.p
     alist = getAncestorList(p)
     if alist: alist.pop(0)
     if alist:
         mvmenu = Tkinter.Menu(pmenu,tearoff=0)
         sb = shouldBreak()
         for z in alist:
-            hs = z.headString()
+            hs = z.h
             c.add_command(mvmenu,
                 label = hs,
                 command = lambda p = p, p2 = z:
@@ -446,7 +446,7 @@ def getMoveAMenu (pmenu,c):
 def getMoveSMenu (pmenu,c):
 
     smenu = None
-    p = c.currentPosition()
+    p = c.p
     sibs = getSiblingList(p)
     bk = p.back()
     if bk: sibs.remove(bk)
@@ -457,7 +457,7 @@ def getMoveSMenu (pmenu,c):
         smenu = Tkinter.Menu(pmenu,tearoff=0)
         sb = shouldBreak()
         for z in sibs:
-            c.add_command(smenu,label=z.headString(),
+            c.add_command(smenu,label=z.h,
                             command = lambda p = p, p2 = z: mafter(p,p2),
                             columnbreak = sb.next())
     return smenu
@@ -466,7 +466,7 @@ def getMoveSMenu (pmenu,c):
 #@+node:mork.20041018092814:getHeadlineMenu
 def getHeadlineMenu (pmenu,c):
 
-    p = c.currentPosition()
+    p = c.p
     v = p.v
     def getValue (names,self=v):
         return names
@@ -550,8 +550,8 @@ def shouldBreak():
 #@+node:mork.20041018095448:setFileDirective
 def setFileDirective( c , directive, names ):
 
-    p = c.currentPosition()
-    hS = p.headString()
+    p = c.p
+    hS = p.h
     hS = getCleanHeadString( hS, names )
     hS = directive + " " + hS
     c.setHeadString(p,hS )
@@ -563,8 +563,8 @@ def setFileDirective( c , directive, names ):
 #@+node:mork.20041018100044:removeFileDirective
 def removeFileDirective (c,names):
 
-    p = c.currentPosition()
-    hS = p.headString()
+    p = c.p
+    hS = p.h
     hS = getCleanHeadString(hS,names)
     c.setHeadString(p,hS)
     c.frame.body.bodyCtrl.focus_set()
@@ -575,7 +575,7 @@ def removeFileDirective (c,names):
 #@+node:mork.20041018091414.14:addGL
 def addGL (c):
     vnode = c.currentVnode()
-    hs = vnode.headString()
+    hs = vnode.h
     nhs = "<" + "<" + hs + ">" + ">"
     c.setHeadString(vnode,nhs)
     c.frame.body.bodyCtrl.focus_set()
@@ -586,7 +586,7 @@ def addGL (c):
 #@+node:mork.20041018091414.15:insertHeadline
 def insertHeadline (directive,c):
     vnode = c.currentVnode()
-    hs = vnode.headString()
+    hs = vnode.h
     nhs = directive + " " + hs
     c.setHeadString(vnode,nhs)
     c.redraw()

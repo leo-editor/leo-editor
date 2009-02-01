@@ -74,9 +74,9 @@ class pluginController:
     #@+node:ekr.20060621124649:print_cp
     def print_cp (self,event=None):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         g.es_print('c: %s' % (c.fileName()),color='red')
-        g.es_print('p: %s' % (p.headString()),color='red')
+        g.es_print('p: %s' % (p.h),color='red')
     #@nonl
     #@-node:ekr.20060621124649:print_cp
     #@-others

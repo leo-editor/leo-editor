@@ -398,7 +398,7 @@ def insertWikiPicture (colorer,filename,s,i):
 
     # g.trace(i,filename)
 
-    c = colorer.c ; p = c.currentPosition() ; w = c.frame.body.bodyCtrl
+    c = colorer.c ; p = c.p ; w = c.frame.body.bodyCtrl
 
     if not p or not g.os_path_exists(filename):
         return

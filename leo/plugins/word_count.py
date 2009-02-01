@@ -80,7 +80,7 @@ def createWordCountMenu (tag,keywords):
 #@-node:danr7.20061010105952.5:createWordCountMenu
 #@+node:danr7.20061010105952.6:word_count
 def word_count( c ):
-    myBody = c.currentPosition().bodyString()
+    myBody = c.p.b
     charNum = len(myBody)
     wordNum = len(myBody.split(None))
     paraSplit = myBody.split("\n")

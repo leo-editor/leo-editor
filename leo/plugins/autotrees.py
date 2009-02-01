@@ -356,7 +356,7 @@ class pluginController:
         #
         # Find the headline text
         node = keywords.get("p") or keywords.get("v")
-        head = node.headString().strip()
+        head = node.h.strip()
         match = self.getdetails.match(head)
         #
         # Is this an auto-tree?

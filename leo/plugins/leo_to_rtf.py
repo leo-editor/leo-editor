@@ -146,7 +146,7 @@ def export_rtf( c ):
             f.write("{")
 
         myLevel = curLevel
-        myHeadline = p.headString()
+        myHeadline = p.h
 
         # Check if node is an @file and ignore if configured to
         if not (myHeadline[:5] == "@file" and flagIgnoreFiles):
@@ -156,7 +156,7 @@ def export_rtf( c ):
             f.write(myOutput)
             # If including outline body text, convert it to RTF usable format
             if not flagJustHeadlines:
-                myBody = p.bodyString().encode( "utf-8" ) 
+                myBody = p.b.encode( "utf-8" ) 
                 myBody = myBody.rstrip().rstrip("\n") 
                 f.write(myBody + "\\par ")
 

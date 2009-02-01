@@ -575,7 +575,7 @@ class cleoController:
         #@    << auto headline colours >>
         #@+node:tbrown.20060903121429.27:<< auto headline colours >>
         # set bg of @file type of nodes
-        h = v and v.headString() or ''
+        h = v and v.h or ''
 
         for f in self.file_nodes:
             if h.startswith(f):
@@ -624,7 +624,7 @@ class cleoController:
         #@-node:tbrown.20060903121429.30:<< arbitary colours >>
         #@nl
 
-        #g.pr("> (%s,%s) %s" % (fg,bg,v.headString()))
+        #g.pr("> (%s,%s) %s" % (fg,bg,v.h))
 
         return fg,bg
     #@-node:tbrown.20060903121429.26:custom_colours
@@ -1275,10 +1275,10 @@ class cleoController:
 
         for nd in p.self_and_subtree_iter():
             if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
-                nd.setHeadStringOrHeadline(re.sub(' <[^>]*>$', '', nd.headString()))
+                nd.setHeadStringOrHeadline(re.sub(' <[^>]*>$', '', nd.h))
             else:
-                self.c.setHeadString(nd, re.sub(' <[^>]*>$', '', nd.headString()))
-                # nd.setHeadString(re.sub(' <[^>]*>$', '', nd.headString()))
+                self.c.setHeadString(nd, re.sub(' <[^>]*>$', '', nd.h))
+                # nd.setHeadString(re.sub(' <[^>]*>$', '', nd.h))
             if show:
                 tr = self.getat(nd.v, 'time_req')
                 pr = self.getat(nd.v, 'progress')
@@ -1296,9 +1296,9 @@ class cleoController:
                         ans += rnd(pr) + '%'  # pr may be non-integer if set by recalc_time
                     ans += '>'
                     if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
-                        nd.setHeadStringOrHeadline(nd.headString()+ans)
+                        nd.setHeadStringOrHeadline(nd.h+ans)
                     else:
-                        self.c.setHeadString(nd, nd.headString()+ans)
+                        self.c.setHeadString(nd, nd.h+ans)
     #@-node:tbrown.20060913204451:show_times
     #@+node:tbrown.20060913133338:recalc_time
     def recalc_time(self, p, clear=False):
@@ -1354,7 +1354,7 @@ class cleoController:
         # s0, s1 = (time_totl, time_done)
         # if not s0: s0 = 0
         # if not s1: s1 = 0
-        # sys.stderr.write('%s %g %g\n' % (p.headString(), float(s0), float(s1)))
+        # sys.stderr.write('%s %g %g\n' % (p.h, float(s0), float(s1)))
         return (time_totl, time_done)
     #@-node:tbrown.20060913133338:recalc_time
     #@+node:tbrown.20060913104504.1:clear_time_req
@@ -1374,12 +1374,12 @@ class cleoController:
         project = None
 
         for nd in p.self_and_parents_iter():
-            if nd.headString().find('@project') > -1:
+            if nd.h.find('@project') > -1:
                 project = nd.copy()
 
         if project:
             self.recalc_time(project)
-            if project.headString().find('@project time') > -1:
+            if project.h.find('@project time') > -1:
                 self.show_times(project, show=True)
     #@-node:tbrown.20060914134553.376:update_project
     #@+node:tbrown.20060919160306:find_todo

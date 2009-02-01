@@ -180,7 +180,7 @@ def onIconDoubleClick(tag,keywords):
 
     v = keywords.get("p") or keywords.get("v")
     c = keywords.get("c")
-    h = v.headString().strip()
+    h = v.h.strip()
     if g.match_word(h,0,"@bibtex"):
         fname = h[8:]
         if v.hasChildren():
@@ -220,11 +220,11 @@ def onHeadKey(tag,keywords):
 
     v = keywords.get("p") or keywords.get("v")
     c = keywords.get("c")
-    h = v.headString().strip()
+    h = v.h.strip()
     ch = keywords.get("ch")
-    if (ch == '\r') and (h[:h.find(' ')] in templates.keys()) and (not v.bodyString()):
+    if (ch == '\r') and (h[:h.find(' ')] in templates.keys()) and (not v.b):
         for p in v.parents_iter():
-            if p.headString()[:8] == '@bibtex ':
+            if p.h[:8] == '@bibtex ':
                 #@                << write template >>
                 #@+node:timo.20050215232157:<< write template >>
                 c.setBodyString(v,templates[h[:h.find(' ')]])
@@ -249,14 +249,14 @@ def writeTreeAsBibTex(bibFile, vnode, c):
     entries = ''
     # iterate over nodes in this tree
     for v in vnode.subtree_iter():    
-        h = v.headString()
+        h = v.h
         h = g.toEncodedString(h,encoding,reportErrors=True)
         if h.lower() == '@string':
             typestring = '@string'
         else:
             typestring = h[:h.find(' ')].lower()
         if typestring in entrytypes:
-            s = v.bodyString()
+            s = v.b
             s = g.toEncodedString(s,encoding,reportErrors=True)
             if h == '@string': # store string declarations in strings
                 for i in s.split('\n'):
@@ -294,7 +294,7 @@ def readBibTexFileIntoTree(bibFile, c):
     if strings:
         biblist.append(('@string', strings)) 
     biblist = biblist + entrylist
-    p = c.currentPosition()
+    p = c.p
     for i in biblist:
         v = p.insertAsLastChild()
         c.setHeadString(v,str(i[0]))

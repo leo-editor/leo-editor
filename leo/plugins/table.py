@@ -104,8 +104,8 @@ class CSVVisualizer:
     def readData( self ):
 
         c = self.c
-        pos = c.currentPosition()
-        data = pos.bodyString()
+        pos = c.p
+        data = pos.b
         cS = cStringIO.StringIO()
         cS.write( data )
         cS.seek( 0 )
@@ -117,7 +117,7 @@ class CSVVisualizer:
     #@+node:ekr.20041017035937.6:writeData
     def writeData( self, save ):
 
-        pos = self.c.currentPosition()
+        pos = self.c.p
         n2 = self.rows
         n = self.columns
         data = []
@@ -133,10 +133,10 @@ class CSVVisualizer:
         cS.seek( 0 )
 
         if not save:
-            # tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str(pos.headString() ) )
+            # tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str(pos.h ) )
             p2 = pos.insertAfter() # tnd )
             p2.setBodyString(cS.getvalue())
-            p2.setHeadString("Save of Edited " + str(pos.headString()))
+            p2.setHeadString("Save of Edited " + str(pos.h))
         else:
             pos.setTnodeText( cS.getvalue() )
         self.c.redraw()
@@ -166,9 +166,9 @@ class CSVVisualizer:
 #@+node:ekr.20041017035937.9:viewTable
 def viewTable( c ):
 
-    pos = c.currentPosition()
+    pos = c.p
     dialog = Pmw.Dialog(
-        title = "Table Editor for " + str( pos.headString()),
+        title = "Table Editor for " + str( pos.h),
         buttons = [ 'Save To Current', 'Write To New', 'Close']
     )
     dbbox = dialog.component( 'buttonbox' )

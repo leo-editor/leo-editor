@@ -270,7 +270,7 @@ class QuickFind(leoFind.leoFind):
         leoFind.leoFind.__init__(self,c)
 
         self.c = c
-        self.p = c.currentPosition() # Bug fix: 5/14/06
+        self.p = c.p # Bug fix: 5/14/06
         self.s_ctrl = leoTkinterFrame.leoTkTextWidget() # Tk.Text() # Used by find.search()
         self.__find_text = text
         self.search_option = search_option

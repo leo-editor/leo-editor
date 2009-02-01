@@ -112,10 +112,10 @@ class gNode(object):
     #@+node:tbrown.20071007213346.1:readtnode
     def readtnode(self, tn, splitLabels = True, vnode = None):
         if splitLabels:
-            self.title = tn.headString().replace(' ', '\n')
+            self.title = tn.h.replace(' ', '\n')
         else:
-            self.title = tn.headString()
-        self.body = tn.bodyString()
+            self.title = tn.h
+        self.body = tn.b
         self.x = getattr(tn,'unknownAttributes',{}).get('graphed',{}).get('x',0)
         self.y = getattr(tn,'unknownAttributes',{}).get('graphed',{}).get('y',0)
         self.attr.update(getattr(tn,'unknownAttributes',{}))
@@ -181,7 +181,7 @@ class tGraph:
         """
 
         self.splitLabels = splitLabels
-        if '@graph' in p.headString():
+        if '@graph' in p.h:
             for p1 in p.children_iter():
                 self._addNodesLinks(p1)
             for p1 in p.children_iter():
@@ -197,10 +197,10 @@ class tGraph:
         todo = set(self.nodes())
 
         root = p.insertAfter()
-        if '@graph' in p.headString():
-            root.setHeadString(p.headString())
+        if '@graph' in p.h:
+            root.setHeadString(p.h)
         else:
-            root.setHeadString('@graph ' + p.headString())
+            root.setHeadString('@graph ' + p.h)
         root.expand()
         pos = root.copy()
 
@@ -298,7 +298,7 @@ class tGraph:
         self._gnxStr2tnode[str(p.v.t.fileIndex)] = gn
 
         for nd0 in p.children_iter():
-            if nd0.headString().startswith('@link'): continue
+            if nd0.h.startswith('@link'): continue
             gn1 = self._addNodesLinks(nd0)
             self.addDirectedEdge(gn, gn1)
 
@@ -311,14 +311,14 @@ class tGraph:
 
         s0 = str(p.v.t.fileIndex)
         for nd0 in p.children_iter():
-            if nd0.headString().startswith('@link'):
-                s1 = self._indexStrFromStr(nd0.headString())
+            if nd0.h.startswith('@link'):
+                s1 = self._indexStrFromStr(nd0.h)
                 try:
                     fnd = self._gnxStr2tnode[s0]
                     tnd = self._gnxStr2tnode[s1]
                     self.addDirectedEdge(fnd, tnd)
                 except:  # @link node went stale
-                    g.es('Broken %s' % nd0.headString())
+                    g.es('Broken %s' % nd0.h)
                     raise
             else:
                 self._addLinks(nd0)
@@ -485,7 +485,7 @@ class GraphEd:
         c = self.c
 
         if pos == None:
-            p = c.currentPosition()
+            p = c.p
         else:
             p = pos
 
@@ -543,7 +543,7 @@ class GraphEd:
     # 
     # def editWholeTree(self, event=None):
     #     c = self.c
-    #     g.pr(c.rootPosition().headString())
+    #     g.pr(c.rootPosition().h)
     #     self.editGraph(pos = c.rootPosition())
     #@-at
     #@-node:ekr.20071004090250.27:editWholeTree
@@ -600,7 +600,7 @@ class GraphEd:
 
         newp = tgraph.createTreeFromGraph(p)
 
-        c.setHeadString(p, 'OLD: ' + p.headString())
+        c.setHeadString(p, 'OLD: ' + p.h)
         p.setDirty()
         c.selectPosition(p)
         c.contractNode()
@@ -612,10 +612,10 @@ class GraphEd:
     #@+node:ekr.20071004090250.32:copyLink
     def copyLink(self, event = None):
         c = self.c
-        p = c.currentPosition()
+        p = c.p
         self.setIndex(p)
         nn = p.insertAfter()
-        nn.setHeadString(self.formatLink(p.v.t.fileIndex, p.headString()))
+        nn.setHeadString(self.formatLink(p.v.t.fileIndex, p.h))
         c.selectPosition(nn)
         c.cutOutline()
         c.selectPosition(p)
@@ -624,7 +624,7 @@ class GraphEd:
     #@+node:ekr.20071004090250.33:followLink
     def followLink(self, event = None):
         c = self.c
-        s = c.currentPosition().headString()
+        s = c.p.h
         s = self.indexStrFromStr(s)
         for p in c.allNodes_iter():
             if self.indexStrFromStr(str(p.v.t.fileIndex)) == s:
@@ -639,8 +639,8 @@ class GraphEd:
     #@+node:tbrown.20071004225829.2:dotNode
     def dotNode(self, event=None):
         c = self.c
-        p = c.currentPosition()
-        t = p.headString()
+        p = c.p
+        t = p.h
         tg = tGraphUtil()
         dot = tg.dotStrFromPosition(p)
         p = p.insertAfter()
@@ -651,8 +651,8 @@ class GraphEd:
     #@+node:tbrown.20071005092239:dotFile
     def dotFile(self, event=None):
         c = self.c
-        p = c.currentPosition()
-        t = p.headString()
+        p = c.p
+        t = p.h
         tg = tGraphUtil()
         dot = tg.dotStrFromPosition(p)
         fn = g.app.gui.runSaveFileDialog(

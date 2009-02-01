@@ -19165,12 +19165,12 @@ u = property(
     doc = "vnode unknownAttribute property")
 #@-node:ekr.20090130114732.6:v.u Property
 #@-node:ekr.20090130065000.1:v.Properties
-#@+node:ekr.20090130065000.2:t Property
+#@+node:ekr.20090130065000.2:t Properties
 #@+node:ekr.20090130125002.2:t.b Property
 def __get_b(self):
 
     t = self
-    return t.bodyString()
+    return t._bodyString # Faster.
 
 def __set_b(self,val):
 
@@ -19217,7 +19217,7 @@ u = property(
     __get_t, __set_t,
     doc = "tnode unknownAttribute property")
 #@-node:ekr.20090130125002.4:t.u Property
-#@-node:ekr.20090130065000.2:t Property
+#@-node:ekr.20090130065000.2:t Properties
 #@-node:ekr.20090128083459.77:Added properties to leoNodes.py
 #@+node:ekr.20081215070651.7:Use myLeoSettings when opening leoSettings.leo
 @nocolor-node

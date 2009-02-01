@@ -48,12 +48,12 @@ def onDClick1 (tag,keywords):
     p = keywords.get("p")
     bookmark = False
     for nd in p.parents_iter():
-        if '@bookmarks' in nd.headString():
+        if '@bookmarks' in nd.h:
             bookmark = True
             break
     if bookmark:
         # Get the url from the first body line.
-        lines = p.bodyString().split('\n')
+        lines = p.b.split('\n')
         url = lines and lines[0] or ''
         if not g.doHook("@url1",c=c,p=p,v=p,url=url):
             c.frame.handleUrlInUrlNode(url)

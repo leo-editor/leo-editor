@@ -228,7 +228,7 @@ class ipythonController:
                     self.qtwidget = ipy_qt.qtipywidget.IPythonWidget()
                     self.qtwidget.set_ipython_session(gIP)
                     self.qtwidget.show()
-                    
+
             else:
                 # To reuse an old IPython session, you need to launch Leo from IPython by doing:
                 #
@@ -283,7 +283,7 @@ class ipythonController:
             if script:
                 gIP.runlines(script)
                 return
-            c = self.c ; p = c.currentPosition()
+            c = self.c ; p = c.p
             push = gIP.user_ns['_leo'].push
             c.inCommand = False # Disable the command lockout logic
             push(p)

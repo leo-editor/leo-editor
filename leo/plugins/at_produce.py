@@ -96,7 +96,7 @@ def makeProduceList( c, root = True ):
         stopnode = rvnode.next()
 
     for z in travel(rvnode,stopnode):
-        body = z.bodyString()
+        body = z.b
         body = body.split( '\n' )
         body = filter(teststart, body)
         if body:

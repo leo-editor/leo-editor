@@ -114,7 +114,7 @@ def open_in_emacs (tag,keywords,val=None):
     if (
         not g.os_path_exists(path) or
         not hasattr(v,'OpenWithOldBody') or
-        v.bodyString() != v.OpenWithOldBody
+        v.b != v.OpenWithOldBody
     ):
         # Open a new temp file.
         if path:
@@ -122,7 +122,7 @@ def open_in_emacs (tag,keywords,val=None):
             os.remove(path)
             g.app.openWithFiles = [d for d in g.app.openWithFiles if d.get('path') != path]
             os.system(_emacs_cmd)
-        v.OpenWithOldBody=v.bodyString() # Remember the old contents
+        v.OpenWithOldBody=v.b # Remember the old contents
         # open the node in emacs (note the space after _emacs_cmd)
         data = "os.spawnl", _emacs_cmd, None
         c.openWith(data=data)

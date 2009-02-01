@@ -168,7 +168,7 @@ stylenodes = weakref.WeakKeyDictionary()
 
 def setStyleNode( c ):
     '''this command sets what the current style node is'''
-    position = c.currentPosition()
+    position = c.p
     stylenodes[ c ] = position
 
 
@@ -180,12 +180,12 @@ def processDocumentNode( c ):
         if not styleNodeSelected( c ): return
         proc = Processor()
         stylenode = stylenodes[ c ]
-        pos = c.currentPosition()
+        pos = c.p
         c.selectPosition( stylenode )
         sIO = getString( c )
         mdom1 = minidom.parseString( sIO )
         sIO = str( mdom1.toxml() )
-        hstring = str( stylenode.headString() )
+        hstring = str( stylenode.h )
         if hstring == "": hstring = "no headline"
         stylesource = InputSource.DefaultFactory.fromString( sIO, uri = hstring)
         proc.appendStylesheet( stylesource )
@@ -213,7 +213,7 @@ def processDocumentNode( c ):
 #@+node:mork.20041025121608:addXSLTNode
 def addXSLTNode (c):
     '''creates a node and inserts some xslt boilerplate'''
-    pos = c.currentPosition()
+    pos = c.p
 
     #body = '''<?xml version="1.0"?>'''
     # body = '''<?xml version="1.0"?>
@@ -242,7 +242,7 @@ def addXSLTElement( c , element):
 def getString (c):
     '''This def turns a node into a string based off of Leo's file-nosent write logic'''
     at = c.atFileCommands
-    pos = c.currentPosition()
+    pos = c.p
     cS = cStringIO.StringIO()
 
     if not hasattr( at, 'new_df' ):
@@ -401,7 +401,7 @@ import Pmw
 </t>
 <t tx="mork.20041015144717.2">def viewTable( c, new = False ):
 
-    pos = c.currentPosition()
+    pos = c.p
     dialog = createDialog( pos )
     csvv = CSVVisualizer( c )
     sframe = Pmw.ScrolledFrame( dialog.interior() )
@@ -448,8 +448,8 @@ def addMenu( tag, keywords ):
 <t tx="mork.20041015152916">def readData( self ):
 
     c = self.c
-    pos = c.currentPosition()
-    data = pos.bodyString()
+    pos = c.p
+    data = pos.b
     cS = cStringIO.StringIO()
     cS.write( data )
     cS.seek( 0 )
@@ -495,7 +495,7 @@ def addMenu( tag, keywords ):
 </t>
 <t tx="mork.20041016141748">def writeData( self, save ):
 
-    pos = self.c.currentPosition()
+    pos = self.c.p
     n2 = self.rows
     n = self.columns
     data = []
@@ -511,10 +511,10 @@ def addMenu( tag, keywords ):
     cS.seek( 0 )
 
     if not save:
-        # tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str( pos.headString() ) )
+        # tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str( pos.h ) )
         p2 = pos.insertAfter() #  tnd )
         p2.setBodyString(cS.getvalue())
-        p2.setHeadString("Save of Edited " + str( pos.headString()))
+        p2.setHeadString("Save of Edited " + str( pos.h))
     else:
         # pos.setTnodeText( cS.getvalue() )
         pos.setBodyString(cS.getvalue())
@@ -586,7 +586,7 @@ def addMenu( tag, keywords ):
 <t tx="mork.20041017105444">def newTable( c ):
 
     # tnd = leoNodes.tnode( "", "New Table" )
-    pos = c.currentPosition()
+    pos = c.p
     npos = pos.insertAfter() # tnd )
     npos.setHeadString('New Table')
     c.redraw()
@@ -617,7 +617,7 @@ def addMenu( tag, keywords ):
 </t>
 <t tx="mork.20041017111248">def createDialog( pos ):
 
-    dialog = Pmw.Dialog( title = "Table Editor for " + str( pos.headString()),
+    dialog = Pmw.Dialog( title = "Table Editor for " + str( pos.h),
                          buttons = [ 'Save To Current', 'Write To New', 'Close' ] )
     dbbox = dialog.component( 'buttonbox' )
     for z in range( dbbox.numbuttons() ):

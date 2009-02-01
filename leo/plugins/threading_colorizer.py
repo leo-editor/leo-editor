@@ -951,7 +951,7 @@ class colorizer:
         # New in Leo 4.6: @nocolor-node disables one node only.
         theDict = g.get_directives_dict(p)
         if 'nocolor-node' in theDict:
-            # g.trace('nocolor-node',p.headString())
+            # g.trace('nocolor-node',p.h)
             return False
 
         for p in p.self_and_parents_iter():
@@ -971,7 +971,7 @@ class colorizer:
             elif color and not no_color:
                 val = True ; break
 
-        # g.trace(first.headString(),val)
+        # g.trace(first.h,val)
         return val
     #@-node:ekr.20071010193720.37:useSyntaxColoring
     #@+node:ekr.20071010193720.38:updateSyntaxColorer

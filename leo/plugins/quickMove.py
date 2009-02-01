@@ -98,16 +98,16 @@ class quickMove:
 
         '''Add a button that creates a target for future moves.'''
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         sc = scriptingController(c)
 
         mb = quickMoveButton(self,p.copy(),first)
 
         b = sc.createIconButton(
-            text = 'to-' + p.headString(), # createButton truncates text.
+            text = 'to-' + p.h, # createButton truncates text.
             command = mb.moveCurrentNodeToTarget,
             shortcut = None,
-            statusLine = 'Move current node to %s child of %s' % (g.choose(first,'first','last'),p.headString()),
+            statusLine = 'Move current node to %s child of %s' % (g.choose(first,'first','last'),p.h),
             bg = "LightBlue"
         )
     #@-node:ekr.20070117113133.2:addTarget/AppendButton
@@ -126,7 +126,7 @@ class quickMoveButton:
         self.c = owner.c
         self.owner = owner
         self.target = target.v
-        self.targetHeadString = target.headString()
+        self.targetHeadString = target.h
         self.first = first
     #@-node:ekr.20070117121326:ctor
     #@+node:ekr.20070117121326.1:moveCurrentNodeToTarget
@@ -135,7 +135,7 @@ class quickMoveButton:
         '''Move the current position to the last child of self.target.'''
 
         c = self.c
-        p = c.currentPosition()
+        p = c.p
         p2 = c.vnode2position(self.target)
         u = c.undoer
 

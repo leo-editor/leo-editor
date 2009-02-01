@@ -248,7 +248,7 @@ class DateNodes:
         today = datetime.date.today()
         day_fmt = self.settings["day_node_headline"]
 
-        day_node = self._insert_day_node(self.c.currentPosition(), today, day_fmt)
+        day_node = self._insert_day_node(self.c.p, today, day_fmt)
 
         self.c.selectPosition(day_node)
 
@@ -265,7 +265,7 @@ class DateNodes:
         omit_sundays = self.settings["month_node_omit_sundays"]
 
         month_node = self._insert_month_node(
-            self.c.currentPosition(), today, day_fmt, month_fmt, omit_saturdays, omit_sundays)
+            self.c.p, today, day_fmt, month_fmt, omit_saturdays, omit_sundays)
 
         self.c.selectPosition(month_node)
 
@@ -283,7 +283,7 @@ class DateNodes:
         omit_sundays = self.settings["year_node_omit_sundays"]
 
         year_node = self._insert_year_node(
-            self.c.currentPosition(), today, day_fmt, month_fmt, year_fmt, omit_saturdays, omit_sundays)
+            self.c.p, today, day_fmt, month_fmt, year_fmt, omit_saturdays, omit_sundays)
 
         self.c.selectPosition(year_node)
 

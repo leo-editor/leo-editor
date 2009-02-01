@@ -141,7 +141,7 @@ class Navigator:
         def callback(event=None,self=self,c=c,p=p.copy()):
             self.select(c,p)
 
-        name = p.headString().strip()
+        name = p.h.strip()
         c.add_command(menu,label=name[:40],command=callback)
         marks.append(p.v.t)
 
@@ -196,7 +196,7 @@ class Navigator:
             if p.isMarked() and p.v.t not in marks:
                 def callback(event=None,self=self,c=c,p=p.copy()):
                     self.select(c,p)
-                name = p.headString().strip()
+                name = p.h.strip()
                 c.add_command(menu,label=name,command=callback)
                 marks.append(p.v.t)
         self.markLists[c] = marks
@@ -218,7 +218,7 @@ class Navigator:
         if menu is None: return # This should never happen.
         menu = menu["menu"]
 
-        name = p.headString().strip()
+        name = p.h.strip()
         try:
             # 9/7/04: The headline may be in the process of being changed.
             # If so, there is no way to clear the old entry.
@@ -262,7 +262,7 @@ class Navigator:
             if c.positionExists(p):
                 def callback(event=None,self=self,c=c,p=p):
                     self.select(c,p)
-                c.add_command(menu,label=p.headString()[:40],command=callback)
+                c.add_command(menu,label=p.h[:40],command=callback)
     #@nonl
     #@-node:ekr.20040108091136:updateRecent
     #@-others

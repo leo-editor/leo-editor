@@ -348,7 +348,7 @@ class marksDialog (tkinterListBoxDialog):
             if p.isMarked() and p.v.t not in tnodeList:
                 tnodeList.append(p.v.t)
                 cb = lambda event, keywords, p=p.copy(): self.gotoNode(p)
-                menu_table.append((p.headString().strip(), cb))
+                menu_table.append((p.h.strip(), cb))
 
         keywords['rc_menu_table'][:0] = menu_table
 
@@ -427,7 +427,7 @@ class marksDialog (tkinterListBoxDialog):
 
         for p in c.allNodes_iter():
             if p.isMarked() and p.v.t not in tnodeList:
-                self.box.insert(i,p.headString().strip())
+                self.box.insert(i,p.h.strip())
                 tnodeList.append(p.v.t)
                 self.positionList.append(p.copy())
                 i += 1
@@ -522,7 +522,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
             count = 0
             for p, ch in h.beadList[:h.beadPointer]:
                 cb = lambda event, keywords, count=count: self.gotoNode(count)
-                menu_table[:0] = [(p.headString(), cb)]
+                menu_table[:0] = [(p.h, cb)]
                 count += 1
 
         keywords['rc_menu_table'][:0] = menu_table
@@ -544,7 +544,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
             count = h.beadPointer + 1
             for p, ch in h.beadList[h.beadPointer+1:]:
                 cb = lambda event, keywords, count=count: self.gotoNode(count)
-                menu_table.append((p.headString(), cb))
+                menu_table.append((p.h, cb))
                 count += 1
 
         keywords['rc_menu_table'][:0] = menu_table
@@ -814,7 +814,7 @@ class recentSectionsDialog (tkinterListBoxDialog):
         i = 0
         for data in c.nodeHistory.beadList:
             p,theChapter = data
-            self.box.insert(i,p.headString().strip())
+            self.box.insert(i,p.h.strip())
             self.positionList.append(p.copy())
             i += 1
 

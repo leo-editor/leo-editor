@@ -85,7 +85,7 @@ class AttrEditor:
             buttons = ('Add Attribute','Remove Attribute','Close'),
                         title = t._headString,
                         command = self.buttonCommands)
-        group = Pmw.Group(self.dialog.interior(),tag_text=p.headString())
+        group = Pmw.Group(self.dialog.interior(),tag_text=p.h)
         group.pack(side='top')
         self._mkGui(group.interior())
         self.dialog.activate()

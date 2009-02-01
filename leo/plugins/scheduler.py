@@ -129,8 +129,8 @@ def viewQueue(event=None,c=None):
     lb = Tk.Listbox(f,background='white')
     for z in sc.queue:
         if z[2] == prepareCom:
-            #s = z[3][3]+" "+ z[3][0].headString()+"  "+time.ctime(z[0])
-            s = "%s %s %s" % (z[3][3],z[3][0].headString(),time.ctime(z[0]))
+            #s = z[3][3]+" "+ z[3][0].h+"  "+time.ctime(z[0])
+            s = "%s %s %s" % (z[3][3],z[3][0].h,time.ctime(z[0]))
         else:
             s = "Message at " + time.ctime(z[0])
         lb.insert("end",s)
@@ -330,7 +330,7 @@ def endRecord(event,c):
     svs = []
     for z in commands:
         sv = Tk.StringVar()
-        s = z[3] + ': ' + z[0].headString() + "   " + sv.get()
+        s = z[3] + ': ' + z[0].h + "   " + sv.get()
         svs.append(sv)
         timepanel.lb.insert("end",s)
     timepanel.e.focus_set()    
@@ -359,7 +359,7 @@ def doCommand (command,label,event=None,c=None):
             command()
             return None
         lk.acquire()
-        commands.append((c.currentPosition(),c,command,label))
+        commands.append((c.p,c,command,label))
         lk.release()
         return True
     else:

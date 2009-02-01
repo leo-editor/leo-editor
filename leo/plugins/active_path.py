@@ -97,7 +97,7 @@ def getPath(p):
     path = []
 
     while p:
-        h = p.headString()
+        h = p.h
         # TODO - use leo internal @path code
 
         if g.match_word(h,0,"@path"):  # top of the tree
@@ -135,8 +135,8 @@ def flattenOrganizers(p):
     """    
     for n in p.children_iter():
         yield n
-        if ('/' not in n.headString()
-            and not n.headString().startswith('@')):
+        if ('/' not in n.h
+            and not n.h.startswith('@')):
             for i in flattenOrganizers(n):
                 yield i
 #@nonl
@@ -146,8 +146,8 @@ def sync_node_to_folder(c,parent,d, updateOnly=False):
     """Decide whether we're opening or creating a file or a folder"""
 
     if os.path.isdir(d):
-        if ('/' in parent.headString()
-            or parent.headString().startswith('@path')):
+        if ('/' in parent.h
+            or parent.h.startswith('@path')):
             # no '/' or @path implies organizer
             openDir(c,parent,d)
         return
@@ -156,7 +156,7 @@ def sync_node_to_folder(c,parent,d, updateOnly=False):
 
     if os.path.isfile(d):
         openFile(c,parent,d)
-    elif '/' in parent.headString():
+    elif '/' in parent.h:
         createDir(c,parent,d)
     else:
         createFile(c,parent,d)
@@ -170,7 +170,7 @@ def createDir(c,parent,d):
     if ok == 'no':
         return
     c.setHeadString(parent, '/'+newd+'/')
-    c.setBodyString(parent, '@path '+newd+'\n'+parent.bodyString())
+    c.setBodyString(parent, '@path '+newd+'\n'+parent.b)
     os.mkdir(d)
 #@nonl
 #@-node:tbrown.20080613095157.7:createDir
@@ -209,7 +209,7 @@ def openDir(c,parent,d):
         path, dirs, files = os.walk(d).next()
     except StopIteration:
         # directory deleted?
-        c.setHeadString(parent,'*'+parent.headString().strip('*')+'*')
+        c.setHeadString(parent,'*'+parent.h.strip('*')+'*')
         return
 
     parent.expand()
@@ -219,7 +219,7 @@ def openDir(c,parent,d):
 
     # get children info
     for p in flattenOrganizers(parent):
-        entry = p.headString().strip('/*')
+        entry = p.h.strip('/*')
         if entry.startswith('@'):  # remove only the @part
             directive = entry.split(None,1)
             if len(directive) > 1:
@@ -250,28 +250,28 @@ def openDir(c,parent,d):
 
     # warn / mark for orphan oldlist
     for p in flattenOrganizers(parent):
-        h = p.headString().strip('/*')  # strip / and *
+        h = p.h.strip('/*')  # strip / and *
         if (h not in oldlist 
-            or (p.hasChildren() and '/' not in p.headString())):  # clears bogus '*' marks
-            nh = p.headString().strip('*')  # strip only *
+            or (p.hasChildren() and '/' not in p.h)):  # clears bogus '*' marks
+            nh = p.h.strip('*')  # strip only *
         else:
-            nh = '*'+p.headString().strip('*')+'*'
-            if '/' in p.headString():
+            nh = '*'+p.h.strip('*')+'*'
+            if '/' in p.h:
                 for orphan in p.subtree_iter():
-                    c.setHeadString(orphan, '*'+orphan.headString().strip('*')+'*')
-        if p.headString() != nh:  # don't dirty node unless we must
+                    c.setHeadString(orphan, '*'+orphan.h.strip('*')+'*')
+        if p.h != nh:  # don't dirty node unless we must
             c.setHeadString(p,nh)
 #@nonl
 #@-node:tbrown.20080613095157.10:openDir
 #@+node:tbrown.20080616153649.2:cmd_ShowCurrentPath
 def cmd_ShowCurrentPath(c):
     """Just show the path to the current file/directory node in the log pane."""
-    g.es(getPath(c.currentPosition()))
+    g.es(getPath(c.p))
 #@-node:tbrown.20080616153649.2:cmd_ShowCurrentPath
 #@+node:tbrown.20080619080950.16:cmd_UpdateRecursive
 def cmd_UpdateRecursive(c):
     """Recursive update, no new expansions."""
-    p = c.currentPosition()
+    p = c.p
 
     for s in p.self_and_subtree_iter():
         path = getPath(s)
@@ -285,33 +285,33 @@ def cmd_UpdateRecursive(c):
 #@+node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
 def cmd_SetNodeToAbsolutePath(c):
     """Change "/dirname/" to "@path /absolute/path/to/dirname"."""
-    p = c.currentPosition()
-    if '@' in p.headString():
+    p = c.p
+    if '@' in p.h:
         g.es('Node should be a "/dirname/" type directory entry')
         return
     path = getPath(p)
     c.setBodyString(p, ('@path Created from node "%s"\n\n'
-        % p.headString())+p.bodyString())
+        % p.h)+p.b)
     c.setHeadString(p, '@path '+path)
 #@-node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
 #@+node:tbrown.20080618141617.879:cmd_PurgeVanishedFiles
 def cond(p):
-    return p.headString().startswith('*') and p.headString().endswith('*')
+    return p.h.startswith('*') and p.h.endswith('*')
 
 def dtor(p):
-    g.es(p.headString())
+    g.es(p.h)
     p.doDelete()
 
 def cmd_PurgeVanishedFilesHere(c):
     """Remove files no longer present, i.e. "*filename*" entries."""
-    p = c.currentPosition().getParent()
+    p = c.p.getParent()
     n = deleteChildren(p, cond, dtor=dtor)
     g.es('Deleted %d nodes' % n)
     c.redraw(p)
 
 def cmd_PurgeVanishedFilesRecursive(c):
     """Remove files no longer present, i.e. "*filename*" entries."""
-    p = c.currentPosition()
+    p = c.p
     n = deleteDescendents(p, cond, dtor=dtor)
     g.es('Deleted at least %d nodes' % n)
     c.redraw(p)
