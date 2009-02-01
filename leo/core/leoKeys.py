@@ -3269,7 +3269,8 @@ class keyHandlerClass:
         #@+node:ekr.20061031131434.147:<< define vars >>
         k = self ; c = k.c ; gui = g.app.gui
 
-        if event: event = gui.leoKeyEvent(event,c)
+        if event:
+            event = gui.leoKeyEvent(event,c)
 
         w = event.widget
         char = event.char

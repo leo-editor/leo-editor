@@ -7925,7 +7925,8 @@ class searchCommandsClass (baseEditCommandsClass):
         if keysym == 'Control_L': return
 
         c.bodyWantsFocusNow()
-        if keysym == 'Return':
+        # g.trace('keysym',repr(keysym),'ch',repr(ch))
+        if keysym in ('Escape','Return'):
             i,j = w.getSelectionRange()
             if not self.forward: i,j = j,i
             self.endSearch(i,j)

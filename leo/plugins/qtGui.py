@@ -4645,22 +4645,30 @@ class QuickHeadlines:
 #@+node:ekr.20081121105001.514:class leoKeyEvent
 class leoKeyEvent:
 
-    '''A gui-independent wrapper for gui events.'''
+    '''A wrapper for wrapper for qt events.
 
-    def __init__ (self,event,c,w,tkKey):
+    This does *not* override leoGui.leoKeyevent because
+    it is a separate class, not member of leoQtGui.'''
+
+    def __init__ (self,event,c,w,ch,tkKey):
+
+        # g.trace('ch: %s, tkKey: %s' % (repr(ch),repr(tkKey)))
 
         # Last minute-munges to keysym.
-        d = {
-            '\r':'Return',
-            '\n':'Return',
-            '\t':'Tab',
-        }
+        #### d = {
+            # '\r':'Return',
+            # '\n':'Return',
+            # '\t':'Tab',
+        # }
+        if tkKey in ('Return','Tab','Escape'):
+                ch = tkKey
 
         # The main ivars.
         self.actualEvent = event
         self.c      = c
-        self.char   = tkKey
-        self.keysym = d.get(tkKey,tkKey)
+        self.char   = ch
+        #### self.keysym = d.get(ch,ch)
+        self.keysym = ch
         self.w = self.widget = w # A leoQtX object
 
         # Auxiliary info.
@@ -4797,7 +4805,7 @@ class leoQtEventFilter(QtCore.QObject):
             if override:
                 w = self.w # Pass the wrapper class, not the wrapped widget.
                 stroke = self.toStroke(tkKey,ch)
-                leoEvent = leoKeyEvent(event,c,w,ch) # ch was stroke
+                leoEvent = leoKeyEvent(event,c,w,ch,tkKey)
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
                 c.outerUpdate()
             else:
