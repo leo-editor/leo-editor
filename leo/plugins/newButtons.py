@@ -290,7 +290,7 @@ class UIHelperClass:
     #@+node:pap.20051011160416:addTemplate
     def addTemplate (self,name,parameter=None):
         """Add a template node"""
-        c = self.c ; p = self.c.p
+        c = self.c ; p = c.p
         template = self.templateCollection.find(name)
         if template:
             root = p.copy()
