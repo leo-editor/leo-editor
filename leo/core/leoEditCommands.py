@@ -421,7 +421,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 i,j = g.getWord(s,ins)
                 w.delete(i,j)
                 w.insert(i,k.arg)
-
+    #@nonl
     #@-node:ekr.20070605110441:dynamicExpandHelper
     #@-node:ekr.20050920084036.59:dynamicExpansion
     #@+node:ekr.20050920084036.61:getDynamicList (helper)
@@ -520,7 +520,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         w = self.editWidget(event)
         if not w: return
 
-        word = w.get('insert -1c wordstart','insert -1c wordend')
+        word = w.get('insert -1c wordstart','insert -1c wordend') ###
         g.trace('ch',repr(ch),'word',repr(word))
         if ch:
             # We must do this: expandAbbrev is called from Alt-x and Control-x,
@@ -579,59 +579,6 @@ class abbrevCommandsClass (baseEditCommandsClass):
         except IOError:
             g.es('can not open',fileName)
     #@-node:ekr.20050920084036.20:readAbbreviations
-    #@+node:ekr.20050920084036.21:regionalExpandAbbrev (TK code)
-    # def regionalExpandAbbrev (self,event):
-
-        # '''Exapand abbreviations throughout a region.'''
-
-        # k = self.k ; w = self.editWidget(event)
-        # if not w or not self._chckSel(event): return
-
-        # i1,i2 = w.getSelectionRange()
-        # ins = w.getInsertPoint()
-        # 
-        #@nonl
-        #@<< define a new generator searchXR >>
-        #@+node:ekr.20050920084036.22:<< define a new generator searchXR >> LATER
-        # @ This is a generator (it contains a yield).
-        # To make this work we must define a new generator for each call to regionalExpandAbbrev.
-        # @c
-        # def searchXR (i1,i2,ins,event):
-            # k = self.k
-            # w = self.editWidget(event)
-            # if not w: return
-
-            # w.tag_add('sXR',i1,i2)
-            # while i1:
-                # tr = w.tag_ranges('sXR')
-                # if not tr: break
-                # i1 = w.search(r'\w',i1,stopindex=tr[1],regexp=True)
-                # if i1:
-                    # word = w.get('%s wordstart' % i1,'%s wordend' % i1)
-                    # w.tag_delete('found')
-                    # w.tag_add('found','%s wordstart' % i1,'%s wordend' % i1)
-                    # w.tag_config('found',background='yellow')
-                    # if word in self.abbrevs:
-                        # k.setLabel('Replace %s with %s? y/n' % (word,self.abbrevs[word]))
-                        # yield None
-                        # if k.regXKey == 'y':
-                            # ind = w.index('%s wordstart' % i1)
-                            # w.delete('%s wordstart' % i1,'%s wordend' % i1)
-                            # w.insert(ind,self.abbrevs[word])
-                    # i1 = '%s wordend' % i1
-            # w.setInsertPoint(ins,ins,insert=ins)
-            # w.tag_delete('sXR')
-            # w.tag_delete('found')
-            # k.setLabelGrey('')
-            # self.k.regx = g.bunch(iter=None,key=None)
-        #@-node:ekr.20050920084036.22:<< define a new generator searchXR >> LATER
-        #@nl
-
-        # # EKR: the 'result' of calling searchXR is a generator object.
-        # k.regx.iter = searchXR(i1,i2,ins,event)
-        # k.regx.iter.next() # Call it the first time.
-    #@nonl
-    #@-node:ekr.20050920084036.21:regionalExpandAbbrev (TK code)
     #@+node:ekr.20050920084036.23:toggleAbbrevMode
     def toggleAbbrevMode (self,event):
 
@@ -2027,6 +1974,7 @@ class editCommandsClass (baseEditCommandsClass):
                 k.setLabelGrey('Eval: %s -> %s' % (e,result))
             except Exception:
                 k.setLabelGrey('Invalid Expression: %s' % e)
+    #@nonl
     #@-node:ekr.20050920084036.65:evalExpression
     #@+node:ekr.20050920084036.66:fill column and centering
     #@+at
@@ -4636,10 +4584,7 @@ class editCommandsClass (baseEditCommandsClass):
                 fields.append(f[i])
         nz = zip(fields,txt)
         nz.sort()
-        #w.delete('%s linestart' % is1,'%s lineend' % is2)
         w.delete(i,j)
-        #i = is1.split('.')
-        #int1 = int(i[0])
         int1 = i
         for z in nz:
             w.insert('%s.0' % int1,'%s\n' % z[1])
@@ -4653,7 +4598,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20060529184652:swapHelper
     def swapHelper (self,w,find,ftext,lind,ltext):
 
-        w.delete(find,'%s wordend' % find)
+        w.delete(find,'%s wordend' % find) ###
         w.insert(find,ltext)
         w.delete(lind,'%s wordend' % lind)
         w.insert(lind,ftext)
@@ -6213,6 +6158,8 @@ class macroCommandsClass (baseEditCommandsClass):
             if ch == 'Return':
                 k.clearState()
                 self.saveMacros(event,s)
+            elif ch == 'Escape':
+                k.clearState()
             elif ch == 'Tab':
                 k.setLabel('%s%s' % (
                     prompt,self.findFirstMatchFromList(s,self.namedMacros)),
@@ -6743,7 +6690,7 @@ class registerCommandsClass (baseEditCommandsClass):
 
         return self._chckSel(event=None,warning=warning)
     #@-node:ekr.20051004123217:checkBodySelection
-    #@+node:ekr.20050920084036.236:Entries...
+    #@+node:ekr.20050920084036.236:Entries... (register commands)
     #@+node:ekr.20050920084036.238:appendToRegister
     def appendToRegister (self,event):
 
@@ -6763,7 +6710,7 @@ class registerCommandsClass (baseEditCommandsClass):
                     key = event.keysym.lower()
                     val = self.registers.get(key,'')
                     try:
-                        val = val + w.get('sel.first','sel.last')
+                        val = val + w.get('sel.first','sel.last') ###
                     except Exception:
                         pass
                     self.registers[key] = val
@@ -6791,7 +6738,7 @@ class registerCommandsClass (baseEditCommandsClass):
                     key = event.keysym.lower()
                     val = self.registers.get(key,'')
                     try:
-                        val = w.get('sel.first','sel.last') + val
+                        val = w.get('sel.first','sel.last') + val ###
                     except Exception:
                         pass
                     self.registers[key] = val
@@ -6851,7 +6798,7 @@ class registerCommandsClass (baseEditCommandsClass):
                     w = c.frame.body.bodyCtrl
                     c.bodyWantsFocus()
                     try:
-                        val = w.get('sel.first','sel.last')
+                        val = w.get('sel.first','sel.last') ###
                     except Exception:
                         g.es_exception()
                         val = ''
@@ -7019,7 +6966,7 @@ class registerCommandsClass (baseEditCommandsClass):
                 k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
     #@-node:ekr.20050920084036.246:viewRegister
-    #@-node:ekr.20050920084036.236:Entries...
+    #@-node:ekr.20050920084036.236:Entries... (register commands)
     #@-others
 #@-node:ekr.20050920084036.234:registerCommandsClass
 #@+node:ekr.20051023094009:Search classes

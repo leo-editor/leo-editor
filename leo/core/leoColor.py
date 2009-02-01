@@ -3212,11 +3212,6 @@ class colorizer:
 
     def tag (self,name,i,j):
 
-        # if 0:
-            # w = c.frame.body.bodyCtrl ; s = self.allBodyText
-            # i2 = w.toPythonIndex(self.index(i))
-            # j2 = w.toPythonIndex(self.index(j))
-            # g.trace(name,i,j,repr(s[i2:j2]))
         self.c.frame.body.tag_add(name,self.index(i),self.index(j))
     #@nonl
     #@-node:ekr.20031218072017.1609:index & tag (leoColor)

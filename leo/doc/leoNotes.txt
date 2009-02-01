@@ -3530,6 +3530,56 @@ if 0: # Set to 1 for lint-like testing.
     except Exception:
         print('\nCan not import pychecker\n')
 #@-node:ekr.20031218072017.2606:<< Import pychecker >>
+#@+node:ekr.20050920084036.21:regionalExpandAbbrev (TK code)
+# def regionalExpandAbbrev (self,event):
+
+    # '''Exapand abbreviations throughout a region.'''
+
+    # k = self.k ; w = self.editWidget(event)
+    # if not w or not self._chckSel(event): return
+
+    # i1,i2 = w.getSelectionRange()
+    # ins = w.getInsertPoint()
+    # << define a new generator searchXR >>
+
+    # # EKR: the 'result' of calling searchXR is a generator object.
+    # k.regx.iter = searchXR(i1,i2,ins,event)
+    # k.regx.iter.next() # Call it the first time.
+#@nonl
+#@+node:ekr.20050920084036.22:<< define a new generator searchXR >> LATER
+# @ This is a generator (it contains a yield).
+# To make this work we must define a new generator for each call to regionalExpandAbbrev.
+# @c
+# def searchXR (i1,i2,ins,event):
+    # k = self.k
+    # w = self.editWidget(event)
+    # if not w: return
+
+    # w.tag_add('sXR',i1,i2)
+    # while i1:
+        # tr = w.tag_ranges('sXR')
+        # if not tr: break
+        # i1 = w.search(r'\w',i1,stopindex=tr[1],regexp=True)
+        # if i1:
+            # word = w.get('%s wordstart' % i1,'%s wordend' % i1)
+            # w.tag_delete('found')
+            # w.tag_add('found','%s wordstart' % i1,'%s wordend' % i1)
+            # w.tag_config('found',background='yellow')
+            # if word in self.abbrevs:
+                # k.setLabel('Replace %s with %s? y/n' % (word,self.abbrevs[word]))
+                # yield None
+                # if k.regXKey == 'y':
+                    # ind = w.index('%s wordstart' % i1)
+                    # w.delete('%s wordstart' % i1,'%s wordend' % i1)
+                    # w.insert(ind,self.abbrevs[word])
+            # i1 = '%s wordend' % i1
+    # w.setInsertPoint(ins,ins,insert=ins)
+    # w.tag_delete('sXR')
+    # w.tag_delete('found')
+    # k.setLabelGrey('')
+    # self.k.regx = g.bunch(iter=None,key=None)
+#@-node:ekr.20050920084036.22:<< define a new generator searchXR >> LATER
+#@-node:ekr.20050920084036.21:regionalExpandAbbrev (TK code)
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl
