@@ -6232,42 +6232,13 @@ def iSearchStateHandler (self,event):
         self.iSearchHelper(event)
         self.scolorizer(event)
 #@-node:ekr.20050920084036.264:iSearchStateHandler
-#@+node:ekr.20050920084036.265:scolorizer LATER
+#@+node:ekr.20050920084036.265:scolorizer
 def scolorizer (self,event,pattern=None):
 
     '''Colorizer for incremental searches.'''
 
-    pass # not ready yet.   
-
-    # k = self.k ; w = self.w
-    # s = pattern or k.getLabel(ignorePrompt=True)
-    # # g.trace(repr(s))
-    # w.tag_delete('color','color1')
-    # if not s: return
-    # if g.app.gui.guiName() != 'tkinter':
-        # return g.es('command not ready yet',color='blue')
-
-    # ind = 0
-    # index = w.getInsertPoint()
-    # index2 = index + len(s)
-    # # g.trace(index,index2)
-    # # Colorize in the forward direction, regardless of the kind of search.
-    # while ind:
-        # try:
-            # ind = w.search(s,ind,stopindex='end',regexp=self.regexp)
-        # except Exception: break
-        # if ind:
-            # i, d = ind.split('.')
-            # d = str(int(d)+len(s))
-            # # g.trace(ind)
-            # if ind in (index,index2):
-                # w.tag_add('color1',ind,'%s.%s' % (i,d))
-            # w.tag_add('color',ind,'%s.%s' % (i,d))
-            # ind = i + '.' + d
-
-    # w.tag_config('color',foreground='red')
-    # w.tag_config('color1',background='lightblue')
-#@-node:ekr.20050920084036.265:scolorizer LATER
+    pass # Doing nothing is fine: it simply selects text.
+#@-node:ekr.20050920084036.265:scolorizer
 #@+node:ekr.20050920084036.263:iSearchHelper
 def iSearchHelper (self,event):
 
