@@ -190,6 +190,14 @@ def copyToRegister (self,event):
     c.bodyWantsFocus()
 #@-node:ekr.20050920084036.240:copyToRegister
 #@-node:ekr.20090131200406.11:Remove remaining tk-isms from Leo's core
+#@+node:ekr.20090201122309.6:Make tag_ methods optional
+@nocolor-node
+
+Use pass instead of oops in base-class methods.
+Revise unit tests to make them optional.
+Remove them from all gui's, except possibly tk gui.
+#@nonl
+#@-node:ekr.20090201122309.6:Make tag_ methods optional
 #@+node:ekr.20090131200406.5:Ask for help with multiple body editors
 #@-node:ekr.20090131200406.5:Ask for help with multiple body editors
 #@+node:ekr.20090131200406.4:Ask Qt people to add native support for flashing
