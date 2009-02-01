@@ -811,6 +811,11 @@
 <v t="ekr.20061110112507"><vh>@test mnplugins.insertBodystamp</vh></v>
 <v t="ekr.20061110115517"><vh>@test macros.parameterize</vh></v>
 <v t="ekr.20060203201949" annotate="7d71002e"><vh>@test restore the screen</vh></v>
+<v t="ekr.20090201140204.1" a="E"><vh>gui plugins</vh>
+<v t="ekr.20090201140204.2"><vh>@test c.vnode2position</vh></v>
+<v t="ekr.20090201135611.3"><vh>@test position2Item</vh></v>
+<v t="ekr.20090201135611.4"><vh>@test item2position</vh></v>
+</v>
 </v>
 <v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20090131113752.2"><vh>leoApp</vh>
@@ -22139,5 +22144,64 @@ for lang in lang_d:
 for ext in ext_d:
     lang = ext_d.get(ext)
     assert lang in lang_d,'fail 3: %s' % lang</t>
+<t tx="ekr.20090201135611.3">tree = c.frame.tree
+
+if hasattr(tree,'position2item'): # and hasattr(tree,'item2vnode'):
+    
+    c.redraw()
+
+    p = c.rootPosition()
+    while p:
+        item = tree.position2item(p)
+        # print item and id(item) or '**none**', p.headString()
+        v = tree.item2vnode(item)
+        assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
+        p.moveToVisNext(c)</t>
+<t tx="ekr.20090201135611.4">def test_sibs(parent_p,parent_item):
+
+    trace = False
+    tree = c.frame.tree
+    sib_items = tree.childItems(parent_item)
+    sibs = [z for z in parent_p.self_and_siblings_iter(copy=True)]
+
+    assert len(sib_items) == len(sibs),(
+        'child_items: %s, children: %s' % (
+            g.listToString(sib_items),g.listToString(sibs)))
+
+    for item,p in zip(sib_items,sibs):
+        p2 = tree.item2position(item)
+        if trace: print (id(item),p2 and p2.headString() or not p2 and '**None**')
+        assert p == p2, 'item: %s, p: %s, p2: %s' % (id(item),p,p2)
+
+        # Recursively test.
+        child = p.firstChild()
+        if child.isVisible(c):
+            test_sibs(child,parent_item=item)
+ 
+if hasattr(c.frame.tree,'item2position'):
+
+    # print '='*10
+    c.redraw()
+    test_sibs(c.rootPosition(),None)
+</t>
+<t tx="ekr.20090201140204.1"></t>
+<t tx="ekr.20090201140204.2">trace = False
+
+if trace: print '=' * 20
+
+for p in c.allNodes_iter():
+
+    p2 = c.vnode2position(p.v)
+
+    if trace: print p2.level(), p2.headString()
+
+    # We can *not* assert that p == p2, only that
+    # p2.v == p.v and c.positionExists(p2)
+    assert p2
+    assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
+    assert c.positionExists(p2),'does not exist: %s' % p2
+
+# if True or trace: print 'passed'
+</t>
 </tnodes>
 </leo_file>

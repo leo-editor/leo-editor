@@ -1,6 +1,16 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20090113083258.1:@thin test_core.txt
-# Contains all test code for Leo's core.
+#@+at
+# This is a good place for running tests during development.
+# 
+# All unit tests should eventually be placed in unitTest.leo.
+# running unit tests there allows you to choose the gui.
+# 
+# Run these tests with alt-5, run-unit-tests, so that the last
+# saved code is used.
+#@-at
+#@@c
+
 
 #@+all
 #@-all

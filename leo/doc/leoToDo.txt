@@ -206,8 +206,6 @@ Remove them from all gui's, except possibly tk gui.
 # These are a partial workaround for the missing brackets flash.
 #@nonl
 #@-node:ekr.20090131200406.3:check-brackets and check-syntax commands
-#@+node:ekr.20090201122309.4:Use leoPy.leo for real unit tests
-#@-node:ekr.20090201122309.4:Use leoPy.leo for real unit tests
 #@+node:ekr.20090201122309.5:Make sure macro commands work
 #@-node:ekr.20090201122309.5:Make sure macro commands work
 #@+node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow

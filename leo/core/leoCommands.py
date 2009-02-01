@@ -7002,7 +7002,10 @@ class baseCommands (object):
         stack = []
         while v.parents:
             parent = v.parents[0]
-            n = parent.t.children.index(v)
+            if v in parent.t.children:
+                n = parent.t.children.index(v)
+            else:
+                return None
             stack.insert(0,(v,n),)
             v = parent
 

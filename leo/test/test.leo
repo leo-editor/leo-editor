@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -414,11 +414,8 @@
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
 <v t="ekr.20080610144233.1"><vh>Wrap test</vh></v>
-<v t="ekr.20090113101004.1"><vh>@test c.vnode2position</vh></v>
-<v t="ekr.20081213091503.1"><vh>Unit tests</vh>
-<v t="ekr.20081213091503.2"><vh>@test position2Item</vh></v>
-<v t="ekr.20081213091503.3"><vh>@test item2position</vh></v>
-</v>
+<v t="ekr.20090128112453.1" key="550378797a71002e"><vh>Property tests</vh></v>
+<v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
 </v>
 <v t="ekr.20081202140932.1"><vh>pythoscope &amp; lib2to3</vh>
 <v t="ekr.20081202141453.1"><vh>@path c:\leo.repo\pythoscope\pythoscope</vh>
@@ -1056,8 +1053,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090128112453.1" key="550378797a71002e"><vh>Property tests</vh></v>
-<v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -11065,40 +11060,6 @@ if not s.startswith(tag):
 print s
 os.system(s)
 </t>
-<t tx="ekr.20081213091503.1">if 0: # Prevent the unit test code from being executed on startup.
-    @others</t>
-<t tx="ekr.20081213091503.2">p = c.rootPosition()
-tree = c.frame.tree
-
-while p:
-    item = tree.position2item(p)
-    print item and id(item) or '**none**', p.headString()
-    v = tree.item2vnode(item)
-    assert v == p.v, 'item2: %s, p.v: %s' % (item2,p.v)
-    p.moveToVisNext(c)</t>
-<t tx="ekr.20081213091503.3">def test_sibs(parent_p,parent_item):
-
-    tree = c.frame.tree
-    sib_items = tree.childItems(parent_item)
-    sibs = [z for z in parent_p.self_and_siblings_iter(copy=True)]
-
-    assert len(sib_items) == len(sibs),(
-        'child_items: %s, children: %s' % (
-            g.listToString(sib_items),g.listToString(sibs)))
-
-    for item,p in zip(sib_items,sibs):
-        p2 = tree.item2position(item)
-        print id(item),p2 and p2.headString() or not p2 and '**None**'
-        assert p == p2, 'item: %s, p: %s, p2: %s' % (id(item),p,p2)
-
-        # Recursively test.
-        child = p.firstChild()
-        if child.isVisible(c):
-            test_sibs(child,parent_item=item)
-
-print '='*10
-test_sibs(c.rootPosition(),None)
-</t>
 <t tx="ekr.20081216091605.2">@language python
 @tabwidth -4
 @others
@@ -11137,21 +11098,6 @@ g.funcToMethod(undirect,c,name='unredirectScriptOutput')
 
 print('script output now goes to the console')
 
-</t>
-<t tx="ekr.20090113101004.1">trace = False
-if trace: print '=' * 20
-
-for p in c.allNodes_iter():
-    p2 = c.vnode2position(p.v)
-
-    if trace: print p2.level(), p2.headString()
-
-    # We can *not* assert that p == p2, only that
-    # p2.v == p.v and c.positionExists(p2)
-    assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
-    assert c.positionExists(p2),'does not exist: %s' % p2
-
-if True or trace: print 'passed'
 </t>
 <t tx="ekr.20090114100446.1">plugins_menu.py
 
