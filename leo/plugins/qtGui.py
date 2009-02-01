@@ -9,7 +9,7 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-safe_mode = False
+# safe_mode = False
     # True: Bypass k.masterKeyHandler for problem keys or visible characters.
 
 # Define these to suppress pylint warnings...
@@ -90,14 +90,14 @@ def init():
             pdb.set_trace()
         g.pdb = qtPdb
 
-        if False: # This will be done, if at all, in leoQtBody.
-            def qtHandleDefaultChar(self,event,stroke):
-                # This is an error.
-                g.trace(stroke,g.callers())
-                return False
-            if safe_mode: # Override handleDefaultChar method.
-                h = leoKeys.keyHandlerClass
-                g.funcToMethod(qtHandleDefaultChar,h,"handleDefaultChar")
+        # if False: # This will be done, if at all, in leoQtBody.
+            # def qtHandleDefaultChar(self,event,stroke):
+                # # This is an error.
+                # g.trace(stroke,g.callers())
+                # return False
+            # if safe_mode: # Override handleDefaultChar method.
+                # h = leoKeys.keyHandlerClass
+                # g.funcToMethod(qtHandleDefaultChar,h,"handleDefaultChar")
 
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
@@ -4733,7 +4733,7 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081121105001.168:eventFilter
     def eventFilter(self, obj, event):
 
-        trace = False ; verbose = True
+        trace = False ; verbose = False
         traceFocus = False and not g.unitTesting
         c = self.c ; k = c.k
         eventType = event.type()
@@ -4766,8 +4766,8 @@ class leoQtEventFilter(QtCore.QObject):
                 override = True
             elif k.inState():
                 override = not ignore # allow all keystrokes.
-            elif safe_mode:
-                override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
+            # elif safe_mode:
+                # override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
             else:
                 override = len(aList) > 0
         else:
@@ -4792,7 +4792,7 @@ class leoQtEventFilter(QtCore.QObject):
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
                 c.outerUpdate()
             else:
-                if trace: g.trace(self.tag,'unbound',tkKey)
+                if trace and verbose: g.trace(self.tag,'unbound',tkKey)
 
         if trace: self.traceEvent(obj,event,tkKey,override)
 
@@ -4933,7 +4933,8 @@ class leoQtEventFilter(QtCore.QObject):
         Tk-style binding compatible with Leo's core
         binding dictionaries.'''
 
-        k = self.c.k ; trace = False ; verbose = True
+        trace = False ; verbose = True
+        k = self.c.k
 
         # Thanks to Jesse Aldridge for additional entries.
         special = {
@@ -4969,7 +4970,7 @@ class leoQtEventFilter(QtCore.QObject):
         elif len(ch) == 1:
             ch = ch.lower()
 
-        if 'Alt' in mods and ch and ch in string.digits:
+        if ('Alt' in mods or 'Control' in mods) and ch and ch in string.digits:
             mods.append('Key')
 
         tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
@@ -5015,6 +5016,16 @@ class leoQtEventFilter(QtCore.QObject):
         whose original spelling has length > 1.'''
 
         d = {
+            '1':'exclam',
+            '2':'at',
+            '3':'numbersign',
+            '4':'dollar',
+            '5':'percent',
+            '6':'asciicircum',
+            '7':'ampersand',
+            '8':'asterisk',
+            '9':'parenleft',
+            '0':'parenright',
             "quoteleft":    "asciitilde",
             "minus":        "underscore",
             "equal":        "plus",
@@ -5061,6 +5072,7 @@ class leoQtEventFilter(QtCore.QObject):
                 mods.remove('Shift')
             else:
                 pass
+            g.trace('ch',ch,'ch2',ch2,mods)
         else:
             ch3 = self.keyboardUpperLong(ch)
             if ch3: ch = ch3
@@ -7041,7 +7053,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             if hasattr(c.frame,'statusLine'):
                 c.frame.statusLine.update()
     #@-node:ekr.20081208041503.499:onClick
-    #@+node:ekr.20081121105001.536:onTextChanged (tkTree)
+    #@+node:ekr.20081121105001.536:onTextChanged (qtTree)
     def onTextChanged (self):
 
         '''Update Leo after the body has been changed.
@@ -7102,7 +7114,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         # This will be called by onBodyChanged.
         # c.frame.tree.updateIcon(p)
         c.outerUpdate()
-    #@-node:ekr.20081121105001.536:onTextChanged (tkTree)
+    #@-node:ekr.20081121105001.536:onTextChanged (qtTree)
     #@+node:ekr.20081121105001.537:indexWarning
     warningsDict = {}
 
