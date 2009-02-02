@@ -5046,6 +5046,7 @@ class leoKeyEvent:
         else:
             return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
                 repr(self.char),repr(self.keysym))
+#@nonl
 #@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
 #@-node:ekr.20080616110054.1:Problem 3
 #@+node:ekr.20080616110054.3:Other problems (from docstring)
