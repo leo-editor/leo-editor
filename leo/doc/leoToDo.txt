@@ -12,185 +12,27 @@
 #@+node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20090103054019.1:First
-#@+node:ekr.20090131200406.11:Remove remaining tk-isms from Leo's core
-@nocolor-node
-
-Eliminate all tk-indices from leoEditCommands.py
-
-(found) wordend, wordstart
-(found) lineend, linestart
-(found) sel.first, sel.last
-(found) w.insert, w.delete
-#@+node:ekr.20060529184652.1:transposeWords (doesn't work)
-def transposeWords (self,event):
-
-    '''Transpose the word at the cursor with the preceding word.'''
-
-    w = self.editWidget(event)
-    if not w: return
-
-    self.beginCommand(undoType='transpose-words')
-    self.swapWords(event,self.swapSpots)
-    self.endCommand(changed=True,setLabel=True)
-#@-node:ekr.20060529184652.1:transposeWords (doesn't work)
-#@+node:ekr.20050920084036.123:swapWords
-def swapWords (self,event,swapspots):
-
-    '''Transpose the word at the cursor with the preceding word.'''
-
-    w = self.editWidget(event)
-    if not w: return
-    if g.app.gui.guiName() != 'tkinter':
-        return g.es('swap-words command not ready yet',color='blue')
-
-    s = w.getAllText()
-
-    txt = w.get('insert wordstart','insert wordend') ###
-    if not txt: return
-
-    i = w.index('insert wordstart') ###
-
-    self.beginCommand(undoType='swap-words')
-
-    if len(swapspots):
-        if i > swapspots[1]:
-            self.swapHelper(w,i,txt,swapspots[1],swapspots[0])
-        elif i < swapspots[1]:
-            self.swapHelper(w,swapspots[1],swapspots[0],i,txt)
-    else:
-        swapspots.append(txt)
-        swapspots.append(i)
-
-    self.endCommand(changed=True,setLabel=True)
-#@-node:ekr.20050920084036.123:swapWords
-#@+node:ekr.20060529184652:swapHelper
-def swapHelper (self,w,find,ftext,lind,ltext):
-
-    w.delete(find,'%s wordend' % find) ###
-    w.insert(find,ltext)
-    w.delete(lind,'%s wordend' % lind)
-    w.insert(lind,ftext)
-    self.swapSpots.pop()
-    self.swapSpots.pop()
-#@-node:ekr.20060529184652:swapHelper
-#@+node:ekr.20050920084036.27:expandAbbrev
-def expandAbbrev (self,event):
-
-    '''Not a command.  Called from k.masterCommand to expand
-    abbreviations in event.widget.'''
-
-    k = self.k ; c = self.c ; ch = event.char.strip()
-    w = self.editWidget(event)
-    if not w: return
-
-    word = w.get('insert -1c wordstart','insert -1c wordend') ###
-    g.trace('ch',repr(ch),'word',repr(word))
-    if ch:
-        # We must do this: expandAbbrev is called from Alt-x and Control-x,
-        # we get two differnt types of data and w states.
-        word = '%s%s'% (word,ch)
-
-    val = self.abbrevs.get(word)
-    if val is not None:
-        s = w.getAllText()
-        i = w.getInsertPoint()
-        i,j = g.getWord(s,i-1)
-        if i != j: w.delete(i,j)
-        w.insert(i,val)
-        c.frame.body.onBodyChanged(undoType='Typing')
-
-    return val is not None
-#@-node:ekr.20050920084036.27:expandAbbrev
-#@+node:ekr.20050920084036.238:appendToRegister
-def appendToRegister (self,event):
-
-    '''Prompt for a register name and append the selected text to the register's contents.'''
-
-    c = self.c ; k = self.k ; state = k.getState('append-to-reg')
-
-    if state == 0:
-        k.setLabelBlue('Append to register: ',protect=True)
-        k.setState('append-to-reg',1,self.appendToRegister)
-    else:
-        k.clearState()
-        if self.checkBodySelection():
-            if event.keysym.isalpha():
-                w = c.frame.body.bodyCtrl
-                c.bodyWantsFocus()
-                key = event.keysym.lower()
-                val = self.registers.get(key,'')
-                try:
-                    val = val + w.get('sel.first','sel.last') ###
-                except Exception:
-                    pass
-                self.registers[key] = val
-                k.setLabelGrey('Register %s = %s' % (key,repr(val)))
-            else:
-                k.setLabelGrey('Register must be a letter')
-    c.bodyWantsFocus()
-#@-node:ekr.20050920084036.238:appendToRegister
-#@+node:ekr.20050920084036.237:prependToRegister
-def prependToRegister (self,event):
-
-    '''Prompt for a register name and prepend the selected text to the register's contents.'''
-
-    c = self.c ; k = self.k ; state = k.getState('prepend-to-reg')
-
-    if state == 0:
-        k.setLabelBlue('Prepend to register: ',protect=True)
-        k.setState('prepend-to-reg',1,self.prependToRegister)
-    else:
-        k.clearState()
-        if self.checkBodySelection():
-            if event.keysym.isalpha():
-                w = c.frame.body.bodyCtrl
-                c.bodyWantsFocus()
-                key = event.keysym.lower()
-                val = self.registers.get(key,'')
-                try:
-                    val = w.get('sel.first','sel.last') + val ###
-                except Exception:
-                    pass
-                self.registers[key] = val
-                k.setLabelGrey('Register %s = %s' % (key,repr(val)))
-            else:
-                k.setLabelGrey('Register must be a letter')
-    c.bodyWantsFocus()
-#@-node:ekr.20050920084036.237:prependToRegister
-#@+node:ekr.20050920084036.240:copyToRegister
-def copyToRegister (self,event):
-
-    '''Prompt for a register name and append the selected text to the register's contents.'''
-
-    c = self.c ; k = self.k ; state = k.getState('copy-to-reg')
-
-    if state == 0:
-        k.commandName = 'copy-to-register'
-        k.setLabelBlue('Copy to register: ',protect=True)
-        k.setState('copy-to-reg',1,self.copyToRegister)
-    else:
-        k.clearState()
-        if self.checkBodySelection():
-            if event.keysym.isalpha():
-                key = event.keysym.lower()
-                w = c.frame.body.bodyCtrl
-                c.bodyWantsFocus()
-                try:
-                    val = w.get('sel.first','sel.last') ###
-                except Exception:
-                    g.es_exception()
-                    val = ''
-                self.registers[key] = val
-                k.setLabelGrey('Register %s = %s' % (key,repr(val)))
-            else:
-                k.setLabelGrey('Register must be a letter')
-    c.bodyWantsFocus()
-#@-node:ekr.20050920084036.240:copyToRegister
-#@-node:ekr.20090131200406.11:Remove remaining tk-isms from Leo's core
 #@+node:ekr.20090131200406.5:Ask for help with multiple body editors
 #@-node:ekr.20090131200406.5:Ask for help with multiple body editors
 #@+node:ekr.20090131200406.4:Ask Qt people to add native support for flashing
 #@-node:ekr.20090131200406.4:Ask Qt people to add native support for flashing
+#@+node:ekr.20081208102356.2:Fix check-leo-outline bug
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/306213
+
+To reproduce (in the latest bzr version, qt-plugin enabled):
+
+create a node "@thin a_directory/a_file" where a_file has some text in it but no sentinels/leo-specific data.
+
+Select File-> read/write -> check derived file. The log window shows:
+
+Bad @+leo sentinel in: check-derived-file
+can not open: '@file /home/user/a_directory/check-derived-file'
+
+Clearly the file is not named 'check-derived-file', so there is a bug somewhere.
+#@nonl
+#@-node:ekr.20081208102356.2:Fix check-leo-outline bug
 #@+node:ekr.20090131200406.3:check-brackets and check-syntax commands
 # These are a partial workaround for the missing brackets flash.
 #@nonl
@@ -280,41 +122,25 @@ which is neither a dictionary nor an iterable of key/value pairs so
 the error is raised. Hope it helps to fix the problem. 
 #@nonl
 #@-node:ekr.20090123073710.5:Fix recent rst3 problem
+#@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
+
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
+
+- Add support for the following options:
+    - expand_noweb_references: default False for compatibility.
+    - ignore_noweb definitions: default False for compatibility.
+
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
+#@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 #@-node:ekr.20090131200406.12:Improve rst3 plugin
-#@+node:ekr.20090201122309.2:Allow ctrl-p for more commands
-#@-node:ekr.20090201122309.2:Allow ctrl-p for more commands
 #@-node:ekr.20090103054019.1:First
 #@+node:ekr.20081215070651.4:Bugs 5
-#@+node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
-
-> Tk only colorizes one body editor, and if you delete that editor it
-> colorizes no editor.
-
-Thanks for this report.  This is a problem, never noticed until now,
-with the threading colorizer.  A workaround is to disable the
-threading colorizer plugin. 
-#@nonl
-#@-node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
-#@+node:ekr.20081208102356.2:Fix check-leo-outline bug
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/306213
-
-To reproduce (in the latest bzr version, qt-plugin enabled):
-
-create a node "@thin a_directory/a_file" where a_file has some text in it but no sentinels/leo-specific data.
-
-Select File-> read/write -> check derived file. The log window shows:
-
-Bad @+leo sentinel in: check-derived-file
-can not open: '@file /home/user/a_directory/check-derived-file'
-
-Clearly the file is not named 'check-derived-file', so there is a bug somewhere.
-#@nonl
-#@-node:ekr.20081208102356.2:Fix check-leo-outline bug
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
 @nocolor
 
@@ -1584,6 +1410,194 @@ def moveUpOrDownHelper (self,event,direction,extend):
 #@nonl
 #@-node:ekr.20060113105246.1:moveUpOrDownHelper
 #@-node:ekr.20080519062109.2:Improve how Leo handles long lines
+#@+node:ekr.20090131200406.11:Remove remaining tk-isms from Leo's core
+@nocolor-node
+
+Eliminate all tk-indices from leoEditCommands.py
+
+(found) wordend, wordstart
+(found) lineend, linestart
+(found) sel.first, sel.last
+(found) w.insert, w.delete
+#@+node:ekr.20060529184652.1:transposeWords (doesn't work)
+def transposeWords (self,event):
+
+    '''Transpose the word at the cursor with the preceding word.'''
+
+    w = self.editWidget(event)
+    if not w: return
+
+    self.beginCommand(undoType='transpose-words')
+    self.swapWords(event,self.swapSpots)
+    self.endCommand(changed=True,setLabel=True)
+#@-node:ekr.20060529184652.1:transposeWords (doesn't work)
+#@+node:ekr.20050920084036.123:swapWords
+def swapWords (self,event,swapspots):
+
+    '''Transpose the word at the cursor with the preceding word.'''
+
+    w = self.editWidget(event)
+    if not w: return
+    if g.app.gui.guiName() != 'tkinter':
+        return g.es('swap-words command not ready yet',color='blue')
+
+    s = w.getAllText()
+
+    txt = w.get('insert wordstart','insert wordend') ###
+    if not txt: return
+
+    i = w.index('insert wordstart') ###
+
+    self.beginCommand(undoType='swap-words')
+
+    if len(swapspots):
+        if i > swapspots[1]:
+            self.swapHelper(w,i,txt,swapspots[1],swapspots[0])
+        elif i < swapspots[1]:
+            self.swapHelper(w,swapspots[1],swapspots[0],i,txt)
+    else:
+        swapspots.append(txt)
+        swapspots.append(i)
+
+    self.endCommand(changed=True,setLabel=True)
+#@-node:ekr.20050920084036.123:swapWords
+#@+node:ekr.20060529184652:swapHelper
+def swapHelper (self,w,find,ftext,lind,ltext):
+
+    w.delete(find,'%s wordend' % find) ###
+    w.insert(find,ltext)
+    w.delete(lind,'%s wordend' % lind)
+    w.insert(lind,ftext)
+    self.swapSpots.pop()
+    self.swapSpots.pop()
+#@-node:ekr.20060529184652:swapHelper
+#@+node:ekr.20050920084036.27:expandAbbrev
+def expandAbbrev (self,event):
+
+    '''Not a command.  Called from k.masterCommand to expand
+    abbreviations in event.widget.'''
+
+    k = self.k ; c = self.c ; ch = event.char.strip()
+    w = self.editWidget(event)
+    if not w: return
+
+    word = w.get('insert -1c wordstart','insert -1c wordend') ###
+    g.trace('ch',repr(ch),'word',repr(word))
+    if ch:
+        # We must do this: expandAbbrev is called from Alt-x and Control-x,
+        # we get two differnt types of data and w states.
+        word = '%s%s'% (word,ch)
+
+    val = self.abbrevs.get(word)
+    if val is not None:
+        s = w.getAllText()
+        i = w.getInsertPoint()
+        i,j = g.getWord(s,i-1)
+        if i != j: w.delete(i,j)
+        w.insert(i,val)
+        c.frame.body.onBodyChanged(undoType='Typing')
+
+    return val is not None
+#@-node:ekr.20050920084036.27:expandAbbrev
+#@+node:ekr.20050920084036.238:appendToRegister
+def appendToRegister (self,event):
+
+    '''Prompt for a register name and append the selected text to the register's contents.'''
+
+    c = self.c ; k = self.k ; state = k.getState('append-to-reg')
+
+    if state == 0:
+        k.setLabelBlue('Append to register: ',protect=True)
+        k.setState('append-to-reg',1,self.appendToRegister)
+    else:
+        k.clearState()
+        if self.checkBodySelection():
+            if event.keysym.isalpha():
+                w = c.frame.body.bodyCtrl
+                c.bodyWantsFocus()
+                key = event.keysym.lower()
+                val = self.registers.get(key,'')
+                try:
+                    val = val + w.get('sel.first','sel.last') ###
+                except Exception:
+                    pass
+                self.registers[key] = val
+                k.setLabelGrey('Register %s = %s' % (key,repr(val)))
+            else:
+                k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+#@-node:ekr.20050920084036.238:appendToRegister
+#@+node:ekr.20050920084036.237:prependToRegister
+def prependToRegister (self,event):
+
+    '''Prompt for a register name and prepend the selected text to the register's contents.'''
+
+    c = self.c ; k = self.k ; state = k.getState('prepend-to-reg')
+
+    if state == 0:
+        k.setLabelBlue('Prepend to register: ',protect=True)
+        k.setState('prepend-to-reg',1,self.prependToRegister)
+    else:
+        k.clearState()
+        if self.checkBodySelection():
+            if event.keysym.isalpha():
+                w = c.frame.body.bodyCtrl
+                c.bodyWantsFocus()
+                key = event.keysym.lower()
+                val = self.registers.get(key,'')
+                try:
+                    val = w.get('sel.first','sel.last') + val ###
+                except Exception:
+                    pass
+                self.registers[key] = val
+                k.setLabelGrey('Register %s = %s' % (key,repr(val)))
+            else:
+                k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+#@-node:ekr.20050920084036.237:prependToRegister
+#@+node:ekr.20050920084036.240:copyToRegister
+def copyToRegister (self,event):
+
+    '''Prompt for a register name and append the selected text to the register's contents.'''
+
+    c = self.c ; k = self.k ; state = k.getState('copy-to-reg')
+
+    if state == 0:
+        k.commandName = 'copy-to-register'
+        k.setLabelBlue('Copy to register: ',protect=True)
+        k.setState('copy-to-reg',1,self.copyToRegister)
+    else:
+        k.clearState()
+        if self.checkBodySelection():
+            if event.keysym.isalpha():
+                key = event.keysym.lower()
+                w = c.frame.body.bodyCtrl
+                c.bodyWantsFocus()
+                try:
+                    val = w.get('sel.first','sel.last') ###
+                except Exception:
+                    g.es_exception()
+                    val = ''
+                self.registers[key] = val
+                k.setLabelGrey('Register %s = %s' % (key,repr(val)))
+            else:
+                k.setLabelGrey('Register must be a letter')
+    c.bodyWantsFocus()
+#@-node:ekr.20050920084036.240:copyToRegister
+#@-node:ekr.20090131200406.11:Remove remaining tk-isms from Leo's core
+#@+node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5be7a099b299327e
+
+> Tk only colorizes one body editor, and if you delete that editor it
+> colorizes no editor.
+
+Thanks for this report.  This is a problem, never noticed until now,
+with the threading colorizer.  A workaround is to disable the
+threading colorizer plugin. 
+#@nonl
+#@-node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
 #@+node:ekr.20090201134906.1:Huge cuts hang Leo
 #@-node:ekr.20090201134906.1:Huge cuts hang Leo
 #@-node:ekr.20081215070651.4:Bugs 5
@@ -1926,6 +1940,22 @@ which is neither a dictionary nor an iterable of key/value pairs so
 the error is raised. Hope it helps to fix the problem. 
 #@nonl
 #@-node:ekr.20090123073710.5:Fix recent rst3 problem
+#@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
+
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
+
+- Add support for the following options:
+    - expand_noweb_references: default False for compatibility.
+    - ignore_noweb definitions: default False for compatibility.
+
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
+#@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 #@-node:ekr.20090131200406.12:Improve rst3 plugin
 #@+node:ekr.20080509065556.2:Fix mod_tempfname plugin
 @nocolor
@@ -2196,22 +2226,6 @@ TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
 #@-node:ekr.20081028060510.1:Fix @shadow crasher
 #@-node:ekr.20080922115725.1:Finish @shadow
 #@-node:ekr.20090131200406.9:Bugs
-#@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
-
-> What would work for me is if named sections in a @rst subtree
-> would work exactly as they work for other derived files: they
-> get inserted at the place where they are referenced.
-
-- Add support for the following options:
-    - expand_noweb_references: default False for compatibility.
-    - ignore_noweb definitions: default False for compatibility.
-
-- When expand_noweb_references is True, definitions (typically clones)
-  must be descendants of the referencing node (in the @rst tree)
-#@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 #@-node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20071211093011:4.7  autocompletion & vim
 #@+node:ekr.20090131200406.14:autocompletion
