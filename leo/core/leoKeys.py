@@ -2488,8 +2488,8 @@ class keyHandlerClass:
 
         # We *must not* interfere with the global state in the macro class.
         if c.macroCommands.recordingMacro:
-            done = c.macroCommands.startKbdMacro(event)
-            if done: return 'break'
+            c.macroCommands.startKbdMacro(event)
+            return 'break'
 
         # g.trace(stroke,k.abortAllModesKey)
 
@@ -3316,7 +3316,11 @@ class keyHandlerClass:
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
             # g.trace('special case')
-            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+            if c.macroCommands.recordingMacro:
+                c.macroCommands.endKbdMacro()
+                return 'break'
+            else:
+                return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
 
         if k.inState():
             # This will return unless k.autoCompleterStateHandler

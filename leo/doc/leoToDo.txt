@@ -187,14 +187,6 @@ def copyToRegister (self,event):
     c.bodyWantsFocus()
 #@-node:ekr.20050920084036.240:copyToRegister
 #@-node:ekr.20090131200406.11:Remove remaining tk-isms from Leo's core
-#@+node:ekr.20090201122309.6:Make tag_ methods optional
-@nocolor-node
-
-Use pass instead of oops in base-class methods.
-Revise unit tests to make them optional.
-Remove them from all gui's, except possibly tk gui.
-#@nonl
-#@-node:ekr.20090201122309.6:Make tag_ methods optional
 #@+node:ekr.20090131200406.5:Ask for help with multiple body editors
 #@-node:ekr.20090131200406.5:Ask for help with multiple body editors
 #@+node:ekr.20090131200406.4:Ask Qt people to add native support for flashing
@@ -203,8 +195,6 @@ Remove them from all gui's, except possibly tk gui.
 # These are a partial workaround for the missing brackets flash.
 #@nonl
 #@-node:ekr.20090131200406.3:check-brackets and check-syntax commands
-#@+node:ekr.20090201122309.5:Make sure macro commands work
-#@-node:ekr.20090201122309.5:Make sure macro commands work
 #@+node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
 #@-node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
 #@+node:ekr.20090131200406.12:Improve rst3 plugin
@@ -3211,7 +3201,11 @@ def masterKeyHandler (self,event,stroke=None):
     # Handle keyboard-quit first.
     if k.abortAllModesKey and stroke == k.abortAllModesKey:
         # g.trace('special case')
-        return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.endKbdMacro()
+            return 'break'
+        else:
+            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
 
     if k.inState():
         # This will return unless k.autoCompleterStateHandler
@@ -3991,7 +3985,11 @@ def masterKeyHandler (self,event,stroke=None):
     # Handle keyboard-quit first.
     if k.abortAllModesKey and stroke == k.abortAllModesKey:
         # g.trace('special case')
-        return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.endKbdMacro()
+            return 'break'
+        else:
+            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
 
     if k.inState():
         # This will return unless k.autoCompleterStateHandler
@@ -5013,6 +5011,7 @@ class leoKeyEvent:
         self.char   = hasattr(event,'char') and event.char or ''
         self.keysym = hasattr(event,'keysym') and event.keysym or ''
         self.state  = hasattr(event,'state') and event.state or 0
+        self.stroke = hasattr(event,'stroke') and event.stroke or ''
         self.w      = hasattr(event,'widget') and event.widget or None
         self.x      = hasattr(event,'x') and event.x or 0
         self.y      = hasattr(event,'y') and event.y or 0
@@ -5028,8 +5027,11 @@ class leoKeyEvent:
 
     def __repr__ (self):
 
-        return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
-#@nonl
+        if self.stroke:
+            return 'leoGui.leoKeyEvent: stroke: %s' % (repr(self.stroke))
+        else:
+            return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
+                repr(self.char),repr(self.keysym))
 #@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
 #@-node:ekr.20080616110054.1:Problem 3
 #@+node:ekr.20080616110054.3:Other problems (from docstring)
@@ -5161,7 +5163,11 @@ def masterKeyHandler (self,event,stroke=None):
     # Handle keyboard-quit first.
     if k.abortAllModesKey and stroke == k.abortAllModesKey:
         # g.trace('special case')
-        return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.endKbdMacro()
+            return 'break'
+        else:
+            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
 
     if k.inState():
         # This will return unless k.autoCompleterStateHandler

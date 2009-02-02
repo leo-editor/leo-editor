@@ -19307,52 +19307,6 @@ def typesMatch (self,type1,type2):
 #@-node:ekr.20051015093141:typesMatch
 #@-node:ekr.20041117083141:get & allies (g.app.config)
 #@-node:ekr.20081215070651.7:Use myLeoSettings when opening leoSettings.leo
-#@+node:ekr.20090201122309.3:Allow Escape in macro recording
-#@+node:ekr.20050920084036.194:insertKeyboardMacro
-def insertKeyboardMacro (self,event):
-
-    '''Save all macros to a file.'''
-
-    k = self.k ; state = k.getState('macro-name')
-    prompt = 'Macro name: '
-
-    if state == 0:
-        k.setLabelBlue(prompt,protect=True)
-        k.getArg(event,'macro-name',1,self.insertKeyboardMacro)
-    else:
-        ch = event.keysym ; s = s = k.getLabel(ignorePrompt=True)
-        g.trace(repr(ch),repr(s))
-        if ch == 'Return':
-            k.clearState()
-            self.saveMacros(event,s)
-        elif ch == 'Escape':
-            k.clearState()
-        elif ch == 'Tab':
-            k.setLabel('%s%s' % (
-                prompt,self.findFirstMatchFromList(s,self.namedMacros)),
-                prompt=prompt,protect=True)
-        else:
-            k.updateLabel(event)
-#@+node:ekr.20050920084036.195:findFirstMatchFromList
-def findFirstMatchFromList (self,s,aList=None):
-
-    '''This method finds the first match it can find in a sorted list'''
-
-    k = self.k ; c = k.c
-
-    if aList is not None:
-        aList = c.commandsDict
-
-    pmatches = [item for item in aList if item.startswith(s)]
-    pmatches.sort()
-    if pmatches:
-        mstring = reduce(g.longestCommonPrefix,pmatches)
-        return mstring
-
-    return s
-#@-node:ekr.20050920084036.195:findFirstMatchFromList
-#@-node:ekr.20050920084036.194:insertKeyboardMacro
-#@-node:ekr.20090201122309.3:Allow Escape in macro recording
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080930072519.8:New options
 #@+node:ekr.20080910054558.2:Added -c option to specify config files
@@ -20282,6 +20236,7 @@ class leoKeyEvent:
         self.char   = hasattr(event,'char') and event.char or ''
         self.keysym = hasattr(event,'keysym') and event.keysym or ''
         self.state  = hasattr(event,'state') and event.state or 0
+        self.stroke = hasattr(event,'stroke') and event.stroke or ''
         self.w      = hasattr(event,'widget') and event.widget or None
         self.x      = hasattr(event,'x') and event.x or 0
         self.y      = hasattr(event,'y') and event.y or 0
@@ -20297,8 +20252,11 @@ class leoKeyEvent:
 
     def __repr__ (self):
 
-        return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
-#@nonl
+        if self.stroke:
+            return 'leoGui.leoKeyEvent: stroke: %s' % (repr(self.stroke))
+        else:
+            return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
+                repr(self.char),repr(self.keysym))
 #@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
 #@+node:ekr.20061031131434.146:masterKeyHandler & helpers
 master_key_count = 0
@@ -20328,7 +20286,11 @@ def masterKeyHandler (self,event,stroke=None):
     # Handle keyboard-quit first.
     if k.abortAllModesKey and stroke == k.abortAllModesKey:
         # g.trace('special case')
-        return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.endKbdMacro()
+            return 'break'
+        else:
+            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
 
     if k.inState():
         # This will return unless k.autoCompleterStateHandler

@@ -453,6 +453,7 @@ class leoGui:
             self.char   = hasattr(event,'char') and event.char or ''
             self.keysym = hasattr(event,'keysym') and event.keysym or ''
             self.state  = hasattr(event,'state') and event.state or 0
+            self.stroke = hasattr(event,'stroke') and event.stroke or ''
             self.w      = hasattr(event,'widget') and event.widget or None
             self.x      = hasattr(event,'x') and event.x or 0
             self.y      = hasattr(event,'y') and event.y or 0
@@ -468,7 +469,11 @@ class leoGui:
 
         def __repr__ (self):
 
-            return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
+            if self.stroke:
+                return 'leoGui.leoKeyEvent: stroke: %s' % (repr(self.stroke))
+            else:
+                return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
+                    repr(self.char),repr(self.keysym))
     #@nonl
     #@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
     #@-node:ekr.20070228154059:May be defined in subclasses

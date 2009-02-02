@@ -4650,25 +4650,20 @@ class leoKeyEvent:
     This does *not* override leoGui.leoKeyevent because
     it is a separate class, not member of leoQtGui.'''
 
-    def __init__ (self,event,c,w,ch,tkKey):
+    def __init__ (self,event,c,w,ch,tkKey,stroke):
 
         # g.trace('ch: %s, tkKey: %s' % (repr(ch),repr(tkKey)))
 
         # Last minute-munges to keysym.
-        #### d = {
-            # '\r':'Return',
-            # '\n':'Return',
-            # '\t':'Tab',
-        # }
         if tkKey in ('Return','Tab','Escape'):
-                ch = tkKey
+            ch = tkKey
 
         # The main ivars.
         self.actualEvent = event
         self.c      = c
         self.char   = ch
-        #### self.keysym = d.get(ch,ch)
         self.keysym = ch
+        self.stroke = stroke
         self.w = self.widget = w # A leoQtX object
 
         # Auxiliary info.
@@ -4678,9 +4673,14 @@ class leoKeyEvent:
         self.x_root = hasattr(event,'x_root') and event.x_root or 0
         self.y_root = hasattr(event,'y_root') and event.y_root or 0
 
+        # g.trace('qt.leoKeyEvent: %s' % repr(self))
+
     def __repr__ (self):
 
-        return 'qtGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
+        return 'qtGui.leoKeyEvent: stroke: %s' % (repr(self.stroke))
+
+        # return 'qtGui.leoKeyEvent: stroke: %s, char: %s, keysym: %s' % (
+            # repr(self.stroke),repr(self.char),repr(self.keysym))
 #@-node:ekr.20081121105001.514:class leoKeyEvent
 #@+node:ekr.20081121105001.166:class leoQtEventFilter
 class leoQtEventFilter(QtCore.QObject):
@@ -4805,7 +4805,7 @@ class leoQtEventFilter(QtCore.QObject):
             if override:
                 w = self.w # Pass the wrapper class, not the wrapped widget.
                 stroke = self.toStroke(tkKey,ch)
-                leoEvent = leoKeyEvent(event,c,w,ch,tkKey)
+                leoEvent = leoKeyEvent(event,c,w,ch,tkKey,stroke)
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
                 c.outerUpdate()
             else:

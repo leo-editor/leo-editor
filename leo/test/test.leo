@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1053,6 +1053,8 @@
 </v>
 </v>
 </v>
+<v t="ekr.20090201162523.1"><vh>Macro test</vh></v>
+<v t="ekr.20090201192257.1"><vh>@test macro ab</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -11149,5 +11151,22 @@ print aList3.dump()
 
 # To see the docstring, enable auto-completion and type g.posList?
 # g.posList</t>
+<t tx="ekr.20090201162523.1"># define a macro: ctrl-f ab ctrl-r AB
+ab
+ab</t>
+<t tx="ekr.20090201192257.1">b = p.b
+try:
+    w = c.frame.body.bodyCtrl
+    w.setInsertPoint(0)
+    m = c.macroCommands
+    fn = g.os_path_finalize_join(g.app.loadDir,'..','..','ekr-macros.txt')
+    f = open(fn)
+    m.loadMacros(f)
+    macro = m.namedMacros.get('ab')
+    m.executeMacro(macro)
+finally:
+    assert p.b =='ab' + b,p.b
+    p.b = b
+</t>
 </tnodes>
 </leo_file>

@@ -3580,6 +3580,24 @@ if 0: # Set to 1 for lint-like testing.
     # self.k.regx = g.bunch(iter=None,key=None)
 #@-node:ekr.20050920084036.22:<< define a new generator searchXR >> LATER
 #@-node:ekr.20050920084036.21:regionalExpandAbbrev (TK code)
+#@+node:ekr.20050920084036.195:findFirstMatchFromList
+# def findFirstMatchFromList (self,s,aList=None):
+
+    # '''Finds the first match it can find in a sorted list'''
+
+    # k = self.k ; c = k.c
+
+    # if aList is not None:
+        # aList = c.commandsDict
+
+    # pmatches = [z for z in aList if z.startswith(s)]
+    # pmatches.sort()
+    # if pmatches:
+        # mstring = reduce(g.longestCommonPrefix,pmatches)
+        # return mstring
+
+    # return s
+#@-node:ekr.20050920084036.195:findFirstMatchFromList
 #@-node:ekr.20031218072017.434:Unused code
 #@-all
 #@nonl

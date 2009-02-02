@@ -6114,6 +6114,16 @@ class leoCommandsClass (baseEditCommandsClass):
 #@+node:ekr.20050920084036.190:macroCommandsClass
 class macroCommandsClass (baseEditCommandsClass):
 
+    '''Define the following commands:
+
+    call-last-keyboard-macro
+    insert-keyboard-macro
+    load-file
+    name-last-kbd-macro
+    save-macros
+    start-kbd-macro
+    '''
+
     #@    @+others
     #@+node:ekr.20050920084036.191: ctor
     def __init__ (self,c):
@@ -6121,7 +6131,7 @@ class macroCommandsClass (baseEditCommandsClass):
         baseEditCommandsClass.__init__(self,c) # init the base class.
 
         self.lastMacro = None
-        self.macs = []
+        self.macros = []
         self.macro = []
         self.namedMacros = {}
 
@@ -6132,60 +6142,101 @@ class macroCommandsClass (baseEditCommandsClass):
     def getPublicCommands (self):
 
         return {
-            'call-last-keyboard-macro': self.callLastKeyboardMacro,
-            'end-kbd-macro':            self.endKbdMacro,
-            'name-last-kbd-macro':      self.nameLastKbdMacro,
-            'load-file':                self.loadFile,
-            'insert-keyboard-macro' :   self.insertKeyboardMacro,
-            'start-kbd-macro':          self.startKbdMacro,
+            'call-last-kbd-macro':  self.callLastKeyboardMacro,
+            'call-kbd-macro':       self.callNamedMacro,
+            'print-macros':         self.printMacros,
+            'name-last-kbd-macro':  self.nameLastKbdMacro,
+            'load-kbd-macros':      self.loadFile,
+            'save-kbd-macros':      self.saveMacros,
+            'start-kbd-macro':      self.startKbdMacro,
         }
     #@-node:ekr.20050920084036.192: getPublicCommands
-    #@+node:ekr.20050920084036.193:Entry points
-    #@+node:ekr.20050920084036.194:insertKeyboardMacro
-    def insertKeyboardMacro (self,event):
+    #@+node:ekr.20050920085536.15:addToDoAltX (common helper)
+    # Called from loadFile and nameLastKbdMacro.
 
-        '''Save all macros to a file.'''
+    def addToDoAltX (self,name,macro):
 
-        k = self.k ; state = k.getState('macro-name')
-        prompt = 'Macro name: '
+        '''Adds macro to Alt-X commands.'''
+
+        k= self ; c = k.c
+
+        g.trace(name,macro)
+
+        if name in c.commandsDict:
+            return False
+
+        def func (event,macro=macro):
+            return self.executeMacro(macro)
+
+        c.commandsDict [name] = func
+        self.namedMacros [name] = macro
+        return True
+    #@-node:ekr.20050920085536.15:addToDoAltX (common helper)
+    #@+node:ekr.20050920084036.202:callLastKeyboardMacro
+    # Called from universal-command.
+
+    def callLastKeyboardMacro (self,event):
+
+        '''Call the last recorded keyboard macro.'''
+
+        if self.lastMacro:
+            self.executeMacro(self.lastMacro)
+    #@nonl
+    #@-node:ekr.20050920084036.202:callLastKeyboardMacro
+    #@+node:ekr.20050920084036.194:callNamedMacro
+    def callNamedMacro (self,event):
+
+        '''Prompts for a macro name to save, then executes it.'''
+
+        k = self.k ; tag = 'macro-name'
+        state = k.getState(tag)
+        prompt = 'Call macro named: '
 
         if state == 0:
             k.setLabelBlue(prompt,protect=True)
-            k.getArg(event,'macro-name',1,self.insertKeyboardMacro)
+            k.getArg(event,tag,1,self.callNamedMacro)
         else:
-            ch = event.keysym ; s = s = k.getLabel(ignorePrompt=True)
-            g.trace(repr(ch),repr(s))
-            if ch == 'Return':
-                k.clearState()
-                self.saveMacros(event,s)
-            elif ch == 'Escape':
-                k.clearState()
-            elif ch == 'Tab':
-                k.setLabel('%s%s' % (
-                    prompt,self.findFirstMatchFromList(s,self.namedMacros)),
-                    prompt=prompt,protect=True)
+            macro = self.namedMacros.get(k.arg)
+            # Must do this first!
+            k.clearState()
+            if macro:
+                self.executeMacro(macro)
             else:
-                k.updateLabel(event)
-    #@+node:ekr.20050920084036.195:findFirstMatchFromList
-    def findFirstMatchFromList (self,s,aList=None):
+                g.es('no macro named %s' % k.arg)
+            k.resetLabel()
 
-        '''This method finds the first match it can find in a sorted list'''
+    #@-node:ekr.20050920084036.194:callNamedMacro
+    #@+node:ekr.20050920084036.206:endKbdMacro
+    def endKbdMacro (self,event=None):
 
-        k = self.k ; c = k.c
+        '''Stop recording a keyboard macro.'''
 
-        if aList is not None:
-            aList = c.commandsDict
+        k = self.k
+        self.recordingMacro = False
+            # Tell k.masterKeyHandler and masterCommandHandler we are done.
 
-        pmatches = [item for item in aList if item.startswith(s)]
-        pmatches.sort()
-        if pmatches:
-            mstring = reduce(g.longestCommonPrefix,pmatches)
-            return mstring
+        if self.macro:
+            # self.macro = self.macro [: -4]
+            self.macros.insert(0,self.macro)
+            self.lastMacro = self.macro[:]
+            self.macro = []
+            k.setLabelBlue('Keyboard macro defined, not named')
+        else:
+            k.setLabelBlue('Empty keyboard macro')
+    #@-node:ekr.20050920084036.206:endKbdMacro
+    #@+node:ekr.20050920084036.203:executeMacro
+    def executeMacro (self,macro):
 
-        return s
-    #@-node:ekr.20050920084036.195:findFirstMatchFromList
-    #@-node:ekr.20050920084036.194:insertKeyboardMacro
-    #@+node:ekr.20050920084036.196:loadFile & helpers
+        c = self.c ; k = self.k
+
+        c.bodyWantsFocusNow()
+
+        for event in macro:
+            # New in Leo 4.6: macro entries are leoKeyEvents.
+            g.trace(event.stroke)
+            k.masterKeyHandler(event,stroke=event.stroke)
+    #@-node:ekr.20050920084036.203:executeMacro
+    #@+node:ekr.20050920084036.196:loadFile & helper
     def loadFile (self,event):
 
         '''Asks for a macro file name to load.'''
@@ -6199,20 +6250,38 @@ class macroCommandsClass (baseEditCommandsClass):
 
         try:
             f = open(fileName)
-            self._loadMacros(f)
+            self.loadMacros(f)
         except IOError:
             g.es('can not open',fileName)
-    #@+node:ekr.20050920084036.197:_loadMacros
-    def _loadMacros (self,f):
+    #@+node:ekr.20050920084036.197:loadMacros
+    def loadMacros (self,f):
 
         '''Loads a macro file into the macros dictionary.'''
 
-        k = self.k
-        macros = pickle.load(f)
-        for z in macros:
-            k.addToDoAltX(z,macros[z])
-    #@-node:ekr.20050920084036.197:_loadMacros
-    #@-node:ekr.20050920084036.196:loadFile & helpers
+        c = self.c ; w = c.frame.body.bodyCtrl
+        try:
+            d = pickle.load(f)
+        except pickle.UnpicklingError:
+            g.es('error unpickling %s' % f.name)
+            return
+
+        # g.trace(f.name,d)
+
+        for name in d:
+            aList = d.get(name)
+            macro = []
+            for stroke in aList:
+                # Create a dummy event with just enough attribute
+                # to keep k.masterKeyHandler happy
+                actualEvent = g.Bunch(stroke=stroke,char=stroke,widget=w)
+                event = g.app.gui.leoKeyEvent(actualEvent,c)
+                macro.append(event)
+            self.addToDoAltX(name,macro)
+                # sets self.namedMacros[name]=macro
+
+
+    #@-node:ekr.20050920084036.197:loadMacros
+    #@-node:ekr.20050920084036.196:loadFile & helper
     #@+node:ekr.20050920084036.198:nameLastKbdMacro
     def nameLastKbdMacro (self,event):
 
@@ -6226,11 +6295,17 @@ class macroCommandsClass (baseEditCommandsClass):
         else:
             k.clearState()
             name = k.arg
-            k.addToDoAltX(name,self.lastMacro)
+            self.addToDoAltX(name,self.lastMacro)
             k.setLabelGrey('Macro defined: %s' % name)
     #@-node:ekr.20050920084036.198:nameLastKbdMacro
-    #@+node:ekr.20050920084036.199:saveMacros & helper
-    def saveMacros (self,event,macname):
+    #@+node:ekr.20090201152408.1:printMacros
+    def printMacros (self,event=None):
+
+        names = [z for z in self.namedMacros]
+        g.es(''.join(names),tabName='Macros')
+    #@-node:ekr.20090201152408.1:printMacros
+    #@+node:ekr.20050920084036.199:saveMacros & helpers
+    def saveMacros (self,event=None):
 
         '''Asks for a file name and saves it.'''
 
@@ -6246,28 +6321,35 @@ class macroCommandsClass (baseEditCommandsClass):
             f = open(fileName,'a+')
             f.seek(0)
             if f:
-                self._saveMacros(f,macname)
+                self.saveMacrosHelper(f)
         except IOError:
             g.es('can not create',fileName)
 
-    #@+node:ekr.20050920084036.200:_saveMacros
-    def _saveMacros( self, f , name ):
-        '''Saves the macros as a pickled dictionary'''
+    #@+node:ekr.20050920084036.200:saveMacrosHelper
+    def saveMacrosHelper( self,f):
 
-        fname = f.name
-        try:
-            macs = pickle.load( f )
-        except Exception:
-            macs = {}
-        f.close()
+        '''Saves all named macros.'''
 
-        if name in self.namedMacros:
-            macs[ name ] = self.namedMacros[ name ]
-            f = open( fname, 'w' )
-            pickle.dump( macs, f )
+        # fname = f.name
+        # try:
+            # macros = pickle.load( f )
+        # except Exception:
+            # macros = {}
+        # f.close()
+
+        d = {}
+        for name in self.namedMacros:
+            macro = self.namedMacros.get(name)
+            # Just save the essential part of the event.
+            # It must be picklable.
+            aList = [event.stroke for event in macro]
+            g.trace(name,aList)
+            d[name] = aList
+            # f = open( fname, 'w' )
+            pickle.dump(d, f )
             f.close()
-    #@-node:ekr.20050920084036.200:_saveMacros
-    #@-node:ekr.20050920084036.199:saveMacros & helper
+    #@-node:ekr.20050920084036.200:saveMacrosHelper
+    #@-node:ekr.20050920084036.199:saveMacros & helpers
     #@+node:ekr.20050920084036.204:startKbdMacro
     def startKbdMacro (self,event):
 
@@ -6277,94 +6359,12 @@ class macroCommandsClass (baseEditCommandsClass):
 
         if not self.recordingMacro:
             self.recordingMacro = True
-            k.setLabelBlue('Recording keyboard macro...',protect=True)
+                # A flag for k.masterCommandHandler & k.masterKeyHandler.
+            k.setLabelBlue('Recording macro. ctrl-g to end...',protect=True)
         else:
-            stroke = k.stroke ; keysym = event.keysym
-            if stroke == '<Key>' and keysym in ('Control_L','Alt_L','Shift_L'):
-                return False
-            g.trace('stroke',stroke,'keysym',keysym)
-            if stroke == '<Key>' and keysym ==')':
-                self.endKbdMacro(event)
-                return True
-            elif stroke == '<Key>':
-                self.macro.append((event.keycode,event.keysym))
-                return True
-            else:
-                self.macro.append((stroke,event.keycode,event.keysym,event.char))
-                return True
+            g.trace(event)
+            self.macro.append(event)
     #@-node:ekr.20050920084036.204:startKbdMacro
-    #@+node:ekr.20050920084036.206:endKbdMacro
-    def endKbdMacro (self,event):
-
-        '''Stop recording a keyboard macro.'''
-
-        k = self.k ; self.recordingMacro = False
-
-        if self.macro:
-            self.macro = self.macro [: -4]
-            self.macs.insert(0,self.macro)
-            self.lastMacro = self.macro[:]
-            self.macro = []
-            k.setLabelGrey('Keyboard macro defined, not named')
-        else:
-            k.setLabelGrey('Empty keyboard macro')
-    #@-node:ekr.20050920084036.206:endKbdMacro
-    #@+node:ekr.20050920084036.202:callLastKeyboardMacro & helper (called from universal command)
-    def callLastKeyboardMacro (self,event):
-
-        '''Call the last recorded keyboard macro.'''
-
-        w = event and event.widget
-        # This does **not** require a text widget.
-
-        if self.lastMacro:
-            self._executeMacro(self.lastMacro,w)
-    #@+node:ekr.20050920084036.203:_executeMacro (test)
-    def _executeMacro (self,macro,w):
-
-        c = self.c ; k = self.k
-
-        for z in macro:
-            if len(z) == 2:
-                w.event_generate('<Key>',keycode=z[0],keysym=z[1])
-            else:
-                meth = g.stripBrackets(z[0])
-                bunchList = k.bindingsDict.get(meth,[]) # Probably should not strip < and >
-                if bunchList:
-                    b = bunchList [0]
-                    # ev = Tk.Event()
-                    # ev.widget = w
-                    # ev.keycode = z [1]
-                    # ev.keysym = z [2]
-                    # ev.char = z [3]
-                    event = g.Bunch(c=c,widget=w,keycode=z[1],keysym=z[2],char=z[3])
-                    k.masterCommand(event,b.f,'<%s>' % meth)
-    #@-node:ekr.20050920084036.203:_executeMacro (test)
-    #@-node:ekr.20050920084036.202:callLastKeyboardMacro & helper (called from universal command)
-    #@-node:ekr.20050920084036.193:Entry points
-    #@+node:ekr.20051006065746:Common Helpers
-    #@+node:ekr.20050920085536.15:addToDoAltX
-    # Called from loadFile and nameLastKbdMacro.
-
-    def addToDoAltX (self,name,macro):
-
-        '''Adds macro to Alt-X commands.'''
-
-        k= self ; c = k.c
-
-        if name in c.commandsDict:
-            return False
-
-        def func (event,macro=macro):
-            w = event and event.widget
-            # This does **not** require a text widget.
-            return self._executeMacro(macro,w)
-
-        c.commandsDict [name] = func
-        self.namedMacros [name] = macro
-        return True
-    #@-node:ekr.20050920085536.15:addToDoAltX
-    #@-node:ekr.20051006065746:Common Helpers
     #@-others
 #@-node:ekr.20050920084036.190:macroCommandsClass
 #@+node:ekr.20050920084036.221:rectangleCommandsClass
