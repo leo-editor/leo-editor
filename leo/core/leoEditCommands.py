@@ -6117,10 +6117,11 @@ class macroCommandsClass (baseEditCommandsClass):
     '''Define the following commands:
 
     call-last-keyboard-macro
-    insert-keyboard-macro
+    call-kbd-macro
     load-file
     name-last-kbd-macro
-    save-macros
+    print-macros
+    save-kbd-macros
     start-kbd-macro
     '''
 
@@ -6366,6 +6367,7 @@ class macroCommandsClass (baseEditCommandsClass):
             self.macro.append(event)
     #@-node:ekr.20050920084036.204:startKbdMacro
     #@-others
+#@nonl
 #@-node:ekr.20050920084036.190:macroCommandsClass
 #@+node:ekr.20050920084036.221:rectangleCommandsClass
 class rectangleCommandsClass (baseEditCommandsClass):
