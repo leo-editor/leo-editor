@@ -3344,7 +3344,7 @@ leoTest.doTests (c,all=False)</t>
 # Important: if you want to specify a gui plugin here,
 # enable that plugin first.
 
-# qtGui.py
+qtGui.py
 # tkGui.py
 
 plugins_menu.py
@@ -11176,6 +11176,6 @@ finally:
     assert p.b =='ab' + b,p.b
     p.b = b
 </t>
-<t tx="ekr.20090203102321.1">( ab </t>
+<t tx="ekr.20090203102321.1">((( ab </t>
 </tnodes>
 </leo_file>

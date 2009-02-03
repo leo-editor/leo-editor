@@ -12,6 +12,8 @@
 #@+node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20090202191501.6:Today
+
+#@nonl
 #@+node:ekr.20090202191501.8:Improve isearch commands
 #@-node:ekr.20090202191501.8:Improve isearch commands
 #@+node:ekr.20090202191501.9:Improve macro commands

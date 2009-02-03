@@ -9119,6 +9119,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     createSpecialGui(gui,pymacs,script,windowFlag)
     g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
     if g.app.killed: return # Support for g.app.forceShutdown.
+    # g.trace('g.app.gui after plugins loaded',g.app.gui)
     if g.app.gui == None: g.app.createTkGui() # Creates global windows.
     g.init_sherlock(args)  # Init tracing and statistics.
     if g.app and g.app.use_psyco: startPsyco()
@@ -9802,6 +9803,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     createSpecialGui(gui,pymacs,script,windowFlag)
     g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
     if g.app.killed: return # Support for g.app.forceShutdown.
+    # g.trace('g.app.gui after plugins loaded',g.app.gui)
     if g.app.gui == None: g.app.createTkGui() # Creates global windows.
     g.init_sherlock(args)  # Init tracing and statistics.
     if g.app and g.app.use_psyco: startPsyco()
@@ -12787,6 +12789,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     createSpecialGui(gui,pymacs,script,windowFlag)
     g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
     if g.app.killed: return # Support for g.app.forceShutdown.
+    # g.trace('g.app.gui after plugins loaded',g.app.gui)
     if g.app.gui == None: g.app.createTkGui() # Creates global windows.
     g.init_sherlock(args)  # Init tracing and statistics.
     if g.app and g.app.use_psyco: startPsyco()
