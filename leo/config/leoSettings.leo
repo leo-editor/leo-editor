@@ -3,24 +3,25 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="94" left="369" height="889" width="1000"/>
+	<global_window_position top="107" left="198" height="889" width="1000"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,14,16,0"><vh>Startup</vh>
+<v t="ekr.20070622214401" a="E" str_leo_pos="0,1,3"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
-<v t="ekr.20060112110750"><vh>Buttons</vh>
+<v t="ekr.20060112110750" a="E"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
 <v t="ekr.20051011123608" annotate="7d71002e"><vh>@@button align to col</vh></v>
-<v t="ekr.20060112103537.17"><vh>@button Check Bindings</vh>
+<v t="ekr.20060112103537.17"><vh>@button Check bindings</vh>
 <v t="ekr.20060112104119"><vh>defineSetNames</vh></v>
 <v t="ekr.20060112104333"><vh>doSet</vh></v>
 <v t="ekr.20060112105523"><vh>doShortcuts</vh></v>
 <v t="ekr.20060112104333.1"><vh>checkSets</vh></v>
 <v t="ekr.20060112104823"><vh>main</vh></v>
 </v>
+<v t="ekr.20090203131919.1"><vh>@button Check menu commands</vh></v>
 </v>
 </v>
 <v t="ekr.20041119035137"><vh>About this file</vh>
@@ -97,7 +98,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -425,7 +426,7 @@
 </v>
 </v>
 <v t="ekr.20070925144552"><vh>Menus</vh>
-<v t="ekr.20070925144534"><vh>@menus</vh>
+<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
 <v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
@@ -647,7 +648,9 @@
 <v t="ekr.20070925144534.189"><vh>@item goto-last-visible-node</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144534.190"><vh>@menu &amp;Plugins</vh></v>
+<v t="ekr.20070925144534.190" a="E"><vh>@menu &amp;Plugins</vh>
+<v t="ekr.20090203134354.2"><vh>@item xyzzy</vh></v>
+</v>
 <v t="ekr.20070925144534.191"><vh>@menu &amp;Cmds</vh>
 <v t="ekr.20070925144534.192"><vh>@menu &amp;Abbrev...</vh>
 <v t="ekr.20070925144534.193"><vh>@item abbre&amp;v-mode</vh></v>
@@ -998,7 +1001,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1134,12 +1137,12 @@
 <v t="bobjack.20080614084120.3"><vh>shortcut _button plugin</vh>
 <v t="bobjack.20080614084120.5"><vh>@data shortcut_button_data</vh></v>
 </v>
-<v t="ekr.20051123100536.1" a="E"><vh>vim plugin</vh>
+<v t="ekr.20051123100536.1"><vh>vim plugin</vh>
 <v t="ekr.20051123100536.2"><vh>@string vim_cmd = c:\Program Files\vim\vim63\gvim --servername LEO</vh></v>
 <v t="ekr.20051123100536.3"><vh>@string vim_exe = c:\Program Files\vim\vim63\gvim</vh></v>
 <v t="ekr.20071114072753"><vh>@bool vim_plugin_opens_url_nodes = False</vh></v>
 </v>
-<v t="ekr.20090202191501.10" a="E"><vh>xemacs plugin</vh>
+<v t="ekr.20090202191501.10"><vh>xemacs plugin</vh>
 <v t="ekr.20090202191501.11"><vh>@string xemacs_exe = c:\XEmacs\XEmacs-21.4.21\i586-pc-win32\xemacs.exe</vh></v>
 </v>
 <v t="ekr.20060904211808"><vh>zodb plugin</vh>
@@ -1400,6 +1403,7 @@
 </v>
 <v t="ekr.20060603215208"></v>
 <v t="ekr.20081018053140.11"></v>
+<v t="ekr.20070925144552" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -7771,6 +7775,28 @@ This allows you to increase the font size.</t>
 <t tx="ekr.20081216090156.5"></t>
 <t tx="ekr.20090202191501.10"></t>
 <t tx="ekr.20090202191501.11"># Not used yet.</t>
+<t tx="ekr.20090203131919.1">'''Check all commands mentioned in the @menus tree
+   to ensure that they exist.'''
+
+def checkMenu (p):
+    for p2 in p.subtree_iter():
+        if p2.h.startswith('@item'):
+            checkItem(p.h,p2)
+
+def checkItem (menuName,p):
+    h = p.h[len('@item'):].replace('&amp;','').replace('*','').strip()
+    if h != '-' and h not in c.commandsDict:
+        print ('command not found: %s: %s' % (menuName,p.h))
+
+menus = g.findNodeAnywhere(c,'@menus')
+assert menus, 'no @menus tree'
+for p in menus.subtree_iter():
+    if p.h.startswith('@menu'):
+        checkMenu(p.copy())
+
+print ('done')
+</t>
+<t tx="ekr.20090203134354.2"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

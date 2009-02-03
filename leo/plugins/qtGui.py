@@ -3722,14 +3722,13 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         w = self.treeWidget
 
-        # g.trace(self.traceItem(item))
+        # g.trace(self.traceItem(item),g.callers(4))
 
         hPos,vPos = self.getScroll()
 
         w.scrollToItem(item,w.PositionAtCenter)
 
         self.setHScroll(hPos)
-    #@nonl
     #@-node:ekr.20090201080444.12:scrollToItem
     #@+node:ekr.20090124174652.107:setCurrentItemHelper
     def setCurrentItemHelper(self,item):
@@ -7727,59 +7726,46 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081121105001.579:flashCharacter (leoQTextEditWidget)
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
 
-        return #### Kill this feature until it is not dangerous.
-
-        # This causes problems during unit tests.
+        # This might causes problems during unit tests.
         # The selection point isn't restored in time.
         if g.app.unitTesting: return
 
         w = self.widget # A QTextEdit.
         e = QtGui.QTextCursor
 
-        g.trace(self.widget)
-
-        # Reduce the flash time to the minimum.
-        # flashes = max(1,min(2,flashes))
-        # flashes = 1
-        # delay = max(10,min(50,delay))
-
         def after(func):
             QtCore.QTimer.singleShot(delay,func)
 
         def addFlashCallback(self=self,w=w):
             n,i = self.flashCount,self.flashIndex
-            g.trace(n)
-            cursor = e()
+
+            cursor = w.textCursor() # Must be the widget's cursor.
             cursor.setPosition(i)
             cursor.movePosition(e.Right,e.KeepAnchor,1)
+
             extra = w.ExtraSelection()
-            # extra.setCursor(cursor)
-            # g.trace(dir(extra))
-            w.setExtraSelections([extra])
-            #### self.setSelectionRange(i,i+1)
+            extra.cursor = cursor
+            if self.flashBg: extra.format.setBackground(QtGui.QColor(self.flashBg))
+            if self.flashFg: extra.format.setForeground(QtGui.QColor(self.flashFg))
+            self.extraSelList = [extra] # keep the reference.
+            w.setExtraSelections(self.extraSelList)
+
             self.flashCount -= 1
             after(removeFlashCallback)
 
         def removeFlashCallback(self=self,w=w):
-            n,i = self.flashCount,self.flashIndex
-
-            if n > 0:
-                self.setSelectionRange(i,i)
+            w.setExtraSelections([])
+            if self.flashCount > 0:
                 after(addFlashCallback)
             else:
-                w.blockSignals(False)
-                w.setDisabled(False)
-                i = self.afterFlashIndex
-                self.setSelectionRange(i,i,insert=i)
-                w.setExtraSelections([])
-                # g.trace('i',i)
                 w.setFocus()
 
+        # g.trace(flashes,fg,bg)
         self.flashCount = flashes
         self.flashIndex = i
-        self.afterFlashIndex = self.getInsertPoint()
-        w.setDisabled(True)
-        w.blockSignals(True)
+        self.flashBg = g.choose(bg.lower()=='same',None,bg)
+        self.flashFg = g.choose(fg.lower()=='same',None,fg)
+
         addFlashCallback()
     #@-node:ekr.20081121105001.579:flashCharacter (leoQTextEditWidget)
     #@+node:ekr.20081121105001.580:getAllText

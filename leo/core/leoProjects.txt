@@ -9119,6 +9119,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     createSpecialGui(gui,pymacs,script,windowFlag)
     g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
     if g.app.killed: return # Support for g.app.forceShutdown.
+    # g.trace('g.app.gui after plugins loaded',g.app.gui)
     if g.app.gui == None: g.app.createTkGui() # Creates global windows.
     g.init_sherlock(args)  # Init tracing and statistics.
     if g.app and g.app.use_psyco: startPsyco()
@@ -9802,6 +9803,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     createSpecialGui(gui,pymacs,script,windowFlag)
     g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
     if g.app.killed: return # Support for g.app.forceShutdown.
+    # g.trace('g.app.gui after plugins loaded',g.app.gui)
     if g.app.gui == None: g.app.createTkGui() # Creates global windows.
     g.init_sherlock(args)  # Init tracing and statistics.
     if g.app and g.app.use_psyco: startPsyco()
@@ -12787,6 +12789,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     createSpecialGui(gui,pymacs,script,windowFlag)
     g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
     if g.app.killed: return # Support for g.app.forceShutdown.
+    # g.trace('g.app.gui after plugins loaded',g.app.gui)
     if g.app.gui == None: g.app.createTkGui() # Creates global windows.
     g.init_sherlock(args)  # Init tracing and statistics.
     if g.app and g.app.use_psyco: startPsyco()
@@ -20234,6 +20237,8 @@ def startKbdMacro (self,event):
 #@-node:ekr.20050920084036.204:startKbdMacro
 #@-node:ekr.20050920084036.190:macroCommandsClass
 #@-node:ekr.20090201122309.5:Made macro commands functional
+#@+node:ekr.20090202064534.3:Added script to leoSettings.leo to ensure all menu items are valid
+#@-node:ekr.20090202064534.3:Added script to leoSettings.leo to ensure all menu items are valid
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080930072519.8:New options
 #@+node:ekr.20080910054558.2:Added -c option to specify config files

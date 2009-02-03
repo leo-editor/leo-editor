@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1055,7 +1055,6 @@
 </v>
 <v t="ekr.20090201162523.1"><vh>Macro test</vh></v>
 <v t="ekr.20090201192257.1"><vh>@test macro ab</vh></v>
-<v t="ekr.20090203102321.1"><vh>test flashing</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -3344,7 +3343,7 @@ leoTest.doTests (c,all=False)</t>
 # Important: if you want to specify a gui plugin here,
 # enable that plugin first.
 
-# qtGui.py
+qtGui.py
 # tkGui.py
 
 plugins_menu.py
@@ -11176,6 +11175,5 @@ finally:
     assert p.b =='ab' + b,p.b
     p.b = b
 </t>
-<t tx="ekr.20090203102321.1">( ab </t>
 </tnodes>
 </leo_file>

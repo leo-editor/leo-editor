@@ -3041,7 +3041,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         bg      = self.bracketsFlashBg or 'DodgerBlue1'
         fg      = self.bracketsFlashFg or 'white'
-        flashes = self.bracketsFlashCount or 2
+        flashes = self.bracketsFlashCount or 3
         delay   = self.bracketsFlashDelay or 75
 
         w.flashCharacter(i,bg,fg,flashes,delay)

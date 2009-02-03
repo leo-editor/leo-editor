@@ -127,6 +127,16 @@ couldn't find any mention of gsimage in the diff.
 #@+node:ekr.20081215162017.4:Allow coloring of script buttons
 #@-node:ekr.20081215162017.4:Allow coloring of script buttons
 #@+node:ekr.20081215162017.5:Support multiple body editors
+@
+
+The body part is a QFrame with QGridLayout.
+
+For an example, run this script:
+@c
+
+from PyQt4.QtGui import QTextEdit
+w = QTextEdit()
+c.frame.top.ui.leo_body_inner_frame.layout().addWidget(w,0,1)
 #@-node:ekr.20081215162017.5:Support multiple body editors
 #@+node:ekr.20081215074704.20:Change background color of body pane depending on focus
 @nocolor-node
@@ -531,7 +541,7 @@ def afterSelectHint (self,p,old_p):
 
     c.outerUpdate() # Bring the tree up to date.
 
-    self.setItemForCurrentPosition()
+    self.setItemForCurrentPosition(scroll=True)
 #@-node:ekr.20090124174652.53:afterSelectHint (nativeTree)
 #@+node:ekr.20090124174652.56:editLabel (nativeTree)
 def editLabel (self,p,selectAll=False,selection=None):
@@ -723,7 +733,7 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
     finally:
         self.redrawing = False
 
-    self.setItemForCurrentPosition(scroll=False)
+    self.setItemForCurrentPosition(scroll=scroll) ####
     c.requestRedrawFlag= False
 
     if trace:
