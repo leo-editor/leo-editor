@@ -2706,7 +2706,8 @@ class leoTree:
 
     def treeSelectHelper (self,p,scroll):
 
-        c = self.c ; frame = c.frame ; trace = False
+        trace = False ; verbose = False
+        c = self.c ; frame = c.frame
         body = w = frame.body.bodyCtrl
         if not w: return # Defensive.
 
@@ -2717,9 +2718,10 @@ class leoTree:
             # We may be in the process of changing roots.
             return None # Not an error.
 
-        if trace: g.trace(
-            '\nold:',old_p and old_p.h,
-            '\nnew:',p and p.h)
+        if trace:
+            if verbose: g.trace(
+                '\nold:',old_p and old_p.h,'\nnew:',p and p.h)
+            else: g.trace(p and p.h)
 
         if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
             if old_p:

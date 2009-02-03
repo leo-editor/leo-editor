@@ -11,32 +11,24 @@
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
 #@+node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20090131200406.9:Bugs
-#@+node:ekr.20090103054019.1:First
-#@+node:ekr.20090202191501.4:Add FAQ entry: Leo's installer failed, what do I do?
-@nocolor
+#@+node:ekr.20090202191501.6:Today
+#@+node:ekr.20090202191501.8:Improve isearch commands
+#@-node:ekr.20090202191501.8:Improve isearch commands
+#@+node:ekr.20090202191501.9:Improve macro commands
+@nocolor-node
 
-You can simply unpack Leo anywhere and run from there.  You don't need the
-installer.
-
-The top-level leo folder has a script called launchLeo.py.  The following
-should work:
-
-cd leo # the top-level folder, not the inner leo folder.
-python launchLeo.py
-
-To specify the qt gui, do:
-
-python launchLeo.py --qui=qt
-
-To load Leo's source, do
-
-python launchLeo.py --qt=qt leo\core\leoPyRef.leo
+- Implement @macros setting tree.
+- Save macros as a list of strokes.
 #@nonl
-#@-node:ekr.20090202191501.4:Add FAQ entry: Leo's installer failed, what do I do?
+#@-node:ekr.20090202191501.9:Improve macro commands
+#@+node:ekr.20090131200406.3:check-brackets and check-syntax commands
+# These are a partial workaround for the missing brackets flash.
+#@nonl
+#@-node:ekr.20090131200406.3:check-brackets and check-syntax commands
 #@+node:ekr.20090202191501.3:Get vim and xemacs plugins working with qt.
 #@-node:ekr.20090202191501.3:Get vim and xemacs plugins working with qt.
-#@+node:ekr.20090202064534.6:Don't scroll when expanding/contracting node.
-#@-node:ekr.20090202064534.6:Don't scroll when expanding/contracting node.
+#@-node:ekr.20090202191501.6:Today
+#@+node:ekr.20090103054019.1:First
 #@+node:ekr.20090202064534.1:Remove bad archived position message?
 bad archived position: bad index="3", len(children)="1"
 restoreDescendentAttributes: can not find vnode (duA):
@@ -46,10 +38,6 @@ test_core.txt'>
 #@-node:ekr.20090202064534.1:Remove bad archived position message?
 #@+node:ekr.20090202064534.3:Add unit test that ensures all menus are functional
 #@-node:ekr.20090202064534.3:Add unit test that ensures all menus are functional
-#@+node:ekr.20090131200406.5:Ask for help with multiple body editors
-#@-node:ekr.20090131200406.5:Ask for help with multiple body editors
-#@+node:ekr.20090131200406.4:Ask Qt people to add native support for flashing
-#@-node:ekr.20090131200406.4:Ask Qt people to add native support for flashing
 #@+node:ekr.20081208102356.2:Fix check-leo-outline bug
 @nocolor-node
 
@@ -67,10 +55,6 @@ can not open: '@file /home/user/a_directory/check-derived-file'
 Clearly the file is not named 'check-derived-file', so there is a bug somewhere.
 #@nonl
 #@-node:ekr.20081208102356.2:Fix check-leo-outline bug
-#@+node:ekr.20090131200406.3:check-brackets and check-syntax commands
-# These are a partial workaround for the missing brackets flash.
-#@nonl
-#@-node:ekr.20090131200406.3:check-brackets and check-syntax commands
 #@+node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
 #@-node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
 #@+node:ekr.20090131200406.12:Improve rst3 plugin

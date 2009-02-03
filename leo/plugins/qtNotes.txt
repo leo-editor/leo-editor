@@ -637,7 +637,7 @@ def onTreeSelect(self):
     c.outerUpdate()
 #@-node:ekr.20090124174652.43:onTreeSelect (nativeTree)
 #@+node:ekr.20090124174652.44:setItemForCurrentPosition (nativeTree)
-def setItemForCurrentPosition (self):
+def setItemForCurrentPosition (self,scroll=True):
 
     '''Select the item for c.currentPosition()'''
 
@@ -664,12 +664,13 @@ def setItemForCurrentPosition (self):
     if item == item2:
         if trace and verbose: g.trace('no change',self.traceItem(item))
     else:
-        if trace: g.trace(self.traceItem(item))
         try:
             self.selecting = True
             # This generates gui events, so we must use a lockout.
             self.setCurrentItemHelper(item)
-            self.scrollToItem(item)
+            if scroll:
+                if trace: g.trace(self.traceItem(item),g.callers(4))
+                self.scrollToItem(item)
         finally:
             self.selecting = False
 
@@ -718,11 +719,11 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
     self.nodeDrawCount = 0
     try:
         self.redrawing = True
-        self.drawTopTree(p,scroll=True)
+        self.drawTopTree(p,scroll)
     finally:
         self.redrawing = False
 
-    self.setItemForCurrentPosition()
+    self.setItemForCurrentPosition(scroll=False)
     c.requestRedrawFlag= False
 
     if trace:
@@ -807,6 +808,7 @@ def drawTopTree (self,p,scroll):
     if scroll:
         pass
     else:
+        # Retain former scroll position.
         self.setVScroll(vPos)
 
     self.repaint()

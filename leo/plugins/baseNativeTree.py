@@ -165,11 +165,11 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.nodeDrawCount = 0
         try:
             self.redrawing = True
-            self.drawTopTree(p,scroll=True)
+            self.drawTopTree(p,scroll)
         finally:
             self.redrawing = False
 
-        self.setItemForCurrentPosition()
+        self.setItemForCurrentPosition(scroll=False)
         c.requestRedrawFlag= False
 
         if trace:
@@ -254,6 +254,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if scroll:
             pass
         else:
+            # Retain former scroll position.
             self.setVScroll(vPos)
 
         self.repaint()
@@ -317,7 +318,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         else:
             # This is not an error.
             # We may have contracted a node that was not, in fact, visible.
-            self.full_redraw()
+            self.full_redraw(scroll=False)
     #@-node:ekr.20090124174652.24:redraw_after_contract
     #@+node:ekr.20090124174652.25:redraw_after_expand
     def redraw_after_expand (self,p=None):
@@ -376,11 +377,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         # It is not an error for position2item to fail.
         if not item:
-            self.full_redraw(p)
+            self.full_redraw(p,scroll=False)
 
         # c.redraw_after_select calls tree.select indirectly.
         # Do not call it again here.
-    #@nonl
     #@-node:ekr.20090124174652.28:redraw_after_select
     #@-node:ekr.20090124174652.16:Entry points (nativeTree)
     #@-node:ekr.20090124174652.15:Drawing... (nativeTree)
@@ -909,7 +909,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         c.outerUpdate()
     #@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
     #@+node:ekr.20090124174652.44:setItemForCurrentPosition (nativeTree)
-    def setItemForCurrentPosition (self):
+    def setItemForCurrentPosition (self,scroll=True):
 
         '''Select the item for c.currentPosition()'''
 
@@ -936,12 +936,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if item == item2:
             if trace and verbose: g.trace('no change',self.traceItem(item))
         else:
-            if trace: g.trace(self.traceItem(item))
             try:
                 self.selecting = True
                 # This generates gui events, so we must use a lockout.
                 self.setCurrentItemHelper(item)
-                self.scrollToItem(item)
+                if scroll:
+                    if trace: g.trace(self.traceItem(item),g.callers(4))
+                    self.scrollToItem(item)
             finally:
                 self.selecting = False
 
