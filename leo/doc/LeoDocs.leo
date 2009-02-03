@@ -109,6 +109,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20080603124653.1"><vh>How do I use bzr to get the latest sources from Leo's launchpad site?</vh></v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
+<v t="ekr.20090202191501.7"><vh>Leo's installer failed, what do I do?</vh></v>
 <v t="ekr.20060329101442"><vh>Nothing (or almost nothing) happens when I start Leo.  What should I do?</vh></v>
 <v t="ekr.20050830115714.75"><vh>Leo is hanging on my Linux box.  What should I do?</vh></v>
 <v t="ekr.20070623145346.1"><vh>Running Python setup.py install from the leo directory doesn't work.  Why not?</vh></v>
@@ -32485,6 +32486,22 @@ When reporting a bug, please include *all* of the following:
 It's polite to make the bug report self contained, so that six weeks later
 somebody will be able to understand the report as it stands.
 </t>
+<t tx="ekr.20090202191501.7">@nocolor
+
+You can simply unpack Leo anywhere and run from there.  You don't need the
+installer.
+
+From a console window, cd to the top-level leo folder.  Run Leo as follows::
+
+    python launchLeo.py
+
+To run Leo with Qt look and feel, use the --gui=qt option::
+
+    python launchLeo.py --gui=qt
+
+To load Leo's source, load leoPyRef.leo::
+
+    python launchLeo.py --gui=qt leo\core\leoPyRef.leo</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
