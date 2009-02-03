@@ -3724,7 +3724,12 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         # g.trace(self.traceItem(item))
 
+        hPos,vPos = self.getScroll()
+
         w.scrollToItem(item,w.PositionAtCenter)
+
+        self.setHScroll(hPos)
+    #@nonl
     #@-node:ekr.20090201080444.12:scrollToItem
     #@+node:ekr.20090124174652.107:setCurrentItemHelper
     def setCurrentItemHelper(self,item):
@@ -7719,7 +7724,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@-node:ekr.20081121105001.577:setConfig
     #@-node:ekr.20081121105001.573:Birth
     #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
-    #@+node:ekr.20081121105001.579:flashCharacter
+    #@+node:ekr.20081121105001.579:flashCharacter (leoQTextEditWidget)
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
 
         return #### Kill this feature until it is not dangerous.
@@ -7728,7 +7733,10 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         # The selection point isn't restored in time.
         if g.app.unitTesting: return
 
-        w = self.widget
+        w = self.widget # A QTextEdit.
+        e = QtGui.QTextCursor
+
+        g.trace(self.widget)
 
         # Reduce the flash time to the minimum.
         # flashes = max(1,min(2,flashes))
@@ -7740,8 +7748,15 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         def addFlashCallback(self=self,w=w):
             n,i = self.flashCount,self.flashIndex
-            # g.trace(n)
-            self.setSelectionRange(i,i+1)
+            g.trace(n)
+            cursor = e()
+            cursor.setPosition(i)
+            cursor.movePosition(e.Right,e.KeepAnchor,1)
+            extra = w.ExtraSelection()
+            # extra.setCursor(cursor)
+            # g.trace(dir(extra))
+            w.setExtraSelections([extra])
+            #### self.setSelectionRange(i,i+1)
             self.flashCount -= 1
             after(removeFlashCallback)
 
@@ -7756,6 +7771,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
                 w.setDisabled(False)
                 i = self.afterFlashIndex
                 self.setSelectionRange(i,i,insert=i)
+                w.setExtraSelections([])
                 # g.trace('i',i)
                 w.setFocus()
 
@@ -7765,7 +7781,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         w.setDisabled(True)
         w.blockSignals(True)
         addFlashCallback()
-    #@-node:ekr.20081121105001.579:flashCharacter
+    #@-node:ekr.20081121105001.579:flashCharacter (leoQTextEditWidget)
     #@+node:ekr.20081121105001.580:getAllText
     def getAllText(self):
 
