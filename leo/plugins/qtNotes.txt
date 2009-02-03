@@ -127,6 +127,16 @@ couldn't find any mention of gsimage in the diff.
 #@+node:ekr.20081215162017.4:Allow coloring of script buttons
 #@-node:ekr.20081215162017.4:Allow coloring of script buttons
 #@+node:ekr.20081215162017.5:Support multiple body editors
+@
+
+The body part is a QFrame with QGridLayout.
+
+For an example, run this script:
+@c
+
+from PyQt4.QtGui import QTextEdit
+w = QTextEdit()
+c.frame.top.ui.leo_body_inner_frame.layout().addWidget(w,0,1)
 #@-node:ekr.20081215162017.5:Support multiple body editors
 #@+node:ekr.20081215074704.20:Change background color of body pane depending on focus
 @nocolor-node

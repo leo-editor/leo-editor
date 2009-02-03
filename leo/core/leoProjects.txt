@@ -20237,6 +20237,8 @@ def startKbdMacro (self,event):
 #@-node:ekr.20050920084036.204:startKbdMacro
 #@-node:ekr.20050920084036.190:macroCommandsClass
 #@-node:ekr.20090201122309.5:Made macro commands functional
+#@+node:ekr.20090202064534.3:Added script to leoSettings.leo to ensure all menu items are valid
+#@-node:ekr.20090202064534.3:Added script to leoSettings.leo to ensure all menu items are valid
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080930072519.8:New options
 #@+node:ekr.20080910054558.2:Added -c option to specify config files

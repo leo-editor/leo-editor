@@ -12,8 +12,6 @@
 #@+node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20090202191501.6:Today
-
-#@nonl
 #@+node:ekr.20090202191501.8:Improve isearch commands
 #@-node:ekr.20090202191501.8:Improve isearch commands
 #@+node:ekr.20090202191501.9:Improve macro commands
@@ -23,10 +21,6 @@
 - Save macros as a list of strokes.
 #@nonl
 #@-node:ekr.20090202191501.9:Improve macro commands
-#@+node:ekr.20090131200406.3:check-brackets and check-syntax commands
-# These are a partial workaround for the missing brackets flash.
-#@nonl
-#@-node:ekr.20090131200406.3:check-brackets and check-syntax commands
 #@-node:ekr.20090202191501.6:Today
 #@+node:ekr.20090103054019.1:First
 #@+node:ekr.20090202064534.1:Remove bad archived position message?
@@ -36,8 +30,6 @@ archivedPosition: 0.3.6.6.2.3, root_v: <vnode 168011244:'@thin
 test_core.txt'>
 #@nonl
 #@-node:ekr.20090202064534.1:Remove bad archived position message?
-#@+node:ekr.20090202064534.3:Add unit test that ensures all menus are functional
-#@-node:ekr.20090202064534.3:Add unit test that ensures all menus are functional
 #@+node:ekr.20081208102356.2:Fix check-leo-outline bug
 @nocolor-node
 
