@@ -112,6 +112,9 @@ def open_in_emacs (tag,keywords,val=None):
             path = d.get('path','') ; break
     else: path = ''
 
+    # g.trace('config',c.config.getString('xemacs_exe'))
+    emacs_cmd = c.config.getString('xemacs_exe') or _exemacs_cmd
+
     if (
         not g.os_path_exists(path) or
         not hasattr(v,'OpenWithOldBody') or
@@ -121,15 +124,16 @@ def open_in_emacs (tag,keywords,val=None):
         if path:
             # Remove the old file and the entry in g.app.openWithFiles.
             os.remove(path)
-            g.app.openWithFiles = [d for d in g.app.openWithFiles if d.get('path') != path]
-            os.system(_emacs_cmd)
+            g.app.openWithFiles = [d for d in g.app.openWithFiles
+                if d.get('path') != path]
+            os.system(emacs_cmd)
         v.OpenWithOldBody=v.b # Remember the old contents
         # open the node in emacs (note the space after _emacs_cmd)
-        data = "os.spawnl", _emacs_cmd, None
+        data = "os.spawnl", emacs_cmd, None
         c.openWith(data=data)
     else:
         # Reopen the old temp file.
-        os.system(_emacs_cmd)
+        os.system(emacs_cmd)
 
     return val
 #@-node:ekr.20050313071202:open_in_emacs

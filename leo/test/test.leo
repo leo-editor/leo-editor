@@ -3381,7 +3381,7 @@ nodenavigator.py
 image.py
 leo_to_html.py
 # vim.py
-# xemacs.py
+xemacs.py
 </t>
 <t tx="ekr.20071026102420.2"></t>
 <t tx="ekr.20071026102420.3"></t>
