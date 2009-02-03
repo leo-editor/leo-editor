@@ -169,7 +169,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         finally:
             self.redrawing = False
 
-        self.setItemForCurrentPosition(scroll=False)
+        self.setItemForCurrentPosition(scroll=scroll) ####
         c.requestRedrawFlag= False
 
         if trace:
@@ -323,7 +323,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.25:redraw_after_expand
     def redraw_after_expand (self,p=None):
 
-        self.full_redraw (p,scroll=False)
+        self.full_redraw (p,scroll=True)
     #@-node:ekr.20090124174652.25:redraw_after_expand
     #@+node:ekr.20090124174652.26:redraw_after_head_changed
     def redraw_after_head_changed (self):
@@ -768,7 +768,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         c.outerUpdate() # Bring the tree up to date.
 
-        self.setItemForCurrentPosition()
+        self.setItemForCurrentPosition(scroll=True)
     #@-node:ekr.20090124174652.53:afterSelectHint (nativeTree)
     #@+node:ekr.20090124174652.54:beforeSelectHint (nativeTree)
     def beforeSelectHint (self,p,old_p):

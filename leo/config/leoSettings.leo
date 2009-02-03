@@ -7786,7 +7786,7 @@ def checkMenu (p):
 def checkItem (menuName,p):
     h = p.h[len('@item'):].replace('&amp;','').replace('*','').strip()
     if h != '-' and h not in c.commandsDict:
-        print 'command not found: %s: %s' % (menuName,p.h)
+        print ('command not found: %s: %s' % (menuName,p.h))
 
 menus = g.findNodeAnywhere(c,'@menus')
 assert menus, 'no @menus tree'

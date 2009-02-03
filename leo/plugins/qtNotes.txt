@@ -541,7 +541,7 @@ def afterSelectHint (self,p,old_p):
 
     c.outerUpdate() # Bring the tree up to date.
 
-    self.setItemForCurrentPosition()
+    self.setItemForCurrentPosition(scroll=True)
 #@-node:ekr.20090124174652.53:afterSelectHint (nativeTree)
 #@+node:ekr.20090124174652.56:editLabel (nativeTree)
 def editLabel (self,p,selectAll=False,selection=None):
@@ -733,7 +733,7 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
     finally:
         self.redrawing = False
 
-    self.setItemForCurrentPosition(scroll=False)
+    self.setItemForCurrentPosition(scroll=scroll) ####
     c.requestRedrawFlag= False
 
     if trace:

@@ -3722,7 +3722,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         w = self.treeWidget
 
-        # g.trace(self.traceItem(item))
+        # g.trace(self.traceItem(item),g.callers(4))
 
         hPos,vPos = self.getScroll()
 

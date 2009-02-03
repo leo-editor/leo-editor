@@ -13,6 +13,198 @@
 #@+node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20090202191501.6:Today
 #@+node:ekr.20090202191501.8:Improve isearch commands
+#@+node:ekr.20050920084036.258: ctor (searchCommandsClass)
+def __init__ (self,c):
+
+    # g.trace('searchCommandsClass')
+
+    baseEditCommandsClass.__init__(self,c) # init the base class.
+
+    self.findTabHandler = None
+    self.minibufferFindHandler = None
+    self.inited = False
+
+    try:
+        self.w = c.frame.body.bodyCtrl
+    except AttributeError:
+        self.w = None
+
+    # For isearch commands.
+    self.ifinder = leoFind.leoFind(c,title='ifinder')
+    self.isearch_v = None # vnode of last isearch.
+    self.isearch_stack = [] # A stack of previous matches: entries are: (sel,insert)
+    self.ignoreCase = None
+    self.forward = None
+    self.regexp = None
+#@-node:ekr.20050920084036.258: ctor (searchCommandsClass)
+#@+node:ekr.20050920084036.261:incremental search...
+def isearchForward (self,event):
+    '''Begin a forward incremental search.'''
+    self.startIncremental(event,forward=True,ignoreCase=False,regexp=False)
+
+def isearchBackward (self,event):
+    '''Begin a backward incremental search.'''
+    self.startIncremental(event,forward=False,ignoreCase=False,regexp=False)
+
+def isearchForwardRegexp (self,event):
+    '''Begin a forward incremental regexp search.'''
+    self.startIncremental(event,forward=True,ignoreCase=False,regexp=True)
+
+def isearchBackwardRegexp (self,event):
+    '''Begin a backard incremental regexp search.'''
+    self.startIncremental(event,forward=False,ignoreCase=False,regexp=True)
+
+def isearchWithPresentOptions (self,event):
+    '''Begin an incremental regexp search using the regexp and reverse options from the find panel.'''
+    self.startIncremental(event,forward=None,ignoreCase=None,regexp=None)
+#@+node:ekr.20060420144640:iSearchBackspace
+def iSearchBackspace (self):
+
+    c = self.c ; k = self.k ; gui = g.app.gui ; w = self.w
+
+    if not self.isearch_stack:
+        ins = w.getInsertPoint()
+        self.endSearch(ins,ins)
+        return 
+
+    gui.set_focus(c,w)
+    pattern = k.getLabel(ignorePrompt=True)
+    self.scolorizer(event=None,pattern=pattern)
+
+    sel,ins = self.isearch_stack.pop()
+
+    if sel:
+        i,j = sel
+        w.setSelectionRange(i,j,insert=ins)
+    else:
+        w.setInsertPoint(ins)
+
+    w.seeInsertPoint()
+
+    if not self.isearch_stack:
+        self.endSearch(ins,ins)
+#@-node:ekr.20060420144640:iSearchBackspace
+#@+node:ekr.20050920084036.262:startIncremental
+def startIncremental (self,event,forward,ignoreCase,regexp):
+
+    c = self.c ; k = self.k ; w = self.w
+
+    # None is a signal to get the option from the find tab.
+    if forward is None or regexp is None:
+        self.openFindTab(show=False)
+        if not self.minibufferFindHandler:
+            self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
+        getOption = self.minibufferFindHandler.getOption
+        # g.trace('reverse',getOption('reverse'))
+        # g.trace('pattern',getOption('pattern_match'))
+    else:
+        getOption = lambda a: False # The value isn't used.
+
+    self.event = event
+    self.forward    = g.choose(forward is None,not getOption('reverse'),forward)
+    self.ignoreCase = g.choose(ignoreCase is None,getOption('ignore_case'),ignoreCase)
+    self.regexp     = g.choose(regexp  is None,getOption('pattern_match'),regexp)
+    # Note: the word option can't be used with isearches!
+
+    self.ins1 = ins = w.getInsertPoint()
+    sel = w.getSelectionRange() or (ins,ins),
+    self.isearch_stack = [(sel,ins),]
+
+    k.setLabelBlue('Isearch%s%s%s: ' % (
+            g.choose(self.forward,'',' Backward'),
+            g.choose(self.regexp,' Regexp',''),
+            g.choose(self.ignoreCase,' NoCase',''),
+        ),protect=True)
+    k.setState('isearch',1,handler=self.iSearchStateHandler)
+    c.minibufferWantsFocusNow()
+#@-node:ekr.20050920084036.262:startIncremental
+#@+node:ekr.20050920084036.264:iSearchStateHandler
+# Called when from the state manager when the state is 'isearch'
+
+def iSearchStateHandler (self,event):
+
+    c = self.c ; k = self.k ; w = self.w
+
+    if not event:
+        g.trace('no event',g.callers())
+        return
+    keysym = event.keysym
+    ch = event.char
+    if keysym == 'Control_L': return
+
+    c.bodyWantsFocusNow()
+    # g.trace('keysym',repr(keysym),'ch',repr(ch))
+    if keysym in ('Escape','Return'):
+        i,j = w.getSelectionRange()
+        if not self.forward: i,j = j,i
+        self.endSearch(i,j)
+    elif keysym == 'BackSpace':
+        k.updateLabel(event)
+        self.iSearchBackspace()
+    elif ch:
+        k.updateLabel(event)
+        self.iSearchHelper(event)
+        self.scolorizer(event)
+#@-node:ekr.20050920084036.264:iSearchStateHandler
+#@+node:ekr.20050920084036.265:scolorizer
+def scolorizer (self,event,pattern=None):
+
+    '''Colorizer for incremental searches.'''
+
+    pass # Doing nothing is fine: it simply selects text.
+#@-node:ekr.20050920084036.265:scolorizer
+#@+node:ekr.20050920084036.263:iSearchHelper
+def iSearchHelper (self,event):
+
+    '''Move the cursor to position that matches the pattern in the miniBuffer.
+    isearches do not cross node boundaries.'''
+
+    c = self.c ; gui = g.app.gui ; k = self.k ; w = self.w
+    p = c.p
+    self.searchString = pattern = k.getLabel(ignorePrompt=True)
+    if not pattern: return
+    s = w.getAllText()
+
+    if self.isearch_v != p.v:
+        self.isearch_v = p.v
+        self.isearch_stack = []
+
+    sel = w.getSelectionRange()
+    startindex = insert = w.getInsertPoint()
+
+    if self.forward:
+        i1 = startindex
+        j1 = len(s)
+    else:
+        i1 = 0
+        j1 = min(len(s),startindex + len(pattern))
+
+    i,j = self.ifinder.searchHelper(s,i1,j1,pattern,
+        backwards=not self.forward,
+        nocase=self.ignoreCase,
+        regexp=self.regexp,
+        word=False, # Incremental word-matches are not possible!
+        swapij=False)
+
+    if i != -1:
+        self.isearch_stack.append((sel,insert),)
+        # g.trace(i1,j1,i,j,pos,newpos)
+        gui.set_focus(c,w)
+        w.setSelectionRange(i,j,insert=i)
+#@-node:ekr.20050920084036.263:iSearchHelper
+#@+node:ekr.20060203072636:endSearch
+def endSearch (self,i,j):
+
+    w = self.w
+    w.tag_delete('color','color1')
+
+    insert = g.choose(self.forward,'sel.end','sel.start')
+    w.setSelectionRange(i,j,insert=insert)
+
+    self.k.keyboardQuit(event=None)
+#@nonl
+#@-node:ekr.20060203072636:endSearch
+#@-node:ekr.20050920084036.261:incremental search...
 #@-node:ekr.20090202191501.8:Improve isearch commands
 #@+node:ekr.20090202191501.9:Improve macro commands
 @nocolor-node
