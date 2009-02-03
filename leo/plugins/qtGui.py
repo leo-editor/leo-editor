@@ -3567,12 +3567,12 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         return g.app.gui.iconimages[hash]
     #@-node:ekr.20090124174652.111:getIcon
-    #@+node:ekr.20090124174652.112:setItemIconHelper
+    #@+node:ekr.20090124174652.112:setItemIconHelper (qtTree)
     def setItemIconHelper (self,item,icon):
 
         # Generates an item-changed event.
         item.setIcon(0,icon)
-    #@-node:ekr.20090124174652.112:setItemIconHelper
+    #@-node:ekr.20090124174652.112:setItemIconHelper (qtTree)
     #@-node:ekr.20090124174652.109:Icons
     #@+node:ekr.20090124174652.115:Items
     #@+node:ekr.20090124174652.67:childIndexOfItem

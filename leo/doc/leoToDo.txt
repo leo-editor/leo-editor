@@ -25,8 +25,6 @@
 # These are a partial workaround for the missing brackets flash.
 #@nonl
 #@-node:ekr.20090131200406.3:check-brackets and check-syntax commands
-#@+node:ekr.20090202191501.3:Get vim and xemacs plugins working with qt.
-#@-node:ekr.20090202191501.3:Get vim and xemacs plugins working with qt.
 #@-node:ekr.20090202191501.6:Today
 #@+node:ekr.20090103054019.1:First
 #@+node:ekr.20090202064534.1:Remove bad archived position message?

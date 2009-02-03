@@ -60,7 +60,7 @@ useDoubleClick = True
 
 if sys.platform == "win32":
     # This path must not contain blanks in XP.  Sheesh.
-    _emacs_cmd = r"c:\XEmacs\XEmacs-21.4.13\i586-pc-win32\xemacs.exe"
+    _emacs_cmd = r"c:\XEmacs\XEmacs-21.4.21\i586-pc-win32\xemacs.exe"
 elif sys.platform.startswith("linux"):
     clients = ["gnuclient", "emacsclient", "xemacs"]
     _emacs_cmd = ""
@@ -103,6 +103,7 @@ def open_in_emacs (tag,keywords,val=None):
     c = keywords.get('c')
     p = keywords.get('p')
     if not c or not p: return
+
     v = p.v
 
     # Search g.app.openWithFiles for a file corresponding to v.
@@ -131,7 +132,6 @@ def open_in_emacs (tag,keywords,val=None):
         os.system(_emacs_cmd)
 
     return val
-#@nonl
 #@-node:ekr.20050313071202:open_in_emacs
 #@-others
 #@nonl

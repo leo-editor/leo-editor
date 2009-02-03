@@ -448,6 +448,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@-node:ekr.20090124174652.33:onPlusBoxRightClick
     #@-node:ekr.20090124174652.30:Click Box... (nativeTree)
     #@+node:ekr.20090124174652.35:Icon Box... (nativeTree)
+    # For Qt, there seems to be no way to trigger these events.
+    #@nonl
     #@+node:ekr.20090124174652.36:onIconBoxClick
     def onIconBoxClick (self,event,p=None):
 
@@ -515,19 +517,29 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         trace = False or self.traceEvents
         verbose = False or self.verbose
 
-        if self.busy(): return 
+        if self.busy(): return
 
         c = self.c
 
-        if trace: g.trace(self.traceItem(item))
+        if trace: g.trace(col,self.traceItem(item),g.callers(4))
 
-        e = self.createTreeEditorForItem(item)
-        if not e: g.trace('*** no e')
+        try:
+            self.selecting = True
 
-        p = self.item2position(item)
-        if not p: g.trace('*** no p')
+            e = self.createTreeEditorForItem(item)
+            if not e: g.trace('*** no e')
 
-        c.outerUpdate()
+            p = self.item2position(item)
+            if p:
+                event = None
+                g.doHook("icondclick1",c=c,p=p,v=p,event=event)
+                g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+            else:
+                g.trace('*** no p')
+
+            c.outerUpdate()
+        finally:
+            self.selecting = False
     #@-node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
     #@+node:ekr.20090124174652.42:onItemExpanded (nativeTree)
     def onItemExpanded (self,item):
