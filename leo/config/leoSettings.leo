@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="182" height="889" width="1218"/>
+	<global_window_position top="49" left="400" height="889" width="1000"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -753,14 +753,13 @@
 <v t="ekr.20071114081712.5"><vh>@item &amp;insert-icon</vh></v>
 </v>
 <v t="ekr.20070925144534.277"><vh>@menu &amp;Macro...</vh>
-<v t="ekr.20070925144534.278"><vh>@item &amp;load-file</vh></v>
-<v t="ekr.20070925144534.279"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.280"><vh>@item &amp;start-kbd-macro</vh></v>
-<v t="ekr.20070925144534.281"><vh>@item &amp;end-kbd-macro</vh></v>
+<v t="ekr.20070925144534.279"><vh>@item &amp;call-kbd-macro</vh></v>
+<v t="ekr.20070925144534.278"><vh>@item call-&amp;last-kbd-macro</vh></v>
+<v t="ekr.20070925144534.280"><vh>@item l&amp;oad-kbd-macros</vh></v>
 <v t="ekr.20070925144534.282"><vh>@item &amp;name-last-kbd-macro</vh></v>
-<v t="ekr.20070925144534.283"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.284"><vh>@item &amp;call-last-keyboard-macro</vh></v>
-<v t="ekr.20070925144534.285"><vh>@item &amp;insert-keyboard-macro</vh></v>
+<v t="ekr.20070925144534.281"><vh>@item &amp;print-macros</vh></v>
+<v t="ekr.20070925144534.283"><vh>@item &amp;save-kbd-macros</vh></v>
+<v t="ekr.20070925144534.284"><vh>@item s&amp;tart-kbd-macro</vh></v>
 </v>
 <v t="ekr.20070925144534.286"><vh>@menu Minibuffer...</vh>
 <v t="ekr.20070925144534.287"><vh>@item &amp;full-command</vh></v>
@@ -6785,7 +6784,6 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.282"></t>
 <t tx="ekr.20070925144534.283"></t>
 <t tx="ekr.20070925144534.284"></t>
-<t tx="ekr.20070925144534.285"></t>
 <t tx="ekr.20070925144534.286"></t>
 <t tx="ekr.20070925144534.287"></t>
 <t tx="ekr.20070925144534.288"></t>

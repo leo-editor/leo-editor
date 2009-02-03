@@ -12,6 +12,17 @@
 #@+node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20090103054019.1:First
+#@+node:ekr.20090202064534.6:Don't scroll when expanding/contracting node.
+#@-node:ekr.20090202064534.6:Don't scroll when expanding/contracting node.
+#@+node:ekr.20090202064534.1:Remove bad archived position message?
+bad archived position: bad index="3", len(children)="1"
+restoreDescendentAttributes: can not find vnode (duA):
+archivedPosition: 0.3.6.6.2.3, root_v: <vnode 168011244:'@thin
+test_core.txt'>
+#@nonl
+#@-node:ekr.20090202064534.1:Remove bad archived position message?
+#@+node:ekr.20090202064534.3:Add unit test that ensures all menus are functional
+#@-node:ekr.20090202064534.3:Add unit test that ensures all menus are functional
 #@+node:ekr.20090131200406.5:Ask for help with multiple body editors
 #@-node:ekr.20090131200406.5:Ask for help with multiple body editors
 #@+node:ekr.20090131200406.4:Ask Qt people to add native support for flashing
@@ -7655,6 +7666,12 @@ S5: http://meyerweb.com/eric/tools/s5/
 #@-node:ekr.20060829103523:Render Leo slideshows
 #@-node:ekr.20060306194040:Leo Video
 #@-all
+
+Major projects:
+
+- Unit tests: pythoscope.
+- Code completion.
+- Refactoring: rope, etc.
 #@nonl
 #@-node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@-leo

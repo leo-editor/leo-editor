@@ -6116,9 +6116,9 @@ class macroCommandsClass (baseEditCommandsClass):
 
     '''Define the following commands:
 
-    call-last-keyboard-macro
     call-kbd-macro
-    load-file
+    call-last-kbd-macro
+    load-kbd-macros
     name-last-kbd-macro
     print-macros
     save-kbd-macros
