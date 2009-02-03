@@ -7,8 +7,8 @@
 
 #@<< imports >>
 #@+node:ekr.20050101090207.11:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -28,7 +28,7 @@ def applyConfiguration(config):
         options = config.options(section)
         options.sort()
         for option in options:
-            print section, option, config.get(section, option)
+            g.pr(section, option, config.get(section, option))
 #@-node:EKR.20040517080555.26:applyConfiguration
 #@+node:EKR.20040517080555.27:cmd_fn1/2/3
 def cmd_fn1(event=None):
@@ -44,7 +44,7 @@ def cmd_fn3(event=None):
 def onSelect (tag,keywords):
 
     new_v = keywords.get("new_v")
-    h = new_v.headString()
+    h = new_v.h
     if h[:7] == "@image ":
         filename = h[7:]
         #@        << Select Image >>
@@ -87,14 +87,14 @@ def onUnselect (tag,keywords):
     old_v = keywords.get("old_v")
 
     if old_v:
-        h = old_v.headString()
+        h = old_v.h
         if h[:7] == "@image ":
             #@            << Unselect Image >>
             #@+node:EKR.20040517080555.31:<< Unselect Image >>
             # Erase image if it was previously displayed
             if a.gsimage:
                 try:
-                     c.frame.body.bodyCtrl.delete(a.gsimage)
+                    c.frame.body.bodyCtrl.delete(a.gsimage)
                 except:
                     g.es("info: no image to erase")
 

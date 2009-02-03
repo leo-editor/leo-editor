@@ -28,9 +28,9 @@ plugin:
 
 #@<< imports >>
 #@+node:mork.20041018131258.2:<< imports >>
-import leoPlugins 
-import leoGlobals as g      
-import leoNodes
+import leo.core.leoPlugins as leoPlugins 
+import leo.core.leoGlobals as g      
+import leo.core.leoNodes as leoNodes
 import copy
 import base64
 
@@ -274,7 +274,7 @@ def addMenu (tag,keywords):
     men = tp.children [mname]
     nrumenu = Tkinter.Menu(men,tearoff=0)
     men.add_cascade(menu=nrumenu,label='GroupOps') # image=groupOpPI)
-    nrumenu.add_command(image=markSpotPI,command=las.markTarget)
+    c.add_command(nrumenu,image=markSpotPI,command=las.markTarget)
     mmenu = Tkinter.Menu(nrumenu,tearoff=0)
     nrumenu.add_cascade(menu=mmenu,image=markForPI)
 
@@ -283,10 +283,10 @@ def addMenu (tag,keywords):
         ('Copying',las.addForCopy,copy_arrowPI),
         ('Cloning',las.addForClone,clone_arrowPI),
     ):
-        mmenu.add_command(label=label,command=command,image=image)
+        c.add_command(mmenu,label=label,command=command,image=image)
 
-    nrumenu.add_command(command=las.operateOnMarked,image=operateOnMarkedPI)
-    nrumenu.add_command(command=las.reset,image=clearMarksPI)
+    c.add_command(nrumenu,command=las.operateOnMarked,image=operateOnMarkedPI)
+    c.add_command(nrumenu,command=las.reset,image=clearMarksPI)
     imenu = Tkinter.Menu(nrumenu,tearoff=0)
     nrumenu.add_cascade(menu=imenu,image=transferFromPI)
     imenu.config(postcommand=lambda nm=imenu: createCommandsMenu(nm))
@@ -305,7 +305,7 @@ def createCommandsMenu (menu):
     for c in commanders:
         if hasattr(c,"frame") and len(lassoers[c]) != 0:
             las = lassoers [c]
-            menu.add_command(
+            c.add_command(menu,
                 label=c.frame.getTitle(),
                 command=lambda frm=las,to=mlas: frm.transfer(event,to))
 #@nonl
@@ -362,7 +362,7 @@ class Lassoer(object):
     #@+node:mork.20041018131258.9:addForMove
     def addForMove (self,event=None):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         aList = self.mvForM ; justRmv = p in aList
         # g.trace(justRmv)
 
@@ -378,7 +378,7 @@ class Lassoer(object):
     #@+node:mork.20041019102247:addForCopy
     def addForCopy (self,event=None):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         aList = self.mvForCopy
         justRmv = p in aList
 
@@ -394,7 +394,7 @@ class Lassoer(object):
     #@+node:mork.20041019102247.1:addForClone
     def addForClone (self,event=None):
 
-        c = self.c ; p = self.c.currentPosition()
+        c = self.c ; p = c.p
         aList = self.mvForClone ; justRmv = p in aList
 
         self.remove(p)
@@ -421,7 +421,7 @@ class Lassoer(object):
     #@+node:mork.20041019121125:markTarget
     def markTarget (self,event=None):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
 
         if p == self.moveNode:
             self.moveNode = None
@@ -438,12 +438,11 @@ class Lassoer(object):
         c = self.c
 
         if self.validMove():
-            c.beginUpdate()
             self.moveTo()
             self.copyTo()
             self.cloneTo()
             self.clear()
-            c.endUpdate()
+            c.redraw()
         else:
             g.es('No valid move',color='blue')
     #@nonl
@@ -458,20 +457,16 @@ class Lassoer(object):
             g.es('Transfer not valid',color='blue')
             return
 
-        lassoer.c.beginUpdate()
-        c.beginUpdate()
-        try:
-            mN = lassoer.moveNode
-            for z in self.mvForCopy:
-                self.copyTo(mN)
-            for z in self.mvForM:
-                self.moveTo(mN,mvC=lassoer.c)
-            if self.mvForClone:
-                g.es('Ignoring clone transer',color='blue')
-            self.clear()
-        finally:
-            c.endUpdate()
-            lassoer.c.endUpdate() # Do this last so we select the target outline.
+        mN = lassoer.moveNode
+        for z in self.mvForCopy:
+            self.copyTo(mN)
+        for z in self.mvForM:
+            self.moveTo(mN,mvC=lassoer.c)
+        if self.mvForClone:
+            g.es('Ignoring clone transer',color='blue')
+        self.clear()
+        c.redraw()
+        lassoer.c.redraw() # Do this last so we select the target outline.
 
     #@-node:mork.20041019125724.3:transfer
     #@-node:ekr.20060325094821:Commands

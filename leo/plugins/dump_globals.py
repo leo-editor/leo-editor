@@ -5,22 +5,22 @@
 #@@language python
 #@@tabwidth -4
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 #@+others
 #@+node:edream.110203113231.731:onStart
 def onStart (tag,keywords):
 
-    print "\nglobals..."
+    g.pr("\nglobals...")
     for s in globals():
         if s not in __builtins__:
-            print s
+            g.pr(s)
 
-    print "\nlocals..."
+    g.pr("\nlocals...")
     for s in locals():
         if s not in __builtins__:
-            print s
+            g.pr(s)
 #@-node:edream.110203113231.731:onStart
 #@-others
 

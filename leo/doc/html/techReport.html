@@ -473,7 +473,7 @@ high-level methods of the position class.</li>
 <p>When executing scripts Leo predefines the following three symbols:
 <strong>c</strong> is the commander of the outline in which the script is defined,
 <strong>g</strong> is the leoGlobals module and
-<strong>p</strong> is the position of the selected node in c’s outline, i.e., <tt class="docutils literal"><span class="pre">c.currentPosition()</span></tt>.</p>
+<strong>p</strong> is the position of the selected node in c’s outline, i.e., <tt class="docutils literal"><span class="pre">c.p</span></tt>.</p>
 </div>
 <div class="section" id="accessing-data">
 <h1><a class="toc-backref" href="#id9">Accessing data</a></h1>
@@ -481,10 +481,13 @@ high-level methods of the position class.</li>
 <pre class="literal-block">
 g.app                The application object. Its ivars are Leo’s global variables.
 g.app.windowList     The list of all open frames.
-c.currentPosition()  The position of the selected node.
+c.p                  The position of the selected node.
+c.currentPosition()  A longer name for c.p.
 c.rootPosition()     The position of the first node in the outline.
-p.headString()       The headline of position p.
-p.bodyString()       The body text of position p.
+p.h                  The headline of position p.
+p.headString()       A longer name for p.h
+p.b                  The body text of position p.
+p.bodyString()       A longer name for p.b
 p.childIndex()       The number of siblings that precede p.
 p.numberOfChildren() The number of p’s children.
 p.level()            The number of p’s ancestors.
@@ -498,8 +501,8 @@ p.isVisible()        True if all of p’s ancestors are expanded.
 </pre>
 <p>And here are some important setters:</p>
 <pre class="literal-block">
-c.setBodyString(p,s) Set body text of p to s.
-c.setHeadString(p,s) Set headline of p to s.
+p.b = s     Set body text of p to s.
+p.h = s     Set headline of p to s.
 </pre>
 </div>
 <div class="section" id="traversing-outlines">
@@ -515,7 +518,7 @@ p.following_siblings_iter() # All siblings following p, not including p.
 <p>For example, the following prints all the nodes of an outline, properly indented:</p>
 <pre class="literal-block">
 for p in c.allNodes_iter():
-    print ' '*p.level(), p.headString()
+    print ' '*p.level(), p.h
 </pre>
 </div>
 <div class="section" id="executing-commands-from-scripts">
@@ -535,7 +538,7 @@ window. The <tt class="docutils literal"><span class="pre">Run</span> <span clas
 like the <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> command. The <tt class="docutils literal"><span class="pre">Script</span> <span class="pre">Button</span></tt> button creates a new
 button whose headline is the headline of the presently selected node, call it
 node N. Pressing this button executes the script in node N with p predefined as
-<tt class="docutils literal"><span class="pre">c.currentPosition()</span></tt> at the time the script is executed. This clever trick
+<tt class="docutils literal"><span class="pre">c.p</span></tt> at the time the script is executed. This clever trick
 brings the script to the data in the selected outline.</p>
 </div>
 <div class="section" id="unit-testing-with-test-and-suite-nodes">
@@ -565,10 +568,9 @@ created suite of unit tests.</p>
 <p>Plugins are Python (.py) files in Leo’s plugin subdirectory. It is easy to
 create new plugins: Leo’s users have contributed dozens of plugins that extend
 Leo’s capabilities in new ways. Leo imports all enabled plugins during startup.
-The file pluginsManager.txt lists all enabled plugins. You can use the plugin
-manager plugin to control plugins without updating <tt class="docutils literal"><span class="pre">pluginsManager.txt</span></tt> by hand.</p>
+The file pluginsManager.txt lists all enabled plugins.</p>
 <p>Plugins can override any class, method or function in Leo’s core, the files in
-Leo’s src subdirectory (the files derived from LeoPy.leo). Besides altering
+Leo’s core subdirectory (the files derived from LeoPy.leo). Besides altering
 Leo’s core, plugins can register functions called hooks that Leo calls at
 various times during Leo’s execution. Events that trigger hooks include key
 pressed events, screen drawing events, node selection events and many others.
@@ -584,7 +586,7 @@ to write your own plugins.</p>
 <h1><a class="toc-backref" href="#id15">Contacts</a></h1>
 <ul class="simple">
 <li>Leo’s home page:  google edreamleo or <a class="reference" href="http://webpages.charter.net/edreamleo/front.html">http://webpages.charter.net/edreamleo/front.html</a></li>
-<li>Edward K. Ream:  <a class="reference" href="mailto:edreamleo&#64;charter.net">edreamleo&#64;charter.net</a>, 166 N. Prospect Ave., Madison WI 53726, (608) 231-0766</li>
+<li>Edward K. Ream:  <a class="reference" href="mailto:edreamleo&#64;gmail.com">edreamleo&#64;gmail.com</a>, 166 N. Prospect Ave., Madison WI 53726, (608) 231-0766</li>
 </ul>
 </div>
 </div>

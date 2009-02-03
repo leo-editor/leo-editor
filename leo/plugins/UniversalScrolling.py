@@ -24,8 +24,11 @@ in leoSettings.leo.
 #@nl
 #@<< imports >>
 #@+node:ekr.20050101090207.5:<< imports >>
-import leoGlobals as g
-import leoTkinterFrame
+import leo.core.leoGlobals as g
+
+import leo.plugins.tkGui as tkGui
+leoTkinterFrame = tkGui.leoTkinterFrame
+createCanvas = leoTkinterFrame.createCanvas
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -54,8 +57,6 @@ __version__ = "0.4"
 #@-node:ekr.20050526121340:<< version history >>
 #@nl
 
-createCanvas = leoTkinterFrame.leoTkinterFrame.createCanvas
-
 #@+others
 #@+node:ekr.20050526121026:init
 def init ():
@@ -69,7 +70,7 @@ def init ():
         ok = g.app.gui.guiName() == "tkinter"
 
         if ok:
-            leoTkinterFrame.leoTkinterFrame.createCanvas = addUThreading
+            tkGui.leoTkinterFrame.createCanvas = addUThreading
             g.plugin_signon(__name__)
 
     return ok
@@ -142,6 +143,7 @@ def addUThreading (tkFrame,parentFrame):
     t.start()
 
     # Replace the canvas bindings.
+    # c is not available.
     canvas.bind( '<Control-Button-1>', scrollDown)
     canvas.bind( '<Shift Button-1>', scrollDown)
     canvas.bind( '<Control-Button-3>', scrollUp)

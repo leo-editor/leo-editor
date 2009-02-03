@@ -104,7 +104,7 @@ disable-checker=DESIGN,SIMILARITIES,IMPORTS
 
 # Disable all common warnings
 
-disable-msg=C0111,C0301,C0321,C0322,C0323,C0324,R0201,R0903,W0122,W0141,W0142,W0201,W0212,W0231,W0232,W0401,W0402,W0404,W0406,W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111
+disable-msg=C0111,C0301,C0321,C0322,C0323,C0324,R0201,R0903,W0102,W0122,W0141,W0142,W0201,W0212,W0231,W0232,W0401,W0402,W0404,W0406,W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111
 
 [REPORTS]
 
@@ -175,15 +175,16 @@ required-attributes=
 no-docstring-rgx=__.*__
 
 # Regular expression which should only match correct module names
-module-rgx=(([a-z_][a-z0-9_]*)|([a-zA-Z0-9]+))$
+# module-rgx=(([a-z_][a-z0-9_]*)|([a-zA-Z0-9]+))$
+module-rgx=[a-zA-Z][a-zA-Z0-9_]+$
 
 # Regular expression which should only match correct module level names
 #const-rgx=(([A-Z_][A-Z1-9_]*)|(__.*__))$
-const-rgx=[a-zA-Z][a-zA-Z0-9_]+$
+const-rgx=(([a-zA-Z_][a-zA-Z0-9_]+)|(__.*__))$
 
 # Regular expression which should only match correct class names
 # class-rgx=[A-Z_][a-zA-Z0-9]+$
-class-rgx=[a-zA-Z][a-zA-Z0-9_]+$
+class-rgx=[a-zA-Z_][a-zA-Z0-9_]+$
 
 # Regular expression which should only match correct function names
 # function-rgx=[a-z_][a-z0-9_]{2,30}$
@@ -199,7 +200,7 @@ attr-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
 
 # Regular expression which should only match correct argument names
 #argument-rgx=[a-z_][a-z0-9_]{2,30}$
-argument-rgx=[a-zA-Z][a-zA-Z0-9_]*$
+argument-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
 
 # Regular expression which should only match correct variable names
 #variable-rgx=[a-z_][a-z0-9_]{2,30}$
@@ -211,7 +212,14 @@ variable-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
 inlinvar-rgx=[a-zA-Z][a-zA-Z0-9_]*$
 
 # Good variable names which should always be accepted, separated by a comma
-good-names=i,j,k,ex,Run,_,__pychecker__,c,d,g,p,s,t,u,v,w,z
+good-names=_,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
+
+#__pychecker__,__version__,\
+#__not_a_plugin__,__plugin_id__,__plugin_name__,__plugin_priority__,__plugin_group__,__plugin_requires__,\
+#__revision__,__author__,__date__,__cvsid__,\
+#_emacs_cmd,_vim_cmd,_vim_exe,\
+#_AssignUniqueConstantValue,_PluginDatabase
+# 
 
 # Bad variable names which should always be refused, separated by a comma
 bad-names=foo,baz,toto,tutu,tata

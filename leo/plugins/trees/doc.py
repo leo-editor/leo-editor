@@ -14,7 +14,7 @@ from autotrees import BaseTreeHandler, TreeNode
 import inspect
 import sets
 
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
 __version__ = "0.1"
 __plugin_requires__ = ["autotrees"]
@@ -36,8 +36,9 @@ __plugin_group__ = "Coding"
 class Doc(BaseTreeHandler):
     """Handler for documentation nodes"""
 
-    def initFrom(self, parameter):
+    def initFrom(self,c,parameter):
         """Initialize the tree"""
+        self.c = c
         self.children = []
         self.done = sets.Set()
         try:
@@ -52,17 +53,17 @@ class Doc(BaseTreeHandler):
 
     def getDocsFor(self, object):
         """Return a list of child nodes documenting the object"""
-        #print object
+        #g.pr(object)
         children = []
         for name in dir(object):
             item = getattr(object, name)
             if not name.startswith("_") and not id(item) in self.done:
                 self.done.add(id(item))
                 if inspect.isclass(item):
-                    #print "Class", item.__name__
+                    #g.pr("Class", item.__name__)
                     grandchildren = self.getDocsFor(item)
                 else:
-                    #print "item", item
+                    #g.pr("item", item)
                     grandchildren = []
                 children.append(
                     TreeNode(

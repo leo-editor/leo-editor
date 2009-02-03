@@ -65,8 +65,8 @@ if 0:
 
 #@<< imports >>
 #@+node:ekr.20050101090207.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import tkFileDialog
 
 Tk =             g.importExtension('Tkinter',       pluginName=__name__,verbose=True)
@@ -116,6 +116,8 @@ __version__ = "1.8"
 #@-node:ekr.20050311104330:<< version history >>
 #@nl
 
+wikiColoredText = None
+
 #@+others
 #@+node:ekr.20060108112937:Module-level
 #@+node:ekr.20050311104330.1:init
@@ -131,7 +133,7 @@ def init ():
 
         if ok:
             if not g.app.unitTesting and not g.app.batchMode:
-                print "wiki markup enabled"
+                g.pr("wiki markup enabled")
 
             # default value for color-tagged wiki text
             global wikiColoredText
@@ -161,7 +163,7 @@ def initAnyMarkup (tag,keywords):
     # underline means hyperlinks
     c.frame.body.tag_configure("http",underline=1) # EKR: 11/4/03
     c.frame.body.tag_configure("https",underline=1) # EKR: 11/4/03
-    dict = g.scanDirectives(c,p=v) # v arg is essential.
+    dict = c.scanAllDirectives(p=v) # v arg is essential.
     pluginsList = dict.get("pluginsList")
 
     if pluginsList:
@@ -172,24 +174,6 @@ def initAnyMarkup (tag,keywords):
 
     colorer.markup_string = "unknown" # default
 #@-node:edream.110403140857.9:initAnyMarkup
-#@+node:edream.110403140857.16:onBodykey1 (not ready)
-# def onBodykey1(tag,keywords):
-
-    # c = keywords.get("c")
-    # w = c.frame.body.bodyCtrl
-    # ins = w.getInsertPoint()
-    # ins = w.toGuiIndex(ins)
-    # # line,char = map(int, idx.split('.'))
-    # elideRange = body.bodyCtrl.tag_prevrange("elide",ins)
-    # if elideRange:
-        # elideLine,elideStart = map(int, elideRange[0].split('.'))
-        # elideLine,elideEnd   = map(int, elideRange[1].split('.'))
-        # if line==elideLine and elideStart<char<=elideEnd:
-            # pass
-            # # print "XXX: tag!"
-            # # body.bodyCtrl.mark_set("insert", "elide+1c")
-    # return 0 # do not override
-#@-node:edream.110403140857.16:onBodykey1 (not ready)
 #@+node:edream.110403140857.17:onBodydclick1 & allies
 def onBodydclick1(tag,keywords):
 
@@ -280,7 +264,7 @@ def colorWikiMarkup (tag,keywords):
     colorer,v,s,i,j,colortag = [keywords.get(key) for key in keys]
     c = colorer.c
 
-    dict = g.scanDirectives(c,p=v) # v arg is essential.
+    dict = c.scanAllDirectives(p=v) # v arg is essential.
     pluginsList = dict.get("pluginsList")
 
     if pluginsList:
@@ -362,7 +346,7 @@ def doWikiText (colorer,s,i,end,colortag):
                         colorer.tag("elide",n2,n2+len(delim2))
                     else:
                         try:
-                            # print "entering", name
+                            # g.pr("entering", name)
                             c = colorer.c
                             c.frame.body.bodyCtrl.tag_configure(name,foreground=name)
                             colorer.color_tags_list.append(name)
@@ -414,7 +398,7 @@ def insertWikiPicture (colorer,filename,s,i):
 
     # g.trace(i,filename)
 
-    c = colorer.c ; p = c.currentPosition() ; w = c.frame.body.bodyCtrl
+    c = colorer.c ; p = c.p ; w = c.frame.body.bodyCtrl
 
     if not p or not g.os_path_exists(filename):
         return

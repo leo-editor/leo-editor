@@ -35,8 +35,8 @@ All created sections are alphabetically ordered.
 
 #@<< imports >>
 #@+node:ekr.20050111085909:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 tkFileDialog = g.importExtension('tkFileDialog',pluginName=__name__,verbose=True)
 #@nonl
@@ -98,7 +98,7 @@ def create_import_cisco_menu (tag,keywords):
 def importCiscoConfig(c):
 
     if not c or not c.exists: return
-    current = c.currentPosition()
+    current = c.p
     #@    << open file >>
     #@+node:edream.110203113231.673:<< open file >>
     name = tkFileDialog.askopenfilename(
@@ -108,9 +108,8 @@ def importCiscoConfig(c):
     if name == "":	return
 
     p = current.insertAsNthChild(0)
-    c.beginUpdate()
     c.setHeadString(p,"cisco config: %s" % name)
-    c.endUpdate()
+    c.redraw()
 
     try:
         fh = open(name)
@@ -212,7 +211,7 @@ def importCiscoConfig(c):
     # scan through the created outline and add children
     for child in children:
         # extract the key from the headline. Uhm... :)
-        key = child.headString().split('<<'
+        key = child.h.split('<<'
             )[1].split('>>')[0].strip()
         if blocks.has_key(key):
             if type(blocks[key][0]) == type(''):

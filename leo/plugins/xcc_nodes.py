@@ -176,8 +176,10 @@
 # 
 # - Eliminated * imports:
 #     ``* imports`` are bad style in complex code.
-#     Replaced ``from leoPlugins import *`` by ``import leoPlugins``
-#     Replaced ``from leoGlobals import *`` by ``import leoGlobals as g``
+#     Replaced ``from leoPlugins import *`` by ``import leo.core.leoPlugins as 
+# leoPlugins``
+#     Replaced ``from leoGlobals import *`` by ``import leo.core.leoGlobals as 
+# g``
 #     Replaced ``from Tkinter import *`` by import Tkinter as Tk.
 #         Replaced Tk constants like END, FLAT, NW, etc. by 'end','flat','nw', 
 # etc.
@@ -257,8 +259,8 @@
 #@+node:ekr.20060513122450.4:<< imports >>
 # from leoPlugins import *
 # from leoGlobals import *
-import leoPlugins
-import leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoGlobals as g
 
 # from Tkinter import *
 import Tkinter as Tk
@@ -446,8 +448,8 @@ if 0:
             if XCC_INITED == False:
                 c = keywords.get("c")
                 InitXcc(c)
-                n = c.currentPosition()
-                h = n.headString()	
+                n = c.p
+                h = n.h	
 
         except Exception,e:
             TraceBack()
@@ -550,7 +552,7 @@ def linPause(pid):	# theorical way to do it, untested!
 #@+node:ekr.20060513122450.33:AddText
 def AddText(text,node):
 
-	c.setBodyText(node,node.bodyString()+text)
+	c.setBodyText(node,node.b+text)
 	l,c = LeoBody.index("end").split(".")
 	LeoBody.see(l+".0")
 #@nonl
@@ -636,9 +638,9 @@ def GetNodePath(node,as="->"):
 
 	path = []
 	for p in node.parents_iter():
-		path.insert(0,p.headString()+as)
+		path.insert(0,p.h+as)
 
-	path.append(node.headString())
+	path.append(node.h)
 	return ''.join(path)
 #@nonl
 #@-node:ekr.20060513122450.32:GetNodePath
@@ -657,7 +659,7 @@ def GetUnknownAttributes(vnode,create = False):
 def GetXccNode(node):
 
 	for p in node.parents_iter():
-		h = p.headString()
+		h = p.h
 		if (h[0:5] == "@xcc "):
 			return p
 
@@ -672,7 +674,7 @@ def ImportFiles():
 #@+node:ekr.20060513122450.390:IsXcc
 def IsXcc(node):
 
-	if node.headString()[0:5] == "@xcc ":
+	if node.h[0:5] == "@xcc ":
 		return True
 	else:
 		return False
@@ -700,7 +702,7 @@ if 0:
         lines = traceback.format_exception(typ,val,tb)
         for line in lines:
             # g.es(line,color = "red")
-            print line
+            g.pr(line)
 
 TraceBack = g.es_exception
 #@nonl
@@ -830,7 +832,7 @@ class controllerClass:
     #@+node:ekr.20060513152032.3:onSelect
     def onSelect(self):
 
-        cc = self ; p = cc.c.currentPosition()
+        cc = self ; p = cc.c.p
 
         if IsXcc(p):
             cc.sSelect(p)
@@ -876,7 +878,7 @@ class controllerClass:
 
         cc = self
 
-        if cc.SELECTED_NODE == cc.c.currentPosition():
+        if cc.SELECTED_NODE == cc.c.p:
             cc.sGoToError()
     #@nonl
     #@-node:ekr.20060513152032.6:onBodyDoubleClick
@@ -893,7 +895,7 @@ class controllerClass:
     #@+node:ekr.20060513152032.8:onHeadKey2
     def onHeadKey2(self,keywords):
 
-        cc = self ; p = cc.c.currentPosition()
+        cc = self ; p = cc.c.p
 
         if IsXcc(p):
             if not cc.SELECTED_NODE:
@@ -926,7 +928,7 @@ class controllerClass:
     def cIs(self,node):
 
         for p in node.parents_iter():
-            if p.headString()[0:5] == "@xcc ":
+            if p.h[0:5] == "@xcc ":
                 return True	
         return False
     #@nonl
@@ -999,12 +1001,11 @@ class controllerClass:
         if not node: return
         cc = self ; c = cc.c ; w = cc.LeoBodyText
 
-        c.beginUpdate()
         if not node.isVisible(c):
             for p in node.parents_iter():
                 p.expand()
         c.selectPosition(node)
-        c.endUpdate()
+        c.redraw()
 
         if index is None: return
         w.mark_set("insert",index)
@@ -1124,7 +1125,7 @@ class controllerClass:
 
         cc = self
 
-        w = cc.SELECTED_NODE.headString() [5:]
+        w = cc.SELECTED_NODE.h [5:]
         if w:
             path, name = os.path.split(w)
             name, ext = os.path.splitext(name)
@@ -1144,7 +1145,7 @@ class controllerClass:
 
         cc = self
 
-        w = cc.SELECTED_NODE.headString() [5:]
+        w = cc.SELECTED_NODE.h [5:]
         if w:
             cc.REL_PATH, cc.NAME = os.path.split(w)
             cc.NAME, EXT = os.path.splitext(cc.NAME)
@@ -1240,7 +1241,7 @@ class controllerClass:
             row,col = cc.LeoBodyText.index("insert").split(".")
             row = int(row)
             col = int(col)
-            lines = cc.SELECTED_NODE.bodyString().splitlines()
+            lines = cc.SELECTED_NODE.b.splitlines()
             e = lines[row-1]
             e=e.replace("/","\\")
 
@@ -1437,7 +1438,7 @@ class controllerClass:
 
         cc = self
 
-        cc.setBodyText(SELECTED_NODE,cc.SELECTED_NODE.bodyString()+text)
+        cc.setBodyText(SELECTED_NODE,cc.SELECTED_NODE.b+text)
 
         if not cc.CHILD_NODE:
             l,c = cc.LeoBodyText.index("end").split(".")
@@ -1626,7 +1627,7 @@ class controllerClass:
         cc = self
 
         if cc.ACTIVE_NOD:
-            cc.setBodyText(cc.ACTIVE_NODE,cc.ACTIVE_NODE.bodyString()+text)
+            cc.setBodyText(cc.ACTIVE_NODE,cc.ACTIVE_NODE.b+text)
 
             if cc.SELECTED_NODE == cc.ACTIVE_NODE and cc.CHILD_NODE:
                 l,c = LeoBodyText.index("end").split(".")
@@ -3906,7 +3907,7 @@ class ToolbarClass(Tk.Frame):
     #@+node:ekr.20060513122450.152:__init__
     def __init__(self,cc):
 
-        self.cc = cc
+        self.cc = cc ; c = cc.c
 
         Tk.Frame.__init__(self,cc.LeoFrame.split1Pane2)
         f = Tk.Frame(self)
@@ -3943,7 +3944,7 @@ class ToolbarClass(Tk.Frame):
         e=">>"
         # command entry
         self.DbgEntry = Tk.Entry(f)
-        self.DbgEntry.bind("<Key>",self.OnKey)
+        c.bind(self.DbgEntry,"<Key>",self.OnKey)
 
         #---------------------------------------------------
         self.ConfigGif=Tk.PhotoImage(data=DecompressIcon(ConfigData))
@@ -4058,7 +4059,7 @@ class ToolbarClass(Tk.Frame):
         off = 0
         if loc.CURRENT_RULE and loc.CURRENT_RULE != "class":
             off = len(disp)
-            disp += cc.CHILD_NODE.headString()	
+            disp += cc.CHILD_NODE.h	
 
         self.Display["state"] = 'normal'
         self.Display.delete(1.0,'end')
@@ -4113,7 +4114,7 @@ class ToolbarClass(Tk.Frame):
         self.Display["state"] = 'disabled'
 
         self.Display["cursor"] = "hand2"
-        self.Display.bind("<Button-1>",self.OnErrorLeftClick)
+        c.bind(self.Display,"<Button-1>",self.OnErrorLeftClick)
 
     #@-node:ekr.20060513122450.160:SyncDisplayToError
     #@+node:ekr.20060513122450.161:SetError
@@ -4180,7 +4181,7 @@ class WatcherClass(Tk.Frame):
 
         self.EditFrame = Tk.Frame(self,relief='groove')
         self.VarEntry = Tk.Entry(self.EditFrame)
-        self.VarEntry.bind("<Key>",self.OnEditKey)
+        c.bind(self.VarEntry,"<Key>",self.OnEditKey)
         self.VarEntry.pack(side="left",fill="x",expand=1)
         self.EditFrame.pack(side="top",fill="x")
 
@@ -4201,10 +4202,10 @@ class WatcherClass(Tk.Frame):
         self.OutBox.pack(side="left",fill="both",expand=1)
 
         self.BoxFrame.pack(fill="both",expand=1)
-        self.InBox.bind("<Delete>",self.OnDelete)
-        self.OutBox.bind("<Delete>",self.OnDelete)
-        self.InBox.bind("<Button-1>",self.OnLeftClick)
-        self.OutBox.bind("<Button-1>",self.OnLeftClick)
+        c.bind(self.InBox,"<Delete>",self.OnDelete)
+        c.bind(self.OutBox,"<Delete>",self.OnDelete)
+        c.bind(self.InBox,"<Button-1>",self.OnLeftClick)
+        c.bind(self.OutBox,"<Button-1>",self.OnLeftClick)
     #@nonl
     #@-node:ekr.20060513122450.167:__init__
     #@+node:ekr.20060513122450.168:OnEditKey
@@ -4346,7 +4347,7 @@ class BreakbarClass(Tk.Text):
     #@+node:ekr.20060513122450.176:__init__
     def __init__(self,cc):
 
-        self.cc = cc
+        self.cc = cc ; c = cc.c
         self.bodychanged = False	
         self.visible = False
         coffset = 10
@@ -4375,8 +4376,8 @@ class BreakbarClass(Tk.Text):
         )
 
         self.leowrap = cc.LeoBodyText["wrap"]
-        self.bind("<Button-1>",self.OnLeftClick)
-        self.bind("<Button-3>",self.OnRightClick)
+        c.bind(self,"<Button-1>",self.OnLeftClick)
+        c.bind(self,"<Button-3>",self.OnRightClick)
         self["state"]='disabled'
         cc.LeoBodyText.pack_forget()
         cc.LeoXBodyBar.pack(side="bottom", fill="x")
@@ -4420,10 +4421,10 @@ class BreakbarClass(Tk.Text):
     #@+node:ekr.20060513122450.181:Plug
     def Plug(self):
 
-        cc = self.cc
+        cc = self.cc ; c = cc.c
 
-        cc.LeoBodyText.bind(g.angleBrackets("Cut"),self.OnCut)
-        cc.LeoBodyText.bind(g.angleBrackets("Paste"),self.OnPaste)
+        c.bind(cc.LeoBodyText,g.angleBrackets("Cut"),self.OnCut)
+        c.bind(cc.LeoBodyText,g.angleBrackets("Paste"),self.OnPaste)
         cc.LeoYBodyBar.config(command=self.yview)
         cc.LeoBodyText["yscrollcommand"] = self.setForBody
         self["yscrollcommand"] = self.setForBar
@@ -4432,10 +4433,10 @@ class BreakbarClass(Tk.Text):
     #@+node:ekr.20060513122450.182:UnPlug
     def UnPlug(self):
 
-        cc = self.cc
+        cc = self.cc ; c = cc.c
 
-        cc.LeoBodyText.bind(g.angleBrackets("Cut"),cc.LeoFrame.OnCut)
-        cc.LeoBodyText.bind(g.angleBrackets("Paste"),cc.LeoFrame.OnPaste)
+        c.bind(cc.LeoBodyText,g.angleBrackets("Cut"),cc.LeoFrame.OnCut)
+        c.bind(cc.LeoBodyText,g.angleBrackets("Paste"),cc.LeoFrame.OnPaste)
         cc.LeoYBodyBar.config(command=cc.LeoBodyText.yview)
         cc.LeoBodyText["yscrollcommand"] = cc.LeoYBodyBar.set
         self["yscrollcommand"] = None
@@ -4456,11 +4457,12 @@ class BreakbarClass(Tk.Text):
     #@+node:ekr.20060513122450.186:OnRightClick
     def OnRightClick(self,event):
         try:
+            c = self.c
             m = Menu(self)
-            m.add_command(label="Delete Node Breaks", command=self.DeleteNodeBreaks)
-            m.add_command(label="Delete Project Breaks", command=self.DeleteProjectBreaks)
+            c.add_command(m,label="Delete Node Breaks", command=self.DeleteNodeBreaks)
+            c.add_command(m,label="Delete Project Breaks", command=self.DeleteProjectBreaks)
             m.add_separator()
-            m.add_command(label="Cancel",command=lambda :self.Cancel(m))
+            c.add_command(m,label="Cancel",command=lambda :self.Cancel(m))
 
             m.post(event.x_root,event.y_root)
         except Exception:
@@ -4563,7 +4565,7 @@ class BreakbarClass(Tk.Text):
         #----------------------------------------
         if cc.CHILD_LINE and cc.CHILD_LINE != -1:
             fl = cc.CHILD_LINE
-            lines = cc.CHILD_NODE.bodyString().splitlines()
+            lines = cc.CHILD_NODE.b.splitlines()
 
             while len(lines) > 0:
                 l = lines.pop(0)
@@ -4744,7 +4746,7 @@ class BreakbarClass(Tk.Text):
         w=4
         if cc.CHILD_LINE and cc.CHILD_LINE != -1:
             fl = cc.CHILD_LINE
-            lines = cc.CHILD_NODE.bodyString().splitlines()
+            lines = cc.CHILD_NODE.b.splitlines()
 
             while len(lines) > 0:
                 l = lines.pop(0)
@@ -4872,7 +4874,7 @@ class CppParserClass:
             w = Parser.CLASS_WRITER or (mo and Parser.Define) or Parser.Declare
             Parser.SetRealBodyDestination(w)
             Parser.CURRENT_LOCATION = "head"
-            w(Parser.TAB_STRING+"/*"+node.headString()[2:]+"\n")
+            w(Parser.TAB_STRING+"/*"+node.h[2:]+"\n")
             Parser.Tab()
 
             if Parser.WriteOthers(node,w) == False:
@@ -5246,9 +5248,9 @@ class CppParserClass:
                     # w = Parser.Declare
 
             if mo:
-                head = node.headString()[:-1]
+                head = node.h[:-1]
             else:
-                head = node.headString()
+                head = node.h
 
             Parser.SetRealBodyDestination(w)
             Parser.CURRENT_LOCATION = "head"
@@ -5467,7 +5469,7 @@ class CppParserClass:
     #@-node:ekr.20060513122450.248:Tabing
     #@+node:ekr.20060513122450.254:WriteOthers
     def WriteOthers(self,node,w):
-        b = node.bodyString()
+        b = node.b
         o = b.find("@others")
         if o != -1:
             #--------------------
@@ -5564,7 +5566,7 @@ class CppParserClass:
 
         for cn in node.children_iter():
             self.OnParseNode(cn)		
-            ch = cn.headString()		
+            ch = cn.h		
 
             self.CURRENT_RULE = None
             for r in self.RULES:

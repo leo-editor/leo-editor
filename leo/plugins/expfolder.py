@@ -17,8 +17,8 @@ For the @text and @expfolder nodes to interact correctly, the textnode plugin mu
 #@@language python
 #@@tabwidth -4
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import os
 import os.path
 import ConfigParser
@@ -50,7 +50,7 @@ def init():
 def on_icondclick(tag, keywords):    
     c = keywords.get("c")
     p = keywords.get("p")
-    h = p.headString()
+    h = p.h
     if g.match_word(h,0,"@expfolder"):
         if p.hasChildren():
             result = g.app.gui.runAskYesNoDialog(c, "Reread?", "Reread contents of folder "+h[11:]+"?")
@@ -58,7 +58,7 @@ def on_icondclick(tag, keywords):
                 return
             kids = []
             for cp in p.subtree_iter():
-                if cp.isDirty() and g.match_word(cp.headString(), 0, "@text"):
+                if cp.isDirty() and g.match_word(cp.h, 0, "@text"):
                     kids.append(cp.copy())
             if kids != []:
                 result = g.app.gui.runAskYesNoDialog(c, "Reread?", "Save changed @text nodes?")

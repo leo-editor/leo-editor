@@ -55,8 +55,8 @@ __version__ = "0.7"
 #@nl
 #@<< imports >>
 #@+node:ktenney.20041211072654.4:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 path           = g.importExtension('path',          pluginName=__name__,verbose=True)
 win32clipboard = g.importExtension('win32clipboard',pluginName=__name__,verbose=True)
@@ -94,8 +94,8 @@ class View:
     #@+node:ktenney.20041211072654.9:icondclick2
     def icondclick2 (self, tag, keywords):
 
-        self.current = self.c.currentPosition()
-        hs = self.current.headString()
+        self.current = self.c.p
+        hs = self.current.h
 
         g.trace(hs)
 
@@ -110,12 +110,12 @@ class View:
     def idle(self, tag, keywords):
 
         try:
-            self.current = self.c.currentPosition()
+            self.current = self.c.p
         except AttributeError:
             # c has been destroyed.
             return
 
-        s = self.current.headString()
+        s = self.current.h
         if s.startswith("@clip"):
             self.clip()
     #@nonl
@@ -165,7 +165,7 @@ class View:
 
         win32clipboard.CloseClipboard()
 
-        body = self.current.bodyString().split(divider)
+        body = self.current.b.split(divider)
         if not body[0] == clipboard:
             g.es('clipboard now holds %s' % clipboard)
             body.insert(0, clipboard)
@@ -186,7 +186,7 @@ class View:
         if currentPath.exists():
             path = currentPath.abspath()
             s = 'currentPath: %s' % path
-            print s ; g.es(s)
+            g.es_print(s)
             filelines = path.lines()
             # Add an @ignore directive.
             lines = ['@ignore\n']
@@ -235,7 +235,7 @@ class View:
         Return the path fragment if this node is a @path or @view or any @file node.
         """
 
-        head = p.headString()
+        head = p.h
 
         for s in ('@path','@view','@strip','@file','@thin','@nosent','@asis'):
             if head.startswith(s):
@@ -268,6 +268,8 @@ class View:
         @node is the node to work with
         """
 
+        c = self.c
+
         # delete all nodes before creating, to avoid duplicates
         while node.firstChild():
             node.firstChild().doDelete(node)
@@ -277,8 +279,8 @@ class View:
             c.setHeadString(child,'@view %s' % file.name)
 
         for file in path.dirs():
-           child = node.insertAsLastChild()
-           c.setHeadString(child,'@view %s' % file.name)
+            child = node.insertAsLastChild()
+            c.setHeadString(child,'@view %s' % file.name)
     #@-node:ktenney.20041211072654.14:processDirectory
     #@-others
 #@nonl

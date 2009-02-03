@@ -37,8 +37,8 @@ __version__ = "0.8"
 #@nl
 #@<< imports >>
 #@+node:ekr.20040909105522:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+# import leo.core.leoPlugins as leoPlugins
 
 try:
     # From win32 extensions: http://www.python.org/windows/win32/
@@ -91,7 +91,7 @@ def getWordConnection():
     except Exception, err:
         g.es("Failed to connect to Word",color="blue")
         raise
-        return None
+        # return None
 #@nonl
 #@-node:ekr.20041109085615:getWordConnection
 #@+node:EKR.20040517075715.17:doPara
@@ -122,13 +122,13 @@ def writeNodeAndTree (c, word, header_style, level,
     if vnode is None:
         vnode = c.currentVnode()
     #
-    dict = g.scanDirectives(c,p=vnode)
+    dict = c.scanAllDirectives(p=vnode)
     encoding = dict.get("encoding",None)
     if encoding == None:
         # encoding = c.config.default_derived_file_encoding
         encoding = sys.getdefaultencoding()
     # 
-    s = vnode.bodyString()
+    s = vnode.b
     s = g.toEncodedString(s,encoding,reportErrors=True)
     doPara(word,s)
     #
@@ -138,7 +138,7 @@ def writeNodeAndTree (c, word, header_style, level,
         else:
             thishead = ""
         child = vnode.nthChild(i)
-        h = child.headString()
+        h = child.h
         h = g.toEncodedString(h,encoding,reportErrors=True)
         doPara(word,"%s %s" % (thishead,h),"%s %d" % (header_style,min(level,maxlevel)))
         writeNodeAndTree(c,word,header_style,level+1,maxlevel,usesections,thishead,child)

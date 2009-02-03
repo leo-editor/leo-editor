@@ -19,7 +19,7 @@ header. This is achieved by using the @auto-newsitem headline.
 
 from autotrees import BaseTreeHandler, TreeNode
 import feedparser
-import leoGlobals as g
+import leo.core.leoGlobals as g
 import nntplib
 import sets
 
@@ -76,8 +76,9 @@ class News(BaseTreeHandler):
 
     #@    @+others
     #@+node:ekr.20050329082101.159:initFrom
-    def initFrom(self, parameter):
+    def initFrom(self,c,parameter):
         """Initialize the tree"""
+        self.c = c
         self.children = []
         #
         try:
@@ -109,19 +110,20 @@ class NewsItem(BaseTreeHandler):
 
     #@    @+others
     #@+node:ekr.20050329082101.161:initFrom
-    def initFrom(self, parameter):
+    def initFrom(self,c,parameter):
         """Initialize the tree"""
+        self.c = c
         self.children = []
         #
         # Get the server name which we conveniently left in the body
-        body = self.node.bodyString().splitlines()[0]
+        body = self.node.b.splitlines()[0]
         try:
             connection, resp, count, first, last, name = getConnection(body)
         except NewsTreeError:
             return
         #
         # Now get the article 
-        id = self.node.headString().split(" - ", 1)[0][15:]
+        id = self.node.h.split(" - ", 1)[0][15:]
         article = connection.body(id)
         self.c.setBodyText(self.node,"\n".join(article[-1]))
         #

@@ -80,31 +80,18 @@ __version__ = '0.9'
 #@nl
 #@<< imports >>
 #@+node:ekr.20080201143145.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import sys
 
 import_ok = True
 
 try:
-    import Tkinter as Tk
-except ImportError:
-    g.es_print('ipython plugin: can not Tkinter',color='red')
-    import_ok = False
-
-try:
     import IPython.ipapi
 except ImportError:
     g.es_print('ipython plugin: can not import IPython.ipapi',color='red')
     import_ok = False
-
-try:
-    from IPython.Shell import IPShellEmbed
-except ImportError:
-    g.es_print('ipython plugin: can not import IPython.Shell.IPShellEmbed')
-    import_ok = False
-
 #@-node:ekr.20080201143145.3:<< imports >>
 #@nl
 
@@ -125,7 +112,7 @@ def init ():
     if g.app.gui is None:
         g.app.createTkGui(__file__)
 
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = g.app.gui.guiName() in ("tkinter","qt")
     if ok:
 
         # Call onCreate after the commander and the key handler exist.
@@ -139,9 +126,23 @@ def onCreate (tag, keys):
 
     c = keys.get('c')
 
-    if c:
-        # Inject the controller into the commander.
-        c.ipythonController = ipythonController(c)
+    if not c:
+        return
+
+    # Inject the controller into the commander.
+    c.ipythonController = ipythonController(c)
+
+    try:
+        import ipy_leo
+    except ImportError:
+        return
+    try:
+        st = ipy_leo._request_immediate_connect
+    except AttributeError:
+        return
+    if st:
+        c.ipythonController.startIPython()
+
 #@-node:ekr.20080201143145.5:onCreate
 #@-node:ekr.20080201144219:Module-level functions
 #@+node:ekr.20080201143145.6:class ipythonController
@@ -203,7 +204,7 @@ class ipythonController:
         try:
             api = IPython.ipapi
             leox = leoInterface(c,g) # inject leox into the namespace.
-            
+
             existing_ip = api.get()
             if existing_ip is None:
                 args = c.config.getString('ipython_argv')
@@ -212,11 +213,22 @@ class ipythonController:
                 else:
                     # force str instead of unicode
                     argv = [str(s) for s in args.split()] 
+                if g.app.gui.guiName() == 'qt':
+                    # qt ui takes care of the coloring (using scintilla)
+                    if '-colors' not in argv:
+                        argv.extend(['-colors','NoColor'])
                 sys.argv = argv
-                
+
                 self.message('Creating IPython shell.')
                 ses = api.make_session()
                 gIP = ses.IP.getapi()
+
+                if g.app.gui.guiName() == 'qt':
+                    import ipy_qt.qtipywidget
+                    self.qtwidget = ipy_qt.qtipywidget.IPythonWidget()
+                    self.qtwidget.set_ipython_session(gIP)
+                    self.qtwidget.show()
+
             else:
                 # To reuse an old IPython session, you need to launch Leo from IPython by doing:
                 #
@@ -226,18 +238,18 @@ class ipythonController:
                 #
                 # Obviously you still need to run launch-ipython (Alt-Shift-I) to make 
                 # the document visible for ILeo
- 
+
                 self.message('Reusing existing IPython shell')
                 gIP = existing_ip                
-                
+
             ipy_leo_m = gIP.load('ipy_leo')
             ipy_leo_m.update_commander(leox)
             c.inCommand = False # Disable the command lockout logic, just as for scripts.
             # start mainloop only if it's not running already
-            if existing_ip is None:
+            if existing_ip is None and g.app.gui.guiName() != 'qt':
                 # Does not return until IPython closes!
                 ses.mainloop()
-                
+
         except Exception:
             self.error('exception creating IPython shell')
             g.es_exception()
@@ -271,7 +283,7 @@ class ipythonController:
             if script:
                 gIP.runlines(script)
                 return
-            c = self.c ; p = c.currentPosition()
+            c = self.c ; p = c.p
             push = gIP.user_ns['_leo'].push
             c.inCommand = False # Disable the command lockout logic
             push(p)

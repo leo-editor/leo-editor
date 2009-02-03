@@ -20,9 +20,9 @@ Requires Pmw and the tktable widget at http://sourceforge.net/projects/tktable
 
 #@<< imports >>
 #@+node:ekr.20041017035937.1:<< imports >>
-import leoGlobals as g
-import leoPlugins
-import leoNodes
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+# import leo.core.leoNodes as leoNodes
 
 Pmw    = g.importExtension("Pmw",    pluginName=__name__,verbose=True)
 Tk     = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
@@ -35,7 +35,7 @@ import weakref
 #@-node:ekr.20041017035937.1:<< imports >>
 #@nl
 
-__version__ = ".13"
+__version__ = ".14"
 #@<< version history >>
 #@+node:ekr.20050311103711:<< version history >>
 #@@killcolor
@@ -45,6 +45,7 @@ __version__ = ".13"
 # .13 EKR:
 #     - Added init function.
 #     - Use only 'new' and 'open2' hooks.
+# .14 EKR: Fixed bug reported by pylint.
 #@-at
 #@nonl
 #@-node:ekr.20050311103711:<< version history >>
@@ -103,8 +104,8 @@ class CSVVisualizer:
     def readData( self ):
 
         c = self.c
-        pos = c.currentPosition()
-        data = pos.bodyString()
+        pos = c.p
+        data = pos.b
         cS = cStringIO.StringIO()
         cS.write( data )
         cS.seek( 0 )
@@ -116,13 +117,13 @@ class CSVVisualizer:
     #@+node:ekr.20041017035937.6:writeData
     def writeData( self, save ):
 
-        pos = self.c.currentPosition()
+        pos = self.c.p
         n2 = self.rows
         n = self.columns
         data = []
-        for z in xrange( n2 ):
+        for z in range( n2 ):
             ndata = []
-            for z2 in xrange( n ):
+            for z2 in range( n ):
                 ndata.append( self.arr.get( "%s,%s" % ( z, z2 ) ) )        
             data.append( ndata )
         cS = cStringIO.StringIO()
@@ -130,13 +131,15 @@ class CSVVisualizer:
         for z in data:
             csv_write.writerow( z )
         cS.seek( 0 )
-        self.c.beginUpdate() 
+
         if not save:
-            tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str(pos.headString() ) )
-            pos.insertAfter( tnd )
+            # tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str(pos.h ) )
+            p2 = pos.insertAfter() # tnd )
+            p2.setBodyString(cS.getvalue())
+            p2.setHeadString("Save of Edited " + str(pos.h))
         else:
             pos.setTnodeText( cS.getvalue() )
-        self.c.endUpdate()
+        self.c.redraw()
     #@-node:ekr.20041017035937.6:writeData
     #@+node:ekr.20041017035937.7:addRow
     def addRow( self , tab ):
@@ -144,7 +147,7 @@ class CSVVisualizer:
         self.rows = self.rows + 1
         tab.configure( rows = self.rows )
         rc =  '%s,0' % (self.rows -1 )
-        for z in xrange( self.columns ):
+        for z in range( self.columns ):
             self.arr.set( '%s,%s' %( self.rows - 1, z ), "" ) 
         tab.activate( rc )
         tab.focus_set()
@@ -163,13 +166,13 @@ class CSVVisualizer:
 #@+node:ekr.20041017035937.9:viewTable
 def viewTable( c ):
 
-    pos = c.currentPosition()
+    pos = c.p
     dialog = Pmw.Dialog(
-        title = "Table Editor for " + str( pos.headString()),
+        title = "Table Editor for " + str( pos.h),
         buttons = [ 'Save To Current', 'Write To New', 'Close']
     )
     dbbox = dialog.component( 'buttonbox' )
-    for z in xrange( dbbox.numbuttons() ):
+    for z in range( dbbox.numbuttons() ):
         dbbox.button( z ).configure( background = 'white', foreground = 'blue')
     csvv = CSVVisualizer( c )
     sframe = Pmw.ScrolledFrame( dialog.interior() )
@@ -223,16 +226,16 @@ def createBBox( parent, csvv, tab ):
 
 #@-node:ekr.20041017035937.12:createBBox
 #@+node:ekr.20041017035937.13:addMenu
-def addMenu( tag, keywords ):
+def addMenu (tag,keywords):
 
-    c = keywords.get(c)
-    if not c or haveseen.has_key( c ):
+    c = keywords.get('c')
+    if not c or haveseen.has_key(c):
         return
 
-    haveseen[ c ] = None
+    haveseen [c] = None
     men = c.frame.menu
-    men = men.getMenu( 'Outline' )
-    men.add_command( label = "Edit Node With Table", command = lambda c = c: viewTable( c ) )
+    men = men.getMenu('Outline')
+    c.add_command(men,label="Edit Node With Table",command=lambda c=c: viewTable(c))
 #@nonl
 #@-node:ekr.20041017035937.13:addMenu
 #@-others

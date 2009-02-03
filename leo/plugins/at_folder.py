@@ -22,8 +22,8 @@ while keep every files in a flat/single directory on your computer.
 #@@language python
 #@@tabwidth -4
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import os  # added JD 2004-09-10
 
 __version__ = "1.4"
@@ -39,7 +39,7 @@ def sync_node_to_folder(c,parent,d):
     after_v = parent.nodeAfterTree()
     while v != after_v:
         if not v.hasChildren():
-            oldlist[v.headString()] = v.bodyString()
+            oldlist[v.h] = v.b
         v = v.threadNext()
     #compare folder content to children
     for name in os.listdir(d):
@@ -64,7 +64,7 @@ def onSelect (tag,keywords):
     c = keywords.get('c') or keywords.get('new_c')
     if not c: return
     v = keywords.get("new_v")
-    h = v.headString()
+    h = v.h
     if g.match_word(h,0,"@folder"):
         sync_node_to_folder(c,v,h[8:])
 

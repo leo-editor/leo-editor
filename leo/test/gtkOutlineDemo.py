@@ -26,7 +26,7 @@ class GtkLeoTreeDemo(object):
     def __init__(self):
 
         #for n in c.allNodes_iter():
-        #    print n.headString()
+        #    g.pr(n.headString())
 
 
         window = gtk.Window(gtk.WINDOW_TOPLEVEL)
@@ -63,11 +63,12 @@ class GtkLeoTreeDemo(object):
 
 
         sp, item = self.canvas.hitTest(event.x, event.y)
-        print codes[event.type], '%s[%s]: %s'%(
-            g.choose(isinstance(item, int), 'headStringIcon[%s]'%item, item),
-            'button-%s'%event.button,
-            sp.headString()
-        )
+        g.pr(
+            codes[event.type], '%s[%s]: %s'%(
+                g.choose(isinstance(item, int), 'headStringIcon[%s]'%item, item),
+                'button-%s'%event.button,
+                sp.headString()
+            ))
 
         if item == 'ClickBox' and event.button == 1:
             if sp.isExpanded():
@@ -93,7 +94,7 @@ def loadIcon(fname):
     if icon and icon.get_width()>0:
         return icon
 
-    print 'Can not load icon from', fname
+    g.pr('Can not load icon from', fname)
 #@-node:bob.20080113170657:loadIcon
 #@+node:bob.20080113133525:loadIcons
 def loadIcons():
@@ -159,11 +160,8 @@ def name2color(name, default=None, cairo=False):
 
     r, g, b = color
 
-    #trace(print r, g, b)
-
     if cairo:
         return r/255.0, g/255.0, b/255.0 
-
 
     return gtk.gdk.Color(r,g,b)
 #@-node:bob.20080113141134:name2Color
@@ -297,7 +295,7 @@ class OutlineCanvasPanel(object):
             return self.hideEntry()
 
         x, y, width, height = sp._textBoxRect
-        #print '\t', x, y, width , height
+        #g.pr('	', x, y, width , height)
 
         entry._virtualTop = canvas._virtualTop + y -2
 
@@ -751,15 +749,7 @@ class OutlineCanvas(gtk.DrawingArea):
 
                 count += 1
 
-                #@        << if p.isExpanded() and p.hasFirstChild():>>
-                #@+node:bob.20080111201957.108:<< if p.isExpanded() and p.hasFirstChild():>>
-                ## if p.isExpanded() and p.hasFirstChild():
-
-                v=p.v
-                if v.statusBits & v.expandedBit and v.t._firstChild:
-                #@nonl
-                #@-node:bob.20080111201957.108:<< if p.isExpanded() and p.hasFirstChild():>>
-                #@nl
+                if p.isExpanded() and p.hasFirstChild():
                     stk.append(newp)
                     p = p.firstChild()
                     continue
@@ -841,7 +831,7 @@ class OutlineCanvas(gtk.DrawingArea):
         # """Renders the offscreen buffer to the outline canvas."""
         # return
 
-        # #print 'refresh'
+        # #g.pr('refresh')
         # wx.ClientDC(self).BlitPointSize((0,0), self._size, self._buffer, (0, 0))
 
     refresh = onPaint
@@ -1056,15 +1046,7 @@ class OutlineCanvas(gtk.DrawingArea):
                         textSize_w + xTextOffset + left
                     )
 
-                #@        << if p.isExpanded() and p.hasFirstChild():>>
-                #@+node:bob.20080111201957.108:<< if p.isExpanded() and p.hasFirstChild():>>
-                ## if p.isExpanded() and p.hasFirstChild():
-
-                v=p.v
-                if v.statusBits & v.expandedBit and v.t._firstChild:
-                #@nonl
-                #@-node:bob.20080111201957.108:<< if p.isExpanded() and p.hasFirstChild():>>
-                #@nl
+                if p.isExpanded() and p.hasFirstChild():
                     stk.append(newp)
                     p = p.firstChild()
                     continue
@@ -1086,10 +1068,10 @@ class OutlineCanvas(gtk.DrawingArea):
 
         # try:
             # result = self._leoTree.drawTreeHook(self)
-            # print 'result =', result
+            # g.pr('result =', result)
         # except:
             # result = False
-            # print 'result is False'
+            # g.pr('result is False')
 
         # if hasattr(self._leoTree, 'drawTreeHook'):
             # try:
@@ -1097,7 +1079,7 @@ class OutlineCanvas(gtk.DrawingArea):
             # except:
                 # result = False
         # else:
-            # #print 'drawTreeHook not known'
+            # #g.pr('drawTreeHook not known')
             # result = None
 
         # if not result:
@@ -1244,13 +1226,14 @@ def abspath(*args):
 if __name__ == "__main__": 
 
     leoDir = abspath(sys.path[0],'..')
+    sys.path[1:1] = [abspath(leoDir, '..')]
 
-    sys.path.insert(0, abspath(leoDir, 'src'))
+    import leo.core.leoGlobals as g
+    g.g = g
 
-    import leoBridge
+    import leo.core.leoBridge as leoBridge
 
     controller = leoBridge.controller(gui='nullGui')
-    g = controller.globals()
     c = controller.openLeoFile(abspath(leoDir, 'test', 'unitTest.leo'))
 
     outlineFont = ''

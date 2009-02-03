@@ -29,13 +29,13 @@ __version__ = "0.1"
 #@nl
 #@<< imports >>
 #@+node:tbrown.20070322113635.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
-import os       
-import urlparse 
+# import os       
+# import urlparse 
 #@nonl
 #@-node:tbrown.20070322113635.3:<< imports >>
 #@nl
@@ -43,17 +43,17 @@ import urlparse
 #@+others
 #@+node:tbrown.20070322113635.4:onDClick1
 def onDClick1 (tag,keywords):
-    """"""
+
     c = keywords.get("c")
     p = keywords.get("p")
     bookmark = False
     for nd in p.parents_iter():
-        if '@bookmarks' in nd.headString():
+        if '@bookmarks' in nd.h:
             bookmark = True
             break
     if bookmark:
         # Get the url from the first body line.
-        lines = p.bodyString().split('\n')
+        lines = p.b.split('\n')
         url = lines and lines[0] or ''
         if not g.doHook("@url1",c=c,p=p,v=p,url=url):
             c.frame.handleUrlInUrlNode(url)

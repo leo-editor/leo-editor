@@ -6,8 +6,8 @@
 #@@tabwidth -4
 
 # By Paul Paterson.
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import time
 

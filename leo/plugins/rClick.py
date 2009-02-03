@@ -1,10 +1,5 @@
 #@+leo-ver=4-thin
 #@+node:bobjack.20080321133958.6:@thin rClick.py
-# Send bug reports to
-# http://sourceforge.net/forum/forum.php?thread_id=980723&forum_id=10228
-
-#@@first
-
 #@@language python
 #@@tabwidth -4
 
@@ -14,12 +9,11 @@
 Right Click Menus (rClick.py)
 =============================
 
-
-
 This plugin provides a simple but powerful and flexible system of managing
 scriptable context menus.
 
-Examples of the use of this plugin can be found in::
+Executable Howto's and other examples of the use of this plugin can be
+found in::
 
     leo/tests/testAtPopup.leo
 
@@ -44,8 +38,8 @@ and also the following fragments:
 
     - 'edit-menu' fragment (c.context_menus['edit-menu'])
 
-            This gives basic 'cut/copy/paste/select all' menu items for plain
-            text widgets, (not body widgets).
+        This gives basic 'cut/copy/paste/select all' menu items for
+        text widgets.
 
     - 'recent-files-menu' fragment (c.context_menus['recent-files-menu']
 
@@ -55,6 +49,10 @@ and also the following fragments:
     - 'to-chapter-fragment'
 
         This gives a list of four (copy/clone/move/goto) chapter menus
+
+    - 'find-controls-fragment'
+
+        This organises the find control buttons into two columns.
 
     These fragments are meant to be included in other popup menu's via::
 
@@ -84,7 +82,7 @@ Any number of keyword pairs can be included and all these will be passed to any
 generator or invocation callbacks used in the menu.
 
 
-The right click menu to be used is determined in one of three ways.
+The right click menu to be used is determined in one of two ways.
 
     The explicitly set context_menu property:
 
@@ -92,18 +90,61 @@ The right click menu to be used is determined in one of three ways.
 
     The context_menu supplied the doHook call if any.   
 
-    The widgets name:
 
-        If no context_menu property is defined then the widgets name, as determined
-        by c.widget_name(w), is used and each key in c.context_menus is tested
-        against it to see if the name starts with that key. If it does, the menu
-        table in c.context_menus[key] will be used.
+Keyword = Value data items in the body
+--------------------------------------
 
-        eg. if the widgets name is 'log3' then c.context_menus['log'] is used.
+Each line after the first line of a body can have the form::
 
-        No attempt is made to resolve conflicts. The keys are in random order and
-        the first match found will be used. Better to use w.context_menu for anything
-        other than the default 'body', 'log', 'find-text' and 'change-text'.
+    key-string = value string
+
+these lines will be passed to the menu system aa a dictionary {key: value, ...}. This will
+be available to generator and invocation callbacks as keywords['item_data'].
+
+Lines not containing '=' or with '#' as the first character are ignored.
+
+Leading and trailing spaces will be stripped as will spaces around the first '=' sign.
+The value string may contain '=' signs.
+
+
+Colored Menu Items
+------------------
+
+Colors for menu items can be set using keyword = value data lines in the body of 
+@item and @menu nodes or the cmd string in rClick menus. 
+
+To set the foreground and background colors for menu items use::
+
+    fg = color
+    bg = color
+
+additionally different background and foreground colors can be set for radio and
+check items in the selected state by using::
+
+    selected-fg = color
+    selected-bg = color
+
+Icons in Menu Items
+-------------------
+Icons will only be shown if the Python Imaging Library extension is available.
+
+To set an icon for an @item or @menu setting in @popup trees use this in the body::
+
+    icon = <full path to image>
+
+or::
+
+    icon = <path relative to leo's Icon folder>
+
+an additional key 'compound' can be added::
+
+    compound = [bottom | center | left | right | top | none]
+
+if compound is not included it is equivalent to::
+
+    compound = left
+
+See the Tk menu documentation for more details.
 
 
 Format of menu tables.
@@ -112,6 +153,8 @@ Format of menu tables.
 The menu tables are simply lists of tuples with the form::
 
     (txt, cmd)
+
+where txt and cmd can be any python object
 
 eg::
 
@@ -279,6 +322,8 @@ If `txt` is '&':
     c.context_menus. If a menu exists with that name its contents are included
     inline, (not as a submenu).
 
+
+
 Example menu generator
 ======================
 
@@ -314,7 +359,7 @@ Create a "Help on:" menu item.
 @Settings (@popup)
 ==================
 
-    **\@popup**
+    **popup**
 
         Context menus can be described in @settings trees using::
 
@@ -359,24 +404,49 @@ Minibuffer Commands
 These are provided for use with ('*', ... ) items. They are of use **only** in
 rclick menu tables and @popup trees.
 
-    **rclick-gen-context-sensitive-commands**
+    - rclick-gen-context-sensitive-commands
 
         It's use is described elsewhere.
 
 
-    **rclick-gen-recent-files-list**
+    - rclick-gen-recent-files-list
 
         Used to generate a list of items from the recent files list.
 
-    **????-node-to-chapter-menu**
+    - clone-node-to-chapter-menu
+    - copy-node-to-chapter-menu
+    - move-node-to-chapter-menu
+    - select-chapter-menu
 
-        Where ???? can be copy, clone or move. These command produce a list of menu items,
-        one for each chapter, which when invoked copies, cuts or moves the current node to
-        the selected chapter.
+        These produce menu items for each chapter that copy, clone, move or select that chapter when invoked. 
+        The currently selected chapter is not included in the list.
 
-    ***rclick-button**
+    - rclick-button
 
         This is the default handler for radio and check menu items.
+
+    - rclick-find-whole-word-button
+    - rclick-find-ignore-case-button
+    - rclick-find-wrap-around-button
+    - rclick-find-reverse-button
+    - rclick-find-regexp-button
+    - rclick-find-mark-finds-button
+    - rclick-find-mark-changes-button
+    - rclick-find-search-body-button
+    - rclick-find-search-headline-button
+    - rclick-find-node-only-button
+    - rclick-find-suboutline-only-button
+    - rclick-find-entire-outline-button
+
+        These commands are generator commands to be use as @item \* (body: rclick-find-\*-button).
+
+        Each command producdes a radio or check item that reflects a control in the find tab.
+
+        When these buttons are clicked, the changes are automatically made to the controls
+        in the find tab.
+
+        fg, bg, selected-fg and selected-bg may be used to color these buttons but
+        do NOT use kind, name or group
 
 
 Radio and Check menu Items.
@@ -389,6 +459,10 @@ of the node should have the following format::
     other lines: kind = <radio or check>
                  name = <unique name for this item>
                  group = <name of group if kind is radio>
+
+As well as 'fg = color' and 'bg = color', 'selected-fg = color' and
+'selected-bg' can be used to set the colors for when a radio or check button is
+selected
 
 From now on controller will refer to c.theContextMenuController
 
@@ -433,6 +507,10 @@ command to handle check and radio items, using rclick-button as a template.
 """
 #@-node:bobjack.20080320084644.2:<< docstring >>
 #@nl
+
+__version__ = "1.37"
+__plugin_name__ = 'Right Click Menus'
+
 #@<< version history >>
 #@+node:ekr.20040422081253:<< version history >>
 #@+at
@@ -505,7 +583,7 @@ command to handle check and radio items, using rclick-button as a template.
 # 0.23 bobjack:
 # - remove rclickbinder as all binding is now done via hooks.
 # - added support for radio/checkbox items
-# - now dependant on Tk again :(
+# - now dependent on Tk again :(
 # 0.24 bobjack:
 # - fix recent-menus bug
 # - fix canvas/plusbox menu bug
@@ -514,6 +592,42 @@ command to handle check and radio items, using rclick-button as a template.
 # - make version 1.25 to show the new api is stable
 # 1.26 bobjack:
 # - bug fixes
+# 1.27 bobjack:
+# - added support for colored menu items
+# 1.28 bobjack:
+# - added support for icons
+# - extended icon and color support to @menu nodes
+# - modified api so that key-value pairs are stored with the label
+#   in the first item of the tuple, instead of with the cmd item.
+# - add rclick-[cut,copy,paste]-text and rclick-select-all commands
+# 1.29 bobjack:
+# - bug fix, in onCreate only create the controller once!
+# 1.30 bobjack:
+# - Linux bug fixes
+# 1.31 bobjack:
+# - some refactoring to aid unit tests
+# 1.32 bobjack:
+#     - bugfix per widget context_menu
+# 1.33 bobjack:
+#     - allow popup menus outside @settings trees.
+#       These wil be local to the commander
+# 1.34 bobjack:
+#     - convert to use c.universalCallback via registerCommand(..., wrap=True)
+#     - fix k.funcReturn but in recentFoldersCallback
+# 1.35 bobjack:
+#     - convert to use class based commands
+#     - add menu generator commands to crate menu items to control find 
+# options
+#     - seperate out base classes pluginCommandClass and basePluginController
+# 1.36 EKR:
+#     - convert menu.add_command to c.add_command
+# 1.37 bobjack:
+#     - remove base classes to a seperate file so toolbar can be independant 
+# of rClick
+#     - modify menu config to remove rClick load order sensitivity
+# 
+# 
+# 
 #@-at
 #@-node:ekr.20040422081253:<< version history >>
 #@nl
@@ -524,6 +638,16 @@ command to handle check and radio items, using rclick-button as a template.
 # 
 # - extend support to other leo widgets
 # 
+#     - allow rClick menus for log tabs
+# 
+#     - menu for minibuffer label/widget
+# 
+#     - menu for status line
+# 
+#     - menus for spell tab objects
+# 
+#     - menus for colors tab objects
+# 
 # - provide rclick-gen-open-with-list and @popup open-with-menu
 # 
 # - remove dependence on Tk.
@@ -533,60 +657,131 @@ command to handle check and radio items, using rclick-button as a template.
 #@nl
 #@<< imports >>
 #@+node:ekr.20050101090207.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import re
 import sys
-import copy
 
 Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
-#@nonl
+
+try:
+    from PIL import Image
+    from PIL import ImageTk
+except ImportError:
+    Image = ImageTk = None
+
+import rClickBasePluginClasses as baseClasses
 #@-node:ekr.20050101090207.2:<< imports >>
 #@nl
 
-# To do: move top-level functions into ContextMenuController class.
-# Eliminate global vars.
-
-__version__ = "1.26"
-__plugin_name__ = 'Right Click Menus'
-
+controllers = {}
 default_context_menus = {}
 
+
 SCAN_URL_RE = """(http|https|ftp)://([^/?#\s'"]*)([^?#\s"']*)(\\?([^#\s"']*))?(#(.*))?"""
+
+#@<< required ivars >>
+#@+node:bobjack.20080424195922.5:<< required ivars >>
+#@+at
+# This is a list of ivars that the pluginController must have and the type of 
+# objects they are allowed to contain.
+# 
+#     (ivar, type)
+# 
+# where type may be a tuple and False indicates any type will do
+# 
+# The list is used by unit tests.
+#@-at
+#@@c
+
+requiredIvars = (
+    ('mb_retval', False),
+    ('mb_keywords', False),
+    ('default_context_menus', dict),
+    ('radio_group_data', dict),
+    ('check_button_data', dict),
+    ('radio_vars', dict),
+    ('iconCache', dict),
+
+    ('commandList', (tuple, dict)),
+    ('iconBasePath', basestring),
+)
+#@-node:bobjack.20080424195922.5:<< required ivars >>
+#@nl
 
 #@+others
 #@+node:ekr.20060108122501:Module-level
 #@+node:ekr.20060108122501.1:init
 def init ():
-    """Initialize and register plugin.
+    """Initialize and register plugin."""
 
-    Hooks bodyrclick1 and after-create-leo-frame.
+    if not Tk:
+        return False
 
+    if g.app.gui is None:
+        g.app.createTkGui(__file__)
 
-    """
+    ok = g.app.gui.guiName() == "tkinter"
 
-    ok = bool(g.app.gui)
     if ok:
 
         leoPlugins.registerHandler('after-create-leo-frame',onCreate)
-        leoPlugins.registerHandler("bodyrclick1",rClicker)
+        leoPlugins.registerHandler('close-frame',onClose)
 
+        leoPlugins.registerHandler("bodyrclick1",rClicker)
         leoPlugins.registerHandler("rclick-popup",rClicker)
+
         g.plugin_signon(__name__)
 
     return ok
 #@-node:ekr.20060108122501.1:init
 #@+node:bobjack.20080323045434.18:onCreate
 def onCreate (tag, keys):
+    """Handle creation and initialization of the pluginController.
+
+    Make sure the pluginController is created only once.
+    """
 
     c = keys.get('c')
-    if not c: return
+    if not (c and c.exists):
+        return
 
-    c.theContextMenuController = ContextMenuController(c)
-#@nonl
+    controller = controllers.get(c)
+    if not controller:
+
+        controllers[c] = controller = pluginController(c)
+        controller.onCreate()
+
+        c.theContextMenuController = controller
+
+        leoPlugins.registerHandler("bodyrclick1",rClicker)
+        leoPlugins.registerHandler("rclick-popup",rClicker)
 #@-node:bobjack.20080323045434.18:onCreate
-#@+node:ekr.20080327061021.229:Event handler
+#@+node:bobjack.20080424195922.4:onClose
+def onClose (tag, keys):
+
+    """Tell controller to clean up then destroy it."""
+
+    c = keys.get('c')
+    if not (c and c.exists):
+        return
+
+    controller = controllers.get(c)
+
+    try: 
+        del controllers[c]
+    except KeyError:
+        pass
+
+    if not controller:
+        return
+
+    try:
+        controller.onClose()
+    finally:
+        controller = None
+#@-node:bobjack.20080424195922.4:onClose
 #@+node:ekr.20080327061021.220:rClicker
 # EKR: it is not necessary to catch exceptions or to return "break".
 
@@ -595,230 +790,441 @@ def rClicker(tag, keywords):
     """Construct and display a popup context menu.
 
     This handler responds to the `bodyrclick1` and `rclick-popup` hooks and
-    dispatches the event to the approriate commander for further processing.
+    dispatches the event to the appropriate commander for further processing.
 
     """
 
     c = keywords.get("c")
     event = keywords.get("event")
-    if not c or not c.exists or not event:
+
+    if not c or not c.exists or not c in controllers:
         return
 
-
-    return c.theContextMenuController.rClicker(keywords)
+    return controllers[c].rClicker(keywords)
 #@-node:ekr.20080327061021.220:rClicker
-#@-node:ekr.20080327061021.229:Event handler
 #@-node:ekr.20060108122501:Module-level
-#@+node:bobjack.20080323045434.14:class ContextMenuController
-class ContextMenuController(object):
+#@+node:bobjack.20080516105903.17:class rClickCommandClass
+class rClickCommandClass(baseClasses.pluginCommandClass):
 
-    """A per commander contoller for right click menu functionality."""
+    """Base class for all commands defined in the rClick.py plugin."""
+
+    pass
+#@nonl
+#@-node:bobjack.20080516105903.17:class rClickCommandClass
+#@+node:bobjack.20080516105903.18:class pluginController
+class pluginController(baseClasses.basePluginController):
+
+    """A per commander controller for right click menu functionality."""
+
+    commandPrefix = 'rclick'
+
+    #@    << command list >>
+    #@+node:bobjack.20080617170156.6:<< command list >>
+    commandList = (
+        'rclick-gen-recent-files-list',
+        'rclick-gen-context-sensitive-commands',
+        'rclick-select-all',
+        'rclick-cut-text',
+        'rclick-copy-text',
+        'rclick-paste-text',
+        'rclick-button',
+        'rclick-insert-newline',
+
+        'clone-node-to-chapter-menu',
+        'copy-node-to-chapter-menu',
+        'move-node-to-chapter-menu',
+        'select-chapter-menu', 
+
+        'rclick-find-whole-word-button',
+        'rclick-find-ignore-case-button',
+        'rclick-find-wrap-around-button',
+        'rclick-find-reverse-button',
+        'rclick-find-regexp-button',
+        'rclick-find-mark-finds-button',
+        'rclick-find-mark-changes-button',
+        'rclick-find-search-body-button',
+        'rclick-find-search-headline-button',
+        'rclick-find-node-only-button',
+        'rclick-find-suboutline-only-button',
+        'rclick-find-entire-outline-button',
+    )
+    #@nonl
+    #@-node:bobjack.20080617170156.6:<< command list >>
+    #@nl
+    #@    << default context menus >>
+    #@+node:bobjack.20080617170156.7:<< default context menus >>
+    defaultContextMenus = {
+
+        'rclick-find-controls-left': [
+            ('*', 'rclick-find-whole-word-button'),
+            ('*', 'rclick-find-ignore-case-button'),
+            ('*', 'rclick-find-wrap-around-button'),
+            ('*', 'rclick-find-reverse-button'),
+            ('*', 'rclick-find-regexp-button'),
+            ('*', 'rclick-find-mark-finds-button'),
+        ],
+
+        'rclick-find-controls-right': [
+            ('*', 'rclick-find-mark-changes-button'),
+            ('*', 'rclick-find-search-body-button'),
+            ('*', 'rclick-find-search-headline-button'),
+            ('*', 'rclick-find-node-only-button'),
+            ('*', 'rclick-find-suboutline-only-button'),
+            ('*', 'rclick-find-entire-outline-button'),
+        ],
+
+        'rclick-find-controls': [
+            ('&', 'rclick-find-controls-left'),
+            ('|', ''),
+            ('&', 'rclick-find-controls-right')
+        ],
+
+    #@+at
+    #     'body': [
+    #         ('&', 'edit-menu'),
+    #         ('-', ''),
+    #         ('Block Operations', [
+    #             ('Indent', 'indent-region'),
+    #             ('Dedent', 'deden-region'),
+    #             ('-', ''),
+    #             ('Add Comments', 'add-comments'),
+    #             ('Remove Comments', 'delete-comments'),
+    #         ]),
+    #         ('&', 'recent-files-menu'),
+    #         ('-', ''),
+    #         ('Match Brackets', 'match-brackets'),
+    #         ('Execture Script', 'execute-script'),
+    #         ('*', 'rclick-gen-context-sensitive-commands'),
+    #     ],
+    # 
+    #     'log': [('&', 'edit-menu')],
+    #     'find-text': [('&', 'edit-menu')],
+    #     'change-text': [('&', 'edit-menu')],
+    # 
+    #     'canvas': [
+    #         ('&', 'to-chapter-fragment'),
+    #         ('-', ''),
+    #         ('Create Chapter', 'create-chapter'),
+    #         ('Remove Chapter', 'remove-chapter'),
+    #     ],
+    # 
+    #     'headline': [],
+    #     'iconbox': [],
+    #     'plusbox': [],
+    # 
+    #     'edit-menu': [
+    #         ('Cut\nicon = Tango/16x16/actions/editcut.png', 
+    # 'rclick-cut-text'),
+    #         ('Copy\nicon = Tango/16x16/actions/editcopy.png', 
+    # 'rclick-copy-text'),
+    #         ('Paste\nicon = Tango/16x16/actions/editpaste.png', 
+    # 'rclick-paste-text'),
+    #         ('-',''),
+    #         ('Select All', 'rclick-select-all'),
+    #     ],
+    # 
+    #     'recent-files-menu': [
+    #         ('Recent Files',
+    #             [('*', 'rclick-gen-recent-files-list')],
+    #         ),
+    #     ],
+    # 
+    #     'to-chapter-fragment': [
+    #         ('Clone To Chapter',
+    #             [('*', 'clone-node-to-chapter-menu')],
+    #         ),
+    #         ('Copy To Chapter',
+    #             [('*', 'copy-node-to-chapter-menu')],
+    #         ),
+    #         ('Move To Chapter',
+    #             [('*', 'move-node-to-chapter-menu')],
+    #         ),
+    #         ('Go To Chapter',
+    #             [('*', 'select-chapter-menu')],
+    #         ),
+    #     ],
+    # 
+    #@-at
+    #@@c
+    }
+    #@-node:bobjack.20080617170156.7:<< default context menus >>
+    #@nl
 
     #@    @+others
-    #@+node:bobjack.20080323045434.15:__init__
-    def __init__ (self,c):
+    #@+node:bobjack.20080516105903.19:__init__
+    def __init__(self, c):
 
-        """Initialize rclick functionality for this commander."""
+        """Initialize rclick functionality for this commander.
 
-        self.c = c
+        This only initializes ivars, the proper setup must be done by calling init
+        in onCreate. This is to make unit testing easier.
 
-        self.popup_menu = None
+        """
+
+        super(self.__class__, self).__init__(c)
+
         self.mb_retval = None
-        self.mb_event = None
-
-        # Warning: hook handlers must use keywords.get('c'), NOT self.c.
-
-        for command in (
-            'rclick-gen-context-sensitive-commands',
-            'rclick-gen-recent-files-list',
-
-            'clone-node-to-chapter-menu',
-            'copy-node-to-chapter-menu',
-            'move-node-to-chapter-menu',
-            'select-chapter-menu',
-
-            'rclick-button',
-
-        ):
-            method = getattr(self, command.replace('-','_'))
-            c.k.registerCommand(command, shortcut=None, func=method)
+        self.mb_keywords = None
 
         self.default_context_menus = {}
-        self.init_default_menus()
-
-        self.rSetupMenus()
-
-        self.button_handlers = {
-            'radio': self.do_radio_button_event,
-            'check': self.do_check_button_event,
-        }
 
         self.radio_group_data = {}
         self.check_button_data = {}
 
         self.radio_vars = {}
-    #@+node:ekr.20080327061021.218:rSetupMenus
+        self.iconCache = {}
+
+
+    #@+node:bobjack.20080516105903.20:onCreate
+    def onCreate(self):
+
+        """Perform initialization for this per commander controller."""
+
+
+        super(self.__class__, self).onCreate()
+
+        self.rSetupMenus()
+    #@-node:bobjack.20080516105903.20:onCreate
+    #@+node:bobjack.20080516105903.21:getButtonHandlers
+    def getButtonHandlers(self):
+
+        return self.button_handlers
+
+    #@-node:bobjack.20080516105903.21:getButtonHandlers
+    #@+node:bobjack.20080516105903.22:rSetupMenus
     def rSetupMenus (self):
 
-        """Set up c.context-menus with menus from @settengs or default_context_menu."""
+        """Set up c.context-menus with menus from @settings or default_context_menu."""
 
         c = self.c
 
-        if not hasattr(c, 'context_menus'):
+        # save any default menus set by plugins before rClick was enabled
 
-            menus = {}
-            if hasattr(g.app.config, 'context_menus'):
-                menus = self.copyMenuDict(g.app.config.context_menus)
+        saved_menus = c.context_menus
 
-            if not isinstance(menus, dict):
-                menus = {}
+        if hasattr(g.app.config, 'context_menus'):
+            c.context_menus = self.copyMenuDict(g.app.config.context_menus)
 
-            c.context_menus = menus
+        self.handleLocalPopupMenus()
 
-            #@        << def config_to_rclick >>
-            #@+node:ekr.20080327061021.219:<< def config_to_rclick >>
-            def config_to_rclick(menu_table):
+        #@    << def config_to_rclick >>
+        #@+node:bobjack.20080516105903.23:<< def config_to_rclick >>
+        def config_to_rclick(menu_table):
 
-                """Convert from config to rClick format"""
+            """Convert from config to rClick format"""
 
-                out = []
+            out = []
 
-                if not menu_table:
-                    return out
-
-                while menu_table:
-
-                    s, cmd = menu_table.pop(0)
-
-                    if isinstance(cmd, list):
-                        out.append((s.strip().replace('&', ''), config_to_rclick(cmd[:])))
-                        continue
-
-                    else:
-                        cmd, pairs = self.getBodyData(cmd)
-
-                    if s in ('-', '&', '*', '|', '"'):
-                        out.append((s, self.rejoin(cmd, pairs)))
-                        continue
-
-                    star = s.startswith('*')
-
-                    if not star and cmd:
-                        out.append((cmd.replace('&', ''), self.rejoin(s, pairs)))
-                        continue
-
-                    if star:
-                        s = s[1:]
-
-                    label = c.frame.menu.capitalizeMinibufferMenuName(s, removeHyphens=True)
-                    cmd = self.rejoin(s.replace('&', ''), pairs)
-                    out.append( (label.replace('&', ''), cmd) )
-
+            if not menu_table:
                 return out
-            #@-node:ekr.20080327061021.219:<< def config_to_rclick >>
-            #@nl
 
-            for key in menus.keys():
-                menus[key] = config_to_rclick(menus[key][:])
+            while menu_table:
 
+                s, cmd = menu_table.pop(0)
+
+                if isinstance(cmd, list):
+
+                    s, pairs = self.getBodyData(s) 
+                    s = s.replace('&', '')
+                    out.append((self.rejoin(s, pairs), config_to_rclick(cmd[:])))
+                    continue
+
+                else:
+                    cmd, pairs = self.getBodyData(cmd)
+
+                if s in ('-', '&', '*', '|', '"'):
+                    out.append((self.rejoin(s, pairs), cmd))
+                    continue
+
+                star = s.startswith('*')
+
+                if not star and cmd:
+                    cmd = cmd.replace('&', '')
+                    out.append((self.rejoin(cmd, pairs), s))
+                    continue
+
+                if star:
+                    s = s[1:]
+
+                label = c.frame.menu.capitalizeMinibufferMenuName(s, removeHyphens=True)
+                label = label.replace('&', '')
+                cmd = s.replace('&', '')
+                out.append( (self.rejoin(label, pairs), cmd) )
+
+            return out
+        #@-node:bobjack.20080516105903.23:<< def config_to_rclick >>
+        #@nl
+
+        # convert config menus to rClick format
         menus = c.context_menus
+        for key in menus.keys():
+            menus[key] = config_to_rclick(menus[key][:])
 
-        if not isinstance(menus, dict):
-            c.context_menus = menus = {}
+        # menus defined before rclick was enabled are inserted here
+        #  config menus take priority over these
 
-        for key, item in self.default_context_menus.iteritems():
-
+        for key, item in saved_menus.iteritems():
             if not key in menus:
-                menus[key] = self.copyMenuTable(item)
+                menus[key] = item
 
         return True
-    #@+node:bobjack.20080414064211.4:rejoin
+
+    #@+node:bobjack.20080516105903.24:rejoin
     def rejoin(self, cmd, pairs):
+        """Join two strings with a line separator."""
 
         return (cmd + '\n' + pairs).strip()
-    #@-node:bobjack.20080414064211.4:rejoin
-    #@-node:ekr.20080327061021.218:rSetupMenus
-    #@-node:bobjack.20080323045434.15:__init__
-    #@+node:bobjack.20080329153415.3:Generator Minibuffer Commands
-    #@+node:bobjack.20080325162505.5:rclick_gen_recent_files_list
-    def rclick_gen_recent_files_list(self, event):
+    #@-node:bobjack.20080516105903.24:rejoin
+    #@+node:bobjack.20080516105903.25:handleLocalPopupMenus
+    def handleLocalPopupMenus(self):
 
-        """Minibuffer command wrapper."""
+        """Handle @popup menu items outside @settings trees."""
 
-        self.mb_retval = self.gen_recent_files_list(self.mb_keywords)
+        c = self.c
+
+        popup = '@popup '
+        lp = len(popup)
+
+        for p in self.c.allNodes_iter():
+
+            h = p.h.strip()
+
+            if not h.startswith(popup):
+                continue
+
+            found = False
+            for pp in p.parents_iter():
+                if pp.h.strip().lower().startswith('@settings'):
+                    found = True
+                    break
+
+            if found:
+                continue
+
+            h = h[lp:]
+            if '=' in h:
+                name, val = h.split('=', 1)
+            else:
+                name, val = h, ''
+
+            name, val = name.strip(), val.strip() 
+
+            aList = []
+
+            self.doPopupItems(p, aList)
+
+            c.context_menus[name] = aList        
+    #@+node:bobjack.20080516105903.26:doPopupItems
+    def doPopupItems (self,p,aList):
+
+        p = p.copy() ; after = p.nodeAfterTree()
+        p.moveToThreadNext()
+        while p and p != after:
+            h = p.h
+            for tag in ('@menu','@item'):
+                if g.match_word(h,0,tag):
+                    itemName = h[len(tag):].strip()
+                    if itemName:
+                        if tag == '@menu':
+                            aList2 = []
+                            kind = '%s' % itemName
+                            body = p.b
+                            self.doPopupItems(p,aList2)
+                            aList.append((kind + '\n' + body, aList2),)
+                            p.moveToNodeAfterTree()
+                            break
+                        else:
+                            kind = tag
+                            head = itemName
+                            body = p.b
+                            aList.append((head,body),)
+                            p.moveToThreadNext()
+                            break
+            else:
+                # g.trace('***skipping***',p.h)
+                p.moveToThreadNext()
     #@nonl
-    #@+node:bobjack.20080325162505.4:gen_recent_files_list
-    def gen_recent_files_list(self, keywords):
+    #@-node:bobjack.20080516105903.26:doPopupItems
+    #@-node:bobjack.20080516105903.25:handleLocalPopupMenus
+    #@-node:bobjack.20080516105903.22:rSetupMenus
+    #@-node:bobjack.20080516105903.19:__init__
+    #@+node:bobjack.20080516105903.27:Generator Minibuffer Commands
+    #@+node:bobjack.20080516105903.28:rclick-gen-recent-files-list
+    class genRecentFilesListCommandClass(rClickCommandClass):
 
         """Generate menu items that will open files from the recent files list.
 
         keywords['event']: the event object obtain from the right click.
         keywords['event'].widget: the widget in which the right click was detected.
-        keywords['rc_rmenu']: the gui menu that has been genereated from previous items
+        keywords['rc_rmenu']: the gui menu that has been generated from previous items
         keywords['rc_menu_table']: the list of menu items that have yet to be
             converted into gui menu items. It may be manipulated or extended at will
             or even replaced entirely.
 
         """
 
-        c = self.c
-        event = keywords.get('event')
-        widget = event.widget
-        #rmenu = keywords.get('rc_rmenu')
-        menu_table = keywords.get('rc_menu_table')
+        #@    @+others
+        #@+node:bobjack.20080516105903.29:doCommand
+        def doCommand(self, keywords):
 
-        def computeLabels (fileName):
+            c = self.c
 
-            if fileName == None:
-                return "untitled", "untitled"
-            else:
-                path,fn = g.os_path_split(fileName)
-                if path:
-                    return fn, path
+            if not self.assertPhase('generate'):
+                return
 
-        fnList = []
-        pathList = []
-        for name in c.recentFiles[:]:
+            event = keywords.get('event')
+            widget = event.widget
+            #rmenu = keywords.get('rc_rmenu')
+            menu_table = self.menu_table
 
-            split = computeLabels(name)
-            if not split:
-                continue
+            def computeLabels (fileName):
 
-            fn, path = split
+                if fileName == None:
+                    return "untitled", "untitled"
+                else:
+                    path,fn = g.os_path_split(fileName)
+                    if path:
+                        return fn, path
 
-            def recentFilesCallback (c, event, name=name):
-                c.openRecentFile(name)
+            fnList = []
+            pathList = []
+            for name in c.recentFiles[:]:
 
-            def recentFoldersCallback(c, event, path=path):
-                g.app.globalOpenDir = path
-                c.executeMinibufferCommand('open-outline')
+                split = computeLabels(name)
+                if not split:
+                    continue
 
-            label = "%s" % (g.computeWindowTitle(name),)
-            fnList.append((fn, recentFilesCallback))
-            pathList.append((path, recentFoldersCallback))
+                fn, path = split
 
-        # Must change menu table in situ.
-        menu_table[:0] = fnList + [('|', '')] + pathList
+                def recentFilesCallback (c, event, name=name):
+                    c.openRecentFile(name)
 
-    #@-node:bobjack.20080325162505.4:gen_recent_files_list
-    #@-node:bobjack.20080325162505.5:rclick_gen_recent_files_list
-    #@+node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
-    def rclick_gen_context_sensitive_commands(self, event):
+                def recentFoldersCallback(c, event, path=path):
+                    g.app.globalOpenDir = path
+                    try:
+                        c.executeMinibufferCommand('open-outline')
+                    except AttributeError:
+                        pass
 
-        """Minibuffer command wrapper."""
+                label = "%s" % (g.computeWindowTitle(name),)
+                fnList.append((fn, recentFilesCallback))
+                pathList.append((path, recentFoldersCallback))
+
+            # Must change menu table in situ.
+            menu_table[:0] = fnList + [('|', '')] + pathList
+        #@-node:bobjack.20080516105903.29:doCommand
+        #@-others
 
 
-        self.mb_retval = self.gen_context_sensitive_commands(self.mb_keywords)
-
-
-    #@+node:bobjack.20080321133958.13:gen_context_sensitive_commands
-    def gen_context_sensitive_commands(self, keywords):
+    #@-node:bobjack.20080516105903.28:rclick-gen-recent-files-list
+    #@+node:bobjack.20080516105903.30:rclick-gen-context-sensitive-commands
+    class genContextSensitiveCommandsCommandClass(rClickCommandClass):
 
         """Generate context-sensitive rclick items.
 
         keywords['event']: the event object obtain from the right click.
         keywords['event'].widget: the widget in which the right click was detected.
-        keywords['rc_rmenu']: the gui menu that has been genereated from previous items
+        keywords['rc_rmenu']: the gui menu that has been generated from previous items
         keywords['rc_menu_table']: the list of menu items that have yet to be
             converted into gui menu items. It may be manipulated or extended at will
             or even replaced entirely.
@@ -831,422 +1237,558 @@ class ContextMenuController(object):
         Example provided:
             - extracts URL's from the text and puts "Open URL:..." in the menu.
             - extracts section headers and puts "Jump To:..." in the menu.
-            - applys python help() to the word or selected text.
+            - applies python help() to the word or selected text.
 
         """
 
-        c = self.c
-        event = keywords.get('event')
-        widget = event.widget
-        #rmenu = keywords.get('rc_rmenu')
-        menu_table = keywords.get('rc_menu_table')
+        #@    @+others
+        #@+node:bobjack.20080516105903.31:doCommand
+        def doCommand(self, keywords):
 
-        contextCommands = []
+            if self.minibufferPhaseError():
+                return
 
-        text, word = self.get_text_and_word_from_body_text(widget)
+            c = self.c
+            event = keywords.get('event')
+            widget = event.widget
+            #rmenu = keywords.get('rc_rmenu')
+            menu_table = keywords.get('rc_menu_table')
 
-        if 0:
-            g.es("selected text: "+text)
-            g.es("selected word: "+repr(word))
+            contextCommands = []
 
-        contextCommands = self.get_urls(text) + self.get_sections(text)
+            text, word = self.get_text_and_word_from_body_text(widget)
 
-        if word:
-            contextCommands += self.get_help(word)
+            if 0:
+                g.es("selected text: "+text)
+                g.es("selected word: "+repr(word))
 
-        if contextCommands:
-            # Must change table is situ. 
-            menu_table += [("-", '')] + contextCommands
-    #@+node:bobjack.20080322043011.13:get_urls
-    def get_urls(self, text):
+            contextCommands = self.get_urls(text) + self.get_sections(text)
 
-        """
-        Extract URL's from the body text and create "Open URL:..." items
-        for inclusion in a menu list.
-        """
+            if word:
+                contextCommands += self.get_help(word)
 
-        contextCommands = []
-        for match in re.finditer(SCAN_URL_RE, text):
+            if contextCommands:
+                # Must change table is situ. 
+                menu_table += [("-", '')] + contextCommands
+        #@-node:bobjack.20080516105903.31:doCommand
+        #@+node:bobjack.20080516105903.32:get_urls
+        def get_urls(self, text):
 
-            #get the underlying text
-            url=match.group()
+            """
+            Extract URL's from the body text and create "Open URL:..." items
+            for inclusion in a menu list.
+            """
 
-            #create new command callback
-            def url_open_command(c, event, url=url):
-                import webbrowser
-                try:
-                    webbrowser.open_new(url)
-                except:
-                    pass #Ignore false errors 
-                    #g.es("not found: " + url,color='red')
+            contextCommands = []
+            for match in re.finditer(SCAN_URL_RE, text):
 
-            #add to menu
-            menu_item=( 'Open URL: '+self.crop(url,30), url_open_command)
-            contextCommands.append( menu_item )
+                #get the underlying text
+                url=match.group()
 
-        return contextCommands
-    #@-node:bobjack.20080322043011.13:get_urls
-    #@+node:bobjack.20080322043011.11:get_sections
-    def get_sections(self, text):
+                #create new command callback
+                def url_open_command(c, event, url=url):
+                    import webbrowser
+                    try:
+                        webbrowser.open_new(url)
+                    except:
+                        pass #Ignore false errors 
+                        #g.es("not found: " + url,color='red')
 
-        """
-        Extract section from the text and create 'Jump to: ...' menu items for
-        inclusion in a menu list.
-        """
-
-        scan_jump_re="<"+"<[^<>]+>"+">"
-
-        c = self.c
-
-        contextCommands = []
-        p=c.currentPosition()
-        for match in re.finditer(scan_jump_re,text):
-            name=match.group()
-            ref=g.findReference(c,name,p)
-            if ref:
-                # Bug fix 1/8/06: bind c here.
-                # This is safe because we only get called from the proper commander.
-                def jump_command(c,event, ref=ref):
-                    c.beginUpdate()
-                    c.selectPosition(ref)
-                    c.endUpdate()
-                menu_item=( 'Jump to: '+ self.crop(name,30), jump_command)
+                #add to menu
+                menu_item=( 'Open URL: '+self.crop(url,30), url_open_command)
                 contextCommands.append( menu_item )
+
+            return contextCommands
+        #@-node:bobjack.20080516105903.32:get_urls
+        #@+node:bobjack.20080516105903.33:get_sections
+        def get_sections(self, text):
+
+            """
+            Extract section from the text and create 'Jump to: ...' menu items for
+            inclusion in a menu list.
+            """
+
+            scan_jump_re="<" + "<.+?>>"
+
+            c = self.c
+
+            contextCommands = []
+            p=c.p
+            for match in re.finditer(scan_jump_re,text):
+                name=match.group()
+                ref=g.findReference(c,name,p)
+                if ref:
+                    # Bug fix 1/8/06: bind c here.
+                    # This is safe because we only get called from the proper commander.
+                    def jump_command(c,event, ref=ref):
+                        c.selectPosition(ref)
+                        c.redraw()
+                    menu_item=( 'Jump to: '+ self.crop(name,30), jump_command)
+                    contextCommands.append( menu_item )
+                else:
+                    # could add "create section" here?
+                    pass
+
+            return contextCommands
+
+        #@-node:bobjack.20080516105903.33:get_sections
+        #@+node:bobjack.20080516105903.34:get_help
+        def get_help(self, word):
+            """Create a menu item to apply python's help() to `word`.
+
+            Uses @string rclick_show_help setting.
+
+            This setting specifies where output from the help() utility is sent when the
+            menu item created here is invoked::
+
+                @string rclick_show_help = 'flags'
+
+            `flags` is a string that can contain any combination of 'print', 'log',
+            'browser' or 'all'.
+
+            eg::
+
+                @string rclick_show_help = 'print log'
+
+            This will send output to stdout and the log pane but not the browser.
+
+            If the setting is not present or does not contain valid data, output
+            will be sent to all three destinations.
+
+            """
+
+
+            c = self.c
+
+            def help_command(c, event, word=word):
+
+                try:
+                    doc = self.getdoc(word,"="*60+"\nHelp on %s")
+
+                    # It would be nice to save log pane position
+                    # and roll log back to make this position visible,
+                    # since the text returned by pydoc can be several
+                    # pages long
+
+                    flags = c.config.getString('rclick_show_help')
+
+                    if not flags or 'all' in flags:
+                        flags = 'print log browser'
+
+                    if 'browser' in flags:
+                        if not doc.startswith('no Python documentation found for'):
+                            xdoc = doc.split('\n')
+                            title = xdoc[0]
+                            g.es('launching browser ...',  color='blue')
+                            self.show_message_as_html(title, '\n'.join(xdoc[1:]))
+                            g.es('done', color='blue')
+                        else:
+                            g.es_print(doc, color='blue')
+                            return
+
+                    if 'log' in flags:
+                        g.es(doc,color="blue")
+
+                    if 'print' in flags:
+                        g.pr(doc)
+
+                except Exception, value:
+                    g.es(str(value),color="red")
+
+
+            menu_item=('Help on: '+ self.crop(word,30), help_command)
+            return [ menu_item ]
+        #@-node:bobjack.20080516105903.34:get_help
+        #@+node:bobjack.20080516105903.35:Utils for context sensitive commands
+        #@+node:bobjack.20080516105903.36:get_text_and_word_from_body_text
+        def get_text_and_word_from_body_text(self, widget):
+
+            """Get text and word from text control.
+
+            If any text is selected this is returned as `text` and `word` is returned as
+            a copy of the text with leading and trailing whitespace stripped.
+
+            If no text is selected, `text` and `word are set to the contents of the line
+            and word containing the current insertion point. """
+
+            text = widget.getSelectedText()
+
+            if text:
+                word = text.strip()
             else:
-                # could add "create section" here?
-                pass
+                s = widget.getAllText()
+                ins = widget.getInsertPoint()
+                i,j = g.getLine(s,ins)
+                text = s[i:j]
+                i,j = g.getWord(s,ins)
+                word = s[i:j]
 
-        return contextCommands
+            return text, word
+        #@-node:bobjack.20080516105903.36:get_text_and_word_from_body_text
+        #@+node:bobjack.20080516105903.37:crop
+        def crop(self, s,n=20,end="..."):
 
-    #@-node:bobjack.20080322043011.11:get_sections
-    #@+node:ekr.20040422072343.15:get_help
-    def get_help(self, word):
-        """Create a menu item to apply python's help() to `word`.
+            """return a part of string s, no more than n characters; optionally add ... at the end"""
 
-        Uses @string rclick_show_help setting.
+            if len(s)<=n:
+                return s
+            else:
+                return s[:n]+end # EKR
+        #@-node:bobjack.20080516105903.37:crop
+        #@+node:bobjack.20080516105903.38:getword
+        def getword(self, s,pos):
 
-        This setting specifies where output from the help() utility is sent when the
-        menu item created here is invoked::
+            """returns a word in string s around position pos"""
 
-            @string rclick_show_help = 'flags'
+            for m in re.finditer("\w+",s):
+                if m.start()<=pos and m.end()>=pos:
+                    return m.group()
+            return None
+        #@-node:bobjack.20080516105903.38:getword
+        #@+node:bobjack.20080516105903.39:getdoc
+        def getdoc(self, thing, title='Help on %s', forceload=0):
 
-        `flags` is a string that can contain any combination of 'print', 'log',
-        'browser' or 'all'.
+            #g.trace(thing)
 
-        eg::
+            # Redirect stdout to a "file like object".
+            old_stdout = sys.stdout
+            sys.stdout = fo = g.fileLikeObject()
 
-            @string rclick_show_help = 'print log'
+            # Python's builtin help function writes to stdout.
+            help(str(thing))
 
-        This will send output to stdout and the log pane but not the browser.
+            # Restore original stdout.
+            sys.stdout = old_stdout
 
-        If the setting is not present or does not contain valid data, output
-        will be sent to all three destinations.
+            # Return what was written to fo.
+            return fo.get()
+        #@-node:bobjack.20080516105903.39:getdoc
+        #@+node:bobjack.20080516105903.40:show_message_as_html
+        def show_message_as_html(self, title, msg):
+
+            """Show `msg` in an external browser using leo_to_html."""
+
+            import leo_to_html
+
+            oHTML = leo_to_html.Leo_to_HTML(c=None) # no need for a commander
+
+            oHTML.loadConfig()
+            oHTML.silent = True
+            oHTML.myFileName = oHTML.title = title
+
+            oHTML.xhtml = '<pre>' + leo_to_html.safe(msg) + '</pre>'
+            oHTML.applyTemplate()
+            oHTML.show()
+        #@-node:bobjack.20080516105903.40:show_message_as_html
+        #@-node:bobjack.20080516105903.35:Utils for context sensitive commands
+        #@-others
+
+
+    #@-node:bobjack.20080516105903.30:rclick-gen-context-sensitive-commands
+    #@+node:bobjack.20080516105903.41:Chapter Menu Commands
+    #@+others
+    #@+node:bobjack.20080516105903.42:chapterMenuCommandClass
+    class chapterMenuCommandClass(rClickCommandClass):
+
+        """Create a menu item for each chapter to perform 'action'.
+
+        The currently selected chapter will not be included in the list.
 
         """
+        action = None
+
+        #@    @+others
+        #@-others
+
+        def doCommand(self, keywords):
+
+            c = self.c
+            cc = c.chapterController
+
+            action = self.__class__.action
+
+            def getChapterCallback(name):
+
+                if action == 'select':
+
+                    def toChapterCallback(c, event, name=name):
+                        cc.selectChapterByName(name)
+
+                else:
+
+                    def toChapterCallback(c, event, name=name):
+                        getattr(cc, action + 'NodeToChapterHelper')(name)
+
+                return toChapterCallback
+
+            commandList = []
+            for chap in sorted(cc.chaptersDict.keys()):
+                if chap != cc.selectedChapter.name:
+                    commandList.append( (chap, getChapterCallback(chap)) )
+
+            keywords['rc_menu_table'][:0] = commandList
+    #@-node:bobjack.20080516105903.42:chapterMenuCommandClass
+    #@-others
+
+    class cloneNodeToChapterMenuCommandClass(chapterMenuCommandClass): 
+        action = 'clone'
+
+    class copyNodeToChapterMenuCommandClass(chapterMenuCommandClass):    
+        action = 'copy'
+
+    class moveNodeToChapterMenuCommandClass(chapterMenuCommandClass):    
+        action = 'move'
+
+    class selectChapterMenuCommandClass(chapterMenuCommandClass):
+        action = 'select'
+
+    #@-node:bobjack.20080516105903.41:Chapter Menu Commands
+    #@-node:bobjack.20080516105903.27:Generator Minibuffer Commands
+    #@+node:bobjack.20080516105903.43:Button Event Handlers
+    #@+node:bobjack.20080516105903.44:rclick-button
+    class buttonCommandClass(rClickCommandClass):
+
+        #@    @+others
+        #@+node:bobjack.20080516105903.45:do_radio_button_event
+        def do_radio_button_event(self, keywords, item_data):
+
+            """Handle radio button events."""
+
+            phase = keywords.get('rc_phase')
+
+            group = item_data.get('group', '<no-group>')
+            control_var = item_data.get('control_var')
 
 
-        c = self.c
+            groups = self.controller.radio_group_data
 
-        def help_command(c, event, word=word):
+            if phase == 'generate':
 
-            try:
-                doc = self.getdoc(word,"="*60+"\nHelp on %s")
+                if not group in groups:
+                    groups[group] = ''
 
-                # It would be nice to save log pane position
-                # and roll log back to make this position visible,
-                # since the text returned by pydoc can be several
-                # pages long
+                control_var.set( groups[group])
 
-                flags = c.config.getString('rclick_show_help')
+            elif phase =='invoke':
 
-                if not flags or 'all' in flags:
-                    flags = 'print log browser'
+                selected = control_var.get()
+                groups[group] = selected
 
-                if 'browser' in flags:
-                    if not doc.startswith('no Python documentation found for'):
-                        xdoc = doc.split('\n')
-                        title = xdoc[0]
-                        g.es('launching browser ...',  color='blue')
-                        self.show_message_as_html(title, '\n'.join(xdoc[1:]))
-                        g.es('done', color='blue')
-                    else:
-                        g.es(doc, color='blue')
-                        print doc
-                        return
+                # All data is available through c.theContextMenuController.mb_keywords
+                # so only the minimum data is sent through the hook.
 
-                if 'log' in flags:
-                    g.es(doc,color="blue")
+                g.doHook('rclick-button-clicked',
+                    kind='radio', group=group, selected=selected)
+        #@-node:bobjack.20080516105903.45:do_radio_button_event
+        #@+node:bobjack.20080516105903.46:do_check_button_event
+        def do_check_button_event(self, keywords, item_data):
 
-                if 'print' in flags:
-                    print doc
+            """Handle check button events."""
 
-            except Exception, value:
-                g.es(str(value),color="red")
+            phase = keywords.get('rc_phase')
+            item_data = keywords.get('rc_item_data')
 
+            control_var = item_data['control_var']
+            name = item_data['name']
 
-        menu_item=('Help on: '+ self.crop(word,30), help_command)
-        return [ menu_item ]
-    #@-node:ekr.20040422072343.15:get_help
-    #@-node:bobjack.20080321133958.13:gen_context_sensitive_commands
-    #@+node:ekr.20040422072343.9:Utils for context sensitive commands
-    #@+node:bobjack.20080322043011.14:get_text_and_word_from_body_text
-    def get_text_and_word_from_body_text(self, widget):
+            buttons = self.controller.check_button_data
 
-        """Get text and word from text control.
+            if phase == 'generate':
 
-        If any text is selected this is returned as `text` and `word` is returned as
-        a copy of the text with leading and trailing whitespace stripped.
+                if name not in buttons:
+                    buttons[name] = False
 
-        If no text is selected, `text` and `word are set to the contents of the line
-        and word containing the current insertion point. """
+                control_var.set( bool(buttons[name]))
 
-        text = widget.getSelectedText()
+            elif phase =='invoke':
 
-        if text:
-            word = text.strip()
-        else:
-            s = widget.getAllText()
-            ins = widget.getInsertPoint()
-            i,j = g.getLine(s,ins)
-            text = s[i:j]
-            i,j = g.getWord(s,ins)
-            word = s[i:j]
+                selected = control_var.get()
+                buttons[name] = bool(selected)
 
-        return text, word
-    #@-node:bobjack.20080322043011.14:get_text_and_word_from_body_text
-    #@+node:ekr.20040422072343.10:crop
-    def crop(self, s,n=20,end="..."):
+                # All data is available through c.theContextMenuController.mb_keywords
+                # so only the minimum data is sent through the hook.
 
-        """return a part of string s, no more than n characters; optionally add ... at the end"""
+                g.doHook('rclick-button-clicked',
+                    kind='check', name=name, selected=selected)
 
-        if len(s)<=n:
-            return s
-        else:
-            return s[:n]+end # EKR
-    #@-node:ekr.20040422072343.10:crop
-    #@+node:ekr.20040422072343.11:getword
-    def getword(self, s,pos):
+        #@-node:bobjack.20080516105903.46:do_check_button_event
+        #@-others
 
-        """returns a word in string s around position pos"""
+        def __init__(self, *args, **keys):
 
-        for m in re.finditer("\w+",s):
-            if m.start()<=pos and m.end()>=pos:
-                return m.group()
-        return None
-    #@-node:ekr.20040422072343.11:getword
-    #@+node:ekr.20040422072343.12:getdoc
-    def getdoc(self, thing, title='Help on %s', forceload=0):
-
-        #g.trace(thing)
-
-        # Redirect stdout to a "file like object".
-        old_stdout = sys.stdout
-        sys.stdout = fo = g.fileLikeObject()
-
-        # Python's builtin help function writes to stdout.
-        help(str(thing))
-
-        # Restore original stdout.
-        sys.stdout = old_stdout
-
-        # Return what was written to fo.
-        return fo.get()
-    #@-node:ekr.20040422072343.12:getdoc
-    #@+node:bobjack.20080323045434.25:show_message_as_html
-    def show_message_as_html(self, title, msg):
-
-        """Show `msg` in an external browser using leo_to_html."""
-
-        import leo_to_html
-
-        oHTML = leo_to_html.Leo_to_HTML(c=None) # no need for a commander
-
-        oHTML.loadConfig()
-        oHTML.silent = True
-        oHTML.myFileName = oHTML.title = title
-
-        oHTML.xhtml = '<pre>' + leo_to_html.safe(msg) + '</pre>'
-        oHTML.applyTemplate()
-        oHTML.show()
-    #@-node:bobjack.20080323045434.25:show_message_as_html
-    #@-node:ekr.20040422072343.9:Utils for context sensitive commands
-    #@-node:bobjack.20080323045434.20:rclick_gen_context_sensitive_commands
-    #@+node:bobjack.20080402160713.3:Chapter Menus
-    #@+node:bobjack.20080402160713.4:rclick_gen_*_node_to_chapter_menu
-    def clone_node_to_chapter_menu(self, event):
-        """Minibuffer command wrapper."""
-
-        self.mb_retval = self.chapter_menu_helper(self.mb_keywords,action='clone')
-
-    def copy_node_to_chapter_menu(self, event):
-        """Minibuffer command wrapper."""
-
-        self.mb_retval = self.chapter_menu_helper(self.mb_keywords,action='copy')
-
-    def move_node_to_chapter_menu(self, event):
-        """Minibuffer command wrapper."""
-
-        self.mb_retval = self.chapter_menu_helper(self.mb_keywords,action='move')
-
-    def select_chapter_menu(self, event):
-        """Minibuffer command wrapper."""
-
-        self.mb_retval = self.chapter_menu_helper(self.mb_keywords,action='select')
+            self.button_handlers = {
+                'radio': self.do_radio_button_event,
+                'check': self.do_check_button_event,
+            }
+            super(self.__class__, self).__init__(*args, **keys)
 
 
-    #@+node:bobjack.20080402160713.5:chapter_menu_helper
-    def chapter_menu_helper(self, keywords, action):
+        def doCommand(self, keywords):
 
-        """Create a menu item for each chapter that will perform the `action` for
-        that chapter when invoked."""
+            """Handle button events."""
 
-        c = self.c
+            item_data = keywords.get('rc_item_data', {})
 
-        cc = c.chapterController
+            kind = item_data.get('kind')
 
-        def getChapterCallback(name):
+            if kind in self.button_handlers:
+                self.button_handlers[kind](keywords, item_data)
 
-            if action == 'select':
+    #@-node:bobjack.20080516105903.44:rclick-button
+    #@+node:bobjack.20080516105903.109:Find Buttons
+    #@+node:bobjack.20080516105903.110:findButtonCommandClass
+    class findButtonCommandClass(rClickCommandClass):
 
-                def toChapterCallback(c, event, name=name):
-                    cc.selectChapterByName(name)
 
-            else:
+        def doCommand(self, keywords):
 
-                def toChapterCallback(c, event, name=name):
-                    getattr(cc, action + 'NodeToChapterHelper')(name)
+            """Handle Find Button events."""
 
-            return toChapterCallback
+            kind, label, idx = self.data
 
-        commandList = []
-        for chap in sorted(cc.chaptersDict.keys()):
-            if chap != cc.selectedChapter.name:
-                commandList.append( (chap, getChapterCallback(chap)) )
+            if self.phase == 'generate':
 
-        keywords['rc_menu_table'][:0] = commandList
-    #@-node:bobjack.20080402160713.5:chapter_menu_helper
-    #@-node:bobjack.20080402160713.4:rclick_gen_*_node_to_chapter_menu
-    #@-node:bobjack.20080402160713.3:Chapter Menus
-    #@-node:bobjack.20080329153415.3:Generator Minibuffer Commands
-    #@+node:bobjack.20080403171532.12:Button Event Handlers
-    #@+node:bobjack.20080404190912.2:rclick_button
-    def rclick_button(self, event):
+                keywords['rc_label'] = label
+                self.item_data['name'] = idx
 
-        """Minibuffer command wrapper."""
+                if kind.startswith('radio'):
+                    self.item_data['control_var'] = self.svarDict[kind]
+                    self.controller.add_radio_button(keywords)
 
-        self.mb_retval = self.do_button_event(self.mb_keywords)
+                elif kind == 'check':
+                    self.item_data['control_var'] = self.svarDict[idx]
+                    self.controller.add_check_button(keywords)
+
+        #@    @+others
+        #@+node:bobjack.20080516105903.111:Properties
+        #@+node:bobjack.20080516105903.112:svarDict
+        def getSvarDict(self):
+
+            return self.c.searchCommands.findTabHandler.svarDict
+
+        svarDict = property(getSvarDict)
+        #@-node:bobjack.20080516105903.112:svarDict
+        #@-node:bobjack.20080516105903.111:Properties
+        #@-others
     #@nonl
-    #@+node:bobjack.20080404190912.3:do_button_event
-    def do_button_event(self, keywords):
+    #@-node:bobjack.20080516105903.110:findButtonCommandClass
+    #@+node:bobjack.20080516105903.113:rclick-find-whole-word-button
+    class findWholeWordButtonCommandClass(findButtonCommandClass):
 
-        """Handle button events."""
+        data =('check', 'Whole Word', 'whole_word')
 
-        item_data = keywords.get('rc_item_data', {})
+    #@-node:bobjack.20080516105903.113:rclick-find-whole-word-button
+    #@+node:bobjack.20080516105903.116:rclick-find-ignore-case-button
+    class findIgnoreCaseButtonCommandClass(findButtonCommandClass):
 
-        kind = item_data.get('kind')
+        data =('check', 'Ignore Case', 'ignore_case')
+    #@-node:bobjack.20080516105903.116:rclick-find-ignore-case-button
+    #@+node:bobjack.20080516105903.117:rclick-find-wrap-around-button
+    class findWrapAroundButtonCommandClass(findButtonCommandClass):
 
-        if kind in self.button_handlers:
-            self.button_handlers[kind](keywords, item_data)
-    #@-node:bobjack.20080404190912.3:do_button_event
-    #@+node:bobjack.20080403171532.14:do_radio_button_event
-    def do_radio_button_event(self, keywords, item_data):
+        data = ('check', 'Wrap Around', 'wrap')
+    #@-node:bobjack.20080516105903.117:rclick-find-wrap-around-button
+    #@+node:bobjack.20080516105903.118:rclick-find-reverse-button
+    class findReverseButtonCommandClass(findButtonCommandClass):
 
-        """Handle radio button events."""
+        data = ('check', 'Reverse Button', 'reverse')
 
-        phase = keywords.get('rc_phase')
+    #@-node:bobjack.20080516105903.118:rclick-find-reverse-button
+    #@+node:bobjack.20080516105903.119:rclick-find-regexp-button
+    class findRegexpButtonCommandClass(findButtonCommandClass):
 
-        group = item_data.get('group', '<no-group>')
-        control_var = item_data.get('control_var')
+        data = ('check', 'Regexp', 'pattern_match')
+    #@-node:bobjack.20080516105903.119:rclick-find-regexp-button
+    #@+node:bobjack.20080516105903.120:rclick-find-mark-finds-button
+    class findMarkFindsButtonCommandClass(findButtonCommandClass):
+
+        data = ('check', 'Mark Finds', 'mark_finds')
+    #@-node:bobjack.20080516105903.120:rclick-find-mark-finds-button
+    #@+node:bobjack.20080516105903.121:rclick-find-mark-changes-button
+    class findMarkChangesButtonCommandClass(findButtonCommandClass):
+
+        data = ('check', 'Mark Changes', 'mark_changes')
+    #@-node:bobjack.20080516105903.121:rclick-find-mark-changes-button
+    #@+node:bobjack.20080516105903.122:rclick-find-search-body-button
+    class findSearchBodyButtonCommandClass(findButtonCommandClass):
+
+        data =('check', 'Search Body', 'search_body')
 
 
-        groups = self.radio_group_data
+    #@-node:bobjack.20080516105903.122:rclick-find-search-body-button
+    #@+node:bobjack.20080516105903.123:rclick-find-search-headline-button
+    class findSearchHeadlineButtonCommandClass(findButtonCommandClass):
 
-        if phase == 'generate':
+        data = ('check', 'Search Headline', 'search_headline')
+    #@-node:bobjack.20080516105903.123:rclick-find-search-headline-button
+    #@+node:bobjack.20080516105903.124:rclick-find-node-only-button
+    class findNodeOnlyButtonCommandClass(findButtonCommandClass):
 
-            if not group in groups:
-                groups[group] = ''
+        data = ('radio-search-scope', 'Node Only', 'node-only')
+    #@-node:bobjack.20080516105903.124:rclick-find-node-only-button
+    #@+node:bobjack.20080516105903.125:rclick-find-suboutline-only-button
+    class findSuboutlineOnlyButtonCommandClass(findButtonCommandClass):
 
-            control_var.set( groups[group])
+        data = ('radio-search-scope', 'Suboutline Only', 'suboutline-only')
+    #@-node:bobjack.20080516105903.125:rclick-find-suboutline-only-button
+    #@+node:bobjack.20080516105903.126:rclick-find-entire-outline-button
+    class findEntireOutlineButtonCommandClass(findButtonCommandClass):
 
-        elif phase =='invoke':
+        data = ('radio-search-scope', 'Entire Outline', 'entire-outline')
 
-            selected = control_var.get()
-            groups[group] = selected
 
-            # All data is availiable through c.theContextMenuController.mb_keywords
-            # so only the minimum data is sent through the hook.
-
-            g.doHook('rclick-button-clicked',
-                kind='radio', group=group, selected=selected)
-    #@-node:bobjack.20080403171532.14:do_radio_button_event
-    #@+node:bobjack.20080404054928.4:do_check_button_event
-    def do_check_button_event(self, keywords, item_data):
-
-        """Handle check button events."""
-
-        phase = keywords.get('rc_phase')
-        item_data = keywords.get('rc_item_data')
-
-        control_var = item_data['control_var']
-        name = item_data['name']
-
-        buttons = self.check_button_data
-
-        if phase == 'generate':
-
-            if name not in buttons:
-                buttons[name] = False
-
-            control_var.set( bool(buttons[name]))
-
-        elif phase =='invoke':
-
-            selected = control_var.get()
-            buttons[name] = bool(selected)
-
-            # All data is availiable through c.theContextMenuController.mb_keywords
-            # so only the minimum data is sent through the hook.
-
-            g.doHook('rclick-button-clicked',
-                kind='check', name=name, selected=selected)
-
-    #@-node:bobjack.20080404054928.4:do_check_button_event
-    #@-node:bobjack.20080404190912.2:rclick_button
-    #@-node:bobjack.20080403171532.12:Button Event Handlers
-    #@+node:bobjack.20080329153415.14:Event Handler
-    #@+node:bobjack.20080404222250.4:add_menu_item
+    #@-node:bobjack.20080516105903.126:rclick-find-entire-outline-button
+    #@-node:bobjack.20080516105903.109:Find Buttons
+    #@-node:bobjack.20080516105903.43:Button Event Handlers
+    #@+node:bobjack.20080516105903.47:rClick Event Handler
+    #@+node:bobjack.20080516105903.48:add_menu_item
     def add_menu_item(self, rmenu, label, command, keywords):
 
         """Add an item to the menu being constructed."""
 
+        c = self.c
+
         item_data = keywords.get('rc_item_data', {})
 
         kind = item_data.get('kind', 'command')
+        name = item_data.get('name')
+
+        if not name:
+            item_data['name'] = keywords['rc_label']
 
         if not kind or kind=='command':
-            rmenu.add_command(
-                label=label,
-                command=command,
-                columnbreak=rmenu.rc_columnbreak
-            )
+            #@        << add command item >>
+            #@+node:bobjack.20080516105903.49:<< add command item >>
+
+            label = keywords.get('rc_label')
+
+            kws = {
+                'label': label,
+                'command': command,
+                'columnbreak': rmenu.rc_columnbreak,
+            }
+
+            self.add_optional_args(kws, item_data)
+
+            c.add_command(rmenu, **kws)
+            #@nonl
+            #@-node:bobjack.20080516105903.49:<< add command item >>
+            #@nl
             return
 
         self.mb_keywords = keywords
         self.mb_retval = None  
 
-        name = item_data.get('name')
-        if not name:
-            item_data['name'] = keywords['rc_label']
-
         if kind == 'radio':
             #@        << add radio item >>
-            #@+node:bobjack.20080405054059.4:<< add radio item >>
+            #@+node:bobjack.20080516105903.50:<< add radio item >>
 
             # control variables for groups are stored in a dictionary
             #
             #    c.theContextMenuController.radio_vars
             #
             # (ie self) with keys as group names and values as control variables.
+
 
             group = item_data.get('group')
             if not group:
@@ -1257,50 +1799,152 @@ class ContextMenuController(object):
                 self.radio_vars[group] = Tk.StringVar()
 
             control_var = self.radio_vars[group]
+            selected = self.radio_group_data.get(group) == name
 
             item_data['control_var'] = control_var
 
+            # Doing this here allows command to change the parameters.
             command(phase='generate')
 
-            # Doing this here allows command to change the label.
-            label = keywords.get('rc_label')
 
-            rmenu.add_radiobutton(
-                label=label,
-                command=command,
-                columnbreak=rmenu.rc_columnbreak,
-                value=name,
-                variable=control_var,
-                selectcolor='red',
-            )
-            #@-node:bobjack.20080405054059.4:<< add radio item >>
+            label = keywords.get('rc_label')
+            selectcolor = item_data.get('selectcolor') or 'red'
+
+            kws = {
+                'label': label,
+                'command': command,
+                'columnbreak': rmenu.rc_columnbreak,
+                'value': name,
+                'variable': control_var,
+                'selectcolor': selectcolor,
+            }
+
+            self.add_optional_args(kws, item_data, selected)
+
+            rmenu.add_radiobutton(**kws)
+            #@-node:bobjack.20080516105903.50:<< add radio item >>
             #@nl
             return
 
         if kind == 'check':
             #@        << add checkbutton item >>
-            #@+node:bobjack.20080405054059.5:<< add checkbutton item >>
-
+            #@+node:bobjack.20080516105903.51:<< add checkbutton item >>
 
             control_var = item_data['control_var'] = Tk.IntVar()
+            selected = self.check_button_data.get(name)
 
             command(phase='generate')
 
             # Doing this here allows command to change the label.
             label = keywords.get('rc_label')
 
-            rmenu.add_checkbutton(
-                label=label,
-                command=command, columnbreak=rmenu.rc_columnbreak,
-                variable=control_var,
-                selectcolor='blue',
-            )
+            selectcolor = item_data.get('selectcolor') or 'blue'
+
+            kws = {
+                'label': label,
+                'command': command,
+                'columnbreak': rmenu.rc_columnbreak,
+                'variable': control_var,
+                'selectcolor': selectcolor,
+            }
+
+            self.add_optional_args(kws, item_data, selected)
+
+            rmenu.add_checkbutton(kws)
             #@nonl
-            #@-node:bobjack.20080405054059.5:<< add checkbutton item >>
+            #@-node:bobjack.20080516105903.51:<< add checkbutton item >>
             #@nl
-            return        
-    #@-node:bobjack.20080404222250.4:add_menu_item
-    #@+node:bobjack.20080329153415.5:rClicker
+            return
+
+    #@-node:bobjack.20080516105903.48:add_menu_item
+    #@+node:bobjack.20080516105903.127:add_check_button
+    def add_check_button(self, keywords):
+
+        rmenu = keywords['rc_rmenu']
+        item_data = keywords.get('rc_item_data', {})
+
+        name = item_data['name']
+
+        control_var = item_data['control_var']
+
+        selected = control_var.get() 
+
+        label = keywords.get('rc_label')
+
+        selectcolor = item_data.get('selectcolor') or 'blue'
+
+        kws = {
+            'label': label,
+            'columnbreak':rmenu.rc_columnbreak,
+            'variable': control_var,
+            'selectcolor': selectcolor,
+        }
+
+        self.add_optional_args(kws, item_data, selected)
+
+
+        rmenu.add_checkbutton(kws)
+        rmenu.rc_columnbreak = 0
+    #@-node:bobjack.20080516105903.127:add_check_button
+    #@+node:bobjack.20080516105903.128:add_radio_item
+    def add_radio_button(self, keywords):
+
+        rmenu = keywords['rc_rmenu']
+        item_data = keywords.get('rc_item_data', {})
+
+        name = item_data['name']
+
+        control_var = item_data['control_var']
+
+        selected = control_var.get() == name
+
+        label = keywords.get('rc_label')
+
+        selectcolor = item_data.get('selectcolor') or 'red'
+
+        kws = {
+            'label': label,
+            'columnbreak': rmenu.rc_columnbreak,
+            'value': name,
+            'variable': control_var,
+            'selectcolor': selectcolor,
+        }
+
+        self.add_optional_args(kws, item_data, selected)
+
+        rmenu.add_radiobutton(**kws)
+        rmenu.rc_columnbreak = 0
+    #@-node:bobjack.20080516105903.128:add_radio_item
+    #@+node:bobjack.20080516105903.52:add_optional_args
+    def add_optional_args(self, kws, item_data, selected=False):
+
+
+        foreground = item_data.get('fg')
+        if selected:
+            foreground = item_data.get('selected-fg') or foreground
+
+        if foreground:
+            kws['foreground'] = foreground
+
+
+        background = item_data.get('bg')
+        if selected:
+            background = item_data.get('selected-bg') or background
+
+        if background:
+            kws['background'] = background
+
+        icon = item_data.get('icon')
+        if icon:
+            image = baseClasses.getImage(icon)
+            if image:
+                kws['image'] = image
+                compound = item_data.get('compound', '').lower()
+                if not compound in ('bottom', 'center', 'left', 'none', 'right', 'top'):
+                    compound = 'left'
+                kws['compound'] = compound
+    #@-node:bobjack.20080516105903.52:add_optional_args
+    #@+node:bobjack.20080516105903.53:rClicker
     # EKR: it is not necessary to catch exceptions or to return "break".
 
     def rClicker(self, keywords):
@@ -1314,6 +1958,8 @@ class ContextMenuController(object):
 
         """
 
+        g.app.gui.killPopupMenu()
+
         self.radio_vars = {}
 
         c = self.c
@@ -1321,40 +1967,42 @@ class ContextMenuController(object):
 
         event = keywords.get('event')
 
-        widget = event.widget
-        if not widget:
+        if not event and not g.app.unitTesting:
             return
 
-        name = c.widget_name(widget)
+        if event:
+            widget = event.widget
+            if not widget:
+                return
 
-        c.widgetWantsFocusNow(widget)
+            name = c.widget_name(widget)
 
-        #@    << hack selections for text widgets >>
-        #@+node:bobjack.20080405054059.2:<< hack selections for text widgets >>
-        isText = g.app.gui.isTextWidget(widget)
-        if isText:
-            try:
-                widget.setSelectionRange(*c.k.previousSelection)
-            except TypeError:
-                #g.trace('no previous selection')
-                pass
+            c.widgetWantsFocusNow(widget)
 
-            if not name.startswith('body'):
-                k.previousSelection = (s1,s2) = widget.getSelectionRange()
-                x,y = g.app.gui.eventXY(event)
-                i = widget.xyToPythonIndex(x,y)
+            #@        << hack selections for text widgets >>
+            #@+node:bobjack.20080516105903.54:<< hack selections for text widgets >>
+            isText = g.app.gui.isTextWidget(widget)
+            if isText:
+                try:
+                    widget.setSelectionRange(*c.k.previousSelection)
+                except TypeError:
+                    #g.trace('no previous selection')
+                    pass
 
-                widget.setSelectionRange(s1,s2,insert=i)
-        #@nonl
-        #@-node:bobjack.20080405054059.2:<< hack selections for text widgets >>
-        #@nl
+                if not name.startswith('body'):
+                    k.previousSelection = (s1,s2) = widget.getSelectionRange()
+                    x,y = g.app.gui.eventXY(event)
+                    i = widget.xyToPythonIndex(x,y)
 
-
+                    widget.setSelectionRange(s1,s2,insert=i)
+            #@nonl
+            #@-node:bobjack.20080516105903.54:<< hack selections for text widgets >>
+            #@nl
 
         top_menu_table = []
 
         #@    << context menu => top_menu_table >>
-        #@+node:bobjack.20080405054059.3:<< context menu => top_menu_table >>
+        #@+node:bobjack.20080516105903.55:<< context menu => top_menu_table >>
         #@+at
         # the canvas should not have an explicit context menu set.
         # 
@@ -1364,8 +2012,8 @@ class ContextMenuController(object):
         context_menu = keywords.get('context_menu')
 
         # If widget has an explicit context_menu set then use it
-        if hasattr(widget, 'context_menu'):
-            context_menu = widget.context_menu = context_menu
+        if event and hasattr(widget, 'context_menu'):
+            context_menu = widget.context_menu
 
         if context_menu:
 
@@ -1384,27 +2032,23 @@ class ContextMenuController(object):
                 if name.startswith(key):
                     top_menu_table = c.context_menus.get(key, [])[:]
                     break
-        #@-node:bobjack.20080405054059.3:<< context menu => top_menu_table >>
+        #@-node:bobjack.20080516105903.55:<< context menu => top_menu_table >>
         #@nl
+
         #@    << def table_to_menu >>
-        #@+node:bobjack.20080329153415.6:<< def table_to_menu >>
-        def table_to_menu(menu_table, level=0):
+        #@+node:bobjack.20080516105903.56:<< def table_to_menu >>
+        def table_to_menu(parent, menu_table, level=0):
 
             """Generate a TK menu from a python list."""
 
             if level > 4 or not menu_table:
                 return
 
-            if level == 0:
-                rmenu = self.popup_menu
-                try:
-                    rmenu.destroy()
-                except:
-                    pass
-
             self.mb_keywords = keywords
 
-            rmenu = c.frame.menu.new_menu(None) #Tk.Menu(None,tearoff=0,takefocus=0)
+            rmenu = Tk.Menu(parent,
+                 tearoff=0,takefocus=0)
+
             rmenu.rc_columnbreak = 0
 
             while menu_table:
@@ -1413,23 +2057,22 @@ class ContextMenuController(object):
 
                 #g.trace(txt, '[', cmd, ']')
 
-                if isinstance(cmd, basestring):
-                    cmd, item_data = self.split_cmd(cmd)
-                else:
-                    item_data = {}
+                txt, item_data = self.split_cmd(txt)
+
 
                 for k, v in (
                     ('rc_rmenu', rmenu),
                     ('rc_menu_table', menu_table),
                     ('rc_label', txt), 
                     ('rc_item_data', item_data),
+                    ('rc_phase', 'generate'),
                 ):
                     keywords[k] = v
 
 
                 if txt == '*':
                     #@            << call a menu generator >>
-                    #@+node:bobjack.20080329153415.7:<< call a menu generator >>
+                    #@+node:bobjack.20080516105903.57:<< call a menu generator >>
                     #@+at
                     # All the data for the minibuffer command generator 
                     # handler is in::
@@ -1438,37 +2081,51 @@ class ContextMenuController(object):
                     # 
                     # The handler should place any return data in 
                     # self.mb_retval
+                    # 
+                    # The retval should normally be None, 'abandoned' will 
+                    # cause the current menu or
+                    # submenu to be abandoned, any other value will also cause 
+                    # the current menu to
+                    # be abandoned but this may change in future.
+                    # 
                     #@-at
                     #@@c
 
-                    if isinstance(cmd, basestring):
+                    self.mb_keywords = keywords
+                    self.mb_retval = None
 
-                        self.mb_keywords = keywords
-                        self.mb_retval = None
-
-                        #g.trace(cmd)
+                    try:
 
                         try:
-                            try:
-                                c.executeMinibufferCommand(cmd)
-                            except:
-                                g.es_exception()
-                                self.mb_retval = None
-                        finally:
-                            self.mb_event = None
+                            if isinstance(cmd, basestring):
+                                c.executeMinibufferCommand(cmd) 
+                            elif cmd:
+                                self.mb_retval = cmd(keywords)
 
-                    elif cmd:
-                        self.mb_retval = cmd(keywords)
-                    #@-node:bobjack.20080329153415.7:<< call a menu generator >>
+                        except Exception:
+                            self.mb_retval = None
+
+                    finally:
+                        self.mb_keywords = None
+
+
+
+
+
+
+
+
+
+                    #@-node:bobjack.20080516105903.57:<< call a menu generator >>
                     #@nl
                     continue
 
                 elif txt == '-':
                     #@            << add a separator >>
-                    #@+node:bobjack.20080329153415.8:<< add a separator >>
+                    #@+node:bobjack.20080516105903.58:<< add a separator >>
                     rmenu.add_separator()
                     #@nonl
-                    #@-node:bobjack.20080329153415.8:<< add a separator >>
+                    #@-node:bobjack.20080516105903.58:<< add a separator >>
                     #@nl
 
                 elif txt in ('', '"'):
@@ -1476,10 +2133,10 @@ class ContextMenuController(object):
 
                 elif txt == '&':
                     #@            << include a menu chunk >>
-                    #@+node:bobjack.20080329153415.9:<< include a menu chunk >>
+                    #@+node:bobjack.20080516105903.59:<< include a menu chunk >>
                     menu_table = self.copyMenuTable(c.context_menus.get(cmd, [])) + menu_table
                     #@nonl
-                    #@-node:bobjack.20080329153415.9:<< include a menu chunk >>
+                    #@-node:bobjack.20080516105903.59:<< include a menu chunk >>
                     #@nl
                     continue
 
@@ -1489,11 +2146,12 @@ class ContextMenuController(object):
 
                 elif isinstance(txt, basestring):
                     #@            << add a named item >>
-                    #@+node:bobjack.20080329153415.10:<< add a named item >>
+                    #@+node:bobjack.20080516105903.60:<< add a named item >>
                     if isinstance(cmd, basestring):
                         #@    << minibuffer command item >>
-                        #@+node:bobjack.20080329153415.11:<< minibuffer command item >>
+                        #@+node:bobjack.20080516105903.61:<< minibuffer command item >>
                         def invokeMinibufferMenuCommand(c=c, event=event, txt=txt, cmd=cmd, item_data=item_data, phase='invoke'):
+
                             """Prepare for and execute a minibuffer command in response to a menu item being selected.
 
                             All the data for the minibuffer command handler is in::
@@ -1503,31 +2161,48 @@ class ContextMenuController(object):
                             The handler should place any return data in self.mb_retval
 
                             """
-                            self.mb_retval = None
+
                             keywords['rc_phase'] = phase
                             keywords['rc_label'] = txt
                             keywords['rc_item_data'] = item_data
-                            c.executeMinibufferCommand(cmd)
+
+                            self.mb_keywords = keywords
+                            self.mb_retval = None 
+
+                            try:
+                                try:
+                                    c.executeMinibufferCommand(cmd)
+                                except:
+                                    g.es_exception()
+                                    self.mb_retval = None
+                            finally:
+                                self.mb_keywords = None    
 
                         self.add_menu_item(rmenu, txt, invokeMinibufferMenuCommand, keywords)
-                        #@-node:bobjack.20080329153415.11:<< minibuffer command item >>
+                        #@-node:bobjack.20080516105903.61:<< minibuffer command item >>
                         #@nl
 
                     elif isinstance(cmd, list):
                         #@    << cascade item >>
-                        #@+node:bobjack.20080329153415.12:<< cascade item >>
-                        submenu = table_to_menu(cmd[:], level+1)
+                        #@+node:bobjack.20080516105903.62:<< cascade item >>
+                        submenu = table_to_menu(rmenu, cmd[:], level+1)
                         if submenu:
-                            rmenu.add_cascade(label=txt, menu=submenu,columnbreak=rmenu.rc_columnbreak)
+
+                            kws = {
+                                'label': txt,
+                                'menu': submenu,
+                                'columnbreak': rmenu.rc_columnbreak,
+                            }
+                            self.add_optional_args(kws, item_data)
+                            rmenu.add_cascade(**kws)
                         else:
                             continue # to avoid reseting columnbreak
-                        #@nonl
-                        #@-node:bobjack.20080329153415.12:<< cascade item >>
+                        #@-node:bobjack.20080516105903.62:<< cascade item >>
                         #@nl
 
                     else:
                         #@    << function command item >>
-                        #@+node:bobjack.20080329153415.13:<< function command item >>
+                        #@+node:bobjack.20080516105903.63:<< function command item >>
                         def invokeMenuCallback(c=c, event=event, txt=txt, cmd=cmd, item_data=item_data, phase='invoke'):
                             """Prepare for and execute a function in response to a menu item being selected.
 
@@ -1539,10 +2214,13 @@ class ContextMenuController(object):
 
                         self.add_menu_item(rmenu, txt, invokeMenuCallback, keywords)
 
-                        #@-node:bobjack.20080329153415.13:<< function command item >>
+                        #@-node:bobjack.20080516105903.63:<< function command item >>
                         #@nl
-                    #@-node:bobjack.20080329153415.10:<< add a named item >>
+                    #@-node:bobjack.20080516105903.60:<< add a named item >>
                     #@nl
+
+                else:
+                    continue
 
                 rmenu.rc_columnbreak = 0
 
@@ -1551,192 +2229,89 @@ class ContextMenuController(object):
 
             rmenu.destroy()
 
-        #@-node:bobjack.20080329153415.6:<< def table_to_menu >>
+        #@-node:bobjack.20080516105903.56:<< def table_to_menu >>
         #@nl
 
-        top_menu = table_to_menu(top_menu_table)
-        if top_menu:
-            top_menu.tk_popup(event.x_root-23, event.y_root+13)
-            self.popup_menu = top_menu
+        top_menu = m = table_to_menu(c.frame.top, top_menu_table)
+
+        if m and event:
+            g.app.gui.postPopupMenu(c, m,
+                event.x_root-23, event.y_root+13)
             return 'break'
-    #@-node:bobjack.20080329153415.5:rClicker
-    #@-node:bobjack.20080329153415.14:Event Handler
-    #@+node:bobjack.20080321133958.8:Invocation Callbacks
-    #@+node:ekr.20040422072343.3:rc_nl
-    def rc_nl(self, keywords):
+    #@-node:bobjack.20080516105903.53:rClicker
+    #@-node:bobjack.20080516105903.47:rClick Event Handler
+    #@+node:bobjack.20080516105903.64:Invocation Minibuffer Commands
+    #@+node:bobjack.20080516105903.65:rclick-insert-newline
+    class insertNewlineCommandClass(rClickCommandClass):
 
-        """Insert a newline at the current curser position of selected body editor."""
+        """Insert a newline at the current cursor position of selected body editor."""
 
-        c = self.c
+        #@    @+others
+        #@-others
+        def doCommand(self, keywords):
 
-        w = c.frame.body.bodyCtrl
+            c = self.c
 
-        if w:
-            ins = w.getInsertPoint()
-            w.insert(ins,'\n')
-            c.frame.body.onBodyChanged("Typing")
-    #@-node:ekr.20040422072343.3:rc_nl
-    #@+node:ekr.20040422072343.4:rc_selectAll
-    def rc_selectAll(self, keywords):
+            w = c.frame.body.bodyCtrl
+
+            if w:
+                ins = w.getInsertPoint()
+                w.insert(ins,'\n')
+                c.frame.body.onBodyChanged("Typing")
+    #@-node:bobjack.20080516105903.65:rclick-insert-newline
+    #@+node:bobjack.20080516105903.66:rclick-select-all
+    class selectAllCommandClass(rClickCommandClass):
 
         """Select the entire contents of the text widget."""
 
-        event = keywords.get('event')
-        w = event.widget
+        #@    @+others
+        #@-others
+        def doCommand(self, keywords):
+            event = keywords.get('event')
+            w = event.widget
 
-        insert = w.getInsertPoint()
-        w.selectAllText(insert=insert)
-        w.focus()
+            insert = w.getInsertPoint()
+            w.selectAllText(insert=insert)
+            w.focus()
 
-    #@-node:ekr.20040422072343.4:rc_selectAll
-    #@+node:bobjack.20080321133958.10:rc_OnCutFromMenu
-    def rc_OnCutFromMenu(self, keywords):
+    #@-node:bobjack.20080516105903.66:rclick-select-all
+    #@+node:bobjack.20080516105903.67:rclick-cut-text
+    class cutTextCommandClass(rClickCommandClass):
 
         """Cut text from currently focused text widget."""
 
-        event = keywords.get('event')
-        self.c.frame.OnCutFromMenu(event)
-    #@-node:bobjack.20080321133958.10:rc_OnCutFromMenu
-    #@+node:bobjack.20080321133958.11:rc_OnCopyFromMenu
-    def rc_OnCopyFromMenu(self, keywords):
+        #@    @+others
+        #@-others
+        def doCommand(self, keywords):
+            event = keywords.get('event')
+            self.c.frame.OnCutFromMenu(event)
+
+    #@-node:bobjack.20080516105903.67:rclick-cut-text
+    #@+node:bobjack.20080516105903.68:rclick-copy-text
+    class copyTextCommandClass(rClickCommandClass):
         """Copy text from currently focused text widget."""
 
-        event = keywords.get('event')
-        self.c.frame.OnCopyFromMenu(event)
-    #@-node:bobjack.20080321133958.11:rc_OnCopyFromMenu
-    #@+node:bobjack.20080321133958.12:rc_OnPasteFromMenu
-    def rc_OnPasteFromMenu(self, keywords):
+        #@    @+others
+        #@-others
+        def doCommand(self, keywords):
+            event = keywords.get('event')
+            self.c.frame.OnCopyFromMenu(event)
+
+    #@-node:bobjack.20080516105903.68:rclick-copy-text
+    #@+node:bobjack.20080516105903.69:rclick-paste-text
+    class pasteTextCommandClass(rClickCommandClass):
         """Paste text into currently focused text widget."""
 
-        event = keywords.get('event')
-        self.c.frame.OnPasteFromMenu(event)
-    #@-node:bobjack.20080321133958.12:rc_OnPasteFromMenu
-    #@-node:bobjack.20080321133958.8:Invocation Callbacks
-    #@+node:bobjack.20080321133958.7:init_default_menus
-    def init_default_menus(self):
-
-        """Initialize all default context menus"""
-
-        c = self.c
-
-        def invoke(method_name):
-
-            def invoke_callback(c, event, method_name=method_name):
-                cb = getattr(c.theContextMenuController, method_name)
-                return cb(event)
-
-            return invoke_callback
-
         #@    @+others
-        #@+node:bobjack.20080325060741.6:edit-menu
-        self.default_context_menus['edit-menu'] = [
-            ('Cut', invoke('rc_OnCutFromMenu')),
-            ('Copy', invoke('rc_OnCopyFromMenu')),
-            ('Paste', invoke('rc_OnPasteFromMenu')),
-            ('-', ''),
-            ('Select All', invoke('rc_selectAll')),
-        ]
-        #@-node:bobjack.20080325060741.6:edit-menu
-        #@+node:bobjack.20080403074002.8:to-chapter-fragment
-        self.default_context_menus['to-chapter-fragment'] = [
-
-            ('Clone to Chapter', [
-                ('*', 'clone-node-to-chapter-menu'),
-            ]),
-
-            ('Copy to Chapter', [
-                ('*', 'copy-node-to-chapter-menu'),
-            ]),
-
-            ('Move to Chapter', [
-                ('*', 'move-node-to-chapter-menu'),
-            ]),
-
-            ('Go to Chapter', [
-                ('*', 'select-chapter-menu'),
-            ]),
-        ]
-        #@-node:bobjack.20080403074002.8:to-chapter-fragment
-        #@+node:bobjack.20080325162505.3:recent-files
-        self.default_context_menus['recent-files-menu'] = [
-            ('Recent Files', [
-                ('*', 'rclick-gen-recent-files-list'),
-            ])
-        ]
-        #@-node:bobjack.20080325162505.3:recent-files
-        #@+node:bobjack.20080325060741.4:body
-        self.default_context_menus['body'] = [
-
-            ('Cut', 'cut-text'),
-            ('Copy', 'copy-text'),
-            ('Paste', 'paste-text'),
-
-            ('-', ''),
-
-            ('Select All', 'select-all'),
-
-            ('-', ''),
-
-            ('Block Operations', [
-
-                ('Indent', 'indent-region'),
-                ('Dedent', 'unindent-region'),
-
-                ('-', ''),
-
-                ('Add Comments', 'add-comments'),
-                ('Remove Comments', 'delete-comments'),
-            ]),
-
-            ('-', ''),
-
-            ('&', 'recent-files-menu'),
-
-                ('Find Bracket', 'match-brackets'),
-                ('Insert newline', invoke('rc_nl')),
-
-            ('Execute Script', 'execute-script'),
-
-                ('"', 'users menu items'),
-
-            ('*', 'rclick-gen-context-sensitive-commands'),
-
-        ]
-        #@-node:bobjack.20080325060741.4:body
-        #@+node:bobjack.20080325060741.5:log
-        self.default_context_menus['log'] = [('&', 'edit-menu')]
-        #@nonl
-        #@-node:bobjack.20080325060741.5:log
-        #@+node:bobjack.20080325060741.2:find-text
-        self.default_context_menus['find-text'] = [('&', 'edit-menu')]
-        #@-node:bobjack.20080325060741.2:find-text
-        #@+node:bobjack.20080325060741.3:change-text
-        self.default_context_menus['change-text'] = [('&', 'edit-menu')]
-        #@-node:bobjack.20080325060741.3:change-text
-        #@+node:bobjack.20080403074002.9:canvas
-        self.default_context_menus['canvas'] = [
-            ('Canvas Menu', ''),   
-            ('-', ''),
-            ('&', 'to-chapter-fragment'),
-            ('-', ''),
-            ('Create Chapter', 'create-chapter'),
-            ('Remove Chapter', 'remove-chapter'),
-        ]
-        #@nonl
-        #@-node:bobjack.20080403074002.9:canvas
-        #@+node:bobjack.20080407082242.2:headline
-        self.default_context_menus['headline'] = []
-        #@-node:bobjack.20080407082242.2:headline
-        #@+node:bobjack.20080407082242.4:plusbox
-        self.default_context_menus['plusbox'] = []
-        #@-node:bobjack.20080407082242.4:plusbox
         #@-others
+        def doCommand(self, keywords):
+            event = keywords.get('event')
+            self.c.frame.OnPasteFromMenu(event)
 
-
-
-    #@-node:bobjack.20080321133958.7:init_default_menus
-    #@+node:bobjack.20080414064211.5:Utility
-    #@+node:bobjack.20080414064211.3:getBodyData
+    #@-node:bobjack.20080516105903.69:rclick-paste-text
+    #@-node:bobjack.20080516105903.64:Invocation Minibuffer Commands
+    #@+node:bobjack.20080516105903.70:Utility
+    #@+node:bobjack.20080516105903.71:getBodyData
     def getBodyData(self, cmd):
 
         """Get and precondition data from cmd.
@@ -1773,8 +2348,8 @@ class ContextMenuController(object):
 
         pairs = '\n'.join(pairs)
         return cmds[0], pairs
-    #@-node:bobjack.20080414064211.3:getBodyData
-    #@+node:bobjack.20080403171532.5:split_cmd
+    #@-node:bobjack.20080516105903.71:getBodyData
+    #@+node:bobjack.20080516105903.72:split_cmd
     def split_cmd(self, cmd):
 
         """Split string cmd into a cmd and dictionary of key value pairs."""
@@ -1788,31 +2363,8 @@ class ContextMenuController(object):
             cmd_data[key] = value
 
         return cmd, cmd_data
-    #@-node:bobjack.20080403171532.5:split_cmd
-    #@+node:bobjack.20080414113201.2:copyMenuTable
-    def copyMenuTable(self, menu_table):
-
-        """make a copy of the menu_table and make copies of its submenus."""
-
-
-        def _deepcopy(menu):
-
-            table = []
-            for item in menu:
-                label, cmd = item
-                if isinstance(cmd, list):
-                    cmd = _deepcopy(cmd)
-                    item = (label, cmd)
-                table.append(item)
-
-            return table
-
-        newtable =  _deepcopy(menu_table)
-
-        return newtable
-
-    #@-node:bobjack.20080414113201.2:copyMenuTable
-    #@+node:bobjack.20080414113201.3:copyMenuDict
+    #@-node:bobjack.20080516105903.72:split_cmd
+    #@+node:bobjack.20080516105903.74:copyMenuDict
     def copyMenuDict(self, menu_dict):
 
         menus = {}
@@ -1821,11 +2373,13 @@ class ContextMenuController(object):
 
         return menus
 
-    #@-node:bobjack.20080414113201.3:copyMenuDict
-    #@-node:bobjack.20080414064211.5:Utility
+    #@-node:bobjack.20080516105903.74:copyMenuDict
+    #@-node:bobjack.20080516105903.70:Utility
     #@-others
-#@-node:bobjack.20080323045434.14:class ContextMenuController
+#@-node:bobjack.20080516105903.18:class pluginController
 #@-others
+
+
 
 
 #@-node:bobjack.20080321133958.6:@thin rClick.py

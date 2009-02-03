@@ -59,8 +59,8 @@ Davide Salomoni
 #@<< imports >>
 #@+node:ekr.20050311091110.1:<< imports >>
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import cStringIO
 import ftplib
@@ -309,7 +309,7 @@ def enable_body(body):
     if body.cget("state") == "disabled":
         try:
             g.es("enable")
-            print insertOffTime,insertOnTime
+            g.pr(insertOffTime,insertOnTime)
             body.configure(state="normal")
             body.configure(insertontime=insertOnTime,insertofftime=insertOffTime)
         except: g.es_exception()
@@ -321,7 +321,7 @@ def disable_body(body):
             g.es("disable")
             insertOnTime = body.cget("insertontime")
             insertOffTime = body.cget("insertofftime")
-            print insertOffTime,insertOnTime
+            g.pr(insertOffTime,insertOnTime)
             body.configure(state="disabled")
         except: g.es_exception()
 #@-node:edream.110203113231.893:enable/disable_body
@@ -334,9 +334,8 @@ def insert_read_only_node (c,v,name):
             title="Open",
             filetypes=[("All files", "*")]
             )
-        c.beginUpdate()
         c.setHeadString(v,"@read-only %s" % name)
-        c.endUpdate()
+        c.redraw()
     parse = urlparse.urlparse(name)
     try:
         if parse[0] == 'ftp':
@@ -376,13 +375,13 @@ def insert_read_only_node (c,v,name):
             numlinks = len(hyperlinks)
             if numlinks > 0:
                 hyperlist = ['\n\n--Hyperlink list follows--']
-                for i in xrange(numlinks):
+                for i in range(numlinks):
                     hyperlist.append("\n[%d]: %s" % (i+1,hyperlinks[i])) # 3/26/03: was i.
                 new = new + ''.join(hyperlist)
             #@nonl
             #@-node:edream.110203113231.895:<< convert HTML to text >>
             #@nl
-        previous = v.t.bodyString
+        previous = v.t._bodyString
         c.setBodyString(v,new)
         changed = (g.toUnicode(new,'ascii') != g.toUnicode(previous,'ascii'))
         if changed and previous != "":
@@ -399,19 +398,18 @@ def on_open (tag,keywords):
 
     v = c.rootVnode()
     g.es("scanning for @read-only nodes...",color="blue")
-    c.beginUpdate()
     while v:
-        h = v.headString()
+        h = v.h
         if g.match_word(h,0,"@read-only"):
             changed = insert_read_only_node(c,v,h[11:])
-            g.es("changing %s" % v.headString(),color="red")
+            g.es("changing %s" % v.h,color="red")
             if changed:
                 if not v.isDirty():
                     v.setDirty()
                 if not c.isChanged():
                     c.setChanged(changed)
         v = v.threadNext()
-    c.endUpdate()
+    c.redraw()
 #@nonl
 #@-node:edream.110203113231.896:on_open
 #@+node:edream.110203113231.897:on_bodykey1
@@ -423,7 +421,7 @@ def on_bodykey1 (tag,keywords):
 
     c = keywords.get("c")
     v = keywords.get("v")
-    h = v.headString()
+    h = v.h
     if g.match_word(h,0,"@read-only"):
         # The following code causes problems with scrolling and syntax coloring.
         # Its advantage is that it makes clear that the text can't be changed,
@@ -432,7 +430,7 @@ def on_bodykey1 (tag,keywords):
             # An @read-only node: do not change its text.
             body = c.frame.body.bodyCtrl
             body.delete("1.0","end")
-            body.insert("1.0",v.bodyString())
+            body.insert("1.0",v.b)
         return 1 # Override the body key event handler.
 #@nonl
 #@-node:edream.110203113231.897:on_bodykey1
@@ -443,7 +441,7 @@ def on_headkey2 (tag,keywords):
 
     c = keywords.get("c")
     v = keywords.get("v")
-    h = v.headString()
+    h = v.h
     ch = keywords.get("ch")
 
     g.trace(repr(ch))
@@ -467,7 +465,7 @@ def on_select2 (tag,keywords):
 
     c = keywords.get("c")
     v = c.currentVnode()
-    h = v.headString()
+    h = v.h
     if g.match_word(h,0,"@read-only"):
         disable_body(c.frame.body)
     else:

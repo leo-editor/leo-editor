@@ -26,7 +26,7 @@ Requires feedparser installed:
 
 from autotrees import BaseTreeHandler, TreeNode
 import feedparser
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
 __version__ = "0.1"
 __plugin_requires__ = ["feedparser", "autotrees", "plugin_manager"]
@@ -48,9 +48,10 @@ __plugin_group__ = "Network"
 class RSS(BaseTreeHandler):
     """RSS auto tree handler"""
 
-    def initFrom(self, parameter):
+    def initFrom(self,c,parameter):
         """Initialize the tree"""
-        node_body = self.node.bodyString().strip()
+        node_body = self.node.b.strip()
+        self.c = c
         self.children = []
         #
         g.es("Starting download", color="blue")

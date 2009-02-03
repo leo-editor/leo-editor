@@ -19,8 +19,8 @@ Otherwise the path is relative to the Leo file.
 
 # By Josef Dalcolmo: contributed under the same license as Leo.py itself.
 
-import leoPlugins
-import leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoGlobals as g
 import os
 
 #@<< change log >>
@@ -70,7 +70,7 @@ def onIconDoubleClick(tag,keywords):
     # g.trace(c)
 
     if c and v:
-        h = v.headString().strip()
+        h = v.h.strip()
         if h and h[0]!='@':
             #@            << find path and start file >>
             #@+node:ekr.20040828103325.4:<< find path and start file >>
@@ -79,7 +79,7 @@ def onIconDoubleClick(tag,keywords):
             basedir = thisdir[:] # use current dir as default.
             parv = v.parent() # start with parent
             while parv: # stop when no more parent found
-                p = parv.headString().strip()
+                p = parv.h.strip()
                 if g.match_word(p,0,'@folder'):
                     basedir = p[8:] # take rest of headline as pathname
                     break # we found the closest @folder

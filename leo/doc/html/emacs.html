@@ -369,7 +369,7 @@ We can execute that script in the hidden Leo application as follows:</p>
 <p>For example:</p>
 <pre class="literal-block">
 (setq c (leo-open fileName)
-(csetq script &quot;print 'c',c,'h',c.currentPosition().headString()&quot;)
+(csetq script &quot;print 'c',c,'h',c.p.h&quot;)
 (leo-run-script c script)
 </pre>
 </blockquote>
@@ -391,7 +391,7 @@ We can execute that script in the hidden Leo application as follows:</p>
 
 ; Step 3: execute a script in ut.leo.
 (setq c (leo-open fileName))
-(setq script &quot;print 'c',c.shortFileName() ,'current:',c.currentPosition().headString()&quot;)
+(setq script &quot;print 'c',c.shortFileName() ,'current:',c.p.h&quot;)
 (leo-run-script c script)
 </pre>
 </div>
@@ -423,7 +423,7 @@ Returns the commander of the open Leo outline, or None if the outline could not 
 <li><p class="first">run_script(c,script,p=None)</p>
 <p>Executes a script in the context of a commander <tt class="docutils literal"><span class="pre">c</span></tt> returned by the leoPymacs.open.
 c may be None, in which case a dummy commander is created in which to run the script.
-In the executed script, p is set to c.currentPosition() if no p argument is specified.
+In the executed script, p is set to c.p if no p argument is specified.
 Returns g.app.scriptResult, where g.app is the hidden app.</p>
 </li>
 </ul>

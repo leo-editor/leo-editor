@@ -34,8 +34,8 @@ from __future__ import generators # To make this plugin work with Python 2.2.
 
 #@<< imports >>
 #@+node:ekr.20040915085715:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 from leoNodes import *
 
@@ -44,7 +44,7 @@ Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 import os
 import threading
 import time
-import weakref
+# import weakref
 #@-node:ekr.20040915085715:<< imports >>
 #@nl
 __version__ = '.3'
@@ -96,7 +96,7 @@ def makeProduceList( c, root = True ):
         stopnode = rvnode.next()
 
     for z in travel(rvnode,stopnode):
-        body = z.bodyString()
+        body = z.b
         body = body.split( '\n' )
         body = filter(teststart, body)
         if body:
@@ -171,10 +171,10 @@ def addMenu( tag, keywords ):
     men = c.frame.menu.getMenu( 'Outline' )
     men2 = Tk.Menu( men , tearoff = 0 )
     men.add_cascade( menu = men2, label = 'Produce' )
-    men2.add_command(
+    c.add_command(men2,
         label = "Execute All Produce",
         command = lambda  c = c: exeProduce( c ))
-    men2.add_command(
+    c.add_command(men2,
         label = "Execute Tree Produce",
         command = lambda c = c: exeProduce( c, root = False ) )
 #@nonl

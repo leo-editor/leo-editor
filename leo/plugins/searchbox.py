@@ -30,7 +30,7 @@ Still to do:
 #@@language python
 #@@tabwidth -4
 
-__version__ = "0.7"
+__version__ = "0.9"
 
 #@<< version history >>
 #@+node:ekr.20040908094021.3:<< version history >>
@@ -51,16 +51,22 @@ __version__ = "0.7"
 # - Changed init_s_text to init_s_ctrl.
 #     - Changed s_text to s_ctrl.
 # 0.7 EKR: Fixed crasher in Leo 4.4 by initing self.p in Quickfind ctor.
+# 0.8 EKR: Fixed crasher by making QuickFind.s_ctrl a leoTkTextWidget and by 
+# adding
+#          ins argument to init_s_ctrl.
+# 0.9 EKR: Import tkGui as needed.
 #@-at
-#@nonl
 #@-node:ekr.20040908094021.3:<< version history >>
 #@nl
 #@<< imports >>
 #@+node:ekr.20040908093511.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
-import leoFind
+import leo.plugins.tkGui as tkGui
+leoTkinterFrame = tkGui.leoTkinterFrame
+
+import leo.core.leoFind as leoFind
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -109,6 +115,22 @@ def onCreate(tag, keywords):
     search.addWidgets()
 #@nonl
 #@-node:ekr.20040909132007:onCreate
+#@+node:ekr.20080707161756.1:init
+def init():
+
+    if not Tk:
+        return False # OK for unit testing.
+
+    if g.app.gui is None:
+        g.app.createTkGui(__file__)
+
+    if g.app.gui.guiName() == "tkinter":
+        leoPlugins.registerHandler("after-create-leo-frame", onCreate)
+        g.plugin_signon(__name__)
+        return True
+    else:
+        return False
+#@-node:ekr.20080707161756.1:init
 #@+node:ekr.20040107092135.3:class SearchBox
 class SearchBox:
 
@@ -152,7 +174,7 @@ class SearchBox:
         # Text entry.
         self.search = Tk.Entry(self._getSizer(toolbar, 24, 130))
         self.search.pack(side="right", padx=3, fill="both", expand=1)
-        self.search.bind("<Return>", self.onKey)
+        c.bind(self.search,"<Return>", self.onKey)
         # Store a list of the last searches.
         self.search_list = []
     #@-node:ekr.20040108054555.3:addWidgets
@@ -204,7 +226,7 @@ class SearchBox:
                 self.doSearch() 
                 break
         else:
-            print name, self.search_list 
+            g.pr(name, self.search_list )
             g.es("Recent search item not found! Looks like a bug ...", color="red")
     #@nonl
     #@-node:ekr.20040108054555.8:searchRecent
@@ -213,19 +235,20 @@ class SearchBox:
         """Update the list of recently searched items"""
 
         # First update the menu - delete all the options if there are any
+        c = self.c
         menu = self.options["menu"]
         if self.search_list:
             menu.delete(len(OPTION_LIST),"end")
 
-        menu.add_command(label="-------------", command=lambda:0) 
+        c.add_command(menu,label="-------------", command=lambda:0) 
 
         # Update and prune list to remove a previous search for this text 
         self.search_list = [(text, search_mode)] +  [
-            (name, mode) for name, mode in self.search_list[:SEARCH_LIST_LENGTH] if name <> text] 
+            (name, mode) for name, mode in self.search_list[:SEARCH_LIST_LENGTH] if name != text] 
 
         # Now update the menu 
         for name, mode in self.search_list:
-            menu.add_command(
+            c.add_command(menu,
                 label=name,command=Tk._setit(self.option_value,name,self.searchRecent))
     #@nonl
     #@-node:ekr.20040108054555.7:updateRecentList
@@ -247,8 +270,8 @@ class QuickFind(leoFind.leoFind):
         leoFind.leoFind.__init__(self,c)
 
         self.c = c
-        self.p = c.currentPosition() # Bug fix: 5/14/06
-        self.s_ctrl = Tk.Text() # Used by find.search()
+        self.p = c.p # Bug fix: 5/14/06
+        self.s_ctrl = leoTkinterFrame.leoTkTextWidget() # Tk.Text() # Used by find.search()
         self.__find_text = text
         self.search_option = search_option
     #@nonl
@@ -280,14 +303,19 @@ class QuickFind(leoFind.leoFind):
     #@nonl
     #@-node:ekr.20040107092135.8:update_ivars
     #@+node:ekr.20040107103252:init_s_ctrl
-    def init_s_ctrl (self,s):
+    def init_s_ctrl (self,s,ins=None):
 
         t = self.s_ctrl
         t.delete("1.0","end")
         t.insert("end",s)
-        t.mark_set("insert",g.choose(self.reverse,"end","1.0"))
+
+        if ins is None:
+            t.mark_set("insert",g.choose(self.reverse,"end","1.0"))
+        else:
+            ins = t.toGuiIndex(ins)
+            t.mark_set("insert",ins)
+
         return t
-    #@nonl
     #@-node:ekr.20040107103252:init_s_ctrl
     #@+node:ekr.20040107103339:gui_search
     def gui_search (self,t,*args,**keys):
@@ -298,15 +326,5 @@ class QuickFind(leoFind.leoFind):
     #@-others
 #@-node:ekr.20040107092135.6:class QuickFind
 #@-others
-
-if Tk: # OK for unit testing.
-
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    if g.app.gui.guiName() == "tkinter":
-        leoPlugins.registerHandler("after-create-leo-frame", onCreate)
-        g.plugin_signon(__name__)
-#@nonl
 #@-node:ekr.20040107092135.2:@thin searchbox.py
 #@-leo

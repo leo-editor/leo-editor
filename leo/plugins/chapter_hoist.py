@@ -19,8 +19,8 @@ Requires at least version 0.19 of mod_scripting
 #@nl
 #@<< imports >>
 #@+node:ekr.20060328125925.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 from mod_scripting import scriptingController
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
@@ -86,7 +86,7 @@ class chapterHoist:
     def createSaveHoistButton(self,sc,c):
 
         def saveHoistCallback(event=None,self=self,sc=sc,c=c):
-            self.createChapterHoistButton(sc,c,c.currentPosition())
+            self.createChapterHoistButton(sc,c,c.p)
             c.hoist()
             return 'break'
 
@@ -121,7 +121,7 @@ class chapterHoist:
     def createChapterHoistButton (self,sc,c,p):
 
         '''Generates a hoist button for the headline at the given position'''    
-        h = p.headString()
+        h = p.h
         buttonText = sc.getButtonText(h)
         statusLine = "Hoist %s" % h
 

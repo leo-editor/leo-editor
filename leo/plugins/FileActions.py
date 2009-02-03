@@ -67,8 +67,8 @@ __version__ = "0.4"
 #@nl
 #@<< imports >>
 #@+node:ekr.20040915110738.1:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import fnmatch
 import os
@@ -94,7 +94,7 @@ file_directives = [
    "@asis",   "@file-asis",   "@silentfile",
    "@noref",  "@file-noref",  "@rawfile",
    "@nosent", "@file-nosent", "@nosentinelsfile",
-   "@file-ref",
+   "@file-ref", "@shadow",
 ]
 #@nonl
 #@-node:ekr.20040915110738.2:<< define the directives that are handled by this plugin >>
@@ -118,9 +118,9 @@ def onIconDoubleClick(tag, keywords):
     p = keywords.get("p")
 
     if not c or not p:
-        return
-    
-    h = p.headString()
+        return None
+
+    h = p.h
     words = h.split()
     directive = words[0]
     if directive[0] != '@' or directive not in file_directives:
@@ -135,7 +135,12 @@ def onIconDoubleClick(tag, keywords):
         # This generates a slightly confusing warning if there are no dirty nodes.
         c.fileCommands.writeDirtyAtFileNodes()
 
-    doFileAction(filename,c)
+    if doFileAction(filename,c):
+        return True #Action was taken - Stop other double-click handlers from running
+    else:
+        return None #No action taken - Let other double-click handlers run
+
+
 #@-node:ekr.20040915105758.14:onIconDoubleClick
 #@+node:ekr.20040915105758.15:doFileAction
 def doFileAction(filename, c):
@@ -145,15 +150,19 @@ def doFileAction(filename, c):
         done = False
         name = os.path.split(filename)[1]
         for p2 in p.children_iter():
-            pattern = p2.headString().strip()
+            pattern = p2.h.strip()
             if fnmatch.fnmatchcase(name, pattern):
                 applyFileAction(p2, filename, c)
                 done = True
                 break
         if not done:
             g.es("no file action matches " + filename, color='blue')
+            return False #TL - Inform onIconDoubleClick that no action was taken
+        else:
+            return True #TL - Inform onIconDoubleClick that action was taken
     else:
         g.es("no FileActions node", color='blue')
+        return False #TL - Inform onIconDoubleClick that no action was taken
 #@nonl
 #@-node:ekr.20040915105758.15:doFileAction
 #@+node:ekr.20040915105758.16:applyFileAction

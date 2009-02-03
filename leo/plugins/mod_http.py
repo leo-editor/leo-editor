@@ -42,12 +42,10 @@ __version__ = "0.99"
 # If it does not, non-ascii characters will look very strange.
 browser_encoding = 'utf-8' # A hack.  Can we query the browser for this?
 
-__pychecker__ = '--no-errors' # Suppress all pychecker errors.
-
 #@<< imports >>
 #@+node:EKR.20040517080250.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import asynchat
 import asyncore
@@ -300,7 +298,7 @@ class leo_interface(object):
 
         # Collecting the navigational links.
         if node:
-            nodename = node.headString()
+            nodename = node.h
             threadNext = node.threadNext()
             sibling = node.next()
             parent = node.parent()
@@ -345,7 +343,7 @@ class leo_interface(object):
             f.write("<ol>\n")
             for child in children:
                 f.write("<li>\n")
-                self.create_leo_reference(window, child, child.headString(), f)
+                self.create_leo_reference(window, child, child.h, f)
                 f.write("</li>\n")
             f.write("</ol>\n")
     #@nonl
@@ -380,8 +378,8 @@ class leo_interface(object):
         """
 
         if node:
-            headString = node.headString()
-            bodyString = node.bodyString()
+            headString = node.h
+            bodyString = node.b
             format_info = get_http_attribute(node)
         else:
             headString, bodyString = "Top level", ""
@@ -594,7 +592,7 @@ class leo_interface(object):
     def write_path(self, node, f):
         result = []
         while node:
-            result.append(node.headString())
+            result.append(node.h)
             node = node.parent()
         result.reverse()
         if result:

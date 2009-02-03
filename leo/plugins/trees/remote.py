@@ -18,7 +18,7 @@ Requires pyCurl:
 from autotrees import BaseTreeHandler, TreeNode
 import pycurl
 import StringIO
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
 __version__ = "0.1"
 __plugin_requires__ = ["pycurl", "autotrees", "plugin_manager"]
@@ -39,8 +39,9 @@ __plugin_group__ = "Network"
 class Remote(BaseTreeHandler):
     """A handler for remote files"""
 
-    def initFrom(self, parameter):
+    def initFrom(self,c,parameter):
         """Initialize the tree"""
+        self.c = c
         self.children = []
 
         content = StringIO.StringIO()

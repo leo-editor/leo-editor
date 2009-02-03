@@ -47,12 +47,12 @@ bwm_file = None
 if 0:
     bwm_file = open("bwm_file", "w")
 
-__version__ = '1.22'
+__version__ = '1.23'
 
 #@<< imports >>
 #@+node:ekr.20050805162550.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import os
 import HTMLParser
@@ -81,7 +81,7 @@ try:
     import SilverCity
 except ImportError:
     if '--silent' not in sys.argv and not g.unitTesting and not g.app.batchMode:
-        print 'rst3 plugin: SilverCity not loaded'
+        g.pr('rst3 plugin: SilverCity not loaded')
     SilverCity = None
 #@-node:ekr.20050805162550.2:<< imports >>
 #@nl
@@ -106,6 +106,7 @@ except ImportError:
 # 1.20 EKR: Registers the write-restructured-text command.
 # 1.21 EKR: Added rst3-publish-argv-for-missing-stylesheets setting.
 # 1.22 EKR: Fixed bug that caused the plugin not to find default.css.
+# 1.23 EKR: Use g.makeAllNonExistentDirectories instead of os.mkdir.
 #@-at
 #@nonl
 #@-node:ekr.20050805162550.3:<< change log >>
@@ -202,7 +203,7 @@ def init ():
         g.plugin_signon(__name__)
     else:
         s = 'rst3 plugin not loaded: can not load docutils'
-        print s ; g.es(s,color='red')
+        g.es_print(s,color='red')
 
     return ok
 #@-node:ekr.20050805162550.5: init
@@ -420,8 +421,8 @@ class htmlParserClass (linkAnchorParserClass):
                 #@            << trace the unknownAttribute >>
                 #@+node:ekr.20050815164715.1:<< trace the unknownAttribute >>
                 if 0:
-                    print "rst3: unknownAttributes[self.http_attributename]"
-                    print "For:", self.last_position
+                    g.pr("rst3: unknownAttributes[self.http_attributename]")
+                    g.pr("For:", self.last_position)
                     pprint.pprint(mod_http.get_http_attribute(self.last_position))
                 #@nonl
                 #@-node:ekr.20050815164715.1:<< trace the unknownAttribute >>
@@ -672,7 +673,7 @@ class rstClass:
         c = self.c ; editMenu = c.frame.menu.getMenu('Edit')
 
         def rst3PluginCallback (event=None):
-            self.processTopTree(c.currentPosition())
+            self.processTopTree(c.p)
 
         c.k.registerCommand('write-restructured-text',shortcut=None,
             func=rst3PluginCallback,pane='all',verbose=False)
@@ -772,6 +773,7 @@ class rstClass:
             'rst3_show_organizer_nodes': True,
             'rst3_show_options_nodes': False,
             'rst3_strip_at_file_prefixes': True,
+            'rst3_show_doc_parts_in_rst_mode': True,
             # Formatting options that apply only to code mode.
             'rst3_show_doc_parts_as_paragraphs': False,
             'rst3_show_leo_directives': True,
@@ -799,9 +801,9 @@ class rstClass:
         d = self.optionsDict
         keys = d.keys() ; keys.sort()
 
-        print 'present settings...'
+        g.pr('present settings...')
         for key in keys:
-            print '%20s %s' % (key,d.get(key))
+            g.pr('%20s %s' % (key,d.get(key)))
     #@nonl
     #@-node:ekr.20050812120933:dumpSettings (debugging)
     #@+node:ekr.20050814134351:getOption
@@ -819,13 +821,14 @@ class rstClass:
     def initCodeBlockString(self,p):
 
         # New in Leo 4.4.4: do this here, not in initWrite:
-        d = g.scanDirectives(c=self.c,p=p)
+        c = self.c
+        d = c.scanAllDirectives(p)
         language = d.get('language')
         if language is None: language = 'python'
         else: language = language.lower()
         syntax = SilverCity is not None
 
-        # g.trace('language',language,'language.title()',language.title(),p.headString())
+        # g.trace('language',language,'language.title()',language.title(),p.h)
 
         if syntax and language in ('python','ruby','perl','c'):
             self.code_block_string = '**code**:\n\n.. code-block:: %s\n' % language.title()
@@ -845,7 +848,7 @@ class rstClass:
             self.preprocessNode(p)
 
         if 0:
-            g.trace(root.headString())
+            g.trace(root.h)
             for key in self.tnodeOptionDict.keys():
                 g.trace(key)
                 g.printDict(self.tnodeOptionDict.get(key))
@@ -918,7 +921,7 @@ class rstClass:
 
         '''Return a dictionary containing the options implied by p's headline.'''
 
-        h = p.headString().strip()
+        h = p.h.strip()
 
         if p == self.topNode:
             return {} # Don't mess with the root node.
@@ -926,7 +929,7 @@ class rstClass:
             s = h [len(self.option_prefix):]
             return self.scanOption(p,s)
         elif g.match_word(h,0,self.getOption('options_prefix')): # '@rst-options'
-            return self.scanOptions(p,p.bodyString())
+            return self.scanOptions(p,p.b)
         else:
             # Careful: can't use g.match_word because options may have '-' chars.
             i = g.skip_id(h,0,chars='@-')
@@ -959,7 +962,7 @@ class rstClass:
 
             if h.startswith('@rst'):
                 g.trace('word',word,'rst_prefix',self.getOption('rst_prefix'))
-                g.trace('unknown kind of @rst headline',p.headString())
+                g.trace('unknown kind of @rst headline',p.h)
 
             return {}
     #@-node:ekr.20050811173750:scanHeadlineForOptions
@@ -971,11 +974,11 @@ class rstClass:
         Such entries may arise from @rst-option or @rst-options in the headline,
         or from @ @rst-options doc parts.'''
 
-        h = p.headString()
+        h = p.h
 
         d = self.scanHeadlineForOptions(p)
 
-        d2 = self.scanForOptionDocParts(p,p.bodyString())
+        d2 = self.scanForOptionDocParts(p,p.b)
 
         # A fine point: body options over-ride headline options.
         d.update(d2)
@@ -999,14 +1002,14 @@ class rstClass:
             if fullName in self.defaultOptionsDict.keys():
                 if   val.lower() == 'true': val = True
                 elif val.lower() == 'false': val = False
-                # g.trace('%24s %8s %s' % (self.munge(name),val,p.headString()))
+                # g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
                 return { self.munge(name): val }
             else:
                 g.es_print('ignoring unknown option: %s' % (name),color='red')
                 return {}
         else:
             g.trace(repr(s))
-            s2 = 'bad rst3 option in %s: %s' % (p.headString(),s)
+            s2 = 'bad rst3 option in %s: %s' % (p.h,s)
             g.es_print(s2,color='red')
             return {}
     #@nonl
@@ -1042,13 +1045,13 @@ class rstClass:
         # g.trace('-'*20)
         for p in p.self_and_parents_iter():
             d = self.tnodeOptionDict.get(p.v.t,{})
-            # g.trace(p.headString(),d)
+            # g.trace(p.h,d)
             for key in d.keys():
                 ivar = self.munge(key)
                 if not ivar in seen:
                     seen.append(ivar)
                     val = d.get(key)
-                    self.setOption(key,val,p.headString())
+                    self.setOption(key,val,p.h)
 
         # self.dumpSettings()
         if self.rst3_all:
@@ -1087,8 +1090,8 @@ class rstClass:
 
         for ivar in self.singleNodeOptions:
             val = d.get(ivar,False)
-            #g.trace('%24s %8s %s' % (ivar,val,p.headString()))
-            self.setOption(ivar,val,p.headString())
+            #g.trace('%24s %8s %s' % (ivar,val,p.h))
+            self.setOption(ivar,val,p.h)
 
     #@-node:ekr.20050810103731:handleSingleNodeOptions
     #@-node:ekr.20050808142313.28:scanAllOptions & helpers
@@ -1117,7 +1120,8 @@ class rstClass:
 
         # Set the encoding from any parent @encoding directive.
         # This can be overridden by @rst-option encoding=whatever.
-        d = g.scanDirectives(c=self.c,p=p)
+        c = self.c
+        d = c.scanAllDirectives(p)
         self.encoding = encoding or d.get('encoding') or self.defaultEncoding
 
     #@-node:ekr.20050809075309:initWrite
@@ -1135,10 +1139,11 @@ class rstClass:
         if not toString:
             # Comput the output file name *after* calling writeTree.
             self.outputFileName = self.computeOutputFileName(self.outputFileName)
-            self.outputFile = file(self.outputFileName,'w')
+            self.outputFile = open(self.outputFileName,'w')
             self.outputFile.write(self.stringOutput)
             self.outputFile.close()
-    #@nonl
+
+        return True
     #@-node:ekr.20050809080925:writeNormalTree
     #@+node:ekr.20051121102358:processTopTree
     def processTopTree (self,p,justOneFile=False):
@@ -1146,7 +1151,7 @@ class rstClass:
         c = self.c ; current = p.copy()
 
         for p in current.self_and_parents_iter():
-            h = p.headString()
+            h = p.h
             if h.startswith('@rst') and not h.startswith('@rst-'):
                 self.processTree(p,ext=None,toString=False,justOneFile=justOneFile)
                 break
@@ -1165,7 +1170,7 @@ class rstClass:
         found = False ; self.stringOutput = ''
         p = p.copy() ; after= p.nodeAfterTree()
         while p and p != after:
-            h = p.headString().strip()
+            h = p.h.strip()
             if g.match_word(h,0,"@rst"):
                 self.outputFileName = h[4:].strip()
                 if (
@@ -1182,15 +1187,15 @@ class rstClass:
                     if self.ext in ('.htm','.html','.tex','.pdf'):
                         ok = self.writeSpecialTree(p,toString=toString,justOneFile=justOneFile)
                     else:
-                        self.writeNormalTree(p,toString=toString)
+                        ok = self.writeNormalTree(p,toString=toString)
                     self.scanAllOptions(p) # Restore the top-level verbose setting.
                     if toString:
                         return p.copy(),self.stringOutput
                     else:
-                        self.report(self.outputFileName)
+                        if ok: self.report(self.outputFileName)
                     p.moveToNodeAfterTree()
                 else:
-                   p.moveToThreadNext()
+                    p.moveToThreadNext()
             else: p.moveToThreadNext()
         if not found:
             g.es('No @rst nodes in selected tree',color='blue')
@@ -1199,6 +1204,7 @@ class rstClass:
     #@+node:ekr.20050805162550.21:writeSpecialTree
     def writeSpecialTree (self,p,toString,justOneFile):
 
+        c = self.c
         isHtml = self.ext in ('.html','.htm')
         if isHtml and not SilverCity:
             if not self.silverCityWarningGiven:
@@ -1216,13 +1222,20 @@ class rstClass:
             self.outputFileName = self.computeOutputFileName(self.outputFileName)
 
             # Create the directory if it doesn't exist.
-            dir, junk = g.os_path_split(self.outputFileName)
-            if not os.access(dir,os.F_OK):
-                os.mkdir(dir)
+            theDir, junk = g.os_path_split(self.outputFileName)
+            theDir = c.os_path_finalize(theDir)
+            if not g.os_path_exists(theDir):
+                ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
+                if not ok:
+                    g.es_print('did not create:',theDir,color='red')
+                    return False
+
+            # if not os.access(theDir,os.F_OK):
+                # os.mkdir(theDir)
 
             if self.getOption('write_intermediate_file'):
                 name = self.outputFileName + '.txt'
-                f = file(name,'w')
+                f = open(name,'w')
                 f.write(self.source)
                 f.close()
                 self.report(name)
@@ -1231,7 +1244,7 @@ class rstClass:
             output = self.writeToDocutils(self.source)
             ok = True
         except Exception:
-            print 'Exception in docutils'
+            g.pr('Exception in docutils')
             g.es_exception()
             ok = False
 
@@ -1254,13 +1267,12 @@ class rstClass:
                 self.stringOutput = output
             else:
                 # Write the file to the directory containing the .leo file.
-                f = file(self.outputFileName,'w')
+                f = open(self.outputFileName,'w')
                 f.write(output)
                 f.close()
                 self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
 
         return ok
-    #@nonl
     #@-node:ekr.20050805162550.21:writeSpecialTree
     #@+node:ekr.20050809082854.1:writeToDocutils (sets argv)
     def writeToDocutils (self,s):
@@ -1268,10 +1280,12 @@ class rstClass:
         '''Send s to docutils using the writer implied by self.ext and return the result.'''
 
         openDirectory = self.c.frame.openDirectory
-        pub = docutils.core.Publisher()
-        pub.source      = docutils.io.StringInput(source=s)
-        pub.destination = docutils.io.StringOutput(pub.settings,encoding=self.encoding)
-        pub.set_reader('standalone',None,'restructuredtext')
+        #pub = docutils.core.Publisher()
+        #pub.source      = docutils.io.StringInput(source=s)
+        #pub.destination = docutils.io.StringOutput(pub.settings,encoding=self.encoding)
+        #pub.set_reader('standalone',None,'restructuredtext')
+
+        overrides = { 'output_encoding': self.encoding }        # MWC -- define override structure
 
         # Compute the args list if the stylesheet path does not exist.
         args = self.getOption('publish_argv_for_missing_stylesheets') or ''
@@ -1296,36 +1310,49 @@ class rstClass:
         # The actual file is gotten by: writers.get_writer_class(writer_name)
         # There is a list of aliases in the __init__ file in the writers folder.
         # If no such alias exists, docutils tries to import the actual name give.
-        pub.set_writer(writer)
+        #pub.set_writer(writer)
 
         # Make the stylesheet path relative to the directory containing the output file.
-        rel_stylesheet_path = (
-            self.getOption('stylesheet_path') or
-            self.c.frame.openDirectory) # Bug fix: take entire open directory.
+        rel_stylesheet_path = self.getOption('stylesheet_path') or ''
 
-        stylesheet_path = g.os_path_abspath(rel_stylesheet_path)
+        # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
+        stylesheet_path = g.os_path_finalize_join(
+            self.c.frame.openDirectory,rel_stylesheet_path)
 
-        # Allow relative paths.
-        path = g.os_path_abspath(g.os_path_join(
-            stylesheet_path,self.getOption('stylesheet_name')))
+        path = g.os_path_finalize_join(
+            stylesheet_path,self.getOption('stylesheet_name'))
 
-        # g.trace('stylesheet_path',stylesheet_path)
-        # g.trace('path',path)
-
+        res = ""
         if g.os_path_exists(path):
             if self.ext == '.pdf':
-                return pub.publish(argv=[])
+                # return pub.publish(argv=[])
+                pass
             else:
-                return pub.publish(argv=['--stylesheet=%s' % path])
+                overrides['stylesheet'] = path
+                overrides['stylesheet_path'] = None
+                #return pub.publish(argv=['--stylesheet=%s' % path])
         else:
             if not args1:
                 if rel_stylesheet_path == stylesheet_path:
-                    g.es_print('stylesheet does not exist: %s' % (path),color='red')
+                    g.es_print('stylesheet not found: %s' % (path),color='red')
                 else:
-                    g.es_print('stylesheet does not exist',color='red')
+                    g.es_print('stylesheet not found',color='red')
+                    g.es_print('open directory: %s' % (self.c.frame.openDirectory),color='red')
                     g.es_print('relative path: %s' % (rel_stylesheet_path),color='red')
-                    g.es_print('absolute path: %s' % (path),color='red')
-            return pub.publish(argv=args)
+                    g.es_print('absolute path: %s' % (path),color='red')       
+            #return pub.publish(argv=args)
+            overrides.update(args)     # MWC add args to settings
+
+        # MWC -- Note:  Forcing all logic above to fall through to here
+        try:
+            res = docutils.core.publish_string(source=s,
+                    reader_name='standalone',
+                    parser_name='restructuredtext',
+                    writer_name=writer,
+                    settings_overrides=overrides)
+        except docutils.ApplicationError, error:
+            g.es_print('Error (%s): %s' % (error.__class__.__name__, error))
+        return res            
     #@-node:ekr.20050809082854.1:writeToDocutils (sets argv)
     #@+node:ekr.20060525102337:writeNodeToString (New in 4.4.1)
     def writeNodeToString (self,p=None,ext=None):
@@ -1340,10 +1367,10 @@ class rstClass:
 
         Returns p, s, where p is the position of the @rst node and s is the converted text.'''
 
-        c = self.c ; current = p or c.currentPosition()
+        c = self.c ; current = p or c.p
 
         for p in current.self_and_parents_iter():
-            if p.headString().startswith('@rst'):
+            if p.h.startswith('@rst'):
                 return self.processTree(p,ext=ext,toString=True,justOneFile=True)
         else:
             return self.processTree(current,ext=ext,toString=True,justOneFile=True)
@@ -1407,7 +1434,7 @@ class rstClass:
     def writeBody (self,p):
 
         # remove trailing cruft and split into lines.
-        lines = p.bodyString().rstrip().split('\n') 
+        lines = p.b.rstrip().split('\n') 
 
         if self.getOption('code_mode'):
             if not self.getOption('show_options_doc_parts'):
@@ -1427,6 +1454,15 @@ class rstClass:
                 retainContents=False)
             lines = self.handleSpecialDocParts(lines,'@rst-markup',
                 retainContents=self.getOption('generate_rst'))
+            if self.getOption('show_doc_parts_in_rst_mode') is True:
+                pass  # original behaviour, treat as plain text
+            elif self.getOption('show_doc_parts_in_rst_mode'):
+                # use value as class for content
+                lines = self.handleSpecialDocParts(lines,None,
+                    retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
+            else:  # option evaluates to false, cut them out
+                lines = self.handleSpecialDocParts(lines,None,
+                    retainContents=False)
             lines = self.removeLeoDirectives(lines)
             if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
                 lines = self.replaceCodeBlockDirectives(lines)
@@ -1529,7 +1565,7 @@ class rstClass:
         if not result: result = []
         if showHeadlines:
             if result or showThisHeadline or showOrganizers or p == self.topNode:
-                # g.trace(len(result),p.headString())
+                # g.trace(len(result),p.h)
                 self.writeHeadlineHelper(p)
         return result
     #@nonl
@@ -1604,7 +1640,7 @@ class rstClass:
     #@nonl
     #@-node:ekr.20050811105438:removeLeoDirectives
     #@+node:ekr.20050811105438.1:handleSpecialDocParts
-    def handleSpecialDocParts (self,lines,kind,retainContents):
+    def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
 
         # g.trace(kind,g.listToString(lines))
 
@@ -1617,7 +1653,15 @@ class rstClass:
             elif self.isSpecialDocPart(s,kind):
                 n, lines2 = self.getDocPart(lines,n)
                 if retainContents:
-                    result.extend(lines2)
+                    result.extend([''])
+                    if asClass:
+                        result.extend(['.. container:: '+asClass, ''])
+                        if 'literal' in asClass.split():
+                            result.extend(['  ::', ''])
+                        for l2 in lines2: result.append('    '+l2)
+                    else:
+                        result.extend(lines2)
+                    result.extend([''])
             else:
                 result.append(s)
 
@@ -1671,8 +1715,8 @@ class rstClass:
             docOnly or # handleDocOnlyMode handles this.
             not showHeadlines and not showThisHeadline or
             # docOnly and not showOrganizers and not thisHeadline or
-            not p.headString().strip() and not showOrganizers or
-            not p.bodyString().strip() and not showOrganizers
+            not p.h.strip() and not showOrganizers or
+            not p.b.strip() and not showOrganizers
         ):
             return
 
@@ -1681,7 +1725,7 @@ class rstClass:
     #@+node:ekr.20060608102001:writeHeadlineHelper
     def writeHeadlineHelper (self,p):
 
-        h = p.headString().strip()
+        h = p.h.strip()
 
         # Remove any headline command before writing the 
         i = g.skip_id(h,0,chars='@-')
@@ -1720,9 +1764,9 @@ class rstClass:
         self.scanAllOptions(p)
 
         if 0:
-            g.trace('%24s code_mode %s' % (p.headString(),self.getOption('code_mode')))
+            g.trace('%24s code_mode %s' % (p.h,self.getOption('code_mode')))
 
-        h = p.headString().strip()
+        h = p.h.strip()
 
         if self.getOption('preformat_this_node'):
             self.http_addNodeMarker(p)
@@ -1751,9 +1795,9 @@ class rstClass:
             line 2 etc.
         '''
 
-        # g.trace(p.headString(),g.callers())
+        # g.trace(p.h,g.callers())
 
-        lines = p.bodyString().split('\n')
+        lines = p.b.split('\n')
         lines = [' '*4 + z for z in lines]
         lines.insert(0,'::\n')
 
@@ -1789,16 +1833,16 @@ class rstClass:
         default_path = self.getOption('default_path')
 
         if default_path:
-            default_path = g.os_path_abspath(default_path)
+            default_path = g.os_path_finalize(default_path)
 
         # g.trace('default_path',default_path,'fileName',fileName)
 
         if default_path:
-            path = g.os_path_join(default_path,fileName)
+            path = g.os_path_finalize_join(default_path,fileName)
         elif openDirectory:
-            path = g.os_path_join(openDirectory,fileName)
+            path = g.os_path_finalize_join(openDirectory,fileName)
         else:
-            path = fileName
+            path = g.os_path_finalize(fileName)
 
         # g.trace('path',path)
 
@@ -1816,7 +1860,7 @@ class rstClass:
 
         if self.getOption('verbose'):
 
-            name = g.os_path_abspath(name)
+            name = g.os_path_finalize(name)
 
             g.es_print('wrote: %s' % (name),color="blue")
     #@nonl
@@ -1839,7 +1883,7 @@ class rstClass:
 
         ch = u [level]
 
-        # g.trace(self.toplevel,p.level(),level,repr(ch),p.headString())
+        # g.trace(self.toplevel,p.level(),level,repr(ch),p.h)
 
         n = max(4,len(s))
 
@@ -1895,7 +1939,7 @@ class rstClass:
     #@+node:ekr.20050805162550.36:set_initial_http_attributes
     def set_initial_http_attributes (self,filename):
 
-        f = file(filename)
+        f = open(filename)
         parser = htmlParserClass(self)
 
         for line in f.readlines():
@@ -1941,7 +1985,7 @@ class rstClass:
             attr = mod_http.get_http_attribute(p)
             if not attr:
                 continue
-            # g.trace('before',p.headString(),attr)
+            # g.trace('before',p.h,attr)
             if bwm_file:
                 print >> bwm_file
                 print >> bwm_file, "relocate_references(1): Position, attr:"

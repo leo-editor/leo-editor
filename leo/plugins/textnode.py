@@ -11,8 +11,8 @@
 #@@language python
 #@@tabwidth -4
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import os.path
 __version__ = "1.1"
     # Terry Brown: support for @path ancestors and uses universal newline mode for opening.
@@ -34,9 +34,9 @@ def init():
 def on_icondclick(tag, keywords):
     c = keywords['c']
     p = keywords['p']
-    h = p.headString()
+    h = p.h
     if g.match_word(h,0,"@text"): 
-        if p.bodyString() != "":
+        if p.b != "":
             result = g.app.gui.runAskYesNoDialog(c, "Query", "Read from file "+h[6:]+"?")
             if result == "no":
                 return
@@ -48,12 +48,11 @@ def on_open(tag,keywords):
     c = keywords.get("c")
     if not c: return
 
-    c.beginUpdate()
     for p in c.allNodes_iter():
-        h = p.headString()
+        h = p.h
         if g.match_word(h,0,"@text"):
             readtextnode(c, p)
-    c.endUpdate()
+    c.redraw()
 #@-node:ajones.20070122160142.3:on_open
 #@+node:ajones.20070122161942:on_save
 def on_save(tag,keywords):
@@ -61,7 +60,7 @@ def on_save(tag,keywords):
     if not c: return
 
     for p in c.allNodes_iter():
-        h = p.headString()
+        h = p.h
         if g.match_word(h,0,"@text") and p.isDirty():
             savetextnode(c, p)
             c.setBodyString(p, "")
@@ -69,8 +68,8 @@ def on_save(tag,keywords):
 #@-node:ajones.20070122161942:on_save
 #@+node:tbrown.20080128221824:getPath
 def getPath(c,p):
-    path = [i.headString()[6:] for i in p.self_and_parents_iter()
-            if i.headString()[:6] in ('@path ', '@text ')]
+    path = [i.h[6:] for i in p.self_and_parents_iter()
+            if i.h[:6] in ('@path ', '@text ')]
     path.append(g.getBaseDirectory(c))
     path.reverse()
     return os.path.join(*path)
@@ -101,7 +100,7 @@ def savetextnode(c, p):
     try:
         file = open(name,"w")
         g.es("writing " + name)
-        file.write(p.bodyString())
+        file.write(p.b)
         file.close()
     except IOError,msg:
         g.es("error writing %s: %s" % (name, msg))

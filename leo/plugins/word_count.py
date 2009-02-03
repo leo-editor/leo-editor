@@ -33,8 +33,8 @@ The Word Count... menu has a shortcut key of 'W'.
 #@nl
 #@<< imports >>
 #@+node:danr7.20061010105952.4:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import tkMessageBox
 
 #@-node:danr7.20061010105952.4:<< imports >>
@@ -76,12 +76,11 @@ def createWordCountMenu (tag,keywords):
     index_label = index_label.replace("&","")
     # Add 'Word Count...' to the bottom of the Edit menu.
     menu = c.frame.menu.getMenu('Edit')
-    c.frame.menu.add_command(menu,label=index_label,underline=amp_index,command= lambda c = c : word_count(c))
-    # menu.add('command',label=index_label,underline=amp_index,command= lambda c = c : word_count(c))
+    c.add_command(menu,label=index_label,underline=amp_index,command= lambda c = c : word_count(c))
 #@-node:danr7.20061010105952.5:createWordCountMenu
 #@+node:danr7.20061010105952.6:word_count
 def word_count( c ):
-    myBody = c.currentPosition().bodyString()
+    myBody = c.p.b
     charNum = len(myBody)
     wordNum = len(myBody.split(None))
     paraSplit = myBody.split("\n")

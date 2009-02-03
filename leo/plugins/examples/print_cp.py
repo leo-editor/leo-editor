@@ -4,7 +4,7 @@
 #@+node:ekr.20060621123339.1:<< docstring >>
 '''A plugin showing how to convert an @button node to a plugin.
 
-This plugin register the 'print-cp' minibuffer command.'''
+This plugin registers the 'print-cp' minibuffer command.'''
 #@-node:ekr.20060621123339.1:<< docstring >>
 #@nl
 
@@ -22,8 +22,8 @@ __version__ = '0.1'
 
 #@<< imports >>
 #@+node:ekr.20060621123339.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 if 0:
     Pmw = g.importExtension('Pmw',    pluginName=__name__,verbose=True,required=True)
@@ -68,15 +68,15 @@ class pluginController:
         self.c = c
         c.k.registerCommand('print-cp',shortcut=None,func=self.print_cp)
         script = "c.k.simulateCommand('print-cp')"
-        g.makeScriptButton(c,script=script,buttonText='Print c & p',bg='red')
+        g.app.gui.makeScriptButton(c,script=script,buttonText='Print c & p',bg='red')
     #@nonl
     #@-node:ekr.20060621123339.7:__init__
     #@+node:ekr.20060621124649:print_cp
     def print_cp (self,event=None):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         g.es_print('c: %s' % (c.fileName()),color='red')
-        g.es_print('p: %s' % (p.headString()),color='red')
+        g.es_print('p: %s' % (p.h),color='red')
     #@nonl
     #@-node:ekr.20060621124649:print_cp
     #@-others

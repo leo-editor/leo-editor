@@ -92,8 +92,8 @@ USE_FIXED_SIZES = 1
 #@nl
 #@<< imports >>
 #@+node:pap.20051010170720.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import os
 import glob
@@ -134,8 +134,9 @@ def onCreate (tag, keywords):
     Showing how to define a global hook that affects all commanders.
     """
 
-    import leoTkinterFrame
-    log = leoTkinterFrame.leoTkinterLog
+    import leo.plugins.tkGui as tkGui
+    leoTkinterFrame = tkGui.leoTkinterFrame
+    log = tkGui.leoTkinterLog
 
     # Ensure that the templates folder is there
     folder = g.os_path_join(g.app.loadDir,"..","plugins", "templates")
@@ -212,7 +213,7 @@ class FlatOptionMenu(Tk.OptionMenu):
         if kwargs.has_key('command'):
             del kwargs['command']
         if kwargs:
-            raise TclError, 'unknown option -'+kwargs.keys()[0]
+            raise Tk.TclError, 'unknown option -'+kwargs.keys()[0]
         self["menu"] = menu
         self.__variable = variable
         self.__callback = callback
@@ -246,6 +247,7 @@ class UIHelperClass:
     #@+node:pap.20051010171746.3:addWidgets
     def addWidgets(self):
         """Add the widgets to Leo"""
+        c = self.c
         toolbar = self.c.frame.iconFrame
         if not toolbar: return
         # 
@@ -254,7 +256,7 @@ class UIHelperClass:
         # 
         self.text = Tk.Entry(self._getSizer(self.frame, 24, 130))
         self.text.pack(side="left", padx=3, fill="both", expand=1)
-        self.text.bind("<Return>", self.newItemClicked)
+        c.bind(self.text,"<Return>", self.newItemClicked)
         # 
         self.pseudobutton = Tk.Frame(self._getSizer(self.frame, 24, 142),
             relief="raised", borderwidth=2) 
@@ -288,7 +290,7 @@ class UIHelperClass:
     #@+node:pap.20051011160416:addTemplate
     def addTemplate (self,name,parameter=None):
         """Add a template node"""
-        c = self.c ; p = self.c.currentPosition()
+        c = self.c ; p = c.p
         template = self.templateCollection.find(name)
         if template:
             root = p.copy()
@@ -301,7 +303,7 @@ class UIHelperClass:
         c = self.c
         def makeit(result,c=c):
             if result is not None:
-                p = self.c.currentPosition()
+                p = self.c.p
                 template = Template().getTemplateFromNode(p, name=result)
                 template.save(c)
                 self.templateCollection.add(template)
@@ -320,7 +322,7 @@ class UIHelperClass:
                 # Remove old one
                 tc.remove(tc.find(result))
                 # Now create a new one
-                p = c.currentPosition()
+                p = c.p
                 newtemplate = Template().getTemplateFromNode(p, name=result)
                 newtemplate.save(c)
                 tc.add(newtemplate)
@@ -362,7 +364,7 @@ class UIHelperClass:
         if USE_FIXED_SIZES:
             sizer = Tk.Frame(parent, height=height, width=width)
             sizer.pack_propagate(0) # don't shrink 
-            sizer.pack(side=pack)
+            sizer.pack(side='pack')
             return sizer
         else:
             return parent
@@ -381,6 +383,11 @@ class HelperForm:
         self.c = c
         self.root = root = g.app.root
         self.callback = callback
+
+        def doNothing(): pass
+        self.getResult = doNothing
+            # Set to a function in subclasses.
+            # This definition removes a pylint complaint.
 
         self.dialog = dialog = Pmw.Dialog(root,
                 buttons = ('OK', 'Cancel'),
@@ -557,42 +564,39 @@ class Template:
     def addNodes (self,c,parent,parameter="",top=False):
         """Add this template to the current"""
 
-        c.beginUpdate()
-        try:
-            # Add this new node
-            c.insertHeadline()
-            c.endEditing()
-            p = c.currentPosition()
-            c.setHeadString(p,self.convert(self.headline,parameter,parent))
-            c.setBodyString(p,self.convert(self.body,parameter,parent))
+        # Add this new node
+        c.insertHeadline()
+        c.endEditing()
+        p = c.p
+        c.setHeadString(p,self.convert(self.headline,parameter,parent))
+        c.setBodyString(p,self.convert(self.body,parameter,parent))
 
-            # Move it to the proper place.
-            if top and not parent.isExpanded():
-                p.moveAfter(parent)
-            else:
-                p.moveToNthChildOf(parent,0)
+        # Move it to the proper place.
+        if top and not parent.isExpanded():
+            p.moveAfter(parent)
+        else:
+            p.moveToNthChildOf(parent,0)
 
-            # Now add the children - go in reverse so we can add them as child 0 (above)
-            children = self.children [:]
-            children.reverse()
-            for child in children:
-                child.addNodes(c,p,parameter)
-        finally:
-            c.endUpdate()
+        # Now add the children - go in reverse so we can add them as child 0 (above)
+        children = self.children [:]
+        children.reverse()
+        for child in children:
+            child.addNodes(c,p,parameter)
+        c.redraw()
     #@nonl
     #@-node:pap.20051010184315:addNodes
     #@+node:ekr.20060107131019:getTemplateFromNode
     def getTemplateFromNode (self,p,name):
 
         self.name = name
-        self.headline = p.headString()
-        self.body = p.bodyString()
+        self.headline = p.h
+        self.body = p.b
 
         # Find children
         self.children = children = []
         child = p.getFirstChild()
         while child:
-            children.append(Template().getTemplateFromNode(child,child.headString()))
+            children.append(Template().getTemplateFromNode(child,child.h))
             child = child.getNext()
         return self
     #@nonl

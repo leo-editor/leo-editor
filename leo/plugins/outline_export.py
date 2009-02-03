@@ -5,11 +5,11 @@
 #@@language python
 #@@tabwidth -4
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 def onStart (tag,keywords):
-    import leoNodes
+    import leo.core.leoNodes as leoNodes
     g.funcToMethod(newMoreHead,leoNodes.vnode,"moreHead")
 
 #@+others
@@ -30,7 +30,7 @@ def newMoreHead (self,firstLevel,useVerticalBar=True):
     else:
         s = ""
     s += g.choose(v.hasChildren(), "+ ", "- ")
-    s += v.headString()
+    s += v.h
     return s
 #@-node:edream.110203113231.721:newMoreHead
 #@-others

@@ -14,8 +14,8 @@
 
 #@<< imports >>
 #@+node:ekr.20050101090207.1:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -26,7 +26,7 @@ except ImportError:
     try:
         from PIL import ImageTk
     except ImportError:
-        print 'image.py: can not import ImageTk'
+        g.pr('image.py: can not import ImageTk')
         ImageTk = None
 
 
@@ -61,7 +61,7 @@ def init ():
 
     ok = g.app.gui.guiName() == "tkinter"
 
-    # print 'image.init'
+    # g.pr('image.init')
 
     if ok:
         leoPlugins.registerHandler("select2", onSelect)
@@ -74,7 +74,7 @@ def init ():
 def onSelect (tag,keywords):
 
     new_v = keywords.get("new_v")
-    h = new_v.headString()
+    h = new_v.h
     if h[:7] == "@image ":
         filename = h[7:]
         #@        << Select Image >>
@@ -119,7 +119,7 @@ def onUnselect (tag,keywords):
     a = g.app
     old_v = keywords.get("old_v")
     if old_v:
-        h = old_v.headString()
+        h = old_v.h
         if h[:7] == "@image ":
             #@            << Unselect Image >>
             #@+node:edream.110203113231.757:<< Unselect Image >>
@@ -128,7 +128,7 @@ def onUnselect (tag,keywords):
 
             if a.gsimage:
                 try:
-                     c.frame.body.bodyCtrl.delete(a.gsimage)
+                    c.frame.body.bodyCtrl.delete(a.gsimage)
                 except:
                     g.es("info: no image to erase")
 

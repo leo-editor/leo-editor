@@ -55,8 +55,8 @@ __version__ = '0.4'
 #@nl
 #@<< imports >>
 #@+node:ekr.20060831165845.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 #@nonl
 #@-node:ekr.20060831165845.3:<< imports >>
 #@nl
@@ -113,7 +113,7 @@ class slideshowController:
 
         c = self.c
         for p in c.allNodes_iter():
-            h = p.headString().strip()
+            h = p.h.strip()
             if h.startswith('@slideshow'):
                 self.firstSlideShow = p.copy()
                 return p
@@ -128,7 +128,7 @@ class slideshowController:
     def ignored (self,p):
 
         for p2 in p.self_and_parents_iter():
-            if g.match_word(p2.headString(),0,'@ignore'):
+            if g.match_word(p2.h,0,'@ignore'):
                 return True
         else:
             return False
@@ -137,14 +137,14 @@ class slideshowController:
     #@+node:ekr.20060831171016.5:nextSlide
     def nextSlide (self,event=None):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         if p == self.slide:
             p = self.slide.threadNext()
             oldSlide = self.slide
         else:
             oldSlide = None
         while p:
-            h = p.headString().strip()
+            h = p.h.strip()
             if self.ignored(p):
                 p = p.threadNext()
             elif h.startswith('@slideshow'):
@@ -170,12 +170,12 @@ class slideshowController:
             return g.es('No slide show found') 
         elif not self.slideShowRoot:
             return self.select(self.firstSlideShow)
-        p = c.currentPosition()
-        h = p.headString().strip()
+        p = c.p
+        h = p.h.strip()
         if h.startswith('@slideshow'):
             p = p.threadNext()
         while p:
-            h = p.headString().strip()
+            h = p.h.strip()
             if self.ignored(p):
                 p = p.threadNext()
             elif h.startswith('@slideshow'):
@@ -190,7 +190,7 @@ class slideshowController:
     #@+node:ekr.20060831171016.4:prevSlide
     def prevSlide (self,event=None):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         if self.ignored(p):
             p = p.threadBack()
         else:
@@ -199,7 +199,7 @@ class slideshowController:
             if p == self.slide:
                 p = self.slide.threadBack()
         while p:
-            h = p.headString().strip()
+            h = p.h.strip()
             if self.ignored(p):
                 p = p.threadBack()
             elif h.startswith('@slideshow'):
@@ -226,12 +226,12 @@ class slideshowController:
             return g.es('No slide show found') 
         elif not self.slideShowRoot:
             return self.select(self.firstSlideShow)
-        p = c.currentPosition()
-        h = p.headString().strip()
+        p = c.p
+        h = p.h.strip()
         if h.startswith('@slideshow'):
             p = p.threadBack()
         while p:
-            h = p.headString().strip()
+            h = p.h.strip()
             if self.ignored(p):
                 p = p.threadBack()
             elif h.startswith('@slideshow'):
@@ -247,7 +247,7 @@ class slideshowController:
 
         '''Make p the present slide, and set self.slide and maybe self.slideShowRoot.'''
 
-        c = self.c ; h = p.headString().strip()
+        c = self.c ; h = p.h.strip()
         w = c.frame.body.bodyCtrl
 
         g.es('%s' % h)

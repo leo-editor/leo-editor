@@ -23,10 +23,10 @@ insertUser : Shift-F6
 #@nl
 #@<< imports >>
 #@+node:ekr.20050101090717.1:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
-import leoCommands
+import leo.core.leoCommands as leoCommands
 import time
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
@@ -35,7 +35,8 @@ Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@nl
 
 OKFLAG='OK '  # Space required.
-__version__ = "0.1"
+__version__ = "0.2"
+    # 0.2: EKR: added c arg to setOK: fixes bug reported by pylint.
 
 #@+others
 #@+node:ekr.20040205071616.1:mnstamp
@@ -61,9 +62,9 @@ def onStart (tag,keywords):
 
 #@-node:ekr.20040205071616.3:onStart
 #@+node:ekr.20040205071616.4:setHeadOK
-def setHeadOK(v):
+def setHeadOK(c,v):
 
-    s = OKFLAG + v.headString()
+    s = OKFLAG + v.h
     c.setHeadString(v,s)
 
 #@-node:ekr.20040205071616.4:setHeadOK
@@ -85,7 +86,7 @@ def is_subnodesOK(v):
         ok = False
         child=v.firstChild()
         while child:
-            s=child.headString()
+            s=child.h
             ok=s[0:len(OKFLAG)]==OKFLAG
             if not ok:break
             child=child.next()
@@ -107,7 +108,7 @@ def insertOKcmd(self,event=None):
     c=self; v=c.currentVnode()  
 
     if is_subnodesOK(v) :
-        setHeadOK(v)
+        setHeadOK(c,v)
         insertBodystamp(c,v)
     else: 
         g.es('OK in child missing')

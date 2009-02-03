@@ -7,8 +7,8 @@
 
 #@<< imports >>
 #@+node:ekr.20050101090207.6:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 #@nonl
@@ -26,7 +26,8 @@ Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
 def onStart (tag,keywords):
 
-    import leoTkinterFrame
+    import leo.plugins.tkGui as tkGui
+    leoTkinterFrame = tkGui.leoTkinterFrame
     log = leoTkinterFrame.leoTkinterLog
 
     # Replace frame.put with newPut.
@@ -41,7 +42,7 @@ def onStart (tag,keywords):
 
 # Same as frame.put except converts everything to upper case.
 def newPut (self,s,color="black"):
-    print "newPut",s,
+    g.pr("newPut",s,newline=False)
     if g.app.quitting > 0: return
     s = s.upper()
     t = self.logCtrl
@@ -49,18 +50,18 @@ def newPut (self,s,color="black"):
             t.insert("end",s)
             t.see("end")
             t.update_idletasks()
-    else: print s,
+    else: g.pr(s,newline=False)
 
 # Same as frame.putnl except writes two newlines.
 def newPutNl (self):
-    print "newPutNl"
+    g.pr("newPutNl")
     if g.app.quitting > 0: return
     t = self.logCtrl
     if t:
         t.insert("end","\n\n")
         t.see("end")
         t.update_idletasks()
-    else: print
+    else: g.pr('')
 #@nonl
 #@-node:edream.110203113231.923:newPut and newPutNl
 #@-others

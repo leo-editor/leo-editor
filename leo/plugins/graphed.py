@@ -20,13 +20,12 @@ Leo plugin by Terry Brown terry_n_brown@yahoo.com
 #@@tabwidth -4
 #@@nowrap
 
-__version__ = "0.3"
+__version__ = "0.4"
 
 #@<< imports >>
 #@+node:ekr.20071004090250.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
-import leoTkinterTree
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -38,7 +37,7 @@ if gato_path not in sys.path:
     sys.path.append(gato_path)
 
 try:
-    from Gato import Gred, Embedder, Graph, GraphEditor, DataStructures
+    from Gato import Gred, Graph
     Gato_ok = True
 except:
     Gato_ok = False
@@ -70,6 +69,7 @@ except:
 #   - gNode class used to make API more friendly
 #   - ask user if they want headings split into lines on spaces
 #   - @graph headString text to indicate container node
+# 0.4 EKR: changed p.link to p._link, and p.unlink to p._unlink
 #@-at
 #@-node:ekr.20071004090250.3:<< version history >>
 #@nl
@@ -112,10 +112,10 @@ class gNode(object):
     #@+node:tbrown.20071007213346.1:readtnode
     def readtnode(self, tn, splitLabels = True, vnode = None):
         if splitLabels:
-            self.title = tn.headString.replace(' ', '\n')
+            self.title = tn.h.replace(' ', '\n')
         else:
-            self.title = tn.headString
-        self.body = tn.bodyString
+            self.title = tn.h
+        self.body = tn.b
         self.x = getattr(tn,'unknownAttributes',{}).get('graphed',{}).get('x',0)
         self.y = getattr(tn,'unknownAttributes',{}).get('graphed',{}).get('y',0)
         self.attr.update(getattr(tn,'unknownAttributes',{}))
@@ -181,7 +181,7 @@ class tGraph:
         """
 
         self.splitLabels = splitLabels
-        if '@graph' in p.headString():
+        if '@graph' in p.h:
             for p1 in p.children_iter():
                 self._addNodesLinks(p1)
             for p1 in p.children_iter():
@@ -197,10 +197,10 @@ class tGraph:
         todo = set(self.nodes())
 
         root = p.insertAfter()
-        if '@graph' in p.headString():
-            root.setHeadString(p.headString())
+        if '@graph' in p.h:
+            root.setHeadString(p.h)
         else:
-            root.setHeadString('@graph ' + p.headString())
+            root.setHeadString('@graph ' + p.h)
         root.expand()
         pos = root.copy()
 
@@ -282,9 +282,9 @@ class tGraph:
         # if only one top level node, remove the holder node
         if pos.numberOfChildren() == 1:
             ch = pos.children_iter().next()
-            ch.linkAfter(pos)
+            ch._linkAfter(pos)
             ans = ch
-            pos.unlink()
+            pos._unlink()
 
         return ans
     #@-node:tbrown.20071004152905:createTreeFromGraph
@@ -298,7 +298,7 @@ class tGraph:
         self._gnxStr2tnode[str(p.v.t.fileIndex)] = gn
 
         for nd0 in p.children_iter():
-            if nd0.headString().startswith('@link'): continue
+            if nd0.h.startswith('@link'): continue
             gn1 = self._addNodesLinks(nd0)
             self.addDirectedEdge(gn, gn1)
 
@@ -311,14 +311,14 @@ class tGraph:
 
         s0 = str(p.v.t.fileIndex)
         for nd0 in p.children_iter():
-            if nd0.headString().startswith('@link'):
-                s1 = self._indexStrFromStr(nd0.headString())
+            if nd0.h.startswith('@link'):
+                s1 = self._indexStrFromStr(nd0.h)
                 try:
                     fnd = self._gnxStr2tnode[s0]
                     tnd = self._gnxStr2tnode[s1]
                     self.addDirectedEdge(fnd, tnd)
                 except:  # @link node went stale
-                    g.es('Broken %s' % nd0.headString())
+                    g.es('Broken %s' % nd0.h)
                     raise
             else:
                 self._addLinks(nd0)
@@ -409,8 +409,8 @@ class GraphEd:
 
         if self.c != key['c']: return  # not our problem
 
-        for i in self.handlers:
-            pass # FIXME no handlers?
+        # for i in self.handlers:
+        #     pass # FIXME no handlers?
 
     #@-node:ekr.20071004090250.13:close
     #@+node:ekr.20071004090250.14:setIndex
@@ -472,80 +472,6 @@ class GraphEd:
         #X if isDefault:  # check if all default, if so drop dict.
         #X     self.dropEmpty(node, dictOk = True)
     #@-node:ekr.20071004090250.18:setat
-    #@+node:ekr.20071004090250.19:probably junk
-    #@+at
-    # 
-    # These probably aren't needed for this app, but maybe we'll need to
-    # offer an option to strip our uAs
-    #@-at
-    #@+node:ekr.20071004090250.20:delUD
-    def delUD (self,node,udict=None):
-
-        ''' Remove our dict from the node'''
-
-        if udict == None: udict = self.dictName
-        if (hasattr(node,"unknownAttributes" ) and 
-            node.unknownAttributes.has_key(udict)):
-
-            del node.unknownAttributes[udict]
-    #@-node:ekr.20071004090250.20:delUD
-    #@+node:ekr.20071004090250.21:hasUD
-    def hasUD (self,node,udict=None):
-
-        ''' Return True if the node has an UD.'''
-
-        if udict == None: udict = self.dictName
-        return (
-            hasattr(node,"unknownAttributes") and
-            node.unknownAttributes.has_key(udict) and
-            type(node.unknownAttributes.get(udict)) == type({}) # EKR
-        )
-    #@-node:ekr.20071004090250.21:hasUD
-    #@+node:ekr.20071004090250.22:testDefault
-    def testDefault(self, attrib, val):
-        "return true if val is default val for attrib"
-
-        # if type(val) == self.typePickle: val = val.get()
-        # not needed as only dropEmpty would call with such a thing, and it checks first
-
-        return attrib == "priority" and val == 9999 or val == ""
-    #@nonl
-    #@-node:ekr.20071004090250.22:testDefault
-    #@+node:ekr.20071004090250.23:dropEmptyAll
-    def dropEmptyAll(self):
-        "search whole tree for empty nodes"
-
-        cnt = 0
-        for p in self.c.allNodes_iter(): 
-            if self.dropEmpty(p.v): cnt += 1
-
-        g.es("cleo: dropped %d empty dictionaries" % cnt)
-    #@-node:ekr.20071004090250.23:dropEmptyAll
-    #@+node:ekr.20071004090250.24:dropEmpty
-    def dropEmpty(self, node, dictOk = False):
-
-        if (dictOk or
-            hasattr(node,'unknownAttributes') and
-            node.unknownAttributes.has_key(self.dictName) and
-            type(node.unknownAttributes[self.dictName]) == type({})):
-
-            isDefault = True
-            for ky, vl in node.unknownAttributes[self.dictName].iteritems():
-                if type(vl) == self.typePickle:
-                    node.unknownAttributes[self.dictName][ky] = vl = vl.get()
-                if not self.testDefault(ky, vl):
-                    isDefault = False
-                    break
-
-            if isDefault:  # no non-defaults seen, drop the whole cleo dictionary
-                del node.unknownAttributes[self.dictName]
-                self.c.setChanged(True)
-                return True
-
-        return False
-    #@nonl
-    #@-node:ekr.20071004090250.24:dropEmpty
-    #@-node:ekr.20071004090250.19:probably junk
     #@-node:ekr.20071004090250.16:attributes...
     #@+node:ekr.20071004090250.25:safe_del
     def safe_del(self, d, k):
@@ -559,7 +485,7 @@ class GraphEd:
         c = self.c
 
         if pos == None:
-            p = c.currentPosition()
+            p = c.p
         else:
             p = pos
 
@@ -617,7 +543,7 @@ class GraphEd:
     # 
     # def editWholeTree(self, event=None):
     #     c = self.c
-    #     print c.rootPosition().headString()
+    #     g.pr(c.rootPosition().h)
     #     self.editGraph(pos = c.rootPosition())
     #@-at
     #@-node:ekr.20071004090250.27:editWholeTree
@@ -650,51 +576,46 @@ class GraphEd:
     def saveGraph(self, p, graph):
 
         def label(i):
-             """change undefined (numeric) labels from ints to strs"""
-             return str(graph.GetLabeling(i))
+            """change undefined (numeric) labels from ints to strs"""
+            return str(graph.GetLabeling(i))
 
         c = self.c
-        c.beginUpdate()
-        try:
+        tgraph = tGraph()
+        gnode2nottnode = {}
+        for node in graph.Vertices():
+            tn = gNode()
+            gnode2nottnode[node] = tn
+            tn.title = label(node)
+            x = graph.GetEmbedding(node)
+            tn.x, tn.y = x.x,x.y
+            if node in self.gnode2attribs:
+                tn.body = self.gnode2attribs[node].body
+                tn.vnode = self.gnode2attribs[node].vnode
+                tn.attr.update(self.gnode2attribs[node].attr)
 
-            tgraph = tGraph()
-            gnode2nottnode = {}
-            for node in graph.Vertices():
-                tn = gNode()
-                gnode2nottnode[node] = tn
-                tn.title = label(node)
-                x = graph.GetEmbedding(node)
-                tn.x, tn.y = x.x,x.y
-                if node in self.gnode2attribs:
-                    tn.body = self.gnode2attribs[node].body
-                    tn.vnode = self.gnode2attribs[node].vnode
-                    tn.attr.update(self.gnode2attribs[node].attr)
+            tgraph.addNode(tn)
 
-                tgraph.addNode(tn)
+        for node0, node1 in graph.Edges():
+            tgraph.addDirectedEdge(gnode2nottnode[node0],gnode2nottnode[node1])
 
-            for node0, node1 in graph.Edges():
-                tgraph.addDirectedEdge(gnode2nottnode[node0],gnode2nottnode[node1])
+        newp = tgraph.createTreeFromGraph(p)
 
-            newp = tgraph.createTreeFromGraph(p)
+        c.setHeadString(p, 'OLD: ' + p.h)
+        p.setDirty()
+        c.selectPosition(p)
+        c.contractNode()
 
-            c.setHeadString(p, 'OLD: ' + p.headString())
-            p.setDirty()
-            c.selectPosition(p)
-            c.contractNode()
-
-            c.selectPosition(newp)
-
-        finally:
-            c.setChanged(True)
-            c.endUpdate()
+        c.selectPosition(newp)
+        c.setChanged(True)
+        c.redraw()
     #@-node:ekr.20071004090250.31:saveGraph
     #@+node:ekr.20071004090250.32:copyLink
     def copyLink(self, event = None):
         c = self.c
-        p = c.currentPosition()
+        p = c.p
         self.setIndex(p)
         nn = p.insertAfter()
-        nn.setHeadString(self.formatLink(p.v.t.fileIndex, p.headString()))
+        nn.setHeadString(self.formatLink(p.v.t.fileIndex, p.h))
         c.selectPosition(nn)
         c.cutOutline()
         c.selectPosition(p)
@@ -703,7 +624,7 @@ class GraphEd:
     #@+node:ekr.20071004090250.33:followLink
     def followLink(self, event = None):
         c = self.c
-        s = c.currentPosition().headString()
+        s = c.p.h
         s = self.indexStrFromStr(s)
         for p in c.allNodes_iter():
             if self.indexStrFromStr(str(p.v.t.fileIndex)) == s:
@@ -718,8 +639,8 @@ class GraphEd:
     #@+node:tbrown.20071004225829.2:dotNode
     def dotNode(self, event=None):
         c = self.c
-        p = c.currentPosition()
-        t = p.headString()
+        p = c.p
+        t = p.h
         tg = tGraphUtil()
         dot = tg.dotStrFromPosition(p)
         p = p.insertAfter()
@@ -730,8 +651,8 @@ class GraphEd:
     #@+node:tbrown.20071005092239:dotFile
     def dotFile(self, event=None):
         c = self.c
-        p = c.currentPosition()
-        t = p.headString()
+        p = c.p
+        t = p.h
         tg = tGraphUtil()
         dot = tg.dotStrFromPosition(p)
         fn = g.app.gui.runSaveFileDialog(

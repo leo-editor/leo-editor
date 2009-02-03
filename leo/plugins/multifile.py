@@ -55,14 +55,14 @@ beginning of the line and by themselves.
 
 #@<< imports >>
 #@+node:ekr.20050226114732.1:<< imports >>
-import leoGlobals as g 
+import leo.core.leoGlobals as g 
 
-import leoAtFile
-import leoPlugins
+import leo.core.leoAtFile as leoAtFile
+import leo.core.leoPlugins as leoPlugins
 
 import os.path
 import shutil
-import sys
+# import sys
 
 try:
     import tkFileDialog
@@ -105,6 +105,7 @@ multiprefix = '@multiprefix'
 multipath = '@multipath'
 haveseen = {}   
 files = {}
+originalOpenFileForWriting = None
 
 #@+others
 #@+node:ekr.20050226115130.1:init & helpers
@@ -116,7 +117,7 @@ def init ():
             g.app.createTkGui(__file__)
         ok = g.app.gui.guiName() == "tkinter"
         if ok:
-            #import leoGlobals # Append to the module list, not to the g.copy.
+            #import leo.core.leoGlobals as leoGlobals # Append to the module list, not to the g.copy.
             g.globalDirectiveList.append('multipath')
             g.globalDirectiveList.append('multiprefix')
 
@@ -143,7 +144,7 @@ def addMenu (tag,keywords):
     haveseen [c] = None
     men = c.frame.menu
     men = men.getMenu('Edit')
-    men.add_command(
+    c.add_command(men,
         label = "Insert Directory String",
         command = lambda c = c: insertDirectoryString(c))
 #@nonl
@@ -219,7 +220,7 @@ def scanForMultiPath (c):
         positions.reverse()
         prefix = ''
         for p in positions:
-            lines = p.bodyString().split('\n')
+            lines = p.b.split('\n')
             # Calculate the prefix fisrt.
             for s in lines:
                 if s.startswith(multiprefix):

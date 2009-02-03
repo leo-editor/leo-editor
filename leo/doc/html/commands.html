@@ -1117,7 +1117,7 @@ follows:</p>
 <ul class="simple">
 <li><tt class="docutils literal"><span class="pre">c</span></tt> is the commander of the outline containing the script.</li>
 <li><tt class="docutils literal"><span class="pre">g</span></tt> is the leoGlobals modules.</li>
-<li><tt class="docutils literal"><span class="pre">p</span></tt> is <tt class="docutils literal"><span class="pre">c.currentPosition()</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">p</span></tt> is <tt class="docutils literal"><span class="pre">c.p</span></tt>, that is, <tt class="docutils literal"><span class="pre">c.currentPosition()</span></tt>.</li>
 </ul>
 <p><strong>Important</strong>: Body text may contain Leo directives and section references. You
 can now use all of Leo's features to organize scripts that you execute
@@ -1233,7 +1233,7 @@ the scripts via ivars such as <tt class="docutils literal"><span class="pre">c.w
 <li><p class="first">Put the following code in the root of a tree that will contain your script search:</p>
 <pre class="literal-block">
 # Initialize Leo's find panel using the named children of this node.
-import leoGlobals as g.
+import leo.core.leoGlobals as g.
 g.initScriptFind(&quot;Find script&quot;,&quot;Change script&quot;) # Second argument is optional.
 # Start searching at the top.
 c.selectPosition(c.rootPosition())

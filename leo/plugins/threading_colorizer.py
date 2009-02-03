@@ -9,23 +9,24 @@ See: http://webpages.charter.net/edreamleo/coloring.html for documentation.
 #@@tabwidth -4
 #@@pagewidth 80
 
-__version__ = '1.4'
+__version__ = '1.5'
 
 trace_all_matches = False
 trace_leo_matches = False
 
 #@<< imports >>
 #@+node:ekr.20071010193720.1:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
-import os
+# import os
 import re
 import string
 import threading
 import traceback
-import xml.sax
-import xml.sax.saxutils
+
+# import xml.sax
+# import xml.sax.saxutils
 
 import Tkinter as Tk
 
@@ -56,6 +57,7 @@ php_re = re.compile("<?(\s[pP][hH][pP])")
 # perl.
 # ** Important: regexp matching can hang for complex regexp's.
 #    The fix for perl was to disable two perl rules.
+# 1.5 EKR: Changes suggested by pylint.
 #@-at
 #@nonl
 #@-node:ekr.20071010193720.2:<< version history >>
@@ -87,156 +89,97 @@ default_colors_dict = {
     'name'           :('undefined_section_name_color','red'),
     'latexBackground':('latex_background_color',      'white'),
 
+    # Tags used by forth.
+    'keyword5'       :('keyword5_color',              'blue'),
+    'bracketRange'   :('bracket_range_color',         'orange'),
     # jEdit tags.
-    'comment1'  :('comment1_color', 'red'),
-    'comment2'  :('comment2_color', 'red'),
-    'comment3'  :('comment3_color', 'red'),
-    'comment4'  :('comment4_color', 'red'),
-    'function'  :('function_color', 'black'),
-    'keyword1'  :('keyword1_color', 'blue'),
-    'keyword2'  :('keyword2_color', 'blue'),
-    'keyword3'  :('keyword3_color', 'blue'),
-    'keyword4'  :('keyword4_color', 'blue'),
-    'label'     :('label_color',    'black'),
-    'literal1'  :('literal1_color', '#00aa00'),
-    'literal2'  :('literal2_color', '#00aa00'),
-    'literal3'  :('literal3_color', '#00aa00'),
-    'literal4'  :('literal4_color', '#00aa00'),
-    'markup'    :('markup_color',   'red'),
-    'null'      :('null_color',     'black'),
-    'operator'  :('operator_color', 'black'),
+
+    'comment1'       :('comment1_color', 'red'),
+    'comment2'       :('comment2_color', 'red'),
+    'comment3'       :('comment3_color', 'red'),
+    'comment4'       :('comment4_color', 'red'),
+    'function'       :('function_color', 'black'),
+    'keyword1'       :('keyword1_color', 'blue'),
+    'keyword2'       :('keyword2_color', 'blue'),
+    'keyword3'       :('keyword3_color', 'blue'),
+    'keyword4'       :('keyword4_color', 'blue'),
+    'label'          :('label_color',    'black'),
+    'literal1'       :('literal1_color', '#00aa00'),
+    'literal2'       :('literal2_color', '#00aa00'),
+    'literal3'       :('literal3_color', '#00aa00'),
+    'literal4'       :('literal4_color', '#00aa00'),
+    'markup'         :('markup_color',   'red'),
+    'null'           :('null_color',     'black'),
+    'operator'       :('operator_color', 'black'),
     }
-#@nonl
 #@-node:ekr.20071010193720.4:<< define default_colors_dict >>
 #@nl
 #@<< define default_font_dict >>
 #@+node:ekr.20071010193720.5:<< define default_font_dict >>
 default_font_dict = {
-    # tag name       : option name
-    'comment'        :'comment_font',
-    'cwebName'       :'cweb_section_name_font',
-    'pp'             :'directive_font',
-    'docPart'        :'doc_part_font',
-    'keyword'        :'keyword_font',
-    'leoKeyword'     :'leo_keyword_font',
-    'link'           :'section_name_font',
-    'nameBrackets'   :'section_name_brackets_font',
-    'string'         :'string_font',
-    'name'           :'undefined_section_name_font',
+    # tag name      : option name
+    'comment'       :'comment_font',
+    'cwebName'      :'cweb_section_name_font',
+    'pp'            :'directive_font',
+    'docPart'       :'doc_part_font',
+    'keyword'       :'keyword_font',
+    'leoKeyword'    :'leo_keyword_font',
+    'link'          :'section_name_font',
+    'nameBrackets'  :'section_name_brackets_font',
+    'string'        :'string_font',
+    'name'          :'undefined_section_name_font',
     'latexBackground':'latex_background_font',
 
-    # jEdit tags.
-    'comment1'  :'comment1_font',
-    'comment2'  :'comment2_font',
-    'comment3'  :'comment3_font',
-    'comment4'  :'comment4_font',
-    'function'  :'function_font',
-    'keyword1'  :'keyword1_font',
-    'keyword2'  :'keyword2_font',
-    'keyword3'  :'keyword3_font',
-    'keyword4'  :'keyword4_font',
-    'label'     :'label_font',
-    'literal1'  :'literal1_font',
-    'literal2'  :'literal2_font',
-    'literal3'  :'literal3_font',
-    'literal4'  :'literal4_font',
-    'markup'    :'markup_font',
+    # Tags used by forth.
+    'bracketRange'   :'bracketRange_font',
+    'keyword5'       :'keyword5_font',
+
+     # jEdit tags.
+    'comment1'      :'comment1_font',
+    'comment2'      :'comment2_font',
+    'comment3'      :'comment3_font',
+    'comment4'      :'comment4_font',
+    'function'      :'function_font',
+    'keyword1'      :'keyword1_font',
+    'keyword2'      :'keyword2_font',
+    'keyword3'      :'keyword3_font',
+    'keyword4'      :'keyword4_font',
+    'keyword5'      :'keyword5_font',
+    'label'         :'label_font',
+    'literal1'      :'literal1_font',
+    'literal2'      :'literal2_font',
+    'literal3'      :'literal3_font',
+    'literal4'      :'literal4_font',
+    'markup'        :'markup_font',
     # 'nocolor' This tag is used, but never generates code.
-    'null'      :'null_font',
-    'operator'  :'operator_font',
+    'null'          :'null_font',
+    'operator'      :'operator_font',
     }
-#@nonl
 #@-node:ekr.20071010193720.5:<< define default_font_dict >>
 #@nl
 
 #@+others
-#@+node:ekr.20071011184312:Tests
-if 0:
-    #@    @+others
-    #@+node:ekr.20071011153139:quickConvertRowColToPythonIndex
-    def quickConvertRowColToPythonIndex(row,col):
-        return lineIndices[row-1] + col
-
-    s = p.bodyString()
-    lines = g.splitLines(s)
-    lineIndices = [0]
-    for i in xrange(1,len(lines)):
-        lineIndices.append(lineIndices[i-1] + len(lines[i-1]))
-
-    n = 0
-    for row in xrange(len(lines)):
-        line = lines[row]
-        for col in xrange(len(line)):
-            assert quickConvertRowColToPythonIndex(row+1,col) == n
-            n += 1
-    print 'pass'
-
-    #@-node:ekr.20071011153139:quickConvertRowColToPythonIndex
-    #@+node:ekr.20071011154916:quickConvertPythonIndexToRowCol
-    # aaaaaaaaaaaaaaaaaa add some more characters.
-
-    total_count_chars = total_rfind_chars = 0
-
-    def quickConvertPythonIndexToRowCol(i,last_row,last_col,last_i):
-        global total_count_chars, total_rfind_chars
-        trace = False
-        if trace: g.trace('i',i,'last_row',last_row,'last_col',last_col,'last_i',last_i)
-        row = s.count('\n',last_i,i) # Don't include i
-        total_count_chars += i-last_i
-        if trace: g.trace('row',row)
-        if row == 0:
-            if trace: g.trace('returns',last_row,last_col+i-last_i)
-            return last_row,last_col+i-last_i
-        else:
-            prevNL = s.rfind('\n',last_i,i) # Don't include i
-            total_rfind_chars += i-last_i
-            if trace: g.trace('prevNL',prevNL)
-            if trace: g.trace('returns',last_row+row,i-prevNL-1)
-            return last_row+row,i-prevNL-1
-
-    def fail(kind,expected,got):
-        return 'n: %d, expected %s %d, got %s %d last_row %d last_col %d' % (
-            n,kind,expected,kind,got,last_row,last_col)
-
-    # This is fast because we never look at characters more than once.
-    s = p.bodyString()
-    print '-'*40
-    last_col = 0 ; last_row = 0 ; last_i = 0 ; n = 0
-    while n < len(s):
-        expected_row, expected_col = g.convertPythonIndexToRowCol(s,n)
-        row,col = quickConvertPythonIndexToRowCol(n,last_row,last_col,last_i=last_i)
-        assert row == expected_row,fail('row',expected_row,row)
-        assert col == expected_col,fail('col',expected_col,col)
-        last_row = row ; last_col = col ; last_i = n
-        n += 20
-    n = len(s)
-    expected_row, expected_col = g.convertPythonIndexToRowCol(s,n)
-    row,col = quickConvertPythonIndexToRowCol(n,last_row,last_col,last_i=last_i)
-    assert row == expected_row,fail('row',expected_row,row)
-    assert col == expected_col,fail('col',expected_col,col)
-    print 'pass','len(s)',len(s),'total_count_chars',total_count_chars,'total_rfind_chars',total_rfind_chars
-
-    #@-node:ekr.20071011154916:quickConvertPythonIndexToRowCol
-    #@-others
-
-#@-node:ekr.20071011184312:Tests
 #@+node:ekr.20071010193720.6:module-level
 #@+node:ekr.20071010193720.7:init
 def init ():
 
-    leoPlugins.registerHandler('start1',onStart1)
-    g.plugin_signon(__name__)
+    # The qt gui plugin now does colorizing.
+    ok = g.app.gui.guiName() in ('tkinter',)
 
-    return True
-#@nonl
+    if ok:
+
+        leoPlugins.registerHandler('start1',onStart1)
+        g.plugin_signon(__name__)
+
+    return ok
 #@-node:ekr.20071010193720.7:init
 #@+node:ekr.20071010193720.8:onStart1
 def onStart1 (tag, keywords):
 
     '''Override Leo's core colorizer classes.'''
 
-    import leoColor
-    # print 'threading_colorizer overriding core classes'
+    import leo.core.leoColor as leoColor
+    # g.pr('threading_colorizer overriding core classes')
     leoColor.colorizer = colorizer
     leoColor.nullColorizer = nullColorizer
 #@-node:ekr.20071010193720.8:onStart1
@@ -257,6 +200,7 @@ def match_at_color (self,s,i):
 
     seq = '@color'
 
+    # Only matches at start of line.
     if i != 0 and s[i-1] != '\n': return 0
 
     if g.match_word(s,i,seq):
@@ -273,6 +217,7 @@ def match_at_nocolor (self,s,i):
 
     if trace_leo_matches: g.trace()
 
+    # Only matches at start of line.
     if i != 0 and s[i-1] != '\n':
         return 0
     if not g.match_word(s,i,'@nocolor'):
@@ -293,6 +238,10 @@ def match_at_nocolor (self,s,i):
 #@-node:ekr.20071010193720.11:match_at_nocolor
 #@+node:ekr.20071010193720.12:match_doc_part
 def match_doc_part (self,s,i):
+
+    # New in Leo 4.5: only matches at start of line.
+    if i != 0 and s[i-1] != '\n':
+        return 0
 
     if g.match_word(s,i,'@doc'):
         j = i+4
@@ -318,7 +267,6 @@ def match_doc_part (self,s,i):
             j = k + 2
     j = n - 1
     return max(0,j - i) # Bug fix: 2008/2/10
-#@nonl
 #@-node:ekr.20071010193720.12:match_doc_part
 #@+node:ekr.20071010193720.13:match_leo_keywords
 def match_leo_keywords(self,s,i):
@@ -373,12 +321,12 @@ def match_section_ref (self,s,i):
                 tagName = "hyper" + str(self.hyperCount)
                 self.hyperCount += 1
                 w.tag_delete(tagName)
-                self.tag(tagName,i+2,j)
+                self.tag_add(tagName,i+2,j)
 
                 ref.tagName = tagName
-                w.tag_bind(tagName,"<Control-1>",ref.OnHyperLinkControlClick)
-                w.tag_bind(tagName,"<Any-Enter>",ref.OnHyperLinkEnter)
-                w.tag_bind(tagName,"<Any-Leave>",ref.OnHyperLinkLeave)
+                c.tag_bind(w,tagName,"<Control-1>",ref.OnHyperLinkControlClick)
+                c.tag_bind(w,tagName,"<Any-Enter>",ref.OnHyperLinkEnter)
+                c.tag_bind(w,tagName,"<Any-Leave>",ref.OnHyperLinkLeave)
                 #@nonl
                 #@-node:ekr.20071010193720.15:<< set the hyperlink >>
                 #@nl
@@ -466,14 +414,16 @@ class colorizer:
         self.p = None
         self.s = None # The string being colorized.
 
+        self.isQt = g.app.gui.guiName() == 'qt'
         self.fake = bool(w)
 
         if w is None:
             self.w = c.frame.body.bodyCtrl
-            try:
-                self.Tk_Text = g.app.gui.Tk_Text
+            # Use hasattr/getattr to keep pylint happy.
+            if hasattr(g.app.gui,'Tk_Text'):
+                self.Tk_Text = getattr(g.app.gui,'Tk_Text')
                 self.fake = True
-            except AttributeError:
+            else:
                 self.Tk_Text = Tk.Text
         else:
             self.w = w
@@ -512,8 +462,8 @@ class colorizer:
         self.mode = None # The mode object for the present language.
         self.modeBunch = None # A bunch fully describing a mode.
         self.modeStack = []
-        if 0: self.defineAndExtendForthWords()
-        self.word_chars = {} # Inited by init_keywords().
+        # self.defineAndExtendForthWords()
+        self.word_chars = [] # Inited by init_keywords().
         self.setFontFromConfig()
         self.tags = [
             "blank","comment","cwebName","docPart","keyword","leoKeyword",
@@ -525,6 +475,7 @@ class colorizer:
             # Leo jEdit tags...
             '@color', '@nocolor', 'doc_part', 'section_ref',
             # jEdit tags.
+            'bracketRange',
             'comment1','comment2','comment3','comment4',
             'function',
             'keyword1','keyword2','keyword3','keyword4',
@@ -544,7 +495,10 @@ class colorizer:
             # The helper thread adds to this dict.  idleHandler in the main thread uses these dicts.
         self.oldTagsDict = {}
         self.postPassStarted = False
-    #@nonl
+
+        # New in Leo 4.6: configure tags only once here.
+        # Some changes will be needed for multiple body editors.
+        self.configure_tags() # Must do this every time to support multiple editors.
     #@-node:ekr.20071010193720.21:__init__ (threading colorizer)
     #@+node:ekr.20071010193720.22:addImportedRules
     def addImportedRules (self,mode,rulesDict,rulesetName):
@@ -582,7 +536,7 @@ class colorizer:
 
         '''Put Leo-specific rules to theList.'''
 
-        for ch, rule, atFront, in (
+        table = (
             # Rules added at front are added in **reverse** order.
             ('@',  match_leo_keywords,True), # Called after all other Leo matchers.
                 # Debatable: Leo keywords override langauge keywords.
@@ -596,7 +550,10 @@ class colorizer:
             # Python rule 3 appears to work well enough.
             #('"',  match_incomplete_strings, False),
             #("'",  match_incomplete_strings, False),
-        ):
+        )
+
+        for ch, rule, atFront, in table:
+
             theList = theDict.get(ch,[])
             if atFront:
                 theList.insert(0,rule)
@@ -605,17 +562,14 @@ class colorizer:
             theDict [ch] = theList
 
         # g.trace(g.listToString(theDict.get('@')))
-    #@nonl
     #@-node:ekr.20071010193720.23:addLeoRules
     #@+node:ekr.20071010193720.24:configure_tags
     def configure_tags (self):
 
-        c = self.c ; w = self.w
+        c = self.c ; w = self.w ; trace = False
 
-        try:
+        if w and hasattr(w,'start_tag_configure'):
             w.start_tag_configure()
-        except AttributeError:
-            pass
 
         # Get the default body font.
         defaultBodyfont = self.fonts.get('default_body_font')
@@ -634,7 +588,7 @@ class colorizer:
             for name in ('%s_%s' % (self.language,option_name),(option_name)):
                 font = self.fonts.get(name)
                 if font:
-                    # g.trace('found',name,id(font))
+                    if trace: g.trace('found',name,id(font))
                     w.tag_config(key,font=font)
                     break
                 else:
@@ -650,12 +604,12 @@ class colorizer:
                         font = g.app.gui.getFontFromParams(family,size,slant,weight)
                         # Save a reference to the font so it 'sticks'.
                         self.fonts[name] = font 
-                        # g.trace(key,name,family,size,slant,weight,id(font))
+                        if trace: g.trace(key,name,family,size,slant,weight,id(font))
                         w.tag_config(key,font=font)
                         break
             else: # Neither the general setting nor the language-specific setting exists.
                 if self.fonts.keys(): # Restore the default font.
-                    # g.trace('default',key)
+                    if trace: g.trace('default',key)
                     w.tag_config(key,font=defaultBodyfont)
 
         keys = default_colors_dict.keys() ; keys.sort()
@@ -666,7 +620,7 @@ class colorizer:
                 c.config.getColor(option_name) or
                 default_color
             )
-            # g.trace(option_name,color)
+            if trace: g.trace(option_name,color)
 
             # Must use foreground, not fg.
             try:
@@ -760,7 +714,12 @@ class colorizer:
             if g.os_path_exists(fileName):
                 mode = g.importFromPath (language,path)
             else: mode = None
-            if not mode:
+
+            if mode:
+                # A hack to give modes/forth.py access to c.
+                if hasattr(mode,'pre_init_mode'):
+                    mode.pre_init_mode(self.c)
+            else:
                 # Create a dummy bunch to limit recursion.
                 self.modes [rulesetName] = self.modeBunch = g.Bunch(
                     attributesDict  = {},
@@ -797,6 +756,14 @@ class colorizer:
             # Do this after 'officially' initing the mode, to limit recursion.
             self.addImportedRules(mode,self.rulesDict,rulesetName)
             self.updateDelimsTables()
+
+            initialDelegate = self.properties.get('initialModeDelegate')
+            if initialDelegate:
+                # g.trace('initialDelegate',initialDelegate)
+                # Replace the original mode by the delegate mode.
+                self.init_mode(initialDelegate)
+                language2,rulesetName2 = self.nameToRulesetName(initialDelegate)
+                self.modes[rulesetName] = self.modes.get(rulesetName2)
             return True
     #@+node:ekr.20071010193720.27:nameToRulesetName
     def nameToRulesetName (self,name):
@@ -836,6 +803,7 @@ class colorizer:
 
         # Create the word_chars list. 
         self.word_chars = [g.toUnicode(ch,encoding='UTF-8') for ch in (string.letters + string.digits)]
+
         for key in d.keys():
             for ch in key:
                 # if ch == ' ': g.trace('blank in key: %s' % repr (key))
@@ -843,12 +811,13 @@ class colorizer:
                     self.word_chars.append(g.toUnicode(ch,encoding='UTF-8'))
 
         # jEdit2Py now does this check, so this isn't really needed.
+        # But it is needed for forth.py.
         for ch in (' ', '\t'):
             if ch in self.word_chars:
-                g.es_print('removing %s from word_chars' % (repr(ch)))
+                # g.es_print('removing %s from word_chars' % (repr(ch)))
                 self.word_chars.remove(ch)
 
-        # g.trace(len(d.keys()))
+        # g.trace(self.language,[str(z) for z in self.word_chars])
     #@nonl
     #@-node:ekr.20071010193720.28:setKeywords
     #@+node:ekr.20071010193720.29:setModeAttributes
@@ -920,9 +889,6 @@ class colorizer:
     #@-node:ekr.20071010193720.26:init_mode & helpers
     #@-node:ekr.20071010193720.20:Birth and init
     #@+node:ekr.20071010193720.32:Entry points
-    def idleHandler (self,event=None):
-
-        if not self.helpterThread: return
     #@+node:ekr.20071010193720.33:colorize
     def colorize(self,p,incremental=False,interruptable=True):
 
@@ -945,7 +911,7 @@ class colorizer:
     #@+node:ekr.20071010193720.34:enable & disable
     def disable (self):
 
-        print "disabling all syntax coloring"
+        g.pr("disabling all syntax coloring")
         self.enabled=False
 
     def enable (self):
@@ -981,11 +947,18 @@ class colorizer:
 
         p = p.copy() ; first = p.copy()
         val = True ; self.killcolorFlag = False
+
+        # New in Leo 4.6: @nocolor-node disables one node only.
+        theDict = g.get_directives_dict(p)
+        if 'nocolor-node' in theDict:
+            # g.trace('nocolor-node',p.h)
+            return False
+
         for p in p.self_and_parents_iter():
             theDict = g.get_directives_dict(p)
-            no_color = theDict.has_key("nocolor")
-            color = theDict.has_key("color")
-            kill_color = theDict.has_key("killcolor")
+            no_color = 'nocolor' in theDict
+            color = 'color' in theDict
+            kill_color = 'killcolor' in theDict
             # A killcolor anywhere disables coloring.
             if kill_color:
                 val = False ; self.killcolorFlag = True ; break
@@ -998,9 +971,8 @@ class colorizer:
             elif color and not no_color:
                 val = True ; break
 
-        # g.trace(first.headString(),val)
+        # g.trace(first.h,val)
         return val
-    #@nonl
     #@-node:ekr.20071010193720.37:useSyntaxColoring
     #@+node:ekr.20071010193720.38:updateSyntaxColorer
     def updateSyntaxColorer (self,p):
@@ -1048,13 +1020,14 @@ class colorizer:
         addList: a list of new tags to be added.
 
         '''
-        trace = self.trace and self.trace_tags
+        trace = False or self.trace and self.trace_tags
+        verbose = self.verbose
         old_len = len(oldList) ; new_len = len(newList)
         addList = [] ; deleteList = []
 
         def report(kind,tag):
             i,j,name = tag
-            print 'computeNewTags: *** %-5s' % (kind),i,j,self.s[i:j]
+            g.pr('computeNewTags: *** %-5s %10s %3d %3d' % (kind,name,i,j),repr(self.s[i:j]))
 
         # Compare while both lists have remaining elements.
         old_n = 0 ; new_n = 0
@@ -1114,7 +1087,7 @@ class colorizer:
         if trace: g.trace('len(s)',len(self.s))
         lines = g.splitLines(self.s)
         lineIndices = [0]
-        for i in xrange(1,len(lines)+1): # Add one more line
+        for i in range(1,len(lines)+1): # Add one more line
             lineIndices.append(lineIndices[i-1] + len(lines[i-1]))
         def quickConvertRowColToPyhthonIndex(row,col):
             return lineIndices[min(len(lineIndices)-1,row)] + col
@@ -1167,13 +1140,13 @@ class colorizer:
         if not hasattr(self,'c') or not self.c.exists:
             return
         if not self.c.frame in g.app.windowList:
-            # print 'threading_colorizer.idleHandler: window killed %d' % n
+            # g.pr('threading_colorizer.idleHandler: window killed %d' % n)
             return
 
         # Do this after we know the ivars exist.
         after_time = 5 # minimum time (in msec.) before this method gets called again.
-        trace = self.trace and not g.unitTesting
-        verbose = self.trace and self.verbose and not g.unitTesting
+        trace = (False or self.trace) and not g.unitTesting
+        verbose = (False or (self.trace and self.verbose)) and not g.unitTesting
 
         if self.threadCount > n:
             if verbose: g.trace('*** old thread %d' % n)
@@ -1215,9 +1188,8 @@ class colorizer:
         self.postPassStarted = False
         self.prev = None
         self.tagsRemoved = False
-
         self.init_mode(self.language)
-        self.configure_tags() # Must do this every time to support multiple editors.
+        # self.configure_tags() # Must do this every time to support multiple editors.
 
         try:
             w.init_colorizer(self)
@@ -1289,32 +1261,38 @@ class colorizer:
         if flag:
             return
 
-        last_i = last_row = last_col = last_i = 0
-        for i,j,tag in addList:
-            if trace and verbose: g.trace('add',tag,i,j,self.s[i:j])
-            ### x1,x2 = w.toGuiIndex(i,s=s), w.toGuiIndex(j,s=s)
-            row_i,col_i = self.quickConvertPythonIndexToRowCol(i,last_row,last_col,last_i)
-            last_row = row_i ; last_col = col_i ; last_i = i
-            x1 = '%d.%d' % (row_i+1,col_i)
-            # An important hack to extend the coloring at the very end of the text.
-            if j >= len_s:
-                # g.trace('end hack:',j,s[j:])
-                x2 = 'end'
-            else:
-                row_j,col_j = self.quickConvertPythonIndexToRowCol(j,last_row,last_col,last_i)
-                last_row = row_j ; last_col = col_j ; last_i = j
-                x2 = '%d.%d' % (row_j+1,col_j)
-            # A crucial optimization for large body text.
-            # Even so, the color_markup plugin slows down coloring considerably.
-            if tag == 'docPart' or tag.startswith('comment'):
-                if not g.doHook("color-optional-markup",
-                    colorer=self,p=self.p,v=self.p,s=s,i=i,j=j,colortag=tag):
-                    # w.tag_add(tag,x1,x2)
+        if self.isQt:
+            for i,j,tag in addList:
+                if trace and verbose: g.trace('add',tag,i,j,self.s[i:j])
+                w.tag_add(tag,i,j)
+        else:
+            last_i = last_row = last_col = last_i = 0
+            for i,j,tag in addList:
+                if trace and verbose: g.trace('add',tag,i,j,self.s[i:j])
+                ### x1,x2 = w.toGuiIndex(i,s=s), w.toGuiIndex(j,s=s)
+                row_i,col_i = self.quickConvertPythonIndexToRowCol(i,last_row,last_col,last_i)
+                last_row = row_i ; last_col = col_i ; last_i = i
+                x1 = '%d.%d' % (row_i+1,col_i)
+                # An important hack to extend the coloring at the very end of the text.
+                if j >= len_s:
+                    # g.trace('end hack:',j,s[j:])
+                    x2 = 'end'
+                else:
+                    row_j,col_j = self.quickConvertPythonIndexToRowCol(j,last_row,last_col,last_i)
+                    last_row = row_j ; last_col = col_j ; last_i = j
+                    x2 = '%d.%d' % (row_j+1,col_j)
+                # A crucial optimization for large body text.
+                # Even so, the color_markup plugin slows down coloring considerably.
+                if tag == 'docPart' or tag.startswith('comment'):
+                    if not g.doHook("color-optional-markup",
+                        colorer=self,p=self.p,v=self.p,s=s,i=i,j=j,colortag=tag):
+                        if self.isQt:
+                            w.tag_add(tag,x1,x2)
+                        else:
+                            self.Tk_Text.tag_add(w,tag,x1,x2)
+                else:
+                    # g.trace(tag,x1,x2,i,j)
                     self.Tk_Text.tag_add(w,tag,x1,x2)
-            else:
-                # g.trace(tag,x1,x2,i,j)
-                # w.tag_add(tag,x1,x2)
-                self.Tk_Text.tag_add(w,tag,x1,x2)
     #@-node:ekr.20071013085626:putNewTags
     #@+node:ekr.20071010193720.44:removeAllImages
     def removeAllImages (self):
@@ -1340,13 +1318,15 @@ class colorizer:
 
         w = self.w
 
-        if self.trace and self.verbose: g.trace()
-
-        names = w.tag_names()
-        i,j = w.toGuiIndex(0), w.toGuiIndex('end')
-        for name in names:
-            if name not in ('sel','insert'):
-                w.tag_remove(name,i,j)
+        if hasattr(w,'removeAllTags'):
+            # A hook for qt plugin.
+            w.removeAllTags()
+        else:
+            names = w.tag_names()
+            i,j = w.toGuiIndex(0), w.toGuiIndex('end')
+            for name in names:
+                if name not in ('sel','insert'):
+                    w.tag_remove(name,i,j)
     #@-node:ekr.20071010193720.45:removeAllTags
     #@+node:ekr.20071013084305:removeOldTags
     def removeOldTags (self,deleteList):
@@ -1355,6 +1335,11 @@ class colorizer:
 
         s = self.s ; len_s = len(s); w = self.w
         verbose = self.trace and self.verbose
+
+        if hasattr(w,'removeAllTags'):
+            # A hook for qt plugin.
+            w.removeAllTags()
+            return
 
         # Delete all tags on the delete list.
         last_i = last_row = last_col = last_i = 0
@@ -1381,7 +1366,6 @@ class colorizer:
                 x_j = '%d.%d' % (row_j+1,col_j)
             # if trace: g.trace('i',i,'x_i',x_i,'j',j,'x_j',x_j)
             self.Tk_Text.tag_remove(w,tagName,x_i,x_j)
-    #@nonl
     #@-node:ekr.20071013084305:removeOldTags
     #@+node:ekr.20071011042037:removeTagsFromRange
     def removeTagsFromRange(self,i,j):
@@ -1408,7 +1392,7 @@ class colorizer:
     def tag (self,name,i,j):
 
         s = self.s ; w = self.w
-        # g.trace(name,i,j,repr(s[i:j]),g.callers())
+        # g.trace(name,i,j,repr(s[i:j])) # ,g.callers())
         x1,x2 = w.toGuiIndex(i,s=s), w.toGuiIndex(j,s=s)
         w.tag_add(name,x1,x2)
     #@-node:ekr.20071010193720.47:tag & index (threadingColorizer)
@@ -1455,6 +1439,8 @@ class colorizer:
 
         '''Add an item to the globalAddList if colorizing is enabled.'''
 
+        trace = False
+
         if self.killFlag:
             if self.trace and self.verbose: g.trace('*** killed',self.threadCount)
             return
@@ -1462,7 +1448,7 @@ class colorizer:
         if not self.flag: return
 
         if delegate:
-            # g.trace(delegate,i,j,g.callers())
+            if trace: g.trace('delegate',delegate,i,j,tag,g.callers(3))
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
             # Color everything at once, using the same indices as the caller.
@@ -1475,17 +1461,22 @@ class colorizer:
                         g.trace('Can not happen: delegate matcher returns None')
                     elif n > 0:
                         # if f.__name__ != 'match_blanks': g.trace(delegate,i,f.__name__)
+                        if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
                         i += n ; break
-                else: i += 1
+                else:
+                    # New in Leo 4.6: Use the default chars for everything else.
+                    aList = self.newTagsDict.get(tag,[])
+                    aList.append((i,i+1),)
+                    self.newTagsDict[tag] = aList
+                    i += 1
                 assert i > progress
             bunch = self.modeStack.pop()
             self.initModeFromBunch(bunch)
         elif not exclude_match:
-            ### self.globalAddList.append((tag,i,j),)
+            # g.trace(tag,i,j)
             aList = self.newTagsDict.get(tag,[])
             aList.append((i,j),)
             self.newTagsDict[tag] = aList
-    #@nonl
     #@-node:ekr.20071010193720.52:colorRangeWithTag (in helper thread)
     #@+node:ekr.20071010193720.54:fullColor (in helper thread)
     def fullColor (self,s):
@@ -1498,7 +1489,7 @@ class colorizer:
         while i < len(s):
             progress = i
             if self.c.frame not in g.app.windowList:
-                # print 'threading_colorizer.fullColor: window killed'
+                # g.pr('threading_colorizer.fullColor: window killed')
                 return
             if self.killFlag:
                 if trace: g.trace('*** killed %d' % self.threadCount)
@@ -1564,11 +1555,13 @@ class colorizer:
 
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
-        if at_word_start and i > 0 and s[i-1] not in self.word_chars: return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(seq) + 1 < len(s) and s[i+len(seq)] in self.word_chars:
+            return 0 # 7/5/2008
 
         if g.match(s,i,seq):
-            #j = g.skip_to_end_of_line(s,i)
-            j = g.skip_line(s,i) # Include the newline so we don't get a flash at the end of the line.
+            #j = g.skip_line(s,i) # Include the newline so we don't get a flash at the end of the line.
+            j = self.skip_line(s,i)
             self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
             self.prev = (i,j,kind)
             self.trace_match(kind,s,i,j)
@@ -1588,12 +1581,12 @@ class colorizer:
 
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
-        if at_word_start and i > 0 and s[i-1] not in self.word_chars: return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
 
         n = self.match_regexp_helper(s,i,regexp)
         if n > 0:
-            # j = g.skip_to_end_of_line(s,i)
-            j = g.skip_line(s,i) # Include the newline so we don't get a flash at the end of the line.
+            # j = g.skip_line(s,i) # Include the newline so we don't get a flash at the end of the line.
+            j = self.skip_line(s,i)
             self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
             self.prev = (i,j,kind)
             self.trace_match(kind,s,i,j)
@@ -1602,6 +1595,17 @@ class colorizer:
             return 0
     #@nonl
     #@-node:ekr.20071010193720.60:match_eol_span_regexp
+    #@+node:ekr.20081014064755.1:match_everything
+    # def match_everything (self,s,i,kind,delegate):
+
+        # '''A hack for phpsection mode: match the entire text and color with delegate.'''
+
+        # j = len(s)
+
+        # self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
+
+        # return j-i
+    #@-node:ekr.20081014064755.1:match_everything
     #@+node:ekr.20071010193720.61:match_keywords
     # This is a time-critical method.
     def match_keywords (self,s,i):
@@ -1624,7 +1628,7 @@ class colorizer:
             self.colorRangeWithTag(s,i,j,kind)
             self.prev = (i,j,kind)
             result = j - i
-            # g.trace('success',word,kind)
+            # g.trace('success',word,kind,j-i)
             # g.trace('word in self.keywordsDict.keys()',word in self.keywordsDict.keys())
             self.trace_match(kind,s,i,j)
             return result
@@ -1647,7 +1651,9 @@ class colorizer:
 
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
-        if at_word_start and i > 0 and s[i-1] not in self.word_chars: return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(pattern) + 1 < len(s) and s[i+len(pattern)] in self.word_chars:
+            return 0 # 7/5/2008
 
         if g.match(s,i,pattern):
             j = i + len(pattern)
@@ -1694,7 +1700,9 @@ class colorizer:
 
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
-        if at_word_start and i > 0 and s[i-1] not in self.word_chars: return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(pattern) + 1 < len(s) and s[i+len(pattern)] in self.word_chars:
+            return 0 # 7/5/2008
 
         if g.match(s,i,pattern):
             j = i + len(pattern)
@@ -1757,8 +1765,10 @@ class colorizer:
             j = i
         elif at_whitespace_end and i != g.skip_ws(s,0):
             j = i
-        elif at_word_start and i > 0 and s[i-1] not in self.word_chars:
+        elif at_word_start and i > 0 and s[i-1] in self.word_chars:  # 7/5/2008
             j = i
+        if at_word_start and i + len(seq) + 1 < len(s) and s[i+len(seq)] in self.word_chars:
+            j = i # 7/5/2008
         elif g.match(s,i,seq):
             j = i + len(seq)
             self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
@@ -1781,7 +1791,7 @@ class colorizer:
 
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
-        if at_word_start and i > 0 and s[i-1] not in self.word_chars: return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
 
         # g.trace('before')
         n = self.match_regexp_helper(s,i,regexp)
@@ -1807,16 +1817,17 @@ class colorizer:
             j = i
         elif at_whitespace_end and i != g.skip_ws(s,0):
             j = i
-        elif at_word_start and i > 0 and s[i-1] not in self.word_chars:
+        elif at_word_start and i > 0 and s[i-1] in self.word_chars: # 7/5/2008
             j = i
+        elif at_word_start and i + len(begin) + 1 < len(s) and s[i+len(begin)] in self.word_chars:
+            j = i # 7/5/2008
         elif not g.match(s,i,begin):
             j = i
         else:
-            j = self.match_span_helper(s,i+len(begin),end,no_escape,no_line_break)
+            j = self.match_span_helper(s,i+len(begin),end,no_escape,no_line_break,no_word_break=no_word_break)
             if j == -1:
                 j = i
             else:
-
                 i2 = i + len(begin) ; j2 = j + len(end)
                 # g.trace(i,j,s[i:j2],kind)
                 if delegate:
@@ -1831,7 +1842,7 @@ class colorizer:
         self.trace_match(kind,s,i,j)
         return j - i
     #@+node:ekr.20071010193720.69:match_span_helper
-    def match_span_helper (self,s,i,pattern,no_escape,no_line_break):
+    def match_span_helper (self,s,i,pattern,no_escape,no_line_break,no_word_break=False):
 
         '''Return n >= 0 if s[i] ends with a non-escaped 'end' string.'''
 
@@ -1840,11 +1851,13 @@ class colorizer:
         while 1:
             j = s.find(pattern,i)
             if j == -1:
-                # 7/21/07: Match to end of text if not found and no_line_break is False
+                # Match to end of text if not found and no_line_break is False
                 if no_line_break:
                     return -1
                 else:
                     return len(s)
+            elif no_word_break and j > 0 and s[j-1] in self.word_chars:
+                return -1 # New in Leo 4.5.
             elif no_line_break and '\n' in s[i:j]:
                 return -1
             elif esc and not no_escape:
@@ -1877,7 +1890,9 @@ class colorizer:
 
         if at_line_start and i != 0 and s[i-1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s,0): return 0
-        if at_word_start and i > 0 and s[i-1] not in self.word_chars: return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(begin) + 1 < len(s) and s[i+len(begin)] in self.word_chars:
+            return 0 # 7/5/2008
 
         n = self.match_regexp_helper(s,i,begin)
         # We may have to allow $n here, in which case we must use a regex object?
@@ -1888,7 +1903,7 @@ class colorizer:
             if self.escape and not no_escape:
                 # Only an odd number of escapes is a 'real' escape.
                 escapes = 0 ; k = 1
-                while j-k >=0 and s[j-k] == esc:
+                while j-k >=0 and s[j-k] == self.escape:
                     escapes += 1 ; k += 1
                 if (escapes % 2) == 1:
                     # An escaped end **aborts the entire match**:
@@ -1906,6 +1921,59 @@ class colorizer:
             return j2 - i
         else: return 0
     #@-node:ekr.20071010193720.70:match_span_regexp
+    #@+node:ekr.20080703111151.19:match_word_and_regexp
+    def match_word_and_regexp (self,s,i,
+        kind1='',word='',
+        kind2='',pattern='',
+        at_line_start=False,at_whitespace_end=False,at_word_start=False,
+        exclude_match=False):
+
+        '''Succeed if s[i:] matches pattern.'''
+
+        if not self.allow_mark_prev: return 0
+
+        if (False or self.verbose): g.trace(i,repr(s[i:i+20]))
+
+        if at_line_start and i != 0 and s[i-1] != '\n': return 0
+        if at_whitespace_end and i != g.skip_ws(s,0): return 0
+        if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+        if at_word_start and i + len(word) + 1 < len(s) and s[i+len(word)] in self.word_chars:
+            j = i # 7/5/2008
+
+        if not g.match(s,i,word):
+            return 0
+
+        j = i + len(word)
+        n = self.match_regexp_helper(s,j,pattern)
+        # g.trace(j,pattern,n)
+        if n == 0:
+            return 0
+        self.colorRangeWithTag(s,i,j,kind1,exclude_match=exclude_match)
+        k = j + n
+        self.colorRangeWithTag(s,j,k,kind2,exclude_match=False)    
+        self.prev = (j,k,kind2)
+        self.trace_match(kind1,s,i,j)
+        self.trace_match(kind2,s,j,k)
+        return k - i
+    #@-node:ekr.20080703111151.19:match_word_and_regexp
+    #@+node:ekr.20080929035109.1:skip_line
+    def skip_line (self,s,i):
+
+        if self.escape:
+            escape = self.escape + '\n'
+            n = len(escape)
+            while i < len(s):
+                j = g.skip_line(s,i)
+                if not g.match(s,j-n,escape):
+                    return j
+                # g.trace('escape',s[i:j])
+                i = j
+            return i
+        else:
+            return g.skip_line(s,i)
+                # Include the newline so we don't get a flash at the end of the line.
+    #@nonl
+    #@-node:ekr.20080929035109.1:skip_line
     #@-node:ekr.20071010193720.58:jEdit matchers (in helper thread)
     #@+node:ekr.20071010193720.57:target (in helper thread)
     def target(self,*args,**keys):
@@ -1982,26 +2050,23 @@ class colorizer:
             #@+node:ekr.20071010193720.75:<< Test for @comment or @language >>
             # @comment and @language may coexist in the same node.
 
-            if theDict.has_key("comment"):
+            if 'comment' in theDict:
                 self.comment_string = theDict["comment"]
 
-            if theDict.has_key("language"):
+            if 'language' in theDict:
                 s = theDict["language"]
-                # tag = "@language"
-                # assert(g.match_word(s,i,tag))
-                #i = g.skip_ws(s,i+len(tag))
                 i = g.skip_ws(s,0)
                 j = g.skip_c_id(s,i)
                 self.language = s[i:j].lower()
 
-            if theDict.has_key("comment") or theDict.has_key("language"):
+            if 'comment' in theDict or 'language' in theDict:
                 break
             #@nonl
             #@-node:ekr.20071010193720.75:<< Test for @comment or @language >>
             #@nl
             #@        << Test for @root, @root-doc or @root-code >>
             #@+node:ekr.20071010193720.76:<< Test for @root, @root-doc or @root-code >>
-            if theDict.has_key("root") and not self.rootMode:
+            if 'root' in theDict and not self.rootMode:
 
                 s = theDict["root"]
                 if g.match_word(s,0,"@root-code"):
@@ -2015,7 +2080,7 @@ class colorizer:
             #@-node:ekr.20071010193720.76:<< Test for @root, @root-doc or @root-code >>
             #@nl
 
-        # g.trace(self.language)
+        # g.trace('new colorizer',self.language)
 
         return self.language # For use by external routines.
     #@nonl
@@ -2024,13 +2089,14 @@ class colorizer:
     def setFontFromConfig (self):
 
         c = self.c
+        isQt = g.app.gui.guiName() == 'qt'
 
         self.bold_font = c.config.getFontFromParams(
             "body_text_font_family", "body_text_font_size",
             "body_text_font_slant",  "body_text_font_weight",
             c.config.defaultBodyFontSize) # , tag = "colorer bold")
 
-        if self.bold_font:
+        if self.bold_font and not isQt:
             self.bold_font.configure(weight="bold")
 
         self.italic_font = c.config.getFontFromParams(
@@ -2038,7 +2104,7 @@ class colorizer:
             "body_text_font_slant",  "body_text_font_weight",
             c.config.defaultBodyFontSize) # , tag = "colorer italic")
 
-        if self.italic_font:
+        if self.italic_font and not isQt:
             self.italic_font.configure(slant="italic",weight="normal")
 
         self.bolditalic_font = c.config.getFontFromParams(
@@ -2046,7 +2112,7 @@ class colorizer:
             "body_text_font_slant",  "body_text_font_weight",
             c.config.defaultBodyFontSize) # , tag = "colorer bold italic")
 
-        if self.bolditalic_font:
+        if self.bolditalic_font and not isQt:
             self.bolditalic_font.configure(weight="bold",slant="italic")
 
         self.color_tags_list = []

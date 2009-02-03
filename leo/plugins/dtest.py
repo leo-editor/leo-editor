@@ -28,11 +28,11 @@ http://tinyurl.com/pxhlq - Jim Fulton's presentation::
 #@nl
 #@<< imports >>
 #@+node:ekr.20070119094733.2:<<imports>>
-import leoPlugins
+import leo.core.leoPlugins as leoPlugins
 from leoPlugins import baseLeoPlugin
 import doctest
 import os
-import leoGlobals as g
+import leo.core.leoGlobals as g
 #@-node:ekr.20070119094733.2:<<imports>>
 #@nl
 #@<< version history >>
@@ -61,26 +61,20 @@ def init ():
 class DT(baseLeoPlugin):
 
     """Sends code to the doctest module and reports the result
-    If text is selected, tests only the selection
+    If text is selected, tests only the selection.
+
+    >>> print "hello world"
+    hello world
+    >>> g.es('hello world')
+    >>> print c.p.h
+    Docstring
+    >>> import notfound
+    Traceback (most recent call last):
+        ...
+    ImportError: No module named notfound
+    >>>   
     """
 
-    #@    << docstring >>
-    #@+node:ekr.20070119094733.7:<< docstring >>
-    """
-        >>> print "hello world"
-        hello world
-        >>> g.es('hello world')
-        >>> print c.currentPosition().headString()
-        Docstring
-        >>> import notfound
-        Traceback (most recent call last):
-            ...
-        ImportError: No module named notfound
-        >>>
-    """    
-    #@nonl
-    #@-node:ekr.20070119094733.7:<< docstring >>
-    #@nl
     #@    @+others
     #@+node:ekr.20070119094733.8:__init__
     def __init__(self, tag, keywords):
@@ -97,7 +91,7 @@ class DT(baseLeoPlugin):
         """The handler for dtest
         """
 
-        import leoGlobals as g
+        import leo.core.leoGlobals as g
 
 
         # get a valid temporary filename

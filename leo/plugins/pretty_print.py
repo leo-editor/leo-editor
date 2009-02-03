@@ -19,10 +19,10 @@ method.
 
 #@<< imports >>
 #@+node:ekr.20041021120859:<< imports >>
-import leoGlobals as g
+import leo.core.leoGlobals as g
 
-import leoCommands
-import leoPlugins
+import leo.core.leoCommands as leoCommands
+import leo.core.leoPlugins as leoPlugins
 #@nonl
 #@-node:ekr.20041021120859:<< imports >>
 #@nl
@@ -48,7 +48,7 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
         oldPrettyPrinter.__init__(self,c)
         self.tracing = False
 
-        # print "Overriding class leoCommands.prettyPrinter"
+        # g.pr("Overriding class leoCommands.prettyPrinter")
     #@nonl
     #@-node:ekr.20041021123018:myPrettyPrinter.__init__
     #@+node:ekr.20041021123018.1:putNormalToken & allies
@@ -260,7 +260,7 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
 
         def oops(self):
 
-            print "unknown PrettyPrinting code: %s" % (self.name)
+            g.pr("unknown PrettyPrinting code: %s" % (self.name))
     #@nonl
     #@-node:ekr.20041021123018.11:oops
     #@+node:ekr.20041021123018.12:trace

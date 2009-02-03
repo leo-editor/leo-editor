@@ -8,8 +8,8 @@ value in being able to quickly execute commands they do not use very often"""
 
 #@<< imports >>
 #@+node:ekr.20041030084334:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 load_ok=True
 try:
@@ -249,7 +249,7 @@ def addNodeBar( tag, keywords ):
         mbox.pack_configure( before = z )
 
     def goToChild( c = c ):
-        pos = c.currentPosition()
+        pos = c.p
         if pos.hasChildren():
             c.selectPosition( pos.nthChild( 0 ) )
 
@@ -292,7 +292,7 @@ def addNodeBar( tag, keywords ):
         c.frame.clearStatusLine()
         c.frame.putStatusLine("Open Help Dialog")
 
-    ques.bind("<Enter>",callback, '+' )
+    c.bind2(ques,"<Enter>",callback, '+' )
     #@nonl
     #@-node:mork.20041026100755:<< Create the help button >>
     #@nl
@@ -310,7 +310,7 @@ def add( c, frame, column, command, image, text ):
         c.frame.clearStatusLine()
         c.frame.putStatusLine(s)
 
-    b.bind("<Enter>",callback, '+' )
+    c.bind2(b,"<Enter>",callback, '+' )
 #@nonl
 #@-node:mork.20041022172156:add
 #@+node:mork.20041026083725:addBalloon

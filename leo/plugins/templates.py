@@ -55,9 +55,9 @@ __version__ = ".5"
 #@nl
 #@<<imports>>
 #@+node:ekr.20041022165647:<< imports >>
-import leoNodes 
-import leoPlugins 
-import leoGlobals as g 
+import leo.core.leoNodes as leoNodes 
+import leo.core.leoPlugins as leoPlugins 
+import leo.core.leoGlobals as g 
 
 try:
     import_succeed = True 
@@ -122,7 +122,7 @@ def getSelectDialog (c):
         #@+node:ekr.20041109175757:<< ask the user what template to use >>
         hlines ={}
         for z in templates:
-            hlines[str(z.headString())] = z 
+            hlines[str(z.h)] = z 
 
         dialog = Pmw.Dialog(
             c.frame.top,# EKR
@@ -228,15 +228,16 @@ def getTemplateDialog (pos,c):
         hS = '<'+'<%s>'%hS+'>'
 
     if ok:
-        nTnd = leoNodes.tnode(bS,hS)
-        pos = c.currentPosition()
-        c.beginUpdate()
-        pos.insertAsNthChild(0,nTnd)
+        # nTnd = leoNodes.tnode(bS,hS)
+        pos = c.p
+        p = pos.insertAsNthChild(0) #,nTnd)
+        p.setBodyString(bS)
+        p.setHeadString(hS)
         bodyCtrl = c.frame.body.bodyCtrl 
         bodyCtrl.insert('insert',hS)
         bodyCtrl.event_generate('<Key>')
         bodyCtrl.update_idletasks()
-        c.endUpdate()
+        c.redraw()
 #@nonl
 #@-node:mork.20041022093042.1:getTemplateDialog
 #@+node:mork.20041022143127:colorize
@@ -260,7 +261,7 @@ def addEntries (parent,num):
     """Factory for creating Pmw.EntryField instances."""
 
     efs =[]
-    for z in xrange(1,num+1):
+    for z in range(1,num+1):
         ef = Pmw.EntryField(
             parent,
             labelpos='w',label_text=z,
@@ -306,7 +307,7 @@ def markAsTemplate (c):
 
     global templates 
 
-    pos = c.currentPosition()
+    pos = c.p
     t = pos.v.t 
     uA = t.__dict__.get("unknownAttributes",{})
     t.unknownAttributes = uA 

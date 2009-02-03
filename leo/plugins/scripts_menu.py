@@ -10,8 +10,8 @@
 #@<< imports >>
 #@+node:ekr.20050111115429:<< imports >>
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import glob
 import os
@@ -75,9 +75,10 @@ def createScriptsMenu (tag,keywords):
                 table = []
                 for file in files:
                     name = g.shortFileName(file)
-                    def doScript(event=None,name=name):
+                    # EKR: use doScript1 to keep pylint happy.
+                    def doScript1(event=None,name=name):
                         g.executeScript(name)
-                    table.append((name,None,doScript),)
+                    table.append((name,None,doScript1),)
 
                 c.frame.menu.createMenuEntries(menu, table,dynamicMenu=True)
                 #@nonl

@@ -5,8 +5,8 @@
 #@@language python
 #@@tabwidth -4
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 #@+others
 #@+node:edream.110203113231.737:onKey
@@ -14,7 +14,7 @@ def onKey (tag,keywords):
 
     ch = keywords.get("ch")
     if ch and len(ch) > 0:
-        g.es("key",`ch`)
+        g.es("key",repr(ch))
 #@nonl
 #@-node:edream.110203113231.737:onKey
 #@-others

@@ -13,8 +13,8 @@ changes will appear in Leo. '''
 
 #@<< imports >>
 #@+node:ekr.20050218024153:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import os
 import sys
 #@nonl
@@ -60,7 +60,7 @@ useDoubleClick = True
 
 if sys.platform == "win32":
     # This path must not contain blanks in XP.  Sheesh.
-    _emacs_cmd = r"c:\XEmacs\XEmacs-21.4.13\i586-pc-win32\xemacs.exe"
+    _emacs_cmd = r"c:\XEmacs\XEmacs-21.4.21\i586-pc-win32\xemacs.exe"
 elif sys.platform.startswith("linux"):
     clients = ["gnuclient", "emacsclient", "xemacs"]
     _emacs_cmd = ""
@@ -81,7 +81,7 @@ def init ():
     ok = True
 
     if g.app.unitTesting:
-        # print "\nEmacs plugin installed: double clicking will start..."
+        # g.pr("\nEmacs plugin installed: double clicking will start...")
         return False
 
     if useDoubleClick: # Open on double click
@@ -103,6 +103,7 @@ def open_in_emacs (tag,keywords,val=None):
     c = keywords.get('c')
     p = keywords.get('p')
     if not c or not p: return
+
     v = p.v
 
     # Search g.app.openWithFiles for a file corresponding to v.
@@ -111,27 +112,30 @@ def open_in_emacs (tag,keywords,val=None):
             path = d.get('path','') ; break
     else: path = ''
 
+    # g.trace('config',c.config.getString('xemacs_exe'))
+    emacs_cmd = c.config.getString('xemacs_exe') or _exemacs_cmd
+
     if (
         not g.os_path_exists(path) or
         not hasattr(v,'OpenWithOldBody') or
-        v.bodyString() != v.OpenWithOldBody
+        v.b != v.OpenWithOldBody
     ):
         # Open a new temp file.
         if path:
             # Remove the old file and the entry in g.app.openWithFiles.
             os.remove(path)
-            g.app.openWithFiles = [d for d in g.app.openWithFiles if d.get('path') != path]
-            os.system(_emacs_cmd)
-        v.OpenWithOldBody=v.bodyString() # Remember the old contents
+            g.app.openWithFiles = [d for d in g.app.openWithFiles
+                if d.get('path') != path]
+            os.system(emacs_cmd)
+        v.OpenWithOldBody=v.b # Remember the old contents
         # open the node in emacs (note the space after _emacs_cmd)
-        data = "os.spawnl", _emacs_cmd, None
+        data = "os.spawnl", emacs_cmd, None
         c.openWith(data=data)
     else:
         # Reopen the old temp file.
-        os.system(_emacs_cmd)
+        os.system(emacs_cmd)
 
     return val
-#@nonl
 #@-node:ekr.20050313071202:open_in_emacs
 #@-others
 #@nonl

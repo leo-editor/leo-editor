@@ -5,15 +5,31 @@
 #@@first
 #@@first
 
-# To do: use cgi.FieldStorage.
-
 '''This is the cgi script called from hello.html when the user hits the button.'''
+
+### Print statements are used to return results (return the form).
+### You *can* use print statement for tracing, but only in print_all.
+# To do: use cgi.FieldStorage.
 
 #@@language python
 #@@tabwidth -4
-import leoBridge
+#@<< imports >>
+#@+node:<< imports >>
+import os
+import sys
+
+# Add the *parent* of the leo directory to sys.path.
+leoParentDir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','..','..'))
+
+if leoParentDir not in sys.path:
+    sys.path.append(leoParentDir)
+
+import leo.core.leoBridge as leoBridge
+
 import cgi
 import cgitb ; cgitb.enable()
+#@-node:<< imports >>
+#@nl
 #@<< define dhtml stuff >>
 #@+node:<< define dhtml stuff >>
 division = """
@@ -45,8 +61,15 @@ def print_all(c):
 
     print '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">'
     print '<html>'
-    print_head(c)
-    print_body(c)
+    if c:
+        # Print the page.
+        print_head(c)
+        print_body(c)
+    else:
+        # Print the debugging info.
+        print '__file__',__file__
+        print 'os.getcwd()',os.getcwd()
+
     print '</html>'
 #@-node:print_all
 #@+node:print_body
@@ -54,12 +77,14 @@ def print_body(c):
 
     print '<body class="st" onload="format()">'
 
-    form = cgi.FieldStorage()
-    print repr(form)
-    # if form.has_key('name'):
-        # print 'name',form['name'].value
-    # else:
-        # print 'no name'
+    if 0:
+        # Debugging info.
+        form = cgi.FieldStorage()
+        print repr(form)
+        # if form.has_key('name'):
+            # print 'name',form['name'].value
+        # else:
+            # print 'no name'
     print_tree(c)
     print '</body>'
 #@-node:print_body
@@ -125,13 +150,14 @@ def print_tree(c):
 #@-node:print_tree
 #@-others
 
-path = r'c:\prog\tigris-cvs\leo\test\test.leo'
-
-b = leoBridge.controller(gui='nullGui',loadPlugins=False,readSettings=False,verbose=False)
-g = b.globals()
-c = b.openLeoFile(path)
-p = c.rootPosition()
-# import os; print os.getcwd()
+if 1: # Open the bridge.
+    path = os.path.abspath(os.path.join(leoParentDir,'leo','test','test.leo')) # c does not exist!
+    b = leoBridge.controller(gui='nullGui',loadPlugins=False,readSettings=False,verbose=False)
+    g = b.globals()
+    c = b.openLeoFile(path)
+    p = c.rootPosition()
+else:
+    c = None
 
 # import pdb ; pdb.Pdb() # Doesn't work.
 print_all(c)

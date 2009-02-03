@@ -26,15 +26,15 @@ __version__ = ".5"
 #@nl
 #@<< imports >>
 #@+node:ekr.20040831115918.1:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk  = g.importExtension('Tkinter',  pluginName=__name__,verbose=True)
 Pmw = g.importExtension("Pmw",      pluginName=__name__,verbose=True)
 
 import os
 import urllib
-import weakref
+# import weakref
 #@nonl
 #@-node:ekr.20040831115918.1:<< imports >>
 #@nl
@@ -65,16 +65,14 @@ def addURLPane (tag,keywords):
     if not c: return
 
     # New in Leo 4.4: the log is always tabbed.
-    if 1: x = c.frame.log.selectTab('URLLoad')
-    else: x = TabbedLog.getPane("URLLoad",c)
-
+    x = c.frame.log.selectTab('URLLoad')
     ef = Pmw.EntryField(x,labelpos='n',label_text='URL:')
     e = ef.component('entry')
     e.configure(background='white',foreground='blue')
     ef.pack(expand=1,fill='x')
     b = Tk.Button(x,text='Load')
     b.pack()
-    b.bind('<Button-1>',lambda event,entry=e,c=c: load(event,entry,c))
+    c.bind(b,'<Button-1>',lambda event,entry=e,c=c: load(event,entry,c))
 #@nonl
 #@-node:ekr.20040831115238.1:addURLPane
 #@+node:ekr.20040831115238.2:load

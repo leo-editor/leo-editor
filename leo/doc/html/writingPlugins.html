@@ -307,7 +307,7 @@ The plugin will define a minibuffer command that does the same thing as pressing
 <p>We shall start with a script button whose script is:</p>
 <pre class="literal-block">
 g.es_print('c: %s' % (c.fileName()),color='red')
-g.es_print('p: %s' % (p.headString()),color='red')
+g.es_print('p: %s' % (p.h),color='red')
 </pre>
 <p>Not very exciting, but it uses the predefined <tt class="docutils literal"><span class="pre">c</span></tt> and <tt class="docutils literal"><span class="pre">p</span></tt> constants.
 Our plugin will create a minibuffer command called print-cp.</p>
@@ -326,8 +326,8 @@ Plugins--&gt;Example code--&gt;&#64;thin print_cp.py
 <li><p class="first">Update the docstring, the __version__ constant and the &lt;&lt; imports &gt;&gt; section.
 Note that unlike when using script buttons, you must have the following imports:</p>
 <pre class="literal-block">
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 </pre>
 </li>
 <li><p class="first">Because this plugin doesn't require any gui interface, we simplify the <tt class="docutils literal"><span class="pre">init</span></tt> function:</p>
@@ -349,9 +349,9 @@ def __init__ (self,c):
     self.c = c
     c.k.registerCommand('print-cp',shortcut=None,func=self.print_cp)
     script = &quot;c.k.simulateCommand('print-cp')&quot;
-    g.makeScriptButton(c,script=script,buttonText='Print c &amp; p',bg='red')
+    g.app.gui.makeScriptButton(c,script=script,buttonText='Print c &amp; p',bg='red')
 </pre>
-<p>This registers the print_cp <em>method</em> of the print_cp class as the print-cp minibuffer command,
+<p>This registers the print_cp <em>method</em> of the pluginController class as the print-cp minibuffer command,
 and creates a script button with the following script:</p>
 <pre class="literal-block">
 c.k.simulateCommand('print-cp')
@@ -360,16 +360,15 @@ c.k.simulateCommand('print-cp')
 <li><p class="first">Define the print_cp method as follows:</p>
 <pre class="literal-block">
 def print_cp (self,event=None):
-    c = self.c ; p = c.currentPosition()
+    c = self.c ; p = c.p
     g.es_print('c: %s' % (c.fileName()),color='red')
-    g.es_print('p: %s' % (p.headString()),color='red')
+    g.es_print('p: %s' % (p.h),color='red')
 </pre>
 <p>The print_cp method must have the event argument as shown because it implements a minibuffer command.
 The print_cp method gets the proper commander from the <tt class="docutils literal"><span class="pre">c</span></tt> ivar (instance variable) and computes
 the current position <tt class="docutils literal"><span class="pre">p</span></tt> as shown.</p>
 </li>
-<li><p class="first">Enable the print_cp plugin using the plugins manager plugin,
-or just add the following line somewhere in pluginsManager.txt:</p>
+<li><p class="first">Enable the print_cp plugin by putting the following in an &#64;enabled-plugins node:</p>
 <pre class="literal-block">
 print_cp.py
 </pre>
@@ -419,9 +418,9 @@ Still, the potential for abuse exists anywhere.</p>
 # Execute the body text of all nodes that start with `&#64;script`.
 def onLoadFile():
     for p in c.allNodes_iter():
-        h = p.headString().lower()
+        h = p.h.lower()
         if g.match_word(h,0,&quot;&#64;script&quot;):
-            s = p.bodyString()
+            s = p.b
             if s and len(s) &gt; 0:
                 try: # SECURITY BREACH: s may be malicious!
                     exec(s + '\n')
@@ -433,7 +432,7 @@ def onLoadFile():
 Leo is a repository of source code, so any text operation is potentially malicious.
 For example, consider the following script, which is valid in rexec mode:</p>
 <pre class="literal-block">
-badNode = c.currentPosition()
+badNode = c.p
 for p in c.allNodes_iter():
     &lt;&lt; change `rexec` to `exec` in p's body &gt;&gt;
 &lt;&lt; delete badNode &gt;&gt;

@@ -45,10 +45,9 @@ __version__ = "0.7"
 #@<< imports >>
 #@+node:ekr.20040909100226:<< imports >>
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
-import leo
 import os
 import sys
 #@nonl
@@ -60,7 +59,7 @@ if sys.platform == "win32":
     pathToExplorer = 'c:/windows/explorer.exe'
     pathToCmd = 'c:/windows/system32/cmd.exe'
 else:
-    # FIXME: Set these...
+    # Set these as needed...
     pathToExplorer = ''
     pathToCmd = ''
 
@@ -74,6 +73,8 @@ def init ():
         leoPlugins.registerHandler("after-create-leo-frame", onCreate)
 
         g.plugin_signon(__name__)
+
+        return True
 #@nonl
 #@-node:ekr.20060107110126:init
 #@+node:ekr.20060107110126.1:onCreate
@@ -114,7 +115,7 @@ class pluginController:
     def _getpath (self,p):
 
         c = self.c
-        dict = g.scanDirectives(c,p=p)
+        dict = c.scanAllDirectives(p)
         d = dict.get("path")
 
         if p.isAnyAtFileNode():
@@ -133,7 +134,7 @@ class pluginController:
     def _getCurrentNodePath(self):
 
         c = self.c
-        p = c.currentPosition()
+        p = c.p
         d = self._getpath(p)
         return d
     #@nonl

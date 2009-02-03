@@ -135,9 +135,6 @@ Fredrik
 FreeMind
 FrontPage
 Frykholm
-Frédéric
-Frédéric
-Frédéric
 FunctionType
 GPL
 Galimberti
@@ -155,9 +152,6 @@ Gruber
 Gtk
 Gtk2
 Guettler
-Györgyi
-Györgyi
-Györgyi
 H1
 H3
 HIGHLIGHT_DIGITS
@@ -251,12 +245,11 @@ Liechti
 ListType
 Litt
 Locators
-Loewis
 LtArrow
 Lua
 Lundh
 Lundh's
-Löwis
+Lëwis
 M2C
 MARK_PREVIOUS
 MORE``'s
@@ -274,9 +267,6 @@ Melena
 Merenda
 Metadata
 ModuleType
-Momméja
-Momméja
-Momméja
 Montcrieffe
 MouseWheel
 Multipath
@@ -392,7 +382,6 @@ RodrigoB's
 Rossum
 RtArrow
 Ruleset
-Réglages
 SECTION000310000000000000000
 SProvide
 SQL
@@ -406,9 +395,6 @@ SaveTo
 Schwant
 Schwant's
 Schwenzer
-Schöön
-Schöön
-Schöön
 ScreenBook
 Scripts_
 Sections_
@@ -811,6 +797,7 @@ atButtonNodes
 atFile
 atFileCommands
 atPluginNodes
+atShadow
 at_char
 at_line_start
 at_produce
@@ -819,6 +806,7 @@ ato
 attachLeoIcon
 attr
 author_email
+auto_
 auto_save
 autocalling
 autocomplete
@@ -1133,6 +1121,7 @@ csv
 csvr
 ctors
 ctypes
+curdir
 currentPosition
 currentVnode
 currentWord
@@ -1442,6 +1431,7 @@ firstChild
 firstLevel
 firstOpen
 firstPart
+fixedWindow
 flattenOutline
 fmerenda
 fn
@@ -1931,6 +1921,7 @@ leoScripts
 leoSetting
 leoSettings
 leoSetttings
+leoShadow
 leoTangle
 leoTest
 leoTestBridge
@@ -1950,6 +1941,7 @@ leo_header
 leo_keyword_font
 leo_pdf
 leo_rst
+leo_shadow
 leo_to_html
 leo_to_rtf
 leo_xresources
@@ -1988,6 +1980,7 @@ literal2_font
 literal3_font
 literal4_font
 literateprogramming
+ln
 loadDir
 loadOnePlugin
 load_build
@@ -2307,6 +2300,7 @@ ouline
 out_after_sent
 outerFrame
 outerList
+outerUpdate
 outline1
 outline2
 outlineCommand
@@ -2884,6 +2878,7 @@ stanford
 start1
 start2
 startIPython
+startTracer
 startfile
 startswith
 startupEncoding
@@ -3123,6 +3118,7 @@ undos
 unhexlify
 unibyte
 unicode
+unified_nodes
 unignored
 uninstall
 unique_tnodes_iter
@@ -3218,6 +3214,7 @@ versioning
 vh
 vhash
 vids
+vimBindings
 vim_cmd
 vim_exe
 visibleText
@@ -3287,6 +3284,7 @@ writeNode
 writeNodeToNode
 writeNodesToNode
 writeNormalTree
+writeOneAtShadowNode
 writeOpenFile
 writeTree
 writeTreeAsRst
@@ -3324,6 +3322,7 @@ x_main
 x_ns
 x_root
 x_setname
+xa
 xb73a876c
 xbuf
 xdb

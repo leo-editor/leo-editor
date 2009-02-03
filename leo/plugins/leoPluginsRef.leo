@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.583216783217">
-	<global_window_position top="115" left="320" height="762" width="841"/>
+<globals body_outline_ratio="0.5">
+	<global_window_position top="51" left="264" height="987" width="910"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20041211035618"><vh>Startup</vh>
+<v t="ekr.20041211035618" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070718131416"><vh>@chapters</vh></v>
 <v t="ekr.20050217093214"><vh>@settings</vh>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
@@ -25,8 +25,10 @@
 <v t="ekr.20051025144116"><vh>@@button Spell</vh></v>
 <v t="ekr.20050819055746"><vh>@@button Save</vh></v>
 </v>
+<v t="ekr.20080515173014.1"><vh>regex: replace w.bind by c.bind(w...)</vh></v>
+<v t="ekr.20080519084304.2"><vh>@@button change leo imports</vh></v>
 </v>
-<v t="edream.110203113231.618" a="TV"><vh>Plugins</vh>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
 <v t="ekr.20041114102139"><vh>Notes</vh>
@@ -58,7 +60,10 @@
 <v t="edream.110403140857.8"><vh>@thin color_markup.py</vh></v>
 <v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
 <v t="edream.110203113231.753"><vh>@thin image.py</vh></v>
+<v t="ekr.20080619090226.4"><vh>rClick plugin</vh>
 <v t="bobjack.20080321133958.6"><vh>@thin rClick.py</vh></v>
+<v t="bobjack.20080619110105.2"><vh>@thin rClickBasePluginClasses.py</vh></v>
+</v>
 <v t="edream.110203113231.925"><vh>@thin script_io_to_body.py</vh></v>
 </v>
 <v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
@@ -132,10 +137,7 @@
 </v>
 </v>
 <v t="ekr.20060513122613.25" xcc_cfg="7d710028550a45786563757461626c6571017d710228550a446c6c2063616c6c65727103550071045513457865637574696f6e20617267756d656e747371056804755504436f64657106680455074144445f4c4f477107680455055469746c657108550b6763635f6764625f657865710955055761746368710a5d710b550161710c61550b427265616b706f696e7473710d7d710e2855056370703a38710f5507456e61626c6564711055066370703a3138711168107555075345545f4c4f4771125511406c616e677561676520632b2b0a20430a71135506494e4954454471145504547275657115550b427265616b506f696e747371167d71172855056370703a3871185507456e61626c6564711955066370703a3135711a5507456e61626c6564711b55066370703a3132711c5507456e61626c6564711d7555074f7074696f6e73711e7d711f28550b58636320766572626f7365712055045472756571215507457865637574657122550546616c73657123550c4372656174652066696c65737124550454727565712555105365656b20627265616b706f696e747371265504547275657127550f436f6e6e65637420746f2070697065712868045507436f6d70696c657129550454727565712a550d46696c746572206f7574707574712b550546616c7365712c55134175746f20696e636c75646520686561646572712d550454727565712e55054465627567712f550454727565713055105365656b206669727374206572726f7271315504547275657132755508446562756767657271337d713428550e4964656e7469667920627265616b71356804550f54617267657420706964207461736b713655327368656c6c207461736b6c697374202f6e68202f66692022494d4147454e414d45206571205f4e414d455f2e5f4558545f22713755085069706520656f6c713855025c6e71395509417267756d656e7473713a5519225f414253504154485f5c5c5f4e414d455f2e65786522200a713b550e50726f6d7074207061747465726e713c55035b295d713d550e5175657279206c6f636174696f6e713e550166713f550846696e6420706964714055215f4e414d455f5c2e5f4558545f202b283f503c5049443e5b302d395d2b29202e2b7141550b436c65617220627265616b71425513636c656172205f46494c455f3a5f4c494e455f714355084576616c75617465714455067072696e74207145550453746f707146550171714755045374657071485504737465707149550b4c69737420627265616b73714a680455045461736b714b5502710a714c550f427265616b20646574656374696f6e714d5516427265616b706f696e74205b302d395d2b2c202e2b0a714e550853746570206f7574714f550666696e6973687150550953657420627265616b71515513627265616b205f46494c455f3a5f4c494e455f7152550d46696e64206c6f636174696f6e7153552861742e2b5f4e414d455f5c2e283f503c4558543e2e2b293a283f503c4c494e453e5b302d395d2b29715455075374657020696e7155550473746570715668335518433a5c53444b5c4d696e47575c62696e5c6764622e65786571575512526567756c61722065787072657373696f6e7158550f50726f6772616d206578697465640a71595508436f6e74696e7565715a5508636f6e74696e7565715b5502476f715c550372756e715d550c53746172747570207461736b715e552e627265616b206d61696e0a736574206c69737473697a6520310a73657420636f6e6669726d206f66660a72756e0a715f550953746570206f766572716055046e6578747161755508436f6d70696c657271627d7163285514496e636c7564652073656172636820706174687371645515433a5c53444b5c4d696e47575c696e636c7564650a7165550f4572726f7220646574656374696f6e71665549283f503c46494c453e5b5e5c5c5d2b295c28283f503c4c494e453e5b302d395d2b295c29203a206572726f7220283f503c49443e435b302d395d2b293a20283f503c4445463e2e2b297167550b557365206c696272617279716855022d6c7169550e55736564206c6962726172696573716a6804550f446562756720617267756d656e7473716b555c225f414253504154485f5c5f4e414d455f2e5f5352434558545f220a2d6f225f414253504154485f5c5f4e414d455f2e5f4558545f220a5f494e4350415448535f0a2d670a5f4c494250415448535f0a5f4c49425241524945535f0a716c550d436865636b2073796e74617865716d55032f5a73716e550c4c6962726172792070617468716f55022d4c7170683a5559225f414253504154485f5c5f4e414d455f2e5f5352434558545f220a2d6f225f414253504154485f5c5f4e414d455f2e5f4558545f220a5f494e4350415448535f0a5f4c494250415448535f0a5f4c49425241524945535f0a717155094275696c6420646c6c717255032f4c447173550755736520706368717455032f5975717555094275696c6420657865717655032f4d4c717755144c6962726172792073656172636820706174687371785511433a5c53444b5c4d696e47575c6c69620a7179550c496e636c7564652070617468717a55022d49717b550b436f6d70696c6520706368717c55032f5963717d68625518433a5c53444b5c4d696e47575c62696e5c6763632e657865717e75752e"><vh>@xcc gcctest\testprog</vh>
-<v t="ekr.20060513122613.22" xcc_child_cfg="7d7100550b427265616b506f696e747371017d7102732e"><vh>program</vh>
-<v t="ekr.20060513122613.23" xcc_child_cfg="7d71002855104865616465724c696e654e756d626572710155013071025510536f757263654c696e654e756d62657271036802550b427265616b506f696e747371047d7105752e"><vh>Header Directives</vh></v>
-<v t="ekr.20060513122613.24" xcc_child_cfg="7d71002855104865616465724c696e654e756d626572710155013571025510536f757263654c696e654e756d62657271035501347104550b427265616b506f696e747371057d71062855013171075507456e61626c65647108550231317109680875752e"><vh>int WINAPI WinMain(HINSTANCE hinstance,HINSTANCE hprevinstance,LPSTR lpcmdline,int ncmdshow);!</vh></v>
-</v>
+<v t="ekr.20060513122613.22" xcc_child_cfg="7d7100550b427265616b506f696e747371017d7102732e"></v>
 </v>
 </v>
 <v t="ekr.20060514125256"><vh>Recent</vh>
@@ -282,9 +284,6 @@
 </v>
 <v t="ekr.20040722134535"><vh>Experimental</vh>
 <v t="ekr.20040918165427.4"><vh>Autocompletion dictionary files</vh></v>
-<v t="edream.110203113231.302"><vh>@thin experimental/__wx_gui.py</vh></v>
-<v t="bob.20070910154126.2"><vh>@thin experimental/__wx_alt_gui.py</vh></v>
-<v t="ekr.20080112150934"><vh>@thin experimental/gtkGui.py</vh></v>
 </v>
 <v t="EKR.20040517075715"><vh>External editors &amp; Open With</vh>
 <v t="EKR.20040517075715.1"><vh>@thin mod_tempfname.py</vh></v>
@@ -298,20 +297,20 @@
 </v>
 </v>
 <v t="EKR.20040517080049"><vh>Files</vh>
+<v t="tbrown.20080613095157.2"><vh>@thin active_path.py</vh></v>
 <v t="EKR.20040517080049.1"><vh>@thin empty_leo_file.py</vh></v>
 <v t="danr7.20060902215215.1"><vh>@thin leo_to_html.py</vh></v>
 <v t="danr7.20060902083957"><vh>@thin leo_to_rtf.py</vh></v>
 <v t="ekr.20040419105219"><vh>@thin lineNumbers.py</vh></v>
 <v t="mork.20041018204908.1"><vh>@thin multifile.py</vh></v>
 <v t="ekr.20040331151007"><vh>@thin niceNosent.py</vh></v>
+<v t="ekr.20081214160729.1"><vh>@thin setHomeDirectory.py</vh></v>
 </v>
 <v t="ekr.20071006112739"><vh>Graph world</vh>
+<v t="tbrown.20081223111325.3"><vh>@shadow backlink.py</vh></v>
 <v t="ekr.20071004090250"><vh>@thin graphed.py</vh></v>
 </v>
-<v t="ekr.20070116074730"><vh>Gui plugins</vh>
-<v t="ekr.20061207074949"><vh>@thin cursesGui.py</vh></v>
-<v t="ekr.20070215164948"><vh>@thin ironPythonGui.py</vh></v>
-</v>
+<v t="ekr.20081121105001.2080"><vh>Gui plugins</vh></v>
 <v t="ekr.20040722135402"><vh>Icon and status areas</vh>
 <v t="ekr.20060328125925"><vh>@thin chapter_hoist.py</vh></v>
 <v t="ekr.20040331072607"><vh>@thin hoist.py</vh></v>
@@ -321,6 +320,8 @@
 <v t="ekr.20040108095351"><vh>@thin rowcol.py</vh></v>
 <v t="ekr.20040107092135.2"><vh>@thin searchbox.py</vh></v>
 <v t="ekr.20060601151845"><vh>@thin shortcut_button.py</vh></v>
+<v t="bobjack.20080424190315.2"
+expanded="bobjack.20080502134903.8,"><vh>@thin toolbar.py</vh></v>
 </v>
 <v t="ekr.20080203083146"><vh>IPython bridge</vh>
 <v t="ekr.20080201143145"><vh>@thin ipython.py</vh></v>
@@ -343,8 +344,8 @@
 <v t="ekr.20040828122150"><vh>@thin pie_menus.py</vh></v>
 </v>
 <v t="ekr.20060530091119"><vh>New colorizer</vh>
-<v t="ekr.20071010193720"
-marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
+<v t="ekr.20071010193720"><vh>@thin threading_colorizer.py	</vh></v>
+<v t="ekr.20080707101341.1"><vh>@thin ../modes/forth.py</vh></v>
 </v>
 <v t="edream.110203113231.872"><vh>Nodes...</vh>
 <v t="edream.110203113231.873"><vh>@thin at_folder.py</vh></v>
@@ -700,22 +701,6 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
 <v t="EKR.20040517080250.1"><vh>@thin mod_http.py</vh></v>
 </v>
-<v t="ekr.20060715100156"><vh>Shadow files plugin</vh>
-<v t="ekr.20060715100156.1"><vh>test zone</vh>
-<v t="ekr.20060715100156.2"><vh>@@button Do @test</vh>
-<v t="ekr.20060715100156.3"><vh>test propagate_changes_from_lines_without_sentinels_to_lines_with_sentinels</vh>
-<v t="ekr.20060715100156.4"><vh>@test basic replacement test</vh>
-<v t="ekr.20060715100156.5"><vh>before with sentinels</vh></v>
-<v t="ekr.20060715100156.6"><vh>after with sentinels</vh></v>
-<v t="ekr.20060715100156.7"><vh>changed without sentinels</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20060816094306"><vh>Note: @button shadow is in leoPy.leo</vh></v>
-<v t="ekr.20060715100156.8"><vh>@thin mod_shadow_core.py</vh></v>
-<v t="ekr.20060715100156.52"><vh>@thin mod_shadow.py</vh></v>
-</v>
 <v t="ekr.20071113084440"><vh>Testing</vh>
 <v t="ekr.20071113084440.1"><vh>@thin test/syntax_error_plugin.py</vh></v>
 <v t="ekr.20071113085315"><vh>@thin test/failed_to_load_plugin.py</vh></v>
@@ -747,11 +732,7 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 </v>
 </v>
 <v t="ekr.20040331071919.1"><vh>Leo 2 AsciiDoc Developers Guide</vh>
-<v t="ekr.20040331071919.2"><vh>About this document</vh>
-<v t="ekr.20040331071919.3"><vh>License</vh>
-<v t="ekr.20040331071919.4"><vh>License document</vh></v>
-</v>
-</v>
+<v t="ekr.20040331071919.2"></v>
 <v t="ekr.20040331071919.5"><vh>Version, Requirements</vh></v>
 <v t="ekr.20040331071919.6"><vh>The General Approach</vh>
 <v t="ekr.20040331071919.7"><vh>Markup Added</vh></v>
@@ -794,7 +775,6 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="ekr.20040331071919.37"><vh>&lt;&lt; Indent Leo comments &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20070627132619"><vh>NewHeadline</vh></v>
 </v>
 <v t="ekr.20050817132814"><vh>rst3</vh>
 <v t="ekr.20050817120850.1" tnodeList="ekr.20050817120850.1,ekr.20050817122915,ekr.20050822123348,ekr.20050817124859,ekr.20050817165745,ekr.20050822172321,ekr.20050817124859.1,ekr.20050817165745.1,ekr.20050818033610,ekr.20050818095347,ekr.20050819055746.1,ekr.20050820112549,ekr.20050822065754,ekr.20050822125824,ekr.20050822172321.1,ekr.20050825101903,ekr.20050818103031,ekr.20050817115636.2,ekr.20050825101321,ekr.20050818103441,ekr.20070305092828,ekr.20050817115636.4,ekr.20050817115636.5,ekr.20050817115636.6,ekr.20050820092312,ekr.20050817115636.8,ekr.20050817115636.9,ekr.20050817115636.7,ekr.20050820100547,ekr.20050820101355,ekr.20050820103029,ekr.20050820101522,ekr.20050820101355.1,ekr.20050820094818,ekr.20050820092312.1,ekr.20050817120850.10,ekr.20050817120850.11,ekr.20050818094118.2,ekr.20050818090152,ekr.20050818090152.1,ekr.20050817120850.98,ekr.20050817120850.99,ekr.20050817120850.94,ekr.20050817120850.95,ekr.20050817120850.96,ekr.20050817120850.108,ekr.20050817142135.1,ekr.20050817120850.143,ekr.20050817120850.144,ekr.20050817120850.141,ekr.20050817135706.1,ekr.20050817120850.157,ekr.20050817120850.158,ekr.20050818105023,ekr.20050817120850.15,ekr.20050817120850.12,ekr.20050817120850.14,ekr.20050818081715,ekr.20050819072001,ekr.20050819072001.1,ekr.20050817120850.13,ekr.20050818083045,ekr.20050821153838,ekr.20050818022030,ekr.20050818084920,ekr.20050818130249,ekr.20050818090907,ekr.20050817120850.32,ekr.20050817120850.34,ekr.20050817120850.39,ekr.20050817120850.42,ekr.20050817120850.44,ekr.20050817120850.46,ekr.20050817120850.48,ekr.20050817120850.62,ekr.20050817120850.64,ekr.20050817120850.74,ekr.20050817120850.78,ekr.20050817120850.86,ekr.20050817120850.92,ekr.20050817120850.162,ekr.20050817120850.102,ekr.20050817120850.106,ekr.20050817120850.110,ekr.20050817120850.122,ekr.20050817120850.124,ekr.20050817120850.126,ekr.20050817120850.130,ekr.20050817120850.132,ekr.20050817120850.138,ekr.20050817120850.28,ekr.20050817120850.147,ekr.20050817120850.18,ekr.20050817120850.20,ekr.20050817120850.40,ekr.20050817120850.54,ekr.20050817120850.82,ekr.20050817120850.100,ekr.20050817120850.105,ekr.20050817120850.120,ekr.20050817120850.36,ekr.20050817120850.58,ekr.20050817120850.60,ekr.20050817120850.66,ekr.20050817120850.24,ekr.20050817120850.22,ekr.20050817120850.50,ekr.20050817120850.52,ekr.20050817120850.56,ekr.20050818094118.1,ekr.20050817120850.68,ekr.20050817120850.134,ekr.20050817120850.145,ekr.20050817120850.151,ekr.20050817120850.26,ekr.20050817120850.76,ekr.20050817120850.80,ekr.20050817120850.88,ekr.20050817120850.112,ekr.20050817120850.128,ekr.20050817142135,ekr.20050817120850.153,ekr.20050817120850.155,ekr.20050817120850.30,ekr.20050817135706,ekr.20050817120850.160,ekr.20050818094954,ekr.20050818105023.1,ekr.20050817120850.84,ekr.20050817120850.90,ekr.20050818094954.1,ekr.20050817120850.165,ekr.20050817120850.116,ekr.20050817120850.70,ekr.20050817120850.72,ekr.20050817120850.164,ekr.20050817120850.114,ekr.20050817120850.118,ekr.20050817120850.149,ekr.20050817120850.159,ekr.20050817120850.140"><vh>@file leo_pdf.py</vh>
@@ -999,7 +979,7 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="ekr.20050227071948.19" annotate="7d71005509617474656e74696f6e71014930300a732e"><vh>archtetype colouring</vh></v>
 </v>
 <v t="ekr.20050227071948.20" annotate="7d71002e"><vh>Problems</vh>
-<v t="ekr.20050227071948.6" annotate="5592376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333462303136323535303936313732363336383635373437393730363537313035323836383032366637313036353530303731303736323735326571002e"><vh>No attributes for @thin nodes</vh></v>
+<v t="ekr.20050227071948.6" annotate="5592376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333462303136323535303936313732363336383635373437393730363537313035323836383032366637313036353530303731303736323735326571002e"></v>
 <v t="ekr.20050227071948.21" annotate="5592376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333462303236323535303936313732363336383635373437393730363537313035323836383032366637313036353530303731303736323735326571002e"><vh>features are not orthogonal</vh></v>
 <v t="ekr.20050227071948.22" annotate="7d71002e"><vh>Too many colours !!</vh></v>
 </v>
@@ -1025,7 +1005,7 @@ marks="ekr.20071010193720.21,"><vh>@thin threading_colorizer.py	</vh></v>
 <v t="ekr.20040915075530"><vh>@thin UASearch.py</vh></v>
 <v t="ekr.20040831122004"><vh>@thin UniversalScrolling.py</vh></v>
 <v t="ekr.20040831115238"><vh>@thin URLloader.py</vh></v>
-<v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
+<v t="ekr.20060506070443.1"></v>
 </v>
 </v>
 </vnodes>
@@ -1627,8 +1607,8 @@ Here we begin the Python program, importing the modules we need, and
 signing on as the Leo2AsciiDoc module in the Leo log window.
 @c
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 import re
 import os
@@ -1821,7 +1801,7 @@ def WriteTreeAsAsc(vnode, ascFileN):
             v = v.threadNext()
 
     CleanUp()
-    g.es('Wrote: '+`ascFileN`)
+    g.es('Wrote: '+ repr(ascFileN))
 
 
 
@@ -3702,8 +3682,8 @@ it is included in "pluginsManager.txt" in that directory.
 @code
 """Create menu for Open With command and handle the resulting commands"""
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -3846,10 +3826,10 @@ have OpenTreeInXEmacs visibly traverse the tree.
 &lt;&lt; Open_Tree Plugin &gt;&gt;
 @code
 
-import leoPlugins
+import leo.core.leoPlugins as leoPlugins
 
 def OpenTreeInXEmacs (c):
-    import leoCommands
+    import leo.core.leoCommands as leoCommands
     #XEmacsCommand = "/usr/bin/gnuclient -q "
     XEmacsCommand = "/mrc2/linux-bin/gnuclient-noshow "
     vnode = c.currentVnode() # get the current vnode.
@@ -3934,10 +3914,10 @@ located in a 'username_Leo' subdirectory of the temporary
 directory. The 'LeoTemp' prefix is omitted.  This makes it easier to
 see which temporary file is related to which outline node.""" #'
 
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
-import leoCommands
+import leo.core.leoCommands as leoCommands
 import getpass
 import os
 import tempfile
@@ -4644,7 +4624,7 @@ may not be available on all platforms.
     from m import *
     from m import x,y,z
 
-- Do not import leoNodes unless your plugin creates nodes directly.</t>
+- Do not import leo.core.leoNodes as leoNodes unless your plugin creates nodes directly.</t>
 <t tx="ekr.20041114103913">Most of the comments in the style guide are comments _about_ the style guide.
 You would replace these comments with your own, or eliminate them entirely in
 your plugin.</t>
@@ -4890,8 +4870,8 @@ what the plugin does and how to use it.
 @
 
 Put notes about each version here.</t>
-<t tx="ekr.20050303051035.5">import leoGlobals as g
-import leoPlugins
+<t tx="ekr.20050303051035.5">import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Pmw = g.importExtension('Pmw',    pluginName=__name__,verbose=True,required=True)
 Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
@@ -4944,7 +4924,7 @@ HitsToHeatUp = 2
     Showing how to define a global hook that affects all commanders.
     """
 
-    import leoTkinterFrame
+    import leo.core.leoTkinterFrame as leoTkinterFrame
     log = leoTkinterFrame.leoTkinterLog
     
     # Replace frame.put with newPut (not shown).
@@ -4965,8 +4945,8 @@ what the plugin does and how to use it.
 @
 
 Put notes about each version here.</t>
-<t tx="ekr.20050306071629.3">import leoGlobals as g
-import leoPlugins
+<t tx="ekr.20050306071629.3">import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 # Whatever other imports your plugins uses.</t>
 <t tx="ekr.20050306071629.4">def init ():
@@ -4996,7 +4976,7 @@ If a plugin catches exceptions during startup it should do one of the following:
 <t tx="ekr.20050329035844">def importLeoGlobals():
 
     '''
-    Try to import leoGlobals from the leo/src directory, assuming that
+    Try to import leo.core.leoGlobals as leoGlobals from the leo/src directory, assuming that
     the script using this function is in a subdirectory of the leo directory.
     '''
 
@@ -5008,10 +4988,10 @@ If a plugin catches exceptions during startup it should do one of the following:
     else:
         sys.path.append(plugins_path)
         try:
-            import leoGlobals as g
+            import leo.core.leoGlobals as g
             return g
         except ImportError:
-            print 'can not import leoGlobals from %s' % (plugins_path)
+            g.pr('can not import leo.core.leoGlobals as leoGlobals from %s' % (plugins_path))
             return None</t>
 <t tx="ekr.20050329080427">def setPaths(self):
     """Set paths to the plugin locations"""
@@ -6029,7 +6009,7 @@ sys.path.append(r'c:\reportlab_1_20')
 
 if 1: # This dependency could easily be removed.
     # Used only for tracing and error reporting.
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
 
 try:
     # from reportlab.lib.enums import *
@@ -6043,7 +6023,7 @@ try:
 
     # General imports...
     import StringIO
-    import time
+    # import time
     import types
 except ImportError:
     docutils = None
@@ -6113,7 +6093,7 @@ output = None
     if 0: # Not useful: story is a list of reportlab.platypus.para.Para objects.
         # Use the trace in createParagraph instead.
         g.trace('story','*'*40)
-        print story        
+        g.pr(story)
 
     # Generate self.output.  Gets sent to reportlab.
     self.output = self.createPDF_usingPlatypus(story)
@@ -6243,12 +6223,12 @@ if docutils:
     if 0:
         s = text.split('&gt;')
         s = '&gt;\n'.join(s)
-        print
+        g.pr('')
         if 1: # just print the text.
-            print s
+            g.pr(s)
         else:
             g.trace('%8s\n\n%s' % (style,s))
-        print
+        g.pr('')
 
     style = self.styleSheet [style]
 
@@ -7150,12 +7130,12 @@ def peek (self,kind):
 - Almost all the grunt work is done.</t>
 <t tx="ekr.20050818081715">def dumpContext (self):
 
-    print ; print '-' * 40
-    print 'Dump of context'
+    g.pr('\n','-' * 40)
+    g.pr('Dump of context')
 
     i = 0
     for bunch in self.context:
-        print '%2d %s' % (i,bunch)
+        g.pr('%2d %s' % (i,bunch))
         i += 1</t>
 <t tx="ekr.20050818083045">def inContext (self,kind):
 
@@ -7293,17 +7273,17 @@ bunch = Bunch</t>
 
     nkeys = d.keys() ; nkeys.sort()
 
-    print ; print '-' * 30
-    print 'dump of node %s\n' % (g.choose(tag,'(%s)' % tag,''))
+    g.pr('\n','-' * 30)
+    g.pr('dump of node %s\n' % (g.choose(tag,'(%s)' % tag,'')))
 
-    print 'class',node.__class__
+    g.pr('class',node.__class__)
 
     for nkey in nkeys:
         if nkey in keys:
             val = d.get(nkey)
-            print nkey,':',g.toString(val,verbose=False,indent='\t')
+            g.pr(nkey,':',g.toString(val,verbose=False,indent='\t'))
 
-    print ; print 'done', '-' * 25</t>
+    g.pr('\ndone', '-' * 25)</t>
 <t tx="ekr.20050819072001.1">keys = (
     #'anonymous_refs'
     #'anonymous_targets'
@@ -7353,7 +7333,7 @@ bunch = Bunch</t>
         pagesize=reportlab.lib.pagesizes.A4)
 
     # The 'real' code is doc.build(story)
-    self.buildFromIntermediateFile(s,story,visitor)
+    visitor.buildFromIntermediateFile(s,story,visitor)
 
     return out.getvalue()</t>
 <t tx="ekr.20050820092312.1">def putParaFromIntermediateFile (self,lines,style):
@@ -7380,10 +7360,10 @@ bunch = Bunch</t>
     for line in lines:
         if line:
             if line.startswith('createParagraph:'):
+                style = line[len('createParagraph:'):].strip()
                 if para:
                     self.putParaFromIntermediateFile(para,style)
                     para = []
-                style = line[len('createParagraph:'):].strip()
             elif line.startswith('starttag:') or line.startswith('..'):
                 pass
             else:
@@ -7512,7 +7492,7 @@ in point 2 above.
 
 IV. About tracing and debugging.
 
-As mentioned in the imports section, it is not necessary to import leoGlobals.
+As mentioned in the imports section, it is not necessary to import leo.core.leoGlobals as leoGlobals.
 This file is part of Leo, and contains debugging stuff such as g.trace and
 g.toString. There are also g.splitLines, g.es_exception, etc. used by debugging
 code.
@@ -9996,42 +9976,6 @@ return(0);
 <t tx="ekr.20060514125256"></t>
 <t tx="ekr.20060530091119"></t>
 <t tx="ekr.20060703162826"></t>
-<t tx="ekr.20060715100156"></t>
-<t tx="ekr.20060715100156.1"></t>
-<t tx="ekr.20060715100156.2">@color
-
-import leoTest
-
-print "\nStart of Do @test"
-leoTest.doTests(c,all=False)
-print "End of Do @test"</t>
-<t tx="ekr.20060715100156.3">@doc
-This is the most complicated part of the plugin, and needs most testing.
-
-All the tags should be tested at least once (equal, replace, delete, insert).
-
-The replace, delete, insert operations should happen at least once:
-    1. At the beginning of a node.
-    2. In the middle of a node.
-    3. At the end of a node.
-    
-
-For the delete and replace operators we must also test the case that the
-deletion or replacement spans more than one block.</t>
-<t tx="ekr.20060715100156.4">import mod_shadow
-reload(mod_shadow)
-mod_shadow.do_test_propagate_changes_Leo(c)
-</t>
-<t tx="ekr.20060715100156.5">#@string1
-line 1
-line 2
-</t>
-<t tx="ekr.20060715100156.6">#@string2
-xxx
-</t>
-<t tx="ekr.20060715100156.7">xxx
-</t>
-<t tx="ekr.20060816094306"></t>
 <t tx="ekr.20060827163237">name = "scripts.leo"
 fileName = g.os_path_join(g.app.loadDir,"..","scripts",name)
 ok,frame = g.openWithFileName(fileName,c)
@@ -10042,15 +9986,62 @@ if not ok:
 <t tx="ekr.20061023141638"></t>
 <t tx="ekr.20061023142737"></t>
 <t tx="ekr.20061023142737.1"></t>
-<t tx="ekr.20070116074730"></t>
 <t tx="ekr.20070305092828">@others</t>
-<t tx="ekr.20070627132619"></t>
 <t tx="ekr.20070718131416"></t>
 <t tx="ekr.20071006112739"></t>
 <t tx="ekr.20071029090815"># This plugins has been disabled until it can be rewritten to handle @enabled-plugins nodes.</t>
 <t tx="ekr.20071113084440"># These plugins are for testing Leo's own plugin loading logic.
 # There is no reason ever to enable these plugins.</t>
 <t tx="ekr.20080203083146"></t>
+<t tx="ekr.20080515173014.1">([a-zA-Z_.]+)\.bind\((.*)\)(.*)$
+c.bind(\1,\2)\3
+
+[a-zA-Z_.]+
+
+(\w)+(\.\w+)*
+
+abc.xyz.pdq
+
+# Bind w.bind with more than two args (none found)
+
+w.bind\(.*,.*,.*$
+
+[-w]\.bind\(</t>
+<t tx="ekr.20080519084304.2">change = True # True: actually make the changes.
+trace = True
+
+print '-' * 40
+
+tag = 'import leo' ; n = len('import ')
+
+for p in p.self_and_subtree_iter():
+    result = []
+    for s in g.splitlines(p.bodyString()):
+        i = s.find(tag,0)
+        if i &gt; -1:
+            # Do nothing if we have already done the translation.
+            i2 = s.find('&lt;&lt;') ; i3 = s.find('import leo.core')
+            if i2 == -1 and i3 == -1:
+                i += n
+                j = g.skip_c_id(s,i)
+                word = s[i:j]
+                rest = s[j:]
+                if rest.strip().startswith('as'):
+                    s = s[:i] + 'leo.core.' + word + rest
+                else:
+                    s = s[:i] + 'leo.core.' + word + ' as ' + word + rest
+                if trace:
+                    print p.headString()
+                    j,k=g.getLine(s,i) ; print s[j:k]
+        result.append(s)
+    result = ''.join(result)
+
+    if change and result != p.bodyString():
+        c.setBodyString(p,result)
+
+</t>
+<t tx="ekr.20080619090226.4"></t>
+<t tx="ekr.20081121105001.2080"># All gui plugins are now in leoGuiPluginsRef.leo</t>
 <t tx="pap.20041006184225">"""
 A plugin to manage Leo's Plugins:
 
@@ -10166,7 +10157,7 @@ import traceback
 import time
 
 try:
-    import leoGlobals as g
+    import leo.core.leoGlobals as g
     standalone = False
 except ImportError:
     standalone = True
@@ -10183,7 +10174,7 @@ if ok:
     except Exception:
         import sys
         s = 'plugins_manager.py: %s: %s' % (sys.exc_type,sys.exc_value)
-        print s
+        g.pr(s)
         ok = False
 
 #
@@ -10191,7 +10182,7 @@ if ok:
 # dynamically enable a plugin        
 if not standalone:
     try:
-        import leoPlugins
+        import leo.core.leoPlugins as leoPlugins
     except ImportError:
         leoPlugins = None
 else:
@@ -10314,7 +10305,7 @@ else:
         text = self.getContents()
         self.getSummary(text)
     except InvalidPlugin, err:
-        print 'InvalidPlugin',str(err)
+        g.pr('InvalidPlugin',str(err))
         self.description = str(err)
     except:
         g.es('Unexpected exception in initFrom')
@@ -10344,7 +10335,7 @@ class InvalidManager(Exception):
         f = file(self.filename, "r")
     except (IOError, OSError), err:
         s = "Unable to open plugin file '%s': %s" % (self.name, err)
-        print s
+        g.pr(s)
         raise InvalidPlugin(s)
     try:
         try:
@@ -10353,7 +10344,7 @@ class InvalidManager(Exception):
             f.close()
     except Exception, err:
         s = "Unable to read plugin file '%s': %s" % (self.name, err)
-        print s
+        g.pr(s)
         raise InvalidPlugin(s)              
 
     self.contents_valid = True

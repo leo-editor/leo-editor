@@ -314,7 +314,7 @@ If you have any problem, please do ask for help on <a class="reference" href="ht
 <p>Now that you have Leo installed, please <a class="reference" href="install.html#running-leo">launch Leo</a>.
 You should see Leo's main window, something like this:
 <strong>Note</strong>: the actual contents of the icon area at the top depends on what plugins are active.</p>
-<p><img alt="leoMainWinow" src="PCWindow.gif" /></p>
+<p><img alt="leoMainWindow" src="PCWindow.gif" /></p>
 <div class="section" id="leo-s-main-window">
 <h3><a class="toc-backref" href="#id4">Leo's main window</a></h3>
 <p>The main window represents an entire project and is stored in a single <strong>Leo file</strong>,
@@ -322,7 +322,7 @@ a file with a .leo extension.
 As you can see, the main window contains three panes:
 the <strong>outline pane</strong> at the top left,
 the <strong>log pane</strong> at the top right, and the <strong>body pane</strong> at the bottom.
-The window also contains an <strong>icon area</strong> at the very top and a <strong>status area</strong> at the very bottom.</p>
+The window also contains an <strong>icon area</strong> at the very top, a <strong>status area</strong> and a <strong>mini-buffer</strong> at the very bottom.</p>
 <dl class="docutils">
 <dt>Outline pane &amp; nodes</dt>
 <dd>The outline pane shows your project as an outline.
@@ -352,6 +352,8 @@ Other information may follow.
 Usually this is the <strong>UNL</strong> (Uniform Node Location) that describes the path in the outline
 to the selected node.
 Please select nodes at several levels of the outline to see how the UNL changes.</dd>
+<dt>Mini-buffer</dt>
+<dd>It is used like the Emacs mini-buffer to invoke commands. For full details, see <a class="reference" href="commands.html">Chapter 5: Using Leo's Commands</a>.</dd>
 </dl>
 <p>Now that we are familiar with Leo's main window,
 let's see how to use Leo as a simple outliner.</p>
@@ -539,7 +541,7 @@ A section definition node is a <a class="reference" href="glossary.html#node">no
 </pre>
 <p>The <a class="reference" href="glossary.html#body-text">body text</a> of this <a class="reference" href="glossary.html#node">node</a> is its definition.  For example:</p>
 <pre class="literal-block">
-import leoGlobals as g
+import leo.core.leoGlobals as g
 import sys
 </pre>
 <p>As you can see, <a class="reference" href="glossary.html#section-definitions">section definitions</a> can be <em>fragments</em> of code;
@@ -831,7 +833,7 @@ This allows you to use all of Leo's normal capabilities to organize your scripts
 <p>Your Python scripts can easily access data in an outline.  For example, the following script will print all the headlines in an outline:</p>
 <pre class="literal-block">
 for p in c.allNodes_iter():
-    print ' '*p.level(),p.headString()
+    print ' '*p.level(),p.h
 </pre>
 <p>Your scripts can use outline structure to avoid having to parse data.
 With a little forethought you can arrange outlines to make scripts easier to write.
@@ -852,7 +854,7 @@ any further support from Leo's core code. For a full discussion of
 </div>
 <div class="section" id="further-study">
 <h3><a class="toc-backref" href="#id23">Further study</a></h3>
-<p><tt class="docutils literal"><span class="pre">LeoPy.leo</span></tt> (in the src subdirectory of the leo folder) contains almost all of Leo's source code.
+<p><tt class="docutils literal"><span class="pre">LeoPyRef.leo</span></tt> (in the core subdirectory of the leo folder) contains almost all of Leo's source code.
 It provides hundreds of examples of everything discussed here.
 This file will repay close study.
 For full details on all aspects of Leo see <tt class="docutils literal"><span class="pre">LeoDocs.leo</span></tt> or <a class="reference" href="leo_TOC.html">Leo's Users Guide</a>.</p>

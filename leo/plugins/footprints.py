@@ -29,9 +29,11 @@ __plugin_name__ = "Footprints"
 #@nl
 #@<< imports >>
 #@+node:pap.20041020001240.2:<< imports >>
-import leoGlobals as g 
-import leoPlugins 
-import leoTkinterTree 
+import leo.core.leoGlobals as g 
+import leo.core.leoPlugins as leoPlugins 
+
+import leo.plugins.tkGui as tkGui
+leoTkinterTree = tkGui.leoTkinterTree
 
 try: 
     import Tkinter as Tk 
@@ -114,8 +116,8 @@ def installDrawMethod(tags, kw):
         return 
 
     g.funcToMethod(doFootprint, 
-                 leoTkinterTree.leoTkinterTree, 
-                 "setUnselectedLabelState") 
+        leoTkinterTree, 
+        "setUnselectedLabelState") 
 
     registered = True 
 
@@ -155,7 +157,7 @@ def storeHeadlineClick(tag, keywords):
     try: 
         node = keywords['p'] 
         click_registry[node.v] = max(click_registry.get(node.v, 0), 0)+1  
-        #print "adding to ", node, click_registry[node.v] 
+        #g.pr("adding to ", node, click_registry[node.v] )
     finally: 
         lock.release() 
 #@nonl
@@ -176,14 +178,14 @@ def updateNodes():
         # Look for nodes about to expire 
         try: 
             expired = sets.Set(); done = sets.Set() 
-            #print coloured_nodes 
+            #g.pr(coloured_nodes )
             for node in coloured_nodes: 
                 if node.v not in done: 
                     done.add(node.v) 
                     click_registry[node.v] = click_registry[node.v]-1 
-                    #print "decreasing", node.v, click_registry[node.v] 
+                    #g.pr("decreasing", node.v, click_registry[node.v] )
                     if click_registry[node.v] <= 0: 
-                        #print "removing", node.v 
+                        #g.pr("removing", node.v )
                         expired.add(node) 
                         if c.edit_widget(node): 
                             c.edit_widget(node).configure( 

@@ -1,0 +1,1001 @@
+#@+leo-ver=4-thin
+#@+node:ekr.20081121105001.147:@thin qtNotes.txt
+#@+all
+#@+node:ekr.20081121105001.148: qt To do
+#@+node:ekr.20081215074704.13:Bugs 6
+#@+node:ekr.20090131123901.2:Sometime a plug box appears wrongly
+# It may happen after a paste?
+#@-node:ekr.20090131123901.2:Sometime a plug box appears wrongly
+#@+node:ekr.20090128113654.1:Recent files menu is duplicated in qt gui
+Using r1372 and the Qt plugin, I get strange results with the recent-
+files menu item.  To reproduce:
+
+1. open a leo window (call this window 1)
+2. open an existing .leo file using file->open... (this opens a new window, window 2)
+3. go to the file->Recent-files menu item of window 1.  The file-list is duplicated.
+4. repeat step 2.  Now window 1's recent-files list is duplicated twice...
+
+** Affects: leo-editor
+    Importance: Undecided
+        Status: New
+
+--
+recent-files menu item list is duplicated
+https://bugs.launchpad.net/bugs/313320
+You received this bug notification because you are a member of The Leo
+editor team, which is subscribed to leo-editor.
+
+Status in Leo: a programmer's editor and more: New
+
+Bug description:
+Using r1372 and the Qt plugin, I get strange results with the recent-files menu item.  To reproduce:
+
+1. open a leo window (call this window 1)
+2. open an existing .leo file using file->open... (this opens a new window, window 2)
+3. go to the file->Recent-files menu item of window 1.  The file-list is duplicated.
+4. repeat step 2.  Now window 1's recent-files list is duplicated twice...
+#@nonl
+#@-node:ekr.20090128113654.1:Recent files menu is duplicated in qt gui
+#@+node:ekr.20090123073723.12:Fix php section coloring
+http://groups.google.com/group/leo-editor/browse_thread/thread/41870d58718b7b7a#
+#@nonl
+#@-node:ekr.20090123073723.12:Fix php section coloring
+#@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
+http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
+#@nonl
+#@-node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
+#@+node:ekr.20081124094918.1:Fix problems with scim
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/59c1e5d6acaf4de0
+
+I've some more information about the problems with accent previously
+reported:
+- I can confirm that they are caused by the interaction scim+leo (with
+and without the qt plugin). If scim is not started leo works fine. If
+scim is running the problems appear and are slightly different with
+and without the qt plugin. The workaround is obvious: don't use leo
+and scim at the same time :-)
+- accents are not working in the qt plugin when scintilla is used. If
+qt-use-scintilla=False I can write this:
+
+àáä (the same for the rest of vowels)
+
+but if qt-use-scintilla=True when I enter the same sequence in the
+keyboard I get:
+
+`aaa (the same for the rest of vowels)
+
+- the problem with the ñ character (reported previously too) is only
+present in the qt plugin (both with and without scintilla)
+#@-node:ekr.20081124094918.1:Fix problems with scim
+#@+node:ekr.20081215074704.18:Finish qt gui delete_range method
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/51edf3b44d6a587e
+
+revno: 1259.1.10
+revision-id: terry_n_brown@yahoo.com-20081130181632-ci0ioaksewdvc257
+
+I added code so that this no longer derails the initialization process,
+i.e. just catch the exception and continue.  I don't know what's wrong
+except I first noticed it after a tkinter update from Ubuntu.  I
+think.  Anyway, that's my story :)
+
+When I added the "clean recent files" menu option long before this
+traceback showed up I had a heap of trouble deleting just the file
+entries on the recent files menu.  It was originally hardwired that the
+menu have a "Clear list" item, and then the file entries, but I wanted
+to make it get it's command entries from @menu @settings and add the
+files afterward and that was a lot of fiddling.  I.e. originally it
+deleted everything and added the "Clear list" item before rebuilding
+the file list, now it either tries to delete only the file entries, or
+stores the entries before the files (from @menu) and adds them back
+before the files each time, I forget which finally worked.
+
+What's my point?  It would be nice if delete_range "just worked".  It's
+a 'pass' in qt, and I would guess recent files is the only thing in the
+entire code base that uses it.
+
+The menu tree seems to me to be "write only", i.e. not readable, at
+least from the Leo API, of course you can walk it in a gui specific
+way.  Not necessarily a problem, but would be nice if it was more
+robustly dynamic.  Or maybe I'm missing something, but I've only seen
+functions which find a menu based on knowing it exists before hand.
+#@nonl
+#@-node:ekr.20081215074704.18:Finish qt gui delete_range method
+#@-node:ekr.20081215074704.13:Bugs 6
+#@+node:ekr.20090128083504.1:Fix plugins 2
+@nocolor-node
+
+rClick
+
+
+After the qt-plugin merge (rev 1251 ), the image plugin no longer works. I
+couldn't find any mention of gsimage in the diff.
+
+ # Erase image if it was previously displayed
+             a = g.app ; c = keywords.get("c")
+
+-            if a.gsimage:
++            if getattr(a, 'gsimage', None):
+                 try:
+                     c.frame.body.bodyCtrl.delete(a.gsimage)
+                 except:
+#@-node:ekr.20090128083504.1:Fix plugins 2
+#@+node:ekr.20081215074704.19:Features 5
+#@+node:ekr.20081215162017.4:Allow coloring of script buttons
+#@-node:ekr.20081215162017.4:Allow coloring of script buttons
+#@+node:ekr.20081215162017.5:Support multiple body editors
+@
+
+The body part is a QFrame with QGridLayout.
+
+For an example, run this script:
+@c
+
+from PyQt4.QtGui import QTextEdit
+w = QTextEdit()
+c.frame.top.ui.leo_body_inner_frame.layout().addWidget(w,0,1)
+#@-node:ekr.20081215162017.5:Support multiple body editors
+#@+node:ekr.20081215074704.20:Change background color of body pane depending on focus
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/1cce885a697d0236/5aea5d0587b47b92?lnk=gst&q=command+and+insert#5aea5d0587b47b92
+
+Set focus in/out events.
+#@nonl
+#@-node:ekr.20081215074704.20:Change background color of body pane depending on focus
+#@+node:ekr.20081215074704.21:Add drag and drop
+#@-node:ekr.20081215074704.21:Add drag and drop
+#@+node:ekr.20081121105001.151:Clean up settings
+- Can style sheets really do the job?
+
+- Remove old-style Leo settings?
+
+- Add stylesheets for dialogs.
+    - Set font for dummy widget in style sheet, then copy that font.
+#@+node:ekr.20081121105001.150:QScintilla stuff
+- Check event handling with QScintilla.
+- Experiment with sending <shift-tab> directly to QScintilla.
+- Call setLexer(0) for nocolor nodes.
+- Add settings for syntax coloring.
+- Make Scintilla handle Leo markup.
+- Install new Qt version and play with QScintilla.
+    From QScintilla change log:
+    2008/10/12 14:32:05  phil
+    QsciScintilla::setSelection() is now implemented using SCI_SETSEL so that the
+    carat can be left at either the start or the end of the selection.
+    Exposed QsciScintilla::positionFromLineIndex() and
+    QsciScintilla::lineIndexFromPosition().
+    - Fix problem with accented characters: see child node for notes.
+#@nonl
+#@-node:ekr.20081121105001.150:QScintilla stuff
+#@-node:ekr.20081121105001.151:Clean up settings
+#@-node:ekr.20081215074704.19:Features 5
+#@-node:ekr.20081121105001.148: qt To do
+#@+node:ekr.20081121105001.185:Scripts
+#@+node:ekr.20081121105001.186:Script to display Qt font database
+import PyQt4.QtGui as QtGui
+
+db = QtGui.QFontDatabase()
+for family in db.families():
+    print family
+    for style in db.styles(family):
+        print '\t',style,db.smoothSizes(family,style)
+#@-node:ekr.20081121105001.186:Script to display Qt font database
+#@+node:ekr.20081121105001.187:dump guiBindNamesInverseDict
+print g.dictToString(c.k.guiBindNamesInverseDict)
+
+@
+   BackSpace: 'BackSpace'
+       Begin: 'Begin'
+       Break: 'Break'
+   Caps_Lock: 'Caps_Lock'
+       Clear: 'Clear'
+      Delete: 'Delete'
+        Down: 'Down'
+         End: 'End'
+      Escape: 'Escape'
+          F1: 'F1'
+         F10: 'F10'
+         F11: 'F11'
+         F12: 'F12'
+          F2: 'F2'
+          F3: 'F3'
+          F4: 'F4'
+          F5: 'F5'
+          F6: 'F6'
+          F7: 'F7'
+          F8: 'F8'
+          F9: 'F9'
+        Home: 'Home'
+        Left: 'Left'
+    Linefeed: 'Linefeed'
+        Next: 'Next'
+    Num_Lock: 'Num_Lock'
+       Prior: 'Prior'
+      Return: 'Return'
+       Right: 'Right'
+         Tab: 'Tab'
+          Up: 'Up'
+   ampersand: '&'
+ asciicircum: '^'
+  asciitilde: '~'
+    asterisk: '*'
+          at: '@'
+   backslash: '\\'
+         bar: '|'
+   braceleft: '{'
+  braceright: '}'
+ bracketleft: '['
+bracketright: ']'
+       colon: ':'
+       comma: ','
+      dollar: '$'
+       equal: '='
+      exclam: '!'
+     greater: '>'
+        less: '<'
+       minus: '-'
+  numbersign: '#'
+   parenleft: '('
+  parenright: ')'
+     percent: '%'
+      period: '.'
+        plus: '+'
+    question: '?'
+    quotedbl: '"'
+   quoteleft: '`'
+  quoteright: "'"
+   semicolon: ';'
+       slash: '/'
+       space: ' '
+  underscore: '_'
+#@nonl
+#@-node:ekr.20081121105001.187:dump guiBindNamesInverseDict
+#@-node:ekr.20081121105001.185:Scripts
+#@+node:ekr.20090124101344.1:Recent
+#@+node:ekr.20081215074704.15:Cut/paste work erratically
+# I tweaked the clipboard code, and leoQtGui.toUnicode.
+# That's all I can see to do.
+#@nonl
+#@+node:ekr.20090128083504.11:Report
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/58af715355227ec
+
+I'm observing the following strange behavior when copy and paste text
+using the qt plugin. The behavior is erratic and I cannot reproduce it
+systematically so I'll try to give you a general picture.
+
+When I select and copy text in the body pane of a node SOMETIMES I see
+the following message in the console
+
+QClipboard::setData: Cannot set X11 selection owner for CLIPBOARD
+
+When I try to paste the copied text:
+- sometimes it works fine
+- sometimes nothing happens (and the Paste entry of the body pane
+context menu is disabled)
+- sometimes the pasted text is not the last copied text (i.e. some
+copy operations fail)
+
+I know this is confusing and I've done my best trying to get a pattern
+for these facts but with no luck.
+
+Vicent 
+#@nonl
+#@-node:ekr.20090128083504.11:Report
+#@+node:ekr.20081121105001.502:toUnicode (qtGui)
+def toUnicode (self,s,encoding='utf-8',reportErrors=True):
+
+    if g.isPython3:
+        return str(s)
+    else:
+        if type(s) == type(u'a'):
+            return s
+        else:
+            return g.toUnicode(
+                s,encoding=encoding,reportErrors=reportErrors)
+#@nonl
+#@-node:ekr.20081121105001.502:toUnicode (qtGui)
+#@+node:ekr.20081121105001.183:Clipboard (qtGui)
+def replaceClipboardWith (self,s):
+
+    '''Replace the clipboard with the string s.'''
+
+    trace = False
+    cb = self.qtApp.clipboard()
+    if cb:
+        cb.clear()
+        s = g.app.gui.toUnicode(s,
+            encoding=g.app.tkEncoding,
+            reportErrors=True)
+        cb.setText(s)
+        if trace: g.trace(len(s),type(s))
+    else:
+        g.trace('no clipboard!')
+
+def getTextFromClipboard (self):
+
+    '''Get a unicode string from the clipboard.'''
+
+    trace = False
+    cb = self.qtApp.clipboard()
+    if cb:
+        s = cb.text()
+        if trace: g.trace (len(s),type(s))
+        s = g.app.gui.toUnicode(s,
+            encoding=g.app.tkEncoding,
+            reportErrors=True)
+        return s
+    else:
+        g.trace('no clipboard!')
+        return ''
+#@-node:ekr.20081121105001.183:Clipboard (qtGui)
+#@-node:ekr.20081215074704.15:Cut/paste work erratically
+#@+node:ekr.20090128173959.1:Fixed headline reversion
+#@+node:ekr.20090126120517.22:getItemText (debugging only)
+def getItemText (self,item):
+
+    '''Return the text of the item.'''
+
+    if item:
+        s = item.text(0)
+        s = g.toUnicode(s,'utf-8')
+        return s
+    else:
+        return '<no item>'
+#@nonl
+#@-node:ekr.20090126120517.22:getItemText (debugging only)
+#@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None):
+
+    '''Officially change a headline.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    c = self.c ; u = c.undoer
+    if not p:
+        if trace: g.trace('*** no p')
+        return
+
+    item = self.position2item(p)
+    if not item:
+        # This is not an error.
+        # g.trace('no item for p: %s' % (p))
+        return
+
+    w = g.app.gui.get_focus()
+    ew = self.edit_widget(p)
+    if ew: e = ew.widget
+    else: e = None
+
+    # These are not errors: focus may have been lost.
+    # if trace and verbose:
+        # if not e:  g.trace('No e',g.callers(4))
+        # if e != w: g.trace('e != w',e,w,g.callers(4))
+        # if not p:  g.trace('No p')
+
+    if e and e == w:
+        s = e.text() ; len_s = len(s)
+        s = g.app.gui.toUnicode(s)
+    else:
+        s = self.getItemText(item)
+
+    oldHead = p.h
+    changed = s != oldHead
+    if changed:
+        if trace: g.trace('changed',repr(s),p.h)
+        p.initHeadString(s)
+        item.setText(0,s) # Required to avoid full redraw.
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+
+    # This is a crucial shortcut.
+    if g.unitTesting: return
+
+    self.redraw_after_head_changed()
+
+    if self.stayInTree:
+        c.treeWantsFocus()
+    else:
+        c.bodyWantsFocus()
+    c.outerUpdate()
+#@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+#@+node:ekr.20090124174652.58:endEditLabel (nativeTree)
+def endEditLabel (self):
+
+    '''Override leoTree.endEditLabel.
+
+    End editing of the presently-selected headline.'''
+
+    # Let onHeadChanged do all the work.
+    c = self.c ; p = c.currentPosition()
+
+    self.onHeadChanged(p)
+#@nonl
+#@-node:ekr.20090124174652.58:endEditLabel (nativeTree)
+#@+node:ekr.20090124174652.60:setHeadline (nativeTree)
+def setHeadline (self,p,s):
+
+    '''Force the actual text of the headline widget to p.h.'''
+
+    trace = False and not g.unitTesting
+
+    # This is used by unit tests to force the headline and p into alignment.
+    if not p:
+        if trace: g.trace('*** no p')
+        return
+
+    # Don't do this here: the caller should do it.
+    # p.setHeadString(s)
+    e = self.edit_widget(p)
+    if e:
+        if trace: g.trace('e',s)
+        e.setAllText(s)
+    else:
+        item = self.position2item(p)
+        if item:
+            if trace: g.trace('item',s)
+            self.setItemText(item,s)
+        else:
+            if trace: g.trace('*** failed. no item for %s' % p.h)
+#@-node:ekr.20090124174652.60:setHeadline (nativeTree)
+#@-node:ekr.20090128173959.1:Fixed headline reversion
+#@+node:ekr.20090129125507.10:Fixed (??) body pane corruption
+#@+node:ekr.20090124174652.10:__init__ (nativeTree)
+def __init__(self,c,frame):
+
+    # Init the base class.
+    leoFrame.leoTree.__init__(self,frame)
+
+    # Components.
+    self.c = c
+    self.canvas = self # An official ivar used by Leo's core.
+
+    # Subclasses should define headline wrappers to
+    # be a subclass of leoFrame.baseTextWidget.
+    self.headlineWrapper = leoFrame.baseTextWidget
+
+    # Subclasses should define .treeWidget to be the underlying
+    # native tree widget.
+    self.treeWidget = None
+
+    # Widget independent status ivars...
+    self.contracting = False
+    self.dragging = False
+    self.expanding = False
+    self.prev_p = None
+    self.redrawing = False
+    self.redrawCount = 0 # Count for debugging.
+    self.revertHeadline = None # Previous headline text for abortEditLabel.
+    self.selecting = False
+
+    # Debugging...
+    self.nodeDrawCount = 0
+    self.traceEvents = False # Enable tracing of events.
+    self.traceCallersFlag = False # Enable traceCallers method.
+    self.verbose = False # Enable verbose traces.
+
+    # Associating items with vnodes...
+    self.item2vnodeDict = {}
+    self.tnode2itemsDict = {} # values are lists of items.
+    self.vnode2itemsDict = {} # values are lists of items.
+
+    self.setConfigIvars()
+    self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
+#@-node:ekr.20090124174652.10:__init__ (nativeTree)
+#@+node:ekr.20090129062500.10:busy (nativeTree)
+def busy (self):
+
+    '''Return True (actually, a debugging string)
+    if any lockout is set.'''
+
+    trace = False
+    table = (
+        (self.contracting,  'contracting'),
+        (self.expanding,    'expanding'),
+        (self.redrawing,    'redrawing'),
+        (self.selecting,    'selecting'))
+
+    item = self.getCurrentItem()
+
+    aList = []
+    for ivar,kind in table:
+        if ivar: aList.append(kind)
+    kinds = ','.join(aList)
+
+    if aList and trace:
+        g.trace(self.traceItem(item),kinds,g.callers(4))
+
+    return kinds # Return the string for debugging
+#@-node:ekr.20090129062500.10:busy (nativeTree)
+#@+node:ekr.20090124174652.53:afterSelectHint (nativeTree)
+def afterSelectHint (self,p,old_p):
+
+    trace = False
+    c = self.c
+
+    self.selecting = False
+
+    if self.busy():
+        self.error('afterSelectHint busy!: %s' % self.busy())
+
+    if not p:
+        return self.error('no p')
+    if p != c.currentPosition():
+        return self.error('p is not c.currentPosition()')
+
+    if trace: g.trace(p and p.headString(),g.callers(4))
+
+    c.outerUpdate() # Bring the tree up to date.
+
+    self.setItemForCurrentPosition(scroll=True)
+#@-node:ekr.20090124174652.53:afterSelectHint (nativeTree)
+#@+node:ekr.20090124174652.56:editLabel (nativeTree)
+def editLabel (self,p,selectAll=False,selection=None):
+
+    """Start editing p's headline."""
+
+    trace = False ; verbose = False
+
+    if self.busy():
+        return
+
+    c = self.c
+
+    if trace: g.trace('***',p and p.headString(),g.callers(4))
+
+    c.outerUpdate()
+        # Do any scheduled redraw.
+        # This won't do anything in the new redraw scheme.
+
+    item = self.position2item(p)
+    if item:
+        e = self.editLabelHelper(item,selectAll,selection)
+    else:
+        e = None
+        self.error('no item for %s' % p)
+
+    # A nice hack: just set the focus request.
+    if e: c.requestedFocusWidget = e
+#@-node:ekr.20090124174652.56:editLabel (nativeTree)
+#@+node:ekr.20090124174652.40:onItemCollapsed (nativeTree)
+def onItemCollapsed (self,item):
+
+    trace = False or self.traceEvents
+    verbose = False or self.verbose
+
+    if self.busy(): return
+
+    c = self.c
+    if trace: g.trace(self.traceItem(item))
+    p = self.item2position(item)
+
+    if p:
+        # Important: do not set lockouts here.
+        # Only methods that actually generate events should set lockouts.
+        p.contract()
+        self.select(p) # Calls before/afterSelectHint.    
+    else:
+        self.error('no p')
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.40:onItemCollapsed (nativeTree)
+#@+node:ekr.20090124174652.42:onItemExpanded (nativeTree)
+def onItemExpanded (self,item):
+
+    '''Handle and tree-expansion event.'''
+
+    trace = False or self.traceEvents
+    verbose = False or self.verbose
+
+    if self.busy(): return
+
+    c = self.c
+    if trace: g.trace(self.traceItem(item))
+    p = self.item2position(item)
+
+    if p:
+        # Important: do not set lockouts here.
+        # Only methods that actually generate events should set lockouts.
+        if not p.isExpanded():
+            p.expand()
+            self.select(p) # Calls before/afterSelectHint.
+            self.full_redraw()
+        else:
+            self.select(p)
+    else:
+        self.error('no p')
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.42:onItemExpanded (nativeTree)
+#@+node:ekr.20090124174652.43:onTreeSelect (nativeTree)
+def onTreeSelect(self):
+
+    '''Select the proper position when a tree node is selected.'''
+
+    trace = False or self.traceEvents
+    verbose = False or self.verbose
+
+    if self.busy(): return
+
+    c = self.c
+
+    item = self.getCurrentItem()
+    p = self.item2position(item)
+
+    if p:
+        # Important: do not set lockouts here.
+        # Only methods that actually generate events should set lockouts.
+        if trace: g.trace(self.traceItem(item))
+        self.select(p) # Calls before/afterSelectHint.
+    else:
+        self.error('no p for item: %s' % item,g.callers(4))
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.43:onTreeSelect (nativeTree)
+#@+node:ekr.20090124174652.44:setItemForCurrentPosition (nativeTree)
+def setItemForCurrentPosition (self,scroll=True):
+
+    '''Select the item for c.currentPosition()'''
+
+    trace = False or self.traceEvents
+    verbose = False or self.verbose
+
+    c = self.c ; p = c.currentPosition()
+
+    if self.busy(): return
+
+    if not p:
+        if trace and verbose: g.trace('** no p')
+        return None
+
+    item = self.position2item(p)
+
+    if not item:
+        # This is not necessarily an error.
+        # We often attempt to select an item before redrawing it.
+        if trace and verbose: g.trace('** no item for',p)
+        return None
+
+    item2 = self.getCurrentItem()
+    if item == item2:
+        if trace and verbose: g.trace('no change',self.traceItem(item))
+    else:
+        try:
+            self.selecting = True
+            # This generates gui events, so we must use a lockout.
+            self.setCurrentItemHelper(item)
+            if scroll:
+                if trace: g.trace(self.traceItem(item),g.callers(4))
+                self.scrollToItem(item)
+        finally:
+            self.selecting = False
+
+    return item
+#@-node:ekr.20090124174652.44:setItemForCurrentPosition (nativeTree)
+#@+node:ekr.20090124174652.76:setItemIcon (nativeTree)
+def setItemIcon (self,item,icon):
+
+    trace = False
+
+    valid = item and self.isValidItem(item)
+
+    if icon and valid:
+        # Important: do not set lockouts here.
+        # This will generate changed events,
+        # but there is no itemChanged event handler.
+        self.setItemIconHelper(item,icon)
+    elif trace:
+        # Apparently, icon can be None due to recent icon changes.
+        if icon:
+            g.trace('** item %s, valid: %s, icon: %s' % (
+                item and id(item) or '<no item>',valid,icon),
+                g.callers(4))
+#@-node:ekr.20090124174652.76:setItemIcon (nativeTree)
+#@+node:ekr.20090124174652.17:full_redraw & helpers
+# forceDraw not used. It is used in the Tk code.
+
+def full_redraw (self,p=None,scroll=True,forceDraw=False):
+
+    '''Redraw all visible nodes of the tree.
+
+    Preserve the vertical scrolling unless scroll is True.'''
+
+    trace = False or self.traceEvents
+    c = self.c
+
+    if self.busy():
+        return g.trace('*** full_redraw: busy!',g.callers(5))
+
+    if p is None:   p = c.currentPosition()
+    else:           c.setCurrentPosition(p)
+
+    self.redrawCount += 1
+    if trace: self.tstart()
+    self.initData()
+    self.nodeDrawCount = 0
+    try:
+        self.redrawing = True
+        self.drawTopTree(p,scroll)
+    finally:
+        self.redrawing = False
+
+    self.setItemForCurrentPosition(scroll=scroll) ####
+    c.requestRedrawFlag= False
+
+    if trace:
+        theTime = self.tstop()
+        if True and not g.app.unitTesting:
+            g.trace('%s: scroll: %s, drew %3s nodes in %s' % (
+                self.redrawCount,scroll,self.nodeDrawCount,theTime),
+                g.callers(4))
+
+# Compatibility
+redraw = full_redraw 
+redraw_now = full_redraw
+#@+node:ekr.20090124174652.19:drawChildren
+def drawChildren (self,p,parent_item):
+
+    if not p:
+        return g.trace('can not happen: no p')
+
+    if p.hasChildren():
+        if p.isExpanded():
+            self.expandItem(parent_item)
+            child = p.firstChild()
+            while child:
+                self.drawTree(child,parent_item)
+                child.moveToNext()
+        else:
+            # Draw the hidden children.
+            child = p.firstChild()
+            while child:
+                self.drawNode(child,parent_item)
+                child.moveToNext()
+            self.contractItem(parent_item)
+    else:
+        self.contractItem(parent_item)
+#@-node:ekr.20090124174652.19:drawChildren
+#@+node:ekr.20090124174652.20:drawNode
+def drawNode (self,p,parent_item):
+
+    trace = False
+    c = self.c 
+    self.nodeDrawCount += 1
+
+    # Allocate the item.
+    item = self.createTreeItem(p,parent_item) 
+
+    # Do this now, so self.isValidItem will be true in setItemIcon.
+    self.rememberItem(p,item)
+
+    # Set the headline and maybe the icon.
+    self.setItemText(item,p.headString())
+    if p:
+        self.drawItemIcon(p,item)
+
+    if trace: g.trace(self.traceItem(item))
+
+    return item
+#@-node:ekr.20090124174652.20:drawNode
+#@+node:ekr.20090129062500.12:drawTopTree
+def drawTopTree (self,p,scroll):
+
+    c = self.c
+    hPos,vPos = self.getScroll()
+    self.clear()
+    # Draw all top-level nodes and their visible descendants.
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        p = bunch.p ; h = p.headString()
+        if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
+            p = p.firstChild()
+            while p:
+                self.drawTree(p)
+                p.moveToNext()
+        else:
+            self.drawTree(p)
+    else:
+        p = c.rootPosition()
+        while p:
+            self.drawTree(p)
+            p.moveToNext()
+
+    self.setHScroll(hPos)
+    if scroll:
+        pass
+    else:
+        # Retain former scroll position.
+        self.setVScroll(vPos)
+
+    self.repaint()
+#@nonl
+#@-node:ekr.20090129062500.12:drawTopTree
+#@+node:ekr.20090124174652.21:drawTree
+def drawTree (self,p,parent_item=None):
+
+    # Draw the (visible) parent node.
+    item = self.drawNode(p,parent_item)
+
+    # Draw all the visible children.
+    self.drawChildren(p,parent_item=item)
+
+
+#@-node:ekr.20090124174652.21:drawTree
+#@+node:ekr.20090124174652.22:initData
+def initData (self):
+
+    # g.trace('*****')
+
+    self.item2vnodeDict = {}
+    self.tnode2itemsDict = {}
+    self.vnode2itemsDict = {}
+#@-node:ekr.20090124174652.22:initData
+#@+node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
+def rememberItem (self,p,item):
+
+    self.rememberVnodeItem(p.v,item)
+
+def rememberVnodeItem (self,v,item):
+
+    # Update item2vnodeDict.
+    self.item2vnodeDict[item] = v
+
+    # Update tnode2itemsDict & vnode2itemsDict.
+    table = (
+        (self.tnode2itemsDict,v.t),
+        (self.vnode2itemsDict,v))
+
+    for d,key in table:
+        aList = d.get(key,[])
+        if item in aList:
+            g.trace('*** ERROR *** item already in list: %s, %s' % (item,aList))
+        else:
+            aList.append(item)
+        d[key] = aList
+#@nonl
+#@-node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
+#@-node:ekr.20090124174652.17:full_redraw & helpers
+#@-node:ekr.20090129125507.10:Fixed (??) body pane corruption
+#@+node:ekr.20090203081015.10:Hooked up icondclick events
+# used QTreeWidget.itemDoubleClicked event.
+# There seems to be no way to connect events to individual tree items.
+#@+node:ekr.20090124174652.120:qtTree.initAfterLoad
+def initAfterLoad (self):
+
+    '''Do late-state inits.'''
+
+    # Called by Leo's core.
+
+    c = self.c ; frame = c.frame
+    w = c.frame.top ; tw = self.treeWidget
+
+    if not leoQtTree.callbacksInjected:
+        leoQtTree.callbacksInjected = True
+        self.injectCallbacks() # A base class method.
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemDoubleClicked(QTreeWidgetItem*, int)"),
+        self.onItemDoubleClicked)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemSelectionChanged()"),
+        self.onTreeSelect)
+
+    # We don't need this.  Hooray!
+    # w.connect(self.treeWidget,QtCore.SIGNAL(
+            # "itemChanged(QTreeWidgetItem*, int)"),
+        # self.onItemChanged)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemCollapsed(QTreeWidgetItem*)"),
+        self.onItemCollapsed)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemExpanded(QTreeWidgetItem*)"),
+        self.onItemExpanded)
+
+    self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+    tw.installEventFilter(self.ev_filter)
+
+    c.setChanged(False)
+#@-node:ekr.20090124174652.120:qtTree.initAfterLoad
+#@+node:ekr.20090124174652.35:Icon Box... (nativeTree)
+# For Qt, there seems to be no way to trigger these events.
+#@nonl
+#@+node:ekr.20090124174652.36:onIconBoxClick
+def onIconBoxClick (self,event,p=None):
+
+    if self.busy(): return
+
+    c = self.c
+
+    g.doHook("iconclick1",c=c,p=p,v=p,event=event)
+    g.doHook("iconclick2",c=c,p=p,v=p,event=event)
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.36:onIconBoxClick
+#@+node:ekr.20090124174652.37:onIconBoxRightClick
+def onIconBoxRightClick (self,event,p=None):
+
+    """Handle a right click in any outline widget."""
+
+    if self.busy(): return
+
+    c = self.c
+
+    g.doHook("iconrclick1",c=c,p=p,v=p,event=event)
+    g.doHook("iconrclick2",c=c,p=p,v=p,event=event)
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.37:onIconBoxRightClick
+#@+node:ekr.20090124174652.38:onIconBoxDoubleClick
+def onIconBoxDoubleClick (self,event,p=None):
+
+    if self.busy(): return
+
+    c = self.c
+
+    g.doHook("icondclick1",c=c,p=p,v=p,event=event)
+    g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.38:onIconBoxDoubleClick
+#@-node:ekr.20090124174652.35:Icon Box... (nativeTree)
+#@+node:ekr.20090124174652.112:setItemIconHelper (qtTree)
+def setItemIconHelper (self,item,icon):
+
+    # Generates an item-changed event.
+    item.setIcon(0,icon)
+#@-node:ekr.20090124174652.112:setItemIconHelper (qtTree)
+#@+node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
+def onItemDoubleClicked (self,item,col):
+
+    trace = False or self.traceEvents
+    verbose = False or self.verbose
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item),g.callers(4))
+
+    try:
+        self.selecting = True
+
+        e = self.createTreeEditorForItem(item)
+        if not e: g.trace('*** no e')
+
+        p = self.item2position(item)
+        if p:
+            event = None
+            g.doHook("icondclick1",c=c,p=p,v=p,event=event)
+            g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+        else:
+            g.trace('*** no p')
+
+        c.outerUpdate()
+    finally:
+        self.selecting = False
+#@-node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
+#@-node:ekr.20090203081015.10:Hooked up icondclick events
+#@-node:ekr.20090124101344.1:Recent
+#@+node:ekr.20081208155215.12:Unused
+#@-node:ekr.20081208155215.12:Unused
+#@-all
+#@nonl
+#@-node:ekr.20081121105001.147:@thin qtNotes.txt
+#@-leo

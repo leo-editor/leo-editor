@@ -29,9 +29,9 @@ out any scheduled commands/messages.
 
 #@<< imports >>
 #@+node:ekr.20050101090207.7:<< imports >>
-import leoGlobals as g
-import leoNodes
-import leoPlugins
+import leo.core.leoGlobals as g
+# import leo.core.leoNodes as leoNodes
+import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -75,6 +75,8 @@ __version__ = "0.6"
 #@nonl
 #@-node:ekr.20050311090939:<< version history >>
 #@nl
+
+sc,sd,lk = None,None,None # To remove pylint complaint.
 
 #@+others
 #@+node:ekr.20050311102853.2:init
@@ -127,8 +129,8 @@ def viewQueue(event=None,c=None):
     lb = Tk.Listbox(f,background='white')
     for z in sc.queue:
         if z[2] == prepareCom:
-            #s = z[3][3]+" "+ z[3][0].headString()+"  "+time.ctime(z[0])
-            s = "%s %s %s" % (z[3][3],z[3][0].headString(),time.ctime(z[0]))
+            #s = z[3][3]+" "+ z[3][0].h+"  "+time.ctime(z[0])
+            s = "%s %s %s" % (z[3][3],z[3][0].h,time.ctime(z[0]))
         else:
             s = "Message at " + time.ctime(z[0])
         lb.insert("end",s)
@@ -143,7 +145,7 @@ def viewQueue(event=None,c=None):
             sc.cancel(x)
             lb.delete(i,i)
         except:
-            print "BOOM!"
+            g.pr("BOOM!")
 
     def close(tl=tl):
 
@@ -258,7 +260,7 @@ def setTime():
     lk.acquire()
     lt = time.localtime()
     priority = 1
-    for i in xrange(len(commands)):
+    for i in range(len(commands)):
         z = commands[i]
         tm = svs[i].get()
         p = tm.split(':')
@@ -310,7 +312,7 @@ def endRecord(event,c):
         bottom = Tk.Scrollbar(f,orient="horizontal")
         bottom.pack(side="bottom",fill=Tk.X)
         timepanel.lb = Tk.Listbox(f,background='white')
-        timepanel.lb.bind('<ButtonRelease-1>',set_time)
+        c.bind(timepanel.lb,'<ButtonRelease-1>',set_time)
         timepanel.lb.pack(side="left",fill="both")
         right = Tk.Scrollbar(f)
         right.pack(side="right",fill="y")
@@ -328,7 +330,7 @@ def endRecord(event,c):
     svs = []
     for z in commands:
         sv = Tk.StringVar()
-        s = z[3] + ': ' + z[0].headString() + "   " + sv.get()
+        s = z[3] + ': ' + z[0].h + "   " + sv.get()
         svs.append(sv)
         timepanel.lb.insert("end",s)
     timepanel.e.focus_set()    
@@ -350,13 +352,14 @@ def doCommand (command,label,event=None,c=None):
 
     global commands
     if not c or not c.exists: return
-    if label == 'exit': shutdown(None,None)
+    # EKR: shutdown is undefined.
+    # if label == 'exit': shutdown(None,None)
     if record:
         if label == 'endrecording':
             command()
             return None
         lk.acquire()
-        commands.append((c.currentPosition(),c,command,label))
+        commands.append((c.p,c,command,label))
         lk.release()
         return True
     else:

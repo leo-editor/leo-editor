@@ -111,10 +111,10 @@ __version__ = "0.4" # Set version for the plugin handler.
 #@nl
 #@<< imports >>
 #@+node:timo.20050213193129:<<imports>>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
-import os
+# import os
 #@nonl
 #@-node:timo.20050213193129:<<imports>>
 #@nl
@@ -180,7 +180,7 @@ def onIconDoubleClick(tag,keywords):
 
     v = keywords.get("p") or keywords.get("v")
     c = keywords.get("c")
-    h = v.headString().strip()
+    h = v.h.strip()
     if g.match_word(h,0,"@bibtex"):
         fname = h[8:]
         if v.hasChildren():
@@ -220,11 +220,11 @@ def onHeadKey(tag,keywords):
 
     v = keywords.get("p") or keywords.get("v")
     c = keywords.get("c")
-    h = v.headString().strip()
+    h = v.h.strip()
     ch = keywords.get("ch")
-    if (ch == '\r') and (h[:h.find(' ')] in templates.keys()) and (not v.bodyString()):
+    if (ch == '\r') and (h[:h.find(' ')] in templates.keys()) and (not v.b):
         for p in v.parents_iter():
-            if p.headString()[:8] == '@bibtex ':
+            if p.h[:8] == '@bibtex ':
                 #@                << write template >>
                 #@+node:timo.20050215232157:<< write template >>
                 c.setBodyString(v,templates[h[:h.find(' ')]])
@@ -240,7 +240,7 @@ def writeTreeAsBibTex(bibFile, vnode, c):
     """Write the tree under vnode to the file bibFile"""
 
     # body text of @bibtex node is ignored
-    dict = g.scanDirectives(c,p=vnode)
+    dict = c.scanAllDirectives(p=vnode)
     encoding = dict.get("encoding",None)
     if encoding == None:
         encoding = g.app.config.default_derived_file_encoding
@@ -249,19 +249,19 @@ def writeTreeAsBibTex(bibFile, vnode, c):
     entries = ''
     # iterate over nodes in this tree
     for v in vnode.subtree_iter():    
-        h = v.headString()
+        h = v.h
         h = g.toEncodedString(h,encoding,reportErrors=True)
         if h.lower() == '@string':
             typestring = '@string'
         else:
             typestring = h[:h.find(' ')].lower()
         if typestring in entrytypes:
-            s = v.bodyString()
+            s = v.b
             s = g.toEncodedString(s,encoding,reportErrors=True)
             if h == '@string': # store string declarations in strings
                 for i in s.split('\n'):
                     if i and (not i.isspace()):
-                         strings = strings + '@string{' + i + '}\n'
+                        strings = strings + '@string{' + i + '}\n'
             else:  # store other stuff in entries  
                 entries = entries + typestring + '{' + h[h.find(' ')+1:]+  ',\n' + s + '}\n\n'
     if strings:
@@ -294,7 +294,7 @@ def readBibTexFileIntoTree(bibFile, c):
     if strings:
         biblist.append(('@string', strings)) 
     biblist = biblist + entrylist
-    p = c.currentPosition()
+    p = c.p
     for i in biblist:
         v = p.insertAsLastChild()
         c.setHeadString(v,str(i[0]))

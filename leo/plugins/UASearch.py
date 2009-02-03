@@ -31,15 +31,17 @@ __version__ = ".4"
 #@nl
 #@<< imports >>
 #@+node:ekr.20040915075530.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
-import leoTkinterFrame
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+
+# import leo.plugins.tkGui as tkGui
+# leoTkinterFrame = tkGui.leoTkinterFrame
 
 Tk        = g.importExtension('Tkinter',  pluginName=__name__,verbose=True)
 Pmw       = g.importExtension("Pmw",      pluginName=__name__,verbose=True)
 
 import re
-import weakref
+# import weakref
 #@nonl
 #@-node:ekr.20040915075530.2:<< imports >>
 #@nl
@@ -68,9 +70,7 @@ def addPMenu (tag,keywords):
     if not c: return
 
     # New in Leo 4.4: the log is always tabbed.
-    if 1: x = c.frame.log.selectTab("UASearch")
-    else: x = TabbedLog.getPane("UASearch",c)
-
+    x = c.frame.log.selectTab("UASearch")
     ef = Pmw.EntryField(x,labelpos='w',label_text='uaname:')
     e = ef.component('entry')
     e.configure(background='white',foreground='blue')
@@ -106,7 +106,7 @@ def addPMenu (tag,keywords):
     #@nonl
     #@-node:ekr.20040915075808:<< define callbacks >>
     #@nl
-    b.bind('<Button-1>',firesearch)
+    c.bind(b,'<Button-1>',firesearch)
 #@-node:ekr.20040915075530.3:addPMenu
 #@+node:ekr.20040915081837:found
 def found (porv,name):
@@ -120,8 +120,7 @@ def found (porv,name):
 #@+node:ekr.20040915082303:note
 def note (s):
 
-    print s
-    g.es(s)
+    g.es_print(s)
 #@nonl
 #@-node:ekr.20040915082303:note
 #@+node:ekr.20040915075530.4:search

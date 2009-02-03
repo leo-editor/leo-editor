@@ -39,8 +39,8 @@ from __future__ import generators # To make this plugin work with Python 2.2.
 
 #@<< imports >>
 #@+node:mork.20041018091414.2:<< imports >>
-import leoPlugins
-import leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoGlobals as g
 
 import copy
 import Tkinter
@@ -137,7 +137,7 @@ def registerPopupMenu (tag,keywords):
     else:
         if not binding.startswith('<'): binding = '<%s>' % binding # Add < and >
         c.keyHandler.registerCommand ('fast-goto-node',None,popper,pane='all',verbose=True)
-        c.frame.top.bind(binding,popper)
+        c.bind(c.frame.top,binding,popper)
 #@nonl
 #@-node:mork.20041018091414.19:registerPopupMenu
 #@+node:mork.20041018091414.21:loadLanguages (not used)
@@ -199,9 +199,9 @@ def pop (event,c):
         menu.configure(activeforeground='blue',activebackground='white')
         def em (event):
             smenu.focus_set()
-        menu.bind('<Expose>',em)
+        c.bind(menu,'<Expose>',em)
 
-    smenu.bind('<Left>',lambda event,c=c: disappear(event,c))
+    c.bind(smenu,'<Left>',lambda event,c=c: disappear(event,c))
 
     ancmenu = getAncestorsMenu(smenu,c)
     if ancmenu:
@@ -247,14 +247,14 @@ def pop (event,c):
 #@+node:ekr.20060110203946.1:Menus
 #@+node:mork.20041018091414.5:getSectionReferenceMenu
 def getSectionReferenceMenu (pmenu,c):
-    p = c.currentPosition()
+    p = c.p
     nc = p.numberOfChildren()
     import re
     reg = re.compile("^<"+"<.+?>"+">$")
     srefs = []
-    for z in xrange(nc):
+    for z in range(nc):
         chi = p.nthChild(z)
-        hl = chi.headString()
+        hl = chi.h
         if reg.match(hl):
             srefs.append(hl)
 
@@ -264,7 +264,7 @@ def getSectionReferenceMenu (pmenu,c):
         srmenu = Tkinter.Menu(pmenu,tearoff=0)
         sb = shouldBreak()
         for z in srefs:
-            srmenu.add_command(
+            c.add_command(srmenu,
                 label = z,
                 command = lambda label = z, c = c:
                 paster(label,c,''), columnbreak = sb.next())
@@ -283,7 +283,7 @@ def getWindowMenu (pmenu,c):
         clear()
     sb = shouldBreak()
     for z in wl:
-        winmenu.add_command(
+        c.add_command(winmenu,
             label = z.getTitle(),
             command = lambda frame = z: bTF(frame),
             columnbreak = sb.next())
@@ -292,7 +292,7 @@ def getWindowMenu (pmenu,c):
 #@-node:mork.20041018091414.6:getWindowMenu
 #@+node:mork.20041018091414.7:getChildrenMenu
 def getChildrenMenu (pmenu,c):
-    p = c.currentPosition()
+    p = c.p
     nchildren = p.numberOfChildren()
     chimenu = None
     if nchildren > 0:
@@ -300,16 +300,16 @@ def getChildrenMenu (pmenu,c):
         sb = shouldBreak()
         childnames = []
         children = {}
-        for z in xrange(p.numberOfChildren()):
+        for z in range(p.numberOfChildren()):
             child = p.nthChild(z)
-            hs = child.headString()
+            hs = child.h
             childnames.append(hs)
             children [hs] = child
         childnames.sort()
         def adder (a):
             hs = a
             child = children [hs]
-            chimenu.add_command(
+            c.add_command(chimenu,
                 label = hs,
                 command = lambda p = child, c = c:
                 jumpto(p,c),
@@ -320,20 +320,20 @@ def getChildrenMenu (pmenu,c):
 #@+node:mork.20041018091414.8:getSiblingsMenu
 def getSiblingsMenu (pmenu,c):
     siblings = []
-    p = c.currentPosition()
+    p = c.p
     siblings = getSiblingList(p)
     sibmenu = None
     def sorSibs (a,b):
-        if a.headString() > b.headString(): return 1
-        elif a.headString() < b.headString(): return-1
+        if a.h > b.h: return 1
+        elif a.h < b.h: return-1
         return 0
     siblings.sort(sorSibs)
     if len(siblings) != 0:
         sibmenu = Tkinter.Menu(pmenu,tearoff=0)
         sb = shouldBreak()
         for z in siblings:
-            hs = z.headString()
-            sibmenu.add_command(
+            hs = z.h
+            c.add_command(sibmenu,
                 label = hs,
                 command = lambda p = z, c = c:
                 jumpto(p,c),
@@ -360,13 +360,13 @@ def getSiblingList (p):
 #@+node:mork.20041018091414.9:getAncestorsMenu
 def getAncestorsMenu (pmenu,c):
         ancmenu = None
-        alist = getAncestorList(c.currentPosition())
+        alist = getAncestorList(c.p)
         if alist:
             ancmenu = Tkinter.Menu(pmenu,tearoff=0)
             sb = shouldBreak()
             for z in alist:
-                hs = z.headString()
-                ancmenu.add_command(
+                hs = z.h
+                c.add_command(ancmenu,
                     label = hs,
                     command = lambda parent = z, c = c:
                     jumpto(parent,c),
@@ -409,7 +409,7 @@ def addLanguageMenu (pmenu,c,haveseen={}):
     lmenu = Tkinter.Menu(pmenu,tearoff=0)
     sb = shouldBreak()
     for z in kwords:
-        lmenu.add_command(
+        c.add_command(lmenu,
             label = z,
             command = lambda keyword = z, c = c:
             paster(keyword,c),
@@ -424,21 +424,18 @@ def getMoveAMenu (pmenu,c):
     mvmenu = None
 
     def mvchild (p,p2,c=c):
-        c.beginUpdate()
-        try:
-            p.moveToNthChildOf(p2,0)
-        finally:
-            c.endUpdate()
+        p.moveToNthChildOf(p2,0)
+        c.redraw()
 
-    p = c.currentPosition()
+    p = c.p
     alist = getAncestorList(p)
     if alist: alist.pop(0)
     if alist:
         mvmenu = Tkinter.Menu(pmenu,tearoff=0)
         sb = shouldBreak()
         for z in alist:
-            hs = z.headString()
-            mvmenu.add_command(
+            hs = z.h
+            c.add_command(mvmenu,
                 label = hs,
                 command = lambda p = p, p2 = z:
                 mvchild(p,p2),
@@ -449,21 +446,18 @@ def getMoveAMenu (pmenu,c):
 def getMoveSMenu (pmenu,c):
 
     smenu = None
-    p = c.currentPosition()
+    p = c.p
     sibs = getSiblingList(p)
     bk = p.back()
     if bk: sibs.remove(bk)
     def mafter (p,p2,c=c):
-        c.beginUpdate()
-        try:
-            p.moveAfter(p2)
-        finally:
-            c.endUpdate()
+        p.moveAfter(p2)
+        c.redraw()
     if sibs:
         smenu = Tkinter.Menu(pmenu,tearoff=0)
         sb = shouldBreak()
         for z in sibs:
-            smenu.add_command(label=z.headString(),
+            c.add_command(smenu,label=z.h,
                             command = lambda p = p, p2 = z: mafter(p,p2),
                             columnbreak = sb.next())
     return smenu
@@ -472,7 +466,7 @@ def getMoveSMenu (pmenu,c):
 #@+node:mork.20041018092814:getHeadlineMenu
 def getHeadlineMenu (pmenu,c):
 
-    p = c.currentPosition()
+    p = c.p
     v = p.v
     def getValue (names,self=v):
         return names
@@ -483,16 +477,16 @@ def getHeadlineMenu (pmenu,c):
     names = list(names)
     names.sort()
     hmenu = Tkinter.Menu(pmenu,tearoff=0)
-    hmenu.add_command(
+    c.add_command(hmenu,
         label = 'add <' + '<' + '>' + '>',
         command = lambda c = c: addGL(c))
     hmenu.add_separator()
     for z in names:
-        hmenu.add_command(label=z,
+        c.add_command(hmenu,label=z,
                             command = lambda c = c, d = z, nm = names:
                                 setFileDirective(c,d,nm))
     hmenu.add_separator()
-    hmenu.add_command(label='remove @',command=lambda c=c,nm=names:
+    c.add_command(hmenu,label='remove @',command=lambda c=c,nm=names:
                                             removeFileDirective(c,nm))
     return hmenu
 #@nonl
@@ -507,7 +501,7 @@ def getDirectiveInsert (pm,c,directives=[],directives2=[]):
             directives.append(z)
         directives.sort()
     for z in directives:
-       m.add_command(
+       c.add_command(m,
           label = z,
           columnbreak = sb.next(),
           command = lambda label = z, c = c:
@@ -556,71 +550,56 @@ def shouldBreak():
 #@+node:mork.20041018095448:setFileDirective
 def setFileDirective( c , directive, names ):
 
-    p = c.currentPosition()
-    hS = p.headString()
+    p = c.p
+    hS = p.h
     hS = getCleanHeadString( hS, names )
     hS = directive + " " + hS
-    c.beginUpdate()
-    try:
-        c.setHeadString(p,hS )
-        c.frame.body.bodyCtrl.focus_set()  
-        c.frame.body.bodyCtrl.update_idletasks()
-    finally:
-        c.endUpdate()
+    c.setHeadString(p,hS )
+    c.frame.body.bodyCtrl.focus_set()  
+    c.frame.body.bodyCtrl.update_idletasks()
+    c.redraw()
 #@nonl
 #@-node:mork.20041018095448:setFileDirective
 #@+node:mork.20041018100044:removeFileDirective
 def removeFileDirective (c,names):
 
-    p = c.currentPosition()
-    hS = p.headString()
+    p = c.p
+    hS = p.h
     hS = getCleanHeadString(hS,names)
-    c.beginUpdate()
-    try:
-        c.setHeadString(p,hS)
-        c.frame.body.bodyCtrl.focus_set()
-        c.frame.body.bodyCtrl.update_idletasks()
-    finally:
-        c.endUpdate()
+    c.setHeadString(p,hS)
+    c.frame.body.bodyCtrl.focus_set()
+    c.frame.body.bodyCtrl.update_idletasks()
+    c.redraw()
 #@nonl
 #@-node:mork.20041018100044:removeFileDirective
 #@+node:mork.20041018091414.14:addGL
 def addGL (c):
     vnode = c.currentVnode()
-    hs = vnode.headString()
+    hs = vnode.h
     nhs = "<" + "<" + hs + ">" + ">"
-    c.beginUpdate()
-    try:
-        c.setHeadString(vnode,nhs)
-        c.frame.body.bodyCtrl.focus_set()
-        c.frame.body.bodyCtrl.update_idletasks()
-    finally:
-        c.endUpdate()
+    c.setHeadString(vnode,nhs)
+    c.frame.body.bodyCtrl.focus_set()
+    c.frame.body.bodyCtrl.update_idletasks()
+    c.redraw()
 #@nonl
 #@-node:mork.20041018091414.14:addGL
 #@+node:mork.20041018091414.15:insertHeadline
 def insertHeadline (directive,c):
     vnode = c.currentVnode()
-    hs = vnode.headString()
+    hs = vnode.h
     nhs = directive + " " + hs
-    c.beginUpdate()
-    try:
-        c.setHeadString(vnode,nhs)
-    finally:
-        c.endUpdate()
+    c.setHeadString(vnode,nhs)
+    c.redraw()
 #@nonl
 #@-node:mork.20041018091414.15:insertHeadline
 #@+node:mork.20041018091414.16:paster
 def paster (directive,c,end=' '):
     bdy = c.frame.body
-    c.beginUpdate()
-    try:
-        bdy.insertAtInsertPoint(directive+end)
-        bdy.onBodyChanged(undoType=None)
-        bdy.bodyCtrl.focus_set()
-        bdy.bodyCtrl.update_idletasks()
-    finally:
-        c.endUpdate()
+    bdy.insertAtInsertPoint(directive+end)
+    bdy.onBodyChanged(undoType=None)
+    bdy.bodyCtrl.focus_set()
+    bdy.bodyCtrl.update_idletasks()
+    c.redraw()
     bdy.bodyCtrl.focus_set()
 #@nonl
 #@-node:mork.20041018091414.16:paster
@@ -635,12 +614,9 @@ def clear ():
 #@+node:mork.20041018091414.18:jumpto
 def jumpto (vnode,c):
     smenu.unpost()
-    c.beginUpdate()
-    try:
-        c.frame.tree.expandAllAncestors(vnode)
-        c.selectVnode(vnode)
-    finally:
-        c.endUpdate()
+    c.frame.tree.expandAllAncestors(vnode)
+    c.selectVnode(vnode)
+    c.redraw()
 #@-node:mork.20041018091414.18:jumpto
 #@-node:ekr.20060110203946.2:Utilities
 #@-others

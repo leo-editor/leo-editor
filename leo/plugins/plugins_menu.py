@@ -78,8 +78,8 @@ Some names defined at the top level have special significance.
 
 #@<< imports >>
 #@+node:ekr.20050101090207.10:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
@@ -204,7 +204,7 @@ def createPluginsMenu (tag,keywords):
         # Create a list of all active plugins.
         files = glob.glob(os.path.join(path,"*.py"))
         files.sort()
-        plugins = [PlugIn(file) for file in files]
+        plugins = [PlugIn(file, c) for file in files]
         PluginDatabase.storeAllPlugins(files)
         loaded = [z.lower() for z in g.app.loadedPlugins]
         # items = [(p.name,p) for p in plugins if p.version]
@@ -245,10 +245,10 @@ def init ():
     if g.app.unitTesting: return None
 
     if g.app.gui is None:
-            g.app.createTkGui(__file__)
+        g.app.createTkGui(__file__)
 
-            if g.app.gui.guiName() != "tkinter":
-                return False
+        if g.app.gui.guiName() != "tkinter":
+            return False
 
     leoPlugins.registerHandler("create-optional-menus",createPluginsMenu)
     g.plugin_signon(__name__)
@@ -324,9 +324,11 @@ class PlugIn:
 
     #@    @+others
     #@+node:EKR.20040517080555.4:__init__
-    def __init__(self, filename):
+    def __init__(self, filename, c=None):
 
         """Initialize the plug-in"""
+
+        self.c = c
 
         # Import the file to find out some interesting stuff
         # Do not use the imp module: we only want to import these files once!
@@ -355,14 +357,14 @@ class PlugIn:
             #
             self.doc = self.mod.__doc__
             self.version = self.mod.__dict__.get("__version__","<unknown>") # EKR: 3/17/05
-            # if self.version: print self.version,g.shortFileName(filename)
+            # if self.version: g.pr(self.version,g.shortFileName(filename))
         except ImportError:
             # s = 'Can not import %s in plugins_menu plugin' % g.shortFileName(filename)
-            # print s ; g.es(s,color='blue')
+            # g.es_print(s,color='blue')
             return
         except Exception:
             s = 'Unexpected exception in plugins_menu plugin importing %s' % filename
-            print s ; g.es(s,color='red')
+            g.es_print(s,color='red')
             return
 
         #@    << Check if this can be configured >>
@@ -428,7 +430,10 @@ class PlugIn:
         g.app.gui.runScrolledMessageDialog(
             title="About Plugin ( " + self.name + " )",
             label="Version: " + self.version,
-            msg=self.doc
+            msg=self.doc,
+            c=self.c,
+            flags='rst',
+            name='leo_system'
         )
 
     #@-node:EKR.20040517080555.8:about
@@ -478,7 +483,7 @@ class PlugIn:
         for section in config.sections():
             options = {}
             for option in config.options(section):
-                #print 'config', section, option 
+                #g.pr('config', section, option )
                 options[option] = unicode(config.get(section,option))
             data[section] = options
 
@@ -827,7 +832,7 @@ class TkScrolledMessageDialog:
 
         elif self.callback:
 
-            retval = self.callback(name)#, data)
+            retval = self.callback(name) or ''
 
         if retval.lower() == 'close':
             self.top.destroy()
@@ -840,9 +845,9 @@ class TkScrolledMessageDialog:
     def show_message_as_html(self, name):
 
         try:
-            import leo_to_html
+            import leo.plugins.leo_to_html as leo_to_html
         except ImportError:
-            g.es('Can not import leo_to_html', color='red')
+            g.es('Can not import leo.plugins.leo_to_html as leo_to_html', color='red')
             return
 
         oHTML = leo_to_html.Leo_to_HTML(c=None) # no need for a commander
@@ -907,7 +912,7 @@ def runPropertiesDialog(title='Properties', data={}, callback=None, buttons=None
     return dialog.result 
 #@-node:bob.20071208211442.1:runPropertiesDialog
 #@+node:bob.20071209110304:runScrolledMessageDialog
-def runScrolledMessageDialog(title='Message', label= '', msg='', callback=None, buttons=None):
+def runScrolledMessageDialog(title='Message', label= '', msg='', callback=None, buttons=None, **kw):
     """Display a modal TkScrolledMessageDialog."""
 
 

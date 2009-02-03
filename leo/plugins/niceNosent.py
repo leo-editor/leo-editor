@@ -27,9 +27,10 @@ __version__ = "0.3"
 #@nl
 #@<< imports >>
 #@+node:ekr.20040909122647.1:<< imports >>
-import leoGlobals as g
-import leoPlugins
-import os
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+
+# import os
 #@nonl
 #@-node:ekr.20040909122647.1:<< imports >>
 #@nl
@@ -57,7 +58,7 @@ def onPreSave(tag=None, keywords=None):
             if p.isAtNoSentinelsFileNode() and p.isDirty():
                 nosentNodes.append(p.copy())
                 for p2 in p.self_and_subtree_iter():
-                    s = p2.bodyString()
+                    s = p2.b
                     lastline = s.split("\n")[-1]
                     if lastline.strip():
                         c.setBodyString(p2,s+"\n")
@@ -72,7 +73,7 @@ def onPostSave(tag=None, keywords=None):
     if c:
         at = c.atFileCommands
         for p in nosentNodes:
-            g.es("node %s found" % p.headString(), color="red")
+            g.es("node %s found" % p.h, color="red")
             at.scanAllDirectives(p)
             name = p.atNoSentinelsFileNodeName()
             fname = g.os_path_join(at.default_directory,name)

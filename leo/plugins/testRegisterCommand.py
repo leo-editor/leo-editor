@@ -5,8 +5,8 @@
 #@@language python
 #@@tabwidth -4
 
-import leoPlugins
-import leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoGlobals as g
 
 __version__ = '0.1'
 

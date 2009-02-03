@@ -41,9 +41,9 @@ __plugin_group__ = "Helpers"
 
 #@<< imports >>
 #@+node:pap.20060703102546.3:<< imports >>
-import leoGlobals as g
-import leoPlugins
-import leoEditCommands
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+import leo.core.leoEditCommands as leoEditCommands
 
 Pmw = g.importExtension('Pmw',    pluginName=__name__,verbose=True,required=True)
 Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
@@ -55,6 +55,8 @@ import webbrowser
 #@nonl
 #@-node:pap.20060703102546.3:<< imports >>
 #@nl
+
+thePluginController = None
 
 #@+others
 #@+node:pap.20060703102546.4:init

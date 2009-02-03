@@ -90,8 +90,8 @@ __version__ = "0.4"
 #@nl
 #@<< imports >>
 #@+node:ekr.20040916073636.2:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 
 Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
 Pmw = g.importExtension("Pmw",    pluginName=__name__,verbose=True,required=True)
@@ -137,7 +137,7 @@ class CSFrontend:
         self.hasparent = 1
         if p:
             nc = p.numberOfChildren()
-            for i in xrange( nc ):
+            for i in range( nc ):
                 children.append( p.nthChild( i ) )
         else:
             p = c.rootVnode()
@@ -210,12 +210,12 @@ class CSFrontend:
                 header = 'def user_sort( a, b, atts):\n'
                 code = header + bcode
                 usort = compile( code, 'user_sort', 'exec' )
-                def lcsort( a, b, atts =atts ):
+                def lcsort2( a, b, atts =atts ):
                     z = {}
                     exec usort in {}, z
                     rv = z[ 'user_sort' ]( a, b, atts )
                     return rv
-                self.children.sort( lcsort )
+                self.children.sort( lcsort2 )
             if self.hasparent:
                 move( self.c, self.children, self.parent )
             else:
@@ -236,22 +236,20 @@ def getConcept( c ):
 #@+node:ekr.20040916074337.5:move
 def move( c, children , parent):
 
-    c.beginUpdate()
     for n, ch in enumerate( children ):
         ch.moveToNthChildOf( parent, n )
-    c.endUpdate()
+    c.redraw()
 
 #@-node:ekr.20040916074337.5:move
 #@+node:ekr.20040916074337.6:move2
 def move2( c, children , oroot):
 
-    c.beginUpdate()
     children[ 0 ].moveToRoot( oroot )
     z1 = children[ 0 ]
     for z in children[ 1: ]:
         z.moveAfter( z1 )
         z1 = z
-    c.endUpdate()
+    c.redraw()
 
 #@-node:ekr.20040916074337.6:move2
 #@+node:ekr.20040916074337.7:buildAttList
@@ -275,7 +273,7 @@ def getChildren( v ):
 
     i = v.numberOfChildren()
     children = []
-    for z in xrange( i ):
+    for z in range( i ):
         chi = v.nthChild( z )
         children.append( chi )
     return children

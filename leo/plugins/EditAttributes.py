@@ -17,9 +17,12 @@ attributes of one another.'''
 
 #@<< imports >>
 #@+node:mork.20041018162155.2:<< imports >>
-import leoPlugins
-import leoGlobals as g
-import leoTkinterFrame    
+# import leo.core.leoPlugins as leoPlugins
+
+import leo.core.leoGlobals as g
+
+import leo.plugins.tkGui as tkGui
+leoTkinterFrame = tkGui.leoTkinterFrame   
 
 Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True,required=True)
 #@nonl
@@ -80,9 +83,9 @@ class AttrEditor:
         self.uAs = t.unknownAttributes = getattr(t,'unknownAttributes',{})
         self.dialog = Pmw.Dialog(c.frame.top, ## Required.
             buttons = ('Add Attribute','Remove Attribute','Close'),
-                        title = t.headString,
+                        title = t._headString,
                         command = self.buttonCommands)
-        group = Pmw.Group(self.dialog.interior(),tag_text=p.headString())
+        group = Pmw.Group(self.dialog.interior(),tag_text=p.h)
         group.pack(side='top')
         self._mkGui(group.interior())
         self.dialog.activate()
@@ -93,11 +96,13 @@ class AttrEditor:
         if name == 'Add Attribute': return self.add() 
         elif name == 'Remove Attribute': return self.rmv()
         else:
-             self.dialog.deactivate()
-             self.dialog.destroy()
+            self.dialog.deactivate()
+            self.dialog.destroy()
     #@-node:mork.20041018162155.5:buttonCommands
     #@+node:mork.20041018162155.6:_mkGui
     def _mkGui( self, frame ):
+
+        c = self.c
 
         group = Pmw.Group( frame , tag_text = "Attributes")
         group.pack( side = 'left' )
@@ -117,7 +122,8 @@ class AttrEditor:
         self.tx = Pmw.ScrolledText( frame, text_background = 'white', text_foreground = 'blue',
                                     labelpos = 'n', label_text = 'Current Attribute Value' )
         self.tx.pack( side = 'right' )
-        self.tx.component( 'text' ).bind( '<Key>', self.setText )
+        w = self.tx.component( 'text' )
+        c.bind(w,'<Key>', self.setText )
         if bk:
             lb.setvalue( bk[ 0 ] )
             self.selcommand()
@@ -166,11 +172,13 @@ class AttrEditor:
     #@-others
 #@-node:mork.20041018162155.3:class AttrEditor
 #@+node:mork.20041018193158:newCreateCanvas
-olCreateCanvas = leoTkinterFrame.leoTkinterFrame.createCanvas
+olCreateCanvas = leoTkinterFrame.createCanvas
 
 def newCreateCanvas (self,parentFrame,pageName=None):
 
     # g.trace('editAttributes plugin',pageName)
+
+    c = self.c
 
     if pageName:
         # Support the chapters2 plugin.
@@ -196,12 +204,12 @@ def newCreateCanvas (self,parentFrame,pageName=None):
                 p, junk = data
                 return AttrEditor(c,p)
 
-    can.bind('<Button-2>',hit,'+')
-    can.bind('<Button-3>',hit,'+')
+    c.bind2(can,'<Button-2>',hit,'+')
+    c.bind2(can,'<Button-3>',hit,'+')
 
     return can
 
-leoTkinterFrame.leoTkinterFrame.createCanvas = newCreateCanvas
+tkGui.leoTkinterFrame.createCanvas = newCreateCanvas
 
 #@-node:mork.20041018193158:newCreateCanvas
 #@-others

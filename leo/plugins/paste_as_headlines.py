@@ -36,8 +36,8 @@ the Edit menu directly under the existing Paste option.
 #@nl
 #@<< imports >>
 #@+node:danr7.20060912105041.4:<< imports >>
-import leoGlobals as g
-import leoPlugins
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 #@-node:danr7.20060912105041.4:<< imports >>
 #@nl
 
@@ -68,28 +68,24 @@ def createPasteAsHeadlinesMenu (tag,keywords):
 def paste_as_headlines(c):
     # g.es("Starting...")
 
-    c.beginUpdate()
-    try:
-        currentPos = c.currentPosition() 
-        clipText = g.app.gui.getTextFromClipboard()
-        # Leo won't display curly quotes properly, so replace them with normal quotes
-        clipText = clipText.replace(u'” “', '" "')
-        # Split clipboard text elements into a list
-        clipList = clipText.split("\n")
-        for tempHead in clipList:
-            tempHead = tempHead.strip()
-            # Make sure list item has some content
-            if tempHead:
-                insertNode = currentPos.insertAsLastChild()
-                if len(tempHead)>50:
-                    c.setHeadString(insertNode,tempHead[:50])
-                    c.setBodyString(insertNode,tempHead)
-                else:
-                    c.setHeadString(insertNode,tempHead)
-        currentPos.expand()
-    finally:
-        c.endUpdate()
-#@nonl
+    currentPos = c.p 
+    clipText = g.app.gui.getTextFromClipboard()
+    # Leo won't display curly quotes properly, so replace them with normal quotes
+    clipText = clipText.replace(u'” “', '" "')
+    # Split clipboard text elements into a list
+    clipList = clipText.split("\n")
+    for tempHead in clipList:
+        tempHead = tempHead.strip()
+        # Make sure list item has some content
+        if tempHead:
+            insertNode = currentPos.insertAsLastChild()
+            if len(tempHead)>50:
+                c.setHeadString(insertNode,tempHead[:50])
+                c.setBodyString(insertNode,tempHead)
+            else:
+                c.setHeadString(insertNode,tempHead)
+    currentPos.expand()
+    c.redraw()
 #@-node:danr7.20060912105041.6:paste_as_headlines
 #@-others
 

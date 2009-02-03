@@ -25,9 +25,9 @@ Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 
 #@<< imports >>
 #@+node:mork.20041025113509:<< imports >>
-import leoGlobals as g
-import leoNodes
-import leoPlugins
+import leo.core.leoGlobals as g
+# import leo.core.leoNodes as leoNodes
+import leo.core.leoPlugins as leoPlugins
 from xml.dom import minidom
 
 try:
@@ -168,7 +168,7 @@ stylenodes = weakref.WeakKeyDictionary()
 
 def setStyleNode( c ):
     '''this command sets what the current style node is'''
-    position = c.currentPosition()
+    position = c.p
     stylenodes[ c ] = position
 
 
@@ -180,13 +180,12 @@ def processDocumentNode( c ):
         if not styleNodeSelected( c ): return
         proc = Processor()
         stylenode = stylenodes[ c ]
-        pos = c.currentPosition()
-        c.beginUpdate()
+        pos = c.p
         c.selectPosition( stylenode )
         sIO = getString( c )
         mdom1 = minidom.parseString( sIO )
         sIO = str( mdom1.toxml() )
-        hstring = str( stylenode.headString() )
+        hstring = str( stylenode.h )
         if hstring == "": hstring = "no headline"
         stylesource = InputSource.DefaultFactory.fromString( sIO, uri = hstring)
         proc.appendStylesheet( stylesource )
@@ -200,20 +199,21 @@ def processDocumentNode( c ):
         xmlsource = InputSource.DefaultFactory.fromString( xIO, uri = xhead ) 
         result = proc.run( xmlsource )
         nhline = "xsl:transform of " + str( xmlnode.headString )
-        tnode = leoNodes.tnode( result, nhline )
-        pos.insertAfter( tnode )
-        c.endUpdate()
+        # tnode = leoNodes.tnode( result, nhline )
+        p2 = pos.insertAfter() # tnode )
+        p2.setBodyString(result)
+        p2.setHeadString(nhline)
+        c.redraw()
 
     except Exception, x:
         g.es( 'exception ' + str( x ))
-    c.endUpdate()
-
-
+    c.redraw()
+#@nonl
 #@-node:mork.20041010095202.1:processDocumentNode
 #@+node:mork.20041025121608:addXSLTNode
 def addXSLTNode (c):
     '''creates a node and inserts some xslt boilerplate'''
-    pos = c.currentPosition()
+    pos = c.p
 
     #body = '''<?xml version="1.0"?>'''
     # body = '''<?xml version="1.0"?>
@@ -223,10 +223,11 @@ def addXSLTNode (c):
 <xsl:transform xmlns:xsl="http:///www.w3.org/1999/XSL/Transform" version="1.0">    
 </xsl:transform>'''
 
-    tnode = leoNodes.tnode(body,"xslt stylesheet")
-    c.beginUpdate()
-    pos.insertAfter(tnode)
-    c.endUpdate()
+    # tnode = leoNodes.tnode(body,"xslt stylesheet")
+    p2 = pos.insertAfter() # tnode)
+    p2.setBodyString(body)
+    p2.setHeadString("xslt stylesheet")
+    c.redraw()
 #@-node:mork.20041025121608:addXSLTNode
 #@+node:mork.20041010110121:addXSLTElement
 def addXSLTElement( c , element):
@@ -241,7 +242,7 @@ def addXSLTElement( c , element):
 def getString (c):
     '''This def turns a node into a string based off of Leo's file-nosent write logic'''
     at = c.atFileCommands
-    pos = c.currentPosition()
+    pos = c.p
     cS = cStringIO.StringIO()
 
     if not hasattr( at, 'new_df' ):
@@ -288,9 +289,8 @@ def jumpToStyleNode( c ):
     '''Simple method that jumps us to the current XSLT node'''
     if not styleNodeSelected( c ): return
     pos = stylenodes[ c ]
-    c.beginUpdate()
     c.selectPosition( pos )
-    c.endUpdate()
+    c.redraw()
 
 
 #@-node:mork.20041010125444:jumpToStyleNode
@@ -312,19 +312,19 @@ def addMenu( tag, keywords ):
     men = c.frame.menu
     men = men.getMenu( 'Outline' )
     xmen = Tk.Menu( men , tearoff = False)
-    xmen.add_command( label = "Set Stylesheet Node", command = lambda c = c : setStyleNode( c ) )
-    xmen.add_command( label = "Jump To Style Node", command = lambda c = c: jumpToStyleNode( c ) )
-    xmen.add_command( label = "Process Node with Stylesheet Node", command = lambda c=c : processDocumentNode( c ) )
+    c.add_command(xmen, label = "Set Stylesheet Node", command = lambda c = c : setStyleNode( c ) )
+    c.add_command(xmen, label = "Jump To Style Node", command = lambda c = c: jumpToStyleNode( c ) )
+    c.add_command(xmen, label = "Process Node with Stylesheet Node", command = lambda c=c : processDocumentNode( c ) )
     xmen.add_separator()
-    xmen.add_command( label = "Create Stylesheet Node", command = lambda c = c : addXSLTNode( c ) )
+    c.add_command(xmen, label = "Create Stylesheet Node", command = lambda c = c : addXSLTNode( c ) )
     elmen= Tk.Menu( xmen, tearoff = False )
     xmen.add_cascade( label = "Insert XSL Element", menu = elmen )
     xsltkeys = xslt.keys()
     xsltkeys.sort()
     for z in xsltkeys:
-        elmen.add_command( label = z, command = lambda c = c, element = xslt[ z ]: addXSLTElement( c, element ) )
+        c.add_command(elmen, label = z, command = lambda c = c, element = xslt[ z ]: addXSLTElement( c, element ) )
     men.add_cascade( menu = xmen, label = "XSLT-Node Commands" )
-    xmen.add_command( label = 'Test Node with Minidom', command = lambda c=c: doMinidomTest( c ) )
+    c.add_command(xmen, label = 'Test Node with Minidom', command = lambda c=c: doMinidomTest( c ) )
 
 
 
@@ -387,9 +387,9 @@ r'''
 <t tx="mork.20041015144717">@path /boboo/leo-4.2-final/plugins</t>
 <t tx="mork.20041015144717.1">import Tkinter as Tk
 import tktable as tktab
-import leoGlobals as g
+import leo.core.leoGlobals as g
 from leoPlugins import *
-import leoNodes
+import leo.core.leoNodes as leoNodes
 import csv
 import cStringIO
 import weakref
@@ -401,7 +401,7 @@ import Pmw
 </t>
 <t tx="mork.20041015144717.2">def viewTable( c, new = False ):
 
-    pos = c.currentPosition()
+    pos = c.p
     dialog = createDialog( pos )
     csvv = CSVVisualizer( c )
     sframe = Pmw.ScrolledFrame( dialog.interior() )
@@ -430,8 +430,8 @@ def addMenu( tag, keywords ):
     men = men.getMenu( 'Outline' )
     tmen = Tk.Menu( men, tearoff = 0 )
     men.add_cascade( menu = tmen, label = "Table Commands" )
-    tmen.add_command( label = "Edit Node With Table", command = lambda c = c: viewTable( c ) )
-    tmen.add_command( label = "Create New Table", command = lambda c = c: newTable( c ) )
+    c.add_command(tmen, label = "Edit Node With Table", command = lambda c = c: viewTable( c ) )
+    c.add_command(tmen, label = "Create New Table", command = lambda c = c: newTable( c ) )
 
 
 
@@ -448,8 +448,8 @@ def addMenu( tag, keywords ):
 <t tx="mork.20041015152916">def readData( self ):
 
     c = self.c
-    pos = c.currentPosition()
-    data = pos.bodyString()
+    pos = c.p
+    data = pos.b
     cS = cStringIO.StringIO()
     cS.write( data )
     cS.seek( 0 )
@@ -495,13 +495,13 @@ def addMenu( tag, keywords ):
 </t>
 <t tx="mork.20041016141748">def writeData( self, save ):
 
-    pos = self.c.currentPosition()
+    pos = self.c.p
     n2 = self.rows
     n = self.columns
     data = []
-    for z in xrange( n2 ):
+    for z in range( n2 ):
         ndata = []
-        for z2 in xrange( n ):
+        for z2 in range( n ):
             ndata.append( self.arr.get( "%s,%s" % ( z, z2 ) ) )        
         data.append( ndata )
     cS = cStringIO.StringIO()
@@ -509,16 +509,16 @@ def addMenu( tag, keywords ):
     for z in data:
         csv_write.writerow( z )
     cS.seek( 0 )
-    self.c.beginUpdate() 
+
     if not save:
-        tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str( pos.headString() ) )
-        pos.insertAfter( tnd )
+        # tnd = leoNodes.tnode( cS.getvalue(), "Save of Edited " + str( pos.h ) )
+        p2 = pos.insertAfter() #  tnd )
+        p2.setBodyString(cS.getvalue())
+        p2.setHeadString("Save of Edited " + str( pos.h))
     else:
-        pos.setTnodeText( cS.getvalue() )
-    self.c.endUpdate()
-
-
-
+        # pos.setTnodeText( cS.getvalue() )
+        pos.setBodyString(cS.getvalue())
+    self.c.redraw()
 
 
 </t>
@@ -527,7 +527,7 @@ def addMenu( tag, keywords ):
     self.rows = self.rows + 1
     tab.configure( rows = self.rows )
     rc =  '%s,0' % (self.rows -1 )
-    for z in xrange( self.columns ):
+    for z in range( self.columns ):
         self.arr.set( '%s,%s' %( self.rows - 1, z ), "" ) 
     tab.activate( rc )
     tab.focus_set()
@@ -569,7 +569,7 @@ def addMenu( tag, keywords ):
 
     self.columns = self.columns + 1
     tab.configure( cols = self.columns )
-    for z in xrange( self.rows ):
+    for z in range( self.rows ):
         self.arr.set( '%s,%s' %( z , self.columns -1 ), "" ) 
 
 
@@ -585,11 +585,11 @@ def addMenu( tag, keywords ):
 </t>
 <t tx="mork.20041017105444">def newTable( c ):
 
-    tnd = leoNodes.tnode( "", "New Table" )
-    pos = c.currentPosition()
-    c.beginUpdate()
-    npos = pos.insertAfter( tnd )
-    c.endUpdate()
+    # tnd = leoNodes.tnode( "", "New Table" )
+    pos = c.p
+    npos = pos.insertAfter() # tnd )
+    npos.setHeadString('New Table')
+    c.redraw()
     c.selectPosition( npos )
     viewTable( c , True )
 
@@ -599,8 +599,8 @@ def addMenu( tag, keywords ):
 
     self.rows = rows
     self.columns = columns
-    for z in xrange( rows ):
-        for z1 in xrange( columns ):
+    for z in range( rows ):
+        for z1 in range( columns ):
             self.arr.set( '%s,%s' %( z, z1 ), "" )
 
 </t>
@@ -617,10 +617,10 @@ def addMenu( tag, keywords ):
 </t>
 <t tx="mork.20041017111248">def createDialog( pos ):
 
-    dialog = Pmw.Dialog( title = "Table Editor for " + str( pos.headString()),
+    dialog = Pmw.Dialog( title = "Table Editor for " + str( pos.h),
                          buttons = [ 'Save To Current', 'Write To New', 'Close' ] )
     dbbox = dialog.component( 'buttonbox' )
-    for z in xrange( dbbox.numbuttons() ):
+    for z in range( dbbox.numbuttons() ):
         dbbox.button( z ).configure( background = 'white', foreground = 'blue' )
     return dialog
 
