@@ -188,12 +188,9 @@ def createSpecialGui(gui,pymacs,script,windowFlag):
             sys.args = []
         else:
             createNullGuiWithScript(script)
-    elif gui == 'qt':
-        leoPlugins.loadOnePlugin ('qtGui',verbose=True)
-    elif gui == 'tk':
-        g.app.createTkGui()
-    elif gui == 'wx':
-        g.app.createWxGui()
+    elif gui == 'qt':   g.app.createQtGui()
+    elif gui == 'tk':   g.app.createTkGui()
+    elif gui == 'wx':   g.app.createWxGui()
 #@nonl
 #@+node:ekr.20031218072017.1938:createNullGuiWithScript
 def createNullGuiWithScript (script):

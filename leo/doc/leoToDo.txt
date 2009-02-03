@@ -12,6 +12,29 @@
 #@+node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20090103054019.1:First
+#@+node:ekr.20090202191501.4:Add FAQ entry: Leo's installer failed, what do I do?
+@nocolor
+
+You can simply unpack Leo anywhere and run from there.  You don't need the
+installer.
+
+The top-level leo folder has a script called launchLeo.py.  The following
+should work:
+
+cd leo # the top-level folder, not the inner leo folder.
+python launchLeo.py
+
+To specify the qt gui, do:
+
+python launchLeo.py --qui=qt
+
+To load Leo's source, do
+
+python launchLeo.py --qt=qt leo\core\leoPyRef.leo
+#@nonl
+#@-node:ekr.20090202191501.4:Add FAQ entry: Leo's installer failed, what do I do?
+#@+node:ekr.20090202191501.3:Get vim and xemacs plugins working with qt.
+#@-node:ekr.20090202191501.3:Get vim and xemacs plugins working with qt.
 #@+node:ekr.20090202064534.6:Don't scroll when expanding/contracting node.
 #@-node:ekr.20090202064534.6:Don't scroll when expanding/contracting node.
 #@+node:ekr.20090202064534.1:Remove bad archived position message?

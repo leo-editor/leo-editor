@@ -299,6 +299,25 @@ class LeoApp:
 
         return True # The window has been closed.
     #@-node:ekr.20031218072017.2609:app.closeLeoWindow
+    #@+node:ekr.20090202191501.5:app.createNullGui
+    def createNullGui (self):
+
+        # Don't import this at the top level:
+        # it might interfere with Leo's startup logic.
+        import leo.core.leoGui as leoGui
+
+        g.app.gui = leoGui.nullGui("nullGui")
+    #@nonl
+    #@-node:ekr.20090202191501.5:app.createNullGui
+    #@+node:ekr.20090202191501.1:app.createQtGui
+    def createQtGui (self,fileName=None):
+
+        # Do NOT omit fileName param: it is used in plugin code.
+
+        """A convenience routines for plugins to create the Qt gui class."""
+
+        leoPlugins.loadOnePlugin ('qtGui',verbose=True)
+    #@-node:ekr.20090202191501.1:app.createQtGui
     #@+node:ekr.20031218072017.2610:app.createTkGui
     def createTkGui (self,fileName=None):
 
@@ -323,7 +342,7 @@ class LeoApp:
 
         # Do NOT omit fileName param: it is used in plugin code.
 
-        """A convenience routines for plugins to create the default Tk gui class."""
+        """A convenience routines for plugins to create the wx gui class."""
 
         leoPlugins.loadOnePlugin ('wxGui',verbose=True)
     #@-node:ekr.20090126063121.3:app.createWxGui
@@ -427,6 +446,58 @@ class LeoApp:
 
         self.finishQuit()
     #@-node:ekr.20031218072017.2616:app.forceShutdown
+    #@+node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
+    def newLeoCommanderAndFrame(self,
+        fileName=None,
+        relativeFileName=None,
+        gui=None,initEditCommanders=True,updateRecentFiles=True):
+
+        """Create a commander and its view frame for the Leo main window."""
+
+        app = self
+
+        import leo.core.leoCommands as leoCommands
+
+        if not fileName: fileName = ''
+        if not relativeFileName: relativeFileName = ''
+        if not gui: gui = g.app.gui
+        #@    << compute the window title >>
+        #@+node:ekr.20031218072017.2189:<< compute the window title >>
+        # Set the window title and fileName
+        if fileName:
+            title = g.computeWindowTitle(fileName)
+        else:
+            s = "untitled"
+            n = g.app.numberOfWindows
+            if n > 0:
+                s += str(n)
+            title = g.computeWindowTitle(s)
+            g.app.numberOfWindows = n+1
+        #@-node:ekr.20031218072017.2189:<< compute the window title >>
+        #@nl
+
+        # g.trace(fileName,relativeFileName)
+
+        # Create an unfinished frame to pass to the commanders.
+        frame = gui.createLeoFrame(title)
+
+        # Create the commander and its subcommanders.
+        c = leoCommands.Commands(frame,fileName,relativeFileName=relativeFileName)
+
+        if not app.initing:
+            g.doHook("before-create-leo-frame",c=c) # Was 'onCreate': too confusing.
+
+        frame.finishCreate(c)
+        c.finishCreate(initEditCommanders)
+
+        # Finish initing the subcommanders.
+        c.undoer.clearUndoState() # Menus must exist at this point.
+
+        # if not g.app.initing:
+            # g.doHook("after-create-leo-frame",c=c)
+
+        return c,frame
+    #@-node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
     #@+node:ekr.20031218072017.2617:app.onQuit
     def onQuit (self,event=None):
 
@@ -616,58 +687,6 @@ class LeoApp:
         else:
             print('writeWaitingLog: still no log!')
     #@-node:ekr.20031218072017.2619:app.writeWaitingLog
-    #@+node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
-    def newLeoCommanderAndFrame(self,
-        fileName=None,
-        relativeFileName=None,
-        gui=None,initEditCommanders=True,updateRecentFiles=True):
-
-        """Create a commander and its view frame for the Leo main window."""
-
-        app = self
-
-        import leo.core.leoCommands as leoCommands
-
-        if not fileName: fileName = ''
-        if not relativeFileName: relativeFileName = ''
-        if not gui: gui = g.app.gui
-        #@    << compute the window title >>
-        #@+node:ekr.20031218072017.2189:<< compute the window title >>
-        # Set the window title and fileName
-        if fileName:
-            title = g.computeWindowTitle(fileName)
-        else:
-            s = "untitled"
-            n = g.app.numberOfWindows
-            if n > 0:
-                s += str(n)
-            title = g.computeWindowTitle(s)
-            g.app.numberOfWindows = n+1
-        #@-node:ekr.20031218072017.2189:<< compute the window title >>
-        #@nl
-
-        # g.trace(fileName,relativeFileName)
-
-        # Create an unfinished frame to pass to the commanders.
-        frame = gui.createLeoFrame(title)
-
-        # Create the commander and its subcommanders.
-        c = leoCommands.Commands(frame,fileName,relativeFileName=relativeFileName)
-
-        if not app.initing:
-            g.doHook("before-create-leo-frame",c=c) # Was 'onCreate': too confusing.
-
-        frame.finishCreate(c)
-        c.finishCreate(initEditCommanders)
-
-        # Finish initing the subcommanders.
-        c.undoer.clearUndoState() # Menus must exist at this point.
-
-        # if not g.app.initing:
-            # g.doHook("after-create-leo-frame",c=c)
-
-        return c,frame
-    #@-node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
     #@-others
 #@-node:ekr.20031218072017.2608:@thin leoApp.py
 #@-leo
