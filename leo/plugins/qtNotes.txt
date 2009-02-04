@@ -671,6 +671,7 @@ def setItemForCurrentPosition (self,scroll=True):
     item2 = self.getCurrentItem()
     if item == item2:
         if trace and verbose: g.trace('no change',self.traceItem(item))
+        self.scrollToItem(item) #### ####
     else:
         try:
             self.selecting = True
@@ -731,7 +732,7 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
     finally:
         self.redrawing = False
 
-    self.setItemForCurrentPosition(scroll=scroll)
+    self.setItemForCurrentPosition(scroll=True) #### scroll)
     c.requestRedrawFlag= False
 
     if trace:

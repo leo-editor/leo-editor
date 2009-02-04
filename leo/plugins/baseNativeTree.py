@@ -167,7 +167,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         finally:
             self.redrawing = False
 
-        self.setItemForCurrentPosition(scroll=scroll)
+        self.setItemForCurrentPosition(scroll=True) #### scroll)
         c.requestRedrawFlag= False
 
         if trace:
@@ -321,6 +321,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.25:redraw_after_expand
     def redraw_after_expand (self,p=None):
 
+        # Important, setting scrolling to False makes the problem *worse*
         self.full_redraw (p,scroll=True)
     #@-node:ekr.20090124174652.25:redraw_after_expand
     #@+node:ekr.20090124174652.26:redraw_after_head_changed
@@ -945,6 +946,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         item2 = self.getCurrentItem()
         if item == item2:
             if trace and verbose: g.trace('no change',self.traceItem(item))
+            self.scrollToItem(item) #### ####
         else:
             try:
                 self.selecting = True
