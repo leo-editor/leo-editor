@@ -4544,8 +4544,6 @@ class baseCommands (object):
 
         parent.contract()
         c.redraw_after_contract(p=parent)
-
-        # c.treeSelectHelper(parent)
     #@-node:ekr.20031218072017.2902:contractParent
     #@+node:ekr.20031218072017.2903:expandAllHeadlines
     def expandAllHeadlines (self,event=None):
@@ -5539,7 +5537,7 @@ class baseCommands (object):
     #@nonl
     #@-node:ekr.20070226121510: treeFocusHelper
     #@+node:ekr.20070226113916: treeSelectHelper
-    def treeSelectHelper (self,p,redraw=True):
+    def treeSelectHelper (self,p,redraw=False): #### was true.
 
         c = self ; current = c.p
 
@@ -5549,7 +5547,7 @@ class baseCommands (object):
 
         if p:
             flag = c.expandAllAncestors(p)
-            if redraw or flag or p != current:
+            if flag: #### redraw or flag or p != current:
                 c.redraw(p)
             else:
                 c.selectPosition(p)
