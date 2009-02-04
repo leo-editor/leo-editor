@@ -54,9 +54,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         # Debugging...
         self.nodeDrawCount = 0
-        self.traceEvents = False # Enable tracing of events.
         self.traceCallersFlag = False # Enable traceCallers method.
-        self.verbose = False # Enable verbose traces.
 
         # Associating items with vnodes...
         self.item2vnodeDict = {}
@@ -150,7 +148,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         Preserve the vertical scrolling unless scroll is True.'''
 
-        trace = False or self.traceEvents
+        trace = True and not g.app.unitTesting
         c = self.c
 
         if self.busy():
@@ -169,7 +167,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         finally:
             self.redrawing = False
 
-        self.setItemForCurrentPosition(scroll=scroll) ####
+        self.setItemForCurrentPosition(scroll=scroll)
         c.requestRedrawFlag= False
 
         if trace:
@@ -492,8 +490,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.40:onItemCollapsed (nativeTree)
     def onItemCollapsed (self,item):
 
-        trace = False or self.traceEvents
-        verbose = False or self.verbose
+        trace = False
+        verbose = False
 
         if self.busy(): return
 
@@ -514,8 +512,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
     def onItemDoubleClicked (self,item,col):
 
-        trace = False or self.traceEvents
-        verbose = False or self.verbose
+        trace = False
+        verbose = False
 
         if self.busy(): return
 
@@ -546,8 +544,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         '''Handle and tree-expansion event.'''
 
-        trace = False or self.traceEvents
-        verbose = False or self.verbose
+        trace = False
+        verbose = False
 
         if self.busy(): return
 
@@ -574,8 +572,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         '''Select the proper position when a tree node is selected.'''
 
-        trace = False or self.traceEvents
-        verbose = False or self.verbose
+        trace = False
+        verbose = False
 
         if self.busy(): return
 
@@ -787,8 +785,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         """Returns the edit widget for position p."""
 
-        trace = False or self.traceEvents
-        verbose = False or self.verbose
+        trace = False
+        verbose = False
 
         c = self.c
         item = self.position2item(p)
@@ -925,8 +923,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         '''Select the item for c.currentPosition()'''
 
-        trace = False or self.traceEvents
-        verbose = False or self.verbose
+        trace = False
+        verbose = False
 
         c = self.c ; p = c.currentPosition()
 
