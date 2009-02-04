@@ -42,7 +42,7 @@ __version__ = '0.1'
 #@+node:dan.20090203174248.28:<< version history >>
 #@+at
 # 
-# Contributed by Dan White.
+# Contributed by Dan White <etihwnad _at_ gmail _dot_ com>.
 # 
 # 0.1 - Initial plugin
 #@-at
