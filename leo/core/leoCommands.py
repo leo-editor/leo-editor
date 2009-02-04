@@ -34,6 +34,7 @@ import sys
 import tempfile
 import time
 import tokenize # for Check Python command
+import imp
 
 try:
     import tabnanny # for Check Python command # Does not exist in jython
@@ -5578,8 +5579,8 @@ class baseCommands (object):
 
         '''Open Python's Idle debugger in a separate process.'''
 
-        pythonDir = g.os_path_dirname(sys.executable)
-        idle = g.os_path_join(pythonDir,'Lib','idlelib','idle.py')
+        idlelib_path = imp.find_module('idlelib')[1]
+        idle = g.os_path_join(idlelib_path,'idle.py')
         args = [sys.executable, idle ]
 
         if 1: # Use present environment.
