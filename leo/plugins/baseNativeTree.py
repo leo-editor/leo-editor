@@ -148,7 +148,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         Preserve the vertical scrolling unless scroll is True.'''
 
-        trace = True and not g.app.unitTesting
+        trace = False and not g.app.unitTesting
         c = self.c
 
         if self.busy():
@@ -952,7 +952,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 self.selecting = True
                 # This generates gui events, so we must use a lockout.
                 self.setCurrentItemHelper(item)
-                if scroll:
+                if True: #### scroll:
                     if trace: g.trace(self.traceItem(item),g.callers(4))
                     self.scrollToItem(item)
             finally:

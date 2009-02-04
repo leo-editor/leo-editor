@@ -869,7 +869,7 @@ class tkinterGui(leoGui.leoGui):
 
         '''A gui-independent wrapper for gui events.'''
 
-        def __init__ (self,event,c):
+        def __init__ (self,event,c,stroke=None):
 
             # g.trace('leoKeyEvent(tkGui)')
             self.actualEvent = event
@@ -888,11 +888,13 @@ class tkinterGui(leoGui.leoGui):
                 # Translate keysyms for ascii characters to the character itself.
                 self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
 
+            self.stroke = g.choose(stroke,stroke,self.keysym)
             self.widget = self.w
 
         def __repr__ (self):
 
-            return 'tkGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
+            return 'tkGui.leoKeyEvent: char: %s, keysym: %s' % (
+                repr(self.char),repr(self.keysym))
     #@nonl
     #@-node:ekr.20081121110412.403:class leoKeyEvent (tkGui)
     #@-others

@@ -13,26 +13,190 @@
 #@+node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20090202191501.6:Today
 #@+node:ekr.20090202191501.8:Improve isearch commands
+@nocolor-node
+
+To do:
+
+- Repeat the search with Alt-S
+- Allow searches in headlines.
+#@nonl
+#@+node:ekr.20040803072955.128:leoTree.select & helper
+tree_select_lockout = False
+
+def select (self,p,scroll=True):
+
+    '''Select a node.
+    Never redraws outline, but may change coloring of individual headlines.
+    The scroll argument is used by tk to suppress scrolling while dragging.'''
+
+    if g.app.killed or self.tree_select_lockout: return None
+
+    try:
+        c = self.c ; old_p = c.p
+        val = 'break'
+        self.tree_select_lockout = True
+        c.frame.tree.beforeSelectHint(p,old_p)
+        val = self.treeSelectHelper(p,scroll=scroll)
+    finally:
+        self.tree_select_lockout = False
+        c.frame.tree.afterSelectHint(p,old_p)
+
+    return val  # Don't put a return in a finally clause.
+#@+node:ekr.20070423101911:treeSelectHelper
+#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+
+def treeSelectHelper (self,p,scroll):
+
+    trace = False ; verbose = False
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.p
+
+    if not p:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    if trace:
+        if verbose: g.trace(
+            '\nold:',old_p and old_p.h,'\nnew:',p and p.h)
+        else: g.trace(p and p.h)
+
+    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        if old_p:
+            << unselect the old node >>
+
+    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        << select the new node >>
+        if p and p != old_p: # Suppress duplicate call.
+            try: # may fail during initialization.
+                # p is NOT c.p here!
+                if 0: # Interferes with new colorizer.
+                    self.canvas.update_idletasks()
+                    self.scrollTo(p)
+                if scroll and g.app.gui.guiName() == 'tkinter':
+                    def scrollCallback(self=self,p=p):
+                        self.scrollTo(p)
+                    self.canvas.after(100,scrollCallback)
+            except Exception: pass
+        c.nodeHistory.update(p) # Remember this position.
+    c.setCurrentPosition(p)
+    << set the current node >>
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    return 'break' # Supresses unwanted selection.
+#@+node:ekr.20040803072955.129:<< unselect the old node >>
+# Remember the position of the scrollbar before making any changes.
+if body:
+    yview = body.getYScrollPosition()
+    insertSpot = c.frame.body.getInsertPoint()
+else:
+    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+    yview,insertSpot = None,0
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+
+if old_p:
+    old_p.v.t.scrollBarSpot = yview
+    old_p.v.t.insertSpot = insertSpot
+#@-node:ekr.20040803072955.129:<< unselect the old node >>
+#@+node:ekr.20040803072955.130:<< select the new node >>
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.h
+frame.setWrap(p)
+
+# Always do this.  Otherwise there can be problems with trailing newlines.
+
+s = g.toUnicode(p.v.t._bodyString,"utf-8")
+old_s = w.getAllText()
+
+if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+    pass
+else:
+    # This destroys all color tags, so do a full recolor.
+    w.setAllText(s)
+    self.frame.body.recolor(p) # recolor now uses p.copy(), so this is safe.
+
+if p.v and p.v.t.scrollBarSpot != None:
+    first,last = p.v.t.scrollBarSpot
+    w.setYScrollPosition(first)
+
+if p.v and p.v.t.insertSpot != None:
+    spot = p.v.t.insertSpot
+    w.setInsertPoint(spot)
+    w.see(spot)
+else:
+    w.setInsertPoint(0)
+
+# g.trace("select:",p.h)
+#@-node:ekr.20040803072955.130:<< select the new node >>
+#@+node:ekr.20040803072955.133:<< set the current node >>
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+if self.use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
+
+if self.stayInTree:
+    c.treeWantsFocus()
+else:
+    c.bodyWantsFocus()
+#@-node:ekr.20040803072955.133:<< set the current node >>
+#@-node:ekr.20070423101911:treeSelectHelper
+#@-node:ekr.20040803072955.128:leoTree.select & helper
+#@+node:ekr.20031218072017.2997:c.selectPosition
+def selectPosition(self,p):
+
+    """Select a new position."""
+
+    c = self ; cc = c.chapterController
+
+    if cc:
+        cc.selectChapterForPosition(p)
+
+    # g.trace(p.h,g.callers())
+
+    c.expandAllAncestors(p)
+    c.frame.tree.select(p)
+
+    # New in Leo 4.4.2.
+    c.setCurrentPosition(p)
+        # Do *not* test whether the position exists!
+        # We may be in the midst of an undo.
+
+selectVnode = selectPosition
+#@-node:ekr.20031218072017.2997:c.selectPosition
 #@+node:ekr.20050920084036.258: ctor (searchCommandsClass)
 def __init__ (self,c):
 
     # g.trace('searchCommandsClass')
 
-    baseEditCommandsClass.__init__(self,c) # init the base class.
+    baseEditCommandsClass.__init__(self,c)
+        # init the base class.
+        # sets self.c
 
     self.findTabHandler = None
     self.minibufferFindHandler = None
     self.inited = False
 
-    try:
-        self.w = c.frame.body.bodyCtrl
-    except AttributeError:
-        self.w = None
-
     # For isearch commands.
     self.ifinder = leoFind.leoFind(c,title='ifinder')
-    self.isearch_v = None # vnode of last isearch.
-    self.isearch_stack = [] # A stack of previous matches: entries are: (sel,insert)
+    self.stack = [] # Entries are (p,sel)
     self.ignoreCase = None
     self.forward = None
     self.regexp = None
@@ -40,54 +204,178 @@ def __init__ (self,c):
 #@+node:ekr.20050920084036.261:incremental search...
 def isearchForward (self,event):
     '''Begin a forward incremental search.'''
-    self.startIncremental(event,forward=True,ignoreCase=False,regexp=False)
+    self.startIncremental(event,'isearch-forward',
+        forward=True,ignoreCase=False,regexp=False)
 
 def isearchBackward (self,event):
     '''Begin a backward incremental search.'''
-    self.startIncremental(event,forward=False,ignoreCase=False,regexp=False)
+    self.startIncremental(event,'isearch-backward',
+        forward=False,ignoreCase=False,regexp=False)
 
 def isearchForwardRegexp (self,event):
     '''Begin a forward incremental regexp search.'''
-    self.startIncremental(event,forward=True,ignoreCase=False,regexp=True)
+    self.startIncremental(event,'isearch-forward-regexp',
+        forward=True,ignoreCase=False,regexp=True)
 
 def isearchBackwardRegexp (self,event):
     '''Begin a backard incremental regexp search.'''
-    self.startIncremental(event,forward=False,ignoreCase=False,regexp=True)
+    self.startIncremental(event,'isearch-backward-regexp',
+        forward=False,ignoreCase=False,regexp=True)
 
 def isearchWithPresentOptions (self,event):
-    '''Begin an incremental regexp search using the regexp and reverse options from the find panel.'''
-    self.startIncremental(event,forward=None,ignoreCase=None,regexp=None)
-#@+node:ekr.20060420144640:iSearchBackspace
+    '''Begin an incremental regexp search using find panel options.'''
+    self.startIncremental(event,'isearch-with-present-options',
+        forward=None,ignoreCase=None,regexp=None)
+#@+node:ekr.20090204084607.1:abortSearch
+def abortSearch (self):
+
+    '''Restore the original position and selection.'''
+
+    c = self.c ; k = self.k ; w = c.frame.body.bodyCtrl
+
+    k.clearState()
+    k.resetLabel()
+
+    p,i,j = self.stack[0]
+    c.redraw_after_select(p)
+    c.bodyWantsFocusNow()
+    w.setSelectionRange(i,j)
+
+    # g.trace(p.h,i,j)
+#@-node:ekr.20090204084607.1:abortSearch
+#@+node:ekr.20060203072636:endSearch
+def endSearch (self):
+
+    c,k = self.c,self.k
+
+    k.clearState()
+    k.resetLabel()
+    c.bodyWantsFocusNow()
+#@-node:ekr.20060203072636:endSearch
+#@+node:ekr.20090204084607.2:iSearch
+def iSearch (self,again=False):
+
+    '''Handle the actual incremental search.'''
+
+    c = self.c ; k = self.k
+    w = c.frame.body.bodyCtrl
+    ifinder = self.ifinder
+    reverse = not self.forward
+    pattern = k.getLabel(ignorePrompt=True)
+    if not pattern:
+        return self.abortSearch()
+    try:
+        # Save
+        oldPattern = ifinder.find_text
+        oldReverse = ifinder.reverse
+        oldSearchHeadline = ifinder.search_headline
+        oldSearchBody = ifinder.search_body
+        # Override
+        ifinder.reverse = reverse
+        ifinder.search_headline = False
+        ifinder.search_body = True
+        ifinder.find_text = pattern
+        # Prepare the search.
+        c.bodyWantsFocusNow()
+        ifinder.c = c ; ifinder.p = c.p
+        s = w.getAllText()
+        i,j = w.getSelectionRange()
+        if again:   ins = g.choose(reverse,i,j+len(pattern))
+        else:       ins = g.choose(reverse,j+len(pattern),i)
+        ifinder.init_s_ctrl(s,ins)
+        # Do the search!
+        pos, newpos = ifinder.findNextMatch()
+    finally:
+        # Restore.
+        ifinder.find_text = oldPattern
+        ifinder.reverse = oldReverse
+        ifinder.search_headline = oldSearchHeadline
+        ifinder.search_body = oldSearchBody
+
+    if pos is not None: # success.
+        ifinder.showSuccess(pos,newpos,showState=False)
+        i,j = w.getSelectionRange(sort=False)
+        if not again: self.push(c.p,i,j)
+    elif ifinder.wrapping:
+        g.es("end of wrapped search")
+    else:
+        g.es("not found","'%s'" % (pattern))
+        event = g.Bunch(char='\b',keysym='\b',stroke='BackSpace')
+        k.updateLabel(event)
+#@-node:ekr.20090204084607.2:iSearch
+#@+node:ekr.20090204084607.4:iSearchBackspace
 def iSearchBackspace (self):
 
-    c = self.c ; k = self.k ; gui = g.app.gui ; w = self.w
+    c = self.c ; w = c.frame.body.bodyCtrl
 
-    if not self.isearch_stack:
-        ins = w.getInsertPoint()
-        self.endSearch(ins,ins)
-        return 
+    # Reduce the stack by net 1.
+    # g.trace(self.stack)
+    junk = self.pop()
+    p,i,j = self.pop()
+    self.push(p,i,j)
 
-    gui.set_focus(c,w)
-    pattern = k.getLabel(ignorePrompt=True)
-    self.scolorizer(event=None,pattern=pattern)
+    c.selectPosition(p)
 
-    sel,ins = self.isearch_stack.pop()
+    c.bodyWantsFocusNow()
+    if i > j: i,j = j,i
+    w.setSelectionRange(i,j)
 
-    if sel:
-        i,j = sel
-        w.setSelectionRange(i,j,insert=ins)
+    if len(self.stack) <= 1:
+        self.abortSearch()
+
+
+
+#@-node:ekr.20090204084607.4:iSearchBackspace
+#@+node:ekr.20050920084036.264:iSearchStateHandler
+# Called from the state manager when the state is 'isearch'
+
+def iSearchStateHandler (self,event):
+
+    c = self.c ; k = self.k
+    stroke = event.stroke
+    g.trace('stroke',repr(stroke))
+
+    # No need to recognize ctrl-z.
+    if stroke in ('Escape','Return'):
+        self.endSearch()
+    elif stroke in self.iSearchStrokes:
+        self.iSearch(again=True)
+    elif stroke == 'BackSpace':
+        k.updateLabel(event)
+        self.iSearchBackspace()
+    elif stroke.startswith('Ctrl+') or stroke.startswith('Alt+'):
+        # End the search and execute the command.
+        self.endSearch()
+        k.masterKeyHandler(event,stroke=stroke)
     else:
-        w.setInsertPoint(ins)
+        k.updateLabel(event)
+        self.iSearch()
+#@nonl
+#@-node:ekr.20050920084036.264:iSearchStateHandler
+#@+node:ekr.20090204084607.6:getStrokes
+def getStrokes (self,commandName):
 
-    w.seeInsertPoint()
+    c = self.c
 
-    if not self.isearch_stack:
-        self.endSearch(ins,ins)
-#@-node:ekr.20060420144640:iSearchBackspace
+    aList = self.inverseBindingDict.get(commandName,[])
+    return [key for pane,key in aList]
+#@-node:ekr.20090204084607.6:getStrokes
+#@+node:ekr.20090204084607.5:push & pop
+def push (self,p,i,j):
+
+    data = p.copy(),i,j
+    self.stack.append(data)
+
+def pop (self):
+
+    data = self.stack.pop()
+    p,i,j = data
+    return p,i,j
+#@-node:ekr.20090204084607.5:push & pop
 #@+node:ekr.20050920084036.262:startIncremental
-def startIncremental (self,event,forward,ignoreCase,regexp):
+def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
 
-    c = self.c ; k = self.k ; w = self.w
+    c = self.c ; k = self.k
 
     # None is a signal to get the option from the find tab.
     if forward is None or regexp is None:
@@ -98,7 +386,7 @@ def startIncremental (self,event,forward,ignoreCase,regexp):
         # g.trace('reverse',getOption('reverse'))
         # g.trace('pattern',getOption('pattern_match'))
     else:
-        getOption = lambda a: False # The value isn't used.
+        def getOption(s): pass # The value isn't used.
 
     self.event = event
     self.forward    = g.choose(forward is None,not getOption('reverse'),forward)
@@ -106,9 +394,14 @@ def startIncremental (self,event,forward,ignoreCase,regexp):
     self.regexp     = g.choose(regexp  is None,getOption('pattern_match'),regexp)
     # Note: the word option can't be used with isearches!
 
-    self.ins1 = ins = w.getInsertPoint()
-    sel = w.getSelectionRange() or (ins,ins),
-    self.isearch_stack = [(sel,ins),]
+    self.w = w = c.frame.body.bodyCtrl
+    self.p1 = c.p.copy()
+    self.sel1 = w.getSelectionRange(sort=False)
+    i,j = self.sel1
+    self.push(c.p,i,j)
+    self.inverseBindingDict = k.computeInverseBindingDict()
+    self.iSearchStrokes = self.getStrokes(commandName)
+    #### To do: remember whether we are in body pane or headline.
 
     k.setLabelBlue('Isearch%s%s%s: ' % (
             g.choose(self.forward,'',' Backward'),
@@ -118,92 +411,6 @@ def startIncremental (self,event,forward,ignoreCase,regexp):
     k.setState('isearch',1,handler=self.iSearchStateHandler)
     c.minibufferWantsFocusNow()
 #@-node:ekr.20050920084036.262:startIncremental
-#@+node:ekr.20050920084036.264:iSearchStateHandler
-# Called when from the state manager when the state is 'isearch'
-
-def iSearchStateHandler (self,event):
-
-    c = self.c ; k = self.k ; w = self.w
-
-    if not event:
-        g.trace('no event',g.callers())
-        return
-    keysym = event.keysym
-    ch = event.char
-    if keysym == 'Control_L': return
-
-    c.bodyWantsFocusNow()
-    # g.trace('keysym',repr(keysym),'ch',repr(ch))
-    if keysym in ('Escape','Return'):
-        i,j = w.getSelectionRange()
-        if not self.forward: i,j = j,i
-        self.endSearch(i,j)
-    elif keysym == 'BackSpace':
-        k.updateLabel(event)
-        self.iSearchBackspace()
-    elif ch:
-        k.updateLabel(event)
-        self.iSearchHelper(event)
-        self.scolorizer(event)
-#@-node:ekr.20050920084036.264:iSearchStateHandler
-#@+node:ekr.20050920084036.265:scolorizer
-def scolorizer (self,event,pattern=None):
-
-    '''Colorizer for incremental searches.'''
-
-    pass # Doing nothing is fine: it simply selects text.
-#@-node:ekr.20050920084036.265:scolorizer
-#@+node:ekr.20050920084036.263:iSearchHelper
-def iSearchHelper (self,event):
-
-    '''Move the cursor to position that matches the pattern in the miniBuffer.
-    isearches do not cross node boundaries.'''
-
-    c = self.c ; gui = g.app.gui ; k = self.k ; w = self.w
-    p = c.p
-    self.searchString = pattern = k.getLabel(ignorePrompt=True)
-    if not pattern: return
-    s = w.getAllText()
-
-    if self.isearch_v != p.v:
-        self.isearch_v = p.v
-        self.isearch_stack = []
-
-    sel = w.getSelectionRange()
-    startindex = insert = w.getInsertPoint()
-
-    if self.forward:
-        i1 = startindex
-        j1 = len(s)
-    else:
-        i1 = 0
-        j1 = min(len(s),startindex + len(pattern))
-
-    i,j = self.ifinder.searchHelper(s,i1,j1,pattern,
-        backwards=not self.forward,
-        nocase=self.ignoreCase,
-        regexp=self.regexp,
-        word=False, # Incremental word-matches are not possible!
-        swapij=False)
-
-    if i != -1:
-        self.isearch_stack.append((sel,insert),)
-        # g.trace(i1,j1,i,j,pos,newpos)
-        gui.set_focus(c,w)
-        w.setSelectionRange(i,j,insert=i)
-#@-node:ekr.20050920084036.263:iSearchHelper
-#@+node:ekr.20060203072636:endSearch
-def endSearch (self,i,j):
-
-    w = self.w
-    w.tag_delete('color','color1')
-
-    insert = g.choose(self.forward,'sel.end','sel.start')
-    w.setSelectionRange(i,j,insert=insert)
-
-    self.k.keyboardQuit(event=None)
-#@nonl
-#@-node:ekr.20060203072636:endSearch
 #@-node:ekr.20050920084036.261:incremental search...
 #@-node:ekr.20090202191501.8:Improve isearch commands
 #@+node:ekr.20090202191501.9:Improve macro commands
@@ -342,6 +549,11 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 #@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
 #@-node:ekr.20090131200406.12:Improve rst3 plugin
 #@-node:ekr.20090103054019.1:First
+#@+node:ekr.20090204083025.1:Cleanup
+Remove all ####
+Remove redraw arg from treeSelectHelper.
+#@nonl
+#@-node:ekr.20090204083025.1:Cleanup
 #@+node:ekr.20081215070651.4:Bugs 5
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
 @nocolor

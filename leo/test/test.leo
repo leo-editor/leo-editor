@@ -11158,9 +11158,7 @@ print aList3.dump()
 
 # To see the docstring, enable auto-completion and type g.posList?
 # g.posList</t>
-<t tx="ekr.20090201162523.1"># define a macro: ctrl-f ab ctrl-r AB
-ab
-ab</t>
+<t tx="ekr.20090201162523.1"># define a macro: ctrl-f ab ctrl-r AB</t>
 <t tx="ekr.20090201192257.1">b = p.b
 try:
     w = c.frame.body.bodyCtrl

@@ -1372,7 +1372,7 @@ class leoFind:
         return (self.in_headline,p,w,insert,start,end)
     #@-node:ekr.20031218072017.3090:save (leoFind)
     #@+node:ekr.20031218072017.3091:showSuccess (test)
-    def showSuccess(self,pos,newpos):
+    def showSuccess(self,pos,newpos,showState=True):
 
         '''Display the result of a successful find operation.'''
 
@@ -1414,7 +1414,8 @@ class leoFind:
             else:
                 c.redraw_after_select(p)
             c.bodyWantsFocus()
-            c.k.showStateAndMode(w)
+            if showState:
+                c.k.showStateAndMode(w)
             w.setSelectionRange(pos,newpos,insert=insert)
             w.seeInsertPoint()
             c.outerUpdate()

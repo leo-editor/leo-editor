@@ -4210,7 +4210,7 @@ def redrawAndEdit(self,p,selectAll=False,selection=None):
 #@nonl
 #@-node:ekr.20031218072017.2991:c.redrawAndEdit
 #@+node:ekr.20031218072017.3091:showSuccess (test)
-def showSuccess(self,pos,newpos):
+def showSuccess(self,pos,newpos,showState=True):
 
     '''Display the result of a successful find operation.'''
 
@@ -4252,7 +4252,8 @@ def showSuccess(self,pos,newpos):
         else:
             c.redraw_after_select(p)
         c.bodyWantsFocus()
-        c.k.showStateAndMode(w)
+        if showState:
+            c.k.showStateAndMode(w)
         w.setSelectionRange(pos,newpos,insert=insert)
         w.seeInsertPoint()
         c.outerUpdate()
@@ -5837,21 +5838,17 @@ def __init__ (self,c):
 
     # g.trace('searchCommandsClass')
 
-    baseEditCommandsClass.__init__(self,c) # init the base class.
+    baseEditCommandsClass.__init__(self,c)
+        # init the base class.
+        # sets self.c
 
     self.findTabHandler = None
     self.minibufferFindHandler = None
     self.inited = False
 
-    try:
-        self.w = c.frame.body.bodyCtrl
-    except AttributeError:
-        self.w = None
-
     # For isearch commands.
     self.ifinder = leoFind.leoFind(c,title='ifinder')
-    self.isearch_v = None # vnode of last isearch.
-    self.isearch_stack = [] # A stack of previous matches: entries are: (sel,insert)
+    self.stack = [] # Entries are (p,sel)
     self.ignoreCase = None
     self.forward = None
     self.regexp = None
@@ -6136,54 +6133,178 @@ def findAgain (self,event):
 #@+node:ekr.20050920084036.261:incremental search...
 def isearchForward (self,event):
     '''Begin a forward incremental search.'''
-    self.startIncremental(event,forward=True,ignoreCase=False,regexp=False)
+    self.startIncremental(event,'isearch-forward',
+        forward=True,ignoreCase=False,regexp=False)
 
 def isearchBackward (self,event):
     '''Begin a backward incremental search.'''
-    self.startIncremental(event,forward=False,ignoreCase=False,regexp=False)
+    self.startIncremental(event,'isearch-backward',
+        forward=False,ignoreCase=False,regexp=False)
 
 def isearchForwardRegexp (self,event):
     '''Begin a forward incremental regexp search.'''
-    self.startIncremental(event,forward=True,ignoreCase=False,regexp=True)
+    self.startIncremental(event,'isearch-forward-regexp',
+        forward=True,ignoreCase=False,regexp=True)
 
 def isearchBackwardRegexp (self,event):
     '''Begin a backard incremental regexp search.'''
-    self.startIncremental(event,forward=False,ignoreCase=False,regexp=True)
+    self.startIncremental(event,'isearch-backward-regexp',
+        forward=False,ignoreCase=False,regexp=True)
 
 def isearchWithPresentOptions (self,event):
-    '''Begin an incremental regexp search using the regexp and reverse options from the find panel.'''
-    self.startIncremental(event,forward=None,ignoreCase=None,regexp=None)
-#@+node:ekr.20060420144640:iSearchBackspace
+    '''Begin an incremental regexp search using find panel options.'''
+    self.startIncremental(event,'isearch-with-present-options',
+        forward=None,ignoreCase=None,regexp=None)
+#@+node:ekr.20090204084607.1:abortSearch
+def abortSearch (self):
+
+    '''Restore the original position and selection.'''
+
+    c = self.c ; k = self.k ; w = c.frame.body.bodyCtrl
+
+    k.clearState()
+    k.resetLabel()
+
+    p,i,j = self.stack[0]
+    c.redraw_after_select(p)
+    c.bodyWantsFocusNow()
+    w.setSelectionRange(i,j)
+
+    # g.trace(p.h,i,j)
+#@-node:ekr.20090204084607.1:abortSearch
+#@+node:ekr.20060203072636:endSearch
+def endSearch (self):
+
+    c,k = self.c,self.k
+
+    k.clearState()
+    k.resetLabel()
+    c.bodyWantsFocusNow()
+#@-node:ekr.20060203072636:endSearch
+#@+node:ekr.20090204084607.2:iSearch
+def iSearch (self,again=False):
+
+    '''Handle the actual incremental search.'''
+
+    c = self.c ; k = self.k
+    w = c.frame.body.bodyCtrl
+    ifinder = self.ifinder
+    reverse = not self.forward
+    pattern = k.getLabel(ignorePrompt=True)
+    if not pattern:
+        return self.abortSearch()
+    try:
+        # Save
+        oldPattern = ifinder.find_text
+        oldReverse = ifinder.reverse
+        oldSearchHeadline = ifinder.search_headline
+        oldSearchBody = ifinder.search_body
+        # Override
+        ifinder.reverse = reverse
+        ifinder.search_headline = False
+        ifinder.search_body = True
+        ifinder.find_text = pattern
+        # Prepare the search.
+        c.bodyWantsFocusNow()
+        ifinder.c = c ; ifinder.p = c.p
+        s = w.getAllText()
+        i,j = w.getSelectionRange()
+        if again:   ins = g.choose(reverse,i,j+len(pattern))
+        else:       ins = g.choose(reverse,j+len(pattern),i)
+        ifinder.init_s_ctrl(s,ins)
+        # Do the search!
+        pos, newpos = ifinder.findNextMatch()
+    finally:
+        # Restore.
+        ifinder.find_text = oldPattern
+        ifinder.reverse = oldReverse
+        ifinder.search_headline = oldSearchHeadline
+        ifinder.search_body = oldSearchBody
+
+    if pos is not None: # success.
+        ifinder.showSuccess(pos,newpos,showState=False)
+        i,j = w.getSelectionRange(sort=False)
+        if not again: self.push(c.p,i,j)
+    elif ifinder.wrapping:
+        g.es("end of wrapped search")
+    else:
+        g.es("not found","'%s'" % (pattern))
+        event = g.Bunch(char='\b',keysym='\b',stroke='BackSpace')
+        k.updateLabel(event)
+#@-node:ekr.20090204084607.2:iSearch
+#@+node:ekr.20090204084607.4:iSearchBackspace
 def iSearchBackspace (self):
 
-    c = self.c ; k = self.k ; gui = g.app.gui ; w = self.w
+    c = self.c ; w = c.frame.body.bodyCtrl
 
-    if not self.isearch_stack:
-        ins = w.getInsertPoint()
-        self.endSearch(ins,ins)
-        return 
+    # Reduce the stack by net 1.
+    # g.trace(self.stack)
+    junk = self.pop()
+    p,i,j = self.pop()
+    self.push(p,i,j)
 
-    gui.set_focus(c,w)
-    pattern = k.getLabel(ignorePrompt=True)
-    self.scolorizer(event=None,pattern=pattern)
+    c.selectPosition(p)
 
-    sel,ins = self.isearch_stack.pop()
+    c.bodyWantsFocusNow()
+    if i > j: i,j = j,i
+    w.setSelectionRange(i,j)
 
-    if sel:
-        i,j = sel
-        w.setSelectionRange(i,j,insert=ins)
+    if len(self.stack) <= 1:
+        self.abortSearch()
+
+
+
+#@-node:ekr.20090204084607.4:iSearchBackspace
+#@+node:ekr.20050920084036.264:iSearchStateHandler
+# Called from the state manager when the state is 'isearch'
+
+def iSearchStateHandler (self,event):
+
+    c = self.c ; k = self.k
+    stroke = event.stroke
+    g.trace('stroke',repr(stroke))
+
+    # No need to recognize ctrl-z.
+    if stroke in ('Escape','Return'):
+        self.endSearch()
+    elif stroke in self.iSearchStrokes:
+        self.iSearch(again=True)
+    elif stroke == 'BackSpace':
+        k.updateLabel(event)
+        self.iSearchBackspace()
+    elif stroke.startswith('Ctrl+') or stroke.startswith('Alt+'):
+        # End the search and execute the command.
+        self.endSearch()
+        k.masterKeyHandler(event,stroke=stroke)
     else:
-        w.setInsertPoint(ins)
+        k.updateLabel(event)
+        self.iSearch()
+#@nonl
+#@-node:ekr.20050920084036.264:iSearchStateHandler
+#@+node:ekr.20090204084607.6:getStrokes
+def getStrokes (self,commandName):
 
-    w.seeInsertPoint()
+    c = self.c
 
-    if not self.isearch_stack:
-        self.endSearch(ins,ins)
-#@-node:ekr.20060420144640:iSearchBackspace
+    aList = self.inverseBindingDict.get(commandName,[])
+    return [key for pane,key in aList]
+#@-node:ekr.20090204084607.6:getStrokes
+#@+node:ekr.20090204084607.5:push & pop
+def push (self,p,i,j):
+
+    data = p.copy(),i,j
+    self.stack.append(data)
+
+def pop (self):
+
+    data = self.stack.pop()
+    p,i,j = data
+    return p,i,j
+#@-node:ekr.20090204084607.5:push & pop
 #@+node:ekr.20050920084036.262:startIncremental
-def startIncremental (self,event,forward,ignoreCase,regexp):
+def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
 
-    c = self.c ; k = self.k ; w = self.w
+    c = self.c ; k = self.k
 
     # None is a signal to get the option from the find tab.
     if forward is None or regexp is None:
@@ -6194,7 +6315,7 @@ def startIncremental (self,event,forward,ignoreCase,regexp):
         # g.trace('reverse',getOption('reverse'))
         # g.trace('pattern',getOption('pattern_match'))
     else:
-        getOption = lambda a: False # The value isn't used.
+        def getOption(s): pass # The value isn't used.
 
     self.event = event
     self.forward    = g.choose(forward is None,not getOption('reverse'),forward)
@@ -6202,9 +6323,14 @@ def startIncremental (self,event,forward,ignoreCase,regexp):
     self.regexp     = g.choose(regexp  is None,getOption('pattern_match'),regexp)
     # Note: the word option can't be used with isearches!
 
-    self.ins1 = ins = w.getInsertPoint()
-    sel = w.getSelectionRange() or (ins,ins),
-    self.isearch_stack = [(sel,ins),]
+    self.w = w = c.frame.body.bodyCtrl
+    self.p1 = c.p.copy()
+    self.sel1 = w.getSelectionRange(sort=False)
+    i,j = self.sel1
+    self.push(c.p,i,j)
+    self.inverseBindingDict = k.computeInverseBindingDict()
+    self.iSearchStrokes = self.getStrokes(commandName)
+    #### To do: remember whether we are in body pane or headline.
 
     k.setLabelBlue('Isearch%s%s%s: ' % (
             g.choose(self.forward,'',' Backward'),
@@ -6214,92 +6340,6 @@ def startIncremental (self,event,forward,ignoreCase,regexp):
     k.setState('isearch',1,handler=self.iSearchStateHandler)
     c.minibufferWantsFocusNow()
 #@-node:ekr.20050920084036.262:startIncremental
-#@+node:ekr.20050920084036.264:iSearchStateHandler
-# Called when from the state manager when the state is 'isearch'
-
-def iSearchStateHandler (self,event):
-
-    c = self.c ; k = self.k ; w = self.w
-
-    if not event:
-        g.trace('no event',g.callers())
-        return
-    keysym = event.keysym
-    ch = event.char
-    if keysym == 'Control_L': return
-
-    c.bodyWantsFocusNow()
-    # g.trace('keysym',repr(keysym),'ch',repr(ch))
-    if keysym in ('Escape','Return'):
-        i,j = w.getSelectionRange()
-        if not self.forward: i,j = j,i
-        self.endSearch(i,j)
-    elif keysym == 'BackSpace':
-        k.updateLabel(event)
-        self.iSearchBackspace()
-    elif ch:
-        k.updateLabel(event)
-        self.iSearchHelper(event)
-        self.scolorizer(event)
-#@-node:ekr.20050920084036.264:iSearchStateHandler
-#@+node:ekr.20050920084036.265:scolorizer
-def scolorizer (self,event,pattern=None):
-
-    '''Colorizer for incremental searches.'''
-
-    pass # Doing nothing is fine: it simply selects text.
-#@-node:ekr.20050920084036.265:scolorizer
-#@+node:ekr.20050920084036.263:iSearchHelper
-def iSearchHelper (self,event):
-
-    '''Move the cursor to position that matches the pattern in the miniBuffer.
-    isearches do not cross node boundaries.'''
-
-    c = self.c ; gui = g.app.gui ; k = self.k ; w = self.w
-    p = c.p
-    self.searchString = pattern = k.getLabel(ignorePrompt=True)
-    if not pattern: return
-    s = w.getAllText()
-
-    if self.isearch_v != p.v:
-        self.isearch_v = p.v
-        self.isearch_stack = []
-
-    sel = w.getSelectionRange()
-    startindex = insert = w.getInsertPoint()
-
-    if self.forward:
-        i1 = startindex
-        j1 = len(s)
-    else:
-        i1 = 0
-        j1 = min(len(s),startindex + len(pattern))
-
-    i,j = self.ifinder.searchHelper(s,i1,j1,pattern,
-        backwards=not self.forward,
-        nocase=self.ignoreCase,
-        regexp=self.regexp,
-        word=False, # Incremental word-matches are not possible!
-        swapij=False)
-
-    if i != -1:
-        self.isearch_stack.append((sel,insert),)
-        # g.trace(i1,j1,i,j,pos,newpos)
-        gui.set_focus(c,w)
-        w.setSelectionRange(i,j,insert=i)
-#@-node:ekr.20050920084036.263:iSearchHelper
-#@+node:ekr.20060203072636:endSearch
-def endSearch (self,i,j):
-
-    w = self.w
-    w.tag_delete('color','color1')
-
-    insert = g.choose(self.forward,'sel.end','sel.start')
-    w.setSelectionRange(i,j,insert=insert)
-
-    self.k.keyboardQuit(event=None)
-#@nonl
-#@-node:ekr.20060203072636:endSearch
 #@-node:ekr.20050920084036.261:incremental search...
 #@-node:ekr.20050920084036.257:class searchCommandsClass
 #@-node:ekr.20051023094009:Search classes
@@ -7084,6 +7124,38 @@ else:
 #@-node:ekr.20070423101911:treeSelectHelper
 #@-node:ekr.20040803072955.128:leoTree.select & helper
 #@-node:ekr.20090202064534.6:Don't scroll when expanding/contracting node.
+#@+node:ekr.20090204072745.1:Go to parent was causing a full redraw!
+# treeSelectHelper cause a redraw only if the new item isn't visible.
+# That is, the redraw flag isn't used, and will be eventually removed.
+#@nonl
+#@+node:ekr.20031218072017.2920:goToParent
+def goToParent (self,event=None):
+
+    '''Select the parent of the selected node.'''
+
+    c = self ; p = c.p
+
+    c.treeSelectHelper(p and p.parent())
+#@-node:ekr.20031218072017.2920:goToParent
+#@+node:ekr.20070226113916: treeSelectHelper
+def treeSelectHelper (self,p,redraw=False): #### No longer used.  To be removed.
+
+    c = self ; current = c.p
+
+    # g.trace(p and p.h,g.callers(4))
+
+    if not p: p = current
+
+    if p:
+        flag = c.expandAllAncestors(p)
+        if flag: #### redraw or flag or p != current:
+            c.redraw(p)
+        else:
+            c.selectPosition(p)
+
+    c.treeFocusHelper()
+#@-node:ekr.20070226113916: treeSelectHelper
+#@-node:ekr.20090204072745.1:Go to parent was causing a full redraw!
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
@@ -20990,54 +21062,178 @@ classesList = [
 #@+node:ekr.20050920084036.261:incremental search...
 def isearchForward (self,event):
     '''Begin a forward incremental search.'''
-    self.startIncremental(event,forward=True,ignoreCase=False,regexp=False)
+    self.startIncremental(event,'isearch-forward',
+        forward=True,ignoreCase=False,regexp=False)
 
 def isearchBackward (self,event):
     '''Begin a backward incremental search.'''
-    self.startIncremental(event,forward=False,ignoreCase=False,regexp=False)
+    self.startIncremental(event,'isearch-backward',
+        forward=False,ignoreCase=False,regexp=False)
 
 def isearchForwardRegexp (self,event):
     '''Begin a forward incremental regexp search.'''
-    self.startIncremental(event,forward=True,ignoreCase=False,regexp=True)
+    self.startIncremental(event,'isearch-forward-regexp',
+        forward=True,ignoreCase=False,regexp=True)
 
 def isearchBackwardRegexp (self,event):
     '''Begin a backard incremental regexp search.'''
-    self.startIncremental(event,forward=False,ignoreCase=False,regexp=True)
+    self.startIncremental(event,'isearch-backward-regexp',
+        forward=False,ignoreCase=False,regexp=True)
 
 def isearchWithPresentOptions (self,event):
-    '''Begin an incremental regexp search using the regexp and reverse options from the find panel.'''
-    self.startIncremental(event,forward=None,ignoreCase=None,regexp=None)
-#@+node:ekr.20060420144640:iSearchBackspace
+    '''Begin an incremental regexp search using find panel options.'''
+    self.startIncremental(event,'isearch-with-present-options',
+        forward=None,ignoreCase=None,regexp=None)
+#@+node:ekr.20090204084607.1:abortSearch
+def abortSearch (self):
+
+    '''Restore the original position and selection.'''
+
+    c = self.c ; k = self.k ; w = c.frame.body.bodyCtrl
+
+    k.clearState()
+    k.resetLabel()
+
+    p,i,j = self.stack[0]
+    c.redraw_after_select(p)
+    c.bodyWantsFocusNow()
+    w.setSelectionRange(i,j)
+
+    # g.trace(p.h,i,j)
+#@-node:ekr.20090204084607.1:abortSearch
+#@+node:ekr.20060203072636:endSearch
+def endSearch (self):
+
+    c,k = self.c,self.k
+
+    k.clearState()
+    k.resetLabel()
+    c.bodyWantsFocusNow()
+#@-node:ekr.20060203072636:endSearch
+#@+node:ekr.20090204084607.2:iSearch
+def iSearch (self,again=False):
+
+    '''Handle the actual incremental search.'''
+
+    c = self.c ; k = self.k
+    w = c.frame.body.bodyCtrl
+    ifinder = self.ifinder
+    reverse = not self.forward
+    pattern = k.getLabel(ignorePrompt=True)
+    if not pattern:
+        return self.abortSearch()
+    try:
+        # Save
+        oldPattern = ifinder.find_text
+        oldReverse = ifinder.reverse
+        oldSearchHeadline = ifinder.search_headline
+        oldSearchBody = ifinder.search_body
+        # Override
+        ifinder.reverse = reverse
+        ifinder.search_headline = False
+        ifinder.search_body = True
+        ifinder.find_text = pattern
+        # Prepare the search.
+        c.bodyWantsFocusNow()
+        ifinder.c = c ; ifinder.p = c.p
+        s = w.getAllText()
+        i,j = w.getSelectionRange()
+        if again:   ins = g.choose(reverse,i,j+len(pattern))
+        else:       ins = g.choose(reverse,j+len(pattern),i)
+        ifinder.init_s_ctrl(s,ins)
+        # Do the search!
+        pos, newpos = ifinder.findNextMatch()
+    finally:
+        # Restore.
+        ifinder.find_text = oldPattern
+        ifinder.reverse = oldReverse
+        ifinder.search_headline = oldSearchHeadline
+        ifinder.search_body = oldSearchBody
+
+    if pos is not None: # success.
+        ifinder.showSuccess(pos,newpos,showState=False)
+        i,j = w.getSelectionRange(sort=False)
+        if not again: self.push(c.p,i,j)
+    elif ifinder.wrapping:
+        g.es("end of wrapped search")
+    else:
+        g.es("not found","'%s'" % (pattern))
+        event = g.Bunch(char='\b',keysym='\b',stroke='BackSpace')
+        k.updateLabel(event)
+#@-node:ekr.20090204084607.2:iSearch
+#@+node:ekr.20090204084607.4:iSearchBackspace
 def iSearchBackspace (self):
 
-    c = self.c ; k = self.k ; gui = g.app.gui ; w = self.w
+    c = self.c ; w = c.frame.body.bodyCtrl
 
-    if not self.isearch_stack:
-        ins = w.getInsertPoint()
-        self.endSearch(ins,ins)
-        return 
+    # Reduce the stack by net 1.
+    # g.trace(self.stack)
+    junk = self.pop()
+    p,i,j = self.pop()
+    self.push(p,i,j)
 
-    gui.set_focus(c,w)
-    pattern = k.getLabel(ignorePrompt=True)
-    self.scolorizer(event=None,pattern=pattern)
+    c.selectPosition(p)
 
-    sel,ins = self.isearch_stack.pop()
+    c.bodyWantsFocusNow()
+    if i > j: i,j = j,i
+    w.setSelectionRange(i,j)
 
-    if sel:
-        i,j = sel
-        w.setSelectionRange(i,j,insert=ins)
+    if len(self.stack) <= 1:
+        self.abortSearch()
+
+
+
+#@-node:ekr.20090204084607.4:iSearchBackspace
+#@+node:ekr.20050920084036.264:iSearchStateHandler
+# Called from the state manager when the state is 'isearch'
+
+def iSearchStateHandler (self,event):
+
+    c = self.c ; k = self.k
+    stroke = event.stroke
+    g.trace('stroke',repr(stroke))
+
+    # No need to recognize ctrl-z.
+    if stroke in ('Escape','Return'):
+        self.endSearch()
+    elif stroke in self.iSearchStrokes:
+        self.iSearch(again=True)
+    elif stroke == 'BackSpace':
+        k.updateLabel(event)
+        self.iSearchBackspace()
+    elif stroke.startswith('Ctrl+') or stroke.startswith('Alt+'):
+        # End the search and execute the command.
+        self.endSearch()
+        k.masterKeyHandler(event,stroke=stroke)
     else:
-        w.setInsertPoint(ins)
+        k.updateLabel(event)
+        self.iSearch()
+#@nonl
+#@-node:ekr.20050920084036.264:iSearchStateHandler
+#@+node:ekr.20090204084607.6:getStrokes
+def getStrokes (self,commandName):
 
-    w.seeInsertPoint()
+    c = self.c
 
-    if not self.isearch_stack:
-        self.endSearch(ins,ins)
-#@-node:ekr.20060420144640:iSearchBackspace
+    aList = self.inverseBindingDict.get(commandName,[])
+    return [key for pane,key in aList]
+#@-node:ekr.20090204084607.6:getStrokes
+#@+node:ekr.20090204084607.5:push & pop
+def push (self,p,i,j):
+
+    data = p.copy(),i,j
+    self.stack.append(data)
+
+def pop (self):
+
+    data = self.stack.pop()
+    p,i,j = data
+    return p,i,j
+#@-node:ekr.20090204084607.5:push & pop
 #@+node:ekr.20050920084036.262:startIncremental
-def startIncremental (self,event,forward,ignoreCase,regexp):
+def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
 
-    c = self.c ; k = self.k ; w = self.w
+    c = self.c ; k = self.k
 
     # None is a signal to get the option from the find tab.
     if forward is None or regexp is None:
@@ -21048,7 +21244,7 @@ def startIncremental (self,event,forward,ignoreCase,regexp):
         # g.trace('reverse',getOption('reverse'))
         # g.trace('pattern',getOption('pattern_match'))
     else:
-        getOption = lambda a: False # The value isn't used.
+        def getOption(s): pass # The value isn't used.
 
     self.event = event
     self.forward    = g.choose(forward is None,not getOption('reverse'),forward)
@@ -21056,9 +21252,14 @@ def startIncremental (self,event,forward,ignoreCase,regexp):
     self.regexp     = g.choose(regexp  is None,getOption('pattern_match'),regexp)
     # Note: the word option can't be used with isearches!
 
-    self.ins1 = ins = w.getInsertPoint()
-    sel = w.getSelectionRange() or (ins,ins),
-    self.isearch_stack = [(sel,ins),]
+    self.w = w = c.frame.body.bodyCtrl
+    self.p1 = c.p.copy()
+    self.sel1 = w.getSelectionRange(sort=False)
+    i,j = self.sel1
+    self.push(c.p,i,j)
+    self.inverseBindingDict = k.computeInverseBindingDict()
+    self.iSearchStrokes = self.getStrokes(commandName)
+    #### To do: remember whether we are in body pane or headline.
 
     k.setLabelBlue('Isearch%s%s%s: ' % (
             g.choose(self.forward,'',' Backward'),
@@ -21068,92 +21269,6 @@ def startIncremental (self,event,forward,ignoreCase,regexp):
     k.setState('isearch',1,handler=self.iSearchStateHandler)
     c.minibufferWantsFocusNow()
 #@-node:ekr.20050920084036.262:startIncremental
-#@+node:ekr.20050920084036.264:iSearchStateHandler
-# Called when from the state manager when the state is 'isearch'
-
-def iSearchStateHandler (self,event):
-
-    c = self.c ; k = self.k ; w = self.w
-
-    if not event:
-        g.trace('no event',g.callers())
-        return
-    keysym = event.keysym
-    ch = event.char
-    if keysym == 'Control_L': return
-
-    c.bodyWantsFocusNow()
-    # g.trace('keysym',repr(keysym),'ch',repr(ch))
-    if keysym in ('Escape','Return'):
-        i,j = w.getSelectionRange()
-        if not self.forward: i,j = j,i
-        self.endSearch(i,j)
-    elif keysym == 'BackSpace':
-        k.updateLabel(event)
-        self.iSearchBackspace()
-    elif ch:
-        k.updateLabel(event)
-        self.iSearchHelper(event)
-        self.scolorizer(event)
-#@-node:ekr.20050920084036.264:iSearchStateHandler
-#@+node:ekr.20050920084036.265:scolorizer
-def scolorizer (self,event,pattern=None):
-
-    '''Colorizer for incremental searches.'''
-
-    pass # Doing nothing is fine: it simply selects text.
-#@-node:ekr.20050920084036.265:scolorizer
-#@+node:ekr.20050920084036.263:iSearchHelper
-def iSearchHelper (self,event):
-
-    '''Move the cursor to position that matches the pattern in the miniBuffer.
-    isearches do not cross node boundaries.'''
-
-    c = self.c ; gui = g.app.gui ; k = self.k ; w = self.w
-    p = c.p
-    self.searchString = pattern = k.getLabel(ignorePrompt=True)
-    if not pattern: return
-    s = w.getAllText()
-
-    if self.isearch_v != p.v:
-        self.isearch_v = p.v
-        self.isearch_stack = []
-
-    sel = w.getSelectionRange()
-    startindex = insert = w.getInsertPoint()
-
-    if self.forward:
-        i1 = startindex
-        j1 = len(s)
-    else:
-        i1 = 0
-        j1 = min(len(s),startindex + len(pattern))
-
-    i,j = self.ifinder.searchHelper(s,i1,j1,pattern,
-        backwards=not self.forward,
-        nocase=self.ignoreCase,
-        regexp=self.regexp,
-        word=False, # Incremental word-matches are not possible!
-        swapij=False)
-
-    if i != -1:
-        self.isearch_stack.append((sel,insert),)
-        # g.trace(i1,j1,i,j,pos,newpos)
-        gui.set_focus(c,w)
-        w.setSelectionRange(i,j,insert=i)
-#@-node:ekr.20050920084036.263:iSearchHelper
-#@+node:ekr.20060203072636:endSearch
-def endSearch (self,i,j):
-
-    w = self.w
-    w.tag_delete('color','color1')
-
-    insert = g.choose(self.forward,'sel.end','sel.start')
-    w.setSelectionRange(i,j,insert=insert)
-
-    self.k.keyboardQuit(event=None)
-#@nonl
-#@-node:ekr.20060203072636:endSearch
 #@-node:ekr.20050920084036.261:incremental search...
 #@+node:ekr.20070228160107:class leoKeyEvent (leoGui)
 class leoKeyEvent:

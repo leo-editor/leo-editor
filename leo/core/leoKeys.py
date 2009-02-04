@@ -3794,10 +3794,10 @@ class keyHandlerClass:
         '''Mimic what would happen with the keyboard and a Text editor
         instead of plain accumalation.'''
 
+        trace = False or self.trace_minibuffer and not g.app.unitTesting
         k = self ; c = k.c ; w = self.widget
         ch = (event and event.char) or ''
         keysym = (event and event.keysym) or ''
-        trace = self.trace_minibuffer and not g.app.unitTesting
 
         trace and g.trace('ch',ch,'keysym',keysym,'k.stroke',k.stroke)
         # g.trace(g.callers())

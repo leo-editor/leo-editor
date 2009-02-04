@@ -273,12 +273,12 @@ class baseCommands (object):
 
         c = self
 
-        g.pr('Commands...')
-
+        print('Commands...')
         for key in sorted(c.commandsDict):
             command = c.commandsDict.get(key)
-            g.pr('%30s = %s' % (key,g.choose(command,command.__name__,'<None>')))
-        g.pr('')
+            print('%30s = %s' % (
+                key,g.choose(command,command.__name__,'<None>')))
+        print('')
     #@-node:ekr.20051007143620:printCommandsDict
     #@-node:ekr.20050920093543:c.finishCreate & helper
     #@-node:ekr.20031218072017.2811: c.Birth & death
@@ -5537,7 +5537,7 @@ class baseCommands (object):
     #@nonl
     #@-node:ekr.20070226121510: treeFocusHelper
     #@+node:ekr.20070226113916: treeSelectHelper
-    def treeSelectHelper (self,p,redraw=False): #### was true.
+    def treeSelectHelper (self,p,redraw=False): #### No longer used.  To be removed.
 
         c = self ; current = c.p
 
