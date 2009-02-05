@@ -6112,11 +6112,11 @@ class jEditColorizer:
             kind = 'leoKeyword'
             self.colorRangeWithTag(s,i,j,kind)
             self.prev = (i,j,kind)
-            result = j-i
+            result = j-i+1 # Bug fix: skip the last character.
             self.trace_match(kind,s,i,j)
             return result
         else:
-            return -(j-i)
+            return -(j-i+1) # An important optimization.
     #@-node:ekr.20081205131308.42:match_leo_keywords
     #@+node:ekr.20081205131308.43:match_section_ref
     def match_section_ref (self,s,i):
