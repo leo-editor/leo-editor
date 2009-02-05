@@ -3807,7 +3807,7 @@ class keyHandlerClass:
             c.widgetWantsFocusNow(w)
             i,j = w.getSelectionRange()
             ins = w.getInsertPoint()
-            g.trace(i,j,ins)
+            # g.trace(i,j,ins)
             if i != j:
                 w.delete(i,j)
                 #### w.setSelectionRange(i,i,insert=i) #### for tk
