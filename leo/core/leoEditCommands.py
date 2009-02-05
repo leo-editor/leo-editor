@@ -7867,6 +7867,7 @@ class searchCommandsClass (baseEditCommandsClass):
 
         if pos is not None: # success.
             ifinder.showSuccess(pos,newpos,showState=False)
+            c.bodyWantsFocusNow()
             i,j = w.getSelectionRange(sort=False)
             if not again: self.push(c.p,i,j)
         elif ifinder.wrapping:

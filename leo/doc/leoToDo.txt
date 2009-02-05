@@ -20,167 +20,336 @@ To do:
 - Repeat the search with Alt-S
 - Allow searches in headlines.
 #@nonl
-#@+node:ekr.20040803072955.128:leoTree.select & helper
-tree_select_lockout = False
+#@+node:ekr.20070228160107:class leoKeyEvent (leoGui)
+class leoKeyEvent:
 
-def select (self,p,scroll=True):
+    '''A gui-independent wrapper for gui events.'''
 
-    '''Select a node.
-    Never redraws outline, but may change coloring of individual headlines.
-    The scroll argument is used by tk to suppress scrolling while dragging.'''
+    def __init__ (self,event,c,stroke=None):
 
-    if g.app.killed or self.tree_select_lockout: return None
+        # g.trace('leoKeyEvent(leoGui)')
+        self.actualEvent = event
+        self.c      = c # Required to access c.k tables.
+        self.char   = hasattr(event,'char') and event.char or ''
+        self.keysym = hasattr(event,'keysym') and event.keysym or ''
+        self.state  = hasattr(event,'state') and event.state or 0
+        self.stroke = hasattr(event,'stroke') and event.stroke or ''
+        self.w      = hasattr(event,'widget') and event.widget or None
+        self.x      = hasattr(event,'x') and event.x or 0
+        self.y      = hasattr(event,'y') and event.y or 0
+        # Support for fastGotoNode plugin
+        self.x_root = hasattr(event,'x_root') and event.x_root or 0
+        self.y_root = hasattr(event,'y_root') and event.y_root or 0
 
-    try:
-        c = self.c ; old_p = c.p
-        val = 'break'
-        self.tree_select_lockout = True
-        c.frame.tree.beforeSelectHint(p,old_p)
-        val = self.treeSelectHelper(p,scroll=scroll)
-    finally:
-        self.tree_select_lockout = False
-        c.frame.tree.afterSelectHint(p,old_p)
+        if self.keysym and c.k:
+            # Translate keysyms for ascii characters to the character itself.
+            self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
 
-    return val  # Don't put a return in a finally clause.
-#@+node:ekr.20070423101911:treeSelectHelper
-#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+        if stroke and not self.stroke:
+            self.stroke = self.actualEvent.stroke = stroke
 
-def treeSelectHelper (self,p,scroll):
+        self.widget = self.w
 
-    trace = False ; verbose = False
-    c = self.c ; frame = c.frame
-    body = w = frame.body.bodyCtrl
-    if not w: return # Defensive.
+    def __repr__ (self):
 
-    old_p = c.p
+        if self.stroke:
+            return 'leoGui.leoKeyEvent: stroke: %s' % (repr(self.stroke))
+        else:
+            return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
+                repr(self.char),repr(self.keysym))
+#@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
+#@+node:ekr.20061031131434.146:masterKeyHandler & helpers
+master_key_count = 0
 
-    if not p:
-        # Do *not* test c.positionExists(p) here.
-        # We may be in the process of changing roots.
-        return None # Not an error.
+def masterKeyHandler (self,event,stroke=None):
+
+    '''This is the handler for almost all key bindings.'''
+
+    << define vars >>
+    trace = False # or (not g.app.unitTesting or self.trace_masterKeyHandler)
+    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+    verbose = True
+
+    if keysym in special_keys:
+        if trace and verbose: g.trace('keysym',keysym)
+        return None
+    if traceGC: g.printNewObjects('masterKey 1')
+    if trace:
+        g.trace('stroke:',repr(stroke),'keysym:',
+            repr(event.keysym),'ch:',repr(event.char),'state',state)
+        # g.trace('callers',g.callers(5))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    # if stroke == 'Return': g.pdb()
+
+    # Handle keyboard-quit first.
+    if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        # g.trace('special case')
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.endKbdMacro()
+            return 'break'
+        else:
+            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+
+    if k.inState():
+        # This will return unless k.autoCompleterStateHandler
+        # (called from k.callStateFunction) returns 'do-standard-keys'
+        << handle mode bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 2')
+
+    if stroke and isPlain:
+        << handle special cases for plain keys >>
+
+    << handle per-pane bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 5')
+
+    return k.handleUnboundKeys(event,char,keysym,stroke)
+#@+node:ekr.20061031131434.147:<< define vars >>
+k = self ; c = k.c ; gui = g.app.gui
+
+if event:
+    # This is a leoGui base class event.
+    event = gui.leoKeyEvent(event,c,stroke=stroke)
+
+w = event.widget
+char = event.char
+keysym = event.keysym
+if stroke and not keysym:
+    event.keysym = keysym = stroke
+
+w_name = c.widget_name(w)
+state = k.state.kind
+
+special_keys = (
+    'Alt_L','Alt_R',
+    'Caps_Lock','Control_L','Control_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Num_Lock',
+    'Shift_L','Shift_R',
+    'Win_L','Win_R',
+)
+
+self.master_key_count += 1
+
+isPlain =  k.isPlainKey(stroke)
+#@nonl
+#@-node:ekr.20061031131434.147:<< define vars >>
+#@+node:ekr.20061031131434.149:<< handle mode bindings >>
+# First, honor minibuffer bindings for all except user modes.
+
+if state in ('getArg','getFileName','full-command','auto-complete'):
+    if k.handleMiniBindings(event,state,stroke):
+        return 'break'
+
+# Second, honor general modes.
+if state == 'getArg':
+    return k.getArg(event,stroke=stroke)
+elif state == 'getFileName':
+    return k.getFileName(event)
+elif state in ('full-command','auto-complete'):
+    # Do the default state action.
+    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
+    val = k.callStateFunction(event) # Calls end-command.
+    if val != 'do-standard-keys': return 'break'
+
+# Third, pass keys to user modes.
+else:
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        b = d.get(stroke)
+        if b:
+            if trace: g.trace('calling generalModeHandler',stroke)
+            k.generalModeHandler (event,
+                commandName=b.commandName,func=b.func,
+                modeName=state,nextMode=b.nextMode)
+            return 'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            if trace: g.trace('unbound key ends mode',stroke,state)
+            k.endMode(event)
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            handler(event)
+        else:
+            g.trace('No state handler for %s' % state)
+        return 'break'
+#@-node:ekr.20061031131434.149:<< handle mode bindings >>
+#@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
+# g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
+
+# Important: only keys bound somewhere have a stroke.
+# All unbound plain keys will be handled by handleUnboundKeys.
+
+if k.unboundKeyAction in ('insert','overwrite'):
+
+    for key in (k.unboundKeyAction,'body','log','text','all'):
+        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
+        d = k.masterBindingsDict.get(key,{})
+        if d:
+            b = d.get(stroke)
+            if b and b.commandName == 'auto-complete':
+                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
+                k.masterCommand(event,b.func,b.stroke,b.commandName)
+                return 'break'
+
+    if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
+    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+    return 'break'
+
+# Bound   plain keys in command mode are by the per-pane logic.
+# Unbound plain keys in command mode are ignored by handleUnboundKeys.
+
+# This code ignores all command-state keys if we are not in a text widget.
+elif k.unboundKeyAction == 'command':
+    if not g.app.gui.isTextWidget(w):
+        c.onCanvasKey(event)
+        return 'break'
+#@nonl
+#@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
+#@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
+keyStatesTuple = ('command','insert','overwrite')
+
+# g.trace('w_name',w_name,'stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
+
+for key,name in (
+    # Order here is similar to bindtags order.
+    ('command',None),
+    ('insert',None),
+    ('overwrite',None),
+    ('button',None),
+    ('body','body'),
+    ('text','head'), # Important: text bindings in head before tree bindings.
+    ('tree','head'),
+    ('tree','canvas'),
+    ('log', 'log'),
+    ('text','log'),
+    ('text',None),
+    ('all',None),
+):
+    if (
+        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+        name and w_name.startswith(name) or
+        key in ('text','all') and g.app.gui.isTextWidget(w) or
+        key in ('button','all')
+    ):
+        d = k.masterBindingsDict.get(key,{})
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+        # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
+        if d:
+            b = d.get(stroke)
+            if b:
+                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                if traceGC: g.printNewObjects('masterKey 3')
+                return k.masterCommand(event,b.func,b.stroke,b.commandName)
+#@-node:ekr.20061031131434.150:<< handle per-pane bindings >>
+#@+node:ekr.20061031131434.108:callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@-node:ekr.20061031131434.108:callStateFunction
+#@+node:ekr.20061031131434.152:handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('BackSpace','Return','Tab','Escape'):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName == 'replace-string' and state == 'getArg':
+                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
+                        return False # Let getArg handle it.
+                    elif b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit(event,hideTabs=True)
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocusNow() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@-node:ekr.20061031131434.152:handleMiniBindings
+#@+node:ekr.20080510095819.1:k.handleUnboudKeys
+def handleUnboundKeys (self,event,char,keysym,stroke):
+
+    k = self ; c = k.c ; trace = False
+    modesTuple = ('insert','overwrite')
 
     if trace:
-        if verbose: g.trace(
-            '\nold:',old_p and old_p.h,'\nnew:',p and p.h)
-        else: g.trace(p and p.h)
+        # if stroke: g.trace('***unexpected stroke***')
+        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
 
-    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-        if old_p:
-            << unselect the old node >>
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        return 'break'
 
-    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
 
-    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-        << select the new node >>
-        if p and p != old_p: # Suppress duplicate call.
-            try: # may fail during initialization.
-                # p is NOT c.p here!
-                if 0: # Interferes with new colorizer.
-                    self.canvas.update_idletasks()
-                    self.scrollTo(p)
-                if scroll and g.app.gui.guiName() == 'tkinter':
-                    def scrollCallback(self=self,p=p):
-                        self.scrollTo(p)
-                    self.canvas.after(100,scrollCallback)
-            except Exception: pass
-        c.nodeHistory.update(p) # Remember this position.
-    c.setCurrentPosition(p)
-    << set the current node >>
-    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
-    c.frame.updateStatusLine() # New in Leo 4.4.1.
+    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
+        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
+        if trace: g.trace('ignoring unbound non-ascii key')
+        return 'break'
 
-    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    elif keysym.find('Escape') != -1:
+        # Never insert escape characters.
+        return 'break'
 
-    return 'break' # Supresses unwanted selection.
-#@+node:ekr.20040803072955.129:<< unselect the old node >>
-# Remember the position of the scrollbar before making any changes.
-if body:
-    yview = body.getYScrollPosition()
-    insertSpot = c.frame.body.getInsertPoint()
-else:
-    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
-    yview,insertSpot = None,0
-
-if old_p != p:
-    self.endEditLabel() # sets editPosition = None
-    self.setUnselectedLabelState(old_p)
-
-if old_p:
-    old_p.v.t.scrollBarSpot = yview
-    old_p.v.t.insertSpot = insertSpot
-#@-node:ekr.20040803072955.129:<< unselect the old node >>
-#@+node:ekr.20040803072955.130:<< select the new node >>
-# Bug fix: we must always set this, even if we never edit the node.
-self.revertHeadline = p.h
-frame.setWrap(p)
-
-# Always do this.  Otherwise there can be problems with trailing newlines.
-
-s = g.toUnicode(p.v.t._bodyString,"utf-8")
-old_s = w.getAllText()
-
-if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
-    pass
-else:
-    # This destroys all color tags, so do a full recolor.
-    w.setAllText(s)
-    self.frame.body.recolor(p) # recolor now uses p.copy(), so this is safe.
-
-if p.v and p.v.t.scrollBarSpot != None:
-    first,last = p.v.t.scrollBarSpot
-    w.setYScrollPosition(first)
-
-if p.v and p.v.t.insertSpot != None:
-    spot = p.v.t.insertSpot
-    w.setInsertPoint(spot)
-    w.see(spot)
-else:
-    w.setInsertPoint(0)
-
-# g.trace("select:",p.h)
-#@-node:ekr.20040803072955.130:<< select the new node >>
-#@+node:ekr.20040803072955.133:<< set the current node >>
-self.setSelectedLabelState(p)
-
-frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
-
-if self.use_chapters:
-    cc = c.chapterController
-    theChapter = cc and cc.getSelectedChapter()
-    if theChapter:
-        theChapter.p = p.copy()
-        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
-
-if self.stayInTree:
-    c.treeWantsFocus()
-else:
-    c.bodyWantsFocus()
-#@-node:ekr.20040803072955.133:<< set the current node >>
-#@-node:ekr.20070423101911:treeSelectHelper
-#@-node:ekr.20040803072955.128:leoTree.select & helper
-#@+node:ekr.20031218072017.2997:c.selectPosition
-def selectPosition(self,p):
-
-    """Select a new position."""
-
-    c = self ; cc = c.chapterController
-
-    if cc:
-        cc.selectChapterForPosition(p)
-
-    # g.trace(p.h,g.callers())
-
-    c.expandAllAncestors(p)
-    c.frame.tree.select(p)
-
-    # New in Leo 4.4.2.
-    c.setCurrentPosition(p)
-        # Do *not* test whether the position exists!
-        # We may be in the midst of an undo.
-
-selectVnode = selectPosition
-#@-node:ekr.20031218072017.2997:c.selectPosition
+    else:
+        if trace: g.trace(repr(stroke),'no func')
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+#@-node:ekr.20080510095819.1:k.handleUnboudKeys
+#@-node:ekr.20061031131434.146:masterKeyHandler & helpers
 #@+node:ekr.20050920084036.258: ctor (searchCommandsClass)
 def __init__ (self,c):
 
@@ -294,6 +463,7 @@ def iSearch (self,again=False):
 
     if pos is not None: # success.
         ifinder.showSuccess(pos,newpos,showState=False)
+        c.bodyWantsFocusNow()
         i,j = w.getSelectionRange(sort=False)
         if not again: self.push(c.p,i,j)
     elif ifinder.wrapping:
@@ -3654,7 +3824,8 @@ def masterKeyHandler (self,event,stroke=None):
 k = self ; c = k.c ; gui = g.app.gui
 
 if event:
-    event = gui.leoKeyEvent(event,c)
+    # This is a leoGui base class event.
+    event = gui.leoKeyEvent(event,c,stroke=stroke)
 
 w = event.widget
 char = event.char
@@ -4438,7 +4609,8 @@ def masterKeyHandler (self,event,stroke=None):
 k = self ; c = k.c ; gui = g.app.gui
 
 if event:
-    event = gui.leoKeyEvent(event,c)
+    # This is a leoGui base class event.
+    event = gui.leoKeyEvent(event,c,stroke=stroke)
 
 w = event.widget
 char = event.char
@@ -5431,7 +5603,7 @@ class leoKeyEvent:
 
     '''A gui-independent wrapper for gui events.'''
 
-    def __init__ (self,event,c):
+    def __init__ (self,event,c,stroke=None):
 
         # g.trace('leoKeyEvent(leoGui)')
         self.actualEvent = event
@@ -5451,6 +5623,9 @@ class leoKeyEvent:
             # Translate keysyms for ascii characters to the character itself.
             self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
 
+        if stroke and not self.stroke:
+            self.stroke = self.actualEvent.stroke = stroke
+
         self.widget = self.w
 
     def __repr__ (self):
@@ -5460,7 +5635,6 @@ class leoKeyEvent:
         else:
             return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
                 repr(self.char),repr(self.keysym))
-#@nonl
 #@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
 #@-node:ekr.20080616110054.1:Problem 3
 #@+node:ekr.20080616110054.3:Other problems (from docstring)
@@ -5617,7 +5791,8 @@ def masterKeyHandler (self,event,stroke=None):
 k = self ; c = k.c ; gui = g.app.gui
 
 if event:
-    event = gui.leoKeyEvent(event,c)
+    # This is a leoGui base class event.
+    event = gui.leoKeyEvent(event,c,stroke=stroke)
 
 w = event.widget
 char = event.char

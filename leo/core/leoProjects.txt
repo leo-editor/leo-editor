@@ -6223,6 +6223,7 @@ def iSearch (self,again=False):
 
     if pos is not None: # success.
         ifinder.showSuccess(pos,newpos,showState=False)
+        c.bodyWantsFocusNow()
         i,j = w.getSelectionRange(sort=False)
         if not again: self.push(c.p,i,j)
     elif ifinder.wrapping:
@@ -19563,7 +19564,7 @@ class leoKeyEvent:
 
     '''A gui-independent wrapper for gui events.'''
 
-    def __init__ (self,event,c):
+    def __init__ (self,event,c,stroke=None):
 
         # g.trace('leoKeyEvent(leoGui)')
         self.actualEvent = event
@@ -19583,6 +19584,9 @@ class leoKeyEvent:
             # Translate keysyms for ascii characters to the character itself.
             self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
 
+        if stroke and not self.stroke:
+            self.stroke = self.actualEvent.stroke = stroke
+
         self.widget = self.w
 
     def __repr__ (self):
@@ -19592,7 +19596,6 @@ class leoKeyEvent:
         else:
             return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
                 repr(self.char),repr(self.keysym))
-#@nonl
 #@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
 #@+node:ekr.20061031131434.146:masterKeyHandler & helpers
 master_key_count = 0
@@ -19647,7 +19650,8 @@ def masterKeyHandler (self,event,stroke=None):
 k = self ; c = k.c ; gui = g.app.gui
 
 if event:
-    event = gui.leoKeyEvent(event,c)
+    # This is a leoGui base class event.
+    event = gui.leoKeyEvent(event,c,stroke=stroke)
 
 w = event.widget
 char = event.char
@@ -21152,6 +21156,7 @@ def iSearch (self,again=False):
 
     if pos is not None: # success.
         ifinder.showSuccess(pos,newpos,showState=False)
+        c.bodyWantsFocusNow()
         i,j = w.getSelectionRange(sort=False)
         if not again: self.push(c.p,i,j)
     elif ifinder.wrapping:
@@ -21275,7 +21280,7 @@ class leoKeyEvent:
 
     '''A gui-independent wrapper for gui events.'''
 
-    def __init__ (self,event,c):
+    def __init__ (self,event,c,stroke=None):
 
         # g.trace('leoKeyEvent(leoGui)')
         self.actualEvent = event
@@ -21295,6 +21300,9 @@ class leoKeyEvent:
             # Translate keysyms for ascii characters to the character itself.
             self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
 
+        if stroke and not self.stroke:
+            self.stroke = self.actualEvent.stroke = stroke
+
         self.widget = self.w
 
     def __repr__ (self):
@@ -21304,7 +21312,6 @@ class leoKeyEvent:
         else:
             return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
                 repr(self.char),repr(self.keysym))
-#@nonl
 #@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
 #@+node:ekr.20061031131434.146:masterKeyHandler & helpers
 master_key_count = 0
@@ -21359,7 +21366,8 @@ def masterKeyHandler (self,event,stroke=None):
 k = self ; c = k.c ; gui = g.app.gui
 
 if event:
-    event = gui.leoKeyEvent(event,c)
+    # This is a leoGui base class event.
+    event = gui.leoKeyEvent(event,c,stroke=stroke)
 
 w = event.widget
 char = event.char

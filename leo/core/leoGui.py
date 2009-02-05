@@ -445,7 +445,7 @@ class leoGui:
 
         '''A gui-independent wrapper for gui events.'''
 
-        def __init__ (self,event,c):
+        def __init__ (self,event,c,stroke=None):
 
             # g.trace('leoKeyEvent(leoGui)')
             self.actualEvent = event
@@ -464,6 +464,9 @@ class leoGui:
             if self.keysym and c.k:
                 # Translate keysyms for ascii characters to the character itself.
                 self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
+
+            if stroke and not self.stroke:
+                self.stroke = self.actualEvent.stroke = stroke
 
             self.widget = self.w
 

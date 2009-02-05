@@ -3270,7 +3270,8 @@ class keyHandlerClass:
         k = self ; c = k.c ; gui = g.app.gui
 
         if event:
-            event = gui.leoKeyEvent(event,c)
+            # This is a leoGui base class event.
+            event = gui.leoKeyEvent(event,c,stroke=stroke)
 
         w = event.widget
         char = event.char
