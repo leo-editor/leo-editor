@@ -6116,7 +6116,7 @@ class jEditColorizer:
             self.trace_match(kind,s,i,j)
             return result
         else:
-            return 0
+            return -(j-i)
     #@-node:ekr.20081205131308.42:match_leo_keywords
     #@+node:ekr.20081205131308.43:match_section_ref
     def match_section_ref (self,s,i):
