@@ -1,245 +1,9 @@
-'''Backlink - allow arbitrary links between nodes
-'''
-
-# Notes
-# 
-# gnxs won't work, because they belong to tnodes, not vnodes
-# 
-# Backlink will store all its stuff in v.unknownAttributes['_bklnk']
-# 
-# The vnode's id will be v.unknownAttributes['_bklnk']['id']
-# 
-# Unless Edward decides otherwise, backlink will use 
-# leo.core.leoNodes.nodeIndices.getNewIndex() to make these ids
-# 
-# When nodes are copied and pasted unknownAttributes are duplicated.
-# during load, backlink will create a dict. of vnode ids.  Duplicates
-# will be split, so that a node linking to a node which is copied and
-# pasted will link to both nodes after the paste, *after* a save and
-# load cycle.  Before a save and load cycle it will link to whichever
-# vnode originally held the id
-
-# TODO
-# 
-# - provide API
-# 
-# - mark Src / Dst - vnodes more robust that positions?
-# 
-# - store attributes for link start/whole-link/end (name, weight)
-# 
-# - restore dropped links (cut / paste or undo)?
-
-__version__ = '0.1.1'
-# 
-# 0.1 - initial release - TNB
-# 0.1.1 - both UIs work - TNB
-
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-# can this happen?
-# if g.app.gui is None:
-#     g.app.createTkGui(__file__)
+from PyQt4 import QtCore, QtGui, uic
+Qt = QtCore.Qt
 
-Tk = None
-Qt = None
-
-# UI class signatures, main class signature
-#
-# UI classes must have (i.e. owner will call):
-#     - __init__(owner)
-#     - showMessage(txt, color=['black'|'red'])
-#     - enableDelete(bool) (also unchecks delete checkbox)
-#     - loadList(listOfStrings)
-# UI classes should call the following on owner:
-#     - markSrc()
-#     - markDst()
-#     - linkSrc()
-#     - linkDst()
-#     - linkUnd()
-#     - loadLinksInt()
-#     - deleteSet(bool)
-#     - linkClicked(n) (zero based)
-    
-if g.app.gui.guiName() == "tkinter":
-    Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
-    class backlinkTkUI(object):
-        def __init__(self, owner):
-
-            self.owner = owner
-            c = self.owner.c
-            c.frame.log.createTab('Links', createText=False)
-            w = c.frame.log.frameDict['Links']
-
-            f = Tk.Frame(w)
-            scrollbar = Tk.Scrollbar(f, orient=Tk.VERTICAL)
-            self.listbox = Tk.Listbox(f, height=4, yscrollcommand=scrollbar.set)
-
-            scrollbar.config(command=self.listbox.yview)
-            scrollbar.pack(side=Tk.RIGHT, fill=Tk.Y)
-
-            self.listbox.pack(side=Tk.RIGHT, fill=Tk.BOTH, expand=True)
-
-            f.pack(side=Tk.TOP, fill=Tk.BOTH, expand=True)
-
-            self.listbox.bind("<ButtonRelease-1>", self.tkListClicked)
-
-            commands = [
-                ('Mark source', self.owner.markSrc),
-                ('Mark  dest.', self.owner.markDst),
-                ('Link source', self.owner.linkSrc),
-                ('Link dest.', self.owner.linkDst),
-                ('Undirected link', self.owner.linkUnd),
-                ('Rescan links', self.owner.loadLinksInt),
-            ]
-
-            comms = iter(commands)
-            for i in range(3):
-                f = Tk.Frame(w)
-                for j in range(2):
-                    txt, com = comms.next()
-                    b = Tk.Button(f, text=txt, width=10, height=1, command=com)
-                    b.pack(side=Tk.LEFT, fill=Tk.BOTH)
-                f.pack(side=Tk.TOP, fill=Tk.BOTH)
-
-            f = Tk.Frame(w)
-            self.message = Tk.Label(f, text='no msg.')
-            self.message.pack(side=Tk.LEFT)
-            self.delete = Tk.IntVar()
-            self.deleteButton = Tk.Checkbutton(f, text='Delete link', variable=self.delete,
-                command=self.tkDeleteClicked)
-            self.deleteButton.pack(side=Tk.RIGHT)
-            f.pack(side=Tk.TOP, fill=Tk.BOTH)
-
-        def loadList(self, lst):
-            self.listbox.delete(0, Tk.END)
-            for i in lst:
-                self.listbox.insert(Tk.END, i)
-
-        def enableDelete(self, enable):
-            self.delete.set(0)
-            if enable:
-                self.deleteButton.configure(state=Tk.NORMAL)
-            else:
-                self.deleteButton.configure(state=Tk.DISABLED)
-
-        def showMessage(self, msg, color='black'):
-            """Show the message using whatever u.i. is available"""
-
-            self.message.configure(text = msg, fg=color)
-        def tkListClicked(self, event):
-
-            selected = self.listbox.curselection() # list of selected indexes
-
-            if not selected:
-                return  # click on empty list of unlinked node
-
-            selected = int(selected[0])  # not some fancy smancy Tk value
-
-            self.owner.linkClicked(selected)
-        def tkDeleteClicked(self):
-
-            self.owner.deleteSet(self.delete.get())
-        def updateTkTab(self,tag,k):
-            # deprecated
-            if k['c'] != self.c: return  # not our problem
-
-            self.updateTkTabInt()
-        def updateTkTabInt(self):
-            # deprecated
-            c = self.c
-            p = c.p
-            v = p.v
-
-            self.listbox.delete(0,Tk.END)
-
-            self.messageUsed = False
-
-            self.delete.set(0)
-
-            self.deleteButton.configure(state=Tk.DISABLED)
-            self.showMessage('', optional=True)
-
-            if hasattr(v, 'unknownAttributes') and '_bklnk' in v.unknownAttributes:
-                i = 0
-                links = v.unknownAttributes['_bklnk']['links']
-                dests = []
-                while i < len(links):
-                    linkType, other = links[i]
-                    otherV = self.vnode[other]
-                    otherP = self.vnodePosition(otherV)
-                    if not self.c.positionExists(otherP):
-                        self.showMessage('Lost link(s) deleted', color='red')
-                        del links[i]
-                    else:
-                        i += 1
-                        dests.append((linkType, otherP))
-                if dests:
-                    self.deleteButton.configure(state=Tk.NORMAL)
-                    self.showMessage('Click a link to follow it', optional=True)
-                    for i in dests:
-                        def goThere(where = i[1]): c.selectPosition(where)
-                        txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + i[1].h
-                        self.listbox.insert(Tk.END, txt)
-                        def delLink(on=v,
-                            to=i[1].v.unknownAttributes['_bklnk']['id'],
-                            type_=i[0]): self.deleteLink(on,to,type_)
-                    self.dests = dests            
-elif g.app.gui.guiName() == "qt":
-    from PyQt4 import QtCore, QtGui, uic
-    Qt = QtCore.Qt
-
-    class backlinkQtUI(QtGui.QWidget):
-    
-        def __init__(self, owner):
-            
-            self.owner = owner
-        
-            QtGui.QWidget.__init__(self)
-            uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Backlink.ui')
-            form_class, base_class = uic.loadUiType(uiPath)
-            self.owner.c.frame.log.createTab('Links', widget = self) 
-            self.UI = form_class()
-            self.UI.setupUi(self)
-            
-            u = self.UI
-            o = self.owner
-        
-            self.connect(u.markSourceBtn,
-                         QtCore.SIGNAL("clicked()"), o.markSrc)
-            self.connect(u.markDestBtn,
-                         QtCore.SIGNAL("clicked()"), o.markDst)
-            self.connect(u.linkSourceBtn,
-                         QtCore.SIGNAL("clicked()"), o.linkSrc)
-            self.connect(u.linkDestBtn,
-                         QtCore.SIGNAL("clicked()"), o.linkDst)
-            self.connect(u.undirectedBtn,
-                         QtCore.SIGNAL("clicked()"), o.linkUnd)
-            self.connect(u.rescanBtn,
-                         QtCore.SIGNAL("clicked()"), o.loadLinksInt)
-                         
-            self.connect(u.linkList,
-                         QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.listClicked)
-            self.connect(u.deleteBtn,
-                         QtCore.SIGNAL("stateChanged(int)"), o.deleteSet)
-                         
-        def listClicked(self):
-            self.owner.linkClicked(self.UI.linkList.currentRow())
-            
-        def loadList(self, lst): 
-            self.UI.linkList.clear()
-            self.UI.linkList.addItems(lst)
-        def showMessage(self, msg, color='black'):
-            fg = Qt.black
-            if hasattr(Qt, color):
-                fg = getattr(Qt, color)
-            pal = QtGui.QPalette(self.UI.label.palette())
-            pal.setColor(QtGui.QPalette.WindowText, fg)
-            self.UI.label.setPalette(pal)
-            self.UI.label.setText(msg)
-        def enableDelete(self, enable):
-            self.UI.deleteBtn.setChecked(False)
-            self.UI.deleteBtn.setEnabled(enable)
 def init ():
 
     leoPlugins.registerHandler('after-create-leo-frame',onCreate)
@@ -252,26 +16,142 @@ def onCreate (tag, keys):
     c = keys.get('c')
     if not c: return
     
-    backlinkController(c)
-class backlinkController(object):
-    """Display and edit links in leo trees"""
+    graphcanvasController(c)
+class nodeItem(QtGui.QGraphicsTextItem):
+    """Node on the canvas"""
+    def __init__(self, glue, *args, **kargs):
+        """:Parameters:
+            - `glue`: glue object owning this
+
+        pass glue object and let it key nodeItems to leo nodes
+        """
+        self.glue = glue
+        QtGui.QGraphicsTextItem.__init__(self, *args)
+        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
+    def mouseMoveEvent(self, event):
+        QtGui.QGraphicsTextItem.mouseMoveEvent(self, event)
+        self.glue.newPos(self)
+class graphcanvasUI(QtGui.QWidget):
+    def __init__(self, owner=None):
+
+        self.owner = owner
+
+        # a = QtGui.QApplication([]) # argc, argv );
+
+        QtGui.QWidget.__init__(self)
+        uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'GraphCanvas.ui')
+        # uiPath = "GraphCanvas.ui"
+        form_class, base_class = uic.loadUiType(uiPath)
+        self.owner.c.frame.log.createTab('Graph', widget = self) 
+        self.UI = form_class()
+        self.UI.setupUi(self)
+
+        self.canvas = QtGui.QGraphicsScene()
+
+        self.canvasView = QtGui.QGraphicsView(self.canvas, self.UI.canvasFrame)
+        self.canvasView.setSceneRect(0,0,300,300)
+        self.canvasView.setRenderHints(QtGui.QPainter.Antialiasing)
+        u = self.UI
+        o = self.owner
+
+        self.connect(u.btnLoad, QtCore.SIGNAL("clicked()"), o.loadGraph)
+        self.connect(u.btnLoadSibs, QtCore.SIGNAL("clicked()"),
+            lambda: o.loadGraph('sibs'))
+        self.connect(u.btnLoadRecur, QtCore.SIGNAL("clicked()"),
+            lambda: o.loadGraph('recur'))
+        # self.show()
+        # a.exec_()
+class graphcanvasController(object):
+    """Display and edit links in leo"""
 
     def __init__ (self,c):
 
         self.c = c
-        self.c.backlinkController = self
         self.initIvars()
 
-        if Tk:
-            self.ui = backlinkTkUI(self)
-        elif Qt:
-            self.ui = backlinkQtUI(self)
+        self.ui = graphcanvasUI(self)
 
-        leoPlugins.registerHandler('select3', self.updateTab)
+        self.node = {}
+        self.nodeItem = {}
+        self.linkItem = {}
+    
+        # leoPlugins.registerHandler('select3', self.updateTab)
 
-        leoPlugins.registerHandler('open2', self.loadLinks)
+        # leoPlugins.registerHandler('open2', self.loadLinks)
         # already missed initial 'open2' because of after-create-leo-frame, so
-        self.loadLinksInt()
+        # self.loadLinksInt()
+    def loadGraph(self, what='node'):
+
+        if what == 'sibs':
+            collection = self.c.currentPosition().self_and_siblings_iter()
+        elif what == 'recur':
+            collection = self.c.currentPosition().subtree_iter()
+        else:
+            collection = [self.c.currentPosition()]
+        
+        for pos in collection:
+        
+            node = pos.v
+    
+            if node in self.nodeItem:
+                continue
+
+            txt = nodeItem(self, node.headString().replace(' ','\n'))
+    
+            self.node[txt] = node
+            self.nodeItem[node] = txt
+    
+            if '_bklnk' in node.u and 'x' in node.u['_bklnk']:
+                txt.setPos(node.u['_bklnk']['x'], node.u['_bklnk']['y'])
+            else:
+                node.u['_bklnk'] = {}
+                node.u['_bklnk']['x'] = 0
+                node.u['_bklnk']['y'] = 0
+        
+            self.ui.canvas.addItem(txt)
+        
+            blc = getattr(self.c, 'backlinkController')
+            if blc:
+                for link in blc.linksFrom(node):
+                    self.addLinkItem(node, link)
+                for link in blc.linksTo(node):
+                    self.addLinkItem(link, node)
+
+    def addLinkItem(self, from_, to):
+        if from_ not in self.nodeItem:
+            return
+        if to not in self.nodeItem:
+            return
+        key = (from_, to)
+        if key in self.linkItem:
+            return
+        li = QtGui.QGraphicsLineItem()
+        self.setLineItem(li, from_, to)
+
+        self.linkItem[key] = li
+        self.ui.canvas.addItem(li)
+    def setLineItem(self, li, from_, to):
+        li.setLine(
+            from_.u['_bklnk']['x'] + self.nodeItem[from_].textWidth() / 2., 
+            from_.u['_bklnk']['y'], 
+            to.u['_bklnk']['x'] + self.nodeItem[to].textWidth() / 2., 
+            to.u['_bklnk']['y']
+            )
+    def newPos(self, nodeItem):
+        """nodeItem is telling us it has a new position"""
+        node = self.node[nodeItem]
+        node.u['_bklnk']['x'] = nodeItem.x()
+        node.u['_bklnk']['y'] = nodeItem.y()
+
+        blc = getattr(self.c, 'backlinkController')
+        if blc:
+            for link in blc.linksFrom(node):
+                if (node, link) in self.linkItem:
+                    self.setLineItem(self.linkItem[(node, link)], node, link)
+
+            for link in blc.linksTo(node):
+                if (link, node) in self.linkItem:
+                    self.setLineItem(self.linkItem[(link, node)], link, node)
     def deleteLink(self, on, to, type_):
         """delete a link from 'on' to 'to' of type 'type_'"""
 
@@ -307,14 +187,14 @@ class backlinkController(object):
     def initBacklink(self, v):
         """set up a vnode to support links"""
 
-        if '_bklnk' not in v.u:
-            v.u['_bklnk'] = {}
-    
-        if 'id' not in v.u['_bklnk']:
-            vid = g.app.nodeIndices.toString(g.app.nodeIndices.getNewIndex())
-            v.u['_bklnk'].update({'id':vid, 'links':[]})
+        if not hasattr(v, 'unknownAttributes'):
+            v.unknownAttributes = {}
 
-        self.vnode[v.u['_bklnk']['id']] = v
+        if '_bklnk' not in v.unknownAttributes:
+            vid = g.app.nodeIndices.toString(g.app.nodeIndices.getNewIndex())
+            v.unknownAttributes['_bklnk'] = {'id':vid, 'links':[]}
+
+        self.vnode[v.unknownAttributes['_bklnk']['id']] = v
     def initIvars(self):
         """initialize, called by __init__ and loadLinks(Int)"""
 
@@ -331,19 +211,17 @@ class backlinkController(object):
         self.initBacklink(v0)
         self.initBacklink(v1)
 
-        print v0.headString(), v1.headString()
-
         linkType = 'U'
 
         if type_ == 'directed':
             linkType = 'S'
-        
-        v0.u['_bklnk']['links'].append( (linkType, v1.u['_bklnk']['id']) )
+        v0.unknownAttributes['_bklnk']['links'].append( (linkType,
+            v1.unknownAttributes['_bklnk']['id']) )
 
         if type_ == 'directed':
             linkType = 'D'
-        
-        v1.u['_bklnk']['links'].append( (linkType, v0.u['_bklnk']['id']) )
+        v1.unknownAttributes['_bklnk']['links'].append( (linkType,
+            v0.unknownAttributes['_bklnk']['id']) )
     def linkClicked(self, selected):
         """UI informs us that link number 'selected' (zero based) was clicked"""
 
@@ -368,25 +246,8 @@ class backlinkController(object):
         self.link(self.c.p, self.linkDestination)
 
         self.updateTabInt()
-    def linksFrom(self, v, type_='S'):
-        ans = []
-        if not (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
-            return ans
-    
-        for i in v.u['_bklnk']['links']:
-            linkType, other = i
-            if linkType == type_:
-                ans.append(self.vnode[other])
-        
-        return ans
-
-    def linksTo(self, v):
-        return self.linksFrom(v, type_='D')
     def linkSrc(self):
         """link from current position to source node"""
-
-        print self.c.p.headString()
-        print self.c.currentPosition().headString()
 
         if not self.linkSource or not self.c.positionExists(self.linkSource):
             self.showMessage('Link source not specified or no longer valid', color='red')
@@ -432,8 +293,8 @@ class backlinkController(object):
         for p in c.allNodes_iter():
             self.positions[p.v] = p.copy()
             v = p.v
-            if v.u and '_bklnk' in v.u and 'id' in v.u['_bklnk']:
-                vid = v.u['_bklnk']['id']
+            if hasattr(v, 'unknownAttributes') and '_bklnk' in v.unknownAttributes:
+                vid = v.unknownAttributes['_bklnk']['id']
                 if vid in ids:
                     ids[vid].append(v)
                 else:
@@ -483,33 +344,6 @@ class backlinkController(object):
         """Mark current position as 'source' (called by UI)"""
         self.linkSource = self.c.p.copy()
         self.showMessage('Source marked')
-    def positionExistsSomewhere(self,p,root=None):
-        """A local copy of c.positionExists so that when the
-        failure to check p._childIndex bug is fixed, that fixing
-        doesn't make backlink.py search more of the tree than it
-        needs to"""
-
-        # used by vnodePosition, not needed node there's c.vnode2position
-
-        c = self.c ; p = p.copy()
-
-        # This code must be fast.
-        if not root:
-            root = c.rootPosition()
-
-        while p:
-            if p == root:
-                return True
-            if p.hasParent():
-                v = p.v
-                p.moveToParent()
-                # Major bug fix: 2009/1/2
-                if v not in p.v.t.children:
-                    return False
-            else:
-                p.moveToBack()  # ???
-
-        return False
     def showLinksLog(self,tag,k):
 
         # deprecated
@@ -641,9 +475,9 @@ class backlinkController(object):
         self.showMessage('', optional=True)
 
         texts = []
-        if (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
+        if hasattr(v, 'unknownAttributes') and '_bklnk' in v.unknownAttributes:
             i = 0
-            links = v.u['_bklnk']['links']
+            links = v.unknownAttributes['_bklnk']['links']
             dests = []
             self.dests = dests
             while i < len(links):
@@ -694,3 +528,30 @@ class backlinkController(object):
                 return p.copy()
 
         return None
+    def positionExistsSomewhere(self,p,root=None):
+        """A local copy of c.positionExists so that when the
+        failure to check p._childIndex bug is fixed, that fixing
+        doesn't make backlink.py search more of the tree than it
+        needs to"""
+
+        # used by vnodePosition, not needed node there's c.vnode2position
+
+        c = self.c ; p = p.copy()
+
+        # This code must be fast.
+        if not root:
+            root = c.rootPosition()
+
+        while p:
+            if p == root:
+                return True
+            if p.hasParent():
+                v = p.v
+                p.moveToParent()
+                # Major bug fix: 2009/1/2
+                if v not in p.v.t.children:
+                    return False
+            else:
+                p.moveToBack()  # ???
+
+        return False
