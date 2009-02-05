@@ -5321,6 +5321,7 @@ class jEditColorizer:
         self.verbose = False
         # Profiling...
         self.totalChars = 0 # The total number of characters examined by recolor.
+        self.totalKeywordsCalls = 0
         self.totalLeoKeywordsCalls = 0
         # Mode data...
         self.comment_string = None # Can be set by @comment directive.
@@ -6095,6 +6096,8 @@ class jEditColorizer:
 
         # g.trace(i,g.get_line(s,i))
 
+        self.totalLeoKeywordsCalls += 1
+
         # We must be at the start of a word.
         if i > 0 and s[i-1] in self.word_chars:
             return 0
@@ -6248,7 +6251,7 @@ class jEditColorizer:
 
         '''Succeed if s[i:] is a keyword.'''
 
-        self.totalLeoKeywordsCalls += 1
+        self.totalKeywordsCalls += 1
 
         # Important.  Return -len(word) for failure greatly reduces
         # the number of times this method is called.

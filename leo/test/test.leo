@@ -160,7 +160,7 @@
 <v t="ekr.20070928095102.2"><vh>child2</vh></v>
 </v>
 </v>
-<v t="ekr.20070929122956.1"><vh>buttons</vh>
+<v t="ekr.20070929122956.1" a="E"><vh>buttons</vh>
 <v t="ekr.20070929070426"><vh>@@button print link</vh></v>
 <v t="ekr.20070927175908"><vh>@@button leo2graph</vh></v>
 <v t="ekr.20070929062147.1"><vh>@@button at-graph2graph</vh></v>
@@ -11175,7 +11175,9 @@ finally:
     p.b = b
 </t>
 <t tx="ekr.20090205070715.1">colorer = c.frame.body.colorizer.highlighter.colorer
-print ('total characters: %s, leo_keywords: %s' % (
-    colorer.totalChars,colorer.totalLeoKeywordsCalls))</t>
+g.es ('total characters: %s, keywords: %s, leo_keywords: %s' % (
+    colorer.totalChars,
+    colorer.totalKeywordsCalls,
+    colorer.totalLeoKeywordsCalls))</t>
 </tnodes>
 </leo_file>
