@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1055,6 +1055,7 @@
 </v>
 <v t="ekr.20090201162523.1"><vh>Macro test</vh></v>
 <v t="ekr.20090201192257.1"><vh>@test macro ab</vh></v>
+<v t="ekr.20090205070715.1"><vh>print colorer stats</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -3343,7 +3344,7 @@ leoTest.doTests (c,all=False)</t>
 # Important: if you want to specify a gui plugin here,
 # enable that plugin first.
 
-qtGui.py
+# qtGui.py
 # tkGui.py
 
 plugins_menu.py
@@ -3365,23 +3366,23 @@ plugins_menu.py
 # threading_colorizer.py
 
 # open_shell.py
-ipython.py
+#### ipython.py
 # open_with.py
-rClick.py
-toolbar.py
+#### rClick.py
+#### toolbar.py
 
 # add_directives.py # scan-directives hook not ready.
 # color_markup.py # Does not work with threading colorizer.
-rst3.py
-UNL.py
-open_with.py
-mod_scripting.py
-nav_buttons.py
-nodenavigator.py
-image.py
-leo_to_html.py
-# vim.py
-xemacs.py
+#### rst3.py
+#### UNL.py
+#### open_with.py
+#### mod_scripting.py
+#### nav_buttons.py
+#### nodenavigator.py
+#### image.py
+#### leo_to_html.py
+####  vim.py
+#### xemacs.py
 </t>
 <t tx="ekr.20071026102420.2"></t>
 <t tx="ekr.20071026102420.3"></t>
@@ -11173,5 +11174,8 @@ finally:
     assert p.b =='ab' + b,p.b
     p.b = b
 </t>
+<t tx="ekr.20090205070715.1">colorer = c.frame.body.colorizer.highlighter.colorer
+print ('total characters: %s, leo_keywords: %s' % (
+    colorer.totalChars,colorer.totalLeoKeywordsCalls))</t>
 </tnodes>
 </leo_file>
