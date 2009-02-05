@@ -309,7 +309,7 @@ class backlinkController(object):
 
         if '_bklnk' not in v.u:
             v.u['_bklnk'] = {}
-    
+
         if 'id' not in v.u['_bklnk']:
             vid = g.app.nodeIndices.toString(g.app.nodeIndices.getNewIndex())
             v.u['_bklnk'].update({'id':vid, 'links':[]})
@@ -331,19 +331,21 @@ class backlinkController(object):
         self.initBacklink(v0)
         self.initBacklink(v1)
 
-        print v0.headString(), v1.headString()
-
         linkType = 'U'
 
         if type_ == 'directed':
             linkType = 'S'
-        
+    
         v0.u['_bklnk']['links'].append( (linkType, v1.u['_bklnk']['id']) )
 
         if type_ == 'directed':
             linkType = 'D'
-        
+    
         v1.u['_bklnk']['links'].append( (linkType, v0.u['_bklnk']['id']) )
+
+        gcc = getattr(self.c, 'graphcanvasController')
+        if gcc:
+            gcc.update()
     def linkClicked(self, selected):
         """UI informs us that link number 'selected' (zero based) was clicked"""
 
@@ -372,21 +374,18 @@ class backlinkController(object):
         ans = []
         if not (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
             return ans
-    
+
         for i in v.u['_bklnk']['links']:
             linkType, other = i
             if linkType == type_:
                 ans.append(self.vnode[other])
-        
+    
         return ans
 
     def linksTo(self, v):
         return self.linksFrom(v, type_='D')
     def linkSrc(self):
         """link from current position to source node"""
-
-        print self.c.p.headString()
-        print self.c.currentPosition().headString()
 
         if not self.linkSource or not self.c.positionExists(self.linkSource):
             self.showMessage('Link source not specified or no longer valid', color='red')

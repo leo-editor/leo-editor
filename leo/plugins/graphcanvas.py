@@ -3,8 +3,10 @@ import leo.core.leoPlugins as leoPlugins
 
 from PyQt4 import QtCore, QtGui, uic
 Qt = QtCore.Qt
-
 def init ():
+
+    if g.app.gui.guiName() != "qt":
+        return False
 
     leoPlugins.registerHandler('after-create-leo-frame',onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
@@ -17,19 +19,33 @@ def onCreate (tag, keys):
     if not c: return
     
     graphcanvasController(c)
-class nodeItem(QtGui.QGraphicsTextItem):
+class nodeItem(QtGui.QGraphicsItemGroup):
     """Node on the canvas"""
-    def __init__(self, glue, *args, **kargs):
+    def __init__(self, glue, text, *args, **kargs):
         """:Parameters:
             - `glue`: glue object owning this
 
         pass glue object and let it key nodeItems to leo nodes
         """
         self.glue = glue
-        QtGui.QGraphicsTextItem.__init__(self, *args)
+        QtGui.QGraphicsItemGroup.__init__(self, *args)
+        self.text = QtGui.QGraphicsTextItem(text.replace(' ','\n'), *args)
+        self.text.document().setDefaultTextOption(QtGui.QTextOption(Qt.AlignHCenter))
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
+        self.text.setZValue(20)
+        self.setZValue(20)
+        self.bg = QtGui.QGraphicsRectItem(-2,+2,30,20)
+        self.bg.setZValue(10)
+        self.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
+        self.bg.setPen(QtGui.QPen(Qt.NoPen))
+        self.addToGroup(self.text)
+        self.addToGroup(self.bg)
     def mouseMoveEvent(self, event):
-        QtGui.QGraphicsTextItem.mouseMoveEvent(self, event)
+        QtGui.QGraphicsItemGroup.mouseMoveEvent(self, event)
+        self.glue.newPos(self)
+    def mouseReleaseEvent(self, event):
+        print event.modifiers()
+        QtGui.QGraphicsItemGroup.mouseReleaseEvent(self, event)
         self.glue.newPos(self)
 class graphcanvasUI(QtGui.QWidget):
     def __init__(self, owner=None):
@@ -48,13 +64,16 @@ class graphcanvasUI(QtGui.QWidget):
 
         self.canvas = QtGui.QGraphicsScene()
 
-        self.canvasView = QtGui.QGraphicsView(self.canvas, self.UI.canvasFrame)
+        self.canvasView = QtGui.QGraphicsView(self.canvas)
+        self.UI.canvasFrame.addWidget(self.canvasView)
         self.canvasView.setSceneRect(0,0,300,300)
         self.canvasView.setRenderHints(QtGui.QPainter.Antialiasing)
         u = self.UI
         o = self.owner
 
         self.connect(u.btnLoad, QtCore.SIGNAL("clicked()"), o.loadGraph)
+        self.connect(u.btnUpdate, QtCore.SIGNAL("clicked()"), o.update)
+        self.connect(u.btnGoto, QtCore.SIGNAL("clicked()"), o.goto)
         self.connect(u.btnLoadSibs, QtCore.SIGNAL("clicked()"),
             lambda: o.loadGraph('sibs'))
         self.connect(u.btnLoadRecur, QtCore.SIGNAL("clicked()"),
@@ -67,6 +86,7 @@ class graphcanvasController(object):
     def __init__ (self,c):
 
         self.c = c
+        self.c.graphcanvasController = self
         self.initIvars()
 
         self.ui = graphcanvasUI(self)
@@ -74,8 +94,9 @@ class graphcanvasController(object):
         self.node = {}
         self.nodeItem = {}
         self.linkItem = {}
-    
-        # leoPlugins.registerHandler('select3', self.updateTab)
+        self.lastNodeItem = None
+
+        leoPlugins.registerHandler('headkey2', lambda a,b: self.update())
 
         # leoPlugins.registerHandler('open2', self.loadLinks)
         # already missed initial 'open2' because of after-create-leo-frame, so
@@ -88,35 +109,29 @@ class graphcanvasController(object):
             collection = self.c.currentPosition().subtree_iter()
         else:
             collection = [self.c.currentPosition()]
-        
+
         for pos in collection:
-        
+
             node = pos.v
-    
+
             if node in self.nodeItem:
                 continue
 
             txt = nodeItem(self, node.headString().replace(' ','\n'))
-    
+
             self.node[txt] = node
             self.nodeItem[node] = txt
-    
+
             if '_bklnk' in node.u and 'x' in node.u['_bklnk']:
                 txt.setPos(node.u['_bklnk']['x'], node.u['_bklnk']['y'])
             else:
                 node.u['_bklnk'] = {}
                 node.u['_bklnk']['x'] = 0
                 node.u['_bklnk']['y'] = 0
-        
-            self.ui.canvas.addItem(txt)
-        
-            blc = getattr(self.c, 'backlinkController')
-            if blc:
-                for link in blc.linksFrom(node):
-                    self.addLinkItem(node, link)
-                for link in blc.linksTo(node):
-                    self.addLinkItem(link, node)
 
+            self.ui.canvas.addItem(txt)
+
+        self.update()
     def addLinkItem(self, from_, to):
         if from_ not in self.nodeItem:
             return
@@ -126,22 +141,31 @@ class graphcanvasController(object):
         if key in self.linkItem:
             return
         li = QtGui.QGraphicsLineItem()
+        li.setZValue(5)
         self.setLineItem(li, from_, to)
 
         self.linkItem[key] = li
         self.ui.canvas.addItem(li)
     def setLineItem(self, li, from_, to):
+        fromSize = self.nodeItem[from_].text.document().size()
+        toSize = self.nodeItem[to].text.document().size()
         li.setLine(
-            from_.u['_bklnk']['x'] + self.nodeItem[from_].textWidth() / 2., 
-            from_.u['_bklnk']['y'], 
-            to.u['_bklnk']['x'] + self.nodeItem[to].textWidth() / 2., 
-            to.u['_bklnk']['y']
+            from_.u['_bklnk']['x'] + fromSize.width()/2, 
+            from_.u['_bklnk']['y'] + fromSize.height()/2, 
+            to.u['_bklnk']['x'] + toSize.width()/2, 
+            to.u['_bklnk']['y'] + toSize.height()/2
             )
     def newPos(self, nodeItem):
         """nodeItem is telling us it has a new position"""
         node = self.node[nodeItem]
         node.u['_bklnk']['x'] = nodeItem.x()
         node.u['_bklnk']['y'] = nodeItem.y()
+
+        if self.lastNodeItem <> nodeItem:
+            if self.lastNodeItem:
+                self.lastNodeItem.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
+            self.lastNodeItem = nodeItem
+            nodeItem.bg.setBrush(QtGui.QBrush(QtGui.QColor(240,200,200)))
 
         blc = getattr(self.c, 'backlinkController')
         if blc:
@@ -152,6 +176,33 @@ class graphcanvasController(object):
             for link in blc.linksTo(node):
                 if (link, node) in self.linkItem:
                     self.setLineItem(self.linkItem[(link, node)], link, node)
+    def update(self):
+        """rescan name, links, extent"""
+        for i in self.linkItem:
+            self.ui.canvas.removeItem(self.linkItem[i])
+        self.linkItem = {}
+
+        blc = getattr(self.c, 'backlinkController')
+
+        for i in self.nodeItem:
+            self.nodeItem[i].text.setPlainText(i.headString().replace(' ','\n'))
+            self.nodeItem[i].bg.setRect(-2, +2, 
+                self.nodeItem[i].text.document().size().width()+4, 
+                self.nodeItem[i].text.document().size().height()-2)
+
+            if blc:
+                for link in blc.linksFrom(i):
+                    self.addLinkItem(i, link)
+                for link in blc.linksTo(i):
+                    self.addLinkItem(link, i)
+
+        self.ui.canvasView.setSceneRect(self.ui.canvas.sceneRect().adjusted(-50,-50,50,50))
+    def goto(self):
+        """make outline select node"""
+        v = self.node[self.lastNodeItem]
+        p = self.c.vnode2position(v)
+        if self.c.positionExists(p):
+            self.c.selectPosition(p)
     def deleteLink(self, on, to, type_):
         """delete a link from 'on' to 'to' of type 'type_'"""
 
