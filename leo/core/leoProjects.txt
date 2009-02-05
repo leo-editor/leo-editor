@@ -4209,7 +4209,7 @@ def redrawAndEdit(self,p,selectAll=False,selection=None):
     c.outerUpdate()
 #@nonl
 #@-node:ekr.20031218072017.2991:c.redrawAndEdit
-#@+node:ekr.20031218072017.3091:showSuccess (test)
+#@+node:ekr.20031218072017.3091:showSuccess (leoFind)
 def showSuccess(self,pos,newpos,showState=True):
 
     '''Display the result of a successful find operation.'''
@@ -4254,10 +4254,11 @@ def showSuccess(self,pos,newpos,showState=True):
         c.bodyWantsFocus()
         if showState:
             c.k.showStateAndMode(w)
+        g.trace(pos,newpos,insert)
         w.setSelectionRange(pos,newpos,insert=insert)
         w.seeInsertPoint()
         c.outerUpdate()
-#@-node:ekr.20031218072017.3091:showSuccess (test)
+#@-node:ekr.20031218072017.3091:showSuccess (leoFind)
 #@+node:ekr.20080514131122.18:c.xWantsFocus
 
 def bodyWantsFocus(self):
@@ -6340,6 +6341,7 @@ def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
         ),protect=True)
     k.setState('isearch',1,handler=self.iSearchStateHandler)
     c.minibufferWantsFocusNow()
+#@nonl
 #@-node:ekr.20050920084036.262:startIncremental
 #@-node:ekr.20050920084036.261:incremental search...
 #@-node:ekr.20050920084036.257:class searchCommandsClass
@@ -21273,6 +21275,7 @@ def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
         ),protect=True)
     k.setState('isearch',1,handler=self.iSearchStateHandler)
     c.minibufferWantsFocusNow()
+#@nonl
 #@-node:ekr.20050920084036.262:startIncremental
 #@-node:ekr.20050920084036.261:incremental search...
 #@+node:ekr.20070228160107:class leoKeyEvent (leoGui)

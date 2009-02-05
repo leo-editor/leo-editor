@@ -580,8 +580,111 @@ def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
         ),protect=True)
     k.setState('isearch',1,handler=self.iSearchStateHandler)
     c.minibufferWantsFocusNow()
+#@nonl
 #@-node:ekr.20050920084036.262:startIncremental
 #@-node:ekr.20050920084036.261:incremental search...
+#@+node:ekr.20090204084607.2:iSearch
+def iSearch (self,again=False):
+
+    '''Handle the actual incremental search.'''
+
+    c = self.c ; k = self.k
+    w = c.frame.body.bodyCtrl
+    ifinder = self.ifinder
+    reverse = not self.forward
+    pattern = k.getLabel(ignorePrompt=True)
+    if not pattern:
+        return self.abortSearch()
+    try:
+        # Save
+        oldPattern = ifinder.find_text
+        oldReverse = ifinder.reverse
+        oldSearchHeadline = ifinder.search_headline
+        oldSearchBody = ifinder.search_body
+        # Override
+        ifinder.reverse = reverse
+        ifinder.search_headline = False
+        ifinder.search_body = True
+        ifinder.find_text = pattern
+        # Prepare the search.
+        c.bodyWantsFocusNow()
+        ifinder.c = c ; ifinder.p = c.p
+        s = w.getAllText()
+        i,j = w.getSelectionRange()
+        if again:   ins = g.choose(reverse,i,j+len(pattern))
+        else:       ins = g.choose(reverse,j+len(pattern),i)
+        ifinder.init_s_ctrl(s,ins)
+        # Do the search!
+        pos, newpos = ifinder.findNextMatch()
+    finally:
+        # Restore.
+        ifinder.find_text = oldPattern
+        ifinder.reverse = oldReverse
+        ifinder.search_headline = oldSearchHeadline
+        ifinder.search_body = oldSearchBody
+
+    if pos is not None: # success.
+        ifinder.showSuccess(pos,newpos,showState=False)
+        c.bodyWantsFocusNow()
+        i,j = w.getSelectionRange(sort=False)
+        if not again: self.push(c.p,i,j)
+    elif ifinder.wrapping:
+        g.es("end of wrapped search")
+    else:
+        g.es("not found","'%s'" % (pattern))
+        event = g.Bunch(char='\b',keysym='\b',stroke='BackSpace')
+        k.updateLabel(event)
+#@-node:ekr.20090204084607.2:iSearch
+#@+node:ekr.20031218072017.3091:showSuccess (leoFind)
+def showSuccess(self,pos,newpos,showState=True):
+
+    '''Display the result of a successful find operation.'''
+
+    trace = True
+    c = self.c ; p = self.p
+    if not p:
+        return g.trace('can not happen: self.p is None')
+
+    current = c.p
+    sparseFind = c.config.getBool('collapse_nodes_during_finds')
+    c.frame.bringToFront() # Needed on the Mac
+
+    # Expand ancestors and set redraw if a redraw is needed.
+    redraw1 = not p.isVisible(c)
+    if sparseFind:
+        # Show only the 'sparse' tree when redrawing.
+        for p2 in c.p.self_and_parents_iter():
+            if p2.isAncestorOf(p):
+                break
+            p2.contract()
+            redraw1 = True # Important bug fix. Was redraw = True.
+    redraw2 = c.expandAllAncestors(self.p)
+    redraw = redraw1 or redraw2
+
+    # Set state vars.
+    # Ensure progress in backwards searches.
+    insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
+    if self.wrap and not self.wrapPosition:
+        self.wrapPosition = self.p
+
+    # g.trace(pos,newpos,insert)
+    if self.in_headline:
+        selection = pos,newpos,insert
+        c.redrawAndEdit(p,selection=selection)
+    else:
+        w = c.frame.body.bodyCtrl
+        if redraw:
+            c.redraw(p)
+        else:
+            c.redraw_after_select(p)
+        c.bodyWantsFocus()
+        if showState:
+            c.k.showStateAndMode(w)
+        g.trace(pos,newpos,insert)
+        w.setSelectionRange(pos,newpos,insert=insert)
+        w.seeInsertPoint()
+        c.outerUpdate()
+#@-node:ekr.20031218072017.3091:showSuccess (leoFind)
 #@-node:ekr.20090202191501.8:Improve isearch commands
 #@+node:ekr.20090202191501.9:Improve macro commands
 @nocolor-node

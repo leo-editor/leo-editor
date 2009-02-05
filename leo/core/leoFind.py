@@ -1371,7 +1371,7 @@ class leoFind:
 
         return (self.in_headline,p,w,insert,start,end)
     #@-node:ekr.20031218072017.3090:save (leoFind)
-    #@+node:ekr.20031218072017.3091:showSuccess (test)
+    #@+node:ekr.20031218072017.3091:showSuccess (leoFind)
     def showSuccess(self,pos,newpos,showState=True):
 
         '''Display the result of a successful find operation.'''
@@ -1416,10 +1416,11 @@ class leoFind:
             c.bodyWantsFocus()
             if showState:
                 c.k.showStateAndMode(w)
+            g.trace(pos,newpos,insert)
             w.setSelectionRange(pos,newpos,insert=insert)
             w.seeInsertPoint()
             c.outerUpdate()
-    #@-node:ekr.20031218072017.3091:showSuccess (test)
+    #@-node:ekr.20031218072017.3091:showSuccess (leoFind)
     #@+node:ekr.20031218072017.1460:update_ivars (leoFind)
     # New in Leo 4.4.3: This is now gui-independent code.
 

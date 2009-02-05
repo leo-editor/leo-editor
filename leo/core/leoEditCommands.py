@@ -7984,6 +7984,7 @@ class searchCommandsClass (baseEditCommandsClass):
             ),protect=True)
         k.setState('isearch',1,handler=self.iSearchStateHandler)
         c.minibufferWantsFocusNow()
+    #@nonl
     #@-node:ekr.20050920084036.262:startIncremental
     #@-node:ekr.20050920084036.261:incremental search...
     #@-others
