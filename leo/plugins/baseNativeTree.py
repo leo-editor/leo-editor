@@ -786,8 +786,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         """Returns the edit widget for position p."""
 
-        trace = False
-        verbose = False
+        trace = False ; verbose = True
 
         c = self.c
         item = self.position2item(p)
@@ -800,6 +799,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 return w
             else:
                 # This is not an error
+                # But warning: calling this method twice might not work!
                 if trace and verbose: g.trace('no e for %s' % (p))
                 return None
         else:

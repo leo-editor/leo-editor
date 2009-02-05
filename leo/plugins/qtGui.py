@@ -956,6 +956,8 @@ class leoQtFindTab (leoFind.findTab):
 
         '''Init the widgets of the 'Find' tab.'''
 
+        # g.trace('leoQtFindTab.init')
+
         self.createIvars()
         self.initIvars()
         self.initTextWidgets()
@@ -983,6 +985,7 @@ class leoQtFindTab (leoFind.findTab):
             ('search_headline', w.checkBoxSearchHeadline),
             ('search_body',     w.checkBoxSearchBody),
             ('mark_changes',    w.checkBoxMarkChanges),
+            ('batch', None), ####
         )
         for ivar,widget in data:
             setattr(self,ivar,widget)
@@ -1093,6 +1096,7 @@ class leoQtFindTab (leoFind.findTab):
     class svar:
         '''A class like Tk's IntVar and StringVar classes.'''
         def __init__(self,owner,ivar):
+            # g.trace('svar.__init__',ivar)
             self.ivar = ivar
             self.owner = owner
             self.val = None
