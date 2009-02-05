@@ -7266,7 +7266,7 @@ class baseCommands (object):
     #@+node:ekr.20031218072017.2991:c.redrawAndEdit
     # Sets the focus to p and edits p.
 
-    def redrawAndEdit(self,p,selectAll=False,selection=None):
+    def redrawAndEdit(self,p,selectAll=False,selection=None,keepMinibuffer=False):
 
         '''Redraw the screen and start editing the headline at position p.'''
 
@@ -7278,7 +7278,7 @@ class baseCommands (object):
             # This should request focus.
             c.frame.tree.editLabel(p,selectAll=selectAll,selection=selection)
 
-            if k:
+            if k and not keepMinibuffer:
                 # Setting the input state has no effect on focus.
                 if selectAll:
                     k.setInputState('insert')
@@ -7289,7 +7289,8 @@ class baseCommands (object):
                 k.showStateAndMode()
 
         # Update the focus immediately.
-        c.outerUpdate()
+        if not keepMinibuffer:
+            c.outerUpdate()
     #@nonl
     #@-node:ekr.20031218072017.2991:c.redrawAndEdit
     #@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)

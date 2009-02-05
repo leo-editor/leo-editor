@@ -17,8 +17,7 @@
 
 To do:
 
-- Repeat the search with Alt-S
-- Allow searches in headlines.
+- allow searches in headlines.
 #@nonl
 #@+node:ekr.20070228160107:class leoKeyEvent (leoGui)
 class leoKeyEvent:
@@ -57,6 +56,7 @@ class leoKeyEvent:
         else:
             return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
                 repr(self.char),repr(self.keysym))
+#@nonl
 #@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
 #@+node:ekr.20061031131434.146:masterKeyHandler & helpers
 master_key_count = 0
@@ -364,7 +364,8 @@ def __init__ (self,c):
     self.inited = False
 
     # For isearch commands.
-    self.ifinder = leoFind.leoFind(c,title='ifinder')
+    #### self.ifinder = leoFind.leoFind(c,title='ifinder')
+    self.ifinder = None
     self.stack = [] # Entries are (p,sel)
     self.ignoreCase = None
     self.forward = None
@@ -405,7 +406,8 @@ def abortSearch (self):
     k.clearState()
     k.resetLabel()
 
-    p,i,j = self.stack[0]
+    p,i,j,in_headline = self.stack[0]
+    self.ifinder.in_headline = in_headline
     c.redraw_after_select(p)
     c.bodyWantsFocusNow()
     w.setSelectionRange(i,j)
@@ -426,46 +428,46 @@ def iSearch (self,again=False):
 
     '''Handle the actual incremental search.'''
 
-    c = self.c ; k = self.k
-    w = c.frame.body.bodyCtrl
+    c = self.c ; k = self.k ; p = c.p
     ifinder = self.ifinder
     reverse = not self.forward
     pattern = k.getLabel(ignorePrompt=True)
     if not pattern:
         return self.abortSearch()
-    try:
-        # Save
-        oldPattern = ifinder.find_text
-        oldReverse = ifinder.reverse
-        oldSearchHeadline = ifinder.search_headline
-        oldSearchBody = ifinder.search_body
-        # Override
-        ifinder.reverse = reverse
-        ifinder.search_headline = False
-        ifinder.search_body = True
-        ifinder.find_text = pattern
-        # Prepare the search.
-        c.bodyWantsFocusNow()
-        ifinder.c = c ; ifinder.p = c.p
-        s = w.getAllText()
-        i,j = w.getSelectionRange()
-        if again:   ins = g.choose(reverse,i,j+len(pattern))
-        else:       ins = g.choose(reverse,j+len(pattern),i)
-        ifinder.init_s_ctrl(s,ins)
-        # Do the search!
-        pos, newpos = ifinder.findNextMatch()
-    finally:
-        # Restore.
-        ifinder.find_text = oldPattern
-        ifinder.reverse = oldReverse
-        ifinder.search_headline = oldSearchHeadline
-        ifinder.search_body = oldSearchBody
-
+    ifinder.c = c ; ifinder.p = p.copy()
+    # Get the base ivars from the find tab.
+    ifinder.update_ivars()
+    # Save
+    oldPattern = ifinder.find_text
+    oldRegexp  = ifinder.pattern_match
+    oldReverse = ifinder.reverse
+    oldWord =  ifinder.whole_word
+    # Override
+    ifinder.pattern_match = self.regexp
+    ifinder.reverse = reverse
+    ifinder.find_text = pattern
+    ifinder.whole_word = False # Word option can't be used!
+    # Prepare the search.
+    if len(self.stack) <= 1: ifinder.in_headline = False
+    w = self.setWidget()
+    s = w.getAllText()
+    i,j = w.getSelectionRange()
+    if again:   ins = g.choose(reverse,i,j+len(pattern))
+    else:       ins = g.choose(reverse,j+len(pattern),i)
+    ifinder.init_s_ctrl(s,ins)
+    # Do the search!
+    pos, newpos = ifinder.findNextMatch()
+    # Restore.
+    ifinder.find_text = oldPattern
+    ifinder.pattern_match = oldRegexp
+    ifinder.reverse = oldReverse
+    ifinder.whole_word = oldWord
+    # Handle the results of the search.
     if pos is not None: # success.
-        ifinder.showSuccess(pos,newpos,showState=False)
-        c.bodyWantsFocusNow()
-        i,j = w.getSelectionRange(sort=False)
-        if not again: self.push(c.p,i,j)
+        w = ifinder.showSuccess(pos,newpos,showState=False)
+        if w: i,j = w.getSelectionRange(sort=False)
+        # else: g.trace('****')
+        if not again: self.push(c.p,i,j,ifinder.in_headline)
     elif ifinder.wrapping:
         g.es("end of wrapped search")
     else:
@@ -473,29 +475,6 @@ def iSearch (self,again=False):
         event = g.Bunch(char='\b',keysym='\b',stroke='BackSpace')
         k.updateLabel(event)
 #@-node:ekr.20090204084607.2:iSearch
-#@+node:ekr.20090204084607.4:iSearchBackspace
-def iSearchBackspace (self):
-
-    c = self.c ; w = c.frame.body.bodyCtrl
-
-    # Reduce the stack by net 1.
-    # g.trace(self.stack)
-    junk = self.pop()
-    p,i,j = self.pop()
-    self.push(p,i,j)
-
-    c.selectPosition(p)
-
-    c.bodyWantsFocusNow()
-    if i > j: i,j = j,i
-    w.setSelectionRange(i,j)
-
-    if len(self.stack) <= 1:
-        self.abortSearch()
-
-
-
-#@-node:ekr.20090204084607.4:iSearchBackspace
 #@+node:ekr.20050920084036.264:iSearchStateHandler
 # Called from the state manager when the state is 'isearch'
 
@@ -503,7 +482,7 @@ def iSearchStateHandler (self,event):
 
     c = self.c ; k = self.k
     stroke = event.stroke
-    g.trace('stroke',repr(stroke))
+    # g.trace('stroke',repr(stroke))
 
     # No need to recognize ctrl-z.
     if stroke in ('Escape','Return'):
@@ -522,6 +501,38 @@ def iSearchStateHandler (self,event):
         self.iSearch()
 #@nonl
 #@-node:ekr.20050920084036.264:iSearchStateHandler
+#@+node:ekr.20090204084607.4:iSearchBackspace
+def iSearchBackspace (self):
+
+    c = self.c ; ifinder = self.ifinder
+
+    if len(self.stack) <= 1:
+        self.abortSearch()
+        return
+
+    # Reduce the stack by net 1.
+    junk = self.pop()
+    p,i,j,in_headline = self.pop()
+    self.push(p,i,j,in_headline)
+
+    if in_headline:
+        # Like ifinder.showSuccess.
+        selection = i,j,i
+        c.redrawAndEdit(p,selectAll=False,
+            selection=selection,
+            keepMinibuffer=True)
+    else:
+        w = c.frame.body.bodyCtrl
+        c.bodyWantsFocusNow()
+        if i > j: i,j = j,i
+        w.setSelectionRange(i,j)
+
+    if len(self.stack) <= 1:
+        self.abortSearch()
+
+
+
+#@-node:ekr.20090204084607.4:iSearchBackspace
 #@+node:ekr.20090204084607.6:getStrokes
 def getStrokes (self,commandName):
 
@@ -531,32 +542,58 @@ def getStrokes (self,commandName):
     return [key for pane,key in aList]
 #@-node:ekr.20090204084607.6:getStrokes
 #@+node:ekr.20090204084607.5:push & pop
-def push (self,p,i,j):
+def push (self,p,i,j,in_headline):
 
-    data = p.copy(),i,j
+    data = p.copy(),i,j,in_headline
     self.stack.append(data)
 
 def pop (self):
 
     data = self.stack.pop()
-    p,i,j = data
-    return p,i,j
+    p,i,j,in_headline = data
+    return p,i,j,in_headline
 #@-node:ekr.20090204084607.5:push & pop
+#@+node:ekr.20090205085858.1:setWidget
+def setWidget (self):
+
+    c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
+    ifinder = self.ifinder
+
+    if ifinder.in_headline:
+        w = c.edit_widget(p)
+        if not w:
+            # Selecting the minibuffer can kill the edit widget.
+            selection = 0,0,0
+            c.redrawAndEdit(p,selectAll=False,
+                selection=selection,keepMinibuffer=True)
+            w = c.edit_widget(p)
+        if not w: # Should never happen.
+            g.trace('**** no edit widget!')
+            ifinder.in_headline = False ; w = bodyCtrl
+    else:
+        w = bodyCtrl
+    if w == bodyCtrl:
+        c.bodyWantsFocusNow()
+    return w
+#@-node:ekr.20090205085858.1:setWidget
 #@+node:ekr.20050920084036.262:startIncremental
 def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
 
     c = self.c ; k = self.k
 
     # None is a signal to get the option from the find tab.
-    if forward is None or regexp is None:
+
+    if not self.findTabHandler:
+        self.findTabHandler = g.app.gui.createFindTab(c,f)
+    self.ifinder = self.findTabHandler
+
+    if forward is None:
         self.openFindTab(show=False)
-        if not self.minibufferFindHandler:
-            self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
-        getOption = self.minibufferFindHandler.getOption
-        # g.trace('reverse',getOption('reverse'))
-        # g.trace('pattern',getOption('pattern_match'))
-    else:
-        def getOption(s): pass # The value isn't used.
+
+    if not self.minibufferFindHandler:
+        self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
+
+    getOption = self.minibufferFindHandler.getOption
 
     self.event = event
     self.forward    = g.choose(forward is None,not getOption('reverse'),forward)
@@ -568,10 +605,9 @@ def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
     self.p1 = c.p.copy()
     self.sel1 = w.getSelectionRange(sort=False)
     i,j = self.sel1
-    self.push(c.p,i,j)
+    self.push(c.p,i,j,self.ifinder.in_headline)
     self.inverseBindingDict = k.computeInverseBindingDict()
     self.iSearchStrokes = self.getStrokes(commandName)
-    #### To do: remember whether we are in body pane or headline.
 
     k.setLabelBlue('Isearch%s%s%s: ' % (
             g.choose(self.forward,'',' Backward'),
@@ -580,7 +616,6 @@ def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
         ),protect=True)
     k.setState('isearch',1,handler=self.iSearchStateHandler)
     c.minibufferWantsFocusNow()
-#@nonl
 #@-node:ekr.20050920084036.262:startIncremental
 #@-node:ekr.20050920084036.261:incremental search...
 #@+node:ekr.20090204084607.2:iSearch
@@ -588,46 +623,46 @@ def iSearch (self,again=False):
 
     '''Handle the actual incremental search.'''
 
-    c = self.c ; k = self.k
-    w = c.frame.body.bodyCtrl
+    c = self.c ; k = self.k ; p = c.p
     ifinder = self.ifinder
     reverse = not self.forward
     pattern = k.getLabel(ignorePrompt=True)
     if not pattern:
         return self.abortSearch()
-    try:
-        # Save
-        oldPattern = ifinder.find_text
-        oldReverse = ifinder.reverse
-        oldSearchHeadline = ifinder.search_headline
-        oldSearchBody = ifinder.search_body
-        # Override
-        ifinder.reverse = reverse
-        ifinder.search_headline = False
-        ifinder.search_body = True
-        ifinder.find_text = pattern
-        # Prepare the search.
-        c.bodyWantsFocusNow()
-        ifinder.c = c ; ifinder.p = c.p
-        s = w.getAllText()
-        i,j = w.getSelectionRange()
-        if again:   ins = g.choose(reverse,i,j+len(pattern))
-        else:       ins = g.choose(reverse,j+len(pattern),i)
-        ifinder.init_s_ctrl(s,ins)
-        # Do the search!
-        pos, newpos = ifinder.findNextMatch()
-    finally:
-        # Restore.
-        ifinder.find_text = oldPattern
-        ifinder.reverse = oldReverse
-        ifinder.search_headline = oldSearchHeadline
-        ifinder.search_body = oldSearchBody
-
+    ifinder.c = c ; ifinder.p = p.copy()
+    # Get the base ivars from the find tab.
+    ifinder.update_ivars()
+    # Save
+    oldPattern = ifinder.find_text
+    oldRegexp  = ifinder.pattern_match
+    oldReverse = ifinder.reverse
+    oldWord =  ifinder.whole_word
+    # Override
+    ifinder.pattern_match = self.regexp
+    ifinder.reverse = reverse
+    ifinder.find_text = pattern
+    ifinder.whole_word = False # Word option can't be used!
+    # Prepare the search.
+    if len(self.stack) <= 1: ifinder.in_headline = False
+    w = self.setWidget()
+    s = w.getAllText()
+    i,j = w.getSelectionRange()
+    if again:   ins = g.choose(reverse,i,j+len(pattern))
+    else:       ins = g.choose(reverse,j+len(pattern),i)
+    ifinder.init_s_ctrl(s,ins)
+    # Do the search!
+    pos, newpos = ifinder.findNextMatch()
+    # Restore.
+    ifinder.find_text = oldPattern
+    ifinder.pattern_match = oldRegexp
+    ifinder.reverse = oldReverse
+    ifinder.whole_word = oldWord
+    # Handle the results of the search.
     if pos is not None: # success.
-        ifinder.showSuccess(pos,newpos,showState=False)
-        c.bodyWantsFocusNow()
-        i,j = w.getSelectionRange(sort=False)
-        if not again: self.push(c.p,i,j)
+        w = ifinder.showSuccess(pos,newpos,showState=False)
+        if w: i,j = w.getSelectionRange(sort=False)
+        # else: g.trace('****')
+        if not again: self.push(c.p,i,j,ifinder.in_headline)
     elif ifinder.wrapping:
         g.es("end of wrapped search")
     else:
@@ -640,7 +675,7 @@ def showSuccess(self,pos,newpos,showState=True):
 
     '''Display the result of a successful find operation.'''
 
-    trace = True
+    trace = False
     c = self.c ; p = self.p
     if not p:
         return g.trace('can not happen: self.p is None')
@@ -667,10 +702,13 @@ def showSuccess(self,pos,newpos,showState=True):
     if self.wrap and not self.wrapPosition:
         self.wrapPosition = self.p
 
-    # g.trace(pos,newpos,insert)
+    if trace: g.trace('in_headline',self.in_headline)
     if self.in_headline:
         selection = pos,newpos,insert
-        c.redrawAndEdit(p,selection=selection)
+        c.redrawAndEdit(p,
+            selection=selection,
+            keepMinibuffer=True)
+        w = c.edit_widget(p)
     else:
         w = c.frame.body.bodyCtrl
         if redraw:
@@ -680,11 +718,162 @@ def showSuccess(self,pos,newpos,showState=True):
         c.bodyWantsFocus()
         if showState:
             c.k.showStateAndMode(w)
-        g.trace(pos,newpos,insert)
+        # g.trace(pos,newpos,insert)
         w.setSelectionRange(pos,newpos,insert=insert)
         w.seeInsertPoint()
         c.outerUpdate()
+    return w # Support for isearch.
 #@-node:ekr.20031218072017.3091:showSuccess (leoFind)
+#@+node:ekr.20061031170011.12:updateLabel
+def updateLabel (self,event):
+
+    '''Mimic what would happen with the keyboard and a Text editor
+    instead of plain accumalation.'''
+
+    trace = False or self.trace_minibuffer and not g.app.unitTesting
+    k = self ; c = k.c ; w = self.widget
+    ch = (event and event.char) or ''
+    keysym = (event and event.keysym) or ''
+
+    trace and g.trace('ch',ch,'keysym',keysym,'k.stroke',k.stroke)
+    # g.trace(g.callers())
+
+    if ch and ch not in ('\n','\r'):
+        c.widgetWantsFocusNow(w)
+        i,j = w.getSelectionRange()
+        ins = w.getInsertPoint()
+        # g.trace(i,j,ins)
+        if i != j:
+            w.delete(i,j)
+            #### w.setSelectionRange(i,i,insert=i) #### for tk
+        if ch == '\b':
+            s = w.getAllText()
+            if len(s) > len(k.mb_prefix):
+                w.delete(i-1)
+                i-=1
+                #### w.setSelectionRange(i,i,insert=i) #### for tk
+        else:
+            w.insert(ins,ch)
+            i = ins+1
+            #### w.setSelectionRange(i,i,insert=i) #### for tk
+        # g.trace(k.mb_prefix)       
+#@-node:ekr.20061031170011.12:updateLabel
+#@+node:ekr.20050920084036.264:iSearchStateHandler
+# Called from the state manager when the state is 'isearch'
+
+def iSearchStateHandler (self,event):
+
+    c = self.c ; k = self.k
+    stroke = event.stroke
+    # g.trace('stroke',repr(stroke))
+
+    # No need to recognize ctrl-z.
+    if stroke in ('Escape','Return'):
+        self.endSearch()
+    elif stroke in self.iSearchStrokes:
+        self.iSearch(again=True)
+    elif stroke == 'BackSpace':
+        k.updateLabel(event)
+        self.iSearchBackspace()
+    elif stroke.startswith('Ctrl+') or stroke.startswith('Alt+'):
+        # End the search and execute the command.
+        self.endSearch()
+        k.masterKeyHandler(event,stroke=stroke)
+    else:
+        k.updateLabel(event)
+        self.iSearch()
+#@nonl
+#@-node:ekr.20050920084036.264:iSearchStateHandler
+#@+node:ekr.20031218072017.3075:findNextMatch
+# Resumes the search where it left off.
+# The caller must call set_first_incremental_search or set_first_batch_search.
+
+def findNextMatch(self):
+
+    c = self.c ; trace = False or self.trace
+
+    if trace: g.trace('entry','p',self.p,
+        'search_headline',self.search_headline,
+        'search_body',self.search_body)
+
+    if not self.search_headline and not self.search_body:
+        if trace: g.trace('nothing to search')
+        return None, None
+
+    if len(self.find_text) == 0:
+        if trace: g.trace('no find text')
+        return None, None
+
+    p = self.p ; self.errors = 0
+    attempts = 0
+    self.backwardAttempts = 0
+
+    # New in Leo 4.4.8: precompute the regexp for regexHelper.
+    if self.pattern_match:
+        try: # Precompile the regexp.
+            flags = re.MULTILINE
+            if self.ignore_case: flags |= re.IGNORECASE
+            # New in Leo 4.5: escape the search text.
+            self.re_obj = re.compile(self.find_text,flags)
+            # self.re_obj = re.compile(re.escape(self.find_text),flags)
+        except Exception:
+            g.es('invalid regular expression:',self.find_text,color='blue')
+            self.errors += 1 # Abort the search.
+            return None,None
+
+    while p:
+        pos, newpos = self.search()
+        if trace: g.trace('attempt','pos',pos,'p',p.h)
+        if pos is not None:
+            if self.mark_finds:
+                p.setMarked()
+                c.frame.tree.drawIcon(p) # redraw only the icon.
+            if trace: g.trace('success',pos,newpos)
+            return pos, newpos
+        elif self.errors:
+            g.trace('find errors')
+            return None,None # Abort the search.
+        elif self.node_only:
+            if trace: g.trace('fail: node only')
+            return None,None # We are only searching one node.
+        else:
+            if trace: g.trace('failed attempt',p)
+            attempts += 1
+            p = self.p = self.selectNextPosition()
+
+    if trace: g.trace('attempts',attempts,'backwardAttempts',self.backwardAttempts)
+    return None, None
+#@-node:ekr.20031218072017.3075:findNextMatch
+#@+node:ekr.20031218072017.2991:c.redrawAndEdit
+# Sets the focus to p and edits p.
+
+def redrawAndEdit(self,p,selectAll=False,selection=None,keepMinibuffer=False):
+
+    '''Redraw the screen and start editing the headline at position p.'''
+
+    c = self ; k = c.k
+
+    c.redraw(p)
+
+    if p:
+        # This should request focus.
+        c.frame.tree.editLabel(p,selectAll=selectAll,selection=selection)
+
+        if k and not keepMinibuffer:
+            # Setting the input state has no effect on focus.
+            if selectAll:
+                k.setInputState('insert')
+            else:
+                k.setDefaultInputState()
+
+            # This *does* affect focus.
+            k.showStateAndMode()
+
+    # Update the focus immediately.
+    if not keepMinibuffer:
+        c.outerUpdate()
+#@nonl
+#@-node:ekr.20031218072017.2991:c.redrawAndEdit
 #@-node:ekr.20090202191501.8:Improve isearch commands
 #@+node:ekr.20090202191501.9:Improve macro commands
 @nocolor-node
@@ -5738,6 +5927,7 @@ class leoKeyEvent:
         else:
             return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
                 repr(self.char),repr(self.keysym))
+#@nonl
 #@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
 #@-node:ekr.20080616110054.1:Problem 3
 #@+node:ekr.20080616110054.3:Other problems (from docstring)

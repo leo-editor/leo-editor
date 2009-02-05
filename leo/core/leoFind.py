@@ -774,9 +774,11 @@ class leoFind:
 
     def findNextMatch(self):
 
-        c = self.c ; trace = self.trace
+        c = self.c ; trace = False or self.trace
 
-        if trace: g.trace('entry',g.callers())
+        if trace: g.trace('entry','p',self.p,
+            'search_headline',self.search_headline,
+            'search_body',self.search_body)
 
         if not self.search_headline and not self.search_body:
             if trace: g.trace('nothing to search')
@@ -1376,7 +1378,7 @@ class leoFind:
 
         '''Display the result of a successful find operation.'''
 
-        trace = True
+        trace = False
         c = self.c ; p = self.p
         if not p:
             return g.trace('can not happen: self.p is None')
@@ -1403,10 +1405,13 @@ class leoFind:
         if self.wrap and not self.wrapPosition:
             self.wrapPosition = self.p
 
-        # g.trace(pos,newpos,insert)
+        if trace: g.trace('in_headline',self.in_headline)
         if self.in_headline:
             selection = pos,newpos,insert
-            c.redrawAndEdit(p,selection=selection)
+            c.redrawAndEdit(p,
+                selection=selection,
+                keepMinibuffer=True)
+            w = c.edit_widget(p)
         else:
             w = c.frame.body.bodyCtrl
             if redraw:
@@ -1416,10 +1421,11 @@ class leoFind:
             c.bodyWantsFocus()
             if showState:
                 c.k.showStateAndMode(w)
-            g.trace(pos,newpos,insert)
+            # g.trace(pos,newpos,insert)
             w.setSelectionRange(pos,newpos,insert=insert)
             w.seeInsertPoint()
             c.outerUpdate()
+        return w # Support for isearch.
     #@-node:ekr.20031218072017.3091:showSuccess (leoFind)
     #@+node:ekr.20031218072017.1460:update_ivars (leoFind)
     # New in Leo 4.4.3: This is now gui-independent code.
