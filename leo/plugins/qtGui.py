@@ -5157,6 +5157,8 @@ class leoQtEventFilter(QtCore.QObject):
 #@-node:ekr.20081121105001.513:Key handling
 #@+node:ekr.20081204090029.1:Syntax coloring
 #@+node:ekr.20081205131308.15:leoQtColorizer
+# This is c.frame.body.colorizer
+
 class leoQtColorizer:
 
     '''An adaptor class that interfaces Leo's core to two class:
@@ -5222,6 +5224,8 @@ class leoQtColorizer:
 
 #@-node:ekr.20081205131308.15:leoQtColorizer
 #@+node:ekr.20081205131308.27:leoQtSyntaxHighlighter
+# This is c.frame.body.colorizer.highlighter
+
 class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
 
     '''A subclass of QSyntaxHighlighter that overrides
@@ -5267,6 +5271,8 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
     #@-others
 #@-node:ekr.20081205131308.27:leoQtSyntaxHighlighter
 #@+node:ekr.20081205131308.48:class jeditColorizer
+# This is c.frame.body.colorizer.highlighter.colorer
+
 class jEditColorizer:
 
     '''This class contains the pattern matching code
@@ -5313,6 +5319,9 @@ class jEditColorizer:
         self.trace_leo_matches = False
         self.trace_match_flag = False # (Useful) True: trace all matching methods.
         self.verbose = False
+        # Profiling...
+        self.totalChars = 0 # The total number of characters examined by recolor.
+        self.totalLeoKeywordsCalls = 0
         # Mode data...
         self.comment_string = None # Can be set by @comment directive.
         self.defaultRulesList = []
@@ -5328,7 +5337,7 @@ class jEditColorizer:
         self.modeStack = []
         self.rulesDict = {}
         # self.defineAndExtendForthWords()
-        self.word_chars = [] # Inited by init_keywords().
+        self.word_chars = {} # Inited by init_keywords().
         self.setFontFromConfig()
         self.tags = [
             "blank","comment","cwebName","docPart","keyword","leoKeyword",
@@ -5504,11 +5513,12 @@ class jEditColorizer:
             # g.trace(rule)
 
             theList = theDict.get(ch,[])
-            if atFront:
-                theList.insert(0,rule)
-            else:
-                theList.append(rule)
-            theDict [ch] = theList
+            if rule not in theList:
+                if atFront:
+                    theList.insert(0,rule)
+                else:
+                    theList.append(rule)
+                theDict [ch] = theList
 
         # g.trace(g.listToString(theDict.get('@')))
     #@-node:ekr.20081205131308.52:addLeoRules
@@ -5771,24 +5781,28 @@ class jEditColorizer:
             if key not in keys:
                 d [key] = 'leoKeyword'
 
-        # Create the word_chars list. 
-        self.word_chars = [g.toUnicode(ch,encoding='UTF-8') for ch in (string.letters + string.digits)]
+        # Create a temporary chars list.  It will be converted to a dict later.
+        chars = [g.toUnicode(ch,encoding='UTF-8')
+            for ch in (string.letters + string.digits)]
 
         for key in d.keys():
             for ch in key:
-                # if ch == ' ': g.trace('blank in key: %s' % repr (key))
-                if ch not in self.word_chars:
-                    self.word_chars.append(g.toUnicode(ch,encoding='UTF-8'))
+                if ch not in chars:
+                    chars.append(g.toUnicode(ch,encoding='UTF-8'))
 
         # jEdit2Py now does this check, so this isn't really needed.
         # But it is needed for forth.py.
         for ch in (' ', '\t'):
-            if ch in self.word_chars:
+            if ch in chars:
                 # g.es_print('removing %s from word_chars' % (repr(ch)))
-                self.word_chars.remove(ch)
+                chars.remove(ch)
 
-        # g.trace(self.language,[str(z) for z in self.word_chars])
-    #@nonl
+        # g.trace(self.language,[str(z) for z in chars])
+
+        # Convert chars to a dict for faster access.
+        self.word_chars = {}
+        for z in chars:
+            self.word_chars[z] = z
     #@-node:ekr.20081205131308.57:setKeywords
     #@+node:ekr.20081205131308.58:setModeAttributes
     def setModeAttributes (self):
@@ -6234,9 +6248,16 @@ class jEditColorizer:
 
         '''Succeed if s[i:] is a keyword.'''
 
+        self.totalLeoKeywordsCalls += 1
+
+        # Important.  Return -len(word) for failure greatly reduces
+        # the number of times this method is called.
+
         # We must be at the start of a word.
         if i > 0 and s[i-1] in self.word_chars:
             return 0
+
+        trace = False
 
         # Get the word as quickly as possible.
         j = i ; n = len(s) ; chars = self.word_chars
@@ -6250,14 +6271,14 @@ class jEditColorizer:
             self.colorRangeWithTag(s,i,j,kind)
             self.prev = (i,j,kind)
             result = j - i
-            # g.trace('success',word,kind,j-i)
+            if trace: g.trace('success',word,kind,j-i)
             # g.trace('word in self.keywordsDict.keys()',word in self.keywordsDict.keys())
             self.trace_match(kind,s,i,j)
             return result
         else:
-            # g.trace('fail',word,kind)
+            if trace: g.trace('fail',word,kind)
             # g.trace('word in self.keywordsDict.keys()',word in self.keywordsDict.keys())
-            return 0
+            return -len(word) # An important new optimization.
     #@-node:ekr.20081205131308.91:match_keywords
     #@+node:ekr.20081205131308.92:match_mark_following & getNextToken
     def match_mark_following (self,s,i,
@@ -6613,6 +6634,7 @@ class jEditColorizer:
         if not self.s: return # Must handle empty lines!
 
         len_s = len(s)
+        self.totalChars += len_s
         bunch = self.getPrevState()
         # offset is the index in self.s of the first character of s.
         offset = bunch.offset + bunch.len_s
@@ -6633,7 +6655,7 @@ class jEditColorizer:
             for f in functions:
                 if trace and verbose: g.trace('i',i,'f',f)
                 n = f(self,self.s,i)
-                if n is None or n < 0:
+                if n is None:
                     g.trace('Can not happen' % (repr(n),repr(f)))
                     lastFunc,lastMatch = None,i
                     break
@@ -6641,6 +6663,11 @@ class jEditColorizer:
                     lastFunc,lastMatch = f,i
                     i += n
                     break # Must break
+                elif n < 0:
+                    # New in Leo 4.6
+                    # match_keyword now sets n < 0 on first failure.
+                    i += -n
+                    lastFunc,lastMatch = None,i
             else:
                 i += 1
                 lastFunc,lastMatch = None,i
