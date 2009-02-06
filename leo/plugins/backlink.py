@@ -326,8 +326,9 @@ class backlinkController(object):
     def link(self, from_, to, type_='directed'):
         """make a link"""
 
-        v0 = from_.v
-        v1 = to.v
+        self.vlink(from_.v, to.v, type_=type_)
+    
+    def vlink(self, v0, v1, type_='directed'):
         self.initBacklink(v0)
         self.initBacklink(v1)
 
@@ -335,12 +336,12 @@ class backlinkController(object):
 
         if type_ == 'directed':
             linkType = 'S'
-    
+
         v0.u['_bklnk']['links'].append( (linkType, v1.u['_bklnk']['id']) )
 
         if type_ == 'directed':
             linkType = 'D'
-    
+
         v1.u['_bklnk']['links'].append( (linkType, v0.u['_bklnk']['id']) )
 
         gcc = getattr(self.c, 'graphcanvasController')
@@ -379,7 +380,7 @@ class backlinkController(object):
             linkType, other = i
             if linkType == type_:
                 ans.append(self.vnode[other])
-    
+
         return ans
 
     def linksTo(self, v):

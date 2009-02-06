@@ -42,11 +42,31 @@ class nodeItem(QtGui.QGraphicsItemGroup):
         self.addToGroup(self.bg)
     def mouseMoveEvent(self, event):
         QtGui.QGraphicsItemGroup.mouseMoveEvent(self, event)
-        self.glue.newPos(self)
+        self.glue.newPos(self, event)
     def mouseReleaseEvent(self, event):
-        print event.modifiers()
         QtGui.QGraphicsItemGroup.mouseReleaseEvent(self, event)
-        self.glue.newPos(self)
+        self.glue.releaseNode(self, event)
+class linkItem(QtGui.QGraphicsItemGroup):
+    """Node on the canvas"""
+    def __init__(self, glue, *args, **kargs):
+        """:Parameters:
+            - `glue`: glue object owning this
+
+        pass glue object and let it key nodeItems to leo nodes
+        """
+        self.glue = glue
+        QtGui.QGraphicsItemGroup.__init__(self)
+        self.line = QtGui.QGraphicsLineItem(*args)
+        self.line.setZValue(0)
+
+        self.setZValue(0)
+        pen = QtGui.QPen()
+        pen.setWidth(2)
+        self.line.setPen(pen)
+        self.addToGroup(self.line)
+    def mousePressEvent(self, event):
+        QtGui.QGraphicsItemGroup.mousePressEvent(self, event)
+        self.glue.pressLink(self, event)
 class graphcanvasUI(QtGui.QWidget):
     def __init__(self, owner=None):
 
@@ -93,6 +113,7 @@ class graphcanvasController(object):
 
         self.node = {}
         self.nodeItem = {}
+        self.link = {}
         self.linkItem = {}
         self.lastNodeItem = None
 
@@ -140,42 +161,86 @@ class graphcanvasController(object):
         key = (from_, to)
         if key in self.linkItem:
             return
-        li = QtGui.QGraphicsLineItem()
-        li.setZValue(5)
-        self.setLineItem(li, from_, to)
+        li = linkItem(self)
+        self.setLinkItem(li, from_, to)
 
         self.linkItem[key] = li
+        self.link[li] = key
+    
         self.ui.canvas.addItem(li)
-    def setLineItem(self, li, from_, to):
+    def setLinkItem(self, li, from_, to):
         fromSize = self.nodeItem[from_].text.document().size()
         toSize = self.nodeItem[to].text.document().size()
-        li.setLine(
+        li.line.setLine(
             from_.u['_bklnk']['x'] + fromSize.width()/2, 
             from_.u['_bklnk']['y'] + fromSize.height()/2, 
             to.u['_bklnk']['x'] + toSize.width()/2, 
             to.u['_bklnk']['y'] + toSize.height()/2
             )
-    def newPos(self, nodeItem):
+    def newPos(self, nodeItem, event):
         """nodeItem is telling us it has a new position"""
         node = self.node[nodeItem]
         node.u['_bklnk']['x'] = nodeItem.x()
         node.u['_bklnk']['y'] = nodeItem.y()
 
-        if self.lastNodeItem <> nodeItem:
-            if self.lastNodeItem:
-                self.lastNodeItem.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
-            self.lastNodeItem = nodeItem
-            nodeItem.bg.setBrush(QtGui.QBrush(QtGui.QColor(240,200,200)))
-
         blc = getattr(self.c, 'backlinkController')
         if blc:
             for link in blc.linksFrom(node):
                 if (node, link) in self.linkItem:
-                    self.setLineItem(self.linkItem[(node, link)], node, link)
+                    self.setLinkItem(self.linkItem[(node, link)], node, link)
 
             for link in blc.linksTo(node):
                 if (link, node) in self.linkItem:
-                    self.setLineItem(self.linkItem[(link, node)], link, node)
+                    self.setLinkItem(self.linkItem[(link, node)], link, node)
+    
+    def releaseNode(self, nodeItem, event):
+        """nodeItem is telling us it has a new position"""
+
+        if self.lastNodeItem == nodeItem:
+            return
+
+
+        #X node = self.node[nodeItem]
+        #X node.u['_bklnk']['x'] = nodeItem.x()
+        #X node.u['_bklnk']['y'] = nodeItem.y()
+ 
+        if self.lastNodeItem:
+            self.lastNodeItem.bg.setPen(QtGui.QPen(Qt.NoPen))
+            # self.lastNodeItem.bg.setBrush(QtGui.QBrush(QtGui.QColor(200,240,200)))
+
+
+        # nodeItem.bg.setBrush(QtGui.QBrush(QtGui.QColor(240,200,200)))
+        nodeItem.bg.setPen(QtGui.QPen())
+
+        oldItem = self.lastNodeItem
+        self.lastNodeItem = nodeItem  # needed for self.goto()
+
+        if self.ui.UI.chkTrack.isChecked():
+            self.goto()
+
+        blc = getattr(self.c, 'backlinkController')
+
+        if not blc:
+            return
+
+        if event.modifiers() & Qt.ShiftModifier:
+            links = blc.linksFrom(self.node[oldItem])
+            if self.node[nodeItem] not in links:
+                blc.vlink(self.node[oldItem], self.node[nodeItem])
+                # blc will call our update(), so in retaliation...
+                blc.updateTabInt()
+
+    def pressLink(self, linkItem, event):
+        """nodeItem is telling us it was clicked"""
+
+        blc = getattr(self.c, 'backlinkController')
+
+        if not blc:
+            return
+
+        if event.modifiers() & Qt.ControlModifier:
+            link = self.link[linkItem]
+            print link
     def update(self):
         """rescan name, links, extent"""
         for i in self.linkItem:
