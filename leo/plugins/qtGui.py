@@ -9,6 +9,8 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
+incremental_coloring = False
+
 # safe_mode = False
     # True: Bypass k.masterKeyHandler for problem keys or visible characters.
 
@@ -4784,7 +4786,6 @@ class leoQtEventFilter(QtCore.QObject):
         elif eventType in kinds:
             tkKey,ch,ignore = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-
             if ignore:
                 override = False
             elif self.isSpecialOverride(tkKey,ch):
@@ -4817,7 +4818,11 @@ class leoQtEventFilter(QtCore.QObject):
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
                 c.outerUpdate()
             else:
-                if trace and verbose: g.trace(self.tag,'unbound',tkKey)
+                if True or trace and verbose:
+                    stroke = self.toStroke(tkKey,ch)
+                    if (stroke and not stroke.startswith('Alt+') and 
+                        not stroke.startswith('Ctrl+')):
+                            g.trace(self.tag,'unbound',tkKey,stroke)
 
         if trace: self.traceEvent(obj,event,tkKey,override)
 
@@ -4852,8 +4857,13 @@ class leoQtEventFilter(QtCore.QObject):
     def isSpecialOverride (self,tkKey,ch):
 
         # g.trace(repr(tkKey),repr(ch))
+        c = self.c
+        d = c.k.guiBindNamesDict
 
-        if tkKey == 'Tab':
+        table = [d.get(key) for key in d]
+        table.append('Tab')
+
+        if tkKey in table:
             return True
         elif len(tkKey) == 1:
             return True # Must process all ascii keys.
@@ -5194,8 +5204,9 @@ class leoQtColorizer:
 
         self.count += 1 # For unit testing.
 
-        if self.enabled:
-            self.highlighter.rehighlight()
+        if not incremental_coloring:
+            if self.enabled:
+                self.highlighter.rehighlight()
 
         return "ok" # For unit testing.
     #@-node:ekr.20081205131308.18:colorize
@@ -5264,7 +5275,7 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
 
         '''Override base rehighlight method'''
 
-        # g.trace('*****')
+        # g.trace('*****',g.callers())
 
         self.colorer.init()
 
@@ -5292,7 +5303,6 @@ class jEditColorizer:
         self.c = c
         self.highlighter = highlighter # a QSyntaxHighlighter
         self.p = None
-        self.s = '' # The string being colorized.
         self.w = w
         assert(w == self.c.frame.body.bodyCtrl)
 
@@ -5324,6 +5334,8 @@ class jEditColorizer:
         self.trace_match_flag = False # (Useful) True: trace all matching methods.
         self.verbose = False
         # Profiling...
+        self.recolorCount = 0 # Total calls to recolor
+        self.stateCount = 0 # Total calls to setCurrentState
         self.totalChars = 0 # The total number of characters examined by recolor.
         self.totalKeywordsCalls = 0
         self.totalLeoKeywordsCalls = 0
@@ -5657,12 +5669,16 @@ class jEditColorizer:
         if not self.showInvisibles:
             w.tag_configure("elide",elide="1")
     #@-node:ekr.20081205131308.54:configure_variable_tags
-    #@+node:ekr.20081205131308.74:init
+    #@+node:ekr.20081205131308.74:init (jeditColorizer)
     def init (self):
 
+        trace = False and not g.unitTesting
         self.p = self.c.currentPosition()
-        self.s = self.w.getAllText()
-        # g.trace(self.s)
+
+        if trace:
+            callers = g.callers(2)
+            if 'setAllText' not in callers:
+                g.trace('****',callers)
 
         # State info.
         self.global_i,self.global_j = 0,0
@@ -5677,8 +5693,9 @@ class jEditColorizer:
         # Used by matchers.
         self.prev = None
 
+        ####
         # self.configure_tags() # Must do this every time to support multiple editors.
-    #@-node:ekr.20081205131308.74:init
+    #@-node:ekr.20081205131308.74:init (jeditColorizer)
     #@+node:ekr.20081205131308.55:init_mode & helpers
     def init_mode (self,name):
 
@@ -5948,13 +5965,13 @@ class jEditColorizer:
                         i += n ; break
                 else:
                     # New in Leo 4.6: Use the default chars for everything else.
-                    self.setTag(tag,i,i+1)
+                    self.setTag(tag,s,i,i+1)
                     i += 1
                 assert i > progress
             bunch = self.modeStack.pop()
             self.initModeFromBunch(bunch)
         elif not exclude_match:
-            self.setTag(tag,i,j)
+            self.setTag(tag,s,i,j)
     #@nonl
     #@-node:ekr.20081206062411.13:colorRangeWithTag
     #@+node:ekr.20081205131308.87:pattern matchers
@@ -6635,53 +6652,70 @@ class jEditColorizer:
     #@+node:ekr.20081206062411.12:recolor & helpers
     def recolor (self,s):
 
-        '''Recolor the line s from i to j.'''
+        '''Recolor line s.'''
 
-        trace = False ; verbose = False
-        if not self.s: return # Must handle empty lines!
+        trace = False and not g.unitTesting
+        verbose = False
+        # g.trace(g.callers(5))
 
+        all_s = self.w.getAllText()
+        if not all_s: return
         len_s = len(s)
+        self.recolorCount += 1
         self.totalChars += len_s
         bunch = self.getPrevState()
-        # offset is the index in self.s of the first character of s.
         offset = bunch.offset + bunch.len_s
+            # The global index of s[0]
+
         # Calculate the bounds of the scan.
         lastFunc,lastMatch = bunch.lastFunc,bunch.lastMatch
+        lastN = 0
         i = g.choose(lastFunc,lastMatch,offset)
         j = offset + len_s
-        j = min(j,len(self.s))
+        j = min(j,len(all_s))
         self.global_i,self.global_j = offset,j
 
-        if trace: g.trace(
-            '%s offset: %3s, i:%3s, j:%3s, s: %s' % (
-            self.language,offset,i,j,repr(self.s[i:j])))
+        # An important check.
+        s2 = all_s[offset:j]
+        if not g.unitTesting:
+            if s2 != s:
+                g.trace('***** offset %s, j %s' % (offset,j))
+                g.trace('*****\ns  %s\ns2 %s' % (
+                    repr(s),repr(s2)))
+
+        if trace:
+                # g.trace('%s offset %3s, i %3s, j %3s, %s' % (
+                    # self.language,offset,i,j,s))
+                g.trace('offset %3s, %s' % (offset,s))
 
         while i < j:
+            assert 0 <= i < len(all_s)
             progress = i
-            functions = self.rulesDict.get(self.s[i],[])
+            functions = self.rulesDict.get(all_s[i],[])
             for f in functions:
-                if trace and verbose: g.trace('i',i,'f',f)
-                n = f(self,self.s,i)
+                n = f(self,all_s,i)
                 if n is None:
                     g.trace('Can not happen' % (repr(n),repr(f)))
-                    lastFunc,lastMatch = None,i
                     break
                 elif n > 0:
-                    lastFunc,lastMatch = f,i
+                    if trace and verbose:
+                        g.trace('i %3s, n %3s, f %s' % (i,n,f))
+                    lastFunc,lastMatch,lastN = f,i,n
                     i += n
                     break # Must break
                 elif n < 0:
-                    # New in Leo 4.6
                     # match_keyword now sets n < 0 on first failure.
-                    i += -n
-                    lastFunc,lastMatch = None,i
+                    i += -n # Don't set lastMatch on failure!
+                    break # Must break
+                else:
+                    pass # Do not break or change i.
             else:
-                i += 1
-                lastFunc,lastMatch = None,i
+                i += 1 # Don't set lastMatch on failure!
             assert i > progress
 
         # Add one for the missing newline.
-        self.setCurrentState(offset,len_s+1,lastFunc,lastMatch)
+        self.setCurrentState(s,offset,len_s+1,lastFunc,lastMatch,lastN)
+            # At present, *every* 'block' must have a state.
     #@+node:ekr.20081206062411.17:getPrevState
     def getPrevState (self):
 
@@ -6689,22 +6723,42 @@ class jEditColorizer:
         state = h.previousBlockState()
         bunch = self.stateDict.get(state)
 
-        # g.trace(bunch)
-
-        if not bunch:
-            bunch = g.Bunch(
-                offset=0,len_s=0,
-                lastFunc=None,lastMatch=0)
-
-        return bunch
+        if bunch:
+            return bunch
+        else:
+            return g.Bunch(
+                active = False,
+                offset=0,
+                len_s=0,
+                lastFunc=None,
+                lastMatch=0,
+                lastN=0)
     #@-node:ekr.20081206062411.17:getPrevState
     #@+node:ekr.20081206062411.18:setCurrentState
-    def setCurrentState (self,offset,len_s,lastFunc,lastMatch):
+    def setCurrentState (self,s,offset,len_s,lastFunc,lastMatch,lastN):
 
+        trace = False
         h = self.highlighter
-        state = h.currentBlockState()
 
-        if state == -1:
+        self.stateCount += 1
+        state = h.currentBlockState()
+        active = lastMatch + lastN >= offset + len_s
+
+        if state == -1 or active:
+            # Every block must have a state.
+            changeState = True
+        else:
+            b = self.stateDict.get(state)
+            if b:
+                changeState = b.lastFunc != lastFunc or b.lastN != lastN
+            else:
+                changeState = True
+
+        if trace:
+            g.trace('%2d active %5s change %5s state %3s %s' % (
+                self.stateCount,active,changeState,state,repr(s)))
+
+        if changeState:
             # Allocate a new state
             state = self.nextState
             self.nextState += 1
@@ -6712,10 +6766,12 @@ class jEditColorizer:
 
         # Remember this info.
         self.stateDict[state] = g.bunch(
+            active=active,
             offset=offset,
             len_s=len_s,
             lastFunc=lastFunc,
-            lastMatch=lastMatch)
+            lastMatch=lastMatch,
+            lastN=lastN)
     #@-node:ekr.20081206062411.18:setCurrentState
     #@-node:ekr.20081206062411.12:recolor & helpers
     #@+node:ekr.20081205131308.26:scanColorDirectives
@@ -6755,7 +6811,7 @@ class jEditColorizer:
         return self.language # For use by external routines.
     #@-node:ekr.20081205131308.26:scanColorDirectives
     #@+node:ekr.20081206062411.14:setTag
-    def setTag (self,tag,i,j):
+    def setTag (self,tag,s,i,j):
 
         trace = False
         w = self.w
@@ -6785,7 +6841,7 @@ class jEditColorizer:
 
         if trace:
             kind = g.choose(ok,' ','***')
-            s2 = g.choose(ok,self.s[clip_i:clip_j],self.s[i:j])
+            s2 = g.choose(ok,s[clip_i:clip_j],all_s[i:j]) #### was self.s
             g.trace('%3s %3s %3s %3s %3s %3s %3s %s' % (
                 kind,tag,offset,i,j,lim_i,lim_j,s2))
 
@@ -6796,11 +6852,14 @@ class jEditColorizer:
     #@+node:ekr.20081205131308.24:updateSyntaxColorer
     def updateSyntaxColorer (self,p):
 
+        trace = False
         p = p.copy()
 
         # self.flag is True unless an unambiguous @nocolor is seen.
+        if trace: g.trace('1',self.flag,p,g.callers(5))
         self.flag = self.useSyntaxColoring(p)
         self.scanColorDirectives(p)
+        if trace: g.trace('2',self.flag,p)
     #@nonl
     #@-node:ekr.20081205131308.24:updateSyntaxColorer
     #@+node:ekr.20081205131308.23:useSyntaxColoring
@@ -6808,13 +6867,17 @@ class jEditColorizer:
 
         """Return True unless p is unambiguously under the control of @nocolor."""
 
+        trace = True
+        if not p:
+            if trace: g.trace('no p',repr(p))
+            return False
         p = p.copy() ; first = p.copy()
         val = True ; self.killcolorFlag = False
 
         # New in Leo 4.6: @nocolor-node disables one node only.
         theDict = g.get_directives_dict(p)
         if 'nocolor-node' in theDict:
-            # g.trace('nocolor-node',p.headString())
+            if trace: g.trace('nocolor-node',p.h)
             return False
 
         for p in p.self_and_parents_iter():
@@ -6824,14 +6887,18 @@ class jEditColorizer:
             kill_color = 'killcolor' in theDict
             # A killcolor anywhere disables coloring.
             if kill_color:
+                if trace: g.trace('@killcolor',p.h)
                 val = False ; self.killcolorFlag = True ; break
             # A color anywhere in the target enables coloring.
             if color and p == first:
+                if trace: g.trace('@color',p.h)
                 val = True ; break
             # Otherwise, the @nocolor specification must be unambiguous.
             elif no_color and not color:
+                if trace: g.trace('@nocolor',p.h)
                 val = False ; break
             elif color and not no_color:
+                if trace: g.trace('@color',p.h)
                 val = True ; break
 
         # g.trace(first.headString(),val)
@@ -7290,6 +7357,12 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@-node:ekr.20081121105001.541:Coloring (baseTextWidget)
     #@-node:ekr.20081121105001.538: May be overridden in subclasses
     #@+node:ekr.20081121105001.543: Must be overridden in subclasses
+    # These methods avoid calls to setAllText.
+
+    # Allow the base-class method for headlines.
+    # def delete(self,i,j=None):              self.oops()
+    # def insert(self,i,s):                   self.oops()
+
     def getAllText(self):                   self.oops()
     def getInsertPoint(self):               self.oops()
     def getSelectionRange(self,sort=True):  self.oops()
@@ -7453,8 +7526,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         w.setText(s)
         if insert is not None:
             self.setSelectionRange(i,i,insert=i)
-
-        # g.trace(i,repr(s))
+    #@nonl
     #@-node:ekr.20081121105001.556:setAllText
     #@+node:ekr.20081121105001.557:setInsertPoint
     def setInsertPoint(self,i):
@@ -7757,6 +7829,32 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@-node:ekr.20081121105001.577:setConfig
     #@-node:ekr.20081121105001.573:Birth
     #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
+    #@+node:ekr.20090205153624.11:delete (avoid call to setAllText)
+    def delete(self,i,j=None):
+
+        trace = False and not g.unitTesting
+        c,w = self.c,self.widget
+        colorer = c.frame.body.colorizer.highlighter.colorer
+        n = colorer.recolorCount
+
+        i = self.toGuiIndex(i)
+        if j is None: j = i+1
+        j = self.toGuiIndex(j)
+
+        if incremental_coloring:
+            cursor = w.textCursor()
+            cursor.setPosition(i)
+            moveCount = abs(j-i)
+            cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
+            cursor.removeSelectedText()
+        else:
+            s = self.getAllText()
+            self.setAllText(s[:i] + s[j:])
+
+        if trace:
+            g.trace('%s calls to recolor' % (
+                colorer.recolorCount-n))
+    #@-node:ekr.20090205153624.11:delete (avoid call to setAllText)
     #@+node:ekr.20081121105001.579:flashCharacter (leoQTextEditWidget)
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
 
@@ -7802,14 +7900,14 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         addFlashCallback()
     #@-node:ekr.20081121105001.579:flashCharacter (leoQTextEditWidget)
-    #@+node:ekr.20081121105001.580:getAllText
+    #@+node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
     def getAllText(self):
 
         w = self.widget
         s = w.toPlainText()
         return g.app.gui.toUnicode(s)
     #@nonl
-    #@-node:ekr.20081121105001.580:getAllText
+    #@-node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
     #@+node:ekr.20081121105001.581:getInsertPoint
     def getInsertPoint(self):
 
@@ -7840,6 +7938,28 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         return self.widget.textCursor().hasSelection()
     #@-node:ekr.20081121105001.584:hasSelection
+    #@+node:ekr.20090205153624.12:insert (avoid call to setAllText)
+    def insert(self,i,s):
+
+        trace = False and not g.unitTesting
+        c,w = self.c,self.widget
+        colorer = c.frame.body.colorizer.highlighter.colorer
+        n = colorer.recolorCount
+
+        i = self.toGuiIndex(i)
+
+        if incremental_coloring:
+            cursor = w.textCursor()
+            cursor.setPosition(i)
+            cursor.insertText(s)
+        else:
+            s2 = self.getAllText()
+            self.setAllText(s2[:i] + s + s2[i:])
+
+        if trace:
+            g.trace('%s calls to recolor' % (
+                colorer.recolorCount-n))
+    #@-node:ekr.20090205153624.12:insert (avoid call to setAllText)
     #@+node:ekr.20081121105001.585:see
     def see(self,i):
 
@@ -7859,14 +7979,26 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         If insert is None, the insert point, selection range and scrollbars are initied.
         Otherwise, the scrollbars are preserved.'''
 
-        w = self.widget
-        # g.trace('len(s)',len(s),p and p.headString())
+        trace = False and not g.unitTesting
+        c,w = self.c,self.widget
+        colorer = c.frame.body.colorizer.highlighter.colorer
+        n = colorer.recolorCount
+
         sb = w.verticalScrollBar()
         if insert is None: i,pos = 0,0
         else: i,pos = insert,sb.sliderPosition()
         w.setPlainText(s)
         self.setSelectionRange(i,i,insert=i)
         sb.setSliderPosition(pos)
+
+        # This is the *only* time we should call rehighlight.
+        if incremental_coloring:
+            c.frame.body.colorizer.highlighter.rehighlight()
+
+        if trace:
+            g.trace('%s calls to recolor' % (
+                colorer.recolorCount-n))
+    #@nonl
     #@-node:ekr.20081121105001.587:setAllText
     #@+node:ekr.20081121105001.588:setInsertPoint
     def setInsertPoint(self,i):

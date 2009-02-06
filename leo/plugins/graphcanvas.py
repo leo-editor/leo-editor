@@ -1,3 +1,9 @@
+"""Add a graph layout for nodes in a tab.  Requires backlink.py"""
+
+__version__ = '0.1'
+# 
+# 0.1 - initial release - TNB
+
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 from math import atan2, sin, cos
@@ -46,18 +52,18 @@ class graphcanvasUI(QtGui.QWidget):
 
         self.connect(u.btnUpdate, QtCore.SIGNAL("clicked()"), o.update)
         self.connect(u.btnGoto, QtCore.SIGNAL("clicked()"), o.goto)
-    
+
         self.connect(u.btnLoad, QtCore.SIGNAL("clicked()"), o.loadGraph)
         self.connect(u.btnLoadSibs, QtCore.SIGNAL("clicked()"),
             lambda: o.loadGraph('sibs'))
         self.connect(u.btnLoadRecur, QtCore.SIGNAL("clicked()"),
             lambda: o.loadGraph('recur'))
-        
+    
         self.connect(u.btnLoadLinked, QtCore.SIGNAL("clicked()"),
             lambda: o.loadLinked('linked'))
         self.connect(u.btnLoadAll, QtCore.SIGNAL("clicked()"),
             lambda: o.loadLinked('all'))
-        
+    
         self.connect(u.btnUnLoad, QtCore.SIGNAL("clicked()"), o.unLoad)
         self.connect(u.btnClear, QtCore.SIGNAL("clicked()"), o.clear)
 class nodeItem(QtGui.QGraphicsItemGroup):
@@ -116,7 +122,7 @@ class linkItem(QtGui.QGraphicsItemGroup):
     def setLine(self, x0, y0, x1, y1):
 
         self.line.setLine(x0, y0, x1, y1)
-    
+
         x,y = x1-(x1-x0)/3., y1-(y1-y0)/3.
         r = 12.
         a = atan2(y1-y0, x1-x0)
@@ -138,7 +144,7 @@ class graphcanvasController(object):
         self.ui = graphcanvasUI(self)
 
         leoPlugins.registerHandler('headkey2', lambda a,b: self.update())
-    
+
         self.initIvars()
 
         # leoPlugins.registerHandler('open2', self.loadLinks)
@@ -188,12 +194,12 @@ class graphcanvasController(object):
         blc = getattr(self.c, 'backlinkController')
         if not blc:
             return
-        
+    
         while True:
-        
+    
             loaded = len(self.node)
             linked = set()
-        
+    
             for i in self.nodeItem:
                 for j in blc.linksTo(i):
                     if j not in self.nodeItem:
@@ -201,23 +207,23 @@ class graphcanvasController(object):
                 for j in blc.linksFrom(i):
                     if j not in self.nodeItem:
                         linked.add(j)
-                    
+                
             for node in linked:
 
                 txt = nodeItem(self, node.headString().replace(' ','\n'))
-    
+
                 self.node[txt] = node
                 self.nodeItem[node] = txt
-    
+
                 if '_bklnk' in node.u and 'x' in node.u['_bklnk']:
                     txt.setPos(node.u['_bklnk']['x'], node.u['_bklnk']['y'])
                 else:
                     node.u['_bklnk'] = {}
                     node.u['_bklnk']['x'] = 0
                     node.u['_bklnk']['y'] = 0
-    
+
                 self.ui.canvas.addItem(txt)
-            
+        
             if not linked or what != 'all':
                 # none added, or doing just one round
                 break
@@ -241,7 +247,7 @@ class graphcanvasController(object):
     def setLinkItem(self, li, from_, to):
         fromSize = self.nodeItem[from_].text.document().size()
         toSize = self.nodeItem[to].text.document().size()
-    
+
         li.setLine(
             from_.u['_bklnk']['x'] + fromSize.width()/2, 
             from_.u['_bklnk']['y'] + fromSize.height()/2, 
@@ -311,48 +317,48 @@ class graphcanvasController(object):
 
         if not (event.modifiers() & Qt.ControlModifier):
             return
-        
+    
         link = self.link[linkItem]
 
         v0, v1 = link
-    
+
         # delete in both directions, only one will be needed, typically
         id0 = v0.u['_bklnk']['id']
         id1 = v1.u['_bklnk']['id']
         blc.deleteLink(v0, id1, 'S')
         blc.deleteLink(v1, id0, 'S')
-    
+
         # blc will call our update(), so in retaliation...
         blc.updateTabInt()
 
         print 'done'
     def unLoad(self):
-    
+
         if not self.lastNodeItem:
             return
-        
+    
         node = self.node[self.lastNodeItem]
-    
+
         self.ui.canvas.removeItem(self.lastNodeItem)
-    
+
         culls = [i for i in self.linkItem if node in i]
-    
+
         for i in culls:
             del self.link[self.linkItem[i]]
             self.ui.canvas.removeItem(self.linkItem[i])
             del self.linkItem[i]
-        
+    
         del self.nodeItem[node]
         del self.node[self.lastNodeItem]
-    
+
         self.lastNodeItem = None
     def clear(self):
-    
+
         for i in self.node:
             self.ui.canvas.removeItem(i)
         for i in self.link:
             self.ui.canvas.removeItem(i)
-    
+
         self.initIvars()
     def update(self):
         """rescan name, links, extent"""
