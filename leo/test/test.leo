@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1057,6 +1057,7 @@
 <v t="ekr.20090201192257.1"><vh>@test macro ab</vh></v>
 <v t="ekr.20090205070715.1"><vh>print colorer stats</vh></v>
 <v t="ekr.20090206065021.1"><vh>test string flipping</vh></v>
+<v t="ekr.20090206124759.2"><vh>Contains @nocolor</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -11181,11 +11182,17 @@ g.es ('total characters: %s, keywords: %s, leo_keywords: %s' % (
     colorer.totalChars,
     colorer.totalKeywordsCalls,
     colorer.totalLeoKeywordsCalls))</t>
-<t tx="ekr.20090206065021.1">a = '''ab'''
+<t tx="ekr.20090206065021.1">#
+
+a = '''ab'''
+
+# test
 
 b = 'c'
 
 def a():
     pass</t>
+<t tx="ekr.20090206124759.2">@nocolor-node
+</t>
 </tnodes>
 </leo_file>

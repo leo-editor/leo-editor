@@ -9,6 +9,8 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
+incremental_coloring = False
+
 # safe_mode = False
     # True: Bypass k.masterKeyHandler for problem keys or visible characters.
 
@@ -4861,24 +4863,6 @@ class leoQtEventFilter(QtCore.QObject):
         table = [d.get(key) for key in d]
         table.append('Tab')
 
-        # table = (
-            # 'ampersand',
-            # 'asciicircum',
-            # 'asterisk',
-            # 'at',
-            # 'dollar',
-            # 'exclam',
-            # 'numbersign',
-            # 'parenleft',
-            # 'parenright',
-            # 'percent',
-            # 'quoteright',
-            # 'quoteleft',
-            # 'semicolon',
-            # 'space',
-            # 'Tab',
-        # )
-
         if tkKey in table:
             return True
         elif len(tkKey) == 1:
@@ -5220,7 +5204,7 @@ class leoQtColorizer:
 
         self.count += 1 # For unit testing.
 
-        if False:
+        if not incremental_coloring:
             if self.enabled:
                 self.highlighter.rehighlight()
 
@@ -5688,7 +5672,7 @@ class jEditColorizer:
     #@+node:ekr.20081205131308.74:init (jeditColorizer)
     def init (self):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         self.p = self.c.currentPosition()
 
         if trace:
@@ -5709,6 +5693,7 @@ class jEditColorizer:
         # Used by matchers.
         self.prev = None
 
+        ####
         # self.configure_tags() # Must do this every time to support multiple editors.
     #@-node:ekr.20081205131308.74:init (jeditColorizer)
     #@+node:ekr.20081205131308.55:init_mode & helpers
@@ -6867,11 +6852,14 @@ class jEditColorizer:
     #@+node:ekr.20081205131308.24:updateSyntaxColorer
     def updateSyntaxColorer (self,p):
 
+        trace = False
         p = p.copy()
 
         # self.flag is True unless an unambiguous @nocolor is seen.
+        if trace: g.trace('1',self.flag,p,g.callers(5))
         self.flag = self.useSyntaxColoring(p)
         self.scanColorDirectives(p)
+        if trace: g.trace('2',self.flag,p)
     #@nonl
     #@-node:ekr.20081205131308.24:updateSyntaxColorer
     #@+node:ekr.20081205131308.23:useSyntaxColoring
@@ -6879,14 +6867,17 @@ class jEditColorizer:
 
         """Return True unless p is unambiguously under the control of @nocolor."""
 
-        if not p: return False
+        trace = True
+        if not p:
+            if trace: g.trace('no p',repr(p))
+            return False
         p = p.copy() ; first = p.copy()
         val = True ; self.killcolorFlag = False
 
         # New in Leo 4.6: @nocolor-node disables one node only.
         theDict = g.get_directives_dict(p)
         if 'nocolor-node' in theDict:
-            # g.trace('nocolor-node',p.headString())
+            if trace: g.trace('nocolor-node',p.h)
             return False
 
         for p in p.self_and_parents_iter():
@@ -6896,14 +6887,18 @@ class jEditColorizer:
             kill_color = 'killcolor' in theDict
             # A killcolor anywhere disables coloring.
             if kill_color:
+                if trace: g.trace('@killcolor',p.h)
                 val = False ; self.killcolorFlag = True ; break
             # A color anywhere in the target enables coloring.
             if color and p == first:
+                if trace: g.trace('@color',p.h)
                 val = True ; break
             # Otherwise, the @nocolor specification must be unambiguous.
             elif no_color and not color:
+                if trace: g.trace('@nocolor',p.h)
                 val = False ; break
             elif color and not no_color:
+                if trace: g.trace('@color',p.h)
                 val = True ; break
 
         # g.trace(first.headString(),val)
@@ -7531,8 +7526,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         w.setText(s)
         if insert is not None:
             self.setSelectionRange(i,i,insert=i)
-
-        # g.trace(i,repr(s))
+    #@nonl
     #@-node:ekr.20081121105001.556:setAllText
     #@+node:ekr.20081121105001.557:setInsertPoint
     def setInsertPoint(self,i):
@@ -7838,7 +7832,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20090205153624.11:delete (avoid call to setAllText)
     def delete(self,i,j=None):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c,w = self.c,self.widget
         colorer = c.frame.body.colorizer.highlighter.colorer
         n = colorer.recolorCount
@@ -7846,12 +7840,16 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         i = self.toGuiIndex(i)
         if j is None: j = i+1
         j = self.toGuiIndex(j)
-        cursor = w.textCursor()
-        cursor.setPosition(i)
-        moveCount = abs(j-i)
-        cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
 
-        cursor.removeSelectedText()
+        if incremental_coloring:
+            cursor = w.textCursor()
+            cursor.setPosition(i)
+            moveCount = abs(j-i)
+            cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
+            cursor.removeSelectedText()
+        else:
+            s = self.getAllText()
+            self.setAllText(s[:i] + s[j:])
 
         if trace:
             g.trace('%s calls to recolor' % (
@@ -7943,15 +7941,20 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20090205153624.12:insert (avoid call to setAllText)
     def insert(self,i,s):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c,w = self.c,self.widget
         colorer = c.frame.body.colorizer.highlighter.colorer
         n = colorer.recolorCount
 
         i = self.toGuiIndex(i)
-        cursor = w.textCursor()
-        cursor.setPosition(i)
-        cursor.insertText(s)
+
+        if incremental_coloring:
+            cursor = w.textCursor()
+            cursor.setPosition(i)
+            cursor.insertText(s)
+        else:
+            s2 = self.getAllText()
+            self.setAllText(s2[:i] + s + s2[i:])
 
         if trace:
             g.trace('%s calls to recolor' % (
@@ -7976,12 +7979,10 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         If insert is None, the insert point, selection range and scrollbars are initied.
         Otherwise, the scrollbars are preserved.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c,w = self.c,self.widget
         colorer = c.frame.body.colorizer.highlighter.colorer
         n = colorer.recolorCount
-
-        # if trace: g.trace('***** len(s)',len(s))
 
         sb = w.verticalScrollBar()
         if insert is None: i,pos = 0,0
@@ -7991,8 +7992,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         sb.setSliderPosition(pos)
 
         # This is the *only* time we should call rehighlight.
-        c = self.c
-        c.frame.body.colorizer.highlighter.rehighlight()
+        if incremental_coloring:
+            c.frame.body.colorizer.highlighter.rehighlight()
 
         if trace:
             g.trace('%s calls to recolor' % (

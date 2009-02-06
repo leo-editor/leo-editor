@@ -401,6 +401,7 @@ def get_directives_dict(p,root=None):
 
     Returns a dict containing pointers to the start of each directive"""
 
+    trace = False
     global globalDirectiveList
 
     if root: root_node = root[0]
@@ -455,6 +456,8 @@ def get_directives_dict(p,root=None):
                 #@-node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
                 #@nl
             i = g.skip_line(s,i)
+
+    if trace: g.trace(p.h,d)
     return d
 #@-node:ekr.20031218072017.1260:g.get_directives_dict
 #@+node:ekr.20080827175609.1:g.get_directives_dict_list

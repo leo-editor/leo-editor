@@ -12,13 +12,6 @@
 #@+node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20090103054019.1:First
-#@+node:ekr.20090202191501.9:Improve macro commands
-@nocolor-node
-
-- Implement @macros setting tree.
-- Save macros as a list of strokes.
-#@nonl
-#@-node:ekr.20090202191501.9:Improve macro commands
 #@+node:ekr.20090202064534.1:Remove bad archived position message?
 bad archived position: bad index="3", len(children)="1"
 restoreDescendentAttributes: can not find vnode (duA):
