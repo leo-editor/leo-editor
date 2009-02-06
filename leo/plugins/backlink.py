@@ -296,6 +296,10 @@ class backlinkController(object):
                 break
         else:
             self.showMessage("Error: no such link")
+        
+        gcc = getattr(self.c, 'graphcanvasController')
+        if gcc:
+            gcc.update()
     def deleteSet(self, enabled):
         """UI informing us that delete mode has been set to value of 'enabled'"""
 
@@ -327,7 +331,7 @@ class backlinkController(object):
         """make a link"""
 
         self.vlink(from_.v, to.v, type_=type_)
-    
+
     def vlink(self, v0, v1, type_='directed'):
         self.initBacklink(v0)
         self.initBacklink(v1)

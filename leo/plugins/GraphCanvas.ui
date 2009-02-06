@@ -25,20 +25,6 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout" >
      <item>
-      <widget class="QPushButton" name="btnUpdate" >
-       <property name="text" >
-        <string>Update</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnGoto" >
-       <property name="text" >
-        <string>Goto</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QLabel" name="label" >
        <property name="text" >
         <string>Load:</string>
@@ -50,6 +36,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnLoad" >
+       <property name="toolTip" >
+        <string>Add the node selected in the tree to the graph</string>
+       </property>
        <property name="text" >
         <string>Node</string>
        </property>
@@ -57,6 +46,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnLoadSibs" >
+       <property name="toolTip" >
+        <string>Add the node selected in the tree and its siblings to the graph</string>
+       </property>
        <property name="text" >
         <string>Sibs</string>
        </property>
@@ -64,8 +56,31 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnLoadRecur" >
+       <property name="toolTip" >
+        <string>Recursively add all the nodes below the node selected in the tree to the graph</string>
+       </property>
        <property name="text" >
         <string>Recur</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnLoadLinked" >
+       <property name="toolTip" >
+        <string>Add any nodes that are directly linked to nodes already in the graph</string>
+       </property>
+       <property name="text" >
+        <string>Linked</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnLoadAll" >
+       <property name="toolTip" >
+        <string>Add all nodes that are linked to nodes already in the graph.</string>
+       </property>
+       <property name="text" >
+        <string>All</string>
        </property>
       </widget>
      </item>
@@ -75,11 +90,54 @@
     <layout class="QHBoxLayout" name="horizontalLayout_2" >
      <item>
       <widget class="QCheckBox" name="chkTrack" >
+       <property name="toolTip" >
+        <string>Alway select node in tree when node is selected in graph</string>
+       </property>
        <property name="text" >
         <string>Track</string>
        </property>
        <property name="checked" >
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnUpdate" >
+       <property name="toolTip" >
+        <string>Update links, node names, etc.</string>
+       </property>
+       <property name="text" >
+        <string>Update</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnGoto" >
+       <property name="toolTip" >
+        <string>Select node in tree</string>
+       </property>
+       <property name="text" >
+        <string>Goto</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnUnLoad" >
+       <property name="toolTip" >
+        <string>Remove node from graph (links etc. not lost)</string>
+       </property>
+       <property name="text" >
+        <string>UnLoad</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnClear" >
+       <property name="toolTip" >
+        <string>Remove all nodes from graph (links etc. not lost)</string>
+       </property>
+       <property name="text" >
+        <string>Clear</string>
        </property>
       </widget>
      </item>
