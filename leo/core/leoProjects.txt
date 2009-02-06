@@ -3518,7 +3518,10 @@ def redraw_after_select(self,p,setFocus=False):
 
     # This will be redundant if tree.before/afterSelectHint are functional,
     # but this redundancy does not hurt.
-    c.frame.tree.redraw_after_select(p)
+
+    #### This *does* hurt: it causes double recoloring.
+    #### c.frame.tree.redraw_after_select(p)
+
     if setFocus: c.treeFocusHelper()
 #@-node:ekr.20090110073010.4:c.redraw_after_select
 #@+node:ekr.20031218072017.2997:c.selectPosition
@@ -3673,7 +3676,6 @@ def setBodyTextAfterSelect (self,p,old_p):
         # This destroys all color tags, so do a full recolor.
         w.setAllText(s)
         self.frame.body.recolor(p)
-        #### c.frame.tree.recolor_after_select(p)
 
     if p.v and p.v.t.scrollBarSpot != None:
         first,last = p.v.t.scrollBarSpot
@@ -4951,7 +4953,10 @@ def redraw_after_select(self,p,setFocus=False):
 
     # This will be redundant if tree.before/afterSelectHint are functional,
     # but this redundancy does not hurt.
-    c.frame.tree.redraw_after_select(p)
+
+    #### This *does* hurt: it causes double recoloring.
+    #### c.frame.tree.redraw_after_select(p)
+
     if setFocus: c.treeFocusHelper()
 #@-node:ekr.20090110073010.4:c.redraw_after_select
 #@-node:ekr.20080514131122.14:c.redrawing...
@@ -5144,7 +5149,6 @@ def setBodyTextAfterSelect (self,p,old_p):
         # This destroys all color tags, so do a full recolor.
         w.setAllText(s)
         self.frame.body.recolor(p)
-        #### c.frame.tree.recolor_after_select(p)
 
     if p.v and p.v.t.scrollBarSpot != None:
         first,last = p.v.t.scrollBarSpot
@@ -6660,7 +6664,6 @@ def setBodyTextAfterSelect (self,p,old_p):
         # This destroys all color tags, so do a full recolor.
         w.setAllText(s)
         self.frame.body.recolor(p)
-        #### c.frame.tree.recolor_after_select(p)
 
     if p.v and p.v.t.scrollBarSpot != None:
         first,last = p.v.t.scrollBarSpot
@@ -6692,7 +6695,10 @@ def redraw_after_select(self,p,setFocus=False):
 
     # This will be redundant if tree.before/afterSelectHint are functional,
     # but this redundancy does not hurt.
-    c.frame.tree.redraw_after_select(p)
+
+    #### This *does* hurt: it causes double recoloring.
+    #### c.frame.tree.redraw_after_select(p)
+
     if setFocus: c.treeFocusHelper()
 #@-node:ekr.20090110073010.4:c.redraw_after_select
 #@-node:ekr.20090129060837.2:Fixed (?) body corruption
@@ -7028,7 +7034,7 @@ def selectVisBack (self,event=None):
     if not c.canSelectVisBack(): return
 
     p.moveToVisBack(c)
-    c.redraw_after_select(p)
+    #### c.redraw_after_select(p)
     c.treeSelectHelper(p,redraw=False)
 #@-node:ekr.20031218072017.2995:selectVisBack
 #@+node:ekr.20031218072017.2996:selectVisNext
@@ -7043,7 +7049,7 @@ def selectVisNext (self,event=None):
     # g.trace(p.h)
 
     p.moveToVisNext(c)
-    c.redraw_after_select(p)
+    #### c.redraw_after_select(p)
     c.treeSelectHelper(p,redraw=False)
 #@-node:ekr.20031218072017.2996:selectVisNext
 #@+node:ekr.20040803072955.128:leoTree.select & helpers
@@ -7176,7 +7182,6 @@ def setBodyTextAfterSelect (self,p,old_p):
         # This destroys all color tags, so do a full recolor.
         w.setAllText(s)
         self.frame.body.recolor(p)
-        #### c.frame.tree.recolor_after_select(p)
 
     if p.v and p.v.t.scrollBarSpot != None:
         first,last = p.v.t.scrollBarSpot

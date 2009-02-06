@@ -2812,7 +2812,6 @@ class leoTree:
             # This destroys all color tags, so do a full recolor.
             w.setAllText(s)
             self.frame.body.recolor(p)
-            #### c.frame.tree.recolor_after_select(p)
 
         if p.v and p.v.t.scrollBarSpot != None:
             first,last = p.v.t.scrollBarSpot

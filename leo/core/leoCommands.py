@@ -5506,7 +5506,7 @@ class baseCommands (object):
         if not c.canSelectVisBack(): return
 
         p.moveToVisBack(c)
-        c.redraw_after_select(p)
+        #### c.redraw_after_select(p)
         c.treeSelectHelper(p,redraw=False)
     #@-node:ekr.20031218072017.2995:selectVisBack
     #@+node:ekr.20031218072017.2996:selectVisNext
@@ -5521,7 +5521,7 @@ class baseCommands (object):
         # g.trace(p.h)
 
         p.moveToVisNext(c)
-        c.redraw_after_select(p)
+        #### c.redraw_after_select(p)
         c.treeSelectHelper(p,redraw=False)
     #@-node:ekr.20031218072017.2996:selectVisNext
     #@+node:ekr.20070417112650:utils
@@ -6336,7 +6336,10 @@ class baseCommands (object):
 
         # This will be redundant if tree.before/afterSelectHint are functional,
         # but this redundancy does not hurt.
-        c.frame.tree.redraw_after_select(p)
+
+        #### This *does* hurt: it causes double recoloring.
+        #### c.frame.tree.redraw_after_select(p)
+
         if setFocus: c.treeFocusHelper()
     #@-node:ekr.20090110073010.4:c.redraw_after_select
     #@-node:ekr.20080514131122.14:c.redrawing...
@@ -6347,7 +6350,7 @@ class baseCommands (object):
         if p is None:
             p = c.p
 
-        # g.trace(p and p.h,g.callers(4))
+        # g.trace('incremental',incremental,p and p.h,g.callers(4))
 
         c.frame.body.colorizer.colorize(p,
             incremental=incremental,interruptable=interruptable)
