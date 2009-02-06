@@ -259,6 +259,7 @@ class backlinkController(object):
     def __init__ (self,c):
 
         self.c = c
+        self.c.backlinkController = self
         self.initIvars()
 
         if Tk:
@@ -295,6 +296,10 @@ class backlinkController(object):
                 break
         else:
             self.showMessage("Error: no such link")
+        
+        gcc = getattr(self.c, 'graphcanvasController')
+        if gcc:
+            gcc.update()
     def deleteSet(self, enabled):
         """UI informing us that delete mode has been set to value of 'enabled'"""
 
@@ -306,14 +311,14 @@ class backlinkController(object):
     def initBacklink(self, v):
         """set up a vnode to support links"""
 
-        if not hasattr(v, 'unknownAttributes'):
-            v.unknownAttributes = {}
+        if '_bklnk' not in v.u:
+            v.u['_bklnk'] = {}
 
-        if '_bklnk' not in v.unknownAttributes:
+        if 'id' not in v.u['_bklnk']:
             vid = g.app.nodeIndices.toString(g.app.nodeIndices.getNewIndex())
-            v.unknownAttributes['_bklnk'] = {'id':vid, 'links':[]}
+            v.u['_bklnk'].update({'id':vid, 'links':[]})
 
-        self.vnode[v.unknownAttributes['_bklnk']['id']] = v
+        self.vnode[v.u['_bklnk']['id']] = v
     def initIvars(self):
         """initialize, called by __init__ and loadLinks(Int)"""
 
@@ -325,8 +330,9 @@ class backlinkController(object):
     def link(self, from_, to, type_='directed'):
         """make a link"""
 
-        v0 = from_.v
-        v1 = to.v
+        self.vlink(from_.v, to.v, type_=type_)
+
+    def vlink(self, v0, v1, type_='directed'):
         self.initBacklink(v0)
         self.initBacklink(v1)
 
@@ -334,13 +340,17 @@ class backlinkController(object):
 
         if type_ == 'directed':
             linkType = 'S'
-        v0.unknownAttributes['_bklnk']['links'].append( (linkType,
-            v1.unknownAttributes['_bklnk']['id']) )
+
+        v0.u['_bklnk']['links'].append( (linkType, v1.u['_bklnk']['id']) )
 
         if type_ == 'directed':
             linkType = 'D'
-        v1.unknownAttributes['_bklnk']['links'].append( (linkType,
-            v0.unknownAttributes['_bklnk']['id']) )
+
+        v1.u['_bklnk']['links'].append( (linkType, v0.u['_bklnk']['id']) )
+
+        gcc = getattr(self.c, 'graphcanvasController')
+        if gcc:
+            gcc.update()
     def linkClicked(self, selected):
         """UI informs us that link number 'selected' (zero based) was clicked"""
 
@@ -365,6 +375,20 @@ class backlinkController(object):
         self.link(self.c.p, self.linkDestination)
 
         self.updateTabInt()
+    def linksFrom(self, v, type_='S'):
+        ans = []
+        if not (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
+            return ans
+
+        for i in v.u['_bklnk']['links']:
+            linkType, other = i
+            if linkType == type_:
+                ans.append(self.vnode[other])
+
+        return ans
+
+    def linksTo(self, v):
+        return self.linksFrom(v, type_='D')
     def linkSrc(self):
         """link from current position to source node"""
 
@@ -412,8 +436,8 @@ class backlinkController(object):
         for p in c.allNodes_iter():
             self.positions[p.v] = p.copy()
             v = p.v
-            if hasattr(v, 'unknownAttributes') and '_bklnk' in v.unknownAttributes:
-                vid = v.unknownAttributes['_bklnk']['id']
+            if v.u and '_bklnk' in v.u and 'id' in v.u['_bklnk']:
+                vid = v.u['_bklnk']['id']
                 if vid in ids:
                     ids[vid].append(v)
                 else:
@@ -463,6 +487,33 @@ class backlinkController(object):
         """Mark current position as 'source' (called by UI)"""
         self.linkSource = self.c.p.copy()
         self.showMessage('Source marked')
+    def positionExistsSomewhere(self,p,root=None):
+        """A local copy of c.positionExists so that when the
+        failure to check p._childIndex bug is fixed, that fixing
+        doesn't make backlink.py search more of the tree than it
+        needs to"""
+
+        # used by vnodePosition, not needed node there's c.vnode2position
+
+        c = self.c ; p = p.copy()
+
+        # This code must be fast.
+        if not root:
+            root = c.rootPosition()
+
+        while p:
+            if p == root:
+                return True
+            if p.hasParent():
+                v = p.v
+                p.moveToParent()
+                # Major bug fix: 2009/1/2
+                if v not in p.v.t.children:
+                    return False
+            else:
+                p.moveToBack()  # ???
+
+        return False
     def showLinksLog(self,tag,k):
 
         # deprecated
@@ -594,9 +645,9 @@ class backlinkController(object):
         self.showMessage('', optional=True)
 
         texts = []
-        if hasattr(v, 'unknownAttributes') and '_bklnk' in v.unknownAttributes:
+        if (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
             i = 0
-            links = v.unknownAttributes['_bklnk']['links']
+            links = v.u['_bklnk']['links']
             dests = []
             self.dests = dests
             while i < len(links):
@@ -647,30 +698,3 @@ class backlinkController(object):
                 return p.copy()
 
         return None
-    def positionExistsSomewhere(self,p,root=None):
-        """A local copy of c.positionExists so that when the
-        failure to check p._childIndex bug is fixed, that fixing
-        doesn't make backlink.py search more of the tree than it
-        needs to"""
-
-        # used by vnodePosition, not needed node there's c.vnode2position
-
-        c = self.c ; p = p.copy()
-
-        # This code must be fast.
-        if not root:
-            root = c.rootPosition()
-
-        while p:
-            if p == root:
-                return True
-            if p.hasParent():
-                v = p.v
-                p.moveToParent()
-                # Major bug fix: 2009/1/2
-                if v not in p.v.t.children:
-                    return False
-            else:
-                p.moveToBack()  # ???
-
-        return False
