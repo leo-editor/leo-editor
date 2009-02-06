@@ -5204,7 +5204,9 @@ class leoQtColorizer:
 
         self.count += 1 # For unit testing.
 
-        if not incremental_coloring:
+        if incremental_coloring:
+            pass
+        else:
             if self.enabled:
                 self.highlighter.rehighlight()
 
@@ -6867,7 +6869,7 @@ class jEditColorizer:
 
         """Return True unless p is unambiguously under the control of @nocolor."""
 
-        trace = True
+        trace = False and not g.unitTesting
         if not p:
             if trace: g.trace('no p',repr(p))
             return False
@@ -7841,15 +7843,12 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         if j is None: j = i+1
         j = self.toGuiIndex(j)
 
-        if incremental_coloring:
-            cursor = w.textCursor()
-            cursor.setPosition(i)
-            moveCount = abs(j-i)
-            cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
-            cursor.removeSelectedText()
-        else:
-            s = self.getAllText()
-            self.setAllText(s[:i] + s[j:])
+        cursor = w.textCursor()
+        cursor.setPosition(i)
+        moveCount = abs(j-i)
+        cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
+        cursor.removeSelectedText()
+
 
         if trace:
             g.trace('%s calls to recolor' % (
@@ -7948,13 +7947,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         i = self.toGuiIndex(i)
 
-        if incremental_coloring:
-            cursor = w.textCursor()
-            cursor.setPosition(i)
-            cursor.insertText(s)
-        else:
-            s2 = self.getAllText()
-            self.setAllText(s2[:i] + s + s2[i:])
+        cursor = w.textCursor()
+        cursor.setPosition(i)
+        cursor.insertText(s)
 
         if trace:
             g.trace('%s calls to recolor' % (
