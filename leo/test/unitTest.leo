@@ -811,7 +811,7 @@
 <v t="ekr.20061110112507"><vh>@test mnplugins.insertBodystamp</vh></v>
 <v t="ekr.20061110115517"><vh>@test macros.parameterize</vh></v>
 <v t="ekr.20060203201949" annotate="7d71002e"><vh>@test restore the screen</vh></v>
-<v t="ekr.20090201140204.1" a="E"><vh>gui plugins</vh>
+<v t="ekr.20090201140204.1"><vh>gui plugins</vh>
 <v t="ekr.20090201140204.2"><vh>@test c.vnode2position</vh></v>
 <v t="ekr.20090201135611.3"><vh>@test position2Item</vh></v>
 <v t="ekr.20090201135611.4"><vh>@test item2position</vh></v>
@@ -923,7 +923,7 @@
 <v t="ekr.20060829092306.2"><vh>@test colorizer Java</vh>
 <v t="ekr.20060829092306.3"><vh>Java</vh></v>
 </v>
-<v t="ekr.20040712101754.137"><vh>@test colorizer LaTex</vh>
+<v t="ekr.20040712101754.137" a="E"><vh>@test colorizer LaTex</vh>
 <v t="ekr.20040712101754.138"><vh>LaTex</vh></v>
 </v>
 <v t="ekr.20071219172126"><vh>@test colorizer lisp</vh>
