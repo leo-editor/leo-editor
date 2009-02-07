@@ -9,7 +9,7 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-incremental_coloring = True
+incremental_coloring = False
 
 # safe_mode = False
     # True: Bypass k.masterKeyHandler for problem keys or visible characters.
@@ -5308,7 +5308,7 @@ class jEditColorizer:
 
     #@    @+others
     #@+node:ekr.20081205131308.49: Birth & init
-    #@+node:ekr.20081205131308.50:__init__ (threading colorizer)
+    #@+node:ekr.20081205131308.50:__init__ (jeditColorizer)
     def __init__(self,c,highlighter,w):
 
         # Basic data...
@@ -5485,7 +5485,7 @@ class jEditColorizer:
         # New in Leo 4.6: configure tags only once here.
         # Some changes will be needed for multiple body editors.
         self.configure_tags() # Must do this every time to support multiple editors.
-    #@-node:ekr.20081205131308.50:__init__ (threading colorizer)
+    #@-node:ekr.20081205131308.50:__init__ (jeditColorizer)
     #@+node:ekr.20081205131308.51:addImportedRules
     def addImportedRules (self,mode,rulesDict,rulesetName):
 
@@ -5684,7 +5684,7 @@ class jEditColorizer:
     #@+node:ekr.20081205131308.74:init (jeditColorizer)
     def init (self,p):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         self.p = p.copy()
 
@@ -7844,7 +7844,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20090205153624.11:delete (avoid call to setAllText)
     def delete(self,i,j=None):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c,w = self.c,self.widget
         colorer = c.frame.body.colorizer.highlighter.colorer
         n = colorer.recolorCount
@@ -7952,7 +7952,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20090205153624.12:insert (avoid call to setAllText)
     def insert(self,i,s):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c,w = self.c,self.widget
         colorer = c.frame.body.colorizer.highlighter.colorer
         n = colorer.recolorCount
@@ -7989,7 +7989,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         If insert is None, the insert point, selection range and scrollbars are initied.
         Otherwise, the scrollbars are preserved.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c,w = self.c,self.widget
         colorer = c.frame.body.colorizer.highlighter.colorer
         n = colorer.recolorCount
