@@ -155,12 +155,13 @@ class DynamicWindow(QtGui.QMainWindow):
         # Init both base classes.
 
         ui_file_name = c.config.getString('qt_ui_file_name')
-        for f in (ui_file_name, 'qt_main.ui', None):
-            assert f, "can not find user interface file"
-            ui_description_file = g.app.loadDir + "/../plugins/" + f
-            # g.pr(ui_description_file)
-            if g.os_path_exists(ui_description_file): break
-
+        if not ui_file_name:
+            ui_file_name = 'qt_main.ui'
+            
+        ui_description_file = g.app.loadDir + "/../plugins/" + ui_file_name
+        g.pr(ui_description_file)
+        assert g.os_path_exists(ui_description_file)
+        
         QtGui.QMainWindow.__init__(self,parent)        
         self.ui = uic.loadUi(ui_description_file, self)
 
