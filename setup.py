@@ -8,6 +8,10 @@ import sys
 #    print "Either use 'setup.py develop', or run launchLeo.py directly"
 #    sys.exit()
 
+# TODO: sanitize this list, not all needs to be installed
+
+datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '.leo', '.def', '.svg', '.ini', '.six', '.bat', '.cat', '.pro', '.sh', '.xsl', '.bmp', '.js', '.ui', '.rix', '.pmsp',  '.pyd', '.png', '.alg', '.php',  '.css', '.ico', '.txt', '.html',  '.iix',  '.w']
+
 setup(
     name = 'leo-editor',
     version = "0.1",
@@ -16,7 +20,8 @@ setup(
     url = 'http://webpages.charter.net/edreamleo/front.html',
     packages =find_packages(),
     package_data = {
-        '' : ["*.ui", "*.bmp", "*.GIF","*.txt"]
+        '' :  datapats
+        
         },
     description = "A programmer's editor, and much more",
     long_description = """
