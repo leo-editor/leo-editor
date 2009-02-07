@@ -3518,7 +3518,10 @@ def redraw_after_select(self,p,setFocus=False):
 
     # This will be redundant if tree.before/afterSelectHint are functional,
     # but this redundancy does not hurt.
-    c.frame.tree.redraw_after_select(p)
+
+    #### This *does* hurt: it causes double recoloring.
+    #### c.frame.tree.redraw_after_select(p)
+
     if setFocus: c.treeFocusHelper()
 #@-node:ekr.20090110073010.4:c.redraw_after_select
 #@+node:ekr.20031218072017.2997:c.selectPosition
@@ -3543,7 +3546,7 @@ def selectPosition(self,p):
 
 selectVnode = selectPosition
 #@-node:ekr.20031218072017.2997:c.selectPosition
-#@+node:ekr.20040803072955.128:leoTree.select & helper
+#@+node:ekr.20040803072955.128:leoTree.select & helpers
 tree_select_lockout = False
 
 def select (self,p,scroll=True):
@@ -3637,31 +3640,8 @@ if old_p:
 # Bug fix: we must always set this, even if we never edit the node.
 self.revertHeadline = p.h
 frame.setWrap(p)
-
-# Always do this.  Otherwise there can be problems with trailing newlines.
-
-s = g.toUnicode(p.v.t._bodyString,"utf-8")
-old_s = w.getAllText()
-
-if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
-    pass
-else:
-    # This destroys all color tags, so do a full recolor.
-    w.setAllText(s)
-    self.frame.body.recolor(p) # recolor now uses p.copy(), so this is safe.
-
-if p.v and p.v.t.scrollBarSpot != None:
-    first,last = p.v.t.scrollBarSpot
-    w.setYScrollPosition(first)
-
-if p.v and p.v.t.insertSpot != None:
-    spot = p.v.t.insertSpot
-    w.setInsertPoint(spot)
-    w.see(spot)
-else:
-    w.setInsertPoint(0)
-
-# g.trace("select:",p.h)
+self.setBodyTextAfterSelect(p,old_p)
+#@nonl
 #@-node:ekr.20040803072955.130:<< select the new node >>
 #@+node:ekr.20040803072955.133:<< set the current node >>
 self.setSelectedLabelState(p)
@@ -3679,9 +3659,37 @@ if self.stayInTree:
     c.treeWantsFocus()
 else:
     c.bodyWantsFocus()
+#@nonl
 #@-node:ekr.20040803072955.133:<< set the current node >>
 #@-node:ekr.20070423101911:treeSelectHelper
-#@-node:ekr.20040803072955.128:leoTree.select & helper
+#@+node:ekr.20090206153445.1:setBodyTextAfterSelect
+def setBodyTextAfterSelect (self,p,old_p):
+
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = g.toUnicode(p.v.t._bodyString,"utf-8")
+    old_s = w.getAllText()
+
+    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        pass
+    else:
+        # This destroys all color tags, so do a full recolor.
+        w.setAllText(s)
+        self.frame.body.recolor(p)
+
+    if p.v and p.v.t.scrollBarSpot != None:
+        first,last = p.v.t.scrollBarSpot
+        w.setYScrollPosition(first)
+
+    if p.v and p.v.t.insertSpot != None:
+        spot = p.v.t.insertSpot
+        w.setInsertPoint(spot)
+        w.see(spot)
+    else:
+        w.setInsertPoint(0)
+#@nonl
+#@-node:ekr.20090206153445.1:setBodyTextAfterSelect
+#@-node:ekr.20040803072955.128:leoTree.select & helpers
 #@-node:ekr.20090121112441.1:Removed redundant calls to expandAllAncestors
 #@+node:ekr.20090122080402.4:Removed most calls to edit_widget
 @nocolor-node
@@ -4945,7 +4953,10 @@ def redraw_after_select(self,p,setFocus=False):
 
     # This will be redundant if tree.before/afterSelectHint are functional,
     # but this redundancy does not hurt.
-    c.frame.tree.redraw_after_select(p)
+
+    #### This *does* hurt: it causes double recoloring.
+    #### c.frame.tree.redraw_after_select(p)
+
     if setFocus: c.treeFocusHelper()
 #@-node:ekr.20090110073010.4:c.redraw_after_select
 #@-node:ekr.20080514131122.14:c.redrawing...
@@ -5008,7 +5019,7 @@ def selectPosition(self,p):
 
 selectVnode = selectPosition
 #@-node:ekr.20031218072017.2997:c.selectPosition
-#@+node:ekr.20040803072955.128:leoTree.select & helper
+#@+node:ekr.20040803072955.128:leoTree.select & helpers
 tree_select_lockout = False
 
 def select (self,p,scroll=True):
@@ -5102,31 +5113,8 @@ if old_p:
 # Bug fix: we must always set this, even if we never edit the node.
 self.revertHeadline = p.h
 frame.setWrap(p)
-
-# Always do this.  Otherwise there can be problems with trailing newlines.
-
-s = g.toUnicode(p.v.t._bodyString,"utf-8")
-old_s = w.getAllText()
-
-if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
-    pass
-else:
-    # This destroys all color tags, so do a full recolor.
-    w.setAllText(s)
-    self.frame.body.recolor(p) # recolor now uses p.copy(), so this is safe.
-
-if p.v and p.v.t.scrollBarSpot != None:
-    first,last = p.v.t.scrollBarSpot
-    w.setYScrollPosition(first)
-
-if p.v and p.v.t.insertSpot != None:
-    spot = p.v.t.insertSpot
-    w.setInsertPoint(spot)
-    w.see(spot)
-else:
-    w.setInsertPoint(0)
-
-# g.trace("select:",p.h)
+self.setBodyTextAfterSelect(p,old_p)
+#@nonl
 #@-node:ekr.20040803072955.130:<< select the new node >>
 #@+node:ekr.20040803072955.133:<< set the current node >>
 self.setSelectedLabelState(p)
@@ -5144,9 +5132,37 @@ if self.stayInTree:
     c.treeWantsFocus()
 else:
     c.bodyWantsFocus()
+#@nonl
 #@-node:ekr.20040803072955.133:<< set the current node >>
 #@-node:ekr.20070423101911:treeSelectHelper
-#@-node:ekr.20040803072955.128:leoTree.select & helper
+#@+node:ekr.20090206153445.1:setBodyTextAfterSelect
+def setBodyTextAfterSelect (self,p,old_p):
+
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = g.toUnicode(p.v.t._bodyString,"utf-8")
+    old_s = w.getAllText()
+
+    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        pass
+    else:
+        # This destroys all color tags, so do a full recolor.
+        w.setAllText(s)
+        self.frame.body.recolor(p)
+
+    if p.v and p.v.t.scrollBarSpot != None:
+        first,last = p.v.t.scrollBarSpot
+        w.setYScrollPosition(first)
+
+    if p.v and p.v.t.insertSpot != None:
+        spot = p.v.t.insertSpot
+        w.setInsertPoint(spot)
+        w.see(spot)
+    else:
+        w.setInsertPoint(0)
+#@nonl
+#@-node:ekr.20090206153445.1:setBodyTextAfterSelect
+#@-node:ekr.20040803072955.128:leoTree.select & helpers
 #@-node:ekr.20090123073710.1:Retain headline changes when expanding/contracting nodes
 #@+node:ekr.20090124143324.1:Changed to headlines do not stick after clone
 #@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
@@ -6518,7 +6534,7 @@ def setHeadString (self,p,s,encoding="utf-8"):
 #@-node:ekr.20040305223225:c.setHeadString
 #@-node:ekr.20090128083459.86:Fixed headline reversions
 #@+node:ekr.20090129060837.2:Fixed (?) body corruption
-#@+node:ekr.20040803072955.128:leoTree.select & helper
+#@+node:ekr.20040803072955.128:leoTree.select & helpers
 tree_select_lockout = False
 
 def select (self,p,scroll=True):
@@ -6612,31 +6628,8 @@ if old_p:
 # Bug fix: we must always set this, even if we never edit the node.
 self.revertHeadline = p.h
 frame.setWrap(p)
-
-# Always do this.  Otherwise there can be problems with trailing newlines.
-
-s = g.toUnicode(p.v.t._bodyString,"utf-8")
-old_s = w.getAllText()
-
-if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
-    pass
-else:
-    # This destroys all color tags, so do a full recolor.
-    w.setAllText(s)
-    self.frame.body.recolor(p) # recolor now uses p.copy(), so this is safe.
-
-if p.v and p.v.t.scrollBarSpot != None:
-    first,last = p.v.t.scrollBarSpot
-    w.setYScrollPosition(first)
-
-if p.v and p.v.t.insertSpot != None:
-    spot = p.v.t.insertSpot
-    w.setInsertPoint(spot)
-    w.see(spot)
-else:
-    w.setInsertPoint(0)
-
-# g.trace("select:",p.h)
+self.setBodyTextAfterSelect(p,old_p)
+#@nonl
 #@-node:ekr.20040803072955.130:<< select the new node >>
 #@+node:ekr.20040803072955.133:<< set the current node >>
 self.setSelectedLabelState(p)
@@ -6654,9 +6647,37 @@ if self.stayInTree:
     c.treeWantsFocus()
 else:
     c.bodyWantsFocus()
+#@nonl
 #@-node:ekr.20040803072955.133:<< set the current node >>
 #@-node:ekr.20070423101911:treeSelectHelper
-#@-node:ekr.20040803072955.128:leoTree.select & helper
+#@+node:ekr.20090206153445.1:setBodyTextAfterSelect
+def setBodyTextAfterSelect (self,p,old_p):
+
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = g.toUnicode(p.v.t._bodyString,"utf-8")
+    old_s = w.getAllText()
+
+    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        pass
+    else:
+        # This destroys all color tags, so do a full recolor.
+        w.setAllText(s)
+        self.frame.body.recolor(p)
+
+    if p.v and p.v.t.scrollBarSpot != None:
+        first,last = p.v.t.scrollBarSpot
+        w.setYScrollPosition(first)
+
+    if p.v and p.v.t.insertSpot != None:
+        spot = p.v.t.insertSpot
+        w.setInsertPoint(spot)
+        w.see(spot)
+    else:
+        w.setInsertPoint(0)
+#@nonl
+#@-node:ekr.20090206153445.1:setBodyTextAfterSelect
+#@-node:ekr.20040803072955.128:leoTree.select & helpers
 #@+node:ekr.20090110073010.4:c.redraw_after_select
 def redraw_after_select(self,p,setFocus=False):
 
@@ -6674,7 +6695,10 @@ def redraw_after_select(self,p,setFocus=False):
 
     # This will be redundant if tree.before/afterSelectHint are functional,
     # but this redundancy does not hurt.
-    c.frame.tree.redraw_after_select(p)
+
+    #### This *does* hurt: it causes double recoloring.
+    #### c.frame.tree.redraw_after_select(p)
+
     if setFocus: c.treeFocusHelper()
 #@-node:ekr.20090110073010.4:c.redraw_after_select
 #@-node:ekr.20090129060837.2:Fixed (?) body corruption
@@ -7010,7 +7034,7 @@ def selectVisBack (self,event=None):
     if not c.canSelectVisBack(): return
 
     p.moveToVisBack(c)
-    c.redraw_after_select(p)
+    #### c.redraw_after_select(p)
     c.treeSelectHelper(p,redraw=False)
 #@-node:ekr.20031218072017.2995:selectVisBack
 #@+node:ekr.20031218072017.2996:selectVisNext
@@ -7025,10 +7049,10 @@ def selectVisNext (self,event=None):
     # g.trace(p.h)
 
     p.moveToVisNext(c)
-    c.redraw_after_select(p)
+    #### c.redraw_after_select(p)
     c.treeSelectHelper(p,redraw=False)
 #@-node:ekr.20031218072017.2996:selectVisNext
-#@+node:ekr.20040803072955.128:leoTree.select & helper
+#@+node:ekr.20040803072955.128:leoTree.select & helpers
 tree_select_lockout = False
 
 def select (self,p,scroll=True):
@@ -7122,31 +7146,8 @@ if old_p:
 # Bug fix: we must always set this, even if we never edit the node.
 self.revertHeadline = p.h
 frame.setWrap(p)
-
-# Always do this.  Otherwise there can be problems with trailing newlines.
-
-s = g.toUnicode(p.v.t._bodyString,"utf-8")
-old_s = w.getAllText()
-
-if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
-    pass
-else:
-    # This destroys all color tags, so do a full recolor.
-    w.setAllText(s)
-    self.frame.body.recolor(p) # recolor now uses p.copy(), so this is safe.
-
-if p.v and p.v.t.scrollBarSpot != None:
-    first,last = p.v.t.scrollBarSpot
-    w.setYScrollPosition(first)
-
-if p.v and p.v.t.insertSpot != None:
-    spot = p.v.t.insertSpot
-    w.setInsertPoint(spot)
-    w.see(spot)
-else:
-    w.setInsertPoint(0)
-
-# g.trace("select:",p.h)
+self.setBodyTextAfterSelect(p,old_p)
+#@nonl
 #@-node:ekr.20040803072955.130:<< select the new node >>
 #@+node:ekr.20040803072955.133:<< set the current node >>
 self.setSelectedLabelState(p)
@@ -7164,9 +7165,37 @@ if self.stayInTree:
     c.treeWantsFocus()
 else:
     c.bodyWantsFocus()
+#@nonl
 #@-node:ekr.20040803072955.133:<< set the current node >>
 #@-node:ekr.20070423101911:treeSelectHelper
-#@-node:ekr.20040803072955.128:leoTree.select & helper
+#@+node:ekr.20090206153445.1:setBodyTextAfterSelect
+def setBodyTextAfterSelect (self,p,old_p):
+
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = g.toUnicode(p.v.t._bodyString,"utf-8")
+    old_s = w.getAllText()
+
+    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        pass
+    else:
+        # This destroys all color tags, so do a full recolor.
+        w.setAllText(s)
+        self.frame.body.recolor(p)
+
+    if p.v and p.v.t.scrollBarSpot != None:
+        first,last = p.v.t.scrollBarSpot
+        w.setYScrollPosition(first)
+
+    if p.v and p.v.t.insertSpot != None:
+        spot = p.v.t.insertSpot
+        w.setInsertPoint(spot)
+        w.see(spot)
+    else:
+        w.setInsertPoint(0)
+#@nonl
+#@-node:ekr.20090206153445.1:setBodyTextAfterSelect
+#@-node:ekr.20040803072955.128:leoTree.select & helpers
 #@-node:ekr.20090202064534.6:Don't scroll when expanding/contracting node.
 #@+node:ekr.20090204072745.1:Go to parent was causing a full redraw!
 # treeSelectHelper cause a redraw only if the new item isn't visible.

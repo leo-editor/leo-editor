@@ -3,10 +3,14 @@ from setuptools import setup,find_packages
 
 import sys
 
-if 'install' in sys.argv:
-    print "WARNING: 'setup.py install' is known to not work."
-    print "Either use 'setup.py develop', or run launchLeo.py directly"
-    sys.exit()
+#if 'install' in sys.argv:
+#    print "WARNING: 'setup.py install' is known to not work."
+#    print "Either use 'setup.py develop', or run launchLeo.py directly"
+#    sys.exit()
+
+# TODO: sanitize this list, not all needs to be installed
+
+datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '.leo', '.def', '.svg', '.ini', '.six', '.bat', '.cat', '.pro', '.sh', '.xsl', '.bmp', '.js', '.ui', '.rix', '.pmsp',  '.pyd', '.png', '.alg', '.php',  '.css', '.ico', '.txt', '.html',  '.iix',  '.w']
 
 setup(
     name = 'leo-editor',
@@ -15,6 +19,10 @@ setup(
     author_email = 'edreamleo@gmail.com',
     url = 'http://webpages.charter.net/edreamleo/front.html',
     packages =find_packages(),
+    package_data = {
+        '' :  datapats
+        
+        },
     description = "A programmer's editor, and much more",
     long_description = """
 Leo is an outline-oriented editor written in 100% pure Python.

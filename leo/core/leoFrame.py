@@ -2679,7 +2679,7 @@ class leoTree:
     def redraw_after_expand(self,p=None):           self.c.redraw()
     def redraw_after_select(self,p=None):           self.c.redraw()
     #@-node:ekr.20081005065934.8:May be defined in subclasses
-    #@+node:ekr.20040803072955.128:leoTree.select & helper
+    #@+node:ekr.20040803072955.128:leoTree.select & helpers
     tree_select_lockout = False
 
     def select (self,p,scroll=True):
@@ -2753,31 +2753,8 @@ class leoTree:
             # Bug fix: we must always set this, even if we never edit the node.
             self.revertHeadline = p.h
             frame.setWrap(p)
-
-            # Always do this.  Otherwise there can be problems with trailing newlines.
-
-            s = g.toUnicode(p.v.t._bodyString,"utf-8")
-            old_s = w.getAllText()
-
-            if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
-                pass
-            else:
-                # This destroys all color tags, so do a full recolor.
-                w.setAllText(s)
-                self.frame.body.recolor(p) # recolor now uses p.copy(), so this is safe.
-
-            if p.v and p.v.t.scrollBarSpot != None:
-                first,last = p.v.t.scrollBarSpot
-                w.setYScrollPosition(first)
-
-            if p.v and p.v.t.insertSpot != None:
-                spot = p.v.t.insertSpot
-                w.setInsertPoint(spot)
-                w.see(spot)
-            else:
-                w.setInsertPoint(0)
-
-            # g.trace("select:",p.h)
+            self.setBodyTextAfterSelect(p,old_p)
+            #@nonl
             #@-node:ekr.20040803072955.130:<< select the new node >>
             #@nl
             if p and p != old_p: # Suppress duplicate call.
@@ -2810,6 +2787,7 @@ class leoTree:
             c.treeWantsFocus()
         else:
             c.bodyWantsFocus()
+        #@nonl
         #@-node:ekr.20040803072955.133:<< set the current node >>
         #@nl
         c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
@@ -2820,7 +2798,34 @@ class leoTree:
 
         return 'break' # Supresses unwanted selection.
     #@-node:ekr.20070423101911:treeSelectHelper
-    #@-node:ekr.20040803072955.128:leoTree.select & helper
+    #@+node:ekr.20090206153445.1:setBodyTextAfterSelect
+    def setBodyTextAfterSelect (self,p,old_p):
+
+        # Always do this.  Otherwise there can be problems with trailing newlines.
+        c = self.c ; w = c.frame.body.bodyCtrl
+        s = g.toUnicode(p.v.t._bodyString,"utf-8")
+        old_s = w.getAllText()
+
+        if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+            pass
+        else:
+            # This destroys all color tags, so do a full recolor.
+            w.setAllText(s)
+            self.frame.body.recolor(p)
+
+        if p.v and p.v.t.scrollBarSpot != None:
+            first,last = p.v.t.scrollBarSpot
+            w.setYScrollPosition(first)
+
+        if p.v and p.v.t.insertSpot != None:
+            spot = p.v.t.insertSpot
+            w.setInsertPoint(spot)
+            w.see(spot)
+        else:
+            w.setInsertPoint(0)
+    #@nonl
+    #@-node:ekr.20090206153445.1:setBodyTextAfterSelect
+    #@-node:ekr.20040803072955.128:leoTree.select & helpers
     #@+node:ekr.20031218072017.3718:oops
     def oops(self):
 
