@@ -43,7 +43,7 @@ class graphcanvasUI(QtGui.QWidget):
 
         self.canvas = QtGui.QGraphicsScene()
 
-        self.canvasView = QtGui.QGraphicsView(self.canvas)
+        self.canvasView = GraphicsView(self.owner, self.canvas)
         self.UI.canvasFrame.addWidget(self.canvasView)
         self.canvasView.setSceneRect(0,0,300,300)
         self.canvasView.setRenderHints(QtGui.QPainter.Antialiasing)
@@ -58,14 +58,21 @@ class graphcanvasUI(QtGui.QWidget):
             lambda: o.loadGraph('sibs'))
         self.connect(u.btnLoadRecur, QtCore.SIGNAL("clicked()"),
             lambda: o.loadGraph('recur'))
-    
+
         self.connect(u.btnLoadLinked, QtCore.SIGNAL("clicked()"),
             lambda: o.loadLinked('linked'))
         self.connect(u.btnLoadAll, QtCore.SIGNAL("clicked()"),
             lambda: o.loadLinked('all'))
-    
+
         self.connect(u.btnUnLoad, QtCore.SIGNAL("clicked()"), o.unLoad)
         self.connect(u.btnClear, QtCore.SIGNAL("clicked()"), o.clear)
+class GraphicsView(QtGui.QGraphicsView):
+    def __init__(self, glue, *args, **kargs):
+        self.glue = glue
+        QtGui.QGraphicsView.__init__(self, *args)
+    def mouseDoubleClickEvent(self, event):
+        QtGui.QGraphicsView.mouseDoubleClickEvent(self, event)
+        nn = self.glue.newNode(pnt=self.mapToScene(event.pos()))
 class nodeItem(QtGui.QGraphicsItemGroup):
     """Node on the canvas"""
     def __init__(self, glue, text, *args, **kargs):
@@ -158,7 +165,7 @@ class graphcanvasController(object):
         self.link = {}
         self.linkItem = {}
         self.lastNodeItem = None
-    def loadGraph(self, what='node'):
+    def loadGraph(self, what='node', pnt=None):
 
         if what == 'sibs':
             collection = self.c.currentPosition().self_and_siblings_iter()
@@ -179,13 +186,21 @@ class graphcanvasController(object):
             self.node[txt] = node
             self.nodeItem[node] = txt
 
-            if '_bklnk' in node.u and 'x' in node.u['_bklnk']:
-                txt.setPos(node.u['_bklnk']['x'], node.u['_bklnk']['y'])
-            else:
+            if '_bklnk' not in node.u:
                 node.u['_bklnk'] = {}
-                node.u['_bklnk']['x'] = 0
-                node.u['_bklnk']['y'] = 0
-
+            
+            x,y = 0,0
+            if pnt:
+                x,y = pnt.x(), pnt.y()
+                node.u['_bklnk']['x'] = x
+                node.u['_bklnk']['y'] = y
+            elif 'x' in node.u['_bklnk']:
+                x,y = node.u['_bklnk']['x'], node.u['_bklnk']['y']
+            else:
+                node.u['_bklnk']['x'] = x
+                node.u['_bklnk']['y'] = y
+        
+            txt.setPos(x,y)
             self.ui.canvas.addItem(txt)
 
         self.update()
@@ -194,12 +209,12 @@ class graphcanvasController(object):
         blc = getattr(self.c, 'backlinkController')
         if not blc:
             return
-    
+
         while True:
-    
+
             loaded = len(self.node)
             linked = set()
-    
+
             for i in self.nodeItem:
                 for j in blc.linksTo(i):
                     if j not in self.nodeItem:
@@ -207,7 +222,7 @@ class graphcanvasController(object):
                 for j in blc.linksFrom(i):
                     if j not in self.nodeItem:
                         linked.add(j)
-                
+            
             for node in linked:
 
                 txt = nodeItem(self, node.headString().replace(' ','\n'))
@@ -223,7 +238,7 @@ class graphcanvasController(object):
                     node.u['_bklnk']['y'] = 0
 
                 self.ui.canvas.addItem(txt)
-        
+    
             if not linked or what != 'all':
                 # none added, or doing just one round
                 break
@@ -307,6 +322,13 @@ class graphcanvasController(object):
                 # blc will call our update(), so in retaliation...
                 blc.updateTabInt()
 
+    def newNode(self, pnt):
+        nn = self.c.currentPosition().insertAfter()
+        nn.setHeadString('node')
+        self.c.selectPosition(nn)
+        self.c.redraw_now()
+        self.loadGraph(pnt=pnt)
+
     def pressLink(self, linkItem, event):
         """nodeItem is telling us it was clicked"""
 
@@ -317,7 +339,7 @@ class graphcanvasController(object):
 
         if not (event.modifiers() & Qt.ControlModifier):
             return
-    
+
         link = self.link[linkItem]
 
         v0, v1 = link
@@ -336,7 +358,7 @@ class graphcanvasController(object):
 
         if not self.lastNodeItem:
             return
-    
+
         node = self.node[self.lastNodeItem]
 
         self.ui.canvas.removeItem(self.lastNodeItem)
@@ -347,7 +369,7 @@ class graphcanvasController(object):
             del self.link[self.linkItem[i]]
             self.ui.canvas.removeItem(self.linkItem[i])
             del self.linkItem[i]
-    
+
         del self.nodeItem[node]
         del self.node[self.lastNodeItem]
 
