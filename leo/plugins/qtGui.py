@@ -157,11 +157,11 @@ class DynamicWindow(QtGui.QMainWindow):
         ui_file_name = c.config.getString('qt_ui_file_name')
         if not ui_file_name:
             ui_file_name = 'qt_main.ui'
-            
+
         ui_description_file = g.app.loadDir + "/../plugins/" + ui_file_name
         g.pr(ui_description_file)
         assert g.os_path_exists(ui_description_file)
-        
+
         QtGui.QMainWindow.__init__(self,parent)        
         self.ui = uic.loadUi(ui_description_file, self)
 
