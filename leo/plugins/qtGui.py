@@ -6732,11 +6732,8 @@ class jEditColorizer:
 
         h = self.highlighter
         state = h.previousBlockState()
-        bunch = self.stateDict.get(state)
 
-        if bunch:
-            return bunch
-        else:
+        if state == -1:
             return g.Bunch(
                 active = False,
                 offset=0,
@@ -6744,6 +6741,11 @@ class jEditColorizer:
                 lastFunc=None,
                 lastMatch=0,
                 lastN=0)
+        else:
+            bunch = self.stateDict.get(state)
+            assert bunch
+            return bunch
+
     #@-node:ekr.20081206062411.17:getPrevState
     #@+node:ekr.20081206062411.18:setCurrentState
     def setCurrentState (self,s,offset,len_s,lastFunc,lastMatch,lastN):
