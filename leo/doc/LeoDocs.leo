@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="69" left="165" height="946" width="1046"/>
+	<global_window_position top="51" left="105" height="538" width="1014"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4,24,0,5"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -57,10 +57,10 @@
 <v t="ekr.20080301071818.1"
 marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20050831184021.2"><vh>Table of contents</vh>
-<v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
+<v t="ekr.20050831184021.2" a="E"><vh>Table of contents</vh>
+<v t="ekr.20080730212711.29" a="E"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -799,8 +799,8 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070628083442.4"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
-<v t="ekr.20080203101507.1"><vh>@rst html\IPythonBridge.html</vh>
+<v t="ekr.20080203101507" a="E"><vh>Chapter 21: ILeo - the IPython bridge</vh>
+<v t="ekr.20080203101507.1" a="E"><vh>@rst html\IPythonBridge.html</vh>
 <v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
 <v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
 <v t="vivainio.20080302174639.2"><vh>Installation and startup</vh></v>
@@ -32760,7 +32760,35 @@ Now, in IPython, we can do this::
 You should declare new @cl types to make ILeo as convenient your problem domain
 as possible. For example, a "@cl etree" could return the elementtree object for
 xml content.
-</t>
+
+In the preceding examples, the return value matter. That, of course, is optional.
+You can just use the @cl node as a convenient syntax for "run this body text through 
+a function". 
+
+Consider this example::
+
+    def remote(body, node):
+        out = sshdo(body)
+        c = node.append()
+        c.b = "@nocolor\n" + out
+        c.h = "Command output"
+
+(sshdo(s) is a just a trivial function implemented using paramiko, that
+returns the output from command run over ssh on remote host).
+
+After running the above node (by, say, wb.require('remote_impl') if the function is 
+declared in a node named 'remote_impl'), you can create nodes that have various 
+little sysadmin tasks (grep the logs, gather data, kick out all the users) like this::
+
+    @cl remote
+    cd /var/log
+    ls -l
+    echo " --- temp ---"
+    cd /var/tmp
+    ls -l
+
+Press alt+I on the node to run it. The output will be written to
+"Command output" child node.</t>
 <t tx="vivainio.20080302174639.6">@ipy-startup
 ------------
 
