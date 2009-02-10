@@ -87,9 +87,6 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="headerHidden" >
-               <bool>false</bool>
-              </property>
               <column>
                <property name="text" >
                 <string>1</string>
