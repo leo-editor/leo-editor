@@ -9,8 +9,6 @@
 #@@tabwidth -4
 #@@pagewidth 80
 
-incremental_coloring = False
-
 # safe_mode = False
     # True: Bypass k.masterKeyHandler for problem keys or visible characters.
 
@@ -5194,12 +5192,10 @@ class leoQtColorizer:
 
         self.count = 0 # For unit testing.
         self.enabled = True
+        self.error = False # Set if there is an error in jeditColorizer.recolor
 
-        self.highlighter = leoQtSyntaxHighlighter(c,w)
+        self.highlighter = leoQtSyntaxHighlighter(c,w,colorizer=self)
         self.colorer = self.highlighter.colorer
-
-        # if incremental_coloring:
-            # self.highlighter.rehighlight(c.rootPosition())
 
     #@-node:ekr.20081205131308.16:ctor (leoQtColorizer)
     #@+node:ekr.20081205131308.18:colorize (leoQtColorizer)
@@ -5207,14 +5203,18 @@ class leoQtColorizer:
 
         '''The main colorizer entry point.'''
 
+        trace = False and not g.unitTesting
+
         self.count += 1 # For unit testing.
 
         if self.enabled:
             self.updateSyntaxColorer(p) # Sets self.flag.
-            if incremental and incremental_coloring:
+            if incremental:
                 pass
             else:
                 self.highlighter.rehighlight(p)
+
+            if trace: g.trace('***** incremental',incremental)
 
         return "ok" # For unit testing.
     #@-node:ekr.20081205131308.18:colorize (leoQtColorizer)
@@ -5258,7 +5258,7 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
 
     #@    @+others
     #@+node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter)
-    def __init__ (self,c,w):
+    def __init__ (self,c,w,colorizer):
 
         self.c = c
         self.w = w
@@ -5268,17 +5268,19 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
         # Init the base class.
         QtGui.QSyntaxHighlighter.__init__(self,w)
 
+        self.colorizer = colorizer
+
         self.colorer = jEditColorizer(
-            c,highlighter=self,
+            c,
+            colorizer=colorizer,
+            highlighter=self,
             w=c.frame.body.bodyCtrl)
-    #@nonl
     #@-node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter)
     #@+node:ekr.20081205131308.11:highlightBlock
     def highlightBlock (self,s):
 
         colorer = self.colorer
         s = unicode(s)
-        # g.trace(s) # s does not include a newline.
         colorer.recolor(s)
     #@-node:ekr.20081205131308.11:highlightBlock
     #@+node:ekr.20081206062411.15:rehighlight
@@ -5286,7 +5288,9 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
 
         '''Override base rehighlight method'''
 
-        # g.trace('*****',g.callers())
+        trace = False and not g.unitTesting
+
+        if trace: g.trace('*****',g.callers())
 
         c = self.c
         self.colorer.init(p)
@@ -5309,10 +5313,11 @@ class jEditColorizer:
     #@    @+others
     #@+node:ekr.20081205131308.49: Birth & init
     #@+node:ekr.20081205131308.50:__init__ (jeditColorizer)
-    def __init__(self,c,highlighter,w):
+    def __init__(self,c,colorizer,highlighter,w):
 
         # Basic data...
         self.c = c
+        self.colorizer = colorizer
         self.highlighter = highlighter # a QSyntaxHighlighter
         self.p = None
         self.w = w
@@ -5321,9 +5326,13 @@ class jEditColorizer:
         # Used by recolor and helpers...
         self.actualColorDict = {} # Used only by setTag.
         self.global_i,self.global_j = 0,0 # The global bounds of colorizing.
+        self.global_offset = 0
         self.hyperCount = 0
+        self.defaultState = u'default-state:' # The name of the default state.
+        self.minimalMatch = ''
         self.nextState = 1 # Dont use 0.
-        self.stateDict = {} # Keys are state numbers, values are data.
+        self.stateDict = {} # Keys are state numbers, values state names.
+        self.stateNameDict = {} # Keys are state names, values are state numbers.
 
         # Attributes dict ivars: defaults are as shown...
         self.default = 'null'
@@ -5692,8 +5701,10 @@ class jEditColorizer:
 
         # State info.
         self.global_i,self.global_j = 0,0
+        self.global_offset = 0
         self.nextState = 1 # Dont use 0.
         self.stateDict = {}
+        self.stateNameDict = {}
 
         self.updateSyntaxColorer(self.p)
             # Sets self.flag and self.language.
@@ -6236,6 +6247,7 @@ class jEditColorizer:
             self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
             self.prev = (i,j,kind)
             self.trace_match(kind,s,i,j)
+            self.minimalMatch = seq
             return j - i
         else:
             return 0
@@ -6261,22 +6273,12 @@ class jEditColorizer:
             self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
             self.prev = (i,j,kind)
             self.trace_match(kind,s,i,j)
+            self.minimalMatch = seq
             return j - i
         else:
             return 0
     #@nonl
     #@-node:ekr.20081205131308.89:match_eol_span_regexp
-    #@+node:ekr.20081205131308.90:match_everything
-    # def match_everything (self,s,i,kind,delegate):
-
-        # '''A hack for phpsection mode: match the entire text and color with delegate.'''
-
-        # j = len(s)
-
-        # self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
-
-        # return j-i
-    #@-node:ekr.20081205131308.90:match_everything
     #@+node:ekr.20081205131308.91:match_keywords
     # This is a time-critical method.
     def match_keywords (self,s,i):
@@ -6342,6 +6344,7 @@ class jEditColorizer:
                 j = k
             self.prev = (i,j,kind)
             self.trace_match(kind,s,i,j)
+            self.minimalMatch = pattern
             return j - i
         else:
             return 0
@@ -6393,6 +6396,7 @@ class jEditColorizer:
                 self.colorRangeWithTag(s,i,j,kind)
             self.prev = (i,j,kind)
             self.trace_match(kind,s,i,j)
+            self.minimalMatch = pattern
             return j - i
         else:
             return 0
@@ -6452,6 +6456,7 @@ class jEditColorizer:
             self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
             self.prev = (i,j,kind)
             self.trace_match(kind,s,i,j)
+            self.minimalMatch = seq
         else:
             j = i
         return j - i
@@ -6516,6 +6521,7 @@ class jEditColorizer:
                     self.colorRangeWithTag(s,i,j2,kind,delegate=None,exclude_match=exclude_match)
                 j = j2
                 self.prev = (i,j,kind)
+                self.minimalMatch = begin
 
         self.trace_match(kind,s,i,j)
         return j - i
@@ -6666,125 +6672,142 @@ class jEditColorizer:
         '''Recolor line s.'''
 
         trace = False and not g.unitTesting
-        verbose = False
-        # g.trace(g.callers(5))
+        verbose = False ; traceMatch = False
 
         all_s = self.w.getAllText()
         if not all_s: return
         len_s = len(s)
         self.recolorCount += 1
-        self.totalChars += len_s
-        bunch = self.getPrevState()
-        offset = bunch.offset + bunch.len_s
-            # The global index of s[0]
+        self.totalChars += len(s)
+        lastFunc,restartString1 = self.getPrevState()
+        lastMatch,lastN,minimalMatch = 0,0,''
 
-        # Calculate the bounds of the scan.
-        lastFunc,lastMatch = bunch.lastFunc,bunch.lastMatch
-        lastN = 0
-        i = g.choose(lastFunc,lastMatch,offset)
-        j = offset + len_s
-        j = min(j,len(all_s))
-        self.global_i,self.global_j = offset,j
+        data = self.initRecolor(all_s,s,restartString1)
+        i,j,offset,restartString,searchString = data
 
         # An important check.
-        s2 = all_s[offset:j]
-        if not g.unitTesting:
-            if s2 != s:
-                g.trace('***** offset %s, j %s' % (offset,j))
-                g.trace('*****\ns  %s\ns2 %s' % (
-                    repr(s),repr(s2)))
+        s2 = searchString[offset+len(restartString):j]
+        if s2 != s and not g.unitTesting:
+            # If this ever fails, we probably should do a full recolor.
+            g.trace('***** mismatch! offset %s, j %s\n%s\n%s' % (
+                offset,j,repr(s),repr(s2)))
+            return
 
         if trace:
-            # g.trace('%s offset %3s, i %3s, j %3s, %s' % (
-                # self.language,offset,i,j,s))
-            g.trace('offset %3s, %s' % (offset,s))
+            if verbose: g.trace('searchString %s' % (repr(searchString)))
+            else: g.trace('lastFunc %s s %s' % (repr(lastFunc),repr(s)))
 
         while i < j:
-            assert 0 <= i < len(all_s)
+            assert 0 <= i < len(searchString)
             progress = i
-            functions = self.rulesDict.get(all_s[i],[])
+            functions = self.rulesDict.get(searchString[i],[])
+            self.minimalMatch = ''
             for f in functions:
-                n = f(self,all_s,i)
+                n = f(self,searchString,i)
                 if n is None:
                     g.trace('Can not happen' % (repr(n),repr(f)))
                     break
-                elif n > 0:
-                    if trace and verbose:
-                        g.trace('i %3s, n %3s, f %s' % (i,n,f))
-                    lastFunc,lastMatch,lastN = f,i,n
+                elif n > 0: # Success.
+                    if trace and traceMatch:
+                        g.trace('match: i %3s, n %3s, f %s' % (i,n,f.__name__))
+                    lastFunc,lastMatch,lastN,minimalMatch = f,i,n,self.minimalMatch
                     i += n
-                    break # Must break
-                elif n < 0:
+                    break # Stop searching the functions.
+                elif n < 0: # Fail and skip n chars.
                     # match_keyword now sets n < 0 on first failure.
                     i += -n # Don't set lastMatch on failure!
-                    break # Must break
-                else:
-                    pass # Do not break or change i.
+                    break # Stop searching the functions.
+                else: # Fail.  Go on to the next f in functions.
+                    pass # Do not break or change i!
             else:
                 i += 1 # Don't set lastMatch on failure!
             assert i > progress
 
-        # Add one for the missing newline.
-        self.setCurrentState(s,offset,len_s+1,lastFunc,lastMatch,lastN)
-            # At present, *every* 'block' must have a state.
+        self.setCurrentState(s,searchString,offset,
+            len(restartString)+len(s)+1,lastFunc,lastMatch,lastN,minimalMatch)
+    #@+node:ekr.20090209070404.10:initRecolor
+    def initRecolor (self,all_s,s,restartString):
+
+        '''Init the string args for recolor.'''
+
+        offset = self.highlighter.currentBlock().position()
+
+        if restartString:
+            # Remove everything after the first newline.
+            i = restartString.find('\n')
+            if i != -1: restartString = restartString[:i]
+            # Prepend restartString to the search string.
+            searchString = restartString + all_s[offset:]
+            i = offset = 0
+            j = min(len(restartString)+len(s),len(searchString))
+        else:
+            # Just use all_s.
+            searchString = all_s
+            i = offset
+            j = min(offset + len(s),len(all_s))
+
+        self.global_i,self.global_j = i,j
+
+        return i,j,offset,restartString,searchString
+    #@-node:ekr.20090209070404.10:initRecolor
     #@+node:ekr.20081206062411.17:getPrevState
     def getPrevState (self):
 
         h = self.highlighter
-        state = h.previousBlockState()
+        n = h.previousBlockState()
 
-        if state == -1:
-            return g.Bunch(
-                active = False,
-                offset=0,
-                len_s=0,
-                lastFunc=None,
-                lastMatch=0,
-                lastN=0)
+        # Convert the state number to a string.
+        if n == -1:
+            state = self.defaultState
         else:
-            bunch = self.stateDict.get(state)
-            assert bunch
-            return bunch
-
+            state = self.stateDict.get(n)
+            if not state:
+                g.trace('**** can not happen. no state %s' % (n))
+                state = self.defaultState
+        i = state.find(':')
+        assert i != -1
+        lastFunc = state[:i]
+        restartString = state[i+1:]
+        return lastFunc,restartString
     #@-node:ekr.20081206062411.17:getPrevState
     #@+node:ekr.20081206062411.18:setCurrentState
-    def setCurrentState (self,s,offset,len_s,lastFunc,lastMatch,lastN):
+    def setCurrentState (self,s,searchString,offset,limit,
+        lastFunc,lastMatch,lastN,minimalMatch,
+    ):
 
-        trace = False
+        trace = False and not g.unitTesting
+        verbose = False
         h = self.highlighter
 
-        self.stateCount += 1
-        state = h.currentBlockState()
-        active = lastMatch + lastN >= offset + len_s
-
-        if state == -1 or active:
-            # Every block must have a state.
-            changeState = True
-        else:
-            b = self.stateDict.get(state)
-            if b:
-                changeState = b.lastFunc != lastFunc or b.lastN != lastN
+        if lastFunc:
+            active = lastMatch + lastN > offset + limit
+            if active:
+                restartString = minimalMatch or searchString[lastMatch:lastMatch+lastN]
+                state = '%s:%s' % (lastFunc.__name__,restartString)
             else:
-                changeState = True
+                state = self.defaultState
+        else:
+            state = self.defaultState
+
+        # Convert the string state to a number.
+        if state == self.defaultState:
+            n = -1 # Apparently, it *is* ok to set state to -1.
+        else:
+            n = self.stateNameDict.get(state)
+            if n is None:
+                n = self.nextState
+                self.nextState += 1
+                self.stateDict[n] = state
+                self.stateNameDict[state] = n
+
+        h.setCurrentBlockState(n)
 
         if trace:
-            g.trace('%2d active %5s change %5s state %3s %s' % (
-                self.stateCount,active,changeState,state,repr(s)))
-
-        if changeState:
-            # Allocate a new state
-            state = self.nextState
-            self.nextState += 1
-            h.setCurrentBlockState(state)
-
-        # Remember this info.
-        self.stateDict[state] = g.bunch(
-            active=active,
-            offset=offset,
-            len_s=len_s,
-            lastFunc=lastFunc,
-            lastMatch=lastMatch,
-            lastN=lastN)
+            if verbose:
+                g.trace('state %3s = %s' % (n,repr(state)))
+            elif state != self.defaultState:
+                g.trace('state %3s length %s' % (n,repr(state)))
+    #@nonl
     #@-node:ekr.20081206062411.18:setCurrentState
     #@-node:ekr.20081206062411.12:recolor & helpers
     #@+node:ekr.20081205131308.26:scanColorDirectives
