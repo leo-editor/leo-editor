@@ -5197,6 +5197,9 @@ class leoQtColorizer:
         self.highlighter = leoQtSyntaxHighlighter(c,w,colorizer=self)
         self.colorer = self.highlighter.colorer
 
+        if self.colorer.enabled:
+            self.colorer.enabled = hasattr(self.highlighter,'currentBlock')
+
     #@-node:ekr.20081205131308.16:ctor (leoQtColorizer)
     #@+node:ekr.20081205131308.18:colorize (leoQtColorizer)
     def colorize(self,p,incremental=False,interruptable=True):
@@ -6725,31 +6728,6 @@ class jEditColorizer:
 
         self.setCurrentState(s,searchString,offset,
             len(restartString)+len(s)+1,lastFunc,lastMatch,lastN,minimalMatch)
-    #@+node:ekr.20090209070404.10:initRecolor
-    def initRecolor (self,all_s,s,restartString):
-
-        '''Init the string args for recolor.'''
-
-        offset = self.highlighter.currentBlock().position()
-
-        if restartString:
-            # Remove everything after the first newline.
-            i = restartString.find('\n')
-            if i != -1: restartString = restartString[:i]
-            # Prepend restartString to the search string.
-            searchString = restartString + all_s[offset:]
-            i = offset = 0
-            j = min(len(restartString)+len(s),len(searchString))
-        else:
-            # Just use all_s.
-            searchString = all_s
-            i = offset
-            j = min(offset + len(s),len(all_s))
-
-        self.global_i,self.global_j = i,j
-
-        return i,j,offset,restartString,searchString
-    #@-node:ekr.20090209070404.10:initRecolor
     #@+node:ekr.20081206062411.17:getPrevState
     def getPrevState (self):
 
@@ -6809,6 +6787,31 @@ class jEditColorizer:
                 g.trace('state %3s length %s' % (n,repr(state)))
     #@nonl
     #@-node:ekr.20081206062411.18:setCurrentState
+    #@+node:ekr.20090209070404.10:initRecolor
+    def initRecolor (self,all_s,s,restartString):
+
+        '''Init the string args for recolor.'''
+
+        offset = self.highlighter.currentBlock().position()
+
+        if restartString:
+            # Remove everything after the first newline.
+            i = restartString.find('\n')
+            if i != -1: restartString = restartString[:i]
+            # Prepend restartString to the search string.
+            searchString = restartString + all_s[offset:]
+            i = offset = 0
+            j = min(len(restartString)+len(s),len(searchString))
+        else:
+            # Just use all_s.
+            searchString = all_s
+            i = offset
+            j = min(offset + len(s),len(all_s))
+
+        self.global_i,self.global_j = i,j
+
+        return i,j,offset,restartString,searchString
+    #@-node:ekr.20090209070404.10:initRecolor
     #@-node:ekr.20081206062411.12:recolor & helpers
     #@+node:ekr.20081205131308.26:scanColorDirectives
     def scanColorDirectives(self,p):

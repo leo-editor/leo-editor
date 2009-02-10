@@ -8014,6 +8014,79 @@ def handleUnboundKeys (self,event,char,keysym,stroke):
 #@-node:ekr.20080510095819.1:k.handleUnboudKeys
 #@-node:ekr.20061031131434.146:masterKeyHandler & helpers
 #@-node:ekr.20090205153620.1:minimized calls to setAllText
+#@+node:ekr.20090206171058.1:Multiple recolors
+#@+node:ekr.20090110073010.4:c.redraw_after_select
+def redraw_after_select(self,p,setFocus=False):
+
+    '''Redraw the screen after node p has been selected.
+
+    The intention is for the gui to just select the node
+    if it is visible, and to completely redraw the screen otherwise.'''
+
+    c = self
+
+    c.expandAllAncestors(p)
+    c.selectPosition(p)
+        # Required to update body pane.
+        # Will call tree.before/afterSelect hint.
+
+    # This will be redundant if tree.before/afterSelectHint are functional,
+    # but this redundancy does not hurt.
+
+    #### This *does* hurt: it causes double recoloring.
+    #### c.frame.tree.redraw_after_select(p)
+
+    if setFocus: c.treeFocusHelper()
+#@-node:ekr.20090110073010.4:c.redraw_after_select
+#@+node:ekr.20070226113916: treeSelectHelper
+def treeSelectHelper (self,p,redraw=False): #### No longer used.  To be removed.
+
+    c = self ; current = c.p
+
+    # g.trace(p and p.h,g.callers(4))
+
+    if not p: p = current
+
+    if p:
+        flag = c.expandAllAncestors(p)
+        if flag: #### redraw or flag or p != current:
+            c.redraw(p)
+        else:
+            c.selectPosition(p)
+
+    c.treeFocusHelper()
+#@-node:ekr.20070226113916: treeSelectHelper
+#@+node:ekr.20031218072017.2995:selectVisBack
+# This has an up arrow for a control key.
+
+def selectVisBack (self,event=None):
+
+    '''Select the visible node preceding the presently selected node.'''
+
+    c = self ; p = c.p
+    if not p: return
+    if not c.canSelectVisBack(): return
+
+    p.moveToVisBack(c)
+    #### c.redraw_after_select(p)
+    c.treeSelectHelper(p,redraw=False)
+#@-node:ekr.20031218072017.2995:selectVisBack
+#@+node:ekr.20031218072017.2996:selectVisNext
+def selectVisNext (self,event=None):
+
+    '''Select the visible node following the presently selected node.'''
+
+    c = self ; p = c.p
+    if not p: return
+    if not c.canSelectVisNext(): return
+
+    # g.trace(p.h)
+
+    p.moveToVisNext(c)
+    #### c.redraw_after_select(p)
+    c.treeSelectHelper(p,redraw=False)
+#@-node:ekr.20031218072017.2996:selectVisNext
+#@-node:ekr.20090206171058.1:Multiple recolors
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
