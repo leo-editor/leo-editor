@@ -1,0 +1,17 @@
+Source: leo
+Section: python
+Priority: optional
+Maintainer: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
+Uploaders: 
+Build-Depends: debhelper (>= 5.0.37.2), dpatch (>= 2.0.10), cdbs (>= 0.4.43), python, python-support (>= 0.4)
+Homepage: http://webpages.charter.net/edreamleo/front.html 
+Standards-Version: 3.7.2.2
+
+Package: leo
+Architecture: all
+Depends: ${python:Depends}, ${misc:Depends}
+Conflicts: 
+Replaces: 
+Suggests: 
+Description: Literary editor and outliner 
+ Leo blah blah
