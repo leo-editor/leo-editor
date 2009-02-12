@@ -565,7 +565,7 @@ class baseCommands (object):
         return c # For unit test.
     #@nonl
     #@-node:ekr.20031218072017.1623:c.new
-    #@+node:ekr.20031218072017.2821:c.open
+    #@+node:ekr.20031218072017.2821:c.open & helper
     def open (self,event=None):
 
         '''Open a Leo window containing the contents of a .leo file.'''
@@ -588,21 +588,24 @@ class baseCommands (object):
             g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
         #@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
         #@nl
+        table = [("All files","*"),("Leo files","*.leo"),
+            ("Python files","*.py"),]
 
         fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
-            title = "Open",
-            filetypes = [("Leo files","*.leo"), ("All files","*")],
-            defaultextension = ".leo")
+            title = "Open",filetypes = table,defaultextension = ".leo")
         c.bringToFront()
 
         ok = False
         if fileName:
-            ok, frame = g.openWithFileName(fileName,c)
-            if ok:
-                g.chdir(fileName)
-                g.setGlobalOpenDir(fileName)
-            if ok and closeFlag:
-                g.app.destroyWindow(c.frame)
+            if fileName.endswith('.leo'):
+                ok, frame = g.openWithFileName(fileName,c)
+                if ok:
+                    g.chdir(fileName)
+                    g.setGlobalOpenDir(fileName)
+                if ok and closeFlag:
+                    g.app.destroyWindow(c.frame)
+            else:
+                ok = c.createNodeFromExternalFile(fileName)
 
         # openWithFileName sets focus if ok.
         if not ok:
@@ -610,7 +613,40 @@ class baseCommands (object):
                 c.treeWantsFocusNow()
             else:
                 c.bodyWantsFocusNow()
-    #@-node:ekr.20031218072017.2821:c.open
+    #@+node:ekr.20090212054250.9:c.createNodeFromExternalFile
+    def createNodeFromExternalFile(self,fn):
+
+        '''Read the file into a node.
+        Return None, indicating that c.open should set focus.'''
+
+        c = self
+
+        f = None
+        try:
+            f = open(fn)
+            s = f.read()
+            f.close()
+        except IOError:
+            g.es('can not open %s' % fn)
+            return
+
+        head,ext = g.os_path_splitext(fn)
+        if ext.startswith('.'): ext = ext[1:]
+        language = g.app.extension_dict.get(ext)
+        if language:
+            prefix = '@color\n@language %s\n\n' % language
+        else:
+            prefix = '@killcolor\n\n'
+        p2 = c.insertHeadline(op_name='Open File', as_child=False)
+        p2.h = g.shortFileName(fn)
+        p2.b = prefix + s
+        w = c.frame.body.bodyCtrl
+        if w: w.setInsertPoint(0)
+        c.redraw()
+        c.recolor()
+    #@nonl
+    #@-node:ekr.20090212054250.9:c.createNodeFromExternalFile
+    #@-node:ekr.20031218072017.2821:c.open & helper
     #@+node:ekr.20031218072017.2823:openWith and allies
     def openWith(self,event=None,data=None):
 

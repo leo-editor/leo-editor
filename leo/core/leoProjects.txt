@@ -1331,6 +1331,7 @@ def createOutline (self,fileName,parent,atAuto=False,atShadow=False,s=None,ext=N
 
     p.contract()
     return p
+#@nonl
 #@+node:ekr.20031218072017.3211:<< Read file into s >>
 try:
     fileName = c.os_path_finalize(fileName)
@@ -12416,6 +12417,7 @@ def createOutline (self,fileName,parent,atAuto=False,atShadow=False,s=None,ext=N
 
     p.contract()
     return p
+#@nonl
 #@+node:ekr.20031218072017.3211:<< Read file into s >>
 try:
     fileName = c.os_path_finalize(fileName)
@@ -14505,24 +14507,16 @@ def createFrame (fileName,relativeFileName,script):
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
 #@-node:ekr.20080921060401.12:Support for @string default_leo_file = ~/.leo/workbook.leo
 #@-node:ekr.20080919085541.2:Open a default .leo file if no other is specified
-#@+node:ekr.20080918164844.15:Allow Leo to open .py files directly (or any other kind of file)
-@nocolor
+#@clone 2
+#@+node:ekr.20080918164844.15:Allow ctrl-o to open non-.leo files
+@nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/3417ff5e9c02c626
 
-I'm wondering, would it make sense for leo to do "something" when launched
-directly against a .py file, i.e.
+The open file dialog now shows all files by default.
+Selecting a non-.leo file will load that file into a new node in the present outline.
 
-"leo test.py".
-
-Of course that's a perfectly sensible thing to do, considering that leo is,
-among other things, a python editor ;-)
-
-Perhaps it might create create a (unsaved) leo document  where the .py file
-is present as @shadow node, or something.
-
-@color
-#@nonl
+This plugs maybe the biggest hole in Leo's history.
 #@+node:ekr.20090211073102.1:Posting
 @nocolor-node
 
@@ -14571,642 +14565,229 @@ is run!
 #@-node:ekr.20090211073102.1:Posting
 #@+node:ekr.20080919085541.1:@url http://groups.google.com/group/leo-editor/browse_thread/thread/3417ff5e9c02c626
 #@-node:ekr.20080919085541.1:@url http://groups.google.com/group/leo-editor/browse_thread/thread/3417ff5e9c02c626
-#@+node:ekr.20080921154026.4:Not changed
-#@+node:ekr.20070412082527:g.openLeoOrZipFile
-def openLeoOrZipFile (fileName):
+#@+node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
+# Internally, lower case is used for all language names.
+self.language_delims_dict = {
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+    "ada"           : "--",
+    "batch"         : "REM", # Leo 4.5.1
+    "actionscript"  : "// /* */", #jason 2003-07-03
+    "autohotkey"    : "; /* */", #TL - AutoHotkey language
+    "c"             : "// /* */", # C, C++ or objective C.
+    "config"        : "#", # Leo 4.5.1
+    "csharp"        : "// /* */", # C#
+    "cpp"           : "// /* */",# C++.
+    "css"           : "/* */", # 4/1/04
+    "cweb"          : "@q@ @>", # Use the "cweb hack"
+    "elisp"         : ";",
+    "forth"         : "\\_ _(_ _)", # Use the "REM hack"
+    "fortran"       : "C",
+    "fortran90"     : "!",
+    "html"          : "<!-- -->",
+    "ini"           : ";",
+    "java"          : "// /* */",
+    "kshell"        : "#", # Leo 4.5.1.
+    "latex"         : "%",
+    "lua"           : "--",  # ddm 13/02/06
+    "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+    "pascal"        : "// { }",
+    "perl"          : "#",
+    "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+    "php"           : "// /* */", # 6/23/07: was "//",
+    "plain"         : "#", # We must pick something.
+    "plsql"         : "-- /* */", # SQL scripts qt02537 2005-05-27
+    "python"        : "#",
+    "rapidq"        : "'", # fil 2004-march-11
+    "rebol"         : ";",  # jason 2003-07-03
+    "ruby"          : "#",  # thyrsus 2008-11-05
+    "shell"         : "#",  # shell scripts
+    "tcltk"         : "#",
+    "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+    "unknown"       : "#", # Set when @comment is seen.
+    "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+    "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "<!-- -->",
+}
 
-    try:
-        isZipped = zipfile.is_zipfile(fileName)
-        if isZipped:
-            theFile = zipfile.ZipFile(fileName,'r')
-            # g.trace('opened zip file',theFile)
-        else:
-            # mode = g.choose(g.isPython3,'r','rb')
-            # 9/19/08: always use binary mode??
-            mode = 'rb'
-            theFile = open(fileName,mode)
-        return theFile,isZipped
-    except IOError:
-        # Do not use string + here: it will fail for non-ascii strings!
-        if not g.unitTesting:
-            g.es_print("can not open:",fileName,color="blue")
-        return None,False
+self.language_extension_dict = {
+    # Keys are languages, values are extensions.
+    "ada"           : "ada",
+    "actionscript"  : "as", #jason 2003-07-03
+    "autohotkey"    : "ahk", #TL - AutoHotkey language
+    "batch"         : "bat", # Leo 4.5.1.
+    "c"             : "c",
+    "config"        : "cfg",
+    "cpp"           : "cpp",
+    "css"           : "css", # 4/1/04
+    "cweb"          : "w",
+    "elisp"         : "el",
+    "forth"         : "forth",
+    "fortran"       : "f",
+    "fortran90"     : "f",
+    "html"          : "html",
+    "ini"           : "ini",
+    "java"          : "java",
+    "kshell"        : "ksh", # Leo 4.5.1.
+    "latex"         : "tex", # 1/8/04
+    "lua"           : "lua",  # ddm 13/02/06
+    "noweb"         : "nw",
+    "pascal"        : "p",
+    "perl"          : "pl",      # 11/7/05
+    "perlpod"       : "pod",  # 11/7/05
+    "php"           : "php",
+    "plain"         : "txt",
+    "python"        : "py",
+    "plsql"         : "sql", # qt02537 2005-05-27
+    "rapidq"        : "bas", # fil 2004-march-11
+    "rebol"         : "r",    # jason 2003-07-03
+    "ruby"          : "rb",   # thyrsus 2008-11-05
+    "shell"         : "sh",   # DS 4/1/04
+    "tex"           : "tex",
+    "tcltk"         : "tcl",
+    "unknown"       : "txt", # Set when @comment is seen.
+    "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
+    "xml"           : "xml",
+}
+
+self.extension_dict = {
+    # Keys are extensions, values are languages.
+    "ada"   : "ada",
+    "adb"   : "ada",
+    "ahk"   : "autohotkey",  # EKR: 2009-01-30.
+    "as"    : "actionscript",
+    "bas"   : "rapidq",
+    "bat"   : "batch",
+    "c"     : "c",
+    "cfg"   : "config",
+    "cpp"   : "cpp",
+    "css"   : "css",
+    "el"    : "elisp",
+    "forth" : "forth",
+    "f"     : "fortran90", # or fortran ?
+    "h"     : "c",
+    "html"  : "html",
+    "ini"   : "ini",
+    "java"  : "java",
+    "ksh"   : "kshell", # Leo 4.5.1.
+    "lua"   : "lua",  # ddm 13/02/06
+    "nw"    : "noweb",
+    "otl"   : "vimoutline",  #TL 8/25/08 Vim's outline plugin
+    "p"     : "pascal",
+    "pl"    : "perl",   # 11/7/05
+    "pod"   : "perlpod", # 11/7/05
+    "php"   : "php",
+    "py"    : "python",
+    "sql"   : "plsql", # qt02537 2005-05-27
+    "r"     : "rebol",
+    "rb"    : "ruby", # thyrsus 2008-11-05
+    "sh"    : "shell",
+    "tex"   : "tex",
+    "txt"   : "plain",
+    "tcl"   : "tcltk",
+    "w"     : "cweb",
+    "xml"   : "xml",
+}
+
+# Extra language extensions, used to associate extensions with mode files.
+# Used by importCommands.languageForExtension.
+# Keys are extensions, values are corresponding mode file (without .py)
+# A value of 'none' is a signal to unit tests that no extension file exists.
+self.extra_extension_dict = {
+    'actionscript': 'actionscript',
+    'ada'   : 'ada95',
+    'adb'   : 'none', # ada??
+    'awk'   : 'awk',
+    'bas'   : 'none', # rapidq
+    'bat'   : 'none', # batch
+    'cfg'   : 'none', # Leo 4.5.1
+    'cpp'   : 'c',
+    'el'    : 'lisp',
+    'f'     : 'fortran',
+    'ksh'   : 'none', # Leo 4.5.1
+    'nw'    : 'none', # noweb.
+    'otl'   : 'none', # vimoutline.
+    'pod'   : 'perl',
+    'tcl'   : 'tcl',
+    'unknown_language': 'none',
+    'w'     : 'none', # cweb
+}
 #@nonl
-#@-node:ekr.20070412082527:g.openLeoOrZipFile
-#@+node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
-def newLeoCommanderAndFrame(self,
-    fileName=None,
-    relativeFileName=None,
-    gui=None,initEditCommanders=True,updateRecentFiles=True):
+#@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
+#@+node:ekr.20031218072017.2821:c.open & helper
+def open (self,event=None):
 
-    """Create a commander and its view frame for the Leo main window."""
+    '''Open a Leo window containing the contents of a .leo file.'''
 
-    app = self
+    c = self
+    << Set closeFlag if the only open window is empty >>
+    table = [("All files","*"),("Leo files","*.leo"),
+        ("Python files","*.py"),]
 
-    import leo.core.leoCommands as leoCommands
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+        title = "Open",filetypes = table,defaultextension = ".leo")
+    c.bringToFront()
 
-    if not fileName: fileName = ''
-    if not relativeFileName: relativeFileName = ''
-    if not gui: gui = g.app.gui
-    << compute the window title >>
-
-    # g.trace(fileName,relativeFileName)
-
-    # Create an unfinished frame to pass to the commanders.
-    frame = gui.createLeoFrame(title)
-
-    # Create the commander and its subcommanders.
-    c = leoCommands.Commands(frame,fileName,relativeFileName=relativeFileName)
-
-    if not app.initing:
-        g.doHook("before-create-leo-frame",c=c) # Was 'onCreate': too confusing.
-
-    frame.finishCreate(c)
-    c.finishCreate(initEditCommanders)
-
-    # Finish initing the subcommanders.
-    c.undoer.clearUndoState() # Menus must exist at this point.
-
-    # if not g.app.initing:
-        # g.doHook("after-create-leo-frame",c=c)
-
-    return c,frame
-#@+node:ekr.20031218072017.2189:<< compute the window title >>
-# Set the window title and fileName
-if fileName:
-    title = g.computeWindowTitle(fileName)
-else:
-    s = "untitled"
-    n = g.app.numberOfWindows
-    if n > 0:
-        s += str(n)
-    title = g.computeWindowTitle(s)
-    g.app.numberOfWindows = n+1
-#@-node:ekr.20031218072017.2189:<< compute the window title >>
-#@-node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
-#@+node:ekr.20031218072017.2297:open (leoFileCommands)
-def open(self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
-
-    c = self.c ; frame = c.frame
-
-    # Set c.openDirectory
-    theDir = g.os_path_dirname(fileName)
-    if theDir: c.openDirectory = theDir
-
-    ok, ratio = self.getLeoFile(
-        theFile,fileName,
-        readAtFileNodesFlag=readAtFileNodesFlag,
-        silent=silent)
-
-    if ok:
-        frame.resizePanesToRatio(ratio,frame.secondary_ratio)
-
-    return ok
-#@-node:ekr.20031218072017.2297:open (leoFileCommands)
-#@+node:ekr.20031218072017.1553:getLeoFile
-# The caller should follow this with a call to c.redraw().
-
-def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
-
-    c = self.c
-    c.setChanged(False) # May be set when reading @file nodes.
-    << warn on read-only files >>
-    self.checking = False
-    self.mFileName = c.mFileName
-    self.initReadIvars()
-    c.loading = True # disable c.changed
-
-    try:
-        ok = True
-        # t1 = time.clock()
-        v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
-        if v: # v is None for minimal .leo files.
-            c.setRootVnode(v)
-            self.rootVnode = v
-        else:
-            v = leoNodes.vnode(context=c)
-            v.setHeadString('created root node')
-            p = leoNodes.position(v)
-            p._linkAsRoot(oldRoot=None)
-            self.rootVnode = v
-            c.setRootPosition(p)
-            c.changed = False
-    except BadLeoFile:
-        junk, message, junk = sys.exc_info()
-        if not silent:
-            g.es_exception()
-            g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
-        ok = False
-
-    # Do this before reading derived files.
-    self.resolveTnodeLists()
-
-    if ok and readAtFileNodesFlag:
-        # Redraw before reading the @file nodes so the screen isn't blank.
-        # This is important for big files like LeoPy.leo.
-        c.redraw()
-        c.setFileTimeStamp(fileName)
-        c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
-
-    # Do this after reading derived files.
-    if readAtFileNodesFlag:
-        # The descendent nodes won't exist unless we have read the @thin nodes!
-        self.restoreDescendentAttributes()
-
-    self.setPositionsFromVnodes()
-    c.selectVnode(c.p) # load body pane
-
-    self.initAllParents()
-
-    if c.config.getBool('check_outline_after_read'):
-        g.trace('@bool check_outline_after_read = True',color='blue')
-        c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-
-    c.loading = False # reenable c.changed
-    c.setChanged(c.changed) # Refresh the changed marker.
-    self.initReadIvars()
-    return ok, self.ratio
-#@+node:ekr.20031218072017.1554:<< warn on read-only files >>
-# os.access may not exist on all platforms.
-
-try:
-    self.read_only = not os.access(fileName,os.W_OK)
-except AttributeError:
-    self.read_only = False
-except UnicodeError:
-    self.read_only = False
-
-if self.read_only:
-    g.es("read only:",fileName,color="red")
-#@-node:ekr.20031218072017.1554:<< warn on read-only files >>
-#@-node:ekr.20031218072017.1553:getLeoFile
-#@-node:ekr.20080921154026.4:Not changed
-#@+node:ekr.20080921154026.5:Changed
-#@+node:ekr.20080211085914:scanDefaultDirectory (leoImport)
-def scanDefaultDirectory(self,p):
-
-    """Set the default_directory ivar by looking for @path directives."""
-
-    c = self.c
-
-    self.default_directory, error = g.setDefaultDirectory(c,p,importing=False)
-
-    if error: self.error(error)
-#@-node:ekr.20080211085914:scanDefaultDirectory (leoImport)
-#@+node:ekr.20031218072017.3210:createOutline (leoImport)
-def createOutline (self,fileName,parent,atAuto=False,atShadow=False,s=None,ext=None):
-
-    c = self.c ; u = c.undoer ; s1 = s
-
-    # New in Leo 4.4.7: honor @path directives.
-
-    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-    fileName = c.os_path_finalize_join(self.default_directory,fileName)
-    junk,self.fileName = g.os_path_split(fileName)
-    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
-    self.setEncoding(p=parent,atAuto=atAuto)
-    # g.trace(self.fileName,self.fileType)
-    # All file types except the following just get copied to the parent node.
-    if not ext: ext = self.fileType
-    ext = ext.lower()
-    if not s:
-        << Read file into s >>
-
-    << convert s to the proper encoding >>
-
-    # Create the top-level headline.
-    if atAuto:
-        p = parent.copy()
-        p.setBodyString('')
-    else:
-        undoData = u.beforeInsertNode(parent)
-        p = parent.insertAsLastChild()
-
-        if self.treeType == "@file":
-            p.initHeadString("@file " + fileName)
-        else:
-            # @root nodes don't have @root in the headline.
-            p.initHeadString(fileName)
-        u.afterInsertNode(p,'Import',undoData)
-
-    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
-
-    func = self.importDispatchDict.get(ext)
-    if func and not c.config.getBool('suppress_import_parsing',default=False):
-        func(s,p,atAuto=atAuto)
-    else:
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-
-    p.contract()
-    return p
-#@+node:ekr.20031218072017.3211:<< Read file into s >>
-try:
-    fileName = c.os_path_finalize(fileName)
-    theFile = open(fileName)
-    s = theFile.read()
-    theFile.close()
-except IOError:
-    if atShadow: kind = '@shadow '
-    elif atAuto: kind = '@auto '
-    else: kind = ''
-    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
-    g.es("can not open", "%s%s" % (kind,fileName),color='red')
-    # g.trace(g.callers())
-    leoTest.fail()
-    return None
-#@-node:ekr.20031218072017.3211:<< Read file into s >>
-#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
-if s and fileName.endswith('.py'):
-    # Python's encoding comments override everything else.
-    lines = g.splitLines(s)
-    tag = '# -*- coding:' ; tag2 = '-*-'
-    n1,n2 = len(tag),len(tag2)
-    line1 = lines[0].strip()
-    if line1.startswith(tag) and line1.endswith(tag2):
-        e = line1[n1:-n2].strip()
-        if e and g.isValidEncoding(e):
-            # g.pr('found',e,'in',line1)
-            self.encoding = e
-
-s = g.toUnicode(s,self.encoding)
-#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
-#@-node:ekr.20031218072017.3210:createOutline (leoImport)
-#@+node:ekr.20031218072017.1624:createFrame (runLeo.py)
-def createFrame (fileName,relativeFileName,script):
-
-    """Create a LeoFrame during Leo's startup process."""
-
-    # New in Leo 4.6: support for 'default_leo_file' setting.
-    if not fileName and not script:
-        fileName = g.app.config.getString(c=None,setting='default_leo_file')
-        fileName = g.os_path_finalize(fileName)
-        if fileName and g.os_path_exists(fileName):
-            g.es_print('opening default_leo_file:',fileName,color='blue')
-
-    # Try to create a frame for the file.
-    if fileName and g.os_path_exists(fileName):
-        ok, frame = g.openWithFileName(relativeFileName or fileName,None)
-        if ok: return frame.c,frame
-
-    # Create a _new_ frame & indicate it is the startup window.
-    c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=fileName,
-        relativeFileName=relativeFileName,
-        initEditCommanders=True)
-    assert frame.c == c and c.frame == frame
-    frame.setInitialWindowGeometry()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
-    frame.startupWindow = True
-    if c.chapterController:
-        c.chapterController.finishCreate()
-        c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
-    # Call the 'new' hook for compatibility with plugins.
-    g.doHook("new",old_c=None,c=c,new_c=c)
-
-    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.p
-    if not g.doHook("menu1",c=frame.c,p=p,v=p):
-        frame.menu.createMenuBar(frame)
-        c.updateRecentFiles(relativeFileName or fileName)
-        g.doHook("menu2",c=frame.c,p=p,v=p)
-        g.doHook("after-create-leo-frame",c=c)
-
-    # Report the failure to open the file.
+    ok = False
     if fileName:
-        g.es_print("file not found:",fileName,color='red')
-
-    return c,frame
-#@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
-#@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
-def readSettingsFiles (self,fileName,verbose=True):
-
-    seen = []
-    self.write_recent_files_as_needed = False # Will be set later.
-    << define localDirectory, localConfigFile & myLocalConfigFile >>
-
-    # g.trace(g.app.oneConfigFilename)
-    table = (
-        (self.globalConfigFile,False),
-        (self.homeFile,False),
-        (localConfigFile,False),
-        (self.myGlobalConfigFile,False),
-        (self.myHomeConfigFile,False),
-        (self.machineConfigFile,False),
-        (myLocalConfigFile,False),
-        # New in Leo 4.6: the -c file is in *addition* to other config files.
-        (g.app.oneConfigFilename,False),
-        (fileName,True),
-    )
-
-    # Init settings from leoSettings.leo and myLeoSettings.leo files.
-    for path,localFlag in table:
-        if path:
-            path = g.os_path_realpath(g.os_path_finalize(path))
-            # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
-        isZipped = path and zipfile.is_zipfile(path)
-        isLeo = isZipped or (path and path.endswith('.leo'))
-        if isLeo and path and path.lower() not in seen:
-            seen.append(path.lower())
-            if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
-                s = 'reading settings in %s' % path
-                # This occurs early in startup, so use the following instead of g.es_print.
-                if not g.isPython3:
-                    s = g.toEncodedString(s,'ascii')
-                g.pr(s)
-                g.app.logWaiting.append((s+'\n','blue'),)
-
-            c = self.openSettingsFile(path)
-            if c:
-                self.updateSettings(c,localFlag)
+        if fileName.endswith('.leo'):
+            ok, frame = g.openWithFileName(fileName,c)
+            if ok:
+                g.chdir(fileName)
+                g.setGlobalOpenDir(fileName)
+            if ok and closeFlag:
                 g.app.destroyWindow(c.frame)
-                self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
-                self.setIvarsFromSettings(c)
-    self.readRecentFiles(localConfigFile)
-    # self.createMyLeoSettingsFile(myLocalConfigFile)
-    self.inited = True
-    self.setIvarsFromSettings(None)
-#@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-# This can't be done in initSettingsFiles because
-# the local directory does not yet exist.
-localDirectory = g.os_path_dirname(fileName)
-
-#  Set the local leoSettings.leo file.
-localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
-if not g.os_path_exists(localConfigFile):
-    localConfigFile = None
-
-# Set the local myLeoSetting.leo file.
-myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
-if not g.os_path_exists(myLocalConfigFile):
-    myLocalConfigFile = None
-#@nonl
-#@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-#@+node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
-def createMyLeoSettingsFile (self,localConfigFile):
-
-    '''Create home.myLeoSettings.leo if no other myLeoSettings.leo file exists.'''
-
-    << define s, a minimalMyLeoSettings.leo string >>
-
-    for path in (
-        localConfigFile,
-        self.myGlobalConfigFile,
-        self.myHomeConfigFile
-    ):
-        # g.trace(path)
-        if path:
-            path = g.os_path_realpath(g.os_path_finalize(path))
-            if g.os_path_exists(path):
-                # g.trace('exists',path)
-                return
-
-    if g.app.homeDir:
-        path = g.os_path_finalize_join(g.app.homeDir,'myLeoSettings.leo')
-        try:
-            f = open(path,'wb')
-            f.write(s)
-            f.close()
-            self.myHomeConfigFile = path
-            # It's early in the startup: g.es does not work yet.
-            s = 'created: %s' % (self.myHomeConfigFile)
-            g.pr(s)
-            g.app.logWaiting.append((s+'\n','red'),)
-        except Exception:
-            s = 'can not create: %s' % (self.myHomeConfigFile)
-            g.pr(s)
-            g.app.logWaiting.append((s+'\n','red'),)
-            g.es_exception()
-#@+node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
-s = '''<?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet ekr_test?>
-<leo_file>
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-	<global_window_position top="26" left="122" height="781" width="953"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
-<preferences/>
-<find_panel_settings/>
-<vnodes>
-<v t="ekr.20070411164127" str_leo_pos="0"><vh>@chapters</vh>
-<v t="ekr.20070411164127.1"><vh>@chapter trash</vh></v>
-</v>
-<v t="ekr.20070411164127.2"><vh>@settings</vh></v>
-</vnodes>
-<tnodes>
-<t tx="ekr.20070411164127"></t>
-<t tx="ekr.20070411164127.1">trash</t>
-<t tx="ekr.20070411164127.2"></t>
-</tnodes>
-</leo_file>
-'''
-#@-node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
-#@-node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
-#@+node:ekr.20041117085625:g.app.config.openSettingsFile
-def openSettingsFile (self,path):
-
-    theFile,isZipped = g.openLeoOrZipFile(path)
-    if not theFile: return None
-
-    # Similar to g.openWithFileName except it uses a null gui.
-    # Changing g.app.gui here is a major hack.
-    oldGui = g.app.gui
-    g.app.gui = leoGui.nullGui("nullGui")
-    c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=path,relativeFileName=None,
-        initEditCommanders=False,updateRecentFiles=False)
-    frame.log.enable(False)
-    c.setLog()
-    g.app.lockLog()
-    ok = frame.c.fileCommands.open(
-        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
-    g.app.unlockLog()
-    frame.openDirectory = g.os_path_dirname(path)
-    g.app.gui = oldGui
-    return ok and c
-#@-node:ekr.20041117085625:g.app.config.openSettingsFile
-#@+node:ekr.20051013161232:g.app.config.updateSettings
-def updateSettings (self,c,localFlag):
-
-    d = self.readSettings(c,localFlag)
-
-    if d:
-        d['_hash'] = theHash = c.hash()
-        if localFlag:
-            self.localOptionsDict[theHash] = d
         else:
-            self.localOptionsList.insert(0,d)
+            ok = c.createNodeFromExternalFile(fileName)
 
-    if 0: # Good trace.
-        if localFlag:
-            g.trace(c.fileName())
-            g.trace(d and d.keys())
-#@-node:ekr.20051013161232:g.app.config.updateSettings
-#@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
-#@+node:ekr.20031218072017.2052:g.openWithFileName
-def openWithFileName(fileName,old_c,
-    enableLog=True,gui=None,readAtFileNodesFlag=True):
+    # openWithFileName sets focus if ok.
+    if not ok:
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+@c
 
-    """Create a Leo Frame for the indicated fileName if the file exists."""
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+#@+node:ekr.20090212054250.9:c.createNodeFromExternalFile
+def createNodeFromExternalFile(self,fn):
 
-    if not fileName or len(fileName) == 0:
-        return False, None
+    '''Read the file into a node.
+    Return None, indicating that c.open should set focus.'''
 
-    def munge(name):
-        return g.os_path_normpath(name or '').lower()
+    c = self
 
-    # Create a full, normalized, Unicode path name, preserving case.
-    relativeFileName = g.os_path_normpath(fileName)
-    fileName = g.os_path_finalize(fileName)
-    isZipped = fileName and zipfile.is_zipfile(fileName)
-    isLeo = isZipped or fileName.endswith('.leo')
-    # g.trace(relativeFileName,'-->',fileName)
+    f = None
+    try:
+        f = open(fn)
+        s = f.read()
+        f.close()
+    except IOError:
+        g.es('can not open %s' % fn)
+        return
 
-    # If the file is already open just bring its window to the front.
-    if isLeo:
-        theList = app.windowList
-        for frame in theList:
-            if munge(fileName) == munge(frame.c.mFileName):
-                frame.bringToFront()
-                frame.c.setLog()
-                frame.c.outerUpdate()
-                return True, frame
-        if old_c:
-            # New in 4.4: We must read the file *twice*.
-            # The first time sets settings for the later call to c.finishCreate.
-            # g.trace('***** prereading',fileName)
-            c2 = g.app.config.openSettingsFile(fileName)
-            if c2: g.app.config.updateSettings(c2,localFlag=True)
-            g.doHook('open0')
-
-        # Open the file in binary mode to allow 0x1a in bodies & headlines.
-        theFile,isZipped = g.openLeoOrZipFile(fileName)
-        if not theFile: return False, None
-        c,frame = app.newLeoCommanderAndFrame(
-            fileName=fileName,
-            relativeFileName=relativeFileName,
-            gui=gui)
+    head,ext = g.os_path_splitext(fn)
+    if ext.startswith('.'): ext = ext[1:]
+    language = g.app.extension_dict.get(ext)
+    if language:
+        prefix = '@color\n@language %s\n\n' % language
     else:
-        c,frame = g.openWrapperLeoFile(old_c,fileName,gui)
-        if not c: return False,None
-
-    assert frame.c == c and c.frame == frame
-    c.isZipped = isZipped
-    frame.log.enable(enableLog)
-    g.app.writeWaitingLog() # New in 4.3: write queued log first.
-    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
-        c.setLog()
-        if isLeo:
-            app.lockLog()
-            ok = frame.c.fileCommands.open(
-                theFile,fileName,
-                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-            app.unlockLog()
-            if not ok:
-                g.app.closeLeoWindow(frame)
-                return False,frame
-            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
-                # The recent files list has been updated by c.updateRecentFiles.
-                z.c.config.setRecentFiles(g.app.config.recentFiles)
-    # Bug fix in 4.4.
-    frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
-    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-    p = c.p
-    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    if not g.doHook("menu1",c=c,p=p,v=p):
-        frame.menu.createMenuBar(frame)
-        c.updateRecentFiles(relativeFileName or fileName)
-        g.doHook("menu2",c=frame.c,p=p,v=p)
-        g.doHook("after-create-leo-frame",c=c)
-    # New in Leo 4.6: provide an official way for very late initialization.
-    c.frame.tree.initAfterLoad()
-    c.initAfterLoad()
+        prefix = '@killcolor\n\n'
+    p2 = c.insertHeadline(op_name='Open File', as_child=False)
+    p2.h = g.shortFileName(fn)
+    p2.b = prefix + s
+    w = c.frame.body.bodyCtrl
+    if w: w.setInsertPoint(0)
     c.redraw()
-    assert frame.c == c and c.frame == frame
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    # g.trace('c.chapterController',c.chapterController)
-    if c.chapterController:
-        c.chapterController.finishCreate()
-    k = c.k
-    if k:
-        k.setDefaultInputState()
-    if c.config.getBool('outline_pane_has_initial_focus'):
-        c.treeWantsFocusNow()
-    else:
-        c.bodyWantsFocusNow()
-    if k:
-        k.showStateAndMode()
-
-    c.frame.initCompleteHint()
-
-    return True, frame
-#@-node:ekr.20031218072017.2052:g.openWithFileName
-#@+node:ekr.20080921154026.1:g.openWrapperLeoFile
-def openWrapperLeoFile (old_c,fileName,gui):
-
-    '''Open a wrapper .leo file for the given file,
-    and import the file into .leo file.'''
-
-    # This code is similar to c.new, but different enough to be separate.
-    if not g.os_path_exists(fileName):
-        if not g.unitTesting:
-            g.es_print("can not open:",fileName,color="blue")
-        return None,None
-
-    c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=None,relativeFileName=None,gui=gui)
-
-    # Needed for plugins.
-    g.doHook("new",old_c=old_c,c=c,new_c=c)
-
-    # Use the config params to set the size and location of the window.
-    frame.setInitialWindowGeometry()
-    frame.deiconify()
-    frame.lift()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-
-    if 1: # Just read the file into the node.
-        try:
-            fileName = g.os_path_finalize(fileName)
-            f = open(fileName)
-            s = f.read()
-            f.close()
-        except IOError:
-            g.es_print("can not open: ",fileName,color='red')
-            return None,None
-        p = c.p
-        if p:
-            p.setHeadString(fileName)
-            p.setBodyString(s)
-    else:  # Import the file into the new outline.
-        junk,ext = g.os_path_splitext(fileName)
-        p = c.p
-        p = c.importCommands.createOutline(fileName,parent=p,atAuto=False,ext=ext)
-        c.setCurrentPosition(p)
-        c.moveOutlineLeft()
-        p = c.p
-        c.setCurrentPosition(p.back())
-        c.deleteOutline(op_name=None)
-        p = c.p
-        p.expand()
-
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
-
-    frame.c.setChanged(True) # Unlike new, we the outline should be marked changed.
-
-    if c.config.getBool('outline_pane_has_initial_focus'):
-        c.treeWantsFocusNow()
-    else:
-        c.bodyWantsFocusNow()
-
-    # c.redraw() # Only needed by menu commands.
-    return c,frame
-#@-node:ekr.20080921154026.1:g.openWrapperLeoFile
-#@-node:ekr.20080921154026.5:Changed
+    c.recolor()
+#@nonl
+#@-node:ekr.20090212054250.9:c.createNodeFromExternalFile
+#@-node:ekr.20031218072017.2821:c.open & helper
 #@+node:ekr.20080921154026.6:tests
 leo c:\leo.repo\trunk\leo\modes\python.py
 
@@ -15214,7 +14795,7 @@ leo c:\leo.repo\trunk\leo\modes\python.py
 leo --script c:\leo.repo\trunk\leo\test\unittest\batchTest.py
 #@nonl
 #@-node:ekr.20080921154026.6:tests
-#@-node:ekr.20080918164844.15:Allow Leo to open .py files directly (or any other kind of file)
+#@-node:ekr.20080918164844.15:Allow ctrl-o to open non-.leo files
 #@+node:ekr.20080921154026.10:Added better default fonts for Leo on Linux
 http://groups.google.com/group/leo-editor/browse_thread/thread/f1c7c5134b95c77e
 

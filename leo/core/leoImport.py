@@ -851,6 +851,7 @@ class leoImportCommands (scanUtility):
 
         p.contract()
         return p
+    #@nonl
     #@-node:ekr.20031218072017.3210:createOutline (leoImport)
     #@+node:ekr.20070806111212:readAtAutoNodes (importCommands) & helper
     def readAtAutoNodes (self):

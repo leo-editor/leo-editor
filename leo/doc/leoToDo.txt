@@ -11,6 +11,97 @@
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
 #@+node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20090131200406.9:Bugs
+#@+node:ekr.20090210093316.2:New bugs
+#@+node:ekr.20090210122758.5:Urgent: Fix Bill Baxters confusions
+@nocolor-node
+
+** Document how to open a wrapper .leo file.
+
+** Improve Leo's tutorials
+
+
+On Tue, Feb 10, 2009 at 3:33 PM, Bill Baxter <wbaxter@gmail.com> wrote:
+
+
+    All these answers are encouraging.  I think the issue I have now might
+    be like the one the poster below suggests.  You have various tutorials
+    about the many advanced and unique features of Leo, but do you have a
+    basic tutorial anywhere explaining how you just open edit a file?
+
+Good point.  Improving Leo's tutorial is becoming urgent.
+
+I'd like to rewrite all of Leo's introductory docs using a "story-based"
+approach inspired by the book "Ideas that stick". Using Leo to "just open and
+edit a file" would be one of the very first stories.
+
+    > From a theoretical point of view, Leo's dom is the essential difference between Leo and any other editor.
+
+    Ok, but it should degrade gracefully to a 1-node dom being equivalent
+    to "plain old text file", right?  I think making this kind of thing
+    work transparently is pretty important to getting newbies to not
+    uninstall Leo the minute they find they can't open a text file.  There
+    are dozens of editors out there that are happy to open a text file
+    with Ctrl-O and let you edit it.  Leo seems to require something else
+    non-obvious for this simple task, so it makes the road unnecessarily
+    bumpy.
+
+
+Thanks for this comment. Until you made it, I had a blind spot regarding this.
+
+There is actually a way to get Leo to open a plain file in a wrapper .leo file,
+but I don't remember what it is and there is no way a newbie is going to stumble
+upon it.
+
+This is more than a mere doc bug. As you say, ctrl-o on a plain file should
+work.
+
+So we have a good collaboration going already. You've highlighted several things
+that will confuse newbies.
+
+    I think if you can soften the transition a bit from regular editor to
+    the leo way, you can probably convince a few more people.
+
+
+I agree completely.  I'll see what I can do in the next three days...
+#@nonl
+#@-node:ekr.20090210122758.5:Urgent: Fix Bill Baxters confusions
+#@+node:ekr.20090210093316.6:** Also look at the qt bugs list!
+#@-node:ekr.20090210093316.6:** Also look at the qt bugs list!
+#@+node:ekr.20090210093316.3:Fix bug: @chapter problem with qt plugin
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/cf688f9c47eb5fd7
+
+Hi. I have just tried new qt plug-in and found out that when I open a
+leo file with chapters, I can see in outline on the top node with
+headline @chapters. But when I click in any node, the @chapters node
+disappears and when I execute mini-buffer command select-chapter I can
+not see selected chapter until I click in top node in outline.
+
+I am using Windows Vista
+Leo Log Window...
+Leo 4.5.1 final, build  1.244 , September 14, 2008
+python 2.5.1, qt version 263169
+Windows 6, 0, 6001, 2, Service Pack 1
+Rev 1537
+
+Vitalije 
+#@nonl
+#@-node:ekr.20090210093316.3:Fix bug: @chapter problem with qt plugin
+#@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
+http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
+#@nonl
+#@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
+#@+node:ekr.20090210093316.5:Swap scrollbars when orientation changes
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/56351acd8e39a654
+
+if you swap the orientation of the panes, the tree pane doesn't allow scrolling
+left/right as the Tk window does.
+#@nonl
+#@-node:ekr.20090210093316.5:Swap scrollbars when orientation changes
+#@-node:ekr.20090210093316.2:New bugs
 #@+node:ekr.20090103054019.1:First
 #@+node:ekr.20090204083025.1:Cleanup
 Remove all ####
@@ -7202,28 +7293,31 @@ def new (self,event=None,gui=None):
     return c # For unit test.
 #@nonl
 #@-node:ekr.20031218072017.1623:c.new
-#@+node:ekr.20031218072017.2821:c.open
+#@+node:ekr.20031218072017.2821:c.open & helper
 def open (self,event=None):
 
     '''Open a Leo window containing the contents of a .leo file.'''
 
     c = self
     << Set closeFlag if the only open window is empty >>
+    table = [("All files","*"),("Leo files","*.leo"),
+        ("Python files","*.py"),]
 
     fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
-        title = "Open",
-        filetypes = [("Leo files","*.leo"), ("All files","*")],
-        defaultextension = ".leo")
+        title = "Open",filetypes = table,defaultextension = ".leo")
     c.bringToFront()
 
     ok = False
     if fileName:
-        ok, frame = g.openWithFileName(fileName,c)
-        if ok:
-            g.chdir(fileName)
-            g.setGlobalOpenDir(fileName)
-        if ok and closeFlag:
-            g.app.destroyWindow(c.frame)
+        if fileName.endswith('.leo'):
+            ok, frame = g.openWithFileName(fileName,c)
+            if ok:
+                g.chdir(fileName)
+                g.setGlobalOpenDir(fileName)
+            if ok and closeFlag:
+                g.app.destroyWindow(c.frame)
+        else:
+            ok = c.createNodeFromExternalFile(fileName)
 
     # openWithFileName sets focus if ok.
     if not ok:
@@ -7240,7 +7334,40 @@ closeFlag = (
     not c.changed and not c.frame.saved and # The window has never been changed
     g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
 #@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
-#@-node:ekr.20031218072017.2821:c.open
+#@+node:ekr.20090212054250.9:c.createNodeFromExternalFile
+def createNodeFromExternalFile(self,fn):
+
+    '''Read the file into a node.
+    Return None, indicating that c.open should set focus.'''
+
+    c = self
+
+    f = None
+    try:
+        f = open(fn)
+        s = f.read()
+        f.close()
+    except IOError:
+        g.es('can not open %s' % fn)
+        return
+
+    head,ext = g.os_path_splitext(fn)
+    if ext.startswith('.'): ext = ext[1:]
+    language = g.app.extension_dict.get(ext)
+    if language:
+        prefix = '@color\n@language %s\n\n' % language
+    else:
+        prefix = '@killcolor\n\n'
+    p2 = c.insertHeadline(op_name='Open File', as_child=False)
+    p2.h = g.shortFileName(fn)
+    p2.b = prefix + s
+    w = c.frame.body.bodyCtrl
+    if w: w.setInsertPoint(0)
+    c.redraw()
+    c.recolor()
+#@nonl
+#@-node:ekr.20090212054250.9:c.createNodeFromExternalFile
+#@-node:ekr.20031218072017.2821:c.open & helper
 #@+node:ekr.20031218072017.2823:openWith and allies
 def openWith(self,event=None,data=None):
 
