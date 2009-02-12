@@ -5198,6 +5198,7 @@ class leoQtColorizer:
         self.colorer = self.highlighter.colorer
 
         if self.colorer.enabled:
+            # g.trace('clearing enabled',g.callers(4))
             self.colorer.enabled = hasattr(self.highlighter,'currentBlock')
 
     #@-node:ekr.20081205131308.16:ctor (leoQtColorizer)
@@ -6792,6 +6793,7 @@ class jEditColorizer:
 
         '''Init the string args for recolor.'''
 
+        # g.trace('using currentBlock()',g.callers(4))
         offset = self.highlighter.currentBlock().position()
 
         if restartString:

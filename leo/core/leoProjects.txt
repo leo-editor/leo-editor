@@ -14523,6 +14523,52 @@ is present as @shadow node, or something.
 
 @color
 #@nonl
+#@+node:ekr.20090211073102.1:Posting
+@nocolor-node
+
+Rev 1111 of the trunk now contains what might be called a first draft
+of this idea.
+
+For example, the following work:
+
+1) leo c:\leo.repo\trunk\leo\modes\python.py
+
+This opens a new, untitled, .leo file, and reads python.py into the
+body text of a node.  Some experimentation showed that using the
+import code is not likely to be what people want.  There is disabled
+code to do that if desired, but I'm not going to add yet another
+option unless somebody really would use that feature.
+
+2) leo --silent --script c:\leo.repo\trunk\leo\test\unittest
+\batchTest.py
+
+This illustrates one of the many complications that I dealt with in
+revising the startup logic.  This code does *not* open the default
+(notebook) file: that would not be a reasonable default (imo) for
+batch runs.
+
+Another complication: Leo does not try to open a file as a settings
+file unless either it is zipped or it has a .leo extension.  That
+should not cause any great hardships, and prevents sax from barfing on
+modes/python.py.
+
+Your comments and suggestions please.
+
+Edward
+
+P.S. The present code now properly handles the --silent option:  this
+option had been broken when moving to optparse.
+
+P.P.S. I heavily refactored the startup logic in runLeo.py.  In
+particular, imports are now done at the module level, rather than in
+run() and its helpers.  This cleans up the code and generally makes
+the module less weird.  However, it means that trying to import
+runLeo.py from within Leo **will not work**.  So I had to remove a
+unittest for runLeo.run().  That was a pretty silly test anyway:
+runLeo.py and run() will be exercised more thoroughly every time Leo
+is run! 
+#@nonl
+#@-node:ekr.20090211073102.1:Posting
 #@+node:ekr.20080919085541.1:@url http://groups.google.com/group/leo-editor/browse_thread/thread/3417ff5e9c02c626
 #@-node:ekr.20080919085541.1:@url http://groups.google.com/group/leo-editor/browse_thread/thread/3417ff5e9c02c626
 #@+node:ekr.20080921154026.4:Not changed

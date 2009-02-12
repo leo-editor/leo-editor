@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1058,6 +1058,7 @@
 <v t="ekr.20090205070715.1"><vh>print colorer stats</vh></v>
 <v t="ekr.20090206065021.1"><vh>test string flipping</vh></v>
 <v t="ekr.20090206124759.2"><vh>Contains @nocolor</vh></v>
+<v t="ekr.20090211123924.1"><vh>String test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -11192,6 +11193,25 @@ b = 'c'
 def a():
     pass</t>
 <t tx="ekr.20090206124759.2">@nocolor-node
+</t>
+<t tx="ekr.20090211123924.1">import time
+
+path = g.os_path_finalize_join(
+    g.app.loadDir,'..','plugins','qtGui.py')
+
+s = s2 = open(path).read()
+
+g.es_print('start %s' % len(s2))
+t = time.time()
+
+d = {}
+for i in range(10000):
+    # s2 = s2[:2] + s2[2:-2] + s2[-2:]
+    d[i] = s2 = s[:i] + s[:-i]
+    # s2 = "hello" + s
+
+t2 = "%1.2f sec" % (time.time()-t)
+g.es_print('done %s %s' % (len(s2),t2))
 </t>
 </tnodes>
 </leo_file>
