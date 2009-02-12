@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -11186,8 +11186,8 @@ g.es ('total characters: %s, keywords: %s, leo_keywords: %s' % (
     colorer.totalLeoKeywordsCalls))</t>
 <t tx="ekr.20090206065021.1">#
 
-a = '''ab''' #
-# test
+a = '''ab'''
+    # test
 
 b = 'c'
 
@@ -11195,7 +11195,9 @@ def a():
     pass</t>
 <t tx="ekr.20090206124759.2">@nocolor-node
 </t>
-<t tx="ekr.20090211123924.1">import time
+<t tx="ekr.20090211123924.1">@nocolor
+
+import time
 
 path = g.os_path_finalize_join(
     g.app.loadDir,'..','plugins','qtGui.py')

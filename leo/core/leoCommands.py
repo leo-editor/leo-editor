@@ -6247,7 +6247,10 @@ class baseCommands (object):
             if verbose: aList.append('%srecolor' % (
                 g.choose(c.incrementalRecolorFlag,'','full ')))
             # This should be the only call to c.recolor_now.
+            #### Replace this with a direct call.
             c.recolor_now(incremental=c.incrementalRecolorFlag)
+            # c.frame.body.colorizer.colorize(c.p,
+                # incremental=c.incrementalRecolorFlag,interruptable=True)
 
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
