@@ -451,7 +451,7 @@ def profile_leo ():
     # On Windows, name must be a plain string. An apparent cProfile bug.
     name = str(g.os_path_normpath(g.os_path_join(theDir,'leoProfile.txt')))
     print ('profiling to %s' % name)
-    profile.run('leo.run()',name)
+    profile.run('import leo ; leo.run()',name)
     p = pstats.Stats(name)
     p.strip_dirs()
     p.sort_stats('module','calls','time','name')
