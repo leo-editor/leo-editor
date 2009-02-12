@@ -1315,12 +1315,6 @@ def setItemForCurrentPosition (self,scroll=True):
 #@-node:ekr.20090201080444.1:Improved scrolling
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
-#@+node:ekr.20090206070552.10:clearColors
-# def clearColors (self,i,j):
-
-    # color = QtGui.QColor('black')
-    # self.highlighter.setFormat(i,j,color)
-#@-node:ekr.20090206070552.10:clearColors
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl

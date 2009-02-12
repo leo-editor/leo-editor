@@ -8026,7 +8026,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         self.widget.ensureCursorVisible()
     #@-node:ekr.20081121105001.586:seeInsertPoint
-    #@+node:ekr.20081121105001.587:setAllText (leoQtTextEditWidget)
+    #@+node:ekr.20081121105001.587:setAllText
     def setAllText(self,s,insert=None):
 
         '''Set the text of the widget.
@@ -8052,7 +8052,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         if trace:
             g.trace('%s calls to recolor' % (
                 colorer.recolorCount-n))
-    #@-node:ekr.20081121105001.587:setAllText (leoQtTextEditWidget)
+    #@-node:ekr.20081121105001.587:setAllText
     #@+node:ekr.20081121105001.588:setInsertPoint
     def setInsertPoint(self,i):
 

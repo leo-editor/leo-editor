@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="51" left="105" height="538" width="1014"/>
+	<global_window_position top="51" left="198" height="830" width="1027"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="4,24,0,5"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4,3,0,1,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -57,7 +57,7 @@
 <v t="ekr.20080301071818.1"
 marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20050831184021.2" a="E"><vh>Table of contents</vh>
+<v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20080730212711.29" a="E"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
 <v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
@@ -104,10 +104,14 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050830080545"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.1"><vh>FAQ</vh>
-<v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
+<v t="ekr.20050831195331.1" a="E"><vh>FAQ</vh>
+<v t="ekr.20050830115714" a="E"><vh>@rst html\FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links</vh></v>
+<v t="ekr.20090212054250.5" a="E"><vh>Getting Leo</vh>
+<v t="ekr.20090212054250.6"><vh>Where can I get official releases of Leo?</vh></v>
 <v t="ekr.20080603124653.1"><vh>How do I use bzr to get the latest sources from Leo's launchpad site?</vh></v>
+<v t="ekr.20090212054250.7"><vh>How can I get recent bzr snapshots of Leo?</vh></v>
+</v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
 <v t="ekr.20090202191501.7"><vh>Leo's installer failed, what do I do?</vh></v>
 <v t="ekr.20060329101442"><vh>Nothing (or almost nothing) happens when I start Leo.  What should I do?</vh></v>
@@ -799,8 +803,8 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070628083442.4"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20080203101507" a="E"><vh>Chapter 21: ILeo - the IPython bridge</vh>
-<v t="ekr.20080203101507.1" a="E"><vh>@rst html\IPythonBridge.html</vh>
+<v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
+<v t="ekr.20080203101507.1"><vh>@rst html\IPythonBridge.html</vh>
 <v t="ekr.20080203101507.2"><vh>@rst-no-head links</vh></v>
 <v t="vivainio.20080302174639.1"><vh>Introduction</vh></v>
 <v t="vivainio.20080302174639.2"><vh>Installation and startup</vh></v>
@@ -32502,6 +32506,12 @@ To run Leo with Qt look and feel, use the --gui=qt option::
 To load Leo's source, load leoPyRef.leo::
 
     python launchLeo.py --gui=qt leo\core\leoPyRef.leo</t>
+<t tx="ekr.20090212054250.5"></t>
+<t tx="ekr.20090212054250.6">You can get the latest official releases of Leo at
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+However, if at all possible, it is better to use bzr to get the latest sources.  See the next entry.</t>
+<t tx="ekr.20090212054250.7">Daily snapshots are available at http://www.greygreen.org/leo/</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
