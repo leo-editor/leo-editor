@@ -5198,7 +5198,6 @@ class leoQtColorizer:
         self.colorer = self.highlighter.colorer
 
         if self.colorer.enabled:
-            # g.trace('clearing enabled',g.callers(4))
             self.colorer.enabled = hasattr(self.highlighter,'currentBlock')
 
     #@-node:ekr.20081205131308.16:ctor (leoQtColorizer)
@@ -5294,10 +5293,10 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
 
         trace = False and not g.unitTesting
 
-        if trace: g.trace('*****',g.callers())
+        if trace: g.trace('***',g.callers())
 
-        c = self.c
-        self.colorer.init(p)
+        s = unicode(self.w.toPlainText())
+        self.colorer.init(p,s)
 
         # Call the base class method.
         QtGui.QSyntaxHighlighter.rehighlight(self)
@@ -5328,10 +5327,12 @@ class jEditColorizer:
         assert(w == self.c.frame.body.bodyCtrl)
 
         # Used by recolor and helpers...
+        self.all_s = '' # The cached string to be colored.
         self.actualColorDict = {} # Used only by setTag.
         self.global_i,self.global_j = 0,0 # The global bounds of colorizing.
         self.global_offset = 0
         self.hyperCount = 0
+        self.initFlag = False # True if recolor must reload self.all_s.
         self.defaultState = u'default-state:' # The name of the default state.
         self.minimalMatch = ''
         self.nextState = 1 # Dont use 0.
@@ -5362,6 +5363,8 @@ class jEditColorizer:
         self.recolorCount = 0 # Total calls to recolor
         self.stateCount = 0 # Total calls to setCurrentState
         self.totalChars = 0 # The total number of characters examined by recolor.
+        self.totalStates = 0
+        self.maxStateNumber = 0
         self.totalKeywordsCalls = 0
         self.totalLeoKeywordsCalls = 0
         # Mode data...
@@ -5695,17 +5698,20 @@ class jEditColorizer:
             w.tag_configure("elide",elide="1")
     #@-node:ekr.20081205131308.54:configure_variable_tags
     #@+node:ekr.20081205131308.74:init (jeditColorizer)
-    def init (self,p):
+    def init (self,p,s):
 
         trace = False and not g.unitTesting
 
-        self.p = p.copy()
+        if p: self.p = p.copy()
+        self.all_s = s or ''
 
-        if trace: g.trace('****',p and p.h)
+        if trace: g.trace('***',p and p.h,len(self.all_s),g.callers(4))
 
         # State info.
+        self.all_s = s
         self.global_i,self.global_j = 0,0
         self.global_offset = 0
+        self.initFlag = False
         self.nextState = 1 # Dont use 0.
         self.stateDict = {}
         self.stateNameDict = {}
@@ -6675,39 +6681,45 @@ class jEditColorizer:
 
         '''Recolor line s.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         verbose = False ; traceMatch = False
 
-        all_s = self.w.getAllText()
+        if self.initFlag:
+            self.initFlag = False
+            self.all_s = self.w.getAllText()
+            if trace and verbose:
+                g.trace('**** set all_s: %s' % len(self.all_s))
+
+        all_s = self.all_s
         if not all_s: return
+
         len_s = len(s)
         self.recolorCount += 1
-        self.totalChars += len(s)
-        lastFunc,restartString1 = self.getPrevState()
-        lastMatch,lastN,minimalMatch = 0,0,''
-
-        data = self.initRecolor(all_s,s,restartString1)
-        i,j,offset,restartString,searchString = data
+        self.totalChars += len_s
+        b = self.getPrevState()
+        lastFunc,lastMatch = b.lastFunc,b.lastMatch
+        lastN,minimalMatch = 0,'' # Not used until there is a match.
+        offset = self.highlighter.currentBlock().position()
+        # Calculate the bounds of the scan.
+        i = g.choose(lastFunc,lastMatch,offset)
+        j = offset + len_s
+        j = min(j,len(all_s))
+        self.global_i,self.global_j = offset,j
 
         # An important check.
-        s2 = searchString[offset+len(restartString):j]
-        if s2 != s and not g.unitTesting:
-            # If this ever fails, we probably should do a full recolor.
-            g.trace('***** mismatch! offset %s, j %s\n%s\n%s' % (
-                offset,j,repr(s),repr(s2)))
+        s2 = all_s[offset:j]
+        if s2 != s:
+            g.trace('**** mismatch! offset %s len %s %s\n%s\n%s' % (
+                offset,len(all_s),g.callers(5),repr(s),repr(s2)))
             return
 
-        if trace:
-            if verbose: g.trace('searchString %s' % (repr(searchString)))
-            else: g.trace('lastFunc %s s %s' % (repr(lastFunc),repr(s)))
-
         while i < j:
-            assert 0 <= i < len(searchString)
+            assert 0 <= i < len(all_s)
             progress = i
-            functions = self.rulesDict.get(searchString[i],[])
+            functions = self.rulesDict.get(all_s[i],[])
             self.minimalMatch = ''
             for f in functions:
-                n = f(self,searchString,i)
+                n = f(self,all_s,i)
                 if n is None:
                     g.trace('Can not happen' % (repr(n),repr(f)))
                     break
@@ -6727,93 +6739,89 @@ class jEditColorizer:
                 i += 1 # Don't set lastMatch on failure!
             assert i > progress
 
-        self.setCurrentState(s,searchString,offset,
-            len(restartString)+len(s)+1,lastFunc,lastMatch,lastN,minimalMatch)
-    #@+node:ekr.20081206062411.17:getPrevState
+        self.setCurrentState(s,offset,len(s)+1,
+            lastFunc,lastMatch,lastN,minimalMatch)
+    #@+node:ekr.20090211072718.14:computeStateName
+    def computeStateName (self,lastFunc,lastMatch,lastN,minimalMatch):
+
+        if lastFunc:
+            matchString = g.choose(minimalMatch,
+                minimalMatch,
+                self.all_s[lastMatch:lastMatch+lastN])
+            return '%s:%s' % (
+                lastFunc.__name__,matchString)
+        else:
+            return self.defaultState
+    #@-node:ekr.20090211072718.14:computeStateName
+    #@+node:ekr.20090211072718.2:getPrevState
     def getPrevState (self):
 
         h = self.highlighter
         n = h.previousBlockState()
 
-        # Convert the state number to a string.
         if n == -1:
-            state = self.defaultState
+            return g.Bunch(lastFunc=None,lastMatch=0,lastN=0)
+                # active = False,
+                # offset=0,
+                # len_s=0,
+                # minimalMatch=''
+                # stateName=self.defaultState)
         else:
-            state = self.stateDict.get(n)
-            if not state:
-                g.trace('**** can not happen. no state %s' % (n))
-                state = self.defaultState
-        i = state.find(':')
-        assert i != -1
-        lastFunc = state[:i]
-        restartString = state[i+1:]
-        return lastFunc,restartString
-    #@-node:ekr.20081206062411.17:getPrevState
-    #@+node:ekr.20081206062411.18:setCurrentState
-    def setCurrentState (self,s,searchString,offset,limit,
-        lastFunc,lastMatch,lastN,minimalMatch,
-    ):
+            bunch = self.stateDict.get(n)
+            assert bunch,'n=%s' % (n)
+            return bunch
+    #@nonl
+    #@-node:ekr.20090211072718.2:getPrevState
+    #@+node:ekr.20090211072718.3:setCurrentState
+    def setCurrentState (self,s,offset,len_s,lastFunc,lastMatch,lastN,minimalMatch):
 
         trace = False and not g.unitTesting
         verbose = False
         h = self.highlighter
 
-        if lastFunc:
-            active = lastMatch + lastN > offset + limit
-            if active:
-                restartString = minimalMatch or searchString[lastMatch:lastMatch+lastN]
-                state = '%s:%s' % (lastFunc.__name__,restartString)
-            else:
-                state = self.defaultState
-        else:
-            state = self.defaultState
+        self.stateCount += 1
+        oldN = h.currentBlockState()
+        active = bool(lastFunc and lastMatch + lastN > offset + len_s)
 
-        # Convert the string state to a number.
-        if state == self.defaultState:
-            n = -1 # Apparently, it *is* ok to set state to -1.
+        if active:
+            b = self.stateDict.get(oldN)
+            if b:
+                changeState = b.lastFunc != lastFunc or b.lastN != lastN
+            else:
+                changeState = True
         else:
-            n = self.stateNameDict.get(state)
-            if n is None:
-                n = self.nextState
-                self.nextState += 1
-                self.stateDict[n] = state
-                self.stateNameDict[state] = n
+            lastFunc,lastMatch,lastN,minimalMatch = None,None,None,None
+            changeState = oldN != -1
+
+        stateName = self.computeStateName(
+            lastFunc,lastMatch,lastN,minimalMatch)
+
+        if trace and (changeState or active or verbose):
+            g.trace('%2d ** active %5s changed %5s %-20s %s' % (
+                self.stateCount,active,changeState,stateName,s))
+
+        if not changeState:
+            return
+
+        n = self.stateNameDict.get(stateName)
+        if n is None:
+            n = self.nextState
+            self.nextState += 1
+            self.totalStates += 1
+            self.maxStateNumber = max(n,self.maxStateNumber)
+
+        state = g.bunch(lastFunc=lastFunc,lastMatch=lastMatch,lastN=lastN)
+            # active=active,
+            # offset=offset,
+            # len_s=len_s,
+            # minimalMatch=minimalMatch,
+            # stateName=stateName)
+
+        self.stateNameDict[stateName] = n
+        self.stateDict[n] = state
 
         h.setCurrentBlockState(n)
-
-        if trace:
-            if verbose:
-                g.trace('state %3s = %s' % (n,repr(state)))
-            elif state != self.defaultState:
-                g.trace('state %3s length %s' % (n,repr(state)))
-    #@nonl
-    #@-node:ekr.20081206062411.18:setCurrentState
-    #@+node:ekr.20090209070404.10:initRecolor
-    def initRecolor (self,all_s,s,restartString):
-
-        '''Init the string args for recolor.'''
-
-        # g.trace('using currentBlock()',g.callers(4))
-        offset = self.highlighter.currentBlock().position()
-
-        if restartString:
-            # Remove everything after the first newline.
-            i = restartString.find('\n')
-            if i != -1: restartString = restartString[:i]
-            # Prepend restartString to the search string.
-            searchString = restartString + all_s[offset:]
-            i = offset = 0
-            j = min(len(restartString)+len(s),len(searchString))
-        else:
-            # Just use all_s.
-            searchString = all_s
-            i = offset
-            j = min(offset + len(s),len(all_s))
-
-        self.global_i,self.global_j = i,j
-
-        return i,j,offset,restartString,searchString
-    #@-node:ekr.20090209070404.10:initRecolor
+    #@-node:ekr.20090211072718.3:setCurrentState
     #@-node:ekr.20081206062411.12:recolor & helpers
     #@+node:ekr.20081205131308.26:scanColorDirectives
     def scanColorDirectives(self,p):
@@ -7883,6 +7891,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         if j is None: j = i+1
         j = self.toGuiIndex(j)
 
+        # Set a hook for the colorer.
+        colorer.initFlag = True
+
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
@@ -7946,7 +7957,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         w = self.widget
         s = w.toPlainText()
-        return g.app.gui.toUnicode(s)
+        # g.trace(len(s),g.callers(5))
+        return unicode(s)
     #@nonl
     #@-node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
     #@+node:ekr.20081121105001.581:getInsertPoint
@@ -7987,13 +7999,16 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         colorer = c.frame.body.colorizer.highlighter.colorer
         n = colorer.recolorCount
 
+        # Set a hook for the colorer.
+        colorer.initFlag = True
+
         i = self.toGuiIndex(i)
 
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
         cursor.setPosition(i)
-        cursor.insertText(s)
+        cursor.insertText(s) # This cause an incremental call to recolor.
         sb.setSliderPosition(pos)
 
         if trace:
@@ -8011,7 +8026,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         self.widget.ensureCursorVisible()
     #@-node:ekr.20081121105001.586:seeInsertPoint
-    #@+node:ekr.20081121105001.587:setAllText
+    #@+node:ekr.20081121105001.587:setAllText (leoQtTextEditWidget)
     def setAllText(self,s,insert=None):
 
         '''Set the text of the widget.
@@ -8024,6 +8039,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         colorer = c.frame.body.colorizer.highlighter.colorer
         n = colorer.recolorCount
 
+        # Set a hook for the colorer.
+        colorer.initFlag = True
+
         sb = w.verticalScrollBar()
         if insert is None: i,pos = 0,0
         else: i,pos = insert,sb.sliderPosition()
@@ -8034,7 +8052,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         if trace:
             g.trace('%s calls to recolor' % (
                 colorer.recolorCount-n))
-    #@-node:ekr.20081121105001.587:setAllText
+    #@-node:ekr.20081121105001.587:setAllText (leoQtTextEditWidget)
     #@+node:ekr.20081121105001.588:setInsertPoint
     def setInsertPoint(self,i):
 
