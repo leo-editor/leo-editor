@@ -2980,6 +2980,67 @@ class editCommandsClass (baseEditCommandsClass):
 
         g.doHook("bodykey2",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType)
         return 'break'
+    #@+node:ekr.20090213065933.14:doPlainTab
+    def doPlainTab(self,s,i,tab_width,w):
+
+        '''Insert spaces equivalent to one tab.'''
+
+        start,end = g.getLine(s,i)
+        s2 = s[start:i]
+        width = g.computeWidth(s2,tab_width)
+
+        if tab_width > 0:
+            w.insert(i,'\t')
+            ins = i+1
+        else:
+            n = abs(tab_width) - (width % abs(tab_width))
+            w.insert(i,' ' * n)
+            ins = i+n
+
+        w.setSelectionRange(ins,ins,insert=ins)
+    #@-node:ekr.20090213065933.14:doPlainTab
+    #@+node:ekr.20060627091557:flashCharacter
+    def flashCharacter(self,w,i):
+
+        bg      = self.bracketsFlashBg or 'DodgerBlue1'
+        fg      = self.bracketsFlashFg or 'white'
+        flashes = self.bracketsFlashCount or 3
+        delay   = self.bracketsFlashDelay or 75
+
+        w.flashCharacter(i,bg,fg,flashes,delay)
+    #@-node:ekr.20060627091557:flashCharacter
+    #@+node:ekr.20060627083506:flashMatchingBracketsHelper
+    def flashMatchingBracketsHelper (self,w,i,ch):
+
+        d = {}
+        if ch in self.openBracketsList:
+            for z in range(len(self.openBracketsList)):
+                d [self.openBracketsList[z]] = self.closeBracketsList[z]
+            reverse = False # Search forward
+        else:
+            for z in range(len(self.openBracketsList)):
+                d [self.closeBracketsList[z]] = self.openBracketsList[z]
+            reverse = True # Search backward
+
+        delim2 = d.get(ch)
+
+        s = w.getAllText()
+        j = g.skip_matching_python_delims(s,i,ch,delim2,reverse=reverse)
+        if j != -1:
+            self.flashCharacter(w,j)
+    #@-node:ekr.20060627083506:flashMatchingBracketsHelper
+    #@+node:ekr.20060804095512:initBracketMatcher
+    def initBracketMatcher (self,c):
+
+        if len(self.openBracketsList) != len(self.closeBracketsList):
+
+            g.es_print('bad open/close_flash_brackets setting: using defaults')
+            self.openBracketsList  = '([{'
+            self.closeBracketsList = ')]}'
+
+        # g.trace('self.openBrackets',openBrackets)
+        # g.trace('self.closeBrackets',closeBrackets)
+    #@-node:ekr.20060804095512:initBracketMatcher
     #@+node:ekr.20051026171121:insertNewlineHelper
     def insertNewlineHelper (self,w,oldSel,undoType):
 
@@ -3004,78 +3065,6 @@ class editCommandsClass (baseEditCommandsClass):
 
         w.seeInsertPoint()
     #@-node:ekr.20051026171121:insertNewlineHelper
-    #@+node:ekr.20060804095512:initBracketMatcher
-    def initBracketMatcher (self,c):
-
-        if len(self.openBracketsList) != len(self.closeBracketsList):
-
-            g.es_print('bad open/close_flash_brackets setting: using defaults')
-            self.openBracketsList  = '([{'
-            self.closeBracketsList = ')]}'
-
-        # g.trace('self.openBrackets',openBrackets)
-        # g.trace('self.closeBrackets',closeBrackets)
-    #@-node:ekr.20060804095512:initBracketMatcher
-    #@+node:ekr.20060627083506:flashMatchingBracketsHelper
-    def flashMatchingBracketsHelper (self,w,i,ch):
-
-        d = {}
-        if ch in self.openBracketsList:
-            for z in range(len(self.openBracketsList)):
-                d [self.openBracketsList[z]] = self.closeBracketsList[z]
-            reverse = False # Search forward
-        else:
-            for z in range(len(self.openBracketsList)):
-                d [self.closeBracketsList[z]] = self.openBracketsList[z]
-            reverse = True # Search backward
-
-        delim2 = d.get(ch)
-
-        s = w.getAllText()
-        j = g.skip_matching_python_delims(s,i,ch,delim2,reverse=reverse)
-        if j != -1:
-            self.flashCharacter(w,j)
-    #@-node:ekr.20060627083506:flashMatchingBracketsHelper
-    #@+node:ekr.20060627091557:flashCharacter
-    def flashCharacter(self,w,i):
-
-        bg      = self.bracketsFlashBg or 'DodgerBlue1'
-        fg      = self.bracketsFlashFg or 'white'
-        flashes = self.bracketsFlashCount or 3
-        delay   = self.bracketsFlashDelay or 75
-
-        w.flashCharacter(i,bg,fg,flashes,delay)
-    #@-node:ekr.20060627091557:flashCharacter
-    #@+node:ekr.20051027172949:updateAutomatchBracket
-    def updateAutomatchBracket (self,p,w,ch,oldSel):
-
-        # assert ch in ('(',')','[',']','{','}')
-
-        c = self.c ; d = c.scanAllDirectives(p)
-        i,j = oldSel
-        language = d.get('language')
-        s = w.getAllText()
-
-        if ch in ('(','[','{',):
-            automatch = language not in ('plain',)
-            if automatch:
-                ch = ch + {'(':')','[':']','{':'}'}.get(ch)
-            if i != j: w.delete(i,j)
-            w.insert(i,ch)
-            if automatch:
-                ins = w.getInsertPoint()
-                w.setInsertPoint(ins-1)
-        else:
-            ins = w.getInsertPoint()
-            ch2 = ins<len(s) and s[ins] or ''
-            if ch2 in (')',']','}'):
-                ins = w.getInsertPoint()
-                w.setInsertPoint(ins+1)
-            else:
-                if i != j: w.delete(i,j)
-                w.insert(i,ch)
-                w.setInsertPoint(i+1)
-    #@-node:ekr.20051027172949:updateAutomatchBracket
     #@+node:ekr.20051026171121.1:udpateAutoIndent
     def updateAutoIndent (self,p,w):
 
@@ -3114,12 +3103,43 @@ class editCommandsClass (baseEditCommandsClass):
             w.insert(i,ws)
             w.setInsertPoint(i+len(ws))
     #@-node:ekr.20051026171121.1:udpateAutoIndent
+    #@+node:ekr.20051027172949:updateAutomatchBracket
+    def updateAutomatchBracket (self,p,w,ch,oldSel):
+
+        # assert ch in ('(',')','[',']','{','}')
+
+        c = self.c ; d = c.scanAllDirectives(p)
+        i,j = oldSel
+        language = d.get('language')
+        s = w.getAllText()
+
+        if ch in ('(','[','{',):
+            automatch = language not in ('plain',)
+            if automatch:
+                ch = ch + {'(':')','[':']','{':'}'}.get(ch)
+            if i != j: w.delete(i,j)
+            w.insert(i,ch)
+            if automatch:
+                ins = w.getInsertPoint()
+                w.setInsertPoint(ins-1)
+        else:
+            ins = w.getInsertPoint()
+            ch2 = ins<len(s) and s[ins] or ''
+            if ch2 in (')',']','}'):
+                ins = w.getInsertPoint()
+                w.setInsertPoint(ins+1)
+            else:
+                if i != j: w.delete(i,j)
+                w.insert(i,ch)
+                w.setInsertPoint(i+1)
+    #@-node:ekr.20051027172949:updateAutomatchBracket
     #@+node:ekr.20051026092433:updateTab
     def updateTab (self,p,w,smartTab=True):
 
         c = self.c
         d = c.scanAllDirectives(p)
         tab_width = d.get("tabwidth",c.tab_width)
+        g.trace('tab_width',tab_width)
         i,j = w.getSelectionRange()
             # Returns insert point if no selection, with i <= j.
 
@@ -3128,17 +3148,28 @@ class editCommandsClass (baseEditCommandsClass):
 
         # Get the preceeding characters.
         s = w.getAllText()
-        start,j = g.getLine(s,i)
-        s2 = s[start:i] ; s3 = s[j:]
-        if smartTab and c.smart_tab and s3.strip() and not s2.strip():
+        # start = g.skip_to_start_of_line(s,i)
+        start,end = g.getLine(s,i)
+        before = s[start:i]
+        after = s[i:end]
+        if after.endswith('\n'): after = after[:-1]
+        ws = g.get_leading_ws(before)
+        s2 = s[start:i] # The characters before the insert point.
+
+        # Only do smart tab at the start of a blank line.
+        doSmartTab = (smartTab and c.smart_tab and i == start)
+            # Truly at the start of the line.
+            # and not after # Nothing *at all* after the cursor.
+        # g.trace(doSmartTab,'i %s start %s after %s' % (i,start,repr(after)))
+
+        if doSmartTab:
             self.updateAutoIndent(p,w)
+            # Add a tab if otherwise nothing would happen.
+            if s == w.getAllText():
+                self.doPlainTab(s,i,tab_width,w)
         else:
-            # Compute n, the number of spaces to insert.
-            width = g.computeWidth(s2,tab_width)
-            n = abs(tab_width) - (width % abs(tab_width))
-            w.insert(i,' ' * n)
-            ins = i+n
-            w.setSelectionRange(ins,ins,insert=ins)
+            self.doPlainTab(s,i,tab_width,w)
+
     #@-node:ekr.20051026092433:updateTab
     #@-node:ekr.20051125080855:selfInsertCommand, helpers
     #@-node:ekr.20050920084036.85:insert & delete...
