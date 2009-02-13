@@ -963,9 +963,10 @@ def makeEditBodySuite(c,p):
     u = testUtils(c)
     assert c.positionExists(p)
     data_p = u.findNodeInTree(p,"editBodyTests")   
-    assert(data_p)
+    assert data_p,'%s %s' % (p and p.h,g.callers())
     temp_p = u.findNodeInTree(data_p,"tempNode")
-    assert(temp_p)
+    assert temp_p,'not found %s in tree %s %s' % (
+        p and p.h,data_p and data_p.h, g.callers())
 
     # Create the suite and add all test cases.
     suite = unittest.makeSuite(unittest.TestCase)

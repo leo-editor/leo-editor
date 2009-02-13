@@ -2467,7 +2467,6 @@
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
-<v t="ekr.20071113145804.5"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -19082,12 +19081,11 @@ try:
     event = g.Bunch(widget=w,char='\t',keysym=None)
     ec.selfInsertCommand(event)
     result = w.getAllText()
-    print('result %s' % result)
+    # print('result %s' % result)
     assert result.endswith('\n    abcdef'),'result\n%s' % (repr(result))
 finally:
     w.setAllText(s)
     p.setBodyString(s)
-    # g.trace(repr(s))
     c.recolor_now()
 
 ###abcdef</t>

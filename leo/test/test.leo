@@ -11184,7 +11184,9 @@ g.es ('total characters: %s, keywords: %s, leo_keywords: %s' % (
     colorer.totalChars,
     colorer.totalKeywordsCalls,
     colorer.totalLeoKeywordsCalls))</t>
-<t tx="ekr.20090206065021.1">#
+<t tx="ekr.20090206065021.1">@tabwidth -4
+
+#
 
 a = '''ab'''
     # test
@@ -11194,6 +11196,7 @@ b = 'c'
 if 1:
     def a():
         pass
+
 # test</t>
 <t tx="ekr.20090206124759.2">@nocolor-node
 </t>

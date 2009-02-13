@@ -20085,6 +20085,549 @@ leo --script c:\leo.repo\trunk\leo\test\unittest\batchTest.py
 #@nonl
 #@-node:ekr.20080921154026.6:tests
 #@-node:ekr.20080918164844.15:Allow ctrl-o to open non-.leo files
+#@+node:ekr.20090213065933.3:Added support for smart_tab setting
+@nocolor-node
+
+Should only do smart tab if we are at the end if the indentation.
+
+(X)Emacs gets it right:
+
+* The <tab> key means "indent this line as it should be"
+
+ - (done) if you are at the beginning of a blank the line, it puts the cursor at the
+ right indent level, whatever that is.
+
+ - (not done) Unnecessary, and prevents inserting of whitespace.
+ if you are in the middle of the line, it indents that line to where it should
+ be
+
+* (this has always been done)
+if the <backspace> key is pressed in the indentation space, it means: reduce
+the indentation level by one.
+#@+node:ekr.20050920084036.86:insertNewLineAndTab (changed)
+def insertNewLineAndTab (self,event):
+
+    '''Insert a newline and tab at the cursor.'''
+
+    c = self.c ; k = c.k
+    w = self.editWidget(event) ; p = c.p
+    if not w: return
+
+    assert g.app.gui.isTextWidget(w)
+    name = c.widget_name(w)
+    if name.startswith('head'): return
+
+    self.beginCommand(undoType='insert-newline-and-indent')
+
+    # New in Leo 4.5: use the same logic as in selfInsertCommand.
+    oldSel = w.getSelectionRange()
+    self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
+    self.updateTab(p,w,smartTab=False)
+    k.setInputState('insert')
+    k.showStateAndMode()
+
+    self.endCommand(changed=True,setLabel=False)
+#@-node:ekr.20050920084036.86:insertNewLineAndTab (changed)
+#@+node:ekr.20031218072017.2811: c.Birth & death
+#@+node:ekr.20031218072017.2812:c.__init__
+def __init__(self,frame,fileName,relativeFileName=None):
+
+    c = self
+
+    self.requestedFocusWidget = None
+    self.requestRedrawFlag = False
+    self.requestedIconify = '' # 'iconify','deiconify'
+    self.requestRecolorFlag = False
+
+    # print('Commands.__init__')
+    self.exists = True # Indicate that this class exists and has not been destroyed.
+        # Do this early in the startup process so we can call hooks.
+
+    # Init ivars with self.x instead of c.x to keep pylint happy
+    self.chapterController = None
+    self.frame = frame
+
+    self.hiddenRootNode = leoNodes.vnode(context=c)
+    self.hiddenRootNode.setHeadString('<hidden root vnode>')
+    self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
+    self.isZipped = False # May be set to True by g.openWithFileName.
+    self.mFileName = fileName
+        # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
+    self.mRelativeFileName = relativeFileName
+
+    self.initIvars()
+    self.nodeHistory = nodeHistory(c)
+    self.initConfigSettings()
+    c.setWindowPosition() # Do this after initing settings.
+
+    # initialize the sub-commanders.
+    # c.finishCreate creates the sub-commanders for edit commands.
+
+    # Break circular import dependencies by importing here.
+    import leo.core.leoAtFile as leoAtFile
+    import leo.core.leoEditCommands as leoEditCommands
+    import leo.core.leoFileCommands as leoFileCommands
+    import leo.core.leoImport as leoImport
+    import leo.core.leoShadow as leoShadow
+    import leo.core.leoTangle as leoTangle
+    import leo.core.leoUndo as leoUndo
+
+    self.shadowController = leoShadow.shadowController(c)
+    self.fileCommands   = leoFileCommands.fileCommands(c)
+    self.atFileCommands = leoAtFile.atFile(c)
+    self.importCommands = leoImport.leoImportCommands(c)
+    self.tangleCommands = leoTangle.tangleCommands(c)
+    leoEditCommands.createEditCommanders(c)
+
+    if 0:
+        g.pr("\n*** using Null undoer ***\n")
+        self.undoer = leoUndo.nullUndoer(self)
+    else:
+        self.undoer = leoUndo.undoer(self)
+#@-node:ekr.20031218072017.2812:c.__init__
+#@+node:ekr.20031218072017.2814:c.__repr__ & __str__
+def __repr__ (self):
+
+    return "Commander %d: %s" % (id(self),repr(self.mFileName))
+
+__str__ = __repr__
+#@-node:ekr.20031218072017.2814:c.__repr__ & __str__
+#@+node:ekr.20050920093543:c.finishCreate & helper
+def finishCreate (self,initEditCommanders=True):  # New in 4.4.
+
+    '''Finish creating the commander after frame.finishCreate.
+
+    Important: this is the last step in the startup process.'''
+
+    c = self ; p = c.p
+    c.miniBufferWidget = c.frame.miniBufferWidget
+    # print('Commands.finishCreate',c.fileName())
+
+    # Create a keyHandler even if there is no miniBuffer.
+    c.keyHandler = c.k = k = g.app.gui.createKeyHandlerClass(c,
+        useGlobalKillbuffer=True,
+        useGlobalRegisters=True)
+
+    if initEditCommanders:
+        # A 'real' .leo file.
+        import leo.core.leoEditCommands as leoEditCommands
+        c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
+        k.finishCreate()
+    else:
+        # A leoSettings.leo file.
+        c.commandsDict = {}
+
+    c.frame.log.finishCreate()
+    c.bodyWantsFocusNow()
+#@+node:ekr.20051007143620:printCommandsDict
+def printCommandsDict (self):
+
+    c = self
+
+    print('Commands...')
+    for key in sorted(c.commandsDict):
+        command = c.commandsDict.get(key)
+        print('%30s = %s' % (
+            key,g.choose(command,command.__name__,'<None>')))
+    print('')
+#@-node:ekr.20051007143620:printCommandsDict
+#@-node:ekr.20050920093543:c.finishCreate & helper
+#@+node:ekr.20041130173135:c.hash
+def hash (self):
+
+    c = self
+    if c.mFileName:
+        return c.os_path_finalize(c.mFileName).lower()
+    else:
+        return 0
+#@-node:ekr.20041130173135:c.hash
+#@+node:ekr.20081005065934.1:c.initAfterLoad
+def initAfterLoad (self):
+
+    '''Provide an offical hook for late inits of the commander.'''
+
+    pass
+#@nonl
+#@-node:ekr.20081005065934.1:c.initAfterLoad
+#@+node:ekr.20090213065933.6:c.initConfigSettings
+def initConfigSettings (self):
+
+    '''Init all cached commander config settings.'''
+
+    c = self ; cf = c.config
+
+    c.autoindent_in_nocolor = cf.getBool('autoindent_in_nocolor_mode')
+    c.contractVisitedNodes  = cf.getBool('contractVisitedNodes')
+    c.fixed                 = cf.getBool('fixedWindow',False)
+    c.fixedWindowPosition   = cf.getData('fixedWindowPosition')
+    c.showMinibuffer        = cf.getBool('useMinibuffer')
+    c.sparse_goto_parent    = cf.getBool('sparse_goto_parent')
+    c.stayInTree            = cf.getBool('stayInTreeAfterSelect')
+    c.smart_tab             = cf.getBool('smart_tab')
+        # Note: there is also a smart_auto_indent setting.
+    c.tab_width             = cf.getInt('tab_width') or -4
+
+    # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
+
+#@-node:ekr.20090213065933.6:c.initConfigSettings
+#@+node:ekr.20040731071037:c.initIvars
+def initIvars(self):
+
+    c = self
+    << initialize ivars >>
+    self.config = configSettings(c)
+    g.app.config.setIvarsFromSettings(c)
+#@+node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
+self._currentPosition = self.nullPosition()
+self._rootPosition    = self.nullPosition()
+self._topPosition     = self.nullPosition()
+
+# Delayed focus.
+self.doubleClickFlag = False
+self.hasFocusWidget = None
+self.requestedFocusWidget = None
+
+# Official ivars.
+self.gui = g.app.gui
+self.ipythonController = None # Set only by the ipython plugin.
+
+# Interlock to prevent setting c.changed when switching chapters.
+c.suppressHeadChanged = False
+
+# Interlocks to prevent premature closing of a window.
+self.inCommand = False
+self.requestCloseWindow = False
+
+# For emacs/vim key handling.
+self.commandsDict = None
+self.keyHandler = self.k = None
+self.miniBufferWidget = None
+
+# per-document info...
+self.disableCommandsMessage = ''
+    # The presence of this message disables all commands.
+self.hookFunction = None
+self.openDirectory = None
+self.timeStampDict = {} # New in Leo 4.6.
+
+self.expansionLevel = 0  # The expansion level of this outline.
+self.expansionNode = None # The last node we expanded or contracted.
+self.changed = False # True if any data has been changed since the last save.
+self.loading = False # True if we are loading a file: disables c.setChanged()
+self.outlineToNowebDefaultFileName = "noweb.nw" # For Outline To Noweb dialog.
+self.promptingForClose = False # To lock out additional closing dialogs.
+
+# For tangle/untangle
+self.tangle_errors = 0
+
+# Global options
+self.page_width = 132
+self.tab_width = -4
+self.tangle_batch_flag = False
+self.untangle_batch_flag = False
+
+# Default Tangle options
+self.tangle_directory = ""
+self.use_header_flag = False
+self.output_doc_flag = False
+
+# Default Target Language
+self.target_language = "python" # Required if leoConfig.txt does not exist.
+
+# For hoist/dehoist commands.
+self.hoistStack = []
+    # Stack of nodes to be root of drawn tree.
+    # Affects drawing routines and find commands.
+self.recentFiles = [] # List of recent files
+
+# For outline navigation.
+self.navPrefix = '' # Must always be a string.
+self.navTime = None
+#@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
+#@-node:ekr.20040731071037:c.initIvars
+#@+node:ekr.20090213065933.7:c.setWindowPosition
+def setWindowPosition (self):
+
+    c = self
+
+    if c.fixedWindowPosition:
+        try:
+            w,h,l,t = self.fixedWindowPosition
+            c.fixedWindowPosition = int(w),int(h),int(l),int(t)
+        except Exception:
+            g.es_print('bad @data fixedWindowPosition',
+                repr(self.fixedWindowPosition),color='red')
+    else:
+        c.windowPosition = 500,700,50,50 # width,height,left,top.
+#@-node:ekr.20090213065933.7:c.setWindowPosition
+#@-node:ekr.20031218072017.2811: c.Birth & death
+#@+node:ekr.20051125080855:selfInsertCommand, helpers
+def selfInsertCommand(self,event,action='insert'):
+
+    '''Insert a character in the body pane.
+    This is the default binding for all keys in the body pane.'''
+
+    w = self.editWidget(event)
+    if not w: return 'break'
+
+    trace = True
+    << set local vars >>
+    if trace: g.trace('ch',repr(ch))
+    if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
+        return "break" # The hook claims to have handled the event.
+    if ch == '\t':
+        self.updateTab(p,w)
+    elif ch == '\b':
+        # This is correct: we only come here if there no bindngs for this key. 
+        self.backwardDeleteCharacter(event)
+    elif ch in ('\r','\n'):
+        ch = '\n'
+        self.insertNewlineHelper(w,oldSel,undoType)
+    elif inBrackets and self.autocompleteBrackets:
+        self.updateAutomatchBracket(p,w,ch,oldSel)
+    elif ch: # Null chars must not delete the selection.
+        i,j = oldSel
+        if i > j: i,j = j,i
+        # Use raw insert/delete to retain the coloring.
+        if i != j:                  w.delete(i,j)
+        elif action == 'overwrite': w.delete(i)
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+        if inBrackets and self.flashMatchingBrackets:
+
+            self.flashMatchingBracketsHelper(w,i,ch)               
+    else:
+        return 'break' # This method *always* returns 'break'
+
+    # Set the column for up and down keys.
+    spot = w.getInsertPoint()
+    c.editCommands.setMoveCol(w,spot)
+
+    # Update the text and handle undo.
+    newText = w.getAllText()
+    changed = newText != oldText
+    if trace:
+        g.trace('ch',repr(ch),'changed',changed,'newText',repr(newText[-10:]))
+    if changed:
+        # g.trace('ins',w.getInsertPoint())
+        c.frame.body.onBodyChanged(undoType=undoType,
+            oldSel=oldSel,oldText=oldText,oldYview=None)
+
+    g.doHook("bodykey2",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType)
+    return 'break'
+#@+node:ekr.20061103114242:<< set local vars >>
+c = self.c
+p = c.p
+gui = g.app.gui
+ch = gui.eventChar(event)
+keysym = gui.eventKeysym(event)
+if keysym == 'Return':
+    ch = '\n' # This fixes the MacOS return bug.
+if keysym == 'Tab': # Support for wx_alt_gui plugin.
+    ch = '\t'
+name = c.widget_name(w)
+oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
+oldText = name.startswith('body') and p.b or ''
+undoType = 'Typing'
+trace = c.config.getBool('trace_masterCommand')
+brackets = self.openBracketsList + self.closeBracketsList
+inBrackets = ch and g.toUnicode(ch,g.app.tkEncoding) in brackets
+if trace: g.trace(name,repr(ch),ch and ch in brackets)
+#@nonl
+#@-node:ekr.20061103114242:<< set local vars >>
+#@+node:ekr.20090213065933.14:doPlainTab
+def doPlainTab(self,s,i,tab_width,w):
+
+    '''Insert spaces equivalent to one tab.'''
+
+    start,end = g.getLine(s,i)
+    s2 = s[start:i]
+    width = g.computeWidth(s2,tab_width)
+
+    if tab_width > 0:
+        w.insert(i,'\t')
+        ins = i+1
+    else:
+        n = abs(tab_width) - (width % abs(tab_width))
+        w.insert(i,' ' * n)
+        ins = i+n
+
+    w.setSelectionRange(ins,ins,insert=ins)
+#@-node:ekr.20090213065933.14:doPlainTab
+#@+node:ekr.20060627091557:flashCharacter
+def flashCharacter(self,w,i):
+
+    bg      = self.bracketsFlashBg or 'DodgerBlue1'
+    fg      = self.bracketsFlashFg or 'white'
+    flashes = self.bracketsFlashCount or 3
+    delay   = self.bracketsFlashDelay or 75
+
+    w.flashCharacter(i,bg,fg,flashes,delay)
+#@-node:ekr.20060627091557:flashCharacter
+#@+node:ekr.20060627083506:flashMatchingBracketsHelper
+def flashMatchingBracketsHelper (self,w,i,ch):
+
+    d = {}
+    if ch in self.openBracketsList:
+        for z in range(len(self.openBracketsList)):
+            d [self.openBracketsList[z]] = self.closeBracketsList[z]
+        reverse = False # Search forward
+    else:
+        for z in range(len(self.openBracketsList)):
+            d [self.closeBracketsList[z]] = self.openBracketsList[z]
+        reverse = True # Search backward
+
+    delim2 = d.get(ch)
+
+    s = w.getAllText()
+    j = g.skip_matching_python_delims(s,i,ch,delim2,reverse=reverse)
+    if j != -1:
+        self.flashCharacter(w,j)
+#@-node:ekr.20060627083506:flashMatchingBracketsHelper
+#@+node:ekr.20060804095512:initBracketMatcher
+def initBracketMatcher (self,c):
+
+    if len(self.openBracketsList) != len(self.closeBracketsList):
+
+        g.es_print('bad open/close_flash_brackets setting: using defaults')
+        self.openBracketsList  = '([{'
+        self.closeBracketsList = ')]}'
+
+    # g.trace('self.openBrackets',openBrackets)
+    # g.trace('self.closeBrackets',closeBrackets)
+#@-node:ekr.20060804095512:initBracketMatcher
+#@+node:ekr.20051026171121:insertNewlineHelper
+def insertNewlineHelper (self,w,oldSel,undoType):
+
+    c = self.c ; p = c.p
+    i,j = oldSel ; ch = '\n'
+
+    if i != j:
+        # No auto-indent if there is selected text.
+        w.delete(i,j)
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+    else:
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+
+        if (c.autoindent_in_nocolor or 
+            (c.frame.body.colorizer.useSyntaxColoring(p) and
+            undoType != "Change")
+        ):
+            # No auto-indent if in @nocolor mode or after a Change command.
+            self.updateAutoIndent(p,w)
+
+    w.seeInsertPoint()
+#@-node:ekr.20051026171121:insertNewlineHelper
+#@+node:ekr.20051026171121.1:udpateAutoIndent
+def updateAutoIndent (self,p,w):
+
+    c = self.c ; d = c.scanAllDirectives(p)
+    tab_width = d.get("tabwidth",c.tab_width)
+    # Get the previous line.
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i = g.skip_to_start_of_line(s,ins)
+    i,j = g.getLine(s,i-1)
+    s = s[i:j-1]
+    # g.trace(i,j,repr(s))
+
+    # Add the leading whitespace to the present line.
+    junk, width = g.skip_leading_ws_with_indent(s,0,tab_width)
+    # g.trace('width',width,'tab_width',tab_width)
+
+    if s and s [-1] == ':':
+        # For Python: increase auto-indent after colons.
+        if g.scanColorDirectives(c,p) == 'python':
+            width += abs(tab_width)
+    if self.smartAutoIndent:
+        # Determine if prev line has unclosed parens/brackets/braces
+        bracketWidths = [width] ; tabex = 0
+        for i in range(0,len(s)):
+            if s [i] == '\t':
+                tabex += tab_width-1
+            if s [i] in '([{':
+                bracketWidths.append(i+tabex+1)
+            elif s [i] in '}])' and len(bracketWidths) > 1:
+                bracketWidths.pop()
+        width = bracketWidths.pop()
+    ws = g.computeLeadingWhitespace(width,tab_width)
+    if ws:
+        i = w.getInsertPoint()
+        w.insert(i,ws)
+        w.setInsertPoint(i+len(ws))
+#@-node:ekr.20051026171121.1:udpateAutoIndent
+#@+node:ekr.20051027172949:updateAutomatchBracket
+def updateAutomatchBracket (self,p,w,ch,oldSel):
+
+    # assert ch in ('(',')','[',']','{','}')
+
+    c = self.c ; d = c.scanAllDirectives(p)
+    i,j = oldSel
+    language = d.get('language')
+    s = w.getAllText()
+
+    if ch in ('(','[','{',):
+        automatch = language not in ('plain',)
+        if automatch:
+            ch = ch + {'(':')','[':']','{':'}'}.get(ch)
+        if i != j: w.delete(i,j)
+        w.insert(i,ch)
+        if automatch:
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins-1)
+    else:
+        ins = w.getInsertPoint()
+        ch2 = ins<len(s) and s[ins] or ''
+        if ch2 in (')',']','}'):
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins+1)
+        else:
+            if i != j: w.delete(i,j)
+            w.insert(i,ch)
+            w.setInsertPoint(i+1)
+#@-node:ekr.20051027172949:updateAutomatchBracket
+#@+node:ekr.20051026092433:updateTab
+def updateTab (self,p,w,smartTab=True):
+
+    c = self.c
+    d = c.scanAllDirectives(p)
+    tab_width = d.get("tabwidth",c.tab_width)
+    g.trace('tab_width',tab_width)
+    i,j = w.getSelectionRange()
+        # Returns insert point if no selection, with i <= j.
+
+    if i != j:
+        w.delete(i,j)
+
+    # Get the preceeding characters.
+    s = w.getAllText()
+    # start = g.skip_to_start_of_line(s,i)
+    start,end = g.getLine(s,i)
+    before = s[start:i]
+    after = s[i:end]
+    if after.endswith('\n'): after = after[:-1]
+    ws = g.get_leading_ws(before)
+    s2 = s[start:i] # The characters before the insert point.
+
+    # Only do smart tab at the start of a blank line.
+    doSmartTab = (smartTab and c.smart_tab and i == start)
+        # Truly at the start of the line.
+        # and not after # Nothing *at all* after the cursor.
+    # g.trace(doSmartTab,'i %s start %s after %s' % (i,start,repr(after)))
+
+    if doSmartTab:
+        self.updateAutoIndent(p,w)
+        # Add a tab if otherwise nothing would happen.
+        if s == w.getAllText():
+            self.doPlainTab(s,i,tab_width,w)
+    else:
+        self.doPlainTab(s,i,tab_width,w)
+
+#@-node:ekr.20051026092433:updateTab
+#@-node:ekr.20051125080855:selfInsertCommand, helpers
+#@-node:ekr.20090213065933.3:Added support for smart_tab setting
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080930072519.8:New options
 #@+node:ekr.20080910054558.2:Added -c option to specify config files
