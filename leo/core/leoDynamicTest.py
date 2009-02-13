@@ -27,7 +27,7 @@ def main ():
     # gui,silent = scanOptions()
     # print 'leoDynamicTest.py.main: gui: %s, silent: %s' % (gui,silent)
 
-    gui = 'nullGui' #### hack.
+    gui = 'nullGui' # hack.
 
     bridge = leoBridge.controller(gui=gui,verbose=False)
     if bridge.isOpen():

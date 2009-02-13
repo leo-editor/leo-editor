@@ -7491,7 +7491,6 @@ class searchCommandsClass (baseEditCommandsClass):
         self.inited = False
 
         # For isearch commands.
-        #### self.ifinder = leoFind.leoFind(c,title='ifinder')
         self.ifinder = None
         self.stack = [] # Entries are (p,sel)
         self.ignoreCase = None

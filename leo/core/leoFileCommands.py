@@ -1702,8 +1702,8 @@ class baseFileCommands:
         ua = hasattr(t,'unknownAttributes') and self.putUnknownAttributes(t) or ''
         b = t.b
         if b:
-            #### Convert to encoded string ????
-            #### b = g.toEncodedString(b,self.leo_file_encoding,reportErrors=True)
+            # Convert to encoded string ????
+            # b = g.toEncodedString(b,self.leo_file_encoding,reportErrors=True)
             body = xml.sax.saxutils.escape(b)
         else:
             body = ''

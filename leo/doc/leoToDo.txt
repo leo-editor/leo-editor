@@ -11,62 +11,500 @@
 #@-node:ekr.20080323093939.3:Update Leo's intro pages
 #@+node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20090131200406.9:Bugs
-#@+node:ekr.20090210093316.2:New bugs
-#@+node:ekr.20090210122758.5:Urgent: Fix Bill Baxters confusions
+#@+node:ekr.20090213065933.1:3-day bugs
+#@+node:ekr.20090213065933.3:Add Emacs-like indentation
 @nocolor-node
 
-** Document how to open a wrapper .leo file.
+(X)Emacs gets it right:
 
-** Improve Leo's tutorials
+* The <tab> key means "indent this line as it should be"
 
+ - if you are at the beginning of a blank the line, it puts the cursor at the
+ right indent level, whatever that is.
 
-On Tue, Feb 10, 2009 at 3:33 PM, Bill Baxter <wbaxter@gmail.com> wrote:
+ - if you are in the middle of the line, it indents that line to where it should
+ be
 
+* if the <backspace> key is pressed in the indentation space, it means: reduce
+the indentation level by one.
 
-    All these answers are encouraging.  I think the issue I have now might
-    be like the one the poster below suggests.  You have various tutorials
-    about the many advanced and unique features of Leo, but do you have a
-    basic tutorial anywhere explaining how you just open edit a file?
+Whether an indentation level is a tab or n spaces should be set-able depending
+on the type of file and/or personal preference.
 
-Good point.  Improving Leo's tutorial is becoming urgent.
+There is one trick for Python: there are often multiple indentation levels that
+are "right", depending on what the programmer wants:
 
-I'd like to rewrite all of Leo's introductory docs using a "story-based"
-approach inspired by the book "Ideas that stick". Using Leo to "just open and
-edit a file" would be one of the very first stories.
+if something:
+   some code
+   if SomethingElse:
+       some more code
 
-    > From a theoretical point of view, Leo's dom is the essential difference between Leo and any other editor.
+so, what is the "right" indentation level for the next line? Peppy, and I'm pretty sure emacs, would put it two levels in. If you don't want that, you hit <backspace> once or twice as need be.
 
-    Ok, but it should degrade gracefully to a 1-node dom being equivalent
-    to "plain old text file", right?  I think making this kind of thing
-    work transparently is pretty important to getting newbies to not
-    uninstall Leo the minute they find they can't open a text file.  There
-    are dozens of editors out there that are happy to open a text file
-    with Ctrl-O and let you edit it.  Leo seems to require something else
-    non-obvious for this simple task, so it makes the road unnecessarily
-    bumpy.
-
-
-Thanks for this comment. Until you made it, I had a blind spot regarding this.
-
-There is actually a way to get Leo to open a plain file in a wrapper .leo file,
-but I don't remember what it is and there is no way a newbie is going to stumble
-upon it.
-
-This is more than a mere doc bug. As you say, ctrl-o on a plain file should
-work.
-
-So we have a good collaboration going already. You've highlighted several things
-that will confuse newbies.
-
-    I think if you can soften the transition a bit from regular editor to
-    the leo way, you can probably convince a few more people.
-
-
-I agree completely.  I'll see what I can do in the next three days...
+I find this method works very well, and I'm amazed by how much I miss it when I use any other editor.
+#@-node:ekr.20090213065933.3:Add Emacs-like indentation
+#@+node:ekr.20090213065933.2:Get isearch working for tkinter
+#@-node:ekr.20090213065933.2:Get isearch working for tkinter
+#@+node:ekr.20090212054250.8:Start an "experimental doc" section on Leo's wiki
+Urgent: create a better tutorial.
 #@nonl
-#@-node:ekr.20090210122758.5:Urgent: Fix Bill Baxters confusions
-#@+node:ekr.20090210093316.6:** Also look at the qt bugs list!
-#@-node:ekr.20090210093316.6:** Also look at the qt bugs list!
+#@-node:ekr.20090212054250.8:Start an "experimental doc" section on Leo's wiki
+#@+node:ekr.20090212054250.2:Don't call recolor if hasattr fails
+#@-node:ekr.20090212054250.2:Don't call recolor if hasattr fails
+#@+node:ekr.20090212054250.3:Handle @killcolor/@nocolor properly
+#@+node:ekr.20080514131122.12:c.recolor & requestRecolor
+def requestRecolor (self):
+
+    c = self
+    # g.trace(g.callers(4))
+    c.requestRecolorFlag = True
+
+recolor = requestRecolor
+#@-node:ekr.20080514131122.12:c.recolor & requestRecolor
+#@+node:ekr.20080514131122.20:c.outerUpdate
+def outerUpdate (self):
+
+    trace = False and g.unitTesting
+    verbose = True
+    c = self ; aList = []
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    c.requestRedrawFlag = False
+
+    # The iconify requests are made only by c.bringToFront.
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw')
+        c.frame.tree.redraw_now(forceDraw=True)
+
+    if c.requestRecolorFlag:
+        if verbose: aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        # This should be the only call to c.recolor_now.
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+        # c.frame.body.colorizer.colorize(c.p,
+            # incremental=c.incrementalRecolorFlag,interruptable=True)
+
+    if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
+        if verbose: aList.append('focus: %s' % (
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
+    else:
+        # We can not set the focus to the body pane:
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and aList:
+        g.trace(', '.join(aList),c.shortFileName() or '<no name>',g.callers())
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+
+    # g.trace('after')
+#@-node:ekr.20080514131122.20:c.outerUpdate
+#@+node:ekr.20080514131122.13:c.recolor_now
+def recolor_now(self,p=None,incremental=False,interruptable=True):
+
+    c = self
+    if p is None:
+        p = c.p
+
+    # g.trace('incremental',incremental,p and p.h,g.callers(4))
+
+    c.frame.body.colorizer.colorize(p,
+        incremental=incremental,interruptable=interruptable)
+#@-node:ekr.20080514131122.13:c.recolor_now
+#@+node:ekr.20031218072017.2052:g.openWithFileName
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
+
+    """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    if not fileName or len(fileName) == 0:
+        return False, None
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    # Create a full, normalized, Unicode path name, preserving case.
+    relativeFileName = g.os_path_normpath(fileName)
+    fileName = g.os_path_finalize(fileName)
+    isZipped = fileName and zipfile.is_zipfile(fileName)
+    isLeo = isZipped or fileName.endswith('.leo')
+    # g.trace(relativeFileName,'-->',fileName)
+
+    # If the file is already open just bring its window to the front.
+    if isLeo:
+        theList = app.windowList
+        for frame in theList:
+            if munge(fileName) == munge(frame.c.mFileName):
+                frame.bringToFront()
+                frame.c.setLog()
+                frame.c.outerUpdate()
+                return True, frame
+        if old_c:
+            # New in 4.4: We must read the file *twice*.
+            # The first time sets settings for the later call to c.finishCreate.
+            # g.trace('***** prereading',fileName)
+            c2 = g.app.config.openSettingsFile(fileName)
+            if c2: g.app.config.updateSettings(c2,localFlag=True)
+            g.doHook('open0')
+
+        # Open the file in binary mode to allow 0x1a in bodies & headlines.
+        theFile,isZipped = g.openLeoOrZipFile(fileName)
+        if not theFile: return False, None
+        c,frame = app.newLeoCommanderAndFrame(
+            fileName=fileName,
+            relativeFileName=relativeFileName,
+            gui=gui)
+    else:
+        c,frame = g.openWrapperLeoFile(old_c,fileName,gui)
+        if not c: return False,None
+
+    assert frame.c == c and c.frame == frame
+    c.isZipped = isZipped
+    frame.log.enable(enableLog)
+    g.app.writeWaitingLog() # New in 4.3: write queued log first.
+    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+        c.setLog()
+        if isLeo:
+            app.lockLog()
+            ok = frame.c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            if not ok:
+                g.app.closeLeoWindow(frame)
+                return False,frame
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+    # Bug fix in 4.4.
+    frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
+    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+    p = c.p
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    if not g.doHook("menu1",c=c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(relativeFileName or fileName)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
+    # New in Leo 4.6: provide an official way for very late initialization.
+    c.frame.tree.initAfterLoad()
+    c.initAfterLoad()
+    c.redraw()
+    assert frame.c == c and c.frame == frame
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    # g.trace('c.chapterController',c.chapterController)
+    if c.chapterController:
+        c.chapterController.finishCreate()
+    k = c.k
+    if k:
+        k.setDefaultInputState()
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    if k:
+        k.showStateAndMode()
+
+    c.frame.initCompleteHint()
+
+    return True, frame
+#@-node:ekr.20031218072017.2052:g.openWithFileName
+#@+node:ekr.20070325104904:cc.finishCreate
+def finishCreate (self):
+
+    '''Find or make the @chapters and @chapter trash nodes.'''
+
+    # This must be called late in the init process:
+    # at present, called by g.openWithFileName and c.new.
+
+    cc = self ; c = cc.c
+
+    # Create the @chapters node if needed, and set cc.chaptersNode.
+    if not cc.chaptersNode and not cc.findChaptersNode():
+        cc.createChaptersNode()
+
+    # Create the main chapter
+    cc.chaptersDict['main'] = chapter(c=c,chapterController=cc,name='main',root=c.rootPosition())
+
+    tag = '@chapter'
+    for p in c.all_positions_with_unique_tnodes_iter():
+        h = p.h
+        if h.startswith(tag) and not h.startswith('@chapters'):
+            tabName = h[len(tag):].strip()
+            if tabName and tabName not in ('main',):
+                if cc.chaptersDict.get(tabName):
+                    self.error('duplicate chapter name: %s' % tabName)
+                else:
+                    cc.chaptersDict[tabName] = chapter(c=c,chapterController=cc,name=tabName,root=p)
+
+    p = c.p
+    if c.positionExists(p):
+        name = cc.findChapterNameForPosition(p) or 'main'
+        # g.trace('chapterController',name,c.p)
+        cc.selectChapterByName(name)
+    else:
+        cc.selectChapterByName('main')
+#@-node:ekr.20070325104904:cc.finishCreate
+#@+node:ekr.20070317130250:cc.selectChapterByName
+def selectChapterByName (self,name):
+
+    cc = self ; c = cc.c ; chapter = cc.chaptersDict.get(name)
+
+    if chapter:
+        if chapter != cc.selectedChapter:
+            if cc.selectedChapter:
+                cc.selectedChapter.unselect()
+            chapter.select()
+            c.setCurrentPosition(chapter.p)
+            cc.selectedChapter = chapter
+    else:
+        cc.error('cc.selectChapter: no such chapter: %s' % name)
+#@-node:ekr.20070317130250:cc.selectChapterByName
+#@+node:ekr.20070423102603.1:chapterSelectHelper
+def chapterSelectHelper (self,w=None,selectEditor=True):
+
+    c = self.c ; cc = self.cc ; name = self.name
+
+    # g.trace(name,'self.p',self.p) # ,'self.root',self.root) # 'w.leo_p',w and w.leo_p)
+
+    cc.selectedChapter = self
+
+    # Next, recompute p and possibly select a new editor.
+    if w:
+        assert w == c.frame.body.bodyCtrl
+        assert w.leo_p
+        # g.trace(name,'w.leo_p',w.leo_p,'p',p)
+        self.p = p = self.findPositionInChapter(w.leo_p)
+        if p != w.leo_p: g.trace('****** can not happen: lost p',w.leo_p)
+    else:
+        # This must be done *after* switching roots.
+        target_p = self.p or self.root.firstChild() or self.root
+        #g.trace(name,'target_p',target_p)
+        #g.trace(name,'self.p',self.p,'self.root',self.root)
+        self.p = p = self.findPositionInChapter(target_p)
+        if selectEditor:
+            w = self.findEditorInChapter(p)
+            c.frame.body.selectEditor(w) # Switches text.
+
+    if name == 'main' and cc.chaptersNode:
+        cc.chaptersNode.contract()    
+    c.hoistStack = self.hoistStack[:]
+
+    c.redraw_after_select(p)
+    g.doHook('hoist-changed',c=c)
+    c.bodyWantsFocusNow()
+#@nonl
+#@-node:ekr.20070423102603.1:chapterSelectHelper
+#@+node:ekr.20090110073010.4:c.redraw_after_select
+def redraw_after_select(self,p,setFocus=False):
+
+    '''Redraw the screen after node p has been selected.
+
+    The intention is for the gui to just select the node
+    if it is visible, and to completely redraw the screen otherwise.'''
+
+    c = self
+
+    c.expandAllAncestors(p)
+    c.selectPosition(p)
+        # Required to update body pane.
+        # Will call tree.before/afterSelect hint.
+
+    # This will be redundant if tree.before/afterSelectHint are functional,
+    # but this redundancy does not hurt.
+
+    # This causes double recoloring.
+    # c.frame.tree.redraw_after_select(p)
+
+    if setFocus: c.treeFocusHelper()
+#@-node:ekr.20090110073010.4:c.redraw_after_select
+#@+node:ekr.20031218072017.2997:c.selectPosition
+def selectPosition(self,p):
+
+    """Select a new position."""
+
+    c = self ; cc = c.chapterController
+
+    if cc:
+        cc.selectChapterForPosition(p)
+
+    # g.trace(p.h,g.callers())
+
+    c.expandAllAncestors(p)
+    c.frame.tree.select(p)
+
+    # New in Leo 4.4.2.
+    c.setCurrentPosition(p)
+        # Do *not* test whether the position exists!
+        # We may be in the midst of an undo.
+
+selectVnode = selectPosition
+#@-node:ekr.20031218072017.2997:c.selectPosition
+#@+node:ekr.20040803072955.128:leoTree.select & helpers
+tree_select_lockout = False
+
+def select (self,p,scroll=True):
+
+    '''Select a node.
+    Never redraws outline, but may change coloring of individual headlines.
+    The scroll argument is used by tk to suppress scrolling while dragging.'''
+
+    if g.app.killed or self.tree_select_lockout: return None
+
+    try:
+        c = self.c ; old_p = c.p
+        val = 'break'
+        self.tree_select_lockout = True
+        c.frame.tree.beforeSelectHint(p,old_p)
+        val = self.selectHelper(p,scroll=scroll)
+    finally:
+        self.tree_select_lockout = False
+        c.frame.tree.afterSelectHint(p,old_p)
+
+    return val  # Don't put a return in a finally clause.
+#@+node:ekr.20070423101911:treeSelectHelper
+#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+
+def selectHelper (self,p,scroll):
+
+    trace = False ; verbose = False
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.p
+
+    if not p:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    if trace:
+        if verbose: g.trace(
+            '\nold:',old_p and old_p.h,'\nnew:',p and p.h)
+        else: g.trace(p and p.h)
+
+    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        if old_p:
+            << unselect the old node >>
+
+    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        << select the new node >>
+        if p and p != old_p: # Suppress duplicate call.
+            try: # may fail during initialization.
+                # p is NOT c.p here!
+                if 0: # Interferes with new colorizer.
+                    self.canvas.update_idletasks()
+                    self.scrollTo(p)
+                if scroll and g.app.gui.guiName() == 'tkinter':
+                    def scrollCallback(self=self,p=p):
+                        self.scrollTo(p)
+                    self.canvas.after(100,scrollCallback)
+            except Exception: pass
+        c.nodeHistory.update(p) # Remember this position.
+    c.setCurrentPosition(p)
+    << set the current node >>
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    return 'break' # Supresses unwanted selection.
+#@+node:ekr.20040803072955.129:<< unselect the old node >>
+# Remember the position of the scrollbar before making any changes.
+if body:
+    yview = body.getYScrollPosition()
+    insertSpot = c.frame.body.getInsertPoint()
+else:
+    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+    yview,insertSpot = None,0
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+
+if old_p:
+    old_p.v.t.scrollBarSpot = yview
+    old_p.v.t.insertSpot = insertSpot
+#@-node:ekr.20040803072955.129:<< unselect the old node >>
+#@+node:ekr.20040803072955.130:<< select the new node >>
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.h
+frame.setWrap(p)
+self.setBodyTextAfterSelect(p,old_p)
+#@nonl
+#@-node:ekr.20040803072955.130:<< select the new node >>
+#@+node:ekr.20040803072955.133:<< set the current node >>
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+if self.use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
+
+if self.stayInTree:
+    c.treeWantsFocus()
+else:
+    c.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20040803072955.133:<< set the current node >>
+#@-node:ekr.20070423101911:treeSelectHelper
+#@+node:ekr.20090206153445.1:setBodyTextAfterSelect
+def setBodyTextAfterSelect (self,p,old_p):
+
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = g.toUnicode(p.v.t._bodyString,"utf-8")
+    old_s = w.getAllText()
+
+    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        pass
+    else:
+        # This destroys all color tags, so do a full recolor.
+        w.setAllText(s)
+        self.frame.body.recolor(p)
+
+    if p.v and p.v.t.scrollBarSpot != None:
+        first,last = p.v.t.scrollBarSpot
+        w.setYScrollPosition(first)
+
+    if p.v and p.v.t.insertSpot != None:
+        spot = p.v.t.insertSpot
+        w.setInsertPoint(spot)
+        w.see(spot)
+    else:
+        w.setInsertPoint(0)
+#@nonl
+#@-node:ekr.20090206153445.1:setBodyTextAfterSelect
+#@-node:ekr.20040803072955.128:leoTree.select & helpers
+#@-node:ekr.20090212054250.3:Handle @killcolor/@nocolor properly
 #@+node:ekr.20090210093316.3:Fix bug: @chapter problem with qt plugin
 @nocolor-node
 
@@ -92,6 +530,10 @@ Vitalije
 http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
 #@nonl
 #@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
+#@-node:ekr.20090213065933.1:3-day bugs
+#@+node:ekr.20090103054019.1:First
+#@+node:ekr.20090210093316.6:** Also look at the qt bugs list!
+#@-node:ekr.20090210093316.6:** Also look at the qt bugs list!
 #@+node:ekr.20090210093316.5:Swap scrollbars when orientation changes
 @nocolor-node
 
@@ -101,13 +543,6 @@ if you swap the orientation of the panes, the tree pane doesn't allow scrolling
 left/right as the Tk window does.
 #@nonl
 #@-node:ekr.20090210093316.5:Swap scrollbars when orientation changes
-#@-node:ekr.20090210093316.2:New bugs
-#@+node:ekr.20090103054019.1:First
-#@+node:ekr.20090204083025.1:Cleanup
-Remove all ####
-Remove redraw arg from treeSelectHelper.
-#@nonl
-#@-node:ekr.20090204083025.1:Cleanup
 #@+node:ekr.20090202064534.1:Remove bad archived position message?
 bad archived position: bad index="3", len(children)="1"
 restoreDescendentAttributes: can not find vnode (duA):
@@ -1707,8 +2142,8 @@ def putTnode (self,t):
     ua = hasattr(t,'unknownAttributes') and self.putUnknownAttributes(t) or ''
     b = t.b
     if b:
-        #### Convert to encoded string ????
-        #### b = g.toEncodedString(b,self.leo_file_encoding,reportErrors=True)
+        # Convert to encoded string ????
+        # b = g.toEncodedString(b,self.leo_file_encoding,reportErrors=True)
         body = xml.sax.saxutils.escape(b)
     else:
         body = ''

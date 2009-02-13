@@ -2695,7 +2695,7 @@ class leoTree:
             val = 'break'
             self.tree_select_lockout = True
             c.frame.tree.beforeSelectHint(p,old_p)
-            val = self.treeSelectHelper(p,scroll=scroll)
+            val = self.selectHelper(p,scroll=scroll)
         finally:
             self.tree_select_lockout = False
             c.frame.tree.afterSelectHint(p,old_p)
@@ -2704,7 +2704,7 @@ class leoTree:
     #@+node:ekr.20070423101911:treeSelectHelper
     #  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
 
-    def treeSelectHelper (self,p,scroll):
+    def selectHelper (self,p,scroll):
 
         trace = False ; verbose = False
         c = self.c ; frame = c.frame

@@ -5542,8 +5542,7 @@ class baseCommands (object):
         if not c.canSelectVisBack(): return
 
         p.moveToVisBack(c)
-        #### c.redraw_after_select(p)
-        c.treeSelectHelper(p,redraw=False)
+        c.treeSelectHelper(p)
     #@-node:ekr.20031218072017.2995:selectVisBack
     #@+node:ekr.20031218072017.2996:selectVisNext
     def selectVisNext (self,event=None):
@@ -5554,11 +5553,8 @@ class baseCommands (object):
         if not p: return
         if not c.canSelectVisNext(): return
 
-        # g.trace(p.h)
-
         p.moveToVisNext(c)
-        #### c.redraw_after_select(p)
-        c.treeSelectHelper(p,redraw=False)
+        c.treeSelectHelper(p)
     #@-node:ekr.20031218072017.2996:selectVisNext
     #@+node:ekr.20070417112650:utils
     #@+node:ekr.20070226121510: treeFocusHelper
@@ -5573,17 +5569,15 @@ class baseCommands (object):
     #@nonl
     #@-node:ekr.20070226121510: treeFocusHelper
     #@+node:ekr.20070226113916: treeSelectHelper
-    def treeSelectHelper (self,p,redraw=False): #### No longer used.  To be removed.
+    def treeSelectHelper (self,p):
 
-        c = self ; current = c.p
+        c = self
 
-        # g.trace(p and p.h,g.callers(4))
-
-        if not p: p = current
+        if not p: p = c.p
 
         if p:
             flag = c.expandAllAncestors(p)
-            if flag: #### redraw or flag or p != current:
+            if flag:
                 c.redraw(p)
             else:
                 c.selectPosition(p)
@@ -6247,7 +6241,6 @@ class baseCommands (object):
             if verbose: aList.append('%srecolor' % (
                 g.choose(c.incrementalRecolorFlag,'','full ')))
             # This should be the only call to c.recolor_now.
-            #### Replace this with a direct call.
             c.recolor_now(incremental=c.incrementalRecolorFlag)
             # c.frame.body.colorizer.colorize(c.p,
                 # incremental=c.incrementalRecolorFlag,interruptable=True)
@@ -6288,10 +6281,6 @@ class baseCommands (object):
         '''Redraw the screen immediately.'''
 
         c = self
-
-        # It's possible to do this now that c.redrawAndEdit exists.
-        # However, it is a major change...
-        #### c.endEditing()
 
         if p:
             # Update body pane and set c._currentPosition.
@@ -6376,8 +6365,8 @@ class baseCommands (object):
         # This will be redundant if tree.before/afterSelectHint are functional,
         # but this redundancy does not hurt.
 
-        #### This *does* hurt: it causes double recoloring.
-        #### c.frame.tree.redraw_after_select(p)
+        # This causes double recoloring.
+        # c.frame.tree.redraw_after_select(p)
 
         if setFocus: c.treeFocusHelper()
     #@-node:ekr.20090110073010.4:c.redraw_after_select
