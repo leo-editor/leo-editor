@@ -6730,25 +6730,25 @@ class jEditColorizer:
         all_s = self.all_s
         if not all_s: return
 
-        len_s = len(s)
+        # Update the counts.
         self.recolorCount += 1
-        self.totalChars += len_s
+        self.totalChars += len(s)
+
+        # Init values that do not depend on all_s.
+        offset = self.highlighter.currentBlock().position()
         b = self.getPrevState()
         lastFunc,lastMatch = b.lastFunc,b.lastMatch
         lastN,minimalMatch = 0,'' # Not used until there is a match.
-        offset = self.highlighter.currentBlock().position()
-        # Calculate the bounds of the scan.
         i = g.choose(lastFunc,lastMatch,offset)
-        j = offset + len_s
-        j = min(j,len(all_s))
-        self.global_i,self.global_j = offset,j
 
-        # An important check.
-        s2 = all_s[offset:j]
-        if s2 != s:
-            g.trace('**** mismatch! offset %s len %s %s\n%s\n%s' % (
-                offset,len(all_s),g.callers(5),repr(s),repr(s2)))
+        # Make sure 
+        if not self.checkRecolor(offset,s):
             return
+
+        # Set the values that depend on all_s.
+        all_s = self.all_s
+        j = min(offset + len(s),len(all_s))
+        self.global_i,self.global_j = offset,j
 
         if trace:g.trace(s)
 
@@ -6780,6 +6780,33 @@ class jEditColorizer:
 
         self.setCurrentState(s,offset,len(s)+1,
             lastFunc,lastMatch,lastN,minimalMatch)
+    #@+node:ekr.20090213102946.10:checkRecolor
+    def checkRecolor (self,offset,s):
+
+        '''Return True if s can be synched with self.all_s.'''
+
+        trace = True and not g.unitTesting
+
+        all_s = self.all_s
+        j = min(offset + len(s),len(all_s))
+        s2 = all_s[offset:j]
+
+        # The first check is allowed to fail.
+        if s == s2: return True
+
+        if trace: g.trace('**resynch**')
+
+        # Assume we should have re-inited all_s
+        self.all_s = all_s = self.w.getAllText()
+        j = min(offset + len(s),len(all_s))
+        s2 = all_s[offset:j]
+
+        # Check again. This should never fail.
+        if s != s2:
+           g.trace('**** mismatch! offset %s len %s %s\n%s\n%s' % (
+               offset,len(all_s),g.callers(5),repr(s),repr(s2)))
+        return s == s2
+    #@-node:ekr.20090213102946.10:checkRecolor
     #@+node:ekr.20090211072718.14:computeStateName
     def computeStateName (self,lastFunc,lastMatch,lastN,minimalMatch):
 
@@ -6800,11 +6827,6 @@ class jEditColorizer:
 
         if n == -1:
             return g.Bunch(lastFunc=None,lastMatch=0,lastN=0)
-                # active = False,
-                # offset=0,
-                # len_s=0,
-                # minimalMatch=''
-                # stateName=self.defaultState)
         else:
             bunch = self.stateDict.get(n)
             assert bunch,'n=%s' % (n)
@@ -6812,7 +6834,7 @@ class jEditColorizer:
     #@nonl
     #@-node:ekr.20090211072718.2:getPrevState
     #@+node:ekr.20090211072718.3:setCurrentState
-    def setCurrentState (self,s,offset,len_s,lastFunc,lastMatch,lastN,minimalMatch):
+    def setCurrentState (self,s,offset,limit,lastFunc,lastMatch,lastN,minimalMatch):
 
         trace = False and not g.unitTesting
         verbose = False
@@ -6820,7 +6842,7 @@ class jEditColorizer:
 
         self.stateCount += 1
         oldN = h.currentBlockState()
-        active = bool(lastFunc and lastMatch + lastN > offset + len_s)
+        active = bool(lastFunc and lastMatch + lastN > offset + limit)
 
         if active:
             b = self.stateDict.get(oldN)
@@ -6849,12 +6871,10 @@ class jEditColorizer:
             self.totalStates += 1
             self.maxStateNumber = max(n,self.maxStateNumber)
 
-        state = g.bunch(lastFunc=lastFunc,lastMatch=lastMatch,lastN=lastN)
-            # active=active,
-            # offset=offset,
-            # len_s=len_s,
-            # minimalMatch=minimalMatch,
-            # stateName=stateName)
+        state = g.bunch(
+            lastFunc=lastFunc,
+            lastMatch=lastMatch,
+            lastN=lastN)
 
         self.stateNameDict[stateName] = n
         self.stateDict[n] = state
