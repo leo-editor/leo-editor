@@ -1718,8 +1718,6 @@
 <v t="ekr.20061104172236.6"><vh>@test moveToHelper</vh></v>
 <v t="ekr.20061110094226"><vh>@test moveUpOrDownHelper</vh></v>
 <v t="ekr.20071113145804.6"><vh>@test scrollHelper</vh></v>
-<v t="ekr.20061104172236.8"><vh>@test selfInsertCommand-1</vh></v>
-<v t="ekr.20061107031449"><vh>@test selfInsertCommand-2 (replacing tabs)</vh></v>
 <v t="ekr.20061104172236.4"><vh>@test setMoveCol</vh></v>
 </v>
 <v t="ekr.20051107115231" annotate="7d71002e"><vh> Typing</vh>
@@ -2469,6 +2467,7 @@
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 </v>
+<v t="ekr.20071113145804.5"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -15770,28 +15769,6 @@ for direction,extend in (('up',False),('down',False),('up',True),('down',True),)
     ec.scrollHelper(event,direction,extend)
 
 </t>
-<t tx="ekr.20061104172236.8">@first # -*- coding: utf-8 -*-
-
-try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    
-    # This strings tests unicode, paren matching, and auto-indentation.
-    u = u'(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉΩBぅ乼cz):\n'
-    u = u'(pdq):\n'
-    w.setInsertPoint(len(s))
-    for char in u:
-        event = g.Bunch(widget=w,char=char,keysym=None)
-        ec.selfInsertCommand(event)
-    result = w.getAllText()
-    #g.trace('result',repr(result))
-    assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    c.recolor()
-
-# end:</t>
 <t tx="ekr.20061104172236.11">s = 'abc xy_z5 pdq'
 i,j = g.getWord(s,5)
 assert s[i:j] == 'xy_z5','got %s' % s[i:j]
@@ -15990,21 +15967,6 @@ assert ins    == s[start:end],'Got %s' % repr(ins)
 assert after == s[end:]
 
 # end.</t>
-<t tx="ekr.20061107031449">try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    w.setSelectionRange(len(s)-9,len(s)-6)
-    event = g.Bunch(widget=w,char='\t',keysym=None)
-    ec.selfInsertCommand(event)
-    result = w.getAllText()
-    # g.trace('result',repr(result))
-    assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    c.recolor()
-        
-###abcdef</t>
 <t tx="ekr.20061109172511"></t>
 <t tx="ekr.20061109172511.1">if g.app.gui.guiName() == 'tkinter':
     
@@ -19111,6 +19073,7 @@ finally:
 
 # end:</t>
 <t tx="ekr.20071113145804.5">@language python
+@tabwidth -4
 
 try:
     ec = c.editCommands ; w = c.frame.body.bodyCtrl
@@ -19119,13 +19082,13 @@ try:
     event = g.Bunch(widget=w,char='\t',keysym=None)
     ec.selfInsertCommand(event)
     result = w.getAllText()
-    # g.trace('result',repr(result))
-    assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
+    print('result %s' % result)
+    assert result.endswith('\n    abcdef'),'result\n%s' % (repr(result))
 finally:
     w.setAllText(s)
     p.setBodyString(s)
     # g.trace(repr(s))
-    c.recolor()
+    c.recolor_now()
 
 ###abcdef</t>
 <t tx="ekr.20071113145804.6">ec = c.editCommands
