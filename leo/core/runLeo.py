@@ -79,6 +79,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
 
     """Initialize and run Leo"""
 
+    # print ('runLeo.run: sys.argv %s' % sys.argv)
     if not isValidPython(): return
     g.computeStandardDirectories()
     adjustSysPath()
