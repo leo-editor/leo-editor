@@ -81,7 +81,8 @@ if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
 #@-others
 
 
-#datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '.leo', '.def', '.svg', '.ini', '.six', '.bat', '.cat', '.pro', '.sh', '.xsl', '.bmp', '.js', '.ui', '.rix', '.pmsp',  '.pyd', '.png', '.alg', '.php',  '.css', '.ico', '.txt', '.html',  '.iix',  '.w']
+# Note than only *.ui matches now - add asterisks as needed/valid
+datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '.leo', '.def', '.svg', '.ini', '.six', '.bat', '.cat', '.pro', '.sh', '.xsl', '.bmp', '.js', '*.ui', '.rix', '.pmsp',  '.pyd', '.png', '.alg', '.php',  '.css', '.ico', '.txt', '.html',  '.iix',  '.w']
 #print data_files
 
 setup(
@@ -92,7 +93,7 @@ setup(
     url = 'http://webpages.charter.net/edreamleo/front.html',
     packages = packages,
     data_files = data_files,
-    package_data = {'' : ['*.ui','*.ini'] },
+    package_data = {'' : datapats },
     description = "A programmer's editor, and much more",
     long_description = """
 Leo is an outline-oriented editor written in 100% pure Python.
