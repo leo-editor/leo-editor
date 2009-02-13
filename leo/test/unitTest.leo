@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6,3"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -739,7 +739,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
@@ -2143,10 +2143,10 @@
 </v>
 <v t="ekr.20071113202452" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113200638.8" a="E"><vh>leoPlugins</vh>
+<v t="ekr.20071113200638.8"><vh>leoPlugins</vh>
 <v t="ekr.20071113145804.30"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20080729200342.1" a="E"><vh>leoShadow</vh>
+<v t="ekr.20080729200342.1"><vh>leoShadow</vh>
 <v t="ekr.20080729200342.2"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080729200342.3"><vh>@shadow-tests</vh>
 <v t="ekr.20080804124245.1"><vh>passed</vh></v>
@@ -2389,20 +2389,20 @@
 </v>
 <v t="ekr.20080729200342.138"><vh>@test delete unittest shadow directory</vh></v>
 </v>
-<v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
+<v t="ekr.20071113200638.1"><vh>leoTangle</vh>
 <v t="ekr.20071113090055.1"><vh>@test tangle.scanAllDirectives</vh></v>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
 <v t="ekr.20071127194743.1"><vh>#@root</vh></v>
 <v t="ekr.20071127194743.2"><vh>Output</vh></v>
 </v>
 </v>
-<v t="ekr.20071113200638.2" a="E"><vh>leoTest</vh>
+<v t="ekr.20071113200638.2"><vh>leoTest</vh>
 <v t="ekr.20071113145804.25"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37" a="E" annotate="7d71002e"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" a="E" annotate="7d71002e"><vh>editBodyTests</vh>
-<v t="ekr.20060127120604"><vh>Startup</vh></v>
+<v t="ekr.20040712101754.37" annotate="7d71002e"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38" annotate="7d71002e"><vh>editBodyTests</vh>
+<v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713" annotate="7d71002e"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
 <v t="ekr.20050417202713.2"><vh>after</vh></v>
@@ -13369,7 +13369,7 @@ assert g.app.positions == n</t>
 assert c.isRootPosition(None) is False
 assert c.isRootPosition(p) is False
 assert g.app.positions == n</t>
-<t tx="ekr.20060127120604"></t>
+<t tx="ekr.20060127120604">This should be called tempNode</t>
 <t tx="ekr.20060130151716.1">table = (
     # 'toggle-find-clone-find-all-option',
     'toggle-find-ignore-case-option',
