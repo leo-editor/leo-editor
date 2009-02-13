@@ -5268,13 +5268,16 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
     All actual syntax coloring is done in the jeditColorer class.'''
 
     #@    @+others
-    #@+node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter) (connects the highligher)
+    #@+node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter)
     def __init__ (self,c,w,colorizer):
 
         self.c = c
         self.w = w
 
         # print('leoQtSyntaxHighlighter.__init__',w)
+
+        # Not all versions of Qt have the crucial currentBlock method.
+        self.hasCurrentBlock = hasattr(self,'currentBlock')
 
         # Init the base class.
         QtGui.QSyntaxHighlighter.__init__(self,w)
@@ -5292,13 +5295,14 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
         self.normalDocument = QtGui.QTextDocument(w)
 
         # self.restoreDocument()
-    #@-node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter) (connects the highligher)
+    #@-node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter)
     #@+node:ekr.20081205131308.11:highlightBlock
     def highlightBlock (self,s):
 
-        colorer = self.colorer
-        s = unicode(s)
-        colorer.recolor(s)
+        if self.hasCurrentBlock:
+            colorer = self.colorer
+            s = unicode(s)
+            colorer.recolor(s)
     #@-node:ekr.20081205131308.11:highlightBlock
     #@+node:ekr.20081206062411.15:rehighlight
     def rehighlight (self,p):
@@ -5310,10 +5314,12 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
         s = unicode(self.w.toPlainText())
         self.colorer.init(p,s)
 
-        # Call the base class method.
         if trace: g.trace('**',g.callers(12))
 
-        QtGui.QSyntaxHighlighter.rehighlight(self)
+        # Call the base class method, but *only*
+        # if the crucial 'currentBlock' method exists.
+        if self.hasCurrentBlock:
+            QtGui.QSyntaxHighlighter.rehighlight(self)
 
 
     #@-node:ekr.20081206062411.15:rehighlight
