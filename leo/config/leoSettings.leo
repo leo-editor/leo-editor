@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,19,1,12"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1175,9 +1175,9 @@
 <v t="ekr.20050203090810" annotate="7d71002e"><vh>Unit test</vh>
 <v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
 </v>
-<v t="ekr.20041213105954" annotate="7d71002e"><vh>Window</vh>
+<v t="ekr.20041213105954" a="E" annotate="7d71002e"><vh>Window</vh>
 <v t="edward.20081129091117.12"></v>
-<v t="ekr.20041119034357.38"><vh>Body pane options</vh>
+<v t="ekr.20041119034357.38" a="E"><vh>Body pane options</vh>
 <v t="ekr.20061010111324"><vh>@bool select_all_text_when_editing_headlines = False</vh></v>
 <v t="ekr.20060531094310"><vh>@bool autoindent_in_nocolor_mode = True</vh></v>
 <v t="ekr.20041119034357.43"><vh>@bool body_gmt_time = False</vh></v>
@@ -1190,6 +1190,7 @@
 <v t="ekr.20060627121646.2"><vh>@int flash_brackets_count = 2</vh></v>
 <v t="ekr.20060627121646.3"><vh>@int flash-brackets-delay = 75</vh></v>
 <v t="ekr.20041119034357.44"><vh>@bool smart_auto_indent = False</vh></v>
+<v t="ekr.20090213065933.11"><vh>@bool smart_tab = True</vh></v>
 <v t="ekr.20041119034357.53"><vh>@int additional_body_text_border = 0</vh></v>
 <v t="ekr.20041119034357.42"><vh>@string body_time_format_string = %m/%d/%Y %H:%M:%S</vh></v>
 <v t="ekr.20060620085654"><vh>@string editor_orientation = horizontal</vh></v>
@@ -7796,6 +7797,7 @@ for p in menus.subtree_iter():
 print ('done')
 </t>
 <t tx="ekr.20090203134354.2"></t>
+<t tx="ekr.20090213065933.11"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

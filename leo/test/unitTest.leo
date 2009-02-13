@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="11" left="318" height="930" width="862"/>
+	<global_window_position top="49" left="352" height="930" width="862"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6,3"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -739,19 +739,19 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
 <v t="ekr.20071113193438"><vh>General</vh>
 <v t="ekr.20061109172511"><vh>Check base classes &amp; ivars</vh>
-<v t="ekr.20061109172511.3"><vh>@test leoBody is subset of leoTkBody</vh></v>
-<v t="ekr.20061109172511.1"><vh>@test leoFrame is subset of leoTkFrame</vh></v>
-<v t="ekr.20061109210659"><vh>@test leoGui is subset of leoTkGui</vh></v>
-<v t="ekr.20061109172511.4"><vh>@test leoTree is subset of leoTkTree</vh></v>
-<v t="ekr.20050105082500"><vh>@test official commander ivars</vh></v>
-<v t="ekr.20050105080048.1"><vh>@test official frame ivars</vh></v>
-<v t="ekr.20050105084757"><vh>@test official g.app directories</vh></v>
+<v t="ekr.20061109172511.3"><vh>Startup</vh></v>
+<v t="ekr.20061109172511.1"><vh>Docs</vh></v>
+<v t="ekr.20061109210659"><vh>Scripts</vh></v>
+<v t="ekr.20061109172511.4"><vh> Test files</vh></v>
+<v t="ekr.20050105082500"><vh>Other tests</vh></v>
+<v t="ekr.20050105080048.1"><vh>Load tests for .leo files</vh></v>
+<v t="ekr.20050105084757"><vh>All unit tests</vh></v>
 <v t="ekr.20050105090632"><vh>@test official g.app ivars</vh></v>
 </v>
 <v t="ekr.20040712101754.186"><vh>@test batch mode</vh>
@@ -805,8 +805,8 @@
 </v>
 <v t="ekr.20061106201509.4"><vh>@test rClick.py</vh></v>
 <v t="ekr.20061106201509.1"><vh>detect_urls.py</vh>
-<v t="ekr.20061106201509.2"><vh>@test openURL</vh></v>
-<v t="ekr.20061106201509.3"><vh>@test colorizerURLs</vh></v>
+<v t="ekr.20061106201509.2"><vh>Startup</vh></v>
+<v t="ekr.20061106201509.3"><vh>Docs</vh></v>
 </v>
 <v t="ekr.20061110112507"><vh>@test mnplugins.insertBodystamp</vh></v>
 <v t="ekr.20061110115517"><vh>@test macros.parameterize</vh></v>
@@ -883,63 +883,63 @@
 </v>
 <v t="ekr.20071113193438.1"><vh>leoColor</vh>
 <v t="ekr.20040712101754.116"><vh>@test @comment after @language plain</vh>
-<v t="ekr.20040712101754.117"><vh>Test</vh></v>
+<v t="ekr.20040712101754.117"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.118"><vh>@test colorizer Actionscript</vh>
-<v t="ekr.20040712101754.119"><vh>Actionscript</vh></v>
+<v t="ekr.20040712101754.119"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.120"><vh>@test colorizer C</vh>
-<v t="ekr.20040712101754.121"><vh>C</vh></v>
+<v t="ekr.20040712101754.121"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.122"><vh>@test colorizer C#</vh>
-<v t="ekr.20040712101754.123"><vh>C#</vh></v>
+<v t="ekr.20040712101754.123"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.124"><vh>@test colorizer css</vh>
-<v t="ekr.20040712101754.125"><vh>css</vh></v>
+<v t="ekr.20040712101754.125"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.126"><vh>@test colorizer CWEB</vh>
-<v t="ekr.20040712101754.127"><vh>CWEB</vh>
+<v t="ekr.20040712101754.127"><vh>Startup</vh>
 <v t="ekr.20040712101754.128"><vh>&lt;&lt; section ref &gt;&gt;</vh></v>
 </v>
 </v>
 <v t="ekr.20040712101754.129"><vh>@test colorizer elisp</vh>
-<v t="ekr.20040712101754.130"><vh>elisp</vh></v>
+<v t="ekr.20040712101754.130"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20060829092306"><vh>@test colorizer erlang</vh>
-<v t="ekr.20060829092306.1"><vh>erlang</vh></v>
+<v t="ekr.20060829092306.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20041107105213"><vh>@test colorizer forth</vh>
-<v t="ekr.20080707101444.1"><vh>forth</vh></v>
+<v t="ekr.20080707101444.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.131"><vh>@test colorizer HTML string bug</vh>
-<v t="ekr.20040712101754.132"><vh>String bug in html</vh></v>
+<v t="ekr.20040712101754.132"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.133"><vh>@test colorizer HTML1</vh>
-<v t="ekr.20040712101754.134"><vh>HTML1</vh></v>
+<v t="ekr.20040712101754.134"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.135"><vh>@test colorizer HTML2</vh>
-<v t="ekr.20040712101754.136"><vh>HTML2</vh></v>
+<v t="ekr.20040712101754.136"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20060829092306.2"><vh>@test colorizer Java</vh>
-<v t="ekr.20060829092306.3"><vh>Java</vh></v>
+<v t="ekr.20060829092306.3"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.137" a="E"><vh>@test colorizer LaTex</vh>
-<v t="ekr.20040712101754.138"><vh>LaTex</vh></v>
+<v t="ekr.20040712101754.137"><vh>@test colorizer LaTex</vh>
+<v t="ekr.20040712101754.138"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20071219172126"><vh>@test colorizer lisp</vh>
-<v t="ekr.20071219172126.1"><vh>lisp</vh></v>
+<v t="ekr.20071219172126.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20071219170354"><vh>@test colorizer perl</vh>
-<v t="ekr.20071219170354.1"><vh>perl</vh></v>
+<v t="ekr.20071219170354.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.141"><vh>@test colorizer PHP</vh>
-<v t="ekr.20040712101754.142"><vh>PHP</vh></v>
+<v t="ekr.20040712101754.142"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20050618053006"><vh>@test colorizer plsql</vh>
-<v t="ekr.20050618053006.1"><vh>plsql</vh></v>
+<v t="ekr.20050618053006.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.143"><vh>@test colorizer python.xml (jEdit)</vh>
-<v t="ekr.20040712101754.144"><vh>python.xml</vh>
+<v t="ekr.20040712101754.144"><vh>Startup</vh>
 <v t="ekr.20040712101754.145"><vh>&lt;&lt; remarks &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.146"><vh>&lt;&lt; comments &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.147"><vh>&lt;&lt; literals &gt;&gt;</vh></v>
@@ -953,43 +953,43 @@
 </v>
 </v>
 <v t="ekr.20040712101754.154"><vh>@test colorizer Python1</vh>
-<v t="ekr.20040712101754.155"><vh>Python1</vh></v>
+<v t="ekr.20040712101754.155"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.156"><vh>@test colorizer Python2</vh>
-<v t="ekr.20040712101754.157"><vh>Python2</vh></v>
+<v t="ekr.20040712101754.157"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20060829092306.4"><vh>@test colorizer r</vh>
-<v t="ekr.20060829092306.5"><vh>r</vh></v>
+<v t="ekr.20060829092306.5"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.158"><vh>@test colorizer rapidq</vh>
-<v t="ekr.20040712101754.159"><vh>rapidq</vh></v>
+<v t="ekr.20040712101754.159"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.160"><vh>@test colorizer Rebol</vh>
-<v t="ekr.20040712101754.161"><vh>Rebol</vh></v>
+<v t="ekr.20040712101754.161"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20071219184852"><vh>@test colorizer rest</vh>
-<v t="ekr.20071219184847"><vh>rest</vh></v>
+<v t="ekr.20071219184847"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.162"><vh>@test colorizer shell</vh>
-<v t="ekr.20040712101754.163"><vh>shell</vh></v>
+<v t="ekr.20040712101754.163"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20071219172615"><vh>@test colorizer shellscript</vh>
-<v t="ekr.20071219172615.1"><vh>shellscript</vh></v>
+<v t="ekr.20071219172615.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.164"><vh>@test colorizer tex.xml (jEdit)</vh>
-<v t="ekr.20040712101754.165"><vh>tex.xml</vh>
+<v t="ekr.20040712101754.165"><vh>Startup</vh>
 <v t="ekr.20040712101754.166"><vh>&lt;&lt; general rules &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.167"><vh>&lt;&lt; math rules &gt;&gt;</vh></v>
 </v>
 </v>
 <v t="ekr.20040712101754.168"><vh>@test colorizer wikiTest1</vh>
-<v t="ekr.20040712101754.169"><vh>wikiTest1</vh></v>
+<v t="ekr.20040712101754.169"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.170"><vh>@test colorizer wikiTest2</vh>
-<v t="ekr.20040712101754.171"><vh>wikiTest2</vh></v>
+<v t="ekr.20040712101754.171"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.172"><vh>@test colorizer wikiTest3</vh>
-<v t="ekr.20040712101754.173"><vh>wikiTest3</vh></v>
+<v t="ekr.20040712101754.173"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20061106184118"><vh>@test leoColor.doNowebSecRef</vh>
 <v t="ekr.20061106184118.1"><vh>&lt;&lt; test defined &gt;&gt;</vh></v>
@@ -997,31 +997,31 @@
 <v t="ekr.20040712101754.176"><vh>@test python keywords (new colorizer)</vh></v>
 <v t="ekr.20071113090055.2"><vh>@test scanColorDirectives</vh></v>
 <v t="ekr.20060829092306.6"><vh>@test vbscript</vh>
-<v t="ekr.20060829092306.7"><vh>vbscript</vh></v>
+<v t="ekr.20060829092306.7"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20061115103558" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113193624"><vh>leoCommands</vh>
 <v t="ekr.20050512084850" annotate="7d71002e"><vh> Check outline</vh>
-<v t="ekr.20040712101754.272"><vh>@test CheckOutline</vh></v>
-<v t="ekr.20041019124050"><vh>@test pretty printing a docstring</vh>
+<v t="ekr.20040712101754.272"><vh>Startup</vh></v>
+<v t="ekr.20041019124050"><vh>Docs</vh>
 <v t="ekr.20041019124050.1"><vh>Original</vh></v>
 <v t="ekr.20041019124050.2"><vh>Test</vh></v>
 </v>
-<v t="ekr.20040713070526"><vh>@test Pretty Print command</vh>
+<v t="ekr.20040713070526"><vh>Scripts</vh>
 <v t="ekr.20040713123617"><vh>tempNode</vh></v>
 <v t="ekr.20050726141158"><vh>before</vh></v>
 <v t="ekr.20040713123828.1"><vh>after</vh></v>
 </v>
 </v>
 <v t="ekr.20071113194033"><vh> Mark commands</vh>
-<v t="ekr.20050512083807.1" annotate="7d71002e"><vh>@test markAllAtFileNodesDirty</vh></v>
-<v t="ekr.20050512083807.2" annotate="7d71002e"><vh>@test markAtFileNodesDirty</vh></v>
-<v t="ekr.20050512083700.1" annotate="7d71002e"><vh>@test markChangedHeadlines</vh></v>
-<v t="ekr.20050512083807" annotate="7d71002e"><vh>@test markChangedRoots</vh></v>
-<v t="ekr.20050512083816" annotate="7d71002e"><vh>@test markClones</vh></v>
+<v t="ekr.20050512083807.1" annotate="7d71002e"><vh>Startup</vh></v>
+<v t="ekr.20050512083807.2" annotate="7d71002e"><vh>Docs</vh></v>
+<v t="ekr.20050512083700.1" annotate="7d71002e"><vh>Scripts</vh></v>
+<v t="ekr.20050512083807" annotate="7d71002e"><vh> Test files</vh></v>
+<v t="ekr.20050512083816" annotate="7d71002e"><vh>Load tests for .leo files</vh></v>
 <v t="ekr.20050512083816" annotate="7d71002e"></v>
-<v t="ekr.20050512083822" annotate="7d71002e"><vh>@test markHeadline</vh></v>
+<v t="ekr.20050512083822" annotate="7d71002e"><vh>All unit tests</vh></v>
 <v t="ekr.20050512083822.1" annotate="7d71002e"><vh>@test markSubheads</vh>
 <v t="ekr.20050512084850.1"><vh>child 1</vh></v>
 <v t="ekr.20050512084850.2"><vh>child 2</vh></v>
@@ -1029,49 +1029,49 @@
 <v t="ekr.20050512083822.2" annotate="7d71002e"><vh>@test unmarkAll</vh></v>
 </v>
 <v t="ekr.20050417102057" annotate="7d71002e"><vh> Reformat Paragraph tests </vh>
-<v t="ekr.20050417102114" annotate="7d71002e"><vh>@test noTrailingNewline (pass)</vh>
+<v t="ekr.20050417102114" annotate="7d71002e"><vh>Startup</vh>
 <v t="ekr.20050417104821" annotate="7d71002e"><vh>data</vh>
 <v t="ekr.20050417124704" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20050417102114.1" annotate="7d71002e"><vh>before</vh></v>
 <v t="ekr.20050417102114.2" annotate="7d71002e"><vh>after</vh></v>
 </v>
 </v>
-<v t="ekr.20050417111144" annotate="7d71002e"><vh>@test trailingNewline (pass)</vh>
+<v t="ekr.20050417111144" annotate="7d71002e"><vh>Docs</vh>
 <v t="ekr.20050417111144.1" annotate="7d71002e"><vh>data</vh>
 <v t="ekr.20050417111240" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20050417111144.2" annotate="7d71002e"><vh>before</vh></v>
 <v t="ekr.20050417111144.3" annotate="7d71002e"><vh>after</vh></v>
 </v>
 </v>
-<v t="ekr.20050417113549" annotate="7d71002e"><vh>@test mixedLineLengths</vh>
+<v t="ekr.20050417113549" annotate="7d71002e"><vh>Scripts</vh>
 <v t="ekr.20050417113910" annotate="7d71002e"><vh>data</vh>
 <v t="ekr.20050417113921" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20050417113910.1" annotate="7d71002e"><vh>before</vh></v>
 <v t="ekr.20050417113910.2" annotate="7d71002e"><vh>after</vh></v>
 </v>
 </v>
-<v t="ekr.20050417114153" annotate="7d71002e"><vh>@test mixedLinesWithLeadingWS</vh>
+<v t="ekr.20050417114153" annotate="7d71002e"><vh> Test files</vh>
 <v t="ekr.20050417114221" annotate="7d71002e"><vh>data</vh>
 <v t="ekr.20050417114221.1" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20050417114221.2" annotate="7d71002e"><vh>before</vh></v>
 <v t="ekr.20050417114221.3" annotate="7d71002e"><vh>after</vh></v>
 </v>
 </v>
-<v t="ekr.20050417114836" annotate="7d71002e"><vh>@test noChangeRequired</vh>
+<v t="ekr.20050417114836" annotate="7d71002e"><vh>Other tests</vh>
 <v t="ekr.20050417095124.16" annotate="7d71002e"><vh>data</vh>
 <v t="ekr.20050417114914" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20050417095124.17" annotate="7d71002e"><vh>before</vh></v>
 <v t="ekr.20050417095124.18" annotate="7d71002e"><vh>after</vh></v>
 </v>
 </v>
-<v t="ekr.20050417095020.11" annotate="7d71002e"><vh>@test honorLeadingWS</vh>
+<v t="ekr.20050417095020.11" annotate="7d71002e"><vh>Load tests for .leo files</vh>
 <v t="ekr.20050417095124.19" annotate="7d71002e"><vh>data</vh>
 <v t="ekr.20050417115111" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20050417095124.20" annotate="7d71002e"><vh>before</vh></v>
 <v t="ekr.20050417095124.21" annotate="7d71002e"><vh>after</vh></v>
 </v>
 </v>
-<v t="ekr.20050417095020.12" annotate="7d71002e"><vh>@test honorLeadingWSVar1</vh>
+<v t="ekr.20050417095020.12" annotate="7d71002e"><vh>All unit tests</vh>
 <v t="ekr.20050417095124.22" annotate="7d71002e"><vh>data</vh>
 <v t="ekr.20050417115257" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20050417095124.23" annotate="7d71002e"><vh>before</vh></v>
@@ -1130,17 +1130,15 @@
 </v>
 <v t="ekr.20071113145804.10"><vh>@test c.contractAllHeadlines</vh></v>
 <v t="ekr.20090104053806.1"><vh>@@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
-<v t="ekr.20061106114738"><vh>@test c.findMatchingBracket</vh></v>
-<v t="ekr.20060211135917"><vh>@test c.getTime</vh></v>
+<v t="ekr.20061106114738"><vh>Load tests for .leo files</vh></v>
+<v t="ekr.20060211135917"><vh>All unit tests</vh></v>
 <v t="ekr.20061106112522"><vh>@test c.insertBodyTime</vh></v>
 <v t="ekr.20040802065214" annotate="7d71002e"><vh>@test changing headline marks descendent @thin nodes dirty</vh>
 <v t="ekr.20040802065214.1"><vh>bogus</vh></v>
 </v>
 <v t="ekr.20070611105423.1"><vh>@test contract all</vh></v>
 <v t="ekr.20071113105654.1"><vh>@test hoist with no children</vh></v>
-<v t="ekr.20070611105728"><vh>@test illegal clone demote</vh>
-<v t="ekr.20090124192423.1"><vh>aClone</vh></v>
-</v>
+<v t="ekr.20070611105728"><vh>@test illegal clone demote</vh></v>
 <v t="ekr.20071113201833" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194216"><vh>leoConfig</vh>
@@ -1176,25 +1174,25 @@
 <v t="ekr.20080907123324.3"></v>
 </v>
 <v t="ekr.20080905113550.2"><vh>Tests with @auto as the root</vh>
-<v t="ekr.20080904110148.1"><vh>@test goto_countlines n = 3</vh></v>
-<v t="ekr.20080904110148.4"><vh>@test goto_countlines n = 20</vh></v>
-<v t="ekr.20080904110148.5"><vh>@test goto_setup n = 3</vh></v>
-<v t="ekr.20080904113003.2"><vh>@test goto_setup with scriptData</vh></v>
+<v t="ekr.20080904110148.1"><vh>Startup</vh></v>
+<v t="ekr.20080904110148.4"><vh>Docs</vh></v>
+<v t="ekr.20080904110148.5"><vh>Scripts</vh></v>
+<v t="ekr.20080904113003.2"><vh> Test files</vh></v>
 </v>
 <v t="ekr.20080905113550.3"><vh>Tests with @file as the root</vh>
-<v t="ekr.20080904120258.6"><vh>@test goto_findGnx</vh></v>
-<v t="ekr.20080905130723.1"><vh>@test goto_findVnode</vh></v>
+<v t="ekr.20080904120258.6"><vh>Startup</vh></v>
+<v t="ekr.20080905130723.1"><vh>Docs</vh></v>
 </v>
 <v t="ekr.20080907122804.2"><vh>Tests with @shadow as the root</vh>
-<v t="ekr.20080907122804.3"><vh>@test goto_setup n = 3 (@shadow)</vh></v>
+<v t="ekr.20080907122804.3"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20080907123324.4"><vh>Tests with @nosent as the root</vh>
-<v t="ekr.20080907123324.5"><vh>@test goto_setup n = 3 (@nosent)</vh></v>
+<v t="ekr.20080907123324.5"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20080905113550.4"><vh>General tests</vh>
-<v t="ekr.20080905165432.1"><vh>@test goto_findRoot (root in ancestors)</vh></v>
-<v t="ekr.20080905165432.3"><vh>@test goto_findRoot (root not in ancestors)</vh></v>
-<v t="ekr.20080904120258.2"><vh>@test goto_showResults found</vh></v>
+<v t="ekr.20080905165432.1"><vh>Startup</vh></v>
+<v t="ekr.20080905165432.3"><vh>Docs</vh></v>
+<v t="ekr.20080904120258.2"><vh>Scripts</vh></v>
 <v t="ekr.20080904120258.3"><vh>@test goto_showResults not found</vh></v>
 </v>
 <v t="ekr.20081111084046.6" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
@@ -1911,18 +1909,7 @@
 <v t="ekr.20040712101754.7" annotate="7d71002e"><vh> Export tests</vh>
 <v t="ekr.20040712101754.9" annotate="7d71002e"><vh>@suite Export tests</vh></v>
 <v t="ekr.20040712101754.24" annotate="7d71002e"><vh>exportTests</vh>
-<v t="ekr.20040712101754.25"><vh>tempNode</vh>
-<v t="ekr.20090122112354.2"><vh>import test: exportHeadlines</vh></v>
-<v t="ekr.20090122112354.3"><vh>import test: flattenOutline</vh></v>
-<v t="ekr.20090122112354.4"><vh>import test: weave</vh></v>
-<v t="ekr.20090122112354.5"><vh>import test: outlineToNoweb</vh></v>
-<v t="ekr.20090122112354.6"><vh>import test: outlineToCWEB</vh></v>
-<v t="ekr.20090124192423.2"><vh>import test: exportHeadlines</vh></v>
-<v t="ekr.20090124192423.3"><vh>import test: flattenOutline</vh></v>
-<v t="ekr.20090124192423.4"><vh>import test: weave</vh></v>
-<v t="ekr.20090124192423.5"><vh>import test: outlineToNoweb</vh></v>
-<v t="ekr.20090124192423.6"><vh>import test: outlineToCWEB</vh></v>
-</v>
+<v t="ekr.20040712101754.25"><vh>tempNode</vh></v>
 <v t="ekr.20040712101754.26"><vh>exportHeadlines</vh>
 <v t="ekr.20040712101754.27"><vh>dialog</vh></v>
 </v>
@@ -1943,22 +1930,7 @@
 <v t="ekr.20070711063849"><vh> Import tests</vh>
 <v t="ekr.20040712101754.8" annotate="7d71002e"><vh>@suite Import tests</vh></v>
 <v t="ekr.20040712101754.10" annotate="7d71002e"><vh>importTests</vh>
-<v t="ekr.20040712101754.11" annotate="7d71002e"><vh>tempNode</vh>
-<v t="ekr.20090122112354.7"><vh>import test: importAtRoot</vh></v>
-<v t="ekr.20090122112354.8"><vh>import test: importDerivedFile</vh></v>
-<v t="ekr.20090122112354.9"><vh>import test: importNowebFiles</vh></v>
-<v t="ekr.20090122112354.10"><vh>import test: importFlattenedOutline</vh></v>
-<v t="ekr.20090122112354.11"><vh>import test: importCWEBFiles</vh></v>
-<v t="ekr.20090122112354.12"><vh>import test: removeSentinels</vh></v>
-<v t="ekr.20090122112354.13"><vh>import test: importAtFile</vh></v>
-<v t="ekr.20090124192423.7"><vh>import test: importAtRoot</vh></v>
-<v t="ekr.20090124192423.8"><vh>import test: importDerivedFile</vh></v>
-<v t="ekr.20090124192423.9"><vh>import test: importNowebFiles</vh></v>
-<v t="ekr.20090124192423.10"><vh>import test: importFlattenedOutline</vh></v>
-<v t="ekr.20090124192423.11"><vh>import test: importCWEBFiles</vh></v>
-<v t="ekr.20090124192423.12"><vh>import test: removeSentinels</vh></v>
-<v t="ekr.20090124192423.13"><vh>import test: importAtFile</vh></v>
-</v>
+<v t="ekr.20040712101754.11" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20040712101754.12" annotate="7d71002e"><vh>importAtRoot</vh>
 <v t="ekr.20040712101754.13"><vh>dialog</vh></v>
 </v>
@@ -2056,10 +2028,10 @@
 <v t="ekr.20071024102639"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20071020075538.79"><vh>@test collapse-all</vh></v>
 </v>
-<v t="ekr.20071113145804.2"><vh>@test compareHelper</vh></v>
-<v t="ekr.20071113145804.3"><vh>@test compareHelper-warning</vh></v>
-<v t="ekr.20071119053439"><vh>@test regularizeWhitespace</vh></v>
-<v t="ekr.20080811180035.1"><vh>@test languageForExtension</vh></v>
+<v t="ekr.20071113145804.2"><vh> Test files</vh></v>
+<v t="ekr.20071113145804.3"><vh>Other tests</vh></v>
+<v t="ekr.20071119053439"><vh>Load tests for .leo files</vh></v>
+<v t="ekr.20080811180035.1"><vh>All unit tests</vh></v>
 <v t="ekr.20071113202321.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194033.2"><vh>leoKeys</vh>
@@ -2077,7 +2049,7 @@
 </v>
 <v t="ekr.20040712101754.182"></v>
 </v>
-<v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
+<v t="ekr.20040712101754.187" a="E" annotate="7d71002e"><vh> Position tests</vh>
 <v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
 <v t="ekr.20040712101754.184"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
 <v t="ekr.20040712101754.208" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
@@ -2119,7 +2091,7 @@
 </v>
 <v t="ekr.20090102061858.2"><vh>@test c.positionExists</vh></v>
 <v t="ekr.20090102062037.2"><vh>@test c.positionExists for all nodes</vh></v>
-<v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519" a="E" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
@@ -2128,7 +2100,7 @@
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
 <v t="ekr.20090130133404.2"><vh>@test leoNodes properties</vh></v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>Startup</vh></v>
@@ -2162,7 +2134,7 @@
 <v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
 </v>
 </v>
-<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -2171,10 +2143,10 @@
 </v>
 <v t="ekr.20071113202452" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113200638.8"><vh>leoPlugins</vh>
+<v t="ekr.20071113200638.8" a="E"><vh>leoPlugins</vh>
 <v t="ekr.20071113145804.30"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20080729200342.1"><vh>leoShadow</vh>
+<v t="ekr.20080729200342.1" a="E"><vh>leoShadow</vh>
 <v t="ekr.20080729200342.2"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080729200342.3"><vh>@shadow-tests</vh>
 <v t="ekr.20080804124245.1"><vh>passed</vh></v>
@@ -2389,7 +2361,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080729200342.119"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20080729200342.119" a="E"><vh>Other unit tests of shadowController</vh>
 <v t="ekr.20080729200342.120"><vh>@test x.baseDirName</vh></v>
 <v t="ekr.20080729200342.121"><vh>@test x.pathName</vh></v>
 <v t="ekr.20080729200342.122"><vh>@test x.dirName</vh></v>
@@ -2404,7 +2376,7 @@
 <v t="ekr.20080812114335.1"><vh>@test x.markerFromExtension</vh></v>
 <v t="ekr.20080822075239.1"><vh>@@test (minitest) x.show_error</vh></v>
 </v>
-<v t="ekr.20080729200342.130"><vh>Unit tests for atFileCommands</vh>
+<v t="ekr.20080729200342.130" a="E"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20080729200342.131"><vh>@test at.open/closeStringFile</vh></v>
 <v t="ekr.20080729200342.132"><vh>@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20080729200342.133"><vh>@test at.readOneAtShadowNode</vh>
@@ -2417,20 +2389,20 @@
 </v>
 <v t="ekr.20080729200342.138"><vh>@test delete unittest shadow directory</vh></v>
 </v>
-<v t="ekr.20071113200638.1"><vh>leoTangle</vh>
+<v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
 <v t="ekr.20071113090055.1"><vh>@test tangle.scanAllDirectives</vh></v>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
 <v t="ekr.20071127194743.1"><vh>#@root</vh></v>
 <v t="ekr.20071127194743.2"><vh>Output</vh></v>
 </v>
 </v>
-<v t="ekr.20071113200638.2"><vh>leoTest</vh>
+<v t="ekr.20071113200638.2" a="E"><vh>leoTest</vh>
 <v t="ekr.20071113145804.25"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37" annotate="7d71002e"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" annotate="7d71002e"><vh>editBodyTests</vh>
-<v t="ekr.20060127120604"><vh>tempNode</vh></v>
+<v t="ekr.20040712101754.37" a="E" annotate="7d71002e"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38" a="E" annotate="7d71002e"><vh>editBodyTests</vh>
+<v t="ekr.20060127120604"><vh>Startup</vh></v>
 <v t="ekr.20050417202713" annotate="7d71002e"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
 <v t="ekr.20050417202713.2"><vh>after</vh></v>
@@ -13397,12 +13369,7 @@ assert g.app.positions == n</t>
 assert c.isRootPosition(None) is False
 assert c.isRootPosition(p) is False
 assert g.app.positions == n</t>
-<t tx="ekr.20060127120604">before
-    &lt;&lt; section &gt;&gt;
-    sec line 1
-        sec line 2 indented
-sec line 3
-after</t>
+<t tx="ekr.20060127120604"></t>
 <t tx="ekr.20060130151716.1">table = (
     # 'toggle-find-clone-find-all-option',
     'toggle-find-ignore-case-option',
@@ -22072,31 +22039,6 @@ c.setFileTimeStamp(path)
 val = c.checkFileTimeStamp(path)
 assert val,repr(val)
 </t>
-<t tx="ekr.20090122112354.2"></t>
-<t tx="ekr.20090122112354.3"></t>
-<t tx="ekr.20090122112354.4"></t>
-<t tx="ekr.20090122112354.5"></t>
-<t tx="ekr.20090122112354.6"></t>
-<t tx="ekr.20090122112354.7"></t>
-<t tx="ekr.20090122112354.8"></t>
-<t tx="ekr.20090122112354.9"></t>
-<t tx="ekr.20090122112354.10"></t>
-<t tx="ekr.20090122112354.11"></t>
-<t tx="ekr.20090122112354.12"></t>
-<t tx="ekr.20090122112354.13"></t>
-<t tx="ekr.20090124192423.1">4</t>
-<t tx="ekr.20090124192423.2"></t>
-<t tx="ekr.20090124192423.3"></t>
-<t tx="ekr.20090124192423.4"></t>
-<t tx="ekr.20090124192423.5"></t>
-<t tx="ekr.20090124192423.6"></t>
-<t tx="ekr.20090124192423.7"></t>
-<t tx="ekr.20090124192423.8"></t>
-<t tx="ekr.20090124192423.9"></t>
-<t tx="ekr.20090124192423.10"></t>
-<t tx="ekr.20090124192423.11"></t>
-<t tx="ekr.20090124192423.12"></t>
-<t tx="ekr.20090124192423.13"></t>
 <t tx="ekr.20090128184952.3"></t>
 <t tx="ekr.20090130133404.2">v,t = p.v,p.v.t
 b = p.b

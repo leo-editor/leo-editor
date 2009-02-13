@@ -1349,13 +1349,16 @@ class editCommandsClass (baseEditCommandsClass):
         self.w = None # For use by state handlers.
 
         # Settings...
-        self.autocompleteBrackets   = c.config.getBool('autocomplete-brackets')
-        self.bracketsFlashBg        = c.config.getColor('flash-brackets-background-color')
-        self.bracketsFlashCount     = c.config.getInt('flash-brackets-count')
-        self.bracketsFlashDelay     = c.config.getInt('flash-brackets-delay')
-        self.bracketsFlashFg        = c.config.getColor('flash-brackets-foreground-color')
-        self.flashMatchingBrackets  = c.config.getBool('flash-matching-brackets')
-        self.smartAutoIndent        = c.config.getBool('smart_auto_indent')
+        cf = c.config
+        self.autocompleteBrackets   = cf.getBool('autocomplete-brackets')
+        self.bracketsFlashBg        = cf.getColor('flash-brackets-background-color')
+        self.bracketsFlashCount     = cf.getInt('flash-brackets-count')
+        self.bracketsFlashDelay     = cf.getInt('flash-brackets-delay')
+        self.bracketsFlashFg        = cf.getColor('flash-brackets-foreground-color')
+        self.flashMatchingBrackets  = cf.getBool('flash-matching-brackets')
+        self.smartAutoIndent        = cf.getBool('smart_auto_indent')
+        self.openBracketsList       = cf.getString('open_flash_brackets')  or '([{'
+        self.closeBracketsList      = cf.getString('close_flash_brackets') or ')]}'
 
         self.initBracketMatcher(c)
     #@-node:ekr.20050920084036.54: ctor (editCommandsClass)
@@ -2857,7 +2860,7 @@ class editCommandsClass (baseEditCommandsClass):
         # New in Leo 4.5: use the same logic as in selfInsertCommand.
         oldSel = w.getSelectionRange()
         self.insertNewlineHelper(w=w,oldSel=oldSel,undoType=None)
-        self.updateTab(p,w)
+        self.updateTab(p,w,smartTab=False)
         k.setInputState('insert')
         k.showStateAndMode()
 
@@ -2992,10 +2995,9 @@ class editCommandsClass (baseEditCommandsClass):
             w.insert(i,ch)
             w.setInsertPoint(i+1)
 
-            allow_in_nocolor = c.config.getBool('autoindent_in_nocolor_mode')
-            if (
-                (allow_in_nocolor or c.frame.body.colorizer.useSyntaxColoring(p)) and
-                undoType != "Change"
+            if (c.autoindent_in_nocolor or 
+                (c.frame.body.colorizer.useSyntaxColoring(p) and
+                undoType != "Change")
             ):
                 # No auto-indent if in @nocolor mode or after a Change command.
                 self.updateAutoIndent(p,w)
@@ -3005,10 +3007,8 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20060804095512:initBracketMatcher
     def initBracketMatcher (self,c):
 
-        self.openBracketsList  = c.config.getString('open_flash_brackets')  or '([{'
-        self.closeBracketsList = c.config.getString('close_flash_brackets') or ')]}'
-
         if len(self.openBracketsList) != len(self.closeBracketsList):
+
             g.es_print('bad open/close_flash_brackets setting: using defaults')
             self.openBracketsList  = '([{'
             self.closeBracketsList = ')]}'
@@ -3115,7 +3115,7 @@ class editCommandsClass (baseEditCommandsClass):
             w.setInsertPoint(i+len(ws))
     #@-node:ekr.20051026171121.1:udpateAutoIndent
     #@+node:ekr.20051026092433:updateTab
-    def updateTab (self,p,w):
+    def updateTab (self,p,w,smartTab=True):
 
         c = self.c
         d = c.scanAllDirectives(p)
@@ -3126,24 +3126,19 @@ class editCommandsClass (baseEditCommandsClass):
         if i != j:
             w.delete(i,j)
 
-        if tab_width > 0:
-            w.insert(i,'\t')
-            ins = i+1
+        # Get the preceeding characters.
+        s = w.getAllText()
+        start,j = g.getLine(s,i)
+        s2 = s[start:i] ; s3 = s[j:]
+        if smartTab and c.smart_tab and s3.strip() and not s2.strip():
+            self.updateAutoIndent(p,w)
         else:
-            # Get the preceeding characters.
-            s = w.getAllText()
-            start = g.skip_to_start_of_line(s,i)
-            s2 = s[start:i]
-
             # Compute n, the number of spaces to insert.
             width = g.computeWidth(s2,tab_width)
             n = abs(tab_width) - (width % abs(tab_width))
-            # g.trace('n',n)
             w.insert(i,' ' * n)
             ins = i+n
-
-        w.setSelectionRange(ins,ins,insert=ins)
-    #@nonl
+            w.setSelectionRange(ins,ins,insert=ins)
     #@-node:ekr.20051026092433:updateTab
     #@-node:ekr.20051125080855:selfInsertCommand, helpers
     #@-node:ekr.20050920084036.85:insert & delete...

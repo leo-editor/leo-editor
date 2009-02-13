@@ -11191,8 +11191,10 @@ a = '''ab'''
 
 b = 'c'
 
-def a():
-    pass</t>
+if 1:
+    def a():
+        pass
+# test</t>
 <t tx="ekr.20090206124759.2">@nocolor-node
 </t>
 <t tx="ekr.20090211123924.1">@nocolor

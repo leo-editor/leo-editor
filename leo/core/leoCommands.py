@@ -79,7 +79,7 @@ class baseCommands (object):
         self.requestedIconify = '' # 'iconify','deiconify'
         self.requestRecolorFlag = False
 
-        # g.trace('Commands')
+        # print('Commands.__init__')
         self.exists = True # Indicate that this class exists and has not been destroyed.
             # Do this early in the startup process so we can call hooks.
 
@@ -95,26 +95,10 @@ class baseCommands (object):
             # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mRelativeFileName = relativeFileName
 
-        # g.trace(c) # Do this after setting c.mFileName.
-        c.initIvars()
+        self.initIvars()
         self.nodeHistory = nodeHistory(c)
-
-        self.contractVisitedNodes = c.config.getBool('contractVisitedNodes')
-        self.sparse_goto_parent = c.config.getBool('sparse_goto_parent')
-        self.showMinibuffer = c.config.getBool('useMinibuffer')
-        self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
-        self.fixed = c.config.getBool('fixedWindow',False)
-            # New in Leo 4.5: True: Don't write window position, expansion states, marks, etc.
-        self.fixedWindowPosition = c.config.getData('fixedWindowPosition')
-        if self.fixedWindowPosition:
-            try:
-                w,h,l,t = self.fixedWindowPosition
-                self.fixedWindowPosition = int(w),int(h),int(l),int(t)
-            except Exception:
-                g.es_print('bad @data fixedWindowPosition',
-                    repr(self.fixedWindowPosition),color='red')
-        else:
-            self.windowPosition = 500,700,50,50 # width,height,left,top.
+        self.initConfigSettings()
+        c.setWindowPosition() # Do this after initing settings.
 
         # initialize the sub-commanders.
         # c.finishCreate creates the sub-commanders for edit commands.
@@ -141,6 +125,91 @@ class baseCommands (object):
         else:
             self.undoer = leoUndo.undoer(self)
     #@-node:ekr.20031218072017.2812:c.__init__
+    #@+node:ekr.20031218072017.2814:c.__repr__ & __str__
+    def __repr__ (self):
+
+        return "Commander %d: %s" % (id(self),repr(self.mFileName))
+
+    __str__ = __repr__
+    #@-node:ekr.20031218072017.2814:c.__repr__ & __str__
+    #@+node:ekr.20050920093543:c.finishCreate & helper
+    def finishCreate (self,initEditCommanders=True):  # New in 4.4.
+
+        '''Finish creating the commander after frame.finishCreate.
+
+        Important: this is the last step in the startup process.'''
+
+        c = self ; p = c.p
+        c.miniBufferWidget = c.frame.miniBufferWidget
+        # print('Commands.finishCreate',c.fileName())
+
+        # Create a keyHandler even if there is no miniBuffer.
+        c.keyHandler = c.k = k = g.app.gui.createKeyHandlerClass(c,
+            useGlobalKillbuffer=True,
+            useGlobalRegisters=True)
+
+        if initEditCommanders:
+            # A 'real' .leo file.
+            import leo.core.leoEditCommands as leoEditCommands
+            c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
+            k.finishCreate()
+        else:
+            # A leoSettings.leo file.
+            c.commandsDict = {}
+
+        c.frame.log.finishCreate()
+        c.bodyWantsFocusNow()
+    #@+node:ekr.20051007143620:printCommandsDict
+    def printCommandsDict (self):
+
+        c = self
+
+        print('Commands...')
+        for key in sorted(c.commandsDict):
+            command = c.commandsDict.get(key)
+            print('%30s = %s' % (
+                key,g.choose(command,command.__name__,'<None>')))
+        print('')
+    #@-node:ekr.20051007143620:printCommandsDict
+    #@-node:ekr.20050920093543:c.finishCreate & helper
+    #@+node:ekr.20041130173135:c.hash
+    def hash (self):
+
+        c = self
+        if c.mFileName:
+            return c.os_path_finalize(c.mFileName).lower()
+        else:
+            return 0
+    #@-node:ekr.20041130173135:c.hash
+    #@+node:ekr.20081005065934.1:c.initAfterLoad
+    def initAfterLoad (self):
+
+        '''Provide an offical hook for late inits of the commander.'''
+
+        pass
+    #@nonl
+    #@-node:ekr.20081005065934.1:c.initAfterLoad
+    #@+node:ekr.20090213065933.6:c.initConfigSettings
+    def initConfigSettings (self):
+
+        '''Init all cached commander config settings.'''
+
+        c = self ; cf = c.config
+
+        c.autoindent_in_nocolor = cf.getBool('autoindent_in_nocolor_mode')
+        c.contractVisitedNodes  = cf.getBool('contractVisitedNodes')
+        c.fixed                 = cf.getBool('fixedWindow',False)
+        c.fixedWindowPosition   = cf.getData('fixedWindowPosition')
+        c.showMinibuffer        = cf.getBool('useMinibuffer')
+        c.sparse_goto_parent    = cf.getBool('sparse_goto_parent')
+        c.stayInTree            = cf.getBool('stayInTreeAfterSelect')
+        c.smart_tab             = cf.getBool('smart_tab')
+            # Note: there is also a smart_auto_indent setting.
+        c.tab_width             = cf.getInt('tab_width') or -4
+
+        # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))
+
+    #@-node:ekr.20090213065933.6:c.initConfigSettings
     #@+node:ekr.20040731071037:c.initIvars
     def initIvars(self):
 
@@ -217,70 +286,21 @@ class baseCommands (object):
         self.config = configSettings(c)
         g.app.config.setIvarsFromSettings(c)
     #@-node:ekr.20040731071037:c.initIvars
-    #@+node:ekr.20081005065934.1:c.initAfterLoad
-    def initAfterLoad (self):
-
-        '''Provide an offical hook for late inits of the commander.'''
-
-        pass
-    #@nonl
-    #@-node:ekr.20081005065934.1:c.initAfterLoad
-    #@+node:ekr.20031218072017.2814:c.__repr__ & __str__
-    def __repr__ (self):
-
-        return "Commander %d: %s" % (id(self),repr(self.mFileName))
-
-    __str__ = __repr__
-    #@-node:ekr.20031218072017.2814:c.__repr__ & __str__
-    #@+node:ekr.20041130173135:c.hash
-    def hash (self):
-
-        c = self
-        if c.mFileName:
-            return c.os_path_finalize(c.mFileName).lower()
-        else:
-            return 0
-    #@-node:ekr.20041130173135:c.hash
-    #@+node:ekr.20050920093543:c.finishCreate & helper
-    def finishCreate (self,initEditCommanders=True):  # New in 4.4.
-
-        '''Finish creating the commander after frame.finishCreate.
-
-        Important: this is the last step in the startup process.'''
-
-        c = self ; p = c.p
-        c.miniBufferWidget = c.frame.miniBufferWidget
-        # g.trace('Commands',c.fileName())
-
-        # Create a keyHandler even if there is no miniBuffer.
-        c.keyHandler = c.k = k = g.app.gui.createKeyHandlerClass(c,
-            useGlobalKillbuffer=True,
-            useGlobalRegisters=True)
-
-        if initEditCommanders:
-            # A 'real' .leo file.
-            import leo.core.leoEditCommands as leoEditCommands
-            c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
-            k.finishCreate()
-        else:
-            # A leoSettings.leo file.
-            c.commandsDict = {}
-
-        c.frame.log.finishCreate()
-        c.bodyWantsFocusNow()
-    #@+node:ekr.20051007143620:printCommandsDict
-    def printCommandsDict (self):
+    #@+node:ekr.20090213065933.7:c.setWindowPosition
+    def setWindowPosition (self):
 
         c = self
 
-        print('Commands...')
-        for key in sorted(c.commandsDict):
-            command = c.commandsDict.get(key)
-            print('%30s = %s' % (
-                key,g.choose(command,command.__name__,'<None>')))
-        print('')
-    #@-node:ekr.20051007143620:printCommandsDict
-    #@-node:ekr.20050920093543:c.finishCreate & helper
+        if c.fixedWindowPosition:
+            try:
+                w,h,l,t = self.fixedWindowPosition
+                c.fixedWindowPosition = int(w),int(h),int(l),int(t)
+            except Exception:
+                g.es_print('bad @data fixedWindowPosition',
+                    repr(self.fixedWindowPosition),color='red')
+        else:
+            c.windowPosition = 500,700,50,50 # width,height,left,top.
+    #@-node:ekr.20090213065933.7:c.setWindowPosition
     #@-node:ekr.20031218072017.2811: c.Birth & death
     #@+node:ekr.20031218072017.2817: doCommand
     command_count = 0
