@@ -82,7 +82,10 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     if not isValidPython(): return
     g.computeStandardDirectories()
     adjustSysPath()
-    gui,script,windowFlag = scanOptions()
+    fileName2,gui,script,windowFlag = scanOptions()
+    if fileName2: fileName = fileName2
+    # print ('runLeo.run: sys.argv %s' % sys.argv)
+    # print ('runLeo.run: fileName %s' % fileName)
     if pymacs: script,windowFlag = None,False
     verbose = script is None
     initApp(verbose)
@@ -129,6 +132,17 @@ def adjustSysPath ():
 def createFrame (fileName,relativeFileName,script):
 
     """Create a LeoFrame during Leo's startup process."""
+
+    # Only allow .zip and .leo files.
+    if fileName:
+        table = ('.leo','.zip',)
+        for ext in table:
+            if fileName.endswith(ext):
+                break
+        else:
+            g.es_print('invalid Leo file extension: %s' % (
+                relativeFileName))
+            fileName = relativeFileName = None
 
     # New in Leo 4.6: support for 'default_leo_file' setting.
     if not fileName and not script:
@@ -478,6 +492,7 @@ def scanOptions():
 
     parser = optparse.OptionParser()
     parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('-f', '--file',   dest="fileName")
     parser.add_option('--gui',          dest="gui")
     parser.add_option('--silent',       action="store_true",dest="silent")
     parser.add_option('--script',       dest="script")
@@ -498,6 +513,9 @@ def scanOptions():
             g.app.oneConfigFilename = path
         else:
             g.es_print('Invalid -c option: file not found:',path,color='red')
+
+    # -f or --file
+    fileName = options.fileName
 
     # -- gui
     gui = options.gui
@@ -536,7 +554,7 @@ def scanOptions():
 
     # Compute the return values.
     windowFlag = script and script_path_w
-    return gui, script, windowFlag
+    return fileName, gui, script, windowFlag
 #@-node:ekr.20080521132317.2:scanOptions
 #@+node:ekr.20040411081633:startPsyco
 def startPsyco ():
