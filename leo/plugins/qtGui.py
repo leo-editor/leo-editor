@@ -5246,7 +5246,8 @@ class leoQtColorizer:
         pass
 
     def scanColorDirectives(self,p):
-        return self.colorer.scanColorDirectives(p)
+        # return self.colorer.scanColorDirectives(p)
+        return self.colorer.findColorDirectives(p) 
 
     def updateSyntaxColorer (self,p):
         return self.colorer.updateSyntaxColorer(p)
@@ -6720,6 +6721,7 @@ class jEditColorizer:
         trace = False and not g.unitTesting
         verbose = False ; traceMatch = False
 
+        # Return immediately if syntax coloring has been disabled.
         if not self.flag:
             self.highlighter.setCurrentBlockState(-1)
             if trace and (self.initFlag or verbose):
@@ -6727,6 +6729,7 @@ class jEditColorizer:
                 g.trace('immediate return')
             return
 
+        # Reload all_s if the widget's text is known to have changed.
         if self.initFlag:
             self.initFlag = False
             self.all_s = self.w.getAllText()
@@ -6747,9 +6750,9 @@ class jEditColorizer:
         lastN,minimalMatch = 0,'' # Not used until there is a match.
         i = g.choose(lastFunc,lastMatch,offset)
 
-        # Make sure 
-        if not self.checkRecolor(offset,s):
-            return
+        # Make sure we are in synch with all_s.
+        # Reload all_s if we are not.
+        if not self.checkRecolor(offset,s): return
 
         # Set the values that depend on all_s.
         all_s = self.all_s
@@ -6758,6 +6761,7 @@ class jEditColorizer:
 
         if trace:g.trace(s)
 
+        # The main colorizing loop.
         while i < j:
             assert 0 <= i < len(all_s)
             progress = i
@@ -6888,42 +6892,6 @@ class jEditColorizer:
         h.setCurrentBlockState(n)
     #@-node:ekr.20090211072718.3:setCurrentState
     #@-node:ekr.20081206062411.12:recolor & helpers
-    #@+node:ekr.20081205131308.26:scanColorDirectives
-    def scanColorDirectives(self,p):
-
-        '''Scan position p and p's ancestors looking for @comment,
-        @language and @root directives,
-        setting corresponding colorizer ivars.'''
-
-        c = self.c
-        if not c: return # May be None for testing.
-
-        table = (
-            ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
-            ('root',        c.scanAtRootDirectives),
-        )
-
-        # Set d by scanning all directives.
-        aList = g.get_directives_dict_list(p)
-        d = {}
-        for key,func in table:
-            val = func(aList)
-            if val: d[key]=val
-
-        # Post process.
-        lang_dict       = d.get('lang-dict')
-        self.rootMode   = d.get('root') or None
-
-        if lang_dict:
-            self.language       = lang_dict.get('language')
-            self.comment_string = lang_dict.get('comment')
-        else:
-            self.language       = c.target_language and c.target_language.lower()
-            self.comment_string = None
-
-        # g.trace('self.language',self.language)
-        return self.language # For use by external routines.
-    #@-node:ekr.20081205131308.26:scanColorDirectives
     #@+node:ekr.20081206062411.14:setTag
     def setTag (self,tag,s,i,j):
 
@@ -6971,7 +6939,6 @@ class jEditColorizer:
 
         # self.flag is True unless an unambiguous @nocolor is seen.
         self.flag = self.useSyntaxColoring(p)
-        self.scanColorDirectives(p)
         if trace: g.trace(self.flag,p.h)
         return self.flag
     #@nonl
@@ -6985,27 +6952,23 @@ class jEditColorizer:
         if not p:
             if trace: g.trace('no p',repr(p))
             return False
-        p = p.copy() ; first = p.copy()
-        val = True ; self.killcolorFlag = False
 
-        # New in Leo 4.6: @nocolor-node disables one node only.
-        theDict = g.get_directives_dict(p)
-        if 'nocolor-node' in theDict:
-            if trace: g.trace('nocolor-node',p.h)
-            return False
-
-        kind = None
+        self.killcolorFlag = False
+        p = p.copy()
+        first = True ; kind = None ; val = True
         for p in p.self_and_parents_iter():
-            theDict = g.get_directives_dict(p)
-            no_color = 'nocolor' in theDict
-            color = 'color' in theDict
-            kill_color = 'killcolor' in theDict
+            d = self.findColorDirectives(p)
+            color,no_color = 'color' in d,'nocolor' in d
+            # An @nocolor-node in the first node disabled coloring.
+            if first and 'nocolor-node' in d:
+                kind = '@nocolor-node'
+                val = False ; self.killcolorFlag = True ; break
             # A killcolor anywhere disables coloring.
-            if kill_color:
+            elif 'killcolor' in d:
                 kind = '@killcolor %s' % p.h
                 val = False ; self.killcolorFlag = True ; break
             # A color anywhere in the target enables coloring.
-            if color and p == first:
+            elif color and first:
                 kind = '@color %s' % p.h
                 val = True ; break
             # Otherwise, the @nocolor specification must be unambiguous.
@@ -7015,10 +6978,38 @@ class jEditColorizer:
             elif color and not no_color:
                 kind = '@color %s' % p.h
                 val = True ; break
+            first = False
 
-        if trace: g.trace(val,kind,g.callers(5))
+        if trace: g.trace(val,kind)
         return val
     #@-node:ekr.20081205131308.23:useSyntaxColoring
+    #@+node:ekr.20090214075058.11:getColorDirectivesDict
+    #@-node:ekr.20090214075058.11:getColorDirectivesDict
+    #@+node:ekr.20090214075058.12:findColorDirectives
+    # The caller passes [root_node] or None as the second arg.
+    # This allows us to distinguish between None and [None].
+
+    color_directives_pat = re.compile(
+        r'(^@color|^@killcolor|^@nocolor|^@nocolor-node)'
+        ,re.MULTILINE)
+
+    def findColorDirectives (self,p):
+
+        '''Scan p for @color, @killcolor, @nocolor and @nocolor-node directives.
+
+        Return a dict containing pointers to the start of each directive.'''
+
+        trace = False and not g.unitTesting
+
+        d = {}
+        anIter = self.color_directives_pat.finditer(p.b)
+        for m in anIter:
+            word = m.group(0)
+            d[word] = word
+
+        if trace: g.trace(d)
+        return d
+    #@-node:ekr.20090214075058.12:findColorDirectives
     #@-others
 #@-node:ekr.20081205131308.48:class jeditColorizer
 #@-node:ekr.20081204090029.1:Syntax coloring

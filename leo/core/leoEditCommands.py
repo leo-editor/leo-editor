@@ -3065,7 +3065,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         w.seeInsertPoint()
     #@-node:ekr.20051026171121:insertNewlineHelper
-    #@+node:ekr.20051026171121.1:udpateAutoIndent
+    #@+node:ekr.20051026171121.1:updateAutoIndent (leoEditCommands)
     def updateAutoIndent (self,p,w):
 
         c = self.c ; d = c.scanAllDirectives(p)
@@ -3084,7 +3084,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         if s and s [-1] == ':':
             # For Python: increase auto-indent after colons.
-            if g.scanColorDirectives(c,p) == 'python':
+            if g.findLanguageDirectives(c,p) == 'python':
                 width += abs(tab_width)
         if self.smartAutoIndent:
             # Determine if prev line has unclosed parens/brackets/braces
@@ -3102,7 +3102,7 @@ class editCommandsClass (baseEditCommandsClass):
             i = w.getInsertPoint()
             w.insert(i,ws)
             w.setInsertPoint(i+len(ws))
-    #@-node:ekr.20051026171121.1:udpateAutoIndent
+    #@-node:ekr.20051026171121.1:updateAutoIndent (leoEditCommands)
     #@+node:ekr.20051027172949:updateAutomatchBracket
     def updateAutomatchBracket (self,p,w,ch,oldSel):
 
@@ -3139,7 +3139,7 @@ class editCommandsClass (baseEditCommandsClass):
         c = self.c
         d = c.scanAllDirectives(p)
         tab_width = d.get("tabwidth",c.tab_width)
-        g.trace('tab_width',tab_width)
+        # g.trace('tab_width',tab_width)
         i,j = w.getSelectionRange()
             # Returns insert point if no selection, with i <= j.
 

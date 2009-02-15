@@ -1313,8 +1313,123 @@ def setItemForCurrentPosition (self,scroll=True):
     return item
 #@-node:ekr.20090124174652.44:setItemForCurrentPosition (nativeTree)
 #@-node:ekr.20090201080444.1:Improved scrolling
+#@+node:ekr.20090215160745.10:Improved speed for scanning color directives
+#@+node:ekr.20081205131308.24:updateSyntaxColorer
+def updateSyntaxColorer (self,p):
+
+    trace = False and not g.unitTesting
+    p = p.copy()
+
+    # self.flag is True unless an unambiguous @nocolor is seen.
+    self.flag = self.useSyntaxColoring(p)
+    if trace: g.trace(self.flag,p.h)
+    return self.flag
+#@nonl
+#@-node:ekr.20081205131308.24:updateSyntaxColorer
+#@+node:ekr.20081205131308.23:useSyntaxColoring
+def useSyntaxColoring (self,p):
+
+    """Return True unless p is unambiguously under the control of @nocolor."""
+
+    trace = False and not g.unitTesting
+    if not p:
+        if trace: g.trace('no p',repr(p))
+        return False
+
+    self.killcolorFlag = False
+    p = p.copy()
+    first = True ; kind = None ; val = True
+    for p in p.self_and_parents_iter():
+        d = self.findColorDirectives(p)
+        color,no_color = 'color' in d,'nocolor' in d
+        # An @nocolor-node in the first node disabled coloring.
+        if first and 'nocolor-node' in d:
+            kind = '@nocolor-node'
+            val = False ; self.killcolorFlag = True ; break
+        # A killcolor anywhere disables coloring.
+        elif 'killcolor' in d:
+            kind = '@killcolor %s' % p.h
+            val = False ; self.killcolorFlag = True ; break
+        # A color anywhere in the target enables coloring.
+        elif color and first:
+            kind = '@color %s' % p.h
+            val = True ; break
+        # Otherwise, the @nocolor specification must be unambiguous.
+        elif no_color and not color:
+            kind = '@nocolor %s' % p.h
+            val = False ; break
+        elif color and not no_color:
+            kind = '@color %s' % p.h
+            val = True ; break
+        first = False
+
+    if trace: g.trace(val,kind)
+    return val
+#@-node:ekr.20081205131308.23:useSyntaxColoring
+#@+node:ekr.20090214075058.12:findColorDirectives
+# The caller passes [root_node] or None as the second arg.
+# This allows us to distinguish between None and [None].
+
+color_directives_pat = re.compile(
+    r'(^@color|^@killcolor|^@nocolor|^@nocolor-node)'
+    ,re.MULTILINE)
+
+def findColorDirectives (self,p):
+
+    '''Scan p for @color, @killcolor, @nocolor and @nocolor-node directives.
+
+    Return a dict containing pointers to the start of each directive.'''
+
+    trace = False and not g.unitTesting
+
+    d = {}
+    anIter = self.color_directives_pat.finditer(p.b)
+    for m in anIter:
+        word = m.group(0)
+        d[word] = word
+
+    if trace: g.trace(d)
+    return d
+#@-node:ekr.20090214075058.12:findColorDirectives
+#@-node:ekr.20090215160745.10:Improved speed for scanning color directives
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
+#@+node:ekr.20081205131308.26:scanColorDirectives (very slow!)
+# def scanColorDirectives(self,p):
+
+    # '''Scan position p and p's ancestors looking for @comment,
+    # @language and @root directives,
+    # setting corresponding colorizer ivars.'''
+
+    # c = self.c
+    # if not c: return # May be None for testing.
+
+    # table = (
+        # ('lang-dict',   g.scanAtCommentAndAtLanguageDirectives),
+        # ('root',        c.scanAtRootDirectives),
+    # )
+
+    # # Set d by scanning all directives.
+    # aList = g.get_directives_dict_list(p)
+    # d = {}
+    # for key,func in table:
+        # val = func(aList)
+        # if val: d[key]=val
+
+    # # Post process.
+    # lang_dict       = d.get('lang-dict')
+    # self.rootMode   = d.get('root') or None
+
+    # if lang_dict:
+        # self.language       = lang_dict.get('language')
+        # self.comment_string = lang_dict.get('comment')
+    # else:
+        # self.language       = c.target_language and c.target_language.lower()
+        # self.comment_string = None
+
+    # # g.trace('self.language',self.language)
+    # return self.language # For use by external routines.
+#@-node:ekr.20081205131308.26:scanColorDirectives (very slow!)
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl

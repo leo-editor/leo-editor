@@ -71,19 +71,21 @@ body_ignored_newline = '\r'
 # Visible externally so plugins may add to the list of directives.
 
 globalDirectiveList = [
-    # New in Leo 4.6:
+
+    # Longer prefixes must appear before shorter.
+    'all',
+    'code','color', 'comment','c',
+    'delims','doc','encoding','end_raw',
+    'first','header','ignore','killcolor',
+    'language','last','lineending',
     'markup', # Make this an official directive,
-              # even if the color_markup directive is not enabled.
-    'nocolor-node',
-    # New in Leo 4.4.4: these used to be in leoKeywords.
-    'all','c','code','delims','doc','end_raw',
-    'first','last','others','raw','root-code','root-doc',
-    # Old.
-    "color", "comment", "encoding", "header", "ignore", "killcolor",
-    "language", "lineending", "nocolor", "noheader", "nowrap",
-    "pagewidth", "path", "quiet", "root", "silent",
-    "tabwidth", "terse", "unit", "verbose", "wrap",
+    'nocolor-node','nocolor','noheader','nowrap',
+    'others','pagewidth','path','quiet',
+    'raw','root-code','root-doc','root','silent',
+    'tabwidth', 'terse',
+    'unit','verbose', 'wrap',
 ]
+#@nonl
 #@-node:EKR.20040610094819:<< define global data structures >>
 #@nl
 
@@ -325,6 +327,10 @@ def startupEncoding ():
 #@-node:ekr.20041117151301.1:startupEncoding
 #@-node:ekr.20050304072744:Compute directories... (leoGlobals)
 #@+node:ekr.20031218072017.1380:g.Directive utils...
+# New in Leo 4.6:
+# g.findAtTabWidthDirectives, g.findLanguageDirectives and
+# g.get_directives_dict use re module for faster searching.
+#@nonl
 #@+node:EKR.20040504150046.4:g.comment_delims_from_extension
 def comment_delims_from_extension(filename):
 
@@ -372,6 +378,62 @@ def computeRelativePath (path):
     # We want a *relative* path, not an absolute path.
     return path
 #@-node:ekr.20071109165315:g.computeRelativePath
+#@+node:ekr.20090214075058.8:g.findAtTabWidthDirectives (must be fast)
+g_tabwidth_pat = re.compile(r'(^@tabwidth)',re.MULTILINE)
+
+def findTabWidthDirectives(c,p):
+
+    '''Return the language in effect at position p.'''
+
+    if c is None:
+        return # c may be None for testing.
+
+    w = None
+    for p in p.self_and_parents_iter(copy=True):
+        if w: break
+        for s in p.h,p.b:
+            if w: break
+            anIter = g_tabwidth_pat.finditer(s)
+            for m in anIter:
+                word = m.group(0)
+                i = m.start(0)
+                j = g.skip_ws(s,i + len(word))
+                junk,w = g.skip_long(s,j)
+                if w == 0: w = None
+    return w
+#@-node:ekr.20090214075058.8:g.findAtTabWidthDirectives (must be fast)
+#@+node:ekr.20090214075058.6:g.findLanguageDirectives (must be fast)
+g_language_pat = re.compile(r'(^@language)',re.MULTILINE)
+
+def findLanguageDirectives(c,p):
+
+    '''Return the language in effect at position p.'''
+
+    trace = True and not g.unitTesting
+
+    if c is None:
+        return # c may be None for testing. 
+    if c.target_language:
+        language = c.target_language.lower()
+    else:
+        language = 'python'
+    found = False
+    for p in p.self_and_parents_iter(copy=True):
+        if found: break
+        for s in p.h,p.b:
+            if found: break
+            anIter = g_language_pat.finditer(s)
+            for m in anIter:
+                word = m.group(0)
+                i = m.start(0)
+                j = i + len(word)
+                k = g.skip_line(s,j)
+                language = s[j:k].strip()
+                found = True
+
+    g.trace(language)
+    return language
+#@-node:ekr.20090214075058.6:g.findLanguageDirectives (must be fast)
 #@+node:ekr.20031218072017.1385:g.findReference
 #@+at 
 #@nonl
@@ -392,80 +454,79 @@ def findReference(c,name,root):
     # g.trace("not found:",name,root)
     return c.nullPosition()
 #@-node:ekr.20031218072017.1385:g.findReference
-#@+node:ekr.20031218072017.1260:g.get_directives_dict
-# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
+#@+node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+# The caller passes [root_node] or None as the second arg.
+# This allows us to distinguish between None and [None].
+
+g_noweb_root = re.compile('<'+'<'+'*'+'>'+'>'+'=',re.MULTILINE)
 
 def get_directives_dict(p,root=None):
 
-    """Scans root for @directives found in globalDirectiveList.
+    """Scan p for @directives found in globalDirectiveList.
 
     Returns a dict containing pointers to the start of each directive"""
 
-    trace = False
-    global globalDirectiveList
+    trace = False and not g.unitTesting
 
     if root: root_node = root[0]
-    d = {'_p':p.copy()}
+    d = {} ##### '_p':p.copy()}
+
+    # Do this every time so plugins can add directives.
+    pat = g.compute_directives_re()
+    directives_pat = re.compile(pat,re.MULTILINE)
 
     # The headline has higher precedence because it is more visible.
-    for kind,s in (
-        ('body',p.v.t._headString),
-        ('head',p.v.t._bodyString),
-    ):
-        i = 0 ; n = len(s)
-        while i < n:
-            if s[i] == '@' and i+1 < n:
-                #@                << set d for @ directives >>
-                #@+node:ekr.20031218072017.1261:<< set d for @ directives >>
-                j = g.skip_id(s,i+1,chars='-')
-                word = s[i+1:j]
+    for kind,s in (('body',p.h),('head',p.b)):
+        anIter = directives_pat.finditer(s)
+        for m in anIter:
+            word = m.group(0)[1:] # Omit the @
+            i = m.start(0)
+            if word not in d:
+                j = i + 1 + len(word)
+                k = g.skip_line(s,j)
+                val = s[j:k].strip()
+                if trace: g.trace(word,repr(val))
+                d[word] = val
 
-                if word in globalDirectiveList:
-                    if d.get(word):
-                        # Ignore second value.
-                        pass
-                        # g.es("warning: conflicting values for",word,color="blue")
-                    else:
-                        k = g.skip_line(s,j)
-                        d[word] = s[j:k].strip()
-                #@nonl
-                #@-node:ekr.20031218072017.1261:<< set d for @ directives >>
-                #@nl
-            elif kind == 'body' and root and g.match(s,i,"<<"):
-                #@                << set d["root"] for noweb * chunks >>
-                #@+node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
-                #@+at 
-                #@nonl
-                # The following looks for chunk definitions of the form < < * 
-                # > > =. If found, we take this to be equivalent to @root 
-                # filename if the headline has the form @root filename.
-                #@-at
-                #@@c
+    if root:
+        anIter = g_noweb_root.finditer(p.b)
+        for m in anIter:
+            if root_node:
+                d["root"]=0 # value not immportant
+            else:
+                g.es('%s= requires @root in the headline' % (
+                    g.angleBrackets('*')))
+            break
 
-                i = g.skip_ws(s,i+2)
-
-                if i < n and s[i] == '*' :
-                    i = g.skip_ws(s,i+1) # Skip the '*'
-                    if g.match(s,i,">>="):
-                        # < < * > > = implies that @root should appear in the headline.
-                        i += 3
-                        if root_node:
-                            d["root"]=0 # value not immportant
-                        else:
-                            g.es('',g.angleBrackets("*") + "= requires @root in the headline")
-                #@-node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
-                #@nl
-            i = g.skip_line(s,i)
-
-    if trace: g.trace(p.h,d)
+    if trace: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers(5))
     return d
-#@-node:ekr.20031218072017.1260:g.get_directives_dict
-#@+node:ekr.20080827175609.1:g.get_directives_dict_list
+#@+node:ekr.20090214075058.10:compute_directives_re
+def compute_directives_re ():
+
+    '''Return an re pattern which will match all Leo directives.'''
+
+    global globalDirectiveList
+
+    aList = ['^@%s' % z for z in globalDirectiveList
+                if z != 'others']
+
+    # @others can have leading whitespace.
+    aList.append(r'^\s@others')
+
+    return '|'.join(aList)
+#@-node:ekr.20090214075058.10:compute_directives_re
+#@-node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+#@+node:ekr.20080827175609.1:g.get_directives_dict_list (must be fast)
 def get_directives_dict_list(p1):
 
     """Scans p and all its ancestors for directives.
 
-    Returns a list of dicts containing pointers to the start of each directive"""
+    Returns a list of dicts containing pointers to
+    the start of each directive"""
+
+    trace = False and not g.unitTesting
+
+    if trace: time1 = g.getTime()
 
     result = [] ; p1 = p1.copy()
 
@@ -474,8 +535,12 @@ def get_directives_dict_list(p1):
         else:             root = [p.copy()]
         result.append(g.get_directives_dict(p,root=root))
 
+    if trace:
+        n = len(p1.h) + len(p1.b)
+        g.trace('%4d %s' % (n,g.timeSince(time1)))
+
     return result
-#@-node:ekr.20080827175609.1:g.get_directives_dict_list
+#@-node:ekr.20080827175609.1:g.get_directives_dict_list (must be fast)
 #@+node:ekr.20031218072017.1386:g.getOutputNewline
 def getOutputNewline (c=None,name=None):
 
@@ -661,25 +726,6 @@ def scanAtWrapDirectives(aList,issue_error_flag=False):
     return None
 #@nonl
 #@-node:ekr.20080831084419.4:g.scanAtWrapDirectives
-#@+node:ekr.20070302160802:g.scanColorDirectives
-def scanColorDirectives(c,p):
-
-    '''Return the language in effect at position p.'''
-
-    if c is None: return # c may be None for testing.
-
-    language = c.target_language and c.target_language.lower() or 'python'
-
-    p = p.copy()
-    for p in p.self_and_parents_iter():
-        d = g.get_directives_dict(p)
-        z = d.get('language')
-        if z is not None:
-            language,junk,junk,junk = g.set_language(z,0)
-            return language
-
-    return language
-#@-node:ekr.20070302160802:g.scanColorDirectives
 #@+node:ekr.20080901195858.4:g.scanDirectives  (for compatibility only)
 def scanDirectives(c,p=None):
 
@@ -733,90 +779,6 @@ def scanForAtSettings(p):
 
     return False
 #@-node:ekr.20041123094807:g.scanForAtSettings
-#@+node:ekr.20081001062423.9:g.setDefaultDirectory
-# This is a refactoring, used by leoImport.scanDefaultDirectory and
-# atFile.scanDefault directory
-
-def setDefaultDirectory(c,p,importing=False):
-
-    '''Set default_directory by scanning @path directives.
-    Return (default_directory,error_message).'''
-
-    default_directory = '' ; error = ''
-    if not p: return default_directory,error
-
-    #@    << Set path from @file node >>
-    #@+node:ekr.20081001062423.10:<< Set path from @file node >>
-    # An absolute path in an @file node over-rides everything else.
-    # A relative path gets appended to the relative path by the open logic.
-
-    name = p.anyAtFileNodeName()
-    theDir = g.choose(name,g.os_path_dirname(name),None)
-
-    if theDir and g.os_path_isabs(theDir):
-        if g.os_path_exists(theDir):
-            default_directory = theDir
-        else:
-            default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-            if not default_directory:
-                error = "Directory \"%s\" does not exist" % theDir
-    #@-node:ekr.20081001062423.10:<< Set path from @file node >>
-    #@nl
-
-    if not default_directory:
-        # Scan for @path directives.
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        if path:
-            #@            << handle @path >>
-            #@+node:ekr.20081001062423.11:<< handle @path >>
-            path = g.computeRelativePath (path)
-
-            if path:
-                base = g.getBaseDirectory(c) # returns "" on error.
-                path = c.os_path_finalize_join(base,path)
-
-                if g.os_path_isabs(path):
-                    if g.os_path_exists(path):
-                        default_directory = path
-                    else:
-                        default_directory = g.makeAllNonExistentDirectories(path,c=c)
-                        if not default_directory:
-                            error = "invalid @path: %s" % path
-                        else:
-                            error = "ignoring bad @path: %s" % path
-            else:
-                error = "ignoring empty @path"
-            #@-node:ekr.20081001062423.11:<< handle @path >>
-            #@nl
-
-    if not default_directory:
-        #@        << Set current directory >>
-        #@+node:ekr.20081001062423.12:<< Set current directory >>
-        # This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
-
-        assert(not default_directory)
-
-        if c.frame:
-            base = g.getBaseDirectory(c) # returns "" on error.
-            for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
-                if theDir and len(theDir) > 0:
-                    theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
-                    if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-                        if g.os_path_exists(theDir):
-                            default_directory = theDir ; break
-                        else:
-                            default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-        #@-node:ekr.20081001062423.12:<< Set current directory >>
-        #@nl
-
-    if not default_directory and not importing:
-        # This should never happen: c.openDirectory should be a good last resort.
-        error = "No absolute directory specified anywhere."
-
-    # g.trace('returns',default_directory)
-    return default_directory, error
-#@-node:ekr.20081001062423.9:g.setDefaultDirectory
 #@+node:ekr.20031218072017.1382:g.set_delims_from_language
 # Returns a tuple (single,start,end) of comment delims
 
@@ -903,6 +865,90 @@ def set_language(s,i,issue_errors_flag=False):
 
     return None, None, None, None,
 #@-node:ekr.20031218072017.1384:g.set_language
+#@+node:ekr.20081001062423.9:g.setDefaultDirectory
+# This is a refactoring, used by leoImport.scanDefaultDirectory and
+# atFile.scanDefault directory
+
+def setDefaultDirectory(c,p,importing=False):
+
+    '''Set default_directory by scanning @path directives.
+    Return (default_directory,error_message).'''
+
+    default_directory = '' ; error = ''
+    if not p: return default_directory,error
+
+    #@    << Set path from @file node >>
+    #@+node:ekr.20081001062423.10:<< Set path from @file node >>
+    # An absolute path in an @file node over-rides everything else.
+    # A relative path gets appended to the relative path by the open logic.
+
+    name = p.anyAtFileNodeName()
+    theDir = g.choose(name,g.os_path_dirname(name),None)
+
+    if theDir and g.os_path_isabs(theDir):
+        if g.os_path_exists(theDir):
+            default_directory = theDir
+        else:
+            default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+            if not default_directory:
+                error = "Directory \"%s\" does not exist" % theDir
+    #@-node:ekr.20081001062423.10:<< Set path from @file node >>
+    #@nl
+
+    if not default_directory:
+        # Scan for @path directives.
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        if path:
+            #@            << handle @path >>
+            #@+node:ekr.20081001062423.11:<< handle @path >>
+            path = g.computeRelativePath (path)
+
+            if path:
+                base = g.getBaseDirectory(c) # returns "" on error.
+                path = c.os_path_finalize_join(base,path)
+
+                if g.os_path_isabs(path):
+                    if g.os_path_exists(path):
+                        default_directory = path
+                    else:
+                        default_directory = g.makeAllNonExistentDirectories(path,c=c)
+                        if not default_directory:
+                            error = "invalid @path: %s" % path
+                        else:
+                            error = "ignoring bad @path: %s" % path
+            else:
+                error = "ignoring empty @path"
+            #@-node:ekr.20081001062423.11:<< handle @path >>
+            #@nl
+
+    if not default_directory:
+        #@        << Set current directory >>
+        #@+node:ekr.20081001062423.12:<< Set current directory >>
+        # This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+        assert(not default_directory)
+
+        if c.frame:
+            base = g.getBaseDirectory(c) # returns "" on error.
+            for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+                if theDir and len(theDir) > 0:
+                    theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
+                    if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                        if g.os_path_exists(theDir):
+                            default_directory = theDir ; break
+                        else:
+                            default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        #@-node:ekr.20081001062423.12:<< Set current directory >>
+        #@nl
+
+    if not default_directory and not importing:
+        # This should never happen: c.openDirectory should be a good last resort.
+        error = "No absolute directory specified anywhere."
+
+    # g.trace('returns',default_directory)
+    return default_directory, error
+#@-node:ekr.20081001062423.9:g.setDefaultDirectory
 #@-node:ekr.20031218072017.1380:g.Directive utils...
 #@+node:ekr.20031218072017.3100:wrap_lines
 #@+at 
@@ -1825,6 +1871,9 @@ def printDiffTime(message, start):
     delta = time.clock()-start
     g.pr("%s %6.3f" % (message,delta))
     return time.clock()
+
+def timeSince(start):
+    return "%6.3f" % (time.clock()-start)
 #@-node:ekr.20031218072017.3137:Timing
 #@+node:ekr.20080531075119.1:class Tracer & g.startTracer
 class Tracer:

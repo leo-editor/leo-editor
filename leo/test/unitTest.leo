@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="352" height="930" width="862"/>
+	<global_window_position top="49" left="526" height="930" width="688"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1829,7 +1829,7 @@
 <v t="ekr.20071113202153.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194033.3"><vh>leoGlobals</vh>
-<v t="ekr.20050208051418" annotate="7d71002e"><vh> Unicode tests</vh>
+<v t="ekr.20050208051418" a="E" annotate="7d71002e"><vh> Unicode tests</vh>
 <v t="ekr.20050206090416"><vh>@test open non-existent non-ascii directory</vh></v>
 <v t="ekr.20050208051418.1"><vh>@test can't open message in g.openWithFileName</vh></v>
 <v t="ekr.20050208051854"><vh>@test atFile.printError</vh></v>
@@ -1860,7 +1860,7 @@
 <v t="ekr.20050105084757.1"><vh>@test g.utils_remove</vh></v>
 <v t="ekr.20050105091547"><vh>@test g.utils_rename</vh></v>
 <v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
-<v t="ekr.20080917151620.8"><vh>Directives, new</vh>
+<v t="ekr.20080917151620.8" a="E"><vh>Directives, new</vh>
 <v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
 <v t="ekr.20080917151620.10"><vh>@test c.scanAtRootDirectives root-code</vh></v>
 <v t="ekr.20080917151620.11"><vh>@test c.scanAtRootDirectives root-doc</vh></v>
@@ -2047,7 +2047,7 @@
 </v>
 <v t="ekr.20040712101754.182"></v>
 </v>
-<v t="ekr.20040712101754.187" a="E" annotate="7d71002e"><vh> Position tests</vh>
+<v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
 <v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
 <v t="ekr.20040712101754.184"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
 <v t="ekr.20040712101754.208" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
@@ -2089,7 +2089,7 @@
 </v>
 <v t="ekr.20090102061858.2"><vh>@test c.positionExists</vh></v>
 <v t="ekr.20090102062037.2"><vh>@test c.positionExists for all nodes</vh></v>
-<v t="ekr.20040802071519" a="E" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
@@ -2098,7 +2098,7 @@
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
 </v>
 <v t="ekr.20090130133404.2"><vh>@test leoNodes properties</vh></v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>Startup</vh></v>
@@ -2132,7 +2132,7 @@
 <v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
 </v>
 </v>
-<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -2359,7 +2359,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080729200342.119" a="E"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20080729200342.119"><vh>Other unit tests of shadowController</vh>
 <v t="ekr.20080729200342.120"><vh>@test x.baseDirName</vh></v>
 <v t="ekr.20080729200342.121"><vh>@test x.pathName</vh></v>
 <v t="ekr.20080729200342.122"><vh>@test x.dirName</vh></v>
@@ -2374,7 +2374,7 @@
 <v t="ekr.20080812114335.1"><vh>@test x.markerFromExtension</vh></v>
 <v t="ekr.20080822075239.1"><vh>@@test (minitest) x.show_error</vh></v>
 </v>
-<v t="ekr.20080729200342.130" a="E"><vh>Unit tests for atFileCommands</vh>
+<v t="ekr.20080729200342.130"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20080729200342.131"><vh>@test at.open/closeStringFile</vh></v>
 <v t="ekr.20080729200342.132"><vh>@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20080729200342.133"><vh>@test at.readOneAtShadowNode</vh>
@@ -17857,8 +17857,7 @@ assert d.get('tabwidth') == -4
 <t tx="ekr.20071113090055.2"># This will work regardless of where this method is.
 @language python
 
-# print 'c.frame.body.colorizer',c.frame.body.colorizer
-language = c.frame.body.colorizer.scanColorDirectives(p)
+language = g.findLanguageDirectives(c,p)
 assert language == 'python','got:%s' % language
 </t>
 <t tx="ekr.20071113090055.4"># This will work regardless of where this method is.
@@ -17881,7 +17880,7 @@ assert d.get('pagewidth') == 120
 @pagewidth 120
 
 d = c.atFileCommands.scanAllDirectives(p)
-
+# print d
 assert d.get('language') == 'python'
 assert d.get('tabwidth') == -4
 # assert d.get('path').endswith('xyzzy')
@@ -21647,7 +21646,7 @@ assert s == 'doc',repr(s)</t>
 
 d = g.get_directives_dict(p)
 
-assert d.get('_p') == p
+# assert d.get('_p') == p # Never used, and a bad idea.
 assert d.get('language') == 'python'
 assert d.get('tabwidth') == '-8'
 assert d.get('pagewidth') == '72'
@@ -21749,7 +21748,7 @@ assert s.endswith(end),repr(s)</t>
 aList = g.get_directives_dict_list(p)
 n = g.scanAtTabwidthDirectives(aList)
 
-assert n == 6</t>
+assert n == 6,repr(n)</t>
 <t tx="ekr.20080917151620.32">@tabwidth -6
 
 aList = g.get_directives_dict_list(p)

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -3370,20 +3370,20 @@ plugins_menu.py
 # threading_colorizer.py
 
 # open_shell.py
-#### ipython.py
-# open_with.py
-#### rClick.py
-#### toolbar.py
+ipython.py
+open_with.py
+rClick.py
+toolbar.py
 
 # add_directives.py # scan-directives hook not ready.
 # color_markup.py # Does not work with threading colorizer.
-#### rst3.py
-#### UNL.py
-#### open_with.py
-#### mod_scripting.py
-#### nav_buttons.py
-#### nodenavigator.py
-#### image.py
+rst3.py
+UNL.py
+
+mod_scripting.py
+nav_buttons.py
+nodenavigator.py
+image.py
 #### leo_to_html.py
 ####  vim.py
 #### xemacs.py
@@ -11200,7 +11200,7 @@ if 1:
 # test</t>
 <t tx="ekr.20090206124759.2">@nocolor-node
 </t>
-<t tx="ekr.20090211123924.1">@nocolor
+<t tx="ekr.20090211123924.1">@color
 
 import time
 

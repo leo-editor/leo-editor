@@ -3598,6 +3598,85 @@ if 0: # Set to 1 for lint-like testing.
 
     # return s
 #@-node:ekr.20050920084036.195:findFirstMatchFromList
+#@+node:ekr.20031218072017.1260:g.OLDget_directives_dict (very slow!) & helpers
+# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
+
+# def get_directives_dict(p,root=None):
+
+    # """Scans root for @directives found in globalDirectiveList.
+
+    # Returns a dict containing pointers to the start of each directive"""
+
+    # trace = True
+    # global globalDirectiveList
+
+    # if root: root_node = root[0]
+    # d = {'_p':p.copy()}
+
+    # # The headline has higher precedence because it is more visible.
+    # for kind,s in (('body',p.h),('head',p.b)):
+        # i = 0 ; n = len(s)
+        # while i < n:
+            # if s[i] == '@' and i+1 < n:
+                # << set d for @ directives >>
+            # elif kind == 'body' and root and g.match(s,i,"<<"):
+                # << set d["root"] for noweb * chunks >>
+            # i = g.skip_line(s,i)
+
+    # if trace: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers())
+    # return d
+#@+node:ekr.20031218072017.1261:<< set d for @ directives >>
+# j = g.skip_id(s,i+1,chars='-')
+# word = s[i+1:j]
+
+# if word in globalDirectiveList:
+    # if d.get(word):
+        # # Ignore second value.
+        # pass
+        # # g.es("warning: conflicting values for",word,color="blue")
+    # else:
+        # k = g.skip_line(s,j)
+        # d[word] = s[j:k].strip()
+#@nonl
+#@-node:ekr.20031218072017.1261:<< set d for @ directives >>
+#@+node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
+@ The following looks for chunk definitions of the form < < * > > =.
+If found, we take this to be equivalent to @root filename
+if the headline has the form @root filename.
+@c
+
+# i = g.skip_ws(s,i+2)
+
+# if i < n and s[i] == '*' :
+    # i = g.skip_ws(s,i+1) # Skip the '*'
+    # if g.match(s,i,">>="):
+        # # < < * > > = implies that @root should appear in the headline.
+        # i += 3
+        # if root_node:
+            # d["root"]=0 # value not immportant
+        # else:
+            # g.es('',g.angleBrackets("*") + "= requires @root in the headline")
+#@-node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
+#@-node:ekr.20031218072017.1260:g.OLDget_directives_dict (very slow!) & helpers
+#@+node:ekr.20070302160802:g.scanColorDirectives
+# def scanColorDirectives(c,p):
+
+    # '''Return the language in effect at position p.'''
+
+    # if c is None: return # c may be None for testing.
+
+    # language = c.target_language and c.target_language.lower() or 'python'
+
+    # p = p.copy()
+    # for p in p.self_and_parents_iter():
+        # d = g.get_directives_dict(p)
+        # z = d.get('language')
+        # if z is not None:
+            # language,junk,junk,junk = g.set_language(z,0)
+            # return language
+
+    # return language
+#@-node:ekr.20070302160802:g.scanColorDirectives
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node
