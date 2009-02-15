@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="13"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1060,6 +1060,7 @@
 <v t="ekr.20090206124759.2"><vh>Contains @nocolor</vh></v>
 <v t="ekr.20090212084402.1"><vh>qtGui.py (big)</vh></v>
 <v t="ekr.20090211123924.1"><vh>String test</vh></v>
+<v t="ekr.20090215164309.1"><vh>indented @others</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -19374,5 +19375,8 @@ class leoQtMinibuffer (leoQLineEditWidget):
 #@-node:ekr.20081121105001.188:@thin qtGui.py
 #@-leo
 </t>
+<t tx="ekr.20090215164309.1">class aClass:
+    @others
+    pass</t>
 </tnodes>
 </leo_file>

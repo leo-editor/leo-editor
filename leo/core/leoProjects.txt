@@ -13539,12 +13539,12 @@ def get_directives_dict(p,root=None):
         for m in anIter:
             word = m.group(0)[1:] # Omit the @
             i = m.start(0)
-            if word not in d:
+            if word.strip() not in d:
                 j = i + 1 + len(word)
                 k = g.skip_line(s,j)
                 val = s[j:k].strip()
                 if trace: g.trace(word,repr(val))
-                d[word] = val
+                d[word.strip()] = val
 
     if root:
         anIter = g_noweb_root.finditer(p.b)
