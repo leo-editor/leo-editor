@@ -272,6 +272,15 @@ if not g.unified_nodes:
             __get_t, __set_t,
             doc = "tnode unknownAttribute property")
         #@-node:ekr.20090130125002.4:t.u Property
+        #@+node:ekr.20090215165030.2:t.gnx Property
+        def __get_gnx(self):
+            t = self
+            return g.app.nodeIndices.toString(t.fileIndex)
+
+        gnx = property(
+            __get_gnx, # __set_gnx,
+            doc = "tnode gnx property")
+        #@-node:ekr.20090215165030.2:t.gnx Property
         #@-node:ekr.20090130065000.2:t Properties
         #@-others
 #@-node:ekr.20031218072017.3321:class tnode
@@ -944,6 +953,15 @@ class vnode (baseVnode):
         __get_u, __set_u,
         doc = "vnode unknownAttribute property")
     #@-node:ekr.20090130114732.6:v.u Property
+    #@+node:ekr.20090215165030.1:v.gnx Property
+    def __get_gnx(self):
+        v = self
+        return g.app.nodeIndices.toString(v.t.fileIndex)
+
+    gnx = property(
+        __get_gnx, # __set_gnx,
+        doc = "vnode gnx property")
+    #@-node:ekr.20090215165030.1:v.gnx Property
     #@-node:ekr.20090130065000.1:v.Properties
     #@-others
 #@nonl
@@ -1318,6 +1336,15 @@ class position (object):
         __get_h, __set_h,
         doc = "position headline string property")  
     #@-node:ekr.20090128083459.76:p.h property
+    #@+node:ekr.20090215165030.3:p.gnx property
+    def __get_gnx(self):
+        p = self
+        return g.app.nodeIndices.toString(p.v.t.fileIndex)
+
+    gnx = property(
+        __get_gnx, # __set_gnx,
+        doc = "position gnx property")
+    #@-node:ekr.20090215165030.3:p.gnx property
     #@-node:ekr.20090128083459.74:p.Properties
     #@+node:ekr.20040306212636:p.Getters
     #@+node:ekr.20040306210951:p.vnode proxies
