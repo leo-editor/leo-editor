@@ -5345,6 +5345,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
 
         s = unicode(self.w.toPlainText())
         self.colorer.init(p,s)
+        n = self.colorer.recolorCount
 
         if trace: g.trace('** enabled',self.enabled)
 
@@ -5352,6 +5353,11 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         # if the crucial 'currentBlock' method exists.
         if self.enabled and self.hasCurrentBlock:
             QtGui.QSyntaxHighlighter.rehighlight(self)
+
+        if trace:
+            g.trace('%s calls to recolor' % (
+                self.colorer.recolorCount-n))
+
 
 
     #@-node:ekr.20081206062411.15:rehighlight
@@ -8114,12 +8120,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         If insert is None, the insert point, selection range and scrollbars are initied.
         Otherwise, the scrollbars are preserved.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c,w = self.c,self.widget
         colorizer = c.frame.body.colorizer
         highlighter = colorizer.highlighter
         colorer = highlighter.colorer
-        n = colorer.recolorCount
 
         # Set a hook for the colorer.
         colorer.initFlag = True
@@ -8128,14 +8133,13 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         if insert is None: i,pos = 0,0
         else: i,pos = insert,sb.sliderPosition()
 
+        if trace: t1 = g.getTime()
         w.setPlainText(s)
+        if trace: g.trace(g.timeSince(t1))
 
         self.setSelectionRange(i,i,insert=i)
         sb.setSliderPosition(pos)
-
-        if trace:
-            g.trace('%s calls to recolor' % (
-                colorer.recolorCount-n))
+    #@nonl
     #@-node:ekr.20081121105001.587:setAllText
     #@+node:ekr.20081121105001.588:setInsertPoint
     def setInsertPoint(self,i):
