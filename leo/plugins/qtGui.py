@@ -5341,13 +5341,14 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
 
         '''Override base rehighlight method'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
+
+        if trace:
+            t1 = g.getTime()
+            n = self.colorer.recolorCount
 
         s = unicode(self.w.toPlainText())
         self.colorer.init(p,s)
-        n = self.colorer.recolorCount
-
-        if trace: g.trace('** enabled',self.enabled)
 
         # Call the base class method, but *only*
         # if the crucial 'currentBlock' method exists.
@@ -5355,8 +5356,8 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
             QtGui.QSyntaxHighlighter.rehighlight(self)
 
         if trace:
-            g.trace('%s calls to recolor' % (
-                self.colorer.recolorCount-n))
+            g.trace('%4s calls to recolor %s sec.' % (
+                self.colorer.recolorCount-n,g.timeSince(t1)))
 
 
 
