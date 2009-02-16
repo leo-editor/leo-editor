@@ -8120,7 +8120,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         If insert is None, the insert point, selection range and scrollbars are initied.
         Otherwise, the scrollbars are preserved.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c,w = self.c,self.widget
         colorizer = c.frame.body.colorizer
         highlighter = colorizer.highlighter
