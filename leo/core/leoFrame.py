@@ -2813,6 +2813,9 @@ class leoTree:
             pass
         else:
             # This destroys all color tags, so do a full recolor.
+            colorizer = c.frame.body.colorizer
+            if hasattr(colorizer,'setHighlighter'):
+                colorizer.setHighlighter(p)
             w.setAllText(s)
             self.frame.body.recolor(p)
 

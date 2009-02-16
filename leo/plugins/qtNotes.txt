@@ -1352,7 +1352,7 @@ def useSyntaxColoring (self,p):
             val = False ; self.killcolorFlag = True ; break
         # A color anywhere in the target enables coloring.
         elif color and first:
-            kind = '@color %s' % p.h
+            kind = 'color %s' % p.h
             val = True ; break
         # Otherwise, the @nocolor specification must be unambiguous.
         elif no_color and not color:
@@ -1385,7 +1385,9 @@ def findColorDirectives (self,p):
     d = {}
     anIter = self.color_directives_pat.finditer(p.b)
     for m in anIter:
-        word = m.group(0)
+        # Remove leading '@' for compatibility with
+        # functions in leoGlobals.py.
+        word = m.group(0)[1:]
         d[word] = word
 
     if trace: g.trace(d)

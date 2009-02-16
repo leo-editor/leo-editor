@@ -19375,7 +19375,9 @@ class leoQtMinibuffer (leoQLineEditWidget):
 #@-node:ekr.20081121105001.188:@thin qtGui.py
 #@-leo
 </t>
-<t tx="ekr.20090215164309.1">class aClass:
+<t tx="ekr.20090215164309.1">@nocolor
+
+class aClass:
     @others
     pass</t>
 </tnodes>

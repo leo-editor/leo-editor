@@ -5213,15 +5213,16 @@ class leoQtColorizer:
         if self.enabled:
             flag = self.updateSyntaxColorer(p) # Sets self.colorer.flag.
             if flag:
+                self.highlighter.enable(p)
                 # change = self.highlighter.restoreDocument()
                 if incremental:
                     pass
                 else:
                     self.highlighter.rehighlight(p)
             else:
-                pass
-                #### Does not work.
-                #### self.highlighter.setNullDocument()
+                self.highlighter.disable(p)
+        else:
+            self.highlighter.disable(p)
 
             # if trace and flag and not incremental:
                 # g.trace('*** flag %s incremental %s' % (
@@ -5229,6 +5230,22 @@ class leoQtColorizer:
 
         return "ok" # For unit testing.
     #@-node:ekr.20081205131308.18:colorize (leoQtColorizer)
+    #@+node:ekr.20090216070256.11:setHighlighter
+    def setHighlighter (self,p):
+
+        c = self.c
+
+        if self.enabled:
+            flag = self.updateSyntaxColorer(p)
+            if flag:
+                self.highlighter.enable(p)
+            else:
+                self.highlighter.disable(p)
+        else:
+            self.highlighter.disable(p)
+
+        # g.trace(flag,p.h)
+    #@-node:ekr.20090216070256.11:setHighlighter
     #@+node:ekr.20081207061047.10:entry points
     def disable (self):
         self.colorer.enabled=False
@@ -5240,7 +5257,7 @@ class leoQtColorizer:
         pass
 
     def isSameColorState (self):
-        return True ###
+        return True # Disable some logic in leoTree.select.
 
     def kill (self):
         pass
@@ -5261,7 +5278,7 @@ class leoQtColorizer:
 #@+node:ekr.20081205131308.27:leoQtSyntaxHighlighter
 # This is c.frame.body.colorizer.highlighter
 
-class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
+class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
 
     '''A subclass of QSyntaxHighlighter that overrides
     the highlightBlock and rehighlight methods.
@@ -5285,18 +5302,32 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
 
         self.colorizer = colorizer
 
-        self.colorer = jEditColorizer(
-            c,
+        self.colorer = jEditColorizer(c,
             colorizer=colorizer,
             highlighter=self,
             w=c.frame.body.bodyCtrl)
 
-        # We disable colorizing by selecting this document.
-        self.nullDocument = QtGui.QTextDocument()
-        self.normalDocument = QtGui.QTextDocument(w)
-
-        # self.restoreDocument()
+        self.enabled = True
+    #@nonl
     #@-node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter)
+    #@+node:ekr.20090216070256.10:enable/disable & disabledRehighlight
+    def enable (self,p):
+
+        if not self.enabled:
+            self.enabled = True
+            self.colorer.flag = True
+            # Do a full recolor, but only if we aren't changing nodes.
+            if self.c.currentPosition() == p:
+                self.rehighlight(p)
+
+    def disable (self,p):
+
+        if self.enabled:
+            self.enabled = False
+            self.colorer.flag = False
+            self.rehighlight(p) # Do a full recolor (to black)
+    #@nonl
+    #@-node:ekr.20090216070256.10:enable/disable & disabledRehighlight
     #@+node:ekr.20081205131308.11:highlightBlock
     def highlightBlock (self,s):
 
@@ -5315,30 +5346,15 @@ class leoQtSyntaxHighlighter (QtGui.QSyntaxHighlighter):
         s = unicode(self.w.toPlainText())
         self.colorer.init(p,s)
 
-        if trace: g.trace('**',g.callers(12))
+        if trace: g.trace('** enabled',self.enabled)
 
         # Call the base class method, but *only*
         # if the crucial 'currentBlock' method exists.
-        if self.hasCurrentBlock:
+        if self.enabled and self.hasCurrentBlock:
             QtGui.QSyntaxHighlighter.rehighlight(self)
 
 
     #@-node:ekr.20081206062411.15:rehighlight
-    #@+node:ekr.20090212093911.10:setNullDocument & restoreDocument
-    def setNullDocument (self):
-
-        pass
-        # g.trace('*****')
-        # self.setDocument(self.nullDocument)
-
-    def restoreDocument (self):
-
-        change = self.document() != self.normalDocument
-        # self.setDocument(self.normalDocument)
-        # # g.trace('*****','change',change)
-        # return change
-    #@nonl
-    #@-node:ekr.20090212093911.10:setNullDocument & restoreDocument
     #@-others
 #@-node:ekr.20081205131308.27:leoQtSyntaxHighlighter
 #@+node:ekr.20081205131308.48:class jeditColorizer
@@ -6223,7 +6239,7 @@ class jEditColorizer:
         if k is not None:
             j = k + 2
             self.colorRangeWithTag(s,i,i+2,'nameBrackets')
-            ref = g.findReference(c,s[i:j],p) #### self.p)
+            ref = g.findReference(c,s[i:j],p)
             if ref:
                 if self.use_hyperlinks:
                     #@                << set the hyperlink >>
@@ -6900,7 +6916,7 @@ class jEditColorizer:
         colorName = w.configDict.get(tag)
 
         # Munch the color name.
-        if not colorName or colorName == 'black':
+        if not colorName: #### or colorName == 'black':
             return
         if colorName[-1].isdigit() and colorName[0] != '#':
             colorName = colorName[:-1]
@@ -6923,7 +6939,7 @@ class jEditColorizer:
 
         if trace:
             kind = g.choose(ok,' ','***')
-            s2 = g.choose(ok,s[clip_i:clip_j],all_s[i:j]) #### was self.s
+            s2 = g.choose(ok,s[clip_i:clip_j],all_s[i:j])
             g.trace('%3s %3s %3s %3s %3s %3s %3s %s' % (
                 kind,tag,offset,i,j,lim_i,lim_j,s2))
 
@@ -6969,7 +6985,7 @@ class jEditColorizer:
                 val = False ; self.killcolorFlag = True ; break
             # A color anywhere in the target enables coloring.
             elif color and first:
-                kind = '@color %s' % p.h
+                kind = 'color %s' % p.h
                 val = True ; break
             # Otherwise, the @nocolor specification must be unambiguous.
             elif no_color and not color:
@@ -6983,8 +6999,6 @@ class jEditColorizer:
         if trace: g.trace(val,kind)
         return val
     #@-node:ekr.20081205131308.23:useSyntaxColoring
-    #@+node:ekr.20090214075058.11:getColorDirectivesDict
-    #@-node:ekr.20090214075058.11:getColorDirectivesDict
     #@+node:ekr.20090214075058.12:findColorDirectives
     # The caller passes [root_node] or None as the second arg.
     # This allows us to distinguish between None and [None].
@@ -7004,7 +7018,9 @@ class jEditColorizer:
         d = {}
         anIter = self.color_directives_pat.finditer(p.b)
         for m in anIter:
-            word = m.group(0)
+            # Remove leading '@' for compatibility with
+            # functions in leoGlobals.py.
+            word = m.group(0)[1:]
             d[word] = word
 
         if trace: g.trace(d)
@@ -8100,7 +8116,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         trace = False and not g.unitTesting
         c,w = self.c,self.widget
-        colorer = c.frame.body.colorizer.highlighter.colorer
+        colorizer = c.frame.body.colorizer
+        highlighter = colorizer.highlighter
+        colorer = highlighter.colorer
         n = colorer.recolorCount
 
         # Set a hook for the colorer.
@@ -8109,7 +8127,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         sb = w.verticalScrollBar()
         if insert is None: i,pos = 0,0
         else: i,pos = insert,sb.sliderPosition()
+
         w.setPlainText(s)
+
         self.setSelectionRange(i,i,insert=i)
         sb.setSliderPosition(pos)
 
