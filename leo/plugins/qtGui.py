@@ -319,7 +319,7 @@ class leoQtBody (leoFrame.leoBody):
                 top.ui.richTextEdit,
                 name = 'body',c=c) # A QTextEdit.
             self.bodyCtrl = w # The widget as seen from Leo's core.        
-            w.widget.connect(w.widget, QtCore.SIGNAL("textChanged()"), self.invalidateBodyCache)
+
 
             # Hook up the QSyntaxHighlighter
             self.colorizer = leoQtColorizer(c,w.widget)
@@ -430,11 +430,7 @@ class leoQtBody (leoFrame.leoBody):
         return self.widget.get(i,j)
 
     def getAllText (self):
-        if self.bodyCache is None:
-            #print "get text from cache"
-            self.bodyCache = self.widget.getAllText()
-        #print "use cache"
-        return self.bodyCache
+        return self.widget.getAllText()
 
     def getFocus (self):
         return self.widget.getFocus()
@@ -816,12 +812,6 @@ class leoQtBody (leoFrame.leoBody):
 
         return s
     #@-node:ekr.20081121105001.228:computeLabel
-    #@+node:ville.20090216190944.11:invalidateBodyCache
-    def invalidateBodyCache(self):
-        #print "invalidate"
-        self.bodyCache = None
-    #@nonl
-    #@-node:ville.20090216190944.11:invalidateBodyCache
     #@+node:ekr.20081121105001.229:createChapterIvar
     def createChapterIvar (self,w):
 
@@ -7628,7 +7618,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
 
         w = self.widget
         s = w.text()
-        return g.app.gui.toUnicode(s)
+        return unicode(s)
     #@nonl
     #@-node:ekr.20081121105001.551:getAllText
     #@+node:ekr.20081121105001.552:getInsertPoint
@@ -7783,6 +7773,7 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081121105001.564:getAllText
     def getAllText(self):
 
+
         w = self.widget
         s = w.text()
         s = g.app.gui.toUnicode(s)
@@ -7885,6 +7876,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         self.setConfig()
         self.setFontFromConfig()
         self.setColorFromConfig()
+        self.bodyCache = None
+        self.widget.connect(self.widget, QtCore.SIGNAL("textChanged()"), self.invalidateBodyCache)
     #@-node:ekr.20081121105001.574:ctor
     #@+node:ekr.20081121105001.575:setFontFromConfig
     def setFontFromConfig (self,w=None):
@@ -8005,6 +7998,12 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             g.trace('%s calls to recolor' % (
                 colorer.recolorCount-n))
     #@-node:ekr.20090205153624.11:delete (avoid call to setAllText)
+    #@+node:ville.20090216202611.10:invalidateBodyCache
+    def invalidateBodyCache(self):
+        #print "invalidate"
+        self.bodyCache = None
+    #@nonl
+    #@-node:ville.20090216202611.10:invalidateBodyCache
     #@+node:ekr.20081121105001.579:flashCharacter (leoQTextEditWidget)
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
 
@@ -8052,12 +8051,12 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@-node:ekr.20081121105001.579:flashCharacter (leoQTextEditWidget)
     #@+node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
     def getAllText(self):
-
         w = self.widget
-        s = w.toPlainText()
-        # g.trace(len(s),g.callers(5))
-        return unicode(s)
-    #@nonl
+        if self.bodyCache is None:
+            #print "get text from cache"
+            self.bodyCache = unicode(w.toPlainText())
+        #print "use cache"
+        return self.bodyCache
     #@-node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
     #@+node:ekr.20081121105001.581:getInsertPoint
     def getInsertPoint(self):
