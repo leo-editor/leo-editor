@@ -7003,7 +7003,7 @@ class jEditColorizer:
     # This allows us to distinguish between None and [None].
 
     color_directives_pat = re.compile(
-        r'(^@color|^@killcolor|^@nocolor|^@nocolor-node)'
+        r'^@(color|killcolor|nocolor|nocolor-node)'
         ,re.MULTILINE)
 
     def findColorDirectives (self,p):
@@ -7017,9 +7017,7 @@ class jEditColorizer:
         d = {}
         anIter = self.color_directives_pat.finditer(p.b)
         for m in anIter:
-            # Remove leading '@' for compatibility with
-            # functions in leoGlobals.py.
-            word = m.group(0)[1:]
+            word = m.group(1)
             d[word] = word
 
         if trace: g.trace(d)
