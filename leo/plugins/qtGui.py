@@ -304,6 +304,7 @@ class leoQtBody (leoFrame.leoBody):
 
         self.useScintilla = c.config.getBool('qt-use-scintilla')
 
+        self.bodyCache = None
         # Set the actual gui widget.
         if self.useScintilla:
             self.widget = w = leoQScintillaWidget(
@@ -317,7 +318,8 @@ class leoQtBody (leoFrame.leoBody):
             self.widget = w = leoQTextEditWidget(
                 top.ui.richTextEdit,
                 name = 'body',c=c) # A QTextEdit.
-            self.bodyCtrl = w # The widget as seen from Leo's core.
+            self.bodyCtrl = w # The widget as seen from Leo's core.        
+            w.widget.connect(w.widget, QtCore.SIGNAL("textChanged()"), self.invalidateBodyCache)
 
             # Hook up the QSyntaxHighlighter
             self.colorizer = leoQtColorizer(c,w.widget)
@@ -428,7 +430,11 @@ class leoQtBody (leoFrame.leoBody):
         return self.widget.get(i,j)
 
     def getAllText (self):
-        return self.widget.getAllText()
+        if self.bodyCache is None:
+            #print "get text from cache"
+            self.bodyCache = self.widget.getAllText()
+        #print "use cache"
+        return self.bodyCache
 
     def getFocus (self):
         return self.widget.getFocus()
@@ -810,6 +816,12 @@ class leoQtBody (leoFrame.leoBody):
 
         return s
     #@-node:ekr.20081121105001.228:computeLabel
+    #@+node:ville.20090216190944.11:invalidateBodyCache
+    def invalidateBodyCache(self):
+        #print "invalidate"
+        self.bodyCache = None
+    #@nonl
+    #@-node:ville.20090216190944.11:invalidateBodyCache
     #@+node:ekr.20081121105001.229:createChapterIvar
     def createChapterIvar (self,w):
 

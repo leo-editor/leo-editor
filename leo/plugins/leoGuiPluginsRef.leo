@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="52" left="436" height="991" width="913"/>
+	<global_window_position top="73" left="10" height="971" width="913"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20081121105001.1076" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20081121105001.1076" str_leo_pos="5,1,2,1,3,3,1"><vh>Startup</vh>
 <v t="ekr.20081121105001.1077"><vh>@chapters</vh></v>
 <v t="ekr.20081121105001.1078"><vh>@settings</vh>
 <v t="ekr.20081121105001.1079"><vh>@page http plugin</vh>
@@ -38,6 +38,7 @@
 <v t="ekr.20081215074704.16"><vh>Mark finds doesn't work in Qt gui plugin</vh></v>
 <v t="ekr.20081124094918.1"><vh>Fix problems with scim</vh></v>
 <v t="ekr.20081215074704.18"><vh>Finish qt gui delete_range method</vh></v>
+<v t="ekr.20090131123901.2"><vh>Sometime a plug box appears wrongly</vh></v>
 </v>
 <v t="ekr.20090128083504.1"><vh>Fix plugins 2</vh></v>
 <v t="ekr.20081215074704.19"><vh>Features 5</vh>
@@ -58,7 +59,7 @@
 <v t="ekr.20090126093408.1"><vh>@thin wxGui.py</vh></v>
 </v>
 <v t="ekr.20090124174652.7"><vh>@thin baseNativeTree.py</vh></v>
-<v t="ekr.20081121105001.1092"><vh>Qt gui</vh>
+<v t="ekr.20081121105001.1092" a="E"><vh>Qt gui</vh>
 <v t="ekr.20081121105001.1093"><vh>QDesigner files</vh>
 <v t="ekr.20081121105001.1094"><vh>@auto ../test/qtui_generate.py</vh></v>
 <v t="ekr.20081121105001.1095"><vh>@auto qt_main.py</vh></v>
@@ -66,7 +67,8 @@
 <v t="ekr.20081121105001.1097"><vh>@auto qt_quicksearch.py</vh></v>
 <v t="ekr.20081121105001.1098"><vh>@auto qt_quicksearch.ui</vh></v>
 </v>
-<v t="ekr.20081121105001.188"><vh>@thin qtGui.py</vh></v>
+<v t="ekr.20081121105001.188" a="E"
+expanded="ekr.20081121105001.194,ekr.20081121105001.205,ekr.20081121105001.206,ekr.20081121105001.212,ekr.20081121105001.227,ekr.20081121105001.235,ekr.20081121105001.236,ekr.20081121105001.238,ekr.20081121105001.471,ekr.20081121105001.513,ekr.20081205131308.27,ekr.20081121105001.515,ekr.20081121105001.516,ekr.20081121105001.521,ekr.20081121105001.524,ekr.20081121105001.541,ekr.20081121105001.572,ekr.20081121105001.573,ekr.20081121105001.578,"><vh>@thin qtGui.py</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -228,7 +230,17 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/1cce885a697d0236/
 Set focus in/out events.</t>
 <t tx="ekr.20081215074704.21"></t>
 <t tx="ekr.20081215162017.4"></t>
-<t tx="ekr.20081215162017.5"></t>
+<t tx="ekr.20081215162017.5">@
+
+The body part is a QFrame with QGridLayout.
+
+For an example, run this script:
+@c
+
+from PyQt4.QtGui import QTextEdit
+w = QTextEdit()
+c.frame.top.ui.leo_body_inner_frame.layout().addWidget(w,0,1)
+</t>
 <t tx="ekr.20090123073723.12">http://groups.google.com/group/leo-editor/browse_thread/thread/41870d58718b7b7a#</t>
 <t tx="ekr.20090128083504.1">@nocolor-node
 
@@ -274,5 +286,7 @@ Using r1372 and the Qt plugin, I get strange results with the recent-files menu 
 2. open an existing .leo file using file-&gt;open... (this opens a new window, window 2)
 3. go to the file-&gt;Recent-files menu item of window 1.  The file-list is duplicated.
 4. repeat step 2.  Now window 1's recent-files list is duplicated twice...</t>
+<t tx="ekr.20090131123901.2"># It may happen after a paste?
+</t>
 </tnodes>
 </leo_file>
