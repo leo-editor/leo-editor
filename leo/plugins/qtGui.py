@@ -5354,7 +5354,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
 
         '''Override base rehighlight method'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         if trace:
             t1 = g.getTime()
