@@ -319,7 +319,8 @@ class leoQtBody (leoFrame.leoBody):
                 top.ui.richTextEdit,
                 name = 'body',c=c) # A QTextEdit.
             self.bodyCtrl = w # The widget as seen from Leo's core.        
-            w.widget.connect(w.widget, QtCore.SIGNAL("textChanged()"), self.invalidateBodyCache)
+            w.widget.connect(w.widget, QtCore.SIGNAL("textChanged()"),
+                self.invalidateBodyCache)
 
             # Hook up the QSyntaxHighlighter
             self.colorizer = leoQtColorizer(c,w.widget)
@@ -431,9 +432,8 @@ class leoQtBody (leoFrame.leoBody):
 
     def getAllText (self):
         if self.bodyCache is None:
-            #print "get text from cache"
             self.bodyCache = self.widget.getAllText()
-        #print "use cache"
+            # g.trace('update cache',len(self.bodyCache),g.callers(5))
         return self.bodyCache
 
     def getFocus (self):
@@ -816,12 +816,13 @@ class leoQtBody (leoFrame.leoBody):
 
         return s
     #@-node:ekr.20081121105001.228:computeLabel
-    #@+node:ville.20090216190944.11:invalidateBodyCache
+    #@+node:ville.20090216190944.11:invalidateBodyCache (qtBody)
     def invalidateBodyCache(self):
-        #print "invalidate"
+
+        # g.trace(g.callers(4))
         self.bodyCache = None
-    #@nonl
-    #@-node:ville.20090216190944.11:invalidateBodyCache
+
+    #@-node:ville.20090216190944.11:invalidateBodyCache (qtBody)
     #@+node:ekr.20081121105001.229:createChapterIvar
     def createChapterIvar (self,w):
 
@@ -5404,7 +5405,6 @@ class jEditColorizer:
         self.global_i,self.global_j = 0,0 # The global bounds of colorizing.
         self.global_offset = 0
         self.hyperCount = 0
-        self.initFlag = False # True if recolor must reload self.all_s.
         self.defaultState = u'default-state:' # The name of the default state.
         self.minimalMatch = ''
         self.nextState = 1 # Dont use 0.
@@ -5783,7 +5783,6 @@ class jEditColorizer:
         self.all_s = s
         self.global_i,self.global_j = 0,0
         self.global_offset = 0
-        self.initFlag = False
         self.nextState = 1 # Dont use 0.
         self.stateDict = {}
         self.stateNameDict = {}
@@ -6759,18 +6758,11 @@ class jEditColorizer:
         # Return immediately if syntax coloring has been disabled.
         if not self.flag:
             self.highlighter.setCurrentBlockState(-1)
-            if trace and (self.initFlag or verbose):
-                self.initFlag = False
-                g.trace('immediate return')
+            if trace: g.trace('immediate return')
             return
 
         # Reload all_s if the widget's text is known to have changed.
-        if self.initFlag:
-            self.initFlag = False
-            self.all_s = self.w.getAllText()
-            if trace and verbose:
-                g.trace('**** set all_s: %s' % len(self.all_s),g.callers(5))
-
+        self.all_s = all_s = self.w.getAllText()
         all_s = self.all_s
         if not all_s: return
 
@@ -7324,7 +7316,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.selecting is guaranteed to be True during
         the entire selection process.'''
 
-        trace = False ; verbose = False
+        trace = True and not g.unitTesting ; verbose = False
         c = self.c ; p = c.currentPosition()
         tree = c.frame.tree ; w = self
 
@@ -7376,15 +7368,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         c.frame.body.updateEditors()
         # This will be called by onBodyChanged.
         # c.frame.tree.updateIcon(p)
-
-        if 1: # This works, and is probably better.
-            # Set a hook for the colorer.
-            colorer = c.frame.body.colorizer.highlighter.colorer
-            colorer.initFlag = True
-        else:
-            # Allow incremental recoloring.
-            c.incrementalRecolorFlag = True
-            c.outerUpdate()
     #@-node:ekr.20081121105001.536:onTextChanged (qtTree)
     #@+node:ekr.20081121105001.537:indexWarning
     warningsDict = {}
@@ -7990,9 +7973,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         if j is None: j = i+1
         j = self.toGuiIndex(j)
 
-        # Set a hook for the colorer.
-        colorer.initFlag = True
-
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
@@ -8097,10 +8077,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         c,w = self.c,self.widget
         colorer = c.frame.body.colorizer.highlighter.colorer
         n = colorer.recolorCount
-
-        # Set a hook for the colorer.
-        colorer.initFlag = True
-
         i = self.toGuiIndex(i)
 
         sb = w.verticalScrollBar()
@@ -8135,12 +8111,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         trace = False and not g.unitTesting
         c,w = self.c,self.widget
-        colorizer = c.frame.body.colorizer
-        highlighter = colorizer.highlighter
-        colorer = highlighter.colorer
-
-        # Set a hook for the colorer.
-        colorer.initFlag = True
+        # colorizer = c.frame.body.colorizer
+        # highlighter = colorizer.highlighter
+        # colorer = highlighter.colorer
 
         sb = w.verticalScrollBar()
         if insert is None: i,pos = 0,0
