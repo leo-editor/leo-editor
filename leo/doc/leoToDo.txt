@@ -24,6 +24,8 @@ Urgent: create a better tutorial.
 #@+node:ekr.20090214075058.1:Where is inheritance of directives explained??
 #@-node:ekr.20090214075058.1:Where is inheritance of directives explained??
 #@-node:ekr.20090216123307.3:Docs
+#@+node:ekr.20090216123307.4:Fix body-pane-out-of-synch bug
+#@-node:ekr.20090216123307.4:Fix body-pane-out-of-synch bug
 #@+node:ekr.20090210093316.3:Fix bug: @chapter problem with qt plugin
 @nocolor-node
 
