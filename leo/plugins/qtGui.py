@@ -8115,6 +8115,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         else: i,pos = insert,sb.sliderPosition()
 
         if trace: t1 = g.getTime()
+        self.invalidateBodyCache()
         w.setPlainText(s)
         if trace: g.trace(g.timeSince(t1))
 
