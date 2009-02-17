@@ -2704,12 +2704,13 @@ class leoTree:
             c.frame.tree.afterSelectHint(p,old_p)
 
         return val  # Don't put a return in a finally clause.
-    #@+node:ekr.20070423101911:treeSelectHelper
+    #@+node:ekr.20070423101911:selectHelper
     #  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
 
     def selectHelper (self,p,scroll):
 
-        trace = False ; verbose = False
+        trace = False and not g.unitTesting
+        verbose = False
         c = self.c ; frame = c.frame
         body = w = frame.body.bodyCtrl
         if not w: return # Defensive.
@@ -2757,6 +2758,10 @@ class leoTree:
             self.revertHeadline = p.h
             frame.setWrap(p)
             self.setBodyTextAfterSelect(p,old_p)
+
+            #### A major change.
+            if c.expandAllAncestors(p):
+                c.frame.tree.redraw_after_select(p)
             #@nonl
             #@-node:ekr.20040803072955.130:<< select the new node >>
             #@nl
@@ -2800,7 +2805,7 @@ class leoTree:
         g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
 
         return 'break' # Supresses unwanted selection.
-    #@-node:ekr.20070423101911:treeSelectHelper
+    #@-node:ekr.20070423101911:selectHelper
     #@+node:ekr.20090206153445.1:setBodyTextAfterSelect
     def setBodyTextAfterSelect (self,p,old_p):
 

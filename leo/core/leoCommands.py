@@ -6178,17 +6178,21 @@ class baseCommands (object):
 
         Return a flag telling whether a redraw is needed.'''
 
-        c = self ; cc = c.chapterController ; redraw_flag = False
+        trace = False and not g.unitTesting
+        c = self ; cc = c.chapterController
+        redraw_flag = False
         # inChapter = cc and cc.inChapter()
 
         for p in p.parents_iter():
-            if cc and p.h.startswith('@chapter'):
-                break
+            #### This is a special case for chapter selection ????
+            # if cc and p.h.startswith('@chapter'):
+                # break
             if not p.isExpanded():
                 # g.trace(p.h)
                 p.expand()
                 redraw_flag = True
 
+        if trace: g.trace(redraw_flag,repr(p and p.h),g.callers())
         return redraw_flag
     #@-node:ekr.20040803072955.143:c.expandAllAncestors
     #@+node:ekr.20080514131122.9:c.get/request/set_focus
@@ -6375,18 +6379,19 @@ class baseCommands (object):
         The intention is for the gui to just select the node
         if it is visible, and to completely redraw the screen otherwise.'''
 
+        trace = False and not g.unitTesting
+        if trace: g.trace('(Commands)',p and p.h or '<No p>', g.callers(4))
+
         c = self
 
-        c.expandAllAncestors(p)
+        flag = c.expandAllAncestors(p)
         c.selectPosition(p)
             # Required to update body pane.
             # Will call tree.before/afterSelect hint.
 
-        # This will be redundant if tree.before/afterSelectHint are functional,
-        # but this redundancy does not hurt.
-
-        # This causes double recoloring.
-        # c.frame.tree.redraw_after_select(p)
+        ####
+        if flag:
+            c.frame.tree.redraw_after_select(p)
 
         if setFocus: c.treeFocusHelper()
     #@-node:ekr.20090110073010.4:c.redraw_after_select

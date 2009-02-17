@@ -1864,16 +1864,16 @@ def getTime():
 
 def esDiffTime(message, start):
     delta = time.clock()-start
-    g.es('',"%s %6.3f" % (message,delta))
+    g.es('',"%s %6.3f sec." % (message,delta))
     return time.clock()
 
 def printDiffTime(message, start):
     delta = time.clock()-start
-    g.pr("%s %6.3f" % (message,delta))
+    g.pr("%s %6.3f sec." % (message,delta))
     return time.clock()
 
 def timeSince(start):
-    return "%6.3f" % (time.clock()-start)
+    return "%6.3f sec." % (time.clock()-start)
 #@-node:ekr.20031218072017.3137:Timing
 #@+node:ekr.20080531075119.1:class Tracer & g.startTracer
 class Tracer:

@@ -1283,18 +1283,391 @@ def getTime():
 
 def esDiffTime(message, start):
     delta = time.clock()-start
-    g.es('',"%s %6.3f" % (message,delta))
+    g.es('',"%s %6.3f sec." % (message,delta))
     return time.clock()
 
 def printDiffTime(message, start):
     delta = time.clock()-start
-    g.pr("%s %6.3f" % (message,delta))
+    g.pr("%s %6.3f sec." % (message,delta))
     return time.clock()
 
 def timeSince(start):
-    return "%6.3f" % (time.clock()-start)
+    return "%6.3f sec." % (time.clock()-start)
 #@-node:ekr.20031218072017.3137:Timing
 #@-node:ekr.20090214075058.7:Use re to scan for directives
+#@+node:ekr.20090210093316.3:@chapter problem with qt plugin
+@nocolor-node
+
+This has probably been fixed by the body-pane-out-of-synch bug fix.
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/cf688f9c47eb5fd7
+
+Hi. I have just tried new qt plug-in and found out that when I open a
+leo file with chapters, I can see in outline on the top node with
+headline @chapters. But when I click in any node, the @chapters node
+disappears and when I execute mini-buffer command select-chapter I can
+not see selected chapter until I click in top node in outline.
+
+I am using Windows Vista
+Leo Log Window...
+Leo 4.5.1 final, build  1.244 , September 14, 2008
+python 2.5.1, qt version 263169
+Windows 6, 0, 6001, 2, Service Pack 1
+Rev 1537
+
+Vitalije 
+#@nonl
+#@-node:ekr.20090210093316.3:@chapter problem with qt plugin
+#@+node:ekr.20090216123307.4:Fixed body-pane-out-of-synch bug
+@nocolor
+
+Note: putting nodes under the @chapters node is not recommended.
+
+here you are a file that requested to me. When I open it the tree pane
+appears fully contracted and no node is selected but the content of the
+body pane is that of the node named "Moment angular". Anyway I don't
+think the problem is in any particular file because I've observed this
+behavior in different files. In fact I've seen worse things:
+
+- I start it leo passing the filename as an argument
+- the file gets opened. Sometimes the tree pane is expanded and
+ sometimes it is fully collapsed
+- when the tree pane is fully collapsed sometimes the @chapters node is
+ selected and sometimes not.  In any case the body pane contents always
+ correspond to the most recently edited node of the file
+- I've also observed that if the tree pane is collapsed *and* the
+ @chapters node is selected then expanding the tr`ee results in the node
+ whose content is being displayed in the body pane being renamed to
+ @chapters
+
+I'm really sorry because I cannot reproduce this behavior systematically
+so maybe the attached file will work just fine for you. However I'm
+seeing the described behavior here quite often.
+
+@color
+#@+node:ekr.20070317131205.1:chapter.select & helpers
+def select (self,w=None,selectEditor=True):
+
+    '''Restore chapter information and redraw the tree when a chapter is selected.'''
+
+    if self.selectLockout: return
+
+    try:
+        self.selectLockout = True
+        self.chapterSelectHelper(w,selectEditor)
+        if self.cc.tt:
+            self.cc.tt.setTabLabel(self.name)
+    finally:
+        self.selectLockout = False
+#@+node:ekr.20070423102603.1:chapterSelectHelper
+def chapterSelectHelper (self,w=None,selectEditor=True):
+
+    c = self.c ; cc = self.cc ; name = self.name
+
+    # g.trace(name,'self.p',self.p) # ,'self.root',self.root) # 'w.leo_p',w and w.leo_p)
+
+    cc.selectedChapter = self
+
+    # Next, recompute p and possibly select a new editor.
+    if w:
+        assert w == c.frame.body.bodyCtrl
+        assert w.leo_p
+        # g.trace(name,'w.leo_p',w.leo_p,'p',p)
+        self.p = p = self.findPositionInChapter(w.leo_p)
+        if p != w.leo_p: g.trace('****** can not happen: lost p',w.leo_p)
+    else:
+        # This must be done *after* switching roots.
+        target_p = self.p or self.root.firstChild() or self.root
+        #g.trace(name,'target_p',target_p)
+        #g.trace(name,'self.p',self.p,'self.root',self.root)
+        self.p = p = self.findPositionInChapter(target_p)
+        if selectEditor:
+            w = self.findEditorInChapter(p)
+            c.frame.body.selectEditor(w) # Switches text.
+
+    if name == 'main' and cc.chaptersNode:
+        cc.chaptersNode.contract()    
+    c.hoistStack = self.hoistStack[:]
+
+    c.redraw_after_select(p)
+    g.doHook('hoist-changed',c=c)
+    c.bodyWantsFocusNow()
+#@nonl
+#@-node:ekr.20070423102603.1:chapterSelectHelper
+#@+node:ekr.20070317131708:chapter.findPositionInChapter
+def findPositionInChapter (self,p1,strict=False):
+
+    '''Return a valid position p such that p.v == v.'''
+
+    # Do nothing if the present position is in the proper chapter.
+    c = self.c ; name = self.name 
+
+    root = g.choose(self.name=='main',c.rootPosition(),self.root)
+    # g.trace('p1',p1)
+    if p1 and c.positionExists(p1,root=root):
+        # g.trace('using existing position',p)
+        return p1
+
+    if name == 'main':
+        for p in self.c.all_positions_with_unique_vnodes_iter():
+            if p.v == p1.v:
+                # g.trace('*** found in main chapter',p)
+                self.p = p.copy()
+                return self.p
+        if strict:
+            return None
+        else:
+            self.p = c.rootPosition()
+    else:
+        for p in self.root.self_and_subtree_iter():
+            # g.trace('testing',p,p1)
+            if p.v == p1.v:
+                # g.trace('*** found in chapter',p)
+                self.p = p.copy()
+                return self.p
+        if strict:
+            return None
+        else:
+            self.p = self.root.copy()
+
+    if 0:
+        self.error('***** chapter: %s findPositionInChapter: lost %s' % (
+            self.name,p1.v.t._headString))
+        g.trace(g.callers())
+
+    return self.p.copy()
+#@-node:ekr.20070317131708:chapter.findPositionInChapter
+#@+node:ekr.20070425175522:chapter.findEditorInChapter
+def findEditorInChapter (self,p):
+
+    '''return w, an editor displaying position p.'''
+
+    chapter = self ; c = self.c
+
+    w = c.frame.body.findEditorForChapter(chapter,p)
+    w.leo_chapter = chapter
+    w.leo_p = p and p.copy()
+    return w
+#@nonl
+#@-node:ekr.20070425175522:chapter.findEditorInChapter
+#@+node:ekr.20070615065222:chapter.positionIsInChapter
+def positionIsInChapter (self,p):
+
+    p2 = self.findPositionInChapter (p,strict=True)
+
+    # g.trace(self.name,'returns',p2)
+    return p2
+#@nonl
+#@-node:ekr.20070615065222:chapter.positionIsInChapter
+#@+node:ekr.20070529171934.1:chapter.rename (not used)
+def rename (self,newName):
+
+    p = self.root
+    s = '@chapter ' + newName
+    p.setHeadString(s)
+#@-node:ekr.20070529171934.1:chapter.rename (not used)
+#@-node:ekr.20070317131205.1:chapter.select & helpers
+#@+node:ekr.20040803072955.128:leoTree.select & helpers
+tree_select_lockout = False
+
+def select (self,p,scroll=True):
+
+    '''Select a node.
+    Never redraws outline, but may change coloring of individual headlines.
+    The scroll argument is used by tk to suppress scrolling while dragging.'''
+
+    if g.app.killed or self.tree_select_lockout: return None
+
+    try:
+        c = self.c ; old_p = c.p
+        val = 'break'
+        self.tree_select_lockout = True
+        c.frame.tree.beforeSelectHint(p,old_p)
+        val = self.selectHelper(p,scroll=scroll)
+    finally:
+        self.tree_select_lockout = False
+        c.frame.tree.afterSelectHint(p,old_p)
+
+    return val  # Don't put a return in a finally clause.
+#@+node:ekr.20070423101911:selectHelper
+#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+
+def selectHelper (self,p,scroll):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.p
+
+    if not p:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    if trace:
+        if verbose: g.trace(
+            '\nold:',old_p and old_p.h,'\nnew:',p and p.h)
+        else: g.trace(p and p.h)
+
+    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        if old_p:
+            << unselect the old node >>
+
+    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        << select the new node >>
+        if p and p != old_p: # Suppress duplicate call.
+            try: # may fail during initialization.
+                # p is NOT c.p here!
+                if 0: # Interferes with new colorizer.
+                    self.canvas.update_idletasks()
+                    self.scrollTo(p)
+                if scroll and g.app.gui.guiName() == 'tkinter':
+                    def scrollCallback(self=self,p=p):
+                        self.scrollTo(p)
+                    self.canvas.after(100,scrollCallback)
+            except Exception: pass
+        c.nodeHistory.update(p) # Remember this position.
+    c.setCurrentPosition(p)
+    << set the current node >>
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    return 'break' # Supresses unwanted selection.
+#@+node:ekr.20040803072955.129:<< unselect the old node >>
+# Remember the position of the scrollbar before making any changes.
+if body:
+    yview = body.getYScrollPosition()
+    insertSpot = c.frame.body.getInsertPoint()
+else:
+    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+    yview,insertSpot = None,0
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+
+if old_p:
+    old_p.v.t.scrollBarSpot = yview
+    old_p.v.t.insertSpot = insertSpot
+#@-node:ekr.20040803072955.129:<< unselect the old node >>
+#@+node:ekr.20040803072955.130:<< select the new node >>
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.h
+frame.setWrap(p)
+self.setBodyTextAfterSelect(p,old_p)
+
+#### A major change.
+if c.expandAllAncestors(p):
+    c.frame.tree.redraw_after_select(p)
+#@nonl
+#@-node:ekr.20040803072955.130:<< select the new node >>
+#@+node:ekr.20040803072955.133:<< set the current node >>
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+if self.use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
+
+if self.stayInTree:
+    c.treeWantsFocus()
+else:
+    c.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20040803072955.133:<< set the current node >>
+#@-node:ekr.20070423101911:selectHelper
+#@+node:ekr.20090206153445.1:setBodyTextAfterSelect
+def setBodyTextAfterSelect (self,p,old_p):
+
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = g.toUnicode(p.v.t._bodyString,"utf-8")
+    old_s = w.getAllText()
+
+    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        pass
+    else:
+        # This destroys all color tags, so do a full recolor.
+        colorizer = c.frame.body.colorizer
+        if hasattr(colorizer,'setHighlighter'):
+            colorizer.setHighlighter(p)
+        w.setAllText(s)
+        self.frame.body.recolor(p)
+
+    if p.v and p.v.t.scrollBarSpot != None:
+        first,last = p.v.t.scrollBarSpot
+        w.setYScrollPosition(first)
+
+    if p.v and p.v.t.insertSpot != None:
+        spot = p.v.t.insertSpot
+        w.setInsertPoint(spot)
+        w.see(spot)
+    else:
+        w.setInsertPoint(0)
+#@nonl
+#@-node:ekr.20090206153445.1:setBodyTextAfterSelect
+#@-node:ekr.20040803072955.128:leoTree.select & helpers
+#@+node:ekr.20040803072955.143:c.expandAllAncestors
+def expandAllAncestors (self,p):
+
+    '''Expand all ancestors without redrawing.
+
+    Return a flag telling whether a redraw is needed.'''
+
+    trace = False and not g.unitTesting
+    c = self ; cc = c.chapterController
+    redraw_flag = False
+    # inChapter = cc and cc.inChapter()
+
+    for p in p.parents_iter():
+        #### This is a special case for chapter selection ????
+        # if cc and p.h.startswith('@chapter'):
+            # break
+        if not p.isExpanded():
+            # g.trace(p.h)
+            p.expand()
+            redraw_flag = True
+
+    if trace: g.trace(redraw_flag,repr(p and p.h),g.callers())
+    return redraw_flag
+#@-node:ekr.20040803072955.143:c.expandAllAncestors
+#@+node:ekr.20090110073010.4:c.redraw_after_select
+def redraw_after_select(self,p,setFocus=False):
+
+    '''Redraw the screen after node p has been selected.
+
+    The intention is for the gui to just select the node
+    if it is visible, and to completely redraw the screen otherwise.'''
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('(Commands)',p and p.h or '<No p>', g.callers(4))
+
+    c = self
+
+    flag = c.expandAllAncestors(p)
+    c.selectPosition(p)
+        # Required to update body pane.
+        # Will call tree.before/afterSelect hint.
+
+    ####
+    if flag:
+        c.frame.tree.redraw_after_select(p)
+
+    if setFocus: c.treeFocusHelper()
+#@-node:ekr.20090110073010.4:c.redraw_after_select
+#@-node:ekr.20090216123307.4:Fixed body-pane-out-of-synch bug
 #@-node:ekr.20090213065933.12:Completed 3-day bugs
 #@+node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20081003084608.4:Not bugs
@@ -4780,18 +5153,19 @@ def redraw_after_select(self,p,setFocus=False):
     The intention is for the gui to just select the node
     if it is visible, and to completely redraw the screen otherwise.'''
 
+    trace = False and not g.unitTesting
+    if trace: g.trace('(Commands)',p and p.h or '<No p>', g.callers(4))
+
     c = self
 
-    c.expandAllAncestors(p)
+    flag = c.expandAllAncestors(p)
     c.selectPosition(p)
         # Required to update body pane.
         # Will call tree.before/afterSelect hint.
 
-    # This will be redundant if tree.before/afterSelectHint are functional,
-    # but this redundancy does not hurt.
-
-    # This causes double recoloring.
-    # c.frame.tree.redraw_after_select(p)
+    ####
+    if flag:
+        c.frame.tree.redraw_after_select(p)
 
     if setFocus: c.treeFocusHelper()
 #@-node:ekr.20090110073010.4:c.redraw_after_select
@@ -4839,12 +5213,13 @@ def select (self,p,scroll=True):
         c.frame.tree.afterSelectHint(p,old_p)
 
     return val  # Don't put a return in a finally clause.
-#@+node:ekr.20070423101911:treeSelectHelper
+#@+node:ekr.20070423101911:selectHelper
 #  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
 
 def selectHelper (self,p,scroll):
 
-    trace = False ; verbose = False
+    trace = False and not g.unitTesting
+    verbose = False
     c = self.c ; frame = c.frame
     body = w = frame.body.bodyCtrl
     if not w: return # Defensive.
@@ -4912,6 +5287,10 @@ if old_p:
 self.revertHeadline = p.h
 frame.setWrap(p)
 self.setBodyTextAfterSelect(p,old_p)
+
+#### A major change.
+if c.expandAllAncestors(p):
+    c.frame.tree.redraw_after_select(p)
 #@nonl
 #@-node:ekr.20040803072955.130:<< select the new node >>
 #@+node:ekr.20040803072955.133:<< set the current node >>
@@ -4932,7 +5311,7 @@ else:
     c.bodyWantsFocus()
 #@nonl
 #@-node:ekr.20040803072955.133:<< set the current node >>
-#@-node:ekr.20070423101911:treeSelectHelper
+#@-node:ekr.20070423101911:selectHelper
 #@+node:ekr.20090206153445.1:setBodyTextAfterSelect
 def setBodyTextAfterSelect (self,p,old_p):
 
@@ -6214,18 +6593,19 @@ def redraw_after_select(self,p,setFocus=False):
     The intention is for the gui to just select the node
     if it is visible, and to completely redraw the screen otherwise.'''
 
+    trace = False and not g.unitTesting
+    if trace: g.trace('(Commands)',p and p.h or '<No p>', g.callers(4))
+
     c = self
 
-    c.expandAllAncestors(p)
+    flag = c.expandAllAncestors(p)
     c.selectPosition(p)
         # Required to update body pane.
         # Will call tree.before/afterSelect hint.
 
-    # This will be redundant if tree.before/afterSelectHint are functional,
-    # but this redundancy does not hurt.
-
-    # This causes double recoloring.
-    # c.frame.tree.redraw_after_select(p)
+    ####
+    if flag:
+        c.frame.tree.redraw_after_select(p)
 
     if setFocus: c.treeFocusHelper()
 #@-node:ekr.20090110073010.4:c.redraw_after_select
@@ -6311,12 +6691,13 @@ def select (self,p,scroll=True):
         c.frame.tree.afterSelectHint(p,old_p)
 
     return val  # Don't put a return in a finally clause.
-#@+node:ekr.20070423101911:treeSelectHelper
+#@+node:ekr.20070423101911:selectHelper
 #  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
 
 def selectHelper (self,p,scroll):
 
-    trace = False ; verbose = False
+    trace = False and not g.unitTesting
+    verbose = False
     c = self.c ; frame = c.frame
     body = w = frame.body.bodyCtrl
     if not w: return # Defensive.
@@ -6384,6 +6765,10 @@ if old_p:
 self.revertHeadline = p.h
 frame.setWrap(p)
 self.setBodyTextAfterSelect(p,old_p)
+
+#### A major change.
+if c.expandAllAncestors(p):
+    c.frame.tree.redraw_after_select(p)
 #@nonl
 #@-node:ekr.20040803072955.130:<< select the new node >>
 #@+node:ekr.20040803072955.133:<< set the current node >>
@@ -6404,7 +6789,7 @@ else:
     c.bodyWantsFocus()
 #@nonl
 #@-node:ekr.20040803072955.133:<< set the current node >>
-#@-node:ekr.20070423101911:treeSelectHelper
+#@-node:ekr.20070423101911:selectHelper
 #@+node:ekr.20090206153445.1:setBodyTextAfterSelect
 def setBodyTextAfterSelect (self,p,old_p):
 
@@ -7820,12 +8205,13 @@ def select (self,p,scroll=True):
         c.frame.tree.afterSelectHint(p,old_p)
 
     return val  # Don't put a return in a finally clause.
-#@+node:ekr.20070423101911:treeSelectHelper
+#@+node:ekr.20070423101911:selectHelper
 #  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
 
 def selectHelper (self,p,scroll):
 
-    trace = False ; verbose = False
+    trace = False and not g.unitTesting
+    verbose = False
     c = self.c ; frame = c.frame
     body = w = frame.body.bodyCtrl
     if not w: return # Defensive.
@@ -7893,6 +8279,10 @@ if old_p:
 self.revertHeadline = p.h
 frame.setWrap(p)
 self.setBodyTextAfterSelect(p,old_p)
+
+#### A major change.
+if c.expandAllAncestors(p):
+    c.frame.tree.redraw_after_select(p)
 #@nonl
 #@-node:ekr.20040803072955.130:<< select the new node >>
 #@+node:ekr.20040803072955.133:<< set the current node >>
@@ -7913,7 +8303,7 @@ else:
     c.bodyWantsFocus()
 #@nonl
 #@-node:ekr.20040803072955.133:<< set the current node >>
-#@-node:ekr.20070423101911:treeSelectHelper
+#@-node:ekr.20070423101911:selectHelper
 #@+node:ekr.20090206153445.1:setBodyTextAfterSelect
 def setBodyTextAfterSelect (self,p,old_p):
 
@@ -7953,18 +8343,19 @@ def redraw_after_select(self,p,setFocus=False):
     The intention is for the gui to just select the node
     if it is visible, and to completely redraw the screen otherwise.'''
 
+    trace = False and not g.unitTesting
+    if trace: g.trace('(Commands)',p and p.h or '<No p>', g.callers(4))
+
     c = self
 
-    c.expandAllAncestors(p)
+    flag = c.expandAllAncestors(p)
     c.selectPosition(p)
         # Required to update body pane.
         # Will call tree.before/afterSelect hint.
 
-    # This will be redundant if tree.before/afterSelectHint are functional,
-    # but this redundancy does not hurt.
-
-    # This causes double recoloring.
-    # c.frame.tree.redraw_after_select(p)
+    ####
+    if flag:
+        c.frame.tree.redraw_after_select(p)
 
     if setFocus: c.treeFocusHelper()
 #@-node:ekr.20090110073010.4:c.redraw_after_select
@@ -8337,12 +8728,13 @@ def select (self,p,scroll=True):
         c.frame.tree.afterSelectHint(p,old_p)
 
     return val  # Don't put a return in a finally clause.
-#@+node:ekr.20070423101911:treeSelectHelper
+#@+node:ekr.20070423101911:selectHelper
 #  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
 
 def selectHelper (self,p,scroll):
 
-    trace = False ; verbose = False
+    trace = False and not g.unitTesting
+    verbose = False
     c = self.c ; frame = c.frame
     body = w = frame.body.bodyCtrl
     if not w: return # Defensive.
@@ -8410,6 +8802,10 @@ if old_p:
 self.revertHeadline = p.h
 frame.setWrap(p)
 self.setBodyTextAfterSelect(p,old_p)
+
+#### A major change.
+if c.expandAllAncestors(p):
+    c.frame.tree.redraw_after_select(p)
 #@nonl
 #@-node:ekr.20040803072955.130:<< select the new node >>
 #@+node:ekr.20040803072955.133:<< set the current node >>
@@ -8430,7 +8826,7 @@ else:
     c.bodyWantsFocus()
 #@nonl
 #@-node:ekr.20040803072955.133:<< set the current node >>
-#@-node:ekr.20070423101911:treeSelectHelper
+#@-node:ekr.20070423101911:selectHelper
 #@+node:ekr.20090206153445.1:setBodyTextAfterSelect
 def setBodyTextAfterSelect (self,p,old_p):
 
@@ -9287,18 +9683,19 @@ def redraw_after_select(self,p,setFocus=False):
     The intention is for the gui to just select the node
     if it is visible, and to completely redraw the screen otherwise.'''
 
+    trace = False and not g.unitTesting
+    if trace: g.trace('(Commands)',p and p.h or '<No p>', g.callers(4))
+
     c = self
 
-    c.expandAllAncestors(p)
+    flag = c.expandAllAncestors(p)
     c.selectPosition(p)
         # Required to update body pane.
         # Will call tree.before/afterSelect hint.
 
-    # This will be redundant if tree.before/afterSelectHint are functional,
-    # but this redundancy does not hurt.
-
-    # This causes double recoloring.
-    # c.frame.tree.redraw_after_select(p)
+    ####
+    if flag:
+        c.frame.tree.redraw_after_select(p)
 
     if setFocus: c.treeFocusHelper()
 #@-node:ekr.20090110073010.4:c.redraw_after_select

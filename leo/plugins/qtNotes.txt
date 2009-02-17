@@ -2,6 +2,11 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
+#@+node:ekr.20090217051021.11:Moving a node recolors it
+# In general, this is necessary, but we may be able to shortcut it
+# in recolor_after_move.
+#@nonl
+#@-node:ekr.20090217051021.11:Moving a node recolors it
 #@+node:ekr.20081215074704.13:Bugs 6
 #@+node:ekr.20090131123901.2:Sometime a plug box appears wrongly
 # It may happen after a paste?
@@ -342,9 +347,7 @@ def getItemText (self,item):
     '''Return the text of the item.'''
 
     if item:
-        s = item.text(0)
-        s = g.toUnicode(s,'utf-8')
-        return s
+        return unicode(item.text(0))
     else:
         return '<no item>'
 #@nonl
@@ -714,6 +717,7 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
     Preserve the vertical scrolling unless scroll is True.'''
 
     trace = False and not g.app.unitTesting
+    # verbose = False
     c = self.c
 
     if self.busy():
@@ -723,7 +727,7 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
     else:           c.setCurrentPosition(p)
 
     self.redrawCount += 1
-    if trace: self.tstart()
+    if trace: t1 = g.getTime()
     self.initData()
     self.nodeDrawCount = 0
     try:
@@ -736,11 +740,9 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
     c.requestRedrawFlag= False
 
     if trace:
-        theTime = self.tstop()
-        if True and not g.app.unitTesting:
-            g.trace('%s: scroll: %s, drew %3s nodes in %s' % (
-                self.redrawCount,scroll,self.nodeDrawCount,theTime),
-                g.callers(4))
+        theTime = g.timeSince(t1)
+        g.trace('%s: drew %3s nodes in %s' % (
+            self.redrawCount,self.nodeDrawCount,theTime))
 
 # Compatibility
 redraw = full_redraw 
@@ -1003,6 +1005,7 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
     Preserve the vertical scrolling unless scroll is True.'''
 
     trace = False and not g.app.unitTesting
+    # verbose = False
     c = self.c
 
     if self.busy():
@@ -1012,7 +1015,7 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
     else:           c.setCurrentPosition(p)
 
     self.redrawCount += 1
-    if trace: self.tstart()
+    if trace: t1 = g.getTime()
     self.initData()
     self.nodeDrawCount = 0
     try:
@@ -1025,11 +1028,9 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
     c.requestRedrawFlag= False
 
     if trace:
-        theTime = self.tstop()
-        if True and not g.app.unitTesting:
-            g.trace('%s: scroll: %s, drew %3s nodes in %s' % (
-                self.redrawCount,scroll,self.nodeDrawCount,theTime),
-                g.callers(4))
+        theTime = g.timeSince(t1)
+        g.trace('%s: drew %3s nodes in %s' % (
+            self.redrawCount,self.nodeDrawCount,theTime))
 
 # Compatibility
 redraw = full_redraw 
@@ -1220,17 +1221,22 @@ def redraw_after_icons_changed (self,all=False):
 
 def redraw_after_select (self,p=None):
 
+    '''Redraw the entire tree when an invisible node
+    is selected.'''
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('(leoQtTree)',p and p.h or '<No p>')
+
     if self.busy(): return
 
     # Don't set self.redrawing here.
     # It will be set by self.afterSelectHint.
 
     c = self.c
-    item = self.position2item(p)
-
+    #### item = self.position2item(p)
     # It is not an error for position2item to fail.
-    if not item:
-        self.full_redraw(p,scroll=False)
+    #### if not item:
+    self.full_redraw(p,scroll=False)
 
     # c.redraw_after_select calls tree.select indirectly.
     # Do not call it again here.
@@ -1432,6 +1438,29 @@ def findColorDirectives (self,p):
     # # g.trace('self.language',self.language)
     # return self.language # For use by external routines.
 #@-node:ekr.20081205131308.26:scanColorDirectives (very slow!)
+#@+node:ekr.20090124174652.124:Timing (nativeTree)
+# def tstart (self):
+    # return g.app.gui.tstart()
+
+# def tstop (self):
+    # return g.app.gui.stop()
+#@-node:ekr.20090124174652.124:Timing (nativeTree)
+#@+node:ekr.20081121110412.7:tstart & tstop (tkGui)
+# def tstart():
+    # global __timing
+    # __timing = time.time()
+
+# def tstop():
+    # return "%1.2f sec." % (time.time()-__timing)
+#@-node:ekr.20081121110412.7:tstart & tstop (tkGui)
+#@+node:ekr.20081121105001.193:tstart & tstop (qtGui)
+# def tstart():
+    # global __timing
+    # __timing = time.time()
+
+# def tstop():
+    # return "%1.2f sec" % (time.time()-__timing)
+#@-node:ekr.20081121105001.193:tstart & tstop (qtGui)
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl

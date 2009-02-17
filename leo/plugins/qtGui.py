@@ -115,14 +115,6 @@ def embed_ipython():
     # ses.mainloop()
 #@nonl
 #@-node:ekr.20081121105001.192:embed_ipython
-#@+node:ekr.20081121105001.193:tstart & tstop
-def tstart():
-    global __timing
-    __timing = time.time()
-
-def tstop():
-    return "%1.2f sec" % (time.time()-__timing)
-#@-node:ekr.20081121105001.193:tstart & tstop
 #@-node:ekr.20081121105001.190: Module level
 #@+node:ekr.20081121105001.194:Frame and component classes...
 #@+node:ekr.20081121105001.200:class  DynamicWindow
@@ -157,7 +149,7 @@ class DynamicWindow(QtGui.QMainWindow):
             ui_file_name = 'qt_main.ui'
 
         ui_description_file = g.app.loadDir + "/../plugins/" + ui_file_name
-        g.pr(ui_description_file)
+        # g.pr('DynamicWindw.__init__,ui_description_file)
         assert g.os_path_exists(ui_description_file)
 
         QtGui.QMainWindow.__init__(self,parent)        
@@ -3667,10 +3659,14 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
     #@+node:ekr.20090124174652.103:createTreeItem
     def createTreeItem(self,p,parent_item):
 
+        trace = False and not g.unitTesting
+
         w = self.treeWidget
         itemOrTree = parent_item or w
         item = QtGui.QTreeWidgetItem(itemOrTree)
         item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+
+        if trace: g.trace(id(item),p.h,g.callers(4))
         return item
     #@-node:ekr.20090124174652.103:createTreeItem
     #@+node:ekr.20090124174652.105:getCurrentItem
@@ -3685,9 +3681,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         '''Return the text of the item.'''
 
         if item:
-            s = item.text(0)
-            s = g.toUnicode(s,'utf-8')
-            return s
+            return unicode(item.text(0))
         else:
             return '<no item>'
     #@nonl
@@ -3740,6 +3734,8 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         w = self.treeWidget
         w.setCurrentItem(item)
+
+        # g.trace(id(item),g.callers(5))
     #@-node:ekr.20090124174652.107:setCurrentItemHelper
     #@+node:ekr.20090124174652.108:setItemText
     def setItemText (self,item,s):
@@ -8042,9 +8038,13 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     def getAllText(self):
 
         w = self.widget
-        s = w.toPlainText()
-        # g.trace(len(s),g.callers(5))
-        return unicode(s)
+        s = unicode(w.toPlainText())
+
+        # Doesn't work: gets only the line containing the cursor.
+        # s = unicode(w.textCursor().block().text())
+
+        # g.trace(repr(s))
+        return s
     #@nonl
     #@-node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
     #@+node:ekr.20081121105001.581:getInsertPoint

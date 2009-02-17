@@ -149,6 +149,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         Preserve the vertical scrolling unless scroll is True.'''
 
         trace = False and not g.app.unitTesting
+        # verbose = False
         c = self.c
 
         if self.busy():
@@ -158,7 +159,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         else:           c.setCurrentPosition(p)
 
         self.redrawCount += 1
-        if trace: self.tstart()
+        if trace: t1 = g.getTime()
         self.initData()
         self.nodeDrawCount = 0
         try:
@@ -171,11 +172,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         c.requestRedrawFlag= False
 
         if trace:
-            theTime = self.tstop()
-            if True and not g.app.unitTesting:
-                g.trace('%s: scroll: %s, drew %3s nodes in %s' % (
-                    self.redrawCount,scroll,self.nodeDrawCount,theTime),
-                    g.callers(4))
+            theTime = g.timeSince(t1)
+            g.trace('%s: drew %3s nodes in %s' % (
+                self.redrawCount,self.nodeDrawCount,theTime))
 
     # Compatibility
     redraw = full_redraw 
@@ -366,17 +365,22 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
     def redraw_after_select (self,p=None):
 
+        '''Redraw the entire tree when an invisible node
+        is selected.'''
+
+        trace = False and not g.unitTesting
+        if trace: g.trace('(leoQtTree)',p and p.h or '<No p>')
+
         if self.busy(): return
 
         # Don't set self.redrawing here.
         # It will be set by self.afterSelectHint.
 
         c = self.c
-        item = self.position2item(p)
-
+        #### item = self.position2item(p)
         # It is not an error for position2item to fail.
-        if not item:
-            self.full_redraw(p,scroll=False)
+        #### if not item:
+        self.full_redraw(p,scroll=False)
 
         # c.redraw_after_select calls tree.select indirectly.
         # Do not call it again here.
@@ -1144,13 +1148,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def setVScroll (self,vPos):
         pass
     #@-node:ekr.20090124174652.123:Scroll bars
-    #@+node:ekr.20090124174652.124:Timing
-    def tstart (self):
-        pass
-
-    def tstop (self):
-        return '?? sec'
-    #@-node:ekr.20090124174652.124:Timing
     #@-node:ekr.20090124174652.78:Widget-dependent helpers
     #@+node:ekr.20090124174652.62:Widget-independent helpers
     #@+node:ekr.20090124174652.63:Associating items and positions

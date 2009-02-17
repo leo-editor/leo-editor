@@ -82,15 +82,6 @@ def embed_ipython():
     # ses.mainloop()
 #@nonl
 #@-node:ekr.20081121110412.6:embed_ipython
-#@+node:ekr.20081121110412.7:tstart & tstop
-def tstart():
-    global __timing
-    __timing = time.time()
-
-def tstop():
-    g.trace("%s Time: %1.2fsec" % (
-        g.callers(1),time.time()-__timing))
-#@-node:ekr.20081121110412.7:tstart & tstop
 #@-node:ekr.20081121110412.4: Module level
 #@+node:ekr.20081121110412.353:class tkinterGui (leoGui)
 class tkinterGui(leoGui.leoGui):
