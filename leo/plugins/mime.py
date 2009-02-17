@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:dan.20090203210614.1:@thin mime.py
+#@+node:dan.20090217132953.1:@thin mime.py
 #@<< docstring >>
 #@+node:dan.20090203174248.27:<< docstring >>
 '''Open files with their default platform program.
@@ -27,7 +27,14 @@ Note: This plugin terminates handling of the 'icondclick1' event by returning
 
 This plugin is complementary to the UNL.py plugin's @url nodes.  Use @url for
 opening either URLs or Uniform Node Locators in "*.leo" files and use @mime
-nodes for opening files on the local filesystem.
+nodes for opening files on the local filesystem.  It also replaces the
+startfile.py plugin, where here the headline must start with @mime to activiate
+this plugin.
+
+For other sys.platform's, add an elif case to the section "guess file
+association handler" and either define a default _mime_open_cmd string, where
+"%s" will be replaced with the filename, or define a function taking the
+filename string as its only argument and set as open_func.
 '''
 #@-node:dan.20090203174248.27:<< docstring >>
 #@nl
@@ -36,7 +43,7 @@ nodes for opening files on the local filesystem.
 #@@tabwidth -4
 
 __name__ = 'mime'
-__version__ = '0.1'
+__version__ = '0.2'
 
 #@<< version history >>
 #@+node:dan.20090203174248.28:<< version history >>
@@ -45,6 +52,8 @@ __version__ = '0.1'
 # Contributed by Dan White <etihwnad _at_ gmail _dot_ com>.
 # 
 # 0.1 - Initial plugin
+# 0.2 - DJW:  -changed open file architecture
+#             -added support for win32 platform
 #@-at
 #@-node:dan.20090203174248.28:<< version history >>
 #@nl
@@ -69,18 +78,61 @@ subprocess = g.importExtension('subprocess',pluginName=__name__,verbose=True)
 #@nonl
 # Search for the best method of opening files.  If running a desktop manager,
 # do the action corresponding to a double-click in the file manager.
+# 
+# Helper functions return a function f(fpath) which takes the full file path,
+# launches the viewer and returns immediately.
 #@-at
 #@@c
 
+#@+others
+#@+node:dan.20090210180636.27:exec_string_cmd
+def exec_string_cmd(cmd):
+    '''Accept a command string and return a function which opens executes the command,
+    replacing %s with the full file path.'''
+
+    if '%s' not in cmd:
+        cmd = cmd + ' %s'
+
+    def f(fpath):
+        s = cmd % fpath
+        return subprocess.Popen(s, shell=True)
+
+    return f
+#@-node:dan.20090210180636.27:exec_string_cmd
+#@+node:dan.20090210183435.1:exec_full_cmd
+def exec_full_cmd(cmd):
+    '''Accept a command string including filename and return a function
+    which executes the command.'''
+
+    def f(fpath):
+        return subprocess.Popen(cmd, shell=True)
+
+    return f
+#@-node:dan.20090210183435.1:exec_full_cmd
+#@-others
+
+# open_func is called with the full file path
+open_func = None
+
+# no initial system string command
 _mime_open_cmd = ''
 
+# default methods of opening files
 if sys.platform == 'linux2':
     #detect KDE or Gnome to use their file associations
     if os.environ.get('KDE_FULL_SESSION'):
-        _mime_open_cmd = 'kfmclient exec'
+        #_mime_open_cmd = 'kfmclient exec'
+        open_func = exec_string_cmd('kfmclient exec')
 
     elif os.environ.get('GNOME_DESKTOP_SESSION_ID'):
         _mime_open_cmd = 'gnome-open'
+
+    else:
+        pass
+
+elif sys.platform == 'win32':
+    #use this directly as 1-arg fn, default action is 'open'
+    open_func = os.startfile
 
 #@-node:dan.20090203174248.35:<< guess file association handler >>
 #@nl
@@ -103,7 +155,16 @@ def init ():
 #@-node:dan.20090203174248.30:init
 #@+node:dan.20090203174248.31:open_mimetype
 def open_mimetype(tag, keywords, val=None):
-    '''Simulate double-clicking on the filename in a file manager.'''
+    '''Simulate double-clicking on the filename in a file manager.  Order of
+    preference is:
+
+        1) @string mime_open_cmd setting
+        2) _mime_open_cmd, defined per sys.platform detection
+        3) open_func(fpath), defined per sys.platform detection
+        4) mailcap file for mimetype handling
+    '''
+
+    global open_func
 
     c = keywords.get('c')
     p = keywords.get('p')
@@ -118,40 +179,52 @@ def open_mimetype(tag, keywords, val=None):
         path = d.get('path')
         fpath = g.os_path_finalize_join(path, fname)
 
-        mime_cmd = c.config.getString('mime_open_cmd') or _mime_open_cmd
+        # stop here if the file doesn't exist
+        if not g.os_path_exists(fpath):
+            g.es('@mime: file does not exist, %s' % fpath, color='red')
+            return True
 
+        # user-specified command string, or sys.platform-determined string
+        mime_cmd = c.config.getString('mime_open_cmd') or _mime_open_cmd
         if mime_cmd:
             if '%s' not in mime_cmd:
                 mime_cmd += ' %s'
-            cmd = mime_cmd % fpath
-        else:
-            #no special handler specified, try mailcap/mimetype entries explicitly
+            open_func = exec_string_cmd(mime_cmd)
+
+        #no special handler function specified,
+        #try mailcap/mimetype entries explicitly
+        if open_func is None:
             (ftype, encoding) = mimetypes.guess_type(fname)
             if ftype:
                 caps = mailcap.getcaps()
-                (cmd, entry) = mailcap.findmatch(caps, ftype,
-                                                    filename=fpath,
-                                                    key='view')
-                if not cmd:
-                    g.es('@mime: no entry for %s: %s' % (ftype, fname),
+                (fullcmd, entry) = mailcap.findmatch(caps, ftype,
+                                                     filename=fpath,
+                                                     key='view')
+                if fullcmd:
+                    # create a function which merely executes the fullcmd in
+                    # a shell for e.g. PATH access
+                    open_func = exec_full_cmd(fullcmd)
+                else:
+                    g.es('@mime: no mailcap entry for %s: %s' % (ftype, fname),
                          color='red')
-                    return True #quit while we're ahead
-
-                #g.trace('mailcap command:', cmd)
+                g.trace('mailcap command:', fullcmd)
             else:
                 g.es('@mime: unknown file type: %s' % fname, color='red')
-                return True #quit while we're ahead
 
 
-        g.trace('executing:', cmd)
-        subprocess.Popen(cmd, shell=True)
+        # use the custom open_func to open external file viewer
+        if open_func:
+            open_func(fpath)
+        else:
+            g.es('@mime: no known way to open %s' % fname, color='red')
 
         # block execution of e.g. vim plugin
         return True
 
+    # not an @mime node
     return val
 
 #@-node:dan.20090203174248.31:open_mimetype
 #@-others
-#@-node:dan.20090203210614.1:@thin mime.py
+#@-node:dan.20090217132953.1:@thin mime.py
 #@-leo

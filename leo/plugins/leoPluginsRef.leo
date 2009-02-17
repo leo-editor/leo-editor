@@ -358,6 +358,7 @@ expanded="bobjack.20080502134903.8,"><vh>@thin toolbar.py</vh></v>
 <v t="ekr.20060807103814.1"><vh>@thin datenodes.py</vh></v>
 <v t="ajones.20070122153625"><vh>@thin expfolder.py</vh></v>
 <v t="mork.20041018091414.1"><vh>@thin fastGotoNode.py</vh></v>
+<v t="dan.20090217132953.1"><vh>@thin mime.py</vh></v>
 <v t="ekr.20050301095332"><vh>@thin mod_labels.py</vh></v>
 <v t="edream.110203113231.876"><vh>@thin read_only_nodes.py</vh></v>
 <v t="ekr.20040910070811.1"><vh>@thin run_nodes.py</vh></v>
