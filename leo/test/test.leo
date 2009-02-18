@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -160,7 +160,7 @@
 <v t="ekr.20070928095102.2"><vh>child2</vh></v>
 </v>
 </v>
-<v t="ekr.20070929122956.1" a="E"><vh>buttons</vh>
+<v t="ekr.20070929122956.1"><vh>buttons</vh>
 <v t="ekr.20070929070426"><vh>@@button print link</vh></v>
 <v t="ekr.20070927175908"><vh>@@button leo2graph</vh></v>
 <v t="ekr.20070929062147.1"><vh>@@button at-graph2graph</vh></v>
@@ -421,6 +421,11 @@
 <v t="ekr.20090201192257.1"><vh>@test macro ab</vh></v>
 <v t="ekr.20090211123924.1"><vh>String test</vh></v>
 <v t="ekr.20090205070715.1"><vh>print colorer stats</vh></v>
+<v t="ekr.20090206065021.1"><vh>test string flipping</vh></v>
+<v t="ekr.20090217151906.1"><vh>@@thin test.py</vh>
+<v t="ekr.20090218121844.1"><vh>child</vh></v>
+</v>
+<v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 </v>
 <v t="ekr.20081202140932.1"><vh>pythoscope &amp; lib2to3</vh>
 <v t="ekr.20081202141453.1"><vh>@path c:\leo.repo\pythoscope\pythoscope</vh>
@@ -1058,9 +1063,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090206065021.1"><vh>test string flipping</vh></v>
-<v t="ekr.20090217151906.1"><vh>@thin test.py</vh></v>
-<v t="ekr.20090218112656.1"><vh>@test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -19373,7 +19375,11 @@ class leoQtMinibuffer (leoQLineEditWidget):
 #@-node:ekr.20081121105001.188:@thin qtGui.py
 #@-leo
 </t>
-<t tx="ekr.20090218112656.1">a,b = 1,2
+<t tx="ekr.20090217151906.1">@others</t>
+<t tx="ekr.20090218112656.1"># 'self' is now defined in @test and @suite nodes.
+a,b = 1,2
 self.assertEqual(a,b)</t>
+<t tx="ekr.20090218121844.1">def child():
+    pass</t>
 </tnodes>
 </leo_file>
