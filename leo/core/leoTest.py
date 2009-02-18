@@ -132,13 +132,6 @@ class generalTestCase(unittest.TestCase):
 
         g.app.unitTestDict["fail"] = g.callers()
     #@-node:ekr.20051104075904.7: fail
-    #@+node:ekr.20051104075904.8:setUp
-    def setUp (self):
-
-        c = self.c ; p = self.p
-
-        c.selectPosition(p)
-    #@-node:ekr.20051104075904.8:setUp
     #@+node:ekr.20051104075904.9:tearDown
     def tearDown (self):
 
@@ -148,6 +141,13 @@ class generalTestCase(unittest.TestCase):
         self.c.outerUpdate()
     #@nonl
     #@-node:ekr.20051104075904.9:tearDown
+    #@+node:ekr.20051104075904.8:setUp
+    def setUp (self):
+
+        c = self.c ; p = self.p
+
+        c.selectPosition(p)
+    #@-node:ekr.20051104075904.8:setUp
     #@+node:ekr.20051104075904.10:runTest
     def runTest (self,define_g = True):
 
@@ -163,7 +163,7 @@ class generalTestCase(unittest.TestCase):
         g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
 
         if define_g:
-            d = {'c':c,'g':g,'p':p}
+            d = {'c':c,'g':g,'p':p,'self':self,}
         else:
             d = {}
 
