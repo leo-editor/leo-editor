@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4,23,0,2"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -60,7 +60,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -791,8 +791,8 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070317033759.6"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20070628083442"><vh>Chapter 20: Unit testing with Leo</vh>
-<v t="ekr.20070628083442.1"><vh>@rst html\unitTesting.html</vh>
+<v t="ekr.20070628083442" a="E"><vh>Chapter 20: Unit testing with Leo</vh>
+<v t="ekr.20070628083442.1" a="E"><vh>@rst html\unitTesting.html</vh>
 <v t="ekr.20070628083442.2"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070704074747"><vh>Overview</vh></v>
 <v t="ekr.20070628084351"><vh>Using @test nodes</vh></v>
@@ -27074,7 +27074,11 @@ need guard lines. The guard line prevents the unit testing code from being
 executed when Python imports the leoNodes module; the g.unitTesting variable is
 True only while running unit tests.
 
-Note: Leo predefines the c, g, and p variables in @test and @suite nodes,
+**New in Leo 4.6**: When Leo runs unit tests, Leo predefines the 'self' variable to
+be the instance of the test itself, that is an instance of unittest.TestCase.
+This allows you to use methods such as self.assertTrue in @test and @suite nodes.
+
+**Note**: Leo predefines the c, g, and p variables in @test and @suite nodes,
 just like in other scripts.  Thus, the line::
     
     c,p = g.getTestVars()

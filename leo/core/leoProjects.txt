@@ -1668,6 +1668,247 @@ def redraw_after_select(self,p,setFocus=False):
     if setFocus: c.treeFocusHelper()
 #@-node:ekr.20090110073010.4:c.redraw_after_select
 #@-node:ekr.20090216123307.4:Fixed body-pane-out-of-synch bug
+#@+node:ekr.20090218115025.1:Predefined 'self' in @test/@suite nodes
+#@+node:ekr.20051104075904.10:runTest
+def runTest (self,define_g = True):
+
+    c = self.c ; p = self.p.copy()
+    script = g.getScript(c,p).strip()
+    # print ('p',p,'len(script)',len(script))
+    self.assert_(script)
+    writeScriptFile = c.config.getBool('write_script_file')
+
+    # import leo.core.leoGlobals as g
+
+    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    if define_g:
+        d = {'c':c,'g':g,'p':p,'self':self,}
+    else:
+        d = {'self':self,}
+
+    script = script + '\n'
+    # g.trace(type(script),script)
+
+    # Execute the script. Let unit test handle any errors!
+
+    if writeScriptFile:
+        scriptFile = c.writeScriptFile(script)
+        execfile(scriptFile,d)
+    else:
+        exec(script,d)
+
+    # if 0: # debug
+        # import pdb
+        # pdb.run(script+'\n',d)
+    # else:
+        # exec script + '\n' in d
+#@-node:ekr.20051104075904.10:runTest
+#@+node:ekr.20051104075904.5:class generalTestCase
+class generalTestCase(unittest.TestCase):
+
+    """Create a unit test from a snippet of code."""
+
+    @others
+#@+node:ekr.20051104075904.6:__init__
+def __init__ (self,c,p):
+
+     # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.p = p.copy()
+#@-node:ekr.20051104075904.6:__init__
+#@+node:ekr.20051104075904.7: fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+#@-node:ekr.20051104075904.7: fail
+#@+node:ekr.20051104075904.9:tearDown
+def tearDown (self):
+
+    pass
+
+    # Restore the outline.
+    self.c.outerUpdate()
+#@nonl
+#@-node:ekr.20051104075904.9:tearDown
+#@+node:ekr.20051104075904.8:setUp
+def setUp (self):
+
+    c = self.c ; p = self.p
+
+    c.selectPosition(p)
+#@-node:ekr.20051104075904.8:setUp
+#@+node:ekr.20051104075904.10:runTest
+def runTest (self,define_g = True):
+
+    c = self.c ; p = self.p.copy()
+    script = g.getScript(c,p).strip()
+    # print ('p',p,'len(script)',len(script))
+    self.assert_(script)
+    writeScriptFile = c.config.getBool('write_script_file')
+
+    # import leo.core.leoGlobals as g
+
+    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    if define_g:
+        d = {'c':c,'g':g,'p':p,'self':self,}
+    else:
+        d = {'self':self,}
+
+    script = script + '\n'
+    # g.trace(type(script),script)
+
+    # Execute the script. Let unit test handle any errors!
+
+    if writeScriptFile:
+        scriptFile = c.writeScriptFile(script)
+        execfile(scriptFile,d)
+    else:
+        exec(script,d)
+
+    # if 0: # debug
+        # import pdb
+        # pdb.run(script+'\n',d)
+    # else:
+        # exec script + '\n' in d
+#@-node:ekr.20051104075904.10:runTest
+#@+node:ekr.20051104075904.11:shortDescription
+def shortDescription (self):
+
+    return self.p.h + '\n'
+#@-node:ekr.20051104075904.11:shortDescription
+#@-node:ekr.20051104075904.5:class generalTestCase
+#@-node:ekr.20090218115025.1:Predefined 'self' in @test/@suite nodes
+#@+node:ekr.20081208102356.2:Fixed check-leo-outline bug
+@nocolor
+
+https://bugs.launchpad.net/leo-editor/+bug/306213
+
+To reproduce (in the latest bzr version, qt-plugin enabled):
+
+create a node "@thin a_directory/a_file" where a_file has some text in it but no sentinels/leo-specific data.
+
+Select File-> read/write -> check derived file. The log window shows:
+
+Bad @+leo sentinel in: check-derived-file
+can not open: '@file /home/user/a_directory/check-derived-file'
+
+Clearly the file is not named 'check-derived-file', so there is a bug somewhere.
+
+@color
+#@nonl
+#@+node:ekr.20070919133659:checkDerivedFile (atFile)
+def checkDerivedFile (self, event=None):
+
+    at = self ; c = at.c ; p = c.p #### ; s = p.b
+
+    if not p.isAtFileNode() and not p.isAtThinFileNode():
+        return g.es('Please select an @thin or @file node',color='red')
+
+    fn = p.anyAtFileNodeName()
+    path = g.os_path_dirname(c.mFileName)
+    fn = g.os_path_finalize_join(g.app.loadDir,path,fn)
+    if not g.os_path_exists(fn):
+        return g.es_print('file not found: %s' % (fn),color='red')
+
+    try:
+        s = open(fn,'r').read()
+    except IOError:
+        return g.es_print('can not open %s' % (fn),color='red')
+
+    # Create a dummy, unconnected, vnode as the root.
+    root_v = leoNodes.vnode(context=c)
+    root = leoNodes.position(root_v)
+    theFile = g.fileLikeObject(fromString=s)
+    thinFile = at.scanHeaderForThin (theFile,fn)
+    at.initReadIvars(root,fn,thinFile=thinFile)
+    if at.errors: return
+    at.openFileForReading(fn,fromString=s)
+    if not at.inputFile: return
+    at.readOpenFile(root,at.inputFile,fn)
+    at.inputFile.close()
+    if at.errors == 0:
+        g.es_print('check-derived-file passed',color='blue')
+#@-node:ekr.20070919133659:checkDerivedFile (atFile)
+#@+node:ekr.20050103163224:scanHeaderForThin
+def scanHeaderForThin (self,theFile,fileName):
+
+    '''Scan the header of a derived file and return True if it is a thin file.
+
+    N.B. We are not interested in @first lines, so any encoding will do.'''
+
+    at = self
+
+    # The encoding doesn't matter.  No error messages are given.
+    at.encoding = at.c.config.default_derived_file_encoding
+
+    junk,junk,isThin = at.scanHeader(theFile,fileName)
+
+    return isThin
+#@-node:ekr.20050103163224:scanHeaderForThin
+#@+node:ekr.20041005105605.129:scanHeader
+def scanHeader(self,theFile,fileName):
+
+    """Scan the @+leo sentinel.
+
+    Sets self.encoding, and self.start/endSentinelComment.
+
+    Returns (firstLines,new_df,isThinDerivedFile) where:
+    firstLines        contains all @first lines,
+    new_df            is True if we are reading a new-format derived file.
+    isThinDerivedFile is True if the file is an @thin file."""
+
+    trace = False
+    at = self
+    firstLines = [] # The lines before @+leo.
+    tag = "@+leo"
+    valid = True ; new_df = False ; isThinDerivedFile = False
+    << skip any non @+leo lines >>
+    if valid:
+        valid,new_df,start,end,isThinDerivedFile = at.parseLeoSentinel(s)
+    if valid:
+        at.startSentinelComment = start
+        at.endSentinelComment = end
+        # g.trace('start',repr(start),'end',repr(end))
+    else:
+        at.error("No @+leo sentinel in: %s" % fileName)
+    # g.trace("start,end",repr(at.startSentinelComment),repr(at.endSentinelComment))
+    return firstLines,new_df,isThinDerivedFile
+#@+node:ekr.20041005105605.130:<< skip any non @+leo lines >>
+@ Queue up the lines before the @+leo.
+
+These will be used to add as parameters to the @first directives, if any.
+Empty lines are ignored (because empty @first directives are ignored).
+NOTE: the function now returns a list of the lines before @+leo.
+
+We can not call sentinelKind here because that depends on
+the comment delimiters we set here.
+
+at-first lines are written "verbatim", so nothing more needs to be done!
+@c
+
+s = at.readLine(theFile)
+if trace: g.trace('first line',repr(s))
+while len(s) > 0:
+    j = s.find(tag)
+    if j != -1: break
+    firstLines.append(s) # Queue the line
+    s = at.readLine(theFile)
+
+n = len(s)
+valid = n > 0
+#@-node:ekr.20041005105605.130:<< skip any non @+leo lines >>
+#@-node:ekr.20041005105605.129:scanHeader
+#@-node:ekr.20081208102356.2:Fixed check-leo-outline bug
 #@-node:ekr.20090213065933.12:Completed 3-day bugs
 #@+node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20081003084608.4:Not bugs

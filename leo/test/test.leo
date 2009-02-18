@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -19373,16 +19373,7 @@ class leoQtMinibuffer (leoQLineEditWidget):
 #@-node:ekr.20081121105001.188:@thin qtGui.py
 #@-leo
 </t>
-<t tx="ekr.20090218112656.1"># import unittest
-# a = 1
-# b = 2
-# t = unittest.TestCase()
-# t.assertEqual(a, b)
-
-print 'hi'
-
-a,b = 1,2
-
+<t tx="ekr.20090218112656.1">a,b = 1,2
 self.assertEqual(a,b)</t>
 </tnodes>
 </leo_file>

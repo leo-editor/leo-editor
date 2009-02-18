@@ -336,7 +336,10 @@ file leoNodes.py. &#64;test nodes that appear outside of Python source files do 
 need guard lines. The guard line prevents the unit testing code from being
 executed when Python imports the leoNodes module; the g.unitTesting variable is
 True only while running unit tests.</p>
-<p>Note: Leo predefines the c, g, and p variables in &#64;test and &#64;suite nodes,
+<p><strong>New in Leo 4.6</strong>: When Leo runs unit tests, Leo predefines the 'self' variable to
+be the instance of the test itself, that is an instance of unittest.TestCase.
+This allows you to use methods such as self.assertTrue in &#64;test and &#64;suite nodes.</p>
+<p><strong>Note</strong>: Leo predefines the c, g, and p variables in &#64;test and &#64;suite nodes,
 just like in other scripts.  Thus, the line:</p>
 <pre class="literal-block">
 c,p = g.getTestVars()

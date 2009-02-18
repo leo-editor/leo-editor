@@ -780,36 +780,50 @@ As an example:
 # 3 
 # 4 
 # 5 
+@verbatim
 #@verbatim
 #@+leo 
+@verbatim
 #@verbatim
 #@+node:0::@file /tmp/firstcheck.py 
+@verbatim
 #@verbatim
 #@+body 
+@verbatim
 #@verbatim
 #@@first 
+@verbatim
 #@verbatim
 #@@first 
+@verbatim
 #@verbatim
 #@@first 
+@verbatim
 #@verbatim
 #@@first 
+@verbatim
 #@verbatim
 #@@first 
+@verbatim
 #@verbatim
 #@+doc 
 # 
 # How many firsts do I get? 
 
+@verbatim
 #@verbatim
 #@-doc 
+@verbatim
 #@verbatim
 #@@c 
 Start code. 
+@verbatim
 #@verbatim
 #@-body 
+@verbatim
 #@verbatim
 #@-node:0::@file /tmp/firstcheck.py 
+@verbatim
 #@verbatim
 #@-leo 
 

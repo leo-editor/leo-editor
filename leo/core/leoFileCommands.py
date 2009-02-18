@@ -531,6 +531,7 @@ if sys.platform != 'cli':
 class baseFileCommands:
     """A base class for the fileCommands subcommander."""
     #@    @+others
+    #@+node:ekr.20090218115025.4:Birth
     #@+node:ekr.20031218072017.3019:leoFileCommands._init_
     def __init__(self,c):
 
@@ -547,7 +548,9 @@ class baseFileCommands:
             # 'vtag',
         )
         self.initIvars()
-
+    #@nonl
+    #@-node:ekr.20031218072017.3019:leoFileCommands._init_
+    #@+node:ekr.20090218115025.5:initIvars
     def initIvars(self):
 
         # General
@@ -590,7 +593,8 @@ class baseFileCommands:
             # Values are gnx's.
         self.vnodesDict = {}
             # keys are gnx strings; values are ignored
-    #@-node:ekr.20031218072017.3019:leoFileCommands._init_
+    #@-node:ekr.20090218115025.5:initIvars
+    #@-node:ekr.20090218115025.4:Birth
     #@+node:ekr.20031218072017.3020:Reading
     #@+node:ekr.20060919104836: Top-level
     #@+node:ekr.20070919133659.1:checkLeoFile (fileCommands)

@@ -383,17 +383,21 @@ class atFile:
             return g.es('Please select an @thin or @file node',color='red')
 
         fn = p.anyAtFileNodeName()
-        fn = g.os_path_finalize_join(g.app.loadDir,fn)
-        g.trace(fn)
+        path = g.os_path_dirname(c.mFileName)
+        fn = g.os_path_finalize_join(g.app.loadDir,path,fn)
         if not g.os_path_exists(fn):
-            return g.es('File not found %s',fn)
+            return g.es_print('file not found: %s' % (fn),color='red')
 
-        # Create a dummy vnode as the root.
+        try:
+            s = open(fn,'r').read()
+        except IOError:
+            return g.es_print('can not open %s' % (fn),color='red')
+
+        # Create a dummy, unconnected, vnode as the root.
         root_v = leoNodes.vnode(context=c)
         root = leoNodes.position(root_v)
         theFile = g.fileLikeObject(fromString=s)
         thinFile = at.scanHeaderForThin (theFile,fn)
-        # g.trace('thinFile',thinFile)
         at.initReadIvars(root,fn,thinFile=thinFile)
         if at.errors: return
         at.openFileForReading(fn,fromString=s)
