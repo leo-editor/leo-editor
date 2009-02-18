@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="13"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -416,6 +416,11 @@
 <v t="ekr.20080610144233.1"><vh>Wrap test</vh></v>
 <v t="ekr.20090128112453.1" key="550378797a71002e"><vh>Property tests</vh></v>
 <v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
+<v t="ekr.20090212084402.1"><vh>qtGui.py (big)</vh></v>
+<v t="ekr.20090201162523.1"><vh>Macro test</vh></v>
+<v t="ekr.20090201192257.1"><vh>@test macro ab</vh></v>
+<v t="ekr.20090211123924.1"><vh>String test</vh></v>
+<v t="ekr.20090205070715.1"><vh>print colorer stats</vh></v>
 </v>
 <v t="ekr.20081202140932.1"><vh>pythoscope &amp; lib2to3</vh>
 <v t="ekr.20081202141453.1"><vh>@path c:\leo.repo\pythoscope\pythoscope</vh>
@@ -1053,14 +1058,9 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090201162523.1"><vh>Macro test</vh></v>
-<v t="ekr.20090201192257.1"><vh>@test macro ab</vh></v>
-<v t="ekr.20090205070715.1"><vh>print colorer stats</vh></v>
 <v t="ekr.20090206065021.1"><vh>test string flipping</vh></v>
-<v t="ekr.20090206124759.2"><vh>Contains @nocolor</vh></v>
-<v t="ekr.20090212084402.1"><vh>qtGui.py (big)</vh></v>
-<v t="ekr.20090211123924.1"><vh>String test</vh></v>
-<v t="ekr.20090215164309.1"><vh>indented @others</vh></v>
+<v t="ekr.20090217151906.1"><vh>@thin test.py</vh></v>
+<v t="ekr.20090218112656.1"><vh>@test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -11199,8 +11199,6 @@ if 1:
         pass
 
 # test</t>
-<t tx="ekr.20090206124759.2">@nocolor-node
-</t>
 <t tx="ekr.20090211123924.1">@color
 
 import time
@@ -19375,10 +19373,16 @@ class leoQtMinibuffer (leoQLineEditWidget):
 #@-node:ekr.20081121105001.188:@thin qtGui.py
 #@-leo
 </t>
-<t tx="ekr.20090215164309.1">@nocolor
+<t tx="ekr.20090218112656.1"># import unittest
+# a = 1
+# b = 2
+# t = unittest.TestCase()
+# t.assertEqual(a, b)
 
-class aClass:
-    @others
-    pass</t>
+print 'hi'
+
+a,b = 1,2
+
+self.assertEqual(a,b)</t>
 </tnodes>
 </leo_file>

@@ -74,23 +74,6 @@ On Feb 15, 8:35 am, maphew <map...@gmail.com> wrote:
 #@-node:ekr.20090217105248.3:Fix the recent files menu crash
 #@+node:ekr.20090217105248.2:Support @color and @nocolor in qt gui
 #@-node:ekr.20090217105248.2:Support @color and @nocolor in qt gui
-#@+node:ekr.20081208102356.2:Fix check-leo-outline bug
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/306213
-
-To reproduce (in the latest bzr version, qt-plugin enabled):
-
-create a node "@thin a_directory/a_file" where a_file has some text in it but no sentinels/leo-specific data.
-
-Select File-> read/write -> check derived file. The log window shows:
-
-Bad @+leo sentinel in: check-derived-file
-can not open: '@file /home/user/a_directory/check-derived-file'
-
-Clearly the file is not named 'check-derived-file', so there is a bug somewhere.
-#@nonl
-#@-node:ekr.20081208102356.2:Fix check-leo-outline bug
 #@+node:ekr.20090214075058.3:ctrl-o should create @auto nodes for non .leo files
 #@-node:ekr.20090214075058.3:ctrl-o should create @auto nodes for non .leo files
 #@+node:ekr.20090213065933.2:Get isearch working for tkinter

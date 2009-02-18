@@ -431,7 +431,7 @@ def findLanguageDirectives(c,p):
                 language = s[j:k].strip()
                 found = True
 
-    g.trace(language)
+    if trace: g.trace(language)
     return language
 #@-node:ekr.20090214075058.6:g.findLanguageDirectives (must be fast)
 #@+node:ekr.20031218072017.1385:g.findReference
