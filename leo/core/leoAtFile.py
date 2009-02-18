@@ -377,20 +377,28 @@ class atFile:
     #@+node:ekr.20070919133659:checkDerivedFile (atFile)
     def checkDerivedFile (self, event=None):
 
-        at = self ; c = at.c ; p = c.p ; s = p.b
+        at = self ; c = at.c ; p = c.p #### ; s = p.b
+
+        if not p.isAtFileNode() and not p.isAtThinFileNode():
+            return g.es('Please select an @thin or @file node',color='red')
+
+        fn = p.anyAtFileNodeName()
+        fn = g.os_path_finalize_join(g.app.loadDir,fn)
+        g.trace(fn)
+        if not g.os_path_exists(fn):
+            return g.es('File not found %s',fn)
 
         # Create a dummy vnode as the root.
-        fileName='check-derived-file'
         root_v = leoNodes.vnode(context=c)
         root = leoNodes.position(root_v)
         theFile = g.fileLikeObject(fromString=s)
-        thinFile = at.scanHeaderForThin (theFile,fileName)
+        thinFile = at.scanHeaderForThin (theFile,fn)
         # g.trace('thinFile',thinFile)
-        at.initReadIvars(root,fileName,thinFile=thinFile)
+        at.initReadIvars(root,fn,thinFile=thinFile)
         if at.errors: return
-        at.openFileForReading(fileName,fromString=s)
+        at.openFileForReading(fn,fromString=s)
         if not at.inputFile: return
-        at.readOpenFile(root,at.inputFile,fileName)
+        at.readOpenFile(root,at.inputFile,fn)
         at.inputFile.close()
         if at.errors == 0:
             g.es_print('check-derived-file passed',color='blue')
@@ -1882,7 +1890,7 @@ class atFile:
         u = g.toUnicode(s,self.encoding)
         return u
     #@-node:ekr.20041005105605.128:readLine
-    #@+node:ekr.20041005105605.129:scanHeader  (3.x and 4.x)
+    #@+node:ekr.20041005105605.129:scanHeader
     def scanHeader(self,theFile,fileName):
 
         """Scan the @+leo sentinel.
@@ -1941,7 +1949,7 @@ class atFile:
             at.error("No @+leo sentinel in: %s" % fileName)
         # g.trace("start,end",repr(at.startSentinelComment),repr(at.endSentinelComment))
         return firstLines,new_df,isThinDerivedFile
-    #@-node:ekr.20041005105605.129:scanHeader  (3.x and 4.x)
+    #@-node:ekr.20041005105605.129:scanHeader
     #@+node:ekr.20041005105605.131:skipIndent
     # Skip past whitespace equivalent to width spaces.
 
