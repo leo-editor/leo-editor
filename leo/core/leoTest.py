@@ -165,7 +165,7 @@ class generalTestCase(unittest.TestCase):
         if define_g:
             d = {'c':c,'g':g,'p':p,'self':self,}
         else:
-            d = {}
+            d = {'self':self,}
 
         script = script + '\n'
         # g.trace(type(script),script)
