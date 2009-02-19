@@ -1979,7 +1979,7 @@ for s in d:
 #@-node:ekr.20050123160215.1:Put all files in alpha order in ExamDiff
 #@-node:ekr.20050123161408:ExamDiff files & scripts
 #@+node:ekr.20031218072017.365:How to...
-#@+node:ekr.20060208112908:CVS stuff...
+#@+node:ekr.20060208112908:BZR stuff...
 #@+node:ekr.20060331094112:How to generate keys using putty
 To generate a SSH key using PuTTY:
 
@@ -2073,7 +2073,7 @@ You may want to look at manually merging changes back into the main branch until
 This will not hurt your ability to use branches, only your ability to automatically merge changes from one branch onto another.
 #@nonl
 #@-node:ekr.20031218072017.391:How to use CVS branches
-#@-node:ekr.20060208112908:CVS stuff...
+#@-node:ekr.20060208112908:BZR stuff...
 #@+node:ekr.20031218072017.367:How to add support for a new language
 @nocolor
 

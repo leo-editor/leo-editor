@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="7,0"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="8,0,5"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -2976,11 +2976,17 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20090101095717.6"><vh>@rst-ignore  @rst-no-head preface (old)</vh></v>
 <v t="ekr.20090101095717.7"><vh>New preface</vh></v>
 </v>
+<v t="ekr.20050831195331.3"></v>
 <v t="ekr.20090219024526.1" a="E"><vh>Copy of wiki</vh>
 <v t="ekr.20090219024526.5" a="E"><vh>top level</vh>
-<v t="ekr.20090219024526.3"><vh>Outlines and nodes</vh></v>
-<v t="ekr.20090219024526.2"><vh>Scripting Leo, part 1</vh></v>
-<v t="ekr.20090219024526.4"><vh>Scripting Leo, part 2</vh></v>
+<v t="ekr.20090219024526.3"><vh>Outlines and Nodes</vh></v>
+<v t="ekr.20090219090426.1"><vh>Clones and Views</vh></v>
+<v t="ekr.20090219090426.2"><vh>External Files</vh></v>
+<v t="ekr.20090219090426.3"><vh>First Steps for Newbies</vh></v>
+<v t="ekr.20090219090426.4"><vh>Other Notable Features</vh></v>
+<v t="ekr.20090219024526.2"><vh>Scripting Leo: Commanders, Nodes and Positions</vh></v>
+<v t="ekr.20090219024526.4"><vh>Scripting Leo: Script Buttons and Node Types</vh></v>
+<v t="ekr.20090219090426.5"><vh>Scripting Leo: Directives and Sections</vh></v>
 </v>
 </v>
 </vnodes>
@@ -32525,21 +32531,21 @@ However, if at all possible, it is better to use bzr to get the latest sources. 
 <t tx="ekr.20090212054250.7">Daily snapshots are available at http://www.greygreen.org/leo/</t>
 <t tx="ekr.20090219024526.1">@nocolor</t>
 <t tx="ekr.20090219024526.2">A **node** is the combination of a headline (in the outline pane) and its
-associated body text. **A node is a real Python object**. Each node has an
-unique identity. Nodes persist. **When you save a Leo outline to a file, you are
-saving the outline's nodes**.
+associated body text. *A node is a real Python object*. Each node has an unique
+identity. Nodes persist. *When you save a Leo outline to a file, you are saving
+the outline's nodes*.
 
 You could say that nodes are what make Leo unique. In fancier language, **Leo
-has a DOM** (Document Object Model). **Leo treats data as true objects, having
-inherent structure**. In Leo, nothing is "just" text. It is, at minimum, **text
+has a DOM** (Document Object Model). *Leo treats data as true objects, having
+inherent structure*. In Leo, nothing is "just" text. It is, at minimum, **text
 in context** (the context of a node, and the context of the node's position in
 the outline.)
 
-Leo creates a new way of understanding data. Really! We call this change of
-perspective **the Leo way**. The consequences of this new view of data are wide
-ranging. Let's start with the simplest example.
+Leo creates a new way of understanding data. We call this change of perspective
+**the Leo way**. The consequences of this new view of data are wide ranging.
+Let's start with the simplest example.
 
-**Any node can contain a Leo (Python) script**. Leo's execute-script command
+*Any node can contain a Leo (Python) script*. Leo's execute-script command
 (Ctrl-b by default) executes the script (in the body text) using Python's exec
 statement. The exec statement pre-defines three variables: c, g and p. **c** is
 the **commander** of the outline. Naturally, a commander is a real Python
@@ -32567,10 +32573,17 @@ show their hierarchical relationships with parent or child nodes.
 
 Note: p.level() is a method of the position class. It returns 0 for top-level
 nodes, 1 for their children, 2 for their grandchildren. There are many other
-useful methods of the position class...</t>
-<t tx="ekr.20090219024526.3">.. _Emacs: http://www.gnu.org/software/emacs/
+useful methods of the position class...
 
-At first glance, Leo looks similar to other editors and IDE's.
+The next section [Scripting Leo: Node Types and @test] discusses some of Leo's
+most powerful and unique features.</t>
+<t tx="ekr.20090219024526.3">.. _Emacs: http://www.gnu.org/software/emacs/
+.. .. |leoMainWindow| image:: http://webpages.charter.net/edreamleo/PCWindow.gif
+.. |leoMainWindow| image:: http://webpages.charter.net/edreamleo/LeoQtWindow.bmp
+
+At first glance, Leo looks similar to other editors and IDE's. 
+
+|leoMainWindow|
 
 At the top of the screen is an **icon area** containing buttons or other
 widgets. Leo's **plugins** (Python scripts) may add items to the icon area.
@@ -32585,17 +32598,21 @@ menus however you like.
 
 Leo's **outline pane** appears below the icon area, to the left of the log pane.
 The outline pane contains **headlines**. Double-click the headline or type
-Ctrl-h to edit a headline. Leo's outline may look ordinary, but it is not.
-
-**Important**: It is natural to use the word **outline** in three ways. First,
-as what is shown in the outline pane. Second, the entire collection of nodes
-(See the next section) in a **Leo outline file** (.leo file). Third, the .leo
-file itself. This slightly ambiguous usage typically causes no confusion.
+Ctrl-h to edit a headline. The **icon box** is a small icon just to the left of
+the headline. The icon box shows the nodes attributes. A red vertical bar
+indicates a node is marked. A small arrow indicates the node is a clone. A
+darker box indicates that the node has been changed. A small square indicates
+that the node has body text.
 
 Below the outline pane lies the **body pane**. The body pane shows the **body
 text** associated with the presently selected headline. A **node** consists of a
 headline, its associated body text, and optional **user data**. We'll say much
-more about nodes in [Scripting Leo].</t>
+more about nodes in [Scripting Leo: Commanders, Nodes and Positions].
+
+**Note**: It is natural to use the word "outline" in three ways. First, what is
+shown in the outline pane. Second, the entire collection of nodes (See the next
+section) in a **Leo outline file** (.leo file). Third, the .leo file itself.
+This slightly ambiguous usage typically causes no confusion.</t>
 <t tx="ekr.20090219024526.4">Now we come to an extraordinary consequence of the Leo way. We said above that
 the execute-script command executes the script in body text in the context of
 the c, g and p variables. But *p is not necessarily the node containing the
@@ -32611,21 +32628,21 @@ script button's script, the new script will be used the next time you push the
 script button (or execute the corresponding minibuffer command, or press the key
 bound to the script button).
 
-You can see that scripts are already powerful, but there is another aspect of
-the Leo way (that is, another change of perspective), that makes Leo's data
-amazingly flexible. This second change in attitude is this:
+There is another aspect of the Leo way (that is, another change of perspective),
+that makes Leo's data amazingly flexible. This second change in attitude is
+this:
 
-    **We can consider that headlines describe the node's data**.
+    **We can consider that a headline describe a node's data**.
 
 That is, a node (it's body text, user data, and internal data managed by Leo) is
-the data. **The headline is the node's metadata**. Because nodes are true Python
-objects, this association of data with metadata is secure. It can not be broken
-by editing text, say.
+the data. *The headline is the node's* **metadata**. Because nodes are true
+Python objects, this association of data with metadata is secure. It can not be
+broken by editing text, say.
 
 But headlines can be much more than a simple, human-readable description.
-**Scripts can assign types to nodes** (and their descendants). By convention
-(it's only a convention, it is not built into Leo) headlines that start with '@'
-have special meaning to scripts, including Leo's own predefined commands.
+*Scripts can assign types to nodes* (and their descendants). By convention (it's
+only a convention, it is not built into Leo) headlines that start with '@' have
+special meaning to scripts, including Leo's own predefined commands.
 
 For example, Leo's **core** (the standard part of Leo that is available to all
 plugins), creates support for **@test nodes**. The headline is @test &lt;test
@@ -32634,16 +32651,16 @@ Leo predefines the c, g and p variables. You can, in fact, use the
 execute-script command on @test nodes. Nothing special will happen.
 
 However, you can run the run-unit-tests-locally (Alt-4) command on a (part of)
-an outline containing one or more @test nodes. **This command converts all @test
-nodes to subclasses of Python's Unittest.TestCase class, and runs the result**.
+an outline containing one or more @test nodes. This command converts all @test
+nodes to subclasses of Python's Unittest.TestCase class, and runs the result.
 (To see the results, you would typically run Leo from a console.)
 
 This is extraordinarily convenient. You don't have to type (or look at) the
 blah-blah-blah that wraps most typical unit tests. For example, in an @test
 node, a single assert statement can make up a complete unit test.
 
-Furthermore, **scripts in @test nodes can use outline nodes as data for the unit
-tests**. Most of Leo's unit tests are in the file leo/test/unitTest.leo. Many of
+Furthermore, scripts in @test nodes can use outline nodes as data for the unit
+tests. Most of Leo's unit tests are in the file leo/test/unitTest.leo. Many of
 these tests are associated with data trees, like 'input', 'output' and 'work'.
 The unit test applies an operation to the data in the input tree using the work
 tree as a scratch area. The unit test then simply asserts that the expected
@@ -32652,14 +32669,10 @@ could be simpler, or more flexible.
 
 Earlier, I said that scripts can assign types to nodes. The "type" is simply the
 start of the headline, like @test, @url, @picture etc. **Scripts create the
-meaning for types**. There is nothing magic about this. What a node type means
-is completely determined by the script that handles such nodes. Thus, **node
-types are infinitely flexible and extensible**.
-
-Leo has many predefined node types, the most important being **@auto**,
-**@file**, **@thin** and **@shadow**. Leo's core uses these nodes (and their
-descendants) to read and write **external files**, files on your file system.
-</t>
+meaning of types**. There is nothing magic about this. What a node type means is
+completely determined by the script that handles such nodes. Thus, *node types
+are completely flexible and extensible*. Leo has many predefined node types, the
+most important being **@auto**, **@file**, **@thin** and **@shadow**.</t>
 <t tx="ekr.20090219024526.5">@nocolor
 
 This page is the beginning of a new form of documentation for Leo based on short stories.
@@ -32733,6 +32746,59 @@ Sections 6, 7 and 8 are for programmers.  You may skip them if you like.
    in the generated script.
    **Section references** of the form ``&lt;&lt;section name&gt;&gt;`` tell where to place **named** child nodes.
    All parts of Leo generate scripts automatically as required.</t>
+<t tx="ekr.20090219090426.1">A **clone** is a "live" copy of a node that changes when the original nodes changes.
+A small red arrow in icon boxes marks clones.
+When you clone a node, there is no distinction between the "original" node and the "new" cloned node.
+All clones are created equal; both nodes are now clones.
+When you remove the penultimate cloned node, the last clone becomes a non-cloned node.
+
+In effect, **all clones are the same node**.
+When you change *any* part of cloned node,
+Leo instantly updates the corresponding parts of all its clones,
+including their headline, body text **and all their descendant nodes**.
+Inserting, deleting or reordering child nodes in one clone,
+causes Leo to make the corresponding changes in the children of all other clones.
+
+If you have already installed Leo, now would be a good time to play with clones.
+Start with a single node whose headline is A.
+Clone this node using the clone-node (Ctrl-\`) command.
+Type some text into the body of either node A. The same text appears in the
+body of the other clone. Insert a node whose headline is B as a child of any clone.
+All the A nodes now have a B child.
+What happens when you clone B? All A nodes should now have *two* children B.
+What happens when you insert, delete or move nodes that are children of A?
+The corresponding changes should appear in all clones.
+Verify that when the second-to-last cloned node is deleted the last cloned node
+becomes a regular node again.
+
+Using clones, any node may appear in many places in the outline.
+A **view** is just a node containing other nodes.
+**You can create as many views of your data as you want**,
+each tailored exactly to the task at hand.
+You never have to create a single "right" or "best" view.
+You can have them all.
+Views, being nodes, persist until you delete them.
+
+To create a new view of the data, just create any *ordinary* node.
+This **view node** represents the new view.
+Views can contain any other nodes, but views typically contain one or more clones.
+Views **gather** nodes from all parts of the outline.
+**Views create a focus of attention**.
+
+For example, when I begin to fix a bug I first create a view node for that bug.
+I create a child node that contains the original bug report,
+and possibly other child nodes containing notes and documentation, test results, etc.
+Next, I go looking throughout Leo's code for nodes related to the bug.
+When I find such a node I clone it and move one of the clones so it becomes a child of the view node.
+Once I have created the view of the bug, I can concentrate *only* on that view.
+Because all clones are, in effect, the *same* node,
+I can fix code *elsewhere* by changing cloned nodes in the view.
+In effect, I can limit my attention to just a few nodes.
+**Views create mini-projects within a larger project**.</t>
+<t tx="ekr.20090219090426.2"></t>
+<t tx="ekr.20090219090426.3"></t>
+<t tx="ekr.20090219090426.4"></t>
+<t tx="ekr.20090219090426.5"></t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
