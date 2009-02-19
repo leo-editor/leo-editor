@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="4,23,0,2"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="7,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -60,7 +60,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -791,8 +791,8 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070317033759.6"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20070628083442" a="E"><vh>Chapter 20: Unit testing with Leo</vh>
-<v t="ekr.20070628083442.1" a="E"><vh>@rst html\unitTesting.html</vh>
+<v t="ekr.20070628083442"><vh>Chapter 20: Unit testing with Leo</vh>
+<v t="ekr.20070628083442.1"><vh>@rst html\unitTesting.html</vh>
 <v t="ekr.20070628083442.2"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070704074747"><vh>Overview</vh></v>
 <v t="ekr.20070628084351"><vh>Using @test nodes</vh></v>
@@ -2975,6 +2975,13 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20090101095717.5"><vh>@rst-no-head preface</vh></v>
 <v t="ekr.20090101095717.6"><vh>@rst-ignore  @rst-no-head preface (old)</vh></v>
 <v t="ekr.20090101095717.7"><vh>New preface</vh></v>
+</v>
+<v t="ekr.20090219024526.1" a="E"><vh>Copy of wiki</vh>
+<v t="ekr.20090219024526.5" a="E"><vh>top level</vh>
+<v t="ekr.20090219024526.3"><vh>Outlines and nodes</vh></v>
+<v t="ekr.20090219024526.2"><vh>Scripting Leo, part 1</vh></v>
+<v t="ekr.20090219024526.4"><vh>Scripting Leo, part 2</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -32516,6 +32523,216 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 However, if at all possible, it is better to use bzr to get the latest sources.  See the next entry.</t>
 <t tx="ekr.20090212054250.7">Daily snapshots are available at http://www.greygreen.org/leo/</t>
+<t tx="ekr.20090219024526.1">@nocolor</t>
+<t tx="ekr.20090219024526.2">A **node** is the combination of a headline (in the outline pane) and its
+associated body text. **A node is a real Python object**. Each node has an
+unique identity. Nodes persist. **When you save a Leo outline to a file, you are
+saving the outline's nodes**.
+
+You could say that nodes are what make Leo unique. In fancier language, **Leo
+has a DOM** (Document Object Model). **Leo treats data as true objects, having
+inherent structure**. In Leo, nothing is "just" text. It is, at minimum, **text
+in context** (the context of a node, and the context of the node's position in
+the outline.)
+
+Leo creates a new way of understanding data. Really! We call this change of
+perspective **the Leo way**. The consequences of this new view of data are wide
+ranging. Let's start with the simplest example.
+
+**Any node can contain a Leo (Python) script**. Leo's execute-script command
+(Ctrl-b by default) executes the script (in the body text) using Python's exec
+statement. The exec statement pre-defines three variables: c, g and p. **c** is
+the **commander** of the outline. Naturally, a commander is a real Python
+object, with many methods useful to scripts. **g** is Leo's **leoGlobals**
+module containing many utility functions of use to scripts.
+
+**p** is the **position** of the presently selected node in the outline at the
+time the script is executed. **Positions are themselves Python objects**, with
+many useful methods and attributes. Given a position p, **p.h** is the node's
+headline text and **p.b** is the node's body text. Nodes can have any kind and
+amount of data, called user data, **p.u**. Scripts can set headline, body and
+user data by assigning data to p.b, p.h and p.h. Scripts can assign any data to
+p.u providing the data is pickleable.
+
+You can access all data in an outline using iterators defined in commander. For
+example, c.allNodes_iter returns every position in the outline in **outline
+order** (the order in which nodes would appear in the outline if all headlines
+were expanded). For example, the following script::
+
+    for p in c.allNodes_iter:
+        print p.level() * ' ',p.h
+
+prints all headlines of all nodes of the outline, in outline order, indented to
+show their hierarchical relationships with parent or child nodes.
+
+Note: p.level() is a method of the position class. It returns 0 for top-level
+nodes, 1 for their children, 2 for their grandchildren. There are many other
+useful methods of the position class...</t>
+<t tx="ekr.20090219024526.3">.. _Emacs: http://www.gnu.org/software/emacs/
+
+At first glance, Leo looks similar to other editors and IDE's.
+
+At the top of the screen is an **icon area** containing buttons or other
+widgets. Leo's **plugins** (Python scripts) may add items to the icon area.
+
+At the bottom of the screen, Leo has a **minibuffer** into which you can type
+**minibuffer commands**, just as in Emacs_. Leo typically uses Emacs-like
+command names, like execute-script or close-window. Like Emacs, you can type the
+command name in the minibuffer, and like Emacs, you can use tab completion,
+shown in a tab in the **log pane**. Of course, you can also execute commands
+from menus. As we shall see, you can use special-purpose Leo outlines to change
+menus however you like.
+
+Leo's **outline pane** appears below the icon area, to the left of the log pane.
+The outline pane contains **headlines**. Double-click the headline or type
+Ctrl-h to edit a headline. Leo's outline may look ordinary, but it is not.
+
+**Important**: It is natural to use the word **outline** in three ways. First,
+as what is shown in the outline pane. Second, the entire collection of nodes
+(See the next section) in a **Leo outline file** (.leo file). Third, the .leo
+file itself. This slightly ambiguous usage typically causes no confusion.
+
+Below the outline pane lies the **body pane**. The body pane shows the **body
+text** associated with the presently selected headline. A **node** consists of a
+headline, its associated body text, and optional **user data**. We'll say much
+more about nodes in [Scripting Leo].</t>
+<t tx="ekr.20090219024526.4">Now we come to an extraordinary consequence of the Leo way. We said above that
+the execute-script command executes the script in body text in the context of
+the c, g and p variables. But *p is not necessarily the node containing the
+script!* You can define a script in one node, create a minibuffer command
+associated with that script. You then select another node of the outline and
+apply the command to the outline. Thus, *you can apply any script in any Leo
+node to any part of an outline*. We call this **bringing scripts to data**.
+
+You can associate key-bindings with any script, and you can create **script
+buttons** in Leo's icon area that will execute a script on the presently
+selected outline. By the way, script buttons are dynamic. If you change the
+script button's script, the new script will be used the next time you push the
+script button (or execute the corresponding minibuffer command, or press the key
+bound to the script button).
+
+You can see that scripts are already powerful, but there is another aspect of
+the Leo way (that is, another change of perspective), that makes Leo's data
+amazingly flexible. This second change in attitude is this:
+
+    **We can consider that headlines describe the node's data**.
+
+That is, a node (it's body text, user data, and internal data managed by Leo) is
+the data. **The headline is the node's metadata**. Because nodes are true Python
+objects, this association of data with metadata is secure. It can not be broken
+by editing text, say.
+
+But headlines can be much more than a simple, human-readable description.
+**Scripts can assign types to nodes** (and their descendants). By convention
+(it's only a convention, it is not built into Leo) headlines that start with '@'
+have special meaning to scripts, including Leo's own predefined commands.
+
+For example, Leo's **core** (the standard part of Leo that is available to all
+plugins), creates support for **@test nodes**. The headline is @test &lt;test
+name&gt;. The body text is any Python script. As always, when executing the script
+Leo predefines the c, g and p variables. You can, in fact, use the
+execute-script command on @test nodes. Nothing special will happen.
+
+However, you can run the run-unit-tests-locally (Alt-4) command on a (part of)
+an outline containing one or more @test nodes. **This command converts all @test
+nodes to subclasses of Python's Unittest.TestCase class, and runs the result**.
+(To see the results, you would typically run Leo from a console.)
+
+This is extraordinarily convenient. You don't have to type (or look at) the
+blah-blah-blah that wraps most typical unit tests. For example, in an @test
+node, a single assert statement can make up a complete unit test.
+
+Furthermore, **scripts in @test nodes can use outline nodes as data for the unit
+tests**. Most of Leo's unit tests are in the file leo/test/unitTest.leo. Many of
+these tests are associated with data trees, like 'input', 'output' and 'work'.
+The unit test applies an operation to the data in the input tree using the work
+tree as a scratch area. The unit test then simply asserts that the expected
+output in the output tree matches the actual result in the work tree. Nothing
+could be simpler, or more flexible.
+
+Earlier, I said that scripts can assign types to nodes. The "type" is simply the
+start of the headline, like @test, @url, @picture etc. **Scripts create the
+meaning for types**. There is nothing magic about this. What a node type means
+is completely determined by the script that handles such nodes. Thus, **node
+types are infinitely flexible and extensible**.
+
+Leo has many predefined node types, the most important being **@auto**,
+**@file**, **@thin** and **@shadow**. Leo's core uses these nodes (and their
+descendants) to read and write **external files**, files on your file system.
+</t>
+<t tx="ekr.20090219024526.5">@nocolor
+
+This page is the beginning of a new form of documentation for Leo based on short stories.
+It is experimental, but will eventually replace Leo's introductory material.
+
+This tutorial introduces Leo's basic features.  It has 8 parts:
+
+1. [Outlines and Nodes]
+
+   In brief: outlines consist of **nodes**.
+   Nodes consist of **headlines**, **body text** and optional **user data**.
+
+2. [Clones and Views]
+
+   In brief: A **Clone** is a "live" copy of a node.
+   Using clones, any node may appear in many places in the outline.
+   A view is a node containing other nodes, including clones.
+   Thus, outlines can contain arbitrarily many views of there data in the outline.
+   You never need to choose between different views of your data.  You can have them all.
+
+3. [Creating and Using External Files]
+
+   In brief:
+   **@auto**, **@file**, **@shadow** and **@thin** nodes (and their descendants) manage **external files**.
+   @file and @thin nodes create external files containing special comments called **sentinels**.
+   Using @thin is recommended whenever possible.
+   External files managed with @shadow and @auto contain no sentinels--Leo automatically
+   imports the external file when reading a .leo file.
+
+4. [Practical First Steps]
+
+   Discusses using non-Leo files, choosing settings, and other practicalities.
+
+5. [Other Features of Leo]
+
+   Discusses plugins, the rst3 plugin, iLeo and other notable features of Leo.
+
+Sections 6, 7 and 8 are for programmers.  You may skip them if you like.
+
+6. [Scripting Leo, Part 1]
+
+   In brief: Nothing in Leo is just text. All data in Leo is a true Python object.
+   Leo's DOM (document object model) consists of **commanders**, **nodes** and **positions**.
+   Saving a .leo files saves these objects.
+   Leo's execute-script command predefines c, g and p:
+   **c** is the outline's commander, **g** is Leo's utility module, leoGlobals.py,
+   and **p** is the position of the presently selected node.
+   c.allNodes_iter is an iterator returning all nodes of the outline.
+   **p.h**, **p.b** and **p.u** are the headline, body text and user data of the node at position p.
+   Internally, Leo represents nodes using two separate data structures,
+   the **vnode** p.v and the **tnode** p.v.t.
+   A position represents a state of a tree traversal:
+   a node may appear at many distinct positions in an outline.
+
+7. [Scripting Leo, Part 2]
+
+   In brief: Scripts can create new minibuffer commands, with key bindings.
+   **Script buttons** bring scripts to data.
+   Headlines can be considered **metadata** describing the body text.
+   By convention, headlines starting with '@' specify types.
+   *Leo scripts give meaning to types*.
+   For example, the run-unit-tests-locally command converts the body of @test nodes
+   into an instance of ``unittest.TestCase`` and runs that test case.
+
+8. [Scripting Leo, Part 3]
+
+   In brief:  **Leo directives** specify properties of a node and its descendants.
+   Directives may be inherited or overridden in descendant nodes.
+   Leo can *generate* scripts by traversing (a part of) an outline!
+   The @others directive tells where to place the expansion of **unnamed** child nodes
+   in the generated script.
+   **Section references** of the form ``&lt;&lt;section name&gt;&gt;`` tell where to place **named** child nodes.
+   All parts of Leo generate scripts automatically as required.</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
