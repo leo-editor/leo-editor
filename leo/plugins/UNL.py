@@ -209,7 +209,9 @@ def onUrl1 (tag,keywords):
 
         if urlProtocol == "file":
             if urlTuple[2].endswith(".leo"):
-                c.frame.top.update_idletasks() # Clear remaining events, so they don't interfere.
+                if hasattr(c.frame.top, 'update_idletasks'):
+                    # this is Tk only - TNB
+                    c.frame.top.update_idletasks() # Clear remaining events, so they don't interfere.
                 ok,frame = g.openWithFileName(urlTuple[2], c)
                 if ok:
                     #@                    << go to the node>>

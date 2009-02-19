@@ -296,7 +296,7 @@ class backlinkController(object):
                 break
         else:
             self.showMessage("Error: no such link")
-        
+    
         gcc = getattr(self.c, 'graphcanvasController')
         if gcc:
             gcc.update()
