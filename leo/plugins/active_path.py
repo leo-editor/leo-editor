@@ -70,6 +70,15 @@ __version__ = "0.2"
 #@nl
 
 #@+others
+#@+node:tbrown.20090219133655.231:isDirNode
+def isDirNode(p):
+
+    return (
+        p.h.startswith('@path ') or 
+        (not p.h.strip().startswith('@') and p.h.strip().endswith('/'))
+        or p.h.strip().startswith('/')
+        )
+#@-node:tbrown.20090219133655.231:isDirNode
 #@+node:tbrown.20080613095157.4:onSelect
 def onSelect (tag,keywords):
     """Determine if a file or directory status-iconbox was clicked, and the path"""
@@ -78,7 +87,7 @@ def onSelect (tag,keywords):
     p = keywords.get("p")
     pos = p.copy()
 
-    path = getPath(p)
+    path = getPath(c, p)
 
     if path:
         sync_node_to_folder(c,pos,path)
@@ -90,15 +99,23 @@ def onSelect (tag,keywords):
 #@nonl
 #@-node:tbrown.20080613095157.4:onSelect
 #@+node:tbrown.20080616153649.4:getPath
-def getPath(p):
-
+def getPath(c, p):
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    if (not isDirNode(p)):
+        path = os.path.join(path, p.h.strip())
+    print path
+    return path
+#@-node:tbrown.20080616153649.4:getPath
+#@+node:tbrown.20090219133655.230:getPathOld
+def getPathOld(p):
+    # NOT USED, my version which does its own @path scanning
     p = p.copy()
 
     path = []
 
     while p:
         h = p.h
-        # TODO - use leo internal @path code
 
         if g.match_word(h,0,"@path"):  # top of the tree
             path.insert(0,os.path.expanduser(h[6:].strip()))
@@ -108,7 +125,7 @@ def getPath(p):
         elif h.startswith('@'):  # some other directive, run away
             break
 
-        elif '/' in h:  # a directory
+        elif isDirNode(p):  # a directory
             path.insert(0,h.strip('/*'))
 
         elif not p.hasChildren():  # a leaf node, assume a file
@@ -117,7 +134,7 @@ def getPath(p):
         p = p.parent()
 
     return None
-#@-node:tbrown.20080616153649.4:getPath
+#@-node:tbrown.20090219133655.230:getPathOld
 #@+node:tbrown.20080613095157.5:flattenOrganizers
 def flattenOrganizers(p):
     """Children of p, some of which may be in organizer nodes
@@ -135,19 +152,18 @@ def flattenOrganizers(p):
     """    
     for n in p.children_iter():
         yield n
-        if ('/' not in n.h
+        if (not isDirNode(n)
             and not n.h.startswith('@')):
             for i in flattenOrganizers(n):
                 yield i
 #@nonl
 #@-node:tbrown.20080613095157.5:flattenOrganizers
 #@+node:tbrown.20080613095157.6:sync_node_to_folder
-def sync_node_to_folder(c,parent,d, updateOnly=False):
+def sync_node_to_folder(c,parent,d,updateOnly=False):
     """Decide whether we're opening or creating a file or a folder"""
 
     if os.path.isdir(d):
-        if ('/' in parent.h
-            or parent.h.startswith('@path')):
+        if (isDirNode(parent) and (not updateOnly or parent.hasChildren())):
             # no '/' or @path implies organizer
             openDir(c,parent,d)
         return
@@ -156,7 +172,7 @@ def sync_node_to_folder(c,parent,d, updateOnly=False):
 
     if os.path.isfile(d):
         openFile(c,parent,d)
-    elif '/' in parent.h:
+    elif isDirNode(parent):
         createDir(c,parent,d)
     else:
         createFile(c,parent,d)
@@ -184,21 +200,20 @@ def createFile(c,parent,d):
 
     d = os.path.basename(d)
     atType = c.config.getString('active_path_attype') or 'auto'
-    ok = g.app.gui.runAskYesNoDialog(c, 'Create file?',
-        'Create file @'+atType+' '+d+'?')
+    ok = g.app.gui.runAskYesNoDialog(c, 'Create / load file?',
+        'Create / load file @'+atType+' '+d+'?')
     if ok == 'no':
         return
     c.setHeadString(parent, '@'+atType+' '+d)
     c.bodyWantsFocusNow()
-#@nonl
 #@-node:tbrown.20080613095157.8:createFile
 #@+node:tbrown.20080613095157.9:openFile
 def openFile(c,parent,d):
     """Open an existing file"""
-    d = os.path.basename(d)
-    c.setHeadString(parent, '@auto '+d)
+    hdr = os.path.basename(d)
+    parent.h = '@auto '+hdr
+    parent.b = file(d).read()
     c.bodyWantsFocusNow()
-#@nonl
 #@-node:tbrown.20080613095157.9:openFile
 #@+node:tbrown.20080613095157.10:openDir
 def openDir(c,parent,d):
@@ -244,7 +259,8 @@ def openDir(c,parent,d):
         p = parent.insertAsNthChild(0)
         c.setChanged(True)
         c.setHeadString(p,name)
-        if name.startswith('/'):
+        if name.startswith('/'): 
+            # sufficient test of dirness as we created newlist
             c.setBodyString(p, '@path '+name.strip('/'))
         p.setMarked()
 
@@ -252,11 +268,11 @@ def openDir(c,parent,d):
     for p in flattenOrganizers(parent):
         h = p.h.strip('/*')  # strip / and *
         if (h not in oldlist 
-            or (p.hasChildren() and '/' not in p.h)):  # clears bogus '*' marks
+            or (p.hasChildren() and not isDirNode(p))):  # clears bogus '*' marks
             nh = p.h.strip('*')  # strip only *
         else:
             nh = '*'+p.h.strip('*')+'*'
-            if '/' in p.h:
+            if isDirNode(p):
                 for orphan in p.subtree_iter():
                     c.setHeadString(orphan, '*'+orphan.h.strip('*')+'*')
         if p.h != nh:  # don't dirty node unless we must
@@ -266,7 +282,7 @@ def openDir(c,parent,d):
 #@+node:tbrown.20080616153649.2:cmd_ShowCurrentPath
 def cmd_ShowCurrentPath(c):
     """Just show the path to the current file/directory node in the log pane."""
-    g.es(getPath(c.p))
+    g.es(getPath(c, c.p))
 #@-node:tbrown.20080616153649.2:cmd_ShowCurrentPath
 #@+node:tbrown.20080619080950.16:cmd_UpdateRecursive
 def cmd_UpdateRecursive(c):
@@ -274,7 +290,7 @@ def cmd_UpdateRecursive(c):
     p = c.p
 
     for s in p.self_and_subtree_iter():
-        path = getPath(s)
+        path = getPath(c, s)
 
         if path:
             sync_node_to_folder(c,s,path,updateOnly=True)
@@ -289,8 +305,8 @@ def cmd_SetNodeToAbsolutePath(c):
     if '@' in p.h:
         g.es('Node should be a "/dirname/" type directory entry')
         return
-    path = getPath(p)
-    c.setBodyString(p, ('@path Created from node "%s"\n\n'
+    path = getPath(c, p)
+    c.setBodyString(p, ('path Created from node "%s"\n\n'
         % p.h)+p.b)
     c.setHeadString(p, '@path '+path)
 #@-node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
@@ -403,5 +419,6 @@ def attachToCommander(t,k):
 def init():
     leoPlugins.registerHandler('after-create-leo-frame', attachToCommander)
     g.plugin_signon(__name__)
+    return True
 #@-node:tbrown.20080613095157.2:@thin active_path.py
 #@-leo
