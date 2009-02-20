@@ -32,7 +32,8 @@ class leoMenu:
             ("Clear Recent Files",None,c.clearRecentFiles),
             ("Clean Recent Files",None,c.cleanRecentFiles),
             ("Sort Recent Files",None,c.sortRecentFiles),
-            ("-",None,None))
+            # ("-",None,None),
+            )
 
         # To aid transition to emacs-style key handling.
         self.useCmdMenu = c.config.getBool('useCmdMenu')
