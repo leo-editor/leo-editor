@@ -2447,6 +2447,70 @@ def shortFileName (fileName):
 
 shortFilename = shortFileName
 #@-node:ekr.20031218072017.3125:g.shortFileName & shortFilename
+#@+node:tbrown.20090219095555.61:g.handleUrlInUrlNode
+def handleUrlInUrlNode(url):
+
+    # Note: the UNL plugin has its own notion of what a good url is.
+
+    # c = self.c
+    # g.trace(url)
+    #@    << check the url; return if bad >>
+    #@+node:tbrown.20090219095555.62:<< check the url; return if bad >>
+    #@+at 
+    #@nonl
+    # A valid url is (according to D.T.Hein):
+    # 
+    # 3 or more lowercase alphas, followed by,
+    # one ':', followed by,
+    # one or more of: (excludes !"#;<>[\]^`|)
+    #   $%&'()*+,-./0-9:=?@A-Z_a-z{}~
+    # followed by one of: (same as above, except no minus sign or comma).
+    #   $%&'()*+/0-9:=?@A-Z_a-z}~
+    #@-at
+    #@@c
+
+    urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+
+    if not url or len(url) == 0:
+        g.es("no url following @url")
+        return
+
+    # Add http:// if required.
+    if not re.match('^([a-z]{3,}:)',url):
+        url = 'http://' + url
+    if not re.match(urlPattern,url):
+        g.es("invalid url:",url)
+        return
+    #@nonl
+    #@-node:tbrown.20090219095555.62:<< check the url; return if bad >>
+    #@nl
+    #@    << pass the url to the web browser >>
+    #@+node:tbrown.20090219095555.63:<< pass the url to the web browser >>
+    #@+at 
+    #@nonl
+    # Most browsers should handle the following urls:
+    #   ftp://ftp.uu.net/public/whatever.
+    #   http://localhost/MySiteUnderDevelopment/index.html
+    #   file://home/me/todolist.html
+    #@-at
+    #@@c
+
+    try:
+        import os
+        os.chdir(g.app.loadDir)
+        if g.match(url,0,"file:") and url[-4:]==".leo":
+            ok,frame = g.openWithFileName(url[5:],None)
+        else:
+            import webbrowser
+            # Mozilla throws a weird exception, then opens the file!
+            try: webbrowser.open(url)
+            except: pass
+    except:
+        g.es("exception opening",url)
+        g.es_exception()
+    #@-node:tbrown.20090219095555.63:<< pass the url to the web browser >>
+    #@nl
+#@-node:tbrown.20090219095555.61:g.handleUrlInUrlNode
 #@+node:ekr.20050104135720:Used by tangle code & leoFileCommands
 #@+node:ekr.20031218072017.1241:g.update_file_if_changed
 # This is part of the tangle code.

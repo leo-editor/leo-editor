@@ -31,12 +31,6 @@ __version__ = "0.1"
 #@+node:tbrown.20070322113635.3:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-
-Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-
-# import os       
-# import urlparse 
-#@nonl
 #@-node:tbrown.20070322113635.3:<< imports >>
 #@nl
 
@@ -56,7 +50,7 @@ def onDClick1 (tag,keywords):
         lines = p.b.split('\n')
         url = lines and lines[0] or ''
         if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-            c.frame.handleUrlInUrlNode(url)
+            g.handleUrlInUrlNode(url)
         g.doHook("@url2",c=c,p=p,v=p)
         return 'break'
     else:
@@ -64,13 +58,8 @@ def onDClick1 (tag,keywords):
 #@-node:tbrown.20070322113635.4:onDClick1
 #@-others
 
-if Tk:
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
-
-    if g.app.gui.guiName() == "tkinter":
-        leoPlugins.registerHandler("icondclick1", onDClick1)
-        # check for bookmark          
-        g.plugin_signon(__name__)
+leoPlugins.registerHandler("icondclick1", onDClick1)
+# check for bookmark          
+g.plugin_signon(__name__)
 #@-node:tbrown.20070322113635:@thin bookmarks.py
 #@-leo

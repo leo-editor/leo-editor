@@ -108,7 +108,7 @@ installed Fredrik Lundh's PIL and tkIcon packages:
 Download PIL from http://www.pythonware.com/downloads/index.htm#pil
 Download tkIcon from http://www.effbot.org/downloads/#tkIcon
     """,
-    scripts = ['launchLeo.py'],
+    scripts = ['leo/scripts/leo'],
 
     #entry_points = {
     #    'console_scripts': [

@@ -2588,75 +2588,11 @@ class leoTree:
                 #@-node:ekr.20031218072017.2313:<< stop the url after any whitespace  >>
                 #@nl
             if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-                self.handleUrlInUrlNode(url)
+                g.handleUrlInUrlNode(url)
             g.doHook("@url2",c=c,p=p,v=p)
 
         return 'break' # 11/19/06
     #@nonl
-    #@+node:ekr.20061030161842:handleUrlInUrlNode
-    def handleUrlInUrlNode(self,url):
-
-        # Note: the UNL plugin has its own notion of what a good url is.
-
-        c = self.c
-        # g.trace(url)
-        #@    << check the url; return if bad >>
-        #@+node:ekr.20031218072017.2314:<< check the url; return if bad >>
-        #@+at 
-        #@nonl
-        # A valid url is (according to D.T.Hein):
-        # 
-        # 3 or more lowercase alphas, followed by,
-        # one ':', followed by,
-        # one or more of: (excludes !"#;<>[\]^`|)
-        #   $%&'()*+,-./0-9:=?@A-Z_a-z{}~
-        # followed by one of: (same as above, except no minus sign or comma).
-        #   $%&'()*+/0-9:=?@A-Z_a-z}~
-        #@-at
-        #@@c
-
-        urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
-
-        if not url or len(url) == 0:
-            g.es("no url following @url")
-            return
-
-        # Add http:// if required.
-        if not re.match('^([a-z]{3,}:)',url):
-            url = 'http://' + url
-        if not re.match(urlPattern,url):
-            g.es("invalid url:",url)
-            return
-        #@nonl
-        #@-node:ekr.20031218072017.2314:<< check the url; return if bad >>
-        #@nl
-        #@    << pass the url to the web browser >>
-        #@+node:ekr.20031218072017.2315:<< pass the url to the web browser >>
-        #@+at 
-        #@nonl
-        # Most browsers should handle the following urls:
-        #   ftp://ftp.uu.net/public/whatever.
-        #   http://localhost/MySiteUnderDevelopment/index.html
-        #   file://home/me/todolist.html
-        #@-at
-        #@@c
-
-        try:
-            import os
-            os.chdir(g.app.loadDir)
-            if g.match(url,0,"file:") and url[-4:]==".leo":
-                ok,frame = g.openWithFileName(url[5:],c)
-            else:
-                import webbrowser
-                # Mozilla throws a weird exception, then opens the file!
-                try: webbrowser.open(url)
-                except: pass
-        except:
-            g.es("exception opening",url)
-            g.es_exception()
-        #@-node:ekr.20031218072017.2315:<< pass the url to the web browser >>
-        #@nl
-    #@-node:ekr.20061030161842:handleUrlInUrlNode
     #@-node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper
     #@-node:ekr.20061109165848:Must be defined in base class
     #@+node:ekr.20081005065934.8:May be defined in subclasses
