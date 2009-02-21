@@ -6,11 +6,5 @@ include /usr/share/cdbs/1/class/python-distutils.mk
 include /usr/share/cdbs/1/rules/dpatch.mk
 
 install/leo::
-	# remove documentation
-	
-	# change permission on scripts
-	
-	# removing bogus usr/IPython directory
+	dh_installman -p$(cdbs_curpkg) debian/leo.1
 
-binary-fixup/leo::
-	# fix lintian warnings (see also patches/04_remove_shebang.dpatch)
