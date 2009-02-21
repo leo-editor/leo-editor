@@ -3013,14 +3013,16 @@ class leoQtMenu (leoMenu.leoMenu):
         # if menu:
             # return menu.delete(realItemName)
     #@-node:ekr.20081121105001.364:delete
-    #@+node:ekr.20081121105001.365:delete_range
+    #@+node:ekr.20081121105001.365:delete_range (leoQtMenu)
     def delete_range (self,menu,n1,n2):
 
         """Wrapper for the Tkinter delete menu method."""
 
+        g.trace(menu,n1,n2)
+
         # if menu:
             # return menu.delete(n1,n2)
-    #@-node:ekr.20081121105001.365:delete_range
+    #@-node:ekr.20081121105001.365:delete_range (leoQtMenu)
     #@+node:ekr.20081121105001.366:destroy
     def destroy (self,menu):
 

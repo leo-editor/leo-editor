@@ -2,45 +2,41 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
+#@+node:ekr.20090220150215.1:Urgent bugs 3
+#@+node:ekr.20090220150215.2:Make @color and @nocolor work properly.
+@nocolor-node
+
+This will probably involve adding @color state to colorizing state.
+#@nonl
+#@-node:ekr.20090220150215.2:Make @color and @nocolor work properly.
+#@+node:ekr.20090128083504.1:Fix rclick
+@nocolor-node
+
+rClick
+
+
+After the qt-plugin merge (rev 1251 ), the image plugin no longer works. I
+couldn't find any mention of gsimage in the diff.
+
+ # Erase image if it was previously displayed
+             a = g.app ; c = keywords.get("c")
+
+-            if a.gsimage:
++            if getattr(a, 'gsimage', None):
+                 try:
+                     c.frame.body.bodyCtrl.delete(a.gsimage)
+                 except:
+#@-node:ekr.20090128083504.1:Fix rclick
+#@-node:ekr.20090220150215.1:Urgent bugs 3
+#@+node:ekr.20081215074704.13:Bugs 6
 #@+node:ekr.20090217051021.11:Moving a node recolors it
 # In general, this is necessary, but we may be able to shortcut it
 # in recolor_after_move.
 #@nonl
 #@-node:ekr.20090217051021.11:Moving a node recolors it
-#@+node:ekr.20081215074704.13:Bugs 6
 #@+node:ekr.20090131123901.2:Sometime a plug box appears wrongly
 # It may happen after a paste?
 #@-node:ekr.20090131123901.2:Sometime a plug box appears wrongly
-#@+node:ekr.20090128113654.1:Recent files menu is duplicated in qt gui
-Using r1372 and the Qt plugin, I get strange results with the recent-
-files menu item.  To reproduce:
-
-1. open a leo window (call this window 1)
-2. open an existing .leo file using file->open... (this opens a new window, window 2)
-3. go to the file->Recent-files menu item of window 1.  The file-list is duplicated.
-4. repeat step 2.  Now window 1's recent-files list is duplicated twice...
-
-** Affects: leo-editor
-    Importance: Undecided
-        Status: New
-
---
-recent-files menu item list is duplicated
-https://bugs.launchpad.net/bugs/313320
-You received this bug notification because you are a member of The Leo
-editor team, which is subscribed to leo-editor.
-
-Status in Leo: a programmer's editor and more: New
-
-Bug description:
-Using r1372 and the Qt plugin, I get strange results with the recent-files menu item.  To reproduce:
-
-1. open a leo window (call this window 1)
-2. open an existing .leo file using file->open... (this opens a new window, window 2)
-3. go to the file->Recent-files menu item of window 1.  The file-list is duplicated.
-4. repeat step 2.  Now window 1's recent-files list is duplicated twice...
-#@nonl
-#@-node:ekr.20090128113654.1:Recent files menu is duplicated in qt gui
 #@+node:ekr.20090123073723.12:Fix php section coloring
 http://groups.google.com/group/leo-editor/browse_thread/thread/41870d58718b7b7a#
 #@nonl
@@ -110,24 +106,6 @@ functions which find a menu based on knowing it exists before hand.
 #@nonl
 #@-node:ekr.20081215074704.18:Finish qt gui delete_range method
 #@-node:ekr.20081215074704.13:Bugs 6
-#@+node:ekr.20090128083504.1:Fix plugins 2
-@nocolor-node
-
-rClick
-
-
-After the qt-plugin merge (rev 1251 ), the image plugin no longer works. I
-couldn't find any mention of gsimage in the diff.
-
- # Erase image if it was previously displayed
-             a = g.app ; c = keywords.get("c")
-
--            if a.gsimage:
-+            if getattr(a, 'gsimage', None):
-                 try:
-                     c.frame.body.bodyCtrl.delete(a.gsimage)
-                 except:
-#@-node:ekr.20090128083504.1:Fix plugins 2
 #@+node:ekr.20081215074704.19:Features 5
 #@+node:ekr.20081215162017.4:Allow coloring of script buttons
 #@-node:ekr.20081215162017.4:Allow coloring of script buttons

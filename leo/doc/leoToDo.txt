@@ -1,77 +1,9 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20080323093939.3:Update Leo's intro pages
-#@+node:ekr.20090105083748.5:Write first draft of new Leo intro using stories
-@nocolor-node
-
-* Why Leo is fun.
-- Leo as a filing cabinet (DOM)
-#@-node:ekr.20090105083748.5:Write first draft of new Leo intro using stories
-#@-node:ekr.20080323093939.3:Update Leo's intro pages
 #@+node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20090213065933.1:3-day bugs 6
-#@+node:ekr.20090217105248.3:Fix the recent files menu crash
-@killcolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/e3ce6ed5e8ea7e70/4bd1824e2555539d
-
-Figured out the common thread between my two machines: I get this
-error whenever I use the Recent Files menu. After using it once in a
-session, the list of recent files is empty.
-
--matt
-
-On Feb 15, 8:35 am, maphew <map...@gmail.com> wrote:
-> Here is the error on Windows XP. I installed python-2.5.4.msi,
-> followed by Leo-4-5-1-2-final.exe and ipython-0.9.1.win32-setup.exe
-> (not necessarily in that order).
->
-> Error: 1
-> <type 'exceptions.TypeError'> Exception in Tk callback
->   Function: <function add_commandCallback at 0x01E4DAF0> (type: <type
-> 'function'>)
->   Args: ()
-> Traceback (innermost last):
->   File "C:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\extensions
-> \Pmw\Pmw_1_3\lib\PmwBase.py", line 1747, in __call__
->     return apply(self.func, args)
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoCommands.py", line 5844, in add_commandCallback
->     val = command()
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoMenu.py", line 1613, in recentFilesCallback
->     c.openRecentFile(name)
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoCommands.py", line 1053, in openRecentFile
->     ok, frame = g.openWithFileName(fileName,c)
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoGlobals.py", line 2208, in openWithFileName
->     c.updateRecentFiles(relativeFileName or fileName)
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoCommands.py", line 1086, in updateRecentFiles
->     frame.menu.createRecentFilesMenuItems()
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoMenu.py", line 1599, in createRecentFilesMenuItems
->     self.deleteRecentFilesMenuItems(recentFilesMenu)
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoMenu.py", line 1624, in deleteRecentFilesMenuItems
->     self.delete_range(menu,0,toDrop)
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoTkinterMenu.py", line 125, in delete_range
->     return menu.delete(n1,n2)
->   File "c:\python25\lib\lib-tk\Tkinter.py", line 2682, in delete
->     if 'command' in self.entryconfig(i):
->   File "c:\python25\lib\lib-tk\Tkinter.py", line 2692, in
-> entryconfigure
->     return self._configure(('entryconfigure', index), cnf, kw)
->   File "c:\python25\lib\lib-tk\Tkinter.py", line 1193, in _configure
->     cnf[x[0][1:]] = (x[0][1:],) + x[1:]
-> <type 'exceptions.TypeError'>: can only concatenate tuple (not "str")
-> to tuple
-#@nonl
-#@-node:ekr.20090217105248.3:Fix the recent files menu crash
 #@+node:ekr.20090214075058.3:ctrl-o should create @auto nodes for non .leo files
 #@-node:ekr.20090214075058.3:ctrl-o should create @auto nodes for non .leo files
 #@+node:ekr.20090217105248.2:Support @color and @nocolor in qt gui

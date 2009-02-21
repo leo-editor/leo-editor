@@ -1652,6 +1652,7 @@ class leoMenu:
         toDrop = len(self.c.recentFiles)
         if hasattr(self, 'recentFilesStatic'):
             toDrop += len(self.recentFilesStatic)
+
         self.delete_range(menu,0,toDrop)
 
         if hasattr(self, 'groupedMenus'):

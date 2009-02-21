@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="8,0,5"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -68,8 +68,9 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20040414172218.4"><vh>Acknowledgements</vh>
 <v t="ekr.20040416080538"><vh>@rst-no-head special mentions</vh></v>
 </v>
-<v t="ekr.20040414172218.5"><vh>Copyright</vh></v>
-<v t="ekr.20040414174439"><vh>DISCLAIMER OF LIABILITY</vh></v>
+<v t="ekr.20040414172218.5"><vh>@rst-ignore Python Copyright</vh></v>
+<v t="ekr.20090221070927.1"><vh>Leo's MIT License</vh></v>
+<v t="ekr.20040414174439"><vh>@rst-ignore DISCLAIMER OF LIABILITY</vh></v>
 <v t="ekr.20050812125502"><vh>@rst-no-head End stuff</vh></v>
 </v>
 </v>
@@ -2977,8 +2978,8 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20090101095717.7"><vh>New preface</vh></v>
 </v>
 <v t="ekr.20050831195331.3"></v>
-<v t="ekr.20090219024526.1" a="E"><vh>Copy of wiki</vh>
-<v t="ekr.20090219024526.5" a="E"><vh>top level</vh>
+<v t="ekr.20090219024526.1"><vh>Copy of wiki</vh>
+<v t="ekr.20090219024526.5"><vh>top level</vh>
 <v t="ekr.20090219024526.3"><vh>Outlines and Nodes</vh></v>
 <v t="ekr.20090219090426.1"><vh>Clones and Views</vh></v>
 <v t="ekr.20090219090426.2"><vh>External Files</vh></v>
@@ -7230,14 +7231,19 @@ to be the same as the Python license, namely that Leo is absolutely free, even
 for commercial use, including resale. There is no GNU-like "copyleft"
 restriction. This license is compatible with the GPL.
 	
-Copyright 1997-2006 by Edward K. Ream. All Rights Reserved. Permission to use,
+Copyright 1997-2009 by Edward K. Ream. All Rights Reserved. Permission to use,
 copy, modify, and distribute this software and its documentation for any purpose
 and without fee is hereby granted, provided that the above copyright notice
 appears in all copies and that both that copyright notice and this permission
 notice appear in supporting documentation, and that the names of Edward K. Ream
 or Leo may not be used in advertising or publicity pertaining to distribution of
 the software without specific, prior written permission from Edward K. Ream.</t>
-<t tx="ekr.20040414174439">**EDWARD K. REAM (REAM) SPECIFICALLY DISCLAIMS ALL WARRANTIES, EXPRESSED OR IMPLIED, WITH RESPECT TO THIS COMPUTER SOFTWARE, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  IN NO EVENT SHALL REAM BE LIABLE FOR ANY LOSS OF PROFIT OR ANY COMMERCIAL DAMAGE, INCLUDING BUT NOT LIMITED TO SPECIAL, INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.**
+<t tx="ekr.20040414174439">**EDWARD K. REAM (REAM) SPECIFICALLY DISCLAIMS ALL WARRANTIES, EXPRESSED OR
+IMPLIED, WITH RESPECT TO THIS COMPUTER SOFTWARE, INCLUDING BUT NOT LIMITED TO
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. IN
+NO EVENT SHALL REAM BE LIABLE FOR ANY LOSS OF PROFIT OR ANY COMMERCIAL DAMAGE,
+INCLUDING BUT NOT LIMITED TO SPECIAL, INCIDENTAL, CONSEQUENTIAL OR OTHER
+DAMAGES.**
 </t>
 <t tx="ekr.20040416080538">The following deserve special mention:
 David Brock wrote TSyntaxMemo.
@@ -32673,46 +32679,46 @@ meaning of types**. There is nothing magic about this. What a node type means is
 completely determined by the script that handles such nodes. Thus, *node types
 are completely flexible and extensible*. Leo has many predefined node types, the
 most important being **@auto**, **@file**, **@thin** and **@shadow**.</t>
-<t tx="ekr.20090219024526.5">@nocolor
+<t tx="ekr.20090219024526.5">This tutorial introduces Leo's basic features.
 
-This page is the beginning of a new form of documentation for Leo based on short stories.
-It is experimental, but will eventually replace Leo's introductory material.
+Here is an [Alternative intro].
 
-This tutorial introduces Leo's basic features.  It has 8 parts:
+This tutorial has 8 parts:
 
 1. [Outlines and Nodes]
 
    In brief: outlines consist of **nodes**.
    Nodes consist of **headlines**, **body text** and optional **user data**.
+   User data is available to scripts, but is not visible in the outline.
 
 2. [Clones and Views]
 
    In brief: A **Clone** is a "live" copy of a node.
    Using clones, any node may appear in many places in the outline.
    A view is a node containing other nodes, including clones.
-   Thus, outlines can contain arbitrarily many views of there data in the outline.
+   Thus, an outline can contain arbitrarily many views of the data it contains.
    You never need to choose between different views of your data.  You can have them all.
 
-3. [Creating and Using External Files]
+3. [External Files]
 
    In brief:
    **@auto**, **@file**, **@shadow** and **@thin** nodes (and their descendants) manage **external files**.
-   @file and @thin nodes create external files containing special comments called **sentinels**.
+   @file and @thin nodes **create** external files containing special comments called **sentinels**.
    Using @thin is recommended whenever possible.
    External files managed with @shadow and @auto contain no sentinels--Leo automatically
    imports the external file when reading a .leo file.
 
-4. [Practical First Steps]
+4. [First Steps for Newbies]
 
    Discusses using non-Leo files, choosing settings, and other practicalities.
 
-5. [Other Features of Leo]
+5. [Other Notable Features]
 
-   Discusses plugins, the rst3 plugin, iLeo and other notable features of Leo.
+   Discusses the rst3 plugin and iLeo plugins, and other notable features of Leo.
 
 Sections 6, 7 and 8 are for programmers.  You may skip them if you like.
 
-6. [Scripting Leo, Part 1]
+6. [Commanders, Nodes and Positions]
 
    In brief: Nothing in Leo is just text. All data in Leo is a true Python object.
    Leo's DOM (document object model) consists of **commanders**, **nodes** and **positions**.
@@ -32727,7 +32733,7 @@ Sections 6, 7 and 8 are for programmers.  You may skip them if you like.
    A position represents a state of a tree traversal:
    a node may appear at many distinct positions in an outline.
 
-7. [Scripting Leo, Part 2]
+7. [Script Buttons and Node Types]
 
    In brief: Scripts can create new minibuffer commands, with key bindings.
    **Script buttons** bring scripts to data.
@@ -32737,7 +32743,7 @@ Sections 6, 7 and 8 are for programmers.  You may skip them if you like.
    For example, the run-unit-tests-locally command converts the body of @test nodes
    into an instance of ``unittest.TestCase`` and runs that test case.
 
-8. [Scripting Leo, Part 3]
+8. [Directives and Sections]
 
    In brief:  **Leo directives** specify properties of a node and its descendants.
    Directives may be inherited or overridden in descendant nodes.
@@ -32745,7 +32751,8 @@ Sections 6, 7 and 8 are for programmers.  You may skip them if you like.
    The @others directive tells where to place the expansion of **unnamed** child nodes
    in the generated script.
    **Section references** of the form ``&lt;&lt;section name&gt;&gt;`` tell where to place **named** child nodes.
-   All parts of Leo generate scripts automatically as required.</t>
+   All parts of Leo generate scripts automatically as required.
+</t>
 <t tx="ekr.20090219090426.1">A **clone** is a "live" copy of a node that changes when the original nodes changes.
 A small red arrow in icon boxes marks clones.
 When you clone a node, there is no distinction between the "original" node and the "new" cloned node.
@@ -32795,10 +32802,105 @@ Because all clones are, in effect, the *same* node,
 I can fix code *elsewhere* by changing cloned nodes in the view.
 In effect, I can limit my attention to just a few nodes.
 **Views create mini-projects within a larger project**.</t>
-<t tx="ekr.20090219090426.2"></t>
+<t tx="ekr.20090219090426.2">This page tell how to turn (parts of) an outline into the text files,
+so you can use Leo to create computer programs or other text documents,
+including html and xml documents.
+
+Leo can automatically generate text files from parts of an outline.
+A single .leo file can generate many separate text files.
+Headlines such as the following tell Leo to read and write the corresponding
+**external file** when reading or writing the Leo outline::
+
+    @auto &lt;filename&gt;
+    @file &lt;filename&gt;
+    @shadow &lt;filename&gt;
+    @thin &lt;filename&gt;
+
+Collectively, these **headline directives** are known as **@&lt;file&gt;** directives.
+Leo has several more varieties of @&lt;file&gt; directives not listed above, but
+we won't discuss them in this tutorial.
+
+The @file and @thin directives **create** external files.
+You could say that the Leo outline "owns" those files.
+Leo inserts **sentinel comments** in files created with @file and @thin.
+This allows Leo to store information that makes managing the files
+easier, and allows @file and @thin outlines to have features that are 
+not possible with @auto and @shadow.
+
+The @auto and @shadow directives manage **imported** external files.
+When reading an .leo file, Leo **parses** @auto and @shadow files.
+When writing @auto and @shadow files, Leo writes those files **without sentinels**.
+Thus, you can use @auto and @shadow to manage files owned by others.
+
+To be revised...
+-------------------------
+
+Each file that is
+to be created has a sub=outline headed by one of the @&lt;file&gt;
+directives that specifies the filename to be created/updated.  The sub-
+outline of the @&lt;file&gt; containing headline is the source of all the
+text that will end up in the file, but just how is the hierarchically
+organized text converted into a linear one?  To convey this process,
+lets use a mechanical analogy of assembling a paper based 'scroll' of
+the file's text.
+
+First, you should be aware that headlines are not part of the
+information that matters to whatever program is going to deal with the
+output file, so they are not put in the relevant text of the output,
+(they may end up in comments, but that is covered below).  For this
+assembly process, headlines only possible use is as labels that name
+the text that will be used to replace that labels occurence in the
+bodytext of one of its parents.  Such labels are denoted by being
+quoted by double angles, e.g. &lt;&lt;label&gt;&gt;, when these occur in bodytext,
+they indicate the place at which their defining text is to be pasted,
+when they occur in a headline, the indicate that that nodes bodytext
+is to be used as the 'boilerplate text' for the replacement of any
+occurrence of the label in one of its parents.  Any headline that is
+not a 'label' exists strictly to flesh out the division of the
+outline.
+
+Thus far, the only text that will get picked up is the bodytext of the
+@&lt;file&gt; node, with any &lt;&lt;labels&gt;&gt; it contains replaced with the
+bodytext of the first child node that defines that label.  Any label
+definition can extend this by having labels in its bodytext that is
+then defined in one of its child nodes.  There is another mechanism to
+indicate that child node's text is to be pick up and placed in the
+output file, that is the occurrence of the directive "@others" in
+either the initial @&lt;file&gt; node or the definition of a used
+&lt;&lt;label&gt;&gt;.  The '@others' directive signals that the bodytext of all
+the non label-defining children is to be picked up and pasted in its
+place.
+
+A note about the pasting in of text, whenever a &lt;&lt;label&gt;&gt; or and
+@others is replace with the called for text, it is done in a way that
+preserves the leading space that existed where the &lt;&lt;labe&gt;&gt; or @others
+was</t>
 <t tx="ekr.20090219090426.3"></t>
 <t tx="ekr.20090219090426.4"></t>
 <t tx="ekr.20090219090426.5"></t>
+<t tx="ekr.20090221070927.1">All parts of Leo are distributed under the following copyright. This is intended
+to be the same as the MIT license, namely that Leo is absolutely free, even for
+commercial use, including resale. There is no GNU-like "copyleft" restriction.
+This license is compatible with the GPL.
+
+**Copyright 1997-2009 by Edward K. Ream. All Rights Reserved.**
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+**THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
