@@ -971,6 +971,7 @@ class controlCommandsClass (baseEditCommandsClass):
             'shell-command':                self.shellCommand,
             'shell-command-on-region':      self.shellCommandOnRegion,
             'suspend':                      self.suspend,
+            'act-on-node':                  self.actOnNode
         }
     #@-node:ekr.20050920084036.152: getPublicCommands
     #@+node:ekr.20050922110030:advertizedUndo
@@ -1077,6 +1078,10 @@ class controlCommandsClass (baseEditCommandsClass):
         else:
             k.setLabelGrey('can not execute shell-command: can not import subprocess')
     #@-node:ekr.20050930112126:shellCommandOnRegion
+    #@+node:ville.20090222184600.2:actOnNode
+    def actOnNode(self, event):
+        g.act_on_node(self.c,self.c.p,event)
+    #@-node:ville.20090222184600.2:actOnNode
     #@+node:ekr.20050920084036.155:shutdown, saveBuffersKillEmacs & setShutdownHook
     def shutdown (self,event):
 
