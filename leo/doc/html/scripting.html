@@ -289,51 +289,52 @@ chapter.</p>
 <li><a class="reference" href="#g-es-writes-to-the-log-pane" id="id4" name="id4">g.es writes to the log pane</a></li>
 <li><a class="reference" href="#app-windowlist-the-list-of-all-open-frames" id="id5" name="id5">app.windowList: the list of all open frames</a></li>
 <li><a class="reference" href="#getting-and-setting-headline-and-body-text" id="id6" name="id6">Getting and setting headline and body text</a></li>
-<li><a class="reference" href="#ensuring-that-positions-are-valid" id="id7" name="id7">Ensuring that positions are valid</a></li>
-<li><a class="reference" href="#about-copying-positions" id="id8" name="id8">About copying positions</a></li>
-<li><a class="reference" href="#traversing-outlines" id="id9" name="id9">Traversing outlines</a><ul>
-<li><a class="reference" href="#c-allnodes-iter" id="id10" name="id10">c.allNodes_iter</a></li>
-<li><a class="reference" href="#p-children-iter" id="id11" name="id11">p.children_iter</a></li>
-<li><a class="reference" href="#p-parents-iter-p-self-and-parents-iter" id="id12" name="id12">p.parents_iter &amp; p.self_and_parents_iter</a></li>
-<li><a class="reference" href="#p-siblings-iter-p-following-siblings-iter" id="id13" name="id13">p.siblings_iter &amp; p.following_siblings_iter</a></li>
-<li><a class="reference" href="#p-subtree-iter-p-self-and-subtree-iter" id="id14" name="id14">p.subtree_iter &amp; p.self_and_subtree_iter</a></li>
-<li><a class="reference" href="#testing-whether-a-position-is-valid" id="id15" name="id15">Testing whether a position is valid</a></li>
-<li><a class="reference" href="#visiting-each-node-once" id="id16" name="id16">Visiting each node once</a></li>
+<li><a class="reference" href="#getting-and-setting-body-text-directly" id="id7" name="id7">Getting and setting body text directly</a></li>
+<li><a class="reference" href="#ensuring-that-positions-are-valid" id="id8" name="id8">Ensuring that positions are valid</a></li>
+<li><a class="reference" href="#about-copying-positions" id="id9" name="id9">About copying positions</a></li>
+<li><a class="reference" href="#traversing-outlines" id="id10" name="id10">Traversing outlines</a><ul>
+<li><a class="reference" href="#c-allnodes-iter" id="id11" name="id11">c.allNodes_iter</a></li>
+<li><a class="reference" href="#p-children-iter" id="id12" name="id12">p.children_iter</a></li>
+<li><a class="reference" href="#p-parents-iter-p-self-and-parents-iter" id="id13" name="id13">p.parents_iter &amp; p.self_and_parents_iter</a></li>
+<li><a class="reference" href="#p-siblings-iter-p-following-siblings-iter" id="id14" name="id14">p.siblings_iter &amp; p.following_siblings_iter</a></li>
+<li><a class="reference" href="#p-subtree-iter-p-self-and-subtree-iter" id="id15" name="id15">p.subtree_iter &amp; p.self_and_subtree_iter</a></li>
+<li><a class="reference" href="#testing-whether-a-position-is-valid" id="id16" name="id16">Testing whether a position is valid</a></li>
+<li><a class="reference" href="#visiting-each-node-once" id="id17" name="id17">Visiting each node once</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#updating-the-screen" id="id17" name="id17">Updating the screen</a></li>
-<li><a class="reference" href="#invoking-commands-from-scripts" id="id18" name="id18">Invoking commands from scripts</a></li>
-<li><a class="reference" href="#getting-settings-from-settings-trees" id="id19" name="id19">Getting settings from &#64;settings trees</a></li>
-<li><a class="reference" href="#getting-and-setting-preferences" id="id20" name="id20">Getting and setting preferences</a></li>
-<li><a class="reference" href="#functions-for-finding-and-changing-text-from-scripts" id="id21" name="id21">Functions for finding and changing text from scripts</a></li>
-<li><a class="reference" href="#functions-defined-in-leoglobals-py" id="id22" name="id22">Functions defined in leoGlobals.py</a></li>
-<li><a class="reference" href="#event-handlers" id="id23" name="id23">Event handlers</a><ul>
-<li><a class="reference" href="#enabling-idle-time-event-handlers" id="id24" name="id24">Enabling idle time event handlers</a></li>
+<li><a class="reference" href="#updating-the-screen" id="id18" name="id18">Updating the screen</a></li>
+<li><a class="reference" href="#invoking-commands-from-scripts" id="id19" name="id19">Invoking commands from scripts</a></li>
+<li><a class="reference" href="#getting-settings-from-settings-trees" id="id20" name="id20">Getting settings from &#64;settings trees</a></li>
+<li><a class="reference" href="#getting-and-setting-preferences" id="id21" name="id21">Getting and setting preferences</a></li>
+<li><a class="reference" href="#functions-for-finding-and-changing-text-from-scripts" id="id22" name="id22">Functions for finding and changing text from scripts</a></li>
+<li><a class="reference" href="#functions-defined-in-leoglobals-py" id="id23" name="id23">Functions defined in leoGlobals.py</a></li>
+<li><a class="reference" href="#event-handlers" id="id24" name="id24">Event handlers</a><ul>
+<li><a class="reference" href="#enabling-idle-time-event-handlers" id="id25" name="id25">Enabling idle time event handlers</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#how-to-make-operations-undoable" id="id25" name="id25">How to make operations undoable</a></li>
-<li><a class="reference" href="#redirecting-output-from-scripts" id="id26" name="id26">Redirecting output from scripts</a></li>
-<li><a class="reference" href="#writing-to-different-log-tabs" id="id27" name="id27">Writing to different log tabs</a></li>
-<li><a class="reference" href="#invoking-dialogs-using-the-g-app-gui-class" id="id28" name="id28">Invoking dialogs using the g.app.gui class</a></li>
-<li><a class="reference" href="#inserting-and-deleting-icons" id="id29" name="id29">Inserting and deleting icons</a></li>
-<li><a class="reference" href="#customizing-panes-with-different-widgets" id="id30" name="id30">Customizing panes with different widgets</a><ul>
-<li><a class="reference" href="#official-ivars" id="id31" name="id31">Official ivars</a></li>
-<li><a class="reference" href="#common-operations-on-tk-text-widgets" id="id32" name="id32">Common operations on Tk.Text widgets</a></li>
-<li><a class="reference" href="#customizing-the-log-pane" id="id33" name="id33">Customizing the log pane</a></li>
-<li><a class="reference" href="#customizing-the-body-pane" id="id34" name="id34">Customizing the body pane</a></li>
-<li><a class="reference" href="#customizing-the-outine-pane" id="id35" name="id35">Customizing the outine pane</a></li>
+<li><a class="reference" href="#how-to-make-operations-undoable" id="id26" name="id26">How to make operations undoable</a></li>
+<li><a class="reference" href="#redirecting-output-from-scripts" id="id27" name="id27">Redirecting output from scripts</a></li>
+<li><a class="reference" href="#writing-to-different-log-tabs" id="id28" name="id28">Writing to different log tabs</a></li>
+<li><a class="reference" href="#invoking-dialogs-using-the-g-app-gui-class" id="id29" name="id29">Invoking dialogs using the g.app.gui class</a></li>
+<li><a class="reference" href="#inserting-and-deleting-icons" id="id30" name="id30">Inserting and deleting icons</a></li>
+<li><a class="reference" href="#customizing-panes-with-different-widgets" id="id31" name="id31">Customizing panes with different widgets</a><ul>
+<li><a class="reference" href="#official-ivars" id="id32" name="id32">Official ivars</a></li>
+<li><a class="reference" href="#common-operations-on-tk-text-widgets" id="id33" name="id33">Common operations on Tk.Text widgets</a></li>
+<li><a class="reference" href="#customizing-the-log-pane" id="id34" name="id34">Customizing the log pane</a></li>
+<li><a class="reference" href="#customizing-the-body-pane" id="id35" name="id35">Customizing the body pane</a></li>
+<li><a class="reference" href="#customizing-the-outine-pane" id="id36" name="id36">Customizing the outine pane</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#working-with-directives-and-paths" id="id36" name="id36">Working with directives and paths</a></li>
-<li><a class="reference" href="#summary-of-the-vnode-and-position-classes" id="id37" name="id37">Summary of the vnode and position classes</a><ul>
-<li><a class="reference" href="#iterators" id="id38" name="id38">Iterators</a></li>
-<li><a class="reference" href="#getters" id="id39" name="id39">Getters</a></li>
-<li><a class="reference" href="#setters" id="id40" name="id40">Setters</a></li>
+<li><a class="reference" href="#working-with-directives-and-paths" id="id37" name="id37">Working with directives and paths</a></li>
+<li><a class="reference" href="#summary-of-the-vnode-and-position-classes" id="id38" name="id38">Summary of the vnode and position classes</a><ul>
+<li><a class="reference" href="#iterators" id="id39" name="id39">Iterators</a></li>
+<li><a class="reference" href="#getters" id="id40" name="id40">Getters</a></li>
+<li><a class="reference" href="#setters" id="id41" name="id41">Setters</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#creating-script-buttons" id="id41" name="id41">Creating script buttons</a></li>
-<li><a class="reference" href="#running-leo-in-batch-mode" id="id42" name="id42">Running Leo in batch mode</a></li>
-<li><a class="reference" href="#getting-interactive-input-from-scripts" id="id43" name="id43">Getting interactive input from scripts</a></li>
+<li><a class="reference" href="#creating-script-buttons" id="id42" name="id42">Creating script buttons</a></li>
+<li><a class="reference" href="#running-leo-in-batch-mode" id="id43" name="id43">Running Leo in batch mode</a></li>
+<li><a class="reference" href="#getting-interactive-input-from-scripts" id="id44" name="id44">Getting interactive input from scripts</a></li>
 </ul>
 </li>
 </ul>
@@ -342,6 +343,7 @@ chapter.</p>
 <!-- WARNING: image targets may not have upper case letters! -->
 <div class="section" id="commonly-used-classes">
 <h2><a class="toc-backref" href="#id2">Commonly used classes</a></h2>
+<p>&#64;language python</p>
 <p>Leo's source code is a collection of classes, along with utility functions in
 <tt class="docutils literal"><span class="pre">leoGlobals.py</span></tt>. Here are the classes and objects that scripts will commonly use:</p>
 <dl class="docutils">
@@ -382,6 +384,12 @@ be using vnodes; in fact they are using positions. I call such scripts
 is designed to make them work. We'll see how this works in detail in <a class="reference" href="#about-copying-positions">About
 copying positions</a>.  This section is <strong>supremely important</strong>.</p>
 </dd>
+</dl>
+<p><strong>baseTextWidget and its subclasses</strong></p>
+<p>Leo's body pane (c.frame.body.bodyCtrl, aka w), is an instance of
+(a subclass of) baseTextWidget.
+Gui plugins implement Leo's body pane by subclassing baseTextWidget.</p>
+<dl class="docutils">
 <dt><strong>vnode</strong></dt>
 <dd>An instance of the <tt class="docutils literal"><span class="pre">vnode</span></tt> class in <tt class="docutils literal"><span class="pre">leoNodes.py</span></tt>.
 vnodes represent one or more outline nodes on the screen.
@@ -484,8 +492,40 @@ In such cases, you can use g.angleBrackets.  For example:</p>
 g.es(g.angleBrackets('abc'))
 </pre>
 </div>
+<div class="section" id="getting-and-setting-body-text-directly">
+<h2><a class="toc-backref" href="#id7">Getting and setting body text directly</a></h2>
+<p>As stated above, Leo's body text, c.frame.body.bodyCtrl,
+is a subclass of baseTextWidget class.
+Scripts can get and set information directly from the body pane,
+using the following methods:</p>
+<pre class="literal-block">
+w.appendText(s)                     # Append s to end of body text.
+w.delete(i,j=None)                  # Delete characters from i to j.
+w.deleteTextSelection()             # Delete the selected text, if any.
+s = w.get(i,j=None)                 # Return the text from i to j.
+s = w.getAllText                    # Return the entire body text.
+i = w.getInsertPoint()              # Return the location of the cursor.
+s = w.getSelectedText()             # Return the selected text, if any.
+i,j = w.getSelectionRange (sort=True) # Return the range of selected text.
+w.replace(i,j,s)                    # Replace the text from i to j by s.
+w.setAllText(s)                     # Set the entire body text to s.
+w.setBackgroundColor(color)         # Set the background color.
+w.setSelectionRange(i,j,insert=None) # Select the text.
+w.setForegroundColor(color)         # Set the foreground color.
+</pre>
+<p><strong>Notes</strong>:</p>
+<ul class="simple">
+<li>These are only the most commonly-used methods.
+For more information, consult Leo's source code.</li>
+<li>i and j are zero-based indices into the the text.
+When j is not specified, it defaults to i.
+When the sort parameter is in effect, getSelectionRange
+ensures i &lt;= j.</li>
+<li>color is a tk color name, even when using the qt gui plugin.</li>
+</ul>
+</div>
 <div class="section" id="ensuring-that-positions-are-valid">
-<h2><a class="toc-backref" href="#id7">Ensuring that positions are valid</a></h2>
+<h2><a class="toc-backref" href="#id8">Ensuring that positions are valid</a></h2>
 <p>Positions become invalid when the user deletes or moves the node to which the position refers.
 Plugins and scripts that store positions for use at a later time should make sure the
 position p is still valid by calling c.positionExists(p).</p>
@@ -501,7 +541,7 @@ if not c.positionExists(p):
 </pre>
 </div>
 <div class="section" id="about-copying-positions">
-<h2><a class="toc-backref" href="#id8">About copying positions</a></h2>
+<h2><a class="toc-backref" href="#id9">About copying positions</a></h2>
 <p>Understanding this section is <em>essential</em>.
 By default, all iterators discussed below use a <em>single</em> position to move
 through the outline. This is a vital optimization; otherwise Leo would generate
@@ -535,12 +575,12 @@ than would the equivalent script that uses <tt class="docutils literal"><span cl
 price of compatibility.</p>
 </div>
 <div class="section" id="traversing-outlines">
-<h2><a class="toc-backref" href="#id9">Traversing outlines</a></h2>
+<h2><a class="toc-backref" href="#id10">Traversing outlines</a></h2>
 <p>The proper way to traverse an outline is with an iterator.
 Iterators are defined only by the position class;
 vnodes can not have iterators because vnodes may appear in multiple places in an outline.</p>
 <div class="section" id="c-allnodes-iter">
-<h3><a class="toc-backref" href="#id10">c.allNodes_iter</a></h3>
+<h3><a class="toc-backref" href="#id11">c.allNodes_iter</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">c.allNodes_iter</span></tt> iterator returns a list of all positions in the outline.
 This script makes a list of all the nodes in an outline:</p>
 <pre class="literal-block">
@@ -566,7 +606,7 @@ g.es(&quot;%8s vnodes&quot; % len(tnodes.keys()))
 </pre>
 </div>
 <div class="section" id="p-children-iter">
-<h3><a class="toc-backref" href="#id11">p.children_iter</a></h3>
+<h3><a class="toc-backref" href="#id12">p.children_iter</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">p.children_iter</span></tt> iterator returns a list of all children of position <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
 parent = p.parent()
@@ -576,7 +616,7 @@ for p in parent.children_iter():
 </pre>
 </div>
 <div class="section" id="p-parents-iter-p-self-and-parents-iter">
-<h3><a class="toc-backref" href="#id12">p.parents_iter &amp; p.self_and_parents_iter</a></h3>
+<h3><a class="toc-backref" href="#id13">p.parents_iter &amp; p.self_and_parents_iter</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">p.parents_iter</span></tt> iterator returns a list of all parents of position <tt class="docutils literal"><span class="pre">p</span></tt>, excluding <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
 current = p.copy()
@@ -593,7 +633,7 @@ for p in current.self_and_parents_iter():
 </pre>
 </div>
 <div class="section" id="p-siblings-iter-p-following-siblings-iter">
-<h3><a class="toc-backref" href="#id13">p.siblings_iter &amp; p.following_siblings_iter</a></h3>
+<h3><a class="toc-backref" href="#id14">p.siblings_iter &amp; p.following_siblings_iter</a></h3>
 <p>The <tt class="docutils literal"><span class="pre">p.siblings_iter</span></tt> iterator returns a list of all siblings of position <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
 current = c.p
@@ -610,7 +650,7 @@ for p in current.following_siblings_iter():
 </pre>
 </div>
 <div class="section" id="p-subtree-iter-p-self-and-subtree-iter">
-<h3><a class="toc-backref" href="#id14">p.subtree_iter &amp; p.self_and_subtree_iter</a></h3>
+<h3><a class="toc-backref" href="#id15">p.subtree_iter &amp; p.self_and_subtree_iter</a></h3>
 <p>The p.subtree_iter iterator returns a list of all positions in <tt class="docutils literal"><span class="pre">p</span></tt>'s subtree, excluding <tt class="docutils literal"><span class="pre">p</span></tt>:</p>
 <pre class="literal-block">
 parent = p.parent()
@@ -627,7 +667,7 @@ for p in parent.self_and_subtree_iter():
 </pre>
 </div>
 <div class="section" id="testing-whether-a-position-is-valid">
-<h3><a class="toc-backref" href="#id15">Testing whether a position is valid</a></h3>
+<h3><a class="toc-backref" href="#id16">Testing whether a position is valid</a></h3>
 <p>The tests:</p>
 <pre class="literal-block">
 if p:       # Right
@@ -641,7 +681,7 @@ if p is not None:   # Wrong
 </pre>
 </div>
 <div class="section" id="visiting-each-node-once">
-<h3><a class="toc-backref" href="#id16">Visiting each node once</a></h3>
+<h3><a class="toc-backref" href="#id17">Visiting each node once</a></h3>
 <p><strong>Joined nodes</strong> represent the same data. Joined nodes are vnodes v1 and v2 such
 that v1.t == v2.t. Joined vnodes are distinct (v1 != v2) if the vnodes are
 clones of each other. Joined nodes are in fact the same node (v1 == v2) if they
@@ -666,7 +706,7 @@ headlines of any future node joined to p.v.</p>
 </div>
 </div>
 <div class="section" id="updating-the-screen">
-<h2><a class="toc-backref" href="#id17">Updating the screen</a></h2>
+<h2><a class="toc-backref" href="#id18">Updating the screen</a></h2>
 <p>You can use <tt class="docutils literal"><span class="pre">c.redraw_now</span></tt> to redraw the entire screen immediately:</p>
 <pre class="literal-block">
 c.redraw_now()
@@ -691,7 +731,7 @@ c.endUpdate() is equivalent to c.redraw(),
 and c.endUpdate(False) does nothing.</p>
 </div>
 <div class="section" id="invoking-commands-from-scripts">
-<h2><a class="toc-backref" href="#id18">Invoking commands from scripts</a></h2>
+<h2><a class="toc-backref" href="#id19">Invoking commands from scripts</a></h2>
 <p>Leo dispatches commands using c.doCommand,
 which calls the &quot;command1&quot; and &quot;command2&quot; hook routines for the given label.
 c.doCommand catches all exceptions thrown by the command:</p>
@@ -710,7 +750,7 @@ c.executeMinibufferCommand('open-outline')
 In many cases, as above, this value is simply 'break'.</p>
 </div>
 <div class="section" id="getting-settings-from-settings-trees">
-<h2><a class="toc-backref" href="#id19">Getting settings from &#64;settings trees</a></h2>
+<h2><a class="toc-backref" href="#id20">Getting settings from &#64;settings trees</a></h2>
 <p>Any .leo file may contain an <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> tree, so settings may be different for each commander.
 Plugins and other scripts can get the value of settings as follows:</p>
 <pre class="literal-block">
@@ -743,7 +783,7 @@ for val in (False,True):
 <p><tt class="docutils literal"><span class="pre">c.config.set</span></tt> does not change the <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> tree; it simply changes the values returned by the getters.</p>
 </div>
 <div class="section" id="getting-and-setting-preferences">
-<h2><a class="toc-backref" href="#id20">Getting and setting preferences</a></h2>
+<h2><a class="toc-backref" href="#id21">Getting and setting preferences</a></h2>
 <p>Each commander maintains its own preferences.
 Your scripts can get the following ivars:</p>
 <pre class="literal-block">
@@ -770,7 +810,7 @@ c.frame.setTabWidth(c.tab_width)
 </pre>
 </div>
 <div class="section" id="functions-for-finding-and-changing-text-from-scripts">
-<h2><a class="toc-backref" href="#id21">Functions for finding and changing text from scripts</a></h2>
+<h2><a class="toc-backref" href="#id22">Functions for finding and changing text from scripts</a></h2>
 <p>The file <tt class="docutils literal"><span class="pre">leoFindScript.py</span></tt> contains functions for finding and changing text
 from within scripts.  See <tt class="docutils literal"><span class="pre">leoFindScript.py</span></tt> in <tt class="docutils literal"><span class="pre">LeoPy.leo</span></tt> for full details.</p>
 <p>The findall function returns a list of tuples <tt class="docutils literal"><span class="pre">(v,pos)</span></tt> describing matches in
@@ -804,7 +844,7 @@ for v,mo,pos in result:
 </pre>
 </div>
 <div class="section" id="functions-defined-in-leoglobals-py">
-<h2><a class="toc-backref" href="#id22">Functions defined in leoGlobals.py</a></h2>
+<h2><a class="toc-backref" href="#id23">Functions defined in leoGlobals.py</a></h2>
 <p><tt class="docutils literal"><span class="pre">leoGlobals.py</span></tt> contains many utility functions and constants.
 The following script prints all the names defined in <tt class="docutils literal"><span class="pre">leoGlobals.py</span></tt>:</p>
 <pre class="literal-block">
@@ -816,7 +856,7 @@ for name in names:
 </pre>
 </div>
 <div class="section" id="event-handlers">
-<h2><a class="toc-backref" href="#id23">Event handlers</a></h2>
+<h2><a class="toc-backref" href="#id24">Event handlers</a></h2>
 <p>Plugins and other scripts can register event handlers (also known as hooks) with code such as:</p>
 <pre class="literal-block">
 leoPlugins.registerHandler(&quot;after-create-leo-frame&quot;,onCreate)
@@ -1341,14 +1381,13 @@ from <tt class="docutils literal"><span class="pre">app.windowList</span></tt> t
 <li><p class="first"><tt class="docutils literal"><span class="pre">g.app.destroyAllGlobalWindows</span></tt> calls the 'destroy-all-global-windows' hook.
 This hook gives plugins the chance to clean up after themselves when Leo shuts down.</p>
 </li>
-<li><p class="first">New in Leo 4.4: Leo calls the 'headkey1' and 'headkey2' hooks only when the user completes
-the editing of a headline, and ch is always 'r', regardless of platform.</p>
+<li><p class="first">Leo calls the 'headkey1' and 'headkey2' when the headline <em>might</em> have changed.</p>
 </li>
 <li><p class="first">p is the new node (position) containing <a class="reference" href="mailto:'&#64;auto">'&#64;auto</a> filename.ext'</p>
 </li>
 </ol>
 <div class="section" id="enabling-idle-time-event-handlers">
-<h3><a class="toc-backref" href="#id24">Enabling idle time event handlers</a></h3>
+<h3><a class="toc-backref" href="#id25">Enabling idle time event handlers</a></h3>
 <p>Two methods in leoGlobals.py allow scripts and plugins to enable and disable 'idle' events.
 <strong>g.enableIdleTimeHook(idleTimeDelay=100)</strong> enables the &quot;idle&quot; hook.
 Afterwards, Leo will call the &quot;idle&quot; hook approximately every idleTimeDelay milliseconds.
@@ -1357,7 +1396,7 @@ Leo will continue to call the &quot;idle&quot; hook periodically until disableId
 </div>
 </div>
 <div class="section" id="how-to-make-operations-undoable">
-<h2><a class="toc-backref" href="#id25">How to make operations undoable</a></h2>
+<h2><a class="toc-backref" href="#id26">How to make operations undoable</a></h2>
 <p>Plugins and scripts should call <tt class="docutils literal"><span class="pre">u.beforeX</span></tt> and <tt class="docutils literal"><span class="pre">u.afterX</span></tt> methods ato
 describe the operation that is being performed. <strong>Note</strong>: <tt class="docutils literal"><span class="pre">u</span></tt> is shorthand for
 <tt class="docutils literal"><span class="pre">c.undoer</span></tt>. Most <tt class="docutils literal"><span class="pre">u.beforeX</span></tt> methods return <tt class="docutils literal"><span class="pre">undoData</span></tt> that the client
@@ -1383,7 +1422,7 @@ for more details. In general, the best way to see how to implement undo is to
 see how Leo's core calls the <tt class="docutils literal"><span class="pre">u.beforeX</span></tt> and <tt class="docutils literal"><span class="pre">afterX</span></tt> methods.</p>
 </div>
 <div class="section" id="redirecting-output-from-scripts">
-<h2><a class="toc-backref" href="#id26">Redirecting output from scripts</a></h2>
+<h2><a class="toc-backref" href="#id27">Redirecting output from scripts</a></h2>
 <p><tt class="docutils literal"><span class="pre">leoGlobals.py</span></tt> defines 6 convenience methods for redirecting stdout and stderr:</p>
 <pre class="literal-block">
 g.redirectStderr() # Redirect stderr to the current log pane.
@@ -1418,7 +1457,7 @@ print &quot;stderr isRedirected:&quot;, g.stdErrIsRedirected()
 </pre>
 </div>
 <div class="section" id="writing-to-different-log-tabs">
-<h2><a class="toc-backref" href="#id27">Writing to different log tabs</a></h2>
+<h2><a class="toc-backref" href="#id28">Writing to different log tabs</a></h2>
 <p>Plugins and scripts can create new tabs in the log panel.
 The following creates a tab named test or make it visible if it already exists:</p>
 <pre class="literal-block">
@@ -1441,7 +1480,7 @@ log.selectTab(tag)
 </pre>
 </div>
 <div class="section" id="invoking-dialogs-using-the-g-app-gui-class">
-<h2><a class="toc-backref" href="#id28">Invoking dialogs using the g.app.gui class</a></h2>
+<h2><a class="toc-backref" href="#id29">Invoking dialogs using the g.app.gui class</a></h2>
 <p>Scripts can invoke various dialogs using the following methods of the g.app.gui object.
 Here is a partial list. You can use typing completion(default bindings: Alt-1 and Alt-2) to get the full list!</p>
 <pre class="literal-block">
@@ -1464,7 +1503,7 @@ g.app.gui.runSaveFileDialog(initialfile,title,filetypes,defaultextension)
 source code. The runOpenFileDialog returns a list of file names.</p>
 </div>
 <div class="section" id="inserting-and-deleting-icons">
-<h2><a class="toc-backref" href="#id29">Inserting and deleting icons</a></h2>
+<h2><a class="toc-backref" href="#id30">Inserting and deleting icons</a></h2>
 <p>You can add an icon to the presently selected node with
 c.editCommands.insertIconFromFile(path). path is an absolute path or a path
 relative to the leo/Icons folder. A relative path is recommended if you plan to
@@ -1482,13 +1521,13 @@ c.editCommands.deleteNodeIcons()
 </pre>
 </div>
 <div class="section" id="customizing-panes-with-different-widgets">
-<h2><a class="toc-backref" href="#id30">Customizing panes with different widgets</a></h2>
+<h2><a class="toc-backref" href="#id31">Customizing panes with different widgets</a></h2>
 <p>Tk/Tkinter make it easy to customize the contents of any of Leo's panes. The
 following sections will discuss the 'official' ivars that make it possible for
 scripts to access and alter the contents of panes. The next three sections will
 give examples of modifying each pane.</p>
 <div class="section" id="official-ivars">
-<h3><a class="toc-backref" href="#id31">Official ivars</a></h3>
+<h3><a class="toc-backref" href="#id32">Official ivars</a></h3>
 <p>The c.frame.log class contains the following 'official' ivars:</p>
 <pre class="literal-block">
 g.es('tabName',c.frame.log.tabName)     # The name of the active tab.
@@ -1511,7 +1550,7 @@ parent = w.pack_info().get('in')
 g.es('bodyCtrl.parent',parent) # The Tk.Frame containing the body text.</blockquote>
 </div>
 <div class="section" id="common-operations-on-tk-text-widgets">
-<h3><a class="toc-backref" href="#id32">Common operations on Tk.Text widgets</a></h3>
+<h3><a class="toc-backref" href="#id33">Common operations on Tk.Text widgets</a></h3>
 <p>The following is no substitute for a full discussion of programming the Tk.Text
 widget: it can do lots.</p>
 <p>To clear the log:</p>
@@ -1531,7 +1570,7 @@ g.es(w.get('1.0','end')+'\n')
 </pre>
 </div>
 <div class="section" id="customizing-the-log-pane">
-<h3><a class="toc-backref" href="#id33">Customizing the log pane</a></h3>
+<h3><a class="toc-backref" href="#id34">Customizing the log pane</a></h3>
 <p>The following line removes the initial text widget:</p>
 <pre class="literal-block">
 c.frame.log.logCtrl.pack_forget()
@@ -1562,7 +1601,7 @@ w.pack(side='left',expand=1,fill='both')
 </pre>
 </div>
 <div class="section" id="customizing-the-body-pane">
-<h3><a class="toc-backref" href="#id34">Customizing the body pane</a></h3>
+<h3><a class="toc-backref" href="#id35">Customizing the body pane</a></h3>
 <p>Warning: you will find it hard to execute scripts after removing the body pane,
 so you had best make the following two scripts into script buttons before
 executing them :-)</p>
@@ -1586,7 +1625,7 @@ w.pack(side='left',expand=1,fill='both')
 </pre>
 </div>
 <div class="section" id="customizing-the-outine-pane">
-<h3><a class="toc-backref" href="#id35">Customizing the outine pane</a></h3>
+<h3><a class="toc-backref" href="#id36">Customizing the outine pane</a></h3>
 <p>The following replaces the outline pane with a red frame:</p>
 <pre class="literal-block">
 import Tkinter as Tk
@@ -1606,7 +1645,7 @@ c.frame.tree.canvas.pack(side='left',expand=1,fill='both')
 </div>
 </div>
 <div class="section" id="working-with-directives-and-paths">
-<h2><a class="toc-backref" href="#id36">Working with directives and paths</a></h2>
+<h2><a class="toc-backref" href="#id37">Working with directives and paths</a></h2>
 <p>Scripts can easily determine what directives are in effect at a particular
 position in an outline. c.scanAllDirectives(p) returns a Python dictionary whose
 keys are directive names and whose values are the value in effect at position p.
@@ -1628,12 +1667,12 @@ if name:
 </pre>
 </div>
 <div class="section" id="summary-of-the-vnode-and-position-classes">
-<h2><a class="toc-backref" href="#id37">Summary of the vnode and position classes</a></h2>
+<h2><a class="toc-backref" href="#id38">Summary of the vnode and position classes</a></h2>
 <p>Most scripts will use methods of the position class to access information in an
 outline. The following sections summarizes the most useful methods that your
 scripts can use. For a complete list, see the <tt class="docutils literal"><span class="pre">leoNodes.py</span></tt> in of <tt class="docutils literal"><span class="pre">LeoPy.leo</span></tt>.</p>
 <div class="section" id="iterators">
-<h3><a class="toc-backref" href="#id38">Iterators</a></h3>
+<h3><a class="toc-backref" href="#id39">Iterators</a></h3>
 <p>Iterators exist only in the position class:</p>
 <pre class="literal-block">
 c.allNodes_iter            # returns all positions in c's outline.
@@ -1647,7 +1686,7 @@ p.self_and_subtree_iter    # returns all positions in p's subtree, including p.
 </pre>
 </div>
 <div class="section" id="getters">
-<h3><a class="toc-backref" href="#id39">Getters</a></h3>
+<h3><a class="toc-backref" href="#id40">Getters</a></h3>
 <p>Here are the most useful getters of the <tt class="docutils literal"><span class="pre">vnode</span></tt> and <tt class="docutils literal"><span class="pre">position</span></tt> classes.</p>
 <p>Returning strings:</p>
 <pre class="literal-block">
@@ -1673,7 +1712,7 @@ p.isVisited()
 </pre>
 </div>
 <div class="section" id="setters">
-<h3><a class="toc-backref" href="#id40">Setters</a></h3>
+<h3><a class="toc-backref" href="#id41">Setters</a></h3>
 <p>Here are the most useful setters of the <tt class="docutils literal"><span class="pre">Commands</span></tt> and <tt class="docutils literal"><span class="pre">position</span></tt> classes.
 The following setters of the <tt class="docutils literal"><span class="pre">position</span></tt> class regardless of whether
 <tt class="docutils literal"><span class="pre">p</span></tt> is the presently selected position:</p>
@@ -1698,7 +1737,7 @@ p.setVisited()
 </div>
 </div>
 <div class="section" id="creating-script-buttons">
-<h2><a class="toc-backref" href="#id41">Creating script buttons</a></h2>
+<h2><a class="toc-backref" href="#id42">Creating script buttons</a></h2>
 <p>Creating a script button should be your first thought whenever you want to
 automate any task. The scripting plugin, <tt class="docutils literal"><span class="pre">mod_scripting.py</span></tt>, puts two buttons
 in the icon menu, a pink <tt class="docutils literal"><span class="pre">Run</span> <span class="pre">Script</span></tt> button and a yellow <tt class="docutils literal"><span class="pre">Script</span> <span class="pre">Button</span></tt>
@@ -1752,7 +1791,7 @@ This feature can be disabled by setting <tt class="docutils literal"><span class
 </ul>
 </div>
 <div class="section" id="running-leo-in-batch-mode">
-<h2><a class="toc-backref" href="#id42">Running Leo in batch mode</a></h2>
+<h2><a class="toc-backref" href="#id43">Running Leo in batch mode</a></h2>
 <p>On startup, Leo looks for two arguments of the form:</p>
 <pre class="literal-block">
 --script scriptFile
@@ -1778,7 +1817,7 @@ for p in newFrame.c.allNodes_iter():
 </pre>
 </div>
 <div class="section" id="getting-interactive-input-from-scripts">
-<h2><a class="toc-backref" href="#id43">Getting interactive input from scripts</a></h2>
+<h2><a class="toc-backref" href="#id44">Getting interactive input from scripts</a></h2>
 <p>The following code can be run from a script to get input from the user using the minibuffer:</p>
 <pre class="literal-block">
 def getInput (event=None):
