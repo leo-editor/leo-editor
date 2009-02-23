@@ -20,6 +20,7 @@ After startup:
 
 import leo.core.leoGlobals as g
 import glob
+import bisect
 
 handlers = {}
 loadedModulesFilesDict = {}
@@ -34,6 +35,7 @@ def init():
     handlers = {}
     loadedModules = {} # Keys are module names, values are modules.
     loadingModuleNameStack = [] # The stack of module names.  Top is the module being loaded.
+    g.act_on_node = CommandChainDispatcher()
 
 #@+others
 #@+node:ktenney.20060628092017.1:baseLeoPlugin
@@ -636,6 +638,68 @@ def unregisterOneHandler (tag,fn):
             handlers[tag] = fn_list
             # g.trace(handlers.get(tag))
 #@-node:ekr.20041111123313:unregisterHandler
+#@+node:ville.20090222141717.2:TryNext (exception)
+class TryNext(Exception):
+    """Try next hook exception.
+
+    Raise this in your hook function to indicate that the next hook handler
+    should be used to handle the operation.  If you pass arguments to the
+    constructor those arguments will be used by the next hook instead of the
+    original ones.
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.args = args
+        self.kwargs = kwargs
+#@-node:ville.20090222141717.2:TryNext (exception)
+#@+node:ville.20090222141717.1:class CommandChainDispatcher
+class CommandChainDispatcher:
+    """ Dispatch calls to a chain of commands until some func can handle it
+
+    Usage: instantiate, execute "add" to add commands (with optional
+    priority), execute normally via f() calling mechanism.
+
+    """
+    def __init__(self,commands=None):
+        if commands is None:
+            self.chain = []
+        else:
+            self.chain = commands
+
+
+    def __call__(self,*args, **kw):
+        """ Command chain is called just like normal func. 
+
+        This will call all funcs in chain with the same args as were given to this
+        function, and return the result of first func that didn't raise
+        TryNext """
+
+        for prio,cmd in self.chain:
+            #print "prio",prio,"cmd",cmd #dbg
+            try:
+                ret = cmd(*args, **kw)
+                return ret
+            except TryNext, exc:
+                if exc.args or exc.kwargs:
+                    args = exc.args
+                    kw = exc.kwargs
+        # if no function will accept it, raise TryNext up to the caller
+        raise TryNext
+
+    def __str__(self):
+        return str(self.chain)
+
+    def add(self, func, priority=0):
+        """ Add a func to the cmd chain with given priority """
+        bisect.insort(self.chain,(priority,func))
+
+    def __iter__(self):
+        """ Return all objects in chain.
+
+        Handy if the objects are not callable.
+        """
+        return iter(self.chain)
+#@-node:ville.20090222141717.1:class CommandChainDispatcher
 #@-others
 #@-node:ekr.20031218072017.3439:@thin leoPlugins.py
 #@-leo
