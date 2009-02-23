@@ -771,7 +771,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         c.outerUpdate() # Bring the tree up to date.
 
-        self.setItemForCurrentPosition(scroll=True)
+        self.setItemForCurrentPosition(scroll=False)
     #@-node:ekr.20090124174652.53:afterSelectHint (nativeTree)
     #@+node:ekr.20090124174652.54:beforeSelectHint (nativeTree)
     def beforeSelectHint (self,p,old_p):
@@ -950,13 +950,14 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         item2 = self.getCurrentItem()
         if item == item2:
             if trace and verbose: g.trace('no change',self.traceItem(item))
-            self.scrollToItem(item) #### ####
+            if scroll:
+                self.scrollToItem(item) #### ####
         else:
             try:
                 self.selecting = True
                 # This generates gui events, so we must use a lockout.
                 self.setCurrentItemHelper(item)
-                if True: #### scroll:
+                if scroll: #### scroll:
                     if trace: g.trace(self.traceItem(item),g.callers(4))
                     self.scrollToItem(item)
             finally:
