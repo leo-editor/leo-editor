@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="20" left="376" height="1002" width="849"/>
+	<global_window_position top="65" left="376" height="731" width="849"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20081121105001.1076" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20081121105001.1076" str_leo_pos="1,0,2,0,2"><vh>Startup</vh>
 <v t="ekr.20081121105001.1077"><vh>@chapters</vh></v>
 <v t="ekr.20081121105001.1078"><vh>@settings</vh>
 <v t="ekr.20081121105001.1079"><vh>@page http plugin</vh>
@@ -28,9 +28,9 @@
 <v t="ekr.20081121105001.1089"><vh>regex: replace w.bind by c.bind(w...)</vh></v>
 <v t="ekr.20081121105001.1090"><vh>@@button change leo imports</vh></v>
 </v>
-<v t="ekr.20081121105001.1108"><vh>Notes</vh>
-<v t="ekr.20081121105001.147"
-expanded="ekr.20081204090029.1,"><vh>@thin qtNotes.txt</vh></v>
+<v t="ekr.20081121105001.1108" a="E"><vh>Notes</vh>
+<v t="ekr.20081121105001.147" a="E"
+expanded="ekr.20090124101344.1,ekr.20081215074704.15,"><vh>@thin qtNotes.txt</vh></v>
 </v>
 <v t="ekr.20090124174652.7"><vh>@thin baseNativeTree.py</vh></v>
 <v t="ekr.20081121105001.1110"><vh>Other guis</vh>
