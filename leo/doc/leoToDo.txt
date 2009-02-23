@@ -3,153 +3,9 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20090131200406.9:Bugs
-#@+node:ekr.20090213065933.1:3-day bugs 6
-#@+node:ekr.20090223065025.1:3 urgent bugs in qt gui
-#@+node:ekr.20090217105248.3:Fix the recent files menu crash
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/e3ce6ed5e8ea7e70/4bd1824e2555539d
-
-w.getInsertPoint()
-
-@color
-#@nonl
-#@+node:ekr.20090219232739.2:Report
-Figured out the common thread between my two machines: I get this
-error whenever I use the Recent Files menu. After using it once in a
-session, the list of recent files is empty.
-
--matt
-
-On Feb 15, 8:35 am, maphew <map...@gmail.com> wrote:
-> Here is the error on Windows XP. I installed python-2.5.4.msi,
-> followed by Leo-4-5-1-2-final.exe and ipython-0.9.1.win32-setup.exe
-> (not necessarily in that order).
->
-> Error: 1
-> <type 'exceptions.TypeError'> Exception in Tk callback
->   Function: <function add_commandCallback at 0x01E4DAF0> (type: <type
-> 'function'>)
->   Args: ()
-> Traceback (innermost last):
->   File "C:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\extensions
-> \Pmw\Pmw_1_3\lib\PmwBase.py", line 1747, in __call__
->     return apply(self.func, args)
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoCommands.py", line 5844, in add_commandCallback
->     val = command()
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoMenu.py", line 1613, in recentFilesCallback
->     c.openRecentFile(name)
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoCommands.py", line 1053, in openRecentFile
->     ok, frame = g.openWithFileName(fileName,c)
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoGlobals.py", line 2208, in openWithFileName
->     c.updateRecentFiles(relativeFileName or fileName)
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoCommands.py", line 1086, in updateRecentFiles
->     frame.menu.createRecentFilesMenuItems()
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoMenu.py", line 1599, in createRecentFilesMenuItems
->     self.deleteRecentFilesMenuItems(recentFilesMenu)
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoMenu.py", line 1624, in deleteRecentFilesMenuItems
->     self.delete_range(menu,0,toDrop)
->   File "c:\python25\Lib\site-packages\Leo-4-5-1-2-final\leo\core
-> \leoTkinterMenu.py", line 125, in delete_range
->     return menu.delete(n1,n2)
->   File "c:\python25\lib\lib-tk\Tkinter.py", line 2682, in delete
->     if 'command' in self.entryconfig(i):
->   File "c:\python25\lib\lib-tk\Tkinter.py", line 2692, in
-> entryconfigure
->     return self._configure(('entryconfigure', index), cnf, kw)
->   File "c:\python25\lib\lib-tk\Tkinter.py", line 1193, in _configure
->     cnf[x[0][1:]] = (x[0][1:],) + x[1:]
-> <type 'exceptions.TypeError'>: can only concatenate tuple (not "str")
-> to tuple
-#@-node:ekr.20090219232739.2:Report
-#@+node:ekr.20031218072017.2078:createRecentFilesMenuItems (leoMenu)
-def createRecentFilesMenuItems (self):
-
-    c = self.c
-    recentFilesMenu = self.getMenu("Recent Files...")
-    if not recentFilesMenu:
-        g.trace('Recent Files Menu does not exist',g.callers())
-        return
-
-    # Delete all previous entries.
-    self.deleteRecentFilesMenuItems(recentFilesMenu)
-
-    # Create the static entries.
-    table = self.recentFilesStatic
-
-    self.createMenuEntries(recentFilesMenu,table)
-
-    # Create all the other entries (a maximum of 36).
-    accel_ch = string.digits + string.ascii_uppercase # Not a unicode problem.
-    i = 0
-    n = len(accel_ch)
-
-    # see if we're grouping when files occur in more than one place
-    rf_group = c.config.getBool("recent_files_group")
-    rf_always = c.config.getBool("recent_files_group_always")
-    groupedEntries = rf_group or rf_always
-
-    if groupedEntries:  # if so, make dict of groups
-        dirCount = {}
-        for fileName in c.recentFiles[:n]:
-            dirName, baseName = g.os_path_split(fileName)
-            if baseName not in dirCount:
-                dirCount[baseName] = {'dirs':[], 'entry': None}
-            dirCount[baseName]['dirs'].append(dirName)
-
-    for name in c.recentFiles[:n]:
-        if name.strip() == "": continue  # happens with empty list/new file
-        def recentFilesCallback (event=None,c=c,name=name):
-            c.openRecentFile(name)
-
-        if groupedEntries:
-            dirName, baseName = g.os_path_split(name)
-
-            entry = dirCount[baseName]
-
-            if len(entry['dirs']) > 1 or rf_always:  # sub menus
-                if entry['entry'] is None:
-                    entry['entry'] = self.createNewMenu(baseName, "Recent Files...")
-                    # acts as a flag for the need to create the menu
-                c.add_command(self.getMenu(baseName), label=dirName,
-                    command=recentFilesCallback, underline=0)
-            else:  # single occurence, no submenu
-                c.add_command(recentFilesMenu,label=baseName,command=recentFilesCallback,underline=0)
-        else:  # original behavior
-            label = "%s %s" % (accel_ch[i],g.computeWindowTitle(name))
-            c.add_command(recentFilesMenu,label=label,command=recentFilesCallback,underline=0)
-        i += 1
-
-    if groupedEntries:  # store so we can delete them later
-        self.groupedMenus = [i for i in dirCount
-                             if dirCount[i]['entry'] is not None]
-#@-node:ekr.20031218072017.2078:createRecentFilesMenuItems (leoMenu)
-#@+node:tbrown.20080509212202.7:deleteRecentFilesMenuItems
-def deleteRecentFilesMenuItems(self,menu):
-    """Delete recent file menu entries"""
-
-    toDrop = len(self.c.recentFiles)
-    if hasattr(self, 'recentFilesStatic'):
-        toDrop += len(self.recentFilesStatic)
-
-    self.delete_range(menu,0,toDrop)
-
-    if hasattr(self, 'groupedMenus'):
-        for i in self.groupedMenus:
-            menu = self.getMenu(i)
-            if menu:
-                self.destroy(menu)
-                self.destroyMenu(i)
-#@-node:tbrown.20080509212202.7:deleteRecentFilesMenuItems
-#@-node:ekr.20090217105248.3:Fix the recent files menu crash
-#@-node:ekr.20090223065025.1:3 urgent bugs in qt gui
+#@+node:ekr.20090213065933.1:Urgent bugs 6
+#@+node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
+#@-node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
 #@+node:ekr.20090219085600.1:Fix new relative-path-name problem
 @nocolor
 
@@ -178,36 +34,264 @@ Best,
 AliaK
 #@nonl
 #@-node:ekr.20090219085600.1:Fix new relative-path-name problem
-#@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
-#@nonl
-#@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
 #@+node:ekr.20090213065933.2:Get isearch working for tkinter
 #@-node:ekr.20090213065933.2:Get isearch working for tkinter
 #@+node:ekr.20090214075058.3:ctrl-o should create @edit nodes for non .leo files
 #@-node:ekr.20090214075058.3:ctrl-o should create @edit nodes for non .leo files
-#@-node:ekr.20090213065933.1:3-day bugs 6
-#@+node:ekr.20090103054019.1:First
-#@+node:ekr.20090210093316.5:Swap scrollbars when orientation changes
+#@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
+http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
+#@nonl
+#@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
+#@+node:ekr.20080922115725.1:Finish @shadow
+# Allow block comments in private shadow files.
+# Compute delims using the private shadow file, not the file extension!
+# Can @shadow mark externally changed nodes?
+#@nonl
+#@clone 2
+#@+node:ekr.20081004102201.2:Log file for @shadow
 @nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/56351acd8e39a654
+http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
+#@nonl
+#@-node:ekr.20081004102201.2:Log file for @shadow
+#@+node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
+#@-node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
+#@+node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
+@nocolor
 
-if you swap the orientation of the panes, the tree pane doesn't allow scrolling
-left/right as the Tk window does.
+http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
+
+@color
 #@nonl
-#@-node:ekr.20090210093316.5:Swap scrollbars when orientation changes
-#@+node:ekr.20090202064534.1:Remove bad archived position message?
-bad archived position: bad index="3", len(children)="1"
-restoreDescendentAttributes: can not find vnode (duA):
-archivedPosition: 0.3.6.6.2.3, root_v: <vnode 168011244:'@thin
-test_core.txt'>
+#@+node:ekr.20080708094444.38:x.propagate_changed_lines
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    x = self ; trace = False ; verbose = True
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old:',old_i,prev_old_j)
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new:',new_i,prev_new_j)
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,new_private_lines_wtr,
+        marker, limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40:<< init vars >>
+new_private_lines_wtr = sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
 #@nonl
-#@-node:ekr.20090202064534.1:Remove bad archived position message?
-#@+node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
-#@-node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
-#@-node:ekr.20090103054019.1:First
-#@+node:ekr.20081215070651.4:Bugs 7
+#@-node:ekr.20080708094444.40:<< init vars >>
+#@+node:ekr.20080708094444.39:<< define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.h)
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@-node:ekr.20080708094444.39:<< define print_tags >>
+#@+node:ekr.20080708192807.2:<< about this loop >>
+@
+
+This loop writes all output lines using a single writer: new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips (deletes)
+all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
+less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from the
+old_private_lines_rdr explicitly. This explains why opcode handlers for the
+'insert' and 'delete' opcodes are identical.
+#@-node:ekr.20080708192807.2:<< about this loop >>
+#@+node:ekr.20080708192807.5:<< Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace(tag,'old_i',old_i,'limit',limit)
+
+if tag == 'insert' and limit >= old_private_lines_rdr.size():
+    pass
+else:
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+if tag == 'equal':
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index()
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag in ('insert','replace'):
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index()
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if x.is_sentinel(line,marker):
+            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Leave new_public_lines_rdr unchanged.
+    pass
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@nonl
+#@-node:ekr.20080708192807.5:<< Handle the opcode >>
+#@+node:ekr.20080708094444.45:<< do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@-node:ekr.20080708094444.45:<< do final correctness check >>
+#@-node:ekr.20080708094444.38:x.propagate_changed_lines
+#@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
+#@+node:ekr.20081028060510.1:Fix @shadow crasher
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
+
+I think Leo crashes when attempting to load a shadow file that starts
+with a line feed character. [EKR: it's the missing file extension]
+
+Here's the stack trace:
+
+Traceback (most recent call last):
+ File "/home/jesse/leo-editor/launchLeo.py", line 8, in <module>
+   leo.core.runLeo.run()
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 120, in run
+   c,frame = createFrame(fileName,relativeFileName,script)
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 156, in
+createFrame
+   ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+ File "/home/jesse/leo-editor/leo/core/leoGlobals.py", line 2211, in
+openWithFileName
+   readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 851,
+in open
+   silent=silent)
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 758,
+in getLeoFile
+   c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 535, in
+readAll
+   at.readOneAtShadowNode (fileName,p)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 684, in
+readOneAtShadowNode
+   at.writeOneAtShadowNode(p,toString=False,force=True)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2588, in
+writeOneAtShadowNode
+   at.writeOpenFile(root,nosentinels=not
+sentinels,toString=False,atAuto=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2842, in
+writeOpenFile
+   at.putBody(root,fromString=fromString)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2914, in
+putBody
+   at.putCodeLine(s,i)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 3137, in
+putCodeLine
+   if g.match(s,k,self.startSentinelComment + '@'):
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
+#@nonl
+#@-node:ekr.20081028060510.1:Fix @shadow crasher
+#@-node:ekr.20080922115725.1:Finish @shadow
+#@-node:ekr.20090213065933.1:Urgent bugs 6
+#@+node:ekr.20081215070651.4:Minor bugs 7
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
 @nocolor
 
@@ -1665,8 +1749,6 @@ with the threading colorizer.  A workaround is to disable the
 threading colorizer plugin. 
 #@nonl
 #@-node:ekr.20081208102356.1:Threading colorizer doesn't handle multiple body editors
-#@+node:ekr.20090201134906.1:Huge cuts hang Leo
-#@-node:ekr.20090201134906.1:Huge cuts hang Leo
 #@+node:ekr.20080509065556.2:Fix mod_tempfname plugin
 @nocolor
 
@@ -1687,6 +1769,14 @@ http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@nonl
 #@-node:ekr.20080509065556.2:Fix mod_tempfname plugin
 #@+node:ekr.20090223065025.4:Fix page up/down problem
+@
+
+At present, the qt gui sends PgUp and PgDn directly to the widget.
+
+That is, the plugin does not handle scrolling properly.
+
+This will become an issue for vim bindings.
+#@nonl
 #@+node:ekr.20061031131434.146:masterKeyHandler & helpers
 master_key_count = 0
 
@@ -2005,8 +2095,15 @@ def scrollOutlineUpPage (self,event=None):
         self.c.frame.tree.canvas.yview_scroll(-1,"page")
 #@-node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
 #@-node:ekr.20090223065025.4:Fix page up/down problem
-#@-node:ekr.20081215070651.4:Bugs 7
-#@+node:ekr.20080517102922.1:Files bugs 8
+#@+node:ekr.20090202064534.1:Remove bad archived position message?
+bad archived position: bad index="3", len(children)="1"
+restoreDescendentAttributes: can not find vnode (duA):
+archivedPosition: 0.3.6.6.2.3, root_v: <vnode 168011244:'@thin
+test_core.txt'>
+#@nonl
+#@-node:ekr.20090202064534.1:Remove bad archived position message?
+#@-node:ekr.20081215070651.4:Minor bugs 7
+#@+node:ekr.20080517102922.1:File bugs 8
 #@+node:ekr.20081204091750.4:Fix inconsistency in how @path works
 @nocolor-node
 
@@ -2260,255 +2357,7 @@ intended behavior. The correct behavior would be to save the file,
 give me the warning about the undefined section, and exit.
 #@nonl
 #@-node:ekr.20080412053100.1:Look into undefined-section behavior
-#@-node:ekr.20080517102922.1:Files bugs 8
-#@+node:ekr.20080922115725.1:Finish @shadow
-# Allow block comments in private shadow files.
-# Compute delims using the private shadow file, not the file extension!
-# Can @shadow mark externally changed nodes?
-#@nonl
-#@clone 2
-#@+node:ekr.20081004102201.2:Log file for @shadow
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
-#@nonl
-#@-node:ekr.20081004102201.2:Log file for @shadow
-#@+node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
-#@-node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
-#@+node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
-
-@color
-#@nonl
-#@+node:ekr.20080708094444.38:x.propagate_changed_lines
-def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
-
-    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
-
-    We compare the old and new public lines, create diffs and
-    propagate the diffs to the new private lines, copying sentinels as well.
-
-    We have two invariants:
-    1. We *never* delete any sentinels.
-    2. Insertions that happen at the boundary between nodes will be put at
-       the end of a node.  However, insertions must always be done within sentinels.
-    '''
-
-    x = self ; trace = False ; verbose = True
-    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
-    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
-
-    << init vars >>
-    << define print_tags >>
-
-    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
-    prev_old_j = 0 ; prev_new_j = 0
-
-    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
-
-        << About this loop >>
-
-        # Verify that SequenceMatcher never leaves gaps.
-        if old_i != prev_old_j: # assert old_i == prev_old_j
-            x.error('can not happen: gap in old:',old_i,prev_old_j)
-        if new_i != prev_new_j: # assert new_i == prev_new_j
-            x.error('can not happen: gap in new:',new_i,prev_new_j)
-
-        << Handle the opcode >>
-
-        # Remember the ends of the previous tag ranges.
-        prev_old_j = old_j
-        prev_new_j = new_j
-
-    # Copy all unwritten sentinels.
-    self.copy_sentinels(
-        old_private_lines_rdr,new_private_lines_wtr,
-        marker, limit = old_private_lines_rdr.size())
-
-    # Get the result.
-    result = new_private_lines_wtr.getlines()
-    if 1:
-        << do final correctness check>>
-    return result
-#@+node:ekr.20080708094444.40:<< init vars >>
-new_private_lines_wtr = sourcewriter(self)
-# collects the contents of the new file.
-
-new_public_lines_rdr = sourcereader(self,new_public_lines)
-    # Contains the changed source code.
-
-old_public_lines_rdr = sourcereader(self,old_public_lines)
-    # this is compared to new_public_lines_rdr to find out the changes.
-
-old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
-    # This is the file which is currently produced by Leo, with sentinels.
-
-# Check that all ranges returned by get_opcodes() are contiguous
-old_old_j, old_i2_modified_lines = -1,-1
-
-tag = old_i = old_j = new_i = new_j = None
-#@nonl
-#@-node:ekr.20080708094444.40:<< init vars >>
-#@+node:ekr.20080708094444.39:<< define print_tags >>
-def print_tags(tag, old_i, old_j, new_i, new_j, message):
-
-    sep1 = '=' * 10 ; sep2 = '-' * 20
-
-    g.pr('\n',sep1,message,sep1,p and p.h)
-
-    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
-
-    g.pr('\n',sep2)
-
-    table = (
-        (old_private_lines_rdr,'old private lines'),
-        (old_public_lines_rdr,'old public lines'),
-        (new_public_lines_rdr,'new public lines'),
-        (new_private_lines_wtr,'new private lines'),
-    )
-
-    for f,tag in table:
-        f.dump(tag)
-        g.pr(sep2)
-
-
-#@-node:ekr.20080708094444.39:<< define print_tags >>
-#@+node:ekr.20080708192807.2:<< about this loop >>
-@
-
-This loop writes all output lines using a single writer: new_private_lines_wtr.
-
-The output lines come from two, and *only* two readers:
-
-1. old_private_lines_rdr delivers the complete original sources. All
-   sentinels and unchanged regular lines come from this reader.
-
-2. new_public_lines_rdr delivers the new, changed sources. All inserted or
-   replacement text comes from this reader.
-
-Each time through the loop, the following are true:
-
-- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
-
-- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
-
-At the start of the loop, the call to copy_sentinels effectively skips (deletes)
-all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
-less than mapping[old_i].
-
-As a result, the opcode handlers do not need to delete elements from the
-old_private_lines_rdr explicitly. This explains why opcode handlers for the
-'insert' and 'delete' opcodes are identical.
-#@-node:ekr.20080708192807.2:<< about this loop >>
-#@+node:ekr.20080708192807.5:<< Handle the opcode >>
-# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
-# In this special case, we must do the insert before the sentinels.
-limit=mapping[old_i]
-
-if trace: g.trace(tag,'old_i',old_i,'limit',limit)
-
-if tag == 'insert' and limit >= old_private_lines_rdr.size():
-    pass
-else:
-    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
-    # Because of this, nothing has to be explicitly deleted below.
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-
-if tag == 'equal':
-    # Copy all lines (including sentinels) from the old private file to the new private file.
-    start = old_private_lines_rdr.index()
-    while old_private_lines_rdr.index() <= mapping[old_j-1]:
-        line = old_private_lines_rdr.get()
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
-
-    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
-    new_public_lines_rdr.sync(new_j)
-
-elif tag in ('insert','replace'):
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Copy lines from new_public_lines_rdr up to new_j.
-    start = new_public_lines_rdr.index()
-    while new_public_lines_rdr.index() < new_j:
-        line = new_public_lines_rdr.get()
-        if x.is_sentinel(line,marker):
-            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-
-elif tag=='delete':
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Leave new_public_lines_rdr unchanged.
-    pass
-
-else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
-
-if trace and verbose:
-    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
-#@nonl
-#@-node:ekr.20080708192807.5:<< Handle the opcode >>
-#@+node:ekr.20080708094444.45:<< do final correctness check >>
-t_sourcelines, t_sentinel_lines = self.separate_sentinels(
-    new_private_lines_wtr.lines, marker)
-
-self.check_the_final_output(
-    new_private_lines   = result,
-    new_public_lines    = new_public_lines,
-    sentinel_lines      = t_sentinel_lines,
-    marker              = marker)
-#@-node:ekr.20080708094444.45:<< do final correctness check >>
-#@-node:ekr.20080708094444.38:x.propagate_changed_lines
-#@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
-#@+node:ekr.20081028060510.1:Fix @shadow crasher
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
-
-I think Leo crashes when attempting to load a shadow file that starts
-with a line feed character. [EKR: it's the missing file extension]
-
-Here's the stack trace:
-
-Traceback (most recent call last):
- File "/home/jesse/leo-editor/launchLeo.py", line 8, in <module>
-   leo.core.runLeo.run()
- File "/home/jesse/leo-editor/leo/core/runLeo.py", line 120, in run
-   c,frame = createFrame(fileName,relativeFileName,script)
- File "/home/jesse/leo-editor/leo/core/runLeo.py", line 156, in
-createFrame
-   ok, frame = g.openWithFileName(relativeFileName or fileName,None)
- File "/home/jesse/leo-editor/leo/core/leoGlobals.py", line 2211, in
-openWithFileName
-   readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
- File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 851,
-in open
-   silent=silent)
- File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 758,
-in getLeoFile
-   c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 535, in
-readAll
-   at.readOneAtShadowNode (fileName,p)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 684, in
-readOneAtShadowNode
-   at.writeOneAtShadowNode(p,toString=False,force=True)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2588, in
-writeOneAtShadowNode
-   at.writeOpenFile(root,nosentinels=not
-sentinels,toString=False,atAuto=False)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2842, in
-writeOpenFile
-   at.putBody(root,fromString=fromString)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2914, in
-putBody
-   at.putCodeLine(s,i)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 3137, in
-putCodeLine
-   if g.match(s,k,self.startSentinelComment + '@'):
-TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
-#@nonl
-#@-node:ekr.20081028060510.1:Fix @shadow crasher
-#@-node:ekr.20080922115725.1:Finish @shadow
+#@-node:ekr.20080517102922.1:File bugs 8
 #@-node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20090210093316.1:Features
 #@+node:ekr.20090131200406.12:Improve rst3 plugin
