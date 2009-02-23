@@ -3971,7 +3971,7 @@ class leoQtGui(leoGui.leoGui):
         trace = False
         cb = self.qtApp.clipboard()
         if cb:
-            cb.clear()
+            #cb.clear()  # unnecessary, breaks on some Qt versions
             s = g.app.gui.toUnicode(s,
                 encoding=g.app.tkEncoding,
                 reportErrors=True)

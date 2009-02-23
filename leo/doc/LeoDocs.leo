@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="51" left="198" height="830" width="1027"/>
+	<global_window_position top="32" left="395" height="974" width="971"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -388,6 +388,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20040403173920.3" rst_http_attribute="5d71002855443c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3522206e616d653d22687474702d6e6f64652d6d61726b65722d35223e710155043c2f613e71025d71032855403c64697620636c6173733d2273656374696f6e222069643d22672d746f702d7468652d636f6d6d616e6465722d6f662d7468652d746f702d77696e646f77223e710455063c2f6469763e71055d710628553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710755063c2f6469763e71085d71092855063c626f64793e710a55073c2f626f64793e710b5d710c2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d55073c2f68746d6c3e710e4e6565656555073c2f6469763e0a710f55363c64697620636c6173733d2273656374696f6e222069643d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e0a711055703c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643322206e616d653d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e672e657328293a20777269746520746f20746865206c6f672070616e653c2f613e3c2f68313e0a7111652e"><vh>g.es writes to the log pane</vh></v>
 <v t="ekr.20040403175157.1" rst_http_attribute="5d71002855443c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3722206e616d653d22687474702d6e6f64652d6d61726b65722d37223e710155043c2f613e71025d71032855353c64697620636c6173733d2273656374696f6e222069643d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e710455063c2f6469763e71055d710628553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710755063c2f6469763e71085d71092855063c626f64793e710a55073c2f626f64793e710b5d710c2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d55073c2f68746d6c3e710e4e6565656555073c2f6469763e0a710f55463c64697620636c6173733d2273656374696f6e222069643d226170702d77696e646f776c6973742d7468652d6c6973742d6f662d616c6c2d6f70656e2d6672616d6573223e0a7110558e3c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643422206e616d653d226170702d77696e646f776c6973742d7468652d6c6973742d6f662d616c6c2d6f70656e2d6672616d6573223e6170702e77696e646f774c6973743a20746865206c697374206f6620616c6c206f70656e206672616d65733c2f613e3c2f68313e0a7111652e"><vh>app.windowList: the list of all open frames</vh></v>
 <v t="ekr.20040403173920.6" rst_http_attribute="5d71002855443c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3922206e616d653d22687474702d6e6f64652d6d61726b65722d39223e710155043c2f613e71025d71032855453c64697620636c6173733d2273656374696f6e222069643d226170702d77696e646f776c6973742d7468652d6c6973742d6f662d616c6c2d6f70656e2d6672616d6573223e710455063c2f6469763e71055d710628553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710755063c2f6469763e71085d71092855063c626f64793e710a55073c2f626f64793e710b5d710c2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d55073c2f68746d6c3e710e4e6565656555073c2f6469763e0a710f55463c64697620636c6173733d2273656374696f6e222069643d2267657474696e672d616e642d73657474696e672d686561646c696e652d616e642d626f64792d74657874223e0a7110558d3c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643522206e616d653d2267657474696e672d616e642d73657474696e672d686561646c696e652d616e642d626f64792d74657874223e47657474696e6720616e642073657474696e6720686561646c696e6520616e6420626f647920746578743c2f613e3c2f68313e0a7111652e"><vh>Getting and setting headline and body text</vh></v>
+<v t="ekr.20090223065025.3"><vh>Getting and setting body text directly</vh></v>
 <v t="ekr.20070122093626"><vh>Ensuring that positions are valid</vh></v>
 <v t="ekr.20050902073404"><vh>About copying positions</vh></v>
 <v t="ekr.20040403173920.9" rst_http_attribute="5d71002855463c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d313122206e616d653d22687474702d6e6f64652d6d61726b65722d3131223e710155043c2f613e71025d71032855453c64697620636c6173733d2273656374696f6e222069643d2267657474696e672d616e642d73657474696e672d686561646c696e652d616e642d626f64792d74657874223e710455063c2f6469763e71055d710628553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710755063c2f6469763e71085d71092855063c626f64793e710a55073c2f626f64793e710b5d710c2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d55073c2f68746d6c3e710e4e6565656555073c2f6469763e0a710f552f3c64697620636c6173733d2273656374696f6e222069643d2274726176657273696e672d6f75746c696e6573223e0a7110555f3c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643622206e616d653d2274726176657273696e672d6f75746c696e6573223e54726176657273696e67206f75746c696e65733c2f613e3c2f68313e0a7111652e"><vh>Traversing outlines</vh>
@@ -7034,7 +7035,9 @@ for that frame::
         g.es(f.shortFileName())
         g.es(c)
         g.es(c.rootPosition())</t>
-<t tx="ekr.20040403183229">Leo's source code is a collection of classes, along with utility functions in
+<t tx="ekr.20040403183229">@language python
+
+Leo's source code is a collection of classes, along with utility functions in
 ``leoGlobals.py``. Here are the classes and objects that scripts will commonly use:
 
 **g.app**
@@ -7079,6 +7082,12 @@ for that frame::
     **confused** scripts. Confused scripts work because the ``position`` class
     is designed to make them work. We'll see how this works in detail in `About
     copying positions`_.  This section is **supremely important**.
+    
+**baseTextWidget and its subclasses**
+
+Leo's body pane (c.frame.body.bodyCtrl, aka w), is an instance of
+(a subclass of) baseTextWidget.
+Gui plugins implement Leo's body pane by subclassing baseTextWidget.
 
 **vnode**
     An instance of the ``vnode`` class in ``leoNodes.py``.
@@ -13872,7 +13881,9 @@ The benefits of the new workflow:
 <t tx="ekr.20050831195331.1">@language rest</t>
 <t tx="ekr.20050831195331.2">@language rest</t>
 <t tx="ekr.20050831195331.3">@language rest</t>
-<t tx="ekr.20050831195331.4">@language rest</t>
+<t tx="ekr.20050831195331.4">@nocolor
+
+@language rest</t>
 <t tx="ekr.20050831195449">@nocolor
 
 For instruction about installing Leo see:
@@ -15510,8 +15521,7 @@ Event name (tag argument)     Stop?    When called                         Keys 
 12. ``g.app.destroyAllGlobalWindows`` calls the 'destroy-all-global-windows' hook.
     This hook gives plugins the chance to clean up after themselves when Leo shuts down.
 
-13. New in Leo 4.4: Leo calls the 'headkey1' and 'headkey2' hooks only when the user completes
-    the editing of a headline, and ch is always '\r', regardless of platform.
+13. Leo calls the 'headkey1' and 'headkey2' when the headline *might* have changed.
     
 14. p is the new node (position) containing '@auto filename.ext'</t>
 <t tx="ekr.20050903075144">A **plugin** is a Python file that appears in Leo's plugin directory. Plugins
@@ -32785,6 +32795,7 @@ each tailored exactly to the task at hand.
 You never have to create a single "right" or "best" view.
 You can have them all.
 Views, being nodes, persist until you delete them.
+**Leo is the best possible filing cabinet for any kind of data.**
 
 To create a new view of the data, just create any *ordinary* node.
 This **view node** represents the new view.
@@ -32901,6 +32912,37 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**</t>
+<t tx="ekr.20090223065025.3">As stated above, Leo's body text, c.frame.body.bodyCtrl,
+is a subclass of baseTextWidget class.
+Scripts can get and set information directly from the body pane,
+using the following methods::
+
+    w.appendText(s)                     # Append s to end of body text.
+    w.delete(i,j=None)                  # Delete characters from i to j.
+    w.deleteTextSelection()             # Delete the selected text, if any.
+    s = w.get(i,j=None)                 # Return the text from i to j.
+    s = w.getAllText                    # Return the entire body text.
+    i = w.getInsertPoint()              # Return the location of the cursor.
+    s = w.getSelectedText()             # Return the selected text, if any.
+    i,j = w.getSelectionRange (sort=True) # Return the range of selected text.
+    w.replace(i,j,s)                    # Replace the text from i to j by s.
+    w.setAllText(s)                     # Set the entire body text to s.
+    w.setBackgroundColor(color)         # Set the background color.
+    w.setSelectionRange(i,j,insert=None) # Select the text.
+    w.setForegroundColor(color)         # Set the foreground color.
+    
+**Notes**:
+    
+- These are only the most commonly-used methods.
+  For more information, consult Leo's source code.
+
+- i and j are zero-based indices into the the text.
+  When j is not specified, it defaults to i.
+  When the sort parameter is in effect, getSelectionRange
+  ensures i &lt;= j.
+  
+- color is a tk color name, even when using the qt gui plugin.
+</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?

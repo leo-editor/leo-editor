@@ -11577,6 +11577,8 @@ file. The unit tests in this file open and close many .leo files and many
 strange things can happen if you have opened this file from another file.
 #@nonl
 #@-node:ekr.20080406075855.3:Added warning about running test unitTest.leo when it is opened from another .leo file
+#@+node:ekr.20090220064909.1:Documented the high-level api for text wrappers
+#@-node:ekr.20090220064909.1:Documented the high-level api for text wrappers
 #@-node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080918201437.1:Leo3k work
 - Use sorted(dict) everywhere.
