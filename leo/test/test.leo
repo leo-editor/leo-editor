@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1063,6 +1063,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20090223092110.1"><vh>Scroll test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -19381,5 +19382,8 @@ a,b = 1,2
 self.assertEqual(a,b)</t>
 <t tx="ekr.20090218121844.1">def child():
     pass</t>
+<t tx="ekr.20090223092110.1">a
+b
+c</t>
 </tnodes>
 </leo_file>

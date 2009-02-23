@@ -4818,7 +4818,8 @@ class leoQtEventFilter(QtCore.QObject):
                 if True or trace and verbose:
                     stroke = self.toStroke(tkKey,ch)
                     if (stroke and not stroke.startswith('Alt+') and 
-                        not stroke.startswith('Ctrl+')):
+                        not stroke.startswith('Ctrl+') and
+                        not stroke in ('PgDn','PgUp')):
                             g.trace(self.tag,'unbound',tkKey,stroke)
 
         if trace: self.traceEvent(obj,event,tkKey,override)
@@ -4974,8 +4975,12 @@ class leoQtEventFilter(QtCore.QObject):
            'Esc':       'Escape',
            'Del':       'Delete',
            'Ins':       'Insert',
+           # Use these to pass the key to the QTextWidget.
            'PgDown':    'PgDn',
            'PgUp':      'PgUp', # The entry must exist.
+           # Use these to enable Leo's page-up/down commands.
+           # 'PgDown':    'Next',
+           # 'PgUp':      'Prior',
         }
 
         # Convert '&' to 'ampersand', for example.
@@ -8191,6 +8196,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@-node:ekr.20081121105001.589:setSelectionRangeHelper & helper
     #@+node:ekr.20081121105001.591:setYScrollPosition
     def setYScrollPosition(self,pos):
+
+        # g.trace('pos',pos)
 
         w = self.widget
         sb = w.verticalScrollBar()
