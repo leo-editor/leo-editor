@@ -2721,6 +2721,24 @@ def delete_range (self,menu,n1,n2):
         # return menu.delete(n1,n2)
 #@-node:ekr.20081121105001.365:delete_range (leoQtMenu)
 #@-node:ekr.20090128113654.1:Recent files menu is duplicated in qt gui
+#@+node:ekr.20090128083504.1:Fix rclick
+@nocolor-node
+
+rClick
+
+
+After the qt-plugin merge (rev 1251 ), the image plugin no longer works. I
+couldn't find any mention of gsimage in the diff.
+
+ # Erase image if it was previously displayed
+             a = g.app ; c = keywords.get("c")
+
+-            if a.gsimage:
++            if getattr(a, 'gsimage', None):
+                 try:
+                     c.frame.body.bodyCtrl.delete(a.gsimage)
+                 except:
+#@-node:ekr.20090128083504.1:Fix rclick
 #@+node:ekr.20081215074704.18:Finish qt gui delete_range method
 @nocolor-node
 
@@ -2799,6 +2817,41 @@ keyboard I get:
 - the problem with the ñ character (reported previously too) is only
 present in the qt plugin (both with and without scintilla)
 #@-node:ekr.20081124094918.1:Fix problems with scim
+#@+node:ekr.20081215074704.18:Finish qt gui delete_range method
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/51edf3b44d6a587e
+
+revno: 1259.1.10
+revision-id: terry_n_brown@yahoo.com-20081130181632-ci0ioaksewdvc257
+
+I added code so that this no longer derails the initialization process,
+i.e. just catch the exception and continue.  I don't know what's wrong
+except I first noticed it after a tkinter update from Ubuntu.  I
+think.  Anyway, that's my story :)
+
+When I added the "clean recent files" menu option long before this
+traceback showed up I had a heap of trouble deleting just the file
+entries on the recent files menu.  It was originally hardwired that the
+menu have a "Clear list" item, and then the file entries, but I wanted
+to make it get it's command entries from @menu @settings and add the
+files afterward and that was a lot of fiddling.  I.e. originally it
+deleted everything and added the "Clear list" item before rebuilding
+the file list, now it either tries to delete only the file entries, or
+stores the entries before the files (from @menu) and adds them back
+before the files each time, I forget which finally worked.
+
+What's my point?  It would be nice if delete_range "just worked".  It's
+a 'pass' in qt, and I would guess recent files is the only thing in the
+entire code base that uses it.
+
+The menu tree seems to me to be "write only", i.e. not readable, at
+least from the Leo API, of course you can walk it in a gui specific
+way.  Not necessarily a problem, but would be nice if it was more
+robustly dynamic.  Or maybe I'm missing something, but I've only seen
+functions which find a menu based on knowing it exists before hand.
+#@nonl
+#@-node:ekr.20081215074704.18:Finish qt gui delete_range method
 #@+node:ekr.20090128083504.1:Fix rclick
 @nocolor-node
 
@@ -2987,16 +3040,8 @@ Vicent
 #@nonl
 #@-node:ekr.20090128083504.11:Report
 #@+node:ekr.20081121105001.502:toUnicode (qtGui)
-def toUnicode (self,s,encoding='utf-8',reportErrors=True):
-
-    if g.isPython3:
-        return str(s)
-    else:
-        if type(s) == type(u'a'):
-            return s
-        else:
-            return g.toUnicode(
-                s,encoding=encoding,reportErrors=reportErrors)
+def toUnicode (self,s,encoding='utf-8',reportErrors=True):    
+    return unicode(s)
 #@nonl
 #@-node:ekr.20081121105001.502:toUnicode (qtGui)
 #@+node:ekr.20081121105001.183:Clipboard (qtGui)
@@ -3970,7 +4015,7 @@ def scrollToItem (self,item):
 
     w.scrollToItem(item,w.PositionAtCenter)
 
-    self.setHScroll(hPos)
+    self.setHScroll(0)
 #@-node:ekr.20090201080444.12:scrollToItem
 #@+node:ekr.20090124174652.44:setItemForCurrentPosition (nativeTree)
 def setItemForCurrentPosition (self,scroll=True):
