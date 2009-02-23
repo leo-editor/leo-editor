@@ -279,6 +279,26 @@ def openDir(c,parent,d):
             c.setHeadString(p,nh)
 #@nonl
 #@-node:tbrown.20080613095157.10:openDir
+#@+node:ville.20090223183051.1:act on node
+def active_path_act_on_node(c,p,event):
+    """ act_on_node handler for active_path.py
+    """
+
+    # implementation mostly copied from onSelect
+
+    if not isDirNode(p):
+        raise leoPlugins.TryNext
+
+    pos = p.copy()
+    path = getPath(c, p)
+
+    if path:
+        sync_node_to_folder(c,pos,path)
+        c.requestRedrawFlag = True
+        c.redraw()
+        return True
+
+#@-node:ville.20090223183051.1:act on node
 #@+node:tbrown.20080616153649.2:cmd_ShowCurrentPath
 def cmd_ShowCurrentPath(c):
     """Just show the path to the current file/directory node in the log pane."""
@@ -418,6 +438,7 @@ def attachToCommander(t,k):
 
 def init():
     leoPlugins.registerHandler('after-create-leo-frame', attachToCommander)
+    g.act_on_node.add(active_path_act_on_node, priority = 90)
     g.plugin_signon(__name__)
     return True
 #@-node:tbrown.20080613095157.2:@thin active_path.py
