@@ -2575,7 +2575,7 @@ class atFile:
     #@+node:ekr.20090225080846.5:writeOneAtEditNode
     # Similar to writeOneAtAutoNode.
 
-    def writeOneAtEditNode(self,p,toString):
+    def writeOneAtEditNode(self,p,toString,force=False):
 
         '''Write p, an @edit node.
 
@@ -2589,6 +2589,8 @@ class atFile:
             at.scanDefaultDirectory(p,importing=True) # Set default_directory
             fn = c.os_path_finalize_join(at.default_directory,fn)
             exists = g.os_path_exists(fn)
+            if not self.shouldWriteAtEditNode(p,exists,force):
+                return False
         elif not toString:
             return False
 
@@ -2615,6 +2617,44 @@ class atFile:
             g.es("not written:",at.outputFileName)
 
         return ok
+    #@+node:ekr.20090225080846.6:shouldWriteAtEditNode
+    #@+at 
+    #@nonl
+    # Much thought went into this decision tree:
+    # 
+    # - We do not want decisions to depend on past history.  That's too 
+    # confusing.
+    # - We must ensure that the file will be written if the user does 
+    # significant work.
+    # - We must ensure that the user can create an @edit x node at any time
+    #   without risk of of replacing x with empty or insignificant 
+    # information.
+    # - We want the user to be able to create an @edit node which will be read
+    #   the next time the .leo file is opened.
+    # - We don't want minor import imperfections to be written to the @edit 
+    # file.
+    # - The explicit commands that read and write @edit trees must always be 
+    # honored.
+    #@-at
+    #@@c
+
+    def shouldWriteAtEditNode (self,p,exists,force):
+
+        '''Return True if we should write the @auto node at p.'''
+
+        if force: # We are executing write-at-auto-node or write-dirty-at-auto-nodes.
+            return True
+        elif not exists: # We can write a non-existent file without danger.
+            return True
+        elif not p.isDirty(): # There is nothing new to write.
+            return False
+        elif not self.isSignificantTree(p): # There is noting of value to write.
+            g.es_print(p.h,'not written:',color='red')
+            g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+            return False
+        else: # The @auto tree is dirty and contains significant info.
+            return True
+    #@-node:ekr.20090225080846.6:shouldWriteAtEditNode
     #@-node:ekr.20090225080846.5:writeOneAtEditNode
     #@+node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
     def writeAtShadowNodes (self,event=None):

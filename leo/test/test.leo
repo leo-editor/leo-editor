@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="33" left="552" height="961" width="704"/>
+	<global_window_position top="33" left="418" height="961" width="838"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -19390,8 +19390,10 @@ self.assertEqual(a,b)</t>
 <t tx="ekr.20090223092110.1">a
 b
 c</t>
-<t tx="ekr.20090225111820.1">@nocolor
-&lt;!-- comment --&gt;
+<t tx="ekr.20090225111820.1">@language xslt
+&lt;!-- tail changed 2 --&gt;
+
+This is the tail&lt;!-- comment --&gt;
 &lt;?xml version="1.0"?&gt;
 &lt;xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"&gt;
 &lt;xsl:output method = 'xml' /&gt;
