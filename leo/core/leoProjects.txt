@@ -3174,7 +3174,8 @@ I refactored them so all the common work is done in g.setDefaultDirectory.
 @color
 #@nonl
 #@+node:ekr.20031218072017.3210:createOutline (leoImport)
-def createOutline (self,fileName,parent,atAuto=False,atShadow=False,s=None,ext=None):
+def createOutline (self,fileName,parent,
+    atAuto=False,atShadow=False,s=None,ext=None):
 
     c = self.c ; u = c.undoer ; s1 = s
 
@@ -4958,6 +4959,7 @@ def shouldWriteAtNosentNode (self,p,exists):
 #@-node:ekr.20041005105605.144:write & helper
 #@+node:ekr.20041005105605.15:initWriteIvars
 def initWriteIvars(self,root,targetFileName,
+    atAuto=False,
     nosentinels=False,
     thinFile=False,
     scriptWrite=False,
@@ -5013,9 +5015,11 @@ file to be the target file.
 self.docKind = None
 self.explicitLineEnding = False # True: an @lineending directive specifies the ending.
 self.fileChangedFlag = False # True: the file has actually been updated.
+self.atAuto = atAuto
 self.shortFileName = "" # short version of file name used for messages.
 self.thinFile = False
-self.force_newlines_in_at_nosent_bodies = self.c.config.getBool('force_newlines_in_at_nosent_bodies')
+self.force_newlines_in_at_nosent_bodies = self.c.config.getBool(
+    'force_newlines_in_at_nosent_bodies')
 
 if toString:
     self.outputFile = g.fileLikeObject()
@@ -8758,6 +8762,7 @@ self.language_delims_dict = {
     "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
     "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
     "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
 }
 
 self.language_extension_dict = {
@@ -8798,6 +8803,7 @@ self.language_extension_dict = {
     "unknown"       : "txt", # Set when @comment is seen.
     "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
     "xml"           : "xml",
+    "xslt"          : "xsl",
 }
 
 self.extension_dict = {
@@ -8837,6 +8843,7 @@ self.extension_dict = {
     "tcl"   : "tcltk",
     "w"     : "cweb",
     "xml"   : "xml",
+    "xsl"   : "xslt",
 }
 
 # Extra language extensions, used to associate extensions with mode files.
@@ -14313,7 +14320,8 @@ def scanAtPathDirectives(self,aList,force=False):
     return path
 #@-node:ekr.20080828103146.15:c.scanAtPathDirectives
 #@+node:ekr.20031218072017.3210:createOutline (leoImport)
-def createOutline (self,fileName,parent,atAuto=False,atShadow=False,s=None,ext=None):
+def createOutline (self,fileName,parent,
+    atAuto=False,atShadow=False,s=None,ext=None):
 
     c = self.c ; u = c.undoer ; s1 = s
 
@@ -21932,6 +21940,7 @@ self.language_delims_dict = {
     "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
     "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
     "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
 }
 
 self.language_extension_dict = {
@@ -21972,6 +21981,7 @@ self.language_extension_dict = {
     "unknown"       : "txt", # Set when @comment is seen.
     "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
     "xml"           : "xml",
+    "xslt"          : "xsl",
 }
 
 self.extension_dict = {
@@ -22011,6 +22021,7 @@ self.extension_dict = {
     "tcl"   : "tcltk",
     "w"     : "cweb",
     "xml"   : "xml",
+    "xsl"   : "xslt",
 }
 
 # Extra language extensions, used to associate extensions with mode files.
@@ -22104,7 +22115,7 @@ def createNodeFromExternalFile(self,fn):
     else:
         prefix = '@killcolor\n\n'
     p2 = c.insertHeadline(op_name='Open File', as_child=False)
-    p2.h = g.shortFileName(fn)
+    p2.h = '@edit %s' % fn # g.shortFileName(fn)
     p2.b = prefix + s
     w = c.frame.body.bodyCtrl
     if w: w.setInsertPoint(0)
@@ -24816,6 +24827,7 @@ self.language_delims_dict = {
     "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
     "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
     "xml"           : "<!-- -->",
+    "xslt"          : "<!-- -->",
 }
 
 self.language_extension_dict = {
@@ -24856,6 +24868,7 @@ self.language_extension_dict = {
     "unknown"       : "txt", # Set when @comment is seen.
     "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
     "xml"           : "xml",
+    "xslt"          : "xsl",
 }
 
 self.extension_dict = {
@@ -24895,6 +24908,7 @@ self.extension_dict = {
     "tcl"   : "tcltk",
     "w"     : "cweb",
     "xml"   : "xml",
+    "xsl"   : "xslt",
 }
 
 # Extra language extensions, used to associate extensions with mode files.

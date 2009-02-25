@@ -658,7 +658,7 @@ class baseCommands (object):
         else:
             prefix = '@killcolor\n\n'
         p2 = c.insertHeadline(op_name='Open File', as_child=False)
-        p2.h = g.shortFileName(fn)
+        p2.h = '@edit %s' % fn # g.shortFileName(fn)
         p2.b = prefix + s
         w = c.frame.body.bodyCtrl
         if w: w.setInsertPoint(0)
@@ -3658,17 +3658,17 @@ class baseCommands (object):
     #@-node:ekr.20031218072017.1759:Insert, Delete & Clone (Commands)
     #@+node:ekr.20080425060424.1:Sort...
     #@+node:ekr.20050415134809:c.sortChildren
-    def sortChildren (self,event=None,cmp=None):
+    def sortChildren (self,event=None,cmp=None,key=None):
 
         '''Sort the children of a node.'''
 
         c = self ; p = c.p
 
         if p and p.hasChildren():
-            c.sortSiblings(p=p.firstChild(),sortChildren=True)
+            c.sortSiblings(p=p.firstChild(),sortChildren=True,key=key)
     #@-node:ekr.20050415134809:c.sortChildren
     #@+node:ekr.20050415134809.1:c.sortSiblings
-    def sortSiblings (self,event=None,cmp=None,p=None,sortChildren=False):
+    def sortSiblings (self,event=None,cmp=None,key=None,p=None,sortChildren=False):
 
         '''Sort the siblings of a node.'''
 
@@ -3682,8 +3682,9 @@ class baseCommands (object):
         oldChildren = parent_v.t.children[:]
         newChildren = parent_v.t.children[:]
 
-        def key (self):
-            return (self.h.lower(), self)
+        if key == None:
+            def key (self):
+                return (self.h.lower(), self)
 
         if cmp: newChildren.sort(cmp,key=key)
         else:   newChildren.sort(key=key)

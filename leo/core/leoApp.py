@@ -146,6 +146,7 @@ class LeoApp:
             "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
             "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
             "xml"           : "<!-- -->",
+            "xslt"          : "<!-- -->",
         }
 
         self.language_extension_dict = {
@@ -186,6 +187,7 @@ class LeoApp:
             "unknown"       : "txt", # Set when @comment is seen.
             "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
             "xml"           : "xml",
+            "xslt"          : "xsl",
         }
 
         self.extension_dict = {
@@ -225,6 +227,7 @@ class LeoApp:
             "tcl"   : "tcltk",
             "w"     : "cweb",
             "xml"   : "xml",
+            "xsl"   : "xslt",
         }
 
         # Extra language extensions, used to associate extensions with mode files.

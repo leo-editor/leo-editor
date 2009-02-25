@@ -7652,7 +7652,7 @@ def createNodeFromExternalFile(self,fn):
     else:
         prefix = '@killcolor\n\n'
     p2 = c.insertHeadline(op_name='Open File', as_child=False)
-    p2.h = g.shortFileName(fn)
+    p2.h = '@edit %s' % fn # g.shortFileName(fn)
     p2.b = prefix + s
     w = c.frame.body.bodyCtrl
     if w: w.setInsertPoint(0)

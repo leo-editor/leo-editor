@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7,0,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1064,6 +1064,11 @@
 </v>
 </v>
 <v t="ekr.20090223092110.1"><vh>Scroll test</vh></v>
+<v t="ekr.20090225112135.1" a="E"><vh>@language html</vh>
+<v t="ekr.20090225112135.2" a="E"><vh>@path c:/leo.repo/trunk</vh>
+<v t="ekr.20090225111820.1" tnodeList="ekr.20090225111820.1"><vh>@edit leo_to_html2.xsl</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -19385,5 +19390,64 @@ self.assertEqual(a,b)</t>
 <t tx="ekr.20090223092110.1">a
 b
 c</t>
+<t tx="ekr.20090225111820.1">@nocolor
+&lt;!-- comment --&gt;
+&lt;?xml version="1.0"?&gt;
+&lt;xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"&gt;
+&lt;xsl:output method = 'xml' /&gt;
+&lt;xsl:preserve-space elements='leo_file/tnodes/t'/&gt;
+
+
+&lt;xsl:template match='v'&gt;
+
+    &lt;ul type='square'&gt;
+    
+        &lt;xsl:variable name ='t' select ='@t' /&gt;
+            &lt;h1&gt;&lt;xsl:value-of select='vh'/&gt;&lt;/h1&gt;
+                &lt;xsl:for-each select='ancestor::leo_file/tnodes/t'&gt;
+                    &lt;xsl:if test="./attribute::tx=$t"&gt;
+                    &lt;li&gt;
+                        &lt;pre&gt;
+                            &lt;xsl:value-of select='.' /&gt;
+                        &lt;/pre&gt;
+                    &lt;/li&gt;
+                    &lt;/xsl:if&gt;
+                &lt;/xsl:for-each&gt;
+
+    &lt;xsl:if test ='./v' &gt;
+        &lt;xsl:apply-templates select = 'v'/&gt;
+     &lt;/xsl:if&gt; 
+     &lt;/ul&gt;
+      &lt;/xsl:template&gt;
+ 
+
+&lt;xsl:template match ='leo_file'&gt;
+    &lt;html&gt;&lt;head&gt;
+        &lt;style&gt;
+            ul{ position:relative;right=25;
+                border:thin ridge blue}
+            li{ position:relative;right=25} 
+            pre{ background:#FFE7C6 }       
+        &lt;/style&gt;
+        &lt;/head&gt;
+            &lt;body&gt;
+                &lt;xsl:apply-templates select='vnodes'/&gt;
+            &lt;/body&gt;
+    &lt;/html&gt;
+&lt;/xsl:template&gt;
+
+&lt;xsl:template match = 'vnodes'&gt;
+    &lt;xsl:for-each select = 'v'&gt;
+        &lt;frame&gt;
+            &lt;xsl:apply-templates select ='.'/&gt;
+        &lt;/frame&gt;
+    &lt;/xsl:for-each&gt;
+&lt;/xsl:template&gt;
+
+
+&lt;/xsl:transform&gt;
+</t>
+<t tx="ekr.20090225112135.1"></t>
+<t tx="ekr.20090225112135.2"></t>
 </tnodes>
 </leo_file>

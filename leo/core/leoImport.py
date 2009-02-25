@@ -773,7 +773,8 @@ class leoImportCommands (scanUtility):
     #@-node:ekr.20031218072017.3305:Utilities
     #@+node:ekr.20031218072017.3209:Import
     #@+node:ekr.20031218072017.3210:createOutline (leoImport)
-    def createOutline (self,fileName,parent,atAuto=False,atShadow=False,s=None,ext=None):
+    def createOutline (self,fileName,parent,
+        atAuto=False,atShadow=False,s=None,ext=None):
 
         c = self.c ; u = c.undoer ; s1 = s
 

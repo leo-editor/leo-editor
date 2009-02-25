@@ -13,6 +13,7 @@
 #@<< imports >>
 #@+node:ekr.20041005105605.2:<< imports >>
 import leo.core.leoGlobals as g
+import leo.core.leoTest as leoTest
 
 if g.app and g.app.use_psyco:
     # print("enabled psyco classes",__file__)
@@ -289,6 +290,7 @@ class atFile:
     #@-node:ekr.20041005105605.13:initReadIvars
     #@+node:ekr.20041005105605.15:initWriteIvars
     def initWriteIvars(self,root,targetFileName,
+        atAuto=False,
         nosentinels=False,
         thinFile=False,
         scriptWrite=False,
@@ -312,9 +314,11 @@ class atFile:
         self.docKind = None
         self.explicitLineEnding = False # True: an @lineending directive specifies the ending.
         self.fileChangedFlag = False # True: the file has actually been updated.
+        self.atAuto = atAuto
         self.shortFileName = "" # short version of file name used for messages.
         self.thinFile = False
-        self.force_newlines_in_at_nosent_bodies = self.c.config.getBool('force_newlines_in_at_nosent_bodies')
+        self.force_newlines_in_at_nosent_bodies = self.c.config.getBool(
+            'force_newlines_in_at_nosent_bodies')
 
         if toString:
             self.outputFile = g.fileLikeObject()
@@ -543,6 +547,10 @@ class atFile:
                 fileName = p.atAutoNodeName()
                 at.readOneAtAutoNode (fileName,p)
                 p.moveToNodeAfterTree()
+            elif p.isAtEditNode():
+                fileName = p.atEditNodeName()
+                at.readOneAtEditNode (fileName,p)
+                p.moveToNodeAfterTree()
             elif p.isAtShadowFileNode():
                 fileName = p.atShadowFileNodeName()
                 at.readOneAtShadowNode (fileName,p)
@@ -594,6 +602,46 @@ class atFile:
         else:
             g.doHook('after-auto', p = p)  # call after-auto callbacks
     #@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+    #@+node:ekr.20090225080846.3:readOneAtEditNode (atFile)
+    def readOneAtEditNode (self,fn,p):
+
+        at = self ; c = at.c ; ic = c.importCommands
+        oldChanged = c.isChanged()
+        at.scanDefaultDirectory(p,importing=True) # Set default_directory
+        fn = c.os_path_finalize_join(at.default_directory,fn)
+        junk,ext = g.os_path_splitext(fn)
+
+        if not g.unitTesting:
+            g.es("reading @edit:", g.shortFileName(fn))
+
+        # Read the file into s.
+        try:
+            s = open(fn).read()
+        except IOError:
+            g.es("can not open @edit ",fn,color='red')
+            leoTest.fail()
+            return
+
+        # Delete all children.
+        while p.hasChildren():
+            p.firstChild().doDelete()
+
+        changed = c.isChanged()
+        head = ''
+        ext = ext.lower()
+        if ext in ('.html','.htm'):   head = '@language html\n'
+        elif ext in ('.txt','.text'): head = '@nocolor\n'
+        else:
+            language = ic.languageForExtension(ext)
+            if language and language != 'unknown_language':
+                head = '@language %s\n' % language
+            else:
+                head = '@nocolor'
+
+        p.b = head + s
+        if not changed: c.setChanged(False)
+        g.doHook('after-edit',p=p)
+    #@-node:ekr.20090225080846.3:readOneAtEditNode (atFile)
     #@+node:ekr.20041005105605.27:readOpenFile
     def readOpenFile(self,root,theFile,fileName):
 
@@ -2358,7 +2406,10 @@ class atFile:
                         pass
                     elif p.isAtAutoNode():
                         at.writeOneAtAutoNode(p,toString=toString,force=False)
-                        writtenFiles.append(p.v.t)
+                        writtenFiles.append(p.v.t) # No need for autosave
+                    elif p.isAtEditNode():
+                        at.writeOneAtEditNode(p,toString=toString)
+                        writtenFiles.append(p.v.t) # No need for autosave
                     elif p.isAtNorefFileNode():
                         at.norefWrite(p,toString=toString)
                         writtenFiles.append(p.v.t) ; autoSave = True
@@ -2521,6 +2572,50 @@ class atFile:
     #@-node:ekr.20071019141745:shouldWriteAtAutoNode
     #@-node:ekr.20070806141607:writeOneAtAutoNode & helper
     #@-node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtAutoNodes (atFile) & helpers
+    #@+node:ekr.20090225080846.5:writeOneAtEditNode
+    # Similar to writeOneAtAutoNode.
+
+    def writeOneAtEditNode(self,p,toString):
+
+        '''Write p, an @edit node.
+
+        File indices *must* have already been assigned.'''
+
+        at = self ; c = at.c ; root = p.copy()
+
+        fn = p.atEditNodeName()
+
+        if fn:
+            at.scanDefaultDirectory(p,importing=True) # Set default_directory
+            fn = c.os_path_finalize_join(at.default_directory,fn)
+            exists = g.os_path_exists(fn)
+        elif not toString:
+            return False
+
+        # This code is similar to code in at.write.
+        c.endEditing() # Capture the current headline.
+        at.targetFileName = g.choose(toString,"<string-file>",fn)
+        at.initWriteIvars(root,at.targetFileName,
+            atAuto=True,
+            nosentinels=True,thinFile=False,scriptWrite=False,
+            toString=toString,write_strips_blank_lines=False)
+
+        ok = at.openFileForWriting(root,fileName=fn,toString=toString)
+        if ok:
+            at.writeOpenFile(root,nosentinels=True,toString=toString,atAuto=True)
+            at.closeWriteFile() # Sets stringOutput if toString is True.
+            if at.errors == 0:
+                at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+            else:
+                g.es("not written:",at.outputFileName)
+                root.setDirty()
+
+        elif not toString:
+            root.setDirty() # Make _sure_ we try to rewrite this file.
+            g.es("not written:",at.outputFileName)
+
+        return ok
+    #@-node:ekr.20090225080846.5:writeOneAtEditNode
     #@+node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
     def writeAtShadowNodes (self,event=None):
 
@@ -2858,7 +2953,8 @@ class atFile:
     # New in 4.3: must be inited before calling this method.
     # New in 4.3 b2: support for writing from a string.
 
-    def writeOpenFile(self,root,nosentinels=False,toString=False,fromString='',atAuto=False):
+    def writeOpenFile(self,root,
+        nosentinels=False,toString=False,fromString='',atAuto=False):
 
         """Do all writes except asis writes."""
 
@@ -2918,9 +3014,14 @@ class atFile:
 
         if s:
             trailingNewlineFlag = s[-1] == '\n'
-            if (at.sentinels or at.force_newlines_in_at_nosent_bodies) and not trailingNewlineFlag:
-                # g.trace('Added newline',repr(s))
-                s = s + '\n'
+            ###  if (at.sentinels or at.force_newlines_in_at_nosent_bodies) and
+            ####     not trailingNewlineFlag:
+            if not trailingNewlineFlag:
+                if (at.sentinels or 
+                    (not at.atAuto and at.force_newlines_in_at_nosent_bodies)
+                ):
+                    # g.trace('Added newline',repr(s))
+                    s = s + '\n'
         else:
             trailingNewlineFlag = True # don't need to generate an @nonl
         #@-node:ekr.20041005105605.162:<< Make sure all lines end in a newline >>
