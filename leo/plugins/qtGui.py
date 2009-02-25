@@ -3729,7 +3729,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         w.scrollToItem(item,w.PositionAtCenter)
 
-        self.setHScroll(hPos)
+        self.setHScroll(0)
     #@-node:ekr.20090201080444.12:scrollToItem
     #@+node:ekr.20090124174652.107:setCurrentItemHelper
     def setCurrentItemHelper(self,item):
@@ -3760,6 +3760,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
     def setHScroll (self,hPos):
         w = self.treeWidget
         hScroll = w.horizontalScrollBar()
+        hScroll.setValue(hPos)
 
     def setVScroll (self,vPos):
         w = self.treeWidget
@@ -4420,16 +4421,8 @@ class leoQtGui(leoGui.leoGui):
 
     #@-node:ekr.20081121105001.501:isTextWidget
     #@+node:ekr.20081121105001.502:toUnicode (qtGui)
-    def toUnicode (self,s,encoding='utf-8',reportErrors=True):
-
-        if g.isPython3:
-            return str(s)
-        else:
-            if type(s) == type(u'a'):
-                return s
-            else:
-                return g.toUnicode(
-                    s,encoding=encoding,reportErrors=reportErrors)
+    def toUnicode (self,s,encoding='utf-8',reportErrors=True):    
+        return unicode(s)
     #@nonl
     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
     #@+node:ekr.20081121105001.503:widget_name (qtGui)

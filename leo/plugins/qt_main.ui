@@ -87,6 +87,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="selectionMode" >
+               <enum>QAbstractItemView::ExtendedSelection</enum>
+              </property>
+              <property name="selectionBehavior" >
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
               <property name="headerHidden" >
                <bool>false</bool>
               </property>
