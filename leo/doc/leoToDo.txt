@@ -3,7 +3,11 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20090131200406.9:Bugs
-#@+node:ekr.20090213065933.1:Urgent bugs 6
+#@+node:ekr.20090213065933.1:Urgent bugs 7
+#@+node:ekr.20090226080753.6:Finish the wiki intro
+#@-node:ekr.20090226080753.6:Finish the wiki intro
+#@+node:ekr.20090226080753.7:No node selected after return ends editing
+#@-node:ekr.20090226080753.7:No node selected after return ends editing
 #@+node:ekr.20090226080753.2:Fix clone-find-all problem with Qt
 @nocolor-node
 
@@ -301,7 +305,7 @@ TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
 #@-node:ekr.20080922115725.1:Finish @shadow
 #@+node:ekr.20090226080753.3:No headline is selected after alt-tab selects Leo
 #@-node:ekr.20090226080753.3:No headline is selected after alt-tab selects Leo
-#@-node:ekr.20090213065933.1:Urgent bugs 6
+#@-node:ekr.20090213065933.1:Urgent bugs 7
 #@+node:ekr.20081215070651.4:Minor bugs 7
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
 @nocolor

@@ -1147,6 +1147,7 @@ class debugCommandsClass (baseEditCommandsClass):
             'dump-new-objects':             self.dumpNewObjects,
             'enable-gc-trace':              self.enableGcTrace,
             'free-tree-widgets':            self.freeTreeWidgets,
+            'pdb':                          g.pdb,
             'print-focus':                  self.printFocus,
             'print-stats':                  self.printStats,
             'print-gc-summary':             self.printGcSummary,

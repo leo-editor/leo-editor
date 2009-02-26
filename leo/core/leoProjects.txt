@@ -23244,6 +23244,16 @@ def findAllPotentiallyDirtyNodes(self):
     return nodes
 #@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
 #@-node:ekr.20090225080846.1:Added support for @edit
+#@+node:ekr.20090226080753.4:added pdb minibuffer command
+@nocolor-node
+
+This works, but stops Leo in the middle of the command-handling logic.
+
+However, it is possible to pick up the commander by stepping out into
+k.masterKeyHandler or k.masterCommandHandler. Using c, one can then get all
+other info.
+#@nonl
+#@-node:ekr.20090226080753.4:added pdb minibuffer command
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080930072519.8:New options
 #@+node:ekr.20080910054558.2:Added -c option to specify config files
