@@ -1467,6 +1467,7 @@ class leoQtFrame (leoFrame.leoFrame):
             self.c = c
             self.parentFrame = parentFrame
             self.w = c.frame.top.iconBar # A QToolBar.
+            self.actions = []
 
             # g.app.iconWidgetCount = 0
         #@-node:ekr.20081121105001.267: ctor
@@ -1493,20 +1494,22 @@ class leoQtFrame (leoFrame.leoFrame):
             # imagefile = keys.get('imagefile')
             # image = keys.get('image')
 
-            b = QtGui.QPushButton(text,self.w)
-            b.leo_buttonAction = self.addWidget(b)
+            action = self.w.addAction(text)
+
+            self.actions.append(action)
+            b = self.w.widgetForAction(action)
+
+            #b = QtGui.QPushButton(text,self.w)
+            #b.leo_buttonAction = self.addWidget(b)
 
             b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
-            def delete_callback(b=b,):
-                a = b.leo_buttonAction
-                self.w.removeAction(a)
-                b.leo_buttonAction = None
-                self.deleteButton(b)
+            def delete_callback(action=action,):
+                self.w.removeAction(action)
 
             b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
             b.addAction(rb)
-            rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
+            rb.connect(rb, QtCore.SIGNAL("activated()"), delete_callback)
 
             if command:
                 def button_callback(c=c,command=command):
@@ -1517,11 +1520,11 @@ class leoQtFrame (leoFrame.leoFrame):
                         c.outerUpdate()
                     return val
 
-                b.connect(b,
-                    QtCore.SIGNAL("clicked()"),
+                self.w.connect(action,
+                    QtCore.SIGNAL("activated()"),
                     button_callback)
 
-            return b
+            return action
         #@-node:ekr.20081121105001.269:add
         #@+node:ekr.20081121105001.270:addRowIfNeeded
         def addRowIfNeeded (self):
@@ -1547,13 +1550,18 @@ class leoQtFrame (leoFrame.leoFrame):
             """Destroy all the widgets in the icon bar"""
 
             self.w.clear()
+            self.actions.clear()
 
             g.app.iconWidgetCount = 0
         #@-node:ekr.20081121105001.272:clear
         #@+node:ekr.20081121105001.273:deleteButton
         def deleteButton (self,w):
+            """ w is button """
 
-            #g.trace(w, '##')
+            #g.trace(w, '##')    
+
+            self.w.removeAction(w)
+
             self.c.bodyWantsFocus()
             self.c.outerUpdate()
         #@-node:ekr.20081121105001.273:deleteButton
@@ -1562,7 +1570,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
             if command:
                 QtCore.QObject.connect(button,
-                    QtCore.SIGNAL("clicked()"),command)
+                    QtCore.SIGNAL("activated()"),command)
         #@-node:ekr.20081121105001.274:setCommandForButton
         #@-others
     #@-node:ekr.20081121105001.266:class qtIconBarClass
@@ -5326,6 +5334,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
     #@-node:ekr.20090216070256.10:enable/disable & disabledRehighlight
     #@+node:ekr.20081205131308.11:highlightBlock
     def highlightBlock (self,s):
+        """ Called by QSyntaxHiglighter """
 
         if self.hasCurrentBlock:
             colorer = self.colorer
