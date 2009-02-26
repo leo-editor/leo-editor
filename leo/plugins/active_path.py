@@ -75,6 +75,7 @@ def isDirNode(p):
 
     return (
         p.h.startswith('@path ') or 
+        #  '/foo/' form *assumes* @path in body
         (not p.h.strip().startswith('@') and p.h.strip().endswith('/'))
         or p.h.strip().startswith('/')
         )
@@ -100,11 +101,16 @@ def onSelect (tag,keywords):
 #@-node:tbrown.20080613095157.4:onSelect
 #@+node:tbrown.20080616153649.4:getPath
 def getPath(c, p):
+    for n in p.self_and_parents_iter():
+        if n.h.startswith('@path'):
+            break
+    else:
+        return None  # must have a full fledged @path in parents
+
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
-    if (not isDirNode(p)):
+    if (not isDirNode(p)):  # add file name
         path = os.path.join(path, p.h.strip())
-    print path
     return path
 #@-node:tbrown.20080616153649.4:getPath
 #@+node:tbrown.20090219133655.230:getPathOld
@@ -159,11 +165,12 @@ def flattenOrganizers(p):
 #@nonl
 #@-node:tbrown.20080613095157.5:flattenOrganizers
 #@+node:tbrown.20080613095157.6:sync_node_to_folder
-def sync_node_to_folder(c,parent,d,updateOnly=False):
+def sync_node_to_folder(c,parent,d,updateOnly=False, recurse=False):
     """Decide whether we're opening or creating a file or a folder"""
 
     if os.path.isdir(d):
-        if (isDirNode(parent) and (not updateOnly or parent.hasChildren())):
+        if (isDirNode(parent)
+            and (not updateOnly or recurse or parent.hasChildren())):
             # no '/' or @path implies organizer
             openDir(c,parent,d)
         return
@@ -318,6 +325,19 @@ def cmd_UpdateRecursive(c):
     c.redraw(p)
 
 #@-node:tbrown.20080619080950.16:cmd_UpdateRecursive
+#@+node:tbrown.20090225191501.1:cmd_LoadRecursive
+def cmd_LoadRecursive(c):
+    """Recursive update, with expansions."""
+    p = c.p
+
+    for s in p.self_and_subtree_iter():
+        path = getPath(c, s)
+
+        if path:
+            sync_node_to_folder(c,s,path,updateOnly=True,recurse=True)
+
+    c.redraw(p)
+#@-node:tbrown.20090225191501.1:cmd_LoadRecursive
 #@+node:tbrown.20080616153649.5:cmd_SetNodeToAbsolutePath
 def cmd_SetNodeToAbsolutePath(c):
     """Change "/dirname/" to "@path /absolute/path/to/dirname"."""
