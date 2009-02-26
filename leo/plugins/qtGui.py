@@ -1509,7 +1509,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
             b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
             b.addAction(rb)
-            rb.connect(rb, QtCore.SIGNAL("activated()"), delete_callback)
+            rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
 
             if command:
                 def button_callback(c=c,command=command):
@@ -1521,7 +1521,7 @@ class leoQtFrame (leoFrame.leoFrame):
                     return val
 
                 self.w.connect(action,
-                    QtCore.SIGNAL("activated()"),
+                    QtCore.SIGNAL("triggered()"),
                     button_callback)
 
             return action
@@ -1570,7 +1570,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
             if command:
                 QtCore.QObject.connect(button,
-                    QtCore.SIGNAL("activated()"),command)
+                    QtCore.SIGNAL("triggered()"),command)
         #@-node:ekr.20081121105001.274:setCommandForButton
         #@-others
     #@-node:ekr.20081121105001.266:class qtIconBarClass
