@@ -15371,7 +15371,7 @@ if c.frame:
 #@-node:ekr.20081001062423.9:g.setDefaultDirectory
 #@-node:ekr.20031218072017.1380:g.Directive utils...
 #@+node:ekr.20080923070954.12:Rewrote
-#@+node:ekr.20080828103146.8:scanColorDirectives
+#@+node:ekr.20080828103146.8:scanColorDirectives (leoColor)
 def scanColorDirectives(self,p):
 
     '''Scan position p and p's ancestors looking for @comment, @language and @root directives,
@@ -15405,7 +15405,7 @@ def scanColorDirectives(self,p):
 
     # g.trace('self.language',self.language)
     return self.language # For use by external routines.
-#@-node:ekr.20080828103146.8:scanColorDirectives
+#@-node:ekr.20080828103146.8:scanColorDirectives (leoColor)
 #@+node:ekr.20080923070954.4:atFile.scanAllDirectives
 def scanAllDirectives(self,p,
     scripting=False,importing=False,

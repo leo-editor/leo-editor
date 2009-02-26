@@ -5178,6 +5178,34 @@ class leoQtColorizer:
        pattern-matchin code from the threading colorizer plugin.'''
 
     #@    @+others
+    #@+node:ekr.20081205131308.18:colorize (leoQtColorizer)
+    def colorize(self,p,incremental=False,interruptable=True):
+
+        '''The main colorizer entry point.'''
+
+        trace = False and not g.unitTesting
+
+        if trace:
+            g.trace('*** incremental %s' % (incremental))
+
+        self.count += 1 # For unit testing.
+
+        if self.enabled:
+            flag = self.updateSyntaxColorer(p) # Sets self.colorer.flag.
+            if flag:
+                self.highlighter.enable(p)
+                # change = self.highlighter.restoreDocument()
+                if incremental:
+                    pass
+                else:
+                    self.highlighter.rehighlight(p)
+            else:
+                self.highlighter.disable(p)
+        else:
+            self.highlighter.disable(p)
+
+        return "ok" # For unit testing.
+    #@-node:ekr.20081205131308.18:colorize (leoQtColorizer)
     #@+node:ekr.20081205131308.16:ctor (leoQtColorizer)
     def __init__ (self,c,w):
 
@@ -5197,35 +5225,75 @@ class leoQtColorizer:
             self.colorer.enabled = hasattr(self.highlighter,'currentBlock')
 
     #@-node:ekr.20081205131308.16:ctor (leoQtColorizer)
-    #@+node:ekr.20081205131308.18:colorize (leoQtColorizer)
-    def colorize(self,p,incremental=False,interruptable=True):
+    #@+node:ekr.20081207061047.10:minor entry points (leoQtColorizer)
+    def disable (self):
+        self.colorer.enabled=False
 
-        '''The main colorizer entry point.'''
+    def enable (self):
+        self.colorer.enabled=True
 
-        trace = False and not g.unitTesting
+    def interrupt(self):
+        pass
 
-        self.count += 1 # For unit testing.
+    def isSameColorState (self):
+        return True # Disable some logic in leoTree.select.
 
-        if self.enabled:
-            flag = self.updateSyntaxColorer(p) # Sets self.colorer.flag.
-            if flag:
-                self.highlighter.enable(p)
-                # change = self.highlighter.restoreDocument()
-                if incremental:
-                    pass
+    def kill (self):
+        pass
+    #@nonl
+    #@-node:ekr.20081207061047.10:minor entry points (leoQtColorizer)
+    #@+node:ekr.20090226105328.12:scanColorDirectives (leoQtColorizer)
+    def scanColorDirectives(self,p):
+
+        trace = True and not g.unitTesting
+
+        p = p.copy() ; c = self.c
+        if c == None: return # self.c may be None for testing.
+
+        self.language = language = c.target_language
+        self.comment_string = None
+        self.rootMode = None # None, "code" or "doc"
+
+        for p in p.self_and_parents_iter():
+            theDict = g.get_directives_dict(p)
+            #@        << Test for @comment or @language >>
+            #@+node:ekr.20090226105328.13:<< Test for @comment or @language >>
+            # @comment and @language may coexist in the same node.
+
+            if 'comment' in theDict:
+                self.comment_string = theDict["comment"]
+
+            if 'language' in theDict:
+                s = theDict["language"]
+                i = g.skip_ws(s,0)
+                j = g.skip_c_id(s,i)
+                self.language = s[i:j].lower()
+
+            if 'comment' in theDict or 'language' in theDict:
+                break
+            #@nonl
+            #@-node:ekr.20090226105328.13:<< Test for @comment or @language >>
+            #@nl
+            #@        << Test for @root, @root-doc or @root-code >>
+            #@+node:ekr.20090226105328.14:<< Test for @root, @root-doc or @root-code >>
+            if 'root' in theDict and not self.rootMode:
+
+                s = theDict["root"]
+                if g.match_word(s,0,"@root-code"):
+                    self.rootMode = "code"
+                elif g.match_word(s,0,"@root-doc"):
+                    self.rootMode = "doc"
                 else:
-                    self.highlighter.rehighlight(p)
-            else:
-                self.highlighter.disable(p)
-        else:
-            self.highlighter.disable(p)
+                    doc = c.config.at_root_bodies_start_in_doc_mode
+                    self.rootMode = g.choose(doc,"doc","code")
+            #@nonl
+            #@-node:ekr.20090226105328.14:<< Test for @root, @root-doc or @root-code >>
+            #@nl
 
-            # if trace and flag and not incremental:
-                # g.trace('*** flag %s incremental %s' % (
-                    # self.colorer.flag,incremental))
+        if trace: g.trace(self.language)
 
-        return "ok" # For unit testing.
-    #@-node:ekr.20081205131308.18:colorize (leoQtColorizer)
+        return self.language # For use by external routines.
+    #@-node:ekr.20090226105328.12:scanColorDirectives (leoQtColorizer)
     #@+node:ekr.20090216070256.11:setHighlighter
     def setHighlighter (self,p):
 
@@ -5242,32 +5310,89 @@ class leoQtColorizer:
 
         # g.trace(flag,p.h)
     #@-node:ekr.20090216070256.11:setHighlighter
-    #@+node:ekr.20081207061047.10:entry points
-    def disable (self):
-        self.colorer.enabled=False
-
-    def enable (self):
-        self.colorer.enabled=True
-
-    def interrupt(self):
-        pass
-
-    def isSameColorState (self):
-        return True # Disable some logic in leoTree.select.
-
-    def kill (self):
-        pass
-
-    def scanColorDirectives(self,p):
-        # return self.colorer.scanColorDirectives(p)
-        return self.colorer.findColorDirectives(p) 
-
+    #@+node:ekr.20081205131308.24:updateSyntaxColorer
     def updateSyntaxColorer (self,p):
-        return self.colorer.updateSyntaxColorer(p)
 
+        trace = False and not g.unitTesting
+        p = p.copy()
+
+        # self.flag is True unless an unambiguous @nocolor is seen.
+        self.flag = self.useSyntaxColoring(p)
+        self.scanColorDirectives(p)
+
+        # Tell the colorer what we found.
+        self.colorer.killcolorFlag = self.killcolorFlag
+        self.colorer.language = self.language
+        self.colorer.rootMode = self.rootMode
+        self.colorer.comment_string = self.comment_string
+
+        if trace: g.trace(self.flag,p.h)
+        return self.flag
+    #@-node:ekr.20081205131308.24:updateSyntaxColorer
+    #@+node:ekr.20081205131308.23:useSyntaxColoring & helper
     def useSyntaxColoring (self,p):
-        return self.colorer.useSyntaxColoring(p)
-    #@-node:ekr.20081207061047.10:entry points
+
+        """Return True unless p is unambiguously under the control of @nocolor."""
+
+        trace = False and not g.unitTesting
+        if not p:
+            if trace: g.trace('no p',repr(p))
+            return False
+
+        self.killcolorFlag = False
+        p = p.copy()
+        first = True ; kind = None ; val = True
+        for p in p.self_and_parents_iter():
+            d = self.findColorDirectives(p)
+            color,no_color = 'color' in d,'nocolor' in d
+            # An @nocolor-node in the first node disabled coloring.
+            if first and 'nocolor-node' in d:
+                kind = '@nocolor-node'
+                val = False ; self.killcolorFlag = True ; break
+            # A killcolor anywhere disables coloring.
+            elif 'killcolor' in d:
+                kind = '@killcolor %s' % p.h
+                val = False ; self.killcolorFlag = True ; break
+            # A color anywhere in the target enables coloring.
+            elif color and first:
+                kind = 'color %s' % p.h
+                val = True ; break
+            # Otherwise, the @nocolor specification must be unambiguous.
+            elif no_color and not color:
+                kind = '@nocolor %s' % p.h
+                val = False ; break
+            elif color and not no_color:
+                kind = '@color %s' % p.h
+                val = True ; break
+            first = False
+
+        if trace: g.trace(val,kind)
+        return val
+    #@+node:ekr.20090214075058.12:findColorDirectives
+    color_directives_pat = re.compile(
+        r'(^@color|^@killcolor|^@nocolor|^@nocolor-node)'
+        ,re.MULTILINE)
+
+    def findColorDirectives (self,p):
+
+        '''Scan p for @color, @killcolor, @nocolor and @nocolor-node directives.
+
+        Return a dict containing pointers to the start of each directive.'''
+
+        trace = False and not g.unitTesting
+
+        d = {}
+        anIter = self.color_directives_pat.finditer(p.b)
+        for m in anIter:
+            # Remove leading '@' for compatibility with
+            # functions in leoGlobals.py.
+            word = m.group(0)[1:]
+            d[word] = word
+
+        if trace: g.trace(d)
+        return d
+    #@-node:ekr.20090214075058.12:findColorDirectives
+    #@-node:ekr.20081205131308.23:useSyntaxColoring & helper
     #@-others
 
 #@-node:ekr.20081205131308.15:leoQtColorizer
@@ -5787,15 +5912,17 @@ class jEditColorizer:
 
         '''Name may be a language name or a delegate name.'''
 
+        trace = False and not g.unitTesting
+
         if not name: return False
         language,rulesetName = self.nameToRulesetName(name)
         bunch = self.modes.get(rulesetName)
         if bunch:
-            # g.trace('found',language,rulesetName)
+            if trace: g.trace('found',language,rulesetName)
             self.initModeFromBunch(bunch)
             return True
         else:
-            # g.trace('****',language,rulesetName)
+            if trace: g.trace('****',language,rulesetName)
             path = g.os_path_join(g.app.loadDir,'..','modes')
             # Bug fix: 2008/2/10: Don't try to import a non-existent language.
             fileName = g.os_path_join(path,'%s.py' % (language))
@@ -6736,7 +6863,7 @@ class jEditColorizer:
 
         '''Recolor line s.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         verbose = False ; traceMatch = False
 
         # Return immediately if syntax coloring has been disabled.
@@ -6777,7 +6904,7 @@ class jEditColorizer:
         j = min(offset + len(s),len(all_s))
         self.global_i,self.global_j = offset,j
 
-        if trace:g.trace(s)
+        if trace:g.trace(self.language,s)
 
         # The main colorizing loop.
         while i < j:
@@ -6949,85 +7076,6 @@ class jEditColorizer:
             self.highlighter.setFormat(clip_i-offset,clip_j-clip_i,color)
     #@nonl
     #@-node:ekr.20081206062411.14:setTag
-    #@+node:ekr.20081205131308.24:updateSyntaxColorer
-    def updateSyntaxColorer (self,p):
-
-        trace = False and not g.unitTesting
-        p = p.copy()
-
-        # self.flag is True unless an unambiguous @nocolor is seen.
-        self.flag = self.useSyntaxColoring(p)
-        if trace: g.trace(self.flag,p.h)
-        return self.flag
-    #@nonl
-    #@-node:ekr.20081205131308.24:updateSyntaxColorer
-    #@+node:ekr.20081205131308.23:useSyntaxColoring
-    def useSyntaxColoring (self,p):
-
-        """Return True unless p is unambiguously under the control of @nocolor."""
-
-        trace = False and not g.unitTesting
-        if not p:
-            if trace: g.trace('no p',repr(p))
-            return False
-
-        self.killcolorFlag = False
-        p = p.copy()
-        first = True ; kind = None ; val = True
-        for p in p.self_and_parents_iter():
-            d = self.findColorDirectives(p)
-            color,no_color = 'color' in d,'nocolor' in d
-            # An @nocolor-node in the first node disabled coloring.
-            if first and 'nocolor-node' in d:
-                kind = '@nocolor-node'
-                val = False ; self.killcolorFlag = True ; break
-            # A killcolor anywhere disables coloring.
-            elif 'killcolor' in d:
-                kind = '@killcolor %s' % p.h
-                val = False ; self.killcolorFlag = True ; break
-            # A color anywhere in the target enables coloring.
-            elif color and first:
-                kind = 'color %s' % p.h
-                val = True ; break
-            # Otherwise, the @nocolor specification must be unambiguous.
-            elif no_color and not color:
-                kind = '@nocolor %s' % p.h
-                val = False ; break
-            elif color and not no_color:
-                kind = '@color %s' % p.h
-                val = True ; break
-            first = False
-
-        if trace: g.trace(val,kind)
-        return val
-    #@-node:ekr.20081205131308.23:useSyntaxColoring
-    #@+node:ekr.20090214075058.12:findColorDirectives
-    # The caller passes [root_node] or None as the second arg.
-    # This allows us to distinguish between None and [None].
-
-    color_directives_pat = re.compile(
-        r'(^@color|^@killcolor|^@nocolor|^@nocolor-node)'
-        ,re.MULTILINE)
-
-    def findColorDirectives (self,p):
-
-        '''Scan p for @color, @killcolor, @nocolor and @nocolor-node directives.
-
-        Return a dict containing pointers to the start of each directive.'''
-
-        trace = False and not g.unitTesting
-
-        d = {}
-        anIter = self.color_directives_pat.finditer(p.b)
-        for m in anIter:
-            # Remove leading '@' for compatibility with
-            # functions in leoGlobals.py.
-            word = m.group(0)[1:]
-            d[word] = word
-
-        if trace: g.trace(d)
-        return d
-    #@-node:ekr.20090214075058.12:findColorDirectives
     #@-others
 #@-node:ekr.20081205131308.48:class jeditColorizer
 #@-node:ekr.20081204090029.1:Syntax coloring
