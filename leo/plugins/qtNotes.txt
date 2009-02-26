@@ -241,6 +241,7 @@ def disable (self,p):
 #@-node:ekr.20090216070256.10:enable/disable & disabledRehighlight
 #@+node:ekr.20081205131308.11:highlightBlock
 def highlightBlock (self,s):
+    """ Called by QSyntaxHiglighter """
 
     if self.hasCurrentBlock:
         colorer = self.colorer
