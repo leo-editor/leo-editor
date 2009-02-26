@@ -581,7 +581,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         '''Select the proper position when a tree node is selected.'''
 
-        trace = False
+        trace = True and not g.unitTesting
         verbose = False
 
         if self.busy(): return

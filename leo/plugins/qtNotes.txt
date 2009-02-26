@@ -3,17 +3,18 @@
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20090220150215.1:Urgent bugs
-#@+node:ekr.20090226102132.12:Ctrl-s destroys headline selection
-
-#@-node:ekr.20090226102132.12:Ctrl-s destroys headline selection
-#@+node:ekr.20090226105328.16:Alt-tab destroys headline selection
-#@-node:ekr.20090226105328.16:Alt-tab destroys headline selection
+#@+node:ekr.20090226105328.17:Fix the colorizer bugs
+# Colorizing gets out of synch somehow.
+#@nonl
+#@+node:ekr.20090226102132.2:Create dump-colorizer command
+#@-node:ekr.20090226102132.2:Create dump-colorizer command
 #@+node:ekr.20090220150215.2:Make @color and @nocolor work properly.
 @nocolor-node
 
 This will probably involve adding @color state to colorizing state.
 #@nonl
-#@+node:ekr.20090206075921.10:Incremental syntax coloring
+#@-node:ekr.20090220150215.2:Make @color and @nocolor work properly.
+#@+node:ekr.20090206075921.10:(Incremental syntax coloring)
 # colorizer.isSameColorState always returns True
 # So that the selection logic doesn't force duplicate recolors.
 #@nonl
@@ -2338,8 +2339,8 @@ def rehighlight (self,p):
 
 
 #@-node:ekr.20081206062411.15:rehighlight
-#@-node:ekr.20090206075921.10:Incremental syntax coloring
-#@-node:ekr.20090220150215.2:Make @color and @nocolor work properly.
+#@-node:ekr.20090206075921.10:(Incremental syntax coloring)
+#@-node:ekr.20090226105328.17:Fix the colorizer bugs
 #@+node:ekr.20090128113654.1:Recent files menu is duplicated in qt gui
 @nocolor
 
@@ -3366,7 +3367,7 @@ def onTreeSelect(self):
 
     '''Select the proper position when a tree node is selected.'''
 
-    trace = False
+    trace = True and not g.unitTesting
     verbose = False
 
     if self.busy(): return
