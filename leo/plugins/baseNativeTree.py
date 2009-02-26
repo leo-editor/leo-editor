@@ -326,16 +326,19 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.26:redraw_after_head_changed
     def redraw_after_head_changed (self):
 
-        # g.trace(g.callers(4))
+        trace = False and not g.unitTesting
 
         c = self.c ; p = c.currentPosition()
 
+        if trace: g.trace(self.treeWidget.currentItem(),p and p.h)
+
         if p:
             h = p.headString()
+            currentItem = self.getCurrentItem()
             for item in self.tnode2items(p.v.t):
                 if self.isValidItem(item):
                     self.setItemText(item,h)
-    #@nonl
+            self.setCurrentItemHelper(currentItem)
     #@-node:ekr.20090124174652.26:redraw_after_head_changed
     #@+node:ekr.20090124174652.27:redraw_after_icons_changed
     def redraw_after_icons_changed (self,all=False):

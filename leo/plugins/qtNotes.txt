@@ -2,7 +2,7 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090220150215.1:Urgent bugs 3
+#@+node:ekr.20090220150215.1:Urgent bugs 6
 #@+node:ekr.20090220150215.2:Make @color and @nocolor work properly.
 @nocolor-node
 
@@ -2721,24 +2721,6 @@ def delete_range (self,menu,n1,n2):
         # return menu.delete(n1,n2)
 #@-node:ekr.20081121105001.365:delete_range (leoQtMenu)
 #@-node:ekr.20090128113654.1:Recent files menu is duplicated in qt gui
-#@+node:ekr.20090128083504.1:Fix rclick
-@nocolor-node
-
-rClick
-
-
-After the qt-plugin merge (rev 1251 ), the image plugin no longer works. I
-couldn't find any mention of gsimage in the diff.
-
- # Erase image if it was previously displayed
-             a = g.app ; c = keywords.get("c")
-
--            if a.gsimage:
-+            if getattr(a, 'gsimage', None):
-                 try:
-                     c.frame.body.bodyCtrl.delete(a.gsimage)
-                 except:
-#@-node:ekr.20090128083504.1:Fix rclick
 #@+node:ekr.20081215074704.18:Finish qt gui delete_range method
 @nocolor-node
 
@@ -2774,8 +2756,35 @@ robustly dynamic.  Or maybe I'm missing something, but I've only seen
 functions which find a menu based on knowing it exists before hand.
 #@nonl
 #@-node:ekr.20081215074704.18:Finish qt gui delete_range method
-#@-node:ekr.20090220150215.1:Urgent bugs 3
-#@+node:ekr.20081215074704.13:Bugs 6
+#@+node:ekr.20090223065019.12:Swap scroll bars when orientation changes
+#@-node:ekr.20090223065019.12:Swap scroll bars when orientation changes
+#@+node:ekr.20090123073723.12:Fix php section coloring
+http://groups.google.com/group/leo-editor/browse_thread/thread/41870d58718b7b7a#
+#@nonl
+#@-node:ekr.20090123073723.12:Fix php section coloring
+#@+node:ekr.20090226094019.2:Fix html coloring
+#@-node:ekr.20090226094019.2:Fix html coloring
+#@-node:ekr.20090220150215.1:Urgent bugs 6
+#@+node:ekr.20081215074704.13:Bugs
+#@clone 2
+#@+node:ekr.20090128083504.1:Fix rclick
+@nocolor-node
+
+rClick
+
+
+After the qt-plugin merge (rev 1251 ), the image plugin no longer works. I
+couldn't find any mention of gsimage in the diff.
+
+ # Erase image if it was previously displayed
+             a = g.app ; c = keywords.get("c")
+
+-            if a.gsimage:
++            if getattr(a, 'gsimage', None):
+                 try:
+                     c.frame.body.bodyCtrl.delete(a.gsimage)
+                 except:
+#@-node:ekr.20090128083504.1:Fix rclick
 #@+node:ekr.20090217051021.11:Moving a node recolors it
 # In general, this is necessary, but we may be able to shortcut it
 # in recolor_after_move.
@@ -2784,10 +2793,6 @@ functions which find a menu based on knowing it exists before hand.
 #@+node:ekr.20090131123901.2:Sometime a plug box appears wrongly
 # It may happen after a paste?
 #@-node:ekr.20090131123901.2:Sometime a plug box appears wrongly
-#@+node:ekr.20090123073723.12:Fix php section coloring
-http://groups.google.com/group/leo-editor/browse_thread/thread/41870d58718b7b7a#
-#@nonl
-#@-node:ekr.20090123073723.12:Fix php section coloring
 #@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
 http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
 #@nonl
@@ -2817,64 +2822,11 @@ keyboard I get:
 - the problem with the ñ character (reported previously too) is only
 present in the qt plugin (both with and without scintilla)
 #@-node:ekr.20081124094918.1:Fix problems with scim
-#@+node:ekr.20081215074704.18:Finish qt gui delete_range method
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/51edf3b44d6a587e
-
-revno: 1259.1.10
-revision-id: terry_n_brown@yahoo.com-20081130181632-ci0ioaksewdvc257
-
-I added code so that this no longer derails the initialization process,
-i.e. just catch the exception and continue.  I don't know what's wrong
-except I first noticed it after a tkinter update from Ubuntu.  I
-think.  Anyway, that's my story :)
-
-When I added the "clean recent files" menu option long before this
-traceback showed up I had a heap of trouble deleting just the file
-entries on the recent files menu.  It was originally hardwired that the
-menu have a "Clear list" item, and then the file entries, but I wanted
-to make it get it's command entries from @menu @settings and add the
-files afterward and that was a lot of fiddling.  I.e. originally it
-deleted everything and added the "Clear list" item before rebuilding
-the file list, now it either tries to delete only the file entries, or
-stores the entries before the files (from @menu) and adds them back
-before the files each time, I forget which finally worked.
-
-What's my point?  It would be nice if delete_range "just worked".  It's
-a 'pass' in qt, and I would guess recent files is the only thing in the
-entire code base that uses it.
-
-The menu tree seems to me to be "write only", i.e. not readable, at
-least from the Leo API, of course you can walk it in a gui specific
-way.  Not necessarily a problem, but would be nice if it was more
-robustly dynamic.  Or maybe I'm missing something, but I've only seen
-functions which find a menu based on knowing it exists before hand.
-#@nonl
-#@-node:ekr.20081215074704.18:Finish qt gui delete_range method
-#@+node:ekr.20090128083504.1:Fix rclick
-@nocolor-node
-
-rClick
-
-
-After the qt-plugin merge (rev 1251 ), the image plugin no longer works. I
-couldn't find any mention of gsimage in the diff.
-
- # Erase image if it was previously displayed
-             a = g.app ; c = keywords.get("c")
-
--            if a.gsimage:
-+            if getattr(a, 'gsimage', None):
-                 try:
-                     c.frame.body.bodyCtrl.delete(a.gsimage)
-                 except:
-#@-node:ekr.20090128083504.1:Fix rclick
 #@+node:ekr.20090223065019.11:(Later: make Leo's page-up/page-down commands funtional)
 # This will be needed for vim.
 #@nonl
 #@-node:ekr.20090223065019.11:(Later: make Leo's page-up/page-down commands funtional)
-#@-node:ekr.20081215074704.13:Bugs 6
+#@-node:ekr.20081215074704.13:Bugs
 #@+node:ekr.20081215074704.19:Features 5
 #@+node:ekr.20081215162017.4:Allow coloring of script buttons
 #@-node:ekr.20081215162017.4:Allow coloring of script buttons
@@ -3922,16 +3874,19 @@ def redraw_after_expand (self,p=None):
 #@+node:ekr.20090124174652.26:redraw_after_head_changed
 def redraw_after_head_changed (self):
 
-    # g.trace(g.callers(4))
+    trace = False and not g.unitTesting
 
     c = self.c ; p = c.currentPosition()
 
+    if trace: g.trace(self.treeWidget.currentItem(),p and p.h)
+
     if p:
         h = p.headString()
+        currentItem = self.getCurrentItem()
         for item in self.tnode2items(p.v.t):
             if self.isValidItem(item):
                 self.setItemText(item,h)
-#@nonl
+        self.setCurrentItemHelper(currentItem)
 #@-node:ekr.20090124174652.26:redraw_after_head_changed
 #@+node:ekr.20090124174652.27:redraw_after_icons_changed
 def redraw_after_icons_changed (self,all=False):
@@ -4333,6 +4288,56 @@ def rememberVnodeItem (self,v,item):
 #@-node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
 #@-node:ekr.20090124174652.17:full_redraw & helpers
 #@-node:ekr.20090217121624.10:Fixed bad startup bug
+#@+node:ekr.20090226094019.1:Fixed bug: No headline selected after return
+#@+node:ekr.20090126093408.855:setCurrentItemHelper
+def setCurrentItemHelper(self,item):
+
+    w = self.treeWidget
+    w.SelectItem(item)
+#@-node:ekr.20090126093408.855:setCurrentItemHelper
+#@+node:ekr.20090124174652.26:redraw_after_head_changed
+def redraw_after_head_changed (self):
+
+    trace = False and not g.unitTesting
+
+    c = self.c ; p = c.currentPosition()
+
+    if trace: g.trace(self.treeWidget.currentItem(),p and p.h)
+
+    if p:
+        h = p.headString()
+        currentItem = self.getCurrentItem()
+        for item in self.tnode2items(p.v.t):
+            if self.isValidItem(item):
+                self.setItemText(item,h)
+        self.setCurrentItemHelper(currentItem)
+#@-node:ekr.20090124174652.26:redraw_after_head_changed
+#@+node:ekr.20090124174652.28:redraw_after_select
+# Important: this can not replace before/afterSelectHint.
+
+def redraw_after_select (self,p=None):
+
+    '''Redraw the entire tree when an invisible node
+    is selected.'''
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('(leoQtTree)',p and p.h or '<No p>')
+
+    if self.busy(): return
+
+    # Don't set self.redrawing here.
+    # It will be set by self.afterSelectHint.
+
+    c = self.c
+    #### item = self.position2item(p)
+    # It is not an error for position2item to fail.
+    #### if not item:
+    self.full_redraw(p,scroll=False)
+
+    # c.redraw_after_select calls tree.select indirectly.
+    # Do not call it again here.
+#@-node:ekr.20090124174652.28:redraw_after_select
+#@-node:ekr.20090226094019.1:Fixed bug: No headline selected after return
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20081205131308.26:scanColorDirectives (very slow!)

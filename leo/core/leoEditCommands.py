@@ -1147,7 +1147,7 @@ class debugCommandsClass (baseEditCommandsClass):
             'dump-new-objects':             self.dumpNewObjects,
             'enable-gc-trace':              self.enableGcTrace,
             'free-tree-widgets':            self.freeTreeWidgets,
-            'pdb':                          g.pdb,
+            'pdb':                          self.pdb,
             'print-focus':                  self.printFocus,
             'print-stats':                  self.printStats,
             'print-gc-summary':             self.printGcSummary,
@@ -1291,6 +1291,12 @@ class debugCommandsClass (baseEditCommandsClass):
         c.frame.tree.destroyWidgets()
         c.redraw()
     #@-node:ekr.20060202154734:freeTreeWidgets
+    #@+node:ekr.20090226080753.8:pdb
+    def pdb (self,event=None):
+
+        g.pdb()
+    #@nonl
+    #@-node:ekr.20090226080753.8:pdb
     #@+node:ekr.20060210100432:printFocus
     # Doesn't work if the focus isn't in a pane with bindings!
 

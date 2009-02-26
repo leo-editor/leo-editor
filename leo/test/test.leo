@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7,0,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1064,8 +1064,8 @@
 </v>
 </v>
 <v t="ekr.20090223092110.1"><vh>Scroll test</vh></v>
-<v t="ekr.20090225112135.1" a="E"><vh>@language html</vh>
-<v t="ekr.20090225112135.2" a="E"><vh>@path c:/leo.repo/trunk</vh>
+<v t="ekr.20090225112135.1"><vh>@language html</vh>
+<v t="ekr.20090225112135.2"><vh>@path c:/leo.repo/trunk</vh>
 <v t="ekr.20090225111820.1" tnodeList="ekr.20090225111820.1"><vh>@edit leo_to_html2.xsl</vh></v>
 </v>
 </v>
