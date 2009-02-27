@@ -188,8 +188,8 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050906105946"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.2"><vh>Chapter 1: Installing Leo</vh>
-<v t="edream.110203163054.48"><vh>@rst html\install.html</vh>
+<v t="ekr.20050831195331.2" a="E"><vh>Chapter 1: Installing Leo</vh>
+<v t="edream.110203163054.48" a="E"><vh>@rst html\install.html</vh>
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
 <v t="ekr.20080408060320.784"><vh>Leo's HOME directory</vh></v>
@@ -5755,26 +5755,27 @@ please ask for help on Leo's help forum:
 -   Leo uses `Pmw`_ (Python Mega Widgets). Leo's extensions folder contains a copy
     of Pmw for use if needed. Leo first tries to import Pmw normally. If that
     fails, Leo will use the version of Pmw in the extensions folder.</t>
-<t tx="edream.110203163054.50">Download the latest version of Leo (a .zip file) from `Leo's download page`_.
+<t tx="edream.110203163054.50">Download the latest release of Leo (a .zip file) from `Leo's download page`_.
    
 Unzip the downloaded .zip file into the **unpacked folder** in your home directory.
-The unpacked folder will be called something like leo-4-5.
+The unpacked folder will be called something like Leo-4-5-1-final.
 
 You now have two choices:
-    
-1. You can run Leo from your home directory.
-   Just add  ~/leo-4-5 to your path.
 
-2. You can install leo into /usr/local/lib and /usr/local/bin by running Leo's install script as follows::
-    
-    cd ~/leo-4-4-3-final
-    chmod u+x install
-    sudo ./install
-    
-The install script will instruct you to add /usr/local/bin to your path.
-You can, instead, add the following link::
+1. Run Leo directly as follows::
 
-    sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.5/site-packages/
+    cd ~/Leo-4-5-1-final
+    python launchLeo.py
+    
+2. Link Leo to your python-site folder as follows::
+
+    cd ~/Leo-4-5-1-final
+    python setup.py develop
+    
+Option 2 puts a script named "leo" into your local python-site/bin folder.  If
+this folder is on your $PATH, you may start Leo by typing "leo" at the command
+line from anywhere.  Note, the "leo" script ultimately links to the 
+Leo-4-5-1-final folder, so it must remain.
 
 Now you are ready to `run Leo`_.
 </t>
