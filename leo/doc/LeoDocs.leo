@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="4,15,0"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4,4,0,3"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -5760,22 +5760,10 @@ please ask for help on Leo's help forum:
 Unzip the downloaded .zip file into the **unpacked folder** in your home directory.
 The unpacked folder will be called something like Leo-4-5-1-final.
 
-You now have two choices:
-
-1. Run Leo directly as follows::
+Run Leo directly as follows::
 
     cd ~/Leo-4-5-1-final
     python launchLeo.py
-    
-2. Link Leo to your python-site folder as follows::
-
-    cd ~/Leo-4-5-1-final
-    python setup.py develop
-    
-Option 2 puts a script named "leo" into your local python-site/bin folder.  If
-this folder is on your $PATH, you may start Leo by typing "leo" at the command
-line from anywhere.  Note, the "leo" script ultimately links to the 
-Leo-4-5-1-final folder, so it must remain.
 
 Now you are ready to `run Leo`_.
 </t>
