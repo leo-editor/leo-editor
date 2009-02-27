@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="24" left="463" height="987" width="910"/>
+	<global_window_position top="72" left="323" height="846" width="757"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20041211035618" str_leo_pos="1,11,1"><vh>Startup</vh>
+<v t="ekr.20041211035618" str_leo_pos="1,3,4"><vh>Startup</vh>
 <v t="ekr.20070718131416"><vh>@chapters</vh></v>
 <v t="ekr.20050217093214"><vh>@settings</vh>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
@@ -31,27 +31,27 @@
 <v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
-<v t="ekr.20041114102139"><vh>Notes</vh>
+<v t="ekr.20041114102139" a="E"><vh>Notes</vh>
 <v t="ekr.20041114103913"><vh>About comments in the style guide</vh></v>
 <v t="ekr.20041114102139.1"><vh>About the root node</vh></v>
 <v t="ekr.20041114103913.1"><vh>About defining functions in separate nodes</vh></v>
 <v t="ekr.20041114102139.2"><vh>About the &lt;&lt; imports &gt;&gt; section</vh></v>
 <v t="ekr.20050306072156"><vh>About exceptions</vh></v>
 </v>
-<v t="ekr.20050306071629"><vh>Template for plugin that overrides commander methods</vh>
+<v t="ekr.20050306071629" a="E"><vh>Template for plugin that overrides commander methods</vh>
 <v t="ekr.20050306071629.1"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
 <v t="ekr.20050306071629.2"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
 <v t="ekr.20050306071629.3"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20050306071629.4"><vh>init</vh></v>
 <v t="ekr.20050306071540"><vh>onStart2</vh></v>
 </v>
-<v t="ekr.20050303051035.2"><vh>Template for Tk plugin with per-commander controller class</vh>
+<v t="ekr.20050303051035.2" a="E"><vh>Template for Tk plugin with per-commander controller class</vh>
 <v t="ekr.20050303051035.3"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
 <v t="ekr.20050303051035.4"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
 <v t="ekr.20050303051035.5"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20050303051101"><vh>init</vh></v>
 <v t="ekr.20050303051150"><vh>onCreate</vh></v>
-<v t="ekr.20050303051222"><vh>class pluginController</vh>
+<v t="ekr.20050303051222" a="E"><vh>class pluginController</vh>
 <v t="ekr.20050303051222.1"><vh>__init__</vh></v>
 </v>
 </v>
@@ -61,20 +61,23 @@
 <v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
 <v t="edream.110203113231.753"><vh>@thin image.py</vh></v>
 <v t="ekr.20080619090226.4"><vh>rClick plugin</vh>
-<v t="bobjack.20080321133958.6"><vh>@thin rClick.py</vh></v>
+<v t="bobjack.20080321133958.6"
+expanded="bobjack.20080516105903.19,bobjack.20080516105903.22,"><vh>@thin rClick.py</vh></v>
 <v t="bobjack.20080619110105.2"><vh>@thin rClickBasePluginClasses.py</vh></v>
 </v>
 <v t="edream.110203113231.925"><vh>@thin script_io_to_body.py</vh></v>
 </v>
-<v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
+<v t="edream.110203113231.667" a="E"><vh>Commands &amp; directives</vh>
 <v t="edream.110203113231.668"><vh> Importing Cisco configuration files</vh>
 <v t="edream.110203113231.669"><vh>@thin import_cisco_config.py</vh></v>
 </v>
 <v t="edream.110203113231.741"><vh>@thin add_directives.py</vh></v>
 <v t="timo.20050213160555"><vh>@thin bibtex.py</vh></v>
 <v t="ekr.20040916073636"><vh>@thin ConceptualSort.py</vh></v>
+<v t="TL.20090225102340.32" a="E"><vh>@thin nodeActions.py</vh></v>
 <v t="ekr.20040915105758.13"><vh>@thin FileActions.py</vh></v>
-<v t="mork.20041018131258.1"><vh>@thin groupOperations.py</vh></v>
+<v t="mork.20041018131258.1"
+expanded="mork.20041018131258.5,"><vh>@thin groupOperations.py</vh></v>
 <v t="ekr.20050328092641.4"><vh>@thin Library.py</vh></v>
 <v t="ekr.20040916084945"><vh>@thin macros.py</vh></v>
 <v t="ekr.20050301083306"><vh>@thin mod_read_dir_outline.py</vh></v>
@@ -300,14 +303,15 @@ marks="ekr.20060513122450.303,ekr.20060513122450.304,ekr.20060513122450.309,ekr.
 <v t="EKR.20040517080049"><vh>Files</vh>
 <v t="tbrown.20080613095157.2"><vh>@thin active_path.py</vh></v>
 <v t="EKR.20040517080049.1"><vh>@thin empty_leo_file.py</vh></v>
-<v t="danr7.20060902215215.1"><vh>@thin leo_to_html.py</vh></v>
+<v t="danr7.20060902215215.1" a="E"
+expanded="bob.20080107154757,"><vh>@thin leo_to_html.py</vh></v>
 <v t="danr7.20060902083957"><vh>@thin leo_to_rtf.py</vh></v>
 <v t="ekr.20040419105219"><vh>@thin lineNumbers.py</vh></v>
 <v t="mork.20041018204908.1"><vh>@thin multifile.py</vh></v>
 <v t="ekr.20040331151007"><vh>@thin niceNosent.py</vh></v>
 <v t="ekr.20081214160729.1"><vh>@thin setHomeDirectory.py</vh></v>
 </v>
-<v t="ekr.20071006112739" a="E"><vh>Graph world</vh>
+<v t="ekr.20071006112739"><vh>Graph world</vh>
 <v t="tbrown.20081223111325.3"><vh>@shadow backlink.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@shadow graphcanvas.py</vh></v>
 <v t="ekr.20071004090250"><vh>@thin graphed.py</vh></v>
@@ -322,8 +326,8 @@ marks="ekr.20060513122450.303,ekr.20060513122450.304,ekr.20060513122450.309,ekr.
 <v t="ekr.20040108095351"><vh>@thin rowcol.py</vh></v>
 <v t="ekr.20040107092135.2"><vh>@thin searchbox.py</vh></v>
 <v t="ekr.20060601151845"><vh>@thin shortcut_button.py</vh></v>
-<v t="bobjack.20080424190315.2"
-expanded="bobjack.20080502134903.8,"><vh>@thin toolbar.py</vh></v>
+<v t="bobjack.20080424190315.2" a="E"
+expanded="bobjack.20080424195922.12,bobjack.20080426190702.2,"><vh>@thin toolbar.py</vh></v>
 </v>
 <v t="ekr.20080203083146"><vh>IPython bridge</vh>
 <v t="ekr.20080201143145"><vh>@thin ipython.py</vh></v>

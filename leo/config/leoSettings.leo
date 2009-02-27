@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="107" left="198" height="889" width="1000"/>
+	<global_window_position top="77" left="10" height="870" width="1000"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,19,1,12"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,14,9,0"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1001,7 +1001,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1042,6 +1042,9 @@
 <v t="ekr.20060109115046.2"><vh>@string library_lib = default</vh></v>
 <v t="ekr.20060109115046.3"><vh>@string library_lib0 = default/library.dbm</vh></v>
 <v t="ekr.20060109121753"><vh>@string library_lib1 = default/libraryS.dbm</vh></v>
+</v>
+<v t="TL.20090225102340.33" a="E"><vh>nodeActions plugin</vh>
+<v t="TL.20090225102340.34"><vh>@bool nodeActions_save_atFile_nodes = False</vh></v>
 </v>
 <v t="ekr.20070411101857"><vh>Open With plugin</vh>
 <v t="ekr.20070411101857.1"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
@@ -1137,7 +1140,7 @@
 <v t="bobjack.20080614084120.3"><vh>shortcut _button plugin</vh>
 <v t="bobjack.20080614084120.5"><vh>@data shortcut_button_data</vh></v>
 </v>
-<v t="ekr.20051123100536.1"><vh>vim plugin</vh>
+<v t="ekr.20051123100536.1" a="E"><vh>vim plugin</vh>
 <v t="ekr.20051123100536.2"><vh>@string vim_cmd = c:\Program Files\vim\vim63\gvim --servername LEO</vh></v>
 <v t="ekr.20051123100536.3"><vh>@string vim_exe = c:\Program Files\vim\vim63\gvim</vh></v>
 <v t="ekr.20071114072753"><vh>@bool vim_plugin_opens_url_nodes = False</vh></v>
@@ -1177,7 +1180,7 @@
 </v>
 <v t="ekr.20041213105954" a="E" annotate="7d71002e"><vh>Window</vh>
 <v t="edward.20081129091117.12"></v>
-<v t="ekr.20041119034357.38" a="E"><vh>Body pane options</vh>
+<v t="ekr.20041119034357.38"><vh>Body pane options</vh>
 <v t="ekr.20061010111324"><vh>@bool select_all_text_when_editing_headlines = False</vh></v>
 <v t="ekr.20060531094310"><vh>@bool autoindent_in_nocolor_mode = True</vh></v>
 <v t="ekr.20041119034357.43"><vh>@bool body_gmt_time = False</vh></v>
@@ -3427,6 +3430,9 @@ cycle-editor-focus   = j   #Vim goes to window below current window
 
 delete-editor        = c   #Close current window (if more than one)
 delete-editor        = q   #Close current window (if more than one)
+</t>
+<t tx="TL.20090225102340.33"></t>
+<t tx="TL.20090225102340.34">If set to True then if a match occurs on an @file type node the nodeActions plugin will save the clicked @file type node (and any other @file type nodes) to disk, if modified, before running the script.
 </t>
 <t tx="bobjack.20080614084120.3"></t>
 <t tx="bobjack.20080614084120.5"># The name of the iconBar to which the buttons should initially be placed

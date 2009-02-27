@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4,15,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -60,7 +60,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -552,8 +552,8 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050901092232.7"><vh>@rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20050912125144"><vh>Chapter 12: Plugins</vh>
-<v t="ekr.20050912125144.1"><vh>@rst html\plugins.html</vh>
+<v t="ekr.20050912125144" a="E"><vh>Chapter 12: Plugins</vh>
+<v t="ekr.20050912125144.1" a="E"><vh>@rst html\plugins.html</vh>
 <v t="ekr.20050912125735"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070814104719"><vh>Enabling plugins</vh></v>
 <v t="ekr.20050912125735.868"><vh>Body pane</vh>
@@ -564,7 +564,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050912125735.942"><vh>color_markup.py</vh></v>
 <v t="ekr.20050912125735.974"><vh>script_io_to_body.py</vh></v>
 </v>
-<v t="ekr.20050912125735.26"><vh>Commands &amp; directives</vh>
+<v t="ekr.20050912125735.26" a="E"><vh>Commands &amp; directives</vh>
 <v t="ekr.20050912125735.82"><vh>add_directives.py</vh></v>
 <v t="ekr.20050912125735.85"><vh>bibtex.py</vh></v>
 <v t="ekr.20050912125735.98"><vh>ConceptualSort.py</vh></v>
@@ -577,6 +577,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050912125735.314"><vh>mod_autosave.py</vh></v>
 <v t="ekr.20050912125735.172"><vh>mod_read_dir_outline.py</vh></v>
 <v t="ekr.20050912125735.184"><vh>mod_timestamp.py</vh></v>
+<v t="TL.20090225194539.1"><vh>nodeActions.py</vh></v>
 <v t="ekr.20050912125735.186"><vh>outline_export.py</vh></v>
 <v t="ekr.20060928200600"><vh>paste_as_headlines.py</vh></v>
 <v t="ekr.20050912125735.188"><vh>pretty_print.py</vh></v>
@@ -5588,6 +5589,92 @@ modelines.</t>
 
 |back| |leo| |next|</t>
 <t tx="TL.20080804095315.11"></t>
+<t tx="TL.20090225194539.1">A Leo plugin that permits the "easy" assignment of scripts to be performed on
+specific nodes when double clicked.  Written by TL. Derived from the
+fileActions plugin. Distributed under the same licence as Leo.
+
+When a node is double clicked, the nodeActions plugin checks for a match of the
+double clicked node's headline text with a list of patterns and, if a match
+occurs, the script associated with the pattern is executed.
+
+Patterns:
+	The patterns are defined in the headlines of sub-nodes of a "nodeActions"
+	node.
+
+	The "nodeActions" node can be located anywhere within the same Leo file as
+	the node that will be double clicked.  For example, a pattern that matches a
+	URL and a pattern that matches any python files stored as an @thin derived
+	file could be stored under an @settings node as follows::
+
+		@settings
+		|
+		+- nodeActions
+			|
+			+- http:\\*
+			|
+			+- @thin *.py
+
+	To enable a script to run on any type of @file node (@thin, @shadow, ...),
+	the pattern can use "@files" at the beginning of the pattern to match on any
+	derived file declaration.  For example, the pattern "@files \*.py" will
+	match a node with the headline "@thin Abcd.py".
+
+	The headline of the double clicked node is matched against the patterns
+	starting from the first sub-node under the "nodeActions" node to the last
+	sub-node.  Only the script associated with the first matching pattern is
+	invoked.  This can be used to define a broad pattern such
+	as "@files \*.py", and then, by placing a more restrictive pattern above it,
+	such as "@files \*_test.py", a different script can be exeuted for those
+	special cases::
+
+		+- nodeActions
+			|
+			+- @files *_test.py
+			|
+			+- @files *.py
+
+	:Note:
+		To prevent Leo from trying to save patterns that begin with a derived
+		file directive (@thin, @auto, ...) to disk, such as "@thin \*.py",
+		place the "@ignore" directive in the body of the "nodeActions" node.
+
+Scripts:
+	The script for a pattern is located in the body of the pattern's node.
+	The following global variables are available to the script::
+
+		c
+		g
+		pClicked - node position of the double clicked node
+		pScript - node position of the invoked script
+
+Configuration:
+	@bool nodeAction_save_atFile_nodes = True or False (default)
+
+		If "nodeAction_save_atFile_nodes" is true then a pattern match to
+		a derived file node will cause the derived file to be saved to disk
+		before the pattern's script is executed.
+
+Example - Displaying URLs (tested with WinXP):
+	Double clicking on a node with a "http:\\\\www.google.com" headline
+	will invoke the script associated with the
+	"http:\\\\\*" pattern.  The following script in the body of the pattern's
+	node displays the URL in a browser::
+
+		import webbrowser
+		hClicked = pClicked.h     #Clicked node's Headline text
+		webbrowser.open(hClicked) #Invoke browser
+
+Example - Executing commands (tested with WinXP):
+	Double clicking a node with a "Python26.chm" headline and a body text
+	containing::
+
+		C:\Windows\hh.exe "C:\Program Files\Python\Doc\python26.chm"
+
+	would match a "\*.chm" pattern that would display the "pythong26.chm"
+	help file using the following script in the pattern node's body::
+
+		g.os.system('"Start /b ' + pClicked.bodyString() + '"')
+</t>
 <t tx="bob.20080110214217"></t>
 <t tx="bob.20080110214217.1">gtkDialogs replaces Tk's file dialogs with Gtk file chooser dialogs.
 
@@ -16530,9 +16617,13 @@ For Windows systems you can install Python's subprocess module in Python 2.2 or
 This installer installs the subprocess sources and also _subprocess.pyd in Python's site-packages folder.</t>
 <t tx="ekr.20050912125735.2736">A plugin that communicates with VIM:
     
-- Double clicking on a node's icon opens that node in VIM. You can open nodes in
-  VIM with a single-click if you set useDoubleClick = False. However, that
-  interferes with Leo's dragging logic.
+When properly installed, this plugin does the following:
+
+- Double clicking on a node's icon opens that node in VIM.
+
+- Leo will put the Vim cursor at same location as the Leo cursor in node's body if the Leo 'vim_plugin_positions_cursor' variable is set to True.
+
+- Leo will put node in a Vim tab card if the Leo 'vim_plugin_uses_tab_feature' is set to True.
 
 - Leo will update the node in the outline when you save the file in VIM.</t>
 <t tx="ekr.20050912125735.2743">This plugin allows you to edit nodes in emacs/xemacs.
