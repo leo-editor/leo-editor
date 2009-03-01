@@ -8015,6 +8015,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             # g.trace('zoom-in',n)
             w.zoomIn(n)
             w.updateMicroFocus()
+
+        # tab stop in pixels - no config for this (yet)        
+        w.setTabStopWidth(24)
+
+
     #@-node:ekr.20081121105001.577:setConfig
     #@-node:ekr.20081121105001.573:Birth
     #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
