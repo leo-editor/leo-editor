@@ -403,6 +403,27 @@ class PlugIn:
         for item in self.mod.__dict__.keys():
             if item.startswith("cmd_"):
                 self.othercmds[self.niceMenuName(item)] = self.mod.__dict__[item]
+
+                # start of command name from module (plugin) name
+                base = []
+                for l in self.mod.__name__:
+                    if base and base[-1] != '-' and l.isupper():
+                        base.append('-')
+                    base.append(l)
+                base = ''.join(base).lower().replace('.py','').replace('_','-')
+                # rest of name from item
+                ltrs = []
+                for l in item[4:]:
+                    if ltrs and ltrs[-1] != '-' and l.isupper():
+                        ltrs.append('-')
+                    ltrs.append(l)
+                name = base+'-'+''.join(ltrs).lower().replace('_','-')
+
+                # make and create command
+                cmd = self.mod.__dict__[item]
+                def wrapped(kw, cmd=cmd):
+                    return cmd(kw['c'])
+                self.c.keyHandler.registerCommand(name, None, wrapped)
         #@-node:EKR.20040517080555.7:<< Look for additional commands >>
         #@nl
         #@    << Look for toplevel menu item >>

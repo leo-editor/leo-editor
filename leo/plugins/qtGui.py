@@ -1509,7 +1509,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
             b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
             b.addAction(rb)
-            rb.connect(rb, QtCore.SIGNAL("activated()"), delete_callback)
+            rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
 
             if command:
                 def button_callback(c=c,command=command):
@@ -1521,7 +1521,7 @@ class leoQtFrame (leoFrame.leoFrame):
                     return val
 
                 self.w.connect(action,
-                    QtCore.SIGNAL("activated()"),
+                    QtCore.SIGNAL("triggered()"),
                     button_callback)
 
             return action
@@ -1570,7 +1570,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
             if command:
                 QtCore.QObject.connect(button,
-                    QtCore.SIGNAL("activated()"),command)
+                    QtCore.SIGNAL("triggered()"),command)
         #@-node:ekr.20081121105001.274:setCommandForButton
         #@-others
     #@-node:ekr.20081121105001.266:class qtIconBarClass
@@ -8017,6 +8017,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             # g.trace('zoom-in',n)
             w.zoomIn(n)
             w.updateMicroFocus()
+
+        # tab stop in pixels - no config for this (yet)        
+        w.setTabStopWidth(24)
+
+
     #@-node:ekr.20081121105001.577:setConfig
     #@-node:ekr.20081121105001.573:Birth
     #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
@@ -8050,6 +8055,12 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@-node:ekr.20090205153624.11:delete (avoid call to setAllText)
     #@+node:ekr.20081121105001.579:flashCharacter (leoQTextEditWidget)
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+
+        # numbered color names don't work in Ubuntu 8.10, so...
+        if bg[-1].isdigit() and bg[0] != '#':
+            bg = bg[:-1]
+        if fg[-1].isdigit() and fg[0] != '#':
+            fg = fg[:-1]
 
         # This might causes problems during unit tests.
         # The selection point isn't restored in time.
