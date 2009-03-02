@@ -57,6 +57,9 @@ active_path is a rewrite of the at_directory plugin to use @path directives (whi
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import os
+
+testing = False
+
 __version__ = "0.2"
 
 #@<< version history >>
@@ -287,12 +290,13 @@ def openDir(c,parent,d):
 #@nonl
 #@-node:tbrown.20080613095157.10:openDir
 #@+node:ville.20090223183051.1:act on node
-def active_path_act_on_node(c,p,event):
+def cmd_ActOnNode(c, p=None, event=None):
     """ act_on_node handler for active_path.py
     """
 
     # implementation mostly copied from onSelect
-
+    if p is None:
+        p = c.currentPosition()
     if not isDirNode(p):
         raise leoPlugins.TryNext
 
@@ -304,7 +308,7 @@ def active_path_act_on_node(c,p,event):
         c.requestRedrawFlag = True
         c.redraw()
         return True
-
+active_path_act_on_node = cmd_ActOnNode
 #@-node:ville.20090223183051.1:act on node
 #@+node:tbrown.20080616153649.2:cmd_ShowCurrentPath
 def cmd_ShowCurrentPath(c):
@@ -444,8 +448,9 @@ def deleteTestHierachy(c):
             try: os.remove(os.path.normpath(f))
             except: pass  # already gone
 
-cmd_MakeTestHierachy = makeTestHierachy
-cmd_DeleteFromTestHierachy = deleteTestHierachy
+if testing:
+    cmd_MakeTestHierachy = makeTestHierachy
+    cmd_DeleteFromTestHierachy = deleteTestHierachy
 #@-node:tbrown.20080619080950.15:makeTestHierachy
 #@-node:tbrown.20080619080950.14:testing
 #@-others
@@ -459,6 +464,7 @@ def attachToCommander(t,k):
 def init():
     leoPlugins.registerHandler('after-create-leo-frame', attachToCommander)
     g.act_on_node.add(active_path_act_on_node, priority = 90)
+
     g.plugin_signon(__name__)
     return True
 #@-node:tbrown.20080613095157.2:@thin active_path.py
