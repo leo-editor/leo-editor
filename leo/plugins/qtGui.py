@@ -3938,16 +3938,16 @@ class leoQtGui(leoGui.leoGui):
         '''Put the focus in the body pane when the Leo window is
         activated, say as the result of an Alt-tab or click.'''
 
+        trace = False and not g.unitTesting
+
         # This is called several times for each window activation.
         # We only need to set the focus once.
 
         if c.exists and tag == 'body':
-
-            # g.trace('Activate',tag,g.callers(5))
-
-            # Putting focus in the body is clearest.
-            c.bodyWantsFocus()
-            c.outerUpdate()
+            if trace: g.trace('Activate',tag)
+            c.redraw_now()
+            c.bodyWantsFocusNow()
+            c.outerUpdate() # Required because this is an event handler.
     #@-node:ekr.20090123150451.11:onActivateEvent (qtGui)
     #@+node:ekr.20081121105001.476:runMainLoop (qtGui)
     def runMainLoop(self):
@@ -4286,8 +4286,10 @@ class leoQtGui(leoGui.leoGui):
 
         """Put the focus on the widget."""
 
+        trace = False and not g.unitTesting
+
         if w:
-            # g.trace('leoQtGui',w,g.callers(4))
+            if trace: g.trace('leoQtGui',w,g.callers(4))
             w.setFocus()
     #@-node:ekr.20081121105001.491:Focus (qtGui)
     #@+node:ekr.20081121105001.492:Font
