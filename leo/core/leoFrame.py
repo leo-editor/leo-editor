@@ -2646,7 +2646,7 @@ class leoTree:
     def selectHelper (self,p,scroll):
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         c = self.c ; frame = c.frame
         body = w = frame.body.bodyCtrl
         if not w: return # Defensive.

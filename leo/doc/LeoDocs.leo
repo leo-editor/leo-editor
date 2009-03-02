@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -2985,7 +2985,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20090219090426.1"><vh>Clones and Views</vh></v>
 <v t="ekr.20090219090426.2"><vh>External Files</vh></v>
 <v t="ekr.20090219090426.3"><vh>First Steps for Newbies</vh></v>
-<v t="ekr.20090219090426.4"><vh>Other Notable Features</vh></v>
+<v t="ekr.20090219090426.4"><vh>The rst3 and ipython plugins</vh></v>
 <v t="ekr.20090219024526.2"><vh>Scripting Leo: Commanders, Nodes and Positions</vh></v>
 <v t="ekr.20090219024526.4"><vh>Scripting Leo: Script Buttons and Node Types</vh></v>
 <v t="ekr.20090219090426.5"><vh>Scripting Leo: Directives and Sections</vh></v>
@@ -32689,11 +32689,13 @@ meaning of types**. There is nothing magic about this. What a node type means is
 completely determined by the script that handles such nodes. Thus, *node types
 are completely flexible and extensible*. Leo has many predefined node types, the
 most important being **@auto**, **@file**, **@thin** and **@shadow**.</t>
-<t tx="ekr.20090219024526.5">This tutorial introduces Leo's basic features.
+<t tx="ekr.20090219024526.5">.. Links
+.. _Emacs: http://www.gnu.org/software/emacs/
+.. _IPython: http://ipython.scipy.org/moin/
+.. _reStructuredText: http://docutils.sourceforge.net/rst.html
+.. _vim: http://www.vim.org/
 
-Here is an [Alternative intro].
-
-This tutorial has 8 parts:
+This tutorial introduces Leo's basic features.  It has 8 parts:
 
 1. [Outlines and Nodes]
 
@@ -32720,11 +32722,15 @@ This tutorial has 8 parts:
 
 4. [First Steps for Newbies]
 
-   Discusses using non-Leo files, choosing settings, and other practicalities.
+   In brief: Leo's ``File:Open`` command creates @edit nodes.
+   These nodes are much like Emacs_ or vim_ buffers.
+   Leo settings files allow total control over settings.
 
-5. [Other Notable Features]
+5. [The rst3 and ipython plugins]
 
-   Discusses the rst3 plugin and iLeo plugins, and other notable features of Leo.
+   In brief: The rst3 plugin integrates outline structure with reStructuredText_.
+   The ipython plugin allows Leo scripts to control IPython_,
+   and allows IPython_ scripts to control Leo.
 
 Sections 6, 7 and 8 are for programmers.  You may skip them if you like.
 
@@ -32886,8 +32892,120 @@ A note about the pasting in of text, whenever a &lt;&lt;label&gt;&gt; or and
 @others is replace with the called for text, it is done in a way that
 preserves the leading space that existed where the &lt;&lt;labe&gt;&gt; or @others
 was</t>
-<t tx="ekr.20090219090426.3"></t>
-<t tx="ekr.20090219090426.4"></t>
+<t tx="ekr.20090219090426.3">.. _`Chapter 8: Configuring Leo`:  http://webpages.charter.net/edreamleo/customizing.html#id1
+.. _`@path`: http://webpages.charter.net/edreamleo/directives.html#path
+
+This page discusses opening and editing non-Leo files, and settings.
+
+Opening non-Leo files
+=====================
+
+To open and edit a non-Leo (non-.leo) file, select the file with the
+``File:Open`` command as with any other editor. When you do this, Leo will
+create an @edit node whose body text is the entire text of the file. These @edit
+nodes are much like Emacs or vim buffers, but Leo will automatically load the
+buffers whenever it loads the .leo file containing these nodes.
+
+Rather than using the ``File:Open`` menu, you can create an @edit node yourself.
+The headline is @edit ``&lt;filename&gt;`` where &lt;filename&gt; can be either an relative
+or absolute path to the file in question. See the documentation for `@path`_ for
+how relative paths are resolved.
+
+**Important**: Leo contains a safeguard against inadvertently overriding files
+when using @edit nodes. Leo will not write an @edit node if it contains an
+**insignificant** amount of information: that is, if the @edit node contains
+less than 10 lines of text and has no children. Thus, you can create an empty
+@edit node affecting the corresponding file. The next time you open the .leo
+file containing the @edit node, Leo will read the file into the node.
+
+An introduction to Leo settings
+===============================
+
+Leo stores options in **@settings trees**, outlines whose headline is @settings.
+When opening a .leo file, Leo looks for @settings trees not only in the outline
+being opened but also in various leoSettings.leo files. This scheme allows for
+great flexibility. The following is a *simplified* introduction. For more
+information about settings, see: `Chapter 8: Configuring Leo`_ or Leo's main
+configuration file, leo/config/leoSettings.leo.
+
+Leo looks for @settings trees in the following places (among others):
+
+1. The file leo/config/leoSettings.leo
+2. The file ~/.leo/myLeoSettings.leo
+3. The .leo file being loaded
+
+Settings appearing later in the list override setting appearing earlier in the
+list. Thus, leoSettings.leo contains defaults, myLeoSettings.leo contains
+personal overrides, and settings in the.leo files being loaded override all
+other settings.
+
+Overriding of settings happens happens on a setting-by-setting basis, not on a
+file-by-file basis. In other words, each individual setting overrides only the
+corresponding setting in previously-read files. Reading a setting file does
+**not** reset all previous settings.
+
+Within an @settings tree, **settings nodes** such @bool, @int and @string nodes
+specify various kinds of settings. For most settings nodes, the headline
+specifies the setting, the body text contains explanatory comments. For other
+settings nodes, the body text of the settings nodes specifies the setting.
+
+With this brief introduction, you should be able to understand the contents of
+leo/config/leoSettings.leo. This file contains extensive notes throughout. If
+you want to change the defaults in leoSettings.leo, it is best to put your
+changes in your myLeoSettings.leo file. That way your changes won't change when
+you install a later version of Leo.</t>
+<t tx="ekr.20090219090426.4">.. _reStructuredText: http://docutils.sourceforge.net/rst.html
+.. _IPython: http://ipython.scipy.org/moin/
+.. _`Chapter 14`: http://webpages.charter.net/edreamleo/rstplugin3.html
+.. _`Chapter 21`: http://webpages.charter.net/edreamleo/IPythonBridge.html
+
+This page discusses the rst3 and ipython plugins.
+
+The rst3 plugin
+===============
+
+The rst3 plugin creates formatted output files from Leo outlines containing
+reStructuredText_ (rST) a text markup language. For full information about this
+plugin, see `Chapter 14`_.
+
+With the rst3 plugin, you can organize book-length restructured text input using
+outlines. Indeed, all of Leo's users guide was created using the rst3 plugin.
+Besides the natural organization qualities of Leo's outlines, the rst3 plugin
+provides two other important features:
+
+1. The rst3 plugin will generate the chapter, section, subsection, etc. headings
+   automatically based on headlines. There is no need to create reStructuredText
+   headings by hand. This is a major convenience: the rst3 plugin will recompute
+   markup for headings as you reorganize nodes.
+
+2. You can specify **rst3 options** on a node-by-node basis. These options
+   control how text is formatted. For example, you can choose to ignore or honor
+   Leo directives, or to treat rST text as code or normal documentation.
+
+The ipython plugin
+===================
+
+Leo's ipython plugin provides two-way communication (a bridge) between Leo and
+IPython_: you can run Leo scripts from IPython, and IPython scripts from Leo.
+For full details of this plugin, see `Chapter 21`_.
+
+To use this plugin, you must run Leo from a console window. When this plugin is
+enabled, Leo's start-ipython command starts IPython in this console.
+
+**You can run any IPython_ script from Leo**. Within Leo, the statement::
+
+    ip = IPython.ipapi.get()
+
+assigns ip to the _ip variable within IPython_. The ip variable allows scripts
+running in Leo to do anything that an IPython_ script can do.
+
+**You can run any Leo script from IPython_**. When the ipython plugin is
+running, IPython_ scripts access Leo's c and g objects as follows::
+
+    c,g = _leo.c, _leo.g
+
+As usual, the c and g variables allow IPython_ scripts to do anything that a Leo
+script can do.</t>
 <t tx="ekr.20090219090426.5"></t>
 <t tx="ekr.20090221070927.1">All parts of Leo are distributed under the following copyright. This is intended
 to be the same as the MIT license, namely that Leo is absolutely free, even for

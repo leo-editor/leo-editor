@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -1069,6 +1069,7 @@
 <v t="ekr.20090225111820.1" tnodeList="ekr.20090225111820.1"><vh>@edit leo_to_html2.xsl</vh></v>
 </v>
 </v>
+<v t="ekr.20090227113136.1" a="E"><vh>@thin at-auto-test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first

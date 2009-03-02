@@ -198,10 +198,8 @@ AliaK
 #@-node:ekr.20090219085600.1:Fix new relative-path-name problem
 #@+node:ekr.20090213065933.2:Get isearch working for tkinter
 #@-node:ekr.20090213065933.2:Get isearch working for tkinter
-#@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
-#@nonl
-#@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
+#@+node:ekr.20090228065229.2:Honor @path in rst3 plugin
+#@-node:ekr.20090228065229.2:Honor @path in rst3 plugin
 #@+node:ekr.20080922115725.1:Finish @shadow
 # Allow block comments in private shadow files.
 # Compute delims using the private shadow file, not the file extension!
@@ -450,10 +448,19 @@ TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
 #@nonl
 #@-node:ekr.20081028060510.1:Fix @shadow crasher
 #@-node:ekr.20080922115725.1:Finish @shadow
-#@+node:ekr.20090226080753.3:No headline is selected after alt-tab selects Leo
-#@-node:ekr.20090226080753.3:No headline is selected after alt-tab selects Leo
+#@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
+http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
+#@nonl
+#@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
 #@-node:ekr.20090213065933.1:Urgent bugs
 #@+node:ekr.20081215070651.4:Minor bugs 7
+#@+node:ekr.20090228065229.1:Potential problems with dirty bits
+@nocolor-node
+
+- In both qt and tk, write-at-file-nodes does not clear dirty bit of @file nodes.
+  Is there a reason for this?
+#@nonl
+#@-node:ekr.20090228065229.1:Potential problems with dirty bits
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
 @nocolor
 
