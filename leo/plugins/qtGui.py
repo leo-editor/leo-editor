@@ -37,7 +37,6 @@ import os
 import re # For colorizer
 import string
 import sys
-import time
 import types
 
 try:
@@ -1550,7 +1549,7 @@ class leoQtFrame (leoFrame.leoFrame):
             """Destroy all the widgets in the icon bar"""
 
             self.w.clear()
-            self.actions.clear()
+            self.actions = []
 
             g.app.iconWidgetCount = 0
         #@-node:ekr.20081121105001.272:clear
@@ -3638,7 +3637,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         return e
     #@-node:ekr.20090124174652.104:createTreeEditorForItem
     #@+node:ekr.20090129062500.13:editLabelHelper
-    def editLabelHelper (self,item,selectAll,selection):
+    def editLabelHelper (self,item,selectAll=False,selection=None):
 
         '''Called by nativeTree.editLabel to do
         gui-specific stuff.'''
@@ -4822,8 +4821,9 @@ class leoQtEventFilter(QtCore.QObject):
                     stroke = self.toStroke(tkKey,ch)
                     if (stroke and not stroke.startswith('Alt+') and 
                         not stroke.startswith('Ctrl+') and
-                        not stroke in ('PgDn','PgUp')):
-                            g.trace(self.tag,'unbound',tkKey,stroke)
+                        not stroke in ('PgDn','PgUp')
+                    ):
+                        g.trace(self.tag,'unbound',tkKey,stroke)
 
         if trace: self.traceEvent(obj,event,tkKey,override)
 
@@ -5188,6 +5188,29 @@ class leoQtColorizer:
        pattern-matchin code from the threading colorizer plugin.'''
 
     #@    @+others
+    #@+node:ekr.20081205131308.16: ctor (leoQtColorizer)
+    def __init__ (self,c,w):
+
+        # g.pr('leoQtColorizer.__init__',c,w,g.callers(4))
+
+        self.c = c
+        self.w = w
+
+        # Step 1: create the ivars.
+        self.count = 0 # For unit testing.
+        self.enabled = c.config.getBool('use_syntax_coloring')
+        self.error = False # Set if there is an error in jeditColorizer.recolor
+        self.flag = True # Per-node enable/disable flag.
+        self.language = 'python' # set by scanColorDirectives.
+
+        # Step 2: create the highlighter.
+        self.highlighter = leoQtSyntaxHighlighter(c,w,colorizer=self)
+        self.colorer = self.highlighter.colorer
+
+        # Step 3: finish enabling.
+        if self.enabled:
+            self.enabled = hasattr(self.highlighter,'currentBlock')
+    #@-node:ekr.20081205131308.16: ctor (leoQtColorizer)
     #@+node:ekr.20081205131308.18:colorize (leoQtColorizer)
     def colorize(self,p,incremental=False,interruptable=True):
 
@@ -5201,47 +5224,34 @@ class leoQtColorizer:
         self.count += 1 # For unit testing.
 
         if self.enabled:
-            flag = self.updateSyntaxColorer(p) # Sets self.colorer.flag.
-            if flag:
-                self.highlighter.enable(p)
-                # change = self.highlighter.restoreDocument()
-                if incremental:
-                    pass
-                else:
-                    self.highlighter.rehighlight(p)
-            else:
-                self.highlighter.disable(p)
-        else:
-            self.highlighter.disable(p)
+            self.updateSyntaxColorer(p) # sets self.flag.
+            if self.flag and not incremental:
+                self.highlighter.rehighlight(p)
 
         return "ok" # For unit testing.
     #@-node:ekr.20081205131308.18:colorize (leoQtColorizer)
-    #@+node:ekr.20081205131308.16:ctor (leoQtColorizer)
-    def __init__ (self,c,w):
+    #@+node:ekr.20090302125215.10:enable/disable
+    def disable (self,p):
 
-        self.c = c
-        self.w = w
+        g.trace(g.callers(4))
 
-        # g.pr('leoQtColorizer.__init__',c,w,g.callers(4))
+        if self.enabled:
+            self.flag = False
+            self.enabled = False
+            self.highlighter.rehighlight(p) # Do a full recolor (to black)
 
-        self.count = 0 # For unit testing.
-        self.enabled = True
-        self.error = False # Set if there is an error in jeditColorizer.recolor
+    def enable (self,p):
 
-        self.highlighter = leoQtSyntaxHighlighter(c,w,colorizer=self)
-        self.colorer = self.highlighter.colorer
+        g.trace(g.callers(4))
 
-        if self.colorer.enabled:
-            self.colorer.enabled = hasattr(self.highlighter,'currentBlock')
-
-    #@-node:ekr.20081205131308.16:ctor (leoQtColorizer)
-    #@+node:ekr.20081207061047.10:minor entry points (leoQtColorizer)
-    def disable (self):
-        self.colorer.enabled=False
-
-    def enable (self):
-        self.colorer.enabled=True
-
+        if not self.enabled:
+            self.enabled = True
+            self.flag = True
+            # Do a full recolor, but only if we aren't changing nodes.
+            if self.c.currentPosition() == p:
+                self.highlighter.rehighlight(p)
+    #@-node:ekr.20090302125215.10:enable/disable
+    #@+node:ekr.20081207061047.10:minor entry points
     def interrupt(self):
         pass
 
@@ -5250,39 +5260,30 @@ class leoQtColorizer:
 
     def kill (self):
         pass
-    #@nonl
-    #@-node:ekr.20081207061047.10:minor entry points (leoQtColorizer)
+    #@-node:ekr.20081207061047.10:minor entry points
     #@+node:ekr.20090226105328.12:scanColorDirectives (leoQtColorizer)
     def scanColorDirectives(self,p):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         p = p.copy() ; c = self.c
         if c == None: return # self.c may be None for testing.
 
         self.language = language = c.target_language
-        self.comment_string = None
+        #### self.comment_string = None
         self.rootMode = None # None, "code" or "doc"
 
         for p in p.self_and_parents_iter():
             theDict = g.get_directives_dict(p)
-            #@        << Test for @comment or @language >>
-            #@+node:ekr.20090226105328.13:<< Test for @comment or @language >>
-            # @comment and @language may coexist in the same node.
-
-            if 'comment' in theDict:
-                self.comment_string = theDict["comment"]
-
+            #@        << Test for @language >>
+            #@+node:ekr.20090226105328.13:<< Test for @language >>
             if 'language' in theDict:
                 s = theDict["language"]
                 i = g.skip_ws(s,0)
                 j = g.skip_c_id(s,i)
                 self.language = s[i:j].lower()
-
-            if 'comment' in theDict or 'language' in theDict:
                 break
-            #@nonl
-            #@-node:ekr.20090226105328.13:<< Test for @comment or @language >>
+            #@-node:ekr.20090226105328.13:<< Test for @language >>
             #@nl
             #@        << Test for @root, @root-doc or @root-code >>
             #@+node:ekr.20090226105328.14:<< Test for @root, @root-doc or @root-code >>
@@ -5307,16 +5308,21 @@ class leoQtColorizer:
     #@+node:ekr.20090216070256.11:setHighlighter
     def setHighlighter (self,p):
 
+        trace = False and not g.unitTesting
+        if trace: g.trace(p.h,g.callers(4))
+
         c = self.c
 
         if self.enabled:
-            flag = self.updateSyntaxColorer(p)
-            if flag:
-                self.highlighter.enable(p)
+            self.flag = self.updateSyntaxColorer(p)
+            if self.flag:
+                # Do a full recolor, but only if we aren't changing nodes.
+                if self.c.currentPosition() == p:
+                    self.highlighter.rehighlight(p)
             else:
-                self.highlighter.disable(p)
+                self.highlighter.rehighlight(p) # Do a full recolor (to black)
         else:
-            self.highlighter.disable(p)
+            self.highlighter.rehighlight(p) # Do a full recolor (to black)
 
         # g.trace(flag,p.h)
     #@-node:ekr.20090216070256.11:setHighlighter
@@ -5330,13 +5336,7 @@ class leoQtColorizer:
         self.flag = self.useSyntaxColoring(p)
         self.scanColorDirectives(p)
 
-        # Tell the colorer what we found.
-        self.colorer.killcolorFlag = self.killcolorFlag
-        self.colorer.language = self.language
-        self.colorer.rootMode = self.rootMode
-        self.colorer.comment_string = self.comment_string
-
-        if trace: g.trace(self.flag,p.h)
+        if trace: g.trace(self.flag,self.language,p.h)
         return self.flag
     #@-node:ekr.20081205131308.24:updateSyntaxColorer
     #@+node:ekr.20081205131308.23:useSyntaxColoring & helper
@@ -5349,7 +5349,6 @@ class leoQtColorizer:
             if trace: g.trace('no p',repr(p))
             return False
 
-        self.killcolorFlag = False
         p = p.copy()
         first = True ; kind = None ; val = True
         for p in p.self_and_parents_iter():
@@ -5358,11 +5357,11 @@ class leoQtColorizer:
             # An @nocolor-node in the first node disabled coloring.
             if first and 'nocolor-node' in d:
                 kind = '@nocolor-node'
-                val = False ; self.killcolorFlag = True ; break
+                val = False ; break
             # A killcolor anywhere disables coloring.
             elif 'killcolor' in d:
                 kind = '@killcolor %s' % p.h
-                val = False ; self.killcolorFlag = True ; break
+                val = False ; break
             # A color anywhere in the target enables coloring.
             elif color and first:
                 kind = 'color %s' % p.h
@@ -5380,7 +5379,8 @@ class leoQtColorizer:
         return val
     #@+node:ekr.20090214075058.12:findColorDirectives
     color_directives_pat = re.compile(
-        r'(^@color|^@killcolor|^@nocolor|^@nocolor-node)'
+        # Order is important: put longest matches first.
+        r'(^@color|^@killcolor|^@nocolor-node|^@nocolor)'
         ,re.MULTILINE)
 
     def findColorDirectives (self,p):
@@ -5438,25 +5438,25 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
             highlighter=self,
             w=c.frame.body.bodyCtrl)
 
-        self.enabled = True
+        #### self.enabled = True
     #@nonl
     #@-node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter)
     #@+node:ekr.20090216070256.10:enable/disable & disabledRehighlight
-    def enable (self,p):
+    # def enable (self,p):
 
-        if not self.enabled:
-            self.enabled = True
-            self.colorer.flag = True
-            # Do a full recolor, but only if we aren't changing nodes.
-            if self.c.currentPosition() == p:
-                self.rehighlight(p)
+        # if not self.enabled:
+            # self.enabled = True
+            # self.colorer.flag = True
+            # # Do a full recolor, but only if we aren't changing nodes.
+            # if self.c.currentPosition() == p:
+                # self.rehighlight(p)
 
-    def disable (self,p):
+    # def disable (self,p):
 
-        if self.enabled:
-            self.enabled = False
-            self.colorer.flag = False
-            self.rehighlight(p) # Do a full recolor (to black)
+        # if self.enabled:
+            # self.enabled = False
+            # self.colorer.flag = False
+            # self.rehighlight(p) # Do a full recolor (to black)
     #@nonl
     #@-node:ekr.20090216070256.10:enable/disable & disabledRehighlight
     #@+node:ekr.20081205131308.11:highlightBlock
@@ -5479,11 +5479,11 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         self.colorer.init(p,s)
         n = self.colorer.recolorCount
 
-        if trace: g.trace('** enabled',self.enabled)
+        if trace: g.trace('** enabled',self.colorizer.enabled)
 
         # Call the base class method, but *only*
         # if the crucial 'currentBlock' method exists.
-        if self.enabled and self.hasCurrentBlock:
+        if self.colorizer.enabled and self.hasCurrentBlock:
             QtGui.QSyntaxHighlighter.rehighlight(self)
 
         if trace:
@@ -5538,11 +5538,11 @@ class jEditColorizer:
         self.ignore_case = True
         self.no_word_sep = ''
         # Config settings...
-        self.comment_string = None # Set by scanColorDirectives on @comment
+        #### self.comment_string = None # Set by scanColorDirectives on @comment
         self.showInvisibles = False # True: show "invisible" characters.
         self.underline_undefined = c.config.getBool("underline_undefined_section_names")
         self.use_hyperlinks = c.config.getBool("use_hyperlinks")
-        self.enabled = c.config.getBool('use_syntax_coloring')
+        #### self.enabled = c.config.getBool('use_syntax_coloring')
         # Debugging...
         self.count = 0 # For unit testing.
         self.allow_mark_prev = True # The new colorizer tolerates this nonsense :-)
@@ -5559,11 +5559,11 @@ class jEditColorizer:
         self.totalKeywordsCalls = 0
         self.totalLeoKeywordsCalls = 0
         # Mode data...
-        self.comment_string = None # Can be set by @comment directive.
+        #### self.comment_string = None # Can be set by @comment directive.
         self.defaultRulesList = []
-        self.flag = True # True unless in range of @nocolor
+        ### self.flag = True # True unless in range of @nocolor
         self.importedRulesets = {}
-        self.language = 'python' # set by scanColorDirectives.
+        #### self.language = 'python' # set by scanColorDirectives.
         self.prev = None # The previous token.
         self.fonts = {} # Keys are config names.  Values are actual fonts.
         self.keywords = {} # Keys are keywords, values are 0..5.
@@ -5780,7 +5780,7 @@ class jEditColorizer:
         for key in keys:
             option_name = self.default_font_dict[key]
             # First, look for the language-specific setting, then the general setting.
-            for name in ('%s_%s' % (self.language,option_name),(option_name)):
+            for name in ('%s_%s' % (self.colorizer.language,option_name),(option_name)):
                 font = self.fonts.get(name)
                 if font:
                     if trace: g.trace('found',name,id(font))
@@ -5811,7 +5811,7 @@ class jEditColorizer:
         for name in keys:
             option_name,default_color = self.default_colors_dict[name]
             color = (
-                c.config.getColor('%s_%s' % (self.language,option_name)) or
+                c.config.getColor('%s_%s' % (self.colorizer.language,option_name)) or
                 c.config.getColor(option_name) or
                 default_color
             )
@@ -5908,9 +5908,9 @@ class jEditColorizer:
         self.stateNameDict = {}
 
         #### self.updateSyntaxColorer(self.p)
-            # Sets self.flag and self.language.
+            # Sets self.colorizer.flag and self.colorizer.language.
 
-        self.init_mode(self.language)
+        self.init_mode(self.colorizer.language)
 
         # Used by matchers.
         self.prev = None
@@ -5958,7 +5958,7 @@ class jEditColorizer:
                     rulesetName     = rulesetName)
                 # g.trace('No colorizer file: %s.py' % language)
                 return False
-            self.language = language
+            self.colorizer.language = language
             self.rulesetName = rulesetName
             self.properties = hasattr(mode,'properties') and mode.properties or {}
             self.keywordsDict = hasattr(mode,'keywordsDictDict') and mode.keywordsDictDict.get(rulesetName,{}) or {}
@@ -5974,7 +5974,7 @@ class jEditColorizer:
                 attributesDict  = self.attributesDict,
                 defaultColor    = self.defaultColor,
                 keywordsDict    = self.keywordsDict,
-                language        = self.language,
+                language        = self.colorizer.language,
                 mode            = self.mode,
                 properties      = self.properties,
                 rulesDict       = self.rulesDict,
@@ -6043,7 +6043,7 @@ class jEditColorizer:
                 # g.es_print('removing %s from word_chars' % (repr(ch)))
                 chars.remove(ch)
 
-        # g.trace(self.language,[str(z) for z in chars])
+        # g.trace(self.colorizer.language,[str(z) for z in chars])
 
         # Convert chars to a dict for faster access.
         self.word_chars = {}
@@ -6082,7 +6082,7 @@ class jEditColorizer:
         self.setModeAttributes()
         self.defaultColor   = bunch.defaultColor
         self.keywordsDict   = bunch.keywordsDict
-        self.language       = bunch.language
+        self.colorizer.language = bunch.language
         self.mode           = bunch.mode
         self.properties     = bunch.properties
         self.rulesDict      = bunch.rulesDict
@@ -6112,9 +6112,9 @@ class jEditColorizer:
 
         if delims:
             d = g.app.language_delims_dict
-            if not d.get(self.language):
-                d [self.language] = delims
-                # g.trace(self.language,'delims:',repr(delims))
+            if not d.get(self.colorizer.language):
+                d [self.colorizer.language] = delims
+                # g.trace(self.colorizer.language,'delims:',repr(delims))
     #@-node:ekr.20081205131308.60:updateDelimsTables
     #@-node:ekr.20081205131308.55:init_mode & helpers
     #@+node:ekr.20081205131308.106:munge
@@ -6170,7 +6170,7 @@ class jEditColorizer:
         This is called whenever a pattern matcher succeed.'''
 
         trace = False
-        if not self.flag: return
+        if not self.colorizer.flag: return
 
         if delegate:
             if trace: g.trace('delegate',delegate,i,j,tag,g.callers(3))
@@ -6252,7 +6252,7 @@ class jEditColorizer:
         if i != 0 and s[i-1] != '\n': return 0
 
         if g.match_word(s,i,seq):
-            self.flag = True # Enable coloring.
+            self.colorizer.flag = True # Enable coloring.
             j = i + len(seq)
             self.colorRangeWithTag(s,i,j,'leoKeyword')
             return j - i
@@ -6275,12 +6275,12 @@ class jEditColorizer:
         k = s.find('\n@color',j)
         if k == -1:
             # No later @color: don't color the @nocolor directive.
-            self.flag = False # Disable coloring.
+            self.colorizer.flag = False # Disable coloring.
             return len(s) - j
         else:
             # A later @color: do color the @nocolor directive.
             self.colorRangeWithTag(s,i,j,'leoKeyword')
-            self.flag = False # Disable coloring.
+            self.colorizer.flag = False # Disable coloring.
             return k+1-j
 
     #@-node:ekr.20081205131308.40:match_at_nocolor
@@ -6476,7 +6476,7 @@ class jEditColorizer:
             self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
             self.prev = (i,j,kind)
             self.trace_match(kind,s,i,j)
-            self.minimalMatch = seq
+            self.minimalMatch = s[i:i+n] # Bug fix: 2009/3/2.
             return j - i
         else:
             return 0
@@ -6874,11 +6874,11 @@ class jEditColorizer:
 
         '''Recolor line s.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = False ; traceMatch = False
 
         # Return immediately if syntax coloring has been disabled.
-        if not self.flag:
+        if not self.colorizer.enabled: #### self.flag:
             self.highlighter.setCurrentBlockState(-1)
             if trace and (self.initFlag or verbose):
                 self.initFlag = False
@@ -6915,7 +6915,7 @@ class jEditColorizer:
         j = min(offset + len(s),len(all_s))
         self.global_i,self.global_j = offset,j
 
-        if trace:g.trace(self.language,s)
+        if trace:g.trace(self.colorizer.language,s)
 
         # The main colorizing loop.
         while i < j:
@@ -6969,7 +6969,7 @@ class jEditColorizer:
 
         # Check again. This should never fail.
         if s != s2:
-           g.trace('**** mismatch! offset %s len %s %s\n%s\n%s' % (
+            g.trace('**** mismatch! offset %s len %s %s\n%s\n%s' % (
                offset,len(all_s),g.callers(5),repr(s),repr(s2)))
         return s == s2
     #@-node:ekr.20090213102946.10:checkRecolor
@@ -7051,12 +7051,14 @@ class jEditColorizer:
     #@+node:ekr.20081206062411.14:setTag
     def setTag (self,tag,s,i,j):
 
-        trace = False
+        trace = False and not g.unitTesting
+        verbose = False
         w = self.w
         colorName = w.configDict.get(tag)
 
         # Munch the color name.
-        if not colorName: #### or colorName == 'black':
+        if not colorName:
+            if trace: g.trace('no color for %s' % tag)
             return
         if colorName[-1].isdigit() and colorName[0] != '#':
             colorName = colorName[:-1]
@@ -7079,13 +7081,16 @@ class jEditColorizer:
 
         if trace:
             kind = g.choose(ok,' ','***')
-            s2 = g.choose(ok,s[clip_i:clip_j],all_s[i:j])
-            g.trace('%3s %3s %3s %3s %3s %3s %3s %s' % (
-                kind,tag,offset,i,j,lim_i,lim_j,s2))
+            s2 = g.choose(ok,s[clip_i:clip_j],self.all_s[i:j])
+
+            if verbose:
+                g.trace('%3s %3s %3s %3s %3s %3s %3s %s' % (
+                    kind,tag,offset,i,j,lim_i,lim_j,s2))
+            else:
+                g.trace('%3s %7s %s' % (kind,tag,s2))
 
         if ok:
             self.highlighter.setFormat(clip_i-offset,clip_j-clip_i,color)
-    #@nonl
     #@-node:ekr.20081206062411.14:setTag
     #@-others
 #@-node:ekr.20081205131308.48:class jeditColorizer
