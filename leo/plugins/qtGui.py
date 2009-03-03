@@ -5201,6 +5201,7 @@ class leoQtColorizer:
         self.enabled = c.config.getBool('use_syntax_coloring')
         self.error = False # Set if there is an error in jeditColorizer.recolor
         self.flag = True # Per-node enable/disable flag.
+        self.killColorFlag = False
         self.language = 'python' # set by scanColorDirectives.
 
         # Step 2: create the highlighter.
@@ -5350,16 +5351,19 @@ class leoQtColorizer:
 
         p = p.copy()
         first = True ; kind = None ; val = True
+        self.killColorFlag = False
         for p in p.self_and_parents_iter():
             d = self.findColorDirectives(p)
             color,no_color = 'color' in d,'nocolor' in d
             # An @nocolor-node in the first node disabled coloring.
             if first and 'nocolor-node' in d:
                 kind = '@nocolor-node'
+                self.killColorFlag = True
                 val = False ; break
             # A killcolor anywhere disables coloring.
             elif 'killcolor' in d:
                 kind = '@killcolor %s' % p.h
+                self.killColorFlag = True
                 val = False ; break
             # A color anywhere in the target enables coloring.
             elif color and first:
@@ -6861,11 +6865,11 @@ class jEditColorizer:
 
         '''Recolor line s.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         verbose = False ; traceMatch = False
 
         # Return immediately if syntax coloring has been disabled.
-        if not self.colorizer.enabled:
+        if self.colorizer.killColorFlag or not self.colorizer.enabled:
             self.highlighter.setCurrentBlockState(-1)
             if trace and (self.initFlag or verbose):
                 self.initFlag = False
