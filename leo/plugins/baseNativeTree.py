@@ -326,27 +326,19 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.26:redraw_after_head_changed
     def redraw_after_head_changed (self):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
 
         if self.busy(): return
 
         c = self.c ; p = c.currentPosition()
-        if trace: g.trace(p and p.h)
-
+        ew = self.edit_widget(p)
         currentItem = self.getCurrentItem()
 
         if p:
             for item in self.tnode2items(p.v.t):
                 if self.isValidItem(item):
                     self.setItemText(item,p.h)
-
-        # A kludge: it's only virtue is that it seems to work.
-        ew = self.edit_widget(p)
-        if ew:
-            pass # Do *not* set the tree item
-        else:
-            self.setCurrentItemHelper(currentItem)
-
+    #@nonl
     #@-node:ekr.20090124174652.26:redraw_after_head_changed
     #@+node:ekr.20090124174652.27:redraw_after_icons_changed
     def redraw_after_icons_changed (self):
@@ -864,8 +856,12 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # Let onHeadChanged do all the work.
         c = self.c ; p = c.currentPosition()
 
+        # g.trace(p.h)
+
         self.onHeadChanged(p)
-    #@nonl
+
+        # c.bodyWantsFocusNow()
+        # c.outerUpdate()
     #@-node:ekr.20090124174652.58:endEditLabel (nativeTree)
     #@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
     # Tricky code: do not change without careful thought and testing.
@@ -874,7 +870,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         '''Officially change a headline.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         verbose = False
 
         c = self.c ; u = c.undoer
@@ -885,7 +881,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         item = self.position2item(p)
         if not item:
             # This is not an error.
-            # g.trace('no item for p: %s' % (p))
+            if trace: g.trace('no item for p: %s' % (p))
             return
 
         w = g.app.gui.get_focus()
@@ -926,7 +922,11 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.redraw_after_head_changed()
 
         if self.stayInTree:
-            c.treeWantsFocus()
+            if False and ew:
+                self.closeEditorHelper(ew)
+            else:
+                self.setCurrentItemHelper(item)
+                c.treeWantsFocus()
         else:
             c.bodyWantsFocus()
         c.outerUpdate()

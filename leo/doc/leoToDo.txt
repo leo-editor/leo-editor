@@ -3,9 +3,15 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20090131200406.9:Bugs
-#@+node:ekr.20090213065933.1:Urgent bugs
+#@+node:ekr.20090303103723.1:Doc bugs 2
+#@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
+http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
+#@nonl
+#@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
 #@+node:ekr.20090226080753.6:Finish the wiki intro
 #@-node:ekr.20090226080753.6:Finish the wiki intro
+#@-node:ekr.20090303103723.1:Doc bugs 2
+#@+node:ekr.20090213065933.1:Urgent bugs 5
 #@+node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
 @nocolor-node
 
@@ -153,19 +159,6 @@ else:
 #@-node:ekr.20041005105605.163:<< handle line at s[i]  >>
 #@-node:ekr.20041005105605.161:putBody
 #@-node:ekr.20090105132011.2:Fix whitespace problems with @auto/@shadow
-#@+node:ekr.20090226080753.2:Fix clone-find-all problem with Qt
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ee1dbcb22a5d0bcb
-
-I've just realised about the following problem with the qt pluguin
-(rev 1593): if I call Find -> Clone Find All when the first node of
-the outline is selected then it gets renamed to "Found:
-something" (something being the searched string), so the first two
-nodes of the oultine have the same name. The top one is correct (it
-contains the found nodes), the second is not. If I call Edit --> Undo
-Typing the badly renamed node recovers it correct name.
-#@-node:ekr.20090226080753.2:Fix clone-find-all problem with Qt
 #@+node:ekr.20090219085600.1:Fix new relative-path-name problem
 @nocolor
 
@@ -446,11 +439,7 @@ TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
 #@nonl
 #@-node:ekr.20081028060510.1:Fix @shadow crasher
 #@-node:ekr.20080922115725.1:Finish @shadow
-#@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
-#@nonl
-#@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-#@-node:ekr.20090213065933.1:Urgent bugs
+#@-node:ekr.20090213065933.1:Urgent bugs 5
 #@+node:ekr.20081215070651.4:Minor bugs 7
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
 @nocolor

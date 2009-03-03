@@ -139,7 +139,7 @@ class DynamicWindow(QtGui.QMainWindow):
         '''Create Leo's main window, c.frame.top'''
 
         self.c = c ; top = c.frame.top
-        # g.pr('DynamicWindow.__init__',c)
+        # print('DynamicWindow.__init__ %s' % c)
 
         # Init both base classes.
 
@@ -222,21 +222,14 @@ class DynamicWindow(QtGui.QMainWindow):
     def setSplitDirection (self,orientation='vertical'):
 
         vert = orientation and orientation.lower().startswith('v')
-        # g.trace('vert',vert)
 
         orientation1 = g.choose(vert,QtCore.Qt.Horizontal, QtCore.Qt.Vertical)
         orientation2 = g.choose(vert,QtCore.Qt.Vertical, QtCore.Qt.Horizontal)
         self.splitter.setOrientation(orientation1)
         self.splitter_2.setOrientation(orientation2)
 
-        # Set scrollbars depending on orientation.
-        c = self.c
-        top = c.frame.top
-        # sw = top.ui.stackedWidget
-        # self.widget = w = leoQTextEditWidget(
-            # top.ui.richTextEdit,
-            # name = 'body',c=c) # A QTextEdit.
-        # self.bodyCtrl = w # The widget as seen from Leo's core.
+        # g.trace('vert',vert)
+
     #@-node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
     #@+node:ekr.20081121105001.203:setStyleSheets & helper
     styleSheet_inited = False
@@ -296,6 +289,8 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081121105001.207: ctor (qtBody)
     def __init__ (self,frame,parentFrame):
 
+        trace = False and not g.unitTesting
+
         # Call the base class constructor.
         leoFrame.leoBody.__init__(self,frame,parentFrame)
 
@@ -341,6 +336,8 @@ class leoQtBody (leoFrame.leoBody):
         self.editor_v = None
         self.numberOfEditors = 1
         self.totalNumberOfEditors = 1
+
+        if trace: print('qtBody.__init__ %s' % self.widget)
     #@-node:ekr.20081121105001.207: ctor (qtBody)
     #@+node:ekr.20081121105001.208:createBindings (qtBody)
     def createBindings (self,w=None):
@@ -3620,6 +3617,15 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         return items
     #@-node:ekr.20090124174652.66:childItems
+    #@+node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
+    def closeEditorHelper (self,ew):
+
+        w = self.treeWidget
+        g.trace(ew.widget)
+        # ew.widget.setReadOnly(True)
+        # item.setDisabled(True)
+        w.closeEditor(ew.widget,QtGui.QAbstractItemDelegate.NoHint)
+    #@-node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
     #@+node:ekr.20090124174652.18:contractItem & expandItem
     def contractItem (self,item):
 
@@ -3645,6 +3651,19 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         return e
     #@-node:ekr.20090124174652.104:createTreeEditorForItem
+    #@+node:ekr.20090124174652.103:createTreeItem
+    def createTreeItem(self,p,parent_item):
+
+        trace = False and not g.unitTesting
+
+        w = self.treeWidget
+        itemOrTree = parent_item or w
+        item = QtGui.QTreeWidgetItem(itemOrTree)
+        item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+
+        if trace: g.trace(id(item),p.h,g.callers(4))
+        return item
+    #@-node:ekr.20090124174652.103:createTreeItem
     #@+node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
     def editLabelHelper (self,item,selectAll=False,selection=None):
 
@@ -3674,19 +3693,6 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         return e
     #@-node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
-    #@+node:ekr.20090124174652.103:createTreeItem
-    def createTreeItem(self,p,parent_item):
-
-        trace = False and not g.unitTesting
-
-        w = self.treeWidget
-        itemOrTree = parent_item or w
-        item = QtGui.QTreeWidgetItem(itemOrTree)
-        item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
-
-        if trace: g.trace(id(item),p.h,g.callers(4))
-        return item
-    #@-node:ekr.20090124174652.103:createTreeItem
     #@+node:ekr.20090124174652.105:getCurrentItem
     def getCurrentItem (self):
 
@@ -7956,6 +7962,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         self.setConfig()
         self.setFontFromConfig()
         self.setColorFromConfig()
+        # self.setScrollBarOrientation()
     #@-node:ekr.20081121105001.574:ctor
     #@+node:ekr.20081121105001.575:setFontFromConfig
     def setFontFromConfig (self,w=None):
@@ -8051,6 +8058,12 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
 
     #@-node:ekr.20081121105001.577:setConfig
+    #@+node:ekr.20090303095630.10:setScrollBarOrientation (QTextEdit)
+    # def setScrollBarOrientation (self):
+
+        # c = self.c
+        # orientation = c.config.getString(jk13ab02xy04)
+    #@-node:ekr.20090303095630.10:setScrollBarOrientation (QTextEdit)
     #@-node:ekr.20081121105001.573:Birth
     #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
     #@+node:ekr.20090205153624.11:delete (avoid call to setAllText)
