@@ -3,14 +3,6 @@
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20090220150215.1:Urgent bugs
-#@+node:ekr.20090226105328.17:Fix the colorizer bugs
-@nocolor-node
-
-Colorizing gets out of synch somehow.
-
-Maybe: create dump-colorizer command.
-#@nonl
-#@-node:ekr.20090226105328.17:Fix the colorizer bugs
 #@+node:ekr.20090128113654.1:Recent files menu is duplicated in qt gui
 @nocolor
 

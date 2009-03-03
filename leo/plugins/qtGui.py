@@ -6865,7 +6865,7 @@ class jEditColorizer:
 
         '''Recolor line s.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = False ; traceMatch = False
 
         # Return immediately if syntax coloring has been disabled.
@@ -6907,6 +6907,8 @@ class jEditColorizer:
         self.global_i,self.global_j = offset,j
 
         if trace:g.trace(self.colorizer.language,s)
+
+        self.clearLine(s)
 
         # The main colorizing loop.
         while i < j:
@@ -6964,6 +6966,19 @@ class jEditColorizer:
                offset,len(all_s),g.callers(5),repr(s),repr(s2)))
         return s == s2
     #@-node:ekr.20090213102946.10:checkRecolor
+    #@+node:ekr.20090303081428.10:clearLine
+    blackColor = None
+
+    def clearLine (self,s):
+
+        trace = False and not g.unitTesting
+        if trace: g.trace(s)
+
+        if not self.blackColor:
+            self.blackColor = QtGui.QColor('black')
+
+        self.highlighter.setFormat(0,len(s),self.blackColor)
+    #@-node:ekr.20090303081428.10:clearLine
     #@+node:ekr.20090211072718.14:computeStateName
     def computeStateName (self,lastFunc,lastMatch,lastN,minimalMatch):
 
