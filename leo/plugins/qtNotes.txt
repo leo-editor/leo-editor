@@ -3,6 +3,380 @@
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20090220150215.1:Urgent bugs
+#@+node:ekr.20090223065019.12:Swap scroll bars when orientation changes
+#@+node:ekr.20081121105001.200:class  DynamicWindow
+from PyQt4 import uic
+
+class DynamicWindow(QtGui.QMainWindow):
+
+    '''A class representing all parts of the main Qt window
+    as created by Designer.
+
+    c.frame.top is a Window object.
+
+    All leoQtX classes use the ivars of this Window class to
+    support operations requested by Leo's core.
+    '''
+
+    @others
+
+#@+node:ekr.20081121105001.201: ctor (Window)
+# Called from leoQtFrame.finishCreate.
+
+def __init__(self,c,parent=None):
+
+    '''Create Leo's main window, c.frame.top'''
+
+    self.c = c ; top = c.frame.top
+    # g.pr('DynamicWindow.__init__',c)
+
+    # Init both base classes.
+
+    ui_file_name = c.config.getString('qt_ui_file_name')
+    if not ui_file_name:
+        ui_file_name = 'qt_main.ui'
+
+    ui_description_file = g.app.loadDir + "/../plugins/" + ui_file_name
+    # g.pr('DynamicWindw.__init__,ui_description_file)
+    assert g.os_path_exists(ui_description_file)
+
+    QtGui.QMainWindow.__init__(self,parent)        
+    self.ui = uic.loadUi(ui_description_file, self)
+
+    # Init the QDesigner elements.
+    #self.setupUi(self)
+
+    ivars = """
+    tabWidget treeWidget stackedWidget richTextEdit lineEdit
+    findPattern findChange checkBoxWholeWord checkBoxIgnoreCase
+    checkBoxWrapAround checkBoxReverse checkBoxRexexp checkBoxMarkFinds
+    checkBoxEntireOutline checkBoxSubroutineOnly checkBoxNodeOnly
+    checkBoxSearchHeadline checkBoxSearchBody checkBoxMarkChanges
+    setWindowIcon setWindowTitle show setGeometry windowTitle
+    menuBar
+
+    """.strip().split()
+
+    #for v in ivars:
+    #    setattr(self, v, getattr(self.ui, v))
+
+    self.iconBar = self.addToolBar("IconBar")
+    self.menubar = self.menuBar()
+    self.statusBar = QtGui.QStatusBar()
+    self.setStatusBar(self.statusBar)
+
+    orientation = c.config.getString('initial_split_orientation')
+    self.setSplitDirection(orientation)
+    self.setStyleSheets()
+#@+node:leohag.20081203210510.17:do_leo_spell_btn_*
+def doSpellBtn(self, btn):
+    getattr(self.c.spellCommands.handler.tab, btn)() 
+
+def do_leo_spell_btn_Add(self):
+    self.doSpellBtn('onAddButton')
+
+def do_leo_spell_btn_Change(self):
+    self.doSpellBtn('onChangeButton')
+
+def do_leo_spell_btn_Find(self):
+    self.doSpellBtn('onFindButton')
+
+def do_leo_spell_btn_FindChange(self):
+    self.doSpellBtn('onChangeThenFindButton')
+
+def do_leo_spell_btn_Hide(self):
+    self.doSpellBtn('onHideButton')
+
+def do_leo_spell_btn_Ignore(self):
+    self.doSpellBtn('onIgnoreButton')
+#@-node:leohag.20081203210510.17:do_leo_spell_btn_*
+#@-node:ekr.20081121105001.201: ctor (Window)
+#@+node:ekr.20081121105001.202:closeEvent (qtFrame)
+def closeEvent (self,event):
+
+    c = self.c
+
+    if c.inCommand:
+        # g.trace('requesting window close')
+        c.requestCloseWindow = True
+    else:
+        ok = g.app.closeLeoWindow(c.frame)
+        # g.trace('ok',ok)
+        if ok:
+            event.accept()
+        else:
+            event.ignore()
+#@-node:ekr.20081121105001.202:closeEvent (qtFrame)
+#@+node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
+def setSplitDirection (self,orientation='vertical'):
+
+    vert = orientation and orientation.lower().startswith('v')
+    # g.trace('vert',vert)
+
+    orientation1 = g.choose(vert,QtCore.Qt.Horizontal, QtCore.Qt.Vertical)
+    orientation2 = g.choose(vert,QtCore.Qt.Vertical, QtCore.Qt.Horizontal)
+    self.splitter.setOrientation(orientation1)
+    self.splitter_2.setOrientation(orientation2)
+
+    # Set scrollbars depending on orientation.
+    c = self.c
+    top = c.frame.top
+    # sw = top.ui.stackedWidget
+    # self.widget = w = leoQTextEditWidget(
+        # top.ui.richTextEdit,
+        # name = 'body',c=c) # A QTextEdit.
+    # self.bodyCtrl = w # The widget as seen from Leo's core.
+#@-node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
+#@+node:ekr.20081121105001.203:setStyleSheets & helper
+styleSheet_inited = False
+
+def setStyleSheets(self):
+
+    trace = False
+    c = self.c
+
+    sheet = c.config.getData('qt-gui-plugin-style-sheet')
+    if sheet:
+        sheet = '\n'.join(sheet)
+        if trace: g.trace(len(sheet))
+        self.ui.setStyleSheet(sheet or self.default_sheet())
+    else:
+        if trace: g.trace('no style sheet')
+#@nonl
+#@+node:ekr.20081121105001.204:defaultStyleSheet
+def defaultStyleSheet (self):
+
+    '''Return a reasonable default style sheet.'''
+
+    # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
+    return '''\
+
+/* A QWidget: supports only background attributes.*/
+QSplitter::handle {
+
+    background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
+}
+QSplitter {
+    border-color: white;
+    background-color: white;
+    border-width: 3px;
+    border-style: solid;
+}
+QTreeWidget {
+    background-color: #ffffec; /* Leo's traditional tree color */
+}
+/* Not supported. */
+QsciScintilla {
+    background-color: pink;
+}
+'''
+#@-node:ekr.20081121105001.204:defaultStyleSheet
+#@-node:ekr.20081121105001.203:setStyleSheets & helper
+#@-node:ekr.20081121105001.200:class  DynamicWindow
+#@+node:ekr.20090303084544.1:setupUi
+def setupUi(self, MainWindow):
+    MainWindow.setObjectName("MainWindow")
+    MainWindow.resize(957, 778)
+    self.centralwidget = QtGui.QWidget(MainWindow)
+    self.centralwidget.setObjectName("centralwidget")
+    self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
+    self.verticalLayout.setObjectName("verticalLayout")
+    self.splitter_2 = QtGui.QSplitter(self.centralwidget)
+    self.splitter_2.setOrientation(QtCore.Qt.Vertical)
+    self.splitter_2.setObjectName("splitter_2")
+    self.splitter = QtGui.QSplitter(self.splitter_2)
+    self.splitter.setOrientation(QtCore.Qt.Horizontal)
+    self.splitter.setObjectName("splitter")
+    self.treeWidget = QtGui.QTreeWidget(self.splitter)
+    self.treeWidget.setObjectName("treeWidget")
+    self.tabWidget = QtGui.QTabWidget(self.splitter)
+    self.tabWidget.setObjectName("tabWidget")
+    self.tab = QtGui.QWidget()
+    self.tab.setObjectName("tab")
+    self.verticalLayout_3 = QtGui.QVBoxLayout(self.tab)
+    self.verticalLayout_3.setObjectName("verticalLayout_3")
+    self.textBrowser = QtGui.QTextBrowser(self.tab)
+    self.textBrowser.setObjectName("textBrowser")
+    self.verticalLayout_3.addWidget(self.textBrowser)
+    self.tabWidget.addTab(self.tab, "")
+    self.tab_2 = QtGui.QWidget()
+    self.tab_2.setObjectName("tab_2")
+    self.gridLayout = QtGui.QGridLayout(self.tab_2)
+    self.gridLayout.setObjectName("gridLayout")
+    self.findPattern = QtGui.QLineEdit(self.tab_2)
+    self.findPattern.setObjectName("findPattern")
+    self.gridLayout.addWidget(self.findPattern, 0, 1, 1, 1)
+    self.findChange = QtGui.QLineEdit(self.tab_2)
+    self.findChange.setObjectName("findChange")
+    self.gridLayout.addWidget(self.findChange, 1, 1, 1, 1)
+    self.checkBoxWholeWord = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxWholeWord.setObjectName("checkBoxWholeWord")
+    self.gridLayout.addWidget(self.checkBoxWholeWord, 2, 0, 1, 1)
+    self.checkBoxEntireOutline = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxEntireOutline.setObjectName("checkBoxEntireOutline")
+    self.gridLayout.addWidget(self.checkBoxEntireOutline, 2, 1, 1, 1)
+    self.checkBoxIgnoreCase = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxIgnoreCase.setObjectName("checkBoxIgnoreCase")
+    self.gridLayout.addWidget(self.checkBoxIgnoreCase, 3, 0, 1, 1)
+    self.checkBoxSubroutineOnly = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxSubroutineOnly.setObjectName("checkBoxSubroutineOnly")
+    self.gridLayout.addWidget(self.checkBoxSubroutineOnly, 3, 1, 1, 1)
+    self.checkBoxWrapAround = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxWrapAround.setObjectName("checkBoxWrapAround")
+    self.gridLayout.addWidget(self.checkBoxWrapAround, 4, 0, 1, 1)
+    self.checkBoxNodeOnly = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxNodeOnly.setObjectName("checkBoxNodeOnly")
+    self.gridLayout.addWidget(self.checkBoxNodeOnly, 4, 1, 1, 1)
+    self.checkBoxReverse = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxReverse.setObjectName("checkBoxReverse")
+    self.gridLayout.addWidget(self.checkBoxReverse, 5, 0, 1, 1)
+    self.checkBoxSearchHeadline = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxSearchHeadline.setObjectName("checkBoxSearchHeadline")
+    self.gridLayout.addWidget(self.checkBoxSearchHeadline, 5, 1, 1, 1)
+    self.checkBoxRexexp = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxRexexp.setObjectName("checkBoxRexexp")
+    self.gridLayout.addWidget(self.checkBoxRexexp, 6, 0, 1, 1)
+    self.checkBoxSearchBody = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxSearchBody.setObjectName("checkBoxSearchBody")
+    self.gridLayout.addWidget(self.checkBoxSearchBody, 6, 1, 1, 1)
+    self.checkBoxMarkFinds = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxMarkFinds.setObjectName("checkBoxMarkFinds")
+    self.gridLayout.addWidget(self.checkBoxMarkFinds, 7, 0, 1, 1)
+    self.checkBoxMarkChanges = QtGui.QCheckBox(self.tab_2)
+    self.checkBoxMarkChanges.setObjectName("checkBoxMarkChanges")
+    self.gridLayout.addWidget(self.checkBoxMarkChanges, 7, 1, 1, 1)
+    self.label_2 = QtGui.QLabel(self.tab_2)
+    self.label_2.setObjectName("label_2")
+    self.gridLayout.addWidget(self.label_2, 0, 0, 1, 1)
+    self.label_3 = QtGui.QLabel(self.tab_2)
+    self.label_3.setObjectName("label_3")
+    self.gridLayout.addWidget(self.label_3, 1, 0, 1, 1)
+    self.tabWidget.addTab(self.tab_2, "")
+    self.tab_3 = QtGui.QWidget()
+    self.tab_3.setObjectName("tab_3")
+    self.tabWidget.addTab(self.tab_3, "")
+    self.stackedWidget = QtGui.QStackedWidget(self.splitter_2)
+    self.stackedWidget.setAcceptDrops(True)
+    self.stackedWidget.setObjectName("stackedWidget")
+    self.page = QtGui.QWidget()
+    self.page.setObjectName("page")
+    self.verticalLayout_2 = QtGui.QVBoxLayout(self.page)
+    self.verticalLayout_2.setObjectName("verticalLayout_2")
+    self.textEdit = Qsci.QsciScintilla(self.page)
+    self.textEdit.setObjectName("textEdit")
+    self.verticalLayout_2.addWidget(self.textEdit)
+    self.stackedWidget.addWidget(self.page)
+    self.page_2 = QtGui.QWidget()
+    self.page_2.setObjectName("page_2")
+    self.verticalLayout_4 = QtGui.QVBoxLayout(self.page_2)
+    self.verticalLayout_4.setObjectName("verticalLayout_4")
+    self.richTextEdit = QtGui.QTextEdit(self.page_2)
+    self.richTextEdit.setObjectName("richTextEdit")
+    self.verticalLayout_4.addWidget(self.richTextEdit)
+    self.stackedWidget.addWidget(self.page_2)
+    self.verticalLayout.addWidget(self.splitter_2)
+    self.horizontalLayout = QtGui.QHBoxLayout()
+    self.horizontalLayout.setObjectName("horizontalLayout")
+    self.label = QtGui.QLabel(self.centralwidget)
+    self.label.setObjectName("label")
+    self.horizontalLayout.addWidget(self.label)
+    self.lineEdit = QtGui.QLineEdit(self.centralwidget)
+    self.lineEdit.setObjectName("lineEdit")
+    self.horizontalLayout.addWidget(self.lineEdit)
+    self.verticalLayout.addLayout(self.horizontalLayout)
+    MainWindow.setCentralWidget(self.centralwidget)
+    self.menubar = QtGui.QMenuBar(MainWindow)
+    self.menubar.setGeometry(QtCore.QRect(0, 0, 957, 22))
+    self.menubar.setObjectName("menubar")
+    MainWindow.setMenuBar(self.menubar)
+    self.statusbar = QtGui.QStatusBar(MainWindow)
+    self.statusbar.setObjectName("statusbar")
+    MainWindow.setStatusBar(self.statusbar)
+    self.actionOpen = QtGui.QAction(MainWindow)
+    self.actionOpen.setObjectName("actionOpen")
+    self.actionSave = QtGui.QAction(MainWindow)
+    self.actionSave.setObjectName("actionSave")
+    self.actionIPython = QtGui.QAction(MainWindow)
+    self.actionIPython.setObjectName("actionIPython")
+    self.label.setBuddy(self.lineEdit)
+
+    self.retranslateUi(MainWindow)
+    self.tabWidget.setCurrentIndex(1)
+    self.stackedWidget.setCurrentIndex(0)
+    QtCore.QObject.connect(self.treeWidget, QtCore.SIGNAL("itemSelectionChanged()"), MainWindow.showNormal)
+    QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+#@-node:ekr.20090303084544.1:setupUi
+#@+node:ekr.20081121105001.207: ctor (qtBody)
+def __init__ (self,frame,parentFrame):
+
+    # Call the base class constructor.
+    leoFrame.leoBody.__init__(self,frame,parentFrame)
+
+    c = self.c
+    assert c.frame == frame and frame.c == c
+
+    self.useScintilla = c.config.getBool('qt-use-scintilla')
+
+    # Set the actual gui widget.
+    if self.useScintilla:
+        self.widget = w = leoQScintillaWidget(
+            c.frame.top.textEdit,
+            name='body',c=c)
+        self.bodyCtrl = w # The widget as seen from Leo's core.
+        self.colorizer = leoColor.nullColorizer(c)
+    else:
+        top = c.frame.top ; sw = top.ui.stackedWidget
+        sw.setCurrentIndex(1)
+        self.widget = w = leoQTextEditWidget(
+            top.ui.richTextEdit,
+            name = 'body',c=c) # A QTextEdit.
+        self.bodyCtrl = w # The widget as seen from Leo's core.
+
+        # Hook up the QSyntaxHighlighter
+        self.colorizer = leoQtColorizer(c,w.widget)
+        w.acceptRichText = False
+
+    # Config stuff.
+    self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
+    wrap = c.config.getBool('body_pane_wraps')
+    # g.trace('wrap',wrap,self.widget.widget)
+    if self.useScintilla:
+        pass
+    else:
+        self.widget.widget.setWordWrapMode(g.choose(wrap,
+            QtGui.QTextOption.WordWrap,
+            QtGui.QTextOption.NoWrap))
+    wrap = g.choose(wrap,"word","none")
+    self.wrapState = wrap
+
+    # For multiple body editors.
+    self.editor_name = None
+    self.editor_v = None
+    self.numberOfEditors = 1
+    self.totalNumberOfEditors = 1
+#@-node:ekr.20081121105001.207: ctor (qtBody)
+#@+node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
+def setSplitDirection (self,orientation='vertical'):
+
+    vert = orientation and orientation.lower().startswith('v')
+    # g.trace('vert',vert)
+
+    orientation1 = g.choose(vert,QtCore.Qt.Horizontal, QtCore.Qt.Vertical)
+    orientation2 = g.choose(vert,QtCore.Qt.Vertical, QtCore.Qt.Horizontal)
+    self.splitter.setOrientation(orientation1)
+    self.splitter_2.setOrientation(orientation2)
+
+    # Set scrollbars depending on orientation.
+    c = self.c
+    top = c.frame.top
+    # sw = top.ui.stackedWidget
+    # self.widget = w = leoQTextEditWidget(
+        # top.ui.richTextEdit,
+        # name = 'body',c=c) # A QTextEdit.
+    # self.bodyCtrl = w # The widget as seen from Leo's core.
+#@-node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
+#@-node:ekr.20090223065019.12:Swap scroll bars when orientation changes
 #@+node:ekr.20090128113654.1:Recent files menu is duplicated in qt gui
 @nocolor
 
@@ -2152,6 +2526,378 @@ def redraw_after_icons_changed (self):
 #@nonl
 #@-node:ekr.20090124174652.27:redraw_after_icons_changed
 #@-node:ekr.20090226105328.18:Ctrl-S destroys headline selection
+#@+node:ekr.20090302135940.11:Ctrl-s does not completely end editing
+#@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None):
+
+    '''Officially change a headline.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    c = self.c ; u = c.undoer
+    if not p:
+        if trace: g.trace('*** no p')
+        return
+
+    item = self.position2item(p)
+    if not item:
+        # This is not an error.
+        # g.trace('no item for p: %s' % (p))
+        return
+
+    w = g.app.gui.get_focus()
+    ew = self.edit_widget(p)
+    if ew: e = ew.widget
+    else: e = None
+
+    # These are not errors: focus may have been lost.
+    # if trace and verbose:
+        # if not e:  g.trace('No e',g.callers(4))
+        # if e != w: g.trace('e != w',e,w,g.callers(4))
+        # if not p:  g.trace('No p')
+
+    if e and e == w:
+        s = e.text() ; len_s = len(s)
+        s = g.app.gui.toUnicode(s)
+    else:
+        s = self.getItemText(item)
+
+    oldHead = p.h
+    changed = s != oldHead
+    if changed:
+        if trace: g.trace('changed',repr(s),p.h)
+        p.initHeadString(s)
+        item.setText(0,s) # Required to avoid full redraw.
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+
+    # This is a crucial shortcut.
+    if g.unitTesting: return
+
+    self.redraw_after_head_changed()
+
+    if self.stayInTree:
+        c.treeWantsFocus()
+    else:
+        c.bodyWantsFocus()
+    c.outerUpdate()
+#@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+#@+node:ekr.20090124174652.26:redraw_after_head_changed
+def redraw_after_head_changed (self):
+
+    trace = False and not g.unitTesting
+
+    if self.busy(): return
+
+    c = self.c ; p = c.currentPosition()
+    if trace: g.trace(p and p.h)
+
+    currentItem = self.getCurrentItem()
+
+    if p:
+        for item in self.tnode2items(p.v.t):
+            if self.isValidItem(item):
+                self.setItemText(item,p.h)
+
+    # A kludge: it's only virtue is that it seems to work.
+    ew = self.edit_widget(p)
+    if ew:
+        pass # Do *not* set the tree item
+    else:
+        self.setCurrentItemHelper(currentItem)
+
+#@-node:ekr.20090124174652.26:redraw_after_head_changed
+#@+node:ekr.20090124174652.107:setCurrentItemHelper (leoQtTree)
+def setCurrentItemHelper(self,item):
+
+    w = self.treeWidget
+    w.setCurrentItem(item)
+
+    # g.trace(id(item),g.callers(5))
+#@-node:ekr.20090124174652.107:setCurrentItemHelper (leoQtTree)
+#@-node:ekr.20090302135940.11:Ctrl-s does not completely end editing
+#@+node:ekr.20090303084544.10:Syntax coloring problem
+# OMG, the problem was in a match_mark_prev.
+# The solution: set self.prev to False in recolor.
+#@nonl
+#@+node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
+def setSplitDirection (self,orientation='vertical'):
+
+    vert = orientation and orientation.lower().startswith('v')
+    # g.trace('vert',vert)
+
+    orientation1 = g.choose(vert,QtCore.Qt.Horizontal, QtCore.Qt.Vertical)
+    orientation2 = g.choose(vert,QtCore.Qt.Vertical, QtCore.Qt.Horizontal)
+    self.splitter.setOrientation(orientation1)
+    self.splitter_2.setOrientation(orientation2)
+
+    # Set scrollbars depending on orientation.
+    c = self.c
+    top = c.frame.top
+    # sw = top.ui.stackedWidget
+    # self.widget = w = leoQTextEditWidget(
+        # top.ui.richTextEdit,
+        # name = 'body',c=c) # A QTextEdit.
+    # self.bodyCtrl = w # The widget as seen from Leo's core.
+#@-node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
+#@+node:ekr.20081206062411.12:recolor & helpers
+def recolor (self,s):
+
+    '''Recolor line s.'''
+
+    trace = False and not g.unitTesting
+    verbose = False ; traceMatch = False
+
+    # Return immediately if syntax coloring has been disabled.
+    if self.colorizer.killColorFlag or not self.colorizer.enabled:
+        self.highlighter.setCurrentBlockState(-1)
+        if trace and (self.initFlag or verbose):
+            self.initFlag = False
+            g.trace('immediate return')
+        return
+
+    # Reload all_s if the widget's text is known to have changed.
+    if self.initFlag:
+        self.initFlag = False
+        self.all_s = self.w.getAllText()
+        if trace and verbose:
+            g.trace('**** set all_s: %s' % len(self.all_s),g.callers(5))
+
+    all_s = self.all_s
+    if not all_s: return
+
+    # Update the counts.
+    self.recolorCount += 1
+    self.totalChars += len(s)
+
+    # Init values that do not depend on all_s.
+    offset = self.highlighter.currentBlock().position()
+    b = self.getPrevState()
+    lastFunc,lastMatch = b.lastFunc,b.lastMatch
+    lastN,minimalMatch = 0,'' # Not used until there is a match.
+    if trace and verbose and lastFunc: g.trace('prevState',b)
+    i = g.choose(lastFunc,lastMatch,offset)
+
+    # Make sure we are in synch with all_s.
+    # Reload all_s if we are not.
+    if not self.checkRecolor(offset,s):
+        return g.trace('**** resych failure',s)
+
+    # Set the values that depend on all_s.
+    all_s = self.all_s
+    j = min(offset + len(s),len(all_s))
+    self.global_i,self.global_j = offset,j
+
+    if trace:
+        kind = g.choose(verbose,'** entry **','')
+        g.trace(kind,self.colorizer.language,s)
+
+    self.clearLine(s)
+
+    # The main colorizing loop.
+    self.prev = None
+    while i < j:
+        assert 0 <= i < len(all_s)
+        progress = i
+        functions = self.rulesDict.get(all_s[i],[])
+        self.minimalMatch = ''
+        for f in functions:
+            n = f(self,all_s,i)
+            if n is None:
+                g.trace('Can not happen' % (repr(n),repr(f)))
+                break
+            elif n > 0: # Success.
+                if trace and traceMatch:
+                    g.trace('match: offset %3s, i %3s, n %3s, f %s %s' % (
+                        offset,i,n,f.__name__,repr(s[i:i+n])))
+                lastFunc,lastMatch,lastN,minimalMatch = f,i,n,self.minimalMatch
+                i += n
+                break # Stop searching the functions.
+            elif n < 0: # Fail and skip n chars.
+                # match_keyword now sets n < 0 on first failure.
+                i += -n # Don't set lastMatch on failure!
+                break # Stop searching the functions.
+            else: # Fail.  Go on to the next f in functions.
+                pass # Do not break or change i!
+        else:
+            i += 1 # Don't set lastMatch on failure!
+        assert i > progress
+
+    self.setCurrentState(s,offset,len(s)+1,
+        lastFunc,lastMatch,lastN,minimalMatch)
+#@+node:ekr.20090213102946.10:checkRecolor
+def checkRecolor (self,offset,s):
+
+    '''Return True if s can be synched with self.all_s.'''
+
+    trace = True and not g.unitTesting
+
+    all_s = self.all_s
+    j = min(offset + len(s),len(all_s))
+    s2 = all_s[offset:j]
+
+    # The first check is allowed to fail.
+    if s == s2: return True
+
+    if trace: g.trace('**resynch**')
+
+    # Assume we should have re-inited all_s
+    self.all_s = all_s = self.w.getAllText()
+    j = min(offset + len(s),len(all_s))
+    s2 = all_s[offset:j]
+
+    # Check again. This should never fail.
+    if s != s2:
+        g.trace('**** mismatch! offset %s len %s %s\n%s\n%s' % (
+           offset,len(all_s),g.callers(5),repr(s),repr(s2)))
+    return s == s2
+#@-node:ekr.20090213102946.10:checkRecolor
+#@+node:ekr.20090303081428.10:clearLine
+blackColor = None
+
+def clearLine (self,s):
+
+    trace = False and not g.unitTesting
+    if trace: g.trace(s)
+
+    if not self.blackColor:
+        self.blackColor = QtGui.QColor('black')
+
+    self.highlighter.setFormat(0,len(s),self.blackColor)
+#@-node:ekr.20090303081428.10:clearLine
+#@+node:ekr.20090211072718.14:computeStateName
+def computeStateName (self,lastFunc,lastMatch,lastN,minimalMatch):
+
+    if lastFunc:
+        matchString = g.choose(minimalMatch,
+            minimalMatch,
+            self.all_s[lastMatch:lastMatch+lastN])
+        return '%s:%s' % (
+            lastFunc.__name__,matchString)
+    else:
+        return self.defaultState
+#@-node:ekr.20090211072718.14:computeStateName
+#@+node:ekr.20090211072718.2:getPrevState
+def getPrevState (self):
+
+    h = self.highlighter
+    n = h.previousBlockState()
+
+    if n == -1:
+        return g.Bunch(lastFunc=None,lastMatch=0,lastN=0)
+    else:
+        bunch = self.stateDict.get(n)
+        assert bunch,'n=%s' % (n)
+        return bunch
+#@nonl
+#@-node:ekr.20090211072718.2:getPrevState
+#@+node:ekr.20090211072718.3:setCurrentState
+def setCurrentState (self,s,offset,limit,lastFunc,lastMatch,lastN,minimalMatch):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    h = self.highlighter
+
+    self.stateCount += 1
+    oldN = h.currentBlockState()
+    active = bool(lastFunc and lastMatch + lastN > offset + limit)
+
+    if active:
+        b = self.stateDict.get(oldN)
+        if b:
+            changeState = b.lastFunc != lastFunc or b.lastN != lastN
+        else:
+            changeState = True
+    else:
+        lastFunc,lastMatch,lastN,minimalMatch = None,None,None,None
+        changeState = oldN != -1
+
+    stateName = self.computeStateName(
+        lastFunc,lastMatch,lastN,minimalMatch)
+
+    if trace and (changeState or active or verbose):
+        g.trace('%2d ** active %5s changed %5s %-20s %s' % (
+            self.stateCount,active,changeState,stateName,s))
+
+    if not changeState:
+        return
+
+    n = self.stateNameDict.get(stateName)
+    if n is None:
+        n = self.nextState
+        self.nextState += 1
+        self.totalStates += 1
+        self.maxStateNumber = max(n,self.maxStateNumber)
+
+    state = g.bunch(
+        lastFunc=lastFunc,
+        lastMatch=lastMatch,
+        lastN=lastN)
+
+    self.stateNameDict[stateName] = n
+    self.stateDict[n] = state
+
+    h.setCurrentBlockState(n)
+#@-node:ekr.20090211072718.3:setCurrentState
+#@+node:ekr.20081206062411.14:setTag
+tagCount = 0
+
+def setTag (self,tag,s,i,j):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    w = self.w
+    colorName = w.configDict.get(tag)
+
+    # Munch the color name.
+    if not colorName:
+        if trace: g.trace('no color for %s' % tag)
+        return
+    if colorName[-1].isdigit() and colorName[0] != '#':
+        colorName = colorName[:-1]
+
+    # Get the actual color.
+    color = self.actualColorDict.get(colorName)
+    if not color:
+        color = QtGui.QColor(colorName)
+        if color.isValid():
+            self.actualColorDict[colorName] = color
+        else:
+            return g.trace('unknown color name',colorName)
+
+    # Clip the colorizing to the global bounds.
+    offset = self.global_i
+    lim_i,lim_j = self.global_i,self.global_j
+    clip_i = max(i,lim_i)
+    clip_j = min(j,lim_j)
+    ok = clip_i < clip_j
+
+    if trace:
+        self.tagCount += 1
+        kind = g.choose(ok,' ','***')
+        s2 = g.choose(ok,s[clip_i:clip_j],self.all_s[i:j])
+
+        if verbose:
+            g.trace('%3s %3s %3s %3s %3s %3s %3s %3s %s' % (
+                self.tagCount,kind,tag,offset,i,j,lim_i,lim_j,s2),
+                g.callers(4))
+        else:
+            g.trace('%3s %3s %7s %s' % (self.tagCount,kind,tag,s2))
+
+    if ok:
+        self.highlighter.setFormat(clip_i-offset,clip_j-clip_i,color)
+#@-node:ekr.20081206062411.14:setTag
+#@-node:ekr.20081206062411.12:recolor & helpers
+#@-node:ekr.20090303084544.10:Syntax coloring problem
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20081205131308.26:scanColorDirectives (very slow!)

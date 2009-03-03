@@ -12307,6 +12307,6 @@ self.assertEqual(a,b)</t>
 def child():
     pass</t>
 <t tx="ekr.20090303083556.1">    # This is a test
-    # Another test.</t>
+    g.trace('Another test')</t>
 </tnodes>
 </leo_file>

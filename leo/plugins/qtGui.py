@@ -6904,22 +6904,27 @@ class jEditColorizer:
         b = self.getPrevState()
         lastFunc,lastMatch = b.lastFunc,b.lastMatch
         lastN,minimalMatch = 0,'' # Not used until there is a match.
+        if trace and verbose and lastFunc: g.trace('prevState',b)
         i = g.choose(lastFunc,lastMatch,offset)
 
         # Make sure we are in synch with all_s.
         # Reload all_s if we are not.
-        if not self.checkRecolor(offset,s): return
+        if not self.checkRecolor(offset,s):
+            return g.trace('**** resych failure',s)
 
         # Set the values that depend on all_s.
         all_s = self.all_s
         j = min(offset + len(s),len(all_s))
         self.global_i,self.global_j = offset,j
 
-        if trace:g.trace(self.colorizer.language,s)
+        if trace:
+            kind = g.choose(verbose,'** entry **','')
+            g.trace(kind,self.colorizer.language,s)
 
         self.clearLine(s)
 
         # The main colorizing loop.
+        self.prev = None
         while i < j:
             assert 0 <= i < len(all_s)
             progress = i
@@ -6932,7 +6937,8 @@ class jEditColorizer:
                     break
                 elif n > 0: # Success.
                     if trace and traceMatch:
-                        g.trace('match: i %3s, n %3s, f %s' % (i,n,f.__name__))
+                        g.trace('match: offset %3s, i %3s, n %3s, f %s %s' % (
+                            offset,i,n,f.__name__,repr(s[i:i+n])))
                     lastFunc,lastMatch,lastN,minimalMatch = f,i,n,self.minimalMatch
                     i += n
                     break # Stop searching the functions.
@@ -7062,8 +7068,9 @@ class jEditColorizer:
 
         h.setCurrentBlockState(n)
     #@-node:ekr.20090211072718.3:setCurrentState
-    #@-node:ekr.20081206062411.12:recolor & helpers
     #@+node:ekr.20081206062411.14:setTag
+    tagCount = 0
+
     def setTag (self,tag,s,i,j):
 
         trace = False and not g.unitTesting
@@ -7095,18 +7102,21 @@ class jEditColorizer:
         ok = clip_i < clip_j
 
         if trace:
+            self.tagCount += 1
             kind = g.choose(ok,' ','***')
             s2 = g.choose(ok,s[clip_i:clip_j],self.all_s[i:j])
 
             if verbose:
-                g.trace('%3s %3s %3s %3s %3s %3s %3s %s' % (
-                    kind,tag,offset,i,j,lim_i,lim_j,s2))
+                g.trace('%3s %3s %3s %3s %3s %3s %3s %3s %s' % (
+                    self.tagCount,kind,tag,offset,i,j,lim_i,lim_j,s2),
+                    g.callers(4))
             else:
-                g.trace('%3s %7s %s' % (kind,tag,s2))
+                g.trace('%3s %3s %7s %s' % (self.tagCount,kind,tag,s2))
 
         if ok:
             self.highlighter.setFormat(clip_i-offset,clip_j-clip_i,color)
     #@-node:ekr.20081206062411.14:setTag
+    #@-node:ekr.20081206062411.12:recolor & helpers
     #@-others
 #@-node:ekr.20081205131308.48:class jeditColorizer
 #@-node:ekr.20081204090029.1:Syntax coloring
