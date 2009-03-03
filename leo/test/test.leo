@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4,29,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -315,7 +315,7 @@
 <v t="ekr.20090102095951.3"><vh>node b</vh></v>
 </v>
 </v>
-<v t="ekr.20071105085941" a="E"><vh>Tests</vh>
+<v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20081216091605.2"><vh>@@auto under_indent.py</vh>
 <v t="ekr.20090122211549.1"><vh>class test</vh>
 <v t="ekr.20090122211549.2"><vh>spam</vh></v>
@@ -422,14 +422,10 @@
 <v t="ekr.20090211123924.1"><vh>String test</vh></v>
 <v t="ekr.20090205070715.1"><vh>print colorer stats</vh></v>
 <v t="ekr.20090206065021.1"><vh>test string flipping</vh></v>
-<v t="ekr.20090217151906.1" a="E"><vh>@thin test.py</vh></v>
+<v t="ekr.20090217151906.1"><vh>@@thin test.py</vh>
+<v t="ekr.20090218121844.1"><vh>child</vh></v>
+</v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
-</v>
-<v t="ekr.20090302124658.1" a="E"><vh>color test</vh>
-<v t="ekr.20090302135203.1"><vh>child</vh></v>
-</v>
-<v t="ekr.20090302133252.1" a="E"><vh>nocolor</vh>
-<v t="ekr.20090302133709.2"><vh>child</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -12301,25 +12297,13 @@ class leoQtMinibuffer (leoQLineEditWidget):
 #@-node:ekr.20081121105001.188:@thin qtGui.py
 #@-leo
 </t>
+<t tx="ekr.20090217151906.1">@others</t>
 <t tx="ekr.20090218112656.1"># 'self' is now defined in @test and @suite nodes.
 a,b = 1,2
 self.assertEqual(a,b)</t>
-<t tx="ekr.20090302124658.1">a = 2
+<t tx="ekr.20090218121844.1">#changed 2
 
-
-#test
-    
-    
-def foo():
-    pass
-    
-@color
-    
-</t>
-<t tx="ekr.20090302133252.1">@nocolor-node
-
-def spam(): pass</t>
-<t tx="ekr.20090302133709.2">def foo(): pass</t>
-<t tx="ekr.20090302135203.1">def foo(): pass</t>
+def child():
+    pass</t>
 </tnodes>
 </leo_file>
