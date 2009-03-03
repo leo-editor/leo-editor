@@ -6921,8 +6921,6 @@ class jEditColorizer:
             kind = g.choose(verbose,'** entry **','')
             g.trace(kind,self.colorizer.language,s)
 
-        self.clearLine(s)
-
         # The main colorizing loop.
         self.prev = None
         while i < j:
@@ -6982,17 +6980,17 @@ class jEditColorizer:
         return s == s2
     #@-node:ekr.20090213102946.10:checkRecolor
     #@+node:ekr.20090303081428.10:clearLine
-    blackColor = None
+    # blackColor = None
 
-    def clearLine (self,s):
+    # def clearLine (self,s):
 
-        trace = False and not g.unitTesting
-        if trace: g.trace(s)
+        # trace = False and not g.unitTesting
+        # if trace: g.trace(s)
 
-        if not self.blackColor:
-            self.blackColor = QtGui.QColor('black')
+        # if not self.blackColor:
+            # self.blackColor = QtGui.QColor('black')
 
-        self.highlighter.setFormat(0,len(s),self.blackColor)
+        # self.highlighter.setFormat(0,len(s),self.blackColor)
     #@-node:ekr.20090303081428.10:clearLine
     #@+node:ekr.20090211072718.14:computeStateName
     def computeStateName (self,lastFunc,lastMatch,lastN,minimalMatch):
