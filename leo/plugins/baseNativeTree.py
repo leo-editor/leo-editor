@@ -342,10 +342,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.setCurrentItemHelper(currentItem)
     #@-node:ekr.20090124174652.26:redraw_after_head_changed
     #@+node:ekr.20090124174652.27:redraw_after_icons_changed
-    def redraw_after_icons_changed (self,all=False):
+    def redraw_after_icons_changed (self):
+
+        trace = False and not g.unitTesting
 
         if self.busy(): return
-        # if self.redrawing: return
+
+        if trace: g.trace(g.callers(4))
 
         self.redrawCount += 1 # To keep a unit test happy.
 
@@ -354,15 +357,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # Suppress call to setHeadString in onItemChanged!
         self.redrawing = True
         try:
-            if all:
-                for p in c.rootPosition().self_and_siblings_iter():
-                    self.updateVisibleIcons(p)
-            else:
-                p = c.currentPosition()
-                self.updateIcon(p,force=True)
+            item = self.getCurrentItem()
+            for p in c.rootPosition().self_and_siblings_iter():
+                self.updateVisibleIcons(p)
+            self.setCurrentItemHelper(item)
         finally:
             self.redrawing = False
-
+    #@nonl
     #@-node:ekr.20090124174652.27:redraw_after_icons_changed
     #@+node:ekr.20090124174652.28:redraw_after_select
     # Important: this can not replace before/afterSelectHint.
@@ -380,10 +381,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # Don't set self.redrawing here.
         # It will be set by self.afterSelectHint.
 
-        c = self.c
-        #### item = self.position2item(p)
-        # It is not an error for position2item to fail.
-        #### if not item:
         self.full_redraw(p,scroll=False)
 
         # c.redraw_after_select calls tree.select indirectly.
@@ -581,7 +578,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         '''Select the proper position when a tree node is selected.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = False
 
         if self.busy(): return

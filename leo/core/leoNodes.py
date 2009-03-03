@@ -1742,7 +1742,8 @@ class position (object):
     #@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
     def findAllPotentiallyDirtyNodes(self):
 
-        p = self ;  c = p.v.context
+        trace = False and not g.unitTesting
+        p = self ; c = p.v.context
 
         # Start with all nodes in the vnodeList.
         nodes = []
@@ -1764,10 +1765,11 @@ class position (object):
 
         # Remove the hidden vnode.
         if c.hiddenRootNode in nodes:
+            if trace: g.trace('removing hidden root',c.hiddenRootNode)
             nodes.remove(c.hiddenRootNode)
 
         # g.trace('done',len(nodes))
-        # g.trace(g.listToString(nodes))
+        if trace: g.trace(nodes)
         return nodes
     #@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
     #@+node:ekr.20040702104823:p.inAtIgnoreRange
@@ -1786,6 +1788,8 @@ class position (object):
     #@+node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
     def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
 
+        trace = False and not g.unitTesting
+        verbose = False
         p = self
         dirtyVnodeList = []
 
@@ -1800,12 +1804,18 @@ class position (object):
                 if p2.v not in nodes and p2.isAtThinFileNode():
                     nodes.append(p2.v)
 
+        if trace and verbose:
+            for v in nodes:
+                print v.t.isDirty(),v.isAnyAtFileNode(),v
+
         dirtyVnodeList = [v for v in nodes
             if not v.t.isDirty() and v.isAnyAtFileNode()]
         changed = len(dirtyVnodeList) > 0
 
         for v in dirtyVnodeList:
             v.t.setDirty() # Do not call v.setDirty here!
+
+        if trace: g.trace(dirtyVnodeList) #,g.callers(5))
 
         return dirtyVnodeList
     #@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty

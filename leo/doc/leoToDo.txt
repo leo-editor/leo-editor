@@ -454,13 +454,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
 #@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
 #@-node:ekr.20090213065933.1:Urgent bugs
 #@+node:ekr.20081215070651.4:Minor bugs 7
-#@+node:ekr.20090228065229.1:Potential problems with dirty bits
-@nocolor-node
-
-- In both qt and tk, write-at-file-nodes does not clear dirty bit of @file nodes.
-  Is there a reason for this?
-#@nonl
-#@-node:ekr.20090228065229.1:Potential problems with dirty bits
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
 @nocolor
 
@@ -8071,7 +8064,8 @@ def save (self,event=None):
 
     '''Save a Leo outline to a file.'''
 
-    c = self ; w = g.app.gui.get_focus(c)
+    c = self ; p = c.currentPosition()
+    w = g.app.gui.get_focus(c)
 
     if g.app.disableSave:
         g.es("save commands disabled",color="purple")
@@ -8104,7 +8098,7 @@ def save (self,event=None):
             g.chdir(c.mFileName)
 
     # Done in fileCommands.save.
-    # c.redraw_after_icons_changed(all=True)
+    # c.redraw_after_icons_changed()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2834:save (commands)
 #@+node:ekr.20031218072017.2835:saveAs
@@ -8142,7 +8136,7 @@ def saveAs (self,event=None):
         g.chdir(c.mFileName)
 
     # Done in fileCommands.saveAs.
-    # c.redraw_after_icons_changed(all=True)
+    # c.redraw_after_icons_changed()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2835:saveAs
 #@+node:ekr.20070413045221:saveAsUnzipped & saveAsZipped
@@ -8198,7 +8192,7 @@ def saveTo (self,event=None):
         g.chdir(fileName)
 
     # Does not change icons status.
-    # c.redraw_after_icons_changed(all=True)
+    # c.redraw_after_icons_changed()
     c.widgetWantsFocusNow(w)
 #@-node:ekr.20031218072017.2836:saveTo
 #@+node:ekr.20031218072017.2837:revert

@@ -4329,13 +4329,10 @@ class atFile:
             if self.compareFiles(self.outputFileName,self.targetFileName,not self.explicitLineEnding):
                 # Files are identical.
                 ok = self.remove(self.outputFileName)
+                g.es('unchanged:',self.shortFileName)
                 if not ok:
                     # self.remove gives the error.
-                    # g.es('error removing temp file',color='red')
-                    g.es('unchanged:',self.shortFileName)
                     if root: root.setDirty() # New in 4.4.8.
-                g.es('unchanged:',self.shortFileName)
-
                 self.fileChangedFlag = False
                 return False
             else:

@@ -1661,7 +1661,6 @@ def redraw_after_select(self,p,setFocus=False):
         # Required to update body pane.
         # Will call tree.before/afterSelect hint.
 
-    ####
     if flag:
         c.frame.tree.redraw_after_select(p)
 
@@ -5408,7 +5407,6 @@ def redraw_after_select(self,p,setFocus=False):
         # Required to update body pane.
         # Will call tree.before/afterSelect hint.
 
-    ####
     if flag:
         c.frame.tree.redraw_after_select(p)
 
@@ -6670,7 +6668,7 @@ def setBodyString (self,p,s,encoding="utf-8"):
         p.setDirty()
         if not c.isChanged():
             c.setChanged(True)
-        c.redraw_after_icons_changed(all=False)
+        c.redraw_after_icons_changed()
 #@nonl
 #@-node:ekr.20040305223522:c.setBodyString
 #@+node:ekr.20031218072017.4037:setSelectionAreas
@@ -6823,12 +6821,16 @@ def redraw_after_head_changed(self):
     return self.frame.tree.redraw_after_head_changed()
 #@-node:ekr.20090110073010.2:c.redraw_after_head_changed
 #@+node:ekr.20090110073010.3:c.redraw_afer_icons_changed
-def redraw_after_icons_changed(self,all=False):
+def redraw_after_icons_changed(self):
 
     '''Update the icon for the presently selected node,
     or all icons if the 'all' flag is true.'''
 
-    return self.frame.tree.redraw_after_icons_changed(all)
+    c = self
+
+    c.frame.tree.redraw_after_icons_changed()
+
+    # c.treeFocusHelper()
 #@-node:ekr.20090110073010.3:c.redraw_afer_icons_changed
 #@+node:ekr.20090110073010.4:c.redraw_after_select
 def redraw_after_select(self,p,setFocus=False):
@@ -6848,7 +6850,6 @@ def redraw_after_select(self,p,setFocus=False):
         # Required to update body pane.
         # Will call tree.before/afterSelect hint.
 
-    ####
     if flag:
         c.frame.tree.redraw_after_select(p)
 
@@ -8598,7 +8599,6 @@ def redraw_after_select(self,p,setFocus=False):
         # Required to update body pane.
         # Will call tree.before/afterSelect hint.
 
-    ####
     if flag:
         c.frame.tree.redraw_after_select(p)
 
@@ -9941,7 +9941,6 @@ def redraw_after_select(self,p,setFocus=False):
         # Required to update body pane.
         # Will call tree.before/afterSelect hint.
 
-    ####
     if flag:
         c.frame.tree.redraw_after_select(p)
 
@@ -20443,13 +20442,10 @@ def replaceTargetFileIfDifferent (self,root):
         if self.compareFiles(self.outputFileName,self.targetFileName,not self.explicitLineEnding):
             # Files are identical.
             ok = self.remove(self.outputFileName)
+            g.es('unchanged:',self.shortFileName)
             if not ok:
                 # self.remove gives the error.
-                # g.es('error removing temp file',color='red')
-                g.es('unchanged:',self.shortFileName)
                 if root: root.setDirty() # New in 4.4.8.
-            g.es('unchanged:',self.shortFileName)
-
             self.fileChangedFlag = False
             return False
         else:
@@ -20511,7 +20507,7 @@ def save(self,fileName):
                 g.es("clearing undo")
                 c.undoer.clearUndoState()
 
-        c.redraw_after_icons_changed(all=True)
+        c.redraw_after_icons_changed()
 
     g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
     return ok
@@ -23189,6 +23185,8 @@ else:
 #@+node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
 def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
 
+    trace = False and not g.unitTesting
+    verbose = False
     p = self
     dirtyVnodeList = []
 
@@ -23203,6 +23201,10 @@ def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
             if p2.v not in nodes and p2.isAtThinFileNode():
                 nodes.append(p2.v)
 
+    if trace and verbose:
+        for v in nodes:
+            print v.t.isDirty(),v.isAnyAtFileNode(),v
+
     dirtyVnodeList = [v for v in nodes
         if not v.t.isDirty() and v.isAnyAtFileNode()]
     changed = len(dirtyVnodeList) > 0
@@ -23210,12 +23212,15 @@ def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
     for v in dirtyVnodeList:
         v.t.setDirty() # Do not call v.setDirty here!
 
+    if trace: g.trace(dirtyVnodeList) #,g.callers(5))
+
     return dirtyVnodeList
 #@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
 #@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
 def findAllPotentiallyDirtyNodes(self):
 
-    p = self ;  c = p.v.context
+    trace = False and not g.unitTesting
+    p = self ; c = p.v.context
 
     # Start with all nodes in the vnodeList.
     nodes = []
@@ -23237,10 +23242,11 @@ def findAllPotentiallyDirtyNodes(self):
 
     # Remove the hidden vnode.
     if c.hiddenRootNode in nodes:
+        if trace: g.trace('removing hidden root',c.hiddenRootNode)
         nodes.remove(c.hiddenRootNode)
 
     # g.trace('done',len(nodes))
-    # g.trace(g.listToString(nodes))
+    if trace: g.trace(nodes)
     return nodes
 #@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
 #@-node:ekr.20090225080846.1:Added support for @edit

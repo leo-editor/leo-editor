@@ -1200,7 +1200,7 @@ class leoBody:
 
         '''Update Leo after the body has been changed.'''
 
-        trace = False
+        trace = False and not g.unitTesting
         body = self ; c = self.c
         bodyCtrl = w = body.bodyCtrl
         p = c.p
@@ -1249,7 +1249,7 @@ class leoBody:
             redraw_flag = True
 
         if redraw_flag:
-            c.redraw_after_icons_changed(all=False)
+            c.redraw_after_icons_changed()
         #@-node:ekr.20051026083733.7:<< update icons if necessary >>
         #@nl
     #@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)

@@ -685,7 +685,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.setInsertPoint('end')
             w.seeInsertPoint()
             self.endCommand()
-            c.redraw_after_icons_changed(all=False)
+            c.redraw_after_icons_changed()
             c.recolor()
     #@nonl
     #@-node:ekr.20050920084036.35:appendToBuffer
@@ -711,7 +711,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.insert('end',s)
             w.setInsertPoint('end')
             self.endCommand()
-            c.redraw_after_icons_changed(all=False)
+            c.redraw_after_icons_changed()
             c.recolor()
     #@-node:ekr.20050920084036.36:copyToBuffer
     #@+node:ekr.20050920084036.37:insertToBuffer
@@ -737,7 +737,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.insert(i,s)
             w.seeInsertPoint()
             self.endCommand()
-            c.redraw_after_icons_changed(all=False)
+            c.redraw_after_icons_changed()
     #@nonl
     #@-node:ekr.20050920084036.37:insertToBuffer
     #@+node:ekr.20050920084036.38:killBuffer
@@ -809,7 +809,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             w.setInsertPoint(0)
             w.seeInsertPoint()
             self.endCommand()
-            c.redraw_after_icons_changed(all=False)
+            c.redraw_after_icons_changed()
             c.recolor()
     #@-node:ekr.20050920084036.39:prependToBuffer
     #@+node:ekr.20050920084036.43:renameBuffer
@@ -2422,7 +2422,7 @@ class editCommandsClass (baseEditCommandsClass):
         if aList:
             self.setIconList(p, aList[1:])
             c.setChanged(True)
-            c.redraw_after_icons_changed(all=False)
+            c.redraw_after_icons_changed()
     #@nonl
     #@-node:ekr.20071114082418:deleteFirstIcon
     #@+node:ekr.20071114092622:deleteIconByName
@@ -2449,7 +2449,7 @@ class editCommandsClass (baseEditCommandsClass):
         if len(newList) != len(aList):
             self.setIconList(p, newList)       
             c.setChanged(True)
-            c.redraw_after_icons_changed(all=False)
+            c.redraw_after_icons_changed()
         else:
             g.trace('not found',name)
 
@@ -2466,7 +2466,7 @@ class editCommandsClass (baseEditCommandsClass):
         if aList:
             self.setIconList(p, aList[:-1])
             c.setChanged(True)
-            c.redraw_after_icons_changed(all=False)
+            c.redraw_after_icons_changed()
     #@nonl
     #@-node:ekr.20071114085054:deleteLastIcon
     #@+node:ekr.20071114082418.1:deleteNodeIcons
@@ -2481,7 +2481,7 @@ class editCommandsClass (baseEditCommandsClass):
             a["lineYOffset"] = 0
             p.setDirty()
             c.setChanged(True)
-            c.redraw_after_icons_changed(all=False)
+            c.redraw_after_icons_changed()
     #@-node:ekr.20071114082418.1:deleteNodeIcons
     #@+node:ekr.20071114081313.1:insertIcon
     def insertIcon (self,event=None):
@@ -2507,7 +2507,7 @@ class editCommandsClass (baseEditCommandsClass):
         aList2.extend(aList)
         self.setIconList(p, aList2)
         c.setChanged(True)
-        c.redraw_after_icons_changed(all=False)
+        c.redraw_after_icons_changed()
     #@-node:ekr.20071114081313.1:insertIcon
     #@+node:ekr.20080108090719:insertIconFromFile
     def insertIconFromFile (self,path,p=None,pos=None,**kargs):
@@ -2526,7 +2526,7 @@ class editCommandsClass (baseEditCommandsClass):
         aList2.insert(pos,aList[0])
         self.setIconList(p, aList2)
         c.setChanged(True)
-        c.redraw_after_icons_changed(all=False)
+        c.redraw_after_icons_changed()
     #@-node:ekr.20080108090719:insertIconFromFile
     #@-node:ekr.20071114081313:icons...
     #@+node:ekr.20050920084036.74:indent...
