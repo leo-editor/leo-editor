@@ -36,6 +36,41 @@ Using r1372 and the Qt plugin, I get strange results with the recent-files menu 
 
 @color
 #@nonl
+#@+node:ekr.20081215074704.18:Finish qt gui delete_range method
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/51edf3b44d6a587e
+
+revno: 1259.1.10
+revision-id: terry_n_brown@yahoo.com-20081130181632-ci0ioaksewdvc257
+
+I added code so that this no longer derails the initialization process,
+i.e. just catch the exception and continue.  I don't know what's wrong
+except I first noticed it after a tkinter update from Ubuntu.  I
+think.  Anyway, that's my story :)
+
+When I added the "clean recent files" menu option long before this
+traceback showed up I had a heap of trouble deleting just the file
+entries on the recent files menu.  It was originally hardwired that the
+menu have a "Clear list" item, and then the file entries, but I wanted
+to make it get it's command entries from @menu @settings and add the
+files afterward and that was a lot of fiddling.  I.e. originally it
+deleted everything and added the "Clear list" item before rebuilding
+the file list, now it either tries to delete only the file entries, or
+stores the entries before the files (from @menu) and adds them back
+before the files each time, I forget which finally worked.
+
+What's my point?  It would be nice if delete_range "just worked".  It's
+a 'pass' in qt, and I would guess recent files is the only thing in the
+entire code base that uses it.
+
+The menu tree seems to me to be "write only", i.e. not readable, at
+least from the Leo API, of course you can walk it in a gui specific
+way.  Not necessarily a problem, but would be nice if it was more
+robustly dynamic.  Or maybe I'm missing something, but I've only seen
+functions which find a menu based on knowing it exists before hand.
+#@nonl
+#@-node:ekr.20081215074704.18:Finish qt gui delete_range method
 #@+node:ekr.20081121105001.354:class leoQtMenu (leoMenu)
 class leoQtMenu (leoMenu.leoMenu):
 
@@ -434,43 +469,6 @@ def delete_range (self,menu,n1,n2):
         # return menu.delete(n1,n2)
 #@-node:ekr.20081121105001.365:delete_range (leoQtMenu)
 #@-node:ekr.20090128113654.1:Recent files menu is duplicated in qt gui
-#@+node:ekr.20081215074704.18:Finish qt gui delete_range method
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/51edf3b44d6a587e
-
-revno: 1259.1.10
-revision-id: terry_n_brown@yahoo.com-20081130181632-ci0ioaksewdvc257
-
-I added code so that this no longer derails the initialization process,
-i.e. just catch the exception and continue.  I don't know what's wrong
-except I first noticed it after a tkinter update from Ubuntu.  I
-think.  Anyway, that's my story :)
-
-When I added the "clean recent files" menu option long before this
-traceback showed up I had a heap of trouble deleting just the file
-entries on the recent files menu.  It was originally hardwired that the
-menu have a "Clear list" item, and then the file entries, but I wanted
-to make it get it's command entries from @menu @settings and add the
-files afterward and that was a lot of fiddling.  I.e. originally it
-deleted everything and added the "Clear list" item before rebuilding
-the file list, now it either tries to delete only the file entries, or
-stores the entries before the files (from @menu) and adds them back
-before the files each time, I forget which finally worked.
-
-What's my point?  It would be nice if delete_range "just worked".  It's
-a 'pass' in qt, and I would guess recent files is the only thing in the
-entire code base that uses it.
-
-The menu tree seems to me to be "write only", i.e. not readable, at
-least from the Leo API, of course you can walk it in a gui specific
-way.  Not necessarily a problem, but would be nice if it was more
-robustly dynamic.  Or maybe I'm missing something, but I've only seen
-functions which find a menu based on knowing it exists before hand.
-#@nonl
-#@-node:ekr.20081215074704.18:Finish qt gui delete_range method
-#@+node:ekr.20090223065019.12:Swap scroll bars when orientation changes
-#@-node:ekr.20090223065019.12:Swap scroll bars when orientation changes
 #@-node:ekr.20090220150215.1:Urgent bugs
 #@+node:ekr.20081215074704.13:Bugs
 #@clone 2
@@ -1560,12 +1558,20 @@ def redraw_after_head_changed (self):
     c = self.c ; p = c.currentPosition()
     if trace: g.trace(p and p.h)
 
+    currentItem = self.getCurrentItem()
+
     if p:
         for item in self.tnode2items(p.v.t):
             if self.isValidItem(item):
                 self.setItemText(item,p.h)
 
-    # Bug fix:  do *not* set the tree item.
+    # A kludge: it's only virtue is that it seems to work.
+    ew = self.edit_widget(p)
+    if ew:
+        pass # Do *not* set the tree item
+    else:
+        self.setCurrentItemHelper(currentItem)
+
 #@-node:ekr.20090124174652.26:redraw_after_head_changed
 #@+node:ekr.20090124174652.27:redraw_after_icons_changed
 def redraw_after_icons_changed (self):
@@ -2003,12 +2009,20 @@ def redraw_after_head_changed (self):
     c = self.c ; p = c.currentPosition()
     if trace: g.trace(p and p.h)
 
+    currentItem = self.getCurrentItem()
+
     if p:
         for item in self.tnode2items(p.v.t):
             if self.isValidItem(item):
                 self.setItemText(item,p.h)
 
-    # Bug fix:  do *not* set the tree item.
+    # A kludge: it's only virtue is that it seems to work.
+    ew = self.edit_widget(p)
+    if ew:
+        pass # Do *not* set the tree item
+    else:
+        self.setCurrentItemHelper(currentItem)
+
 #@-node:ekr.20090124174652.26:redraw_after_head_changed
 #@+node:ekr.20090124174652.28:redraw_after_select
 # Important: this can not replace before/afterSelectHint.
@@ -2138,89 +2152,6 @@ def redraw_after_icons_changed (self):
 #@nonl
 #@-node:ekr.20090124174652.27:redraw_after_icons_changed
 #@-node:ekr.20090226105328.18:Ctrl-S destroys headline selection
-#@+node:ekr.20090302135940.11:Ctrl-s does not completely end editing
-#@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
-# Tricky code: do not change without careful thought and testing.
-
-def onHeadChanged (self,p,undoType='Typing',s=None):
-
-    '''Officially change a headline.'''
-
-    trace = False and not g.unitTesting
-    verbose = False
-
-    c = self.c ; u = c.undoer
-    if not p:
-        if trace: g.trace('*** no p')
-        return
-
-    item = self.position2item(p)
-    if not item:
-        # This is not an error.
-        # g.trace('no item for p: %s' % (p))
-        return
-
-    w = g.app.gui.get_focus()
-    ew = self.edit_widget(p)
-    if ew: e = ew.widget
-    else: e = None
-
-    # These are not errors: focus may have been lost.
-    # if trace and verbose:
-        # if not e:  g.trace('No e',g.callers(4))
-        # if e != w: g.trace('e != w',e,w,g.callers(4))
-        # if not p:  g.trace('No p')
-
-    if e and e == w:
-        s = e.text() ; len_s = len(s)
-        s = g.app.gui.toUnicode(s)
-    else:
-        s = self.getItemText(item)
-
-    oldHead = p.h
-    changed = s != oldHead
-    if changed:
-        if trace: g.trace('changed',repr(s),p.h)
-        p.initHeadString(s)
-        item.setText(0,s) # Required to avoid full redraw.
-        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
-        if not c.changed: c.setChanged(True)
-        # New in Leo 4.4.5: we must recolor the body because
-        # the headline may contain directives.
-        c.frame.body.recolor(p,incremental=True)
-        dirtyVnodeList = p.setDirty()
-        u.afterChangeNodeContents(p,undoType,undoData,
-            dirtyVnodeList=dirtyVnodeList)
-
-    # This is a crucial shortcut.
-    if g.unitTesting: return
-
-    self.redraw_after_head_changed()
-
-    if self.stayInTree:
-        c.treeWantsFocus()
-    else:
-        c.bodyWantsFocus()
-    c.outerUpdate()
-#@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
-#@+node:ekr.20090124174652.26:redraw_after_head_changed
-def redraw_after_head_changed (self):
-
-    trace = False and not g.unitTesting
-
-    if self.busy(): return
-
-    c = self.c ; p = c.currentPosition()
-    if trace: g.trace(p and p.h)
-
-    if p:
-        for item in self.tnode2items(p.v.t):
-            if self.isValidItem(item):
-                self.setItemText(item,p.h)
-
-    # Bug fix:  do *not* set the tree item.
-#@-node:ekr.20090124174652.26:redraw_after_head_changed
-#@-node:ekr.20090302135940.11:Ctrl-s does not completely end editing
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20081205131308.26:scanColorDirectives (very slow!)

@@ -228,6 +228,15 @@ class DynamicWindow(QtGui.QMainWindow):
         orientation2 = g.choose(vert,QtCore.Qt.Vertical, QtCore.Qt.Horizontal)
         self.splitter.setOrientation(orientation1)
         self.splitter_2.setOrientation(orientation2)
+
+        # Set scrollbars depending on orientation.
+        c = self.c
+        top = c.frame.top
+        # sw = top.ui.stackedWidget
+        # self.widget = w = leoQTextEditWidget(
+            # top.ui.richTextEdit,
+            # name = 'body',c=c) # A QTextEdit.
+        # self.bodyCtrl = w # The widget as seen from Leo's core.
     #@-node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
     #@+node:ekr.20081121105001.203:setStyleSheets & helper
     styleSheet_inited = False

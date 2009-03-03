@@ -333,12 +333,20 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         c = self.c ; p = c.currentPosition()
         if trace: g.trace(p and p.h)
 
+        currentItem = self.getCurrentItem()
+
         if p:
             for item in self.tnode2items(p.v.t):
                 if self.isValidItem(item):
                     self.setItemText(item,p.h)
 
-        # Bug fix:  do *not* set the tree item.
+        # A kludge: it's only virtue is that it seems to work.
+        ew = self.edit_widget(p)
+        if ew:
+            pass # Do *not* set the tree item
+        else:
+            self.setCurrentItemHelper(currentItem)
+
     #@-node:ekr.20090124174652.26:redraw_after_head_changed
     #@+node:ekr.20090124174652.27:redraw_after_icons_changed
     def redraw_after_icons_changed (self):
