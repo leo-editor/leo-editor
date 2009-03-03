@@ -2695,7 +2695,6 @@ class leoTree:
             frame.setWrap(p)
             self.setBodyTextAfterSelect(p,old_p)
 
-            #### A major change.
             if c.expandAllAncestors(p):
                 c.frame.tree.redraw_after_select(p)
             #@nonl

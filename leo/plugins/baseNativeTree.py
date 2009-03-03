@@ -168,7 +168,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         finally:
             self.redrawing = False
 
-        self.setItemForCurrentPosition(scroll=True) #### scroll)
+        self.setItemForCurrentPosition(scroll=True)
         c.requestRedrawFlag= False
 
         if trace:
@@ -328,18 +328,17 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         trace = False and not g.unitTesting
 
-        c = self.c ; p = c.currentPosition()
-        currentItem = self.getCurrentItem()
+        if self.busy(): return
 
-        if trace: g.trace(currentItem,p and p.h)
+        c = self.c ; p = c.currentPosition()
+        if trace: g.trace(p and p.h)
 
         if p:
-            h = p.headString()
             for item in self.tnode2items(p.v.t):
                 if self.isValidItem(item):
-                    self.setItemText(item,h)
+                    self.setItemText(item,p.h)
 
-        self.setCurrentItemHelper(currentItem)
+        # Bug fix:  do *not* set the tree item.
     #@-node:ekr.20090124174652.26:redraw_after_head_changed
     #@+node:ekr.20090124174652.27:redraw_after_icons_changed
     def redraw_after_icons_changed (self):
@@ -952,13 +951,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if item == item2:
             if trace and verbose: g.trace('no change',self.traceItem(item))
             if scroll:
-                self.scrollToItem(item) #### ####
+                self.scrollToItem(item)
         else:
             try:
                 self.selecting = True
                 # This generates gui events, so we must use a lockout.
                 self.setCurrentItemHelper(item)
-                if scroll: #### scroll:
+                if scroll:
                     if trace: g.trace(self.traceItem(item),g.callers(4))
                     self.scrollToItem(item)
             finally:

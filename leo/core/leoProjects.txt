@@ -800,7 +800,7 @@ def get_directives_dict(p,root=None):
     trace = False and not g.unitTesting
 
     if root: root_node = root[0]
-    d = {} ##### '_p':p.copy()}
+    d = {}
 
     # Do this every time so plugins can add directives.
     pat = g.compute_directives_re()
@@ -1564,7 +1564,6 @@ self.revertHeadline = p.h
 frame.setWrap(p)
 self.setBodyTextAfterSelect(p,old_p)
 
-#### A major change.
 if c.expandAllAncestors(p):
     c.frame.tree.redraw_after_select(p)
 #@nonl
@@ -1629,14 +1628,9 @@ def expandAllAncestors (self,p):
     trace = False and not g.unitTesting
     c = self ; cc = c.chapterController
     redraw_flag = False
-    # inChapter = cc and cc.inChapter()
 
     for p in p.parents_iter():
-        #### This is a special case for chapter selection ????
-        # if cc and p.h.startswith('@chapter'):
-            # break
         if not p.isExpanded():
-            # g.trace(p.h)
             p.expand()
             redraw_flag = True
 
@@ -1808,7 +1802,7 @@ Clearly the file is not named 'check-derived-file', so there is a bug somewhere.
 #@+node:ekr.20070919133659:checkDerivedFile (atFile)
 def checkDerivedFile (self, event=None):
 
-    at = self ; c = at.c ; p = c.p #### ; s = p.b
+    at = self ; c = at.c ; p = c.p
 
     if not p.isAtFileNode() and not p.isAtThinFileNode():
         return g.es('Please select an @thin or @file node',color='red')
@@ -5531,7 +5525,6 @@ self.revertHeadline = p.h
 frame.setWrap(p)
 self.setBodyTextAfterSelect(p,old_p)
 
-#### A major change.
 if c.expandAllAncestors(p):
     c.frame.tree.redraw_after_select(p)
 #@nonl
@@ -6745,9 +6738,7 @@ def endEditing(self):
     p = c.p
 
     if p:
-
         c.frame.tree.endEditLabel()
-
         c.frame.tree.setSelectedLabelState(p)
 
     # The following code would be wrong; c.endEditing is a utility method.
@@ -7012,7 +7003,6 @@ self.revertHeadline = p.h
 frame.setWrap(p)
 self.setBodyTextAfterSelect(p,old_p)
 
-#### A major change.
 if c.expandAllAncestors(p):
     c.frame.tree.redraw_after_select(p)
 #@nonl
@@ -7079,9 +7069,7 @@ def endEditing(self):
     p = c.p
 
     if p:
-
         c.frame.tree.endEditLabel()
-
         c.frame.tree.setSelectedLabelState(p)
 
     # The following code would be wrong; c.endEditing is a utility method.
@@ -8346,7 +8334,6 @@ def getArg (self,event,
         << init altX vars >>
         # Set the states.
         bodyCtrl = c.frame.body.bodyCtrl
-        #### c.endEditing() #### A major change.
         c.widgetWantsFocus(bodyCtrl)
         k.afterGetArgState=returnKind,returnState,handler
         k.setState('getArg',1,k.getArg)
@@ -8400,9 +8387,7 @@ def endEditing(self):
     p = c.p
 
     if p:
-
         c.frame.tree.endEditLabel()
-
         c.frame.tree.setSelectedLabelState(p)
 
     # The following code would be wrong; c.endEditing is a utility method.
@@ -8526,7 +8511,6 @@ self.revertHeadline = p.h
 frame.setWrap(p)
 self.setBodyTextAfterSelect(p,old_p)
 
-#### A major change.
 if c.expandAllAncestors(p):
     c.frame.tree.redraw_after_select(p)
 #@nonl
@@ -9051,7 +9035,6 @@ self.revertHeadline = p.h
 frame.setWrap(p)
 self.setBodyTextAfterSelect(p,old_p)
 
-#### A major change.
 if c.expandAllAncestors(p):
     c.frame.tree.redraw_after_select(p)
 #@nonl
@@ -9993,6 +9976,583 @@ def selectVisNext (self,event=None):
 # Not all versions of Qt have this crucial method.
 #@nonl
 #@-node:ekr.20090212054250.2:Don't call recolor if hasattr fails
+#@+node:ekr.20090228065229.1:Fixed problems with dirty bits
+@nocolor
+
+- Setting a node dirty does not set ancestor @<file> nodes dirty.
+
+- In both qt and tk, write-at-file-nodes does not clear dirty bit of @file nodes.
+  Is there a reason for this?
+
+- (fixed) New nodes are not marked dirty (In either tk or qt).
+
+@color
+#@nonl
+#@+node:ekr.20031218072017.1761:c.insertHeadline
+def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
+
+    '''Insert a node after the presently selected node.'''
+
+    c = self ; u = c.undoer
+    current = c.p
+
+    if not current: return
+
+    undoData = c.undoer.beforeInsertNode(current)
+    # Make sure the new node is visible when hoisting.
+    if (as_child or
+        (current.hasChildren() and current.isExpanded()) or
+        (c.hoistStack and current == c.hoistStack[-1].p)
+    ):
+        if c.config.getBool('insert_new_nodes_at_end'):
+            p = current.insertAsLastChild()
+        else:
+            p = current.insertAsNthChild(0)
+    else:
+        p = current.insertAfter()
+    p.setDirty(setDescendentsDirty=False)
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    c.setChanged(True)
+    u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
+    c.redrawAndEdit(p,selectAll=True)
+
+    return p # for mod_labels plugin.
+#@-node:ekr.20031218072017.1761:c.insertHeadline
+#@+node:ekr.20031218072017.2012:writeAtFileNodes
+def writeAtFileNodes (self,event=None):
+
+    '''Write all @file nodes in the selected outline.'''
+
+    c = self.c
+
+    changedFiles,atOk = c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
+
+    if changedFiles:
+        g.es("auto-saving outline",color="blue")
+        c.save() # Must be done to set or clear tnodeList.
+#@-node:ekr.20031218072017.2012:writeAtFileNodes
+#@+node:ekr.20041005105605.147:writeAll (atFile)
+def writeAll(self,
+    writeAtFileNodesFlag=False,
+    writeDirtyAtFileNodesFlag=False,
+    toString=False,
+):
+
+    """Write @file nodes in all or part of the outline"""
+
+    at = self ; c = at.c
+    writtenFiles = [] # Files that might be written again.
+    mustAutoSave = False ; atOk = True
+
+    if writeAtFileNodesFlag:
+        # Write all nodes in the selected tree.
+        p = c.p
+        after = p.nodeAfterTree()
+    else:
+        # Write dirty nodes in the entire outline.
+        p =  c.rootPosition()
+        after = c.nullPosition()
+
+    << Clear all orphan bits >>
+    atOk = True
+    while p and p != after:
+        if p.isAnyAtFileNode() or p.isAtIgnoreNode():
+            << handle v's tree >>
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+
+    << say the command is finished >>
+    return mustAutoSave,atOk
+#@+node:ekr.20041005105605.148:<< Clear all orphan bits >>
+@ We must clear these bits because they may have been set on a previous write.
+Calls to atFile::write may set the orphan bits in @file nodes.
+If so, write_Leo_file will write the entire @file tree.
+@c
+
+for v2 in p.self_and_subtree_iter():
+    v2.clearOrphan()
+#@-node:ekr.20041005105605.148:<< Clear all orphan bits >>
+#@+node:ekr.20041005105605.149:<< handle v's tree >>
+if p.v.isDirty() or writeAtFileNodesFlag or p.v.t in writtenFiles:
+
+    at.fileChangedFlag = False
+    autoSave = False
+
+    # Tricky: @ignore not recognised in @silentfile nodes.
+    if p.isAtAsisFileNode():
+        at.asisWrite(p,toString=toString)
+        writtenFiles.append(p.v.t) ; autoSave = True
+    elif p.isAtIgnoreNode():
+        pass
+    elif p.isAtAutoNode():
+        at.writeOneAtAutoNode(p,toString=toString,force=False)
+        writtenFiles.append(p.v.t) # No need for autosave
+    elif p.isAtEditNode():
+        at.writeOneAtEditNode(p,toString=toString)
+        writtenFiles.append(p.v.t) # No need for autosave
+    elif p.isAtNorefFileNode():
+        at.norefWrite(p,toString=toString)
+        writtenFiles.append(p.v.t) ; autoSave = True
+    elif p.isAtNoSentFileNode():
+        at.write(p,nosentinels=True,toString=toString)
+        writtenFiles.append(p.v.t) # No need for autosave
+    elif p.isAtShadowFileNode():
+        at.writeOneAtShadowNode(p,toString=toString,force=False)
+        writtenFiles.append(p.v.t) ; autoSave = True # 2008/7/29
+    elif p.isAtThinFileNode():
+        at.write(p,thinFile=True,toString=toString)
+        writtenFiles.append(p.v.t) # No need for autosave.
+    elif p.isAtFileNode():
+        at.write(p,toString=toString)
+        writtenFiles.append(p.v.t) ; autoSave = True
+
+    if at.errors: atOk = False
+
+    if at.fileChangedFlag and autoSave: # Set by replaceTargetFileIfDifferent.
+        mustAutoSave = True
+#@-node:ekr.20041005105605.149:<< handle v's tree >>
+#@+node:ekr.20041005105605.150:<< say the command is finished >>
+if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
+    if len(writtenFiles) > 0:
+        g.es("finished")
+    elif writeAtFileNodesFlag:
+        g.es("no @file nodes in the selected tree")
+    else:
+        g.es("no dirty @file nodes")
+#@-node:ekr.20041005105605.150:<< say the command is finished >>
+#@-node:ekr.20041005105605.147:writeAll (atFile)
+#@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
+def replaceTargetFileIfDifferent (self,root):
+
+    '''Create target file as follows:
+    1. If target file does not exist, rename output file to target file.
+    2. If target file is identical to output file, remove the output file.
+    3. If target file is different from output file,
+       remove target file, then rename output file to be target file.
+
+    Return True if the original file was changed.
+    '''
+
+    c = self.c
+
+    assert(self.outputFile is None)
+
+    if self.toString:
+        # Do *not* change the actual file or set any dirty flag.
+        self.fileChangedFlag = False
+        return False
+
+    if root:
+        # The default: may be changed later.
+        root.clearOrphan()
+        root.clearDirty()
+
+    if g.os_path_exists(self.targetFileName):
+        if self.compareFiles(self.outputFileName,self.targetFileName,not self.explicitLineEnding):
+            # Files are identical.
+            ok = self.remove(self.outputFileName)
+            g.es('unchanged:',self.shortFileName)
+            if not ok:
+                # self.remove gives the error.
+                if root: root.setDirty() # New in 4.4.8.
+            self.fileChangedFlag = False
+            return False
+        else:
+            << report if the files differ only in line endings >>
+            mode = self.stat(self.targetFileName)
+            ok = self.rename(self.outputFileName,self.targetFileName,mode)
+            if ok:
+                c.setFileTimeStamp(self.targetFileName)
+                g.es('wrote:    ',self.shortFileName)
+            else:
+                # self.rename gives the error.
+                g.es('unchanged:',self.shortFileName)
+                if root: root.setDirty() # New in 4.4.8.
+
+            self.fileChangedFlag = ok
+            return ok
+    else:
+        # Rename the output file.
+        ok = self.rename(self.outputFileName,self.targetFileName)
+        if ok:
+            c.setFileTimeStamp(self.targetFileName)
+            g.es('created:  ',self.targetFileName)
+        else:
+            # self.rename gives the error.
+            if root: root.setDirty() # New in 4.4.8.
+
+        # No original file to change. Return value tested by a unit test.
+        self.fileChangedFlag = False 
+        return False
+#@+node:ekr.20041019090322:<< report if the files differ only in line endings >>
+if (
+    self.explicitLineEnding and
+    self.compareFiles(
+        self.outputFileName,
+        self.targetFileName,
+        ignoreLineEndings=True)):
+
+    g.es("correcting line endings in:",self.targetFileName,color="blue")
+#@-node:ekr.20041019090322:<< report if the files differ only in line endings >>
+#@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent & helper
+#@+node:ekr.20040305162628:p.Dirty bits
+#@+node:ekr.20040311113514:p.clearDirty
+def clearDirty (self):
+
+    p = self
+    p.v.clearDirty()
+#@-node:ekr.20040311113514:p.clearDirty
+#@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
+def findAllPotentiallyDirtyNodes(self):
+
+    trace = False and not g.unitTesting
+    p = self ; c = p.v.context
+
+    # Start with all nodes in the vnodeList.
+    nodes = []
+    newNodes = p.v.t.vnodeList[:]
+
+    # Add nodes until no more are added.
+    while newNodes:
+        addedNodes = []
+        # g.trace(len(newNodes))
+        nodes.extend(newNodes)
+        for v in newNodes:
+            for v2 in v.t.vnodeList:
+                if v2 not in nodes and v2 not in addedNodes:
+                    addedNodes.append(v2)
+            for v2 in v.parents:
+                if v2 not in nodes and v2 not in addedNodes:
+                    addedNodes.append(v2)
+        newNodes = addedNodes[:]
+
+    # Remove the hidden vnode.
+    if c.hiddenRootNode in nodes:
+        if trace: g.trace('removing hidden root',c.hiddenRootNode)
+        nodes.remove(c.hiddenRootNode)
+
+    # g.trace('done',len(nodes))
+    if trace: g.trace(nodes)
+    return nodes
+#@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
+#@+node:ekr.20040702104823:p.inAtIgnoreRange
+def inAtIgnoreRange (self):
+
+    """Returns True if position p or one of p's parents is an @ignore node."""
+
+    p = self
+
+    for p in p.self_and_parents_iter():
+        if p.isAtIgnoreNode():
+            return True
+
+    return False
+#@-node:ekr.20040702104823:p.inAtIgnoreRange
+#@+node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    p = self
+    dirtyVnodeList = []
+
+    # Calculate all nodes that are joined to p or parents of such nodes.
+    nodes = p.findAllPotentiallyDirtyNodes()
+
+    if setDescendentsDirty:
+        # N.B. Only mark _direct_ descendents of nodes.
+        # Using the findAllPotentiallyDirtyNodes algorithm would mark way too many nodes.
+        for p2 in p.subtree_iter():
+            # Only @thin nodes need to be marked.
+            if p2.v not in nodes and p2.isAtThinFileNode():
+                nodes.append(p2.v)
+
+    if trace and verbose:
+        for v in nodes:
+            print v.t.isDirty(),v.isAnyAtFileNode(),v
+
+    dirtyVnodeList = [v for v in nodes
+        if not v.t.isDirty() and v.isAnyAtFileNode()]
+    changed = len(dirtyVnodeList) > 0
+
+    for v in dirtyVnodeList:
+        v.t.setDirty() # Do not call v.setDirty here!
+
+    if trace: g.trace(dirtyVnodeList) #,g.callers(5))
+
+    return dirtyVnodeList
+#@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
+#@+node:ekr.20040303163330:p.setDirty
+def setDirty (self,setDescendentsDirty=True):
+
+    '''Mark a node and all ancestor @file nodes dirty.'''
+
+    p = self ; dirtyVnodeList = []
+
+    # g.trace(p.h,g.callers(4))
+
+    if not p.v.t.isDirty():
+        p.v.t.setDirty()
+        dirtyVnodeList.append(p.v)
+
+    # Important: this must be called even if p.v is already dirty.
+    # Typing can change the @ignore state!
+    dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
+    dirtyVnodeList.extend(dirtyVnodeList2)
+
+    return dirtyVnodeList
+#@-node:ekr.20040303163330:p.setDirty
+#@-node:ekr.20040305162628:p.Dirty bits
+#@+node:ekr.20031218072017.1329:onBodyChanged (leoBody)
+# This is the only key handler for the body pane.
+def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
+
+    '''Update Leo after the body has been changed.'''
+
+    trace = False and not g.unitTesting
+    body = self ; c = self.c
+    bodyCtrl = w = body.bodyCtrl
+    p = c.p
+    insert = w.getInsertPoint()
+    ch = g.choose(insert==0,'',w.get(insert-1))
+    ch = g.toUnicode(ch,g.app.tkEncoding)
+    newText = w.getAllText() # Note: getAllText converts to unicode.
+    newSel = w.getSelectionRange()
+    if not oldText:
+        oldText = p.b ; changed = True
+    else:
+        changed = oldText != newText
+    if trace: g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
+    if not changed: return
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+    p.v.setBodyString(newText)
+    p.v.t.insertSpot = body.getInsertPoint()
+    << recolor the body >>
+    if not c.changed: c.setChanged(True)
+    self.updateEditors()
+    << update icons if necessary >>
+#@+node:ekr.20051026083733.6:<< recolor the body >>
+body.colorizer.interrupt()
+c.frame.scanForTabWidth(p)
+body.recolor(p,incremental=not self.forceFullRecolorFlag)
+self.forceFullRecolorFlag = False
+
+if g.app.unitTesting:
+    g.app.unitTestDict['colorized'] = True
+#@-node:ekr.20051026083733.6:<< recolor the body >>
+#@+node:ekr.20051026083733.7:<< update icons if necessary >>
+
+redraw_flag = False
+# Update dirty bits.
+# p.setDirty() sets all cloned and @file dirty bits.
+if not p.isDirty() and p.setDirty():
+    redraw_flag = True
+
+# Update icons. p.v.iconVal may not exist during unit tests.
+val = p.computeIcon()
+# g.trace('new val:',val,'old val:',hasattr(p.v,'iconVal') and p.v.iconVal or '<None>')
+if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
+    p.v.iconVal = val
+    redraw_flag = True
+
+if redraw_flag:
+    c.redraw_after_icons_changed()
+#@-node:ekr.20051026083733.7:<< update icons if necessary >>
+#@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)
+#@-node:ekr.20090228065229.1:Fixed problems with dirty bits
+#@+node:ekr.20090302102736.1:Fixed bug: Ctrl-s destroys headline selection
+# When editing headline text.
+#@nonl
+#@+node:ekr.20031218072017.2834:save (commands)
+def save (self,event=None):
+
+    '''Save a Leo outline to a file.'''
+
+    c = self ; p = c.currentPosition()
+    w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+        c.mFileName = ""
+
+    if c.mFileName:
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.save(c.mFileName)
+    else:
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            # Don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+            c.fileCommands.save(c.mFileName)
+            c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
+
+    # Done in fileCommands.save.
+    # c.redraw_after_icons_changed()
+    c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2834:save (commands)
+#@+node:ekr.20031218072017.1720:save (fileCommands)
+def save(self,fileName):
+
+    c = self.c ; v = c.currentVnode()
+
+    # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
+    ok = g.doHook("save1",c=c,p=v,v=v,fileName=fileName)
+
+    if ok is None:
+        c.endEditing() # Set the current headline text.
+        self.setDefaultDirectoryForNewFiles(fileName)
+        ok = c.checkFileTimeStamp(fileName)
+        if ok:
+            ok = self.write_Leo_file(fileName,False) # outlineOnlyFlag
+        if ok:
+            self.putSavedMessage(fileName)
+            c.setChanged(False) # Clears all dirty bits.
+            if c.config.save_clears_undo_buffer:
+                g.es("clearing undo")
+                c.undoer.clearUndoState()
+
+        c.redraw_after_icons_changed()
+
+    g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
+    return ok
+#@-node:ekr.20031218072017.1720:save (fileCommands)
+#@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+# Ends the editing in the outline.
+
+def endEditing(self):
+
+    c = self ; k = c.k
+
+    p = c.p
+
+    if p:
+        c.frame.tree.endEditLabel()
+        c.frame.tree.setSelectedLabelState(p)
+
+    # The following code would be wrong; c.endEditing is a utility method.
+    # if k:
+        # k.setDefaultInputState()
+        # # Recolor the *body* text, **not** the headline.
+        # k.showStateAndMode(w=c.frame.body.bodyCtrl)
+#@-node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+#@+node:ekr.20080514131122.14:c.redrawing...
+#@+node:ekr.20090110073010.1:c.redraw
+def redraw (self,p=None,setFocus=False):
+    '''Redraw the screen immediately.'''
+
+    c = self
+
+    if p:
+        # Update body pane and set c._currentPosition.
+        c.expandAllAncestors(p) # Redundant, but safe.
+        c.selectPosition(p)
+    else:
+        p = c.p
+        c.expandAllAncestors(p)
+
+    c.frame.tree.redraw(p)
+    if setFocus: c.treeFocusHelper()
+
+# Compatibility with old scripts
+force_redraw = redraw
+redraw_now = redraw
+#@-node:ekr.20090110073010.1:c.redraw
+#@+node:ekr.20090110131802.2:c.redraw_after_contract
+def redraw_after_contract (self,p=None,setFocus=False):
+
+    c = self
+
+    c.endEditing()
+
+    if p:
+        c.setCurrentPosition(p)
+    else:
+        p = c.currentPosition()
+
+    c.frame.tree.redraw_after_contract(p)
+
+    if setFocus:
+        c.treeFocusHelper()
+#@-node:ekr.20090110131802.2:c.redraw_after_contract
+#@+node:ekr.20090112065525.1:c.redraw_after_expand
+def redraw_after_expand (self,p=None,setFocus=False):
+
+    c = self
+
+    c.endEditing()
+
+    if p:
+        c.setCurrentPosition(p)
+    else:
+        p = c.currentPosition()
+
+    c.frame.tree.redraw_after_expand(p)
+
+    if setFocus:
+        c.treeFocusHelper()
+#@-node:ekr.20090112065525.1:c.redraw_after_expand
+#@+node:ekr.20090110073010.2:c.redraw_after_head_changed
+def redraw_after_head_changed(self):
+
+    '''Redraw the screen (if needed) when editing ends.
+    This may be a do-nothing for some gui's.'''
+
+    return self.frame.tree.redraw_after_head_changed()
+#@-node:ekr.20090110073010.2:c.redraw_after_head_changed
+#@+node:ekr.20090110073010.3:c.redraw_afer_icons_changed
+def redraw_after_icons_changed(self):
+
+    '''Update the icon for the presently selected node,
+    or all icons if the 'all' flag is true.'''
+
+    c = self
+
+    c.frame.tree.redraw_after_icons_changed()
+
+    # c.treeFocusHelper()
+#@-node:ekr.20090110073010.3:c.redraw_afer_icons_changed
+#@+node:ekr.20090110073010.4:c.redraw_after_select
+def redraw_after_select(self,p,setFocus=False):
+
+    '''Redraw the screen after node p has been selected.
+
+    The intention is for the gui to just select the node
+    if it is visible, and to completely redraw the screen otherwise.'''
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('(Commands)',p and p.h or '<No p>', g.callers(4))
+
+    c = self
+
+    flag = c.expandAllAncestors(p)
+    c.selectPosition(p)
+        # Required to update body pane.
+        # Will call tree.before/afterSelect hint.
+
+    if flag:
+        c.frame.tree.redraw_after_select(p)
+
+    if setFocus: c.treeFocusHelper()
+#@-node:ekr.20090110073010.4:c.redraw_after_select
+#@-node:ekr.20080514131122.14:c.redrawing...
+#@-node:ekr.20090302102736.1:Fixed bug: Ctrl-s destroys headline selection
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
@@ -14892,7 +15452,7 @@ def get_directives_dict(p,root=None):
     trace = False and not g.unitTesting
 
     if root: root_node = root[0]
-    d = {} ##### '_p':p.copy()}
+    d = {}
 
     # Do this every time so plugins can add directives.
     pat = g.compute_directives_re()
@@ -23118,8 +23678,6 @@ If we add a trailing newline, we'll generate an @nonl sentinel below.
 
 if s:
     trailingNewlineFlag = s[-1] == '\n'
-    ###  if (at.sentinels or at.force_newlines_in_at_nosent_bodies) and
-    ####     not trailingNewlineFlag:
     if not trailingNewlineFlag:
         if (at.sentinels or 
             (not at.atAuto and at.force_newlines_in_at_nosent_bodies)
@@ -25323,18 +25881,15 @@ def updateLabel (self,event):
         # g.trace(i,j,ins)
         if i != j:
             w.delete(i,j)
-            #### w.setSelectionRange(i,i,insert=i) #### for tk
         if ch == '\b':
             s = w.getAllText()
             if len(s) > len(k.mb_prefix):
                 w.delete(i-1)
                 i-=1
-                #### w.setSelectionRange(i,i,insert=i) #### for tk
         else:
             w.insert(ins,ch)
             i = ins+1
-            #### w.setSelectionRange(i,i,insert=i) #### for tk
-        # g.trace(k.mb_prefix)       
+#@nonl
 #@-node:ekr.20061031170011.12:updateLabel
 #@+node:ekr.20050920084036.264:iSearchStateHandler
 # Called from the state manager when the state is 'isearch'

@@ -469,7 +469,7 @@ def get_directives_dict(p,root=None):
     trace = False and not g.unitTesting
 
     if root: root_node = root[0]
-    d = {} ##### '_p':p.copy()}
+    d = {}
 
     # Do this every time so plugins can add directives.
     pat = g.compute_directives_re()

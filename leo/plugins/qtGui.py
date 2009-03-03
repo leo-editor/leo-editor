@@ -3636,7 +3636,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         return e
     #@-node:ekr.20090124174652.104:createTreeEditorForItem
-    #@+node:ekr.20090129062500.13:editLabelHelper
+    #@+node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
     def editLabelHelper (self,item,selectAll=False,selection=None):
 
         '''Called by nativeTree.editLabel to do
@@ -3664,7 +3664,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
             self.error('no edit widget')
 
         return e
-    #@-node:ekr.20090129062500.13:editLabelHelper
+    #@-node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
     #@+node:ekr.20090124174652.103:createTreeItem
     def createTreeItem(self,p,parent_item):
 
@@ -3738,14 +3738,14 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         self.setHScroll(0)
     #@-node:ekr.20090201080444.12:scrollToItem
-    #@+node:ekr.20090124174652.107:setCurrentItemHelper
+    #@+node:ekr.20090124174652.107:setCurrentItemHelper (leoQtTree)
     def setCurrentItemHelper(self,item):
 
         w = self.treeWidget
         w.setCurrentItem(item)
 
         # g.trace(id(item),g.callers(5))
-    #@-node:ekr.20090124174652.107:setCurrentItemHelper
+    #@-node:ekr.20090124174652.107:setCurrentItemHelper (leoQtTree)
     #@+node:ekr.20090124174652.108:setItemText
     def setItemText (self,item,s):
 
@@ -5270,7 +5270,6 @@ class leoQtColorizer:
         if c == None: return # self.c may be None for testing.
 
         self.language = language = c.target_language
-        #### self.comment_string = None
         self.rootMode = None # None, "code" or "doc"
 
         for p in p.self_and_parents_iter():
@@ -5437,9 +5436,6 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
             colorizer=colorizer,
             highlighter=self,
             w=c.frame.body.bodyCtrl)
-
-        #### self.enabled = True
-    #@nonl
     #@-node:ekr.20081205131308.1:ctor (leoQtSyntaxHighlighter)
     #@+node:ekr.20090216070256.10:enable/disable & disabledRehighlight
     # def enable (self,p):
@@ -5538,11 +5534,9 @@ class jEditColorizer:
         self.ignore_case = True
         self.no_word_sep = ''
         # Config settings...
-        #### self.comment_string = None # Set by scanColorDirectives on @comment
         self.showInvisibles = False # True: show "invisible" characters.
         self.underline_undefined = c.config.getBool("underline_undefined_section_names")
         self.use_hyperlinks = c.config.getBool("use_hyperlinks")
-        #### self.enabled = c.config.getBool('use_syntax_coloring')
         # Debugging...
         self.count = 0 # For unit testing.
         self.allow_mark_prev = True # The new colorizer tolerates this nonsense :-)
@@ -5559,11 +5553,8 @@ class jEditColorizer:
         self.totalKeywordsCalls = 0
         self.totalLeoKeywordsCalls = 0
         # Mode data...
-        #### self.comment_string = None # Can be set by @comment directive.
         self.defaultRulesList = []
-        ### self.flag = True # True unless in range of @nocolor
         self.importedRulesets = {}
-        #### self.language = 'python' # set by scanColorDirectives.
         self.prev = None # The previous token.
         self.fonts = {} # Keys are config names.  Values are actual fonts.
         self.keywords = {} # Keys are keywords, values are 0..5.
@@ -5906,10 +5897,6 @@ class jEditColorizer:
         self.nextState = 1 # Dont use 0.
         self.stateDict = {}
         self.stateNameDict = {}
-
-        #### self.updateSyntaxColorer(self.p)
-            # Sets self.colorizer.flag and self.colorizer.language.
-
         self.init_mode(self.colorizer.language)
 
         # Used by matchers.
@@ -6878,7 +6865,7 @@ class jEditColorizer:
         verbose = False ; traceMatch = False
 
         # Return immediately if syntax coloring has been disabled.
-        if not self.colorizer.enabled: #### self.flag:
+        if not self.colorizer.enabled:
             self.highlighter.setCurrentBlockState(-1)
             if trace and (self.initFlag or verbose):
                 self.initFlag = False

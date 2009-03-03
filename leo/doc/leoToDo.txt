@@ -90,8 +90,6 @@ If we add a trailing newline, we'll generate an @nonl sentinel below.
 
 if s:
     trailingNewlineFlag = s[-1] == '\n'
-    ###  if (at.sentinels or at.force_newlines_in_at_nosent_bodies) and
-    ####     not trailingNewlineFlag:
     if not trailingNewlineFlag:
         if (at.sentinels or 
             (not at.atAuto and at.force_newlines_in_at_nosent_bodies)

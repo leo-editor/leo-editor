@@ -381,7 +381,7 @@ class atFile:
     #@+node:ekr.20070919133659:checkDerivedFile (atFile)
     def checkDerivedFile (self, event=None):
 
-        at = self ; c = at.c ; p = c.p #### ; s = p.b
+        at = self ; c = at.c ; p = c.p
 
         if not p.isAtFileNode() and not p.isAtThinFileNode():
             return g.es('Please select an @thin or @file node',color='red')
@@ -3054,8 +3054,6 @@ class atFile:
 
         if s:
             trailingNewlineFlag = s[-1] == '\n'
-            ###  if (at.sentinels or at.force_newlines_in_at_nosent_bodies) and
-            ####     not trailingNewlineFlag:
             if not trailingNewlineFlag:
                 if (at.sentinels or 
                     (not at.atAuto and at.force_newlines_in_at_nosent_bodies)

@@ -3107,7 +3107,6 @@ class keyHandlerClass:
             #@nl
             # Set the states.
             bodyCtrl = c.frame.body.bodyCtrl
-            #### c.endEditing() #### A major change.
             c.widgetWantsFocus(bodyCtrl)
             k.afterGetArgState=returnKind,returnState,handler
             k.setState('getArg',1,k.getArg)
@@ -3810,18 +3809,15 @@ class keyHandlerClass:
             # g.trace(i,j,ins)
             if i != j:
                 w.delete(i,j)
-                #### w.setSelectionRange(i,i,insert=i) #### for tk
             if ch == '\b':
                 s = w.getAllText()
                 if len(s) > len(k.mb_prefix):
                     w.delete(i-1)
                     i-=1
-                    #### w.setSelectionRange(i,i,insert=i) #### for tk
             else:
                 w.insert(ins,ch)
                 i = ins+1
-                #### w.setSelectionRange(i,i,insert=i) #### for tk
-            # g.trace(k.mb_prefix)       
+    #@nonl
     #@-node:ekr.20061031170011.12:updateLabel
     #@+node:ekr.20061031170011.13:getEditableTextRange
     def getEditableTextRange (self):
