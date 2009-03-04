@@ -149,7 +149,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         Preserve the vertical scrolling unless scroll is True.'''
 
         trace = False and not g.app.unitTesting
-        # verbose = False
         c = self.c
 
         if self.busy():
@@ -753,7 +752,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.53:afterSelectHint (nativeTree)
     def afterSelectHint (self,p,old_p):
 
-        trace = False
+        trace = False and not g.unitTesting
         c = self.c
 
         self.selecting = False
@@ -775,7 +774,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.54:beforeSelectHint (nativeTree)
     def beforeSelectHint (self,p,old_p):
 
-        trace = False
+        trace = False and not g.unitTesting
 
         if self.busy(): return
 
@@ -931,7 +930,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         '''Select the item for c.currentPosition()'''
 
-        trace = False
+        trace = False and not g.unitTesting
         verbose = False
 
         c = self.c ; p = c.currentPosition()
