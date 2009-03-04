@@ -3709,11 +3709,11 @@ class keyHandlerClass:
     #@+node:ekr.20061031170011.8:setLabel
     def setLabel (self,s,protect=False):
 
-        trace = (False or self.trace_minibuffer) and g.app.unitTesting
+        trace = (False or self.trace_minibuffer) and not g.app.unitTesting
         k = self ; c = k.c ; w = self.widget
         if not w: return
 
-        if trace: g.trace('w',w)
+        if trace: g.trace(repr(s),g.callers(4))
 
         w.setAllText(s)
         n = len(s)
@@ -4635,6 +4635,10 @@ class keyHandlerClass:
             if not w: return
 
         # g.trace(w, state, mode,g.callers(5))
+
+        # This fixes a problem with the tk gui plugin.
+        if mode and mode.lower().startswith('isearch'):
+            return
 
         wname = g.app.gui.widget_name(w).lower()
 

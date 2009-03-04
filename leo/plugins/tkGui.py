@@ -4310,6 +4310,8 @@ class leoTkinterFrame (leoFrame.leoFrame):
 
         f = self ; c = f.c ; k = c.k ; w = f.miniBufferWidget
 
+        # g.trace(g.callers(4))
+
         table = [
             ('<Key>',           k.masterKeyHandler),
             ('<Button-1>',      k.masterClickHandler),

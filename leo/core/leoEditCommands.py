@@ -7938,9 +7938,10 @@ class searchCommandsClass (baseEditCommandsClass):
 
     def iSearchStateHandler (self,event):
 
+        trace = False and not g.unitTesting
         c = self.c ; k = self.k
         stroke = event.stroke
-        # g.trace('stroke',repr(stroke))
+        if trace: g.trace('stroke',repr(stroke))
 
         # No need to recognize ctrl-z.
         if stroke in ('Escape','Return'):
@@ -7955,6 +7956,7 @@ class searchCommandsClass (baseEditCommandsClass):
             self.endSearch()
             k.masterKeyHandler(event,stroke=stroke)
         else:
+            if trace: g.trace('event',event)
             k.updateLabel(event)
             self.iSearch()
     #@nonl
@@ -8014,7 +8016,8 @@ class searchCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20090205085858.1:setWidget
     def setWidget (self):
 
-        c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
+        c = self.c ; p = c.currentPosition()
+        bodyCtrl = c.frame.body.bodyCtrl
         ifinder = self.ifinder
 
         if ifinder.in_headline:
@@ -8072,6 +8075,7 @@ class searchCommandsClass (baseEditCommandsClass):
                 g.choose(self.regexp,' Regexp',''),
                 g.choose(self.ignoreCase,' NoCase',''),
             ),protect=True)
+
         k.setState('isearch',1,handler=self.iSearchStateHandler)
         c.minibufferWantsFocusNow()
     #@-node:ekr.20050920084036.262:startIncremental

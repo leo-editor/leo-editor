@@ -2,10 +2,6 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090304084841.13:Urgent
-#@+node:ekr.20090304084841.14:Get isearch working for tkinter
-#@-node:ekr.20090304084841.14:Get isearch working for tkinter
-#@-node:ekr.20090304084841.13:Urgent
 #@+node:ekr.20090304084841.10:Asap
 #@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
 http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
@@ -13,6 +9,18 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
 #@-node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
 #@+node:ekr.20090304084841.15:Complete open-with menu
 #@-node:ekr.20090304084841.15:Complete open-with menu
+#@+node:ekr.20081215162017.5:Support multiple body editors
+@
+
+The body part is a QFrame with QGridLayout.
+
+For an example, run this script:
+@c
+
+from PyQt4.QtGui import QTextEdit
+w = QTextEdit()
+c.frame.top.ui.leo_body_inner_frame.layout().addWidget(w,0,1)
+#@-node:ekr.20081215162017.5:Support multiple body editors
 #@+node:ekr.20090128083504.1:Fix rclick
 @nocolor-node
 
@@ -31,18 +39,6 @@ couldn't find any mention of gsimage in the diff.
                      c.frame.body.bodyCtrl.delete(a.gsimage)
                  except:
 #@-node:ekr.20090128083504.1:Fix rclick
-#@+node:ekr.20081215162017.5:Support multiple body editors
-@
-
-The body part is a QFrame with QGridLayout.
-
-For an example, run this script:
-@c
-
-from PyQt4.QtGui import QTextEdit
-w = QTextEdit()
-c.frame.top.ui.leo_body_inner_frame.layout().addWidget(w,0,1)
-#@-node:ekr.20081215162017.5:Support multiple body editors
 #@-node:ekr.20090304084841.10:Asap
 #@+node:ekr.20090304084841.11:Later
 #@+node:ekr.20081215074704.21:Add drag and drop
@@ -3413,6 +3409,11 @@ def delete_range (self,menu,n1,n2):
         menu.removeAction(z)
 #@-node:ekr.20081121105001.365:delete_range (leoQtMenu)
 #@-node:ekr.20090128113654.1:Fixed bug re: duplicate recent-files menu
+#@+node:ekr.20090304084841.14:isearch now works for tkinter
+# The fix was in k.showStateAndMode:
+# it does nothing when in isearch mode.
+#@nonl
+#@-node:ekr.20090304084841.14:isearch now works for tkinter
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20081205131308.26:scanColorDirectives (very slow!)

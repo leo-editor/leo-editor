@@ -8146,9 +8146,10 @@ def iSearch (self,again=False):
 
 def iSearchStateHandler (self,event):
 
+    trace = False and not g.unitTesting
     c = self.c ; k = self.k
     stroke = event.stroke
-    # g.trace('stroke',repr(stroke))
+    if trace: g.trace('stroke',repr(stroke))
 
     # No need to recognize ctrl-z.
     if stroke in ('Escape','Return'):
@@ -8163,6 +8164,7 @@ def iSearchStateHandler (self,event):
         self.endSearch()
         k.masterKeyHandler(event,stroke=stroke)
     else:
+        if trace: g.trace('event',event)
         k.updateLabel(event)
         self.iSearch()
 #@nonl
@@ -8222,7 +8224,8 @@ def pop (self):
 #@+node:ekr.20090205085858.1:setWidget
 def setWidget (self):
 
-    c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
+    c = self.c ; p = c.currentPosition()
+    bodyCtrl = c.frame.body.bodyCtrl
     ifinder = self.ifinder
 
     if ifinder.in_headline:
@@ -8280,6 +8283,7 @@ def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
             g.choose(self.regexp,' Regexp',''),
             g.choose(self.ignoreCase,' NoCase',''),
         ),protect=True)
+
     k.setState('isearch',1,handler=self.iSearchStateHandler)
     c.minibufferWantsFocusNow()
 #@-node:ekr.20050920084036.262:startIncremental
@@ -10917,6 +10921,391 @@ def setBodyTextAfterSelect (self,p,old_p):
 #@-node:ekr.20090206153445.1:setBodyTextAfterSelect
 #@-node:ekr.20040803072955.128:leoTree.select & helpers
 #@-node:ekr.20090304084910.3:Fixed clone-find-all in qt plugin
+#@+node:ekr.20090304110414.2:Fixed isearch with tk
+# k.showStateAndMode does nothing in isearch mode.
+#@nonl
+#@+node:ekr.20050920084036.261:incremental search...
+def isearchForward (self,event):
+    '''Begin a forward incremental search.'''
+    self.startIncremental(event,'isearch-forward',
+        forward=True,ignoreCase=False,regexp=False)
+
+def isearchBackward (self,event):
+    '''Begin a backward incremental search.'''
+    self.startIncremental(event,'isearch-backward',
+        forward=False,ignoreCase=False,regexp=False)
+
+def isearchForwardRegexp (self,event):
+    '''Begin a forward incremental regexp search.'''
+    self.startIncremental(event,'isearch-forward-regexp',
+        forward=True,ignoreCase=False,regexp=True)
+
+def isearchBackwardRegexp (self,event):
+    '''Begin a backard incremental regexp search.'''
+    self.startIncremental(event,'isearch-backward-regexp',
+        forward=False,ignoreCase=False,regexp=True)
+
+def isearchWithPresentOptions (self,event):
+    '''Begin an incremental regexp search using find panel options.'''
+    self.startIncremental(event,'isearch-with-present-options',
+        forward=None,ignoreCase=None,regexp=None)
+#@+node:ekr.20090204084607.1:abortSearch
+def abortSearch (self):
+
+    '''Restore the original position and selection.'''
+
+    c = self.c ; k = self.k ; w = c.frame.body.bodyCtrl
+
+    k.clearState()
+    k.resetLabel()
+
+    p,i,j,in_headline = self.stack[0]
+    self.ifinder.in_headline = in_headline
+    c.redraw_after_select(p)
+    c.bodyWantsFocusNow()
+    w.setSelectionRange(i,j)
+
+    # g.trace(p.h,i,j)
+#@-node:ekr.20090204084607.1:abortSearch
+#@+node:ekr.20060203072636:endSearch
+def endSearch (self):
+
+    c,k = self.c,self.k
+
+    k.clearState()
+    k.resetLabel()
+    c.bodyWantsFocusNow()
+#@-node:ekr.20060203072636:endSearch
+#@+node:ekr.20090204084607.2:iSearch
+def iSearch (self,again=False):
+
+    '''Handle the actual incremental search.'''
+
+    c = self.c ; k = self.k ; p = c.p
+    ifinder = self.ifinder
+    reverse = not self.forward
+    pattern = k.getLabel(ignorePrompt=True)
+    if not pattern:
+        return self.abortSearch()
+    ifinder.c = c ; ifinder.p = p.copy()
+    # Get the base ivars from the find tab.
+    ifinder.update_ivars()
+    # Save
+    oldPattern = ifinder.find_text
+    oldRegexp  = ifinder.pattern_match
+    oldReverse = ifinder.reverse
+    oldWord =  ifinder.whole_word
+    # Override
+    ifinder.pattern_match = self.regexp
+    ifinder.reverse = reverse
+    ifinder.find_text = pattern
+    ifinder.whole_word = False # Word option can't be used!
+    # Prepare the search.
+    if len(self.stack) <= 1: ifinder.in_headline = False
+    w = self.setWidget()
+    s = w.getAllText()
+    i,j = w.getSelectionRange()
+    if again:   ins = g.choose(reverse,i,j+len(pattern))
+    else:       ins = g.choose(reverse,j+len(pattern),i)
+    ifinder.init_s_ctrl(s,ins)
+    # Do the search!
+    pos, newpos = ifinder.findNextMatch()
+    # Restore.
+    ifinder.find_text = oldPattern
+    ifinder.pattern_match = oldRegexp
+    ifinder.reverse = oldReverse
+    ifinder.whole_word = oldWord
+    # Handle the results of the search.
+    if pos is not None: # success.
+        w = ifinder.showSuccess(pos,newpos,showState=False)
+        if w: i,j = w.getSelectionRange(sort=False)
+        # else: g.trace('****')
+        if not again: self.push(c.p,i,j,ifinder.in_headline)
+    elif ifinder.wrapping:
+        g.es("end of wrapped search")
+    else:
+        g.es("not found","'%s'" % (pattern))
+        event = g.Bunch(char='\b',keysym='\b',stroke='BackSpace')
+        k.updateLabel(event)
+#@-node:ekr.20090204084607.2:iSearch
+#@+node:ekr.20050920084036.264:iSearchStateHandler
+# Called from the state manager when the state is 'isearch'
+
+def iSearchStateHandler (self,event):
+
+    trace = False and not g.unitTesting
+    c = self.c ; k = self.k
+    stroke = event.stroke
+    if trace: g.trace('stroke',repr(stroke))
+
+    # No need to recognize ctrl-z.
+    if stroke in ('Escape','Return'):
+        self.endSearch()
+    elif stroke in self.iSearchStrokes:
+        self.iSearch(again=True)
+    elif stroke == 'BackSpace':
+        k.updateLabel(event)
+        self.iSearchBackspace()
+    elif stroke.startswith('Ctrl+') or stroke.startswith('Alt+'):
+        # End the search and execute the command.
+        self.endSearch()
+        k.masterKeyHandler(event,stroke=stroke)
+    else:
+        if trace: g.trace('event',event)
+        k.updateLabel(event)
+        self.iSearch()
+#@nonl
+#@-node:ekr.20050920084036.264:iSearchStateHandler
+#@+node:ekr.20090204084607.4:iSearchBackspace
+def iSearchBackspace (self):
+
+    c = self.c ; ifinder = self.ifinder
+
+    if len(self.stack) <= 1:
+        self.abortSearch()
+        return
+
+    # Reduce the stack by net 1.
+    junk = self.pop()
+    p,i,j,in_headline = self.pop()
+    self.push(p,i,j,in_headline)
+
+    if in_headline:
+        # Like ifinder.showSuccess.
+        selection = i,j,i
+        c.redrawAndEdit(p,selectAll=False,
+            selection=selection,
+            keepMinibuffer=True)
+    else:
+        w = c.frame.body.bodyCtrl
+        c.bodyWantsFocusNow()
+        if i > j: i,j = j,i
+        w.setSelectionRange(i,j)
+
+    if len(self.stack) <= 1:
+        self.abortSearch()
+
+
+
+#@-node:ekr.20090204084607.4:iSearchBackspace
+#@+node:ekr.20090204084607.6:getStrokes
+def getStrokes (self,commandName):
+
+    c = self.c
+
+    aList = self.inverseBindingDict.get(commandName,[])
+    return [key for pane,key in aList]
+#@-node:ekr.20090204084607.6:getStrokes
+#@+node:ekr.20090204084607.5:push & pop
+def push (self,p,i,j,in_headline):
+
+    data = p.copy(),i,j,in_headline
+    self.stack.append(data)
+
+def pop (self):
+
+    data = self.stack.pop()
+    p,i,j,in_headline = data
+    return p,i,j,in_headline
+#@-node:ekr.20090204084607.5:push & pop
+#@+node:ekr.20090205085858.1:setWidget
+def setWidget (self):
+
+    c = self.c ; p = c.currentPosition()
+    bodyCtrl = c.frame.body.bodyCtrl
+    ifinder = self.ifinder
+
+    if ifinder.in_headline:
+        w = c.edit_widget(p)
+        if not w:
+            # Selecting the minibuffer can kill the edit widget.
+            selection = 0,0,0
+            c.redrawAndEdit(p,selectAll=False,
+                selection=selection,keepMinibuffer=True)
+            w = c.edit_widget(p)
+        if not w: # Should never happen.
+            g.trace('**** no edit widget!')
+            ifinder.in_headline = False ; w = bodyCtrl
+    else:
+        w = bodyCtrl
+    if w == bodyCtrl:
+        c.bodyWantsFocusNow()
+    return w
+#@-node:ekr.20090205085858.1:setWidget
+#@+node:ekr.20050920084036.262:startIncremental
+def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
+
+    c = self.c ; k = self.k
+
+    # None is a signal to get the option from the find tab.
+
+    if not self.findTabHandler:
+        self.findTabHandler = g.app.gui.createFindTab(c,f)
+    self.ifinder = self.findTabHandler
+
+    if forward is None:
+        self.openFindTab(show=False)
+
+    if not self.minibufferFindHandler:
+        self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
+
+    getOption = self.minibufferFindHandler.getOption
+
+    self.event = event
+    self.forward    = g.choose(forward is None,not getOption('reverse'),forward)
+    self.ignoreCase = g.choose(ignoreCase is None,getOption('ignore_case'),ignoreCase)
+    self.regexp     = g.choose(regexp  is None,getOption('pattern_match'),regexp)
+    # Note: the word option can't be used with isearches!
+
+    self.w = w = c.frame.body.bodyCtrl
+    self.p1 = c.p.copy()
+    self.sel1 = w.getSelectionRange(sort=False)
+    i,j = self.sel1
+    self.push(c.p,i,j,self.ifinder.in_headline)
+    self.inverseBindingDict = k.computeInverseBindingDict()
+    self.iSearchStrokes = self.getStrokes(commandName)
+
+    k.setLabelBlue('Isearch%s%s%s: ' % (
+            g.choose(self.forward,'',' Backward'),
+            g.choose(self.regexp,' Regexp',''),
+            g.choose(self.ignoreCase,' NoCase',''),
+        ),protect=True)
+
+    k.setState('isearch',1,handler=self.iSearchStateHandler)
+    c.minibufferWantsFocusNow()
+#@-node:ekr.20050920084036.262:startIncremental
+#@-node:ekr.20050920084036.261:incremental search...
+#@+node:ekr.20050920084036.262:startIncremental
+def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
+
+    c = self.c ; k = self.k
+
+    # None is a signal to get the option from the find tab.
+
+    if not self.findTabHandler:
+        self.findTabHandler = g.app.gui.createFindTab(c,f)
+    self.ifinder = self.findTabHandler
+
+    if forward is None:
+        self.openFindTab(show=False)
+
+    if not self.minibufferFindHandler:
+        self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
+
+    getOption = self.minibufferFindHandler.getOption
+
+    self.event = event
+    self.forward    = g.choose(forward is None,not getOption('reverse'),forward)
+    self.ignoreCase = g.choose(ignoreCase is None,getOption('ignore_case'),ignoreCase)
+    self.regexp     = g.choose(regexp  is None,getOption('pattern_match'),regexp)
+    # Note: the word option can't be used with isearches!
+
+    self.w = w = c.frame.body.bodyCtrl
+    self.p1 = c.p.copy()
+    self.sel1 = w.getSelectionRange(sort=False)
+    i,j = self.sel1
+    self.push(c.p,i,j,self.ifinder.in_headline)
+    self.inverseBindingDict = k.computeInverseBindingDict()
+    self.iSearchStrokes = self.getStrokes(commandName)
+
+    k.setLabelBlue('Isearch%s%s%s: ' % (
+            g.choose(self.forward,'',' Backward'),
+            g.choose(self.regexp,' Regexp',''),
+            g.choose(self.ignoreCase,' NoCase',''),
+        ),protect=True)
+
+    k.setState('isearch',1,handler=self.iSearchStateHandler)
+    c.minibufferWantsFocusNow()
+#@-node:ekr.20050920084036.262:startIncremental
+#@+node:ekr.20050920084036.264:iSearchStateHandler
+# Called from the state manager when the state is 'isearch'
+
+def iSearchStateHandler (self,event):
+
+    trace = False and not g.unitTesting
+    c = self.c ; k = self.k
+    stroke = event.stroke
+    if trace: g.trace('stroke',repr(stroke))
+
+    # No need to recognize ctrl-z.
+    if stroke in ('Escape','Return'):
+        self.endSearch()
+    elif stroke in self.iSearchStrokes:
+        self.iSearch(again=True)
+    elif stroke == 'BackSpace':
+        k.updateLabel(event)
+        self.iSearchBackspace()
+    elif stroke.startswith('Ctrl+') or stroke.startswith('Alt+'):
+        # End the search and execute the command.
+        self.endSearch()
+        k.masterKeyHandler(event,stroke=stroke)
+    else:
+        if trace: g.trace('event',event)
+        k.updateLabel(event)
+        self.iSearch()
+#@nonl
+#@-node:ekr.20050920084036.264:iSearchStateHandler
+#@+node:ekr.20061031170011.8:setLabel
+def setLabel (self,s,protect=False):
+
+    trace = (False or self.trace_minibuffer) and not g.app.unitTesting
+    k = self ; c = k.c ; w = self.widget
+    if not w: return
+
+    if trace: g.trace(repr(s),g.callers(4))
+
+    w.setAllText(s)
+    n = len(s)
+    w.setSelectionRange(n,n,insert=n)
+
+    if protect:
+        k.mb_prefix = s
+#@-node:ekr.20061031170011.8:setLabel
+#@+node:ekr.20061031131434.192:showStateAndMode
+def showStateAndMode(self,w=None,prompt=None):
+
+    k = self ; c = k.c
+    state = k.unboundKeyAction
+    mode = k.getStateKind()
+    inOutline = False
+    if not g.app.gui: return
+
+    if not w:
+        w = g.app.gui.get_focus(c)
+        if not w: return
+
+    # g.trace(w, state, mode,g.callers(5))
+
+    # This fixes a problem with the tk gui plugin.
+    if mode and mode.lower().startswith('isearch'):
+        return
+
+    wname = g.app.gui.widget_name(w).lower()
+
+    if mode:
+        if mode in ('getArg','getFileName','full-command'):
+            s = None
+        elif prompt:
+            s = prompt
+        else:
+            mode = mode.strip()
+            if mode.endswith('-mode'):
+                mode = mode[:-5]
+            s = '%s Mode' % mode.capitalize()
+    elif w and (wname.startswith('canvas') or wname.startswith('head')):
+        s = 'In Outline'
+        inOutline = True
+    else:
+        s = '%s State' % state.capitalize()
+
+    if s:
+        # g.trace(s,w,g.callers(4))
+        k.setLabelBlue(label=s,protect=True)
+
+    if w and g.app.gui.isTextWidget(w):
+        k.showStateColors(inOutline,w)
+#@-node:ekr.20061031131434.192:showStateAndMode
+#@-node:ekr.20090304110414.2:Fixed isearch with tk
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
@@ -25043,9 +25432,10 @@ def iSearch (self,again=False):
 
 def iSearchStateHandler (self,event):
 
+    trace = False and not g.unitTesting
     c = self.c ; k = self.k
     stroke = event.stroke
-    # g.trace('stroke',repr(stroke))
+    if trace: g.trace('stroke',repr(stroke))
 
     # No need to recognize ctrl-z.
     if stroke in ('Escape','Return'):
@@ -25060,6 +25450,7 @@ def iSearchStateHandler (self,event):
         self.endSearch()
         k.masterKeyHandler(event,stroke=stroke)
     else:
+        if trace: g.trace('event',event)
         k.updateLabel(event)
         self.iSearch()
 #@nonl
@@ -25119,7 +25510,8 @@ def pop (self):
 #@+node:ekr.20090205085858.1:setWidget
 def setWidget (self):
 
-    c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
+    c = self.c ; p = c.currentPosition()
+    bodyCtrl = c.frame.body.bodyCtrl
     ifinder = self.ifinder
 
     if ifinder.in_headline:
@@ -25177,6 +25569,7 @@ def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
             g.choose(self.regexp,' Regexp',''),
             g.choose(self.ignoreCase,' NoCase',''),
         ),protect=True)
+
     k.setState('isearch',1,handler=self.iSearchStateHandler)
     c.minibufferWantsFocusNow()
 #@-node:ekr.20050920084036.262:startIncremental
@@ -25980,9 +26373,10 @@ def iSearch (self,again=False):
 
 def iSearchStateHandler (self,event):
 
+    trace = False and not g.unitTesting
     c = self.c ; k = self.k
     stroke = event.stroke
-    # g.trace('stroke',repr(stroke))
+    if trace: g.trace('stroke',repr(stroke))
 
     # No need to recognize ctrl-z.
     if stroke in ('Escape','Return'):
@@ -25997,6 +26391,7 @@ def iSearchStateHandler (self,event):
         self.endSearch()
         k.masterKeyHandler(event,stroke=stroke)
     else:
+        if trace: g.trace('event',event)
         k.updateLabel(event)
         self.iSearch()
 #@nonl
@@ -26056,7 +26451,8 @@ def pop (self):
 #@+node:ekr.20090205085858.1:setWidget
 def setWidget (self):
 
-    c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
+    c = self.c ; p = c.currentPosition()
+    bodyCtrl = c.frame.body.bodyCtrl
     ifinder = self.ifinder
 
     if ifinder.in_headline:
@@ -26114,6 +26510,7 @@ def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
             g.choose(self.regexp,' Regexp',''),
             g.choose(self.ignoreCase,' NoCase',''),
         ),protect=True)
+
     k.setState('isearch',1,handler=self.iSearchStateHandler)
     c.minibufferWantsFocusNow()
 #@-node:ekr.20050920084036.262:startIncremental
@@ -26260,9 +26657,10 @@ def updateLabel (self,event):
 
 def iSearchStateHandler (self,event):
 
+    trace = False and not g.unitTesting
     c = self.c ; k = self.k
     stroke = event.stroke
-    # g.trace('stroke',repr(stroke))
+    if trace: g.trace('stroke',repr(stroke))
 
     # No need to recognize ctrl-z.
     if stroke in ('Escape','Return'):
@@ -26277,6 +26675,7 @@ def iSearchStateHandler (self,event):
         self.endSearch()
         k.masterKeyHandler(event,stroke=stroke)
     else:
+        if trace: g.trace('event',event)
         k.updateLabel(event)
         self.iSearch()
 #@nonl
