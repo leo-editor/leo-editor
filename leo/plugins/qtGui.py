@@ -3031,10 +3031,12 @@ class leoQtMenu (leoMenu.leoMenu):
 
         """Wrapper for the Tkinter delete menu method."""
 
-        g.trace(menu,n1,n2)
+        # Menu is a subclass of QMenu and leoQtMenu.
 
-        # if menu:
-            # return menu.delete(n1,n2)
+        # g.trace(menu,n1,n2,g.callers(4))
+
+        for z in menu.actions()[n1:n2]:
+            menu.removeAction(z)
     #@-node:ekr.20081121105001.365:delete_range (leoQtMenu)
     #@+node:ekr.20081121105001.366:destroy
     def destroy (self,menu):
@@ -3887,7 +3889,7 @@ class leoQtTreeTab (leoFrame.leoTreeTab):
     #@-others
 #@nonl
 #@-node:ekr.20081121105001.459:class leoQtTreeTab
-#@+node:ekr.20081121105001.469:class qtMenuWrapper (QtMenu,leoQtMenu)
+#@+node:ekr.20081121105001.469:class qtMenuWrapper (QMenu,leoQtMenu)
 class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
 
     def __init__ (self,c,frame,parent):
@@ -3900,7 +3902,7 @@ class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
     def __repr__(self):
 
         return '<qtMenuWrapper %s>' % self.leo_label or 'unlabeled'
-#@-node:ekr.20081121105001.469:class qtMenuWrapper (QtMenu,leoQtMenu)
+#@-node:ekr.20081121105001.469:class qtMenuWrapper (QMenu,leoQtMenu)
 #@+node:ekr.20081121105001.470:class qtSearchWidget
 class qtSearchWidget:
 
