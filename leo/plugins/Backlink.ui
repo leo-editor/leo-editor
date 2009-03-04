@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>286</width>
-    <height>254</height>
+    <width>359</width>
+    <height>586</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -33,63 +33,168 @@
         <number>2</number>
        </property>
        <item>
+        <widget class="QPushButton" name="rescanBtn" >
+         <property name="toolTip" >
+          <string>Rescan links information</string>
+         </property>
+         <property name="text" >
+          <string>Rescan</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2" >
+         <property name="text" >
+          <string>Mark:</string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QVBoxLayout" name="verticalLayout_3" >
          <property name="spacing" >
           <number>2</number>
          </property>
          <item>
-          <widget class="QPushButton" name="markSourceBtn" >
-           <property name="text" >
-            <string>Mark Source</string>
+          <widget class="QPushButton" name="markBtn" >
+           <property name="toolTip" >
+            <string>Place mark here</string>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="linkSourceBtn" >
            <property name="text" >
-            <string>Link Source</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="undirectedBtn" >
-           <property name="text" >
-            <string>Undirected Link</string>
-           </property>
-           <property name="checkable" >
-            <bool>false</bool>
+            <string>Place</string>
            </property>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_2" >
-         <property name="spacing" >
-          <number>2</number>
+        <widget class="QPushButton" name="swapBtn" >
+         <property name="toolTip" >
+          <string>Swap mark and current position</string>
+         </property>
+         <property name="text" >
+          <string>Swap</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4" >
+       <property name="spacing" >
+        <number>3</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="linkBtn" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize" >
+          <size>
+           <width>37</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Create a link</string>
+         </property>
+         <property name="text" >
+          <string>Link</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="dirLeftBtn" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize" >
+          <size>
+           <width>37</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Toggle direction</string>
+         </property>
+         <property name="text" >
+          <string>from</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>here</string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="dirRightBtn" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize" >
+          <size>
+           <width>37</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Toggle direction</string>
+         </property>
+         <property name="text" >
+          <string>to</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="whatSel" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+           <horstretch>80</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip" >
+          <string>Link type</string>
          </property>
          <item>
-          <widget class="QPushButton" name="markDestBtn" >
-           <property name="text" >
-            <string>Mark Dest.</string>
-           </property>
-          </widget>
+          <property name="text" >
+           <string>mark</string>
+          </property>
          </item>
          <item>
-          <widget class="QPushButton" name="linkDestBtn" >
-           <property name="text" >
-            <string>Link Dest.</string>
-           </property>
-          </widget>
+          <property name="text" >
+           <string>mark, undirected</string>
+          </property>
          </item>
          <item>
-          <widget class="QPushButton" name="rescanBtn" >
-           <property name="text" >
-            <string>Rescan links</string>
-           </property>
-          </widget>
+          <property name="text" >
+           <string>new child of mark</string>
+          </property>
          </item>
-        </layout>
+        </widget>
        </item>
       </layout>
      </item>

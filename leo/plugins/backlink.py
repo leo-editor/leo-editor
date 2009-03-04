@@ -205,26 +205,45 @@ elif g.app.gui.guiName() == "qt":
             u = self.UI
             o = self.owner
         
-            self.connect(u.markSourceBtn,
-                         QtCore.SIGNAL("clicked()"), o.markSrc)
-            self.connect(u.markDestBtn,
-                         QtCore.SIGNAL("clicked()"), o.markDst)
-            self.connect(u.linkSourceBtn,
-                         QtCore.SIGNAL("clicked()"), o.linkSrc)
-            self.connect(u.linkDestBtn,
-                         QtCore.SIGNAL("clicked()"), o.linkDst)
-            self.connect(u.undirectedBtn,
-                         QtCore.SIGNAL("clicked()"), o.linkUnd)
+            self.connect(u.markBtn,
+                         QtCore.SIGNAL("clicked()"), o.mark)
+            self.connect(u.swapBtn,
+                         QtCore.SIGNAL("clicked()"), o.swap)
+            self.connect(u.linkBtn,
+                         QtCore.SIGNAL("clicked()"), self.linkClicked)
             self.connect(u.rescanBtn,
                          QtCore.SIGNAL("clicked()"), o.loadLinksInt)
                          
+            self.connect(u.dirLeftBtn, 
+                         QtCore.SIGNAL("clicked()"), self.dirClicked)
+            self.connect(u.dirRightBtn, 
+                         QtCore.SIGNAL("clicked()"), self.dirClicked)
+
             self.connect(u.linkList,
                          QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.listClicked)
             self.connect(u.deleteBtn,
                          QtCore.SIGNAL("stateChanged(int)"), o.deleteSet)
                          
+        def dirClicked(self):
+            if self.UI.dirLeftBtn.text() == "from":
+                self.UI.dirLeftBtn.setText("to")
+                self.UI.dirRightBtn.setText("from")
+            else:
+                self.UI.dirLeftBtn.setText("from")
+                self.UI.dirRightBtn.setText("to")
+                
         def listClicked(self):
             self.owner.linkClicked(self.UI.linkList.currentRow())
+    
+        def linkClicked(self):
+            if self.UI.whatSel.currentText() == "mark, undirected":
+                self.owner.linkAction('undirected')
+                return
+            newChild = self.UI.whatSel.currentText() == "new child of mark"
+            if self.UI.dirLeftBtn.text() == "from":
+                self.owner.linkAction('from', newChild=newChild)
+            else:
+                self.owner.linkAction('to', newChild=newChild)
             
         def loadList(self, lst): 
             self.UI.linkList.clear()
@@ -296,7 +315,7 @@ class backlinkController(object):
                 break
         else:
             self.showMessage("Error: no such link")
-    
+
         gcc = getattr(self.c, 'graphcanvasController')
         if gcc:
             gcc.update()
@@ -324,9 +343,31 @@ class backlinkController(object):
 
         self.linkDestination = None
         self.linkSource = None
+        self.linkMark = None
         self.vnode = {}
         self.positions = {}
         self.messageUsed = False
+    def linkAction(self, dir_, newChild=False):
+        """link to/from current position from/to mark node"""
+        if not self.linkMark or not self.c.positionExists(self.linkMark):
+            self.showMessage('Link mark not specified or no longer valid', color='red')
+            return
+        
+        if dir_ == "from":
+            p = self.linkMark
+            if newChild:
+                p = self.linkMark.insertAsLastChild()
+                p.h = self.c.p.h
+            self.link(self.c.p, p)
+        else:
+            p = self.linkMark
+            if newChild:
+                p = self.linkMark.insertAsLastChild()
+                p.h = self.c.p.h
+            self.link(p, self.c.p)
+
+        self.updateTabInt()
+        self.c.redraw()
     def link(self, from_, to, type_='directed'):
         """make a link"""
 
@@ -479,6 +520,10 @@ class backlinkController(object):
             self.vnode[vnode].unknownAttributes['_bklnk']['links'] = nl
 
         self.showMessage('Link info. loaded on %d nodes' % len(self.vnode))
+    def mark(self):
+        """Mark current position as 'mark' (called by UI)"""
+        self.linkMark = self.c.p.copy()
+        self.showMessage('Marked')
     def markDst(self):
         """Mark current position as 'destination' (called by UI)"""
         self.linkDestination = self.c.p.copy()
@@ -627,6 +672,14 @@ class backlinkController(object):
             self.messageUsed = True
 
         self.ui.showMessage(msg, color=color)
+    def swap(self):
+        """Swap current pos. w. mark"""
+        if not self.linkMark or not self.c.positionExists(self.linkMark):
+            self.showMessage('Link mark not specified or no longer valid', color='red')
+            return
+        p = self.linkMark
+        self.linkMark = self.c.p.copy()
+        self.c.selectPosition(p)
     def updateTab(self,tag,k):
         """called by leo select position hook"""
         if k['c'] != self.c: return  # not our problem
