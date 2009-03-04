@@ -359,7 +359,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             item = self.getCurrentItem()
             for p in c.rootPosition().self_and_siblings_iter():
                 self.updateVisibleIcons(p)
-            self.setCurrentItemHelper(item)
         finally:
             self.redrawing = False
     #@nonl
@@ -870,7 +869,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         '''Officially change a headline.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = False
 
         c = self.c ; u = c.undoer
@@ -920,13 +919,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if g.unitTesting: return
 
         self.redraw_after_head_changed()
-
+        self.closeEditorHelper(ew,item)
         if self.stayInTree:
-            if False and ew:
-                self.closeEditorHelper(ew)
-            else:
-                self.setCurrentItemHelper(item)
-                c.treeWantsFocus()
+            c.treeWantsFocus()
         else:
             c.bodyWantsFocus()
         c.outerUpdate()

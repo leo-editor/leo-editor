@@ -740,7 +740,7 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
 
     '''Officially change a headline.'''
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     verbose = False
 
     c = self.c ; u = c.undoer
@@ -790,13 +790,9 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
     if g.unitTesting: return
 
     self.redraw_after_head_changed()
-
+    self.closeEditorHelper(ew,item)
     if self.stayInTree:
-        if False and ew:
-            self.closeEditorHelper(ew)
-        else:
-            self.setCurrentItemHelper(item)
-            c.treeWantsFocus()
+        c.treeWantsFocus()
     else:
         c.bodyWantsFocus()
     c.outerUpdate()
@@ -1605,7 +1601,6 @@ def redraw_after_icons_changed (self):
         item = self.getCurrentItem()
         for p in c.rootPosition().self_and_siblings_iter():
             self.updateVisibleIcons(p)
-        self.setCurrentItemHelper(item)
     finally:
         self.redrawing = False
 #@nonl
@@ -2151,7 +2146,6 @@ def redraw_after_icons_changed (self):
         item = self.getCurrentItem()
         for p in c.rootPosition().self_and_siblings_iter():
             self.updateVisibleIcons(p)
-        self.setCurrentItemHelper(item)
     finally:
         self.redrawing = False
 #@nonl
@@ -3190,6 +3184,153 @@ def toggleQtSplitDirection (self,verticalFlag):
 #@-node:ekr.20081121105001.311:toggleQtSplitDirection
 #@-node:ekr.20081121105001.310:toggleSplitDirection (qtFrame)
 #@-node:ekr.20090223065019.12:Swap scroll bars when orientation changes
+#@+node:ekr.20090302135940.11:Ctrl-s does not completely end editing
+@nocolor-node
+
+There are 3 cases:
+
+- Ctrl-s in headline.
+- Ctrl-s in body.
+- Return in headline.
+#@nonl
+#@+node:ekr.20090124174652.58:endEditLabel (nativeTree)
+def endEditLabel (self):
+
+    '''Override leoTree.endEditLabel.
+
+    End editing of the presently-selected headline.'''
+
+    # Let onHeadChanged do all the work.
+    c = self.c ; p = c.currentPosition()
+
+    # g.trace(p.h)
+
+    self.onHeadChanged(p)
+
+    # c.bodyWantsFocusNow()
+    # c.outerUpdate()
+#@-node:ekr.20090124174652.58:endEditLabel (nativeTree)
+#@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None):
+
+    '''Officially change a headline.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    c = self.c ; u = c.undoer
+    if not p:
+        if trace: g.trace('*** no p')
+        return
+
+    item = self.position2item(p)
+    if not item:
+        # This is not an error.
+        if trace: g.trace('no item for p: %s' % (p))
+        return
+
+    w = g.app.gui.get_focus()
+    ew = self.edit_widget(p)
+    if ew: e = ew.widget
+    else: e = None
+
+    # These are not errors: focus may have been lost.
+    # if trace and verbose:
+        # if not e:  g.trace('No e',g.callers(4))
+        # if e != w: g.trace('e != w',e,w,g.callers(4))
+        # if not p:  g.trace('No p')
+
+    if e and e == w:
+        s = e.text() ; len_s = len(s)
+        s = g.app.gui.toUnicode(s)
+    else:
+        s = self.getItemText(item)
+
+    oldHead = p.h
+    changed = s != oldHead
+    if changed:
+        if trace: g.trace('changed',repr(s),p.h)
+        p.initHeadString(s)
+        item.setText(0,s) # Required to avoid full redraw.
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+
+    # This is a crucial shortcut.
+    if g.unitTesting: return
+
+    self.redraw_after_head_changed()
+    self.closeEditorHelper(ew,item)
+    if self.stayInTree:
+        c.treeWantsFocus()
+    else:
+        c.bodyWantsFocus()
+    c.outerUpdate()
+#@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+#@+node:ekr.20090124174652.27:redraw_after_icons_changed
+def redraw_after_icons_changed (self):
+
+    trace = False and not g.unitTesting
+
+    if self.busy(): return
+
+    if trace: g.trace(g.callers(4))
+
+    self.redrawCount += 1 # To keep a unit test happy.
+
+    c = self.c
+
+    # Suppress call to setHeadString in onItemChanged!
+    self.redrawing = True
+    try:
+        item = self.getCurrentItem()
+        for p in c.rootPosition().self_and_siblings_iter():
+            self.updateVisibleIcons(p)
+    finally:
+        self.redrawing = False
+#@nonl
+#@-node:ekr.20090124174652.27:redraw_after_icons_changed
+#@+node:ekr.20090124174652.26:redraw_after_head_changed
+def redraw_after_head_changed (self):
+
+    trace = True and not g.unitTesting
+
+    if self.busy(): return
+
+    c = self.c ; p = c.currentPosition()
+    ew = self.edit_widget(p)
+    currentItem = self.getCurrentItem()
+
+    if p:
+        for item in self.tnode2items(p.v.t):
+            if self.isValidItem(item):
+                self.setItemText(item,p.h)
+#@nonl
+#@-node:ekr.20090124174652.26:redraw_after_head_changed
+#@+node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
+def closeEditorHelper (self,ew,item):
+
+    w = self.treeWidget
+
+    if ew:
+        w.closeEditor(ew.widget,QtGui.QAbstractItemDelegate.NoHint)
+        w.setCurrentItem(item)
+#@nonl
+#@-node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
+#@+node:ekr.20090124174652.107:setCurrentItemHelper (leoQtTree)
+def setCurrentItemHelper(self,item):
+
+    w = self.treeWidget
+    w.setCurrentItem(item)
+#@-node:ekr.20090124174652.107:setCurrentItemHelper (leoQtTree)
+#@-node:ekr.20090302135940.11:Ctrl-s does not completely end editing
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20081205131308.26:scanColorDirectives (very slow!)

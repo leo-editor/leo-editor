@@ -6234,8 +6234,8 @@ class baseCommands (object):
     #@+node:ekr.20080514131122.20:c.outerUpdate
     def outerUpdate (self):
 
-        trace = False and g.unitTesting
-        verbose = True
+        trace = False and not g.unitTesting
+        verbose = False ; traceFocus = True
         c = self ; aList = []
         if not c.exists or not c.k:
             return
@@ -6269,7 +6269,7 @@ class baseCommands (object):
 
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
-            if verbose: aList.append('focus: %s' % (
+            if traceFocus: aList.append('focus: %s' % (
                 g.app.gui.widget_name(w)))
             c.set_focus(w)
         else:
@@ -6278,7 +6278,7 @@ class baseCommands (object):
             pass
 
         if trace and aList:
-            g.trace(', '.join(aList),c.shortFileName() or '<no name>',g.callers())
+            g.trace(', '.join(aList)) # ,c.shortFileName() or '<no name>',g.callers())
 
         c.incrementalRecolorFlag = False
         c.requestRecolorFlag = None

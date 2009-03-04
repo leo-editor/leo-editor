@@ -10362,6 +10362,254 @@ if redraw_flag:
 #@-node:ekr.20051026083733.7:<< update icons if necessary >>
 #@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)
 #@-node:ekr.20090228065229.1:Fixed problems with dirty bits
+#@+node:ekr.20090302102736.1:Fixed bug: Ctrl-s destroys headline selection
+# When editing headline text.
+#@nonl
+#@+node:ekr.20031218072017.2834:save (commands)
+def save (self,event=None):
+
+    '''Save a Leo outline to a file.'''
+
+    c = self ; p = c.currentPosition()
+    w = g.app.gui.get_focus(c)
+
+    if g.app.disableSave:
+        g.es("save commands disabled",color="purple")
+        return
+
+    # Make sure we never pass None to the ctor.
+    if not c.mFileName:
+        c.frame.title = ""
+        c.mFileName = ""
+
+    if c.mFileName:
+        # Calls c.setChanged(False) if no error.
+        c.fileCommands.save(c.mFileName)
+    else:
+        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+            initialfile = c.mFileName,
+            title="Save",
+            filetypes=[("Leo files", "*.leo")],
+            defaultextension=".leo")
+        c.bringToFront()
+
+        if fileName:
+            # Don't change mFileName until the dialog has suceeded.
+            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.frame.title = c.mFileName
+            c.frame.setTitle(g.computeWindowTitle(c.mFileName))
+            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+            c.fileCommands.save(c.mFileName)
+            c.updateRecentFiles(c.mFileName)
+            g.chdir(c.mFileName)
+
+    # Done in fileCommands.save.
+    # c.redraw_after_icons_changed()
+    c.widgetWantsFocusNow(w)
+#@-node:ekr.20031218072017.2834:save (commands)
+#@+node:ekr.20031218072017.1720:save (fileCommands)
+def save(self,fileName):
+
+    c = self.c ; v = c.currentVnode()
+
+    # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
+    ok = g.doHook("save1",c=c,p=v,v=v,fileName=fileName)
+
+    if ok is None:
+        c.endEditing() # Set the current headline text.
+        self.setDefaultDirectoryForNewFiles(fileName)
+        ok = c.checkFileTimeStamp(fileName)
+        if ok:
+            ok = self.write_Leo_file(fileName,False) # outlineOnlyFlag
+        if ok:
+            self.putSavedMessage(fileName)
+            c.setChanged(False) # Clears all dirty bits.
+            if c.config.save_clears_undo_buffer:
+                g.es("clearing undo")
+                c.undoer.clearUndoState()
+
+        c.redraw_after_icons_changed()
+
+    g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
+    return ok
+#@-node:ekr.20031218072017.1720:save (fileCommands)
+#@+node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+# Ends the editing in the outline.
+
+def endEditing(self):
+
+    c = self ; k = c.k
+
+    p = c.p
+
+    if p:
+        c.frame.tree.endEditLabel()
+        c.frame.tree.setSelectedLabelState(p)
+
+    # The following code would be wrong; c.endEditing is a utility method.
+    # if k:
+        # k.setDefaultInputState()
+        # # Recolor the *body* text, **not** the headline.
+        # k.showStateAndMode(w=c.frame.body.bodyCtrl)
+#@-node:ekr.20031218072017.2992:c.endEditing (calls tree.endEditLabel)
+#@+node:ekr.20080514131122.14:c.redrawing...
+#@+node:ekr.20090110073010.1:c.redraw
+def redraw (self,p=None,setFocus=False):
+    '''Redraw the screen immediately.'''
+
+    c = self
+
+    if p:
+        # Update body pane and set c._currentPosition.
+        c.expandAllAncestors(p) # Redundant, but safe.
+        c.selectPosition(p)
+    else:
+        p = c.p
+        c.expandAllAncestors(p)
+
+    c.frame.tree.redraw(p)
+    if setFocus: c.treeFocusHelper()
+
+# Compatibility with old scripts
+force_redraw = redraw
+redraw_now = redraw
+#@-node:ekr.20090110073010.1:c.redraw
+#@+node:ekr.20090110131802.2:c.redraw_after_contract
+def redraw_after_contract (self,p=None,setFocus=False):
+
+    c = self
+
+    c.endEditing()
+
+    if p:
+        c.setCurrentPosition(p)
+    else:
+        p = c.currentPosition()
+
+    c.frame.tree.redraw_after_contract(p)
+
+    if setFocus:
+        c.treeFocusHelper()
+#@-node:ekr.20090110131802.2:c.redraw_after_contract
+#@+node:ekr.20090112065525.1:c.redraw_after_expand
+def redraw_after_expand (self,p=None,setFocus=False):
+
+    c = self
+
+    c.endEditing()
+
+    if p:
+        c.setCurrentPosition(p)
+    else:
+        p = c.currentPosition()
+
+    c.frame.tree.redraw_after_expand(p)
+
+    if setFocus:
+        c.treeFocusHelper()
+#@-node:ekr.20090112065525.1:c.redraw_after_expand
+#@+node:ekr.20090110073010.2:c.redraw_after_head_changed
+def redraw_after_head_changed(self):
+
+    '''Redraw the screen (if needed) when editing ends.
+    This may be a do-nothing for some gui's.'''
+
+    return self.frame.tree.redraw_after_head_changed()
+#@-node:ekr.20090110073010.2:c.redraw_after_head_changed
+#@+node:ekr.20090110073010.3:c.redraw_afer_icons_changed
+def redraw_after_icons_changed(self):
+
+    '''Update the icon for the presently selected node,
+    or all icons if the 'all' flag is true.'''
+
+    c = self
+
+    c.frame.tree.redraw_after_icons_changed()
+
+    # c.treeFocusHelper()
+#@-node:ekr.20090110073010.3:c.redraw_afer_icons_changed
+#@+node:ekr.20090110073010.4:c.redraw_after_select
+def redraw_after_select(self,p,setFocus=False):
+
+    '''Redraw the screen after node p has been selected.
+
+    The intention is for the gui to just select the node
+    if it is visible, and to completely redraw the screen otherwise.'''
+
+    trace = False and not g.unitTesting
+    if trace: g.trace('(Commands)',p and p.h or '<No p>', g.callers(4))
+
+    c = self
+
+    flag = c.expandAllAncestors(p)
+    c.selectPosition(p)
+        # Required to update body pane.
+        # Will call tree.before/afterSelect hint.
+
+    if flag:
+        c.frame.tree.redraw_after_select(p)
+
+    if setFocus: c.treeFocusHelper()
+#@-node:ekr.20090110073010.4:c.redraw_after_select
+#@-node:ekr.20080514131122.14:c.redrawing...
+#@+node:ekr.20080514131122.20:c.outerUpdate
+def outerUpdate (self):
+
+    trace = False and not g.unitTesting
+    verbose = False ; traceFocus = True
+    c = self ; aList = []
+    if not c.exists or not c.k:
+        return
+
+    # Suppress any requested redraw until we have iconified or diconified.
+    redrawFlag = c.requestRedrawFlag
+    c.requestRedrawFlag = False
+
+    # The iconify requests are made only by c.bringToFront.
+    if c.requestedIconify == 'iconify':
+        if verbose: aList.append('iconify')
+        c.frame.iconify()
+
+    if c.requestedIconify == 'deiconify':
+        if verbose: aList.append('deiconify')
+        c.frame.deiconify()
+
+    if redrawFlag:
+        g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+        # A hack: force the redraw, even if we are dragging.
+        aList.append('*** redraw')
+        c.frame.tree.redraw_now(forceDraw=True)
+
+    if c.requestRecolorFlag:
+        if verbose: aList.append('%srecolor' % (
+            g.choose(c.incrementalRecolorFlag,'','full ')))
+        # This should be the only call to c.recolor_now.
+        c.recolor_now(incremental=c.incrementalRecolorFlag)
+        # c.frame.body.colorizer.colorize(c.p,
+            # incremental=c.incrementalRecolorFlag,interruptable=True)
+
+    if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
+        if traceFocus: aList.append('focus: %s' % (
+            g.app.gui.widget_name(w)))
+        c.set_focus(w)
+    else:
+        # We can not set the focus to the body pane:
+        # That would make nested calls to c.outerUpdate significant.
+        pass
+
+    if trace and aList:
+        g.trace(', '.join(aList)) # ,c.shortFileName() or '<no name>',g.callers())
+
+    c.incrementalRecolorFlag = False
+    c.requestRecolorFlag = None
+    c.requestRedrawFlag = False
+    c.requestedFocusWidget = None
+    c.requestedIconify = ''
+
+    # g.trace('after')
+#@-node:ekr.20080514131122.20:c.outerUpdate
+#@-node:ekr.20090302102736.1:Fixed bug: Ctrl-s destroys headline selection
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs

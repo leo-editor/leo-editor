@@ -3618,13 +3618,14 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         return items
     #@-node:ekr.20090124174652.66:childItems
     #@+node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
-    def closeEditorHelper (self,ew):
+    def closeEditorHelper (self,ew,item):
 
         w = self.treeWidget
-        g.trace(ew.widget)
-        # ew.widget.setReadOnly(True)
-        # item.setDisabled(True)
-        w.closeEditor(ew.widget,QtGui.QAbstractItemDelegate.NoHint)
+
+        if ew:
+            w.closeEditor(ew.widget,QtGui.QAbstractItemDelegate.NoHint)
+            w.setCurrentItem(item)
+    #@nonl
     #@-node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
     #@+node:ekr.20090124174652.18:contractItem & expandItem
     def contractItem (self,item):
@@ -3758,8 +3759,6 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         w = self.treeWidget
         w.setCurrentItem(item)
-
-        # g.trace(id(item),g.callers(5))
     #@-node:ekr.20090124174652.107:setCurrentItemHelper (leoQtTree)
     #@+node:ekr.20090124174652.108:setItemText
     def setItemText (self,item,s):
