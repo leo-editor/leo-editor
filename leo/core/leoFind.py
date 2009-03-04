@@ -733,10 +733,13 @@ class leoFind:
                 q.moveToLastChildOf(found)
                 #@-node:ekr.20051113110851:<< create a clone of p under the find node >>
                 #@nl
+
         if self.clone_find_all and clones:
             u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
-            # u.afterChangeGroup(found,undoType,reportFlag=True) 
-            c.selectPosition(found) # Recomputes root.
+            # Do not call c.selectPosition here.
+            # That would make life difficult for the qt plugin.
+            c.setRootPosition(found)
+            c.setCurrentPosition(found)
             c.setChanged(True)
 
         self.restore(data)

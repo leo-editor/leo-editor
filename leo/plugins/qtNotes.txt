@@ -3,19 +3,6 @@
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20090220150215.1:Urgent bugs
-#@+node:ekr.20090303095630.14:Fix clone-find-all problem with Qt
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ee1dbcb22a5d0bcb
-
-I've just realised about the following problem with the qt pluguin
-(rev 1593): if I call Find -> Clone Find All when the first node of
-the outline is selected then it gets renamed to "Found:
-something" (something being the searched string), so the first two
-nodes of the oultine have the same name. The top one is correct (it
-contains the found nodes), the second is not. If I call Edit --> Undo
-Typing the badly renamed node recovers it correct name.
-#@-node:ekr.20090303095630.14:Fix clone-find-all problem with Qt
 #@+node:ekr.20090128113654.1:Recent files menu is duplicated in qt gui
 @nocolor
 
@@ -910,7 +897,7 @@ def busy (self):
 #@+node:ekr.20090124174652.53:afterSelectHint (nativeTree)
 def afterSelectHint (self,p,old_p):
 
-    trace = False
+    trace = False and not g.unitTesting
     c = self.c
 
     self.selecting = False
@@ -1037,7 +1024,7 @@ def setItemForCurrentPosition (self,scroll=True):
 
     '''Select the item for c.currentPosition()'''
 
-    trace = False
+    trace = False and not g.unitTesting
     verbose = False
 
     c = self.c ; p = c.currentPosition()
@@ -1103,7 +1090,6 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
     Preserve the vertical scrolling unless scroll is True.'''
 
     trace = False and not g.app.unitTesting
-    # verbose = False
     c = self.c
 
     if self.busy():
@@ -1391,7 +1377,6 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
     Preserve the vertical scrolling unless scroll is True.'''
 
     trace = False and not g.app.unitTesting
-    # verbose = False
     c = self.c
 
     if self.busy():
@@ -1630,7 +1615,7 @@ def redraw_after_select (self,p=None):
 #@+node:ekr.20090124174652.53:afterSelectHint (nativeTree)
 def afterSelectHint (self,p,old_p):
 
-    trace = False
+    trace = False and not g.unitTesting
     c = self.c
 
     self.selecting = False
@@ -1667,7 +1652,7 @@ def setItemForCurrentPosition (self,scroll=True):
 
     '''Select the item for c.currentPosition()'''
 
-    trace = False
+    trace = False and not g.unitTesting
     verbose = False
 
     c = self.c ; p = c.currentPosition()
@@ -1846,7 +1831,6 @@ def full_redraw (self,p=None,scroll=True,forceDraw=False):
     Preserve the vertical scrolling unless scroll is True.'''
 
     trace = False and not g.app.unitTesting
-    # verbose = False
     c = self.c
 
     if self.busy():
@@ -3331,6 +3315,105 @@ def setCurrentItemHelper(self,item):
     w.setCurrentItem(item)
 #@-node:ekr.20090124174652.107:setCurrentItemHelper (leoQtTree)
 #@-node:ekr.20090302135940.11:Ctrl-s does not completely end editing
+#@+node:ekr.20090303095630.14:Fixed clone-find-all problem with Qt
+@nocolor-node
+
+EKR: the problem was in the select logic in cloneFindAll in the core.
+It was calling c.selectPosition.  That called nativeTree.endEditLabel,
+which used old values for position2item.
+The solution was not to call c.selectPosition before calling full_redraw.
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ee1dbcb22a5d0bcb
+
+I've just realised about the following problem with the qt pluguin
+(rev 1593): if I call Find -> Clone Find All when the first node of
+the outline is selected then it gets renamed to "Found:
+something" (something being the searched string), so the first two
+nodes of the oultine have the same name. The top one is correct (it
+contains the found nodes), the second is not. If I call Edit --> Undo
+Typing the badly renamed node recovers it correct name.
+#@+node:ekr.20090124174652.58:endEditLabel (nativeTree)
+def endEditLabel (self):
+
+    '''Override leoTree.endEditLabel.
+
+    End editing of the presently-selected headline.'''
+
+    # Let onHeadChanged do all the work.
+    c = self.c ; p = c.currentPosition()
+
+    # g.trace(p.h)
+
+    self.onHeadChanged(p)
+
+    # c.bodyWantsFocusNow()
+    # c.outerUpdate()
+#@-node:ekr.20090124174652.58:endEditLabel (nativeTree)
+#@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None):
+
+    '''Officially change a headline.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    c = self.c ; u = c.undoer
+    if not p:
+        if trace: g.trace('*** no p')
+        return
+
+    item = self.position2item(p)
+    if not item:
+        # This is not an error.
+        if trace: g.trace('no item for p: %s' % (p))
+        return
+
+    w = g.app.gui.get_focus()
+    ew = self.edit_widget(p)
+    if ew: e = ew.widget
+    else: e = None
+
+    # These are not errors: focus may have been lost.
+    # if trace and verbose:
+        # if not e:  g.trace('No e',g.callers(4))
+        # if e != w: g.trace('e != w',e,w,g.callers(4))
+        # if not p:  g.trace('No p')
+
+    if e and e == w:
+        s = e.text() ; len_s = len(s)
+        s = g.app.gui.toUnicode(s)
+    else:
+        s = self.getItemText(item)
+
+    oldHead = p.h
+    changed = s != oldHead
+    if changed:
+        if trace: g.trace('changed',repr(s),p.h)
+        p.initHeadString(s)
+        item.setText(0,s) # Required to avoid full redraw.
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+
+    # This is a crucial shortcut.
+    if g.unitTesting: return
+
+    self.redraw_after_head_changed()
+    self.closeEditorHelper(ew,item)
+    if self.stayInTree:
+        c.treeWantsFocus()
+    else:
+        c.bodyWantsFocus()
+    c.outerUpdate()
+#@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+#@-node:ekr.20090303095630.14:Fixed clone-find-all problem with Qt
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20081205131308.26:scanColorDirectives (very slow!)
