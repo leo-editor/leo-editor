@@ -7964,6 +7964,7 @@ class searchCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20090204084607.4:iSearchBackspace
     def iSearchBackspace (self):
 
+        trace = False and not g.unitTesting
         c = self.c ; ifinder = self.ifinder
 
         if len(self.stack) <= 1:
@@ -7974,6 +7975,7 @@ class searchCommandsClass (baseEditCommandsClass):
         junk = self.pop()
         p,i,j,in_headline = self.pop()
         self.push(p,i,j,in_headline)
+        if trace: g.trace(p.h,i,j,in_headline)
 
         if in_headline:
             # Like ifinder.showSuccess.
@@ -7982,6 +7984,7 @@ class searchCommandsClass (baseEditCommandsClass):
                 selection=selection,
                 keepMinibuffer=True)
         else:
+            c.selectPosition(p)
             w = c.frame.body.bodyCtrl
             c.bodyWantsFocusNow()
             if i > j: i,j = j,i

@@ -8172,6 +8172,7 @@ def iSearchStateHandler (self,event):
 #@+node:ekr.20090204084607.4:iSearchBackspace
 def iSearchBackspace (self):
 
+    trace = False and not g.unitTesting
     c = self.c ; ifinder = self.ifinder
 
     if len(self.stack) <= 1:
@@ -8182,6 +8183,7 @@ def iSearchBackspace (self):
     junk = self.pop()
     p,i,j,in_headline = self.pop()
     self.push(p,i,j,in_headline)
+    if trace: g.trace(p.h,i,j,in_headline)
 
     if in_headline:
         # Like ifinder.showSuccess.
@@ -8190,6 +8192,7 @@ def iSearchBackspace (self):
             selection=selection,
             keepMinibuffer=True)
     else:
+        c.selectPosition(p)
         w = c.frame.body.bodyCtrl
         c.bodyWantsFocusNow()
         if i > j: i,j = j,i
@@ -10923,6 +10926,8 @@ def setBodyTextAfterSelect (self,p,old_p):
 #@-node:ekr.20090304084910.3:Fixed clone-find-all in qt plugin
 #@+node:ekr.20090304110414.2:Fixed isearch with tk
 # k.showStateAndMode does nothing in isearch mode.
+
+# Also fixed a bug in iSearchBackspace.
 #@nonl
 #@+node:ekr.20050920084036.261:incremental search...
 def isearchForward (self,event):
@@ -11059,6 +11064,7 @@ def iSearchStateHandler (self,event):
 #@+node:ekr.20090204084607.4:iSearchBackspace
 def iSearchBackspace (self):
 
+    trace = False and not g.unitTesting
     c = self.c ; ifinder = self.ifinder
 
     if len(self.stack) <= 1:
@@ -11069,6 +11075,7 @@ def iSearchBackspace (self):
     junk = self.pop()
     p,i,j,in_headline = self.pop()
     self.push(p,i,j,in_headline)
+    if trace: g.trace(p.h,i,j,in_headline)
 
     if in_headline:
         # Like ifinder.showSuccess.
@@ -11077,6 +11084,7 @@ def iSearchBackspace (self):
             selection=selection,
             keepMinibuffer=True)
     else:
+        c.selectPosition(p)
         w = c.frame.body.bodyCtrl
         c.bodyWantsFocusNow()
         if i > j: i,j = j,i
@@ -11305,6 +11313,41 @@ def showStateAndMode(self,w=None,prompt=None):
     if w and g.app.gui.isTextWidget(w):
         k.showStateColors(inOutline,w)
 #@-node:ekr.20061031131434.192:showStateAndMode
+#@+node:ekr.20090204084607.4:iSearchBackspace
+def iSearchBackspace (self):
+
+    trace = False and not g.unitTesting
+    c = self.c ; ifinder = self.ifinder
+
+    if len(self.stack) <= 1:
+        self.abortSearch()
+        return
+
+    # Reduce the stack by net 1.
+    junk = self.pop()
+    p,i,j,in_headline = self.pop()
+    self.push(p,i,j,in_headline)
+    if trace: g.trace(p.h,i,j,in_headline)
+
+    if in_headline:
+        # Like ifinder.showSuccess.
+        selection = i,j,i
+        c.redrawAndEdit(p,selectAll=False,
+            selection=selection,
+            keepMinibuffer=True)
+    else:
+        c.selectPosition(p)
+        w = c.frame.body.bodyCtrl
+        c.bodyWantsFocusNow()
+        if i > j: i,j = j,i
+        w.setSelectionRange(i,j)
+
+    if len(self.stack) <= 1:
+        self.abortSearch()
+
+
+
+#@-node:ekr.20090204084607.4:iSearchBackspace
 #@-node:ekr.20090304110414.2:Fixed isearch with tk
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
@@ -25458,6 +25501,7 @@ def iSearchStateHandler (self,event):
 #@+node:ekr.20090204084607.4:iSearchBackspace
 def iSearchBackspace (self):
 
+    trace = False and not g.unitTesting
     c = self.c ; ifinder = self.ifinder
 
     if len(self.stack) <= 1:
@@ -25468,6 +25512,7 @@ def iSearchBackspace (self):
     junk = self.pop()
     p,i,j,in_headline = self.pop()
     self.push(p,i,j,in_headline)
+    if trace: g.trace(p.h,i,j,in_headline)
 
     if in_headline:
         # Like ifinder.showSuccess.
@@ -25476,6 +25521,7 @@ def iSearchBackspace (self):
             selection=selection,
             keepMinibuffer=True)
     else:
+        c.selectPosition(p)
         w = c.frame.body.bodyCtrl
         c.bodyWantsFocusNow()
         if i > j: i,j = j,i
@@ -26399,6 +26445,7 @@ def iSearchStateHandler (self,event):
 #@+node:ekr.20090204084607.4:iSearchBackspace
 def iSearchBackspace (self):
 
+    trace = False and not g.unitTesting
     c = self.c ; ifinder = self.ifinder
 
     if len(self.stack) <= 1:
@@ -26409,6 +26456,7 @@ def iSearchBackspace (self):
     junk = self.pop()
     p,i,j,in_headline = self.pop()
     self.push(p,i,j,in_headline)
+    if trace: g.trace(p.h,i,j,in_headline)
 
     if in_headline:
         # Like ifinder.showSuccess.
@@ -26417,6 +26465,7 @@ def iSearchBackspace (self):
             selection=selection,
             keepMinibuffer=True)
     else:
+        c.selectPosition(p)
         w = c.frame.body.bodyCtrl
         c.bodyWantsFocusNow()
         if i > j: i,j = j,i
