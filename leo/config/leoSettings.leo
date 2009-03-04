@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="76" left="374" height="870" width="891"/>
+	<global_window_position top="10" left="703" height="641" width="627"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,14,4"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -98,7 +98,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -1001,7 +1001,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1045,6 +1045,7 @@
 </v>
 <v t="TL.20090225102340.33"><vh>nodeActions plugin</vh>
 <v t="TL.20090225102340.34"><vh>@bool nodeActions_save_atFile_nodes = False</vh></v>
+<v t="TL.20090303191843.1"><vh>@int nodeActions_message_level = 1</vh></v>
 </v>
 <v t="ekr.20070411101857"><vh>Open With plugin</vh>
 <v t="ekr.20070411101857.1"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
@@ -1178,7 +1179,7 @@
 <v t="ekr.20050203090810" annotate="7d71002e"><vh>Unit test</vh>
 <v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
 </v>
-<v t="ekr.20041213105954" annotate="7d71002e"><vh>Window</vh>
+<v t="ekr.20041213105954" a="E" annotate="7d71002e"><vh>Window</vh>
 <v t="edward.20081129091117.12"></v>
 <v t="ekr.20041119034357.38"><vh>Body pane options</vh>
 <v t="ekr.20061010111324"><vh>@bool select_all_text_when_editing_headlines = False</vh></v>
@@ -3433,6 +3434,16 @@ delete-editor        = q   #Close current window (if more than one)
 </t>
 <t tx="TL.20090225102340.33"></t>
 <t tx="TL.20090225102340.34">If set to True then if a match occurs on an @file type node the nodeActions plugin will save the clicked @file type node (and any other @file type nodes) to disk, if modified, before running the script.
+</t>
+<t tx="TL.20090303191843.1">Specifies the type of messages to be sent to the log pane.	Specifying a
+higher message level will display that level and all lower levels.
+The following integer values are supported:
+
+0 = no messages
+1 = Plugin triggered and the patterns that were matched (default)
+2 = Double-click event passed or not to next plugin
+3 = Patterns that did not match
+4 = Code debugging messages
 </t>
 <t tx="bobjack.20080614084120.3"></t>
 <t tx="bobjack.20080614084120.5"># The name of the iconBar to which the buttons should initially be placed
@@ -6373,6 +6384,7 @@ threading_colorizer.py
 #EditAttributes.py
 #FileActions.py
 #Library.py
+#nodeActions.py
 #UASearch.py
 #URLloader.py
 #UniversalScrolling.py
