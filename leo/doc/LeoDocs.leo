@@ -577,6 +577,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050912125735.314"><vh>mod_autosave.py</vh></v>
 <v t="ekr.20050912125735.172"><vh>mod_read_dir_outline.py</vh></v>
 <v t="ekr.20050912125735.184"><vh>mod_timestamp.py</vh></v>
+<v t="TL.20090225194539.1"><vh>nodeActions.py</vh></v>
 <v t="ekr.20050912125735.186"><vh>outline_export.py</vh></v>
 <v t="ekr.20060928200600"><vh>paste_as_headlines.py</vh></v>
 <v t="ekr.20050912125735.188"><vh>pretty_print.py</vh></v>
@@ -5588,6 +5589,199 @@ modelines.</t>
 
 |back| |leo| |next|</t>
 <t tx="TL.20080804095315.11"></t>
+<t tx="TL.20090225194539.1">A Leo plugin that permits the "easy" assignment of scripts to be performed on
+double-clicked nodes based on pattern matching.
+
+When a node is double-clicked, the nodeActions plugin checks for a match of the
+double-clicked node's headline text with a list of patterns and, if a match
+occurs, the script associated with the pattern is executed.
+
+The nodeActions plugin will only pass the double-click event to other plugins
+if no pattern match occurred unless overridden by the "&gt;" `pattern directive`__.
+
+__ nA_Directives_
+
+.. _nA_Patterns:
+
+Patterns:
+   The patterns are defined in the headlines of sub-nodes of a single
+   "nodeActions" node.
+
+   The "nodeActions" node can be located anywhere within the same Leo file as
+   the node that will be double-clicked.  For example, a pattern that matches a
+   URL and a pattern that matches any python files stored as an @thin derived
+   file could be stored under an @settings node as follows::
+
+      @settings
+      |
+      +- nodeActions
+         |
+         +- http:\\*
+         |
+         +- @thin *.py
+
+   __ nA_Directives_
+
+   Pattern matching is performed using python's support for Unix
+   shell-style patterns unless overwritten by the "X" `pattern directive`__.
+   The following pattern elements are supported::
+
+              * - matches everything
+              ? - matches any single character
+        [&lt;seq&gt;] - matches any character in &lt;seq&gt;
+       [!&lt;seq&gt;] - matches any character **not** in &lt;seq&gt;
+
+   Unix shell-style pattern matching is case insensitive and always starts from
+   the beginning of the headline.  For example:
+
+      .. table::
+
+         ======= =========== ==============
+         Pattern   Matches   Does not match
+         ======= =========== ==============
+         \*.py   Abc_Test.py
+         .py     .py - Test  Abc_Test.py
+         test*   Test_Abc.py Abc_Test.py
+         ======= =========== ==============
+
+   To enable a script to run on any type of @file node (@thin, @shadow, ...),
+   the pattern can use "@files" at the beginning of the pattern to match on any
+   derived file type.  For example, the pattern "@files \*.py" will
+   match a node with the headline "@thin Abcd.py".
+
+   The headline of the double-clicked node is matched against the patterns
+   starting from the first sub-node under the "nodeActions" node to the last
+   sub-node.  Only the script associated with the first matching pattern is
+   invoked unless overwritten by the "V" `pattern directive`__.
+
+   __ nA_Directives_
+
+   This can be used to define a broad pattern such
+   as "@files \*.py", and then, by placing a more restrictive pattern above it,
+   such as "@files \*_test.py", a different script can be executed for those
+   special cases::
+
+      +- nodeActions
+         |
+         +- @files *_test.py
+         |
+         +- @files *.py
+
+   :Note:
+      To prevent Leo from trying to save patterns that begin with a derived
+      file directive (@thin, @auto, ...) to disk, such as "@thin \*.py",
+      place the "@ignore" directive in the body of the "nodeActions" node.
+
+Scripts:
+   The script for a pattern is located in the body of the pattern's node.
+   The following global variables are available to the script::
+
+      c
+      g
+      pClicked - node position of the double-clicked node
+      pScript - node position of the invoked script
+
+.. _nA_Directives:
+
+Directives:
+   The following pattern specific directives can be appended to the end of a
+   pattern (do not include the ':'):
+
+   :[X]:
+      Use python's regular expression type patterns instead of the Unix
+      shell-style pattern syntax.
+
+      For example, the following patterns will match the same headline string::
+      
+         Unix shell-style pattern:
+            @files *.py
+         
+         Regular Expression patern:
+            ^@files .*\.py$ [X]
+
+   :[V]:
+      Matching the pattern will not block the double-click event from
+      being passed to the remaining patterns.
+      The "V" represents a down arrow that symbolizes the passing of the event
+      to the next pattern below it.
+
+      __ nA_Patterns_
+
+      For example, adding the "[V]" directive to the "@files \*_test.py" in
+      the `Patterns`__ section above, changes its script from being 'an
+      alternate to' to being 'a pre-processor for' the "@files \*.py" script::
+
+         +- nodeActions
+            |
+            +- @files *_test.py [V]
+            |
+            +- @files *.py
+
+   :[&gt;]:
+      Matching the pattern will not block the double-click event from being
+      passed to other plugins.
+      The "&gt;" represents a right arrow that
+      symbolizes the passing of the event to the next plugin.
+      
+      If the headline matched more than one headline,
+      the double-click event will be passed to the next plugin if the
+      directive is associated with any of the matched patterns.
+
+   The directive(s) for a pattern must be contained within a single set of
+   brackets, separated from the pattern by a space, with or without a comma
+   separator.  For example, the following specifies all three directives::
+   
+      ^@files .*\.py$ [X,V&gt;]
+
+Configurations:
+   The nodeActions plugin supports the following global configurations using
+   Leo's support for setting global variables within an @settings node's
+   sub-nodes in the leoSettings.leo, myLeoSettings.leo, and the project Leo
+   file:
+   
+   @bool nodeActions_save_atFile_nodes = False
+
+      :True:
+         The nodeActions plugin will save a double-clicked derived file node
+         to disk, if a pattern match occurred, before executing its script.  
+
+      :False:
+         A pattern match to a double-clicked derived file node will **not**
+         cause the derived file to be saved to disk.
+         (default)
+
+   @int nodeActions_message_level = 1
+
+      Specifies the type of messages to be sent to the log pane.  Specifying a
+      higher message level will display that level and all lower levels.
+      The following integer values are supported:
+      
+      :0: no messages
+      :1: Plugin triggered and the patterns that were matched (default)
+      :2: Double-click event passed or not to next plugin
+      :3: Patterns that did not match
+      :4: Code debugging messages
+
+Script examples:
+   Displaying URLs (tested with WinXP):
+
+      Double-clicking on a node with a "http:\\\\www.google.com" headline
+      will invoke the script associated with the
+      "http:\\\\\*" pattern.  The following script in the body of the pattern's
+      node displays the URL in a browser::
+
+         import webbrowser
+         hClicked = pClicked.h     #Clicked node's Headline text
+         webbrowser.open(hClicked) #Invoke browser
+
+   Executing commands (tested with WinXP):
+
+      The following script can be placed in the body of a pattern's node to
+      execute a command in the first line of the body of a double-clicked node::
+      
+         g.os.system('"Start /b ' + pClicked.bodyString() + '"')
+
+</t>
 <t tx="bob.20080110214217"></t>
 <t tx="bob.20080110214217.1">gtkDialogs replaces Tk's file dialogs with Gtk file chooser dialogs.
 
@@ -16530,9 +16724,13 @@ For Windows systems you can install Python's subprocess module in Python 2.2 or
 This installer installs the subprocess sources and also _subprocess.pyd in Python's site-packages folder.</t>
 <t tx="ekr.20050912125735.2736">A plugin that communicates with VIM:
     
-- Double clicking on a node's icon opens that node in VIM. You can open nodes in
-  VIM with a single-click if you set useDoubleClick = False. However, that
-  interferes with Leo's dragging logic.
+When properly installed, this plugin does the following:
+
+- Double clicking on a node's icon opens that node in VIM.
+
+- Leo will put the Vim cursor at same location as the Leo cursor in node's body if the Leo 'vim_plugin_positions_cursor' variable is set to True.
+
+- Leo will put node in a Vim tab card if the Leo 'vim_plugin_uses_tab_feature' is set to True.
 
 - Leo will update the node in the outline when you save the file in VIM.</t>
 <t tx="ekr.20050912125735.2743">This plugin allows you to edit nodes in emacs/xemacs.

@@ -5,51 +5,9 @@
 """ A Leo plugin that permits the definition of actions for double-clicking on
 nodes. Written by TL. Derived from the fileActions plugin. Distributed under the same licence as Leo.
 
-When a node is double clicked, the nodeActions plugin checks for a match of the clicked node's headline text with a list of patterns and, if a match occurs, the script associated with the pattern is executed.
+When a node is double-clicked, the nodeActions plugin checks for a match of the clicked node's headline text with a list of patterns and, if a match occurs, the script associated with the pattern is executed.
 
-The patterns are defined in the headlines of sub-nodes of a "nodeActions" node.
-
-Use "@files" at the beginning of the pattern to match on any derived file directive (@file, @thin, @shadow, ...).  For example, the pattern "@files *.py" will match a node with the headline "@thin Abcd.py".
-
-The script for a pattern is located in the body of the pattern's node.
-The following global variables are available to the script:
-    c
-    g
-    pClicked - node position of the double clicked node
-    pScript - node position of the invoked script
-
-The script can obtain the double clicked node's headline with the line:
-    hClicked = pClicked.h
-
-The script can obtain the first line of the body of the double clicked node with the lines:
-    bodyLines = pClicked.bodyString().split('\n')
-    firstLine = bodyLines[0] or ''
-
-The "nodeActions" node can be located anywhere within the same Leo file as the
-node that was double clicked.  For example, a pattern that matches a URL and a pattern that matches any python files stored as an @thin derived file could be stored under a @settings node as follows:
-   @settings
-   |
-   +- nodeActions
-      |
-      +- http:\\*
-      |
-      +- @thin *.py
-
-Note: To prevent Leo from trying to save the "@thin *.py" node as a derived file, place the "@ignore" directive in the body of the "nodeActions" node.
-
-Patterns are matched against the headline of the double clicked node starting from the first sub-node under the "nodeActions" node to the last sub-node.  Only the script associated with the first matching pattern is invoked.
-
-Real world example (tested with WinXP):
----------------------------------------
-Double clicking on a node with a "http:\\www.google.com" headline anywhere in the Leo file will invoke the script associated with the "http:\\*" pattern.  The following script in the body of the pattern's node, when executed, would display the URL in a browser:
-
-    import webbrowser
-    hClicked = pClicked.h.strip() #Headline text with trailing spaces stripped
-    webbrowser.open(hClicked)     #Invoke browser
-
-Configuration:
---------------
-If the boolean variable "nodeAction_save_atFile_nodes" is true (default setting) nodeActions will save the clicked node to disk before executing the script. 
+Detailed documentations is provided in the "Plugins" section of the Leo Users Guide (Chapter 12).
 """
 #@-node:TL.20080507213950.3:<< docstring >>
 #@nl
@@ -62,9 +20,9 @@ __version__ = "0.4"
 #@+node:TL.20080507213950.4:<< version history >>
 #@@nocolor
 #@+at
-# 0.1 TL: Initial code (modified from FileActions plugin)
+# 0.2 : 02-Mar-09 : TL : Support for 'X', 'V', and  '>' directives added
+# 0.1 : 27-Feb-09 : TL : Initial code (modified from FileActions plugin)
 #@-at
-#@nonl
 #@-node:TL.20080507213950.4:<< version history >>
 #@nl
 #@<< imports >>
@@ -73,6 +31,7 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 import fnmatch
+import re
 import os
 import sys
 import tempfile
@@ -80,24 +39,13 @@ import tempfile
 #@-node:ekr.20040915110738.1:<< imports >>
 #@nl
 
-fileDirectives = [
+atFileTypes = [
 	"@file", "@thin", "@file-thin",   "@thinfile", "@asis",   "@file-asis",
 	"@silentfile", "@noref",  "@file-noref",  "@rawfile", "@nosent",
 	"@file-nosent", "@nosentinelsfile", "@shadow", "@edit",
 ]
 
 #@+others
-#@+node:TL.20080507213950.7:init
-def init():
-
-	 g.es("nodeActions: Init", color='blue')
-	 ok = not g.app.unitTesting # Dangerous for unit testing.
-	 if ok:
-		  leoPlugins.registerHandler("icondclick1", onIconDoubleClickNA)
-		  g.plugin_signon(__name__)
-	 return ok
-#@nonl
-#@-node:TL.20080507213950.7:init
 #@+node:TL.20080507213950.8:onIconDoubleClickNA
 def onIconDoubleClickNA(tag, keywords):
 
@@ -114,10 +62,35 @@ def onIconDoubleClickNA(tag, keywords):
 
 
 #@-node:TL.20080507213950.8:onIconDoubleClickNA
+#@+node:TL.20080507213950.7:init
+def init():
+
+	 g.es("nodeActions: Init", color='blue')
+	 ok = not g.app.unitTesting # Dangerous for unit testing.
+	 if ok:
+		  leoPlugins.registerHandler("icondclick1", onIconDoubleClickNA)
+		  g.plugin_signon(__name__)
+	 return ok
+#@nonl
+#@-node:TL.20080507213950.7:init
 #@+node:TL.20080507213950.9:doNodeAction
 def doNodeAction(pClicked, c):
 
    hClicked = pClicked.h.strip()
+
+   messageLevel = c.config.getInt('nodeActions_message_level')
+   #0 = log no messages
+   #1 = log 'triggered', 'matched patterns', 'no match'
+   #2 = log 1 & 'event passed'
+   #3 = log 1,2 & 'no match to pattern'
+   #4 = log 1,2,3, & any code debugging messages
+   #         matched pattern's 'directives' and '@file saved' settings
+
+   if messageLevel >= 1:
+      g.es( "nodeActions: triggered" )
+   if messageLevel >= 4:
+      g.es( "nA: Global nodeActions_save_atFile_nodes=", \
+                c.config.getBool('nodeActions_save_atFile_nodes'), color='blue')
 
    #Find the "nodeActions" node
    pNA = g.findNodeAnywhere(c,"nodeActions")
@@ -127,38 +100,105 @@ def doNodeAction(pClicked, c):
    if pNA:
       #Found "nodeActions" node
       foundPattern = False
+      passEventExternal = False  #No pass to next plugin after pattern matched
+      #Check all children pattern nodes under the "nodeActions" node
       for pScript in pNA.children_iter():
-         hScript = pScript.h.strip()
+
+         #Don't trigger on double click of a nodeActions' pattern node
+         if pClicked == pScript:
+            continue
+
+         pattern = pScript.h.strip()   #Pattern node's header
+         if messageLevel >= 4:
+            g.es( "nA: Checking pattern '" + pattern, color='blue' )
+
+         #if directives exist, parse them and set directive flags for later use
+         directiveExists = re.search( " \[[V>X],?[V>X]?,?[V>X]?]$", pattern )
+         if directiveExists:
+            directives = directiveExists.group(0)
+         else:
+            directives = "[]"
+         #What directives exist?
+         useRegEx = re.search("X", directives) != None
+         passEventInternal = re.search("V", directives) != None
+         if not passEventExternal: #don't disable once enabled.
+            passEventExternal = re.search(">", directives) != None
+         #Remove the directives from the end of the pattern (if they exist)
+         pattern = re.sub( " \[.*]$", "", pattern, 1)
+         if messageLevel >= 4:
+            g.es( "nA:   Pattern='" + pattern + "' " \
+                                  + "(after directives removed)", color='blue' )
+
+			#Keep copy of pattern without directives for message log
+         patternOriginal = pattern
 
          #if pattern begins with "@files" and clicked node is an @file type node
-         #   then replace "@files" in hScript to clicked node's @file type
-         wordsScript = hScript.split()    #separate node's header into words
-         if wordsScript[0] == "@files":
-            wordsClicked = hClicked.split()  #separate node's header into words
-            if wordsClicked[0] in fileDirectives:
-               wordsScript[0] = wordsClicked[0]
-               hScript = " ".join(wordsScript) #rebuild headline from its words
-               #g.es("@files found: hScript=" + hScript, color='blue')
+         #   then replace "@files" in pattern with clicked node's @file type
+         patternBeginsWithAtFiles = re.search( "^@files ", pattern )
+         clickedAtFileTypeNode = False #assume @file type node not clicked
+         if patternBeginsWithAtFiles:
+            #Check if first word in clicked header is in list of @file types
+            firstWordInClickedHeader = hClicked.split()[0]
+            if firstWordInClickedHeader in atFileTypes:
+               clickedAtFileTypeNode = True #Tell "write @file type nodes" code
+               #Replace "@files" in pattern with clicked node's @file type
+               pattern = re.sub( "^@files", firstWordInClickedHeader, pattern)
+               if messageLevel >= 4:
+                  g.es( "nA:   Pattern='" + pattern + "' " \
+                                 + "(after @files substitution)", color='blue' )
 
-         #Check for match between clicked node's header with action node
-         if fnmatch.fnmatchcase(hClicked, hScript):
-            #Write node to disk before launching script (if configured)
-            if wordsScript[0] in fileDirectives:
+         #Check for pattern match to clicked node's header
+         if useRegEx:
+            match = re.search(pattern, hClicked)
+         else:
+            match = fnmatch.fnmatchcase(hClicked, pattern)
+         if match:
+            if messageLevel >= 1:
+               g.es( "nA: Matched pattern '" + patternOriginal + "'"
+																					, color='blue' )
+            if messageLevel >= 4:
+               g.es( "nA:   Directives: X=",useRegEx, "V=",passEventInternal, \
+                                           ">=",passEventExternal, color='blue')
+            #if @file type node, save node to disk (if configured)
+            if clickedAtFileTypeNode:
                if c.config.getBool('nodeActions_save_atFile_nodes'):
                   #Problem - No way found to just save clicked node, saving all
                   c.fileCommands.writeAtFileNodes()
                   c.requestRedrawFlag = True
                   c.redraw()
+                  if messageLevel >= 3:
+                     g.es( "nA:   Saved '" + hClicked + "'", color='blue' )
+            #Run the script
             applyNodeAction(pScript, pClicked, c)
+            #Indicate that at least one pattern was matched
             foundPattern = True
-            break
+            #Don't trigger more patterns unless enabled in patterns' headline
+            if passEventInternal == False:
+               break
+         else:
+            if messageLevel >= 3:
+               g.es("nA: Did not match `" + patternOriginal + "'", color='blue')
+
+      #Finished checking headline against patterns
       if not foundPattern:
-         g.es("nodeActions: No matching patterns " + hClicked, color='blue')
+         #no match to any pattern, always pass event to next plugin
+         if messageLevel >= 1:
+            g.es("nA: No patterns matched to """ + hClicked + '"', color='blue')
          return False #TL - Inform onIconDoubleClick that no action was taken
+      elif passEventExternal == True:
+         #last matched pattern has directive to pass event to next plugin
+         if messageLevel >= 2:
+            g.es("nA: Event passed to next plugin", color='blue')
+         return False #TL - Inform onIconDoubleClick to pass double-click event
       else:
-         return True #TL - Inform onIconDoubleClick that action was taken
+         #last matched pattern did not have directive to pass event to plugin
+         if messageLevel >= 2:
+            g.es("nA: Event not passed to next plugin", color='blue')
+         return True #TL - Inform onIconDoubleClick to not pass double-click
    else:
-      g.es("nodeActions: No nodeActions node found", color='blue')
+      if messageLevel >= 1:
+         g.es("nA: The ""nodeActions"" node does not exist", \
+                                                                   color='blue')
       return False #TL - Inform onIconDoubleClick that no action was taken
 #@-node:TL.20080507213950.9:doNodeAction
 #@+node:TL.20080507213950.10:applyNodeAction
