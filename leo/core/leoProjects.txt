@@ -11092,6 +11092,14 @@ def getNodeFileName (self,p):
     return filename and g.os_path_finalize_join(path,filename) or None
 #@-node:ekr.20081006100835.1:c.getNodePath & c.getNodeFileName
 #@-node:ekr.20081006100835.2:Added c.getNodePath and c.getNodeFileName
+#@+node:ekr.20081022080424.1:Added support for meta keys
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b6a39ed672a28c65?pli=1
+
+Patches made to leoKeys.py
+#@nonl
+#@-node:ekr.20081022080424.1:Added support for meta keys
 #@-node:ekr.20080917153158.15:New features
 #@+node:ekr.20080930072519.8:New options
 #@+node:ekr.20080910054558.2:Added -c option to specify config files

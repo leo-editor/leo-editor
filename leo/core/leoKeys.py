@@ -2455,6 +2455,7 @@ class keyHandlerClass:
         #@+node:ekr.20061031131434.106:<< define specialKeysyms >>
         specialKeysyms = (
             'Alt_L','Alt_R',
+            'Meta_L','Meta_R', # Meta support.
             'Caps_Lock','Control_L','Control_R',
             'Num_Lock',
             'Shift_L','Shift_R',
@@ -2860,6 +2861,8 @@ class keyHandlerClass:
         for prefix in (
             'Alt+Ctrl+Shift', 'Alt+Shift', 'Alt+Ctrl', 'Alt+Key','Alt',
             'Ctrl+Shift', 'Ctrl', 'Shift',
+            'Meta+Ctrl+Shift', 'Meta+Shift', 'Meta+Ctrl', 'Meta+Key','Meta',
+            # Meta support
         ):
             data2 = []
             for item in data:
@@ -3268,6 +3271,7 @@ class keyHandlerClass:
         special_keys = (
             'Alt_L','Alt_R',
             'Caps_Lock','Control_L','Control_R',
+            'Meta_L','Meta_R', # Meta support.
             'Num_Lock',
             'Shift_L','Shift_R',
             'Win_L','Win_R',
@@ -4394,7 +4398,7 @@ class keyHandlerClass:
 
         k = self ; shortcut = shortcut or ''
 
-        for s in ('Alt','Ctrl','Command'):
+        for s in ('Alt','Ctrl','Command','Meta'):
             if shortcut.find(s) != -1:
                 return False
         else:
@@ -4429,6 +4433,7 @@ class keyHandlerClass:
         ctrl  = s2.find("control") >= 0 or s2.find("ctrl") >= 0
         alt   = s2.find("alt") >= 0
         shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
+        meta  = s2.find("meta") >= 0
         #@-node:ekr.20061031131434.185:<< define cmd, ctrl, alt, shift >>
         #@nl
         if k.swap_mac_keys and sys.platform == "darwin":
@@ -4489,6 +4494,7 @@ class keyHandlerClass:
             (alt, 'Alt+'),
             (ctrl,'Ctrl+'),
             (cmd, 'Command+'),
+            (meta,'Meta+'),
             (shift,'Shift+'),
             (True, last),
         )
@@ -4514,6 +4520,7 @@ class keyHandlerClass:
             ('Alt+','Alt-'),
             ('Ctrl-','Control-'),
             ('Ctrl+','Control-'), # New in Leo 4.5.
+            ('Meta+','Meta-'), # New in Leo 4.6
             ('Shift+','Shift-'),
             ('Command+','Command-'),
             ('DnArrow','Down'), # New in Leo 4.5.
@@ -4827,6 +4834,7 @@ class keyHandlerClass:
             elif stroke == '<Key>' and keysym in (
                 'Alt_L','Alt_R',
                 'Control_L','Control_R',
+                'Meta_L','Meta_R',
                 'Shift_L','Shift_R',
             ):
                  # g.trace('stroke',k.stroke,'keysym',keysym)

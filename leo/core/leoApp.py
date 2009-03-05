@@ -8,6 +8,7 @@
 #@@pagewidth 80
 
 import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
 import os
 import sys
 
@@ -103,7 +104,7 @@ class LeoApp:
         #@-node:ekr.20031218072017.1417:<< define global constants >>
         #@nl
         #@    << Define global data structures >>
-        #@+node:ekr.20031218072017.368:<< define global data structures >> app
+        #@+node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
         # Internally, lower case is used for all language names.
         self.language_delims_dict = {
             # Keys are languages, values are 1,2 or 3-tuples of delims.
@@ -127,6 +128,7 @@ class LeoApp:
             "kshell"        : "#", # Leo 4.5.1.
             "latex"         : "%",
             "lua"           : "--",  # ddm 13/02/06
+            "noweb"         : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
             "pascal"        : "// { }",
             "perl"          : "#",
             "perlpod"       : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
@@ -136,13 +138,15 @@ class LeoApp:
             "python"        : "#",
             "rapidq"        : "'", # fil 2004-march-11
             "rebol"         : ";",  # jason 2003-07-03
-            "ruby"          : "#",  # thyrsus 2008-10-24
+            "ruby"          : "#",  # thyrsus 2008-11-05
             "shell"         : "#",  # shell scripts
             "tcltk"         : "#",
+            "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
             "unknown"       : "#", # Set when @comment is seen.
             "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
             "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
             "xml"           : "<!-- -->",
+            "xslt"          : "<!-- -->",
         }
 
         self.language_extension_dict = {
@@ -176,19 +180,21 @@ class LeoApp:
             "plsql"         : "sql", # qt02537 2005-05-27
             "rapidq"        : "bas", # fil 2004-march-11
             "rebol"         : "r",    # jason 2003-07-03
-            "ruby"          : "rb",  # thyrsus 2008-10-24
+            "ruby"          : "rb",   # thyrsus 2008-11-05
             "shell"         : "sh",   # DS 4/1/04
             "tex"           : "tex",
             "tcltk"         : "tcl",
             "unknown"       : "txt", # Set when @comment is seen.
             "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
             "xml"           : "xml",
+            "xslt"          : "xsl",
         }
 
         self.extension_dict = {
             # Keys are extensions, values are languages.
             "ada"   : "ada",
             "adb"   : "ada",
+            "ahk"   : "autohotkey",  # EKR: 2009-01-30.
             "as"    : "actionscript",
             "bas"   : "rapidq",
             "bat"   : "batch",
@@ -214,13 +220,14 @@ class LeoApp:
             "py"    : "python",
             "sql"   : "plsql", # qt02537 2005-05-27
             "r"     : "rebol",
-            "rb"    : "ruby", # thyrsus 2008-10-24
+            "rb"    : "ruby", # thyrsus 2008-11-05
             "sh"    : "shell",
             "tex"   : "tex",
             "txt"   : "plain",
             "tcl"   : "tcltk",
             "w"     : "cweb",
             "xml"   : "xml",
+            "xsl"   : "xslt",
         }
 
         # Extra language extensions, used to associate extensions with mode files.
@@ -247,7 +254,7 @@ class LeoApp:
             'w'     : 'none', # cweb
         }
         #@nonl
-        #@-node:ekr.20031218072017.368:<< define global data structures >> app
+        #@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
         #@nl
     #@-node:ekr.20031218072017.1416:app.__init__
     #@+node:ekr.20031218072017.2609:app.closeLeoWindow
@@ -258,6 +265,8 @@ class LeoApp:
         Return False if the user veto's the close."""
 
         c = frame.c
+
+        # g.trace('frame',frame,g.callers(4))
 
         c.endEditing() # Commit any open edits.
 
@@ -286,13 +295,32 @@ class LeoApp:
             frame.deiconify()
             frame.lift()
             frame.c.setLog()
-            frame.c.bodyWantsFocusNow()
+            frame.c.bodyWantsFocus()
             frame.c.outerUpdate()
         elif not g.app.unitTesting:
             g.app.finishQuit()
 
         return True # The window has been closed.
     #@-node:ekr.20031218072017.2609:app.closeLeoWindow
+    #@+node:ekr.20090202191501.5:app.createNullGui
+    def createNullGui (self):
+
+        # Don't import this at the top level:
+        # it might interfere with Leo's startup logic.
+        import leo.core.leoGui as leoGui
+
+        g.app.gui = leoGui.nullGui("nullGui")
+    #@nonl
+    #@-node:ekr.20090202191501.5:app.createNullGui
+    #@+node:ekr.20090202191501.1:app.createQtGui
+    def createQtGui (self,fileName=None):
+
+        # Do NOT omit fileName param: it is used in plugin code.
+
+        """A convenience routines for plugins to create the Qt gui class."""
+
+        leoPlugins.loadOnePlugin ('qtGui',verbose=True)
+    #@-node:ekr.20090202191501.1:app.createQtGui
     #@+node:ekr.20031218072017.2610:app.createTkGui
     def createTkGui (self,fileName=None):
 
@@ -300,19 +328,27 @@ class LeoApp:
 
         """A convenience routines for plugins to create the default Tk gui class."""
 
-        import leo.core.leoTkinterGui as leoTkinterGui # Do this import after app module is fully imported.
+        leoPlugins.loadOnePlugin ('tkGui',verbose=True)
 
-        g.app.gui = leoTkinterGui.tkinterGui()
-        g.app.root = g.app.gui.createRootWindow()
+        # Old code.
+            # import leo.core.leoTkinterGui as leoTkinterGui # Do this import after app module is fully imported.
 
-        # Show a dialog and exit immediately if Pmw can not be imported.
-        g.importExtension("Pmw",pluginName="Leo's core",verbose=False,required=True)
-        g.app.gui.finishCreate()
+            # g.app.gui = leoTkinterGui.tkinterGui()
+            # g.app.root = g.app.gui.createRootWindow()
 
-        if 0:
-            if fileName:
-                g.pr("Tk gui created in", g.shortFileName(fileName))
+            # # Show a dialog and exit immediately if Pmw can not be imported.
+            # g.importExtension("Pmw",pluginName="Leo's core",verbose=False,required=True)
+            # g.app.gui.finishCreate()
     #@-node:ekr.20031218072017.2610:app.createTkGui
+    #@+node:ekr.20090126063121.3:app.createWxGui
+    def createWxGui (self,fileName=None):
+
+        # Do NOT omit fileName param: it is used in plugin code.
+
+        """A convenience routines for plugins to create the wx gui class."""
+
+        leoPlugins.loadOnePlugin ('wxGui',verbose=True)
+    #@-node:ekr.20090126063121.3:app.createWxGui
     #@+node:ekr.20031218072017.2612:app.destroyAllOpenWithFiles
     def destroyAllOpenWithFiles (self):
 
@@ -348,9 +384,9 @@ class LeoApp:
         if path and g.os_path_exists(path):
             try:
                 os.remove(path)
-                g.pr("deleting temp file:", g.shortFileName(path))
+                g.pr("deleting temp file: %s" % g.shortFileName(path))
             except:
-                g.pr("can not delete temp file:", path)
+                g.pr("can not delete temp file: %s" % path)
 
         # Remove theDict from the list so the gc can recycle the Leo window!
         g.app.openWithFiles.remove(theDict)
@@ -359,12 +395,11 @@ class LeoApp:
     def destroyWindow (self,frame):
 
         # g.trace(frame in g.app.windowList,frame)
-
         g.app.destroyOpenWithFilesForFrame(frame)
 
         if frame in g.app.windowList:
-            g.app.windowList.remove(frame)
             # g.trace(g.app.windowList)
+            g.app.windowList.remove(frame)
 
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
@@ -383,7 +418,7 @@ class LeoApp:
             g.app.gui.destroySelf()
 
         # Don't use g.trace!
-        # g.pr('app.finishQuit: setting g.app.killed',g.callers())
+        # print('app.finishQuit: setting g.app.killed',g.callers())
 
         g.app.killed = True
             # Disable all further hooks and events.
@@ -391,7 +426,7 @@ class LeoApp:
 
         if g.app.afterHandler:
             # TK bug: This appears to have no effect, at least on Windows.
-            # g.pr("finishQuit: cancelling",g.app.afterHandler)
+            # print("finishQuit: cancelling",g.app.afterHandler)
             if g.app.gui and g.app.gui.guiName() == "tkinter":
                 self.root.after_cancel(g.app.afterHandler)
             g.app.afterHandler = None
@@ -414,6 +449,58 @@ class LeoApp:
 
         self.finishQuit()
     #@-node:ekr.20031218072017.2616:app.forceShutdown
+    #@+node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
+    def newLeoCommanderAndFrame(self,
+        fileName=None,
+        relativeFileName=None,
+        gui=None,initEditCommanders=True,updateRecentFiles=True):
+
+        """Create a commander and its view frame for the Leo main window."""
+
+        app = self
+
+        import leo.core.leoCommands as leoCommands
+
+        if not fileName: fileName = ''
+        if not relativeFileName: relativeFileName = ''
+        if not gui: gui = g.app.gui
+        #@    << compute the window title >>
+        #@+node:ekr.20031218072017.2189:<< compute the window title >>
+        # Set the window title and fileName
+        if fileName:
+            title = g.computeWindowTitle(fileName)
+        else:
+            s = "untitled"
+            n = g.app.numberOfWindows
+            if n > 0:
+                s += str(n)
+            title = g.computeWindowTitle(s)
+            g.app.numberOfWindows = n+1
+        #@-node:ekr.20031218072017.2189:<< compute the window title >>
+        #@nl
+
+        # g.trace(fileName,relativeFileName)
+
+        # Create an unfinished frame to pass to the commanders.
+        frame = gui.createLeoFrame(title)
+
+        # Create the commander and its subcommanders.
+        c = leoCommands.Commands(frame,fileName,relativeFileName=relativeFileName)
+
+        if not app.initing:
+            g.doHook("before-create-leo-frame",c=c) # Was 'onCreate': too confusing.
+
+        frame.finishCreate(c)
+        c.finishCreate(initEditCommanders)
+
+        # Finish initing the subcommanders.
+        c.undoer.clearUndoState() # Menus must exist at this point.
+
+        # if not g.app.initing:
+            # g.doHook("after-create-leo-frame",c=c)
+
+        return c,frame
+    #@-node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
     #@+node:ekr.20031218072017.2617:app.onQuit
     def onQuit (self,event=None):
 
@@ -477,7 +564,7 @@ class LeoApp:
         #@+node:ekr.20031218072017.1979:<< return if we can set leoID from sys.leoID>>
         # This would be set by in Python's sitecustomize.py file.
 
-        # 7/2/04: Use hasattr & getattr to suppress pychecker warning.
+        # Use hasattr & getattr to suppress pylint warning.
         # We also have to use a "non-constant" attribute to suppress another warning!
 
         nonConstantAttr = "leoID"
@@ -578,7 +665,7 @@ class LeoApp:
 
         """set the frame to which log messages will go"""
 
-        # g.pr("setLog:",tag,"locked:",self.logIsLocked,log)
+        # print("setLog:",tag,"locked:",self.logIsLocked,log)
         if not self.logIsLocked:
             self.log = log
 
@@ -601,60 +688,8 @@ class LeoApp:
                     g.es('',s,color=color,newline=0) # The caller must write the newlines.
                 self.logWaiting = []
         else:
-            g.pr('writeWaitingLog: still no log!')
+            print('writeWaitingLog: still no log!')
     #@-node:ekr.20031218072017.2619:app.writeWaitingLog
-    #@+node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
-    def newLeoCommanderAndFrame(self,
-        fileName=None,
-        relativeFileName=None,
-        gui=None,initEditCommanders=True,updateRecentFiles=True):
-
-        """Create a commander and its view frame for the Leo main window."""
-
-        app = self
-
-        import leo.core.leoCommands as leoCommands
-
-        if not fileName: fileName = ''
-        if not relativeFileName: relativeFileName = ''
-        if not gui: gui = g.app.gui
-        #@    << compute the window title >>
-        #@+node:ekr.20031218072017.2189:<< compute the window title >>
-        # Set the window title and fileName
-        if fileName:
-            title = g.computeWindowTitle(fileName)
-        else:
-            s = "untitled"
-            n = g.app.numberOfWindows
-            if n > 0:
-                s += str(n)
-            title = g.computeWindowTitle(s)
-            g.app.numberOfWindows = n+1
-        #@-node:ekr.20031218072017.2189:<< compute the window title >>
-        #@nl
-
-        # g.trace(fileName,relativeFileName)
-
-        # Create an unfinished frame to pass to the commanders.
-        frame = gui.createLeoFrame(title)
-
-        # Create the commander and its subcommanders.
-        c = leoCommands.Commands(frame,fileName,relativeFileName=relativeFileName)
-
-        if not app.initing:
-            g.doHook("before-create-leo-frame",c=c) # Was 'onCreate': too confusing.
-
-        frame.finishCreate(c)
-        c.finishCreate(initEditCommanders)
-
-        # Finish initing the subcommanders.
-        c.undoer.clearUndoState() # Menus must exist at this point.
-
-        # if not g.app.initing:
-            # g.doHook("after-create-leo-frame",c=c)
-
-        return c,frame
-    #@-node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
     #@-others
 #@-node:ekr.20031218072017.2608:@thin leoApp.py
 #@-leo
