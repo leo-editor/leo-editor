@@ -761,6 +761,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             c.deleteOutline (op_name='kill-buffer: %s' % h)
             c.selectPosition(current)
             self.k.setLabelBlue('Killed buffer: %s' % h)
+            c.redraw(current) ####
     #@-node:ekr.20050920084036.38:killBuffer
     #@+node:ekr.20050920084036.42:listBuffers & listBuffersAlphabetically
     def listBuffers (self,event):
@@ -846,6 +847,7 @@ class bufferCommandsClass (baseEditCommandsClass):
 
         c = self.c ; p = self.findBuffer(name)
         if p:
+            c.selectPosition(p)
             c.redraw_after_select(p)
 
     #@-node:ekr.20050920084036.40:switchToBuffer
@@ -2739,6 +2741,7 @@ class editCommandsClass (baseEditCommandsClass):
             w.setSelectionRange(0,0,insert=0)
             c.editCommands.cleanLines(event)
         c.selectPosition(current)
+        c.redraw_after_icons_changed()
     #@-node:ekr.20070325094935:cleanAllLines
     #@+node:ekr.20060415112257:cleanLines
     def cleanLines (self,event):
@@ -4891,7 +4894,6 @@ class editFileCommandsClass (baseEditCommandsClass):
             self.createCompareClones(d,kind,parent)
         c.selectPosition(parent)
         u.afterChangeGroup(parent,undoType,reportFlag=True) 
-
         c.redraw()
     #@nonl
     #@+node:ekr.20070921074410:createCompareClones
@@ -7866,6 +7868,7 @@ class searchCommandsClass (baseEditCommandsClass):
 
         p,i,j,in_headline = self.stack[0]
         self.ifinder.in_headline = in_headline
+        c.selectPosition(p)
         c.redraw_after_select(p)
         c.bodyWantsFocusNow()
         w.setSelectionRange(i,j)
@@ -8406,9 +8409,10 @@ class spellTabHandler (leoFind.leoFind):
                         if not p2.isExpanded():
                             p2.expand()
                             redraw = True
-                    c.selectPosition(p)
                     if redraw:
-                        c.redraw()
+                        c.redraw(p)
+                    else:
+                        c.selectPosition(p)
                     w.setSelectionRange(i,j,insert=j)
                     break
         except Exception:

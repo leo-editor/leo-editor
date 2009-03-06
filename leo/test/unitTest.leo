@@ -2470,6 +2470,7 @@
 </v>
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2706,7 +2707,7 @@ last line 1: two trailing newlines
 </t>
 <t tx="ekr.20040712101754.116">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -2725,7 +2726,7 @@ continues */
 More plain text.</t>
 <t tx="ekr.20040712101754.118">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -2788,7 +2789,7 @@ _y, _ymouse, _yscale
 and, add, eq, ge, gt, le, lt, ne, not, or, Array, Boolean, Color, Date, Key, Math, MovieClip, Mouse, Number, Object, Selection, Sound, String, XML, XMLSocket</t>
 <t tx="ekr.20040712101754.120">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -2811,7 +2812,7 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 #include &lt;rlydef.h&gt;</t>
 <t tx="ekr.20040712101754.122">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -2848,7 +2849,7 @@ where while
 yield</t>
 <t tx="ekr.20040712101754.124">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -2922,7 +2923,7 @@ stress, azimuth, elevation, pitch, richness, volume,
 page-break, page-after, page-inside</t>
 <t tx="ekr.20040712101754.126">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -2955,7 +2956,7 @@ if else, while, do // C keywords.</t>
     /* This is also \LaTeX text */</t>
 <t tx="ekr.20040712101754.129">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -2982,7 +2983,7 @@ unless
 when while</t>
 <t tx="ekr.20040712101754.131">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -2993,7 +2994,7 @@ d
 </t>
 <t tx="ekr.20040712101754.133">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -3092,7 +3093,7 @@ HEIGHT="32" ALIGN="left" NATURALSIZEFLAG="3"&gt;
 &lt;/HTML&gt;</t>
 <t tx="ekr.20040712101754.135">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -3104,7 +3105,7 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 &lt;/project&gt;"""</t>
 <t tx="ekr.20040712101754.137">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -3133,7 +3134,7 @@ The following 2-letter words should be colored, regardless of what follows:
 \(abc\)abc\{abc\}abc\@abc</t>
 <t tx="ekr.20040712101754.141">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -3153,7 +3154,7 @@ __CLASS__
 &lt;?PHP and or array() ?&gt;</t>
 <t tx="ekr.20040712101754.143">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -3498,7 +3499,7 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 &lt;KEYWORD3&gt;__xor__&lt;/KEYWORD3&gt;</t>
 <t tx="ekr.20040712101754.154">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -3884,7 +3885,7 @@ write,
 xor</t>
 <t tx="ekr.20040712101754.156">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -3907,7 +3908,7 @@ def copyTree(self,root):
     return result</t>
 <t tx="ekr.20040712101754.158">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -3943,7 +3944,7 @@ UCASE$,UNLOADLIBRARY,UNTIL,VAL,VARIANT,VARPTR,VARPTR$,VARTYPE,
 WEND,WHILE,WITH,WORD,XOR</t>
 <t tx="ekr.20040712101754.160">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -4015,7 +4016,7 @@ within? word?
 zero?</t>
 <t tx="ekr.20040712101754.162">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -4042,7 +4043,7 @@ shift,test,trap,ulimit,
 umask,wait</t>
 <t tx="ekr.20040712101754.164">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -4141,7 +4142,7 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 &lt;EOL_SPAN TYPE="COMMENT1"&gt;%&lt;/EOL_SPAN&gt;</t>
 <t tx="ekr.20040712101754.168">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -4186,7 +4187,7 @@ if 1 and 2:
 print g.app().loadDir</t>
 <t tx="ekr.20040712101754.170">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -4225,7 +4226,7 @@ print g.app().loadDir
 </t>
 <t tx="ekr.20040712101754.172">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -4943,7 +4944,7 @@ finally:
         child.clearDirty()
     finally: pass
 
-c.redraw()
+#### c.redraw()
 </t>
 <t tx="ekr.20040802065214.1">test</t>
 <t tx="ekr.20040802071519"># Tests that c.setBodyString works immediately.
@@ -5117,7 +5118,7 @@ last line</t>
 <t tx="ekr.20041021065903.2">unnamed node line 1</t>
 <t tx="ekr.20041107105213">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -6858,7 +6859,7 @@ sec line 3
 after</t>
 <t tx="ekr.20050618053006">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -13767,7 +13768,7 @@ assert s == result</t>
 </t>
 <t tx="ekr.20060829092306">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -13778,7 +13779,7 @@ halt()
 -module()</t>
 <t tx="ekr.20060829092306.2">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -13796,7 +13797,7 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 /** @see tag = label */</t>
 <t tx="ekr.20060829092306.4">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -13810,7 +13811,7 @@ def python_funct(uu):
 return uu</t>
 <t tx="ekr.20060829092306.6">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -16802,20 +16803,15 @@ c.selectPosition(p2)
 c.clone()
 assert 2 == p.numberOfChildren()
 
-if 1:
-    try:
-        # Select the first clone and demote (it should be illegal)
-        c.selectPosition(p2)
-        c.demote() # This should do nothing.
-        assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
-        assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
-        assert 2 == p.numberOfChildren(), 'fail 3'
-        # Delete the children, but only if there are no errors.
-        while p.hasChildren():
-            p.firstChild().doDelete()
-    finally:
-        c.redraw()
-</t>
+# Select the first clone and demote (it should be illegal)
+c.selectPosition(p2)
+c.demote() # This should do nothing.
+assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
+assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
+assert 2 == p.numberOfChildren(), 'fail 3'
+# Delete the children, but only if there are no errors.
+while p.hasChildren():
+    p.firstChild().doDelete()</t>
 <t tx="ekr.20070615070259"></t>
 <t tx="ekr.20070626153940">'''
 This script runs all @test nodes as follows:
@@ -19754,7 +19750,7 @@ config.macros.br.handler = function(place)
 </t>
 <t tx="ekr.20071219170354">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -19815,7 +19811,7 @@ sub inside
 }</t>
 <t tx="ekr.20071219172126">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -19842,7 +19838,7 @@ unless
 when while</t>
 <t tx="ekr.20071219172615">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -19931,7 +19927,7 @@ please ask for help on Leo's help forum:
 |back| |leo| |next|</t>
 <t tx="ekr.20071219184852">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
 assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
@@ -20327,17 +20323,16 @@ try:
     p4 = p.insertAsNthChild(2)
     p4.setHeadString('C')
     p.expand()
-    c.redraw_now()
-    c.setCurrentPosition(p3)
+    c.selectPosition(p3)
     c.deleteOutline()
-    c.outerUpdate()
+    c.redraw_now()
     p = c.p
     assert p.h == 'A', 'fail 1: got %s' % p.h
     assert p.next().h == 'C', 'fail 2'
     c.undoer.undo()
     c.outerUpdate()
     p = c.p
-    assert p.back() == p2, 'fail 4'
+    assert p.back() == p2, 'fail 4 %s' % p.back()
     assert p.next() == p4, 'fail 5'
     c.undoer.redo()
     c.outerUpdate()
@@ -22118,5 +22113,8 @@ Last line: no newline</t>
 <t tx="ekr.20090225102051.4">Line 1
 
 Last line: no newline</t>
+<t tx="ekr.20090306091634.1">tree = c.frame.tree
+if hasattr(tree,'redrawCount'):
+    print 'tree.redrawCount:',tree.redrawCount</t>
 </tnodes>
 </leo_file>

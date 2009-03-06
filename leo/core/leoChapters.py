@@ -118,7 +118,7 @@ class chapterController:
             parent = cc.getChapterNode(toChapter.name)
             clone.moveToLastChildOf(parent)
         u.afterMoveNode(clone,'Move Node',undoData2,dirtyVnodeList=[])
-        c.selectPosition(clone)
+        c.redraw(clone) ####
         c.setChanged(True)
         # Close the group undo.
         # Only the ancestors of the moved node get set dirty.
@@ -198,7 +198,7 @@ class chapterController:
         s = c.fileCommands.putLeoOutline()
         p2 = c.fileCommands.getLeoOutline(s)
         p2.moveToLastChildOf(parent)
-        c.selectPosition(p2)
+        c.redraw(p2) ####
         u.afterInsertNode(p2,undoType,undoData)
         c.setChanged(True)
 
@@ -334,7 +334,7 @@ class chapterController:
                 p.moveAfter(toChapter.p)
             else:
                 p.moveToLastChildOf(toChapter.root)
-            c.selectPosition(sel)
+            c.redraw(sel) ####
             c.setChanged(True)
             # Do the 'after' undo operation.
             if inAtIgnoreRange and not p.inAtIgnoreRange():
@@ -445,21 +445,40 @@ class chapterController:
             if k.arg:
                 cc.selectChapterByName(k.arg)
     #@-node:ekr.20070604165126:cc.selectChapter
-    #@+node:ekr.20070317130250:cc.selectChapterByName
+    #@+node:ekr.20070317130250:cc.selectChapterByName & helper
     def selectChapterByName (self,name):
 
-        cc = self ; c = cc.c ; chapter = cc.chaptersDict.get(name)
+        '''Select a chapter.  Return True if a redraw is needed.'''
+
+        cc = self ; c = cc.c
+
+        chapter = cc.chaptersDict.get(name)
 
         if chapter:
-            if chapter != cc.selectedChapter:
-                if cc.selectedChapter:
-                    cc.selectedChapter.unselect()
-                chapter.select()
-                c.setCurrentPosition(chapter.p)
-                cc.selectedChapter = chapter
+            self.selectChapterByNameHelper(chapter)
         else:
             cc.error('cc.selectChapter: no such chapter: %s' % name)
-    #@-node:ekr.20070317130250:cc.selectChapterByName
+            chapter = cc.chaptersDict.get('main')
+            if chapter:
+                self.selectChapterByNameHelper(chapter)
+            else:
+                cc.error('no main chapter!')
+    #@nonl
+    #@+node:ekr.20090306060344.2:selectChapterHelper
+    def selectChapterByNameHelper (self,chapter):
+
+        cc = self ; c = cc.c
+
+        if chapter != cc.selectedChapter:
+            if cc.selectedChapter:
+                cc.selectedChapter.unselect()
+            chapter.select()
+            c.setCurrentPosition(chapter.p)
+            cc.selectedChapter = chapter
+
+            # Do not call c.redraw here!
+    #@-node:ekr.20090306060344.2:selectChapterHelper
+    #@-node:ekr.20070317130250:cc.selectChapterByName & helper
     #@-node:ekr.20070317085437.30:Commands (chapters)
     #@+node:ekr.20070511081405:Creating/deleting nodes (chapterController)
     #@+node:ekr.20070325101652:cc.createChaptersNode
@@ -915,7 +934,8 @@ class chapter:
             cc.chaptersNode.contract()    
         c.hoistStack = self.hoistStack[:]
 
-        c.redraw_after_select(p)
+        c.selectPosition(p)
+        c.redraw_after_select(p) ####
         g.doHook('hoist-changed',c=c)
         c.bodyWantsFocusNow()
     #@nonl

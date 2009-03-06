@@ -3631,9 +3631,13 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
     #@+node:ekr.20090124174652.18:contractItem & expandItem
     def contractItem (self,item):
 
+        # g.trace(g.callers(4))
+
         self.treeWidget.collapseItem(item)
 
     def expandItem (self,item):
+
+        # g.trace(g.callers(4))
 
         self.treeWidget.expandItem(item)
     #@-node:ekr.20090124174652.18:contractItem & expandItem

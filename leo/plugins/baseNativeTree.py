@@ -149,6 +149,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         Preserve the vertical scrolling unless scroll is True.'''
 
         trace = False and not g.app.unitTesting
+        verbose = True
         c = self.c
 
         if self.busy():
@@ -172,14 +173,20 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         if trace:
             theTime = g.timeSince(t1)
+            callers = g.choose(verbose,g.callers(5),'')
             g.trace('%s: drew %3s nodes in %s' % (
-                self.redrawCount,self.nodeDrawCount,theTime))
+                self.redrawCount,self.nodeDrawCount,theTime),callers)
 
     # Compatibility
     redraw = full_redraw 
     redraw_now = full_redraw
     #@+node:ekr.20090124174652.19:drawChildren
     def drawChildren (self,p,parent_item):
+
+        trace = False and not g.unitTesting
+
+        if trace: g.trace('children? %5s expanded? %5s %s' % (
+            p.hasChildren(),p.isExpanded(),p.h))
 
         if not p:
             return g.trace('can not happen: no p')
@@ -325,19 +332,21 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.26:redraw_after_head_changed
     def redraw_after_head_changed (self):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         if self.busy(): return
 
         c = self.c ; p = c.currentPosition()
         ew = self.edit_widget(p)
+
+        if trace: g.trace(p.h)
+
         currentItem = self.getCurrentItem()
 
         if p:
             for item in self.tnode2items(p.v.t):
                 if self.isValidItem(item):
                     self.setItemText(item,p.h)
-    #@nonl
     #@-node:ekr.20090124174652.26:redraw_after_head_changed
     #@+node:ekr.20090124174652.27:redraw_after_icons_changed
     def redraw_after_icons_changed (self):
@@ -346,11 +355,11 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         if self.busy(): return
 
-        if trace: g.trace(g.callers(4))
-
         self.redrawCount += 1 # To keep a unit test happy.
 
         c = self.c
+
+        if trace: g.trace(c.p.h,g.callers(4))
 
         # Suppress call to setHeadString in onItemChanged!
         self.redrawing = True
@@ -360,7 +369,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 self.updateVisibleIcons(p)
         finally:
             self.redrawing = False
-    #@nonl
     #@-node:ekr.20090124174652.27:redraw_after_icons_changed
     #@+node:ekr.20090124174652.28:redraw_after_select
     # Important: this can not replace before/afterSelectHint.
@@ -371,14 +379,18 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         is selected.'''
 
         trace = False and not g.unitTesting
-        if trace: g.trace('(leoQtTree)',p and p.h or '<No p>')
 
-        if self.busy(): return
+        if trace: g.trace('(leoQtTree) busy? %s %s' % (
+            self.busy(),p and p.h or '<no p>'),g.callers(4))
 
-        # Don't set self.redrawing here.
-        # It will be set by self.afterSelectHint.
-
-        self.full_redraw(p,scroll=False)
+        # Prevent the selecting lockout from disabling the redraw.
+        oldSelecting = self.selecting
+        self.selecting = False
+        try:
+            if not self.busy():
+                self.full_redraw(p,scroll=False)
+        finally:
+            self.selecting = oldSelecting
 
         # c.redraw_after_select calls tree.select indirectly.
         # Do not call it again here.
@@ -403,7 +415,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         aList = []
         for ivar,kind in table:
-            if ivar: aList.append(kind)
+            if ivar:
+                aList.append(kind)
         kinds = ','.join(aList)
 
         if aList and trace:
@@ -767,9 +780,12 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         if trace: g.trace(p and p.h,g.callers(4))
 
-        c.outerUpdate() # Bring the tree up to date.
-
-        self.setItemForCurrentPosition(scroll=False)
+        # We don't redraw during unit testing: an important speedup.
+        if c.expandAllAncestors(p) and not g.unitTesting:
+            self.full_redraw(p)
+        else:
+            c.outerUpdate() # Bring the tree up to date.
+            self.setItemForCurrentPosition(scroll=False)
     #@-node:ekr.20090124174652.53:afterSelectHint (nativeTree)
     #@+node:ekr.20090124174652.54:beforeSelectHint (nativeTree)
     def beforeSelectHint (self,p,old_p):

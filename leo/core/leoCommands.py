@@ -542,7 +542,8 @@ class baseCommands (object):
 
         '''Create a new Leo window.'''
 
-        c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
+        c,frame = g.app.newLeoCommanderAndFrame(
+            fileName=None,relativeFileName=None,gui=gui)
 
         # Needed for plugins.
         g.doHook("new",old_c=self,c=c,new_c=c)
@@ -568,16 +569,20 @@ class baseCommands (object):
 
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
-        if c.config.getBool('use_chapters') and c.chapterController:
+        useChapters = c.config.getBool('use_chapters') and c.chapterController
+        if useChapters:
             c.chapterController.finishCreate()
-            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+            frame.c.setChanged(False)
+            # Clear the changed flag set when creating the @chapters node.
+        else:
+            c.redraw(p) ####
         if c.config.getBool('outline_pane_has_initial_focus'):
             c.treeWantsFocusNow()
         else:
             c.bodyWantsFocusNow()
         # Force a call to c.outerUpdate.
         # This is needed when we execute this command from a menu.
-        c.redraw()
+        c.outerUpdate()
         c.frame.tree.initAfterLoad()
         c.initAfterLoad()
         c.frame.initCompleteHint()
@@ -2717,12 +2722,11 @@ class baseCommands (object):
                     p = self.createLastChildNode(current,name,None)
                     u.afterInsertNode(p,undoType,undoData)
                     found = True
-            c.selectPosition(current)
             c.validateOutline()
             if not found:
                 g.es("selected text should contain one or more section names",color="blue")
         u.afterChangeGroup(current,undoType)
-        c.redraw(p)
+        c.redraw(p) ####
 
         # Restore the selection.
         body.setSelectionRange(oldSel)
@@ -5307,6 +5311,7 @@ class baseCommands (object):
         p = c.nodeHistory.goNext()
 
         if p:
+            c.selectPosition(p)
             c.redraw_after_select(p)
 
     #@-node:ekr.20031218072017.1628:goNextVisitedNode
@@ -5320,6 +5325,7 @@ class baseCommands (object):
         p = c.nodeHistory.goPrev()
 
         if p:
+            c.selectPosition(p)
             c.redraw_after_select(p)
     #@-node:ekr.20031218072017.1627:goPrevVisitedNode
     #@+node:ekr.20031218072017.2914:goToFirstNode
@@ -5354,6 +5360,7 @@ class baseCommands (object):
         p = c.firstVisible()
         if p:
             c.selectPosition(p)
+            c.redraw_after_select(p)
 
         c.treeSelectHelper(p)
     #@-node:ekr.20070615070925:goToFirstVisibleNode
@@ -5391,6 +5398,7 @@ class baseCommands (object):
         p = c.lastVisible()
         if p:
             c.selectPosition(p)
+            c.redraw_after_select(p)
 
         c.treeSelectHelper(p)
     #@-node:ekr.20050711153537:c.goToLastVisibleNode
@@ -5425,7 +5433,9 @@ class baseCommands (object):
             name = cc.findChapterNameForPosition(p)
             cc.selectChapterByName(name)
 
+        c.selectPosition(p)
         c.redraw_after_select(p)
+    #@nonl
     #@-node:ekr.20031218072017.2916:goToNextClone
     #@+node:ekr.20071213123942:findNextClone
     def findNextClone (self,event=None):
@@ -5449,6 +5459,7 @@ class baseCommands (object):
             if cc:
                 name = cc.findChapterNameForPosition(p)
                 cc.selectChapterByName(name)
+            c.selectPosition(p)
             c.redraw_after_select(p)
         else:
             g.es('no more clones',color='blue')
@@ -5599,11 +5610,9 @@ class baseCommands (object):
         if not p: p = c.p
 
         if p:
-            flag = c.expandAllAncestors(p)
-            if flag:
-                c.redraw(p)
-            else:
-                c.selectPosition(p)
+            # Do not call expandAllAncestors here.
+            c.selectPosition(p)
+            c.redraw_after_select(p)
 
         c.treeFocusHelper()
     #@-node:ekr.20070226113916: treeSelectHelper
@@ -6235,7 +6244,7 @@ class baseCommands (object):
     def outerUpdate (self):
 
         trace = False and not g.unitTesting
-        verbose = False ; traceFocus = True
+        verbose = True ; traceFocus = False
         c = self ; aList = []
         if not c.exists or not c.k:
             return
@@ -6303,16 +6312,12 @@ class baseCommands (object):
         '''Redraw the screen immediately.'''
 
         c = self
+        if not p: p = c.p or c.rootPosition()
 
-        if p:
-            # Update body pane and set c._currentPosition.
-            c.expandAllAncestors(p) # Redundant, but safe.
-            c.selectPosition(p)
-        else:
-            p = c.p
-            c.expandAllAncestors(p)
-
+        c.expandAllAncestors(p)
         c.frame.tree.redraw(p)
+        c.selectPosition(p)
+
         if setFocus: c.treeFocusHelper()
 
     # Compatibility with old scripts
@@ -6374,12 +6379,9 @@ class baseCommands (object):
         # c.treeFocusHelper()
     #@-node:ekr.20090110073010.3:c.redraw_afer_icons_changed
     #@+node:ekr.20090110073010.4:c.redraw_after_select
-    def redraw_after_select(self,p,setFocus=False):
+    def redraw_after_select(self,p):
 
-        '''Redraw the screen after node p has been selected.
-
-        The intention is for the gui to just select the node
-        if it is visible, and to completely redraw the screen otherwise.'''
+        '''Redraw the screen after node p has been selected.'''
 
         trace = False and not g.unitTesting
         if trace: g.trace('(Commands)',p and p.h or '<No p>', g.callers(4))
@@ -6387,14 +6389,8 @@ class baseCommands (object):
         c = self
 
         flag = c.expandAllAncestors(p)
-        c.selectPosition(p)
-            # Required to update body pane.
-            # Will call tree.before/afterSelect hint.
-
         if flag:
             c.frame.tree.redraw_after_select(p)
-
-        if setFocus: c.treeFocusHelper()
     #@-node:ekr.20090110073010.4:c.redraw_after_select
     #@-node:ekr.20080514131122.14:c.redrawing...
     #@+node:ekr.20080514131122.13:c.recolor_now
@@ -7381,7 +7377,6 @@ class baseCommands (object):
 
         # g.trace(p.h,g.callers())
 
-        c.expandAllAncestors(p)
         c.frame.tree.select(p)
 
         # New in Leo 4.4.2.
@@ -7427,9 +7422,8 @@ class baseCommands (object):
                     found = True ; break
             if found: break
         if found:
-            if allFlag:
-                c.expandAllAncestors(p)
             c.selectPosition(p)
+            c.redraw_after_select(p) ####
             c.navTime = time.clock()
             c.navPrefix = newPrefix
             # g.trace('extend',extend,'extend2',extend2,'navPrefix',c.navPrefix,'p',p.h)

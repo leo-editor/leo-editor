@@ -1396,6 +1396,7 @@ class leoFind:
                     break
                 p2.contract()
                 redraw1 = True # Important bug fix. Was redraw = True.
+
         redraw2 = c.expandAllAncestors(self.p)
         redraw = redraw1 or redraw2
 
@@ -1414,9 +1415,11 @@ class leoFind:
             w = c.edit_widget(p)
         else:
             w = c.frame.body.bodyCtrl
+            # This is like the logic in c.selectPosition.
             if redraw:
                 c.redraw(p)
             else:
+                c.selectPosition(p)
                 c.redraw_after_select(p)
             c.bodyWantsFocus()
             if showState:

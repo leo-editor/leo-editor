@@ -2694,10 +2694,6 @@ class leoTree:
             self.revertHeadline = p.h
             frame.setWrap(p)
             self.setBodyTextAfterSelect(p,old_p)
-
-            if c.expandAllAncestors(p):
-                c.frame.tree.redraw_after_select(p)
-            #@nonl
             #@-node:ekr.20040803072955.130:<< select the new node >>
             #@nl
             if p and p != old_p: # Suppress duplicate call.
