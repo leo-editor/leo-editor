@@ -644,7 +644,7 @@ class textTree(leoFrame.leoTree):
         g.choose(p.isCloned(),'@',' '),
         g.choose(p.isDirty(),'*',' '))
 
-      g.pr(" " * indent * 2, icons, box, p.headString())
+      g.pr(" " * indent * 2, icons, box, p.h)
 
       if p.isExpanded() and p.hasChildren():
         self.draw_tree_helper(p.firstChild(),indent+1)

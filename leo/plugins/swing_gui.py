@@ -3298,7 +3298,7 @@ class leoSwingMenu( leoMenu.leoMenu ):
             def runInPdb( event ):
 
                 cp = c.currentPosition()
-                name = cp.headString()
+                name = cp.h
                 name = name.split()[ 0 ]
                 at = c.atFileCommands 
                 c.fileCommands.assignFileIndices()
@@ -5549,7 +5549,7 @@ class leoSwingTree (leoFrame.leoTree):
             canvas.itemconfigure(theId,image=image)
         else:
             theId = canvas.create_image(x,y,image=image,tag=tag)
-            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.headString()),align=-20)
+            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.h),align=-20)
 
         if theId not in self.visibleBoxes: 
             self.visibleBoxes.append(theId)
@@ -5572,7 +5572,7 @@ class leoSwingTree (leoFrame.leoTree):
         else:
             theId = self.canvas.create_rectangle(x1,y1,x2,y2,tag=tag)
             canvas.itemconfig(theId,fill=defaultColor,outline=defaultColor)
-            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.headString()),align=-20)
+            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.h),align=-20)
 
         if theId not in self.visibleClickBoxes:
             self.visibleClickBoxes.append(theId)
@@ -5592,7 +5592,7 @@ class leoSwingTree (leoFrame.leoTree):
             canvas.coords(theId,x,y)
         else:
             theId = canvas.create_image(x,y,image=image,anchor="nw",tag=tag)
-            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.headString()),align=-20)
+            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.h),align=-20)
 
         if theId not in self.visibleIcons:
             self.visibleIcons.append(theId)
@@ -5614,7 +5614,7 @@ class leoSwingTree (leoFrame.leoTree):
             canvas.coords(theId,x1,y1,x2,y2)
         else:
             theId = canvas.create_line(x1,y1,x2,y2,tag="lines",fill="gray50") # stipple="gray25")
-            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.headString()),align=-20)
+            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.h),align=-20)
 
         if p:
             self.ids[theId] = p
@@ -5676,7 +5676,7 @@ class leoSwingTree (leoFrame.leoTree):
 
         if p:
             self.ids[theId] = p # Add the id of the *window*
-            self.setHeadlineText(theId,w,p.headString())
+            self.setHeadlineText(theId,w,p.h)
             w.configure(width=self.headWidth(p=p))
             w.leo_position = p # This p never changes.
                 # *Required*: onHeadlineClick uses w.leo_position to get p.
@@ -5824,7 +5824,7 @@ class leoSwingTree (leoFrame.leoTree):
 
         """Returns the proper width of the entry widget for the headline."""
 
-        if p: s = p.headString()
+        if p: s = p.h
 
         return self.font.measure(s)/self.font.measure('0')+1
 
@@ -5876,7 +5876,7 @@ class leoSwingTree (leoFrame.leoTree):
                 if p is None: # For lines.
                     print "%3d None" % key
                 else:
-                    print "%3d" % key,p.headString()
+                    print "%3d" % key,p.h
             if flag and full:
                 print '-' * 40
                 values = theDict.values()
@@ -5888,7 +5888,7 @@ class leoSwingTree (leoFrame.leoTree):
                         for item in theDict.items():
                             key,val = item
                             if val and val == value:
-                                print "%3d" % key,val.headString()
+                                print "%3d" % key,val.h
     #@-node:ekr.20081121105001.941:traceIds (Not used)
     #@-node:ekr.20081121105001.939:Debugging...
     #@+node:ekr.20081121105001.942:Drawing... (swingTree)
@@ -5931,7 +5931,7 @@ class leoSwingTree (leoFrame.leoTree):
                     g.printGcSummary()
             if self.trace_redraw or self.trace_alloc:
                 # g.trace(self.redrawCount,g.callers())
-                # g.trace(c.rootPosition().headString(),'canvas:',id(self.canvas),g.callers())
+                # g.trace(c.rootPosition().h,'canvas:',id(self.canvas),g.callers())
                 if self.trace_stats:
                     g.print_stats()
                     g.clear_stats()
@@ -6137,7 +6137,7 @@ class leoSwingTree (leoFrame.leoTree):
 
         h2 = self.drawText(p,x,y)
         h = max(h,h2)
-        x += self.widthInPixels(p.headString())
+        x += self.widthInPixels(p.h)
 
         h2,w2 = self.drawUserIcons(p,"afterHeadline",x,y)
         h = max(h,h2)
@@ -6309,7 +6309,7 @@ class leoSwingTree (leoFrame.leoTree):
         hoistFlag = c.hoistStack
         if c.hoistStack:
             bunch = c.hoistStack[-1] ; p = bunch.p
-            h = p.headString()
+            h = p.h
             if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
                 p = p.firstChild()
                 hoistFlag = False
@@ -6542,13 +6542,13 @@ class leoSwingTree (leoFrame.leoTree):
     def yoffsetTree(self,p,p1):
         h = 0 ; trace = False
         if not self.c.positionExists(p):
-            if trace: g.trace('does not exist',p.headString())
+            if trace: g.trace('does not exist',p.h)
             return h,False # An extra precaution.
         p = p.copy()
         for p2 in p.self_and_siblings_iter():  # was p.siblings_iter
             print "yoffsetTree:", p2
             if p2 == p1:
-                if trace: g.trace(p.headString(),p1.headString(),h)
+                if trace: g.trace(p.h,p1.h,h)
                 return h, True
             h += self.line_height
             if p2.isExpanded() and p2.hasChildren():
@@ -6556,10 +6556,10 @@ class leoSwingTree (leoFrame.leoTree):
                 h2, flag = self.yoffsetTree(child,p1)
                 h += h2
                 if flag:
-                    if trace: g.trace(p.headString(),p1.headString(),h)
+                    if trace: g.trace(p.h,p1.h,h)
                     return h, True
 
-        if trace: g.trace('not found',p.headString(),p1.headString())
+        if trace: g.trace('not found',p.h,p1.h)
         return h, False
     #@-node:ekr.20081121105001.972:yoffset (swingTree)
     #@-node:ekr.20081121105001.964:Helpers...
@@ -6576,7 +6576,7 @@ class leoSwingTree (leoFrame.leoTree):
             p = w.leo_position
             if p:
                 s = w.getAllText().strip()
-                h = p.headString().strip()
+                h = p.h.strip()
 
                 if h != s:
                     self.dumpWidgetList(tag)
@@ -6598,7 +6598,7 @@ class leoSwingTree (leoFrame.leoTree):
             p = w.leo_position
             if p:
                 s = w.getAllText().strip()
-                h = p.headString().strip()
+                h = p.h.strip()
 
                 addr = self.textAddr(w)
                 print "p:",addr,h
@@ -6647,7 +6647,7 @@ class leoSwingTree (leoFrame.leoTree):
         if self.trace and self.verbose:
             if p:
                 w = self.findEditWidget(p)
-                g.trace("%3d %3d %3d %d" % (theId,x,y,id(w)),p.headString())
+                g.trace("%3d %3d %3d %d" % (theId,x,y,id(w)),p.h)
             else:
                 g.trace("%3d %3d %3d" % (theId,x,y),None)
 
@@ -6666,13 +6666,13 @@ class leoSwingTree (leoFrame.leoTree):
             aTuple = self.visibleText.get(p.key())
             if aTuple:
                 w,theId = aTuple
-                # g.trace('%4d' % (theId),self.textAddr(w),p.headString())
+                # g.trace('%4d' % (theId),self.textAddr(w),p.h)
                 return w
             else:
                 # g.trace('oops: not found',p)
                 return None
 
-        # g.trace(not found',p.headString())
+        # g.trace(not found',p.h)
         return None
     #@-node:ekr.20081121105001.979:findEditWidget
     #@+node:ekr.20081121105001.980:findVnodeWithIconId
@@ -6688,7 +6688,7 @@ class leoSwingTree (leoFrame.leoTree):
             p,generation = data
             if generation==self.generation:
                 if self.trace and self.verbose:
-                    g.trace(theId,p.headString())
+                    g.trace(theId,p.h)
                 return p
             else:
                 if self.trace and self.verbose:
@@ -6763,7 +6763,7 @@ class leoSwingTree (leoFrame.leoTree):
             if redrawFlag: # Disallow drag to joined node.
                 #@            << drag p to vdrag >>
                 #@+node:ekr.20081121105001.986:<< drag p to vdrag >>
-                # g.trace("*** end drag   ***",theId,x,y,p.headString(),vdrag.headString())
+                # g.trace("*** end drag   ***",theId,x,y,p.h,vdrag.h)
 
                 if self.controlDrag: # Clone p and move the clone.
                     if childFlag:
@@ -6813,7 +6813,7 @@ class leoSwingTree (leoFrame.leoTree):
         c.setLog()
         self.drag_p = p.copy() # defensive programming: not needed.
         self.dragging = True
-        # g.trace("*** start drag ***",theId,self.drag_p.headString())
+        # g.trace("*** start drag ***",theId,self.drag_p.h)
         # Only do this once: greatly speeds drags.
         self.savedNumberOfVisibleNodes = self.numberOfVisibleNodes()
         # g.trace('self.controlDrag',self.controlDrag)
@@ -6974,7 +6974,7 @@ class leoSwingTree (leoFrame.leoTree):
 
         '''Handle common process when any part of a headline is clicked.'''
 
-        # g.trace(p.headString())
+        # g.trace(p.h)
 
         returnVal = 'break' # Default: do nothing more.
         trace = False
@@ -7026,7 +7026,7 @@ class leoSwingTree (leoFrame.leoTree):
 
         if not p: return
 
-        # g.trace(p.headString(),self.c._currentPosition)
+        # g.trace(p.h,self.c._currentPosition)
 
         if c.isCurrentPosition(p):
             if p == self.editPosition():
@@ -7057,7 +7057,7 @@ class leoSwingTree (leoFrame.leoTree):
                 g.trace('*'*20,'oops')
         if not p: return 'break'
 
-        # g.trace(g.app.gui.widget_name(w)) #p.headString())
+        # g.trace(g.app.gui.widget_name(w)) #p.h)
 
         c.setLog()
 
@@ -7442,7 +7442,7 @@ class leoSwingTree (leoFrame.leoTree):
         if p and p != self.editPosition():
 
             if trace:
-                g.trace(p.headString(),g.choose(c.edit_widget(p),'','no edit widget'))
+                g.trace(p.h,g.choose(c.edit_widget(p),'','no edit widget'))
 
             c.beginUpdate()
             try:
@@ -7455,7 +7455,7 @@ class leoSwingTree (leoFrame.leoTree):
         if trace: g.trace(c.edit_widget(p))
 
         if p and c.edit_widget(p):
-            self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
+            self.revertHeadline = p.h # New in 4.4b2: helps undo.
             self.setEditLabelState(p,selectAll=selectAll) # Sets the focus immediately.
             c.headlineWantsFocus(p) # Make sure the focus sticks.
     #@-node:ekr.20081121105001.1021:tree.editLabel
@@ -7482,7 +7482,7 @@ class leoSwingTree (leoFrame.leoTree):
     #@+node:ekr.20081121105001.1024:setSelectedLabelState
     def setSelectedLabelState (self,p): # selected, disabled
 
-        # g.trace(p.headString(),g.callers())
+        # g.trace(p.h,g.callers())
 
         c = self.c
 
@@ -7504,7 +7504,7 @@ class leoSwingTree (leoFrame.leoTree):
 
         if self.trace and self.verbose:
             if not self.redrawing:
-                g.trace("%10s %d %s" % ("disabled",id(w),p.headString()))
+                g.trace("%10s %d %s" % ("disabled",id(w),p.h))
                 # import traceback ; traceback.print_stack(limit=6)
 
         fg = self.headline_text_selected_foreground_color or 'black'
@@ -7525,7 +7525,7 @@ class leoSwingTree (leoFrame.leoTree):
 
         if self.trace and self.verbose:
             if not self.redrawing:
-                print "%10s %d %s" % ("edit",id(2),p.headString())
+                print "%10s %d %s" % ("edit",id(2),p.h)
 
         fg    = self.headline_text_editing_foreground_color or 'black'
         bg    = self.headline_text_editing_background_color or 'white'
@@ -7545,7 +7545,7 @@ class leoSwingTree (leoFrame.leoTree):
 
         if self.trace and self.verbose:
             if not self.redrawing:
-                print "%10s %d %s" % ("unselect",id(w),p.headString())
+                print "%10s %d %s" % ("unselect",id(w),p.h)
                 # import traceback ; traceback.print_stack(limit=6)
 
         fg = self.headline_text_unselected_foreground_color or 'black'
@@ -8148,7 +8148,7 @@ class swingGui(leoGui.leoGui):
         The button's text defaults to p.headString'''
 
         k = c.k
-        if p and not buttonText: buttonText = p.headString().strip()
+        if p and not buttonText: buttonText = p.h.strip()
         if not buttonText: buttonText = 'Unnamed Script Button'
         #@    << create the button b >>
         #@+node:ekr.20081121105001.1069:<< create the button b >>
