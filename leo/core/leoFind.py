@@ -736,10 +736,7 @@ class leoFind:
 
         if self.clone_find_all and clones:
             u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
-            # Do not call c.selectPosition here.
-            # That would make life difficult for the qt plugin.
-            c.setRootPosition(found)
-            c.setCurrentPosition(found)
+            c.selectPosition(found)
             c.setChanged(True)
 
         self.restore(data)
