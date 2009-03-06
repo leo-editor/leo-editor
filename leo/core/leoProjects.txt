@@ -10617,313 +10617,6 @@ def outerUpdate (self):
     # g.trace('after')
 #@-node:ekr.20080514131122.20:c.outerUpdate
 #@-node:ekr.20090302102736.1:Fixed bug: Ctrl-s destroys headline selection
-#@+node:ekr.20090304084910.3:Fixed clone-find-all in qt plugin
-# The problem is in the qt select logic.
-#@nonl
-#@+node:ekr.20031218072017.3073:findAll
-def findAll(self):
-
-    c = self.c ; w = self.s_ctrl ; u = c.undoer
-    undoType = 'Clone Find All'
-    if not self.checkArgs():
-        return
-    self.initInHeadline()
-    if self.clone_find_all:
-        self.p = None # Restore will select the root position.
-    data = self.save()
-    self.initBatchCommands()
-    count = 0 ; clones = []
-    while 1:
-        pos, newpos = self.findNextMatch()
-        if pos is None: break
-        count += 1
-        s = w.getAllText()
-        i,j = g.getLine(s,pos)
-        line = s[i:j]
-        if not self.clone_find_all:
-            self.printLine(line,allFlag=True)
-        if self.clone_find_all and self.p.v.t not in clones:
-            # g.trace(self.p.v.t,self.p.h)
-            if not clones:
-                undoData = u.beforeInsertNode(c.p)
-                << create the found node >>
-            clones.append(self.p.v.t)
-            << create a clone of p under the find node >>
-
-    if self.clone_find_all and clones:
-        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
-        # Do not call c.selectPosition here.
-        # That would make life difficult for the qt plugin.
-        c.setRootPosition(found)
-        c.setCurrentPosition(found)
-        c.setChanged(True)
-
-    self.restore(data)
-    c.redraw()
-    g.es("found",count,"matches")
-#@+node:ekr.20051113110735:<< create the found node >>
-oldRoot = c.rootPosition()
-found = oldRoot.insertAfter()
-found.moveToRoot(oldRoot)
-c.setHeadString(found,'Found: ' + self.find_text)
-c.setRootPosition(found) # New in Leo 4.5.
-#@-node:ekr.20051113110735:<< create the found node >>
-#@+node:ekr.20051113110851:<< create a clone of p under the find node >>
-q = self.p.clone()
-q.moveToLastChildOf(found)
-#@-node:ekr.20051113110851:<< create a clone of p under the find node >>
-#@-node:ekr.20031218072017.3073:findAll
-#@+node:ekr.20070325101652:cc.createChaptersNode
-def createChaptersNode (self):
-
-    cc = self ; c = cc.c ; root = c.rootPosition()
-
-    # Create the node with a postion method
-    # so we don't involve the undo logic.
-    # g.trace('root',root)
-    p = root.insertAsLastChild()
-    p.initHeadString('@chapters')
-    p.moveToRoot(oldRoot=root)
-    c.setRootPosition(p)
-    cc.chaptersNode = p.copy()
-    t = p.v.t
-    if t.fileIndex:
-        self.error('***** t.fileIndex already exists')
-    else:
-        t.setFileIndex(g.app.nodeIndices.getNewIndex())
-    c.setChanged(True)
-#@-node:ekr.20070325101652:cc.createChaptersNode
-#@+node:ekr.20031218072017.1772:moveOutlineUp
-def moveOutlineUp (self,event=None):
-
-    '''Move the selected node up if possible.'''
-
-    c = self ; u = c.undoer ; p = c.p
-    if not p: return
-    if not c.canMoveOutlineUp(): # Support for hoist.
-        if c.hoistStack: self.cantMoveMessage()
-        c.treeFocusHelper()
-        return
-    back = p.visBack(c)
-    if not back: return
-    inAtIgnoreRange = p.inAtIgnoreRange()
-    back2 = back.visBack(c)
-
-    sparseMove = c.config.getBool('sparse_move_outline_left')
-    c.endEditing()
-    undoData = u.beforeMoveNode(p)
-    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-    moved = False
-    << Move p up >>
-    if moved:
-        if inAtIgnoreRange and not p.inAtIgnoreRange():
-            # The moved nodes have just become newly unignored.
-            dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
-        else: # No need to mark descendents dirty.
-            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
-        dirtyVnodeList.extend(dirtyVnodeList2)
-        c.setChanged(True)
-        u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
-    c.redraw(p,setFocus=True)
-    c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-#@nonl
-#@+node:ekr.20031218072017.1773:<< Move p up >>
-if 0:
-    g.trace("visBack",back)
-    g.trace("visBack2",back2)
-    g.trace("back2.hasChildren",back2.hasChildren())
-    g.trace("back2.isExpanded",back2.isExpanded())
-
-parent = p.parent()
-
-# For this special case we move p after back2.
-specialCase = back2 and p.v in back2.v.t.vnodeList
-
-if specialCase:
-    # The move must be legal.
-    moved = True
-    back2.contract()
-    p.moveAfter(back2)
-elif not back2:
-    if c.hoistStack: # hoist or chapter.
-        limit,limitIsVisible = c.visLimit()
-        assert limit
-        if limitIsVisible:
-            # canMoveOutlineUp should have caught this.
-            g.trace('can not happen. In hoist')
-        else:
-            # g.trace('chapter first child')
-            moved = True
-            p.moveToFirstChildOf(limit)
-    else:
-        # p will be the new root node
-        p.moveToRoot(oldRoot=c.rootPosition())
-        moved = True
-elif back2.hasChildren() and back2.isExpanded():
-    if c.checkMoveWithParentWithWarning(p,back2,True):
-        moved = True
-        p.moveToNthChildOf(back2,0)
-else:
-    if c.checkMoveWithParentWithWarning(p,back2.parent(),True):
-        moved = True
-        p.moveAfter(back2)
-if moved and sparseMove and parent and not parent.isAncestorOf(p):
-    # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
-    parent.contract()
-#@-node:ekr.20031218072017.1773:<< Move p up >>
-#@-node:ekr.20031218072017.1772:moveOutlineUp
-#@+node:ekr.20040803072955.128:leoTree.select & helpers
-tree_select_lockout = False
-
-def select (self,p,scroll=True):
-
-    '''Select a node.
-    Never redraws outline, but may change coloring of individual headlines.
-    The scroll argument is used by tk to suppress scrolling while dragging.'''
-
-    if g.app.killed or self.tree_select_lockout: return None
-
-    try:
-        c = self.c ; old_p = c.p
-        val = 'break'
-        self.tree_select_lockout = True
-        c.frame.tree.beforeSelectHint(p,old_p)
-        val = self.selectHelper(p,scroll=scroll)
-    finally:
-        self.tree_select_lockout = False
-        c.frame.tree.afterSelectHint(p,old_p)
-
-    return val  # Don't put a return in a finally clause.
-#@+node:ekr.20070423101911:selectHelper
-#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
-
-def selectHelper (self,p,scroll):
-
-    trace = False and not g.unitTesting
-    verbose = True
-    c = self.c ; frame = c.frame
-    body = w = frame.body.bodyCtrl
-    if not w: return # Defensive.
-
-    old_p = c.p
-
-    if not p:
-        # Do *not* test c.positionExists(p) here.
-        # We may be in the process of changing roots.
-        return None # Not an error.
-
-    if trace:
-        if verbose: g.trace(
-            '\nold:',old_p and old_p.h,'\nnew:',p and p.h)
-        else: g.trace(p and p.h)
-
-    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-        if old_p:
-            << unselect the old node >>
-
-    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-
-    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
-        << select the new node >>
-        if p and p != old_p: # Suppress duplicate call.
-            try: # may fail during initialization.
-                # p is NOT c.p here!
-                if 0: # Interferes with new colorizer.
-                    self.canvas.update_idletasks()
-                    self.scrollTo(p)
-                if scroll and g.app.gui.guiName() == 'tkinter':
-                    def scrollCallback(self=self,p=p):
-                        self.scrollTo(p)
-                    self.canvas.after(100,scrollCallback)
-            except Exception: pass
-        c.nodeHistory.update(p) # Remember this position.
-    c.setCurrentPosition(p)
-    << set the current node >>
-    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
-    c.frame.updateStatusLine() # New in Leo 4.4.1.
-
-    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
-
-    return 'break' # Supresses unwanted selection.
-#@+node:ekr.20040803072955.129:<< unselect the old node >>
-# Remember the position of the scrollbar before making any changes.
-if body:
-    yview = body.getYScrollPosition()
-    insertSpot = c.frame.body.getInsertPoint()
-else:
-    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
-    yview,insertSpot = None,0
-
-if old_p != p:
-    self.endEditLabel() # sets editPosition = None
-    self.setUnselectedLabelState(old_p)
-
-if old_p:
-    old_p.v.t.scrollBarSpot = yview
-    old_p.v.t.insertSpot = insertSpot
-#@-node:ekr.20040803072955.129:<< unselect the old node >>
-#@+node:ekr.20040803072955.130:<< select the new node >>
-# Bug fix: we must always set this, even if we never edit the node.
-self.revertHeadline = p.h
-frame.setWrap(p)
-self.setBodyTextAfterSelect(p,old_p)
-
-if c.expandAllAncestors(p):
-    c.frame.tree.redraw_after_select(p)
-#@nonl
-#@-node:ekr.20040803072955.130:<< select the new node >>
-#@+node:ekr.20040803072955.133:<< set the current node >>
-self.setSelectedLabelState(p)
-
-frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
-
-if self.use_chapters:
-    cc = c.chapterController
-    theChapter = cc and cc.getSelectedChapter()
-    if theChapter:
-        theChapter.p = p.copy()
-        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
-
-if self.stayInTree:
-    c.treeWantsFocus()
-else:
-    c.bodyWantsFocus()
-#@nonl
-#@-node:ekr.20040803072955.133:<< set the current node >>
-#@-node:ekr.20070423101911:selectHelper
-#@+node:ekr.20090206153445.1:setBodyTextAfterSelect
-def setBodyTextAfterSelect (self,p,old_p):
-
-    # Always do this.  Otherwise there can be problems with trailing newlines.
-    c = self.c ; w = c.frame.body.bodyCtrl
-    s = g.toUnicode(p.v.t._bodyString,"utf-8")
-    old_s = w.getAllText()
-
-    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
-        pass
-    else:
-        # This destroys all color tags, so do a full recolor.
-        colorizer = c.frame.body.colorizer
-        if hasattr(colorizer,'setHighlighter'):
-            colorizer.setHighlighter(p)
-        w.setAllText(s)
-        self.frame.body.recolor(p)
-
-    if p.v and p.v.t.scrollBarSpot != None:
-        first,last = p.v.t.scrollBarSpot
-        w.setYScrollPosition(first)
-
-    if p.v and p.v.t.insertSpot != None:
-        spot = p.v.t.insertSpot
-        w.setInsertPoint(spot)
-        w.see(spot)
-    else:
-        w.setInsertPoint(0)
-#@nonl
-#@-node:ekr.20090206153445.1:setBodyTextAfterSelect
-#@-node:ekr.20040803072955.128:leoTree.select & helpers
-#@-node:ekr.20090304084910.3:Fixed clone-find-all in qt plugin
 #@+node:ekr.20090304110414.2:Fixed isearch with tk
 # k.showStateAndMode does nothing in isearch mode.
 
@@ -11349,6 +11042,310 @@ def iSearchBackspace (self):
 
 #@-node:ekr.20090204084607.4:iSearchBackspace
 #@-node:ekr.20090304110414.2:Fixed isearch with tk
+#@+node:ekr.20090304084910.3:Fixed clone-find-all in qt plugin
+# The problem is in the qt select logic.
+#@nonl
+#@+node:ekr.20031218072017.3073:findAll
+def findAll(self):
+
+    c = self.c ; w = self.s_ctrl ; u = c.undoer
+    undoType = 'Clone Find All'
+    if not self.checkArgs():
+        return
+    self.initInHeadline()
+    if self.clone_find_all:
+        self.p = None # Restore will select the root position.
+    data = self.save()
+    self.initBatchCommands()
+    count = 0 ; clones = []
+    while 1:
+        pos, newpos = self.findNextMatch()
+        if pos is None: break
+        count += 1
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if not self.clone_find_all:
+            self.printLine(line,allFlag=True)
+        if self.clone_find_all and self.p.v.t not in clones:
+            # g.trace(self.p.v.t,self.p.h)
+            if not clones:
+                undoData = u.beforeInsertNode(c.p)
+                << create the found node >>
+            clones.append(self.p.v.t)
+            << create a clone of p under the find node >>
+
+    if self.clone_find_all and clones:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        c.selectPosition(found)
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw()
+    g.es("found",count,"matches")
+#@+node:ekr.20051113110735:<< create the found node >>
+oldRoot = c.rootPosition()
+found = oldRoot.insertAfter()
+found.moveToRoot(oldRoot)
+c.setHeadString(found,'Found: ' + self.find_text)
+c.setRootPosition(found) # New in Leo 4.5.
+#@-node:ekr.20051113110735:<< create the found node >>
+#@+node:ekr.20051113110851:<< create a clone of p under the find node >>
+q = self.p.clone()
+q.moveToLastChildOf(found)
+#@-node:ekr.20051113110851:<< create a clone of p under the find node >>
+#@-node:ekr.20031218072017.3073:findAll
+#@+node:ekr.20070325101652:cc.createChaptersNode
+def createChaptersNode (self):
+
+    cc = self ; c = cc.c ; root = c.rootPosition()
+
+    # Create the node with a postion method
+    # so we don't involve the undo logic.
+    # g.trace('root',root)
+    p = root.insertAsLastChild()
+    p.initHeadString('@chapters')
+    p.moveToRoot(oldRoot=root)
+    c.setRootPosition(p)
+    cc.chaptersNode = p.copy()
+    t = p.v.t
+    if t.fileIndex:
+        self.error('***** t.fileIndex already exists')
+    else:
+        t.setFileIndex(g.app.nodeIndices.getNewIndex())
+    c.setChanged(True)
+#@-node:ekr.20070325101652:cc.createChaptersNode
+#@+node:ekr.20031218072017.1772:moveOutlineUp
+def moveOutlineUp (self,event=None):
+
+    '''Move the selected node up if possible.'''
+
+    c = self ; u = c.undoer ; p = c.p
+    if not p: return
+    if not c.canMoveOutlineUp(): # Support for hoist.
+        if c.hoistStack: self.cantMoveMessage()
+        c.treeFocusHelper()
+        return
+    back = p.visBack(c)
+    if not back: return
+    inAtIgnoreRange = p.inAtIgnoreRange()
+    back2 = back.visBack(c)
+
+    sparseMove = c.config.getBool('sparse_move_outline_left')
+    c.endEditing()
+    undoData = u.beforeMoveNode(p)
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    moved = False
+    << Move p up >>
+    if moved:
+        if inAtIgnoreRange and not p.inAtIgnoreRange():
+            # The moved nodes have just become newly unignored.
+            dirtyVnodeList2 = p.setDirty() # Mark descendent @thin nodes dirty.
+        else: # No need to mark descendents dirty.
+            dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty()
+        dirtyVnodeList.extend(dirtyVnodeList2)
+        c.setChanged(True)
+        u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
+    c.redraw(p,setFocus=True)
+    c.updateSyntaxColorer(p) # Moving can change syntax coloring.
+#@nonl
+#@+node:ekr.20031218072017.1773:<< Move p up >>
+if 0:
+    g.trace("visBack",back)
+    g.trace("visBack2",back2)
+    g.trace("back2.hasChildren",back2.hasChildren())
+    g.trace("back2.isExpanded",back2.isExpanded())
+
+parent = p.parent()
+
+# For this special case we move p after back2.
+specialCase = back2 and p.v in back2.v.t.vnodeList
+
+if specialCase:
+    # The move must be legal.
+    moved = True
+    back2.contract()
+    p.moveAfter(back2)
+elif not back2:
+    if c.hoistStack: # hoist or chapter.
+        limit,limitIsVisible = c.visLimit()
+        assert limit
+        if limitIsVisible:
+            # canMoveOutlineUp should have caught this.
+            g.trace('can not happen. In hoist')
+        else:
+            # g.trace('chapter first child')
+            moved = True
+            p.moveToFirstChildOf(limit)
+    else:
+        # p will be the new root node
+        p.moveToRoot(oldRoot=c.rootPosition())
+        moved = True
+elif back2.hasChildren() and back2.isExpanded():
+    if c.checkMoveWithParentWithWarning(p,back2,True):
+        moved = True
+        p.moveToNthChildOf(back2,0)
+else:
+    if c.checkMoveWithParentWithWarning(p,back2.parent(),True):
+        moved = True
+        p.moveAfter(back2)
+if moved and sparseMove and parent and not parent.isAncestorOf(p):
+    # New in Leo 4.4.2: contract the old parent if it is no longer the parent of p.
+    parent.contract()
+#@-node:ekr.20031218072017.1773:<< Move p up >>
+#@-node:ekr.20031218072017.1772:moveOutlineUp
+#@+node:ekr.20040803072955.128:leoTree.select & helpers
+tree_select_lockout = False
+
+def select (self,p,scroll=True):
+
+    '''Select a node.
+    Never redraws outline, but may change coloring of individual headlines.
+    The scroll argument is used by tk to suppress scrolling while dragging.'''
+
+    if g.app.killed or self.tree_select_lockout: return None
+
+    try:
+        c = self.c ; old_p = c.p
+        val = 'break'
+        self.tree_select_lockout = True
+        c.frame.tree.beforeSelectHint(p,old_p)
+        val = self.selectHelper(p,scroll=scroll)
+    finally:
+        self.tree_select_lockout = False
+        c.frame.tree.afterSelectHint(p,old_p)
+
+    return val  # Don't put a return in a finally clause.
+#@+node:ekr.20070423101911:selectHelper
+#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+
+def selectHelper (self,p,scroll):
+
+    trace = False and not g.unitTesting
+    verbose = True
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.p
+
+    if not p:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    if trace:
+        if verbose: g.trace(
+            '\nold:',old_p and old_p.h,'\nnew:',p and p.h)
+        else: g.trace(p and p.h)
+
+    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        if old_p:
+            << unselect the old node >>
+
+    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        << select the new node >>
+        if p and p != old_p: # Suppress duplicate call.
+            try: # may fail during initialization.
+                # p is NOT c.p here!
+                if 0: # Interferes with new colorizer.
+                    self.canvas.update_idletasks()
+                    self.scrollTo(p)
+                if scroll and g.app.gui.guiName() == 'tkinter':
+                    def scrollCallback(self=self,p=p):
+                        self.scrollTo(p)
+                    self.canvas.after(100,scrollCallback)
+            except Exception: pass
+        c.nodeHistory.update(p) # Remember this position.
+    c.setCurrentPosition(p)
+    << set the current node >>
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    return 'break' # Supresses unwanted selection.
+#@+node:ekr.20040803072955.129:<< unselect the old node >>
+# Remember the position of the scrollbar before making any changes.
+if body:
+    yview = body.getYScrollPosition()
+    insertSpot = c.frame.body.getInsertPoint()
+else:
+    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+    yview,insertSpot = None,0
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+
+if old_p:
+    old_p.v.t.scrollBarSpot = yview
+    old_p.v.t.insertSpot = insertSpot
+#@-node:ekr.20040803072955.129:<< unselect the old node >>
+#@+node:ekr.20040803072955.130:<< select the new node >>
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.h
+frame.setWrap(p)
+self.setBodyTextAfterSelect(p,old_p)
+
+if c.expandAllAncestors(p):
+    c.frame.tree.redraw_after_select(p)
+#@nonl
+#@-node:ekr.20040803072955.130:<< select the new node >>
+#@+node:ekr.20040803072955.133:<< set the current node >>
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+if self.use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
+
+if self.stayInTree:
+    c.treeWantsFocus()
+else:
+    c.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20040803072955.133:<< set the current node >>
+#@-node:ekr.20070423101911:selectHelper
+#@+node:ekr.20090206153445.1:setBodyTextAfterSelect
+def setBodyTextAfterSelect (self,p,old_p):
+
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = g.toUnicode(p.v.t._bodyString,"utf-8")
+    old_s = w.getAllText()
+
+    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        pass
+    else:
+        # This destroys all color tags, so do a full recolor.
+        colorizer = c.frame.body.colorizer
+        if hasattr(colorizer,'setHighlighter'):
+            colorizer.setHighlighter(p)
+        w.setAllText(s)
+        self.frame.body.recolor(p)
+
+    if p.v and p.v.t.scrollBarSpot != None:
+        first,last = p.v.t.scrollBarSpot
+        w.setYScrollPosition(first)
+
+    if p.v and p.v.t.insertSpot != None:
+        spot = p.v.t.insertSpot
+        w.setInsertPoint(spot)
+        w.see(spot)
+    else:
+        w.setInsertPoint(0)
+#@nonl
+#@-node:ekr.20090206153445.1:setBodyTextAfterSelect
+#@-node:ekr.20040803072955.128:leoTree.select & helpers
+#@-node:ekr.20090304084910.3:Fixed clone-find-all in qt plugin
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs

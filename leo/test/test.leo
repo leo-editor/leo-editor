@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -428,6 +428,7 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 </v>
 <v t="ekr.20090304073837.1"><vh>Undo editing</vh></v>
+<v t="ekr.20090304173642.1"><vh>@button moveAfterRoot</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -12315,5 +12316,9 @@ print item,e
 if 1:
     w.closeEditor(e,QtGui.QAbstractItemDelegate.NoHint)
     w.setCurrentItem(item)</t>
+<t tx="ekr.20090304173642.1">new_node = c.p.insertAsLastChild()
+new_node.initHeadString("I am a new node")
+new_node.moveAfter(c.rootPosition())
+c.redraw()</t>
 </tnodes>
 </leo_file>

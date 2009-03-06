@@ -260,16 +260,26 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
         if trace: g.trace('*** no p')
         return
 
-    item = self.position2item(p)
-    if not item:
-        # This is not an error.
-        if trace: g.trace('no item for p: %s' % (p))
+    item = self.getCurrentItem()
+    e = self.getTreeEditorForItem(item)
+    if not e:
+        if trace and verbose: g.trace('*** not editing***')
         return
 
-    w = g.app.gui.get_focus()
-    ew = self.edit_widget(p)
-    if ew: e = ew.widget
-    else: e = None
+    s = e.text()
+    self.closeEditorHelper(e,item)
+
+    # if 0:
+        # item = self.position2item(p)
+        # if not item:
+            # # This is not an error.
+            # if trace: g.trace('no item for p: %s' % (p))
+            # return
+
+        # w = g.app.gui.get_focus()
+        # ew = self.edit_widget(p)
+        # if ew: e = ew.widget
+        # else: e = None
 
     # These are not errors: focus may have been lost.
     # if trace and verbose:
@@ -277,11 +287,11 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
         # if e != w: g.trace('e != w',e,w,g.callers(4))
         # if not p:  g.trace('No p')
 
-    if e and e == w:
-        s = e.text() ; len_s = len(s)
-        s = g.app.gui.toUnicode(s)
-    else:
-        s = self.getItemText(item)
+    # if e and e == w:
+        # s = e.text() ; len_s = len(s)
+        # s = g.app.gui.toUnicode(s)
+    # else:
+        # s = self.getItemText(item)
 
     oldHead = p.h
     changed = s != oldHead
@@ -302,7 +312,7 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
     if g.unitTesting: return
 
     self.redraw_after_head_changed()
-    self.closeEditorHelper(ew,item)
+
     if self.stayInTree:
         c.treeWantsFocus()
     else:
@@ -316,15 +326,10 @@ def endEditLabel (self):
 
     End editing of the presently-selected headline.'''
 
-    # Let onHeadChanged do all the work.
     c = self.c ; p = c.currentPosition()
 
-    # g.trace(p.h)
-
     self.onHeadChanged(p)
-
-    # c.bodyWantsFocusNow()
-    # c.outerUpdate()
+#@nonl
 #@-node:ekr.20090124174652.58:endEditLabel (nativeTree)
 #@+node:ekr.20090124174652.60:setHeadline (nativeTree)
 def setHeadline (self,p,s):
@@ -435,7 +440,7 @@ def afterSelectHint (self,p,old_p):
     if p != c.currentPosition():
         return self.error('p is not c.currentPosition()')
 
-    if trace: g.trace(p and p.headString(),g.callers(4))
+    if trace: g.trace(p and p.h,g.callers(4))
 
     c.outerUpdate() # Bring the tree up to date.
 
@@ -453,7 +458,7 @@ def editLabel (self,p,selectAll=False,selection=None):
 
     c = self.c
 
-    if trace: g.trace('***',p and p.headString(),g.callers(4))
+    if trace: g.trace('***',p and p.h,g.callers(4))
 
     c.outerUpdate()
         # Do any scheduled redraw.
@@ -681,7 +686,7 @@ def drawNode (self,p,parent_item):
     self.rememberItem(p,item)
 
     # Set the headline and maybe the icon.
-    self.setItemText(item,p.headString())
+    self.setItemText(item,p.h)
     if p:
         self.drawItemIcon(p,item)
 
@@ -698,7 +703,7 @@ def drawTopTree (self,p,scroll):
     # Draw all top-level nodes and their visible descendants.
     if c.hoistStack:
         bunch = c.hoistStack[-1]
-        p = bunch.p ; h = p.headString()
+        p = bunch.p ; h = p.h
         if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
             p = p.firstChild()
             while p:
@@ -968,7 +973,7 @@ def drawNode (self,p,parent_item):
     self.rememberItem(p,item)
 
     # Set the headline and maybe the icon.
-    self.setItemText(item,p.headString())
+    self.setItemText(item,p.h)
     if p:
         self.drawItemIcon(p,item)
 
@@ -985,7 +990,7 @@ def drawTopTree (self,p,scroll):
     # Draw all top-level nodes and their visible descendants.
     if c.hoistStack:
         bunch = c.hoistStack[-1]
-        p = bunch.p ; h = p.headString()
+        p = bunch.p ; h = p.h
         if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
             p = p.firstChild()
             while p:
@@ -1153,7 +1158,7 @@ def afterSelectHint (self,p,old_p):
     if p != c.currentPosition():
         return self.error('p is not c.currentPosition()')
 
-    if trace: g.trace(p and p.headString(),g.callers(4))
+    if trace: g.trace(p and p.h,g.callers(4))
 
     c.outerUpdate() # Bring the tree up to date.
 
@@ -1422,7 +1427,7 @@ def drawNode (self,p,parent_item):
     self.rememberItem(p,item)
 
     # Set the headline and maybe the icon.
-    self.setItemText(item,p.headString())
+    self.setItemText(item,p.h)
     if p:
         self.drawItemIcon(p,item)
 
@@ -1439,7 +1444,7 @@ def drawTopTree (self,p,scroll):
     # Draw all top-level nodes and their visible descendants.
     if c.hoistStack:
         bunch = c.hoistStack[-1]
-        p = bunch.p ; h = p.headString()
+        p = bunch.p ; h = p.h
         if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
             p = p.firstChild()
             while p:
@@ -2709,15 +2714,10 @@ def endEditLabel (self):
 
     End editing of the presently-selected headline.'''
 
-    # Let onHeadChanged do all the work.
     c = self.c ; p = c.currentPosition()
 
-    # g.trace(p.h)
-
     self.onHeadChanged(p)
-
-    # c.bodyWantsFocusNow()
-    # c.outerUpdate()
+#@nonl
 #@-node:ekr.20090124174652.58:endEditLabel (nativeTree)
 #@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
 # Tricky code: do not change without careful thought and testing.
@@ -2734,16 +2734,26 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
         if trace: g.trace('*** no p')
         return
 
-    item = self.position2item(p)
-    if not item:
-        # This is not an error.
-        if trace: g.trace('no item for p: %s' % (p))
+    item = self.getCurrentItem()
+    e = self.getTreeEditorForItem(item)
+    if not e:
+        if trace and verbose: g.trace('*** not editing***')
         return
 
-    w = g.app.gui.get_focus()
-    ew = self.edit_widget(p)
-    if ew: e = ew.widget
-    else: e = None
+    s = e.text()
+    self.closeEditorHelper(e,item)
+
+    # if 0:
+        # item = self.position2item(p)
+        # if not item:
+            # # This is not an error.
+            # if trace: g.trace('no item for p: %s' % (p))
+            # return
+
+        # w = g.app.gui.get_focus()
+        # ew = self.edit_widget(p)
+        # if ew: e = ew.widget
+        # else: e = None
 
     # These are not errors: focus may have been lost.
     # if trace and verbose:
@@ -2751,11 +2761,11 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
         # if e != w: g.trace('e != w',e,w,g.callers(4))
         # if not p:  g.trace('No p')
 
-    if e and e == w:
-        s = e.text() ; len_s = len(s)
-        s = g.app.gui.toUnicode(s)
-    else:
-        s = self.getItemText(item)
+    # if e and e == w:
+        # s = e.text() ; len_s = len(s)
+        # s = g.app.gui.toUnicode(s)
+    # else:
+        # s = self.getItemText(item)
 
     oldHead = p.h
     changed = s != oldHead
@@ -2776,7 +2786,7 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
     if g.unitTesting: return
 
     self.redraw_after_head_changed()
-    self.closeEditorHelper(ew,item)
+
     if self.stayInTree:
         c.treeWantsFocus()
     else:
@@ -2824,14 +2834,13 @@ def redraw_after_head_changed (self):
 #@nonl
 #@-node:ekr.20090124174652.26:redraw_after_head_changed
 #@+node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
-def closeEditorHelper (self,ew,item):
+def closeEditorHelper (self,e,item):
 
     w = self.treeWidget
 
-    if ew:
-        w.closeEditor(ew.widget,QtGui.QAbstractItemDelegate.NoHint)
+    if e:
+        w.closeEditor(e,QtGui.QAbstractItemDelegate.NoHint)
         w.setCurrentItem(item)
-#@nonl
 #@-node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
 #@+node:ekr.20090124174652.107:setCurrentItemHelper (leoQtTree)
 def setCurrentItemHelper(self,item):
@@ -2840,105 +2849,6 @@ def setCurrentItemHelper(self,item):
     w.setCurrentItem(item)
 #@-node:ekr.20090124174652.107:setCurrentItemHelper (leoQtTree)
 #@-node:ekr.20090302135940.11:Ctrl-s does not completely end editing
-#@+node:ekr.20090303095630.14:Fixed clone-find-all problem with Qt
-@nocolor-node
-
-EKR: the problem was in the select logic in cloneFindAll in the core.
-It was calling c.selectPosition.  That called nativeTree.endEditLabel,
-which used old values for position2item.
-The solution was not to call c.selectPosition before calling full_redraw.
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ee1dbcb22a5d0bcb
-
-I've just realised about the following problem with the qt pluguin
-(rev 1593): if I call Find -> Clone Find All when the first node of
-the outline is selected then it gets renamed to "Found:
-something" (something being the searched string), so the first two
-nodes of the oultine have the same name. The top one is correct (it
-contains the found nodes), the second is not. If I call Edit --> Undo
-Typing the badly renamed node recovers it correct name.
-#@+node:ekr.20090124174652.58:endEditLabel (nativeTree)
-def endEditLabel (self):
-
-    '''Override leoTree.endEditLabel.
-
-    End editing of the presently-selected headline.'''
-
-    # Let onHeadChanged do all the work.
-    c = self.c ; p = c.currentPosition()
-
-    # g.trace(p.h)
-
-    self.onHeadChanged(p)
-
-    # c.bodyWantsFocusNow()
-    # c.outerUpdate()
-#@-node:ekr.20090124174652.58:endEditLabel (nativeTree)
-#@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
-# Tricky code: do not change without careful thought and testing.
-
-def onHeadChanged (self,p,undoType='Typing',s=None):
-
-    '''Officially change a headline.'''
-
-    trace = False and not g.unitTesting
-    verbose = False
-
-    c = self.c ; u = c.undoer
-    if not p:
-        if trace: g.trace('*** no p')
-        return
-
-    item = self.position2item(p)
-    if not item:
-        # This is not an error.
-        if trace: g.trace('no item for p: %s' % (p))
-        return
-
-    w = g.app.gui.get_focus()
-    ew = self.edit_widget(p)
-    if ew: e = ew.widget
-    else: e = None
-
-    # These are not errors: focus may have been lost.
-    # if trace and verbose:
-        # if not e:  g.trace('No e',g.callers(4))
-        # if e != w: g.trace('e != w',e,w,g.callers(4))
-        # if not p:  g.trace('No p')
-
-    if e and e == w:
-        s = e.text() ; len_s = len(s)
-        s = g.app.gui.toUnicode(s)
-    else:
-        s = self.getItemText(item)
-
-    oldHead = p.h
-    changed = s != oldHead
-    if changed:
-        if trace: g.trace('changed',repr(s),p.h)
-        p.initHeadString(s)
-        item.setText(0,s) # Required to avoid full redraw.
-        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
-        if not c.changed: c.setChanged(True)
-        # New in Leo 4.4.5: we must recolor the body because
-        # the headline may contain directives.
-        c.frame.body.recolor(p,incremental=True)
-        dirtyVnodeList = p.setDirty()
-        u.afterChangeNodeContents(p,undoType,undoData,
-            dirtyVnodeList=dirtyVnodeList)
-
-    # This is a crucial shortcut.
-    if g.unitTesting: return
-
-    self.redraw_after_head_changed()
-    self.closeEditorHelper(ew,item)
-    if self.stayInTree:
-        c.treeWantsFocus()
-    else:
-        c.bodyWantsFocus()
-    c.outerUpdate()
-#@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
-#@-node:ekr.20090303095630.14:Fixed clone-find-all problem with Qt
 #@+node:ekr.20090128113654.1:Fixed bug re: duplicate recent-files menu
 @nocolor
 
@@ -3414,6 +3324,160 @@ def delete_range (self,menu,n1,n2):
 # it does nothing when in isearch mode.
 #@nonl
 #@-node:ekr.20090304084841.14:isearch now works for tkinter
+#@+node:ekr.20090304173101.11:Fixed onHeadChanged
+# endEditLabel will fail if the outline has changed!
+
+# The solution is not to call position2item in onHeadChanged.
+#@nonl
+#@+node:ekr.20090304173101.12:Report 2
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/f00cfb630c0be2de
+
+Create a new outline.
+
+Paste the following into the the NewHeadline node:
+
+new_node = c.p.insertAsLastChild()
+new_node.initHeadString("I am a new node")
+new_node.moveAfter(c.rootPosition())
+c.redraw()
+
+Make the node a script button.
+Click the button twice.
+
+=====================
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bc7f615ff991325d
+
+If now is the appropriate time, I recommend you fix the problem with
+changes to the headline not being committed until another node has
+been selected.  It creates a number of problems:
+
+1. Attempts to undo a headline change using Leo's undo command fails.
+Instead the previous the 2nd oldest change is undone.
+
+2. Saving a derived file uses the old file name.  A critical problem
+if a copy/paste node is performed, the pasted node's headline is
+changed, and then a save all derived files is performed.  It appears
+that the two headlines have different names but they both will write
+to the same file.
+
+3.  Exporting the file to Vim using the open_with plugin will show the
+previous headline in Vim.
+
+There are probably others.
+
+#@-node:ekr.20090304173101.12:Report 2
+#@+node:ekr.20090303095630.14:Report 1
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ee1dbcb22a5d0bcb
+
+I've just realised about the following problem with the qt pluguin
+(rev 1593): if I call Find -> Clone Find All when the first node of
+the outline is selected then it gets renamed to "Found:
+something" (something being the searched string), so the first two
+nodes of the oultine have the same name. The top one is correct (it
+contains the found nodes), the second is not. If I call Edit --> Undo
+Typing the badly renamed node recovers it correct name.
+#@-node:ekr.20090303095630.14:Report 1
+#@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None):
+
+    '''Officially change a headline.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    c = self.c ; u = c.undoer
+    if not p:
+        if trace: g.trace('*** no p')
+        return
+
+    item = self.getCurrentItem()
+    e = self.getTreeEditorForItem(item)
+    if not e:
+        if trace and verbose: g.trace('*** not editing***')
+        return
+
+    s = e.text()
+    self.closeEditorHelper(e,item)
+
+    # if 0:
+        # item = self.position2item(p)
+        # if not item:
+            # # This is not an error.
+            # if trace: g.trace('no item for p: %s' % (p))
+            # return
+
+        # w = g.app.gui.get_focus()
+        # ew = self.edit_widget(p)
+        # if ew: e = ew.widget
+        # else: e = None
+
+    # These are not errors: focus may have been lost.
+    # if trace and verbose:
+        # if not e:  g.trace('No e',g.callers(4))
+        # if e != w: g.trace('e != w',e,w,g.callers(4))
+        # if not p:  g.trace('No p')
+
+    # if e and e == w:
+        # s = e.text() ; len_s = len(s)
+        # s = g.app.gui.toUnicode(s)
+    # else:
+        # s = self.getItemText(item)
+
+    oldHead = p.h
+    changed = s != oldHead
+    if changed:
+        if trace: g.trace('changed',repr(s),p.h)
+        p.initHeadString(s)
+        item.setText(0,s) # Required to avoid full redraw.
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+
+    # This is a crucial shortcut.
+    if g.unitTesting: return
+
+    self.redraw_after_head_changed()
+
+    if self.stayInTree:
+        c.treeWantsFocus()
+    else:
+        c.bodyWantsFocus()
+    c.outerUpdate()
+#@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+#@+node:ekr.20090124174652.58:endEditLabel (nativeTree)
+def endEditLabel (self):
+
+    '''Override leoTree.endEditLabel.
+
+    End editing of the presently-selected headline.'''
+
+    c = self.c ; p = c.currentPosition()
+
+    self.onHeadChanged(p)
+#@nonl
+#@-node:ekr.20090124174652.58:endEditLabel (nativeTree)
+#@+node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
+def closeEditorHelper (self,e,item):
+
+    w = self.treeWidget
+
+    if e:
+        w.closeEditor(e,QtGui.QAbstractItemDelegate.NoHint)
+        w.setCurrentItem(item)
+#@-node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
+#@-node:ekr.20090304173101.11:Fixed onHeadChanged
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20081205131308.26:scanColorDirectives (very slow!)
