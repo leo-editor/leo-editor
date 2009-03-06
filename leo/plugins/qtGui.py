@@ -575,7 +575,7 @@ class leoQtBody (leoFrame.leoBody):
             # self.updateInjectedIvars(w,p)
             # self.selectLabel(w)
 
-            # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.headString())
+            # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.h)
         #@-node:ekr.20081121105001.218:assignPositionToEditor
         #@+node:ekr.20081121105001.219:cycleEditorFocus
         def cycleEditorFocus (self,event=None):
@@ -636,17 +636,17 @@ class leoQtBody (leoFrame.leoBody):
                         # hasattr(w,'leo_chapter') and w.leo_chapter == chapter and
                         # hasattr(w,'leo_p') and w.leo_p and w.leo_p == p
                     # ):
-                        # # g.trace('***',id(w),'match chapter and p',p.headString())
+                        # # g.trace('***',id(w),'match chapter and p',p.h)
                         # return w
 
             # # Next, try to match just the chapter.
             # for w in values:
                 # if hasattr(w,'leo_chapter') and w.leo_chapter == chapter:
-                    # # g.trace('***',id(w),'match only chapter',p.headString())
+                    # # g.trace('***',id(w),'match only chapter',p.h)
                     # return w
 
             # # As a last resort, return the present editor widget.
-            # # g.trace('***',id(self.bodyCtrl),'no match',p.headString())
+            # # g.trace('***',id(self.bodyCtrl),'no match',p.h)
             # return c.frame.body.bodyCtrl
         #@-node:ekr.20081121105001.221:findEditorForChapter (leoBody)
         #@+node:ekr.20081121105001.222:select/unselectLabel
@@ -718,7 +718,7 @@ class leoQtBody (leoFrame.leoBody):
             if trace:
                 g.trace('==1',id(w),
                     hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
-                    hasattr(w,'leo_p') and w.leo_p and w.leo_p.headString())
+                    hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
 
             self.inactivateActiveEditor(w)
 
@@ -736,9 +736,9 @@ class leoQtBody (leoFrame.leoBody):
             if trace:
                 g.trace('==2',id(w),
                     hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
-                    hasattr(w,'leo_p') and w.leo_p and w.leo_p.headString())
+                    hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
 
-            # g.trace('expanding ancestors of ',w.leo_p.headString(),g.callers())
+            # g.trace('expanding ancestors of ',w.leo_p.h,g.callers())
             c.expandAllAncestors(w.leo_p)
             c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
             c.redraw()
@@ -863,7 +863,7 @@ class leoQtBody (leoFrame.leoBody):
 
         c = self.c ; old_w = c.frame.body.bodyCtrl
 
-        # g.trace('w',id(w),p.headString(),len(w.getAllText()))
+        # g.trace('w',id(w),p.h,len(w.getAllText()))
 
         # Save.
         c.frame.body.bodyCtrl = w
@@ -904,9 +904,9 @@ class leoQtBody (leoFrame.leoBody):
 
         w.leo_p = p.copy()
         w.leo_v = w.leo_p.v
-        w.leo_label_s = p.headString()
+        w.leo_label_s = p.h
 
-        # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.headString())
+        # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.h)
     #@-node:ekr.20081121105001.234:updateInjectedIvars
     #@-node:ekr.20081121105001.227:utils
     #@-node:ekr.20081121105001.212:Editors (qtBody)
@@ -3620,14 +3620,13 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         return items
     #@-node:ekr.20090124174652.66:childItems
     #@+node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
-    def closeEditorHelper (self,ew,item):
+    def closeEditorHelper (self,e,item):
 
         w = self.treeWidget
 
-        if ew:
-            w.closeEditor(ew.widget,QtGui.QAbstractItemDelegate.NoHint)
+        if e:
+            w.closeEditor(e,QtGui.QAbstractItemDelegate.NoHint)
             w.setCurrentItem(item)
-    #@nonl
     #@-node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
     #@+node:ekr.20090124174652.18:contractItem & expandItem
     def contractItem (self,item):
@@ -4485,7 +4484,7 @@ class leoQtGui(leoGui.leoGui):
         The button's text defaults to p.headString'''
 
         k = c.k
-        if p and not buttonText: buttonText = p.headString().strip()
+        if p and not buttonText: buttonText = p.h.strip()
         if not buttonText: buttonText = 'Unnamed Script Button'
         #@    << create the button b >>
         #@+node:ekr.20081121105001.505:<< create the button b >>
@@ -4584,7 +4583,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         matches = list(matches)
         self.ui.tableWidget.setRowCount(len(matches))
         for idx,p in enumerate(matches):
-            s = p.headString()
+            s = p.h
             it = QtGui.QTableWidgetItem('test')
             it.setText(QtCore.QString(s))
             g.trace("Match",s)
@@ -4613,7 +4612,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         c = self.c
         pat = pat.lower()
         for p in c.allNodes_iter():
-            if pat in p.headString():
+            if pat in p.h:
                 yield p
         return 
 
@@ -4621,7 +4620,7 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         c = self.c
         pat = pat.lower()
         for p in c.allNodes_iter():
-            if pat in p.headString():
+            if pat in p.h:
                 yield p.copy()
             elif pat in p.bodyString():
                 yield p.copy()
@@ -4660,7 +4659,7 @@ class QuickHeadlines:
         self.listWidget.clear()
         p = self.c.currentPosition()
         for n in p.children_iter():
-            self.listWidget.addItem(n.headString())
+            self.listWidget.addItem(n.h)
 
 
 
@@ -7426,7 +7425,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             return
 
         if trace and verbose:
-            g.trace(p.headString(),len(oldText),len(newText))
+            g.trace(p.h,len(oldText),len(newText))
 
         oldIns  = p.v.t.insertSpot
         i,j = p.v.t.selectionStart,p.v.t.selectionLength
