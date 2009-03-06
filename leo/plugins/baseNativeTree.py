@@ -215,7 +215,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.rememberItem(p,item)
 
         # Set the headline and maybe the icon.
-        self.setItemText(item,p.headString())
+        self.setItemText(item,p.h)
         if p:
             self.drawItemIcon(p,item)
 
@@ -232,7 +232,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # Draw all top-level nodes and their visible descendants.
         if c.hoistStack:
             bunch = c.hoistStack[-1]
-            p = bunch.p ; h = p.headString()
+            p = bunch.p ; h = p.h
             if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
                 p = p.firstChild()
                 while p:
@@ -765,7 +765,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if p != c.currentPosition():
             return self.error('p is not c.currentPosition()')
 
-        if trace: g.trace(p and p.headString(),g.callers(4))
+        if trace: g.trace(p and p.h,g.callers(4))
 
         c.outerUpdate() # Bring the tree up to date.
 
@@ -778,7 +778,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         if self.busy(): return
 
-        if trace: g.trace(p and p.headString())
+        if trace: g.trace(p and p.h)
 
         # Disable onTextChanged.
         self.selecting = True
@@ -797,7 +797,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if e:
                 # Create a wrapper widget for Leo's core.
                 w = self.headlineWrapper(widget=e,name='head',c=c)
-                if trace: g.trace(w,p and p.headString())
+                if trace: g.trace(w,p and p.h)
                 return w
             else:
                 # This is not an error
@@ -821,7 +821,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         c = self.c
 
-        if trace: g.trace('***',p and p.headString(),g.callers(4))
+        if trace: g.trace('***',p and p.h,g.callers(4))
 
         c.outerUpdate()
             # Do any scheduled redraw.
@@ -851,15 +851,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         End editing of the presently-selected headline.'''
 
-        # Let onHeadChanged do all the work.
         c = self.c ; p = c.currentPosition()
 
-        # g.trace(p.h)
-
         self.onHeadChanged(p)
-
-        # c.bodyWantsFocusNow()
-        # c.outerUpdate()
+    #@nonl
     #@-node:ekr.20090124174652.58:endEditLabel (nativeTree)
     #@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
     # Tricky code: do not change without careful thought and testing.
@@ -876,16 +871,26 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if trace: g.trace('*** no p')
             return
 
-        item = self.position2item(p)
-        if not item:
-            # This is not an error.
-            if trace: g.trace('no item for p: %s' % (p))
+        item = self.getCurrentItem()
+        e = self.getTreeEditorForItem(item)
+        if not e:
+            if trace and verbose: g.trace('*** not editing***')
             return
 
-        w = g.app.gui.get_focus()
-        ew = self.edit_widget(p)
-        if ew: e = ew.widget
-        else: e = None
+        s = e.text()
+        self.closeEditorHelper(e,item)
+
+        # if 0:
+            # item = self.position2item(p)
+            # if not item:
+                # # This is not an error.
+                # if trace: g.trace('no item for p: %s' % (p))
+                # return
+
+            # w = g.app.gui.get_focus()
+            # ew = self.edit_widget(p)
+            # if ew: e = ew.widget
+            # else: e = None
 
         # These are not errors: focus may have been lost.
         # if trace and verbose:
@@ -893,11 +898,11 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             # if e != w: g.trace('e != w',e,w,g.callers(4))
             # if not p:  g.trace('No p')
 
-        if e and e == w:
-            s = e.text() ; len_s = len(s)
-            s = g.app.gui.toUnicode(s)
-        else:
-            s = self.getItemText(item)
+        # if e and e == w:
+            # s = e.text() ; len_s = len(s)
+            # s = g.app.gui.toUnicode(s)
+        # else:
+            # s = self.getItemText(item)
 
         oldHead = p.h
         changed = s != oldHead
@@ -918,7 +923,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if g.unitTesting: return
 
         self.redraw_after_head_changed()
-        self.closeEditorHelper(ew,item)
+
         if self.stayInTree:
             c.treeWantsFocus()
         else:
@@ -1202,7 +1207,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             v2 = self.item2vnode(item)
             data = v2,n2
             if trace: g.trace(self.traceItem(item),n2,
-                v2 and repr(v2 and v2.headString()))
+                v2 and repr(v2 and v2.h))
             stack.insert(0,data)
             item = self.getParentItem(item)
 
