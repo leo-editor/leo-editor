@@ -4435,12 +4435,12 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
         s = self.getItemText(item)
 
         if v:
-            if s == v.headString():
+            if s == v.h:
                 return 'item %s: %s' % (
                     id(item),s)
             else:
                 return '*** item %s: %s, mismatched vnode: %s %s' % (
-                    id(item),s,id(node),v.headString())
+                    id(item),s,id(node),v.h)
         else:
             return '*** item %s: %s, *** no v' % (
                 id(item),s)
@@ -4525,13 +4525,13 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
                     # 'lockout',self.frame.lockout,
                     # 'redrawing',self.redrawing,
                     # 'id.IsOk',id.IsOk(),
-                    # 'p',p and p.headString(),
+                    # 'p',p and p.h,
                     # g.callers(9))
 
             # if self.frame.lockout or self.redrawing or not p:
                 # return None
             # else:
-                # # g.trace(p.headString(),g.callers())
+                # # g.trace(p.h,g.callers())
                 # return p
         #@nonl
         #@-node:ekr.20090126093408.870:get_p
@@ -4756,7 +4756,7 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
         if self.redrawing:
             if trace and verbose: g.trace('redrawing')
             return
-        if trace: g.trace('***',p and p.headString(),g.callers(4))
+        if trace: g.trace('***',p and p.h,g.callers(4))
 
         c.outerUpdate()
             # Do any scheduled redraw.
@@ -4799,7 +4799,7 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
         p = self.c.currentPosition()
 
         # Used by the base classes onHeadChanged method.
-        self.revertHeadline = p.headString()
+        self.revertHeadline = p.h
     #@-node:ekr.20090126093408.875:onTreeBeginLabelEdit
     #@+node:ekr.20090126093408.881:onTreeEndLabelEdit
     # Editing will be allowed only if this routine exists.
@@ -4814,7 +4814,7 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
         s = event.GetLabel()
 
         # Don't clear the headline by default.
-        if s and s != p.headString():
+        if s and s != p.h:
             # Call the base-class method.
             self.onHeadChanged (p,undoType='Typing',s=s)
     #@-node:ekr.20090126093408.881:onTreeEndLabelEdit
@@ -5023,7 +5023,7 @@ class wxLeoTree (baseNativeTree.baseNativeTreeWidget):
     def createTreeItem(self,p,parent_item):
 
         trace = False
-        w = self.treeWidget ; h = p.headString()
+        w = self.treeWidget ; h = p.h
 
         if parent_item is None:
             parent_item = self.hiddenRootItem

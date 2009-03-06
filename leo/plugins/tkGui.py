@@ -757,7 +757,7 @@ class tkinterGui(leoGui.leoGui):
         The button's text defaults to p.headString'''
 
         k = c.k
-        if p and not buttonText: buttonText = p.headString().strip()
+        if p and not buttonText: buttonText = p.h.strip()
         if not buttonText: buttonText = 'Unnamed Script Button'
         #@    << create the button b >>
         #@+node:ekr.20081121110412.397:<< create the button b >>
@@ -6708,7 +6708,7 @@ class leoTkinterTree (leoFrame.leoTree):
             canvas.itemconfigure(theId,image=image)
         else:
             theId = canvas.create_image(x,y,image=image,tag=tag)
-            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.headString()),align=-20)
+            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.h),align=-20)
 
         if theId not in self.visibleBoxes: 
             self.visibleBoxes.append(theId)
@@ -6732,7 +6732,7 @@ class leoTkinterTree (leoFrame.leoTree):
         else:
             theId = self.canvas.create_rectangle(x1,y1,x2,y2,tag=tag)
             canvas.itemconfig(theId,fill=defaultColor,outline=defaultColor)
-            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.headString()),align=-20)
+            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.h),align=-20)
 
         if theId not in self.visibleClickBoxes:
             self.visibleClickBoxes.append(theId)
@@ -6753,7 +6753,7 @@ class leoTkinterTree (leoFrame.leoTree):
             canvas.coords(theId,x,y)
         else:
             theId = canvas.create_image(x,y,image=image,anchor="nw",tag=tag)
-            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.headString()),align=-20)
+            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.h),align=-20)
 
         if theId not in self.visibleIcons:
             self.visibleIcons.append(theId)
@@ -6776,7 +6776,7 @@ class leoTkinterTree (leoFrame.leoTree):
             canvas.coords(theId,x1,y1,x2,y2)
         else:
             theId = canvas.create_line(x1,y1,x2,y2,tag="lines",fill="gray50") # stipple="gray25")
-            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.headString()),align=-20)
+            if self.trace_alloc: g.trace("%3d %s" % (theId,p and p.h),align=-20)
 
         if p:
             self.ids[theId] = p
@@ -6838,7 +6838,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         if p:
             self.ids[theId] = p # Add the id of the *window*
-            self.setHeadlineText(theId,w,p.headString())
+            self.setHeadlineText(theId,w,p.h)
             w.configure(width=self.headWidth(p=p))
             w.leo_position = p # This p never changes.
                 # *Required*: onHeadlineClick uses w.leo_position to get p.
@@ -6991,7 +6991,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         """Returns the proper width of the entry widget for the headline."""
 
-        if p: s = p.headString()
+        if p: s = p.h
 
         return self.font.measure(s)/self.font.measure('0')+1
 
@@ -7044,7 +7044,7 @@ class leoTkinterTree (leoFrame.leoTree):
                 if p is None: # For lines.
                     g.pr("%3d None" % key)
                 else:
-                    g.pr("%3d" % key,p.headString())
+                    g.pr("%3d" % key,p.h)
             if flag and full:
                 g.pr('-' * 40)
                 seenValues = {}
@@ -7055,7 +7055,7 @@ class leoTkinterTree (leoFrame.leoTree):
                         for item in theDict.items():
                             key,val = item
                             if val and val == value:
-                                g.pr("%3d" % key,val.headString())
+                                g.pr("%3d" % key,val.h)
     #@-node:ekr.20081121110412.469:traceIds (Not used)
     #@-node:ekr.20081121110412.467:Debugging...
     #@+node:ekr.20081121110412.470:Drawing... (tkTree)
@@ -7109,7 +7109,7 @@ class leoTkinterTree (leoFrame.leoTree):
                     g.printGcSummary()
             if self.trace_redraw or self.trace_alloc:
                 # g.trace(self.redrawCount,g.callers())
-                # g.trace(c.rootPosition().headString(),'canvas:',id(self.canvas),g.callers())
+                # g.trace(c.rootPosition().h,'canvas:',id(self.canvas),g.callers())
                 if self.trace_stats:
                     g.print_stats()
                     g.clear_stats()
@@ -7344,7 +7344,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         h2 = self.drawText(p,x,y)
         h = max(h,h2)
-        x += self.widthInPixels(p.headString())
+        x += self.widthInPixels(p.h)
 
         h2,w2 = self.drawUserIcons(p,"afterHeadline",x,y)
         h = max(h,h2)
@@ -7538,7 +7538,7 @@ class leoTkinterTree (leoFrame.leoTree):
         hoistFlag = c.hoistStack
         if c.hoistStack:
             bunch = c.hoistStack[-1] ; p = bunch.p
-            h = p.headString()
+            h = p.h
             if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
                 p = p.firstChild()
                 hoistFlag = False
@@ -7780,11 +7780,11 @@ class leoTkinterTree (leoFrame.leoTree):
         c = self.c ; h = 0 ; trace = False ; verbose = True
         if trace: g.trace('entry','root',p,p.stack,'target',p1,p1.stack)
         if not c.positionExists(p):
-            if trace: g.trace('*** does not exist',p.headString())
+            if trace: g.trace('*** does not exist',p.h)
             return h,False # An extra precaution.
         p = p.copy()
         if trace and verbose and isTop and c.hoistStack:
-            g.trace('c.hoistStack',c.hoistStack[-1].p.headString())
+            g.trace('c.hoistStack',c.hoistStack[-1].p.h)
         if isTop and c.hoistStack:
             if p.firstChild():  theIter = [p.firstChild()]
             else:               theIter = []
@@ -7792,11 +7792,11 @@ class leoTkinterTree (leoFrame.leoTree):
             theIter = p.self_and_siblings_iter() # Bug fix 10/27/07: was p.siblings_iter()
 
         for p2 in theIter:
-            if trace and p1.headString() == p2.headString():
+            if trace and p1.h == p2.h:
                 g.trace('loop',p1,p2)
                 g.trace(p1.stack,p2.stack)
             if p2 == p1:
-                if trace and verbose: g.trace('returns',h,p1.headString())
+                if trace and verbose: g.trace('returns',h,p1.h)
                 return h, True
             h += self.line_height
             if p2.isExpanded() and p2.hasChildren():
@@ -7805,10 +7805,10 @@ class leoTkinterTree (leoFrame.leoTree):
                 h2, flag = self.yoffsetTree(child,p1,isTop=False)
                 h += h2
                 if flag:
-                    if trace and verbose: g.trace('returns',h,p1.headString())
+                    if trace and verbose: g.trace('returns',h,p1.h)
                     return h, True
 
-        if trace: g.trace('not found',h,p1.headString())
+        if trace: g.trace('not found',h,p1.h)
         return h, False
     #@-node:ekr.20081121110412.499:yoffset (tkTree)
     #@-node:ekr.20081121110412.491:Helpers...
@@ -7845,7 +7845,7 @@ class leoTkinterTree (leoFrame.leoTree):
             p = w.leo_position
             if p:
                 s = w.getAllText().strip()
-                h = p.headString().strip()
+                h = p.h.strip()
 
                 addr = self.textAddr(w)
                 g.pr("p:",addr,h)
@@ -7894,7 +7894,7 @@ class leoTkinterTree (leoFrame.leoTree):
         if self.trace and self.verbose:
             if p:
                 w = self.findEditWidget(p)
-                g.trace("%3d %3d %3d %d" % (theId,x,y,id(w)),p.headString())
+                g.trace("%3d %3d %3d %d" % (theId,x,y,id(w)),p.h)
             else:
                 g.trace("%3d %3d %3d" % (theId,x,y),None)
 
@@ -7912,17 +7912,17 @@ class leoTkinterTree (leoFrame.leoTree):
         # if trace: g.trace(g.callers())
 
         if p and c:
-            # if trace: g.trace('h',p.headString(),'key',p.key())
+            # if trace: g.trace('h',p.h,'key',p.key())
             aTuple = self.visibleText.get(p.key())
             if aTuple:
                 w,theId = aTuple
-                # if trace: g.trace('id(p.v):',id(p.v),'%4d' % (theId),self.textAddr(w),p.headString())
+                # if trace: g.trace('id(p.v):',id(p.v),'%4d' % (theId),self.textAddr(w),p.h)
                 return w
             else:
                 if trace: g.trace('oops: not found',p,g.callers())
                 return None
 
-        if trace: g.trace('not found',p and p.headString())
+        if trace: g.trace('not found',p and p.h)
         return None
     #@-node:ekr.20081121110412.507:findEditWidget (tkTree)
     #@+node:ekr.20081121110412.508:findVnodeWithIconId
@@ -7938,7 +7938,7 @@ class leoTkinterTree (leoFrame.leoTree):
             p,generation = data
             if generation==self.generation:
                 if self.trace and self.verbose:
-                    g.trace(theId,p.headString())
+                    g.trace(theId,p.h)
                 return p
             else:
                 if self.trace and self.verbose:
@@ -8035,7 +8035,7 @@ class leoTkinterTree (leoFrame.leoTree):
         if redrawFlag: # Disallow drag to joined node.
             #@        << drag p to vdrag >>
             #@+node:ekr.20081121110412.516:<< drag p to vdrag >>
-            # g.trace("*** end drag   ***",theId,x,y,p.headString(),vdrag.headString())
+            # g.trace("*** end drag   ***",theId,x,y,p.h,vdrag.h)
 
             if self.controlDrag: # Clone p and move the clone.
                 if childFlag:
@@ -8088,7 +8088,7 @@ class leoTkinterTree (leoFrame.leoTree):
         c.setLog()
         self.drag_p = p.copy() # defensive programming: not needed.
         self.dragging = True
-        # g.trace("*** start drag ***",theId,self.drag_p.headString())
+        # g.trace("*** start drag ***",theId,self.drag_p.h)
         # Only do this once: greatly speeds drags.
         self.savedNumberOfVisibleNodes = self.numberOfVisibleNodes()
         # g.trace('self.controlDrag',self.controlDrag)
@@ -8260,7 +8260,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         '''Handle common process when any part of a headline is clicked.'''
 
-        # g.trace(p.headString())
+        # g.trace(p.h)
 
         returnVal = 'break' # Default: do nothing more.
         trace = False
@@ -8344,7 +8344,7 @@ class leoTkinterTree (leoFrame.leoTree):
                 g.trace('*'*20,'oops')
         if not p: return 'break'
 
-        # g.trace(g.app.gui.widget_name(w),p and p.headString())
+        # g.trace(g.app.gui.widget_name(w),p and p.h)
 
         c.setLog()
 
@@ -8742,7 +8742,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         if p and w:
             if trace: g.trace('w',w,p)
-            self.revertHeadline = p.headString() # New in 4.4b2: helps undo.
+            self.revertHeadline = p.h # New in 4.4b2: helps undo.
             self.setEditLabelState(p,selectAll=selectAll,selection=selection)
                 # Sets the focus immediately.
             c.widgetWantsFocus(w)
@@ -8806,7 +8806,7 @@ class leoTkinterTree (leoFrame.leoTree):
         c = self.c ; w = c.edit_widget(p)
 
         if False or (self.trace and self.verbose):
-            g.trace("%10s %d %s" % ("disabled",id(w),p.headString()))
+            g.trace("%10s %d %s" % ("disabled",id(w),p.h))
             # import traceback ; traceback.print_stack(limit=6)
 
         fg = self.headline_text_selected_foreground_color or 'black'
@@ -8827,7 +8827,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         if self.trace and self.verbose:
             if not self.redrawing:
-                g.pr("%10s %d %s" % ("edit",id(2),p.headString()))
+                g.pr("%10s %d %s" % ("edit",id(2),p.h))
 
         fg    = self.headline_text_editing_foreground_color or 'black'
         bg    = self.headline_text_editing_background_color or 'white'
@@ -8847,7 +8847,7 @@ class leoTkinterTree (leoFrame.leoTree):
 
         if self.trace and self.verbose:
             if not self.redrawing:
-                g.pr("%10s %d %s" % ("unselect",id(w),p.headString()))
+                g.pr("%10s %d %s" % ("unselect",id(w),p.h))
                 # import traceback ; traceback.print_stack(limit=6)
 
         fg = self.headline_text_unselected_foreground_color or 'black'
