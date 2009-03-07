@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="32" left="395" height="974" width="971"/>
+	<global_window_position top="133" left="527" height="671" width="732"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4,25,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -60,7 +60,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
 <v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -832,10 +832,10 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="TL.20080804095315.1"><vh>Chapter 22: Using Vim with Leo</vh>
-<v t="TL.20080804095315.2"><vh>@rst html\vimBindings.html</vh>
+<v t="TL.20080804095315.1" a="E"><vh>Chapter 22: Using Vim with Leo</vh>
+<v t="TL.20080804095315.2" a="E"><vh>@rst html\vimBindings.html</vh>
 <v t="TL.20080804095315.3"><vh>@rst-no-head links</vh></v>
-<v t="TL.20080804095315.11"><vh>Vim bindings</vh>
+<v t="TL.20080804095315.11" a="E"><vh>Vim bindings</vh>
 <v t="TL.20080804095315.4"><vh>Installing vim bindings</vh></v>
 <v t="TL.20080804095315.5"><vh>General commands</vh></v>
 <v t="TL.20080804095315.6"><vh>Body pane commands</vh></v>
@@ -5161,9 +5161,16 @@ This chapter describes Leo's vim-like bindings, including how to install them.
 .. |next| image:: arrow_rt.gif
     :target: atShadow.html
 </t>
-<t tx="TL.20080804095315.4">To install vim bindings, move the node in leoSettings.leo called "Vim bindings by TL"
-so that it is not a descendant of the "@ignore Unused key bindings" node.
-Then restart Leo.</t>
+<t tx="TL.20080804095315.4">Place a copy of the "@keys Vim bindings" node and its sub-nodes,
+located in the leoSettings.leo file, under the "@settings" node
+in the myLeoSettings.leo file
+
+The same procedure is performed to update to a new version.
+
+Note: Place any local customized key bindings in a separate
+"@keys My Vi" node in the myLeoSettings.leo file to prevent
+them from being overwritten when updating to a new version.
+</t>
 <t tx="TL.20080804095315.5">The following commands are always available.
 
 State change commands::
