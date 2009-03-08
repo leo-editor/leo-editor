@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -267,7 +267,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050828061501.1"><vh>@rst-no-head Intro.</vh></v>
 <v t="ekr.20050828163557"><vh>Overview: the 9 ways of accessing external files</vh></v>
 <v t="ekr.20050828211507"><vh>Overview: summary of directives</vh></v>
-<v t="ekr.20050828061501.30" a="E"><vh>Reference: all about directives</vh>
+<v t="ekr.20050828061501.30"><vh>Reference: all about directives</vh>
 <v t="ekr.20050828173234"><vh>@ and @doc</vh></v>
 <v t="ekr.20050828061501.31"><vh>@all</vh></v>
 <v t="ekr.20050828174453.2"><vh>\@asis and @noref</vh></v>
@@ -2983,7 +2983,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20050831195331.3"></v>
 <v t="ekr.20090219024526.1"><vh>Copy of wiki</vh>
-<v t="ekr.20090219024526.5" a="E"><vh>top level</vh>
+<v t="ekr.20090219024526.5"><vh>top level</vh>
 <v t="ekr.20090219024526.3"><vh>Outlines and Nodes</vh></v>
 <v t="ekr.20090219090426.1"><vh>Clones and Views</vh></v>
 <v t="ekr.20090219090426.2"><vh>External Files</vh></v>
@@ -5163,9 +5163,16 @@ This chapter describes Leo's vim-like bindings, including how to install them.
 .. |next| image:: arrow_rt.gif
     :target: atShadow.html
 </t>
-<t tx="TL.20080804095315.4">To install vim bindings, move the node in leoSettings.leo called "Vim bindings by TL"
-so that it is not a descendant of the "@ignore Unused key bindings" node.
-Then restart Leo.</t>
+<t tx="TL.20080804095315.4">Place a copy of the "@keys Vim bindings" node and its sub-nodes,
+located in the leoSettings.leo file, under the "@settings" node
+in the myLeoSettings.leo file
+
+The same procedure is performed to update to a new version.
+
+Note: Place any local customized key bindings in a separate
+"@keys My Vi" node in the myLeoSettings.leo file to prevent
+them from being overwritten when updating to a new version.
+</t>
 <t tx="TL.20080804095315.5">The following commands are always available.
 
 State change commands::
