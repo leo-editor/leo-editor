@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="56" left="387" height="961" width="838"/>
+	<global_window_position top="56" left="557" height="961" width="668"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -436,6 +436,7 @@
 </v>
 <v t="ekr.20090306060447.6"><vh>two</vh></v>
 </v>
+<v t="ekr.20090307111700.1"><vh>color test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bob.20080111194559">@first
@@ -12340,5 +12341,10 @@ collapse and expand "toplevel", phew, the children have returned</t>
 <t tx="ekr.20090306060447.4"></t>
 <t tx="ekr.20090306060447.5"></t>
 <t tx="ekr.20090306060447.6"></t>
+<t tx="ekr.20090307111700.1">@nocolor
+
+def
+
+@color</t>
 </tnodes>
 </leo_file>

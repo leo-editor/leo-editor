@@ -5748,7 +5748,9 @@ class jEditColorizer:
             ('@',  self.match_leo_keywords,True), # Called after all other Leo matchers.
                 # Debatable: Leo keywords override langauge keywords.
             ('@',  self.match_at_color,    True),
+            ('@',  self.match_at_killcolor,True),
             ('@',  self.match_at_nocolor,  True),
+            ('@',  self.match_at_nocolor_node,True),
             ('@',  self.match_doc_part,    True), 
             ('<',  self.match_section_ref, True), # Called **first**.
             # Rules added at back are added in normal order.
@@ -6180,7 +6182,7 @@ class jEditColorizer:
         This is called whenever a pattern matcher succeed.'''
 
         trace = False
-        if not self.colorizer.flag: return
+        if self.colorizer.killColorFlag or not self.colorizer.flag: return
 
         if delegate:
             if trace: g.trace('delegate',delegate,i,j,tag,g.callers(3))
@@ -6278,6 +6280,8 @@ class jEditColorizer:
         # Only matches at start of line.
         if i != 0 and s[i-1] != '\n':
             return 0
+        if g.match(s,i,'@nocolor-'):
+            return 0
         if not g.match_word(s,i,'@nocolor'):
             return 0
 
@@ -6291,9 +6295,50 @@ class jEditColorizer:
             # A later @color: do color the @nocolor directive.
             self.colorRangeWithTag(s,i,j,'leoKeyword')
             self.colorizer.flag = False # Disable coloring.
-            return k+1-j
+            return k+2-j
 
     #@-node:ekr.20081205131308.40:match_at_nocolor
+    #@+node:ekr.20090308163450.10:match_at_killcolor (NEW)
+    def match_at_killcolor (self,s,i):
+
+        if self.trace_leo_matches: g.trace()
+
+        # Only matches at start of line.
+        if i != 0 and s[i-1] != '\n':
+            return 0
+
+        tag = '@killcolor'
+
+        if g.match_word(s,i,tag):
+            j = i + len(tag)
+            self.colorizer.flag = False # Disable coloring.
+            self.colorizer.killColorFlag = True
+            self.minimalMatch = tag
+            return len(s) - j # Match everything.
+        else:
+            return 0
+
+    #@-node:ekr.20090308163450.10:match_at_killcolor (NEW)
+    #@+node:ekr.20090308163450.11:match_at_nocolor_node (NEW)
+    def match_at_nocolor_node (self,s,i):
+
+        if self.trace_leo_matches: g.trace()
+
+        # Only matches at start of line.
+        if i != 0 and s[i-1] != '\n':
+            return 0
+
+        tag = '@nocolor-node'
+
+        if g.match_word(s,i,tag):
+            j = i + len(tag)
+            self.colorizer.flag = False # Disable coloring.
+            self.colorizer.killColorFlag = True
+            self.minimalMatch = tag
+            return len(s) - j # Match everything.
+        else:
+            return 0
+    #@-node:ekr.20090308163450.11:match_at_nocolor_node (NEW)
     #@+node:ekr.20081205131308.45:match_blanks
     def match_blanks (self,s,i):
 
@@ -6321,9 +6366,11 @@ class jEditColorizer:
 
         if g.match_word(s,i,'@doc'):
             j = i+4
+            self.minimalMatch = '@doc'
             self.colorRangeWithTag(s,i,j,'leoKeyword')
         elif g.match(s,i,'@') and (i+1 >= len(s) or s[i+1] in (' ','\t','\n')):
             j = i + 1
+            self.minimalMatch = '@'
             self.colorRangeWithTag(s,i,j,'leoKeyword')
         else: return 0
 
@@ -6884,16 +6931,16 @@ class jEditColorizer:
 
         '''Recolor line s.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         verbose = False ; traceMatch = False
 
         # Return immediately if syntax coloring has been disabled.
-        if self.colorizer.killColorFlag or not self.colorizer.enabled:
-            self.highlighter.setCurrentBlockState(-1)
-            if trace and (self.initFlag or verbose):
-                self.initFlag = False
-                g.trace('immediate return')
-            return
+        # if self.colorizer.killColorFlag or not self.colorizer.enabled:
+            # self.highlighter.setCurrentBlockState(-1)
+            # if trace and (self.initFlag or verbose):
+                # self.initFlag = False
+                # g.trace('immediate return')
+            # return
 
         # Reload all_s if the widget's text is known to have changed.
         if self.initFlag:
@@ -6914,6 +6961,10 @@ class jEditColorizer:
         b = self.getPrevState()
         lastFunc,lastMatch = b.lastFunc,b.lastMatch
         lastN,minimalMatch = 0,'' # Not used until there is a match.
+        lastFlag = b.lastFlag
+        if lastFlag is not None:
+            # g.trace('***** set flag',lastFlag)
+            self.colorizer.flag = lastFlag
         if trace and verbose and lastFunc: g.trace('prevState',b)
         i = g.choose(lastFunc,lastMatch,offset)
 
@@ -6928,12 +6979,13 @@ class jEditColorizer:
         self.global_i,self.global_j = offset,j
 
         if trace:
-            kind = g.choose(verbose,'** entry **','')
-            g.trace(kind,self.colorizer.language,s)
+            g.trace('%3s %5s %-40s %s' % (
+                self.recolorCount,self.colorizer.flag,b.stateName,s))
 
         # The main colorizing loop.
         self.prev = None
         while i < j:
+            loopFlag = self.colorizer.flag
             assert 0 <= i < len(all_s)
             progress = i
             functions = self.rulesDict.get(all_s[i],[])
@@ -6989,30 +7041,27 @@ class jEditColorizer:
                offset,len(all_s),g.callers(5),repr(s),repr(s2)))
         return s == s2
     #@-node:ekr.20090213102946.10:checkRecolor
-    #@+node:ekr.20090303081428.10:clearLine
-    # blackColor = None
-
-    # def clearLine (self,s):
-
-        # trace = False and not g.unitTesting
-        # if trace: g.trace(s)
-
-        # if not self.blackColor:
-            # self.blackColor = QtGui.QColor('black')
-
-        # self.highlighter.setFormat(0,len(s),self.blackColor)
-    #@-node:ekr.20090303081428.10:clearLine
     #@+node:ekr.20090211072718.14:computeStateName
     def computeStateName (self,lastFunc,lastMatch,lastN,minimalMatch):
+
+        if self.colorizer.killColorFlag:
+            colorState = 'killcolor.'
+        else:
+            colorState = g.choose(
+                self.colorizer.flag in (True,None),'','nocolor.')
 
         if lastFunc:
             matchString = g.choose(minimalMatch,
                 minimalMatch,
                 self.all_s[lastMatch:lastMatch+lastN])
-            return '%s:%s' % (
-                lastFunc.__name__,matchString)
+            name = '%s%s:%s' % (
+                colorState,lastFunc.__name__,matchString)
         else:
-            return self.defaultState
+            name = '%s%s' % (colorState,self.defaultState)
+
+        # g.trace(repr(lastFlag),name)
+
+        return name
     #@-node:ekr.20090211072718.14:computeStateName
     #@+node:ekr.20090211072718.2:getPrevState
     def getPrevState (self):
@@ -7021,7 +7070,13 @@ class jEditColorizer:
         n = h.previousBlockState()
 
         if n == -1:
-            return g.Bunch(lastFunc=None,lastMatch=0,lastN=0)
+            return g.Bunch(
+                lastKillColorFlag=None,
+                lastFlag=None,
+                lastFunc=None,
+                lastMatch=0,
+                lastN=0,
+                stateName = self.defaultState)
         else:
             bunch = self.stateDict.get(n)
             assert bunch,'n=%s' % (n)
@@ -7029,25 +7084,34 @@ class jEditColorizer:
     #@nonl
     #@-node:ekr.20090211072718.2:getPrevState
     #@+node:ekr.20090211072718.3:setCurrentState
-    def setCurrentState (self,s,offset,limit,lastFunc,lastMatch,lastN,minimalMatch):
+    def setCurrentState (self,s,offset,limit,
+        lastFunc,lastMatch,lastN,minimalMatch):
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         h = self.highlighter
+        flag = self.colorizer.flag
+        killColorFlag = self.colorizer.killColorFlag
 
         self.stateCount += 1
         oldN = h.currentBlockState()
-        active = bool(lastFunc and lastMatch + lastN > offset + limit)
+        active = bool(
+            killColorFlag or flag is False or 
+            (lastFunc and lastMatch + lastN > offset + limit))
 
         if active:
             b = self.stateDict.get(oldN)
             if b:
-                changeState = b.lastFunc != lastFunc or b.lastN != lastN
+                changeState = (
+                    b.lastFlag != flag or
+                    b.lastKillColorFlag != killColorFlag or
+                    b.lastFunc != lastFunc or
+                    b.lastN != lastN)
             else:
                 changeState = True
         else:
-            lastFunc,lastMatch,lastN,minimalMatch = None,None,None,None
-            changeState = oldN != -1
+            flag,lastFunc,lastMatch,lastN,minimalMatch = None,None,None,None,None
+            changeState = oldN != -1 #### or not flag or killColorFlag 
 
         stateName = self.computeStateName(
             lastFunc,lastMatch,lastN,minimalMatch)
@@ -7067,9 +7131,12 @@ class jEditColorizer:
             self.maxStateNumber = max(n,self.maxStateNumber)
 
         state = g.bunch(
+            lastKillColorFlag = killColorFlag,
+            lastFlag=flag,
             lastFunc=lastFunc,
             lastMatch=lastMatch,
-            lastN=lastN)
+            lastN=lastN,
+            stateName=stateName,)
 
         self.stateNameDict[stateName] = n
         self.stateDict[n] = state
@@ -7085,6 +7152,11 @@ class jEditColorizer:
         verbose = False
         w = self.w
         colorName = w.configDict.get(tag)
+
+        if not self.colorizer.flag:
+            # We are under the influence of @nocolor
+            if trace: g.trace('in range of @nocolor',tag)
+            return
 
         # Munch the color name.
         if not colorName:
@@ -7111,15 +7183,15 @@ class jEditColorizer:
 
         if trace:
             self.tagCount += 1
-            kind = g.choose(ok,' ','***')
+            # kind = g.choose(ok,' ','***')
             s2 = g.choose(ok,s[clip_i:clip_j],self.all_s[i:j])
 
             if verbose:
-                g.trace('%3s %3s %3s %3s %3s %3s %3s %3s %s' % (
-                    self.tagCount,kind,tag,offset,i,j,lim_i,lim_j,s2),
+                g.trace('%3s %3s %3s %3s %3s %3s %3s %s' % (
+                    self.tagCount,tag,offset,i,j,lim_i,lim_j,s2),
                     g.callers(4))
             else:
-                g.trace('%3s %3s %7s %s' % (self.tagCount,kind,tag,s2))
+                g.trace('%3s %7s %s' % (self.tagCount,tag,s2))
 
         if ok:
             self.highlighter.setFormat(clip_i-offset,clip_j-clip_i,color)
