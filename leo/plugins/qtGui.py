@@ -6931,7 +6931,7 @@ class jEditColorizer:
 
         '''Recolor line s.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = False ; traceMatch = False
 
         # Return immediately if syntax coloring has been disabled.
