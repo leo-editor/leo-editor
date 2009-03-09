@@ -367,7 +367,7 @@
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
 </v>
-<v t="ekr.20090309112809.1"><vh>@auto whitespace-test.py</vh></v>
+<v t="ekr.20090309113341.2" a="E"><vh>@shadow whitespace-test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
