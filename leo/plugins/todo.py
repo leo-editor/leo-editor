@@ -211,6 +211,7 @@ class todoController:
         self.ui = cleoQtUI(self)
         os.chdir(owd)
         leoPlugins.registerHandler('select3', self.updateUI)
+        leoPlugins.registerHandler('save2', self.loadAllIcons)
 
         for i in self.handlers:
             leoPlugins.registerHandler(i[0], i[1])
@@ -245,7 +246,7 @@ class todoController:
     #@-node:tbrown.20090119215428.14:projectChanger
     #@+node:tbrown.20090119215428.15:loadAllIcons
     @redrawer
-    def loadAllIcons(self, clear=False):
+    def loadAllIcons(self, tag=None, k=None, clear=None):
         """Load icons to represent cleo state"""
 
         for p in self.c.allNodes_iter():
@@ -254,6 +255,7 @@ class todoController:
     #@+node:tbrown.20090119215428.16:loadIcons
     @redrawer
     def loadIcons(self, p, clear=False):
+
         com = self.c.editCommands
         allIcons = com.getIconList(p)
         icons = [i for i in allIcons if 'cleoIcon' not in i]
@@ -773,6 +775,7 @@ class todoController:
     #@-node:tbrown.20090119215428.40:ToDo icon related...
     #@+node:tbrown.20090119215428.49:updateUI
     def updateUI(self,tag=None,k=None):
+
         if k and k['c'] != self.c:
             return  # wrong number
 
