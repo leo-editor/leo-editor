@@ -36,6 +36,7 @@ def init():
     loadedModules = {} # Keys are module names, values are modules.
     loadingModuleNameStack = [] # The stack of module names.  Top is the module being loaded.
     g.act_on_node = CommandChainDispatcher()
+    g.visit_tree_item = CommandChainDispatcher()
 
 #@+others
 #@+node:ktenney.20060628092017.1:baseLeoPlugin
