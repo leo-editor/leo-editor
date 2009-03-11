@@ -3882,19 +3882,26 @@ Note: I plan to start work on this immediately.
 #@-node:ekr.20090202064534.5:Checklist
 #@-node:ekr.20090202064534.4:Your mission, should you choose to accept it
 #@+node:ville.20090311193011.2:test select_h, select_b, find_h, find_b
-pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')
-print "Modules used:"
+pl = c.find_h('@thin.*py').select_h('class.*').select_b('^import (.*)')
+print "Imports in direct class nodes under thin nodes:"
 for p in pl:
     for match in p.matchiter:
-        print match.groups(1)
+        print p.h,":", match.group(1)
 
-print "All classes"
+
+print "\n\nAll classes"
 pl = c.find_b(r'^class\s+(\w+).*:')
 #print pl
 for p in pl:
+    print "Node:",p.h
     for match in p.matchiter:
         print match.group(1)
 
+pl = c.find_h('@thin.*leoNotes')
+pl2 = pl.select_h('test select.*')
+
+print pl2
+#@nonl
 #@-node:ville.20090311193011.2:test select_h, select_b, find_h, find_b
 #@-all
 #@nonl

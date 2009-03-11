@@ -27,6 +27,7 @@ if g.app and g.app.use_psyco:
 
 import time
 import re
+import itertools
 #@nonl
 #@-node:ekr.20060904165452.1:<< imports >>
 #@nl
@@ -3164,7 +3165,7 @@ class poslist(list):
     #@-node:ville.20090311190405.69:select_h
     #@+node:ville.20090311195550.1:select_b
     def select_b(self, regex, flags = re.IGNORECASE ):
-        """ Find immediate child nodes of nodes in poslist with regex.
+        """ Find all the nodes in poslist where body matches regex
 
         You can chain find_h / find_b with select_h / select_b like this
         to refine an outline search::
@@ -3174,12 +3175,17 @@ class poslist(list):
         pat = re.compile(regex, flags)
         res = poslist()
         for p in self:
-            for child_p in p.children_iter():            
-                m = re.finditer(pat, child_p.b)
-                if m:
-                    pc = child_p.copy()
-                    pc.matchiter = m
-                    res.append(pc)
+            m = re.finditer(pat, p.b)
+            t1,t2 = itertools.tee(m,2)
+            try:
+                first = t1.next()
+            except StopIteration:
+                continue
+
+            if m:
+                pc = p.copy()
+                pc.matchiter = t2
+                res.append(pc)
         return res
 
 

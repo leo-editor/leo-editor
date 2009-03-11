@@ -36,6 +36,7 @@ import time
 import tokenize # for Check Python command
 import imp
 import re
+import itertools
 
 try:
     import tabnanny # for Check Python command # Does not exist in jython
@@ -490,10 +491,14 @@ class baseCommands (object):
         res = leoNodes.poslist()
         for p in self.allNodes_iter():
             m = re.finditer(pat, p.b)
-            if m:
-                pc = p.copy()
-                pc.matchiter = m
-                res.append(pc)
+            t1,t2 = itertools.tee(m,2)
+            try:
+                first = t1.next()
+            except StopIteration:
+                continue
+            pc = p.copy()
+            pc.matchiter = t2
+            res.append(pc)
         return res
     #@-node:ville.20090311200059.1:c.find_b
     #@-node:ekr.20040312090934:c.iterators
