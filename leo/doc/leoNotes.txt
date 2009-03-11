@@ -3881,6 +3881,21 @@ Note: I plan to start work on this immediately.
 #@nonl
 #@-node:ekr.20090202064534.5:Checklist
 #@-node:ekr.20090202064534.4:Your mission, should you choose to accept it
+#@+node:ville.20090311193011.2:test select_h, select_b, find_h, find_b
+pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')
+print "Modules used:"
+for p in pl:
+    for match in p.matchiter:
+        print match.groups(1)
+
+print "All classes"
+pl = c.find_b(r'^class\s+(\w+).*:')
+#print pl
+for p in pl:
+    for match in p.matchiter:
+        print match.group(1)
+
+#@-node:ville.20090311193011.2:test select_h, select_b, find_h, find_b
 #@-all
 #@nonl
 #@-node:ekr.20031218072017.329:@thin ../doc/leoNotes.txt
