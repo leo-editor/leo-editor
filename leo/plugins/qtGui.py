@@ -27,6 +27,7 @@ import leo.core.leoFind as leoFind
 import leo.core.leoGui as leoGui
 import leo.core.leoKeys as leoKeys
 import leo.core.leoMenu as leoMenu
+import leo.core.leoPlugins as leoPlugins
 
 import leo.plugins.baseNativeTree as baseNativeTree
 
@@ -3534,6 +3535,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         item = QtGui.QTreeWidgetItem(itemOrTree)
         icon = self.getIcon(p)
         self.setItemIcon(item,icon)
+
     #@-node:ekr.20090124174652.110:drawIcon
     #@+node:ekr.20090124174652.111:getIcon
     def getIcon(self,p):
@@ -3668,6 +3670,11 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
 
         if trace: g.trace(id(item),p.h,g.callers(4))
+        try:
+            g.visit_tree_item(self.c, p, item)
+        except leoPlugins.TryNext:
+            pass
+        #print "item",item
         return item
     #@-node:ekr.20090124174652.103:createTreeItem
     #@+node:ekr.20090129062500.13:editLabelHelper (leoQtTree)

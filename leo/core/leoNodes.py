@@ -26,6 +26,8 @@ if g.app and g.app.use_psyco:
     except ImportError: pass
 
 import time
+import re
+import itertools
 #@nonl
 #@-node:ekr.20060904165452.1:<< imports >>
 #@nl
@@ -3127,6 +3129,70 @@ class position (object):
     #@-node:ekr.20080423062035.1:p.Low level methods
     #@-others
 #@-node:ekr.20031218072017.889:class position
+#@+node:ville.20090311190405.68:class poslist
+class poslist(list):
+    """ List of positions 
+
+    This behaves like a normal list, with the distinction that it 
+    has select_h and select_b methods that can be used 
+    to search through immediate children of the nodes.
+
+    """
+    #@    @+others
+    #@+node:ville.20090311190405.69:select_h
+    def select_h(self, regex, flags = re.IGNORECASE):
+        """ Find immediate child nodes of nodes in poslist with regex.
+
+        You can chain find_h / find_b with select_h / select_b like this
+        to refine an outline search::
+
+            pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')
+
+        """
+        pat = re.compile(regex, flags)
+        res = poslist()
+        for p in self:
+            for child_p in p.children_iter():            
+                m = re.match(pat, child_p.h)
+                if m:
+                    pc = child_p.copy()
+                    pc.mo = m
+                    res.append(pc)
+        return res
+
+
+
+    #@-node:ville.20090311190405.69:select_h
+    #@+node:ville.20090311195550.1:select_b
+    def select_b(self, regex, flags = re.IGNORECASE ):
+        """ Find all the nodes in poslist where body matches regex
+
+        You can chain find_h / find_b with select_h / select_b like this
+        to refine an outline search::
+
+            pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')
+        """
+        pat = re.compile(regex, flags)
+        res = poslist()
+        for p in self:
+            m = re.finditer(pat, p.b)
+            t1,t2 = itertools.tee(m,2)
+            try:
+                first = t1.next()
+            except StopIteration:
+                continue
+
+            if m:
+                pc = p.copy()
+                pc.matchiter = t2
+                res.append(pc)
+        return res
+
+
+
+    #@-node:ville.20090311195550.1:select_b
+    #@-others
+#@-node:ville.20090311190405.68:class poslist
 #@-others
 #@nonl
 #@-node:ekr.20031218072017.3320:@thin leoNodes.py
