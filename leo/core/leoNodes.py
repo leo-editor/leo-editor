@@ -3153,7 +3153,7 @@ class poslist(list):
         res = poslist()
         for p in self:
             for child_p in p.children_iter():            
-                m = re.finditer(pat, child_p.b)
+                m = re.match(pat, child_p.h)
                 if m:
                     pc = child_p.copy()
                     pc.mo = m

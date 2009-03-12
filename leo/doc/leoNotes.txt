@@ -3882,11 +3882,12 @@ Note: I plan to start work on this immediately.
 #@-node:ekr.20090202064534.5:Checklist
 #@-node:ekr.20090202064534.4:Your mission, should you choose to accept it
 #@+node:ville.20090311193011.2:test select_h, select_b, find_h, find_b
-pl = c.find_h('@thin.*py').select_h('class.*').select_b('^import (.*)')
-print "Imports in direct class nodes under thin nodes:"
-for p in pl:
-    for match in p.matchiter:
-        print p.h,":", match.group(1)
+pl = c.find_h('@thin.*py').select_h('class.*')
+print "Direct classes in thin nodes:",[e.h for e in pl]
+pl = pl.select_b(r"\(object\)")
+print "Subclass object",[e.h for e in pl]
+
+
 
 
 print "\n\nAll classes"
@@ -3896,6 +3897,8 @@ for p in pl:
     print "Node:",p.h
     for match in p.matchiter:
         print match.group(1)
+
+# find this node
 
 pl = c.find_h('@thin.*leoNotes')
 pl2 = pl.select_h('test select.*')
