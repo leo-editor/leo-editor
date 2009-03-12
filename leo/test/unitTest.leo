@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2363,7 +2363,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080729200342.119"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20080729200342.119" a="E"><vh>Other unit tests of shadowController</vh>
 <v t="ekr.20080729200342.120"><vh>@test x.baseDirName</vh></v>
 <v t="ekr.20080729200342.121"><vh>@test x.pathName</vh></v>
 <v t="ekr.20080729200342.122"><vh>@test x.dirName</vh></v>
@@ -2378,7 +2378,7 @@
 <v t="ekr.20080812114335.1"><vh>@test x.markerFromExtension</vh></v>
 <v t="ekr.20080822075239.1"><vh>@@test (minitest) x.show_error</vh></v>
 </v>
-<v t="ekr.20080729200342.130"><vh>Unit tests for atFileCommands</vh>
+<v t="ekr.20080729200342.130" a="E"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20080729200342.131"><vh>@test at.open/closeStringFile</vh></v>
 <v t="ekr.20080729200342.132"><vh>@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20080729200342.133"><vh>@test at.readOneAtShadowNode</vh>
@@ -2472,6 +2472,8 @@
 </v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
+<v t="ekr.20080729200342.1"></v>
+<v t="ekr.20050112095306.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor

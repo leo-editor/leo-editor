@@ -8050,12 +8050,10 @@ class searchCommandsClass (baseEditCommandsClass):
 
         # None is a signal to get the option from the find tab.
 
-        if not self.findTabHandler:
-            self.findTabHandler = g.app.gui.createFindTab(c,f)
-        self.ifinder = self.findTabHandler
-
-        if forward is None:
+        if forward is None or not self.findTabHandler:
             self.openFindTab(show=False)
+
+        self.ifinder = self.findTabHandler
 
         if not self.minibufferFindHandler:
             self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)

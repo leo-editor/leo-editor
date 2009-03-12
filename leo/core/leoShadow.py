@@ -961,10 +961,12 @@ class sourcereader:
     #@    @+others
     #@+node:ekr.20080708094444.13:__init__
     def __init__ (self,shadowController,lines):
+
         self.lines = lines 
         self.length = len(self.lines)
         self.i = 0
         self.shadowController=shadowController
+    #@nonl
     #@-node:ekr.20080708094444.13:__init__
     #@+node:ekr.20080708094444.14:index
     def index (self):
@@ -972,8 +974,13 @@ class sourcereader:
     #@-node:ekr.20080708094444.14:index
     #@+node:ekr.20080708094444.15:get
     def get (self):
+
+        trace = False and not g.unitTesting
+
         result = self.lines[self.i]
         self.i+=1
+
+        if trace: g.trace(repr(result))
         return result 
     #@-node:ekr.20080708094444.15:get
     #@+node:ekr.20080708094444.16:sync
@@ -1026,7 +1033,7 @@ class sourcewriter:
     #@+node:ekr.20080708094444.23:put
     def put(self, line, tag=''):
 
-        trace = False or self.trace
+        trace = (False or self.trace) and not g.unitTesting
 
         # An important hack.  Make sure *all* lines end with a newline.
         # This will cause a mismatch later in check_the_final_output,

@@ -4946,6 +4946,7 @@ def shouldWriteAtNosentNode (self,p,exists):
 #@+node:ekr.20041005105605.15:initWriteIvars
 def initWriteIvars(self,root,targetFileName,
     atAuto=False,
+    atShadow=False,
     nosentinels=False,
     thinFile=False,
     scriptWrite=False,
@@ -5002,6 +5003,7 @@ self.docKind = None
 self.explicitLineEnding = False # True: an @lineending directive specifies the ending.
 self.fileChangedFlag = False # True: the file has actually been updated.
 self.atAuto = atAuto
+self.atShadow = atShadow
 self.shortFileName = "" # short version of file name used for messages.
 self.thinFile = False
 self.force_newlines_in_at_nosent_bodies = self.c.config.getBool(
@@ -6379,11 +6381,6 @@ def setFontFromConfig (self):                   self.oops()
 def drawIcon(self,p):                                       self.oops()
 def redraw(self,p=None,scroll=True,forceDraw=False):        self.oops()
 def redraw_now(self,p=None,scroll=True,forceDraw=False):    self.oops()
-def redraw_after_contract(self,p=None):         self.oops()
-def redraw_after_expand(self,p=None):           self.oops()
-def redraw_after_head_changed(self):            self.oops()
-def redraw_after_icons_changed(self,all=False): self.oops()
-def redraw_after_select(self,p=None):           self.oops()
 def scrollTo(self,p):                           self.oops()
 idle_scrollTo = scrollTo # For compatibility.
 
@@ -8207,12 +8204,10 @@ def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
 
     # None is a signal to get the option from the find tab.
 
-    if not self.findTabHandler:
-        self.findTabHandler = g.app.gui.createFindTab(c,f)
-    self.ifinder = self.findTabHandler
-
-    if forward is None:
+    if forward is None or not self.findTabHandler:
         self.openFindTab(show=False)
+
+    self.ifinder = self.findTabHandler
 
     if not self.minibufferFindHandler:
         self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
@@ -10750,12 +10745,10 @@ def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
 
     # None is a signal to get the option from the find tab.
 
-    if not self.findTabHandler:
-        self.findTabHandler = g.app.gui.createFindTab(c,f)
-    self.ifinder = self.findTabHandler
-
-    if forward is None:
+    if forward is None or not self.findTabHandler:
         self.openFindTab(show=False)
+
+    self.ifinder = self.findTabHandler
 
     if not self.minibufferFindHandler:
         self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
@@ -10793,12 +10786,10 @@ def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
 
     # None is a signal to get the option from the find tab.
 
-    if not self.findTabHandler:
-        self.findTabHandler = g.app.gui.createFindTab(c,f)
-    self.ifinder = self.findTabHandler
-
-    if forward is None:
+    if forward is None or not self.findTabHandler:
         self.openFindTab(show=False)
+
+    self.ifinder = self.findTabHandler
 
     if not self.minibufferFindHandler:
         self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
@@ -24555,6 +24546,7 @@ def languageForExtension (self,ext):
 #@+node:ekr.20041005105605.15:initWriteIvars
 def initWriteIvars(self,root,targetFileName,
     atAuto=False,
+    atShadow=False,
     nosentinels=False,
     thinFile=False,
     scriptWrite=False,
@@ -24611,6 +24603,7 @@ self.docKind = None
 self.explicitLineEnding = False # True: an @lineending directive specifies the ending.
 self.fileChangedFlag = False # True: the file has actually been updated.
 self.atAuto = atAuto
+self.atShadow = atShadow
 self.shortFileName = "" # short version of file name used for messages.
 self.thinFile = False
 self.force_newlines_in_at_nosent_bodies = self.c.config.getBool(
@@ -24753,7 +24746,7 @@ def writeOneAtEditNode(self,p,toString,force=False):
 
     ok = at.openFileForWriting(root,fileName=fn,toString=toString)
     if ok:
-        at.writeOpenFile(root,nosentinels=True,toString=toString,atAuto=True)
+        at.writeOpenFile(root,nosentinels=True,toString=toString) ####,atAuto=True)
         at.closeWriteFile() # Sets stringOutput if toString is True.
         if at.errors == 0:
             at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
@@ -24802,7 +24795,7 @@ def shouldWriteAtEditNode (self,p,exists,force):
 # New in 4.3 b2: support for writing from a string.
 
 def writeOpenFile(self,root,
-    nosentinels=False,toString=False,fromString='',atAuto=False):
+    nosentinels=False,toString=False,fromString=''): ####,atAuto=False):
 
     """Do all writes except asis writes."""
 
@@ -24821,7 +24814,7 @@ def writeOpenFile(self,root,
     root.setVisited()
     at.putAtLastLines(s)
 
-    if atAuto or (not toString and not nosentinels):
+    if self.atAuto or (not toString and not nosentinels):
         at.warnAboutOrphandAndIgnoredNodes()
 #@-node:ekr.20041005105605.157:writeOpenFile
 #@+node:ekr.20041005105605.204:os
@@ -24866,7 +24859,7 @@ def putBody(self,p,oneNodeOnly=False,fromString=''):
 
     inCode = True
     << Make sure all lines end in a newline >>
-    if self.write_strips_blank_lines:
+    if self.write_strips_blank_lines and not self.atAuto: ####
         s = self.cleanLines(p,s)
     i = 0
     while i < len(s):
@@ -26003,12 +25996,10 @@ def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
 
     # None is a signal to get the option from the find tab.
 
-    if not self.findTabHandler:
-        self.findTabHandler = g.app.gui.createFindTab(c,f)
-    self.ifinder = self.findTabHandler
-
-    if forward is None:
+    if forward is None or not self.findTabHandler:
         self.openFindTab(show=False)
+
+    self.ifinder = self.findTabHandler
 
     if not self.minibufferFindHandler:
         self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
@@ -26948,12 +26939,10 @@ def startIncremental (self,event,commandName,forward,ignoreCase,regexp):
 
     # None is a signal to get the option from the find tab.
 
-    if not self.findTabHandler:
-        self.findTabHandler = g.app.gui.createFindTab(c,f)
-    self.ifinder = self.findTabHandler
-
-    if forward is None:
+    if forward is None or not self.findTabHandler:
         self.openFindTab(show=False)
+
+    self.ifinder = self.findTabHandler
 
     if not self.minibufferFindHandler:
         self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)

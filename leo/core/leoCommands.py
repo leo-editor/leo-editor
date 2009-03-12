@@ -3689,8 +3689,9 @@ class baseCommands (object):
         newChildren = parent_v.t.children[:]
 
         if key == None:
-            def key (self):
+            def lowerKey (self):
                 return (self.h.lower(), self)
+            key = lowerKey
 
         if cmp: newChildren.sort(cmp,key=key)
         else:   newChildren.sort(key=key)

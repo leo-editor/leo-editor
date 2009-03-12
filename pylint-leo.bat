@@ -13,13 +13,16 @@ REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
 
-goto errors
+rem goto errors
 goto all
 
 :errors
 
-echo qtGui.py
-call pylint.bat leo\plugins\qtGui.py                --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
+echo leoCommands.py
+call pylint.bat leo\core\leoCommands.py      --rcfile=leo\test\pylint-leo-rc.txt
+
+echo leoFrame.py
+call pylint.bat leo\core\leoFrame.py         --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 
@@ -65,6 +68,7 @@ call pylint.bat leo\core\leoFind.py          --rcfile=leo\test\pylint-leo-rc.txt
 echo leoFrame.py
 call pylint.bat leo\core\leoFrame.py         --rcfile=leo\test\pylint-leo-rc.txt
 
+rem E0602:4528:isBytes: Undefined variable 'bytes'
 echo leoGlobals.py
 call pylint.bat leo\core\leoGlobals.py       --rcfile=leo\test\pylint-leo-rc.txt
 

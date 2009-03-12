@@ -3,7 +3,7 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20090131200406.9:Bugs
-#@+node:ekr.20090304084910.2:Asap 8
+#@+node:ekr.20090304084910.2:Asap 7
 #@+node:ekr.20090307110054.1:Docs
 #@+node:ekr.20090226080753.6:Finish the wiki intro
 #@-node:ekr.20090226080753.6:Finish the wiki intro
@@ -12,53 +12,11 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
 #@nonl
 #@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
 #@-node:ekr.20090307110054.1:Docs
-#@+node:ekr.20090306121629.1:Make sure change-all honors node-only and suboutline-only settings
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/430287018f9d773d
-
-The following problem hits rev 1633, qt plugin (untested with tk plugin). The
-command Find --> Change All *always* acts on *every node*. It ignores the
-checkboxes selection made by the user. Even if you select the "Node Only"
-checkbox the changes are aplied to the whole tree (headline text and body text).
-#@nonl
-#@-node:ekr.20090306121629.1:Make sure change-all honors node-only and suboutline-only settings
-#@+node:ekr.20090219085600.1:Fix new relative-path-name problem
-@nocolor
-
-http://mail.google.com/mail/#inbox/11f8d37e8ed0349b
-
-Just to make an observation: the @path machinery in leo no longer
-works as expected in terms of relative paths.
-
-For some reason, running my (http://leo.zwiki.org/LeoDirectory) script
-with the default setting of relative_paths=True in leo trunk (revno:
-1584)
-causes some funny behaviour :
-
-- only the top two directories have .leo_shadow directories created
-- all python files are inexplicably copied to the root directory of
-the project
-
-The script works as normal if I change the setting to
-relative_paths=False, but I tend to not prefer this setting as it
-hardcodes the subdirectories in the project with absolute @paths,
-which one would have to modify by hand if the leo project directory is
-moved.
-
-Best,
-
-AliaK
-#@nonl
-#@-node:ekr.20090219085600.1:Fix new relative-path-name problem
-#@+node:ekr.20090228065229.2:Honor @path in rst3 plugin
-#@-node:ekr.20090228065229.2:Honor @path in rst3 plugin
 #@+node:ekr.20080922115725.1:Finish @shadow
 # Allow block comments in private shadow files.
 # Compute delims using the private shadow file, not the file extension!
 # Can @shadow mark externally changed nodes?
 #@nonl
-#@clone 2
 #@+node:ekr.20081004102201.2:Log file for @shadow
 @nocolor-node
 
@@ -301,6 +259,47 @@ TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
 #@nonl
 #@-node:ekr.20081028060510.1:Fix @shadow crasher
 #@-node:ekr.20080922115725.1:Finish @shadow
+#@+node:ekr.20090306121629.1:Make sure change-all honors node-only and suboutline-only settings
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/430287018f9d773d
+
+The following problem hits rev 1633, qt plugin (untested with tk plugin). The
+command Find --> Change All *always* acts on *every node*. It ignores the
+checkboxes selection made by the user. Even if you select the "Node Only"
+checkbox the changes are aplied to the whole tree (headline text and body text).
+#@nonl
+#@-node:ekr.20090306121629.1:Make sure change-all honors node-only and suboutline-only settings
+#@+node:ekr.20090219085600.1:Fix new relative-path-name problem
+@nocolor
+
+http://mail.google.com/mail/#inbox/11f8d37e8ed0349b
+
+Just to make an observation: the @path machinery in leo no longer
+works as expected in terms of relative paths.
+
+For some reason, running my (http://leo.zwiki.org/LeoDirectory) script
+with the default setting of relative_paths=True in leo trunk (revno:
+1584)
+causes some funny behaviour :
+
+- only the top two directories have .leo_shadow directories created
+- all python files are inexplicably copied to the root directory of
+the project
+
+The script works as normal if I change the setting to
+relative_paths=False, but I tend to not prefer this setting as it
+hardcodes the subdirectories in the project with absolute @paths,
+which one would have to modify by hand if the leo project directory is
+moved.
+
+Best,
+
+AliaK
+#@nonl
+#@-node:ekr.20090219085600.1:Fix new relative-path-name problem
+#@+node:ekr.20090228065229.2:Honor @path in rst3 plugin
+#@-node:ekr.20090228065229.2:Honor @path in rst3 plugin
 #@+node:ekr.20090304155947.6:Read @auto (and @edit?)_nodes only as required
 #@-node:ekr.20090304155947.6:Read @auto (and @edit?)_nodes only as required
 #@+node:ekr.20090307063422.1:Can we generate pdf files in rst3?
@@ -309,7 +308,7 @@ http://docutils.sourceforge.net/docs/user/latex.html
 #@-node:ekr.20090307063422.1:Can we generate pdf files in rst3?
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
 #@-node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
-#@-node:ekr.20090304084910.2:Asap 8
+#@-node:ekr.20090304084910.2:Asap 7
 #@+node:ekr.20081215070651.4:Minor bugs 7
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
 @nocolor

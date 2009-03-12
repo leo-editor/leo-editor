@@ -14,8 +14,6 @@ import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
 import leo.core.leoUndo as leoUndo
 
-import re
-
 #@<< About handling events >>
 #@+node:ekr.20031218072017.2410:<< About handling events >>
 #@+at
@@ -747,7 +745,7 @@ class leoBody:
         pass
 
     def tag_add (self,tagName,index1,index2):
-            pass
+        pass
 
     def tag_bind (self,tagName,event,callback):
         pass
@@ -2304,11 +2302,6 @@ class leoTree:
     def drawIcon(self,p):                                       self.oops()
     def redraw(self,p=None,scroll=True,forceDraw=False):        self.oops()
     def redraw_now(self,p=None,scroll=True,forceDraw=False):    self.oops()
-    def redraw_after_contract(self,p=None):         self.oops()
-    def redraw_after_expand(self,p=None):           self.oops()
-    def redraw_after_head_changed(self):            self.oops()
-    def redraw_after_icons_changed(self,all=False): self.oops()
-    def redraw_after_select(self,p=None):           self.oops()
     def scrollTo(self,p):                           self.oops()
     idle_scrollTo = scrollTo # For compatibility.
 
@@ -2612,10 +2605,11 @@ class leoTree:
 
     # These are hints for optimization.
     # The proper default is c.redraw()
-    def redraw_after_icons_changed(self,all=False): self.c.redraw()
     def redraw_after_clone(self):                   self.c.redraw()
     def redraw_after_contract(self,p=None):         self.c.redraw()
     def redraw_after_expand(self,p=None):           self.c.redraw()
+    def redraw_after_head_changed(self):            self.c.redraw()
+    def redraw_after_icons_changed(self,all=False): self.c.redraw()
     def redraw_after_select(self,p=None):           self.c.redraw()
     #@-node:ekr.20081005065934.8:May be defined in subclasses
     #@+node:ekr.20040803072955.128:leoTree.select & helpers
