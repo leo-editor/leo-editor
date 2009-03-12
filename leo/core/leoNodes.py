@@ -3179,13 +3179,14 @@ class poslist(list):
             t1,t2 = itertools.tee(m,2)
             try:
                 first = t1.next()
-            except StopIteration:
-                continue
-
-            if m:
+                # if does not raise StopIteration...
                 pc = p.copy()
                 pc.matchiter = t2
                 res.append(pc)
+
+            except StopIteration:
+                pass
+
         return res
 
 

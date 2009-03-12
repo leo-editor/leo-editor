@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="526" height="930" width="688"/>
+	<global_window_position top="27" left="49" height="822" width="1193"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6,3,15,1,25"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -66,7 +66,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051012104957"><vh>Docs</vh>
+<v t="ekr.20051012104957" a="E"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
 <v t="ekr.20050618061835.1"><vh>Intro</vh>
@@ -100,7 +100,7 @@
 <v t="ekr.20050618061835.20"><vh>Final remarks</vh></v>
 </v>
 <v t="ekr.20051104080236" annotate="7d71002e"><vh>Other</vh>
-<v t="ekr.20080405085247.1"><vh>@ignore</vh>
+<v t="ekr.20080405085247.1" a="E"><vh>@ignore</vh>
 <v t="ekr.20051104081502" annotate="7d71002e"><vh>Other tests</vh>
 <v t="ekr.20051104081502.542"><vh>@@nosent test-niceNosent</vh>
 <v t="ekr.20051104081502.543"><vh>part 1</vh></v>
@@ -696,7 +696,7 @@
 </v>
 </v>
 <v t="ekr.20070417092935.1"><vh>Scripts</vh>
-<v t="ekr.20080405085247.2"><vh>@ignore</vh>
+<v t="ekr.20080405085247.2" a="E"><vh>@ignore</vh>
 <v t="ekr.20070217065840"><vh>Scripts that make unit tests</vh>
 <v t="ekr.20070217065840.1"><vh>@@command make-test @key = Alt-5</vh></v>
 <v t="ekr.20070217065840.2"><vh>@@command do-before @key = Alt-6</vh>
@@ -728,7 +728,7 @@
 <v t="ekr.20051104081502.109"></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 </v>
-<v t="ekr.20040712101754.2" annotate="7d71002e"><vh>Load tests for .leo files</vh>
+<v t="ekr.20040712101754.2" a="E" annotate="7d71002e"><vh>Load tests for .leo files</vh>
 <v t="ekr.20040712101754.3"><vh>@test test.leo</vh></v>
 <v t="ekr.20040803090901"><vh>@test leoDist.leo</vh></v>
 <v t="ekr.20081121164135.1"><vh>@test leoGuiPluginsRef.leo</vh></v>
@@ -739,11 +739,11 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
-<v t="ekr.20071113193438"><vh>General</vh>
+<v t="ekr.20071113193438" a="E"><vh>General</vh>
 <v t="ekr.20061109172511"><vh>Check base classes &amp; ivars</vh>
 <v t="ekr.20061109172511.3"><vh>Startup</vh></v>
 <v t="ekr.20061109172511.1"><vh>Docs</vh></v>
@@ -762,7 +762,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20050120095423" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20050120095423" a="E" annotate="7d71002e"><vh>Plugins</vh>
 <v t="ekr.20080309193654.1"><vh>@ignore</vh>
 <v t="ekr.20050120095423.21"><vh>print all loaded plugins</vh></v>
 <v t="ekr.20050218015346"><vh>@suite run all plugin test routines</vh>
@@ -817,7 +817,7 @@
 <v t="ekr.20090201135611.4"><vh>@test item2position</vh></v>
 </v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
 <v t="ekr.20090131113752.2"><vh>leoApp</vh>
 <v t="ekr.20090131113752.3"><vh>@test consistency of leoApp tables</vh></v>
 </v>
@@ -2044,19 +2044,19 @@
 <v t="ekr.20060203181203.2"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20071113202410" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
+<v t="ekr.20071113194424.1" a="E"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.182"></v>
 </v>
-<v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
+<v t="ekr.20040712101754.187" a="E" annotate="7d71002e"><vh> Position tests</vh>
 <v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
 <v t="ekr.20040712101754.184"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
 <v t="ekr.20040712101754.208" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
 </v>
-<v t="ekr.20040712101754.99" annotate="7d71002e"><vh>@test c iters</vh>
+<v t="ekr.20040712101754.99" a="E" annotate="7d71002e"><vh>@test c iters</vh>
 <v t="ekr.20040712101754.100"><vh>&lt;&lt; coverage tests &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.101"><vh>&lt;&lt; duplicate tests &gt;&gt;</vh></v>
 </v>
@@ -2075,14 +2075,14 @@
 <v t="ekr.20040712101754.199" annotate="7d71002e"><vh>@test p.comparisons</vh></v>
 <v t="ekr.20060106211922" annotate="7d71002e"><vh>@test p.isCurrentPosition</vh></v>
 <v t="ekr.20060106211922.1" annotate="7d71002e"><vh>@test p.isRootPosition</vh></v>
-<v t="ekr.20040712101754.188" annotate="7d71002e"><vh>@test p.iters and v.iters</vh>
-<v t="ekr.20040712101754.189"><vh>child1</vh>
-<v t="ekr.20040712101754.190"><vh>a</vh>
+<v t="ekr.20040712101754.188" a="E" annotate="7d71002e"><vh>@test p.iters and v.iters</vh>
+<v t="ekr.20040712101754.189" a="E"><vh>child1</vh>
+<v t="ekr.20040712101754.190" a="E"><vh>a</vh>
 <v t="ekr.20040712101754.191"><vh>b</vh></v>
 </v>
 <v t="ekr.20040712101754.192"><vh>c</vh></v>
-<v t="ekr.20040712101754.190"></v>
-<v t="ekr.20040712101754.193"><vh>d</vh>
+<v t="ekr.20040712101754.190" a="E"></v>
+<v t="ekr.20040712101754.193" a="E"><vh>d</vh>
 <v t="ekr.20040712101754.194"><vh>e</vh></v>
 </v>
 </v>
@@ -2093,13 +2093,14 @@
 </v>
 <v t="ekr.20090102061858.2"><vh>@test c.positionExists</vh></v>
 <v t="ekr.20090102062037.2"><vh>@test c.positionExists for all nodes</vh></v>
-<v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519" a="E" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
 <v t="ekr.20040712101754.200" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
+<v t="ville.20090312195309.2"><vh>@test find_h / find_b / select_h / select_b</vh></v>
 </v>
 <v t="ekr.20090130133404.2"><vh>@test leoNodes properties</vh></v>
 <v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
@@ -22118,5 +22119,69 @@ Last line: no newline</t>
 <t tx="ekr.20090306091634.1">tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
     print 'tree.redrawCount:',tree.redrawCount</t>
+<t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
+import random,fnmatch
+
+all_h = [po.h for po in c.find_h('.')]
+
+assert len(all_h) &gt; 1000
+
+#for p in c.allNodes_iter():
+#    all_h.append(p.h)
+#    print p.h
+    
+sample = random.sample(all_h, 20)    
+
+#test that all nodes are found at least once
+
+for h in sample:
+    pat = fnmatch.translate(h)
+    pl = c.find_h(pat)
+    #print pl,h
+    assert len(pl) &gt; 0 and len(pl) &lt; len(all_h)
+    #print pl
+
+tests = c.find_h('@test(.*)')
+
+#print tests
+
+# some of then have allNodes_iter
+bm = tests.select_b('(.*)allNodes_iter')
+#print bm
+forloops = 0
+for node in bm:   
+    # many of these are for loops
+    for m in node.matchiter:
+        if 'for' in m.group(1):
+            forloops += 1
+            
+assert forloops &gt; 10
+
+# all of these should also be found by find_b
+
+all_bm = c.find_b('(.*)allNodes_iter')
+assert len(all_bm) &gt;= len(bm)
+
+assert set(el.h for el in bm).issubset(set(el.h for el in all_bm))
+
+itertest = c.find_h('@test p.iters and v.iters')
+assert len(itertest) == 1
+tn = itertest[0]
+assert tn.h == '@test p.iters and v.iters'
+assert len(itertest.select_b('notfound, really')) == 0
+assert len(itertest.select_b('leoNodes')) == 1
+chi = itertest.select_h('child?')
+assert chi[0].h == 'child1'
+assert chi[1].h == 'child2'
+# twice, in clones
+chi_b = chi.select_h('a').select_h('b')
+assert len(chi_b) == 2
+
+assert chi_b[0].h == chi_b[1].h == 'b'
+chi_e = chi.select_h('d').select_h('e')
+assert len(chi_e) == 1
+assert chi_e[0].h == 'e'
+
+</t>
 </tnodes>
 </leo_file>
