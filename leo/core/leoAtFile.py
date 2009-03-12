@@ -3312,7 +3312,7 @@ class atFile:
 
         '''Put a normal code line.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         at = self
 
         # Put @verbatim sentinel if required.
