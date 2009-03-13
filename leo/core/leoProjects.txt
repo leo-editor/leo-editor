@@ -284,8 +284,9 @@ self.navPrefix = '' # Must always be a string.
 self.navTime = None
 
 # Controller-specific pickleshare db at /foo/bar.leo_db/
-import leo.core.pickleshare
-dbdirname = self.mFileName + '_db'
+import leo.external.pickleshare
+pth, bname = os.path.split(self.mFileName)
+dbdirname = '%s/.%s_db' % (pth, bname)
 self.db = leo.external.pickleshare.PickleShareDB(dbdirname)
 
 #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
