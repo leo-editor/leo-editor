@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="27" left="49" height="822" width="1193"/>
+	<global_window_position top="54" left="53" height="822" width="1193"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6,3,15,1,25"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6,3,4,13"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1005,7 +1005,7 @@
 </v>
 <v t="ekr.20061115103558" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113193624"><vh>leoCommands</vh>
+<v t="ekr.20071113193624" a="E"><vh>leoCommands</vh>
 <v t="ekr.20050512084850" annotate="7d71002e"><vh> Check outline</vh>
 <v t="ekr.20040712101754.272"><vh>Startup</vh></v>
 <v t="ekr.20041019124050"><vh>Docs</vh>
@@ -1144,6 +1144,7 @@
 <v t="ekr.20071113105654.1"><vh>@test hoist with no children</vh></v>
 <v t="ekr.20070611105728"><vh>@test illegal clone demote</vh></v>
 <v t="ekr.20071113201833" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+<v t="ville.20090313183551.2" a="M"><vh>@test c.db</vh></v>
 </v>
 <v t="ekr.20071113194216"><vh>leoConfig</vh>
 <v t="ekr.20060325071703.2"><vh>@@test ifgui</vh></v>
@@ -2044,7 +2045,7 @@
 <v t="ekr.20060203181203.2"><vh>@test strokeFromSetting</vh></v>
 <v t="ekr.20071113202410" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424.1" a="E"><vh>leoNodes</vh>
+<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>Startup</vh></v>
@@ -2075,7 +2076,7 @@
 <v t="ekr.20040712101754.199" annotate="7d71002e"><vh>@test p.comparisons</vh></v>
 <v t="ekr.20060106211922" annotate="7d71002e"><vh>@test p.isCurrentPosition</vh></v>
 <v t="ekr.20060106211922.1" annotate="7d71002e"><vh>@test p.isRootPosition</vh></v>
-<v t="ekr.20040712101754.188" a="E" annotate="7d71002e"><vh>@test p.iters and v.iters</vh>
+<v t="ekr.20040712101754.188" annotate="7d71002e"><vh>@test p.iters and v.iters</vh>
 <v t="ekr.20040712101754.189" a="E"><vh>child1</vh>
 <v t="ekr.20040712101754.190" a="E"><vh>a</vh>
 <v t="ekr.20040712101754.191"><vh>b</vh></v>
@@ -2093,7 +2094,7 @@
 </v>
 <v t="ekr.20090102061858.2"><vh>@test c.positionExists</vh></v>
 <v t="ekr.20090102062037.2"><vh>@test c.positionExists for all nodes</vh></v>
-<v t="ekr.20040802071519" a="E" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
@@ -22183,5 +22184,36 @@ assert len(chi_e) == 1
 assert chi_e[0].h == 'e'
 
 </t>
+<t tx="ville.20090313183551.2"># test the controller-specific pickleshare db
+v = [1212,121131313, { 'hello' : (121,'world')} ]
+c.db['leo_utest'] = v
+c.db['leo_utest2'] = 1
+c.db['leotest/foo'] = 2
+c.db['leotest/bar'] = 3
+assert c.db['leo_utest'] == v
+assert c.db['leo_utest2'] == 1
+assert c.db['leotest/foo'] == 2
+assert c.db['leotest/bar'] == 3
+
+assert len(c.db.keys()) &gt; 1
+del c.db['leo_utest']
+del c.db['leo_utest2']
+
+try:
+    c.db['leo_utest']
+    assert false
+except KeyError:
+    pass
+
+ltest = c.db.keys('leotest/*')
+assert len(ltest) &gt;= 2
+
+for k in ltest:
+    del c.db[k]
+
+ltest = c.db.keys('leotest/*')
+assert len(ltest) == 0
+
+     </t>
 </tnodes>
 </leo_file>
