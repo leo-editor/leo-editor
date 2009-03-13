@@ -110,6 +110,7 @@ def __init__(self,frame,fileName,relativeFileName=None):
     import leo.core.leoTangle as leoTangle
     import leo.core.leoUndo as leoUndo
 
+
     self.shadowController = leoShadow.shadowController(c)
     self.fileCommands   = leoFileCommands.fileCommands(c)
     self.atFileCommands = leoAtFile.atFile(c)
@@ -281,6 +282,12 @@ self.recentFiles = [] # List of recent files
 # For outline navigation.
 self.navPrefix = '' # Must always be a string.
 self.navTime = None
+
+# Controller-specific pickleshare db at /foo/bar.leo_db/
+import leo.core.pickleshare
+dbdirname = self.mFileName + '_db'
+self.db = leo.external.pickleshare.PickleShareDB(dbdirname)
+
 #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
 #@-node:ekr.20040731071037:c.initIvars
 #@+node:ekr.20090213065933.7:c.setWindowPosition
