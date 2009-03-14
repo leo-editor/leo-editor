@@ -208,6 +208,7 @@ class QuickSearchController:
 
     def doSearch(self, pat):
         self.its = {}
+        self.lw.clear()
         hm = self.c.find_h(pat)
         self.addHeadlineMatches(hm)
         bm = self.c.find_b(pat)
