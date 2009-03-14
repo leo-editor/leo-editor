@@ -287,7 +287,8 @@ class baseCommands (object):
 
         # Controller-specific pickleshare db at /foo/bar.leo_db/
         import leo.external.pickleshare
-        dbdirname = self.mFileName + '_db'
+        pth, bname = os.path.split(self.mFileName)
+        dbdirname = '%s/.%s_db' % (pth, bname)
         self.db = leo.external.pickleshare.PickleShareDB(dbdirname)
 
         #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
