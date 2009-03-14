@@ -223,11 +223,11 @@ class ipythonController:
                 ses = api.make_session()
                 gIP = ses.IP.getapi()
 
-                if g.app.gui.guiName() == 'qt':
-                    import ipy_qt.qtipywidget
-                    self.qtwidget = ipy_qt.qtipywidget.IPythonWidget()
-                    self.qtwidget.set_ipython_session(gIP)
-                    self.qtwidget.show()
+                #if g.app.gui.guiName() == 'qt':
+                    #import ipy_qt.qtipywidget
+                    #self.qtwidget = ipy_qt.qtipywidget.IPythonWidget()
+                    #self.qtwidget.set_ipython_session(gIP)
+                    #self.qtwidget.show()
 
             else:
                 # To reuse an old IPython session, you need to launch Leo from IPython by doing:

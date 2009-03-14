@@ -86,7 +86,8 @@ def init():
         def qtPdb(message=''):
             if message: print message
             import pdb
-            QtCore.pyqtRemoveInputHook()
+            if not g.app.useIpython:
+                QtCore.pyqtRemoveInputHook()
             pdb.set_trace()
         g.pdb = qtPdb
 
@@ -103,18 +104,6 @@ def init():
         g.plugin_signon(__name__)
         return True
 #@-node:ekr.20081121105001.191:init
-#@+node:ekr.20081121105001.192:embed_ipython
-def embed_ipython():
-
-    import IPython.ipapi
-
-    # sys.argv = ['ipython', '-p' , 'sh']
-    # ses = IPython.ipapi.make_session(dict(w = window))
-    # ip = ses.IP.getapi()
-    # ip.load('ipy_leo')
-    # ses.mainloop()
-#@nonl
-#@-node:ekr.20081121105001.192:embed_ipython
 #@-node:ekr.20081121105001.190: Module level
 #@+node:ekr.20081121105001.194:Frame and component classes...
 #@+node:ekr.20081121105001.200:class  DynamicWindow
@@ -3974,6 +3963,22 @@ class leoQtGui(leoGui.leoGui):
             c.bodyWantsFocusNow()
             c.outerUpdate() # Required because this is an event handler.
     #@-node:ekr.20090123150451.11:onActivateEvent (qtGui)
+    #@+node:ville.20090314101331.2:IPython embedding & mainloop
+    def embed_ipython(self):
+        import IPython.ipapi
+
+        oargv = sys.argv
+        # no c
+        #args = c.config.getString('ipython_argv')
+        args = None
+        if args is None:
+            argv = ['leo.py', '-p', 'sh']   
+        sys.argv = argv         
+        ses = IPython.ipapi.make_session()
+        sys.argv = oargv
+        # Does not return until IPython closes! IPython runs the leo mainloop
+        ses.mainloop()    
+    #@-node:ville.20090314101331.2:IPython embedding & mainloop
     #@+node:ekr.20081121105001.476:runMainLoop (qtGui)
     def runMainLoop(self):
 
@@ -3988,6 +3993,10 @@ class leoQtGui(leoGui.leoGui):
             else:
                 g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
         else:
+            if g.app.useIpython:
+                self.embed_ipython()
+                sys.exit(0)
+
             sys.exit(self.qtApp.exec_())
     #@-node:ekr.20081121105001.476:runMainLoop (qtGui)
     #@+node:ekr.20081121105001.477:destroySelf

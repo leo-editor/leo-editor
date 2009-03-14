@@ -70,18 +70,6 @@ def init():
         g.plugin_signon(__name__)
         return True
 #@-node:ekr.20081121110412.5:init
-#@+node:ekr.20081121110412.6:embed_ipython
-def embed_ipython():
-
-    import IPython.ipapi
-
-    # sys.argv = ['ipython', '-p' , 'sh']
-    # ses = IPython.ipapi.make_session(dict(w = window))
-    # ip = ses.IP.getapi()
-    # ip.load('ipy_leo')
-    # ses.mainloop()
-#@nonl
-#@-node:ekr.20081121110412.6:embed_ipython
 #@-node:ekr.20081121110412.4: Module level
 #@+node:ekr.20081121110412.353:class tkinterGui (leoGui)
 class tkinterGui(leoGui.leoGui):

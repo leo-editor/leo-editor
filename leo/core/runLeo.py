@@ -499,6 +499,7 @@ def scanOptions():
     parser.add_option('--silent',       action="store_true",dest="silent")
     parser.add_option('--script',       dest="script")
     parser.add_option('--script-window',dest="script_window")
+    parser.add_option('--ipython',      action="store_true",dest="use_ipython")
 
     # Parse the options, and remove them from sys.argv.
     options, args = parser.parse_args()
@@ -554,6 +555,9 @@ def scanOptions():
     g.app.silentMode = options.silent
     # g.trace('silentMode',g.app.silentMode)
 
+    # --ipython
+
+    g.app.useIpython = options.use_ipython
     # Compute the return values.
     windowFlag = script and script_path_w
     return fileName, gui, script, windowFlag
