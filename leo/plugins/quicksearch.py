@@ -2,8 +2,11 @@
 #@+node:ville.20090314215508.4:@thin quicksearch.py
 #@<< docstring >>
 #@+node:ville.20090314215508.5:<< docstring >>
-'''This docstring should be a clear, concise description of
-what the plugin does and how to use it.
+''' This plugin adds a fast-to-use search widget, in the style of "Find in files" feature of many editors
+
+Just load the plugin, activate "Nav" tab, enter search text and press enter.
+
+
 '''
 #@-node:ville.20090314215508.5:<< docstring >>
 #@nl
@@ -66,10 +69,9 @@ def install_qt_quicksearch_tab(c):
     c.frame.log.createTab("Nav", widget = wdg)
     #tabw.addTab(wdg, "QuickSearch")
 
-g.insqs = install_qt_quicksearch_tab
 
 class LeoQuickSearchWidget(QtGui.QWidget):
-    """ Real-time search widget """
+    """ 'Find in files'/grep style search widget """
     #@    @+others
     #@+node:ville.20090314215508.3:methods
     def __init__(self, c, parent = None):
