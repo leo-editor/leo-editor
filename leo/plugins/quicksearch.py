@@ -80,75 +80,17 @@ class LeoQuickSearchWidget(QtGui.QWidget):
         w = self.ui.listWidget
         cc = QuickSearchController(c,w)
         self.scon = cc
-        #cc.doSearch('hello')
-        #w.show()
 
-
-
-
-
-        #self.connect(self.ui.lineEdit,
-        #            QtCore.SIGNAL("textChanged(const QString&)"),
-        #              self.textChanged)
-        #self.connect(self.ui.tableWidget,
-        #            QtCore.SIGNAL("cellClicked(int, int)"),
-        #              self.cellClicked)
         self.connect(self.ui.lineEdit,
                     QtCore.SIGNAL("returnPressed()"),
                       self.returnPressed)
 
-
         self.c = c                  
-        self.ps = {} # item=> pos
-
-    def update_matches(self, matches):
-        self.ui.tableWidget.clear()
-        matches = list(matches)
-        self.ui.tableWidget.setRowCount(len(matches))
-        for idx,p in enumerate(matches):
-            s = p.h
-            it = QtGui.QTableWidgetItem('test')
-            it.setText(QtCore.QString(s))
-            g.trace("Match",s)
-            self.ps[idx] = p.copy(), it
-            self.ui.tableWidget.setItem(idx, 0, it)
-            idx+=1
-
-
 
     def returnPressed(self):
         t = unicode(self.ui.lineEdit.text())
         self.scon.doSearch(t)
-
-
-    def textChanged(self):
-        g.trace("New text", self.ui.lineEdit.text())
-        m = self.match_headlines(unicode(self.ui.lineEdit.text()))
-        self.update_matches(m)
-
-    def cellClicked (self, row, column ) :
-        p = self.ps[row][0]
-        g.trace("Go to pos",p)
-        self.c.selectPosition(p)
-
-    def match_headlines(self, pat):
-        c = self.c
-        pat = pat.lower()
-        for p in c.allNodes_iter():
-            if pat in p.h:
-                yield p
-        return 
-
-    def match_any(self, pat):
-        c = self.c
-        pat = pat.lower()
-        for p in c.allNodes_iter():
-            if pat in p.h:
-                yield p.copy()
-            elif pat in p.bodyString():
-                yield p.copy()
-        return 
-
+    #@nonl
     #@-node:ville.20090314215508.3:methods
     #@-others
 #@-node:ville.20090314215508.2:class LeoQuickSearchWidget
@@ -159,7 +101,7 @@ def matchlines(b, miter):
     for m in miter:
         st, en = g.getLine(b, m.start())
         li = b[st:en].strip()
-        print li
+        #print li
         res.append((li, (m.start(), m.end() )))
     return res
 
@@ -174,7 +116,7 @@ class QuickSearchController:
 
 
     def selectItem(self, it):
-        print "selected",it
+        #print "selected",it
         p, pos = self.its[it]
         self.c.selectPosition(p)
         if pos is not None:
@@ -202,7 +144,7 @@ class QuickSearchController:
             self.its[it] = (p, None)
             ms = matchlines(p.b, p.matchiter)
             for ml, pos in ms:
-                print "ml",ml,"pos",pos
+                #print "ml",ml,"pos",pos
                 it =  QListWidgetItem(ml, self.lw);    
                 self.its[it] = (p, pos)
 

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt_quicksearch.ui'
 #
-# Created: Sat Mar 14 22:10:22 2009
+# Created: Sat Mar 14 22:38:41 2009
 #      by: PyQt4 UI code generator 4.4.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -14,6 +14,7 @@ class Ui_LeoQuickSearchWidget(object):
         LeoQuickSearchWidget.setObjectName("LeoQuickSearchWidget")
         LeoQuickSearchWidget.resize(868,572)
         self.verticalLayout_2 = QtGui.QVBoxLayout(LeoQuickSearchWidget)
+        self.verticalLayout_2.setContentsMargins(0,1,0,1)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
