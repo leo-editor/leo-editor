@@ -92,7 +92,8 @@ class LeoQuickSearchWidget(QtGui.QWidget):
     def returnPressed(self):
         t = unicode(self.ui.lineEdit.text())
         self.scon.doSearch(t)
-    #@nonl
+        if self.scon.its:
+            self.ui.listWidget.setFocus()
     #@-node:ville.20090314215508.3:methods
     #@-others
 #@-node:ville.20090314215508.2:class LeoQuickSearchWidget
