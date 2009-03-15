@@ -112,11 +112,13 @@ class QuickSearchController:
         self.lw = listWidget
         self.c = c
         self.its = {}
+        # we want both single-clicks and activations (press enter)
         self.lw.connect(self.lw,
-                QtCore.SIGNAL("itemPressed(QListWidgetItem*)"),
+                QtCore.SIGNAL("itemActivated(QListWidgetItem*)"),
                   self.selectItem)        
-
-
+        self.lw.connect(self.lw,                                    
+                QtCore.SIGNAL("itemPressed(QListWidgetItem*)"),
+                self.selectItem)        
     def selectItem(self, it):
         #print "selected",it
         p, pos = self.its[it]
@@ -126,6 +128,7 @@ class QuickSearchController:
             w = self.c.frame.body.bodyCtrl
             w.setSelectionRange(st,en)
             w.seeInsertPoint()
+        self.lw.setFocus()
 
     def addHeadlineMatches(self, poslist):
         for p in poslist:
