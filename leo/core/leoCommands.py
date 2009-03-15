@@ -114,6 +114,7 @@ class baseCommands (object):
         import leo.core.leoTangle as leoTangle
         import leo.core.leoUndo as leoUndo
 
+
         self.shadowController = leoShadow.shadowController(c)
         self.fileCommands   = leoFileCommands.fileCommands(c)
         self.atFileCommands = leoAtFile.atFile(c)
@@ -283,6 +284,19 @@ class baseCommands (object):
         # For outline navigation.
         self.navPrefix = '' # Must always be a string.
         self.navTime = None
+
+        # Controller-specific pickleshare db at /foo/bar.leo_db/
+
+        import leo.external.pickleshare
+        pth, bname = os.path.split(self.mFileName)
+
+        if pth and bname:
+            dbdirname = '%s/.%s_db' % (pth, bname)
+            self.db = leo.external.pickleshare.PickleShareDB(dbdirname)
+        else:
+            self.db = None    
+            g.pr("\n*** No file in controller, using c.db=None ***\n")
+
         #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
         #@nl
         self.config = configSettings(c)

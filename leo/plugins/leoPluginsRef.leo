@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="99" left="327" height="846" width="1191"/>
+	<global_window_position top="27" left="118" height="846" width="1191"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20041211035618" str_leo_pos="1,25,10,4"><vh>Startup</vh>
+<v t="ekr.20041211035618" str_leo_pos="1,25,11,6"><vh>Startup</vh>
 <v t="ekr.20070718131416"><vh>@chapters</vh></v>
 <v t="ekr.20050217093214"><vh>@settings</vh>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
@@ -30,7 +30,7 @@
 </v>
 <v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
-<v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
+<v t="ekr.20050303051035" a="E"><vh> Templates: these show recommended ways of defining plugins.</vh>
 <v t="ekr.20041114102139" a="E"><vh>Notes</vh>
 <v t="ekr.20041114103913"><vh>About comments in the style guide</vh></v>
 <v t="ekr.20041114102139.1"><vh>About the root node</vh></v>
@@ -74,7 +74,8 @@ expanded="bobjack.20080516105903.19,bobjack.20080516105903.22,"><vh>@thin rClick
 <v t="edream.110203113231.741"><vh>@thin add_directives.py</vh></v>
 <v t="timo.20050213160555"><vh>@thin bibtex.py</vh></v>
 <v t="ekr.20040916073636"><vh>@thin ConceptualSort.py</vh></v>
-<v t="TL.20090225102340.32"><vh>@thin nodeActions.py</vh></v>
+<v t="TL.20090225102340.32"
+marks="ekr.20040915110738.1,"><vh>@thin nodeActions.py</vh></v>
 <v t="ekr.20040915105758.13"
 marks="ekr.20040915110738.1,"><vh>@thin FileActions.py</vh></v>
 <v t="mork.20041018131258.1"
@@ -331,8 +332,9 @@ expanded="bob.20080107154757,"><vh>@thin leo_to_html.py</vh></v>
 <v t="bobjack.20080424190315.2" a="E"
 expanded="bobjack.20080424195922.12,bobjack.20080426190702.2,"><vh>@thin toolbar.py</vh></v>
 </v>
-<v t="ekr.20080203083146"><vh>IPython bridge</vh>
-<v t="ekr.20080201143145"><vh>@thin ipython.py</vh></v>
+<v t="ekr.20080203083146" a="E"><vh>IPython bridge</vh>
+<v t="ekr.20080201143145" a="E"
+expanded="ekr.20080201143145.6,ekr.20080204110426,ekr.20080201151802.1,"><vh>@thin ipython.py</vh></v>
 </v>
 <v t="ekr.20050402080206"><vh>LeoN</vh>
 <v t="ekr.20050402080206.1"><vh>Readme file.</vh></v>
@@ -704,8 +706,8 @@ expanded="bobjack.20080424195922.12,bobjack.20080426190702.2,"><vh>@thin toolbar
 </v>
 <v t="pap.20050605183206"><vh>@thin leoupdate.py</vh></v>
 </v>
-<v t="ekr.20041001210557"><vh>Scripting</vh>
-<v t="ekr.20060328125248"><vh>@thin mod_scripting.py</vh></v>
+<v t="ekr.20041001210557" a="E"><vh>Scripting</vh>
+<v t="ekr.20060328125248" a="E"><vh>@thin mod_scripting.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
 <v t="EKR.20040517080250.1"><vh>@thin mod_http.py</vh></v>
@@ -964,7 +966,7 @@ expanded="bobjack.20080424195922.12,bobjack.20080426190702.2,"><vh>@thin toolbar
 <v t="rogererens.20041013082304"><vh>@thin UNL.py</vh></v>
 </v>
 <v t="ekr.20040915073259" a="E"><vh>Windows</vh>
-<v t="ekr.20050227071948" annotate="5404010000376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333464306632373632353530343665366636343635373130353238363830323666373130363535303734363635363137343735373236353731303736323535303236323637373130383238363830323666373130393535303037313061363235353039363137323633363836353734373937303635373130623238363830323666373130633638306136323535303236363637373130643238363830323666373130653638306136323735326571002e"><vh> cleo</vh>
+<v t="ekr.20050227071948" a="E" annotate="5404010000376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333464306632373632353530343665366636343635373130353238363830323666373130363535303734363635363137343735373236353731303736323535303236323637373130383238363830323666373130393535303037313061363235353039363137323633363836353734373937303635373130623238363830323666373130633638306136323535303236363637373130643238363830323666373130653638306136323735326571002e"><vh> cleo</vh>
 <v t="ekr.20050227072121"><vh>Notes</vh>
 <v t="ekr.20050227071948.1" annotate="7d71002e"><vh>TODO</vh>
 <v t="ekr.20050227071948.2" annotate="7d71002e"><vh>pixmap icons</vh></v>
@@ -1017,6 +1019,8 @@ expanded="tbrown.20060903121429.14,"><vh>@thin cleo.py</vh></v>
 <v t="ekr.20040831115238"><vh>@thin URLloader.py</vh></v>
 <v t="ekr.20060506070443.1"></v>
 <v t="ville.20090310191936.10" a="E"><vh>@thin colorize_headlines.py</vh></v>
+<v t="ville.20090314215508.4" a="E"
+expanded="ville.20090314215508.2,"><vh>@thin quicksearch.py</vh></v>
 </v>
 </v>
 </vnodes>

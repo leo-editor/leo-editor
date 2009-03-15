@@ -223,11 +223,16 @@ class ipythonController:
                 ses = api.make_session()
                 gIP = ses.IP.getapi()
 
-                if g.app.gui.guiName() == 'qt':
+                if g.app.gui.guiName() == 'qt' and not g.app.useIpython:
                     import ipy_qt.qtipywidget
+                    import textwrap
                     self.qtwidget = ipy_qt.qtipywidget.IPythonWidget()
                     self.qtwidget.set_ipython_session(gIP)
                     self.qtwidget.show()
+                    self.qtwidget.viewport.append(textwrap.dedent("""\
+                    Qt IPython widget (for Leo). Commands entered on box below.
+                    If you want the classic IPython text console, start leo with 'launchLeo.py --gui=qt --ipython'
+                    """))
 
             else:
                 # To reuse an old IPython session, you need to launch Leo from IPython by doing:

@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="526" height="930" width="688"/>
+	<global_window_position top="54" left="53" height="822" width="1193"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1144,6 +1144,7 @@
 <v t="ekr.20071113105654.1"><vh>@test hoist with no children</vh></v>
 <v t="ekr.20070611105728"><vh>@test illegal clone demote</vh></v>
 <v t="ekr.20071113201833" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+<v t="ville.20090313183551.2" a="M"><vh>@test c.db</vh></v>
 </v>
 <v t="ekr.20071113194216"><vh>leoConfig</vh>
 <v t="ekr.20060325071703.2"><vh>@@test ifgui</vh></v>
@@ -2100,6 +2101,7 @@
 <v t="ekr.20040712101754.200" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
+<v t="ville.20090312195309.2"><vh>@test find_h / find_b / select_h / select_b</vh></v>
 </v>
 <v t="ekr.20090130133404.2"><vh>@test leoNodes properties</vh></v>
 <v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
@@ -2363,7 +2365,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080729200342.119" a="E"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20080729200342.119"><vh>Other unit tests of shadowController</vh>
 <v t="ekr.20080729200342.120"><vh>@test x.baseDirName</vh></v>
 <v t="ekr.20080729200342.121"><vh>@test x.pathName</vh></v>
 <v t="ekr.20080729200342.122"><vh>@test x.dirName</vh></v>
@@ -2378,7 +2380,7 @@
 <v t="ekr.20080812114335.1"><vh>@test x.markerFromExtension</vh></v>
 <v t="ekr.20080822075239.1"><vh>@@test (minitest) x.show_error</vh></v>
 </v>
-<v t="ekr.20080729200342.130" a="E"><vh>Unit tests for atFileCommands</vh>
+<v t="ekr.20080729200342.130"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20080729200342.131"><vh>@test at.open/closeStringFile</vh></v>
 <v t="ekr.20080729200342.132"><vh>@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20080729200342.133"><vh>@test at.readOneAtShadowNode</vh>
@@ -22118,5 +22120,100 @@ Last line: no newline</t>
 <t tx="ekr.20090306091634.1">tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
     print 'tree.redrawCount:',tree.redrawCount</t>
+<t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
+import random,fnmatch
+
+all_h = [po.h for po in c.find_h('.')]
+
+assert len(all_h) &gt; 1000
+
+#for p in c.allNodes_iter():
+#    all_h.append(p.h)
+#    print p.h
+    
+sample = random.sample(all_h, 20)    
+
+#test that all nodes are found at least once
+
+for h in sample:
+    pat = fnmatch.translate(h)
+    pl = c.find_h(pat)
+    #print pl,h
+    assert len(pl) &gt; 0 and len(pl) &lt; len(all_h)
+    #print pl
+
+tests = c.find_h('@test(.*)')
+
+#print tests
+
+# some of then have allNodes_iter
+bm = tests.select_b('(.*)allNodes_iter')
+#print bm
+forloops = 0
+for node in bm:   
+    # many of these are for loops
+    for m in node.matchiter:
+        if 'for' in m.group(1):
+            forloops += 1
+            
+assert forloops &gt; 10
+
+# all of these should also be found by find_b
+
+all_bm = c.find_b('(.*)allNodes_iter')
+assert len(all_bm) &gt;= len(bm)
+
+assert set(el.h for el in bm).issubset(set(el.h for el in all_bm))
+
+itertest = c.find_h('@test p.iters and v.iters')
+assert len(itertest) == 1
+tn = itertest[0]
+assert tn.h == '@test p.iters and v.iters'
+assert len(itertest.select_b('notfound, really')) == 0
+assert len(itertest.select_b('leoNodes')) == 1
+chi = itertest.select_h('child?')
+assert chi[0].h == 'child1'
+assert chi[1].h == 'child2'
+# twice, in clones
+chi_b = chi.select_h('a').select_h('b')
+assert len(chi_b) == 2
+
+assert chi_b[0].h == chi_b[1].h == 'b'
+chi_e = chi.select_h('d').select_h('e')
+assert len(chi_e) == 1
+assert chi_e[0].h == 'e'
+
+</t>
+<t tx="ville.20090313183551.2"># test the controller-specific pickleshare db
+v = [1212,121131313, { 'hello' : (121,'world')} ]
+c.db['leo_utest'] = v
+c.db['leo_utest2'] = 1
+c.db['leotest/foo'] = 2
+c.db['leotest/bar'] = 3
+assert c.db['leo_utest'] == v
+assert c.db['leo_utest2'] == 1
+assert c.db['leotest/foo'] == 2
+assert c.db['leotest/bar'] == 3
+
+assert len(c.db.keys()) &gt; 1
+del c.db['leo_utest']
+del c.db['leo_utest2']
+
+try:
+    c.db['leo_utest']
+    assert false
+except KeyError:
+    pass
+
+ltest = c.db.keys('leotest/*')
+assert len(ltest) &gt;= 2
+
+for k in ltest:
+    del c.db[k]
+
+ltest = c.db.keys('leotest/*')
+assert len(ltest) == 0
+
+     </t>
 </tnodes>
 </leo_file>

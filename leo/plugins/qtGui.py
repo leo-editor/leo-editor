@@ -86,7 +86,8 @@ def init():
         def qtPdb(message=''):
             if message: print message
             import pdb
-            QtCore.pyqtRemoveInputHook()
+            if not g.app.useIpython:
+                QtCore.pyqtRemoveInputHook()
             pdb.set_trace()
         g.pdb = qtPdb
 
@@ -103,18 +104,6 @@ def init():
         g.plugin_signon(__name__)
         return True
 #@-node:ekr.20081121105001.191:init
-#@+node:ekr.20081121105001.192:embed_ipython
-def embed_ipython():
-
-    import IPython.ipapi
-
-    # sys.argv = ['ipython', '-p' , 'sh']
-    # ses = IPython.ipapi.make_session(dict(w = window))
-    # ip = ses.IP.getapi()
-    # ip.load('ipy_leo')
-    # ses.mainloop()
-#@nonl
-#@-node:ekr.20081121105001.192:embed_ipython
 #@-node:ekr.20081121105001.190: Module level
 #@+node:ekr.20081121105001.194:Frame and component classes...
 #@+node:ekr.20081121105001.200:class  DynamicWindow
@@ -3974,6 +3963,22 @@ class leoQtGui(leoGui.leoGui):
             c.bodyWantsFocusNow()
             c.outerUpdate() # Required because this is an event handler.
     #@-node:ekr.20090123150451.11:onActivateEvent (qtGui)
+    #@+node:ville.20090314101331.2:IPython embedding & mainloop
+    def embed_ipython(self):
+        import IPython.ipapi
+
+        oargv = sys.argv
+        # no c
+        #args = c.config.getString('ipython_argv')
+        args = None
+        if args is None:
+            argv = ['leo.py', '-p', 'sh']   
+        sys.argv = argv         
+        ses = IPython.ipapi.make_session()
+        sys.argv = oargv
+        # Does not return until IPython closes! IPython runs the leo mainloop
+        ses.mainloop()    
+    #@-node:ville.20090314101331.2:IPython embedding & mainloop
     #@+node:ekr.20081121105001.476:runMainLoop (qtGui)
     def runMainLoop(self):
 
@@ -3988,6 +3993,10 @@ class leoQtGui(leoGui.leoGui):
             else:
                 g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
         else:
+            if g.app.useIpython:
+                self.embed_ipython()
+                sys.exit(0)
+
             sys.exit(self.qtApp.exec_())
     #@-node:ekr.20081121105001.476:runMainLoop (qtGui)
     #@+node:ekr.20081121105001.477:destroySelf
@@ -4554,92 +4563,6 @@ class leoQtGui(leoGui.leoGui):
 #@-node:ekr.20081121105001.472:class leoQtGui
 #@-node:ekr.20081121105001.471:Gui wrapper
 #@+node:ekr.20081121105001.509:Non-essential
-#@+node:ekr.20081121105001.510:class LeoQuickSearchWidget
-import qt_quicksearch
-
-def install_qt_quicksearch_tab(c):
-    #tabw = c.frame.top.tabWidget
-
-    wdg = LeoQuickSearchWidget(c)
-    c.frame.log.createTab('QuickSearch', widget = wdg)
-    #tabw.addTab(wdg, "QuickSearch")
-
-g.insqs = install_qt_quicksearch_tab
-
-class LeoQuickSearchWidget(QtGui.QWidget):
-    """ Real-time search widget """
-    #@    @+others
-    #@+node:ekr.20081121105001.511:methods
-    def __init__(self, c, parent = None):
-        QtGui.QWidget.__init__(self, parent)
-        self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
-        self.ui.setupUi(self)
-
-        #self.connect(self.ui.lineEdit,
-        #            QtCore.SIGNAL("textChanged(const QString&)"),
-        #              self.textChanged)
-        self.connect(self.ui.tableWidget,
-                    QtCore.SIGNAL("cellClicked(int, int)"),
-                      self.cellClicked)
-        self.connect(self.ui.lineEdit,
-                    QtCore.SIGNAL("returnPressed()"),
-                      self.returnPressed)
-
-
-        self.c = c                  
-        self.ps = {} # item=> pos
-
-    def update_matches(self, matches):
-        self.ui.tableWidget.clear()
-        matches = list(matches)
-        self.ui.tableWidget.setRowCount(len(matches))
-        for idx,p in enumerate(matches):
-            s = p.h
-            it = QtGui.QTableWidgetItem('test')
-            it.setText(QtCore.QString(s))
-            g.trace("Match",s)
-            self.ps[idx] = p.copy(), it
-            self.ui.tableWidget.setItem(idx, 0, it)
-            idx+=1
-
-
-
-    def returnPressed(self):
-        m = self.match_any(unicode(self.ui.lineEdit.text()))
-        self.update_matches(m)
-
-
-    def textChanged(self):
-        g.trace("New text", self.ui.lineEdit.text())
-        m = self.match_headlines(unicode(self.ui.lineEdit.text()))
-        self.update_matches(m)
-
-    def cellClicked (self, row, column ) :
-        p = self.ps[row][0]
-        g.trace("Go to pos",p)
-        self.c.selectPosition(p)
-
-    def match_headlines(self, pat):
-        c = self.c
-        pat = pat.lower()
-        for p in c.allNodes_iter():
-            if pat in p.h:
-                yield p
-        return 
-
-    def match_any(self, pat):
-        c = self.c
-        pat = pat.lower()
-        for p in c.allNodes_iter():
-            if pat in p.h:
-                yield p.copy()
-            elif pat in p.bodyString():
-                yield p.copy()
-        return 
-
-    #@-node:ekr.20081121105001.511:methods
-    #@-others
-#@-node:ekr.20081121105001.510:class LeoQuickSearchWidget
 #@+node:ekr.20081121105001.512:quickheadlines
 def install_qt_quickheadlines_tab(c):
     global __qh
