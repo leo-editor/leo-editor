@@ -44,3 +44,8 @@ leo/test/unicode-ä-test
 leo/test/under_indent.py
 ekr-macros.txt
 annotate.txt
+leo/config/.leoSettings.leo_db
+leo/plugins/.leoPlugins.leo_db
+leo/plugins/.leoPluginsRef.leo_db
+leo/test/.test.leo_db
+leo/test/.unitTest.leo_db
