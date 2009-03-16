@@ -848,8 +848,8 @@ class shadowController:
                 nosentinels = False,
                 thinFile = False,  # Debatable.
                 scriptWrite = True,
-                toString = True,
-                write_strips_blank_lines = None,)
+                toString = True)
+                #### write_strips_blank_lines = None,)
 
             s = at.stringOutput
 

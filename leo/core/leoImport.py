@@ -1808,8 +1808,8 @@ class baseScannerClass (scanUtility):
         if s1 is None and s2 is None:
             at.write(self.root,
                 nosentinels=True,thinFile=False,
-                scriptWrite=False,toString=True,
-                write_strips_blank_lines=False)
+                scriptWrite=False,toString=True)
+                #### write_strips_blank_lines=False)
             s1,s2 = self.file_s, at.stringOutput
 
         s1 = g.toUnicode(s1,self.encoding)

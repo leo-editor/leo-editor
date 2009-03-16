@@ -297,7 +297,7 @@ class atFile:
         scriptWrite=False,
         toString=False,
         forcePythonSentinels=None,
-        write_strips_blank_lines=None,
+        #### write_strips_blank_lines=None,
     ):
 
         self.initCommonIvars()
@@ -337,10 +337,11 @@ class atFile:
         #@-node:ekr.20041005105605.16:<< init ivars for writing >>>
         #@nl
 
-        if write_strips_blank_lines is None:
-            self.write_strips_blank_lines = self.c.config.getBool('write_strips_blank_lines')
-        else:
-            self.write_strips_blank_lines = write_strips_blank_lines
+        ####
+        # if write_strips_blank_lines is None:
+            # self.write_strips_blank_lines = self.c.config.getBool('write_strips_blank_lines')
+        # else:
+            # self.write_strips_blank_lines = write_strips_blank_lines
 
         if forcePythonSentinels is None:
             forcePythonSentinels = scriptWrite
@@ -2082,7 +2083,7 @@ class atFile:
 
                 s = p.b
 
-                if self.write_strips_blank_lines:
+                if True: #### self.write_strips_blank_lines:
                     s = self.cleanLines(p,s)
 
                 if s:
@@ -2241,7 +2242,7 @@ class atFile:
         thinFile = False,
         scriptWrite = False,
         toString = False,
-        write_strips_blank_lines = None,
+        #### write_strips_blank_lines = None,
     ):
 
         """Write a 4.x derived file."""
@@ -2270,8 +2271,8 @@ class atFile:
         #@nl
         at.initWriteIvars(root,at.targetFileName,
             nosentinels = nosentinels, thinFile = thinFile,
-            scriptWrite = scriptWrite, toString = toString,
-            write_strips_blank_lines = write_strips_blank_lines)
+            scriptWrite = scriptWrite, toString = toString)
+            #### write_strips_blank_lines = write_strips_blank_lines)
 
         if nosentinels and not scriptWrite and not toString:
             fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
@@ -2518,7 +2519,8 @@ class atFile:
         at.initWriteIvars(root,at.targetFileName,
             atAuto=True, ####
             nosentinels=True,thinFile=False,scriptWrite=False,
-            toString=toString,write_strips_blank_lines=False)
+            toString=toString)
+            #### ,write_strips_blank_lines=False)
 
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
         if ok:
@@ -2603,7 +2605,8 @@ class atFile:
         at.initWriteIvars(root,at.targetFileName,
             atAuto=True,
             nosentinels=True,thinFile=False,scriptWrite=False,
-            toString=toString,write_strips_blank_lines=False)
+            toString=toString)
+            #### write_strips_blank_lines=False)
 
         ok = at.openFileForWriting(root,fileName=fn,toString=toString)
         if ok:
@@ -2735,10 +2738,10 @@ class atFile:
             thinFile=True, # New in Leo 4.5 b2: private files are thin files.
             scriptWrite=False,
             toString=False, # True: create a fileLikeObject.  This is done below.
-            forcePythonSentinels=True, # A hack to suppress an error message.
+            forcePythonSentinels=True) # A hack to suppress an error message.
                 # The actual sentinels will be set below.
-            write_strips_blank_lines=False,
-        )
+
+            #### write_strips_blank_lines=False,
 
         # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
         #                     what is used in x.propegate changes.
@@ -2979,7 +2982,7 @@ class atFile:
                 #@+node:ekr.20041005105605.156:<< Write p's body >>
                 s = p.b
 
-                if self.write_strips_blank_lines:
+                if True: #### self.write_strips_blank_lines:
                     s = self.cleanLines(p,s)
 
                 if s:
@@ -3069,7 +3072,7 @@ class atFile:
             trailingNewlineFlag = True # don't need to generate an @nonl
         #@-node:ekr.20041005105605.162:<< Make sure all lines end in a newline >>
         #@nl
-        if self.write_strips_blank_lines and not self.atAuto: ####
+        if True: #### self.write_strips_blank_lines and not self.atAuto: ####
             s = self.cleanLines(p,s)
         i = 0
         while i < len(s):
@@ -3325,7 +3328,7 @@ class atFile:
 
         if trace: g.trace(self.atShadow,repr(line))
 
-        if self.write_strips_blank_lines:
+        if True: #### self.write_strips_blank_lines:
             # Don't put any whitespace in otherwise blank lines.
             if line.strip(): # The line has non-empty content.
                 if not at.raw:
