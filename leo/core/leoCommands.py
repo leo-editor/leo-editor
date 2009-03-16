@@ -3652,6 +3652,8 @@ class baseCommands (object):
 
         if not current: return
 
+        c.endEditing()
+
         undoData = c.undoer.beforeInsertNode(current)
         # Make sure the new node is visible when hoisting.
         if (as_child or
