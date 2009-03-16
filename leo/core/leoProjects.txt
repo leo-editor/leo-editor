@@ -11773,6 +11773,1341 @@ def setBodyTextAfterSelect (self,p,old_p):
 #@-node:ekr.20090206153445.1:setBodyTextAfterSelect
 #@-node:ekr.20040803072955.128:leoTree.select & helpers
 #@-node:ekr.20090306060344.1:Fixed redraw_after_select bug
+#@+node:ekr.20090105132011.2:Fixed whitespace problems with @auto/@shadow
+@nocolor-node
+#@+node:ekr.20090225154415.1: Report
+@nocolor
+
+Pulled trunk, got r1599
+
+python launchLeo.py leo/plugins/leoPlugins.leo
+
+go to
+
+Plugins-->Graph world-->@shadow backlink.py-->backlink declarations
+
+All I did was add the full stop at the end of the docstring, but see
+the diff:
+
+=== modified file 'leo/plugins/backlink.py'
+--- leo/plugins/backlink.py     2009-02-19 18:16:01 +0000
++++ leo/plugins/backlink.py     2009-02-25 22:14:46 +0000
+@@ -1,4 +1,4 @@
+-'''Backlink - allow arbitrary links between nodes
++'''Backlink - allow arbitrary links between nodes.
+ '''
+
+ # Notes
+@@ -296,7 +296,7 @@
+                break
+        else:
+            self.showMessage("Error: no such link")
+-
++
+        gcc = getattr(self.c, 'graphcanvasController')
+        if gcc:
+            gcc.update()
+#@-node:ekr.20090225154415.1: Report
+#@+node:ekr.20090310071259.1:From kdiff
+@color
+    def linkAction(self, dir_, newChild=False):
+        """link to/from current position from/to mark node"""
+        if not self.linkMark or not self.c.positionExists(self.linkMark):
+            self.showMessage('Link mark not specified or no longer valid', color='red')
+            return
+
+@nocolor
+The new version has a completely blank line after the return.
+The old version had 4 blanks in the blank line.
+
+The problem probably arises from the write_strips_blank_lines option.
+#@nonl
+#@-node:ekr.20090310071259.1:From kdiff
+#@+node:ekr.20041005105605.15:initWriteIvars
+def initWriteIvars(self,root,targetFileName,
+    atAuto=False,
+    atShadow=False,
+    nosentinels=False,
+    thinFile=False,
+    scriptWrite=False,
+    toString=False,
+    forcePythonSentinels=None,
+    #### write_strips_blank_lines=None,
+):
+
+    self.initCommonIvars()
+    << init ivars for writing >>
+
+    ####
+    # if write_strips_blank_lines is None:
+        # self.write_strips_blank_lines = self.c.config.getBool('write_strips_blank_lines')
+    # else:
+        # self.write_strips_blank_lines = write_strips_blank_lines
+
+    if forcePythonSentinels is None:
+        forcePythonSentinels = scriptWrite
+
+    if root:
+        self.scanAllDirectives(root,
+            scripting=scriptWrite,
+            forcePythonSentinels=forcePythonSentinels)
+
+    # g.trace(forcePythonSentinels,self.startSentinelComment,self.endSentinelComment)
+
+    if forcePythonSentinels:
+        # Force Python comment delims for g.getScript.
+        self.startSentinelComment = "#"
+        self.endSentinelComment = None
+
+    # Init state from arguments.
+    self.targetFileName = targetFileName
+    self.sentinels = not nosentinels
+    self.thinFile = thinFile
+    self.toString = toString
+    self.root = root
+
+    # Ignore config settings for unit testing.
+    if toString and g.app.unitTesting: self.output_newline = '\n'
+
+    # Init all other ivars even if there is an error.
+    if not self.errors and self.root:
+        self.root.v.t.tnodeList = []
+        self.root.v.t._p_changed = True
+#@+node:ekr.20041005105605.16:<< init ivars for writing >>>
+@
+When tangling, we first write to a temporary output file. After tangling is
+temporary file. Otherwise we delete the old target file and rename the temporary
+file to be the target file.
+@c
+
+self.docKind = None
+self.explicitLineEnding = False # True: an @lineending directive specifies the ending.
+self.fileChangedFlag = False # True: the file has actually been updated.
+self.atAuto = atAuto
+self.atShadow = atShadow
+self.shortFileName = "" # short version of file name used for messages.
+self.thinFile = False
+self.force_newlines_in_at_nosent_bodies = self.c.config.getBool(
+    'force_newlines_in_at_nosent_bodies')
+
+if toString:
+    self.outputFile = g.fileLikeObject()
+    self.stringOutput = ""
+    self.targetFileName = self.outputFileName = "<string-file>"
+else:
+    self.outputFile = None # The temporary output file.
+    self.stringOutput = None
+
+    if g.isPython3:
+        self.targetFileName = self.outputFileName = ''
+    else:
+        self.targetFileName = self.outputFileName = unicode('')
+#@-node:ekr.20041005105605.16:<< init ivars for writing >>>
+#@-node:ekr.20041005105605.15:initWriteIvars
+#@+node:ekr.20070806141607:writeOneAtAutoNode & helper
+def writeOneAtAutoNode(self,p,toString,force):
+
+    '''Write p, an @auto node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy()
+
+    fileName = p.atAutoNodeName()
+    if not fileName: return False
+
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+    exists = g.os_path_exists(fileName)
+
+    if not toString and not self.shouldWriteAtAutoNode(p,exists,force):
+        return False
+
+    # This code is similar to code in at.write.
+    c.endEditing() # Capture the current headline.
+    at.targetFileName = g.choose(toString,"<string-file>",fileName)
+    at.initWriteIvars(root,at.targetFileName,
+        atAuto=True, ####
+        nosentinels=True,thinFile=False,scriptWrite=False,
+        toString=toString)
+        #### ,write_strips_blank_lines=False)
+
+    ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
+    if ok:
+        at.writeOpenFile(root,nosentinels=True,toString=toString) ####,atAuto=True)
+        at.closeWriteFile() # Sets stringOutput if toString is True.
+        if at.errors == 0:
+            at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+        else:
+            g.es("not written:",at.outputFileName)
+            root.setDirty() # New in Leo 4.4.8.
+
+    elif not toString:
+        root.setDirty() # Make _sure_ we try to rewrite this file.
+        g.es("not written:",at.outputFileName)
+
+    return ok
+#@+node:ekr.20071019141745:shouldWriteAtAutoNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @auto x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @auto node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @auto file.
+- The explicit commands that read and write @auto trees must always be honored.
+@c
+
+def shouldWriteAtAutoNode (self,p,exists,force):
+
+    '''Return True if we should write the @auto node at p.'''
+
+    if force: # We are executing write-at-auto-node or write-dirty-at-auto-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.h,'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @auto tree is dirty and contains significant info.
+        return True
+#@-node:ekr.20071019141745:shouldWriteAtAutoNode
+#@-node:ekr.20070806141607:writeOneAtAutoNode & helper
+#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+def writeOneAtShadowNode(self,p,toString,force):
+
+    '''Write p, an @shadow node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
+
+    fn = p.atShadowFileNodeName()
+    if not fn:
+        g.es_print('can not happen: not an @shadow node',p.h,color='red')
+        return False
+
+    # A hack to support unknown extensions.
+    self.adjustTargetLanguage(fn) # May set c.target_language.
+
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fn = c.os_path_finalize_join(at.default_directory,fn)
+    exists = g.os_path_exists(fn)
+
+    if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
+        return False
+
+    c.endEditing() # Capture the current headline.
+    at.initWriteIvars(root,targetFileName=None, # Not used.
+        atShadow=True, ####
+        nosentinels=None, # set below.  Affects only error messages (sometimes).
+        thinFile=True, # New in Leo 4.5 b2: private files are thin files.
+        scriptWrite=False,
+        toString=False, # True: create a fileLikeObject.  This is done below.
+        forcePythonSentinels=True) # A hack to suppress an error message.
+            # The actual sentinels will be set below.
+
+        #### write_strips_blank_lines=False,
+
+    # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+    #                     what is used in x.propegate changes.
+    # Note: x.marker_from_extension takes the file name as the argument,
+    # not the extension itself
+    marker = x.marker_from_extension(fn,addAtSign=False)
+    # g.trace('write marker',marker)
+    at.startSentinelComment = marker
+    at.endSentinelComment = None
+
+    if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
+
+    # Write the public and private files to public_s and private_s strings.
+    data = []
+    for sentinels in (False,True):
+        theFile = at.openStringFile(fn)
+        at.sentinels = sentinels
+        at.writeOpenFile(root,
+            nosentinels=not sentinels,toString=False) ####,atAuto=False)
+            # nosentinels only affects error messages, and then only if atAuto is True.
+        s = at.closeStringFile(theFile)
+        data.append(s)
+
+    # Set these new ivars for unit tests.
+    at.public_s, at.private_s = data
+
+    if g.app.unitTesting:
+        exceptions = ('public_s','private_s','sentinels','stringOutput')
+        assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
+
+    if at.errors == 0 and not toString:
+        ### It may be better to compute the public file by removing sentinels from at.private_s
+        # by calling x.copy_file_removing_sentinels. This would ensure that the (dubious!!)
+        # x.isSentinel logic is used consistently by the @shadow read/write logic.
+        # OTOH, Leo's write logic should actually dominate x.isSentinel.
+
+        # Write the public and private files.
+        private_fn = x.shadowPathName(fn)
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        at.replaceFileWithString(private_fn,at.private_s)
+        at.replaceFileWithString(fn,at.public_s)
+
+    if at.errors == 0:
+        root.clearOrphan()
+        root.clearDirty()
+    else:
+        g.es("not written:",at.outputFileName,color='red')
+        root.setDirty() # New in Leo 4.4.8.
+
+    return at.errors == 0
+#@+node:ekr.20080711093251.6:shouldWriteAtShadowNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @shadow x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @shadow node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @shadow file.
+- The explicit commands that read and write @shadow trees must always be honored.
+@c
+
+def shouldWriteAtShadowNode (self,p,exists,force,fn):
+
+    '''Return True if we should write the @shadow node at p.'''
+
+    at = self ; x = at.c.shadowController
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.h,'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @shadow tree is dirty and contains significant info.
+        return True
+#@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
+def adjustTargetLanguage (self,fn):
+
+    """Use the language implied by fn's extension if
+    there is a conflict between it and c.target_language."""
+
+    at = self ; c = at.c
+
+    if c.target_language:
+        junk,target_ext = g.os_path_splitext(fn)  
+    else:
+        target_ext = ''
+
+    junk,ext = g.os_path_splitext(fn)
+
+    if ext:
+        if ext.startswith('.'): ext = ext[1:]
+
+        language = g.app.extension_dict.get(ext)
+        if language:
+            c.target_language = language
+        else:
+            # An unknown language.
+            pass # Use the default language, **not** 'unknown_language'
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
+#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+#@+node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
+def openFileForWriting (self,root,fileName,toString):
+
+    at = self
+    at.outputFile = None
+
+    if toString:
+        at.shortFileName = g.shortFileName(fileName)
+        at.outputFileName = "<string: %s>" % at.shortFileName
+        at.outputFile = g.fileLikeObject()
+    else:
+        ok = at.openFileForWritingHelper(fileName)
+
+        # New in Leo 4.4.8: set dirty bit if there are errors.
+        if not ok: at.outputFile = None
+
+    # New in 4.3 b2: root may be none when writing from a string.
+    if root:
+        if at.outputFile:
+            root.clearOrphan()
+        else:
+            root.setOrphan()
+            root.setDirty()
+
+    return at.outputFile is not None
+#@+node:ekr.20041005105605.143:openFileForWritingHelper & helper
+def openFileForWritingHelper (self,fileName):
+
+    '''Open the file and return True if all went well.'''
+
+    at = self ; c = at.c
+
+    try:
+        at.shortFileName = g.shortFileName(fileName)
+        at.targetFileName = c.os_path_finalize_join(at.default_directory,fileName)
+        path = g.os_path_dirname(at.targetFileName)
+        if not path or not g.os_path_exists(path):
+            if path:
+                path = g.makeAllNonExistentDirectories(path,c=c)
+            if not path or not g.os_path_exists(path):
+                path = g.os_path_dirname(at.targetFileName)
+                at.writeError("path does not exist: " + path)
+                return False
+    except Exception:
+        at.exception("exception creating path: %s" % repr(path))
+        g.es_exception()
+        return False
+
+    if g.os_path_exists(at.targetFileName):
+        try:
+            if not os.access(at.targetFileName,os.W_OK):
+                at.writeError("can not open: read only: " + at.targetFileName)
+                return False
+        except AttributeError:
+            pass # os.access() may not exist on all platforms.
+
+    try:
+        at.outputFileName = at.targetFileName + ".tmp"
+        kind,at.outputFile = self.openForWrite(at.outputFileName,'wb')
+        if not at.outputFile:
+            kind = g.choose(kind=='check',
+                'did not overwrite','can not create')
+            at.writeError("%s %s" % (kind,at.outputFileName))
+            return False
+    except Exception:
+        at.exception("exception creating:" + at.outputFileName)
+        return False
+
+    return True
+#@+node:bwmulder.20050101094804:openForWrite (atFile)
+def openForWrite (self, filename, wb='wb'):
+
+    '''Open a file for writes, handling shadow files.'''
+
+    trace = False # or x.trace
+    at = self ; c = at.c ; x = c.shadowController
+
+    try:
+        shadow_filename = x.shadowPathName(filename)
+        self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+        open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
+        self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
+
+        if self.writing_to_shadow_directory:
+            if trace and not g.app.unitTesting: g.trace(filename,shadow_filename)
+            x.message('writing %s' % shadow_filename)
+            return 'shadow',open(open_file_name,wb)
+        else:
+            ok = c.checkFileTimeStamp(at.targetFileName)
+            return 'check',ok and open(open_file_name,wb)
+
+    except IOError:
+        if not g.app.unitTesting:
+            g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
+            g.es_exception()
+        return 'error',None
+#@-node:bwmulder.20050101094804:openForWrite (atFile)
+#@-node:ekr.20041005105605.143:openFileForWritingHelper & helper
+#@-node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
+#@+node:ekr.20041005105605.157:writeOpenFile
+# New in 4.3: must be inited before calling this method.
+# New in 4.3 b2: support for writing from a string.
+
+def writeOpenFile(self,root,
+    nosentinels=False,toString=False,fromString=''): ####,atAuto=False):
+
+    """Do all writes except asis writes."""
+
+    at = self ; s = g.choose(fromString,fromString,root.v.t._bodyString)
+
+    root.clearAllVisitedInTree() # Clear both vnode and tnode bits.
+    root.clearVisitedInTree()
+
+    at.putAtFirstLines(s)
+    at.putOpenLeoSentinel("@+leo-ver=4")
+    at.putInitialComment()
+    at.putOpenNodeSentinel(root)
+    at.putBody(root,fromString=fromString)
+    at.putCloseNodeSentinel(root)
+    at.putSentinel("@-leo")
+    root.setVisited()
+    at.putAtLastLines(s)
+
+    if self.atAuto or (not toString and not nosentinels):
+        at.warnAboutOrphandAndIgnoredNodes()
+#@-node:ekr.20041005105605.157:writeOpenFile
+#@+node:ekr.20041005105605.160:Writing 4.x
+#@+node:ekr.20041005105605.161:putBody
+# oneNodeOnly is no longer used, but it might be used in the future?
+
+def putBody(self,p,oneNodeOnly=False,fromString=''):
+
+    """ Generate the body enclosed in sentinel lines."""
+
+    at = self
+
+    # New in 4.3 b2: get s from fromString if possible.
+    s = g.choose(fromString,fromString,p.b)
+
+    p.v.t.setVisited() # Suppress orphans check.
+    p.v.setVisited() # Make sure v is never expanded again.
+    if not at.thinFile:
+        p.v.t.setWriteBit() # Mark the tnode to be written.
+    if not at.thinFile and not s: return
+
+    inCode = True
+    << Make sure all lines end in a newline >>
+    if True: #### self.write_strips_blank_lines and not self.atAuto: ####
+        s = self.cleanLines(p,s)
+    i = 0
+    while i < len(s):
+        next_i = g.skip_line(s,i)
+        assert(next_i > i)
+        kind = at.directiveKind4(s,i)
+        << handle line at s[i] >>
+        i = next_i
+    if not inCode:
+        at.putEndDocLine()
+    if at.sentinels and not trailingNewlineFlag:
+        at.putSentinel("@nonl")
+#@+node:ekr.20041005105605.162:<< Make sure all lines end in a newline >>
+@
+
+If we add a trailing newline, we'll generate an @nonl sentinel below.
+
+- We always ensure a newline in @file and @thin trees.
+- This code is not used used in @asis trees.
+- New in Leo 4.4.3 b1: We add a newline in @nosent trees unless
+  @bool force_newlines_in_at_nosent_bodies = False
+@c
+
+if s:
+    trailingNewlineFlag = s[-1] == '\n'
+    if not trailingNewlineFlag:
+        if (at.sentinels or 
+            (not at.atAuto and at.force_newlines_in_at_nosent_bodies)
+        ):
+            # g.trace('Added newline',repr(s))
+            s = s + '\n'
+else:
+    trailingNewlineFlag = True # don't need to generate an @nonl
+#@-node:ekr.20041005105605.162:<< Make sure all lines end in a newline >>
+#@+node:ekr.20041005105605.163:<< handle line at s[i]  >>
+# g.trace(kind,repr(s[i:next_i]))
+
+if kind == at.noDirective:
+    if not oneNodeOnly:
+        if inCode:
+            hasRef,n1,n2 = at.findSectionName(s,i)
+            if hasRef and not at.raw:
+                at.putRefLine(s,i,n1,n2,p)
+            else:
+                at.putCodeLine(s,i)
+        else:
+            at.putDocLine(s,i)
+elif kind in (at.docDirective,at.atDirective):
+    assert(not at.pending)
+    if not inCode: # Bug fix 12/31/04: handle adjacent doc parts.
+        at.putEndDocLine() 
+    at.putStartDocLine(s,i,kind)
+    inCode = False
+elif kind in (at.cDirective,at.codeDirective):
+    # Only @c and @code end a doc part.
+    if not inCode:
+        at.putEndDocLine() 
+    at.putDirective(s,i)
+    inCode = True
+elif kind == at.allDirective:
+    if not oneNodeOnly:
+        if inCode: at.putAtAllLine(s,i,p)
+        else: at.putDocLine(s,i)
+elif kind == at.othersDirective:
+    if not oneNodeOnly:
+        if inCode: at.putAtOthersLine(s,i,p)
+        else: at.putDocLine(s,i)
+elif kind == at.rawDirective:
+    at.raw = True
+    at.putSentinel("@@raw")
+elif kind == at.endRawDirective:
+    at.raw = False
+    at.putSentinel("@@end_raw")
+    i = g.skip_line(s,i)
+elif kind == at.startVerbatim:
+    at.putSentinel("@verbatim")
+    at.putIndent(at.indent)
+    i = next_i
+    next_i = g.skip_line(s,i)
+    at.os(s[i:next_i])
+elif kind == at.miscDirective:
+    # g.trace('miscDirective')
+    at.putDirective(s,i)
+else:
+    assert(0) # Unknown directive.
+#@-node:ekr.20041005105605.163:<< handle line at s[i]  >>
+#@-node:ekr.20041005105605.161:putBody
+#@+node:ekr.20041005105605.164:writing code lines...
+#@+node:ekr.20041005105605.165:@all
+#@+node:ekr.20041005105605.166:putAtAllLine
+def putAtAllLine (self,s,i,p):
+
+    """Put the expansion of @others."""
+
+    at = self
+    j,delta = g.skip_leading_ws_with_indent(s,i,at.tab_width)
+    at.putLeadInSentinel(s,i,j,delta)
+
+    at.indent += delta
+    if at.leadingWs:
+        at.putSentinel("@" + at.leadingWs + "@+all")
+    else:
+        at.putSentinel("@+all")
+
+    for child in p.children_iter():
+        at.putAtAllChild(child)
+
+    at.putSentinel("@-all")
+    at.indent -= delta
+#@-node:ekr.20041005105605.166:putAtAllLine
+#@+node:ekr.20041005105605.167:putatAllBody
+def putAtAllBody(self,p):
+
+    """ Generate the body enclosed in sentinel lines."""
+
+    at = self ; s = p.b
+
+    p.v.setVisited()   # Make sure v is never expanded again.
+    p.v.t.setVisited() # Use the tnode for the orphans check.
+    if not at.thinFile and not s: return
+    inCode = True
+    << Make sure all lines end in a newline >>
+    i = 0
+    while i < len(s):
+        next_i = g.skip_line(s,i)
+        assert(next_i > i)
+        if inCode:
+            # Use verbatim sentinels to write all directives.
+            at.putCodeLine(s,i)
+        else:
+            at.putDocLine(s,i)
+        i = next_i
+
+    if not inCode:
+        at.putEndDocLine()
+    if at.sentinels and not trailingNewlineFlag:
+        at.putSentinel("@nonl")
+#@+node:ekr.20041005105605.168:<< Make sure all lines end in a newline >>
+# 11/20/03: except in nosentinel mode.
+# 1/30/04: and especially in scripting mode.
+# If we add a trailing newline, we'll generate an @nonl sentinel below.
+
+if s:
+    trailingNewlineFlag = s and s[-1] == '\n'
+    if at.sentinels and not trailingNewlineFlag:
+        s = s + '\n'
+else:
+    trailingNewlineFlag = True # don't need to generate an @nonl
+#@-node:ekr.20041005105605.168:<< Make sure all lines end in a newline >>
+#@-node:ekr.20041005105605.167:putatAllBody
+#@+node:ekr.20041005105605.169:putAtAllChild
+@
+This code puts only the first of two or more cloned siblings, preceding the
+clone with an @clone n sentinel.
+
+This is a debatable choice: the cloned tree appears only once in the derived
+file. This should be benign; the text created by @all is likely to be used only
+for recreating the outline in Leo. The representation in the derived file
+doesn't matter much.
+@c
+
+def putAtAllChild(self,p):
+
+    at = self
+
+    parent_v = p._parentVnode()
+    clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
+    if clonedSibs > 1:
+        if thisClonedSibIndex == 1:
+            at.putSentinel("@clone %d" % (clonedSibs))
+        else: return # Don't write second or greater trees.
+
+    at.putOpenNodeSentinel(p,inAtAll=True) # Suppress warnings about @file nodes.
+    at.putAtAllBody(p) 
+
+    for child in p.children_iter():
+        at.putAtAllChild(child)
+
+    at.putCloseNodeSentinel(p)
+#@-node:ekr.20041005105605.169:putAtAllChild
+#@-node:ekr.20041005105605.165:@all
+#@+node:ekr.20041005105605.170:@others
+#@+node:ekr.20041005105605.171:inAtOthers
+def inAtOthers(self,p):
+
+    """Returns True if p should be included in the expansion of the at-others directive
+
+    in the body text of p's parent."""
+
+    # Return False if this has been expanded previously.
+    if  p.v.isVisited():
+        # g.trace("previously visited",p.v)
+        return False
+
+    # Return False if this is a definition node.
+    h = p.h ; i = g.skip_ws(h,0)
+    isSection,junk = self.isSectionName(h,i)
+    if isSection:
+        # g.trace("is section",p)
+        return False
+
+    # Return False if p's body contains an @ignore directive.
+    if p.isAtIgnoreNode():
+        # g.trace("is @ignore",p)
+        return False
+    else:
+        # g.trace("ok",p)
+        return True
+#@-node:ekr.20041005105605.171:inAtOthers
+#@+node:ekr.20041005105605.172:putAtOthersChild
+def putAtOthersChild(self,p):
+
+    at = self
+
+    parent_v = p._parentVnode()
+    clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
+    if clonedSibs > 1 and thisClonedSibIndex == 1:
+        at.writeError("Cloned siblings are not valid in @thin trees")
+
+    at.putOpenNodeSentinel(p)
+    at.putBody(p) 
+
+    # Insert expansions of all children.
+    for child in p.children_iter():
+        if at.inAtOthers(child):
+            at.putAtOthersChild(child)
+
+    at.putCloseNodeSentinel(p)
+#@-node:ekr.20041005105605.172:putAtOthersChild
+#@+node:ekr.20041005105605.173:putAtOthersLine
+def putAtOthersLine (self,s,i,p):
+
+    """Put the expansion of @others."""
+
+    at = self
+    j,delta = g.skip_leading_ws_with_indent(s,i,at.tab_width)
+    at.putLeadInSentinel(s,i,j,delta)
+
+    at.indent += delta
+    if at.leadingWs:
+        at.putSentinel("@" + at.leadingWs + "@+others")
+    else:
+        at.putSentinel("@+others")
+
+    for child in p.children_iter():
+        if at.inAtOthers(child):
+            at.putAtOthersChild(child)
+
+    at.putSentinel("@-others")
+    at.indent -= delta
+#@-node:ekr.20041005105605.173:putAtOthersLine
+#@-node:ekr.20041005105605.170:@others
+#@+node:ekr.20041005105605.174:putCodeLine (leoAtFile)
+def putCodeLine (self,s,i):
+
+    '''Put a normal code line.'''
+
+    trace = False and not g.unitTesting
+    at = self
+
+    # Put @verbatim sentinel if required.
+    k = g.skip_ws(s,i)
+    if g.match(s,k,self.startSentinelComment + '@'):
+        self.putSentinel('@verbatim')
+
+    j = g.skip_line(s,i)
+    line = s[i:j]
+
+    if trace: g.trace(self.atShadow,repr(line))
+
+    if True: #### self.write_strips_blank_lines:
+        # Don't put any whitespace in otherwise blank lines.
+        if line.strip(): # The line has non-empty content.
+            if not at.raw:
+                at.putIndent(at.indent,line)
+
+            if line[-1:]=='\n':
+                at.os(line[:-1])
+                at.onl()
+            else:
+                at.os(line)
+        elif line and line[-1] == '\n':
+            at.onl()
+        else:
+            g.trace('Can not happen: completely empty line')
+    else:
+        # Don't put leading indent if the line is empty!
+        if line.strip() and not at.raw:
+        # if at.atAuto or at.atShadow or (line.strip() and not at.raw):
+            at.putIndent(at.indent,line)
+
+        if line[-1:]=='\n':
+            at.os(line[:-1])
+            at.onl()
+        else:
+            at.os(line)
+#@-node:ekr.20041005105605.174:putCodeLine (leoAtFile)
+#@+node:ekr.20041005105605.175:putRefLine & allies
+#@+node:ekr.20041005105605.176:putRefLine
+def putRefLine(self,s,i,n1,n2,p):
+
+    """Put a line containing one or more references."""
+
+    at = self
+
+    # Compute delta only once.
+    delta = self.putRefAt(s,i,n1,n2,p,delta=None)
+    if delta is None: return # 11/23/03
+
+    while 1:
+        i = n2 + 2
+        hasRef,n1,n2 = at.findSectionName(s,i)
+        if hasRef:
+            self.putAfterMiddleRef(s,i,n1,delta)
+            self.putRefAt(s,n1,n1,n2,p,delta)
+        else:
+            break
+
+    self.putAfterLastRef(s,i,delta)
+#@-node:ekr.20041005105605.176:putRefLine
+#@+node:ekr.20041005105605.177:putRefAt
+def putRefAt (self,s,i,n1,n2,p,delta):
+
+    """Put a reference at s[n1:n2+2] from p."""
+
+    at = self ; c = at.c ; name = s[n1:n2+2]
+
+    ref = g.findReference(c,name,p)
+    if not ref:
+        if not g.unitTesting:
+            at.writeError(
+                "undefined section: %s\n\treferenced from: %s" %
+                    ( name,p.h))
+        return None
+
+    # Expand the ref.
+    if not delta:
+        junk,delta = g.skip_leading_ws_with_indent(s,i,at.tab_width)
+
+    at.putLeadInSentinel(s,i,n1,delta)
+
+    inBetween = []
+    if at.thinFile: # @+-middle used only in thin files.
+        parent = ref.parent()
+        while parent != p:
+            inBetween.append(parent)
+            parent = parent.parent()
+
+    at.indent += delta
+
+    if at.leadingWs:
+        at.putSentinel("@" + at.leadingWs + name)
+    else:
+        at.putSentinel("@" + name)
+
+    if inBetween:
+        # Bug fix: reverse the +middle sentinels, not the -middle sentinels.
+        inBetween.reverse()
+        for p2 in inBetween:
+            at.putOpenNodeSentinel(p2,middle=True)
+
+    at.putOpenNodeSentinel(ref)
+    at.putBody(ref)
+    at.putCloseNodeSentinel(ref)
+
+    if inBetween:
+        inBetween.reverse()
+        for p2 in inBetween:
+            at.putCloseNodeSentinel(p2,middle=True)
+
+    at.indent -= delta
+
+    return delta
+#@-node:ekr.20041005105605.177:putRefAt
+#@+node:ekr.20041005105605.178:putAfterLastRef
+def putAfterLastRef (self,s,start,delta):
+
+    """Handle whatever follows the last ref of a line."""
+
+    at = self
+
+    j = g.skip_ws(s,start)
+
+    if j < len(s) and s[j] != '\n':
+        end = g.skip_line(s,start)
+        after = s[start:end] # Ends with a newline only if the line did.
+        # Temporarily readjust delta to make @afterref look better.
+        at.indent += delta
+        at.putSentinel("@afterref")
+        at.os(after)
+        if at.sentinels and after and after[-1] != '\n':
+            at.onl() # Add a newline if the line didn't end with one.
+        at.indent -= delta
+    else:
+        # Temporarily readjust delta to make @nl look better.
+        at.indent += delta
+        at.putSentinel("@nl")
+        at.indent -= delta
+#@-node:ekr.20041005105605.178:putAfterLastRef
+#@+node:ekr.20041005105605.179:putAfterMiddleef
+def putAfterMiddleRef (self,s,start,end,delta):
+
+    """Handle whatever follows a ref that is not the last ref of a line."""
+
+    at = self
+
+    if start < end:
+        after = s[start:end]
+        at.indent += delta
+        at.putSentinel("@afterref")
+        at.os(after) ; at.onl_sent() # Not a real newline.
+        at.putSentinel("@nonl")
+        at.indent -= delta
+#@-node:ekr.20041005105605.179:putAfterMiddleef
+#@-node:ekr.20041005105605.175:putRefLine & allies
+#@-node:ekr.20041005105605.164:writing code lines...
+#@+node:ekr.20041005105605.180:writing doc lines...
+#@+node:ekr.20041005105605.181:putBlankDocLine
+def putBlankDocLine (self):
+
+    at = self
+
+    at.putPending(split=False)
+
+    if not at.endSentinelComment:
+        at.putIndent(at.indent)
+        at.os(at.startSentinelComment) ; at.oblank()
+
+    at.onl()
+#@-node:ekr.20041005105605.181:putBlankDocLine
+#@+node:ekr.20041005105605.182:putStartDocLine
+def putStartDocLine (self,s,i,kind):
+
+    """Write the start of a doc part."""
+
+    at = self ; at.docKind = kind
+
+    sentinel = g.choose(kind == at.docDirective,"@+doc","@+at")
+    directive = g.choose(kind == at.docDirective,"@doc","@")
+
+    if 0: # New code: put whatever follows the directive in the sentinel
+        # Skip past the directive.
+        i += len(directive)
+        j = g.skip_to_end_of_line(s,i)
+        follow = s[i:j]
+
+        # Put the opening @+doc or @-doc sentinel, including whatever follows the directive.
+        at.putSentinel(sentinel + follow)
+
+        # Put the opening comment if we are using block comments.
+        if at.endSentinelComment:
+            at.putIndent(at.indent)
+            at.os(at.startSentinelComment) ; at.onl()
+    else: # old code.
+        # Skip past the directive.
+        i += len(directive)
+
+        # Get the trailing whitespace.
+        j = g.skip_ws(s,i)
+        ws = s[i:j]
+
+        # Put the opening @+doc or @-doc sentinel, including trailing whitespace.
+        at.putSentinel(sentinel + ws)
+
+        # Put the opening comment.
+        if at.endSentinelComment:
+            at.putIndent(at.indent)
+            at.os(at.startSentinelComment) ; at.onl()
+
+        # Put an @nonl sentinel if there is significant text following @doc or @.
+        if not g.is_nl(s,j):
+            # Doesn't work if we are using block comments.
+            at.putSentinel("@nonl")
+            at.putDocLine(s,j)
+#@-node:ekr.20041005105605.182:putStartDocLine
+#@+node:ekr.20041005105605.183:putDocLine
+def putDocLine (self,s,i):
+
+    """Handle one line of a doc part.
+
+    Output complete lines and split long lines and queue pending lines.
+    Inserted newlines are always preceded by whitespace."""
+
+    at = self
+    j = g.skip_line(s,i)
+    s = s[i:j]
+
+    if at.endSentinelComment:
+        leading = at.indent
+    else:
+        leading = at.indent + len(at.startSentinelComment) + 1
+
+    if not s or s[0] == '\n':
+        # A blank line.
+        at.putBlankDocLine()
+    else:
+        << append words to pending line, splitting the line if needed >>
+#@+node:ekr.20041005105605.184:<< append words to pending line, splitting the line if needed >>
+@ All inserted newlines are preceeded by whitespace:
+we remove trailing whitespace from lines that have not been split.
+@c
+
+i = 0
+while i < len(s):
+
+    # Scan to the next word.
+    word1 = i # Start of the current word.
+    word2 = i = g.skip_ws(s,i)
+    while i < len(s) and s[i] not in (' ','\t'):
+        i += 1
+    word3 = i = g.skip_ws(s,i)
+    # g.trace(s[word1:i])
+
+    if leading + word3 - word1 + len(''.join(at.pending)) >= at.page_width:
+        if at.pending:
+            # g.trace("splitting long line.")
+            # Ouput the pending line, and start a new line.
+            at.putPending(split=True)
+            at.pending = [s[word2:word3]]
+        else:
+            # Output a long word on a line by itself.
+            # g.trace("long word:",s[word2:word3])
+            at.pending = [s[word2:word3]]
+            at.putPending(split=True)
+    else:
+        # Append the entire word to the pending line.
+        # g.trace("appending",s[word1:word3])
+        at.pending.append(s[word1:word3])
+
+# Output the remaining line: no more is left.
+at.putPending(split=False)
+#@-node:ekr.20041005105605.184:<< append words to pending line, splitting the line if needed >>
+#@-node:ekr.20041005105605.183:putDocLine
+#@+node:ekr.20041005105605.185:putEndDocLine
+def putEndDocLine (self):
+
+    """Write the conclusion of a doc part."""
+
+    at = self
+
+    at.putPending(split=False)
+
+    # Put the closing delimiter if we are using block comments.
+    if at.endSentinelComment:
+        at.putIndent(at.indent)
+        at.os(at.endSentinelComment)
+        at.onl() # Note: no trailing whitespace.
+
+    sentinel = g.choose(at.docKind == at.docDirective,"@-doc","@-at")
+    at.putSentinel(sentinel)
+#@-node:ekr.20041005105605.185:putEndDocLine
+#@+node:ekr.20041005105605.186:putPending
+def putPending (self,split):
+
+    """Write the pending part of a doc part.
+
+    We retain trailing whitespace iff the split flag is True."""
+
+    at = self ; s = ''.join(at.pending) ; at.pending = []
+
+    # g.trace("split",s)
+
+    # Remove trailing newline temporarily.  We'll add it back later.
+    if s and s[-1] == '\n':
+        s = s[:-1]
+
+    if not split:
+        s = s.rstrip()
+        if not s:
+            return
+
+    at.putIndent(at.indent)
+
+    if not at.endSentinelComment:
+        at.os(at.startSentinelComment) ; at.oblank()
+
+    at.os(s) ; at.onl()
+#@-node:ekr.20041005105605.186:putPending
+#@-node:ekr.20041005105605.180:writing doc lines...
+#@-node:ekr.20041005105605.160:Writing 4.x
+#@+node:ekr.20090312080307.1:underindentEscapeString
+#@+node:ekr.20090312080307.2:in leoAtFile
+#@+node:ekr.20041005105605.204:os
+def os (self,s):
+
+    """Write a string to the output stream.
+
+    All output produced by leoAtFile module goes here."""
+
+    trace = False
+    at = self ; tag = self.underindentEscapeString
+    f = at.outputFile
+
+    if s and f:
+        try:
+            if trace: g.trace(repr(s),g.callers(4))
+            if s.startswith(tag):
+                junk,s = self.parseUnderindentTag(s)
+            # Bug fix: this must be done last.
+            s = g.toEncodedString(s,at.encoding,reportErrors=True)
+            f.write(s)
+        except Exception:
+            at.exception("exception writing:" + s)
+#@-node:ekr.20041005105605.204:os
+#@+node:ekr.20041005105605.210:putIndent
+def putIndent(self,n,s=''):
+
+    """Put tabs and spaces corresponding to n spaces,
+    assuming that we are at the start of a line.
+
+    Remove extra blanks if the line starts with the underindentEscapeString"""
+
+    # g.trace(repr(s))
+    tag = self.underindentEscapeString
+
+    if s.startswith(tag):
+        n2,s2 = self.parseUnderindentTag(s)
+        if n2 >= n: return
+        elif n > 0: n -= n2
+        else:       n += n2
+
+    if n != 0:
+        w = self.tab_width
+        if w > 1:
+            q,r = divmod(n,w) 
+            self.otabs(q) 
+            self.oblanks(r)
+        else:
+            self.oblanks(n)
+#@-node:ekr.20041005105605.210:putIndent
+#@+node:ekr.20081216090156.4:parseUnderindentTag
+def parseUnderindentTag (self,s):
+
+    tag = self.underindentEscapeString
+    s2 = s[len(tag):]
+
+    # To be valid, the escape must be followed by at least one digit.
+    i = 0
+    while i < len(s2) and s2[i].isdigit():
+        i += 1
+
+    if i > 0:
+        n = int(s2[:i])
+        return n,s2[i:]
+    else:
+        return 0,s
+#@-node:ekr.20081216090156.4:parseUnderindentTag
+#@-node:ekr.20090312080307.2:in leoAtFile
+#@+node:ekr.20090312080307.3:In leoImport
+#@+node:ekr.20070707113832.1:putClass & helpers
+def putClass (self,s,i,sigEnd,codeEnd,start,parent):
+
+    '''Creates a child node c of parent for the class, and a child of c for each def in the class.'''
+
+    # Enter a new class 1: save the old class info.
+    oldMethodName = self.methodName
+    oldStartSigIndent = self.startSigIndent
+
+    # Enter a new class 2: init the new class info.
+    self.indentRefFlag = None
+
+    class_kind = self.classId
+    class_name = self.sigId
+    headline = '%s %s' % (class_kind,class_name)
+    headline = headline.strip()
+    self.methodName = headline
+
+    # Compute the starting lines of the class.
+    prefix = self.createClassNodePrefix()
+    if not self.sigId:
+        g.trace('Can not happen: no sigId')
+        self.sigId = 'Unknown class name'
+    classHead = s[start:sigEnd]
+    i = self.extendSignature(s,sigEnd)
+    extend = s[sigEnd:i]
+    if extend:
+        classHead = classHead + extend
+
+    # Create the class node.
+    class_node = self.createHeadline(parent,'',headline)
+
+    # Remember the indentation of the class line.
+    undentVal = self.getLeadingIndent(classHead,0)
+
+    # Call the helper to parse the inner part of the class.
+    putRef,bodyIndent,classDelim,decls,trailing = self.putClassHelper(
+        s,i,codeEnd,class_node)
+    # g.trace('bodyIndent',bodyIndent,'undentVal',undentVal)
+
+    # Set the body of the class node.
+    ref = putRef and self.getClassNodeRef(class_name) or ''
+
+    # Give ref the same indentation as the body of the class.
+    if ref:
+        bodyWs = g.computeLeadingWhitespace (bodyIndent,self.tab_width)
+        ref = '%s%s' % (bodyWs,ref)
+
+    # Remove the leading whitespace.
+    result = (
+        prefix +
+        self.undentBy(classHead,undentVal) +
+        self.undentBy(classDelim,undentVal) +
+        self.undentBy(decls,undentVal) +
+        self.undentBy(ref,undentVal) +
+        self.undentBy(trailing,undentVal))
+
+    # Append the result to the class node.
+    self.appendTextToClassNode(class_node,result)
+
+    # Exit the new class: restore the previous class info.
+    self.methodName = oldMethodName
+    self.startSigIndent = oldStartSigIndent
+#@+node:ekr.20070707190351:appendTextToClassNode
+def appendTextToClassNode (self,class_node,s):
+
+    c = self.c
+
+    self.appendStringToBody(class_node,s) 
+#@-node:ekr.20070707190351:appendTextToClassNode
+#@+node:ekr.20070703122141.105:createClassNodePrefix
+def createClassNodePrefix (self):
+
+    '''Create the class node prefix.'''
+
+    if  self.treeType == '@file':
+        prefix = ''
+    else:
+        prefix = g.angleBrackets(' ' + self.methodName + ' methods ') + '=\n\n'
+        self.methodsSeen = True
+
+    return prefix
+#@-node:ekr.20070703122141.105:createClassNodePrefix
+#@+node:ekr.20070703122141.106:getClassNodeRef
+def getClassNodeRef (self,class_name):
+
+    '''Insert the proper body text in the class_vnode.'''
+
+    if self.treeType == '@file':
+        s = '@others'
+    else:
+        s = g.angleBrackets(' class %s methods ' % (class_name))
+
+    return '%s\n' % (s)
+#@-node:ekr.20070703122141.106:getClassNodeRef
+#@+node:ekr.20070707171329:putClassHelper
+def putClassHelper(self,s,i,end,class_node):
+
+    '''s contains the body of a class, not including the signature.
+
+    Parse s for inner methods and classes, and create nodes.'''
+
+    # Increase the output indentation (used only in startsHelper).
+    # This allows us to detect over-indented classes and functions.
+    old_output_indent = self.output_indent
+    self.output_indent += abs(self.tab_width)
+
+    # Parse the decls.
+    j = i ; i = self.skipDecls(s,i,end,inClass=True)
+    decls = s[j:i]
+
+    # Set the body indent if there are real decls.
+    bodyIndent = decls.strip() and self.getIndent(s,i) or None
+
+    # Parse the rest of the class.
+    delim1, delim2 = self.outerBlockDelim1, self.outerBlockDelim2
+    if g.match(s,i,delim1):
+        # Do *not* use g.skip_ws_and_nl here!
+        j = g.skip_ws(s,i + len(delim1))
+        if g.is_nl(s,j): j = g.skip_nl(s,j)
+        classDelim = s[i:j]
+        end2 = self.skipBlock(s,i,delim1=delim1,delim2=delim2)
+        start,putRef,bodyIndent2 = self.scanHelper(s,j,end=end2,parent=class_node,kind='class')
+    else:
+        classDelim = ''
+        start,putRef,bodyIndent2 = self.scanHelper(s,i,end=end,parent=class_node,kind='class')
+
+    if bodyIndent is None: bodyIndent = bodyIndent2
+
+    # Restore the output indentation.
+    self.output_indent = old_output_indent
+
+    # Return the results.
+    trailing = s[start:end]
+    return putRef,bodyIndent,classDelim,decls,trailing
+#@-node:ekr.20070707171329:putClassHelper
+#@-node:ekr.20070707113832.1:putClass & helpers
+#@+node:ekr.20070703122141.88:undentBody
+def undentBody (self,s,ignoreComments=True):
+
+    '''Remove the first line's leading indentation from all lines of s.'''
+
+    trace = False
+    if trace: g.trace('before...\n',g.listToString(g.splitLines(s)))
+
+    # Copy an @code line as is.
+    # i = 0
+    # if g.match(s,i,'@code'):
+        # j = i ; i = g.skip_line(s,i) # don't use get_line: it is only for dumping.
+        # result += s[j:i]
+
+    # Calculate the amount to be removed from each line.
+    undentVal = self.getLeadingIndent(s,0,ignoreComments=ignoreComments)
+    if undentVal == 0:
+        return s
+    else:
+        result = self.undentBy(s,undentVal)
+        if trace: g.trace('after...\n',g.listToString(g.splitLines(result)))
+        return result
+#@nonl
+#@-node:ekr.20070703122141.88:undentBody
+#@+node:ekr.20081216090156.1:undentBy
+def undentBy (self,s,undentVal):
+
+    '''Remove leading whitespace equivalent to undentVal from each line.
+    add an underindentEscapeString for underindented line.'''
+
+    # return ''.join(
+        # [g.removeLeadingWhitespace(line,undentVal,self.tab_width)
+            # for line in g.splitLines(s)])
+
+    trace = False and not g.app.unitTesting
+    tag = self.c.atFileCommands.underindentEscapeString
+    result = [] ; tab_width = self.tab_width
+    for line in g.splitlines(s):
+        lws_s = g.get_leading_ws(line)
+        lws = g.computeWidth(lws_s,tab_width)
+        s = g.removeLeadingWhitespace(line,undentVal,tab_width)
+        n = lws - undentVal
+        if s.strip() and lws < undentVal:
+            if trace: g.trace('undentVal: %s, lws: %s, %s' % (
+                undentVal,lws,repr(line)))
+            result.append("%s%s%s" % (tag,undentVal-lws,s.lstrip()))
+        else:
+            result.append(s)
+
+    return ''.join(result)
+
+#@-node:ekr.20081216090156.1:undentBy
+#@-node:ekr.20090312080307.3:In leoImport
+#@-node:ekr.20090312080307.1:underindentEscapeString
+#@-node:ekr.20090105132011.2:Fixed whitespace problems with @auto/@shadow
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
