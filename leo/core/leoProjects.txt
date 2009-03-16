@@ -292,9 +292,9 @@ if pth and bname:
     dbdirname = '%s/.%s_db' % (pth, bname)
     self.db = leo.external.pickleshare.PickleShareDB(dbdirname)
 else:
-    self.db = None    
-    g.pr("\n*** No file in controller, using c.db=None ***\n")
-
+    self.db = None
+    if not g.unitTesting:
+        g.pr("\n*** No file in controller, using c.db=None ***\n")
 #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
 #@-node:ekr.20040731071037:c.initIvars
 #@+node:ekr.20090213065933.7:c.setWindowPosition
@@ -551,32 +551,32 @@ def updateTab (self,p,w,smartTab=True):
         # Returns insert point if no selection, with i <= j.
 
     if i != j:
-        w.delete(i,j)
-
-    # Get the preceeding characters.
-    s = w.getAllText()
-    # start = g.skip_to_start_of_line(s,i)
-    start,end = g.getLine(s,i)
-    before = s[start:i]
-    after = s[i:end]
-    if after.endswith('\n'): after = after[:-1]
-    ws = g.get_leading_ws(before)
-    s2 = s[start:i] # The characters before the insert point.
-
-    # Only do smart tab at the start of a blank line.
-    doSmartTab = (smartTab and c.smart_tab and i == start)
-        # Truly at the start of the line.
-        # and not after # Nothing *at all* after the cursor.
-    # g.trace(doSmartTab,'i %s start %s after %s' % (i,start,repr(after)))
-
-    if doSmartTab:
-        self.updateAutoIndent(p,w)
-        # Add a tab if otherwise nothing would happen.
-        if s == w.getAllText():
-            self.doPlainTab(s,i,tab_width,w)
+        # w.delete(i,j)
+        c.indentBody()
     else:
-        self.doPlainTab(s,i,tab_width,w)
+        # Get the preceeding characters.
+        s = w.getAllText()
+        # start = g.skip_to_start_of_line(s,i)
+        start,end = g.getLine(s,i)
+        before = s[start:i]
+        after = s[i:end]
+        if after.endswith('\n'): after = after[:-1]
+        ws = g.get_leading_ws(before)
+        s2 = s[start:i] # The characters before the insert point.
 
+        # Only do smart tab at the start of a blank line.
+        doSmartTab = (smartTab and c.smart_tab and i == start)
+            # Truly at the start of the line.
+            # and not after # Nothing *at all* after the cursor.
+        # g.trace(doSmartTab,'i %s start %s after %s' % (i,start,repr(after)))
+
+        if doSmartTab:
+            self.updateAutoIndent(p,w)
+            # Add a tab if otherwise nothing would happen.
+            if s == w.getAllText():
+                self.doPlainTab(s,i,tab_width,w)
+        else:
+            self.doPlainTab(s,i,tab_width,w)
 #@-node:ekr.20051026092433:updateTab
 #@-node:ekr.20051125080855:selfInsertCommand, helpers
 #@-node:ekr.20090213065933.3:Added support for smart_tab setting

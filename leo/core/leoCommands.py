@@ -294,9 +294,9 @@ class baseCommands (object):
             dbdirname = '%s/.%s_db' % (pth, bname)
             self.db = leo.external.pickleshare.PickleShareDB(dbdirname)
         else:
-            self.db = None    
-            g.pr("\n*** No file in controller, using c.db=None ***\n")
-
+            self.db = None
+            if not g.unitTesting:
+                g.pr("\n*** No file in controller, using c.db=None ***\n")
         #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
         #@nl
         self.config = configSettings(c)
@@ -2964,7 +2964,7 @@ class baseCommands (object):
 
         return head,lines,tail,oldSel,oldVview # string,list,string,tuple.
     #@-node:ekr.20031218072017.1829:getBodyLines
-    #@+node:ekr.20031218072017.1830:indentBody (test)
+    #@+node:ekr.20031218072017.1830:indentBody (indent-region)
     def indentBody (self,event=None):
 
         '''The indent-region command indents each line of the selected body text,
@@ -2987,7 +2987,7 @@ class baseCommands (object):
         if changed:
             result = ''.join(result)
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
-    #@-node:ekr.20031218072017.1830:indentBody (test)
+    #@-node:ekr.20031218072017.1830:indentBody (indent-region)
     #@+node:ekr.20031218072017.1831:insertBodyTime, helpers and tests
     def insertBodyTime (self,event=None):
 

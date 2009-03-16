@@ -3176,32 +3176,32 @@ class editCommandsClass (baseEditCommandsClass):
             # Returns insert point if no selection, with i <= j.
 
         if i != j:
-            w.delete(i,j)
-
-        # Get the preceeding characters.
-        s = w.getAllText()
-        # start = g.skip_to_start_of_line(s,i)
-        start,end = g.getLine(s,i)
-        before = s[start:i]
-        after = s[i:end]
-        if after.endswith('\n'): after = after[:-1]
-        ws = g.get_leading_ws(before)
-        s2 = s[start:i] # The characters before the insert point.
-
-        # Only do smart tab at the start of a blank line.
-        doSmartTab = (smartTab and c.smart_tab and i == start)
-            # Truly at the start of the line.
-            # and not after # Nothing *at all* after the cursor.
-        # g.trace(doSmartTab,'i %s start %s after %s' % (i,start,repr(after)))
-
-        if doSmartTab:
-            self.updateAutoIndent(p,w)
-            # Add a tab if otherwise nothing would happen.
-            if s == w.getAllText():
-                self.doPlainTab(s,i,tab_width,w)
+            # w.delete(i,j)
+            c.indentBody()
         else:
-            self.doPlainTab(s,i,tab_width,w)
+            # Get the preceeding characters.
+            s = w.getAllText()
+            # start = g.skip_to_start_of_line(s,i)
+            start,end = g.getLine(s,i)
+            before = s[start:i]
+            after = s[i:end]
+            if after.endswith('\n'): after = after[:-1]
+            ws = g.get_leading_ws(before)
+            s2 = s[start:i] # The characters before the insert point.
 
+            # Only do smart tab at the start of a blank line.
+            doSmartTab = (smartTab and c.smart_tab and i == start)
+                # Truly at the start of the line.
+                # and not after # Nothing *at all* after the cursor.
+            # g.trace(doSmartTab,'i %s start %s after %s' % (i,start,repr(after)))
+
+            if doSmartTab:
+                self.updateAutoIndent(p,w)
+                # Add a tab if otherwise nothing would happen.
+                if s == w.getAllText():
+                    self.doPlainTab(s,i,tab_width,w)
+            else:
+                self.doPlainTab(s,i,tab_width,w)
     #@-node:ekr.20051026092433:updateTab
     #@-node:ekr.20051125080855:selfInsertCommand, helpers
     #@-node:ekr.20050920084036.85:insert & delete...

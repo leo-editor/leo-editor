@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="54" left="53" height="822" width="1193"/>
+	<global_window_position top="54" left="425" height="822" width="821"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -811,7 +811,7 @@
 <v t="ekr.20061110112507"><vh>@test mnplugins.insertBodystamp</vh></v>
 <v t="ekr.20061110115517"><vh>@test macros.parameterize</vh></v>
 <v t="ekr.20060203201949" annotate="7d71002e"><vh>@test restore the screen</vh></v>
-<v t="ekr.20090201140204.1"><vh>gui plugins</vh>
+<v t="ekr.20090201140204.1" a="E"><vh>gui plugins</vh>
 <v t="ekr.20090201140204.2"><vh>@test c.vnode2position</vh></v>
 <v t="ekr.20090201135611.3"><vh>@test position2Item</vh></v>
 <v t="ekr.20090201135611.4"><vh>@test item2position</vh></v>
@@ -13376,7 +13376,7 @@ assert g.app.positions == n</t>
 assert c.isRootPosition(None) is False
 assert c.isRootPosition(p) is False
 assert g.app.positions == n</t>
-<t tx="ekr.20060127120604">This should be called tempNode</t>
+<t tx="ekr.20060127120604"></t>
 <t tx="ekr.20060130151716.1">table = (
     # 'toggle-find-clone-find-all-option',
     'toggle-find-ignore-case-option',
@@ -18310,7 +18310,7 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
         ec.selfInsertCommand(event)
         result = w.getAllText()
         # g.trace('result',repr(result))
-        assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
+        assert result.endswith('\n    ###abcdef'),'last line:%s' % repr(result.split('\n')[-1])
     finally:
         w.setAllText(s)
         p.setBodyString(s)
