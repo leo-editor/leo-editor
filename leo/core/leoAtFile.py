@@ -2982,7 +2982,7 @@ class atFile:
                 #@+node:ekr.20041005105605.156:<< Write p's body >>
                 s = p.b
 
-                if True: #### self.write_strips_blank_lines:
+                if False: #### self.write_strips_blank_lines:
                     s = self.cleanLines(p,s)
 
                 if s:
