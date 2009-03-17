@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="56" left="557" height="961" width="668"/>
+	<global_window_position top="31" left="482" height="961" width="769"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -33,7 +33,9 @@
 <v t="ekr.20080529111617.1"><vh>plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
-<v t="ekr.20070723091227.2"><vh>@int  port = 8080</vh></v>
+<v t="ekr.20070723091227.2"><vh>@int</vh>
+<v t="ekr.20090316115500.1"><vh>port = 8080</vh></v>
+</v>
 <v t="ekr.20070723091227.3"><vh>@string rst_http_attributename = 'rst_http_attribute'</vh></v>
 </v>
 <v t="ekr.20070305085403"><vh>vim plugin</vh>
@@ -367,6 +369,8 @@
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
 </v>
+<v t="ekr.20090316113038.1"><vh>@button split-long-headlines</vh></v>
+<v t="ekr.20090316113038.2"><vh>A.  B.  C</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2789,5 +2793,33 @@ collapse and expand "toplevel", phew, the children have returned</t>
 <t tx="ekr.20090309064612.4"></t>
 <t tx="ekr.20090309064612.5"></t>
 <t tx="ekr.20090309065826.1"></t>
+<t tx="ekr.20090316113038.1">u = c.undoer ; current = c.p
+undoType = "Break up long headline"
+u.beforeChangeGroup(current,undoType)
+n = 0
+for p in c.allNodes_iter():
+   split = p.h.split("  ", 1)
+   if len(split) &gt; 1:
+        b = u.beforeChangeNodeContents(p)
+        before,after = split
+        p.setHeadString(before)
+        print(p.h)
+        u.afterChangeNodeContents(p,undoType,b)
+        while after:
+            n += 1
+            split = after.split("  ", 1)
+            if len(split) &gt; 1: h,after = split
+            else: h,after = after,None
+            b = c.undoer.beforeInsertNode(p)
+            child = p.insertAsLastChild()
+            child.setHeadString(h)
+            c.undoer.afterInsertNode(child,undoType,b)
+
+u.afterChangeGroup(current,undoType,reportFlag=True)
+print('%s nodes changed' % n)
+c.redraw()
+</t>
+<t tx="ekr.20090316113038.2"></t>
+<t tx="ekr.20090316115500.1"></t>
 </tnodes>
 </leo_file>

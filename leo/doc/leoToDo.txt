@@ -12,6 +12,32 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
 #@nonl
 #@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
 #@-node:ekr.20090307110054.1:Docs
+#@+node:ekr.20090316072136.8:Defer loading of files?
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b07a4963fcea2b86
+
+> +1
+>
+> I hesitate to open them on my slower machine, because it takes so
+> long.  If I have some serious objective, sure, I'll wait 20-30 seconds,
+> but if I just want to check something, sometimes it's easier not to
+> bother.
+
+If someone can change the @thin / @auto parse code to return data
+structures instead of creating the nodes directly, we can use the
+md5sum based caching scheme I have presented previously instead of
+lazy open.
+
+This will make leoPyRef.leo and the likes open in few seconds.
+
+I'd do this completely myself, but I don't have the time ATM.
+
+The scheme was explained here:
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/27c3eb49b87ca335/3641e900388db356
+
+#@-node:ekr.20090316072136.8:Defer loading of files?
 #@+node:ekr.20080922115725.1:Finish @shadow
 # Allow block comments in private shadow files.
 # Compute delims using the private shadow file, not the file extension!
