@@ -295,8 +295,8 @@ class baseCommands (object):
             self.db = leo.external.pickleshare.PickleShareDB(dbdirname)
         else:
             self.db = None
-            if not g.unitTesting:
-                g.pr("\n*** No file in controller, using c.db=None ***\n")
+            if not g.app.silentMode:
+                print("\n*** No file in controller, using c.db=None ***\n")
         #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
         #@nl
         self.config = configSettings(c)

@@ -3677,6 +3677,20 @@ if the headline has the form @root filename.
 
     # return language
 #@-node:ekr.20070302160802:g.scanColorDirectives
+#@+node:ekr.20090317090343.3:updateBackTab
+def updateBackTab (self,p,w):
+
+    c = self.c
+
+    if not w.hasSelection():
+        i = w.getInsertPoint()
+        s = w.getAllText()
+        i,j = g.getLine(s,i)
+        w.setSelectionRange(i,j,insert=i)
+
+    c.dedentBody()
+#@nonl
+#@-node:ekr.20090317090343.3:updateBackTab
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node

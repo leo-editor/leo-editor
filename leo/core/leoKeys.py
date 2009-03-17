@@ -3296,7 +3296,7 @@ class keyHandlerClass:
         #@nonl
         #@-node:ekr.20061031131434.147:<< define vars >>
         #@nl
-        trace = False # or (not g.app.unitTesting or self.trace_masterKeyHandler)
+        trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
         traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
         verbose = True
 

@@ -4812,6 +4812,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         table = [d.get(key) for key in d]
         table.append('Tab')
+        table.append('Shift+Tab')
 
         if tkKey in table:
             return True
@@ -4918,12 +4919,14 @@ class leoQtEventFilter(QtCore.QObject):
         Tk-style binding compatible with Leo's core
         binding dictionaries.'''
 
-        trace = False ; verbose = True
+        trace = False and not g.unitTesting
+        verbose = True
         k = self.c.k
 
         # Thanks to Jesse Aldridge for additional entries.
         special = {
            'Backspace': 'BackSpace',
+           'Backtab':   'Shift+Tab',
            'Esc':       'Escape',
            'Del':       'Delete',
            'Ins':       'Insert',

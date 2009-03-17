@@ -293,8 +293,8 @@ if pth and bname:
     self.db = leo.external.pickleshare.PickleShareDB(dbdirname)
 else:
     self.db = None
-    if not g.unitTesting:
-        g.pr("\n*** No file in controller, using c.db=None ***\n")
+    if not g.app.silentMode:
+        print("\n*** No file in controller, using c.db=None ***\n")
 #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
 #@-node:ekr.20040731071037:c.initIvars
 #@+node:ekr.20090213065933.7:c.setWindowPosition
@@ -319,12 +319,12 @@ def selfInsertCommand(self,event,action='insert'):
     '''Insert a character in the body pane.
     This is the default binding for all keys in the body pane.'''
 
+    trace = False and not g.unitTesting # or c.config.getBool('trace_masterCommand')
+    verbose = False
     w = self.editWidget(event)
     if not w: return 'break'
-
-    trace = True
     << set local vars >>
-    if trace: g.trace('ch',repr(ch))
+    if trace: g.trace('ch',repr(ch),'keysym',repr(keysym)) # ,'stroke',repr(stroke))
     if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
         return "break" # The hook claims to have handled the event.
     if ch == '\t':
@@ -358,7 +358,7 @@ def selfInsertCommand(self,event,action='insert'):
     # Update the text and handle undo.
     newText = w.getAllText()
     changed = newText != oldText
-    if trace:
+    if trace and verbose:
         g.trace('ch',repr(ch),'changed',changed,'newText',repr(newText[-10:]))
     if changed:
         # g.trace('ins',w.getInsertPoint())
@@ -373,6 +373,7 @@ p = c.p
 gui = g.app.gui
 ch = gui.eventChar(event)
 keysym = gui.eventKeysym(event)
+# stroke = gui.eventStroke(event)
 if keysym == 'Return':
     ch = '\n' # This fixes the MacOS return bug.
 if keysym == 'Tab': # Support for wx_alt_gui plugin.
@@ -381,10 +382,9 @@ name = c.widget_name(w)
 oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
 oldText = name.startswith('body') and p.b or ''
 undoType = 'Typing'
-trace = c.config.getBool('trace_masterCommand')
 brackets = self.openBracketsList + self.closeBracketsList
 inBrackets = ch and g.toUnicode(ch,g.app.tkEncoding) in brackets
-if trace: g.trace(name,repr(ch),ch and ch in brackets)
+# if trace: g.trace(name,repr(ch),ch and ch in brackets)
 #@nonl
 #@-node:ekr.20061103114242:<< set local vars >>
 #@+node:ekr.20090213065933.14:doPlainTab
@@ -544,8 +544,7 @@ def updateAutomatchBracket (self,p,w,ch,oldSel):
 def updateTab (self,p,w,smartTab=True):
 
     c = self.c
-    d = c.scanAllDirectives(p)
-    tab_width = d.get("tabwidth",c.tab_width)
+
     # g.trace('tab_width',tab_width)
     i,j = w.getSelectionRange()
         # Returns insert point if no selection, with i <= j.
@@ -554,6 +553,8 @@ def updateTab (self,p,w,smartTab=True):
         # w.delete(i,j)
         c.indentBody()
     else:
+        d = c.scanAllDirectives(p)
+        tab_width = d.get("tabwidth",c.tab_width)
         # Get the preceeding characters.
         s = w.getAllText()
         # start = g.skip_to_start_of_line(s,i)
@@ -9570,7 +9571,7 @@ def masterKeyHandler (self,event,stroke=None):
     '''This is the handler for almost all key bindings.'''
 
     << define vars >>
-    trace = False # or (not g.app.unitTesting or self.trace_masterKeyHandler)
+    trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
     verbose = True
 
@@ -26448,12 +26449,12 @@ def selfInsertCommand(self,event,action='insert'):
     '''Insert a character in the body pane.
     This is the default binding for all keys in the body pane.'''
 
+    trace = False and not g.unitTesting # or c.config.getBool('trace_masterCommand')
+    verbose = False
     w = self.editWidget(event)
     if not w: return 'break'
-
-    trace = True
     << set local vars >>
-    if trace: g.trace('ch',repr(ch))
+    if trace: g.trace('ch',repr(ch),'keysym',repr(keysym)) # ,'stroke',repr(stroke))
     if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
         return "break" # The hook claims to have handled the event.
     if ch == '\t':
@@ -26487,7 +26488,7 @@ def selfInsertCommand(self,event,action='insert'):
     # Update the text and handle undo.
     newText = w.getAllText()
     changed = newText != oldText
-    if trace:
+    if trace and verbose:
         g.trace('ch',repr(ch),'changed',changed,'newText',repr(newText[-10:]))
     if changed:
         # g.trace('ins',w.getInsertPoint())
@@ -26502,6 +26503,7 @@ p = c.p
 gui = g.app.gui
 ch = gui.eventChar(event)
 keysym = gui.eventKeysym(event)
+# stroke = gui.eventStroke(event)
 if keysym == 'Return':
     ch = '\n' # This fixes the MacOS return bug.
 if keysym == 'Tab': # Support for wx_alt_gui plugin.
@@ -26510,10 +26512,9 @@ name = c.widget_name(w)
 oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
 oldText = name.startswith('body') and p.b or ''
 undoType = 'Typing'
-trace = c.config.getBool('trace_masterCommand')
 brackets = self.openBracketsList + self.closeBracketsList
 inBrackets = ch and g.toUnicode(ch,g.app.tkEncoding) in brackets
-if trace: g.trace(name,repr(ch),ch and ch in brackets)
+# if trace: g.trace(name,repr(ch),ch and ch in brackets)
 #@nonl
 #@-node:ekr.20061103114242:<< set local vars >>
 #@+node:ekr.20090213065933.14:doPlainTab
@@ -26673,8 +26674,7 @@ def updateAutomatchBracket (self,p,w,ch,oldSel):
 def updateTab (self,p,w,smartTab=True):
 
     c = self.c
-    d = c.scanAllDirectives(p)
-    tab_width = d.get("tabwidth",c.tab_width)
+
     # g.trace('tab_width',tab_width)
     i,j = w.getSelectionRange()
         # Returns insert point if no selection, with i <= j.
@@ -26683,6 +26683,8 @@ def updateTab (self,p,w,smartTab=True):
         # w.delete(i,j)
         c.indentBody()
     else:
+        d = c.scanAllDirectives(p)
+        tab_width = d.get("tabwidth",c.tab_width)
         # Get the preceeding characters.
         s = w.getAllText()
         # start = g.skip_to_start_of_line(s,i)
@@ -26712,8 +26714,7 @@ def updateTab (self,p,w,smartTab=True):
 def updateTab (self,p,w,smartTab=True):
 
     c = self.c
-    d = c.scanAllDirectives(p)
-    tab_width = d.get("tabwidth",c.tab_width)
+
     # g.trace('tab_width',tab_width)
     i,j = w.getSelectionRange()
         # Returns insert point if no selection, with i <= j.
@@ -26722,6 +26723,8 @@ def updateTab (self,p,w,smartTab=True):
         # w.delete(i,j)
         c.indentBody()
     else:
+        d = c.scanAllDirectives(p)
+        tab_width = d.get("tabwidth",c.tab_width)
         # Get the preceeding characters.
         s = w.getAllText()
         # start = g.skip_to_start_of_line(s,i)
@@ -27827,7 +27830,7 @@ def masterKeyHandler (self,event,stroke=None):
     '''This is the handler for almost all key bindings.'''
 
     << define vars >>
-    trace = False # or (not g.app.unitTesting or self.trace_masterKeyHandler)
+    trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
     verbose = True
 
@@ -28166,7 +28169,7 @@ def masterKeyHandler (self,event,stroke=None):
     '''This is the handler for almost all key bindings.'''
 
     << define vars >>
-    trace = False # or (not g.app.unitTesting or self.trace_masterKeyHandler)
+    trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
     traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
     verbose = True
 

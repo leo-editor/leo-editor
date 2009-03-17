@@ -369,8 +369,7 @@
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
 </v>
-<v t="ekr.20090316113038.1"><vh>@button split-long-headlines</vh></v>
-<v t="ekr.20090316113038.2"><vh>A.  B.  C</vh></v>
+<v t="ekr.20090317102513.1"><vh>shift-tab test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2793,33 +2792,8 @@ collapse and expand "toplevel", phew, the children have returned</t>
 <t tx="ekr.20090309064612.4"></t>
 <t tx="ekr.20090309064612.5"></t>
 <t tx="ekr.20090309065826.1"></t>
-<t tx="ekr.20090316113038.1">u = c.undoer ; current = c.p
-undoType = "Break up long headline"
-u.beforeChangeGroup(current,undoType)
-n = 0
-for p in c.allNodes_iter():
-   split = p.h.split("  ", 1)
-   if len(split) &gt; 1:
-        b = u.beforeChangeNodeContents(p)
-        before,after = split
-        p.setHeadString(before)
-        print(p.h)
-        u.afterChangeNodeContents(p,undoType,b)
-        while after:
-            n += 1
-            split = after.split("  ", 1)
-            if len(split) &gt; 1: h,after = split
-            else: h,after = after,None
-            b = c.undoer.beforeInsertNode(p)
-            child = p.insertAsLastChild()
-            child.setHeadString(h)
-            c.undoer.afterInsertNode(child,undoType,b)
-
-u.afterChangeGroup(current,undoType,reportFlag=True)
-print('%s nodes changed' % n)
-c.redraw()
-</t>
-<t tx="ekr.20090316113038.2"></t>
 <t tx="ekr.20090316115500.1"></t>
+<t tx="ekr.20090317102513.1">abc
+dee</t>
 </tnodes>
 </leo_file>

@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="10" left="703" height="641" width="627"/>
+	<global_window_position top="56" left="583" height="864" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="0"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1307,7 +1307,7 @@
 <v t="TL.20090307074930.59"><vh>@mode tree-goto-next-marked-node</vh></v>
 <v t="TL.20090307074930.60"><vh>@mode tree-unmark-all-nodes</vh></v>
 </v>
-<v t="TL.20090307074930.61" a="E"><vh>@shortcuts - vi in Body pane</vh>
+<v t="TL.20090307074930.61"><vh>@shortcuts - vi in Body pane</vh>
 <v t="TL.20090307074930.62"><vh>@mode body-search-forward</vh></v>
 <v t="TL.20090307074930.63"><vh>@mode body-search-backward</vh></v>
 <v t="TL.20090307074930.64"><vh>@mode body-search-everywhere</vh></v>
@@ -6168,6 +6168,7 @@ paste-text                          = Ctrl-v
 reformat-paragraph                  = Shift-Ctrl-p
 split-line                          = None
 unindent-region                     = Ctrl-[
+unindent-region                     = Shift-tab
 yank                                = Ctrl-Y
 yank-pop                            = Alt-Y
 zap-to-character                    = Alt-z</t>

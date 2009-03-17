@@ -352,6 +352,9 @@ class leoGui:
         '''Return the keysym value of an event.'''
         return event and event.keysym
 
+    def eventStroke (self,event,c=None):
+        return event and hasattr(event,'stroke') and event.stroke or ''
+
     def eventWidget (self,event,c=None):
         '''Return the widget field of an event.'''
         return event and event.widget
@@ -361,7 +364,6 @@ class leoGui:
             return event.x,event.y
         else:
             return 0,0
-    #@nonl
     #@-node:ekr.20061031132907:Events (leoGui)
     #@+node:ekr.20070212145124:getFullVersion
     def getFullVersion (self,c):

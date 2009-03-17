@@ -2943,10 +2943,10 @@ class editCommandsClass (baseEditCommandsClass):
         '''Insert a character in the body pane.
         This is the default binding for all keys in the body pane.'''
 
+        trace = False and not g.unitTesting # or c.config.getBool('trace_masterCommand')
+        verbose = False
         w = self.editWidget(event)
         if not w: return 'break'
-
-        trace = True
         #@    << set local vars >>
         #@+node:ekr.20061103114242:<< set local vars >>
         c = self.c
@@ -2954,6 +2954,7 @@ class editCommandsClass (baseEditCommandsClass):
         gui = g.app.gui
         ch = gui.eventChar(event)
         keysym = gui.eventKeysym(event)
+        # stroke = gui.eventStroke(event)
         if keysym == 'Return':
             ch = '\n' # This fixes the MacOS return bug.
         if keysym == 'Tab': # Support for wx_alt_gui plugin.
@@ -2962,14 +2963,13 @@ class editCommandsClass (baseEditCommandsClass):
         oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
         oldText = name.startswith('body') and p.b or ''
         undoType = 'Typing'
-        trace = c.config.getBool('trace_masterCommand')
         brackets = self.openBracketsList + self.closeBracketsList
         inBrackets = ch and g.toUnicode(ch,g.app.tkEncoding) in brackets
-        if trace: g.trace(name,repr(ch),ch and ch in brackets)
+        # if trace: g.trace(name,repr(ch),ch and ch in brackets)
         #@nonl
         #@-node:ekr.20061103114242:<< set local vars >>
         #@nl
-        if trace: g.trace('ch',repr(ch))
+        if trace: g.trace('ch',repr(ch),'keysym',repr(keysym)) # ,'stroke',repr(stroke))
         if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
             return "break" # The hook claims to have handled the event.
         if ch == '\t':
@@ -3003,7 +3003,7 @@ class editCommandsClass (baseEditCommandsClass):
         # Update the text and handle undo.
         newText = w.getAllText()
         changed = newText != oldText
-        if trace:
+        if trace and verbose:
             g.trace('ch',repr(ch),'changed',changed,'newText',repr(newText[-10:]))
         if changed:
             # g.trace('ins',w.getInsertPoint())
@@ -3169,8 +3169,7 @@ class editCommandsClass (baseEditCommandsClass):
     def updateTab (self,p,w,smartTab=True):
 
         c = self.c
-        d = c.scanAllDirectives(p)
-        tab_width = d.get("tabwidth",c.tab_width)
+
         # g.trace('tab_width',tab_width)
         i,j = w.getSelectionRange()
             # Returns insert point if no selection, with i <= j.
@@ -3179,6 +3178,8 @@ class editCommandsClass (baseEditCommandsClass):
             # w.delete(i,j)
             c.indentBody()
         else:
+            d = c.scanAllDirectives(p)
+            tab_width = d.get("tabwidth",c.tab_width)
             # Get the preceeding characters.
             s = w.getAllText()
             # start = g.skip_to_start_of_line(s,i)
