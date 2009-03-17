@@ -3616,11 +3616,11 @@ class baseCommands (object):
         p = c.p
         if not p: return
 
+        c.endEditing() # Make sure we capture the headline for Undo.
+
         if p.hasVisBack(c): newNode = p.visBack(c)
         else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
         if not newNode: return
-
-        c.endEditing() # Make sure we capture the headline for Undo.
 
         if cc: # Special cases for @chapter and @chapters nodes.
             chapter = '@chapter ' ; chapters = '@chapters ' 
