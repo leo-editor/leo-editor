@@ -1767,7 +1767,7 @@ class atFile:
             except Exception: s = ""
             old_body = p.b
             if s != old_body:
-                if 0: # For debugging.
+                if False and old_body: # For debugging.
                     g.pr("\nchanged: " + p.h)
                     g.pr("\nnew:",s)
                     g.pr("\nold:",p.b)
