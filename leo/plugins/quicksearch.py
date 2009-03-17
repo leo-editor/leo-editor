@@ -62,13 +62,23 @@ def onCreate (tag, keys):
 #@+node:ville.20090314215508.2:class LeoQuickSearchWidget
 import qt_quicksearch
 
+global qsWidget
+
 def install_qt_quicksearch_tab(c):
     #tabw = c.frame.top.tabWidget
 
     wdg = LeoQuickSearchWidget(c)
+    qsWidgent = wdg
     c.frame.log.createTab("Nav", widget = wdg)
     #tabw.addTab(wdg, "QuickSearch")
 
+    def focus_quicksearch_entry(event):
+        c.frame.log.selectTab('Nav')
+        wdg.ui.lineEdit.setText('')
+        wdg.ui.lineEdit.setFocus()
+
+    c.k.registerCommand(
+            'find-quick','Ctrl-Shift-f',focus_quicksearch_entry)
 
 class LeoQuickSearchWidget(QtGui.QWidget):
     """ 'Find in files'/grep style search widget """
