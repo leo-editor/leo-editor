@@ -66,7 +66,7 @@ __version__ = "0.4"
 #@-node:ekr.20040915110738:<< version history >>
 #@nl
 #@<< imports >>
-#@+node:ekr.20040915110738.1:<< imports >>
+#@+node:ekr.20090317093747.1:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -75,7 +75,7 @@ import os
 import sys
 import tempfile
 #@nonl
-#@-node:ekr.20040915110738.1:<< imports >>
+#@-node:ekr.20090317093747.1:<< imports >>
 #@nl
 #@<< define the directives that are handled by this plugin >>
 #@+node:ekr.20040915110738.2:<< define the directives that are handled by this plugin >>

@@ -31,8 +31,8 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 import fnmatch
-import re
 import os
+import re
 import sys
 import tempfile
 #@nonl
