@@ -2794,6 +2794,7 @@ collapse and expand "toplevel", phew, the children have returned</t>
 <t tx="ekr.20090309065826.1"></t>
 <t tx="ekr.20090316115500.1"></t>
 <t tx="ekr.20090317102513.1">abc
-dee</t>
+dee
+</t>
 </tnodes>
 </leo_file>

@@ -4465,7 +4465,8 @@ class leoQtGui(leoGui.leoGui):
 
     #@-node:ekr.20081121105001.501:isTextWidget
     #@+node:ekr.20081121105001.502:toUnicode (qtGui)
-    def toUnicode (self,s,encoding='utf-8',reportErrors=True):    
+    def toUnicode (self,s,encoding='utf-8',reportErrors=True):
+
         return unicode(s)
     #@nonl
     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
@@ -4826,7 +4827,7 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081121105001.169:toStroke
     def toStroke (self,tkKey,ch):
 
-        trace = False
+        trace = False and not g.unitTesting
         k = self.c.k ; s = tkKey
 
         special = ('Alt','Ctrl','Control',)
@@ -4877,19 +4878,29 @@ class leoQtEventFilter(QtCore.QObject):
 
         '''Return the components of a Qt key event.'''
 
+        trace = False and not g.unitTesting
         keynum = event.key()
-        text   = event.text()
+        text   = event.text() # This is the unicode text.
         toString = QtGui.QKeySequence(keynum).toString()
+        toUnicode = unicode
+
         try:
-            ch = chr(keynum)
+            ch1 = chr(keynum)
         except ValueError:
-            ch = ''
-        ch       = g.app.gui.toUnicode(ch)
-        text     = g.app.gui.toUnicode(text)
-        toString = g.app.gui.toUnicode(toString)
+            ch1 = ''
+
+        try:
+            ch = toUnicode(ch1)
+        except UnicodeError:
+            ch = ch1
+
+        text     = toUnicode(text)
+        toString = toUnicode(toString)
+
+        if trace: g.trace('keynum %s ch %s ch1 %s toString %s' % (
+            repr(keynum),repr(ch),repr(ch1),repr(toString)))
 
         return keynum,text,toString,ch
-
 
     #@-node:ekr.20081121105001.172:qtKey
     #@+node:ekr.20081121105001.173:qtMods
@@ -4920,7 +4931,6 @@ class leoQtEventFilter(QtCore.QObject):
         binding dictionaries.'''
 
         trace = False and not g.unitTesting
-        verbose = True
         k = self.c.k
 
         # Thanks to Jesse Aldridge for additional entries.
@@ -4951,12 +4961,6 @@ class leoQtEventFilter(QtCore.QObject):
         ch4 = k.guiBindNamesDict.get(ch)
         if ch4: ch = ch4
 
-        if trace and verbose: g.trace(
-    'keynum: %s, mods: %s text: %s, toString: %s, '
-    'ch: %s, ch2: %s, ch3: %s, ch4: %s' % (
-    keynum,mods,repr(text),toString,
-    repr(ch),repr(ch2),repr(ch3),repr(ch4)))
-
         if 'Shift' in mods:
             mods,ch = self.shifted(mods,ch)
         elif len(ch) == 1:
@@ -4968,9 +4972,12 @@ class leoQtEventFilter(QtCore.QObject):
         tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
         ignore = not ch
 
-        if trace and (ignore or verbose):
-            g.trace('tkKey: %s, ch: %s, ignore: %s' % (
-                repr(tkKey),repr(ch),ignore))
+        if trace: g.trace(
+    'keynum: %s, mods: %s text: %s, toString: %s, '
+    'tkKey: %s ignore: %5s ch: %s, ch2: %s, ch3: %s, ch4: %s' % (
+    keynum,mods,repr(text),toString,
+    repr(tkKey),bool(ignore),
+    repr(ch),repr(ch2),repr(ch3),repr(ch4)))
 
         ch = text or toString # was ch
         return tkKey,ch,ignore

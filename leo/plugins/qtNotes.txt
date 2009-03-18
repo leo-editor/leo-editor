@@ -15,98 +15,6 @@ from PyQt4.QtGui import QTextEdit
 w = QTextEdit()
 c.frame.top.ui.leo_body_inner_frame.layout().addWidget(w,0,1)
 #@-node:ekr.20081215162017.5:Support multiple body editors
-#@+node:ekr.20090313075003.2:Fix new unicode problem
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/eb22a9d0f363954e
-
-working with revno 1633 and qt gui I've found a couple of unicode
-problems:
-
-a) when I press the keys "ñ" or "ç" of my (Spanish) keyboard the
-following errors appears in the console (but not in the log pane):
-
-vmas@rachael$ Traceback (most recent call last):
-  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4805, in
-eventFilter
-    tkKey,ch,ignore = self.toTkKey(event)
-  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4929, in
-toTkKey
-    keynum,text,toString,ch = self.qtKey(event)
-  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4956, in
-qtKey
-    ch       = g.app.gui.toUnicode(ch)
-  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4453, in
-toUnicode
-    return unicode(s)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xd1 in position
-0: ordinal not in range(128)
-Traceback (most recent call last):
-  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4805, in
-eventFilter
-    tkKey,ch,ignore = self.toTkKey(event)
-  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4929, in
-toTkKey
-    keynum,text,toString,ch = self.qtKey(event)
-  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4956, in
-qtKey
-    ch       = g.app.gui.toUnicode(ch)
-  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4453, in
-toUnicode
-    return unicode(s)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xd1 in position
-0: ordinal not in range(128)
-Traceback (most recent call last):
-  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4805, in
-eventFilter
-    tkKey,ch,ignore = self.toTkKey(event)
-  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4929, in
-toTkKey
-    keynum,text,toString,ch = self.qtKey(event)
-  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4956, in
-qtKey
-    ch       = g.app.gui.toUnicode(ch)
-  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4453, in
-toUnicode
-    return unicode(s)
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xd1 in position
-0: ordinal not in range(128)
-
-The other observed errors are more complex.
-
-b) Suppose I've a node with no characters out of range(128) in its
-headline. I edit the headline and put
-something like "Ejecució immediata". Then select a different node,
-save the file (everything seems fine),
-close it and open it again. The node headline has been reverted to its
-initial value.
-
-c) Suppose I've a node with no characters out of range(128) in its
-headline. I edit the headline and put
-something like "Ejecució immediata". Then, while the node still has
-the keyboard focus, I save the file or press
-Enter. The node headline becomes "Ejecuci?immediata". Then close the
-file and open it again. The node
-headline is *not* reverted,
-it is still  "Ejecuci?immediata".
-#@+node:ekr.20090313075003.3:Hint
-@nocolor
-    >    keynum,text,toString,ch = self.qtKey(event)
-    >  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4956, in
-    > qtKey
-    >    ch       = g.app.gui.toUnicode(ch)
-    >  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4453, in
-    > toUnicode
-    >    return unicode(s)
-    > UnicodeDecodeError: 'ascii' codec can't decode byte 0xd1 in position
-
-    Seems like calling unicode(chr(some_value)) is a bad idea...
-
-
-Thanks for this hint.  I'll attempt a simplification soon.
-#@nonl
-#@-node:ekr.20090313075003.3:Hint
-#@-node:ekr.20090313075003.2:Fix new unicode problem
 #@+node:ekr.20090317102300.12:Fix autocompleter problems with qt gui
 #@-node:ekr.20090317102300.12:Fix autocompleter problems with qt gui
 #@+node:ekr.20090317102300.13:Fix new unicode/copy-outline problem
@@ -327,7 +235,8 @@ bracketright: ']'
 #@+node:ekr.20090128083504.11:Report
 #@-node:ekr.20090128083504.11:Report
 #@+node:ekr.20081121105001.502:toUnicode (qtGui)
-def toUnicode (self,s,encoding='utf-8',reportErrors=True):    
+def toUnicode (self,s,encoding='utf-8',reportErrors=True):
+
     return unicode(s)
 #@nonl
 #@-node:ekr.20081121105001.502:toUnicode (qtGui)
