@@ -2,7 +2,7 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090316095604.11:Urgent 3
+#@+node:ekr.20090316095604.11:Urgent 2
 #@+node:ekr.20081215162017.5:Support multiple body editors
 @
 
@@ -17,7 +17,7 @@ c.frame.top.ui.leo_body_inner_frame.layout().addWidget(w,0,1)
 #@-node:ekr.20081215162017.5:Support multiple body editors
 #@+node:ekr.20090317102300.12:Fix autocompleter problems with qt gui
 #@-node:ekr.20090317102300.12:Fix autocompleter problems with qt gui
-#@-node:ekr.20090316095604.11:Urgent 3
+#@-node:ekr.20090316095604.11:Urgent 2
 #@+node:ekr.20090304084841.10:Asap 4
 #@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
 http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
@@ -7352,6 +7352,80 @@ def traceEvent (self,obj,event,tkKey,override):
 #@-node:ekr.20081121105001.179:traceEvent
 #@-node:ekr.20081121105001.166:class leoQtEventFilter
 #@-node:ekr.20090313075003.2:Fixed (?) new unicode problem
+#@+node:ekr.20090317102300.13:Fixed new unicode/copy-outline problem
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/85560a3d5bc933c
+
+When I try to ctrl+shift+C a node with unicode chars, I get an exception:
+
+Traceback (most recent call last):
+
+  File "/home/ville/leo-editor/leo/core/leoCommands.py", line 358, in doCommand
+    val = command(event)
+
+  File "/home/ville/leo-editor/leo/core/leoCommands.py", line 3421, in
+copyOutline
+    g.app.gui.replaceClipboardWith(s)
+
+  File "/home/ville/leo-editor/leo/plugins/qtGui.py", line 4020, in
+replaceClipboardWith
+    reportErrors=True)
+
+  File "/home/ville/leo-editor/leo/plugins/qtGui.py", line 4469, in toUnicode
+    return unicode(s)
+
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position
+220: ordinal not in range(128)
+
+This is because (I suppose because of Tk?) copyOutline calls
+replaceClipboardWith() with non-unicode data (created with
+putLeoOutline).
+
+There are several alternative fix approaches, none of which involve
+(IMHO) doing any kind of decoding in app.gui.toUnicode. The easiest
+would be, in replaceClipboardWith, to call g.toUnicode if (and only
+if)  the arg is str (so we can always tell it comes from copyOutline
+in core). 
+#@nonl
+#@+node:ekr.20081121105001.502:toUnicode (qtGui)
+def toUnicode (self,s,encoding='utf-8',reportErrors=True):
+
+    return unicode(s)
+#@nonl
+#@-node:ekr.20081121105001.502:toUnicode (qtGui)
+#@+node:ekr.20081121105001.183:Clipboard (qtGui)
+def replaceClipboardWith (self,s):
+
+    '''Replace the clipboard with the string s.'''
+
+    trace = False and not g.unitTesting
+    cb = self.qtApp.clipboard()
+    if cb:
+        # cb.clear()  # unnecessary, breaks on some Qt versions
+        if type(s) == type(''):
+            s = g.app.gui.toUnicode(s)
+        cb.setText(s)
+        if trace: g.trace(len(s),type(s))
+    else:
+        g.trace('no clipboard!')
+
+def getTextFromClipboard (self):
+
+    '''Get a unicode string from the clipboard.'''
+
+    trace = False and not g.unitTesting
+    cb = self.qtApp.clipboard()
+    if cb:
+        s = cb.text()
+        if trace: g.trace (len(s),type(s))
+        s = g.app.gui.toUnicode(s)
+        return s
+    else:
+        g.trace('no clipboard!')
+        return ''
+#@-node:ekr.20081121105001.183:Clipboard (qtGui)
+#@-node:ekr.20090317102300.13:Fixed new unicode/copy-outline problem
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20090303081428.10:clearLine
