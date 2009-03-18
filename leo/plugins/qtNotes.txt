@@ -2,7 +2,7 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090316095604.11:Urgent 4
+#@+node:ekr.20090316095604.11:Urgent 3
 #@+node:ekr.20081215162017.5:Support multiple body editors
 @
 
@@ -17,44 +17,7 @@ c.frame.top.ui.leo_body_inner_frame.layout().addWidget(w,0,1)
 #@-node:ekr.20081215162017.5:Support multiple body editors
 #@+node:ekr.20090317102300.12:Fix autocompleter problems with qt gui
 #@-node:ekr.20090317102300.12:Fix autocompleter problems with qt gui
-#@+node:ekr.20090317102300.13:Fix new unicode/copy-outline problem
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/85560a3d5bc933c
-
-When I try to ctrl+shift+C a node with unicode chars, I get an exception:
-
-Traceback (most recent call last):
-
-  File "/home/ville/leo-editor/leo/core/leoCommands.py", line 358, in doCommand
-    val = command(event)
-
-  File "/home/ville/leo-editor/leo/core/leoCommands.py", line 3421, in
-copyOutline
-    g.app.gui.replaceClipboardWith(s)
-
-  File "/home/ville/leo-editor/leo/plugins/qtGui.py", line 4020, in
-replaceClipboardWith
-    reportErrors=True)
-
-  File "/home/ville/leo-editor/leo/plugins/qtGui.py", line 4469, in toUnicode
-    return unicode(s)
-
-UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position
-220: ordinal not in range(128)
-
-This is because (I suppose because of Tk?) copyOutline calls
-replaceClipboardWith() with non-unicode data (created with
-putLeoOutline).
-
-There are several alternative fix approaches, none of which involve
-(IMHO) doing any kind of decoding in app.gui.toUnicode. The easiest
-would be, in replaceClipboardWith, to call g.toUnicode if (and only
-if)  the arg is str (so we can always tell it comes from copyOutline
-in core). 
-#@nonl
-#@-node:ekr.20090317102300.13:Fix new unicode/copy-outline problem
-#@-node:ekr.20090316095604.11:Urgent 4
+#@-node:ekr.20090316095604.11:Urgent 3
 #@+node:ekr.20090304084841.10:Asap 4
 #@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
 http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
@@ -245,13 +208,12 @@ def replaceClipboardWith (self,s):
 
     '''Replace the clipboard with the string s.'''
 
-    trace = False
+    trace = False and not g.unitTesting
     cb = self.qtApp.clipboard()
     if cb:
-        #cb.clear()  # unnecessary, breaks on some Qt versions
-        s = g.app.gui.toUnicode(s,
-            encoding=g.app.tkEncoding,
-            reportErrors=True)
+        # cb.clear()  # unnecessary, breaks on some Qt versions
+        if type(s) == type(''):
+            s = g.app.gui.toUnicode(s)
         cb.setText(s)
         if trace: g.trace(len(s),type(s))
     else:
@@ -261,14 +223,12 @@ def getTextFromClipboard (self):
 
     '''Get a unicode string from the clipboard.'''
 
-    trace = False
+    trace = False and not g.unitTesting
     cb = self.qtApp.clipboard()
     if cb:
         s = cb.text()
         if trace: g.trace (len(s),type(s))
-        s = g.app.gui.toUnicode(s,
-            encoding=g.app.tkEncoding,
-            reportErrors=True)
+        s = g.app.gui.toUnicode(s)
         return s
     else:
         g.trace('no clipboard!')
@@ -6801,6 +6761,597 @@ def setTag (self,tag,s,i,j):
 #@-node:ekr.20081206062411.14:setTag
 #@-node:ekr.20081206062411.12:recolor & helpers
 #@-node:ekr.20090307110717.1:Fixed @color/@nocolor interaction
+#@+node:ekr.20090313075003.2:Fixed (?) new unicode problem
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/eb22a9d0f363954e
+
+working with revno 1633 and qt gui I've found a couple of unicode
+problems:
+
+a) when I press the keys "ñ" or "ç" of my (Spanish) keyboard the
+following errors appears in the console (but not in the log pane):
+
+vmas@rachael$ Traceback (most recent call last):
+  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4805, in
+eventFilter
+    tkKey,ch,ignore = self.toTkKey(event)
+  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4929, in
+toTkKey
+    keynum,text,toString,ch = self.qtKey(event)
+  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4956, in
+qtKey
+    ch       = g.app.gui.toUnicode(ch)
+  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4453, in
+toUnicode
+    return unicode(s)
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xd1 in position
+0: ordinal not in range(128)
+Traceback (most recent call last):
+  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4805, in
+eventFilter
+    tkKey,ch,ignore = self.toTkKey(event)
+  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4929, in
+toTkKey
+    keynum,text,toString,ch = self.qtKey(event)
+  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4956, in
+qtKey
+    ch       = g.app.gui.toUnicode(ch)
+  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4453, in
+toUnicode
+    return unicode(s)
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xd1 in position
+0: ordinal not in range(128)
+Traceback (most recent call last):
+  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4805, in
+eventFilter
+    tkKey,ch,ignore = self.toTkKey(event)
+  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4929, in
+toTkKey
+    keynum,text,toString,ch = self.qtKey(event)
+  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4956, in
+qtKey
+    ch       = g.app.gui.toUnicode(ch)
+  File "/usr/local/src/leo-editor/leo/plugins/qtGui.py", line 4453, in
+toUnicode
+    return unicode(s)
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xd1 in position
+0: ordinal not in range(128)
+
+The other observed errors are more complex.
+
+b) Suppose I've a node with no characters out of range(128) in its
+headline. I edit the headline and put
+something like "Ejecució immediata". Then select a different node,
+save the file (everything seems fine),
+close it and open it again. The node headline has been reverted to its
+initial value.
+
+c) Suppose I've a node with no characters out of range(128) in its
+headline. I edit the headline and put
+something like "Ejecució immediata". Then, while the node still has
+the keyboard focus, I save the file or press
+Enter. The node headline becomes "Ejecuci?immediata". Then close the
+file and open it again. The node
+headline is *not* reverted,
+it is still  "Ejecuci?immediata".
+#@+node:ekr.20081121105001.502:toUnicode (qtGui)
+def toUnicode (self,s,encoding='utf-8',reportErrors=True):
+
+    return unicode(s)
+#@nonl
+#@-node:ekr.20081121105001.502:toUnicode (qtGui)
+#@+node:ekr.20081121105001.172:qtKey
+def qtKey (self,event):
+
+    '''Return the components of a Qt key event.'''
+
+    trace = False and not g.unitTesting
+    keynum = event.key()
+    text   = event.text() # This is the unicode text.
+    toString = QtGui.QKeySequence(keynum).toString()
+    toUnicode = unicode
+
+    try:
+        ch1 = chr(keynum)
+    except ValueError:
+        ch1 = ''
+
+    try:
+        ch = toUnicode(ch1)
+    except UnicodeError:
+        ch = ch1
+
+    text     = toUnicode(text)
+    toString = toUnicode(toString)
+
+    if trace: g.trace('keynum %s ch %s ch1 %s toString %s' % (
+        repr(keynum),repr(ch),repr(ch1),repr(toString)))
+
+    return keynum,text,toString,ch
+
+#@-node:ekr.20081121105001.172:qtKey
+#@+node:ekr.20081121105001.166:class leoQtEventFilter
+class leoQtEventFilter(QtCore.QObject):
+
+    << about internal bindings >>
+
+    @others
+#@+node:ekr.20081121105001.167:<< about internal bindings >>
+@nocolor-node
+@
+
+Here are the rules for translating key bindings (in leoSettings.leo) into keys for k.bindingsDict:
+
+1.  The case of plain letters is significant:  a is not A.
+
+2. The Shift- prefix can be applied *only* to letters. Leo will ignore (with a
+warning) the shift prefix applied to any other binding, e.g., Ctrl-Shift-(
+
+3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
+significant. Thus, the Shift- prefix is required if you want an upper-case
+letter (with the exception of 'bare' uppercase letters.)
+
+The following table illustrates these rules. In each row, the first entry is the
+key (for k.bindingsDict) and the other entries are equivalents that the user may
+specify in leoSettings.leo:
+
+a, Key-a, Key-A
+A, Shift-A
+Alt-a, Alt-A
+Alt-A, Alt-Shift-a, Alt-Shift-A
+Ctrl-a, Ctrl-A
+Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+!, Key-!,Key-exclam,exclam
+
+This table is consistent with how Leo already works (because it is consistent
+with Tk's key-event specifiers). It is also, I think, the least confusing set of
+rules.
+#@nonl
+#@-node:ekr.20081121105001.167:<< about internal bindings >>
+#@+node:ekr.20081121105001.180: ctor
+def __init__(self,c,w,tag=''):
+
+    # Init the base class.
+    QtCore.QObject.__init__(self)
+
+    self.c = c
+    self.w = w      # A leoQtX object, *not* a Qt object.
+    self.tag = tag
+
+    # Pretend there is a binding for these characters.
+    close_flashers = c.config.getString('close_flash_brackets') or ''
+    open_flashers  = c.config.getString('open_flash_brackets') or ''
+    self.flashers = open_flashers + close_flashers
+
+
+#@-node:ekr.20081121105001.180: ctor
+#@+node:ekr.20081121105001.168:eventFilter
+def eventFilter(self, obj, event):
+
+    trace = False ; verbose = False
+    traceFocus = False and not g.unitTesting
+    c = self.c ; k = c.k
+    eventType = event.type()
+    ev = QtCore.QEvent
+    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
+    if traceFocus:
+        table = (
+            (ev.FocusIn,        'focus-in '),
+            (ev.FocusOut,       'focus-out'),
+            (ev.WindowActivate, 'activate '))
+        for evKind,kind in table:
+            if eventType == evKind:
+                g.trace('%s %s %s' % (
+                    (kind,id(obj),
+                    # event.reason(),
+                    g.app.gui.widget_name(obj) or obj)))
+        # else: g.trace('unknown kind: %s' % eventType)
+
+    if eventType == ev.WindowActivate:
+        g.app.gui.onActivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+        # g.trace(g.app.gui.get_focus(c))
+    elif eventType in kinds:
+        tkKey,ch,ignore = self.toTkKey(event)
+        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+        if ignore:
+            override = False
+        elif self.isSpecialOverride(tkKey,ch):
+            override = True
+        elif k.inState():
+            override = not ignore # allow all keystrokes.
+        # elif safe_mode:
+            # override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
+        else:
+            override = len(aList) > 0
+    else:
+        override = False ; tkKey = '<no key>'
+
+    # A hack. QLineEdit generates ev.KeyRelease only.
+    if eventType in (ev.KeyPress,ev.KeyRelease):
+        p = c.currentPosition()
+        isEditWidget = obj == c.frame.tree.edit_widget(p)
+        keyIsActive = g.choose(
+            isEditWidget,
+            eventType == ev.KeyRelease,
+            eventType == ev.KeyPress)
+    else:
+        keyIsActive = False
+
+    if keyIsActive:
+        if override:
+            w = self.w # Pass the wrapper class, not the wrapped widget.
+            stroke = self.toStroke(tkKey,ch)
+            leoEvent = leoKeyEvent(event,c,w,ch,tkKey,stroke)
+            ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+            c.outerUpdate()
+        else:
+            if True or trace and verbose:
+                stroke = self.toStroke(tkKey,ch)
+                if (stroke and not stroke.startswith('Alt+') and 
+                    not stroke.startswith('Ctrl+') and
+                    not stroke in ('PgDn','PgUp')
+                ):
+                    g.trace(self.tag,'unbound',tkKey,stroke)
+
+    if trace: self.traceEvent(obj,event,tkKey,override)
+
+    return override
+#@-node:ekr.20081121105001.168:eventFilter
+#@+node:ekr.20081121105001.181:isDangerous
+def isDangerous (self,tkKey,ch):
+
+    c = self.c
+
+    if not c.frame.body.useScintilla: return False
+
+    arrows = ('home','end','left','right','up','down')
+    special = ('tab','backspace','period','parenright','parenleft')
+
+    key = tkKey.lower()
+    ch = ch.lower()
+    isAlt = key.find('alt') > -1
+    w = g.app.gui.get_focus()
+    inTree = w == self.c.frame.tree.treeWidget
+
+    val = (
+        key in special or
+        ch in arrows and not inTree and not isAlt or
+        key == 'return' and not inTree # Just barely works.
+    )
+
+    # g.trace(tkKey,ch,val)
+    return val
+#@-node:ekr.20081121105001.181:isDangerous
+#@+node:ekr.20081121105001.182:isSpecialOverride
+def isSpecialOverride (self,tkKey,ch):
+
+    # g.trace(repr(tkKey),repr(ch))
+    c = self.c
+    d = c.k.guiBindNamesDict
+
+    table = [d.get(key) for key in d]
+    table.append('Tab')
+    table.append('Shift+Tab')
+
+    if tkKey in table:
+        return True
+    elif len(tkKey) == 1:
+        return True # Must process all ascii keys.
+    elif ch in self.flashers:
+        return True
+    else:
+        return False
+#@-node:ekr.20081121105001.182:isSpecialOverride
+#@+node:ekr.20081121105001.169:toStroke
+def toStroke (self,tkKey,ch):
+
+    trace = False and not g.unitTesting
+    k = self.c.k ; s = tkKey
+
+    special = ('Alt','Ctrl','Control',)
+    isSpecial = [True for z in special if s.find(z) > -1]
+
+    if not isSpecial:
+        # Keep the Tk spellings for special keys.
+        ch2 = k.guiBindNamesDict.get(ch) # was inverseDict
+        if trace: g.trace('ch',repr(ch),'ch2',repr(ch2))
+        if ch2: s = s.replace(ch,ch2)
+
+    table = (
+        ('Alt-','Alt+'),
+        ('Ctrl-','Ctrl+'),
+        ('Control-','Ctrl+'),
+        # Use Alt+Key-1, etc.  Sheesh.
+        # ('Key-','Key+'),
+        ('Shift-','Shift+')
+    )
+    for a,b in table:
+        s = s.replace(a,b)
+
+    if trace: g.trace('tkKey',tkKey,'-->',s)
+    return s
+#@-node:ekr.20081121105001.169:toStroke
+#@+node:ekr.20081121105001.170:toTkKey
+def toTkKey (self,event):
+
+    mods = self.qtMods(event)
+
+    keynum,text,toString,ch = self.qtKey(event)
+
+    tkKey,ch,ignore = self.tkKey(
+        event,mods,keynum,text,toString,ch)
+
+    return tkKey,ch,ignore
+#@+node:ekr.20081121105001.171:isFKey
+def isFKey(self,ch):
+
+    return (
+        ch and len(ch) in (2,3) and
+        ch[0].lower() == 'f' and
+        ch[1:].isdigit()
+    )
+#@-node:ekr.20081121105001.171:isFKey
+#@+node:ekr.20081121105001.172:qtKey
+def qtKey (self,event):
+
+    '''Return the components of a Qt key event.'''
+
+    trace = False and not g.unitTesting
+    keynum = event.key()
+    text   = event.text() # This is the unicode text.
+    toString = QtGui.QKeySequence(keynum).toString()
+    toUnicode = unicode
+
+    try:
+        ch1 = chr(keynum)
+    except ValueError:
+        ch1 = ''
+
+    try:
+        ch = toUnicode(ch1)
+    except UnicodeError:
+        ch = ch1
+
+    text     = toUnicode(text)
+    toString = toUnicode(toString)
+
+    if trace: g.trace('keynum %s ch %s ch1 %s toString %s' % (
+        repr(keynum),repr(ch),repr(ch1),repr(toString)))
+
+    return keynum,text,toString,ch
+
+#@-node:ekr.20081121105001.172:qtKey
+#@+node:ekr.20081121105001.173:qtMods
+def qtMods (self,event):
+
+    modifiers = event.modifiers()
+
+    # The order of this table is significant.
+    # It must the order of modifiers in bindings
+    # in k.masterGuiBindingsDict
+
+    table = (
+        (QtCore.Qt.AltModifier,     'Alt'),
+        (QtCore.Qt.ControlModifier, 'Control'),
+        (QtCore.Qt.MetaModifier,    'Meta'),
+        (QtCore.Qt.ShiftModifier,   'Shift'),
+    )
+
+    mods = [b for a,b in table if (modifiers & a)]
+
+    return mods
+#@-node:ekr.20081121105001.173:qtMods
+#@+node:ekr.20081121105001.174:tkKey & helpers
+def tkKey (self,event,mods,keynum,text,toString,ch):
+
+    '''Carefully convert the Qt key to a 
+    Tk-style binding compatible with Leo's core
+    binding dictionaries.'''
+
+    trace = False and not g.unitTesting
+    k = self.c.k
+
+    # Thanks to Jesse Aldridge for additional entries.
+    special = {
+       'Backspace': 'BackSpace',
+       'Backtab':   'Shift+Tab',
+       'Esc':       'Escape',
+       'Del':       'Delete',
+       'Ins':       'Insert',
+       # Use these to pass the key to the QTextWidget.
+       'PgDown':    'PgDn',
+       'PgUp':      'PgUp', # The entry must exist.
+       # Use these to enable Leo's page-up/down commands.
+       # 'PgDown':    'Next',
+       # 'PgUp':      'Prior',
+    }
+
+    # Convert '&' to 'ampersand', for example.
+    ch2 = k.guiBindNamesDict.get(ch or toString)
+
+    if not ch: ch = ch2
+    if not ch: ch = ''
+
+    # Handle special cases.
+    ch3 = special.get(toString)
+    if ch3: ch = ch3
+
+    ch4 = k.guiBindNamesDict.get(ch)
+    if ch4: ch = ch4
+
+    if 'Shift' in mods:
+        mods,ch = self.shifted(mods,ch)
+    elif len(ch) == 1:
+        ch = ch.lower()
+
+    if ('Alt' in mods or 'Control' in mods) and ch and ch in string.digits:
+        mods.append('Key')
+
+    tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
+    ignore = not ch
+
+    if trace: g.trace(
+'keynum: %s, mods: %s text: %s, toString: %s, '
+'tkKey: %s ignore: %5s ch: %s, ch2: %s, ch3: %s, ch4: %s' % (
+keynum,mods,repr(text),toString,
+repr(tkKey),bool(ignore),
+repr(ch),repr(ch2),repr(ch3),repr(ch4)))
+
+    ch = text or toString # was ch
+    return tkKey,ch,ignore
+#@+node:ekr.20081121105001.175:keyboardUpper1
+def keyboardUpper1 (self,ch):
+
+    '''A horrible, keyboard-dependent hack.
+
+    Return the upper-case version of the given character
+    whose original spelling has length == 1.'''
+
+    d = {
+        '1':'exclam',
+        '2':'at',
+        '3':'numbersign',
+        '4':'dollar',
+        '5':'percent',
+        '6':'asciicircum',
+        '7':'ampersand',
+        '8':'asterisk',
+        '9':'parenleft',
+        '0':'parenright',
+    }
+
+    # g.trace(ch,d.get(ch))
+    return d.get(ch)
+
+#@-node:ekr.20081121105001.175:keyboardUpper1
+#@+node:ekr.20081121105001.176:keyboardUpperLong
+def keyboardUpperLong (self,ch):
+
+    '''A horrible, keyboard-dependent hack.
+
+    Return the upper-case version of the given character
+    whose original spelling has length > 1.'''
+
+    d = {
+        '1':'exclam',
+        '2':'at',
+        '3':'numbersign',
+        '4':'dollar',
+        '5':'percent',
+        '6':'asciicircum',
+        '7':'ampersand',
+        '8':'asterisk',
+        '9':'parenleft',
+        '0':'parenright',
+        "quoteleft":    "asciitilde",
+        "minus":        "underscore",
+        "equal":        "plus",
+        "bracketleft":  "braceleft",
+        "bracketright": "braceright",
+        "semicolon":    "colon",
+        "quoteright":   "quotedbl",
+        "backslash":    "bar",
+        "comma":        "less",
+        "period":       "greater",
+        "slash":        "question",
+        "parenleft":    "parenleft", # Bug fix: 2008/11/24
+        "parenright":   "parenright", # Bug fix: 2008/11/24
+    }
+    # g.trace(ch,d.get(ch))
+    return d.get(ch)
+#@-node:ekr.20081121105001.176:keyboardUpperLong
+#@+node:ekr.20081121105001.177:shifted
+def shifted (self,mods,ch):
+    '''
+        A horrible, keyboard-dependent kludge.
+        return the shifted version of the letter.
+        return mods, ch.
+    '''
+
+    # Special tk symbols, like '&' have already
+    # been converted to names like 'ampersand'.
+
+    # These special characters should be handled in Leo's core.
+    noShiftList = ('Return','BackSpace','Tab',)
+
+    special = ('Home','End','Right','Left','Up','Down',)
+
+    if len(ch) == 1:
+        ch2 = self.keyboardUpper1(ch)
+        if ch2:
+            mods.remove('Shift')
+            ch = ch2
+        elif len(ch) == 1:
+            # Correct regardless of alt/ctrl mods.
+            mods.remove('Shift')
+            ch = ch.upper()
+        elif len(mods) == 1: # No alt/ctrl.
+            mods.remove('Shift')
+        else:
+            pass
+        # g.trace('ch',ch,'ch2',ch2,mods)
+    else:
+        ch3 = self.keyboardUpperLong(ch)
+        if ch3: ch = ch3
+
+        if ch3 or ch in noShiftList:
+            mods.remove('Shift')
+        elif ch in special:
+            pass # Allow the shift.
+        elif len(mods) == 1: # No alt/ctrl.
+            mods.remove('Shift')
+        else:
+            pass # Retain shift modifier for all special keys.
+
+    return mods,ch
+#@-node:ekr.20081121105001.177:shifted
+#@-node:ekr.20081121105001.174:tkKey & helpers
+#@-node:ekr.20081121105001.170:toTkKey
+#@+node:ekr.20081121105001.179:traceEvent
+def traceEvent (self,obj,event,tkKey,override):
+
+    c = self.c ; e = QtCore.QEvent
+
+    eventType = event.type()
+
+    if 0: # Show focus events.
+        show = (
+            (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
+            (e.Enter,'enter'),(e.Leave,'leave'),
+        )
+
+    else:
+        show = (
+            (e.KeyPress,'key-press'),(e.KeyRelease,'key-release'),
+            (e.ShortcutOverride,'shortcut-override'),
+        )
+
+    ignore = (
+        e.ToolTip,
+        e.FocusIn,e.FocusOut,e.Enter,e.Leave,
+        e.MetaCall,e.Move,e.Paint,e.Resize,
+        e.Polish,e.PolishRequest,
+    )
+
+    for val,kind in show:
+        if eventType == val:
+            if override:
+                g.trace(
+                    'tag: %s, kind: %s, in-state: %s, key: %s, override: %s' % (
+                    self.tag,kind,repr(c.k.inState()),tkKey,override))
+            return
+
+    # if trace: g.trace(self.tag,
+        # 'bound in state: %s, key: %s, returns: %s' % (
+        # k.getState(),tkKey,ret))
+
+    if False and eventType not in ignore:
+        g.trace('%3s:%s' % (eventType,'unknown'))
+#@-node:ekr.20081121105001.179:traceEvent
+#@-node:ekr.20081121105001.166:class leoQtEventFilter
+#@-node:ekr.20090313075003.2:Fixed (?) new unicode problem
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20090303081428.10:clearLine

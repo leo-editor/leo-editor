@@ -4011,13 +4011,12 @@ class leoQtGui(leoGui.leoGui):
 
         '''Replace the clipboard with the string s.'''
 
-        trace = False
+        trace = False and not g.unitTesting
         cb = self.qtApp.clipboard()
         if cb:
-            #cb.clear()  # unnecessary, breaks on some Qt versions
-            s = g.app.gui.toUnicode(s,
-                encoding=g.app.tkEncoding,
-                reportErrors=True)
+            # cb.clear()  # unnecessary, breaks on some Qt versions
+            if type(s) == type(''):
+                s = g.app.gui.toUnicode(s)
             cb.setText(s)
             if trace: g.trace(len(s),type(s))
         else:
@@ -4027,14 +4026,12 @@ class leoQtGui(leoGui.leoGui):
 
         '''Get a unicode string from the clipboard.'''
 
-        trace = False
+        trace = False and not g.unitTesting
         cb = self.qtApp.clipboard()
         if cb:
             s = cb.text()
             if trace: g.trace (len(s),type(s))
-            s = g.app.gui.toUnicode(s,
-                encoding=g.app.tkEncoding,
-                reportErrors=True)
+            s = g.app.gui.toUnicode(s)
             return s
         else:
             g.trace('no clipboard!')
