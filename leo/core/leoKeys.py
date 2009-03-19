@@ -276,10 +276,12 @@ class autoCompleterClass:
     #@+node:ekr.20061031131434.11:autoCompleterStateHandler
     def autoCompleterStateHandler (self,event):
 
+        trace = (False or self.trace) and not g.app.unitTesting
         c = self.c ; k = self.k ; gui = g.app.gui
         tag = 'auto-complete' ; state = k.getState(tag)
-        keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
-        trace = self.trace and not g.app.unitTesting
+        ch = gui.eventChar(event)
+        keysym = gui.eventKeysym(event)
+
         if trace: g.trace(repr(ch),repr(keysym),state)
 
         if state == 0:
@@ -292,7 +294,7 @@ class autoCompleterClass:
             self.abort()
         elif keysym == 'Tab':
             self.doTabCompletion()
-        elif keysym == 'BackSpace':
+        elif keysym in ('\b','BackSpace'): # Horrible hack for qt plugin.
             self.doBackSpace()
         elif keysym == '.':
             self.chain()
@@ -309,7 +311,7 @@ class autoCompleterClass:
         elif ch and ch in string.printable:
             self.insertNormalChar(ch,keysym)
         else:
-            if trace: g.trace('ignore',repr(ch))
+            # if trace: g.trace('ignore',repr(ch))
             return 'do-standard-keys'
     #@-node:ekr.20061031131434.11:autoCompleterStateHandler
     #@+node:ekr.20080924032842.3:getExternalCompletions
@@ -669,7 +671,8 @@ class autoCompleterClass:
 
         '''Cut back to previous prefix.'''
 
-        # g.trace('(autocompleter)',self.prefix,self.theObject,self.prevObjects)
+        trace = False and not g.unitTesting
+        if trace: g.trace('(autocompleter)',self.prefix,self.theObject,self.prevObjects)
 
         c = self.c
         if self.prefix:
@@ -707,7 +710,6 @@ class autoCompleterClass:
                 self.abort() # should not happen.
         else:
             self.abort()            
-    #@nonl
     #@-node:ekr.20061031131434.29:doBackSpace (autocompleter)
     #@+node:ekr.20061031131434.30:doTabCompletion (autocompleter)
     def doTabCompletion (self):

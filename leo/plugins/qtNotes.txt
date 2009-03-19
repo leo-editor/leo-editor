@@ -2,7 +2,9 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090316095604.11:Urgent 2
+#@+node:ekr.20090316095604.11:Urgent 4
+#@+node:ekr.20090318091009.11:Fix reverting headline problem
+#@-node:ekr.20090318091009.11:Fix reverting headline problem
 #@+node:ekr.20081215162017.5:Support multiple body editors
 @
 
@@ -15,9 +17,24 @@ from PyQt4.QtGui import QTextEdit
 w = QTextEdit()
 c.frame.top.ui.leo_body_inner_frame.layout().addWidget(w,0,1)
 #@-node:ekr.20081215162017.5:Support multiple body editors
+#@+node:ekr.20090318091009.10:Fix undo problems with qt gui
+#@-node:ekr.20090318091009.10:Fix undo problems with qt gui
 #@+node:ekr.20090317102300.12:Fix autocompleter problems with qt gui
+@nocolor-node
+
+Starting with  g.b
+
+Type backspace
+
+Tk shows the completions for g., qt does not
+
+
+Now type a
+
+Tk shows the completions for g.a, qt does not.
+#@nonl
 #@-node:ekr.20090317102300.12:Fix autocompleter problems with qt gui
-#@-node:ekr.20090316095604.11:Urgent 2
+#@-node:ekr.20090316095604.11:Urgent 4
 #@+node:ekr.20090304084841.10:Asap 4
 #@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
 http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590

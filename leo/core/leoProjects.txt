@@ -13157,6 +13157,52 @@ def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
     return p # for mod_labels plugin.
 #@-node:ekr.20031218072017.1761:c.insertHeadline
 #@-node:ekr.20090316072136.1:Fixed headline reversion problem
+#@+node:ekr.20090318091001.1:Fixed autocompletion problems with qt gui
+# The problem was in handling backspace.
+# I added a hack to autoCompleterStateHandler.
+#@nonl
+#@+node:ekr.20061031131434.11:autoCompleterStateHandler
+def autoCompleterStateHandler (self,event):
+
+    trace = (False or self.trace) and not g.app.unitTesting
+    c = self.c ; k = self.k ; gui = g.app.gui
+    tag = 'auto-complete' ; state = k.getState(tag)
+    ch = gui.eventChar(event)
+    keysym = gui.eventKeysym(event)
+
+    if trace: g.trace(repr(ch),repr(keysym),state)
+
+    if state == 0:
+        c.frame.log.clearTab(self.tabName)
+        self.computeCompletionList()
+        k.setState(tag,1,handler=self.autoCompleterStateHandler) 
+    elif keysym in (' ','Return'):
+        self.finish()
+    elif keysym == 'Escape':
+        self.abort()
+    elif keysym == 'Tab':
+        self.doTabCompletion()
+    elif keysym in ('\b','BackSpace'): # Horrible hack for qt plugin.
+        self.doBackSpace()
+    elif keysym == '.':
+        self.chain()
+    elif keysym == '?':
+        self.info()
+    elif keysym == '!':
+        # Toggle between verbose and brief listing.
+        self.verbose = not self.verbose
+        if type(self.theObject) == types.DictType:
+            self.membersList = self.theObject.keys()
+        elif type(self.theObject) in (types.ListType,types.TupleType):
+            self.membersList = self.theObject
+        self.computeCompletionList(verbose=self.verbose)
+    elif ch and ch in string.printable:
+        self.insertNormalChar(ch,keysym)
+    else:
+        # if trace: g.trace('ignore',repr(ch))
+        return 'do-standard-keys'
+#@-node:ekr.20061031131434.11:autoCompleterStateHandler
+#@-node:ekr.20090318091001.1:Fixed autocompletion problems with qt gui
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
@@ -13338,10 +13384,12 @@ def autoCompleteForce (self,event=None):
 #@+node:ekr.20061031131434.11:autoCompleterStateHandler
 def autoCompleterStateHandler (self,event):
 
+    trace = (False or self.trace) and not g.app.unitTesting
     c = self.c ; k = self.k ; gui = g.app.gui
     tag = 'auto-complete' ; state = k.getState(tag)
-    keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
-    trace = self.trace and not g.app.unitTesting
+    ch = gui.eventChar(event)
+    keysym = gui.eventKeysym(event)
+
     if trace: g.trace(repr(ch),repr(keysym),state)
 
     if state == 0:
@@ -13354,7 +13402,7 @@ def autoCompleterStateHandler (self,event):
         self.abort()
     elif keysym == 'Tab':
         self.doTabCompletion()
-    elif keysym == 'BackSpace':
+    elif keysym in ('\b','BackSpace'): # Horrible hack for qt plugin.
         self.doBackSpace()
     elif keysym == '.':
         self.chain()
@@ -13371,7 +13419,7 @@ def autoCompleterStateHandler (self,event):
     elif ch and ch in string.printable:
         self.insertNormalChar(ch,keysym)
     else:
-        if trace: g.trace('ignore',repr(ch))
+        # if trace: g.trace('ignore',repr(ch))
         return 'do-standard-keys'
 #@-node:ekr.20061031131434.11:autoCompleterStateHandler
 #@+node:ekr.20080924032842.3:getExternalCompletions
@@ -13725,7 +13773,8 @@ def doBackSpace (self):
 
     '''Cut back to previous prefix.'''
 
-    # g.trace('(autocompleter)',self.prefix,self.theObject,self.prevObjects)
+    trace = False and not g.unitTesting
+    if trace: g.trace('(autocompleter)',self.prefix,self.theObject,self.prevObjects)
 
     c = self.c
     if self.prefix:
@@ -13763,7 +13812,6 @@ def doBackSpace (self):
             self.abort() # should not happen.
     else:
         self.abort()            
-#@nonl
 #@-node:ekr.20061031131434.29:doBackSpace (autocompleter)
 #@+node:ekr.20061031131434.30:doTabCompletion (autocompleter)
 def doTabCompletion (self):
@@ -14661,10 +14709,12 @@ def start (self,event=None,w=None,prefix=None):
 #@+node:ekr.20061031131434.11:autoCompleterStateHandler
 def autoCompleterStateHandler (self,event):
 
+    trace = (False or self.trace) and not g.app.unitTesting
     c = self.c ; k = self.k ; gui = g.app.gui
     tag = 'auto-complete' ; state = k.getState(tag)
-    keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
-    trace = self.trace and not g.app.unitTesting
+    ch = gui.eventChar(event)
+    keysym = gui.eventKeysym(event)
+
     if trace: g.trace(repr(ch),repr(keysym),state)
 
     if state == 0:
@@ -14677,7 +14727,7 @@ def autoCompleterStateHandler (self,event):
         self.abort()
     elif keysym == 'Tab':
         self.doTabCompletion()
-    elif keysym == 'BackSpace':
+    elif keysym in ('\b','BackSpace'): # Horrible hack for qt plugin.
         self.doBackSpace()
     elif keysym == '.':
         self.chain()
@@ -14694,7 +14744,7 @@ def autoCompleterStateHandler (self,event):
     elif ch and ch in string.printable:
         self.insertNormalChar(ch,keysym)
     else:
-        if trace: g.trace('ignore',repr(ch))
+        # if trace: g.trace('ignore',repr(ch))
         return 'do-standard-keys'
 #@-node:ekr.20061031131434.11:autoCompleterStateHandler
 #@+node:ekr.20061031131434.28:computeCompletionList
@@ -19970,10 +20020,12 @@ def autoCompleteForce (self,event=None):
 #@+node:ekr.20061031131434.11:autoCompleterStateHandler
 def autoCompleterStateHandler (self,event):
 
+    trace = (False or self.trace) and not g.app.unitTesting
     c = self.c ; k = self.k ; gui = g.app.gui
     tag = 'auto-complete' ; state = k.getState(tag)
-    keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
-    trace = self.trace and not g.app.unitTesting
+    ch = gui.eventChar(event)
+    keysym = gui.eventKeysym(event)
+
     if trace: g.trace(repr(ch),repr(keysym),state)
 
     if state == 0:
@@ -19986,7 +20038,7 @@ def autoCompleterStateHandler (self,event):
         self.abort()
     elif keysym == 'Tab':
         self.doTabCompletion()
-    elif keysym == 'BackSpace':
+    elif keysym in ('\b','BackSpace'): # Horrible hack for qt plugin.
         self.doBackSpace()
     elif keysym == '.':
         self.chain()
@@ -20003,7 +20055,7 @@ def autoCompleterStateHandler (self,event):
     elif ch and ch in string.printable:
         self.insertNormalChar(ch,keysym)
     else:
-        if trace: g.trace('ignore',repr(ch))
+        # if trace: g.trace('ignore',repr(ch))
         return 'do-standard-keys'
 #@-node:ekr.20061031131434.11:autoCompleterStateHandler
 #@+node:ekr.20080924032842.3:getExternalCompletions
@@ -20357,7 +20409,8 @@ def doBackSpace (self):
 
     '''Cut back to previous prefix.'''
 
-    # g.trace('(autocompleter)',self.prefix,self.theObject,self.prevObjects)
+    trace = False and not g.unitTesting
+    if trace: g.trace('(autocompleter)',self.prefix,self.theObject,self.prevObjects)
 
     c = self.c
     if self.prefix:
@@ -20395,7 +20448,6 @@ def doBackSpace (self):
             self.abort() # should not happen.
     else:
         self.abort()            
-#@nonl
 #@-node:ekr.20061031131434.29:doBackSpace (autocompleter)
 #@+node:ekr.20061031131434.30:doTabCompletion (autocompleter)
 def doTabCompletion (self):
