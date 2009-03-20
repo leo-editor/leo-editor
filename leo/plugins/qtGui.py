@@ -7351,7 +7351,13 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20090320101733.14:toPythonIndexToRowCol
     def toPythonIndexRowCol(self,index):
         print "use idx",index
-        w = self
+
+        if index == '1.0':
+            return 0, 0, 0
+        if index == 'end':
+            index = w.getLastPosition()
+
+        w = self 
         te = self.widget
         print te
         doc = te.document()
