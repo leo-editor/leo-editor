@@ -7350,12 +7350,20 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@-node:ekr.20090320101733.13:toPythonIndex
     #@+node:ekr.20090320101733.14:toPythonIndexToRowCol
     def toPythonIndexRowCol(self,index):
-
+        print "use idx",index
         w = self
-        s = w.getAllText()
-        i = w.toPythonIndex(index)
-        row,col = g.convertPythonIndexToRowCol(s,i)
-        return i,row,col
+        te = self.widget
+        print te
+        doc = te.document()
+        bl = doc.findBlock(index)
+        row = bl.blockNumber()
+        col = index - bl.position()
+
+        #s = w.getAllText()
+        #i = w.toPythonIndex(index)
+        #row,col = g.convertPythonIndexToRowCol(s,i)
+        print "idx",index,row,col
+        return index,row,col
     #@-node:ekr.20090320101733.14:toPythonIndexToRowCol
     #@-node:ekr.20081121105001.523: Indices
     #@+node:ekr.20081121105001.524: Text getters/settters
