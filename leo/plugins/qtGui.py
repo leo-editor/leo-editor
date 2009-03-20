@@ -5333,6 +5333,17 @@ class leoQtColorizer:
 
         return self.language # For use by external routines.
     #@-node:ekr.20090226105328.12:scanColorDirectives (leoQtColorizer)
+    #@+node:ville.20090319181106.135:checkStartKillColor
+    def checkStartKillColor(self):
+        # note that we avoid the slow getAllText at all cost
+        doc = self.w.document()
+        fb = doc.begin() 
+        firstline = unicode(fb.text())
+        if firstline.startswith('@killcolor'):
+            return True
+        return False
+
+    #@-node:ville.20090319181106.135:checkStartKillColor
     #@+node:ekr.20090216070256.11:setHighlighter
     def setHighlighter (self,p):
 
@@ -5359,6 +5370,8 @@ class leoQtColorizer:
 
         trace = False and not g.unitTesting
         p = p.copy()
+        if self.checkStartKillColor():
+            return False
 
         # self.flag is True unless an unambiguous @nocolor is seen.
         self.flag = self.useSyntaxColoring(p)
@@ -5371,6 +5384,9 @@ class leoQtColorizer:
     def useSyntaxColoring (self,p):
 
         """Return True unless p is unambiguously under the control of @nocolor."""
+
+        if self.checkStartKillColor():
+            return False
 
         trace = False and not g.unitTesting
         if not p:
@@ -5491,7 +5507,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
     def highlightBlock (self,s):
         """ Called by QSyntaxHiglighter """
 
-        if self.hasCurrentBlock:
+        if self.hasCurrentBlock and not self.colorizer.checkStartKillColor():
             colorer = self.colorer
             s = unicode(s)
             colorer.recolor(s)
