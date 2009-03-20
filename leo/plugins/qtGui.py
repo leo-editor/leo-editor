@@ -7325,6 +7325,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def toPythonIndex (self,index):
 
         w = self
+        te = self.widget
 
         if type(index) == type(99):
             return index
@@ -7334,14 +7335,20 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             return w.getLastPosition()
         else:
             # g.trace(repr(index))
-            s = w.getAllText()
+            #s = w.getAllText()
+            doc = te.document()
             data = index.split('.')
             if len(data) == 2:
                 row,col = data
                 row,col = int(row),int(col)
-                i = g.convertRowColToPythonIndex(s,row-1,col)
+                bl = doc.findBlockByNumber(row-1)
+                return bl.position() + col
+
+
+                #i = g.convertRowColToPythonIndex(s,row-1,col)
+
                 # g.trace(index,row,col,i,g.callers(6))
-                return i
+                #return i
             else:
                 g.trace('bad string index: %s' % index)
                 return 0
@@ -7361,15 +7368,16 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         te = self.widget
         print te
         doc = te.document()
-        bl = doc.findBlock(index)
+        i = w.toPythonIndex(index)
+        bl = doc.findBlock(i)
         row = bl.blockNumber()
-        col = index - bl.position()
+        col = i - bl.position()
 
         #s = w.getAllText()
         #i = w.toPythonIndex(index)
         #row,col = g.convertPythonIndexToRowCol(s,i)
-        print "idx",index,row,col
-        return index,row,col
+        print "idx",i,row,col
+        return i,row,col
     #@-node:ekr.20090320101733.14:toPythonIndexToRowCol
     #@-node:ekr.20081121105001.523: Indices
     #@+node:ekr.20081121105001.524: Text getters/settters
@@ -7407,11 +7415,32 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@-node:ekr.20081121105001.527:deleteTextSelection
     #@+node:ekr.20081121105001.528:get
     def get(self,i,j=None):
+        i = self.toGuiIndex(i)
+        if j is None: 
+            j = i+1
+        else:
+            j = self.toGuiIndex(j)
+        te = self.widget
+        doc = te.document()
+        bl = doc.findBlock(i)
+        #row = bl.blockNumber()
+        #col = index - bl.position()
 
-        w = self.widget
+        # common case, e.g. one character    
+        if bl.contains(j):
+            s = unicode(bl.text())
+            offset = i - bl.position()
+
+            ret = s[ offset : offset + (j-i)]
+            print "fastget",ret
+            return ret
+
+        # the next implementation is much slower, but will have to do        
+
+        g.trace('Slow get()', g.callers(5))
         s = self.getAllText()
         i = self.toGuiIndex(i)
-        if j is None: j = i+1
+
         j = self.toGuiIndex(j)
         return s[i:j]
     #@-node:ekr.20081121105001.528:get
