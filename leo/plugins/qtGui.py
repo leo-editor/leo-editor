@@ -1502,16 +1502,20 @@ class leoQtFrame (leoFrame.leoFrame):
         #@-node:ekr.20081121105001.264:clear, get & put/1
         #@+node:ekr.20081121105001.265:update
         def update (self):
-
             if g.app.killed: return
             c = self.c ; body = c.frame.body
-            s = body.getAllText()
-            i = body.getInsertPoint()
-            # Compute row,col & fcol
-            row,col = g.convertPythonIndexToRowCol(s,i)
+
+            # QTextEdit
+            te = body.widget.widget
+            cr = te.textCursor()
+            bl = cr.block()
+
+            col = cr.columnNumber()
+            row = bl.blockNumber()
+            line = bl.text()
+
             if col > 0:
-                s2 = s[i-col:i]
-                s2 = g.toUnicode(s2,g.app.tkEncoding)
+                s2 = line[0:col]        
                 col = g.computeWidth (s2,c.tab_width)
             fcol = col + c.currentPosition().textOffset()
             self.put1(
