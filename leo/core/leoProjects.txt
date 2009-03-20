@@ -1780,7 +1780,11 @@ def runTest (self,define_g = True):
 #@+node:ekr.20051104075904.11:shortDescription
 def shortDescription (self):
 
-    return self.p.h + '\n'
+    s = self.p.h
+
+    # g.trace(s)
+
+    return s + '\n'
 #@-node:ekr.20051104075904.11:shortDescription
 #@-node:ekr.20051104075904.5:class generalTestCase
 #@-node:ekr.20090218115025.1:Predefined 'self' in @test/@suite nodes
@@ -4311,15 +4315,12 @@ def setMoveCol (self,w,spot):
     '''Set the column to which an up or down arrow will attempt to move.'''
 
     c = self.c ; p = c.p
-    s = w.getAllText()
-    i = w.toPythonIndex(spot)
-    junk,col = g.convertPythonIndexToRowCol(s,i)
-    # g.trace('spot,i,col',spot,i,col)
+
+    i,row,col = w.toPythonIndexRowCol(spot)
 
     self.moveSpot = i
     self.moveCol = col
     self.moveSpotNode = p.v.t
-#@nonl
 #@-node:ekr.20060209095101:setMoveCol
 #@-node:ekr.20051218170358: helpers
 #@+node:ekr.20081123102100.1:backToHome
@@ -9225,6 +9226,15 @@ def yview (self,*args):                     return 0,0
 tag_config = tag_configure
 #@nonl
 #@-node:ekr.20081031074455.13: do-nothings
+#@+node:ekr.20090320055710.4:toPythonIndexToRowCol (baseText) (may be overridden)
+def toPythonIndexRowCol(self,index):
+
+    w = self
+    s = w.getAllText()
+    i = w.toPythonIndex(index)
+    row,col = g.convertPythonIndexToRowCol(s,i)
+    return i,row,col
+#@-node:ekr.20090320055710.4:toPythonIndexToRowCol (baseText) (may be overridden)
 #@+node:ekr.20070228074312.13:delete
 def delete(self,i,j=None):
 
@@ -13160,6 +13170,18 @@ def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
 #@+node:ekr.20090318091001.1:Fixed autocompletion problems with qt gui
 # The problem was in handling backspace.
 # I added a hack to autoCompleterStateHandler.
+
+@nocolor-node
+
+Starting with  g.b
+
+Type backspace
+
+Tk shows the completions for g., qt does not
+
+Now type a
+
+Tk shows the completions for g.a, qt does not.
 #@nonl
 #@+node:ekr.20061031131434.11:autoCompleterStateHandler
 def autoCompleterStateHandler (self,event):
@@ -24299,15 +24321,12 @@ def setMoveCol (self,w,spot):
     '''Set the column to which an up or down arrow will attempt to move.'''
 
     c = self.c ; p = c.p
-    s = w.getAllText()
-    i = w.toPythonIndex(spot)
-    junk,col = g.convertPythonIndexToRowCol(s,i)
-    # g.trace('spot,i,col',spot,i,col)
+
+    i,row,col = w.toPythonIndexRowCol(spot)
 
     self.moveSpot = i
     self.moveCol = col
     self.moveSpotNode = p.v.t
-#@nonl
 #@-node:ekr.20060209095101:setMoveCol
 #@-node:ekr.20051218170358: helpers
 #@+node:ekr.20081123102100.1:backToHome

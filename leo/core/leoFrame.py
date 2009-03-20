@@ -210,6 +210,15 @@ class baseTextWidget:
     tag_config = tag_configure
     #@nonl
     #@-node:ekr.20081031074455.13: do-nothings
+    #@+node:ekr.20090320055710.4:toPythonIndexToRowCol (baseText) (may be overridden)
+    def toPythonIndexRowCol(self,index):
+
+        w = self
+        s = w.getAllText()
+        i = w.toPythonIndex(index)
+        row,col = g.convertPythonIndexToRowCol(s,i)
+        return i,row,col
+    #@-node:ekr.20090320055710.4:toPythonIndexToRowCol (baseText) (may be overridden)
     #@+node:ekr.20070228074312.13:delete
     def delete(self,i,j=None):
 
@@ -805,7 +814,7 @@ class leoBody:
 
 
     #@+node:ekr.20070424053629:entries
-    #@+node:ekr.20060528100747.1:addEditor
+    #@+node:ekr.20060528100747.1:addEditor (leoBody)
     def addEditor (self,event=None):
 
         '''Add another editor to the body pane.'''
@@ -861,7 +870,7 @@ class leoBody:
         self.selectEditor(w)
         self.updateEditors()
         c.bodyWantsFocusNow()
-    #@-node:ekr.20060528100747.1:addEditor
+    #@-node:ekr.20060528100747.1:addEditor (leoBody)
     #@+node:ekr.20060528132829:assignPositionToEditor
     def assignPositionToEditor (self,p):
 

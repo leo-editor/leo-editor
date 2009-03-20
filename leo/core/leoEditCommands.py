@@ -3654,15 +3654,12 @@ class editCommandsClass (baseEditCommandsClass):
         '''Set the column to which an up or down arrow will attempt to move.'''
 
         c = self.c ; p = c.p
-        s = w.getAllText()
-        i = w.toPythonIndex(spot)
-        junk,col = g.convertPythonIndexToRowCol(s,i)
-        # g.trace('spot,i,col',spot,i,col)
+
+        i,row,col = w.toPythonIndexRowCol(spot)
 
         self.moveSpot = i
         self.moveCol = col
         self.moveSpotNode = p.v.t
-    #@nonl
     #@-node:ekr.20060209095101:setMoveCol
     #@-node:ekr.20051218170358: helpers
     #@+node:ekr.20081123102100.1:backToHome

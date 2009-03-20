@@ -467,17 +467,6 @@ class leoQtBody (leoFrame.leoBody):
         return self.widget.setYScrollPosition(i)
     #@-node:ekr.20081121105001.211:High-level interface to self.widget
     #@+node:ekr.20081121105001.212:Editors (qtBody)
-    # This code uses self.pb, a paned body widget,
-    # created by tkBody.finishCreate.
-    #@+node:ekr.20081121105001.213:createEditorFrame
-    def createEditorFrame (self,pane):
-
-        return None
-
-        # f = Tk.Frame(pane)
-        # f.pack(side='top',expand=1,fill='both')
-        # return f
-    #@-node:ekr.20081121105001.213:createEditorFrame
     #@+node:ekr.20081121105001.214:packEditorLabelWidget
     def packEditorLabelWidget (self,w):
 
@@ -494,67 +483,150 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081121105001.215:entries
     if 1:
         #@    @+others
-        #@+node:ekr.20081121105001.216:addEditor
+        #@+node:ekr.20081121105001.216:addEditor & helpers (qtBody)
+        # An override of leoFrame.addEditor.
+
         def addEditor (self,event=None):
 
             '''Add another editor to the body pane.'''
 
-            self.editorWidgets['1'] = self.c.frame.body.bodyCtrl
+            trace = True and not g.unitTesting
 
-            # c = self.c ; p = c.currentPosition()
+            bodyCtrl = self.c.frame.body.bodyCtrl # A leoQTextEditWidget
+            self.editorWidgets['1'] = bodyCtrl
+            c = self.c ; p = c.currentPosition()
+            self.totalNumberOfEditors += 1
+            self.numberOfEditors += 1
 
-            # self.totalNumberOfEditors += 1
-            # self.numberOfEditors += 1
+            if self.numberOfEditors == 2:
+                # Inject the ivars into the first editor.
+                # The name of the last editor need not be '1'
+                d = self.editorWidgets ; keys = d.keys()
+                if len(keys) == 1:
+                    w_old = d.get(keys[0])
+                    if trace: g.trace('w_old',w_old)
+                    self.updateInjectedIvars(w_old,p)
+                    self.selectLabel(w_old) # Immediately create the label in the old editor.
+                else:
+                    g.trace('can not happen: unexpected editorWidgets',d)
 
-            # if self.numberOfEditors == 2:
-                # # Inject the ivars into the first editor.
-                # # Bug fix: Leo 4.4.8 rc1: The name of the last editor need not be '1'
-                # d = self.editorWidgets ; keys = d.keys()
-                # if len(keys) == 1:
-                    # w_old = d.get(keys[0])
-                    # self.updateInjectedIvars(w_old,p)
-                    # self.selectLabel(w_old) # Immediately create the label in the old editor.
-                # else:
-                    # g.trace('can not happen: unexpected editorWidgets',d)
+            name = '%d' % self.totalNumberOfEditors
 
-            # name = '%d' % self.totalNumberOfEditors
-            # pane = self.pb.add(name)
-            # panes = self.pb.panes()
-            # minSize = float(1.0/float(len(panes)))
-
-            # f = self.createEditorFrame(pane)
-            # 
-            #@nonl
-            #@<< create text widget w >>
-            #@+node:ekr.20081121105001.217:<< create text widget w >>
-            # w = self.createTextWidget(f,name=name,p=p)
-            # w.delete(0,'end')
-            # w.insert('end',p.bodyString())
-            # w.see(0)
-
-            # self.setFontFromConfig(w=w)
-            # self.setColorFromConfig(w=w)
-            # self.createBindings(w=w)
-            # c.k.completeAllBindingsForWidget(w)
-
-            # self.recolorWidget(p,w)
-            #@nonl
-            #@-node:ekr.20081121105001.217:<< create text widget w >>
-            #@nl
-            # self.editorWidgets[name] = w
+            f,w = self.createEditorFrame()
+            self.createEditorWidget(f,name,p,w)
+            self.editorWidgets[name] = w
 
             # for pane in panes:
                 # self.pb.configurepane(pane,size=minSize)
 
             # self.pb.updatelayout()
-            # c.frame.body.bodyCtrl = w
+            if trace: g.trace('w',w)
+            c.frame.body.bodyCtrl = w
 
-            # self.updateInjectedIvars(w,p)
-            # self.selectLabel(w)
-            # self.selectEditor(w)
-            # self.updateEditors()
-            # c.bodyWantsFocusNow()
-        #@-node:ekr.20081121105001.216:addEditor
+            self.updateInjectedIvars(w,p)
+            self.selectLabel(w)
+            self.selectEditor(w)
+            self.updateEditors()
+            c.bodyWantsFocusNow()
+        #@+node:ekr.20081121105001.213:createEditorFrame
+        def createEditorFrame (self):
+
+            f = self.c.frame
+            inner_f = f.top.ui.leo_body_inner_frame
+            body = leoQtBody(f,None)
+            w = body.widget.widget
+
+            inner_f.layout().addWidget(w,0,1)
+            w.setFocus()
+
+            return inner_f,body.widget
+        #@-node:ekr.20081121105001.213:createEditorFrame
+        #@+node:ekr.20081121105001.217:createEditorWidget
+        def createEditorWidget (self,f,name,p,w):
+
+            c = self.c
+
+            g.trace(p.h,w)
+            #### w = self.createTextWidget(f,name,p,w)
+            self.updateInjectedIvars(w,p)
+            w.delete(0,'end')
+            w.insert('end',p.bodyString())
+            w.see(0)
+            ##self.setFontFromConfig(w=w)
+            ##self.setColorFromConfig(w=w)
+            self.createBindings(w=w)
+            c.k.completeAllBindingsForWidget(w)
+            self.recolorWidget(p,w)
+
+            #### return w
+        #@-node:ekr.20081121105001.217:createEditorWidget
+        #@+node:ekr.20090318091009.14:createTextWidget (not used)
+        def createTextWidget (self,parentFrame,name,p,w):
+
+            c = self.c
+
+            # # parentFrame.configure(bg='LightSteelBlue1')
+
+            # # wrap = c.config.getBool('body_pane_wraps')
+            # # wrap = g.choose(wrap,"word","none")
+
+            # Setgrid=1 cause severe problems with the font panel.
+            #### w = leoQTextEditWidget (widget,name,c)
+
+
+            # # bodyBar = Tk.Scrollbar(parentFrame,name='bodyBar')
+
+            # # def yscrollCallback(x,y,bodyBar=bodyBar,w=w):
+                # # # g.trace(x,y,g.callers())
+                # # if hasattr(w,'leo_scrollBarSpot'):
+                    # # w.leo_scrollBarSpot = (x,y)
+                # # return bodyBar.set(x,y)
+
+            # # body['yscrollcommand'] = yscrollCallback # bodyBar.set
+
+            # # bodyBar['command'] =  body.yview
+            # # bodyBar.pack(side="right", fill="y")
+
+            # # # Always create the horizontal bar.
+            # # bodyXBar = Tk.Scrollbar(
+                # # parentFrame,name='bodyXBar',orient="horizontal")
+            # # body['xscrollcommand'] = bodyXBar.set
+            # # bodyXBar['command'] = body.xview
+
+            # # if wrap == "none":
+                # # # g.trace(parentFrame)
+                # # bodyXBar.pack(side="bottom", fill="x")
+
+            # # body.pack(expand=1,fill="both")
+
+            # # self.wrapState = wrap
+
+            # # if 0: # Causes the cursor not to blink.
+                # # body.configure(insertofftime=0)
+
+            # Inject ivars
+            if name == '1':
+                w.leo_p = w.leo_v = None # Will be set when the second editor is created.
+            else:
+                w.leo_p = p.copy()
+                w.leo_v = w.leo_p.v
+
+            w.leo_active = True
+            # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
+            w.leo_bodyBar = None #### bodyBar # 2007/10/31
+            w.leo_bodyXBar = None #### bodyXBar # 2007/10/31
+            w.leo_chapter = None
+            w.leo_frame = parentFrame
+            w.leo_name = name
+            w.leo_label = None
+            w.leo_label_s = None
+            w.leo_scrollBarSpot = None
+            w.leo_insertSpot = None
+            w.leo_selection = None
+
+            #### return w
+        #@-node:ekr.20090318091009.14:createTextWidget (not used)
+        #@-node:ekr.20081121105001.216:addEditor & helpers (qtBody)
         #@+node:ekr.20081121105001.218:assignPositionToEditor
         def assignPositionToEditor (self,p):
 
@@ -6956,7 +7028,7 @@ class jEditColorizer:
 
         '''Return True if s can be synched with self.all_s.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         all_s = self.all_s
         j = min(offset + len(s),len(all_s))
@@ -7229,6 +7301,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         g.app.gui.set_focus(self.c,self.widget)
     #@-node:ekr.20081121105001.522: Focus
     #@+node:ekr.20081121105001.523: Indices
+    #@+node:ekr.20090320101733.13:toPythonIndex
     def toPythonIndex (self,index):
 
         w = self
@@ -7254,6 +7327,16 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 return 0
 
     toGuiIndex = toPythonIndex
+    #@-node:ekr.20090320101733.13:toPythonIndex
+    #@+node:ekr.20090320101733.14:toPythonIndexToRowCol
+    def toPythonIndexRowCol(self,index):
+
+        w = self
+        s = w.getAllText()
+        i = w.toPythonIndex(index)
+        row,col = g.convertPythonIndexToRowCol(s,i)
+        return i,row,col
+    #@-node:ekr.20090320101733.14:toPythonIndexToRowCol
     #@-node:ekr.20081121105001.523: Indices
     #@+node:ekr.20081121105001.524: Text getters/settters
     #@+node:ekr.20081121105001.525:appendText

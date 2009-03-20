@@ -187,7 +187,11 @@ class generalTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.11:shortDescription
     def shortDescription (self):
 
-        return self.p.h + '\n'
+        s = self.p.h
+
+        # g.trace(s)
+
+        return s + '\n'
     #@-node:ekr.20051104075904.11:shortDescription
     #@-others
 #@-node:ekr.20051104075904.5:class generalTestCase

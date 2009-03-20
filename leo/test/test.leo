@@ -369,7 +369,7 @@
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
 </v>
-<v t="ekr.20090317102513.1"><vh>Unicode tests</vh></v>
+<v t="ekr.20090320100846.1"><vh>@test fail</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2793,9 +2793,6 @@ collapse and expand "toplevel", phew, the children have returned</t>
 <t tx="ekr.20090309064612.5"></t>
 <t tx="ekr.20090309065826.1"></t>
 <t tx="ekr.20090316115500.1"></t>
-<t tx="ekr.20090317102513.1">abc
-É
-dee
-</t>
+<t tx="ekr.20090320100846.1">assert False</t>
 </tnodes>
 </leo_file>

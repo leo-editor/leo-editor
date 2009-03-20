@@ -9004,6 +9004,17 @@ class leoTkTextWidget (Tk.Text):
     # def _setSelectionRange(self,i,j):   return self.widget.SetSelection(i,j)
     #@-node:ekr.20081121110412.318:bindings (not used)
     #@+node:ekr.20081121110412.319:Index conversion (leoTextWidget)
+    #@+node:ekr.20090320101733.12:w.toPythonIndexToRowCol
+    # New in Leo 4.6 b1.
+
+    def toPythonIndexRowCol(self,index):
+
+        w = self
+        s = w.getAllText()
+        i = w.toPythonIndex(index)
+        row,col = g.convertPythonIndexToRowCol(s,i)
+        return i,row,col
+    #@-node:ekr.20090320101733.12:w.toPythonIndexToRowCol
     #@+node:ekr.20081121110412.320:w.toGuiIndex
     def toGuiIndex (self,i,s=None):
         '''Convert a Python index to a Tk index as needed.'''
