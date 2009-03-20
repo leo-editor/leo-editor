@@ -1511,7 +1511,7 @@ class leoQtFrame (leoFrame.leoFrame):
             bl = cr.block()
 
             col = cr.columnNumber()
-            row = bl.blockNumber()
+            row = bl.blockNumber() + 1
             line = bl.text()
 
             if col > 0:
@@ -8264,6 +8264,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
     def getAllText(self):
 
+        g.trace("getAllText", g.callers(5))
         w = self.widget
         s = unicode(w.toPlainText())
 
