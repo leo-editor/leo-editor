@@ -7325,7 +7325,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def toPythonIndex (self,index):
 
         w = self
-        te = self.widget
+        g.trace('slow toPythonIndex', g.callers(5))
 
         if type(index) == type(99):
             return index
@@ -7334,21 +7334,15 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         elif index == 'end':
             return w.getLastPosition()
         else:
-            # g.trace(repr(index))
-            #s = w.getAllText()
-            doc = te.document()
+            g.trace(repr(index))
+            s = w.getAllText()
             data = index.split('.')
             if len(data) == 2:
                 row,col = data
                 row,col = int(row),int(col)
-                bl = doc.findBlockByNumber(row-1)
-                return bl.position() + col
-
-
-                #i = g.convertRowColToPythonIndex(s,row-1,col)
-
+                i = g.convertRowColToPythonIndex(s,row-1,col)
                 # g.trace(index,row,col,i,g.callers(6))
-                #return i
+                return i
             else:
                 g.trace('bad string index: %s' % index)
                 return 0
@@ -7357,26 +7351,12 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@-node:ekr.20090320101733.13:toPythonIndex
     #@+node:ekr.20090320101733.14:toPythonIndexToRowCol
     def toPythonIndexRowCol(self,index):
-        print "use idx",index
-
-        if index == '1.0':
-            return 0, 0, 0
-        if index == 'end':
-            index = w.getLastPosition()
-
-        w = self 
-        te = self.widget
-        print te
-        doc = te.document()
+        """ Slow 'default' implementation """
+        g.trace('slow toPythonIndexRowCol', g.callers(5))
+        w = self
+        s = w.getAllText()
         i = w.toPythonIndex(index)
-        bl = doc.findBlock(i)
-        row = bl.blockNumber()
-        col = i - bl.position()
-
-        #s = w.getAllText()
-        #i = w.toPythonIndex(index)
-        #row,col = g.convertPythonIndexToRowCol(s,i)
-        print "idx",i,row,col
+        row,col = g.convertPythonIndexToRowCol(s,i)
         return i,row,col
     #@-node:ekr.20090320101733.14:toPythonIndexToRowCol
     #@-node:ekr.20081121105001.523: Indices
@@ -8470,6 +8450,66 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             pos = pos[0]
         sb.setSliderPosition(pos)
     #@-node:ekr.20081121105001.591:setYScrollPosition
+    #@+node:ville.20090321082712.1: Indices
+    #@+node:ville.20090321082712.2:toPythonIndex
+    def toPythonIndex (self,index):
+
+        w = self
+        te = self.widget
+
+        if type(index) == type(99):
+            return index
+        elif index == '1.0':
+            return 0
+        elif index == 'end':
+            return w.getLastPosition()
+        else:
+            # g.trace(repr(index))
+            #s = w.getAllText()
+            doc = te.document()
+            data = index.split('.')
+            if len(data) == 2:
+                row,col = data
+                row,col = int(row),int(col)
+                bl = doc.findBlockByNumber(row-1)
+                return bl.position() + col
+
+
+                #i = g.convertRowColToPythonIndex(s,row-1,col)
+
+                # g.trace(index,row,col,i,g.callers(6))
+                #return i
+            else:
+                g.trace('bad string index: %s' % index)
+                return 0
+
+    toGuiIndex = toPythonIndex
+    #@-node:ville.20090321082712.2:toPythonIndex
+    #@+node:ville.20090321082712.3:toPythonIndexToRowCol
+    def toPythonIndexRowCol(self,index):
+        print "use idx",index
+
+        if index == '1.0':
+            return 0, 0, 0
+        if index == 'end':
+            index = w.getLastPosition()
+
+        w = self 
+        te = self.widget
+        print te
+        doc = te.document()
+        i = w.toPythonIndex(index)
+        bl = doc.findBlock(i)
+        row = bl.blockNumber()
+        col = i - bl.position()
+
+        #s = w.getAllText()
+        #i = w.toPythonIndex(index)
+        #row,col = g.convertPythonIndexToRowCol(s,i)
+        print "idx",i,row,col
+        return i,row,col
+    #@-node:ville.20090321082712.3:toPythonIndexToRowCol
+    #@-node:ville.20090321082712.1: Indices
     #@-node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
     #@-others
 #@-node:ekr.20081121105001.572: class leoQTextEditWidget
