@@ -2,10 +2,21 @@
 #@+node:ville.20090317180704.7:@thin ctagscompleter.py
 #@<< docstring >>
 #@+node:ville.20090317180704.8:<< docstring >>
-''' This plugin adds a fast-to-use search widget, in the style of "Find in files" feature of many editors
+''' This plugin uses ctags to provide autocompletion list
 
-Just load the plugin, activate "Nav" tab, enter search text and press enter.
+Requirements:
 
+    - (exuberant) ctags
+    - grep
+
+Usage:
+
+    - You need to create ctags file to ~/.leo/tags. Example::
+
+        cd ~/.leo
+        ctags -R /usr/lib/python2.5 ~/leo-editor ~/my-project
+
+    - Enter text you want to complete and press alt+0 to show completions
 
 '''
 #@-node:ville.20090317180704.8:<< docstring >>
@@ -64,7 +75,11 @@ import os
 
 def ctags_lookup(prefix):
     # insecure
-    return set(l.split(None,1)[0] for l in os.popen('grep "^%s" ~/.leo/tags' % prefix))
+    assert os.path.isfile(os.path.expanduser('~/.leo/tags'))
+    s = set(l.split(None,1)[0] for l in os.popen('grep "^%s" ~/.leo/tags' % prefix))
+    l = list(s)
+    l.sort()
+    return l
 
 def getCurrentWord(s, pos):
     i = pos-1
@@ -90,9 +105,8 @@ def ctags_complete(event):
     txt = tc.selectedText()
 
     hits = ctags_lookup(txt)
-    print "hits",hits
 
-    cpl = c.frame.top.completer = QCompleter(list(hits))
+    cpl = c.frame.top.completer = QCompleter(hits)
     cpl.setWidget(body)
     f = mkins(cpl, body)
     cpl.setCompletionPrefix(txt)
