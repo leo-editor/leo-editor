@@ -80,11 +80,13 @@ def show_unittest_failures(event):
                 pos = p.copy()
                 break
 
-        def focus():
-            g.es(stack)
-            c.selectPosition(pos)        
+        def mkcb(pos, stack):
+            def focus():            
+                g.es(stack)
+                c.selectPosition(pos)        
+            return focus
 
-        it = nav.scon.addGeneric(pos.h, focus)
+        it = nav.scon.addGeneric(pos.h, mkcb(pos,stack))
         it.setToolTip(stack)
     c.k.simulateCommand('focus-to-nav')    
 
