@@ -6,7 +6,7 @@
 
 Requirements:
 
-    - (exuberant) ctags
+    - Exuberant Ctags
     - grep
 
 Usage:
@@ -17,6 +17,14 @@ Usage:
         ctags -R /usr/lib/python2.5 ~/leo-editor ~/my-project
 
     - Enter text you want to complete and press alt+0 to show completions
+      (or bind/execute ctags-complete command yourself).
+
+Exuberant Ctags supports wide array of programming languages. It does not
+do type inference, so you need to remember at least the start 
+of the function yourself. That is, attempting to complete 'foo->'
+is useless, but 'foo->ba' will work (provided you don't have 2000 
+functions/methods starting with 'ba'. 'foo->' portion is ignored in completion
+search.
 
 '''
 #@-node:ville.20090317180704.8:<< docstring >>
@@ -67,8 +75,7 @@ def onCreate (tag, keys):
     c = keys.get('c')
     if not c: return
 
-    install_wordcompleter(c)
-
+    install_ctags_completer(c)
 #@-node:ville.20090317180704.12:onCreate
 #@+node:ville.20090321223959.2:ctags_lookup
 import os,re
@@ -90,12 +97,6 @@ def ctags_lookup(prefix):
     l = list(set(desc))
     l.sort()
     return l
-
-def getCurrentWord(s, pos):
-    i = pos-1
-    while i>=0 and wordsep.find(s[i]) < 0:
-         i -= 1
-    return s[i+1:pos]
 
 def mkins(completer, body):
     def insertCompletion(completion):
@@ -125,12 +126,8 @@ def ctags_complete(event):
     cpl.connect(cpl, QtCore.SIGNAL("activated(QString)"), f)    
     cpl.complete()
 #@-node:ville.20090321223959.2:ctags_lookup
-#@+node:ville.20090317180704.16:install_wordcompleter
-from PyQt4.QtGui import QCompleter
-
-g_completer = None
-
-def install_wordcompleter(c):
+#@+node:ville.20090317180704.16:install_ctags_completer
+def install_ctags_completer(c):
     c.k.registerCommand(
             'ctags-complete','Alt-0',ctags_complete)
 
@@ -138,7 +135,7 @@ def install_wordcompleter(c):
 
 
 
-#@-node:ville.20090317180704.16:install_wordcompleter
+#@-node:ville.20090317180704.16:install_ctags_completer
 #@-others
 #@nonl
 #@-node:ville.20090317180704.7:@thin ctagscompleter.py
