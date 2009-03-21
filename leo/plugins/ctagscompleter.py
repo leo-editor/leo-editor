@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ville.20090317180704.7:@thin wordcompleter.py
+#@+node:ville.20090317180704.7:@thin ctagscompleter.py
 #@<< docstring >>
 #@+node:ville.20090317180704.8:<< docstring >>
 ''' This plugin adds a fast-to-use search widget, in the style of "Find in files" feature of many editors
@@ -106,7 +106,7 @@ g_completer = None
 
 def install_wordcompleter(c):
     c.k.registerCommand(
-            'ctags-complete','Alt+Space',ctags_complete)
+            'ctags-complete','Alt-0',ctags_complete)
 
 
 
@@ -115,5 +115,5 @@ def install_wordcompleter(c):
 #@-node:ville.20090317180704.16:install_wordcompleter
 #@-others
 #@nonl
-#@-node:ville.20090317180704.7:@thin wordcompleter.py
+#@-node:ville.20090317180704.7:@thin ctagscompleter.py
 #@-leo
