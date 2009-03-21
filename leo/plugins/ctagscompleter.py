@@ -71,13 +71,23 @@ def onCreate (tag, keys):
 
 #@-node:ville.20090317180704.12:onCreate
 #@+node:ville.20090321223959.2:ctags_lookup
-import os
+import os,re
 
 def ctags_lookup(prefix):
     # insecure
     assert os.path.isfile(os.path.expanduser('~/.leo/tags'))
-    s = set(l.split(None,1)[0] for l in os.popen('grep "^%s" ~/.leo/tags' % prefix))
-    l = list(s)
+
+    hits = (l.split(None,1) for l in os.popen('grep "^%s" ~/.leo/tags' % prefix))
+
+    desc = []
+    for h in hits:
+        s = h[0]
+        m = re.findall('class:(\w+)',h[1])
+        if m:
+            s+= "\t" + m[0]
+        desc.append(s)
+
+    l = list(set(desc))
     l.sort()
     return l
 
@@ -89,11 +99,13 @@ def getCurrentWord(s, pos):
 
 def mkins(completer, body):
     def insertCompletion(completion):
+        cmpl = unicode(completion).split(None,1)[0]
+
         tc = body.textCursor()
-        extra = completion.length() - completer.completionPrefix().length()
+        extra = len(cmpl) - completer.completionPrefix().length()
         tc.movePosition(QtGui.QTextCursor.Left)
         tc.movePosition(QtGui.QTextCursor.EndOfWord)
-        tc.insertText(completion.right(extra))
+        tc.insertText(cmpl[-extra:])
         body.setTextCursor(tc)
     return insertCompletion
 
