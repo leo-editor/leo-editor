@@ -64,6 +64,30 @@ import qt_quicksearch
 
 global qsWidget
 
+def show_unittest_failures(event):
+    c = event.get('c')
+    fails = c.db['unittest/cur/fail']
+    print fails
+    nav = c.frame.nav
+    #print nav
+
+    nav.scon.clear()
+    for gnx, stack in fails:
+        pos = None
+        # sucks
+        for p in c.allNodes_iter():
+            if p.gnx == gnx:
+                pos = p.copy()
+                break
+
+        def focus():
+            g.es(stack)
+            c.selectPosition(pos)        
+
+        it = nav.scon.addGeneric(pos.h, focus)
+        it.setToolTip(stack)
+    c.k.simulateCommand('focus-to-nav')    
+
 def install_qt_quicksearch_tab(c):
     #tabw = c.frame.top.tabWidget
 
@@ -77,8 +101,18 @@ def install_qt_quicksearch_tab(c):
         wdg.ui.lineEdit.setText('')
         wdg.ui.lineEdit.setFocus()
 
+    def focus_to_nav(event):
+        c.frame.log.selectTab('Nav')
+        wdg.ui.listWidget.setFocus()
+
     c.k.registerCommand(
             'find-quick','Ctrl-Shift-f',focus_quicksearch_entry)
+    c.k.registerCommand(
+            'focus-to-nav', None,focus_to_nav)
+    c.k.registerCommand(
+            'find-quick-test-failures', None,show_unittest_failures)
+
+    c.frame.nav = wdg            
 
 class LeoQuickSearchWidget(QtGui.QWidget):
     """ 'Find in files'/grep style search widget """
@@ -131,15 +165,21 @@ class QuickSearchController:
                 QtCore.SIGNAL("itemPressed(QListWidgetItem*)"),
                 self.selectItem)        
     def selectItem(self, it):
-        #print "selected",it
-        p, pos = self.its[it]
-        self.c.selectPosition(p)
-        if pos is not None:
-            st, en = pos
-            w = self.c.frame.body.bodyCtrl
-            w.setSelectionRange(st,en)
-            w.seeInsertPoint()
-        self.lw.setFocus()
+
+        tgt = self.its[it]
+        # generic callable
+        if callable(tgt):
+            tgt()
+        elif len(tgt) == 2:            
+            #print "selected",it
+            p, pos = tgt
+            self.c.selectPosition(p)
+            if pos is not None:
+                st, en = pos
+                w = self.c.frame.body.bodyCtrl
+                w.setSelectionRange(st,en)
+                w.seeInsertPoint()
+            self.lw.setFocus()
 
     def addHeadlineMatches(self, poslist):
         for p in poslist:
@@ -164,9 +204,18 @@ class QuickSearchController:
                 it =  QListWidgetItem(ml, self.lw);    
                 self.its[it] = (p, pos)
 
-    def doSearch(self, pat):
+    def addGeneric(self, text, f):
+        """ Add generic callback """
+        it =  QListWidgetItem(text, self.lw)
+        self.its[it] = f
+        return it
+
+    def clear(self):
         self.its = {}
         self.lw.clear()
+
+    def doSearch(self, pat):
+        self.clear()
         hm = self.c.find_h(pat)
         self.addHeadlineMatches(hm)
         bm = self.c.find_b(pat)
