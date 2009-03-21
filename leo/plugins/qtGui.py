@@ -5344,7 +5344,10 @@ class leoQtColorizer:
         fb = doc.begin() 
         firstline = unicode(fb.text())
         if firstline.startswith('@killcolor'):
+            g.trace('have @killcolor')
+            self.killColorFlag = True
             return True
+
         return False
 
     #@-node:ville.20090319181106.135:checkStartKillColor
@@ -5374,8 +5377,6 @@ class leoQtColorizer:
 
         trace = False and not g.unitTesting
         p = p.copy()
-        if self.checkStartKillColor():
-            return False
 
         # self.flag is True unless an unambiguous @nocolor is seen.
         self.flag = self.useSyntaxColoring(p)
@@ -5511,7 +5512,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
     def highlightBlock (self,s):
         """ Called by QSyntaxHiglighter """
 
-        if self.hasCurrentBlock and not self.colorizer.checkStartKillColor():
+        if self.hasCurrentBlock and not self.colorizer.killColorFlag:
             colorer = self.colorer
             s = unicode(s)
             colorer.recolor(s)
@@ -6974,6 +6975,10 @@ class jEditColorizer:
         # Reload all_s if the widget's text is known to have changed.
         if self.initFlag:
             self.initFlag = False
+            if self.colorizer.checkStartKillColor():
+                self.all_s = None
+                return 
+
             self.all_s = self.w.getAllText()
             if trace and verbose:
                 g.trace('**** set all_s: %s' % len(self.all_s),g.callers(5))
