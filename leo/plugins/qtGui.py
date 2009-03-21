@@ -8455,7 +8455,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             pos = pos[0]
         sb.setSliderPosition(pos)
     #@-node:ekr.20081121105001.591:setYScrollPosition
-    #@+node:ville.20090321082712.1: Indices
+    #@+node:ville.20090321082712.1: PythonIndex
     #@+node:ville.20090321082712.2:toPythonIndex
     def toPythonIndex (self,index):
 
@@ -8492,7 +8492,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@-node:ville.20090321082712.2:toPythonIndex
     #@+node:ville.20090321082712.3:toPythonIndexToRowCol
     def toPythonIndexRowCol(self,index):
-        print "use idx",index
+        #print "use idx",index
 
         if index == '1.0':
             return 0, 0, 0
@@ -8501,7 +8501,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         w = self 
         te = self.widget
-        print te
+        #print te
         doc = te.document()
         i = w.toPythonIndex(index)
         bl = doc.findBlock(i)
@@ -8511,10 +8511,10 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         #s = w.getAllText()
         #i = w.toPythonIndex(index)
         #row,col = g.convertPythonIndexToRowCol(s,i)
-        print "idx",i,row,col
+        #print "idx",i,row,col
         return i,row,col
     #@-node:ville.20090321082712.3:toPythonIndexToRowCol
-    #@-node:ville.20090321082712.1: Indices
+    #@-node:ville.20090321082712.1: PythonIndex
     #@-node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
     #@-others
 #@-node:ekr.20081121105001.572: class leoQTextEditWidget
