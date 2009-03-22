@@ -27,6 +27,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 #@+node:ekr.20081121105001.574:ctor
 def __init__ (self,widget,name,c=None):
 
+    # widget is a QTextEdit.
+
     # Init the base class.
     leoQtBaseTextWidget.__init__(self,widget,name,c=c)
 
@@ -38,6 +40,9 @@ def __init__ (self,widget,name,c=None):
     self.setFontFromConfig()
     self.setColorFromConfig()
     # self.setScrollBarOrientation()
+
+    # Override the mouse handler
+    #### widget.mouseReleaseEvent = self.mouseReleaseEvent
 #@-node:ekr.20081121105001.574:ctor
 #@+node:ekr.20081121105001.575:setFontFromConfig
 def setFontFromConfig (self,w=None):
@@ -140,6 +145,17 @@ def setConfig (self):
     # orientation = c.config.getString(jk13ab02xy04)
 #@-node:ekr.20090303095630.10:setScrollBarOrientation (QTextEdit)
 #@-node:ekr.20081121105001.573:Birth
+#@+node:ekr.20090322092751.1:mouseReleaseEvent (not used)
+def mouseReleaseEvent (self,event):
+
+    '''An override of the self.widget.mouseReleaseEvent,
+    monkey-patched by the leoQTextEditWidget ctor.'''
+
+    g.trace(self,event,self.widget)
+    # self.c.frame.tree.endEditLabel()
+    self.c.endEditing()
+    event.ignore()
+#@-node:ekr.20090322092751.1:mouseReleaseEvent (not used)
 #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
 #@+node:ekr.20090205153624.11:delete (avoid call to setAllText)
 def delete(self,i,j=None):
@@ -331,9 +347,14 @@ def setAllText(self,s,insert=None):
 def setInsertPoint(self,i):
 
     w = self.widget
+
     s = w.toPlainText()
-    cursor = w.textCursor()
     i = max(0,min(i,len(s)))
+    cursor = w.textCursor()
+
+    # block = cursor.block()
+    # i = max(0,min(i,block.length()))
+
     cursor.setPosition(i)
     w.setTextCursor(cursor)
 #@-node:ekr.20081121105001.588:setInsertPoint
@@ -516,11 +537,12 @@ def __init__ (self,frame,parentFrame):
         self.bodyCtrl = w # The widget as seen from Leo's core.
         self.colorizer = leoColor.nullColorizer(c)
     else:
-        top = c.frame.top ; sw = top.ui.stackedWidget
+        top = c.frame.top
+        sw = top.ui.stackedWidget
+        qtWidget = top.ui.richTextEdit # A QTextEdit.
         sw.setCurrentIndex(1)
         self.widget = w = leoQTextEditWidget(
-            top.ui.richTextEdit,
-            name = 'body',c=c) # A QTextEdit.
+            qtWidget,name = 'body',c=c)
         self.bodyCtrl = w # The widget as seen from Leo's core.
 
         # Hook up the QSyntaxHighlighter
@@ -764,9 +786,10 @@ def createEditorFrame (self):
 #@+node:ekr.20081121105001.217:createEditorWidget
 def createEditorWidget (self,f,name,p,w):
 
+    trace = False and not g.unitTesting
     c = self.c
 
-    g.trace(p.h,w)
+    if trace: g.trace(p.h,w)
     #### w = self.createTextWidget(f,name,p,w)
     self.updateInjectedIvars(w,p)
     w.delete(0,'end')
@@ -2396,9 +2419,10 @@ def createEditorFrame (self):
 #@+node:ekr.20081121105001.217:createEditorWidget
 def createEditorWidget (self,f,name,p,w):
 
+    trace = False and not g.unitTesting
     c = self.c
 
-    g.trace(p.h,w)
+    if trace: g.trace(p.h,w)
     #### w = self.createTextWidget(f,name,p,w)
     self.updateInjectedIvars(w,p)
     w.delete(0,'end')
@@ -2895,9 +2919,10 @@ def createEditorFrame (self):
 #@+node:ekr.20081121105001.217:createEditorWidget
 def createEditorWidget (self,f,name,p,w):
 
+    trace = False and not g.unitTesting
     c = self.c
 
-    g.trace(p.h,w)
+    if trace: g.trace(p.h,w)
     #### w = self.createTextWidget(f,name,p,w)
     self.updateInjectedIvars(w,p)
     w.delete(0,'end')
@@ -3005,10 +3030,6 @@ def selectLabel (self,w):
         # w.leo_label = None
 #@-node:ekr.20081121105001.222:select/unselectLabel
 #@-node:ekr.20081215162017.5:Support multiple body editors
-#@+node:ekr.20090318091009.11:Fix reverting headline problem
-# Happens when lose/restore focus to another app, before hitting <return>
-#@nonl
-#@-node:ekr.20090318091009.11:Fix reverting headline problem
 #@+node:ekr.20090318091009.10:Fix undo problems with qt gui
 #@-node:ekr.20090318091009.10:Fix undo problems with qt gui
 #@+node:ekr.20090318091009.12:Script errors mess up syntax coloring
@@ -3232,7 +3253,7 @@ def getTextFromClipboard (self):
 #@-node:ekr.20081121105001.183:Clipboard (qtGui)
 #@-node:ekr.20081215074704.15:Cut/paste work erratically
 #@+node:ekr.20090128173959.1:Fixed headline reversion
-#@+node:ekr.20090126120517.22:getItemText (debugging only)
+#@+node:ekr.20090126120517.22:getItemText
 def getItemText (self,item):
 
     '''Return the text of the item.'''
@@ -3242,11 +3263,11 @@ def getItemText (self,item):
     else:
         return '<no item>'
 #@nonl
-#@-node:ekr.20090126120517.22:getItemText (debugging only)
+#@-node:ekr.20090126120517.22:getItemText
 #@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
 # Tricky code: do not change without careful thought and testing.
 
-def onHeadChanged (self,p,undoType='Typing',s=None):
+def onHeadChanged (self,p,undoType='Typing',s=None,e=None):
 
     '''Officially change a headline.'''
 
@@ -3255,46 +3276,22 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
 
     c = self.c ; u = c.undoer
     if not p:
-        if trace: g.trace('*** no p')
+        if trace: g.trace('** no p')
         return
 
     item = self.getCurrentItem()
-    e = self.getTreeEditorForItem(item)
     if not e:
-        if trace and verbose: g.trace('*** not editing***')
+        e = self.getTreeEditorForItem(item)
+    if not e:
+        if trace and verbose: g.trace('** not editing')
         return
 
-    s = e.text()
+    s = unicode(e.text())
     self.closeEditorHelper(e,item)
-
-    # if 0:
-        # item = self.position2item(p)
-        # if not item:
-            # # This is not an error.
-            # if trace: g.trace('no item for p: %s' % (p))
-            # return
-
-        # w = g.app.gui.get_focus()
-        # ew = self.edit_widget(p)
-        # if ew: e = ew.widget
-        # else: e = None
-
-    # These are not errors: focus may have been lost.
-    # if trace and verbose:
-        # if not e:  g.trace('No e',g.callers(4))
-        # if e != w: g.trace('e != w',e,w,g.callers(4))
-        # if not p:  g.trace('No p')
-
-    # if e and e == w:
-        # s = e.text() ; len_s = len(s)
-        # s = g.app.gui.toUnicode(s)
-    # else:
-        # s = self.getItemText(item)
-
     oldHead = p.h
     changed = s != oldHead
+    if trace: g.trace('new',repr(s),'old',p.h,g.callers())
     if changed:
-        if trace: g.trace('changed',repr(s),p.h)
         p.initHeadString(s)
         item.setText(0,s) # Required to avoid full redraw.
         undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
@@ -4601,114 +4598,6 @@ def redraw_after_select (self,p=None):
     # Do not call it again here.
 #@-node:ekr.20090124174652.28:redraw_after_select
 #@-node:ekr.20090226094019.1:Fixed bug: No headline selected after return
-#@+node:ekr.20090302100414.10:Fixed alt-tab problems
-# It was not always restoring focus or headline selection
-#@+node:ekr.20081121105001.491:Focus (qtGui)
-def get_focus(self,c=None):
-
-    """Returns the widget that has focus."""
-
-    w = QtGui.QApplication.focusWidget()
-    # g.trace('leoQtGui',w)
-    return w
-
-def set_focus(self,c,w):
-
-    """Put the focus on the widget."""
-
-    trace = False and not g.unitTesting
-
-    if w:
-        if trace: g.trace('leoQtGui',w,g.callers(4))
-        w.setFocus()
-#@-node:ekr.20081121105001.491:Focus (qtGui)
-#@+node:ekr.20090123150451.11:onActivateEvent (qtGui)
-def onActivateEvent (self,event,c,obj,tag):
-
-    '''Put the focus in the body pane when the Leo window is
-    activated, say as the result of an Alt-tab or click.'''
-
-    trace = False and not g.unitTesting
-
-    # This is called several times for each window activation.
-    # We only need to set the focus once.
-
-    if c.exists and tag == 'body':
-        if trace: g.trace('Activate',tag)
-        c.redraw_now()
-        c.bodyWantsFocusNow()
-        c.outerUpdate() # Required because this is an event handler.
-#@-node:ekr.20090123150451.11:onActivateEvent (qtGui)
-#@-node:ekr.20090302100414.10:Fixed alt-tab problems
-#@+node:ekr.20090226105328.18:Ctrl-S destroys headline selection
-# The ctrl-s problem happens when editing body text.
-# The fix was to redraw_after_icons_changed.
-#@nonl
-#@+node:ekr.20090123150451.11:onActivateEvent (qtGui)
-def onActivateEvent (self,event,c,obj,tag):
-
-    '''Put the focus in the body pane when the Leo window is
-    activated, say as the result of an Alt-tab or click.'''
-
-    trace = False and not g.unitTesting
-
-    # This is called several times for each window activation.
-    # We only need to set the focus once.
-
-    if c.exists and tag == 'body':
-        if trace: g.trace('Activate',tag)
-        c.redraw_now()
-        c.bodyWantsFocusNow()
-        c.outerUpdate() # Required because this is an event handler.
-#@-node:ekr.20090123150451.11:onActivateEvent (qtGui)
-#@+node:ekr.20090124174652.28:redraw_after_select
-# Important: this can not replace before/afterSelectHint.
-
-def redraw_after_select (self,p=None):
-
-    '''Redraw the entire tree when an invisible node
-    is selected.'''
-
-    trace = False and not g.unitTesting
-
-    if trace: g.trace('(leoQtTree) busy? %s %s' % (
-        self.busy(),p and p.h or '<no p>'),g.callers(4))
-
-    # Prevent the selecting lockout from disabling the redraw.
-    oldSelecting = self.selecting
-    self.selecting = False
-    try:
-        if not self.busy():
-            self.full_redraw(p,scroll=False)
-    finally:
-        self.selecting = oldSelecting
-
-    # c.redraw_after_select calls tree.select indirectly.
-    # Do not call it again here.
-#@-node:ekr.20090124174652.28:redraw_after_select
-#@+node:ekr.20090124174652.27:redraw_after_icons_changed
-def redraw_after_icons_changed (self):
-
-    trace = False and not g.unitTesting
-
-    if self.busy(): return
-
-    self.redrawCount += 1 # To keep a unit test happy.
-
-    c = self.c
-
-    if trace: g.trace(c.p.h,g.callers(4))
-
-    # Suppress call to setHeadString in onItemChanged!
-    self.redrawing = True
-    try:
-        item = self.getCurrentItem()
-        for p in c.rootPosition().self_and_siblings_iter():
-            self.updateVisibleIcons(p)
-    finally:
-        self.redrawing = False
-#@-node:ekr.20090124174652.27:redraw_after_icons_changed
-#@-node:ekr.20090226105328.18:Ctrl-S destroys headline selection
 #@+node:ekr.20090303084544.10:Syntax coloring problem
 # OMG, the problem was in a match_mark_prev.
 # The solution: set self.prev to False in recolor.
@@ -5316,11 +5205,12 @@ def __init__ (self,frame,parentFrame):
         self.bodyCtrl = w # The widget as seen from Leo's core.
         self.colorizer = leoColor.nullColorizer(c)
     else:
-        top = c.frame.top ; sw = top.ui.stackedWidget
+        top = c.frame.top
+        sw = top.ui.stackedWidget
+        qtWidget = top.ui.richTextEdit # A QTextEdit.
         sw.setCurrentIndex(1)
         self.widget = w = leoQTextEditWidget(
-            top.ui.richTextEdit,
-            name = 'body',c=c) # A QTextEdit.
+            qtWidget,name = 'body',c=c)
         self.bodyCtrl = w # The widget as seen from Leo's core.
 
         # Hook up the QSyntaxHighlighter
@@ -5369,6 +5259,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 #@+node:ekr.20081121105001.574:ctor
 def __init__ (self,widget,name,c=None):
 
+    # widget is a QTextEdit.
+
     # Init the base class.
     leoQtBaseTextWidget.__init__(self,widget,name,c=c)
 
@@ -5380,6 +5272,9 @@ def __init__ (self,widget,name,c=None):
     self.setFontFromConfig()
     self.setColorFromConfig()
     # self.setScrollBarOrientation()
+
+    # Override the mouse handler
+    #### widget.mouseReleaseEvent = self.mouseReleaseEvent
 #@-node:ekr.20081121105001.574:ctor
 #@+node:ekr.20081121105001.575:setFontFromConfig
 def setFontFromConfig (self,w=None):
@@ -5482,6 +5377,17 @@ def setConfig (self):
     # orientation = c.config.getString(jk13ab02xy04)
 #@-node:ekr.20090303095630.10:setScrollBarOrientation (QTextEdit)
 #@-node:ekr.20081121105001.573:Birth
+#@+node:ekr.20090322092751.1:mouseReleaseEvent (not used)
+def mouseReleaseEvent (self,event):
+
+    '''An override of the self.widget.mouseReleaseEvent,
+    monkey-patched by the leoQTextEditWidget ctor.'''
+
+    g.trace(self,event,self.widget)
+    # self.c.frame.tree.endEditLabel()
+    self.c.endEditing()
+    event.ignore()
+#@-node:ekr.20090322092751.1:mouseReleaseEvent (not used)
 #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
 #@+node:ekr.20090205153624.11:delete (avoid call to setAllText)
 def delete(self,i,j=None):
@@ -5673,9 +5579,14 @@ def setAllText(self,s,insert=None):
 def setInsertPoint(self,i):
 
     w = self.widget
+
     s = w.toPlainText()
-    cursor = w.textCursor()
     i = max(0,min(i,len(s)))
+    cursor = w.textCursor()
+
+    # block = cursor.block()
+    # i = max(0,min(i,block.length()))
+
     cursor.setPosition(i)
     w.setTextCursor(cursor)
 #@-node:ekr.20081121105001.588:setInsertPoint
@@ -5767,158 +5678,6 @@ def toggleQtSplitDirection (self,verticalFlag):
 #@-node:ekr.20081121105001.311:toggleQtSplitDirection
 #@-node:ekr.20081121105001.310:toggleSplitDirection (qtFrame)
 #@-node:ekr.20090223065019.12:Swap scroll bars when orientation changes
-#@+node:ekr.20090302135940.11:Ctrl-s does not completely end editing
-@nocolor-node
-
-There are 3 cases:
-
-- Ctrl-s in headline.
-- Ctrl-s in body.
-- Return in headline.
-#@nonl
-#@+node:ekr.20090124174652.58:endEditLabel (nativeTree)
-def endEditLabel (self):
-
-    '''Override leoTree.endEditLabel.
-
-    End editing of the presently-selected headline.'''
-
-    c = self.c ; p = c.currentPosition()
-
-    self.onHeadChanged(p)
-#@nonl
-#@-node:ekr.20090124174652.58:endEditLabel (nativeTree)
-#@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
-# Tricky code: do not change without careful thought and testing.
-
-def onHeadChanged (self,p,undoType='Typing',s=None):
-
-    '''Officially change a headline.'''
-
-    trace = False and not g.unitTesting
-    verbose = False
-
-    c = self.c ; u = c.undoer
-    if not p:
-        if trace: g.trace('*** no p')
-        return
-
-    item = self.getCurrentItem()
-    e = self.getTreeEditorForItem(item)
-    if not e:
-        if trace and verbose: g.trace('*** not editing***')
-        return
-
-    s = e.text()
-    self.closeEditorHelper(e,item)
-
-    # if 0:
-        # item = self.position2item(p)
-        # if not item:
-            # # This is not an error.
-            # if trace: g.trace('no item for p: %s' % (p))
-            # return
-
-        # w = g.app.gui.get_focus()
-        # ew = self.edit_widget(p)
-        # if ew: e = ew.widget
-        # else: e = None
-
-    # These are not errors: focus may have been lost.
-    # if trace and verbose:
-        # if not e:  g.trace('No e',g.callers(4))
-        # if e != w: g.trace('e != w',e,w,g.callers(4))
-        # if not p:  g.trace('No p')
-
-    # if e and e == w:
-        # s = e.text() ; len_s = len(s)
-        # s = g.app.gui.toUnicode(s)
-    # else:
-        # s = self.getItemText(item)
-
-    oldHead = p.h
-    changed = s != oldHead
-    if changed:
-        if trace: g.trace('changed',repr(s),p.h)
-        p.initHeadString(s)
-        item.setText(0,s) # Required to avoid full redraw.
-        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
-        if not c.changed: c.setChanged(True)
-        # New in Leo 4.4.5: we must recolor the body because
-        # the headline may contain directives.
-        c.frame.body.recolor(p,incremental=True)
-        dirtyVnodeList = p.setDirty()
-        u.afterChangeNodeContents(p,undoType,undoData,
-            dirtyVnodeList=dirtyVnodeList)
-
-    # This is a crucial shortcut.
-    if g.unitTesting: return
-
-    self.redraw_after_head_changed()
-
-    if self.stayInTree:
-        c.treeWantsFocus()
-    else:
-        c.bodyWantsFocus()
-    c.outerUpdate()
-#@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
-#@+node:ekr.20090124174652.27:redraw_after_icons_changed
-def redraw_after_icons_changed (self):
-
-    trace = False and not g.unitTesting
-
-    if self.busy(): return
-
-    self.redrawCount += 1 # To keep a unit test happy.
-
-    c = self.c
-
-    if trace: g.trace(c.p.h,g.callers(4))
-
-    # Suppress call to setHeadString in onItemChanged!
-    self.redrawing = True
-    try:
-        item = self.getCurrentItem()
-        for p in c.rootPosition().self_and_siblings_iter():
-            self.updateVisibleIcons(p)
-    finally:
-        self.redrawing = False
-#@-node:ekr.20090124174652.27:redraw_after_icons_changed
-#@+node:ekr.20090124174652.26:redraw_after_head_changed
-def redraw_after_head_changed (self):
-
-    trace = False and not g.unitTesting
-
-    if self.busy(): return
-
-    c = self.c ; p = c.currentPosition()
-    ew = self.edit_widget(p)
-
-    if trace: g.trace(p.h)
-
-    currentItem = self.getCurrentItem()
-
-    if p:
-        for item in self.tnode2items(p.v.t):
-            if self.isValidItem(item):
-                self.setItemText(item,p.h)
-#@-node:ekr.20090124174652.26:redraw_after_head_changed
-#@+node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
-def closeEditorHelper (self,e,item):
-
-    w = self.treeWidget
-
-    if e:
-        w.closeEditor(e,QtGui.QAbstractItemDelegate.NoHint)
-        w.setCurrentItem(item)
-#@-node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
-#@+node:ekr.20090124174652.107:setCurrentItemHelper (leoQtTree)
-def setCurrentItemHelper(self,item):
-
-    w = self.treeWidget
-    w.setCurrentItem(item)
-#@-node:ekr.20090124174652.107:setCurrentItemHelper (leoQtTree)
-#@-node:ekr.20090302135940.11:Ctrl-s does not completely end editing
 #@+node:ekr.20090128113654.1:Fixed bug re: duplicate recent-files menu
 @nocolor
 
@@ -6394,160 +6153,6 @@ def delete_range (self,menu,n1,n2):
 # it does nothing when in isearch mode.
 #@nonl
 #@-node:ekr.20090304084841.14:isearch now works for tkinter
-#@+node:ekr.20090304173101.11:Fixed onHeadChanged
-# endEditLabel will fail if the outline has changed!
-
-# The solution is not to call position2item in onHeadChanged.
-#@nonl
-#@+node:ekr.20090304173101.12:Report 2
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/f00cfb630c0be2de
-
-Create a new outline.
-
-Paste the following into the the NewHeadline node:
-
-new_node = c.p.insertAsLastChild()
-new_node.initHeadString("I am a new node")
-new_node.moveAfter(c.rootPosition())
-c.redraw()
-
-Make the node a script button.
-Click the button twice.
-
-=====================
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/bc7f615ff991325d
-
-If now is the appropriate time, I recommend you fix the problem with
-changes to the headline not being committed until another node has
-been selected.  It creates a number of problems:
-
-1. Attempts to undo a headline change using Leo's undo command fails.
-Instead the previous the 2nd oldest change is undone.
-
-2. Saving a derived file uses the old file name.  A critical problem
-if a copy/paste node is performed, the pasted node's headline is
-changed, and then a save all derived files is performed.  It appears
-that the two headlines have different names but they both will write
-to the same file.
-
-3.  Exporting the file to Vim using the open_with plugin will show the
-previous headline in Vim.
-
-There are probably others.
-
-#@-node:ekr.20090304173101.12:Report 2
-#@+node:ekr.20090303095630.14:Report 1
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ee1dbcb22a5d0bcb
-
-I've just realised about the following problem with the qt pluguin
-(rev 1593): if I call Find -> Clone Find All when the first node of
-the outline is selected then it gets renamed to "Found:
-something" (something being the searched string), so the first two
-nodes of the oultine have the same name. The top one is correct (it
-contains the found nodes), the second is not. If I call Edit --> Undo
-Typing the badly renamed node recovers it correct name.
-#@-node:ekr.20090303095630.14:Report 1
-#@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
-# Tricky code: do not change without careful thought and testing.
-
-def onHeadChanged (self,p,undoType='Typing',s=None):
-
-    '''Officially change a headline.'''
-
-    trace = False and not g.unitTesting
-    verbose = False
-
-    c = self.c ; u = c.undoer
-    if not p:
-        if trace: g.trace('*** no p')
-        return
-
-    item = self.getCurrentItem()
-    e = self.getTreeEditorForItem(item)
-    if not e:
-        if trace and verbose: g.trace('*** not editing***')
-        return
-
-    s = e.text()
-    self.closeEditorHelper(e,item)
-
-    # if 0:
-        # item = self.position2item(p)
-        # if not item:
-            # # This is not an error.
-            # if trace: g.trace('no item for p: %s' % (p))
-            # return
-
-        # w = g.app.gui.get_focus()
-        # ew = self.edit_widget(p)
-        # if ew: e = ew.widget
-        # else: e = None
-
-    # These are not errors: focus may have been lost.
-    # if trace and verbose:
-        # if not e:  g.trace('No e',g.callers(4))
-        # if e != w: g.trace('e != w',e,w,g.callers(4))
-        # if not p:  g.trace('No p')
-
-    # if e and e == w:
-        # s = e.text() ; len_s = len(s)
-        # s = g.app.gui.toUnicode(s)
-    # else:
-        # s = self.getItemText(item)
-
-    oldHead = p.h
-    changed = s != oldHead
-    if changed:
-        if trace: g.trace('changed',repr(s),p.h)
-        p.initHeadString(s)
-        item.setText(0,s) # Required to avoid full redraw.
-        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
-        if not c.changed: c.setChanged(True)
-        # New in Leo 4.4.5: we must recolor the body because
-        # the headline may contain directives.
-        c.frame.body.recolor(p,incremental=True)
-        dirtyVnodeList = p.setDirty()
-        u.afterChangeNodeContents(p,undoType,undoData,
-            dirtyVnodeList=dirtyVnodeList)
-
-    # This is a crucial shortcut.
-    if g.unitTesting: return
-
-    self.redraw_after_head_changed()
-
-    if self.stayInTree:
-        c.treeWantsFocus()
-    else:
-        c.bodyWantsFocus()
-    c.outerUpdate()
-#@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
-#@+node:ekr.20090124174652.58:endEditLabel (nativeTree)
-def endEditLabel (self):
-
-    '''Override leoTree.endEditLabel.
-
-    End editing of the presently-selected headline.'''
-
-    c = self.c ; p = c.currentPosition()
-
-    self.onHeadChanged(p)
-#@nonl
-#@-node:ekr.20090124174652.58:endEditLabel (nativeTree)
-#@+node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
-def closeEditorHelper (self,e,item):
-
-    w = self.treeWidget
-
-    if e:
-        w.closeEditor(e,QtGui.QAbstractItemDelegate.NoHint)
-        w.setCurrentItem(item)
-#@-node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
-#@-node:ekr.20090304173101.11:Fixed onHeadChanged
 #@+node:ekr.20090306060335.1:Fixed "missing children" bug
 @nocolor-node
 
@@ -6621,7 +6226,8 @@ def edit_widget (self,p):
 
     """Returns the edit widget for position p."""
 
-    trace = False ; verbose = True
+    trace = False and not g.unitTesting
+    verbose = True
 
     c = self.c
     item = self.position2item(p)
@@ -6630,7 +6236,7 @@ def edit_widget (self,p):
         if e:
             # Create a wrapper widget for Leo's core.
             w = self.headlineWrapper(widget=e,name='head',c=c)
-            if trace: g.trace(w,p and p.h)
+            # if trace: g.trace(e,p and p.h)
             return w
         else:
             # This is not an error
@@ -6692,7 +6298,7 @@ def endEditLabel (self):
 #@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
 # Tricky code: do not change without careful thought and testing.
 
-def onHeadChanged (self,p,undoType='Typing',s=None):
+def onHeadChanged (self,p,undoType='Typing',s=None,e=None):
 
     '''Officially change a headline.'''
 
@@ -6701,46 +6307,22 @@ def onHeadChanged (self,p,undoType='Typing',s=None):
 
     c = self.c ; u = c.undoer
     if not p:
-        if trace: g.trace('*** no p')
+        if trace: g.trace('** no p')
         return
 
     item = self.getCurrentItem()
-    e = self.getTreeEditorForItem(item)
     if not e:
-        if trace and verbose: g.trace('*** not editing***')
+        e = self.getTreeEditorForItem(item)
+    if not e:
+        if trace and verbose: g.trace('** not editing')
         return
 
-    s = e.text()
+    s = unicode(e.text())
     self.closeEditorHelper(e,item)
-
-    # if 0:
-        # item = self.position2item(p)
-        # if not item:
-            # # This is not an error.
-            # if trace: g.trace('no item for p: %s' % (p))
-            # return
-
-        # w = g.app.gui.get_focus()
-        # ew = self.edit_widget(p)
-        # if ew: e = ew.widget
-        # else: e = None
-
-    # These are not errors: focus may have been lost.
-    # if trace and verbose:
-        # if not e:  g.trace('No e',g.callers(4))
-        # if e != w: g.trace('e != w',e,w,g.callers(4))
-        # if not p:  g.trace('No p')
-
-    # if e and e == w:
-        # s = e.text() ; len_s = len(s)
-        # s = g.app.gui.toUnicode(s)
-    # else:
-        # s = self.getItemText(item)
-
     oldHead = p.h
     changed = s != oldHead
+    if trace: g.trace('new',repr(s),'old',p.h,g.callers())
     if changed:
-        if trace: g.trace('changed',repr(s),p.h)
         p.initHeadString(s)
         item.setText(0,s) # Required to avoid full redraw.
         undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
@@ -9925,29 +9507,42 @@ def __init__(self,c,w,tag=''):
 #@+node:ekr.20081121105001.168:eventFilter
 def eventFilter(self, obj, event):
 
-    trace = False ; verbose = False
+    trace = False and not g.unitTesting
+    verbose = False
     traceFocus = False and not g.unitTesting
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
+    gui = g.app.gui
     kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
     if traceFocus:
         table = (
-            (ev.FocusIn,        'focus-in '),
+            (ev.FocusIn,        'focus-in'),
             (ev.FocusOut,       'focus-out'),
-            (ev.WindowActivate, 'activate '))
+            (ev.WindowActivate, 'activate'),
+            (ev.WindowDeactivate,'deactivate'),
+        )
         for evKind,kind in table:
             if eventType == evKind:
-                g.trace('%s %s %s' % (
+                g.trace('%11s %s %s' % (
                     (kind,id(obj),
                     # event.reason(),
                     g.app.gui.widget_name(obj) or obj)))
         # else: g.trace('unknown kind: %s' % eventType)
 
     if eventType == ev.WindowActivate:
-        g.app.gui.onActivateEvent(event,c,obj,self.tag)
+        gui.onActivateEvent(event,c,obj,self.tag)
         override = False ; tkKey = None
         # g.trace(g.app.gui.get_focus(c))
+    elif eventType == ev.WindowDeactivate:
+        gui.onDeactivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    #### Dangerous
+    # elif eventType == ev.FocusIn:
+        # if self.tag.startswith('tree'):
+            # # g.trace('FocusIn',self.tag,c.p.h)
+            # c.frame.tree.onHeadChanged(c.p)
+        # override = False ; tkKey = None
     elif eventType in kinds:
         tkKey,ch,ignore = self.toTkKey(event)
         aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])

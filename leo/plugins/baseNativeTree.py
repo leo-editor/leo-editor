@@ -804,7 +804,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         """Returns the edit widget for position p."""
 
-        trace = False ; verbose = True
+        trace = False and not g.unitTesting
+        verbose = True
 
         c = self.c
         item = self.position2item(p)
@@ -813,7 +814,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if e:
                 # Create a wrapper widget for Leo's core.
                 w = self.headlineWrapper(widget=e,name='head',c=c)
-                if trace: g.trace(w,p and p.h)
+                # if trace: g.trace(e,p and p.h)
                 return w
             else:
                 # This is not an error
@@ -875,7 +876,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
     # Tricky code: do not change without careful thought and testing.
 
-    def onHeadChanged (self,p,undoType='Typing',s=None):
+    def onHeadChanged (self,p,undoType='Typing',s=None,e=None):
 
         '''Officially change a headline.'''
 
@@ -884,46 +885,22 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         c = self.c ; u = c.undoer
         if not p:
-            if trace: g.trace('*** no p')
+            if trace: g.trace('** no p')
             return
 
         item = self.getCurrentItem()
-        e = self.getTreeEditorForItem(item)
         if not e:
-            if trace and verbose: g.trace('*** not editing***')
+            e = self.getTreeEditorForItem(item)
+        if not e:
+            if trace and verbose: g.trace('** not editing')
             return
 
-        s = e.text()
+        s = unicode(e.text())
         self.closeEditorHelper(e,item)
-
-        # if 0:
-            # item = self.position2item(p)
-            # if not item:
-                # # This is not an error.
-                # if trace: g.trace('no item for p: %s' % (p))
-                # return
-
-            # w = g.app.gui.get_focus()
-            # ew = self.edit_widget(p)
-            # if ew: e = ew.widget
-            # else: e = None
-
-        # These are not errors: focus may have been lost.
-        # if trace and verbose:
-            # if not e:  g.trace('No e',g.callers(4))
-            # if e != w: g.trace('e != w',e,w,g.callers(4))
-            # if not p:  g.trace('No p')
-
-        # if e and e == w:
-            # s = e.text() ; len_s = len(s)
-            # s = g.app.gui.toUnicode(s)
-        # else:
-            # s = self.getItemText(item)
-
         oldHead = p.h
         changed = s != oldHead
+        if trace: g.trace('new',repr(s),'old',p.h,g.callers())
         if changed:
-            if trace: g.trace('changed',repr(s),p.h)
             p.initHeadString(s)
             item.setText(0,s) # Required to avoid full redraw.
             undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)

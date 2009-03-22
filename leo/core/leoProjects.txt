@@ -13225,6 +13225,55 @@ def autoCompleterStateHandler (self,event):
         return 'do-standard-keys'
 #@-node:ekr.20061031131434.11:autoCompleterStateHandler
 #@-node:ekr.20090318091001.1:Fixed autocompletion problems with qt gui
+#@+node:ekr.20090320055710.3:Removed call to getAllText from setMoveCol
+@
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dcd6e32a98b17ed3
+
+It seems at least setMoveCol is easy to optimize (getAllText not needed - and
+w.toPythonIndex can lose getAllText as well).
+#@+node:ekr.20050314140957:g.convertPythonIndexToRowCol
+def convertPythonIndexToRowCol (s,i):
+
+    '''Convert index i into string s into zero-based row/col indices.'''
+
+    if not s or i <= 0:
+        return 0,0
+
+    i = min(i,len(s))
+
+    # works regardless of what s[i] is
+    row = s.count('\n',0,i) # Don't include i
+    if row == 0:
+        return row,i
+    else:
+        prevNL = s.rfind('\n',0,i) # Don't include i
+        # g.trace('prevNL',prevNL,'i',i,g.callers())
+        return row,i-prevNL-1
+#@-node:ekr.20050314140957:g.convertPythonIndexToRowCol
+#@+node:ekr.20060209095101:setMoveCol
+def setMoveCol (self,w,spot):
+
+    '''Set the column to which an up or down arrow will attempt to move.'''
+
+    c = self.c ; p = c.p
+
+    i,row,col = w.toPythonIndexRowCol(spot)
+
+    self.moveSpot = i
+    self.moveCol = col
+    self.moveSpotNode = p.v.t
+#@-node:ekr.20060209095101:setMoveCol
+#@+node:ekr.20090320055710.4:toPythonIndexToRowCol (baseText) (may be overridden)
+def toPythonIndexRowCol(self,index):
+
+    w = self
+    s = w.getAllText()
+    i = w.toPythonIndex(index)
+    row,col = g.convertPythonIndexToRowCol(s,i)
+    return i,row,col
+#@-node:ekr.20090320055710.4:toPythonIndexToRowCol (baseText) (may be overridden)
+#@-node:ekr.20090320055710.3:Removed call to getAllText from setMoveCol
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs

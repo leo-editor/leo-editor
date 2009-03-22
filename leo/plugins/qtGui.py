@@ -297,11 +297,12 @@ class leoQtBody (leoFrame.leoBody):
             self.bodyCtrl = w # The widget as seen from Leo's core.
             self.colorizer = leoColor.nullColorizer(c)
         else:
-            top = c.frame.top ; sw = top.ui.stackedWidget
+            top = c.frame.top
+            sw = top.ui.stackedWidget
+            qtWidget = top.ui.richTextEdit # A QTextEdit.
             sw.setCurrentIndex(1)
             self.widget = w = leoQTextEditWidget(
-                top.ui.richTextEdit,
-                name = 'body',c=c) # A QTextEdit.
+                qtWidget,name = 'body',c=c)
             self.bodyCtrl = w # The widget as seen from Leo's core.
 
             # Hook up the QSyntaxHighlighter
@@ -544,9 +545,10 @@ class leoQtBody (leoFrame.leoBody):
         #@+node:ekr.20081121105001.217:createEditorWidget
         def createEditorWidget (self,f,name,p,w):
 
+            trace = False and not g.unitTesting
             c = self.c
 
-            g.trace(p.h,w)
+            if trace: g.trace(p.h,w)
             #### w = self.createTextWidget(f,name,p,w)
             self.updateInjectedIvars(w,p)
             w.delete(0,'end')
@@ -3707,6 +3709,8 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
     #@+node:ekr.20090124174652.104:createTreeEditorForItem
     def createTreeEditorForItem(self,item):
 
+        trace = False and not g.unitTesting
+
         w = self.treeWidget
         w.setCurrentItem(item) # Must do this first.
         w.editItem(item)
@@ -3717,6 +3721,15 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         e.connect(e,QtCore.SIGNAL(
             "textEdited(QTreeWidgetItem*,int)"),
             self.onHeadChanged)
+
+        def onDestroyedCallback(theObject,e=e,self=self):
+            assert theObject == e
+            c = self.c ; p = c.p
+            self.onHeadChanged(p=p,e=e)
+
+        e.connect(e,QtCore.SIGNAL(
+            "destroyed(QObject*)"),
+            onDestroyedCallback)
 
         return e
     #@-node:ekr.20090124174652.104:createTreeEditorForItem
@@ -3762,6 +3775,20 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
             e.setSelection(start,n)
             # e.setCursorPosition(ins) # Does not work.
             e.setFocus()
+
+            # Hook up the widget.
+            e.connect(e,QtCore.SIGNAL(
+                "textEdited(QTreeWidgetItem*,int)"),
+                self.onHeadChanged)
+
+            def onDestroyedCallback(theObject,e=e,self=self):
+                assert theObject == e
+                c = self.c ; p = c.p
+                self.onHeadChanged(p=p,e=e)
+
+            e.connect(e,QtCore.SIGNAL(
+                "destroyed(QObject*)"),
+                onDestroyedCallback)
         else:
             self.error('no edit widget')
 
@@ -3773,7 +3800,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w = self.treeWidget
         return w.currentItem()
     #@-node:ekr.20090124174652.105:getCurrentItem
-    #@+node:ekr.20090126120517.22:getItemText (debugging only)
+    #@+node:ekr.20090126120517.22:getItemText
     def getItemText (self,item):
 
         '''Return the text of the item.'''
@@ -3783,7 +3810,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         else:
             return '<no item>'
     #@nonl
-    #@-node:ekr.20090126120517.22:getItemText (debugging only)
+    #@-node:ekr.20090126120517.22:getItemText
     #@+node:ekr.20090126120517.19:getParentItem
     def getParentItem(self,item):
 
@@ -4029,12 +4056,29 @@ class leoQtGui(leoGui.leoGui):
         # This is called several times for each window activation.
         # We only need to set the focus once.
 
+        if trace: g.trace(tag)
+
         if c.exists and tag == 'body':
-            if trace: g.trace('Activate',tag)
             c.redraw_now()
             c.bodyWantsFocusNow()
             c.outerUpdate() # Required because this is an event handler.
     #@-node:ekr.20090123150451.11:onActivateEvent (qtGui)
+    #@+node:ekr.20090320101733.16:onDeactiveEvent (qtGui)
+    def onDeactivateEvent (self,event,c,obj,tag):
+
+        '''Put the focus in the body pane when the Leo window is
+        activated, say as the result of an Alt-tab or click.'''
+
+        trace = False and not g.unitTesting
+
+        # This is called several times for each window activation.
+        # Save the headline only once.
+
+        if c.exists and tag.startswith('tree'):
+            if trace: g.trace(tag,c.p)
+            c.endEditing()
+    #@nonl
+    #@-node:ekr.20090320101733.16:onDeactiveEvent (qtGui)
     #@+node:ville.20090314101331.2:IPython embedding & mainloop
     def embed_ipython(self):
         import IPython.ipapi
@@ -4778,29 +4822,42 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081121105001.168:eventFilter
     def eventFilter(self, obj, event):
 
-        trace = False ; verbose = False
+        trace = False and not g.unitTesting
+        verbose = False
         traceFocus = False and not g.unitTesting
         c = self.c ; k = c.k
         eventType = event.type()
         ev = QtCore.QEvent
+        gui = g.app.gui
         kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
         if traceFocus:
             table = (
-                (ev.FocusIn,        'focus-in '),
+                (ev.FocusIn,        'focus-in'),
                 (ev.FocusOut,       'focus-out'),
-                (ev.WindowActivate, 'activate '))
+                (ev.WindowActivate, 'activate'),
+                (ev.WindowDeactivate,'deactivate'),
+            )
             for evKind,kind in table:
                 if eventType == evKind:
-                    g.trace('%s %s %s' % (
+                    g.trace('%11s %s %s' % (
                         (kind,id(obj),
                         # event.reason(),
                         g.app.gui.widget_name(obj) or obj)))
             # else: g.trace('unknown kind: %s' % eventType)
 
         if eventType == ev.WindowActivate:
-            g.app.gui.onActivateEvent(event,c,obj,self.tag)
+            gui.onActivateEvent(event,c,obj,self.tag)
             override = False ; tkKey = None
             # g.trace(g.app.gui.get_focus(c))
+        elif eventType == ev.WindowDeactivate:
+            gui.onDeactivateEvent(event,c,obj,self.tag)
+            override = False ; tkKey = None
+        #### Dangerous
+        # elif eventType == ev.FocusIn:
+            # if self.tag.startswith('tree'):
+                # # g.trace('FocusIn',self.tag,c.p.h)
+                # c.frame.tree.onHeadChanged(c.p)
+            # override = False ; tkKey = None
         elif eventType in kinds:
             tkKey,ch,ignore = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
@@ -8048,6 +8105,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081121105001.574:ctor
     def __init__ (self,widget,name,c=None):
 
+        # widget is a QTextEdit.
+
         # Init the base class.
         leoQtBaseTextWidget.__init__(self,widget,name,c=c)
 
@@ -8059,6 +8118,9 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         self.setFontFromConfig()
         self.setColorFromConfig()
         # self.setScrollBarOrientation()
+
+        # Override the mouse handler
+        #### widget.mouseReleaseEvent = self.mouseReleaseEvent
     #@-node:ekr.20081121105001.574:ctor
     #@+node:ekr.20081121105001.575:setFontFromConfig
     def setFontFromConfig (self,w=None):
@@ -8161,6 +8223,17 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         # orientation = c.config.getString(jk13ab02xy04)
     #@-node:ekr.20090303095630.10:setScrollBarOrientation (QTextEdit)
     #@-node:ekr.20081121105001.573:Birth
+    #@+node:ekr.20090322092751.1:mouseReleaseEvent (not used)
+    def mouseReleaseEvent (self,event):
+
+        '''An override of the self.widget.mouseReleaseEvent,
+        monkey-patched by the leoQTextEditWidget ctor.'''
+
+        g.trace(self,event,self.widget)
+        # self.c.frame.tree.endEditLabel()
+        self.c.endEditing()
+        event.ignore()
+    #@-node:ekr.20090322092751.1:mouseReleaseEvent (not used)
     #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
     #@+node:ekr.20090205153624.11:delete (avoid call to setAllText)
     def delete(self,i,j=None):
@@ -8352,9 +8425,14 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     def setInsertPoint(self,i):
 
         w = self.widget
+
         s = w.toPlainText()
-        cursor = w.textCursor()
         i = max(0,min(i,len(s)))
+        cursor = w.textCursor()
+
+        # block = cursor.block()
+        # i = max(0,min(i,block.length()))
+
         cursor.setPosition(i)
         w.setTextCursor(cursor)
     #@-node:ekr.20081121105001.588:setInsertPoint
