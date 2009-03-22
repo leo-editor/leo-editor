@@ -3730,9 +3730,9 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
             c = self.c ; p = c.p
             self.onHeadChanged(p=p,e=e)
 
-        e.connect(e,QtCore.SIGNAL(
-            "destroyed(QObject*)"),
-            onDestroyedCallback)
+        # e.connect(e,QtCore.SIGNAL(
+            # "destroyed(QObject*)"),
+            # onDestroyedCallback)
 
         return e
     #@-node:ekr.20090124174652.104:createTreeEditorForItem
@@ -3789,9 +3789,9 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
                 c = self.c ; p = c.p
                 self.onHeadChanged(p=p,e=e)
 
-            e.connect(e,QtCore.SIGNAL(
-                "destroyed(QObject*)"),
-                onDestroyedCallback)
+            # e.connect(e,QtCore.SIGNAL(
+                # "destroyed(QObject*)"),
+                # onDestroyedCallback)
         else:
             self.error('no edit widget')
 
