@@ -491,6 +491,9 @@ class leoQtBody (leoFrame.leoBody):
 
             '''Add another editor to the body pane.'''
 
+            g.es_print('add-editor not supported yet',color='red')
+            return
+
             trace = True and not g.unitTesting
 
             bodyCtrl = self.c.frame.body.bodyCtrl # A leoQTextEditWidget

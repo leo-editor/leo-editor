@@ -732,6 +732,9 @@ def addEditor (self,event=None):
 
     '''Add another editor to the body pane.'''
 
+    g.es_print('add-editor not supported yet',color='red')
+    return
+
     trace = True and not g.unitTesting
 
     bodyCtrl = self.c.frame.body.bodyCtrl # A leoQTextEditWidget
@@ -2365,6 +2368,9 @@ def addEditor (self,event=None):
 
     '''Add another editor to the body pane.'''
 
+    g.es_print('add-editor not supported yet',color='red')
+    return
+
     trace = True and not g.unitTesting
 
     bodyCtrl = self.c.frame.body.bodyCtrl # A leoQTextEditWidget
@@ -2864,6 +2870,9 @@ def packEditorLabelWidget (self,w):
 def addEditor (self,event=None):
 
     '''Add another editor to the body pane.'''
+
+    g.es_print('add-editor not supported yet',color='red')
+    return
 
     trace = True and not g.unitTesting
 
