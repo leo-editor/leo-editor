@@ -2102,7 +2102,7 @@ class leoLog:
         if w: w.delete(0,'end')
     #@-node:ekr.20070302094848.1:clearTab
     #@+node:ekr.20070302094848.2:createTab
-    def createTab (self,tabName,createText=True,wrap='none'):
+    def createTab (self,tabName,createText=True,widget=None,wrap='none'):
 
         # g.trace(tabName,wrap)
 
@@ -3176,7 +3176,7 @@ class nullLog (leoLog):
     #@+node:ekr.20060124085830:tabs
     def clearTab        (self,tabName,wrap='none'):             pass
     def createCanvas    (self,tabName):                         pass
-    def createTab (self,tabName,createText=True,wrap='none'):   pass
+    def createTab (self,tabName,createText=True,widget=None,wrap='none'):   pass
     def deleteTab       (self,tabName,force=False):             pass
     def getSelectedTab  (self):                                 return None
     def lowerTab        (self,tabName):                         pass
