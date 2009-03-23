@@ -635,7 +635,7 @@ class baseCommands (object):
             frame.c.setChanged(False)
             # Clear the changed flag set when creating the @chapters node.
         else:
-            c.redraw(p) ####
+            c.redraw(p)
         if c.config.getBool('outline_pane_has_initial_focus'):
             c.treeWantsFocusNow()
         else:
@@ -2786,7 +2786,7 @@ class baseCommands (object):
             if not found:
                 g.es("selected text should contain one or more section names",color="blue")
         u.afterChangeGroup(current,undoType)
-        c.redraw(p) ####
+        c.redraw(p)
 
         # Restore the selection.
         body.setSelectionRange(oldSel)
@@ -7486,7 +7486,7 @@ class baseCommands (object):
             if found: break
         if found:
             c.selectPosition(p)
-            c.redraw_after_select(p) ####
+            c.redraw_after_select(p)
             c.navTime = time.clock()
             c.navPrefix = newPrefix
             # g.trace('extend',extend,'extend2',extend2,'navPrefix',c.navPrefix,'p',p.h)

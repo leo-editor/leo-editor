@@ -2,7 +2,7 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090316095604.11:Urgent 4
+#@+node:ekr.20090316095604.11:Urgent 3
 #@+node:ekr.20081215162017.5:Support multiple body editors
 #@+node:ekr.20090318091009.13:Prototype code
 @color
@@ -40,9 +40,7 @@ def __init__ (self,widget,name,c=None):
     self.setFontFromConfig()
     self.setColorFromConfig()
     # self.setScrollBarOrientation()
-
-    # Override the mouse handler
-    #### widget.mouseReleaseEvent = self.mouseReleaseEvent
+#@nonl
 #@-node:ekr.20081121105001.574:ctor
 #@+node:ekr.20081121105001.575:setFontFromConfig
 def setFontFromConfig (self,w=None):
@@ -145,17 +143,6 @@ def setConfig (self):
     # orientation = c.config.getString(jk13ab02xy04)
 #@-node:ekr.20090303095630.10:setScrollBarOrientation (QTextEdit)
 #@-node:ekr.20081121105001.573:Birth
-#@+node:ekr.20090322092751.1:mouseReleaseEvent (not used)
-def mouseReleaseEvent (self,event):
-
-    '''An override of the self.widget.mouseReleaseEvent,
-    monkey-patched by the leoQTextEditWidget ctor.'''
-
-    g.trace(self,event,self.widget)
-    # self.c.frame.tree.endEditLabel()
-    self.c.endEditing()
-    event.ignore()
-#@-node:ekr.20090322092751.1:mouseReleaseEvent (not used)
 #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
 #@+node:ekr.20090205153624.11:delete (avoid call to setAllText)
 def delete(self,i,j=None):
@@ -3043,7 +3030,7 @@ def selectLabel (self,w):
 #@-node:ekr.20090318091009.10:Fix undo problems with qt gui
 #@+node:ekr.20090318091009.12:Script errors mess up syntax coloring
 #@-node:ekr.20090318091009.12:Script errors mess up syntax coloring
-#@-node:ekr.20090316095604.11:Urgent 4
+#@-node:ekr.20090316095604.11:Urgent 3
 #@+node:ekr.20090304084841.10:Asap 4
 #@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
 http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
@@ -3299,8 +3286,8 @@ def onHeadChanged (self,p,undoType='Typing',s=None,e=None):
     self.closeEditorHelper(e,item)
     oldHead = p.h
     changed = s != oldHead
-    if trace: g.trace('new',repr(s),'old',p.h,g.callers())
     if changed:
+        if trace: g.trace('new',repr(s),'old',p.h,g.callers())
         p.initHeadString(s)
         item.setText(0,s) # Required to avoid full redraw.
         undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
@@ -4809,7 +4796,7 @@ def setCurrentState (self,s,offset,limit,
             changeState = True
     else:
         flag,lastFunc,lastMatch,lastN,minimalMatch = None,None,None,None,None
-        changeState = oldN != -1 #### or not flag or killColorFlag 
+        changeState = oldN != -1 
 
     stateName = self.computeStateName(
         lastFunc,lastMatch,lastN,minimalMatch)
@@ -5281,9 +5268,7 @@ def __init__ (self,widget,name,c=None):
     self.setFontFromConfig()
     self.setColorFromConfig()
     # self.setScrollBarOrientation()
-
-    # Override the mouse handler
-    #### widget.mouseReleaseEvent = self.mouseReleaseEvent
+#@nonl
 #@-node:ekr.20081121105001.574:ctor
 #@+node:ekr.20081121105001.575:setFontFromConfig
 def setFontFromConfig (self,w=None):
@@ -5386,17 +5371,6 @@ def setConfig (self):
     # orientation = c.config.getString(jk13ab02xy04)
 #@-node:ekr.20090303095630.10:setScrollBarOrientation (QTextEdit)
 #@-node:ekr.20081121105001.573:Birth
-#@+node:ekr.20090322092751.1:mouseReleaseEvent (not used)
-def mouseReleaseEvent (self,event):
-
-    '''An override of the self.widget.mouseReleaseEvent,
-    monkey-patched by the leoQTextEditWidget ctor.'''
-
-    g.trace(self,event,self.widget)
-    # self.c.frame.tree.endEditLabel()
-    self.c.endEditing()
-    event.ignore()
-#@-node:ekr.20090322092751.1:mouseReleaseEvent (not used)
 #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
 #@+node:ekr.20090205153624.11:delete (avoid call to setAllText)
 def delete(self,i,j=None):
@@ -6330,8 +6304,8 @@ def onHeadChanged (self,p,undoType='Typing',s=None,e=None):
     self.closeEditorHelper(e,item)
     oldHead = p.h
     changed = s != oldHead
-    if trace: g.trace('new',repr(s),'old',p.h,g.callers())
     if changed:
+        if trace: g.trace('new',repr(s),'old',p.h,g.callers())
         p.initHeadString(s)
         item.setText(0,s) # Required to avoid full redraw.
         undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
@@ -8756,7 +8730,7 @@ def setCurrentState (self,s,offset,limit,
             changeState = True
     else:
         flag,lastFunc,lastMatch,lastN,minimalMatch = None,None,None,None,None
-        changeState = oldN != -1 #### or not flag or killColorFlag 
+        changeState = oldN != -1 
 
     stateName = self.computeStateName(
         lastFunc,lastMatch,lastN,minimalMatch)
@@ -9261,7 +9235,7 @@ def setCurrentState (self,s,offset,limit,
             changeState = True
     else:
         flag,lastFunc,lastMatch,lastN,minimalMatch = None,None,None,None,None
-        changeState = oldN != -1 #### or not flag or killColorFlag 
+        changeState = oldN != -1 
 
     stateName = self.computeStateName(
         lastFunc,lastMatch,lastN,minimalMatch)
@@ -9546,12 +9520,6 @@ def eventFilter(self, obj, event):
     elif eventType == ev.WindowDeactivate:
         gui.onDeactivateEvent(event,c,obj,self.tag)
         override = False ; tkKey = None
-    #### Dangerous
-    # elif eventType == ev.FocusIn:
-        # if self.tag.startswith('tree'):
-            # # g.trace('FocusIn',self.tag,c.p.h)
-            # c.frame.tree.onHeadChanged(c.p)
-        # override = False ; tkKey = None
     elif eventType in kinds:
         tkKey,ch,ignore = self.toTkKey(event)
         aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
@@ -10026,6 +9994,195 @@ def getTextFromClipboard (self):
         return ''
 #@-node:ekr.20081121105001.183:Clipboard (qtGui)
 #@-node:ekr.20090317102300.13:Fixed new unicode/copy-outline problem
+#@+node:ekr.20090318091009.11:Headline problems
+@nocolor-node
+
+# Happens when lose/restore focus to another app, before hitting <return>
+
+http://mail.google.com/mail/#inbox/11fb490f1b42408f
+
+Here are the test cases:
+
+- Ctrl-s in headline.
+- Ctrl-s in body.
+- Return in headline.
+- Alt-tab to another app, and back.
+- Click in body pane.
+#@nonl
+#@+node:ekr.20090304173101.12:Report 2
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/f00cfb630c0be2de
+
+Create a new outline.
+
+Paste the following into the the NewHeadline node:
+
+new_node = c.p.insertAsLastChild()
+new_node.initHeadString("I am a new node")
+new_node.moveAfter(c.rootPosition())
+c.redraw()
+
+Make the node a script button.
+Click the button twice.
+
+=====================
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bc7f615ff991325d
+
+If now is the appropriate time, I recommend you fix the problem with
+changes to the headline not being committed until another node has
+been selected.  It creates a number of problems:
+
+1. Attempts to undo a headline change using Leo's undo command fails.
+Instead the previous the 2nd oldest change is undone.
+
+2. Saving a derived file uses the old file name.  A critical problem
+if a copy/paste node is performed, the pasted node's headline is
+changed, and then a save all derived files is performed.  It appears
+that the two headlines have different names but they both will write
+to the same file.
+
+3.  Exporting the file to Vim using the open_with plugin will show the
+previous headline in Vim.
+
+There are probably others.
+
+#@-node:ekr.20090304173101.12:Report 2
+#@+node:ekr.20090303095630.14:Report 1
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ee1dbcb22a5d0bcb
+
+I've just realised about the following problem with the qt pluguin
+(rev 1593): if I call Find -> Clone Find All when the first node of
+the outline is selected then it gets renamed to "Found:
+something" (something being the searched string), so the first two
+nodes of the oultine have the same name. The top one is correct (it
+contains the found nodes), the second is not. If I call Edit --> Undo
+Typing the badly renamed node recovers it correct name.
+#@-node:ekr.20090303095630.14:Report 1
+#@+node:ekr.20090302135940.11:Ctrl-s problems
+# The ctrl-s problem happens when editing body text.
+# The fix was to redraw_after_icons_changed.
+
+#@-node:ekr.20090302135940.11:Ctrl-s problems
+#@+node:ekr.20090322092751.12:Added event handler for QLineEdit.editingFinish events
+# Don't even *think* about trying to use focus in/out events
+# or (even worse) QObject.destroyed events.
+#@nonl
+#@+node:ekr.20090322190318.10:connectEditorWidget
+def connectEditorWidget (self,e,item):
+
+    # Hook up the widget.
+    def editingFinishedCallback(e=e,item=item,self=self):
+        w = self.treeWidget
+        self.onHeadChanged(p=self.c.p,e=e)
+        w.setCurrentItem(item)
+
+    e.connect(e,QtCore.SIGNAL(
+        "editingFinished()"),
+        editingFinishedCallback)
+
+    # e.connect(e,QtCore.SIGNAL(
+        # "textEdited(QTreeWidgetItem*,int)"),
+        # self.onHeadChanged)
+#@nonl
+#@-node:ekr.20090322190318.10:connectEditorWidget
+#@+node:ekr.20090124174652.104:createTreeEditorForItem
+def createTreeEditorForItem(self,item):
+
+    trace = False and not g.unitTesting
+
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+    e = w.itemWidget(item,0)
+    e.setObjectName('headline')
+    self.connectEditorWidget(e,item)
+
+    return e
+#@-node:ekr.20090124174652.104:createTreeEditorForItem
+#@+node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
+def editLabelHelper (self,item,selectAll=False,selection=None):
+
+    '''Called by nativeTree.editLabel to do
+    gui-specific stuff.'''
+
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+        # Generates focus-in event that tree doesn't report.
+    e = w.itemWidget(item,0) # A QLineEdit
+
+    if e:
+        s = e.text() ; len_s = len(s)
+        if selection:
+            i,j,ins = selection
+            start,n = i,abs(i-j)
+                # Not right for backward searches.
+        elif selectAll: start,n,ins = 0,len_s,len_s
+        else:           start,n,ins = len_s,0,len_s
+        e.setObjectName('headline')
+        e.setSelection(start,n)
+        # e.setCursorPosition(ins) # Does not work.
+        e.setFocus()
+        self.connectEditorWidget(e,item) # Hook up the widget.
+
+    return e
+#@-node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
+#@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None,e=None):
+
+    '''Officially change a headline.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    c = self.c ; u = c.undoer
+    if not p:
+        if trace: g.trace('** no p')
+        return
+
+    item = self.getCurrentItem()
+    if not e:
+        e = self.getTreeEditorForItem(item)
+    if not e:
+        if trace and verbose: g.trace('** not editing')
+        return
+
+    s = unicode(e.text())
+    self.closeEditorHelper(e,item)
+    oldHead = p.h
+    changed = s != oldHead
+    if changed:
+        if trace: g.trace('new',repr(s),'old',p.h,g.callers())
+        p.initHeadString(s)
+        item.setText(0,s) # Required to avoid full redraw.
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+
+    # This is a crucial shortcut.
+    if g.unitTesting: return
+
+    self.redraw_after_head_changed()
+
+    if self.stayInTree:
+        c.treeWantsFocus()
+    else:
+        c.bodyWantsFocus()
+    c.outerUpdate()
+#@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+#@-node:ekr.20090322092751.12:Added event handler for QLineEdit.editingFinish events
+#@-node:ekr.20090318091009.11:Headline problems
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20090303081428.10:clearLine
@@ -10041,6 +10198,17 @@ def getTextFromClipboard (self):
 
     # self.highlighter.setFormat(0,len(s),self.blackColor)
 #@-node:ekr.20090303081428.10:clearLine
+#@+node:ekr.20090322092751.1:mouseReleaseEvent (not used)
+def mouseReleaseEvent (self,event):
+
+    '''An override of the self.widget.mouseReleaseEvent,
+    monkey-patched by the leoQTextEditWidget ctor.'''
+
+    g.trace(self,event,self.widget)
+    # self.c.frame.tree.endEditLabel()
+    self.c.endEditing()
+    event.ignore()
+#@-node:ekr.20090322092751.1:mouseReleaseEvent (not used)
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl

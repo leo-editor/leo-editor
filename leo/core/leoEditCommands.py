@@ -761,7 +761,7 @@ class bufferCommandsClass (baseEditCommandsClass):
             c.deleteOutline (op_name='kill-buffer: %s' % h)
             c.selectPosition(current)
             self.k.setLabelBlue('Killed buffer: %s' % h)
-            c.redraw(current) ####
+            c.redraw(current)
     #@-node:ekr.20050920084036.38:killBuffer
     #@+node:ekr.20050920084036.42:listBuffers & listBuffersAlphabetically
     def listBuffers (self,event):

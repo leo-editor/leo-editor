@@ -118,7 +118,7 @@ class chapterController:
             parent = cc.getChapterNode(toChapter.name)
             clone.moveToLastChildOf(parent)
         u.afterMoveNode(clone,'Move Node',undoData2,dirtyVnodeList=[])
-        c.redraw(clone) ####
+        c.redraw(clone)
         c.setChanged(True)
         # Close the group undo.
         # Only the ancestors of the moved node get set dirty.
@@ -198,7 +198,7 @@ class chapterController:
         s = c.fileCommands.putLeoOutline()
         p2 = c.fileCommands.getLeoOutline(s)
         p2.moveToLastChildOf(parent)
-        c.redraw(p2) ####
+        c.redraw(p2)
         u.afterInsertNode(p2,undoType,undoData)
         c.setChanged(True)
 
@@ -334,7 +334,7 @@ class chapterController:
                 p.moveAfter(toChapter.p)
             else:
                 p.moveToLastChildOf(toChapter.root)
-            c.redraw(sel) ####
+            c.redraw(sel)
             c.setChanged(True)
             # Do the 'after' undo operation.
             if inAtIgnoreRange and not p.inAtIgnoreRange():
@@ -935,7 +935,7 @@ class chapter:
         c.hoistStack = self.hoistStack[:]
 
         c.selectPosition(p)
-        c.redraw_after_select(p) ####
+        c.redraw_after_select(p)
         g.doHook('hoist-changed',c=c)
         c.bodyWantsFocusNow()
     #@nonl

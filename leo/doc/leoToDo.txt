@@ -7609,7 +7609,7 @@ def new (self,event=None,gui=None):
         frame.c.setChanged(False)
         # Clear the changed flag set when creating the @chapters node.
     else:
-        c.redraw(p) ####
+        c.redraw(p)
     if c.config.getBool('outline_pane_has_initial_focus'):
         c.treeWantsFocusNow()
     else:

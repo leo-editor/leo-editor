@@ -899,8 +899,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.closeEditorHelper(e,item)
         oldHead = p.h
         changed = s != oldHead
-        if trace: g.trace('new',repr(s),'old',p.h,g.callers())
         if changed:
+            if trace: g.trace('new',repr(s),'old',p.h,g.callers())
             p.initHeadString(s)
             item.setText(0,s) # Required to avoid full redraw.
             undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)

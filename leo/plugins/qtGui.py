@@ -1050,7 +1050,7 @@ class leoQtFindTab (leoFind.findTab):
             ('search_headline', w.checkBoxSearchHeadline),
             ('search_body',     w.checkBoxSearchBody),
             ('mark_changes',    w.checkBoxMarkChanges),
-            ('batch', None), ####
+            ('batch', None),
         )
         for ivar,widget in data:
             setattr(self,ivar,widget)
@@ -3719,23 +3719,28 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w.editItem(item)
         e = w.itemWidget(item,0)
         e.setObjectName('headline')
-
-        # Hook up the widget.
-        e.connect(e,QtCore.SIGNAL(
-            "textEdited(QTreeWidgetItem*,int)"),
-            self.onHeadChanged)
-
-        def onDestroyedCallback(theObject,e=e,self=self):
-            assert theObject == e
-            c = self.c ; p = c.p
-            self.onHeadChanged(p=p,e=e)
-
-        # e.connect(e,QtCore.SIGNAL(
-            # "destroyed(QObject*)"),
-            # onDestroyedCallback)
+        self.connectEditorWidget(e,item)
 
         return e
     #@-node:ekr.20090124174652.104:createTreeEditorForItem
+    #@+node:ekr.20090322190318.10:connectEditorWidget
+    def connectEditorWidget (self,e,item):
+
+        # Hook up the widget.
+        def editingFinishedCallback(e=e,item=item,self=self):
+            w = self.treeWidget
+            self.onHeadChanged(p=self.c.p,e=e)
+            w.setCurrentItem(item)
+
+        e.connect(e,QtCore.SIGNAL(
+            "editingFinished()"),
+            editingFinishedCallback)
+
+        # e.connect(e,QtCore.SIGNAL(
+            # "textEdited(QTreeWidgetItem*,int)"),
+            # self.onHeadChanged)
+    #@nonl
+    #@-node:ekr.20090322190318.10:connectEditorWidget
     #@+node:ekr.20090124174652.103:createTreeItem
     def createTreeItem(self,p,parent_item):
 
@@ -3778,22 +3783,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
             e.setSelection(start,n)
             # e.setCursorPosition(ins) # Does not work.
             e.setFocus()
-
-            # Hook up the widget.
-            e.connect(e,QtCore.SIGNAL(
-                "textEdited(QTreeWidgetItem*,int)"),
-                self.onHeadChanged)
-
-            def onDestroyedCallback(theObject,e=e,self=self):
-                assert theObject == e
-                c = self.c ; p = c.p
-                self.onHeadChanged(p=p,e=e)
-
-            # e.connect(e,QtCore.SIGNAL(
-                # "destroyed(QObject*)"),
-                # onDestroyedCallback)
-        else:
-            self.error('no edit widget')
+            self.connectEditorWidget(e,item) # Hook up the widget.
 
         return e
     #@-node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
@@ -4855,12 +4845,6 @@ class leoQtEventFilter(QtCore.QObject):
         elif eventType == ev.WindowDeactivate:
             gui.onDeactivateEvent(event,c,obj,self.tag)
             override = False ; tkKey = None
-        #### Dangerous
-        # elif eventType == ev.FocusIn:
-            # if self.tag.startswith('tree'):
-                # # g.trace('FocusIn',self.tag,c.p.h)
-                # c.frame.tree.onHeadChanged(c.p)
-            # override = False ; tkKey = None
         elif eventType in kinds:
             tkKey,ch,ignore = self.toTkKey(event)
             aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
@@ -7180,7 +7164,7 @@ class jEditColorizer:
                 changeState = True
         else:
             flag,lastFunc,lastMatch,lastN,minimalMatch = None,None,None,None,None
-            changeState = oldN != -1 #### or not flag or killColorFlag 
+            changeState = oldN != -1 
 
         stateName = self.computeStateName(
             lastFunc,lastMatch,lastN,minimalMatch)
@@ -8121,9 +8105,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         self.setFontFromConfig()
         self.setColorFromConfig()
         # self.setScrollBarOrientation()
-
-        # Override the mouse handler
-        #### widget.mouseReleaseEvent = self.mouseReleaseEvent
+    #@nonl
     #@-node:ekr.20081121105001.574:ctor
     #@+node:ekr.20081121105001.575:setFontFromConfig
     def setFontFromConfig (self,w=None):
@@ -8226,17 +8208,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         # orientation = c.config.getString(jk13ab02xy04)
     #@-node:ekr.20090303095630.10:setScrollBarOrientation (QTextEdit)
     #@-node:ekr.20081121105001.573:Birth
-    #@+node:ekr.20090322092751.1:mouseReleaseEvent (not used)
-    def mouseReleaseEvent (self,event):
-
-        '''An override of the self.widget.mouseReleaseEvent,
-        monkey-patched by the leoQTextEditWidget ctor.'''
-
-        g.trace(self,event,self.widget)
-        # self.c.frame.tree.endEditLabel()
-        self.c.endEditing()
-        event.ignore()
-    #@-node:ekr.20090322092751.1:mouseReleaseEvent (not used)
     #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
     #@+node:ekr.20090205153624.11:delete (avoid call to setAllText)
     def delete(self,i,j=None):
