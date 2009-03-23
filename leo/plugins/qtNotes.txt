@@ -2,7 +2,7 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090316095604.11:Urgent 3
+#@+node:ekr.20090316095604.11:Urgent 1
 #@+node:ekr.20081215162017.5:Support multiple body editors
 #@+node:ekr.20090318091009.13:Prototype code
 @color
@@ -353,7 +353,6 @@ def setSelectionRangeHelper(self,i,j,insert):
     e = QtGui.QTextCursor
     if i > j: i,j = j,i
     n = self.lengthHelper()
-    # s = w.toPlainText() ; n = len(s)
     i = max(0,min(i,n))
     j = max(0,min(j,n))
     k = max(0,min(j-i,n))
@@ -3026,12 +3025,10 @@ def selectLabel (self,w):
         # w.leo_label = None
 #@-node:ekr.20081121105001.222:select/unselectLabel
 #@-node:ekr.20081215162017.5:Support multiple body editors
-#@+node:ekr.20090318091009.10:Fix undo problems with qt gui
-#@-node:ekr.20090318091009.10:Fix undo problems with qt gui
+#@-node:ekr.20090316095604.11:Urgent 1
+#@+node:ekr.20090304084841.10:Asap 5
 #@+node:ekr.20090318091009.12:Script errors mess up syntax coloring
 #@-node:ekr.20090318091009.12:Script errors mess up syntax coloring
-#@-node:ekr.20090316095604.11:Urgent 3
-#@+node:ekr.20090304084841.10:Asap 4
 #@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
 http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
 #@nonl
@@ -3056,7 +3053,7 @@ couldn't find any mention of gsimage in the diff.
                      c.frame.body.bodyCtrl.delete(a.gsimage)
                  except:
 #@-node:ekr.20090128083504.1:Fix rclick
-#@-node:ekr.20090304084841.10:Asap 4
+#@-node:ekr.20090304084841.10:Asap 5
 #@+node:ekr.20090304084841.11:Later
 #@+node:ekr.20081215074704.21:Add drag and drop
 #@-node:ekr.20081215074704.21:Add drag and drop
@@ -5581,7 +5578,6 @@ def setSelectionRangeHelper(self,i,j,insert):
     e = QtGui.QTextCursor
     if i > j: i,j = j,i
     n = self.lengthHelper()
-    # s = w.toPlainText() ; n = len(s)
     i = max(0,min(i,n))
     j = max(0,min(j,n))
     k = max(0,min(j-i,n))

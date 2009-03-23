@@ -12542,7 +12542,6 @@ def putCodeLine (self,s,i):
     else:
         g.trace('Can not happen: completely empty line')
 
-#@nonl
 #@-node:ekr.20041005105605.174:putCodeLine (leoAtFile)
 #@+node:ekr.20041005105605.175:putRefLine & allies
 #@+node:ekr.20041005105605.176:putRefLine
@@ -13241,6 +13240,14 @@ def toPythonIndexRowCol(self,index):
     return i,row,col
 #@-node:ekr.20090320055710.4:toPythonIndexToRowCol (baseText) (may be overridden)
 #@-node:ekr.20090320055710.3:Removed call to getAllText from setMoveCol
+#@+node:ekr.20090317090343.8:Fixed undo problems with qt gui
+@nocolor-node
+
+The selection is not handled properly.
+The fix was to save/restore the selection range in
+the top-level undo/redo logic before calling c.redraw.
+#@nonl
+#@-node:ekr.20090317090343.8:Fixed undo problems with qt gui
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs

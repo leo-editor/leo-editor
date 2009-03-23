@@ -7473,41 +7473,12 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             i,j = args
         else:
             g.trace('can not happen',args)
+
         insert = keys.get('insert')
         i,j = self.toGuiIndex(i),self.toGuiIndex(j)
         if i > j: i,j = j,i
 
         return self.setSelectionRangeHelper(i,j,insert)
-
-        # g.trace('i',i,'j',j,'insert',insert,g.callers(4))
-
-        # if self.useScintilla:
-            # if i > j: i,j = j,i
-            # if insert in (j,None):
-                # self.setInsertPoint(j)
-                # w.SendScintilla(w.SCI_SETANCHOR,i)
-            # else:
-                # self.setInsertPoint(i)
-                # w.SendScintilla(w.SCI_SETANCHOR,j)
-        # else:
-            # e = QtGui.QTextCursor
-            # if i > j: i,j = j,i
-            # s = w.toPlainText()
-            # i = max(0,min(i,len(s)))
-            # j = max(0,min(j,len(s)))
-            # k = max(0,min(j-i,len(s)))
-            # cursor = w.textCursor()
-            # if i == j:
-                # cursor.setPosition(i)
-            # elif insert in (j,None):
-                # cursor.setPosition(i)
-                # k = max(0,min(k,len(s)))
-                # cursor.movePosition(e.Right,e.KeepAnchor,k)
-            # else:
-                # cursor.setPosition(j)
-                # cursor.movePosition(e.Left,e.KeepAnchor,k)
-
-            # w.setTextCursor(cursor)
     #@+node:ekr.20081121105001.534:setSelectionRangeHelper
     def setSelectionRangeHelper(self,i,j,insert):
 
@@ -8418,7 +8389,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         e = QtGui.QTextCursor
         if i > j: i,j = j,i
         n = self.lengthHelper()
-        # s = w.toPlainText() ; n = len(s)
         i = max(0,min(i,n))
         j = max(0,min(j,n))
         k = max(0,min(j-i,n))
