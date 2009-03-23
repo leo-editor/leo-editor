@@ -13248,6 +13248,68 @@ The fix was to save/restore the selection range in
 the top-level undo/redo logic before calling c.redraw.
 #@nonl
 #@-node:ekr.20090317090343.8:Fixed undo problems with qt gui
+#@+node:ekr.20090323080711.2:Investigated reported @shadow bug
+@nocolor-node
+
+This @shadow functionality is a great enhancement to Leo, and I would
+like to use it more.
+
+I am using Leo 4.5.1 Final on Windows XP.
+
+My particulars, as reported by Leo :
+  | Leo Log Window...
+  | Leo 4.5.1 final, build  1.244 , September 14, 2008
+  | python 2.6.1, Tk 8.5.2, Pmw 1.3
+  | Windows 5, 1, 2600, 2, Service Pack 3
+
+I've seen 3 discussion threads titled
+  - "@shadow node failing to shadow" 01/23/2009
+  - "@shadow notes" 08/31/2008
+  - "Problem with shadow files" 09/10/2008
+that seem to imply the problem was resolved before Leo 4.5.1 Final.
+
+However, I still see the problem and can reproduce the problem as
+follows:
+
+0) Sample c code created
+
+  >type sampleHello.c
+  #include <stdio.h>
+
+  void main(void){
+     printf("hello world\n");
+     printf("hello again everybody!\n");
+  }
+
+1) Place sampleHello.c in an empty folder, eg c:/tmp/sampleHello.c
+2) Open a new Leo window, and add "@shadow sampleHello.c" node.
+3) Save the Leo file to c:/tmp/sampleHello.leo, then close it.
+4) Reopen c:/tmp/sampleHello.leo and
+   - confirm that @shadow node has a "main" outline node inside.
+   - confirm that .leo_shadow is created
+   - confirm .leo_shadow/xsampleHello.c contains sentinels
+5) Close the Leo file. Reopen the Leo file.
+
+  Get error message :
+  | reading: G:\projects\test\tmp\sampleHello.leo
+  | wrote:     G:\projects\test\tmp\.leo_shadow\xsampleHello.c
+  | updated private G:\projects\test\tmp\.leo_shadow\xsampleHello.c
+from public G:\projects\test\tmp\sampleHello.c
+  | reading: @shadow sampleHello.c
+  | Bad @+leo sentinel in: G:\projects\test\tmp\.leo_shadow
+\xsampleHello.c
+  |invalid @shadow private file G:\projects\test\tmp\.leo_shadow
+\xsampleHello.c
+
+  - confirm that shadow node in Leo file is now empty.
+  - confirm that /tmp/.leo_shadow/xsampleHello.c is exact copy of /
+tmp/sampleHello.c
+
+If there is a workaround, please let me know.
+
+Thanks for a very useful tool,
+#@nonl
+#@-node:ekr.20090323080711.2:Investigated reported @shadow bug
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
