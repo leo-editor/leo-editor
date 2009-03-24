@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="52" left="512" height="974" width="765"/>
+	<global_window_position top="52" left="255" height="974" width="1022"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="6,1,0,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -1217,7 +1217,29 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="ekr.20090324085713.1"><vh>Other docs</vh>
+<v t="ekr.20090101095717.1"><vh>Stories</vh>
+<v t="ekr.20090101095717.2"><vh>Introduction (iLeo, revised)</vh></v>
+<v t="ekr.20090101095717.3" rst_http_attribute="5d71002855443c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3122206e616d653d22687474702d6e6f64652d6d61726b65722d31223e710155043c2f613e71025d710328553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710455063c2f6469763e71055d71062855063c626f64793e710755073c2f626f64793e71085d71092855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710a55073c2f68746d6c3e710b4e65656555243c64697620636c6173733d2273656374696f6e222069643d226f76657276696577223e0a710c55493c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643122206e616d653d226f76657276696577223e4f766572766965773c2f613e3c2f68313e0a710d652e"><vh>Commonly used classes (scripting intro, revised)</vh></v>
+<v t="ekr.20090101095717.4"><vh>Intro to scripting Leo</vh></v>
+<v t="ekr.20090101095717.5"><vh>@rst-no-head preface</vh></v>
+<v t="ekr.20090101095717.6"><vh>@rst-ignore  @rst-no-head preface (old)</vh></v>
+<v t="ekr.20090101095717.7"><vh>New preface</vh></v>
+</v>
+<v t="ekr.20090219024526.1"><vh>Copy of wiki</vh>
+<v t="ekr.20090219024526.5"><vh>top level</vh>
+<v t="ekr.20090219024526.3"><vh>Outlines and Nodes</vh></v>
+<v t="ekr.20090219090426.1"><vh>Clones and Views</vh></v>
+<v t="ekr.20090219090426.2"><vh>External Files</vh></v>
+<v t="ekr.20090219090426.3"><vh>First Steps for Newbies</vh></v>
+<v t="ekr.20090219090426.4"><vh>The rst3 and ipython plugins</vh></v>
+<v t="ekr.20090219024526.2"><vh>Scripting Leo: Commanders, Nodes and Positions</vh></v>
+<v t="ekr.20090219024526.4"><vh>Scripting Leo: Script Buttons and Node Types</vh></v>
+<v t="ekr.20090219090426.5"><vh>Scripting Leo: Directives and Sections</vh></v>
+</v>
+</v>
+</v>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -2963,9 +2985,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20080902080930.5"><vh>Minor new features</vh></v>
 <v t="ekr.20080902080930.6"><vh>New settings</vh></v>
 </v>
-</v>
-</v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20080912143702.137"><vh>4.5.1 final</vh>
 <v t="ekr.20080912143702.138"><vh>Fixed line number problems</vh></v>
 <v t="ekr.20080912143702.139"><vh>Fixed problems with @shadow files with unknown file extensions</vh></v>
@@ -2973,25 +2992,65 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20090101095717.1"><vh>Stories</vh>
-<v t="ekr.20090101095717.2"><vh>Introduction (iLeo, revised)</vh></v>
-<v t="ekr.20090101095717.3" rst_http_attribute="5d71002855443c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3122206e616d653d22687474702d6e6f64652d6d61726b65722d31223e710155043c2f613e71025d710328553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710455063c2f6469763e71055d71062855063c626f64793e710755073c2f626f64793e71085d71092855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710a55073c2f68746d6c3e710b4e65656555243c64697620636c6173733d2273656374696f6e222069643d226f76657276696577223e0a710c55493c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643122206e616d653d226f76657276696577223e4f766572766965773c2f613e3c2f68313e0a710d652e"><vh>Commonly used classes (scripting intro, revised)</vh></v>
-<v t="ekr.20090101095717.4"><vh>Intro to scripting Leo</vh></v>
-<v t="ekr.20090101095717.5"><vh>@rst-no-head preface</vh></v>
-<v t="ekr.20090101095717.6"><vh>@rst-ignore  @rst-no-head preface (old)</vh></v>
-<v t="ekr.20090101095717.7"><vh>New preface</vh></v>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="ekr.20090324085713.2" a="E"><vh>4.6 b1</vh>
+<v t="ekr.20090324085713.285"><vh>Bugs fixed</vh>
+<v t="ekr.20090324085713.292"><vh>Fixed goto-global-line crasher</vh></v>
+<v t="ekr.20090324085713.326"><vh>Fixed bug that prevented Leo from opening files on the XP desktop</vh></v>
+<v t="ekr.20090324085713.350"><vh>Save/restore tnodeList in atFile.write</vh></v>
+<v t="ekr.20090324085713.358"><vh>Paste outline problem</vh></v>
+<v t="ekr.20090324085713.395"><vh>Made sure $Home works for @nosent</vh></v>
+<v t="ekr.20090324085713.404"><vh>Fixed atFile unicode bug</vh></v>
+<v t="ekr.20090324085713.513"><vh>Fixed Mark Edgington's @shadow bug</vh></v>
+<v t="ekr.20090324085713.605"><vh>Fixed whitespace problems with @auto/@shadow</vh></v>
+<v t="ekr.20090324085713.327"><vh>Fixed nested @path problem</vh></v>
+<v t="ekr.20090324085713.289"><vh>Fixed encoding problems with rst3 plugin</vh></v>
+<v t="ekr.20090324085713.318"><vh>Fixed new rst3 crash</vh></v>
+<v t="ekr.20090324085713.320"><vh>Fixed two c syntax-coloring bugs</vh></v>
 </v>
-<v t="ekr.20050831195331.3"></v>
-<v t="ekr.20090219024526.1"><vh>Copy of wiki</vh>
-<v t="ekr.20090219024526.5"><vh>top level</vh>
-<v t="ekr.20090219024526.3"><vh>Outlines and Nodes</vh></v>
-<v t="ekr.20090219090426.1"><vh>Clones and Views</vh></v>
-<v t="ekr.20090219090426.2"><vh>External Files</vh></v>
-<v t="ekr.20090219090426.3"><vh>First Steps for Newbies</vh></v>
-<v t="ekr.20090219090426.4"><vh>The rst3 and ipython plugins</vh></v>
-<v t="ekr.20090219024526.2"><vh>Scripting Leo: Commanders, Nodes and Positions</vh></v>
-<v t="ekr.20090219024526.4"><vh>Scripting Leo: Script Buttons and Node Types</vh></v>
-<v t="ekr.20090219090426.5"><vh>Scripting Leo: Directives and Sections</vh></v>
+<v t="ekr.20090324085713.690"><vh>Improved file handling</vh>
+<v t="ekr.20090324085713.726"><vh>Open a default .leo file if no other is specified</vh></v>
+<v t="ekr.20090324085713.748"><vh>Added escapes for underindented lines</vh></v>
+<v t="ekr.20090324085713.792"><vh>Warn when writing an externally changed file</vh></v>
+</v>
+<v t="ekr.20090324085713.661"><vh>New code features</vh>
+<v t="ekr.20090324085713.662"><vh>Added autoCompleter.getExternalCompletions</vh></v>
+<v t="ekr.20090324085713.663"><vh>Added g.posList</vh></v>
+<v t="ekr.20090324085713.666"><vh>Better plugin info</vh></v>
+<v t="ekr.20090324085713.672"><vh>Added properties to leoNodes.py</vh></v>
+<v t="ekr.20090324085713.688"><vh>Added script to leoSettings.leo to ensure all menu items are valid</vh></v>
+<v t="ekr.20090324085713.689"><vh>Added c.config.getSettingSource</vh></v>
+<v t="ekr.20090324085713.272"><vh>Predefined 'self' in @test/@suite nodes</vh></v>
+<v t="ekr.20090324085713.745"><vh>Added c.getNodePath and c.getNodeFileName</vh></v>
+</v>
+<v t="ekr.20090324105223.15"><vh>New command-line options</vh>
+<v t="ekr.20090324085713.849"><vh>Added -c option to specify config files</vh></v>
+<v t="ekr.20090324085713.835"><vh>Added support for --file=fileName command-line option</vh></v>
+<v t="ekr.20090324085713.867"><vh>Added support for --gui option</vh></v>
+</v>
+<v t="ekr.20090324105223.9"><vh>New commands</vh>
+<v t="ekr.20090324085713.747"><vh>Added smart home (back-to-home) command</vh></v>
+<v t="ekr.20090324085713.817"><vh>The open command creates @edit nodes when opening non-.leo files</vh></v>
+<v t="ekr.20090324085713.836"><vh>added pdb minibuffer command</vh></v>
+<v t="ekr.20090324085713.837"><vh>Added support for smart_tab setting</vh></v>
+<v t="ekr.20090324085713.847"><vh>Improved isearch commands</vh></v>
+</v>
+<v t="ekr.20090324105223.10"><vh>New and improved directives</vh>
+<v t="ekr.20090324085713.740"><vh>Added @nocolor-node directive</vh></v>
+<v t="ekr.20090324085713.691"><vh>Improved @path handling</vh></v>
+</v>
+<v t="ekr.20090324085713.848"><vh>New settings</vh>
+<v t="ekr.20090324085713.732"><vh>Added better default fonts for Leo on Linux</vh></v>
+<v t="ekr.20090324085713.850"><vh>Added support for @int icon_bar_widgets_per_row setting</vh></v>
+<v t="ekr.20090324085713.746"><vh>Added support for meta keys</vh></v>
+<v t="ekr.20090324085713.814"><vh>Use myLeoSettings when opening leoSettings.leo</vh></v>
+</v>
+<v t="ekr.20090324085713.868"><vh>Plugins</vh>
+<v t="ekr.20090324085713.869"><vh>Improved nav_buttons plugin and corresponding nodeHistory class</vh></v>
+<v t="ekr.20090324085713.881"><vh>Created qtGui and tkGui plugins</vh></v>
+<v t="ekr.20090324085713.890"><vh>Created leoGuiPluginsRef.leo</vh></v>
+</v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -5828,7 +5887,8 @@ This plugin provides:
 see test/testToolbar.leo for demo's and howto's
 see test/testAtPopup.leo for examples of enhanced buttons
 </t>
-<t tx="edream.110203163054.46">@language rest</t>
+<t tx="edream.110203163054.46">@nocolor
+@language plain</t>
 <t tx="edream.110203163054.48">@ @rst-options
 code_mode=False
 generate_rst=True
@@ -33282,6 +33342,211 @@ When reading @edit nodes, Leo just puts then entire text of the file
 into the node, along with @language or @nocolor directives as
 appropriate.  These added directives will not change the file when it
 gets written because no sentinels are written.</t>
+<t tx="ekr.20090324085713.1"></t>
+<t tx="ekr.20090324085713.2">Leo 4.6 beta 1                                       March 23, 2009
+
+Leo 4.6 b1 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.6:
+--------------------------
+
+- Leo now requires Python 2.4 or later.
+- A new qt gui plugin, supporting Qt's look and feel.
+- New command-line options:  --gui, --file, -c
+- Dozens of small improvements and bug fixes.
+
+Quote of the month:
+-------------------
+Squeak and Leo have been two of the most significant technologies to
+redefine my personal computer experience and the ideas behind computing.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20090324085713.272"></t>
+<t tx="ekr.20090324085713.285"></t>
+<t tx="ekr.20090324085713.289">http://groups.google.com/group/leo-editor/browse_thread/thread/5f5219fedd977ec2
+</t>
+<t tx="ekr.20090324085713.292"></t>
+<t tx="ekr.20090324085713.318">http://groups.google.com/group/leo-editor/browse_thread/thread/414137b93c7e4b90
+
+Calls g.makeAllNonExistentDirectories instead of os.mkdir.</t>
+<t tx="ekr.20090324085713.320">http://groups.google.com/group/leo-editor/browse_thread/thread/707a910f975f3715
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/74c6ab4809bde980
+
+There were two separate bugs:
+
+1. The eol_span and eol_span_regex now honor the mode's escape character.
+
+2. colorRangeWithTag now colors delegates with the default tag color.
+
+No changes were made in modes/c.py or modes/c.xml.</t>
+<t tx="ekr.20090324085713.326"></t>
+<t tx="ekr.20090324085713.327">http://groups.google.com/group/leo-editor/browse_thread/thread/7d8325d055cbef30</t>
+<t tx="ekr.20090324085713.350">The code should save/restore, just as in the clean_file function (from scripts.leo)</t>
+<t tx="ekr.20090324085713.358">The problem was missing calls to initAfterLoad in c.new.</t>
+<t tx="ekr.20090324085713.395">http://groups.google.com/group/leo-editor/browse_thread/thread/f27e3514310a5c90</t>
+<t tx="ekr.20090324085713.404"></t>
+<t tx="ekr.20090324085713.513"></t>
+<t tx="ekr.20090324085713.605">Pulled trunk, got r1599
+
+python launchLeo.py leo/plugins/leoPlugins.leo
+
+go to
+
+Plugins--&gt;Graph world--&gt;@shadow backlink.py--&gt;backlink declarations
+
+All I did was add the full stop at the end of the docstring, but see
+the diff:
+
+=== modified file 'leo/plugins/backlink.py'
+--- leo/plugins/backlink.py     2009-02-19 18:16:01 +0000
++++ leo/plugins/backlink.py     2009-02-25 22:14:46 +0000
+@@ -1,4 +1,4 @@
+-'''Backlink - allow arbitrary links between nodes
++'''Backlink - allow arbitrary links between nodes.
+ '''
+
+ # Notes
+@@ -296,7 +296,7 @@
+                break
+        else:
+            self.showMessage("Error: no such link")
+-
++
+        gcc = getattr(self.c, 'graphcanvasController')
+        if gcc:
+            gcc.update()
+</t>
+<t tx="ekr.20090324085713.661"></t>
+<t tx="ekr.20090324085713.662">@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ad91984a6d0acac
+
+&gt; As I said, all I need would be is for leo to call callback/hook with
+&gt; signature like
+&gt; def complete(line-up-to-cursor, current_node) =&gt; list of strings
+
+The actual signature is:
+
+theObject,completionList = getExternalCompletions (self,s,p=None,language='python')
+
+p is used only to get the language, or you can set the language by hand.
+
+@color</t>
+<t tx="ekr.20090324085713.663"></t>
+<t tx="ekr.20090324085713.666">c.config.doEnabledPlugins sets g.app.config.enabledPluginsFileName</t>
+<t tx="ekr.20090324085713.672">p.b, p.h and p.gnx
+t.b, t.h, t.gnx and t.u
+v.b, v.h, v.gnx, and v.u</t>
+<t tx="ekr.20090324085713.688"></t>
+<t tx="ekr.20090324085713.689">c.config.getSettingSource('show_full_tracebacks_in_scripts')
+returns the name of the file which Leo used to determine the setting
+
+- D indicates default settings.
+- F indicates the file being loaded
+- L indicates leoSettings.leo
+- M indicates myLeoSettings.leo</t>
+<t tx="ekr.20090324085713.690"></t>
+<t tx="ekr.20090324085713.691"></t>
+<t tx="ekr.20090324085713.726">http://groups.google.com/group/leo-editor/browse_thread/thread/d6449236bc140713#
+
+Added support for @string default_leo_file = ~/.leo/workbook.leo</t>
+<t tx="ekr.20090324085713.732">http://groups.google.com/group/leo-editor/browse_thread/thread/f1c7c5134b95c77e
+</t>
+<t tx="ekr.20090324085713.740"># Useful: we don't need a closing @color to enable coloring in descendants.</t>
+<t tx="ekr.20090324085713.745">http://groups.google.com/group/leo-editor/browse_thread/thread/3b5f1232ecc6bba7</t>
+<t tx="ekr.20090324085713.746">http://groups.google.com/group/leo-editor/browse_thread/thread/b6a39ed672a28c65?pli=1</t>
+<t tx="ekr.20090324085713.747"></t>
+<t tx="ekr.20090324085713.748">@string underindent-escape-string = \-</t>
+<t tx="ekr.20090324085713.792">http://groups.google.com/group/leo-editor/browse_thread/thread/c80fd8375534afdf</t>
+<t tx="ekr.20090324085713.814">Changed config.get so that settings in leoSettings.leo are read *last*.
+This means that myLeoSettings.leo will override leoSettings.leo,
+even when leoSettigns.leo is the local file.</t>
+<t tx="ekr.20090324085713.817">http://groups.google.com/group/leo-editor/browse_thread/thread/3417ff5e9c02c626
+
+The open file dialog now shows all files by default.
+Selecting a non-.leo file will load that file into a new node in the present outline.
+
+This plugs what may have been the biggest hole in Leo's history.
+</t>
+<t tx="ekr.20090324085713.835">Only .zip and .leo extensions are allowed at present.</t>
+<t tx="ekr.20090324085713.836">This works, but stops Leo in the middle of the command-handling logic.
+
+However, it is possible to pick up the commander by stepping out into
+k.masterKeyHandler or k.masterCommandHandler. Using c, one can then get all
+other info.</t>
+<t tx="ekr.20090324085713.837">- Tab = indent when there is a text selection
+- Shift-Tab unindents always</t>
+<t tx="ekr.20090324085713.847">Escape now ends isearch
+</t>
+<t tx="ekr.20090324085713.848"></t>
+<t tx="ekr.20090324085713.849">@nocolor
+
+The setting is called -c or --config.  The one-config-file arg no longer exists.
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/f3f95d93bcd93b94
+
+Personally, I'd like to see another config file available via -c on
+the command line:
+(a common idiom)
+
+leo myproject.leo -c /usr/lib/myproject/myLeoSettings.leo
+
+or better yet:
+
+leo myproject.leo -c /etc/leo/style01.leo
+leo myotherproject.leo -c /etc/leo/style02.leo
+leo anotherproject.leo -c /etc/leo/style23.leo
+
+Each file opens in an editor with the shortcuts, buttons, commands,
+plugins, appearance etc.  that has been tuned for that data management task.
+
+or best yet:
+
+leo myproject.leo -c /usr/lib/python2.5/site-packages/leo/config/style94.leo
+
+==================
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b5a736089079acaf#
+
+Please, I think each file has a distinct and required role.
+
+- config/leoSettings.leo = Edward's base, required for a sane starting point
+
+- home/.leo/myLeoSettings.leo = adjust Edwards suggestions to taste
+
+- cwd/myLeoSettings.leo = provide a customized working environment in
+this folder
+
+- leo -c /usr/lib/leo-editor/src/config/zope3_ide.leo =
+  - open this file in a specialized environments, mine or community contributed
+  - ...
+
+- currentfile/@settings =
+  - I'm working on some customization ideas
+  - Here, try out this Leo file I sent you, check out all the spiffy
+modifications 
+
+@color</t>
+<t tx="ekr.20090324085713.850"></t>
+<t tx="ekr.20090324085713.867"></t>
+<t tx="ekr.20090324085713.868"></t>
+<t tx="ekr.20090324085713.869"></t>
+<t tx="ekr.20090324085713.881"></t>
+<t tx="ekr.20090324085713.890">This contains all gui plugins.</t>
+<t tx="ekr.20090324105223.9"></t>
+<t tx="ekr.20090324105223.10"></t>
+<t tx="ekr.20090324105223.15"></t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
