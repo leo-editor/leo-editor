@@ -7357,7 +7357,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20090320101733.14:toPythonIndexToRowCol
     def toPythonIndexRowCol(self,index):
         """ Slow 'default' implementation """
-        g.trace('slow toPythonIndexRowCol', g.callers(5))
+        #g.trace('slow toPythonIndexRowCol', g.callers(5))
         w = self
         s = w.getAllText()
         i = w.toPythonIndex(index)
