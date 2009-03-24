@@ -185,6 +185,7 @@ def createFrame (fileName,relativeFileName,script):
     if fileName:
         g.es_print("file not found:",fileName,color='red')
 
+    c.redraw()
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
