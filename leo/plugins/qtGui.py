@@ -3657,14 +3657,15 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
     def setItemIconHelper (self,item,icon):
 
         # Generates an item-changed event.
-        item.setIcon(0,icon)
+        if item:
+            item.setIcon(0,icon)
     #@-node:ekr.20090124174652.112:setItemIconHelper (qtTree)
     #@-node:ekr.20090124174652.109:Icons
     #@+node:ekr.20090124174652.115:Items
     #@+node:ekr.20090124174652.67:childIndexOfItem
     def childIndexOfItem (self,item):
 
-        parent = item.parent()
+        parent = item and item.parent()
 
         if parent:
             n = parent.indexOfChild(item)
@@ -3811,7 +3812,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
     #@+node:ekr.20090126120517.19:getParentItem
     def getParentItem(self,item):
 
-        return item.parent()
+        return item and item.parent()
     #@nonl
     #@-node:ekr.20090126120517.19:getParentItem
     #@+node:ekr.20090124174652.106:getTreeEditorForItem
@@ -3860,7 +3861,8 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
     #@+node:ekr.20090124174652.108:setItemText
     def setItemText (self,item,s):
 
-        item.setText(0,s)
+        if item:
+            item.setText(0,s)
     #@-node:ekr.20090124174652.108:setItemText
     #@-node:ekr.20090124174652.115:Items
     #@+node:ekr.20090124174652.122:Scroll bars
