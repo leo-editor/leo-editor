@@ -7442,37 +7442,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         i,j = self.getSelectionRange()
         self.delete(i,j)
     #@-node:ekr.20081121105001.527:deleteTextSelection
-    #@+node:ekr.20081121105001.528:get
-    def get(self,i,j=None):
-        i = self.toGuiIndex(i)
-        if j is None: 
-            j = i+1
-        else:
-            j = self.toGuiIndex(j)
-        te = self.widget
-        doc = te.document()
-        bl = doc.findBlock(i)
-        #row = bl.blockNumber()
-        #col = index - bl.position()
-
-        # common case, e.g. one character    
-        if bl.contains(j):
-            s = unicode(bl.text())
-            offset = i - bl.position()
-
-            ret = s[ offset : offset + (j-i)]
-            #print "fastget",ret
-            return ret
-
-        # the next implementation is much slower, but will have to do        
-
-        #g.trace('Slow get()', g.callers(5))
-        s = self.getAllText()
-        i = self.toGuiIndex(i)
-
-        j = self.toGuiIndex(j)
-        return s[i:j]
-    #@-node:ekr.20081121105001.528:get
     #@+node:ekr.20081121105001.529:getLastPosition
     def getLastPosition(self):
 
@@ -7491,6 +7460,20 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # g.trace(repr(s[i:j]))
             return s[i:j]
     #@-node:ekr.20081121105001.530:getSelectedText
+    #@+node:ville.20090324170325.73:get
+    def get(self,i,j=None):
+        """ Slow implementation of get() - ok for QLineEdit """
+        #g.trace('Slow get', g.callers(5))
+
+        s = self.getAllText()
+        i = self.toGuiIndex(i)
+
+        if j is None: 
+            j = i+1
+
+        j = self.toGuiIndex(j)
+        return s[i:j]
+    #@-node:ville.20090324170325.73:get
     #@+node:ekr.20081121105001.531:insert
     def insert(self,i,s):
 
@@ -8381,6 +8364,37 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         self.widget.ensureCursorVisible()
     #@nonl
     #@-node:ekr.20081121105001.585:see
+    #@+node:ville.20090324170325.63:get
+    def get(self,i,j=None):
+        i = self.toGuiIndex(i)
+        if j is None: 
+            j = i+1
+        else:
+            j = self.toGuiIndex(j)
+        te = self.widget
+        doc = te.document()
+        bl = doc.findBlock(i)
+        #row = bl.blockNumber()
+        #col = index - bl.position()
+
+        # common case, e.g. one character    
+        if bl.contains(j):
+            s = unicode(bl.text())
+            offset = i - bl.position()
+
+            ret = s[ offset : offset + (j-i)]
+            #print "fastget",ret
+            return ret
+
+        # the next implementation is much slower, but will have to do        
+
+        #g.trace('Slow get()', g.callers(5))
+        s = self.getAllText()
+        i = self.toGuiIndex(i)
+
+        j = self.toGuiIndex(j)
+        return s[i:j]
+    #@-node:ville.20090324170325.63:get
     #@+node:ekr.20081121105001.586:seeInsertPoint
     def seeInsertPoint (self):
 
