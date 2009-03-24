@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="36" left="367" height="961" width="889"/>
+	<global_window_position top="37" left="323" height="977" width="950"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20051031040240" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
 <v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
@@ -72,17 +72,13 @@
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.3"><vh>Projects</vh>
-<v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c68067573732e"
-marks="ekr.20070228160107,"
-expanded="ekr.20061031131434.146,"><vh>@thin leoProjects.txt</vh></v>
+<v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d71002855013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c68067573550a302e302e352e31382e30710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="ekr.20090113083258.3"><vh>Unit tests</vh>
 <v t="ekr.20090113083258.1"><vh>@thin test_core.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20040117181936"
-marks="ekr.20070228160107,"
-expanded="ekr.20061031131434.146,"><vh>@thin ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20040117181936"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
@@ -114,10 +110,8 @@ expanded="ekr.20061031131434.146,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20031218072017.3630"><vh>@thin leoCompare.py</vh></v>
 <v t="ekr.20060123151617"><vh>@thin leoFind.py</vh></v>
 <v t="ekr.20031218072017.3655"><vh>@thin leoFrame.py</vh></v>
-<v t="ekr.20031218072017.3719"
-marks="ekr.20070228160107,"><vh>@thin leoGui.py</vh></v>
-<v t="ekr.20061031131434"
-expanded="ekr.20061031131434.146,"><vh>@thin leoKeys.py</vh></v>
+<v t="ekr.20031218072017.3719"><vh>@thin leoGui.py</vh></v>
+<v t="ekr.20061031131434"><vh>@thin leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@thin leoMenu.py</vh></v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Test classes</vh>
@@ -141,7 +135,7 @@ Leo's code uses the following conventions throughout:
 
 c:  a commander
 ch: a character
-d:  a dialog or a dict.
+d:  a dialog orf a dict.
 g:  the leoGlobal module.
 i, j, k: indices into a string
 p:  a position.
@@ -152,19 +146,22 @@ v:  a vnode
 z:  a local temp.
 
 The following are 'official' ivars that will always exist:
-    
+
 c.frame                 The frame containing the log,body,tree, etc.
 c.frame.body            The body pane
 c.frame.body.bodyCtrl   The body widget.
 c.frame.iconBar         The icon bar.
 c.frame.log             The log pane.
-c.frame.tree            The tree pane.</t>
+c.frame.tree            The tree pane.
+</t>
 <t tx="ekr.20031218072017.2604"></t>
 <t tx="ekr.20031218072017.3625">&lt;&lt; about gui classes and gui plugins &gt;&gt;
 </t>
-<t tx="ekr.20040629121554.1">def getSignOnLine (self):
+<t tx="ekr.20040629121554.1"># Leo 4.5.1 final: September 14, 2008
+
+def getSignOnLine (self):
     c = self
-    return "Leo 4.5.1 final, build %s, September 14, 2008" % c.getBuildNumber()
+    return "Leo 4.6 beta 1, build %s, March 24, 2009" % c.getBuildNumber()
 </t>
 <t tx="ekr.20050721093241">@nocolor
 

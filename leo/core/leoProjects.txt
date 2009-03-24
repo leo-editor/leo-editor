@@ -13310,6 +13310,10 @@ If there is a workaround, please let me know.
 Thanks for a very useful tool,
 #@nonl
 #@-node:ekr.20090323080711.2:Investigated reported @shadow bug
+#@+node:ekr.20090323080711.1:Opening non-existent file now draws the outline properly
+# Added call to c.redraw at *end* of runLeo.py:
+#@nonl
+#@-node:ekr.20090323080711.1:Opening non-existent file now draws the outline properly
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
@@ -15441,6 +15445,7 @@ def createFrame (fileName,relativeFileName,script):
     if fileName:
         g.es_print("file not found:",fileName,color='red')
 
+    c.redraw()
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
@@ -16149,6 +16154,7 @@ def createFrame (fileName,relativeFileName,script):
     if fileName:
         g.es_print("file not found:",fileName,color='red')
 
+    c.redraw()
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
@@ -19218,6 +19224,7 @@ def createFrame (fileName,relativeFileName,script):
     if fileName:
         g.es_print("file not found:",fileName,color='red')
 
+    c.redraw()
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
@@ -19877,6 +19884,7 @@ def createFrame (fileName,relativeFileName,script):
     if fileName:
         g.es_print("file not found:",fileName,color='red')
 
+    c.redraw()
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
 #@-node:ekr.20080921060401.12:Support for @string default_leo_file = ~/.leo/workbook.leo

@@ -390,9 +390,11 @@ class baseCommands (object):
         return c.ver[10:-1] # Strip off "(dollar)Revision" and the trailing "$"
     #@-node:ekr.20040629121554:getBuildNumber
     #@+node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
+    # Leo 4.5.1 final: September 14, 2008
+
     def getSignOnLine (self):
         c = self
-        return "Leo 4.5.1 final, build %s, September 14, 2008" % c.getBuildNumber()
+        return "Leo 4.6 beta 1, build %s, March 24, 2009" % c.getBuildNumber()
     #@-node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     #@+node:ekr.20040629121554.2:initVersion
     def initVersion (self):
@@ -3631,7 +3633,11 @@ class baseCommands (object):
             elif h.startswith(chapter):
                 name = h[len(chapter):].strip()
                 if name:
-                    return cc.removeChapterByName(name)
+                    # Bug fix: 2009/3/23: Make sure the chapter exists!
+                    # This might be an @chapter node outside of @chapters tree.
+                    theChapter = cc.chaptersDict.get(name)
+                    if theChapter:
+                        return cc.removeChapterByName(name)
 
         undoData = u.beforeDeleteNode(p)
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()

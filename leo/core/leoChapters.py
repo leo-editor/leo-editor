@@ -385,7 +385,6 @@ class chapterController:
         cc.selectChapterByName('main')
         cc.afterRemoveChapter(bunch,c.p)
         c.redraw()
-    #@nonl
     #@-node:ekr.20070606075434:cc.removeChapterByName
     #@+node:ekr.20070317085437.41:cc.renameChapter
     # newName is for unitTesting.
