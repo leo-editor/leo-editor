@@ -1507,16 +1507,20 @@ class leoQtFrame (leoFrame.leoFrame):
         #@-node:ekr.20081121105001.264:clear, get & put/1
         #@+node:ekr.20081121105001.265:update
         def update (self):
-
             if g.app.killed: return
             c = self.c ; body = c.frame.body
-            s = body.getAllText()
-            i = body.getInsertPoint()
-            # Compute row,col & fcol
-            row,col = g.convertPythonIndexToRowCol(s,i)
+
+            # QTextEdit
+            te = body.widget.widget
+            cr = te.textCursor()
+            bl = cr.block()
+
+            col = cr.columnNumber()
+            row = bl.blockNumber() + 1
+            line = bl.text()
+
             if col > 0:
-                s2 = s[i-col:i]
-                s2 = g.toUnicode(s2,g.app.tkEncoding)
+                s2 = line[0:col]        
                 col = g.computeWidth (s2,c.tab_width)
             fcol = col + c.currentPosition().textOffset()
             self.put1(
@@ -5416,6 +5420,9 @@ class leoQtColorizer:
 
         """Return True unless p is unambiguously under the control of @nocolor."""
 
+        if self.checkStartKillColor():
+            return False
+
         trace = False and not g.unitTesting
         if not p:
             if trace: g.trace('no p',repr(p))
@@ -5478,6 +5485,20 @@ class leoQtColorizer:
         return d
     #@-node:ekr.20090214075058.12:findColorDirectives
     #@-node:ekr.20081205131308.23:useSyntaxColoring & helper
+    #@+node:ville.20090319181106.135:checkStartKillColor
+    def checkStartKillColor(self):
+        # note that we avoid the slow getAllText at all cost
+        doc = self.w.document()
+        fb = doc.begin() 
+        firstline = unicode(fb.text())
+        if firstline.startswith('@killcolor'):
+            #g.trace('have @killcolor')
+            self.killColorFlag = True
+            return True
+
+        return False
+
+    #@-node:ville.20090319181106.135:checkStartKillColor
     #@-others
 
 #@-node:ekr.20081205131308.15:leoQtColorizer
@@ -5535,7 +5556,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
     def highlightBlock (self,s):
         """ Called by QSyntaxHiglighter """
 
-        if self.hasCurrentBlock:
+        if self.hasCurrentBlock and not self.colorizer.killColorFlag:
             colorer = self.colorer
             s = unicode(s)
             colorer.recolor(s)
@@ -6998,6 +7019,10 @@ class jEditColorizer:
         # Reload all_s if the widget's text is known to have changed.
         if self.initFlag:
             self.initFlag = False
+            if self.colorizer.checkStartKillColor():
+                self.all_s = None
+                return 
+
             self.all_s = self.w.getAllText()
             if trace and verbose:
                 g.trace('**** set all_s: %s' % len(self.all_s),g.callers(5))
@@ -7349,6 +7374,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def toPythonIndex (self,index):
 
         w = self
+        #g.trace('slow toPythonIndex', g.callers(5))
 
         if type(index) == type(99):
             return index
@@ -7357,7 +7383,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         elif index == 'end':
             return w.getLastPosition()
         else:
-            # g.trace(repr(index))
+            g.trace(repr(index))
             s = w.getAllText()
             data = index.split('.')
             if len(data) == 2:
@@ -7374,7 +7400,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@-node:ekr.20090320101733.13:toPythonIndex
     #@+node:ekr.20090320101733.14:toPythonIndexToRowCol
     def toPythonIndexRowCol(self,index):
-
+        """ Slow 'default' implementation """
+        #g.trace('slow toPythonIndexRowCol', g.callers(5))
         w = self
         s = w.getAllText()
         i = w.toPythonIndex(index)
@@ -7417,11 +7444,32 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@-node:ekr.20081121105001.527:deleteTextSelection
     #@+node:ekr.20081121105001.528:get
     def get(self,i,j=None):
+        i = self.toGuiIndex(i)
+        if j is None: 
+            j = i+1
+        else:
+            j = self.toGuiIndex(j)
+        te = self.widget
+        doc = te.document()
+        bl = doc.findBlock(i)
+        #row = bl.blockNumber()
+        #col = index - bl.position()
 
-        w = self.widget
+        # common case, e.g. one character    
+        if bl.contains(j):
+            s = unicode(bl.text())
+            offset = i - bl.position()
+
+            ret = s[ offset : offset + (j-i)]
+            #print "fastget",ret
+            return ret
+
+        # the next implementation is much slower, but will have to do        
+
+        #g.trace('Slow get()', g.callers(5))
         s = self.getAllText()
         i = self.toGuiIndex(i)
-        if j is None: j = i+1
+
         j = self.toGuiIndex(j)
         return s[i:j]
     #@-node:ekr.20081121105001.528:get
@@ -8262,6 +8310,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
     def getAllText(self):
 
+        #g.trace("getAllText", g.callers(5))
         w = self.widget
         s = unicode(w.toPlainText())
 
@@ -8428,6 +8477,66 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             pos = pos[0]
         sb.setSliderPosition(pos)
     #@-node:ekr.20081121105001.591:setYScrollPosition
+    #@+node:ville.20090321082712.1: PythonIndex
+    #@+node:ville.20090321082712.2:toPythonIndex
+    def toPythonIndex (self,index):
+
+        w = self
+        te = self.widget
+
+        if type(index) == type(99):
+            return index
+        elif index == '1.0':
+            return 0
+        elif index == 'end':
+            return w.getLastPosition()
+        else:
+            # g.trace(repr(index))
+            #s = w.getAllText()
+            doc = te.document()
+            data = index.split('.')
+            if len(data) == 2:
+                row,col = data
+                row,col = int(row),int(col)
+                bl = doc.findBlockByNumber(row-1)
+                return bl.position() + col
+
+
+                #i = g.convertRowColToPythonIndex(s,row-1,col)
+
+                # g.trace(index,row,col,i,g.callers(6))
+                #return i
+            else:
+                g.trace('bad string index: %s' % index)
+                return 0
+
+    toGuiIndex = toPythonIndex
+    #@-node:ville.20090321082712.2:toPythonIndex
+    #@+node:ville.20090321082712.3:toPythonIndexToRowCol
+    def toPythonIndexRowCol(self,index):
+        #print "use idx",index
+
+        if index == '1.0':
+            return 0, 0, 0
+        if index == 'end':
+            index = w.getLastPosition()
+
+        w = self 
+        te = self.widget
+        #print te
+        doc = te.document()
+        i = w.toPythonIndex(index)
+        bl = doc.findBlock(i)
+        row = bl.blockNumber()
+        col = i - bl.position()
+
+        #s = w.getAllText()
+        #i = w.toPythonIndex(index)
+        #row,col = g.convertPythonIndexToRowCol(s,i)
+        #print "idx",i,row,col
+        return i,row,col
+    #@-node:ville.20090321082712.3:toPythonIndexToRowCol
+    #@-node:ville.20090321082712.1: PythonIndex
     #@-node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
     #@-others
 #@-node:ekr.20081121105001.572: class leoQTextEditWidget
