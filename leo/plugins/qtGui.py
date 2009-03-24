@@ -5337,20 +5337,6 @@ class leoQtColorizer:
 
         return self.language # For use by external routines.
     #@-node:ekr.20090226105328.12:scanColorDirectives (leoQtColorizer)
-    #@+node:ville.20090319181106.135:checkStartKillColor
-    def checkStartKillColor(self):
-        # note that we avoid the slow getAllText at all cost
-        doc = self.w.document()
-        fb = doc.begin() 
-        firstline = unicode(fb.text())
-        if firstline.startswith('@killcolor'):
-            g.trace('have @killcolor')
-            self.killColorFlag = True
-            return True
-
-        return False
-
-    #@-node:ville.20090319181106.135:checkStartKillColor
     #@+node:ekr.20090216070256.11:setHighlighter
     def setHighlighter (self,p):
 
@@ -5455,6 +5441,20 @@ class leoQtColorizer:
         return d
     #@-node:ekr.20090214075058.12:findColorDirectives
     #@-node:ekr.20081205131308.23:useSyntaxColoring & helper
+    #@+node:ville.20090319181106.135:checkStartKillColor
+    def checkStartKillColor(self):
+        # note that we avoid the slow getAllText at all cost
+        doc = self.w.document()
+        fb = doc.begin() 
+        firstline = unicode(fb.text())
+        if firstline.startswith('@killcolor'):
+            #g.trace('have @killcolor')
+            self.killColorFlag = True
+            return True
+
+        return False
+
+    #@-node:ville.20090319181106.135:checkStartKillColor
     #@-others
 
 #@-node:ekr.20081205131308.15:leoQtColorizer
@@ -7330,7 +7330,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def toPythonIndex (self,index):
 
         w = self
-        g.trace('slow toPythonIndex', g.callers(5))
+        #g.trace('slow toPythonIndex', g.callers(5))
 
         if type(index) == type(99):
             return index
@@ -7417,12 +7417,12 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             offset = i - bl.position()
 
             ret = s[ offset : offset + (j-i)]
-            print "fastget",ret
+            #print "fastget",ret
             return ret
 
         # the next implementation is much slower, but will have to do        
 
-        g.trace('Slow get()', g.callers(5))
+        #g.trace('Slow get()', g.callers(5))
         s = self.getAllText()
         i = self.toGuiIndex(i)
 
@@ -8292,7 +8292,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
     def getAllText(self):
 
-        g.trace("getAllText", g.callers(5))
+        #g.trace("getAllText", g.callers(5))
         w = self.widget
         s = unicode(w.toPlainText())
 
