@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -370,7 +370,7 @@
 <v t="ekr.20071214132254"><vh>Import options</vh>
 <v t="ekr.20071214132254.1"><vh>@data import_xml_tags</vh></v>
 </v>
-<v t="ekr.20060122105527.3" a="E"><vh>Keyboard and minibuffer options</vh>
+<v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20060215094146"><vh>@@bool ignore_caps_lock = True</vh></v>
 <v t="ekr.20060216170801"><vh>@bool enable_calltips_initially = False</vh></v>
 <v t="ekr.20060215102141"></v>
@@ -4545,6 +4545,7 @@ back-paragraph                      = None
 back-paragraph-extend-selection     = None
 back-sentence                       = None
 back-sentence-extend-selection      = None
+back-to-home                        = None
 back-to-indentation                 = None
 back-word                           = None
 back-word-extend-selection          = None
