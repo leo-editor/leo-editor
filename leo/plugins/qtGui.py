@@ -7385,7 +7385,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         elif index == 'end':
             return w.getLastPosition()
         else:
-            g.trace(repr(index))
+            # g.trace(repr(index))
             s = w.getAllText()
             data = index.split('.')
             if len(data) == 2:
@@ -8366,37 +8366,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         self.widget.ensureCursorVisible()
     #@nonl
     #@-node:ekr.20081121105001.585:see
-    #@+node:ville.20090324170325.63:get
-    def get(self,i,j=None):
-        i = self.toGuiIndex(i)
-        if j is None: 
-            j = i+1
-        else:
-            j = self.toGuiIndex(j)
-        te = self.widget
-        doc = te.document()
-        bl = doc.findBlock(i)
-        #row = bl.blockNumber()
-        #col = index - bl.position()
-
-        # common case, e.g. one character    
-        if bl.contains(j):
-            s = unicode(bl.text())
-            offset = i - bl.position()
-
-            ret = s[ offset : offset + (j-i)]
-            #print "fastget",ret
-            return ret
-
-        # the next implementation is much slower, but will have to do        
-
-        #g.trace('Slow get()', g.callers(5))
-        s = self.getAllText()
-        i = self.toGuiIndex(i)
-
-        j = self.toGuiIndex(j)
-        return s[i:j]
-    #@-node:ville.20090324170325.63:get
     #@+node:ekr.20081121105001.586:seeInsertPoint
     def seeInsertPoint (self):
 
@@ -8553,6 +8522,37 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         return i,row,col
     #@-node:ville.20090321082712.3:toPythonIndexToRowCol
     #@-node:ville.20090321082712.1: PythonIndex
+    #@+node:ville.20090324170325.63:get
+    def get(self,i,j=None):
+        i = self.toGuiIndex(i)
+        if j is None: 
+            j = i+1
+        else:
+            j = self.toGuiIndex(j)
+        te = self.widget
+        doc = te.document()
+        bl = doc.findBlock(i)
+        #row = bl.blockNumber()
+        #col = index - bl.position()
+
+        # common case, e.g. one character    
+        if bl.contains(j):
+            s = unicode(bl.text())
+            offset = i - bl.position()
+
+            ret = s[ offset : offset + (j-i)]
+            #print "fastget",ret
+            return ret
+
+        # the next implementation is much slower, but will have to do        
+
+        #g.trace('Slow get()', g.callers(5))
+        s = self.getAllText()
+        i = self.toGuiIndex(i)
+
+        j = self.toGuiIndex(j)
+        return s[i:j]
+    #@-node:ville.20090324170325.63:get
     #@-node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
     #@-others
 #@-node:ekr.20081121105001.572: class leoQTextEditWidget
