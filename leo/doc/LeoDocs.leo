@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="2,0"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="6,1,1"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -3005,7 +3005,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
 <v t="ekr.20090324145450.20"></v>
 <v t="ekr.20090324085713.2"><vh>4.6 b1</vh>
 <v t="ekr.20090324085713.285"><vh>Bugs fixed</vh>
@@ -33369,7 +33369,8 @@ The highlights of Leo 4.6:
 --------------------------
 
 - Leo now requires Python 2.4 or later.
-- A new qt gui plugin, supporting Qt's look and feel.
+- Leo now features a modern Qt interface;
+  Leo's legacy Tk interface can also be used.
 - New --config --file and --gui command-line options.
 - Dozens of small improvements and bug fixes.
 
