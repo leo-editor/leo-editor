@@ -13,16 +13,16 @@ REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
 
-rem goto errors
+goto errors
 goto all
 
 :errors
 
-echo leoCommands.py
-call pylint.bat leo\core\leoCommands.py      --rcfile=leo\test\pylint-leo-rc.txt
+echo mod_scripting.py
+rem Harmless: E0611:489:scriptingController.runDebugScriptCommand: No name 'leoScriptModule' in module 'leo.core'
+REM call pylint.bat leo\plugins\mod_scripting.py        --disable-msg=E0611 --rcfile=leo\test\pylint-leo-rc.txt
 
-echo leoFrame.py
-call pylint.bat leo\core\leoFrame.py         --rcfile=leo\test\pylint-leo-rc.txt
+call pylint.bat leo\plugins\mod_scripting.py --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 
