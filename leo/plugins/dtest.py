@@ -54,6 +54,7 @@ import leo.core.leoGlobals as g
 def init ():
 
     leoPlugins.registerHandler('after-create-leo-frame', DT)
+    g.plugin_signon(__name__)
 
     return True
 #@-node:ekr.20070119094733.5:init
