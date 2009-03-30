@@ -888,7 +888,11 @@ class baseCommands (object):
                             vtuple.append(path)
                         command = "subprocess.Popen(%s)" % repr(vtuple)
                         if subprocess:
-                            subprocess.Popen(vtuple)
+                            try:
+                                subprocess.Popen(vtuple)
+                            except OSError:
+                                g.es_print("vtuple",repr(vtuple))
+                                g.es_exception()
                         else:
                             g.trace('Can not import subprocess.  Skipping: "%s"' % command)
                     else:
