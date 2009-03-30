@@ -295,10 +295,9 @@ class scriptingController:
         if shortcut:
             statusLine = '%s = %s' % (statusLine,shortcut)
 
-        # This helper is also called by the script-button callback.
         b = self.createAtButtonFromSettingHelper(h,script,statusLine,shortcut)
     #@+node:ekr.20070926085149:createAtButtonFromSettingHelper & callback
-    def createAtButtonFromSettingHelper (self,args,h,script,statusLine,shortcut,bg='LightSteelBlue2'):
+    def createAtButtonFromSettingHelper (self,h,script,statusLine,shortcut,bg='LightSteelBlue2'):
 
         '''Create a button from an @button node.
 

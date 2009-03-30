@@ -293,7 +293,7 @@ if pth and bname:
     self.db = leo.external.pickleshare.PickleShareDB(dbdirname)
 else:
     self.db = None
-    if not g.app.silentMode:
+    if not g.app.silentMode and not g.unitTesting:
         print("\n*** No file in controller, using c.db=None ***\n")
 #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
 #@-node:ekr.20040731071037:c.initIvars
@@ -1405,7 +1405,7 @@ def chapterSelectHelper (self,w=None,selectEditor=True):
     c.hoistStack = self.hoistStack[:]
 
     c.selectPosition(p)
-    c.redraw_after_select(p) ####
+    c.redraw_after_select(p)
     g.doHook('hoist-changed',c=c)
     c.bodyWantsFocusNow()
 #@nonl
@@ -1780,7 +1780,11 @@ def runTest (self,define_g = True):
 #@+node:ekr.20051104075904.11:shortDescription
 def shortDescription (self):
 
-    return self.p.h + '\n'
+    s = self.p.h
+
+    # g.trace(s)
+
+    return s + '\n'
 #@-node:ekr.20051104075904.11:shortDescription
 #@-node:ekr.20051104075904.5:class generalTestCase
 #@-node:ekr.20090218115025.1:Predefined 'self' in @test/@suite nodes
@@ -3375,7 +3379,6 @@ def checkTrialWrite (self,s1=None,s2=None):
         at.write(self.root,
             nosentinels=True,thinFile=False,
             scriptWrite=False,toString=True)
-            #### write_strips_blank_lines=False)
         s1,s2 = self.file_s, at.stringOutput
 
     s1 = g.toUnicode(s1,self.encoding)
@@ -3738,7 +3741,6 @@ def write (self,root,
     thinFile = False,
     scriptWrite = False,
     toString = False,
-    #### write_strips_blank_lines = None,
 ):
 
     """Write a 4.x derived file."""
@@ -3757,7 +3759,6 @@ def write (self,root,
     at.initWriteIvars(root,at.targetFileName,
         nosentinels = nosentinels, thinFile = thinFile,
         scriptWrite = scriptWrite, toString = toString)
-        #### write_strips_blank_lines = write_strips_blank_lines)
 
     if nosentinels and not scriptWrite and not toString:
         fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
@@ -3954,7 +3955,7 @@ def new (self,event=None,gui=None):
         frame.c.setChanged(False)
         # Clear the changed flag set when creating the @chapters node.
     else:
-        c.redraw(p) ####
+        c.redraw(p)
     if c.config.getBool('outline_pane_has_initial_focus'):
         c.treeWantsFocusNow()
     else:
@@ -4311,15 +4312,12 @@ def setMoveCol (self,w,spot):
     '''Set the column to which an up or down arrow will attempt to move.'''
 
     c = self.c ; p = c.p
-    s = w.getAllText()
-    i = w.toPythonIndex(spot)
-    junk,col = g.convertPythonIndexToRowCol(s,i)
-    # g.trace('spot,i,col',spot,i,col)
+
+    i,row,col = w.toPythonIndexRowCol(spot)
 
     self.moveSpot = i
     self.moveCol = col
     self.moveSpotNode = p.v.t
-#@nonl
 #@-node:ekr.20060209095101:setMoveCol
 #@-node:ekr.20051218170358: helpers
 #@+node:ekr.20081123102100.1:backToHome
@@ -4857,7 +4855,6 @@ def write (self,root,
     thinFile = False,
     scriptWrite = False,
     toString = False,
-    #### write_strips_blank_lines = None,
 ):
 
     """Write a 4.x derived file."""
@@ -4876,7 +4873,6 @@ def write (self,root,
     at.initWriteIvars(root,at.targetFileName,
         nosentinels = nosentinels, thinFile = thinFile,
         scriptWrite = scriptWrite, toString = toString)
-        #### write_strips_blank_lines = write_strips_blank_lines)
 
     if nosentinels and not scriptWrite and not toString:
         fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
@@ -4967,17 +4963,10 @@ def initWriteIvars(self,root,targetFileName,
     scriptWrite=False,
     toString=False,
     forcePythonSentinels=None,
-    #### write_strips_blank_lines=None,
 ):
 
     self.initCommonIvars()
     << init ivars for writing >>
-
-    ####
-    # if write_strips_blank_lines is None:
-        # self.write_strips_blank_lines = self.c.config.getBool('write_strips_blank_lines')
-    # else:
-        # self.write_strips_blank_lines = write_strips_blank_lines
 
     if forcePythonSentinels is None:
         forcePythonSentinels = scriptWrite
@@ -9225,6 +9214,15 @@ def yview (self,*args):                     return 0,0
 tag_config = tag_configure
 #@nonl
 #@-node:ekr.20081031074455.13: do-nothings
+#@+node:ekr.20090320055710.4:toPythonIndexToRowCol (baseText) (may be overridden)
+def toPythonIndexRowCol(self,index):
+
+    w = self
+    s = w.getAllText()
+    i = w.toPythonIndex(index)
+    row,col = g.convertPythonIndexToRowCol(s,i)
+    return i,row,col
+#@-node:ekr.20090320055710.4:toPythonIndexToRowCol (baseText) (may be overridden)
 #@+node:ekr.20070228074312.13:delete
 def delete(self,i,j=None):
 
@@ -11416,7 +11414,7 @@ def new (self,event=None,gui=None):
         frame.c.setChanged(False)
         # Clear the changed flag set when creating the @chapters node.
     else:
-        c.redraw(p) ####
+        c.redraw(p)
     if c.config.getBool('outline_pane_has_initial_focus'):
         c.treeWantsFocusNow()
     else:
@@ -11835,17 +11833,10 @@ def initWriteIvars(self,root,targetFileName,
     scriptWrite=False,
     toString=False,
     forcePythonSentinels=None,
-    #### write_strips_blank_lines=None,
 ):
 
     self.initCommonIvars()
     << init ivars for writing >>
-
-    ####
-    # if write_strips_blank_lines is None:
-        # self.write_strips_blank_lines = self.c.config.getBool('write_strips_blank_lines')
-    # else:
-        # self.write_strips_blank_lines = write_strips_blank_lines
 
     if forcePythonSentinels is None:
         forcePythonSentinels = scriptWrite
@@ -11930,14 +11921,13 @@ def writeOneAtAutoNode(self,p,toString,force):
     c.endEditing() # Capture the current headline.
     at.targetFileName = g.choose(toString,"<string-file>",fileName)
     at.initWriteIvars(root,at.targetFileName,
-        atAuto=True, ####
+        atAuto=True,
         nosentinels=True,thinFile=False,scriptWrite=False,
         toString=toString)
-        #### ,write_strips_blank_lines=False)
 
     ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
     if ok:
-        at.writeOpenFile(root,nosentinels=True,toString=toString) ####,atAuto=True)
+        at.writeOpenFile(root,nosentinels=True,toString=toString)
         at.closeWriteFile() # Sets stringOutput if toString is True.
         if at.errors == 0:
             at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
@@ -12006,15 +11996,13 @@ def writeOneAtShadowNode(self,p,toString,force):
 
     c.endEditing() # Capture the current headline.
     at.initWriteIvars(root,targetFileName=None, # Not used.
-        atShadow=True, ####
+        atShadow=True,
         nosentinels=None, # set below.  Affects only error messages (sometimes).
         thinFile=True, # New in Leo 4.5 b2: private files are thin files.
         scriptWrite=False,
         toString=False, # True: create a fileLikeObject.  This is done below.
         forcePythonSentinels=True) # A hack to suppress an error message.
             # The actual sentinels will be set below.
-
-        #### write_strips_blank_lines=False,
 
     # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
     #                     what is used in x.propegate changes.
@@ -12033,7 +12021,7 @@ def writeOneAtShadowNode(self,p,toString,force):
         theFile = at.openStringFile(fn)
         at.sentinels = sentinels
         at.writeOpenFile(root,
-            nosentinels=not sentinels,toString=False) ####,atAuto=False)
+            nosentinels=not sentinels,toString=False)
             # nosentinels only affects error messages, and then only if atAuto is True.
         s = at.closeStringFile(theFile)
         data.append(s)
@@ -12226,7 +12214,7 @@ def openForWrite (self, filename, wb='wb'):
 # New in 4.3 b2: support for writing from a string.
 
 def writeOpenFile(self,root,
-    nosentinels=False,toString=False,fromString=''): ####,atAuto=False):
+    nosentinels=False,toString=False,fromString=''):
 
     """Do all writes except asis writes."""
 
@@ -12269,8 +12257,7 @@ def putBody(self,p,oneNodeOnly=False,fromString=''):
 
     inCode = True
     << Make sure all lines end in a newline >>
-    if True: #### self.write_strips_blank_lines and not self.atAuto: ####
-        s = self.cleanLines(p,s)
+    s = self.cleanLines(p,s)
     i = 0
     while i < len(s):
         next_i = g.skip_line(s,i)
@@ -12540,25 +12527,9 @@ def putCodeLine (self,s,i):
 
     if trace: g.trace(self.atShadow,repr(line))
 
-    if True: #### self.write_strips_blank_lines:
-        # Don't put any whitespace in otherwise blank lines.
-        if line.strip(): # The line has non-empty content.
-            if not at.raw:
-                at.putIndent(at.indent,line)
-
-            if line[-1:]=='\n':
-                at.os(line[:-1])
-                at.onl()
-            else:
-                at.os(line)
-        elif line and line[-1] == '\n':
-            at.onl()
-        else:
-            g.trace('Can not happen: completely empty line')
-    else:
-        # Don't put leading indent if the line is empty!
-        if line.strip() and not at.raw:
-        # if at.atAuto or at.atShadow or (line.strip() and not at.raw):
+    # Don't put any whitespace in otherwise blank lines.
+    if line.strip(): # The line has non-empty content.
+        if not at.raw:
             at.putIndent(at.indent,line)
 
         if line[-1:]=='\n':
@@ -12566,6 +12537,11 @@ def putCodeLine (self,s,i):
             at.onl()
         else:
             at.os(line)
+    elif line and line[-1] == '\n':
+        at.onl()
+    else:
+        g.trace('Can not happen: completely empty line')
+
 #@-node:ekr.20041005105605.174:putCodeLine (leoAtFile)
 #@+node:ekr.20041005105605.175:putRefLine & allies
 #@+node:ekr.20041005105605.176:putRefLine
@@ -13157,6 +13133,187 @@ def insertHeadline (self,event=None,op_name="Insert Node",as_child=False):
     return p # for mod_labels plugin.
 #@-node:ekr.20031218072017.1761:c.insertHeadline
 #@-node:ekr.20090316072136.1:Fixed headline reversion problem
+#@+node:ekr.20090318091001.1:Fixed autocompletion problems with qt gui
+# The problem was in handling backspace.
+# I added a hack to autoCompleterStateHandler.
+
+@nocolor-node
+
+Starting with  g.b
+
+Type backspace
+
+Tk shows the completions for g., qt does not
+
+Now type a
+
+Tk shows the completions for g.a, qt does not.
+#@nonl
+#@+node:ekr.20061031131434.11:autoCompleterStateHandler
+def autoCompleterStateHandler (self,event):
+
+    trace = (False or self.trace) and not g.app.unitTesting
+    c = self.c ; k = self.k ; gui = g.app.gui
+    tag = 'auto-complete' ; state = k.getState(tag)
+    ch = gui.eventChar(event)
+    keysym = gui.eventKeysym(event)
+
+    if trace: g.trace(repr(ch),repr(keysym),state)
+
+    if state == 0:
+        c.frame.log.clearTab(self.tabName)
+        self.computeCompletionList()
+        k.setState(tag,1,handler=self.autoCompleterStateHandler) 
+    elif keysym in (' ','Return'):
+        self.finish()
+    elif keysym == 'Escape':
+        self.abort()
+    elif keysym == 'Tab':
+        self.doTabCompletion()
+    elif keysym in ('\b','BackSpace'): # Horrible hack for qt plugin.
+        self.doBackSpace()
+    elif keysym == '.':
+        self.chain()
+    elif keysym == '?':
+        self.info()
+    elif keysym == '!':
+        # Toggle between verbose and brief listing.
+        self.verbose = not self.verbose
+        if type(self.theObject) == types.DictType:
+            self.membersList = self.theObject.keys()
+        elif type(self.theObject) in (types.ListType,types.TupleType):
+            self.membersList = self.theObject
+        self.computeCompletionList(verbose=self.verbose)
+    elif ch and ch in string.printable:
+        self.insertNormalChar(ch,keysym)
+    else:
+        # if trace: g.trace('ignore',repr(ch))
+        return 'do-standard-keys'
+#@-node:ekr.20061031131434.11:autoCompleterStateHandler
+#@-node:ekr.20090318091001.1:Fixed autocompletion problems with qt gui
+#@+node:ekr.20090320055710.3:Removed call to getAllText from setMoveCol
+@
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dcd6e32a98b17ed3
+
+It seems at least setMoveCol is easy to optimize (getAllText not needed - and
+w.toPythonIndex can lose getAllText as well).
+#@+node:ekr.20050314140957:g.convertPythonIndexToRowCol
+def convertPythonIndexToRowCol (s,i):
+
+    '''Convert index i into string s into zero-based row/col indices.'''
+
+    if not s or i <= 0:
+        return 0,0
+
+    i = min(i,len(s))
+
+    # works regardless of what s[i] is
+    row = s.count('\n',0,i) # Don't include i
+    if row == 0:
+        return row,i
+    else:
+        prevNL = s.rfind('\n',0,i) # Don't include i
+        # g.trace('prevNL',prevNL,'i',i,g.callers())
+        return row,i-prevNL-1
+#@-node:ekr.20050314140957:g.convertPythonIndexToRowCol
+#@+node:ekr.20060209095101:setMoveCol
+def setMoveCol (self,w,spot):
+
+    '''Set the column to which an up or down arrow will attempt to move.'''
+
+    c = self.c ; p = c.p
+
+    i,row,col = w.toPythonIndexRowCol(spot)
+
+    self.moveSpot = i
+    self.moveCol = col
+    self.moveSpotNode = p.v.t
+#@-node:ekr.20060209095101:setMoveCol
+#@+node:ekr.20090320055710.4:toPythonIndexToRowCol (baseText) (may be overridden)
+def toPythonIndexRowCol(self,index):
+
+    w = self
+    s = w.getAllText()
+    i = w.toPythonIndex(index)
+    row,col = g.convertPythonIndexToRowCol(s,i)
+    return i,row,col
+#@-node:ekr.20090320055710.4:toPythonIndexToRowCol (baseText) (may be overridden)
+#@-node:ekr.20090320055710.3:Removed call to getAllText from setMoveCol
+#@+node:ekr.20090317090343.8:Fixed undo problems with qt gui
+@nocolor-node
+
+The selection is not handled properly.
+The fix was to save/restore the selection range in
+the top-level undo/redo logic before calling c.redraw.
+#@nonl
+#@-node:ekr.20090317090343.8:Fixed undo problems with qt gui
+#@+node:ekr.20090323080711.2:Investigated reported @shadow bug
+@nocolor-node
+
+This @shadow functionality is a great enhancement to Leo, and I would
+like to use it more.
+
+I am using Leo 4.5.1 Final on Windows XP.
+
+My particulars, as reported by Leo :
+  | Leo Log Window...
+  | Leo 4.5.1 final, build  1.244 , September 14, 2008
+  | python 2.6.1, Tk 8.5.2, Pmw 1.3
+  | Windows 5, 1, 2600, 2, Service Pack 3
+
+I've seen 3 discussion threads titled
+  - "@shadow node failing to shadow" 01/23/2009
+  - "@shadow notes" 08/31/2008
+  - "Problem with shadow files" 09/10/2008
+that seem to imply the problem was resolved before Leo 4.5.1 Final.
+
+However, I still see the problem and can reproduce the problem as
+follows:
+
+0) Sample c code created
+
+  >type sampleHello.c
+  #include <stdio.h>
+
+  void main(void){
+     printf("hello world\n");
+     printf("hello again everybody!\n");
+  }
+
+1) Place sampleHello.c in an empty folder, eg c:/tmp/sampleHello.c
+2) Open a new Leo window, and add "@shadow sampleHello.c" node.
+3) Save the Leo file to c:/tmp/sampleHello.leo, then close it.
+4) Reopen c:/tmp/sampleHello.leo and
+   - confirm that @shadow node has a "main" outline node inside.
+   - confirm that .leo_shadow is created
+   - confirm .leo_shadow/xsampleHello.c contains sentinels
+5) Close the Leo file. Reopen the Leo file.
+
+  Get error message :
+  | reading: G:\projects\test\tmp\sampleHello.leo
+  | wrote:     G:\projects\test\tmp\.leo_shadow\xsampleHello.c
+  | updated private G:\projects\test\tmp\.leo_shadow\xsampleHello.c
+from public G:\projects\test\tmp\sampleHello.c
+  | reading: @shadow sampleHello.c
+  | Bad @+leo sentinel in: G:\projects\test\tmp\.leo_shadow
+\xsampleHello.c
+  |invalid @shadow private file G:\projects\test\tmp\.leo_shadow
+\xsampleHello.c
+
+  - confirm that shadow node in Leo file is now empty.
+  - confirm that /tmp/.leo_shadow/xsampleHello.c is exact copy of /
+tmp/sampleHello.c
+
+If there is a workaround, please let me know.
+
+Thanks for a very useful tool,
+#@nonl
+#@-node:ekr.20090323080711.2:Investigated reported @shadow bug
+#@+node:ekr.20090323080711.1:Opening non-existent file now draws the outline properly
+# Added call to c.redraw at *end* of runLeo.py:
+#@nonl
+#@-node:ekr.20090323080711.1:Opening non-existent file now draws the outline properly
 #@-node:ekr.20080917153158.12:Bugs
 #@+node:ekr.20080922124033.2:Documentation
 #@+node:ekr.20080921154026.9:Added getInput example to Leo's docs
@@ -13338,10 +13495,12 @@ def autoCompleteForce (self,event=None):
 #@+node:ekr.20061031131434.11:autoCompleterStateHandler
 def autoCompleterStateHandler (self,event):
 
+    trace = (False or self.trace) and not g.app.unitTesting
     c = self.c ; k = self.k ; gui = g.app.gui
     tag = 'auto-complete' ; state = k.getState(tag)
-    keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
-    trace = self.trace and not g.app.unitTesting
+    ch = gui.eventChar(event)
+    keysym = gui.eventKeysym(event)
+
     if trace: g.trace(repr(ch),repr(keysym),state)
 
     if state == 0:
@@ -13354,7 +13513,7 @@ def autoCompleterStateHandler (self,event):
         self.abort()
     elif keysym == 'Tab':
         self.doTabCompletion()
-    elif keysym == 'BackSpace':
+    elif keysym in ('\b','BackSpace'): # Horrible hack for qt plugin.
         self.doBackSpace()
     elif keysym == '.':
         self.chain()
@@ -13371,7 +13530,7 @@ def autoCompleterStateHandler (self,event):
     elif ch and ch in string.printable:
         self.insertNormalChar(ch,keysym)
     else:
-        if trace: g.trace('ignore',repr(ch))
+        # if trace: g.trace('ignore',repr(ch))
         return 'do-standard-keys'
 #@-node:ekr.20061031131434.11:autoCompleterStateHandler
 #@+node:ekr.20080924032842.3:getExternalCompletions
@@ -13725,7 +13884,8 @@ def doBackSpace (self):
 
     '''Cut back to previous prefix.'''
 
-    # g.trace('(autocompleter)',self.prefix,self.theObject,self.prevObjects)
+    trace = False and not g.unitTesting
+    if trace: g.trace('(autocompleter)',self.prefix,self.theObject,self.prevObjects)
 
     c = self.c
     if self.prefix:
@@ -13763,7 +13923,6 @@ def doBackSpace (self):
             self.abort() # should not happen.
     else:
         self.abort()            
-#@nonl
 #@-node:ekr.20061031131434.29:doBackSpace (autocompleter)
 #@+node:ekr.20061031131434.30:doTabCompletion (autocompleter)
 def doTabCompletion (self):
@@ -14661,10 +14820,12 @@ def start (self,event=None,w=None,prefix=None):
 #@+node:ekr.20061031131434.11:autoCompleterStateHandler
 def autoCompleterStateHandler (self,event):
 
+    trace = (False or self.trace) and not g.app.unitTesting
     c = self.c ; k = self.k ; gui = g.app.gui
     tag = 'auto-complete' ; state = k.getState(tag)
-    keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
-    trace = self.trace and not g.app.unitTesting
+    ch = gui.eventChar(event)
+    keysym = gui.eventKeysym(event)
+
     if trace: g.trace(repr(ch),repr(keysym),state)
 
     if state == 0:
@@ -14677,7 +14838,7 @@ def autoCompleterStateHandler (self,event):
         self.abort()
     elif keysym == 'Tab':
         self.doTabCompletion()
-    elif keysym == 'BackSpace':
+    elif keysym in ('\b','BackSpace'): # Horrible hack for qt plugin.
         self.doBackSpace()
     elif keysym == '.':
         self.chain()
@@ -14694,7 +14855,7 @@ def autoCompleterStateHandler (self,event):
     elif ch and ch in string.printable:
         self.insertNormalChar(ch,keysym)
     else:
-        if trace: g.trace('ignore',repr(ch))
+        # if trace: g.trace('ignore',repr(ch))
         return 'do-standard-keys'
 #@-node:ekr.20061031131434.11:autoCompleterStateHandler
 #@+node:ekr.20061031131434.28:computeCompletionList
@@ -15284,6 +15445,7 @@ def createFrame (fileName,relativeFileName,script):
     if fileName:
         g.es_print("file not found:",fileName,color='red')
 
+    c.redraw()
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
@@ -15992,6 +16154,7 @@ def createFrame (fileName,relativeFileName,script):
     if fileName:
         g.es_print("file not found:",fileName,color='red')
 
+    c.redraw()
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
@@ -19061,6 +19224,7 @@ def createFrame (fileName,relativeFileName,script):
     if fileName:
         g.es_print("file not found:",fileName,color='red')
 
+    c.redraw()
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
@@ -19720,6 +19884,7 @@ def createFrame (fileName,relativeFileName,script):
     if fileName:
         g.es_print("file not found:",fileName,color='red')
 
+    c.redraw()
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
 #@-node:ekr.20080921060401.12:Support for @string default_leo_file = ~/.leo/workbook.leo
@@ -19970,10 +20135,12 @@ def autoCompleteForce (self,event=None):
 #@+node:ekr.20061031131434.11:autoCompleterStateHandler
 def autoCompleterStateHandler (self,event):
 
+    trace = (False or self.trace) and not g.app.unitTesting
     c = self.c ; k = self.k ; gui = g.app.gui
     tag = 'auto-complete' ; state = k.getState(tag)
-    keysym = gui.eventKeysym(event) ; ch = gui.eventChar(event)
-    trace = self.trace and not g.app.unitTesting
+    ch = gui.eventChar(event)
+    keysym = gui.eventKeysym(event)
+
     if trace: g.trace(repr(ch),repr(keysym),state)
 
     if state == 0:
@@ -19986,7 +20153,7 @@ def autoCompleterStateHandler (self,event):
         self.abort()
     elif keysym == 'Tab':
         self.doTabCompletion()
-    elif keysym == 'BackSpace':
+    elif keysym in ('\b','BackSpace'): # Horrible hack for qt plugin.
         self.doBackSpace()
     elif keysym == '.':
         self.chain()
@@ -20003,7 +20170,7 @@ def autoCompleterStateHandler (self,event):
     elif ch and ch in string.printable:
         self.insertNormalChar(ch,keysym)
     else:
-        if trace: g.trace('ignore',repr(ch))
+        # if trace: g.trace('ignore',repr(ch))
         return 'do-standard-keys'
 #@-node:ekr.20061031131434.11:autoCompleterStateHandler
 #@+node:ekr.20080924032842.3:getExternalCompletions
@@ -20357,7 +20524,8 @@ def doBackSpace (self):
 
     '''Cut back to previous prefix.'''
 
-    # g.trace('(autocompleter)',self.prefix,self.theObject,self.prevObjects)
+    trace = False and not g.unitTesting
+    if trace: g.trace('(autocompleter)',self.prefix,self.theObject,self.prevObjects)
 
     c = self.c
     if self.prefix:
@@ -20395,7 +20563,6 @@ def doBackSpace (self):
             self.abort() # should not happen.
     else:
         self.abort()            
-#@nonl
 #@-node:ekr.20061031131434.29:doBackSpace (autocompleter)
 #@+node:ekr.20061031131434.30:doTabCompletion (autocompleter)
 def doTabCompletion (self):
@@ -22256,7 +22423,6 @@ def checkTrialWrite (self,s1=None,s2=None):
         at.write(self.root,
             nosentinels=True,thinFile=False,
             scriptWrite=False,toString=True)
-            #### write_strips_blank_lines=False)
         s1,s2 = self.file_s, at.stringOutput
 
     s1 = g.toUnicode(s1,self.encoding)
@@ -23700,7 +23866,6 @@ def write (self,root,
     thinFile = False,
     scriptWrite = False,
     toString = False,
-    #### write_strips_blank_lines = None,
 ):
 
     """Write a 4.x derived file."""
@@ -23719,7 +23884,6 @@ def write (self,root,
     at.initWriteIvars(root,at.targetFileName,
         nosentinels = nosentinels, thinFile = thinFile,
         scriptWrite = scriptWrite, toString = toString)
-        #### write_strips_blank_lines = write_strips_blank_lines)
 
     if nosentinels and not scriptWrite and not toString:
         fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
@@ -24247,15 +24411,12 @@ def setMoveCol (self,w,spot):
     '''Set the column to which an up or down arrow will attempt to move.'''
 
     c = self.c ; p = c.p
-    s = w.getAllText()
-    i = w.toPythonIndex(spot)
-    junk,col = g.convertPythonIndexToRowCol(s,i)
-    # g.trace('spot,i,col',spot,i,col)
+
+    i,row,col = w.toPythonIndexRowCol(spot)
 
     self.moveSpot = i
     self.moveCol = col
     self.moveSpotNode = p.v.t
-#@nonl
 #@-node:ekr.20060209095101:setMoveCol
 #@-node:ekr.20051218170358: helpers
 #@+node:ekr.20081123102100.1:backToHome
@@ -25967,17 +26128,10 @@ def initWriteIvars(self,root,targetFileName,
     scriptWrite=False,
     toString=False,
     forcePythonSentinels=None,
-    #### write_strips_blank_lines=None,
 ):
 
     self.initCommonIvars()
     << init ivars for writing >>
-
-    ####
-    # if write_strips_blank_lines is None:
-        # self.write_strips_blank_lines = self.c.config.getBool('write_strips_blank_lines')
-    # else:
-        # self.write_strips_blank_lines = write_strips_blank_lines
 
     if forcePythonSentinels is None:
         forcePythonSentinels = scriptWrite
@@ -26159,11 +26313,10 @@ def writeOneAtEditNode(self,p,toString,force=False):
         atAuto=True,
         nosentinels=True,thinFile=False,scriptWrite=False,
         toString=toString)
-        #### write_strips_blank_lines=False)
 
     ok = at.openFileForWriting(root,fileName=fn,toString=toString)
     if ok:
-        at.writeOpenFile(root,nosentinels=True,toString=toString) ####,atAuto=True)
+        at.writeOpenFile(root,nosentinels=True,toString=toString)
         at.closeWriteFile() # Sets stringOutput if toString is True.
         if at.errors == 0:
             at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
@@ -26212,7 +26365,7 @@ def shouldWriteAtEditNode (self,p,exists,force):
 # New in 4.3 b2: support for writing from a string.
 
 def writeOpenFile(self,root,
-    nosentinels=False,toString=False,fromString=''): ####,atAuto=False):
+    nosentinels=False,toString=False,fromString=''):
 
     """Do all writes except asis writes."""
 
@@ -26276,8 +26429,7 @@ def putBody(self,p,oneNodeOnly=False,fromString=''):
 
     inCode = True
     << Make sure all lines end in a newline >>
-    if True: #### self.write_strips_blank_lines and not self.atAuto: ####
-        s = self.cleanLines(p,s)
+    s = self.cleanLines(p,s)
     i = 0
     while i < len(s):
         next_i = g.skip_line(s,i)

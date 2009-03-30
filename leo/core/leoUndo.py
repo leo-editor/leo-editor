@@ -1379,7 +1379,9 @@ class undoer:
 
         '''Redo the operation undone by the last undo.'''
 
-        u = self ; c = u.c ; trace = False
+        trace = False and not g.unitTesting
+        u = self ; c = u.c
+        w = c.frame.body.bodyCtrl
 
         if not u.canRedo():
             if trace: g.trace('cant redo',u.undoMenuLabel,u.redoMenuLabel)
@@ -1405,9 +1407,12 @@ class undoer:
             c.setCurrentPosition(c.p)
         c.setChanged(True)
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
+        i,j = w.getSelectionRange()
+        ins = w.getInsertPoint()
         c.redraw()
         c.recolor()
         c.bodyWantsFocusNow()
+        w.setSelectionRange(i,j,insert=ins)
         u.redoing = False
         u.bead += 1
         u.setUndoTypes()
@@ -1702,7 +1707,9 @@ class undoer:
 
         """Undo the operation described by the undo parameters."""
 
-        u = self ; c = u.c ; trace = False
+        trace = False and not g.unitTesting
+        u = self ; c = u.c
+        w = c.frame.body.bodyCtrl
 
         if not u.canUndo():
             if trace: g.trace('cant undo',u.undoMenuLabel,u.redoMenuLabel)
@@ -1728,9 +1735,12 @@ class undoer:
             c.setCurrentPosition(c.p)
         c.setChanged(True)
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
+        i,j = w.getSelectionRange()
+        ins = w.getInsertPoint()
         c.redraw()
         c.recolor()
         c.bodyWantsFocusNow()
+        w.setSelectionRange(i,j,insert=ins)
         u.undoing = False
         u.bead -= 1
         u.setUndoTypes()

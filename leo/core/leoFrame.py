@@ -210,6 +210,15 @@ class baseTextWidget:
     tag_config = tag_configure
     #@nonl
     #@-node:ekr.20081031074455.13: do-nothings
+    #@+node:ekr.20090320055710.4:toPythonIndexToRowCol (baseText) (may be overridden)
+    def toPythonIndexRowCol(self,index):
+
+        w = self
+        s = w.getAllText()
+        i = w.toPythonIndex(index)
+        row,col = g.convertPythonIndexToRowCol(s,i)
+        return i,row,col
+    #@-node:ekr.20090320055710.4:toPythonIndexToRowCol (baseText) (may be overridden)
     #@+node:ekr.20070228074312.13:delete
     def delete(self,i,j=None):
 
@@ -805,7 +814,7 @@ class leoBody:
 
 
     #@+node:ekr.20070424053629:entries
-    #@+node:ekr.20060528100747.1:addEditor
+    #@+node:ekr.20060528100747.1:addEditor (leoBody)
     def addEditor (self,event=None):
 
         '''Add another editor to the body pane.'''
@@ -861,7 +870,7 @@ class leoBody:
         self.selectEditor(w)
         self.updateEditors()
         c.bodyWantsFocusNow()
-    #@-node:ekr.20060528100747.1:addEditor
+    #@-node:ekr.20060528100747.1:addEditor (leoBody)
     #@+node:ekr.20060528132829:assignPositionToEditor
     def assignPositionToEditor (self,p):
 
@@ -2093,7 +2102,7 @@ class leoLog:
         if w: w.delete(0,'end')
     #@-node:ekr.20070302094848.1:clearTab
     #@+node:ekr.20070302094848.2:createTab
-    def createTab (self,tabName,createText=True,wrap='none'):
+    def createTab (self,tabName,createText=True,widget=None,wrap='none'):
 
         # g.trace(tabName,wrap)
 
@@ -3167,7 +3176,7 @@ class nullLog (leoLog):
     #@+node:ekr.20060124085830:tabs
     def clearTab        (self,tabName,wrap='none'):             pass
     def createCanvas    (self,tabName):                         pass
-    def createTab (self,tabName,createText=True,wrap='none'):   pass
+    def createTab (self,tabName,createText=True,widget=None,wrap='none'):   pass
     def deleteTab       (self,tabName,force=False):             pass
     def getSelectedTab  (self):                                 return None
     def lowerTab        (self,tabName):                         pass

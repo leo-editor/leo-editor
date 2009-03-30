@@ -824,6 +824,7 @@ b3
 b4
 b70ea10f5aa3
 back_
+backlink
 backticks
 backwards
 backwardsHelper
@@ -986,6 +987,7 @@ childv
 chmod
 classList
 class_var
+clean_file
 clearAllVisited
 clearAllVistied
 clearDirty
@@ -1058,6 +1060,7 @@ compareTest2
 compare_comments
 compare_file_1
 compare_file_2
+completionList
 computeHomeDir
 computeIcon
 computeIndices
@@ -1125,6 +1128,7 @@ curdir
 currentPosition
 currentVnode
 currentWord
+current_node
 current_v
 customBlocks
 customizeLeo
@@ -1161,6 +1165,7 @@ defaultButton
 defaultFont
 defaultLoc
 defaultRule
+default_leo_file
 default_path
 defaultextension
 defaultsDict
@@ -1338,6 +1343,7 @@ ensureExtension
 entrytype
 enum
 env
+eol_span_regex
 eq
 erlang
 errorTest
@@ -1472,6 +1478,7 @@ gClassName
 gIvars
 gLeoFrameList
 gc
+gcc
 ge
 gen_cond
 gen_defconst
@@ -1522,12 +1529,15 @@ getMark
 getMenu
 getNewIndex
 getNext
+getNodeFileName
+getNodePath
 getOption
 getPane
 getPrefs
 getRatio
 getRowCol
 getScript
+getSettingSource
 getShortcut
 getString
 getTestVars
@@ -1706,6 +1716,7 @@ include_once
 incompletions
 ind0
 indices
+initAfterLoad
 initBatchCommands
 initBatchText
 initEncoding
@@ -1861,6 +1872,7 @@ lastTypesDict
 lastWord
 last_mo
 last_p
+launchLeo
 le
 leadinWord
 left_data
@@ -2086,6 +2098,7 @@ minibuffer
 minimalLeoFile
 minimalLeoFile2
 miscDirective
+mkdir
 mkstemp
 mktemp
 mnt
@@ -2131,6 +2144,7 @@ myModule
 myPlugin
 myPluginName
 mySettings
+myproject
 mystring
 n'th
 n0
@@ -2183,6 +2197,7 @@ nocolor
 node3
 node9
 nodeAfterTree
+nodeHistory
 nodeIndices
 nodeName
 node_
@@ -2404,6 +2419,7 @@ porv
 pos
 pos1
 pos2
+posList
 positionExists
 positionList
 positions1
@@ -2500,6 +2516,7 @@ pythondebugger
 pythonw
 pythonware
 pyw
+qtGui
 quickstart
 quickstart_
 r1
@@ -2774,6 +2791,7 @@ setname
 setq
 setstate
 setting_
+setting_name
 settingsController
 settingsRoot
 settings_
@@ -2792,6 +2810,7 @@ shouldn
 showFindPanel
 showHeadlines
 showInvisibles
+showMessage
 showOrganizers
 showSuccess
 showThisHeadline
@@ -3025,6 +3044,7 @@ timeit
 timestamp
 tkEncoding
 tkFont
+tkGui
 tkIcon
 tkNamesList
 tkTree
@@ -3108,6 +3128,7 @@ un
 uncheck
 undent
 undents
+underindent
 undoBletch
 undoData
 undoHelper
@@ -3120,6 +3141,7 @@ unibyte
 unicode
 unified_nodes
 unignored
+unindents
 uninstall
 unique_tnodes_iter
 unique_vnodes_iter

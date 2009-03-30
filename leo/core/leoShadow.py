@@ -849,12 +849,8 @@ class shadowController:
                 thinFile = False,  # Debatable.
                 scriptWrite = True,
                 toString = True)
-                #### write_strips_blank_lines = None,)
 
             s = at.stringOutput
-
-            # g.trace(p.h,'\n',s)
-
             return g.splitLines(s)
         #@-node:ekr.20080709062932.21:makePrivateLines
         #@+node:ekr.20080709062932.22:makePublicLines

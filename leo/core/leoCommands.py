@@ -295,7 +295,7 @@ class baseCommands (object):
             self.db = leo.external.pickleshare.PickleShareDB(dbdirname)
         else:
             self.db = None
-            if not g.app.silentMode:
+            if not g.app.silentMode and not g.unitTesting:
                 print("\n*** No file in controller, using c.db=None ***\n")
         #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
         #@nl
@@ -390,9 +390,11 @@ class baseCommands (object):
         return c.ver[10:-1] # Strip off "(dollar)Revision" and the trailing "$"
     #@-node:ekr.20040629121554:getBuildNumber
     #@+node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
+    # Leo 4.5.1 final: September 14, 2008
+
     def getSignOnLine (self):
         c = self
-        return "Leo 4.5.1 final, build %s, September 14, 2008" % c.getBuildNumber()
+        return "Leo 4.6 beta 1, build %s, March 24, 2009" % c.getBuildNumber()
     #@-node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     #@+node:ekr.20040629121554.2:initVersion
     def initVersion (self):
@@ -635,7 +637,7 @@ class baseCommands (object):
             frame.c.setChanged(False)
             # Clear the changed flag set when creating the @chapters node.
         else:
-            c.redraw(p) ####
+            c.redraw(p)
         if c.config.getBool('outline_pane_has_initial_focus'):
             c.treeWantsFocusNow()
         else:
@@ -2790,7 +2792,7 @@ class baseCommands (object):
             if not found:
                 g.es("selected text should contain one or more section names",color="blue")
         u.afterChangeGroup(current,undoType)
-        c.redraw(p) ####
+        c.redraw(p)
 
         # Restore the selection.
         body.setSelectionRange(oldSel)
@@ -3635,7 +3637,11 @@ class baseCommands (object):
             elif h.startswith(chapter):
                 name = h[len(chapter):].strip()
                 if name:
-                    return cc.removeChapterByName(name)
+                    # Bug fix: 2009/3/23: Make sure the chapter exists!
+                    # This might be an @chapter node outside of @chapters tree.
+                    theChapter = cc.chaptersDict.get(name)
+                    if theChapter:
+                        return cc.removeChapterByName(name)
 
         undoData = u.beforeDeleteNode(p)
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
@@ -5730,7 +5736,7 @@ class baseCommands (object):
         # Doing so would add unwanted leading tabs.
         version = c.getSignOnLine() + "\n\n"
         theCopyright = (
-            "Copyright 1999-2007 by Edward K. Ream\n" +
+            "Copyright 1999-2009 by Edward K. Ream\n" +
             "All Rights Reserved\n" +
             "Leo is distributed under the Python License")
         url = "http://webpages.charter.net/edreamleo/front.html"
@@ -7490,7 +7496,7 @@ class baseCommands (object):
             if found: break
         if found:
             c.selectPosition(p)
-            c.redraw_after_select(p) ####
+            c.redraw_after_select(p)
             c.navTime = time.clock()
             c.navPrefix = newPrefix
             # g.trace('extend',extend,'extend2',extend2,'navPrefix',c.navPrefix,'p',p.h)

@@ -3115,7 +3115,8 @@ class position (object):
             g.trace('can not happen: bad child index: %s, len(children): %s' % (n,len(parent_v.t.children)))
             # g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
             g.trace('parent_v',parent_v,'p.v',p.v)
-            g.trace('** callsers:',g.callers())
+            g.trace('** callers:',g.callers())
+            g.pdb()
             if g.app.unitTesting: assert False, 'children[%s] != p.v'
 
         # Clear the entire parents array.

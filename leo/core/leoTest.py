@@ -102,7 +102,14 @@ def doTests(c,all,verbosity=1):
                 p.moveToThreadNext()
 
         # Verbosity: 1: print just dots.
-        unittest.TextTestRunner(verbosity=verbosity).run(suite)
+        res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
+        # put info to db as well
+        
+        key = 'unittest/cur/fail'
+        archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
+        c.db[key] = archive
+        
+        #g.pdb()
     finally:
         c.setChanged(changed) # Restore changed state.
         if g.app.unitTestDict.get('restoreSelectedNode',True):
@@ -187,7 +194,11 @@ class generalTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.11:shortDescription
     def shortDescription (self):
 
-        return self.p.h + '\n'
+        s = self.p.h
+
+        # g.trace(s)
+
+        return s + '\n'
     #@-node:ekr.20051104075904.11:shortDescription
     #@-others
 #@-node:ekr.20051104075904.5:class generalTestCase
