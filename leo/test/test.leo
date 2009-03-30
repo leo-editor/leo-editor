@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="31" left="482" height="961" width="769"/>
+	<global_window_position top="49" left="492" height="721" width="769"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -369,7 +369,8 @@
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
 </v>
-<v t="ekr.20090317102513.1"><vh>shift-tab test</vh></v>
+<v t="edward.20090329132334.1"><vh>Lightning talks</vh></v>
+<v t="edward.20090329151116.1"><vh>Sprint intro</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -543,6 +544,24 @@ def spam(a=5):
 
 spam(3)
 spam(a=4)
+</t>
+<t tx="edward.20090329132334.1">argparse module
+moments module
+pose module
+fabric tool
+Trac tool (ClueMapper)
+blist module
+launchpad will be open source
+    storm,lazr,Gary Poster
+pyjamas
+ctypes module, ctypeslib,
+Europython, Birmingham
+Zope,Grok,Repose,Deliverance</t>
+<t tx="edward.20090329151116.1">Brett Cannon
+Crown Plaza
+Kenny 4242424242
+Breakfast 7:30
+Dinner Tuesday Night
 </t>
 <t tx="ekr.20041001211817">import os
 
@@ -2793,7 +2812,5 @@ collapse and expand "toplevel", phew, the children have returned</t>
 <t tx="ekr.20090309064612.5"></t>
 <t tx="ekr.20090309065826.1"></t>
 <t tx="ekr.20090316115500.1"></t>
-<t tx="ekr.20090317102513.1">abc
-dee</t>
 </tnodes>
 </leo_file>
