@@ -3177,7 +3177,7 @@ class javaScriptScanner (baseScannerClass):
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='java')
+        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='javascript')
             # The langauge is used to set comment delims.
 
         # Set the parser delims.
