@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="492" height="721" width="769"/>
+	<global_window_position top="49" left="506" height="721" width="769"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -22,14 +22,11 @@
 </v>
 <v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
-<v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20090114100446.1"><vh>@@enabled-plugins (minimal)</vh></v>
-<v t="ekr.20080811112727.1"><vh>@@@bool suppress_import_parsing = True</vh></v>
 <v t="ekr.20080529111617.1"><vh>plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
@@ -37,10 +34,6 @@
 <v t="ekr.20090316115500.1"><vh>port = 8080</vh></v>
 </v>
 <v t="ekr.20070723091227.3"><vh>@string rst_http_attributename = 'rst_http_attribute'</vh></v>
-</v>
-<v t="ekr.20070305085403"><vh>vim plugin</vh>
-<v t="ekr.20070305085403.1"><vh>@string vim_cmd = c:\vim\vim63\gvim --servername LEO</vh></v>
-<v t="ekr.20070305085403.2"><vh>@string vim_exe = c:\vim\vim63\gvim</vh></v>
 </v>
 <v t="ekr.20080529111617.2"><vh>cleo</vh>
 <v t="ekr.20080529111617.3"><vh>@color cleo_color_prog_green =</vh></v>
@@ -371,6 +364,7 @@
 </v>
 <v t="edward.20090329132334.1"><vh>Lightning talks</vh></v>
 <v t="edward.20090329151116.1"><vh>Sprint intro</vh></v>
+<v t="edward.20090330072724.1"><vh>Grok intro</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -563,6 +557,7 @@ Kenny 4242424242
 Breakfast 7:30
 Dinner Tuesday Night
 </t>
+<t tx="edward.20090330072724.1"></t>
 <t tx="ekr.20041001211817">import os
 
 g.pr(os.path.exists(os.path.normpath("C:\\Progra~1\\Eclipse")))</t>
@@ -883,9 +878,6 @@ g.es("done",color="blue")
     return child
 </t>
 <t tx="ekr.20070224123943"></t>
-<t tx="ekr.20070305085403"></t>
-<t tx="ekr.20070305085403.1"></t>
-<t tx="ekr.20070305085403.2"></t>
 <t tx="ekr.20070410063214"></t>
 <t tx="ekr.20070416075121"></t>
 <t tx="ekr.20070503085527"></t>
@@ -1164,7 +1156,6 @@ pyrexc = r'c:\prog\Pyrex-0.9.6.4\pyrexc.py'
 os.system(r'%s %s %s' % (python,pyrexc,theFile))
 
 # Use pyrex/Demos/setup.py to create module on Linux.</t>
-<t tx="ekr.20070701090143"></t>
 <t tx="ekr.20070723091227">
         
         
@@ -1504,6 +1495,7 @@ plugins_menu.py
 # threading_colorizer.py
 
 # open_shell.py
+dtest.py
 quicksearch.py
 ipython.py
 open_with.py
@@ -1520,7 +1512,7 @@ nav_buttons.py
 nodenavigator.py
 image.py
 #### leo_to_html.py
-####  vim.py
+vim.py
 #### xemacs.py
 </t>
 <t tx="ekr.20071026102420.2"></t>
@@ -2506,8 +2498,6 @@ from win32com.axscript import axscript
 from win32com.axscript.server import axsite
 import pythoncom
 import win32com.server.util</t>
-<t tx="ekr.20080811112727.1">False: (recommended) Enable import parsing for @shadow and @auto
-True: @shadow and @auto create a single node for the entire file.</t>
 <t tx="ekr.20080811113441.2"></t>
 <t tx="ekr.20080812102914.1">root first line
 @others
@@ -2705,9 +2695,6 @@ os.system(s)
 @tabwidth -4
 @others
 </t>
-<t tx="ekr.20090114100446.1">plugins_menu.py
-
-vim.py</t>
 <t tx="ekr.20090122211549.1">
 class test:
     
