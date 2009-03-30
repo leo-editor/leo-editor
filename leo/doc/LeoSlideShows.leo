@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="93" left="213" height="720" width="890"/>
+	<global_window_position top="50" left="362" height="720" width="890"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20080129151228"><vh>Startup</vh>
+<v t="ekr.20080129151228" str_leo_pos="0"><vh>Startup</vh>
 <v t="ekr.20080129151123"><vh>@chapters</vh></v>
 <v t="ekr.20070315073704"><vh>@settings</vh>
 <v t="ekr.20070315073704.1"><vh>@enabled-plugins</vh></v>
@@ -33,7 +33,7 @@
 <v t="ekr.20060901144149.7"><vh>@url c:\prog\Sounds\s2.wav</vh></v>
 </v>
 <v t="ekr.20060902100840"><vh>To do: rst + python colorizing</vh></v>
-<v t="ekr.20070315074504" a="TV"><vh>To be made into slides</vh>
+<v t="ekr.20070315074504"><vh>To be made into slides</vh>
 <v t="ekr.20070315074504.1"><vh>a</vh></v>
 <v t="ekr.20070315074504.2"><vh>b</vh></v>
 </v>
