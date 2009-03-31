@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="4,30,4,2"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4,5,0,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -52,12 +52,12 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20080301071818" a="E"><vh>Home page</vh>
+<v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848" a="M"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"
 marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20050831184021.2"><vh>Table of contents</vh>
+<v t="ekr.20050831184021.2"><vh>Table of contents (To be deleted)</vh>
 <v t="ekr.20080730212711.29"><vh>@@thin html\leo_TOC.html</vh>
 <v t="ekr.20080730212711.30"><vh>&lt;&lt;head&gt;&gt;</vh></v>
 <v t="ekr.20080730212711.36"><vh>&lt;&lt; body &gt;&gt;</vh></v>
@@ -74,7 +74,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20040414172218.5"><vh>@rst-ignore Python Copyright</vh></v>
 <v t="ekr.20090221070927.1"><vh>Leo's MIT License</vh></v>
 <v t="ekr.20040414174439"><vh>@rst-ignore DISCLAIMER OF LIABILITY</vh></v>
-<v t="ekr.20050812125502"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20070701101808"><vh>Preface</vh>
@@ -82,7 +81,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070701101809.1"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20070723100037"><vh>@rst-no-head preface</vh></v>
 <v t="ekr.20070701090840"><vh>@rst-ignore  @rst-no-head preface (old)</vh></v>
-<v t="ekr.20070701101809.7"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050831184021.4"><vh>What people are saying about Leo</vh>
@@ -105,7 +103,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050830074815.15"><vh>Dan Winkler 2</vh></v>
 <v t="ekr.20050830074815.16"><vh>Dan Winkler 3</vh></v>
 </v>
-<v t="ekr.20050830080545"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
@@ -188,7 +185,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050830115714.10"><vh>Some characters are garbled when importing files. What can I do?</vh></v>
 <v t="ekr.20071026055929.1"><vh>Python's print statement shows 'byte hash' for unicode characters.  What can I do?</vh></v>
 </v>
-<v t="ekr.20050906105946"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050831195331.2"><vh>Chapter 1: Installing Leo</vh>
@@ -208,11 +204,10 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050901174937"><vh>Running Leo</vh></v>
 <v t="ekr.20070629130418" rst_http_attribute="5d71002855463c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710155043c2f613e71025d71032855263c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710455063c2f6469763e71055d710628554f3c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710755063c2f6469763e71085d710928553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a55063c2f6469763e710b5d710c2855063c626f64793e710d55073c2f626f64793e710e5d710f2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711055073c2f68746d6c3e71114e656565656555073c2f6469763e0a711255073c2f6469763e0a711355353c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7114556c3c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a7115652e"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20060105145125"><vh>How to install the Aspell spell checker</vh></v>
-<v t="ekr.20050906105335"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.3"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
-<v t="ekr.20050816073412"><vh>@rst html\intro.html</vh>
+<v t="ekr.20050831195331.3" a="E"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
+<v t="ekr.20050816073412" a="E"><vh>@rst html\intro.html</vh>
 <v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050816073412.1"><vh>Introduction</vh>
 <v t="ekr.20050822173420"><vh>Leo's main window</vh></v>
@@ -239,7 +234,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050823081317.1"><vh>Plugins &amp; settings</vh></v>
 <v t="ekr.20050827090802"><vh>Further study</vh></v>
 </v>
-<v t="ekr.20050816073824"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.26"><vh>Chapter 3: Using Outlines</vh>
@@ -261,7 +255,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="EKR.20040524104904.47"><vh>Resizing panes</vh></v>
 <v t="EKR.20040524104904.48"><vh>Undoing operations</vh></v>
 <v t="ekr.20070623145346.2"><vh>Using chapters</vh></v>
-<v t="ekr.20050901102400"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050831184021.5"><vh>Chapter 4: Programming with Leo</vh>
@@ -320,7 +313,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="EKR.20040524104904.282"><vh>Converting @root trees to @file trees</vh></v>
 </v>
 <v t="ekr.20050828061501.43"><vh>CWEB mode</vh></v>
-<v t="ekr.20050828115003"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.99"><vh>Chapter 5: Using Leo's Commands</vh>
@@ -372,7 +364,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="EKR.20040524104904.151"><vh>The Window Menu</vh></v>
 <v t="EKR.20040524104904.157"><vh>The Help Menu</vh></v>
-<v t="ekr.20050901102400.1"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.161"><vh>Chapter 6: Leo and Literate Programming</vh>
@@ -381,7 +372,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="EKR.20040524104904.162"><vh>Why I like Literate Programming</vh></v>
 <v t="EKR.20040524104904.173"><vh>How Leo Improves Literate Programming</vh></v>
 <v t="EKR.20040524104904.181"><vh>How Leo Changes the Notion of Literate Programming</vh></v>
-<v t="ekr.20050901102400.2"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050831195331.4"><vh>Chapter 7: Scripting Leo with Python</vh>
@@ -436,7 +426,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050903161843"><vh>Creating script buttons</vh></v>
 <v t="ekr.20040403173920.24" rst_http_attribute="5d71002855463c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710155043c2f613e71025d71032855263c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710455063c2f6469763e71055d710628554f3c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710755063c2f6469763e71085d710928553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a55063c2f6469763e710b5d710c2855063c626f64793e710d55073c2f626f64793e710e5d710f2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711055073c2f68746d6c3e71114e656565656555073c2f6469763e0a711255073c2f6469763e0a711355353c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7114556c3c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a7115652e"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20080922124033.1"><vh>Getting interactive input from scripts</vh></v>
-<v t="ekr.20050901102400.3"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.211"><vh>Chapter 8: Customizing Leo</vh>
@@ -466,7 +455,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050306090601"><vh>Adding extensible attributes to nodes and .leo files</vh></v>
 <v t="ekr.20050620150517"><vh>Specifying Tk options using .leo_xresources</vh></v>
 <v t="ekr.20080310093038.4"><vh>Translating Leo's menus and messages</vh></v>
-<v t="ekr.20050901102400.4"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.245"><vh>Chapter 9: History of Leo</vh>
@@ -508,7 +496,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="EKR.20040524104904.257"><vh>Error recovery, at last</vh></v>
 </v>
 </v>
-<v t="ekr.20050901102400.5"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.261"><vh>Chapter 10: Theory of Operation</vh>
@@ -523,7 +510,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="EKR.20040524104904.268"><vh>Unicode</vh></v>
 <v t="EKR.20040524104904.269"><vh>Unlimited undo</vh></v>
 <v t="ekr.20060602142732"><vh>Key bindings</vh></v>
-<v t="ekr.20050901102400.6"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050901084134"><vh>Chapter 11: White papers</vh>
@@ -554,7 +540,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20061129175952"><vh>Typical lifetimes</vh></v>
 <v t="ekr.20061129202238"><vh>Implications for pypy</vh></v>
 </v>
-<v t="ekr.20050901092232.7"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050912125144"><vh>Chapter 12: Plugins</vh>
@@ -686,7 +671,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050912125735.1333"><vh>UniversalScrolling.py</vh></v>
 <v t="ekr.20050912125735.1342"><vh>URLloader.py</vh></v>
 </v>
-<v t="ekr.20050912133515"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20060612102055"><vh>Chapter 13: Writing Plugins</vh>
@@ -697,7 +681,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060621075135"><vh>Turning script buttons into plugins</vh></v>
 <v t="EKR.20040524104904.224"><vh>Important security warnings</vh></v>
 <v t="ekr.20071021101506"><vh>@rst-ignore menu convenience routines</vh></v>
-<v t="ekr.20060612104638"><vh>@rst-no-head end-of-page stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050831184021.1"><vh>Chapter 14: Using the rst3 plugin</vh>
@@ -719,7 +702,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050818163826.14"><vh>Theory of operation</vh></v>
 <v t="ekr.20060527103630"><vh>Controlling the rst3 plugin from scripts</vh></v>
 <v t="ekr.20050818163826.16"><vh>Acknowledgements</vh></v>
-<v t="ekr.20050818163826.17"><vh>@rst-no-head end-of-page stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20060430221745"><vh>Chapter 15: Controlling syntax coloring</vh>
@@ -750,7 +732,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20060830142929"><vh>Syntax coloring settings</vh></v>
 <v t="ekr.20070724081553"><vh>The threading_colorizer plugin</vh></v>
-<v t="ekr.20060430223116"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20060527105211"><vh>Chapter 16: Debugging with Leo</vh>
@@ -763,7 +744,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070115172724.2"><vh>@button winpdb</vh></v>
 <v t="ekr.20070115172724.3"><vh>The execute-script command with explicit debugger breaks</vh></v>
 </v>
-<v t="ekr.20060601104756"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20060913164304"><vh>Chapter 17: Using ZODB with Leo</vh>
@@ -779,7 +759,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060913165542.2"><vh>g.init_zodb (pathToZodbStorage,verbose=True)</vh></v>
 <v t="ekr.20060913165542.3"><vh>v.detach()</vh></v>
 </v>
-<v t="ekr.20060913164729"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20061025065357"><vh>Chapter 18: Leo and Emacs</vh>
@@ -788,7 +767,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20061025081359"><vh>Controlling Leo from Emacs using Pymacs</vh></v>
 <v t="ekr.20061025070825.1"><vh>Functions in leoPymacs.py</vh></v>
 <v t="ekr.20061025142434"><vh>The minibuffer</vh></v>
-<v t="ekr.20061025065357.12"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20070317033759"><vh>Chapter 19: Embedding Leo with the leoBridge module</vh>
@@ -796,7 +774,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070317033759.2"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070317033759.3"><vh>The basics</vh></v>
 <v t="ekr.20071210094621"><vh>Running leoBridge from within Leo</vh></v>
-<v t="ekr.20070317033759.6"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20070628083442"><vh>Chapter 20: Unit testing with Leo</vh>
@@ -808,7 +785,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070628094515.2"><vh>How the unit test commands work</vh></v>
 <v t="ekr.20080729064227.6"><vh>@button timer</vh></v>
 <v t="ekr.20080729064227.7"><vh>@button profile</vh></v>
-<v t="ekr.20070628083442.4"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
@@ -826,7 +802,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="vivainio.20080318125834.2"><vh>Example use case: pylab</vh></v>
 <v t="vivainio.20080302194307"><vh>Magic functions	</vh></v>
 <v t="vivainio.20080302174639.9"><vh>Acknowledgements and history</vh></v>
-<v t="ekr.20080203101507.10"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 <v t="vivainio.20080302174957"><vh>@rst-ignore Old documentation - not completely valid anymore</vh>
 <v t="ekr.20080204100523.1"><vh>Commands</vh></v>
 <v t="ekr.20080204100523"><vh>Startup</vh></v>
@@ -848,7 +823,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="TL.20080804095315.8"><vh>Commands not supported</vh></v>
 </v>
 <v t="TL.20080804095315.9"><vh>Avoiding changes to 'tag' files</vh></v>
-<v t="TL.20080804095315.10"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20080730212711.14"><vh>Chapter 23: Using @shadow</vh>
@@ -858,7 +832,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20080730212711.42"><vh>Creating @shadow trees</vh></v>
 <v t="ekr.20080730212711.40"><vh>What the update algorithm does</vh></v>
 <v t="ekr.20080730212711.52"><vh>Aha: boundary cases don't matter</vh></v>
-<v t="ekr.20080730212711.17"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.274"><vh>Appendices</vh>
@@ -872,14 +845,12 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="EKR.20040524104904.357"><vh>Format of .leo files</vh></v>
 <v t="ekr.20060921064744.1"><vh>Format of derived files</vh></v>
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
-<v t="ekr.20050901071613"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.380"><vh>Glossary</vh>
 <v t="ekr.20050901071041"><vh>@rst html\glossary.html</vh>
 <v t="ekr.20050901071300"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050901073048"><vh>@rst-no-head glossary</vh></v>
-<v t="ekr.20050901083017"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
@@ -893,7 +864,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20090324145450.46"><vh>New and improved directives</vh></v>
 <v t="ekr.20090324145450.49"><vh>New settings</vh></v>
 <v t="ekr.20090324145450.54"><vh>Plugins</vh></v>
-<v t="ekr.20090324145450.58"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20080806211440.185"><vh>What's New in Leo 4.5</vh>
@@ -903,7 +873,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20080806211440.253"><vh>Major code reorganizations</vh></v>
 <v t="ekr.20080806211440.256"><vh>Minor new features</vh></v>
 <v t="ekr.20080806211440.189"><vh>New settings</vh></v>
-<v t="ekr.20080806211440.190"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20080314081157.127"><vh>What's New in Leo 4.4.8</vh>
@@ -912,7 +881,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20080314081157.124"><vh>New features</vh></v>
 <v t="ekr.20080314081157.128"><vh>New and improved plugins</vh></v>
 <v t="ekr.20080314081157.125"><vh>New settings</vh></v>
-<v t="ekr.20080314081157.126"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20071217093444"><vh>What's New in Leo 4.4.6</vh>
@@ -921,7 +889,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20071217093444.5"><vh>New commands</vh></v>
 <v t="ekr.20080116071239"><vh>New features</vh></v>
 <v t="ekr.20071217093444.6"><vh>New settings</vh></v>
-<v t="ekr.20071217093444.7"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20071116062917"><vh>What's New in Leo 4.4.5</vh>
@@ -931,7 +898,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20071116062917.3"><vh>New features</vh></v>
 <v t="ekr.20071116062917.18"><vh>New commands</vh></v>
 <v t="ekr.20071116063649"><vh>New settings</vh></v>
-<v t="ekr.20071116062917.19"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20070809145744"><vh>What's New in Leo 4.4.4</vh>
@@ -955,7 +921,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20071026180804"><vh>Improved prototype for icons in headlines</vh></v>
 <v t="ekr.20070809145744.7"><vh>Minor improvements</vh></v>
 <v t="ekr.20070809145744.4"><vh>Summary of new commands</vh></v>
-<v t="ekr.20070809145744.8"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20070513113903"><vh>What's New in Leo 4.4.3</vh>
@@ -967,7 +932,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070513115832.4"><vh>Plugins</vh></v>
 <v t="ekr.20070513115832.5"><vh>Minor improvements</vh></v>
 </v>
-<v t="ekr.20070513113931.9"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20060928172457"><vh>What's New in Leo 4.4.2</vh>
@@ -979,7 +943,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060928172457.5"><vh>New and improved plugins</vh></v>
 <v t="ekr.20061009111417.11"><vh>Settings</vh></v>
 <v t="ekr.20060929043325.1"><vh>ZODB scripting</vh></v>
-<v t="ekr.20060928172457.8"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20060620094033.1"><vh>What's New in Leo 4.4.1 and 4.4.1.1</vh>
@@ -991,7 +954,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060620095949.25"><vh>New settings</vh></v>
 <v t="ekr.20070622212732"><vh>Improved settings</vh></v>
 <v t="ekr.20060620095655"><vh>Minor improvements</vh></v>
-<v t="ekr.20060621132923"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20060620094033.2"><vh>What's New in Leo 4.4</vh>
@@ -1002,11 +964,10 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20071004101443.178"><vh>Added new convenience methods for scripts and plugins</vh></v>
 <v t="ekr.20060620140130"><vh>New and improved plugins</vh></v>
 <v t="ekr.20060620140228"><vh>New and improved settings</vh></v>
-<v t="ekr.20060621132923.1"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20050914132220" a="E"><vh>Other docs</vh>
+<v t="ekr.20050914132220"><vh>Other docs</vh>
 <v t="ekr.20051203084745"><vh>JythonShell help</vh>
 <v t="ekr.20051203085709"><vh>original</vh></v>
 <v t="ekr.20051203084850"><vh>@rst html\jythonShell.html</vh>
@@ -1065,7 +1026,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20051203101828.7"><vh>%xslt ref1 ref2 ref3</vh></v>
 </v>
 <v t="ekr.20051203090220.2"><vh>A Note on JPIDs and the CWD</vh></v>
-<v t="ekr.20051203084850.16"><vh>@rst-no-head end-of-page stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050916184158"><vh>Leo Tech report</vh>
@@ -1087,77 +1047,8 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050916184158.16"><vh>Contacts</vh></v>
 </v>
 </v>
-<v t="ekr.20050903174637"><vh>Not used (pdf sources)</vh>
-<v t="ekr.20050829134901"><vh>@@rst pdf docs\directives.pdf</vh>
-<v t="ekr.20050829134901.1"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20050829134901.2"><vh>@rst-ignore-node To do</vh></v>
-<v t="ekr.20050829134901.3"><vh>@rst-no-head Intro.</vh></v>
-<v t="ekr.20050829134901.4"><vh>Overview: the six ways of creating derived files</vh></v>
-<v t="ekr.20050829134901.5"><vh>Overview: summary of directives</vh>
-<v t="ekr.20050829134901.6"><vh>@rst-ignore-node alternate representation</vh></v>
-</v>
-<v t="ekr.20050829134901.7"><vh>Reference: all about directives</vh>
-<v t="ekr.20050829134901.8"><vh>@ and @doc</vh></v>
-<v t="ekr.20050829134901.9"><vh>@all</vh></v>
-<v t="ekr.20050829134901.10"><vh>@c and @code</vh></v>
-<v t="ekr.20050829134901.11"><vh>@color, @nocolor and @killcolor</vh></v>
-<v t="ekr.20050829134901.12"><vh>@comment</vh></v>
-<v t="ekr.20050829134901.13"><vh>@delims</vh></v>
-<v t="ekr.20050829134901.14"><vh>@encoding</vh></v>
-<v t="ekr.20050829134901.15"><vh>@first</vh></v>
-<v t="ekr.20050829134901.16"><vh>@ignore</vh></v>
-<v t="ekr.20050829134901.17"><vh>@language</vh></v>
-<v t="ekr.20050829134901.18"><vh>@last</vh></v>
-<v t="ekr.20050829134901.19"><vh>@lineending</vh></v>
-<v t="ekr.20050829134901.20"><vh>@others</vh></v>
-<v t="ekr.20050829134901.21"><vh>@path</vh></v>
-<v t="ekr.20050829134901.22"><vh>@pagewidth</vh></v>
-<v t="ekr.20050829134901.23"><vh>@tabwidth</vh></v>
-<v t="ekr.20050829134901.24"><vh>@raw and @end_raw</vh></v>
-<v t="ekr.20050829134901.25"><vh>@root-code and @root-doc</vh></v>
-<v t="ekr.20050829134901.26"><vh>@verbose, @terse, @quiet and @silent</vh></v>
-<v t="ekr.20050829134901.27"><vh>@wrap and @nowrap</vh></v>
-</v>
-<v t="ekr.20050829134901.28"><vh>Reference: the six ways of creating derived files</vh>
-<v t="ekr.20050829134901.29"><vh> @file and @thin</vh></v>
-<v t="ekr.20050829134901.30"><vh> @nosent</vh></v>
-<v t="ekr.20050829134901.31"><vh> @asis and @noref</vh></v>
-<v t="ekr.20050829134901.32"><vh> @root</vh>
-<v t="ekr.20050829134901.33"><vh>Sections and section definitions</vh></v>
-<v t="ekr.20050829134901.34"><vh>Tangling @root trees with the Tangle commands</vh></v>
-<v t="ekr.20050829134901.35"><vh>Untangling @root trees with the Untangle commands</vh></v>
-</v>
-</v>
-<v t="ekr.20050829134901.36"><vh>Cweb mode</vh>
-<v t="ekr.20050829140911"><vh>@rst-ignore-node original</vh></v>
-</v>
-<v t="ekr.20050829134901.37"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
-</v>
-<v t="ekr.20050813102008.1"><vh>@@rst pdf docs\rstplugin3.pdf</vh>
-<v t="ekr.20050813102008.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20050813102008.3"><vh>Overview</vh></v>
-<v t="ekr.20050813102008.4"><vh>Comparison with previous rst plugins</vh></v>
-<v t="ekr.20050813102008.5"><vh>Options</vh>
-<v t="ekr.20050814093016"><vh>Options supporting the http plugin</vh></v>
-<v t="ekr.20050816051911"><vh>Options that set command names</vh></v>
-</v>
-<v t="ekr.20050813102008.6"><vh>Headline Commands</vh></v>
-<v t="ekr.20050813102008.7"><vh>Using doc parts</vh></v>
-<v t="ekr.20050813102008.9"><vh>Setting defaults</vh></v>
-<v t="ekr.20050813102008.10"><vh>The code-block directive</vh></v>
-<v t="ekr.20050813102008.11"><vh>Required cascading style sheets</vh></v>
-<v t="ekr.20050813102008.12"><vh>Notes about rST markup</vh></v>
-<v t="ekr.20050813102008.14"><vh>Examples</vh></v>
-<v t="ekr.20050814144727"><vh>Theory of operation</vh></v>
-<v t="ekr.20050813102008.13"><vh>@rst-ignore @rst-no-head end stuff</vh>
-<v t="ekr.20050813102008.15"><vh>Acknowledgements</vh></v>
-</v>
-<v t="ekr.20050822081728"><vh>@rst-ignore-tree Footnotes</vh></v>
-<v t="ekr.20050813102008.16"><vh>@rst-no-head end-of-page stuff</vh></v>
-</v>
-</v>
 <v t="ekr.20050916065715"><vh>suggestions for tutorial</vh></v>
-<v t="ekr.20060608111953" a="E"><vh>@rst html\docModeOnlyTest.html</vh>
+<v t="ekr.20060608111953"><vh>@rst html\docModeOnlyTest.html</vh>
 <v t="ekr.20060608111953.1"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20060608111953.2"><vh>leoFind.py</vh>
 <v t="ekr.20060608111953.3"><vh>&lt;&lt; Theory of operation of find/change &gt;&gt;</vh></v>
@@ -1229,7 +1120,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20060608111953.59"><vh>Must be overridden in subclasses</vh></v>
 </v>
-<v t="ekr.20060608111953.60"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 </v>
@@ -5211,10 +5101,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. June 11, 2008
-
-.. |back| |leo| |next|
-
 ############################################################
 Chapter 22: Using Vim Bindings with Leo
 ############################################################
@@ -5224,20 +5110,6 @@ This chapter describes Leo's vim-like bindings, including how to install them.
 .. contents::
 </t>
 <t tx="TL.20080804095315.3">.. Links
-
-.. .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
-
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: IPythonBridge.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: atShadow.html
 </t>
 <t tx="TL.20080804095315.4">Place a copy of the "@keys Vim bindings" node and its sub-nodes,
 located in the leoSettings.leo file, under the "@settings" node
@@ -5670,9 +5542,6 @@ allow for Leo's trailing sentinel lines::
 
 Issue the ":help modeline" command within Vim for the more information about
 modelines.</t>
-<t tx="TL.20080804095315.10">-----------------------
-
-|back| |leo| |next|</t>
 <t tx="TL.20080804095315.11"></t>
 <t tx="TL.20090225194539.1">A Leo plugin that permits the "easy" assignment of scripts to be performed on
 double-clicked nodes based on pattern matching.
@@ -5917,8 +5786,6 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 verbose=True
 @c
-
-.. |back| |leo| |next|
 
 ##########################################
 Chapter 1: Installing Leo
@@ -6953,8 +6820,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |back| |leo| |next|
-
 ####################################
 Chapter 7: Scripting Leo with Python
 ####################################
@@ -7400,7 +7265,17 @@ future changes to the internals of these classes.
 	p.following_siblings_iter  # returns all siblings following p.
 	p.subtree_iter             # returns all positions in p's subtree, excluding p.
 	p.self_and_subtree_iter    # returns all positions in p's subtree, including p.</t>
-<t tx="ekr.20040414161647">@nocolor-node
+<t tx="ekr.20040414161647">@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = True
+verbose=True
+@c
 
 @language rest
 
@@ -7429,8 +7304,6 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 verbose=True
 @c
-
-.. |prev| |leo| |next|
 
 ############
 Front Matter
@@ -9615,18 +9488,12 @@ Removes @ignore, @nocolor, @wrap directives.
 </t>
 <t tx="ekr.20050812123002.7">Used differently.  See rst2_pure_document.</t>
 <t tx="ekr.20050812123002.8"></t>
-<t tx="ekr.20050812125502">----------------
-
-|prev| |leo| |next|</t>
 <t tx="ekr.20050812134441">.. External links...
-
-.. .. _`CWEB`:          http://www-cs-faculty.stanford.edu/~knuth/cweb.html
 .. _`Open Software`:    http://www.opensource.org/
 .. _Python:             http://www.python.org/
 .. _`SourceForge`:      http://sourceforge.net/projects/leo/
 
 .. Relative links...
-
 .. _clones:             intro.html#clones-views
 .. _leo:                front.html
 .. _outline:            intro.html#introduction
@@ -9634,497 +9501,13 @@ Removes @ignore, @nocolor, @wrap directives.
 .. _plugins:            intro.html#plugins-settings
 .. _scripting:          intro.html#scripting-leo
 .. _users:              http://sourceforge.net/projects/leo/
-
-.. WARNING: image targets may not have upper case letters!     
-
-.. |leo|  image:: leo.gif
-	:target: front.html
-
-.. |prev| image:: arrow_lt.gif
-	:target: leo_TOC.html
-
-.. |next| image:: arrow_rt.gif
-    :target: preface.html</t>
+</t>
 <t tx="ekr.20050812134441.1">.. Links used in this document.
-
-.. _front:      front.html
-.. _chapter6:   design.html
-.. _chapter8:   customizing.html
-
+.. _front:          front.html
+.. _chapter6:       design.html
+.. _chapter8:       customizing.html
 .. _`rst3 plugin`:  rstplugin3.html
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-	:target: design.html
-
-.. |leo|   image:: leo.gif
-	:target: front.html
-
-.. |next| image:: arrow_rt.gif
-	:target: customizing.html
 </t>
-<t tx="ekr.20050813102008.1">###########################
-|leo| Using the rst3 plugin
-###########################
-
-.. August 14, 2005
-
-@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-.. contents::</t>
-<t tx="ekr.20050813102008.2">.. Links used in this document...
-
-.. _LaTeX:                http://www.latex-project.org/
-.. _reStructuredText:     http://docutils.sourceforge.net/rst.html
-.. _docutils:             http://docutils.sourceforge.net
-.. _ListManagerDocs.html: http://webpages.charter.net/edreamleo/ListManagerDocs.html
-.. _wxListManager.leo:    http://webpages.charter.net/edreamleo/wxListManager.leo
-.. _SilverCity:           http://silvercity.sourceforge.net
-.. _front:                http://webpages.charter.net/edreamleo/front.html
-.. _home:                 http://webpages.charter.net/edreamleo/front.html
-
-.. |blank| image:: blank.gif
-.. |leo|   image:: leo.gif
-    :target: http://webpages.charter.net/edreamleo/front.html</t>
-<t tx="ekr.20050813102008.3">The rst3 plugin creates output files from Leo outlines containing
-reStructuredText_ (rST) ReStructuredText is a simple and powerful text
-formatting markup language. Outlines are a natural way to organize rST (or any
-text).
-
-.. The line @rst &lt;xyzzy&gt; causes problems.
-
-This plugin adds the Write Restructured Text command to Leo's Edit menu. The Write
-Restructured Text command searches the selected outline looking for **rst root nodes**
-whose headline have the form @rst xyzzy. The plugin then creates
-the named file in various ways depending which rst3 options are in effect.
-
-By default, the rst3 plugin creates rST headings automatically from outlines, so
-the higher-level nodes in the outline correspond to higher-level sections in the
-output. Creating rST headings automatically relieves you from one of the most
-tedious chores in creating rST markup.
-
-.. .. [1] See footnote 1.
-
-.. .. [2] See footnote 2.
-
-To use this plugin effectively, Python's docutils_ module must be installed. The
-rst3 plugin will use the SilverCity_ syntax coloring package if it installed.
-
-This plugin sends .htm, .html or .tex files to the docutils module for further
-processing. Docutils generates HTML files or LaTeX files depending on the file's
-extension. HTML files generated by docutils refer to three .css (cascading style
-sheet) files that should exist in the same directory as the generated HTML file.
-You can control the formatting of the HTML file by altering these .css files.
-.. .. See `Required cascading style sheets`_ for more details.
-See Required cascading style sheets for more details.</t>
-<t tx="ekr.20050813102008.4">The rst3 plugin provides several important benefits compared to previous rst plugins:
-
-1. This plugin allows much more flexible control over its operations using **rst3 options**. You can
-set options in @settings trees, in headlines and in body text. Nodes inherit most rst3 options from
-ancestor nodes much like nodes inherit Leo directives.  See `Options`_.
-
-The most important option is the code_mode option. This option specifies whether to process the
-body text of a node as rst markup (rst mode) or source code that is to be converted to rST
-markup (code mode). Unlike previous versions of this plugin, any node can be processed in any
-mode.
-
-2. Headlines can set any option. This turns out to be very convenient. See `Headline commands`_ for
-details.  Nodes whose headlines start with @rst-options are treated specially. The body text of such **rst
-options nodes** should contain nothing but lines of the form::
-
-    &lt;option&gt;=&lt;value&gt;
-
-3. You can set any rst3 options in the *body text* of any node
-using doc parts of the form::
-
-    @ @rst-options
-    list of rst3 options, one per line
-    @c
-
-Such **option doc parts** allows you to specify rst3 options even with source code files.
-
-4. You can embed rST markup in the body text
-of any node using doc parts of the form::
-
-    @ @rst-markup
-    any rST markup
-    @c
-
-Such **markup doc parts** allow you to fine-tune the formatting of your source files.
-See `Using doc parts`_ for full details.
-
-All these features create a wonderful environment for using rST.
-There is complete integration of Leo outlines with rST markup.
-You can embed both rst3 options and rST markup in any node, even node in derived files.</t>
-<t tx="ekr.20050813102008.5">You can set any option in any node, so you have complete control over how this plugin processes each
-node.  The following is a list of options that control how the rst3 plugin formats each particular node.
-
-code_mode
-    True: process nodes in code mode.  False: process nodes in rst mode.
-    In code mode, the rst3 plugin automatically creates rST markup to display the body text as an
-    rst code-block. In rst mode the rst3 simply copies the body text of the node to the output. That
-    is, the plugin assumes that body text is already valid rST markup.
-
-default_path
-    The path to be prepended to filenames given in root nodes.  The default is an empty string.
-    
-generate_rst
-    A master switch.
-    True: generate rST markup for rST sections and rST code-blocks.
-    False: don't generate rST markup and ignore @ @rst-markup doc parts.
-
-number_code_lines
-    Controls whether to number code lines in code mode.
-    This option has no effect in rst mode.
-
-show_doc_parts_as_paragraphs
-    True: Move doc parts outside of the code-block directive in code mode.
-    This option has no effect in rst mode.
-
-    **Cool**: Any rST markup in doc parts included as the result of this option will be rendered properly.
-
-show_headlines
-    True: automatically generate rST sections from headlines.
-    Applies to both code mode and rst mode.
-
-    The level of the node in the outline determines the level of the section
-    underling in the rST markup. Higher-level headlines in the outline
-    correspond to higher-level section headings; lower-level headlines in the
-    outline correspond to lower-level section headings.
-
-show_leo_directives
-    True: include Leo directives in code mode.
-    This option has no effect in rst mode.
-
-show_markup_doc_parts
-    True: include markup doc parts in code mode.
-    This option has no effect in rst mode.
-
-show_options_doc_parts
-    True: include options doc parts in code mode.
-    This option has no effect in rst mode.
-
-show_options_nodes
-    True: show @rst-options nodes.
-
-show_organizer_nodes
-    True: generate rST sections for nodes that do not contain body text.
-    This option has no effect unless the rST section would otherwise be written.
-
-stylesheet_name
-    The name of the stylesheet passed to docutils.  The default is 'default.css'
-
-stylesheet_path
-    The directory containing the stylesheet passed to docutils.  The default is an empty string.
-
-underline_characters
-    The underlining characters to be used to specify rST sections.  
-    The default value is \'\'\'#=+*^~"'\`-:&gt;&lt;\_\'\'\'.
-    The first character is reserved so you can specify the top-level section explicitly.
-
-verbose
-    True: write informational messages.
-
-write_intermediate_file
-    True: writes intermediate files before sending them to docutils.
-    This option only applies to .htm, .html and .tex files.
-    The name of the intermediate file has the name of the output file with .txt appended.
-    This option has effect only if the generate_rst option is True.</t>
-<t tx="ekr.20050813102008.6">It is often convenient to set options in headlines.  This is done with the following **headline commands**:
-
-.. changed &lt;text&gt; to TEXT to avoid problems.
-
-@rst TEXT
-    Enter rst mode.  Create a section called TEXT provided the show_headlines option is set.
-
-@rst-code TEXT
-    Enter code mode.  Create a section called TEXT provided the show_headlines option is set.
-
-@rst-ignore-node TEXT
-    Suppress all output from a single node. TEXT is ignored.
-    Has *no* effect on descendant nodes and does **not** change any rst3 option. 
-
-@rst-ignore-tree TEXT
-    Suppress all output from the node and its descendants.  TEXT is ignored.
-    Does **not** change any rst3 formatting option.
-
-@rst-no-head TEXT
-    Suppress the generation of an rST section for this node only.  Does not affect descendant nodes.
-    Has *no* effect on descendant nodes and does **not** change any rst3 option. 
-
-@rst-no-headlines TEXT
-    Set the show_headlines option to False.  As a result, TEXT is ignored.
-
-@rst-option OPTION = VALUE
-    Set a single option to the given value.  The default value is True.
-
-@rst-options TEXT
-    Set zero or more options from the body text of the node.  TEXT is ignored.
-    The entire body text is treated as if it were in an @ @rst-options doc part.
-
-**Notes**:
-
-- Several of these commands affect only the node in which they appear.  Such commands set internal settings variables only: they have no effect on the visible rst3 options.
-
-- If a headline generates an rST section, the section name does not include the headline command.  Furthermore, no rST section is generated if the TEXT is empty.</t>
-<t tx="ekr.20050813102008.7">Recall that in Leo a doc part starts with the '@' directive and continues until the end of body text or until the '@c' directive is seen.  For example::
-
-    @ This is a comment in a doc part.
-    Doc parts can span multiple lines.
-    The next line ends the doc part
-    @c
-
-Leo converts doc parts into comments using whatever comment delimiters are in effect.
-
-**Option doc parts** are doc parts that start with @ @rst-options. All other
-lines of such doc parts should be of the form name=value. (rST comments lines
-starting with '..' are allowed). For example::
-
-    @ @rst-options
-    .. This comment line is ignored.
-    show_headlines=False
-    show_leo_directives=False
-    verbose=True
-    @c
-
-The rst3 plugin sets options from option doc parts, even in code mode.
-
-**Markup doc parts** are doc parts that start with @ @rst-markup.  For example::
-
-    @ @rst-markup
-    .. contents::
-
-The rst3 plugin replaces markup doc parts by the markup they contain, even in code mode.
-
-Option and markup doc parts are especially useful in code mode. They allow you
-to specify options or insert rST markup directly from with derived files. This
-makes your source files self contained: there is no need to add other nodes to
-make the rst3 plugin happy.
-
-A cool feature: In code mode, rST markup in *ordinary* doc parts will be
-rendered properly when the show_doc_parts_as_paragraphs option is in effect.
-*Important*: Regardless of the show_doc_parts_as_paragraphs option, doc parts
-have no special significance in rst mode. That is, the entire `doc part` from
-the opening '@' to the closing '@c and everything in between are treated normal
-rST markup.</t>
-<t tx="ekr.20050813102008.9">You can set the defaults for any rst3 option in several ways:
-
-\1.  By setting options in the root node using @ @rst-options doc parts.
-For example, the root of the file that generated this documentation contains::
-
-    @ @rst-options
-    code_mode=False
-    generate_rst=True
-    show_organizer_nodes=True
-    show_headlines=True
-    show_leo_directives=True
-    verbose=True
-    @c
-
-\2. By setting options in @settings trees.  To do this, you must prefix the option name shown in this documentation with the prefix 'rst3\_'.  For example::
-
-    @settings
-        @bool rst3_write_intermediate_file = True
-</t>
-<t tx="ekr.20050813102008.10">This plugin defines a code-block rST directive.  The primary purpose of this directive is to show formatted source code.
-
-In rst mode you can insert the code-block directive like any other rST markup.  The rst3 plugin generates code-block directives when handling nodes in code mode.
-
-This directive takes one argument, a language name.  Like this::
-
-    .. code-block:: Python
-
-        import leo.core.leoPlugins as leoPlugins
-        import leo.core.leoGlobals as g
-
-This directive syntax colors the code in the indented code block that follows the directive.
-The result looks like this if the SilverCity syntax coloring module has been installed.
-
-.. code-block:: Python
-    
-    import leo.core.leoPlugins as leoPlugins
-    import leo.core.leoGlobals as g
-
-Otherwise, the output looks like this::
-
-    import leo.core.leoPlugins as leoPlugins
-    import leo.core.leoGlobals as g
-
-See the tree called "Scripting chapter using the rst plugin" in LeoDocs.leo for many examples of how to use code-blocks.
-</t>
-<t tx="ekr.20050813102008.11">HTML files generated by the rst3 plugin assume that three .css (cascading style sheet) files exist
-in the same directory. For the HTML output to look good the following .css
-files should exist:
-
-- default.css is the default style sheet that docutils expects to exist.
-
-- leo_rst.css contains some style improvements based on Gunnar Schwant's DocFactory.
-
-- silver_city.css is the style sheet that controls the syntax highlighting generated by SilverCity.
-
-The latter two style sheets are imported at the end of the default.css.
-
-**Important:** You can use cascading style sheets to do things that otherwise
-wouldn't be possible with "plain" rST. For instance, the background color of
-this page was specified in a body style.</t>
-<t tx="ekr.20050813102008.12">The plugin reserves the '#' character for your own use so that you can
-specify an rST headline explicitly. For example,::
-
-    #####
-    Title
-    #####
-
-You would typically put such a title in the rst root node. Otherwise, you should
-let the rst3 plugin automatically generate rST sections from headlines.
-
-To create a table of contents (TOC) put::
-
-    .. contents:: Table of Contents
-
-on its own line wherever you want the TOC to appear.  This line can appear in body text in rst mode,
-or in an @ @rst-markup doc part in code mode.</t>
-<t tx="ekr.20050813102008.13"></t>
-<t tx="ekr.20050813102008.14">The file ListManagerDocs.html_ is an impressive example of the kind of output
-that can be generated relatively easily using this plugin.
-
-The source for ListManagerDocs.html is wxListManager.leo_.
-**Important**: wxListManager.leo was written for the rst2 plugin; it
-could be greatly simplified if adapted for the rst3 plugin.
-
-The files in LeoDocs.leo under the node 'Leo's HTML Users Guide' contain
-examples of using the rst3 plugin.
-
-This documentation was created using the rst3 plugin. The source code for this
-documentation is in LeoDocs.leo. The source code for all the rst plugins is in
-LeoPlugins.leo.</t>
-<t tx="ekr.20050813102008.15">Josef Dalcolmo wrote the initial rst plugin.  Timo Honkasalo, Bernhard Mulder, Paul Paterson, Kent Tenney and Steve Zatz made contributions to the rst and rst2 plugins.  Edward K. Ream designed and wrote the rst3 plugin.</t>
-<t tx="ekr.20050813102008.16">-------------
-
-|leo|</t>
-<t tx="ekr.20050814093016">The following options are for the use of Bernhard Mulder's http plugin.  The http plugin creates an http server running on a local port, typically 8080.  When the http plugin is running you will see a purple message in the log window that looks something like this::
-
-    http serving enabled on port 8080, version 0.91
-
-To use the http plugin, start a web browser and enter this url::
-
-    http://localhost:8080/
-
-You will see a a top level page containing one link for every open .leo file.  Clicking on link will cause the http server to pass a new page to the browser.  You can use the browser's refresh button to update the top-level view in the browser after you have opened or closed files.
-
-**Important**: See the docstring for the http plugin for information on configuring the plugin.
-Some of the following rst3 settings must match values of settings for the http plugin. 
-Here are the rst3 options that support the http plugin:
-
-http_server_support
-    A master switch: none of the following options have any effect unless this option is True.
-    If True, the rst3 plugin does the following:
-
-    - Writes **node markers** in the rst output for use by the http plugin. Node markers are rst named hyperlink targets.  By default they look like::
-    
-            .. _http-node-marker-N
-    
-      where N is a unique node number.
-
-    - Adds additional information to all nodes of the tree being formatted using Leo's
-      unknownAttributes mechanism.
-
-http_attributename
-    The name of the attribute name written to the unknownAttributes attribute of
-    each each outline node in the rst root tree.
-    The default is 'rst_http_attribute';
-    it should match the following setting of the *http* plugin::
-
-        @string rst_http_attributename = 'rst_http_attribute'
-    
-    This option has no effect unless the http_server_support option is True.
-
-clear_http_attributes
-    If True the rst3 plugin initially clears the fields specified by `http_attributename`.  
-    This option has no effect unless the http_server_support option is True.
-
-node_begin_marker
-    The string used for node markers. The default is 'http-node-marker-'.
-    This option has no effect unless the http_server_support option is True.</t>
-<t tx="ekr.20050814144727">The code for the rst3 plugin is more complex than usual.  Fortunately, the overall organization is straightforward.
-
-defaultOptionsDict
-    This dictionary represents each rst3 option.
-    To add another option, just add another entry to this dictionary.
-    Keys are the option name, including the `rst3_` prefix.
-    Values are the default value of the option.
-    The hard values in the dictionary may be changed as the result of @settings entries.
-
-processTree
-    processTree is the top-level code that handles one rst root node.
-    It calls preprocessTree to create the **tnodeOptionDict** ivar.
-    processTree then calls either writeNormalTree or writeSpecialTree
-    depending on whether text will be sent to docutils for further processing.
-    These two methods handle mundane details of opening an closing files.
-    Both writeNormalTree and writeSpecialTree call **writeTree** to do the actual work.
-
-tnodeOptionDict
-    The entries in this dictionary represents the options that are set in one particular node.
-    The keys of tnodeOptionDict are tnodes, the values are anonymous dictionaries.
-    These anonymous inner dictionaries contain the options that are explicitly set at each tnode
-    (and thus each position).
-    Preprocessing the tree this way ensures that each node (headline and body text) is parsed exactly once.
-
-writeTree
-    writeTree first calls **scanAllOptions**, which has the effect of
-    initializing all options. writeTree then calls **writeNode** for each node
-    that will be processed by the rst3 plugin. Options may cause the plugin to
-    skip a node or an entire subtree.
-
-writeNode
-    writeNode first calls **scanAllOptions** to compute the options that are in
-    effect for that *single* node. Once options have computed, processing the
-    node is straightforward. writeNode calls writeBody and writeHeadline
-    to do the real work. These methods generate or skip text based on various
-    options.
-
-scanAllOptions
-    scanAllOptions recreates the optionsDict ivar to represent *all* the options
-    in effect for *for the particular node being processed by writeNode*. Client
-    code gets these options by calling the getOption method.
-
-    scanAllOptions first inits all options from settings,
-    then updates those options using the anonymous
-    dictionaries contained in the tnodeOptionsDict.
-    scanAllOptions works like g.scanAllDirectives, but the code is much simpler.</t>
-<t tx="ekr.20050816051911">The following options specify the 'spelling' of headline commands.  The option_prefix and option_prefixes command also define the spelling of special doc parts.
-
-You can change these to make them shorter or to avoid conflicts with headlines in your Leo files.  The list below merely gives the default value for each setting.
-
-.. escape the '@' signs so they don't become email addresses.
-
-`code_prefix`: '\@rst-code'
-
-`ignore_headline_prefix`: '\@rst-no-head'
-
-`ignore_headlines_prefix`: '\@rst-no-headlines'
-
-`ignore_node_prefix`: '\@rst-ignore-node'
-
-`ignore_tree_prefix`: '\@rst-ignore-tree'
-
-`option_prefix`: '\@rst-option'
-
-`options_prefix`: '\@rst-options'
-
-`rst_prefix`: '\@rst'
-
-`show_headline_prefix`: '\@rst-head'</t>
 <t tx="ekr.20050816073412">@ @rst-options
 code_mode=False
 generate_rst=True
@@ -10136,8 +9519,6 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 verbose=True
 @c
-
-.. |back| |leo| |next|
 
 ##########################################
 Chapter 2: A Tutorial Introduction to Leo
@@ -10246,21 +9627,8 @@ You should see Leo's main window, something like this:
 .. _`section references`:       glossary.html#section-references
 .. _siblings:                   glossary.html#siblings
 
-.. WARNING: image targets may not have upper case letters!
-
 .. |leoMainWindow| image:: PCWindow.gif
-
-.. |back| image:: arrow_lt.gif
-    :target: install.html
-
-.. |next| image:: arrow_rt.gif
-    :target: outlines.html
-
-.. |leo|   image:: leo.gif
-    :target: front.html</t>
-<t tx="ekr.20050816073824">-------------
-
-|back| |leo| |next|</t>
+</t>
 <t tx="ekr.20050818163826">.. June 8, 2006
 
 @ @rst-options
@@ -10279,8 +9647,6 @@ verbose=True
 
 .. publish_argv_for_missing_stylesheets = --language=de,--documentclass=report,--use-latex-toc
 
-.. |back| |leo| |next|
-
 ####################################
 Chapter 14: Using the rst3 plugin
 ####################################
@@ -10290,27 +9656,14 @@ Chapter 14: Using the rst3 plugin
 <t tx="ekr.20050818163826.1">.. rST links used in this document...
 
 .. External links...
-
 .. _docutils:             http://docutils.sourceforge.net
 .. _LaTeX:                http://www.latex-project.org/
 .. _reStructuredText:     http://docutils.sourceforge.net/rst.html
 .. _SilverCity:           http://silvercity.sourceforge.net
 
 .. Hard links to Leo's web site...
-
 .. _ListManagerDocs.html: http://webpages.charter.net/edreamleo/ListManagerDocs.html
 .. _wxListManager.leo:    http://webpages.charter.net/edreamleo/wxListManager.leo
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: writingPlugins.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: coloring.html
 </t>
 <t tx="ekr.20050818163826.2">The rst3 plugin creates output files from Leo outlines containing
 reStructuredText_ (rST) ReStructuredText is a simple and powerful text
@@ -10801,15 +10154,6 @@ scanAllOptions
 Timo Honkasalo, Bernhard Mulder, Paul Paterson, Kent Tenney and
 Steve Zatz made contributions to the rst and rst2 plugins.
 Edward K. Ream designed and wrote the rst3 plugin.</t>
-<t tx="ekr.20050818163826.17">-----------------------
-
-|back| |leo| |next|</t>
-<t tx="ekr.20050822081728">.. This was used only for testing.
-
-[1]_ Footnote 1.
-
-[2]_ Footnote 2.
-</t>
 <t tx="ekr.20050822173420">The main window represents an entire project and is stored in a single **Leo file**,
 a file with a .leo extension.
 As you can see, the main window contains three panes:
@@ -11277,10 +10621,6 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 verbose=True
 @c
-
-.. August 28, 2005
-
-.. |back| |leo| |next|
 
 #####################################
 Chapter 4: Writing Programs in Leo
@@ -11902,33 +11242,16 @@ is the kind of sentinel lines that Leo writes:
 `Chapter 4: Writing Programs in Leo`_ discusses the various ways of creating derived files.
 This is a highly complex subject: you should ignore these details at first.
 Just use ``@thin`` to create your `derived files`_.</t>
-<t tx="ekr.20050828115003">------------------
-
-|back| |leo| |next|</t>
 <t tx="ekr.20050828160132">.. External links...
-
 .. _`CWEB`:     http://www-cs-faculty.stanford.edu/~knuth/cweb.html
 .. _`noweb`:    http://www.eecs.harvard.edu/~nr/noweb/
 
 .. Relative links...
-
 .. _`@root reference`:      directives.html#id5 
 .. _front:                  front.html
 .. _`Leo's tutorial`:       intro.html
 .. _`@auto reference`:      directives#id1
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: outlines.html
-
-.. |next| image:: arrow_rt.gif
-    :target: commands.html
-
-.. |blank| image:: blank.gif
-
-.. |leo|   image:: leo.gif
-    :target: front.html</t>
+</t>
 <t tx="ekr.20050828161117">An **orphan node** is a descendant of an `@thin`_ node_ that will not be copied
 to the `derived file`_. Orphan nodes can arise because an `@thin`_ tree has no
 ``@others`` or ``@all`` directives. Sections that are defined but not used also
@@ -12210,916 +11533,6 @@ Negative values cause Leo to convert tabs to blanks.</t>
 `Chapter 4: Writing Programs in Leo`_ is the full reference guide.
 I recommend avoiding that chapter until you have been programming with Leo for some time.
 </t>
-<t tx="ekr.20050829134901">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-.. August 28, 2005
-
-.. |back| |leo| |next|
-
-#####################################
-Chapter 4: Writing Programs in Leo
-#####################################
-</t>
-<t tx="ekr.20050829134901.1">.. _front:      http://webpages.charter.net/edreamleo/front.html
-.. _home:       http://webpages.charter.net/edreamleo/front.html
-.. _back:       http://webpages.charter.net/edreamleo/outlines.html
-.. _next:       http://webpages.charter.net/edreamleo/commands.html
-
-.. _`CWEB`:     http://www-cs-faculty.stanford.edu/~knuth/cweb.html
-.. _`noweb`:    http://www.eecs.harvard.edu/~nr/noweb/
-
-.. |back| image:: arrow_lt.gif
-    :target: back_
-
-.. |next| image:: arrow_rt.gif
-    :target: next_
-
-.. |blank| image:: blank.gif
-
-.. |leo|   image:: leo.gif
-    :target: front.html
-
-.. _`Leo's tutorial`:       http://webpages.charter.net/edreamleo/intro.html
-</t>
-<t tx="ekr.20050829134901.2">** Use active verbs!
-
-* Spell check.</t>
-<t tx="ekr.20050829134901.3">This chapter is a *reference guide* to computer programming with Leo.
-This chapter does *not* teach you how to use Leo:
-for that you should read `Leo's tutorial`_.
-This chapter assumes you are thoroughly familiar with the terminology introduced in the tutorial.
-**Note**: Are you *sure* you want to read this chapter?
-It contains many details that are no interest to the average user of Leo.
-I recommend using Leo for two weeks, or longer, before attempting this chapter.
-
-.. contents::</t>
-<t tx="ekr.20050829134901.4">You can create derived files using six kinds of directives.
-The first five,
-``@file-thin``, ``@file``, ``@file-nosent``, ``@file-noref``, ``@file-asis``,
-are collectively known as ``@file`` trees.
-The abbreviated forms are most common:
-``@thin``, ``@file``, ``@nosent``, ``@noref`` and ``@asis``.
-There is also a sixth directive: ``@root``.
-
-**Important**: You create the ``@file`` trees by putting
-``@thin``, ``@file``, ``@nosent``, ``@noref`` or ``@asis`` (or the long forms) in a *headline*.
-In contrast, you create ``@root`` trees by putting the ``root`` directive in *body text*.
-The term 'directive' usually refers to a construct in Leo's body text.
-In this chapter *I'll stretch the term* to include all 10 ``@file`` forms,
-as well as the true ``@root`` directive.
-Here are the six ways of creating derived files:
-
-\@thin
-  Use this unless you have a good reason not to.
-  It is the 'state-of-the-art' in derived files.
-  This form is easy to use and is cvs friendly.
-  Using ``@thin`` reduces the size of .leo files,
-  and saves all essential information in the derived file.
-  ``@all`` directives are valid only in ``@thin`` trees.
-
-\@file
-  This was the old 'state-of-the-art' directive.
-  There is not much reason to use it now,
-  except that its sentinels are more readable than ``@thin`` sentinels.
-  However, ``@file`` is not nearly as cvs friendly as ``@thin``;
-  avoid ``@file`` in cooperative environments.
-
-\@nosent
-  Use this directive only if you absolutely can not tolerate any sentinels in derived files.
-  Without sentinels, Leo can not update ``@nosent`` trees from changes made to the derived files.
-  *Consider using @thin even if you must produce derived files without sentinels*.
-  You can use ``@thin`` for most work, then change ``@thin`` to ``@nosent``
-  when showing your derived files to the world.
-
-\@noref
-  This directive produces derived files with minimal sentinels.
-  Section references are not allowed.
-  This is the least often used way of producing derived files.
-  Don't use this unless you are sure you must.
-
-\@asis
-  This directive copies body text verbatim,
-  without even ensuring that newlines terminate each node.
-  Use this directive only when you must have complete control over every character of the derived file.
-
-\@root
-  This directive is the most flexible, and the most difficult to use.
-  **Note**: ``@root`` is a true directive: you put ``@root`` in body text.
-  Historically, this was the first directive that created derived files.
-  It comes closest in spirit to traditional literate programming tools.
-  However, it is seldom necessary to suffer the drawbacks of using ``@root``.
-  It is certainly never necessary when programming in Python.
-  My advice is to avoid using ``@root`` unless you have a compelling reason.
-
-To complicate matters further,
-you can use `CWEB`_ markup instead of `noweb`_ markup.
-See the section called `CWEB mode`_ for the details.
-The choice between CWEB and noweb is independent of the directive is used to create derived files.</t>
-<t tx="ekr.20050829134901.5">Here is a brief summary of each directive:
-
-- **\@**
-  Starts a doc part. ``@doc`` is a deprecated synonym.
-
-- **\@all**
-  Copies *all* descendant nodes to the derived file.
-  Not valid in ``@root`` trees.
-
-- **\@c**
-  Starts a code part. ``@code`` is a deprecated synonym.
-
-- **\@color**, **\@nocolor** and **\@killcolor**
-  Control syntax coloring.
-
-- **\@comment**
-  Sets comment delimiters in ``@root`` and ``@unit`` trees.
-
-- **\@delims**
-  Sets comment delimiters in ``@file`` trees.
-
-- **\@encoding**
-  Sets the Unicode encoding used in derived files.
-
-- **\@first**
-  Forces lines to appear before the first sentinel of a derived file.
-
-- **\@ignore**
-  Causes Leo to ignore all or part of a derived file.
-  Works differently in ``@file`` and ``@root`` trees.
-
-- **\@language**
-  Sets the language used for syntax coloring **and**
-  sets the comment delimiters used in sentinel lines and in doc parts.
-
-- **\@last**
-  Forces lines to appear after the last sentinel of a derived file.
-
-- **\@lineending**
-  Sets the line ending to be used in derived files.
-
-- **\@others**
-  Copies all nodes *except* section definition nodes to the derived file.
-
-- **\@pagewidth**
-  Sets the page width used to break doc parts into lines.
-
-- **\@path**
-  Set the path to be appended to filenames.
-
-- **\@raw** and **\@end_raw**
-  Delimit a section of 'raw' text.
-  Not valid in ``@root`` or ``@unit`` trees.
-
-- **\@root**, **\@root-code** and **\@root-code**
-  Start an ``@root`` tree.
-  The last two forms set the starting mode for body text.
-
-- **\@tabwidth**
-  Sets the width of tabs.
-  Negative tab widths cause Leo to convert tabs to spaces.
-
-- **@verbose**, **@terse**, **@quiet** and **@silent**
-  Set the verbosity of sentinels in files derived from ``@root``.
-
-- **\@wrap** and **\@nowrap**
-  Enable or disable line wrapping the Leo's body pane.</t>
-<t tx="ekr.20050829134901.6">Here is a brief summary of each directive:
-
-\@
-    Starts a doc part. ``@doc`` is a deprecated synonym.
-
-\@all
-    Copies *all* descendant nodes to the derived file.
-    Not valid in ``@root`` trees.
-
-\@c
-    Starts a code part. ``@code`` is a deprecated synonym.
-
-\@color, \@nocolor and \@killcolor
-    Control syntax coloring.
-
-\@comment
-    Sets comment delimiters in ``@root`` and ``@unit`` trees.
-
-\@delims
-    Sets comment delimiters in ``@file`` trees.
-
-\@encoding
-    Sets the Unicode encoding used in derived files.
-
-\@first
-    Forces lines to appear before the first sentinel of a derived file.
-
-\@ignore
-    Causes Leo to ignore all or part of a derived file.
-    In ``@file`` trees, only valid in the actual ``@file`` node itself.
-    May appear anywhere in ``@root`` trees.
-
-\@language
-    Sets the language used for syntax coloring and
-    sets the comment delimiters used in sentinel lines and in doc parts.
-
-\@last
-    Forces lines to appear after the last sentinel of a derived file.
-
-\@lineending
-    Sets the line ending to be used in derived files.
-
-\@others
-    Copies all nodes *except* section definition nodes to the derived file.
-
-\@pagewidth
-    Sets the page width used to break doc parts into lines.
-
-\@path
-    Set the path to be appended to filenames in descendant ``@file`` nodes.
-
-\@raw and \@end_raw
-    Delimits a section of 'raw' text.
-    Not valid in ``@root`` or ``@unit`` trees.
-
-\@root, \@root-code and \@root-code
-    Start an ``@root`` tree.
-    ``@root-code`` and ``root-doc`` specify whether body text starts in code or doc mode by default.
-
-\@tabwidth
-    Sets the width of tabs.
-    Negative tab widths cause Leo to convert tabs to spaces.
-
-\@wrap and \@nowrap
-    Enable or disable line wrapping the Leo's body pane.
-    Only the first ``@wrap`` or ``@nowrap`` directive in a node has any effect.</t>
-<t tx="ekr.20050829134901.7">The following sections give full details about each directive.
-</t>
-<t tx="ekr.20050829134901.8">The ``@`` directive starts a doc part.
-Doc parts continue until an ``@c`` directive or the end of the body text.
-For example::
-
-    @ This is a comment in a doc part.
-    Doc parts can span multiple lines.
-    The next line ends the doc part
-    @c
-
-``@doc`` is a synonym for ``@``, but ``@`` is preferred.</t>
-<t tx="ekr.20050829134901.9">The ``@all`` directive is valid only in ``@thin`` trees.
-The ``@all`` directive is similar to ``@others``, but it is less restrictive:
-it dumps *all* nodes to the derived file, including ``@ignore`` nodes and nodes that
-in an ``@others`` tree would be considered to be orphan nodes.
-
-The ``@all`` directive is required for files such as ``@thin leoProjects.txt`` in ``LeoPy.leo``.
-``leoProjects.txt`` contains so-called project nodes.
-It doesn't have any meaning as a program file: it is simply a collection of unrelated data.
-``@others`` would not work at all: it would complain about lots of orphan nodes.</t>
-<t tx="ekr.20050829134901.10">The ``@c`` directive ends a doc part and begins a code part.
-``@code`` is a synonym for ``@c``, but ``@c`` is preferred.</t>
-<t tx="ekr.20050829134901.11">Syntax coloring is on by default in all body text.
-Leo formats comments and documentation parts in red,
-directives and C keywords in blue,
-strings and character constants in gray and all other text in code parts in black.
-The ``@nocolor`` directive disables syntax coloring for the body text in which it appears.
-No syntax coloring is done until an ``@color`` directive re-enables syntax coloring.
-
-If a node contains neither the ``@color`` nor the ``@nocolor`` directive
-it may inherit the syntax coloring attribute from an ancestor.
-The nearest ancestor that contains exactly one of the ``@color`` or ``@nocolor`` directives
-will control the syntax coloring.
-**Ambiguous nodes**, nodes containing both the ``@color`` and ``@nocolor`` directives,
-never affect the coloring of their offspring.
-
-The ``@killcolor`` directive completely disables the colorizer for that node.
-The result much faster syntax coloring of large body text.
-As usual ``@killcolor`` may itself be overridden in descendant nodes.
-The differences between ``@killcolor`` and ``@nocolor``:
-
-- ``@nocolor`` suppresses coloring only until the next ``@color`` directive.
-
-- ``@killcolor`` overrides ``@nocolor`` and ``@color`` directives.
-  Any node containing @killcolor is unambiguously a ``@killcolor`` node regardless of
-  whether that node also contains ``@color`` or ``@nocolor`` directives.
-
-**Note**:
-the ``@color``, ``@nocolor`` and ``@killcolor`` directives do not affect the ``Tangle`` commands in any way.
-In particular, the ``Tangle`` commands will recognize section definitions as usual even
-after an ``@nocolor`` directive is seen.</t>
-<t tx="ekr.20050829134901.12">**Note**:
-the ``@comment`` directive is deprecated:
-you should use the ``@language`` directive whenever possible.
-However, sometimes using both ``@language`` and ``@comment`` is useful.
-For this to be effective the ``@comment`` directive should appear after the ``@language`` directive (in outline order).
-
-The ``Untangle`` command will not process an ``@root`` or ``@unit`` node if
-an ``@comment`` directive is in effect because
-``Untangle`` can't be sure of properly parsing a derived file if the language of the derived file isn't known.
-It might be possible to assume some defaults in this case,
-but that is not done at present and is not a high priority.
-By default, the ``Tangle`` commands produces C-language comments.
-Single-line comments generated during tangling start with ``///``,
-while documentation parts are surrounded by ``/*`` and ``*/``.
-The ``@comment`` directive allows you to use ``Tangle`` to produce shell and make files,
-as well as source code for other programming languages.
-
-The ``@comment`` directive may be followed by zero to three delimiters, separated by whitespace.
-This directive sets the single-line comment delimiter and the opening and closing block comment delimiters as follows:
-
-====================== =====================================================================
-\@comment              no args\: restores the defaults to ///, /\* and \*/
----------------------- ---------------------------------------------------------------------
-\@comment ///          \1 arg\: sets the single-line comment and clears the other delims.
----------------------- ---------------------------------------------------------------------
-\@comment /\* \*/      \2 args\: sets the block comment delims; clears the single-line delim.
----------------------- ---------------------------------------------------------------------
-\@comment /// /\* \*/  \3 args\: sets all three delimiters.
-====================== =====================================================================
-
-If only one delimiter is given, Leo does not write any documentation parts while tangling.
-If two delimiters are given, block-style comments are used instead of single-line comments.
-For example, the ``@comment { }`` directive could be used to tangle Pascal files.
-
-The ``@comment`` directive is only recognized in ``@root``, ``@unit`` or ``@file`` nodes,
-and the ``@comment`` directive must precede the first section name or ``@code`` directive.
-An ``@comment`` directive in the body text of an ``@unit`` directive specifies the current global defaults.
-An ``@comment`` directive in the body text of an ``@root`` directive affects comments generated for one root only.
-Comments in all other roots are governed by the global defaults.
-
-Leo will convert underscores in the ``@comment`` directives to significant spaces.  For example::
-
-    @comment REM_
-
-causes the comment delimiter to be "REM " (Note the trailing space).</t>
-<t tx="ekr.20050829134901.13">The ``@delims`` directive changes the comment strings used to mark sentinel lines.
-This directive is often used to place Javascript text inside XML or HTML files.
-
-The ``@delims`` directive contains one or two delimiters, separated by whitespace.
-If only one delim is present it delimits single-line comments.
-If two delims are present they delimit block comments.
-The ``@delims`` directive can not be used to change the comment strings at the start of the derived file,
-that is, the comment strings for the ``@+leo`` sentinel and the initial ``@+body`` and ``@+node`` sentinels.
-
-The ``@delims`` directive inserts ``@@delims`` sentinels into the derived file.
-The new delimiter strings continue in effect until the next ``@@delims`` sentinel in the derived file or
-the end of the derived file.
-
-**Note**: Leo can not revert to previous delimiters automatically;
-you must change back to previous delimiters using another ``@delims`` directive. For example::
-
-    @delims /* */
-    Javascript stuff
-    @delims &lt;-- --&gt;
-    HTML stuff
-
-Adding, deleting or changing ``@@delims`` sentinels will destroy Leo's ability to read the derived file.
-Mistakes using the ``@delims`` directive have no effect on Leo,
-though such mistakes will thoroughly mess up a derived file as far as compilers,
-HTML renderers, etc. are concerned.</t>
-<t tx="ekr.20050829134901.14">You may use the ``@encoding`` directive to specify the encoding used in a derived file.
-You can't mix encodings in a single derived file.  For example::
-
-    @encoding iso-8859-1
-
-If the encoding used in a derived file is not "utf-8" it is represented in the @+leo sentinel line, like this::
-
-    #@+leo-encoding=iso-8859-1.
-
-The ``utf-8`` encoding is used by default.
-The ``utf-8`` encoding is a "lossless" encoding (it can represent all unicode code points),
-so encoding and decoding to and from ``utf-8`` plain strings will never cause a problem.
-When reading or writing a character not in a "lossy" encoding (such as ``iso-8859-1``),
-Leo converts such characters to ``'?'`` and issues a warning. </t>
-<t tx="ekr.20050829134901.15">The ``@first`` directive allows you to place lines at the very start of files derived from ``@file`` nodes.
-For example, the body text of ``@file spam.py`` might be::
-
-	@first #! /usr/bin/env python
-
-The body text of ``@file foo.perl`` might be::
-
-	@first #/usr/bin/perl
-
-``@first`` directives are recognized only at the start of the body text of ``@file`` nodes.
-No text may precede ``@first`` directives.
-More than one ``@first`` directive may exist, like this::
-
-	@first #! /usr/bin/env python
-	@first # more comments.</t>
-<t tx="ekr.20050829134901.16">The ``@ignore`` directive is valid *only* in the root node of ``@file`` trees.
-The ``@ignore`` directive has several uses:
-
-- In the root node of an ``@file`` tree, ``@ignore`` prevents Leo from writing the derived file.
-
-- In ``@root`` trees, ``@ignore`` excludes the ``@ignore`` tree from the derived file.
-
-- Outside of ``@file`` and ``@root`` trees, ``@ignore`` can be used by scripts.</t>
-<t tx="ekr.20050829134901.17">The ``@language`` directive specifies the comment delimiters and string types used by the
-``Tangle`` and ``Untangle`` commands.
-This directive over-rides the default specified in the settings dialog.
-Here are the valid ``@language`` directives::
-
-    @language actionscript
-    @language c
-    @language c++
-    @language cweb
-    @language elisp
-    @language html
-    @language java
-    @language latex
-    @language objective-c
-    @language pascal
-    @language perl
-    @language perlpod
-    @language plain
-    @language python
-    @language rebol
-    @language shell
-    @language tcltk
-
-Shell files have comments that start with `#`.
-Case is ignored in the language specifiers, but not in the ``@language`` itself.
-Thus, the following are equivalent::
-
-    @language html
-    @language HTML
-    @language hTmL
-
-but the following is invalid::
-
-    @LANGUAGE html</t>
-<t tx="ekr.20050829134901.18">The ``@last`` directive allows you to place lines at the very end of files derived from ``@file`` nodes.
-The ``@last`` directive is recognized only at the end of body text of ``@file`` nodes.
-No text may follow ``@last`` directives.
-More than one ``@last`` directive may exist.
-For example, here is how a PHP file might be set up::
-
-	@first &lt;?php
-	...
-	@last ?&gt;</t>
-<t tx="ekr.20050829134901.19">The ``@lineending`` directive sets the line endings for individual derived files.
-This directive will override the ``output_newline`` setting.
-The ``@lineending`` *never* affects the line endings in .leo files themselves:
-.leo files must have consistent line endings!
-
-The valid forms of the ``@lineending`` directive are:
-
-======================= ======================================================
-\@lineending nl         The default, Linux.
------------------------ ------------------------------------------------------
-\@lineending cr         Mac
------------------------ ------------------------------------------------------
-\@lineending crlf       Windows
------------------------ ------------------------------------------------------
-\@lineending lf         Same as 'nl', not recommended
------------------------ ------------------------------------------------------
-\@lineending platform   Same as platform value for ``output_newline`` setting.
-======================= ======================================================</t>
-<t tx="ekr.20050829134901.20">The ``@others`` directive refers to the body text of all nodes *except* section definition nodes.
-The ``@others`` directive places the body text of section definition nodes in the derived file in outline order.
-
-An ``@file`` tree may contain more than one ``@others`` directive.
-``@others`` directives that descend from other ``@others`` directives refer only to unnamed nodes that descend from them.
-The ``@others`` directive that occurs highest in the ``@file`` tree refers to all other unnamed nodes.
-
-**Notes**:
-
-- No node may contain more than one ``@others`` directive.
-
-- No section definition node may intervene between an non-section definition node containing body text and
-  an ``@others`` node.
-  In practice this is never a problem.</t>
-<t tx="ekr.20050829134901.21">The ``@path`` directives override the deprecated ``default_tangle_directory`` setting.
-
-The form of the @path directive is ``@path`` *filename*,
-where *filename* is taken to be everything following @path to the end of the line.
-
-If *filename* is an absolute filename the location of the derived file is specified only by the filename.
-Otherwise, if *filename* is a relative filename, the location of the derived file is relative to:
-	
-1. the directory specified the applicable ``@path`` directive, or
-2. the "Default Tangle Directory" in the Settings dialog if no ``@path`` directive is in effect, or
-3. the directory in which the .leo resides if the .leo file has ever been saved.
-
-An error occurs if no absolute path can be computed according to these rules,
-or if *filename* does not exist.</t>
-<t tx="ekr.20050829134901.22">The ``@pagewidth`` directive overrides the ``page_width`` setting.
-The form of the ``@pagewidth`` directive is ``@pagewidth`` *n*,
-where n is a positive integer that indicates the width of tangled pages in columns.
-For example::
-
-    @pagewidth 100
-
-This setting only affects how Leo reformats doc parts, and how the ``Tangle`` command outputs block comments.
-
-</t>
-<t tx="ekr.20050829134901.23">The ``@tabwidth`` directive overrides the ``tab_width`` setting.
-The form of the ``@tabwidth`` directive is ``@tabwidth`` *n*,
-where n is a positive integer that indicates the width of tabs in spaces.
-For example::
-
-    @tabwidth -4
-
-Negative values cause Leo to convert tabs to blanks.</t>
-<t tx="ekr.20050829134901.24">The ``@raw`` and ``@end_raw`` directives are valid only within ``@file`` trees.
-The ``@raw`` directive starts a section of "raw" text.
-The ``@end_raw`` directive ends such a section, as does the end of body text.
-No section references are recognized within raw text,
-and no additional leading whitespace is generated within raw text when writing the derived file.
-</t>
-<t tx="ekr.20050829134901.25">Leo allows you to choose whether body text in ``@root`` trees will start in code mode or doc mode by default.
-``@root-doc`` *filename* and ``@root-code`` *filename* directives
-specify that body text is assumed to start in doc mode or code mode respectively.
-The options (``-doc`` and ``-code``) must follow ``@root`` immediately with no intervening whitespace.
-In effect, ``@root-code`` and ``@root-doc`` are two new directives.
-
-These ``@root`` options override the ``at_root_bodies_start_in_doc_mode`` setting.
-This setting affects only @root trees without options.
-Such "plain" ``@root`` trees are now deprecated,
-which only means that it is better style to use either ``@root-code`` or ``@root-doc``.
-The reason is simple:
-the meaning of plain ``@root`` trees will depend on the ``at_root_bodies_start_in_doc_mode`` setting.
-It's better to be explicit.
-By default, ``at_root_bodies_start_in_doc_mode = 1`` for compatibility for old ``@root`` trees.
-I actually don't think this option is good for much;
-I created it before I created ``@root-doc`` and ``@root-code`` settings,
-and I decided it wouldn't hurt to leave it in.
-Anyway, you now have complete flexibility about how ``@root`` works,
-and in particular you can make ``@root`` work just like ``@file``.</t>
-<t tx="ekr.20050829134901.26">The ``@verbose``, ``@terse``, ``@quiet`` and ``@silent`` directives determine
-how the ``Tangle`` command outputs comments in ``@root`` trees.
-Comments written by the user in code sections are always output.
-These directives control only:
-a) the comments containing doc sections and
-b) sentinel comments that delimit the beginning and end of code sections.
-
-When ``@verbose`` is in effect ``Tangle`` outputs all comments.
-When ``@terse`` is in effect, ``Tangle`` outputs only those comments necessary for ``Untangle`` to work.
-When ``@silent`` is in effect Tangle adds no additional comments.
-The ``@quiet`` directive is like @silent except that it does output leading sentinels as comments.
-Like ``@silent``, ``@quiet`` inhibits untangling. 
-``@verbose`` is the default.
-If more than one of these directives appear in the same body text the "most verbose" of these options will be in effect.</t>
-<t tx="ekr.20050829134901.27">By default, the ``body_pane_wraps`` setting controls whether body text wraps.
-You may override this setting for a particular tree using the ``@wrap`` and ``@nowrap`` directives.
-Only the first ``@wrap`` or ``@nowrap`` directive in a node has any effect.</t>
-<t tx="ekr.20050829134901.28">In the following table all terms in each row are equivalent.
-The spelling in the first column is preferred:
-
-=========== =============== =================
-\@asis      \@file-asis     \@silent
------------ --------------- -----------------
-\@nosent    \@file-nosent   \@nosentinelsfile
------------ --------------- -----------------
-\@noref     \@file-noref    \@rawfile
-=========== =============== =================
-
-You can get any combination of sentinels/no sentinels and references/no references using
-``@file``, ``@nosent``, ``@noref`` and ``@asis`` trees:
-
-+---------+------------+-------------------+
-|         |            | Sections and      |
-| Type    | Sentinels? | @others expanded? |
-+---------+------------+-------------------+
-| @asis   | no         | no                |
-+---------+------------+-------------------+
-| @file   | yes        | yes               |
-+---------+------------+-------------------+
-| @noref  | yes        | no                |
-+---------+------------+-------------------+
-| @nosent | no         | yes               |
-+---------+------------+-------------------+
-
-Leo can not update the outline from changes made from derived files unless those files contain sentinels.
-The primary source for ``@nosent`` and ``@asis`` trees are the outlines from which those files were derived.</t>
-<t tx="ekr.20050829134901.29">In most respects ``@thin`` works just like ``@file``.
-In fact, you can convert from ``@file`` to ``@thin`` simply by opening an outline,
-changing ``@file`` to ``@thin``, and saving the outline.
-
-Here are the differences between ``@file`` and ``@thin``:
-
-- Leo does not save the information contained in the ``@thin`` tree in the .leo file.  
-
-- Files derived from ``@thin`` ("thin" derived files) contain all information needed to
-  recreate the ``@thin`` tree in the outline.
-  In particular, ``@+node`` and ``@-node`` sentinels use timestamps to uniquely identify nodes.
-
-- The ``@all`` directive is valid only in ``@thin`` trees.
-
-- Thin derived files are much more friendly to cvs than files derived from ``@file`` trees.
-  Developers only need to commit thin derived files to cvs.
-
-  The cvs repository contains **reference** .leo files.
-  These reference files should containing nothing but ``@thin`` nodes.
-  Reference files will change only when new derived files get added to the project.
-
-  Developers will use local copies of reference files for their own work.
-  For example, instead of using LeoPyRef.leo directly, I use a copy called ``LeoPy.leo``.
-  My local copy can contain nodes other than ``@thin`` nodes.</t>
-<t tx="ekr.20050829134901.30">Leo writes ``@nosent`` trees just as for ``@thin`` trees,
-but Leo writes no sentinels at all.</t>
-<t tx="ekr.20050829134901.31">The only difference between ``@asis`` and ``@noref`` trees is that files derived from
-``@noref`` contain sentinels while files derived from ``@asis`` do not.
-
-Leo creates files derived from ``@noref`` and ``@asis`` trees by
-writing the body text of all nodes of the tree in outline order.
-Leo writes the body text *as is*, without recognizing section definitions,
-without expanding section references, and without treating directives specially in any way.
-In particular, Leo copies all directives,
-including ``@`` or ``@c`` directives, to the derived file as text.
-
-Leo does recognize the ``@ignore`` directive in the *ancestors* of ``@noref`` or ``@asis`` nodes,
-so you may use the ``@ignore`` directive as usual to prevent Leo from writing ``@noref`` or ``@asis`` trees.
-
-**Notes**:
-
-- When writing ``@noref`` trees,
-  Leo writes only the ``@+leo``, ``@-leo``, ``@+node``, ``@-node``, ``@+body`` and ``@-body`` sentinels.
-
-- Within ``@asis`` trees only, if a headline starts with ``@@``,
-  Leo writes everything in the headline following the ``@@`` just before the corresponding body text.
-
-- Files derived from ``@asis`` trees contain *nothing* not contained in body text (or ``@@`` headlines).
-  In particular, if body text does not end in a newline,
-  the first line from the next node will concatenated to the last line of the preceding node.</t>
-<t tx="ekr.20050829134901.32">This section discusses all aspects of ``@root`` trees.
-You should carefully consider whether the extra flexibility afforded by
-``@root`` trees is worth the extra bother.
-Indeed, ``@file`` trees are much easier to use than ``@root`` trees:
-
-- ``@file`` trees use less markup than ``@root`` trees.
-  In particular, the @others directive is valid only within ``@file`` trees.
-
-- You must explicitly tangle and untangle ``@root`` trees using the ``Tangle`` and ``Untangle`` commands.
-
-However, ``@root`` trees are more flexible than ``@file`` trees:
-
-- Sections may be defined anywhere within ``@root`` trees.
-  Moreover, the ``@unit`` directive expands the scope of section definitions in ``@root`` trees
-  so that a section may be referenced in several ``@root`` trees.
-
-- The meaning of section definitions in ``@root`` trees are independent of their position within the tree.</t>
-<t tx="ekr.20050829134901.33">Just as with ``@file`` trees, ``@root`` trees may contain code parts and doc parts.
-Code parts start with section definition lines (see below) or the ``@c`` directive.
-Doc parts start with ``@`` directive.
-Doc parts continue until the end of body text or until the next ``@c`` or ``@`` directive.
-
-Body text in ``@root`` trees contain zero or more code and doc parts in any order.
-The ``@c`` directive starts a named code section if the node's headline starts with::
-
-    &lt;&lt; section name &gt;&gt;
-
-Otherwise, the ``@c`` directive is invalid.
-
-**Section definition lines** are lines of the form::
-
-	&lt;&lt; section name &gt;&gt;=
-
-(note the equal sign).
-Such lines also start named code parts.
-Named code parts in ``@root`` trees may be defined in several places.
-The definition of a named code part is the concatenation of all code parts with the same name.
-Body text that defines no code part is ignored.
-At least one non-blank line must follow the section definition line;
-empty sections are not allowed.
-
-**Note for pdf version**:
-due to a bug in docutils the phrase 'double-angle-bracket characters' below stands for::
-
-    &lt;&lt; and &gt;&gt;
-
-As in ``@file`` trees, paired double-angle-bracket characters on the same line always denote a section name,
-even within comments are strings.
-Thus,double-angle-bracket characters that do not delimit a section name must be placed on separate lines.
-If double-angle-bracket are not paired on a line, they are treated as ordinary double-angle-bracket characters.
-
-Here is a typical example of body text within an @root tree::
-
-    @ This method puts an open node sentinel for node v.
-    &lt;&lt;atFile methods&gt;&gt;=
-    def putOpenNodeSentinel(self,v):
-        if v.isAtFileNode() and v != self.root:
-            &lt;&lt; issue an error message &gt;&gt;
-        else:
-            s = self.nodeSentinelText(v)
-            self.putSentinel("@+node:" + s)
-
-Provided that the node's headline starts with::
-
-    &lt;&lt; atFile methods &gt;&gt;
-
-the example above is equivalent to::
-
-    @ This method puts an open node sentinel for node v.
-    @c
-    def putOpenNodeSentinel(self,v):
-        if v.isAtFileNode() and v != self.root:
-            &lt;&lt; issue an error message &gt;&gt;
-        else:
-            s = self.nodeSentinelText(v)
-            self.putSentinel("@+node:" + s)
-
-We may not eliminate @c directives in @root trees.
-If we convert the doc part to a comment we are left with::
-
-    @c
-    # This method puts an open node sentinel for node v.
-    def putOpenNodeSentinel(self,v):
-        if v.isAtFileNode() and v != self.root:
-            &lt;&lt; issue an error message &gt;&gt;
-        else:
-            s = self.nodeSentinelText(v)
-            self.putSentinel("@+node:" + s)
-    
-The following escape convention applies only in ``@root`` trees.
-Within a code parts ``@@`` in the first column (and only in the first column) stands for a single ``@`` sign.</t>
-<t tx="ekr.20050829134901.34">Each ``@root`` tree represents a single derived file.
-**Tangling** is the process of creating derived files from ``@file`` or ``@root`` trees.
-Leo tangles ``@file`` trees automatically whenever an outline is saved.
-The user must tangle ``@root`` trees explicitly using one of the ``Tangle`` commands.
-
-Leo creates derived files by expanding all section references in an ``@root`` node.
-Leo expands a section reference by substituting the code section itself for the section reference.
-This is a recursive process:
-the substituted code section may contain other code references which are themselves expanded, and so on.
-
-It is unusual and bad style for the meaning of an ``@root`` tree to depend on the position of nodes within it.
-The meaning of a section definition in an ``@root`` tree usually does not depend on is position,
-and we may place sections wherever we want.
-The outline provides a natural way of organizing an sections as follows::
-
-	Place the definition of a section S in a child of
-	the node containing the reference to S.
-
-If a section is referenced in more than one node,
-I usually place its definition in a node containing all the nodes that refer to it.
-Using this rule of thumb creates an outline whose structure mirrors the intrinsic organization of a program.
-
-The ``Tangle`` command creates derived files from ``@root`` node.
-The ``@root`` directive indicates which sections constitute an output file.
-The text following a @root directive forms the entire content of the file,
-that is, after section references are expanded.
-An outline can contain arbitrarily many ``@root`` directives:
-Leo's ``Tangle`` commands will create one output file for each.
-The process of creating derived files is called "tangling" because
-the code from the outline is rearrange to create the derived files.
-
-For example, the following ``@root`` section shows a typical way of specifying a header file ``xx.h``::
-
-    @root xx.h
-    #ifndef xx_defined
-    #define xx_defined
-    &lt;&lt; declarations of public constants of the xx class &gt;&gt;
-    &lt;&lt; declarations of public types of the xx class &gt;&gt;
-    &lt;&lt; declarations of public variables of the xx class &gt;&gt;
-    &lt;&lt; public prototypes of the xx class &gt;&gt;
-    #endif
-
-The ``Tangle`` commands will create the file ``xx.h`` from this body text by expanding all the section references.
-Incidentally, the introductory documentation will be included in the header file:
-any text preceding the ``@root`` directive is treated just like the documentation part of an section definition.
-
-As another example, the following shows a typical way of specifying the corresponding ``xx.c`` file::
-
-    @root xx.c
-    &lt;&lt; public variables of the xx class &gt;&gt;
-    &lt;&lt; private types of the xx class &gt;&gt;
-    &lt;&lt; private variables of the xx class &gt;&gt;
-    &lt;&lt; private function prototypes of the xx class &gt;&gt;
-    &lt;&lt; methods of the xx class &gt;&gt;
-
-There are three menu commands that tangle an outline: ``Tangle``, ``Tangle All`` and ``Tangle Marked``.
-These commands are identical except for how much of the outline is tangled.
-The ``Tangle`` command tangles only the selected portion of the outline,
-the ``Tangle All`` command tangles the entire outline,
-and the ``Tangle Marked`` command tangles only marked headlines.
-
-The ``@root`` directive has three forms.
-All three forms mean exactly the same thing::
-
-    @root filename
-    @root "filename"
-    @root &lt;filename&gt;
-
-If *filename* is an absolute filename the location of the derived file is specified only by the filename.
-Otherwise, if the ``@root`` node contains a relative filename, the location of the derived file is relative to:
-	
-1. the directory specified by an ``@path`` directive, or
-
-2. the ``default_tangle_directory`` setting if no ``@path`` directive is in effect, or
-
-3. the directory in which the .leo resides if the .leo file has ever been saved.
-
-An error occurs if no absolute path can be computed according to these rules,
-or if the filename or directory does not exist.
-
-The scope of a definition is the tree in which the definition is known.
-By default, ``Tangle`` commands look for section definitions only
-in the suboutline of the ``@root`` node being tangled.
-That is, all sections are assumed to be defined either in the body text of the headline,
-say h, containing the ``@root`` directive, or in the body texts of the descendants of h.
-The ``@unit`` directive explicitly indicates the scope of section definitions.
-When a ``Tangle`` command encounters the ``@unit`` directive it treats the suboutline containing
-the ``@unit`` command as the scope for all enclosed roots.
-This ensures that the group of roots in the subtree use the same section definitions.
-
-For example, suppose we have a tree organized as follows::
-
-	+ @unit
-		+ @root A
-		    sections in A
-		+ @root B
-		    sections in B
-		
-The ``@unit`` directive insures that
-only sections defined in the unit can effect files A and B and
-that all sections definitions in A and B are compatible with each other.
-
-The ``Tangle`` commands ignore any tree containing an ``@ignore`` directive.
-This ensures that trees that contain cloned nodes or other subsidiary information
-do not cause the tangle commands to issue spurious error messages.
-It also ensures that a tree can never contribute a section definition to another part of the outline by mistake.</t>
-<t tx="ekr.20050829134901.35">The ``Untangle``, ``Untangle All`` and ``Untangle Marked`` commands are the
-reverse of the corresponding ``Tangle`` commands.
-They update one or more ``@root`` nodes based on changes made to the corresponding derived files.
-
-For example, suppose you create a new part of the outline and tangle it for the first time.
-When you compile derived files for the first you are likely to get many syntax errors.
-You could fix those errors in the outline and tangle the outline again, but there is a much easier way:
-you fix the errors in the derived files using the compiler's editor,
-then run the untangle command on the part of the outline that created the derived file.
-The ``Untangle`` command updates the selected outline to match the changes in the derived files.
-It's as simple as that.
-By the way, the ``Untangle`` command marks all the nodes in the outline that it updates,
-and you can examine all such nodes with the ``Go To Next Marked`` command in the ``Outline`` menu.
-
-You cannot use ``Untangle`` to update doc parts, or leading comments in code parts or
-"trivial" whitespace in code parts.
-This is a limitation of the ``Untangle`` command that cannot be fixed;
-``Untangle`` has no way of knowing whether leading comments came from doc parts or are just leading comments.
-
-``Untangle`` never changes the structure of an outline;
-it never inserts, deletes or moves nodes.
-Don't attempt to change the structure of an outline by modifying derived files; it won't work.
-Also, never delete, move or alter the sentinel lines in derived files written by the ``Tangle`` command.
-Such lines start with the comment delimiter followed by a section name.
-
-If you change the section name in a sentinel line ``Untangle`` will not update the code in the outline
-(with the old name) that generated the renamed section.
-``Untangle`` warns about sections that appear in a derived file but not in the outline.
-``Untangle`` has no trouble with changed section references in derived files;
-it is only changed sentinel lines that cause problems.
-
-Cloned nodes that generate code in several files may cause problems for ``Untangle``.
-If ``Untangle`` is run separately on these derived files,
-``Untangle`` will update all cloned nodes each time it is run,
-so only the code in the last Untangle run will take effect.
-Therefore, the safe way to update text in cloned nodes is to make the change in the .leo file rather than the derived files.</t>
-<t tx="ekr.20050829134901.36">Cweb mode refers to how Leo tangles an outline when ``@language cweb`` is in effect or
-the ``cweb`` setting is in effect.
-Leo treats *all* cweb code in cweb mode as unevaluated text.
-That is, Leo treats cweb control codes, including::
-
-    @&lt;...@&gt;
-    @&lt;..@&gt;=
-    @c
-    @
-    @*
-    @
-
-as "raw" text within cweb mode.
-
-Leo does *not* expand *cweb* section references when writing derived files in cweb mode.
-However, Leo *does* expand *noweb* section references,
-so you may use noweb sections to organize cweb files!
-You can create *noweb* code and doc sections using the ``@code`` and ``@doc`` directives
-in place of ``@c`` and ``@`` directives.
-
-By default, cweb colors ``@``, ``@*`` and ``@**`` sections using the same syntax coloring as for ``LaTeX``.
-In addition, cweb colors ``C`` ``//`` and ``/*..*/`` comments using ``LaTeX`` coloring by default.
-You may change these defaults using the
-``color_cweb_doc_parts_with_latex`` and ``color_cweb_comments_with_latex`` settings.</t>
-<t tx="ekr.20050829134901.37">------------------
-
-|back| |leo| |next|</t>
-<t tx="ekr.20050829140911">Cweb mode refers to how Leo tangles an outline when ``@language cweb`` is in effect or
-the ``cweb`` setting is in effect.
-Leo treats *all* cweb code in cweb mode as unevaluated text.
-That is, Leo treats cweb control codes, including:
-``@&lt;...@&gt;``, ``@&lt;..@&gt;=``, ``@c``, ``@``, ``@*`` and ``@**`` as "raw" text within cweb mode.
-Leo does *not* expand *cweb* section references when writing derived files in cweb mode.
-However, Leo *does* expand *noweb* section references,
-so you may use noweb sections to organize cweb files!
-You can create *noweb* code and doc sections using the ``@code`` and ``@doc`` directives
-in place of ``@c`` and ``@`` directives.
-
-By default, cweb colors ``@``, ``@*`` and ``@**`` sections using the same syntax coloring as for ``LaTeX``.
-In addition, cweb colors ``C`` ``//`` and ``/*..*/`` comments using ``LaTeX`` coloring by default.
-You may change these defaults using the
-``color_cweb_doc_parts_with_latex`` and ``color_cweb_comments_with_latex`` settings.</t>
 <t tx="ekr.20050830074716">@ @rst-options
 code_mode=False
 generate_rst=True
@@ -13131,8 +11544,6 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 verbose=True
 @c
-
-.. |prev| |leo| |next|
 
 ###################################
 What People Are Saying About Leo
@@ -13462,20 +11873,7 @@ the same Leo node for LaTeX to process.
 
 .. _quotes:         testimonials.html
 .. _toc:            leo_TOC.html
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |leo|  image:: leo.gif
-	:target: preface.html
-
-.. |prev| image:: arrow_lt.gif
-	:target: preface.html
-
-.. |next| image:: arrow_rt.gif
-    :target: FAQ.html</t>
-<t tx="ekr.20050830080545">--------------------
-
-|prev| |leo| |next|</t>
+</t>
 <t tx="ekr.20050830115714">@ @rst-options
 code_mode=False
 generate_rst=True
@@ -13489,8 +11887,6 @@ verbose=True
 @c
 
 .. August 30, 2005
-
-.. |back| |leo| |next|
 
 ####
 FAQ
@@ -13907,12 +12303,12 @@ problem. There are several workarounds:
 1.  The crashes I have seen arise from the following bug in docutils.
     **Hyperlinks in image:: markup must be lower case**.  This will work::
 
-        .. |back| image:: arrow_lt.gif
+        .. .. |back| image:: arrow_lt.gif
             :target: faq_
 
     This will **crash**::
 
-        .. |back| image:: arrow_lt.gif
+        .. .. |back| image:: arrow_lt.gif
             :target: FAQ_
 
     So avoid this crash by making sure to use lower case targets in ``:target:`` markup.
@@ -14086,17 +12482,7 @@ Flash file gets mapped to an &lt;embed&gt; tag, etc).</t>
 .. _settings:               glossary.html#settings
 .. _tangle:                 glossary.html#tangle
 .. _untangle:               glossary.html#untangle
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-	:target: testimonials.html
-
-.. |leo|  image:: leo.gif
-	:target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: install.html</t>
+</t>
 <t tx="ekr.20050830120844">``c.frame.menu.createMenuItemsFromTable`` will append items to the end of an existing menu.
 For example, the following script will add a new item at the end of the 'File' menu::
 
@@ -14158,9 +12544,7 @@ The benefits of the new workflow:
 <t tx="ekr.20050831195331.1">@language rest</t>
 <t tx="ekr.20050831195331.2">@language rest</t>
 <t tx="ekr.20050831195331.3">@language rest</t>
-<t tx="ekr.20050831195331.4">@nocolor
-
-@language rest</t>
+<t tx="ekr.20050831195331.4">@language rest</t>
 <t tx="ekr.20050831195449">@nocolor
 
 For instruction about installing Leo see:
@@ -14183,10 +12567,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. August 30, 2005
-
-.. |back| |leo| |next|
-
 ############
 Appendices
 ############
@@ -14194,23 +12574,11 @@ Appendices
 .. contents::
 </t>
 <t tx="ekr.20050831232205">.. Relative links.
-
 .. _`Chapter 13: Writing plugins`:   writingPlugins.html
 
 .. References to the glossary.
-
 .. _`sentinel lines`:             glossary.html#sentinel-lines
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-	:target: atShadow.html
-
-.. |next| image:: arrow_rt.gif
-	:target: glossary.html
-
-.. |leo|   image:: leo.gif
-	:target: front.html</t>
+</t>
 <t tx="ekr.20050901054622">c.save()</t>
 <t tx="ekr.20050901055150">@color
 # Script to promote headlines and body text
@@ -14256,10 +12624,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. August 30, 2005
-
-.. |prev| |leo| |next|
-
 ############
 Glossary
 ############
@@ -14298,22 +12662,7 @@ Glossary
 .. _`leo directives`:               intro.html#leo-directives
 .. _`quick start for programmers`:  intro.html#quick-start-for-programmers
 .. _`sentinels lines`:              intro.html#sentinel-lines
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |prev| image:: arrow_lt.gif
-	:target: appendices.html
-
-.. |leo|  image:: leo.gif
-	:target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: new-4-6.html
-
 </t>
-<t tx="ekr.20050901071613">----------------------
-
-|back| |leo| |next|</t>
 <t tx="ekr.20050901073048">**Important**: We often refer to outline_ nodes_ by the directives_ they contain.
 For example, an `@root node`_ is a node containing an @root directive_, etc.
 **Exception**: An `@file node`_ is a node whose *headline* starts with ``@file``.
@@ -14800,9 +13149,6 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
     Leo does not support weaving directly.
     To weave a file you can create noweb_ or CWEB_ files using Leo's ``Export`` commands,
     then use the noweb_ or CWEB_ systems to weave those files.</t>
-<t tx="ekr.20050901083017">-----------------------
-
-|prev| |leo| |next|</t>
 <t tx="ekr.20050901084134">@language rest</t>
 <t tx="ekr.20050901092232">@ @rst-options
 code_mode=False
@@ -14816,10 +13162,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. February, 2006
-
-.. |back| |leo| |next|
-
 ##########################
 Chapter 11: White Papers
 ##########################
@@ -14831,28 +13173,15 @@ I wrote the third in November 2004, and rewrote it in February 2006.
 .. contents::
 </t>
 <t tx="ekr.20050901092232.1">.. External links...
-
 .. _pychecker:              http://pychecker.sourceforge.net/
 .. _`region inference`:     http://en.wikipedia.org/wiki/Region_inference
 
 .. Relative links...
-
 .. _chapter10:              theory.html
 .. _appendices:             appendices.html
 .. _`Rst3 plugin`:          rstplugin3.html
 .. _`Scripting plugin`:     plugins.html#mod-scripting
 .. _`test buttons`:         scripting.html#test-and-suite-nodes
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: theory.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: plugins.html
 </t>
 <t tx="ekr.20050901092232.2">What struck me first as I converted C++ code to Python is how much less blah,
 blah, blah there is in Python. No braces, no stupid semicolons and most
@@ -14930,9 +13259,6 @@ Edward K. Ream, October 25, 2001.  P.S., September, 2005:
 
 Four years of experience have only added to my admiration for Python. Leo could
 not possibly be what it is today without Python.</t>
-<t tx="ekr.20050901092232.7">-----------------------
-
-|back| |leo| |next|</t>
 <t tx="ekr.20050901101608">@ @rst-options
 code_mode=False
 generate_rst=True
@@ -14945,8 +13271,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |back| |leo| |next|
-
 ##########################################
 Chapter 3: Using Outlines
 ##########################################
@@ -14957,18 +13281,6 @@ This chapter tells how to use Leo's outlines.
 <t tx="ekr.20050901101608.1">.. _`Chapter 2\: A Tutorial Introduction to Leo`:   intro.html
 .. _`Chapter 4\: Writing Programs in Leo`:          directives.html
 .. _`Clones and views`:                             intro.html#clones-views
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: intro.html 
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: directives.html
-
 </t>
 <t tx="ekr.20050901101608.2">@ @rst-options
 code_mode=False
@@ -14981,8 +13293,6 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 verbose=True
 @c
-
-.. |back| |leo| |next|
 
 ##########################################
 Chapter 5: Using Leo's Commands
@@ -15005,8 +13315,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |back| |leo| |next|
-
 ##########################################
 Chapter 6: Leo and Literate Programming
 ##########################################
@@ -15025,8 +13333,6 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 verbose=True
 @c
-
-.. |back| |leo| |next|
 
 #############################################
 Chapter 8: Customizing Leo
@@ -15048,8 +13354,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |back| |leo| |next|
-
 ##########################################
 Chapter 9: History of Leo
 ##########################################
@@ -15070,8 +13374,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |back| |leo| |next|
-
 ##########################################
 Chapter 10: Theory of Operation
 ##########################################
@@ -15082,33 +13384,18 @@ This chapter will be of use primarily to those wanting to change Leo's code.
 
 .. contents::</t>
 <t tx="ekr.20050901101852">.. External links...
-
 .. _CWEB:       http://www-cs-faculty.stanford.edu/~knuth/cweb.html
 .. _noweb:      http://www.eecs.harvard.edu/~nr/noweb/
 
 .. Relative links...
-
 .. _`Chapter 4\: Writing Programs in Leo`:              directives.html
 .. _`Chapter 6\: Leo and Literate Programming`:         design.html
 .. _`Chapter 8: Customizing Leo`:                       customizing.html
-
 .. _`Clones and views`:                                 intro.html#clones-views
 .. _`Creating script buttons`:                          scripting.html#creating-script-buttons
 .. _`Tangling @root trees with the Tangle commands`:    directives.html#tangling-root-trees-with-the-tangle-commands
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: directives.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: design.html
 </t>
 <t tx="ekr.20050901101949">.. Relative links...
-
 .. _`Chapter 5\: Using Leo's Commands`:             commands.html
 .. _`Chapter 7\: Scripting Leo with Python`:        scripting.html
 .. _`Clones &amp; views`:                               intro.html#clones-views
@@ -15137,40 +13424,16 @@ This chapter will be of use primarily to those wanting to change Leo's code.
 .. _tangling:               glossary.html#tangling
 .. _tree:                   glossary.html#tree
 .. _untangling:             glossary.html#untangling
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: commands.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: scripting.html
 </t>
 <t tx="ekr.20050901102055">.. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
 .. _`Chapter 9\: History of Leo`:               history.html
 .. _`rst3 plugin`:                              glossary.html#rst3-plugin
 .. _`Specifying settings`:                      commands.html#specifying-settings
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: scripting.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: history.html
 </t>
 <t tx="ekr.20050901102147">.. Relative links...
-
 .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
 .. _`Chapter 8\: Customizing Leo`:              customizing.html
 .. _`Chapter 10\: Theory of Operation`:         theory.html
-
 .. _`Chapter 15\: Controlling Syntax Coloring`:     coloring.html
 .. _`Chapter 16\: Debugging with Leo`:              debuggers.html
 .. _`Chapter 17\: Using ZODB with Leo`:             zodb.html
@@ -15178,74 +13441,20 @@ This chapter will be of use primarily to those wanting to change Leo's code.
 .. _`Chapter 19\: Embedding Leo with the leoBridge Module`: leoBridge.html
 .. _`Chapter 20\: Unit testing with Leo`:           unitTesting.html
 .. _`Chapter 21\: ILeo - the IPython bridge`:       IPythonBridge.html
+
 .. Absolute links..
-
 .. _OPML:   http://en.wikipedia.org/wiki/OPML
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: customizing.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: theory.html
 </t>
 <t tx="ekr.20050901102300">.. _`Chapter 9\: History of Leo`:   history.html
 .. _`Chapter 11\: White Papers`:    whitepapers.html
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: history.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: whitepapers.html</t>
-<t tx="ekr.20050901102400">-------------
-
-|back| |leo| |next|</t>
-<t tx="ekr.20050901102400.1">-------------
-
-|back| |leo| |next|</t>
-<t tx="ekr.20050901102400.2">-------------
-
-|back| |leo| |next|</t>
-<t tx="ekr.20050901102400.3">-------------
-
-|back| |leo| |next|</t>
-<t tx="ekr.20050901102400.4">-------------
-
-|back| |leo| |next|</t>
-<t tx="ekr.20050901102400.5">-------------
-
-|back| |leo| |next|</t>
-<t tx="ekr.20050901102400.6">-------------
-
-|back| |leo| |next|</t>
+</t>
 <t tx="ekr.20050901110110">.. Links used in this document...
-
 .. _`Pmw`:                  http://pmw.sourceforge.net/
 .. _run:                    `Running Leo`_
 .. _`run Leo`:              `Running Leo`_
 .. _`Leo's download page`:  http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
 .. _`associated .leo files with Leo`:   `How to associate Leo with .leo files on Windows`_
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: FAQ.html
-
-.. |leo|   image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: intro.html</t>
+</t>
 <t tx="ekr.20050901121617">@color
 
 # Puts each sentence on a separate line
@@ -15878,9 +14087,6 @@ script calls the `rst3 plugin`_ to format it. I don't have to select the actual
     for every node whose headline starts with ``@button scriptName``.
     **Warning**: this is indeed a security risk of the kind discussed later.
     This feature can be disabled by setting ``atButtonNodes = True`` at the start of ``mod_scripting.py``.</t>
-<t tx="ekr.20050903174637">There are many problems with pdf at present.
-
-@ignore</t>
 <t tx="ekr.20050906090012">Leo (and other programs) often send more detailed error messages to ``stderr``,
 the output stream that goes to the console window. In Linux and MacOS
 environments, python programs normally execute with the console window visible.
@@ -15984,12 +14190,6 @@ test.leo had some non-@ignore'd @thin nodes for files not in the distribution.
     - Added blank after multi-line string if needed.
 - Added lastName token for special-case handling depending on previous token.
 - No change to put, putArray or doName.</t>
-<t tx="ekr.20050906105335">-------------
-
-|back| |leo| |next|</t>
-<t tx="ekr.20050906105946">-------------
-
-|back| |leo| |next|</t>
 <t tx="ekr.20050907094633">Any .leo file may contain an ``@settings`` tree, so settings may be different for each commander.
 Plugins and other scripts can get the value of settings as follows::
 
@@ -16106,10 +14306,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. August 30, 2005
-
-.. |back| |leo| |next|
-
 ##########################
 Chapter 12: Plugins
 ##########################
@@ -16126,29 +14322,16 @@ instantly hooked.
 .. contents::
 </t>
 <t tx="ekr.20050912125735">.. External links...
-
 .. _docutils:             http://docutils.sourceforge.net
 .. _LaTeX:                http://www.latex-project.org/
 .. _reStructuredText:     http://docutils.sourceforge.net/rst.html
 .. _SilverCity:           http://silvercity.sourceforge.net
 
 .. Relative links...
-
 .. _`Specifying settings`:              customizer.html#specifying-settings
 .. _`Chapter 8\: Customizing Leo`:      customizing.html
 .. _`Chapter 13\: Writing Plugins`:     writingPlugins.html
 .. _`Creating script buttons`:          scripting.html#creating-script-buttons
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: whitepapers.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: writingPlugins.html
 </t>
 <t tx="ekr.20050912125735.26"></t>
 <t tx="ekr.20050912125735.28">This plugin adds a menu item under the File-&gt;Import menu to import
@@ -17068,9 +15251,6 @@ Notes:
   None converts the @rst tree to a single reStructuredText string, as shown in @button rst-&gt;rst.
 
 - There is some support for ext='.pdf', but this is experimental code.  Expect crashes.</t>
-<t tx="ekr.20050912133515">-----------------------
-
-|back| |leo| |next|</t>
 <t tx="ekr.20050913131848">Leo 4.3.2 final                 September 16, 2005
 
 To learn about Leo, see: http://webpages.charter.net/edreamleo/intro.html
@@ -18136,29 +16316,13 @@ verbose=True
 @c
 
 ###########################
-|leo| Using JythonShell
+Using JythonShell
 ###########################
 
 This chapter describes how to use the Jython Shell created by LeoUser.
 
 .. contents::</t>
-<t tx="ekr.20051203084850.1">.. rST links used in this document...
-
-.. External links...
-
-.. Hard links to Leo's web site...
-
-.. WARNING: image targets may not have upper case letters!
-
-.. _front:  front.html
-
-.. |blank| image:: blank.gif
-.. |leo|   image:: leo.gif
-    :target: front_
-</t>
-<t tx="ekr.20051203084850.16">-------------
-
-|leo|</t>
+<t tx="ekr.20051203084850.1">.. rST links used in this document...</t>
 <t tx="ekr.20051203085709">
 
 
@@ -20412,10 +18576,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. July, 2006
-
-.. |back| |leo| |next|
-
 #########################################
 Chapter 15: Controlling Syntax Coloring
 #########################################
@@ -20436,29 +18596,13 @@ in this chapter.
 .. contents::
 </t>
 <t tx="ekr.20060430222753">.. External links...
-
 .. _jEdit:                      http://www.jedit.org/
 .. _`jEdit's documentation`:    http://www.jedit.org/42docs/users-guide/writing-modes-part.html
 
 .. Relative links...
-
 .. _`Ruleset name`:      `Ruleset names`_
 .. _`Chapter 8`:           customizing.html
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: rstplugin3.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: debuggers.html
 </t>
-<t tx="ekr.20060430223116">-----------------------
-
-|back| |leo| |next|</t>
 <t tx="ekr.20060502084233">When Leo's syntax colorer sees the ``'@language x'`` directive,
 it will import ``x.py`` from Leo's ``modes`` folder.
 The colorer can then access any module-level object ``obj`` in ``x.py`` as ``x.obj``.
@@ -21141,10 +19285,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. May 27, 2006
-
-.. |back| |leo| |next|
-
 #######################################
 Chapter 16: Debugging with Leo
 #######################################
@@ -21157,27 +19297,14 @@ general scripts do not.
 .. contents::
 </t>
 <t tx="ekr.20060527105804">.. External links...
-
 .. _Idle:                       http://www.python.org/idle/
 .. _pdb:                        http://docs.python.org/lib/module-pdb.html
 .. _winpdb:                     http://www.digitalpeers.com/pythondebugger/
-
 .. _`the FAQ`:                  http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-use-python-s-pdb-debugger-with-leo
 .. _`running Leo in a console`: http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-run-leo-from-a-console-window
 .. _`embedded winpdb`:          http://www.digitalpeers.com/pythondebugger/embedded.htm
 .. _`Leo's forums`:             http://sourceforge.net/forum/?group_id=3458
 .. _`work flow`:                http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: coloring.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: zodb.html
 </t>
 <t tx="ekr.20060527112801">The following settings in leoSettings.leo control debugger operation.
 The settings shown here will be assumed to be in effect throughout this chapter.
@@ -21316,9 +19443,6 @@ you to make Leo work exactly as before if you want.</t>
 <t tx="ekr.20060601101958.277"></t>
 <t tx="ekr.20060601102802"></t>
 <t tx="ekr.20060601102802.2"></t>
-<t tx="ekr.20060601104756">-----------------------
-
-|back| |leo| |next|</t>
 <t tx="ekr.20060601112502">This plugin puts two buttons in the icon area.
 The 'Save Hoist' button hoists the presently selected node and creates a button
 which can later rehoist the same node.
@@ -21415,39 +19539,21 @@ verbose=True
 
 # Note the use of @ @rst-markup and @ @rst-options throughout this tree to control doc_mode_only mode.
 
-.. |back| |leo| |next|
-
 @ @rst-markup
 
 #####################################
 Documentation for leoFind.py
 #####################################
 
-@c
-
-</t>
+@c</t>
 <t tx="ekr.20060608111953.1">.. External links...
-
 .. _`CWEB`:     http://www-cs-faculty.stanford.edu/~knuth/cweb.html
 .. _`noweb`:    http://www.eecs.harvard.edu/~nr/noweb/
 
 .. Relative links...
-
 .. _front:      front.html
 .. _`Leo's tutorial`:       intro.html
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: outlines.html
-
-.. |next| image:: arrow_rt.gif
-    :target: commands.html
-
-.. |blank| image:: blank.gif
-
-.. |leo|   image:: leo.gif
-    :target: front.html</t>
+</t>
 <t tx="ekr.20060608111953.2">@language python
 @tabwidth -4
 @pagewidth 80
@@ -22469,9 +20575,6 @@ def oops(self):
         
 def update_ivars(self):
     self.oops()</t>
-<t tx="ekr.20060608111953.60">------------------
-
-|back| |leo| |next|</t>
 <t tx="ekr.20060612102055">@language rest</t>
 <t tx="ekr.20060612103240">.. June 8, 2006
 
@@ -22489,8 +20592,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |back| |leo| |next|
-
 ####################################
 Chapter 13: Writing Plugins
 ####################################
@@ -22498,33 +20599,16 @@ Chapter 13: Writing Plugins
 .. contents::
 </t>
 <t tx="ekr.20060612103824">.. External links...
-
 .. _docutils:             http://docutils.sourceforge.net
 .. _LaTeX:                http://www.latex-project.org/
 .. _reStructuredText:     http://docutils.sourceforge.net/rst.html
 .. _SilverCity:           http://silvercity.sourceforge.net
 
-
 .. Relative links...
-
 .. _`Event handlers`:                           scripting.html#event-handlers
 .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
 .. _`Chapter 8\: Customizing Leo`:              customizing.html
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: plugins.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: rstplugin3.html
 </t>
-<t tx="ekr.20060612104638">-----------------------
-
-|back| |leo| |next|</t>
 <t tx="ekr.20060613062025.1">These commands are for debugging Leo itself::
 
     collect-garbage
@@ -23056,8 +21140,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |prev| |leo| |next|
-
 ##########################################
 What's New in Leo 4.4
 ##########################################
@@ -23380,8 +21462,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |prev| |leo| |next|
-
 ##########################################
 What's New in Leo 4.4.1
 ##########################################
@@ -23648,36 +21728,9 @@ Plugins--&gt; Templates: these show recommended ways of defining plugins.--&gt;T
 That's all.  You can find the completed version of the print_cp plugin in leoPlugins.leo,
 or leoPluginsRef.leo if you are using cvs.</t>
 <t tx="ekr.20060621132338">.. Links used in this document.
-
-.. WARNING: image targets may not have upper case letters!   
-
-.. |prev| image:: arrow_lt.gif
-	:target: new-4-4-1.html
-
-.. |leo|  image:: leo.gif
-	:target: front.html
-
-.. |next| image:: Blank.gif
 </t>
 <t tx="ekr.20060621132547">.. Links used in this document.
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |prev| image:: arrow_lt.gif
-	:target: new-4-4-2.html
-
-.. |leo|  image:: leo.gif
-	:target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: new-4-4.html
 </t>
-<t tx="ekr.20060621132923">-----------------------
-
-|prev| |leo| |next|</t>
-<t tx="ekr.20060621132923.1">-----------------------
-
-|prev| |leo| |next|</t>
 <t tx="ekr.20060622130553">
 http://sourceforge.net/forum/message.php?msg_id=3784292
 
@@ -24073,10 +22126,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. September 13, 2006
-
-.. |back| |leo| |next|
-
 #######################################
 Chapter 17: Using ZODB with Leo
 #######################################
@@ -24086,24 +22135,9 @@ This chapter discusses how to write Leo scripts that store and retrieve data usi
 .. contents::
 </t>
 <t tx="ekr.20060913164311">.. External links...
-
 .. _ZODB:               http://www.zope.org/Wikis/ZODB/guide/zodb.html
 .. _`Installing ZODB`:  http://www.zope.org/Wikis/ZODB/guide/node3.html#SECTION000310000000000000000
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: debuggers.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: emacs.html
 </t>
-<t tx="ekr.20060913164729">-----------------------
-
-|back| |leo| |next|</t>
 <t tx="ekr.20060913165542.1"></t>
 <t tx="ekr.20060913165542.2">This function inits the zodb.
 pathToZodbStorage is the full path to the zodb storage file.
@@ -24554,8 +22588,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |prev| |leo| |next|
-
 ##########################################
 What's New in Leo 4.4.2
 ##########################################
@@ -24565,22 +22597,9 @@ For full details see the release notes section in LeoDocs.leo.
 
 .. contents::</t>
 <t tx="ekr.20060928172457.2">.. Links used in this document.
-
-.. _Emacs:      http://www.xemacs.org/
-.. _pymacs:     http://pymacs.progiciels-bpi.ca/index.html
-
+.. _Emacs:                          http://www.xemacs.org/
+.. _pymacs:                         http://pymacs.progiciels-bpi.ca/index.html
 .. _`Chapter 18: Leo and Emacs`:    emacs.html
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |prev| image:: arrow_lt.gif
-	:target: new-4-4-3.html
-
-.. |leo|  image:: leo.gif
-	:target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: new-4-4-1.html
 </t>
 <t tx="ekr.20060928172457.4">- Added support for controlling Leo from Emacs_ with pymacs_.
   See `Chapter 18: Leo and Emacs`_ for full details.
@@ -24647,9 +22666,6 @@ Improved the mod_scripting plugin:
 - Made showing the Run Script button optional.
 - The Script Button button now creates the press-script-button-button command.
 - A new utility method does a much better job of massaging button and command names.</t>
-<t tx="ekr.20060928172457.8">-----------------------
-
-|prev| |leo| |next|</t>
 <t tx="ekr.20060928172525.81">What I did:
     
 - Removed c argument from t, v and p ctors.
@@ -25465,10 +23481,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. September 13, 2006
-
-.. |back| |leo| |next|
-
 #######################################
 Chapter 18: Leo and Emacs
 #######################################
@@ -25478,29 +23490,13 @@ This chapter several topics relating to the Emacs editor.
 .. contents::
 </t>
 <t tx="ekr.20061025065357.2">.. Links
-
 .. _elisp:              http://en.wikipedia.org/wiki/Emacs_Lisp
 .. _Emacs:              http://www.xemacs.org/
 .. _ZODB:               http://www.zope.org/Wikis/ZODB/guide/zodb.html
 .. _`Installing ZODB`:  http://www.zope.org/Wikis/ZODB/guide/node3.html#SECTION000310000000000000000
 .. _pymacs:             http://pymacs.progiciels-bpi.ca/index.html
-
 .. _`Chapter 8: Customizing Leo`:   customizing.html
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: zodb.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: leoBridge.html
 </t>
-<t tx="ekr.20061025065357.12">-----------------------
-
-|back| |leo| |next|</t>
 <t tx="ekr.20061025070825.1">The leoPymacs module is intended to be called from Emacs using pymacs.  It contains the following top-level functions:
     
 - get_app()
@@ -26377,10 +24373,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. March 17, 2007
-
-.. |back| |leo| |next|
-
 ############################################################
 Chapter 19: Embedding Leo with the leoBridge module
 ############################################################
@@ -26396,17 +24388,6 @@ Using the leoBridge module, host programs can get access to:
 .. contents::
 </t>
 <t tx="ekr.20070317033759.2">.. Links
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: emacs.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: unitTesting.html
 </t>
 <t tx="ekr.20070317033759.3">Host programs use the leoBridge module as follows::
 
@@ -26496,9 +24477,6 @@ Here it is, stripped of its sentinel lines::
     if __name__ == '__main__':
         main()
 </t>
-<t tx="ekr.20070317033759.6">-----------------------
-
-|back| |leo| |next|</t>
 <t tx="ekr.20070317043727">Organizer nodes have headlines that do no start with @.
 Organizer nodes may be inserted freely without changing the meaning of an @setting tree.</t>
 <t tx="ekr.20070317043727.2">Simple settings nodes have headlines of the form::
@@ -26685,8 +24663,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |prev| |leo| |next|
-
 ##########################################
 What's New in Leo 4.4.3
 ##########################################
@@ -26705,25 +24681,9 @@ The highlights of Leo 4.4.3:
 
 .. contents::</t>
 <t tx="ekr.20070513113931.1">.. Links used in this document.
-
 .. _`leoBridge chapter`:    leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
-
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |prev| image:: arrow_lt.gif
-	:target: new-4-4-4.html
-
-.. |leo|  image:: leo.gif
-	:target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: new-4-4-2.html
 </t>
-<t tx="ekr.20070513113931.9">-----------------------
-
-|prev| |leo| |next|</t>
 <t tx="ekr.20070513115832.1">::
 
     apropos-debugging-commands
@@ -27306,10 +25266,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. June, 2007
-
-.. |back| |leo| |next|
-
 ############################################################
 Chapter 20: Unit testing with Leo
 ############################################################
@@ -27319,21 +25275,7 @@ This chapter describes how you can execute Python unit test from within Leo outl
 .. contents::
     </t>
 <t tx="ekr.20070628083442.2">.. Links
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: leoBridge.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: IPythonBridge.html
 </t>
-<t tx="ekr.20070628083442.4">-----------------------
-
-|back| |leo| |next|</t>
 <t tx="ekr.20070628084351">**@test nodes** are nodes whose headlines start with @test. The unit test
 commands convert the body text of @test nodes into a unit test automatically.
 That is, Leo's unit test commands automatically create a unittest.TestCase
@@ -27591,16 +25533,11 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |prev| |leo| |next|
-
 ############
 Preface
 ############
-
-
 </t>
 <t tx="ekr.20070701101809.1">.. links...
-
 .. _`SourceForge`:      http://sourceforge.net/projects/leo/
 .. _`noweb`:            http://www.eecs.harvard.edu/~nr/noweb/
 .. _reStructuredText:   http://docutils.sourceforge.net/rst.html
@@ -27614,20 +25551,7 @@ Preface
 .. _`derived files`:     intro.html#derived-files
 
 .. _`Chapter 14\: Using the Rst3 Plugin`:           rstplugin3.html
-
-.. WARNING: image targets may not have upper case letters!     
-
-.. |leo|  image:: leo.gif
-	:target: front.html
-
-.. |prev| image:: arrow_lt.gif
-	:target: leo_TOC.html
-
-.. |next| image:: arrow_rt.gif
-    :target: testimonials.html</t>
-<t tx="ekr.20070701101809.7">----------------
-
-|prev| |leo| |next|</t>
+</t>
 <t tx="ekr.20070702162421">Leo 4.4.3.1                                 July 3, 2006
 
 Leo 4.4.3.1 is available at:
@@ -28031,8 +25955,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |prev| |leo| |next|
-
 ##########################################
 What's New in Leo 4.4.4
 ##########################################
@@ -28065,21 +25987,8 @@ The highlights of Leo 4.4.4:
     
 .. contents::</t>
 <t tx="ekr.20070809145744.2">.. Links used in this document.
-
 .. _`leoBridge chapter`:    leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
-
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |prev| image:: arrow_lt.gif
-	:target: new-4-4-5.html
-
-.. |leo|  image:: leo.gif
-	:target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: new-4-4-3.html
 </t>
 <t tx="ekr.20070809145744.3"></t>
 <t tx="ekr.20070809145744.4">::
@@ -28132,9 +26041,6 @@ The highlights of Leo 4.4.4:
 
 - Added @bool big_outline_pane setting. False (legacy): Top pane contains outline and log panes.
   True: Top pane contains only the outline pane.  Bottom pane contains body and log panes.</t>
-<t tx="ekr.20070809145744.8">-----------------------
-
-|prev| |leo| |next|</t>
 <t tx="ekr.20070814090306">@auto trees allow people to use Leo in collaborative environments without using
 sentinels in the files Leo generates. In contrast to @nosent, @auto trees can
 change when the corresponding file changes outside of Leo.
@@ -29308,8 +27214,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |prev| |leo| |next|
-
 ##########################################
 What's New in Leo 4.4.5
 ##########################################
@@ -29326,21 +27230,8 @@ The highlights of Leo 4.4.5:
     
 .. contents::</t>
 <t tx="ekr.20071116062917.2">.. Links used in this document.
-
 .. _`leoBridge chapter`:    leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
-
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |prev| image:: arrow_lt.gif
-	:target: new-4-4-6.html
-
-.. |leo|  image:: leo.gif
-	:target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: new-4-4-4.html
 </t>
 <t tx="ekr.20071116062917.3">- Leo now supports all directives in headlines.
 
@@ -29361,9 +27252,6 @@ The highlights of Leo 4.4.5:
     sort-lines-ignoring-case
     toggle-collapse_nodes_during_finds
 </t>
-<t tx="ekr.20071116062917.19">-----------------------
-
-|prev| |leo| |next|</t>
 <t tx="ekr.20071116063202">- Fixed hung (zombie) windows.
   http://sourceforge.net/forum/message.php?msg_id=3768494
   
@@ -29687,8 +27575,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |prev| |leo| |next|
-
 ##########################################
 What's New in Leo 4.4.6
 ##########################################
@@ -29697,21 +27583,8 @@ Leo 4.4.6 fixes all known bugs and adds a few new features.
     
 .. contents::</t>
 <t tx="ekr.20071217093444.2">.. Links used in this document.
-
 .. _`leoBridge chapter`:    leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
-
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |prev| image:: arrow_lt.gif
-	:target: new-4-4-8.html
-
-.. |leo|  image:: leo.gif
-	:target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: new-4-4-5.html
 </t>
 <t tx="ekr.20071217093444.5">::
 
@@ -29723,9 +27596,6 @@ Replaced the delete-all-icons command with a script in scripts.leo.  This comman
 
 - The @data import_xml_tags setting specifies the xml tags that act as organizers.
   This settings is used by @auto when importing xml files.</t>
-<t tx="ekr.20071217093444.7">-----------------------
-
-|prev| |leo| |next|</t>
 <t tx="ekr.20080106114203.1">http://sourceforge.net/forum/message.php?msg_id=4682598
 </t>
 <t tx="ekr.20080106114203.2">http://sourceforge.net/forum/message.php?msg_id=4681175
@@ -29838,10 +27708,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. June, 2007
-
-.. |back| |leo| |next|
-
 ############################################################
 Chapter 21: IPython and Leo
 ############################################################
@@ -29887,32 +27753,14 @@ painless and powerful.
 
 </t>
 <t tx="ekr.20080203101507.2">.. Links
-
 .. _discussions:            http://sourceforge.net/forum/forum.php?thread_id=1911662&amp;forum_id=10226
 .. _ipython:                http://ipython.scipy.org/
 .. _IPython:                http://ipython.scipy.org/
 .. _`IPython Notebook`:     http://projects.scipy.org/ipython/ipython/wiki/NoteBook
 .. _extensionAPI:           http://ipython.scipy.org/moin/IpythonExtensionApi
-
 .. _`The Ipython Extension API`: extensionAPI_
-
 .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
-
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: unitTesting.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: vimBindings.html
 </t>
-<t tx="ekr.20080203101507.10">-----------------------
-
-|back| |leo| |next|</t>
 <t tx="ekr.20080204100523">This plugin creates an instance of the **ipythonController** class for each Leo
 window. The ipythonController objects manage a singleton instance of IPython's
 IPShellEmbed class. See http://ipython.scipy.org/doc/manual/node9.html. Creating
@@ -30358,30 +28206,15 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |prev| |leo| |next|
-
 #######################################
 What's New in Leo 4.4.7 and Leo 4.4.8
 #######################################
 
 .. contents::</t>
 <t tx="ekr.20080314081157.122">.. Links used in this document.
-
 .. _`leoBridge chapter`:    leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
 .. _gettext: http://docs.python.org/lib/module-gettext.html
-
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |prev| image:: arrow_lt.gif
-	:target: new-4-5.html
-
-.. |leo|  image:: leo.gif
-	:target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: new-4-4-6.html
 </t>
 <t tx="ekr.20080314081157.124">- Better support for unicode in \@auto trees.
 
@@ -30403,9 +28236,6 @@ What's New in Leo 4.4.7 and Leo 4.4.8
   automatically save the outline whenever an external editor changes the
   outline.
 </t>
-<t tx="ekr.20080314081157.126">-----------------------
-
-|prev| |leo| |next|</t>
 <t tx="ekr.20080314081157.127">@language rest</t>
 <t tx="ekr.20080314081157.128">- The ipython plugin creates a simple, powerful, effective bridge between IPython and Leo.
   See http://webpages.charter.net/edreamleo/IPythonBridge.html
@@ -31234,10 +29064,6 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. July 31, 2008
-
-.. |back| |leo| |next|
-
 ############################################################
 Chapter 23: Eliminating sentinel lines with @shadow
 ############################################################
@@ -31259,24 +29085,8 @@ The crucial ideas and algorithms underlying @shadow trees are the invention of B
 .. contents::
 </t>
 <t tx="ekr.20080730212711.16">.. Links
-
 .. _`@auto trees`:          directives.html#auto    
-
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: vimBindings.html
-
-.. |leo|  image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: appendices.html
 </t>
-<t tx="ekr.20080730212711.17">-----------------------
-
-|back| |leo| |next|</t>
 <t tx="ekr.20080730212711.29">@first &lt;?xml version="1.0" encoding="utf-8" ?&gt;
 @first &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
 
@@ -31787,28 +29597,13 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |prev| |leo| |next|
-
 #######################################
 What's New in Leo 4.5
 #######################################
 
 .. contents::</t>
 <t tx="ekr.20080806211440.187">.. Links used in this document.
-
 .. _`Chapter 23`:           atShadow.html
-
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |prev| image:: arrow_lt.gif
-	:target: new-4-6.html
-
-.. |leo|  image:: leo.gif
-	:target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: new-4-4-8.html
 </t>
 <t tx="ekr.20080806211440.188">- Added support for @shadow files.
   This is a major breakthrough.
@@ -31852,9 +29647,6 @@ What's New in Leo 4.5
 
 - Added @bool cleo_color_ignore = True
   This determines whether cleo colors @ignore headlines. The default is True.</t>
-<t tx="ekr.20080806211440.190">-----------------------
-
-|prev| |leo| |next|</t>
 <t tx="ekr.20080806211440.253">- Leo now uses a sax-based parser to read .leo files.
   This makes it possible to extend Leo's file format without invalidating previous versions of Leo.
   
@@ -33887,28 +31679,13 @@ write_intermediate_file = True
 verbose=True
 @c
 
-.. |prev| |leo| |next|
-
 #######################################
 What's New in Leo 4.6
 #######################################
 
 .. contents::</t>
 <t tx="ekr.20090324145450.22">.. Links used in this document.
-
 .. .. _`Chapter 23`:           atShadow.html
-
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |prev| image:: arrow_lt.gif
-	:target: glossary.html
-
-.. |leo|  image:: leo.gif
-	:target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: new-4-5.html
 </t>
 <t tx="ekr.20090324145450.23">- Leo opens a default .leo file if no other is specified,
   using the @string default_leo_file setting.
@@ -33989,9 +31766,6 @@ What's New in Leo 4.6
 <t tx="ekr.20090324145450.54">- Improved nav_buttons plugin and corresponding nodeHistory class.
 - Created qtGui and tkGui plugins.
 - Created leoGuiPluginsRef.leo.</t>
-<t tx="ekr.20090324145450.58">-----------------------
-
-|prev| |leo| |next|</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
