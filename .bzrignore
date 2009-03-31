@@ -22,6 +22,11 @@ leo/dist/*.zip
 leo/dist/*.exe
 
 leo/doc/leoTechReport.*
+leo/doc/_build/*
+leo/doc/_build
+leo/doc/_static
+leo/doc/_templates
+leo/doc/html/*.html.txt
 
 leo/plugins/leoPlugins.leo
 leo/plugins/temacs_ext/

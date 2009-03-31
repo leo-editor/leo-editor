@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.4.1: http://docutils.sourceforge.net/" />
 <title>Chapter 22: Using Vim Bindings with Leo</title>
 <style type="text/css">
 
@@ -248,39 +248,40 @@ hr { /* EKR */
 </style>
 </head>
 <body>
-<div class="document">
-
-
+<div class="document" id="chapter-22-using-vim-bindings-with-leo">
+<h1 class="title">Chapter 22: Using Vim Bindings with Leo</h1>
 <!-- rst3: filename: html\vimBindings.html -->
 <!-- June 11, 2008 -->
-<p><a class="reference external" href="IPythonBridge.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference external" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference external" href="atShadow.html"><img alt="next" src="arrow_rt.gif" /></a></p>
-<div class="section" id="chapter-22-using-vim-bindings-with-leo">
-<h1><a class="toc-backref" href="#id1">Chapter 22: Using Vim Bindings with Leo</a></h1>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">&lt;string&gt;</tt>, line 5)</p>
+<p>Substitution definition &quot;back&quot; empty or invalid.</p>
+<pre class="literal-block">
+.. |back| |leo| |next|
+
+</pre>
+</div>
 <p>This chapter describes Leo's vim-like bindings, including how to install them.</p>
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
 <ul class="simple">
-<li><a class="reference internal" href="#chapter-22-using-vim-bindings-with-leo" id="id1">Chapter 22: Using Vim Bindings with Leo</a><ul>
-<li><a class="reference internal" href="#vim-bindings" id="id2">Vim bindings</a><ul>
-<li><a class="reference internal" href="#installing-vim-bindings" id="id3">Installing vim bindings</a></li>
-<li><a class="reference internal" href="#general-commands" id="id4">General commands</a></li>
-<li><a class="reference internal" href="#body-pane-commands" id="id5">Body pane commands</a></li>
-<li><a class="reference internal" href="#outline-commands" id="id6">Outline commands</a></li>
-<li><a class="reference internal" href="#commands-not-supported" id="id7">Commands not supported</a></li>
+<li><a class="reference" href="#vim-bindings" id="id1" name="id1">Vim bindings</a><ul>
+<li><a class="reference" href="#installing-vim-bindings" id="id2" name="id2">Installing vim bindings</a></li>
+<li><a class="reference" href="#general-commands" id="id3" name="id3">General commands</a></li>
+<li><a class="reference" href="#body-pane-commands" id="id4" name="id4">Body pane commands</a></li>
+<li><a class="reference" href="#outline-commands" id="id5" name="id5">Outline commands</a></li>
+<li><a class="reference" href="#commands-not-supported" id="id6" name="id6">Commands not supported</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#avoiding-changes-to-tag-files" id="id8">Avoiding changes to 'tag' files</a></li>
-</ul>
-</li>
+<li><a class="reference" href="#avoiding-changes-to-tag-files" id="id7" name="id7">Avoiding changes to 'tag' files</a></li>
 </ul>
 </div>
 <!-- Links -->
 <!-- .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html -->
 <!-- WARNING: image targets may not have upper case letters! -->
-<div class="section" id="vim-bindings">
-<h2><a class="toc-backref" href="#id2">Vim bindings</a></h2>
-<div class="section" id="installing-vim-bindings">
-<h3><a class="toc-backref" href="#id3">Installing vim bindings</a></h3>
+<div class="section">
+<h1><a class="toc-backref" href="#id1" id="vim-bindings" name="vim-bindings">Vim bindings</a></h1>
+<div class="section">
+<h2><a class="toc-backref" href="#id2" id="installing-vim-bindings" name="installing-vim-bindings">Installing vim bindings</a></h2>
 <p>Place a copy of the &quot;&#64;keys Vim bindings&quot; node and its sub-nodes,
 located in the leoSettings.leo file, under the &quot;&#64;settings&quot; node
 in the myLeoSettings.leo file</p>
@@ -289,8 +290,8 @@ in the myLeoSettings.leo file</p>
 &quot;&#64;keys My Vi&quot; node in the myLeoSettings.leo file to prevent
 them from being overwritten when updating to a new version.</p>
 </div>
-<div class="section" id="general-commands">
-<h3><a class="toc-backref" href="#id4">General commands</a></h3>
+<div class="section">
+<h2><a class="toc-backref" href="#id3" id="general-commands" name="general-commands">General commands</a></h2>
 <p>The following commands are always available.</p>
 <p>State change commands:</p>
 <pre class="literal-block">
@@ -337,8 +338,8 @@ Alt-G       Go to specified line number (relative to derived file)
 Ctrl-:      Enter Leo's command line
 </pre>
 </div>
-<div class="section" id="body-pane-commands">
-<h3><a class="toc-backref" href="#id5">Body pane commands</a></h3>
+<div class="section">
+<h2><a class="toc-backref" href="#id4" id="body-pane-commands" name="body-pane-commands">Body pane commands</a></h2>
 <p>Move cursor commands:</p>
 <pre class="literal-block">
 h           Go back 1 character
@@ -527,8 +528,8 @@ Ctrl-l      Display sub-nodes or, if displayed, go down 1 level
    Ctrl-RtArrow    Mapped to &quot;Ctrl-l&quot; for convenience
 </pre>
 </div>
-<div class="section" id="outline-commands">
-<h3><a class="toc-backref" href="#id6">Outline commands</a></h3>
+<div class="section">
+<h2><a class="toc-backref" href="#id5" id="outline-commands" name="outline-commands">Outline commands</a></h2>
 <p>The following commands are supported when in a headline's command mode.</p>
 <p>State change commands:</p>
 <pre class="literal-block">
@@ -665,8 +666,8 @@ Ctrl-e       scroll outline down one line
     Ctrl-f    Mapped to Ctrl-e until scroll down by pane's height supported
 </pre>
 </div>
-<div class="section" id="commands-not-supported">
-<h3><a class="toc-backref" href="#id7">Commands not supported</a></h3>
+<div class="section">
+<h2><a class="toc-backref" href="#id6" id="commands-not-supported" name="commands-not-supported">Commands not supported</a></h2>
 <p>Notable missing editing commands:</p>
 <pre class="literal-block">
 t&lt;char&gt;     Move cursor to character before specified character
@@ -688,8 +689,8 @@ z&lt;movement&gt; Slide buffer to put current line at top/middle/bottom of pane
 </pre>
 </div>
 </div>
-<div class="section" id="avoiding-changes-to-tag-files">
-<h2><a class="toc-backref" href="#id8">Avoiding changes to 'tag' files</a></h2>
+<div class="section">
+<h1><a class="toc-backref" href="#id7" id="avoiding-changes-to-tag-files" name="avoiding-changes-to-tag-files">Avoiding changes to 'tag' files</a></h1>
 <p>If you use the open-with plugin to open node text in Vim and your Vim's &quot;tag&quot;
 file refers to derived files then there is a risk that a derived file that is
 initially displayed via the &quot;tag&quot; command&quot; in Vim is accidentally edited and
@@ -719,9 +720,6 @@ set modelines=8
 </pre>
 <p>Issue the &quot;:help modeline&quot; command within Vim for the more information about
 modelines.</p>
-<hr class="docutils" />
-<p><a class="reference external" href="IPythonBridge.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference external" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference external" href="atShadow.html"><img alt="next" src="arrow_rt.gif" /></a></p>
-</div>
 </div>
 </div>
 </body>

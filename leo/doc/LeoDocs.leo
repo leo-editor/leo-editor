@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="53" left="301" height="974" width="1022"/>
+	<global_window_position top="49" left="253" height="721" width="1022"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="6,1,1"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4,30,4,2"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -58,9 +58,12 @@
 marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20050831184021.2"><vh>Table of contents</vh>
-<v t="ekr.20080730212711.29"><vh>@thin html\leo_TOC.html</vh></v>
+<v t="ekr.20080730212711.29"><vh>@@thin html\leo_TOC.html</vh>
+<v t="ekr.20080730212711.30"><vh>&lt;&lt;head&gt;&gt;</vh></v>
+<v t="ekr.20080730212711.36"><vh>&lt;&lt; body &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+</v>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -71,7 +74,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20040414172218.5"><vh>@rst-ignore Python Copyright</vh></v>
 <v t="ekr.20090221070927.1"><vh>Leo's MIT License</vh></v>
 <v t="ekr.20040414174439"><vh>@rst-ignore DISCLAIMER OF LIABILITY</vh></v>
-<v t="ekr.20050812125502"><vh>@rst-no-head End stuff</vh></v>
+<v t="ekr.20050812125502"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20070701101808"><vh>Preface</vh>
@@ -79,7 +82,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070701101809.1"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20070723100037"><vh>@rst-no-head preface</vh></v>
 <v t="ekr.20070701090840"><vh>@rst-ignore  @rst-no-head preface (old)</vh></v>
-<v t="ekr.20070701101809.7"><vh>@rst-no-head End stuff</vh></v>
+<v t="ekr.20070701101809.7"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050831184021.4"><vh>What people are saying about Leo</vh>
@@ -102,7 +105,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050830074815.15"><vh>Dan Winkler 2</vh></v>
 <v t="ekr.20050830074815.16"><vh>Dan Winkler 3</vh></v>
 </v>
-<v t="ekr.20050830080545"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050830080545"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
@@ -185,7 +188,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050830115714.10"><vh>Some characters are garbled when importing files. What can I do?</vh></v>
 <v t="ekr.20071026055929.1"><vh>Python's print statement shows 'byte hash' for unicode characters.  What can I do?</vh></v>
 </v>
-<v t="ekr.20050906105946"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050906105946"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050831195331.2"><vh>Chapter 1: Installing Leo</vh>
@@ -205,7 +208,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050901174937"><vh>Running Leo</vh></v>
 <v t="ekr.20070629130418" rst_http_attribute="5d71002855463c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710155043c2f613e71025d71032855263c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710455063c2f6469763e71055d710628554f3c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710755063c2f6469763e71085d710928553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a55063c2f6469763e710b5d710c2855063c626f64793e710d55073c2f626f64793e710e5d710f2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711055073c2f68746d6c3e71114e656565656555073c2f6469763e0a711255073c2f6469763e0a711355353c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7114556c3c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a7115652e"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20060105145125"><vh>How to install the Aspell spell checker</vh></v>
-<v t="ekr.20050906105335"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050906105335"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050831195331.3"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
@@ -236,7 +239,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050823081317.1"><vh>Plugins &amp; settings</vh></v>
 <v t="ekr.20050827090802"><vh>Further study</vh></v>
 </v>
-<v t="ekr.20050816073824"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050816073824"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.26"><vh>Chapter 3: Using Outlines</vh>
@@ -258,7 +261,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="EKR.20040524104904.47"><vh>Resizing panes</vh></v>
 <v t="EKR.20040524104904.48"><vh>Undoing operations</vh></v>
 <v t="ekr.20070623145346.2"><vh>Using chapters</vh></v>
-<v t="ekr.20050901102400"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050901102400"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050831184021.5"><vh>Chapter 4: Programming with Leo</vh>
@@ -317,7 +320,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="EKR.20040524104904.282"><vh>Converting @root trees to @file trees</vh></v>
 </v>
 <v t="ekr.20050828061501.43"><vh>CWEB mode</vh></v>
-<v t="ekr.20050828115003"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050828115003"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.99"><vh>Chapter 5: Using Leo's Commands</vh>
@@ -369,7 +372,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="EKR.20040524104904.151"><vh>The Window Menu</vh></v>
 <v t="EKR.20040524104904.157"><vh>The Help Menu</vh></v>
-<v t="ekr.20050901102400.1"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050901102400.1"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.161"><vh>Chapter 6: Leo and Literate Programming</vh>
@@ -378,7 +381,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="EKR.20040524104904.162"><vh>Why I like Literate Programming</vh></v>
 <v t="EKR.20040524104904.173"><vh>How Leo Improves Literate Programming</vh></v>
 <v t="EKR.20040524104904.181"><vh>How Leo Changes the Notion of Literate Programming</vh></v>
-<v t="ekr.20050901102400.2"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050901102400.2"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050831195331.4"><vh>Chapter 7: Scripting Leo with Python</vh>
@@ -433,7 +436,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050903161843"><vh>Creating script buttons</vh></v>
 <v t="ekr.20040403173920.24" rst_http_attribute="5d71002855463c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710155043c2f613e71025d71032855263c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710455063c2f6469763e71055d710628554f3c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710755063c2f6469763e71085d710928553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a55063c2f6469763e710b5d710c2855063c626f64793e710d55073c2f626f64793e710e5d710f2855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711055073c2f68746d6c3e71114e656565656555073c2f6469763e0a711255073c2f6469763e0a711355353c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7114556c3c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a7115652e"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20080922124033.1"><vh>Getting interactive input from scripts</vh></v>
-<v t="ekr.20050901102400.3"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050901102400.3"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.211"><vh>Chapter 8: Customizing Leo</vh>
@@ -463,7 +466,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050306090601"><vh>Adding extensible attributes to nodes and .leo files</vh></v>
 <v t="ekr.20050620150517"><vh>Specifying Tk options using .leo_xresources</vh></v>
 <v t="ekr.20080310093038.4"><vh>Translating Leo's menus and messages</vh></v>
-<v t="ekr.20050901102400.4"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050901102400.4"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.245"><vh>Chapter 9: History of Leo</vh>
@@ -505,7 +508,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="EKR.20040524104904.257"><vh>Error recovery, at last</vh></v>
 </v>
 </v>
-<v t="ekr.20050901102400.5"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050901102400.5"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.261"><vh>Chapter 10: Theory of Operation</vh>
@@ -520,7 +523,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="EKR.20040524104904.268"><vh>Unicode</vh></v>
 <v t="EKR.20040524104904.269"><vh>Unlimited undo</vh></v>
 <v t="ekr.20060602142732"><vh>Key bindings</vh></v>
-<v t="ekr.20050901102400.6"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050901102400.6"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050901084134"><vh>Chapter 11: White papers</vh>
@@ -551,7 +554,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20061129175952"><vh>Typical lifetimes</vh></v>
 <v t="ekr.20061129202238"><vh>Implications for pypy</vh></v>
 </v>
-<v t="ekr.20050901092232.7"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050901092232.7"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20050912125144"><vh>Chapter 12: Plugins</vh>
@@ -683,7 +686,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050912125735.1333"><vh>UniversalScrolling.py</vh></v>
 <v t="ekr.20050912125735.1342"><vh>URLloader.py</vh></v>
 </v>
-<v t="ekr.20050912133515"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050912133515"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20060612102055"><vh>Chapter 13: Writing Plugins</vh>
@@ -747,7 +750,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20060830142929"><vh>Syntax coloring settings</vh></v>
 <v t="ekr.20070724081553"><vh>The threading_colorizer plugin</vh></v>
-<v t="ekr.20060430223116"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20060430223116"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20060527105211"><vh>Chapter 16: Debugging with Leo</vh>
@@ -760,7 +763,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070115172724.2"><vh>@button winpdb</vh></v>
 <v t="ekr.20070115172724.3"><vh>The execute-script command with explicit debugger breaks</vh></v>
 </v>
-<v t="ekr.20060601104756"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20060601104756"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20060913164304"><vh>Chapter 17: Using ZODB with Leo</vh>
@@ -776,7 +779,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060913165542.2"><vh>g.init_zodb (pathToZodbStorage,verbose=True)</vh></v>
 <v t="ekr.20060913165542.3"><vh>v.detach()</vh></v>
 </v>
-<v t="ekr.20060913164729"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20060913164729"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20061025065357"><vh>Chapter 18: Leo and Emacs</vh>
@@ -785,7 +788,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20061025081359"><vh>Controlling Leo from Emacs using Pymacs</vh></v>
 <v t="ekr.20061025070825.1"><vh>Functions in leoPymacs.py</vh></v>
 <v t="ekr.20061025142434"><vh>The minibuffer</vh></v>
-<v t="ekr.20061025065357.12"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20061025065357.12"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20070317033759"><vh>Chapter 19: Embedding Leo with the leoBridge module</vh>
@@ -793,7 +796,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070317033759.2"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070317033759.3"><vh>The basics</vh></v>
 <v t="ekr.20071210094621"><vh>Running leoBridge from within Leo</vh></v>
-<v t="ekr.20070317033759.6"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20070317033759.6"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20070628083442"><vh>Chapter 20: Unit testing with Leo</vh>
@@ -805,7 +808,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070628094515.2"><vh>How the unit test commands work</vh></v>
 <v t="ekr.20080729064227.6"><vh>@button timer</vh></v>
 <v t="ekr.20080729064227.7"><vh>@button profile</vh></v>
-<v t="ekr.20070628083442.4"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20070628083442.4"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20080203101507"><vh>Chapter 21: ILeo - the IPython bridge</vh>
@@ -823,7 +826,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="vivainio.20080318125834.2"><vh>Example use case: pylab</vh></v>
 <v t="vivainio.20080302194307"><vh>Magic functions	</vh></v>
 <v t="vivainio.20080302174639.9"><vh>Acknowledgements and history</vh></v>
-<v t="ekr.20080203101507.10"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20080203101507.10"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 <v t="vivainio.20080302174957"><vh>@rst-ignore Old documentation - not completely valid anymore</vh>
 <v t="ekr.20080204100523.1"><vh>Commands</vh></v>
 <v t="ekr.20080204100523"><vh>Startup</vh></v>
@@ -845,7 +848,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="TL.20080804095315.8"><vh>Commands not supported</vh></v>
 </v>
 <v t="TL.20080804095315.9"><vh>Avoiding changes to 'tag' files</vh></v>
-<v t="TL.20080804095315.10"><vh>@rst-no-head end stuff</vh></v>
+<v t="TL.20080804095315.10"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20080730212711.14"><vh>Chapter 23: Using @shadow</vh>
@@ -855,7 +858,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20080730212711.42"><vh>Creating @shadow trees</vh></v>
 <v t="ekr.20080730212711.40"><vh>What the update algorithm does</vh></v>
 <v t="ekr.20080730212711.52"><vh>Aha: boundary cases don't matter</vh></v>
-<v t="ekr.20080730212711.17"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20080730212711.17"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.274"><vh>Appendices</vh>
@@ -869,14 +872,14 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="EKR.20040524104904.357"><vh>Format of .leo files</vh></v>
 <v t="ekr.20060921064744.1"><vh>Format of derived files</vh></v>
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
-<v t="ekr.20050901071613"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050901071613"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="EKR.20040524104904.380"><vh>Glossary</vh>
 <v t="ekr.20050901071041"><vh>@rst html\glossary.html</vh>
 <v t="ekr.20050901071300"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050901073048"><vh>@rst-no-head glossary</vh></v>
-<v t="ekr.20050901083017"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050901083017"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
@@ -890,7 +893,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20090324145450.46"><vh>New and improved directives</vh></v>
 <v t="ekr.20090324145450.49"><vh>New settings</vh></v>
 <v t="ekr.20090324145450.54"><vh>Plugins</vh></v>
-<v t="ekr.20090324145450.58"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20090324145450.58"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20080806211440.185"><vh>What's New in Leo 4.5</vh>
@@ -900,7 +903,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20080806211440.253"><vh>Major code reorganizations</vh></v>
 <v t="ekr.20080806211440.256"><vh>Minor new features</vh></v>
 <v t="ekr.20080806211440.189"><vh>New settings</vh></v>
-<v t="ekr.20080806211440.190"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20080806211440.190"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20080314081157.127"><vh>What's New in Leo 4.4.8</vh>
@@ -909,7 +912,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20080314081157.124"><vh>New features</vh></v>
 <v t="ekr.20080314081157.128"><vh>New and improved plugins</vh></v>
 <v t="ekr.20080314081157.125"><vh>New settings</vh></v>
-<v t="ekr.20080314081157.126"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20080314081157.126"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20071217093444"><vh>What's New in Leo 4.4.6</vh>
@@ -918,7 +921,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20071217093444.5"><vh>New commands</vh></v>
 <v t="ekr.20080116071239"><vh>New features</vh></v>
 <v t="ekr.20071217093444.6"><vh>New settings</vh></v>
-<v t="ekr.20071217093444.7"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20071217093444.7"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20071116062917"><vh>What's New in Leo 4.4.5</vh>
@@ -928,7 +931,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20071116062917.3"><vh>New features</vh></v>
 <v t="ekr.20071116062917.18"><vh>New commands</vh></v>
 <v t="ekr.20071116063649"><vh>New settings</vh></v>
-<v t="ekr.20071116062917.19"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20071116062917.19"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20070809145744"><vh>What's New in Leo 4.4.4</vh>
@@ -952,7 +955,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20071026180804"><vh>Improved prototype for icons in headlines</vh></v>
 <v t="ekr.20070809145744.7"><vh>Minor improvements</vh></v>
 <v t="ekr.20070809145744.4"><vh>Summary of new commands</vh></v>
-<v t="ekr.20070809145744.8"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20070809145744.8"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20070513113903"><vh>What's New in Leo 4.4.3</vh>
@@ -964,7 +967,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070513115832.4"><vh>Plugins</vh></v>
 <v t="ekr.20070513115832.5"><vh>Minor improvements</vh></v>
 </v>
-<v t="ekr.20070513113931.9"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20070513113931.9"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20060928172457"><vh>What's New in Leo 4.4.2</vh>
@@ -976,7 +979,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060928172457.5"><vh>New and improved plugins</vh></v>
 <v t="ekr.20061009111417.11"><vh>Settings</vh></v>
 <v t="ekr.20060929043325.1"><vh>ZODB scripting</vh></v>
-<v t="ekr.20060928172457.8"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20060928172457.8"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20060620094033.1"><vh>What's New in Leo 4.4.1 and 4.4.1.1</vh>
@@ -988,7 +991,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060620095949.25"><vh>New settings</vh></v>
 <v t="ekr.20070622212732"><vh>Improved settings</vh></v>
 <v t="ekr.20060620095655"><vh>Minor improvements</vh></v>
-<v t="ekr.20060621132923"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20060621132923"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 <v t="ekr.20060620094033.2"><vh>What's New in Leo 4.4</vh>
@@ -999,11 +1002,11 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20071004101443.178"><vh>Added new convenience methods for scripts and plugins</vh></v>
 <v t="ekr.20060620140130"><vh>New and improved plugins</vh></v>
 <v t="ekr.20060620140228"><vh>New and improved settings</vh></v>
-<v t="ekr.20060621132923.1"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20060621132923.1"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20050914132220"><vh>Other docs</vh>
+<v t="ekr.20050914132220" a="E"><vh>Other docs</vh>
 <v t="ekr.20051203084745"><vh>JythonShell help</vh>
 <v t="ekr.20051203085709"><vh>original</vh></v>
 <v t="ekr.20051203084850"><vh>@rst html\jythonShell.html</vh>
@@ -1128,7 +1131,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050829134901.36"><vh>Cweb mode</vh>
 <v t="ekr.20050829140911"><vh>@rst-ignore-node original</vh></v>
 </v>
-<v t="ekr.20050829134901.37"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20050829134901.37"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 <v t="ekr.20050813102008.1"><vh>@@rst pdf docs\rstplugin3.pdf</vh>
 <v t="ekr.20050813102008.2"><vh>@rst-no-head links</vh></v>
@@ -1146,7 +1149,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050813102008.12"><vh>Notes about rST markup</vh></v>
 <v t="ekr.20050813102008.14"><vh>Examples</vh></v>
 <v t="ekr.20050814144727"><vh>Theory of operation</vh></v>
-<v t="ekr.20050813102008.13"><vh>@rst-no-head end stuff</vh>
+<v t="ekr.20050813102008.13"><vh>@rst-ignore @rst-no-head end stuff</vh>
 <v t="ekr.20050813102008.15"><vh>Acknowledgements</vh></v>
 </v>
 <v t="ekr.20050822081728"><vh>@rst-ignore-tree Footnotes</vh></v>
@@ -1154,7 +1157,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 <v t="ekr.20050916065715"><vh>suggestions for tutorial</vh></v>
-<v t="ekr.20060608111953"><vh>@rst html\docModeOnlyTest.html</vh>
+<v t="ekr.20060608111953" a="E"><vh>@rst html\docModeOnlyTest.html</vh>
 <v t="ekr.20060608111953.1"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20060608111953.2"><vh>leoFind.py</vh>
 <v t="ekr.20060608111953.3"><vh>&lt;&lt; Theory of operation of find/change &gt;&gt;</vh></v>
@@ -1226,7 +1229,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20060608111953.59"><vh>Must be overridden in subclasses</vh></v>
 </v>
-<v t="ekr.20060608111953.60"><vh>@rst-no-head end stuff</vh></v>
+<v t="ekr.20060608111953.60"><vh>@rst-ignore @rst-no-head end stuff</vh></v>
 </v>
 </v>
 </v>
@@ -1252,7 +1255,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -3005,7 +3008,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20090324145450.20"></v>
 <v t="ekr.20090324085713.2"><vh>4.6 b1</vh>
 <v t="ekr.20090324085713.285"><vh>Bugs fixed</vh>
@@ -5204,13 +5207,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. June 11, 2008
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ############################################################
 Chapter 22: Using Vim Bindings with Leo
@@ -5911,11 +5914,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ##########################################
 Chapter 1: Installing Leo
@@ -6946,11 +6949,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ####################################
 Chapter 7: Scripting Leo with Python
@@ -7423,11 +7426,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|prev| |leo| |next|
+.. |prev| |leo| |next|
 
 ############
 Front Matter
@@ -10130,11 +10133,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ##########################################
 Chapter 2: A Tutorial Introduction to Leo
@@ -10270,13 +10273,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. publish_argv_for_missing_stylesheets = --language=de,--documentclass=report,--use-latex-toc
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ####################################
 Chapter 14: Using the rst3 plugin
@@ -10692,15 +10695,15 @@ This directive takes one argument, a language name.  Like this::
 This directive syntax colors the code in the indented code block that follows the directive.
 The result looks like this if the SilverCity syntax coloring module has been installed.
 
-.. code-block:: Python
+.. .. code-block:: Python
     
-    import leo.core.leoPlugins as leoPlugins
-    import leo.core.leoGlobals as g
+    .. import leo.core.leoPlugins as leoPlugins
+    .. import leo.core.leoGlobals as g
 
-Otherwise, the output looks like this::
+.. Otherwise, the output looks like this::
 
-    import leo.core.leoPlugins as leoPlugins
-    import leo.core.leoGlobals as g
+    .. import leo.core.leoPlugins as leoPlugins
+    .. import leo.core.leoGlobals as g
 
 See the tree called "Scripting chapter using the rst plugin" in LeoDocs.leo for many examples of how to use code-blocks.
 </t>
@@ -11271,13 +11274,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. August 28, 2005
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 #####################################
 Chapter 4: Writing Programs in Leo
@@ -12221,7 +12224,7 @@ verbose=True
 
 .. August 28, 2005
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 #####################################
 Chapter 4: Writing Programs in Leo
@@ -13125,11 +13128,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|prev| |leo| |next|
+.. |prev| |leo| |next|
 
 ###################################
 What People Are Saying About Leo
@@ -13481,13 +13484,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. August 30, 2005
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ####
 FAQ
@@ -14176,13 +14179,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. August 30, 2005
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ############
 Appendices
@@ -14249,13 +14252,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. August 30, 2005
 
-|prev| |leo| |next|
+.. |prev| |leo| |next|
 
 ############
 Glossary
@@ -14809,13 +14812,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. February, 2006
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ##########################
 Chapter 11: White Papers
@@ -14938,11 +14941,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ##########################################
 Chapter 3: Using Outlines
@@ -14975,11 +14978,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ##########################################
 Chapter 5: Using Leo's Commands
@@ -14998,11 +15001,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ##########################################
 Chapter 6: Leo and Literate Programming
@@ -15019,11 +15022,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 #############################################
 Chapter 8: Customizing Leo
@@ -15041,11 +15044,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ##########################################
 Chapter 9: History of Leo
@@ -15063,11 +15066,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ##########################################
 Chapter 10: Theory of Operation
@@ -16099,13 +16102,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. August 30, 2005
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ##########################
 Chapter 12: Plugins
@@ -17123,7 +17126,7 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
@@ -18128,7 +18131,7 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
@@ -20405,13 +20408,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. July, 2006
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 #########################################
 Chapter 15: Controlling Syntax Coloring
@@ -21134,13 +21137,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. May 27, 2006
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 #######################################
 Chapter 16: Debugging with Leo
@@ -21404,7 +21407,7 @@ show_organizer_nodes=False
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
@@ -21412,7 +21415,7 @@ verbose=True
 
 # Note the use of @ @rst-markup and @ @rst-options throughout this tree to control doc_mode_only mode.
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 @ @rst-markup
 
@@ -22482,11 +22485,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ####################################
 Chapter 13: Writing Plugins
@@ -23049,11 +23052,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|prev| |leo| |next|
+.. |prev| |leo| |next|
 
 ##########################################
 What's New in Leo 4.4
@@ -23373,11 +23376,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|prev| |leo| |next|
+.. |prev| |leo| |next|
 
 ##########################################
 What's New in Leo 4.4.1
@@ -24066,13 +24069,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. September 13, 2006
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 #######################################
 Chapter 17: Using ZODB with Leo
@@ -24547,11 +24550,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|prev| |leo| |next|
+.. |prev| |leo| |next|
 
 ##########################################
 What's New in Leo 4.4.2
@@ -25458,13 +25461,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. September 13, 2006
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 #######################################
 Chapter 18: Leo and Emacs
@@ -26370,13 +26373,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. March 17, 2007
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ############################################################
 Chapter 19: Embedding Leo with the leoBridge module
@@ -26678,11 +26681,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|prev| |leo| |next|
+.. |prev| |leo| |next|
 
 ##########################################
 What's New in Leo 4.4.3
@@ -27299,13 +27302,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. June, 2007
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ############################################################
 Chapter 20: Unit testing with Leo
@@ -27584,11 +27587,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|prev| |leo| |next|
+.. |prev| |leo| |next|
 
 ############
 Preface
@@ -28024,11 +28027,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|prev| |leo| |next|
+.. |prev| |leo| |next|
 
 ##########################################
 What's New in Leo 4.4.4
@@ -29301,11 +29304,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|prev| |leo| |next|
+.. |prev| |leo| |next|
 
 ##########################################
 What's New in Leo 4.4.5
@@ -29680,11 +29683,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|prev| |leo| |next|
+.. |prev| |leo| |next|
 
 ##########################################
 What's New in Leo 4.4.6
@@ -29831,13 +29834,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. June, 2007
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ############################################################
 Chapter 21: IPython and Leo
@@ -30351,11 +30354,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|prev| |leo| |next|
+.. |prev| |leo| |next|
 
 #######################################
 What's New in Leo 4.4.7 and Leo 4.4.8
@@ -31227,13 +31230,13 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
 .. July 31, 2008
 
-|back| |leo| |next|
+.. |back| |leo| |next|
 
 ############################################################
 Chapter 23: Eliminating sentinel lines with @shadow
@@ -31274,6 +31277,320 @@ The crucial ideas and algorithms underlying @shadow trees are the invention of B
 <t tx="ekr.20080730212711.17">-----------------------
 
 |back| |leo| |next|</t>
+<t tx="ekr.20080730212711.29">@first &lt;?xml version="1.0" encoding="utf-8" ?&gt;
+@first &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+
+@language html
+@tabwidth -4
+
+&lt;!-- Last Modified: July 31, 2008 --&gt;
+&lt;!-- Author: Edward K. Ream, edreamleo@gmail.com --&gt;
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;&lt;head&gt;&gt;
+&lt;/head&gt;
+
+&lt;body bgcolor="#fffbdc"&gt;
+&lt;&lt; body &gt;&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</t>
+<t tx="ekr.20080730212711.30">&lt;title&gt;Leo's Table of contents&lt;/title&gt;
+
+&lt;meta name="description"
+    content="This page is the table of contents for Leo."/&gt;
+
+&lt;style type="text/css"&gt;
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+&lt;/style&gt;
+</t>
+<t tx="ekr.20080730212711.36">&lt;div class="document"&gt;
+
+&lt;p&gt;&lt;img alt="blank" src="Blank.gif" /&gt; &lt;a class="reference" href="front.html"&gt;&lt;img alt="leo" src="leo.gif" /&gt;&lt;/a&gt; &lt;a class="reference" href="frontMatter.html"&gt;&lt;img alt="next" src="arrow_rt.gif" /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;div class="section" id="leo-s-users-guide"&gt;
+&lt;h1&gt;Leo's Users Guide&lt;/h1&gt;
+
+&lt;p&gt;&lt;strong&gt;Important&lt;/strong&gt;:
+LeoDocs.leo (included in all Leo distributions) contains the full source code for
+all parts of Leo's Users Guide.&lt;/p&gt;
+
+&lt;div class="section" id="table-of-contents"&gt;
+&lt;h2&gt;Table of Contents&lt;/h2&gt;
+
+&lt;a class="reference" href="frontMatter.html"&gt;Front Matter&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="preface.html"&gt;Preface&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="testimonials.html"&gt;What people are saying about Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="FAQ.html"&gt;FAQ&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="install.html"&gt;Chapter 1: Installing Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="intro.html"&gt;Chapter 2: A Tutorial Introduction to Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="outlines.html"&gt;Chapter 3: Using Leo's Outlines&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="directives.html"&gt;Chapter 4: Writing Programs in Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="commands.html"&gt;Chapter 5: Using Leo's Commands&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="design.html"&gt;Chapter 6: Leo and Literate Programming&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="scripting.html"&gt;Chapter 7: Scripting Leo with Python&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="customizing.html"&gt;Chapter 8: Customizing Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="history.html"&gt;Chapter 9: History of Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="theory.html"&gt;Chapter 10: Theory of Operation&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="whitepapers.html"&gt;Chapter 11: White Papers&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="plugins.html"&gt;Chapter 12: Plugins&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="writingPlugins.html"&gt;Chapter 13: Writing Plugins&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="rstplugin3.html"&gt;Chapter 14: Using the Rst3 Plugin&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="coloring.html"&gt;Chapter 15: Controlling Syntax Coloring&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="debuggers.html"&gt;Chapter 16: Debugging with Leo&lt;/a&gt;&lt;br&gt;
+
+&lt;a class="reference" href="zodb.html"&gt;Chapter 17: Using ZODB with Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="emacs.html"&gt;Chapter 18: Leo and Emacs&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="leoBridge.html"&gt;Chapter 19: Embedding Leo with the leoBridge Module&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="unitTesting.html"&gt;Chapter 20: Unit testing with Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="IPythonBridge.html"&gt;Chapter 21: ILeo - the IPython bridge&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="vimBindings.html"&gt;Chapter 22: Using Vim with Leo&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="atShadow.html"&gt;Chapter 23: Eliminating sentinel lines with @shadow&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="appendices.html"&gt;Appendices&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="glossary.html"&gt;Glossary&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-5.html"&gt;What's new in Leo 4.5&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-4-8.html"&gt;What's new in Leo 4.4.7 and 4.4.8&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-4-6.html"&gt;What's new in Leo 4.4.6&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-4-5.html"&gt;What's new in Leo 4.4.5&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-4-4.html"&gt;What's new in Leo 4.4.4&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-4-3.html"&gt;What's new in Leo 4.4.3&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-4-2.html"&gt;What's new in Leo 4.4.2&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-4-1.html"&gt;What's new in Leo 4.4.1&lt;/a&gt;&lt;br&gt;
+&lt;a class="reference" href="new-4-4.html"&gt;What's new in Leo 4.4&lt;/a&gt;&lt;br&gt;
+
+&lt;hr class="docutils" /&gt;
+&lt;p&gt;&lt;a class="reference" href="front.html"&gt;&lt;img alt="leo" src="leo.gif" /&gt;&lt;/a&gt; &lt;a class="reference" href="frontMatter.html"&gt;&lt;img alt="next" src="arrow_rt.gif" /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</t>
 <t tx="ekr.20080730212711.39">Using @shadow trees is the best choice when you want to have the full power of
 Leo's outlines, but wish to retain the source files in their original format,
 without Leo sentinels (markup) in comments in the source file. 
@@ -31466,11 +31783,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|prev| |leo| |next|
+.. |prev| |leo| |next|
 
 #######################################
 What's New in Leo 4.5
@@ -33566,11 +33883,11 @@ show_organizer_nodes=True
 show_headlines=True
 show_leo_directives=True
 stylesheet_path=..\doc
-write_intermediate_file = False
+write_intermediate_file = True
 verbose=True
 @c
 
-|prev| |leo| |next|
+.. |prev| |leo| |next|
 
 #######################################
 What's New in Leo 4.6

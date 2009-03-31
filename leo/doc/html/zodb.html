@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.4.1: http://docutils.sourceforge.net/" />
 <title>Chapter 17: Using ZODB with Leo</title>
 <style type="text/css">
 
@@ -248,38 +248,39 @@ hr { /* EKR */
 </style>
 </head>
 <body>
-<div class="document">
-
-
+<div class="document" id="chapter-17-using-zodb-with-leo">
+<h1 class="title">Chapter 17: Using ZODB with Leo</h1>
 <!-- rst3: filename: html\zodb.html -->
 <!-- September 13, 2006 -->
-<p><a class="reference" href="debuggers.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="emacs.html"><img alt="next" src="arrow_rt.gif" /></a></p>
-<div class="section" id="chapter-17-using-zodb-with-leo">
-<h1><a class="toc-backref" href="#id1">Chapter 17: Using ZODB with Leo</a></h1>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">&lt;string&gt;</tt>, line 5)</p>
+<p>Substitution definition &quot;back&quot; empty or invalid.</p>
+<pre class="literal-block">
+.. |back| |leo| |next|
+
+</pre>
+</div>
 <p>This chapter discusses how to write Leo scripts that store and retrieve data using <a class="reference" href="http://www.zope.org/Wikis/ZODB/guide/zodb.html">ZODB</a>.</p>
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
 <ul class="simple">
-<li><a class="reference" href="#chapter-17-using-zodb-with-leo" id="id1" name="id1">Chapter 17: Using ZODB with Leo</a><ul>
-<li><a class="reference" href="#configuring-leo-to-use-zodb" id="id2" name="id2">Configuring Leo to use zodb</a></li>
-<li><a class="reference" href="#initing-zodb" id="id3" name="id3">Initing zodb</a></li>
-<li><a class="reference" href="#writing-data-to-zodb" id="id4" name="id4">Writing data to zodb</a></li>
-<li><a class="reference" href="#defining-zodb-keys" id="id5" name="id5">Defining zodb keys</a></li>
-<li><a class="reference" href="#reading-data-from-zodb" id="id6" name="id6">Reading data from zodb</a></li>
-<li><a class="reference" href="#about-connections" id="id7" name="id7">About connections</a></li>
-<li><a class="reference" href="#convenience-routines" id="id8" name="id8">Convenience routines</a><ul>
-<li><a class="reference" href="#g-init-zodb-pathtozodbstorage-verbose-true" id="id9" name="id9">g.init_zodb (pathToZodbStorage,verbose=True)</a></li>
-<li><a class="reference" href="#v-detach" id="id10" name="id10">v.detach()</a></li>
-</ul>
-</li>
+<li><a class="reference" href="#configuring-leo-to-use-zodb" id="id1" name="id1">Configuring Leo to use zodb</a></li>
+<li><a class="reference" href="#initing-zodb" id="id2" name="id2">Initing zodb</a></li>
+<li><a class="reference" href="#writing-data-to-zodb" id="id3" name="id3">Writing data to zodb</a></li>
+<li><a class="reference" href="#defining-zodb-keys" id="id4" name="id4">Defining zodb keys</a></li>
+<li><a class="reference" href="#reading-data-from-zodb" id="id5" name="id5">Reading data from zodb</a></li>
+<li><a class="reference" href="#about-connections" id="id6" name="id6">About connections</a></li>
+<li><a class="reference" href="#convenience-routines" id="id7" name="id7">Convenience routines</a><ul>
+<li><a class="reference" href="#g-init-zodb-pathtozodbstorage-verbose-true" id="id8" name="id8">g.init_zodb (pathToZodbStorage,verbose=True)</a></li>
+<li><a class="reference" href="#v-detach" id="id9" name="id9">v.detach()</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <!-- External links... -->
 <!-- WARNING: image targets may not have upper case letters! -->
-<div class="section" id="configuring-leo-to-use-zodb">
-<h2><a class="toc-backref" href="#id2">Configuring Leo to use zodb</a></h2>
+<div class="section">
+<h1><a class="toc-backref" href="#id1" id="configuring-leo-to-use-zodb" name="configuring-leo-to-use-zodb">Configuring Leo to use zodb</a></h1>
 <p>To enable zodb scripting within Leo, you must set <tt class="docutils literal"><span class="pre">use_zodb</span> <span class="pre">=</span> <span class="pre">True</span></tt> in the root node of leoNodes.py.
 You must also install ZODB itself.  See <a class="reference" href="http://www.zope.org/Wikis/ZODB/guide/node3.html#SECTION000310000000000000000">Installing ZODB</a> for details.</p>
 <p>When ZODB is installed and <tt class="docutils literal"><span class="pre">use_zodb</span></tt> is <tt class="docutils literal"><span class="pre">True</span></tt>
@@ -296,8 +297,8 @@ Scripts are free to do with Leo's vnodes and tnodes <em>anything</em> that can
 be done with ZODB.Persistence.Persistent objects.</li>
 </ul>
 </div>
-<div class="section" id="initing-zodb">
-<h2><a class="toc-backref" href="#id3">Initing zodb</a></h2>
+<div class="section">
+<h1><a class="toc-backref" href="#id2" id="initing-zodb" name="initing-zodb">Initing zodb</a></h1>
 <p>Scripts should call g.init_zodb to open a ZODB.Storage file.
 g.init_zodb returns an instance of ZODB.DB.  For example:</p>
 <pre class="literal-block">
@@ -307,8 +308,8 @@ db = g.init_zodb (zodbStorageFileName)
 Only the first call for any path actually does anything:
 subsequent calls for a previously opened path simply return the same value as the first call.</p>
 </div>
-<div class="section" id="writing-data-to-zodb">
-<h2><a class="toc-backref" href="#id4">Writing data to zodb</a></h2>
+<div class="section">
+<h1><a class="toc-backref" href="#id3" id="writing-data-to-zodb" name="writing-data-to-zodb">Writing data to zodb</a></h1>
 <p>The following script writes v, a tree of vnodes, to zodb:</p>
 <pre class="literal-block">
 db = g.init_zodb (zodbStorageFileName)
@@ -346,8 +347,8 @@ The following section discusses how to define reasonable zodb keys.</p>
 </li>
 </ul>
 </div>
-<div class="section" id="defining-zodb-keys">
-<h2><a class="toc-backref" href="#id5">Defining zodb keys</a></h2>
+<div class="section">
+<h1><a class="toc-backref" href="#id4" id="defining-zodb-keys" name="defining-zodb-keys">Defining zodb keys</a></h1>
 <p>The keys used to store and retrieve data in connection.root() can be any string that uniquely identifies the data.
 The following are only suggestions: you are free to use any string you like.</p>
 <ol class="arabic">
@@ -372,8 +373,8 @@ aKey = g.app.nodeIndices.toString(v2.t.fileIndex)
 </li>
 </ol>
 </div>
-<div class="section" id="reading-data-from-zodb">
-<h2><a class="toc-backref" href="#id6">Reading data from zodb</a></h2>
+<div class="section">
+<h1><a class="toc-backref" href="#id5" id="reading-data-from-zodb" name="reading-data-from-zodb">Reading data from zodb</a></h1>
 <p>The following script reads a tree of vnodes from zodb and sets p as the root position of the tree:</p>
 <pre class="literal-block">
 try:
@@ -386,8 +387,8 @@ finally:
     connection.close()
 </pre>
 </div>
-<div class="section" id="about-connections">
-<h2><a class="toc-backref" href="#id7">About connections</a></h2>
+<div class="section">
+<h1><a class="toc-backref" href="#id6" id="about-connections" name="about-connections">About connections</a></h1>
 <p>The scripts shown above close the zodb connection after processing the data.
 This is by far the simplest strategy.
 I recommend it for typical scripts.</p>
@@ -423,18 +424,18 @@ Unless special zodb precautions are taken (like defining zodb transaction manage
 calling get_transaction().commit() will affect <strong>all</strong> open connections.
 You have been warned.</p>
 </div>
-<div class="section" id="convenience-routines">
-<h2><a class="toc-backref" href="#id8">Convenience routines</a></h2>
-<div class="section" id="g-init-zodb-pathtozodbstorage-verbose-true">
-<h3><a class="toc-backref" href="#id9">g.init_zodb (pathToZodbStorage,verbose=True)</a></h3>
+<div class="section">
+<h1><a class="toc-backref" href="#id7" id="convenience-routines" name="convenience-routines">Convenience routines</a></h1>
+<div class="section">
+<h2><a class="toc-backref" href="#id8" id="g-init-zodb-pathtozodbstorage-verbose-true" name="g-init-zodb-pathtozodbstorage-verbose-true">g.init_zodb (pathToZodbStorage,verbose=True)</a></h2>
 <p>This function inits the zodb.
 pathToZodbStorage is the full path to the zodb storage file.
 You can call g.init_zodb as many times as you like.
 Only the first call for any path actually does anything:
 subsequent calls for a previously opened path simply return the same value as the first call.</p>
 </div>
-<div class="section" id="v-detach">
-<h3><a class="toc-backref" href="#id10">v.detach()</a></h3>
+<div class="section">
+<h2><a class="toc-backref" href="#id9" id="v-detach" name="v-detach">v.detach()</a></h2>
 <p>This vnode method returns v2, a copy of v that is completely detached from the outline.
 v2.t is a completely new tnode.
 v2.fileIndex is None initially, but is may be convenient to copy this field:</p>
@@ -442,9 +443,6 @@ v2.fileIndex is None initially, but is may be convenient to copy this field:</p>
 v2 = v.detach()
 v2.t.fileIndex = v.t.fileIndex
 </pre>
-<hr class="docutils" />
-<p><a class="reference" href="debuggers.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="emacs.html"><img alt="next" src="arrow_rt.gif" /></a></p>
-</div>
 </div>
 </div>
 </div>
