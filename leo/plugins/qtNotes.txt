@@ -3121,16 +3121,10 @@ def selectLabel (self,w):
         # w.leo_label = None
 #@-node:ekr.20081121105001.222:select/unselectLabel
 #@-node:ekr.20081215162017.5:Support multiple body editors
-#@+node:ekr.20090313075003.2:Fix new unicode problem
-#@+node:ekr.20090313075003.3:Hint
-#@-node:ekr.20090313075003.3:Hint
-#@-node:ekr.20090313075003.2:Fix new unicode problem
-#@+node:ekr.20090317102300.12:Fix autocompleter problems with qt gui
-#@-node:ekr.20090317102300.12:Fix autocompleter problems with qt gui
-#@+node:ekr.20090317102300.13:Fix new unicode/copy-outline problem
-#@-node:ekr.20090317102300.13:Fix new unicode/copy-outline problem
 #@-node:ekr.20090316095604.11:Urgent 1
 #@+node:ekr.20090304084841.10:Asap 5
+#@+node:ekr.20090401110027.1:Make sure qt plugin supports user icons
+#@-node:ekr.20090401110027.1:Make sure qt plugin supports user icons
 #@+node:ekr.20090318091009.12:Script errors mess up syntax coloring
 #@-node:ekr.20090318091009.12:Script errors mess up syntax coloring
 #@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin

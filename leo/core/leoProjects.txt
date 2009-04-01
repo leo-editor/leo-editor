@@ -20,8 +20,7 @@
 
 #@+all
 #@+node:ekr.20080917153158.11:4.6 b2
-#@+node:ekr.20080918164844.1:Leo now requires Python 2.4 or higher
-#@-node:ekr.20080918164844.1:Leo now requires Python 2.4 or higher
+#@+node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401093731.1:Fixed elisp importer problem
 #@+node:ekr.20070707073859:skipBlock
 def skipBlock(self,s,i,delim1=None,delim2=None):
@@ -154,6 +153,9 @@ def startsString(self,s,i):
 #@-node:ekr.20070711060113.2:Overrides
 #@-node:ekr.20070711060113:class elispScanner
 #@-node:ekr.20090401093731.1:Fixed elisp importer problem
+#@-node:ekr.20090401105902.2:Bugs
+#@+node:ekr.20090401105902.3:Features
+#@-node:ekr.20090401105902.3:Features
 #@-node:ekr.20080917153158.11:4.6 b2
 #@-all
 #@nonl
