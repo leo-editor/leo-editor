@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.4.1: http://docutils.sourceforge.net/" />
 <title>htmldocModeOnlyTest.html</title>
 <style type="text/css">
 
@@ -251,13 +251,11 @@ hr { /* EKR */
 <div class="document" id="htmldocmodeonlytest-html">
 <h1 class="title">htmldocModeOnlyTest.html</h1>
 <h2 class="subtitle" id="documentation-for-leofind-py">Documentation for leoFind.py</h2>
-
 <!-- rst3: filename: html\docModeOnlyTest.html -->
 <!-- External links... -->
 <!-- Relative links... -->
-<!-- WARNING: image targets may not have upper case letters! -->
-<div class="section" id="theory-of-operation-of-find-change">
-<h1>&lt;&lt; Theory of operation of find/change &gt;&gt;</h1>
+<div class="section">
+<h1><a id="theory-of-operation-of-find-change" name="theory-of-operation-of-find-change">&lt;&lt; Theory of operation of find/change &gt;&gt;</a></h1>
 <p>The find and change commands are tricky; there are many details that must be handled properly. This documentation describes the leo.py code. Previous versions of Leo used an inferior scheme.  The following principles govern the leoFind class:</p>
 <ol class="arabic simple">
 <li>Find and Change commands initialize themselves using only the state of the
@@ -284,10 +282,10 @@ after any Find All and Change All command.</li>
 <p>Initialization involves setting the self.c, self.p, self.in_headline, self.wrapping and self.s_ctrl ivars. Setting self.in_headline is tricky; we must be sure to retain the state of the outline pane until initialization is complete. Initializing the Find All and Change All commands is much easier because such initialization does not depend on the state of the Leo window.</p>
 <p>Using Tk.Text widgets for both headlines and body text results in a huge simplification of the code. Indeed, the searching code does not know whether it is searching headline or body text. The search code knows only that self.s_ctrl is a Tk.Text widget that contains the text to be searched or changed and the insert and sel Tk attributes of self.search_text indicate the range of text to be searched. Searching headline and body text simultaneously is complicated. The selectNextPosition() method handles the many details involved by setting self.s_ctrl and its insert and sel attributes.</p>
 </div>
-<div class="section" id="leofind-init">
-<h1>leoFind.__init__</h1>
-<div class="section" id="init-the-gui-independent-ivars">
-<h2>&lt;&lt; init the gui-independent ivars &gt;&gt;</h2>
+<div class="section">
+<h1><a id="leofind-init" name="leofind-init">leoFind.__init__</a></h1>
+<div class="section">
+<h2><a id="init-the-gui-independent-ivars" name="init-the-gui-independent-ivars">&lt;&lt; init the gui-independent ivars &gt;&gt;</a></h2>
 <p>New in 4.3:
 - These are the names of leoFind ivars. (no more _flag hack).
 - There are no corresponding commander ivars to keep in synch (hurray!)
@@ -300,12 +298,10 @@ We set wrapPos on entry, before the first search.
 We set wrapPosition in selectNextPosition after the first search fails.
 We also set wrapPosition on exit if the first search succeeds.</p>
 </div>
-<div class="section" id="batchchange-sets-start-of-change-all-group">
-<h2>batchChange (sets start of change-all group)</h2>
+<div class="section">
+<h2><a id="batchchange-sets-start-of-change-all-group" name="batchchange-sets-start-of-change-all-group">batchChange (sets start of change-all group)</a></h2>
 <p>This routine performs a single batch change operation, updating the head or body string of p and leaving the result in s_ctrl.  We update the body if we are changing the body text of c.currentVnode().</p>
 <p>s_ctrl contains the found text on entry and contains the changed text on exit.  pos and pos2 indicate the selection.  The selection will never be empty. NB: we can not assume that self.p is visible.</p>
-<hr class="docutils" />
-<p><a class="reference" href="outlines.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="commands.html"><img alt="next" src="arrow_rt.gif" /></a></p>
 </div>
 </div>
 </div>

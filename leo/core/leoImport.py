@@ -2484,7 +2484,7 @@ class baseScannerClass (scanUtility):
 
         If no matching is found i is set to len(s)'''
 
-        trace = False
+        trace = False and not g.unitTesting
         start = i
         if delim1 is None: delim1 = self.blockDelim1
         if delim2 is None: delim2 = self.blockDelim2
@@ -2529,7 +2529,7 @@ class baseScannerClass (scanUtility):
                         i = i2 + len(z)
                         break
                 if level <= 0:
-                    if trace: g.trace('returns\n',repr(s[start:i]))
+                    if trace: g.trace('returns:',repr(s[start:i]))
                     return i
 
             else: i += 1
@@ -3101,8 +3101,10 @@ class elispScanner (baseScannerClass):
         self.sigStart = i
         self.codeEnd = self.sigEnd = self.sigId = None
         if not g.match(s,i,'('): return False
+
         end = self.skipBlock(s,i)
-        if not g.match(s,end,')'): return False
+        # g.trace('%3s %15s block: %s' % (i,repr(s[i:i+10]),repr(s[i:end])))
+        if not g.match(s,end-1,')'): return False
 
         i = g.skip_ws(s,i+1)
         if not g.match_word(s,i,'defun'): return False
@@ -3177,7 +3179,7 @@ class javaScriptScanner (baseScannerClass):
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='java')
+        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='javascript')
             # The langauge is used to set comment delims.
 
         # Set the parser delims.

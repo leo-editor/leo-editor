@@ -4543,25 +4543,31 @@ class leoQtGui(leoGui.leoGui):
             return None,None
     #@-node:ekr.20081123003126.2:getTreeImage (test)
     #@-node:ekr.20081121105001.495:Icons
-    #@+node:ekr.20081121105001.498:Idle Time (to do)
-    #@+node:ekr.20081121105001.499:qtGui.setIdleTimeHook
+    #@+node:ekr.20081121105001.498:Idle Time
+    #@+node:ekr.20081121105001.499:qtGui.setIdleTimeHook & setIdleTimeHookAfterDelay
+    timer = None
+
     def setIdleTimeHook (self,idleTimeHookHandler):
 
         # if self.root:
             # self.root.after_idle(idleTimeHookHandler)
 
-        pass
-    #@nonl
-    #@-node:ekr.20081121105001.499:qtGui.setIdleTimeHook
-    #@+node:ekr.20081121105001.500:setIdleTimeHookAfterDelay
-    def setIdleTimeHookAfterDelay (self,idleTimeHookHandler):
+        if not self.timer:
+            self.timer = timer = QtCore.QTimer()
 
-        pass
+            def timerCallBack(self=self,handler=idleTimeHookHandler):
+                # g.trace(self,idleTimeHookHandler)
+                idleTimeHookHandler()
 
-        # if self.root:
-            # g.app.root.after(g.app.idleTimeDelay,idleTimeHookHandler)
-    #@-node:ekr.20081121105001.500:setIdleTimeHookAfterDelay
-    #@-node:ekr.20081121105001.498:Idle Time (to do)
+            timer.connect(timer,QtCore.SIGNAL("timeout()"),timerCallBack)
+
+            # To make your application perform idle processing, use a QTimer with 0 timeout.
+            # More advanced idle processing schemes can be achieved using processEvents().
+            timer.start(1000)
+
+    setIdleTimeHookAfterDelay = setIdleTimeHook
+    #@-node:ekr.20081121105001.499:qtGui.setIdleTimeHook & setIdleTimeHookAfterDelay
+    #@-node:ekr.20081121105001.498:Idle Time
     #@+node:ekr.20081121105001.501:isTextWidget
     def isTextWidget (self,w):
 

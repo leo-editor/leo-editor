@@ -60,7 +60,7 @@ Qt = None
 #     - loadLinksInt()
 #     - deleteSet(bool)
 #     - linkClicked(n) (zero based)
-    
+
 if g.app.gui.guiName() == "tkinter":
     Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True,required=True)
     class backlinkTkUI(object):
@@ -190,21 +190,21 @@ elif g.app.gui.guiName() == "qt":
     Qt = QtCore.Qt
 
     class backlinkQtUI(QtGui.QWidget):
-    
+
         def __init__(self, owner):
-            
+
             self.owner = owner
-        
+
             QtGui.QWidget.__init__(self)
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Backlink.ui')
             form_class, base_class = uic.loadUiType(uiPath)
             self.owner.c.frame.log.createTab('Links', widget = self) 
             self.UI = form_class()
             self.UI.setupUi(self)
-            
+
             u = self.UI
             o = self.owner
-        
+
             self.connect(u.markBtn,
                          QtCore.SIGNAL("clicked()"), o.mark)
             self.connect(u.swapBtn,
@@ -213,7 +213,7 @@ elif g.app.gui.guiName() == "qt":
                          QtCore.SIGNAL("clicked()"), self.linkClicked)
             self.connect(u.rescanBtn,
                          QtCore.SIGNAL("clicked()"), o.loadLinksInt)
-                         
+
             self.connect(u.dirLeftBtn, 
                          QtCore.SIGNAL("clicked()"), self.dirClicked)
             self.connect(u.dirRightBtn, 
@@ -223,7 +223,7 @@ elif g.app.gui.guiName() == "qt":
                          QtCore.SIGNAL("itemClicked(QListWidgetItem*)"), self.listClicked)
             self.connect(u.deleteBtn,
                          QtCore.SIGNAL("stateChanged(int)"), o.deleteSet)
-                         
+
         def dirClicked(self):
             if self.UI.dirLeftBtn.text() == "from":
                 self.UI.dirLeftBtn.setText("to")
@@ -231,10 +231,10 @@ elif g.app.gui.guiName() == "qt":
             else:
                 self.UI.dirLeftBtn.setText("from")
                 self.UI.dirRightBtn.setText("to")
-                
+
         def listClicked(self):
             self.owner.linkClicked(self.UI.linkList.currentRow())
-    
+
         def linkClicked(self):
             if self.UI.whatSel.currentText() == "mark, undirected":
                 self.owner.linkAction('undirected')
@@ -244,7 +244,7 @@ elif g.app.gui.guiName() == "qt":
                 self.owner.linkAction('from', newChild=newChild)
             else:
                 self.owner.linkAction('to', newChild=newChild)
-            
+
         def loadList(self, lst): 
             self.UI.linkList.clear()
             self.UI.linkList.addItems(lst)
@@ -264,13 +264,13 @@ def init ():
     leoPlugins.registerHandler('after-create-leo-frame',onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
-        
+
     return True
 def onCreate (tag, keys):
-    
+
     c = keys.get('c')
     if not c: return
-    
+
     backlinkController(c)
 class backlinkController(object):
     """Display and edit links in leo trees"""
@@ -352,7 +352,7 @@ class backlinkController(object):
         if not self.linkMark or not self.c.positionExists(self.linkMark):
             self.showMessage('Link mark not specified or no longer valid', color='red')
             return
-        
+
         if dir_ == "from":
             p = self.linkMark
             if newChild:

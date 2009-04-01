@@ -453,6 +453,37 @@ def toPythonIndexRowCol(self,index):
     return i,row,col
 #@-node:ville.20090321082712.3:toPythonIndexToRowCol
 #@-node:ville.20090321082712.1: PythonIndex
+#@+node:ville.20090324170325.63:get
+def get(self,i,j=None):
+    i = self.toGuiIndex(i)
+    if j is None: 
+        j = i+1
+    else:
+        j = self.toGuiIndex(j)
+    te = self.widget
+    doc = te.document()
+    bl = doc.findBlock(i)
+    #row = bl.blockNumber()
+    #col = index - bl.position()
+
+    # common case, e.g. one character    
+    if bl.contains(j):
+        s = unicode(bl.text())
+        offset = i - bl.position()
+
+        ret = s[ offset : offset + (j-i)]
+        #print "fastget",ret
+        return ret
+
+    # the next implementation is much slower, but will have to do        
+
+    #g.trace('Slow get()', g.callers(5))
+    s = self.getAllText()
+    i = self.toGuiIndex(i)
+
+    j = self.toGuiIndex(j)
+    return s[i:j]
+#@-node:ville.20090324170325.63:get
 #@-node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
 #@-node:ekr.20081121105001.572: class leoQTextEditWidget
 #@+node:ekr.20081121110412.143:Editors (tkBody)
@@ -3090,6 +3121,14 @@ def selectLabel (self,w):
         # w.leo_label = None
 #@-node:ekr.20081121105001.222:select/unselectLabel
 #@-node:ekr.20081215162017.5:Support multiple body editors
+#@+node:ekr.20090313075003.2:Fix new unicode problem
+#@+node:ekr.20090313075003.3:Hint
+#@-node:ekr.20090313075003.3:Hint
+#@-node:ekr.20090313075003.2:Fix new unicode problem
+#@+node:ekr.20090317102300.12:Fix autocompleter problems with qt gui
+#@-node:ekr.20090317102300.12:Fix autocompleter problems with qt gui
+#@+node:ekr.20090317102300.13:Fix new unicode/copy-outline problem
+#@-node:ekr.20090317102300.13:Fix new unicode/copy-outline problem
 #@-node:ekr.20090316095604.11:Urgent 1
 #@+node:ekr.20090304084841.10:Asap 5
 #@+node:ekr.20090318091009.12:Script errors mess up syntax coloring
@@ -3269,6 +3308,108 @@ bracketright: ']'
 #@-node:ekr.20081121105001.187:dump guiBindNamesInverseDict
 #@-node:ekr.20081121105001.185:Scripts
 #@+node:ekr.20090124101344.1:Recent
+#@+node:edward.20090330082228.1:Made idle-time hook functional in Qt
+#@+node:ekr.20081121105001.474: qtGui.__init__
+def __init__ (self):
+
+    # Initialize the base class.
+    leoGui.leoGui.__init__(self,'qt')
+
+    self.qtApp = app = QtGui.QApplication(sys.argv)
+
+    self.bodyTextWidget  = leoQtBaseTextWidget
+    self.plainTextWidget = leoQtBaseTextWidget
+
+    self.iconimages = {} # Image cache set by getIconImage().
+
+    self.mGuiName = 'qt'
+#@-node:ekr.20081121105001.474: qtGui.__init__
+#@+node:ekr.20081121105001.476:runMainLoop (qtGui)
+def runMainLoop(self):
+
+    '''Start the Qt main loop.'''
+
+    if self.script:
+        log = g.app.log
+        if log:
+            g.pr('Start of batch script...\n')
+            log.c.executeScript(script=self.script)
+            g.pr('End of batch script')
+        else:
+            g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
+    else:
+        if g.app.useIpython:
+            self.embed_ipython()
+            sys.exit(0)
+
+        sys.exit(self.qtApp.exec_())
+#@-node:ekr.20081121105001.476:runMainLoop (qtGui)
+#@+node:ekr.20090124174652.120:qtTree.initAfterLoad
+def initAfterLoad (self):
+
+    '''Do late-state inits.'''
+
+    # Called by Leo's core.
+
+    c = self.c ; frame = c.frame
+    w = c.frame.top ; tw = self.treeWidget
+
+    if not leoQtTree.callbacksInjected:
+        leoQtTree.callbacksInjected = True
+        self.injectCallbacks() # A base class method.
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemDoubleClicked(QTreeWidgetItem*, int)"),
+        self.onItemDoubleClicked)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemSelectionChanged()"),
+        self.onTreeSelect)
+
+    # We don't need this.  Hooray!
+    # w.connect(self.treeWidget,QtCore.SIGNAL(
+            # "itemChanged(QTreeWidgetItem*, int)"),
+        # self.onItemChanged)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemCollapsed(QTreeWidgetItem*)"),
+        self.onItemCollapsed)
+
+    w.connect(self.treeWidget,QtCore.SIGNAL(
+            "itemExpanded(QTreeWidgetItem*)"),
+        self.onItemExpanded)
+
+    self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+    tw.installEventFilter(self.ev_filter)
+
+    c.setChanged(False)
+#@-node:ekr.20090124174652.120:qtTree.initAfterLoad
+#@+node:ekr.20081121105001.498:Idle Time
+#@+node:ekr.20081121105001.499:qtGui.setIdleTimeHook & setIdleTimeHookAfterDelay
+timer = None
+
+def setIdleTimeHook (self,idleTimeHookHandler):
+
+    # if self.root:
+        # self.root.after_idle(idleTimeHookHandler)
+
+    if not self.timer:
+        self.timer = timer = QtCore.QTimer()
+
+        def timerCallBack(self=self,handler=idleTimeHookHandler):
+            # g.trace(self,idleTimeHookHandler)
+            idleTimeHookHandler()
+
+        timer.connect(timer,QtCore.SIGNAL("timeout()"),timerCallBack)
+
+        # To make your application perform idle processing, use a QTimer with 0 timeout.
+        # More advanced idle processing schemes can be achieved using processEvents().
+        timer.start(1000)
+
+setIdleTimeHookAfterDelay = setIdleTimeHook
+#@-node:ekr.20081121105001.499:qtGui.setIdleTimeHook & setIdleTimeHookAfterDelay
+#@-node:ekr.20081121105001.498:Idle Time
+#@-node:edward.20090330082228.1:Made idle-time hook functional in Qt
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@-node:ekr.20081208155215.12:Unused

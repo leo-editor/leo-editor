@@ -1,0 +1,61 @@
+.. Leo documentation documentation master file, created by
+   sphinx-quickstart on Mon Mar 30 16:39:02 2009.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to Leo
+===============
+
+Contents:
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   html/frontMatter   
+   html/preface
+   html/testimonials
+   html/FAQ
+   html/install
+   html/intro
+   html/outlines
+   html/directives
+   html/commands
+   html/design
+   html/scripting
+   html/customizing
+   html/history
+   html/theory
+   html/whitepapers
+   html/plugins
+   html/writingPlugins
+   html/rstplugin3
+   html/coloring
+   html/debuggers
+   html/zodb
+   html/emacs
+   html/leoBridge
+   html/unitTesting
+   html/IPythonBridge
+   html/vimBindings
+   html/atShadow
+   html/appendices
+   html/glossary
+   html/new-4-6
+   html/new-4-5
+   html/new-4-4-8
+   html/new-4-4-6
+   html/new-4-4-5
+   html/new-4-4-4
+   html/new-4-4-3
+   html/new-4-4-2
+   html/new-4-4-1
+   html/new-4-4
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

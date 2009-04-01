@@ -251,8 +251,9 @@ class slideshowController:
         w = c.frame.body.bodyCtrl
 
         g.es('%s' % h)
-        c.frame.tree.expandAllAncestors(p)
-        c.selectPosition(p)
+        #c.expandAllAncestors(p)
+        #c.selectPosition(p)
+        c.redraw_now(p)
         w.see('1.0')
 
         if h.startswith('@slideshow'):

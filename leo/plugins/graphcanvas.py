@@ -18,13 +18,13 @@ def init ():
     leoPlugins.registerHandler('after-create-leo-frame',onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
-        
+
     return True
 def onCreate (tag, keys):
-    
+
     c = keys.get('c')
     if not c: return
-    
+
     graphcanvasController(c)
 class graphcanvasUI(QtGui.QWidget):
     def __init__(self, owner=None):
@@ -188,7 +188,7 @@ class graphcanvasController(object):
 
             if '_bklnk' not in node.u:
                 node.u['_bklnk'] = {}
-            
+
             x,y = 0,0
             if pnt:
                 x,y = pnt.x(), pnt.y()
@@ -199,7 +199,7 @@ class graphcanvasController(object):
             else:
                 node.u['_bklnk']['x'] = x
                 node.u['_bklnk']['y'] = y
-        
+
             txt.setPos(x,y)
             self.ui.canvas.addItem(txt)
 
@@ -222,7 +222,7 @@ class graphcanvasController(object):
                 for j in blc.linksFrom(i):
                     if j not in self.nodeItem:
                         linked.add(j)
-            
+
             for node in linked:
 
                 txt = nodeItem(self, node.headString().replace(' ','\n'))
@@ -238,7 +238,7 @@ class graphcanvasController(object):
                     node.u['_bklnk']['y'] = 0
 
                 self.ui.canvas.addItem(txt)
-    
+
             if not linked or what != 'all':
                 # none added, or doing just one round
                 break
