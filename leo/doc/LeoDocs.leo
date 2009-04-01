@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="4,5,0,0"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -187,7 +187,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.2"><vh>Chapter 1: Installing Leo</vh>
+<v t="ekr.20050831195331.2" a="E"><vh>Chapter 1: Installing Leo</vh>
 <v t="edream.110203163054.48"><vh>@rst html\install.html</vh>
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
@@ -206,8 +206,8 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060105145125"><vh>How to install the Aspell spell checker</vh></v>
 </v>
 </v>
-<v t="ekr.20050831195331.3" a="E"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
-<v t="ekr.20050816073412" a="E"><vh>@rst html\intro.html</vh>
+<v t="ekr.20050831195331.3"><vh>Chapter 2: A Tutorial Introduction to Leo</vh>
+<v t="ekr.20050816073412"><vh>@rst html\intro.html</vh>
 <v t="ekr.20050816073814"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050816073412.1"><vh>Introduction</vh>
 <v t="ekr.20050822173420"><vh>Leo's main window</vh></v>
@@ -2958,6 +2958,11 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20090324085713.890"><vh>Created leoGuiPluginsRef.leo</vh></v>
 </v>
 </v>
+</v>
+</v>
+<v t="ekr.20090401113141.1" a="E"><vh>Test of odt/rtf/pdf files</vh>
+<v t="ekr.20090401113141.2" a="E"><vh>@rst c:\prog\test\test.html</vh>
+<v t="ekr.20090401113141.4"><vh>section 1</vh></v>
 </v>
 </v>
 </vnodes>
@@ -31766,6 +31771,52 @@ What's New in Leo 4.6
 <t tx="ekr.20090324145450.54">- Improved nav_buttons plugin and corresponding nodeHistory class.
 - Created qtGui and tkGui plugins.
 - Created leoGuiPluginsRef.leo.</t>
+<t tx="ekr.20090401113141.1">@language rest
+
+@
+To generate .odt or .rtf or .pdf files, you create an intermediate file and
+ignore the the "official" output file, in this case test.html. The intermediate
+file contains the rST text corresponding to the @rst tree.
+
+To tell the rst3 plugin to generate an intermediate file, do::
+
+    write_intermediate_file = True
+
+After you create the intermediate file, in this case, test.html.txt,
+You can create an odt file as follows::
+
+    python rst2odt.py test.html.txt test.odt
+    
+Note that rst3odt.py is in the tools directory of the DocUtils distribution.
+    
+To generate .rtf, you can use PanDoc to convert test.html.txt to RTF.
+
+To generate .pdf files, you would first convert test.html.txt to LaTeX::
+
+    python rst2newlatex.py test.html.txt test.tex
+    
+You can then use one of the LaTeX to .pdf converters to create the final .pdf
+file. See http://docutils.sourceforge.net/docs/user/latex.html#pdf-generation
+for details.
+    </t>
+<t tx="ekr.20090401113141.2">@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = True
+verbose=True
+@c
+
+====
+Test
+====
+
+This is a test.</t>
+<t tx="ekr.20090401113141.4">This is section 1</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
