@@ -63,7 +63,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20080730212711.36"><vh>&lt;&lt; body &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -187,7 +187,7 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.2" a="E"><vh>Chapter 1: Installing Leo</vh>
+<v t="ekr.20050831195331.2"><vh>Chapter 1: Installing Leo</vh>
 <v t="edream.110203163054.48"><vh>@rst html\install.html</vh>
 <v t="ekr.20050901110110"><vh>@rst-no-head links</vh></v>
 <v t="edream.110203163054.49"><vh>System requirements</vh></v>
@@ -2960,8 +2960,8 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20090401113141.1" a="E"><vh>Test of odt/rtf/pdf files</vh>
-<v t="ekr.20090401113141.2" a="E"><vh>@rst c:\prog\test\test.html</vh>
+<v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
+<v t="ekr.20090401113141.2"><vh>@rst c:\prog\test\test.html</vh>
 <v t="ekr.20090401113141.4"><vh>section 1</vh></v>
 </v>
 </v>
