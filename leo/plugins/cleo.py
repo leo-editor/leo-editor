@@ -333,11 +333,12 @@ class cleoController:
         pri = self.getat(p.v, 'priority')
         if pri: pri = int(pri)
         if pri in self.priorities:
+            cleo_icon_path = self.c.config.getString('cleo_icon_path')
             iconDir = g.os_path_abspath(
               g.os_path_normpath(
                 g.os_path_join(g.app.loadDir,"..","Icons")))
             com.appendImageDictToList(icons, iconDir,
-                g.os_path_join('cleo',self.priorities[pri]['icon']),
+                g.os_path_join(cleo_icon_path,self.priorities[pri]['icon']),
                 2, on='vnode', cleoIcon='1', where=self.icon_location)
                 # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
                 # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
@@ -1421,3 +1422,4 @@ class cleoController:
 #@nonl
 #@-node:tbrown.20060828111141:@thin cleo.py
 #@-leo
+

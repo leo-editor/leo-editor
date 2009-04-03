@@ -2,14 +2,14 @@
 <?xml-stylesheet ekr_test?>
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="575" height="721" width="700"/>
+<globals body_outline_ratio="0.740234375">
+	<global_window_position top="10" left="10" height="692" width="1024"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,14,4"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,14,5,0"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1009,7 +1009,8 @@
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20080328105334.1"><vh>cleo</vh>
+<v t="ekr.20080328105334.1" a="E"><vh>cleo</vh>
+<v t="tbrown.20090403131705.1"><vh>@string cleo_icon_path = cleo</vh></v>
 <v t="ekr.20080602174756.1"><vh>@bool cleo_color_ignore = True</vh></v>
 <v t="ekr.20080328105334.2"><vh>@color cleo_color_prog_green =</vh></v>
 <v t="ekr.20080328105334.3"><vh>@color cleo_color_prog_red =</vh></v>
@@ -7847,7 +7848,9 @@ but you can still see where things come from before you load them.
 False: don't use submenus for multiple path entries, unless recent_files_group
 is true (and recent_files_omit_directories is False)
 </t>
+<t tx="tbrown.20090403131705.1"></t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>
 </leo_file>
+
