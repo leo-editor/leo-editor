@@ -255,65 +255,11 @@ hr { /* EKR */
 <p>This chapter discusses all of Leo's menu commands.
 It starts with a discussion of the Emacs-like minibuffer,
 then continues with a discussion of commands in each of Leo's menus.</p>
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
-<ul class="simple">
-<li><a class="reference internal" href="#the-minibuffer" id="id1">The minibuffer</a><ul>
-<li><a class="reference internal" href="#basic-editing-commands" id="id2">Basic editing commands</a></li>
-<li><a class="reference internal" href="#debugging-commands" id="id3">Debugging commands</a></li>
-<li><a class="reference internal" href="#emacs-commands" id="id4">Emacs commands</a></li>
-<li><a class="reference internal" href="#find-commands" id="id5">Find commands</a></li>
-<li><a class="reference internal" href="#gui-commands" id="id6">Gui commands</a></li>
-<li><a class="reference internal" href="#help-commands" id="id7">Help commands</a></li>
-<li><a class="reference internal" href="#mode-commands" id="id8">Mode commands</a></li>
-<li><a class="reference internal" href="#outline-commands" id="id9">Outline commands</a></li>
-<li><a class="reference internal" href="#miscellaneous-commands" id="id10">Miscellaneous commands</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#the-file-menu" id="id11">The File Menu</a><ul>
-<li><a class="reference internal" href="#loading-saving-and-reverting-files" id="id12">Loading, Saving and Reverting Files</a></li>
-<li><a class="reference internal" href="#communicating-with-external-editors" id="id13">Communicating with external editors</a></li>
-<li><a class="reference internal" href="#tangling-an-outline-producing-derived-files" id="id14">Tangling an outline: Producing Derived Files</a></li>
-<li><a class="reference internal" href="#untangling-updating-an-outline" id="id15">Untangling: updating an outline</a></li>
-<li><a class="reference internal" href="#importing-files-into-leo-outlines" id="id16">Importing Files into Leo Outlines</a></li>
-<li><a class="reference internal" href="#exporting-files-from-leo-outlines" id="id17">Exporting Files from Leo Outlines</a></li>
-<li><a class="reference internal" href="#quitting-leo" id="id18">Quitting Leo</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#the-edit-menu" id="id19">The Edit Menu</a><ul>
-<li><a class="reference internal" href="#undoing-changes" id="id20">Undoing changes</a></li>
-<li><a class="reference internal" href="#cutting-pasting-and-selecting-text" id="id21">Cutting, pasting and selecting text</a></li>
-<li><a class="reference internal" href="#shifting-body-text" id="id22">Shifting body text</a></li>
-<li><a class="reference internal" href="#adding-and-deleting-comments-in-body-text" id="id23">Adding and deleting comments in body text</a></li>
-<li><a class="reference internal" href="#creating-nodes-from-body-text" id="id24">Creating nodes from body text</a></li>
-<li><a class="reference internal" href="#converting-leading-blanks-and-tabs-in-body-text" id="id25">Converting leading blanks and tabs in body text</a></li>
-<li><a class="reference internal" href="#executing-python-scripts-in-body-text" id="id26">Executing Python scripts in body text</a></li>
-<li><a class="reference internal" href="#finding-and-changing-text" id="id27">Finding and changing text</a></li>
-<li><a class="reference internal" href="#script-search" id="id28">Script search</a></li>
-<li><a class="reference internal" href="#go-to-line-number" id="id29">Go To Line Number</a></li>
-<li><a class="reference internal" href="#inserting-the-date-and-time" id="id30">Inserting the date and time</a></li>
-<li><a class="reference internal" href="#reformatting-paragraphs-in-body-text" id="id31">Reformatting paragraphs in body text</a></li>
-<li><a class="reference internal" href="#matching-brackets-and-parenthesis" id="id32">Matching brackets and parenthesis</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#the-outline-menu" id="id33">The Outline Menu</a><ul>
-<li><a class="reference internal" href="#checking-outlines" id="id34">Checking outlines</a></li>
-<li><a class="reference internal" href="#creating-cloning-nodes" id="id35">Creating &amp; cloning nodes</a></li>
-<li><a class="reference internal" href="#cutting-pasting-and-deleting-nodes" id="id36">Cutting, pasting and deleting nodes</a></li>
-<li><a class="reference internal" href="#expanding-and-contracting-nodes" id="id37">Expanding and contracting nodes</a></li>
-<li><a class="reference internal" href="#marking-nodes" id="id38">Marking nodes</a></li>
-<li><a class="reference internal" href="#moving-sorting-and-reorganizing-nodes" id="id39">Moving, sorting and reorganizing nodes</a></li>
-<li><a class="reference internal" href="#hoisting-de-hoisting-nodes" id="id40">Hoisting &amp; De-hoisting nodes</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#the-window-menu" id="id41">The Window Menu</a></li>
-<li><a class="reference internal" href="#the-help-menu" id="id42">The Help Menu</a></li>
-</ul>
-</div>
+<!-- .. contents:: -->
 <!-- External links... -->
 <!-- Relative links... -->
 <div class="section" id="the-minibuffer">
-<h1><a class="toc-backref" href="#id1">The minibuffer</a></h1>
+<h1>The minibuffer</h1>
 <p>The mini-buffer is a text area at the bottom of the body pane.
 You use it like the Emacs mini-buffer to invoke commands by their so-called <em>long name</em>.
 The following commands affect the minibuffer:</p>
@@ -333,7 +279,7 @@ the focus in the body pane.</li>
 <strong>Important</strong>: you may bind keystrokes to any of these commands.
 See <a class="reference external" href="customizing.html">Chapter 8: Customizing Leo</a> for full details.</p>
 <div class="section" id="basic-editing-commands">
-<h2><a class="toc-backref" href="#id2">Basic editing commands</a></h2>
+<h2>Basic editing commands</h2>
 <p>The following basic editing commands are typically bound to key strokes:</p>
 <pre class="literal-block">
 back-char
@@ -387,7 +333,7 @@ undo
 </pre>
 </div>
 <div class="section" id="debugging-commands">
-<h2><a class="toc-backref" href="#id3">Debugging commands</a></h2>
+<h2>Debugging commands</h2>
 <p>These commands are for debugging Leo itself:</p>
 <pre class="literal-block">
 collect-garbage
@@ -405,7 +351,7 @@ verbose-dump-objects
 </pre>
 </div>
 <div class="section" id="emacs-commands">
-<h2><a class="toc-backref" href="#id4">Emacs commands</a></h2>
+<h2>Emacs commands</h2>
 <p>The following commands work just like their Emacs counterparts.
 Use the help-for-command command for further details:</p>
 <pre class="literal-block">
@@ -542,7 +488,7 @@ zap-to-character
 </pre>
 </div>
 <div class="section" id="find-commands">
-<h2><a class="toc-backref" href="#id5">Find commands</a></h2>
+<h2>Find commands</h2>
 <p>Here is a list of all of Leo's find commands.
 The apropos-find-commands command will print a detailed
 help message discussing these commands:</p>
@@ -587,7 +533,7 @@ word-search-forward
 </pre>
 </div>
 <div class="section" id="gui-commands">
-<h2><a class="toc-backref" href="#id6">Gui commands</a></h2>
+<h2>Gui commands</h2>
 <p>The following commands simulate mouse clicks, double-clicks or drags:</p>
 <pre class="literal-block">
 abort-edit-headline
@@ -664,7 +610,7 @@ toggle-split-direction
 </pre>
 </div>
 <div class="section" id="help-commands">
-<h2><a class="toc-backref" href="#id7">Help commands</a></h2>
+<h2>Help commands</h2>
 <p>The following commands print various helpful messages.
 Apropos commands print longer discussions of specific topics.
 The help-for-command command prompts for a command name
@@ -683,7 +629,7 @@ python-help
 </pre>
 </div>
 <div class="section" id="mode-commands">
-<h2><a class="toc-backref" href="#id8">Mode commands</a></h2>
+<h2>Mode commands</h2>
 <p>These commands put Leo into various kinds of modes.</p>
 <ul class="simple">
 <li>The <tt class="docutils literal"><span class="pre">enter-*-mode</span></tt> commands enter modes defined by &#64;mode nodes in leoSettings.leo
@@ -735,7 +681,7 @@ toggle-input-state
 </pre>
 </div>
 <div class="section" id="outline-commands">
-<h2><a class="toc-backref" href="#id9">Outline commands</a></h2>
+<h2>Outline commands</h2>
 <p>The following commands invoke Leo's outline commands:</p>
 <pre class="literal-block">
 clone-node
@@ -803,7 +749,7 @@ sort-siblings
 </pre>
 </div>
 <div class="section" id="miscellaneous-commands">
-<h2><a class="toc-backref" href="#id10">Miscellaneous commands</a></h2>
+<h2>Miscellaneous commands</h2>
 <p>Here are various miscellaneous minibuffer commands:</p>
 <pre class="literal-block">
 about-leo
@@ -883,9 +829,9 @@ write-outline-only
 </div>
 </div>
 <div class="section" id="the-file-menu">
-<h1><a class="toc-backref" href="#id11">The File Menu</a></h1>
+<h1>The File Menu</h1>
 <div class="section" id="loading-saving-and-reverting-files">
-<h2><a class="toc-backref" href="#id12">Loading, Saving and Reverting Files</a></h2>
+<h2>Loading, Saving and Reverting Files</h2>
 <ul>
 <li><p class="first">The <tt class="docutils literal"><span class="pre">New</span></tt> command creates a new Leo main window.</p>
 </li>
@@ -935,7 +881,7 @@ derived file with the same name.</li>
 </ul>
 </div>
 <div class="section" id="communicating-with-external-editors">
-<h2><a class="toc-backref" href="#id13">Communicating with external editors</a></h2>
+<h2>Communicating with external editors</h2>
 <p>The <tt class="docutils literal"><span class="pre">Open</span> <span class="pre">With</span></tt> command allows you to communicate with external editor. When
 you select this command Leo creates a temporary file and invokes an external
 program. Leo periodically checks whether this temporary file has changed; Leo
@@ -946,7 +892,7 @@ the createOpenWithMenuFromTable routine described in the child of this node. The
 of handling the <tt class="docutils literal"><span class="pre">Open</span> <span class="pre">With</span></tt> menu.</p>
 </div>
 <div class="section" id="tangling-an-outline-producing-derived-files">
-<h2><a class="toc-backref" href="#id14">Tangling an outline: Producing Derived Files</a></h2>
+<h2>Tangling an outline: Producing Derived Files</h2>
 <p>The <tt class="docutils literal"><span class="pre">Tangle</span></tt>, <tt class="docutils literal"><span class="pre">Tangle</span> <span class="pre">All</span></tt> and <tt class="docutils literal"><span class="pre">Tangle</span> <span class="pre">Marked</span></tt> commands create derived
 files from portions of an outline. These commands indent and format the derived
 files so that they are easy to read and so that it is clear what sections
@@ -968,7 +914,7 @@ the <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> direc
 more details, see: <a class="reference external" href="directives.html#tangling-root-trees-with-the-tangle-commands">Tangling &#64;root trees with the Tangle commands</a></p>
 </div>
 <div class="section" id="untangling-updating-an-outline">
-<h2><a class="toc-backref" href="#id15">Untangling: updating an outline</a></h2>
+<h2>Untangling: updating an outline</h2>
 <p>The <tt class="docutils literal"><span class="pre">Untangle</span></tt>, <tt class="docutils literal"><span class="pre">Untangle</span> <span class="pre">All</span></tt> and <tt class="docutils literal"><span class="pre">Untangle</span> <span class="pre">Marked</span></tt> commands are the
 reverse of the corresponding <tt class="docutils literal"><span class="pre">Tangle</span></tt> commands. They update an outline based
 on changes made to one or more derived files. These are exceptionally useful
@@ -1004,7 +950,7 @@ text in cloned nodes is to make the change in the .leo file rather than the
 derived files.</p>
 </div>
 <div class="section" id="importing-files-into-leo-outlines">
-<h2><a class="toc-backref" href="#id16">Importing Files into Leo Outlines</a></h2>
+<h2>Importing Files into Leo Outlines</h2>
 <p>The <tt class="docutils literal"><span class="pre">Import</span></tt> commands do not attempt to do perfect translations; they merely automate the bulk of the drudgery:</p>
 <ul class="simple">
 <li>The <tt class="docutils literal"><span class="pre">Import</span> <span class="pre">to</span> <span class="pre">&#64;file</span></tt> command creates an <tt class="docutils literal"><span class="pre">&#64;file</span></tt> node from a file.</li>
@@ -1026,7 +972,7 @@ Leo escapes such characters by preceding <tt class="docutils literal"><span clas
 backslash.</p>
 </div>
 <div class="section" id="exporting-files-from-leo-outlines">
-<h2><a class="toc-backref" href="#id17">Exporting Files from Leo Outlines</a></h2>
+<h2>Exporting Files from Leo Outlines</h2>
 <ul class="simple">
 <li>The <tt class="docutils literal"><span class="pre">Outline</span> <span class="pre">To</span> <span class="pre">CWEB</span></tt> command creates a <a class="reference external" href="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">CWEB</a> file from the selected outline.</li>
 <li>The <tt class="docutils literal"><span class="pre">Outline</span> <span class="pre">TO</span> <span class="pre">noweb</span></tt> command creates a <a class="reference external" href="http://www.eecs.harvard.edu/~nr/noweb/">noweb</a> file from the selected outline.</li>
@@ -1037,16 +983,16 @@ See the previous section for a discussion of <tt class="docutils literal"><span 
 </ul>
 </div>
 <div class="section" id="quitting-leo">
-<h2><a class="toc-backref" href="#id18">Quitting Leo</a></h2>
+<h2>Quitting Leo</h2>
 <p>The <tt class="docutils literal"><span class="pre">Quit</span></tt> command causes Leo to exit. You may also exit Leo by closing the
 main window. You will be prompted to save any file that has been altered but not
 saved.</p>
 </div>
 </div>
 <div class="section" id="the-edit-menu">
-<h1><a class="toc-backref" href="#id19">The Edit Menu</a></h1>
+<h1>The Edit Menu</h1>
 <div class="section" id="undoing-changes">
-<h2><a class="toc-backref" href="#id20">Undoing changes</a></h2>
+<h2>Undoing changes</h2>
 <p>Leo supports unlimited undo and redo. Think of actions that may be undone or
 redone as a string of beads. A &quot;bead pointer&quot; points to the present bead.
 Performing an operation creates a new bead after the present bead and removes
@@ -1056,19 +1002,19 @@ disabled when the bead pointer moves in front of the first bead; the <tt class="
 command is disabled when the bead pointer points to the last bead.</p>
 </div>
 <div class="section" id="cutting-pasting-and-selecting-text">
-<h2><a class="toc-backref" href="#id21">Cutting, pasting and selecting text</a></h2>
+<h2>Cutting, pasting and selecting text</h2>
 <p>Leo supports the standard editing commands: <tt class="docutils literal"><span class="pre">Cut</span></tt>, <tt class="docutils literal"><span class="pre">Copy</span></tt>, <tt class="docutils literal"><span class="pre">Paste</span></tt>,
 <tt class="docutils literal"><span class="pre">Clear</span></tt> and <tt class="docutils literal"><span class="pre">Select</span> <span class="pre">All</span></tt>. These commands work with either headline or body
 text.</p>
 </div>
 <div class="section" id="shifting-body-text">
-<h2><a class="toc-backref" href="#id22">Shifting body text</a></h2>
+<h2>Shifting body text</h2>
 <p>The <tt class="docutils literal"><span class="pre">Shift</span> <span class="pre">Left</span></tt> and <tt class="docutils literal"><span class="pre">Shift</span> <span class="pre">Right</span></tt> commands shift selected lines in the body
 text left or right one tab position. These commands shift the entire line if any
 characters in that line are selected.</p>
 </div>
 <div class="section" id="adding-and-deleting-comments-in-body-text">
-<h2><a class="toc-backref" href="#id23">Adding and deleting comments in body text</a></h2>
+<h2>Adding and deleting comments in body text</h2>
 <ul class="simple">
 <li>The <tt class="docutils literal"><span class="pre">Add</span> <span class="pre">Comments</span></tt> command puts comments around a block of code.
 This command uses single-line comments if possible.</li>
@@ -1076,7 +1022,7 @@ This command uses single-line comments if possible.</li>
 </ul>
 </div>
 <div class="section" id="creating-nodes-from-body-text">
-<h2><a class="toc-backref" href="#id24">Creating nodes from body text</a></h2>
+<h2>Creating nodes from body text</h2>
 <p>The Extract, Extract Section and Extract Section Names commands create child nodes whose headline is the first line of the selected body text.</p>
 <ul class="simple">
 <li>The <tt class="docutils literal"><span class="pre">Extract</span> <span class="pre">command</span></tt> creates a new node whose headline is the first line of selected body text and
@@ -1092,7 +1038,7 @@ The headline of each created node is the section name; the body text is <tt clas
 </ul>
 </div>
 <div class="section" id="converting-leading-blanks-and-tabs-in-body-text">
-<h2><a class="toc-backref" href="#id25">Converting leading blanks and tabs in body text</a></h2>
+<h2>Converting leading blanks and tabs in body text</h2>
 <ul class="simple">
 <li>The Convert Tabs command converts leading tabs to blanks in a single node.</li>
 <li>The Convert Blanks command converts blanks to tabs in a single node.</li>
@@ -1102,7 +1048,7 @@ The headline of each created node is the section name; the body text is <tt clas
 <p>All these commands convert between tabs and blanks using the tab width presently in effect.</p>
 </div>
 <div class="section" id="executing-python-scripts-in-body-text">
-<h2><a class="toc-backref" href="#id26">Executing Python scripts in body text</a></h2>
+<h2>Executing Python scripts in body text</h2>
 <p>The <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> command executes body text as a Python script. Leo
 execute the selected text, or the entire body text if no text is selected. The
 <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> command pre-defines the values <tt class="docutils literal"><span class="pre">c</span></tt>, <tt class="docutils literal"><span class="pre">g</span></tt> and <tt class="docutils literal"><span class="pre">p</span></tt> as
@@ -1123,7 +1069,7 @@ to the value of the script after preprocessing. Scripts may examine and change
 app.scriptDict as they please.</p>
 </div>
 <div class="section" id="finding-and-changing-text">
-<h2><a class="toc-backref" href="#id27">Finding and changing text</a></h2>
+<h2>Finding and changing text</h2>
 <p>The following check boxes options appear in the search dialog and control the operations of the find and change commands.</p>
 <dl class="docutils">
 <dt>Clone Find All</dt>
@@ -1176,7 +1122,7 @@ the command reaches the top of the file.</dd>
 </dl>
 </div>
 <div class="section" id="script-search">
-<h2><a class="toc-backref" href="#id28">Script search</a></h2>
+<h2>Script search</h2>
 <p><strong>Important</strong>: Script buttons are easier to use than the script-oriented
 find/change commands described next. I recommend using script buttons whenever
 possible. See <a class="reference external" href="scripting.html#creating-script-buttons">Creating script buttons</a>.
@@ -1262,11 +1208,11 @@ operate.</li>
 </ul>
 </div>
 <div class="section" id="go-to-line-number">
-<h2><a class="toc-backref" href="#id29">Go To Line Number</a></h2>
+<h2>Go To Line Number</h2>
 <p>The <tt class="docutils literal"><span class="pre">Go</span> <span class="pre">To</span> <span class="pre">Line</span> <span class="pre">Number</span></tt> command selects the locations in your outlines corresponding to a line in a derived file.</p>
 </div>
 <div class="section" id="inserting-the-date-and-time">
-<h2><a class="toc-backref" href="#id30">Inserting the date and time</a></h2>
+<h2>Inserting the date and time</h2>
 <p>The <tt class="docutils literal"><span class="pre">Insert</span> <span class="pre">Body</span> <span class="pre">Time/Date</span></tt> and <tt class="docutils literal"><span class="pre">Insert</span> <span class="pre">Headline</span> <span class="pre">Time/Date</span></tt> commands insert
 formatted time and date into body or headline text. You must be editing a
 headline to be able to insert the time/date into the headline.
@@ -1282,7 +1228,7 @@ format like:</p>
 </pre>
 </div>
 <div class="section" id="reformatting-paragraphs-in-body-text">
-<h2><a class="toc-backref" href="#id31">Reformatting paragraphs in body text</a></h2>
+<h2>Reformatting paragraphs in body text</h2>
 <p>The Reformat Paragraph command rearranges the words in a text paragraph to fill
 each line as full as possible, up to the <tt class="docutils literal"><span class="pre">&#64;pagewidth</span></tt> setting. A paragraph is
 delimited by blank lines, Leo directives, and (of course) start and end of text
@@ -1304,7 +1250,7 @@ numbered lists, such as:</p>
 </pre>
 </div>
 <div class="section" id="matching-brackets-and-parenthesis">
-<h2><a class="toc-backref" href="#id32">Matching brackets and parenthesis</a></h2>
+<h2>Matching brackets and parenthesis</h2>
 <p>The <tt class="docutils literal"><span class="pre">Match</span> <span class="pre">Brackets</span></tt> command is enabled if the cursor is next to one of the
 following characters in the body pane:</p>
 <blockquote>
@@ -1319,9 +1265,9 @@ highlights the range of matched characters without changing the cursor.</p>
 </div>
 </div>
 <div class="section" id="the-outline-menu">
-<h1><a class="toc-backref" href="#id33">The Outline Menu</a></h1>
+<h1>The Outline Menu</h1>
 <div class="section" id="checking-outlines">
-<h2><a class="toc-backref" href="#id34">Checking outlines</a></h2>
+<h2>Checking outlines</h2>
 <ul>
 <li><p class="first">The <tt class="docutils literal"><span class="pre">Check</span> <span class="pre">Outline</span></tt> command checks the outline for consistency.</p>
 </li>
@@ -1344,7 +1290,7 @@ putNormalToken:   puts whitespace around everything else.
 </ul>
 </div>
 <div class="section" id="creating-cloning-nodes">
-<h2><a class="toc-backref" href="#id35">Creating &amp; cloning nodes</a></h2>
+<h2>Creating &amp; cloning nodes</h2>
 <ul class="simple">
 <li>The <tt class="docutils literal"><span class="pre">Insert</span> <span class="pre">Headline</span></tt> command inserts a new headline after the presently selected headline,
 either as the next sibling or the first child of the presently selected headline
@@ -1354,7 +1300,7 @@ See <a class="reference external" href="intro.html#clones-views">Clones and view
 </ul>
 </div>
 <div class="section" id="cutting-pasting-and-deleting-nodes">
-<h2><a class="toc-backref" href="#id36">Cutting, pasting and deleting nodes</a></h2>
+<h2>Cutting, pasting and deleting nodes</h2>
 <ul class="simple">
 <li>The <tt class="docutils literal"><span class="pre">Cut</span> <span class="pre">Outline</span></tt> and <tt class="docutils literal"><span class="pre">Copy</span> <span class="pre">Outline</span></tt> commands copy a text
 representation of the outline to the clipboard. This representation is the same
@@ -1367,7 +1313,7 @@ pasted node will become of a clone of the already-existing node.</li>
 </ul>
 </div>
 <div class="section" id="expanding-and-contracting-nodes">
-<h2><a class="toc-backref" href="#id37">Expanding and contracting nodes</a></h2>
+<h2>Expanding and contracting nodes</h2>
 <ul class="simple">
 <li>The <tt class="docutils literal"><span class="pre">Expand</span></tt> command expands the currently selected node so that all its children are visible.</li>
 <li>The <tt class="docutils literal"><span class="pre">Expand</span> <span class="pre">All</span> <span class="pre">Subheads</span></tt> command expands the currently selected node so that all its offspring are visible.</li>
@@ -1376,7 +1322,7 @@ pasted node will become of a clone of the already-existing node.</li>
 </ul>
 </div>
 <div class="section" id="marking-nodes">
-<h2><a class="toc-backref" href="#id38">Marking nodes</a></h2>
+<h2>Marking nodes</h2>
 <ul class="simple">
 <li>The <tt class="docutils literal"><span class="pre">Mark</span> <span class="pre">Headline</span></tt> command marks a headline with a red marker  near the leader characters.</li>
 <li>The <tt class="docutils literal"><span class="pre">Unmark</span> <span class="pre">Headline</span></tt> command removes such a mark.</li>
@@ -1389,7 +1335,7 @@ This command is especially useful with the Tangle Marked command.</li>
 </ul>
 </div>
 <div class="section" id="moving-sorting-and-reorganizing-nodes">
-<h2><a class="toc-backref" href="#id39">Moving, sorting and reorganizing nodes</a></h2>
+<h2>Moving, sorting and reorganizing nodes</h2>
 <ul class="simple">
 <li>The <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Up</span></tt>, <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Down</span></tt>, <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Left</span></tt> and <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Right</span></tt> commands move the currently selected node.</li>
 <li>The <tt class="docutils literal"><span class="pre">Promote</span> <span class="pre">command</span></tt> makes all the children of a node siblings of the node.</li>
@@ -1399,7 +1345,7 @@ This command is especially useful with the Tangle Marked command.</li>
 </ul>
 </div>
 <div class="section" id="hoisting-de-hoisting-nodes">
-<h2><a class="toc-backref" href="#id40">Hoisting &amp; De-hoisting nodes</a></h2>
+<h2>Hoisting &amp; De-hoisting nodes</h2>
 <ul class="simple">
 <li>The <tt class="docutils literal"><span class="pre">Hoist</span></tt> command redraws the screen so presently selected tree becomes the only visible part of the outline.
 Hoist commands may be nested.</li>
@@ -1408,7 +1354,7 @@ Hoist commands may be nested.</li>
 </div>
 </div>
 <div class="section" id="the-window-menu">
-<h1><a class="toc-backref" href="#id41">The Window Menu</a></h1>
+<h1>The Window Menu</h1>
 <ul class="simple">
 <li>The <tt class="docutils literal"><span class="pre">Equal</span> <span class="pre">Sized</span> <span class="pre">Panes</span></tt> command adjusts the sizes of the outline and body
 panes so that they are the same height.</li>
@@ -1427,7 +1373,7 @@ two files, one containing sentinels and one not.</li>
 </ul>
 </div>
 <div class="section" id="the-help-menu">
-<h1><a class="toc-backref" href="#id42">The Help Menu</a></h1>
+<h1>The Help Menu</h1>
 <ul class="simple">
 <li>The <tt class="docutils literal"><span class="pre">About</span> <span class="pre">Leo</span></tt> command puts up a dialog box showing the version of Leo.</li>
 <li>The <tt class="docutils literal"><span class="pre">Online</span> <span class="pre">Home</span> <span class="pre">Page</span></tt> command opens Leo's home page at <a class="reference external" href="http://webpages.charter.net/edreamleo/front.html">http://webpages.charter.net/edreamleo/front.html</a>.</li>

@@ -261,47 +261,14 @@ It briefly describes everything a Python programmer needs to know in order to un
 <a class="reference internal" href="#good-style-and-bad-sections-vs-others">Good style and bad</a> answers common question about when to use the features described in the <a class="reference internal" href="#quick-start-for-programmers">quickstart</a>.
 The section <a class="reference internal" href="#scripting-leo">Scripting Leo</a> is an introduction to scripting Leo with Python.
 For full details, see <a class="reference external" href="scripting.html">Chapter 7: Scripting Leo with Python</a>.</p>
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
-<ul class="simple">
-<li><a class="reference internal" href="#introduction" id="id2">Introduction</a><ul>
-<li><a class="reference internal" href="#leo-s-main-window" id="id3">Leo's main window</a></li>
-<li><a class="reference internal" href="#using-leo-as-an-outliner" id="id4">Using Leo as an outliner</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#unique-features-of-leo" id="id5">Unique features of Leo</a><ul>
-<li><a class="reference internal" href="#derived-files" id="id6">Derived files</a></li>
-<li><a class="reference internal" href="#clones-views" id="id7">Clones &amp; views</a></li>
-<li><a class="reference internal" href="#outline-structure-is-significant-everywhere" id="id8">Outline structure is significant everywhere</a></li>
-<li><a class="reference internal" href="#leo-directives" id="id9">Leo directives</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#leo-for-programmers" id="id10">Leo for Programmers</a><ul>
-<li><a class="reference internal" href="#quick-start-for-programmers" id="id11">Quick start for programmers</a></li>
-<li><a class="reference internal" href="#beginner-s-reference-guide" id="id12">Beginner`s reference guide</a><ul>
-<li><a class="reference internal" href="#syntax-of-section-names" id="id13">Syntax of section names</a></li>
-<li><a class="reference internal" href="#code-and-doc-parts" id="id14">Code and doc parts</a></li>
-<li><a class="reference internal" href="#directives-for-programming" id="id15">Directives for programming</a></li>
-<li><a class="reference internal" href="#orphan-nodes" id="id16">Orphan nodes</a></li>
-<li><a class="reference internal" href="#sentinel-lines" id="id17">Sentinel lines</a></li>
-<li><a class="reference internal" href="#leo-and-literate-programming" id="id18">Leo and literate programming</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#good-style-and-bad-sections-vs-others" id="id19">Good style and bad:  sections vs. &#64;others</a></li>
-<li><a class="reference internal" href="#scripting-leo" id="id20">Scripting Leo</a></li>
-<li><a class="reference internal" href="#plugins-settings" id="id21">Plugins &amp; settings</a></li>
-<li><a class="reference internal" href="#further-study" id="id22">Further study</a></li>
-</ul>
-</li>
-</ul>
-</div>
+<!-- .. contents:: -->
 <!-- Links used in this document... -->
 <!-- - - - - - External references. -->
 <!-- - - - - - Relative links.... -->
 <!-- - - - - - References to other chapters. -->
 <!-- - - - - - References to the glossary -->
 <div class="section" id="introduction">
-<h1><a class="toc-backref" href="#id2">Introduction</a></h1>
+<h1>Introduction</h1>
 <p><strong>Important</strong>: please <a class="reference external" href="install.html">install Leo</a> before reading this tutorial,
 If you have any problem, please do ask for help on <a class="reference external" href="http://sourceforge.net/forum/forum.php?forum_id=10227">Leo's help forum</a>.</p>
 <p>Now that you have Leo installed, please <a class="reference external" href="install.html#running-leo">launch Leo</a>.
@@ -309,7 +276,7 @@ You should see Leo's main window, something like this:
 <strong>Note</strong>: the actual contents of the icon area at the top depends on what plugins are active.</p>
 <p><img alt="leoMainWindow" src="PCWindow.gif" /></p>
 <div class="section" id="leo-s-main-window">
-<h2><a class="toc-backref" href="#id3">Leo's main window</a></h2>
+<h2>Leo's main window</h2>
 <p>The main window represents an entire project and is stored in a single <strong>Leo file</strong>,
 a file with a .leo extension.
 As you can see, the main window contains three panes:
@@ -352,7 +319,7 @@ Please select nodes at several levels of the outline to see how the UNL changes.
 let's see how to use Leo as a simple outliner.</p>
 </div>
 <div class="section" id="using-leo-as-an-outliner">
-<h2><a class="toc-backref" href="#id4">Using Leo as an outliner</a></h2>
+<h2>Using Leo as an outliner</h2>
 <p>You can use Leo as fairly typical outliner. Play around with some of the
 commands from the Outline menu:</p>
 <ul class="simple">
@@ -373,11 +340,11 @@ commands</a> that apply to the body pane.</p>
 </div>
 </div>
 <div class="section" id="unique-features-of-leo">
-<h1><a class="toc-backref" href="#id5">Unique features of Leo</a></h1>
+<h1>Unique features of Leo</h1>
 <p>So far we have discussed features that Leo shares with other editors and outliners.
 The following sections explain what makes Leo unique.</p>
 <div class="section" id="derived-files">
-<h2><a class="toc-backref" href="#id6">Derived files</a></h2>
+<h2>Derived files</h2>
 <p>You don't have to store all outline data in Leo (.leo) files.
 Leo allows you to store outline data in external files called <strong>derived files</strong>.
 This is useful for creating programming files, documentation files such as LaTeX files, and web pages.</p>
@@ -412,7 +379,7 @@ you can use <a class="reference external" href="glossary.html#headlines">headlin
 Usually, <a class="reference external" href="glossary.html#headlines">headlines</a> describe what's in the node.</p>
 </div>
 <div class="section" id="clones-views">
-<h2><a class="toc-backref" href="#id7">Clones &amp; views</a></h2>
+<h2>Clones &amp; views</h2>
 <p>A <strong>cloned node</strong> is a copy of a <a class="reference external" href="glossary.html#node">node</a> that changes when the original changes.
 Changes to the <a class="reference external" href="glossary.html#child">children</a>, <a class="reference external" href="glossary.html#grandchildren">grandchildren</a>, etc. of a node are simultaneously made
 to the corresponding nodes contained in all cloned nodes. A small red arrow in
@@ -460,7 +427,7 @@ task at hand, and lets me ignore all other details.</p>
 ability to create multiple views of a project is most helpful.</p>
 </div>
 <div class="section" id="outline-structure-is-significant-everywhere">
-<h2><a class="toc-backref" href="#id8">Outline structure is significant everywhere</a></h2>
+<h2>Outline structure is significant everywhere</h2>
 <p>So far we have been focusing on Leo's outline pane: creating and <a class="reference external" href="glossary.html#clone">cloning</a> <a class="reference external" href="glossary.html#nodes">nodes</a>.
 In fact, <em>outline structure affects all aspects of Leo</em>.
 For example:</p>
@@ -478,7 +445,7 @@ effects to the presently selected outline.</li>
 </ul>
 </div>
 <div class="section" id="leo-directives">
-<h2><a class="toc-backref" href="#id9">Leo directives</a></h2>
+<h2>Leo directives</h2>
 <p>Leo directives control such things as syntax coloring, line wrapping within the body pane and the width of tabs.
 Leo directives may appear in headlines or body text.
 Leo directives start with '&#64;' in the leftmost column, followed by the name of the directive.  Some examples:</p>
@@ -508,7 +475,7 @@ only if the ancestor node contains exactly one <tt class="docutils literal"><spa
 </div>
 </div>
 <div class="section" id="leo-for-programmers">
-<h1><a class="toc-backref" href="#id10">Leo for Programmers</a></h1>
+<h1>Leo for Programmers</h1>
 <p>The previous sections have discussed the basics of Leo.
 <em>Non-programmers can stop reading this tutorial now</em>!</p>
 <p>The following sections tell how to create derived files that contain computer
@@ -517,7 +484,7 @@ the following section explain how you can take advantage of <strong>power-user</
 features designed specifically for computer programmers. Even if you don't read
 manuals, please read the following short <a class="reference internal" href="#quick-start-for-programmers">Quick start for programmers</a> section.</p>
 <div class="section" id="quick-start-for-programmers">
-<h2><a class="toc-backref" href="#id11">Quick start for programmers</a></h2>
+<h2>Quick start for programmers</h2>
 <p><a class="reference external" href="glossary.html#thin-trees">&#64;thin trees</a> (parts of the outline whose <em>headline</em> starts with &#64;thin)
 create <a class="reference internal" href="#derived-files">derived files</a> containing your program.
 Within <tt class="docutils literal"><span class="pre">&#64;thin</span> <span class="pre">trees</span></tt> you can write <em>functional pseudo-code</em>, like this:</p>
@@ -582,12 +549,12 @@ you might save yourself some extra work.</p>
 Leo imports such derived files every time Leo reads the .leo file.</p>
 </div>
 <div class="section" id="beginner-s-reference-guide">
-<h2><a class="toc-backref" href="#id12">Beginner`s reference guide</a></h2>
+<h2>Beginner`s reference guide</h2>
 <p>This section covers all the details of programming with Leo that beginners are likely to need.
 <a class="reference external" href="directives.html">Chapter 4: Writing Programs in Leo</a> is the full reference guide.
 I recommend avoiding that chapter until you have been programming with Leo for some time.</p>
 <div class="section" id="syntax-of-section-names">
-<h3><a class="toc-backref" href="#id13">Syntax of section names</a></h3>
+<h3>Syntax of section names</h3>
 <p>A section name has the form:</p>
 <pre class="literal-block">
 &lt;&lt; any text &gt;&gt;
@@ -617,7 +584,7 @@ Eliminating these escape conventions may seem odd,
 but it has turned out to be one of the best design decisions I ever made.</p>
 </div>
 <div class="section" id="code-and-doc-parts">
-<h3><a class="toc-backref" href="#id14">Code and doc parts</a></h3>
+<h3>Code and doc parts</h3>
 <p><strong>Doc parts</strong> are blocks of text that Leo treats as comments.
 Leo syntax colors doc parts as comments,
 and Leo converts doc parts into comments in derived files.
@@ -657,7 +624,7 @@ of use <em>only</em> for those who want to create .nw output files for use with 
 official <a class="reference external" href="http://www.eecs.harvard.edu/~nr/noweb/">noweb</a> system.</p>
 </div>
 <div class="section" id="directives-for-programming">
-<h3><a class="toc-backref" href="#id15">Directives for programming</a></h3>
+<h3>Directives for programming</h3>
 <p>The following directives are commonly used by Leo programmers.
 See <a class="reference external" href="directives.html">Chapter 4: Writing Programs in Leo</a> for full details.</p>
 <ul class="simple">
@@ -679,7 +646,7 @@ Leo treats lines starting with <tt class="docutils literal"><span class="pre">&#
 In particular, Leo will output Python decorators correctly, provided the name of the decorator is not a Leo directive.</p>
 </div>
 <div class="section" id="orphan-nodes">
-<h3><a class="toc-backref" href="#id16">Orphan nodes</a></h3>
+<h3>Orphan nodes</h3>
 <p>An <strong>orphan node</strong> is a descendant of an <a class="reference external" href="glossary.html#thin">&#64;thin</a> <a class="reference external" href="glossary.html#node">node</a> that will not be copied
 to the <a class="reference internal" href="#derived-files">derived file</a>. Orphan nodes can arise because an <a class="reference external" href="glossary.html#thin">&#64;thin</a> tree has no
 <tt class="docutils literal"><span class="pre">&#64;others</span></tt> or <tt class="docutils literal"><span class="pre">&#64;all</span></tt> directives. Sections that are defined but not used also
@@ -690,7 +657,7 @@ lost; Leo will load the <a class="reference external" href="glossary.html#thin">
 opens the .leo file.</p>
 </div>
 <div class="section" id="sentinel-lines">
-<h3><a class="toc-backref" href="#id17">Sentinel lines</a></h3>
+<h3>Sentinel lines</h3>
 <p>When writing <a class="reference internal" href="#derived-files">derived files</a>, Leo stores information about the outline
 structure in special comments called <strong>sentinel lines</strong>. Sentinel lines are
 comment lines with '&#64;' following the comment delimiter. For example, here are
@@ -724,7 +691,7 @@ This is a highly complex subject: you should ignore these details at first.
 Just use <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> to create your <a class="reference internal" href="#derived-files">derived files</a>.</p>
 </div>
 <div class="section" id="leo-and-literate-programming">
-<h3><a class="toc-backref" href="#id18">Leo and literate programming</a></h3>
+<h3>Leo and literate programming</h3>
 <p>Leo can support a style of programming similar to <a class="reference external" href="http://www.literateprogramming.com/">Literate Programming</a> (LP).
 LP has a bad reputation in some quarters. That's too bad; Leo fixes all the
 problems with traditional LP. See <a class="reference external" href="design.html">Chapter 6: Leo and Literate Programming</a> in
@@ -734,7 +701,7 @@ mistake, and a big one.</p>
 </div>
 </div>
 <div class="section" id="good-style-and-bad-sections-vs-others">
-<h2><a class="toc-backref" href="#id19">Good style and bad:  sections vs. &#64;others</a></h2>
+<h2>Good style and bad:  sections vs. &#64;others</h2>
 <p>Newcomers to Leo frequently ask when to use the <a class="reference external" href="glossary.html#others">&#64;others</a> <a class="reference internal" href="#leo-directives">directive</a> and when
 to use <a class="reference external" href="glossary.html#section">sections</a>. It is good style to use <a class="reference external" href="glossary.html#section-references">section references</a> only when the
 order of text within a <a class="reference internal" href="#derived-files">derived file</a> matters. For example, Python programmers
@@ -812,7 +779,7 @@ necessary. Feel free to invent your own style of using Leo. Still, it would be
 wise to &quot;know the rules before you break them.&quot;</p>
 </div>
 <div class="section" id="scripting-leo">
-<h2><a class="toc-backref" href="#id20">Scripting Leo</a></h2>
+<h2>Scripting Leo</h2>
 <p>Leo is fully scriptable using the Python language.
 <strong>Leo can execute any body text as a Python script</strong>.
 To run the entire body text as a script, simply choose the node and execute the <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> <a class="reference external" href="commands.html">command</a>.
@@ -834,7 +801,7 @@ The example above is only the beginning of what scripts can do.
 See <a class="reference external" href="scripting.html">Chapter 7: Scripting Leo with Python</a> for a complete discussion of scripting.</p>
 </div>
 <div class="section" id="plugins-settings">
-<h2><a class="toc-backref" href="#id21">Plugins &amp; settings</a></h2>
+<h2>Plugins &amp; settings</h2>
 <p><strong>Plugins</strong> are Python modules that change how Leo works, yet are not part of Leo's core code.
 Leo's user have contributed dozens of plugins that have extended Leo's capabilities in many new directions.
 The file <tt class="docutils literal"><span class="pre">leoPlugins.leo</span></tt> contains all plugins that are included in Leo distributions.</p>
@@ -846,7 +813,7 @@ any further support from Leo's core code. For a full discussion of
 <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> trees, see <a class="reference external" href="customizing.html">Chapter 8: Customizing Leo</a>.</p>
 </div>
 <div class="section" id="further-study">
-<h2><a class="toc-backref" href="#id22">Further study</a></h2>
+<h2>Further study</h2>
 <p><tt class="docutils literal"><span class="pre">LeoPyRef.leo</span></tt> (in the core subdirectory of the leo folder) contains almost all of Leo's source code.
 It provides hundreds of examples of everything discussed here.
 This file will repay close study.

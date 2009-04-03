@@ -254,25 +254,15 @@ hr { /* EKR */
 <!-- rst3: filename: html\new-4-4-2.html -->
 <p>This page summarizes the changes made in Leo 4.4.2
 For full details see the release notes section in LeoDocs.leo.</p>
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
-<ul class="simple">
-<li><a class="reference internal" href="#a-major-code-reorg" id="id1">A major code reorg</a></li>
-<li><a class="reference internal" href="#new-commands" id="id2">New commands</a></li>
-<li><a class="reference internal" href="#new-features" id="id3">New features</a></li>
-<li><a class="reference internal" href="#new-and-improved-plugins" id="id4">New and improved plugins</a></li>
-<li><a class="reference internal" href="#settings" id="id5">Settings</a></li>
-<li><a class="reference internal" href="#zodb-scripting" id="id6">ZODB scripting</a></li>
-</ul>
-</div>
+<!-- .. contents:: -->
 <!-- Links used in this document. -->
 <div class="section" id="a-major-code-reorg">
-<h1><a class="toc-backref" href="#id1">A major code reorg</a></h1>
+<h1>A major code reorg</h1>
 <p>Leo's vnode and tnode classes are now completely independent of the rest of Leo.
 Some api's have been changed.  This 'big reorg' and may affect scripts and plugins.</p>
 </div>
 <div class="section" id="new-commands">
-<h1><a class="toc-backref" href="#id2">New commands</a></h1>
+<h1>New commands</h1>
 <pre class="literal-block">
 extend-to-line
 extend-to-paragraph
@@ -282,7 +272,7 @@ forward-end-word-extend-selection
 </pre>
 </div>
 <div class="section" id="new-features">
-<h1><a class="toc-backref" href="#id3">New features</a></h1>
+<h1>New features</h1>
 <ul class="simple">
 <li>Added support for controlling Leo from <a class="reference external" href="http://www.xemacs.org/">Emacs</a> with <a class="reference external" href="http://pymacs.progiciels-bpi.ca/index.html">pymacs</a>.
 See <a class="reference external" href="emacs.html">Chapter 18: Leo and Emacs</a> for full details.</li>
@@ -333,7 +323,7 @@ well without me thinking at all about what is happening.</li>
 </ul>
 </div>
 <div class="section" id="new-and-improved-plugins">
-<h1><a class="toc-backref" href="#id4">New and improved plugins</a></h1>
+<h1>New and improved plugins</h1>
 <ul class="simple">
 <li>Improved the mod_scripting plugin. Every button created by the plugin creates
 a corresponding command. The command name is the 'cleaned' version of the
@@ -357,7 +347,7 @@ buttons without right-clicking.</li>
 </ul>
 </div>
 <div class="section" id="settings">
-<h1><a class="toc-backref" href="#id5">Settings</a></h1>
+<h1>Settings</h1>
 <ul class="simple">
 <li>Removed .leoRecentFiles.txt from the distribution and cvs and added &#64;bool
 write_recent_files_as_needed. The presence or absence of .leoRecentFiles.txt
@@ -385,7 +375,7 @@ toggle-extend-mode = Alt-3
 </pre>
 </div>
 <div class="section" id="zodb-scripting">
-<h1><a class="toc-backref" href="#id6">ZODB scripting</a></h1>
+<h1>ZODB scripting</h1>
 <p>Leo's vnode and tnode classes can optionally be compatible with ZODB databases,
 i.e., they can optionally derive from ZODB.Persistence.Persistent.
 See Chapter 17: Using ZODB with Leo for details.</p>

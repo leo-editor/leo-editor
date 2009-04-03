@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="5,1,0,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -1146,7 +1146,7 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -2899,8 +2899,8 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
-<v t="ekr.20090324145450.20"></v>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="ekr.20090324145450.20" a="E"></v>
 <v t="ekr.20090324085713.2"><vh>4.6 b1</vh>
 <v t="ekr.20090324085713.285"><vh>Bugs fixed</vh>
 <v t="ekr.20090324085713.292"><vh>Fixed goto-global-line crasher</vh></v>
@@ -5101,7 +5101,7 @@ Chapter 22: Using Vim Bindings with Leo
 
 This chapter describes Leo's vim-like bindings, including how to install them.
 
-.. contents::
+.. .. contents::
 </t>
 <t tx="TL.20080804095315.3">.. Links
 </t>
@@ -5779,8 +5779,7 @@ This chapter tells how to install and run_ Leo.
     
 If you have *any* problems installing Leo,
 please ask for help on Leo's help forum:
-
-.. contents::</t>
+</t>
 <t tx="edream.110203163054.49">Leo will work on any platform that supports Python 2.4 or later and Tk 8.4 or later.
 
 -   Download the latest version of Leo from `Leo's download page`_.
@@ -6824,7 +6823,7 @@ However, your scripts have complete access to all of Leo's source code, that
 is, all the code in ``LeoPy.leo``. You are not limited by what you see in this
 chapter.
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20040403173920.3">The g.es method prints its arguments to the Log tab of the log pane::
 
     g.es("Hello world")
@@ -7269,7 +7268,7 @@ The following @ignore is needed so that discussions of @file, @root, etc. do not
 Front Matter
 ############
 
-.. contents::
+.. .. contents::
 </t>
 <t tx="ekr.20040414172218.2">Leo_ has thousands of users_. Like me, many of them would never willingly be without Leo again.
 Here are Leo's essential features:
@@ -9482,7 +9481,7 @@ It briefly describes everything a Python programmer needs to know in order to un
 The section `Scripting Leo`_ is an introduction to scripting Leo with Python.
 For full details, see `Chapter 7: Scripting Leo with Python`_.
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20050816073412.1">**Important**: please `install Leo`_ before reading this tutorial,
 If you have any problem, please do ask for help on `Leo's help forum`_.
 
@@ -9582,7 +9581,7 @@ You should see Leo's main window, something like this:
 Chapter 14: Using the rst3 plugin
 ####################################
 
-.. contents::
+.. .. contents::
 </t>
 <t tx="ekr.20050818163826.1">.. rST links used in this document...
 
@@ -10553,7 +10552,7 @@ This chapter assumes you are thoroughly familiar with the terminology introduced
 It contains many details that are no interest to the average user of Leo.
 I recommend using Leo for two weeks, or longer, before attempting this chapter.
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20050828061501.30">The following sections give full details about each directive.
 The directives listed here may appear in headlines or body text.
 </t>
@@ -11456,7 +11455,7 @@ I recommend avoiding that chapter until you have been programming with Leo for s
 What People Are Saying About Leo
 ###################################
 
-.. contents::
+.. .. contents::
 </t>
 <t tx="ekr.20050830074815.1">"I am using Leo since a few weeks and I brim over with enthusiasm for it.
 I think it is the most amazing software since the invention of the spreadsheet."
@@ -11787,7 +11786,7 @@ FAQ
 
 This is Leo's Frequently Asked Questions document.
 
-.. contents::
+.. .. contents::
 </t>
 <t tx="ekr.20050830115714.1"></t>
 <t tx="ekr.20050830115714.2">First, read the tutorial_. This will be enough to get you started if you just
@@ -12452,7 +12451,7 @@ http://groups.google.com/group/leo-editor</t>
 Appendices
 ############
 
-.. contents::
+.. .. contents::
 </t>
 <t tx="ekr.20050831232205">.. Relative links.
 .. _`Chapter 13: Writing plugins`:   writingPlugins.html
@@ -13027,7 +13026,7 @@ I wrote the first two white papers soon after discovering Python.
 The conclusions in these papers have remained largely unchanged.
 I wrote the third in November 2004, and rewrote it in February 2006.
 
-.. contents::
+.. .. contents::
 </t>
 <t tx="ekr.20050901092232.1">.. External links...
 .. _pychecker:              http://pychecker.sourceforge.net/
@@ -13122,7 +13121,7 @@ Chapter 3: Using Outlines
 
 This chapter tells how to use Leo's outlines.
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20050901101608.1">.. _`Chapter 2\: A Tutorial Introduction to Leo`:   intro.html
 .. _`Chapter 4\: Writing Programs in Leo`:          directives.html
 .. _`Clones and views`:                             intro.html#clones-views
@@ -13135,14 +13134,14 @@ This chapter discusses all of Leo's menu commands.
 It starts with a discussion of the Emacs-like minibuffer,
 then continues with a discussion of commands in each of Leo's menus.
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20050901101608.3">##########################################
 Chapter 6: Leo and Literate Programming
 ##########################################
 
 This chapter discusses Leo's relationship with traditional `literate programming`_.
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20050901101608.4">#############################################
 Chapter 8: Customizing Leo
 #############################################
@@ -13150,7 +13149,7 @@ Chapter 8: Customizing Leo
 This chapter discusses how to customize Leo using the plugins and other means.
 See `Specifying settings`_ for a description of how to change Leo's settings.
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20050901101608.5">##########################################
 Chapter 9: History of Leo
 ##########################################
@@ -13158,7 +13157,7 @@ Chapter 9: History of Leo
 This chapter discusses the history of Leo and tells the essential features of each version.
 Here are the most important dates in Leo's history:
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20050901101608.6">##########################################
 Chapter 10: Theory of Operation
 ##########################################
@@ -13167,7 +13166,7 @@ This chapter discusses how Leo's code works,
 paying particular attention to topics that have caused difficulties in design or implementation.
 This chapter will be of use primarily to those wanting to change Leo's code.
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20050901101852">.. External links...
 .. _CWEB:       http://www-cs-faculty.stanford.edu/~knuth/cweb.html
 .. _noweb:      http://www.eecs.harvard.edu/~nr/noweb/
@@ -14092,7 +14091,7 @@ plugin lets you create **script buttons** in a matter of seconds. See `Creating
 script buttons`_. Script buttons are extraordinarily useful. Try them, you'll be
 instantly hooked.
 
-.. contents::
+.. .. contents::
 </t>
 <t tx="ekr.20050912125735">.. External links...
 .. _docutils:             http://docutils.sourceforge.net
@@ -15087,7 +15086,7 @@ verbose=True
 The Essentials of Leo
 ##########################################
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20050916184158.2">Leo organizes all data into nodes containing a **headline**, an expandable page of
 **body text** and a (possibly empty) subtree of **descendant nodes**. The **contents** of a
 node are its headline and body text. Leo’s main window contains an **outline** pane
@@ -16094,7 +16093,7 @@ Using JythonShell
 
 This chapter describes how to use the Jython Shell created by LeoUser.
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20051203084850.1">.. rST links used in this document...</t>
 <t tx="ekr.20051203085709">
 
@@ -18354,7 +18353,7 @@ This code has been retired. The threading_colorizer.py plugin uses a separate
 helper thread to do the colorizing. Coding details for this plugin are discussed
 in this chapter.
 
-.. contents::
+.. .. contents::
 </t>
 <t tx="ekr.20060430222753">.. External links...
 .. _jEdit:                      http://www.jedit.org/
@@ -19043,7 +19042,7 @@ Be aware of the distinction between **Leo-specific** scripts and **general** scr
 Leo-specific scripts access data in the Leo outline in which they are contained;
 general scripts do not.
 
-.. contents::
+.. .. contents::
 </t>
 <t tx="ekr.20060527105804">.. External links...
 .. _Idle:                       http://www.python.org/idle/
@@ -20329,7 +20328,7 @@ def update_ivars(self):
 Chapter 13: Writing Plugins
 ####################################
 
-.. contents::
+.. .. contents::
 </t>
 <t tx="ekr.20060612103824">.. External links...
 .. _docutils:             http://docutils.sourceforge.net
@@ -20887,7 +20886,7 @@ The main features of Leo 4.4 are:
 - Autocompletion and calltips.  Autocompletion works much like tab completion.
   To enable autocompletion, bind a key to the auto-complete command.
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20060620094645">Leo 4.4.1 beta 2                                            June 23, 2006
 
 Leo 4.4.1 beta 2 is available at:
@@ -21189,7 +21188,7 @@ The main features of Leo 4.4.1 are:
 - The help-for-command commands now contains information for almost all commands.
 - A new shortcut_button plugin.
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20060620095655">- The print-bindings command now properly sorts bindings.
 - The help-for-command command now works for almost all commands.
 - Improved filename completion.
@@ -21829,7 +21828,7 @@ Chapter 17: Using ZODB with Leo
 
 This chapter discusses how to write Leo scripts that store and retrieve data using ZODB_.
 
-.. contents::
+.. .. contents::
 </t>
 <t tx="ekr.20060913164311">.. External links...
 .. _ZODB:               http://www.zope.org/Wikis/ZODB/guide/zodb.html
@@ -22280,7 +22279,7 @@ What's New in Leo 4.4.2
 This page summarizes the changes made in Leo 4.4.2
 For full details see the release notes section in LeoDocs.leo.
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20060928172457.2">.. Links used in this document.
 .. _Emacs:                          http://www.xemacs.org/
 .. _pymacs:                         http://pymacs.progiciels-bpi.ca/index.html
@@ -23160,7 +23159,7 @@ Chapter 18: Leo and Emacs
 
 This chapter several topics relating to the Emacs editor.
 
-.. contents::
+.. .. contents::
 </t>
 <t tx="ekr.20061025065357.2">.. Links
 .. _elisp:              http://en.wikipedia.org/wiki/Emacs_Lisp
@@ -24046,7 +24045,7 @@ Using the leoBridge module, host programs can get access to:
 - the contents of any .leo file,
 - the commander of any .leo file.
 
-.. contents::
+.. .. contents::
 </t>
 <t tx="ekr.20070317033759.2">.. Links
 </t>
@@ -24328,7 +24327,7 @@ The highlights of Leo 4.4.3:
 - Removed all gui-dependent code from Leo's core.
 - The__wx_gui plugin is now functional.
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20070513113931.1">.. Links used in this document.
 .. _`leoBridge chapter`:    leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
@@ -24909,7 +24908,7 @@ Chapter 20: Unit testing with Leo
 
 This chapter describes how you can execute Python unit test from within Leo outlines.
 
-.. contents::
+.. .. contents::
     </t>
 <t tx="ekr.20070628083442.2">.. Links
 </t>
@@ -25161,7 +25160,8 @@ directions. Who knows what the next plugin will bring? -- Edward K. Ream</t>
 <t tx="ekr.20070701101809">############
 Preface
 ############
-</t>
+
+.. .. contents::</t>
 <t tx="ekr.20070701101809.1">.. links...
 .. _`SourceForge`:      http://sourceforge.net/projects/leo/
 .. _`noweb`:            http://www.eecs.harvard.edu/~nr/noweb/
@@ -25598,7 +25598,7 @@ The highlights of Leo 4.4.4:
 
 - Leo's core is now compatible with jython.
     
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20070809145744.2">.. Links used in this document.
 .. _`leoBridge chapter`:    leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
@@ -26829,7 +26829,7 @@ The highlights of Leo 4.4.5:
 - Adds all the Tango 16x16 icons to Leo's icon library.
 - Adds support for @rst-preformat nodes to the rst3 plugin.
     
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20071116062917.2">.. Links used in this document.
 .. _`leoBridge chapter`:    leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
@@ -27170,7 +27170,7 @@ What's New in Leo 4.4.6
 
 Leo 4.4.6 fixes all known bugs and adds a few new features.
     
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20071217093444.2">.. Links used in this document.
 .. _`leoBridge chapter`:    leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
@@ -27326,7 +27326,7 @@ However, you probably wont use 'c' and 'g' directly, but use a series of
 convenience wrappers described in this document that make interactive work
 painless and powerful.
 
-.. contents::
+.. .. contents::
 
 </t>
 <t tx="ekr.20080203101507.2">.. Links
@@ -27775,7 +27775,7 @@ Leo now contains support for translating messages sent to Leo's log:
 What's New in Leo 4.4.7 and Leo 4.4.8
 #######################################
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20080314081157.122">.. Links used in this document.
 .. _`leoBridge chapter`:    leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
@@ -28635,7 +28635,7 @@ using the same algorithms used by `@auto trees`_.
   
 The crucial ideas and algorithms underlying @shadow trees are the invention of Bernhard Mulder.
 
-.. contents::
+.. .. contents::
 </t>
 <t tx="ekr.20080730212711.16">.. Links
 .. _`@auto trees`:          directives.html#auto    
@@ -29142,7 +29142,7 @@ Understanding these three reasons finally convinced me that @shadow could be mad
 What's New in Leo 4.5
 #######################################
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20080806211440.187">.. Links used in this document.
 .. _`Chapter 23`:           atShadow.html
 </t>
@@ -31213,7 +31213,7 @@ modifications
 What's New in Leo 4.6
 #######################################
 
-.. contents::</t>
+.. .. contents::</t>
 <t tx="ekr.20090324145450.22">.. Links used in this document.
 .. .. _`Chapter 23`:           atShadow.html
 </t>

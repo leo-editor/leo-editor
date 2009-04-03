@@ -253,25 +253,12 @@ hr { /* EKR */
 
 <!-- rst3: filename: html\vimBindings.html -->
 <p>This chapter describes Leo's vim-like bindings, including how to install them.</p>
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
-<ul class="simple">
-<li><a class="reference internal" href="#vim-bindings" id="id1">Vim bindings</a><ul>
-<li><a class="reference internal" href="#installing-vim-bindings" id="id2">Installing vim bindings</a></li>
-<li><a class="reference internal" href="#general-commands" id="id3">General commands</a></li>
-<li><a class="reference internal" href="#body-pane-commands" id="id4">Body pane commands</a></li>
-<li><a class="reference internal" href="#outline-commands" id="id5">Outline commands</a></li>
-<li><a class="reference internal" href="#commands-not-supported" id="id6">Commands not supported</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#avoiding-changes-to-tag-files" id="id7">Avoiding changes to 'tag' files</a></li>
-</ul>
-</div>
+<!-- .. contents:: -->
 <!-- Links -->
 <div class="section" id="vim-bindings">
-<h1><a class="toc-backref" href="#id1">Vim bindings</a></h1>
+<h1>Vim bindings</h1>
 <div class="section" id="installing-vim-bindings">
-<h2><a class="toc-backref" href="#id2">Installing vim bindings</a></h2>
+<h2>Installing vim bindings</h2>
 <p>Place a copy of the &quot;&#64;keys Vim bindings&quot; node and its sub-nodes,
 located in the leoSettings.leo file, under the &quot;&#64;settings&quot; node
 in the myLeoSettings.leo file</p>
@@ -281,7 +268,7 @@ in the myLeoSettings.leo file</p>
 them from being overwritten when updating to a new version.</p>
 </div>
 <div class="section" id="general-commands">
-<h2><a class="toc-backref" href="#id3">General commands</a></h2>
+<h2>General commands</h2>
 <p>The following commands are always available.</p>
 <p>State change commands:</p>
 <pre class="literal-block">
@@ -329,7 +316,7 @@ Ctrl-:      Enter Leo's command line
 </pre>
 </div>
 <div class="section" id="body-pane-commands">
-<h2><a class="toc-backref" href="#id4">Body pane commands</a></h2>
+<h2>Body pane commands</h2>
 <p>Move cursor commands:</p>
 <pre class="literal-block">
 h           Go back 1 character
@@ -519,7 +506,7 @@ Ctrl-l      Display sub-nodes or, if displayed, go down 1 level
 </pre>
 </div>
 <div class="section" id="outline-commands">
-<h2><a class="toc-backref" href="#id5">Outline commands</a></h2>
+<h2>Outline commands</h2>
 <p>The following commands are supported when in a headline's command mode.</p>
 <p>State change commands:</p>
 <pre class="literal-block">
@@ -657,7 +644,7 @@ Ctrl-e       scroll outline down one line
 </pre>
 </div>
 <div class="section" id="commands-not-supported">
-<h2><a class="toc-backref" href="#id6">Commands not supported</a></h2>
+<h2>Commands not supported</h2>
 <p>Notable missing editing commands:</p>
 <pre class="literal-block">
 t&lt;char&gt;     Move cursor to character before specified character
@@ -680,7 +667,7 @@ z&lt;movement&gt; Slide buffer to put current line at top/middle/bottom of pane
 </div>
 </div>
 <div class="section" id="avoiding-changes-to-tag-files">
-<h1><a class="toc-backref" href="#id7">Avoiding changes to 'tag' files</a></h1>
+<h1>Avoiding changes to 'tag' files</h1>
 <p>If you use the open-with plugin to open node text in Vim and your Vim's &quot;tag&quot;
 file refers to derived files then there is a risk that a derived file that is
 initially displayed via the &quot;tag&quot; command&quot; in Vim is accidentally edited and
