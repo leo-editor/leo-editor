@@ -34,7 +34,7 @@ source_suffix = '.html.txt'
 #source_encoding = 'utf-8'
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = 'leo_toc'
 
 # General information about the project.
 project = u'Leo'
@@ -96,7 +96,31 @@ html_theme = 'default'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = {
+
+	#  footerbgcolor (CSS color): Background color for the footer line.
+	#  footertextcolor (CSS color): Text color for the footer line.
+	#  sidebarbgcolor (CSS color): Background color for the sidebar.
+	'sidebarbgcolor': "#fffdbc",
+	#  sidebartextcolor (CSS color): Text color for the sidebar.
+	'sidebartextcolor': 'black',
+	#  sidebarlinkcolor (CSS color): Link color for the sidebar.
+	'sidebarlinkcolor': 'black',
+	#  relbarbgcolor (CSS color): Background color for the relation bar.
+	#  relbartextcolor (CSS color): Text color for the relation bar.
+	#  relbarlinkcolor (CSS color): Link color for the relation bar.
+	#  bgcolor (CSS color): Body background color.
+	'bgcolor': "#fffbdc",
+	#  textcolor (CSS color): Body text color.
+	#  linkcolor (CSS color): Body link color.
+	#  headbgcolor (CSS color): Background color for headings.
+	#  headtextcolor (CSS color): Text color for headings.
+	#  headlinkcolor (CSS color): Link color for headings.
+	#  codebgcolor (CSS color): Background color for code blocks.
+	#  codetextcolor (CSS color): Default text color for code blocks, if not set differently by the highlighting style.
+	#  bodyfont (CSS font-family): Font for normal text.
+	#  headfont (CSS font-family): Font for headings.
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []

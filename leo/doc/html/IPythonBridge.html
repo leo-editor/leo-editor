@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
 <title>Chapter 21: IPython and Leo</title>
 <style type="text/css">
 
@@ -250,17 +250,18 @@ hr { /* EKR */
 <body>
 <div class="document" id="chapter-21-ipython-and-leo">
 <h1 class="title">Chapter 21: IPython and Leo</h1>
+
 <!-- rst3: filename: html\IPythonBridge.html -->
 <p>Leo's ipython plugin provides two-way communication (a bridge) between Leo and
 IPython: you can run Leo scripts from IPython, and IPython scripts from Leo. To
 use this plugin, you must run Leo from a console window. When this plugin is
-enabled, Leo's start-ipython command starts <a class="reference" href="http://ipython.scipy.org/">IPython</a> in this console.</p>
+enabled, Leo's start-ipython command starts <a class="reference external" href="http://ipython.scipy.org/">IPython</a> in this console.</p>
 <p>Remarkably, Leo and IPython run simultaneously in the same process,
 yet their separate event loops do not interfere with each other.
 Scripts run from IPython <em>immediately</em> change Leo,
 <em>exactly</em> as if the script were run from Leo.
 Conversely, scripts run from Leo <em>immediately</em> affect the IPython interpreter.
-As a result, Leo might be considered an <a class="reference" href="http://projects.scipy.org/ipython/ipython/wiki/NoteBook">IPython Notebook</a>.</p>
+As a result, Leo might be considered an <a class="reference external" href="http://projects.scipy.org/ipython/ipython/wiki/NoteBook">IPython Notebook</a>.</p>
 <p>The bridge between Leo and IPython is powerful because it is simple. Indeed,</p>
 <p>1. <strong>You can run any IPython script from Leo</strong>.
 On the Leo side, a single statement:</p>
@@ -282,48 +283,48 @@ Leo script can do.</p>
 However, you probably wont use 'c' and 'g' directly, but use a series of
 convenience wrappers described in this document that make interactive work
 painless and powerful.</p>
-<div class="contents topic">
-<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference" href="#introduction" id="id2" name="id2">Introduction</a></li>
-<li><a class="reference" href="#installation-and-startup" id="id3" name="id3">Installation and startup</a></li>
-<li><a class="reference" href="#accessing-ipython-from-leo" id="id4" name="id4">Accessing IPython from Leo</a><ul>
-<li><a class="reference" href="#ipython-code" id="id5" name="id5">IPython code</a></li>
-<li><a class="reference" href="#plain-python-code" id="id6" name="id6">Plain Python code</a></li>
+<li><a class="reference internal" href="#introduction" id="id2">Introduction</a></li>
+<li><a class="reference internal" href="#installation-and-startup" id="id3">Installation and startup</a></li>
+<li><a class="reference internal" href="#accessing-ipython-from-leo" id="id4">Accessing IPython from Leo</a><ul>
+<li><a class="reference internal" href="#ipython-code" id="id5">IPython code</a></li>
+<li><a class="reference internal" href="#plain-python-code" id="id6">Plain Python code</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#accessing-leo-nodes-from-ipython" id="id7" name="id7">Accessing Leo nodes from IPython</a><ul>
-<li><a class="reference" href="#leonode" id="id8" name="id8">LeoNode</a></li>
-<li><a class="reference" href="#accessing-children-with-iteration-and-dict-notation" id="id9" name="id9">Accessing children with iteration and dict notation</a></li>
+<li><a class="reference internal" href="#accessing-leo-nodes-from-ipython" id="id7">Accessing Leo nodes from IPython</a><ul>
+<li><a class="reference internal" href="#leonode" id="id8">LeoNode</a></li>
+<li><a class="reference internal" href="#accessing-children-with-iteration-and-dict-notation" id="id9">Accessing children with iteration and dict notation</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#cl-definitions" id="id10" name="id10">&#64;cl definitions</a></li>
-<li><a class="reference" href="#special-node-types" id="id11" name="id11">Special node types</a><ul>
-<li><a class="reference" href="#ipy-startup" id="id12" name="id12">&#64;ipy-startup</a></li>
-<li><a class="reference" href="#ipy-results" id="id13" name="id13">&#64;ipy-results</a></li>
-<li><a class="reference" href="#ipy-root" id="id14" name="id14">&#64;ipy-root</a></li>
-<li><a class="reference" href="#a-nodes" id="id15" name="id15">&#64;a nodes</a></li>
+<li><a class="reference internal" href="#cl-definitions" id="id10">&#64;cl definitions</a></li>
+<li><a class="reference internal" href="#special-node-types" id="id11">Special node types</a><ul>
+<li><a class="reference internal" href="#ipy-startup" id="id12">&#64;ipy-startup</a></li>
+<li><a class="reference internal" href="#ipy-results" id="id13">&#64;ipy-results</a></li>
+<li><a class="reference internal" href="#ipy-root" id="id14">&#64;ipy-root</a></li>
+<li><a class="reference internal" href="#a-nodes" id="id15">&#64;a nodes</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#launching-ileo-from-ipython" id="id16" name="id16">Launching ILeo from IPython</a></li>
-<li><a class="reference" href="#declaring-custom-push-to-ipython-handlers" id="id17" name="id17">Declaring custom push-to-ipython handlers</a></li>
-<li><a class="reference" href="#example-code-snippets" id="id18" name="id18">Example code snippets</a></li>
-<li><a class="reference" href="#example-use-case-pylab" id="id19" name="id19">Example use case: pylab</a><ul>
-<li><a class="reference" href="#startup" id="id20" name="id20">Startup</a></li>
-<li><a class="reference" href="#usage" id="id21" name="id21">Usage</a></li>
+<li><a class="reference internal" href="#launching-ileo-from-ipython" id="id16">Launching ILeo from IPython</a></li>
+<li><a class="reference internal" href="#declaring-custom-push-to-ipython-handlers" id="id17">Declaring custom push-to-ipython handlers</a></li>
+<li><a class="reference internal" href="#example-code-snippets" id="id18">Example code snippets</a></li>
+<li><a class="reference internal" href="#example-use-case-pylab" id="id19">Example use case: pylab</a><ul>
+<li><a class="reference internal" href="#startup" id="id20">Startup</a></li>
+<li><a class="reference internal" href="#usage" id="id21">Usage</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#magic-functions" id="id22" name="id22">Magic functions</a><ul>
-<li><a class="reference" href="#mb" id="id23" name="id23">%mb</a></li>
-<li><a class="reference" href="#lee" id="id24" name="id24">%lee</a></li>
+<li><a class="reference internal" href="#magic-functions" id="id22">Magic functions</a><ul>
+<li><a class="reference internal" href="#mb" id="id23">%mb</a></li>
+<li><a class="reference internal" href="#lee" id="id24">%lee</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#acknowledgements-and-history" id="id25" name="id25">Acknowledgements and history</a></li>
+<li><a class="reference internal" href="#acknowledgements-and-history" id="id25">Acknowledgements and history</a></li>
 </ul>
 </div>
 <!-- Links -->
-<div class="section">
-<h1><a class="toc-backref" href="#id2" id="introduction" name="introduction">Introduction</a></h1>
+<div class="section" id="introduction">
+<h1><a class="toc-backref" href="#id2">Introduction</a></h1>
 <p>ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate <strong>data</strong>
@@ -341,8 +342,8 @@ of ILeo over using %edit, you can save your experimental scripts all at one
 time, without having to organize them into script/module files (before you
 really want to, of course!)</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id3" id="installation-and-startup" name="installation-and-startup">Installation and startup</a></h1>
+<div class="section" id="installation-and-startup">
+<h1><a class="toc-backref" href="#id3">Installation and startup</a></h1>
 <p>You need at least Leo 4.4.8, and IPython 0.8.3</p>
 <p>The ILeo concept is still being developed actively, so if you want to get access
 to latest features you can get IPython from Launchpad by installing bzr and
@@ -369,13 +370,13 @@ will not be restarted, only the leo commander object is updated in the
 existing session.</li>
 <li>If you want to specify command line arguments to IPython (e.g. to choose a
 profile, or to start in 'pylab' mode), add this to your &#64;settings:
-<a class="reference" href="mailto:'&#64;string">'&#64;string</a> ipython_argv = ipython -pylab' (where -pylab is the command line argument)</li>
+<a class="reference external" href="mailto:'&#64;string">'&#64;string</a> ipython_argv = ipython -pylab' (where -pylab is the command line argument)</li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id4" id="accessing-ipython-from-leo" name="accessing-ipython-from-leo">Accessing IPython from Leo</a></h1>
-<div class="section">
-<h2><a class="toc-backref" href="#id5" id="ipython-code" name="ipython-code">IPython code</a></h2>
+<div class="section" id="accessing-ipython-from-leo">
+<h1><a class="toc-backref" href="#id4">Accessing IPython from Leo</a></h1>
+<div class="section" id="ipython-code">
+<h2><a class="toc-backref" href="#id5">IPython code</a></h2>
 <p>Just enter IPython commands on a Leo node and press alt-I to execute
 push-to-ipython in order to execute the script in IPython. 'commands' is
 interpreted loosely here - you can enter function and class definitions, in
@@ -407,8 +408,8 @@ In: f('hello world')
 <p>(numbers like &lt;6&gt; mean IPython output history indices; the actual object can be
 referenced with _6 as usual in IPython).</p>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id6" id="plain-python-code" name="plain-python-code">Plain Python code</a></h2>
+<div class="section" id="plain-python-code">
+<h2><a class="toc-backref" href="#id6">Plain Python code</a></h2>
 <p>If the headline of the node ends with capital P, alt-I will not run the code
 through IPython translation mechanism but use the direct python 'exec' statement
 (in IPython user namespace) to execute the code. It wont be shown in IPython
@@ -417,8 +418,8 @@ plain Python statements. Large class definitions are good candidates for P
 nodes.</p>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id7" id="accessing-leo-nodes-from-ipython" name="accessing-leo-nodes-from-ipython">Accessing Leo nodes from IPython</a></h1>
+<div class="section" id="accessing-leo-nodes-from-ipython">
+<h1><a class="toc-backref" href="#id7">Accessing Leo nodes from IPython</a></h1>
 <p>The real fun starts when you start entering text to leo nodes, and are using
 that as data (input/output) for your IPython work.</p>
 <p>Accessing Leo nodes happens through the variable <strong>wb</strong> (short for &quot;WorkBook&quot;)
@@ -438,8 +439,8 @@ wb.bar         wb.Docs        wb.strlist     wb.csvr
 </pre>
 <p>So here, we meet the 'LeoNode' class that is your key to manipulating Leo
 content from IPython!</p>
-<div class="section">
-<h2><a class="toc-backref" href="#id8" id="leonode" name="leonode">LeoNode</a></h2>
+<div class="section" id="leonode">
+<h2><a class="toc-backref" href="#id8">LeoNode</a></h2>
 <p>Suppose that we had a node with headline 'spam' and body:</p>
 <pre class="literal-block">
 ['12',2222+32]
@@ -452,7 +453,7 @@ C:leo/core]|19&gt; wb.spam.v
 <p>'v' attribute stands for 'value', which means the node contents will be run
 through 'eval' and everything you would be able to enter into IPython prompt
 will be converted to objects. This mechanism can be extended far beyond direct
-evaluation (see <a class="reference" href="mailto:'&#64;cl">'&#64;cl</a> definitions').</p>
+evaluation (see <a class="reference external" href="mailto:'&#64;cl">'&#64;cl</a> definitions').</p>
 <p>'v' attribute also has a setter, i.e. you can do:</p>
 <pre class="literal-block">
 wb.spam.v = &quot;mystring&quot;
@@ -489,8 +490,8 @@ used for domain-specific metadata. Example:</p>
             &lt;13&gt; {'coords': (12, 222)}
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id9" id="accessing-children-with-iteration-and-dict-notation" name="accessing-children-with-iteration-and-dict-notation">Accessing children with iteration and dict notation</a></h2>
+<div class="section" id="accessing-children-with-iteration-and-dict-notation">
+<h2><a class="toc-backref" href="#id9">Accessing children with iteration and dict notation</a></h2>
 <p>Sometimes, you may want to treat a node as a 'database', where the nodes
 children represent elements in the database. You can create a new child node for
 node 'spam', with headline 'foo bar' like this:</p>
@@ -516,9 +517,9 @@ for n in wb.spam:
 </pre>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id10" id="cl-definitions" name="cl-definitions">&#64;cl definitions</a></h1>
-<p>If the first line in the body text is of the form <a class="reference" href="mailto:'&#64;cl">'&#64;cl</a> sometext', IPython will
+<div class="section" id="cl-definitions">
+<h1><a class="toc-backref" href="#id10">&#64;cl definitions</a></h1>
+<p>If the first line in the body text is of the form <a class="reference external" href="mailto:'&#64;cl">'&#64;cl</a> sometext', IPython will
 evaluate 'sometext' and call the result with the rest of the body when you do
 'wb.foo.v' or press alt+I on the node. An example is in place here. Suppose that we have defined a class (I
 use the term class in a non-python sense here):</p>
@@ -584,37 +585,37 @@ ls -l
 <p>Press alt+I on the node to run it. The output will be written to
 &quot;Command output&quot; child node.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id11" id="special-node-types" name="special-node-types">Special node types</a></h1>
-<div class="section">
-<h2><a class="toc-backref" href="#id12" id="ipy-startup" name="ipy-startup">&#64;ipy-startup</a></h2>
+<div class="section" id="special-node-types">
+<h1><a class="toc-backref" href="#id11">Special node types</a></h1>
+<div class="section" id="ipy-startup">
+<h2><a class="toc-backref" href="#id12">&#64;ipy-startup</a></h2>
 <p>If this node exist, the <em>direct children</em> of this will be pushed to IPython when
 ILeo is started (you press alt+shift-i). Use it to push your own &#64;cl
 definitions, import the modules you will be using elsewhere in the document, etc.</p>
 <p>The contents of of the node itself will be ignored.</p>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id13" id="ipy-results" name="ipy-results">&#64;ipy-results</a></h2>
+<div class="section" id="ipy-results">
+<h2><a class="toc-backref" href="#id13">&#64;ipy-results</a></h2>
 <p>If you press alt+I on a node that has &#64;cl, it will be evaluated and the result
 will be put into this node. Otherwise, it will just be displayed in log tab.</p>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id14" id="ipy-root" name="ipy-root">&#64;ipy-root</a></h2>
+<div class="section" id="ipy-root">
+<h2><a class="toc-backref" href="#id14">&#64;ipy-root</a></h2>
 <p>You can set up a subportion of the leo document as a &quot;sandbox&quot; for your IPython
 work. Only the nodes under &#64;ipy-root will be visible through the 'wb' variable.</p>
 <p>Also, when you create a new node (wb.foo.v = 'stuff'), the node foo will be created as
 a child of this node.</p>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id15" id="a-nodes" name="a-nodes">&#64;a nodes</a></h2>
+<div class="section" id="a-nodes">
+<h2><a class="toc-backref" href="#id15">&#64;a nodes</a></h2>
 <p>You can attach these as children of existing nodes to provide a way to access
 nodes with arbitrary headlines, or to provide aliases to other nodes. If
 multiple &#64;a nodes are attached as children of a node, all the names can be used
 to access the same object.</p>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id16" id="launching-ileo-from-ipython" name="launching-ileo-from-ipython">Launching ILeo from IPython</a></h1>
+<div class="section" id="launching-ileo-from-ipython">
+<h1><a class="toc-backref" href="#id16">Launching ILeo from IPython</a></h1>
 <p>Sometimes you may decide to launch Leo when an IPython session is already
 running. This is typically the case when IPython is launched from/as another
 application (Turbogears/Django shell, Sage, etc.), or you only decide later on
@@ -645,8 +646,8 @@ make the document visible in IPython. Despite the name, launch-ipython will not
 create a new instance of IPython; if an IPython session already exists, it will
 be automatically used by ILeo.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id17" id="declaring-custom-push-to-ipython-handlers" name="declaring-custom-push-to-ipython-handlers">Declaring custom push-to-ipython handlers</a></h1>
+<div class="section" id="declaring-custom-push-to-ipython-handlers">
+<h1><a class="toc-backref" href="#id17">Declaring custom push-to-ipython handlers</a></h1>
 <p>Sometimes, you might want to configure what alt+I on a node does. You can do
 that by creating your own push function and expose it using
 ipy_leo.expose_ileo_push(f, priority). The function should check whether the
@@ -667,8 +668,8 @@ ipy_leo.expose_ileo_push(push_upcase, 12)
 try) - typically, you don't need to care about it and can usually omit the
 argument altogether)</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id18" id="example-code-snippets" name="example-code-snippets">Example code snippets</a></h1>
+<div class="section" id="example-code-snippets">
+<h1><a class="toc-backref" href="#id18">Example code snippets</a></h1>
 <p>Get list of all headlines of all the nodes in leo:</p>
 <pre class="literal-block">
 [node.h for node in wb]
@@ -698,16 +699,16 @@ def sort_node(n):
     n.l = lines
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id19" id="example-use-case-pylab" name="example-use-case-pylab">Example use case: pylab</a></h1>
+<div class="section" id="example-use-case-pylab">
+<h1><a class="toc-backref" href="#id19">Example use case: pylab</a></h1>
 <p>If you install matplotlib and numpy, you can use ILeo to interactively edit and
 view your data. This is convenient for storing potentially valuable information
 in Leo document, and yields an interactive system that is comparable in
 convenience to various commercial mathematical packages (at least if you compare
 it agains plain IPython, that forgets the data on exit unless explicitly saved
 to data files or %store:d).</p>
-<div class="section">
-<h2><a class="toc-backref" href="#id20" id="startup" name="startup">Startup</a></h2>
+<div class="section" id="startup">
+<h2><a class="toc-backref" href="#id20">Startup</a></h2>
 <p>It's probably safest to rely on TkAgg backend, to avoid two event loops running
 in the same process. TkAgg is the default, so the only thing you need to do is
 to install numpy and matplotlib:</p>
@@ -722,8 +723,8 @@ this by having the following under some &#64;settings node:</p>
 </pre>
 <p>Then, you just need to press alt+I to launch IPython.</p>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id21" id="usage" name="usage">Usage</a></h2>
+<div class="section" id="usage">
+<h2><a class="toc-backref" href="#id21">Usage</a></h2>
 <p>The simplest use case is probably pushing an existing array to Leo for editing.
 Let's generate a simple array and edit it:</p>
 <pre class="literal-block">
@@ -752,17 +753,17 @@ plot(wb.myarr.v)
 plotted representation of the array!</p>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id22" id="magic-functions" name="magic-functions">Magic functions</a></h1>
-<div class="section">
-<h2><a class="toc-backref" href="#id23" id="mb" name="mb">%mb</a></h2>
+<div class="section" id="magic-functions">
+<h1><a class="toc-backref" href="#id22">Magic functions</a></h1>
+<div class="section" id="mb">
+<h2><a class="toc-backref" href="#id23">%mb</a></h2>
 <p>Execute leo minibuffer command. Tab completion works. Example:</p>
 <pre class="literal-block">
 mb open-outline
 </pre>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id24" id="lee" name="lee">%lee</a></h2>
+<div class="section" id="lee">
+<h2><a class="toc-backref" href="#id24">%lee</a></h2>
 <p>Stands for &quot;LEo Edit&quot;. Allows you to open file(s), and even objects in Leo for editing. Examples:</p>
 <pre class="literal-block">
 lee *.txt
@@ -783,19 +784,19 @@ lee hist
 <p>Opens IPython interactive history (both input and output) in Leo.</p>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id25" id="acknowledgements-and-history" name="acknowledgements-and-history">Acknowledgements and history</a></h1>
+<div class="section" id="acknowledgements-and-history">
+<h1><a class="toc-backref" href="#id25">Acknowledgements and history</a></h1>
 <p>This idea got started when I (Ville M. Vainio) saw this post by Edward Ream (the author of
 Leo) on IPython developer mailing list:</p>
 <blockquote>
-<a class="reference" href="http://lists.ipython.scipy.org/pipermail/ipython-dev/2008-January/003551.html">http://lists.ipython.scipy.org/pipermail/ipython-dev/2008-January/003551.html</a></blockquote>
+<a class="reference external" href="http://lists.ipython.scipy.org/pipermail/ipython-dev/2008-January/003551.html">http://lists.ipython.scipy.org/pipermail/ipython-dev/2008-January/003551.html</a></blockquote>
 <p>I was using FreeMind as mind mapping software, and so I had an immediate use
 case for Leo (which, incidentally, is superior to FreeMind as mind mapper). The
 wheels started rolling, I got obsessed with the power of this concept
 (everything clicked together), and Edwards excitement paralleled mine.
 Everything was mind-bogglingly easy/trivial, something that is typical of all
 promising technologies.</p>
-<p><a class="reference" href="http://sourceforge.net/forum/forum.php?thread_id=1911662&amp;forum_id=10226">Discussions</a> on SourceForge show how the goal of close cooperation between Leo and IPython went from
+<p><a class="reference external" href="http://sourceforge.net/forum/forum.php?thread_id=1911662&amp;forum_id=10226">Discussions</a> on SourceForge show how the goal of close cooperation between Leo and IPython went from
 vague dream to completed reality over the span of about 10 days.</p>
 </div>
 </div>

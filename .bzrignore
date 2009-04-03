@@ -50,3 +50,5 @@ leo/test/unicode-ä-test
 leo/test/under_indent.py
 ekr-macros.txt
 annotate.txt
+leo/doc/html/build
+leo/doc/html/_build

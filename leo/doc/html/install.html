@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
 <title>Chapter 1: Installing Leo</title>
 <style type="text/css">
 
@@ -250,64 +250,65 @@ hr { /* EKR */
 <body>
 <div class="document" id="chapter-1-installing-leo">
 <h1 class="title">Chapter 1: Installing Leo</h1>
+
 <!-- rst3: filename: html\install.html -->
-<p>This chapter tells how to install and <a class="reference" href="#running-leo">run</a> Leo.</p>
+<p>This chapter tells how to install and <a class="reference internal" href="#running-leo">run</a> Leo.</p>
 <p><strong>Important</strong>:</p>
 <p>If you have <em>any</em> problems installing Leo,
 please ask for help on Leo's help forum:</p>
-<div class="contents topic">
-<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference" href="#system-requirements" id="id1" name="id1">System requirements</a></li>
-<li><a class="reference" href="#leo-s-home-directory" id="id2" name="id2">Leo's HOME directory</a></li>
-<li><a class="reference" href="#how-to-install-leo-on-linux" id="id3" name="id3">How to install Leo on Linux</a></li>
-<li><a class="reference" href="#installing-leo-on-windows" id="id4" name="id4">Installing Leo on Windows</a><ul>
-<li><a class="reference" href="#how-to-associate-leo-with-leo-files-on-windows" id="id5" name="id5">How to associate Leo with .leo files on Windows</a></li>
+<li><a class="reference internal" href="#system-requirements" id="id1">System requirements</a></li>
+<li><a class="reference internal" href="#leo-s-home-directory" id="id2">Leo's HOME directory</a></li>
+<li><a class="reference internal" href="#how-to-install-leo-on-linux" id="id3">How to install Leo on Linux</a></li>
+<li><a class="reference internal" href="#installing-leo-on-windows" id="id4">Installing Leo on Windows</a><ul>
+<li><a class="reference internal" href="#how-to-associate-leo-with-leo-files-on-windows" id="id5">How to associate Leo with .leo files on Windows</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#installing-leo-on-macos-x" id="id6" name="id6">Installing Leo on MacOS X</a><ul>
-<li><a class="reference" href="#how-to-use-platypus-to-create-a-mac-launcher-for-leo" id="id7" name="id7">How to use Platypus to create a Mac launcher for Leo</a></li>
-<li><a class="reference" href="#how-to-create-macos-x-pkg-files" id="id8" name="id8">How to create MacOS X .pkg files</a></li>
+<li><a class="reference internal" href="#installing-leo-on-macos-x" id="id6">Installing Leo on MacOS X</a><ul>
+<li><a class="reference internal" href="#how-to-use-platypus-to-create-a-mac-launcher-for-leo" id="id7">How to use Platypus to create a Mac launcher for Leo</a></li>
+<li><a class="reference internal" href="#how-to-create-macos-x-pkg-files" id="id8">How to create MacOS X .pkg files</a></li>
 </ul>
 </li>
-<li><a class="reference" href="#tracking-the-development-version" id="id9" name="id9">Tracking the development version</a></li>
-<li><a class="reference" href="#running-leo" id="id10" name="id10">Running Leo</a></li>
-<li><a class="reference" href="#running-leo-in-batch-mode" id="id11" name="id11">Running Leo in batch mode</a></li>
-<li><a class="reference" href="#how-to-install-the-aspell-spell-checker" id="id12" name="id12">How to install the Aspell spell checker</a></li>
+<li><a class="reference internal" href="#tracking-the-development-version" id="id9">Tracking the development version</a></li>
+<li><a class="reference internal" href="#running-leo" id="id10">Running Leo</a></li>
+<li><a class="reference internal" href="#running-leo-in-batch-mode" id="id11">Running Leo in batch mode</a></li>
+<li><a class="reference internal" href="#how-to-install-the-aspell-spell-checker" id="id12">How to install the Aspell spell checker</a></li>
 </ul>
 </div>
 <!-- Links used in this document... -->
-<div class="section">
-<h1><a class="toc-backref" href="#id1" id="system-requirements" name="system-requirements">System requirements</a></h1>
+<div class="section" id="system-requirements">
+<h1><a class="toc-backref" href="#id1">System requirements</a></h1>
 <p>Leo will work on any platform that supports Python 2.4 or later and Tk 8.4 or later.</p>
 <ul>
-<li><p class="first">Download the latest version of Leo from <a class="reference" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.</p>
+<li><p class="first">Download the latest version of Leo from <a class="reference external" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.</p>
 </li>
-<li><p class="first">Download Python from: <a class="reference" href="http://python.org/">http://python.org/</a></p>
+<li><p class="first">Download Python from: <a class="reference external" href="http://python.org/">http://python.org/</a></p>
 </li>
 <li><p class="first">Most installations of Python have Tk pre-installed.
-If your doesn't, you may download it from: <a class="reference" href="http://tcl.activestate.com/software/tcltk/">http://tcl.activestate.com/software/tcltk/</a></p>
+If your doesn't, you may download it from: <a class="reference external" href="http://tcl.activestate.com/software/tcltk/">http://tcl.activestate.com/software/tcltk/</a></p>
 <p><strong>Warning</strong>: When building Tcl on Linux, do <strong>not</strong> specify
 &quot;--enable-threads&quot;.
 Only use Tcl with the default &quot;threads not enabled&quot; case.</p>
 </li>
-<li><p class="first">Leo uses <a class="reference" href="http://pmw.sourceforge.net/">Pmw</a> (Python Mega Widgets). Leo's extensions folder contains a copy
+<li><p class="first">Leo uses <a class="reference external" href="http://pmw.sourceforge.net/">Pmw</a> (Python Mega Widgets). Leo's extensions folder contains a copy
 of Pmw for use if needed. Leo first tries to import Pmw normally. If that
 fails, Leo will use the version of Pmw in the extensions folder.</p>
 </li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id2" id="leo-s-home-directory" name="leo-s-home-directory">Leo's HOME directory</a></h1>
+<div class="section" id="leo-s-home-directory">
+<h1><a class="toc-backref" href="#id2">Leo's HOME directory</a></h1>
 <p>Python's HOME environment variable specifies Leo's HOME directory.
-See <a class="reference" href="http://docs.python.org/lib/os-procinfo.html">http://docs.python.org/lib/os-procinfo.html</a> for details.</p>
+See <a class="reference external" href="http://docs.python.org/lib/os-procinfo.html">http://docs.python.org/lib/os-procinfo.html</a> for details.</p>
 <p>Leo uses os.expanduser('~') to determine the HOME directory if no HOME environment variable exists.</p>
 <p>Leo puts several files in your HOME/.leo directory:
 .leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id3" id="how-to-install-leo-on-linux" name="how-to-install-leo-on-linux">How to install Leo on Linux</a></h1>
-<p>Download the latest version of Leo (a .zip file) from <a class="reference" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.</p>
+<div class="section" id="how-to-install-leo-on-linux">
+<h1><a class="toc-backref" href="#id3">How to install Leo on Linux</a></h1>
+<p>Download the latest version of Leo (a .zip file) from <a class="reference external" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.</p>
 <p>Unzip the downloaded .zip file into the <strong>unpacked folder</strong> in your home directory.
 The unpacked folder will be called something like leo-4-5.</p>
 <p>You now have two choices:</p>
@@ -328,15 +329,15 @@ You can, instead, add the following link:</p>
 <pre class="literal-block">
 sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.5/site-packages/
 </pre>
-<p>Now you are ready to <a class="reference" href="#running-leo">run Leo</a>.</p>
+<p>Now you are ready to <a class="reference internal" href="#running-leo">run Leo</a>.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id4" id="installing-leo-on-windows" name="installing-leo-on-windows">Installing Leo on Windows</a></h1>
+<div class="section" id="installing-leo-on-windows">
+<h1><a class="toc-backref" href="#id4">Installing Leo on Windows</a></h1>
 <p>Leo is distributed either as an executable installer (.exe) file or as a .zip file.</p>
 <p>To install Leo using the executable installer:</p>
 <blockquote>
 <ol class="arabic simple">
-<li>Download the latest version of Leo's installer from <a class="reference" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.
+<li>Download the latest version of Leo's installer from <a class="reference external" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.
 The installer will be called something like LeoSetup-4-5.exe.</li>
 <li>Run the installer.
 By default, the install will install Leo an <strong>unpacked folder</strong> called something like Leo-4-5 in your <tt class="docutils literal"><span class="pre">Python\Lib\site-packages</span></tt> directory.</li>
@@ -345,7 +346,7 @@ By default, the install will install Leo an <strong>unpacked folder</strong> cal
 <p>To install Leo from the .zip file:</p>
 <blockquote>
 <ol class="arabic">
-<li><p class="first">Download the latest version of Leo (a .zip file) from <a class="reference" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.</p>
+<li><p class="first">Download the latest version of Leo (a .zip file) from <a class="reference external" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.</p>
 </li>
 <li><p class="first">Unzip the .zip file.  The <strong>unpacked folder</strong> will have a name like Leo-x-y,
 where x and y are version numbers.  For example, Leo-4-5 or Leo-4-5-b3.</p>
@@ -363,13 +364,13 @@ sys.path.append(r'c:\Program Files\Leo-4-5')
 </blockquote>
 <p>Another way is to append the path to the unpacked folder to the Windows PYTHONPATH environment variable.</p>
 <p>Now that you have installed Leo and told Python where to find Leo,
-you are ready to <a class="reference" href="#running-leo">run Leo</a>.</p>
+you are ready to <a class="reference internal" href="#running-leo">run Leo</a>.</p>
 <p><strong>Note</strong>:
 If you haven't already created a HOME environment variable, it would be good to
 define home to be &quot;%USERPROFILE%My Documents&quot;.  You can check whether HOME exists
 by typing 'echo %HOME%' (without the quotes) in a console window.</p>
-<div class="section">
-<h2><a class="toc-backref" href="#id5" id="how-to-associate-leo-with-leo-files-on-windows" name="how-to-associate-leo-with-leo-files-on-windows">How to associate Leo with .leo files on Windows</a></h2>
+<div class="section" id="how-to-associate-leo-with-leo-files-on-windows">
+<h2><a class="toc-backref" href="#id5">How to associate Leo with .leo files on Windows</a></h2>
 <p>Leo will open .leo files automatically provided that you associate leo.py with .leo files.
 Here is how to open Leo when double-clicking a .leo file on Windows 2K or XP:</p>
 <ul class="simple">
@@ -402,20 +403,20 @@ The second line opens Leo files with a console window and leaves the window open
 You should now be able to double click on a leo file in explorer with Leo.</p>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id6" id="installing-leo-on-macos-x" name="installing-leo-on-macos-x">Installing Leo on MacOS X</a></h1>
+<div class="section" id="installing-leo-on-macos-x">
+<h1><a class="toc-backref" href="#id6">Installing Leo on MacOS X</a></h1>
 <p>By Randall Voth:
 Leo works reliably only on MacOS X 10.3 (Panther) and above.
 To run Leo on Macintosh OS X 10:</p>
 <ol class="arabic simple">
 <li>Download and install <tt class="docutils literal"><span class="pre">MacPython</span> <span class="pre">2.3</span> <span class="pre">for</span> <span class="pre">Panther</span> <span class="pre">addons</span></tt>.
 Python is already included in OS X 10.3 so only the addons are necessary at
-<a class="reference" href="http://www.cwi.nl/~jack/macpython.html">http://www.cwi.nl/~jack/macpython.html</a></li>
-<li>Download and install TclTkAqua from <a class="reference" href="http://tcltkaqua.sourceforge.net/">http://tcltkaqua.sourceforge.net/</a></li>
+<a class="reference external" href="http://www.cwi.nl/~jack/macpython.html">http://www.cwi.nl/~jack/macpython.html</a></li>
+<li>Download and install TclTkAqua from <a class="reference external" href="http://tcltkaqua.sourceforge.net/">http://tcltkaqua.sourceforge.net/</a></li>
 <li>Run the PackageManager found in <tt class="docutils literal"><span class="pre">/Applications/MacPython-2.3</span></tt> and
 install <tt class="docutils literal"><span class="pre">_tkinter-2.3-binary</span></tt> by clicking on the package in the list
 and clicking the [Install:] button with <tt class="docutils literal"><span class="pre">Install</span> <span class="pre">dependencies</span></tt> checked.</li>
-<li>Download Leo (platform independent source.zip) from <a class="reference" href="http://leo.sourceforge.net/">http://leo.sourceforge.net/</a></li>
+<li>Download Leo (platform independent source.zip) from <a class="reference external" href="http://leo.sourceforge.net/">http://leo.sourceforge.net/</a></li>
 <li>Unzip the contents into a directory by double-clicking the downloaded file.
 Typically you would put the Leo folder into the <tt class="docutils literal"><span class="pre">Applications</span></tt> directory.</li>
 <li>Control-click on <tt class="docutils literal"><span class="pre">/path_to_unzipped_dir/leo/core/leo.py</span></tt> and open with <tt class="docutils literal"><span class="pre">PythonLauncher</span></tt>.</li>
@@ -425,17 +426,17 @@ Finder's File menu, and selecting &quot;PythonLauncher&quot; as the default
 program to <tt class="docutils literal"><span class="pre">Open</span> <span class="pre">With:</span></tt>
 By clicking the <tt class="docutils literal"><span class="pre">Change</span> <span class="pre">All...</span></tt> button, all python scripts will be
 opened with <tt class="docutils literal"><span class="pre">PythonLauncher</span></tt>.</li>
-<li>Download <tt class="docutils literal"><span class="pre">Pmw</span></tt> from <a class="reference" href="http://pmw.sourceforge.net/">http://pmw.sourceforge.net/</a>
+<li>Download <tt class="docutils literal"><span class="pre">Pmw</span></tt> from <a class="reference external" href="http://pmw.sourceforge.net/">http://pmw.sourceforge.net/</a>
 <tt class="docutils literal"><span class="pre">Pmw</span></tt> must be installed in order to use the Settings panel.
 Drag the downloaded gzip file into
 <tt class="docutils literal"><span class="pre">/System/Library/Frameworks/Python.framework/Versions/2.3/lib/python2.3/site-packages</span></tt>
 Double click on it to unzip and untar the file into a folder to make it available to Python</li>
 </ol>
-<div class="section">
-<h2><a class="toc-backref" href="#id7" id="how-to-use-platypus-to-create-a-mac-launcher-for-leo" name="how-to-use-platypus-to-create-a-mac-launcher-for-leo">How to use Platypus to create a Mac launcher for Leo</a></h2>
+<div class="section" id="how-to-use-platypus-to-create-a-mac-launcher-for-leo">
+<h2><a class="toc-backref" href="#id7">How to use Platypus to create a Mac launcher for Leo</a></h2>
 <p>This documents how I used Platypus 3.0 to create MacLeo, the MacOS X launcher
 for Leo. You don't need Platypus to _use_ MacLeo, but you do need Platypus to
-<em>create</em> MacLeo. You may download Platypus 3.0 from <a class="reference" href="http://sveinbjorn.vefsyn.is/platypus">http://sveinbjorn.vefsyn.is/platypus</a>
+<em>create</em> MacLeo. You may download Platypus 3.0 from <a class="reference external" href="http://sveinbjorn.vefsyn.is/platypus">http://sveinbjorn.vefsyn.is/platypus</a>
 Platypus creates something called an &quot;application bundle,&quot; essentially a wrapper
 for the shell script called openLeoScript.sh.</p>
 <p>At present this script contains just:</p>
@@ -465,8 +466,8 @@ for the shell script called openLeoScript.sh.</p>
 </li>
 </ol>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id8" id="how-to-create-macos-x-pkg-files" name="how-to-create-macos-x-pkg-files">How to create MacOS X .pkg files</a></h2>
+<div class="section" id="how-to-create-macos-x-pkg-files">
+<h2><a class="toc-backref" href="#id8">How to create MacOS X .pkg files</a></h2>
 <p>This tells how I created <tt class="docutils literal"><span class="pre">leo-4-3-a3.pkg</span></tt> using <tt class="docutils literal"><span class="pre">PackageMaker</span></tt>.</p>
 <p><tt class="docutils literal"><span class="pre">PackageMaker</span></tt> is included in the <tt class="docutils literal"><span class="pre">Xtools</span></tt> disk that comes with MacOS X. Installing
 <tt class="docutils literal"><span class="pre">PackageMaker</span></tt> was easy, but I don't remember the details.</p>
@@ -489,14 +490,14 @@ If necessary, set the file name to <tt class="docutils literal"><span class="pre
 </ol>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id9" id="tracking-the-development-version" name="tracking-the-development-version">Tracking the development version</a></h1>
+<div class="section" id="tracking-the-development-version">
+<h1><a class="toc-backref" href="#id9">Tracking the development version</a></h1>
 <p>Many users will want to track the development version of Leo, in order to stay
 on top of the latest features and bugfixes. Running the development version is
 quite safe and easy, and it's also a requirement if you want to contribute to
 Leo.</p>
 <ol class="arabic">
-<li><p class="first">First, you need to get Bazaar (bzr) from <a class="reference" href="http://bazaar-vcs.org">http://bazaar-vcs.org</a>. For windows
+<li><p class="first">First, you need to get Bazaar (bzr) from <a class="reference external" href="http://bazaar-vcs.org">http://bazaar-vcs.org</a>. For windows
 users we recommend the standalone installer - the python installer may have
 problems pushing to Launchpad. Plain bzr installer only contains the command
 line version, so you might want to augment that with a friendly GUI - qbzr is
@@ -534,8 +535,8 @@ future pushes to that location. Then, you only need to execute <tt class="docuti
 <p>After your branch is pushed, you can email the Leo mailing list and request it
 to be reviewed and merged to trunk.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id10" id="running-leo" name="running-leo">Running Leo</a></h1>
+<div class="section" id="running-leo">
+<h1><a class="toc-backref" href="#id10">Running Leo</a></h1>
 <p>You can run Leo from a Python interpreter as follows:</p>
 <pre class="literal-block">
 import leo
@@ -558,7 +559,7 @@ python &lt;leopath&gt;launchLeo.py $1
 <p class="last">where &lt;leopath&gt; is the path to the directory containing the leo directory.</p>
 </dd>
 <dt><strong>Windows</strong></dt>
-<dd><p class="first">If you have <a class="reference" href="#how-to-associate-leo-with-leo-files-on-windows">associated .leo files with Leo</a> you may run Leo by double-clicking any .leo file.
+<dd><p class="first">If you have <a class="reference internal" href="#how-to-associate-leo-with-leo-files-on-windows">associated .leo files with Leo</a> you may run Leo by double-clicking any .leo file.
 You can also use a batch file.
 Put the following .bat file in c:\Windows:</p>
 <pre class="literal-block">
@@ -576,8 +577,8 @@ stores this identifier in the file <tt class="docutils literal"><span class="pre
 finally in Leo's core directory. You can change this identifier at any time by
 editing <tt class="docutils literal"><span class="pre">.leoID.txt</span></tt>.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id11" id="running-leo-in-batch-mode" name="running-leo-in-batch-mode">Running Leo in batch mode</a></h1>
+<div class="section" id="running-leo-in-batch-mode">
+<h1><a class="toc-backref" href="#id11">Running Leo in batch mode</a></h1>
 <p>On startup, Leo looks for two arguments of the form:</p>
 <pre class="literal-block">
 --script scriptFile
@@ -602,11 +603,11 @@ for p in newFrame.c.allNodes_iter():
     g.es(g.toEncodedString(p.h,&quot;utf-8&quot;))
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id12" id="how-to-install-the-aspell-spell-checker" name="how-to-install-the-aspell-spell-checker">How to install the Aspell spell checker</a></h1>
+<div class="section" id="how-to-install-the-aspell-spell-checker">
+<h1><a class="toc-backref" href="#id12">How to install the Aspell spell checker</a></h1>
 <p>You must install the Aspell package if you want to use Leo's Spell tab.</p>
 <ol class="arabic simple">
-<li>Download and install the Aspell package from <a class="reference" href="http://aspell.sourceforge.net/">http://aspell.sourceforge.net/</a>
+<li>Download and install the Aspell package from <a class="reference external" href="http://aspell.sourceforge.net/">http://aspell.sourceforge.net/</a>
 Typically this will create a directory called Aspell/bin</li>
 <li>If you are using Python 2.3 or Python 2.4 you must copy a dll
 from Leo's extensions folder to the Aspell/bin directory.

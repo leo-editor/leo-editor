@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
 <title>Chapter 8: Customizing Leo</title>
 <style type="text/css">
 
@@ -250,42 +250,43 @@ hr { /* EKR */
 <body>
 <div class="document" id="chapter-8-customizing-leo">
 <h1 class="title">Chapter 8: Customizing Leo</h1>
+
 <!-- rst3: filename: html\customizing.html -->
 <p>This chapter discusses how to customize Leo using the plugins and other means.
-See <a class="reference" href="commands.html#specifying-settings">Specifying settings</a> for a description of how to change Leo's settings.</p>
-<div class="contents topic">
-<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+See <a class="reference external" href="commands.html#specifying-settings">Specifying settings</a> for a description of how to change Leo's settings.</p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference" href="#id1" id="id2" name="id2">Specifying settings</a><ul>
-<li><a class="reference" href="#configuration-directories" id="id3" name="id3">Configuration directories</a></li>
-<li><a class="reference" href="#search-order-for-settings-files" id="id4" name="id4">Search order for settings files</a></li>
-<li><a class="reference" href="#safe-rules-for-local-settings" id="id5" name="id5">Safe rules for local settings</a></li>
-<li><a class="reference" href="#organizer-nodes" id="id6" name="id6">Organizer nodes</a></li>
-<li><a class="reference" href="#ignore-and-if-nodes" id="id7" name="id7">&#64;ignore and &#64;if nodes</a></li>
-<li><a class="reference" href="#simple-settings-nodes" id="id8" name="id8">Simple settings nodes</a></li>
-<li><a class="reference" href="#complex-settings-nodes" id="id9" name="id9">Complex settings nodes</a><ul>
-<li><a class="reference" href="#button" id="id10" name="id10">&#64;button</a></li>
-<li><a class="reference" href="#commands" id="id11" name="id11">&#64;commands</a></li>
-<li><a class="reference" href="#data" id="id12" name="id12">&#64;data</a></li>
-<li><a class="reference" href="#enabled-plugins" id="id13" name="id13">&#64;enabled-plugins</a></li>
-<li><a class="reference" href="#font" id="id14" name="id14">&#64;font</a></li>
-<li><a class="reference" href="#menuat" id="id15" name="id15">&#64;menuat</a></li>
-<li><a class="reference" href="#menus" id="id16" name="id16">&#64;menus</a></li>
-<li><a class="reference" href="#mode" id="id17" name="id17">&#64;mode</a></li>
-<li><a class="reference" href="#recentfiles" id="id18" name="id18">&#64;recentfiles</a></li>
-<li><a class="reference" href="#shortcuts" id="id19" name="id19">&#64;shortcuts</a></li>
+<li><a class="reference internal" href="#id1" id="id2">Specifying settings</a><ul>
+<li><a class="reference internal" href="#configuration-directories" id="id3">Configuration directories</a></li>
+<li><a class="reference internal" href="#search-order-for-settings-files" id="id4">Search order for settings files</a></li>
+<li><a class="reference internal" href="#safe-rules-for-local-settings" id="id5">Safe rules for local settings</a></li>
+<li><a class="reference internal" href="#organizer-nodes" id="id6">Organizer nodes</a></li>
+<li><a class="reference internal" href="#ignore-and-if-nodes" id="id7">&#64;ignore and &#64;if nodes</a></li>
+<li><a class="reference internal" href="#simple-settings-nodes" id="id8">Simple settings nodes</a></li>
+<li><a class="reference internal" href="#complex-settings-nodes" id="id9">Complex settings nodes</a><ul>
+<li><a class="reference internal" href="#button" id="id10">&#64;button</a></li>
+<li><a class="reference internal" href="#commands" id="id11">&#64;commands</a></li>
+<li><a class="reference internal" href="#data" id="id12">&#64;data</a></li>
+<li><a class="reference internal" href="#enabled-plugins" id="id13">&#64;enabled-plugins</a></li>
+<li><a class="reference internal" href="#font" id="id14">&#64;font</a></li>
+<li><a class="reference internal" href="#menuat" id="id15">&#64;menuat</a></li>
+<li><a class="reference internal" href="#menus" id="id16">&#64;menus</a></li>
+<li><a class="reference internal" href="#mode" id="id17">&#64;mode</a></li>
+<li><a class="reference internal" href="#recentfiles" id="id18">&#64;recentfiles</a></li>
+<li><a class="reference internal" href="#shortcuts" id="id19">&#64;shortcuts</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference" href="#input-modes" id="id20" name="id20">Input modes</a></li>
-<li><a class="reference" href="#adding-extensible-attributes-to-nodes-and-leo-files" id="id21" name="id21">Adding extensible attributes to nodes and .leo files</a></li>
-<li><a class="reference" href="#specifying-tk-options-using-leo-xresources" id="id22" name="id22">Specifying Tk options using .leo_xresources</a></li>
-<li><a class="reference" href="#translating-leo-s-menus-and-messages" id="id23" name="id23">Translating Leo's menus and messages</a></li>
+<li><a class="reference internal" href="#input-modes" id="id20">Input modes</a></li>
+<li><a class="reference internal" href="#adding-extensible-attributes-to-nodes-and-leo-files" id="id21">Adding extensible attributes to nodes and .leo files</a></li>
+<li><a class="reference internal" href="#specifying-tk-options-using-leo-xresources" id="id22">Specifying Tk options using .leo_xresources</a></li>
+<li><a class="reference internal" href="#translating-leo-s-menus-and-messages" id="id23">Translating Leo's menus and messages</a></li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id2" id="id1" name="id1">Specifying settings</a></h1>
+<div class="section" id="id1">
+<h1><a class="toc-backref" href="#id2">Specifying settings</a></h1>
 <p>Leo stores options in <strong>&#64;settings trees</strong>, outlines whose headline is
 &#64;settings. When opening a .leo file, Leo looks for &#64;settings trees not only
 in the outline being opened but also in various leoSettings.leo files.
@@ -315,8 +316,8 @@ files typically provide a common set of settings for files scattered in
 various places on the file system.</li>
 </ol>
 <p>The following sections describe the kinds of nodes in &#64;settings trees.</p>
-<div class="section">
-<h2><a class="toc-backref" href="#id3" id="configuration-directories" name="configuration-directories">Configuration directories</a></h2>
+<div class="section" id="configuration-directories">
+<h2><a class="toc-backref" href="#id3">Configuration directories</a></h2>
 <p>Settings files can be found in the following directories:</p>
 <ul class="simple">
 <li><strong>homeDir</strong>, the HOME/.leo directory. HOME is given by Python's HOME
@@ -331,8 +332,8 @@ socket.gethostname() if neither environment variable exists.</li>
 </ul>
 <p>In addition, Leo's -c command-line option can specify any .leo file anywhere.</p>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id4" id="search-order-for-settings-files" name="search-order-for-settings-files">Search order for settings files</a></h2>
+<div class="section" id="search-order-for-settings-files">
+<h2><a class="toc-backref" href="#id4">Search order for settings files</a></h2>
 <p>When reading a .leo file, Leo looks for settings in default settings
 files first, then settings in personal settings files, and finally
 settings in local settings files.  The exact search order is:</p>
@@ -376,8 +377,8 @@ configuration scheme that could possibly work&quot;.  Something like:</p>
 <p><strong>Important</strong>: it is good style to limit settings placed in
 myLeoSettings.leo to those settings that differ from default settings.</p>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id5" id="safe-rules-for-local-settings" name="safe-rules-for-local-settings">Safe rules for local settings</a></h2>
+<div class="section" id="safe-rules-for-local-settings">
+<h2><a class="toc-backref" href="#id5">Safe rules for local settings</a></h2>
 <p>You should use special care when placing default or personal settings files in
 <strong>local</strong> directories, that is, directories other than homeDir, configDir or
 machineDir. In particular, the value of localDir can change when Leo reads
@@ -396,13 +397,13 @@ cover all other settings files.
 local settings file will take precedence over all previously-read default and
 personal settings files. Ignore this principle at your peril.</p>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id6" id="organizer-nodes" name="organizer-nodes">Organizer nodes</a></h2>
+<div class="section" id="organizer-nodes">
+<h2><a class="toc-backref" href="#id6">Organizer nodes</a></h2>
 <p>Organizer nodes have headlines that do no start with &#64;.
 Organizer nodes may be inserted freely without changing the meaning of an &#64;setting tree.</p>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id7" id="ignore-and-if-nodes" name="ignore-and-if-nodes">&#64;ignore and &#64;if nodes</a></h2>
+<div class="section" id="ignore-and-if-nodes">
+<h2><a class="toc-backref" href="#id7">&#64;ignore and &#64;if nodes</a></h2>
 <p>Leo ignores any subtree of an <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> tree whose headline starts with <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt>.</p>
 <p>You can use several other kinds of nodes to cause Leo to ignore parts of  an <tt class="docutils literal"><span class="pre">&#64;settings</span></tt> tree:</p>
 <ul>
@@ -421,8 +422,8 @@ to allow differing settings on only a few machines.</p>
 </li>
 </ul>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id8" id="simple-settings-nodes" name="simple-settings-nodes">Simple settings nodes</a></h2>
+<div class="section" id="simple-settings-nodes">
+<h2><a class="toc-backref" href="#id8">Simple settings nodes</a></h2>
 <p>Simple settings nodes have headlines of the form:</p>
 <pre class="literal-block">
 &#64;&lt;type&gt; name = val
@@ -477,13 +478,13 @@ Example: &#64;strings tk_relief['flat','groove','raised']='groove'</td>
 </table>
 <p><strong>Note</strong>: For a list of Tk color specifiers see:</p>
 <ul class="simple">
-<li><a class="reference" href="http://www.tcl.tk/man/tcl8.4/TkCmd/colors.htm">http://www.tcl.tk/man/tcl8.4/TkCmd/colors.htm</a></li>
-<li><a class="reference" href="http://www.tcl.tk/man/tcl8.4/TkLib/GetColor.htm">http://www.tcl.tk/man/tcl8.4/TkLib/GetColor.htm</a></li>
+<li><a class="reference external" href="http://www.tcl.tk/man/tcl8.4/TkCmd/colors.htm">http://www.tcl.tk/man/tcl8.4/TkCmd/colors.htm</a></li>
+<li><a class="reference external" href="http://www.tcl.tk/man/tcl8.4/TkLib/GetColor.htm">http://www.tcl.tk/man/tcl8.4/TkLib/GetColor.htm</a></li>
 </ul>
 <p><strong>Important</strong>: you can use the show-colors minibuffer command to guide you in making these settings.</p>
 </div>
-<div class="section">
-<h2><a class="toc-backref" href="#id9" id="complex-settings-nodes" name="complex-settings-nodes">Complex settings nodes</a></h2>
+<div class="section" id="complex-settings-nodes">
+<h2><a class="toc-backref" href="#id9">Complex settings nodes</a></h2>
 <p>Complex settings nodes have headlines of the form:</p>
 <pre class="literal-block">
 &#64;&lt;type&gt; description
@@ -532,33 +533,33 @@ Example: &#64;strings tk_relief['flat','groove','raised']='groove'</td>
 </table>
 <p>Complex nodes specify settings in their body text.
 See the following sections for details.</p>
-<div class="section">
-<h3><a class="toc-backref" href="#id10" id="button" name="button">&#64;button</a></h3>
+<div class="section" id="button">
+<h3><a class="toc-backref" href="#id10">&#64;button</a></h3>
 <p>An &#64;buttons tree in a settings file defines global buttons that
 are created in the icon area of all .leo files.
 All &#64;button nodes in the &#64;commands tree create global buttons.
 All &#64;button nodes outside the commands tree create buttons local to the settings file.</p>
 </div>
-<div class="section">
-<h3><a class="toc-backref" href="#id11" id="commands" name="commands">&#64;commands</a></h3>
+<div class="section" id="commands">
+<h3><a class="toc-backref" href="#id11">&#64;commands</a></h3>
 <p>An &#64;commands tree in a settings file defines global commands.
 All &#64;command nodes in the &#64;commands tree create global commands.
 All &#64;command nodes outside the commands tree create commands local to the settings file.</p>
 </div>
-<div class="section">
-<h3><a class="toc-backref" href="#id12" id="data" name="data">&#64;data</a></h3>
+<div class="section" id="data">
+<h3><a class="toc-backref" href="#id12">&#64;data</a></h3>
 <p>The body text contains a list of strings, one per line.
 Lines starting with '#' are ignored.</p>
 </div>
-<div class="section">
-<h3><a class="toc-backref" href="#id13" id="enabled-plugins" name="enabled-plugins">&#64;enabled-plugins</a></h3>
+<div class="section" id="enabled-plugins">
+<h3><a class="toc-backref" href="#id13">&#64;enabled-plugins</a></h3>
 <p>The body text of the &#64;enabled plugins node contains a list of enabled plugins,
 one per line. Comment lines starting with '#' are ignored. Leo loads plugins in
 the order they appear.
 <strong>Important</strong>: Leo handles &#64;enabled-plugins nodes a differently from other kinds
 of settings. To avoid confusion, <strong>please read the following carefully</strong>.</p>
 <p>As always, Leo looks for &#64;enabled-plugins nodes in settings files in the order
-specified by <a class="reference" href="#search-order-for-settings-files">Search order for settings files</a>. Leo will enable all plugins
+specified by <a class="reference internal" href="#search-order-for-settings-files">Search order for settings files</a>. Leo will enable all plugins
 found in the &#64;enabled-plugins node it finds <em>last</em> in the search order. Leo does
 <em>not</em> enable plugins found in any other &#64;enabled-plugins node. In particular,
 <strong>you can not specify a list of default plugins by placing that list in a
@@ -581,8 +582,8 @@ A's &#64;enabled-plugin node. The safe rule for plugins is:</p>
 should cover &#64;enabled-plugins nodes in all other settings files.
 </pre>
 </div>
-<div class="section">
-<h3><a class="toc-backref" href="#id14" id="font" name="font">&#64;font</a></h3>
+<div class="section" id="font">
+<h3><a class="toc-backref" href="#id14">&#64;font</a></h3>
 <p>The body text contains a list of settings for a font.  For example:</p>
 <pre class="literal-block">
 body_text_font_family = Courier New
@@ -592,8 +593,8 @@ body_text_font_weight = None
 </pre>
 <p><strong>Important</strong>: you can use the show-fonts minibuffer command to guide you in making these settings.</p>
 </div>
-<div class="section">
-<h3><a class="toc-backref" href="#id15" id="menuat" name="menuat">&#64;menuat</a></h3>
+<div class="section" id="menuat">
+<h3><a class="toc-backref" href="#id15">&#64;menuat</a></h3>
 <p>The form of this node is:</p>
 <pre class="literal-block">
 &#64;menuat *&lt;path&gt;* *&lt;action&gt;* *[clipboard]*
@@ -635,8 +636,8 @@ as descendants of the &#64;menuat setting. If you specify &quot;clipboard&quot; 
 quotes) as the source, the contents of the clipboard from a previous cut or copy
 action will be used instead. This parameter is optional and can be left blank.</p>
 </div>
-<div class="section">
-<h3><a class="toc-backref" href="#id16" id="menus" name="menus">&#64;menus</a></h3>
+<div class="section" id="menus">
+<h3><a class="toc-backref" href="#id16">&#64;menus</a></h3>
 <p>Leo creates its menus from the &#64;menu, &#64;item and &#64;popup nodes in the &#64;menus tree.
 Within &#64;menus trees, &#64;menu nodes create menus and &#64;item nodes create menu items.</p>
 <p>The menu name always follows &#64;menu. If the menu name is 'Plugins', Leo will
@@ -654,8 +655,8 @@ separator.</p>
 The children of this node should be &#64;menu and &#64;item nodes, used as with
 &#64;menus.</p>
 </div>
-<div class="section">
-<h3><a class="toc-backref" href="#id17" id="mode" name="mode">&#64;mode</a></h3>
+<div class="section" id="mode">
+<h3><a class="toc-backref" href="#id17">&#64;mode</a></h3>
 <p>The form of this node is:</p>
 <pre class="literal-block">
 &#64;mode *&lt;mode name&gt;*
@@ -664,20 +665,20 @@ The children of this node should be &#64;menu and &#64;item nodes, used as with
 like <tt class="docutils literal"><span class="pre">&#64;shortcuts</span></tt> nodes, but in addition they have the side effect of creating
 the <tt class="docutils literal"><span class="pre">enter-&lt;mode</span> <span class="pre">name&gt;-mode</span></tt> command.</p>
 </div>
-<div class="section">
-<h3><a class="toc-backref" href="#id18" id="recentfiles" name="recentfiles">&#64;recentfiles</a></h3>
+<div class="section" id="recentfiles">
+<h3><a class="toc-backref" href="#id18">&#64;recentfiles</a></h3>
 <p>The body text contains a list of paths of recently opened files, one path per
 line. Leo writes the list of recent files to <tt class="docutils literal"><span class="pre">.leoRecentFiles.txt</span></tt> in Leo's
 <tt class="docutils literal"><span class="pre">config</span></tt> directory, again one file per line.</p>
 </div>
-<div class="section">
-<h3><a class="toc-backref" href="#id19" id="shortcuts" name="shortcuts">&#64;shortcuts</a></h3>
+<div class="section" id="shortcuts">
+<h3><a class="toc-backref" href="#id19">&#64;shortcuts</a></h3>
 <p>The body text contains a list of shortcut specifiers.</p>
 </div>
 </div>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id20" id="input-modes" name="input-modes">Input modes</a></h1>
+<div class="section" id="input-modes">
+<h1><a class="toc-backref" href="#id20">Input modes</a></h1>
 <p>Leo now allows you to specify input modes. You enter mode <tt class="docutils literal"><span class="pre">x</span></tt> with the
 <tt class="docutils literal"><span class="pre">enter-x-mode</span></tt> command. The purpose of a mode is to create different bindings
 for keys within a mode. Often plain keys are useful in input modes.</p>
@@ -706,8 +707,8 @@ commands alter what happens to unbound keys in the top-level mode.</li>
 </ul>
 <p>With all these options it should be possible to emulate the keyboard behavior of any other editor.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id21" id="adding-extensible-attributes-to-nodes-and-leo-files" name="adding-extensible-attributes-to-nodes-and-leo-files">Adding extensible attributes to nodes and .leo files</a></h1>
+<div class="section" id="adding-extensible-attributes-to-nodes-and-leo-files">
+<h1><a class="toc-backref" href="#id21">Adding extensible attributes to nodes and .leo files</a></h1>
 <p>Leo's .leo file format is extensible. The basis for extending .leo files are the
 <tt class="docutils literal"><span class="pre">t.unknownAttributes</span></tt> and <tt class="docutils literal"><span class="pre">v.unknownAttributes</span></tt> ivars of tnodes and vnodes,
 or uA's for short. Leo translates between uA's and xml attributes in the
@@ -777,14 +778,14 @@ if the corresponding  vnode or tnode contains an <tt class="docutils literal"><s
 <li>Leo performs the usual xml escapes on these strings when reading or writing the <tt class="docutils literal"><span class="pre">unknownAttributes</span></tt> ivars.</li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id22" id="specifying-tk-options-using-leo-xresources" name="specifying-tk-options-using-leo-xresources">Specifying Tk options using .leo_xresources</a></h1>
+<div class="section" id="specifying-tk-options-using-leo-xresources">
+<h1><a class="toc-backref" href="#id22">Specifying Tk options using .leo_xresources</a></h1>
 <p>Leo looks for a file called <tt class="docutils literal"><span class="pre">.leo_xresources</span></tt> in the users home directory. If
 found, Leo will pass that file to Tk's <tt class="docutils literal"><span class="pre">option_readfile</span></tt> method for the top
 widget. This allows users to set Tk options.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id23" id="translating-leo-s-menus-and-messages" name="translating-leo-s-menus-and-messages">Translating Leo's menus and messages</a></h1>
+<div class="section" id="translating-leo-s-menus-and-messages">
+<h1><a class="toc-backref" href="#id23">Translating Leo's menus and messages</a></h1>
 <p>It is easy to translate Leo's menu strings: simply create an &#64;menus tree in
 leoSettings.leo or myLeoSettings.leo that contains the translated menu names.</p>
 <p><strong>New in Leo 4.4.8</strong>:
@@ -795,7 +796,7 @@ g.es and g.es_print functions translate &quot;odd&quot; (first, third, fifth) ar
 leaving &quot;even&quot; arguments untranslated. Keyword arguments, color, newline, etc.
 are never translated.</li>
 <li>All calls to g.es and g.es_print in Leo's core follow this convention.</li>
-<li>g.translateString does the actual translation using Python's <a class="reference" href="http://docs.python.org/lib/module-gettext.html">gettext</a> module.</li>
+<li>g.translateString does the actual translation using Python's <a class="reference external" href="http://docs.python.org/lib/module-gettext.html">gettext</a> module.</li>
 <li>You can use the script in the node &quot;&#64;button print g.es stats&quot; in scripts.leo
 to create catalogs of all scripts that need to be translated. Such catalogs
 are used by Python's gettext module. (This script was also used to check that

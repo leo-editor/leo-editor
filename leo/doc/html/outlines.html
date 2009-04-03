@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
 <title>Chapter 3: Using Outlines</title>
 <style type="text/css">
 
@@ -250,31 +250,32 @@ hr { /* EKR */
 <body>
 <div class="document" id="chapter-3-using-outlines">
 <h1 class="title">Chapter 3: Using Outlines</h1>
+
 <!-- rst3: filename: html\outlines.html -->
 <p>This chapter tells how to use Leo's outlines.</p>
-<div class="contents topic">
-<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference" href="#autocompletion-and-calltips" id="id1" name="id1">Autocompletion and calltips</a></li>
-<li><a class="reference" href="#cloning-nodes" id="id2" name="id2">Cloning nodes</a></li>
-<li><a class="reference" href="#creating-and-destroying-nodes" id="id3" name="id3">Creating and destroying nodes</a></li>
-<li><a class="reference" href="#creating-and-destroying-multiple-body-editors" id="id4" name="id4">Creating and destroying multiple body editors</a></li>
-<li><a class="reference" href="#cutting-pasting-and-deleting-nodes" id="id5" name="id5">Cutting, pasting and deleting nodes</a></li>
-<li><a class="reference" href="#dragging-nodes" id="id6" name="id6">Dragging nodes</a></li>
-<li><a class="reference" href="#editing-body-text" id="id7" name="id7">Editing body text</a></li>
-<li><a class="reference" href="#expanding-contracting-nodes" id="id8" name="id8">Expanding &amp; contracting nodes</a></li>
-<li><a class="reference" href="#indenting-body-text-automatically" id="id9" name="id9">Indenting body text automatically</a></li>
-<li><a class="reference" href="#marking-nodes" id="id10" name="id10">Marking nodes</a></li>
-<li><a class="reference" href="#moving-reorganizing-nodes" id="id11" name="id11">Moving &amp; Reorganizing nodes</a></li>
-<li><a class="reference" href="#navigating-through-the-outline" id="id12" name="id12">Navigating through the outline</a></li>
-<li><a class="reference" href="#opening-url-s-automatically" id="id13" name="id13">Opening URL's automatically</a></li>
-<li><a class="reference" href="#resizing-panes" id="id14" name="id14">Resizing panes</a></li>
-<li><a class="reference" href="#undoing-operations" id="id15" name="id15">Undoing operations</a></li>
-<li><a class="reference" href="#using-chapters" id="id16" name="id16">Using chapters</a></li>
+<li><a class="reference internal" href="#autocompletion-and-calltips" id="id1">Autocompletion and calltips</a></li>
+<li><a class="reference internal" href="#cloning-nodes" id="id2">Cloning nodes</a></li>
+<li><a class="reference internal" href="#creating-and-destroying-nodes" id="id3">Creating and destroying nodes</a></li>
+<li><a class="reference internal" href="#creating-and-destroying-multiple-body-editors" id="id4">Creating and destroying multiple body editors</a></li>
+<li><a class="reference internal" href="#cutting-pasting-and-deleting-nodes" id="id5">Cutting, pasting and deleting nodes</a></li>
+<li><a class="reference internal" href="#dragging-nodes" id="id6">Dragging nodes</a></li>
+<li><a class="reference internal" href="#editing-body-text" id="id7">Editing body text</a></li>
+<li><a class="reference internal" href="#expanding-contracting-nodes" id="id8">Expanding &amp; contracting nodes</a></li>
+<li><a class="reference internal" href="#indenting-body-text-automatically" id="id9">Indenting body text automatically</a></li>
+<li><a class="reference internal" href="#marking-nodes" id="id10">Marking nodes</a></li>
+<li><a class="reference internal" href="#moving-reorganizing-nodes" id="id11">Moving &amp; Reorganizing nodes</a></li>
+<li><a class="reference internal" href="#navigating-through-the-outline" id="id12">Navigating through the outline</a></li>
+<li><a class="reference internal" href="#opening-url-s-automatically" id="id13">Opening URL's automatically</a></li>
+<li><a class="reference internal" href="#resizing-panes" id="id14">Resizing panes</a></li>
+<li><a class="reference internal" href="#undoing-operations" id="id15">Undoing operations</a></li>
+<li><a class="reference internal" href="#using-chapters" id="id16">Using chapters</a></li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id1" id="autocompletion-and-calltips" name="autocompletion-and-calltips">Autocompletion and calltips</a></h1>
+<div class="section" id="autocompletion-and-calltips">
+<h1><a class="toc-backref" href="#id1">Autocompletion and calltips</a></h1>
 <p>Typing a period when &#64;language python is in effect starts autocompletion. Typing
 '(' during autocompletion shows the calltip. Typing Return or Control-g
 (keyboard-quit) exits autocompletion or calltips.</p>
@@ -319,8 +320,8 @@ enable or disable these features at any time with these commands:
 enable-auto-completer-command, enable-calltips-command,
 disable-auto-completer-command and disable-calltips-command.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id2" id="cloning-nodes" name="cloning-nodes">Cloning nodes</a></h1>
+<div class="section" id="cloning-nodes">
+<h1><a class="toc-backref" href="#id2">Cloning nodes</a></h1>
 <p>A cloned node is a copy of a node that changes when the original changes. Not
 only are changes maintained across all the the clones of a node, changes to its
 offspring (children, grandchildren, etc). are simultaneously made to the
@@ -329,22 +330,22 @@ box marks cloned nodes. There is no real distinction between the &quot;original&
 and any of its clones. This makes it possible to update any of the clones and
 the original node will change as well. A cloned nodes becomes a regular node
 again when its penultimate clone is deleted. Clones are useful for making
-alternate views of a program. See <a class="reference" href="intro.html#clones-views">Clones and views</a> for full details.</p>
+alternate views of a program. See <a class="reference external" href="intro.html#clones-views">Clones and views</a> for full details.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id3" id="creating-and-destroying-nodes" name="creating-and-destroying-nodes">Creating and destroying nodes</a></h1>
+<div class="section" id="creating-and-destroying-nodes">
+<h1><a class="toc-backref" href="#id3">Creating and destroying nodes</a></h1>
 <p>The <tt class="docutils literal"><span class="pre">Insert</span> <span class="pre">Node</span></tt> command inserts a new node into the outline. The
 <tt class="docutils literal"><span class="pre">Delete</span> <span class="pre">Node</span></tt> command deletes a node and all its children.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id4" id="creating-and-destroying-multiple-body-editors" name="creating-and-destroying-multiple-body-editors">Creating and destroying multiple body editors</a></h1>
+<div class="section" id="creating-and-destroying-multiple-body-editors">
+<h1><a class="toc-backref" href="#id4">Creating and destroying multiple body editors</a></h1>
 <p>Three commands in the Cmds:Body Editors menu allow to create and destroy separate editors in the body pane.
 The Add Body Editor (add-editor) command adds a new editor in the body pane.
 The Delete Body Editor (delete-editor) command deletes the presently selected editor,
 The Change Body Editor (cycle-editor-focus) command cycles focus between editors in the body text.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id5" id="cutting-pasting-and-deleting-nodes" name="cutting-pasting-and-deleting-nodes">Cutting, pasting and deleting nodes</a></h1>
+<div class="section" id="cutting-pasting-and-deleting-nodes">
+<h1><a class="toc-backref" href="#id5">Cutting, pasting and deleting nodes</a></h1>
 <p>The <tt class="docutils literal"><span class="pre">Cut</span> <span class="pre">Outline</span></tt>, <tt class="docutils literal"><span class="pre">Paste</span> <span class="pre">Outline</span></tt>, <tt class="docutils literal"><span class="pre">Copy</span> <span class="pre">Outline</span></tt> and <tt class="docutils literal"><span class="pre">Delete</span> <span class="pre">Outline</span></tt>
 commands work on nodes rather than text. For example, to delete a node,
 select the node and choose the <tt class="docutils literal"><span class="pre">Cut</span> <span class="pre">Outline</span></tt> or <tt class="docutils literal"><span class="pre">Delete</span> <span class="pre">Outline</span></tt>
@@ -360,8 +361,8 @@ Therefore, if you are cutting and pasting an outline containing clones it is
 best to cut and paste the <em>entire</em> outline. Alternatively, you can paste part of
 an outline, then delete all clones.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id6" id="dragging-nodes" name="dragging-nodes">Dragging nodes</a></h1>
+<div class="section" id="dragging-nodes">
+<h1><a class="toc-backref" href="#id6">Dragging nodes</a></h1>
 <p>You may drag an node (including all its descendants) from one place to another
 in an outline. To start a drag, press the main (left) mouse button while the
 cursor is over the icon for a node. The cursor will change to a hand icon. If
@@ -371,14 +372,14 @@ button when the hand cursor is not over an icon, Leo will leave the outline pane
 as it is. Leo scrolls the outline pane as the result of mouse-moved events, so
 to continue scrolling you must keep moving the mouse.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id7" id="editing-body-text" name="editing-body-text">Editing body text</a></h1>
+<div class="section" id="editing-body-text">
+<h1><a class="toc-backref" href="#id7">Editing body text</a></h1>
 <p>Leo auto indents unless <tt class="docutils literal"><span class="pre">&#64;nocolor</span></tt> is in effect. Typing a newline
 automatically inserts the same leading whitespace present on the previous line.
 If Python is the present language, Leo inserts an additional tab if the previous
 line ends with a colon.</p>
 <p>The default features of Leo's body text derive from the Tk.Text widget,
-described at: <a class="reference" href="http://www.tcl.tk/man/tcl8.3/TkCmd/text.htm">http://www.tcl.tk/man/tcl8.3/TkCmd/text.htm</a> Not all these features
+described at: <a class="reference external" href="http://www.tcl.tk/man/tcl8.3/TkCmd/text.htm">http://www.tcl.tk/man/tcl8.3/TkCmd/text.htm</a> Not all these features
 are found on all platforms.
 The following features are derived from the Tk Text widget. Some default
 behaviors have been changed because they conflict with other Leo features.</p>
@@ -449,22 +450,22 @@ if there is no text selection.</li>
 if there is no text selection.</li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id8" id="expanding-contracting-nodes" name="expanding-contracting-nodes">Expanding &amp; contracting nodes</a></h1>
+<div class="section" id="expanding-contracting-nodes">
+<h1><a class="toc-backref" href="#id8">Expanding &amp; contracting nodes</a></h1>
 <p>You can expand or contract a node by clicking in the standard Windows Tree
 View icon to the left of the status icon. Expanding a node shows its immediate
 children; contracting a node hides all its children. The <tt class="docutils literal"><span class="pre">Expand</span> <span class="pre">All</span> <span class="pre">Subheads</span></tt>
 command expands all of a nodes offspring (children, grandchildren, etc.)</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id9" id="indenting-body-text-automatically" name="indenting-body-text-automatically">Indenting body text automatically</a></h1>
+<div class="section" id="indenting-body-text-automatically">
+<h1><a class="toc-backref" href="#id9">Indenting body text automatically</a></h1>
 <p>Leo auto indents body text following colons when <tt class="docutils literal"><span class="pre">&#64;language</span> <span class="pre">Python</span></tt> is in
 effect. When the <tt class="docutils literal"><span class="pre">smart_auto_indent</span></tt> setting is True, Leo uses Emacs-style
 auto-indentation instead. This style of auto-indent aligns newly created lines
 with unmatched <tt class="docutils literal"><span class="pre">(</span></tt> <tt class="docutils literal"><span class="pre">[</span></tt> or <tt class="docutils literal"><span class="pre">{</span></tt> brackets in the previous line.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id10" id="marking-nodes" name="marking-nodes">Marking nodes</a></h1>
+<div class="section" id="marking-nodes">
+<h1><a class="toc-backref" href="#id10">Marking nodes</a></h1>
 <p>You can mark nodes in several ways:</p>
 <ul class="simple">
 <li>With the <tt class="docutils literal"><span class="pre">Mark</span></tt> commands.</li>
@@ -474,8 +475,8 @@ with unmatched <tt class="docutils literal"><span class="pre">(</span></tt> <tt 
 <p>The <tt class="docutils literal"><span class="pre">Go</span> <span class="pre">To</span> <span class="pre">Next</span> <span class="pre">Marked</span></tt> command selects the next marked node, if any.
 The <tt class="docutils literal"><span class="pre">Mark</span></tt> command unmarks the selected headline if it is already marked.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id11" id="moving-reorganizing-nodes" name="moving-reorganizing-nodes">Moving &amp; Reorganizing nodes</a></h1>
+<div class="section" id="moving-reorganizing-nodes">
+<h1><a class="toc-backref" href="#id11">Moving &amp; Reorganizing nodes</a></h1>
 <p>The <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Up</span></tt>, <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Down</span></tt>, <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Left</span></tt> and <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Right</span></tt> commands move the currently
 selected node. The <tt class="docutils literal"><span class="pre">Promote</span></tt> command makes all the children of a node
 siblings of the node. The <tt class="docutils literal"><span class="pre">Demote</span></tt> command makes all following siblings of a
@@ -493,8 +494,8 @@ Therefore, if you are cutting and pasting an outline containing clones it is
 best to cut and paste the _entire_ outline. Alternatively, you can paste part of
 an outline, then delete all clones.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id12" id="navigating-through-the-outline" name="navigating-through-the-outline">Navigating through the outline</a></h1>
+<div class="section" id="navigating-through-the-outline">
+<h1><a class="toc-backref" href="#id12">Navigating through the outline</a></h1>
 <p>Leo has many commands that select nodes in the outline. These commands can be
 found in the Outline:Go To menu.</p>
 <p>When focus is in the outline Pane, you can move to from
@@ -511,8 +512,8 @@ the previous match. The term 'close together' is defined by the setting:</p>
 search fails, so in fact the delay is not too significant. In practice
 everything works well without thinking about what is happening.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id13" id="opening-url-s-automatically" name="opening-url-s-automatically">Opening URL's automatically</a></h1>
+<div class="section" id="opening-url-s-automatically">
+<h1><a class="toc-backref" href="#id13">Opening URL's automatically</a></h1>
 <p>Double-clicking the icon box of a node whose headline has the form:</p>
 <pre class="literal-block">
 &#64;url &lt;any url&gt;
@@ -529,14 +530,14 @@ everything works well without thinking about what is happening.</p>
 <p>Url's should contain no spaces: use <tt class="docutils literal"><span class="pre">%20</span></tt> to indicate spaces. You may use any
 type of url that your browser supports: http, mailto, ftp, file, etc.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id14" id="resizing-panes" name="resizing-panes">Resizing panes</a></h1>
+<div class="section" id="resizing-panes">
+<h1><a class="toc-backref" href="#id14">Resizing panes</a></h1>
 <p>You can change the relative sizes of the outline and body panes by dragging the
 splitter bar. The <tt class="docutils literal"><span class="pre">Equal</span> <span class="pre">Sized</span> <span class="pre">Panes</span></tt> command resizes the panes so that each
 fills half of the main window.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id15" id="undoing-operations" name="undoing-operations">Undoing operations</a></h1>
+<div class="section" id="undoing-operations">
+<h1><a class="toc-backref" href="#id15">Undoing operations</a></h1>
 <p>Leo supports unlimited undo for all typing and all commands. The
 'undo_granularity' setting controls the granularity of undo. There are four
 possible values:</p>
@@ -559,8 +560,8 @@ method only when the typing could possibly continue a previous word. In other
 words, undo will work safely regardless of the value returned. See the actual
 code for <tt class="docutils literal"><span class="pre">recognizeStartOfTypingWord</span></tt> for more details.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id16" id="using-chapters" name="using-chapters">Using chapters</a></h1>
+<div class="section" id="using-chapters">
+<h1><a class="toc-backref" href="#id16">Using chapters</a></h1>
 <p>Chapters are regions of a Leo outline whose root is an &#64;chapter node. &#64;chapter
 nodes may appear anywhere in an outline, but the create-chapter command (see
 below) creates &#64;chapter nodes as children of the first &#64;chapters node in the outline.</p>

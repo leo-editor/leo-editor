@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="253" height="721" width="1022"/>
+	<global_window_position top="49" left="253" height="827" width="1022"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -54,14 +54,9 @@
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848" a="M"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
-<v t="ekr.20080301071818.1"
-marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
-</v>
-<v t="ekr.20050831184021.2"><vh>Table of contents (To be deleted)</vh>
-<v t="ekr.20080730212711.29"><vh>@@thin html\leo_TOC.html</vh>
-<v t="ekr.20080730212711.30"><vh>&lt;&lt;head&gt;&gt;</vh></v>
-<v t="ekr.20080730212711.36"><vh>&lt;&lt; body &gt;&gt;</vh></v>
-</v>
+<v t="ekr.20080301071818.1" a="E"
+marks="ekr.20080306071848,"
+expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
@@ -80,7 +75,6 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070701101809"><vh>@rst html\preface.html</vh>
 <v t="ekr.20070701101809.1"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20070723100037"><vh>@rst-no-head preface</vh></v>
-<v t="ekr.20070701090840"><vh>@rst-ignore  @rst-no-head preface (old)</vh></v>
 </v>
 </v>
 <v t="ekr.20050831184021.4"><vh>What people are saying about Leo</vh>
@@ -1124,6 +1118,13 @@ marks="ekr.20080306071848,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 <v t="ekr.20090324085713.1"><vh>Other docs</vh>
+<v t="ekr.20070701090840"><vh>Old preface</vh></v>
+<v t="ekr.20050831184021.2"><vh>Table of contents (No longer used)</vh>
+<v t="ekr.20080730212711.29"><vh>@@thin html\leo_TOC.html</vh>
+<v t="ekr.20080730212711.30"><vh>&lt;&lt;head&gt;&gt;</vh></v>
+<v t="ekr.20080730212711.36"><vh>&lt;&lt; body &gt;&gt;</vh></v>
+</v>
+</v>
 <v t="ekr.20090101095717.1"><vh>Stories</vh>
 <v t="ekr.20090101095717.2"><vh>Introduction (iLeo, revised)</vh></v>
 <v t="ekr.20090101095717.3" rst_http_attribute="5d71002855443c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3122206e616d653d22687474702d6e6f64652d6d61726b65722d31223e710155043c2f613e71025d710328553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710455063c2f6469763e71055d71062855063c626f64793e710755073c2f626f64793e71085d71092855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710a55073c2f68746d6c3e710b4e65656555243c64697620636c6173733d2273656374696f6e222069643d226f76657276696577223e0a710c55493c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643122206e616d653d226f76657276696577223e4f766572766965773c2f613e3c2f68313e0a710d652e"><vh>Commonly used classes (scripting intro, revised)</vh></v>
@@ -5094,19 +5095,7 @@ The code is pretty fragile; it should handle either None or "", but in fact it r
 <t tx="EKR.20040628100535.1"></t>
 <t tx="TL.20080804095315.1">@language rest
 </t>
-<t tx="TL.20080804095315.2">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-############################################################
+<t tx="TL.20080804095315.2">############################################################
 Chapter 22: Using Vim Bindings with Leo
 ############################################################
 
@@ -5780,19 +5769,7 @@ see test/testAtPopup.leo for examples of enhanced buttons
 </t>
 <t tx="edream.110203163054.46">@nocolor
 @language plain</t>
-<t tx="edream.110203163054.48">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################################
+<t tx="edream.110203163054.48">##########################################
 Chapter 1: Installing Leo
 ##########################################
 
@@ -6809,20 +6786,10 @@ about comment lines that do not have the form:
 
 # -*- coding: &lt;encoding&gt; -*-</t>
 <t tx="ekr.20040403171740">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-..
 .. A very cool option: doc parts will be rendered properly,
 .. but will be ignored by the Execute script command.
 ..
 show_doc_parts_as_paragraphs = True
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
 @c
 
 ####################################
@@ -7298,24 +7265,11 @@ The following @ignore is needed so that discussions of @file, @root, etc. do not
 
 @ignore
 @tabwidth -4</t>
-<t tx="ekr.20040414172212">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-############
+<t tx="ekr.20040414172212">############
 Front Matter
 ############
 
 .. contents::
-
 </t>
 <t tx="ekr.20040414172218.2">Leo_ has thousands of users_. Like me, many of them would never willingly be without Leo again.
 Here are Leo's essential features:
@@ -9513,19 +9467,7 @@ Removes @ignore, @nocolor, @wrap directives.
 .. _chapter8:       customizing.html
 .. _`rst3 plugin`:  rstplugin3.html
 </t>
-<t tx="ekr.20050816073412">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################################
+<t tx="ekr.20050816073412">##########################################
 Chapter 2: A Tutorial Introduction to Leo
 ##########################################
 
@@ -9634,23 +9576,7 @@ You should see Leo's main window, something like this:
 
 .. |leoMainWindow| image:: PCWindow.gif
 </t>
-<t tx="ekr.20050818163826">.. June 8, 2006
-
-@ @rst-options
-code_mode=False
-doc_only_mode=False
-default_path =
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-.. publish_argv_for_missing_stylesheets = --language=de,--documentclass=report,--use-latex-toc
+<t tx="ekr.20050818163826">.. publish_argv_for_missing_stylesheets = --language=de,--documentclass=report,--use-latex-toc
 
 ####################################
 Chapter 14: Using the rst3 plugin
@@ -10615,19 +10541,7 @@ problems with traditional LP. See `Chapter 6: Leo and Literate Programming`_ in
 `Leo's Users Guide`_ for more details. *Please* don't let the words 'Literate
 Programming' get in the way of your using Leo effectively. That would be *your*
 mistake, and a big one.</t>
-<t tx="ekr.20050828061213">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-#####################################
+<t tx="ekr.20050828061213">#####################################
 Chapter 4: Writing Programs in Leo
 #####################################
 </t>
@@ -11538,19 +11452,7 @@ Negative values cause Leo to convert tabs to blanks.</t>
 `Chapter 4: Writing Programs in Leo`_ is the full reference guide.
 I recommend avoiding that chapter until you have been programming with Leo for some time.
 </t>
-<t tx="ekr.20050830074716">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-###################################
+<t tx="ekr.20050830074716">###################################
 What People Are Saying About Leo
 ###################################
 
@@ -11879,21 +11781,7 @@ the same Leo node for LaTeX to process.
 .. _quotes:         testimonials.html
 .. _toc:            leo_TOC.html
 </t>
-<t tx="ekr.20050830115714">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-.. August 30, 2005
-
-####
+<t tx="ekr.20050830115714">####
 FAQ
 ####
 
@@ -12560,19 +12448,7 @@ http://webpages.charter.net/edreamleo/intro.html
 
 For help, please ask questions at:
 http://groups.google.com/group/leo-editor</t>
-<t tx="ekr.20050831231852">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-############
+<t tx="ekr.20050831231852">############
 Appendices
 ############
 
@@ -12617,19 +12493,7 @@ createDefList(c,p)</t>
     lines = ''.join(result).rstrip()
 
     c.updateBodyPane(head,lines,tail,undoType,oldSel,oldYview)</t>
-<t tx="ekr.20050901071041">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-############
+<t tx="ekr.20050901071041">############
 Glossary
 ############
 </t>
@@ -13155,19 +13019,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
     To weave a file you can create noweb_ or CWEB_ files using Leo's ``Export`` commands,
     then use the noweb_ or CWEB_ systems to weave those files.</t>
 <t tx="ekr.20050901084134">@language rest</t>
-<t tx="ekr.20050901092232">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################
+<t tx="ekr.20050901092232">##########################
 Chapter 11: White Papers
 ##########################
 
@@ -13264,19 +13116,7 @@ Edward K. Ream, October 25, 2001.  P.S., September, 2005:
 
 Four years of experience have only added to my admiration for Python. Leo could
 not possibly be what it is today without Python.</t>
-<t tx="ekr.20050901101608">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################################
+<t tx="ekr.20050901101608">##########################################
 Chapter 3: Using Outlines
 ##########################################
 
@@ -13287,19 +13127,7 @@ This chapter tells how to use Leo's outlines.
 .. _`Chapter 4\: Writing Programs in Leo`:          directives.html
 .. _`Clones and views`:                             intro.html#clones-views
 </t>
-<t tx="ekr.20050901101608.2">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################################
+<t tx="ekr.20050901101608.2">##########################################
 Chapter 5: Using Leo's Commands
 ##########################################
 
@@ -13308,38 +13136,14 @@ It starts with a discussion of the Emacs-like minibuffer,
 then continues with a discussion of commands in each of Leo's menus.
 
 .. contents::</t>
-<t tx="ekr.20050901101608.3">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################################
+<t tx="ekr.20050901101608.3">##########################################
 Chapter 6: Leo and Literate Programming
 ##########################################
 
 This chapter discusses Leo's relationship with traditional `literate programming`_.
 
 .. contents::</t>
-<t tx="ekr.20050901101608.4">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-#############################################
+<t tx="ekr.20050901101608.4">#############################################
 Chapter 8: Customizing Leo
 #############################################
 
@@ -13347,19 +13151,7 @@ This chapter discusses how to customize Leo using the plugins and other means.
 See `Specifying settings`_ for a description of how to change Leo's settings.
 
 .. contents::</t>
-<t tx="ekr.20050901101608.5">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################################
+<t tx="ekr.20050901101608.5">##########################################
 Chapter 9: History of Leo
 ##########################################
 
@@ -13367,19 +13159,7 @@ This chapter discusses the history of Leo and tells the essential features of ea
 Here are the most important dates in Leo's history:
 
 .. contents::</t>
-<t tx="ekr.20050901101608.6">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################################
+<t tx="ekr.20050901101608.6">##########################################
 Chapter 10: Theory of Operation
 ##########################################
 
@@ -14299,19 +14079,7 @@ For Windows systems you can install Python's subprocess module in Python 2.2 or
 This installer installs the subprocess sources and also _subprocess.pyd in Python's site-packages folder.
 </t>
 <t tx="ekr.20050912125144">@language rest</t>
-<t tx="ekr.20050912125144.1">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################
+<t tx="ekr.20050912125144.1">##########################
 Chapter 12: Plugins
 ##########################
 
@@ -18569,19 +18337,7 @@ Using Python colorer control files has the following advantages:
   In particular, it would be easy to define entirely new kinds of pattern-matching rules in Python merely
   by creating functions in a colorer control file.</t>
 <t tx="ekr.20060430221745">@language rest</t>
-<t tx="ekr.20060430221745.1">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-#########################################
+<t tx="ekr.20060430221745.1">#########################################
 Chapter 15: Controlling Syntax Coloring
 #########################################
 
@@ -19278,19 +19034,7 @@ Notes:
 
 - There is some support for ext='.pdf', but this is experimental code.  Expect crashes.</t>
 <t tx="ekr.20060527105211">@language rest</t>
-<t tx="ekr.20060527105617">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-#######################################
+<t tx="ekr.20060527105617">#######################################
 Chapter 16: Debugging with Leo
 #######################################
 
@@ -20581,23 +20325,7 @@ def oops(self):
 def update_ivars(self):
     self.oops()</t>
 <t tx="ekr.20060612102055">@language rest</t>
-<t tx="ekr.20060612103240">.. June 8, 2006
-
-@ @rst-options
-code_mode=False
-doc_only_mode=False
-default_path =
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-####################################
+<t tx="ekr.20060612103240">####################################
 Chapter 13: Writing Plugins
 ####################################
 
@@ -21133,19 +20861,7 @@ Here is the full list of mode-related commands::
 <t tx="ekr.20060620094033">@language rest</t>
 <t tx="ekr.20060620094033.1"></t>
 <t tx="ekr.20060620094033.2"></t>
-<t tx="ekr.20060620094425">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################################
+<t tx="ekr.20060620094425">##########################################
 What's New in Leo 4.4
 ##########################################
 
@@ -21455,19 +21171,7 @@ I note that the scheduler plugin is currently broken.
 The problem was that all commands now get an event arg.
 
 The Begin Recording and End Recording commands do not seem to work...</t>
-<t tx="ekr.20060620094645.310">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################################
+<t tx="ekr.20060620094645.310">##########################################
 What's New in Leo 4.4.1
 ##########################################
 
@@ -22119,19 +21823,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20060913164304">@language rest</t>
-<t tx="ekr.20060913164304.1">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-#######################################
+<t tx="ekr.20060913164304.1">#######################################
 Chapter 17: Using ZODB with Leo
 #######################################
 
@@ -22581,19 +22273,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20060928172457"></t>
-<t tx="ekr.20060928172457.1">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################################
+<t tx="ekr.20060928172457.1">##########################################
 What's New in Leo 4.4.2
 ##########################################
 
@@ -23474,19 +23154,7 @@ Quotes:     http://webpages.charter.net/edreamleo/testimonials.html
 <t tx="ekr.20061021164213.1">This is a known bug in Tk/Tkinter and there is no good workaround. Some
 keyboards allow you to disable the caps-lock key.</t>
 <t tx="ekr.20061025065357">@language rest</t>
-<t tx="ekr.20061025065357.1">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-#######################################
+<t tx="ekr.20061025065357.1">#######################################
 Chapter 18: Leo and Emacs
 #######################################
 
@@ -24366,19 +24034,7 @@ B) The default plugins will be enabled in an @enabled-plugins
 C) g.app.gui.getEnabledPlugins contains the last value last processed @enabled-plugins node.
 </t>
 <t tx="ekr.20070317033759">@language rest</t>
-<t tx="ekr.20070317033759.1">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-############################################################
+<t tx="ekr.20070317033759.1">############################################################
 Chapter 19: Embedding Leo with the leoBridge module
 ############################################################
 
@@ -24656,19 +24312,7 @@ menu item was not disabled when the local root is selected.
   - The move-node-to-chapter, clone-node-to-chapter and copy-node-to-chapter commands
     add a node (and its descendants) to another chapter.</t>
 <t tx="ekr.20070513113903"></t>
-<t tx="ekr.20070513113931">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################################
+<t tx="ekr.20070513113931">##########################################
 What's New in Leo 4.4.3
 ##########################################
 
@@ -25259,19 +24903,7 @@ CVS:      http://leo.tigris.org/source/browse/leo/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20070628083442">@language rest
 @tabwidth -4</t>
-<t tx="ekr.20070628083442.1">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-############################################################
+<t tx="ekr.20070628083442.1">############################################################
 Chapter 20: Unit testing with Leo
 ############################################################
 
@@ -25526,19 +25158,7 @@ Working with this community has been a constant source of joy and inspiration.
 Suggestions and plugins from users continue to drive Leo in excellent new
 directions. Who knows what the next plugin will bring? -- Edward K. Ream</t>
 <t tx="ekr.20070701101808">@language rest</t>
-<t tx="ekr.20070701101809">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-############
+<t tx="ekr.20070701101809">############
 Preface
 ############
 </t>
@@ -25948,19 +25568,7 @@ File comparison mismatches can arise for several reasons:
 Leo will issue a warning (not an error) for underindented Python comment lines.
 Such lines can not change the meaning of Python programs.</t>
 <t tx="ekr.20070809145744"></t>
-<t tx="ekr.20070809145744.1">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################################
+<t tx="ekr.20070809145744.1">##########################################
 What's New in Leo 4.4.4
 ##########################################
 
@@ -27207,19 +26815,7 @@ This allows Leo to find the icon when multiple machines are involved.</t>
 These icons are now part of Leo's distribution.</t>
 <t tx="ekr.20071115102421"></t>
 <t tx="ekr.20071116062917"></t>
-<t tx="ekr.20071116062917.1">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################################
+<t tx="ekr.20071116062917.1">##########################################
 What's New in Leo 4.4.5
 ##########################################
 
@@ -27568,19 +27164,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20071217093444"></t>
-<t tx="ekr.20071217093444.1">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-##########################################
+<t tx="ekr.20071217093444.1">##########################################
 What's New in Leo 4.4.6
 ##########################################
 
@@ -27701,19 +27285,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 CVS:      http://leo.tigris.org/source/browse/leo/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080203101507">@language rest</t>
-<t tx="ekr.20080203101507.1">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-############################################################
+<t tx="ekr.20080203101507.1">############################################################
 Chapter 21: IPython and Leo
 ############################################################
 
@@ -28199,19 +27771,7 @@ Leo now contains support for translating messages sent to Leo's log:
 - Select an item initially.
 - Added bindings for up and down arrows.</t>
 <t tx="ekr.20080314081157.2"></t>
-<t tx="ekr.20080314081157.121">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-#######################################
+<t tx="ekr.20080314081157.121">#######################################
 What's New in Leo 4.4.7 and Leo 4.4.8
 #######################################
 
@@ -29057,19 +28617,7 @@ Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ekr.20080730212711.14">@language rest</t>
-<t tx="ekr.20080730212711.15">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-############################################################
+<t tx="ekr.20080730212711.15">############################################################
 Chapter 23: Eliminating sentinel lines with @shadow
 ############################################################
 
@@ -29590,19 +29138,7 @@ these two cases **does not matter**, for three very important reasons:
 Understanding these three reasons finally convinced me that @shadow could be made to work reliably.
 </t>
 <t tx="ekr.20080806211440.185">@language rest</t>
-<t tx="ekr.20080806211440.186">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-#######################################
+<t tx="ekr.20080806211440.186">#######################################
 What's New in Leo 4.5
 #######################################
 
@@ -31470,7 +31006,8 @@ When reading @edit nodes, Leo just puts then entire text of the file
 into the node, along with @language or @nocolor directives as
 appropriate.  These added directives will not change the file when it
 gets written because no sentinels are written.</t>
-<t tx="ekr.20090324085713.1"></t>
+<t tx="ekr.20090324085713.1">@language rest
+</t>
 <t tx="ekr.20090324085713.2">Leo 4.6 beta 1                                       March 23, 2009
 
 Leo 4.6 b1 is now available at:
@@ -31672,19 +31209,7 @@ modifications
 <t tx="ekr.20090324105223.10"></t>
 <t tx="ekr.20090324105223.15"></t>
 <t tx="ekr.20090324145450.20"></t>
-<t tx="ekr.20090324145450.21">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-#######################################
+<t tx="ekr.20090324145450.21">#######################################
 What's New in Leo 4.6
 #######################################
 

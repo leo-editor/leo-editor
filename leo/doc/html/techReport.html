@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
 <title>The Essentials of Leo</title>
 <style type="text/css">
 
@@ -250,29 +250,30 @@ hr { /* EKR */
 <body>
 <div class="document" id="the-essentials-of-leo">
 <h1 class="title">The Essentials of Leo</h1>
+
 <!-- rst3: filename: html\techReport.html -->
-<div class="contents topic">
-<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference" href="#leo-s-window-outlines-clones" id="id1" name="id1">Leo’s window, outlines &amp; clones</a></li>
-<li><a class="reference" href="#relations-organizer-nodes-views-tasks-and-metadata" id="id2" name="id2">Relations: organizer nodes, views, tasks and metadata</a></li>
-<li><a class="reference" href="#plugins" id="id3" name="id3">Plugins</a></li>
-<li><a class="reference" href="#derived-files-and-special-nodes" id="id4" name="id4">Derived files and special nodes</a></li>
-<li><a class="reference" href="#markup-for-scripts" id="id5" name="id5">Markup for scripts</a></li>
-<li><a class="reference" href="#scripting-leo" id="id6" name="id6">Scripting Leo</a></li>
-<li><a class="reference" href="#leo-s-modules-and-classes" id="id7" name="id7">Leo’s modules and classes</a></li>
-<li><a class="reference" href="#predefined-symbols-in-scripts" id="id8" name="id8">Predefined symbols in scripts</a></li>
-<li><a class="reference" href="#accessing-data" id="id9" name="id9">Accessing data</a></li>
-<li><a class="reference" href="#traversing-outlines" id="id10" name="id10">Traversing outlines</a></li>
-<li><a class="reference" href="#executing-commands-from-scripts" id="id11" name="id11">Executing commands from scripts</a></li>
-<li><a class="reference" href="#bringing-scripts-to-data" id="id12" name="id12">Bringing scripts to data</a></li>
-<li><a class="reference" href="#unit-testing-with-test-and-suite-nodes" id="id13" name="id13">Unit Testing with &#64;test and &#64;suite nodes</a></li>
-<li><a class="reference" href="#plugins-and-hooks" id="id14" name="id14">Plugins and hooks</a></li>
-<li><a class="reference" href="#contacts" id="id15" name="id15">Contacts</a></li>
+<li><a class="reference internal" href="#leos-window-outlines-clones" id="id1">Leo’s window, outlines &amp; clones</a></li>
+<li><a class="reference internal" href="#relations-organizer-nodes-views-tasks-and-metadata" id="id2">Relations: organizer nodes, views, tasks and metadata</a></li>
+<li><a class="reference internal" href="#plugins" id="id3">Plugins</a></li>
+<li><a class="reference internal" href="#derived-files-and-special-nodes" id="id4">Derived files and special nodes</a></li>
+<li><a class="reference internal" href="#markup-for-scripts" id="id5">Markup for scripts</a></li>
+<li><a class="reference internal" href="#scripting-leo" id="id6">Scripting Leo</a></li>
+<li><a class="reference internal" href="#leos-modules-and-classes" id="id7">Leo’s modules and classes</a></li>
+<li><a class="reference internal" href="#predefined-symbols-in-scripts" id="id8">Predefined symbols in scripts</a></li>
+<li><a class="reference internal" href="#accessing-data" id="id9">Accessing data</a></li>
+<li><a class="reference internal" href="#traversing-outlines" id="id10">Traversing outlines</a></li>
+<li><a class="reference internal" href="#executing-commands-from-scripts" id="id11">Executing commands from scripts</a></li>
+<li><a class="reference internal" href="#bringing-scripts-to-data" id="id12">Bringing scripts to data</a></li>
+<li><a class="reference internal" href="#unit-testing-with-test-and-suite-nodes" id="id13">Unit Testing with &#64;test and &#64;suite nodes</a></li>
+<li><a class="reference internal" href="#plugins-and-hooks" id="id14">Plugins and hooks</a></li>
+<li><a class="reference internal" href="#contacts" id="id15">Contacts</a></li>
 </ul>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id1" id="leo-s-window-outlines-clones" name="leo-s-window-outlines-clones">Leo’s window, outlines &amp; clones</a></h1>
+<div class="section" id="leos-window-outlines-clones">
+<h1><a class="toc-backref" href="#id1">Leo’s window, outlines &amp; clones</a></h1>
 <p>Leo organizes all data into nodes containing a <strong>headline</strong>, an expandable page of
 <strong>body text</strong> and a (possibly empty) subtree of <strong>descendant nodes</strong>. The <strong>contents</strong> of a
 node are its headline and body text. Leo’s main window contains an <strong>outline</strong> pane
@@ -285,8 +286,8 @@ contents of one node (call it node N) changes the contents of all clones of N.
 Furthermore, inserting, deleting or changing any descendant of node N causes the
 corresponding insertion, deletion or change in all other clones of N.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id2" id="relations-organizer-nodes-views-tasks-and-metadata" name="relations-organizer-nodes-views-tasks-and-metadata">Relations: organizer nodes, views, tasks and metadata</a></h1>
+<div class="section" id="relations-organizer-nodes-views-tasks-and-metadata">
+<h1><a class="toc-backref" href="#id2">Relations: organizer nodes, views, tasks and metadata</a></h1>
 <p>Clones allow you to organize data in multiple ways within the same outline. You
 do not have to choose a single ‘correct’ organization: you can organize your
 data in as many ways as you like.</p>
@@ -308,14 +309,14 @@ body text. That is, nodes relate <strong>metadata</strong> (descriptions of data
 Separating data from metadata is useful for humans. It is even more valuable for
 scripts: scripts can access data and metadata without complex parsing.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id3" id="plugins" name="plugins">Plugins</a></h1>
+<div class="section" id="plugins">
+<h1><a class="toc-backref" href="#id3">Plugins</a></h1>
 <p>Plugins are Python (.py) files contained in Leo’s plugins folder. Users can
 write plugins to change how Leo works and to add new features without changing
 Leo’s core code. We’ll discuss plugins in more detail later.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id4" id="derived-files-and-special-nodes" name="derived-files-and-special-nodes">Derived files and special nodes</a></h1>
+<div class="section" id="derived-files-and-special-nodes">
+<h1><a class="toc-backref" href="#id4">Derived files and special nodes</a></h1>
 <p>Leo can generate many external files called <strong>derived files</strong> from an outline. Leo
 outlines can organize files throughout your computer’s file system. Nodes whose
 headlines start with ‘&#64;’ are special nodes. Several <strong>special nodes</strong> indicate the
@@ -346,8 +347,8 @@ root of a tree that generates a derived file:</p>
 &#64;run command Double clicking the node’s icon executes the command.  Requires run_nodes plugin.
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id5" id="markup-for-scripts" name="markup-for-scripts">Markup for scripts</a></h1>
+<div class="section" id="markup-for-scripts">
+<h1><a class="toc-backref" href="#id5">Markup for scripts</a></h1>
 <p>Leo’s Execute Script command <strong>preprocesses</strong> the script to be executed by scanning
 a node N and its descendants looking for markup. <strong>Markup</strong> is special syntax that
 controls this preprocessing. If node N contains no markup, the resulting script
@@ -425,8 +426,8 @@ The <tt class="docutils literal"><span class="pre">&#64;language</span></tt> and
 </li>
 </ol>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id6" id="scripting-leo" name="scripting-leo">Scripting Leo</a></h1>
+<div class="section" id="scripting-leo">
+<h1><a class="toc-backref" href="#id6">Scripting Leo</a></h1>
 <p>The <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> command preprocesses the selected text of the presently
 selected outline node, or the entire text of the node if there is no selected
 text. See the section called <tt class="docutils literal"><span class="pre">Markup</span> <span class="pre">for</span> <span class="pre">Scripts</span></tt> for a discussion of how Leo
@@ -435,8 +436,8 @@ using outlines. Conversely, scripts can use outlines to organize their data. To
 write such scripts you must understand at least the basics of Leo’s modules and
 classes...</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id7" id="leo-s-modules-and-classes" name="leo-s-modules-and-classes">Leo’s modules and classes</a></h1>
+<div class="section" id="leos-modules-and-classes">
+<h1><a class="toc-backref" href="#id7">Leo’s modules and classes</a></h1>
 <p>Leo’s source code is organized as a collection of modules. The following
 paragraphs describe five of the most important modules. See <tt class="docutils literal"><span class="pre">LeoPy.leo</span></tt> (Leo’s
 full source code) for more details: scripts have full access to all of Leo’s
@@ -467,15 +468,15 @@ high-level methods of the position class.</li>
 </ol>
 <p>A <strong>position</strong> (an instance of the position class) is the state of some traversal of an outline. Equivalently, a position is a particular visual place in an outline. Cloned nodes may appear many times in an outline. Non-cloned nodes may also appear in many places: consider a non-cloned descendant of a cloned node. By convention, in Leo’s source code p is a position.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id8" id="predefined-symbols-in-scripts" name="predefined-symbols-in-scripts">Predefined symbols in scripts</a></h1>
+<div class="section" id="predefined-symbols-in-scripts">
+<h1><a class="toc-backref" href="#id8">Predefined symbols in scripts</a></h1>
 <p>When executing scripts Leo predefines the following three symbols:
 <strong>c</strong> is the commander of the outline in which the script is defined,
 <strong>g</strong> is the leoGlobals module and
 <strong>p</strong> is the position of the selected node in c’s outline, i.e., <tt class="docutils literal"><span class="pre">c.p</span></tt>.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id9" id="accessing-data" name="accessing-data">Accessing data</a></h1>
+<div class="section" id="accessing-data">
+<h1><a class="toc-backref" href="#id9">Accessing data</a></h1>
 <p>Scripts should get and set data using high-level access methods. Here are some important getters:</p>
 <pre class="literal-block">
 g.app                The application object. Its ivars are Leo’s global variables.
@@ -504,8 +505,8 @@ p.b = s     Set body text of p to s.
 p.h = s     Set headline of p to s.
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id10" id="traversing-outlines" name="traversing-outlines">Traversing outlines</a></h1>
+<div class="section" id="traversing-outlines">
+<h1><a class="toc-backref" href="#id10">Traversing outlines</a></h1>
 <p>Scripts can visit some or all of the nodes of a Leo outline using the following iterators:</p>
 <pre class="literal-block">
 c.allNodes_iter             # All positions in the outline, in outline order.
@@ -520,8 +521,8 @@ for p in c.allNodes_iter():
     print ' '*p.level(), p.h
 </pre>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id11" id="executing-commands-from-scripts" name="executing-commands-from-scripts">Executing commands from scripts</a></h1>
+<div class="section" id="executing-commands-from-scripts">
+<h1><a class="toc-backref" href="#id11">Executing commands from scripts</a></h1>
 <p>Scripts may open other Leo outlines, or execute any of Leo’s commands.  Here are some examples:</p>
 <pre class="literal-block">
 ok,frame = g.openWithFileName(path,c)       # Opens the .leo file found at path.
@@ -530,8 +531,8 @@ c.insertHeadline()  # Inserts a new node after present position.
 </pre>
 <p>For more examples, see <tt class="docutils literal"><span class="pre">Chapter</span> <span class="pre">7:</span> <span class="pre">Scripting</span> <span class="pre">Leo</span> <span class="pre">with</span> <span class="pre">Python</span></tt>, in <tt class="docutils literal"><span class="pre">Leo’s</span> <span class="pre">Users</span> <span class="pre">Guide</span></tt>.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id12" id="bringing-scripts-to-data" name="bringing-scripts-to-data">Bringing scripts to data</a></h1>
+<div class="section" id="bringing-scripts-to-data">
+<h1><a class="toc-backref" href="#id12">Bringing scripts to data</a></h1>
 <p>The scripting plugin creates two buttons in the icon area at the top of the Leo
 window. The <tt class="docutils literal"><span class="pre">Run</span> <span class="pre">Script</span></tt> button executes the script in the selected node just
 like the <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> command. The <tt class="docutils literal"><span class="pre">Script</span> <span class="pre">Button</span></tt> button creates a new
@@ -540,8 +541,8 @@ node N. Pressing this button executes the script in node N with p predefined as
 <tt class="docutils literal"><span class="pre">c.p</span></tt> at the time the script is executed. This clever trick
 brings the script to the data in the selected outline.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id13" id="unit-testing-with-test-and-suite-nodes" name="unit-testing-with-test-and-suite-nodes">Unit Testing with &#64;test and &#64;suite nodes</a></h1>
+<div class="section" id="unit-testing-with-test-and-suite-nodes">
+<h1><a class="toc-backref" href="#id13">Unit Testing with &#64;test and &#64;suite nodes</a></h1>
 <p><tt class="docutils literal"><span class="pre">test.leo</span></tt> contains all of Leo’s unit tests. An <tt class="docutils literal"><span class="pre">&#64;button</span> <span class="pre">node</span></tt> in test.leo
 creates a blue <tt class="docutils literal"><span class="pre">Unit</span> <span class="pre">Test</span></tt> button in the icon area. This button is an
 excellent example of bringing scripts to data. The <tt class="docutils literal"><span class="pre">Unit</span> <span class="pre">Test</span></tt> button executes
@@ -562,8 +563,8 @@ g.app.scriptDict['suite'] = suite
 <p>where suite is the created suite. The <tt class="docutils literal"><span class="pre">Unit</span> <span class="pre">Test</span></tt> button then runs that
 created suite of unit tests.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id14" id="plugins-and-hooks" name="plugins-and-hooks">Plugins and hooks</a></h1>
+<div class="section" id="plugins-and-hooks">
+<h1><a class="toc-backref" href="#id14">Plugins and hooks</a></h1>
 <p>Plugins are Python (.py) files in Leo’s plugin subdirectory. It is easy to
 create new plugins: Leo’s users have contributed dozens of plugins that extend
 Leo’s capabilities in new ways. Leo imports all enabled plugins during startup.
@@ -581,11 +582,11 @@ leoPlugins.registerHandler.</p>
 presently distributed with Leo; studying these plugins is a good way of learning
 to write your own plugins.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id15" id="contacts" name="contacts">Contacts</a></h1>
+<div class="section" id="contacts">
+<h1><a class="toc-backref" href="#id15">Contacts</a></h1>
 <ul class="simple">
-<li>Leo’s home page:  google edreamleo or <a class="reference" href="http://webpages.charter.net/edreamleo/front.html">http://webpages.charter.net/edreamleo/front.html</a></li>
-<li>Edward K. Ream:  <a class="reference" href="mailto:edreamleo&#64;gmail.com">edreamleo&#64;gmail.com</a>, 166 N. Prospect Ave., Madison WI 53726, (608) 231-0766</li>
+<li>Leo’s home page:  google edreamleo or <a class="reference external" href="http://webpages.charter.net/edreamleo/front.html">http://webpages.charter.net/edreamleo/front.html</a></li>
+<li>Edward K. Ream:  <a class="reference external" href="mailto:edreamleo&#64;gmail.com">edreamleo&#64;gmail.com</a>, 166 N. Prospect Ave., Madison WI 53726, (608) 231-0766</li>
 </ul>
 </div>
 </div>

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
 <title>Chapter 13: Writing Plugins</title>
 <style type="text/css">
 
@@ -250,21 +250,21 @@ hr { /* EKR */
 <body>
 <div class="document" id="chapter-13-writing-plugins">
 <h1 class="title">Chapter 13: Writing Plugins</h1>
+
 <!-- rst3: filename: html\writingPlugins.html -->
-<!-- June 8, 2006 -->
-<div class="contents topic">
-<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference" href="#overview" id="id1" name="id1">Overview</a></li>
-<li><a class="reference" href="#support-for-unit-testing" id="id2" name="id2">Support for unit testing</a></li>
-<li><a class="reference" href="#turning-script-buttons-into-plugins" id="id3" name="id3">Turning script buttons into plugins</a></li>
-<li><a class="reference" href="#important-security-warnings" id="id4" name="id4">Important security warnings</a></li>
+<li><a class="reference internal" href="#overview" id="id1">Overview</a></li>
+<li><a class="reference internal" href="#support-for-unit-testing" id="id2">Support for unit testing</a></li>
+<li><a class="reference internal" href="#turning-script-buttons-into-plugins" id="id3">Turning script buttons into plugins</a></li>
+<li><a class="reference internal" href="#important-security-warnings" id="id4">Important security warnings</a></li>
 </ul>
 </div>
 <!-- External links... -->
 <!-- Relative links... -->
-<div class="section">
-<h1><a class="toc-backref" href="#id1" id="overview" name="overview">Overview</a></h1>
+<div class="section" id="overview">
+<h1><a class="toc-backref" href="#id1">Overview</a></h1>
 <p>A <strong>plugin</strong> is a Python file that appears in Leo's plugin directory. Plugins
 modify how Leo works. With plugins you can give Leo new commands, modify how
 existing commands work, or change any other aspect of Leo's look and feel.
@@ -275,25 +275,25 @@ myLeoSettings.leo. For more details, see the &#64;enabled-plugins node in
 leoSettings.leo. Leo imports all enabled plugins at startup time. Plugins become
 <strong>active</strong> if importing the plugin was successful.</p>
 <p>Writing plugins is quite similar to writing any other Leo script.  See
-<a class="reference" href="scripting.html">Chapter 7: Scripting Leo with Python</a>. In particular:</p>
+<a class="reference external" href="scripting.html">Chapter 7: Scripting Leo with Python</a>. In particular:</p>
 <ol class="arabic simple">
 <li>Plugins can use any of Leo's source code simply by importing any module
 defined in leoPy.leo.</li>
 <li>Plugins can register event handlers just like any other Leo script. For full
-details, see the section called <a class="reference" href="scripting.html#event-handlers">event handlers</a> in Leo's scripting chapter.</li>
+details, see the section called <a class="reference external" href="scripting.html#event-handlers">event handlers</a> in Leo's scripting chapter.</li>
 </ol>
 <p>The rest of this chapters discusses topics related specifically to plugins.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id2" id="support-for-unit-testing" name="support-for-unit-testing">Support for unit testing</a></h1>
+<div class="section" id="support-for-unit-testing">
+<h1><a class="toc-backref" href="#id2">Support for unit testing</a></h1>
 <p>The plugins test suite creates a new convention: if a plugin has a function at
 the outer (module) level called <tt class="docutils literal"><span class="pre">unitTest</span></tt>, Leo will call that function when
 doing unit testing for plugins. So it would be good if writers of plugins would
 create such a <tt class="docutils literal"><span class="pre">unitTest</span> <span class="pre">function</span></tt>. To indicate a failure the <tt class="docutils literal"><span class="pre">unitTest</span></tt> just
 throws an exception. Leo's plugins test suite takes care of the rest.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id3" id="turning-script-buttons-into-plugins" name="turning-script-buttons-into-plugins">Turning script buttons into plugins</a></h1>
+<div class="section" id="turning-script-buttons-into-plugins">
+<h1><a class="toc-backref" href="#id3">Turning script buttons into plugins</a></h1>
 <p>This section provides step-by-step instructions for turning a script button into a plugin.
 The plugin will define a minibuffer command that does the same thing as pressing the button.</p>
 <p>We shall start with a script button whose script is:</p>
@@ -373,8 +373,8 @@ or by typing &lt;Alt-x&gt; print-cp &lt;Return&gt;.</p>
 <p>That's all.  You can find the completed version of the print_cp plugin in leoPlugins.leo,
 or leoPluginsRef.leo if you are using cvs.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id4" id="important-security-warnings" name="important-security-warnings">Important security warnings</a></h1>
+<div class="section" id="important-security-warnings">
+<h1><a class="toc-backref" href="#id4">Important security warnings</a></h1>
 <p>Naively using plugins can expose you and your .leo files to malicious attacks.
 The fundamental principles are:</p>
 <pre class="literal-block">

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.4.1: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
 <title>Chapter 6: Leo and Literate Programming</title>
 <style type="text/css">
 
@@ -250,61 +250,62 @@ hr { /* EKR */
 <body>
 <div class="document" id="chapter-6-leo-and-literate-programming">
 <h1 class="title">Chapter 6: Leo and Literate Programming</h1>
+
 <!-- rst3: filename: html\design.html -->
-<p>This chapter discusses Leo's relationship with traditional <a class="reference" href="glossary.html#literate-programming">literate programming</a>.</p>
-<div class="contents topic">
-<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
+<p>This chapter discusses Leo's relationship with traditional <a class="reference external" href="glossary.html#literate-programming">literate programming</a>.</p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
 <ul class="simple">
-<li><a class="reference" href="#why-i-like-literate-programming" id="id1" name="id1">Why I like Literate Programming</a></li>
-<li><a class="reference" href="#how-leo-improves-literate-programming" id="id2" name="id2">How Leo Improves Literate Programming</a></li>
-<li><a class="reference" href="#how-leo-changes-the-notion-of-literate-programming" id="id3" name="id3">How Leo Changes the Notion of Literate Programming</a></li>
+<li><a class="reference internal" href="#why-i-like-literate-programming" id="id1">Why I like Literate Programming</a></li>
+<li><a class="reference internal" href="#how-leo-improves-literate-programming" id="id2">How Leo Improves Literate Programming</a></li>
+<li><a class="reference internal" href="#how-leo-changes-the-notion-of-literate-programming" id="id3">How Leo Changes the Notion of Literate Programming</a></li>
 </ul>
 </div>
 <!-- Relative links... -->
-<div class="section">
-<h1><a class="toc-backref" href="#id1" id="why-i-like-literate-programming" name="why-i-like-literate-programming">Why I like Literate Programming</a></h1>
-<p>The following paragraphs discuss the main benefits of traditional <a class="reference" href="glossary.html#literate-programming">literate programming</a>.
+<div class="section" id="why-i-like-literate-programming">
+<h1><a class="toc-backref" href="#id1">Why I like Literate Programming</a></h1>
+<p>The following paragraphs discuss the main benefits of traditional <a class="reference external" href="glossary.html#literate-programming">literate programming</a>.
 <strong>Note</strong>: none of these benefits depends on printed output.</p>
 <p><strong>Design and coding happen at the highest possible level</strong>.
-The names of <a class="reference" href="glossary.html#sections">sections</a> are constrained only by one's design skill, not by any
+The names of <a class="reference external" href="glossary.html#sections">sections</a> are constrained only by one's design skill, not by any
 rules of language. You say what you mean, and that becomes both the design and
-the code. You never have to simulate a concept because concepts become <a class="reference" href="glossary.html#section-names">section
+the code. You never have to simulate a concept because concepts become <a class="reference external" href="glossary.html#section-names">section
 names</a>.</p>
 <p><strong>The visual weight of code is separate from its actual length</strong>.
-The visual weight of a <a class="reference" href="glossary.html#section">section</a> is simply the length and complexity of the
-<a class="reference" href="glossary.html#section-name">section name</a>, regardless of how complex the actual definition of the section
+The visual weight of a <a class="reference external" href="glossary.html#section">section</a> is simply the length and complexity of the
+<a class="reference external" href="glossary.html#section-name">section name</a>, regardless of how complex the actual definition of the section
 is. The results of this separation are spectacular. No longer is one reluctant
 to do extensive error handling (or any other kind of minutia) for fear that it
 would obscure the essence of the program. Donald Knuth stresses this aspect of
 literate programming and I fully agree.</p>
 <p><strong>Sections show relations between snippets of code</strong>.
-<a class="reference" href="glossary.html#sections">Sections</a> can show and enforce relationships between apparently unrelated pieces
+<a class="reference external" href="glossary.html#sections">Sections</a> can show and enforce relationships between apparently unrelated pieces
 of code. Comments, macros or functions are other ways to indicate such
 relationships, but often sections are ideal. Indeed, a natural progression is to
 create sections as a matter of course. I typically convert a section to a
 function only when it becomes apparent that a function's greater generality
 outweighs the inconvenience of having to declare and define the function.</p>
 <p><strong>Complex section names invite improvements</strong>.
-A <a class="reference" href="glossary.html#section-name">section name</a> is complex when it implies unwholesome dependencies between the
-caller (user) of the section and the <a class="reference" href="glossary.html#section">section</a> itself. Such section names tend to
+A <a class="reference external" href="glossary.html#section-name">section name</a> is complex when it implies unwholesome dependencies between the
+caller (user) of the section and the <a class="reference external" href="glossary.html#section">section</a> itself. Such section names tend to
 be conspicuous, so that the programmer is lead to revise both the section name
 and its purpose. Many times my attention has been drawn to a poorly conceived
 section because I didn't like what its name implied. I have always been able to
 revise the code to improve the design, either by splitting a section into parts
 or be simplifying its relation to colleagues.</p>
 <p><strong>Sections create a place for extensive comments</strong>.
-One of the most surprising thing about <a class="reference" href="glossary.html#literate-programming">literate programming</a> is how severely
+One of the most surprising thing about <a class="reference external" href="glossary.html#literate-programming">literate programming</a> is how severely
 traditional programming tends to limit comments. In a conventional program the
 formatting of code must indicate structure, and comments obscure that
-formatting. <a class="reference" href="glossary.html#sections">Sections</a> in literate programming provide a place for lengthy
+formatting. <a class="reference external" href="glossary.html#sections">Sections</a> in literate programming provide a place for lengthy
 comments that do not clutter the code at the place the section is
-<a class="reference" href="glossary.html#referenced">referenced</a>.</p>
+<a class="reference external" href="glossary.html#referenced">referenced</a>.</p>
 <p><strong>Section names eliminate mundane comments</strong>.
-The <a class="reference" href="glossary.html#section-name">section name</a> often says it all. The <a class="reference" href="glossary.html#reference">reference</a> to the section says everything
+The <a class="reference external" href="glossary.html#section-name">section name</a> often says it all. The <a class="reference external" href="glossary.html#reference">reference</a> to the section says everything
 that the user needs to know, and the section name at the point of definition
 also eliminates the need for many comments.</p>
 <p><strong>Sections create comments automatically</strong>.
-A typical <a class="reference" href="glossary.html#root-node">&#64;root node</a> starts out with something like:</p>
+A typical <a class="reference external" href="glossary.html#root-node">&#64;root node</a> starts out with something like:</p>
 <pre class="literal-block">
 &lt;&lt; includes for class x &gt;&gt;
 &lt;&lt; private data for class x &gt;&gt;
@@ -317,13 +318,13 @@ A typical <a class="reference" href="glossary.html#root-node">&#64;root node</a>
 </pre>
 <p>It would be silly to write this comment by hand, though often programmers do
 just that in order to have a place holder for a mark in the source file. With
-<a class="reference" href="glossary.html#literate-programming">literate programming</a> the situation is different: the comment indicates that the
-code came from a particular <a class="reference" href="glossary.html#section">section</a>; that is, the comment servers a real
+<a class="reference external" href="glossary.html#literate-programming">literate programming</a> the situation is different: the comment indicates that the
+code came from a particular <a class="reference external" href="glossary.html#section">section</a>; that is, the comment servers a real
 purpose.</p>
 <p><strong>Literate programming clarifies the shape of code</strong>.
 These last several paragraphs have discussed comments in detail because the net
 effect of &quot;putting comments where they belong&quot; is that comments don't clutter
-the code. <a class="reference" href="glossary.html#section-references">Section references</a> hide irrelevant detail, so larger-scale patterns
+the code. <a class="reference external" href="glossary.html#section-references">Section references</a> hide irrelevant detail, so larger-scale patterns
 within functions (or declarations) become more apparent. Often just recasting
 code into web format has created Aha's about my own code, with no special
 attention to recoding or redesign! Recasting a function as a web raises the real
@@ -335,32 +336,32 @@ sections are formatted consistently because the format of one section has no
 effect on the look of other sections. Also, I don't worry about most line breaks
 within <cite>documentation parts</cite>, or about adding comment delimiters.</p>
 <p><strong>Literate programming creates a new design dimension</strong>.
-<a class="reference" href="glossary.html#sections">Sections</a> add a new dimension to the design and coding process. Choices about
+<a class="reference external" href="glossary.html#sections">Sections</a> add a new dimension to the design and coding process. Choices about
 what sections do, what they are named, what order they appear in, are choices in
 a design space different from &quot;normal&quot; programming. This an abstract concept, to
 be sure. However, the previous paragraphs are really a manifestation of
 working in this new design space.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id2" id="how-leo-improves-literate-programming" name="how-leo-improves-literate-programming">How Leo Improves Literate Programming</a></h1>
-<p><a class="reference" href="glossary.html#outlines">Outlines</a> add something brand new to traditional <a class="reference" href="glossary.html#literate-programming">literate programming</a>, namely an
+<div class="section" id="how-leo-improves-literate-programming">
+<h1><a class="toc-backref" href="#id2">How Leo Improves Literate Programming</a></h1>
+<p><a class="reference external" href="glossary.html#outlines">Outlines</a> add something brand new to traditional <a class="reference external" href="glossary.html#literate-programming">literate programming</a>, namely an
 explicit mechanism for expressing structure at any level of detail, from largest
 overall view to smallest detail. The following paragraphs elaborate on this theme.</p>
 <p><strong>Outlines add context</strong>.
-There are too many <a class="reference" href="glossary.html#sections">sections</a> in conventional <cite>literate programming</cite>. It becomes
-difficult to understand the relationships between sections. Using an <a class="reference" href="glossary.html#outline">outline</a> to
+There are too many <a class="reference external" href="glossary.html#sections">sections</a> in conventional <cite>literate programming</cite>. It becomes
+difficult to understand the relationships between sections. Using an <a class="reference external" href="glossary.html#outline">outline</a> to
 express a literate programming instantly solves this problem. The programmer is
 always aware of how sections are related.</p>
 <p><strong>Outlines provide scope for commands</strong>.
-<a class="reference" href="glossary.html#outlines">Outlines</a> provide a convenient way of expressing the intended scope of commands.
-For example, the <tt class="docutils literal"><span class="pre">Tangle</span></tt> command operates only on the presently selected <a class="reference" href="glossary.html#tree">tree</a>.
-The <tt class="docutils literal"><span class="pre">Extract</span> <span class="pre">Section</span></tt> command creates a new <a class="reference" href="glossary.html#section">section</a> as the last <a class="reference" href="glossary.html#child">child</a> of the
-present <a class="reference" href="glossary.html#node">node</a>.</p>
+<a class="reference external" href="glossary.html#outlines">Outlines</a> provide a convenient way of expressing the intended scope of commands.
+For example, the <tt class="docutils literal"><span class="pre">Tangle</span></tt> command operates only on the presently selected <a class="reference external" href="glossary.html#tree">tree</a>.
+The <tt class="docutils literal"><span class="pre">Extract</span> <span class="pre">Section</span></tt> command creates a new <a class="reference external" href="glossary.html#section">section</a> as the last <a class="reference external" href="glossary.html#child">child</a> of the
+present <a class="reference external" href="glossary.html#node">node</a>.</p>
 <p><strong>Clones create different views and focus attention</strong>.
-<a class="reference" href="glossary.html#clones">Clones</a> can create different views of the outline. An <a class="reference" href="glossary.html#outline">outline</a> can contain many such views.
-<a class="reference" href="intro.html#clones-views">Clones &amp; views</a> discusses the implications of clones in detail.</p>
+<a class="reference external" href="glossary.html#clones">Clones</a> can create different views of the outline. An <a class="reference external" href="glossary.html#outline">outline</a> can contain many such views.
+<a class="reference external" href="intro.html#clones-views">Clones &amp; views</a> discusses the implications of clones in detail.</p>
 <p><strong>Outlines increase flexibility</strong>.
-<a class="reference" href="intro.html#good-style-and-bad-sections-vs-others">Organizer nodes</a> do not affect derived files in any way, but organizer nodes
+<a class="reference external" href="intro.html#good-style-and-bad-sections-vs-others">Organizer nodes</a> do not affect derived files in any way, but organizer nodes
 often convey the most information about the structure and design of a large
 system. Decoupling structure from content in this way is precisely what is
 needed for flexibility: one can reorganize at will without worrying about
@@ -368,29 +369,29 @@ changing the meaning of the code.</p>
 <p><strong>Outlines express hierarchy directly</strong>.
 Hierarchy is often implicit in programming: for example, the grouping of
 functions into files, or the organization of a single file as a set of
-functions, etc. An <a class="reference" href="glossary.html#outline">outline</a> directly expresses hierarchy. Many of Leo's <a class="reference" href="commands.html">commands</a>
+functions, etc. An <a class="reference external" href="glossary.html#outline">outline</a> directly expresses hierarchy. Many of Leo's <a class="reference external" href="commands.html">commands</a>
 operate on the presently selected node. It is natural to apply operations on
-selected <a class="reference" href="glossary.html#node">node</a> of the outline.</p>
+selected <a class="reference external" href="glossary.html#node">node</a> of the outline.</p>
 <p><strong>reStructuredText is much easier to use than CWEB markup.</strong>
-Leo's <a class="reference" href="glossary.html#rst3-plugin">rst3 plugin</a> makes it easy to use <a class="reference" href="glossary.html#restructuredtext">reStructuredText</a> (rST) instead of <a class="reference" href="glossary.html#cweb">CWEB</a>
+Leo's <a class="reference external" href="glossary.html#rst3-plugin">rst3 plugin</a> makes it easy to use <a class="reference external" href="glossary.html#restructuredtext">reStructuredText</a> (rST) instead of <a class="reference external" href="glossary.html#cweb">CWEB</a>
 markup. For most purposes, rST suffices, and rST is much easier to use and less
-intrusive than <a class="reference" href="glossary.html#cweb">CWEB</a>.</p>
+intrusive than <a class="reference external" href="glossary.html#cweb">CWEB</a>.</p>
 <p><strong>Outlines create new design dimensions</strong>.
 There are many ways to express a program as a Leo outline. Such choices are
 important. They add clarity to the entire program. These are different <em>kind</em> of
 choices. They simply can not be expressed at all in other editors. In other
 words, such choices exist in a new design space.</p>
 <p><strong>Leo improves tangling and adds untangling</strong>.
-<a class="reference" href="glossary.html#tangling">Tangling</a> and <a class="reference" href="glossary.html#untangling">untangling</a> are fundamental operations of <a class="reference" href="glossary.html#literate-programming">literate programming</a>.
-Leo tangles and untangles files derived from <a class="reference" href="glossary.html#file-trees">&#64;file trees</a> automatically. This
+<a class="reference external" href="glossary.html#tangling">Tangling</a> and <a class="reference external" href="glossary.html#untangling">untangling</a> are fundamental operations of <a class="reference external" href="glossary.html#literate-programming">literate programming</a>.
+Leo tangles and untangles files derived from <a class="reference external" href="glossary.html#file-trees">&#64;file trees</a> automatically. This
 is an important convenience.</p>
 </div>
-<div class="section">
-<h1><a class="toc-backref" href="#id3" id="how-leo-changes-the-notion-of-literate-programming" name="how-leo-changes-the-notion-of-literate-programming">How Leo Changes the Notion of Literate Programming</a></h1>
+<div class="section" id="how-leo-changes-the-notion-of-literate-programming">
+<h1><a class="toc-backref" href="#id3">How Leo Changes the Notion of Literate Programming</a></h1>
 <p>Leo changes the theory and practice of literate programming as follows:</p>
 <p><strong>Leo reduces the need for comments</strong>.
 In particular, bridge or transition phrases are almost always unnecessary in a
-Leo <a class="reference" href="glossary.html#outline">outline</a>. One never needs to say something like, &quot;having just finished
+Leo <a class="reference external" href="glossary.html#outline">outline</a>. One never needs to say something like, &quot;having just finished
 with topic x, we turn now to topic y.&quot; Leo's outlines tend to be far less
 chatty than flat literate programs.</p>
 <p><strong>Leo reduces the need for printed listings</strong>.
@@ -398,8 +399,8 @@ Experience with the <tt class="docutils literal"><span class="pre">Weave</span><
 unintelligible when printed, no matter how &quot;beautiful&quot; the typeset printout is.
 No printed listing can be as clear as Leo's outline view.</p>
 <p><strong>Leo reduces the need for indices and tables of contents</strong>.
-You could say the entire outline is a table of contents. Moreover, <a class="reference" href="glossary.html#sections">sections</a>
-must always be defined in a descendant of the <a class="reference" href="glossary.html#node">node</a> containing the <a class="reference" href="glossary.html#section-reference">section
+You could say the entire outline is a table of contents. Moreover, <a class="reference external" href="glossary.html#sections">sections</a>
+must always be defined in a descendant of the <a class="reference external" href="glossary.html#node">node</a> containing the <a class="reference external" href="glossary.html#section-reference">section
 reference</a>, so there is very little need for an index.</p>
 <p><strong>Leo shows that outline structure is more powerful than narrative.</strong>
 Indeed, narrative style creates severe maintenance problems. The narrative is
