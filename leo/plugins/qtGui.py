@@ -1594,27 +1594,25 @@ class leoQtFrame (leoFrame.leoFrame):
             # imagefile = keys.get('imagefile')
             # image = keys.get('image')
 
-            class iconBarButton (QtGui.QWidgetAction):
+            class leoIconBarButton (QtGui.QWidgetAction):
                 def __init__ (self,parent,text,toolbar):
                     QtGui.QWidgetAction.__init__(self,parent)
+                    self.button = None # set below
                     self.text = text
                     self.toolbar = toolbar
                 def createWidget (self,parent):
-                    button = QtGui.QPushButton(self.text,parent)
-                    g.app.gui.setWidgetColor(button,
+                    self.button = b = QtGui.QPushButton(self.text,parent)
+                    g.app.gui.setWidgetColor(b,
                         widgetKind='QPushButton',
                         selector='background-color',
                         colorName = self.toolbar.buttonColor)
-                    return button
+                    return b
 
-            action = iconBarButton(parent=self.w,text=text,toolbar=self)
+            action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
             self.w.addAction(action)
 
             self.actions.append(action)
             b = self.w.widgetForAction(action)
-
-            #b = QtGui.QPushButton(text,self.w)
-            #b.leo_buttonAction = self.addWidget(b)
 
             b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
@@ -1622,6 +1620,7 @@ class leoQtFrame (leoFrame.leoFrame):
                 self.w.removeAction(action)
 
             b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
+
             b.addAction(rb)
             rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
 
@@ -1634,8 +1633,8 @@ class leoQtFrame (leoFrame.leoFrame):
                         c.outerUpdate()
                     return val
 
-                self.w.connect(action,
-                    QtCore.SIGNAL("triggered()"),
+                self.w.connect(b,
+                    QtCore.SIGNAL("clicked()"),
                     button_callback)
 
             return action
@@ -1683,8 +1682,9 @@ class leoQtFrame (leoFrame.leoFrame):
         def setCommandForButton(self,button,command):
 
             if command:
-                QtCore.QObject.connect(button,
-                    QtCore.SIGNAL("triggered()"),command)
+                # button is a leoIconBarButton.
+                QtCore.QObject.connect(button.button,
+                    QtCore.SIGNAL("clicked()"),command)
         #@-node:ekr.20081121105001.274:setCommandForButton
         #@-others
     #@-node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)

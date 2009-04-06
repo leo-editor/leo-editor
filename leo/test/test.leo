@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" a="E" str_leo_pos="0,2,2"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -54,7 +54,7 @@
 </v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
 </v>
-<v t="ekr.20041001211817"><vh>Buttons</vh>
+<v t="ekr.20041001211817" a="E"><vh>Buttons</vh>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
 <v t="ekr.20061030041356"><vh>@url c:\prog\IronPython-1.0.1\Doc\IronPythonApiReference.chm</vh></v>
 </v>
@@ -2592,7 +2592,10 @@ else:
         rst3.onCreate('tag',{'c':c})
     else:
         # Ask to be removed.
-        g.app.scriptDict['removeMe'] = True</t>
+        g.app.scriptDict['removeMe'] = True
+
+print 'done'
+</t>
 <t tx="ekr.20080917063615.1">aList = (
 'aspellbindir',
 'wholeword',
