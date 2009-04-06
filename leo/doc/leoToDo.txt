@@ -123,6 +123,17 @@ def removeChapterByName (self,name):
 #@-node:ekr.20070606075434:cc.removeChapterByName
 #@-node:ekr.20090324100430.1:Major bug: deleting @chapter node doesn't work
 #@+node:ekr.20090304084910.2:Asap
+@nocolor-node
+
+Most important projects:
+
+** Everything is @shadow.
+- Improve docs.
+- key handling.
+- multiple body editors.
+- bugs.
+#@+node:ekr.20090404051241.2:What does it take to get a proper sphinx index?
+#@-node:ekr.20090404051241.2:What does it take to get a proper sphinx index?
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
 #@-node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
 #@+node:ekr.20090228065229.2:Honor @path in rst3 plugin

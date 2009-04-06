@@ -1552,7 +1552,7 @@ class leoQtFrame (leoFrame.leoFrame):
         #@-node:ekr.20081121105001.265:update
         #@-others
     #@-node:ekr.20081121105001.261:class qtStatusLineClass (qtFrame)
-    #@+node:ekr.20081121105001.266:class qtIconBarClass
+    #@+node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
     class qtIconBarClass:
 
         '''A class representing the singleton Icon bar'''
@@ -1565,6 +1565,9 @@ class leoQtFrame (leoFrame.leoFrame):
             self.parentFrame = parentFrame
             self.w = c.frame.top.iconBar # A QToolBar.
             self.actions = []
+
+            # Options
+            self.buttonColor = c.config.getString('qt-button-color')
 
             # g.app.iconWidgetCount = 0
         #@-node:ekr.20081121105001.267: ctor
@@ -1591,7 +1594,21 @@ class leoQtFrame (leoFrame.leoFrame):
             # imagefile = keys.get('imagefile')
             # image = keys.get('image')
 
-            action = self.w.addAction(text)
+            class iconBarButton (QtGui.QWidgetAction):
+                def __init__ (self,parent,text,toolbar):
+                    QtGui.QWidgetAction.__init__(self,parent)
+                    self.text = text
+                    self.toolbar = toolbar
+                def createWidget (self,parent):
+                    button = QtGui.QPushButton(self.text,parent)
+                    g.app.gui.setWidgetColor(button,
+                        widgetKind='QPushButton',
+                        selector='background-color',
+                        colorName = self.toolbar.buttonColor)
+                    return button
+
+            action = iconBarButton(parent=self.w,text=text,toolbar=self)
+            self.w.addAction(action)
 
             self.actions.append(action)
             b = self.w.widgetForAction(action)
@@ -1670,7 +1687,7 @@ class leoQtFrame (leoFrame.leoFrame):
                     QtCore.SIGNAL("triggered()"),command)
         #@-node:ekr.20081121105001.274:setCommandForButton
         #@-others
-    #@-node:ekr.20081121105001.266:class qtIconBarClass
+    #@-node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
     #@+node:ekr.20081121105001.275:Minibuffer methods
     #@+node:ekr.20081121105001.276:showMinibuffer
     def showMinibuffer (self):
@@ -4603,6 +4620,37 @@ class leoQtGui(leoGui.leoGui):
         )
 
     #@-node:ekr.20081121105001.501:isTextWidget
+    #@+node:ekr.20090406111739.14:Style Sheets
+    #@+node:ekr.20090406111739.13:setStyleSetting (qtGui)
+    def setStyleSetting(self,w,widgetKind,selector,val):
+
+        '''Set the styleSheet for w to
+           "%s { %s: %s; }  % (widgetKind,selector,val)"
+        '''
+
+        s = '%s { %s: %s; }' % (widgetKind,selector,val)
+
+        try:
+            w.setStyleSheet(s)
+        except Exception:
+            g.es_print('bad style sheet: %s' % s)
+            g.es_exception()
+    #@-node:ekr.20090406111739.13:setStyleSetting (qtGui)
+    #@+node:ekr.20090406111739.12:setWidgetColor (qtGui)
+    badWidgetColors = []
+
+    def setWidgetColor (self,w,widgetKind,selector,colorName):
+
+        if not colorName: return
+
+        if QtGui.QColor(colorName).isValid():
+            g.app.gui.setStyleSetting(w,widgetKind,selector,colorName)
+        elif colorName not in self.badWidgetColors:
+            self.badWidgetColors.append(colorName)
+            g.es_print('bad widget color %s for %s' % (
+                colorName,widgetKind),color='blue')
+    #@-node:ekr.20090406111739.12:setWidgetColor (qtGui)
+    #@-node:ekr.20090406111739.14:Style Sheets
     #@+node:ekr.20081121105001.502:toUnicode (qtGui)
     def toUnicode (self,s,encoding='utf-8',reportErrors=True):
 

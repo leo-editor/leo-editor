@@ -1618,7 +1618,7 @@ def update (self):
     self.lastFcol = fcol
 #@-node:ekr.20081121105001.265:update
 #@-node:ekr.20081121105001.261:class qtStatusLineClass (qtFrame)
-#@+node:ekr.20081121105001.266:class qtIconBarClass
+#@+node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
 class qtIconBarClass:
 
     '''A class representing the singleton Icon bar'''
@@ -1631,6 +1631,9 @@ def __init__ (self,c,parentFrame):
     self.parentFrame = parentFrame
     self.w = c.frame.top.iconBar # A QToolBar.
     self.actions = []
+
+    # Options
+    self.buttonColor = c.config.getString('qt-button-color')
 
     # g.app.iconWidgetCount = 0
 #@-node:ekr.20081121105001.267: ctor
@@ -1657,7 +1660,21 @@ def add(self,*args,**keys):
     # imagefile = keys.get('imagefile')
     # image = keys.get('image')
 
-    action = self.w.addAction(text)
+    class iconBarButton (QtGui.QWidgetAction):
+        def __init__ (self,parent,text,toolbar):
+            QtGui.QWidgetAction.__init__(self,parent)
+            self.text = text
+            self.toolbar = toolbar
+        def createWidget (self,parent):
+            button = QtGui.QPushButton(self.text,parent)
+            g.app.gui.setWidgetColor(button,
+                widgetKind='QPushButton',
+                selector='background-color',
+                colorName = self.toolbar.buttonColor)
+            return button
+
+    action = iconBarButton(parent=self.w,text=text,toolbar=self)
+    self.w.addAction(action)
 
     self.actions.append(action)
     b = self.w.widgetForAction(action)
@@ -1735,7 +1752,7 @@ def setCommandForButton(self,button,command):
         QtCore.QObject.connect(button,
             QtCore.SIGNAL("triggered()"),command)
 #@-node:ekr.20081121105001.274:setCommandForButton
-#@-node:ekr.20081121105001.266:class qtIconBarClass
+#@-node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
 #@+node:ekr.20081121105001.275:Minibuffer methods
 #@+node:ekr.20081121105001.276:showMinibuffer
 def showMinibuffer (self):
@@ -3145,8 +3162,48 @@ def selectLabel (self,w):
         # w.leo_label = None
 #@-node:ekr.20081121105001.222:select/unselectLabel
 #@-node:ekr.20081215162017.5:Support multiple body editors
-#@+node:ekr.20090406071640.2:Use gui to do line up/down commands
-#@-node:ekr.20090406071640.2:Use gui to do line up/down commands
+#@+node:ekr.20090406111739.10:Let gui handle hard part of next/prev-line commands
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ef04b185f74f4926
+
+This is a little difficult to describe in words, but trying it out
+should, I hope make the issue clear enough.
+
+(1) Start by setting body_pane_wraps to true.
+
+(2) Create a very long line of e.g. 500 characters, which is wrapped
+around on the body pane. (E.g. paste in a paragraph from a Word
+document). This text will then be wrapped onscreen into roughly 8
+lines of 70 characters.
+
+(3) The up and down arrows do not behave as expected.
+
+I'd expect that in this scenario, pressing the down arrow key should
+go to go to the next line down as it currently appears *onscreen* --
+so in this example, I'd expect to have to press the down arrow several
+times to get to the end of the paragraph.  This is the way that Emacs
+works when it is in word wrap mode, and is of course is the way that
+all word processors work. However, Leo does not play this way, and
+takes you right to the end of the line (i.e. to the last of the 500
+characters) when you press the down key once. This makes editing plain
+text (e.g. using Leo as an outliner) rather more tricky than it ought
+to be. Would it be possible to change the effect of Previous-Line and
+Next-Line when in word wrap mode, so that they behave as other text
+editors and word processors do?
+
+============================
+
+This is a long-standing problem.  It's tricky to fix in a straightforward
+way.
+
+However, I just realized that there might be a clever way: the commands
+could let the gui handle the hard part of the command (the actual move) and
+then the commands could detect the resulting row/col numbers as they must.
+
+I've been putting this off, I'll see if this more clever way will work soon. 
+#@nonl
+#@-node:ekr.20090406111739.10:Let gui handle hard part of next/prev-line commands
 #@-node:ekr.20090406071640.17:First
 #@+node:ekr.20090304084841.10:Asap
 #@+node:ekr.20090223065019.11:Make Leo's page-up/page-down commands functional
@@ -3181,8 +3238,6 @@ couldn't find any mention of gsimage in the diff.
                      c.frame.body.bodyCtrl.delete(a.gsimage)
                  except:
 #@-node:ekr.20090128083504.1:Fix rclick
-#@+node:ekr.20081215162017.4:Allow coloring of script buttons
-#@-node:ekr.20081215162017.4:Allow coloring of script buttons
 #@+node:ekr.20081215074704.21:Add drag and drop
 #@-node:ekr.20081215074704.21:Add drag and drop
 #@+node:ekr.20081124094918.1:Fix problems with scim
@@ -4314,6 +4369,240 @@ def onFocusHelper(self,name):
         g.es_print('invalid body background color: %s' % (name),color='blue')
 #@-node:ekr.20090406071640.13:Event handlers called from eventFilter
 #@-node:ekr.20081215074704.20:Change background color of body pane depending on focus
+#@+node:ekr.20081215162017.4:Allow coloring of script buttons
+@nocolor-node
+
+Use @string qt-button-color = lightSteelBlue
+
+The following does *not* work in @data qt-gui-plugin-style-sheet::
+
+    QPushButton {
+        background-color: red;
+    }
+#@+node:ekr.20090406111739.12:setWidgetColor (qtGui)
+badWidgetColors = []
+
+def setWidgetColor (self,w,widgetKind,selector,colorName):
+
+    if not colorName: return
+
+    if QtGui.QColor(colorName).isValid():
+        g.app.gui.setStyleSetting(w,widgetKind,selector,colorName)
+    elif colorName not in self.badWidgetColors:
+        self.badWidgetColors.append(colorName)
+        g.es_print('bad widget color %s for %s' % (
+            colorName,widgetKind),color='blue')
+#@-node:ekr.20090406111739.12:setWidgetColor (qtGui)
+#@+node:ekr.20090406111739.13:setStyleSetting (qtGui)
+def setStyleSetting(self,w,widgetKind,selector,val):
+
+    '''Set the styleSheet for w to
+       "%s { %s: %s; }  % (widgetKind,selector,val)"
+    '''
+
+    s = '%s { %s: %s; }' % (widgetKind,selector,val)
+
+    try:
+        w.setStyleSheet(s)
+    except Exception:
+        g.es_print('bad style sheet: %s' % s)
+        g.es_exception()
+#@-node:ekr.20090406111739.13:setStyleSetting (qtGui)
+#@+node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
+class qtIconBarClass:
+
+    '''A class representing the singleton Icon bar'''
+
+    @others
+#@+node:ekr.20081121105001.267: ctor
+def __init__ (self,c,parentFrame):
+
+    self.c = c
+    self.parentFrame = parentFrame
+    self.w = c.frame.top.iconBar # A QToolBar.
+    self.actions = []
+
+    # Options
+    self.buttonColor = c.config.getString('qt-button-color')
+
+    # g.app.iconWidgetCount = 0
+#@-node:ekr.20081121105001.267: ctor
+#@+node:ekr.20081121105001.268: do-nothings
+def addRow(self,height=None):   pass
+def getFrame (self):            return None
+def getNewFrame (self):         return None
+def pack (self):                pass
+def unpack (self):              pass
+
+hide = unpack
+show = pack
+#@-node:ekr.20081121105001.268: do-nothings
+#@+node:ekr.20081121105001.269:add
+def add(self,*args,**keys):
+
+    '''Add a button to the icon bar.'''
+
+    c = self.c
+    command = keys.get('command')
+    text = keys.get('text')
+    if not text: return
+
+    # imagefile = keys.get('imagefile')
+    # image = keys.get('image')
+
+    class iconBarButton (QtGui.QWidgetAction):
+        def __init__ (self,parent,text,toolbar):
+            QtGui.QWidgetAction.__init__(self,parent)
+            self.text = text
+            self.toolbar = toolbar
+        def createWidget (self,parent):
+            button = QtGui.QPushButton(self.text,parent)
+            g.app.gui.setWidgetColor(button,
+                widgetKind='QPushButton',
+                selector='background-color',
+                colorName = self.toolbar.buttonColor)
+            return button
+
+    action = iconBarButton(parent=self.w,text=text,toolbar=self)
+    self.w.addAction(action)
+
+    self.actions.append(action)
+    b = self.w.widgetForAction(action)
+
+    #b = QtGui.QPushButton(text,self.w)
+    #b.leo_buttonAction = self.addWidget(b)
+
+    b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+    def delete_callback(action=action,):
+        self.w.removeAction(action)
+
+    b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
+    b.addAction(rb)
+    rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
+
+    if command:
+        def button_callback(c=c,command=command):
+            g.trace('command',command.__name__)
+            val = command()
+            if c.exists:
+                c.bodyWantsFocus()
+                c.outerUpdate()
+            return val
+
+        self.w.connect(action,
+            QtCore.SIGNAL("triggered()"),
+            button_callback)
+
+    return action
+#@-node:ekr.20081121105001.269:add
+#@+node:ekr.20081121105001.270:addRowIfNeeded
+def addRowIfNeeded (self):
+
+    '''Add a new icon row if there are too many widgets.'''
+
+    # n = g.app.iconWidgetCount
+
+    # if n >= self.widgets_per_row:
+        # g.app.iconWidgetCount = 0
+        # self.addRow()
+
+    # g.app.iconWidgetCount += 1
+#@-node:ekr.20081121105001.270:addRowIfNeeded
+#@+node:ekr.20081121105001.271:addWidget
+def addWidget (self,w):
+
+    self.w.addWidget(w)
+#@-node:ekr.20081121105001.271:addWidget
+#@+node:ekr.20081121105001.272:clear
+def clear(self):
+
+    """Destroy all the widgets in the icon bar"""
+
+    self.w.clear()
+    self.actions = []
+
+    g.app.iconWidgetCount = 0
+#@-node:ekr.20081121105001.272:clear
+#@+node:ekr.20081121105001.273:deleteButton
+def deleteButton (self,w):
+    """ w is button """
+
+    #g.trace(w, '##')    
+
+    self.w.removeAction(w)
+
+    self.c.bodyWantsFocus()
+    self.c.outerUpdate()
+#@-node:ekr.20081121105001.273:deleteButton
+#@+node:ekr.20081121105001.274:setCommandForButton
+def setCommandForButton(self,button,command):
+
+    if command:
+        QtCore.QObject.connect(button,
+            QtCore.SIGNAL("triggered()"),command)
+#@-node:ekr.20081121105001.274:setCommandForButton
+#@-node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
+#@+node:ekr.20081121105001.269:add
+def add(self,*args,**keys):
+
+    '''Add a button to the icon bar.'''
+
+    c = self.c
+    command = keys.get('command')
+    text = keys.get('text')
+    if not text: return
+
+    # imagefile = keys.get('imagefile')
+    # image = keys.get('image')
+
+    class iconBarButton (QtGui.QWidgetAction):
+        def __init__ (self,parent,text,toolbar):
+            QtGui.QWidgetAction.__init__(self,parent)
+            self.text = text
+            self.toolbar = toolbar
+        def createWidget (self,parent):
+            button = QtGui.QPushButton(self.text,parent)
+            g.app.gui.setWidgetColor(button,
+                widgetKind='QPushButton',
+                selector='background-color',
+                colorName = self.toolbar.buttonColor)
+            return button
+
+    action = iconBarButton(parent=self.w,text=text,toolbar=self)
+    self.w.addAction(action)
+
+    self.actions.append(action)
+    b = self.w.widgetForAction(action)
+
+    #b = QtGui.QPushButton(text,self.w)
+    #b.leo_buttonAction = self.addWidget(b)
+
+    b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+    def delete_callback(action=action,):
+        self.w.removeAction(action)
+
+    b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
+    b.addAction(rb)
+    rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
+
+    if command:
+        def button_callback(c=c,command=command):
+            g.trace('command',command.__name__)
+            val = command()
+            if c.exists:
+                c.bodyWantsFocus()
+                c.outerUpdate()
+            return val
+
+        self.w.connect(action,
+            QtCore.SIGNAL("triggered()"),
+            button_callback)
+
+    return action
+#@-node:ekr.20081121105001.269:add
+#@-node:ekr.20081215162017.4:Allow coloring of script buttons
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@-node:ekr.20081208155215.12:Unused
