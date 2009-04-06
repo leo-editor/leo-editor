@@ -469,15 +469,17 @@ class leoQtBody (leoFrame.leoBody):
         return self.widget.setYScrollPosition(i)
     #@-node:ekr.20081121105001.211:High-level interface to self.widget
     #@+node:ekr.20090406071640.13:Event handlers called from eventFilter
-    badFocusColors = []
-
     def onFocusIn (self):
         self.onFocusHelper(self.selectedBackgroundColor)
 
     def onFocusOut (self):
         self.onFocusHelper(self.unselectedBackgroundColor)
 
+    badFocusColors = []
+
     def onFocusHelper(self,name):
+
+        if not name: return
 
         if QtGui.QColor(name).isValid():
             s = 'QTextEdit#richTextEdit { background-color: %s; }' % name

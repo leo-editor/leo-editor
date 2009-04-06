@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -363,9 +363,6 @@
 </v>
 </v>
 <v t="edward.20090329132334.1"><vh>Lightning talks</vh></v>
-<v t="edward.20090329151116.1"><vh>Sprint intro</vh></v>
-<v t="edward.20090330072724.1"><vh>Grok intro</vh></v>
-<v t="ekr.20090401095501.1"><vh>@auto c:\prog\test\a.el</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -552,13 +549,6 @@ pyjamas
 ctypes module, ctypeslib,
 Europython, Birmingham
 Zope,Grok,Repose,Deliverance</t>
-<t tx="edward.20090329151116.1">Brett Cannon
-Crown Plaza
-Kenny 4242424242
-Breakfast 7:30
-Dinner Tuesday Night
-</t>
-<t tx="edward.20090330072724.1"></t>
 <t tx="ekr.20041001211817">import os
 
 g.pr(os.path.exists(os.path.normpath("C:\\Progra~1\\Eclipse")))</t>
