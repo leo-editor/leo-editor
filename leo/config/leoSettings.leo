@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="8,7"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1074,6 +1074,8 @@
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
 <v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
 <v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
+<v t="ekr.20090406071640.18"><vh>@@string selected-background-color = #fdf5f5</vh></v>
+<v t="ekr.20090406071640.19"><vh>@@string unselected-background-color = #f2fdff</vh></v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
@@ -1411,7 +1413,7 @@
 </v>
 </v>
 <v t="ekr.20060603215208"></v>
-<v t="ekr.20081018053140.11"></v>
+<v t="ekr.20081018053140.11" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -7830,6 +7832,8 @@ print ('done')
 </t>
 <t tx="ekr.20090203134354.2"></t>
 <t tx="ekr.20090213065933.11"></t>
+<t tx="ekr.20090406071640.18">A kind of pink</t>
+<t tx="ekr.20090406071640.19">A kind of blue</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
