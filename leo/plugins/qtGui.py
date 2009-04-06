@@ -236,7 +236,6 @@ class DynamicWindow(QtGui.QMainWindow):
             self.ui.setStyleSheet(sheet or self.default_sheet())
         else:
             if trace: g.trace('no style sheet')
-    #@nonl
     #@+node:ekr.20081121105001.204:defaultStyleSheet
     def defaultStyleSheet (self):
 
@@ -288,6 +287,8 @@ class leoQtBody (leoFrame.leoBody):
         assert c.frame == frame and frame.c == c
 
         self.useScintilla = c.config.getBool('qt-use-scintilla')
+        self.selectedBackgroundColor = c.config.getString('selected-background-color')
+        self.unselectedBackgroundColor = c.config.getString('unselected-background-color')
 
         # Set the actual gui widget.
         if self.useScintilla:
@@ -467,6 +468,24 @@ class leoQtBody (leoFrame.leoBody):
     def setYScrollPosition (self,i):
         return self.widget.setYScrollPosition(i)
     #@-node:ekr.20081121105001.211:High-level interface to self.widget
+    #@+node:ekr.20090406071640.13:Event handlers called from eventFilter
+    badFocusColors = []
+
+    def onFocusIn (self):
+        self.onFocusHelper(self.selectedBackgroundColor)
+
+    def onFocusOut (self):
+        self.onFocusHelper(self.unselectedBackgroundColor)
+
+    def onFocusHelper(self,name):
+
+        if QtGui.QColor(name).isValid():
+            s = 'QTextEdit#richTextEdit { background-color: %s; }' % name
+            self.widget.widget.setStyleSheet(s)
+        elif name not in self.badFocusColors:
+            self.badFocusColors.append(name)
+            g.es_print('invalid body background color: %s' % (name),color='blue')
+    #@-node:ekr.20090406071640.13:Event handlers called from eventFilter
     #@+node:ekr.20081121105001.212:Editors (qtBody)
     #@+node:ekr.20081121105001.214:packEditorLabelWidget
     def packEditorLabelWidget (self,w):
@@ -4872,6 +4891,11 @@ class leoQtEventFilter(QtCore.QObject):
                 override = len(aList) > 0
         else:
             override = False ; tkKey = '<no key>'
+            if self.tag == 'body':
+                if eventType == ev.FocusIn:
+                    c.frame.body.onFocusIn()
+                elif eventType == ev.FocusOut:
+                    c.frame.body.onFocusOut()
 
         # A hack. QLineEdit generates ev.KeyRelease only.
         if eventType in (ev.KeyPress,ev.KeyRelease):

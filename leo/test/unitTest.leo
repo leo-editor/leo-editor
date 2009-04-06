@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7,2,2,0"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1957,7 +1957,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071020075538" a="E"><vh> Tests of @auto</vh>
+<v t="ekr.20071020075538"><vh> Tests of @auto</vh>
 <v t="ekr.20071020075538.1"><vh>C tests</vh>
 <v t="ekr.20071020075538.2"><vh>@test c class 1</vh></v>
 <v t="ekr.20071020075538.3"><vh>@test c class--underindented line</vh></v>
@@ -1969,12 +1969,12 @@
 <v t="ekr.20071020075538.9"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20071108082844"><vh>@test c extern</vh></v>
 </v>
-<v t="ekr.20071020075538.33" a="E"><vh>c# tests</vh>
+<v t="ekr.20071020075538.33"><vh>c# tests</vh>
 <v t="ekr.20071020075538.34"><vh>@test c# namespace indent</vh></v>
 <v t="ekr.20071020075538.50"><vh>@test c# namespace no indent</vh></v>
 <v t="ekr.20071020075538.63"><vh>@@test c# ref card</vh></v>
 </v>
-<v t="ekr.20090401102321.1" a="E"><vh>elisp tests</vh>
+<v t="ekr.20090401102321.1"><vh>elisp tests</vh>
 <v t="ekr.20090401102321.2"><vh>@test elisp functions</vh></v>
 </v>
 <v t="ekr.20080211092326"><vh>Pascal tests</vh>
@@ -2477,7 +2477,6 @@
 </v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
-<v t="ekr.20071113193624.1" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor

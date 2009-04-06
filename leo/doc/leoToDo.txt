@@ -123,6 +123,198 @@ def removeChapterByName (self,name):
 #@-node:ekr.20070606075434:cc.removeChapterByName
 #@-node:ekr.20090324100430.1:Major bug: deleting @chapter node doesn't work
 #@+node:ekr.20090304084910.2:Asap
+#@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
+#@-node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
+#@+node:ekr.20090228065229.2:Honor @path in rst3 plugin
+#@-node:ekr.20090228065229.2:Honor @path in rst3 plugin
+#@+node:ekr.20090402072059.2:clone-find-all-once
+@
+
+First do a normal clone-find-all for the word "clone". Then click the script
+button and do it again. Notice that children of previously found nodes don't get
+added again in the modified version.
+#@nonl
+#@+node:ekr.20060128080201:cloneFindAll
+def cloneFindAll (self,event):
+
+    c = self.c ; k = self.k ; tag = 'clone-find-all'
+    state = k.getState(tag)
+
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if not w: return
+        self.setupArgs(forward=None,regexp=None,word=None)
+        k.setLabelBlue('Clone Find All: ',protect=True)
+        k.getArg(event,tag,1,self.cloneFindAll)
+    else:
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg,cloneFindAll=True)
+        c.treeWantsFocus()
+#@-node:ekr.20060128080201:cloneFindAll
+#@+node:ekr.20060128075225:cloneFindAllCommand
+def cloneFindAllCommand (self,event=None):
+
+    self.setup_command()
+    self.clone_find_all = True
+    self.findAll()
+    self.clone_find_all = False
+#@-node:ekr.20060128075225:cloneFindAllCommand
+#@+node:ekr.20031218072017.3073:findAll
+def findAll(self):
+
+    c = self.c ; w = self.s_ctrl ; u = c.undoer
+    undoType = 'Clone Find All'
+    if not self.checkArgs():
+        return
+    self.initInHeadline()
+    if self.clone_find_all:
+        self.p = None # Restore will select the root position.
+    data = self.save()
+    self.initBatchCommands()
+    count = 0 ; clones = []
+    while 1:
+        pos, newpos = self.findNextMatch()
+        if pos is None: break
+        count += 1
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if not self.clone_find_all:
+            self.printLine(line,allFlag=True)
+        if self.clone_find_all and self.p.v.t not in clones:
+            # g.trace(self.p.v.t,self.p.h)
+            if not clones:
+                undoData = u.beforeInsertNode(c.p)
+                << create the found node >>
+            clones.append(self.p.v.t)
+            << create a clone of p under the find node >>
+
+    if self.clone_find_all and clones:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        c.selectPosition(found)
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw()
+    g.es("found",count,"matches")
+#@+node:ekr.20051113110735:<< create the found node >>
+oldRoot = c.rootPosition()
+found = oldRoot.insertAfter()
+found.moveToRoot(oldRoot)
+c.setHeadString(found,'Found: ' + self.find_text)
+c.setRootPosition(found) # New in Leo 4.5.
+#@-node:ekr.20051113110735:<< create the found node >>
+#@+node:ekr.20051113110851:<< create a clone of p under the find node >>
+q = self.p.clone()
+q.moveToLastChildOf(found)
+#@-node:ekr.20051113110851:<< create a clone of p under the find node >>
+#@-node:ekr.20031218072017.3073:findAll
+#@+node:ekr.20090402072059.4:@@@button my clone find all
+import leo.core.leoFind as leoFind 
+
+def new_find_all(self):
+    << do some initial stuff >>
+
+
+    while 1:
+        pos, newpos = self.findNextMatch()
+        if pos is None: break
+
+        if count % 10 == 0 and count > 0:
+            g.es("still searching, matches found: ", count)
+
+        << Skip node if it's a child of a previously found node >>
+
+        count += 1
+
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if not self.clone_find_all:
+            self.printLine(line,allFlag=True)
+        if self.clone_find_all and self.p.v.t not in clones:
+            # g.trace(self.p.v.t,self.p.h)
+            if not clones:
+                undoData = u.beforeInsertNode(c.p)
+                << create the found node >>
+            clones.append(self.p.v.t)
+            positions.append(self.p)
+            << create a clone of p under the find node >>
+
+    if self.clone_find_all and clones:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        c.selectPosition(found)
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw()
+    g.es("found",count,"matches")
+
+
+leoFind.leoFind.findAll = new_find_all
+
+c.executeMinibufferCommand("clone-find-all") 
+#@+node:ekr.20090402072059.5:<< do some initial stuff >>
+g.es("findAll..., self: ", self)
+
+c = self.c ; w = self.s_ctrl ; u = c.undoer
+undoType = 'Clone Find All'
+if not self.checkArgs():
+    return
+self.initInHeadline()
+if self.clone_find_all:
+    self.p = None # Restore will select the root position.
+data = self.save()
+self.initBatchCommands()
+count = 0 ; clones = []; positions = []
+#@nonl
+#@-node:ekr.20090402072059.5:<< do some initial stuff >>
+#@+node:ekr.20090402072059.6:<< create the found node >>
+oldRoot = c.rootPosition()
+found = oldRoot.insertAfter()
+found.moveToRoot(oldRoot)
+c.setHeadString(found,'Found: ' + self.find_text)
+c.setRootPosition(found) # New in Leo 4.5.
+#@-node:ekr.20090402072059.6:<< create the found node >>
+#@+node:ekr.20090402072059.7:<< create a clone of p under the find node >>
+q = self.p.clone()
+q.moveToLastChildOf(found)
+#@-node:ekr.20090402072059.7:<< create a clone of p under the find node >>
+#@+node:ekr.20090402072059.8:<< Skip node if it's a child of a previously found node >>
+<< def: is a child of b >>
+
+is_child_of_previous = False
+for previously_found in positions:
+    if is_a_child_of_b(self.p, previously_found):
+        is_child_of_previous = True
+        break
+
+if is_child_of_previous:
+    continue
+#@nonl
+#@+node:ekr.20090402072059.9:<< def: is a child of b >>
+
+def is_a_child_of_b(a, b):
+    for child in b.children_iter():
+        if a.t == child.t:
+            return True
+        if is_a_child_of_b(a, child):
+            return True
+    return False
+#@nonl
+#@-node:ekr.20090402072059.9:<< def: is a child of b >>
+#@-node:ekr.20090402072059.8:<< Skip node if it's a child of a previously found node >>
+#@-node:ekr.20090402072059.4:@@@button my clone find all
+#@-node:ekr.20090402072059.2:clone-find-all-once
+#@+node:ekr.20090402072059.23:Round-tripping rST files
+@nocolor-node
+
+- Create Leo directive corresponding to underline_characters option
+    default: '''#=+*^~"'`-:><_'''
+#@nonl
+#@-node:ekr.20090402072059.23:Round-tripping rST files
 #@+node:ekr.20090402072059.14:Investigate read crash
 @nocolor-node
 
@@ -828,32 +1020,6 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 # It's very confusing.
 #@nonl
 #@-node:ekr.20090402072059.11:What should be done about @enabled-plugins nodes?
-#@+node:ekr.20090316072136.8:Defer loading of files?
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/b07a4963fcea2b86
-
-> +1
->
-> I hesitate to open them on my slower machine, because it takes so
-> long.  If I have some serious objective, sure, I'll wait 20-30 seconds,
-> but if I just want to check something, sometimes it's easier not to
-> bother.
-
-If someone can change the @thin / @auto parse code to return data
-structures instead of creating the nodes directly, we can use the
-md5sum based caching scheme I have presented previously instead of
-lazy open.
-
-This will make leoPyRef.leo and the likes open in few seconds.
-
-I'd do this completely myself, but I don't have the time ATM.
-
-The scheme was explained here:
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/27c3eb49b87ca335/3641e900388db356
-
-#@-node:ekr.20090316072136.8:Defer loading of files?
 #@+node:ekr.20090402072059.13:Create a general mechanism for aux (shadow, _db) files
 @nocolor-node
 
@@ -1213,197 +1379,6 @@ Best,
 AliaK
 #@nonl
 #@-node:ekr.20090219085600.1:Fix new relative-path-name problem
-#@+node:ekr.20090228065229.2:Honor @path in rst3 plugin
-#@-node:ekr.20090228065229.2:Honor @path in rst3 plugin
-#@+node:ekr.20090304155947.6:Read @auto (and @edit?)_nodes only as required
-#@-node:ekr.20090304155947.6:Read @auto (and @edit?)_nodes only as required
-#@+node:ekr.20090307063422.1:Can we generate pdf files in rst3?
-http://docutils.sourceforge.net/docs/user/latex.html
-#@nonl
-#@-node:ekr.20090307063422.1:Can we generate pdf files in rst3?
-#@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
-#@-node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
-#@+node:ekr.20090402072059.2:clone-find-all-once
-@
-
-First do a normal clone-find-all for the word "clone". Then click the script
-button and do it again. Notice that children of previously found nodes don't get
-added again in the modified version.
-#@nonl
-#@+node:ekr.20060128080201:cloneFindAll
-def cloneFindAll (self,event):
-
-    c = self.c ; k = self.k ; tag = 'clone-find-all'
-    state = k.getState(tag)
-
-    if state == 0:
-        w = self.editWidget(event) # sets self.w
-        if not w: return
-        self.setupArgs(forward=None,regexp=None,word=None)
-        k.setLabelBlue('Clone Find All: ',protect=True)
-        k.getArg(event,tag,1,self.cloneFindAll)
-    else:
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
-        self.generalSearchHelper(k.arg,cloneFindAll=True)
-        c.treeWantsFocus()
-#@-node:ekr.20060128080201:cloneFindAll
-#@+node:ekr.20060128075225:cloneFindAllCommand
-def cloneFindAllCommand (self,event=None):
-
-    self.setup_command()
-    self.clone_find_all = True
-    self.findAll()
-    self.clone_find_all = False
-#@-node:ekr.20060128075225:cloneFindAllCommand
-#@+node:ekr.20031218072017.3073:findAll
-def findAll(self):
-
-    c = self.c ; w = self.s_ctrl ; u = c.undoer
-    undoType = 'Clone Find All'
-    if not self.checkArgs():
-        return
-    self.initInHeadline()
-    if self.clone_find_all:
-        self.p = None # Restore will select the root position.
-    data = self.save()
-    self.initBatchCommands()
-    count = 0 ; clones = []
-    while 1:
-        pos, newpos = self.findNextMatch()
-        if pos is None: break
-        count += 1
-        s = w.getAllText()
-        i,j = g.getLine(s,pos)
-        line = s[i:j]
-        if not self.clone_find_all:
-            self.printLine(line,allFlag=True)
-        if self.clone_find_all and self.p.v.t not in clones:
-            # g.trace(self.p.v.t,self.p.h)
-            if not clones:
-                undoData = u.beforeInsertNode(c.p)
-                << create the found node >>
-            clones.append(self.p.v.t)
-            << create a clone of p under the find node >>
-
-    if self.clone_find_all and clones:
-        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
-        c.selectPosition(found)
-        c.setChanged(True)
-
-    self.restore(data)
-    c.redraw()
-    g.es("found",count,"matches")
-#@+node:ekr.20051113110735:<< create the found node >>
-oldRoot = c.rootPosition()
-found = oldRoot.insertAfter()
-found.moveToRoot(oldRoot)
-c.setHeadString(found,'Found: ' + self.find_text)
-c.setRootPosition(found) # New in Leo 4.5.
-#@-node:ekr.20051113110735:<< create the found node >>
-#@+node:ekr.20051113110851:<< create a clone of p under the find node >>
-q = self.p.clone()
-q.moveToLastChildOf(found)
-#@-node:ekr.20051113110851:<< create a clone of p under the find node >>
-#@-node:ekr.20031218072017.3073:findAll
-#@+node:ekr.20090402072059.4:@@@button my clone find all
-import leo.core.leoFind as leoFind 
-
-def new_find_all(self):
-    << do some initial stuff >>
-
-
-    while 1:
-        pos, newpos = self.findNextMatch()
-        if pos is None: break
-
-        if count % 10 == 0 and count > 0:
-            g.es("still searching, matches found: ", count)
-
-        << Skip node if it's a child of a previously found node >>
-
-        count += 1
-
-        s = w.getAllText()
-        i,j = g.getLine(s,pos)
-        line = s[i:j]
-        if not self.clone_find_all:
-            self.printLine(line,allFlag=True)
-        if self.clone_find_all and self.p.v.t not in clones:
-            # g.trace(self.p.v.t,self.p.h)
-            if not clones:
-                undoData = u.beforeInsertNode(c.p)
-                << create the found node >>
-            clones.append(self.p.v.t)
-            positions.append(self.p)
-            << create a clone of p under the find node >>
-
-    if self.clone_find_all and clones:
-        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
-        c.selectPosition(found)
-        c.setChanged(True)
-
-    self.restore(data)
-    c.redraw()
-    g.es("found",count,"matches")
-
-
-leoFind.leoFind.findAll = new_find_all
-
-c.executeMinibufferCommand("clone-find-all") 
-#@+node:ekr.20090402072059.5:<< do some initial stuff >>
-g.es("findAll..., self: ", self)
-
-c = self.c ; w = self.s_ctrl ; u = c.undoer
-undoType = 'Clone Find All'
-if not self.checkArgs():
-    return
-self.initInHeadline()
-if self.clone_find_all:
-    self.p = None # Restore will select the root position.
-data = self.save()
-self.initBatchCommands()
-count = 0 ; clones = []; positions = []
-#@nonl
-#@-node:ekr.20090402072059.5:<< do some initial stuff >>
-#@+node:ekr.20090402072059.6:<< create the found node >>
-oldRoot = c.rootPosition()
-found = oldRoot.insertAfter()
-found.moveToRoot(oldRoot)
-c.setHeadString(found,'Found: ' + self.find_text)
-c.setRootPosition(found) # New in Leo 4.5.
-#@-node:ekr.20090402072059.6:<< create the found node >>
-#@+node:ekr.20090402072059.7:<< create a clone of p under the find node >>
-q = self.p.clone()
-q.moveToLastChildOf(found)
-#@-node:ekr.20090402072059.7:<< create a clone of p under the find node >>
-#@+node:ekr.20090402072059.8:<< Skip node if it's a child of a previously found node >>
-<< def: is a child of b >>
-
-is_child_of_previous = False
-for previously_found in positions:
-    if is_a_child_of_b(self.p, previously_found):
-        is_child_of_previous = True
-        break
-
-if is_child_of_previous:
-    continue
-#@nonl
-#@+node:ekr.20090402072059.9:<< def: is a child of b >>
-
-def is_a_child_of_b(a, b):
-    for child in b.children_iter():
-        if a.t == child.t:
-            return True
-        if is_a_child_of_b(a, child):
-            return True
-    return False
-#@nonl
-#@-node:ekr.20090402072059.9:<< def: is a child of b >>
-#@-node:ekr.20090402072059.8:<< Skip node if it's a child of a previously found node >>
-#@-node:ekr.20090402072059.4:@@@button my clone find all
-#@-node:ekr.20090402072059.2:clone-find-all-once
 #@-node:ekr.20090304084910.2:Asap
 #@+node:ekr.20081215070651.4:Minor bugs 7
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
@@ -4391,6 +4366,32 @@ No big deal.
 #@-node:ekr.20090210093316.1:Features
 #@-node:ekr.20080814103428.4:4.6 bugs
 #@+node:ekr.20071211093011:4.7  autocompletion & vim
+#@+node:ekr.20090316072136.8:Defer loading of files?
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/b07a4963fcea2b86
+
+> +1
+>
+> I hesitate to open them on my slower machine, because it takes so
+> long.  If I have some serious objective, sure, I'll wait 20-30 seconds,
+> but if I just want to check something, sometimes it's easier not to
+> bother.
+
+If someone can change the @thin / @auto parse code to return data
+structures instead of creating the nodes directly, we can use the
+md5sum based caching scheme I have presented previously instead of
+lazy open.
+
+This will make leoPyRef.leo and the likes open in few seconds.
+
+I'd do this completely myself, but I don't have the time ATM.
+
+The scheme was explained here:
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/27c3eb49b87ca335/3641e900388db356
+
+#@-node:ekr.20090316072136.8:Defer loading of files?
 #@+node:ekr.20090131200406.14:autocompletion
 #@+node:ekr.20081005065934.12:Links from Ville re Scintilla
 @nocolor-node
