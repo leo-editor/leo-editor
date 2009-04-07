@@ -297,8 +297,6 @@ def cmd_ActOnNode(c, p=None, event=None):
     # implementation mostly copied from onSelect
     if p is None:
         p = c.currentPosition()
-    if not isDirNode(p):
-        raise leoPlugins.TryNext
 
     pos = p.copy()
     path = getPath(c, p)
@@ -308,6 +306,11 @@ def cmd_ActOnNode(c, p=None, event=None):
         c.requestRedrawFlag = True
         c.redraw()
         return True
+
+    else:
+
+        raise leoPlugins.TryNext
+
 active_path_act_on_node = cmd_ActOnNode
 #@-node:ville.20090223183051.1:act on node
 #@+node:tbrown.20080616153649.2:cmd_ShowCurrentPath
