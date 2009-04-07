@@ -2661,6 +2661,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.112:callAltXFunction
     def callAltXFunction (self,event):
 
+        trace = False and not g.unitTesting
         k = self ; c = k.c ; s = k.getLabel()
         k.mb_tabList = []
         commandName = s[len(k.mb_prefix):].strip()
@@ -2680,7 +2681,7 @@ class keyHandlerClass:
             k.endCommand(event,commandName)
         else:
             if 1: # Useful.
-                g.trace('*** tab completion')
+                if trace: g.trace('*** tab completion')
                 k.doTabCompletion(c.commandsDict.keys())
             else: # Annoying.
                 k.keyboardQuit(event)
@@ -3224,6 +3225,7 @@ class keyHandlerClass:
             ok = k.bindKey (pane,stroke,func,commandName) # Must be a stroke.
             k.makeMasterGuiBinding(stroke) # Must be a stroke.
             if verbose and ok and not g.app.silentMode:
+                # g.trace(g.callers())
                 g.es_print('','@command: %s = %s' % (
                     commandName,k.prettyPrintKey(stroke)),color='blue')
                 if 0:
@@ -3231,6 +3233,7 @@ class keyHandlerClass:
                     g.print_dict(d)
             c.frame.tree.setBindings()
         elif verbose and not g.app.silentMode:
+            g.trace(g.callers())
             g.es_print('','@command: %s' % (commandName),color='blue')
 
         # Fixup any previous abbreviation to press-x-button commands.
