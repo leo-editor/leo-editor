@@ -3,8 +3,10 @@
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20090406071640.17:First
-#@+node:ekr.20090406071640.1:Fix key problems
-#@-node:ekr.20090406071640.1:Fix key problems
+#@+node:ekr.20090223065019.11:Make Leo's page-up/page-down commands functional
+# This will be needed for vim.
+#@nonl
+#@-node:ekr.20090223065019.11:Make Leo's page-up/page-down commands functional
 #@+node:ekr.20081215162017.5:Support multiple body editors
 #@+node:ekr.20090318091009.13:Prototype code
 @color
@@ -1618,7 +1620,7 @@ def update (self):
     self.lastFcol = fcol
 #@-node:ekr.20081121105001.265:update
 #@-node:ekr.20081121105001.261:class qtStatusLineClass (qtFrame)
-#@+node:ekr.20081121105001.266:class qtIconBarClass
+#@+node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
 class qtIconBarClass:
 
     '''A class representing the singleton Icon bar'''
@@ -1631,6 +1633,9 @@ def __init__ (self,c,parentFrame):
     self.parentFrame = parentFrame
     self.w = c.frame.top.iconBar # A QToolBar.
     self.actions = []
+
+    # Options
+    self.buttonColor = c.config.getString('qt-button-color')
 
     # g.app.iconWidgetCount = 0
 #@-node:ekr.20081121105001.267: ctor
@@ -1657,13 +1662,25 @@ def add(self,*args,**keys):
     # imagefile = keys.get('imagefile')
     # image = keys.get('image')
 
-    action = self.w.addAction(text)
+    class leoIconBarButton (QtGui.QWidgetAction):
+        def __init__ (self,parent,text,toolbar):
+            QtGui.QWidgetAction.__init__(self,parent)
+            self.button = None # set below
+            self.text = text
+            self.toolbar = toolbar
+        def createWidget (self,parent):
+            self.button = b = QtGui.QPushButton(self.text,parent)
+            g.app.gui.setWidgetColor(b,
+                widgetKind='QPushButton',
+                selector='background-color',
+                colorName = self.toolbar.buttonColor)
+            return b
+
+    action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
+    self.w.addAction(action)
 
     self.actions.append(action)
     b = self.w.widgetForAction(action)
-
-    #b = QtGui.QPushButton(text,self.w)
-    #b.leo_buttonAction = self.addWidget(b)
 
     b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
@@ -1671,6 +1688,7 @@ def add(self,*args,**keys):
         self.w.removeAction(action)
 
     b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
+
     b.addAction(rb)
     rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
 
@@ -1683,8 +1701,8 @@ def add(self,*args,**keys):
                 c.outerUpdate()
             return val
 
-        self.w.connect(action,
-            QtCore.SIGNAL("triggered()"),
+        self.w.connect(b,
+            QtCore.SIGNAL("clicked()"),
             button_callback)
 
     return action
@@ -1732,10 +1750,11 @@ def deleteButton (self,w):
 def setCommandForButton(self,button,command):
 
     if command:
-        QtCore.QObject.connect(button,
-            QtCore.SIGNAL("triggered()"),command)
+        # button is a leoIconBarButton.
+        QtCore.QObject.connect(button.button,
+            QtCore.SIGNAL("clicked()"),command)
 #@-node:ekr.20081121105001.274:setCommandForButton
-#@-node:ekr.20081121105001.266:class qtIconBarClass
+#@-node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
 #@+node:ekr.20081121105001.275:Minibuffer methods
 #@+node:ekr.20081121105001.276:showMinibuffer
 def showMinibuffer (self):
@@ -3145,14 +3164,50 @@ def selectLabel (self,w):
         # w.leo_label = None
 #@-node:ekr.20081121105001.222:select/unselectLabel
 #@-node:ekr.20081215162017.5:Support multiple body editors
-#@+node:ekr.20090406071640.2:Use gui to do line up/down commands
-#@-node:ekr.20090406071640.2:Use gui to do line up/down commands
+#@+node:ekr.20090406111739.10:Let gui handle hard part of next/prev-line commands
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ef04b185f74f4926
+
+This is a little difficult to describe in words, but trying it out
+should, I hope make the issue clear enough.
+
+(1) Start by setting body_pane_wraps to true.
+
+(2) Create a very long line of e.g. 500 characters, which is wrapped
+around on the body pane. (E.g. paste in a paragraph from a Word
+document). This text will then be wrapped onscreen into roughly 8
+lines of 70 characters.
+
+(3) The up and down arrows do not behave as expected.
+
+I'd expect that in this scenario, pressing the down arrow key should
+go to go to the next line down as it currently appears *onscreen* --
+so in this example, I'd expect to have to press the down arrow several
+times to get to the end of the paragraph.  This is the way that Emacs
+works when it is in word wrap mode, and is of course is the way that
+all word processors work. However, Leo does not play this way, and
+takes you right to the end of the line (i.e. to the last of the 500
+characters) when you press the down key once. This makes editing plain
+text (e.g. using Leo as an outliner) rather more tricky than it ought
+to be. Would it be possible to change the effect of Previous-Line and
+Next-Line when in word wrap mode, so that they behave as other text
+editors and word processors do?
+
+============================
+
+This is a long-standing problem.  It's tricky to fix in a straightforward
+way.
+
+However, I just realized that there might be a clever way: the commands
+could let the gui handle the hard part of the command (the actual move) and
+then the commands could detect the resulting row/col numbers as they must.
+
+I've been putting this off, I'll see if this more clever way will work soon. 
+#@nonl
+#@-node:ekr.20090406111739.10:Let gui handle hard part of next/prev-line commands
 #@-node:ekr.20090406071640.17:First
 #@+node:ekr.20090304084841.10:Asap
-#@+node:ekr.20090223065019.11:Make Leo's page-up/page-down commands functional
-# This will be needed for vim.
-#@nonl
-#@-node:ekr.20090223065019.11:Make Leo's page-up/page-down commands functional
 #@+node:ekr.20090401110027.1:Make sure qt plugin supports user icons
 #@-node:ekr.20090401110027.1:Make sure qt plugin supports user icons
 #@+node:ekr.20090318091009.12:Script errors mess up syntax coloring
@@ -3181,8 +3236,6 @@ couldn't find any mention of gsimage in the diff.
                      c.frame.body.bodyCtrl.delete(a.gsimage)
                  except:
 #@-node:ekr.20090128083504.1:Fix rclick
-#@+node:ekr.20081215162017.4:Allow coloring of script buttons
-#@-node:ekr.20081215162017.4:Allow coloring of script buttons
 #@+node:ekr.20081215074704.21:Add drag and drop
 #@-node:ekr.20081215074704.21:Add drag and drop
 #@+node:ekr.20081124094918.1:Fix problems with scim
@@ -4219,25 +4272,12 @@ def eventFilter(self, obj, event):
     ev = QtCore.QEvent
     gui = g.app.gui
     kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
-    if traceFocus:
-        table = (
-            (ev.FocusIn,        'focus-in'),
-            (ev.FocusOut,       'focus-out'),
-            (ev.WindowActivate, 'activate'),
-            (ev.WindowDeactivate,'deactivate'),
-        )
-        for evKind,kind in table:
-            if eventType == evKind:
-                g.trace('%11s %s %s' % (
-                    (kind,id(obj),
-                    # event.reason(),
-                    g.app.gui.widget_name(obj) or obj)))
-        # else: g.trace('unknown kind: %s' % eventType)
+
+    if traceFocus: self.traceFocus(eventType,obj)
 
     if eventType == ev.WindowActivate:
         gui.onActivateEvent(event,c,obj,self.tag)
         override = False ; tkKey = None
-        # g.trace(g.app.gui.get_focus(c))
     elif eventType == ev.WindowDeactivate:
         gui.onDeactivateEvent(event,c,obj,self.tag)
         override = False ; tkKey = None
@@ -4250,8 +4290,6 @@ def eventFilter(self, obj, event):
             override = True
         elif k.inState():
             override = not ignore # allow all keystrokes.
-        # elif safe_mode:
-            # override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
         else:
             override = len(aList) > 0
     else:
@@ -4314,8 +4352,946 @@ def onFocusHelper(self,name):
         g.es_print('invalid body background color: %s' % (name),color='blue')
 #@-node:ekr.20090406071640.13:Event handlers called from eventFilter
 #@-node:ekr.20081215074704.20:Change background color of body pane depending on focus
+#@+node:ekr.20081215162017.4:Allow coloring of script buttons
+@nocolor-node
+
+Use @string qt-button-color = lightSteelBlue
+
+The following does *not* work in @data qt-gui-plugin-style-sheet::
+
+    QPushButton {
+        background-color: red;
+    }
+#@+node:ekr.20090406111739.12:setWidgetColor (qtGui)
+badWidgetColors = []
+
+def setWidgetColor (self,w,widgetKind,selector,colorName):
+
+    if not colorName: return
+
+    if QtGui.QColor(colorName).isValid():
+        g.app.gui.setStyleSetting(w,widgetKind,selector,colorName)
+    elif colorName not in self.badWidgetColors:
+        self.badWidgetColors.append(colorName)
+        g.es_print('bad widget color %s for %s' % (
+            colorName,widgetKind),color='blue')
+#@-node:ekr.20090406111739.12:setWidgetColor (qtGui)
+#@+node:ekr.20090406111739.13:setStyleSetting (qtGui)
+def setStyleSetting(self,w,widgetKind,selector,val):
+
+    '''Set the styleSheet for w to
+       "%s { %s: %s; }  % (widgetKind,selector,val)"
+    '''
+
+    s = '%s { %s: %s; }' % (widgetKind,selector,val)
+
+    try:
+        w.setStyleSheet(s)
+    except Exception:
+        g.es_print('bad style sheet: %s' % s)
+        g.es_exception()
+#@-node:ekr.20090406111739.13:setStyleSetting (qtGui)
+#@+node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
+class qtIconBarClass:
+
+    '''A class representing the singleton Icon bar'''
+
+    @others
+#@+node:ekr.20081121105001.267: ctor
+def __init__ (self,c,parentFrame):
+
+    self.c = c
+    self.parentFrame = parentFrame
+    self.w = c.frame.top.iconBar # A QToolBar.
+    self.actions = []
+
+    # Options
+    self.buttonColor = c.config.getString('qt-button-color')
+
+    # g.app.iconWidgetCount = 0
+#@-node:ekr.20081121105001.267: ctor
+#@+node:ekr.20081121105001.268: do-nothings
+def addRow(self,height=None):   pass
+def getFrame (self):            return None
+def getNewFrame (self):         return None
+def pack (self):                pass
+def unpack (self):              pass
+
+hide = unpack
+show = pack
+#@-node:ekr.20081121105001.268: do-nothings
+#@+node:ekr.20081121105001.269:add
+def add(self,*args,**keys):
+
+    '''Add a button to the icon bar.'''
+
+    c = self.c
+    command = keys.get('command')
+    text = keys.get('text')
+    if not text: return
+
+    # imagefile = keys.get('imagefile')
+    # image = keys.get('image')
+
+    class leoIconBarButton (QtGui.QWidgetAction):
+        def __init__ (self,parent,text,toolbar):
+            QtGui.QWidgetAction.__init__(self,parent)
+            self.button = None # set below
+            self.text = text
+            self.toolbar = toolbar
+        def createWidget (self,parent):
+            self.button = b = QtGui.QPushButton(self.text,parent)
+            g.app.gui.setWidgetColor(b,
+                widgetKind='QPushButton',
+                selector='background-color',
+                colorName = self.toolbar.buttonColor)
+            return b
+
+    action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
+    self.w.addAction(action)
+
+    self.actions.append(action)
+    b = self.w.widgetForAction(action)
+
+    b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+    def delete_callback(action=action,):
+        self.w.removeAction(action)
+
+    b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
+
+    b.addAction(rb)
+    rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
+
+    if command:
+        def button_callback(c=c,command=command):
+            g.trace('command',command.__name__)
+            val = command()
+            if c.exists:
+                c.bodyWantsFocus()
+                c.outerUpdate()
+            return val
+
+        self.w.connect(b,
+            QtCore.SIGNAL("clicked()"),
+            button_callback)
+
+    return action
+#@-node:ekr.20081121105001.269:add
+#@+node:ekr.20081121105001.270:addRowIfNeeded
+def addRowIfNeeded (self):
+
+    '''Add a new icon row if there are too many widgets.'''
+
+    # n = g.app.iconWidgetCount
+
+    # if n >= self.widgets_per_row:
+        # g.app.iconWidgetCount = 0
+        # self.addRow()
+
+    # g.app.iconWidgetCount += 1
+#@-node:ekr.20081121105001.270:addRowIfNeeded
+#@+node:ekr.20081121105001.271:addWidget
+def addWidget (self,w):
+
+    self.w.addWidget(w)
+#@-node:ekr.20081121105001.271:addWidget
+#@+node:ekr.20081121105001.272:clear
+def clear(self):
+
+    """Destroy all the widgets in the icon bar"""
+
+    self.w.clear()
+    self.actions = []
+
+    g.app.iconWidgetCount = 0
+#@-node:ekr.20081121105001.272:clear
+#@+node:ekr.20081121105001.273:deleteButton
+def deleteButton (self,w):
+    """ w is button """
+
+    #g.trace(w, '##')    
+
+    self.w.removeAction(w)
+
+    self.c.bodyWantsFocus()
+    self.c.outerUpdate()
+#@-node:ekr.20081121105001.273:deleteButton
+#@+node:ekr.20081121105001.274:setCommandForButton
+def setCommandForButton(self,button,command):
+
+    if command:
+        # button is a leoIconBarButton.
+        QtCore.QObject.connect(button.button,
+            QtCore.SIGNAL("clicked()"),command)
+#@-node:ekr.20081121105001.274:setCommandForButton
+#@-node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
+#@-node:ekr.20081215162017.4:Allow coloring of script buttons
+#@+node:ekr.20090406071640.1:Fixed (??) key problems
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/347059
+
+> menu Outline - Move - Demote menu says ctrl-} and ctrl-{ demote and
+> promote but those keys move text in the body even when the head is the
+> active panel. Maybe ctrl-[ ctrl-] bindings are interfering.
+
+I suppose this could be called a bug. Probably what is happening is that
+bindings are general, and the code is specific: it always works on the
+body. You could make the bindings specific to the body pane, but not much
+would really change.
+
+In short, this is a nit, and probably fixable in myLeoSettings.leo.
+
+> In short, this is a nit, and probably fixable in myLeoSettings.leo.
+
+In myLeoSettings.leo I have:
+
+close-xml-element ! body = Ctrl-C
+demote ! all = Ctrl-}
+promote ! all = Ctrl-{
+demote ! all = Ctrl-]
+promote ! all = Ctrl-[
+print-settings ! all = Ctrl-U
+
+the print-settings binding I threw in to test seems to be working fine,
+but I can't get any demotion. Also on startup I notice:
+
+redefining shortcut Ctrl+bracketright from demote to indent-region in
+all
+redefining shortcut Ctrl+u from move-outline-up to print-settings in
+all
+redefining shortcut Ctrl+bracketleft from promote to
+unindent-region in all
+
+the Ctrl+u part makes sense, the others don't.
+Edward K. Ream wrote on 2009-03-23: (permalink)
+
+On Mon, Mar 23, 2009 at 9:50 AM, tbnorth <terry_n_brown@yahoo.com> wrote:
+
+>
+> redefining shortcut Ctrl+bracketright from demote to indent-region in all
+> redefining shortcut Ctrl+u from move-outline-up to print-settings in all
+> redefining shortcut Ctrl+bracketleft from promote to
+> unindent-region in all
+>
+> the Ctrl+u part makes sense, the others don't.
+
+The qt plugin has to play some gruesome games with key bindings. Maybe more
+games are needed.
+
+How do these bindings work with the tk gui enabled?
+
+Edward
+tbnorth wrote on 2009-03-23: (permalink)
+
+On Mon, 23 Mar 2009 15:37:26 -0000
+"Edward K. Ream" <edreamleo@gmail.com> wrote:
+
+> > redefining shortcut Ctrl+bracketright from demote to
+> > indent-region in all redefining shortcut Ctrl+u from
+> > move-outline-up to print-settings in all redefining shortcut
+> > Ctrl+bracketleft from promote to unindent-region in all
+> >
+> > the Ctrl+u part makes sense, the others don't.
+>
+> The qt plugin has to play some gruesome games with key bindings.
+> Maybe more games are needed.
+>
+> How do these bindings work with the tk gui enabled?
+
+Ctrl-{} work, Ctrl-[] don't, I'd expect both to work, but would be
+happy with just Ctrl-{} working in qt.
+
+Also I tried permutations with and without Shift, i.e.
+
+Ctrl-Shift-[ as well as Ctrl-{ etc.
+Edward K. Ream wrote on 2009-03-23: (permalink)
+
+On Mon, Mar 23, 2009 at 11:01 AM, tbnorth <terry_n_brown@yahoo.com> wrote:
+
+>
+> > How do these bindings work with the tk gui enabled?
+>
+> Ctrl-{} work, Ctrl-[] don't, I'd expect both to work, but would be
+> happy with just Ctrl-{} working in qt.
+>
+> Also I tried permutations with and without Shift, i.e.
+>
+> Ctrl-Shift-[ as well as Ctrl-{ etc.
+
+So you are saying that the bindings work the same regardless of gui?
+
+Edward
+tbnorth wrote on 2009-03-23: (permalink)
+
+On Mon, 23 Mar 2009 16:50:11 -0000
+"Edward K. Ream" <edreamleo@gmail.com> wrote:
+
+[...]
+> On Mon, Mar 23, 2009 at 11:01 AM, tbnorth <terry_n_brown@yahoo.com>
+> wrote:
+>
+> >
+> > > How do these bindings work with the tk gui enabled?
+> >
+> > Ctrl-{} work, Ctrl-[] don't, I'd expect both to work, but would be
+> > happy with just Ctrl-{} working in qt.
+> >
+> > Also I tried permutations with and without Shift, i.e.
+> >
+> > Ctrl-Shift-[ as well as Ctrl-{ etc.
+>
+> So you are saying that the bindings work the same regardless of gui?
+
+Nope, Ctrl-{} work in tk, not qt, in qt text indent / outdent seem to
+take over everything. And it seems if tab/shift-tab are defaults for
+that there's no need for any bindings of Ctrl-{}[] for that.
+Ville M. Vainio wrote on 2009-03-23: (permalink)
+
+On Mon, Mar 23, 2009 at 4:50 PM, tbnorth <terry_n_brown@yahoo.com> wrote:
+
+> close-xml-element ! body = Ctrl-C
+> demote ! all = Ctrl-}
+
+Just a thought: bindings like ctrl + } are extremely ambigous on
+international keyboards, because you have press shift to reach that
+anyway, to the extent that they are meaningless. ctrl+shift+ ] is the
+same as ctrl + }. Generally, they should be avoided as much as
+possible...
+
+[...]
+--
+Ville M. Vainio
+http://tinyurl.com/vainio
+Edward K. Ream wrote on 2009-03-23: (permalink)
+
+On Mon, Mar 23, 2009 at 12:28 PM, Ville M. Vainio <vivainio@gmail.com>wrote:
+
+> On Mon, Mar 23, 2009 at 4:50 PM, tbnorth <terry_n_brown@yahoo.com>
+> wrote:
+>
+> > close-xml-element ! body = Ctrl-C
+> > demote ! all = Ctrl-}
+>
+> Just a thought: bindings like ctrl + } are extremely ambiguous on
+> international keyboards, because you have press shift to reach that
+> anyway, to the extent that they are meaningless. ctrl+shift+ ] is the
+> same as ctrl + }. Generally, they should be avoided as much as
+> possible...
+
+I suspect that difficulties with this translation may be the problem with
+the qt plugin.
+
+Edward
+Edward K. Ream wrote on 2009-03-23: (permalink)
+
+On Mon, Mar 23, 2009 at 1:41 PM, Edward K. Ream <edreamleo@gmail.com> wrote:
+
+[...]
+>
+>
+> On Mon, Mar 23, 2009 at 12:28 PM, Ville M. Vainio <vivainio@gmail.com>wrote:
+>
+>> On Mon, Mar 23, 2009 at 4:50 PM, tbnorth <terry_n_brown@yahoo.com>
+>> wrote:
+>>
+>> > close-xml-element ! body = Ctrl-C
+>> > demote ! all = Ctrl-}
+>>
+>> Just a thought: bindings like ctrl + } are extremely ambiguous on
+>> international keyboards, because you have press shift to reach that
+>> anyway, to the extent that they are meaningless. ctrl+shift+ ] is the
+>> same as ctrl + }. Generally, they should be avoided as much as
+>> possible...
+>>
+>
+> I suspect that difficulties with this translation may be the problem with
+> the qt plugin.
+>
+
+Not sure this will be fixed before b1, but it definitely will be fixed
+before Leo 4.6 final.
+
+EKR
+Edward K. Ream 4 seconds ago
+leo-editor importance: 	Undecided → Medium
+leo-editor status: 	New → Confirmed
+Add a comment/attachment
+E-mail me about changes to this bug report
+Include an attachment (Optional)
+Attachment:
+(Optional) 	
+	This attachment is a patch
+Description:
+(Optional) 	
+
+Offer mentorship
+What next?
+
+    * Report another bug about leo-editor
+    * List open bugs for leo-editor
+
+Subscribe
+Subscribe someone else
+Subscribers
+tbnorth
+Also notified
+Edward K. Ream
+The Leo editor team
+Search
+Enter bug ID or keywords:
+
+
+Show all open bugs
+Contact us | Get help with Launchpad
+© 2004-2009 Canonical Ltd. | Terms of use
+#@+node:ekr.20090407091911.1:What I did
+@nocolor-node
+
+- isSpecialOverride now computes a baseKey as the key to look up the symbol in
+  guiBindNamesDict. This allows the method to find Alt-x for any x, etc.
+
+- Added two more entries at end of dict in keyboardUpperLong.
+
+  Changing the return value from keyboardUpperLong so that it returns a special
+  Tk key name if the name is not found in the table **does not work**.
+#@nonl
+#@-node:ekr.20090407091911.1:What I did
+#@+node:ekr.20081121105001.166:class leoQtEventFilter
+class leoQtEventFilter(QtCore.QObject):
+
+    << about internal bindings >>
+
+    @others
+#@+node:ekr.20081121105001.167:<< about internal bindings >>
+@nocolor-node
+@
+
+Here are the rules for translating key bindings (in leoSettings.leo) into keys for k.bindingsDict:
+
+1.  The case of plain letters is significant:  a is not A.
+
+2. The Shift- prefix can be applied *only* to letters. Leo will ignore (with a
+warning) the shift prefix applied to any other binding, e.g., Ctrl-Shift-(
+
+3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
+significant. Thus, the Shift- prefix is required if you want an upper-case
+letter (with the exception of 'bare' uppercase letters.)
+
+The following table illustrates these rules. In each row, the first entry is the
+key (for k.bindingsDict) and the other entries are equivalents that the user may
+specify in leoSettings.leo:
+
+a, Key-a, Key-A
+A, Shift-A
+Alt-a, Alt-A
+Alt-A, Alt-Shift-a, Alt-Shift-A
+Ctrl-a, Ctrl-A
+Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+!, Key-!,Key-exclam,exclam
+
+This table is consistent with how Leo already works (because it is consistent
+with Tk's key-event specifiers). It is also, I think, the least confusing set of
+rules.
+#@nonl
+#@-node:ekr.20081121105001.167:<< about internal bindings >>
+#@+node:ekr.20081121105001.180: ctor
+def __init__(self,c,w,tag=''):
+
+    # Init the base class.
+    QtCore.QObject.__init__(self)
+
+    self.c = c
+    self.w = w      # A leoQtX object, *not* a Qt object.
+    self.tag = tag
+
+    # Pretend there is a binding for these characters.
+    close_flashers = c.config.getString('close_flash_brackets') or ''
+    open_flashers  = c.config.getString('open_flash_brackets') or ''
+    self.flashers = open_flashers + close_flashers
+
+
+#@-node:ekr.20081121105001.180: ctor
+#@+node:ekr.20081121105001.168:eventFilter
+def eventFilter(self, obj, event):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    traceFocus = False and not g.unitTesting
+    c = self.c ; k = c.k
+    eventType = event.type()
+    ev = QtCore.QEvent
+    gui = g.app.gui
+    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
+
+    if traceFocus: self.traceFocus(eventType,obj)
+
+    if eventType == ev.WindowActivate:
+        gui.onActivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    elif eventType == ev.WindowDeactivate:
+        gui.onDeactivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    elif eventType in kinds:
+        tkKey,ch,ignore = self.toTkKey(event)
+        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+        if ignore:
+            override = False
+        elif self.isSpecialOverride(tkKey,ch):
+            override = True
+        elif k.inState():
+            override = not ignore # allow all keystrokes.
+        else:
+            override = len(aList) > 0
+    else:
+        override = False ; tkKey = '<no key>'
+        if self.tag == 'body':
+            if eventType == ev.FocusIn:
+                c.frame.body.onFocusIn()
+            elif eventType == ev.FocusOut:
+                c.frame.body.onFocusOut()
+
+    # A hack. QLineEdit generates ev.KeyRelease only.
+    if eventType in (ev.KeyPress,ev.KeyRelease):
+        p = c.currentPosition()
+        isEditWidget = obj == c.frame.tree.edit_widget(p)
+        keyIsActive = g.choose(
+            isEditWidget,
+            eventType == ev.KeyRelease,
+            eventType == ev.KeyPress)
+    else:
+        keyIsActive = False
+
+    if keyIsActive:
+        if override:
+            w = self.w # Pass the wrapper class, not the wrapped widget.
+            stroke = self.toStroke(tkKey,ch)
+            leoEvent = leoKeyEvent(event,c,w,ch,tkKey,stroke)
+            ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+            c.outerUpdate()
+        else:
+            if True or trace and verbose:
+                stroke = self.toStroke(tkKey,ch)
+                if (stroke and not stroke.startswith('Alt+') and 
+                    not stroke.startswith('Ctrl+') and
+                    not stroke in ('PgDn','PgUp')
+                ):
+                    g.trace(self.tag,'unbound',tkKey,stroke)
+
+    if trace: self.traceEvent(obj,event,tkKey,override)
+
+    return override
+#@-node:ekr.20081121105001.168:eventFilter
+#@+node:ekr.20081121105001.182:isSpecialOverride
+def isSpecialOverride (self,tkKey,ch):
+
+    '''Return True if tkKey is a key in guiBindNamesDict,
+    that is, if tkKey is a special Tk key name.
+    '''
+
+    trace = False and not g.unitTesting
+    c = self.c
+    d = c.k.guiBindNamesDict
+
+    # Ignore Key, Control, Shift, etc.
+    # aList1 = tkKey.split('+')
+    # aList2 = tkKey.split('-')
+    # if   len(aList1) > 1: baseKey = aList1[-1]
+    # elif len(aList2) > 1: baseKey = aList2[-1]
+    # else: baseKey = tkKey
+
+    baseKey = tkKey
+
+    table = [d.get(key) for key in d]
+    table.append('Tab')
+    table.append('Shift+Tab')
+
+    if trace: g.trace('%s in dict: %5s %s' % (
+        repr(baseKey),baseKey in table,repr(tkKey)))
+
+    if baseKey in table:
+        return True
+    elif len(tkKey) == 1:
+        return True # Must process all ascii keys.
+    elif ch in self.flashers:
+        return True
+    else:
+        return False
+#@-node:ekr.20081121105001.182:isSpecialOverride
+#@+node:ekr.20081121105001.169:toStroke
+def toStroke (self,tkKey,ch):
+
+    trace = False and not g.unitTesting
+    k = self.c.k ; s = tkKey
+
+    special = ('Alt','Ctrl','Control',)
+    isSpecial = [True for z in special if s.find(z) > -1]
+
+    if not isSpecial:
+        # Keep the Tk spellings for special keys.
+        ch2 = k.guiBindNamesDict.get(ch) # was inverseDict
+        if trace: g.trace('ch',repr(ch),'ch2',repr(ch2))
+        if ch2: s = s.replace(ch,ch2)
+
+    table = (
+        ('Alt-','Alt+'),
+        ('Ctrl-','Ctrl+'),
+        ('Control-','Ctrl+'),
+        # Use Alt+Key-1, etc.  Sheesh.
+        # ('Key-','Key+'),
+        ('Shift-','Shift+')
+    )
+    for a,b in table:
+        s = s.replace(a,b)
+
+    if trace: g.trace('tkKey',tkKey,'-->',s)
+    return s
+#@-node:ekr.20081121105001.169:toStroke
+#@+node:ekr.20081121105001.170:toTkKey
+def toTkKey (self,event):
+
+    mods = self.qtMods(event)
+
+    keynum,text,toString,ch = self.qtKey(event)
+
+    tkKey,ch,ignore = self.tkKey(
+        event,mods,keynum,text,toString,ch)
+
+    return tkKey,ch,ignore
+#@+node:ekr.20081121105001.172:qtKey
+def qtKey (self,event):
+
+    '''Return the components of a Qt key event.'''
+
+    trace = False and not g.unitTesting
+    keynum = event.key()
+    text   = event.text() # This is the unicode text.
+    toString = QtGui.QKeySequence(keynum).toString()
+    toUnicode = unicode
+
+    try:
+        ch1 = chr(keynum)
+    except ValueError:
+        ch1 = ''
+
+    try:
+        ch = toUnicode(ch1)
+    except UnicodeError:
+        ch = ch1
+
+    text     = toUnicode(text)
+    toString = toUnicode(toString)
+
+    if trace: g.trace('keynum %s ch %s ch1 %s toString %s' % (
+        repr(keynum),repr(ch),repr(ch1),repr(toString)))
+
+    return keynum,text,toString,ch
+#@-node:ekr.20081121105001.172:qtKey
+#@+node:ekr.20081121105001.173:qtMods
+def qtMods (self,event):
+
+    modifiers = event.modifiers()
+
+    # The order of this table is significant.
+    # It must the order of modifiers in bindings
+    # in k.masterGuiBindingsDict
+
+    table = (
+        (QtCore.Qt.AltModifier,     'Alt'),
+        (QtCore.Qt.ControlModifier, 'Control'),
+        (QtCore.Qt.MetaModifier,    'Meta'),
+        (QtCore.Qt.ShiftModifier,   'Shift'),
+    )
+
+    mods = [b for a,b in table if (modifiers & a)]
+
+    return mods
+#@-node:ekr.20081121105001.173:qtMods
+#@+node:ekr.20081121105001.174:tkKey & helpers
+def tkKey (self,event,mods,keynum,text,toString,ch):
+
+    '''Carefully convert the Qt key to a 
+    Tk-style binding compatible with Leo's core
+    binding dictionaries.'''
+
+    trace = False and not g.unitTesting
+    k = self.c.k
+
+    # Thanks to Jesse Aldridge for additional entries.
+    special = {
+       'Backspace': 'BackSpace',
+       'Backtab':   'Shift+Tab',
+       'Esc':       'Escape',
+       'Del':       'Delete',
+       'Ins':       'Insert',
+       # Use these to pass the key to the QTextWidget.
+       'PgDown':    'PgDn',
+       'PgUp':      'PgUp', # The entry must exist.
+       # Use these to enable Leo's page-up/down commands.
+       # 'PgDown':    'Next',
+       # 'PgUp':      'Prior',
+    }
+
+    # Convert '&' to 'ampersand', for example.
+    ch2 = k.guiBindNamesDict.get(ch or toString)
+
+    if not ch: ch = ch2
+    if not ch: ch = ''
+
+    # Handle special cases.
+    ch3 = special.get(toString)
+    if ch3: ch = ch3
+
+    ch4 = k.guiBindNamesDict.get(ch)
+    if ch4: ch = ch4
+
+    if 'Shift' in mods:
+        mods,ch = self.shifted(mods,ch)
+    elif len(ch) == 1:
+        ch = ch.lower()
+
+    if ('Alt' in mods or 'Control' in mods) and ch and ch in string.digits:
+        mods.append('Key')
+
+    tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
+    ignore = not ch
+
+    if trace: g.trace(
+'keynum: %s, mods: %s text: %s, toString: %s, '
+'tkKey: %s ignore: %5s ch: %s, ch2: %s, ch3: %s, ch4: %s' % (
+keynum,mods,repr(text),toString,
+repr(tkKey),bool(ignore),
+repr(ch),repr(ch2),repr(ch3),repr(ch4)))
+
+    ch = text or toString # was ch
+    return tkKey,ch,ignore
+#@+node:ekr.20081121105001.175:keyboardUpper1
+def keyboardUpper1 (self,ch):
+
+    '''A horrible, keyboard-dependent hack.
+
+    Return the upper-case version of the given character
+    whose original spelling has length == 1.'''
+
+    d = {
+        '1':'exclam',
+        '2':'at',
+        '3':'numbersign',
+        '4':'dollar',
+        '5':'percent',
+        '6':'asciicircum',
+        '7':'ampersand',
+        '8':'asterisk',
+        '9':'parenleft',
+        '0':'parenright',
+    }
+
+    # g.trace(ch,d.get(ch))
+    return d.get(ch)
+
+#@-node:ekr.20081121105001.175:keyboardUpper1
+#@+node:ekr.20081121105001.176:keyboardUpperLong
+def keyboardUpperLong (self,ch):
+
+    '''A horrible, keyboard-dependent hack.
+
+    Return the upper-case version of the given character
+    whose original spelling has length > 1.'''
+
+    trace = False and not g.unitTesting
+    d = {
+        '1':'exclam',
+        '2':'at',
+        '3':'numbersign',
+        '4':'dollar',
+        '5':'percent',
+        '6':'asciicircum',
+        '7':'ampersand',
+        '8':'asterisk',
+        '9':'parenleft',
+        '0':'parenright',
+        "quoteleft":    "asciitilde",
+        "minus":        "underscore",
+        "equal":        "plus",
+        "bracketleft":  "braceleft",
+        "bracketright": "braceright",
+        "semicolon":    "colon",
+        "quoteright":   "quotedbl",
+        "backslash":    "bar",
+        "comma":        "less",
+        "period":       "greater",
+        "slash":        "question",
+        "parenleft":    "parenleft", # Bug fix: 2008/11/24
+        "parenright":   "parenright", # Bug fix: 2008/11/24
+        "braceleft":    "braceleft", # Bug fix: 2009/4/5
+        "braceright":   "braceright", # Bug fix: 2009/4/5
+    }
+    if trace: g.trace(ch,d.get(ch))
+    val = d.get(ch)
+    return d.get(ch)
+
+    # The following does not work.
+    # if val:
+        # return val
+    # elif len(ch) > 1:
+        # return ch
+    # else:
+        # return None
+
+#@-node:ekr.20081121105001.176:keyboardUpperLong
+#@+node:ekr.20081121105001.177:shifted
+def shifted (self,mods,ch):
+    '''
+        A horrible, keyboard-dependent kludge.
+        return the shifted version of the letter.
+        return mods, ch.
+    '''
+
+    # Special tk symbols, like '&' have already
+    # been converted to names like 'ampersand'.
+
+    # These special characters should be handled in Leo's core.
+    noShiftList = ('Return','BackSpace','Tab',)
+
+    special = ('Home','End','Right','Left','Up','Down',)
+
+    if len(ch) == 1:
+        ch2 = self.keyboardUpper1(ch)
+        if ch2:
+            mods.remove('Shift')
+            ch = ch2
+        elif len(ch) == 1:
+            # Correct regardless of alt/ctrl mods.
+            mods.remove('Shift')
+            ch = ch.upper()
+        elif len(mods) == 1: # No alt/ctrl.
+            mods.remove('Shift')
+        else:
+            pass
+        # g.trace('ch',ch,'ch2',ch2,mods)
+    else:
+        ch3 = self.keyboardUpperLong(ch)
+        if ch3: ch = ch3
+
+        if ch3 or ch in noShiftList:
+            mods.remove('Shift')
+        elif ch in special:
+            pass # Allow the shift.
+        elif len(mods) == 1: # No alt/ctrl.
+            mods.remove('Shift')
+        else:
+            pass # Retain shift modifier for all special keys.
+
+    return mods,ch
+#@-node:ekr.20081121105001.177:shifted
+#@-node:ekr.20081121105001.174:tkKey & helpers
+#@-node:ekr.20081121105001.170:toTkKey
+#@+node:ekr.20081121105001.179:traceEvent
+def traceEvent (self,obj,event,tkKey,override):
+
+    c = self.c ; e = QtCore.QEvent
+
+    eventType = event.type()
+
+    if 0: # Show focus events.
+        show = (
+            (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
+            (e.Enter,'enter'),(e.Leave,'leave'),
+        )
+
+    else:
+        show = (
+            (e.KeyPress,'key-press'),(e.KeyRelease,'key-release'),
+            (e.ShortcutOverride,'shortcut-override'),
+        )
+
+    ignore = (
+        e.ToolTip,
+        e.FocusIn,e.FocusOut,e.Enter,e.Leave,
+        e.MetaCall,e.Move,e.Paint,e.Resize,
+        e.Polish,e.PolishRequest,
+    )
+
+    for val,kind in show:
+        if eventType == val:
+            if override:
+                g.trace(
+                    'tag: %s, kind: %s, in-state: %s, key: %s, override: %s' % (
+                    self.tag,kind,repr(c.k.inState()),tkKey,override))
+            return
+
+    # if trace: g.trace(self.tag,
+        # 'bound in state: %s, key: %s, returns: %s' % (
+        # k.getState(),tkKey,ret))
+
+    if False and eventType not in ignore:
+        g.trace('%3s:%s' % (eventType,'unknown'))
+#@-node:ekr.20081121105001.179:traceEvent
+#@+node:ekr.20090407080217.1:traceFocus
+def traceFocuse (self,eventType,obj):
+
+    table = (
+        (ev.FocusIn,        'focus-in'),
+        (ev.FocusOut,       'focus-out'),
+        (ev.WindowActivate, 'activate'),
+        (ev.WindowDeactivate,'deactivate'),
+    )
+
+    for evKind,kind in table:
+        if eventType == evKind:
+            g.trace('%11s %s %s' % (
+                (kind,id(obj),
+                # event.reason(),
+                g.app.gui.widget_name(obj) or obj)))
+
+    # else: g.trace('unknown kind: %s' % eventType)
+#@-node:ekr.20090407080217.1:traceFocus
+#@-node:ekr.20081121105001.166:class leoQtEventFilter
+#@+node:ekr.20090407080217.11:Print dict
+d = c.k.guiBindNamesDict
+table = [d.get(key) for key in d]
+table.sort()
+print g.toString(table)
+#@nonl
+#@-node:ekr.20090407080217.11:Print dict
+#@-node:ekr.20090406071640.1:Fixed (??) key problems
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
+#@+node:ekr.20081121105001.181:isDangerous (no longer used)
+def isDangerous (self,tkKey,ch):
+
+    c = self.c
+
+    if not c.frame.body.useScintilla: return False
+
+    arrows = ('home','end','left','right','up','down')
+    special = ('tab','backspace','period','parenright','parenleft')
+
+    key = tkKey.lower()
+    ch = ch.lower()
+    isAlt = key.find('alt') > -1
+    w = g.app.gui.get_focus()
+    inTree = w == self.c.frame.tree.treeWidget
+
+    val = (
+        key in special or
+        ch in arrows and not inTree and not isAlt or
+        key == 'return' and not inTree # Just barely works.
+    )
+
+    # g.trace(tkKey,ch,val)
+    return val
+#@-node:ekr.20081121105001.181:isDangerous (no longer used)
+#@+node:ekr.20081121105001.171:isFKey (no longer used)
+def isFKey(self,ch):
+
+    return (
+        ch and len(ch) in (2,3) and
+        ch[0].lower() == 'f' and
+        ch[1:].isdigit()
+    )
+#@-node:ekr.20081121105001.171:isFKey (no longer used)
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl

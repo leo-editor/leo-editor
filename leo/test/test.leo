@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -362,7 +362,6 @@
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
 </v>
-<v t="edward.20090329132334.1"><vh>Lightning talks</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -537,18 +536,6 @@ def spam(a=5):
 spam(3)
 spam(a=4)
 </t>
-<t tx="edward.20090329132334.1">argparse module
-moments module
-pose module
-fabric tool
-Trac tool (ClueMapper)
-blist module
-launchpad will be open source
-    storm,lazr,Gary Poster
-pyjamas
-ctypes module, ctypeslib,
-Europython, Birmingham
-Zope,Grok,Repose,Deliverance</t>
 <t tx="ekr.20041001211817">import os
 
 g.pr(os.path.exists(os.path.normpath("C:\\Progra~1\\Eclipse")))</t>
@@ -1486,7 +1473,7 @@ plugins_menu.py
 # threading_colorizer.py
 
 # open_shell.py
-dtest.py
+# dtest.py
 quicksearch.py
 ipython.py
 open_with.py
@@ -2592,7 +2579,10 @@ else:
         rst3.onCreate('tag',{'c':c})
     else:
         # Ask to be removed.
-        g.app.scriptDict['removeMe'] = True</t>
+        g.app.scriptDict['removeMe'] = True
+
+print 'done'
+</t>
 <t tx="ekr.20080917063615.1">aList = (
 'aspellbindir',
 'wholeword',

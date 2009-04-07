@@ -1552,7 +1552,7 @@ class leoQtFrame (leoFrame.leoFrame):
         #@-node:ekr.20081121105001.265:update
         #@-others
     #@-node:ekr.20081121105001.261:class qtStatusLineClass (qtFrame)
-    #@+node:ekr.20081121105001.266:class qtIconBarClass
+    #@+node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
     class qtIconBarClass:
 
         '''A class representing the singleton Icon bar'''
@@ -1565,6 +1565,9 @@ class leoQtFrame (leoFrame.leoFrame):
             self.parentFrame = parentFrame
             self.w = c.frame.top.iconBar # A QToolBar.
             self.actions = []
+
+            # Options
+            self.buttonColor = c.config.getString('qt-button-color')
 
             # g.app.iconWidgetCount = 0
         #@-node:ekr.20081121105001.267: ctor
@@ -1591,13 +1594,25 @@ class leoQtFrame (leoFrame.leoFrame):
             # imagefile = keys.get('imagefile')
             # image = keys.get('image')
 
-            action = self.w.addAction(text)
+            class leoIconBarButton (QtGui.QWidgetAction):
+                def __init__ (self,parent,text,toolbar):
+                    QtGui.QWidgetAction.__init__(self,parent)
+                    self.button = None # set below
+                    self.text = text
+                    self.toolbar = toolbar
+                def createWidget (self,parent):
+                    self.button = b = QtGui.QPushButton(self.text,parent)
+                    g.app.gui.setWidgetColor(b,
+                        widgetKind='QPushButton',
+                        selector='background-color',
+                        colorName = self.toolbar.buttonColor)
+                    return b
+
+            action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
+            self.w.addAction(action)
 
             self.actions.append(action)
             b = self.w.widgetForAction(action)
-
-            #b = QtGui.QPushButton(text,self.w)
-            #b.leo_buttonAction = self.addWidget(b)
 
             b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
@@ -1605,6 +1620,7 @@ class leoQtFrame (leoFrame.leoFrame):
                 self.w.removeAction(action)
 
             b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
+
             b.addAction(rb)
             rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
 
@@ -1617,8 +1633,8 @@ class leoQtFrame (leoFrame.leoFrame):
                         c.outerUpdate()
                     return val
 
-                self.w.connect(action,
-                    QtCore.SIGNAL("triggered()"),
+                self.w.connect(b,
+                    QtCore.SIGNAL("clicked()"),
                     button_callback)
 
             return action
@@ -1666,11 +1682,12 @@ class leoQtFrame (leoFrame.leoFrame):
         def setCommandForButton(self,button,command):
 
             if command:
-                QtCore.QObject.connect(button,
-                    QtCore.SIGNAL("triggered()"),command)
+                # button is a leoIconBarButton.
+                QtCore.QObject.connect(button.button,
+                    QtCore.SIGNAL("clicked()"),command)
         #@-node:ekr.20081121105001.274:setCommandForButton
         #@-others
-    #@-node:ekr.20081121105001.266:class qtIconBarClass
+    #@-node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
     #@+node:ekr.20081121105001.275:Minibuffer methods
     #@+node:ekr.20081121105001.276:showMinibuffer
     def showMinibuffer (self):
@@ -4603,6 +4620,37 @@ class leoQtGui(leoGui.leoGui):
         )
 
     #@-node:ekr.20081121105001.501:isTextWidget
+    #@+node:ekr.20090406111739.14:Style Sheets
+    #@+node:ekr.20090406111739.13:setStyleSetting (qtGui)
+    def setStyleSetting(self,w,widgetKind,selector,val):
+
+        '''Set the styleSheet for w to
+           "%s { %s: %s; }  % (widgetKind,selector,val)"
+        '''
+
+        s = '%s { %s: %s; }' % (widgetKind,selector,val)
+
+        try:
+            w.setStyleSheet(s)
+        except Exception:
+            g.es_print('bad style sheet: %s' % s)
+            g.es_exception()
+    #@-node:ekr.20090406111739.13:setStyleSetting (qtGui)
+    #@+node:ekr.20090406111739.12:setWidgetColor (qtGui)
+    badWidgetColors = []
+
+    def setWidgetColor (self,w,widgetKind,selector,colorName):
+
+        if not colorName: return
+
+        if QtGui.QColor(colorName).isValid():
+            g.app.gui.setStyleSetting(w,widgetKind,selector,colorName)
+        elif colorName not in self.badWidgetColors:
+            self.badWidgetColors.append(colorName)
+            g.es_print('bad widget color %s for %s' % (
+                colorName,widgetKind),color='blue')
+    #@-node:ekr.20090406111739.12:setWidgetColor (qtGui)
+    #@-node:ekr.20090406111739.14:Style Sheets
     #@+node:ekr.20081121105001.502:toUnicode (qtGui)
     def toUnicode (self,s,encoding='utf-8',reportErrors=True):
 
@@ -4856,25 +4904,12 @@ class leoQtEventFilter(QtCore.QObject):
         ev = QtCore.QEvent
         gui = g.app.gui
         kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
-        if traceFocus:
-            table = (
-                (ev.FocusIn,        'focus-in'),
-                (ev.FocusOut,       'focus-out'),
-                (ev.WindowActivate, 'activate'),
-                (ev.WindowDeactivate,'deactivate'),
-            )
-            for evKind,kind in table:
-                if eventType == evKind:
-                    g.trace('%11s %s %s' % (
-                        (kind,id(obj),
-                        # event.reason(),
-                        g.app.gui.widget_name(obj) or obj)))
-            # else: g.trace('unknown kind: %s' % eventType)
+
+        if traceFocus: self.traceFocus(eventType,obj)
 
         if eventType == ev.WindowActivate:
             gui.onActivateEvent(event,c,obj,self.tag)
             override = False ; tkKey = None
-            # g.trace(g.app.gui.get_focus(c))
         elif eventType == ev.WindowDeactivate:
             gui.onDeactivateEvent(event,c,obj,self.tag)
             override = False ; tkKey = None
@@ -4887,8 +4922,6 @@ class leoQtEventFilter(QtCore.QObject):
                 override = True
             elif k.inState():
                 override = not ignore # allow all keystrokes.
-            # elif safe_mode:
-                # override = len(aList) > 0 and not self.isDangerous(tkKey,ch)
             else:
                 override = len(aList) > 0
         else:
@@ -4930,43 +4963,34 @@ class leoQtEventFilter(QtCore.QObject):
 
         return override
     #@-node:ekr.20081121105001.168:eventFilter
-    #@+node:ekr.20081121105001.181:isDangerous
-    def isDangerous (self,tkKey,ch):
-
-        c = self.c
-
-        if not c.frame.body.useScintilla: return False
-
-        arrows = ('home','end','left','right','up','down')
-        special = ('tab','backspace','period','parenright','parenleft')
-
-        key = tkKey.lower()
-        ch = ch.lower()
-        isAlt = key.find('alt') > -1
-        w = g.app.gui.get_focus()
-        inTree = w == self.c.frame.tree.treeWidget
-
-        val = (
-            key in special or
-            ch in arrows and not inTree and not isAlt or
-            key == 'return' and not inTree # Just barely works.
-        )
-
-        # g.trace(tkKey,ch,val)
-        return val
-    #@-node:ekr.20081121105001.181:isDangerous
     #@+node:ekr.20081121105001.182:isSpecialOverride
     def isSpecialOverride (self,tkKey,ch):
 
-        # g.trace(repr(tkKey),repr(ch))
+        '''Return True if tkKey is a key in guiBindNamesDict,
+        that is, if tkKey is a special Tk key name.
+        '''
+
+        trace = False and not g.unitTesting
         c = self.c
         d = c.k.guiBindNamesDict
+
+        # Ignore Key, Control, Shift, etc.
+        # aList1 = tkKey.split('+')
+        # aList2 = tkKey.split('-')
+        # if   len(aList1) > 1: baseKey = aList1[-1]
+        # elif len(aList2) > 1: baseKey = aList2[-1]
+        # else: baseKey = tkKey
+
+        baseKey = tkKey
 
         table = [d.get(key) for key in d]
         table.append('Tab')
         table.append('Shift+Tab')
 
-        if tkKey in table:
+        if trace: g.trace('%s in dict: %5s %s' % (
+            repr(baseKey),baseKey in table,repr(tkKey)))
+
+        if baseKey in table:
             return True
         elif len(tkKey) == 1:
             return True # Must process all ascii keys.
@@ -5015,15 +5039,6 @@ class leoQtEventFilter(QtCore.QObject):
             event,mods,keynum,text,toString,ch)
 
         return tkKey,ch,ignore
-    #@+node:ekr.20081121105001.171:isFKey
-    def isFKey(self,ch):
-
-        return (
-            ch and len(ch) in (2,3) and
-            ch[0].lower() == 'f' and
-            ch[1:].isdigit()
-        )
-    #@-node:ekr.20081121105001.171:isFKey
     #@+node:ekr.20081121105001.172:qtKey
     def qtKey (self,event):
 
@@ -5052,7 +5067,6 @@ class leoQtEventFilter(QtCore.QObject):
             repr(keynum),repr(ch),repr(ch1),repr(toString)))
 
         return keynum,text,toString,ch
-
     #@-node:ekr.20081121105001.172:qtKey
     #@+node:ekr.20081121105001.173:qtMods
     def qtMods (self,event):
@@ -5165,6 +5179,7 @@ class leoQtEventFilter(QtCore.QObject):
         Return the upper-case version of the given character
         whose original spelling has length > 1.'''
 
+        trace = False and not g.unitTesting
         d = {
             '1':'exclam',
             '2':'at',
@@ -5189,9 +5204,21 @@ class leoQtEventFilter(QtCore.QObject):
             "slash":        "question",
             "parenleft":    "parenleft", # Bug fix: 2008/11/24
             "parenright":   "parenright", # Bug fix: 2008/11/24
+            "braceleft":    "braceleft", # Bug fix: 2009/4/5
+            "braceright":   "braceright", # Bug fix: 2009/4/5
         }
-        # g.trace(ch,d.get(ch))
+        if trace: g.trace(ch,d.get(ch))
+        val = d.get(ch)
         return d.get(ch)
+
+        # The following does not work.
+        # if val:
+            # return val
+        # elif len(ch) > 1:
+            # return ch
+        # else:
+            # return None
+
     #@-node:ekr.20081121105001.176:keyboardUpperLong
     #@+node:ekr.20081121105001.177:shifted
     def shifted (self,mods,ch):
@@ -5281,6 +5308,25 @@ class leoQtEventFilter(QtCore.QObject):
         if False and eventType not in ignore:
             g.trace('%3s:%s' % (eventType,'unknown'))
     #@-node:ekr.20081121105001.179:traceEvent
+    #@+node:ekr.20090407080217.1:traceFocus
+    def traceFocuse (self,eventType,obj):
+
+        table = (
+            (ev.FocusIn,        'focus-in'),
+            (ev.FocusOut,       'focus-out'),
+            (ev.WindowActivate, 'activate'),
+            (ev.WindowDeactivate,'deactivate'),
+        )
+
+        for evKind,kind in table:
+            if eventType == evKind:
+                g.trace('%11s %s %s' % (
+                    (kind,id(obj),
+                    # event.reason(),
+                    g.app.gui.widget_name(obj) or obj)))
+
+        # else: g.trace('unknown kind: %s' % eventType)
+    #@-node:ekr.20090407080217.1:traceFocus
     #@-others
 #@-node:ekr.20081121105001.166:class leoQtEventFilter
 #@-node:ekr.20081121105001.513:Key handling

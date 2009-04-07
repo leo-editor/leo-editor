@@ -889,6 +889,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             return
 
         item = self.getCurrentItem()
+        if not item:
+            if trace and verbose: g.trace('** no item')
+            return
         if not e:
             e = self.getTreeEditorForItem(item)
         if not e:
