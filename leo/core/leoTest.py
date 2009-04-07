@@ -104,11 +104,11 @@ def doTests(c,all,verbosity=1):
         # Verbosity: 1: print just dots.
         res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
         # put info to db as well
-        
+
         key = 'unittest/cur/fail'
         archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
         c.db[key] = archive
-        
+
         #g.pdb()
     finally:
         c.setChanged(changed) # Restore changed state.

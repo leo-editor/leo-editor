@@ -132,8 +132,6 @@ Most important projects:
 - key handling.
 - multiple body editors.
 - bugs.
-#@+node:ekr.20090404051241.2:What does it take to get a proper sphinx index?
-#@-node:ekr.20090404051241.2:What does it take to get a proper sphinx index?
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
 #@-node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
 #@+node:ekr.20090228065229.2:Honor @path in rst3 plugin
