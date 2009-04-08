@@ -4266,6 +4266,7 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = False
+    traceEvent = False and not g.unitTesting
     traceFocus = False and not g.unitTesting
     c = self.c ; k = c.k
     eventType = event.type()
@@ -4274,6 +4275,17 @@ def eventFilter(self, obj, event):
     kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
 
     if traceFocus: self.traceFocus(eventType,obj)
+
+    # A hack. QLineEdit generates ev.KeyRelease only.
+    if eventType in (ev.KeyPress,ev.KeyRelease):
+        p = c.currentPosition()
+        isEditWidget = obj == c.frame.tree.edit_widget(p)
+        self.keyIsActive = g.choose(
+            isEditWidget,
+            eventType == ev.KeyRelease,
+            eventType == ev.KeyPress)
+    else:
+        self.keyIsActive = False
 
     if eventType == ev.WindowActivate:
         gui.onActivateEvent(event,c,obj,self.tag)
@@ -4300,34 +4312,21 @@ def eventFilter(self, obj, event):
             elif eventType == ev.FocusOut:
                 c.frame.body.onFocusOut()
 
-    # A hack. QLineEdit generates ev.KeyRelease only.
-    if eventType in (ev.KeyPress,ev.KeyRelease):
-        p = c.currentPosition()
-        isEditWidget = obj == c.frame.tree.edit_widget(p)
-        keyIsActive = g.choose(
-            isEditWidget,
-            eventType == ev.KeyRelease,
-            eventType == ev.KeyPress)
-    else:
-        keyIsActive = False
-
-    if keyIsActive:
+    if self.keyIsActive:
+        stroke = self.toStroke(tkKey,ch)
         if override:
+            if trace and not ignore: g.trace('bound',repr(stroke))
             w = self.w # Pass the wrapper class, not the wrapped widget.
-            stroke = self.toStroke(tkKey,ch)
             leoEvent = leoKeyEvent(event,c,w,ch,tkKey,stroke)
             ret = k.masterKeyHandler(leoEvent,stroke=stroke)
             c.outerUpdate()
-        else:
-            if True or trace and verbose:
-                stroke = self.toStroke(tkKey,ch)
-                if (stroke and not stroke.startswith('Alt+') and 
-                    not stroke.startswith('Ctrl+') and
-                    not stroke in ('PgDn','PgUp')
-                ):
-                    g.trace(self.tag,'unbound',tkKey,stroke)
+        # else:
+            # if (stroke): # and not stroke.startswith('Alt+') and 
+                    # not stroke.startswith('Ctrl+') and
+                    # not stroke in ('PgDn','PgUp')):
+                # g.trace(self.tag,'unbound',tkKey,stroke)
 
-    if trace: self.traceEvent(obj,event,tkKey,override)
+    if traceEvent: self.traceEvent(obj,event,tkKey,override)
 
     return override
 #@-node:ekr.20081121105001.168:eventFilter
@@ -4527,545 +4526,47 @@ def setCommandForButton(self,button,command):
 #@-node:ekr.20081121105001.274:setCommandForButton
 #@-node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
 #@-node:ekr.20081215162017.4:Allow coloring of script buttons
-#@+node:ekr.20090406071640.1:Fixed (??) key problems
-@nocolor-node
+#@-node:ekr.20090124101344.1:Recent
+#@+node:ekr.20081208155215.12:Unused
+#@+node:ekr.20081121105001.181:isDangerous (no longer used)
+def isDangerous (self,tkKey,ch):
 
-https://bugs.launchpad.net/leo-editor/+bug/347059
+    c = self.c
 
-> menu Outline - Move - Demote menu says ctrl-} and ctrl-{ demote and
-> promote but those keys move text in the body even when the head is the
-> active panel. Maybe ctrl-[ ctrl-] bindings are interfering.
+    if not c.frame.body.useScintilla: return False
 
-I suppose this could be called a bug. Probably what is happening is that
-bindings are general, and the code is specific: it always works on the
-body. You could make the bindings specific to the body pane, but not much
-would really change.
+    arrows = ('home','end','left','right','up','down')
+    special = ('tab','backspace','period','parenright','parenleft')
 
-In short, this is a nit, and probably fixable in myLeoSettings.leo.
+    key = tkKey.lower()
+    ch = ch.lower()
+    isAlt = key.find('alt') > -1
+    w = g.app.gui.get_focus()
+    inTree = w == self.c.frame.tree.treeWidget
 
-> In short, this is a nit, and probably fixable in myLeoSettings.leo.
+    val = (
+        key in special or
+        ch in arrows and not inTree and not isAlt or
+        key == 'return' and not inTree # Just barely works.
+    )
 
-In myLeoSettings.leo I have:
+    # g.trace(tkKey,ch,val)
+    return val
+#@-node:ekr.20081121105001.181:isDangerous (no longer used)
+#@+node:ekr.20081121105001.171:isFKey (no longer used)
+def isFKey(self,ch):
 
-close-xml-element ! body = Ctrl-C
-demote ! all = Ctrl-}
-promote ! all = Ctrl-{
-demote ! all = Ctrl-]
-promote ! all = Ctrl-[
-print-settings ! all = Ctrl-U
-
-the print-settings binding I threw in to test seems to be working fine,
-but I can't get any demotion. Also on startup I notice:
-
-redefining shortcut Ctrl+bracketright from demote to indent-region in
-all
-redefining shortcut Ctrl+u from move-outline-up to print-settings in
-all
-redefining shortcut Ctrl+bracketleft from promote to
-unindent-region in all
-
-the Ctrl+u part makes sense, the others don't.
-Edward K. Ream wrote on 2009-03-23: (permalink)
-
-On Mon, Mar 23, 2009 at 9:50 AM, tbnorth <terry_n_brown@yahoo.com> wrote:
-
->
-> redefining shortcut Ctrl+bracketright from demote to indent-region in all
-> redefining shortcut Ctrl+u from move-outline-up to print-settings in all
-> redefining shortcut Ctrl+bracketleft from promote to
-> unindent-region in all
->
-> the Ctrl+u part makes sense, the others don't.
-
-The qt plugin has to play some gruesome games with key bindings. Maybe more
-games are needed.
-
-How do these bindings work with the tk gui enabled?
-
-Edward
-tbnorth wrote on 2009-03-23: (permalink)
-
-On Mon, 23 Mar 2009 15:37:26 -0000
-"Edward K. Ream" <edreamleo@gmail.com> wrote:
-
-> > redefining shortcut Ctrl+bracketright from demote to
-> > indent-region in all redefining shortcut Ctrl+u from
-> > move-outline-up to print-settings in all redefining shortcut
-> > Ctrl+bracketleft from promote to unindent-region in all
-> >
-> > the Ctrl+u part makes sense, the others don't.
->
-> The qt plugin has to play some gruesome games with key bindings.
-> Maybe more games are needed.
->
-> How do these bindings work with the tk gui enabled?
-
-Ctrl-{} work, Ctrl-[] don't, I'd expect both to work, but would be
-happy with just Ctrl-{} working in qt.
-
-Also I tried permutations with and without Shift, i.e.
-
-Ctrl-Shift-[ as well as Ctrl-{ etc.
-Edward K. Ream wrote on 2009-03-23: (permalink)
-
-On Mon, Mar 23, 2009 at 11:01 AM, tbnorth <terry_n_brown@yahoo.com> wrote:
-
->
-> > How do these bindings work with the tk gui enabled?
->
-> Ctrl-{} work, Ctrl-[] don't, I'd expect both to work, but would be
-> happy with just Ctrl-{} working in qt.
->
-> Also I tried permutations with and without Shift, i.e.
->
-> Ctrl-Shift-[ as well as Ctrl-{ etc.
-
-So you are saying that the bindings work the same regardless of gui?
-
-Edward
-tbnorth wrote on 2009-03-23: (permalink)
-
-On Mon, 23 Mar 2009 16:50:11 -0000
-"Edward K. Ream" <edreamleo@gmail.com> wrote:
-
-[...]
-> On Mon, Mar 23, 2009 at 11:01 AM, tbnorth <terry_n_brown@yahoo.com>
-> wrote:
->
-> >
-> > > How do these bindings work with the tk gui enabled?
-> >
-> > Ctrl-{} work, Ctrl-[] don't, I'd expect both to work, but would be
-> > happy with just Ctrl-{} working in qt.
-> >
-> > Also I tried permutations with and without Shift, i.e.
-> >
-> > Ctrl-Shift-[ as well as Ctrl-{ etc.
->
-> So you are saying that the bindings work the same regardless of gui?
-
-Nope, Ctrl-{} work in tk, not qt, in qt text indent / outdent seem to
-take over everything. And it seems if tab/shift-tab are defaults for
-that there's no need for any bindings of Ctrl-{}[] for that.
-Ville M. Vainio wrote on 2009-03-23: (permalink)
-
-On Mon, Mar 23, 2009 at 4:50 PM, tbnorth <terry_n_brown@yahoo.com> wrote:
-
-> close-xml-element ! body = Ctrl-C
-> demote ! all = Ctrl-}
-
-Just a thought: bindings like ctrl + } are extremely ambigous on
-international keyboards, because you have press shift to reach that
-anyway, to the extent that they are meaningless. ctrl+shift+ ] is the
-same as ctrl + }. Generally, they should be avoided as much as
-possible...
-
-[...]
---
-Ville M. Vainio
-http://tinyurl.com/vainio
-Edward K. Ream wrote on 2009-03-23: (permalink)
-
-On Mon, Mar 23, 2009 at 12:28 PM, Ville M. Vainio <vivainio@gmail.com>wrote:
-
-> On Mon, Mar 23, 2009 at 4:50 PM, tbnorth <terry_n_brown@yahoo.com>
-> wrote:
->
-> > close-xml-element ! body = Ctrl-C
-> > demote ! all = Ctrl-}
->
-> Just a thought: bindings like ctrl + } are extremely ambiguous on
-> international keyboards, because you have press shift to reach that
-> anyway, to the extent that they are meaningless. ctrl+shift+ ] is the
-> same as ctrl + }. Generally, they should be avoided as much as
-> possible...
-
-I suspect that difficulties with this translation may be the problem with
-the qt plugin.
-
-Edward
-Edward K. Ream wrote on 2009-03-23: (permalink)
-
-On Mon, Mar 23, 2009 at 1:41 PM, Edward K. Ream <edreamleo@gmail.com> wrote:
-
-[...]
->
->
-> On Mon, Mar 23, 2009 at 12:28 PM, Ville M. Vainio <vivainio@gmail.com>wrote:
->
->> On Mon, Mar 23, 2009 at 4:50 PM, tbnorth <terry_n_brown@yahoo.com>
->> wrote:
->>
->> > close-xml-element ! body = Ctrl-C
->> > demote ! all = Ctrl-}
->>
->> Just a thought: bindings like ctrl + } are extremely ambiguous on
->> international keyboards, because you have press shift to reach that
->> anyway, to the extent that they are meaningless. ctrl+shift+ ] is the
->> same as ctrl + }. Generally, they should be avoided as much as
->> possible...
->>
->
-> I suspect that difficulties with this translation may be the problem with
-> the qt plugin.
->
-
-Not sure this will be fixed before b1, but it definitely will be fixed
-before Leo 4.6 final.
-
-EKR
-Edward K. Ream 4 seconds ago
-leo-editor importance: 	Undecided → Medium
-leo-editor status: 	New → Confirmed
-Add a comment/attachment
-E-mail me about changes to this bug report
-Include an attachment (Optional)
-Attachment:
-(Optional) 	
-	This attachment is a patch
-Description:
-(Optional) 	
-
-Offer mentorship
-What next?
-
-    * Report another bug about leo-editor
-    * List open bugs for leo-editor
-
-Subscribe
-Subscribe someone else
-Subscribers
-tbnorth
-Also notified
-Edward K. Ream
-The Leo editor team
-Search
-Enter bug ID or keywords:
-
-
-Show all open bugs
-Contact us | Get help with Launchpad
-© 2004-2009 Canonical Ltd. | Terms of use
-#@+node:ekr.20090407091911.1:What I did
-@nocolor-node
-
-- isSpecialOverride now computes a baseKey as the key to look up the symbol in
-  guiBindNamesDict. This allows the method to find Alt-x for any x, etc.
-
-- Added two more entries at end of dict in keyboardUpperLong.
-
-  Changing the return value from keyboardUpperLong so that it returns a special
-  Tk key name if the name is not found in the table **does not work**.
-#@nonl
-#@-node:ekr.20090407091911.1:What I did
-#@+node:ekr.20081121105001.166:class leoQtEventFilter
-class leoQtEventFilter(QtCore.QObject):
-
-    << about internal bindings >>
+    return (
+        ch and len(ch) in (2,3) and
+        ch[0].lower() == 'f' and
+        ch[1:].isdigit()
+    )
+#@-node:ekr.20081121105001.171:isFKey (no longer used)
+#@+node:ekr.20090407101640.12:No longer used key-shifting hack
+if 0: #### There are a horror.
 
     @others
-#@+node:ekr.20081121105001.167:<< about internal bindings >>
-@nocolor-node
-@
-
-Here are the rules for translating key bindings (in leoSettings.leo) into keys for k.bindingsDict:
-
-1.  The case of plain letters is significant:  a is not A.
-
-2. The Shift- prefix can be applied *only* to letters. Leo will ignore (with a
-warning) the shift prefix applied to any other binding, e.g., Ctrl-Shift-(
-
-3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
-significant. Thus, the Shift- prefix is required if you want an upper-case
-letter (with the exception of 'bare' uppercase letters.)
-
-The following table illustrates these rules. In each row, the first entry is the
-key (for k.bindingsDict) and the other entries are equivalents that the user may
-specify in leoSettings.leo:
-
-a, Key-a, Key-A
-A, Shift-A
-Alt-a, Alt-A
-Alt-A, Alt-Shift-a, Alt-Shift-A
-Ctrl-a, Ctrl-A
-Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
-!, Key-!,Key-exclam,exclam
-
-This table is consistent with how Leo already works (because it is consistent
-with Tk's key-event specifiers). It is also, I think, the least confusing set of
-rules.
 #@nonl
-#@-node:ekr.20081121105001.167:<< about internal bindings >>
-#@+node:ekr.20081121105001.180: ctor
-def __init__(self,c,w,tag=''):
-
-    # Init the base class.
-    QtCore.QObject.__init__(self)
-
-    self.c = c
-    self.w = w      # A leoQtX object, *not* a Qt object.
-    self.tag = tag
-
-    # Pretend there is a binding for these characters.
-    close_flashers = c.config.getString('close_flash_brackets') or ''
-    open_flashers  = c.config.getString('open_flash_brackets') or ''
-    self.flashers = open_flashers + close_flashers
-
-
-#@-node:ekr.20081121105001.180: ctor
-#@+node:ekr.20081121105001.168:eventFilter
-def eventFilter(self, obj, event):
-
-    trace = False and not g.unitTesting
-    verbose = False
-    traceFocus = False and not g.unitTesting
-    c = self.c ; k = c.k
-    eventType = event.type()
-    ev = QtCore.QEvent
-    gui = g.app.gui
-    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
-
-    if traceFocus: self.traceFocus(eventType,obj)
-
-    if eventType == ev.WindowActivate:
-        gui.onActivateEvent(event,c,obj,self.tag)
-        override = False ; tkKey = None
-    elif eventType == ev.WindowDeactivate:
-        gui.onDeactivateEvent(event,c,obj,self.tag)
-        override = False ; tkKey = None
-    elif eventType in kinds:
-        tkKey,ch,ignore = self.toTkKey(event)
-        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-        if ignore:
-            override = False
-        elif self.isSpecialOverride(tkKey,ch):
-            override = True
-        elif k.inState():
-            override = not ignore # allow all keystrokes.
-        else:
-            override = len(aList) > 0
-    else:
-        override = False ; tkKey = '<no key>'
-        if self.tag == 'body':
-            if eventType == ev.FocusIn:
-                c.frame.body.onFocusIn()
-            elif eventType == ev.FocusOut:
-                c.frame.body.onFocusOut()
-
-    # A hack. QLineEdit generates ev.KeyRelease only.
-    if eventType in (ev.KeyPress,ev.KeyRelease):
-        p = c.currentPosition()
-        isEditWidget = obj == c.frame.tree.edit_widget(p)
-        keyIsActive = g.choose(
-            isEditWidget,
-            eventType == ev.KeyRelease,
-            eventType == ev.KeyPress)
-    else:
-        keyIsActive = False
-
-    if keyIsActive:
-        if override:
-            w = self.w # Pass the wrapper class, not the wrapped widget.
-            stroke = self.toStroke(tkKey,ch)
-            leoEvent = leoKeyEvent(event,c,w,ch,tkKey,stroke)
-            ret = k.masterKeyHandler(leoEvent,stroke=stroke)
-            c.outerUpdate()
-        else:
-            if True or trace and verbose:
-                stroke = self.toStroke(tkKey,ch)
-                if (stroke and not stroke.startswith('Alt+') and 
-                    not stroke.startswith('Ctrl+') and
-                    not stroke in ('PgDn','PgUp')
-                ):
-                    g.trace(self.tag,'unbound',tkKey,stroke)
-
-    if trace: self.traceEvent(obj,event,tkKey,override)
-
-    return override
-#@-node:ekr.20081121105001.168:eventFilter
-#@+node:ekr.20081121105001.182:isSpecialOverride
-def isSpecialOverride (self,tkKey,ch):
-
-    '''Return True if tkKey is a key in guiBindNamesDict,
-    that is, if tkKey is a special Tk key name.
-    '''
-
-    trace = False and not g.unitTesting
-    c = self.c
-    d = c.k.guiBindNamesDict
-
-    # Ignore Key, Control, Shift, etc.
-    # aList1 = tkKey.split('+')
-    # aList2 = tkKey.split('-')
-    # if   len(aList1) > 1: baseKey = aList1[-1]
-    # elif len(aList2) > 1: baseKey = aList2[-1]
-    # else: baseKey = tkKey
-
-    baseKey = tkKey
-
-    table = [d.get(key) for key in d]
-    table.append('Tab')
-    table.append('Shift+Tab')
-
-    if trace: g.trace('%s in dict: %5s %s' % (
-        repr(baseKey),baseKey in table,repr(tkKey)))
-
-    if baseKey in table:
-        return True
-    elif len(tkKey) == 1:
-        return True # Must process all ascii keys.
-    elif ch in self.flashers:
-        return True
-    else:
-        return False
-#@-node:ekr.20081121105001.182:isSpecialOverride
-#@+node:ekr.20081121105001.169:toStroke
-def toStroke (self,tkKey,ch):
-
-    trace = False and not g.unitTesting
-    k = self.c.k ; s = tkKey
-
-    special = ('Alt','Ctrl','Control',)
-    isSpecial = [True for z in special if s.find(z) > -1]
-
-    if not isSpecial:
-        # Keep the Tk spellings for special keys.
-        ch2 = k.guiBindNamesDict.get(ch) # was inverseDict
-        if trace: g.trace('ch',repr(ch),'ch2',repr(ch2))
-        if ch2: s = s.replace(ch,ch2)
-
-    table = (
-        ('Alt-','Alt+'),
-        ('Ctrl-','Ctrl+'),
-        ('Control-','Ctrl+'),
-        # Use Alt+Key-1, etc.  Sheesh.
-        # ('Key-','Key+'),
-        ('Shift-','Shift+')
-    )
-    for a,b in table:
-        s = s.replace(a,b)
-
-    if trace: g.trace('tkKey',tkKey,'-->',s)
-    return s
-#@-node:ekr.20081121105001.169:toStroke
-#@+node:ekr.20081121105001.170:toTkKey
-def toTkKey (self,event):
-
-    mods = self.qtMods(event)
-
-    keynum,text,toString,ch = self.qtKey(event)
-
-    tkKey,ch,ignore = self.tkKey(
-        event,mods,keynum,text,toString,ch)
-
-    return tkKey,ch,ignore
-#@+node:ekr.20081121105001.172:qtKey
-def qtKey (self,event):
-
-    '''Return the components of a Qt key event.'''
-
-    trace = False and not g.unitTesting
-    keynum = event.key()
-    text   = event.text() # This is the unicode text.
-    toString = QtGui.QKeySequence(keynum).toString()
-    toUnicode = unicode
-
-    try:
-        ch1 = chr(keynum)
-    except ValueError:
-        ch1 = ''
-
-    try:
-        ch = toUnicode(ch1)
-    except UnicodeError:
-        ch = ch1
-
-    text     = toUnicode(text)
-    toString = toUnicode(toString)
-
-    if trace: g.trace('keynum %s ch %s ch1 %s toString %s' % (
-        repr(keynum),repr(ch),repr(ch1),repr(toString)))
-
-    return keynum,text,toString,ch
-#@-node:ekr.20081121105001.172:qtKey
-#@+node:ekr.20081121105001.173:qtMods
-def qtMods (self,event):
-
-    modifiers = event.modifiers()
-
-    # The order of this table is significant.
-    # It must the order of modifiers in bindings
-    # in k.masterGuiBindingsDict
-
-    table = (
-        (QtCore.Qt.AltModifier,     'Alt'),
-        (QtCore.Qt.ControlModifier, 'Control'),
-        (QtCore.Qt.MetaModifier,    'Meta'),
-        (QtCore.Qt.ShiftModifier,   'Shift'),
-    )
-
-    mods = [b for a,b in table if (modifiers & a)]
-
-    return mods
-#@-node:ekr.20081121105001.173:qtMods
-#@+node:ekr.20081121105001.174:tkKey & helpers
-def tkKey (self,event,mods,keynum,text,toString,ch):
-
-    '''Carefully convert the Qt key to a 
-    Tk-style binding compatible with Leo's core
-    binding dictionaries.'''
-
-    trace = False and not g.unitTesting
-    k = self.c.k
-
-    # Thanks to Jesse Aldridge for additional entries.
-    special = {
-       'Backspace': 'BackSpace',
-       'Backtab':   'Shift+Tab',
-       'Esc':       'Escape',
-       'Del':       'Delete',
-       'Ins':       'Insert',
-       # Use these to pass the key to the QTextWidget.
-       'PgDown':    'PgDn',
-       'PgUp':      'PgUp', # The entry must exist.
-       # Use these to enable Leo's page-up/down commands.
-       # 'PgDown':    'Next',
-       # 'PgUp':      'Prior',
-    }
-
-    # Convert '&' to 'ampersand', for example.
-    ch2 = k.guiBindNamesDict.get(ch or toString)
-
-    if not ch: ch = ch2
-    if not ch: ch = ''
-
-    # Handle special cases.
-    ch3 = special.get(toString)
-    if ch3: ch = ch3
-
-    ch4 = k.guiBindNamesDict.get(ch)
-    if ch4: ch = ch4
-
-    if 'Shift' in mods:
-        mods,ch = self.shifted(mods,ch)
-    elif len(ch) == 1:
-        ch = ch.lower()
-
-    if ('Alt' in mods or 'Control' in mods) and ch and ch in string.digits:
-        mods.append('Key')
-
-    tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
-    ignore = not ch
-
-    if trace: g.trace(
-'keynum: %s, mods: %s text: %s, toString: %s, '
-'tkKey: %s ignore: %5s ch: %s, ch2: %s, ch3: %s, ch4: %s' % (
-keynum,mods,repr(text),toString,
-repr(tkKey),bool(ignore),
-repr(ch),repr(ch2),repr(ch3),repr(ch4)))
-
-    ch = text or toString # was ch
-    return tkKey,ch,ignore
 #@+node:ekr.20081121105001.175:keyboardUpper1
 def keyboardUpper1 (self,ch):
 
@@ -5185,113 +4686,7 @@ def shifted (self,mods,ch):
 
     return mods,ch
 #@-node:ekr.20081121105001.177:shifted
-#@-node:ekr.20081121105001.174:tkKey & helpers
-#@-node:ekr.20081121105001.170:toTkKey
-#@+node:ekr.20081121105001.179:traceEvent
-def traceEvent (self,obj,event,tkKey,override):
-
-    c = self.c ; e = QtCore.QEvent
-
-    eventType = event.type()
-
-    if 0: # Show focus events.
-        show = (
-            (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
-            (e.Enter,'enter'),(e.Leave,'leave'),
-        )
-
-    else:
-        show = (
-            (e.KeyPress,'key-press'),(e.KeyRelease,'key-release'),
-            (e.ShortcutOverride,'shortcut-override'),
-        )
-
-    ignore = (
-        e.ToolTip,
-        e.FocusIn,e.FocusOut,e.Enter,e.Leave,
-        e.MetaCall,e.Move,e.Paint,e.Resize,
-        e.Polish,e.PolishRequest,
-    )
-
-    for val,kind in show:
-        if eventType == val:
-            if override:
-                g.trace(
-                    'tag: %s, kind: %s, in-state: %s, key: %s, override: %s' % (
-                    self.tag,kind,repr(c.k.inState()),tkKey,override))
-            return
-
-    # if trace: g.trace(self.tag,
-        # 'bound in state: %s, key: %s, returns: %s' % (
-        # k.getState(),tkKey,ret))
-
-    if False and eventType not in ignore:
-        g.trace('%3s:%s' % (eventType,'unknown'))
-#@-node:ekr.20081121105001.179:traceEvent
-#@+node:ekr.20090407080217.1:traceFocus
-def traceFocuse (self,eventType,obj):
-
-    table = (
-        (ev.FocusIn,        'focus-in'),
-        (ev.FocusOut,       'focus-out'),
-        (ev.WindowActivate, 'activate'),
-        (ev.WindowDeactivate,'deactivate'),
-    )
-
-    for evKind,kind in table:
-        if eventType == evKind:
-            g.trace('%11s %s %s' % (
-                (kind,id(obj),
-                # event.reason(),
-                g.app.gui.widget_name(obj) or obj)))
-
-    # else: g.trace('unknown kind: %s' % eventType)
-#@-node:ekr.20090407080217.1:traceFocus
-#@-node:ekr.20081121105001.166:class leoQtEventFilter
-#@+node:ekr.20090407080217.11:Print dict
-d = c.k.guiBindNamesDict
-table = [d.get(key) for key in d]
-table.sort()
-print g.toString(table)
-#@nonl
-#@-node:ekr.20090407080217.11:Print dict
-#@-node:ekr.20090406071640.1:Fixed (??) key problems
-#@-node:ekr.20090124101344.1:Recent
-#@+node:ekr.20081208155215.12:Unused
-#@+node:ekr.20081121105001.181:isDangerous (no longer used)
-def isDangerous (self,tkKey,ch):
-
-    c = self.c
-
-    if not c.frame.body.useScintilla: return False
-
-    arrows = ('home','end','left','right','up','down')
-    special = ('tab','backspace','period','parenright','parenleft')
-
-    key = tkKey.lower()
-    ch = ch.lower()
-    isAlt = key.find('alt') > -1
-    w = g.app.gui.get_focus()
-    inTree = w == self.c.frame.tree.treeWidget
-
-    val = (
-        key in special or
-        ch in arrows and not inTree and not isAlt or
-        key == 'return' and not inTree # Just barely works.
-    )
-
-    # g.trace(tkKey,ch,val)
-    return val
-#@-node:ekr.20081121105001.181:isDangerous (no longer used)
-#@+node:ekr.20081121105001.171:isFKey (no longer used)
-def isFKey(self,ch):
-
-    return (
-        ch and len(ch) in (2,3) and
-        ch[0].lower() == 'f' and
-        ch[1:].isdigit()
-    )
-#@-node:ekr.20081121105001.171:isFKey (no longer used)
+#@-node:ekr.20090407101640.12:No longer used key-shifting hack
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl
