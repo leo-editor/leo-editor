@@ -149,7 +149,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         Preserve the vertical scrolling unless scroll is True.'''
 
         trace = False and not g.app.unitTesting
-        verbose = True
+        verbose = False
         c = self.c
 
         if self.busy():
@@ -164,7 +164,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.nodeDrawCount = 0
         try:
             self.redrawing = True
-            self.drawTopTree(p,scroll)
+            self.drawTopTree(p)
         finally:
             self.redrawing = False
 
@@ -174,8 +174,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if trace:
             theTime = g.timeSince(t1)
             callers = g.choose(verbose,g.callers(5),'')
-            g.trace('%s: drew %3s nodes in %s' % (
-                self.redrawCount,self.nodeDrawCount,theTime),callers)
+            g.trace('%s: scroll %5s drew %3s nodes in %s' % (
+                self.redrawCount,scroll,self.nodeDrawCount,theTime),callers)
 
     # Compatibility
     redraw = full_redraw 
@@ -231,7 +231,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         return item
     #@-node:ekr.20090124174652.20:drawNode
     #@+node:ekr.20090129062500.12:drawTopTree
-    def drawTopTree (self,p,scroll):
+    def drawTopTree (self,p):
 
         c = self.c
         hPos,vPos = self.getScroll()
@@ -253,12 +253,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                 self.drawTree(p)
                 p.moveToNext()
 
+        # This method always retains previous scroll position.
         self.setHScroll(hPos)
-        if scroll:
-            pass
-        else:
-            # Retain former scroll position.
-            self.setVScroll(vPos)
+        self.setVScroll(vPos)
 
         self.repaint()
     #@nonl

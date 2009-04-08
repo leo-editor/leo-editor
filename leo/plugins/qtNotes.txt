@@ -7,6 +7,48 @@
 # This will be needed for vim.
 #@nonl
 #@-node:ekr.20090223065019.11:Make Leo's page-up/page-down commands functional
+#@+node:ekr.20090406111739.10:Let gui handle hard part of next/prev-line commands
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ef04b185f74f4926
+
+This is a little difficult to describe in words, but trying it out
+should, I hope make the issue clear enough.
+
+(1) Start by setting body_pane_wraps to true.
+
+(2) Create a very long line of e.g. 500 characters, which is wrapped
+around on the body pane. (E.g. paste in a paragraph from a Word
+document). This text will then be wrapped onscreen into roughly 8
+lines of 70 characters.
+
+(3) The up and down arrows do not behave as expected.
+
+I'd expect that in this scenario, pressing the down arrow key should
+go to go to the next line down as it currently appears *onscreen* --
+so in this example, I'd expect to have to press the down arrow several
+times to get to the end of the paragraph.  This is the way that Emacs
+works when it is in word wrap mode, and is of course is the way that
+all word processors work. However, Leo does not play this way, and
+takes you right to the end of the line (i.e. to the last of the 500
+characters) when you press the down key once. This makes editing plain
+text (e.g. using Leo as an outliner) rather more tricky than it ought
+to be. Would it be possible to change the effect of Previous-Line and
+Next-Line when in word wrap mode, so that they behave as other text
+editors and word processors do?
+
+============================
+
+This is a long-standing problem.  It's tricky to fix in a straightforward
+way.
+
+However, I just realized that there might be a clever way: the commands
+could let the gui handle the hard part of the command (the actual move) and
+then the commands could detect the resulting row/col numbers as they must.
+
+I've been putting this off, I'll see if this more clever way will work soon. 
+#@nonl
+#@-node:ekr.20090406111739.10:Let gui handle hard part of next/prev-line commands
 #@+node:ekr.20081215162017.5:Support multiple body editors
 #@+node:ekr.20090318091009.13:Prototype code
 @color
@@ -3164,54 +3206,12 @@ def selectLabel (self,w):
         # w.leo_label = None
 #@-node:ekr.20081121105001.222:select/unselectLabel
 #@-node:ekr.20081215162017.5:Support multiple body editors
-#@+node:ekr.20090406111739.10:Let gui handle hard part of next/prev-line commands
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ef04b185f74f4926
-
-This is a little difficult to describe in words, but trying it out
-should, I hope make the issue clear enough.
-
-(1) Start by setting body_pane_wraps to true.
-
-(2) Create a very long line of e.g. 500 characters, which is wrapped
-around on the body pane. (E.g. paste in a paragraph from a Word
-document). This text will then be wrapped onscreen into roughly 8
-lines of 70 characters.
-
-(3) The up and down arrows do not behave as expected.
-
-I'd expect that in this scenario, pressing the down arrow key should
-go to go to the next line down as it currently appears *onscreen* --
-so in this example, I'd expect to have to press the down arrow several
-times to get to the end of the paragraph.  This is the way that Emacs
-works when it is in word wrap mode, and is of course is the way that
-all word processors work. However, Leo does not play this way, and
-takes you right to the end of the line (i.e. to the last of the 500
-characters) when you press the down key once. This makes editing plain
-text (e.g. using Leo as an outliner) rather more tricky than it ought
-to be. Would it be possible to change the effect of Previous-Line and
-Next-Line when in word wrap mode, so that they behave as other text
-editors and word processors do?
-
-============================
-
-This is a long-standing problem.  It's tricky to fix in a straightforward
-way.
-
-However, I just realized that there might be a clever way: the commands
-could let the gui handle the hard part of the command (the actual move) and
-then the commands could detect the resulting row/col numbers as they must.
-
-I've been putting this off, I'll see if this more clever way will work soon. 
-#@nonl
-#@-node:ekr.20090406111739.10:Let gui handle hard part of next/prev-line commands
 #@-node:ekr.20090406071640.17:First
 #@+node:ekr.20090304084841.10:Asap
-#@+node:ekr.20090401110027.1:Make sure qt plugin supports user icons
-#@-node:ekr.20090401110027.1:Make sure qt plugin supports user icons
 #@+node:ekr.20090318091009.12:Script errors mess up syntax coloring
 #@-node:ekr.20090318091009.12:Script errors mess up syntax coloring
+#@+node:ekr.20081215074704.21:Add drag and drop
+#@-node:ekr.20081215074704.21:Add drag and drop
 #@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
 http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
 #@nonl
@@ -3236,8 +3236,6 @@ couldn't find any mention of gsimage in the diff.
                      c.frame.body.bodyCtrl.delete(a.gsimage)
                  except:
 #@-node:ekr.20090128083504.1:Fix rclick
-#@+node:ekr.20081215074704.21:Add drag and drop
-#@-node:ekr.20081215074704.21:Add drag and drop
 #@+node:ekr.20081124094918.1:Fix problems with scim
 @nocolor-node
 
@@ -3263,6 +3261,8 @@ keyboard I get:
 - the problem with the ñ character (reported previously too) is only
 present in the qt plugin (both with and without scintilla)
 #@-node:ekr.20081124094918.1:Fix problems with scim
+#@+node:ekr.20090401110027.1:Make sure qt plugin supports user icons
+#@-node:ekr.20090401110027.1:Make sure qt plugin supports user icons
 #@-node:ekr.20090304084841.10:Asap
 #@-node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20081121105001.185:Scripts
@@ -4526,6 +4526,925 @@ def setCommandForButton(self,button,command):
 #@-node:ekr.20081121105001.274:setCommandForButton
 #@-node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
 #@-node:ekr.20081215162017.4:Allow coloring of script buttons
+#@+node:ekr.20090406071640.1:Removed keyboard-specific key code
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/347059
+
+> menu Outline - Move - Demote menu says ctrl-} and ctrl-{ demote and
+> promote but those keys move text in the body even when the head is the
+> active panel. Maybe ctrl-[ ctrl-] bindings are interfering.
+
+I suppose this could be called a bug. Probably what is happening is that
+bindings are general, and the code is specific: it always works on the
+body. You could make the bindings specific to the body pane, but not much
+would really change.
+
+In short, this is a nit, and probably fixable in myLeoSettings.leo.
+
+> In short, this is a nit, and probably fixable in myLeoSettings.leo.
+
+In myLeoSettings.leo I have:
+
+close-xml-element ! body = Ctrl-C
+demote ! all = Ctrl-}
+promote ! all = Ctrl-{
+demote ! all = Ctrl-]
+promote ! all = Ctrl-[
+print-settings ! all = Ctrl-U
+
+the print-settings binding I threw in to test seems to be working fine,
+but I can't get any demotion. Also on startup I notice:
+
+redefining shortcut Ctrl+bracketright from demote to indent-region in
+all
+redefining shortcut Ctrl+u from move-outline-up to print-settings in
+all
+redefining shortcut Ctrl+bracketleft from promote to
+unindent-region in all
+
+the Ctrl+u part makes sense, the others don't.
+Edward K. Ream wrote on 2009-03-23: (permalink)
+
+On Mon, Mar 23, 2009 at 9:50 AM, tbnorth <terry_n_brown@yahoo.com> wrote:
+
+>
+> redefining shortcut Ctrl+bracketright from demote to indent-region in all
+> redefining shortcut Ctrl+u from move-outline-up to print-settings in all
+> redefining shortcut Ctrl+bracketleft from promote to
+> unindent-region in all
+>
+> the Ctrl+u part makes sense, the others don't.
+
+The qt plugin has to play some gruesome games with key bindings. Maybe more
+games are needed.
+
+How do these bindings work with the tk gui enabled?
+
+Edward
+tbnorth wrote on 2009-03-23: (permalink)
+
+On Mon, 23 Mar 2009 15:37:26 -0000
+"Edward K. Ream" <edreamleo@gmail.com> wrote:
+
+> > redefining shortcut Ctrl+bracketright from demote to
+> > indent-region in all redefining shortcut Ctrl+u from
+> > move-outline-up to print-settings in all redefining shortcut
+> > Ctrl+bracketleft from promote to unindent-region in all
+> >
+> > the Ctrl+u part makes sense, the others don't.
+>
+> The qt plugin has to play some gruesome games with key bindings.
+> Maybe more games are needed.
+>
+> How do these bindings work with the tk gui enabled?
+
+Ctrl-{} work, Ctrl-[] don't, I'd expect both to work, but would be
+happy with just Ctrl-{} working in qt.
+
+Also I tried permutations with and without Shift, i.e.
+
+Ctrl-Shift-[ as well as Ctrl-{ etc.
+Edward K. Ream wrote on 2009-03-23: (permalink)
+
+On Mon, Mar 23, 2009 at 11:01 AM, tbnorth <terry_n_brown@yahoo.com> wrote:
+
+>
+> > How do these bindings work with the tk gui enabled?
+>
+> Ctrl-{} work, Ctrl-[] don't, I'd expect both to work, but would be
+> happy with just Ctrl-{} working in qt.
+>
+> Also I tried permutations with and without Shift, i.e.
+>
+> Ctrl-Shift-[ as well as Ctrl-{ etc.
+
+So you are saying that the bindings work the same regardless of gui?
+
+Edward
+tbnorth wrote on 2009-03-23: (permalink)
+
+On Mon, 23 Mar 2009 16:50:11 -0000
+"Edward K. Ream" <edreamleo@gmail.com> wrote:
+
+[...]
+> On Mon, Mar 23, 2009 at 11:01 AM, tbnorth <terry_n_brown@yahoo.com>
+> wrote:
+>
+> >
+> > > How do these bindings work with the tk gui enabled?
+> >
+> > Ctrl-{} work, Ctrl-[] don't, I'd expect both to work, but would be
+> > happy with just Ctrl-{} working in qt.
+> >
+> > Also I tried permutations with and without Shift, i.e.
+> >
+> > Ctrl-Shift-[ as well as Ctrl-{ etc.
+>
+> So you are saying that the bindings work the same regardless of gui?
+
+Nope, Ctrl-{} work in tk, not qt, in qt text indent / outdent seem to
+take over everything. And it seems if tab/shift-tab are defaults for
+that there's no need for any bindings of Ctrl-{}[] for that.
+Ville M. Vainio wrote on 2009-03-23: (permalink)
+
+On Mon, Mar 23, 2009 at 4:50 PM, tbnorth <terry_n_brown@yahoo.com> wrote:
+
+> close-xml-element ! body = Ctrl-C
+> demote ! all = Ctrl-}
+
+Just a thought: bindings like ctrl + } are extremely ambigous on
+international keyboards, because you have press shift to reach that
+anyway, to the extent that they are meaningless. ctrl+shift+ ] is the
+same as ctrl + }. Generally, they should be avoided as much as
+possible...
+
+[...]
+--
+Ville M. Vainio
+http://tinyurl.com/vainio
+Edward K. Ream wrote on 2009-03-23: (permalink)
+
+On Mon, Mar 23, 2009 at 12:28 PM, Ville M. Vainio <vivainio@gmail.com>wrote:
+
+> On Mon, Mar 23, 2009 at 4:50 PM, tbnorth <terry_n_brown@yahoo.com>
+> wrote:
+>
+> > close-xml-element ! body = Ctrl-C
+> > demote ! all = Ctrl-}
+>
+> Just a thought: bindings like ctrl + } are extremely ambiguous on
+> international keyboards, because you have press shift to reach that
+> anyway, to the extent that they are meaningless. ctrl+shift+ ] is the
+> same as ctrl + }. Generally, they should be avoided as much as
+> possible...
+
+I suspect that difficulties with this translation may be the problem with
+the qt plugin.
+
+Edward
+Edward K. Ream wrote on 2009-03-23: (permalink)
+
+On Mon, Mar 23, 2009 at 1:41 PM, Edward K. Ream <edreamleo@gmail.com> wrote:
+
+[...]
+>
+>
+> On Mon, Mar 23, 2009 at 12:28 PM, Ville M. Vainio <vivainio@gmail.com>wrote:
+>
+>> On Mon, Mar 23, 2009 at 4:50 PM, tbnorth <terry_n_brown@yahoo.com>
+>> wrote:
+>>
+>> > close-xml-element ! body = Ctrl-C
+>> > demote ! all = Ctrl-}
+>>
+>> Just a thought: bindings like ctrl + } are extremely ambiguous on
+>> international keyboards, because you have press shift to reach that
+>> anyway, to the extent that they are meaningless. ctrl+shift+ ] is the
+>> same as ctrl + }. Generally, they should be avoided as much as
+>> possible...
+>>
+>
+> I suspect that difficulties with this translation may be the problem with
+> the qt plugin.
+>
+
+Not sure this will be fixed before b1, but it definitely will be fixed
+before Leo 4.6 final.
+
+EKR
+Edward K. Ream 4 seconds ago
+leo-editor importance: 	Undecided → Medium
+leo-editor status: 	New → Confirmed
+Add a comment/attachment
+E-mail me about changes to this bug report
+Include an attachment (Optional)
+Attachment:
+(Optional) 	
+	This attachment is a patch
+Description:
+(Optional) 	
+
+Offer mentorship
+What next?
+
+    * Report another bug about leo-editor
+    * List open bugs for leo-editor
+
+Subscribe
+Subscribe someone else
+Subscribers
+tbnorth
+Also notified
+Edward K. Ream
+The Leo editor team
+Search
+Enter bug ID or keywords:
+
+
+Show all open bugs
+Contact us | Get help with Launchpad
+© 2004-2009 Canonical Ltd. | Terms of use
+#@+node:ekr.20090407091911.1:What I did
+@nocolor-node
+
+- isSpecialOverride now does hardly anything.
+
+- Removed the horrible keyboard-specific methods:
+    shifted, keyboardUpper1 and keyboardUpperLong.
+
+- toStroke now very simple.
+
+- Leo's core (shortcutFromSetting) no longer removes Shift mod from special Tk
+  symbols. The user is responsible setting the Shift mode correctly.
+#@nonl
+#@-node:ekr.20090407091911.1:What I did
+#@+node:ekr.20090408115522.10:Posting
+@nocolor-node
+
+Rev 1714 of the trunk contains a substantial revision of how Leo handle's key bindings.  I would be astounded if the new code just worked for everybody, so please report any key problem immediately.
+
+The new code in the qt plugin is much simpler than before, an important step forward.  But there may be problems.  Notes:
+
+1. All unit tests pass with both tk and qt.  A small but significant change was made in Leo's core, and that change could result in some Tk key bindings being handled differently.
+
+2. The new qt code no longer attempts any translation of bindings like Ctrl-{ to Ctrl-Shift-0.  You, the user, must use the second form, not the first.  Imo, this is the simplest way of allowing people to set the correct bindings for international keyboards.  I won't consider adding other features unless it is clear that they are absolutely needed.
+
+3. I've add a new @shortcuts node to the EKR bindings tree in leoSettings.leo::
+
+@shortcuts duplicate bindings for Qt
+
+# These are needed because Qt reports Ctrl-( as Ctrl-Shift-9, etc.
+add-comments = Ctrl-Shift-9  # Ctrl-parenleft
+delete-comments = Ctrl-Shift-0  # Ctrl-parenright
+demote = Ctrl-Shift-]  # Ctrl-}
+move-past-close  = Alt-Shift-0   # Alt-parenright
+promote = Ctrl-Shift-[  # Ctrl-{
+
+With these changes in place, Leo appears to work properly for these commands in both Qt and Tk.  These duplicate bindings generate no warnings, because they do not override existing bindings for *other* commands; they merely give two equivalent bindings for the same command.  Each gui honors one binding and ignores the other.
+
+To repeat, it is almost certain that some key glitches remain.  Please report any problem immediately, and feel free to ask for as much help as you need.
+
+Edward
+#@-node:ekr.20090408115522.10:Posting
+#@+node:ekr.20081121105001.166:class leoQtEventFilter
+class leoQtEventFilter(QtCore.QObject):
+
+    << about internal bindings >>
+
+    @others
+#@+node:ekr.20081121105001.180: ctor
+def __init__(self,c,w,tag=''):
+
+    # Init the base class.
+    QtCore.QObject.__init__(self)
+
+    self.c = c
+    self.w = w      # A leoQtX object, *not* a Qt object.
+    self.tag = tag
+
+    # Debugging.
+    self.keyIsActive = False
+
+    # Pretend there is a binding for these characters.
+    close_flashers = c.config.getString('close_flash_brackets') or ''
+    open_flashers  = c.config.getString('open_flash_brackets') or ''
+    self.flashers = open_flashers + close_flashers
+
+
+#@-node:ekr.20081121105001.180: ctor
+#@+node:ekr.20081121105001.167:<< about internal bindings >>
+@nocolor-node
+@
+
+Here are the rules for translating key bindings (in leoSettings.leo) into keys for k.bindingsDict:
+
+1.  The case of plain letters is significant:  a is not A.
+
+2. The Shift- prefix can be applied *only* to letters. Leo will ignore (with a
+warning) the shift prefix applied to any other binding, e.g., Ctrl-Shift-(
+
+3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
+significant. Thus, the Shift- prefix is required if you want an upper-case
+letter (with the exception of 'bare' uppercase letters.)
+
+The following table illustrates these rules. In each row, the first entry is the
+key (for k.bindingsDict) and the other entries are equivalents that the user may
+specify in leoSettings.leo:
+
+a, Key-a, Key-A
+A, Shift-A
+Alt-a, Alt-A
+Alt-A, Alt-Shift-a, Alt-Shift-A
+Ctrl-a, Ctrl-A
+Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+!, Key-!,Key-exclam,exclam
+
+This table is consistent with how Leo already works (because it is consistent
+with Tk's key-event specifiers). It is also, I think, the least confusing set of
+rules.
+#@nonl
+#@-node:ekr.20081121105001.167:<< about internal bindings >>
+#@+node:ekr.20090407101640.10:char2tkName (new)
+char2tkNameDict = {
+    # Part 1: same as k.guiBindNamesDict
+    "&" : "ampersand",
+    "^" : "asciicircum",
+    "~" : "asciitilde",
+    "*" : "asterisk",
+    "@" : "at",
+    "\\": "backslash",
+    "|" : "bar",
+    "{" : "braceleft",
+    "}" : "braceright",
+    "[" : "bracketleft",
+    "]" : "bracketright",
+    ":" : "colon",  
+    "," : "comma",
+    "$" : "dollar",
+    "=" : "equal",
+    "!" : "exclam",
+    ">" : "greater",
+    "<" : "less",
+    "-" : "minus",
+    "#" : "numbersign",
+    '"' : "quotedbl",
+    "'" : "quoteright",
+    "(" : "parenleft",
+    ")" : "parenright", 
+    "%" : "percent",
+    "." : "period",     
+    "+" : "plus",
+    "?" : "question",
+    "`" : "quoteleft",
+    ";" : "semicolon",
+    "/" : "slash",
+    " " : "space",      
+    "_" : "underscore",
+    # Part 2: special Qt translations.
+    'Backspace': 'BackSpace',
+    'Backtab':   'Tab', # The shift mod will convert to 'Shift+Tab',
+    'Esc':       'Escape',
+    'Del':       'Delete',
+    'Ins':       'Insert',
+    # Comment these out to pass the key to the QTextWidget.
+    # Use these to enable Leo's page-up/down commands.
+        # 'PgDown':    'Next',
+        # 'PgUp':      'Prior',
+    # New entries.  These simplify code.
+    'Down':'Down','Left':'Left','Right':'Right','Up':'Up',
+    'End':'End',
+    'F1':'F1','F2':'F2','F3':'F3','F4':'F4','F5':'F5',
+    'F6':'F6','F7':'F7','F8':'F8','F9':'F9',
+    'F10':'F10','F11':'F11','F12':'F12',
+    'Home':'Home',
+    'Return':'Return',
+    'Tab':'Tab',
+    # Unused: Break, Caps_Lock,Linefeed,Num_lock
+}
+
+def char2tkName (self,ch):
+    # g.trace(repr(ch))
+    return self.char2tkNameDict.get(ch)
+#@-node:ekr.20090407101640.10:char2tkName (new)
+#@+node:ekr.20081121105001.168:eventFilter
+def eventFilter(self, obj, event):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    traceEvent = False and not g.unitTesting
+    traceFocus = False and not g.unitTesting
+    c = self.c ; k = c.k
+    eventType = event.type()
+    ev = QtCore.QEvent
+    gui = g.app.gui
+    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
+
+    if traceFocus: self.traceFocus(eventType,obj)
+
+    # A hack. QLineEdit generates ev.KeyRelease only.
+    if eventType in (ev.KeyPress,ev.KeyRelease):
+        p = c.currentPosition()
+        isEditWidget = obj == c.frame.tree.edit_widget(p)
+        self.keyIsActive = g.choose(
+            isEditWidget,
+            eventType == ev.KeyRelease,
+            eventType == ev.KeyPress)
+    else:
+        self.keyIsActive = False
+
+    if eventType == ev.WindowActivate:
+        gui.onActivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    elif eventType == ev.WindowDeactivate:
+        gui.onDeactivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    elif eventType in kinds:
+        tkKey,ch,ignore = self.toTkKey(event)
+        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+        if ignore:
+            override = False
+        elif self.isSpecialOverride(tkKey,ch):
+            override = True
+        elif k.inState():
+            override = not ignore # allow all keystrokes.
+        else:
+            override = len(aList) > 0
+    else:
+        override = False ; tkKey = '<no key>'
+        if self.tag == 'body':
+            if eventType == ev.FocusIn:
+                c.frame.body.onFocusIn()
+            elif eventType == ev.FocusOut:
+                c.frame.body.onFocusOut()
+
+    if self.keyIsActive:
+        stroke = self.toStroke(tkKey,ch)
+        if override:
+            if trace and not ignore: g.trace('bound',repr(stroke))
+            w = self.w # Pass the wrapper class, not the wrapped widget.
+            leoEvent = leoKeyEvent(event,c,w,ch,tkKey,stroke)
+            ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+            c.outerUpdate()
+        # else:
+            # if (stroke): # and not stroke.startswith('Alt+') and 
+                    # not stroke.startswith('Ctrl+') and
+                    # not stroke in ('PgDn','PgUp')):
+                # g.trace(self.tag,'unbound',tkKey,stroke)
+
+    if traceEvent: self.traceEvent(obj,event,tkKey,override)
+
+    return override
+#@-node:ekr.20081121105001.168:eventFilter
+#@+node:ekr.20081121105001.182:isSpecialOverride (simplified)
+def isSpecialOverride (self,tkKey,ch):
+
+    '''Return True if tkKey is a special Tk key name.
+    '''
+
+    if 1:
+        if tkKey:
+            return True
+        elif ch in self.flashers:
+            return True
+        else:
+            return False
+
+    else: #### old code
+        trace = True and not g.unitTesting
+        c = self.c
+        d = c.k.guiBindNamesDict
+        table = [d.get(key) for key in d]
+        table.append('Tab')
+        #### table.append('Shift+Tab')
+        if tkKey in table:
+            if trace: g.trace('in table:',tkKey)
+            return True
+        elif len(tkKey) == 1:
+            return True # Must process all ascii keys.
+        # if tkKey:
+            # return True
+        elif ch in self.flashers:
+            return True
+        else:
+            return False
+#@-node:ekr.20081121105001.182:isSpecialOverride (simplified)
+#@+node:ekr.20081121105001.172:qtKey
+def qtKey (self,event):
+
+    '''Return the components of a Qt key event.'''
+
+    trace = False and not g.unitTesting
+    keynum = event.key()
+    text   = event.text() # This is the unicode text.
+    toString = QtGui.QKeySequence(keynum).toString()
+    toUnicode = unicode
+
+    try:
+        ch1 = chr(keynum)
+    except ValueError:
+        ch1 = ''
+
+    try:
+        ch = toUnicode(ch1)
+    except UnicodeError:
+        ch = ch1
+
+    text     = toUnicode(text)
+    toString = toUnicode(toString)
+
+    if trace and self.keyIsActive: g.trace(
+        'keynum %s ch %s ch1 %s toString %s' % (
+            repr(keynum),repr(ch),repr(ch1),repr(toString)))
+
+    return keynum,text,toString,ch
+#@-node:ekr.20081121105001.172:qtKey
+#@+node:ekr.20081121105001.173:qtMods
+def qtMods (self,event):
+
+    modifiers = event.modifiers()
+
+    # The order of this table is significant.
+    # It must the order of modifiers in bindings
+    # in k.masterGuiBindingsDict
+
+    table = (
+        (QtCore.Qt.AltModifier,     'Alt'),
+        (QtCore.Qt.ControlModifier, 'Control'),
+        (QtCore.Qt.MetaModifier,    'Meta'),
+        (QtCore.Qt.ShiftModifier,   'Shift'),
+    )
+
+    mods = [b for a,b in table if (modifiers & a)]
+
+    return mods
+#@-node:ekr.20081121105001.173:qtMods
+#@+node:ekr.20081121105001.174:tkKey (changed)
+def tkKey (self,event,mods,keynum,text,toString,ch):
+
+    '''Carefully convert the Qt key to a 
+    Tk-style binding compatible with Leo's core
+    binding dictionaries.'''
+
+    trace = False and not g.unitTesting
+    ch1 = ch # For tracing.
+
+    # Convert '&' to 'ampersand', etc.
+    # *Do* allow shift-bracketleft, etc.
+    ch2 = self.char2tkName(ch or toString)
+    if ch2: ch = ch2 
+    if not ch: ch = ''
+
+    if 'Shift' in mods:
+        if len(ch) == 1 and ch.isalpha():
+            mods.remove('Shift')
+            ch = ch.upper()
+    elif len(ch) == 1:
+        ch = ch.lower()
+
+    if ('Alt' in mods or 'Control' in mods) and ch and ch in string.digits:
+        mods.append('Key')
+
+    # *Do* allow bare mod keys, so they won't be passed on.
+    tkKey = '%s%s%s' % ('-'.join(mods),mods and '-' or '',ch)
+
+    if trace: g.trace(
+        'text: %s toString: %s ch1: %s ch: %s' % (
+        repr(text),repr(toString),repr(ch1),repr(ch)))
+
+    ignore = not ch # Essential
+    ch = text or toString
+    return tkKey,ch,ignore
+#@-node:ekr.20081121105001.174:tkKey (changed)
+#@+node:ekr.20081121105001.169:toStroke
+def toStroke (self,tkKey,ch):
+
+    trace = False and not g.unitTesting
+    k = self.c.k ; s = tkKey
+
+    special = ('Alt','Ctrl','Control',)
+    isSpecial = [True for z in special if s.find(z) > -1]
+
+    if 0:
+        if isSpecial:
+            pass # s = s.replace('Key-','')
+        else:
+            # Keep the Tk spellings for special keys.
+            ch2 = k.guiBindNamesDict.get(ch)
+            if trace: g.trace('ch',repr(ch),'ch2',repr(ch2))
+            if ch2: s = s.replace(ch,ch2)
+
+    table = (
+        ('Alt-','Alt+'),
+        ('Ctrl-','Ctrl+'),
+        ('Control-','Ctrl+'),
+        # Use Alt+Key-1, etc.  Sheesh.
+        # ('Key-','Key+'),
+        ('Shift-','Shift+')
+    )
+    for a,b in table:
+        s = s.replace(a,b)
+
+    if trace: g.trace('tkKey',tkKey,'-->',s)
+    return s
+#@-node:ekr.20081121105001.169:toStroke
+#@+node:ekr.20081121105001.170:toTkKey
+def toTkKey (self,event):
+
+    mods = self.qtMods(event)
+
+    keynum,text,toString,ch = self.qtKey(event)
+
+    tkKey,ch,ignore = self.tkKey(
+        event,mods,keynum,text,toString,ch)
+
+    return tkKey,ch,ignore
+#@-node:ekr.20081121105001.170:toTkKey
+#@+node:ekr.20081121105001.179:traceEvent
+def traceEvent (self,obj,event,tkKey,override):
+
+    c = self.c ; e = QtCore.QEvent
+
+    eventType = event.type()
+
+    if 0: # Show focus events.
+        show = (
+            (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
+            (e.Enter,'enter'),(e.Leave,'leave'),
+        )
+
+    else:
+        show = (
+            (e.KeyPress,'key-press'),(e.KeyRelease,'key-release'),
+            (e.ShortcutOverride,'shortcut-override'),
+        )
+
+    ignore = (
+        e.ToolTip,
+        e.FocusIn,e.FocusOut,e.Enter,e.Leave,
+        e.MetaCall,e.Move,e.Paint,e.Resize,
+        e.Polish,e.PolishRequest,
+    )
+
+    for val,kind in show:
+        if eventType == val:
+            if override:
+                g.trace(
+                    'tag: %s, kind: %s, in-state: %s, key: %s, override: %s' % (
+                    self.tag,kind,repr(c.k.inState()),tkKey,override))
+            return
+
+    # if trace: g.trace(self.tag,
+        # 'bound in state: %s, key: %s, returns: %s' % (
+        # k.getState(),tkKey,ret))
+
+    if False and eventType not in ignore:
+        g.trace('%3s:%s' % (eventType,'unknown'))
+#@-node:ekr.20081121105001.179:traceEvent
+#@+node:ekr.20090407080217.1:traceFocus
+def traceFocuse (self,eventType,obj):
+
+    table = (
+        (ev.FocusIn,        'focus-in'),
+        (ev.FocusOut,       'focus-out'),
+        (ev.WindowActivate, 'activate'),
+        (ev.WindowDeactivate,'deactivate'),
+    )
+
+    for evKind,kind in table:
+        if eventType == evKind:
+            g.trace('%11s %s %s' % (
+                (kind,id(obj),
+                # event.reason(),
+                g.app.gui.widget_name(obj) or obj)))
+
+    # else: g.trace('unknown kind: %s' % eventType)
+#@-node:ekr.20090407080217.1:traceFocus
+#@-node:ekr.20081121105001.166:class leoQtEventFilter
+#@-node:ekr.20090406071640.1:Removed keyboard-specific key code
+#@+node:ekr.20090408131517.1:Fixed jittering tree pane
+@
+The problem appears only when scrollbars are present in the tree pane.
+
+It looks like a complete fix is to restore the vertical scrollbar position in
+drawTopTree.
+
+Important: setVScroll was not doing anything.
+#@nonl
+#@+node:ekr.20090124174652.122:Scroll bars
+def getScroll (self):
+
+    '''Return the hPos,vPos for the tree's scrollbars.'''
+
+    w = self.treeWidget
+    hScroll = w.horizontalScrollBar()
+    vScroll = w.verticalScrollBar()
+    hPos = hScroll.sliderPosition()
+    vPos = vScroll.sliderPosition()
+    return hPos,vPos
+
+def setHScroll (self,hPos):
+    w = self.treeWidget
+    hScroll = w.horizontalScrollBar()
+    hScroll.setValue(hPos)
+
+def setVScroll (self,vPos):
+    # g.trace(vPos)
+    w = self.treeWidget
+    vScroll = w.verticalScrollBar()
+    vScroll.setValue(vPos)
+#@nonl
+#@-node:ekr.20090124174652.122:Scroll bars
+#@+node:ekr.20090201080444.12:scrollToItem
+def scrollToItem (self,item):
+
+    w = self.treeWidget
+
+    # g.trace(self.traceItem(item),g.callers(4))
+
+    hPos,vPos = self.getScroll()
+
+    w.scrollToItem(item,w.PositionAtCenter)
+
+    self.setHScroll(0)
+#@-node:ekr.20090201080444.12:scrollToItem
+#@+node:ekr.20090124174652.17:full_redraw & helpers
+# forceDraw not used. It is used in the Tk code.
+
+def full_redraw (self,p=None,scroll=True,forceDraw=False):
+
+    '''Redraw all visible nodes of the tree.
+
+    Preserve the vertical scrolling unless scroll is True.'''
+
+    trace = False and not g.app.unitTesting
+    verbose = False
+    c = self.c
+
+    if self.busy():
+        return g.trace('*** full_redraw: busy!',g.callers(5))
+
+    if p is None:   p = c.currentPosition()
+    else:           c.setCurrentPosition(p)
+
+    self.redrawCount += 1
+    if trace: t1 = g.getTime()
+    self.initData()
+    self.nodeDrawCount = 0
+    try:
+        self.redrawing = True
+        self.drawTopTree(p)
+    finally:
+        self.redrawing = False
+
+    self.setItemForCurrentPosition(scroll=True)
+    c.requestRedrawFlag= False
+
+    if trace:
+        theTime = g.timeSince(t1)
+        callers = g.choose(verbose,g.callers(5),'')
+        g.trace('%s: scroll %5s drew %3s nodes in %s' % (
+            self.redrawCount,scroll,self.nodeDrawCount,theTime),callers)
+
+# Compatibility
+redraw = full_redraw 
+redraw_now = full_redraw
+#@+node:ekr.20090124174652.19:drawChildren
+def drawChildren (self,p,parent_item):
+
+    trace = False and not g.unitTesting
+
+    if trace: g.trace('children? %5s expanded? %5s %s' % (
+        p.hasChildren(),p.isExpanded(),p.h))
+
+    if not p:
+        return g.trace('can not happen: no p')
+
+    if p.hasChildren():
+        if p.isExpanded():
+            self.expandItem(parent_item)
+            child = p.firstChild()
+            while child:
+                self.drawTree(child,parent_item)
+                child.moveToNext()
+        else:
+            # Draw the hidden children.
+            child = p.firstChild()
+            while child:
+                self.drawNode(child,parent_item)
+                child.moveToNext()
+            self.contractItem(parent_item)
+    else:
+        self.contractItem(parent_item)
+#@-node:ekr.20090124174652.19:drawChildren
+#@+node:ekr.20090124174652.20:drawNode
+def drawNode (self,p,parent_item):
+
+    trace = False
+    c = self.c 
+    self.nodeDrawCount += 1
+
+    # Allocate the item.
+    item = self.createTreeItem(p,parent_item) 
+
+    # Do this now, so self.isValidItem will be true in setItemIcon.
+    self.rememberItem(p,item)
+
+    # Set the headline and maybe the icon.
+    self.setItemText(item,p.h)
+    if p:
+        self.drawItemIcon(p,item)
+
+    if trace: g.trace(self.traceItem(item))
+
+    return item
+#@-node:ekr.20090124174652.20:drawNode
+#@+node:ekr.20090129062500.12:drawTopTree
+def drawTopTree (self,p):
+
+    c = self.c
+    hPos,vPos = self.getScroll()
+    self.clear()
+    # Draw all top-level nodes and their visible descendants.
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        p = bunch.p ; h = p.h
+        if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
+            p = p.firstChild()
+            while p:
+                self.drawTree(p)
+                p.moveToNext()
+        else:
+            self.drawTree(p)
+    else:
+        p = c.rootPosition()
+        while p:
+            self.drawTree(p)
+            p.moveToNext()
+
+    # This method always retains previous scroll position.
+    self.setHScroll(hPos)
+    self.setVScroll(vPos)
+
+    self.repaint()
+#@nonl
+#@-node:ekr.20090129062500.12:drawTopTree
+#@+node:ekr.20090124174652.21:drawTree
+def drawTree (self,p,parent_item=None):
+
+    # Draw the (visible) parent node.
+    item = self.drawNode(p,parent_item)
+
+    # Draw all the visible children.
+    self.drawChildren(p,parent_item=item)
+
+
+#@-node:ekr.20090124174652.21:drawTree
+#@+node:ekr.20090124174652.22:initData
+def initData (self):
+
+    # g.trace('*****')
+
+    self.item2vnodeDict = {}
+    self.tnode2itemsDict = {}
+    self.vnode2itemsDict = {}
+#@-node:ekr.20090124174652.22:initData
+#@+node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
+def rememberItem (self,p,item):
+
+    self.rememberVnodeItem(p.v,item)
+
+def rememberVnodeItem (self,v,item):
+
+    # Update item2vnodeDict.
+    self.item2vnodeDict[item] = v
+
+    # Update tnode2itemsDict & vnode2itemsDict.
+    table = (
+        (self.tnode2itemsDict,v.t),
+        (self.vnode2itemsDict,v))
+
+    for d,key in table:
+        aList = d.get(key,[])
+        if item in aList:
+            g.trace('*** ERROR *** item already in list: %s, %s' % (item,aList))
+        else:
+            aList.append(item)
+        d[key] = aList
+#@nonl
+#@-node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
+#@-node:ekr.20090124174652.17:full_redraw & helpers
+#@+node:ekr.20090129062500.12:drawTopTree
+def drawTopTree (self,p):
+
+    c = self.c
+    hPos,vPos = self.getScroll()
+    self.clear()
+    # Draw all top-level nodes and their visible descendants.
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        p = bunch.p ; h = p.h
+        if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
+            p = p.firstChild()
+            while p:
+                self.drawTree(p)
+                p.moveToNext()
+        else:
+            self.drawTree(p)
+    else:
+        p = c.rootPosition()
+        while p:
+            self.drawTree(p)
+            p.moveToNext()
+
+    # This method always retains previous scroll position.
+    self.setHScroll(hPos)
+    self.setVScroll(vPos)
+
+    self.repaint()
+#@nonl
+#@-node:ekr.20090129062500.12:drawTopTree
+#@-node:ekr.20090408131517.1:Fixed jittering tree pane
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20081121105001.181:isDangerous (no longer used)

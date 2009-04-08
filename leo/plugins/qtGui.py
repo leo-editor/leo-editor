@@ -3921,7 +3921,10 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         hScroll.setValue(hPos)
 
     def setVScroll (self,vPos):
+        # g.trace(vPos)
         w = self.treeWidget
+        vScroll = w.verticalScrollBar()
+        vScroll.setValue(vPos)
     #@nonl
     #@-node:ekr.20090124174652.122:Scroll bars
     #@-node:ekr.20090124174652.102:Widget-dependent helpers (leoQtTree)
