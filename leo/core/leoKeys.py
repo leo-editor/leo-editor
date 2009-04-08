@@ -4412,8 +4412,8 @@ class keyHandlerClass:
 
         k = self
 
-        if not setting:
-            return None
+        trace = False and not g.unitTesting
+        if not setting:return None
 
         s = g.stripBrackets(setting.strip())
         #@    << define cmd, ctrl, alt, shift >>
@@ -4459,16 +4459,15 @@ class keyHandlerClass:
 
         if len(last) == 1:
             last2 = k.guiBindNamesDict.get(last) # Fix new bug introduced in 4.4b2.
-            # g.trace(last,last2)
             if last2:
-                last = last2 ; shift = False # Ignore the shift state for these special chars.
+                last = last2
             else:
-                if shift:
-                    last = last.upper()
-                    shift = False
-                else:
-                    last = last.lower()
-
+                if last.isalpha():
+                    if shift:
+                        last = last.upper()
+                        shift = False # It is Ctrl-A, not Ctrl-Shift-A.
+                    else:
+                        last = last.lower()
                 # New in Leo 4.4.2: Alt-2 is not a key event!
                 if addKey and last.isdigit():
                     last = 'Key-' + last
@@ -4494,7 +4493,7 @@ class keyHandlerClass:
         shortcut = ''.join([g.toUnicode(val,g.app.tkEncoding) for flag,val in table if flag])
         #@-node:ekr.20061031131434.189:<< compute shortcut >>
         #@nl
-        # g.trace(setting,shortcut)
+        if trace: g.trace('%20s %s' % (setting,shortcut))
         return shortcut
 
     canonicalizeShortcut = shortcutFromSetting # For compatibility.
