@@ -20,6 +20,233 @@
 
 #@+all
 #@+node:ekr.20080917153158.11:4.6 b2
+#@+node:ekr.20090410090554.1:Proof of @shadow theorems
+#@+node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+def readOneAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c ; x = c.shadowController
+
+    if not fn == p.atShadowFileNodeName():
+        return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
+            fn, p.atShadowFileNodeName()))
+
+    at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
+
+    fn = c.os_path_finalize_join(at.default_directory,fn)
+    shadow_fn     = x.shadowPathName(fn)
+    shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+
+    if shadow_exists:
+        # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
+        at.read(p,thinFile=True,atShadow=True)
+    else:
+        if not g.unitTesting: g.es("reading:",p.h)
+        ok = at.importAtShadowNode(fn,p)
+        if ok:
+            # Create the private file automatically.
+            at.writeOneAtShadowNode(p,toString=False,force=True)
+#@+node:ekr.20080712080505.1:importAtShadowNode
+def importAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c  ; ic = c.importCommands
+    oldChanged = c.isChanged()
+
+    # Delete all the child nodes.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    # Import the outline, exactly as @auto does.
+    ic.createOutline(fn,parent=p.copy(),atAuto=True,atShadow=True)
+
+    if ic.errors:
+        g.es_print('errors inhibited read @shadow',fn,color='red')
+
+    if ic.errors or not g.os_path_exists(fn):
+        p.clearDirty()
+        c.setChanged(oldChanged)
+
+    # else: g.doHook('after-shadow', p = p)
+
+    return ic.errors == 0
+#@-node:ekr.20080712080505.1:importAtShadowNode
+#@-node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+#@+node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    x = self ; trace = False ; verbose = True
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old:',old_i,prev_old_j)
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new:',new_i,prev_new_j)
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,new_private_lines_wtr,
+        marker, limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40:<< init vars >>
+new_private_lines_wtr = sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
+#@nonl
+#@-node:ekr.20080708094444.40:<< init vars >>
+#@+node:ekr.20080708094444.39:<< define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.h)
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@-node:ekr.20080708094444.39:<< define print_tags >>
+#@+node:ekr.20080708192807.2:<< about this loop >>
+@
+
+This loop writes all output lines using a single writer: new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips (deletes)
+all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
+is less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from the
+old_private_lines_rdr explicitly. This explains why opcode handlers for the
+'insert' and 'delete' opcodes are identical.
+#@-node:ekr.20080708192807.2:<< about this loop >>
+#@+node:ekr.20080708192807.5:<< Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace(tag,'old_i',old_i,'limit',limit)
+
+if tag == 'insert' and limit >= old_private_lines_rdr.size():
+    pass
+else:
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+if tag == 'equal':
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index()
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag in ('insert','replace'):
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index()
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if x.is_sentinel(line,marker):
+            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Leave new_public_lines_rdr unchanged.
+    pass
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@nonl
+#@-node:ekr.20080708192807.5:<< Handle the opcode >>
+#@+node:ekr.20080708094444.45:<< do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@-node:ekr.20080708094444.45:<< do final correctness check >>
+#@-node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
+#@-node:ekr.20090410090554.1:Proof of @shadow theorems
 #@+node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401093731.1:Fixed elisp importer problem
 #@+node:ekr.20070707073859:skipBlock

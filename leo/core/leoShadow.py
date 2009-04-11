@@ -295,7 +295,7 @@ class shadowController:
                     # g.trace('put line',repr(line))
                     writer.put(line,tag='copy sent %s:%s' % (start,limit))
     #@-node:ekr.20080708094444.37:x.copy_sentinels
-    #@+node:ekr.20080708094444.38:x.propagate_changed_lines
+    #@+node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
     def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
 
         '''Propagate changes from 'new_public_lines' to 'old_private_lines.
@@ -395,7 +395,7 @@ class shadowController:
             # skips (deletes)
             # all previously unwritten non-sentinel lines in 
             # old_private_lines_rdr whose index
-            # less than mapping[old_i].
+            # is less than mapping[old_i].
             # 
             # As a result, the opcode handlers do not need to delete elements 
             # from the
@@ -485,7 +485,7 @@ class shadowController:
             #@-node:ekr.20080708094444.45:<< do final correctness check >>
             #@nl
         return result
-    #@-node:ekr.20080708094444.38:x.propagate_changed_lines
+    #@-node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
     #@+node:ekr.20080708094444.36:x.propagate_changes
     def propagate_changes(self, old_public_file, old_private_file):
 
