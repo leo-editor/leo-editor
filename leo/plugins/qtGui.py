@@ -468,26 +468,6 @@ class leoQtBody (leoFrame.leoBody):
     def setYScrollPosition (self,i):
         return self.widget.setYScrollPosition(i)
     #@-node:ekr.20081121105001.211:High-level interface to self.widget
-    #@+node:ekr.20090406071640.13:Event handlers called from eventFilter
-    def onFocusIn (self):
-        self.onFocusHelper(self.selectedBackgroundColor)
-
-    def onFocusOut (self):
-        self.onFocusHelper(self.unselectedBackgroundColor)
-
-    badFocusColors = []
-
-    def onFocusHelper(self,name):
-
-        if not name: return
-
-        if QtGui.QColor(name).isValid():
-            s = 'QTextEdit#richTextEdit { background-color: %s; }' % name
-            self.widget.widget.setStyleSheet(s)
-        elif name not in self.badFocusColors:
-            self.badFocusColors.append(name)
-            g.es_print('invalid body background color: %s' % (name),color='blue')
-    #@-node:ekr.20090406071640.13:Event handlers called from eventFilter
     #@+node:ekr.20081121105001.212:Editors (qtBody)
     #@+node:ekr.20081121105001.214:packEditorLabelWidget
     def packEditorLabelWidget (self,w):
@@ -998,6 +978,26 @@ class leoQtBody (leoFrame.leoBody):
     #@-node:ekr.20081121105001.234:updateInjectedIvars
     #@-node:ekr.20081121105001.227:utils
     #@-node:ekr.20081121105001.212:Editors (qtBody)
+    #@+node:ekr.20090406071640.13:Event handlers called from eventFilter
+    def onFocusIn (self):
+        self.onFocusHelper(self.selectedBackgroundColor)
+
+    def onFocusOut (self):
+        self.onFocusHelper(self.unselectedBackgroundColor)
+
+    badFocusColors = []
+
+    def onFocusHelper(self,name):
+
+        if not name: return
+
+        if QtGui.QColor(name).isValid():
+            s = 'QTextEdit#richTextEdit { background-color: %s; }' % name
+            self.widget.widget.setStyleSheet(s)
+        elif name not in self.badFocusColors:
+            self.badFocusColors.append(name)
+            g.es_print('invalid body background color: %s' % (name),color='blue')
+    #@-node:ekr.20090406071640.13:Event handlers called from eventFilter
     #@-others
 #@-node:ekr.20081121105001.205:class leoQtBody (leoBody)
 #@+node:ekr.20081121105001.235:class leoQtFindTab (findTab)
@@ -1035,7 +1035,8 @@ class leoQtFindTab (leoFind.findTab):
         self.svarDict[ivar] = self.svar(owner,ivar)
 
         for ivar in self.newStringKeys:
-            self.svarDict[ivar] = self.svar(owner,ivar=None)
+            # "radio-find-type", "radio-search-scope"
+            self.svarDict[ivar] = self.svar(owner,ivar)
     #@-node:ekr.20081121105001.237:initGui
     #@+node:ekr.20081121105001.238:init (qtFindTab) & helpers
     def init (self,c):
@@ -1195,15 +1196,18 @@ class leoQtFindTab (leoFind.findTab):
                     w = self.owner.widgetsDict.get(ivar)
                     if w: w.setChecked(False)
         def get (self):
-            return self.w and bool(self.w.isChecked()) or self.val
+            #### return self.w and bool(self.w.isChecked()) or self.val
+            # g.trace('qt svar %15s = %s' % (self.ivar,self.val))
+            return self.val
         def set (self,val):
             self.clearRadioButtons()
             self.val = bool(val)
             if self.w: self.w.setChecked(bool(val))
-            # g.trace(val,self.w,g.callers(4))
+            # g.trace('qt svar %15s = %s' % (self.ivar,val),g.callers(4))
         def setVal(self,val):
             self.clearRadioButtons()
             self.val = bool(val)
+            g.trace('qt svar %15s = %s' % (self.ivar,val),g.callers(4))
         def setWidget(self,w):
             self.w = w
     #@-node:ekr.20081121105001.244:class svar
@@ -1217,10 +1221,10 @@ class leoQtFindTab (leoFind.findTab):
 
         if var:
             val = var.get()
-            # g.trace('%s = %s' % (ivar,val))
+            # g.trace('ivar %s = %s' % (ivar,val))
             return val
         else:
-            g.trace('bad ivar name: %s' % ivar)
+            # g.trace('bad ivar name: %s' % ivar)
             return None
     #@-node:ekr.20081121105001.246:getOption
     #@+node:ekr.20081121105001.247:setOption
@@ -1230,7 +1234,7 @@ class leoQtFindTab (leoFind.findTab):
             if val is not None:
                 svar = self.svarDict.get(ivar)
                 svar.set(val)
-                # g.trace('%s = %s' % (ivar,val))
+                # g.trace('ivar %s = %s' % (ivar,val))
 
         elif not g.app.unitTesting:
             g.trace('oops: bad find ivar %s' % ivar)
@@ -1552,7 +1556,7 @@ class leoQtFrame (leoFrame.leoFrame):
         #@-node:ekr.20081121105001.265:update
         #@-others
     #@-node:ekr.20081121105001.261:class qtStatusLineClass (qtFrame)
-    #@+node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
+    #@+node:ekr.20081121105001.266:class qtIconBarClass
     class qtIconBarClass:
 
         '''A class representing the singleton Icon bar'''
@@ -1687,7 +1691,7 @@ class leoQtFrame (leoFrame.leoFrame):
                     QtCore.SIGNAL("clicked()"),command)
         #@-node:ekr.20081121105001.274:setCommandForButton
         #@-others
-    #@-node:ekr.20081121105001.266:class qtIconBarClass (qtFrame)
+    #@-node:ekr.20081121105001.266:class qtIconBarClass
     #@+node:ekr.20081121105001.275:Minibuffer methods
     #@+node:ekr.20081121105001.276:showMinibuffer
     def showMinibuffer (self):

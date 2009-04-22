@@ -1189,17 +1189,6 @@ if 1:
 #@-node:ekr.20090223065019.11:Make Leo's page-up/page-down commands funtional
 #@-node:ekr.20090304084841.11:Later
 #@+node:ekr.20090406071640.17:First
-#@+node:ekr.20090409055330.10:Make sure change-all honors node-only and suboutline-only settings
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/430287018f9d773d
-
-The following problem hits rev 1633, qt plugin (untested with tk plugin). The
-command Find --> Change All *always* acts on *every node*. It ignores the
-checkboxes selection made by the user. Even if you select the "Node Only"
-checkbox the changes are aplied to the whole tree (headline text and body text).
-#@nonl
-#@-node:ekr.20090409055330.10:Make sure change-all honors node-only and suboutline-only settings
 #@+node:ekr.20090406111739.10:Let gui handle hard part of next/prev-line commands
 @nocolor-node
 
@@ -4399,6 +4388,25 @@ def selectLabel (self,w):
         # w.leo_label = None
 #@-node:ekr.20081121105001.222:select/unselectLabel
 #@-node:ekr.20081215162017.5:Support multiple body editors
+#@+node:ekr.20090223065019.11:Make Leo's page-up/page-down commands funtional
+# This will be needed for vim.
+
+if 0:
+    tree = c.frame.tree
+    hs,vs = tree.getScroll()
+    print hs,vs
+    tree.setVScroll(bs+10)
+
+if 1:
+    w = c.frame.body.bodyCtrl.widget
+    hScroll = w.horizontalScrollBar()
+    vScroll = w.verticalScrollBar()
+    hPos = hScroll.sliderPosition()
+    vPos = vScroll.sliderPosition()
+    print hPos,vPos
+    vScroll.setValue(vPos+10)
+#@nonl
+#@-node:ekr.20090223065019.11:Make Leo's page-up/page-down commands funtional
 #@-node:ekr.20090406071640.17:First
 #@-node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20081121105001.185:Scripts

@@ -847,6 +847,8 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
     return sax_node
 #@-node:ekr.20060919110638.14:parse_leo_file
 #@-node:ekr.20090402072059.14:Investigate read crash
+#@+node:ekr.20090421121858.1:bzr branch for link nodes
+#@-node:ekr.20090421121858.1:bzr branch for link nodes
 #@-node:ekr.20090409055258.1:Next (some urgent)
 #@+node:ekr.20090402072059.11:What should be done about @enabled-plugins nodes?
 # It's very confusing.
