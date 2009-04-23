@@ -1256,6 +1256,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 def __init__ (self,widget,name,c=None):
 
     # widget is a QTextEdit.
+    # g.trace('leoQTextEditWidget',widget)
 
     # Init the base class.
     leoQtBaseTextWidget.__init__(self,widget,name,c=c)
@@ -2822,6 +2823,8 @@ def put_helper(self,s,w):
 #@+node:ekr.20081121105001.265:update
 def update (self):
     if g.app.killed: return
+    if not useUI: return ###
+
     c = self.c ; body = c.frame.body
 
     # QTextEdit
@@ -3193,6 +3196,8 @@ def divideLeoSplitter2 (self, frac, verticalFlag):
 # It is the only general-purpose splitter code in Leo.
 
 def divideAnySplitter (self, frac, splitter ):#verticalFlag, bar, pane1, pane2):
+
+    if not useUI: return
 
     sizes = splitter.sizes()
 
