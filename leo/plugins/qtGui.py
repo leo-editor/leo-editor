@@ -15,6 +15,7 @@
 # Define these to suppress pylint warnings...
 __timing = None # For timing stats.
 __qh = None # For quick headlines.
+useUI = True
 
 #@<< qt imports >>
 #@+node:ekr.20081121105001.189: << qt imports >>
@@ -106,7 +107,7 @@ def init():
 #@-node:ekr.20081121105001.191:init
 #@-node:ekr.20081121105001.190: Module level
 #@+node:ekr.20081121105001.194:Frame and component classes...
-#@+node:ekr.20081121105001.200:class  DynamicWindow
+#@+node:ekr.20081121105001.200:class  DynamicWindow (QtGui.QMainWindow)
 from PyQt4 import uic
 
 class DynamicWindow(QtGui.QMainWindow):
@@ -121,7 +122,7 @@ class DynamicWindow(QtGui.QMainWindow):
     '''
 
     #@    @+others
-    #@+node:ekr.20081121105001.201: ctor (Window)
+    #@+node:ekr.20081121105001.201: ctor (DynamicWindow)
     # Called from leoQtFrame.finishCreate.
 
     def __init__(self,c,parent=None):
@@ -141,8 +142,12 @@ class DynamicWindow(QtGui.QMainWindow):
         # g.pr('DynamicWindw.__init__,ui_description_file)
         assert g.os_path_exists(ui_description_file)
 
-        QtGui.QMainWindow.__init__(self,parent)        
-        self.ui = uic.loadUi(ui_description_file, self)
+        QtGui.QMainWindow.__init__(self,parent)
+
+        if useUI:  
+            self.ui = uic.loadUi(ui_description_file, self)
+        else:
+            self.createMainWindow()
 
         # Init the QDesigner elements.
         #self.setupUi(self)
@@ -191,8 +196,8 @@ class DynamicWindow(QtGui.QMainWindow):
     def do_leo_spell_btn_Ignore(self):
         self.doSpellBtn('onIgnoreButton')
     #@-node:leohag.20081203210510.17:do_leo_spell_btn_*
-    #@-node:ekr.20081121105001.201: ctor (Window)
-    #@+node:ekr.20081121105001.202:closeEvent (qtFrame)
+    #@-node:ekr.20081121105001.201: ctor (DynamicWindow)
+    #@+node:ekr.20081121105001.202:closeEvent (DynanicWindow)
     def closeEvent (self,event):
 
         c = self.c
@@ -207,7 +212,60 @@ class DynamicWindow(QtGui.QMainWindow):
                 event.accept()
             else:
                 event.ignore()
-    #@-node:ekr.20081121105001.202:closeEvent (qtFrame)
+    #@-node:ekr.20081121105001.202:closeEvent (DynanicWindow)
+    #@+node:ekr.20090423070717.14:createMainWindow (replaces qt_main.ui)
+    # Called instead of uic.loadUi(ui_description_file, self)
+
+    def createMainWindow (self):
+
+        '''Create the component ivars of the main window.'''
+
+        checkBoxes = '''checkBoxWholeWord checkBoxIgnoreCase
+        checkBoxWrapAround checkBoxReverse checkBoxRexexp checkBoxMarkFinds
+        checkBoxEntireOutline checkBoxSubroutineOnly checkBoxNodeOnly
+        checkBoxSearchHeadline checkBoxSearchBody checkBoxMarkChanges
+        '''.strip().split()
+
+        for z in checkBoxes:
+            setattr(self,z,QtGui.QCheckBox())
+
+        for z in ('findPattern','findChange'):
+            setattr(self,z,QtGui.QLineEdit())
+
+        self.ui = self ###
+        self.lineEdit = QtGui.QLineEdit()
+        self.richTextEdit = QtGui.QTextEdit()
+        self.splitter = QtGui.QSplitter()
+        self.splitter_2 = QtGui.QSplitter()
+        self.stackedWidget = QtGui.QStackedWidget()
+        self.tabWidget = QtGui.QTabWidget()
+        self.treeWidget = QtGui.QTreeWidget()
+
+        self.setMainWindowProperties()
+    #@+node:ekr.20090423070717.15:setMainWindowProperties
+    def setMainWindowProperties (self):
+
+        '''
+        <property name="geometry" >
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>691</width>
+          <height>635</height>
+         </rect>
+        </property>
+        <property name="windowTitle" >
+         <string>Leo</string>
+        </property>
+        <property name="dockNestingEnabled" >
+         <bool>false</bool>
+        </property>
+        <property name="dockOptions" >
+         <set>QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
+        </property>
+        '''
+    #@-node:ekr.20090423070717.15:setMainWindowProperties
+    #@-node:ekr.20090423070717.14:createMainWindow (replaces qt_main.ui)
     #@+node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
     def setSplitDirection (self,orientation='vertical'):
 
@@ -267,7 +325,7 @@ class DynamicWindow(QtGui.QMainWindow):
     #@-node:ekr.20081121105001.203:setStyleSheets & helper
     #@-others
 
-#@-node:ekr.20081121105001.200:class  DynamicWindow
+#@-node:ekr.20081121105001.200:class  DynamicWindow (QtGui.QMainWindow)
 #@+node:ekr.20081121105001.205:class leoQtBody (leoBody)
 class leoQtBody (leoFrame.leoBody):
 
@@ -1186,6 +1244,7 @@ class leoQtFindTab (leoFind.findTab):
             # g.trace('svar.__init__',ivar)
             self.ivar = ivar
             self.owner = owner
+            self.trace = False
             self.val = None
             self.w = None
         def clearRadioButtons(self):
@@ -1207,7 +1266,7 @@ class leoQtFindTab (leoFind.findTab):
         def setVal(self,val):
             self.clearRadioButtons()
             self.val = bool(val)
-            g.trace('qt svar %15s = %s' % (self.ivar,val),g.callers(4))
+            # g.trace('qt svar %15s = %s' % (self.ivar,val),g.callers(4))
         def setWidget(self,w):
             self.w = w
     #@-node:ekr.20081121105001.244:class svar
@@ -1533,6 +1592,8 @@ class leoQtFrame (leoFrame.leoFrame):
         #@+node:ekr.20081121105001.265:update
         def update (self):
             if g.app.killed: return
+            if not useUI: return ###
+
             c = self.c ; body = c.frame.body
 
             # QTextEdit
@@ -1906,6 +1967,8 @@ class leoQtFrame (leoFrame.leoFrame):
     # It is the only general-purpose splitter code in Leo.
 
     def divideAnySplitter (self, frac, splitter ):#verticalFlag, bar, pane1, pane2):
+
+        if not useUI: return
 
         sizes = splitter.sizes()
 
@@ -2540,6 +2603,10 @@ class leoQtLog (leoFrame.leoLog):
     # All output to the log stream eventually comes here.
     def put (self,s,color=None,tabName='Log'):
 
+        if not useUI:
+            print(s)
+            return
+
         c = self.c
         if g.app.quitting or not c or not c.exists:
             return
@@ -2575,6 +2642,10 @@ class leoQtLog (leoFrame.leoLog):
     def putnl (self,tabName='Log'):
 
         if g.app.quitting:
+            return
+
+        if not useUI:
+            print('')
             return
 
         if tabName:
@@ -2684,6 +2755,8 @@ class leoQtLog (leoFrame.leoLog):
 
     #@+node:ekr.20081121105001.336:selectHelper
     def selectHelper (self,tabName,createText):
+
+        if not useUI: return True ###
 
         w = self.tabWidget
 
@@ -3018,7 +3091,7 @@ class leoQtMenu (leoMenu.leoMenu):
         self.leo_label = '<no leo_label>'
 
         self.menuBar = c.frame.top.menuBar()
-        assert self.menuBar
+        assert self.menuBar is not None
 
         # Inject this dict into the commander.
         if not hasattr(c,'menuAccels'):
@@ -4661,7 +4734,10 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20081121105001.502:toUnicode (qtGui)
     def toUnicode (self,s,encoding='utf-8',reportErrors=True):
 
-        return unicode(s)
+        try:
+            return unicode(s)
+        except Exception:
+            return ''
     #@nonl
     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
     #@+node:ekr.20081121105001.503:widget_name (qtGui)
@@ -5292,8 +5368,11 @@ class leoQtColorizer:
         self.language = 'python' # set by scanColorDirectives.
 
         # Step 2: create the highlighter.
-        self.highlighter = leoQtSyntaxHighlighter(c,w,colorizer=self)
-        self.colorer = self.highlighter.colorer
+        if useUI:
+            self.highlighter = leoQtSyntaxHighlighter(c,w,colorizer=self)
+            self.colorer = self.highlighter.colorer
+        else:
+            self.enabled = False
 
         # Step 3: finish enabling.
         if self.enabled:
@@ -7919,6 +7998,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
     def setSelectionRangeHelper(self,i,j,insert):
 
         w = self.widget
+
         # g.trace('i',i,'j',j,'insert',insert,g.callers(4))
         if i > j: i,j = j,i
         s = w.text()
@@ -8106,6 +8186,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     def __init__ (self,widget,name,c=None):
 
         # widget is a QTextEdit.
+        # g.trace('leoQTextEditWidget',widget)
 
         # Init the base class.
         leoQtBaseTextWidget.__init__(self,widget,name,c=c)
