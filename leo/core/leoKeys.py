@@ -186,11 +186,13 @@ class autoCompleterClass:
         # g.trace('position:',self.allClassesDict.get('position'))
     #@-node:ekr.20061031131434.6:defineClassesDict
     #@+node:ekr.20061031131434.7:defineObjectDict
-    def defineObjectDict (self):
+    def defineObjectDict (self,table=None):
 
         c = self.c ; k = c.k ; p = c.p
 
-        table = [
+        # g.trace(g.callers(4))
+
+        if table is None: table = [
             # Python globals...
             (['aList','bList'],     'python','list'),
             (['aString'],           'object','aString'), # An actual string object.
