@@ -208,8 +208,8 @@ class DynamicWindow(QtGui.QMainWindow):
         MainWindow = self
         self.ui = self
 
-        MainWindow.setWindowTitle(self.tr("Leo"))
         self.createContainers()
+            # Create .splitter, .splitter_2, .centralwidget and .verticalLayout.
         self.treeWidget = self.createTree()
         self.createLog()
         self.richTextEdit = self.createBody()
@@ -217,22 +217,13 @@ class DynamicWindow(QtGui.QMainWindow):
         self.menubar = self.createMenuBar()
         self.statusBar = self.createStatusBar()
 
-        # Actions
-        if 0:
-            self.actionOpen = QtGui.QAction(MainWindow)
-            self.actionOpen.setObjectName("actionOpen")
-            self.actionSave = QtGui.QAction(MainWindow)
-            self.actionSave.setObjectName("actionSave")
-            self.actionIPython = QtGui.QAction(MainWindow)
-            self.actionIPython.setObjectName("actionIPython")
-
         # Signals
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
     #@+node:ekr.20090424085523.43:createBody
     def createBody (self):
 
         frame = QtGui.QWidget()
-        frame.setObjectName("page_2")
+        frame.setObjectName("bodyFrame")
 
         vLayout = QtGui.QVBoxLayout(frame)
         vLayout.setObjectName("body-vLayout")
@@ -248,8 +239,6 @@ class DynamicWindow(QtGui.QMainWindow):
         sw.setCurrentIndex(0)
         sw.addWidget(frame)
 
-        self.verticalLayout.addWidget(self.splitter_2)
-
         return w
     #@-node:ekr.20090424085523.43:createBody
     #@+node:ekr.20090424085523.41:createContainers
@@ -257,6 +246,7 @@ class DynamicWindow(QtGui.QMainWindow):
 
         MainWindow = self
 
+        MainWindow.setWindowTitle(self.tr("Leo"))
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(957, 778)
 
@@ -275,6 +265,8 @@ class DynamicWindow(QtGui.QMainWindow):
         self.splitter = QtGui.QSplitter(self.splitter_2)
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName("splitter")
+
+        self.verticalLayout.addWidget(self.splitter_2)
     #@-node:ekr.20090424085523.41:createContainers
     #@+node:ekr.20090424085523.38:createFindTab & helpers
     def createFindTab (self,tab):
@@ -351,11 +343,11 @@ class DynamicWindow(QtGui.QMainWindow):
     def createLog (self):
 
         self.tabWidget = QtGui.QTabWidget(self.splitter)
-        self.tabWidget.setObjectName("tabWidget")
+        self.tabWidget.setObjectName("logTabWidget")
 
         # Create Find tab.
         self.findTab = QtGui.QWidget()
-        self.findTab.setObjectName('find-tab')
+        self.findTab.setObjectName('findTab')
         self.createFindTab(self.findTab)
 
         self.tabWidget.setCurrentIndex(1)
@@ -386,10 +378,10 @@ class DynamicWindow(QtGui.QMainWindow):
 
         w = QtGui.QLineEdit(self.centralwidget)
         w.setObjectName("lineEdit")
+        lab.setBuddy(w)
         hLayout.addWidget(w)
 
         self.verticalLayout.addLayout(hLayout)
-        lab.setBuddy(w)
 
         return w
     #@nonl
