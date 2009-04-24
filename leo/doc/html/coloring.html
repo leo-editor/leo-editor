@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
 <title>Chapter 15: Controlling Syntax Coloring</title>
 <style type="text/css">
 
@@ -248,16 +248,12 @@ hr { /* EKR */
 </style>
 </head>
 <body>
-<div class="document">
-
+<div class="document" id="chapter-15-controlling-syntax-coloring">
+<h1 class="title">Chapter 15: Controlling Syntax Coloring</h1>
 
 <!-- rst3: filename: html\coloring.html -->
-<!-- July, 2006 -->
-<p><a class="reference" href="rstplugin3.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="debuggers.html"><img alt="next" src="arrow_rt.gif" /></a></p>
-<div class="section" id="chapter-15-controlling-syntax-coloring">
-<h1><a class="toc-backref" href="#id1">Chapter 15: Controlling Syntax Coloring</a></h1>
 <p>This chapter discusses how to control Leo's new syntax colorer using Python
-files derived from <a class="reference" href="http://www.jedit.org/">jEdit</a>'s xml language description files. It also discusses
+files derived from <a class="reference external" href="http://www.jedit.org/">jEdit</a>'s xml language description files. It also discusses
 settings related to syntax coloring.</p>
 <p><strong>Important</strong>: this material is for those who want to support Leo's colorizing
 code. You do <em>not</em> need to understand this chapter in order to use Leo's
@@ -266,48 +262,13 @@ colorizers.</p>
 This code has been retired. The threading_colorizer.py plugin uses a separate
 helper thread to do the colorizing. Coding details for this plugin are discussed
 in this chapter.</p>
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
-<ul class="simple">
-<li><a class="reference" href="#chapter-15-controlling-syntax-coloring" id="id1" name="id1">Chapter 15: Controlling Syntax Coloring</a><ul>
-<li><a class="reference" href="#files" id="id2" name="id2">Files</a></li>
-<li><a class="reference" href="#the-colorizer-s-inner-loop" id="id3" name="id3">The colorizer's inner loop</a></li>
-<li><a class="reference" href="#format-of-colorizer-control-files" id="id4" name="id4">Format of colorizer control files</a><ul>
-<li><a class="reference" href="#ruleset-names" id="id5" name="id5">Ruleset names</a></li>
-<li><a class="reference" href="#x-properties" id="id6" name="id6">x.properties</a></li>
-<li><a class="reference" href="#attribute-dictionaries-and-x-attributesdictdict" id="id7" name="id7">Attribute dictionaries and x.attributesDictDict</a></li>
-<li><a class="reference" href="#keyword-dictionaries-and-x-keywordsdictdict" id="id8" name="id8">Keyword dictionaries and x.keywordsDictDict</a></li>
-<li><a class="reference" href="#rules-rules-dictionaries-and-x-rulesdictdict" id="id9" name="id9">Rules, rules dictionaries and x.rulesDictDict</a></li>
-<li><a class="reference" href="#x-importdict-and-imported-versus-delegated-rulesets" id="id10" name="id10">x.importDict and imported versus delegated rulesets</a></li>
-</ul>
-</li>
-<li><a class="reference" href="#rule-methods" id="id11" name="id11">Rule methods</a><ul>
-<li><a class="reference" href="#arguments-to-rule-methods" id="id12" name="id12">Arguments to rule methods</a></li>
-<li><a class="reference" href="#match-eol-span" id="id13" name="id13">match_eol_span</a></li>
-<li><a class="reference" href="#match-eol-span-regexp" id="id14" name="id14">match_eol_span_regexp</a></li>
-<li><a class="reference" href="#match-keywords" id="id15" name="id15">match_keywords</a></li>
-<li><a class="reference" href="#match-mark-following" id="id16" name="id16">match_mark_following</a></li>
-<li><a class="reference" href="#match-mark-previous" id="id17" name="id17">match_mark_previous</a></li>
-<li><a class="reference" href="#match-seq" id="id18" name="id18">match_seq</a></li>
-<li><a class="reference" href="#match-seq-regexp" id="id19" name="id19">match_seq_regexp</a></li>
-<li><a class="reference" href="#match-span" id="id20" name="id20">match_span</a></li>
-<li><a class="reference" href="#match-span-regexp" id="id21" name="id21">match_span_regexp</a></li>
-<li><a class="reference" href="#match-terminate" id="id22" name="id22">match_terminate</a></li>
-</ul>
-</li>
-<li><a class="reference" href="#syntax-coloring-settings" id="id23" name="id23">Syntax coloring settings</a></li>
-<li><a class="reference" href="#the-threading-colorizer-plugin" id="id24" name="id24">The threading_colorizer plugin</a></li>
-</ul>
-</li>
-</ul>
-</div>
+<!-- .. contents:: -->
 <!-- External links... -->
 <!-- Relative links... -->
-<!-- WARNING: image targets may not have upper case letters! -->
 <div class="section" id="files">
-<h2><a class="toc-backref" href="#id2">Files</a></h2>
-<p>The <a class="reference" href="http://www.jedit.org/">jEdit</a> editor drives its syntax colorer using xml <strong>language description files.</strong>
-<a class="reference" href="http://www.jedit.org/42docs/users-guide/writing-modes-part.html">jEdit's documentation</a> contain a complete description of these xml files.
+<h1>Files</h1>
+<p>The <a class="reference external" href="http://www.jedit.org/">jEdit</a> editor drives its syntax colorer using xml <strong>language description files.</strong>
+<a class="reference external" href="http://www.jedit.org/42docs/users-guide/writing-modes-part.html">jEdit's documentation</a> contain a complete description of these xml files.
 Each xml file describes one <strong>colorizing mode</strong>.
 A mode consists of one or more <strong>rulesets</strong>, and each ruleset consists of a list of <strong>colorizing rules</strong>.
 In addition, modes, rulesets and rules may have associated <strong>properties</strong> and <strong>attributes</strong>.
@@ -341,7 +302,7 @@ by creating functions in a colorer control file.</li>
 </ul>
 </div>
 <div class="section" id="the-colorizer-s-inner-loop">
-<h2><a class="toc-backref" href="#id3">The colorizer's inner loop</a></h2>
+<h1>The colorizer's inner loop</h1>
 <p>When Leo's syntax colorer sees the <tt class="docutils literal"><span class="pre">'&#64;language</span> <span class="pre">x'</span></tt> directive,
 it will import <tt class="docutils literal"><span class="pre">x.py</span></tt> from Leo's <tt class="docutils literal"><span class="pre">modes</span></tt> folder.
 The colorer can then access any module-level object <tt class="docutils literal"><span class="pre">obj</span></tt> in <tt class="docutils literal"><span class="pre">x.py</span></tt> as <tt class="docutils literal"><span class="pre">x.obj</span></tt>.</p>
@@ -372,10 +333,10 @@ the list of rules that can start with that character.</li>
 <p>Rules methods (and functions) return n &gt; 0 if they match, and n == 0 if they fail.</p>
 </div>
 <div class="section" id="format-of-colorizer-control-files">
-<h2><a class="toc-backref" href="#id4">Format of colorizer control files</a></h2>
+<h1>Format of colorizer control files</h1>
 <p>The following sections describe the top-level data in <tt class="docutils literal"><span class="pre">x.py</span></tt>.</p>
 <div class="section" id="ruleset-names">
-<h3><a class="toc-backref" href="#id5">Ruleset names</a></h3>
+<h2>Ruleset names</h2>
 <p>A <strong>ruleset name</strong> is a Python string having the form <tt class="docutils literal"><span class="pre">'x_setname'</span></tt>,
 where <tt class="docutils literal"><span class="pre">setname</span></tt> is the value of the <tt class="docutils literal"><span class="pre">SET</span></tt> attribute of the <tt class="docutils literal"><span class="pre">&lt;RULES&gt;</span></tt> element in <tt class="docutils literal"><span class="pre">x.xml</span></tt>.
 For example, the ruleset name of the ruleset whose <tt class="docutils literal"><span class="pre">SET</span></tt> attribute is <tt class="docutils literal"><span class="pre">JAVASCRIPT</span></tt> in <tt class="docutils literal"><span class="pre">php.xml</span></tt> is
@@ -397,7 +358,7 @@ keywordsDict = x.keywordsDictDict('php_JAVASCRIPT')
 are the <strong>only</strong> names that the colorizer needs to know in order to access all information in <tt class="docutils literal"><span class="pre">x.py</span></tt>.</p>
 </div>
 <div class="section" id="x-properties">
-<h3><a class="toc-backref" href="#id6">x.properties</a></h3>
+<h2>x.properties</h2>
 <p><strong>x.properties</strong> is a Python dictionary corresponding to the &lt;PROPS&gt; element in <tt class="docutils literal"><span class="pre">x.xml</span></tt>.
 Keys are property names; values are strings, namely the contents of <tt class="docutils literal"><span class="pre">&lt;PROPERTY&gt;</span></tt> elements in <tt class="docutils literal"><span class="pre">x.xml</span></tt>.
 <tt class="docutils literal"><span class="pre">x.properties</span></tt> contains properties for the entire mode.
@@ -415,7 +376,7 @@ properties = {
 </pre>
 </div>
 <div class="section" id="attribute-dictionaries-and-x-attributesdictdict">
-<h3><a class="toc-backref" href="#id7">Attribute dictionaries and x.attributesDictDict</a></h3>
+<h2>Attribute dictionaries and x.attributesDictDict</h2>
 <p><tt class="docutils literal"><span class="pre">x.py</span></tt> contains a <strong>attribute dictionary</strong> for each ruleset in <tt class="docutils literal"><span class="pre">x.xml</span></tt>.
 Keys are attribute names, values strings representing the values of the attributes.
 This dictionary is empty if a ruleset contains no attributes.
@@ -461,7 +422,7 @@ Leo's colorer uses only the name <tt class="docutils literal"><span class="pre">
 Leo's colorer never uses the actual names of attribute dictionaries.</p>
 </div>
 <div class="section" id="keyword-dictionaries-and-x-keywordsdictdict">
-<h3><a class="toc-backref" href="#id8">Keyword dictionaries and x.keywordsDictDict</a></h3>
+<h2>Keyword dictionaries and x.keywordsDictDict</h2>
 <p><tt class="docutils literal"><span class="pre">x.py</span></tt> contains a <strong>keyword dictionary</strong> for each ruleset in <tt class="docutils literal"><span class="pre">x.xml</span></tt>.
 <tt class="docutils literal"><span class="pre">x.py</span></tt> contains an empty keywords dictionary if a ruleset contains no <tt class="docutils literal"><span class="pre">&lt;KEYWORDS&gt;</span></tt> element.</p>
 <p>Keys are strings representing keywords of the language describe by the mode.
@@ -525,7 +486,7 @@ Leo's colorer uses only the name <tt class="docutils literal"><span class="pre">
 Leo's colorer never uses the actual names of keywords dictionaries such as <tt class="docutils literal"><span class="pre">php_PHPDOC_keywords_dict</span></tt>.</p>
 </div>
 <div class="section" id="rules-rules-dictionaries-and-x-rulesdictdict">
-<h3><a class="toc-backref" href="#id9">Rules, rules dictionaries and x.rulesDictDict</a></h3>
+<h2>Rules, rules dictionaries and x.rulesDictDict</h2>
 <p><tt class="docutils literal"><span class="pre">x.py</span></tt> contains one <strong>rule function</strong> for every rule in every ruleset (<tt class="docutils literal"><span class="pre">&lt;RULES&gt;</span></tt> element) in <tt class="docutils literal"><span class="pre">x.xml</span></tt>.
 These rules have names <tt class="docutils literal"><span class="pre">rule1</span></tt> through  <tt class="docutils literal"><span class="pre">ruleN</span></tt>,
 where <tt class="docutils literal"><span class="pre">N</span></tt> is the total number of rules in all rulesets in <tt class="docutils literal"><span class="pre">x.xml</span></tt>.</p>
@@ -614,7 +575,7 @@ Leo's colorer never uses the actual names of rules lists such as <tt class="docu
 and Leo's colorer never uses the actual names of rules functions such as <tt class="docutils literal"><span class="pre">rule64</span></tt>.</p>
 </div>
 <div class="section" id="x-importdict-and-imported-versus-delegated-rulesets">
-<h3><a class="toc-backref" href="#id10">x.importDict and imported versus delegated rulesets</a></h3>
+<h2>x.importDict and imported versus delegated rulesets</h2>
 <p><tt class="docutils literal"><span class="pre">x.importDict</span></tt> is a Python dictionary.
 Keys are ruleset names; values are a list of ruleset names.
 For example:</p>
@@ -636,7 +597,7 @@ that would require running <tt class="docutils literal"><span class="pre">jEdit2
 delegated rules are copied to the end of <tt class="docutils literal"><span class="pre">N's</span></tt> rules list in the order they appear in the ruleset.</p>
 <p><strong>Note 3</strong>: The <tt class="docutils literal"><span class="pre">DELEGATE</span></tt> attribute of <tt class="docutils literal"><span class="pre">&lt;IMPORT&gt;</span></tt> elements is, in fact,
 completely separate from the <tt class="docutils literal"><span class="pre">DELEGATE</span></tt> attributes of other rules as
-discussed in <a class="reference" href="#arguments-to-rule-methods">Arguments to rule methods</a>.
+discussed in <a class="reference internal" href="#arguments-to-rule-methods">Arguments to rule methods</a>.
 Indeed, the <tt class="docutils literal"><span class="pre">DELEGATE</span></tt> attribute of <tt class="docutils literal"><span class="pre">&lt;IMPORT&gt;</span></tt> elements creates entries in
 <tt class="docutils literal"><span class="pre">x.importDict</span></tt>, which in turn causes the colorizer to append the rules of the imported ruleset
 to the end of the present rules list.
@@ -652,15 +613,15 @@ the rules of <strong>delegated</strong> rulesets never are.</li>
 </div>
 </div>
 <div class="section" id="rule-methods">
-<h2><a class="toc-backref" href="#id11">Rule methods</a></h2>
+<h1>Rule methods</h1>
 <p>This section describes each rules method in Leo's new colorizer.
 Rules methods are called by rules functions in colorizer control file;
 they correspond directly to rules elements in jEdit's language description files.
-In fact, this documentation is a 'refactoring' of <a class="reference" href="http://www.jedit.org/42docs/users-guide/writing-modes-part.html">jEdit's documentation</a>.</p>
+In fact, this documentation is a 'refactoring' of <a class="reference external" href="http://www.jedit.org/42docs/users-guide/writing-modes-part.html">jEdit's documentation</a>.</p>
 <p>All rule methods attempt to match a pattern at a particular spot in a string.
 These methods all return True if the match succeeds.</p>
 <div class="section" id="arguments-to-rule-methods">
-<h3><a class="toc-backref" href="#id12">Arguments to rule methods</a></h3>
+<h2>Arguments to rule methods</h2>
 <p>All rule methods take three required arguments and zero or more optional keyword arguments.</p>
 <p>Here is a list of the required arguments and their meaning:</p>
 <ul class="simple">
@@ -677,7 +638,7 @@ If <tt class="docutils literal"><span class="pre">True</span></tt>, the match wi
 <li><strong>at_word_start</strong>:
 If <tt class="docutils literal"><span class="pre">True</span></tt>, the match will succeed only if <tt class="docutils literal"><span class="pre">i</span></tt> is at the beginning of a word.</li>
 <li><strong>delegate</strong>:
-If non-empty, the value of this argument is a <a class="reference" href="#ruleset-names">ruleset name</a>.
+If non-empty, the value of this argument is a <a class="reference internal" href="#ruleset-names">ruleset name</a>.
 If the match succeeds, the matched text will be colored recursively with the indicate ruleset.</li>
 <li><strong>exclude_match</strong>:
 If <tt class="docutils literal"><span class="pre">True</span></tt>, the actual text that matched will not be colored.
@@ -700,7 +661,7 @@ If <tt class="docutils literal"><span class="pre">True</span></tt>, the match wi
 because such matchers are called only if the present search pattern starts with <tt class="docutils literal"><span class="pre">hash_char</span></tt>.</p>
 </div>
 <div class="section" id="match-eol-span">
-<h3><a class="toc-backref" href="#id13">match_eol_span</a></h3>
+<h2>match_eol_span</h2>
 <pre class="literal-block">
 def match_eol_span (self,s,i,kind,begin,
     at_line_start = False,
@@ -717,7 +678,7 @@ If the <tt class="docutils literal"><span class="pre">exclude_match</span></tt> 
 The <tt class="docutils literal"><span class="pre">delegate</span></tt> argument, if present, specifies the ruleset to color the colored text.</p>
 </div>
 <div class="section" id="match-eol-span-regexp">
-<h3><a class="toc-backref" href="#id14">match_eol_span_regexp</a></h3>
+<h2>match_eol_span_regexp</h2>
 <pre class="literal-block">
 def match_eol_span_regexp (self,s,i,kind,regex,
     at_line_start = False,
@@ -736,7 +697,7 @@ If the <tt class="docutils literal"><span class="pre">exclude_match</span></tt> 
 The <tt class="docutils literal"><span class="pre">delegate</span></tt> argument, if present, specifies the ruleset to color the colored text.</p>
 </div>
 <div class="section" id="match-keywords">
-<h3><a class="toc-backref" href="#id15">match_keywords</a></h3>
+<h2>match_keywords</h2>
 <pre class="literal-block">
 def match_keywords (self,s,i):
 </pre>
@@ -746,7 +707,7 @@ def match_keywords (self,s,i):
 Instead, the keyword is colored as specified by <tt class="docutils literal"><span class="pre">d.get(theKeyword)</span></tt>.</p>
 </div>
 <div class="section" id="match-mark-following">
-<h3><a class="toc-backref" href="#id16">match_mark_following</a></h3>
+<h2>match_mark_following</h2>
 <pre class="literal-block">
 def match_mark_following (self,s,i,kind,pattern,
     at_line_start = False,
@@ -761,7 +722,7 @@ with the color specified by <tt class="docutils literal"><span class="pre">kind<
 If the <tt class="docutils literal"><span class="pre">exclude_match</span></tt> argument is <tt class="docutils literal"><span class="pre">True</span></tt>, only the text after the matched text will be colored.</p>
 </div>
 <div class="section" id="match-mark-previous">
-<h3><a class="toc-backref" href="#id17">match_mark_previous</a></h3>
+<h2>match_mark_previous</h2>
 <pre class="literal-block">
 def match_mark_previous (self,s,i,kind,pattern,
     at_line_start = False,
@@ -776,7 +737,7 @@ with the color specified by <tt class="docutils literal"><span class="pre">kind<
 If the <tt class="docutils literal"><span class="pre">exclude_match</span></tt> argument is <tt class="docutils literal"><span class="pre">True</span></tt>, only the text before the matched text will be colored.</p>
 </div>
 <div class="section" id="match-seq">
-<h3><a class="toc-backref" href="#id18">match_seq</a></h3>
+<h2>match_seq</h2>
 <pre class="literal-block">
 def match_seq (self,s,i,kind,seq,
     at_line_start = False,
@@ -791,7 +752,7 @@ with the color specified by <tt class="docutils literal"><span class="pre">kind<
 The <tt class="docutils literal"><span class="pre">delegate</span></tt> argument, if present, specifies the ruleset to color the colored text.</p>
 </div>
 <div class="section" id="match-seq-regexp">
-<h3><a class="toc-backref" href="#id19">match_seq_regexp</a></h3>
+<h2>match_seq_regexp</h2>
 <pre class="literal-block">
 def match_seq_regexp (self,s,i,kind,regex,
     at_line_start = False,
@@ -809,7 +770,7 @@ with the color specified by <tt class="docutils literal"><span class="pre">kind<
 The <tt class="docutils literal"><span class="pre">delegate</span></tt> argument, if present, specifies the ruleset to color the colored text.</p>
 </div>
 <div class="section" id="match-span">
-<h3><a class="toc-backref" href="#id20">match_span</a></h3>
+<h2>match_span</h2>
 <pre class="literal-block">
 def match_span (self,s,i,kind,begin,end,
     at_line_start = False,
@@ -831,7 +792,7 @@ but if the <tt class="docutils literal"><span class="pre">exclude_match</span></
 The <tt class="docutils literal"><span class="pre">delegate</span></tt> argument, if present, specifies the ruleset to color the colored text.</p>
 </div>
 <div class="section" id="match-span-regexp">
-<h3><a class="toc-backref" href="#id21">match_span_regexp</a></h3>
+<h2>match_span_regexp</h2>
 <pre class="literal-block">
 def match_span (self,s,i,kind,regex,end,
     at_line_start = False,
@@ -856,7 +817,7 @@ but if the <tt class="docutils literal"><span class="pre">exclude_match</span></
 The <tt class="docutils literal"><span class="pre">delegate</span></tt> argument, if present, specifies the ruleset to color the colored text.</p>
 </div>
 <div class="section" id="match-terminate">
-<h3><a class="toc-backref" href="#id22">match_terminate</a></h3>
+<h2>match_terminate</h2>
 <pre class="literal-block">
 def match_terminate (self,s,i,kind,at_char):
 </pre>
@@ -866,9 +827,9 @@ with the color specified by <tt class="docutils literal"><span class="pre">kind<
 </div>
 </div>
 <div class="section" id="syntax-coloring-settings">
-<h2><a class="toc-backref" href="#id23">Syntax coloring settings</a></h2>
+<h1>Syntax coloring settings</h1>
 <p>This section discusses only those settings that affect syntax coloring.
-See <a class="reference" href="customizing.html">Chapter 8</a> for a general discussion of Leo's settings.</p>
+See <a class="reference external" href="customizing.html">Chapter 8</a> for a general discussion of Leo's settings.</p>
 <p>Both the old colorizer (in Leo's core) and the new colorizer (the threading_colorizer plugin)
 now support &#64;font settings for colorizing options.
 The settings for the old colorizer are:</p>
@@ -910,7 +871,7 @@ php_keyword_font_weight = bold
 </pre>
 </div>
 <div class="section" id="the-threading-colorizer-plugin">
-<h2><a class="toc-backref" href="#id24">The threading_colorizer plugin</a></h2>
+<h1>The threading_colorizer plugin</h1>
 <p>This section contains code-level notes for the threading colorizer. You do not
 need to understand this material in order to use the threading colorizer.</p>
 <p>The threading_colorizer plugin uses a separate <strong>helper thread</strong> to compute the
@@ -942,9 +903,6 @@ optimization.  It absolutely minimizes the load on Tk.</p>
 <p>When the 'interruptible' argument to the colorizer is False,
 no threading is used and the main thread completely colors the entire text. This
 must be done when multiple body editors are present.</p>
-<hr class="docutils" />
-<p><a class="reference" href="rstplugin3.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="debuggers.html"><img alt="next" src="arrow_rt.gif" /></a></p>
-</div>
 </div>
 </div>
 </body>

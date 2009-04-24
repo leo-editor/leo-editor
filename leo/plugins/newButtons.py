@@ -134,8 +134,9 @@ def onCreate (tag, keywords):
     Showing how to define a global hook that affects all commanders.
     """
 
-    import leo.core.leoTkinterFrame as leoTkinterFrame
-    log = leoTkinterFrame.leoTkinterLog
+    import leo.plugins.tkGui as tkGui
+    leoTkinterFrame = tkGui.leoTkinterFrame
+    log = tkGui.leoTkinterLog
 
     # Ensure that the templates folder is there
     folder = g.os_path_join(g.app.loadDir,"..","plugins", "templates")
@@ -289,7 +290,7 @@ class UIHelperClass:
     #@+node:pap.20051011160416:addTemplate
     def addTemplate (self,name,parameter=None):
         """Add a template node"""
-        c = self.c ; p = self.c.currentPosition()
+        c = self.c ; p = c.p
         template = self.templateCollection.find(name)
         if template:
             root = p.copy()
@@ -302,7 +303,7 @@ class UIHelperClass:
         c = self.c
         def makeit(result,c=c):
             if result is not None:
-                p = self.c.currentPosition()
+                p = self.c.p
                 template = Template().getTemplateFromNode(p, name=result)
                 template.save(c)
                 self.templateCollection.add(template)
@@ -321,7 +322,7 @@ class UIHelperClass:
                 # Remove old one
                 tc.remove(tc.find(result))
                 # Now create a new one
-                p = c.currentPosition()
+                p = c.p
                 newtemplate = Template().getTemplateFromNode(p, name=result)
                 newtemplate.save(c)
                 tc.add(newtemplate)
@@ -382,7 +383,9 @@ class HelperForm:
         self.c = c
         self.root = root = g.app.root
         self.callback = callback
-        self.getResult = lambda None:None
+
+        def doNothing(): pass
+        self.getResult = doNothing
             # Set to a function in subclasses.
             # This definition removes a pylint complaint.
 
@@ -564,7 +567,7 @@ class Template:
         # Add this new node
         c.insertHeadline()
         c.endEditing()
-        p = c.currentPosition()
+        p = c.p
         c.setHeadString(p,self.convert(self.headline,parameter,parent))
         c.setBodyString(p,self.convert(self.body,parameter,parent))
 
@@ -586,14 +589,14 @@ class Template:
     def getTemplateFromNode (self,p,name):
 
         self.name = name
-        self.headline = p.headString()
-        self.body = p.bodyString()
+        self.headline = p.h
+        self.body = p.b
 
         # Find children
         self.children = children = []
         child = p.getFirstChild()
         while child:
-            children.append(Template().getTemplateFromNode(child,child.headString()))
+            children.append(Template().getTemplateFromNode(child,child.h))
             child = child.getNext()
         return self
     #@nonl

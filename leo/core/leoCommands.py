@@ -35,6 +35,8 @@ import tempfile
 import time
 import tokenize # for Check Python command
 import imp
+import re
+import itertools
 
 try:
     import tabnanny # for Check Python command # Does not exist in jython
@@ -111,6 +113,7 @@ class baseCommands (object):
         import leo.core.leoShadow as leoShadow
         import leo.core.leoTangle as leoTangle
         import leo.core.leoUndo as leoUndo
+
 
         self.shadowController = leoShadow.shadowController(c)
         self.fileCommands   = leoFileCommands.fileCommands(c)
@@ -281,6 +284,19 @@ class baseCommands (object):
         # For outline navigation.
         self.navPrefix = '' # Must always be a string.
         self.navTime = None
+
+        # Controller-specific pickleshare db at /foo/bar.leo_db/
+
+        import leo.external.pickleshare
+        pth, bname = os.path.split(self.mFileName)
+
+        if pth and bname:
+            dbdirname = '%s/.%s_db' % (pth, bname)
+            self.db = leo.external.pickleshare.PickleShareDB(dbdirname)
+        else:
+            self.db = None
+            if not g.app.silentMode and not g.unitTesting:
+                print("\n*** No file in controller, using c.db=None ***\n")
         #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
         #@nl
         self.config = configSettings(c)
@@ -374,9 +390,11 @@ class baseCommands (object):
         return c.ver[10:-1] # Strip off "(dollar)Revision" and the trailing "$"
     #@-node:ekr.20040629121554:getBuildNumber
     #@+node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
+    # Leo 4.5.1 final: September 14, 2008
+
     def getSignOnLine (self):
         c = self
-        return "Leo 4.5.1 final, build %s, September 14, 2008" % c.getBuildNumber()
+        return "Leo 4.6 beta 1, build %s, March 24, 2009" % c.getBuildNumber()
     #@-node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     #@+node:ekr.20040629121554.2:initVersion
     def initVersion (self):
@@ -455,6 +473,50 @@ class baseCommands (object):
         r = self.rootPosition()
         return r.unique_iter_class(r, lambda p: p, lambda u: u.v)
     #@-node:sps.20080327174748.4:c.all_positions_with_unique_vnodes_iter
+    #@+node:ville.20090311190405.70:c.find_h
+    def find_h(self, regex, flags = re.IGNORECASE):
+        """ Return list (a poslist) of all nodes whose headline matches the regex
+
+        You can chain find_h / find_b with select_h / select_b like this
+        to refine an outline search::
+
+        pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')    
+        """
+        pat = re.compile(regex, flags)
+        res = leoNodes.poslist()
+        for p in self.allNodes_iter():
+            m = re.match(pat, p.h)
+            if m:
+                pc = p.copy()
+                pc.mo = m
+                res.append(pc)
+        return res
+
+    #@-node:ville.20090311190405.70:c.find_h
+    #@+node:ville.20090311200059.1:c.find_b
+    def find_b(self, regex, flags = re.IGNORECASE | re.MULTILINE):
+        """ Return list (a poslist) of all nodes whose body matches the regex
+
+        You can chain find_h / find_b with select_h / select_b like this
+        to refine an outline search::
+
+        pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')    
+        """
+
+        pat = re.compile(regex, flags)
+        res = leoNodes.poslist()
+        for p in self.allNodes_iter():
+            m = re.finditer(pat, p.b)
+            t1,t2 = itertools.tee(m,2)
+            try:
+                first = t1.next()
+            except StopIteration:
+                continue
+            pc = p.copy()
+            pc.matchiter = t2
+            res.append(pc)
+        return res
+    #@-node:ville.20090311200059.1:c.find_b
     #@-node:ekr.20040312090934:c.iterators
     #@+node:ekr.20051106040126:c.executeMinibufferCommand
     def executeMinibufferCommand (self,commandName):
@@ -542,7 +604,8 @@ class baseCommands (object):
 
         '''Create a new Leo window.'''
 
-        c,frame = g.app.newLeoCommanderAndFrame(fileName=None,relativeFileName=None,gui=gui)
+        c,frame = g.app.newLeoCommanderAndFrame(
+            fileName=None,relativeFileName=None,gui=gui)
 
         # Needed for plugins.
         g.doHook("new",old_c=self,c=c,new_c=c)
@@ -568,16 +631,20 @@ class baseCommands (object):
 
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
-        if c.config.getBool('use_chapters') and c.chapterController:
+        useChapters = c.config.getBool('use_chapters') and c.chapterController
+        if useChapters:
             c.chapterController.finishCreate()
-            frame.c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+            frame.c.setChanged(False)
+            # Clear the changed flag set when creating the @chapters node.
+        else:
+            c.redraw(p)
         if c.config.getBool('outline_pane_has_initial_focus'):
             c.treeWantsFocusNow()
         else:
             c.bodyWantsFocusNow()
         # Force a call to c.outerUpdate.
         # This is needed when we execute this command from a menu.
-        c.redraw()
+        c.outerUpdate()
         c.frame.tree.initAfterLoad()
         c.initAfterLoad()
         c.frame.initCompleteHint()
@@ -823,7 +890,11 @@ class baseCommands (object):
                             vtuple.append(path)
                         command = "subprocess.Popen(%s)" % repr(vtuple)
                         if subprocess:
-                            subprocess.Popen(vtuple)
+                            try:
+                                subprocess.Popen(vtuple)
+                            except OSError:
+                                g.es_print("vtuple",repr(vtuple))
+                                g.es_exception()
                         else:
                             g.trace('Can not import subprocess.  Skipping: "%s"' % command)
                     else:
@@ -2717,7 +2788,6 @@ class baseCommands (object):
                     p = self.createLastChildNode(current,name,None)
                     u.afterInsertNode(p,undoType,undoData)
                     found = True
-            c.selectPosition(current)
             c.validateOutline()
             if not found:
                 g.es("selected text should contain one or more section names",color="blue")
@@ -2900,7 +2970,7 @@ class baseCommands (object):
 
         return head,lines,tail,oldSel,oldVview # string,list,string,tuple.
     #@-node:ekr.20031218072017.1829:getBodyLines
-    #@+node:ekr.20031218072017.1830:indentBody (test)
+    #@+node:ekr.20031218072017.1830:indentBody (indent-region)
     def indentBody (self,event=None):
 
         '''The indent-region command indents each line of the selected body text,
@@ -2923,7 +2993,7 @@ class baseCommands (object):
         if changed:
             result = ''.join(result)
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
-    #@-node:ekr.20031218072017.1830:indentBody (test)
+    #@-node:ekr.20031218072017.1830:indentBody (indent-region)
     #@+node:ekr.20031218072017.1831:insertBodyTime, helpers and tests
     def insertBodyTime (self,event=None):
 
@@ -3552,11 +3622,11 @@ class baseCommands (object):
         p = c.p
         if not p: return
 
+        c.endEditing() # Make sure we capture the headline for Undo.
+
         if p.hasVisBack(c): newNode = p.visBack(c)
         else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
         if not newNode: return
-
-        c.endEditing() # Make sure we capture the headline for Undo.
 
         if cc: # Special cases for @chapter and @chapters nodes.
             chapter = '@chapter ' ; chapters = '@chapters ' 
@@ -3567,7 +3637,11 @@ class baseCommands (object):
             elif h.startswith(chapter):
                 name = h[len(chapter):].strip()
                 if name:
-                    return cc.removeChapterByName(name)
+                    # Bug fix: 2009/3/23: Make sure the chapter exists!
+                    # This might be an @chapter node outside of @chapters tree.
+                    theChapter = cc.chaptersDict.get(name)
+                    if theChapter:
+                        return cc.removeChapterByName(name)
 
         undoData = u.beforeDeleteNode(p)
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
@@ -3587,6 +3661,8 @@ class baseCommands (object):
         current = c.p
 
         if not current: return
+
+        c.endEditing()
 
         undoData = c.undoer.beforeInsertNode(current)
         # Make sure the new node is visible when hoisting.
@@ -3685,8 +3761,9 @@ class baseCommands (object):
         newChildren = parent_v.t.children[:]
 
         if key == None:
-            def key (self):
+            def lowerKey (self):
                 return (self.h.lower(), self)
+            key = lowerKey
 
         if cmp: newChildren.sort(cmp,key=key)
         else:   newChildren.sort(key=key)
@@ -5307,6 +5384,7 @@ class baseCommands (object):
         p = c.nodeHistory.goNext()
 
         if p:
+            c.selectPosition(p)
             c.redraw_after_select(p)
 
     #@-node:ekr.20031218072017.1628:goNextVisitedNode
@@ -5320,6 +5398,7 @@ class baseCommands (object):
         p = c.nodeHistory.goPrev()
 
         if p:
+            c.selectPosition(p)
             c.redraw_after_select(p)
     #@-node:ekr.20031218072017.1627:goPrevVisitedNode
     #@+node:ekr.20031218072017.2914:goToFirstNode
@@ -5354,6 +5433,7 @@ class baseCommands (object):
         p = c.firstVisible()
         if p:
             c.selectPosition(p)
+            c.redraw_after_select(p)
 
         c.treeSelectHelper(p)
     #@-node:ekr.20070615070925:goToFirstVisibleNode
@@ -5391,6 +5471,7 @@ class baseCommands (object):
         p = c.lastVisible()
         if p:
             c.selectPosition(p)
+            c.redraw_after_select(p)
 
         c.treeSelectHelper(p)
     #@-node:ekr.20050711153537:c.goToLastVisibleNode
@@ -5425,7 +5506,9 @@ class baseCommands (object):
             name = cc.findChapterNameForPosition(p)
             cc.selectChapterByName(name)
 
+        c.selectPosition(p)
         c.redraw_after_select(p)
+    #@nonl
     #@-node:ekr.20031218072017.2916:goToNextClone
     #@+node:ekr.20071213123942:findNextClone
     def findNextClone (self,event=None):
@@ -5449,6 +5532,7 @@ class baseCommands (object):
             if cc:
                 name = cc.findChapterNameForPosition(p)
                 cc.selectChapterByName(name)
+            c.selectPosition(p)
             c.redraw_after_select(p)
         else:
             g.es('no more clones',color='blue')
@@ -5599,11 +5683,9 @@ class baseCommands (object):
         if not p: p = c.p
 
         if p:
-            flag = c.expandAllAncestors(p)
-            if flag:
-                c.redraw(p)
-            else:
-                c.selectPosition(p)
+            # Do not call expandAllAncestors here.
+            c.selectPosition(p)
+            c.redraw_after_select(p)
 
         c.treeFocusHelper()
     #@-node:ekr.20070226113916: treeSelectHelper
@@ -5654,7 +5736,7 @@ class baseCommands (object):
         # Doing so would add unwanted leading tabs.
         version = c.getSignOnLine() + "\n\n"
         theCopyright = (
-            "Copyright 1999-2007 by Edward K. Ream\n" +
+            "Copyright 1999-2009 by Edward K. Ream\n" +
             "All Rights Reserved\n" +
             "Leo is distributed under the Python License")
         url = "http://webpages.charter.net/edreamleo/front.html"
@@ -6235,7 +6317,7 @@ class baseCommands (object):
     def outerUpdate (self):
 
         trace = False and not g.unitTesting
-        verbose = False ; traceFocus = True
+        verbose = True ; traceFocus = False
         c = self ; aList = []
         if not c.exists or not c.k:
             return
@@ -6303,16 +6385,12 @@ class baseCommands (object):
         '''Redraw the screen immediately.'''
 
         c = self
+        if not p: p = c.p or c.rootPosition()
 
-        if p:
-            # Update body pane and set c._currentPosition.
-            c.expandAllAncestors(p) # Redundant, but safe.
-            c.selectPosition(p)
-        else:
-            p = c.p
-            c.expandAllAncestors(p)
-
+        c.expandAllAncestors(p)
         c.frame.tree.redraw(p)
+        c.selectPosition(p)
+
         if setFocus: c.treeFocusHelper()
 
     # Compatibility with old scripts
@@ -6374,12 +6452,9 @@ class baseCommands (object):
         # c.treeFocusHelper()
     #@-node:ekr.20090110073010.3:c.redraw_afer_icons_changed
     #@+node:ekr.20090110073010.4:c.redraw_after_select
-    def redraw_after_select(self,p,setFocus=False):
+    def redraw_after_select(self,p):
 
-        '''Redraw the screen after node p has been selected.
-
-        The intention is for the gui to just select the node
-        if it is visible, and to completely redraw the screen otherwise.'''
+        '''Redraw the screen after node p has been selected.'''
 
         trace = False and not g.unitTesting
         if trace: g.trace('(Commands)',p and p.h or '<No p>', g.callers(4))
@@ -6387,14 +6462,8 @@ class baseCommands (object):
         c = self
 
         flag = c.expandAllAncestors(p)
-        c.selectPosition(p)
-            # Required to update body pane.
-            # Will call tree.before/afterSelect hint.
-
         if flag:
             c.frame.tree.redraw_after_select(p)
-
-        if setFocus: c.treeFocusHelper()
     #@-node:ekr.20090110073010.4:c.redraw_after_select
     #@-node:ekr.20080514131122.14:c.redrawing...
     #@+node:ekr.20080514131122.13:c.recolor_now
@@ -7381,7 +7450,6 @@ class baseCommands (object):
 
         # g.trace(p.h,g.callers())
 
-        c.expandAllAncestors(p)
         c.frame.tree.select(p)
 
         # New in Leo 4.4.2.
@@ -7427,9 +7495,8 @@ class baseCommands (object):
                     found = True ; break
             if found: break
         if found:
-            if allFlag:
-                c.expandAllAncestors(p)
             c.selectPosition(p)
+            c.redraw_after_select(p)
             c.navTime = time.clock()
             c.navPrefix = newPrefix
             # g.trace('extend',extend,'extend2',extend2,'navPrefix',c.navPrefix,'p',p.h)

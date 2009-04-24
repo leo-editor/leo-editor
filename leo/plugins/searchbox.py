@@ -30,7 +30,7 @@ Still to do:
 #@@language python
 #@@tabwidth -4
 
-__version__ = "0.8"
+__version__ = "0.9"
 
 #@<< version history >>
 #@+node:ekr.20040908094021.3:<< version history >>
@@ -54,6 +54,7 @@ __version__ = "0.8"
 # 0.8 EKR: Fixed crasher by making QuickFind.s_ctrl a leoTkTextWidget and by 
 # adding
 #          ins argument to init_s_ctrl.
+# 0.9 EKR: Import tkGui as needed.
 #@-at
 #@-node:ekr.20040908094021.3:<< version history >>
 #@nl
@@ -61,7 +62,9 @@ __version__ = "0.8"
 #@+node:ekr.20040908093511.3:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
-import leo.core.leoTkinterFrame as leoTkinterFrame
+
+import leo.plugins.tkGui as tkGui
+leoTkinterFrame = tkGui.leoTkinterFrame
 
 import leo.core.leoFind as leoFind
 
@@ -267,7 +270,7 @@ class QuickFind(leoFind.leoFind):
         leoFind.leoFind.__init__(self,c)
 
         self.c = c
-        self.p = c.currentPosition() # Bug fix: 5/14/06
+        self.p = c.p # Bug fix: 5/14/06
         self.s_ctrl = leoTkinterFrame.leoTkTextWidget() # Tk.Text() # Used by find.search()
         self.__find_text = text
         self.search_option = search_option

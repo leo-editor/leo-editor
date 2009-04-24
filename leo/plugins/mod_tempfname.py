@@ -40,11 +40,11 @@ def openWithTempFilePath (self,v,ext):
         atFileFound = False   #Track when first ancestor @file found
         #Build list of all of node's parents
         ancestor = []
-        p = c.currentPosition()
+        p = c.p
         while p:
             hs = p.isAnyAtFileNode() #Get file name if we're at a @file node
             if not hs:
-                hs = p.headString()  #Otherwise, use the entire header
+                hs = p.h  #Otherwise, use the entire header
             else:
 #@verbatim
                 #@file type node
@@ -54,7 +54,7 @@ def openWithTempFilePath (self,v,ext):
                         atFileFound = True #no need to look any more.
                         #Found first ancestor @file node in outline
                         atFileBase,atFileExt = g.os_path_splitext(hs)
-                        if(p == c.currentPosition()):
+                        if(p == c.p):
                             #node to edit is an @file, Move ext from hs to ext
                             hs = atFileBase
                         if atFileExt: #It has an extension
@@ -105,7 +105,7 @@ def openWithTempFilePath (self,v,ext):
         td = os.path.join(os.path.abspath(tempfile.gettempdir()), leoTempDir)
         if not os.path.exists(td):
             os.mkdir(td)
-        name = g.sanitize_filename(v.headString()) + '_' + str(id(v.t)) + ext
+        name = g.sanitize_filename(v.h) + '_' + str(id(v.t)) + ext
 
     path = os.path.join(td,name)
     return path

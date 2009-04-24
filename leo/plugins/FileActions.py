@@ -66,7 +66,7 @@ __version__ = "0.4"
 #@-node:ekr.20040915110738:<< version history >>
 #@nl
 #@<< imports >>
-#@+node:ekr.20040915110738.1:<< imports >>
+#@+node:ekr.20090317093747.1:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
@@ -75,7 +75,7 @@ import os
 import sys
 import tempfile
 #@nonl
-#@-node:ekr.20040915110738.1:<< imports >>
+#@-node:ekr.20090317093747.1:<< imports >>
 #@nl
 #@<< define the directives that are handled by this plugin >>
 #@+node:ekr.20040915110738.2:<< define the directives that are handled by this plugin >>
@@ -120,7 +120,7 @@ def onIconDoubleClick(tag, keywords):
     if not c or not p:
         return None
 
-    h = p.headString()
+    h = p.h
     words = h.split()
     directive = words[0]
     if directive[0] != '@' or directive not in file_directives:
@@ -150,7 +150,7 @@ def doFileAction(filename, c):
         done = False
         name = os.path.split(filename)[1]
         for p2 in p.children_iter():
-            pattern = p2.headString().strip()
+            pattern = p2.h.strip()
             if fnmatch.fnmatchcase(name, pattern):
                 applyFileAction(p2, filename, c)
                 done = True

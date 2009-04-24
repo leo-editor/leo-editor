@@ -97,7 +97,7 @@ def init ():
     except ImportError:
         print('leoPymacs.init: can not import runLeo')
         print('leoPymacs.init: sys.path:')
-        for z in sys.path: print z
+        for z in sys.path: print (z)
 
     leo.run(pymacs=True)
 

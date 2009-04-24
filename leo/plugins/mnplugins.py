@@ -64,7 +64,7 @@ def onStart (tag,keywords):
 #@+node:ekr.20040205071616.4:setHeadOK
 def setHeadOK(c,v):
 
-    s = OKFLAG + v.headString()
+    s = OKFLAG + v.h
     c.setHeadString(v,s)
 
 #@-node:ekr.20040205071616.4:setHeadOK
@@ -86,7 +86,7 @@ def is_subnodesOK(v):
         ok = False
         child=v.firstChild()
         while child:
-            s=child.headString()
+            s=child.h
             ok=s[0:len(OKFLAG)]==OKFLAG
             if not ok:break
             child=child.next()

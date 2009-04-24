@@ -1756,6 +1756,23 @@ class colorizer:
         "UCASE$","UNLOADLIBRARY","UNTIL","VAL","VARIANT","VARPTR","VARPTR$","VARTYPE",
         "WEND","WHILE","WITH","WORD","XOR"]
         #@-node:ekr.20040331145826:rapidq keywords
+        #@+node:sps.20081213155951.1:ruby keywords
+        self.ruby_keywords = [
+        # ruby keywords
+        # based on "Ruby in a Nutshell"
+        "BEGIN",    "do",     "next",   "then",
+        "END",      "else",   "nil",    "true",
+        "alias",    "elsif",  "not",    "undef",
+        "and",      "end",    "or",     "unless",
+        "begin",    "ensure", "redo",   "until",
+        "break",    "false",  "rescue", "when",
+        "case",     "for",    "retry",  "while",
+        "class",    "if",     "return", "yield",
+        "def",      "in",     "self",   "__FILE__",
+        "defined?", "module", "super",  "__LINE__",
+        ]
+        #@nonl
+        #@-node:sps.20081213155951.1:ruby keywords
         #@+node:ekr.20031218072017.382:rebol keywords
         self.rebol_keywords = [
         #Jason 2003-07-03 
@@ -2145,7 +2162,7 @@ class colorizer:
             # Eventually we might just use language_delims_dict.keys()
             languages = [
                 "actionscript","ada","c","csharp","css","cweb","elisp","html","java","latex","lua",
-                "pascal","perl","perlpod","php","plsql","python","rapidq","rebol","shell","tcltk"]
+                "pascal","perl","perlpod","php","plsql","python","rapidq","rebol","ruby","shell","tcltk"]
 
             self.keywords = []
             if self.language == "cweb":
@@ -3071,7 +3088,7 @@ class colorizer:
 
         self.image_references = []
     #@-node:ekr.20031218072017.1944:removeAllImages (leoColor)
-    #@+node:ekr.20080828103146.8:scanColorDirectives
+    #@+node:ekr.20080828103146.8:scanColorDirectives (leoColor)
     def scanColorDirectives(self,p):
 
         '''Scan position p and p's ancestors looking for @comment, @language and @root directives,
@@ -3105,7 +3122,7 @@ class colorizer:
 
         # g.trace('self.language',self.language)
         return self.language # For use by external routines.
-    #@-node:ekr.20080828103146.8:scanColorDirectives
+    #@-node:ekr.20080828103146.8:scanColorDirectives (leoColor)
     #@+node:ekr.20041217041016:setFontFromConfig (colorizer)
     def setFontFromConfig (self):
 
@@ -3195,11 +3212,6 @@ class colorizer:
 
     def tag (self,name,i,j):
 
-        # if 0:
-            # w = c.frame.body.bodyCtrl ; s = self.allBodyText
-            # i2 = w.toPythonIndex(self.index(i))
-            # j2 = w.toPythonIndex(self.index(j))
-            # g.trace(name,i,j,repr(s[i2:j2]))
         self.c.frame.body.tag_add(name,self.index(i),self.index(j))
     #@nonl
     #@-node:ekr.20031218072017.1609:index & tag (leoColor)

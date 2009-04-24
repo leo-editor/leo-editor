@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
 <title>Chapter 13: Writing Plugins</title>
 <style type="text/css">
 
@@ -248,31 +248,15 @@ hr { /* EKR */
 </style>
 </head>
 <body>
-<div class="document">
-
+<div class="document" id="chapter-13-writing-plugins">
+<h1 class="title">Chapter 13: Writing Plugins</h1>
 
 <!-- rst3: filename: html\writingPlugins.html -->
-<!-- June 8, 2006 -->
-<p><a class="reference" href="plugins.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="rstplugin3.html"><img alt="next" src="arrow_rt.gif" /></a></p>
-<div class="section" id="chapter-13-writing-plugins">
-<h1><a class="toc-backref" href="#id1">Chapter 13: Writing Plugins</a></h1>
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
-<ul class="simple">
-<li><a class="reference" href="#chapter-13-writing-plugins" id="id1" name="id1">Chapter 13: Writing Plugins</a><ul>
-<li><a class="reference" href="#overview" id="id2" name="id2">Overview</a></li>
-<li><a class="reference" href="#support-for-unit-testing" id="id3" name="id3">Support for unit testing</a></li>
-<li><a class="reference" href="#turning-script-buttons-into-plugins" id="id4" name="id4">Turning script buttons into plugins</a></li>
-<li><a class="reference" href="#important-security-warnings" id="id5" name="id5">Important security warnings</a></li>
-</ul>
-</li>
-</ul>
-</div>
+<!-- .. contents:: -->
 <!-- External links... -->
 <!-- Relative links... -->
-<!-- WARNING: image targets may not have upper case letters! -->
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id2">Overview</a></h2>
+<h1>Overview</h1>
 <p>A <strong>plugin</strong> is a Python file that appears in Leo's plugin directory. Plugins
 modify how Leo works. With plugins you can give Leo new commands, modify how
 existing commands work, or change any other aspect of Leo's look and feel.
@@ -283,17 +267,17 @@ myLeoSettings.leo. For more details, see the &#64;enabled-plugins node in
 leoSettings.leo. Leo imports all enabled plugins at startup time. Plugins become
 <strong>active</strong> if importing the plugin was successful.</p>
 <p>Writing plugins is quite similar to writing any other Leo script.  See
-<a class="reference" href="scripting.html">Chapter 7: Scripting Leo with Python</a>. In particular:</p>
+<a class="reference external" href="scripting.html">Chapter 7: Scripting Leo with Python</a>. In particular:</p>
 <ol class="arabic simple">
 <li>Plugins can use any of Leo's source code simply by importing any module
 defined in leoPy.leo.</li>
 <li>Plugins can register event handlers just like any other Leo script. For full
-details, see the section called <a class="reference" href="scripting.html#event-handlers">event handlers</a> in Leo's scripting chapter.</li>
+details, see the section called <a class="reference external" href="scripting.html#event-handlers">event handlers</a> in Leo's scripting chapter.</li>
 </ol>
 <p>The rest of this chapters discusses topics related specifically to plugins.</p>
 </div>
 <div class="section" id="support-for-unit-testing">
-<h2><a class="toc-backref" href="#id3">Support for unit testing</a></h2>
+<h1>Support for unit testing</h1>
 <p>The plugins test suite creates a new convention: if a plugin has a function at
 the outer (module) level called <tt class="docutils literal"><span class="pre">unitTest</span></tt>, Leo will call that function when
 doing unit testing for plugins. So it would be good if writers of plugins would
@@ -301,13 +285,13 @@ create such a <tt class="docutils literal"><span class="pre">unitTest</span> <sp
 throws an exception. Leo's plugins test suite takes care of the rest.</p>
 </div>
 <div class="section" id="turning-script-buttons-into-plugins">
-<h2><a class="toc-backref" href="#id4">Turning script buttons into plugins</a></h2>
+<h1>Turning script buttons into plugins</h1>
 <p>This section provides step-by-step instructions for turning a script button into a plugin.
 The plugin will define a minibuffer command that does the same thing as pressing the button.</p>
 <p>We shall start with a script button whose script is:</p>
 <pre class="literal-block">
 g.es_print('c: %s' % (c.fileName()),color='red')
-g.es_print('p: %s' % (p.headString()),color='red')
+g.es_print('p: %s' % (p.h),color='red')
 </pre>
 <p>Not very exciting, but it uses the predefined <tt class="docutils literal"><span class="pre">c</span></tt> and <tt class="docutils literal"><span class="pre">p</span></tt> constants.
 Our plugin will create a minibuffer command called print-cp.</p>
@@ -360,9 +344,9 @@ c.k.simulateCommand('print-cp')
 <li><p class="first">Define the print_cp method as follows:</p>
 <pre class="literal-block">
 def print_cp (self,event=None):
-    c = self.c ; p = c.currentPosition()
+    c = self.c ; p = c.p
     g.es_print('c: %s' % (c.fileName()),color='red')
-    g.es_print('p: %s' % (p.headString()),color='red')
+    g.es_print('p: %s' % (p.h),color='red')
 </pre>
 <p>The print_cp method must have the event argument as shown because it implements a minibuffer command.
 The print_cp method gets the proper commander from the <tt class="docutils literal"><span class="pre">c</span></tt> ivar (instance variable) and computes
@@ -382,7 +366,7 @@ or by typing &lt;Alt-x&gt; print-cp &lt;Return&gt;.</p>
 or leoPluginsRef.leo if you are using cvs.</p>
 </div>
 <div class="section" id="important-security-warnings">
-<h2><a class="toc-backref" href="#id5">Important security warnings</a></h2>
+<h1>Important security warnings</h1>
 <p>Naively using plugins can expose you and your .leo files to malicious attacks.
 The fundamental principles are:</p>
 <pre class="literal-block">
@@ -418,9 +402,9 @@ Still, the potential for abuse exists anywhere.</p>
 # Execute the body text of all nodes that start with `&#64;script`.
 def onLoadFile():
     for p in c.allNodes_iter():
-        h = p.headString().lower()
+        h = p.h.lower()
         if g.match_word(h,0,&quot;&#64;script&quot;):
-            s = p.bodyString()
+            s = p.b
             if s and len(s) &gt; 0:
                 try: # SECURITY BREACH: s may be malicious!
                     exec(s + '\n')
@@ -432,7 +416,7 @@ def onLoadFile():
 Leo is a repository of source code, so any text operation is potentially malicious.
 For example, consider the following script, which is valid in rexec mode:</p>
 <pre class="literal-block">
-badNode = c.currentPosition()
+badNode = c.p
 for p in c.allNodes_iter():
     &lt;&lt; change `rexec` to `exec` in p's body &gt;&gt;
 &lt;&lt; delete badNode &gt;&gt;
@@ -442,9 +426,6 @@ for p in c.allNodes_iter():
 prohibited by rexec, and without leaving any traces of the perpetrating script
 behind. The damage will become permanent <em>outside</em> this script when the user
 saves the .leo file.</p>
-<hr class="docutils" />
-<p><a class="reference" href="plugins.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="rstplugin3.html"><img alt="next" src="arrow_rt.gif" /></a></p>
-</div>
 </div>
 </div>
 </body>

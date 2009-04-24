@@ -117,7 +117,7 @@ def on_idle (tag,keywords):
                     #@                    << update p's body text >>
                     #@+node:EKR.20040517075715.6:<< update p's body text >>
                     # Convert body and s to whatever encoding is in effect.
-                    body = p.bodyString()
+                    body = p.b
                     body = g.toEncodedString(body,encoding,reportErrors=True)
                     s = g.toEncodedString(s,encoding,reportErrors=True)
 

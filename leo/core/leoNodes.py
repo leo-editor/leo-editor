@@ -26,6 +26,8 @@ if g.app and g.app.use_psyco:
     except ImportError: pass
 
 import time
+import re
+import itertools
 #@nonl
 #@-node:ekr.20060904165452.1:<< imports >>
 #@nl
@@ -147,6 +149,7 @@ if not g.unified_nodes:
 
             t = self
             t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
+            # g.trace('t',len(s),g.callers(5))
 
         initBodyString = setBodyString
         setTnodeText = setBodyString
@@ -219,6 +222,68 @@ if not g.unified_nodes:
         #@-node:EKR.20040503094727.1:setWriteBit
         #@-node:ekr.20031218072017.3332:t.Status bits
         #@-node:ekr.20031218072017.3331:t.Setters
+        #@+node:ekr.20090130065000.2:t Properties
+        #@+node:ekr.20090130125002.2:t.b Property
+        def __get_b(self):
+
+            t = self
+            return t._bodyString # Faster.
+
+        def __set_b(self,val):
+
+            t = self
+            t.setBodyString(val)
+
+        b = property(
+            __get_b, __set_b,
+            doc = "tnode body string property")
+        #@-node:ekr.20090130125002.2:t.b Property
+        #@+node:ekr.20090130125002.3:t.h property
+        def __get_h(self):
+
+            t = self
+            return t.headString()
+
+        def __set_h(self,val):
+
+            t = self
+            t.setHeadString(val)
+
+        h = property(
+            __get_h, __set_h,
+            doc = "tnode headline string property")  
+        #@-node:ekr.20090130125002.3:t.h property
+        #@+node:ekr.20090130125002.4:t.u Property
+        def __get_t(self):
+            t = self
+            if not hasattr(t,'unknownAttributes'):
+                t.unknownAttributes = {}
+            return t.unknownAttributes
+
+        def __set_t(self,val):
+            t = self
+            if val is None:
+                if hasattr(t,'unknownAttributes'):
+                    delattr(t,'unknownAttributes')
+            elif type(val) == type({}):
+                t.unknownAttributes = val
+            else:
+                raise ValueError
+
+        u = property(
+            __get_t, __set_t,
+            doc = "tnode unknownAttribute property")
+        #@-node:ekr.20090130125002.4:t.u Property
+        #@+node:ekr.20090215165030.2:t.gnx Property
+        def __get_gnx(self):
+            t = self
+            return g.app.nodeIndices.toString(t.fileIndex)
+
+        gnx = property(
+            __get_gnx, # __set_gnx,
+            doc = "tnode gnx property")
+        #@-node:ekr.20090215165030.2:t.gnx Property
+        #@-node:ekr.20090130065000.2:t Properties
         #@-others
 #@-node:ekr.20031218072017.3321:class tnode
 #@+node:ekr.20031218072017.3341:class vnode
@@ -367,6 +432,7 @@ class vnode (baseVnode):
 
         names = (
             "@auto",
+            "@edit",
             "@file",
             "@thin",   "@file-thin",   "@thinfile",
             "@asis",   "@file-asis",   "@silentfile",
@@ -385,6 +451,10 @@ class vnode (baseVnode):
         # # Prevent conflicts with autotrees plugin: don't allow @auto-whatever to match.
         # return g.match_word(h,0,tag) and not g.match(h,0,tag+'-') and h[len(tag):].strip()
         names = ("@auto",)
+        return self.findAtFileName(names)
+
+    def atEditNodeName (self):
+        names = ("@edit",)
         return self.findAtFileName(names)
 
     def atFileNodeName (self):
@@ -438,6 +508,9 @@ class vnode (baseVnode):
     #@+node:ekr.20040325073709:isAt...FileNode (vnode)
     def isAtAutoNode (self):
         return g.choose(self.atAutoNodeName(),True,False)
+
+    def isAtEditNode (self):
+        return g.choose(self.atEditNodeName(),True,False)
 
     def isAtFileNode (self):
         return g.choose(self.atFileNodeName(),True,False)
@@ -602,6 +675,8 @@ class vnode (baseVnode):
     #@+node:ekr.20031218072017.3370:v.isExpanded
     def isExpanded (self):
 
+        # g.trace( ( self.statusBits & self.expandedBit ) != 0, g.callers())
+
         return ( self.statusBits & self.expandedBit ) != 0
     #@-node:ekr.20031218072017.3370:v.isExpanded
     #@+node:ekr.20031218072017.3371:v.isMarked
@@ -681,19 +756,19 @@ class vnode (baseVnode):
     #@+node:ekr.20031218072017.3395:v.contract & expand & initExpandedBit
     def contract(self):
 
-        self.statusBits &= ~ self.expandedBit
+        # g.trace(self,g.callers(4))
 
-        # g.trace(self.statusBits)
+        self.statusBits &= ~ self.expandedBit
 
     def expand(self):
 
+        # g.trace(self,g.callers(4))
+
         self.statusBits |= self.expandedBit
 
-        # g.trace(self,g.callers())
-
-        # g.trace(self.statusBits)
-
     def initExpandedBit (self):
+
+        # g.trace(self.t._headString)
 
         self.statusBits |= self.expandedBit
     #@-node:ekr.20031218072017.3395:v.contract & expand & initExpandedBit
@@ -758,6 +833,7 @@ class vnode (baseVnode):
     def setBodyString (self,s,encoding="utf-8"):
         v = self
         v.t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
+        # g.trace('v',len(s),g.callers(5))
 
     def setHeadString (self,s,encoding="utf-8"):
         v = self
@@ -835,6 +911,68 @@ class vnode (baseVnode):
                     child.parents.append(v2)
     #@-node:ekr.20080427062528.10:v._computeParentsOfChildren
     #@-node:ekr.20080427062528.9:v.Low level methods
+    #@+node:ekr.20090130065000.1:v.Properties
+    #@+node:ekr.20090130114732.5:v.b Property
+    def __get_b(self):
+
+        v = self
+        return v.bodyString()
+
+    def __set_b(self,val):
+
+        v = self
+        v.setBodyString(val)
+
+    b = property(
+        __get_b, __set_b,
+        doc = "vnode body string property")
+    #@-node:ekr.20090130114732.5:v.b Property
+    #@+node:ekr.20090130125002.1:v.h property
+    def __get_h(self):
+
+        v = self
+        return v.headString()
+
+    def __set_h(self,val):
+
+        v = self
+        v.setHeadString(val)
+
+    h = property(
+        __get_h, __set_h,
+        doc = "vnode headline string property")  
+    #@-node:ekr.20090130125002.1:v.h property
+    #@+node:ekr.20090130114732.6:v.u Property
+    def __get_u(self):
+        v = self
+        if not hasattr(v,'unknownAttributes'):
+            v.unknownAttributes = {}
+        return v.unknownAttributes
+
+    def __set_u(self,val):
+        v = self
+        if val is None:
+            if hasattr(v,'unknownAttributes'):
+                delattr(v,'unknownAttributes')
+        elif type(val) == type({}):
+            v.unknownAttributes = val
+        else:
+            raise ValueError
+
+    u = property(
+        __get_u, __set_u,
+        doc = "vnode unknownAttribute property")
+    #@-node:ekr.20090130114732.6:v.u Property
+    #@+node:ekr.20090215165030.1:v.gnx Property
+    def __get_gnx(self):
+        v = self
+        return g.app.nodeIndices.toString(v.t.fileIndex)
+
+    gnx = property(
+        __get_gnx, # __set_gnx,
+        doc = "vnode gnx property")
+    #@-node:ekr.20090215165030.1:v.gnx Property
+    #@-node:ekr.20090130065000.1:v.Properties
     #@-others
 #@nonl
 #@-node:ekr.20031218072017.3341:class vnode
@@ -991,8 +1129,7 @@ class nodeIndices (object):
 #@nl
 
 # Positions should *never* be saved by the ZOBD.
-
-class basePosition (object):
+class position (object):
     #@    @+others
     #@+node:ekr.20040228094013: p.ctor & other special methods...
     #@+node:ekr.20080416161551.190: p.__init__
@@ -1027,7 +1164,7 @@ class basePosition (object):
 
         # Don't use g.trace: it might call p.__eq__ or p.__ne__.
         # print ('p.__eq__: %s %s' % (
-            # p1 and p1.v and p1.headString(),p2 and p2.v and p2.headString()))
+            # p1 and p1.v and p1.h,p2 and p2.v and p2.h))
 
         if p2 is None or p2.v is None:
             return p1.v is None
@@ -1172,11 +1309,59 @@ class basePosition (object):
         )
     #@-node:ekr.20080416161551.191:p.key
     #@-node:ekr.20040228094013: p.ctor & other special methods...
+    #@+node:ekr.20090128083459.74:p.Properties
+    #@+node:ekr.20090128083459.75:p.b property
+    def __get_b(self):
+
+        p = self
+        return p.bodyString()
+
+    def __set_b(self,val):
+
+        p = self ; c = p.v and p.v.context
+        if c:
+            c.setBodyString(p, val)
+            # Don't redraw the screen: p.b must be fast.
+            # c.redraw_after_icons_changed()
+
+    b = property(
+        __get_b, __set_b,
+        doc = "position body string property")
+    #@-node:ekr.20090128083459.75:p.b property
+    #@+node:ekr.20090128083459.76:p.h property
+    def __get_h(self):
+
+        p = self
+        return p.headString()
+
+    def __set_h(self,val):
+
+        p = self ; c = p.v and p.v.context
+        if c:
+            c.setHeadString(p,val)
+            # Don't redraw the screen: p.h must be fast.
+            # c.redraw_after_head_changed()
+
+    h = property(
+        __get_h, __set_h,
+        doc = "position headline string property")  
+    #@-node:ekr.20090128083459.76:p.h property
+    #@+node:ekr.20090215165030.3:p.gnx property
+    def __get_gnx(self):
+        p = self
+        return g.app.nodeIndices.toString(p.v.t.fileIndex)
+
+    gnx = property(
+        __get_gnx, # __set_gnx,
+        doc = "position gnx property")
+    #@-node:ekr.20090215165030.3:p.gnx property
+    #@-node:ekr.20090128083459.74:p.Properties
     #@+node:ekr.20040306212636:p.Getters
     #@+node:ekr.20040306210951:p.vnode proxies
     #@+node:ekr.20040306211032:p.Comparisons
     def anyAtFileNodeName         (self): return self.v.anyAtFileNodeName()
     def atAutoNodeName            (self): return self.v.atAutoNodeName()
+    def atEditNodeName            (self): return self.v.atEditNodeName()
     def atFileNodeName            (self): return self.v.atFileNodeName()
     def atNoSentinelsFileNodeName (self): return self.v.atNoSentinelsFileNodeName()
     def atRawFileNodeName         (self): return self.v.atRawFileNodeName()
@@ -1192,6 +1377,7 @@ class basePosition (object):
     def isAnyAtFileNode         (self): return self.v.isAnyAtFileNode()
     def isAtAllNode             (self): return self.v.isAtAllNode()
     def isAtAutoNode            (self): return self.v.isAtAutoNode()
+    def isAtEditNode            (self): return self.v.isAtEditNode()
     def isAtFileNode            (self): return self.v.isAtFileNode()
     def isAtIgnoreNode          (self): return self.v.isAtIgnoreNode()
     def isAtNoSentinelsFileNode (self): return self.v.isAtNoSentinelsFileNode()
@@ -1387,12 +1573,11 @@ class basePosition (object):
     #@+node:ekr.20080416161551.196:p.isVisible
     def isVisible (self,c):
 
-        p = self
-        trace = False
+        p = self ; trace = False
         limit,limitIsVisible = c.visLimit()
         limit_v = limit and limit.v or None
         if p.v == limit_v:
-            if trace: g.trace('*** at limit','limitIsVisible',limitIsVisible,p.v.headString())
+            if trace: g.trace('*** at limit','limitIsVisible',limitIsVisible,p.h)
             return limitIsVisible
 
         # It's much easier with a full stack.
@@ -1410,7 +1595,7 @@ class basePosition (object):
                 else: # Ignore the expansion state of @chapter nodes.
                     return True
             if not v.isExpanded():
-                if trace: g.trace('*** non-limit parent is not expanded',v)
+                if trace: g.trace('*** non-limit parent is not expanded:',v.t._headString,p.h)
                 return False
             n -= 1
             assert progress > n
@@ -1446,13 +1631,13 @@ class basePosition (object):
             parent = cursor.parent()
             if parent == None: # root reached
                 break
-            parent_bodyString = parent.bodyString()
+            parent_bodyString = parent.b
             if parent_bodyString == '': # organizer node
                 continue
             parent_lines = parent_bodyString.split('\n')
             # check out if the cursor node is a section
             cursor_is_section = False
-            cursor_headString = cursor.headString()
+            cursor_headString = cursor.h
             if cursor_headString.startswith('<<'):
                 cursor_is_section = True # section node
             for line in parent_lines:
@@ -1559,7 +1744,8 @@ class basePosition (object):
     #@+node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
     def findAllPotentiallyDirtyNodes(self):
 
-        p = self ;  c = p.v.context
+        trace = False and not g.unitTesting
+        p = self ; c = p.v.context
 
         # Start with all nodes in the vnodeList.
         nodes = []
@@ -1568,6 +1754,7 @@ class basePosition (object):
         # Add nodes until no more are added.
         while newNodes:
             addedNodes = []
+            # g.trace(len(newNodes))
             nodes.extend(newNodes)
             for v in newNodes:
                 for v2 in v.t.vnodeList:
@@ -1580,10 +1767,11 @@ class basePosition (object):
 
         # Remove the hidden vnode.
         if c.hiddenRootNode in nodes:
+            if trace: g.trace('removing hidden root',c.hiddenRootNode)
             nodes.remove(c.hiddenRootNode)
 
-        # g.trace(len(nodes))
-        # g.trace(g.listToString(nodes))
+        # g.trace('done',len(nodes))
+        if trace: g.trace(nodes)
         return nodes
     #@-node:ekr.20040318125934:p.findAllPotentiallyDirtyNodes
     #@+node:ekr.20040702104823:p.inAtIgnoreRange
@@ -1602,6 +1790,8 @@ class basePosition (object):
     #@+node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
     def setAllAncestorAtFileNodesDirty (self,setDescendentsDirty=False):
 
+        trace = False and not g.unitTesting
+        verbose = False
         p = self
         dirtyVnodeList = []
 
@@ -1616,6 +1806,10 @@ class basePosition (object):
                 if p2.v not in nodes and p2.isAtThinFileNode():
                     nodes.append(p2.v)
 
+        if trace and verbose:
+            for v in nodes:
+                print v.t.isDirty(),v.isAnyAtFileNode(),v
+
         dirtyVnodeList = [v for v in nodes
             if not v.t.isDirty() and v.isAnyAtFileNode()]
         changed = len(dirtyVnodeList) > 0
@@ -1623,8 +1817,9 @@ class basePosition (object):
         for v in dirtyVnodeList:
             v.t.setDirty() # Do not call v.setDirty here!
 
+        if trace: g.trace(dirtyVnodeList) #,g.callers(5))
+
         return dirtyVnodeList
-    #@nonl
     #@-node:ekr.20040303214038:p.setAllAncestorAtFileNodesDirty
     #@+node:ekr.20040303163330:p.setDirty
     def setDirty (self,setDescendentsDirty=True):
@@ -1633,7 +1828,7 @@ class basePosition (object):
 
         p = self ; dirtyVnodeList = []
 
-        # g.trace(p.headString(),g.callers())
+        # g.trace(p.h,g.callers(4))
 
         if not p.v.t.isDirty():
             p.v.t.setDirty()
@@ -1681,7 +1876,7 @@ class basePosition (object):
         level = self.level() - firstLevel
         plusMinus = g.choose(p.hasChildren(), "+", "-")
 
-        return "%s%s %s" % ('\t'*level,plusMinus,p.headString())
+        return "%s%s %s" % ('\t'*level,plusMinus,p.h)
     #@-node:ekr.20040315023430.2:p.moreHead
     #@+node:ekr.20040315023430.3:p.moreBody
     #@+at 
@@ -1702,7 +1897,7 @@ class basePosition (object):
         Inserts a backslash before any leading plus, minus or backslash."""
 
         p = self ; array = []
-        lines = p.bodyString().split('\n')
+        lines = p.b.split('\n')
         for s in lines:
             i = g.skip_ws(s,0)
             if i < len(s) and s[i] in ('+','-','\\'):
@@ -2243,8 +2438,8 @@ class basePosition (object):
 
     def copyTreeFromSelfTo(self,p2):
         p = self
-        p2.v.t._headString = p.headString()
-        p2.v.t._bodyString = p.bodyString()
+        p2.v.t._headString = p.h
+        p2.v.t._bodyString = p.b
         for child in p.children_iter(copy=True):
             child2 = p2.insertAsLastChild()
             child.copyTreeFromSelfTo(child2)
@@ -2634,6 +2829,8 @@ class basePosition (object):
 
         p = self ; limit,limitIsVisible = c.visLimit() ; trace = False
 
+        if trace: g.trace('limit',limit,'limitIsVisible',limitIsVisible)
+
         def checkLimit (p):
             '''Return done, return-val'''
             if limit:
@@ -2651,20 +2848,25 @@ class basePosition (object):
         while p:
             # Short-circuit if possible.
             back = p.back()
+            if trace: g.trace(
+                'back',back,'hasChildren',bool(back and back.hasChildren()),
+                'isExpanded',bool(back and back.isExpanded()))
             if back and (not back.hasChildren() or not back.isExpanded()):
                 p.moveToBack()
             else:
                 p.moveToThreadBack()
             if p:
-                if trace: g.trace('*p',p.headString())
+                if trace: g.trace('*p',p.h)
                 done,val = checkLimit(p)
-                if done: return val
+                if done:
+                    if trace: g.trace('done')
+                    return val
                 if p.isVisible(c):
+                    if trace: g.trace('isVisible')
                     return p
         else:
             # assert not p.
             return p
-    #@nonl
     #@-node:ekr.20080416161551.210:p.moveToVisBack
     #@+node:ekr.20080416161551.211:p.moveToVisNext
     def moveToVisNext (self,c):
@@ -2688,13 +2890,17 @@ class basePosition (object):
                 return False,None
 
         while p:
+            if trace: g.trace(
+                'hasChildren',p.hasChildren(),
+                'isExpanded',p.isExpanded(),
+                p.h)
             # Short-circuit if possible.
             if p.hasNext() and (not p.hasChildren() or not p.isExpanded()):
                 p.moveToNext()
             else:
                 p.moveToThreadNext()
             if p:
-                if trace: g.trace('*p',p.headString())
+                if trace: g.trace('*p',p.h)
                 done,val = checkLimit(p)
                 if done: return val
                 if p.isVisible(c):
@@ -2750,7 +2956,7 @@ class basePosition (object):
 
         # Delete p.v from the its own vnodeList.
         if p.v in p.v.t.vnodeList:
-            # g.trace('**** remove p.v from %s' % p.headString())
+            # g.trace('**** remove p.v from %s' % p.h)
             p.v.t.vnodeList.remove(p.v)
             p.v.t._p_changed = 1
             assert(p.v not in p.v.t.vnodeList)
@@ -2909,7 +3115,8 @@ class basePosition (object):
             g.trace('can not happen: bad child index: %s, len(children): %s' % (n,len(parent_v.t.children)))
             # g.trace('parent_v.t.children...\n',g.listToString(parent_v.t.children))
             g.trace('parent_v',parent_v,'p.v',p.v)
-            g.trace('** callsers:',g.callers())
+            g.trace('** callers:',g.callers())
+            g.pdb()
             if g.app.unitTesting: assert False, 'children[%s] != p.v'
 
         # Clear the entire parents array.
@@ -2922,11 +3129,72 @@ class basePosition (object):
     #@-node:ekr.20080416161551.217:p._unlink
     #@-node:ekr.20080423062035.1:p.Low level methods
     #@-others
-
-class position (basePosition):
-    pass
-#@nonl
 #@-node:ekr.20031218072017.889:class position
+#@+node:ville.20090311190405.68:class poslist
+class poslist(list):
+    """ List of positions 
+
+    This behaves like a normal list, with the distinction that it 
+    has select_h and select_b methods that can be used 
+    to search through immediate children of the nodes.
+
+    """
+    #@    @+others
+    #@+node:ville.20090311190405.69:select_h
+    def select_h(self, regex, flags = re.IGNORECASE):
+        """ Find immediate child nodes of nodes in poslist with regex.
+
+        You can chain find_h / find_b with select_h / select_b like this
+        to refine an outline search::
+
+            pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')
+
+        """
+        pat = re.compile(regex, flags)
+        res = poslist()
+        for p in self:
+            for child_p in p.children_iter():            
+                m = re.match(pat, child_p.h)
+                if m:
+                    pc = child_p.copy()
+                    pc.mo = m
+                    res.append(pc)
+        return res
+
+
+
+    #@-node:ville.20090311190405.69:select_h
+    #@+node:ville.20090311195550.1:select_b
+    def select_b(self, regex, flags = re.IGNORECASE ):
+        """ Find all the nodes in poslist where body matches regex
+
+        You can chain find_h / find_b with select_h / select_b like this
+        to refine an outline search::
+
+            pl = c.find_h('@thin.*py').select_h('class.*').select_b('import (.*)')
+        """
+        pat = re.compile(regex, flags)
+        res = poslist()
+        for p in self:
+            m = re.finditer(pat, p.b)
+            t1,t2 = itertools.tee(m,2)
+            try:
+                first = t1.next()
+                # if does not raise StopIteration...
+                pc = p.copy()
+                pc.matchiter = t2
+                res.append(pc)
+
+            except StopIteration:
+                pass
+
+        return res
+
+
+
+    #@-node:ville.20090311195550.1:select_b
+    #@-others
+#@-node:ville.20090311190405.68:class poslist
 #@-others
 #@nonl
 #@-node:ekr.20031218072017.3320:@thin leoNodes.py

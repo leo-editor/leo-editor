@@ -291,12 +291,12 @@ class atFile:
     #@+node:ekr.20041005105605.15:initWriteIvars
     def initWriteIvars(self,root,targetFileName,
         atAuto=False,
+        atShadow=False,
         nosentinels=False,
         thinFile=False,
         scriptWrite=False,
         toString=False,
         forcePythonSentinels=None,
-        write_strips_blank_lines=None,
     ):
 
         self.initCommonIvars()
@@ -315,6 +315,7 @@ class atFile:
         self.explicitLineEnding = False # True: an @lineending directive specifies the ending.
         self.fileChangedFlag = False # True: the file has actually been updated.
         self.atAuto = atAuto
+        self.atShadow = atShadow
         self.shortFileName = "" # short version of file name used for messages.
         self.thinFile = False
         self.force_newlines_in_at_nosent_bodies = self.c.config.getBool(
@@ -334,11 +335,6 @@ class atFile:
                 self.targetFileName = self.outputFileName = unicode('')
         #@-node:ekr.20041005105605.16:<< init ivars for writing >>>
         #@nl
-
-        if write_strips_blank_lines is None:
-            self.write_strips_blank_lines = self.c.config.getBool('write_strips_blank_lines')
-        else:
-            self.write_strips_blank_lines = write_strips_blank_lines
 
         if forcePythonSentinels is None:
             forcePythonSentinels = scriptWrite
@@ -1764,7 +1760,7 @@ class atFile:
             except Exception: s = ""
             old_body = p.b
             if s != old_body:
-                if 0: # For debugging.
+                if False and old_body: # For debugging.
                     g.pr("\nchanged: " + p.h)
                     g.pr("\nnew:",s)
                     g.pr("\nold:",p.b)
@@ -2079,9 +2075,7 @@ class atFile:
                 at.putOpenNodeSentinel(p)
 
                 s = p.b
-
-                if self.write_strips_blank_lines:
-                    s = self.cleanLines(p,s)
+                s = self.cleanLines(p,s)
 
                 if s:
                     s = g.toEncodedString(s,at.encoding,reportErrors=True)
@@ -2239,7 +2233,6 @@ class atFile:
         thinFile = False,
         scriptWrite = False,
         toString = False,
-        write_strips_blank_lines = None,
     ):
 
         """Write a 4.x derived file."""
@@ -2268,8 +2261,7 @@ class atFile:
         #@nl
         at.initWriteIvars(root,at.targetFileName,
             nosentinels = nosentinels, thinFile = thinFile,
-            scriptWrite = scriptWrite, toString = toString,
-            write_strips_blank_lines = write_strips_blank_lines)
+            scriptWrite = scriptWrite, toString = toString)
 
         if nosentinels and not scriptWrite and not toString:
             fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
@@ -2514,12 +2506,13 @@ class atFile:
         c.endEditing() # Capture the current headline.
         at.targetFileName = g.choose(toString,"<string-file>",fileName)
         at.initWriteIvars(root,at.targetFileName,
+            atAuto=True,
             nosentinels=True,thinFile=False,scriptWrite=False,
-            toString=toString,write_strips_blank_lines=False)
+            toString=toString)
 
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
         if ok:
-            at.writeOpenFile(root,nosentinels=True,toString=toString,atAuto=True)
+            at.writeOpenFile(root,nosentinels=True,toString=toString)
             at.closeWriteFile() # Sets stringOutput if toString is True.
             if at.errors == 0:
                 at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
@@ -2600,11 +2593,11 @@ class atFile:
         at.initWriteIvars(root,at.targetFileName,
             atAuto=True,
             nosentinels=True,thinFile=False,scriptWrite=False,
-            toString=toString,write_strips_blank_lines=False)
+            toString=toString)
 
         ok = at.openFileForWriting(root,fileName=fn,toString=toString)
         if ok:
-            at.writeOpenFile(root,nosentinels=True,toString=toString,atAuto=True)
+            at.writeOpenFile(root,nosentinels=True,toString=toString)
             at.closeWriteFile() # Sets stringOutput if toString is True.
             if at.errors == 0:
                 at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
@@ -2727,14 +2720,13 @@ class atFile:
 
         c.endEditing() # Capture the current headline.
         at.initWriteIvars(root,targetFileName=None, # Not used.
+            atShadow=True,
             nosentinels=None, # set below.  Affects only error messages (sometimes).
             thinFile=True, # New in Leo 4.5 b2: private files are thin files.
             scriptWrite=False,
             toString=False, # True: create a fileLikeObject.  This is done below.
-            forcePythonSentinels=True, # A hack to suppress an error message.
+            forcePythonSentinels=True) # A hack to suppress an error message.
                 # The actual sentinels will be set below.
-            write_strips_blank_lines=False,
-        )
 
         # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
         #                     what is used in x.propegate changes.
@@ -2752,7 +2744,8 @@ class atFile:
         for sentinels in (False,True):
             theFile = at.openStringFile(fn)
             at.sentinels = sentinels
-            at.writeOpenFile(root,nosentinels=not sentinels,toString=False,atAuto=False)
+            at.writeOpenFile(root,
+                nosentinels=not sentinels,toString=False)
                 # nosentinels only affects error messages, and then only if atAuto is True.
             s = at.closeStringFile(theFile)
             data.append(s)
@@ -2974,9 +2967,6 @@ class atFile:
                 #@+node:ekr.20041005105605.156:<< Write p's body >>
                 s = p.b
 
-                if self.write_strips_blank_lines:
-                    s = self.cleanLines(p,s)
-
                 if s:
                     s = g.toEncodedString(s,at.encoding,reportErrors=True) # 3/7/03
                     at.outputStringWithLineEndings(s)
@@ -2994,7 +2984,7 @@ class atFile:
     # New in 4.3 b2: support for writing from a string.
 
     def writeOpenFile(self,root,
-        nosentinels=False,toString=False,fromString='',atAuto=False):
+        nosentinels=False,toString=False,fromString=''):
 
         """Do all writes except asis writes."""
 
@@ -3013,7 +3003,7 @@ class atFile:
         root.setVisited()
         at.putAtLastLines(s)
 
-        if atAuto or (not toString and not nosentinels):
+        if self.atAuto or (not toString and not nosentinels):
             at.warnAboutOrphandAndIgnoredNodes()
     #@-node:ekr.20041005105605.157:writeOpenFile
     #@-node:ekr.20041005105605.153:Override in plugins...
@@ -3064,8 +3054,7 @@ class atFile:
             trailingNewlineFlag = True # don't need to generate an @nonl
         #@-node:ekr.20041005105605.162:<< Make sure all lines end in a newline >>
         #@nl
-        if self.write_strips_blank_lines:
-            s = self.cleanLines(p,s)
+        s = self.cleanLines(p,s)
         i = 0
         while i < len(s):
             next_i = g.skip_line(s,i)
@@ -3307,6 +3296,7 @@ class atFile:
 
         '''Put a normal code line.'''
 
+        trace = False and not g.unitTesting
         at = self
 
         # Put @verbatim sentinel if required.
@@ -3317,26 +3307,11 @@ class atFile:
         j = g.skip_line(s,i)
         line = s[i:j]
 
-        # g.trace('atRaw',at.raw,'line',repr(line),g.callers(4))
+        if trace: g.trace(self.atShadow,repr(line))
 
-        if self.write_strips_blank_lines:
-            # Don't put any whitespace in otherwise blank lines.
-            if line.strip(): # The line has non-empty content.
-                if not at.raw:
-                    at.putIndent(at.indent,line)
-
-                if line[-1:]=='\n':
-                    at.os(line[:-1])
-                    at.onl()
-                else:
-                    at.os(line)
-            elif line and line[-1] == '\n':
-                at.onl()
-            else:
-                g.trace('Can not happen: completely empty line')
-        else:
-            # Don't put leading indent if the line is empty!
-            if line.strip() and not at.raw: 
+        # Don't put any whitespace in otherwise blank lines.
+        if line.strip(): # The line has non-empty content.
+            if not at.raw:
                 at.putIndent(at.indent,line)
 
             if line[-1:]=='\n':
@@ -3344,6 +3319,11 @@ class atFile:
                 at.onl()
             else:
                 at.os(line)
+        elif line and line[-1] == '\n':
+            at.onl()
+        else:
+            g.trace('Can not happen: completely empty line')
+
     #@-node:ekr.20041005105605.174:putCodeLine (leoAtFile)
     #@+node:ekr.20041005105605.175:putRefLine & allies
     #@+node:ekr.20041005105605.176:putRefLine

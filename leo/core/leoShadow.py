@@ -295,7 +295,7 @@ class shadowController:
                     # g.trace('put line',repr(line))
                     writer.put(line,tag='copy sent %s:%s' % (start,limit))
     #@-node:ekr.20080708094444.37:x.copy_sentinels
-    #@+node:ekr.20080708094444.38:x.propagate_changed_lines
+    #@+node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
     def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
 
         '''Propagate changes from 'new_public_lines' to 'old_private_lines.
@@ -340,7 +340,7 @@ class shadowController:
 
             sep1 = '=' * 10 ; sep2 = '-' * 20
 
-            g.pr('\n',sep1,message,sep1,p and p.headString())
+            g.pr('\n',sep1,message,sep1,p and p.h)
 
             g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
 
@@ -395,7 +395,7 @@ class shadowController:
             # skips (deletes)
             # all previously unwritten non-sentinel lines in 
             # old_private_lines_rdr whose index
-            # less than mapping[old_i].
+            # is less than mapping[old_i].
             # 
             # As a result, the opcode handlers do not need to delete elements 
             # from the
@@ -485,7 +485,7 @@ class shadowController:
             #@-node:ekr.20080708094444.45:<< do final correctness check >>
             #@nl
         return result
-    #@-node:ekr.20080708094444.38:x.propagate_changed_lines
+    #@-node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
     #@+node:ekr.20080708094444.36:x.propagate_changes
     def propagate_changes(self, old_public_file, old_private_file):
 
@@ -833,7 +833,7 @@ class shadowController:
 
             '''Write p's tree to a string, as if to a file.'''
 
-            h = p.headString()
+            h = p.h
             p2 = root.insertAsLastChild()
             p2.setHeadString(h + '-sentinels')
             return p2
@@ -848,13 +848,9 @@ class shadowController:
                 nosentinels = False,
                 thinFile = False,  # Debatable.
                 scriptWrite = True,
-                toString = True,
-                write_strips_blank_lines = None,)
+                toString = True)
 
             s = at.stringOutput
-
-            # g.trace(p.headString(),'\n',s)
-
             return g.splitLines(s)
         #@-node:ekr.20080709062932.21:makePrivateLines
         #@+node:ekr.20080709062932.22:makePublicLines
@@ -933,7 +929,7 @@ class shadowController:
         #@+node:ekr.20080709062932.11:shortDescription
         def shortDescription (self):
 
-            return self.p and self.p.headString() or '@test-shadow: no self.p'
+            return self.p and self.p.h or '@test-shadow: no self.p'
         #@-node:ekr.20080709062932.11:shortDescription
         #@-others
 
@@ -961,10 +957,12 @@ class sourcereader:
     #@    @+others
     #@+node:ekr.20080708094444.13:__init__
     def __init__ (self,shadowController,lines):
+
         self.lines = lines 
         self.length = len(self.lines)
         self.i = 0
         self.shadowController=shadowController
+    #@nonl
     #@-node:ekr.20080708094444.13:__init__
     #@+node:ekr.20080708094444.14:index
     def index (self):
@@ -972,8 +970,13 @@ class sourcereader:
     #@-node:ekr.20080708094444.14:index
     #@+node:ekr.20080708094444.15:get
     def get (self):
+
+        trace = False and not g.unitTesting
+
         result = self.lines[self.i]
         self.i+=1
+
+        if trace: g.trace(repr(result))
         return result 
     #@-node:ekr.20080708094444.15:get
     #@+node:ekr.20080708094444.16:sync
@@ -1026,7 +1029,7 @@ class sourcewriter:
     #@+node:ekr.20080708094444.23:put
     def put(self, line, tag=''):
 
-        trace = False or self.trace
+        trace = (False or self.trace) and not g.unitTesting
 
         # An important hack.  Make sure *all* lines end with a newline.
         # This will cause a mismatch later in check_the_final_output,

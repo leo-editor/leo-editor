@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="3,7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="2"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -17,7 +17,7 @@
 </v>
 <v t="ekr.20070603190944"><vh>@chapter xyz</vh>
 <v t="ekr.20070603190944.1"><vh>xyz node 1</vh></v>
-<v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
+<v t="ekr.20071206070207"></v>
 </v>
 </v>
 <v t="ekr.20070224123943"><vh>@settings</vh>
@@ -123,14 +123,18 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
-<v t="ekr.20070517160058.1" a="E"><vh>Prototypes</vh>
+<v t="ekr.20090309114909.2"><vh>Prototypes</vh>
+<v t="ekr.20080118100049"><vh>cairo</vh></v>
 <v t="ekr.20071026102420"><vh>Garbage collection</vh>
 <v t="ekr.20070504064616"><vh>gc.get_objects</vh></v>
 <v t="ekr.20070504131950"><vh>getNewObjects</vh>
 <v t="ekr.20070504134219"><vh>isLargeItem</vh></v>
 </v>
+</v>
+<v t="ekr.20090309114909.3"><vh>mxTextTools proto</vh>
+<v t="ekr.20090309114909.4"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
+<v t="ekr.20090309114909.5"><vh>&lt;&lt; define scan4 tables &gt;&gt;</vh></v>
+<v t="ekr.20090309114909.6"><vh>printItem</vh></v>
 </v>
 <v t="ekr.20070127154855.1"><vh>Prototype of Java</vh>
 <v t="ekr.20070127150459"><vh>@@button java</vh></v>
@@ -146,356 +150,207 @@
 <v t="ekr.20070930055931"><vh>jyleo-script</vh></v>
 <v t="ekr.20070930183037"><vh>@@thin jyleo.py</vh></v>
 </v>
-<v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
-<v t="ekr.20070929122956"><vh>Data trees</vh>
-<v t="ekr.20070929114617"><vh>@graph-target</vh></v>
-<v t="ekr.20070929072043"><vh>@networkx</vh>
-<v t="ekr.20070929072506.1"><vh>@nodes</vh></v>
-<v t="ekr.20070929072506"><vh>@edges</vh></v>
+<v t="ekr.20090309114909.7"><vh>Prototype of Leo in Ajax</vh>
+<v t="ekr.20090309114909.8"><vh>To do</vh></v>
+<v t="ekr.20090309114909.9"><vh>@@button Leo2DHTML</vh>
+<v t="ekr.20090309114909.10"><vh>&lt;&lt; about LeoToHTML &gt;&gt;</vh></v>
+<v t="ekr.20090309114909.11"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
+<v t="ekr.20090309114909.12"><vh>escape</vh></v>
+<v t="ekr.20090309114909.13"><vh>writeAll</vh></v>
+<v t="ekr.20090309114909.14"><vh>writeBody</vh></v>
+<v t="ekr.20090309114909.15"><vh>writeHead</vh></v>
+<v t="ekr.20090309114909.16"><vh>writeContents</vh></v>
+<v t="ekr.20090309114909.17"><vh>writePreamble</vh></v>
+<v t="ekr.20090309114909.18"><vh>writePostamble</vh></v>
 </v>
-<v t="ekr.20070929070257"><vh>@graph</vh>
-<v t="ekr.20070929070257.1"><vh>@node child1</vh>
-<v t="ekr.20070929070632"><vh>@link ('ekr', '20070929070257', 2): @node child2</vh></v>
+<v t="ekr.20090309114909.19"><vh>@@file server.py</vh></v>
+<v t="ekr.20090309114909.20"><vh>@@file hello.html</vh></v>
+<v t="ekr.20090309114909.21"><vh>@@file cgi-bin/edward.py</vh>
+<v t="ekr.20090309114909.22"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20090309114909.23"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
+<v t="ekr.20090309114909.24"><vh>escape</vh></v>
+<v t="ekr.20090309114909.25"><vh>print_all</vh></v>
+<v t="ekr.20090309114909.26"><vh>print_body</vh></v>
+<v t="ekr.20090309114909.27"><vh>print_head</vh></v>
+<v t="ekr.20090309114909.28"><vh>print_leo_dot_js</vh></v>
+<v t="ekr.20090309114909.29"><vh>print_tree</vh></v>
 </v>
-<v t="ekr.20070929070257.2"><vh>@node child2</vh>
-<v t="ekr.20070929070632.1"><vh>@link ('ekr', '20070929070257', 1): @node child1</vh></v>
+<v t="ekr.20090309114909.30"><vh>@@thin cgi-bin/leo.js</vh>
+<v t="ekr.20090309114909.31"><vh>getElementbyClass</vh></v>
+<v t="ekr.20090309114909.32"><vh>contractcontent</vh></v>
+<v t="ekr.20090309114909.33"><vh>expandcontent</vh></v>
+<v t="ekr.20090309114909.34"><vh>revivecontent</vh></v>
+<v t="ekr.20090309114909.35"><vh>get_cookie</vh></v>
+<v t="ekr.20090309114909.36"><vh>getselectedItem</vh></v>
+<v t="ekr.20090309114909.37"><vh>saveswitchstate</vh></v>
+<v t="ekr.20090309114909.38"><vh>do_onload</vh></v>
+<v t="ekr.20090309114909.39"><vh>format</vh></v>
+<v t="ekr.20090309114909.40"><vh>formatText</vh></v>
 </v>
+<v t="ekr.20090309114909.41"><vh>@@thin jqueryTest.html</vh></v>
 </v>
-<v t="ekr.20070928095102"><vh>root-node</vh>
-<v t="ekr.20070928095102.1"><vh>child1</vh></v>
-<v t="ekr.20070928095102.2"><vh>child2</vh></v>
+<v t="ekr.20090309114909.42"><vh>Prototype of networkx graph tools</vh>
+<v t="ekr.20090309114909.43"><vh>Data trees</vh>
+<v t="ekr.20090309114909.44"><vh>@graph-target</vh></v>
+<v t="ekr.20090309114909.45"><vh>@networkx</vh>
+<v t="ekr.20090309114909.46"><vh>@nodes</vh></v>
+<v t="ekr.20090309114909.47"><vh>@edges</vh></v>
 </v>
+<v t="ekr.20090309114909.48"><vh>@graph</vh>
+<v t="ekr.20090309114909.49"><vh>@node child1</vh>
+<v t="ekr.20090309114909.50"><vh>@link ('ekr', '20070929070257', 2): @node child2</vh></v>
 </v>
-<v t="ekr.20070929122956.1"><vh>buttons</vh>
-<v t="ekr.20070929070426"><vh>@@button print link</vh></v>
-<v t="ekr.20070927175908"><vh>@@button leo2graph</vh></v>
-<v t="ekr.20070929062147.1"><vh>@@button at-graph2graph</vh></v>
-<v t="ekr.20070929062147.2"><vh>@@button at-networkx2graph</vh>
-<v t="ekr.20070929081505"><vh>error</vh></v>
-<v t="ekr.20070929074830"><vh>parse</vh></v>
-<v t="ekr.20070929072506.2"><vh>parseNodes</vh></v>
-<v t="ekr.20070929074830.1"><vh>parseEdges</vh></v>
-</v>
-<v t="ekr.20070929082546"><vh>@@button at-networkx2at-graph</vh>
-<v t="ekr.20070929120541"><vh>createEdges</vh></v>
-<v t="ekr.20070929120541.1"><vh>createNodes</vh></v>
-<v t="ekr.20070929115302"><vh>createTree</vh></v>
-<v t="ekr.20070929114410.2"><vh>error</vh></v>
-<v t="ekr.20070929114410.3"><vh>parse</vh></v>
-<v t="ekr.20070929114410.5"><vh>parseEdges</vh></v>
-<v t="ekr.20070929114410.4"><vh>parseNodes</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20070630142904"><vh>Prototype of pyrex</vh>
-<v t="ekr.20070630142904.2"><vh>gcc build docs</vh></v>
-<v t="ekr.20070630142904.3"><vh>pyrexc command-line options</vh></v>
-<v t="ekr.20070630142904.4"><vh>@@file myModule.pyx</vh></v>
-<v t="ekr.20070630142904.5"><vh>Make myModule.c</vh></v>
-</v>
-<v t="ekr.20071026082438"><vh>Prototype of user icons</vh>
-<v t="ekr.20071026082914"><vh>Arrow target</vh></v>
-<v t="ekr.20071026084348"><vh>Icon target</vh></v>
-<v t="ekr.20071026174655"><vh>Small icons</vh>
-<v t="ekr.20071026174231"><vh>small icons</vh></v>
-</v>
-<v t="ekr.20071026174414"><vh>Medium icons</vh>
-<v t="ekr.20071026174331"><vh>medium icons 1</vh></v>
-<v t="ekr.20071026174414.1"><vh></vh></v>
-<v t="ekr.20071026174414.2"><vh>medium icons 2</vh></v>
-</v>
-<v t="ekr.20071026174655.1"><vh>Large icons</vh>
-<v t="ekr.20071026174817"><vh></vh></v>
-<v t="ekr.20071026174817.1"><vh></vh></v>
-<v t="ekr.20071026174655.2"><vh>large icons 1</vh></v>
-</v>
-<v t="ekr.20071026082438.1"><vh>@@button delete all icons</vh></v>
-<v t="ekr.20071026085244"><vh>@@button delete icons</vh></v>
-<v t="ekr.20071026082438.2"><vh>@@button insert arrows</vh>
-<v t="ekr.20071026082438.3"><vh>&lt;&lt; define event callbacks &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20071026083020"><vh>@@button insert icons @key=Alt+5</vh>
-<v t="ekr.20071026133046"><vh>getImageHeight</vh></v>
-</v>
-<v t="ekr.20071026170504"><vh>print sizes of all icons in various directories</vh>
-<v t="ekr.20071026170511.1"><vh>getImageStats</vh></v>
-</v>
-<v t="ekr.20071026175552"><vh>print icon paths</vh></v>
-</v>
-<v t="ekr.20071026102420.2"><vh>Screen capture</vh>
-<v t="ekr.20070528111805"><vh>FrontWindowCapture.pyw</vh></v>
-<v t="ekr.20070609085533"><vh>@@url c:\prog\wink\ChangeViewMenu.htm</vh></v>
-</v>
-<v t="edreamleo.20080110083531"><vh>gtk stuff</vh>
-<v t="edreamleo.20080110130828"><vh>createWindow</vh></v>
-<v t="bob.20080111200056"><vh>@thin gtkOutlineDemo.py</vh></v>
-</v>
-<v t="ekr.20080118100049"><vh>cairo</vh></v>
-<v t="ekr.20080128143841"><vh>test of ekrProj</vh></v>
-<v t="ekr.20080127215337"><vh>package-script</vh></v>
-<v t="ekr.20080503202744.3"><vh>Rope</vh></v>
-</v>
-<v t="ekr.20070315071830"><vh>Test files (do not delete)</vh>
-<v t="ekr.20070227104713"><vh>@thin leoBridgeTest.py</vh></v>
-<v t="ekr.20070626153912"><vh>@thin leoDynamicTest.py</vh></v>
-</v>
-<v t="ekr.20071105085941"><vh>Tests</vh>
-<v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
-<v t="ekr.20070722102255"><vh>@image C:\prog\tigris-cvs\leo\Icons\leo_inst.ico</vh></v>
-<v t="ekr.20071030094853"><vh>Java import tests</vh>
-<v t="ekr.20071030103209"><vh>Scripts: print/add/disable all java files in the from-victor directory</vh>
-<v t="ekr.20071030103909"><vh>files</vh></v>
-</v>
-<v t="ekr.20071110092702.1"><vh>@@auto c:\prog\tigris-cvs\leo\test\r-41-framework\adminPermission.java</vh></v>
-<v t="ekr.20071030103258"><vh>@@auto c:\prog\test\from-victor\AdminPermission.java</vh></v>
-<v t="ekr.20071030103909.19"><vh>@@auto c:\prog\test\from-victor\AllServiceListener.java</vh></v>
-<v t="ekr.20071030104140.23"><vh>@@auto c:\prog\test\from-victor\Bundle.java</vh></v>
-<v t="ekr.20071030104140.22"><vh>@@auto c:\prog\test\from-victor\BundleActivator.java</vh></v>
-<v t="ekr.20071030104140.21"><vh>@@auto c:\prog\test\from-victor\BundleContext.java</vh></v>
-<v t="ekr.20071030104140.20"><vh>@@auto c:\prog\test\from-victor\BundleEvent.java</vh></v>
-<v t="ekr.20071030104140.19"><vh>@@auto c:\prog\test\from-victor\BundleListener.java</vh></v>
-<v t="ekr.20071030104140.18"><vh>@@auto c:\prog\test\from-victor\BundlePermission.java</vh></v>
-<v t="ekr.20071030104140.17"><vh>@@auto c:\prog\test\from-victor\Configurable.java</vh></v>
-<v t="ekr.20071030104140.16"><vh>@@auto c:\prog\test\from-victor\Constants.java</vh></v>
-<v t="ekr.20071030104140.15"><vh>@@auto c:\prog\test\from-victor\Filter.java</vh></v>
-<v t="ekr.20071030104140.14"><vh>@@auto c:\prog\test\from-victor\FrameworkEvent.java</vh></v>
-<v t="ekr.20071030104140.13"><vh>@@auto c:\prog\test\from-victor\FrameworkListener.java</vh></v>
-<v t="ekr.20071030104140.12"><vh>@@auto c:\prog\test\from-victor\FrameworkUtil.java</vh></v>
-<v t="ekr.20071030104140.11"><vh>@@auto c:\prog\test\from-victor\InvalidSyntaxException.java</vh></v>
-<v t="ekr.20071030104140.10"><vh>@@auto c:\prog\test\from-victor\PackagePermission.java</vh></v>
-<v t="ekr.20071030104140.9"><vh>@@auto c:\prog\test\from-victor\ServiceEvent.java</vh></v>
-<v t="ekr.20071030104140.8"><vh>@@auto c:\prog\test\from-victor\ServiceFactory.java</vh></v>
-<v t="ekr.20071030104140.7"><vh>@@auto c:\prog\test\from-victor\ServiceListener.java</vh></v>
-<v t="ekr.20071030104140.6"><vh>@@auto c:\prog\test\from-victor\ServicePermission.java</vh></v>
-<v t="ekr.20071030104140.5"><vh>@@auto c:\prog\test\from-victor\ServiceReference.java</vh></v>
-<v t="ekr.20071030104140.4"><vh>@@auto c:\prog\test\from-victor\ServiceRegistration.java</vh></v>
-<v t="ekr.20071030102858.3"><vh>@@auto c:\prog\test\from-victor\shortBundleException.java</vh></v>
-<v t="ekr.20071030104140.3"><vh>@@auto c:\prog\test\from-victor\shortBundleException.java</vh></v>
-<v t="ekr.20071030104140.2"><vh>@@auto c:\prog\test\from-victor\SynchronousBundleListener.java</vh></v>
-<v t="ekr.20071030104140.1"><vh>@@auto c:\prog\test\from-victor\Version.java</vh></v>
-<v t="ekr.20071019073617"><vh>@@auto AdminPermission.java</vh></v>
-</v>
-<v t="ekr.20071114053401"><vh>@@file minimimal-at-thin-test.py</vh></v>
-<v t="ekr.20071113100456"><vh>color_markup test</vh></v>
-<v t="ekr.20071114071901"><vh>@url http://webpages.charter.net/edreamleo/front.html</vh></v>
-<v t="ekr.20071115061426"><vh>@rst preformat-test.html</vh>
-<v t="ekr.20071115061426.1"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20071115061426.2"><vh>Before section</vh></v>
-<v t="ekr.20071115061426.3"><vh>@rst-preformat</vh></v>
-<v t="ekr.20071115061535.1"><vh>After section</vh></v>
-<v t="ekr.20071115061426.12"><vh>@rst-no-head end stuff</vh></v>
-</v>
-<v t="ekr.20071117152614"><vh>Mini test of at.putBuffered</vh></v>
-<v t="ekr.20071127232245"><vh>lockout test</vh></v>
-<v t="ekr.20071129090337"><vh>perl problem</vh></v>
-<v t="ekr.20071201065815"><vh>@@auto at-auto-test.py</vh>
-<v t="ekr.20071201073632"><vh>class Index</vh></v>
-<v t="ekr.20071201073632.1"><vh>main</vh></v>
-</v>
-<v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
-<v t="ekr.20080108091619"><vh>Convenience methods for icons</vh>
-<v t="ekr.20080108092210"><vh>@@button insert-icon</vh></v>
-<v t="ekr.20080108092210.1"><vh>@@button delete-icons</vh></v>
-</v>
-<v t="ekr.20071114092813"><vh>Tests of user icons</vh>
-<v t="ekr.20071114092813.1"><vh>Arrow target</vh></v>
-<v t="ekr.20071114092813.2"><vh>Icon target</vh></v>
-<v t="ekr.20071114092813.3"><vh>Small icons</vh>
-<v t="ekr.20071114092813.4"><vh>small icons</vh></v>
-</v>
-<v t="ekr.20071114092813.5"><vh>Medium icons</vh>
-<v t="ekr.20071114092813.6"><vh>medium icons 1</vh></v>
-<v t="ekr.20071114092813.7"><vh></vh></v>
-<v t="ekr.20071114092813.8"><vh>medium icons 2</vh></v>
-</v>
-<v t="ekr.20071114092813.9"><vh>Large icons</vh>
-<v t="ekr.20071114092813.10"><vh></vh></v>
-<v t="ekr.20071114092813.11"><vh></vh></v>
-<v t="ekr.20071114092813.12"><vh>large icons 1</vh></v>
-</v>
-<v t="ekr.20071114092813.13"><vh>@@button delete all icons</vh></v>
-<v t="ekr.20071114092813.14"><vh>@@button delete icons</vh></v>
-<v t="ekr.20071114092813.15"><vh>@@button insert arrows</vh>
-<v t="ekr.20071114092813.16"><vh>&lt;&lt; define event callbacks &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20071114092813.17"><vh>@@button insert icons @key=Alt+5</vh>
-<v t="ekr.20071114092813.18"><vh>getImageHeight</vh></v>
-</v>
-<v t="ekr.20071114092813.19"><vh>print sizes of all icons in various directories</vh>
-<v t="ekr.20071114092813.20"><vh>getImageStats</vh></v>
-</v>
-<v t="ekr.20071114092813.21"><vh>print icon paths</vh></v>
-<v t="ekr.20071114084053"><vh>From Icons/Tango/16x16/emotes</vh></v>
-<v t="ekr.20071116113202"><vh>Body text contains all icons in Icons/Tango</vh></v>
-</v>
-<v t="ekr.20080211085709"><vh>filter</vh></v>
-<v t="ekr.20080211090819"><vh>@path c:\prog\test</vh>
-<v t="ekr.20080210201921"><vh>@@auto pascalTest.pas</vh>
-<v t="ekr.20080211172530"><vh>pascalTest declarations</vh></v>
-<v t="ekr.20080211172530.1"><vh>interface</vh></v>
+<v t="ekr.20090309114909.51"><vh>@node child2</vh>
+<v t="ekr.20090309114909.52"><vh>@link ('ekr', '20070929070257', 1): @node child1</vh></v>
 </v>
 </v>
-<v t="ekr.20080212035042"><vh>@@auto c:\prog\test\django-tests.py</vh>
-<v t="ekr.20080212114457"><vh>django-tests declarations</vh></v>
-</v>
-<v t="ekr.20080223084414"><vh>testing mixture of keyword args and *args arg</vh></v>
-<v t="ekr.20080229140820"><vh>test minibuffer command with args</vh></v>
-<v t="ekr.20080413195706.1"><vh>PyDispatcher</vh></v>
-<v t="ekr.20080502120646.1"><vh>@@asis C:\leo.repo\trunk\leo\test\test.php</vh></v>
-<v t="ekr.20080503195928.1"><vh>@@auto C:\leo.repo\trunk\leo\test\test.php</vh></v>
-</v>
-<v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
-<v t="ekr.20080531131542.1"><vh>mxTextTools proto</vh>
-<v t="ekr.20080531141227.1"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
-<v t="ekr.20080531131542.2"><vh>&lt;&lt; define scan4 tables &gt;&gt;</vh></v>
-<v t="ekr.20080531131542.4"><vh>printItem</vh></v>
-</v>
-<v t="ekr.20071210102626"><vh>@thin cgi-bin/leo.js</vh></v>
-<v t="ekr.20080601134805.7"><vh>old helpers</vh>
-<v t="ekr.20080601131331.6"><vh>readNormalLine</vh>
-<v t="ekr.20080601131331.7"><vh>&lt;&lt; Skip the leading stuff &gt;&gt;</vh></v>
-<v t="ekr.20080601131331.8"><vh>&lt;&lt; Append s to docOut &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20080601131331.9"><vh>start sentinels</vh>
-<v t="ekr.20080601131331.10"><vh>readStartAll (4.2)</vh></v>
-<v t="ekr.20080601131331.11"><vh>readStartAt &amp; readStartDoc</vh></v>
-<v t="ekr.20080601131331.12"><vh>readStartLeo</vh></v>
-<v t="ekr.20080601131331.13"><vh>readStartMiddle</vh></v>
-<v t="ekr.20080601131331.14"><vh>readStartNode (4.x)</vh>
-<v t="ekr.20080601131331.15"><vh>&lt;&lt; set gnx and bump i &gt;&gt;</vh></v>
-<v t="ekr.20080601131331.16"><vh>&lt;&lt; Set headline, undoing the CWEB hack &gt;&gt;</vh></v>
-<v t="ekr.20080601131331.17"><vh>&lt;&lt; Check the filename in the sentinel &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20080601131331.18"><vh>readStartOthers</vh></v>
-</v>
-<v t="ekr.20080601131331.19"><vh>end sentinels</vh>
-<v t="ekr.20080601131331.20"><vh>readEndAll (4.2)</vh></v>
-<v t="ekr.20080601131331.21"><vh>readEndAt &amp; readEndDoc</vh></v>
-<v t="ekr.20080601131331.22"><vh>readEndLeo</vh></v>
-<v t="ekr.20080601131331.23"><vh>readEndMiddle</vh></v>
-<v t="ekr.20080601131331.24"><vh>readEndNode (4.x)</vh>
-<v t="ekr.20080601131331.25"><vh>&lt;&lt; indicate that the node has been changed &gt;&gt;</vh>
-<v t="ekr.20080601131331.26"><vh>&lt;&lt; bump at.correctedLines and tell about the correction &gt;&gt;</vh></v>
+<v t="ekr.20090309114909.53"><vh>root-node</vh>
+<v t="ekr.20090309114909.54"><vh>child1</vh></v>
+<v t="ekr.20090309114909.55"><vh>child2</vh></v>
 </v>
 </v>
-<v t="ekr.20080601131331.27"><vh>readEndOthers</vh></v>
-<v t="ekr.20080601131331.28"><vh>readLastDocLine</vh></v>
+<v t="ekr.20090309114909.56"><vh>buttons</vh>
+<v t="ekr.20090309114909.57"><vh>@@button print link</vh></v>
+<v t="ekr.20090309114909.58"><vh>@@button leo2graph</vh></v>
+<v t="ekr.20090309114909.59"><vh>@@button at-graph2graph</vh></v>
+<v t="ekr.20090309114909.60"><vh>@@button at-networkx2graph</vh>
+<v t="ekr.20090309114909.61"><vh>error</vh></v>
+<v t="ekr.20090309114909.62"><vh>parse</vh></v>
+<v t="ekr.20090309114909.63"><vh>parseNodes</vh></v>
+<v t="ekr.20090309114909.64"><vh>parseEdges</vh></v>
 </v>
-<v t="ekr.20080601131331.29"><vh>Unpaired sentinels</vh>
-<v t="ekr.20080601131331.30"><vh>ignoreOldSentinel</vh></v>
-<v t="ekr.20080601131331.31"><vh>readAfterRef</vh></v>
-<v t="ekr.20080601131331.32"><vh>readClone</vh></v>
-<v t="ekr.20080601131331.33"><vh>readComment</vh></v>
-<v t="ekr.20080601131331.34"><vh>readDelims</vh></v>
-<v t="ekr.20080601131331.35"><vh>readDirective (@@)</vh>
-<v t="ekr.20080601131331.36"><vh>&lt;&lt; handle @language &gt;&gt;</vh></v>
-<v t="ekr.20080601131331.37"><vh>&lt;&lt; handle @comment &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20080601131331.38"><vh>readNl</vh></v>
-<v t="ekr.20080601131331.39"><vh>readNonl</vh></v>
-<v t="ekr.20080601131331.40"><vh>readRef</vh></v>
-<v t="ekr.20080601131331.41"><vh>readVerbatim</vh></v>
-</v>
-<v t="ekr.20080601131331.42"><vh>badEndSentinel, push/popSentinelStack</vh></v>
-</v>
-<v t="ekr.20080601131331.2"><vh>override scanText4</vh>
-<v t="ekr.20080601131331.3"><vh>scanText4_mxTextTools &amp; allies</vh>
-<v t="ekr.20080601131331.4"><vh>&lt;&lt; init ivars for scanText4 &gt;&gt;</vh></v>
-<v t="ekr.20080601132606.1"><vh>&lt;&lt; define mxTextTools tables &gt;&gt;</vh></v>
-<v t="ekr.20080601134805.12"><vh>&lt;&lt; define sentinelDict &gt;&gt;</vh></v>
-<v t="ekr.20080601131331.5"><vh>&lt;&lt; report unexpected end of text &gt;&gt;</vh></v>
-<v t="ekr.20080601134805.2"><vh>new helpers</vh>
-<v t="ekr.20080601134805.3"><vh>doLine</vh>
-<v t="ekr.20080601134805.4"><vh>&lt;&lt; Skip the leading stuff &gt;&gt;</vh></v>
-<v t="ekr.20080601134805.5"><vh>&lt;&lt; Append s to docOut &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20080601134805.6"><vh>doSentinel &amp; helpers</vh>
-<v t="ekr.20080601134805.13"><vh>start sentinels</vh>
-<v t="ekr.20080601134805.14"><vh>readStartAll (4.2)</vh></v>
-<v t="ekr.20080601134805.15"><vh>readStartAt &amp; readStartDoc</vh></v>
-<v t="ekr.20080601134805.16"><vh>readStartLeo</vh></v>
-<v t="ekr.20080601134805.17"><vh>readStartMiddle</vh></v>
-<v t="ekr.20080601134805.18"><vh>readStartNode (4.x)</vh>
-<v t="ekr.20080601134805.19"><vh>&lt;&lt; set gnx and bump i &gt;&gt;</vh></v>
-<v t="ekr.20080601134805.20"><vh>&lt;&lt; Set headline, undoing the CWEB hack &gt;&gt;</vh></v>
-<v t="ekr.20080601134805.21"><vh>&lt;&lt; Check the filename in the sentinel &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20080601134805.22"><vh>readStartOthers</vh></v>
-</v>
-<v t="ekr.20080601134805.23"><vh>end sentinels</vh>
-<v t="ekr.20080601134805.24"><vh>readEndAll (4.2)</vh></v>
-<v t="ekr.20080601134805.25"><vh>readEndAt &amp; readEndDoc</vh></v>
-<v t="ekr.20080601134805.26"><vh>readEndLeo</vh></v>
-<v t="ekr.20080601134805.27"><vh>readEndMiddle</vh></v>
-<v t="ekr.20080601134805.28"><vh>readEndNode (4.x)</vh>
-<v t="ekr.20080601134805.29"><vh>&lt;&lt; indicate that the node has been changed &gt;&gt;</vh>
-<v t="ekr.20080601134805.30"><vh>&lt;&lt; bump at.correctedLines and tell about the correction &gt;&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20080601134805.31"><vh>readEndOthers</vh></v>
-<v t="ekr.20080601134805.32"><vh>readLastDocLine</vh></v>
-</v>
-<v t="ekr.20080601134805.33"><vh>Unpaired sentinels</vh>
-<v t="ekr.20080601134805.34"><vh>ignoreOldSentinel</vh></v>
-<v t="ekr.20080601134805.35"><vh>readAfterRef</vh></v>
-<v t="ekr.20080601134805.36"><vh>readClone</vh></v>
-<v t="ekr.20080601134805.37"><vh>readComment</vh></v>
-<v t="ekr.20080601134805.38"><vh>readDelims</vh></v>
-<v t="ekr.20080601134805.39"><vh>readDirective (@@)</vh>
-<v t="ekr.20080601134805.40"><vh>&lt;&lt; handle @language &gt;&gt;</vh></v>
-<v t="ekr.20080601134805.41"><vh>&lt;&lt; handle @comment &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20080601134805.42"><vh>readNl</vh></v>
-<v t="ekr.20080601134805.43"><vh>readNonl</vh></v>
-<v t="ekr.20080601134805.44"><vh>readRef</vh></v>
-<v t="ekr.20080601134805.45"><vh>readVerbatim</vh></v>
-</v>
-<v t="ekr.20080601134805.46"><vh>badEndSentinel, push/popSentinelStack</vh></v>
+<v t="ekr.20090309114909.65"><vh>@@button at-networkx2at-graph</vh>
+<v t="ekr.20090309114909.66"><vh>createEdges</vh></v>
+<v t="ekr.20090309114909.67"><vh>createNodes</vh></v>
+<v t="ekr.20090309114909.68"><vh>createTree</vh></v>
+<v t="ekr.20090309114909.69"><vh>error</vh></v>
+<v t="ekr.20090309114909.70"><vh>parse</vh></v>
+<v t="ekr.20090309114909.71"><vh>parseEdges</vh></v>
+<v t="ekr.20090309114909.72"><vh>parseNodes</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20080601132606.2"><vh>printItem</vh></v>
+<v t="ekr.20090309114909.73"><vh>Prototype of pyrex</vh>
+<v t="ekr.20090309114909.74"><vh>gcc build docs</vh></v>
+<v t="ekr.20090309114909.75"><vh>pyrexc command-line options</vh></v>
+<v t="ekr.20090309114909.76"><vh>@@file myModule.pyx</vh></v>
+<v t="ekr.20090309114909.77"><vh>Make myModule.c</vh></v>
+</v>
+<v t="ekr.20090309114909.78"><vh>Rope</vh></v>
+<v t="ekr.20090309114909.79"><vh>Running body text as a windows script</vh>
+<v t="ekr.20090309114909.80"><vh>Windows script</vh></v>
+<v t="ekr.20090309114909.81"><vh>@@button run-windows-script</vh>
+<v t="ekr.20090309114909.82"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20090309114909.83"><vh>class MySite</vh></v>
+<v t="ekr.20090309114909.84"><vh>class Application</vh></v>
+<v t="ekr.20090309114909.85"><vh>RunCode</vh></v>
+</v>
+</v>
+<v t="ekr.20090309114909.86"><vh>Screen capture with Wink</vh>
+<v t="ekr.20090309114909.87"><vh>FrontWindowCapture.pyw</vh></v>
+<v t="ekr.20090309114909.88"><vh>@@url c:\prog\wink\ChangeViewMenu.htm</vh></v>
+</v>
+</v>
+<v t="ekr.20090309114909.89"><vh>Tests</vh>
+<v t="ekr.20090309114909.90"><vh> Future features/bug fixes (do not delete)</vh>
+<v t="ekr.20090309114909.91"><vh>@@auto under_indent.py</vh>
+<v t="ekr.20090309114909.92"><vh>class test</vh>
+<v t="ekr.20090309114909.93"><vh>spam</vh></v>
+</v>
+</v>
+<v t="ekr.20090309114909.94"><vh>test of autoCompleter.getExternalCompletions</vh></v>
+<v t="ekr.20090309114909.95"><vh>Wrap test</vh></v>
+</v>
+<v t="ekr.20090309114909.96"><vh>Example scripts</vh>
+<v t="ekr.20090309114909.97"><vh>Run pylint on plugins</vh></v>
+<v t="ekr.20090309114909.98"><vh>Determining key values</vh></v>
+<v t="ekr.20090309114909.99"><vh>getInput</vh></v>
+<v t="ekr.20090309114909.100"><vh>getSettingSource</vh></v>
+<v t="ekr.20090309114909.101"><vh>run bash script</vh></v>
+</v>
+<v t="ekr.20090309114909.102"><vh>Icon stuff</vh>
+<v t="ekr.20090309114909.103"><vh>Add icon row</vh></v>
+<v t="ekr.20090309114909.104"><vh>hide icon rows</vh></v>
+<v t="ekr.20090309114909.105"><vh>show icon rows</vh></v>
+<v t="ekr.20090309114909.106"><vh>clear icon bar</vh></v>
+</v>
+<v t="ekr.20090309114909.107"><vh>Print stats</vh>
+<v t="ekr.20090309114909.108"><vh>print colorer stats</vh></v>
+</v>
+<v t="ekr.20090309114909.109"><vh>Tests for @shadow</vh>
+<v t="ekr.20090309114909.110"><vh>@@shadow python-import-test.py</vh>
+<v t="ekr.20090309114909.111"><vh>python-import-test declarations</vh></v>
+<v t="ekr.20090309114909.112"><vh>class Person</vh>
+<v t="ekr.20090309114909.113"><vh>talk</vh></v>
+<v t="ekr.20090309114909.114"><vh>class Meta</vh></v>
+</v>
+</v>
+<v t="ekr.20090309114909.115"><vh>@@shadow at-shadow-test.ini</vh></v>
+<v t="ekr.20090309114909.116"><vh>@@shadow at-unknown-shadow-test.xyzzy</vh></v>
+<v t="ekr.20090309114909.117"><vh>@@shadow TerryBrownTest.py</vh>
+<v t="ekr.20090309114909.118"><vh>spam</vh></v>
+</v>
+<v t="ekr.20090309114909.119"><vh>@@nosent at-nosent-test.py</vh>
+<v t="ekr.20090309114909.120"><vh>child</vh></v>
+</v>
+<v t="ekr.20090309114909.121"><vh>@@shadow at-shadow-attributes-test.py</vh>
+<v t="ekr.20090309114909.122"><vh>spam</vh>
+<v t="ekr.20090309114909.123"><vh>child</vh></v>
+</v>
+<v t="ekr.20090309114909.124"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20090309114909.125"><vh>@@shadow huh_extension_test.huh</vh></v>
+<v t="ekr.20090309114909.126"><vh>@@shadow ekr-shadow-test.html</vh></v>
+<v t="ekr.20090309114909.127"><vh>@@shadow dummy.conf</vh></v>
+<v t="ekr.20090309114909.128"><vh>@@shadow weird-extension.C</vh>
+<v t="ekr.20090309114909.129"><vh>spam</vh></v>
+</v>
+<v t="ekr.20090309114909.130"><vh>@@shadow mark-changed-nodes-test.py</vh>
+<v t="ekr.20090309114909.131"><vh>spam</vh></v>
+<v t="ekr.20090309114909.132"><vh>eggs</vh></v>
+</v>
+</v>
+<v t="ekr.20090309114909.133"><vh>Tests of new features</vh>
+<v t="ekr.20090309114909.134"><vh>Decorator tests</vh>
+<v t="ekr.20090309114909.135"><vh>Decorator test</vh></v>
+<v t="ekr.20090309114909.136"><vh>decorator test 2</vh></v>
+</v>
+<v t="ekr.20090309114909.137"><vh>tracer tests</vh></v>
+<v t="ekr.20090309114909.138"><vh>posList tests</vh></v>
+<v t="ekr.20090309114909.139"><vh>Macro test</vh>
+<v t="ekr.20090309114909.140"><vh>@test macro ab</vh></v>
+</v>
+<v t="ekr.20090309114909.141"><vh>@test self.assertEqual</vh></v>
+<v t="ekr.20090309114909.142" key="550378797a71002e"><vh>Property tests</vh></v>
+<v t="ekr.20090309114909.143"><vh>Tests of path expressions</vh>
+<v t="ekr.20090309114909.144"><vh>Tests of g.os_path_finalize</vh></v>
+<v t="ekr.20090309114909.145"><vh>test os_pathExpression</vh></v>
+<v t="ekr.20090309114909.146"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
+<v t="ekr.20090309114909.147"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
+<v t="ekr.20090309114909.148"><vh>@path {{c.config.getString('test')}}</vh>
+<v t="ekr.20090309114909.149"><vh>@@thin eval-thin-test.txt</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20090309114909.150"><vh>Tests of recent bug fixes</vh>
+<v t="ekr.20090309114909.151"><vh>@@button moveAfterRoot</vh></v>
+<v t="ekr.20090309114909.152"><vh>@@button totop</vh>
+<v t="ekr.20090309114909.153"><vh>toplevel</vh>
+<v t="ekr.20090309114909.154"><vh>one</vh>
+<v t="ekr.20090309114909.155"><vh>foo</vh></v>
+<v t="ekr.20090309114909.156"><vh>bar</vh></v>
+</v>
+<v t="ekr.20090309114909.157"><vh>two</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20090309114909.158"><vh>Unicode tests</vh>
+<v t="ekr.20090309114909.159"><vh>locale tests</vh></v>
+<v t="ekr.20090309114909.160"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
-<t tx="edreamleo.20080110083531">import gtk
-
-@others
-
-createWindow()
-
-gtk.main()</t>
-<t tx="edreamleo.20080110130828">def createWindow():
-
-    def onKeyUp(w,event):
-        g.trace(event.state,event.keyval,event.string)
-
-    window = gtk.Window()
-    window.set_title("Hello World")
-
-    # button = gtk.Button("-----Press me-----")
-    # button.connect("clicked",onButtonPressed)
-    # window.add(button)
-
-    splitter1 = gtk.VPaned()
-    window.add(splitter1)
-
-    tree = gtk.TextView()
-    buf1 = tree.get_buffer()
-    buf1.set_text("tree")
-
-    body = gtk.TextView()
-    buf2 = body.get_buffer()
-    buf2.set_text("body")
-    body.connect("key_release_event",onKeyUp)
-
-    splitter1.add(tree)
-    splitter1.add2(body)
-
-    window.connect("delete-event",gtk.main_quit)
-    window.show_all()
-    return window
-</t>
 <t tx="ekr.20041001211817">import os
 
 print os.path.exists(os.path.normpath("C:\\Progra~1\\Eclipse"))</t>
@@ -855,7 +710,6 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 </t>
 <t tx="ekr.20070305085403.1"></t>
 <t tx="ekr.20070305085403.2"></t>
-<t tx="ekr.20070315071830"># Do not remove these nodes.</t>
 <t tx="ekr.20070410063214"></t>
 <t tx="ekr.20070416075121">g.app.gui.set_focus(c,w)</t>
 <t tx="ekr.20070503085527"></t>
@@ -969,169 +823,6 @@ if 0: # This can not be run locally: leoBridge.controller starts a Tk event loop
         n += 1
     print '%d nodes in %s' % (n,path)
     # g.app.closeLeoWindow(c.frame)</t>
-<t tx="ekr.20070517160058.1"></t>
-<t tx="ekr.20070528111805"># FrontWindowCapture.pyw
-# Version 0.1
-# Date    20070526
-# Author  Roger Erens (roger AT erens-krekels.net)
-"""
-        Purpose:
-        Capture the image of the front-most window into a fixed-name
-        (_front_window), max-size (default MAX_WIDTH is 640 pixels), and
-        fixed-format (PNG) file that can easily be used when creating
-        documentation for an application on a wiki or in some HTML-docs.
-        This script does _not_ copy the captured image to the clipboard (handy
-        when creating MS Word or OpenOffice documents) since MS Windows already
-        has ALT-PRTSCR to do so.
-
-        Dependencies:
-        Fairly recent versions of Python, wxPython, and PIL should be installed
-
-        Start:
-        Double click FrontWindowCapture.pyw; an icon appears in the Task Bar (lower right of
-        the screen).
-
-        Use:
-        Bring a window to the front and then left-click on the
-        icon in the Task Bar. A file named '_front_window.png' will be saved
-        in the current directory.
-        A pictures wider than MAXWIDTH is scaled down in order to make it easily
-        used in wikis or HTML-documentation.
-        Usually, human intelligence is needed to rename that file; this is also
-        why this script does not copy the image to the clipboard.
-
-        End:
-        Close the application by right-clicking the icon in the Task Bar.
-
-        Note:
-        Make sure that your system is fast enough to find the frontmost
-        window. That is, when a virusscanner is running or virtual memory is
-        low, this script will choke. You can see what happens by enabling the
-        print statements and running this script from a console (change the
-        extension from .pyw to .py).
-"""
-import wx
-import sys
-import win32ui
-import win32gui
-import win32con
-import time
-from PIL import Image, ImageGrab
-
-Image.init()
-
-MAX_WIDTH = 640
-BLINK_STATE = 0
-
-class TaskBarApp(wx.Frame):
-    def __init__(self, parent, id, title):
-        wx.Frame.__init__(self, parent, -1, title, size = (1, 1),
-            style=wx.FRAME_NO_TASKBAR| wx.NO_FULL_REPAINT_ON_RESIZE)
-        self.tbicon = wx.TaskBarIcon()
-        icon = wx.Icon('LeoApp16.ico', wx.BITMAP_TYPE_ICO)
-        self.tbicon.SetIcon(icon, 'Click to capture the foremost window')
-        self.tbicon.Bind(wx.EVT_TASKBAR_LEFT_UP, self.OnTaskBarLeftClick)
-        self.tbicon.Bind(wx.EVT_TASKBAR_RIGHT_UP, self.OnTaskBarRightClick)
-        self.Show(True)
-
-    def OnTaskBarLeftClick(self, evt):
-
-        self.FlashIcon(evt)
-
-        def _MyCallback(hwnd, extra ):
-            extra.append(hwnd)
-
-        windows = []
-        win32gui.EnumWindows(_MyCallback, windows)
-
-        winList = []
-        for i in windows:
-            if win32gui.IsWindowVisible(i):
-                winList.append(i)
-                #print i
-
-        win32gui.SetForegroundWindow(winList[1])    # found by trial and error
-                                                    # that I need the second
-                                                    # window from the list
-        time.sleep(0.1)  # give the previous command some time to finish
-
-        fgwindow = win32ui.GetForegroundWindow()
-        #print "(C)lick!"
-
-        bbox = fgwindow.GetWindowRect()
-        img = ImageGrab.grab( bbox)
-        width = bbox[2] - bbox[0]
-        if width &gt; MAX_WIDTH:
-            coeff = MAX_WIDTH * 1. / width
-            height = bbox[3] - bbox[1]
-            newHeight = int( coeff * height)
-            #print width, height, "scaled down to", MAX_WIDTH, newHeight
-            img = img.resize((MAX_WIDTH,newHeight), Image.ANTIALIAS)
-        img = img.convert("P", dither=Image.NONE,
-                              palette=Image.ADAPTIVE, colors=256)
-        img.save("_front_window.png", "PNG", optimize=1)
-        #img.show() # show the image in an image viewer
-
-        self.FlashIcon(evt)
-
-    def OnTaskBarRightClick(self, evt):
-        #print "Auta..." # that's about it...
-        self.tbicon.Destroy()
-        self.Close(True)
-        wx.GetApp().ProcessIdle()
-
-    def FlashIcon(self, evt):
-        global BLINK_STATE
-        if BLINK_STATE == 0:
-            icon = wx.Icon('LeoApp16lick.ico', wx.BITMAP_TYPE_ICO)
-            self.tbicon.SetIcon(icon, 'Window is being captured...')
-            BLINK_STATE = 1
-            return
-        else:
-            icon = wx.Icon('LeoApp16.ico', wx.BITMAP_TYPE_ICO)
-            self.tbicon.SetIcon(icon, 'Click to capture the foremost window')
-            BLINK_STATE = 0
-            return
-
-class MyApp(wx.App):
-    def OnInit(self):
-        frame = TaskBarApp(None, -1, ' ')
-        frame.Center(wx.BOTH)
-        frame.Show(False)
-        return True
-
-def main():
-    app = MyApp(0)
-    app.MainLoop()
-
-if __name__ == '__main__':
-    main()
-
-""" CREDITS
-
-    Thanks to
-    Roger Upole:
-    http://groups.google.com/group/comp.lang.python/
-    browse_thread/thread/ff39ec79f7c3248a/
-    e600c892772bf52a?lnk=gst&amp;q=screen+capture&amp;rnum=6#e600c892772bf52a
-    for his time.sleep() Aha (This took me a year and a half to note!)
-
-    Christian Wyglendowski, Werner Bruhin, and Xavier Morel for the
-    http://wiki.wxpython.org/index.cgi/FlashingTaskbarIcon
-    discussion
-
-    'Rob aspn at msolutionsinc.com '
-    http://mail.python.org/pipermail/python-win32/2003-June/001129.html
-    for his suggestion to find out the foremost window
-
-    and of course the usual suspects that created/maintain
-    wxPython,
-    PIL,
-    pywin32,
-    LEO,
-    gvim,
-    and Python itself.
-"""</t>
 <t tx="ekr.20070529172620"></t>
 <t tx="ekr.20070529173219"></t>
 <t tx="ekr.20070529173219.1"></t>
@@ -1152,67 +843,7 @@ cc.selectChapterByName('xyz')</t>
 <t tx="ekr.20070603190944.1"></t>
 <t tx="ekr.20070604095313"></t>
 <t tx="ekr.20070604100125"></t>
-<t tx="ekr.20070609085533"></t>
-<t tx="ekr.20070630142904"></t>
-<t tx="ekr.20070630142904.2">@nocolor
-
-To build your module using GCC is a three step process on Unix:
-
-1. Use Pyrex to translate mymodule.pyx to mymodule.c::
-
-    python pyrexc mymodule.pyx
-
-mymodule.pyx is the name of the Pyrex module you are writing.
-
-2. Compile mymodule.c to mymodule.o::
-
-    gcc -c -fPIC -I/usr/include/python2.2/ mymodule.c
-
--c  Produces a .o file instead of an executable. 
--fPIC Produces position independent code, so we can dynamically link against it later. 
--I/usr/include/python2.2/ is the location of the Python 2.2 include file.
- The location of your Python include file may differ from /usr/include/python2.2/. 
-
-3 Link the mymodule.o into a mymodule.so::
-    
-    gcc -shared mymodule.o -lxosd -o mymodule.so
-
--shared produces a shared-object file, instead of an executable. 
--lxosd links against a C-library, with the name of the library given as the argument. 
-</t>
-<t tx="ekr.20070630142904.3">@nocolor
-
-The pyrexc command supports the following options:
-
-  Short Long              Argument    Description
-  ----- ----              --------    -----------
-  -v    --version                     Display version number of pyrex compiler
-  -l    --create-listing              Write error messages to a .lis file
-  -I    --include-dir     &lt;directory&gt; Search for include files in named 
-                                      directory (may be repeated)
-  -o    --output-file     &lt;filename&gt;  Specify name of generated C file (only
-                                      one source file allowed if this is used)
-
-Anything else is taken as the name of a Pyrex source file and compiled
-to a C source file. Multiple Pyrex source files can be specified
-(unless -o is used), in which case each source file is treated as the
-source of a distinct extension module and compiled separately to
-produce its own C file.
-</t>
-<t tx="ekr.20070630142904.4">def spam(int i, char *s):
-    if 1:
-        print i,s</t>
-<t tx="ekr.20070630142904.5"># Use pyrexc to create myModule.c from myModule.pyx.
-
-import os,sys
-python = sys.executable
-theFile = r'C:\prog\tigris-cvs\leo\test\myModule.pyx'
-pyrexc = r'c:\prog\Pyrex-0.9.6.4\pyrexc.py'
-os.system(r'%s %s %s' % (python,pyrexc,theFile))
-
-# Use pyrex/Demos/setup.py to create module on Linux.</t>
 <t tx="ekr.20070701090143"></t>
-<t tx="ekr.20070722102255"></t>
 <t tx="ekr.20070723091227">
         
         
@@ -1220,293 +851,6 @@ os.system(r'%s %s %s' % (python,pyrexc,theFile))
 <t tx="ekr.20070723091227.1"></t>
 <t tx="ekr.20070723091227.2"></t>
 <t tx="ekr.20070723091227.3"></t>
-<t tx="ekr.20070927175908">'''Convert a normal Leo tree to a networkx graph'''
-import networkx as nx
-import sys
-
-x = nx.Graph()
-
-def node_id(p):
-    return '%s: %s' % (id(p.v.t),p.headString())
-
-def addTree(p):
-    x.add_node(node_id(p))
-    for child in p.children_iter():
-        addTree(child)
-        x.add_edge(node_id(p),node_id(child))
-
-addTree(p)
-
-print 'nodes...\n', g.listToString(x.nodes(),sort=True)
-print 'edges...\n', g.listToString(x.edges(),sort=True)
-print 'yaml...\n'
-nx.write_yaml(x,sys.stdout) # 'graph.yaml')
-</t>
-<t tx="ekr.20070928095102">@ This is a plain Leo tree.
-
-You can convert it to a networkx graph using the leo2graph button.
-</t>
-<t tx="ekr.20070928095102.1"></t>
-<t tx="ekr.20070928095102.2"></t>
-<t tx="ekr.20070929062147">@nocolor
-
-The following scripts convert between Leo trees and NetworkX graphs.
-
-- leo2graph:            convert a normal Leo tree to a NetworkX graph.
-- at-graph2graph:       convert an @graph tree to a Networkx graph.
-- at-networkx2graph:    convert an @networkx tree to a Networkx graph
-- at-networkx2at-graph: create an @graph tree from an @networkx tree.
-
-Not ready yet:
-
-- tree2pict: convert a Leo @graph tree to a picture of the corresponding graph.
-
-@color</t>
-<t tx="ekr.20070929062147.1">'''Convert an @graph tree to a networkx graph.'''
-import networkx as nx
-import sys
-
-x = nx.Graph()
-
-def node_id(p):
-    return '%s: %s' % (str(p.v.t.fileIndex),p.headString())
-
-def addTree(p):
-    tag = '@link'
-    h = p.headString()
-    if h.startswith('@graph'):
-        for child in p.children_iter():
-            addTree(child)
-    elif h.startswith('@node'):
-        x.add_node(node_id(p))
-        for child in p.children_iter():
-            h = child.headString()
-            if h.startswith(tag):
-                link = h[len(tag):].strip()
-                if link: x.add_edge(node_id(p),link)
-            elif child.headString().startswith('@node'):
-                addTree(child)
-                x.add_edge(node_id(p),node_id(child))
-
-addTree(p)
-
-print 'nodes...\n', g.listToString(x.nodes(),sort=True)
-print 'edges...\n', g.listToString(x.edges(),sort=True)
-print 'yaml...\n'
-nx.write_yaml(x,sys.stdout) # 'graph.yaml')</t>
-<t tx="ekr.20070929062147.2">'''Convert an @networkx node to a networkx graph.'''
-import networkx as nx
-import sys
-
-@others
-
-x = nx.Graph()
-
-edges,nodes = parse(p)
-
-for z in nodes:
-    x.add_node(z)
-
-for z in edges:
-    a,b = z
-    x.add_edge(a,b)
-
-print 'nodes...\n', g.listToString(x.nodes(),sort=True)
-print 'edges...\n', g.listToString(x.edges(),sort=True)
-print 'yaml...\n'
-nx.write_yaml(x,sys.stdout) # 'graph.yaml')
-</t>
-<t tx="ekr.20070929070257">@ This is an @graph tree.
-
-You can convert it to a networkx graph using the at-graph2graph button.</t>
-<t tx="ekr.20070929070257.1"></t>
-<t tx="ekr.20070929070257.2"></t>
-<t tx="ekr.20070929070426">g.es('@link %s: %s' % (str(p.v.t.fileIndex),p.headString()))</t>
-<t tx="ekr.20070929070632"></t>
-<t tx="ekr.20070929070632.1"></t>
-<t tx="ekr.20070929072043">@ This node defines a networkx graph using nodes and edges.
-
-You can create an @graph tree from this node using the graph2at-graph button.
-</t>
-<t tx="ekr.20070929072506"># Each edge is represented as two lines.
-
-# child1 --&gt; child2
-('ekr', '20070929070257', 1): @node child1
-('ekr', '20070929070257', 2): @node child2
-
-# child2 --&gt; child1
-('ekr', '20070929070257', 2): @node child2
-('ekr', '20070929070257', 1): @node child1
-
-</t>
-<t tx="ekr.20070929072506.1"># Each node is on a separate line.
-
-('ekr', '20070929070257', 1): @node child1
-('ekr', '20070929070257', 2): @node child2
-</t>
-<t tx="ekr.20070929072506.2">def parseNodes (p):
-
-    s = p.bodyString()
-    lines = [str(z).strip() for z in g.splitLines(s) if z.strip() and not z.startswith('#')]
-    # g.trace(g.listToString(lines))
-    return lines
-</t>
-<t tx="ekr.20070929074830">def parse (p):
-
-    tag = '@networkx'
-    if not p.headString().startswith(tag):
-        p = g.findNodeAnywhere(c,tag)
-        if not p.headString().startswith(tag):
-            error('No %s node in the outline' % tag)
-            return [],[]
-
-    nodes = []
-    for tag in ('@edges','@nodes'):
-        node = g.findNodeInTree(c,p,tag)
-        if node:
-            nodes.append(node)
-        else:
-            error('No %s node in @networkx tree' % tag)
-            return [],[]
-    edgesNode,nodesNode = nodes
-    edges = parseEdges(edgesNode)
-    nodes = parseNodes(nodesNode)
-    return edges,nodes
-</t>
-<t tx="ekr.20070929074830.1">def parseEdges (p):
-
-    s = p.bodyString()
-    lines = [str(z).strip() for z in g.splitLines(s) if z.strip() and not z.startswith('#')]
-    # g.trace(len(lines),lines)
-    if (len(lines) % 2) == 0:
-        i = 0 ; edges = []
-        while i &lt; len(lines):
-            data = lines[i],lines[i+1]
-            edges.append(data)
-            i += 2
-        # g.trace(g.listToString(edges))
-        return edges
-    else:
-        error('edges node must have even number of lines')
-        return []
-
-</t>
-<t tx="ekr.20070929081505">def error (s):
-
-    g.es_print(s,color='red')
-</t>
-<t tx="ekr.20070929082546">'''Convert an @networkx node to an @graph tree.
-Create the tree as the child of the @graph-target node,
-or the current position if no such node.'''
-
-import networkx as nx
-import sys
-
-@others
-
-print '=' * 10
-
-p,edges,nodes = parse(p)
-
-createTree(p,edges,nodes)
-</t>
-<t tx="ekr.20070929114410.2">def error (s):
-
-    g.es_print(s,color='red')
-</t>
-<t tx="ekr.20070929114410.3">def parse (p):
-
-    tag = '@graph-target'
-    if not p.headString().startswith(tag):
-        p = g.findNodeAnywhere(c,tag)
-    if not (p and p.headString().startswith(tag)):
-        p = c.currentPosition() # Use the presently selected node.
-
-    nodes = [] ; tag = '@networkx'
-    data = g.findNodeAnywhere(c,tag)
-    if not data:
-        error('No %s tree' % tag)
-        return None,[],[]
-    for tag in ('@edges','@nodes'):
-        node = g.findNodeInTree(c,data,tag)
-        if node:
-            nodes.append(node)
-        else:
-            error('No %s node in @networkx tree' % tag)
-            return None,[],[]
-    edgesNode,nodesNode = nodes
-    edges = parseEdges(edgesNode)
-    nodes = parseNodes(nodesNode)
-    return p,edges,nodes
-</t>
-<t tx="ekr.20070929114410.4">def parseNodes (p):
-
-    s = p.bodyString()
-    lines = [str(z).strip() for z in g.splitLines(s) if z.strip() and not z.startswith('#')]
-    # g.trace(g.listToString(lines))
-    return lines
-</t>
-<t tx="ekr.20070929114410.5">def parseEdges (p):
-
-    s = p.bodyString()
-    lines = [str(z).strip() for z in g.splitLines(s) if z.strip() and not z.startswith('#')]
-    # g.trace(len(lines),lines)
-    if (len(lines) % 2) == 0:
-        i = 0 ; edges = []
-        while i &lt; len(lines):
-            data = lines[i],lines[i+1]
-            edges.append(data)
-            i += 2
-        # g.trace(g.listToString(edges))
-        return edges
-    else:
-        error('edges node must have even number of lines')
-        return []
-
-</t>
-<t tx="ekr.20070929114617">@ This will be the root node for the @graph tree produced by the at-networkx2at-graph button.</t>
-<t tx="ekr.20070929115302">def createTree (parent,edges,nodes):
-
-    if 0:
-        g.trace('nodes...\n', g.listToString(nodes,sort=True))
-        g.trace('edges...\n', g.listToString(edges,sort=True))
-
-    c.beginUpdate()
-    try:
-        p = parent.insertAsLastChild()
-        p.setHeadString('@graph')
-        d = createNodes(p,nodes)
-        createEdges(d,edges)
-        c.selectPosition(p)
-    finally:
-        c.endUpdate()
-</t>
-<t tx="ekr.20070929120541">def createEdges (d,edges):
-
-    for edge in edges:
-        a,b = edge
-        g.trace('\n%s --&gt; %s' % (a,b))
-        p = d.get(a)
-        if p:
-            p2 = p.insertAsLastChild()
-            p2.setHeadString('@link %s' % (b))
-        else:
-            error('@node not found: %s' % (a))
-</t>
-<t tx="ekr.20070929120541.1">def createNodes (parent,nodes):
-
-    d = {}
-
-    for node in nodes:
-        # g.trace(node)
-        p = parent.insertAsLastChild()
-        p.setHeadString('@node %s' % (node))
-        d[node] = p.copy()
-
-    return d
-</t>
-<t tx="ekr.20070929122956"></t>
-<t tx="ekr.20070929122956.1"></t>
 <t tx="ekr.20070929154250"># This code isn't used directly anymore.  Instead we have:
     
 jyLeo.bat:
@@ -1613,13 +957,6 @@ s = w.getAllText()
 ins = w.getInsertPoint()
 row,col = g.convertPythonIndexToRowCol(s,ins)
 print 'row',row,'col',col</t>
-<t tx="ekr.20071019073617">@language java
-@tabwidth 8
-@others
-
-// changed.3
-
-</t>
 <t tx="ekr.20071025192258">import leoTest
 leoTest.doTests (c,all=False)</t>
 <t tx="ekr.20071025193940"># Caution: you will have to disable cursesGui in an external editor
@@ -1647,376 +984,8 @@ leo_to_html.py
 
 # vim.py
 </t>
-<t tx="ekr.20071026082438">@
-
-** Note **: icons will appear only if they are found on your system.
-
-To do:
-    
-- Icon menu.
-- Left click to delete icons.
-- Tree control recomputes height of each line.</t>
-<t tx="ekr.20071026082438.1">for p in c.allNodes_iter():
-
-    if hasattr(p.v.t,"unknownAttributes"):
-        a = p.v.t.unknownAttributes
-        iconsList = a.get("icons")
-        if dict:
-            a["icons"] = []
-            a["lineYOffset"] = 0
-
-c.redraw()
-</t>
-<t tx="ekr.20071026082438.2">p.v.t.unknownAttributes = {}
-a = p.v.t.unknownAttributes
-
-&lt;&lt; define event callbacks &gt;&gt;
-
-path = g.os_path_join(g.app.loadDir,"..","Icons")
-icon1 = g.os_path_join(path,"lt_arrow_enabled.gif")
-icon2 = g.os_path_join(path,"rt_arrow_enabled.gif")
-
-d1 = {
-    "type" : "file", "file" : icon1,
-    "where" : "beforeIcon",
-    "yoffset" : -3,
-    # "yoffset" : 5, "ypad" : -5,
-    # "height" : 40, # automatically adjust headline y position.
-    "xpad": 2
-}
-
-# Classes and functions can only be pickled if they are at the top level of a module.
-    #"onClick" : onClick,
-    #"onRightClick" : onRightClick,
-    #"onDoubleClick" : onDoubleClick }
-
-d2 = {
-    "type" : "file", "file" : icon2,
-    "where" : "beforeHeadline",
-    "yoffset" : -3,
-    "xoffset" : 2, "xpad" : -2 }
-
-a["icons"] = [d1,d2]
-a["lineYOffset"] = 3
-
-c.redraw()
-</t>
-<t tx="ekr.20071026082438.3">def onClick(p=p):
-
-    g.trace(p)
-
-def onRightClick(p=p):
-
-    g.trace(p)
-
-def onDoubleClick(p=p):
-
-    g.trace(p)
-</t>
-<t tx="ekr.20071026082914"></t>
-<t tx="ekr.20071026083020">import Tkinter as Tk
-import os, sys
-
-tree = c.frame.tree
-
-@others
-
-os.chdir(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons")))
-
-paths = g.app.gui.runOpenFileDialog(
-    title='Get Icons',
-    filetypes=[('All files','*'),('Gif','*.gif'), ('Bitmap','*.bmp'),('Icon','*.ico'),],
-    defaultextension=None,
-    multiple=True)
-
-aList = [] ; xoffset = 2
-for path in paths:
-    path = g.os_path_abspath(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons",path)))
-    image_height = getImageHeight(path)
-    if image_height is None:
-        yoffset = 0
-    else:
-        yoffset = (tree.line_height-image_height)/2
-
-    aList.append ({
-        'type' : 'file', 'file' : path,
-        'where' : 'beforeHeadline',
-        'yoffset' : yoffset, 'xoffset' : xoffset, 'xpad' : -2,
-    })
-    xoffset += 2
-
-# aList.reverse()
-
-if not hasattr(p.v.t,'unknownAttributes'):
-    p.v.t.unknownAttributes = {}
-
-aList2 = p.v.t.unknownAttributes.get('icons',[])
-aList2.extend(aList)
-p.v.t.unknownAttributes ['icons'] = aList2
-p.v.t.unknownAttributes ['lineYOffset'] = 3
-c.redraw()
-
-# Classes and functions can only be pickled if they are at the top level of a module.
-#"onClick" : onClick,
-#"onRightClick" : onRightClick,
-#"onDoubleClick" : onDoubleClick }
-</t>
-<t tx="ekr.20071026084348"></t>
-<t tx="ekr.20071026085244">if hasattr(p.v.t,"unknownAttributes"):
-    a = p.v.t.unknownAttributes
-    iconsList = a.get("icons")
-    if dict:
-        a["icons"] = []
-        a["lineYOffset"] = 0
-        c.redraw()</t>
 <t tx="ekr.20071026102420"></t>
-<t tx="ekr.20071026102420.2"></t>
 <t tx="ekr.20071026102420.3"></t>
-<t tx="ekr.20071026133046">def getImageHeight (path):
-
-    try:
-        from PIL import Image, ImageTk
-    except ImportError:
-        Image = None
-
-    try:
-        if Image:
-            image1 = Image.open(path)
-            image = ImageTk.PhotoImage(image1)
-        else:
-            image = Tk.PhotoImage(master=tree.canvas,file=path)
-        return image.height()
-    except Exception:
-        return None
-</t>
-<t tx="ekr.20071026170504"># A script to get the proper height of icons.
-# The XP file browser doesn't show or report the correct values.
-
-import glob
-
-@others
-
-for z in ('LargeIcons','MediumIcons','SmallIcons'):
-    theDir = g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons",'UserIcons',z))
-    for name in glob.glob(g.os_path_join(theDir,'*.*')):
-        h,w = getImageStats(name)
-        if h is not None:
-            print h,w,name
-</t>
-<t tx="ekr.20071026170511.1">def getImageStats (path):
-
-    try:
-        from PIL import Image, ImageTk
-    except ImportError:
-        Image = None
-
-    try:
-        if Image:
-            image1 = Image.open(path)
-            image = ImageTk.PhotoImage(image1)
-        else:
-            image = Tk.PhotoImage(master=c.frame.tree.canvas,file=path)
-        return image.height(),image.width()
-
-    except Exception:
-        #g.es_exception()
-        return None,None
-</t>
-<t tx="ekr.20071026174231"></t>
-<t tx="ekr.20071026174331"></t>
-<t tx="ekr.20071026174414"></t>
-<t tx="ekr.20071026174414.1"></t>
-<t tx="ekr.20071026174414.2"></t>
-<t tx="ekr.20071026174655"></t>
-<t tx="ekr.20071026174655.1"></t>
-<t tx="ekr.20071026174655.2"></t>
-<t tx="ekr.20071026174817"></t>
-<t tx="ekr.20071026174817.1"></t>
-<t tx="ekr.20071026175552">seen = {}
-print '----'
-for p in c.allNodes_iter():
-    if p.v.t not in seen:
-        seen[p.v.t] = True
-        if hasattr(p.v.t,'unknownAttributes'):
-            aList = p.v.t.unknownAttributes.get('icons',[])
-            for d in aList:
-                name = d.get('file')
-                if name: print 'p: %-20s icon: %s' % (p.headString(),g.os_path_abspath(name))</t>
-<t tx="ekr.20071030094853">@language java
-@tabwidth 8</t>
-<t tx="ekr.20071030102858.3">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030103209">@tabwidth -4
-@language python
-
-if 0: # List all java files: this was used to create the 'files' node.
-    import glob
-    for s in glob.glob(r'c:\prog\test\from-victor\*.java'):
-        g.es('@auto %s' % (s))
-
-if 0: # Create a child for every line in the 'files' node.
-    p = p.firstChild()
-    if p:
-        s = p.bodyString()
-        lines = g.splitLines(s)
-        c.beginUpdate()
-        try:
-            for line in lines:
-                if line.strip():
-                    p2 = p.v.insertAsNthChild(0)
-                    p2.initHeadString(line)
-        finally:
-            c.endUpdate()
-
-if 1: # Disable all child @auto nodes and delete the children.
-    c.beginUpdate()
-    try:
-        for p in p.siblings_iter():
-            h = p.headString()
-            if h.startswith('@auto'):
-                p.initHeadString('@'+h)
-                while p.hasChildren():
-                    p.firstChild().doDelete()
-    finally:
-        c.endUpdate()
-
-if 0: # Enable all child @@auto nodes and delete the children.
-    c.beginUpdate()
-    try:
-        for p in p.siblings_iter():
-            h = p.headString()
-            if h.startswith('@@auto'):
-                p.initHeadString(h[1:])
-                while p.hasChildren():
-                    p.firstChild().doDelete()
-    finally:
-        c.endUpdate()
-</t>
-<t tx="ekr.20071030103258">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030103909">@auto c:\prog\test\from-victor\Bundle.java
-@auto c:\prog\test\from-victor\BundleActivator.java
-@auto c:\prog\test\from-victor\BundleContext.java
-@auto c:\prog\test\from-victor\BundleEvent.java
-@auto c:\prog\test\from-victor\BundleListener.java
-@auto c:\prog\test\from-victor\BundlePermission.java
-@auto c:\prog\test\from-victor\Configurable.java
-@auto c:\prog\test\from-victor\Constants.java
-@auto c:\prog\test\from-victor\Filter.java
-@auto c:\prog\test\from-victor\FrameworkEvent.java
-@auto c:\prog\test\from-victor\FrameworkListener.java
-@auto c:\prog\test\from-victor\FrameworkUtil.java
-@auto c:\prog\test\from-victor\InvalidSyntaxException.java
-@auto c:\prog\test\from-victor\PackagePermission.java
-@auto c:\prog\test\from-victor\ServiceEvent.java
-@auto c:\prog\test\from-victor\ServiceFactory.java
-@auto c:\prog\test\from-victor\ServiceListener.java
-@auto c:\prog\test\from-victor\ServicePermission.java
-@auto c:\prog\test\from-victor\ServiceReference.java
-@auto c:\prog\test\from-victor\ServiceRegistration.java
-@auto c:\prog\test\from-victor\shortBundleException.java
-@auto c:\prog\test\from-victor\SynchronousBundleListener.java
-@auto c:\prog\test\from-victor\Version.java</t>
-<t tx="ekr.20071030103909.19">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.1">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.2">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.3">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.4">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.5">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.6">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.7">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.8">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.9">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.10">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.11">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.12">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.13">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.14">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.15">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.16">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.17">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.18">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.19">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.20">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.21">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.22">@language java
-@tabwidth 8
-@others
-</t>
-<t tx="ekr.20071030104140.23">@language java
-@tabwidth 8
-@others
-</t>
 <t tx="ekr.20071101163934">import leoPlugins
 
 rst3 = leoPlugins.getPluginModule('rst3')
@@ -2033,1260 +1002,6 @@ else:
     else:
         # Ask to be removed.
         g.app.scriptDict['removeMe'] = True</t>
-<t tx="ekr.20071105085941"></t>
-<t tx="ekr.20071110092702.1"></t>
-<t tx="ekr.20071113100456">@@markup wiki
-
-@
-__bold__
-
-~~#80ff00:~~~~#80ff80:this is a test~~
-
-
-actions\add.png {picture file=c:\prog\tigris-cvs\leo\Icons\Tango\16x16\actions\add.png}
-
-
-The wiki text must be in the range of an @markup wiki directive **and** in a Leo
-doc part (starting with '@') **or** a Python triple-quoted string.
-
-File "..\Icons\Tango\16x16\actions\*.*"
-
-SetOutPath "$INSTDIR\Icons\Tango\16x16\animations"
-File "..\Icons\Tango\16x16\animations\*.*"
-
-SetOutPath "$INSTDIR\Icons\Tango\16x16\apps"
-File "..\Icons\Tango\16x16\apps\*.*"
-
-SetOutPath "$INSTDIR\Icons\Tango\16x16\categories"
-File "..\Icons\Tango\16x16\categories\*.*"
-
-SetOutPath "$INSTDIR\Icons\Tango\16x16\devices"
-File "..\Icons\Tango\16x16\devices\*.*"
-
-SetOutPath "$INSTDIR\Icons\Tango\16x16\emblems"
-File "..\Icons\Tango\16x16\emblems\*.*"
-
-SetOutPath "$INSTDIR\Icons\Tango\16x16\emotes"
-File "..\Icons\Tango\16x16\emotes\*.*"
-
-SetOutPath "$INSTDIR\Icons\Tango\16x16\mimetypes"
-File "..\Icons\Tango\16x16\mimetypes\*.*"
-
-SetOutPath "$INSTDIR\Icons\Tango\16x16\places"
-File "..\Icons\Tango\16x16\places\*.*"
-
-SetOutPath "$INSTDIR\Icons\Tango\16x16\status"
-File "..\Icons\Tango\16x16\status\*.*"
-</t>
-<t tx="ekr.20071114053401"># This is a test.</t>
-<t tx="ekr.20071114071901"></t>
-<t tx="ekr.20071114084053"></t>
-<t tx="ekr.20071114092813">@
-
-** Note **: icons will appear only if they are found on your system.
-
-To do:
-    
-- Icon menu.
-- Left click to delete icons.
-- Tree control recomputes height of each line.</t>
-<t tx="ekr.20071114092813.1"></t>
-<t tx="ekr.20071114092813.2"></t>
-<t tx="ekr.20071114092813.3"></t>
-<t tx="ekr.20071114092813.4"></t>
-<t tx="ekr.20071114092813.5"></t>
-<t tx="ekr.20071114092813.6"></t>
-<t tx="ekr.20071114092813.7"></t>
-<t tx="ekr.20071114092813.8"></t>
-<t tx="ekr.20071114092813.9"></t>
-<t tx="ekr.20071114092813.10"></t>
-<t tx="ekr.20071114092813.11"></t>
-<t tx="ekr.20071114092813.12"></t>
-<t tx="ekr.20071114092813.13">for p in c.allNodes_iter():
-
-    if hasattr(p.v.t,"unknownAttributes"):
-        a = p.v.t.unknownAttributes
-        iconsList = a.get("icons")
-        if dict:
-            a["icons"] = []
-            a["lineYOffset"] = 0
-
-c.redraw()
-</t>
-<t tx="ekr.20071114092813.14">if hasattr(p.v.t,"unknownAttributes"):
-    a = p.v.t.unknownAttributes
-    iconsList = a.get("icons")
-    if dict:
-        a["icons"] = []
-        a["lineYOffset"] = 0
-        c.redraw()</t>
-<t tx="ekr.20071114092813.15">p.v.t.unknownAttributes = {}
-a = p.v.t.unknownAttributes
-
-&lt;&lt; define event callbacks &gt;&gt;
-
-path = g.os_path_join(g.app.loadDir,"..","Icons")
-icon1 = g.os_path_join(path,"lt_arrow_enabled.gif")
-icon2 = g.os_path_join(path,"rt_arrow_enabled.gif")
-
-d1 = {
-    "type" : "file", "file" : icon1,
-    "where" : "beforeIcon",
-    "yoffset" : -3,
-    # "yoffset" : 5, "ypad" : -5,
-    # "height" : 40, # automatically adjust headline y position.
-    "xpad": 2
-}
-
-# Classes and functions can only be pickled if they are at the top level of a module.
-    #"onClick" : onClick,
-    #"onRightClick" : onRightClick,
-    #"onDoubleClick" : onDoubleClick }
-
-d2 = {
-    "type" : "file", "file" : icon2,
-    "where" : "beforeHeadline",
-    "yoffset" : -3,
-    "xoffset" : 2, "xpad" : -2 }
-
-a["icons"] = [d1,d2]
-a["lineYOffset"] = 3
-
-c.redraw()
-</t>
-<t tx="ekr.20071114092813.16">def onClick(p=p):
-
-    g.trace(p)
-
-def onRightClick(p=p):
-
-    g.trace(p)
-
-def onDoubleClick(p=p):
-
-    g.trace(p)
-</t>
-<t tx="ekr.20071114092813.17">import Tkinter as Tk
-import os, sys
-
-tree = c.frame.tree
-
-@others
-
-os.chdir(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons")))
-
-paths = g.app.gui.runOpenFileDialog(
-    title='Get Icons',
-    filetypes=[('All files','*'),('Gif','*.gif'), ('Bitmap','*.bmp'),('Icon','*.ico'),],
-    defaultextension=None,
-    multiple=True)
-
-aList = [] ; xoffset = 2
-for path in paths:
-    path = g.os_path_abspath(g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons",path)))
-    image_height = getImageHeight(path)
-    if image_height is None:
-        yoffset = 0
-    else:
-        yoffset = (tree.line_height-image_height)/2
-
-    aList.append ({
-        'type' : 'file', 'file' : path,
-        'where' : 'beforeHeadline',
-        'yoffset' : yoffset, 'xoffset' : xoffset, 'xpad' : -2,
-    })
-    xoffset += 2
-
-# aList.reverse()
-
-if not hasattr(p.v.t,'unknownAttributes'):
-    p.v.t.unknownAttributes = {}
-
-aList2 = p.v.t.unknownAttributes.get('icons',[])
-aList2.extend(aList)
-p.v.t.unknownAttributes ['icons'] = aList2
-p.v.t.unknownAttributes ['lineYOffset'] = 3
-c.redraw()
-
-# Classes and functions can only be pickled if they are at the top level of a module.
-#"onClick" : onClick,
-#"onRightClick" : onRightClick,
-#"onDoubleClick" : onDoubleClick }
-</t>
-<t tx="ekr.20071114092813.18">def getImageHeight (path):
-
-    try:
-        from PIL import Image, ImageTk
-    except ImportError:
-        Image = None
-
-    try:
-        if Image:
-            image1 = Image.open(path)
-            image = ImageTk.PhotoImage(image1)
-        else:
-            image = Tk.PhotoImage(master=tree.canvas,file=path)
-        return image.height()
-    except Exception:
-        return None
-</t>
-<t tx="ekr.20071114092813.19"># A script to get the proper height of icons.
-# The XP file browser doesn't show or report the correct values.
-
-import glob
-
-@others
-
-for z in ('LargeIcons','MediumIcons','SmallIcons'):
-    theDir = g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons",'UserIcons',z))
-    for name in glob.glob(g.os_path_join(theDir,'*.*')):
-        h,w = getImageStats(name)
-        if h is not None:
-            print h,w,name
-</t>
-<t tx="ekr.20071114092813.20">def getImageStats (path):
-
-    try:
-        from PIL import Image, ImageTk
-    except ImportError:
-        Image = None
-
-    try:
-        if Image:
-            image1 = Image.open(path)
-            image = ImageTk.PhotoImage(image1)
-        else:
-            image = Tk.PhotoImage(master=c.frame.tree.canvas,file=path)
-        return image.height(),image.width()
-
-    except Exception:
-        #g.es_exception()
-        return None,None
-</t>
-<t tx="ekr.20071114092813.21">seen = {}
-print '----'
-for p in c.allNodes_iter():
-    if p.v.t not in seen:
-        seen[p.v.t] = True
-        if hasattr(p.v.t,'unknownAttributes'):
-            aList = p.v.t.unknownAttributes.get('icons',[])
-            for d in aList:
-                name = d.get('file')
-                if name: print 'p: %-20s icon: %s' % (p.headString(),g.os_path_abspath(name))</t>
-<t tx="ekr.20071115061426">@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = False
-verbose=True
-@c
-
-|back| |leo| |next|
-
-##########################################
-Chapter 0: Preformat test
-##########################################
-
-This is a test of the @rst-preformat option
-
-.. contents::</t>
-<t tx="ekr.20071115061426.1">.. Links used in this document...
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: FAQ.html
-
-.. |leo|   image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: intro.html</t>
-<t tx="ekr.20071115061426.2">Before section.</t>
-<t tx="ekr.20071115061426.3">def writePreformat (self,p):
-
-    '''Write all p's body text lines as if preformatted.'''
-
-    lines = p.bodyString().split('\n')
-    lines = ['\t' + z for z in lines]
-    lines.insert(0,'::\n\n')
-
-    s = '\n'.join(lines)
-    if s.strip()
-        self.write('%s\n\n' % s)
-</t>
-<t tx="ekr.20071115061426.12">-------------
-
-|back| |leo| |next|</t>
-<t tx="ekr.20071115061535.1">This is the following section.</t>
-<t tx="ekr.20071116113202"># Enable this @markup wiki directive to see all icons in the Icons/Tango directory.
-# The color_markup and add_directives plugins must be enabled.
-# Be patient: it may take a while to render all the icons.
-
-@@markup wiki
-
-@
-
-actions
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\add.png} add.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\address-book-new.png} address-book-new.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\appointment-new.png} appointment-new.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\appointment.png} appointment.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\back.png} back.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\bookmark-new.png} bookmark-new.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\bookmark_add.png} bookmark_add.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\bookmarks_list_add.png} bookmarks_list_add.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\bottom.png} bottom.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\centrejust.png} centrejust.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\contact-new.png} contact-new.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\document-new.png} document-new.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\document-open.png} document-open.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\document-print-preview.png} document-print-preview.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\document-print.png} document-print.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\document-properties.png} document-properties.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\document-save-as.png} document-save-as.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\document-save.png} document-save.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\down.png} down.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\edit-clear.png} edit-clear.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\edit-copy.png} edit-copy.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\edit-cut.png} edit-cut.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\edit-delete.png} edit-delete.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\edit-find-replace.png} edit-find-replace.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\edit-find.png} edit-find.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\edit-paste.png} edit-paste.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\edit-redo.png} edit-redo.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\edit-select-all.png} edit-select-all.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\edit-undo.png} edit-undo.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\editclear.png} editclear.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\editcopy.png} editcopy.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\editcut.png} editcut.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\editdelete.png} editdelete.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\editpaste.png} editpaste.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\exit.png} exit.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\filefind.png} filefind.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\filenew.png} filenew.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\fileopen.png} fileopen.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\fileprint.png} fileprint.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\filequickprint.png} filequickprint.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\filesave.png} filesave.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\filesaveas.png} filesaveas.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\find.png} find.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\finish.png} finish.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\folder-new.png} folder-new.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\folder_new.png} folder_new.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\format-indent-less.png} format-indent-less.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\format-indent-more.png} format-indent-more.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\format-justify-center.png} format-justify-center.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\format-justify-fill.png} format-justify-fill.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\format-justify-left.png} format-justify-left.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\format-justify-right.png} format-justify-right.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\format-text-bold.png} format-text-bold.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\format-text-italic.png} format-text-italic.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\format-text-strikethrough.png} format-text-strikethrough.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\format-text-underline.png} format-text-underline.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\forward.png} forward.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gnome-lockscreen.png} gnome-lockscreen.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gnome-logout.png} gnome-logout.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gnome-searchtool.png} gnome-searchtool.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gnome-session-logout.png} gnome-session-logout.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gnome-stock-mail-fwd.png} gnome-stock-mail-fwd.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gnome-stock-mail-new.png} gnome-stock-mail-new.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gnome-stock-mail-rpl.png} gnome-stock-mail-rpl.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gnome-stock-text-indent.png} gnome-stock-text-indent.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gnome-stock-text-unindent.png} gnome-stock-text-unindent.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\go-bottom.png} go-bottom.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\go-down.png} go-down.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\go-first.png} go-first.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\go-home.png} go-home.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\go-jump.png} go-jump.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\go-last.png} go-last.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\go-next.png} go-next.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\go-previous.png} go-previous.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\go-top.png} go-top.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\go-up.png} go-up.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gohome.png} gohome.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-add.png} gtk-add.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-bold.png} gtk-bold.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-cancel.png} gtk-cancel.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-clear.png} gtk-clear.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-copy.png} gtk-copy.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-cut.png} gtk-cut.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-delete.png} gtk-delete.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-find-and-replace.png} gtk-find-and-replace.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-find.png} gtk-find.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-fullscreen.png} gtk-fullscreen.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-go-back-ltr.png} gtk-go-back-ltr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-go-back-rtl.png} gtk-go-back-rtl.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-go-down.png} gtk-go-down.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-go-forward-ltr.png} gtk-go-forward-ltr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-go-forward-rtl.png} gtk-go-forward-rtl.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-go-up.png} gtk-go-up.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-goto-bottom.png} gtk-goto-bottom.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-goto-first-ltr.png} gtk-goto-first-ltr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-goto-first-rtl.png} gtk-goto-first-rtl.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-goto-last-ltr.png} gtk-goto-last-ltr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-goto-last-rtl.png} gtk-goto-last-rtl.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-goto-top.png} gtk-goto-top.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-home.png} gtk-home.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-indent-ltr.png} gtk-indent-ltr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-indent-rtl.png} gtk-indent-rtl.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-indent.png} gtk-indent.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-italic.png} gtk-italic.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-jump-to-ltr.png} gtk-jump-to-ltr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-jump-to-rtl.png} gtk-jump-to-rtl.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-justify-center.png} gtk-justify-center.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-justify-fill.png} gtk-justify-fill.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-justify-left.png} gtk-justify-left.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-justify-right.png} gtk-justify-right.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-media-forward-ltr.png} gtk-media-forward-ltr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-media-forward-rtl.png} gtk-media-forward-rtl.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-media-next-ltr.png} gtk-media-next-ltr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-media-next-rtl.png} gtk-media-next-rtl.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-media-pause.png} gtk-media-pause.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-media-play-ltr.png} gtk-media-play-ltr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-media-previous-ltr.png} gtk-media-previous-ltr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-media-previous-rtl.png} gtk-media-previous-rtl.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-media-record.png} gtk-media-record.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-media-rewind-ltr.png} gtk-media-rewind-ltr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-media-rewind-rtl.png} gtk-media-rewind-rtl.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-media-stop.png} gtk-media-stop.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-new.png} gtk-new.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-open.png} gtk-open.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-paste.png} gtk-paste.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-print-preview.png} gtk-print-preview.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-print.png} gtk-print.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-properties.png} gtk-properties.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-redo-ltr.png} gtk-redo-ltr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-refresh.png} gtk-refresh.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-remove.png} gtk-remove.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-save-as.png} gtk-save-as.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-save.png} gtk-save.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-select-all.png} gtk-select-all.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-stop.png} gtk-stop.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-strikethrough.png} gtk-strikethrough.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-underline.png} gtk-underline.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-undo-ltr.png} gtk-undo-ltr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-unindent-ltr.png} gtk-unindent-ltr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-unindent-rtl.png} gtk-unindent-rtl.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\gtk-unindent.png} gtk-unindent.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\kfind.png} kfind.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\kfm_home.png} kfm_home.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\leftjust.png} leftjust.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\list-add.png} list-add.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\list-remove.png} list-remove.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\lock.png} lock.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\mail-forward.png} mail-forward.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\mail-mark-junk.png} mail-mark-junk.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\mail-mark-not-junk.png} mail-mark-not-junk.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\mail-message-new.png} mail-message-new.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\mail-reply-all.png} mail-reply-all.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\mail-reply-sender.png} mail-reply-sender.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\mail-send-receive.png} mail-send-receive.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\mail_forward.png} mail_forward.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\mail_new.png} mail_new.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\mail_reply.png} mail_reply.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\mail_replyall.png} mail_replyall.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\mail_spam.png} mail_spam.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\media-eject.png} media-eject.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\media-playback-pause.png} media-playback-pause.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\media-playback-start.png} media-playback-start.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\media-playback-stop.png} media-playback-stop.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\media-record.png} media-record.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\media-seek-backward.png} media-seek-backward.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\media-seek-forward.png} media-seek-forward.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\media-skip-backward.png} media-skip-backward.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\media-skip-forward.png} media-skip-forward.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\next.png} next.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\player_eject.png} player_eject.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\player_end.png} player_end.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\player_fwd.png} player_fwd.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\player_pause.png} player_pause.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\player_play.png} player_play.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\player_record.png} player_record.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\player_rew.png} player_rew.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\player_start.png} player_start.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\player_stop.png} player_stop.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\previous.png} previous.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\process-stop.png} process-stop.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\redhat-home.png} redhat-home.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\redo.png} redo.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\reload.png} reload.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\reload3.png} reload3.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\reload_all_tabs.png} reload_all_tabs.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\reload_page.png} reload_page.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\remove.png} remove.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\rightjust.png} rightjust.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\search.png} search.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\start.png} start.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_add-bookmark.png} stock_add-bookmark.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_bottom.png} stock_bottom.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_copy.png} stock_copy.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_cut.png} stock_cut.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_delete.png} stock_delete.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_down.png} stock_down.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_file-properites.png} stock_file-properites.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_first.png} stock_first.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_fullscreen.png} stock_fullscreen.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_help-add-bookmark.png} stock_help-add-bookmark.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_home.png} stock_home.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_last.png} stock_last.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_left.png} stock_left.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_mail-compose.png} stock_mail-compose.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_mail-forward.png} stock_mail-forward.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_mail-reply-to-all.png} stock_mail-reply-to-all.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_mail-reply.png} stock_mail-reply.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_mail-send-receive.png} stock_mail-send-receive.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_media-fwd.png} stock_media-fwd.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_media-next.png} stock_media-next.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_media-pause.png} stock_media-pause.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_media-play.png} stock_media-play.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_media-prev.png} stock_media-prev.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_media-rec.png} stock_media-rec.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_media-rew.png} stock_media-rew.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_media-stop.png} stock_media-stop.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_new-address-book.png} stock_new-address-book.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_new-appointment.png} stock_new-appointment.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_new-bcard.png} stock_new-bcard.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_new-dir.png} stock_new-dir.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_new-tab.png} stock_new-tab.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_new-text.png} stock_new-text.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_new-window.png} stock_new-window.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_not-spam.png} stock_not-spam.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_paste.png} stock_paste.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_print-preview.png} stock_print-preview.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_print.png} stock_print.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_properties.png} stock_properties.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_redo.png} stock_redo.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_refresh.png} stock_refresh.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_right.png} stock_right.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_save-as.png} stock_save-as.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_save.png} stock_save.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_search-and-replace.png} stock_search-and-replace.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_search.png} stock_search.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_select-all.png} stock_select-all.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_spam.png} stock_spam.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_stop.png} stock_stop.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_text-strikethrough.png} stock_text-strikethrough.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_text_bold.png} stock_text_bold.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_text_center.png} stock_text_center.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_text_indent.png} stock_text_indent.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_text_italic.png} stock_text_italic.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_text_justify.png} stock_text_justify.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_text_left.png} stock_text_left.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_text_right.png} stock_text_right.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_text_underlined.png} stock_text_underlined.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_text_unindent.png} stock_text_unindent.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_top.png} stock_top.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_undo.png} stock_undo.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stock_up.png} stock_up.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\stop.png} stop.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\system-lock-screen.png} system-lock-screen.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\system-log-out.png} system-log-out.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\system-search.png} system-search.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\system-shutdown.png} system-shutdown.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\tab-new.png} tab-new.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\tab_new.png} tab_new.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\text_bold.png} text_bold.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\text_italic.png} text_italic.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\text_strike.png} text_strike.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\text_under.png} text_under.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\top.png} top.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\undo.png} undo.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\up.png} up.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\view-fullscreen.png} view-fullscreen.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\view-refresh.png} view-refresh.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\window-new.png} window-new.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\window_fullscreen.png} window_fullscreen.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\window_new.png} window_new.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\actions\\xfce-system-lock.png} xfce-system-lock.png
-
-animations
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\animations\\gnome-spinner.png} gnome-spinner.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\animations\\process-working.png} process-working.png
-
-apps
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\access.png} access.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\accessibility-directory.png} accessibility-directory.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\accessories-calculator.png} accessories-calculator.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\accessories-character-map.png} accessories-character-map.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\accessories-dictionary.png} accessories-dictionary.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\accessories-text-editor.png} accessories-text-editor.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\amarok.png} amarok.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\background.png} background.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\browser.png} browser.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\calc.png} calc.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\compose.png} compose.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\config-date.png} config-date.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\config-language.png} config-language.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\config-users.png} config-users.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\date.png} date.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\email.png} email.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\file-manager.png} file-manager.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\fonts.png} fonts.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\force-exit.png} force-exit.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gaim.png} gaim.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-calculator.png} gnome-calculator.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-character-map.png} gnome-character-map.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-fs-blockdev.png} gnome-fs-blockdev.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-help.png} gnome-help.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-keyring-manager.png} gnome-keyring-manager.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-monitor.png} gnome-monitor.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-remote-desktop.png} gnome-remote-desktop.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-session.png} gnome-session.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-settings-accessibility-technologies.png} gnome-settings-accessibility-techno
-logies.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-settings-background.png} gnome-settings-background.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-settings-font.png} gnome-settings-font.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-settings-keybindings.png} gnome-settings-keybindings.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-settings-sound.png} gnome-settings-sound.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-settings-theme.png} gnome-settings-theme.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-terminal.png} gnome-terminal.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gnome-window-manager.png} gnome-window-manager.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gtk-help.png} gtk-help.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\gucharmap.png} gucharmap.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\help-browser.png} help-browser.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\help.png} help.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\inkscape.png} inkscape.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\internet-group-chat.png} internet-group-chat.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\internet-mail.png} internet-mail.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\internet-news-reader.png} internet-news-reader.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\internet-web-browser.png} internet-web-browser.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\k3b.png} k3b.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\kcalc.png} kcalc.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\kcharselect.png} kcharselect.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\kcmkwm.png} kcmkwm.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\kedit.png} kedit.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\key_bindings.png} key_bindings.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\kfm.png} kfm.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\khelpcenter.png} khelpcenter.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\knotify.png} knotify.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\konqueror.png} konqueror.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\konsole.png} konsole.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\kontact.png} kontact.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\konversation.png} konversation.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\kopete.png} kopete.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\krfb.png} krfb.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\kscreensaver.png} kscreensaver.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\ksysguard.png} ksysguard.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\kuser.png} kuser.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\kwin.png} kwin.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\locale.png} locale.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\mail_generic.png} mail_generic.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\office-calendar.png} office-calendar.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\openterm.png} openterm.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\package_edutainment.png} package_edutainment.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\preferences-desktop-accessibility.png} preferences-desktop-accessibility.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\preferences-desktop-assistive-technology.png} preferences-desktop-assistive-techno
-logy.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\preferences-desktop-font.png} preferences-desktop-font.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\preferences-desktop-keyboard-shortcuts.png} preferences-desktop-keyboard-shortcuts
-.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\preferences-desktop-locale.png} preferences-desktop-locale.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\preferences-desktop-multimedia.png} preferences-desktop-multimedia.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\preferences-desktop-remote-desktop.png} preferences-desktop-remote-desktop.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\preferences-desktop-screensaver.png} preferences-desktop-screensaver.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\preferences-desktop-sound.png} preferences-desktop-sound.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\preferences-desktop-theme.png} preferences-desktop-theme.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\preferences-desktop-wallpaper.png} preferences-desktop-wallpaper.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\preferences-system-network-proxy.png} preferences-system-network-proxy.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\preferences-system-session.png} preferences-system-session.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\preferences-system-windows.png} preferences-system-windows.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\proxy-config.png} proxy-config.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\proxy.png} proxy.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\redhat-email.png} redhat-email.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\redhat-filemanager.png} redhat-filemanager.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\redhat-web-browser.png} redhat-web-browser.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\screensaver.png} screensaver.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\software-properties.png} software-properties.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\stock_help.png} stock_help.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\stock_proxy.png} stock_proxy.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\style.png} style.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\susehelpcenter.png} susehelpcenter.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\synaptic.png} synaptic.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\system-config-users.png} system-config-users.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\system-file-manager.png} system-file-manager.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\system-installer.png} system-installer.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\system-software-update.png} system-software-update.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\system-users.png} system-users.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\terminal.png} terminal.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\text-editor.png} text-editor.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\update-manager.png} update-manager.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\user-info.png} user-info.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\utilities-system-monitor.png} utilities-system-monitor.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\utilities-terminal.png} utilities-terminal.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\wallpaper.png} wallpaper.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\web-browser.png} web-browser.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\wmtweaks.png} wmtweaks.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xchat-gnome.png} xchat-gnome.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfcalendar.png} xfcalendar.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfce-edit.png} xfce-edit.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfce-filemanager.png} xfce-filemanager.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfce-mail.png} xfce-mail.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfce-man.png} xfce-man.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfce-sound.png} xfce-sound.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfce-terminal.png} xfce-terminal.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfce4-backdrop.png} xfce4-backdrop.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfce4-panel.png} xfce4-panel.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfce4-session.png} xfce4-session.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfce4-sound.png} xfce4-sound.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfce4-splash.png} xfce4-splash.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfce4-taskbar.png} xfce4-taskbar.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfce4-ui.png} xfce4-ui.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfce4-workspaces.png} xfce4-workspaces.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xfwm4.png} xfwm4.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\ximian-evolution-calendar.png} ximian-evolution-calendar.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\xscreensaver.png} xscreensaver.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\apps\\zen-icon.png} zen-icon.png
-
-categories
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\applications-accessories.png} applications-accessories.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\applications-development.png} applications-development.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\applications-games.png} applications-games.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\applications-graphics.png} applications-graphics.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\applications-internet.png} applications-internet.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\applications-multimedia.png} applications-multimedia.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\applications-office.png} applications-office.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\applications-other.png} applications-other.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\applications-system.png} applications-system.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\gnome-applications.png} gnome-applications.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\gnome-control-center.png} gnome-control-center.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\gnome-devel.png} gnome-devel.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\gnome-globe.png} gnome-globe.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\gnome-graphics.png} gnome-graphics.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\gnome-joystick.png} gnome-joystick.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\gnome-multimedia.png} gnome-multimedia.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\gnome-other.png} gnome-other.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\gnome-settings.png} gnome-settings.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\gnome-system.png} gnome-system.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\gnome-util.png} gnome-util.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\gtk-preferences.png} gtk-preferences.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\input_devices_settings.png} input_devices_settings.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\kcontrol.png} kcontrol.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\package_development.png} package_development.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\package_games.png} package_games.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\package_graphics.png} package_graphics.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\package_multimedia.png} package_multimedia.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\package_network.png} package_network.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\package_office.png} package_office.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\package_settings.png} package_settings.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\package_system.png} package_system.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\package_utilities.png} package_utilities.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\preferences-desktop-peripherals.png} preferences-desktop-peripherals.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\preferences-desktop.png} preferences-desktop.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\preferences-system.png} preferences-system.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\redhat-accessories.png} redhat-accessories.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\redhat-games.png} redhat-games.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\redhat-graphics.png} redhat-graphics.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\redhat-internet.png} redhat-internet.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\redhat-office.png} redhat-office.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\redhat-preferences.png} redhat-preferences.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\redhat-programming.png} redhat-programming.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\redhat-sound_video.png} redhat-sound_video.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\redhat-system_settings.png} redhat-system_settings.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\redhat-system_tools.png} redhat-system_tools.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\stock_internet.png} stock_internet.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\xfce-devel.png} xfce-devel.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\xfce-games.png} xfce-games.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\xfce-graphics.png} xfce-graphics.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\xfce-internet.png} xfce-internet.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\xfce-multimedia.png} xfce-multimedia.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\xfce-office.png} xfce-office.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\xfce-system-settings.png} xfce-system-settings.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\xfce-system.png} xfce-system.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\xfce-utils.png} xfce-utils.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\categories\\xfce4-settings.png} xfce4-settings.png
-
-devices
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\3floppy_unmount.png} 3floppy_unmount.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\audio-card.png} audio-card.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\audio-input-microphone.png} audio-input-microphone.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\battery.png} battery.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\camera-photo.png} camera-photo.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\camera-video.png} camera-video.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\camera.png} camera.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\camera_unmount.png} camera_unmount.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\cdrom_unmount.png} cdrom_unmount.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\cdwriter_unmount.png} cdwriter_unmount.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\chardevice.png} chardevice.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\computer.png} computer.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\display.png} display.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\drive-cdrom.png} drive-cdrom.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\drive-harddisk.png} drive-harddisk.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\drive-optical.png} drive-optical.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\drive-removable-media.png} drive-removable-media.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\dvd_unmount.png} dvd_unmount.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-battery.png} gnome-dev-battery.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-cdrom-audio.png} gnome-dev-cdrom-audio.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-cdrom.png} gnome-dev-cdrom.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-computer.png} gnome-dev-computer.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-disc-cdr.png} gnome-dev-disc-cdr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-disc-cdrw.png} gnome-dev-disc-cdrw.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-disc-dvdr-plus.png} gnome-dev-disc-dvdr-plus.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-disc-dvdr.png} gnome-dev-disc-dvdr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-disc-dvdram.png} gnome-dev-disc-dvdram.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-disc-dvdrom.png} gnome-dev-disc-dvdrom.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-disc-dvdrw.png} gnome-dev-disc-dvdrw.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-dvd.png} gnome-dev-dvd.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-ethernet.png} gnome-dev-ethernet.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-floppy.png} gnome-dev-floppy.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-harddisk-1394.png} gnome-dev-harddisk-1394.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-harddisk-usb.png} gnome-dev-harddisk-usb.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-harddisk.png} gnome-dev-harddisk.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-ipod.png} gnome-dev-ipod.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-keyboard.png} gnome-dev-keyboard.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-media-cf.png} gnome-dev-media-cf.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-media-ms.png} gnome-dev-media-ms.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-media-sdmmc.png} gnome-dev-media-sdmmc.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-media-sm.png} gnome-dev-media-sm.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-mouse-ball.png} gnome-dev-mouse-ball.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-mouse-optical.png} gnome-dev-mouse-optical.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-printer.png} gnome-dev-printer.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-removable-1394.png} gnome-dev-removable-1394.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-removable-usb.png} gnome-dev-removable-usb.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-removable.png} gnome-dev-removable.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-dev-wavelan.png} gnome-dev-wavelan.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-fs-client.png} gnome-fs-client.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gnome-stock-mic.png} gnome-stock-mic.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gtk-cdrom.png} gtk-cdrom.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gtk-floppy.png} gtk-floppy.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\gtk-harddisk.png} gtk-harddisk.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\harddrive.png} harddrive.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\hdd_unmount.png} hdd_unmount.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\input-gaming.png} input-gaming.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\input-keyboard.png} input-keyboard.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\input-mouse.png} input-mouse.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\ipod_mount.png} ipod_mount.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\joystick.png} joystick.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\keyboard.png} keyboard.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\kjobviewer.png} kjobviewer.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\kxkb.png} kxkb.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\media-cdrom.png} media-cdrom.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\media-flash.png} media-flash.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\media-floppy.png} media-floppy.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\media-optical.png} media-optical.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\mouse.png} mouse.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\multimedia-player.png} multimedia-player.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\network-wired.png} network-wired.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\network-wireless.png} network-wireless.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\printer-remote.png} printer-remote.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\printer.png} printer.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\printer1.png} printer1.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\printmgr.png} printmgr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\stock_mic.png} stock_mic.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\stock_printers.png} stock_printers.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\system-floppy.png} system-floppy.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\system.png} system.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\usbpendrive_unmount.png} usbpendrive_unmount.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\video-display.png} video-display.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\xfce-printer.png} xfce-printer.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\xfce4-display.png} xfce4-display.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\xfce4-keyboard.png} xfce4-keyboard.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\xfce4-mouse.png} xfce4-mouse.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\yast_HD.png} yast_HD.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\yast_idetude.png} yast_idetude.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\yast_joystick.png} yast_joystick.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\yast_mouse.png} yast_mouse.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\yast_printer.png} yast_printer.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\devices\\yast_soundcard.png} yast_soundcard.png
-
-emblems
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emblems\\emblem-favorite.png} emblem-favorite.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emblems\\emblem-important.png} emblem-important.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emblems\\emblem-noread.png} emblem-noread.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emblems\\emblem-nowrite.png} emblem-nowrite.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emblems\\emblem-photos.png} emblem-photos.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emblems\\emblem-readonly.png} emblem-readonly.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emblems\\emblem-symbolic-link.png} emblem-symbolic-link.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emblems\\emblem-system.png} emblem-system.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emblems\\emblem-unreadable.png} emblem-unreadable.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emblems\\stock_mail-priority-high.png} stock_mail-priority-high.png
-
-emotes
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\face-angel.png} face-angel.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\face-crying.png} face-crying.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\face-devilish.png} face-devilish.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\face-glasses.png} face-glasses.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\face-grin.png} face-grin.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\face-kiss.png} face-kiss.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\face-monkey.png} face-monkey.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\face-plain.png} face-plain.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\face-sad.png} face-sad.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\face-smile-big.png} face-smile-big.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\face-smile.png} face-smile.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\face-surprise.png} face-surprise.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\face-wink.png} face-wink.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\stock_smiley-1.png} stock_smiley-1.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\stock_smiley-11.png} stock_smiley-11.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\stock_smiley-13.png} stock_smiley-13.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\stock_smiley-18.png} stock_smiley-18.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\stock_smiley-2.png} stock_smiley-2.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\stock_smiley-22.png} stock_smiley-22.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\stock_smiley-3.png} stock_smiley-3.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\stock_smiley-4.png} stock_smiley-4.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\stock_smiley-5.png} stock_smiley-5.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\stock_smiley-6.png} stock_smiley-6.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\stock_smiley-7.png} stock_smiley-7.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\emotes\\stock_smiley-8.png} stock_smiley-8.png
-
-mimetypes
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\application-certificate.png} application-certificate.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\application-x-executable.png} application-x-executable.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\ascii.png} ascii.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\audio-x-generic.png} audio-x-generic.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\binary.png} binary.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\contents2.png} contents2.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\deb.png} deb.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\document.png} document.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\empty.png} empty.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\exec.png} exec.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\folder_tar.png} folder_tar.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\font-x-generic.png} font-x-generic.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\font.png} font.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\font_bitmap.png} font_bitmap.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\font_truetype.png} font_truetype.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\font_type1.png} font_type1.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-fs-executable.png} gnome-fs-executable.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-magicpoint.png} gnome-mime-application-magicpoint.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-msword.png} gnome-mime-application-msword.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-ogg.png} gnome-mime-application-ogg.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-pdf.png} gnome-mime-application-pdf.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-postscript.png} gnome-mime-application-postscript.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-rtf.png} gnome-mime-application-rtf.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.lotus-1-2-3.png} gnome-mime-application-vnd.lotus-
-1-2-3.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.ms-excel.png} gnome-mime-application-vnd.ms-excel.
-png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.ms-powerpoint.png} gnome-mime-application-vnd.ms-p
-owerpoint.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.oasis.opendocument.graphics-template.png} gnome-mi
-me-application-vnd.oasis.opendocument.graphics-template.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.oasis.opendocument.graphics.png} gnome-mime-applic
-ation-vnd.oasis.opendocument.graphics.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.oasis.opendocument.image.png} gnome-mime-applicati
-on-vnd.oasis.opendocument.image.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.oasis.opendocument.presentation-template.png} gnom
-e-mime-application-vnd.oasis.opendocument.presentation-template.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.oasis.opendocument.presentation.png} gnome-mime-ap
-plication-vnd.oasis.opendocument.presentation.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.oasis.opendocument.spreadsheet-template.png} gnome
--mime-application-vnd.oasis.opendocument.spreadsheet-template.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.oasis.opendocument.spreadsheet.png} gnome-mime-app
-lication-vnd.oasis.opendocument.spreadsheet.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.oasis.opendocument.text-template.png} gnome-mime-a
-pplication-vnd.oasis.opendocument.text-template.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.oasis.opendocument.text-web.png} gnome-mime-applic
-ation-vnd.oasis.opendocument.text-web.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.oasis.opendocument.text.png} gnome-mime-applicatio
-n-vnd.oasis.opendocument.text.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.rn-realmedia-secure.png} gnome-mime-application-vn
-d.rn-realmedia-secure.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.rn-realmedia-vbr.png} gnome-mime-application-vnd.r
-n-realmedia-vbr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.rn-realmedia.png} gnome-mime-application-vnd.rn-re
-almedia.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.stardivision.calc.png} gnome-mime-application-vnd.
-stardivision.calc.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.stardivision.impress.png} gnome-mime-application-v
-nd.stardivision.impress.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.stardivision.writer.png} gnome-mime-application-vn
-d.stardivision.writer.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.sun.xml.calc.png} gnome-mime-application-vnd.sun.x
-ml.calc.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.sun.xml.calc.template.png} gnome-mime-application-
-vnd.sun.xml.calc.template.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.sun.xml.draw.png} gnome-mime-application-vnd.sun.x
-ml.draw.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.sun.xml.draw.template.png} gnome-mime-application-
-vnd.sun.xml.draw.template.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.sun.xml.impress.png} gnome-mime-application-vnd.su
-n.xml.impress.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.sun.xml.impress.template.png} gnome-mime-applicati
-on-vnd.sun.xml.impress.template.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.sun.xml.writer.png} gnome-mime-application-vnd.sun
-.xml.writer.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-vnd.sun.xml.writer.template.png} gnome-mime-applicatio
-n-vnd.sun.xml.writer.template.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-wordperfect.png} gnome-mime-application-wordperfect.pn
-g
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-7z-compressed.png} gnome-mime-application-x-7z-compr
-essed.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-abiword.png} gnome-mime-application-x-abiword.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-applix-spreadsheet.png} gnome-mime-application-x-app
-lix-spreadsheet.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-applix-word.png} gnome-mime-application-x-applix-wor
-d.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-archive.png} gnome-mime-application-x-archive.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-arj.png} gnome-mime-application-x-arj.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-bzip-compressed-tar.png} gnome-mime-application-x-bz
-ip-compressed-tar.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-bzip.png} gnome-mime-application-x-bzip.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-compress.png} gnome-mime-application-x-compress.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-compressed-tar.png} gnome-mime-application-x-compres
-sed-tar.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-cpio-compressed.png} gnome-mime-application-x-cpio-c
-ompressed.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-cpio.png} gnome-mime-application-x-cpio.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-deb.png} gnome-mime-application-x-deb.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-dvi.png} gnome-mime-application-x-dvi.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-executable.png} gnome-mime-application-x-executable.
-png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-font-afm.png} gnome-mime-application-x-font-afm.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-font-bdf.png} gnome-mime-application-x-font-bdf.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-font-linux-psf.png} gnome-mime-application-x-font-li
-nux-psf.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-font-pcf.png} gnome-mime-application-x-font-pcf.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-font-sunos-news.png} gnome-mime-application-x-font-s
-unos-news.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-font-ttf.png} gnome-mime-application-x-font-ttf.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-gnumeric.png} gnome-mime-application-x-gnumeric.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-gzip.png} gnome-mime-application-x-gzip.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-gzpostscript.png} gnome-mime-application-x-gzpostscr
-ipt.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-jar.png} gnome-mime-application-x-jar.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-killustrator.png} gnome-mime-application-x-killustra
-tor.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-kpresenter.png} gnome-mime-application-x-kpresenter.
-png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-kspread.png} gnome-mime-application-x-kspread.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-kword.png} gnome-mime-application-x-kword.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-lha.png} gnome-mime-application-x-lha.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-lhz.png} gnome-mime-application-x-lhz.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-ms-dos-executable.png} gnome-mime-application-x-ms-d
-os-executable.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-perl.png} gnome-mime-application-x-perl.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-php.png} gnome-mime-application-x-php.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-python-bytecode.png} gnome-mime-application-x-python
--bytecode.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-rar.png} gnome-mime-application-x-rar.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-rpm.png} gnome-mime-application-x-rpm.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-scribus.png} gnome-mime-application-x-scribus.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-shellscript.png} gnome-mime-application-x-shellscrip
-t.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-shockwave-flash.png} gnome-mime-application-x-shockw
-ave-flash.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-stuffit.png} gnome-mime-application-x-stuffit.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-tar.png} gnome-mime-application-x-tar.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-tarz.png} gnome-mime-application-x-tarz.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-x-tex.png} gnome-mime-application-x-tex.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-xhtml+xml.png} gnome-mime-application-xhtml+xml.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-application-zip.png} gnome-mime-application-zip.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-audio.png} gnome-mime-audio.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-image.png} gnome-mime-image.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-text-html.png} gnome-mime-text-html.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-text-vnd.wap.wml.png} gnome-mime-text-vnd.wap.wml.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-text-x-csh.png} gnome-mime-text-x-csh.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-text-x-python.png} gnome-mime-text-x-python.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-text-x-sh.png} gnome-mime-text-x-sh.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-text-x-vcalendar.png} gnome-mime-text-x-vcalendar.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-text-x-vcard.png} gnome-mime-text-x-vcard.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-text-x-zsh.png} gnome-mime-text-x-zsh.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-text.png} gnome-mime-text.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-video.png} gnome-mime-video.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-mime-x-font-afm.png} gnome-mime-x-font-afm.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\gnome-package.png} gnome-package.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\html.png} html.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\image-x-generic.png} image-x-generic.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\image.png} image.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\kpresenter_kpr.png} kpresenter_kpr.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\mime_ascii.png} mime_ascii.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\misc.png} misc.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\package-x-generic.png} package-x-generic.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\package.png} package.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\package_editors.png} package_editors.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\package_wordprocessing.png} package_wordprocessing.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\plan.png} plan.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\rpm.png} rpm.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\shellscript.png} shellscript.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\sound.png} sound.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\spreadsheet.png} spreadsheet.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\stock_addressbook.png} stock_addressbook.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\stock_calendar.png} stock_calendar.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\stock_certificate.png} stock_certificate.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\stock_script.png} stock_script.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\tar.png} tar.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\template_source.png} template_source.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\text-html.png} text-html.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\text-x-generic-template.png} text-x-generic-template.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\text-x-generic.png} text-x-generic.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\text-x-script.png} text-x-script.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\tgz.png} tgz.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\txt.png} txt.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\txt2.png} txt2.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\unknown.png} unknown.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\vcalendar.png} vcalendar.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\vcard.png} vcard.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\video-x-generic.png} video-x-generic.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\video.png} video.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\wordprocessing.png} wordprocessing.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\www.png} www.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\x-office-address-book.png} x-office-address-book.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\x-office-calendar.png} x-office-calendar.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\x-office-document-template.png} x-office-document-template.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\x-office-document.png} x-office-document.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\x-office-drawing-template.png} x-office-drawing-template.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\x-office-drawing.png} x-office-drawing.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\x-office-presentation-template.png} x-office-presentation-template.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\x-office-presentation.png} x-office-presentation.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\x-office-spreadsheet-template.png} x-office-spreadsheet-template.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\x-office-spreadsheet.png} x-office-spreadsheet.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\mimetypes\\zip.png} zip.png
-
-places
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\application-x-gnome-saved-search.png} application-x-gnome-saved-search.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\desktop.png} desktop.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\distributor-logo.png} distributor-logo.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\emptytrash.png} emptytrash.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\folder-remote.png} folder-remote.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\folder-saved-search.png} folder-saved-search.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\folder.png} folder.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\folder_home.png} folder_home.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-fs-desktop.png} gnome-fs-desktop.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-fs-directory.png} gnome-fs-directory.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-fs-ftp.png} gnome-fs-ftp.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-fs-home.png} gnome-fs-home.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-fs-network.png} gnome-fs-network.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-fs-nfs.png} gnome-fs-nfs.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-fs-server.png} gnome-fs-server.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-fs-share.png} gnome-fs-share.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-fs-smb.png} gnome-fs-smb.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-fs-ssh.png} gnome-fs-ssh.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-fs-trash-empty.png} gnome-fs-trash-empty.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-main-menu.png} gnome-main-menu.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-mime-x-directory-nfs-server.png} gnome-mime-x-directory-nfs-server.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-mime-x-directory-smb-server.png} gnome-mime-x-directory-smb-server.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-mime-x-directory-smb-share.png} gnome-mime-x-directory-smb-share.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-mime-x-directory-smb-workgroup.png} gnome-mime-x-directory-smb-workgroup.p
-ng
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gnome-stock-trash.png} gnome-stock-trash.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gtk-directory.png} gtk-directory.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\gtk-network.png} gtk-network.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\network-server.png} network-server.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\network-workgroup.png} network-workgroup.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\network.png} network.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\network_local.png} network_local.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\novell-button.png} novell-button.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\redhat-network-server.png} redhat-network-server.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\server.png} server.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\start-here.png} start-here.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\stock_folder.png} stock_folder.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\trashcan_empty.png} trashcan_empty.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\user-desktop.png} user-desktop.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\user-home.png} user-home.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\user-trash.png} user-trash.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\places\\xfce-trash_empty.png} xfce-trash_empty.png
-
-status
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\audio-volume-high.png} audio-volume-high.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\audio-volume-low.png} audio-volume-low.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\audio-volume-medium.png} audio-volume-medium.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\audio-volume-muted.png} audio-volume-muted.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\battery-caution.png} battery-caution.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\connect_creating.png} connect_creating.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\connect_established.png} connect_established.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\connect_no.png} connect_no.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\dialog-error.png} dialog-error.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\dialog-information.png} dialog-information.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\dialog-warning.png} dialog-warning.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\edittrash.png} edittrash.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\error.png} error.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\folder-drag-accept.png} folder-drag-accept.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\folder-open.png} folder-open.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\folder-visiting.png} folder-visiting.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\folder_open.png} folder_open.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gnome-dev-wavelan-encrypted.png} gnome-dev-wavelan-encrypted.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gnome-fs-directory-accept.png} gnome-fs-directory-accept.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gnome-fs-directory-visiting.png} gnome-fs-directory-visiting.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gnome-fs-loading-icon.png} gnome-fs-loading-icon.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gnome-fs-trash-full.png} gnome-fs-trash-full.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gnome-netstatus-disconn.png} gnome-netstatus-disconn.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gnome-netstatus-error.png} gnome-netstatus-error.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gnome-netstatus-idle.png} gnome-netstatus-idle.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gnome-netstatus-rx.png} gnome-netstatus-rx.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gnome-netstatus-tx.png} gnome-netstatus-tx.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gnome-netstatus-txrx.png} gnome-netstatus-txrx.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gnome-stock-trash-full.png} gnome-stock-trash-full.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gtk-dialog-error.png} gtk-dialog-error.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gtk-dialog-info.png} gtk-dialog-info.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gtk-dialog-warning.png} gtk-dialog-warning.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gtk-directory.png} gtk-directory.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\gtk-missing-image.png} gtk-missing-image.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\image-loading.png} image-loading.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\image-missing.png} image-missing.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\important.png} important.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\info.png} info.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\mail-attachment.png} mail-attachment.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\messagebox_critical.png} messagebox_critical.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\messagebox_info.png} messagebox_info.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\messagebox_warning.png} messagebox_warning.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\network-error.png} network-error.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\network-idle.png} network-idle.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\network-offline.png} network-offline.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\network-receive.png} network-receive.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\network-transmit-receive.png} network-transmit-receive.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\network-transmit.png} network-transmit.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\network-wireless-encrypted.png} network-wireless-encrypted.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\nm-adhoc.png} nm-adhoc.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\nm-device-wired.png} nm-device-wired.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\nm-device-wireless.png} nm-device-wireless.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\nm-no-connection.png} nm-no-connection.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\printer-error.png} printer-error.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\software-update-available.png} software-update-available.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\software-update-urgent.png} software-update-urgent.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_attach.png} stock_attach.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_dialog-error.png} stock_dialog-error.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_dialog-info.png} stock_dialog-info.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_dialog-warning.png} stock_dialog-warning.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_open.png} stock_open.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_trash_full.png} stock_trash_full.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_volume-0.png} stock_volume-0.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_volume-max.png} stock_volume-max.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_volume-med.png} stock_volume-med.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_volume-min.png} stock_volume-min.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_volume-mute.png} stock_volume-mute.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_volume.png} stock_volume.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_weather-cloudy.png} stock_weather-cloudy.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_weather-few-clouds.png} stock_weather-few-clouds.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_weather-night-clear.png} stock_weather-night-clear.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_weather-night-few-clouds.png} stock_weather-night-few-clouds.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_weather-showers.png} stock_weather-showers.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_weather-snow.png} stock_weather-snow.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_weather-storm.png} stock_weather-storm.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\stock_weather-sunny.png} stock_weather-sunny.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\sunny.png} sunny.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\trashcan_full.png} trashcan_full.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\user-trash-full.png} user-trash-full.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\weather-clear-night.png} weather-clear-night.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\weather-clear.png} weather-clear.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\weather-few-clouds-night.png} weather-few-clouds-night.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\weather-few-clouds.png} weather-few-clouds.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\weather-overcast.png} weather-overcast.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\weather-severe-alert.png} weather-severe-alert.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\weather-showers-scattered.png} weather-showers-scattered.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\weather-showers.png} weather-showers.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\weather-snow.png} weather-snow.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\weather-storm.png} weather-storm.png
-{picture file=C:\\prog\\tigris-cvs\\leo\\Icons\\Tango\\16x16\\status\\xfce-trash_full.png} xfce-trash_full.png
-
-</t>
-<t tx="ekr.20071117152614">import sys
-
-at = c.atFileCommands
-
-at.outputFile = sys.stdout
-print '0123456789' * 2
-at.putBuffered('\ta\n    \tb\nc\n')
-print ; print 'done'</t>
-<t tx="ekr.20071127232245">#!/usr/bin/env python
-from Tkinter import *
-root = Tk()
-w = Label(root, text="Hello world!")
-w.pack()
-root.mainloop()
-</t>
 <t tx="ekr.20071128122043">log = c.frame.log ; tag = 'Shell'
 frame1 = log.frameDict.get(tag)
 shellKind = 'text' # in ('plain','text','canvas')
@@ -3311,18 +1026,6 @@ if frame and not frame1:
     frame.configure(bg='white')
     print 'logFrame',log.frameDict.get(tag)
 </t>
-<t tx="ekr.20071129090337">@language perl
-
-# comment.
-
-print "abc"
-
-foreach (keys(%entries)) {
-
-    next if ($_ eq '.snapshot' or
-        $_ eq '.' or
-        $_ eq '..');
-}</t>
 <t tx="ekr.20071129103842"># A script to create @auto nodes from all .py files in a directory.
 
 import glob,os
@@ -3347,18 +1050,6 @@ try:
                 child.initHeadString(h)
 finally:
     c.endUpdate()
-</t>
-<t tx="ekr.20071201065815">@language python
-@tabwidth -4
-@others
-</t>
-<t tx="ekr.20071201073632">
-class Index: 
-    pass 
- 
-</t>
-<t tx="ekr.20071201073632.1">def main(): 
-    pass 
 </t>
 <t tx="ekr.20071206070207"></t>
 <t tx="ekr.20080105115712"># This hangs Leo while pylint is running.
@@ -3443,14 +1134,6 @@ W0702 No exception type specified
 W0703 Catch "Exception"
 W0704 Except doesn't do anything (Except: pass)
 W1111 Assigning to a function call that only returns None</t>
-<t tx="ekr.20080108091619"></t>
-<t tx="ekr.20080108092210"># Inserts the icon in the presently selected node.
-# path is an absolute path or a path relative to the leo/Icons folder.
-
-path = 'rt_arrow_disabled.gif'
-c.editCommands.insertIconFromFile(path)</t>
-<t tx="ekr.20080108092210.1"># Deletes all icons from the presently selected node.
-c.editCommands.deleteNodeIcons()</t>
 <t tx="ekr.20080115085447">@nocolor
 @
 
@@ -3492,44 +1175,6 @@ surface.write_to_png('gradient.png')
 
 g.es_print('wrote leo/test/gradient.png',color='blue')
 </t>
-<t tx="ekr.20080127215337">pat1 = 'import leo'
-pat2 = 'import leo.core.' # use 'import leo.plugins.' for plugins.
-pat3 = 'import leo.core.leo'
-replace = False
-print '=' * 20
-
-for p in c.allNodes_iter():
-    s = p.bodyString() ; h = p.headString()
-    lines = g.splitLines(s)
-    result = [] ; changed = False
-    for line in lines:
-        s2 = line.strip()
-        if s2.startswith(pat1):
-            changed = True
-            if s2 == pat1:
-                z = line.replace(pat1,pat3)
-            else:
-                i = line.find(pat1)
-                n = i + len(pat1)
-                line2 = line[:n] + line[n:n+1].lower() + line[n+1:]
-                z = line2.replace(pat1,pat2)
-            result.append(z)
-            # print ('%35s: %s' % (h,line)),
-            print ('%35s: %s' % (h,z)),
-        else:
-            result.append(line)
-    result = ''.join(result)
-    if replace and changed:
-        c.setBodyString(p,result)
-</t>
-<t tx="ekr.20080128143841">import sys
-# for z in sys.path: print z
-
-from pkg_resources import require
-require("ekrProj&gt;=0.0.1")
-
-import ekrProj
-print ekrProj</t>
 <t tx="ekr.20080206055658">print 'settings...'
 for z in ('body','button','headline','log','menu','outline'):
     for z2 in ('family','size','slant','weight',):
@@ -3548,526 +1193,7 @@ for z in ('body','button','headline','log','menu','outline'):
     setting = '%s_text_font' % (z)
     print '%20s' % (setting),c.config.getFontFromParams(arg0,arg1,arg2,arg3,defaultSize=12)
 </t>
-<t tx="ekr.20080210201921">@language pascal
-@tabwidth -4
-@others
-</t>
-<t tx="ekr.20080211085709">aList = range(10)
-
-def isEven(x): return (x%2) == 0
-def plusOne(x): return x + 1
-def larger(x,y): return g.choose(x&gt;y,x,y)
-def add(x,y): return x+y
-
-# print filter(isEven,aList)
-
-# print map(plusOne,aList)
-
-print reduce(add,aList)
-
-print [z for z in filter(isEven,aList)]</t>
-<t tx="ekr.20080211090819"></t>
-<t tx="ekr.20080211172530">unit Unit1;
-
-</t>
-<t tx="ekr.20080211172530.1">interface
-
-uses
-Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,
-Forms,
-Dialogs;
-
-type
-TForm1 = class(TForm)
-procedure FormCreate(Sender: TObject);
-private
-{ Private declarations }
-public
-{ Public declarations }
-end;
-
-var
-Form1: TForm1;
-
-implementation
-
-{$R *.dfm}
-
-procedure TForm1.FormCreate(Sender: TObject);
-var
-x,y: double;
-begin
-x:= 4;
-Y := x/2;
-end;
-
-end.
-</t>
-<t tx="ekr.20080212035042">@language python
-@tabwidth -4
-@others
-</t>
-<t tx="ekr.20080212114457"># -*- coding: utf-8 -*-
-r"""
-changed ekr
-&gt;&gt;&gt; import os
-&gt;&gt;&gt; from django import newforms as forms
-&gt;&gt;&gt; from tagging.forms import TagField
-&gt;&gt;&gt; from tagging import settings
-&gt;&gt;&gt; from tagging.models import Tag, TaggedItem
-&gt;&gt;&gt; from tagging.tests.models import Article, Link, Perch, Parrot, FormTest
-&gt;&gt;&gt; from tagging.utils import calculate_cloud, get_tag_list, get_tag, parse_tag_input
-&gt;&gt;&gt; from tagging.utils import LINEAR
-&gt;&gt;&gt; from tagging.validators import isTagList, isTag
-
-#############
-# Utilities #
-#############
-
-# Tag input ###################################################################
-
-# Simple space-delimited tags
-&gt;&gt;&gt; parse_tag_input('one')
-[u'one']
-&gt;&gt;&gt; parse_tag_input('one two')
-[u'one', u'two']
-&gt;&gt;&gt; parse_tag_input('one two three')
-[u'one', u'three', u'two']
-&gt;&gt;&gt; parse_tag_input('one one two two')
-[u'one', u'two']
-
-# Comma-delimited multiple words - an unquoted comma in the input will trigger
-# this.
-&gt;&gt;&gt; parse_tag_input(',one')
-[u'one']
-&gt;&gt;&gt; parse_tag_input(',one two')
-[u'one two']
-&gt;&gt;&gt; parse_tag_input(',one two three')
-[u'one two three']
-&gt;&gt;&gt; parse_tag_input('a-one, a-two and a-three')
-[u'a-one', u'a-two and a-three']
-
-# Double-quoted multiple words - a completed quote will trigger this.
-# Unclosed quotes are ignored.
-&gt;&gt;&gt; parse_tag_input('"one')
-[u'one']
-&gt;&gt;&gt; parse_tag_input('"one two')
-[u'one', u'two']
-&gt;&gt;&gt; parse_tag_input('"one two three')
-[u'one', u'three', u'two']
-&gt;&gt;&gt; parse_tag_input('"one two"')
-[u'one two']
-&gt;&gt;&gt; parse_tag_input('a-one "a-two and a-three"')
-[u'a-one', u'a-two and a-three']
-
-# No loose commas - split on spaces
-&gt;&gt;&gt; parse_tag_input('one two "thr,ee"')
-[u'one', u'thr,ee', u'two']
-
-# Loose commas - split on commas
-&gt;&gt;&gt; parse_tag_input('"one", two three')
-[u'one', u'two three']
-
-# Double quotes can contain commas
-&gt;&gt;&gt; parse_tag_input('a-one "a-two, and a-three"')
-[u'a-one', u'a-two, and a-three']
-&gt;&gt;&gt; parse_tag_input('"two", one, one, two, "one"')
-[u'one', u'two']
-
-# Bad users! Naughty users!
-&gt;&gt;&gt; parse_tag_input(None)
-[]
-&gt;&gt;&gt; parse_tag_input('')
-[]
-&gt;&gt;&gt; parse_tag_input('"')
-[]
-&gt;&gt;&gt; parse_tag_input('""')
-[]
-&gt;&gt;&gt; parse_tag_input('"' * 7)
-[]
-&gt;&gt;&gt; parse_tag_input(',,,,,,')
-[]
-&gt;&gt;&gt; parse_tag_input('",",",",",",","')
-[u',']
-&gt;&gt;&gt; parse_tag_input('a-one "a-two" and "a-three')
-[u'a-one', u'a-three', u'a-two', u'and']
-
-# Normalised Tag list input ###################################################
-&gt;&gt;&gt; cheese = Tag.objects.create(name='cheese')
-&gt;&gt;&gt; toast = Tag.objects.create(name='toast')
-&gt;&gt;&gt; get_tag_list(cheese)
-[&lt;Tag: cheese&gt;]
-&gt;&gt;&gt; get_tag_list('cheese toast')
-[&lt;Tag: cheese&gt;, &lt;Tag: toast&gt;]
-&gt;&gt;&gt; get_tag_list('cheese,toast')
-[&lt;Tag: cheese&gt;, &lt;Tag: toast&gt;]
-&gt;&gt;&gt; get_tag_list([])
-[]
-&gt;&gt;&gt; get_tag_list(['cheese', 'toast'])
-[&lt;Tag: cheese&gt;, &lt;Tag: toast&gt;]
-&gt;&gt;&gt; get_tag_list([cheese.id, toast.id])
-[&lt;Tag: cheese&gt;, &lt;Tag: toast&gt;]
-&gt;&gt;&gt; get_tag_list(['cheese', 'toast', 'ŠĐĆŽćžšđ'])
-[&lt;Tag: cheese&gt;, &lt;Tag: toast&gt;]
-&gt;&gt;&gt; get_tag_list([cheese, toast])
-[&lt;Tag: cheese&gt;, &lt;Tag: toast&gt;]
-&gt;&gt;&gt; get_tag_list((cheese, toast))
-(&lt;Tag: cheese&gt;, &lt;Tag: toast&gt;)
-&gt;&gt;&gt; get_tag_list(Tag.objects.filter(name__in=['cheese', 'toast']))
-[&lt;Tag: cheese&gt;, &lt;Tag: toast&gt;]
-&gt;&gt;&gt; get_tag_list(['cheese', toast])
-Traceback (most recent call last):
-    ...
-ValueError: If a list or tuple of tags is provided, they must all be tag names, Tag objects or Tag ids.
-&gt;&gt;&gt; get_tag_list(29)
-Traceback (most recent call last):
-    ...
-ValueError: The tag input given was invalid.
-
-# Normalised Tag input
-&gt;&gt;&gt; get_tag(cheese)
-&lt;Tag: cheese&gt;
-&gt;&gt;&gt; get_tag('cheese')
-&lt;Tag: cheese&gt;
-&gt;&gt;&gt; get_tag(cheese.id)
-&lt;Tag: cheese&gt;
-&gt;&gt;&gt; get_tag('mouse')
-
-# Tag clouds ##################################################################
-&gt;&gt;&gt; tags = []
-&gt;&gt;&gt; for line in open(os.path.join(os.path.dirname(__file__), 'tags.txt')).readlines():
-...     name, count = line.rstrip().split()
-...     tag = Tag(name=name)
-...     tag.count = int(count)
-...     tags.append(tag)
-
-&gt;&gt;&gt; sizes = {}
-&gt;&gt;&gt; for tag in calculate_cloud(tags, steps=5):
-...     sizes[tag.font_size] = sizes.get(tag.font_size, 0) + 1
-
-# This isn't a pre-calculated test, just making sure it's consistent
-&gt;&gt;&gt; sizes
-{1: 48, 2: 30, 3: 19, 4: 15, 5: 10}
-
-&gt;&gt;&gt; sizes = {}
-&gt;&gt;&gt; for tag in calculate_cloud(tags, steps=5, distribution=LINEAR):
-...     sizes[tag.font_size] = sizes.get(tag.font_size, 0) + 1
-
-# This isn't a pre-calculated test, just making sure it's consistent
-&gt;&gt;&gt; sizes
-{1: 97, 2: 12, 3: 7, 4: 2, 5: 4}
-
-&gt;&gt;&gt; calculate_cloud(tags, steps=5, distribution='cheese')
-Traceback (most recent call last):
-    ...
-ValueError: Invalid distribution algorithm specified: cheese.
-
-# Validators ##################################################################
-
-&gt;&gt;&gt; isTagList('foo qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbn bar', {})
-Traceback (most recent call last):
-    ...
-ValidationError: [u'Each tag may be no more than 50 characters long.']
-
-&gt;&gt;&gt; isTag('"test"', {})
-&gt;&gt;&gt; isTag(',test', {})
-&gt;&gt;&gt; isTag('f o o', {})
-Traceback (most recent call last):
-    ...
-ValidationError: [u'Multiple tags were given.']
-&gt;&gt;&gt; isTagList('foo qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbn bar', {})
-Traceback (most recent call last):
-    ...
-ValidationError: [u'Each tag may be no more than 50 characters long.']
-
-###########
-# Tagging #
-###########
-
-# Basic tagging ###############################################################
-
-&gt;&gt;&gt; dead = Parrot.objects.create(state='dead')
-&gt;&gt;&gt; Tag.objects.update_tags(dead, 'foo,bar,"ter"')
-&gt;&gt;&gt; Tag.objects.get_for_object(dead)
-[&lt;Tag: bar&gt;, &lt;Tag: foo&gt;, &lt;Tag: ter&gt;]
-&gt;&gt;&gt; Tag.objects.update_tags(dead, '"foo" bar "baz"')
-&gt;&gt;&gt; Tag.objects.get_for_object(dead)
-[&lt;Tag: bar&gt;, &lt;Tag: baz&gt;, &lt;Tag: foo&gt;]
-&gt;&gt;&gt; Tag.objects.add_tag(dead, 'foo')
-&gt;&gt;&gt; Tag.objects.get_for_object(dead)
-[&lt;Tag: bar&gt;, &lt;Tag: baz&gt;, &lt;Tag: foo&gt;]
-&gt;&gt;&gt; Tag.objects.add_tag(dead, 'zip')
-&gt;&gt;&gt; Tag.objects.get_for_object(dead)
-[&lt;Tag: bar&gt;, &lt;Tag: baz&gt;, &lt;Tag: foo&gt;, &lt;Tag: zip&gt;]
-&gt;&gt;&gt; Tag.objects.add_tag(dead, '    ')
-Traceback (most recent call last):
-    ...
-AttributeError: No tags were given: "    ".
-&gt;&gt;&gt; Tag.objects.add_tag(dead, 'one two')
-Traceback (most recent call last):
-    ...
-AttributeError: Multiple tags were given: "one two".
-
-# Note that doctest in Python 2.4 (and maybe 2.5?) doesn't support non-ascii
-# characters in output, so we're displaying the repr() here.
-&gt;&gt;&gt; Tag.objects.update_tags(dead, 'ŠĐĆŽćžšđ')
-&gt;&gt;&gt; repr(Tag.objects.get_for_object(dead))
-'[&lt;Tag: \xc5\xa0\xc4\x90\xc4\x86\xc5\xbd\xc4\x87\xc5\xbe\xc5\xa1\xc4\x91&gt;]'
-
-&gt;&gt;&gt; Tag.objects.update_tags(dead, None)
-&gt;&gt;&gt; Tag.objects.get_for_object(dead)
-[]
-
-# Using a model's TagField
-&gt;&gt;&gt; f1 = FormTest.objects.create(tags=u'test3 test2 test1')
-&gt;&gt;&gt; Tag.objects.get_for_object(f1)
-[&lt;Tag: test1&gt;, &lt;Tag: test2&gt;, &lt;Tag: test3&gt;]
-&gt;&gt;&gt; f1.tags = u'test4'
-&gt;&gt;&gt; f1.save()
-&gt;&gt;&gt; Tag.objects.get_for_object(f1)
-[&lt;Tag: test4&gt;]
-&gt;&gt;&gt; f1.tags = ''
-&gt;&gt;&gt; f1.save()
-&gt;&gt;&gt; Tag.objects.get_for_object(f1)
-[]
-
-# Forcing tags to lowercase
-&gt;&gt;&gt; settings.FORCE_LOWERCASE_TAGS = True
-&gt;&gt;&gt; Tag.objects.update_tags(dead, 'foO bAr Ter')
-&gt;&gt;&gt; Tag.objects.get_for_object(dead)
-[&lt;Tag: bar&gt;, &lt;Tag: foo&gt;, &lt;Tag: ter&gt;]
-&gt;&gt;&gt; Tag.objects.update_tags(dead, 'foO bAr baZ')
-&gt;&gt;&gt; Tag.objects.get_for_object(dead)
-[&lt;Tag: bar&gt;, &lt;Tag: baz&gt;, &lt;Tag: foo&gt;]
-&gt;&gt;&gt; Tag.objects.add_tag(dead, 'FOO')
-&gt;&gt;&gt; Tag.objects.get_for_object(dead)
-[&lt;Tag: bar&gt;, &lt;Tag: baz&gt;, &lt;Tag: foo&gt;]
-&gt;&gt;&gt; Tag.objects.add_tag(dead, 'Zip')
-&gt;&gt;&gt; Tag.objects.get_for_object(dead)
-[&lt;Tag: bar&gt;, &lt;Tag: baz&gt;, &lt;Tag: foo&gt;, &lt;Tag: zip&gt;]
-&gt;&gt;&gt; Tag.objects.update_tags(dead, None)
-&gt;&gt;&gt; f1.tags = u'TEST5'
-&gt;&gt;&gt; f1.save()
-&gt;&gt;&gt; Tag.objects.get_for_object(f1)
-[&lt;Tag: test5&gt;]
-&gt;&gt;&gt; f1.tags
-u'test5'
-
-# Retrieving tags by Model ####################################################
-
-&gt;&gt;&gt; Tag.objects.usage_for_model(Parrot)
-[]
-&gt;&gt;&gt; parrot_details = (
-...     ('pining for the fjords', 9, True,  'foo bar'),
-...     ('passed on',             6, False, 'bar baz ter'),
-...     ('no more',               4, True,  'foo ter'),
-...     ('late',                  2, False, 'bar ter'),
-... )
-
-&gt;&gt;&gt; for state, perch_size, perch_smelly, tags in parrot_details:
-...     perch = Perch.objects.create(size=perch_size, smelly=perch_smelly)
-...     parrot = Parrot.objects.create(state=state, perch=perch)
-...     Tag.objects.update_tags(parrot, tags)
-
-&gt;&gt;&gt; [(tag.name, tag.count) for tag in Tag.objects.usage_for_model(Parrot, counts=True)]
-[(u'bar', 3), (u'baz', 1), (u'foo', 2), (u'ter', 3)]
-&gt;&gt;&gt; [(tag.name, tag.count) for tag in Tag.objects.usage_for_model(Parrot, min_count=2)]
-[(u'bar', 3), (u'foo', 2), (u'ter', 3)]
-
-# Limiting results to a subset of the model
-&gt;&gt;&gt; [(tag.name, tag.count) for tag in Tag.objects.usage_for_model(Parrot, counts=True, filters=dict(state='no more'))]
-[(u'foo', 1), (u'ter', 1)]
-&gt;&gt;&gt; [(tag.name, tag.count) for tag in Tag.objects.usage_for_model(Parrot, counts=True, filters=dict(state__startswith='p'))]
-[(u'bar', 2), (u'baz', 1), (u'foo', 1), (u'ter', 1)]
-&gt;&gt;&gt; [(tag.name, tag.count) for tag in Tag.objects.usage_for_model(Parrot, counts=True, filters=dict(perch__size__gt=4))]
-[(u'bar', 2), (u'baz', 1), (u'foo', 1), (u'ter', 1)]
-&gt;&gt;&gt; [(tag.name, tag.count) for tag in Tag.objects.usage_for_model(Parrot, counts=True, filters=dict(perch__smelly=True))]
-[(u'bar', 1), (u'foo', 2), (u'ter', 1)]
-&gt;&gt;&gt; [(tag.name, tag.count) for tag in Tag.objects.usage_for_model(Parrot, min_count=2, filters=dict(perch__smelly=True))]
-[(u'foo', 2)]
-&gt;&gt;&gt; [(tag.name, hasattr(tag, 'counts')) for tag in Tag.objects.usage_for_model(Parrot, filters=dict(perch__size__gt=4))]
-[(u'bar', False), (u'baz', False), (u'foo', False), (u'ter', False)]
-&gt;&gt;&gt; [(tag.name, hasattr(tag, 'counts')) for tag in Tag.objects.usage_for_model(Parrot, filters=dict(perch__size__gt=99))]
-[]
-
-# Related tags
-&gt;&gt;&gt; [(tag.name, tag.count) for tag in Tag.objects.related_for_model(Tag.objects.filter(name__in=['bar']), Parrot, counts=True)]
-[(u'baz', 1), (u'foo', 1), (u'ter', 2)]
-&gt;&gt;&gt; [(tag.name, tag.count) for tag in Tag.objects.related_for_model(Tag.objects.filter(name__in=['bar']), Parrot, min_count=2)]
-[(u'ter', 2)]
-&gt;&gt;&gt; [tag.name for tag in Tag.objects.related_for_model(Tag.objects.filter(name__in=['bar']), Parrot, counts=False)]
-[u'baz', u'foo', u'ter']
-&gt;&gt;&gt; [(tag.name, tag.count) for tag in Tag.objects.related_for_model(Tag.objects.filter(name__in=['bar', 'ter']), Parrot, counts=True)]
-[(u'baz', 1)]
-&gt;&gt;&gt; [(tag.name, tag.count) for tag in Tag.objects.related_for_model(Tag.objects.filter(name__in=['bar', 'ter', 'baz']), Parrot, counts=True)]
-[]
-
-# Once again, with feeling (strings)
-&gt;&gt;&gt; [(tag.name, tag.count) for tag in Tag.objects.related_for_model('bar', Parrot, counts=True)]
-[(u'baz', 1), (u'foo', 1), (u'ter', 2)]
-&gt;&gt;&gt; [(tag.name, tag.count) for tag in Tag.objects.related_for_model('bar', Parrot, min_count=2)]
-[(u'ter', 2)]
-&gt;&gt;&gt; [tag.name for tag in Tag.objects.related_for_model('bar', Parrot, counts=False)]
-[u'baz', u'foo', u'ter']
-&gt;&gt;&gt; [(tag.name, tag.count) for tag in Tag.objects.related_for_model(['bar', 'ter'], Parrot, counts=True)]
-[(u'baz', 1)]
-&gt;&gt;&gt; [(tag.name, tag.count) for tag in Tag.objects.related_for_model(['bar', 'ter', 'baz'], Parrot, counts=True)]
-[]
-
-# Retrieving tagged objects by Model ##########################################
-
-&gt;&gt;&gt; foo = Tag.objects.get(name='foo')
-&gt;&gt;&gt; bar = Tag.objects.get(name='bar')
-&gt;&gt;&gt; baz = Tag.objects.get(name='baz')
-&gt;&gt;&gt; ter = Tag.objects.get(name='ter')
-&gt;&gt;&gt; TaggedItem.objects.get_by_model(Parrot, foo)
-[&lt;Parrot: no more&gt;, &lt;Parrot: pining for the fjords&gt;]
-&gt;&gt;&gt; TaggedItem.objects.get_by_model(Parrot, bar)
-[&lt;Parrot: late&gt;, &lt;Parrot: passed on&gt;, &lt;Parrot: pining for the fjords&gt;]
-
-# Intersections are supported
-&gt;&gt;&gt; TaggedItem.objects.get_by_model(Parrot, [foo, baz])
-[]
-&gt;&gt;&gt; TaggedItem.objects.get_by_model(Parrot, [foo, bar])
-[&lt;Parrot: pining for the fjords&gt;]
-&gt;&gt;&gt; TaggedItem.objects.get_by_model(Parrot, [bar, ter])
-[&lt;Parrot: late&gt;, &lt;Parrot: passed on&gt;]
-
-# You can also pass Tag QuerySets
-&gt;&gt;&gt; TaggedItem.objects.get_by_model(Parrot, Tag.objects.filter(name__in=['foo', 'baz']))
-[]
-&gt;&gt;&gt; TaggedItem.objects.get_by_model(Parrot, Tag.objects.filter(name__in=['foo', 'bar']))
-[&lt;Parrot: pining for the fjords&gt;]
-&gt;&gt;&gt; TaggedItem.objects.get_by_model(Parrot, Tag.objects.filter(name__in=['bar', 'ter']))
-[&lt;Parrot: late&gt;, &lt;Parrot: passed on&gt;]
-
-# You can also pass strings and lists of strings
-&gt;&gt;&gt; TaggedItem.objects.get_by_model(Parrot, 'foo baz')
-[]
-&gt;&gt;&gt; TaggedItem.objects.get_by_model(Parrot, 'foo bar')
-[&lt;Parrot: pining for the fjords&gt;]
-&gt;&gt;&gt; TaggedItem.objects.get_by_model(Parrot, 'bar ter')
-[&lt;Parrot: late&gt;, &lt;Parrot: passed on&gt;]
-&gt;&gt;&gt; TaggedItem.objects.get_by_model(Parrot, ['foo', 'baz'])
-[]
-&gt;&gt;&gt; TaggedItem.objects.get_by_model(Parrot, ['foo', 'bar'])
-[&lt;Parrot: pining for the fjords&gt;]
-&gt;&gt;&gt; TaggedItem.objects.get_by_model(Parrot, ['bar', 'ter'])
-[&lt;Parrot: late&gt;, &lt;Parrot: passed on&gt;]
-
-# Issue 50 - Get by non-existent tag
-&gt;&gt;&gt; TaggedItem.objects.get_by_model(Parrot, 'argatrons')
-[]
-
-# Unions
-&gt;&gt;&gt; TaggedItem.objects.get_union_by_model(Parrot, ['foo', 'ter'])
-[&lt;Parrot: late&gt;, &lt;Parrot: no more&gt;, &lt;Parrot: passed on&gt;, &lt;Parrot: pining for the fjords&gt;]
-&gt;&gt;&gt; TaggedItem.objects.get_union_by_model(Parrot, ['bar', 'baz'])
-[&lt;Parrot: late&gt;, &lt;Parrot: passed on&gt;, &lt;Parrot: pining for the fjords&gt;]
-
-# Retrieving related objects by Model #########################################
-
-# Related instances of the same Model
-&gt;&gt;&gt; l1 = Link.objects.create(name='link 1')
-&gt;&gt;&gt; Tag.objects.update_tags(l1, 'tag1 tag2 tag3 tag4 tag5')
-&gt;&gt;&gt; l2 = Link.objects.create(name='link 2')
-&gt;&gt;&gt; Tag.objects.update_tags(l2, 'tag1 tag2 tag3')
-&gt;&gt;&gt; l3 = Link.objects.create(name='link 3')
-&gt;&gt;&gt; Tag.objects.update_tags(l3, 'tag1')
-&gt;&gt;&gt; l4 = Link.objects.create(name='link 4')
-&gt;&gt;&gt; TaggedItem.objects.get_related(l1, Link)
-[&lt;Link: link 2&gt;, &lt;Link: link 3&gt;]
-&gt;&gt;&gt; TaggedItem.objects.get_related(l1, Link, num=1)
-[&lt;Link: link 2&gt;]
-&gt;&gt;&gt; TaggedItem.objects.get_related(l4, Link)
-[]
-
-# Related instance of a different Model
-&gt;&gt;&gt; a1 = Article.objects.create(name='article 1')
-&gt;&gt;&gt; Tag.objects.update_tags(a1, 'tag1 tag2 tag3 tag4')
-&gt;&gt;&gt; TaggedItem.objects.get_related(a1, Link)
-[&lt;Link: link 1&gt;, &lt;Link: link 2&gt;, &lt;Link: link 3&gt;]
-&gt;&gt;&gt; Tag.objects.update_tags(a1, 'tag6')
-&gt;&gt;&gt; TaggedItem.objects.get_related(a1, Link)
-[]
-
-################
-# Model Fields #
-################
-
-# TagField ####################################################################
-
-# Ensure that automatically created forms use TagField
-&gt;&gt;&gt; class TestForm(forms.ModelForm):
-...     class Meta:
-...         model = FormTest
-&gt;&gt;&gt; form = TestForm()
-&gt;&gt;&gt; form.fields['tags'].__class__.__name__
-'TagField'
-
-# Recreating string representaions of tag lists ###############################
-&gt;&gt;&gt; plain = Tag.objects.create(name='plain')
-&gt;&gt;&gt; spaces = Tag.objects.create(name='spa ces')
-&gt;&gt;&gt; comma = Tag.objects.create(name='com,ma')
-
-&gt;&gt;&gt; from tagging.utils import edit_string_for_tags
-&gt;&gt;&gt; edit_string_for_tags([plain])
-u'plain'
-&gt;&gt;&gt; edit_string_for_tags([plain, spaces])
-u'plain, spa ces'
-&gt;&gt;&gt; edit_string_for_tags([plain, spaces, comma])
-u'plain, spa ces, "com,ma"'
-&gt;&gt;&gt; edit_string_for_tags([plain, comma])
-u'plain "com,ma"'
-&gt;&gt;&gt; edit_string_for_tags([comma, spaces])
-u'"com,ma", spa ces'
-
-###############
-# Form Fields #
-###############
-
-&gt;&gt;&gt; t = TagField()
-&gt;&gt;&gt; t.clean('foo')
-u'foo'
-&gt;&gt;&gt; t.clean('foo bar baz')
-u'foo bar baz'
-&gt;&gt;&gt; t.clean('foo,bar,baz')
-u'foo,bar,baz'
-&gt;&gt;&gt; t.clean('foo, bar, baz')
-u'foo, bar, baz'
-&gt;&gt;&gt; t.clean('foo qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvb bar')
-u'foo qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvb bar'
-&gt;&gt;&gt; t.clean('foo qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbn bar')
-Traceback (most recent call last):
-    ...
-ValidationError: [u'Each tag may be no more than 50 characters long.']
-"""
-</t>
 <t tx="ekr.20080214091706.2">print 'hello from ekr'</t>
-<t tx="ekr.20080223084414">def test (s,color='red',*args,**keys):
-    g.es(args,keys)
-
-test('s',color='red',newline=False)
-
-test('s',newline=False,color='red')
-
-# This fails, illustrating that we can't reliably mix keyword args with *args.
-test('a','b',color='red',newline=False)
-</t>
-<t tx="ekr.20080229140820">if 0: # passed
-    c.k.simulateCommand('about-leo')
-elif 0: # passed.
-    fileName = r'c:\prog\test\test2.leo'
-    c.k.simulateCommand('save-file-as %s' % fileName)
-elif 0: # passed
-    fileName = r'c:\prog\test\test2.leo'
-    c.k.simulateCommand('save-file-to %s' % fileName)
-elif 0: # passed
-    fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','doc','LeoDocs.leo'))
-    c.k.simulateCommand('open-outline %s' % fileName)
-else: # passed
-    fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','doc','LeoDocs.leo'))
-    c.k.simulateCommand('open-outline-by-name %s' % fileName)</t>
 <t tx="ekr.20080310111916.1">def myTranslateString (s):
 
     i = s.lower().find('can not')
@@ -4080,95 +1206,6 @@ g.translateString = myTranslateString
 
 </t>
 <t tx="ekr.20080412082246.1"></t>
-<t tx="ekr.20080413195706.1">import pydispatch
-g.es(pydispatch)
-g.es(g.listToString(dir(pydispatch)))
-</t>
-<t tx="ekr.20080502120646.1">&lt;?php /*Cascade Style Sheet style1.css*/
-?&gt;
-&lt;link href="../stex.css" rel="stylesheet" type="text/css" /&gt;
-
-&lt;?php
-/*
-Choice of language for website yes/no
-*/
-$ADD_LANGUAGE_CHOICE = 'yes';
-/*
-If 'Yes' you need to create images based on content/filename.htm
-ex: /imgs/bttns_index.jpg
-$NAV_IMAGES ='yes';
-*/
-
-?&gt;
-
-&lt;?php /* Contact information */
-$domain = "domain.com";
-
-?&gt;
-
-&lt;?php /* Content Script; reads .htm files in Content Directory */
-
-//-- first section ends, second section begins
-
-include('language.php');
-
-$mycontentdir = "content"."/".$mylanguage;
-if ($main_page == "") $main_page = "index";
-
-
-$pagename = $main_page;
-$ptitle = $company . " " . $main_page . " page " . $tel ." " . $city .
-" " . $state . " " . $zip;
-
-$main_page = "" . $main_page . ".htm";
-
-/* if (is_file("$mycontentdir/$main_page")) {
-$open = fopen("$mycontentdir/$main_page", "r");
-$size = filesize("$mycontentdir/$main_page");
-$content = fread($open, $size); */
-//}
-?&gt;
-
-&lt;?php
-/*Echo's Website*/
-function hpo(){
-echo '&lt;div class="hpo"&gt;whatever text goes here&lt;/a&gt; &lt;/div&gt;';
-}
-?&gt;
-</t>
-<t tx="ekr.20080503195928.1"></t>
-<t tx="ekr.20080503202744.3">import rope.base.project
-import rope.contrib.codeassist as codeassist
-import leoGlobals as g
-import leoCommands
-c2 = leoCommands.Commands(frame=c.frame,fileName='xyz-file')
-
-class leoFSCommands (object):
-    def create_file(self,path):         g.trace(path)
-    def create_folder(self,path):       g.trace(path)
-    def move (self,path,new_location):  g.trace(path,new_location)
-    def remove (self,path):             g.trace(path)
-    def write (self,path,data):         g.trace(path,data)
-
-path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','..'))
-    # Make the trunk folder a project
-project = rope.base.project.Project(path,fscommands=leoFSCommands)
-s = p.bodyString() # Could simulate a write to allow @others.
-
-print '*' * 40
-for pattern in (
-    # 'g.', # works.
-    # 'g.trace(', # weird.
-    # 'rope.base.', # works.
-    'g.list', # works: gives g.listToString
-    'c2.de', # works.
-):
-    i = s.find(pattern)
-    if i &gt; -1:
-        proposals = codeassist.code_assist(project,s,i+len(pattern))
-        print '-' * 20
-        print 'pattern:',pattern
-        print g.listToString(proposals)</t>
 <t tx="ekr.20080529111617.1"></t>
 <t tx="ekr.20080529111617.2"></t>
 <t tx="ekr.20080529111617.3">The colour used instead of green in progress bars</t>
@@ -4187,32 +1224,26 @@ for pattern in (
 2: scaled progress bars</t>
 <t tx="ekr.20080529111617.9">pixels per time unit to add to width of scaled progress bars</t>
 <t tx="ekr.20080529111617.10">The name of time unit (e.g. days, weeks, hours)</t>
-<t tx="ekr.20080531080812.1">def eggs():
-    g.trace()
-
-def spam():
-    g.trace()
-    eggs()
-
-t = g.startTracer()
-spam()
-t.stop()
-</t>
-<t tx="ekr.20080531131542.1">import mx.TextTools as tt
+<t tx="ekr.20090309114909.2"></t>
+<t tx="ekr.20090309114909.3">import mx.TextTools as tt
 
 &lt;&lt; define scan4 tables &gt;&gt;
 &lt;&lt; define s &gt;&gt;
 
 @others
 
-print '*' * 60
+g.pr('*' * 60)
 ok,taglist,nextindex = tt.tag(s,lineTable)
-# print g.listToString(taglist)
+# g.pr(g.listToString(taglist))
 for z in taglist:
     printItem(z,level=0)
-print 'ok:',ok
+g.pr('ok:',ok)
 </t>
-<t tx="ekr.20080531131542.2">from mx.TextTools import * # Required for tags.
+<t tx="ekr.20090309114909.4">path = r'c:\leo.repo\trunk\leo\core\runLeo.py'
+f = file(path)
+s = f.read()
+f.close()</t>
+<t tx="ekr.20090309114909.5">from mx.TextTools import * # Required for tags.
 
 ws_charset   = CharSet(' \t')
 name_charset = CharSet(alpha)
@@ -4253,1490 +1284,1512 @@ lineTable = (
     ('line',Table,normalLineTable,+1,+1),
     ('eof',EOF,Here,-2),
 )</t>
-<t tx="ekr.20080531131542.4">def printItem(aList,level):
+<t tx="ekr.20090309114909.6">def printItem(aList,level):
 
     obj,lt_index,rt_index,subtag = aList
-    print '  '*level,obj,repr(s[lt_index:rt_index])
+    g.pr('  '*level,obj,repr(s[lt_index:rt_index]))
     if subtag:
         for z in subtag:
             printItem(z,level+1)
 </t>
-<t tx="ekr.20080531141227.1">path = r'c:\leo.repo\trunk\leo\core\runLeo.py'
-f = file(path)
-s = f.read()
-f.close()</t>
-<t tx="ekr.20080601131331.2">@others
+<t tx="ekr.20090309114909.7">@nocolor
 
-import leo.core.leoAtFile as leoAtFile
-
-try:
-    import mx.TextTools as tt
-    # from mx.TextTools import * # Required for tags.
-except ImportError:
-    tt = None
-
-if tt:
-    g.funcToMethod(scanText4_mxTextTools,leoAtFile.atFile,'scanText4')
-    g.es_print('override: scanText4')
-</t>
-<t tx="ekr.20080601131331.3">def scanText4_mxTextTools (self,theFile,fileName,p,verbose=False):
-
-    """Scan a 4.x derived file non-recursively."""
-
-    # __pychecker__ = '--no-argsused' # fileName,verbose might be used for debugging.
-
-    at = self
-    &lt;&lt; init ivars for scanText4 &gt;&gt;
-    &lt;&lt; define mxTextTools tables &gt;&gt;
-    &lt;&lt; define sentinelDict &gt;&gt;
+Notes:
     
-    # Temp: define helpers
-    s = theFile.read()
-    # s = s.replace('\n\r','\n').replace('\r\n','\n').replace('\r','\n')
-    s = g.toUnicode(s,self.encoding)
-    ok,taglist,nextindex = tt.tag(s,lineTable)
-    for z in taglist:
-        printItem(s,z,level=0)
-        obj,lt_index,rt_index,subtag = z
-        if obj == 'line':
-            doLine(s[lt_index:rt_index])
-        else:
-            doSentinel(obj,s[lt_index:rt_index],subtag)
-    print 'ok:',ok
-    return at.lastLines
-    # while at.errors == 0 and not at.done:
-        # s = at.readLine(theFile)
-        # self.lineNumber += 1
-        # if len(s) == 0: break
-        # kind = at.sentinelKind4(s)
-        # # g.trace(at.sentinelName(kind),s.strip())
-        # if kind == at.noSentinel:
-            # i = 0
+- button Leo2dHTML creates leo\test\x.htm, where x is the name of the .leo file
+  containing the script. The file contains javascript that allows a browser to
+  expand and contract headlines.  Leo2DHTML is *unrelated* to the other files.
+    
+- leo\test\server.py is a minimal Python server.  Invoke from a console with::
+    
+    python server.py
+
+To use this server, type this url in a web browser: http://localhost:8080/
+The server will print the contents of the directory from which it was invoked.
+Choose hello.html to see the 'Hello World' test page.
+
+- leo\test\hello.html is a test page.  It uses leo\test\cgi-bin\edward.py
+
+- leo\test\cgi-bin\edward.py is the script called from hello.leo when the user
+  hits the 'Submit Query button.
+  This is recompiled (as needed) for every query, which makes testing it easier.
+  
+  **Important** edward.py returns its result by printing (in a special format):
+  Thus, everything you print will be part of the returned form(!). You **can**
+  print debug info: just make sure you don't mess up the special conventions:
+  the best place to print debugging info is in print_all.
+
+@color</t>
+<t tx="ekr.20090309114909.8">@
+
+edward.py:
+    
+How can we get the content of an input form?</t>
+<t tx="ekr.20090309114909.9">@first # -*- coding: utf-8 -*-
+@language python
+@tabwidth -4
+
+&lt;&lt; about LeoToHTML &gt;&gt;
+import leo.core.leoGlobals as g
+&lt;&lt; define dhtml stuff &gt;&gt;
+@others
+
+fileName = c.frame.shortFileName() # Get current outline file name
+if fileName.endswith('.leo'): fileName = fileName[:-4] # Remove .leo suffix
+path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test',fileName)) + '.htm'
+
+# Write the file.
+f=open(path, 'w')
+writeAll(f)
+f.close() 
+g.es('wrote: %s' % (path),color="turquoise4") 
+</t>
+<t tx="ekr.20090309114909.10">@
+
+LeoToHTML by Dan Rahmel, modified by EKR.
+
+This @button script creates an .htm file containing the contents of the selected tree.
+The file is called x.htm, where x is the name of the .leo file containing the script.
+This file is written to the leo/test folder.
+
+The script inserts javascript into the page so that nodes can be expanded and contracted.
+
+The script presently works well.  This script may become the basis for a facebook app.
+
+The generated html passes html-tidy: http://www.w3.org/People/Raggett/tidy/
+</t>
+<t tx="ekr.20090309114909.11">division = """
+&lt;div STYLE="margin-left:3em;text-indent:0em;margin-top:0em; margin-bottom:0em;"&gt;
+&lt;h3 onClick="expandcontent('sc%d')" style="cursor:hand; cursor:pointer; margin-top:0em; margin-bottom:0em"&gt;+ %s&lt;/h3&gt;
+    &lt;div id="sc%d" class="switchcontent" style="margin-top:0em; margin-bottom:0em;"&gt;
+"""
+
+javascript  = """
+&lt;script src="cgi-bin/leo.js" type="text/javascript"&gt;&lt;/script&gt;
+"""
+
+style = '''
+&lt;STYLE type="text/css"&gt;
+    BODY {font:x-medium 'Verdana'; margin-right:1.5em}
+    PRE {margin:0px; display:inline}
+&lt;/STYLE&gt;
+'''
+</t>
+<t tx="ekr.20090309114909.12">def escape (s):
+
+    return s.replace('&amp;','&amp;amp;').replace('&lt;','&amp;lt;').replace('&gt;','&amp;gt;')
+</t>
+<t tx="ekr.20090309114909.13">def writeAll(f):
+
+    f.write('&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN"&gt;')
+    f.write('&lt;html&gt;')
+    writeHead(f)
+    writeBody(f)
+    f.write("&lt;/html&gt;")
+</t>
+<t tx="ekr.20090309114909.14">def writeBody(f):
+
+    f.write('&lt;body class="st" onload="format()"&gt;')
+    writeContents(f)
+    f.write("&lt;/body&gt;")
+</t>
+<t tx="ekr.20090309114909.15">def writeHead(f):
+
+    f.write('&lt;head&gt;')
+    f.write(style)
+    f.write(javascript)
+    f.write('&lt;title&gt;%s&lt;/title&gt;' % c.shortFileName())
+    f.write('&lt;/head&gt;')
+</t>
+<t tx="ekr.20090309114909.16">def writeContents(f):
+
+    div = "&lt;div class='c' STYLE='margin-left:4em;margin-top:0em; margin-bottom:0em;'&gt;\n&lt;pre&gt;\n%s\n&lt;/pre&gt;\n&lt;/div&gt;"
+    end_div = "&lt;/div&gt;\n&lt;/div&gt;\n"
+    n = 1 # The node number
+    current = c.currentPosition()
+    prev_level = current.level()
+    open_divs = 0
+    for p in current.self_and_subtree_iter():
+        h = p.headString()
+        while prev_level &gt;= p.level() and open_divs &gt; 0:
+            f.write(end_div)
+            prev_level -= 1
+            open_divs -= 1
+        body = p.bodyString().encode( "utf-8" )
+        body = body.rstrip().rstrip("\n")
+        f.write(division % (n,escape(h),n))
+        open_divs += 1
+        if body:
+            f.write(div % escape(body))
+        prev_level = p.level()
+        n += 1
+
+    # Close all divisions.
+    while open_divs &gt; 0:
+        f.write(end_div)
+        open_divs -= 1
+</t>
+<t tx="ekr.20090309114909.17"># def writePreamble(f):
+
+    # '''Write HTML header information.'''
+
+    # header_start = '''\
+
+
+# &lt;body class="st" onload="format()"&gt;
+# '''
+
+    # for s in (header_start,style,javascript,header_end):
+        # # f.write(g.adjustTripleString(s,c.tab_width))
+        # f.write(s)
+</t>
+<t tx="ekr.20090309114909.18"># def writePostamble (f):
+
+    # pass
+
+</t>
+<t tx="ekr.20090309114909.19"># A minimal python server for testing.
+# To access this server, type this url in a web browser: http://localhost:8080/
+# The server will print the contents of the directory from which it was invoked.
+# Choose hello.html to see the 'Hello World' test page.
+
+import CGIHTTPServer
+import SocketServer
+
+port = 8080
+
+Handler = CGIHTTPServer.CGIHTTPRequestHandler
+s = SocketServer.TCPServer(("", port), Handler)
+
+s.server_name = '127.0.0.1' # represents local host.
+s.server_port = port
+
+# import os ; print 'cwd', os.getcwd()
+
+print "server.py: serving at port", port
+s.serve_forever()
+</t>
+<t tx="ekr.20090309114909.20">@language html
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;&lt;/title&gt;
+
+&lt;!-- Used by edward.old.py
+&lt;script language="JavaScript" type="text/javascript"&gt;
+   var openImg = new Image();
+   openImg.src = "open.gif";
+   var closedImg = new Image();
+   closedImg.src = "closed.gif";
+
+   function showNode(node) {
+      var objBranch = 
+         document.getElementById(node).style;
+      if(objBranch.display=="block")
+         objBranch.display="none";
+      else
+         objBranch.display="block";
+   }
+
+   function swapFolder(img) {
+      objImg = document.getElementById(img);
+      if(objImg.src.indexOf('closed.gif')&gt;-1)
+         objImg.src = openImg.src;
+      else
+         objImg.src = closedImg.src;
+   }
+&lt;/script&gt;
+--&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action="cgi-bin/edward.py" method="GET"&gt;
+&lt;input type="submit" name="George"&gt;
+&lt;/form&gt;
+
+&lt;p&gt;This is the hello world test page.
+The server in server.py should be running when using this page.
+
+&lt;p&gt;The button (form) above should cause the server to send a "GET" request
+to the edward.py script, which will respond with a new page.
+
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20090309114909.21">@first #! c:\python25\python.exe
+@first # -*- coding: utf-8 -*-
+
+'''This is the cgi script called from hello.html when the user hits the button.'''
+
+### Print statements are used to return results (return the form).
+### You *can* use print statement for tracing, but only in print_all.
+# To do: use cgi.FieldStorage.
+
+@language python
+@tabwidth -4
+&lt;&lt; imports &gt;&gt;
+&lt;&lt; define dhtml stuff &gt;&gt;
+@others
+
+if 1: # Open the bridge.
+    path = os.path.abspath(os.path.join(leoParentDir,'leo','test','test.leo')) # c does not exist!
+    b = leoBridge.controller(gui='nullGui',loadPlugins=False,readSettings=False,verbose=False)
+    g = b.globals()
+    c = b.openLeoFile(path)
+    p = c.rootPosition()
+else:
+    c = None
+
+# import pdb ; pdb.Pdb() # Doesn't work.
+print_all(c)</t>
+<t tx="ekr.20090309114909.22">import os
+import sys
+
+# Add the *parent* of the leo directory to sys.path.
+leoParentDir = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','..','..'))
+
+if leoParentDir not in sys.path:
+    sys.path.append(leoParentDir)
+
+import leo.core.leoBridge as leoBridge
+
+import cgi
+import cgitb ; cgitb.enable()
+</t>
+<t tx="ekr.20090309114909.23">division = """
+&lt;div STYLE="margin-left:3em;text-indent:0em;margin-top:0em; margin-bottom:0em;"&gt;
+&lt;h3 onClick="expandcontent('sc%d')" style="cursor:hand; cursor:pointer; margin-top:0em; margin-bottom:0em"&gt;+ %s&lt;/h3&gt;
+    &lt;div id="sc%d" class="switchcontent" style="margin-top:0em; margin-bottom:0em;"&gt;
+"""
+
+style = """
+&lt;STYLE type="text/css"&gt;
+    BODY {font:x-medium 'Verdana'; margin-right:1.5em}
+    PRE {margin:0px; display:inline}
+&lt;/STYLE&gt;
+"""</t>
+<t tx="ekr.20090309114909.24">def escape (s):
+
+    return s.replace('&amp;','&amp;amp;').replace('&lt;','&amp;lt;').replace('&gt;','&amp;gt;')
+</t>
+<t tx="ekr.20090309114909.25">def print_all(c):
+
+    # This line is required (with extra newline), but does not show on the page.
+    print "Content-type:text/html\n"
+
+    print '&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN"&gt;'
+    print '&lt;html&gt;'
+    if c:
+        # Print the page.
+        print_head(c)
+        print_body(c)
+    else:
+        # Print the debugging info.
+        print '__file__',__file__
+        print 'os.getcwd()',os.getcwd()
+
+    print '&lt;/html&gt;'
+</t>
+<t tx="ekr.20090309114909.26">def print_body(c):
+
+    print '&lt;body class="st" onload="format()"&gt;'
+
+    if 0:
+        # Debugging info.
+        form = cgi.FieldStorage()
+        print repr(form)
+        # if form.has_key('name'):
+            # print 'name',form['name'].value
         # else:
-            # i = at.skipSentinelStart4(s,0)
-        # func = at.dispatch_dict[kind]
-        # func(s,i)
-
-    if at.errors == 0 and not at.done:
-        &lt;&lt; report unexpected end of text &gt;&gt;
-
-    # return at.lastLines
+            # print 'no name'
+    print_tree(c)
+    print '&lt;/body&gt;'
 </t>
-<t tx="ekr.20080601131331.4"># Unstacked ivars...
-at.cloneSibCount = 0
-at.done = False
-at.inCode = True
-at.indent = 0 # Changed only for sentinels.
-at.lastLines = [] # The lines after @-leo
-at.leadingWs = ""
-at.lineNumber = 0
-at.root = p.copy() # Bug fix: 12/10/05
-at.rootSeen = False
-at.updateWarningGiven = False
+<t tx="ekr.20090309114909.27">def print_head(c):
 
-# Stacked ivars...
-at.endSentinelStack = [at.endLeo] # We have already handled the @+leo sentinel.
-at.out = [] ; at.outStack = []
-at.t = p.v.t ; at.tStack = []
-at.lastThinNode = p.v ; at.thinNodeStack = [p.v]
+    print '&lt;head&gt;'
 
-if 0: # Useful for debugging.
-    if hasattr(p.v.t,"tnodeList"):
-        g.trace("len(tnodeList)",len(p.v.t.tnodeList),p.v)
-    else:
-        g.trace("no tnodeList",p.v)
+    if 1: # Copy the entire leo.js file into the page.
+        print '&lt;script type="text/javascript"&gt;'
+        print_leo_dot_js(c)
+        print '&lt;/script&gt;'
 
-# g.trace(at.startSentinelComment)
+    else: # Possible bug in the python server??
+        # The Python says leo.js is not executable(!)
+        print '&lt;script src="leo.js" type="text/javascript"&gt;&lt;/script&gt;'
+
+    print '&lt;title&gt;%s&lt;/title&gt;' % (c.shortFileName())
+    print '&lt;/head&gt;'
 </t>
-<t tx="ekr.20080601131331.5">assert(at.endSentinelStack)
+<t tx="ekr.20090309114909.28">def print_leo_dot_js(c):
 
-at.readError(
-    "Unexpected end of file. Expecting %s sentinel" %
-    at.sentinelName(at.endSentinelStack[-1]))
-</t>
-<t tx="ekr.20080601131331.6">def readNormalLine (self,s,i):
+    path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','cgi-bin','leo.js'))
 
-    at = self
-
-    if at.inCode:
-        if not at.raw:
-            s = g.removeLeadingWhitespace(s,at.indent,at.tab_width)
-        at.out.append(s)
-    else:
-        &lt;&lt; Skip the leading stuff &gt;&gt;
-        &lt;&lt; Append s to docOut &gt;&gt;
-</t>
-<t tx="ekr.20080601131331.7">if len(at.endSentinelComment) == 0:
-    # Skip the single comment delim and a blank.
-    i = g.skip_ws(s,0)
-    if g.match(s,i,at.startSentinelComment):
-        i += len(at.startSentinelComment)
-        if g.match(s,i," "): i += 1
-else:
-    i = at.skipIndent(s,0,at.indent)
-</t>
-<t tx="ekr.20080601131331.8">line = s[i:-1] # remove newline for rstrip.
-
-if line == line.rstrip():
-    # no trailing whitespace: the newline is real.
-    at.docOut.append(line + '\n')
-else:
-    # trailing whitespace: the newline is fake.
-    at.docOut.append(line)
-</t>
-<t tx="ekr.20080601131331.9"></t>
-<t tx="ekr.20080601131331.10">def readStartAll (self,s,i):
-
-    """Read an @+all sentinel."""
-
-    at = self
-    j = g.skip_ws(s,i)
-    leadingWs = s[i:j]
-    if leadingWs:
-        assert(g.match(s,j,"@+all"))
-    else:
-        assert(g.match(s,j,"+all"))
-
-    # Make sure that the generated at-all is properly indented.
-    at.out.append(leadingWs + "@all\n")
-
-    at.endSentinelStack.append(at.endAll)
-</t>
-<t tx="ekr.20080601131331.11">def readStartAt (self,s,i):
-    """Read an @+at sentinel."""
-    at = self ; assert(g.match(s,i,"+at"))
-    if 0:# new code: append whatever follows the sentinel.
-        i += 3 ; j = at.skipToEndSentinel(s,i) ; follow = s[i:j]
-        at.out.append('@' + follow) ; at.docOut = []
-    else:
-        i += 3 ; j = g.skip_ws(s,i) ; ws = s[i:j]
-        at.docOut = ['@' + ws + '\n'] # This newline may be removed by a following @nonl
-    at.inCode = False
-    at.endSentinelStack.append(at.endAt)
-
-def readStartDoc (self,s,i):
-    """Read an @+doc sentinel."""
-    at = self ; assert(g.match(s,i,"+doc"))
-    if 0: # new code: append whatever follows the sentinel.
-        i += 4 ; j = at.skipToEndSentinel(s,i) ; follow = s[i:j]
-        at.out.append('@' + follow) ; at.docOut = []
-    else:
-        i += 4 ; j = g.skip_ws(s,i) ; ws = s[i:j]
-        at.docOut = ["@doc" + ws + '\n'] # This newline may be removed by a following @nonl
-    at.inCode = False
-    at.endSentinelStack.append(at.endDoc)
-
-def skipToEndSentinel(self,s,i):
-    at = self
-    end = at.endSentinelComment
-    if end:
-        j = s.find(end,i)
-        if j == -1:
-            return g.skip_to_end_of_line(s,i)
-        else:
-            return j
-    else:
-        return g.skip_to_end_of_line(s,i)
-</t>
-<t tx="ekr.20080601131331.12">def readStartLeo (self,s,i):
-
-    """Read an unexpected @+leo sentinel."""
-
-    at = self
-    assert(g.match(s,i,"+leo"))
-    at.readError("Ignoring unexpected @+leo sentinel")
-</t>
-<t tx="ekr.20080601131331.13">def readStartMiddle (self,s,i):
-
-    """Read an @+middle sentinel."""
-
-    at = self
-
-    at.readStartNode(s,i,middle=True)
-</t>
-<t tx="ekr.20080601131331.14">def readStartNode (self,s,i,middle=False):
-
-    """Read an @+node or @+middle sentinel."""
-
-    at = self
-    if middle:
-        assert(g.match(s,i,"+middle:"))
-        i += 8
-    else:
-        assert(g.match(s,i,"+node:"))
-        i += 6
-
-    if at.thinFile:
-        &lt;&lt; set gnx and bump i &gt;&gt;
-    &lt;&lt; Set headline, undoing the CWEB hack &gt;&gt;
-    if not at.root_seen:
-        at.root_seen = True
-        &lt;&lt; Check the filename in the sentinel &gt;&gt;
-
-    i,newIndent = g.skip_leading_ws_with_indent(s,0,at.tab_width)
-    at.indentStack.append(at.indent) ; at.indent = newIndent
-
-    at.outStack.append(at.out) ; at.out = []
-    at.tStack.append(at.t)
-
-    if at.importing:
-        p = at.createImportedNode(at.root,headline)
-        at.t = p.v.t
-    elif at.thinFile:
-        at.thinNodeStack.append(at.lastThinNode)
-        at.lastThinNode = v = at.createThinChild4(gnx,headline)
-        at.t = v.t
-    else:
-        at.t = at.findChild4(headline)
-
-    at.endSentinelStack.append(at.endNode)
-</t>
-<t tx="ekr.20080601131331.15"># We have skipped past the opening colon of the gnx.
-j = s.find(':',i)
-if j == -1:
-    g.trace("no closing colon",g.get_line(s,i))
-    at.readError("Expecting gnx in @+node sentinel")
-    return # 5/17/04
-else:
-    gnx = s[i:j]
-    i = j + 1 # Skip the i
-</t>
-<t tx="ekr.20080601131331.16"># Set headline to the rest of the line.
-# Don't strip leading whitespace."
-
-if len(at.endSentinelComment) == 0:
-    headline = s[i:-1].rstrip()
-else:
-    k = s.rfind(at.endSentinelComment,i)
-    headline = s[i:k].rstrip() # works if k == -1
-
-# Undo the CWEB hack: undouble @ signs if the opening comment delim ends in '@'.
-if at.startSentinelComment[-1:] == '@':
-    headline = headline.replace('@@','@')
-</t>
-<t tx="ekr.20080601131331.17">if 0: # This doesn't work so well in cooperative environments.
-    if not at.importing:
-
-        h = headline.strip()
-
-        if h[:5] == "@file":
-            i,junk,junk = g.scanAtFileOptions(h)
-            fileName = string.strip(h[i:])
-            if fileName != at.targetFileName:
-                at.readError("File name in @node sentinel does not match file's name")
-        elif h[:8] == "@rawfile":
-            fileName = string.strip(h[8:])
-            if fileName != at.targetFileName:
-                at.readError("File name in @node sentinel does not match file's name")
-        else:
-            at.readError("Missing @file in root @node sentinel")
-</t>
-<t tx="ekr.20080601131331.18">def readStartOthers (self,s,i):
-
-    """Read an @+others sentinel."""
-
-    at = self
-    j = g.skip_ws(s,i)
-    leadingWs = s[i:j]
-    if leadingWs:
-        assert(g.match(s,j,"@+others"))
-    else:
-        assert(g.match(s,j,"+others"))
-
-    # Make sure that the generated at-others is properly indented.
-    at.out.append(leadingWs + "@others\n")
-
-    at.endSentinelStack.append(at.endOthers)
-</t>
-<t tx="ekr.20080601131331.19"></t>
-<t tx="ekr.20080601131331.20">def readEndAll (self,unused_s,unused_i):
-
-    """Read an @-all sentinel."""
-
-    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
-
-    at = self
-    at.popSentinelStack(at.endAll)
-</t>
-<t tx="ekr.20080601131331.21">def readEndAt (self,unused_s,unused_i):
-
-    """Read an @-at sentinel."""
-
-    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
-
-    at = self
-    at.readLastDocLine("@")
-    at.popSentinelStack(at.endAt)
-    at.inCode = True
-
-def readEndDoc (self,unused_s,unused_i):
-
-    """Read an @-doc sentinel."""
-
-    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
-
-    at = self
-    at.readLastDocLine("@doc")
-    at.popSentinelStack(at.endDoc)
-    at.inCode = True
-</t>
-<t tx="ekr.20080601131331.22">def readEndLeo (self,unused_s,unused_i):
-
-    """Read an @-leo sentinel."""
-
-    # __pychecker__ = '--no-argsused' # i not used, but must be present.
-
-    at = self
-
-    # Ignore everything after @-leo.
-    # Such lines were presumably written by @last.
-    while 1:
-        s = at.readLine(at.inputFile)
-        if len(s) == 0: break
-        at.lastLines.append(s) # Capture all trailing lines, even if empty.
-
-    at.done = True
-</t>
-<t tx="ekr.20080601131331.23">def readEndMiddle (self,s,i):
-
-    """Read an @-middle sentinel."""
-
-    at = self
-
-    at.readEndNode(s,i,middle=True)
-</t>
-<t tx="ekr.20080601131331.24">def readEndNode (self,unused_s,unused_i,middle=False):
-
-    """Handle end-of-node processing for @-others and @-ref sentinels."""
-
-    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
-
-    at = self ; c = at.c
-
-    # End raw mode.
-    at.raw = False
-
-    # Set the temporary body text.
-    s = ''.join(at.out)
-    s = g.toUnicode(s,g.app.tkEncoding) # 9/28/03
-
-    if at.importing:
-        at.t._bodyString = s
-    elif middle: 
-        pass # Middle sentinels never alter text.
-    else:
-        if hasattr(at.t,"tempBodyString") and s != at.t.tempBodyString:
-            old = at.t.tempBodyString
-        elif at.t.hasBody() and s != at.t.getBody():
-            old = at.t.getBody()
-        else:
-            old = None
-        # 9/4/04: Suppress this warning for the root: @first complicates matters.
-        if old and not g.app.unitTesting and at.t != at.root.t:
-            &lt;&lt; indicate that the node has been changed &gt;&gt;
-        at.t.tempBodyString = s
-
-    # Indicate that the tnode has been set in the derived file.
-    at.t.setVisited()
-
-    # End the previous node sentinel.
-    at.indent = at.indentStack.pop()
-    at.out = at.outStack.pop()
-    at.t = at.tStack.pop()
-    if at.thinFile and not at.importing:
-        at.lastThinNode = at.thinNodeStack.pop()
-
-    at.popSentinelStack(at.endNode)
-</t>
-<t tx="ekr.20080601131331.25">if at.perfectImportRoot:
-    &lt;&lt; bump at.correctedLines and tell about the correction &gt;&gt;
-    # p.setMarked()
-    at.t._bodyString = s # Just setting at.t.tempBodyString won't work here.
-    at.t.setDirty() # Mark the node dirty.  Ancestors will be marked dirty later.
-    at.c.setChanged(True)
-else:
-    if 0: # New in 4.4.1 final.  This warning can be very confusing.
-        if not at.updateWarningGiven:
-            at.updateWarningGiven = True
-            # print "***",at.t,at.root.t
-            g.es("warning: updating changed text in",at.root.headString(),color="blue")
-    # Just set the dirty bit. Ancestors will be marked dirty later.
-    at.t.setDirty()
-    if 1: # We must avoid the full setChanged logic here!
-        c.changed = True
-    else: # Far too slow for mass changes.
-        at.c.setChanged(True)</t>
-<t tx="ekr.20080601131331.26"># Report the number of corrected nodes.
-at.correctedLines += 1
-
-found = False
-for p in at.perfectImportRoot.self_and_subtree_iter():
-    if p.v.t == at.t:
-        found = True ; break
-
-if found:
-    if 0: # For debugging.
-        print ; print '-' * 40
-        print "old",len(old)
-        for line in g.splitLines(old):
-            #line = line.replace(' ','&lt; &gt;').replace('\t','&lt;TAB&gt;')
-            print repr(str(line))
-        print ; print '-' * 40
-        print "new",len(s)
-        for line in g.splitLines(s):
-            #line = line.replace(' ','&lt; &gt;').replace('\t','&lt;TAB&gt;')
-            print repr(str(line))
-        print ; print '-' * 40
-else:
-    # This should never happen.
-    g.es("correcting hidden node: t=",repr(at.t),color="red")
-</t>
-<t tx="ekr.20080601131331.27">def readEndOthers (self,unused_s,unused_i):
-
-    """Read an @-others sentinel."""
-
-    # __pychecker__ = '--no-argsused' # s,i unused, but must be present.
-
-    at = self
-    at.popSentinelStack(at.endOthers)
-</t>
-<t tx="ekr.20080601131331.28">def readLastDocLine (self,tag):
-
-    """Read the @c line that terminates the doc part.
-    tag is @doc or @."""
-
-    at = self
-    end = at.endSentinelComment
-    start = at.startSentinelComment
-    s = ''.join(at.docOut)
-
-    # Remove the @doc or @space.  We'll add it back at the end.
-    if g.match(s,0,tag):
-        s = s[len(tag):]
-    else:
-        at.readError("Missing start of doc part")
+    try:
+        f = file(path)
+    except IOError:
+        print 'can not open',path
         return
 
-    # Bug fix: Append any whitespace following the tag to tag.
-    while s and s[0] in (' ','\t'):
-        tag = tag + s[0] ; s = s[1:]
+    for line in f.readlines():
+        print line,
 
-    if end:
-        # Remove leading newline.
-        if s[0] == '\n': s = s[1:]
-        # Remove opening block delim.
-        if g.match(s,0,start):
-            s = s[len(start):]
+    f.close()
+</t>
+<t tx="ekr.20090309114909.29">def print_tree(c):
+
+    div = "&lt;div class='c' STYLE='margin-left:4em;margin-top:0em; margin-bottom:0em;'&gt;\n&lt;pre&gt;\n%s\n&lt;/pre&gt;\n&lt;/div&gt;"
+    end_div = "&lt;/div&gt;\n&lt;/div&gt;\n"
+    n = 1 # The node number
+    prev_level = 0
+    open_divs = 0
+    for p in c.allNodes_iter():
+        h = p.headString()
+        while prev_level &gt;= p.level() and open_divs &gt; 0:
+            print end_div
+            prev_level -= 1
+            open_divs -= 1
+        body = p.bodyString().encode( "utf-8" )
+        body = body.rstrip().rstrip("\n")
+        print division % (n,escape(h),n)
+        open_divs += 1
+        if body: print div % escape(body)
+        prev_level = p.level()
+        n += 1
+
+    # Close all divisions.
+    while open_divs &gt; 0:
+        print end_div
+        open_divs -= 1
+</t>
+<t tx="ekr.20090309114909.30">@language javascript
+
+/**********************************************
+* Contractible Headers script- © Dynamic Drive (www.dynamicdrive.com)
+* This notice must stay intact for legal use. Last updated Mar 23rd, 2004.
+* Visit http://www.dynamicdrive.com/ for full source code
+***********************************************/
+
+// alert("start");
+
+var enablepersist="on" //Enable saving state of content structure using session cookies? (on/off)
+var collapseprevious="no" //Collapse previously open content when opening present? (yes/no)
+
+if (document.getElementById){
+    document.write('&lt;style type="text/css"&gt;')
+    document.write('.switchcontent{display:none;}')
+    document.write('&lt;\/style&gt;')
+}
+
+@others</t>
+<t tx="ekr.20090309114909.31">function getElementbyClass(classname){
+    ccollect=new Array()
+    var inc=0
+    var alltags=document.all? document.all : document.getElementsByTagName("*")
+    for (i=0; i&lt;alltags.length; i++){
+        if (alltags[i].className==classname)
+            ccollect[inc++]=alltags[i]
+    }
+}
+
+</t>
+<t tx="ekr.20090309114909.32">function contractcontent(omit){
+    var inc=0
+    while (ccollect[inc]){
+        if (ccollect[inc].id!=omit)
+        ccollect[inc].style.display="none"
+        inc++
+    }
+}
+</t>
+<t tx="ekr.20090309114909.33">function expandcontent(cid){
+    if (typeof ccollect!="undefined"){
+        if (collapseprevious=="yes")
+            contractcontent(cid)
+        document.getElementById(cid).style.display=(document.getElementById(cid).style.display!="block")? "block" : "none"
+    }
+}
+</t>
+<t tx="ekr.20090309114909.34">function revivecontent(){
+    contractcontent("omitnothing")
+    selectedItem=getselectedItem()
+    selectedComponents=selectedItem.split("|")
+    for (i=0; i&lt;selectedComponents.length-1; i++)
+        document.getElementById(selectedComponents[i]).style.display="block"
+}
+
+</t>
+<t tx="ekr.20090309114909.35">function get_cookie(Name) { 
+    var search = Name + "="
+    var returnvalue = "";
+    if (document.cookie.length &gt; 0) {
+        offset = document.cookie.indexOf(search)
+        if (offset != -1) { 
+            offset += search.length
+            end = document.cookie.indexOf(";", offset);
+            if (end == -1) end = document.cookie.length;
+            returnvalue=unescape(document.cookie.substring(offset, end))
+        }
+    }
+    return returnvalue;
+}
+
+</t>
+<t tx="ekr.20090309114909.36">function getselectedItem(){
+    if (get_cookie(window.location.pathname) != ""){
+        selectedItem=get_cookie(window.location.pathname)
+        return selectedItem
+    }
+    else
+        return ""
+}
+
+</t>
+<t tx="ekr.20090309114909.37">function saveswitchstate(){
+    var inc=0, selectedItem=""
+    while (ccollect[inc]){
+        if (ccollect[inc].style.display=="block")
+            selectedItem+=ccollect[inc].id+"|"
+        inc++
+    }
+    document.cookie=window.location.pathname+"="+selectedItem
+}
+
+</t>
+<t tx="ekr.20090309114909.38">function do_onload(){
+    // alert("do_onload");
+    uniqueidn=window.location.pathname+"firsttimeload"
+    getElementbyClass("switchcontent")
+    if (enablepersist=="on" &amp;&amp; typeof ccollect!="undefined"){
+        document.cookie=(get_cookie(uniqueidn)=="")? uniqueidn+"=1" : uniqueidn+"=0" 
+        firsttimeload=(get_cookie(uniqueidn)==1)? 1 : 0 //check if this is 1st page load
+        if (!firsttimeload)
+        revivecontent()
+    }
+}
+
+if (window.addEventListener)
+    window.addEventListener("load", do_onload, false)
+else if (window.attachEvent)
+    window.attachEvent("onload", do_onload)
+else if (document.getElementById)
+    window.onload=do_onload
+
+if (enablepersist=="on" &amp;&amp; document.getElementById)
+    window.onunload=saveswitchstate
+
+</t>
+<t tx="ekr.20090309114909.39">function format() {
+
+    return;
+
+    // var sections = document.getElementsByTagName("pre");  // EKR: was span.
+    // //alert("format:" + sections.length + "sections")
+    // for(i=0; i &lt; sections.length; i++) {
+        // formatText(sections[i]);
+    // }
+}
+</t>
+<t tx="ekr.20090309114909.40">function formatText(item) {
+
+    ;
+    // alert(item);
+}
+</t>
+<t tx="ekr.20090309114909.41"></t>
+<t tx="ekr.20090309114909.42">@nocolor
+
+The following scripts convert between Leo trees and NetworkX graphs.
+
+- leo2graph:            convert a normal Leo tree to a NetworkX graph.
+- at-graph2graph:       convert an @graph tree to a Networkx graph.
+- at-networkx2graph:    convert an @networkx tree to a Networkx graph
+- at-networkx2at-graph: create an @graph tree from an @networkx tree.
+
+Not ready yet:
+
+- tree2pict: convert a Leo @graph tree to a picture of the corresponding graph.
+
+@color</t>
+<t tx="ekr.20090309114909.43"></t>
+<t tx="ekr.20090309114909.44">@ This will be the root node for the @graph tree produced by the at-networkx2at-graph button.</t>
+<t tx="ekr.20090309114909.45">@ This node defines a networkx graph using nodes and edges.
+
+You can create an @graph tree from this node using the graph2at-graph button.
+</t>
+<t tx="ekr.20090309114909.46"># Each node is on a separate line.
+
+('ekr', '20070929070257', 1): @node child1
+('ekr', '20070929070257', 2): @node child2
+</t>
+<t tx="ekr.20090309114909.47"># Each edge is represented as two lines.
+
+# child1 --&gt; child2
+('ekr', '20070929070257', 1): @node child1
+('ekr', '20070929070257', 2): @node child2
+
+# child2 --&gt; child1
+('ekr', '20070929070257', 2): @node child2
+('ekr', '20070929070257', 1): @node child1
+
+</t>
+<t tx="ekr.20090309114909.48">@ This is an @graph tree.
+
+You can convert it to a networkx graph using the at-graph2graph button.</t>
+<t tx="ekr.20090309114909.49"></t>
+<t tx="ekr.20090309114909.50"></t>
+<t tx="ekr.20090309114909.51"></t>
+<t tx="ekr.20090309114909.52"></t>
+<t tx="ekr.20090309114909.53">@ This is a plain Leo tree.
+
+You can convert it to a networkx graph using the leo2graph button.
+</t>
+<t tx="ekr.20090309114909.54"></t>
+<t tx="ekr.20090309114909.55"></t>
+<t tx="ekr.20090309114909.56"></t>
+<t tx="ekr.20090309114909.57">g.es('@link %s: %s' % (str(p.v.t.fileIndex),p.headString()))</t>
+<t tx="ekr.20090309114909.58">'''Convert a normal Leo tree to a networkx graph'''
+import networkx as nx
+import sys
+
+x = nx.Graph()
+
+def node_id(p):
+    return '%s: %s' % (id(p.v.t),p.headString())
+
+def addTree(p):
+    x.add_node(node_id(p))
+    for child in p.children_iter():
+        addTree(child)
+        x.add_edge(node_id(p),node_id(child))
+
+addTree(p)
+
+g.pr('nodes...\n', g.listToString(x.nodes(),sort=True))
+g.pr('edges...\n', g.listToString(x.edges(),sort=True))
+g.pr('yaml...\n')
+nx.write_yaml(x,sys.stdout) # 'graph.yaml')
+</t>
+<t tx="ekr.20090309114909.59">'''Convert an @graph tree to a networkx graph.'''
+import networkx as nx
+import sys
+
+x = nx.Graph()
+
+def node_id(p):
+    return '%s: %s' % (str(p.v.t.fileIndex),p.headString())
+
+def addTree(p):
+    tag = '@link'
+    h = p.headString()
+    if h.startswith('@graph'):
+        for child in p.children_iter():
+            addTree(child)
+    elif h.startswith('@node'):
+        x.add_node(node_id(p))
+        for child in p.children_iter():
+            h = child.headString()
+            if h.startswith(tag):
+                link = h[len(tag):].strip()
+                if link: x.add_edge(node_id(p),link)
+            elif child.headString().startswith('@node'):
+                addTree(child)
+                x.add_edge(node_id(p),node_id(child))
+
+addTree(p)
+
+g.pr('nodes...\n', g.listToString(x.nodes(),sort=True))
+g.pr('edges...\n', g.listToString(x.edges(),sort=True))
+g.pr('yaml...\n')
+nx.write_yaml(x,sys.stdout) # 'graph.yaml')</t>
+<t tx="ekr.20090309114909.60">'''Convert an @networkx node to a networkx graph.'''
+import networkx as nx
+import sys
+
+@others
+
+x = nx.Graph()
+
+edges,nodes = parse(p)
+
+for z in nodes:
+    x.add_node(z)
+
+for z in edges:
+    a,b = z
+    x.add_edge(a,b)
+
+g.pr('\nnodes...\n', g.listToString(x.nodes(),sort=True))
+g.pr('\nedges...\n', g.listToString(x.edges(),sort=True))
+g.pr('\nyaml...\n')
+nx.write_yaml(x,sys.stdout) # 'graph.yaml')
+</t>
+<t tx="ekr.20090309114909.61">def error (s):
+
+    g.es_print(s,color='red')
+</t>
+<t tx="ekr.20090309114909.62">def parse (p):
+
+    tag = '@networkx'
+    if not p.headString().startswith(tag):
+        p = g.findNodeAnywhere(c,tag)
+        if not p.headString().startswith(tag):
+            error('No %s node in the outline' % tag)
+            return [],[]
+
+    nodes = []
+    for tag in ('@edges','@nodes'):
+        node = g.findNodeInTree(c,p,tag)
+        if node:
+            nodes.append(node)
         else:
-            at.readError("Missing open block comment")
-            g.trace('tag',repr(tag),'start',repr(start),'s',repr(s))
-            return
-        # Remove trailing newline.
-        if s[-1] == '\n': s = s[:-1]
-        # Remove closing block delim.
-        if s[-len(end):] == end:
-            s = s[:-len(end)]
+            error('No %s node in @networkx tree' % tag)
+            return [],[]
+    edgesNode,nodesNode = nodes
+    edges = parseEdges(edgesNode)
+    nodes = parseNodes(nodesNode)
+    return edges,nodes
+</t>
+<t tx="ekr.20090309114909.63">def parseNodes (p):
+
+    s = p.bodyString()
+    lines = [str(z).strip() for z in g.splitLines(s) if z.strip() and not z.startswith('#')]
+    # g.trace(g.listToString(lines))
+    return lines
+</t>
+<t tx="ekr.20090309114909.64">def parseEdges (p):
+
+    s = p.bodyString()
+    lines = [str(z).strip() for z in g.splitLines(s) if z.strip() and not z.startswith('#')]
+    # g.trace(len(lines),lines)
+    if (len(lines) % 2) == 0:
+        i = 0 ; edges = []
+        while i &lt; len(lines):
+            data = lines[i],lines[i+1]
+            edges.append(data)
+            i += 2
+        # g.trace(g.listToString(edges))
+        return edges
+    else:
+        error('edges node must have even number of lines')
+        return []
+
+</t>
+<t tx="ekr.20090309114909.65">'''Convert an @networkx node to an @graph tree.
+Create the tree as the child of the @graph-target node,
+or the current position if no such node.'''
+
+import networkx as nx
+import sys
+
+@others
+
+g.pr('=' * 10)
+
+p,edges,nodes = parse(p)
+
+createTree(p,edges,nodes)
+</t>
+<t tx="ekr.20090309114909.66">def createEdges (d,edges):
+
+    for edge in edges:
+        a,b = edge
+        g.trace('\n%s --&gt; %s' % (a,b))
+        p = d.get(a)
+        if p:
+            p2 = p.insertAsLastChild()
+            p2.setHeadString('@link %s' % (b))
         else:
-            at.readError("Missing close block comment")
-            g.trace(s)
-            g.trace(end)
-            g.trace(start)
-            return
-
-    at.out.append(tag + s)
-    at.docOut = []
+            error('@node not found: %s' % (a))
 </t>
-<t tx="ekr.20080601131331.29"></t>
-<t tx="ekr.20080601131331.30">def  ignoreOldSentinel (self,s,unused_i):
+<t tx="ekr.20090309114909.67">def createNodes (parent,nodes):
 
-    """Ignore an 3.x sentinel."""
+    d = {}
 
-    # __pychecker__ = '--no-argsused' # i unused, but must be present.
+    for node in nodes:
+        # g.trace(node)
+        p = parent.insertAsLastChild()
+        p.setHeadString('@node %s' % (node))
+        d[node] = p.copy()
 
-    g.es("ignoring 3.x sentinel:",s.strip(),color="blue")
+    return d
 </t>
-<t tx="ekr.20080601131331.31">def  readAfterRef (self,s,i):
+<t tx="ekr.20090309114909.68">def createTree (parent,edges,nodes):
 
-    """Read an @afterref sentinel."""
+    if 0:
+        g.trace('nodes...\n', g.listToString(nodes,sort=True))
+        g.trace('edges...\n', g.listToString(edges,sort=True))
 
-    at = self
-    assert(g.match(s,i,"afterref"))
-
-    # Append the next line to the text.
-    s = at.readLine(at.inputFile)
-    at.out.append(s)
+    c.beginUpdate()
+    try:
+        p = parent.insertAsLastChild()
+        p.setHeadString('@graph')
+        d = createNodes(p,nodes)
+        createEdges(d,edges)
+        c.selectPosition(p)
+    finally:
+        c.endUpdate()
 </t>
-<t tx="ekr.20080601131331.32">def readClone (self,s,i):
+<t tx="ekr.20090309114909.69">def error (s):
 
-    at = self ; tag = "clone"
-
-    assert(g.match(s,i,tag))
-
-    # Skip the tag and whitespace.
-    i = g.skip_ws(s,i+len(tag))
-
-    # Get the clone count.
-    junk,val = g.skip_long(s,i)
-
-    if val == None:
-        at.readError("Invalid count in @clone sentinel")
-    else:
-        at.cloneSibCount = val
+    g.es_print(s,color='red')
 </t>
-<t tx="ekr.20080601131331.33">def readComment (self,s,i):
+<t tx="ekr.20090309114909.70">def parse (p):
 
-    """Read an @comment sentinel."""
+    tag = '@graph-target'
+    if not p.headString().startswith(tag):
+        p = g.findNodeAnywhere(c,tag)
+    if not (p and p.headString().startswith(tag)):
+        p = c.currentPosition() # Use the presently selected node.
 
-    assert(g.match(s,i,"comment"))
-
-    # Just ignore the comment line!
-</t>
-<t tx="ekr.20080601131331.34">def readDelims (self,s,i):
-
-    """Read an @delims sentinel."""
-
-    at = self
-    assert(g.match(s,i-1,"@delims"))
-
-    # Skip the keyword and whitespace.
-    i0 = i-1
-    i = g.skip_ws(s,i-1+7)
-
-    # Get the first delim.
-    j = i
-    while i &lt; len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
-        i += 1
-
-    if j &lt; i:
-        at.startSentinelComment = s[j:i]
-        # print "delim1:", at.startSentinelComment
-
-        # Get the optional second delim.
-        j = i = g.skip_ws(s,i)
-        while i &lt; len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
-            i += 1
-        end = g.choose(j&lt;i,s[j:i],"")
-        i2 = g.skip_ws(s,i)
-        if end == at.endSentinelComment and (i2 &gt;= len(s) or g.is_nl(s,i2)):
-            at.endSentinelComment = "" # Not really two params.
-            line = s[i0:j]
-            line = line.rstrip()
-            at.out.append(line+'\n')
+    nodes = [] ; tag = '@networkx'
+    data = g.findNodeAnywhere(c,tag)
+    if not data:
+        error('No %s tree' % tag)
+        return None,[],[]
+    for tag in ('@edges','@nodes'):
+        node = g.findNodeInTree(c,data,tag)
+        if node:
+            nodes.append(node)
         else:
-            at.endSentinelComment = end
-            # print "delim2:",end
-            line = s[i0:i]
-            line = line.rstrip()
-            at.out.append(line+'\n')
+            error('No %s node in @networkx tree' % tag)
+            return None,[],[]
+    edgesNode,nodesNode = nodes
+    edges = parseEdges(edgesNode)
+    nodes = parseNodes(nodesNode)
+    return p,edges,nodes
+</t>
+<t tx="ekr.20090309114909.71">def parseEdges (p):
+
+    s = p.bodyString()
+    lines = [str(z).strip() for z in g.splitLines(s) if z.strip() and not z.startswith('#')]
+    # g.trace(len(lines),lines)
+    if (len(lines) % 2) == 0:
+        i = 0 ; edges = []
+        while i &lt; len(lines):
+            data = lines[i],lines[i+1]
+            edges.append(data)
+            i += 2
+        # g.trace(g.listToString(edges))
+        return edges
     else:
-        at.readError("Bad @delims")
-        # Append the bad @delims line to the body text.
-        at.out.append("@delims")
+        error('edges node must have even number of lines')
+        return []
+
 </t>
-<t tx="ekr.20080601131331.35">def readDirective (self,s,i):
+<t tx="ekr.20090309114909.72">def parseNodes (p):
 
-    """Read an @@sentinel."""
-
-    at = self
-    assert(g.match(s,i,"@")) # The first '@' has already been eaten.
-
-    # g.trace(g.get_line(s,i))
-
-    if g.match_word(s,i,"@raw"):
-        at.raw = True
-    elif g.match_word(s,i,"@end_raw"):
-        at.raw = False
-
-    e = at.endSentinelComment
-    s2 = s[i:]
-    if len(e) &gt; 0:
-        k = s.rfind(e,i)
-        if k != -1:
-            s2 = s[i:k] + '\n'
-
-    start = at.startSentinelComment
-    if start and len(start) &gt; 0 and start[-1] == '@':
-        s2 = s2.replace('@@','@')
-
-    if 0: # New in 4.2.1: never change comment delims here...
-        if g.match_word(s,i,"@language"):
-            &lt;&lt; handle @language &gt;&gt;
-        elif g.match_word(s,i,"@comment"):
-            &lt;&lt; handle @comment &gt;&gt;
-
-    at.out.append(s2)
+    s = p.bodyString()
+    lines = [str(z).strip() for z in g.splitLines(s) if z.strip() and not z.startswith('#')]
+    # g.trace(g.listToString(lines))
+    return lines
 </t>
-<t tx="ekr.20080601131331.36"># Skip the keyword and whitespace.
-i += len("@language")
-i = g.skip_ws(s,i)
-j = g.skip_c_id(s,i)
-language = s[i:j]
+<t tx="ekr.20090309114909.73"></t>
+<t tx="ekr.20090309114909.74">@nocolor
 
-delim1,delim2,delim3 = g.set_delims_from_language(language)
+To build your module using GCC is a three step process on Unix:
 
-g.trace(g.get_line(s,i))
-g.trace(delim1,delim2,delim3)
+1. Use Pyrex to translate mymodule.pyx to mymodule.c::
 
-# Returns a tuple (single,start,end) of comment delims
-if delim1:
-    at.startSentinelComment = delim1
-    at.endSentinelComment = "" # Must not be None.
-elif delim2 and delim3:
-    at.startSentinelComment = delim2
-    at.endSentinelComment = delim3
-else:
-    line = g.get_line(s,i)
-    g.es("ignoring bad @language sentinel:",line,color="red")
-</t>
-<t tx="ekr.20080601131331.37">j = g.skip_line(s,i)
-line = s[i:j]
-delim1,delim2,delim3 = g.set_delims_from_string(line)
+    python pyrexc mymodule.pyx
 
-#g.trace(g.get_line(s,i))
-#g.trace(delim1,delim2,delim3)
+mymodule.pyx is the name of the Pyrex module you are writing.
 
-# Returns a tuple (single,start,end) of comment delims
-if delim1:
-    self.startSentinelComment = delim1
-    self.endSentinelComment = "" # Must not be None.
-elif delim2 and delim3:
-    self.startSentinelComment = delim2
-    self.endSentinelComment = delim3
-else:
-    line = g.get_line(s,i)
-    g.es("ignoring bad @comment sentinel:",line,color="red")
-</t>
-<t tx="ekr.20080601131331.38">def readNl (self,s,i):
+2. Compile mymodule.c to mymodule.o::
 
-    """Handle an @nonl sentinel."""
+    gcc -c -fPIC -I/usr/include/python2.2/ mymodule.c
 
-    at = self
-    assert(g.match(s,i,"nl"))
+-c  Produces a .o file instead of an executable. 
+-fPIC Produces position independent code, so we can dynamically link against it later. 
+-I/usr/include/python2.2/ is the location of the Python 2.2 include file.
+ The location of your Python include file may differ from /usr/include/python2.2/. 
 
-    if at.inCode:
-        at.out.append('\n')
-    else:
-        at.docOut.append('\n')
-</t>
-<t tx="ekr.20080601131331.39">def readNonl (self,s,i):
-
-    """Handle an @nonl sentinel."""
-
-    at = self
-    assert(g.match(s,i,"nonl"))
-
-    if at.inCode:
-        s = ''.join(at.out)
-        if s and s[-1] == '\n':
-            at.out = [s[:-1]]
-        else:
-            g.trace("out:",s)
-            at.readError("unexpected @nonl directive in code part")
-    else:
-        s = ''.join(at.pending)
-        if s:
-            if s and s[-1] == '\n':
-                at.pending = [s[:-1]]
-            else:
-                g.trace("docOut:",s)
-                at.readError("unexpected @nonl directive in pending doc part")
-        else:
-            s = ''.join(at.docOut)
-            if s and s[-1] == '\n':
-                at.docOut = [s[:-1]]
-            else:
-                g.trace("docOut:",s)
-                at.readError("unexpected @nonl directive in doc part")
-</t>
-<t tx="ekr.20080601131331.40">@ The sentinel contains an @ followed by a section name in angle brackets.  This code is different from the code for the @@ sentinel: the expansion of the reference does not include a trailing newline.
-@c
-
-def readRef (self,s,i):
-
-    """Handle an @&lt;&lt; sentinel."""
-
-    at = self
-    j = g.skip_ws(s,i)
-    assert(g.match(s,j,"&lt;&lt;"))
-
-    if len(at.endSentinelComment) == 0:
-        line = s[i:-1] # No trailing newline
-    else:
-        k = s.find(at.endSentinelComment,i)
-        line = s[i:k] # No trailing newline, whatever k is.
-
-    # Undo the cweb hack.
-    start = at.startSentinelComment
-    if start and len(start) &gt; 0 and start[-1] == '@':
-        line = line.replace('@@','@')
-
-    at.out.append(line)
-</t>
-<t tx="ekr.20080601131331.41">def readVerbatim (self,s,i):
-
-    """Read an @verbatim sentinel."""
-
-    at = self
-    assert(g.match(s,i,"verbatim"))
-
-    # Append the next line to the text.
-    s = at.readLine(at.inputFile) 
-    i = at.skipIndent(s,0,at.indent)
-    at.out.append(s[i:])
-</t>
-<t tx="ekr.20080601131331.42">def badEndSentinel (self,expectedKind):
-
-    """Handle a mismatched ending sentinel."""
-
-    at = self
-    assert(at.endSentinelStack)
-    s = "Ignoring %s sentinel.  Expecting %s" % (
-        at.sentinelName(at.endSentinelStack[-1]),
-        at.sentinelName(expectedKind))
-    at.readError(s)
-
-def popSentinelStack (self,expectedKind):
-
-    """Pop an entry from endSentinelStack and check it."""
-
-    at = self
-    if at.endSentinelStack and at.endSentinelStack[-1] == expectedKind:
-        at.endSentinelStack.pop()
-    else:
-        at.badEndSentinel(expectedKind)
-</t>
-<t tx="ekr.20080601132606.1">ws_charset   = tt.CharSet(' \t')
-name_charset = tt.CharSet(tt.alpha)
-
-gnxTable = (
-    (None,tt.Is,':',tt.MatchFail),
-    (None,tt.AllNotIn,':',tt.MatchFail),
-    (None,tt.Is,':',tt.MatchFail,tt.MatchOk),
-)
-
-sentinelNameTable = (
-    (None,tt.Is,'@',+1,+3),
-    (None,tt.Is,'+',+1,+2),
-    (None,tt.Is,'-',+1),
-    (None,tt.AllInCharSet,name_charset,tt.MatchFail,tt.MatchOk),
-)
-
-sentinelTable = (
-    # Start of another line.
-    # Skip ws.
-    (None,tt.AllInCharSet,ws_charset,+1),
-    # Require sentinel comment.
-    (None,tt.Word,'#@',tt.MatchFail),
-    ('kind',tt.Table,sentinelNameTable,tt.MatchFail),
-    ('gnx',tt.Table,gnxTable,+1),
-    # Everything else is the sentinel value
-    ('extra',tt.AllNotIn,'\n',+1),
-    (None,tt.Is,'\n',tt.MatchOk,tt.MatchOk),
-)
-
-normalLineTable = (
-    (None,tt.AllNotIn,'\n',+1),
-    (None,tt.Is,'\n',tt.MatchOk,tt.MatchOk),
-)
-
-lineTable = (
-    ('sent',tt.Table,sentinelTable,+1,+2),
-    ('line',tt.Table,normalLineTable,+1,+1),
-    ('eof',tt.EOF,tt.Here,-2),
-)</t>
-<t tx="ekr.20080601132606.2">def printItem(s,aList,level):
-
-    obj,lt_index,rt_index,subtag = aList
-    print '  '*level,obj,repr(s[lt_index:rt_index])
-    if subtag:
-        for z in subtag:
-            printItem(s,z,level+1)
-</t>
-<t tx="ekr.20080601134805.2"></t>
-<t tx="ekr.20080601134805.3">def doLine (self,s):
-
-    at = self
-
-    if at.inCode:
-        if not at.raw:
-            s = g.removeLeadingWhitespace(s,at.indent,at.tab_width)
-        at.out.append(s)
-    else:
-        &lt;&lt; Skip the leading stuff &gt;&gt;
-        &lt;&lt; Append s to docOut &gt;&gt;
-</t>
-<t tx="ekr.20080601134805.4">if len(at.endSentinelComment) == 0:
-    # Skip the single comment delim and a blank.
-    i = g.skip_ws(s,0)
-    if g.match(s,i,at.startSentinelComment):
-        i += len(at.startSentinelComment)
-        if g.match(s,i," "): i += 1
-else:
-    i = at.skipIndent(s,0,at.indent)
-</t>
-<t tx="ekr.20080601134805.5">line = s[i:-1] # remove newline for rstrip.
-
-if line == line.rstrip():
-    # no trailing whitespace: the newline is real.
-    at.docOut.append(line + '\n')
-else:
-    # trailing whitespace: the newline is fake.
-    at.docOut.append(line)
-</t>
-<t tx="ekr.20080601134805.6">def doSentinel (self,kind,s):
+3 Link the mymodule.o into a mymodule.so::
     
-    func = at.dispatch_dict[kind]
-    func(self,s)
+    gcc -shared mymodule.o -lxosd -o mymodule.so
+
+-shared produces a shared-object file, instead of an executable. 
+-lxosd links against a C-library, with the name of the library given as the argument. 
 </t>
-<t tx="ekr.20080601134805.7">if 0:
-    @others</t>
-<t tx="ekr.20080601134805.12">sentinelDict = {
+<t tx="ekr.20090309114909.75">@nocolor
 
-    # Unpaired sentinels: 3.x and 4.x.
-    "@comment" : startComment,
-    "@delims" :  startDelims,
-    "@verbatim": startVerbatim,
+The pyrexc command supports the following options:
 
-    # Unpaired sentinels: 3.x only.
-    "@verbatimAfterRef": startVerbatimAfterRef,
+  Short Long              Argument    Description
+  ----- ----              --------    -----------
+  -v    --version                     Display version number of pyrex compiler
+  -l    --create-listing              Write error messages to a .lis file
+  -I    --include-dir     &lt;directory&gt; Search for include files in named 
+                                      directory (may be repeated)
+  -o    --output-file     &lt;filename&gt;  Specify name of generated C file (only
+                                      one source file allowed if this is used)
 
-    # Unpaired sentinels: 4.x only.
-    "@afterref" : startAfterRef,
-    "@clone"    : startClone,
-    "@nl"       : startNl,
-    "@nonl"     : startNonl,
-
-    # Paired sentinels: 3.x only.
-    ### "@+body":   startBody,   "@-body":   endBody,
-
-    # Paired sentinels: 3.x and 4.x.
-    "@+all":    startAll,    "@-all":    endAll,
-    "@+at":     startAt,     "@-at":     endAt,
-    "@+doc":    startDoc,    "@-doc":    endDoc,
-    "@+leo":    startLeo,    "@-leo":    endLeo,
-    "@+middle": startMiddle, "@-middle": endMiddle,
-    "@+node":   startNode,   "@-node":   endNode,
-    "@+others": startOthers, "@-others": endOthers,</t>
-<t tx="ekr.20080601134805.13"></t>
-<t tx="ekr.20080601134805.14">def readStartAll (self,s,i):
-
-    """Read an @+all sentinel."""
-
-    at = self
-    j = g.skip_ws(s,i)
-    leadingWs = s[i:j]
-    if leadingWs:
-        assert(g.match(s,j,"@+all"))
-    else:
-        assert(g.match(s,j,"+all"))
-
-    # Make sure that the generated at-all is properly indented.
-    at.out.append(leadingWs + "@all\n")
-
-    at.endSentinelStack.append(at.endAll)
+Anything else is taken as the name of a Pyrex source file and compiled
+to a C source file. Multiple Pyrex source files can be specified
+(unless -o is used), in which case each source file is treated as the
+source of a distinct extension module and compiled separately to
+produce its own C file.
 </t>
-<t tx="ekr.20080601134805.15">def readStartAt (self,s,i):
-    """Read an @+at sentinel."""
-    at = self ; assert(g.match(s,i,"+at"))
-    if 0:# new code: append whatever follows the sentinel.
-        i += 3 ; j = at.skipToEndSentinel(s,i) ; follow = s[i:j]
-        at.out.append('@' + follow) ; at.docOut = []
-    else:
-        i += 3 ; j = g.skip_ws(s,i) ; ws = s[i:j]
-        at.docOut = ['@' + ws + '\n'] # This newline may be removed by a following @nonl
-    at.inCode = False
-    at.endSentinelStack.append(at.endAt)
+<t tx="ekr.20090309114909.76">def spam(int i, char *s):
+    if 1:
+        g.pr(i,s)</t>
+<t tx="ekr.20090309114909.77"># Use pyrexc to create myModule.c from myModule.pyx.
 
-def readStartDoc (self,s,i):
-    """Read an @+doc sentinel."""
-    at = self ; assert(g.match(s,i,"+doc"))
-    if 0: # new code: append whatever follows the sentinel.
-        i += 4 ; j = at.skipToEndSentinel(s,i) ; follow = s[i:j]
-        at.out.append('@' + follow) ; at.docOut = []
-    else:
-        i += 4 ; j = g.skip_ws(s,i) ; ws = s[i:j]
-        at.docOut = ["@doc" + ws + '\n'] # This newline may be removed by a following @nonl
-    at.inCode = False
-    at.endSentinelStack.append(at.endDoc)
+import os,sys
+python = sys.executable
+theFile = r'C:\prog\tigris-cvs\leo\test\myModule.pyx'
+pyrexc = r'c:\prog\Pyrex-0.9.6.4\pyrexc.py'
+os.system(r'%s %s %s' % (python,pyrexc,theFile))
 
-def skipToEndSentinel(self,s,i):
-    at = self
-    end = at.endSentinelComment
-    if end:
-        j = s.find(end,i)
-        if j == -1:
-            return g.skip_to_end_of_line(s,i)
-        else:
-            return j
-    else:
-        return g.skip_to_end_of_line(s,i)
+# Use pyrex/Demos/setup.py to create module on Linux.</t>
+<t tx="ekr.20090309114909.78">import rope.base.project
+import rope.contrib.codeassist as codeassist
+import leo.core.leoGlobals as g
+import leo.core.leoCommands as leoCommands
+c2 = leoCommands.Commands(frame=c.frame,fileName='xyz-file')
+
+class leoFSCommands (object):
+    def create_file(self,path):         g.trace(path)
+    def create_folder(self,path):       g.trace(path)
+    def move (self,path,new_location):  g.trace(path,new_location)
+    def remove (self,path):             g.trace(path)
+    def write (self,path,data):         g.trace(path,data)
+
+path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','..'))
+    # Make the trunk folder a project
+project = rope.base.project.Project(path,fscommands=leoFSCommands)
+s = p.bodyString() # Could simulate a write to allow @others.
+
+g.pr('*' * 40)
+for pattern in (
+    # 'g.', # works.
+    # 'g.trace(', # weird.
+    # 'rope.base.', # works.
+    'g.list', # works: gives g.listToString
+    'c2.de', # works.
+):
+    i = s.find(pattern)
+    if i &gt; -1:
+        proposals = codeassist.code_assist(project,s,i+len(pattern))
+        g.pr('-' * 20)
+        g.pr('pattern:',pattern)
+        g.pr(g.listToString(proposals))</t>
+<t tx="ekr.20090309114909.79"></t>
+<t tx="ekr.20090309114909.80">Application.Echo("Hello from Python")
 </t>
-<t tx="ekr.20080601134805.16">def readStartLeo (self,s,i):
-
-    """Read an unexpected @+leo sentinel."""
-
-    at = self
-    assert(g.match(s,i,"+leo"))
-    at.readError("Ignoring unexpected @+leo sentinel")
-</t>
-<t tx="ekr.20080601134805.17">def readStartMiddle (self,s,i):
-
-    """Read an @+middle sentinel."""
-
-    at = self
-
-    at.readStartNode(s,i,middle=True)
-</t>
-<t tx="ekr.20080601134805.18">def readStartNode (self,s,i,middle=False):
-
-    """Read an @+node or @+middle sentinel."""
-
-    at = self
-    if middle:
-        assert(g.match(s,i,"+middle:"))
-        i += 8
-    else:
-        assert(g.match(s,i,"+node:"))
-        i += 6
-
-    if at.thinFile:
-        &lt;&lt; set gnx and bump i &gt;&gt;
-    &lt;&lt; Set headline, undoing the CWEB hack &gt;&gt;
-    if not at.root_seen:
-        at.root_seen = True
-        &lt;&lt; Check the filename in the sentinel &gt;&gt;
-
-    i,newIndent = g.skip_leading_ws_with_indent(s,0,at.tab_width)
-    at.indentStack.append(at.indent) ; at.indent = newIndent
-
-    at.outStack.append(at.out) ; at.out = []
-    at.tStack.append(at.t)
-
-    if at.importing:
-        p = at.createImportedNode(at.root,headline)
-        at.t = p.v.t
-    elif at.thinFile:
-        at.thinNodeStack.append(at.lastThinNode)
-        at.lastThinNode = v = at.createThinChild4(gnx,headline)
-        at.t = v.t
-    else:
-        at.t = at.findChild4(headline)
-
-    at.endSentinelStack.append(at.endNode)
-</t>
-<t tx="ekr.20080601134805.19"># We have skipped past the opening colon of the gnx.
-j = s.find(':',i)
-if j == -1:
-    g.trace("no closing colon",g.get_line(s,i))
-    at.readError("Expecting gnx in @+node sentinel")
-    return # 5/17/04
-else:
-    gnx = s[i:j]
-    i = j + 1 # Skip the i
-</t>
-<t tx="ekr.20080601134805.20"># Set headline to the rest of the line.
-# Don't strip leading whitespace."
-
-if len(at.endSentinelComment) == 0:
-    headline = s[i:-1].rstrip()
-else:
-    k = s.rfind(at.endSentinelComment,i)
-    headline = s[i:k].rstrip() # works if k == -1
-
-# Undo the CWEB hack: undouble @ signs if the opening comment delim ends in '@'.
-if at.startSentinelComment[-1:] == '@':
-    headline = headline.replace('@@','@')
-</t>
-<t tx="ekr.20080601134805.21">if 0: # This doesn't work so well in cooperative environments.
-    if not at.importing:
-
-        h = headline.strip()
-
-        if h[:5] == "@file":
-            i,junk,junk = g.scanAtFileOptions(h)
-            fileName = string.strip(h[i:])
-            if fileName != at.targetFileName:
-                at.readError("File name in @node sentinel does not match file's name")
-        elif h[:8] == "@rawfile":
-            fileName = string.strip(h[8:])
-            if fileName != at.targetFileName:
-                at.readError("File name in @node sentinel does not match file's name")
-        else:
-            at.readError("Missing @file in root @node sentinel")
-</t>
-<t tx="ekr.20080601134805.22">def readStartOthers (self,s,i):
-
-    """Read an @+others sentinel."""
-
-    at = self
-    j = g.skip_ws(s,i)
-    leadingWs = s[i:j]
-    if leadingWs:
-        assert(g.match(s,j,"@+others"))
-    else:
-        assert(g.match(s,j,"+others"))
-
-    # Make sure that the generated at-others is properly indented.
-    at.out.append(leadingWs + "@others\n")
-
-    at.endSentinelStack.append(at.endOthers)
-</t>
-<t tx="ekr.20080601134805.23"></t>
-<t tx="ekr.20080601134805.24">def readEndAll (self,unused_s,unused_i):
-
-    """Read an @-all sentinel."""
-
-    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
-
-    at = self
-    at.popSentinelStack(at.endAll)
-</t>
-<t tx="ekr.20080601134805.25">def readEndAt (self,unused_s,unused_i):
-
-    """Read an @-at sentinel."""
-
-    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
-
-    at = self
-    at.readLastDocLine("@")
-    at.popSentinelStack(at.endAt)
-    at.inCode = True
-
-def readEndDoc (self,unused_s,unused_i):
-
-    """Read an @-doc sentinel."""
-
-    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
-
-    at = self
-    at.readLastDocLine("@doc")
-    at.popSentinelStack(at.endDoc)
-    at.inCode = True
-</t>
-<t tx="ekr.20080601134805.26">def readEndLeo (self,unused_s,unused_i):
-
-    """Read an @-leo sentinel."""
-
-    # __pychecker__ = '--no-argsused' # i not used, but must be present.
-
-    at = self
-
-    # Ignore everything after @-leo.
-    # Such lines were presumably written by @last.
-    while 1:
-        s = at.readLine(at.inputFile)
-        if len(s) == 0: break
-        at.lastLines.append(s) # Capture all trailing lines, even if empty.
-
-    at.done = True
-</t>
-<t tx="ekr.20080601134805.27">def readEndMiddle (self,s,i):
-
-    """Read an @-middle sentinel."""
-
-    at = self
-
-    at.readEndNode(s,i,middle=True)
-</t>
-<t tx="ekr.20080601134805.28">def readEndNode (self,unused_s,unused_i,middle=False):
-
-    """Handle end-of-node processing for @-others and @-ref sentinels."""
-
-    # __pychecker__ = '--no-argsused' # s,i not used, but must be present.
-
-    at = self ; c = at.c
-
-    # End raw mode.
-    at.raw = False
-
-    # Set the temporary body text.
-    s = ''.join(at.out)
-    s = g.toUnicode(s,g.app.tkEncoding) # 9/28/03
-
-    if at.importing:
-        at.t._bodyString = s
-    elif middle: 
-        pass # Middle sentinels never alter text.
-    else:
-        if hasattr(at.t,"tempBodyString") and s != at.t.tempBodyString:
-            old = at.t.tempBodyString
-        elif at.t.hasBody() and s != at.t.getBody():
-            old = at.t.getBody()
-        else:
-            old = None
-        # 9/4/04: Suppress this warning for the root: @first complicates matters.
-        if old and not g.app.unitTesting and at.t != at.root.t:
-            &lt;&lt; indicate that the node has been changed &gt;&gt;
-        at.t.tempBodyString = s
-
-    # Indicate that the tnode has been set in the derived file.
-    at.t.setVisited()
-
-    # End the previous node sentinel.
-    at.indent = at.indentStack.pop()
-    at.out = at.outStack.pop()
-    at.t = at.tStack.pop()
-    if at.thinFile and not at.importing:
-        at.lastThinNode = at.thinNodeStack.pop()
-
-    at.popSentinelStack(at.endNode)
-</t>
-<t tx="ekr.20080601134805.29">if at.perfectImportRoot:
-    &lt;&lt; bump at.correctedLines and tell about the correction &gt;&gt;
-    # p.setMarked()
-    at.t._bodyString = s # Just setting at.t.tempBodyString won't work here.
-    at.t.setDirty() # Mark the node dirty.  Ancestors will be marked dirty later.
-    at.c.setChanged(True)
-else:
-    if 0: # New in 4.4.1 final.  This warning can be very confusing.
-        if not at.updateWarningGiven:
-            at.updateWarningGiven = True
-            # print "***",at.t,at.root.t
-            g.es("warning: updating changed text in",at.root.headString(),color="blue")
-    # Just set the dirty bit. Ancestors will be marked dirty later.
-    at.t.setDirty()
-    if 1: # We must avoid the full setChanged logic here!
-        c.changed = True
-    else: # Far too slow for mass changes.
-        at.c.setChanged(True)</t>
-<t tx="ekr.20080601134805.30"># Report the number of corrected nodes.
-at.correctedLines += 1
-
-found = False
-for p in at.perfectImportRoot.self_and_subtree_iter():
-    if p.v.t == at.t:
-        found = True ; break
-
-if found:
-    if 0: # For debugging.
-        print ; print '-' * 40
-        print "old",len(old)
-        for line in g.splitLines(old):
-            #line = line.replace(' ','&lt; &gt;').replace('\t','&lt;TAB&gt;')
-            print repr(str(line))
-        print ; print '-' * 40
-        print "new",len(s)
-        for line in g.splitLines(s):
-            #line = line.replace(' ','&lt; &gt;').replace('\t','&lt;TAB&gt;')
-            print repr(str(line))
-        print ; print '-' * 40
-else:
-    # This should never happen.
-    g.es("correcting hidden node: t=",repr(at.t),color="red")
-</t>
-<t tx="ekr.20080601134805.31">def readEndOthers (self,unused_s,unused_i):
-
-    """Read an @-others sentinel."""
-
-    # __pychecker__ = '--no-argsused' # s,i unused, but must be present.
-
-    at = self
-    at.popSentinelStack(at.endOthers)
-</t>
-<t tx="ekr.20080601134805.32">def readLastDocLine (self,tag):
-
-    """Read the @c line that terminates the doc part.
-    tag is @doc or @."""
-
-    at = self
-    end = at.endSentinelComment
-    start = at.startSentinelComment
-    s = ''.join(at.docOut)
-
-    # Remove the @doc or @space.  We'll add it back at the end.
-    if g.match(s,0,tag):
-        s = s[len(tag):]
-    else:
-        at.readError("Missing start of doc part")
-        return
-
-    # Bug fix: Append any whitespace following the tag to tag.
-    while s and s[0] in (' ','\t'):
-        tag = tag + s[0] ; s = s[1:]
-
-    if end:
-        # Remove leading newline.
-        if s[0] == '\n': s = s[1:]
-        # Remove opening block delim.
-        if g.match(s,0,start):
-            s = s[len(start):]
-        else:
-            at.readError("Missing open block comment")
-            g.trace('tag',repr(tag),'start',repr(start),'s',repr(s))
-            return
-        # Remove trailing newline.
-        if s[-1] == '\n': s = s[:-1]
-        # Remove closing block delim.
-        if s[-len(end):] == end:
-            s = s[:-len(end)]
-        else:
-            at.readError("Missing close block comment")
-            g.trace(s)
-            g.trace(end)
-            g.trace(start)
-            return
-
-    at.out.append(tag + s)
-    at.docOut = []
-</t>
-<t tx="ekr.20080601134805.33"></t>
-<t tx="ekr.20080601134805.34">def  ignoreOldSentinel (self,s,unused_i):
-
-    """Ignore an 3.x sentinel."""
-
-    # __pychecker__ = '--no-argsused' # i unused, but must be present.
-
-    g.es("ignoring 3.x sentinel:",s.strip(),color="blue")
-</t>
-<t tx="ekr.20080601134805.35">def  readAfterRef (self,s,i):
-
-    """Read an @afterref sentinel."""
-
-    at = self
-    assert(g.match(s,i,"afterref"))
-
-    # Append the next line to the text.
-    s = at.readLine(at.inputFile)
-    at.out.append(s)
-</t>
-<t tx="ekr.20080601134805.36">def readClone (self,s,i):
-
-    at = self ; tag = "clone"
-
-    assert(g.match(s,i,tag))
-
-    # Skip the tag and whitespace.
-    i = g.skip_ws(s,i+len(tag))
-
-    # Get the clone count.
-    junk,val = g.skip_long(s,i)
-
-    if val == None:
-        at.readError("Invalid count in @clone sentinel")
-    else:
-        at.cloneSibCount = val
-</t>
-<t tx="ekr.20080601134805.37">def readComment (self,s,i):
-
-    """Read an @comment sentinel."""
-
-    assert(g.match(s,i,"comment"))
-
-    # Just ignore the comment line!
-</t>
-<t tx="ekr.20080601134805.38">def readDelims (self,s,i):
-
-    """Read an @delims sentinel."""
-
-    at = self
-    assert(g.match(s,i-1,"@delims"))
-
-    # Skip the keyword and whitespace.
-    i0 = i-1
-    i = g.skip_ws(s,i-1+7)
-
-    # Get the first delim.
-    j = i
-    while i &lt; len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
-        i += 1
-
-    if j &lt; i:
-        at.startSentinelComment = s[j:i]
-        # print "delim1:", at.startSentinelComment
-
-        # Get the optional second delim.
-        j = i = g.skip_ws(s,i)
-        while i &lt; len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
-            i += 1
-        end = g.choose(j&lt;i,s[j:i],"")
-        i2 = g.skip_ws(s,i)
-        if end == at.endSentinelComment and (i2 &gt;= len(s) or g.is_nl(s,i2)):
-            at.endSentinelComment = "" # Not really two params.
-            line = s[i0:j]
-            line = line.rstrip()
-            at.out.append(line+'\n')
-        else:
-            at.endSentinelComment = end
-            # print "delim2:",end
-            line = s[i0:i]
-            line = line.rstrip()
-            at.out.append(line+'\n')
-    else:
-        at.readError("Bad @delims")
-        # Append the bad @delims line to the body text.
-        at.out.append("@delims")
-</t>
-<t tx="ekr.20080601134805.39">def readDirective (self,s,i):
-
-    """Read an @@sentinel."""
-
-    at = self
-    assert(g.match(s,i,"@")) # The first '@' has already been eaten.
-
-    # g.trace(g.get_line(s,i))
-
-    if g.match_word(s,i,"@raw"):
-        at.raw = True
-    elif g.match_word(s,i,"@end_raw"):
-        at.raw = False
-
-    e = at.endSentinelComment
-    s2 = s[i:]
-    if len(e) &gt; 0:
-        k = s.rfind(e,i)
-        if k != -1:
-            s2 = s[i:k] + '\n'
-
-    start = at.startSentinelComment
-    if start and len(start) &gt; 0 and start[-1] == '@':
-        s2 = s2.replace('@@','@')
-
-    if 0: # New in 4.2.1: never change comment delims here...
-        if g.match_word(s,i,"@language"):
-            &lt;&lt; handle @language &gt;&gt;
-        elif g.match_word(s,i,"@comment"):
-            &lt;&lt; handle @comment &gt;&gt;
-
-    at.out.append(s2)
-</t>
-<t tx="ekr.20080601134805.40"># Skip the keyword and whitespace.
-i += len("@language")
-i = g.skip_ws(s,i)
-j = g.skip_c_id(s,i)
-language = s[i:j]
-
-delim1,delim2,delim3 = g.set_delims_from_language(language)
-
-g.trace(g.get_line(s,i))
-g.trace(delim1,delim2,delim3)
-
-# Returns a tuple (single,start,end) of comment delims
-if delim1:
-    at.startSentinelComment = delim1
-    at.endSentinelComment = "" # Must not be None.
-elif delim2 and delim3:
-    at.startSentinelComment = delim2
-    at.endSentinelComment = delim3
-else:
-    line = g.get_line(s,i)
-    g.es("ignoring bad @language sentinel:",line,color="red")
-</t>
-<t tx="ekr.20080601134805.41">j = g.skip_line(s,i)
-line = s[i:j]
-delim1,delim2,delim3 = g.set_delims_from_string(line)
-
-#g.trace(g.get_line(s,i))
-#g.trace(delim1,delim2,delim3)
-
-# Returns a tuple (single,start,end) of comment delims
-if delim1:
-    self.startSentinelComment = delim1
-    self.endSentinelComment = "" # Must not be None.
-elif delim2 and delim3:
-    self.startSentinelComment = delim2
-    self.endSentinelComment = delim3
-else:
-    line = g.get_line(s,i)
-    g.es("ignoring bad @comment sentinel:",line,color="red")
-</t>
-<t tx="ekr.20080601134805.42">def readNl (self,s,i):
-
-    """Handle an @nonl sentinel."""
-
-    at = self
-    assert(g.match(s,i,"nl"))
-
-    if at.inCode:
-        at.out.append('\n')
-    else:
-        at.docOut.append('\n')
-</t>
-<t tx="ekr.20080601134805.43">def readNonl (self,s,i):
-
-    """Handle an @nonl sentinel."""
-
-    at = self
-    assert(g.match(s,i,"nonl"))
-
-    if at.inCode:
-        s = ''.join(at.out)
-        if s and s[-1] == '\n':
-            at.out = [s[:-1]]
-        else:
-            g.trace("out:",s)
-            at.readError("unexpected @nonl directive in code part")
-    else:
-        s = ''.join(at.pending)
-        if s:
-            if s and s[-1] == '\n':
-                at.pending = [s[:-1]]
-            else:
-                g.trace("docOut:",s)
-                at.readError("unexpected @nonl directive in pending doc part")
-        else:
-            s = ''.join(at.docOut)
-            if s and s[-1] == '\n':
-                at.docOut = [s[:-1]]
-            else:
-                g.trace("docOut:",s)
-                at.readError("unexpected @nonl directive in doc part")
-</t>
-<t tx="ekr.20080601134805.44">@ The sentinel contains an @ followed by a section name in angle brackets.  This code is different from the code for the @@ sentinel: the expansion of the reference does not include a trailing newline.
+<t tx="ekr.20090309114909.81">@
+A script button to run any body text as a Windows Script.
+See: http://en.wikipedia.org/wiki/Windows_Script_Host
+
+You need the win32 extensions and you must enable the script engine.
+Adapted from Active State examples:ch21_active_scripting:ActiveApp.py
+http://python.net/crew/mhammond/win32/
 @c
 
-def readRef (self,s,i):
+&lt;&lt; imports &gt;&gt;
 
-    """Handle an @&lt;&lt; sentinel."""
+@others
 
-    at = self
-    j = g.skip_ws(s,i)
-    assert(g.match(s,j,"&lt;&lt;"))
+RunCode("python",p.bodyString())
+</t>
+<t tx="ekr.20090309114909.82">import string
+import sys
+from win32com.axscript import axscript
+from win32com.axscript.server import axsite
+import pythoncom
+import win32com.server.util</t>
+<t tx="ekr.20090309114909.83">class MySite(axsite.AXSite):
+    # Our error handler will simply print to the console.
+    def OnScriptError(self, activeScriptError):
+        exc = activeScriptError.GetExceptionInfo()
+        print "Exception:", exc[1]
+        try:
+            sourceText = activeScriptError.GetSourceLineText()
+        except pythoncom.com_error:
+            sourceText = None
+        if sourceText is not None: 
+            context, lineNo, charNo = activeScriptError.GetSourcePosition()
+            print sourceText
+            indent = " " * (charNo-1)
+            print indent + "^"
+        return winerror.S_OK
+</t>
+<t tx="ekr.20090309114909.84"># A named object for our namespace
+# A normal Python COM object (minus registration info)
+class Application:
+    _public_methods_ = [ 'Echo' ]
+    def Echo(self, *args):
+        print string.join(map(str, args))
 
-    if len(at.endSentinelComment) == 0:
-        line = s[i:-1] # No trailing newline
+</t>
+<t tx="ekr.20090309114909.85"># Create the site and the engine and runs the code.
+def RunCode(engineName, code):
+
+    app = win32com.server.util.wrap( Application() )
+
+    # Create a dictionary holding our object model.
+    model = {'Application' : app,}
+
+    # Create the scripting site.
+    site = MySite(model)
+    # Create the engine and add the code.
+    engine = site.AddEngine(engineName)
+    engine.AddCode(code)
+
+    # Run the code.
+    engine.Start()
+</t>
+<t tx="ekr.20090309114909.86"></t>
+<t tx="ekr.20090309114909.87"># FrontWindowCapture.pyw
+# Version 0.1
+# Date    20070526
+# Author  Roger Erens (roger AT erens-krekels.net)
+"""
+        Purpose:
+        Capture the image of the front-most window into a fixed-name
+        (_front_window), max-size (default MAX_WIDTH is 640 pixels), and
+        fixed-format (PNG) file that can easily be used when creating
+        documentation for an application on a wiki or in some HTML-docs.
+        This script does _not_ copy the captured image to the clipboard (handy
+        when creating MS Word or OpenOffice documents) since MS Windows already
+        has ALT-PRTSCR to do so.
+
+        Dependencies:
+        Fairly recent versions of Python, wxPython, and PIL should be installed
+
+        Start:
+        Double click FrontWindowCapture.pyw; an icon appears in the Task Bar (lower right of
+        the screen).
+
+        Use:
+        Bring a window to the front and then left-click on the
+        icon in the Task Bar. A file named '_front_window.png' will be saved
+        in the current directory.
+        A pictures wider than MAXWIDTH is scaled down in order to make it easily
+        used in wikis or HTML-documentation.
+        Usually, human intelligence is needed to rename that file; this is also
+        why this script does not copy the image to the clipboard.
+
+        End:
+        Close the application by right-clicking the icon in the Task Bar.
+
+        Note:
+        Make sure that your system is fast enough to find the frontmost
+        window. That is, when a virusscanner is running or virtual memory is
+        low, this script will choke. You can see what happens by enabling the
+        print statements and running this script from a console (change the
+        extension from .pyw to .py).
+"""
+import wx
+import sys
+import win32ui
+import win32gui
+import win32con
+import time
+from PIL import Image, ImageGrab
+
+Image.init()
+
+MAX_WIDTH = 640
+BLINK_STATE = 0
+
+class TaskBarApp(wx.Frame):
+    def __init__(self, parent, id, title):
+        wx.Frame.__init__(self, parent, -1, title, size = (1, 1),
+            style=wx.FRAME_NO_TASKBAR| wx.NO_FULL_REPAINT_ON_RESIZE)
+        self.tbicon = wx.TaskBarIcon()
+        icon = wx.Icon('LeoApp16.ico', wx.BITMAP_TYPE_ICO)
+        self.tbicon.SetIcon(icon, 'Click to capture the foremost window')
+        self.tbicon.Bind(wx.EVT_TASKBAR_LEFT_UP, self.OnTaskBarLeftClick)
+        self.tbicon.Bind(wx.EVT_TASKBAR_RIGHT_UP, self.OnTaskBarRightClick)
+        self.Show(True)
+
+    def OnTaskBarLeftClick(self, evt):
+
+        self.FlashIcon(evt)
+
+        def _MyCallback(hwnd, extra ):
+            extra.append(hwnd)
+
+        windows = []
+        win32gui.EnumWindows(_MyCallback, windows)
+
+        winList = []
+        for i in windows:
+            if win32gui.IsWindowVisible(i):
+                winList.append(i)
+                #g.pr(i)
+
+        win32gui.SetForegroundWindow(winList[1])    # found by trial and error
+                                                    # that I need the second
+                                                    # window from the list
+        time.sleep(0.1)  # give the previous command some time to finish
+
+        fgwindow = win32ui.GetForegroundWindow()
+        #g.pr("(C)lick!")
+
+        bbox = fgwindow.GetWindowRect()
+        img = ImageGrab.grab( bbox)
+        width = bbox[2] - bbox[0]
+        if width &gt; MAX_WIDTH:
+            coeff = MAX_WIDTH * 1. / width
+            height = bbox[3] - bbox[1]
+            newHeight = int( coeff * height)
+            #g.pr(width, height, "scaled down to", MAX_WIDTH, newHeight)
+            img = img.resize((MAX_WIDTH,newHeight), Image.ANTIALIAS)
+        img = img.convert("P", dither=Image.NONE,
+                              palette=Image.ADAPTIVE, colors=256)
+        img.save("_front_window.png", "PNG", optimize=1)
+        #img.show() # show the image in an image viewer
+
+        self.FlashIcon(evt)
+
+    def OnTaskBarRightClick(self, evt):
+        #g.pr("Auta..." # that's about it...)
+        self.tbicon.Destroy()
+        self.Close(True)
+        wx.GetApp().ProcessIdle()
+
+    def FlashIcon(self, evt):
+        global BLINK_STATE
+        if BLINK_STATE == 0:
+            icon = wx.Icon('LeoApp16lick.ico', wx.BITMAP_TYPE_ICO)
+            self.tbicon.SetIcon(icon, 'Window is being captured...')
+            BLINK_STATE = 1
+            return
+        else:
+            icon = wx.Icon('LeoApp16.ico', wx.BITMAP_TYPE_ICO)
+            self.tbicon.SetIcon(icon, 'Click to capture the foremost window')
+            BLINK_STATE = 0
+            return
+
+class MyApp(wx.App):
+    def OnInit(self):
+        frame = TaskBarApp(None, -1, ' ')
+        frame.Center(wx.BOTH)
+        frame.Show(False)
+        return True
+
+def main():
+    app = MyApp(0)
+    app.MainLoop()
+
+if __name__ == '__main__':
+    main()
+
+""" CREDITS
+
+    Thanks to
+    Roger Upole:
+    http://groups.google.com/group/comp.lang.python/
+    browse_thread/thread/ff39ec79f7c3248a/
+    e600c892772bf52a?lnk=gst&amp;q=screen+capture&amp;rnum=6#e600c892772bf52a
+    for his time.sleep() Aha (This took me a year and a half to note!)
+
+    Christian Wyglendowski, Werner Bruhin, and Xavier Morel for the
+    http://wiki.wxpython.org/index.cgi/FlashingTaskbarIcon
+    discussion
+
+    'Rob aspn at msolutionsinc.com '
+    http://mail.python.org/pipermail/python-win32/2003-June/001129.html
+    for his suggestion to find out the foremost window
+
+    and of course the usual suspects that created/maintain
+    wxPython,
+    PIL,
+    pywin32,
+    LEO,
+    gvim,
+    and Python itself.
+"""</t>
+<t tx="ekr.20090309114909.88"></t>
+<t tx="ekr.20090309114909.89"></t>
+<t tx="ekr.20090309114909.90"></t>
+<t tx="ekr.20090309114909.91">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20090309114909.92">
+class test:
+    
+    '''Class docstring
+test line 2'''
+    @others
+</t>
+<t tx="ekr.20090309114909.93">
+def spam (self):
+
+    '''Spam docstring.
+\\-4spam line 2'''
+
+    pass
+</t>
+<t tx="ekr.20090309114909.94"># c.k.ab
+
+# Test this code using the execute-script command.
+
+s = p.bodyString()
+lines = g.splitLines(s)
+s = lines[0]
+
+theObject,aList = c.k.autoCompleter.getExternalCompletions(s)
+
+print '='*20
+print 'theObject',theObject and theObject.__class__
+print 'len(completions)',len(aList)
+print g.listToString(aList, tag='completion list', sort=True, indent='')
+</t>
+<t tx="ekr.20090309114909.95">aaaaaaaaaaaa bbbbbbbbbbbbbbbbbb cccccccccccccccc ddddddddddddddddddd eeeeeeeeeeeeeee ffffffffffffffffff ggggggggggggggggggggg hhhhhhhhhhhhhhhh iiiiiiiiiiiii jjjjjjjjjjjjjjjj kkkkkkkkkkkkkk llllllllllllll mmmmmmmmmmmmmmmmm nnnnnnnnnnnn ooooooooo</t>
+<t tx="ekr.20090309114909.96"></t>
+<t tx="ekr.20090309114909.97">import glob
+
+aList = glob.glob(r'c:\leo.repo\trunk\leo\plugins\*.py')
+for z in aList:
+    name = g.shortFileName(z)
+    if not name.startswith('_'):
+        g.pr('echo .')
+        g.pr('echo',name)
+        g.pr('call pylint.bat core\%s' % name)</t>
+<t tx="ekr.20090309114909.98">@first # -*- coding: utf-8 -*-
+
+import Tkinter as Tk
+
+top = Tk.Toplevel()
+w = Tk.Text(top)
+w.pack()
+
+def key(event):
+    if event.char: g.pr('state',event.state,'char', repr(event.char), repr(event.keysym))
+
+def after():
+    g.trace()
+    w.event_generate('&lt;Key&gt;',keysym='a')
+    w.event_generate('A')
+    w.event_generate(g.toEncodedString('Á',encoding='utf8'))
+    # w.event_generate('&lt;Key-Control_L&gt;')
+    # w.event_generate('c')
+    # w.event_generate('Shift-Control-a')
+
+w.bind('&lt;Key&gt;',key)
+w.focus_set()
+w.update()
+# top.after_idle(after)
+top.mainloop()
+</t>
+<t tx="ekr.20090309114909.99">def getInput (event=None):
+
+    '''Evaluate a Python Expression entered in the minibuffer.'''
+
+    stateName = 'get-input'
+    k = c.k ; state = k.getState(stateName)
+
+    if state == 0:
+        k.setLabelBlue('Input: ',protect=True)
+        k.getArg(event,stateName,1,getInput)
     else:
-        k = s.find(at.endSentinelComment,i)
-        line = s[i:k] # No trailing newline, whatever k is.
+        k.clearState()
+        g.es_print('input:',k.arg)
 
-    # Undo the cweb hack.
-    start = at.startSentinelComment
-    if start and len(start) &gt; 0 and start[-1] == '@':
-        line = line.replace('@@','@')
-
-    at.out.append(line)
+getInput()
 </t>
-<t tx="ekr.20080601134805.45">def readVerbatim (self,s,i):
+<t tx="ekr.20090309114909.100">aList = (
+'aspellbindir',
+'wholeword',
+'Whole-Word',
+'vimcmd',
+'huh',
+)
 
-    """Read an @verbatim sentinel."""
-
-    at = self
-    assert(g.match(s,i,"verbatim"))
-
-    # Append the next line to the text.
-    s = at.readLine(at.inputFile) 
-    i = at.skipIndent(s,0,at.indent)
-    at.out.append(s[i:])
+for name in aList:
+    kind, val = c.config.getSettingSource(name)
+    print '%-20s %-20s %s' % (name,repr(val),kind)
 </t>
-<t tx="ekr.20080601134805.46">def badEndSentinel (self,expectedKind):
+<t tx="ekr.20090309114909.101"># import os
+tag = '#!/bin/bash\n'
+s = g.getScript(c,p,
+    useSelectedText=False,
+    forcePythonSentinels=False,
+    useSentinels=True)
+if not s.startswith(tag):
+    s = tag + s
+print s
+os.system(s)
+</t>
+<t tx="ekr.20090309114909.102"></t>
+<t tx="ekr.20090309114909.103">c.frame.iconBar.addRow()
+c.frame.addIconButton(text="New")</t>
+<t tx="ekr.20090309114909.104">c.frame.hideIconBar()</t>
+<t tx="ekr.20090309114909.105">c.frame.showIconBar()</t>
+<t tx="ekr.20090309114909.106">c.frame.clearIconBar()</t>
+<t tx="ekr.20090309114909.107"></t>
+<t tx="ekr.20090309114909.108">#colorer = c.frame.body.colorizer.highlighter.colorer
+g.es ('total characters: %s, keywords: %s, leo_keywords: %s' % (
+    colorer.totalChars,
+    colorer.totalKeywordsCalls,
+    colorer.totalLeoKeywordsCalls))</t>
+<t tx="ekr.20090309114909.109"></t>
+<t tx="ekr.20090309114909.110">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20090309114909.111">#!/usr/local/bin/python
+# -*- coding: utf-8 -*-
+"""
+module docs
+"""
 
-    """Handle a mismatched ending sentinel."""
+</t>
+<t tx="ekr.20090309114909.112">class Person(object):
+   '''class docs
+   '''
+   field1 = 10
+   field2 = 20
 
-    at = self
-    assert(at.endSentinelStack)
-    s = "Ignoring %s sentinel.  Expecting %s" % (
-        at.sentinelName(at.endSentinelStack[-1]),
-        at.sentinelName(expectedKind))
-    at.readError(s)
+   @others
+</t>
+<t tx="ekr.20090309114909.113">def talk(self):
+    ''' this is the func doc
+    '''
+    print 'hello world'
 
-def popSentinelStack (self,expectedKind):
+</t>
+<t tx="ekr.20090309114909.114">class Meta:
+    age = 10</t>
+<t tx="ekr.20090309114909.115">@language ini
+[section]
+blah blah
+changed
+changed2
+changed3
+changed4
+change5</t>
+<t tx="ekr.20090309114909.116"># Line one
+# line two</t>
+<t tx="ekr.20090309114909.117">@others
+</t>
+<t tx="ekr.20090309114909.118">def spam():
+    pass</t>
+<t tx="ekr.20090309114909.119">root first line
+@others
+root last line</t>
+<t tx="ekr.20090309114909.120">child line 1
+child line 2</t>
+<t tx="ekr.20090309114909.121">@others</t>
+<t tx="ekr.20090309114909.122">def spam():
+    pass</t>
+<t tx="ekr.20090309114909.123"></t>
+<t tx="ekr.20090309114909.124">def eggs():
+    pass</t>
+<t tx="ekr.20090309114909.125">@language unknown_language
+# huh language .................
+changed 7
+</t>
+<t tx="ekr.20090309114909.126">@language html
+../hex6x -
+changed</t>
+<t tx="ekr.20090309114909.127">@language conf
+; This is a comment
+P1 = 0
+</t>
+<t tx="ekr.20090309114909.128">@language c
 
-    """Pop an entry from endSentinelStack and check it."""
+@others</t>
+<t tx="ekr.20090309114909.129">int spam():
+    ;</t>
+<t tx="ekr.20090309114909.130">@others</t>
+<t tx="ekr.20090309114909.131">def spam():
+    
+    pass # changed</t>
+<t tx="ekr.20090309114909.132">def eggs():
+    
+    pass</t>
+<t tx="ekr.20090309114909.133"></t>
+<t tx="ekr.20090309114909.134"></t>
+<t tx="ekr.20090309114909.135">if 0:
+    # Called when func is **defined**
+    def leo_command(func):
+        g.trace(func.__name__)
+        return func
+else:
+    class leo_command:
+        def __init__(self,func,c=c):
+            self.c = c
+            self.func = func
+            self.name = func.__name__
+            g.pr("registering",self.name)
 
-    at = self
-    if at.endSentinelStack and at.endSentinelStack[-1] == expectedKind:
-        at.endSentinelStack.pop()
+        def __call__(__self,*__args,**__kw):
+            g.pr("before", __self.name)
+            try:
+                return __self.func(*__args,**__kw)
+            finally:
+                g.pr("after ", __self.name)
+                g.pr('c',c)
+                c.outerUpdate()
+
+
+@leo_command
+def hello():
+    g.pr("Hello, world!")
+
+hello()
+</t>
+<t tx="ekr.20090309114909.136">def debug(f,*args,**keys):
+    if 1:
+        def debugCallback(*args,**keys):
+            print f.__name__,args,keys
+            f(*args,**keys)
+            print 'after',f.__name__
+        return debugCallback
     else:
-        at.badEndSentinel(expectedKind)
+        print 'in debug'
+        return f
+@debug
+def spam(a=5):
+    g.trace(a,g.callers(4))
+
+spam(3)
+spam(a=4)
 </t>
+<t tx="ekr.20090309114909.137">def eggs():
+    g.trace()
+
+def spam():
+    g.trace()
+    eggs()
+
+t = g.startTracer()
+spam()
+t.stop()
+</t>
+<t tx="ekr.20090309114909.138">aList = g.posList(c) # Start with all positions
+print len(aList)
+aList2 = aList.select('plugin',regex=False,removeClones=True)
+print aList2.dump(sort=True)
+aList3 = aList2.select('http')
+print aList3.dump()
+
+# To see the docstring, enable auto-completion and type g.posList?
+# g.posList</t>
+<t tx="ekr.20090309114909.139"># define a macro: ctrl-f ab ctrl-r AB
+pass</t>
+<t tx="ekr.20090309114909.140">b = p.b
+try:
+    w = c.frame.body.bodyCtrl
+    w.setInsertPoint(0)
+    m = c.macroCommands
+    fn = g.os_path_finalize_join(g.app.loadDir,'..','..','ekr-macros.txt')
+    f = open(fn)
+    m.loadMacros(f)
+    macro = m.namedMacros.get('ab')
+    m.executeMacro(macro)
+finally:
+    assert p.b =='ab' + b,p.b
+    p.b = b
+</t>
+<t tx="ekr.20090309114909.141"># 'self' is now defined in @test and @suite nodes.
+a,b = 1,2
+self.assertEqual(a,b)</t>
+<t tx="ekr.20090309114909.142"># print p.b
+# p.b = p.b + '\n# new'
+# p.h = p.h + 'z'
+
+print c.p
+
+if 0:
+    print p.v.u
+    print p.v.u.get('key')
+    p.v.u['key'] = 'abc'
+    print p.v.u.get('key')
+    p.v.u = {'key':'xyz'}
+    # p.v.u = 'abc'
+    print p.v.u
+
+if 0:
+    print p.v.t.u
+    print p.v.t.u.get('t-key')
+    p.v.t.u['t-key'] = 'pdq'
+    print p.v.t.u.get('t-key')
+    # p.v.t.u = {'key':'pdq'}
+    # # p.v.t.u = 'pdq'
+    # print p.v.t.u</t>
+<t tx="ekr.20090309114909.143"></t>
+<t tx="ekr.20090309114909.144">print(g.os_path_finalize(r'~/.leo/notebook.leo'))
+print(g.os_path_finalize(g.os_path_join(g.app.loadDir,r'~/.leo/notebook.leo')))
+print(g.os_path_finalize_join(g.app.loadDir,r'~/.leo/notebook.leo'))</t>
+<t tx="ekr.20090309114909.145"># @string default_leo_file = ~/.leo/workbook.leo
+path = "{{c.config.getString('default_leo_file')}}"
+# print g.os_path_expandExpression(path,c=c)
+print g.os_path_finalize(path,c=c)</t>
+<t tx="ekr.20090309114909.146"></t>
+<t tx="ekr.20090309114909.147"></t>
+<t tx="ekr.20090309114909.148"></t>
+<t tx="ekr.20090309114909.149">{{c.config.getString('test')}}/eval-test.txt
+=
+c:\leo.repo\trunk\leo\test\eval-test.txt</t>
+<t tx="ekr.20090309114909.150"></t>
+<t tx="ekr.20090309114909.151">new_node = c.p.insertAsLastChild()
+new_node.initHeadString("I am a new node")
+new_node.moveAfter(c.rootPosition())
+c.redraw()</t>
+<t tx="ekr.20090309114909.152">p = g.findTopLevelNode(c, 'toplevel')
+p2 = g.findNodeInChildren(c, p, 'one')
+c.selectPosition(p2)
+# c.redraw_after_select(p2)
+
+@
+Create a top level node "toplevel"
+give it two children, "one", and "two"
+give "one" two children, "foo" and "bar"
+Leaving "one" expanded, collapse "toplevel"
+save the file
+revert the file
+click the "totop" button.
+
+"one" appears to have no children... !
+
+collapse and expand "toplevel", phew, the children have returned</t>
+<t tx="ekr.20090309114909.153"></t>
+<t tx="ekr.20090309114909.154"></t>
+<t tx="ekr.20090309114909.155"></t>
+<t tx="ekr.20090309114909.156"></t>
+<t tx="ekr.20090309114909.157"></t>
+<t tx="ekr.20090309114909.158"></t>
+<t tx="ekr.20090309114909.159">import locale
+aList = dir(locale)
+# g.pr(g.listToString(aList))
+
+g.pr(g.getpreferredencoding())
+# import os
+# g.pr(dir(os))
+</t>
+<t tx="ekr.20090309114909.160">@first # -*- coding: utf-8 -*-
+
+# Important: see http://webpages.charter.net/edreamleo/FAQ.html#unicode-issues
+
+import sys
+        
+print '=' * 40
+
+e = sys.getdefaultencoding()
+assert e.lower() == 'utf-8'
+print 'encoding',e
+
+table = (
+    'La Peña',
+    unicode('La Peña','utf-8'),
+    u'La Peña',
+    u'La Pe\xf1a',
+    # u'AA \u0102 BB',
+)
+
+for s in table:
+    print type(s)
+    g.es_print('g.es_print',s)
+    if type(s) != type(u'a'):
+        s = unicode(s,e)
+    print      'print     ',s
+    print      'repr(s)   ',repr(s)</t>
 </tnodes>
 </leo_file>

@@ -1087,14 +1087,14 @@ class pluginController(baseClasses.basePluginController):
 
         for p in self.c.allNodes_iter():
 
-            h = p.headString().strip()
+            h = p.h.strip()
 
             if not h.startswith(popup):
                 continue
 
             found = False
             for pp in p.parents_iter():
-                if pp.headString().strip().lower().startswith('@settings'):
+                if pp.h.strip().lower().startswith('@settings'):
                     found = True
                     break
 
@@ -1120,7 +1120,7 @@ class pluginController(baseClasses.basePluginController):
         p = p.copy() ; after = p.nodeAfterTree()
         p.moveToThreadNext()
         while p and p != after:
-            h = p.headString()
+            h = p.h
             for tag in ('@menu','@item'):
                 if g.match_word(h,0,tag):
                     itemName = h[len(tag):].strip()
@@ -1128,7 +1128,7 @@ class pluginController(baseClasses.basePluginController):
                         if tag == '@menu':
                             aList2 = []
                             kind = '%s' % itemName
-                            body = p.bodyString()
+                            body = p.b
                             self.doPopupItems(p,aList2)
                             aList.append((kind + '\n' + body, aList2),)
                             p.moveToNodeAfterTree()
@@ -1136,12 +1136,12 @@ class pluginController(baseClasses.basePluginController):
                         else:
                             kind = tag
                             head = itemName
-                            body = p.bodyString()
+                            body = p.b
                             aList.append((head,body),)
                             p.moveToThreadNext()
                             break
             else:
-                # g.trace('***skipping***',p.headString())
+                # g.trace('***skipping***',p.h)
                 p.moveToThreadNext()
     #@nonl
     #@-node:bobjack.20080516105903.26:doPopupItems
@@ -1313,7 +1313,7 @@ class pluginController(baseClasses.basePluginController):
             c = self.c
 
             contextCommands = []
-            p=c.currentPosition()
+            p=c.p
             for match in re.finditer(scan_jump_re,text):
                 name=match.group()
                 ref=g.findReference(c,name,p)

@@ -50,7 +50,7 @@ This installer installs the subprocess sources and also _subprocess.pyd in Pytho
 #@@language python
 #@@tabwidth -4
 
-__version__ = "1.13"
+__version__ = "1.17"
 #@<< version history >>
 #@+node:ekr.20050226184411.1:<< version history >>
 #@@killcolor
@@ -97,6 +97,7 @@ __version__ = "1.13"
 # 1.16 TL: open_in_vim modifications
 #     - support file open in gVim at same line number as Leo cursor location
 #     - support file open in a gVim tab (see also mod_tempfname.py)
+# 1.17 EKR: Give a location message to help with settings.
 #@-at
 #@nonl
 #@-node:ekr.20050226184411.1:<< version history >>
@@ -217,15 +218,18 @@ else:
     _vim_cmd = "vim --servername LEO"
     _vim_exe = "vim"
 
+locationMessageGiven = False
+
 #@+others
 #@+node:ekr.20050226184624:init
 def init ():
 
-    event = "icondclick1" #Only launched if previous handlers let it.
+    event = "icondclick1" # Only launched if previous handlers let it.
 
     ok = not g.app.unitTesting # Don't conflict with xemacs plugin.
 
     if ok:
+        print ('vim.py enabled')
         # Register the handlers...
         if useDoubleClick:
             # Open on double click
@@ -234,7 +238,8 @@ def init ():
             # Open on single click: interferes with dragging.
             leoPlugins.registerHandler(event,open_in_vim,val=True)
 
-        # Enable the os.system call if you want to start a (g)vim server when Leo starts.
+        # Enable the os.system call if you want to
+        # start a (g)vim server when Leo starts.
         if 0:
             os.system(_vim_cmd)
 
@@ -253,17 +258,23 @@ def open_in_vim (tag,keywords,val=None):
     #Avoid @file node types
     #if p.isAnyAtFileNode():
     #   return
-    if p.headString().find('file-ref') == 1: #Must be at 2nd position
+    if p.h.find('file-ref') == 1: #Must be at 2nd position
         return
 
     #URL nodes
     openURLNodes = c.config.getBool('vim_plugin_opens_url_nodes')
-    if not openURLNodes and p.headString().startswith('@url'):
+    if not openURLNodes and p.h.startswith('@url'):
         return # Avoid conflicts with @url nodes.
     v = p.v
 
     vim_cmd = c.config.getString('vim_cmd') or _vim_cmd
     vim_exe = c.config.getString('vim_exe') or _vim_exe
+
+    global locationMessageGiven
+    if not locationMessageGiven:
+        locationMessageGiven = True
+        print ('vim_cmd: %s' % vim_cmd)
+        print ('vim_exe: %s' % vim_exe)
 
     #Cursor positioning
     Lnum = ""
@@ -294,7 +305,7 @@ def open_in_vim (tag,keywords,val=None):
     if (
         not g.os_path_exists(path) or 
         not hasattr(v,'OpenWithOldBody') or
-        v.bodyString() != v.OpenWithOldBody
+        v.b != v.OpenWithOldBody
     ):
         # Open a new temp file.
         if path:
@@ -302,7 +313,7 @@ def open_in_vim (tag,keywords,val=None):
             os.remove(path)
             g.app.openWithFiles = [d for d in g.app.openWithFiles if d.get('path') != path]
             os.system(vim_cmd+"--remote-send '<C-\\><C-N>:bd "+path+"<CR>'")
-        v.OpenWithOldBody=v.bodyString() # Remember the previous contents.
+        v.OpenWithOldBody=v.b # Remember the previous contents.
         if subprocess:
             # New code by Jim Sizemore (TL: added support for gVim tabs).
             data = "subprocess.Popen",[vim_exe, "--servername", "LEO" \
@@ -320,6 +331,5 @@ def open_in_vim (tag,keywords,val=None):
     return val
 #@-node:EKR.20040517075715.11:open_in_vim
 #@-others
-#@nonl
 #@-node:EKR.20040517075715.10:@thin vim.py
 #@-leo

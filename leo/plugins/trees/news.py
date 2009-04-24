@@ -116,14 +116,14 @@ class NewsItem(BaseTreeHandler):
         self.children = []
         #
         # Get the server name which we conveniently left in the body
-        body = self.node.bodyString().splitlines()[0]
+        body = self.node.b.splitlines()[0]
         try:
             connection, resp, count, first, last, name = getConnection(body)
         except NewsTreeError:
             return
         #
         # Now get the article 
-        id = self.node.headString().split(" - ", 1)[0][15:]
+        id = self.node.h.split(" - ", 1)[0][15:]
         article = connection.body(id)
         self.c.setBodyText(self.node,"\n".join(article[-1]))
         #

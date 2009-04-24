@@ -673,7 +673,7 @@ class rstClass:
         c = self.c ; editMenu = c.frame.menu.getMenu('Edit')
 
         def rst3PluginCallback (event=None):
-            self.processTopTree(c.currentPosition())
+            self.processTopTree(c.p)
 
         c.k.registerCommand('write-restructured-text',shortcut=None,
             func=rst3PluginCallback,pane='all',verbose=False)
@@ -828,7 +828,7 @@ class rstClass:
         else: language = language.lower()
         syntax = SilverCity is not None
 
-        # g.trace('language',language,'language.title()',language.title(),p.headString())
+        # g.trace('language',language,'language.title()',language.title(),p.h)
 
         if syntax and language in ('python','ruby','perl','c'):
             self.code_block_string = '**code**:\n\n.. code-block:: %s\n' % language.title()
@@ -848,7 +848,7 @@ class rstClass:
             self.preprocessNode(p)
 
         if 0:
-            g.trace(root.headString())
+            g.trace(root.h)
             for key in self.tnodeOptionDict.keys():
                 g.trace(key)
                 g.printDict(self.tnodeOptionDict.get(key))
@@ -921,7 +921,7 @@ class rstClass:
 
         '''Return a dictionary containing the options implied by p's headline.'''
 
-        h = p.headString().strip()
+        h = p.h.strip()
 
         if p == self.topNode:
             return {} # Don't mess with the root node.
@@ -929,7 +929,7 @@ class rstClass:
             s = h [len(self.option_prefix):]
             return self.scanOption(p,s)
         elif g.match_word(h,0,self.getOption('options_prefix')): # '@rst-options'
-            return self.scanOptions(p,p.bodyString())
+            return self.scanOptions(p,p.b)
         else:
             # Careful: can't use g.match_word because options may have '-' chars.
             i = g.skip_id(h,0,chars='@-')
@@ -962,7 +962,7 @@ class rstClass:
 
             if h.startswith('@rst'):
                 g.trace('word',word,'rst_prefix',self.getOption('rst_prefix'))
-                g.trace('unknown kind of @rst headline',p.headString())
+                g.trace('unknown kind of @rst headline',p.h)
 
             return {}
     #@-node:ekr.20050811173750:scanHeadlineForOptions
@@ -974,11 +974,11 @@ class rstClass:
         Such entries may arise from @rst-option or @rst-options in the headline,
         or from @ @rst-options doc parts.'''
 
-        h = p.headString()
+        h = p.h
 
         d = self.scanHeadlineForOptions(p)
 
-        d2 = self.scanForOptionDocParts(p,p.bodyString())
+        d2 = self.scanForOptionDocParts(p,p.b)
 
         # A fine point: body options over-ride headline options.
         d.update(d2)
@@ -1002,14 +1002,14 @@ class rstClass:
             if fullName in self.defaultOptionsDict.keys():
                 if   val.lower() == 'true': val = True
                 elif val.lower() == 'false': val = False
-                # g.trace('%24s %8s %s' % (self.munge(name),val,p.headString()))
+                # g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
                 return { self.munge(name): val }
             else:
                 g.es_print('ignoring unknown option: %s' % (name),color='red')
                 return {}
         else:
             g.trace(repr(s))
-            s2 = 'bad rst3 option in %s: %s' % (p.headString(),s)
+            s2 = 'bad rst3 option in %s: %s' % (p.h,s)
             g.es_print(s2,color='red')
             return {}
     #@nonl
@@ -1045,13 +1045,13 @@ class rstClass:
         # g.trace('-'*20)
         for p in p.self_and_parents_iter():
             d = self.tnodeOptionDict.get(p.v.t,{})
-            # g.trace(p.headString(),d)
+            # g.trace(p.h,d)
             for key in d.keys():
                 ivar = self.munge(key)
                 if not ivar in seen:
                     seen.append(ivar)
                     val = d.get(key)
-                    self.setOption(key,val,p.headString())
+                    self.setOption(key,val,p.h)
 
         # self.dumpSettings()
         if self.rst3_all:
@@ -1090,8 +1090,8 @@ class rstClass:
 
         for ivar in self.singleNodeOptions:
             val = d.get(ivar,False)
-            #g.trace('%24s %8s %s' % (ivar,val,p.headString()))
-            self.setOption(ivar,val,p.headString())
+            #g.trace('%24s %8s %s' % (ivar,val,p.h))
+            self.setOption(ivar,val,p.h)
 
     #@-node:ekr.20050810103731:handleSingleNodeOptions
     #@-node:ekr.20050808142313.28:scanAllOptions & helpers
@@ -1151,7 +1151,7 @@ class rstClass:
         c = self.c ; current = p.copy()
 
         for p in current.self_and_parents_iter():
-            h = p.headString()
+            h = p.h
             if h.startswith('@rst') and not h.startswith('@rst-'):
                 self.processTree(p,ext=None,toString=False,justOneFile=justOneFile)
                 break
@@ -1170,7 +1170,7 @@ class rstClass:
         found = False ; self.stringOutput = ''
         p = p.copy() ; after= p.nodeAfterTree()
         while p and p != after:
-            h = p.headString().strip()
+            h = p.h.strip()
             if g.match_word(h,0,"@rst"):
                 self.outputFileName = h[4:].strip()
                 if (
@@ -1280,10 +1280,12 @@ class rstClass:
         '''Send s to docutils using the writer implied by self.ext and return the result.'''
 
         openDirectory = self.c.frame.openDirectory
-        pub = docutils.core.Publisher()
-        pub.source      = docutils.io.StringInput(source=s)
-        pub.destination = docutils.io.StringOutput(pub.settings,encoding=self.encoding)
-        pub.set_reader('standalone',None,'restructuredtext')
+        #pub = docutils.core.Publisher()
+        #pub.source      = docutils.io.StringInput(source=s)
+        #pub.destination = docutils.io.StringOutput(pub.settings,encoding=self.encoding)
+        #pub.set_reader('standalone',None,'restructuredtext')
+
+        overrides = { 'output_encoding': self.encoding }        # MWC -- define override structure
 
         # Compute the args list if the stylesheet path does not exist.
         args = self.getOption('publish_argv_for_missing_stylesheets') or ''
@@ -1308,7 +1310,7 @@ class rstClass:
         # The actual file is gotten by: writers.get_writer_class(writer_name)
         # There is a list of aliases in the __init__ file in the writers folder.
         # If no such alias exists, docutils tries to import the actual name give.
-        pub.set_writer(writer)
+        #pub.set_writer(writer)
 
         # Make the stylesheet path relative to the directory containing the output file.
         rel_stylesheet_path = self.getOption('stylesheet_path') or ''
@@ -1320,11 +1322,15 @@ class rstClass:
         path = g.os_path_finalize_join(
             stylesheet_path,self.getOption('stylesheet_name'))
 
+        res = ""
         if g.os_path_exists(path):
             if self.ext == '.pdf':
-                return pub.publish(argv=[])
+                # return pub.publish(argv=[])
+                pass
             else:
-                return pub.publish(argv=['--stylesheet=%s' % path])
+                overrides['stylesheet'] = path
+                overrides['stylesheet_path'] = None
+                #return pub.publish(argv=['--stylesheet=%s' % path])
         else:
             if not args1:
                 if rel_stylesheet_path == stylesheet_path:
@@ -1333,8 +1339,20 @@ class rstClass:
                     g.es_print('stylesheet not found',color='red')
                     g.es_print('open directory: %s' % (self.c.frame.openDirectory),color='red')
                     g.es_print('relative path: %s' % (rel_stylesheet_path),color='red')
-                    g.es_print('absolute path: %s' % (path),color='red')
-            return pub.publish(argv=args)
+                    g.es_print('absolute path: %s' % (path),color='red')       
+            #return pub.publish(argv=args)
+            overrides.update(args)     # MWC add args to settings
+
+        # MWC -- Note:  Forcing all logic above to fall through to here
+        try:
+            res = docutils.core.publish_string(source=s,
+                    reader_name='standalone',
+                    parser_name='restructuredtext',
+                    writer_name=writer,
+                    settings_overrides=overrides)
+        except docutils.ApplicationError, error:
+            g.es_print('Error (%s): %s' % (error.__class__.__name__, error))
+        return res            
     #@-node:ekr.20050809082854.1:writeToDocutils (sets argv)
     #@+node:ekr.20060525102337:writeNodeToString (New in 4.4.1)
     def writeNodeToString (self,p=None,ext=None):
@@ -1349,10 +1367,10 @@ class rstClass:
 
         Returns p, s, where p is the position of the @rst node and s is the converted text.'''
 
-        c = self.c ; current = p or c.currentPosition()
+        c = self.c ; current = p or c.p
 
         for p in current.self_and_parents_iter():
-            if p.headString().startswith('@rst'):
+            if p.h.startswith('@rst'):
                 return self.processTree(p,ext=ext,toString=True,justOneFile=True)
         else:
             return self.processTree(current,ext=ext,toString=True,justOneFile=True)
@@ -1416,7 +1434,7 @@ class rstClass:
     def writeBody (self,p):
 
         # remove trailing cruft and split into lines.
-        lines = p.bodyString().rstrip().split('\n') 
+        lines = p.b.rstrip().split('\n') 
 
         if self.getOption('code_mode'):
             if not self.getOption('show_options_doc_parts'):
@@ -1547,7 +1565,7 @@ class rstClass:
         if not result: result = []
         if showHeadlines:
             if result or showThisHeadline or showOrganizers or p == self.topNode:
-                # g.trace(len(result),p.headString())
+                # g.trace(len(result),p.h)
                 self.writeHeadlineHelper(p)
         return result
     #@nonl
@@ -1697,8 +1715,8 @@ class rstClass:
             docOnly or # handleDocOnlyMode handles this.
             not showHeadlines and not showThisHeadline or
             # docOnly and not showOrganizers and not thisHeadline or
-            not p.headString().strip() and not showOrganizers or
-            not p.bodyString().strip() and not showOrganizers
+            not p.h.strip() and not showOrganizers or
+            not p.b.strip() and not showOrganizers
         ):
             return
 
@@ -1707,7 +1725,7 @@ class rstClass:
     #@+node:ekr.20060608102001:writeHeadlineHelper
     def writeHeadlineHelper (self,p):
 
-        h = p.headString().strip()
+        h = p.h.strip()
 
         # Remove any headline command before writing the 
         i = g.skip_id(h,0,chars='@-')
@@ -1746,9 +1764,9 @@ class rstClass:
         self.scanAllOptions(p)
 
         if 0:
-            g.trace('%24s code_mode %s' % (p.headString(),self.getOption('code_mode')))
+            g.trace('%24s code_mode %s' % (p.h,self.getOption('code_mode')))
 
-        h = p.headString().strip()
+        h = p.h.strip()
 
         if self.getOption('preformat_this_node'):
             self.http_addNodeMarker(p)
@@ -1777,9 +1795,9 @@ class rstClass:
             line 2 etc.
         '''
 
-        # g.trace(p.headString(),g.callers())
+        # g.trace(p.h,g.callers())
 
-        lines = p.bodyString().split('\n')
+        lines = p.b.split('\n')
         lines = [' '*4 + z for z in lines]
         lines.insert(0,'::\n')
 
@@ -1865,7 +1883,7 @@ class rstClass:
 
         ch = u [level]
 
-        # g.trace(self.toplevel,p.level(),level,repr(ch),p.headString())
+        # g.trace(self.toplevel,p.level(),level,repr(ch),p.h)
 
         n = max(4,len(s))
 
@@ -1967,7 +1985,7 @@ class rstClass:
             attr = mod_http.get_http_attribute(p)
             if not attr:
                 continue
-            # g.trace('before',p.headString(),attr)
+            # g.trace('before',p.h,attr)
             if bwm_file:
                 print >> bwm_file
                 print >> bwm_file, "relocate_references(1): Position, attr:"

@@ -173,16 +173,19 @@ class cleoController:
       5: {'long': 'Low',       'short': '5', 'icon': 'pri5.png'},
       6: {'long': 'Very Low',  'short': '6', 'icon': 'pri6.png'},
       7: {'long': 'Sometime',  'short': '7', 'icon': 'pri7.png'},
+      8: {'long': 'Level 8',   'short': '8', 'icon': 'pri8.png'},
+      9: {'long': 'Level 9',   'short': '9', 'icon': 'pri9.png'},
+     10: {'long': 'Level 0',   'short': '0', 'icon': 'pri0.png'},
      19: {'long': 'To do',     'short': 'o', 'icon': 'chkboxblk.png'},
      20: {'long': 'Bang',      'short': '!', 'icon': 'bngblk.png'},
      21: {'long': 'Cross',     'short': 'X', 'icon': 'xblk.png'},
      22: {'long': '(cross)',   'short': 'x', 'icon': 'xgry.png'},
      23: {'long': 'Query',     'short': '?', 'icon': 'qryblk.png'},
+     24: {'long': 'Bullet',    'short': '-', 'icon': 'bullet.png'},
     100: {'long': 'Done',      'short': 'D', 'icon': 'chkblk.png'},
     }
 
-    todo_priorities = 1,2,3,4,5,6,7,19
-    #@nonl
+    todo_priorities = 1,2,3,4,5,6,7,8,9,10,19
     #@-node:tbrown.20080304230028:priority table
     #@+node:tbrown.20060903121429.15:birth
     def __init__ (self,c):
@@ -218,6 +221,10 @@ class cleoController:
             self.time_name = c.config.getString('cleo_time_name')
 
         self.colorIgnore = c.config.getBool('cleo_color_ignore',default=True)
+
+        self.icon_location = 'beforeIcon'
+        if c.config.getString('cleo_icon_location'):
+            self.icon_location = c.config.getString('cleo_icon_location')
         #@-node:tbrown.20060913151952:<< set / read default values >>
         #@nl
 
@@ -304,7 +311,7 @@ class cleoController:
 
         # g.pr("Cleo plugin: installing overrides for",self.c.shortFileName())
 
-        tree = self.c.frame.tree # NOT leoTkinterTree.leoTkinterTree
+        tree = self.c.frame.tree # NOT tkGui.leoTkinterTree
 
         g.funcToMethod(self.setUnselectedHeadlineColors,tree)
         g.funcToMethod(self.setDisabledHeadlineColors,tree)
@@ -320,21 +327,27 @@ class cleoController:
     #@-node:tbrown.20080303214305:loadAllIcons
     #@+node:tbrown.20080303232514:loadIcons
     def loadIcons(self, p):
-        iconDir = g.os_path_abspath(
-          g.os_path_normpath(
-            g.os_path_join(g.app.loadDir,"..","Icons")))
         com = self.c.editCommands
-        icons = [i for i in com.getIconList(p)
-                 if 'cleoIcon' not in i]
+        allIcons = com.getIconList(p)
+        icons = [i for i in allIcons if 'cleoIcon' not in i]
         pri = self.getat(p.v, 'priority')
         if pri: pri = int(pri)
         if pri in self.priorities:
+            cleo_icon_path = self.c.config.getString('cleo_icon_path')
+            iconDir = g.os_path_abspath(
+              g.os_path_normpath(
+                g.os_path_join(g.app.loadDir,"..","Icons")))
             com.appendImageDictToList(icons, iconDir,
-                g.os_path_join('cleo',self.priorities[pri]['icon']),
-                2, on='vnode', cleoIcon='1', where = 'beforeIcon')
-                # beforeBox beforeIcon beforeHeadline afterHeadline
+                g.os_path_join(cleo_icon_path,self.priorities[pri]['icon']),
+                2, on='vnode', cleoIcon='1', where=self.icon_location)
+                # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
+                # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
+                # Note: 'beforeBox' and 'afterHeadline' collide with other elements on the line.
+            com.setIconList(p, icons)
+        else:
+            if len(allIcons) != len(icons):  # something to remove
+                com.setIconList(p, icons)
 
-        com.setIconList(p, icons)
     #@-node:tbrown.20080303232514:loadIcons
     #@+node:tbrown.20060903121429.18:close
     def close(self, tag, key):
@@ -563,7 +576,7 @@ class cleoController:
         #@    << auto headline colours >>
         #@+node:tbrown.20060903121429.27:<< auto headline colours >>
         # set bg of @file type of nodes
-        h = v and v.headString() or ''
+        h = v and v.h or ''
 
         for f in self.file_nodes:
             if h.startswith(f):
@@ -612,7 +625,7 @@ class cleoController:
         #@-node:tbrown.20060903121429.30:<< arbitary colours >>
         #@nl
 
-        #g.pr("> (%s,%s) %s" % (fg,bg,v.headString()))
+        #g.pr("> (%s,%s) %s" % (fg,bg,v.h))
 
         return fg,bg
     #@-node:tbrown.20060903121429.26:custom_colours
@@ -706,7 +719,7 @@ class cleoController:
         return None
     #@nonl
     #@-node:tbrown.20060903121429.37:draw
-    #@+node:tbrown.20060903121429.39:draw_box
+    #@+node:tbrown.20060903121429.39:draw_box <1 'hours', 100%>
     def draw_box (self,v,color,canvas):
 
         c = self.c
@@ -716,7 +729,7 @@ class cleoController:
                 canvas.create_rectangle(x,y,x+10,y+10,fill=color)
                 )
     #@nonl
-    #@-node:tbrown.20060903121429.39:draw_box
+    #@-node:tbrown.20060903121429.39:draw_box <1 'hours', 100%>
     #@+node:tbrown.20060903121429.40:draw_arrow
     # If too long can obscure +/- box
 
@@ -1002,6 +1015,57 @@ class cleoController:
             self.loadIcons(p)
         self.c.redraw()
 
+    def showDist(self):
+        """show distribution of priority levels in subtree"""
+        pris = {}
+        for p in self.pickleP.subtree_iter():
+            pri = int(self.getat(p.v, 'priority'))
+            if pri not in pris:
+                pris[pri] = 1
+            else:
+                pris[pri] += 1
+        pris = sorted([(k,v) for k,v in pris.iteritems()]) 
+        for pri in pris:
+            if pri[0] in self.priorities:
+                g.es('%s\t%d\t%s' % (self.priorities[pri[0]]['short'], pri[1],
+                    self.priorities[pri[0]]['long']))
+
+    def reclassify(self):
+        """change priority codes"""
+
+        g.es('\n Current distribution:')
+        self.showDist()
+        dat = {}
+        for end in 'from', 'to':
+            x0 = g.app.gui.runAskOkCancelStringDialog(
+                self.c,'Reclassify priority' ,'%s priorities (1-7,19)' % end.upper())
+            try:
+                x0 = [int(i) for i in x0.replace(',',' ').split()
+                      if int(i) in self.todo_priorities]
+            except:
+                g.es('Not understood, no action')
+                return
+            if not x0:
+                g.es('No action')
+                return
+            dat[end] = x0
+
+        if len(dat['from']) != len(dat['to']):
+            g.es('Unequal list lengths, no action')
+            return
+
+        cnt = 0
+        for p in self.pickleP.subtree_iter():
+            pri = int(self.getat(p.v, 'priority'))
+            if pri in dat['from']:
+                self.setat(p.v, 'priority', dat['to'][dat['from'].index(pri)])
+                self.loadIcons(p)
+                cnt += 1
+        g.es('\n%d priorities reclassified, new distribution:' % cnt)
+        self.showDist()
+        if cnt:
+            self.c.redraw_now()
+
     def priority_menu(self,parent,p):
 
         # done already in left_priority menu
@@ -1026,6 +1090,10 @@ class cleoController:
             command=self.priSort, underline=0)
         c.add_command(menu,label='Children -> To do',
             command=self.childrenTodo, underline=0)
+        c.add_command(menu,label='Show distribution',
+            command=self.showDist, underline=0)
+        c.add_command(menu,label='Reclassify',
+            command=self.reclassify, underline=0)
 
         menu.add_separator()
 
@@ -1119,6 +1187,7 @@ class cleoController:
         if k['c'] != self.c: return  # not our problem
 
         p = k['p']
+        self.c.selectPosition(p)
         v = k['p'].v ## EKR
 
         self.pickles = {}  # clear dict. of TkPickleVars
@@ -1207,10 +1276,10 @@ class cleoController:
 
         for nd in p.self_and_subtree_iter():
             if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
-                nd.setHeadStringOrHeadline(re.sub(' <[^>]*>$', '', nd.headString()))
+                nd.setHeadStringOrHeadline(re.sub(' <[^>]*>$', '', nd.h))
             else:
-                self.c.setHeadString(nd, re.sub(' <[^>]*>$', '', nd.headString()))
-                # nd.setHeadString(re.sub(' <[^>]*>$', '', nd.headString()))
+                self.c.setHeadString(nd, re.sub(' <[^>]*>$', '', nd.h))
+                # nd.setHeadString(re.sub(' <[^>]*>$', '', nd.h))
             if show:
                 tr = self.getat(nd.v, 'time_req')
                 pr = self.getat(nd.v, 'progress')
@@ -1228,9 +1297,9 @@ class cleoController:
                         ans += rnd(pr) + '%'  # pr may be non-integer if set by recalc_time
                     ans += '>'
                     if hasattr(nd, 'setHeadStringOrHeadline'):  # temp. cvs transition code
-                        nd.setHeadStringOrHeadline(nd.headString()+ans)
+                        nd.setHeadStringOrHeadline(nd.h+ans)
                     else:
-                        self.c.setHeadString(nd, nd.headString()+ans)
+                        self.c.setHeadString(nd, nd.h+ans)
     #@-node:tbrown.20060913204451:show_times
     #@+node:tbrown.20060913133338:recalc_time
     def recalc_time(self, p, clear=False):
@@ -1286,7 +1355,7 @@ class cleoController:
         # s0, s1 = (time_totl, time_done)
         # if not s0: s0 = 0
         # if not s1: s1 = 0
-        # sys.stderr.write('%s %g %g\n' % (p.headString(), float(s0), float(s1)))
+        # sys.stderr.write('%s %g %g\n' % (p.h, float(s0), float(s1)))
         return (time_totl, time_done)
     #@-node:tbrown.20060913133338:recalc_time
     #@+node:tbrown.20060913104504.1:clear_time_req
@@ -1306,12 +1375,12 @@ class cleoController:
         project = None
 
         for nd in p.self_and_parents_iter():
-            if nd.headString().find('@project') > -1:
+            if nd.h.find('@project') > -1:
                 project = nd.copy()
 
         if project:
             self.recalc_time(project)
-            if project.headString().find('@project time') > -1:
+            if project.h.find('@project time') > -1:
                 self.show_times(project, show=True)
     #@-node:tbrown.20060914134553.376:update_project
     #@+node:tbrown.20060919160306:find_todo
@@ -1353,3 +1422,4 @@ class cleoController:
 #@nonl
 #@-node:tbrown.20060828111141:@thin cleo.py
 #@-leo
+

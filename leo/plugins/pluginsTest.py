@@ -44,7 +44,7 @@ def cmd_fn3(event=None):
 def onSelect (tag,keywords):
 
     new_v = keywords.get("new_v")
-    h = new_v.headString()
+    h = new_v.h
     if h[:7] == "@image ":
         filename = h[7:]
         #@        << Select Image >>
@@ -87,7 +87,7 @@ def onUnselect (tag,keywords):
     old_v = keywords.get("old_v")
 
     if old_v:
-        h = old_v.headString()
+        h = old_v.h
         if h[:7] == "@image ":
             #@            << Unselect Image >>
             #@+node:EKR.20040517080555.31:<< Unselect Image >>

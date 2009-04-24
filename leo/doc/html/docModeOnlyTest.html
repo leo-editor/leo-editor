@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
 <title>htmldocModeOnlyTest.html</title>
 <style type="text/css">
 
@@ -255,7 +255,6 @@ hr { /* EKR */
 <!-- rst3: filename: html\docModeOnlyTest.html -->
 <!-- External links... -->
 <!-- Relative links... -->
-<!-- WARNING: image targets may not have upper case letters! -->
 <div class="section" id="theory-of-operation-of-find-change">
 <h1>&lt;&lt; Theory of operation of find/change &gt;&gt;</h1>
 <p>The find and change commands are tricky; there are many details that must be handled properly. This documentation describes the leo.py code. Previous versions of Leo used an inferior scheme.  The following principles govern the leoFind class:</p>
@@ -304,8 +303,6 @@ We also set wrapPosition on exit if the first search succeeds.</p>
 <h2>batchChange (sets start of change-all group)</h2>
 <p>This routine performs a single batch change operation, updating the head or body string of p and leaving the result in s_ctrl.  We update the body if we are changing the body text of c.currentVnode().</p>
 <p>s_ctrl contains the found text on entry and contains the changed text on exit.  pos and pos2 indicate the selection.  The selection will never be empty. NB: we can not assume that self.p is visible.</p>
-<hr class="docutils" />
-<p><a class="reference" href="outlines.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="commands.html"><img alt="next" src="arrow_rt.gif" /></a></p>
 </div>
 </div>
 </div>

@@ -71,17 +71,21 @@ body_ignored_newline = '\r'
 # Visible externally so plugins may add to the list of directives.
 
 globalDirectiveList = [
-    # New in Leo 4.6:
-    'nocolor-node',
-    # New in Leo 4.4.4: these used to be in leoKeywords.
-    'all','c','code','delims','doc','end_raw',
-    'first','last','others','raw','root-code','root-doc',
-    # Old.
-    "color", "comment", "encoding", "header", "ignore", "killcolor",
-    "language", "lineending", "nocolor", "noheader", "nowrap",
-    "pagewidth", "path", "quiet", "root", "silent",
-    "tabwidth", "terse", "unit", "verbose", "wrap",
+
+    # Longer prefixes must appear before shorter.
+    'all',
+    'code','color', 'comment','c',
+    'delims','doc','encoding','end_raw',
+    'first','header','ignore','killcolor',
+    'language','last','lineending',
+    'markup', # Make this an official directive,
+    'nocolor-node','nocolor','noheader','nowrap',
+    'others','pagewidth','path','quiet',
+    'raw','root-code','root-doc','root','silent',
+    'tabwidth', 'terse',
+    'unit','verbose', 'wrap',
 ]
+#@nonl
 #@-node:EKR.20040610094819:<< define global data structures >>
 #@nl
 
@@ -145,7 +149,7 @@ def computeGlobalConfigDir():
 
     encoding = g.startupEncoding()
 
-    # To avoid pychecker/pylint complaints that sys.leo_config_directory does not exist.
+    # To avoid pylint complaints that sys.leo_config_directory does not exist.
     leo_config_dir = (
         hasattr(sys,'leo_config_directory') and
         getattr(sys,'leo_config_directory'))
@@ -180,8 +184,8 @@ def computeHomeDir():
     home = os.path.expanduser("~")
         # Windows searches the HOME, HOMEPATH and HOMEDRIVE environment vars, then gives up.
 
-    # print('computeHomeDir: %s' % repr(home))
-    # print("computeHomeDir: os.path.expanduser('~'): %s" % os.path.expanduser('~'))
+    # g.pr('computeHomeDir: %s' % repr(home))
+    # g.pr("computeHomeDir: os.path.expanduser('~'): %s" % os.path.expanduser('~'))
 
     if home and len(home) > 1 and home[0]=='%' and home[-1]=='%':
         # Get the indirect reference to the true home.
@@ -323,6 +327,10 @@ def startupEncoding ():
 #@-node:ekr.20041117151301.1:startupEncoding
 #@-node:ekr.20050304072744:Compute directories... (leoGlobals)
 #@+node:ekr.20031218072017.1380:g.Directive utils...
+# New in Leo 4.6:
+# g.findAtTabWidthDirectives, g.findLanguageDirectives and
+# g.get_directives_dict use re module for faster searching.
+#@nonl
 #@+node:EKR.20040504150046.4:g.comment_delims_from_extension
 def comment_delims_from_extension(filename):
 
@@ -341,7 +349,11 @@ def comment_delims_from_extension(filename):
 
     """
 
-    root, ext = os.path.splitext(filename)
+    if filename.startswith('.'):
+        # Python 2.6 changes how splitext works.
+        root,ext = None,filename
+    else:
+        root, ext = os.path.splitext(filename)
     if ext == '.tmp':
         root, ext = os.path.splitext(root)
 
@@ -349,7 +361,8 @@ def comment_delims_from_extension(filename):
     if ext:
         return g.set_delims_from_language(language)
     else:
-        g.trace("unknown extension %s" % ext)
+        g.trace("unknown extension: %s, filename: %s, root: %s" % (
+            repr(ext),repr(filename),repr(root)))
         return None,None,None
 #@-node:EKR.20040504150046.4:g.comment_delims_from_extension
 #@+node:ekr.20071109165315:g.computeRelativePath
@@ -365,6 +378,62 @@ def computeRelativePath (path):
     # We want a *relative* path, not an absolute path.
     return path
 #@-node:ekr.20071109165315:g.computeRelativePath
+#@+node:ekr.20090214075058.8:g.findAtTabWidthDirectives (must be fast)
+g_tabwidth_pat = re.compile(r'(^@tabwidth)',re.MULTILINE)
+
+def findTabWidthDirectives(c,p):
+
+    '''Return the language in effect at position p.'''
+
+    if c is None:
+        return # c may be None for testing.
+
+    w = None
+    for p in p.self_and_parents_iter(copy=True):
+        if w: break
+        for s in p.h,p.b:
+            if w: break
+            anIter = g_tabwidth_pat.finditer(s)
+            for m in anIter:
+                word = m.group(0)
+                i = m.start(0)
+                j = g.skip_ws(s,i + len(word))
+                junk,w = g.skip_long(s,j)
+                if w == 0: w = None
+    return w
+#@-node:ekr.20090214075058.8:g.findAtTabWidthDirectives (must be fast)
+#@+node:ekr.20090214075058.6:g.findLanguageDirectives (must be fast)
+g_language_pat = re.compile(r'(^@language)',re.MULTILINE)
+
+def findLanguageDirectives(c,p):
+
+    '''Return the language in effect at position p.'''
+
+    trace = False and not g.unitTesting
+
+    if c is None:
+        return # c may be None for testing. 
+    if c.target_language:
+        language = c.target_language.lower()
+    else:
+        language = 'python'
+    found = False
+    for p in p.self_and_parents_iter(copy=True):
+        if found: break
+        for s in p.h,p.b:
+            if found: break
+            anIter = g_language_pat.finditer(s)
+            for m in anIter:
+                word = m.group(0)
+                i = m.start(0)
+                j = i + len(word)
+                k = g.skip_line(s,j)
+                language = s[j:k].strip()
+                found = True
+
+    if trace: g.trace(language)
+    return language
+#@-node:ekr.20090214075058.6:g.findLanguageDirectives (must be fast)
 #@+node:ekr.20031218072017.1385:g.findReference
 #@+at 
 #@nonl
@@ -385,79 +454,79 @@ def findReference(c,name,root):
     # g.trace("not found:",name,root)
     return c.nullPosition()
 #@-node:ekr.20031218072017.1385:g.findReference
-#@+node:ekr.20031218072017.1260:g.get_directives_dict
-# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
+#@+node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+# The caller passes [root_node] or None as the second arg.
+# This allows us to distinguish between None and [None].
+
+g_noweb_root = re.compile('<'+'<'+'*'+'>'+'>'+'=',re.MULTILINE)
 
 def get_directives_dict(p,root=None):
 
-    """Scans root for @directives found in globalDirectiveList.
+    """Scan p for @directives found in globalDirectiveList.
 
     Returns a dict containing pointers to the start of each directive"""
 
-    global globalDirectiveList
+    trace = False and not g.unitTesting
 
     if root: root_node = root[0]
-    d = {'_p':p.copy()}
+    d = {}
+
+    # Do this every time so plugins can add directives.
+    pat = g.compute_directives_re()
+    directives_pat = re.compile(pat,re.MULTILINE)
 
     # The headline has higher precedence because it is more visible.
-    for kind,s in (
-        ('body',p.v.t._headString),
-        ('head',p.v.t._bodyString),
-    ):
-        i = 0 ; n = len(s)
-        while i < n:
-            if s[i] == '@' and i+1 < n:
-                #@                << set d for @ directives >>
-                #@+node:ekr.20031218072017.1261:<< set d for @ directives >>
-                j = g.skip_id(s,i+1,chars='-')
-                word = s[i+1:j]
+    for kind,s in (('body',p.h),('head',p.b)):
+        anIter = directives_pat.finditer(s)
+        for m in anIter:
+            word = m.group(0)[1:] # Omit the @
+            i = m.start(0)
+            if word.strip() not in d:
+                j = i + 1 + len(word)
+                k = g.skip_line(s,j)
+                val = s[j:k].strip()
+                if trace: g.trace(word,repr(val))
+                d[word.strip()] = val
 
-                if word in globalDirectiveList:
-                    if d.get(word):
-                        # Ignore second value.
-                        pass
-                        # g.es("warning: conflicting values for",word,color="blue")
-                    else:
-                        k = g.skip_line(s,j)
-                        d[word] = s[j:k].strip()
-                #@nonl
-                #@-node:ekr.20031218072017.1261:<< set d for @ directives >>
-                #@nl
-            elif kind == 'body' and root and g.match(s,i,"<<"):
-                #@                << set d["root"] for noweb * chunks >>
-                #@+node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
-                #@+at 
-                #@nonl
-                # The following looks for chunk definitions of the form < < * 
-                # > > =. If found, we take this to be equivalent to @root 
-                # filename if the headline has the form @root filename.
-                #@-at
-                #@@c
+    if root:
+        anIter = g_noweb_root.finditer(p.b)
+        for m in anIter:
+            if root_node:
+                d["root"]=0 # value not immportant
+            else:
+                g.es('%s= requires @root in the headline' % (
+                    g.angleBrackets('*')))
+            break
 
-                i = g.skip_ws(s,i+2)
-
-                if i < n and s[i] == '*' :
-                    i = g.skip_ws(s,i+1) # Skip the '*'
-                    if g.match(s,i,">>="):
-                        # < < * > > = implies that @root should appear in the headline.
-                        i += 3
-                        if root_node:
-                            d["root"]=0 # value not immportant
-                        else:
-                            g.es('',g.angleBrackets("*") + "= requires @root in the headline")
-                #@-node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
-                #@nl
-            i = g.skip_line(s,i)
+    if trace: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers(5))
     return d
-#@-node:ekr.20031218072017.1260:g.get_directives_dict
-#@+node:ekr.20080827175609.1:g.get_directives_dict_list
-# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
+#@+node:ekr.20090214075058.10:compute_directives_re
+def compute_directives_re ():
 
+    '''Return an re pattern which will match all Leo directives.'''
+
+    global globalDirectiveList
+
+    aList = ['^@%s' % z for z in globalDirectiveList
+                if z != 'others']
+
+    # @others can have leading whitespace.
+    aList.append(r'^\s@others')
+
+    return '|'.join(aList)
+#@-node:ekr.20090214075058.10:compute_directives_re
+#@-node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+#@+node:ekr.20080827175609.1:g.get_directives_dict_list (must be fast)
 def get_directives_dict_list(p1):
 
     """Scans p and all its ancestors for directives.
 
-    Returns a list of dicts containing pointers to the start of each directive"""
+    Returns a list of dicts containing pointers to
+    the start of each directive"""
+
+    trace = False and not g.unitTesting
+
+    if trace: time1 = g.getTime()
 
     result = [] ; p1 = p1.copy()
 
@@ -466,8 +535,12 @@ def get_directives_dict_list(p1):
         else:             root = [p.copy()]
         result.append(g.get_directives_dict(p,root=root))
 
+    if trace:
+        n = len(p1.h) + len(p1.b)
+        g.trace('%4d %s' % (n,g.timeSince(time1)))
+
     return result
-#@-node:ekr.20080827175609.1:g.get_directives_dict_list
+#@-node:ekr.20080827175609.1:g.get_directives_dict_list (must be fast)
 #@+node:ekr.20031218072017.1386:g.getOutputNewline
 def getOutputNewline (c=None,name=None):
 
@@ -653,25 +726,6 @@ def scanAtWrapDirectives(aList,issue_error_flag=False):
     return None
 #@nonl
 #@-node:ekr.20080831084419.4:g.scanAtWrapDirectives
-#@+node:ekr.20070302160802:g.scanColorDirectives
-def scanColorDirectives(c,p):
-
-    '''Return the language in effect at position p.'''
-
-    if c is None: return # c may be None for testing.
-
-    language = c.target_language and c.target_language.lower() or 'python'
-
-    p = p.copy()
-    for p in p.self_and_parents_iter():
-        d = g.get_directives_dict(p)
-        z = d.get('language')
-        if z is not None:
-            language,junk,junk,junk = g.set_language(z,0)
-            return language
-
-    return language
-#@-node:ekr.20070302160802:g.scanColorDirectives
 #@+node:ekr.20080901195858.4:g.scanDirectives  (for compatibility only)
 def scanDirectives(c,p=None):
 
@@ -718,97 +772,13 @@ def scanForAtSettings(p):
     """Scan position p and its ancestors looking for @settings nodes."""
 
     for p in p.self_and_parents_iter():
-        h = p.headString()
+        h = p.h
         h = g.app.config.canonicalizeSettingName(h)
         if h.startswith("@settings"):
             return True
 
     return False
 #@-node:ekr.20041123094807:g.scanForAtSettings
-#@+node:ekr.20081001062423.9:g.setDefaultDirectory
-# This is a refactoring, used by leoImport.scanDefaultDirectory and
-# atFile.scanDefault directory
-
-def setDefaultDirectory(c,p,importing=False):
-
-    '''Set default_directory by scanning @path directives.
-    Return (default_directory,error_message).'''
-
-    default_directory = '' ; error = ''
-    if not p: return default_directory,error
-
-    #@    << Set path from @file node >>
-    #@+node:ekr.20081001062423.10:<< Set path from @file node >>
-    # An absolute path in an @file node over-rides everything else.
-    # A relative path gets appended to the relative path by the open logic.
-
-    name = p.anyAtFileNodeName()
-    theDir = g.choose(name,g.os_path_dirname(name),None)
-
-    if theDir and g.os_path_isabs(theDir):
-        if g.os_path_exists(theDir):
-            default_directory = theDir
-        else:
-            default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-            if not default_directory:
-                error = "Directory \"%s\" does not exist" % theDir
-    #@-node:ekr.20081001062423.10:<< Set path from @file node >>
-    #@nl
-
-    if not default_directory:
-        # Scan for @path directives.
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        if path:
-            #@            << handle @path >>
-            #@+node:ekr.20081001062423.11:<< handle @path >>
-            path = g.computeRelativePath (path)
-
-            if path:
-                base = g.getBaseDirectory(c) # returns "" on error.
-                path = c.os_path_finalize_join(base,path)
-
-                if g.os_path_isabs(path):
-                    if g.os_path_exists(path):
-                        default_directory = path
-                    else:
-                        default_directory = g.makeAllNonExistentDirectories(path,c=c)
-                        if not default_directory:
-                            error = "invalid @path: %s" % path
-                        else:
-                            error = "ignoring bad @path: %s" % path
-            else:
-                error = "ignoring empty @path"
-            #@-node:ekr.20081001062423.11:<< handle @path >>
-            #@nl
-
-    if not default_directory:
-        #@        << Set current directory >>
-        #@+node:ekr.20081001062423.12:<< Set current directory >>
-        # This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
-
-        assert(not default_directory)
-
-        if c.frame:
-            base = g.getBaseDirectory(c) # returns "" on error.
-            for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
-                if theDir and len(theDir) > 0:
-                    theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
-                    if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-                        if g.os_path_exists(theDir):
-                            default_directory = theDir ; break
-                        else:
-                            default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-        #@-node:ekr.20081001062423.12:<< Set current directory >>
-        #@nl
-
-    if not default_directory and not importing:
-        # This should never happen: c.openDirectory should be a good last resort.
-        error = "No absolute directory specified anywhere."
-
-    # g.trace('returns',default_directory)
-    return default_directory, error
-#@-node:ekr.20081001062423.9:g.setDefaultDirectory
 #@+node:ekr.20031218072017.1382:g.set_delims_from_language
 # Returns a tuple (single,start,end) of comment delims
 
@@ -895,6 +865,90 @@ def set_language(s,i,issue_errors_flag=False):
 
     return None, None, None, None,
 #@-node:ekr.20031218072017.1384:g.set_language
+#@+node:ekr.20081001062423.9:g.setDefaultDirectory
+# This is a refactoring, used by leoImport.scanDefaultDirectory and
+# atFile.scanDefault directory
+
+def setDefaultDirectory(c,p,importing=False):
+
+    '''Set default_directory by scanning @path directives.
+    Return (default_directory,error_message).'''
+
+    default_directory = '' ; error = ''
+    if not p: return default_directory,error
+
+    #@    << Set path from @file node >>
+    #@+node:ekr.20081001062423.10:<< Set path from @file node >>
+    # An absolute path in an @file node over-rides everything else.
+    # A relative path gets appended to the relative path by the open logic.
+
+    name = p.anyAtFileNodeName()
+    theDir = g.choose(name,g.os_path_dirname(name),None)
+
+    if theDir and g.os_path_isabs(theDir):
+        if g.os_path_exists(theDir):
+            default_directory = theDir
+        else:
+            default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+            if not default_directory:
+                error = "Directory \"%s\" does not exist" % theDir
+    #@-node:ekr.20081001062423.10:<< Set path from @file node >>
+    #@nl
+
+    if not default_directory:
+        # Scan for @path directives.
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        if path:
+            #@            << handle @path >>
+            #@+node:ekr.20081001062423.11:<< handle @path >>
+            path = g.computeRelativePath (path)
+
+            if path:
+                base = g.getBaseDirectory(c) # returns "" on error.
+                path = c.os_path_finalize_join(base,path)
+
+                if g.os_path_isabs(path):
+                    if g.os_path_exists(path):
+                        default_directory = path
+                    else:
+                        default_directory = g.makeAllNonExistentDirectories(path,c=c)
+                        if not default_directory:
+                            error = "invalid @path: %s" % path
+                        else:
+                            error = "ignoring bad @path: %s" % path
+            else:
+                error = "ignoring empty @path"
+            #@-node:ekr.20081001062423.11:<< handle @path >>
+            #@nl
+
+    if not default_directory:
+        #@        << Set current directory >>
+        #@+node:ekr.20081001062423.12:<< Set current directory >>
+        # This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
+
+        assert(not default_directory)
+
+        if c.frame:
+            base = g.getBaseDirectory(c) # returns "" on error.
+            for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
+                if theDir and len(theDir) > 0:
+                    theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
+                    if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                        if g.os_path_exists(theDir):
+                            default_directory = theDir ; break
+                        else:
+                            default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+        #@-node:ekr.20081001062423.12:<< Set current directory >>
+        #@nl
+
+    if not default_directory and not importing:
+        # This should never happen: c.openDirectory should be a good last resort.
+        error = "No absolute directory specified anywhere."
+
+    # g.trace('returns',default_directory)
+    return default_directory, error
+#@-node:ekr.20081001062423.9:g.setDefaultDirectory
 #@-node:ekr.20031218072017.1380:g.Directive utils...
 #@+node:ekr.20031218072017.3100:wrap_lines
 #@+at 
@@ -978,10 +1032,8 @@ def wrap_lines (lines,pageWidth,firstLineWidth=None):
 #@+node:ekr.20031218072017.3105:alert
 def alert(message):
 
-    g.es('',message)
-
-    import tkMessageBox
-    tkMessageBox.showwarning("Alert", message)
+    g.es(message)
+    g.app.gui.alert(message)
 #@-node:ekr.20031218072017.3105:alert
 #@+node:ekr.20051023083258:callers & _callerName
 def callers (n=8,excludeCaller=True,files=False):
@@ -1026,12 +1078,14 @@ def _callerName (n=1,files=False):
 #@-node:ekr.20031218072017.3107:_callerName
 #@-node:ekr.20051023083258:callers & _callerName
 #@+node:ekr.20041105091148:g.pdb
-def pdb ():
+def pdb (message=''):
 
     """Fall into pdb."""
 
     import pdb # Required: we have just defined pdb as a function!
 
+    if message:
+        print message
     pdb.set_trace()
 #@-node:ekr.20041105091148:g.pdb
 #@+node:ekr.20031218072017.3108:Dumps
@@ -1805,20 +1859,21 @@ def stat (name=None):
 #@-node:ekr.20031218072017.3136:stat
 #@-node:ekr.20031218072017.3133:Statistics
 #@+node:ekr.20031218072017.3137:Timing
-# pychecker bug: pychecker complains that there is no attribute time.clock
-
 def getTime():
     return time.clock()
 
 def esDiffTime(message, start):
     delta = time.clock()-start
-    g.es('',"%s %6.3f" % (message,delta))
+    g.es('',"%s %6.3f sec." % (message,delta))
     return time.clock()
 
 def printDiffTime(message, start):
     delta = time.clock()-start
-    g.pr("%s %6.3f" % (message,delta))
+    g.pr("%s %6.3f sec." % (message,delta))
     return time.clock()
+
+def timeSince(start):
+    return "%6.3f sec." % (time.clock()-start)
 #@-node:ekr.20031218072017.3137:Timing
 #@+node:ekr.20080531075119.1:class Tracer & g.startTracer
 class Tracer:
@@ -2088,8 +2143,7 @@ def is_sentinel (line,delims):
         j = line.find(delim3)
         return 0 == i < j
     else:
-        g.pr(repr(delims))
-        g.es("can't happen: is_sentinel",color="red")
+        g.trace("can't happen. delims: %s" % repr(delims),color="red")
         return False
 #@-node:EKR.20040504154039:g.is_sentinel
 #@+node:ekr.20071114113736:g.makePathRelativeTo
@@ -2219,7 +2273,7 @@ def openWithFileName(fileName,old_c,
     # Bug fix in 4.4.
     frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-    p = c.currentPosition()
+    p = c.p
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
     if not g.doHook("menu1",c=c,p=p,v=p):
         frame.menu.createMenuBar(frame)
@@ -2233,6 +2287,7 @@ def openWithFileName(fileName,old_c,
     assert frame.c == c and c.frame == frame
     # chapterController.finishCreate must be called after the first real redraw
     # because it requires a valid value for c.rootPosition().
+    # g.trace('c.chapterController',c.chapterController)
     if c.chapterController:
         c.chapterController.finishCreate()
     k = c.k
@@ -2244,6 +2299,8 @@ def openWithFileName(fileName,old_c,
         c.bodyWantsFocusNow()
     if k:
         k.showStateAndMode()
+
+    c.frame.initCompleteHint()
 
     return True, frame
 #@-node:ekr.20031218072017.2052:g.openWithFileName
@@ -2301,19 +2358,20 @@ def openWrapperLeoFile (old_c,fileName,gui):
         except IOError:
             g.es_print("can not open: ",fileName,color='red')
             return None,None
-        p = c.currentPosition()
-        p.setHeadString(fileName)
-        p.setBodyString(s)
+        p = c.p
+        if p:
+            p.setHeadString(fileName)
+            p.setBodyString(s)
     else:  # Import the file into the new outline.
         junk,ext = g.os_path_splitext(fileName)
-        p = c.currentPosition()
+        p = c.p
         p = c.importCommands.createOutline(fileName,parent=p,atAuto=False,ext=ext)
         c.setCurrentPosition(p)
         c.moveOutlineLeft()
-        p = c.currentPosition()
+        p = c.p
         c.setCurrentPosition(p.back())
         c.deleteOutline(op_name=None)
-        p = c.currentPosition()
+        p = c.p
         p.expand()
 
     # chapterController.finishCreate must be called after the first real redraw
@@ -2328,7 +2386,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
     else:
         c.bodyWantsFocusNow()
 
-    # c.redraw_now() # Only needed by menu commands.
+    # c.redraw() # Only needed by menu commands.
     return c,frame
 #@-node:ekr.20080921154026.1:g.openWrapperLeoFile
 #@+node:ekr.20031218072017.3120:g.readlineForceUnixNewline (Steven P. Schaefer)
@@ -2389,6 +2447,70 @@ def shortFileName (fileName):
 
 shortFilename = shortFileName
 #@-node:ekr.20031218072017.3125:g.shortFileName & shortFilename
+#@+node:tbrown.20090219095555.61:g.handleUrlInUrlNode
+def handleUrlInUrlNode(url):
+
+    # Note: the UNL plugin has its own notion of what a good url is.
+
+    # c = self.c
+    # g.trace(url)
+    #@    << check the url; return if bad >>
+    #@+node:tbrown.20090219095555.62:<< check the url; return if bad >>
+    #@+at 
+    #@nonl
+    # A valid url is (according to D.T.Hein):
+    # 
+    # 3 or more lowercase alphas, followed by,
+    # one ':', followed by,
+    # one or more of: (excludes !"#;<>[\]^`|)
+    #   $%&'()*+,-./0-9:=?@A-Z_a-z{}~
+    # followed by one of: (same as above, except no minus sign or comma).
+    #   $%&'()*+/0-9:=?@A-Z_a-z}~
+    #@-at
+    #@@c
+
+    urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+
+    if not url or len(url) == 0:
+        g.es("no url following @url")
+        return
+
+    # Add http:// if required.
+    if not re.match('^([a-z]{3,}:)',url):
+        url = 'http://' + url
+    if not re.match(urlPattern,url):
+        g.es("invalid url:",url)
+        return
+    #@nonl
+    #@-node:tbrown.20090219095555.62:<< check the url; return if bad >>
+    #@nl
+    #@    << pass the url to the web browser >>
+    #@+node:tbrown.20090219095555.63:<< pass the url to the web browser >>
+    #@+at 
+    #@nonl
+    # Most browsers should handle the following urls:
+    #   ftp://ftp.uu.net/public/whatever.
+    #   http://localhost/MySiteUnderDevelopment/index.html
+    #   file://home/me/todolist.html
+    #@-at
+    #@@c
+
+    try:
+        import os
+        os.chdir(g.app.loadDir)
+        if g.match(url,0,"file:") and url[-4:]==".leo":
+            ok,frame = g.openWithFileName(url[5:],None)
+        else:
+            import webbrowser
+            # Mozilla throws a weird exception, then opens the file!
+            try: webbrowser.open(url)
+            except: pass
+    except:
+        g.es("exception opening",url)
+        g.es_exception()
+    #@-node:tbrown.20090219095555.63:<< pass the url to the web browser >>
+    #@nl
+#@-node:tbrown.20090219095555.61:g.handleUrlInUrlNode
 #@+node:ekr.20050104135720:Used by tangle code & leoFileCommands
 #@+node:ekr.20031218072017.1241:g.update_file_if_changed
 # This is part of the tangle code.
@@ -2925,13 +3047,36 @@ def plugin_signon(module_name,verbose=False):
 #@-node:ekr.20031218072017.3139:Hooks & plugins (leoGlobals)
 #@+node:ekr.20031218072017.3145:Most common functions...
 # These are guaranteed always to exist for scripts.
-#@+node:ekr.20031218072017.3147:choose
+#@+node:ekr.20031218072017.3147:g.choose
 def choose(cond, a, b): # warning: evaluates all arguments
 
     if cond: return a
     else: return b
-#@-node:ekr.20031218072017.3147:choose
-#@+node:ekr.20031218072017.1474:enl, ecnl & ecnls
+#@-node:ekr.20031218072017.3147:g.choose
+#@+node:ekr.20080821073134.2:g.doKeywordArgs
+def doKeywordArgs (keys,d=None):
+
+    '''Return a result dict that is a copy of the keys dict
+    with missing items replaced by defaults in d dict.'''
+
+    if d is None: d = {}
+
+    result = {}
+    for key,default_val in d.items():
+        isBool = default_val in (True,False)
+        val = keys.get(key)
+        if isBool and val in (True,'True','true'):
+            result[key] = True
+        elif isBool and val in (False,'False','false'):
+            result[key] = False
+        elif val is None:
+            result[key] = default_val
+        else:
+            result[key] = val
+
+    return result 
+#@-node:ekr.20080821073134.2:g.doKeywordArgs
+#@+node:ekr.20031218072017.1474:g.enl, ecnl & ecnls
 def ecnl(tabName='Log'):
     g.ecnls(1,tabName)
 
@@ -2946,8 +3091,8 @@ def enl(tabName='Log'):
     if log and not log.isNull:
         log.newlines += 1
         log.putnl(tabName)
-#@-node:ekr.20031218072017.1474:enl, ecnl & ecnls
-#@+node:ekr.20070626132332:es & minitest
+#@-node:ekr.20031218072017.1474:g.enl, ecnl & ecnls
+#@+node:ekr.20070626132332:g.es & minitest
 def es(*args,**keys):
 
     '''Put all non-keyword args to the log pane.
@@ -3007,8 +3152,8 @@ def es(*args,**keys):
 #     g.es_print(s)
 #@-at
 #@-node:ekr.20071024101611:mini test of es
-#@-node:ekr.20070626132332:es & minitest
-#@+node:ekr.20050707064040:es_print
+#@-node:ekr.20070626132332:g.es & minitest
+#@+node:ekr.20050707064040:g.es_print
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
 def es_print(*args,**keys):
@@ -3022,30 +3167,82 @@ def es_print(*args,**keys):
 
     if not g.app.unitTesting:
         g.es(*args,**keys)
-#@-node:ekr.20050707064040:es_print
-#@+node:ekr.20080821073134.2:doKeywordArgs
-def doKeywordArgs (keys,d=None):
+#@-node:ekr.20050707064040:g.es_print
+#@+node:ekr.20050707065530:g.es_trace
+def es_trace(*args,**keys):
 
-    '''Return a result dict that is a copy of the keys dict
-    with missing items replaced by defaults in d dict.'''
+    if args:
+        try:
+            s = args[0]
+            g.trace(g.toEncodedString(s,'ascii'))
+        except Exception:
+            pass
 
-    if d is None: d = {}
+    g.es(*args,**keys)
+#@-node:ekr.20050707065530:g.es_trace
+#@+node:ekr.20090128083459.82:g.posList
+class posList(list):
+    #@    << docstring for posList >>
+    #@+node:ekr.20090130114732.2:<< docstring for posList >>
+    '''A subclass of list for creating and selecting lists of positions.
 
-    result = {}
-    for key,default_val in d.items():
-        isBool = default_val in (True,False)
-        val = keys.get(key)
-        if isBool and val in (True,'True','true'):
-            result[key] = True
-        elif isBool and val in (False,'False','false'):
-            result[key] = False
-        elif val is None:
-            result[key] = default_val
+        aList = g.posList(c)
+            # Creates a posList containing all positions in c.
+
+        aList = g.posList(c,aList2)
+            # Creates a posList from aList2.
+
+        aList2 = aList.select(pattern,regex=False,removeClones=True)
+            # Creates a posList containing all positions p in aList
+            # such that p.h matches the pattern.
+            # The pattern is a regular expression if regex is True.
+            # if removeClones is True, all positions p2 are removed
+            # if a position p is already in the list and p2.v.t == p.v.t.
+
+        aList.dump(sort=False,verbose=False)
+            # Prints all positions in aList, sorted if sort is True.
+            # Prints p.h, or repr(p) if verbose is True.
+    '''
+    #@-node:ekr.20090130114732.2:<< docstring for posList >>
+    #@nl
+    def __init__ (self,c,aList=None):
+        self.c = c
+        list.__init__(self) # Init the base class
+        if aList is None:
+            for p in c.allNodes_iter():
+                self.append(p.copy())
         else:
-            result[key] = val
+            for p in aList:
+                self.append(p.copy())
 
-    return result 
-#@-node:ekr.20080821073134.2:doKeywordArgs
+    def dump (self,sort=False,verbose=False):
+        if verbose: return g.listToString(self,sort=sort)
+        else: return g.listToString([p.h for p in self],sort=sort)
+
+    def select(self,pat,regex=False,removeClones=True):
+        '''Return a new posList containing all positions
+        in self that match the given pattern.'''
+        c = self.c ; aList = []
+        if regex:
+            for p in self:
+                if re.match(pat,p.h):
+                    aList.append(p.copy())
+        else:
+            for p in self:
+                if p.h.find(pat) != -1:
+                    aList.append(p.copy())
+        if removeClones:
+            aList = self.removeClones(aList)
+        return posList(c,aList)
+
+    def removeClones(self,aList):
+        seen = {} ; aList2 = []
+        for p in aList:
+            if p.v.t not in seen:
+                seen[p.v.t] = p.v.t
+                aList2.append(p)
+        return aList2
+#@-node:ekr.20090128083459.82:g.posList
 #@+node:ekr.20080710101653.1:g.pr
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
@@ -3076,19 +3273,7 @@ def pr(*args,**keys):
         g.es_exception()
         g.trace(g.callers())
 #@-node:ekr.20080710101653.1:g.pr
-#@+node:ekr.20050707065530:es_trace
-def es_trace(*args,**keys):
-
-    if args:
-        try:
-            s = args[0]
-            g.trace(g.toEncodedString(s,'ascii'))
-        except Exception:
-            pass
-
-    g.es(*args,**keys)
-#@-node:ekr.20050707065530:es_trace
-#@+node:ekr.20080220111323:translateArgs
+#@+node:ekr.20080220111323:g.translateArgs
 def translateArgs(args,d):
 
     '''Return the concatenation of s and all args,
@@ -3122,8 +3307,8 @@ def translateArgs(args,d):
             result.append(arg)
 
     return ''.join(result)
-#@-node:ekr.20080220111323:translateArgs
-#@+node:ekr.20060810095921:translateString & tr
+#@-node:ekr.20080220111323:g.translateArgs
+#@+node:ekr.20060810095921:g.translateString & tr
 def translateString (s):
 
     '''Return the translated text of s.'''
@@ -3143,26 +3328,11 @@ def translateString (s):
             return gettext.gettext(s)
 
 tr = translateString
-#@-node:ekr.20060810095921:translateString & tr
-#@+node:ekr.20031218072017.3148:top
-if 0: # An extremely dangerous function.
-
-    def top():
-
-        """Return the commander of the topmost window"""
-
-        # Warning: may be called during startup or shutdown when nothing exists.
-        try:
-            return app.log.c
-        except Exception:
-            return None
-#@-node:ekr.20031218072017.3148:top
-#@+node:ekr.20031218072017.3149:trace is defined below
-#@-node:ekr.20031218072017.3149:trace is defined below
-#@+node:ekr.20031218072017.3150:windows
+#@-node:ekr.20060810095921:g.translateString & tr
+#@+node:ekr.20031218072017.3150:g.windows
 def windows():
     return app.windowList
-#@-node:ekr.20031218072017.3150:windows
+#@-node:ekr.20031218072017.3150:g.windows
 #@-node:ekr.20031218072017.3145:Most common functions...
 #@+node:ekr.20031218072017.2145:os.path wrappers (leoGlobals.py)
 #@+at 
@@ -3236,7 +3406,7 @@ def os_path_expandExpression (s,**keys):
             try:
                 import os
                 import sys
-                p = c.currentPosition()
+                p = c.p
                 d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
                 val = eval(exp,d)
                 s = s[:i] + str(val) + s[j+2:]
@@ -3259,7 +3429,7 @@ def os_path_expanduser(path,encoding=None):
 
     return result
 #@-node:ekr.20080921060401.13:os_path_expanduser
-#@+node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@+node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 def os_path_finalize (path,**keys):
 
     '''
@@ -3285,7 +3455,7 @@ def os_path_finalize_join (*args,**keys):
 
     return os.path.normpath(os.path.abspath(
         g.os_path_join(*args,**keys))) # Handles expanduser
-#@-node:ekr.20080921060401.14:os_path_finalize & os_path_finalize_join
+#@-node:ekr.20080921060401.14:g.os_path_finalize & os_path_finalize_join
 #@+node:ekr.20031218072017.2150:os_path_getmtime
 def os_path_getmtime(path,encoding=None):
 
@@ -4199,11 +4369,11 @@ def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
     import leo.core.leoGlobals as g
 
     # Find the scripts.
-    p = c.currentPosition()
+    p = c.p
     u = leoTest.testUtils(c)
     find_p = u.findNodeInTree(p,findHeadline)
     if find_p:
-        find_text = find_p.bodyString()
+        find_text = find_p.b
     else:
         g.es("no Find script node",color="red")
         return
@@ -4212,7 +4382,7 @@ def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
     else:
         change_p = None
     if change_p:
-        change_text = change_p.bodyString()
+        change_text = change_p.b
     else:
         change_text = ""
     # g.pr(find_p,change_p)
@@ -4237,7 +4407,7 @@ def findNodeInChildren(c,p,headline):
     """Search for a node in v's tree matching the given headline."""
 
     for p in p.children_iter():
-        if p.headString().strip() == headline.strip():
+        if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
 
@@ -4246,21 +4416,21 @@ def findNodeInTree(c,p,headline):
     """Search for a node in v's tree matching the given headline."""
 
     for p in p.subtree_iter():
-        if p.headString().strip() == headline.strip():
+        if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
 
 def findNodeAnywhere(c,headline):
 
     for p in c.all_positions_with_unique_tnodes_iter():
-        if p.headString().strip() == headline.strip():
+        if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
 
 def findTopLevelNode(c,headline):
 
     for p in c.rootPosition().self_and_siblings_iter():
-        if p.headString().strip() == headline.strip():
+        if p.h.strip() == headline.strip():
             return p.copy()
     return c.nullPosition()
 #@-node:ekr.20040321065415:g.findNode... &,findTopLevelNode
@@ -4338,32 +4508,48 @@ def executeFile(filename, options= ''):
 #@-node:ekr.20050503112513.7:g.executeFile
 #@-node:ekr.20040327103735.2:Script Tools (leoGlobals.py)
 #@+node:ekr.20031218072017.1498:Unicode utils...
-#@+node:ekr.20080816125725.2:g.isBytes & g.isString
-def isBytes (s):
+#@+node:ekr.20081204091750.2:g.emptyString
+def emptyString():
 
-    '''Return True if s is Python3k bytes type.
+    '''Return an empty unicode string.'''
 
-    Python 3.x: s must be a unicode string, not bytes.
-    Python 2.x: always returns False.'''
+    if isPython3:
+        return ''
+    else:
+        return unicode('')
+#@-node:ekr.20081204091750.2:g.emptyString
+#@+node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
+# The syntax of these functions must be valid on Python2K and Python3K.
 
+def isBytes(s):
+    '''Return True if s is Python3k bytes type.'''
     if g.isPython3:
         # Generates a pylint warning, but that can't be helped.
         return type(s) == type(bytes('a','utf-8'))
     else:
         return False
 
-def isString (s):
+def isChar(s):
+    '''Return True if s is a Python2K character type.'''
+    if g.isPython3:
+        return False
+    else:
+        return type(s) == types.StringType
 
-    '''Return True if s is a string.
-
-    Python 3.x: s must be a unicode string, not bytes.
-    Python 2.x: s may be either a unicode string or a regular string.'''
-
+def isString(s):
+    '''Return True if s is any string, but not bytes.'''
     if g.isPython3:
         return type(s) == type('a')
     else:
         return type(s) in types.StringTypes
-#@-node:ekr.20080816125725.2:g.isBytes & g.isString
+
+def isUnicode(s):
+    '''Return True if s is a unicode string.'''
+    if g.isPython3:
+        return type(s) == type('a')
+    else:
+        return type(s) == types.UnicodeType
+#@-node:ekr.20080816125725.2:g.isBytes, isChar, isString & isUnicode
 #@+node:ekr.20061006152327:g.isWordChar & g.isWordChar1
 def isWordChar (ch):
 
@@ -4403,7 +4589,7 @@ except Exception:
     else:
         #@        << define getpreferredencoding for *nix >>
         #@+node:ekr.20031218072017.1505:<< define getpreferredencoding for *nix >>
-        # Avoid pychecker & pylint complaints about CODESET, LC_CTYPE and nl_langinfo.
+        # Avoid pylint complaints about CODESET, LC_CTYPE and nl_langinfo.
         if (
             hasattr(locale,'CODESET') and
             hasattr(locale,'LC_CTYPE') and
@@ -4440,14 +4626,6 @@ except Exception:
         #@-node:ekr.20031218072017.1505:<< define getpreferredencoding for *nix >>
         #@nl
 #@-node:ekr.20031218072017.1503:getpreferredencoding from 2.3a2
-#@+node:ekr.20031218072017.1499:isUnicode
-def isUnicode(s):
-
-    if g.isPython3:
-        return type(s) == type('a')
-    else:
-        return type(s) in types.StringTypes
-#@-node:ekr.20031218072017.1499:isUnicode
 #@+node:ekr.20031218072017.1500:isValidEncoding
 def isValidEncoding (encoding):
 
@@ -4472,10 +4650,8 @@ def isValidEncoding (encoding):
 def reportBadChars (s,encoding):
 
     if g.isPython3:  ### To do
-
         errors = 0
-        ### if type(s) == type(u""):
-        if g.isString(s):
+        if g.isUnicode(s):
             for ch in s:
                 try: ch.encode(encoding,"strict")
                 except UnicodeEncodeError:
@@ -4486,8 +4662,7 @@ def reportBadChars (s,encoding):
                     encoding.encode('ascii','replace'))
                 if not g.unitTesting:
                     g.es(s2,color='red')
-        ### elif type(s) == type(""):
-        else:
+        elif g.isChar(s):
             for ch in s:
                 try: unicode(ch,encoding,"strict")
                 except Exception: errors += 1
@@ -4499,8 +4674,7 @@ def reportBadChars (s,encoding):
                     g.es(s2,color='red')
     else:
         errors = 0
-        ### if type(s) == type(u""):
-        if type(s) == types.UnicodeType:
+        if g.isUnicode(s):
             for ch in s:
                 try: ch.encode(encoding,"strict")
                 except UnicodeEncodeError:
@@ -4511,8 +4685,7 @@ def reportBadChars (s,encoding):
                     encoding.encode('ascii','replace'))
                 if not g.unitTesting:
                     g.es(s2,color='red')
-        ### elif type(s) == type(""):
-        elif type(s) in types.StringTypes:
+        elif g.isChar(s):
             for ch in s:
                 try: unicode(ch,encoding,"strict")
                 except Exception: errors += 1
@@ -4567,31 +4740,25 @@ def toEncodedStringWithErrorCode (s,encoding,reportErrors=False):
 def toUnicode (s,encoding,reportErrors=False):
 
     if isPython3:
-        if s is None:
-            return ''
-        elif not g.isBytes(s):
-            return s
-        else:
-            try:
-                s = s.decode(encoding)
-            except UnicodeError:
-                if reportErrors:
-                    g.reportBadChars(s,encoding)
-                s = unicode(s,encoding,"replace")
-            return s
+        convert,mustConvert,nullVal = str,g.isBytes,''
     else:
-        if s is None:
-            return unicode('')
-        elif type(s) == types.UnicodeType:
-            return s
-        else:
-            try:
-                s = unicode(s,encoding,"strict")
-            except UnicodeError:
-                if reportErrors:
-                    g.reportBadChars(s,encoding)
-                s = unicode(s,encoding,"replace")
-            return s
+        convert,nullVal = unicode,unicode('')
+        def mustConvert (s):
+            return type(s) != types.UnicodeType
+
+    if not s:
+        s = nullVal
+    elif mustConvert(s):
+        try:
+            s = convert(s,encoding,'strict')
+        except UnicodeError:
+            s = convert(s,encoding,'replace')
+            if reportErrors: g.reportBadChars(s,encoding)
+    else:
+        pass
+
+    return s
+#@nonl
 #@-node:ekr.20050208093800.1:g.toUnicode
 #@+node:ekr.20080919065433.1:toUnicodeWithErrorCode (for unit testing)
 def toUnicodeWithErrorCode (s,encoding,reportErrors=False):
@@ -4941,9 +5108,8 @@ class nullObject:
 
     def __init__   (self,*args,**keys): pass
     def __call__   (self,*args,**keys): return self
-
+    # def __len__    (self): return 0 ###
     def __repr__   (self): return "nullObject"
-
     def __nonzero__ (self): return 0
 
     def __delattr__(self,attr):     return self
@@ -5065,16 +5231,20 @@ class fileLikeObject:
 #@nonl
 # The following is taken from page 188 of the Python Cookbook.
 # 
-# The following method allows you to add a function as a method of any class.  
-# That is, it converts the function to a method of the class.  The method just 
-# added is available instantly to all existing instances of the class, and to 
-# all instances created in the future.
+# The following method allows you to add a function as a method of any class. 
+# That
+# is, it converts the function to a method of the class. The method just added 
+# is
+# available instantly to all existing instances of the class, and to all 
+# instances
+# created in the future.
 # 
 # The function's first argument should be self.
 # 
 # The newly created method has the same name as the function unless the 
-# optional name argument is supplied, in which case that name is used as the 
-# method name.
+# optional
+# name argument is supplied, in which case that name is used as the method 
+# name.
 #@-at
 #@@c
 
@@ -5093,19 +5263,19 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
     at = c.atFileCommands ; w = c.frame.body.bodyCtrl
     p1 = p and p.copy()
     if not p:
-        p = c.currentPosition()
+        p = c.p
     try:
         if g.app.inBridge:
-            s = p.bodyString()
+            s = p.b
         elif p1:
-            s = p.bodyString() # Bug fix: Leo 8.8.4.
-        elif p == c.currentPosition():
+            s = p.b # Bug fix: Leo 8.8.4.
+        elif p == c.p:
             if useSelectedText and w.hasSelection():
                 s = w.getSelectedText()
             else:
                 s = w.getAllText()
         else:
-            s = p.bodyString()
+            s = p.b
         # Remove extra leading whitespace so the user may execute indented code.
         s = g.removeExtraLws(s,c.tab_width)
         if s.strip():

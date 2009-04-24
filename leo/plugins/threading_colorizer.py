@@ -163,11 +163,15 @@ default_font_dict = {
 #@+node:ekr.20071010193720.7:init
 def init ():
 
-    leoPlugins.registerHandler('start1',onStart1)
-    g.plugin_signon(__name__)
+    # The qt gui plugin now does colorizing.
+    ok = g.app.gui.guiName() in ('tkinter',)
 
-    return True
-#@nonl
+    if ok:
+
+        leoPlugins.registerHandler('start1',onStart1)
+        g.plugin_signon(__name__)
+
+    return ok
 #@-node:ekr.20071010193720.7:init
 #@+node:ekr.20071010193720.8:onStart1
 def onStart1 (tag, keywords):
@@ -317,7 +321,7 @@ def match_section_ref (self,s,i):
                 tagName = "hyper" + str(self.hyperCount)
                 self.hyperCount += 1
                 w.tag_delete(tagName)
-                self.tag(tagName,i+2,j)
+                self.tag_add(tagName,i+2,j)
 
                 ref.tagName = tagName
                 c.tag_bind(w,tagName,"<Control-1>",ref.OnHyperLinkControlClick)
@@ -410,6 +414,7 @@ class colorizer:
         self.p = None
         self.s = None # The string being colorized.
 
+        self.isQt = g.app.gui.guiName() == 'qt'
         self.fake = bool(w)
 
         if w is None:
@@ -490,7 +495,10 @@ class colorizer:
             # The helper thread adds to this dict.  idleHandler in the main thread uses these dicts.
         self.oldTagsDict = {}
         self.postPassStarted = False
-    #@nonl
+
+        # New in Leo 4.6: configure tags only once here.
+        # Some changes will be needed for multiple body editors.
+        self.configure_tags() # Must do this every time to support multiple editors.
     #@-node:ekr.20071010193720.21:__init__ (threading colorizer)
     #@+node:ekr.20071010193720.22:addImportedRules
     def addImportedRules (self,mode,rulesDict,rulesetName):
@@ -943,7 +951,7 @@ class colorizer:
         # New in Leo 4.6: @nocolor-node disables one node only.
         theDict = g.get_directives_dict(p)
         if 'nocolor-node' in theDict:
-            # g.trace('nocolor-node',p.headString())
+            # g.trace('nocolor-node',p.h)
             return False
 
         for p in p.self_and_parents_iter():
@@ -963,7 +971,7 @@ class colorizer:
             elif color and not no_color:
                 val = True ; break
 
-        # g.trace(first.headString(),val)
+        # g.trace(first.h,val)
         return val
     #@-node:ekr.20071010193720.37:useSyntaxColoring
     #@+node:ekr.20071010193720.38:updateSyntaxColorer
@@ -1137,8 +1145,8 @@ class colorizer:
 
         # Do this after we know the ivars exist.
         after_time = 5 # minimum time (in msec.) before this method gets called again.
-        trace = self.trace and not g.unitTesting
-        verbose = self.trace and self.verbose and not g.unitTesting
+        trace = (False or self.trace) and not g.unitTesting
+        verbose = (False or (self.trace and self.verbose)) and not g.unitTesting
 
         if self.threadCount > n:
             if verbose: g.trace('*** old thread %d' % n)
@@ -1180,10 +1188,8 @@ class colorizer:
         self.postPassStarted = False
         self.prev = None
         self.tagsRemoved = False
-
-        # g.trace(self.language)
         self.init_mode(self.language)
-        self.configure_tags() # Must do this every time to support multiple editors.
+        # self.configure_tags() # Must do this every time to support multiple editors.
 
         try:
             w.init_colorizer(self)
@@ -1255,32 +1261,38 @@ class colorizer:
         if flag:
             return
 
-        last_i = last_row = last_col = last_i = 0
-        for i,j,tag in addList:
-            if trace and verbose: g.trace('add',tag,i,j,self.s[i:j])
-            ### x1,x2 = w.toGuiIndex(i,s=s), w.toGuiIndex(j,s=s)
-            row_i,col_i = self.quickConvertPythonIndexToRowCol(i,last_row,last_col,last_i)
-            last_row = row_i ; last_col = col_i ; last_i = i
-            x1 = '%d.%d' % (row_i+1,col_i)
-            # An important hack to extend the coloring at the very end of the text.
-            if j >= len_s:
-                # g.trace('end hack:',j,s[j:])
-                x2 = 'end'
-            else:
-                row_j,col_j = self.quickConvertPythonIndexToRowCol(j,last_row,last_col,last_i)
-                last_row = row_j ; last_col = col_j ; last_i = j
-                x2 = '%d.%d' % (row_j+1,col_j)
-            # A crucial optimization for large body text.
-            # Even so, the color_markup plugin slows down coloring considerably.
-            if tag == 'docPart' or tag.startswith('comment'):
-                if not g.doHook("color-optional-markup",
-                    colorer=self,p=self.p,v=self.p,s=s,i=i,j=j,colortag=tag):
-                    # w.tag_add(tag,x1,x2)
+        if self.isQt:
+            for i,j,tag in addList:
+                if trace and verbose: g.trace('add',tag,i,j,self.s[i:j])
+                w.tag_add(tag,i,j)
+        else:
+            last_i = last_row = last_col = last_i = 0
+            for i,j,tag in addList:
+                if trace and verbose: g.trace('add',tag,i,j,self.s[i:j])
+                ### x1,x2 = w.toGuiIndex(i,s=s), w.toGuiIndex(j,s=s)
+                row_i,col_i = self.quickConvertPythonIndexToRowCol(i,last_row,last_col,last_i)
+                last_row = row_i ; last_col = col_i ; last_i = i
+                x1 = '%d.%d' % (row_i+1,col_i)
+                # An important hack to extend the coloring at the very end of the text.
+                if j >= len_s:
+                    # g.trace('end hack:',j,s[j:])
+                    x2 = 'end'
+                else:
+                    row_j,col_j = self.quickConvertPythonIndexToRowCol(j,last_row,last_col,last_i)
+                    last_row = row_j ; last_col = col_j ; last_i = j
+                    x2 = '%d.%d' % (row_j+1,col_j)
+                # A crucial optimization for large body text.
+                # Even so, the color_markup plugin slows down coloring considerably.
+                if tag == 'docPart' or tag.startswith('comment'):
+                    if not g.doHook("color-optional-markup",
+                        colorer=self,p=self.p,v=self.p,s=s,i=i,j=j,colortag=tag):
+                        if self.isQt:
+                            w.tag_add(tag,x1,x2)
+                        else:
+                            self.Tk_Text.tag_add(w,tag,x1,x2)
+                else:
+                    # g.trace(tag,x1,x2,i,j)
                     self.Tk_Text.tag_add(w,tag,x1,x2)
-            else:
-                # g.trace(tag,x1,x2,i,j)
-                # w.tag_add(tag,x1,x2)
-                self.Tk_Text.tag_add(w,tag,x1,x2)
     #@-node:ekr.20071013085626:putNewTags
     #@+node:ekr.20071010193720.44:removeAllImages
     def removeAllImages (self):
@@ -1306,13 +1318,15 @@ class colorizer:
 
         w = self.w
 
-        if self.trace and self.verbose: g.trace()
-
-        names = w.tag_names()
-        i,j = w.toGuiIndex(0), w.toGuiIndex('end')
-        for name in names:
-            if name not in ('sel','insert'):
-                w.tag_remove(name,i,j)
+        if hasattr(w,'removeAllTags'):
+            # A hook for qt plugin.
+            w.removeAllTags()
+        else:
+            names = w.tag_names()
+            i,j = w.toGuiIndex(0), w.toGuiIndex('end')
+            for name in names:
+                if name not in ('sel','insert'):
+                    w.tag_remove(name,i,j)
     #@-node:ekr.20071010193720.45:removeAllTags
     #@+node:ekr.20071013084305:removeOldTags
     def removeOldTags (self,deleteList):
@@ -1321,6 +1335,11 @@ class colorizer:
 
         s = self.s ; len_s = len(s); w = self.w
         verbose = self.trace and self.verbose
+
+        if hasattr(w,'removeAllTags'):
+            # A hook for qt plugin.
+            w.removeAllTags()
+            return
 
         # Delete all tags on the delete list.
         last_i = last_row = last_col = last_i = 0
@@ -1347,7 +1366,6 @@ class colorizer:
                 x_j = '%d.%d' % (row_j+1,col_j)
             # if trace: g.trace('i',i,'x_i',x_i,'j',j,'x_j',x_j)
             self.Tk_Text.tag_remove(w,tagName,x_i,x_j)
-    #@nonl
     #@-node:ekr.20071013084305:removeOldTags
     #@+node:ekr.20071011042037:removeTagsFromRange
     def removeTagsFromRange(self,i,j):
@@ -2071,13 +2089,14 @@ class colorizer:
     def setFontFromConfig (self):
 
         c = self.c
+        isQt = g.app.gui.guiName() == 'qt'
 
         self.bold_font = c.config.getFontFromParams(
             "body_text_font_family", "body_text_font_size",
             "body_text_font_slant",  "body_text_font_weight",
             c.config.defaultBodyFontSize) # , tag = "colorer bold")
 
-        if self.bold_font:
+        if self.bold_font and not isQt:
             self.bold_font.configure(weight="bold")
 
         self.italic_font = c.config.getFontFromParams(
@@ -2085,7 +2104,7 @@ class colorizer:
             "body_text_font_slant",  "body_text_font_weight",
             c.config.defaultBodyFontSize) # , tag = "colorer italic")
 
-        if self.italic_font:
+        if self.italic_font and not isQt:
             self.italic_font.configure(slant="italic",weight="normal")
 
         self.bolditalic_font = c.config.getFontFromParams(
@@ -2093,7 +2112,7 @@ class colorizer:
             "body_text_font_slant",  "body_text_font_weight",
             c.config.defaultBodyFontSize) # , tag = "colorer bold italic")
 
-        if self.bolditalic_font:
+        if self.bolditalic_font and not isQt:
             self.bolditalic_font.configure(weight="bold",slant="italic")
 
         self.color_tags_list = []

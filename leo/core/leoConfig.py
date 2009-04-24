@@ -143,7 +143,7 @@ class parserBaseClass:
     def doAbbrev (self,p,kind,name,val):
 
         d = {}
-        s = p.bodyString()
+        s = p.b
         lines = g.splitLines(s)
         for line in lines:
             line = line.strip()
@@ -170,11 +170,11 @@ class parserBaseClass:
 
         aList = [] ; c = self.c ; tag = '@button'
         for p in p.subtree_with_unique_tnodes_iter():
-            h = p.headString()
+            h = p.h
             if g.match_word(h,0,tag):
                 # We can not assume that p will be valid when it is used.
                 script = g.getScript(c,p,useSelectedText=False,forcePythonSentinels=True,useSentinels=True)
-                aList.append((p.headString(),script),)
+                aList.append((p.h,script),)
 
         # g.trace(g.listToString([h for h,script in aList]))
 
@@ -191,11 +191,11 @@ class parserBaseClass:
 
         aList = [] ; c = self.c ; tag = '@command'
         for p in p.subtree_iter():
-            h = p.headString()
+            h = p.h
             if g.match_word(h,0,tag):
                 # We can not assume that p will be valid when it is used.
                 script = g.getScript(c,p,useSelectedText=False,forcePythonSentinels=True,useSentinels=True)
-                aList.append((p.headString(),script),)
+                aList.append((p.h,script),)
 
         # g.trace(g.listToString(aList))
 
@@ -217,7 +217,7 @@ class parserBaseClass:
     #@+node:ekr.20071214140900:doData
     def doData (self,p,kind,name,val):
 
-        s = p.bodyString()
+        s = p.b
         lines = g.splitLines(s)
         data = [z.strip() for z in lines if z.strip() and not z.startswith('#')]
 
@@ -235,7 +235,7 @@ class parserBaseClass:
     def doEnabledPlugins (self,p,kind,name,val):
 
         c = self.c
-        s = p.bodyString()
+        s = p.b
 
         # This setting is handled differently from all other settings,
         # because the last setting must be retrieved before any commander exists.
@@ -260,7 +260,7 @@ class parserBaseClass:
 
         trace = False
 
-        if trace: g.trace(p and p.headString(),kind,name,self.c.mFileName)
+        if trace: g.trace(p and p.h,kind,name,self.c.mFileName)
 
         d = self.parseFont(p)
 
@@ -389,16 +389,16 @@ class parserBaseClass:
 
         c = self.c ; aList = [] ; tag = '@menu' ; trace = False and g.isPython3
         p = p.copy() ; after = p.nodeAfterTree()
-        if trace: g.trace('******',p.headString(),'after',after and after.headString())
+        if trace: g.trace('******',p.h,'after',after and after.h)
         while p and p != after:
             self.debug_count += 1
-            h = p.headString()
+            h = p.h
             # if trace:
-                # if p.headString()==after.headString():
+                # if p.h==after.h:
                     # val = p != after
                     # g.trace('*' * 10, 'terminating via headString',p,after)
                     # return
-                # g.trace('***',self.debug_count,p.headString())
+                # g.trace('***',self.debug_count,p.h)
                 # if self.debug_count >= 1000:
                     # g.trace('*'*10,'terminating!') ; return
             if g.match_word(h,0,tag):
@@ -431,16 +431,16 @@ class parserBaseClass:
     def doItems (self,p,aList):
 
         trace = False and g.isPython3
-        if trace: g.trace(p.headString())
+        if trace: g.trace(p.h)
         p = p.copy()
         after = p.nodeAfterTree()
         p.moveToThreadNext()
-        if trace: g.trace(self.debug_count,p.headString(),'after',after and after.headString())
+        if trace: g.trace(self.debug_count,p.h,'after',after and after.h)
         while p and p != after:
             self.debug_count += 1
-            h = p.headString()
+            h = p.h
             # if trace:
-                # if p.headString()==after.headString():
+                # if p.h==after.h:
                     # val = p != after
                     # g.trace('*' * 10, 'terminating via headString',p,after)
                     # return
@@ -461,12 +461,12 @@ class parserBaseClass:
                         else:
                             kind = tag
                             head = itemName
-                            body = p.bodyString()
+                            body = p.b
                             aList.append((kind,head,body),)
                             p.moveToThreadNext()
                             break
             else:
-                # g.trace('***skipping***',p.headString())
+                # g.trace('***skipping***',p.h)
                 p.moveToThreadNext()
     #@-node:ekr.20070926141716:doItems
     #@+node:ekr.20070926142312:dumpMenuList
@@ -497,7 +497,7 @@ class parserBaseClass:
         old_d = self.shortcutsDict
         d = self.shortcutsDict = {}
 
-        s = p.bodyString()
+        s = p.b
         lines = g.splitLines(s)
         for line in lines:
             line = line.strip()
@@ -565,7 +565,7 @@ class parserBaseClass:
         c = self.c ; d = self.shortcutsDict ; k = c.k
         trace = False or c.config.getBool('trace_bindings_verbose')
         munge = k.shortcutFromSetting
-        if s is None: s = p.bodyString()
+        if s is None: s = p.b
         lines = g.splitLines(s)
         for line in lines:
             line = line.strip()
@@ -649,7 +649,7 @@ class parserBaseClass:
         p = p.copy() ; after = p.nodeAfterTree()
         p.moveToThreadNext()
         while p and p != after:
-            h = p.headString()
+            h = p.h
             for tag in ('@menu','@item'):
                 if g.match_word(h,0,tag):
                     itemName = h[len(tag):].strip()
@@ -657,7 +657,7 @@ class parserBaseClass:
                         if tag == '@menu':
                             aList2 = []
                             kind = '%s' % itemName
-                            body = p.bodyString()
+                            body = p.b
                             self.doPopupItems(p,aList2)
                             aList.append((kind + '\n' + body, aList2),)
                             p.moveToNodeAfterTree()
@@ -665,12 +665,12 @@ class parserBaseClass:
                         else:
                             kind = tag
                             head = itemName
-                            body = p.bodyString()
+                            body = p.b
                             aList.append((head,body),)
                             p.moveToThreadNext()
                             break
             else:
-                # g.trace('***skipping***',p.headString())
+                # g.trace('***skipping***',p.h)
                 p.moveToThreadNext()
     #@nonl
     #@-node:bobjack.20080324141020.5:doPopupItems
@@ -816,7 +816,7 @@ class parserBaseClass:
             'weight': None,
         }
 
-        s = p.bodyString()
+        s = p.b
         lines = g.splitLines(s)
 
         for line in lines:
@@ -887,7 +887,7 @@ class parserBaseClass:
 
         d = {'command': None,}
 
-        s = p.bodyString()
+        s = p.b
         lines = g.splitLines(s)
 
         for line in lines:
@@ -1045,10 +1045,10 @@ class parserBaseClass:
         while p and p != after:
             result = self.visitNode(p)
             # if g.isPython3:
-                # g.trace(result,p.headString())
-                # if p.headString() == 'Menus': g.pdb()
+                # g.trace(result,p.h)
+                # if p.h == 'Menus': g.pdb()
             if result == "skip":
-                # g.es_print('skipping settings in',p.headString(),color='blue')
+                # g.es_print('skipping settings in',p.h,color='blue')
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -1378,7 +1378,7 @@ class configClass:
 
         for p in root.subtree_iter():
             #BJ munge will return None if a headstring is empty
-            h = munge(p.headString()) or ''
+            h = munge(p.h) or ''
             if h.startswith(setting):
                 return p.copy()
 
@@ -1411,7 +1411,10 @@ class configClass:
 
         """Get the setting and make sure its type matches the expected type."""
 
-        if c:
+        isLeoSettings = c and c.shortFileName().endswith('leoSettings.leo')
+
+        # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+        if c and not isLeoSettings:
             d = self.localOptionsDict.get(c.hash())
             if d:
                 val,junk = self.getValFromDict(d,setting,kind)
@@ -1435,6 +1438,16 @@ class configClass:
                 # if setting == 'targetlanguage':
                     # g.trace(kind,setting,val,g.callers())
                 return val
+
+        # New in Leo 4.6. Use settings in leoSettings.leo *last*.
+        if c and isLeoSettings:
+            d = self.localOptionsDict.get(c.hash())
+            if d:
+                val,junk = self.getValFromDict(d,setting,kind)
+                if val is not None:
+                    # if setting == 'targetlanguage':
+                        # g.trace(c.shortFileName(),setting,val,g.callers())
+                    return val
 
         return None
     #@+node:ekr.20041121143823:getValFromDict
@@ -1718,7 +1731,7 @@ class configClass:
         # g.trace(c,c.rootPosition())
 
         for p in c.all_positions_with_unique_tnodes_iter():
-            if p.headString().rstrip() == "@settings":
+            if p.h.rstrip() == "@settings":
                 return p.copy()
         else:
             return c.nullPosition()
@@ -1813,7 +1826,8 @@ class configClass:
         self.write_recent_files_as_needed = False # Will be set later.
         #@    << define localDirectory, localConfigFile & myLocalConfigFile >>
         #@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
-        # This can't be done in initSettingsFiles because the local directory does not exits.
+        # This can't be done in initSettingsFiles because
+        # the local directory does not yet exist.
         localDirectory = g.os_path_dirname(fileName)
 
         #  Set the local leoSettings.leo file.
@@ -2151,12 +2165,16 @@ class configClass:
         for d in self.dictList:
             self.printSettingsHelper(settings,d)
 
+        result = []
         for key in sorted(settings):
             data = settings.get(key)
             letter,val = data
-            g.pr('%45s = %s %s' % (key,letter,val))
-            g.es('','%s %s = %s' % (letter,key,val))
-    #@nonl
+            # g.pr('%45s = %s %s' % (key,letter,val))
+            result.append('%s %s = %s\n' % (letter,key,val))
+
+        # Use a single g.es statement.
+        g.es('',''.join(result),tabName='Settings')
+
     #@+node:ekr.20070418075804:printSettingsHelper
     def printSettingsHelper(self,settings,d,letter=None):
 
@@ -2210,11 +2228,11 @@ class settingsTreeParser (parserBaseClass):
 
         """Init any settings found in node p."""
 
-        # g.trace(p.headString())
+        # g.trace(p.h)
 
         munge = g.app.config.munge
 
-        kind,name,val = self.parseHeadline(p.headString())
+        kind,name,val = self.parseHeadline(p.h)
         kind = munge(kind)
 
         if g.isPython3:

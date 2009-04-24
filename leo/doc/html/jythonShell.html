@@ -3,8 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
-<title>leo Using JythonShell</title>
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
+<title>Using JythonShell</title>
 <style type="text/css">
 
 /*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
@@ -248,78 +248,16 @@ hr { /* EKR */
 </style>
 </head>
 <body>
-<div class="document" id="leo-using-jythonshell">
-<h1 class="title"><a class="reference" href="#front"><img alt="leo" src="leo.gif" /></a> Using JythonShell</h1>
+<div class="document" id="using-jythonshell">
+<h1 class="title">Using JythonShell</h1>
 
 <!-- rst3: filename: html\jythonShell.html -->
 <!-- December 3, 2005 -->
 <p>This chapter describes how to use the Jython Shell created by LeoUser.</p>
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
-<ul class="simple">
-<li><a class="reference" href="#autocompleter-actions" id="id1" name="id1">Autocompleter Actions</a></li>
-<li><a class="reference" href="#keystrokes" id="id2" name="id2">Keystrokes</a></li>
-<li><a class="reference" href="#alt-slash-dynamic-abbreviations" id="id3" name="id3">Alt Slash: Dynamic Abbreviations</a></li>
-<li><a class="reference" href="#object-introspection" id="id4" name="id4">Object Introspection</a></li>
-<li><a class="reference" href="#system-access" id="id5" name="id5">System access</a></li>
-<li><a class="reference" href="#magic-commands" id="id6" name="id6">Magic Commands</a><ul>
-<li><a class="reference" href="#alias-analias" id="id7" name="id7">%alias anAlias</a></li>
-<li><a class="reference" href="#autocall" id="id8" name="id8">%autocall</a></li>
-<li><a class="reference" href="#autoindent" id="id9" name="id9">%autoindent</a></li>
-<li><a class="reference" href="#bg" id="id10" name="id10">%bg</a></li>
-<li><a class="reference" href="#cd" id="id11" name="id11">%cd</a></li>
-<li><a class="reference" href="#clean" id="id12" name="id12">%clean</a></li>
-<li><a class="reference" href="#clear" id="id13" name="id13">%clear</a></li>
-<li><a class="reference" href="#cwd" id="id14" name="id14">%cwd</a></li>
-<li><a class="reference" href="#cwd-areference" id="id15" name="id15">%cwd aReference</a></li>
-<li><a class="reference" href="#deserialize-areference" id="id16" name="id16">%deserialize aReference</a></li>
-<li><a class="reference" href="#ed" id="id17" name="id17">%ed</a></li>
-<li><a class="reference" href="#edit-options-args" id="id18" name="id18">%edit [options] [args]</a></li>
-<li><a class="reference" href="#env" id="id19" name="id19">%env</a></li>
-<li><a class="reference" href="#hist-n-n1-n2" id="id20" name="id20">%hist [-n] [n1] [n2]</a></li>
-<li><a class="reference" href="#kill-n" id="id21" name="id21">%kill n</a></li>
-<li><a class="reference" href="#ls" id="id22" name="id22">%ls</a></li>
-<li><a class="reference" href="#ls-areference" id="id23" name="id23">%ls aReference</a></li>
-<li><a class="reference" href="#lsmagic" id="id24" name="id24">%lsmagic</a></li>
-<li><a class="reference" href="#macro-amacro" id="id25" name="id25">%macro aMacro</a></li>
-<li><a class="reference" href="#magic" id="id26" name="id26">%magic</a></li>
-<li><a class="reference" href="#p" id="id27" name="id27">%p</a></li>
-<li><a class="reference" href="#pdb" id="id28" name="id28">%pdb</a></li>
-<li><a class="reference" href="#pdoc-anobject" id="id29" name="id29">%pdoc anObject</a></li>
-<li><a class="reference" href="#pfile-obj" id="id30" name="id30">%pfile obj</a></li>
-<li><a class="reference" href="#pinfo-areference" id="id31" name="id31">%pinfo aReference</a></li>
-<li><a class="reference" href="#prun-statement" id="id32" name="id32">%prun statement</a></li>
-<li><a class="reference" href="#ps" id="id33" name="id33">%ps</a></li>
-<li><a class="reference" href="#r" id="id34" name="id34">%r</a></li>
-<li><a class="reference" href="#rehash-and-rehashx" id="id35" name="id35">%rehash and %rehashx</a></li>
-<li><a class="reference" href="#reset" id="id36" name="id36">%reset</a></li>
-<li><a class="reference" href="#run-n-i-t-n-n-d-b-n-p-profile-options-file-args" id="id37" name="id37">%run [-n -i -t [-N n] -d [-b n] -p [profile options]] file [args]</a></li>
-<li><a class="reference" href="#save-filename-n1-n2-n3-n4-n5-n6" id="id38" name="id38">%save filename n1:n2 n3:n4 ... n5 .. n6 ...</a></li>
-<li><a class="reference" href="#sc-options-varname-command" id="id39" name="id39">%sc [options] varname=command</a></li>
-<li><a class="reference" href="#see" id="id40" name="id40">%see</a></li>
-<li><a class="reference" href="#send-n-areference" id="id41" name="id41">%send n aReference</a></li>
-<li><a class="reference" href="#serialize-areference" id="id42" name="id42">%serialize aReference</a></li>
-<li><a class="reference" href="#swing-areference" id="id43" name="id43">%swing aReference</a></li>
-<li><a class="reference" href="#sx-acommand" id="id44" name="id44">%sx aCommand</a></li>
-<li><a class="reference" href="#threads" id="id45" name="id45">%threads</a></li>
-<li><a class="reference" href="#unalias-analias" id="id46" name="id46">%unalias anAlias</a></li>
-<li><a class="reference" href="#url-ref-aurl" id="id47" name="id47">%url ref aUrl</a></li>
-<li><a class="reference" href="#wait-n" id="id48" name="id48">%wait n</a></li>
-<li><a class="reference" href="#who" id="id49" name="id49">%who</a></li>
-<li><a class="reference" href="#who-ls" id="id50" name="id50">%who_ls</a></li>
-<li><a class="reference" href="#whos" id="id51" name="id51">%whos</a></li>
-<li><a class="reference" href="#xslt-ref1-ref2-ref3" id="id52" name="id52">%xslt ref1 ref2 ref3</a></li>
-</ul>
-</li>
-<li><a class="reference" href="#a-note-on-jpids-and-the-cwd" id="id53" name="id53">A Note on JPIDs and the CWD</a></li>
-</ul>
-</div>
+<!-- .. contents:: -->
 <!-- rST links used in this document... -->
-<!-- External links... -->
-<!-- Hard links to Leo's web site... -->
-<!-- WARNING: image targets may not have upper case letters! -->
 <div class="section" id="autocompleter-actions">
-<h1><a class="toc-backref" href="#id1">Autocompleter Actions</a></h1>
+<h1>Autocompleter Actions</h1>
 <ul class="simple">
 <li>Up-Down Arrow moves the selection up or down.</li>
 <li>Tab inserts the current selection.</li>
@@ -328,7 +266,7 @@ hr { /* EKR */
 Any other key withdraws the autocompleter.</p>
 </div>
 <div class="section" id="keystrokes">
-<h1><a class="toc-backref" href="#id2">Keystrokes</a></h1>
+<h1>Keystrokes</h1>
 <dl class="docutils">
 <dt>Enter</dt>
 <dd>Processes the current line from the prompt to the end,
@@ -345,7 +283,7 @@ This is the behavior if there is character data on the line.</li>
 </dl>
 </div>
 <div class="section" id="alt-slash-dynamic-abbreviations">
-<h1><a class="toc-backref" href="#id3">Alt Slash: Dynamic Abbreviations</a></h1>
+<h1>Alt Slash: Dynamic Abbreviations</h1>
 <p>Executing will dynamically expand a prefix to matching
 words already entered within the interpreter.  For example:
 cactus
@@ -387,7 +325,7 @@ By moving, this means the current line is replaced with history item.</dd>
 </dl>
 </div>
 <div class="section" id="object-introspection">
-<h1><a class="toc-backref" href="#id4">Object Introspection</a></h1>
+<h1>Object Introspection</h1>
 <p>Typing a reference name followed by a ? will create a object view which gives
 the user a variety of information about the Object in question. Example:</p>
 <pre class="literal-block">
@@ -396,17 +334,17 @@ a? # Upon Enter, a panel will appear below showing Object information.
 </pre>
 </div>
 <div class="section" id="system-access">
-<h1><a class="toc-backref" href="#id5">System access</a></h1>
+<h1>System access</h1>
 <p>Typing ! at the command prompt followed by the system command you wish to
 execute will start the command as a process and return a JPID for the process
 that can be manipulated by the magic command set.</p>
 </div>
 <div class="section" id="magic-commands">
-<h1><a class="toc-backref" href="#id6">Magic Commands</a></h1>
+<h1>Magic Commands</h1>
 <p>Entering one of the following commands will cause its
 corresponding command to execute:</p>
 <div class="section" id="alias-analias">
-<h2><a class="toc-backref" href="#id7">%alias anAlias</a></h2>
+<h2>%alias anAlias</h2>
 <p><tt class="docutils literal"><span class="pre">%alias</span></tt> <em>anAlias</em> defines alias name as an alias for cmd.
 Afterwards, typing alias name params will execute the system command cmd params (from your
 underlying operating system).
@@ -414,7 +352,7 @@ Aliases have lower precedence than magic functions and Python normal variables,
 so if foo is both a Python variable and an alias, the alias can not be executed until you remove the Python using <tt class="docutils literal"><span class="pre">del</span> <span class="pre">foo</span></tt>.</p>
 </div>
 <div class="section" id="autocall">
-<h2><a class="toc-backref" href="#id8">%autocall</a></h2>
+<h2>%autocall</h2>
 <p>Toggles autocalling off and on.
 Autocalling is the ability to do something like:</p>
 <pre class="literal-block">
@@ -423,11 +361,11 @@ dir a
 <p>instead of dir( a ).</p>
 </div>
 <div class="section" id="autoindent">
-<h2><a class="toc-backref" href="#id9">%autoindent</a></h2>
+<h2>%autoindent</h2>
 <p>Toggles autoindenting off and on.</p>
 </div>
 <div class="section" id="bg">
-<h2><a class="toc-backref" href="#id10">%bg</a></h2>
+<h2>%bg</h2>
 <p>Runs a method/function in a background thread.
 For example:</p>
 <pre class="literal-block">
@@ -446,37 +384,37 @@ jobs[jobnumber].result
 The result will be the return value of the method/function or it will tell you the job isn't finished yet.</p>
 </div>
 <div class="section" id="cd">
-<h2><a class="toc-backref" href="#id11">%cd</a></h2>
+<h2>%cd</h2>
 <p>Changes the current working directory of the Jython Shell.
 <tt class="docutils literal"><span class="pre">..</span></tt> signifies the parent directory.
 Absolute and relative paths are allowed.</p>
 </div>
 <div class="section" id="clean">
-<h2><a class="toc-backref" href="#id12">%clean</a></h2>
+<h2>%clean</h2>
 <p>Destroys all JPIDs.</p>
 </div>
 <div class="section" id="clear">
-<h2><a class="toc-backref" href="#id13">%clear</a></h2>
+<h2>%clear</h2>
 <p>Clears the shell of all text and starts over with a fresh prompt.</p>
 </div>
 <div class="section" id="cwd">
-<h2><a class="toc-backref" href="#id14">%cwd</a></h2>
+<h2>%cwd</h2>
 <p>Shows the current working directory of the Jython Shell.</p>
 </div>
 <div class="section" id="cwd-areference">
-<h2><a class="toc-backref" href="#id15">%cwd aReference</a></h2>
+<h2>%cwd aReference</h2>
 <p>Sets the reference to a java.io.File instance representing the current directory.</p>
 </div>
 <div class="section" id="deserialize-areference">
-<h2><a class="toc-backref" href="#id16">%deserialize aReference</a></h2>
+<h2>%deserialize aReference</h2>
 <p>Deserialize an Object stored on disk into the reference.</p>
 </div>
 <div class="section" id="ed">
-<h2><a class="toc-backref" href="#id17">%ed</a></h2>
+<h2>%ed</h2>
 <p>Same as %edit.</p>
 </div>
 <div class="section" id="edit-options-args">
-<h2><a class="toc-backref" href="#id18">%edit [options] [args]</a></h2>
+<h2>%edit [options] [args]</h2>
 <p>Brings up the Jython Shell editor and executes the resulting code.</p>
 <p>This command allows you to conveniently edit multi-line code right in your JythonShell session.
 If called without arguments,
@@ -509,11 +447,11 @@ You can thus edit any string which contains python code (including the result of
 </ul>
 </div>
 <div class="section" id="env">
-<h2><a class="toc-backref" href="#id19">%env</a></h2>
+<h2>%env</h2>
 <p>Prints all environment variables.</p>
 </div>
 <div class="section" id="hist-n-n1-n2">
-<h2><a class="toc-backref" href="#id20">%hist [-n] [n1] [n2]</a></h2>
+<h2>%hist [-n] [n1] [n2]</h2>
 <p>Prints all or part of the history.
 If given, the <tt class="docutils literal"><span class="pre">-n</span></tt> argument signifies that line numbers should not be printed out.</p>
 <dl class="docutils">
@@ -526,26 +464,26 @@ If given, the <tt class="docutils literal"><span class="pre">-n</span></tt> argu
 </dl>
 </div>
 <div class="section" id="kill-n">
-<h2><a class="toc-backref" href="#id21">%kill n</a></h2>
+<h2>%kill n</h2>
 <p>Destroys JPID n.</p>
 </div>
 <div class="section" id="ls">
-<h2><a class="toc-backref" href="#id22">%ls</a></h2>
+<h2>%ls</h2>
 <p>Shows the contents of the current working directory.</p>
 </div>
 <div class="section" id="ls-areference">
-<h2><a class="toc-backref" href="#id23">%ls aReference</a></h2>
+<h2>%ls aReference</h2>
 <p>Shows a java array of File instances.  For example:</p>
 <pre class="literal-block">
 %ls a # a now holds a java array of File instances
 </pre>
 </div>
 <div class="section" id="lsmagic">
-<h2><a class="toc-backref" href="#id24">%lsmagic</a></h2>
+<h2>%lsmagic</h2>
 <p>Returns the current available set of magic commands.</p>
 </div>
 <div class="section" id="macro-amacro">
-<h2><a class="toc-backref" href="#id25">%macro aMacro</a></h2>
+<h2>%macro aMacro</h2>
 <p>Defines a macro that can be executed by using the name given.  For example:</p>
 <pre class="literal-block">
 %macro macex 9:10 11 12:13 4
@@ -556,7 +494,7 @@ Hence entering macex and typing enter will cause those lines to rexecute.</p>
 To remove a macro type: <tt class="docutils literal"><span class="pre">del</span> <span class="pre">macroname</span></tt>.</p>
 </div>
 <div class="section" id="magic">
-<h2><a class="toc-backref" href="#id26">%magic</a></h2>
+<h2>%magic</h2>
 <dl class="docutils">
 <dt>%magic</dt>
 <dd>Prints out the description of the magic commands.</dd>
@@ -565,11 +503,11 @@ To remove a macro type: <tt class="docutils literal"><span class="pre">del</span
 </dl>
 </div>
 <div class="section" id="p">
-<h2><a class="toc-backref" href="#id27">%p</a></h2>
+<h2>%p</h2>
 <p>Same as 'print'.</p>
 </div>
 <div class="section" id="pdb">
-<h2><a class="toc-backref" href="#id28">%pdb</a></h2>
+<h2>%pdb</h2>
 <dl class="docutils">
 <dt>%pdb</dt>
 <dd>Starts the Pdb debugger.</dd>
@@ -590,26 +528,26 @@ Runs the file under Pdb in the shell.</blockquote>
 </dl>
 </div>
 <div class="section" id="pdoc-anobject">
-<h2><a class="toc-backref" href="#id29">%pdoc anObject</a></h2>
+<h2>%pdoc anObject</h2>
 <p>Prints out the doc string of the passed in object if one can be found, otherwise does nothing.</p>
 <p>The object may be a module, a method, an object, etc.</p>
 </div>
 <div class="section" id="pfile-obj">
-<h2><a class="toc-backref" href="#id30">%pfile obj</a></h2>
+<h2>%pfile obj</h2>
 <p>Attempts to locate the source file of the passed in object
 and displays the contents of the source in the shell.</p>
 </div>
 <div class="section" id="pinfo-areference">
-<h2><a class="toc-backref" href="#id31">%pinfo aReference</a></h2>
+<h2>%pinfo aReference</h2>
 <p>An alias for the ? object viewer syntax.
 If the references is valid, a widget containing info on the reference will appear.</p>
 </div>
 <div class="section" id="prun-statement">
-<h2><a class="toc-backref" href="#id32">%prun statement</a></h2>
+<h2>%prun statement</h2>
 <p>Executes a statement entered on the same line in the profile module.</p>
 </div>
 <div class="section" id="ps">
-<h2><a class="toc-backref" href="#id33">%ps</a></h2>
+<h2>%ps</h2>
 <dl class="docutils">
 <dt>%ps</dt>
 <dd>Prints out all JPID's the JythonShell has collected.</dd>
@@ -621,11 +559,11 @@ If the references is valid, a widget containing info on the reference will appea
 </dl>
 </div>
 <div class="section" id="r">
-<h2><a class="toc-backref" href="#id34">%r</a></h2>
+<h2>%r</h2>
 <p>Repeats the last input.</p>
 </div>
 <div class="section" id="rehash-and-rehashx">
-<h2><a class="toc-backref" href="#id35">%rehash and %rehashx</a></h2>
+<h2>%rehash and %rehashx</h2>
 <dl class="docutils">
 <dt>%rehash</dt>
 <dd>Updates the alias table with all entries in $PATH.
@@ -637,12 +575,12 @@ This command <strong>does</strong> explicitly check that every entry in $PATH is
 </dl>
 </div>
 <div class="section" id="reset">
-<h2><a class="toc-backref" href="#id36">%reset</a></h2>
+<h2>%reset</h2>
 <p>Resets the namespace by removing all names defined by the user.
 Input/Output history remain in case you need them.</p>
 </div>
 <div class="section" id="run-n-i-t-n-n-d-b-n-p-profile-options-file-args">
-<h2><a class="toc-backref" href="#id37">%run [-n -i -t [-N n] -d [-b n] -p [profile options]] file [args]</a></h2>
+<h2>%run [-n -i -t [-N n] -d [-b n] -p [profile options]] file [args]</h2>
 <p>Runs the named file inside IPython as a program. Options:</p>
 <dl class="docutils">
 <dt>-n:</dt>
@@ -667,14 +605,14 @@ The final timing report will include total and per run results.</dd>
 </dl>
 </div>
 <div class="section" id="save-filename-n1-n2-n3-n4-n5-n6">
-<h2><a class="toc-backref" href="#id38">%save filename n1:n2 n3:n4 ... n5 .. n6 ...</a></h2>
+<h2>%save filename n1:n2 n3:n4 ... n5 .. n6 ...</h2>
 <p>This command uses the same syntax as %macro for line extraction, but instead
 of creating a macro it saves the resulting string to file whose name is
 given. It ensures the filename ends with a .py extension, and it asks for
 confirmation before overwriting existing files.</p>
 </div>
 <div class="section" id="sc-options-varname-command">
-<h2><a class="toc-backref" href="#id39">%sc [options] varname=command</a></h2>
+<h2>%sc [options] varname=command</h2>
 <p>Runs the given command using <tt class="docutils literal"><span class="pre">command.getoutput()</span></tt>
 and updates the user's interactive namespace with a variable called varname
 containing the value of the call.
@@ -691,7 +629,7 @@ single string.</dd>
 </dl>
 </div>
 <div class="section" id="see">
-<h2><a class="toc-backref" href="#id40">%see</a></h2>
+<h2>%see</h2>
 <dl class="docutils">
 <dt>%see n</dt>
 <dd>Shows any output JPID n has collected.</dd>
@@ -700,34 +638,34 @@ single string.</dd>
 </dl>
 </div>
 <div class="section" id="send-n-areference">
-<h2><a class="toc-backref" href="#id41">%send n aReference</a></h2>
+<h2>%send n aReference</h2>
 <p>Sends the reference as input to JPID n.</p>
 </div>
 <div class="section" id="serialize-areference">
-<h2><a class="toc-backref" href="#id42">%serialize aReference</a></h2>
+<h2>%serialize aReference</h2>
 <p>Saves the object referenced by reference as a serialized Object.</p>
 </div>
 <div class="section" id="swing-areference">
-<h2><a class="toc-backref" href="#id43">%swing aReference</a></h2>
+<h2>%swing aReference</h2>
 <p>Places the reference into the editor if the reference is a JComponent subclass.
 Useful for quick gazing of what a Swing component looks like.</p>
 </div>
 <div class="section" id="sx-acommand">
-<h2><a class="toc-backref" href="#id44">%sx aCommand</a></h2>
+<h2>%sx aCommand</h2>
 <p>Runs the given command using commands.getoutput(), and returns the result formatted as a list (split on).
 The output is stored in ipython's regular output cache Out[N] and in the N automatic variables.</p>
 </div>
 <div class="section" id="threads">
-<h2><a class="toc-backref" href="#id45">%threads</a></h2>
+<h2>%threads</h2>
 <p>Shows the threads running and the state they are in.
 Selecting a thread shows the thread's stack.</p>
 </div>
 <div class="section" id="unalias-analias">
-<h2><a class="toc-backref" href="#id46">%unalias anAlias</a></h2>
+<h2>%unalias anAlias</h2>
 <p>Removes the given alias.</p>
 </div>
 <div class="section" id="url-ref-aurl">
-<h2><a class="toc-backref" href="#id47">%url ref aUrl</a></h2>
+<h2>%url ref aUrl</h2>
 <p>Loads data from a url into a reference.  For example:</p>
 <pre class="literal-block">
 %url a http://python.org
@@ -735,15 +673,15 @@ Selecting a thread shows the thread's stack.</p>
 <p>take the data at <tt class="docutils literal"><span class="pre">http://python.org</span></tt> and places it in ref.</p>
 </div>
 <div class="section" id="wait-n">
-<h2><a class="toc-backref" href="#id48">%wait n</a></h2>
+<h2>%wait n</h2>
 <p>Suspends the JythonShell until JPID n has finished.</p>
 </div>
 <div class="section" id="who">
-<h2><a class="toc-backref" href="#id49">%who</a></h2>
+<h2>%who</h2>
 <p>Prints the list of identifiers that have been defined interactively.</p>
 </div>
 <div class="section" id="who-ls">
-<h2><a class="toc-backref" href="#id50">%who_ls</a></h2>
+<h2>%who_ls</h2>
 <p>Returns a sorted list of all interactive variables.
 If arguments are given, only variables of types matching these arguments are returned.
 Examples:</p>
@@ -753,16 +691,16 @@ Examples:</p>
 </pre>
 </div>
 <div class="section" id="whos">
-<h2><a class="toc-backref" href="#id51">%whos</a></h2>
+<h2>%whos</h2>
 <p>Prints a table of identifiers that have been defined interactively.</p>
 </div>
 <div class="section" id="xslt-ref1-ref2-ref3">
-<h2><a class="toc-backref" href="#id52">%xslt ref1 ref2 ref3</a></h2>
+<h2>%xslt ref1 ref2 ref3</h2>
 <p>Transforms reference ref2 with the stylesheet in ref1 putting the result in ref3.</p>
 </div>
 </div>
 <div class="section" id="a-note-on-jpids-and-the-cwd">
-<h1><a class="toc-backref" href="#id53">A Note on JPIDs and the CWD</a></h1>
+<h1>A Note on JPIDs and the CWD</h1>
 <p>JPIDs are not PIDs of the OS. They are a system by which the JythonShell can
 keep track of Processes created by it, and means by which the user can
 manipulate those Processes.</p>
@@ -776,8 +714,6 @@ magic command of the form:</p>
 <p>This will place a java.io.File in the reference. The File instance is a copy of
 the CWD File and will allow the user to open, write, create, close streams and
 such in the JythonShell's CWD</p>
-<hr class="docutils" />
-<p><a class="reference" href="#front"><img alt="leo" src="leo.gif" /></a></p>
 </div>
 </div>
 </body>

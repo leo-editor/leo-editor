@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
 <title>Chapter 23: Eliminating sentinel lines with &#64;shadow</title>
 <style type="text/css">
 
@@ -248,14 +248,10 @@ hr { /* EKR */
 </style>
 </head>
 <body>
-<div class="document">
-
+<div class="document" id="chapter-23-eliminating-sentinel-lines-with-shadow">
+<h1 class="title">Chapter 23: Eliminating sentinel lines with &#64;shadow</h1>
 
 <!-- rst3: filename: html\atShadow.html -->
-<!-- July 31, 2008 -->
-<p><a class="reference" href="vimBindings.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="appendices.html"><img alt="next" src="arrow_rt.gif" /></a></p>
-<div class="section" id="chapter-23-eliminating-sentinel-lines-with-shadow">
-<h1><a class="toc-backref" href="#id1">Chapter 23: Eliminating sentinel lines with &#64;shadow</a></h1>
 <p>This chapter describes an important new feature that debuted in Leo 4.5 b2: &#64;shadow trees.
 These trees combine the benefits of &#64;auto, &#64;thin, &#64;file and &#64;nosent trees:</p>
 <ul class="simple">
@@ -266,24 +262,12 @@ to public files outside of Leo.</li>
 <p>&#64;shadow trees are often useful for studying or editing source files from projects that don't use Leo.
 In such situations, it is convenient to import the &#64;shadow tree from the (public) sources.
 As discussed below, Leo can import &#64;shadow trees automatically,
-using the same algorithms used by <a class="reference" href="directives.html#auto">&#64;auto trees</a>.</p>
+using the same algorithms used by <a class="reference external" href="directives.html#auto">&#64;auto trees</a>.</p>
 <p>The crucial ideas and algorithms underlying &#64;shadow trees are the invention of Bernhard Mulder.</p>
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
-<ul class="simple">
-<li><a class="reference" href="#chapter-23-eliminating-sentinel-lines-with-shadow" id="id1" name="id1">Chapter 23: Eliminating sentinel lines with &#64;shadow</a><ul>
-<li><a class="reference" href="#overview" id="id2" name="id2">Overview</a></li>
-<li><a class="reference" href="#creating-shadow-trees" id="id3" name="id3">Creating &#64;shadow trees</a></li>
-<li><a class="reference" href="#what-the-update-algorithm-does" id="id4" name="id4">What the update algorithm does</a></li>
-<li><a class="reference" href="#aha-boundary-cases-don-t-matter" id="id5" name="id5">Aha: boundary cases don't matter</a></li>
-</ul>
-</li>
-</ul>
-</div>
+<!-- .. contents:: -->
 <!-- Links -->
-<!-- WARNING: image targets may not have upper case letters! -->
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id2">Overview</a></h2>
+<h1>Overview</h1>
 <p>Using &#64;shadow trees is the best choice when you want to have the full power of
 Leo's outlines, but wish to retain the source files in their original format,
 without Leo sentinels (markup) in comments in the source file.</p>
@@ -309,7 +293,7 @@ Note that private files need not be known to source code control systems such as
 </ul>
 </div>
 <div class="section" id="creating-shadow-trees">
-<h2><a class="toc-backref" href="#id3">Creating &#64;shadow trees</a></h2>
+<h1>Creating &#64;shadow trees</h1>
 <p>The first step in creating an &#64;shadow tree is to create a node whose headline is
 &#64;shadow <em>&lt;filename&gt;</em>. This is always safe, even if <em>&lt;filename&gt;</em> already
 exists: Leo writes the &#64;shadow tree to the public and private files only if the
@@ -318,10 +302,10 @@ contains a significant amount of information if it has children or if the &#64;s
 node contains more than 10 characters, excluding Leo directives.</p>
 <p>Thus, you can create an &#64;shadow node and save your outline, regardless of whether the original file exists.
 The next time Leo reads the &#64;shadow node, Leo will <strong>create</strong> the entire &#64;shadow tree
-using the same logic as for <a class="reference" href="directives.html#auto">&#64;auto trees</a>.
+using the same logic as for <a class="reference external" href="directives.html#auto">&#64;auto trees</a>.
 You can cause Leo to read the &#64;shadow node in two ways:
 1) by closing and reloading the Leo outline or
-2) by selecting the &#64;shadow node and executing the <a class="reference" href="File:Read/Write:Read">File:Read/Write:Read</a> &#64;shadow Node command.</p>
+2) by selecting the &#64;shadow node and executing the <a class="reference external" href="File:Read/Write:Read">File:Read/Write:Read</a> &#64;shadow Node command.</p>
 <p><strong>Important</strong>: Leo imports the private file into the &#64;shadow tree only if
 a) the public file exists and b) the private file does <em>not</em> exist.
 Thus, Leo will import code into each &#64;shadow node at most once.
@@ -330,7 +314,7 @@ After the first import, updates are made using the update algorithm.</p>
 the &#64;shadow node is under the influence of an &#64;ignore directive.</p>
 </div>
 <div class="section" id="what-the-update-algorithm-does">
-<h2><a class="toc-backref" href="#id4">What the update algorithm does</a></h2>
+<h1>What the update algorithm does</h1>
 <p>Suppose our &#64;shadow tree is &#64;shadow a.py. When Leo writes this tree it creates a
 public file, a.py, and a private file, .leo_shadow/xa.p (or just xa.p for
 short). Public files might can committed to a source code control system such as
@@ -355,7 +339,7 @@ please study the x.propagate_changed_lines method in leoShadow.py. This code is
 heavily commented.</p>
 </div>
 <div class="section" id="aha-boundary-cases-don-t-matter">
-<h2><a class="toc-backref" href="#id5">Aha: boundary cases don't matter</a></h2>
+<h1>Aha: boundary cases don't matter</h1>
 <p>There is one boundary case that the update algorithm can not resolve.
 If a line is inserted at the boundary between nodes,
 the updated algorithm can not determine whether the line should be inserted
@@ -380,9 +364,6 @@ the line (on the boundary) will be completely determined and it will never
 need to be moved across the boundary.</li>
 </ol>
 <p>Understanding these three reasons finally convinced me that &#64;shadow could be made to work reliably.</p>
-<hr class="docutils" />
-<p><a class="reference" href="vimBindings.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="appendices.html"><img alt="next" src="arrow_rt.gif" /></a></p>
-</div>
 </div>
 </div>
 </body>

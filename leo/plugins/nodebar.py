@@ -249,7 +249,7 @@ def addNodeBar( tag, keywords ):
         mbox.pack_configure( before = z )
 
     def goToChild( c = c ):
-        pos = c.currentPosition()
+        pos = c.p
         if pos.hasChildren():
             c.selectPosition( pos.nthChild( 0 ) )
 

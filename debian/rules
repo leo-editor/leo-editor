@@ -1,0 +1,10 @@
+#!/usr/bin/make -f
+# leo debian/rules file
+DEB_PYTHON_SYSTEM=pysupport
+include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/python-distutils.mk
+include /usr/share/cdbs/1/rules/dpatch.mk
+
+install/leo::
+	dh_installman -p$(cdbs_curpkg) debian/leo.1
+

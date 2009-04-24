@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="101" left="145" height="804" width="896"/>
+	<global_window_position top="54" left="425" height="822" width="821"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -66,7 +66,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070303143846.1"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20051012104957"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -85,8 +84,8 @@
 <v t="ekr.20050618061835.10"><vh>output on the console</vh></v>
 </v>
 <v t="ekr.20050618061835.11"><vh>It takes two to tango</vh>
-<v t="ekr.20050618061835.6"><vh>@test my first Leo test</vh></v>
-<v t="ekr.20050618061835.9"><vh>@@test my second Leo test</vh></v>
+<v t="ekr.20050618061835.6"></v>
+<v t="ekr.20050618061835.9"></v>
 <v t="ekr.20050618061835.12"><vh>output on the console</vh></v>
 </v>
 <v t="ekr.20050618061835.13"><vh>Life gets more interesting</vh>
@@ -123,13 +122,10 @@
 <v t="ekr.20051104081502.9"><vh>a</vh></v>
 </v>
 <v t="ekr.20051104081502.10"><vh>d</vh>
-<v t="ekr.20051104081502.5"><vh>c</vh>
-<v t="ekr.20051104081502.6"><vh>firstChild</vh></v>
-<v t="ekr.20051104081502.7"><vh>secondChild</vh></v>
-</v>
+<v t="ekr.20051104081502.5"></v>
 <v t="ekr.20051104081502.11"><vh>sibling 2</vh></v>
 </v>
-<v t="ekr.20051104081502.6"><vh>firstChild</vh></v>
+<v t="ekr.20051104081502.6"></v>
 <v t="ekr.20051104081502.12"><vh>last</vh></v>
 </v>
 <v t="ekr.20051104081502.13"><vh>Cloning headlines</vh>
@@ -139,59 +135,16 @@
 <v t="ekr.20051104081502.17"><vh>d</vh></v>
 <v t="ekr.20051104081502.18"><vh>e</vh></v>
 </v>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
+<v t="ekr.20051104081502.16"></v>
 </v>
 <v t="ekr.20051104081502.19"><vh>g</vh></v>
 </v>
 <v t="ekr.20051104081502.20"><vh>a</vh>
-<v t="ekr.20051104081502.15"><vh>b</vh>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
+<v t="ekr.20051104081502.15"></v>
+<v t="ekr.20051104081502.15"></v>
+<v t="ekr.20051104081502.19"></v>
 </v>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
-</v>
-<v t="ekr.20051104081502.15"><vh>b</vh>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
-</v>
-<v t="ekr.20051104081502.19"><vh>g</vh></v>
-</v>
-<v t="ekr.20051104081502.20"><vh>a</vh>
-<v t="ekr.20051104081502.15"><vh>b</vh>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
-</v>
-<v t="ekr.20051104081502.15"><vh>b</vh>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
-<v t="ekr.20051104081502.16"><vh>c</vh>
-<v t="ekr.20051104081502.17"><vh>d</vh></v>
-<v t="ekr.20051104081502.18"><vh>e</vh></v>
-</v>
-</v>
-<v t="ekr.20051104081502.19"><vh>g</vh></v>
-</v>
+<v t="ekr.20051104081502.20"></v>
 <v t="ekr.20051104081502.21"><vh>f</vh></v>
 </v>
 <v t="ekr.20051104081502.308"><vh>Develop &amp; test g.removeExtraLws</vh>
@@ -203,7 +156,6 @@
 <v t="ekr.20051104081502.24"><vh>Test of using an iterator inside a list comprehension</vh></v>
 <v t="ekr.20051104081502.25"><vh>Test of using c.allNodes_iter to create a list of all positions</vh></v>
 <v t="ekr.20051104081502.26"><vh>Creating a list of distinct vnodes</vh></v>
-<v t="ekr.20051104081502.27"><vh>Test that back quotes are not needed in es</vh></v>
 <v t="ekr.20051104081502.28"><vh>test of list comparisons</vh></v>
 <v t="ekr.20051104081502.29"><vh>test that childIndex doesn't mess with p</vh></v>
 <v t="ekr.20051104081502.30"><vh>Test of __cmp__ vrs equal</vh></v>
@@ -266,26 +218,10 @@
 <v t="ekr.20051104081502.125"><vh>Clone test data</vh>
 <v t="ekr.20051104081502.126"><vh>aa</vh></v>
 <v t="ekr.20051104081502.127"><vh>a</vh>
-<v t="ekr.20051104081502.120"><vh>b</vh>
-<v t="ekr.20051104081502.121"><vh>c</vh>
-<v t="ekr.20051104081502.122"><vh>c2</vh>
-<v t="ekr.20051104081502.123"><vh>c3</vh></v>
-<v t="ekr.20051104081502.124"><vh>c4</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20051104081502.120"></v>
 </v>
 <v t="ekr.20051104081502.128"><vh>d</vh>
-<v t="ekr.20051104081502.127"><vh>a</vh>
-<v t="ekr.20051104081502.120"><vh>b</vh>
-<v t="ekr.20051104081502.121"><vh>c</vh>
-<v t="ekr.20051104081502.122"><vh>c2</vh>
-<v t="ekr.20051104081502.123"><vh>c3</vh></v>
-<v t="ekr.20051104081502.124"><vh>c4</vh></v>
-</v>
-</v>
-</v>
-</v>
+<v t="ekr.20051104081502.127"></v>
 </v>
 <v t="ekr.20051104081502.129"><vh>e</vh></v>
 <v t="ekr.20051104081502.130"><vh>z</vh></v>
@@ -753,26 +689,8 @@
 <v t="ekr.20071113143523.25"><vh>Posting: document unit test bug &amp; describe coming new scheme</vh></v>
 </v>
 <v t="ekr.20070524080435"><vh>@@test Run all @test nodes in leoPy.leo</vh></v>
-<v t="ekr.20051108141141" annotate="7d71002e"><vh>Not ready yet (typing)</vh>
-<v t="ekr.20051107115231.19"><vh>@@test typing and undo in headline - with selection</vh></v>
-<v t="ekr.20051107115231.32"><vh>@@test plugins manager stays in front</vh></v>
-<v t="ekr.20051109091333"><vh>@@test deleting the last body character text redraws the screen (and icon)</vh></v>
-<v t="ekr.20051107115231.31"><vh>@test return in minibuffer after tab</vh></v>
-<v t="ekr.20051107115231.34"><vh>@test scrolling at bottom of window</vh></v>
-<v t="ekr.20051130080047"><vh>@test head changes stick after click in icon box</vh></v>
-<v t="ekr.20051120110536"><vh>@test paste into body sticks</vh></v>
-<v t="ekr.20051202100844"><vh>@test edit headline, then insert node</vh></v>
-<v t="ekr.20051202100844.1"><vh>@test &lt;Delete&gt; key</vh></v>
-<v t="ekr.20051202100844.2"><vh>@test arrow keys</vh></v>
-<v t="ekr.20051107115231.26"><vh>@@test paste in headline recomputes width</vh></v>
-</v>
 <v t="ekr.20060208195054"><vh>@@test k.inverseCommandsDict is inverse of c.commandsDict</vh>
 <v t="ekr.20070926095117"><vh>mungeKey</vh></v>
-</v>
-<v t="ekr.20080514113943.1"><vh>Fail when command mode is the default</vh>
-<v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
-<v t="ekr.20060208072307"><vh>@test paste from menu into body sticks</vh></v>
-<v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
 </v>
 </v>
 </v>
@@ -806,17 +724,14 @@
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
 </v>
 <v t="ekr.20080703104536.1"><vh>Other tests</vh>
-<v t="ekr.20051104081502.108"><vh>runProfile button mini-test </vh></v>
-<v t="ekr.20051104081502.109"><vh>runTimeit mini-test </vh></v>
+<v t="ekr.20051104081502.108"></v>
+<v t="ekr.20051104081502.109"></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
-<v t="ekr.20060205165937"><vh>Doctests</vh>
-<v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
-</v>
-<v t="ekr.20040712101754.2" annotate="7d71002e"><vh>Unit tests for  .leo files</vh>
+<v t="ekr.20040712101754.2" annotate="7d71002e"><vh>Load tests for .leo files</vh>
 <v t="ekr.20040712101754.3"><vh>@test test.leo</vh></v>
 <v t="ekr.20040803090901"><vh>@test leoDist.leo</vh></v>
+<v t="ekr.20081121164135.1"><vh>@test leoGuiPluginsRef.leo</vh></v>
 <v t="ekr.20040712101754.4"><vh>@test LeoPyRef.leo</vh></v>
 <v t="ekr.20040712101754.5"><vh>@test leoPluginsRef.leo</vh></v>
 <v t="ekr.20040712101754.6"><vh>@test LeoDocs.leo</vh></v>
@@ -824,7 +739,30 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20050120095423" annotate="7d71002e"><vh>Unit tests for plugins</vh>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20060205165937"><vh>Doctests</vh>
+<v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
+</v>
+<v t="ekr.20071113193438"><vh>General</vh>
+<v t="ekr.20061109172511"><vh>Check base classes &amp; ivars</vh>
+<v t="ekr.20061109172511.3"><vh>Startup</vh></v>
+<v t="ekr.20061109172511.1"><vh>Docs</vh></v>
+<v t="ekr.20061109210659"><vh>Scripts</vh></v>
+<v t="ekr.20061109172511.4"><vh> Test files</vh></v>
+<v t="ekr.20050105082500"><vh>Other tests</vh></v>
+<v t="ekr.20050105080048.1"><vh>Load tests for .leo files</vh></v>
+<v t="ekr.20050105084757"><vh>All unit tests</vh></v>
+<v t="ekr.20050105090632"><vh>@test official g.app ivars</vh></v>
+</v>
+<v t="ekr.20040712101754.186"><vh>@test batch mode</vh>
+<v t="ekr.20041012084201"><vh>removeFile</vh></v>
+</v>
+<v t="ekr.20040712101813"><vh>@@test checkAllPythonCode</vh></v>
+<v t="ekr.20060131101806"><vh>@test all commands have an event arg</vh></v>
+<v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
+<v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+</v>
+<v t="ekr.20050120095423" annotate="7d71002e"><vh>Plugins</vh>
 <v t="ekr.20080309193654.1"><vh>@ignore</vh>
 <v t="ekr.20050120095423.21"><vh>print all loaded plugins</vh></v>
 <v t="ekr.20050218015346"><vh>@suite run all plugin test routines</vh>
@@ -867,33 +805,22 @@
 </v>
 <v t="ekr.20061106201509.4"><vh>@test rClick.py</vh></v>
 <v t="ekr.20061106201509.1"><vh>detect_urls.py</vh>
-<v t="ekr.20061106201509.2"><vh>@test openURL</vh></v>
-<v t="ekr.20061106201509.3"><vh>@test colorizerURLs</vh></v>
+<v t="ekr.20061106201509.2"><vh>Startup</vh></v>
+<v t="ekr.20061106201509.3"><vh>Docs</vh></v>
 </v>
 <v t="ekr.20061110112507"><vh>@test mnplugins.insertBodystamp</vh></v>
 <v t="ekr.20061110115517"><vh>@test macros.parameterize</vh></v>
 <v t="ekr.20060203201949" annotate="7d71002e"><vh>@test restore the screen</vh></v>
+<v t="ekr.20090201140204.1"><vh>gui plugins</vh>
+<v t="ekr.20090201140204.2"><vh>@test c.vnode2position</vh></v>
+<v t="ekr.20090201135611.3"><vh>@test position2Item</vh></v>
+<v t="ekr.20090201135611.4"><vh>@test item2position</vh></v>
 </v>
-<v t="ekr.20061109172511"><vh>Check base classes &amp; ivars</vh>
-<v t="ekr.20061109172511.3"><vh>@test leoBody is subset of leoTkBody</vh></v>
-<v t="ekr.20061109172511.1"><vh>@test leoFrame is subset of leoTkFrame</vh></v>
-<v t="ekr.20061109210659"><vh>@test leoGui is subset of leoTkGui</vh></v>
-<v t="ekr.20061109172511.4"><vh>@test leoTree is subset of leoTkTree</vh></v>
-<v t="ekr.20050105082500"><vh>@test official commander ivars</vh></v>
-<v t="ekr.20050105080048.1"><vh>@test official frame ivars</vh></v>
-<v t="ekr.20050105084757"><vh>@test official g.app directories</vh></v>
-<v t="ekr.20050105090632"><vh>@test official g.app ivars</vh></v>
-</v>
-<v t="ekr.20071113193438"><vh>General</vh>
-<v t="ekr.20040712101754.186"><vh>@test batch mode</vh>
-<v t="ekr.20041012084201"><vh>removeFile</vh></v>
-</v>
-<v t="ekr.20040712101813"><vh>@@test checkAllPythonCode</vh></v>
-<v t="ekr.20060131101806"><vh>@test all commands have an event arg</vh></v>
-<v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
-<v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20090131113752.2"><vh>leoApp</vh>
+<v t="ekr.20090131113752.3"><vh>@test consistency of leoApp tables</vh></v>
+</v>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -902,6 +829,10 @@
 <v t="ekr.20041021065903.2"><vh>unnamed node</vh></v>
 </v>
 <v t="ekr.20041021065844.1"><vh>Output</vh></v>
+</v>
+<v t="ekr.20090225102051.2"><vh>@test @edit</vh>
+<v t="ekr.20090225102051.3"><vh>#@edit</vh></v>
+<v t="ekr.20090225102051.4"><vh>Output</vh></v>
 </v>
 <v t="ekr.20040712101754.103"><vh>@test @file no newline</vh>
 <v t="ekr.20040712101754.104"><vh>#@file</vh></v>
@@ -956,63 +887,63 @@
 </v>
 <v t="ekr.20071113193438.1"><vh>leoColor</vh>
 <v t="ekr.20040712101754.116"><vh>@test @comment after @language plain</vh>
-<v t="ekr.20040712101754.117"><vh>Test</vh></v>
+<v t="ekr.20040712101754.117"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.118"><vh>@test colorizer Actionscript</vh>
-<v t="ekr.20040712101754.119"><vh>Actionscript</vh></v>
+<v t="ekr.20040712101754.119"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.120"><vh>@test colorizer C</vh>
-<v t="ekr.20040712101754.121"><vh>C</vh></v>
+<v t="ekr.20040712101754.121"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.122"><vh>@test colorizer C#</vh>
-<v t="ekr.20040712101754.123"><vh>C#</vh></v>
+<v t="ekr.20040712101754.123"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.124"><vh>@test colorizer css</vh>
-<v t="ekr.20040712101754.125"><vh>css</vh></v>
+<v t="ekr.20040712101754.125"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.126"><vh>@test colorizer CWEB</vh>
-<v t="ekr.20040712101754.127"><vh>CWEB</vh>
+<v t="ekr.20040712101754.127"><vh>Startup</vh>
 <v t="ekr.20040712101754.128"><vh>&lt;&lt; section ref &gt;&gt;</vh></v>
 </v>
 </v>
 <v t="ekr.20040712101754.129"><vh>@test colorizer elisp</vh>
-<v t="ekr.20040712101754.130"><vh>elisp</vh></v>
+<v t="ekr.20040712101754.130"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20060829092306"><vh>@test colorizer erlang</vh>
-<v t="ekr.20060829092306.1"><vh>erlang</vh></v>
+<v t="ekr.20060829092306.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20041107105213"><vh>@test colorizer forth</vh>
-<v t="ekr.20080707101444.1"><vh>forth</vh></v>
+<v t="ekr.20080707101444.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.131"><vh>@test colorizer HTML string bug</vh>
-<v t="ekr.20040712101754.132"><vh>String bug in html</vh></v>
+<v t="ekr.20040712101754.132"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.133"><vh>@test colorizer HTML1</vh>
-<v t="ekr.20040712101754.134"><vh>HTML1</vh></v>
+<v t="ekr.20040712101754.134"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.135"><vh>@test colorizer HTML2</vh>
-<v t="ekr.20040712101754.136"><vh>HTML2</vh></v>
+<v t="ekr.20040712101754.136"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20060829092306.2"><vh>@test colorizer Java</vh>
-<v t="ekr.20060829092306.3"><vh>Java</vh></v>
+<v t="ekr.20060829092306.3"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.137"><vh>@test colorizer LaTex</vh>
-<v t="ekr.20040712101754.138"><vh>LaTex</vh></v>
+<v t="ekr.20040712101754.138"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20071219172126"><vh>@test colorizer lisp</vh>
-<v t="ekr.20071219172126.1"><vh>lisp</vh></v>
+<v t="ekr.20071219172126.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20071219170354"><vh>@test colorizer perl</vh>
-<v t="ekr.20071219170354.1"><vh>perl</vh></v>
+<v t="ekr.20071219170354.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.141"><vh>@test colorizer PHP</vh>
-<v t="ekr.20040712101754.142"><vh>PHP</vh></v>
+<v t="ekr.20040712101754.142"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20050618053006"><vh>@test colorizer plsql</vh>
-<v t="ekr.20050618053006.1"><vh>plsql</vh></v>
+<v t="ekr.20050618053006.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.143"><vh>@test colorizer python.xml (jEdit)</vh>
-<v t="ekr.20040712101754.144"><vh>python.xml</vh>
+<v t="ekr.20040712101754.144"><vh>Startup</vh>
 <v t="ekr.20040712101754.145"><vh>&lt;&lt; remarks &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.146"><vh>&lt;&lt; comments &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.147"><vh>&lt;&lt; literals &gt;&gt;</vh></v>
@@ -1026,43 +957,43 @@
 </v>
 </v>
 <v t="ekr.20040712101754.154"><vh>@test colorizer Python1</vh>
-<v t="ekr.20040712101754.155"><vh>Python1</vh></v>
+<v t="ekr.20040712101754.155"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.156"><vh>@test colorizer Python2</vh>
-<v t="ekr.20040712101754.157"><vh>Python2</vh></v>
+<v t="ekr.20040712101754.157"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20060829092306.4"><vh>@test colorizer r</vh>
-<v t="ekr.20060829092306.5"><vh>r</vh></v>
+<v t="ekr.20060829092306.5"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.158"><vh>@test colorizer rapidq</vh>
-<v t="ekr.20040712101754.159"><vh>rapidq</vh></v>
+<v t="ekr.20040712101754.159"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.160"><vh>@test colorizer Rebol</vh>
-<v t="ekr.20040712101754.161"><vh>Rebol</vh></v>
+<v t="ekr.20040712101754.161"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20071219184852"><vh>@test colorizer rest</vh>
-<v t="ekr.20071219184847"><vh>rest</vh></v>
+<v t="ekr.20071219184847"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.162"><vh>@test colorizer shell</vh>
-<v t="ekr.20040712101754.163"><vh>shell</vh></v>
+<v t="ekr.20040712101754.163"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20071219172615"><vh>@test colorizer shellscript</vh>
-<v t="ekr.20071219172615.1"><vh>shellscript</vh></v>
+<v t="ekr.20071219172615.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.164"><vh>@test colorizer tex.xml (jEdit)</vh>
-<v t="ekr.20040712101754.165"><vh>tex.xml</vh>
+<v t="ekr.20040712101754.165"><vh>Startup</vh>
 <v t="ekr.20040712101754.166"><vh>&lt;&lt; general rules &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.167"><vh>&lt;&lt; math rules &gt;&gt;</vh></v>
 </v>
 </v>
 <v t="ekr.20040712101754.168"><vh>@test colorizer wikiTest1</vh>
-<v t="ekr.20040712101754.169"><vh>wikiTest1</vh></v>
+<v t="ekr.20040712101754.169"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.170"><vh>@test colorizer wikiTest2</vh>
-<v t="ekr.20040712101754.171"><vh>wikiTest2</vh></v>
+<v t="ekr.20040712101754.171"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.172"><vh>@test colorizer wikiTest3</vh>
-<v t="ekr.20040712101754.173"><vh>wikiTest3</vh></v>
+<v t="ekr.20040712101754.173"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20061106184118"><vh>@test leoColor.doNowebSecRef</vh>
 <v t="ekr.20061106184118.1"><vh>&lt;&lt; test defined &gt;&gt;</vh></v>
@@ -1070,31 +1001,31 @@
 <v t="ekr.20040712101754.176"><vh>@test python keywords (new colorizer)</vh></v>
 <v t="ekr.20071113090055.2"><vh>@test scanColorDirectives</vh></v>
 <v t="ekr.20060829092306.6"><vh>@test vbscript</vh>
-<v t="ekr.20060829092306.7"><vh>vbscript</vh></v>
+<v t="ekr.20060829092306.7"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20061115103558" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113193624"><vh>leoCommands</vh>
 <v t="ekr.20050512084850" annotate="7d71002e"><vh> Check outline</vh>
-<v t="ekr.20040712101754.272"><vh>@test CheckOutline</vh></v>
-<v t="ekr.20041019124050"><vh>@test pretty printing a docstring</vh>
+<v t="ekr.20040712101754.272"><vh>Startup</vh></v>
+<v t="ekr.20041019124050"><vh>Docs</vh>
 <v t="ekr.20041019124050.1"><vh>Original</vh></v>
 <v t="ekr.20041019124050.2"><vh>Test</vh></v>
 </v>
-<v t="ekr.20040713070526"><vh>@test Pretty Print command</vh>
+<v t="ekr.20040713070526"><vh>Scripts</vh>
 <v t="ekr.20040713123617"><vh>tempNode</vh></v>
 <v t="ekr.20050726141158"><vh>before</vh></v>
 <v t="ekr.20040713123828.1"><vh>after</vh></v>
 </v>
 </v>
 <v t="ekr.20071113194033"><vh> Mark commands</vh>
-<v t="ekr.20050512083807.1" annotate="7d71002e"><vh>@test markAllAtFileNodesDirty</vh></v>
-<v t="ekr.20050512083807.2" annotate="7d71002e"><vh>@test markAtFileNodesDirty</vh></v>
-<v t="ekr.20050512083700.1" annotate="7d71002e"><vh>@test markChangedHeadlines</vh></v>
-<v t="ekr.20050512083807" annotate="7d71002e"><vh>@test markChangedRoots</vh></v>
-<v t="ekr.20050512083816" annotate="7d71002e"><vh>@test markClones</vh></v>
-<v t="ekr.20050512083816" annotate="7d71002e"><vh>@test markClones</vh></v>
-<v t="ekr.20050512083822" annotate="7d71002e"><vh>@test markHeadline</vh></v>
+<v t="ekr.20050512083807.1" annotate="7d71002e"><vh>Startup</vh></v>
+<v t="ekr.20050512083807.2" annotate="7d71002e"><vh>Docs</vh></v>
+<v t="ekr.20050512083700.1" annotate="7d71002e"><vh>Scripts</vh></v>
+<v t="ekr.20050512083807" annotate="7d71002e"><vh> Test files</vh></v>
+<v t="ekr.20050512083816" annotate="7d71002e"><vh>Load tests for .leo files</vh></v>
+<v t="ekr.20050512083816" annotate="7d71002e"></v>
+<v t="ekr.20050512083822" annotate="7d71002e"><vh>All unit tests</vh></v>
 <v t="ekr.20050512083822.1" annotate="7d71002e"><vh>@test markSubheads</vh>
 <v t="ekr.20050512084850.1"><vh>child 1</vh></v>
 <v t="ekr.20050512084850.2"><vh>child 2</vh></v>
@@ -1102,49 +1033,49 @@
 <v t="ekr.20050512083822.2" annotate="7d71002e"><vh>@test unmarkAll</vh></v>
 </v>
 <v t="ekr.20050417102057" annotate="7d71002e"><vh> Reformat Paragraph tests </vh>
-<v t="ekr.20050417102114" annotate="7d71002e"><vh>@test noTrailingNewline (pass)</vh>
+<v t="ekr.20050417102114" annotate="7d71002e"><vh>Startup</vh>
 <v t="ekr.20050417104821" annotate="7d71002e"><vh>data</vh>
 <v t="ekr.20050417124704" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20050417102114.1" annotate="7d71002e"><vh>before</vh></v>
 <v t="ekr.20050417102114.2" annotate="7d71002e"><vh>after</vh></v>
 </v>
 </v>
-<v t="ekr.20050417111144" annotate="7d71002e"><vh>@test trailingNewline (pass)</vh>
+<v t="ekr.20050417111144" annotate="7d71002e"><vh>Docs</vh>
 <v t="ekr.20050417111144.1" annotate="7d71002e"><vh>data</vh>
 <v t="ekr.20050417111240" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20050417111144.2" annotate="7d71002e"><vh>before</vh></v>
 <v t="ekr.20050417111144.3" annotate="7d71002e"><vh>after</vh></v>
 </v>
 </v>
-<v t="ekr.20050417113549" annotate="7d71002e"><vh>@test mixedLineLengths</vh>
+<v t="ekr.20050417113549" annotate="7d71002e"><vh>Scripts</vh>
 <v t="ekr.20050417113910" annotate="7d71002e"><vh>data</vh>
 <v t="ekr.20050417113921" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20050417113910.1" annotate="7d71002e"><vh>before</vh></v>
 <v t="ekr.20050417113910.2" annotate="7d71002e"><vh>after</vh></v>
 </v>
 </v>
-<v t="ekr.20050417114153" annotate="7d71002e"><vh>@test mixedLinesWithLeadingWS</vh>
+<v t="ekr.20050417114153" annotate="7d71002e"><vh> Test files</vh>
 <v t="ekr.20050417114221" annotate="7d71002e"><vh>data</vh>
 <v t="ekr.20050417114221.1" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20050417114221.2" annotate="7d71002e"><vh>before</vh></v>
 <v t="ekr.20050417114221.3" annotate="7d71002e"><vh>after</vh></v>
 </v>
 </v>
-<v t="ekr.20050417114836" annotate="7d71002e"><vh>@test noChangeRequired</vh>
+<v t="ekr.20050417114836" annotate="7d71002e"><vh>Other tests</vh>
 <v t="ekr.20050417095124.16" annotate="7d71002e"><vh>data</vh>
 <v t="ekr.20050417114914" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20050417095124.17" annotate="7d71002e"><vh>before</vh></v>
 <v t="ekr.20050417095124.18" annotate="7d71002e"><vh>after</vh></v>
 </v>
 </v>
-<v t="ekr.20050417095020.11" annotate="7d71002e"><vh>@test honorLeadingWS</vh>
+<v t="ekr.20050417095020.11" annotate="7d71002e"><vh>Load tests for .leo files</vh>
 <v t="ekr.20050417095124.19" annotate="7d71002e"><vh>data</vh>
 <v t="ekr.20050417115111" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20050417095124.20" annotate="7d71002e"><vh>before</vh></v>
 <v t="ekr.20050417095124.21" annotate="7d71002e"><vh>after</vh></v>
 </v>
 </v>
-<v t="ekr.20050417095020.12" annotate="7d71002e"><vh>@test honorLeadingWSVar1</vh>
+<v t="ekr.20050417095020.12" annotate="7d71002e"><vh>All unit tests</vh>
 <v t="ekr.20050417095124.22" annotate="7d71002e"><vh>data</vh>
 <v t="ekr.20050417115257" annotate="7d71002e"><vh>tempNode</vh></v>
 <v t="ekr.20050417095124.23" annotate="7d71002e"><vh>before</vh></v>
@@ -1202,8 +1133,9 @@
 </v>
 </v>
 <v t="ekr.20071113145804.10"><vh>@test c.contractAllHeadlines</vh></v>
-<v t="ekr.20061106114738"><vh>@test c.findMatchingBracket</vh></v>
-<v t="ekr.20060211135917"><vh>@test c.getTime</vh></v>
+<v t="ekr.20090104053806.1"><vh>@@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
+<v t="ekr.20061106114738"><vh>Load tests for .leo files</vh></v>
+<v t="ekr.20060211135917"><vh>All unit tests</vh></v>
 <v t="ekr.20061106112522"><vh>@test c.insertBodyTime</vh></v>
 <v t="ekr.20040802065214" annotate="7d71002e"><vh>@test changing headline marks descendent @thin nodes dirty</vh>
 <v t="ekr.20040802065214.1"><vh>bogus</vh></v>
@@ -1212,6 +1144,7 @@
 <v t="ekr.20071113105654.1"><vh>@test hoist with no children</vh></v>
 <v t="ekr.20070611105728"><vh>@test illegal clone demote</vh></v>
 <v t="ekr.20071113201833" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+<v t="ville.20090313183551.2" a="M"><vh>@test c.db</vh></v>
 </v>
 <v t="ekr.20071113194216"><vh>leoConfig</vh>
 <v t="ekr.20060325071703.2"><vh>@@test ifgui</vh></v>
@@ -1241,35 +1174,35 @@
 </v>
 </v>
 <v t="ekr.20080905112230.4"><vh>goto-line-number tests: clones</vh>
-<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
+<v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080905130723.4"><vh>at-thin-child</vh></v>
-<v t="ekr.20080907123324.3"><vh>at-nosent-child</vh></v>
+<v t="ekr.20080907123324.3"></v>
 </v>
 <v t="ekr.20080905113550.2"><vh>Tests with @auto as the root</vh>
-<v t="ekr.20080904110148.1"><vh>@test goto_countlines n = 3</vh></v>
-<v t="ekr.20080904110148.4"><vh>@test goto_countlines n = 20</vh></v>
-<v t="ekr.20080904110148.5"><vh>@test goto_setup n = 3</vh></v>
-<v t="ekr.20080904113003.2"><vh>@test goto_setup with scriptData</vh></v>
+<v t="ekr.20080904110148.1"><vh>Startup</vh></v>
+<v t="ekr.20080904110148.4"><vh>Docs</vh></v>
+<v t="ekr.20080904110148.5"><vh>Scripts</vh></v>
+<v t="ekr.20080904113003.2"><vh> Test files</vh></v>
 </v>
 <v t="ekr.20080905113550.3"><vh>Tests with @file as the root</vh>
-<v t="ekr.20080904120258.6"><vh>@test goto_findGnx</vh></v>
-<v t="ekr.20080905130723.1"><vh>@test goto_findVnode</vh></v>
+<v t="ekr.20080904120258.6"><vh>Startup</vh></v>
+<v t="ekr.20080905130723.1"><vh>Docs</vh></v>
 </v>
 <v t="ekr.20080907122804.2"><vh>Tests with @shadow as the root</vh>
-<v t="ekr.20080907122804.3"><vh>@test goto_setup n = 3 (@shadow)</vh></v>
+<v t="ekr.20080907122804.3"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20080907123324.4"><vh>Tests with @nosent as the root</vh>
-<v t="ekr.20080907123324.5"><vh>@test goto_setup n = 3 (@nosent)</vh></v>
+<v t="ekr.20080907123324.5"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20080905113550.4"><vh>General tests</vh>
-<v t="ekr.20080905165432.1"><vh>@test goto_findRoot (root in ancestors)</vh></v>
-<v t="ekr.20080905165432.3"><vh>@test goto_findRoot (root not in ancestors)</vh></v>
-<v t="ekr.20080904120258.2"><vh>@test goto_showResults found</vh></v>
+<v t="ekr.20080905165432.1"><vh>Startup</vh></v>
+<v t="ekr.20080905165432.3"><vh>Docs</vh></v>
+<v t="ekr.20080904120258.2"><vh>Scripts</vh></v>
 <v t="ekr.20080904120258.3"><vh>@test goto_showResults not found</vh></v>
 </v>
-<v t="ekr.20080904120258.4" annotate="7d71002e"><vh>@test restore the screen</vh></v>
+<v t="ekr.20081111084046.6" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20070131175538"><vh> Commands A-E</vh>
+<v t="ekr.20070131175538"><vh> Commands A-B</vh>
 <v t="ekr.20061101121602.78"><vh>@test add-space-to-lines</vh>
 <v t="ekr.20061101121602.79"><vh>work</vh></v>
 <v t="ekr.20061101121602.80"><vh>before sel=2.0,4.6</vh></v>
@@ -1352,6 +1285,11 @@
 <v t="ekr.20070131173932.2"><vh>before sel=3.2,3.2</vh></v>
 <v t="ekr.20070131173932.3"><vh>after sel=2.23,2.23</vh></v>
 </v>
+<v t="ekr.20081215084144.2"><vh>@test backward-kill-word</vh>
+<v t="ekr.20081215084144.3"><vh>work</vh></v>
+<v t="ekr.20081215084144.4"><vh>before sel=3.7,3.7</vh></v>
+<v t="ekr.20081215084144.5"><vh>after sel=3.5,3.5</vh></v>
+</v>
 <v t="ekr.20061101121602.130"><vh>@test beginning-of-buffer</vh>
 <v t="ekr.20061101121602.131"><vh>work</vh></v>
 <v t="ekr.20061101121602.132"><vh>before sel=5.56,5.56</vh></v>
@@ -1372,6 +1310,9 @@
 <v t="ekr.20061101121602.144"><vh>before sel=4.10,4.10</vh></v>
 <v t="ekr.20061101121602.145"><vh>after sel=4.0,4.10</vh></v>
 </v>
+<v t="ekr.20081111084046.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+</v>
+<v t="ekr.20081111084046.2"><vh> Commands C-E</vh>
 <v t="ekr.20061101121602.146"><vh>@test capitalize-word</vh>
 <v t="ekr.20061101121602.147"><vh>work</vh></v>
 <v t="ekr.20061101121602.148"><vh>before sel=3.6,3.6</vh></v>
@@ -1492,6 +1433,7 @@
 <v t="ekr.20061101121602.216"><vh>before sel=3.10,3.10</vh></v>
 <v t="ekr.20061101121602.217"><vh>after sel=3.4,3.12</vh></v>
 </v>
+<v t="ekr.20081111082931.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20070131175538.1"><vh> Commands F-L</vh>
 <v t="ekr.20061101121602.218"><vh>@test fill-paragraph</vh>
@@ -1625,6 +1567,12 @@
 <v t="ekr.20070131172706.2"><vh>before sel=2.2,2.2</vh></v>
 <v t="ekr.20070131172706.3"><vh>after sel=1.27,1.27</vh></v>
 </v>
+<v t="ekr.20081215084144.7"><vh>@test kill-word</vh>
+<v t="ekr.20081215084144.8"><vh>work</vh></v>
+<v t="ekr.20081215084144.9"><vh>before sel=2.6,2.6</vh></v>
+<v t="ekr.20081215084144.10"><vh>after sel=2.7,2.7</vh></v>
+</v>
+<v t="ekr.20081111084046.3" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20070131175646"><vh> Commands M-Z</vh>
 <v t="ekr.20070131171218.1"><vh>@@test zap-to-chararacter</vh>
@@ -1763,6 +1711,7 @@
 <v t="ekr.20070217071121.28"><vh>before sel=2.3,5.6</vh></v>
 <v t="ekr.20070217071121.27"><vh>after sel=2.3,5.6</vh></v>
 </v>
+<v t="ekr.20081111084046.4" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20061104172236.1"><vh> Function tests</vh>
 <v t="ekr.20061104172236.3"><vh>@test capitalizeHelper</vh></v>
@@ -1774,33 +1723,33 @@
 <v t="ekr.20061104172236.6"><vh>@test moveToHelper</vh></v>
 <v t="ekr.20061110094226"><vh>@test moveUpOrDownHelper</vh></v>
 <v t="ekr.20071113145804.6"><vh>@test scrollHelper</vh></v>
-<v t="ekr.20061104172236.8"><vh>@test selfInsertCommand-1</vh></v>
-<v t="ekr.20061107031449"><vh>@test selfInsertCommand-2 (replacing tabs)</vh></v>
 <v t="ekr.20061104172236.4"><vh>@test setMoveCol</vh></v>
 </v>
 <v t="ekr.20051107115231" annotate="7d71002e"><vh> Typing</vh>
-<v t="ekr.20051122095426" annotate="7d71002e"><vh>@test make sure the window is visible (Make this the first test)</vh></v>
-<v t="ekr.20051216171321" annotate="7d71002e"><vh>Test headline abc</vh></v>
-<v t="ekr.20051107115231.13" annotate="7d71002e"><vh>Typing and undo tests</vh>
-<v t="ekr.20051107115231.14" annotate="7d71002e"><vh>@test return ends editing of headline</vh></v>
+<v t="ekr.20051122095426" annotate="7d71002e"><vh>Doctests</vh></v>
+<v t="ekr.20051216171321" annotate="7d71002e"><vh>General</vh></v>
+<v t="ekr.20051107115231.13" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20090128184952.3"><vh>Test headline abc</vh></v>
+<v t="ekr.20060208072415" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in body</vh></v>
+<v t="ekr.20051125170139" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in headline</vh></v>
+<v t="ekr.20051109091333"><vh>@test deleting the last body character text redraws the screen (and icon)</vh></v>
 <v t="ekr.20051107115231.15" annotate="7d71002e"><vh>@test editLabel selects entire headline</vh></v>
-<v t="ekr.20051107115231.16" annotate="7d71002e"><vh>@test paste at end of headline</vh></v>
-<v t="ekr.20051107115231.17" annotate="7d71002e"><vh>@test typing and undo in headline - at end</vh></v>
+<v t="ekr.20051120110335" annotate="7d71002e"><vh>@test inserting a new node can be undone and redone</vh></v>
+<v t="ekr.20051125155134" annotate="7d71002e"><vh>@test inserting a new node draws the screen exactly once</vh></v>
 <v t="ekr.20051107115231.18" annotate="7d71002e"><vh>@test paste and undo in headline - at end</vh></v>
 <v t="ekr.20051107115231.20" annotate="7d71002e"><vh>@test paste and undo in headline - with selection</vh></v>
-<v t="ekr.20051107115231.21" annotate="7d71002e"><vh>@test selecting new node retains typing in headline</vh></v>
+<v t="ekr.20051107115231.16" annotate="7d71002e"><vh>@test paste at end of headline</vh></v>
 <v t="ekr.20060208072307" annotate="7d71002e"><vh>@test paste from menu into body sticks</vh></v>
 <v t="ekr.20060208072331" annotate="7d71002e"><vh>@test paste from menu into headline sticks</vh></v>
 <v t="ekr.20051107115231.24" annotate="7d71002e"><vh>@test paste from menu to body recolors the body</vh></v>
-<v t="ekr.20051107115231.25" annotate="7d71002e"><vh>@test typing in headline recomputes width</vh></v>
+<v t="ekr.20051107115231.14" annotate="7d71002e"><vh>@test return ends editing of headline</vh></v>
 <v t="ekr.20051107115231.28" annotate="7d71002e"><vh>@test selecting new node retains paste in headline</vh></v>
+<v t="ekr.20051107115231.21" annotate="7d71002e"><vh>@test selecting new node retains typing in headline</vh></v>
+<v t="ekr.20051107115231.17" annotate="7d71002e"><vh>@test typing and undo in headline - at end</vh></v>
 <v t="ekr.20060208072358" annotate="7d71002e"><vh>@test typing in empty body text redraws the screen (and icon)</vh></v>
+<v t="ekr.20051107115231.25" annotate="7d71002e"><vh>@test typing in headline recomputes width</vh></v>
 <v t="ekr.20051109091731" annotate="7d71002e"><vh>@test typing in non-empty body text does not redraw the screen</vh></v>
-<v t="ekr.20051120110335" annotate="7d71002e"><vh>@test inserting a new node can be undone and redone</vh></v>
-<v t="ekr.20051125155134" annotate="7d71002e"><vh>@test inserting a new node draws the screen exactly once</vh></v>
 <v t="ekr.20051120115046" annotate="7d71002e"><vh>@test undoing insert node restores previous node's body text</vh></v>
-<v t="ekr.20060208072415" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in body</vh></v>
-<v t="ekr.20051125170139" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in headline</vh></v>
 <v t="ekr.20060131102450"><vh>print end of typing and undo tests</vh></v>
 </v>
 <v t="ekr.20051109143831" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
@@ -2020,6 +1969,14 @@
 <v t="ekr.20071020075538.9"><vh>@test c old-style decl 2</vh></v>
 <v t="ekr.20071108082844"><vh>@test c extern</vh></v>
 </v>
+<v t="ekr.20071020075538.33"><vh>c# tests</vh>
+<v t="ekr.20071020075538.34"><vh>@test c# namespace indent</vh></v>
+<v t="ekr.20071020075538.50"><vh>@test c# namespace no indent</vh></v>
+<v t="ekr.20071020075538.63"><vh>@@test c# ref card</vh></v>
+</v>
+<v t="ekr.20090401102321.1"><vh>elisp tests</vh>
+<v t="ekr.20090401102321.2"><vh>@test elisp functions</vh></v>
+</v>
 <v t="ekr.20080211092326"><vh>Pascal tests</vh>
 <v t="ekr.20080211092326.1"><vh>@test pascal-to-delphi interface</vh></v>
 </v>
@@ -2044,6 +2001,7 @@
 <v t="ekr.20071020075538.17"><vh>@test python minimal class 1</vh></v>
 <v t="ekr.20071020075538.18"><vh>@test python minimal class 2</vh></v>
 <v t="ekr.20071020075538.19"><vh>@test python minimal class 3</vh></v>
+<v t="ekr.20081216113655.2"><vh>@test python underindent method</vh></v>
 <v t="ekr.20071020075538.32"><vh>@test scanPythonText: leoImportNosent.py</vh></v>
 <v t="ekr.20071020075538.22"><vh>@test string test: extra indent</vh></v>
 <v t="ekr.20071020075538.23"><vh>@test string underindent lines</vh></v>
@@ -2052,11 +2010,6 @@
 <v t="ekr.20071020075538.29"><vh>@test trailing comment--outer levels</vh></v>
 <v t="ekr.20080901083414.24"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
 <v t="ekr.20080901083414.1"><vh>@test unindent in triple string does not end function</vh></v>
-</v>
-<v t="ekr.20071020075538.33"><vh>c# tests</vh>
-<v t="ekr.20071020075538.34"><vh>@test c# namespace indent</vh></v>
-<v t="ekr.20071020075538.50"><vh>@test c# namespace no indent</vh></v>
-<v t="ekr.20071020075538.63"><vh>@@test c# ref card</vh></v>
 </v>
 <v t="ekr.20071020075538.64"><vh>Java tests</vh>
 <v t="ekr.20071020075538.65"><vh>@test java interface test1</vh></v>
@@ -2081,14 +2034,13 @@
 <v t="ekr.20071024102639"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20071020075538.79"><vh>@test collapse-all</vh></v>
 </v>
-<v t="ekr.20071113145804.2"><vh>@test compareHelper</vh></v>
-<v t="ekr.20071113145804.3"><vh>@test compareHelper-warning</vh></v>
-<v t="ekr.20071119053439"><vh>@test regularizeWhitespace</vh></v>
-<v t="ekr.20080811180035.1"><vh>@test languageForExtension</vh></v>
+<v t="ekr.20071113145804.2"><vh> Test files</vh></v>
+<v t="ekr.20071113145804.3"><vh>Other tests</vh></v>
+<v t="ekr.20071119053439"><vh>Load tests for .leo files</vh></v>
+<v t="ekr.20080811180035.1"><vh>All unit tests</vh></v>
 <v t="ekr.20071113202321.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194033.2"><vh>leoKeys</vh>
-<v t="ekr.20060203181203.3"><vh>@@test strokeFromEvent (no longer used)</vh></v>
 <v t="ekr.20071113145804.34"><vh>@test isPlainKey</vh></v>
 <v t="ekr.20061104172236.24"><vh>@test k.autoCompleterClass.calltip</vh></v>
 <v t="ekr.20060328091154"><vh>@test k.registerCommand</vh></v>
@@ -2098,11 +2050,9 @@
 <v t="ekr.20071113194424.1"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
-<v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
+<v t="ekr.20040712101754.183"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.182"><vh>parent</vh>
-<v t="ekr.20040712101754.183"><vh>@test consistency between parents iter and v.parents</vh></v>
-</v>
+<v t="ekr.20040712101754.182"></v>
 </v>
 <v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
 <v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
@@ -2134,9 +2084,7 @@
 <v t="ekr.20040712101754.191"><vh>b</vh></v>
 </v>
 <v t="ekr.20040712101754.192"><vh>c</vh></v>
-<v t="ekr.20040712101754.190"><vh>a</vh>
-<v t="ekr.20040712101754.191"><vh>b</vh></v>
-</v>
+<v t="ekr.20040712101754.190"></v>
 <v t="ekr.20040712101754.193"><vh>d</vh>
 <v t="ekr.20040712101754.194"><vh>e</vh></v>
 </v>
@@ -2146,18 +2094,22 @@
 <v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
 <v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20090102061858.2"><vh>@test c.positionExists</vh></v>
+<v t="ekr.20090102062037.2"><vh>@test c.positionExists for all nodes</vh></v>
 <v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
-<v t="ekr.20040802071519.1"><vh>child</vh></v>
+<v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
 <v t="ekr.20040712101754.200" annotate="7d71002e"><vh>@test that clones share subtrees</vh></v>
 <v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
 <v t="ekr.20040712101754.212" annotate="7d71002e"><vh>@test vnode list</vh></v>
+<v t="ville.20090312195309.2"><vh>@test find_h / find_b / select_h / select_b</vh></v>
 </v>
+<v t="ekr.20090130133404.2"><vh>@test leoNodes properties</vh></v>
 <v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
-<v t="ekr.20080503132221.1"><vh>@test create-chapter</vh></v>
+<v t="ekr.20080503132221.1"><vh>Startup</vh></v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
 <v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
 <v t="ekr.20080503082625.5"><vh>@test demote</vh></v>
@@ -2520,13 +2472,10 @@
 </v>
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
-<v t="ekr.20081026172306.1"><vh>@mydata</vh>
-<v t="ekr.20081026172306.2"><vh>@run x=a, y=b</vh></v>
-</v>
-<v t="ekr.20081026171313.1"><vh>NewHeadline</vh></v>
-<v t="ekr.20081026172306.3"><vh>@command hi @key=Alt-8</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2681,16 +2630,16 @@ line 4</t>
 &lt;&lt; duplicate tests &gt;&gt;
 
 if 0:
-    g.pr("vnodes",len([v for v in c.all_vnodes_iter()]),len([v for v in c.all_unique_vnodes_iter()]))
-    g.pr("tnodes",len([t for t in c.all_tnodes_iter()]),len([t for t in c.all_unique_tnodes_iter()]))
+    print("vnodes",len([v for v in c.all_vnodes_iter()]),len([v for v in c.all_unique_vnodes_iter()]))
+    print("tnodes",len([t for t in c.all_tnodes_iter()]),len([t for t in c.all_unique_tnodes_iter()]))
 
 if 0: # all nodes
-    for v in c.all_vnodes_iter(): g.pr(v)
-    for t in c.all_tnodes_iter(): g.pr(t)
+    for v in c.all_vnodes_iter(): print(v)
+    for t in c.all_tnodes_iter(): print(t)
         
 if 0: # unique nodes
-    for v in c.all_unique_vnodes_iter(): g.pr(v)
-    for t in c.all_unique_tnodes_iter(): g.pr(t)</t>
+    for v in c.all_unique_vnodes_iter(): print(v)
+    for t in c.all_unique_tnodes_iter(): print(t)</t>
 <t tx="ekr.20040712101754.100">v1 = [p.v for p in c.all_positions_iter()]
 v2 = [v for v in c.all_vnodes_iter()]
 for v in v2: assert(v in v1)
@@ -2701,7 +2650,7 @@ t2 = [t for t in c.all_tnodes_iter()]
 for t in t2: assert(t in t1)
 for t in t1: assert(t in t2)
 
-# g.pr("coverage tests pass")</t>
+# print("coverage tests pass")</t>
 <t tx="ekr.20040712101754.101">nodes = []
 for v in c.all_unique_vnodes_iter():
     assert v not in nodes
@@ -2712,7 +2661,7 @@ for t in c.all_unique_tnodes_iter():
     assert t not in nodes
     nodes.append(t)
     
-# g.pr("duplicate tests pass")</t>
+# print("duplicate tests pass")</t>
 <t tx="ekr.20040712101754.103">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
@@ -2760,11 +2709,11 @@ Line 1
 #@-leo
 last line 1: two trailing newlines
 </t>
-<t tx="ekr.20040712101754.116">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.116">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.117">@language plain
 @comment # /* */
@@ -2779,11 +2728,11 @@ More plain text.
 continues */
 
 More plain text.</t>
-<t tx="ekr.20040712101754.118">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.118">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.119">@language actionscript
 
@@ -2842,11 +2791,11 @@ _width
 _x, _xmouse, _xscale
 _y, _ymouse, _yscale
 and, add, eq, ge, gt, le, lt, ne, not, or, Array, Boolean, Color, Date, Key, Math, MovieClip, Mouse, Number, Object, Selection, Sound, String, XML, XMLSocket</t>
-<t tx="ekr.20040712101754.120">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.120">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.121">@language c
 @comment /* */
@@ -2865,11 +2814,11 @@ assert val=="ok", "colorizer test failed: %s" % p.headString()
 #include "eeprom.h"
 #include &lt;hpc_ram.h&gt;
 #include &lt;rlydef.h&gt;</t>
-<t tx="ekr.20040712101754.122">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.122">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.123">@language csharp
 @ comment
@@ -2902,11 +2851,11 @@ uint ulong unchecked unsafe ushort using
 value virtual void volatile 
 where while
 yield</t>
-<t tx="ekr.20040712101754.124">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.124">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.125">@language css
 /* New in 4.2. */
@@ -2976,11 +2925,11 @@ pitch, range, pitch-during, cue-after, pause-after, cue-before, pause-before, sp
 /*aural values*/
 stress, azimuth, elevation, pitch, richness, volume,
 page-break, page-after, page-inside</t>
-<t tx="ekr.20040712101754.126">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.126">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.127">@language cweb
 
@@ -3009,11 +2958,11 @@ if else, while, do // C keywords.</t>
 
     my \c code goes here // This is \LaTeX text
     /* This is also \LaTeX text */</t>
-<t tx="ekr.20040712101754.129">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.129">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.130">@language elisp
 
@@ -3036,22 +2985,22 @@ set setq
 t type-of 
 unless 
 when while</t>
-<t tx="ekr.20040712101754.131">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.131">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.132">@language html
 
 b = "cd"
 d
 </t>
-<t tx="ekr.20040712101754.133">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.133">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.134">@language html
 
@@ -3146,11 +3095,11 @@ HEIGHT="32" ALIGN="left" NATURALSIZEFLAG="3"&gt;
 
 &lt;/BODY&gt;
 &lt;/HTML&gt;</t>
-<t tx="ekr.20040712101754.135">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.135">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.136">@language html
 
@@ -3158,11 +3107,11 @@ assert val=="ok", "colorizer test failed: %s" % p.headString()
 &lt;!-- test --&gt;
 &lt;project name="Converter" default="dist"&gt;
 &lt;/project&gt;"""</t>
-<t tx="ekr.20040712101754.137">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.137">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.138">@language latex
 
@@ -3187,11 +3136,11 @@ The following 2-letter words should be colored, regardless of what follows:
 
 \(\)\{\}\@
 \(abc\)abc\{abc\}abc\@abc</t>
-<t tx="ekr.20040712101754.141">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.141">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.142">@language php
 @ doc
@@ -3207,11 +3156,11 @@ this is a test.
 __CLASS__
 &lt;?php and or array() ?&gt;
 &lt;?PHP and or array() ?&gt;</t>
-<t tx="ekr.20040712101754.143">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.143">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.144">@language html
 
@@ -3552,11 +3501,11 @@ assert val=="ok", "colorizer test failed: %s" % p.headString()
 &lt;KEYWORD3&gt;__truediv__&lt;/KEYWORD3&gt;
 &lt;KEYWORD3&gt;__version__&lt;/KEYWORD3&gt;
 &lt;KEYWORD3&gt;__xor__&lt;/KEYWORD3&gt;</t>
-<t tx="ekr.20040712101754.154">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.154">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.155">@language plsql
 
@@ -3938,11 +3887,11 @@ with,
 work,
 write,
 xor</t>
-<t tx="ekr.20040712101754.156">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.156">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.157">"""This creates a free-floating copy of v's tree for undo.
 The copied trees must use different tnodes than the original."""
@@ -3958,14 +3907,14 @@ def copyTree(self,root):
     # Replace all tnodes in v by copies.
     assert(v.nodeAfterTree() == None)
     while v:
-        v.t = leoNodes.tnode(0, v.bodyString())
+        v.t = leoNodes.tnode(0, v.b)
         v = v.threadNext()
     return result</t>
-<t tx="ekr.20040712101754.158">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.158">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.159">' New in 4.2.
 @language rapidq
@@ -3997,11 +3946,11 @@ SPACE$,SQR,STACK,STATIC,STEP,STR$,STRF$,STRING,STRING$,
 SUB,SUBI,SWAP,TALLY,TAN,THEN,TIME$,TIMER,TO,TYPE,UBOUND,
 UCASE$,UNLOADLIBRARY,UNTIL,VAL,VARIANT,VARPTR,VARPTR$,VARTYPE,
 WEND,WHILE,WITH,WORD,XOR</t>
-<t tx="ekr.20040712101754.160">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.160">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.161">@language rebol
 
@@ -4069,11 +4018,11 @@ unset? url?
 value? view? 
 within? word?  
 zero?</t>
-<t tx="ekr.20040712101754.162">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.162">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.163"># New in 4.2.
 
@@ -4096,11 +4045,11 @@ cd,chdir,eval,exec,
 exit,kill,newgrp,pwd,read,readonly,
 shift,test,trap,ulimit,
 umask,wait</t>
-<t tx="ekr.20040712101754.164">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.164">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.165">@language html
 
@@ -4195,11 +4144,11 @@ assert val=="ok", "colorizer test failed: %s" % p.headString()
 
 &lt;!-- comments --&gt;
 &lt;EOL_SPAN TYPE="COMMENT1"&gt;%&lt;/EOL_SPAN&gt;</t>
-<t tx="ekr.20040712101754.168">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.168">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.169"># both color_markup &amp; add_directives plugins must be enabled.
 
@@ -4240,11 +4189,11 @@ if 1 and 2:
     pass
 
 print g.app().loadDir</t>
-<t tx="ekr.20040712101754.170">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.170">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.171"># both color_markup &amp; add_directives plugins must be enabled.
 @markup wiki
@@ -4279,11 +4228,11 @@ if 1 and 2:
 
 print g.app().loadDir
 </t>
-<t tx="ekr.20040712101754.172">p = c.currentPosition().firstChild()
+<t tx="ekr.20040712101754.172">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20040712101754.173"># both color_markup &amp; add_directives plugins must be enabled.
 
@@ -4307,7 +4256,7 @@ for p in c.allNodes_iter():
 except AttributeError:
     pass # modes only exists for new colorizer.</t>
 <t tx="ekr.20040712101754.177">p = p.firstChild()
-assert(p.headString()=="File Conversion")
+assert(p.h=="File Conversion")
 p.convertTreeToString()</t>
 <t tx="ekr.20040712101754.178">@
 - convertTreeToString and moreHead can't be vnode methods because they uses level().
@@ -4322,7 +4271,7 @@ p.convertTreeToString()</t>
     level = self.level() - firstLevel
     plusMinus = g.choose(p.hasChildren(), "+", "-")
     
-    return "%s%s %s" % ('\t'*level,plusMinus,p.headString())</t>
+    return "%s%s %s" % ('\t'*level,plusMinus,p.h)</t>
 <t tx="ekr.20040712101754.180">@ 
     + test line
     - test line
@@ -4342,7 +4291,7 @@ def moreBody (self):
     p = self ; list = []
     
     # Only escape the first non-blank character of the line.
-    s =  p.bodyString() ; result = []
+    s =  p.b ; result = []
     lines = string.split(s,'\n')
     for s in lines:
         i = g.skip_ws(s,0)
@@ -4378,10 +4327,10 @@ def moreBody (self):
             assert parent in parents1, "%s not in %s" % (parent,parent2)
 
 except AssertionError:
-    g.pr("parents1")
-    for parent in parents1: g.pr(parent)
-    g.pr("parents2")
-    for parent in parents2: g.pr(parent)
+    print("parents1")
+    for parent in parents1: print(parent)
+    print("parents2")
+    for parent in parents2: print(parent)
     raise</t>
 <t tx="ekr.20040712101754.184">try:
     for p in c.allNodes_iter():
@@ -4395,10 +4344,10 @@ except AssertionError:
                 for parent in vparents:
                     assert parent in parents, "not in parents: %s,%s" % (p,child)
 except AssertionError:
-    g.pr("parents...")
-    for parent in parents: g.pr(parent)
-    g.pr("vparents...")
-    for parent in vparents: g.pr(parent)
+    print("parents...")
+    for parent in parents: print(parent)
+    print("vparents...")
+    for parent in vparents: print(parent)
     raise # for unittest.</t>
 <t tx="ekr.20040712101754.186">import os
 import sys
@@ -4436,19 +4385,19 @@ assert(g.os_path_exists(test_file))</t>
 <t tx="ekr.20040712101754.187"></t>
 <t tx="ekr.20040712101754.188">import leo.core.leoNodes as leoNodes
 
-current = c.currentPosition()
+current = c.p
 child = current.firstChild()
 
 allList = [p.v for p in c.all_positions_iter()]
-vList1 = [v for v in current.vnodes_iter()]
-vList2 = [v for v in current.unique_vnodes_iter()]
+vList1 = [v for v in c.p.vnodes_iter()]
+vList2 = [v for v in c.p.unique_vnodes_iter()]
 
 if 0:
-    for v in vList1: g.pr(v)
-    for v in vList2: g.pr(v)
+    for v in vList1: print(v)
+    for v in vList2: print(v)
 
 if 0:
-    g.pr(len(allList),len(vList1),len(vList2))
+    print(len(allList),len(vList1),len(vList2))
 
 if 0: # v.iters no longer exist.
     &lt;&lt; tests of consistency of p and v iters &gt;&gt;
@@ -4472,14 +4421,14 @@ if 0: # v.iters no longer exist.
     list2 = [v   for v in c.all_vnodes_iter()]
     assert(list1==list2)
     
-    # g.pr("consistency tests pass")
+    # print("consistency tests pass")
 
 except AssertionError:
-    g.pr(tag)
-    g.pr("list1")
-    for v in list1: g.pr(v)
-    g.pr("list2")
-    for v in list2: g.pr(v)
+    print(tag)
+    print("list1")
+    for v in list1: print(v)
+    print("list2")
+    for v in list2: print(v)
     raise</t>
 <t tx="ekr.20040712101754.197">nodes = []
 for v in current.unique_vnodes_iter():
@@ -4491,19 +4440,19 @@ for t in current.unique_tnodes_iter():
     assert t not in nodes
     nodes.append(t)
     
-# g.pr("duplicate tests pass")</t>
+# print("duplicate tests pass")</t>
 <t tx="ekr.20040712101754.198">if 0:
-    for v in current.vnodes_iter(): g.pr(v)
-    for v in current.unique_vnodes_iter(): g.pr(v)
+    for v in current.vnodes_iter(): print(v)
+    for v in current.unique_vnodes_iter(): print(v)
 
 if 0: # subtree of root node:
     root = c.rootPosition()
-    for v in root.vnodes_iter(): g.pr(v)
-    for t in root.tnodes_iter(): g.pr(t)
+    for v in root.vnodes_iter(): print(v)
+    for t in root.tnodes_iter(): print(t)
 
 if 0: # child1's tree.  child2 should not be included.
-    for v in child.vnodes_iter(): g.pr(v)
-    for t in child.tnodes_iter(): g.pr(t)</t>
+    for v in child.vnodes_iter(): print(v)
+    for t in child.tnodes_iter(): print(t)</t>
 <t tx="ekr.20040712101754.199">copy = p.copy()
 assert(p == copy)
 assert(p != p.threadNext())
@@ -4610,10 +4559,10 @@ for p in c.allNodes_iter():
                     assert(z in parents), 'fail 3'
                     
 except AssertionError:
-    g.pr("parents...")
-    for parent in parents: g.pr(parent)
-    g.pr("vparents...")
-    for parent in vparents: g.pr(parent)
+    print("parents...")
+    for parent in parents: print(parent)
+    print("vparents...")
+    for parent in vparents: print(parent)
     g.pdb()
     raise # for unittest.</t>
 <t tx="ekr.20040712101754.209">for p in c.allNodes_iter():
@@ -4688,8 +4637,8 @@ c.redraw()</t>
 u = leoTest.testUtils(c)
 outline1 = p.firstChild()
 outline2 = outline1.next()
-assert(outline1.headString()=="outline1")
-assert(outline2.headString()=="outline2")
+assert(outline1.h=="outline1")
+assert(outline2.h=="outline2")
 
 u.replaceOutline(outline1,outline2)
 c.redraw()
@@ -4704,7 +4653,7 @@ c.checkOutline()</t>
     
     retaining the headline of outline1."""
 
-    h = outline1.headString()
+    h = outline1.h
     copy = outline2.copyTreeAfter()
     copy.initHeadString(h)
     copy.unlink()
@@ -4767,7 +4716,7 @@ g.app.scriptDict['suite'] = suite</t>
     assert move, "no move node"
     
     c.selectVnode(move)
-    commandName = self.parent.headString()
+    commandName = self.parent.h
     command = getattr(c,commandName)
     command(event)
 
@@ -4807,7 +4756,7 @@ g.app.scriptDict['suite'] = suite</t>
     self.parent.parent().contract()</t>
 <t tx="ekr.20040712101754.235">def shortDescription (self):
     
-    return self.parent.headString()</t>
+    return self.parent.h</t>
 <t tx="ekr.20040712101754.236"></t>
 <t tx="ekr.20040712101754.237"></t>
 <t tx="ekr.20040712101754.238"></t>
@@ -4884,8 +4833,8 @@ if sys.platform.lower().startswith('win'):
     else:
         # Create an empty suite to suppress a warning.
         g.app.scriptDict['suite'] = unittest.TestSuite()
-        g.pr("\nCan't create unit tests from doctests")
-        g.pr("doctest.DocTestSuite requires Python 2.3 or above.\n")
+        print("\nCan't create unit tests from doctests")
+        print("doctest.DocTestSuite requires Python 2.3 or above.\n")
         
 else:
     pass # There are problems on Linux.</t>
@@ -4909,9 +4858,9 @@ else:
     c.setBodyString(temp,"")
     before = u.findNodeInTree(p,"before")
     after = u.findNodeInTree(p,"after")
-    temp.scriptSetBodyString(before.bodyString())
+    temp.scriptSetBodyString(before.b)
     c.prettyPrintPythonCode(p=temp,dump=dump)
-    assert temp.bodyString() == after.bodyString(),"Pretty Print Test failed"</t>
+    assert temp.b == after.b,"Pretty Print Test failed"</t>
 <t tx="ekr.20040713123617">@ This is a test of stuff.in doc parts.
 
          I wonder what will happen.
@@ -4981,12 +4930,12 @@ path = g.os_path_join(g.app.loadDir,"..","test","unittest","minimalLeoFile2.leo"
 leoTest.runLeoTest(c,path,verbose=False,full=True)
 </t>
 <t tx="ekr.20040802065214"># Make sure that changing this headline marks descendant @thin nodes dirty.
-h = p.headString()
+h = p.h
 
 try:
     child = p.firstChild()
     child.initHeadString("@thin bogus")
-    assert child.headString() == "@thin bogus", "setting headline failed"
+    assert child.h == "@thin bogus", "setting headline failed"
     child.clearDirty()
     assert not child.isDirty(), "clearing dirty failed"
     c.setHeadString(p,"changed")
@@ -4999,15 +4948,15 @@ finally:
         child.clearDirty()
     finally: pass
 
-c.redraw()
+#### c.redraw()
 </t>
 <t tx="ekr.20040802065214.1">test</t>
 <t tx="ekr.20040802071519"># Tests that c.setBodyString works immediately.
-h = p.headString()
+h = p.h
 
 try:
     child = p.firstChild()
-    before = child.bodyString()
+    before = child.b
     after = "after"
     c.setBodyString(child,"after")
     c.selectPosition(child)
@@ -5079,11 +5028,11 @@ c.selectPosition(p)</t>
 
     if os.path.exists(test_file):
         if verbose:
-            g.pr("@test batch mode: deleting",test_file)
+            print("@test batch mode: deleting",test_file)
         os.remove(test_file)
     else:
         if verbose:
-            g.pr("@test batch mode: not found:",test_file)
+            print("@test batch mode: not found:",test_file)
 </t>
 <t tx="ekr.20041013062906"># This hack is needed only for tkinter gui.
 if g.app.gui.guiName() == 'tkinter':
@@ -5094,7 +5043,7 @@ test2 = p.firstChild().next()
 
 c.prettyPrintPythonCode(p=test2,dump=False)
 
-assert(test2.bodyString()==test1.bodyString())</t>
+assert(test2.b==test1.b)</t>
 <t tx="ekr.20041019124050.1">"""
 line 1
 line 2
@@ -5171,11 +5120,11 @@ last linesection line 1unnamed node line 1</t>
 last line</t>
 <t tx="ekr.20041021065903.1">section line 1</t>
 <t tx="ekr.20041021065903.2">unnamed node line 1</t>
-<t tx="ekr.20041107105213">p = c.currentPosition().firstChild()
+<t tx="ekr.20041107105213">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20041121151002"></t>
 <t tx="ekr.20050104095950"># Switch EqualSizedPanes and ExecuteScript
@@ -5312,7 +5261,7 @@ assert exists(path2)
 f = file(path2)
 s = f.read()
 f.close()
-# g.pr('Contents of %s: %s' % (path2,s))
+# print('Contents of %s: %s' % (path2,s))
 assert s == 'test %s' % path
 os.remove(path2)
 assert not exists(path)</t>
@@ -5357,7 +5306,7 @@ assert exists(path2)
 f = file(path2)
 s = f.read()
 f.close()
-# g.pr('Contents of %s: %s' % (path2,s))
+# print('Contents of %s: %s' % (path2,s))
 assert s == 'test %s' % path
 os.remove(path2)
 assert not exists(path)</t>
@@ -5376,7 +5325,7 @@ for p in (at.outputFileName,at.targetFileName):
     assert not exists(p)
     f = file(p,'w')
     s = 'test %s' % p
-    # g.pr(repr(p),repr(s))
+    # print(repr(p),repr(s))
     f.write(s)
     f.close()
     assert exists(p) # , '%s does not exist' % repr(p)
@@ -5386,14 +5335,14 @@ at.shortFileName = at.targetFileName
 root = at.root
 assert at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns False'
 if 0:
-    g.pr('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-    g.pr('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
+    print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+    print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
 assert not exists(at.outputFileName), 'oops, output file exists'
 assert exists(at.targetFileName), 'oops, target file does not exist'
 f = file(at.targetFileName)
 s = f.read()
 f.close()
-# g.pr('Contents of %s: %s' % (at.targetFileName,s))
+# print('Contents of %s: %s' % (at.targetFileName,s))
 assert s == 'test %s' % at.outputFileName, 'unexpected contents of target file'
 os.remove(at.targetFileName)</t>
 <t tx="ekr.20050105095743">import os
@@ -5411,7 +5360,7 @@ for p in (at.outputFileName,at.targetFileName):
     assert not exists(p)
     f = file(p,'w')
     s = 'test %s' % at.outputFileName
-    # g.pr(repr(p),repr(s))
+    # print(repr(p),repr(s))
     f.write(s)
     f.close()
     assert exists(p)
@@ -5421,14 +5370,14 @@ at.shortFileName = at.targetFileName
 root = at.root
 assert not at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns True'
 if 0:
-    g.pr('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-    g.pr('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
+    print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+    print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
 assert not exists(at.outputFileName), 'oops, output file exists'
 assert exists(at.targetFileName), 'oops, target file does not exist'
 f = file(at.targetFileName)
 s = f.read()
 f.close()
-# g.pr('Contents of %s: %s' % (at.targetFileName,s))
+# print('Contents of %s: %s' % (at.targetFileName,s))
 assert s == 'test %s' % at.outputFileName, 'unexpected contents of target file'
 os.remove(at.targetFileName)</t>
 <t tx="ekr.20050105100227">import os
@@ -5448,7 +5397,7 @@ for p in (at.outputFileName,):
     assert not exists(p)
     f = file(p,'w')
     s = 'test %s' % at.outputFileName
-    # g.pr(repr(p),repr(s))
+    # print(repr(p),repr(s))
     f.write(s)
     f.close()
     assert exists(p)
@@ -5458,21 +5407,21 @@ at.shortFileName = at.targetFileName
 root = at.root
 assert not at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns True'
 if 0:
-    g.pr('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-    g.pr('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
+    print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+    print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
 assert not exists(at.outputFileName), 'oops, output file exists'
 assert exists(at.targetFileName), 'oops, target file does not exist'
 f = file(at.targetFileName)
 s = f.read()
 f.close()
-# g.pr('Contents of %s: %s' % (at.targetFileName,s))
+# print('Contents of %s: %s' % (at.targetFileName,s))
 assert s == 'test %s' % at.outputFileName, 'unexpected contents of target file'
 os.remove(at.targetFileName)</t>
 <t tx="ekr.20050106080304">import glob
 import inspect
 import unittest
 
-changed = c.isChanged() ; p1 = c.currentPosition()
+changed = c.isChanged() ; p1 = c.p
 &lt;&lt; class testRoutineTestCase &gt;&gt;
 @others
 
@@ -5530,7 +5479,7 @@ g.pr('\nEnd of test routines')</t>
     self.f = f
     self.g = g
     self.code = code
-    self.p = c.currentPosition().copy()
+    self.p = c.p.copy()
     self.verbose = verbose
 </t>
 <t tx="ekr.20050106080318.3">def fail (self,msg=None):
@@ -5758,8 +5707,7 @@ else:
     result = ''.join(result)
     return result</t>
 <t tx="ekr.20050112095306.1"></t>
-<t tx="ekr.20050120095423"># These are now compatible with the other unit tests.
-# It may be a bit off-putting to run the two sets together, however...</t>
+<t tx="ekr.20050120095423"></t>
 <t tx="ekr.20050120095423.6"># N.B.  We don't import the files: multiple imports might cause problems.
 import unittest
 import leo.core.leoTest as leoTest
@@ -5769,7 +5717,7 @@ import sys
 
 if sys.platform.lower().startswith('win'):
 
-    g.pr('@suite test syntax of all plugins')
+    print('@suite test syntax of all plugins')
     
     suite = unittest.makeSuite(unittest.TestCase)
     
@@ -5906,7 +5854,7 @@ g.app.scriptDict['suite'] = suite</t>
 
     def runTest(self):
         c = self.c
-        g.pr('\n%s a new window to test more plugin logic\n' % g.choose()
+        print('\n%s a new window to test more plugin logic\n' % g.choose()
             self.openFlag,'opening','open')
         if self.openFlag:
             self.new_c = new_c = c.new() # Create the new window.
@@ -5918,10 +5866,10 @@ g.app.scriptDict['suite'] = suite</t>
             c.close()</t>
 <t tx="ekr.20050120095423.21">import leo.core.leoPlugins as leoPlugins
 
-g.pr('\nloaded plugins...')
+print('\nloaded plugins...')
 
 for p in g.app.loadedPlugins:
-    g.pr(p)
+    print(p)
     
 leoPlugins.printHandlers()</t>
 <t tx="ekr.20050203001146"># g.es(c.page_width)
@@ -5934,7 +5882,7 @@ assert w == 132</t>
 
 file = u'Ỗ'
 path = g.os_path_join('Ỗ','Ỗ')
-# g.pr(g.toEncodedString(file,'utf-8'))
+# print(g.toEncodedString(file,'utf-8'))
 
 ok,frame = g.openWithFileName(path,c)
 
@@ -6013,7 +5961,7 @@ assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' 
 s = u'炰'
 s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
 assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s</t>
-<t tx="ekr.20050208135429"># g.pr(g.listToString(dir()))
+<t tx="ekr.20050208135429"># print(g.listToString(dir()))
 
 for ivar in ('c','g','p'):
     assert ivar in dir()
@@ -6043,7 +5991,7 @@ g.app.gui = oldGui</t>
 import inspect
 import unittest
 
-changed = c.isChanged() ; p1 = c.currentPosition()
+changed = c.isChanged() ; p1 = c.p
 &lt;&lt; class testRoutineTestCase &gt;&gt;
 @others
 
@@ -6051,7 +5999,7 @@ plugins = getAllPlugins()
 
 # g.printList(plugins)
 
-g.pr('@suite run all plugin test routines')
+print('@suite run all plugin test routines')
 
 if 1:
     g.app.unitTestDict["fail"] = False
@@ -6085,7 +6033,7 @@ if 1:
     self.f = f
     self.g = g
     self.code = code
-    self.p = c.currentPosition().copy()
+    self.p = c.p.copy()
     self.verbose = verbose
 </t>
 <t tx="ekr.20050218015346.13">def fail (self,msg=None):
@@ -6183,7 +6131,7 @@ if 1:
             # This looks like a bug in inspect: The zodb classes have no methods.
             # g.trace('Exception in inspect.getmembers(theClass,inspect.ismethod) for %s' % moduleName)
             methods = []
-        # g.pr('\nmethods of class %s...\n\n%s' % (theClass,toString(methods)))
+        # print('\nmethods of class %s...\n\n%s' % (theClass,toString(methods)))
         methods = [(theClass,f) for name,f in methods if name.startswith('test_')]
         allMethods.extend(methods)
 
@@ -6197,20 +6145,20 @@ if 1:
     result = functions
     result.extend(allMethods)
     return result</t>
-<t tx="ekr.20050218015346.20">g.pr('=' * 40)
+<t tx="ekr.20050218015346.20">print('=' * 40)
 
 if classes:
-    g.pr('classes in %s...\n%s' % (moduleName,toString(classes)))
+    print('classes in %s...\n%s' % (moduleName,toString(classes)))
 else:
-    g.pr('no classes in %s' % (moduleName))
+    print('no classes in %s' % (moduleName))
 if allMethods:
-    g.pr('test methods in %s...\n%s'   % (moduleName,toString(allMethods)))
+    print('test methods in %s...\n%s'   % (moduleName,toString(allMethods)))
 else:
-    g.pr('no test methods in %s' % (moduleName))
+    print('no test methods in %s' % (moduleName))
 if functions:
-    g.pr('test functions in %s...\n%s' % (moduleName,toString(functions)))
+    print('test functions in %s...\n%s' % (moduleName,toString(functions)))
 else:
-    g.pr('no test functions in %s' % (moduleName))</t>
+    print('no test functions in %s' % (moduleName))</t>
 <t tx="ekr.20050218015346.21">def getAllPlugins ():
 
     path = g.os_path_abspath(g.os_path_join(g.app.loadDir,"..","plugins"))
@@ -6243,7 +6191,7 @@ else:
         elif not line.strip() and line.endswith('\n'):
             result.append('\n')
         else:
-            g.pr('unitTest.leo:underindented line:%s' % repr(line))
+            print('unitTest.leo:underindented line:%s' % repr(line))
             result.append(line)
             
     # g.trace(g.listToString(result))
@@ -6913,11 +6861,11 @@ after</t>
         sec line 2 indented
 sec line 3
 after</t>
-<t tx="ekr.20050618053006">p = c.currentPosition().firstChild()
+<t tx="ekr.20050618053006">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20050618053006.1">@language plsql
 
@@ -7429,11 +7377,11 @@ try:
 
     # obtaining the input parameter for the function
     inputNode = p.firstChild()
-    inputData = inputNode.bodyString()
+    inputData = inputNode.b
     
     # obtaining the expected result from the function with above input parameter
     expectedResultNode = inputNode.next()
-    expected = expectedResultNode.bodyString()
+    expected = expectedResultNode.b
     
     # execute the function with above input parameter
     result = koekiemonster.wants(inputData)
@@ -7446,7 +7394,7 @@ try:
 
 except AssertionError:
     # TEARDOWN
-    g.es("Oh oh! %s failed:" % p.headString().strip())
+    g.es("Oh oh! %s failed:" % p.h.strip())
     g.es("koekiemonster.wants(%s)==%s" % (inputData, result))
     g.es("Expected: %s" % expected)
     raise # pass the exception on to the unit test machinery</t>
@@ -7642,8 +7590,6 @@ g.pr(len(positions),len(vnodes))
 
 for v in vnodes:
     g.pr(v)</t>
-<t tx="ekr.20051104081502.27">g.es("v",g.top().currentPosition())
-g.es(1,2)</t>
 <t tx="ekr.20051104081502.28">stack1 = ["a","b","c"]
 stack2 = ["a","b","c"]
 stack3 = ["a","b","d"]
@@ -7651,9 +7597,9 @@ stack4 = ["a","b"]
 g.pr(stack1 == stack2)
 g.pr(stack1 == stack3)
 g.pr(stack1 == stack4)</t>
-<t tx="ekr.20051104081502.29">g.pr(p.v.headString())
+<t tx="ekr.20051104081502.29">g.pr(p.h)
 g.pr(p.childIndex())
-g.pr(p.v.headString())</t>
+g.pr(p.h)</t>
 <t tx="ekr.20051104081502.30">import timeit
 
 s1 = '''\
@@ -7765,8 +7711,8 @@ g.pr(mod)</t>
 <t tx="ekr.20051104081502.36">import compiler
 
 for child in p.children_iter():
-    h = child.headString()
-    body = child.bodyString()
+    h = child.h
+    body = child.b
     
     try:
         val = compiler.parse(body)
@@ -7983,7 +7929,7 @@ position = leoNodes.position
 
 @others
 
-current = pos = c.currentPosition()
+current = pos = c.p
 child1 = current.firstChild()
 child2 = child1.firstChild()
 
@@ -8029,11 +7975,11 @@ u = leoTest.testUtils(c)
 
 g.pr("children", '-' * 20)
 children = u.findChildrenOf(p)
-for child in children: g.pr(child.headString())
+for child in children: g.pr(child.h)
 
 g.pr("subtree", '-' * 20)
 descendants = u.findSubnodesOf(p)
-for descendant in descendants: g.pr(descendant.headString())</t>
+for descendant in descendants: g.pr(descendant.h)</t>
 <t tx="ekr.20051104081502.147">import binascii
 import pickle
 
@@ -8258,7 +8204,7 @@ def onDoubleClick(p=p):
 d = {'str_ekr_attribute': 'abc'}
 p.v.t.unknownAttributes = d</t>
 <t tx="ekr.20051104081502.166">for p in c.allNodes_iter():
-    h = p.headString()
+    h = p.h
     if hasattr(p.v.t,'unknownAttributes'):
         d = p.v.t.unknownAttributes
         val = d.get('str_ekr_attribute')
@@ -8704,7 +8650,7 @@ leoTest.throwAssertionError()</t>
 count = 0
 for p in c.allNodes_iter():
     count += 1
-    g.pr(' '*p.level(),p.headString())
+    g.pr(' '*p.level(),p.h)
 g.pr('found',count,'nodes')</t>
 <t tx="ekr.20051104081502.318">table = ('spawnv',None,(
     'os.spawnv',[
@@ -13027,17 +12973,16 @@ ab</t>
 <t tx="ekr.20051107115231.1"># This is used by a unit test.
 g.es_print('Test of @command')
 g.app.unitTestDict ['unit-test-command1'] = True</t>
-<t tx="ekr.20051107115231.9">c.redraw_now() # To make node visible
-c.outerUpdate()
+<t tx="ekr.20051107115231.9">c.redraw(p) # To make node visible
 
 c2 = c.new()
-p2 = c2.currentPosition()
+p2 = c2.p
 
 try:
     # This fails, but it is possible to edit the headline.
     # assert c2.edit_widget(p2),'c2.edit_widget(p2) failed: %s' % repr(p2)
     assert p2,'p2 failed: %s' % repr(p2)
-    assert c.edit_widget(p),'c.edit_widget(p) failed: %s' % repr(p)
+    # assert c.edit_widget(p),'c.edit_widget(p) failed: %s' % repr(p)
 finally:
     c2.setChanged(False)
     c2.close()</t>
@@ -13047,20 +12992,14 @@ finally:
 h = '@test return ends editing of headline'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
+c.redraw(p) # To make node visible
 c.frame.tree.editLabel(p)
 w = c.edit_widget(p)
 guiName = g.app.gui.guiName()
 wName = g.app.gui.widget_name(w)
 assert wName.startswith('head'),'w.name:%s' % wName
-# if guiName == 'tkinter':
-    # c.frame.top.update_idletasks()
-    # w2 = c.get_focus()
-    # assert w == w2, 'oops1 %s != %s' % (w,w2)
-# elif guiName == 'wxPython':
-    # assert repr(w).startswith('headlineWidget')
 w.event_generate('&lt;Return&gt;')
+c.outerUpdate()
 assert w != c.get_focus(),'oops2: focus in headline'</t>
 <t tx="ekr.20051107115231.15">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
@@ -13069,8 +13008,7 @@ frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = '@test editLabel selects entire headline'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
+c.redraw(p) # To make node visible
 tree.editLabel(p)
 w = c.edit_widget(p)
 assert w
@@ -13083,39 +13021,50 @@ if selectAll:
 else:
     assert i == len(s) and j == len(s),'oops2: i: %d, j: %d' % (i,j)
 </t>
-<t tx="ekr.20051107115231.16">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+<t tx="ekr.20051107115231.16">trace = False ; verbose = False
+import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
-trace = False
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
-if trace: g.pr('='*20)
-if trace: g.pr('1',g.app.gui.get_focus(c))
-tree.editLabel(p)
-if trace: g.pr('2',g.app.gui.get_focus(c))
+if trace: print('='*20)
+c.redrawAndEdit(p) # To make node visible
 w = c.edit_widget(p)
-if trace: g.pr('3',g.app.gui.get_focus(c))
+g.app.gui.set_focus(c,w)
 w2 = g.app.gui.get_focus(c)
-assert w==w2,'w: %s, w2: %s' % (w,w2)
+if trace: print ('focus 1',w2)
+if trace: print ('*** w ***',w)
+if 0: # The tkGui.set_focus now does an update to force the focus.
+    w2 = g.app.gui.get_focus(c)
+    if w != w2:
+        print ('*** FAIL ***\nw: %s\nw2: %s' % (w,w2))
+    assert w == w2 or hasattr(w,'widget') and w.widget == w2,'w: %s\nw2: %s' % (w,w2)
+    if trace: print('focus',w2)
+# For the qt gui w is a wrapper and w.widget is the actual widget.
 
 try:
     assert w
     paste = 'ABC'
     g.app.gui.replaceClipboardWith(paste)
+    g.app.gui.set_focus(c,w)
+    w2 = g.app.gui.get_focus(c)
+    if trace: print ('focus 1',w2)
     w.setSelectionRange('end','end')
     k.manufactureKeyPressForCommandName(w,'paste-text')
-    if trace: g.pr('before',p.headString())
-    w.event_generate('&lt;Return&gt;')
-    if trace: g.pr('after',p.headString())
-    assert p.headString() == h + paste,'Expected: %s, got %s' % (h + paste,p.headString())
-finally:
+    if 0: # Easiest.
+        c.endEditing()
+    else: # More thorough test.
+        w.event_generate('&lt;Return&gt;')
+        w.update()
     if 1:
-        p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
-        c.redraw_now()</t>
+        assert p.h == h + paste,'Expected: %s, got %s' % (
+            h + paste,p.h)
+finally:
+    if trace: print('-'*20)
+    if 1:
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)</t>
 <t tx="ekr.20051107115231.17">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.k
 
@@ -13124,11 +13073,9 @@ if k.defaultUnboundKeyAction == 'insert':
     h = 'Test headline abc'
     p = u.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
-    c.selectPosition(p)
-    c.redraw_now() # To make node visible
-    c.editPosition(p)
+    c.redrawAndEdit(p) # To make the node visible.
     w = c.edit_widget(p)
-    # g.pr('guiName',g.app.gui.guiName())
+    # print('guiName',g.app.gui.guiName())
     try:
         assert w, 'oops1'
         wName = g.app.gui.widget_name(w)
@@ -13138,28 +13085,28 @@ if k.defaultUnboundKeyAction == 'insert':
         w.event_generate('Y')
         w.event_generate('Z')
         w.event_generate('&lt;Return&gt;')
-        assert p.headString() == h + 'XYZ','oops2: got: %s' % p.headString()
+        assert p.h == h + 'XYZ',(
+            'oops2: expected: %s, got: %s' % (
+                h + 'XYZ',p.h))
         if g.app.gui.guiName() != 'nullGui':
-            assert c.undoer.undoMenuLabel == 'Undo Typing','oops3'
+            assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
+                c.undoer.undoMenuLabel)
         k.manufactureKeyPressForCommandName(w,'undo')
         if g.app.gui.guiName() != 'nullGui':
             assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
-        assert p.headString() == h,'oops5 got: %s' % p.headString()
+        assert p.h == h,'oops5 got: %s, expected: %s' % (
+            p.h,h)
     finally:
         if 1:
-            p.initHeadString(h)
-            c.frame.tree.setHeadline(p,h)
-            c.redraw_now()
-            # c.outerUpdate()</t>
+            c.setHeadString(p,h) # Essential
+            c.redraw(p)</t>
 <t tx="ekr.20051107115231.18">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
-tree.editLabel(p)
+c.redrawAndEdit(p) # To make node visible
 w = c.edit_widget(p)
 try:
     assert w,'oops1'
@@ -13169,54 +13116,20 @@ try:
     w.setSelectionRange('end','end')
     k.manufactureKeyPressForCommandName(w,'paste-text')
     w.event_generate('&lt;Return&gt;')
-    assert p.headString() == h + paste,'oops2 got: %s' % p.headString()
+    assert p.h == h + paste,'oops2 got: %s' % p.h
     k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.headString() == h,'oops3 got: %s' % p.headString()
+    assert p.h == h,'oops3 got: %s' % p.h
 finally:
     if 1:
-        p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
-        c.redraw_now()</t>
-<t tx="ekr.20051107115231.19"># Totally weird.
-
-import leoTest ; u = leoTest.testUtils(c)
-k = c.keyHandler
-frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
-tree.editLabel(p) # Sets focus.
-w = c.edit_widget(p)
-try:
-    assert w
-    w.update()
-    w.setSelectionRange('1.1','1.2',insert='1.1')
-    w.event_generate('X')
-    w.event_generate('Y')
-    w.event_generate('Z')
-    w.event_generate('&lt;Return&gt;')
-    g.pr('after',repr(w.get('1.0','end')))
-    g.pr('end edit')
-    expected = h[0] + 'XYZ' + h[2:]
-    assert p.headString() == expected,'fail 1: expected "%s" got "%s"' % (
-        expected,repr(p.headString()))
-    k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.headString() == h,'fail 2'
-finally:
-    if 1:
-        p.initHeadString(h)
-        c.redraw_now()
-</t>
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)</t>
 <t tx="ekr.20051107115231.20">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
+c.redraw(p) # To make node visible
 tree.editLabel(p)
 w = c.edit_widget(p)
 try:
@@ -13226,14 +13139,13 @@ try:
     w.setSelectionRange('1.1','1.2')
     k.manufactureKeyPressForCommandName(w,'paste-text')
     w.event_generate('&lt;Return&gt;')
-    assert p.headString() == h[0] + paste + h[2:]
+    assert p.h == h[0] + paste + h[2:]
     k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.headString() == h, 'head mismatch'
+    assert p.h == h, 'head mismatch'
 finally:
     if 1:
-        p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
-        c.redraw_now()</t>
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)</t>
 <t tx="ekr.20051107115231.21">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.k
 
@@ -13242,8 +13154,7 @@ if k.defaultUnboundKeyAction == 'insert':
     h = 'Test headline abc'
     p = u.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
-    c.selectPosition(p)
-    c.redraw_now() # To make node visible
+    c.redraw(p) # To make node visible
     tree.editLabel(p)
     w = c.edit_widget(p)
     try:
@@ -13253,14 +13164,13 @@ if k.defaultUnboundKeyAction == 'insert':
         w.event_generate('Y')
         w.event_generate('Z')
         w.event_generate('&lt;Return&gt;')
-        assert p.headString() == h + 'XYZ'
+        assert p.h == h + 'XYZ'
         k.manufactureKeyPressForCommandName(w,'undo')
-        assert p.headString() == h
+        assert p.h == h
     finally:
         if 1:
-            p.initHeadString(h)
-            c.frame.tree.setHeadline(p,h)
-            c.redraw_now()</t>
+            c.setHeadString(p,h) # Essential
+            c.redraw(p)</t>
 <t tx="ekr.20051107115231.24"># Should be a comment# Should be a comment# Should be a comment# Should be a comment
 import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
@@ -13288,79 +13198,65 @@ try:
 finally:
     if 1:
         c.setBodyString(p,'')
-        c.redraw_now()</t>
+        c.redraw(p)</t>
 <t tx="ekr.20051107115231.25">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
+c.redraw(p) # To make node visible
 c.frame.tree.editLabel(p)
 w = c.edit_widget(p)
 try:
     assert w
+    g.app.gui.set_focus(c,w)
+    w2 = g.app.gui.get_focus(c)
+    # assert w == w2 or hasattr(w,'widget') and w.widget == w2,'w: %s\nw2: %s' % (w,w2)
     w.setSelectionRange('end','end')
     n = w.getWidth()
     w.event_generate('X')
     w.event_generate('Y')
     w.event_generate('Z')
+    w.update()
+    if 1: # Easiest.
+        c.endEditing()
+    else: # More thorough test.
+        w.event_generate('&lt;Return&gt;')
+        w.update()
+    assert w, 'fail 2'
     n2 = w.getWidth()
     if g.app.gui.guiName() == 'tkinter':
         assert n2 &gt; n, '%s %s' % (n2,n)
     # g.trace(n,n2)
 finally:
     if 1:
-        p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
-        c.redraw_now()</t>
-<t tx="ekr.20051107115231.26">import leoTest ; u = leoTest.testUtils(c)
-k = c.keyHandler
-h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
-c.frame.tree.editLabel(p)
-w = c.edit_widget(p)
-paste = 'ABC'
-g.app.gui.replaceClipboardWith(paste)
-try:
-    assert w, 'no w'
-    w.setSelectionRange('end','end')
-    g.app.unitTestDict = {}
-    k.manufactureKeyPressForCommandName(w,'paste-text')
-    assert g.app.unitTestDict.get('headWidth') == True
-finally:
-    if 1:
-        p.initHeadString(h)
-        c.redraw_now()</t>
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)</t>
 <t tx="ekr.20051107115231.28">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
+c.redraw(p) # To make node visible
 tree.editLabel(p)
 w = c.edit_widget(p)
 try:
-    assert w
+    assert w,'oops1'
     w.setSelectionRange('end','end')
     paste = 'ABC'
     g.app.gui.replaceClipboardWith(paste)
     w.setSelectionRange('end','end')
     k.manufactureKeyPressForCommandName(w,'paste-text')
     c.selectPosition(p.visBack(c))
-    assert p.headString() == h + paste
+    assert p.h == h + paste
     k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.headString() == h
+    assert p.h == h,'expected: %s, got: %s' % (
+        h,p.h)
 finally:
     if 1:
-        p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
-        c.redraw_now()</t>
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)</t>
 <t tx="ekr.20051107115231.29">import leo.core.leoEditCommands as leoEditCommands
 s = 'foo' ; bodyCtrl = c.frame.body.bodyCtrl
 
@@ -13377,18 +13273,6 @@ wName = g.app.gui.widget_name(w)
 # in wxPython w != bodyCtrl (it's a proxy)
 assert 'body' in wName, 'focus: %s = %s, expected %s = %s' % (
     w,wName,bodyCtrl,g.app.gui.widget_name(bodyCtrl))</t>
-<t tx="ekr.20051107115231.31"></t>
-<t tx="ekr.20051107115231.32"># Not so easy to do.
-import plugin_manager
-n = g.app.dialogs
-pm = plugin_manager.ManagerDialog()
-try:
-    assert g.app.dialogs == n
-finally:
-    if 1:
-        pass</t>
-<t tx="ekr.20051107115231.34"></t>
-<t tx="ekr.20051108141141"></t>
 <t tx="ekr.20051109091333"># Not ready yet: generating a backspace seems impossible!
 
 import leoTest ; u = leoTest.testUtils(c)
@@ -13416,10 +13300,9 @@ finally:
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
-c.selectPosition(p)
 c.setBodyString(p,'a')
-c.redraw_now() # To make node visible
-c.outerUpdate()
+c.redraw(p) # To make node visible
+# print ('after redraw_now')
 c.bodyWantsFocusNow()
 n = c.frame.tree.redrawCount
 try:
@@ -13429,21 +13312,19 @@ try:
 finally:
     if 1:
         c.setBodyString(p,'')
-        c.redraw_now()</t>
+        c.redraw(p)</t>
 <t tx="ekr.20051109143831"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
-c.contractParent()
-c.selectPosition(p.parent())
+c.contractAllHeadlines()
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
-    
-# g.pr('\nEnd of typing tests.')</t>
-<t tx="ekr.20051120110335">c.insertHeadline()
-assert c.undoer.undoMenuLabel == 'Undo Insert Node'
+
+    </t>
+<t tx="ekr.20051120110335">u = c.undoer
+c.insertHeadline()
+assert u.undoMenuLabel == 'Undo Insert Node',repr(c.undoMenuLabel)
 c.undoer.undo()
-assert c.undoer.redoMenuLabel == 'Redo Insert Node'</t>
-<t tx="ekr.20051120110536"></t>
+assert u.redoMenuLabel == 'Redo Insert Node',repr(u.undoMenuLabel)</t>
 <t tx="ekr.20051120115046">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
@@ -13453,17 +13334,19 @@ body = 'This is a test'
 c.setBodyString(p,body)
 
 try:
-    assert p.bodyString() == body
+    assert p.b == body
     c.insertHeadline()
     c.undoer.undo()
-    assert p.bodyString() == body
+    assert p.b == body
 finally:
     c.setBodyString(p,'')</t>
-<t tx="ekr.20051122095426">c.frame.bringToFront()
-c.frame.body.bodyCtrl.update()</t>
+<t tx="ekr.20051122095426"></t>
 <t tx="ekr.20051125155134">n = c.frame.tree.redrawCount
+# print ('before')
 c.insertHeadline()
-c.outerUpdate()
+c.outerUpdate() # Not actually needed, but should not matter.
+# print ('after')
+
 try:
     n2 = c.frame.tree.redrawCount
     assert n2 == n + 1,'redraws: %d' % (n2 - n)
@@ -13473,8 +13356,7 @@ finally:
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
 assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.redraw_now() # To make node visible
+c.redraw(p) # To make node visible
 c.frame.tree.editLabel(p)
 w = c.edit_widget(p)
 try:
@@ -13483,13 +13365,8 @@ try:
     # w.event_generate('X')
 finally:
     if 1:
-        p.initHeadString(h)
-        c.frame.tree.setHeadline(p,h)
-        c.redraw_now()</t>
-<t tx="ekr.20051130080047"></t>
-<t tx="ekr.20051202100844"></t>
-<t tx="ekr.20051202100844.1"></t>
-<t tx="ekr.20051202100844.2"></t>
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)</t>
 <t tx="ekr.20051216171321"></t>
 <t tx="ekr.20060106211922">n = g.app.positions
 assert c.isCurrentPosition(None) is False
@@ -13550,13 +13427,13 @@ d = c.commandsDict ; keys = d.keys() ; keys.sort()
 for key in keys:
     f = d.get(key) ; name = f and f.__name__
     args, varargs, varkw, defaults = data = inspect.getargspec(f)
-    # g.pr('%-28s' % (name),data)
+    # print('%-28s' % (name),data)
     arg0 = len(args) &gt; 0 and args[0]
     arg1 = len(args) &gt; 1 and args[1]
     assert arg0 == 'self' and arg1 == 'event' or arg0 == 'event',\
        'no event arg for %s, args: %s' % (name,data)</t>
-<t tx="ekr.20060131102450">g.pr('\nEnd of typing and undo tests')</t>
-<t tx="ekr.20060203181203.2"># g.pr('settingsNameDict',c.k.settingsNameDict)
+<t tx="ekr.20060131102450">print('\nEnd of typing and undo tests')</t>
+<t tx="ekr.20060203181203.2"># print('settingsNameDict',c.k.settingsNameDict)
 
 table = (
     ('a','a'),
@@ -13566,7 +13443,8 @@ table = (
     ('Alt-Shift-a','Alt+A'),
     ('Alt-=','Alt+equal'),
     ('Alt-+','Alt+plus'),
-    ('Alt-Shift++','Alt+plus'), # Ignore the shift.
+    # We can no longer igtnore the shift.
+    # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
     ('Alt--','Alt+minus'),
     ('Shift-a','A'),
     ('Shift-A','A'),
@@ -13579,22 +13457,6 @@ table = (
 )
 for setting, result in table:
     val = c.k.strokeFromSetting(setting)
-    assert val==result,'Expected %s, Got %s' % (result,val)</t>
-<t tx="ekr.20060203181203.3">alt = 0x20000 ; ctrl  = 4 ; shift = 1 ; key = 0
-
-table = (
-    (key, 'a','a','a'),
-    (shift,'A','A','A'),
-    (alt,'','a','Alt+a'),
-    (alt+shift,'','A','Alt+A'),
-    (shift,'A','A','A',),
-    (key,'','Right','Right'),
-    (shift,'','Right','Shift+Right'),
-    (ctrl,'','Right','Ctrl+Right'),
-    (ctrl+shift,'','Right','Ctrl+Shift+Right'),
-)
-for state, ch, keysym, result in table:
-    val = c.k.strokeFromEvent(g.Bunch(state=state,char=ch,keysym=keysym))
     assert val==result,'Expected %s, Got %s' % (result,val)</t>
 <t tx="ekr.20060203201949"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
@@ -13610,7 +13472,7 @@ if p:
     c.selectPosition(p)
     c.redraw()
         
-g.pr('\nEnd of plugins unit tests')</t>
+print('\nEnd of plugins unit tests')</t>
 <t tx="ekr.20060205165937"># Only run with windows--there are problems on Linux.</t>
 <t tx="ekr.20060208072307">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
@@ -13618,7 +13480,7 @@ if c.k.defaultUnboundKeyAction == 'insert':
     h = 'Test headline abc'
     p = u.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
-    c.selectPosition(p)
+    c.redraw(p)
     c.bodyWantsFocusNow()
     paste = 'ABC'
     g.app.gui.replaceClipboardWith(paste)
@@ -13632,15 +13494,15 @@ if c.k.defaultUnboundKeyAction == 'insert':
         menu.invoke(i)
     # Move around and and make sure it doesn't change.
     try:
-        assert p.bodyString() == paste, 'paste1 failed'
+        assert p.b == paste, 'paste1 failed'
         c.selectPosition(p.threadBack())
-        assert p.bodyString() == paste, 'stick failed'
+        assert p.b == paste, 'stick failed'
         c.selectPosition(p)
-        assert p.bodyString() == paste, 'revisit failed'
+        assert p.b == paste, 'revisit failed'
     finally:
         if 1:
             c.setBodyString(p,'')
-            c.redraw_now()
+            c.redraw(p)
 </t>
 <t tx="ekr.20060208072331">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
@@ -13663,40 +13525,39 @@ else:
 try:
     # g.trace('before select',w,w.getAllText())
     c.selectPosition(p.threadBack())
-    assert p.headString() == h + paste,'oops1: expected: %s, got %s' % (h + paste,p.headString())
+    assert p.h == h + paste,'oops1: expected: %s, got %s' % (h + paste,p.h)
     c.selectPosition(p)
-    assert p.headString() == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.headString())
+    assert p.h == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.h)
 finally:
     if 1:
-        c.setHeadString(p,h)
-        c.frame.tree.setHeadline(p,h)
-        c.redraw_now()</t>
-<t tx="ekr.20060208072358">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+        c.setHeadString(p,h) # Essential
+        c.redraw(p)</t>
+<t tx="ekr.20060208072358"># This test is too flaky for Tk.
+if g.app.gui.guiName() != 'tkinter':
 
-h = 'Test headline abc'
-p = u.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.bodyWantsFocusNow()
-c.redraw_now() # To make node visible
-c.outerUpdate()
-n = c.frame.tree.redrawCount
-
-assert not p.bodyString(), 'oops1'
-try:
-    # g.pr('before insert a',c.currentPosition())
-    assert p == c.currentPosition(),'position has changed!'
-    c.frame.body.bodyCtrl.event_generate('a')
-    # g.pr('after insert a')
-    assert p.bodyString() == 'a', 'expected "a", got: %s' % repr(p.bodyString())
-    if g.app.gui.guiName() != 'nullGui':
-        n2 = c.frame.tree.redrawCount
-        c.outerUpdate() # Force the coloring before doing the test.
-        assert n2 == n + 1,'too many or too few redraws: expected 1: got: %d' % (n2-n)
-finally:
-    if 1:
-        c.setBodyString(p,'')
-        c.redraw_now()</t>
+    import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
+    
+    h = 'Test headline abc'
+    p = u.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.selectPosition(p)
+    c.bodyWantsFocusNow()
+    c.redraw(p) # To make node visible
+    n = c.frame.tree.redrawCount
+    assert not p.b, 'oops1'
+    try:
+        # print('before insert a',c.p)
+        assert p == c.p,'position has changed!'
+        c.frame.body.bodyCtrl.event_generate('a')
+        assert p.b == 'a', 'expected "a", got: %s' % repr(p.b)
+        if g.app.gui.guiName() != 'nullGui':
+            n2 = c.frame.tree.redrawCount
+            c.outerUpdate() # Force the coloring before doing the test.
+            assert n2 == n + 1,'too many or too few redraws: expected 1: got: %d' % (n2-n)
+    finally:
+        if 1:
+            c.setBodyString(p,'')
+            c.redraw(p)</t>
 <t tx="ekr.20060208072415">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 h = 'Test headline abc'
 p = u.findNodeAnywhere(h)
@@ -13710,16 +13571,14 @@ try:
     w.setInsertPoint(2)
     c.outerUpdate() # This fixed the problem.
     w.event_generate('&lt;Delete&gt;') # Calls c.outerUpdate()
-    assert p.bodyString() == s[:-1],'oops1: expected "AB", got %s' % p.bodyString()
+    assert p.b == s[:-1],'oops1: expected "AB", got %s' % p.b
     c.selectPosition(p.threadBack())
     c.selectPosition(p)
-    assert p.bodyString() == s[:-1],'oops2: expected "AB", got %s' % p.bodyString()
+    assert p.b == s[:-1],'oops2: expected "AB", got %s' % p.b
 finally:
     if 1:
         c.setBodyString(p,'')
-        c.redraw_now()
-
-</t>
+        c.redraw(p)</t>
 <t tx="ekr.20060208195054"># c.commandsDict: keys are emacs command names, values are functions f.
 # k.inverseCommandsDict: keys are f.__name__, values are emacs command names.
 
@@ -13754,7 +13613,7 @@ abbrevDict = c.config.getAbbrevDict()
 @others
 buttonKeys = []
 for p in c.allNodes_iter():
-    h = p.headString().strip().lower()
+    h = p.h.strip().lower()
     for kind in ('@button','@command'):
         if h.startswith(kind):
             key1 = mungeKey(h,kind,substitute=False)
@@ -13815,7 +13674,7 @@ elif sys.platform== 'darwin':
 tkinter = c.config.getBool('test_tkinter_setting')
 wx      = c.config.getBool('test_wxWindows_setting')
 
-g.pr(guiname)
+print(guiname)
 
 if guiname == 'tkinter':
     assert(tkinter)
@@ -13829,7 +13688,7 @@ if guiname == 'wxWindows':
 <t tx="ekr.20060325072919.2"></t>
 <t tx="ekr.20060325072919.3"></t>
 <t tx="ekr.20060328091154">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-k = c.k ; p = c.currentPosition() ; w = c.edit_widget(p)
+k = c.k ; p = c.p ; w = c.edit_widget(p)
 commandName = 'test-registerCommand'
 
 def callback (event=None,c=c): # Must have an event param to pass later unit test.
@@ -13848,7 +13707,7 @@ if 0: # Test 2
 <t tx="ekr.20060602195313">at = c.atFileCommands
 child = p.firstChild()
 child2 = child.next()
-result = str(child2.bodyString())
+result = str(child2.b)
 at.write(child,nosentinels=False,thinFile=False,scriptWrite=False,toString=True)
 s = str(at.stringOutput)
 
@@ -13896,22 +13755,22 @@ assert s == result</t>
 /*@-node:root*/
 /*@-leo*/
 </t>
-<t tx="ekr.20060829092306">p = c.currentPosition().firstChild()
+<t tx="ekr.20060829092306">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20060829092306.1">@language erlang
 
 halt()
 
 -module()</t>
-<t tx="ekr.20060829092306.2">p = c.currentPosition().firstChild()
+<t tx="ekr.20060829092306.2">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20060829092306.3">@ doc part
 @c
@@ -13925,11 +13784,11 @@ assert val=="ok", "colorizer test failed: %s" % p.headString()
 /** &lt;!-- comment --&gt; tag = comment1. */
 
 /** @see tag = label */</t>
-<t tx="ekr.20060829092306.4">p = c.currentPosition().firstChild()
+<t tx="ekr.20060829092306.4">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20060829092306.5">@language r
 
@@ -13939,11 +13798,11 @@ vv &lt;- function(z) return(z)
  
 def python_funct(uu): 
 return uu</t>
-<t tx="ekr.20060829092306.6">p = c.currentPosition().firstChild()
+<t tx="ekr.20060829092306.6">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20060829092306.7">@language vbscript
 
@@ -13959,12 +13818,9 @@ body.addEditor()
 
 # Select the leftmost editor.
 w = body.editorWidgets.get('1')
-#g.pr('1',w)
+assert(w)
 body.selectEditor(w)
 body.bodyCtrl = frame.bodyCtrl = w
-#g.pr('2',w)
-# Delete the selected editor.
-# g.pdb()
 body.deleteEditor()</t>
 <t tx="ekr.20060913084600">import leo.core.leoNodes as leoNodes
 
@@ -14032,7 +13888,7 @@ finally:
 <t tx="ekr.20061001124008.1"></t>
 <t tx="ekr.20061001124008.2"></t>
 <t tx="ekr.20061008162912">assert p.firstChild(), 'no child node'
-assert p.firstChild().bodyString().startswith('@ignore'), 'No @ignore in child'
+assert p.firstChild().b.startswith('@ignore'), 'No @ignore in child'
 ok = c.fileCommands.write_Leo_file(
     'file-name',outlineOnlyFlag=True,toString=True,toOPML=False)
 assert ok, 'error writing file'
@@ -15881,7 +15737,7 @@ for i,j,python in (
     ec.moveSpot = None # It's hard to init this properly.
     ec.extendHelper(w,extend,j)
     i2,j2 = w.getSelectionRange()
-    # g.pr(i2,j2)
+    # print(i2,j2)
     #assert 0==i2, 'Expected i=%s, got %s' % (repr(i),repr(i2))
     #assert j==j2, 'Expected j=%s, got %s' % (repr(j),repr(j2))
 </t>
@@ -15906,28 +15762,6 @@ for direction,extend in (('up',False),('down',False),('up',True),('down',True),)
     ec.scrollHelper(event,direction,extend)
 
 </t>
-<t tx="ekr.20061104172236.8">@first # -*- coding: utf-8 -*-
-
-try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    
-    # This strings tests unicode, paren matching, and auto-indentation.
-    u = u'(a\u00c9\u03a9B\u3045\u4e7cz):\n' # '(aÉΩBぅ乼cz):\n'
-    u = u'(pdq):\n'
-    w.setInsertPoint(len(s))
-    for char in u:
-        event = g.Bunch(widget=w,char=char,keysym=None)
-        ec.selfInsertCommand(event)
-    result = w.getAllText()
-    #g.trace('result',repr(result))
-    assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    c.recolor()
-
-# end:</t>
 <t tx="ekr.20061104172236.11">s = 'abc xy_z5 pdq'
 i,j = g.getWord(s,5)
 assert s[i:j] == 'xy_z5','got %s' % s[i:j]
@@ -16126,29 +15960,17 @@ assert ins    == s[start:end],'Got %s' % repr(ins)
 assert after == s[end:]
 
 # end.</t>
-<t tx="ekr.20061107031449">try:
-    ec = c.editCommands ; w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    w.setSelectionRange(len(s)-9,len(s)-6)
-    event = g.Bunch(widget=w,char='\t',keysym=None)
-    ec.selfInsertCommand(event)
-    result = w.getAllText()
-    # g.trace('result',repr(result))
-    assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    c.recolor()
-        
-###abcdef</t>
 <t tx="ekr.20061109172511"></t>
 <t tx="ekr.20061109172511.1">if g.app.gui.guiName() == 'tkinter':
+    
+    import leo.core.leoPlugins as leoPlugins
+    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+    
     import leo.core.leoFrame as leoFrame
-    import leo.core.leoTkinterFrame as leoTkinterFrame
     import inspect
     
     baseClass = leoFrame.leoFrame
-    subClasses  = (leoTkinterFrame.leoTkinterFrame,leoFrame.nullFrame)
+    subClasses  = (tkGui.leoTkinterFrame,leoFrame.nullFrame)
     baseObject = c.frame
     
     methods = inspect.getmembers(baseClass,inspect.ismethod)
@@ -16168,12 +15990,15 @@ finally:
                 assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
 </t>
 <t tx="ekr.20061109172511.3">if g.app.gui.guiName() == 'tkinter':
+    
+    import leo.core.leoPlugins as leoPlugins
+    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+    
     import leo.core.leoFrame as leoFrame
-    import leo.core.leoTkinterFrame as leoTkinterFrame
     import inspect,sys
     
     baseClass = leoFrame.leoBody
-    subClasses  = (leoTkinterFrame.leoTkinterBody,leoFrame.nullBody)
+    subClasses  = (tkGui.leoTkinterBody,leoFrame.nullBody)
     baseObject = c.frame.body
     
     methods = inspect.getmembers(baseClass,inspect.ismethod)
@@ -16184,7 +16009,7 @@ finally:
             assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
         except AssertionError:
             exctype, value = sys.exc_info()[:2]
-            g.pr(value)
+            print(value)
             raise
     
     for subClass in subClasses:
@@ -16200,15 +16025,17 @@ finally:
             except AssertionError:
                 #raise
                 exctype, value = sys.exc_info()[:2]
-                g.pr(value)</t>
+                print(value)</t>
 <t tx="ekr.20061109172511.4">if g.app.gui.guiName() == 'tkinter':
+    
+    import leo.core.leoPlugins as leoPlugins
+    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+    
     import leo.core.leoFrame as leoFrame
-    import leo.core.leoTkinterGui as leoTkinterGui
-    import leo.core.leoTkinterTree as leoTkinterTree
     import inspect
     
     baseClass = leoFrame.leoTree
-    subClasses  = (leoTkinterTree.leoTkinterTree,leoFrame.nullTree)
+    subClasses  = (tkGui.leoTkinterTree,leoFrame.nullTree)
     baseObject = c.frame.tree
     
     methods = inspect.getmembers(baseClass,inspect.ismethod)
@@ -16228,12 +16055,15 @@ finally:
                 assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
 </t>
 <t tx="ekr.20061109210659">if g.app.gui.guiName() == 'tkinter':
+    
+    import leo.core.leoPlugins as leoPlugins
+    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
+    
     import leo.core.leoGui as leoGui
-    import leo.core.leoTkinterGui as leoTkinterGui
     import inspect
     
     baseClass = leoGui.leoGui
-    subClasses  = (leoTkinterGui.tkinterGui,) # nullGui can inherit almost all leoGui dummy methods.
+    subClasses  = (tkGui.tkinterGui,) # nullGui can inherit almost all leoGui dummy methods.
     baseObject = g.app.gui
     
     methods = inspect.getmembers(baseClass,inspect.ismethod)
@@ -16293,9 +16123,11 @@ controller.parameterize()
     # Not much will happen because there are no children.
     # However, this does test recent changes.</t>
 <t tx="ekr.20061113154104">if g.app.gui.guiName() == 'tkinter':
+    
+    import leo.core.leoPlugins as leoPlugins
+    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
     import Tkinter as Tk
-    import leo.core.leoTkinterFrame as leoTkinterFrame
-    w = leoTkinterFrame.leoTkTextWidget()
+    w = tkGui.leoTkTextWidget()
     w.setAllText('abcdef\n')
     s = w.getAllText()
     assert s == 'abcdef\n'
@@ -16341,20 +16173,16 @@ controller.parameterize()
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
-c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
     
-g.pr('\nEnd of general unit tests')</t>
+print('\nEnd of general unit tests')</t>
 <t tx="ekr.20061115103558"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
-c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
     
-g.pr('\End of leoColor tests')</t>
+print('\nEnd of leoColor tests')</t>
 <t tx="ekr.20061127142311">#ab
 #
 
@@ -16458,18 +16286,7 @@ if not g.os_path_exists(s):
     g.pr('created chinese file')
     
 </t>
-<t tx="ekr.20070114140212">@
-
-Important warnings:
-    
-1. Do not run tests from this file after opening unitTest.leo from another .leo
-   file. The unit tests in this file open and close many .leo files and many
-   strange things can happen if you have opened this file from another file.
-
-2. Some unit tests may fail if you do select other windows or other applications
-   while running these tests. Therefore, you should leave your computer
-   completely alone while running these unit tests.
-</t>
+<t tx="ekr.20070114140212"></t>
 <t tx="ekr.20070131162935">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070131162935.1">first line
@@ -16563,9 +16380,9 @@ range of the work in the headline of the before node.
 
 sel = getSel(c)
 top,work,before,after = findNodes(p)
-if top and work.bodyString():
+if top and work.b:
 
-    c.setBodyString(before,work.bodyString())
+    c.setBodyString(before,work.b)
     c.setBodyString(after,'')
     putSelectionInHeadline(c,before,'before',sel)
     c.redraw()
@@ -16586,23 +16403,23 @@ else:
     'work', 'before' and 'after' children.'''
     
     for p in p.self_and_parents_iter():
-        if p.headString().startswith('@test '):
+        if p.h.startswith('@test '):
             break
     top    = p and p.copy()
     work   = top and top.firstChild() 
     before = work and work.next()     
     after  = before and before.next()
     if (
-        work   and work.headString().startswith('work') and
-        before and before.headString().startswith('before') and
-        after  and after.headString().startswith('after')
+        work   and work.h.startswith('work') and
+        before and before.h.startswith('before') and
+        after  and after.h.startswith('after')
     ):
         return top,work,before,after
     else:
         return None,None,None,None</t>
 <t tx="ekr.20070217065840.5">def putSelectionInHeadline (c,p,prefix,sel):
     
-    # g.trace(p.headString(),repr(sel))
+    # g.trace(p.h,repr(sel))
 
     w = c.frame.body.bodyCtrl
     i,j = sel
@@ -16621,7 +16438,7 @@ and represent the selection range of the work node in the headline of the after 
 sel = getSel(c)
 top,work,before,after = findNodes(p)
 if top:
-    c.setBodyString(after,work.bodyString())
+    c.setBodyString(after,work.b)
     putSelectionInHeadline(c,after,'after',sel)
     c.redraw()
 else:
@@ -16633,23 +16450,23 @@ else:
     'work', 'before' and 'after' children.'''
     
     for p in p.self_and_parents_iter():
-        if p.headString().startswith('@test '):
+        if p.h.startswith('@test '):
             break
     top    = p and p.copy()
     work   = top and top.firstChild()
     before = work and work.next()
     after  = before and before.next()
     if (
-        work   and work.headString().startswith('work') and
-        before and before.headString().startswith('before') and
-        after  and after.headString().startswith('after')
+        work   and work.h.startswith('work') and
+        before and before.h.startswith('before') and
+        after  and after.h.startswith('after')
     ):
         return top,work,before,after
     else:
         return None,None,None,None</t>
 <t tx="ekr.20070217065840.9">def putSelectionInHeadline (c,p,prefix,sel):
     
-    # g.trace(p.headString(),repr(sel))
+    # g.trace(p.h,repr(sel))
     
     w = c.frame.body.bodyCtrl
     i,j = sel
@@ -16816,10 +16633,14 @@ after</t>
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070301064408">g.pr('\nAll plugins tests complete.')</t>
+<t tx="ekr.20070301064408">print('\nAll plugins tests complete.')</t>
 <t tx="ekr.20070303143846.1"># Plugin_manager.py needs plugins_menu.py
 # Plugins_manager is not functional at present.
 # plugin_manager.py
+
+# qtGui.py
+# tkGui.py
+
 plugins_menu.py
 
 # Standard plugins...
@@ -16830,7 +16651,6 @@ rst3.py
 UNL.py
 nav_buttons.py
 hoist.py
-ipython.py
 
 image.py
 leo_to_html.py
@@ -16842,27 +16662,25 @@ threading_colorizer.py
 rClick.py
 </t>
 <t tx="ekr.20070303143951"></t>
-<t tx="ekr.20070305095401">p = c.currentPosition().copy()
+<t tx="ekr.20070305095401">p = c.p.copy()
 c.selectPosition(p.threadBack())
-p1 = c.currentPosition()
-# g.pr(p1)
+p1 = c.p
+# print(p1)
 c.goPrevVisitedNode()
-p2 = c.currentPosition()
-# g.pr(p2)
+p2 = c.p
+# print(p2)
 c.goNextVisitedNode()
-p3 = c.currentPosition()
-# g.pr(p3)
+p3 = c.p
+# print(p3)
 # assert p == p3
 </t>
 <t tx="ekr.20070306091949"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
-c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
     
-g.pr('\nEnd of leoEditCommands tests.')</t>
+print('\nEnd of leoEditCommands tests.')</t>
 <t tx="ekr.20070315065720">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070315065720.1">a
@@ -16918,10 +16736,10 @@ c2 = b.firstChild()
 limit = a.next()
 d = limit.firstChild()
 e = limit.next()
-assert e.headString() == 'e'
+assert e.h == 'e'
 for p2,h in ((a,'a'),(b,'b'),(c2,'c2'),(d,'d'),(limit,'limit')):
     p2.expand()
-    assert p2.headString()==h,'headString mismatch'
+    assert p2.h==h,'headString mismatch'
 
 try: # Tests without hoist...
     p1.expand()
@@ -16967,26 +16785,22 @@ while p.hasChildren():
 # Create two cloned children.
 c.selectPosition(p)
 c.insertHeadline()
-p2 = c.currentPosition()
+p2 = c.p
 p2.moveToFirstChildOf(p)
 p2.setHeadString('aClone')
 c.selectPosition(p2)
 c.clone()
 assert 2 == p.numberOfChildren()
 
-try:
-    # Select the first clone and demote (it should be illegal)
-    c.selectPosition(p2)
-    c.demote() # This should do nothing.
-    assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
-    assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
-    assert 2 == p.numberOfChildren(), 'fail 3'
-    # Delete the children, but only if there are no errors.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-finally:
-    c.redraw()
-</t>
+# Select the first clone and demote (it should be illegal)
+c.selectPosition(p2)
+c.demote() # This should do nothing.
+assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
+assert 0 == c.checkOutline(event=None,verbose=False,unittest=True,full=True), 'fail 2'
+assert 2 == p.numberOfChildren(), 'fail 3'
+# Delete the children, but only if there are no errors.
+while p.hasChildren():
+    p.firstChild().doDelete()</t>
 <t tx="ekr.20070615070259"></t>
 <t tx="ekr.20070626153940">'''
 This script runs all @test nodes as follows:
@@ -17020,7 +16834,7 @@ else:
 <t tx="ekr.20070626153940.1">def searchOutline(p):
 
     for p in p.self_and_subtree_iter():
-        h = p.headString()
+        h = p.h
         if h.startswith('@test') or h.startswith('@suite'):
             return True
     else:
@@ -17035,7 +16849,7 @@ else:
 
     c2root.expand()
     for p in p.self_and_subtree_iter():
-        h = p.headString()
+        h = p.h
         if h.startswith('@test') or h.startswith('@suite'):
             # g.pr(h)
             # c.copyOutline is too slow.
@@ -17086,7 +16900,7 @@ c.editCommands.ccolumn = 4 # Set the comment column
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20071007120750.6"># xxxx.yyyy
 
-s = p.bodyString()
+s = p.b
 w = c.frame.body.bodyCtrl
 w.setSelectionRange(2,11)
 c.editCommands.setFillPrefix(event=None)
@@ -17261,7 +17075,7 @@ make a difference?</t>
 <t tx="ekr.20071020075538">@tabwidth -4
 @language python</t>
 <t tx="ekr.20071020075538.1"></t>
-<t tx="ekr.20071020075538.2">fileName = p.headString()
+<t tx="ekr.20071020075538.2">fileName = p.h
 
 s = '''\
 class cTestClass1 {
@@ -17278,7 +17092,7 @@ class cTestClass1 {
 
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20071020075538.3">fileName = p.headString()
+<t tx="ekr.20071020075538.3">fileName = p.h
 
 s = '''\
 class cTestClass1 {
@@ -17300,7 +17114,7 @@ g.app.unitTestDict ['expectedErrors'] = 1
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20071020075538.4">fileName = p.headString()
+<t tx="ekr.20071020075538.4">fileName = p.h
 
 s = '''\
 class cTestClass1 {
@@ -17317,7 +17131,7 @@ class cTestClass1 {
 
 c.importCommands.defaultImporterUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20071020075538.5">fileName = p.headString()
+<t tx="ekr.20071020075538.5">fileName = p.h
 
 s = '''\
 void
@@ -17341,7 +17155,7 @@ aaa::bbb::dothat
 
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20071020075538.6">fileName = p.headString()
+<t tx="ekr.20071020075538.6">fileName = p.h
 
 s = '''\
 void
@@ -17365,7 +17179,7 @@ aaa::bbb::dothat
 
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20071020075538.7">fileName = p.headString()
+<t tx="ekr.20071020075538.7">fileName = p.h
 
 s = '''
 void
@@ -17383,7 +17197,7 @@ g.app.unitTestDict ['expectedErrors'] = 0 # Intermixed blanks and tabs are ok fo
 
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20071020075538.8">fileName = p.headString()
+<t tx="ekr.20071020075538.8">fileName = p.h
 
 s = '''\
 static void
@@ -17401,7 +17215,7 @@ g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.cUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20071020075538.9">fileName = p.headString()
+<t tx="ekr.20071020075538.9">fileName = p.h
 
 s = '''\
 Tcl_Obj *
@@ -17523,7 +17337,7 @@ class test:
 
         c = self.c
         if c == None: return
-        v = current = c.currentVnode()
+        p = c.currentPosition()
 
     # Used by paste logic.
 
@@ -17941,7 +17755,7 @@ class mainPages(mammalProviderBase):
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071108082844">fileName = p.headString()
+<t tx="ekr.20071108082844">fileName = p.h
 
 s = '''\
 extern  "C"
@@ -18032,8 +17846,7 @@ assert d.get('tabwidth') == -4
 <t tx="ekr.20071113090055.2"># This will work regardless of where this method is.
 @language python
 
-# print 'c.frame.body.colorizer',c.frame.body.colorizer
-language = c.frame.body.colorizer.scanColorDirectives(p)
+language = g.findLanguageDirectives(c,p)
 assert language == 'python','got:%s' % language
 </t>
 <t tx="ekr.20071113090055.4"># This will work regardless of where this method is.
@@ -18056,7 +17869,7 @@ assert d.get('pagewidth') == 120
 @pagewidth 120
 
 d = c.atFileCommands.scanAllDirectives(p)
-
+# print d
 assert d.get('language') == 'python'
 assert d.get('tabwidth') == -4
 # assert d.get('path').endswith('xyzzy')
@@ -18074,7 +17887,7 @@ c1 = c
 d1 = {} ; d2 = {}
 for c,d in ( (c1,d1),(c2,d2)):
     for t in c.all_unique_tnodes_iter():
-        h = t.headString
+        h = t.h
         if h.startswith('@test'):
             d[h]=h
 
@@ -18273,7 +18086,7 @@ if g.unitTesting:
     return 'break'
 </t>
 <t tx="ekr.20071113143523.7">c = self.c
-p = c.currentPosition()
+p = c.p
 gui = g.app.gui
 ch = gui.eventChar(event)
 keysym = gui.eventKeysym(event)
@@ -18283,7 +18096,7 @@ if keysym == 'Tab': # Support for wx_alt_gui plugin.
     ch = '\t'
 name = c.widget_name(w)
 oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
-oldText = name.startswith('body') and p.bodyString() or ''
+oldText = name.startswith('body') and p.b or ''
 undoType = 'Typing'
 trace = c.config.getBool('trace_masterCommand')
 brackets = self.openBracketsList + self.closeBracketsList
@@ -18291,7 +18104,7 @@ inBrackets = ch and g.toUnicode(ch,g.app.tkEncoding) in brackets
 if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
 <t tx="ekr.20071113143523.8">def insertNewlineHelper (self,w,oldSel,undoType):
 
-    c = self.c ; p = c.currentPosition()
+    c = self.c ; p = c.p
     i,j = oldSel ; ch = '\n'
 
     if i != j:
@@ -18465,7 +18278,8 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
         assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
     finally:
         w.setAllText(s)
-        p.v.t.bodyString = s
+        p.setBodyString(s)
+        #### p.v.t.bodyString = s
         # g.trace(repr(s))
         c.recolor()
 
@@ -18481,10 +18295,11 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
         ec.selfInsertCommand(event)
         result = w.getAllText()
         # g.trace('result',repr(result))
-        assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
+        assert result.endswith('\n    ###abcdef'),'last line:%s' % repr(result.split('\n')[-1])
     finally:
         w.setAllText(s)
-        p.v.t.bodyString = s
+        p.setBodyString(s)
+        #### p.v.t.bodyString = s
         # g.trace(repr(s))
         c.recolor()
 
@@ -18493,7 +18308,7 @@ if trace: g.trace(name,repr(ch),ch and ch in brackets)</t>
 
     '''Set the column to which an up or down arrow will attempt to move.'''
 
-    c = self.c ; p = c.currentPosition()
+    c = self.c ; p = c.p
     s = w.getAllText()
     i = w.toPythonIndex(spot)
     junk,col = g.convertPythonIndexToRowCol(s,i)
@@ -18640,9 +18455,9 @@ if g.unitTesting:
     try:
         w = c.frame.body.bodyCtrl
         # g.pr((w))
-        s2 = p.bodyString()
+        s2 = p.b
         s = w.getAllText()
-        assert s == s2, 'w.getAllText() != p.bodyString(): len(w)=%d, len(p)=%d' % (len(s),len(s2))
+        assert s == s2, 'w.getAllText() != p.b: len(w)=%d, len(p)=%d' % (len(s),len(s2))
         w.setInsertPoint(len(s))
         c.k.previousSelection = 2,8
         event = g.Bunch(widget=w)
@@ -18651,7 +18466,8 @@ if g.unitTesting:
         assert len(s2) == len(s) + len('target')
     finally:
         w.setAllText(s)
-        p.v.t.bodyString = s2
+        p.setBodyString(s2)
+        #### p.v.t.bodyString = s2
         # g.trace(repr(s))
         c.recolor()
 
@@ -19233,15 +19049,18 @@ try:
         ec.selfInsertCommand(event)
     result = w.getAllText()
     #g.trace('result',repr(result))
-    assert result.endswith('    '),'result:%s' % repr(result) # Test of autocompleter.
+    assert result.endswith('    '),'result:\n%s' % result
+    # Test of autocompleter.
 finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    # g.trace(repr(s))
-    c.recolor()
+    if 1:
+        w.setAllText(s)
+        p.setBodyString(s)
+        # g.trace(repr(s))
+        c.recolor()
 
 # end:</t>
 <t tx="ekr.20071113145804.5">@language python
+@tabwidth -4
 
 try:
     ec = c.editCommands ; w = c.frame.body.bodyCtrl
@@ -19250,13 +19069,12 @@ try:
     event = g.Bunch(widget=w,char='\t',keysym=None)
     ec.selfInsertCommand(event)
     result = w.getAllText()
-    # g.trace('result',repr(result))
-    assert result.endswith('\n    abcdef'),'last line:%s' % repr(result.split('\n')[-1])
+    # print('result %s' % result)
+    assert result.endswith('\n    ###abcdef'),'result\n%s' % (repr(result))
 finally:
     w.setAllText(s)
     p.setBodyString(s)
-    # g.trace(repr(s))
-    c.recolor()
+    c.recolor_now()
 
 ###abcdef</t>
 <t tx="ekr.20071113145804.6">ec = c.editCommands
@@ -19539,10 +19357,10 @@ assert after == s[end:]
 
 try:
     w = c.frame.body.bodyCtrl
-    # g.pr((w))
-    s2 = p.bodyString()
+    # print((w))
+    s2 = p.b
     s = w.getAllText()
-    assert s == s2, 'w.getAllText() != p.bodyString(): len(w)=%d, len(p)=%d' % (len(s),len(s2))
+    assert s == s2, 'w.getAllText() != p.b: len(w)=%d, len(p)=%d' % (len(s),len(s2))
     w.setInsertPoint(len(s))
     c.k.previousSelection = 2,8
     event = g.Bunch(widget=w)
@@ -19580,30 +19398,30 @@ special = (
 for ch in special:
     assert not k.isPlainKey(ch), 'wrong: is plain: %s' % (ch)
 </t>
-<t tx="ekr.20071113145804.35"># g.pr('-' * 30)
+<t tx="ekr.20071113145804.35"># print('-' * 30)
 ok = True
 p = c.rootPosition()
 while p:
     if p.isAnyAtFileNode():
-        h = p.headString()
+        h = p.h
         if h.endswith('.py'):
-            # g.pr('checking',p.headString())
+            # print('checking',p.h)
             # Check all the descendant nodes.
             for p2 in p.subtree_iter():
-                h = p2.headString()
+                h = p2.h
                 for tag in ('@test','@suite'):
                     if h.startswith(tag):
-                        s = p2.bodyString()
+                        s = p2.b
                         lines = g.splitLines(s)
                         for line in lines:
-                            # g.pr('line',line)
+                            # print('line',line)
                             if not line.strip() or line.startswith('#'):
                                 continue
                             elif line.startswith('if g.unitTesting:'):
                                 break
                             else:
-                                g.pr('in',p.headString())
-                                g.pr('missing "if g.unitTesting:"',h)
+                                print('in',p.h)
+                                print('missing "if g.unitTesting:"',h)
                                 ok = False ; break
         p.moveToNodeAfterTree()
     else:
@@ -19646,110 +19464,86 @@ This eliminates references to nodes that no longer exist in the present outline.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
-c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
     
-g.pr('\nEnd of leoAtFile tests')</t>
+print('\nEnd of leoAtFile tests')</t>
 <t tx="ekr.20071113201833"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
-c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
     
-g.pr('\nEnd of leoCommands tests')</t>
+print('\nEnd of leoCommands tests')</t>
 <t tx="ekr.20071113201854"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
-c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
     
-g.pr('\nEnd of leoConfig tests')</t>
+print('\nEnd of leoConfig tests')</t>
 <t tx="ekr.20071113202045"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
-c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
   
-g.pr('\nEnd of leoFileCommands tests.')</t>
+print('\nEnd of leoFileCommands tests.')</t>
 <t tx="ekr.20071113202153"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
-c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
     
-# g.pr('\nEnd of leoFind tests.')</t>
+# print('\nEnd of leoFind tests.')</t>
 <t tx="ekr.20071113202153.1"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
-c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
     
-# g.pr('\nEnd of leoFrame tests.')</t>
+# print('\nEnd of leoFrame tests.')</t>
 <t tx="ekr.20071113202153.2"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
-c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
     
-# g.pr('\nEnd of leoGlobals tests.')</t>
+# print('\nEnd of leoGlobals tests.')</t>
 <t tx="ekr.20071113202321"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
-c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
     
-# g.pr('\nEnd of leoGui tests.')</t>
+# print('\nEnd of leoGui tests.')</t>
 <t tx="ekr.20071113202321.1"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
-c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
     
-g.pr('\nEnd of leoImport tests.')</t>
+print('\nEnd of leoImport tests.')</t>
 <t tx="ekr.20071113202410"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
-c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
     
-# g.pr('\nEnd of leoKeys tests.')</t>
+# print('\nEnd of leoKeys tests.')</t>
 <t tx="ekr.20071113202452"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
-c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
     
-g.pr('\nEnd of leoNodes tests.')</t>
+print('\nEnd of leoNodes tests.')</t>
 <t tx="ekr.20071113202510"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
 c.contractParent()
-c.selectPosition(p.parent())
 g.app.unitTestDict['restoreSelectedNode']=False
-c.redraw()
     
-g.pr('\nEnd of leoUndo tests.')</t>
+print('\nEnd of leoUndo tests.')</t>
 <t tx="ekr.20071113203234"></t>
 <t tx="ekr.20071119053439">s = '''\
     a
@@ -19943,11 +19737,11 @@ config.macros.br.handler = function(place)
 	createTiddlyElement(place,"br");
 };
 </t>
-<t tx="ekr.20071219170354">p = c.currentPosition().firstChild()
+<t tx="ekr.20071219170354">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20071219170354.1">@language perl
 
@@ -20004,11 +19798,11 @@ sub inside
 	($a =~ /$b/ || $b =~ /$a/);	# Is $b inside $a
 					#   or $a inside $b?
 }</t>
-<t tx="ekr.20071219172126">p = c.currentPosition().firstChild()
+<t tx="ekr.20071219172126">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20071219172126.1">@language lisp
 
@@ -20031,11 +19825,11 @@ set setq
 t type-of 
 unless 
 when while</t>
-<t tx="ekr.20071219172615">p = c.currentPosition().firstChild()
+<t tx="ekr.20071219172615">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20071219172615.1">@language shellscript
 
@@ -20120,11 +19914,11 @@ please ask for help on Leo's help forum:
 -------------
 
 |back| |leo| |next|</t>
-<t tx="ekr.20071219184852">p = c.currentPosition().firstChild()
+<t tx="ekr.20071219184852">p = c.p.firstChild()
 
-c.selectVnode(p) # Sets body text.
+c.selectPosition(p) # Sets body text.
 val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.headString()
+assert val=="ok", "colorizer test failed: %s" % p.h
 </t>
 <t tx="ekr.20080121080011">s = '''\
 """A file consisting only of a docstring.
@@ -20209,21 +20003,21 @@ for v in c.all_unique_vnodes_iter():
         if d.get('str_leo_pos'):
             n += 1
             
-# g.pr(n)
+# print(n)
 assert n &lt; 2</t>
 <t tx="ekr.20080423110627.3"># Delete all children.
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
     
 child = p.insertAsNthChild(0)
-child.setHeadString('child')
-assert child, 'no child'
+c.setHeadString(child,'child') # Force the headline to update.
 
 try:
+    assert child, 'no child'
     c.selectPosition(child)
-    c.clone()
-    clone = c.currentPosition()
-    assert clone.headString() == 'child','fail headstring'
+    clone = c.clone()
+    assert clone == c.p
+    assert clone.h == 'child','fail headstring: %s' % clone.h
     assert child.isCloned(), 'fail 1'
     assert clone.isCloned(), 'fail 2'
     assert child.isCloned(), 'fail 3'
@@ -20231,17 +20025,17 @@ try:
     c.undoer.undo()
     assert not child.isCloned(), 'fail 1-a'
     c.undoer.redo()
-    assert child.isCloned(), 'fail 1-b'
+    assert child.isCloned(),    'fail 1-b'
     c.undoer.undo()
     assert not child.isCloned(), 'fail 1-c'
     c.undoer.redo()
-    assert child.isCloned(), 'fail 1-d'
+    assert child.isCloned(),    'fail 1-d'
     oldRoot = c.rootPosition()
     clone.moveToRoot(oldRoot=oldRoot) # Does not change child position.
-    assert child.isCloned(), 'fail 3-2'
-    assert clone.isCloned(), 'fail 4-2'
-    assert not clone.parent(), 'fail 5'
-    assert not clone.back(), 'fail 6'
+    assert child.isCloned(),    'fail 3-2'
+    assert clone.isCloned(),    'fail 4-2'
+    assert not clone.parent(),  'fail 5'
+    assert not clone.back(),    'fail 6'
     clone.doDelete()
     assert not child.isCloned(), 'fail 7'
 finally:
@@ -20255,6 +20049,8 @@ finally:
     
 child = p.insertAsNthChild(0)
 child.setHeadString('child')
+child2 = p.insertAsNthChild(1)
+child2.setHeadString('child2')
 grandChild = child.insertAsNthChild(0)
 grandChild.setHeadString('grand child')
 c.selectPosition(grandChild)
@@ -20264,16 +20060,17 @@ c.selectPosition(child)
 try:
     p.expand()
     c.selectPosition(child)
+    assert c.p.h == 'child','fail 1'
     c.copyOutline()
     oldTnodes = [p2.v.t for p2 in child.self_and_subtree_iter()]
     c.selectPosition(child)
-    c.currentPosition().contract() # Essential
+    c.p.contract() # Essential
     c.pasteOutline()
-    current = c.currentPosition()
-    assert current != child, 'fail 2'
-    newTnodes = [p2.v.t for p2 in current.self_and_subtree_iter()]
+    assert c.p != child, 'fail 2'
+    assert c.p.h == 'child','fail 3'
+    newTnodes = [p2.v.t for p2 in c.p.self_and_subtree_iter()]
     for t in newTnodes:
-        assert t not in oldTnodes, 'fail 3'
+        assert t not in oldTnodes, 'fail 4'
     c.undoer.undo()
     c.undoer.redo()
     c.undoer.undo()
@@ -20298,11 +20095,10 @@ try:
     c.selectPosition(child)
     c.copyOutline()
     oldTnodes = [p2.v.t for p2 in child.self_and_subtree_iter()]
-    c.currentPosition().contract() # Essential
+    c.p.contract() # Essential
     c.pasteOutlineRetainingClones()
-    current = c.currentPosition()
-    assert current != child, 'fail 2'
-    newTnodes = [p2.v.t for p2 in current.self_and_subtree_iter()]
+    assert c.p != child, 'fail 2'
+    newTnodes = [p2.v.t for p2 in c.p.self_and_subtree_iter()]
     for t in newTnodes:
         assert t in oldTnodes, 'fail 3'
 finally:
@@ -20326,31 +20122,31 @@ try:
     p.expand()
     c.setCurrentPosition(p3)
     c.moveOutlineDown()
-    moved = c.currentPosition()
-    assert moved.headString() == 'B', 'fail 1'
-    assert moved.back().headString() == 'C', 'fail 2'
-    assert moved.next().headString() == 'D', 'fail 3'
+    moved = c.p
+    assert moved.h == 'B',          'fail 1: %s' % moved.h
+    assert moved.back().h == 'C',   'fail 2'
+    assert moved.next().h == 'D',   'fail 3'
     # This assert fails because p4._childIndex != moved.back()._childIndex.
     # assert moved.back() == p4, 'fail 4: %s != %s' % (moved.back(),p4)
-    assert moved.next() == p5, 'fail 5: %s != %s' % (moved.next(),p5)
+    assert moved.next() == p5,      'fail 5: %s != %s' % (moved.next(),p5)
     c.undoer.undo()
-    moved = c.currentPosition()
-    assert moved.back() == p2, 'fail 4'
-    assert moved.next() == p4, 'fail 5'
+    moved = c.p
+    assert moved.back() == p2,      'fail 4'
+    assert moved.next() == p4,      'fail 5'
     c.undoer.redo()
-    moved = c.currentPosition()
-    assert moved.headString() == 'B', 'fail 1-2'
-    assert moved.back().headString() == 'C', 'fail 2-2'
-    assert moved.next().headString() == 'D', 'fail 3-2'
+    moved = c.p
+    assert moved.h == 'B',          'fail 1-2: %s' % moved.h
+    assert moved.back().h == 'C',   'fail 2-2'
+    assert moved.next().h == 'D',   'fail 3-2'
     c.undoer.undo()
-    moved = c.currentPosition()
-    assert moved.back() == p2, 'fail 4-2'
-    assert moved.next() == p4, 'fail 5-2'
+    moved = c.p
+    assert moved.back() == p2,      'fail 4-2'
+    assert moved.next() == p4,      'fail 5-2'
     c.undoer.redo()
-    moved = c.currentPosition()
-    assert moved.headString() == 'B', 'fail 1-3'
-    assert moved.back().headString() == 'C', 'fail 2-3'
-    assert moved.next().headString() == 'D', 'fail 3-3'
+    moved = c.p
+    assert moved.h == 'B',          'fail 1-3'
+    assert moved.back().h == 'C',   'fail 2-3'
+    assert moved.next().h == 'D',   'fail 3-3'
 
 finally:
     if 1:
@@ -20372,13 +20168,13 @@ try:
     p.expand()
     c.setCurrentPosition(p4)
     c.moveOutlineUp()
-    moved = c.currentPosition()
-    assert moved.headString() == 'C', 'fail 1'
-    assert moved.back().headString() == 'A', 'fail 2'
-    assert moved.next().headString() == 'B', 'fail 3'
-    assert moved.back() == p2, 'fail 4: %s != %s' % (moved.back(),p2)
+    moved = c.p
+    assert moved.h == 'C',          'fail 1'
+    assert moved.back().h == 'A',   'fail 2'
+    assert moved.next().h == 'B',   'fail 3'
+    assert moved.back() == p2,      'fail 4: %s != %s' % (moved.back(),p2)
     # This assert fails because p4._childIndex != moved.back()._childIndex.
-    # assert moved.next() == p3, 'fail 5: %s != %s' % (moved.next(),p3)
+    # assert moved.next() == p3,    'fail 5: %s != %s' % (moved.next(),p3)
     c.undoer.undo()
     c.undoer.redo()
     c.undoer.undo()
@@ -20402,9 +20198,9 @@ try:
     child.moveToRoot(oldRoot=oldRoot) # Does not change child position.
     c.setRootPosition(child)
     assert c.positionExists(child)
-    assert c.rootPosition().headString() == 'child', 'fail 1'
+    assert c.rootPosition().h == 'child', 'fail 1'
     next = c.rootPosition().next()
-    assert next.headString() == 'Startup', 'fail 2: next: %s' % next
+    assert next.h == 'Startup', 'fail 2: next: %s' % next
     c.rootPosition().doDelete(newNode=next)
     c.setRootPosition(next)
 finally:
@@ -20425,26 +20221,26 @@ try:
     p.expand()
     c.setCurrentPosition(p2)
     c.insertHeadline()
-    p = c.currentPosition()
+    p = c.p
     p.setHeadString('inserted')
-    assert p.back().headString() == 'A', 'fail 1'
-    assert p.next().headString() == 'B', 'fail 2'
+    assert p.back().h == 'A', 'fail 1'
+    assert p.next().h == 'B', 'fail 2'
     c.undoer.undo()
-    p = c.currentPosition()
-    assert p == p2,        'fail 3'
-    assert p.next() == p3, 'fail 4'
+    p = c.p
+    assert p == p2,         'fail 3'
+    assert p.next() == p3,  'fail 4'
     c.undoer.redo()
-    p = c.currentPosition()
-    assert p.back().headString() == 'A', 'fail 1-2'
-    assert p.next().headString() == 'B', 'fail 2-2'
+    p = c.p
+    assert p.back().h == 'A', 'fail 1-2'
+    assert p.next().h == 'B', 'fail 2-2'
     c.undoer.undo()
-    p = c.currentPosition()
-    assert p == p2,        'fail 3-2'
-    assert p.next() == p3, 'fail 3-2'
+    p = c.p
+    assert p == p2,         'fail 3-2'
+    assert p.next() == p3,  'fail 3-2'
     c.undoer.redo()
-    p = c.currentPosition()
-    assert p.back().headString() == 'A', 'fail 1-3'
-    assert p.next().headString() == 'B', 'fail 2-3'
+    p = c.p
+    assert p.back().h == 'A', 'fail 1-3'
+    assert p.next().h == 'B', 'fail 2-3'
 
 finally:
     if 1:
@@ -20460,8 +20256,8 @@ try:
     p.expand()
     c.setCurrentPosition(p2)
     c.moveOutlineLeft()
-    moved = c.currentPosition()
-    assert moved.headString() == 'A','fail 1'
+    moved = c.p
+    assert moved.h == 'A','fail 1'
     # This assert fails because p4._childIndex != moved.back()._childIndex.
     assert moved.back() == p, 'fail 2: %s != %s' % (moved.back(),p4)
     c.undoer.undo()
@@ -20491,8 +20287,8 @@ try:
     p.expand()
     c.setCurrentPosition(p3)
     c.moveOutlineRight()
-    moved = c.currentPosition()
-    assert moved.headString() == 'B', 'fail 1'
+    moved = c.p
+    assert moved.h == 'B', 'fail 1'
     assert moved.parent() == p2
     c.undoer.undo()
     c.undoer.redo()
@@ -20516,33 +20312,32 @@ try:
     p4 = p.insertAsNthChild(2)
     p4.setHeadString('C')
     p.expand()
-    c.outerUpdate() # This call is required so the expansion actually happens.
-    c.setCurrentPosition(p3)
+    c.selectPosition(p3)
     c.deleteOutline()
-    c.outerUpdate()
-    p = c.currentPosition()
-    assert p.headString() == 'A', 'fail 1: got %s' % p.headString()
-    assert p.next().headString() == 'C', 'fail 2'
+    c.redraw_now()
+    p = c.p
+    assert p.h == 'A', 'fail 1: got %s' % p.h
+    assert p.next().h == 'C', 'fail 2'
     c.undoer.undo()
     c.outerUpdate()
-    p = c.currentPosition()
-    assert p.back() == p2, 'fail 4'
+    p = c.p
+    assert p.back() == p2, 'fail 4 %s' % p.back()
     assert p.next() == p4, 'fail 5'
     c.undoer.redo()
     c.outerUpdate()
-    p = c.currentPosition()
-    assert p.headString() == 'A', 'fail 1-2'
-    assert p.next().headString() == 'C', 'fail 2-2'
+    p = c.p
+    assert p.h == 'A',          'fail 1-2'
+    assert p.next().h == 'C',   'fail 2-2'
     c.undoer.undo()
     c.outerUpdate()
-    p = c.currentPosition()
-    assert p.back() == p2, 'fail 4-2'
-    assert p.next() == p4, 'fail 5-2'
+    p = c.p
+    assert p.back() == p2,  'fail 4-2'
+    assert p.next() == p4,  'fail 5-2'
     c.undoer.redo()
     c.outerUpdate()
-    p = c.currentPosition()
-    assert p.headString() == 'A', 'fail 1-3'
-    assert p.next().headString() == 'C', 'fail 2-3'
+    p = c.p
+    assert p.h == 'A',          'fail 1-3'
+    assert p.next().h == 'C',   'fail 2-3'
 
 finally:
     if 1:
@@ -20567,42 +20362,41 @@ try:
     p6.setHeadString('C')
     c.setCurrentPosition(p3)
     c.promote()
-    p = c.currentPosition()
-    assert p == p3,                                     'fail 1'
-    assert p.headString() == 'B',                       'fail 2'
-    assert p.next().headString()=='child 1',            'fail 3'
-    assert p.next().next().headString() == 'child 2',   'fail child 1'
-    assert p.next().next().next().headString() == 'C',  'fail child 2'
+    p = c.p
+    assert p == p3,         'fail 1'
+    assert p.h == 'B',      'fail 2'
+    assert p.next().h=='child 1',            'fail 3'
+    assert p.next().next().h == 'child 2',   'fail child 1'
+    assert p.next().next().next().h == 'C',  'fail child 2'
     c.undoer.undo()
-    p = c.currentPosition()
+    p = c.p
     assert p == p3
-    assert p.back() == p2,                              'fail 5'
-    assert p.next() == p6,                              'fail 6'
-    assert p.firstChild().headString()=='child 1',          'fail child 3'
-    assert p.firstChild().next().headString() == 'child 2', 'fail child 4'
+    assert p.back() == p2,  'fail 5'
+    assert p.next() == p6,  'fail 6'
+    assert p.firstChild().h=='child 1',          'fail child 3'
+    assert p.firstChild().next().h == 'child 2', 'fail child 4'
     c.undoer.redo()
-    p = c.currentPosition()
-    assert p == p3,                                     'fail 1-2'
-    assert p.headString() == 'B',                       'fail 2-2'
-    assert p.next().headString()=='child 1',            'fail 3-2'
-    assert p.next().next().headString() == 'child 2',   'fail child 1-2'
-    assert p.next().next().next().headString() == 'C',  'fail child 2-2'
+    p = c.p
+    assert p == p3,         'fail 1-2'
+    assert p.h == 'B',      'fail 2-2'
+    assert p.next().h=='child 1',            'fail 3-2'
+    assert p.next().next().h == 'child 2',   'fail child 1-2'
+    assert p.next().next().next().h == 'C',  'fail child 2-2'
     c.undoer.undo()
-    p = c.currentPosition()
+    p = c.p
     assert p == p3
-    assert p.back() == p2,                                  'fail 5-2'
-    assert p.next() == p6,                                  'fail 6-2'
-    assert p.firstChild().headString()=='child 1',          'fail child 3-2'
-    assert p.firstChild().next().headString() == 'child 2', 'fail child 4-2'
+    assert p.back() == p2,                      'fail 5-2'
+    assert p.next() == p6,                      'fail 6-2'
+    assert p.firstChild().h=='child 1',         'fail child 3-2'
+    assert p.firstChild().next().h == 'child 2','fail child 4-2'
     c.undoer.redo()
-    p = c.currentPosition()
-    assert p == p3,                                     'fail 1-3'
-    assert p.headString() == 'B',                       'fail 2-3'
-    assert p.next().headString()=='child 1',            'fail 3-3'
-    assert p.next().next().headString() == 'child 2',   'fail child 1-3'
-    assert p.next().next().next().headString() == 'C',  'fail child 2-3'
+    p = c.p
+    assert p == p3,     'fail 1-3'
+    assert p.h == 'B',  'fail 2-3'
+    assert p.next().h=='child 1',            'fail 3-3'
+    assert p.next().next().h == 'child 2',   'fail child 1-3'
+    assert p.next().next().next().h == 'C',  'fail child 2-3'
     
-
 finally:
     if 1:
         while root.hasChildren():
@@ -20624,33 +20418,33 @@ try:
     p.expand()
     c.setCurrentPosition(p3)
     c.demote()
-    p = c.currentPosition()
-    assert p == p3,                                     'fail 1'
-    assert p.headString() == 'B',                       'fail 2'
-    assert not p.next(),                                'fail 3'
-    assert p.firstChild().headString() == 'C',          'fail child 1'
-    assert p.firstChild().next().headString() == 'D',   'fail child 2'
+    p = c.p
+    assert p == p3,         'fail 1'
+    assert p.h == 'B',      'fail 2'
+    assert not p.next(),    'fail 3'
+    assert p.firstChild().h == 'C',          'fail child 1'
+    assert p.firstChild().next().h == 'D',   'fail child 2'
     c.undoer.undo()
-    p = c.currentPosition()
+    p = c.p
     assert p == p3
     assert p.back() == p2, 'fail 5'
     assert p.next() == p4, 'fail 6'
     c.undoer.redo()
-    assert p == p3,                                     'fail 1-2'
-    assert p.headString() == 'B',                       'fail 2-2'
-    assert not p.next(),                                'fail 3-2'
-    assert p.firstChild().headString() == 'C',          'fail child 1-2'
-    assert p.firstChild().next().headString() == 'D',   'fail child 2-2'
+    assert p == p3,         'fail 1-2'
+    assert p.h == 'B',      'fail 2-2'
+    assert not p.next(),    'fail 3-2'
+    assert p.firstChild().h == 'C',         'fail child 1-2'
+    assert p.firstChild().next().h == 'D',  'fail child 2-2'
     c.undoer.undo()
-    p = c.currentPosition()
+    p = c.p
     assert p.back() == p2, 'fail 4-2'
     assert p.next() == p4, 'fail 5-2'
     c.undoer.redo()
-    assert p == p3,                                     'fail 1-3'
-    assert p.headString() == 'B',                       'fail 2-3'
-    assert not p.next(),                                'fail 3-3'
-    assert p.firstChild().headString() == 'C',          'fail child 1-3'
-    assert p.firstChild().next().headString() == 'D',   'fail child 2-3'
+    assert p == p3,         'fail 1-3'
+    assert p.h == 'B',      'fail 2-3'
+    assert not p.next(),    'fail 3-3'
+    assert p.firstChild().h == 'C',         'fail child 1-3'
+    assert p.firstChild().next().h == 'D',  'fail child 2-3'
 
 finally:
     if 1:
@@ -20662,7 +20456,7 @@ while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
     
 child = p.insertAsNthChild(0)
-child.setHeadString('child')
+c.setHeadString(child,'child') # Force the headline to update.
 c.selectPosition(child)
 
 try:
@@ -20679,7 +20473,6 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now()</t>
-<t tx="ekr.20080514113943.1"># The 'solution' is just to disable these when command mode is the default.</t>
 <t tx="ekr.20080529114722.1">import leo.core.leoTest as leoTest
 leoTest.runTimerOnNode(c,p,count=100)</t>
 <t tx="ekr.20080529115911.1">import leo.core.leoTest as leoTest
@@ -20691,7 +20484,7 @@ leoTest.runProfileOnNode(p,outputPath=None) # Defaults to leo\test\profileStats.
 <t tx="ekr.20080701183239.2">def quickConvertRowColToPythonIndex(row,col):
     return lineIndices[row-1] + col
 
-s = p.bodyString()
+s = p.b
 lines = g.splitLines(s)
 lineIndices = [0]
 for i in xrange(1,len(lines)):
@@ -20703,7 +20496,7 @@ for row in xrange(len(lines)):
     for col in xrange(len(line)):
         assert quickConvertRowColToPythonIndex(row+1,col) == n
         n += 1
-g.pr('pass')
+print('pass')
 
 </t>
 <t tx="ekr.20080701183239.3"># aaaaaaaaaaaaaaaaaa add some more characters.
@@ -20732,8 +20525,8 @@ def fail(kind,expected,got):
         n,kind,expected,kind,got,last_row,last_col)
 
 # This is fast because we never look at characters more than once.
-s = p.bodyString()
-g.pr('-'*40)
+s = p.b
+print('-'*40)
 last_col = 0 ; last_row = 0 ; last_i = 0 ; n = 0
 while n &lt; len(s):
     expected_row, expected_col = g.convertPythonIndexToRowCol(s,n)
@@ -20747,7 +20540,7 @@ expected_row, expected_col = g.convertPythonIndexToRowCol(s,n)
 row,col = quickConvertPythonIndexToRowCol(n,last_row,last_col,last_i=last_i)
 assert row == expected_row,fail('row',expected_row,row)
 assert col == expected_col,fail('col',expected_col,col)
-g.pr('pass','len(s)',len(s),'total_count_chars',total_count_chars,'total_rfind_chars',total_rfind_chars)
+print('pass','len(s)',len(s),'total_count_chars',total_count_chars,'total_rfind_chars',total_rfind_chars)
 </t>
 <t tx="ekr.20080703104536.1"></t>
 <t tx="ekr.20080707101444.1">@language forth
@@ -20797,7 +20590,7 @@ assert root, 'Node not found: @shadow-tests'
 
 trace = False ; vrbose = False
 for p in root.children_iter():
-    h = p.headString().strip()
+    h = p.h.strip()
     if h.startswith('@shadow-test-lax'):
         test = x.atShadowTestCase(c,p,x,lax=True)
     elif h.startswith('@shadow-test'):
@@ -20805,7 +20598,7 @@ for p in root.children_iter():
     else:
         test = None
     if test:
-        if trace and verbose: g.pr(h)
+        if trace and verbose: print(h)
         suite.addTest(test)
 if suite:
     g.app.scriptDict['suite'] = suite
@@ -21017,8 +20810,8 @@ node 2 line 3</t>
 path = x.baseDirName()
 expected = g.os_path_dirname(g.os_path_abspath(g.os_path_join(c.fileName())))
 
-# g.pr(path)
-# g.pr(expected)
+# print(path)
+# print(expected)
 
 assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
 <t tx="ekr.20080729200342.121">x = c.shadowController
@@ -21028,8 +20821,8 @@ filename = 'xyzzy'
 path = x.pathName(filename)
 expected = g.os_path_abspath(g.os_path_join(x.baseDirName(),filename))
 
-# g.pr(path)
-# g.pr(expected)
+# print(path)
+# print(expected)
 
 assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
 <t tx="ekr.20080729200342.122">x = c.shadowController
@@ -21039,8 +20832,8 @@ path = x.dirName(filename)
 expected = g.os_path_dirname(g.os_path_abspath(
     g.os_path_join(g.os_path_dirname(c.fileName()),filename)))
 
-# g.pr(path)
-# g.pr(expected)
+# print(path)
+# print(expected)
 
 assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
 <t tx="ekr.20080729200342.123">x = c.shadowController
@@ -21048,8 +20841,8 @@ assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
 subdir = c.config.getString('shadow_subdir') or 'LeoFolder'
 prefix = c.config.getString('shadow_prefix') or ''
 
-# g.pr('c.fileName',c.fileName())
-# g.pr('c.relativeFileName',c.relativeFileName())
+# print('c.fileName',c.fileName())
+# print('c.relativeFileName',c.relativeFileName())
 
 filename = 'xyzzy'
 path = x.shadowPathName(filename)
@@ -21057,9 +20850,9 @@ expected = g.os_path_abspath(g.os_path_join(
     g.os_path_dirname(c.fileName()),subdir,prefix+filename))
 
 if 0:
-    g.pr('prefix',prefix)
-    g.pr(path)
-    g.pr(expected)
+    print('prefix',prefix)
+    print(path)
+    print(expected)
 
 assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
 <t tx="ekr.20080729200342.124">x = c.shadowController
@@ -21067,16 +20860,16 @@ assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
 subdir = c.config.getString('shadow_subdir') or 'LeoFolder'
 prefix = c.config.getString('shadow_prefix') or ''
 
-# g.pr('c.fileName',c.fileName())
-# g.pr('c.relativeFileName',c.relativeFileName())
+# print('c.fileName',c.fileName())
+# print('c.relativeFileName',c.relativeFileName())
 
 filename = 'xyzzy'
 path = x.shadowDirName(filename)
 expected = g.os_path_abspath(
     g.os_path_join(g.os_path_dirname(c.fileName()),subdir))
 
-# g.pr(path)
-# g.pr(expected)
+# print(path)
+# print(expected)
 
 assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
 <t tx="ekr.20080729200342.125">x = c.shadowController
@@ -21087,17 +20880,17 @@ n = x.errors
 x.rename('xyzzy','xyzzy2',silent=True)
 assert x.errors == n+1
 assert x.last_error.startswith('can not rename')
-# g.pr(x.last_error)</t>
+# print(x.last_error)</t>
 <t tx="ekr.20080729200342.126">x = c.shadowController
 
 filename = x.pathName('xyzzy')
-# g.pr(filename)
+# print(filename)
 assert not g.os_path_exists(filename)
 n = x.errors
 x.unlink('xyzzy',silent=True)
 assert x.errors == n+1
 assert x.last_error.startswith('can not delete xyzzy')
-# g.pr(x.last_error)</t>
+# print(x.last_error)</t>
 <t tx="ekr.20080729200342.127">import glob
 import os
 
@@ -21165,8 +20958,9 @@ filename = x.pathName('xyzzy')
 assert not g.os_path_exists(filename)
 
 try:
-    theFile = at.openForWrite(filename)
-    # g.pr(repr(theFile))
+    kind,theFile = at.openForWrite(filename)
+    assert kind == 'check'
+    # print(repr(theFile))
     if theFile: theFile.close()
     
 finally:
@@ -21178,7 +20972,7 @@ x = c.shadowController
 
 changed = c.changed
 child = p.firstChild()
-s = child.bodyString()
+s = child.b
 
 try:
     fn = 'unittest/read_test.py'
@@ -21213,7 +21007,7 @@ finally:
 x = c.shadowController
 changed = c.changed
 child = p.firstChild()
-s = child.bodyString()
+s = child.b
 
 try:
     child.setHeadString('@shadow unittest/test_1.py')
@@ -21227,8 +21021,8 @@ try:
     assert at.startSentinelComment == '#',repr(at.startSentinelComment)
     assert at.endSentinelComment == None,repr(at.endSentinelComment)
     if 0:
-        g.pr('public...\n',at.public_s)
-        g.pr('private...\n',at.private_s)
+        print('public...\n',at.public_s)
+        print('private...\n',at.private_s)
     at.writeOneAtShadowNode(child,toString=False,force=True)
     # assert at.stringOutput == s,'got %s, expected %s' % (repr(at.stringOutput),repr(s))
     assert g.os_path_exists(shadow_fn)
@@ -21420,8 +21214,8 @@ trace = False
 
 if 0: # Set the uA's.
     for p2 in root.self_and_subtree_iter():
-        p2.v.unknownAttributes = {tag: p2.headString()}
-        p2.v.t.unknownAttributes = {ttag: p2.headString()}
+        p2.v.unknownAttributes = {tag: p2.h}
+        p2.v.t.unknownAttributes = {ttag: p2.h}
 else: # Test the uA's.
     # The root is a special case.
     v = root.v
@@ -21431,14 +21225,14 @@ else: # Test the uA's.
         v = p2.v
         assert hasattr(v,uA),'no v.uA for %s' % v
         a = getattr(v,uA)
-        d = {tag: v.headString()}
-        if trace: g.pr(d)
+        d = {tag: v.h}
+        if trace: print(d)
         assert a == d, 'expected v.uA: "%s", got "%s"' % (d,a)
         t = p2.v.t
-        assert hasattr(t,uA),'no t.uA for %s' % p.headString()
+        assert hasattr(t,uA),'no t.uA for %s' % p.h
         a = getattr(t,uA)
-        d = {ttag: v.headString()}
-        if trace: g.pr(d)
+        d = {ttag: v.h}
+        if trace: print(d)
         assert a == d, 'expected t.uA: "%s", got "%s"' % (d,a)</t>
 <t tx="ekr.20080806211453.1">@language python
 @tabwidth -4
@@ -21452,8 +21246,8 @@ trace = False
 
 if 0: # Set the uA's.
     for p2 in root.self_and_subtree_iter():
-        p2.v.unknownAttributes = {tag: p2.headString()}
-        p2.v.t.unknownAttributes = {ttag: p2.headString()}
+        p2.v.unknownAttributes = {tag: p2.h}
+        p2.v.t.unknownAttributes = {ttag: p2.h}
 else: # Test the uA's.
     # The root is a special case.
     v = root.v
@@ -21463,14 +21257,14 @@ else: # Test the uA's.
         v = p2.v
         assert hasattr(v,uA),'no v.uA for %s' % v
         a = getattr(v,uA)
-        d = {tag: v.headString()}
-        if trace: g.pr(d)
+        d = {tag: v.h}
+        if trace: print(d)
         assert a == d, 'expected v.uA: "%s", got "%s"' % (d,a)
         t = p2.v.t
-        assert hasattr(t,uA),'no t.uA for %s' % p.headString()
+        assert hasattr(t,uA),'no t.uA for %s' % p.h
         a = getattr(t,uA)
-        d = {ttag: v.headString()}
-        if trace: g.pr(d)
+        d = {ttag: v.h}
+        if trace: print(d)
         assert a == d, 'expected t.uA: "%s", got "%s"' % (d,a)</t>
 <t tx="ekr.20080811180035.1">d = g.app.extra_extension_dict
 
@@ -21487,13 +21281,13 @@ for ext in g.app.extension_dict.keys():
         if language2 in ('None','none'):  continue
         if language2: language = language2
         # Made-up languages do not have mode files.
-        if not language.endswith('_language'):
+        if not language.endswith('_language') and language not in ('autohotkey',):
             path = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
             assert g.os_path_exists(path), 'for ext=%s does not exist: %s' % (ext,path)
         
     if 0:
         if language is None:
-            g.pr('no language for ext=%s' % (ext))</t>
+            print('no language for ext=%s' % (ext))</t>
 <t tx="ekr.20080812114335.1">x = c.shadowController
 
 table = (
@@ -21575,13 +21369,13 @@ if showTree:
         assert n == 2, 'expected 2 children, got %s' % n
     finally:
         if keepTree:
-            h = child.headString()
+            h = child.h
             print 'h',h
             child.setHeadString('@'+h)
         else:
             while p.hasChildren():
                 p.firstChild().doDelete()
-        c.redraw_now()</t>
+        c.redraw(p)</t>
 <t tx="ekr.20080901083414.24">s = '''\
 
 def foo():
@@ -21619,14 +21413,14 @@ assert target
 p,n,found = c.goto_countLines (target,3)
 assert found,found
 assert n == 3,n
-assert p.headString() == 'at_auto_child',p.headString()
+assert p.h == 'at_auto_child',p.h
 </t>
 <t tx="ekr.20080904110148.4">h = '@auto unittest/at-auto-line-number-test.py'
 root = g.findNodeAnywhere(c,h)
 assert root
 p,n,found = c.goto_countLines (root,20)
 assert not found
-assert p.headString() == 'at_auto_child'
+assert p.h == 'at_auto_child'
 # print ('p:%s, n:%s, found: %s' % (p,n,found))</t>
 <t tx="ekr.20080904110148.5">h = '@auto unittest/at-auto-line-number-test.py'
 root1 = g.findNodeAnywhere(c,h)
@@ -21640,7 +21434,7 @@ assert root == root1
 
 if 0:
     print ('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
-        root and root.headString(),isRaw,n,len(lines)))</t>
+        root and root.h,isRaw,n,len(lines)))</t>
 <t tx="ekr.20080904113003.2">h = '@auto unittest/at-auto-line-number-test.py'
 root1 = g.findNodeAnywhere(c,h)
 assert root1
@@ -21656,25 +21450,10 @@ assert n == 2,n
 
 if 0:
     print ('root:%s, n:%s, len(lines): %s' % (
-        root and root.headString(),n,len(lines)))</t>
+        root and root.h,n,len(lines)))</t>
 <t tx="ekr.20080904120258.2">c.goto_showResults(found=True,p=p,n=3,n2=3,lines=3)</t>
 <t tx="ekr.20080904120258.3">c.goto_showResults(found=False,p=p,n=3,n2=3,lines=['a','b'])
 </t>
-<t tx="ekr.20080904120258.4"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c) # This *is* used
-
-c.contractAllHeadlines()
-h = 'All unit tests'
-p = u.findNodeAnywhere(h)
-if p:
-    p.expand()
-    g.app.unitTestDict['restoreSelectedNode']=False
-    c.selectPosition(p)
-    c.redraw()
-        
-# g.pr('\nEnd of goto tests')</t>
 <t tx="ekr.20080904120258.5">root = p.parent().parent()
 h = '@file unittest/at-file-line-number-test.py'
 target = g.findNodeInTree(c,root,h)
@@ -21732,7 +21511,7 @@ assert not gnx,repr(gnx)
 assert offset is not None,repr(offset)
 assert vnodeName,repr(vnodeName)
 
-# g.pr('vnodeName',vnodeName,'gnx',gnx,'offset',offset,'delim',delim)
+# print('vnodeName',vnodeName,'gnx',gnx,'offset',offset,'delim',delim)
 
 </t>
 <t tx="ekr.20080905130723.4">def child():
@@ -21743,11 +21522,11 @@ h = '@auto unittest/at-auto-line-number-test.py'
 target = g.findNodeInTree(c,root,h)
 assert target
 child = target.firstChild()
-assert child.headString() == 'at_auto_child'
+assert child.h == 'at_auto_child'
 
 p,found = c.goto_findRoot(child)
 
-assert p == target,p and p.headString()
+assert p == target,p and p.h
 assert found,found
 </t>
 <t tx="ekr.20080905165432.3">root = p.parent().parent()
@@ -21756,12 +21535,12 @@ assert found,found
 clones = g.findNodeInTree(c,root,'goto-line-number tests: clones')
 assert clones
 child = g.findNodeInTree(c,clones,'at-file-child')
-assert child and child.headString() == 'at-file-child',child
+assert child and child.h == 'at-file-child',child
 
 h = '@file unittest/at-file-line-number-test.py'
 p,found = c.goto_findRoot(child)
 
-assert p and p.headString()==h,p and p.headString()
+assert p and p.h==h,p and p.h
 assert found,found
 </t>
 <t tx="ekr.20080907122804.2"></t>
@@ -21777,7 +21556,7 @@ assert root == root1
 
 if 0:
     print ('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
-        root and root.headString(),isRaw,n,len(lines)))</t>
+        root and root.h,isRaw,n,len(lines)))</t>
 <t tx="ekr.20080907123324.2">@language python
 @tabwidth -4
 @others
@@ -21805,7 +21584,7 @@ assert root == root1
 
 if 0:
     print ('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
-        root and root.headString(),isRaw,n,len(lines)))</t>
+        root and root.h,isRaw,n,len(lines)))</t>
 <t tx="ekr.20080917151620.8"></t>
 <t tx="ekr.20080917151620.9">@language python
 @comment a b c
@@ -21855,7 +21634,7 @@ assert s == 'doc',repr(s)</t>
 
 d = g.get_directives_dict(p)
 
-assert d.get('_p') == p
+# assert d.get('_p') == p # Never used, and a bad idea.
 assert d.get('language') == 'python'
 assert d.get('tabwidth') == '-8'
 assert d.get('pagewidth') == '72'
@@ -21957,7 +21736,7 @@ assert s.endswith(end),repr(s)</t>
 aList = g.get_directives_dict_list(p)
 n = g.scanAtTabwidthDirectives(aList)
 
-assert n == 6</t>
+assert n == 6,repr(n)</t>
 <t tx="ekr.20080917151620.32">@tabwidth -6
 
 aList = g.get_directives_dict_list(p)
@@ -22075,13 +21854,374 @@ finally:
             root.firstChild().doDelete(newNode = None)
     c.redraw_now()
 </t>
-<t tx="ekr.20081026171313.1">table = (...)
+<t tx="ekr.20081111082931.1"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
 
-for data in table:
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+</t>
+<t tx="ekr.20081111084046.1"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+    </t>
+<t tx="ekr.20081111084046.2"></t>
+<t tx="ekr.20081111084046.3"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+</t>
+<t tx="ekr.20081111084046.4"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+</t>
+<t tx="ekr.20081111084046.6"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+</t>
+<t tx="ekr.20081111150402.11"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+</t>
+<t tx="ekr.20081121164135.1">import leo.core.leoTest as leoTest
+
+path = g.os_path_join(g.app.loadDir,"..","plugins","leoGuiPluginsRef.leo")
+leoTest.runLeoTest(c,path,verbose=False,full=True)
+</t>
+<t tx="ekr.20081215084144.2">import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)</t>
+<t tx="ekr.20081215084144.3">This is the first sentence.  This
+is the second sentence.  And
+this  the last sentence.
+</t>
+<t tx="ekr.20081215084144.4">This is the first sentence.  This
+is the second sentence.  And
+this is the last sentence.
+</t>
+<t tx="ekr.20081215084144.5">This is the first sentence.  This
+is the second sentence.  And
+this  the last sentence.
+</t>
+<t tx="ekr.20081215084144.7">import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)</t>
+<t tx="ekr.20081215084144.8">This is the first sentence.  This
+is the  sentence.  And
+this is the last sentence.
+</t>
+<t tx="ekr.20081215084144.9">This is the first sentence.  This
+is the second sentence.  And
+this is the last sentence.
+</t>
+<t tx="ekr.20081215084144.10">This is the first sentence.  This
+is the  sentence.  And
+this is the last sentence.
+</t>
+<t tx="ekr.20081216113655.2">s = '''\
+
+class emptyClass: 
+
+    def spam():
+        
+        """docstring line 1
+\-4under-indented docstring line"""
+        pass
+
+def followingDef(): # comment
+    pass
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090102061858.2">child = p.insertAsLastChild()
+assert c.positionExists(child)
+child.doDelete()
+assert not c.positionExists(child)</t>
+<t tx="ekr.20090102062037.2">root = c.rootPosition()
+
+for p in c.allNodes_iter():
+    assert c.positionExists(p,root)</t>
+<t tx="ekr.20090104053806.1"># Disabled because modifying errorTest.py creates annoying bzr conflicts.
+
+import os
+
+path = g.os_path_finalize_join(g.app.testDir,'unittest','errorTest.py')
+assert g.os_path_exists(path),path
+timeStamp = c.timeStampDict.get(path)
+val = c.checkFileTimeStamp(path)
+assert val == True
+
+f = open(path)
+s = f.read()
+lines = g.splitLines(s)
+result = [] ; found = False
+tag = '# timestamp:'
+for line in lines:
+    if line.startswith(tag):
+        timeStamp = os.path.getmtime(path)
+        result.append('%s %s\n' % (tag,timeStamp))
+        found = True
+    else:
+        result.append(line)
+f.close()
+
+assert found,' no line starts with "%s"' % tag
+
+f = open(path,'w')
+f.write(''.join(result))
+f.close()
+
+timeStamp2 = os.path.getmtime(path)
+assert timeStamp != timeStamp2
+val = c.checkFileTimeStamp(path)
+assert not val,repr(val)
+c.setFileTimeStamp(path)
+val = c.checkFileTimeStamp(path)
+assert val,repr(val)
+</t>
+<t tx="ekr.20090128184952.3"></t>
+<t tx="ekr.20090130133404.2">v,t = p.v,p.v.t
+b = p.b
+p.b = b
+assert p.b == b
+v.b = b
+assert v.b == b
+t.b = b
+assert t.b == b
+
+h = p.h
+p.h = h
+assert p.h == h
+v.h = h
+assert v.h == h
+t.h = h
+assert t.h == h
+
+for p in c.allNodes_iter():
+    assert p.b == p.bodyString()
+    assert p.v.b == p.v.bodyString()
+    assert p.v.t.b == p.v.t.bodyString()
     
-    runMyScript(data)</t>
-<t tx="ekr.20081026172306.1"></t>
-<t tx="ekr.20081026172306.2"></t>
-<t tx="ekr.20081026172306.3">print 'Hi'</t>
+    assert p.h == p.headString()
+    assert p.v.h == p.v.headString()
+    assert p.v.t.h == p.v.t.headString()</t>
+<t tx="ekr.20090131113752.2"></t>
+<t tx="ekr.20090131113752.3">@
+language_delims_dict 
+    # Keys are languages, values are 1,2 or 3-tuples of delims. 
+language_extension_dict
+    # Keys are languages, values are extensions.
+extension_dict = {
+    # Keys are extensions, values are languages.
+@c
+
+delims_d    = g.app.language_delims_dict
+lang_d      = g.app.language_extension_dict
+ext_d       = g.app.extension_dict
+
+for lang in lang_d:
+    ext = lang_d.get(lang)
+    assert lang in delims_d,'fail 1: %s' % lang
+    assert ext in ext_d,'fail 2: %s' % ext
+for ext in ext_d:
+    lang = ext_d.get(ext)
+    assert lang in lang_d,'fail 3: %s' % lang</t>
+<t tx="ekr.20090201135611.3">tree = c.frame.tree
+
+if hasattr(tree,'position2item'): # and hasattr(tree,'item2vnode'):
+    
+    c.redraw()
+
+    p = c.rootPosition()
+    while p:
+        item = tree.position2item(p)
+        # print item and id(item) or '**none**', p.headString()
+        v = tree.item2vnode(item)
+        assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
+        p.moveToVisNext(c)</t>
+<t tx="ekr.20090201135611.4">def test_sibs(parent_p,parent_item):
+
+    trace = False
+    tree = c.frame.tree
+    sib_items = tree.childItems(parent_item)
+    sibs = [z for z in parent_p.self_and_siblings_iter(copy=True)]
+
+    assert len(sib_items) == len(sibs),(
+        'child_items: %s, children: %s' % (
+            g.listToString(sib_items),g.listToString(sibs)))
+
+    for item,p in zip(sib_items,sibs):
+        p2 = tree.item2position(item)
+        if trace: print (id(item),p2 and p2.headString() or not p2 and '**None**')
+        assert p == p2, 'item: %s, p: %s, p2: %s' % (id(item),p,p2)
+
+        # Recursively test.
+        child = p.firstChild()
+        if child.isVisible(c):
+            test_sibs(child,parent_item=item)
+ 
+if hasattr(c.frame.tree,'item2position'):
+
+    # print '='*10
+    c.redraw()
+    test_sibs(c.rootPosition(),None)
+</t>
+<t tx="ekr.20090201140204.1"></t>
+<t tx="ekr.20090201140204.2">trace = False
+
+if trace: print '=' * 20
+
+for p in c.allNodes_iter():
+
+    p2 = c.vnode2position(p.v)
+
+    if trace: print p2.level(), p2.headString()
+
+    # We can *not* assert that p == p2, only that
+    # p2.v == p.v and c.positionExists(p2)
+    assert p2
+    assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
+    assert c.positionExists(p2),'does not exist: %s' % p2
+
+# if True or trace: print 'passed'
+</t>
+<t tx="ekr.20090225102051.2">import leo.core.leoTest as leoTest
+
+leoTest.runAtFileTest(c,p)</t>
+<t tx="ekr.20090225102051.3">Line 1
+
+Last line: no newline</t>
+<t tx="ekr.20090225102051.4">Line 1
+
+Last line: no newline</t>
+<t tx="ekr.20090306091634.1">tree = c.frame.tree
+if hasattr(tree,'redrawCount'):
+    print 'tree.redrawCount:',tree.redrawCount</t>
+<t tx="ekr.20090401102321.1"></t>
+<t tx="ekr.20090401102321.2">s = '''\
+;;; a.el --- Test
+
+;; some other verbose comment
+;; some other verbose comment
+;; some other verbose comment
+
+(defun abc (a1 a2)
+  "Return blah blah."
+  (+ 1 2))
+
+(defun fgh (a1 a2)
+  "Return blah blah."
+  (- 1 2))
+
+;;; a.el ends here
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.elispUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
+import random,fnmatch
+
+all_h = [po.h for po in c.find_h('.')]
+
+assert len(all_h) &gt; 1000
+
+#for p in c.allNodes_iter():
+#    all_h.append(p.h)
+#    print p.h
+    
+sample = random.sample(all_h, 20)    
+
+#test that all nodes are found at least once
+
+for h in sample:
+    pat = fnmatch.translate(h)
+    pl = c.find_h(pat)
+    #print pl,h
+    assert len(pl) &gt; 0 and len(pl) &lt; len(all_h)
+    #print pl
+
+tests = c.find_h('@test(.*)')
+
+#print tests
+
+# some of then have allNodes_iter
+bm = tests.select_b('(.*)allNodes_iter')
+#print bm
+forloops = 0
+for node in bm:   
+    # many of these are for loops
+    for m in node.matchiter:
+        if 'for' in m.group(1):
+            forloops += 1
+            
+assert forloops &gt; 10
+
+# all of these should also be found by find_b
+
+all_bm = c.find_b('(.*)allNodes_iter')
+assert len(all_bm) &gt;= len(bm)
+
+assert set(el.h for el in bm).issubset(set(el.h for el in all_bm))
+
+itertest = c.find_h('@test p.iters and v.iters')
+assert len(itertest) == 1
+tn = itertest[0]
+assert tn.h == '@test p.iters and v.iters'
+assert len(itertest.select_b('notfound, really')) == 0
+assert len(itertest.select_b('leoNodes')) == 1
+chi = itertest.select_h('child?')
+assert chi[0].h == 'child1'
+assert chi[1].h == 'child2'
+# twice, in clones
+chi_b = chi.select_h('a').select_h('b')
+assert len(chi_b) == 2
+
+assert chi_b[0].h == chi_b[1].h == 'b'
+chi_e = chi.select_h('d').select_h('e')
+assert len(chi_e) == 1
+assert chi_e[0].h == 'e'
+
+</t>
+<t tx="ville.20090313183551.2"># test the controller-specific pickleshare db
+v = [1212,121131313, { 'hello' : (121,'world')} ]
+c.db['leo_utest'] = v
+c.db['leo_utest2'] = 1
+c.db['leotest/foo'] = 2
+c.db['leotest/bar'] = 3
+assert c.db['leo_utest'] == v
+assert c.db['leo_utest2'] == 1
+assert c.db['leotest/foo'] == 2
+assert c.db['leotest/bar'] == 3
+
+assert len(c.db.keys()) &gt; 1
+del c.db['leo_utest']
+del c.db['leo_utest2']
+
+try:
+    c.db['leo_utest']
+    assert false
+except KeyError:
+    pass
+
+ltest = c.db.keys('leotest/*')
+assert len(ltest) &gt;= 2
+
+for k in ltest:
+    del c.db[k]
+
+ltest = c.db.keys('leotest/*')
+assert len(ltest) == 0
+
+     </t>
 </tnodes>
 </leo_file>

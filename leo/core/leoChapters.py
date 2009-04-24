@@ -54,7 +54,7 @@ class chapterController:
 
         tag = '@chapter'
         for p in c.all_positions_with_unique_tnodes_iter():
-            h = p.v.headString()
+            h = p.h
             if h.startswith(tag) and not h.startswith('@chapters'):
                 tabName = h[len(tag):].strip()
                 if tabName and tabName not in ('main',):
@@ -63,11 +63,10 @@ class chapterController:
                     else:
                         cc.chaptersDict[tabName] = chapter(c=c,chapterController=cc,name=tabName,root=p)
 
-        p = c.currentPosition()
-        # g.trace(c.positionExists(p),p)
+        p = c.p
         if c.positionExists(p):
             name = cc.findChapterNameForPosition(p) or 'main'
-            # g.trace('chapterController',name,c.currentPosition())
+            # g.trace('chapterController',name,c.p)
             cc.selectChapterByName(name)
         else:
             cc.selectChapterByName('main')
@@ -98,7 +97,7 @@ class chapterController:
     def cloneNodeToChapterHelper (self,toChapterName):
 
         cc = self ; c = cc.c ;  u = c.undoer ; undoType = 'Clone Node To Chapter'
-        p = c.currentPosition() ; h = p.headString()
+        p = c.p ; h = p.h
         fromChapter = cc.getSelectedChapter()
         toChapter = cc.getChapter(toChapterName)
         if not toChapter:
@@ -119,7 +118,7 @@ class chapterController:
             parent = cc.getChapterNode(toChapter.name)
             clone.moveToLastChildOf(parent)
         u.afterMoveNode(clone,'Move Node',undoData2,dirtyVnodeList=[])
-        c.selectPosition(clone)
+        c.redraw(clone)
         c.setChanged(True)
         # Close the group undo.
         # Only the ancestors of the moved node get set dirty.
@@ -143,8 +142,8 @@ class chapterController:
         cc = self ; c = cc.c ; k = c.k ; tag = 'convert-node-to-chapter'
         state = k.getState(tag)
 
-        p = c.currentPosition()
-        if p.headString().startswith('@chapter'):
+        p = c.p
+        if p.h.startswith('@chapter'):
             cc.error('Can not create a new chapter from from an @chapter or @chapters node.')
             return
 
@@ -156,7 +155,7 @@ class chapterController:
             k.clearState()
             k.resetLabel()
             if k.arg:
-                cc.createChapterByName(k.arg,p=c.currentPosition(),
+                cc.createChapterByName(k.arg,p=c.p,
                     undoType='Convert Node To Chapter')
     #@-node:ekr.20070608072116:cc.convertNodeToChapter
     #@+node:ekr.20070317085437.51:cc.copyNodeToChapter & helper
@@ -183,7 +182,7 @@ class chapterController:
     def copyNodeToChapterHelper (self,toChapterName):
 
         cc = self ; c = cc.c ; u = c.undoer ; undoType = 'Copy Node To Chapter'
-        p = c.currentPosition() ; h = p.headString()
+        p = c.p ; h = p.h
         fromChapter = cc.getSelectedChapter()
         toChapter = cc.getChapter(toChapterName)
         if not toChapter:
@@ -199,7 +198,7 @@ class chapterController:
         s = c.fileCommands.putLeoOutline()
         p2 = c.fileCommands.getLeoOutline(s)
         p2.moveToLastChildOf(parent)
-        c.selectPosition(p2)
+        c.redraw(p2)
         u.afterInsertNode(p2,undoType,undoData)
         c.setChanged(True)
 
@@ -242,7 +241,7 @@ class chapterController:
         if theChapter:
             return cc.error('Duplicate chapter name: %s' % name)
 
-        bunch = cc.beforeCreateChapter(c.currentPosition(),oldChapter.name,name,undoType)
+        bunch = cc.beforeCreateChapter(c.p,oldChapter.name,name,undoType)
         if undoType == 'Convert Node To Chapter':
             root = p.insertAfter()
             root.initHeadString('@chapter %s' % name)
@@ -256,7 +255,7 @@ class chapterController:
 
         cc.chaptersDict[name] = chapter(c=c,chapterController=cc,name=name,root=root)
         cc.selectChapterByName(name)
-        cc.afterCreateChapter(bunch,c.currentPosition())
+        cc.afterCreateChapter(bunch,c.p)
 
         # g.es('created chapter',name,color='blue')
         return True
@@ -271,8 +270,8 @@ class chapterController:
         cc = self ; c = cc.c ; k = c.k ; tag = 'create-chapter-from-node'
         state = k.getState(tag)
 
-        p = c.currentPosition()
-        if p.headString().startswith('@chapter'):
+        p = c.p
+        if p.h.startswith('@chapter'):
             cc.error('Can not create a new chapter from from an @chapter or @chapters node.')
             return
 
@@ -311,14 +310,14 @@ class chapterController:
     def moveNodeToChapterHelper (self,toChapterName):
 
         cc = self ; c = cc.c ; u = c.undoer ; undoType = 'Move Node To Chapter'
-        p = c.currentPosition()
+        p = c.p
         fromChapter = cc.getSelectedChapter()
         toChapter = cc.getChapter(toChapterName)
         if not toChapter:
             return cc.error('chapter "%s" does not exist' % toChapterName)
 
         if 1: # Defensive code: should never happen.
-            if fromChapter.name == 'main' and p.headString().startswith('@chapter'):
+            if fromChapter.name == 'main' and p.h.startswith('@chapter'):
                 return cc.error('can not move @chapter node')
 
         if toChapter.name == 'main':
@@ -335,7 +334,7 @@ class chapterController:
                 p.moveAfter(toChapter.p)
             else:
                 p.moveToLastChildOf(toChapter.root)
-            c.selectPosition(sel)
+            c.redraw(sel)
             c.setChanged(True)
             # Do the 'after' undo operation.
             if inAtIgnoreRange and not p.inAtIgnoreRange():
@@ -379,14 +378,13 @@ class chapterController:
         if not theChapter: return
 
         savedRoot = theChapter.root
-        bunch = cc.beforeRemoveChapter(c.currentPosition(),name,savedRoot)
+        bunch = cc.beforeRemoveChapter(c.p,name,savedRoot)
         cc.deleteChapterNode(name)
         del cc.chaptersDict[name] # Do this after calling deleteChapterNode.
         if tt:tt.destroyTab(name)
         cc.selectChapterByName('main')
-        cc.afterRemoveChapter(bunch,c.currentPosition())
+        cc.afterRemoveChapter(bunch,c.p)
         c.redraw()
-    #@nonl
     #@-node:ekr.20070606075434:cc.removeChapterByName
     #@+node:ekr.20070317085437.41:cc.renameChapter
     # newName is for unitTesting.
@@ -424,7 +422,7 @@ class chapterController:
                     tt.setTabLabel(k.arg)
                     tt.destroyTab(oldChapterName)
                     tt.createTab(k.arg)
-                c.redraw_now()
+                c.redraw()
     #@-node:ekr.20070317085437.41:cc.renameChapter
     #@+node:ekr.20070604165126:cc.selectChapter
     def selectChapter (self,event=None):
@@ -446,21 +444,40 @@ class chapterController:
             if k.arg:
                 cc.selectChapterByName(k.arg)
     #@-node:ekr.20070604165126:cc.selectChapter
-    #@+node:ekr.20070317130250:cc.selectChapterByName
+    #@+node:ekr.20070317130250:cc.selectChapterByName & helper
     def selectChapterByName (self,name):
 
-        cc = self ; c = cc.c ; chapter = cc.chaptersDict.get(name)
+        '''Select a chapter.  Return True if a redraw is needed.'''
+
+        cc = self ; c = cc.c
+
+        chapter = cc.chaptersDict.get(name)
 
         if chapter:
-            if chapter != cc.selectedChapter:
-                if cc.selectedChapter:
-                    cc.selectedChapter.unselect()
-                chapter.select()
-                c.setCurrentPosition(chapter.p)
-                cc.selectedChapter = chapter
+            self.selectChapterByNameHelper(chapter)
         else:
             cc.error('cc.selectChapter: no such chapter: %s' % name)
-    #@-node:ekr.20070317130250:cc.selectChapterByName
+            chapter = cc.chaptersDict.get('main')
+            if chapter:
+                self.selectChapterByNameHelper(chapter)
+            else:
+                cc.error('no main chapter!')
+    #@nonl
+    #@+node:ekr.20090306060344.2:selectChapterHelper
+    def selectChapterByNameHelper (self,chapter):
+
+        cc = self ; c = cc.c
+
+        if chapter != cc.selectedChapter:
+            if cc.selectedChapter:
+                cc.selectedChapter.unselect()
+            chapter.select()
+            c.setCurrentPosition(chapter.p)
+            cc.selectedChapter = chapter
+
+            # Do not call c.redraw here!
+    #@-node:ekr.20090306060344.2:selectChapterHelper
+    #@-node:ekr.20070317130250:cc.selectChapterByName & helper
     #@-node:ekr.20070317085437.30:Commands (chapters)
     #@+node:ekr.20070511081405:Creating/deleting nodes (chapterController)
     #@+node:ekr.20070325101652:cc.createChaptersNode
@@ -470,6 +487,7 @@ class chapterController:
 
         # Create the node with a postion method
         # so we don't involve the undo logic.
+        # g.trace('root',root)
         p = root.insertAsLastChild()
         p.initHeadString('@chapters')
         p.moveToRoot(oldRoot=root)
@@ -489,7 +507,7 @@ class chapterController:
         Use p for the first child, or create a first child if p is None.'''
 
         cc = self ; c = cc.c
-        current = c.currentPosition() or c.rootPosition()
+        current = c.p or c.rootPosition()
 
         # Create the node with a postion method
         # so we don't involve the undo logic.
@@ -554,11 +572,11 @@ class chapterController:
 
         s = '@chapter ' + chapterName
         for p in cc.chaptersNode.children_iter():
-            h = p.headString()
+            h = p.h
             if h == s:
                 return p
             # elif h.startswith('@chapter '):
-                # body = p.bodyString()
+                # body = p.b
                 # if body:
                     # lines = g.splitLines(body)
                     # line = lines[0].strip()
@@ -578,7 +596,7 @@ class chapterController:
         cc = self ; c = cc.c
 
         for p in c.all_positions_with_unique_tnodes_iter():
-            if p.headString() == '@chapters':
+            if p.h == '@chapters':
                 cc.chaptersNode = p.copy()
                 return p
 
@@ -843,7 +861,7 @@ class chapter:
 
         # State variables: saved/restored when the chapter is unselected/selected.
         if self.name == 'main':
-            self.p = c.currentPosition() or c.rootPosition()
+            self.p = c.p or c.rootPosition()
             self.root = None # Not used.
         else:
             self.p = None # Set later.
@@ -861,7 +879,7 @@ class chapter:
         return '<chapter id: %s name: %s p: %s>' % (
             id(self),
             self.name,
-            self.p and self.p.headString() or '<no p>')
+            self.p and self.p.h or '<no p>')
 
     __repr__ = __str__
     #@-node:ekr.20070317085708.2:__str__ and __repr__(chapter)
@@ -914,8 +932,9 @@ class chapter:
         if name == 'main' and cc.chaptersNode:
             cc.chaptersNode.contract()    
         c.hoistStack = self.hoistStack[:]
+
         c.selectPosition(p)
-        c.redraw()
+        c.redraw_after_select(p)
         g.doHook('hoist-changed',c=c)
         c.bodyWantsFocusNow()
     #@nonl
@@ -1000,8 +1019,8 @@ class chapter:
 
         c = self.c ; cc = self.cc
         self.hoistStack = c.hoistStack[:]
-        self.p = c.currentPosition()
-        if self.trace: g.trace('chapter',self.name,'p',self.p.headString())
+        self.p = c.p
+        if self.trace: g.trace('chapter',self.name,'p',self.p.h)
     #@-node:ekr.20070320091806.1:chapter.unselect
     #@-others
 #@nonl

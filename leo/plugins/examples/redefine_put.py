@@ -26,7 +26,8 @@ Tk = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
 
 def onStart (tag,keywords):
 
-    import leo.core.leoTkinterFrame as leoTkinterFrame
+    import leo.plugins.tkGui as tkGui
+    leoTkinterFrame = tkGui.leoTkinterFrame
     log = leoTkinterFrame.leoTkinterLog
 
     # Replace frame.put with newPut.

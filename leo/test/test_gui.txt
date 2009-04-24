@@ -1,0 +1,49 @@
+#@+leo-ver=4-thin
+#@+node:ekr.20090112065600.12:@thin ../test/test_gui.txt
+# This file contains all unit tests for leoGuiPlugins.leo
+
+#@+all
+#@+node:ekr.20090112065600.13:Must be run with run-unit-test-locally
+# These must be run with alt-4, because external unit tests use a null tree.
+# This means that we have to reload this file if a test fails.
+#@+node:ekr.20081213093110.2:@test position2Item
+p = c.rootPosition()
+tree = c.frame.tree
+
+while p:
+    item = tree.position2item(p)
+    print item and id(item) or '**none**', p.headString()
+    v = tree.item2vnode(item)
+    assert v == p.v, 'item2: %s, p.v: %s' % (item2,p.v)
+    p.moveToVisNext(c)
+#@nonl
+#@-node:ekr.20081213093110.2:@test position2Item
+#@+node:ekr.20081213093110.3:@test item2position
+def test_sibs(parent_p,parent_item):
+
+    tree = c.frame.tree
+    sib_items = tree.childItems(parent_item)
+    sibs = [z for z in parent_p.self_and_siblings_iter(copy=True)]
+
+    assert len(sib_items) == len(sibs),(
+        'child_items: %s, children: %s' % (
+            g.listToString(sib_items),g.listToString(sibs)))
+
+    for item,p in zip(sib_items,sibs):
+        p2 = tree.item2position(item)
+        # print id(item),p2 and p2.headString() or not p2 and '**None**'
+        assert p == p2, 'item: %s, p: %s, p2: %s' % (id(item),p,p2)
+
+        # Recursively test.
+        child = p.firstChild()
+        if child.isVisible(c):
+            test_sibs(child,parent_item=item)
+
+# print '='*10
+test_sibs(c.rootPosition(),None)
+#@-node:ekr.20081213093110.3:@test item2position
+#@-node:ekr.20090112065600.13:Must be run with run-unit-test-locally
+#@-all
+#@nonl
+#@-node:ekr.20090112065600.12:@thin ../test/test_gui.txt
+#@-leo

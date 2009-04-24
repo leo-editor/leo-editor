@@ -399,10 +399,10 @@ def on_open (tag,keywords):
     v = c.rootVnode()
     g.es("scanning for @read-only nodes...",color="blue")
     while v:
-        h = v.headString()
+        h = v.h
         if g.match_word(h,0,"@read-only"):
             changed = insert_read_only_node(c,v,h[11:])
-            g.es("changing %s" % v.headString(),color="red")
+            g.es("changing %s" % v.h,color="red")
             if changed:
                 if not v.isDirty():
                     v.setDirty()
@@ -421,7 +421,7 @@ def on_bodykey1 (tag,keywords):
 
     c = keywords.get("c")
     v = keywords.get("v")
-    h = v.headString()
+    h = v.h
     if g.match_word(h,0,"@read-only"):
         # The following code causes problems with scrolling and syntax coloring.
         # Its advantage is that it makes clear that the text can't be changed,
@@ -430,7 +430,7 @@ def on_bodykey1 (tag,keywords):
             # An @read-only node: do not change its text.
             body = c.frame.body.bodyCtrl
             body.delete("1.0","end")
-            body.insert("1.0",v.bodyString())
+            body.insert("1.0",v.b)
         return 1 # Override the body key event handler.
 #@nonl
 #@-node:edream.110203113231.897:on_bodykey1
@@ -441,7 +441,7 @@ def on_headkey2 (tag,keywords):
 
     c = keywords.get("c")
     v = keywords.get("v")
-    h = v.headString()
+    h = v.h
     ch = keywords.get("ch")
 
     g.trace(repr(ch))
@@ -465,7 +465,7 @@ def on_select2 (tag,keywords):
 
     c = keywords.get("c")
     v = c.currentVnode()
-    h = v.headString()
+    h = v.h
     if g.match_word(h,0,"@read-only"):
         disable_body(c.frame.body)
     else:

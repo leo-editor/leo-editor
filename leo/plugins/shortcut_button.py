@@ -320,8 +320,8 @@ class shortcutButton(object):
 
         data = self.item_data
 
-        p = c.currentPosition()
-        h = p.headString()
+        p = c.p
+        h = p.h
 
         commandName = 'go-%s-node' % h
 

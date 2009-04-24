@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="4,2"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="3,1"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -26,8 +26,8 @@
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
-<v t="ekr.20080912152259.1"><vh>ANN: Leo 4.5.1 final</vh></v>
-<v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
+<v t="ekr.20090325065530.1"><vh>ANN: Leo 4.6 b1</vh></v>
+<v t="EKR.20040519091259.30" a="E"><vh>Previous announcements</vh>
 <v t="ekr.20080807093308.2"><vh>4.5</vh>
 <v t="ekr.20080628062747.73"><vh>ANN: Leo 4.5 b1</vh></v>
 <v t="ekr.20080807093308.1"><vh>ANN: Leo 4.5 b2</vh></v>
@@ -36,11 +36,12 @@
 <v t="ekr.20080828073358.1"><vh>ANN: Leo 4.5 rc1</vh></v>
 <v t="ekr.20080830082008.6"><vh>ANN: Leo 4.5 rc2</vh></v>
 <v t="ekr.20080902080927.1"><vh>ANN: Leo 4.5 final</vh></v>
+<v t="ekr.20080912152259.1"><vh>ANN: Leo 4.5.1 final</vh></v>
 </v>
 </v>
 </v>
 <v t="ekr.20080628065201.2"><vh>Distribution checklist</vh></v>
-<v t="EKR.20040519090846"><vh>Distribution files</vh>
+<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
@@ -62,7 +63,7 @@
 <v t="ekr.20080913110741.1"><vh>@thin leo-post-install-script.py</vh></v>
 <v t="ekr.20080826091039.1"><vh>@button make</vh>
 <v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
-<v t="ekr.20080916084557.2"><vh>&lt;&lt; make version &gt;&gt;</vh></v>
+<v t="ekr.20080916084557.2"></v>
 <v t="ekr.20080913110741.8"><vh>make</vh></v>
 <v t="ekr.20080826091039.4"><vh>class createExe</vh>
 <v t="ekr.20080826091039.5"><vh>ctor</vh></v>
@@ -161,7 +162,7 @@ rm -f  $LEO_RUN_SCRIPT_OUTPUT
 
 Do a search and replace on this suffix.
 
-Latest suffix:  -final
+Latest suffix:  -b1
 
 
 </t>
@@ -171,7 +172,7 @@ The gist of the license is that Leo is absolutely free, even for commercial use
 Initiative board has voted to certify the Python license as Open Source. This
 license is compatible with the GPL.
 
-Copyright (c) 1997-2008 by Edward K. Ream. All Rights Reserved.
+Copyright (c) 1997-2009 by Edward K. Ream. All Rights Reserved.
 
 Permission to use, copy, modify, and distribute this software and its
 documentation for any purpose and without fee is hereby granted, provided that
@@ -311,14 +312,15 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.5.1-final
+Version: 4.6-b1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
 Author-email: edreamleo@charter.net
 License: Python
 Description: Leo is an outline-oriented editor written in 100% pure Python.
-		Leo works on any platform that supports Python 2.2.1 and Tk 8.4 or above.
+		Leo works on any platform that supports Python 2.4 or above.
+     Leo will work with either Qt or Tk guis.
 		You may download Python from http://python.org/ and
 		tcl/Tk from http://tcl.activestate.com/software/tcltk/
 		Leo features a multi-window outlining editor, Python colorizing,
@@ -330,38 +332,19 @@ Description: Leo is an outline-oriented editor written in 100% pure Python.
 		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.5.1 final                                  September 14, 2008
-
-Leo 4.5.1 final is now available at:
+<t tx="EKR.20040519090846.9">Leo 4.6 b1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-
-Leo 4.5.1 final fixes several important bugs in Leo 4.5 final:
-
-- Eliminated spurious error messages in the goto-global-line command.
-- @shadow files with unknown file extensions now work properly.
-- Leo's installer now properly finds Python's install directory.
 
 Leo is a text editor, data organizer, project manager and much more. See:
 http://webpages.charter.net/edreamleo/intro.html
 
-The highlights of Leo 4.5:
+The highlights of Leo 4.6:
 --------------------------
 
-- Full support for @shadow files in Leo's core.
-- Major improvements to Leo's key binding code.
-- The beginning of usable vim-like bindings.
-- uA's may now be associated with vnodes in @thin and @shadow files.
-- Several major reorganizations of Leo's code:
-  including sax-based parsing, support for the Graph world (unified nodes),
-  and simplified drawing code.
-- Leo is now an installable package.
-- Prepared code to be ready for Python 3.0.
-- Many small improvements and bug fixes.
-
-Quote of the month:
--------------------
-Squeak and Leo have been two of the most significant technologies to
-redefine my personal computer experience and the ideas behind computing.
+- Leo now requires Python 2.4 or later.
+- A new qt gui plugin, supporting Qt's look and feel.
+- New --config --file and --gui command-line options.
+- Dozens of small improvements and bug fixes.
 
 Links:
 ------
@@ -1081,6 +1064,27 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 
     os.system('dir %s' % (top))</t>
 <t tx="ekr.20080916084557.1"></t>
-<t tx="ekr.20080916084557.2">version = '4-5-1-2-final'</t>
+<t tx="ekr.20080916084557.2">version = '4-6-b1'</t>
+<t tx="ekr.20090325065530.1">Leo 4.6 b1 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.6:
+--------------------------
+
+- Leo now requires Python 2.4 or later.
+- A new qt gui plugin, supporting Qt's look and feel.
+- New --config --file and --gui command-line options.
+- Dozens of small improvements and bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 </tnodes>
 </leo_file>

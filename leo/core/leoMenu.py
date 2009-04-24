@@ -32,7 +32,8 @@ class leoMenu:
             ("Clear Recent Files",None,c.clearRecentFiles),
             ("Clean Recent Files",None,c.cleanRecentFiles),
             ("Sort Recent Files",None,c.sortRecentFiles),
-            ("-",None,None))
+            # ("-",None,None),
+            )
 
         # To aid transition to emacs-style key handling.
         self.useCmdMenu = c.config.getBool('useCmdMenu')
@@ -66,7 +67,7 @@ class leoMenu:
 
         if c and c.exists:
             c.setLog()
-            p = c.currentPosition()
+            p = c.p
 
             if not g.doHook("menu-update",c=c,p=p,v=p):
                 self.updateFileMenu()
@@ -140,7 +141,7 @@ class leoMenu:
         c = self.c ; frame = c.frame
         if not c: return
 
-        p = c.currentPosition()
+        p = c.p
         hasParent = p.hasParent()
         hasBack = p.hasBack()
         hasNext = p.hasNext()
@@ -1315,7 +1316,7 @@ class leoMenu:
         New in 4.4: this method shows the shortcut in the menu,
         but this method **never** binds any shortcuts.'''
 
-        # g.trace('c',self.c)
+        # g.trace('menu',menu)
 
         c = self.c ; f = c.frame ; k = c.k ; trace = False
         if g.app.unitTesting: return
@@ -1425,7 +1426,7 @@ class leoMenu:
             #@nl
             accelerator = stroke = k.shortcutFromSetting(accel,addKey=False) or ''
             accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
-            def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName):
+            def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName,event=None):
                 #k.clearState()
                 #g.trace(stroke)
                 return k.masterMenuHandler(stroke,command,commandName)
@@ -1476,7 +1477,7 @@ class leoMenu:
             if menu:
                 g.es("menu already exists:",menuName,color="red")
             else:
-                menu = self.new_menu(parent,tearoff=0)
+                menu = self.new_menu(parent,tearoff=0,label=menuName)
                 self.setMenu(menuName,menu)
                 label = self.getRealMenuName(menuName)
                 amp_index = label.find("&")
@@ -1652,6 +1653,7 @@ class leoMenu:
         toDrop = len(self.c.recentFiles)
         if hasattr(self, 'recentFilesStatic'):
             toDrop += len(self.recentFilesStatic)
+
         self.delete_range(menu,0,toDrop)
 
         if hasattr(self, 'groupedMenus'):

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.6: http://docutils.sourceforge.net/" />
 <title>Chapter 4: Writing Programs in Leo</title>
 <style type="text/css">
 
@@ -248,174 +248,92 @@ hr { /* EKR */
 </style>
 </head>
 <body>
-<div class="document">
-
+<div class="document" id="chapter-4-writing-programs-in-leo">
+<h1 class="title">Chapter 4: Writing Programs in Leo</h1>
 
 <!-- rst3: filename: html\directives.html -->
-<!-- August 28, 2005 -->
-<p><a class="reference" href="outlines.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="commands.html"><img alt="next" src="arrow_rt.gif" /></a></p>
-<div class="section" id="chapter-4-writing-programs-in-leo">
-<h1><a class="toc-backref" href="#id8">Chapter 4: Writing Programs in Leo</a></h1>
 <!-- External links... -->
 <!-- Relative links... -->
-<!-- WARNING: image targets may not have upper case letters! -->
 <p>This chapter is a <em>reference guide</em> to computer programming with Leo.
 This chapter does <em>not</em> teach you how to use Leo:
-for that you should read <a class="reference" href="intro.html">Leo's tutorial</a>.
+for that you should read <a class="reference external" href="intro.html">Leo's tutorial</a>.
 This chapter assumes you are thoroughly familiar with the terminology introduced in the tutorial.
 <strong>Note</strong>: Are you <em>sure</em> you want to read this chapter?
 It contains many details that are no interest to the average user of Leo.
 I recommend using Leo for two weeks, or longer, before attempting this chapter.</p>
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
-<ul class="simple">
-<li><a class="reference" href="#chapter-4-writing-programs-in-leo" id="id8" name="id8">Chapter 4: Writing Programs in Leo</a><ul>
-<li><a class="reference" href="#overview-the-8-ways-of-creating-derived-files" id="id9" name="id9">Overview: the 8 ways of creating derived files</a></li>
-<li><a class="reference" href="#overview-summary-of-directives" id="id10" name="id10">Overview: summary of directives</a></li>
-<li><a class="reference" href="#reference-all-about-directives" id="id11" name="id11">Reference: all about directives</a><ul>
-<li><a class="reference" href="#and-doc" id="id12" name="id12">&#64; and &#64;doc</a></li>
-<li><a class="reference" href="#all" id="id13" name="id13">&#64;all</a></li>
-<li><a class="reference" href="#asis-and-noref" id="id14" name="id14">&#64;asis and &#64;noref</a></li>
-<li><a class="reference" href="#auto" id="id15" name="id15">&#64;auto</a></li>
-<li><a class="reference" href="#c-and-code" id="id16" name="id16">&#64;c and &#64;code</a></li>
-<li><a class="reference" href="#color-nocolor-nocolor-node-and-killcolor" id="id17" name="id17">&#64;color, &#64;nocolor, &#64;nocolor-node and &#64;killcolor</a></li>
-<li><a class="reference" href="#comment" id="id18" name="id18">&#64;comment</a></li>
-<li><a class="reference" href="#delims" id="id19" name="id19">&#64;delims</a></li>
-<li><a class="reference" href="#encoding" id="id20" name="id20">&#64;encoding</a></li>
-<li><a class="reference" href="#file" id="id21" name="id21">&#64;file</a></li>
-<li><a class="reference" href="#first" id="id22" name="id22">&#64;first</a></li>
-<li><a class="reference" href="#ignore" id="id23" name="id23">&#64;ignore</a></li>
-<li><a class="reference" href="#language" id="id24" name="id24">&#64;language</a></li>
-<li><a class="reference" href="#last" id="id25" name="id25">&#64;last</a></li>
-<li><a class="reference" href="#lineending" id="id26" name="id26">&#64;lineending</a></li>
-<li><a class="reference" href="#others" id="id27" name="id27">&#64;others</a></li>
-<li><a class="reference" href="#nosent" id="id28" name="id28">&#64;nosent</a></li>
-<li><a class="reference" href="#path" id="id29" name="id29">&#64;path</a></li>
-<li><a class="reference" href="#pagewidth" id="id30" name="id30">&#64;pagewidth</a></li>
-<li><a class="reference" href="#raw-and-end-raw" id="id31" name="id31">&#64;raw and &#64;end_raw</a></li>
-<li><a class="reference" href="#root" id="id32" name="id32">&#64;root</a></li>
-<li><a class="reference" href="#root-code-and-root-doc" id="id33" name="id33">&#64;root-code and &#64;root-doc</a></li>
-<li><a class="reference" href="#shadow" id="id34" name="id34">&#64;shadow</a></li>
-<li><a class="reference" href="#tabwidth" id="id35" name="id35">&#64;tabwidth</a></li>
-<li><a class="reference" href="#thin" id="id36" name="id36">&#64;thin</a></li>
-<li><a class="reference" href="#unit" id="id37" name="id37">&#64;unit</a></li>
-<li><a class="reference" href="#verbose-terse-quiet-and-silent" id="id38" name="id38">&#64;verbose, &#64;terse, &#64;quiet and &#64;silent</a></li>
-<li><a class="reference" href="#wrap-and-nowrap" id="id39" name="id39">&#64;wrap and &#64;nowrap</a></li>
-</ul>
-</li>
-<li><a class="reference" href="#reference-the-8-ways-of-creating-derived-files" id="id40" name="id40">Reference: the 8 ways of creating derived files</a><ul>
-<li><a class="reference" href="#id1" id="id41" name="id41">&#64;auto</a><ul>
-<li><a class="reference" href="#perfect-import-checks" id="id42" name="id42">Perfect import checks</a></li>
-<li><a class="reference" href="#commands-related-to-auto" id="id43" name="id43">Commands related to &#64;auto</a></li>
-</ul>
-</li>
-<li><a class="reference" href="#id2" id="id44" name="id44">&#64;file</a></li>
-<li><a class="reference" href="#id3" id="id45" name="id45">&#64;nosent</a></li>
-<li><a class="reference" href="#id4" id="id46" name="id46">&#64;asis and &#64;noref</a></li>
-<li><a class="reference" href="#id5" id="id47" name="id47">&#64;root reference</a><ul>
-<li><a class="reference" href="#sections-and-section-definitions" id="id48" name="id48">Sections and section definitions</a></li>
-<li><a class="reference" href="#tangling-root-trees-with-the-tangle-commands" id="id49" name="id49">Tangling &#64;root trees with the Tangle commands</a></li>
-<li><a class="reference" href="#untangling-root-trees-with-the-untangle-commands" id="id50" name="id50">Untangling &#64;root trees with the Untangle commands</a></li>
-</ul>
-</li>
-<li><a class="reference" href="#id6" id="id51" name="id51">&#64;thin</a></li>
-<li><a class="reference" href="#id7" id="id52" name="id52">&#64;shadow</a></li>
-<li><a class="reference" href="#converting-root-trees-to-file-trees" id="id53" name="id53">Converting &#64;root trees to &#64;file trees</a></li>
-</ul>
-</li>
-<li><a class="reference" href="#cweb-mode" id="id54" name="id54">CWEB mode</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="section" id="overview-the-8-ways-of-creating-derived-files">
-<h2><a class="toc-backref" href="#id9">Overview: the 8 ways of creating derived files</a></h2>
-<p>You can create derived files using seven kinds of directives.
-Unlike most directives, these directives may only appear in headlines.</p>
-<p>The first five,
-<tt class="docutils literal"><span class="pre">&#64;auto</span></tt>, <tt class="docutils literal"><span class="pre">&#64;file-thin</span></tt>, <tt class="docutils literal"><span class="pre">&#64;file</span></tt>, <tt class="docutils literal"><span class="pre">&#64;file-nosent</span></tt>, <tt class="docutils literal"><span class="pre">&#64;file-noref</span></tt>, <tt class="docutils literal"><span class="pre">&#64;file-asis</span></tt>,
-are collectively known as <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.
-The abbreviated forms are most common:
-<tt class="docutils literal"><span class="pre">&#64;thin</span></tt>, <tt class="docutils literal"><span class="pre">&#64;file</span></tt>, <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt>, <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> and <tt class="docutils literal"><span class="pre">&#64;asis</span></tt>.
-There is also a sixth directive: <tt class="docutils literal"><span class="pre">&#64;root</span></tt>.</p>
-<p><strong>Important</strong>: You create the <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees by putting
-<tt class="docutils literal"><span class="pre">&#64;thin</span></tt>, <tt class="docutils literal"><span class="pre">&#64;file</span></tt>, <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt>, <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> or <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> (or the long forms) in a <em>headline</em>.
-In contrast, you create <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees by putting the <tt class="docutils literal"><span class="pre">root</span></tt> directive in <em>body text</em>.
-The term 'directive' usually refers to a construct in Leo's body text.
-In this chapter <em>I'll stretch the term</em> to include all 10 <tt class="docutils literal"><span class="pre">&#64;file</span></tt> forms,
-as well as the true <tt class="docutils literal"><span class="pre">&#64;root</span></tt> directive.
-Here are the six ways of creating derived files:</p>
+<!-- .. contents:: -->
+<div class="section" id="overview-the-9-ways-of-accessing-external-files">
+<h1>Overview: the 9 ways of accessing external files</h1>
+<p>You can create external files using <tt class="docutils literal"><span class="pre">&#64;&lt;file&gt;</span></tt> directives.
+Most of these directives may only appear in headlines.</p>
+<p>Here are all the ways of creating external files:</p>
 <dl class="docutils">
+<dt>&#64;asis</dt>
+<dd>This directive copies body text verbatim, without even ensuring that
+newlines terminate each node. Use this directive only when you must have
+complete control over every character of the external file.</dd>
 <dt>&#64;auto</dt>
-<dd>Import the derived file when Leo reads an outline.
-See the <a class="reference" href="directives#id1">&#64;auto reference</a> for full details.</dd>
-<dt>&#64;thin</dt>
-<dd>Use this unless you have a good reason not to.
-It is the 'state-of-the-art' in derived files.
-This form is easy to use and is cvs friendly.
-Using <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> reduces the size of .leo files,
-and saves all essential information in the derived file.
-<tt class="docutils literal"><span class="pre">&#64;all</span></tt> directives are valid only in <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees.</dd>
+<dd>Imports the external file when Leo reads an outline. See the <a class="reference external" href="directives#id1">&#64;auto
+reference</a> for full details.</dd>
+<dt>&#64;edit</dt>
+<dd>Reads the external file into a single node.</dd>
 <dt>&#64;file</dt>
-<dd>This was the old 'state-of-the-art' directive.
-There is not much reason to use it now,
-except that its sentinels are more readable than <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> sentinels.
-However, <tt class="docutils literal"><span class="pre">&#64;file</span></tt> is not nearly as cvs friendly as <tt class="docutils literal"><span class="pre">&#64;thin</span></tt>;
-avoid <tt class="docutils literal"><span class="pre">&#64;file</span></tt> in cooperative environments.</dd>
+<dd><tt class="docutils literal"><span class="pre">&#64;file</span></tt> is like <tt class="docutils literal"><span class="pre">&#64;thin</span></tt>,
+but <tt class="docutils literal"><span class="pre">&#64;file</span></tt> sentinels are more readable than <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> sentinels.
+However,``&#64;file`` is not as friendly to cvs or bzr as <tt class="docutils literal"><span class="pre">&#64;thin</span></tt>.
+Avoid <tt class="docutils literal"><span class="pre">&#64;file</span></tt> in cooperative environments.</dd>
+<dt>&#64;thin</dt>
+<dd>Creates external files containing sentinels that minimize conflicts
+in source code control systems such as bzr.
+Use <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> unless you have a good reason not to.</dd>
+<dt>&#64;noref</dt>
+<dd>This directive produces external files with minimal sentinels.
+Section references are not allowed.
+This is the least often used way of producing external files.
+Don't use this unless you are sure you must.</dd>
 <dt>&#64;nosent</dt>
-<dd><p class="first">Use this directive only if you absolutely can not tolerate any sentinels in derived files.
-Without sentinels, Leo can not update <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt> trees from changes made to the derived files.
-<em>Consider using &#64;thin even if you must produce derived files without sentinels</em>.
-You can use <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> for most work, then change <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> to <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt>
-when showing your derived files to the world.</p>
+<dd><p class="first">Creates external files without sentinels.
+Use <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt> only as a last resort:
+<tt class="docutils literal"><span class="pre">&#64;auto</span></tt> or <tt class="docutils literal"><span class="pre">&#64;shadow</span></tt> are usually a better choice.
+Leo can not update <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt> trees from changes made to the external files.</p>
 <p class="last">The &#64;bool force_newlines_in_at_nosent_bodies setting
 controls whether Leo writes a trailing newline if non-empty body text does not
 end in a newline. The default is True. In effect, the default value of this
 setting was False in previous versions of Leo.</p>
 </dd>
-<dt>&#64;noref</dt>
-<dd>This directive produces derived files with minimal sentinels.
-Section references are not allowed.
-This is the least often used way of producing derived files.
-Don't use this unless you are sure you must.</dd>
-<dt>&#64;asis</dt>
-<dd>This directive copies body text verbatim,
-without even ensuring that newlines terminate each node.
-Use this directive only when you must have complete control over every character of the derived file.</dd>
 <dt>&#64;root</dt>
 <dd>This directive is the most flexible, and the most difficult to use.
 <strong>Note</strong>: <tt class="docutils literal"><span class="pre">&#64;root</span></tt> is a true directive: you put <tt class="docutils literal"><span class="pre">&#64;root</span></tt> in body text.
-Historically, this was the first directive that created derived files.
+Historically, this was the first directive that created external files.
 It comes closest in spirit to traditional literate programming tools.
 However, it is seldom necessary to suffer the drawbacks of using <tt class="docutils literal"><span class="pre">&#64;root</span></tt>.
-It is certainly never necessary when programming in Python.
 My advice is to avoid using <tt class="docutils literal"><span class="pre">&#64;root</span></tt> unless you have a compelling reason.</dd>
 <dt>&#64;shadow</dt>
-<dd>This directive writes <em>two</em> derived files, a <strong>public</strong> file without sentinels,
+<dd>This directive writes <em>two</em> external files, a <strong>public</strong> file without sentinels,
 and a <strong>private</strong> file (by default in the .leo_shadow subfolder) containing sentinels.
 This allows Leo to get the benefits of &#64;thin or &#64;file trees,
 without having sentinels in the public files that people care about.</dd>
 </dl>
 <p>To complicate matters further,
-you can use <a class="reference" href="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">CWEB</a> markup instead of <a class="reference" href="http://www.eecs.harvard.edu/~nr/noweb/">noweb</a> markup.
-See the section called <a class="reference" href="#cweb-mode">CWEB mode</a> for the details.
-The choice between CWEB and noweb is independent of the directive is used to create derived files.</p>
+you can use <a class="reference external" href="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">CWEB</a> markup instead of <a class="reference external" href="http://www.eecs.harvard.edu/~nr/noweb/">noweb</a> markup.
+See the section called <a class="reference internal" href="#cweb-mode">CWEB mode</a> for the details.
+The choice between CWEB and noweb is independent of the directive is used to create external files.</p>
 </div>
 <div class="section" id="overview-summary-of-directives">
-<h2><a class="toc-backref" href="#id10">Overview: summary of directives</a></h2>
+<h1>Overview: summary of directives</h1>
 <p>Here is a brief summary of each directive:</p>
 <ul class="simple">
 <li><strong>&#64;</strong>
 Starts a doc part. <tt class="docutils literal"><span class="pre">&#64;doc</span></tt> is a deprecated synonym.</li>
 <li><strong>&#64;all</strong>
-Copies <em>all</em> descendant nodes to the derived file.
+Copies <em>all</em> descendant nodes to the external file.
 Not valid in <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.</li>
 <li><strong>&#64;asis</strong>
-Creates a derived file without sentinels,
+Creates an external file without sentinels,
 containing exactly the data in the <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> tree,
 without expanding section references or <tt class="docutils literal"><span class="pre">&#64;others</span></tt> directives.</li>
 <li><strong>&#64;auto</strong>
-Imports the derived file every time Leo reads the outline.
+Imports the external file every time Leo reads the outline.
 The read-at-auto-nodes and write-at-auto-nodes commands can
 be used to read and write and &#64;auto nodes.</li>
 <li><strong>&#64;c</strong>
@@ -426,28 +344,30 @@ Control syntax coloring.</li>
 Sets comment delimiters in <tt class="docutils literal"><span class="pre">&#64;root</span></tt> and <tt class="docutils literal"><span class="pre">&#64;unit</span></tt> trees.</li>
 <li><strong>&#64;delims</strong>
 Sets comment delimiters in <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.</li>
+<li><strong>&#64;edit</strong>
+Reads an external file into a single node.</li>
 <li><strong>&#64;encoding</strong>
-Sets the Unicode encoding used in derived files.</li>
+Sets the Unicode encoding used in external files.</li>
 <li><strong>&#64;file</strong>
-Creates a derived file containing sentinels.
-Thin derived file contains simpler sentinels than &#64;thin.
-The &#64;file tree in the outline contains a copy of all information in the derived file.</li>
+Creates an external file containing sentinels.
+Thin external files contains simpler sentinels than &#64;thin.
+The &#64;file tree in the outline contains a copy of all information in the external file.</li>
 <li><strong>&#64;first</strong>
-Forces lines to appear before the first sentinel of a derived file.</li>
+Forces lines to appear before the first sentinel of an external file.</li>
 <li><strong>&#64;ignore</strong>
-Causes Leo to ignore all or part of a derived file.
+Causes Leo to ignore all or part of an external file.
 Works differently in <tt class="docutils literal"><span class="pre">&#64;file</span></tt> and <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.</li>
 <li><strong>&#64;language</strong>
 Sets the language used for syntax coloring <strong>and</strong>
 sets the comment delimiters used in sentinel lines and in doc parts.</li>
 <li><strong>&#64;last</strong>
-Forces lines to appear after the last sentinel of a derived file.</li>
+Forces lines to appear after the last sentinel of an external file.</li>
 <li><strong>&#64;lineending</strong>
-Sets the line ending to be used in derived files.</li>
+Sets the line ending to be used in external files.</li>
 <li><strong>&#64;others</strong>
-Copies all nodes <em>except</em> section definition nodes to the derived file.</li>
+Copies all nodes <em>except</em> section definition nodes to the external file.</li>
 <li><strong>&#64;nosent</strong>
-Same as <tt class="docutils literal"><span class="pre">&#64;file</span></tt>, but the derived file contains no sentinels.</li>
+Same as <tt class="docutils literal"><span class="pre">&#64;file</span></tt>, but the external file contains no sentinels.</li>
 <li><strong>&#64;pagewidth</strong>
 Sets the page width used to break doc parts into lines.</li>
 <li><strong>&#64;path</strong>
@@ -459,28 +379,28 @@ Not valid in <tt class="docutils literal"><span class="pre">&#64;root</span></tt
 Start an <tt class="docutils literal"><span class="pre">&#64;root</span></tt> tree.
 The last two forms set the starting mode for body text.</li>
 <li><strong>&#64;shadow</strong>
-Creates two derived files, a <strong>public</strong> file without sentinels,
+Creates two external files, a <strong>public</strong> file without sentinels,
 and a <strong>private</strong> file containing sentinels.
 Imports the file just as <tt class="docutils literal"><span class="pre">&#64;auto</span></tt> does if the private file does not exist.</li>
 <li><strong>&#64;tabwidth</strong>
 Sets the width of tabs.
 Negative tab widths cause Leo to convert tabs to spaces.</li>
 <li><strong>&#64;thin</strong>
-Creates a derived file containing sentinels.
-Thin derived file miminizes cvs and bzr conflicts.
-All essential information is stored in the thin derived file.</li>
+Creates an external file containing sentinels.
+Thin external files miminize cvs and bzr conflicts.
+All essential information is stored in the thin external file.</li>
 <li><strong>&#64;verbose</strong>, <strong>&#64;terse</strong>, <strong>&#64;quiet</strong> and <strong>&#64;silent</strong>
-Set the verbosity of sentinels in files derived from <tt class="docutils literal"><span class="pre">&#64;root</span></tt>.</li>
+Set the verbosity of sentinels in external files from <tt class="docutils literal"><span class="pre">&#64;root</span></tt>.</li>
 <li><strong>&#64;wrap</strong> and <strong>&#64;nowrap</strong>
 Enable or disable line wrapping the Leo's body pane.</li>
 </ul>
 </div>
 <div class="section" id="reference-all-about-directives">
-<h2><a class="toc-backref" href="#id11">Reference: all about directives</a></h2>
+<h1>Reference: all about directives</h1>
 <p>The following sections give full details about each directive.
 The directives listed here may appear in headlines or body text.</p>
 <div class="section" id="and-doc">
-<h3><a class="toc-backref" href="#id12">&#64; and &#64;doc</a></h3>
+<h2>&#64; and &#64;doc</h2>
 <p>The <tt class="docutils literal"><span class="pre">&#64;</span></tt> directive starts a doc part.
 Doc parts continue until an <tt class="docutils literal"><span class="pre">&#64;c</span></tt> directive or the end of the body text.
 For example:</p>
@@ -493,10 +413,10 @@ The next line ends the doc part
 <p><tt class="docutils literal"><span class="pre">&#64;doc</span></tt> is a synonym for <tt class="docutils literal"><span class="pre">&#64;</span></tt>, but <tt class="docutils literal"><span class="pre">&#64;</span></tt> is preferred.</p>
 </div>
 <div class="section" id="all">
-<h3><a class="toc-backref" href="#id13">&#64;all</a></h3>
+<h2>&#64;all</h2>
 <p>The <tt class="docutils literal"><span class="pre">&#64;all</span></tt> directive is valid only in <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees.
 The <tt class="docutils literal"><span class="pre">&#64;all</span></tt> directive is similar to <tt class="docutils literal"><span class="pre">&#64;others</span></tt>, but it is less restrictive:
-it dumps <em>all</em> nodes to the derived file, including <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> nodes and nodes that
+it dumps <em>all</em> nodes to the external file, including <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> nodes and nodes that
 in an <tt class="docutils literal"><span class="pre">&#64;others</span></tt> tree would be considered to be orphan nodes.</p>
 <p>The <tt class="docutils literal"><span class="pre">&#64;all</span></tt> directive is required for files such as <tt class="docutils literal"><span class="pre">&#64;thin</span> <span class="pre">leoProjects.txt</span></tt> in <tt class="docutils literal"><span class="pre">LeoPy.leo</span></tt>.
 <tt class="docutils literal"><span class="pre">leoProjects.txt</span></tt> contains so-called project nodes.
@@ -504,30 +424,34 @@ It doesn't have any meaning as a program file: it is simply a collection of unre
 <tt class="docutils literal"><span class="pre">&#64;others</span></tt> would not work at all: it would complain about lots of orphan nodes.</p>
 </div>
 <div class="section" id="asis-and-noref">
-<h3><a class="toc-backref" href="#id14">&#64;asis and &#64;noref</a></h3>
-<p>The only difference between <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> and <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> trees is that files derived from
-<tt class="docutils literal"><span class="pre">&#64;noref</span></tt> contain sentinels while files derived from <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> do not.</p>
-<p>Leo creates files derived from <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> and <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees by
-writing the body text of all nodes of the tree in outline order.
-Leo writes the body text <em>as is</em>, without recognizing section definitions,
-without expanding section references, and without treating directives specially in any way.
-In particular, Leo copies all directives,
-including <tt class="docutils literal"><span class="pre">&#64;</span></tt> or <tt class="docutils literal"><span class="pre">&#64;c</span></tt> directives, to the derived file as text.</p>
-<p>Leo does recognize the <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directive in the <em>ancestors</em> of <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> or <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> nodes,
-so you may use the <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directive as usual to prevent Leo from writing <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> or <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees.</p>
+<h2>&#64;asis and &#64;noref</h2>
+<p>The only difference between <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> and <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> trees is that external
+files created from <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> contain sentinels while external files created
+from``&#64;asis`` do not.</p>
+<p>Leo creates files from <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> and <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees by writing the body text
+of all nodes of the tree in outline order. Leo writes the body text <em>as is</em>,
+without recognizing section definitions, without expanding section references,
+and without treating directives specially in any way. In particular, Leo copies
+all directives, including <tt class="docutils literal"><span class="pre">&#64;</span></tt> or <tt class="docutils literal"><span class="pre">&#64;c</span></tt> directives, to the external file as
+text.</p>
+<p>Leo does recognize the <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directive in the <em>ancestors</em> of <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> or
+<tt class="docutils literal"><span class="pre">&#64;asis</span></tt> nodes, so you may use the <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directive as usual to prevent
+Leo from writing <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> or <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees.</p>
 <p><strong>Notes</strong>:</p>
 <ul class="simple">
 <li>When writing <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> trees,
 Leo writes only the <tt class="docutils literal"><span class="pre">&#64;+leo</span></tt>, <tt class="docutils literal"><span class="pre">&#64;-leo</span></tt>, <tt class="docutils literal"><span class="pre">&#64;+node</span></tt>, <tt class="docutils literal"><span class="pre">&#64;-node</span></tt>, <tt class="docutils literal"><span class="pre">&#64;+body</span></tt> and <tt class="docutils literal"><span class="pre">&#64;-body</span></tt> sentinels.</li>
-<li>Within <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees only, if a headline starts with <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt>,
-Leo writes everything in the headline following the <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt> just before the corresponding body text.</li>
-<li>Files derived from <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees contain <em>nothing</em> not contained in body text (or <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt> headlines).
-In particular, if body text does not end in a newline,
-the first line from the next node will concatenated to the last line of the preceding node.</li>
+<li>Within <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees only, if a headline starts with <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt>, Leo writes
+everything in the headline following the <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt> just before the corresponding
+body text.</li>
+<li>Files created from <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees contain <em>nothing</em> not contained in body
+text (or <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt> headlines). In particular, if body text does not end in a
+newline, the first line from the next node will concatenated to the last line
+of the preceding node.</li>
 </ul>
 </div>
 <div class="section" id="auto">
-<h3><a class="toc-backref" href="#id15">&#64;auto</a></h3>
+<h2>&#64;auto</h2>
 <p>&#64;auto trees allow people to use Leo in collaborative environments without using
 sentinels in the files Leo generates. In contrast to &#64;nosent, &#64;auto trees can
 change when the corresponding file changes outside of Leo.</p>
@@ -545,13 +469,13 @@ the root &#64;auto tree is under the influence of an &#64;ignore directive.</p>
 contains a significant amount of information if it has  children or if the
 root node contains more than 10 characters.</li>
 </ol>
-<p>Leo creates &#64;auto trees by parsing the corresponding derived file. Parsers
+<p>Leo creates &#64;auto trees by parsing the corresponding external file. Parsers
 create descendant nodes of the &#64;auto tree: one node for each class, method and
-function in the derived file.</p>
+function in the external file.</p>
 <p>Parsers presently exist for C, elisp, Java, Javascript, Pascal, PHP, Python and xml. Leo
 determines the language using the file's extension.  Notes:</p>
 <ul class="simple">
-<li>If no parser exists for a language, the entire body of the derived file is
+<li>If no parser exists for a language, the entire body of the external file is
 copied to the body of the &#64;auto node.</li>
 <li>Javascript regexps that look like section references cause problems, but that
 can not be helped.</li>
@@ -561,13 +485,13 @@ body, head, and div.</li>
 </ul>
 </div>
 <div class="section" id="c-and-code">
-<h3><a class="toc-backref" href="#id16">&#64;c and &#64;code</a></h3>
+<h2>&#64;c and &#64;code</h2>
 <p>The <tt class="docutils literal"><span class="pre">&#64;c</span></tt> directive ends a doc part and begins a code part.
 <tt class="docutils literal"><span class="pre">&#64;code</span></tt> is a synonym for <tt class="docutils literal"><span class="pre">&#64;c</span></tt>, but <tt class="docutils literal"><span class="pre">&#64;c</span></tt> is preferred.</p>
 <p>In <tt class="docutils literal"><span class="pre">&#64;root</span></tt> and <tt class="docutils literal"><span class="pre">&#64;unit</span></tt> trees, the headline must contain a valid section name.</p>
 </div>
 <div class="section" id="color-nocolor-nocolor-node-and-killcolor">
-<h3><a class="toc-backref" href="#id17">&#64;color, &#64;nocolor, &#64;nocolor-node and &#64;killcolor</a></h3>
+<h2>&#64;color, &#64;nocolor, &#64;nocolor-node and &#64;killcolor</h2>
 <p>Syntax coloring is on by default in all body text.
 Leo formats comments and documentation parts in red,
 directives and C keywords in blue,
@@ -598,7 +522,7 @@ In particular, the <tt class="docutils literal"><span class="pre">Tangle</span><
 after an <tt class="docutils literal"><span class="pre">&#64;nocolor</span></tt> directive is seen.</p>
 </div>
 <div class="section" id="comment">
-<h3><a class="toc-backref" href="#id18">&#64;comment</a></h3>
+<h2>&#64;comment</h2>
 <p><strong>Note</strong>:
 the <tt class="docutils literal"><span class="pre">&#64;comment</span></tt> directive is deprecated:
 you should use the <tt class="docutils literal"><span class="pre">&#64;language</span></tt> directive whenever possible.
@@ -606,7 +530,7 @@ However, sometimes using both <tt class="docutils literal"><span class="pre">&#6
 For this to be effective the <tt class="docutils literal"><span class="pre">&#64;comment</span></tt> directive should appear after the <tt class="docutils literal"><span class="pre">&#64;language</span></tt> directive (in outline order).</p>
 <p>The <tt class="docutils literal"><span class="pre">Untangle</span></tt> command will not process an <tt class="docutils literal"><span class="pre">&#64;root</span></tt> or <tt class="docutils literal"><span class="pre">&#64;unit</span></tt> node if
 an <tt class="docutils literal"><span class="pre">&#64;comment</span></tt> directive is in effect because
-<tt class="docutils literal"><span class="pre">Untangle</span></tt> can't be sure of properly parsing a derived file if the language of the derived file isn't known.
+<tt class="docutils literal"><span class="pre">Untangle</span></tt> can't be sure of properly parsing an external file if the language of the external file isn't known.
 It might be possible to assume some defaults in this case,
 but that is not done at present and is not a high priority.
 By default, the <tt class="docutils literal"><span class="pre">Tangle</span></tt> commands produces C-language comments.
@@ -651,18 +575,18 @@ Comments in all other roots are governed by the global defaults.</p>
 <p>causes the comment delimiter to be &quot;REM &quot; (Note the trailing space).</p>
 </div>
 <div class="section" id="delims">
-<h3><a class="toc-backref" href="#id19">&#64;delims</a></h3>
+<h2>&#64;delims</h2>
 <p>The <tt class="docutils literal"><span class="pre">&#64;delims</span></tt> directive changes the comment strings used to mark sentinel lines.
 This directive is often used to place Javascript text inside XML or HTML files.
 The <tt class="docutils literal"><span class="pre">delims</span></tt> directive is not valid in <tt class="docutils literal"><span class="pre">&#64;root</span></tt> or <tt class="docutils literal"><span class="pre">&#64;unit</span></tt> trees.</p>
 <p>The <tt class="docutils literal"><span class="pre">&#64;delims</span></tt> directive contains one or two delimiters, separated by whitespace.
 If only one delim is present it delimits single-line comments.
 If two delims are present they delimit block comments.
-The <tt class="docutils literal"><span class="pre">&#64;delims</span></tt> directive can not be used to change the comment strings at the start of the derived file,
+The <tt class="docutils literal"><span class="pre">&#64;delims</span></tt> directive can not be used to change the comment strings at the start of the external file,
 that is, the comment strings for the <tt class="docutils literal"><span class="pre">&#64;+leo</span></tt> sentinel and the initial <tt class="docutils literal"><span class="pre">&#64;+body</span></tt> and <tt class="docutils literal"><span class="pre">&#64;+node</span></tt> sentinels.</p>
-<p>The <tt class="docutils literal"><span class="pre">&#64;delims</span></tt> directive inserts <tt class="docutils literal"><span class="pre">&#64;&#64;delims</span></tt> sentinels into the derived file.
-The new delimiter strings continue in effect until the next <tt class="docutils literal"><span class="pre">&#64;&#64;delims</span></tt> sentinel in the derived file or
-the end of the derived file.</p>
+<p>The <tt class="docutils literal"><span class="pre">&#64;delims</span></tt> directive inserts <tt class="docutils literal"><span class="pre">&#64;&#64;delims</span></tt> sentinels into the external file.
+The new delimiter strings continue in effect until the next <tt class="docutils literal"><span class="pre">&#64;&#64;delims</span></tt> sentinel in the external file or
+the end of the external file.</p>
 <p><strong>Note</strong>: Leo can not revert to previous delimiters automatically;
 you must change back to previous delimiters using another <tt class="docutils literal"><span class="pre">&#64;delims</span></tt> directive. For example:</p>
 <pre class="literal-block">
@@ -671,19 +595,27 @@ Javascript stuff
 &#64;delims &lt;-- --&gt;
 HTML stuff
 </pre>
-<p>Adding, deleting or changing <tt class="docutils literal"><span class="pre">&#64;&#64;delims</span></tt> sentinels will destroy Leo's ability to read the derived file.
+<p>Adding, deleting or changing <tt class="docutils literal"><span class="pre">&#64;&#64;delims</span></tt> sentinels will destroy Leo's ability to read the external file.
 Mistakes using the <tt class="docutils literal"><span class="pre">&#64;delims</span></tt> directive have no effect on Leo,
-though such mistakes will thoroughly mess up a derived file as far as compilers,
+though such mistakes will thoroughly mess up a external file as far as compilers,
 HTML renderers, etc. are concerned.</p>
 </div>
+<div class="section" id="edit">
+<h2>&#64;edit</h2>
+<p>Reads a file into a single node.
+&#64;edit is similar to &#64;auto; saving a .leo file does not save dirty &#64;edit nodes
+if they do not contain a <strong>significant</strong> amount of information. An &#64;edit tree
+contains a significant amount of information if it has children or if the root
+node contains more than 10 characters.</p>
+</div>
 <div class="section" id="encoding">
-<h3><a class="toc-backref" href="#id20">&#64;encoding</a></h3>
-<p>You may use the <tt class="docutils literal"><span class="pre">&#64;encoding</span></tt> directive to specify the encoding used in a derived file.
-You can't mix encodings in a single derived file.  For example:</p>
+<h2>&#64;encoding</h2>
+<p>You may use the <tt class="docutils literal"><span class="pre">&#64;encoding</span></tt> directive to specify the encoding used in an external file.
+You can't mix encodings in a single external file.  For example:</p>
 <pre class="literal-block">
 &#64;encoding iso-8859-1
 </pre>
-<p>If the encoding used in a derived file is not &quot;utf-8&quot; it is represented in the &#64;+leo sentinel line, like this:</p>
+<p>If the encoding used in an external file is not &quot;utf-8&quot; it is represented in the &#64;+leo sentinel line, like this:</p>
 <pre class="literal-block">
 #&#64;+leo-encoding=iso-8859-1.
 </pre>
@@ -694,15 +626,17 @@ When reading or writing a character not in a &quot;lossy&quot; encoding (such as
 Leo converts such characters to <tt class="docutils literal"><span class="pre">'?'</span></tt> and issues a warning.</p>
 </div>
 <div class="section" id="file">
-<h3><a class="toc-backref" href="#id21">&#64;file</a></h3>
-<p>Creates a derived file containing sentinels.
-Thin derived file contains simpler sentinels than &#64;thin.
-The &#64;file tree in the outline contains a copy of all information in the derived file.</p>
+<h2>&#64;file</h2>
+<p>Creates an external file containing sentinels.
+Thin external files contain simpler sentinels than &#64;thin.
+The &#64;file tree in the outline contains a copy of all information in the external file.</p>
 </div>
 <div class="section" id="first">
-<h3><a class="toc-backref" href="#id22">&#64;first</a></h3>
-<p>The <tt class="docutils literal"><span class="pre">&#64;first</span></tt> directive allows you to place lines at the very start of files derived from <tt class="docutils literal"><span class="pre">&#64;file</span></tt> nodes.
-For example, the body text of <tt class="docutils literal"><span class="pre">&#64;file</span> <span class="pre">spam.py</span></tt> might be:</p>
+<h2>&#64;first</h2>
+<p>The <tt class="docutils literal"><span class="pre">&#64;first</span></tt> directive allows you to place lines at the very start of external files created
+by <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> and <tt class="docutils literal"><span class="pre">&#64;file</span></tt> nodes.
+For example, the body text of <tt class="docutils literal"><span class="pre">&#64;file</span> <span class="pre">spam.py</span></tt>
+might be:</p>
 <pre class="literal-block">
 &#64;first #! /usr/bin/env python
 </pre>
@@ -710,7 +644,7 @@ For example, the body text of <tt class="docutils literal"><span class="pre">&#6
 <pre class="literal-block">
 &#64;first #/usr/bin/perl
 </pre>
-<p><tt class="docutils literal"><span class="pre">&#64;first</span></tt> directives are recognized only at the start of the body text of <tt class="docutils literal"><span class="pre">&#64;file</span></tt> nodes.
+<p><tt class="docutils literal"><span class="pre">&#64;first</span></tt> directives are recognized only at the start of the body text of <tt class="docutils literal"><span class="pre">&#64;file</span></tt> and <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> nodes.
 No text may precede <tt class="docutils literal"><span class="pre">&#64;first</span></tt> directives.
 More than one <tt class="docutils literal"><span class="pre">&#64;first</span></tt> directive may exist, like this:</p>
 <pre class="literal-block">
@@ -720,11 +654,11 @@ More than one <tt class="docutils literal"><span class="pre">&#64;first</span></
 <p>The <tt class="docutils literal"><span class="pre">&#64;first</span></tt> directive is not valid in <tt class="docutils literal"><span class="pre">&#64;root</span></tt> or <tt class="docutils literal"><span class="pre">&#64;unit</span></tt> trees.</p>
 </div>
 <div class="section" id="ignore">
-<h3><a class="toc-backref" href="#id23">&#64;ignore</a></h3>
+<h2>&#64;ignore</h2>
 <p>Generally speaking, <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directive prevents nodes from being processed.</p>
 <ol class="arabic simple">
-<li>In the root node of any <tt class="docutils literal"><span class="pre">&#64;auto</span></tt>, <tt class="docutils literal"><span class="pre">&#64;file</span></tt>, <tt class="docutils literal"><span class="pre">&#64;noref</span></tt>, <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt>, <tt class="docutils literal"><span class="pre">&#64;root</span></tt>, <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> or <tt class="docutils literal"><span class="pre">&#64;shadow</span></tt> tree,
-<tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> prevents Leo from writing the derived file.</li>
+<li>In the root node of any <tt class="docutils literal"><span class="pre">&#64;auto</span></tt>, <tt class="docutils literal"><span class="pre">&#64;edit</span></tt>, <tt class="docutils literal"><span class="pre">&#64;file</span></tt>, <tt class="docutils literal"><span class="pre">&#64;noref</span></tt>, <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt>, <tt class="docutils literal"><span class="pre">&#64;root</span></tt>, <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> or <tt class="docutils literal"><span class="pre">&#64;shadow</span></tt> tree,
+<tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> prevents Leo from writing the external file.</li>
 <li><tt class="docutils literal"><span class="pre">&#64;auto</span></tt> trees are an exception.  Everything, including <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directives, are written.
 However, you can disable the writing of an <tt class="docutils literal"><span class="pre">&#64;auto</span></tt> tree by putting an <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directive in an
 ancestor of the <tt class="docutils literal"><span class="pre">&#64;auto</span></tt> tree.</li>
@@ -734,7 +668,7 @@ This may be dubious behavior, but that's how Leo works.</li>
 </ol>
 </div>
 <div class="section" id="language">
-<h3><a class="toc-backref" href="#id24">&#64;language</a></h3>
+<h2>&#64;language</h2>
 <p>The <tt class="docutils literal"><span class="pre">&#64;language</span></tt> directive specifies the comment delimiters and string types used by the
 <tt class="docutils literal"><span class="pre">Tangle</span></tt> and <tt class="docutils literal"><span class="pre">Untangle</span></tt> commands.
 This directive over-rides the default specified in the settings dialog.</p>
@@ -777,9 +711,10 @@ Thus, the following are equivalent:</p>
 </pre>
 </div>
 <div class="section" id="last">
-<h3><a class="toc-backref" href="#id25">&#64;last</a></h3>
-<p>The <tt class="docutils literal"><span class="pre">&#64;last</span></tt> directive allows you to place lines at the very end of files derived from <tt class="docutils literal"><span class="pre">&#64;file</span></tt> nodes.
-The <tt class="docutils literal"><span class="pre">&#64;last</span></tt> directive is recognized only at the end of body text of <tt class="docutils literal"><span class="pre">&#64;file</span></tt> nodes.
+<h2>&#64;last</h2>
+<p>The <tt class="docutils literal"><span class="pre">&#64;last</span></tt> directive allows you to place lines at the very end of external files
+created from <tt class="docutils literal"><span class="pre">&#64;file</span></tt> and <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> nodes.
+The <tt class="docutils literal"><span class="pre">&#64;last</span></tt> directive is recognized only at the end of body text of <tt class="docutils literal"><span class="pre">&#64;file</span></tt> and <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> nodes.
 No text may follow <tt class="docutils literal"><span class="pre">&#64;last</span></tt> directives.
 More than one <tt class="docutils literal"><span class="pre">&#64;last</span></tt> directive may exist.
 For example, here is how a PHP file might be set up:</p>
@@ -790,8 +725,8 @@ For example, here is how a PHP file might be set up:</p>
 </pre>
 </div>
 <div class="section" id="lineending">
-<h3><a class="toc-backref" href="#id26">&#64;lineending</a></h3>
-<p>The <tt class="docutils literal"><span class="pre">&#64;lineending</span></tt> directive sets the line endings for individual derived files.
+<h2>&#64;lineending</h2>
+<p>The <tt class="docutils literal"><span class="pre">&#64;lineending</span></tt> directive sets the line endings for individual external files.
 This directive will override the <tt class="docutils literal"><span class="pre">output_newline</span></tt> setting.
 The <tt class="docutils literal"><span class="pre">&#64;lineending</span></tt> <em>never</em> affects the line endings in .leo files themselves:
 .leo files must have consistent line endings!</p>
@@ -821,9 +756,9 @@ The <tt class="docutils literal"><span class="pre">&#64;lineending</span></tt> <
 </table>
 </div>
 <div class="section" id="others">
-<h3><a class="toc-backref" href="#id27">&#64;others</a></h3>
+<h2>&#64;others</h2>
 <p>The <tt class="docutils literal"><span class="pre">&#64;others</span></tt> directive refers to the body text of all nodes <em>except</em> section definition nodes.
-The <tt class="docutils literal"><span class="pre">&#64;others</span></tt> directive places the body text of section definition nodes in the derived file in outline order.</p>
+The <tt class="docutils literal"><span class="pre">&#64;others</span></tt> directive places the body text of section definition nodes in the external file in outline order.</p>
 <p>An <tt class="docutils literal"><span class="pre">&#64;file</span></tt> tree may contain more than one <tt class="docutils literal"><span class="pre">&#64;others</span></tt> directive.
 <tt class="docutils literal"><span class="pre">&#64;others</span></tt> directives that descend from other <tt class="docutils literal"><span class="pre">&#64;others</span></tt> directives refer only to unnamed nodes that descend from them.
 The <tt class="docutils literal"><span class="pre">&#64;others</span></tt> directive that occurs highest in the <tt class="docutils literal"><span class="pre">&#64;file</span></tt> tree refers to all other unnamed nodes.</p>
@@ -837,7 +772,7 @@ In practice this is never a problem.</li>
 </ul>
 </div>
 <div class="section" id="nosent">
-<h3><a class="toc-backref" href="#id28">&#64;nosent</a></h3>
+<h2>&#64;nosent</h2>
 <p>Leo writes <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt> trees just as for <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees,
 but Leo writes no sentinels at all.</p>
 <p>The &#64;bool force_newlines_in_at_nosent_bodies setting
@@ -846,12 +781,12 @@ end in a newline. The default is True. In effect, the default value of this
 setting was False in previous versions of Leo.</p>
 </div>
 <div class="section" id="path">
-<h3><a class="toc-backref" href="#id29">&#64;path</a></h3>
+<h2>&#64;path</h2>
 <p>The <tt class="docutils literal"><span class="pre">&#64;path</span></tt> directives override the deprecated <tt class="docutils literal"><span class="pre">default_tangle_directory</span></tt> setting.</p>
 <p>The form of the &#64;path directive is <tt class="docutils literal"><span class="pre">&#64;path</span></tt> <em>filename</em>,
 where <em>filename</em> is taken to be everything following &#64;path to the end of the line.</p>
-<p>If <em>filename</em> is an absolute filename the location of the derived file is specified only by the filename.
-Otherwise, if <em>filename</em> is a relative filename, the location of the derived file is relative to:</p>
+<p>If <em>filename</em> is an absolute filename the location of the external file is specified only by the filename.
+Otherwise, if <em>filename</em> is a relative filename, the location of the external file is relative to:</p>
 <ol class="arabic simple">
 <li>the directory specified the applicable <tt class="docutils literal"><span class="pre">&#64;path</span></tt> directive, or</li>
 <li>the &quot;Default Tangle Directory&quot; in the Settings dialog if no <tt class="docutils literal"><span class="pre">&#64;path</span></tt> directive is in effect, or</li>
@@ -861,7 +796,7 @@ Otherwise, if <em>filename</em> is a relative filename, the location of the deri
 or if <em>filename</em> does not exist.</p>
 </div>
 <div class="section" id="pagewidth">
-<h3><a class="toc-backref" href="#id30">&#64;pagewidth</a></h3>
+<h2>&#64;pagewidth</h2>
 <p>The <tt class="docutils literal"><span class="pre">&#64;pagewidth</span></tt> directive overrides the <tt class="docutils literal"><span class="pre">page_width</span></tt> setting.
 The form of the <tt class="docutils literal"><span class="pre">&#64;pagewidth</span></tt> directive is <tt class="docutils literal"><span class="pre">&#64;pagewidth</span></tt> <em>n</em>,
 where n is a positive integer that indicates the width of tangled pages in columns.
@@ -872,17 +807,17 @@ For example:</p>
 <p>This setting only affects how Leo reformats doc parts, and how the <tt class="docutils literal"><span class="pre">Tangle</span></tt> command outputs block comments.</p>
 </div>
 <div class="section" id="raw-and-end-raw">
-<h3><a class="toc-backref" href="#id31">&#64;raw and &#64;end_raw</a></h3>
+<h2>&#64;raw and &#64;end_raw</h2>
 <p>The <tt class="docutils literal"><span class="pre">&#64;raw</span></tt> and <tt class="docutils literal"><span class="pre">&#64;end_raw</span></tt> directives are valid only within <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.
 The <tt class="docutils literal"><span class="pre">&#64;raw</span></tt> directive starts a section of &quot;raw&quot; text.
 The <tt class="docutils literal"><span class="pre">&#64;end_raw</span></tt> directive ends such a section, as does the end of body text.
 No section references are recognized within raw text,
-and no additional leading whitespace is generated within raw text when writing the derived file.</p>
+and no additional leading whitespace is generated within raw text when writing the external file.</p>
 </div>
 <div class="section" id="root">
-<h3><a class="toc-backref" href="#id32">&#64;root</a></h3>
-<p><tt class="docutils literal"><span class="pre">&#64;root</span></tt> creates derived files that are more flexible than
-<tt class="docutils literal"><span class="pre">&#64;file</span></tt>, <tt class="docutils literal"><span class="pre">&#64;thin</span></tt>, <tt class="docutils literal"><span class="pre">&#64;shadow</span></tt> or any other kind of derived file.</p>
+<h2>&#64;root</h2>
+<p><tt class="docutils literal"><span class="pre">&#64;root</span></tt> creates external files that are more flexible than
+<tt class="docutils literal"><span class="pre">&#64;file</span></tt>, <tt class="docutils literal"><span class="pre">&#64;thin</span></tt>, <tt class="docutils literal"><span class="pre">&#64;shadow</span></tt>, etc.</p>
 <ul class="simple">
 <li>Sections may be defined anywhere within <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.
 Moreover, the <tt class="docutils literal"><span class="pre">&#64;unit</span></tt> directive expands the scope of section definitions in <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees
@@ -895,10 +830,10 @@ so that a section may be referenced in several <tt class="docutils literal"><spa
 In particular, the &#64;others directive is valid only within <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.</li>
 <li>You must explicitly tangle and untangle <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees using the <tt class="docutils literal"><span class="pre">Tangle</span></tt> and <tt class="docutils literal"><span class="pre">Untangle</span></tt> commands.</li>
 </ul>
-<p>See <a class="reference" href="directives.html#id5">&#64;root reference</a> for more details.</p>
+<p>See <a class="reference external" href="directives.html#id5">&#64;root reference</a> for more details.</p>
 </div>
 <div class="section" id="root-code-and-root-doc">
-<h3><a class="toc-backref" href="#id33">&#64;root-code and &#64;root-doc</a></h3>
+<h2>&#64;root-code and &#64;root-doc</h2>
 <p>Leo allows you to choose whether body text in <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees will start in code mode or doc mode by default.
 <tt class="docutils literal"><span class="pre">&#64;root-doc</span></tt> <em>filename</em> and <tt class="docutils literal"><span class="pre">&#64;root-code</span></tt> <em>filename</em> directives
 specify that body text is assumed to start in doc mode or code mode respectively.
@@ -919,7 +854,7 @@ Anyway, you now have complete flexibility about how <tt class="docutils literal"
 and in particular you can make <tt class="docutils literal"><span class="pre">&#64;root</span></tt> work just like <tt class="docutils literal"><span class="pre">&#64;file</span></tt>.</p>
 </div>
 <div class="section" id="shadow">
-<h3><a class="toc-backref" href="#id34">&#64;shadow</a></h3>
+<h2>&#64;shadow</h2>
 <p>When writing an &#64;shadow tree, Leo writes <em>two</em> files, a <strong>public</strong> file without sentinels,
 and a <strong>private</strong> file (by default in the .leo_shadow subfolder) containing sentinels.
 The primary sources for &#64;shadow trees are the private files, updated by changes to the public file.</p>
@@ -944,7 +879,7 @@ exactly as is done for &#64;auto node.
 See the discussion of &#64;auto above for details.</p>
 </div>
 <div class="section" id="tabwidth">
-<h3><a class="toc-backref" href="#id35">&#64;tabwidth</a></h3>
+<h2>&#64;tabwidth</h2>
 <p>The <tt class="docutils literal"><span class="pre">&#64;tabwidth</span></tt> directive overrides the <tt class="docutils literal"><span class="pre">tab_width</span></tt> setting.
 The form of the <tt class="docutils literal"><span class="pre">&#64;tabwidth</span></tt> directive is <tt class="docutils literal"><span class="pre">&#64;tabwidth</span></tt> <em>n</em>,
 where n is a positive integer that indicates the width of tabs in spaces.
@@ -955,20 +890,21 @@ For example:</p>
 <p>Negative values cause Leo to convert tabs to blanks.</p>
 </div>
 <div class="section" id="thin">
-<h3><a class="toc-backref" href="#id36">&#64;thin</a></h3>
-<p>Creates a derived file containing sentinels.
-Thin derived files are much more friendly to cvs than files derived from <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.
-Thin derived files contain all information needed to recreate the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> tree in the outline.</p>
+<h2>&#64;thin</h2>
+<p>Creates an external file containing sentinels.
+Thin external files are more friendly to source code control systems such as bzr
+than external files created from <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.
+Thin exteral files contain all information needed to recreate the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> tree in the outline.</p>
 <p>The <tt class="docutils literal"><span class="pre">&#64;all</span></tt> directive is valid only in <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees, not <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.</p>
 </div>
 <div class="section" id="unit">
-<h3><a class="toc-backref" href="#id37">&#64;unit</a></h3>
+<h2>&#64;unit</h2>
 <p>The <tt class="docutils literal"><span class="pre">&#64;unit</span></tt> directive expands the scope of section definitions in <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees
 so that a section may be referenced in several <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.
 The <tt class="docutils literal"><span class="pre">&#64;unit</span></tt> directive is ignored outside of <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.</p>
 </div>
 <div class="section" id="verbose-terse-quiet-and-silent">
-<h3><a class="toc-backref" href="#id38">&#64;verbose, &#64;terse, &#64;quiet and &#64;silent</a></h3>
+<h2>&#64;verbose, &#64;terse, &#64;quiet and &#64;silent</h2>
 <p>The <tt class="docutils literal"><span class="pre">&#64;verbose</span></tt>, <tt class="docutils literal"><span class="pre">&#64;terse</span></tt>, <tt class="docutils literal"><span class="pre">&#64;quiet</span></tt> and <tt class="docutils literal"><span class="pre">&#64;silent</span></tt> directives determine
 how the <tt class="docutils literal"><span class="pre">Tangle</span></tt> command outputs comments in <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.
 Comments written by the user in code sections are always output.
@@ -984,14 +920,14 @@ Like <tt class="docutils literal"><span class="pre">&#64;silent</span></tt>, <tt
 If more than one of these directives appear in the same body text the &quot;most verbose&quot; of these options will be in effect.</p>
 </div>
 <div class="section" id="wrap-and-nowrap">
-<h3><a class="toc-backref" href="#id39">&#64;wrap and &#64;nowrap</a></h3>
+<h2>&#64;wrap and &#64;nowrap</h2>
 <p>By default, the <tt class="docutils literal"><span class="pre">body_pane_wraps</span></tt> setting controls whether body text wraps.
 You may override this setting for a particular tree using the <tt class="docutils literal"><span class="pre">&#64;wrap</span></tt> and <tt class="docutils literal"><span class="pre">&#64;nowrap</span></tt> directives.
 Only the first <tt class="docutils literal"><span class="pre">&#64;wrap</span></tt> or <tt class="docutils literal"><span class="pre">&#64;nowrap</span></tt> directive in a node has any effect.</p>
 </div>
 </div>
-<div class="section" id="reference-the-8-ways-of-creating-derived-files">
-<h2><a class="toc-backref" href="#id40">Reference: the 8 ways of creating derived files</a></h2>
+<div class="section" id="reference-the-9-ways-of-accessing-external-files">
+<h1>Reference: the 9 ways of accessing external files</h1>
 <p>In the following table all terms in each row are equivalent.
 The spelling in the first column is preferred:</p>
 <table border="1" class="docutils">
@@ -1037,6 +973,10 @@ The spelling in the first column is preferred:</p>
 <td>no</td>
 <td>no</td>
 </tr>
+<tr><td>&#64;edit</td>
+<td>no</td>
+<td>yes</td>
+</tr>
 <tr><td>&#64;file</td>
 <td>yes</td>
 <td>yes</td>
@@ -1063,11 +1003,11 @@ The spelling in the first column is preferred:</p>
 </tr>
 </tbody>
 </table>
-<p>Leo can not update the outline from changes made from derived files unless those files contain sentinels.
-The primary source for <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt> and <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees are the outlines from which those files were derived.</p>
+<p>Leo can not update the outline from changes made from external files unless those files contain sentinels.
+The primary source for <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt> and <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees are the outlines from which those files were created.</p>
 <p>&#64;shadow trees create <em>two</em> files, a <strong>public</strong> file without sentinels, and a <strong>private</strong> file (by default in the .leo_shadow subfolder) containing sentinels.  The primary sources for &#64;shadow trees are the private files, updated by changes to the public file.</p>
 <div class="section" id="id1">
-<h3><a class="toc-backref" href="#id41">&#64;auto</a></h3>
+<h2>&#64;auto</h2>
 <p>&#64;auto trees allow people to use Leo in collaborative environments without using
 sentinels in the files Leo generates. In contrast to &#64;nosent, &#64;auto trees can
 change when the corresponding file changes outside of Leo.</p>
@@ -1085,13 +1025,13 @@ the root &#64;auto tree is under the influence of an &#64;ignore directive.</p>
 contains a significant amount of information if it has  children or if the
 root node contains more than 10 characters.</li>
 </ol>
-<p>Leo creates &#64;auto trees by parsing the corresponding derived file. Parsers
+<p>Leo creates &#64;auto trees by parsing the corresponding external file. Parsers
 create descendant nodes of the &#64;auto tree: one node for each class, method and
-function in the derived file.</p>
+function in the external file.</p>
 <p>Parsers presently exist for C, elisp, Java, Javascript, Pascal, PHP, Python and xml. Leo
 determines the language using the file's extension.  Notes:</p>
 <ul class="simple">
-<li>If no parser exists for a language, the entire body of the derived file is
+<li>If no parser exists for a language, the entire body of the external file is
 copied to the body of the &#64;auto node.</li>
 <li>Javascript regexps that look like section references cause problems, but that
 can not be helped.</li>
@@ -1100,7 +1040,7 @@ tags that create outline nodes. By default, the <strong>organizer tags</strong> 
 body, head, and div.</li>
 </ul>
 <div class="section" id="perfect-import-checks">
-<h4><a class="toc-backref" href="#id42">Perfect import checks</a></h4>
+<h3>Perfect import checks</h3>
 <p>Leo performs several checks to ensure that the result of importing an external
 file will be equivalent to the file that writing the &#64;auto tree would produce.</p>
 <p>These checks can produces <strong>errors</strong> or <strong>warnings</strong>. Errors indicate a
@@ -1138,8 +1078,8 @@ any unindented line of the node.</li>
 Such lines can not change the meaning of Python programs.</p>
 </div>
 <div class="section" id="commands-related-to-auto">
-<h4><a class="toc-backref" href="#id43">Commands related to &#64;auto</a></h4>
-<p>Three commands in the <a class="reference" href="File:Read/Write">File:Read/Write</a> menu allow you to manually read and
+<h3>Commands related to &#64;auto</h3>
+<p>Three commands in the <a class="reference external" href="File:Read/Write">File:Read/Write</a> menu allow you to manually read and
 write &#64;auto nodes from the presently selected outline. As always, an &#64;ignore
 directive in the &#64;auto node or its ancestors will suppress any of these
 commands:</p>
@@ -1159,13 +1099,24 @@ read-at-auto-nodes command to update &#64;auto nodes without having to reload th
 </div>
 </div>
 <div class="section" id="id2">
-<h3><a class="toc-backref" href="#id44">&#64;file</a></h3>
-<p>Creates a derived file containing sentinels.
-Thin derived file contains simpler sentinels than &#64;thin.
-The &#64;file tree in the outline contains a copy of all information in the derived file.</p>
+<h2>&#64;edit</h2>
+<p>Initially, Leo's <a class="reference external" href="File:Open">File:Open</a> command creates such nodes when opening any
+non-.leo file.</p>
+<p>When writing &#64;edit nodes, Leo uses Leo's &#64;auto write logic.  That is,
+no sentinels are written.</p>
+<p>When reading &#64;edit nodes, Leo just puts then entire text of the file
+into the node, along with &#64;language or &#64;nocolor directives as
+appropriate.  These added directives will not change the file when it
+gets written because no sentinels are written.</p>
 </div>
 <div class="section" id="id3">
-<h3><a class="toc-backref" href="#id45">&#64;nosent</a></h3>
+<h2>&#64;file</h2>
+<p>Creates an external file containing sentinels.
+Thin external files contain simpler sentinels than &#64;thin.
+The &#64;file tree in the outline contains a copy of all information in the external file.</p>
+</div>
+<div class="section" id="id4">
+<h2>&#64;nosent</h2>
 <p>Leo writes <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt> trees just as for <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees,
 but Leo writes no sentinels at all.</p>
 <p>The &#64;bool force_newlines_in_at_nosent_bodies setting
@@ -1173,31 +1124,35 @@ controls whether Leo writes a trailing newline if non-empty body text does not
 end in a newline. The default is True. In effect, the default value of this
 setting was False in previous versions of Leo.</p>
 </div>
-<div class="section" id="id4">
-<h3><a class="toc-backref" href="#id46">&#64;asis and &#64;noref</a></h3>
-<p>The only difference between <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> and <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> trees is that files derived from
-<tt class="docutils literal"><span class="pre">&#64;noref</span></tt> contain sentinels while files derived from <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> do not.</p>
-<p>Leo creates files derived from <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> and <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees by
-writing the body text of all nodes of the tree in outline order.
-Leo writes the body text <em>as is</em>, without recognizing section definitions,
-without expanding section references, and without treating directives specially in any way.
-In particular, Leo copies all directives,
-including <tt class="docutils literal"><span class="pre">&#64;</span></tt> or <tt class="docutils literal"><span class="pre">&#64;c</span></tt> directives, to the derived file as text.</p>
-<p>Leo does recognize the <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directive in the <em>ancestors</em> of <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> or <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> nodes,
-so you may use the <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directive as usual to prevent Leo from writing <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> or <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees.</p>
+<div class="section" id="id5">
+<h2>&#64;asis and &#64;noref</h2>
+<p>The only difference between <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> and <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> trees is that external
+files created from <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> contain sentinels while external files created
+from``&#64;asis`` do not.</p>
+<p>Leo creates files from <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> and <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees by writing the body text
+of all nodes of the tree in outline order. Leo writes the body text <em>as is</em>,
+without recognizing section definitions, without expanding section references,
+and without treating directives specially in any way. In particular, Leo copies
+all directives, including <tt class="docutils literal"><span class="pre">&#64;</span></tt> or <tt class="docutils literal"><span class="pre">&#64;c</span></tt> directives, to the external file as
+text.</p>
+<p>Leo does recognize the <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directive in the <em>ancestors</em> of <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> or
+<tt class="docutils literal"><span class="pre">&#64;asis</span></tt> nodes, so you may use the <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> directive as usual to prevent
+Leo from writing <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> or <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees.</p>
 <p><strong>Notes</strong>:</p>
 <ul class="simple">
 <li>When writing <tt class="docutils literal"><span class="pre">&#64;noref</span></tt> trees,
 Leo writes only the <tt class="docutils literal"><span class="pre">&#64;+leo</span></tt>, <tt class="docutils literal"><span class="pre">&#64;-leo</span></tt>, <tt class="docutils literal"><span class="pre">&#64;+node</span></tt>, <tt class="docutils literal"><span class="pre">&#64;-node</span></tt>, <tt class="docutils literal"><span class="pre">&#64;+body</span></tt> and <tt class="docutils literal"><span class="pre">&#64;-body</span></tt> sentinels.</li>
-<li>Within <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees only, if a headline starts with <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt>,
-Leo writes everything in the headline following the <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt> just before the corresponding body text.</li>
-<li>Files derived from <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees contain <em>nothing</em> not contained in body text (or <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt> headlines).
-In particular, if body text does not end in a newline,
-the first line from the next node will concatenated to the last line of the preceding node.</li>
+<li>Within <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees only, if a headline starts with <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt>, Leo writes
+everything in the headline following the <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt> just before the corresponding
+body text.</li>
+<li>Files created from <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees contain <em>nothing</em> not contained in body
+text (or <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt> headlines). In particular, if body text does not end in a
+newline, the first line from the next node will concatenated to the last line
+of the preceding node.</li>
 </ul>
 </div>
-<div class="section" id="id5">
-<h3><a class="toc-backref" href="#id47">&#64;root reference</a></h3>
+<div class="section" id="id6">
+<h2>&#64;root reference</h2>
 <p>This section discusses all aspects of <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.
 You should carefully consider whether the extra flexibility afforded by
 <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees is worth the extra bother.
@@ -1215,7 +1170,7 @@ so that a section may be referenced in several <tt class="docutils literal"><spa
 <li>The meaning of section definitions in <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees are independent of their position within the tree.</li>
 </ul>
 <div class="section" id="sections-and-section-definitions">
-<h4><a class="toc-backref" href="#id48">Sections and section definitions</a></h4>
+<h3>Sections and section definitions</h3>
 <p>Just as with <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees, <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees may contain code parts and doc parts.
 Code parts start with section definition lines (see below) or the <tt class="docutils literal"><span class="pre">&#64;c</span></tt> directive.
 Doc parts start with <tt class="docutils literal"><span class="pre">&#64;</span></tt> directive.
@@ -1277,12 +1232,12 @@ def putOpenNodeSentinel(self,v):
 Within a code part <tt class="docutils literal"><span class="pre">&#64;&#64;</span></tt> in the first column (and only in the first column) stands for a single <tt class="docutils literal"><span class="pre">&#64;</span></tt> sign.</p>
 </div>
 <div class="section" id="tangling-root-trees-with-the-tangle-commands">
-<h4><a class="toc-backref" href="#id49">Tangling &#64;root trees with the Tangle commands</a></h4>
-<p>Each <tt class="docutils literal"><span class="pre">&#64;root</span></tt> tree represents a single derived file.
-<strong>Tangling</strong> is the process of creating derived files from <tt class="docutils literal"><span class="pre">&#64;file</span></tt> or <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.
+<h3>Tangling &#64;root trees with the Tangle commands</h3>
+<p>Each <tt class="docutils literal"><span class="pre">&#64;root</span></tt> tree represents a single external file.
+<strong>Tangling</strong> is the process of creating external files from <tt class="docutils literal"><span class="pre">&#64;file</span></tt> or <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.
 Leo tangles <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees automatically whenever an outline is saved.
 The user must tangle <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees explicitly using one of the <tt class="docutils literal"><span class="pre">Tangle</span></tt> commands.</p>
-<p>Leo creates derived files by expanding all section references in an <tt class="docutils literal"><span class="pre">&#64;root</span></tt> node.
+<p>Leo creates external files by expanding all section references in an <tt class="docutils literal"><span class="pre">&#64;root</span></tt> node.
 Leo expands a section reference by substituting the code section itself for the section reference.
 This is a recursive process:
 the substituted code section may contain other code references which are themselves expanded, and so on.</p>
@@ -1294,14 +1249,14 @@ the node containing the reference to S.
 <p>If a section is referenced in more than one node,
 I usually place its definition in a node containing all the nodes that refer to it.
 Using this rule of thumb creates an outline whose structure mirrors the intrinsic organization of a program.</p>
-<p>The <tt class="docutils literal"><span class="pre">Tangle</span></tt> command creates derived files from <tt class="docutils literal"><span class="pre">&#64;root</span></tt> node.
+<p>The <tt class="docutils literal"><span class="pre">Tangle</span></tt> command creates external files from <tt class="docutils literal"><span class="pre">&#64;root</span></tt> node.
 The <tt class="docutils literal"><span class="pre">&#64;root</span></tt> directive indicates which sections constitute an output file.
 The text following a &#64;root directive forms the entire content of the file,
 that is, after section references are expanded.
 An outline can contain arbitrarily many <tt class="docutils literal"><span class="pre">&#64;root</span></tt> directives:
 Leo's <tt class="docutils literal"><span class="pre">Tangle</span></tt> commands will create one output file for each.
-The process of creating derived files is called &quot;tangling&quot; because
-the code from the outline is rearranged to create the derived files.</p>
+The process of creating external files is called &quot;tangling&quot; because
+the code from the outline is rearranged to create the external files.</p>
 <p>For example, the following <tt class="docutils literal"><span class="pre">&#64;root</span></tt> section shows a typical way of specifying a header file <tt class="docutils literal"><span class="pre">xx.h</span></tt>:</p>
 <pre class="literal-block">
 &#64;root xx.h
@@ -1337,8 +1292,8 @@ All three forms mean exactly the same thing:</p>
 &#64;root &quot;filename&quot;
 &#64;root &lt;filename&gt;
 </pre>
-<p>If <em>filename</em> is an absolute filename the location of the derived file is specified only by the filename.
-Otherwise, if the <tt class="docutils literal"><span class="pre">&#64;root</span></tt> node contains a relative filename, the location of the derived file is relative to:</p>
+<p>If <em>filename</em> is an absolute filename the location of the external file is specified only by the filename.
+Otherwise, if the <tt class="docutils literal"><span class="pre">&#64;root</span></tt> node contains a relative filename, the location of the external file is relative to:</p>
 <ol class="arabic simple">
 <li>the directory specified by an <tt class="docutils literal"><span class="pre">&#64;path</span></tt> directive, or</li>
 <li>the <tt class="docutils literal"><span class="pre">default_tangle_directory</span></tt> setting if no <tt class="docutils literal"><span class="pre">&#64;path</span></tt> directive is in effect, or</li>
@@ -1372,16 +1327,16 @@ do not cause the tangle commands to issue spurious error messages.
 It also ensures that a tree can never contribute a section definition to another part of the outline by mistake.</p>
 </div>
 <div class="section" id="untangling-root-trees-with-the-untangle-commands">
-<h4><a class="toc-backref" href="#id50">Untangling &#64;root trees with the Untangle commands</a></h4>
+<h3>Untangling &#64;root trees with the Untangle commands</h3>
 <p>The <tt class="docutils literal"><span class="pre">Untangle</span></tt>, <tt class="docutils literal"><span class="pre">Untangle</span> <span class="pre">All</span></tt> and <tt class="docutils literal"><span class="pre">Untangle</span> <span class="pre">Marked</span></tt> commands are the
 reverse of the corresponding <tt class="docutils literal"><span class="pre">Tangle</span></tt> commands.
-They update one or more <tt class="docutils literal"><span class="pre">&#64;root</span></tt> nodes based on changes made to the corresponding derived files.</p>
+They update one or more <tt class="docutils literal"><span class="pre">&#64;root</span></tt> nodes based on changes made to the corresponding external files.</p>
 <p>For example, suppose you create a new part of the outline and tangle it for the first time.
-When you compile derived files for the first you are likely to get many syntax errors.
+When you compile external files for the first you are likely to get many syntax errors.
 You could fix those errors in the outline and tangle the outline again, but there is a much easier way:
-you fix the errors in the derived files using the compiler's editor,
-then run the untangle command on the part of the outline that created the derived file.
-The <tt class="docutils literal"><span class="pre">Untangle</span></tt> command updates the selected outline to match the changes in the derived files.
+you fix the errors in the external files using the compiler's editor,
+then run the untangle command on the part of the outline that created the external file.
+The <tt class="docutils literal"><span class="pre">Untangle</span></tt> command updates the selected outline to match the changes in the external files.
 It's as simple as that.
 By the way, the <tt class="docutils literal"><span class="pre">Untangle</span></tt> command marks all the nodes in the outline that it updates,
 and you can examine all such nodes with the <tt class="docutils literal"><span class="pre">Go</span> <span class="pre">To</span> <span class="pre">Next</span> <span class="pre">Marked</span></tt> command in the <tt class="docutils literal"><span class="pre">Outline</span></tt> menu.</p>
@@ -1391,30 +1346,32 @@ This is a limitation of the <tt class="docutils literal"><span class="pre">Untan
 <tt class="docutils literal"><span class="pre">Untangle</span></tt> has no way of knowing whether leading comments came from doc parts or are just leading comments.</p>
 <p><tt class="docutils literal"><span class="pre">Untangle</span></tt> never changes the structure of an outline;
 it never inserts, deletes or moves nodes.
-Don't attempt to change the structure of an outline by modifying derived files; it won't work.
-Also, never delete, move or alter the sentinel lines in derived files written by the <tt class="docutils literal"><span class="pre">Tangle</span></tt> command.
+Don't attempt to change the structure of an outline by modifying external files; it won't work.
+Also, never delete, move or alter the sentinel lines in external files written by the <tt class="docutils literal"><span class="pre">Tangle</span></tt> command.
 Such lines start with the comment delimiter followed by a section name.</p>
 <p>If you change the section name in a sentinel line <tt class="docutils literal"><span class="pre">Untangle</span></tt> will not update the code in the outline
 (with the old name) that generated the renamed section.
-<tt class="docutils literal"><span class="pre">Untangle</span></tt> warns about sections that appear in a derived file but not in the outline.
-<tt class="docutils literal"><span class="pre">Untangle</span></tt> has no trouble with changed section references in derived files;
+<tt class="docutils literal"><span class="pre">Untangle</span></tt> warns about sections that appear in an external file but not in the outline.
+<tt class="docutils literal"><span class="pre">Untangle</span></tt> has no trouble with changed section references in external files;
 it is only changed sentinel lines that cause problems.</p>
 <p>Cloned nodes that generate code in several files may cause problems for <tt class="docutils literal"><span class="pre">Untangle</span></tt>.
-If <tt class="docutils literal"><span class="pre">Untangle</span></tt> is run separately on these derived files,
+If <tt class="docutils literal"><span class="pre">Untangle</span></tt> is run separately on these external files,
 <tt class="docutils literal"><span class="pre">Untangle</span></tt> will update all cloned nodes each time it is run,
 so only the code in the last Untangle run will take effect.
-Therefore, the safe way to update text in cloned nodes is to make the change in the .leo file rather than the derived files.</p>
+Therefore, the safe way to update text in cloned nodes is to
+make the change in the .leo file rather than the external files.</p>
 </div>
-</div>
-<div class="section" id="id6">
-<h3><a class="toc-backref" href="#id51">&#64;thin</a></h3>
-<p>Creates a derived file containing sentinels.
-Thin derived files are much more friendly to cvs than files derived from <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.
-Thin derived files contain all information needed to recreate the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> tree in the outline.</p>
-<p>The <tt class="docutils literal"><span class="pre">&#64;all</span></tt> directive is valid only in <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees, not <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.</p>
 </div>
 <div class="section" id="id7">
-<h3><a class="toc-backref" href="#id52">&#64;shadow</a></h3>
+<h2>&#64;thin</h2>
+<p>Creates an external file containing sentinels.
+Thin external files are more friendly to source code control systems such as bzr
+than external files created from <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.
+Thin exteral files contain all information needed to recreate the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> tree in the outline.</p>
+<p>The <tt class="docutils literal"><span class="pre">&#64;all</span></tt> directive is valid only in <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees, not <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.</p>
+</div>
+<div class="section" id="id8">
+<h2>&#64;shadow</h2>
 <p>When writing an &#64;shadow tree, Leo writes <em>two</em> files, a <strong>public</strong> file without sentinels,
 and a <strong>private</strong> file (by default in the .leo_shadow subfolder) containing sentinels.
 The primary sources for &#64;shadow trees are the private files, updated by changes to the public file.</p>
@@ -1439,7 +1396,7 @@ exactly as is done for &#64;auto node.
 See the discussion of &#64;auto above for details.</p>
 </div>
 <div class="section" id="converting-root-trees-to-file-trees">
-<h3><a class="toc-backref" href="#id53">Converting &#64;root trees to &#64;file trees</a></h3>
+<h2>Converting &#64;root trees to &#64;file trees</h2>
 <p>To convert an <tt class="docutils literal"><span class="pre">&#64;root</span></tt> tree to an <tt class="docutils literal"><span class="pre">&#64;file</span></tt> tree, choose the root of the tree to be converted,
 then do the following in the Python window:</p>
 <pre class="literal-block">
@@ -1462,7 +1419,7 @@ so if a doc part starts body text it should start with <tt class="docutils liter
 <li>Replace all section definition lines (like <tt class="docutils literal"><span class="pre">&lt;&lt;name&gt;&gt;=</span></tt>) by <tt class="docutils literal"><span class="pre">&#64;c</span></tt>.
 This results in the node being added to the expansion of <tt class="docutils literal"><span class="pre">&#64;others</span></tt>.</li>
 <li>Remove all unused code from the <tt class="docutils literal"><span class="pre">&#64;file</span></tt> tree.
-Leo does not write derived files whose <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees contain orphan or <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> nodes.</li>
+Leo does not write external files whose <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees contain orphan or <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> nodes.</li>
 <li>Make sure that all nodes defining a section have a headline that starts with <tt class="docutils literal"><span class="pre">&lt;&lt;section&gt;&gt;</span></tt>.
 This will typically be true when converting <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees that use the <tt class="docutils literal"><span class="pre">&#64;code</span></tt> directive.</li>
 <li>If a section is referenced in more than one node (a rare occurrence in my code),
@@ -1473,14 +1430,14 @@ place each different definition in a different node.</li>
 </div>
 </div>
 <div class="section" id="cweb-mode">
-<h2><a class="toc-backref" href="#id54">CWEB mode</a></h2>
-<p>See <a class="reference" href="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">CWEB</a> for a discussion of the CWEB language.
+<h1>CWEB mode</h1>
+<p>See <a class="reference external" href="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">CWEB</a> for a discussion of the CWEB language.
 CWEB mode refers to how Leo tangles an outline when <tt class="docutils literal"><span class="pre">&#64;language</span> <span class="pre">cweb</span></tt> is in effect or
 the <tt class="docutils literal"><span class="pre">cweb</span></tt> setting is in effect.
 Leo treats <em>all</em> cweb code in cweb mode as unevaluated text.
 That is, Leo treats cweb control codes, including
 <tt class="docutils literal"><span class="pre">&#64;&lt;...&#64;&gt;</span></tt>, <tt class="docutils literal"><span class="pre">&#64;&lt;..&#64;&gt;=</span></tt>, <tt class="docutils literal"><span class="pre">&#64;c</span></tt>, <tt class="docutils literal"><span class="pre">&#64;</span></tt>, <tt class="docutils literal"><span class="pre">&#64;*</span></tt> and <tt class="docutils literal"><span class="pre">&#64;**</span></tt> as &quot;raw&quot; text within cweb mode.
-Leo does <em>not</em> expand <em>cweb</em> section references when writing derived files in cweb mode.
+Leo does <em>not</em> expand <em>cweb</em> section references when writing external files in cweb mode.
 However, Leo <em>does</em> expand <em>noweb</em> section references,
 so you may use noweb sections to organize cweb files!
 You can create <em>noweb</em> code and doc sections using the <tt class="docutils literal"><span class="pre">&#64;code</span></tt> and <tt class="docutils literal"><span class="pre">&#64;doc</span></tt> directives
@@ -1489,9 +1446,6 @@ in place of <tt class="docutils literal"><span class="pre">&#64;c</span></tt> an
 In addition, cweb colors <tt class="docutils literal"><span class="pre">C</span></tt> <tt class="docutils literal"><span class="pre">//</span></tt> and <tt class="docutils literal"><span class="pre">/*..*/</span></tt> comments using <tt class="docutils literal"><span class="pre">LaTeX</span></tt> coloring by default.
 You may change these defaults using the
 <tt class="docutils literal"><span class="pre">color_cweb_doc_parts_with_latex</span></tt> and <tt class="docutils literal"><span class="pre">color_cweb_comments_with_latex</span></tt> settings.</p>
-<hr class="docutils" />
-<p><a class="reference" href="outlines.html"><img alt="back" src="arrow_lt.gif" /></a> <a class="reference" href="front.html"><img alt="leo" src="leo.gif" /></a> <a class="reference" href="commands.html"><img alt="next" src="arrow_rt.gif" /></a></p>
-</div>
 </div>
 </div>
 </body>

@@ -2,6 +2,7 @@
 *~
 *.tmp
 *.py[co]
+*.leo_db
 
 ./*.zip
 ./*.exe
@@ -21,6 +22,11 @@ leo/dist/*.zip
 leo/dist/*.exe
 
 leo/doc/leoTechReport.*
+leo/doc/_build/*
+leo/doc/_build
+leo/doc/_static
+leo/doc/_templates
+leo/doc/html/*.html.txt
 
 leo/plugins/leoPlugins.leo
 leo/plugins/temacs_ext/
@@ -36,3 +42,13 @@ leo/test/scriptFile.py
 leo/test/leoProfile.txt
 leo/test/unittest/createdFile.txt
 leo/test/at_ignore_test.txt
+leo/core/scriptFile.py
+leoGuiPlugins.leo
+leo/doc/html/ed.hup
+.pythoscope
+leo/test/unicode-ä-test
+leo/test/under_indent.py
+ekr-macros.txt
+annotate.txt
+leo/doc/html/build
+leo/doc/html/_build

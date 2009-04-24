@@ -122,7 +122,7 @@ def getSelectDialog (c):
         #@+node:ekr.20041109175757:<< ask the user what template to use >>
         hlines ={}
         for z in templates:
-            hlines[str(z.headString())] = z 
+            hlines[str(z.h)] = z 
 
         dialog = Pmw.Dialog(
             c.frame.top,# EKR
@@ -229,7 +229,7 @@ def getTemplateDialog (pos,c):
 
     if ok:
         # nTnd = leoNodes.tnode(bS,hS)
-        pos = c.currentPosition()
+        pos = c.p
         p = pos.insertAsNthChild(0) #,nTnd)
         p.setBodyString(bS)
         p.setHeadString(hS)
@@ -307,7 +307,7 @@ def markAsTemplate (c):
 
     global templates 
 
-    pos = c.currentPosition()
+    pos = c.p
     t = pos.v.t 
     uA = t.__dict__.get("unknownAttributes",{})
     t.unknownAttributes = uA 

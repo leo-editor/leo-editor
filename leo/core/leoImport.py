@@ -14,9 +14,31 @@ import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
 import string
 
+#@<< class scanUtility >>
+#@+node:sps.20081112093624.1:<< class scanUtility >>
+class scanUtility:
+
+    #@    @+others
+    #@+node:sps.20081111154528.5:escapeFalseSectionReferences
+    def escapeFalseSectionReferences(self,s):
+
+        result = []
+        for line in g.splitLines(s):
+            r1 = line.find('<<')
+            r2 = line.find('>>')
+            if r1>=0 and r2>=0 and r1<r2:
+                result.append("@verbatim\n")
+                result.append(line)
+            else:
+                result.append(line)
+        return ''.join(result)
+    #@-node:sps.20081111154528.5:escapeFalseSectionReferences
+    #@-others
+#@-node:sps.20081112093624.1:<< class scanUtility >>
+#@nl
 #@<< class leoImportCommands >>
 #@+node:ekr.20071127175948:<< class leoImportCommands >>
-class leoImportCommands:
+class leoImportCommands (scanUtility):
 
     #@    @+others
     #@+node:ekr.20031218072017.3207:import.__init__ & helper
@@ -248,7 +270,7 @@ class leoImportCommands:
         if not v or not c: return ""
         startInCode = not c.config.at_root_bodies_start_in_doc_mode
         nl = self.output_newline
-        s = v.bodyString()
+        s = v.b
         lb = g.choose(self.webType=="cweb","@<","<<")
         i = 0 ; result = "" ; docSeen = False
         while i < len(s):
@@ -331,7 +353,7 @@ class leoImportCommands:
     def exportHeadlines (self,fileName):
 
         c = self.c ; nl = self.output_newline
-        p = c.currentPosition()
+        p = c.p
         if not p: return
         self.setEncoding()
         firstLevel = p.level()
@@ -382,7 +404,7 @@ class leoImportCommands:
     def outlineToWeb (self,fileName,webType):
 
         c = self.c ; nl = self.output_newline
-        current = c.currentPosition()
+        current = c.p
         if not current: return
         self.setEncoding()
         self.webType = webType
@@ -399,7 +421,7 @@ class leoImportCommands:
         self.treeType = "@file"
         # Set self.treeType to @root if p or an ancestor is an @root node.
         for p in current.parents_iter():
-            flag,junk = g.is_special(p.bodyString(),0,"@root")
+            flag,junk = g.is_special(p.b,0,"@root")
             if flag:
                 self.treeType = "@root"
                 break
@@ -513,7 +535,7 @@ class leoImportCommands:
     def weave (self,filename):
 
         c = self.c ; nl = self.output_newline
-        p = c.currentPosition()
+        p = c.p
         if not p: return
         self.setEncoding()
         #@    << open filename to f, or return >>
@@ -531,7 +553,7 @@ class leoImportCommands:
         #@-node:ekr.20031218072017.1150:<< open filename to f, or return >>
         #@nl
         for p in p.self_and_subtree_iter():
-            s = p.bodyString()
+            s = p.b
             s2 = s.strip()
             if s2 and len(s2) > 0:
                 f.write("-" * 60) ; f.write(nl)
@@ -542,7 +564,7 @@ class leoImportCommands:
                 while i < 3:
                     i += 1
                     if not p2: break
-                    context.append(p2.headString())
+                    context.append(p2.h)
                     p2.moveToParent()
 
                 context.reverse()
@@ -563,6 +585,42 @@ class leoImportCommands:
     #@-node:ekr.20031218072017.1464:weave
     #@-node:ekr.20031218072017.3289:Export
     #@+node:ekr.20031218072017.3305:Utilities
+    #@+node:ekr.20090122201952.4:appendStringToBody & setBodyString (baseScannerClass)
+    def appendStringToBody (self,p,s,encoding="utf-8"):
+
+        '''Similar to c.appendStringToBody,
+        but does not recolor the text or redraw the screen.'''
+
+        if s:
+            body = p.b
+            assert(g.isUnicode(body))
+            s = g.toUnicode(s,encoding)
+            self.setBodyString(p,body + s,encoding)
+
+    def setBodyString (self,p,s,encoding="utf-8"):
+
+        '''Similar to c.setBodyString,
+        but does not recolor the text or redraw the screen.'''
+
+        c = self.c ; v = p.v
+        if not c or not p: return
+
+        s = g.toUnicode(s,encoding)
+        current = c.p
+        if current and p.v.t==current.v.t:
+            c.frame.body.setSelectionAreas(s,None,None)
+            w = c.frame.body.bodyCtrl
+            i = w.getInsertPoint()
+            w.setSelectionRange(i,i)
+
+        # Keep the body text in the tnode up-to-date.
+        if v.t._bodyString != s:
+            v.setBodyString(s)
+            v.t.setSelection(0,0)
+            p.setDirty()
+            if not c.isChanged():
+                c.setChanged(True)
+    #@-node:ekr.20090122201952.4:appendStringToBody & setBodyString (baseScannerClass)
     #@+node:ekr.20031218072017.3306:createHeadline
     def createHeadline (self,parent,body,headline):
 
@@ -572,7 +630,7 @@ class leoImportCommands:
         v.initHeadString(headline,self.encoding)
         # Set the body.
         if len(body) > 0:
-            self.c.setBodyString(v,body,self.encoding)
+            self.setBodyString(v,body,self.encoding)
         return v
     #@-node:ekr.20031218072017.3306:createHeadline
     #@+node:ekr.20031218072017.3307:error
@@ -699,7 +757,7 @@ class leoImportCommands:
 
         # c.scanAllDirectives checks the encoding: may return None.
         c = self.c
-        if p is None: p = c.currentPosition()
+        if p is None: p = c.p
         theDict = c.scanAllDirectives(p)
         encoding = theDict.get("encoding")
         if encoding and g.isValidEncoding(encoding):
@@ -715,7 +773,8 @@ class leoImportCommands:
     #@-node:ekr.20031218072017.3305:Utilities
     #@+node:ekr.20031218072017.3209:Import
     #@+node:ekr.20031218072017.3210:createOutline (leoImport)
-    def createOutline (self,fileName,parent,atAuto=False,atShadow=False,s=None,ext=None):
+    def createOutline (self,fileName,parent,
+        atAuto=False,atShadow=False,s=None,ext=None):
 
         c = self.c ; u = c.undoer ; s1 = s
 
@@ -793,18 +852,19 @@ class leoImportCommands:
 
         p.contract()
         return p
+    #@nonl
     #@-node:ekr.20031218072017.3210:createOutline (leoImport)
     #@+node:ekr.20070806111212:readAtAutoNodes (importCommands) & helper
     def readAtAutoNodes (self):
 
         c = self.c
-        p = c.currentPosition() ; after = p.nodeAfterTree()
+        p = c.p ; after = p.nodeAfterTree()
 
         found = False
         while p and p != after:
             if p.isAtAutoNode():
                 if p.isAtIgnoreNode():
-                    g.es_print('ignoring',p.headString(),color='blue')
+                    g.es_print('ignoring',p.h,color='blue')
                     p.moveToThreadNext()
                 else:
                     self.readOneAtAutoNode(p)
@@ -816,7 +876,7 @@ class leoImportCommands:
         g.es(message,color='blue')
         c.redraw()
 
-    #@+node:ekr.20070807084545:readOneAtAutoNode
+    #@+node:ekr.20070807084545:readOneAtAutoNode (leoImport)
     def readOneAtAutoNode(self,p):
 
         '''Read the @auto node at p'''
@@ -829,16 +889,16 @@ class leoImportCommands:
             atAuto=True)
 
         # Force an update of the body pane.
-        c.setBodyString(p,p.bodyString())
+        self.setBodyString(p,p.b)
         c.frame.body.onBodyChanged(undoType=None)
-    #@-node:ekr.20070807084545:readOneAtAutoNode
+    #@-node:ekr.20070807084545:readOneAtAutoNode (leoImport)
     #@-node:ekr.20070806111212:readAtAutoNodes (importCommands) & helper
     #@+node:ekr.20031218072017.1810:importDerivedFiles
     def importDerivedFiles (self,parent=None,paths=None):
         # Not a command.  It must *not* have an event arg.
 
         c = self.c ; u = c.undoer ; command = 'Import'
-        at = c.atFileCommands ; current = c.currentPosition()
+        at = c.atFileCommands ; current = c.p
         self.tab_width = self.getTabWidth()
         if not paths: return
         u.beforeChangeGroup(current,command)
@@ -868,10 +928,9 @@ class leoImportCommands:
             p.contract()
             u.afterInsertNode(p,command,undoData)
         current.expand()
-        c.selectPosition(current)
         c.setChanged(True)
         u.afterChangeGroup(p,command)
-        c.redraw()
+        c.redraw(current)
     #@+node:ekr.20051208100903.1:forceGnxOnPosition
     def forceGnxOnPosition (self,p):
 
@@ -921,9 +980,7 @@ class leoImportCommands:
                 c.setChanged(True)
         c.validateOutline()
         current.expand()
-        c.redraw()
-
-        c.selectVnode(current)
+        c.redraw(current)
     #@-node:ekr.20031218072017.3212:importFilesCommand
     #@+node:ekr.20031218072017.3214:importFlattenedOutline & allies
     #@+node:ekr.20031218072017.3215:convertMoreString/StringsToOutlineAfter
@@ -1026,7 +1083,7 @@ class leoImportCommands:
     #@+node:ekr.20031218072017.3220:importFlattenedOutline
     def importFlattenedOutline (self,files): # Not a command, so no event arg.
 
-        c = self.c ; u = c.undoer ; current = c.currentPosition()
+        c = self.c ; u = c.undoer ; current = c.p
         if current == None: return
         if len(files) < 1: return
 
@@ -1055,7 +1112,7 @@ class leoImportCommands:
         if p:
             c.endEditing()
             c.validateOutline()
-            c.editPosition(p)
+            c.redrawAndEdit(p)
             p.setDirty()
             c.setChanged(True)
             u.afterInsertNode(p,'Import',undoData)
@@ -1121,7 +1178,7 @@ class leoImportCommands:
         p = parent.insertAsLastChild()
         p.initHeadString(fileName)
         if self.webType=="cweb":
-            c.setBodyString(p,"@ignore\n" + self.rootLine + "@language cweb")
+            self.setBodyString(p,"@ignore\n" + self.rootLine + "@language cweb")
 
         # Scan the file, creating one section for each function definition.
         self.scanWebFile(path,p)
@@ -1133,7 +1190,7 @@ class leoImportCommands:
     #@+node:ekr.20031218072017.3226:importWebCommand
     def importWebCommand (self,files,webType):
 
-        c = self.c ; current = c.currentVnode()
+        c = self.c ; current = c.p
         if current == None: return
         if not files: return
         self.tab_width = self.getTabWidth() # New in 4.3.
@@ -1141,12 +1198,12 @@ class leoImportCommands:
 
         for fileName in files:
             g.setGlobalOpenDir(fileName)
-            v = self.createOutlineFromWeb(fileName,current)
-            v.contract()
-            v.setDirty()
+            p = self.createOutlineFromWeb(fileName,current)
+            p.contract()
+            p.setDirty()
             c.setChanged(True)
-        c.selectVnode(current)
-        c.redraw()
+
+        c.redraw(current)
     #@-node:ekr.20031218072017.3226:importWebCommand
     #@+node:ekr.20031218072017.3227:findFunctionDef
     def findFunctionDef (self,s,i):
@@ -1469,7 +1526,7 @@ class leoImportCommands:
         '''Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.'''
 
-        c = self.c ; h = p.headString() ; old_root = p.copy()
+        c = self.c ; h = p.h ; old_root = p.copy()
         oldChanged = c.changed
         d = g.app.unitTestDict
         expectedErrors = d.get('expectedErrors')
@@ -1480,7 +1537,7 @@ class leoImportCommands:
             'expectedErrorMessage':expectedErrorMessage,
             'expectedMismatchLine':expectedMismatchLine,
         }
-        if not fileName: fileName = p.headString()
+        if not fileName: fileName = p.h
         if not s: s = self.removeSentinelsCommand([fileName],toString=True)
         title = g.choose(h.startswith('@test'),h[5:],h)
         self.createOutline(title.strip(),p.copy(),atAuto=atAuto,s=s,ext=ext)
@@ -1506,8 +1563,8 @@ class leoImportCommands:
             while old_root.hasChildren():
                 old_root.firstChild().doDelete()
             c.setChanged(oldChanged)
-        c.selectPosition(old_root)
-        c.redraw()
+
+        c.redraw(old_root)
 
         if g.app.unitTesting:
             assert ok
@@ -1603,7 +1660,7 @@ class leoImportCommands:
             language = self.languageForExtension(ext)
             if language: body += '@language %s\n' % language
 
-        c.setBodyString(p,body + self.rootLine + s)
+        self.setBodyString(p,body + self.rootLine + self.escapeFalseSectionReferences(s))
         if atAuto:
             for p in p.self_and_subtree_iter():
                 p.clearDirty()
@@ -1643,7 +1700,7 @@ class leoImportCommands:
 #@nl
 #@<< class baseScannerClass >>
 #@+node:ekr.20070703122141.65:<< class baseScannerClass >>
-class baseScannerClass:
+class baseScannerClass (scanUtility):
 
     '''The base class for all import scanner classes.
     This class contains common utility methods.'''
@@ -1751,8 +1808,7 @@ class baseScannerClass:
         if s1 is None and s2 is None:
             at.write(self.root,
                 nosentinels=True,thinFile=False,
-                scriptWrite=False,toString=True,
-                write_strips_blank_lines=False)
+                scriptWrite=False,toString=True)
             s1,s2 = self.file_s, at.stringOutput
 
         s1 = g.toUnicode(s1,self.encoding)
@@ -1888,7 +1944,7 @@ class baseScannerClass:
 
         self.error(
             '%s did not import %s perfectly\nfirst mismatched line: %d\n%s' % (
-                kind,self.root.headString(),bad_i,repr(lines2[bad_i-1])))
+                kind,self.root.h,bad_i,repr(lines2[bad_i-1])))
 
         if len(lines1) < 100:
             pr('input...')
@@ -1914,15 +1970,30 @@ class baseScannerClass:
 
         c = self.c
 
-        # g.trace(parent.headString())
+        # g.trace(parent.h)
 
         if self.treeType == '@file':
-            c.appendStringToBody(parent,'@others\n')
+            self.appendStringToBody(parent,'@others\n')
 
         if self.treeType == '@root' and self.methodsSeen:
-            c.appendStringToBody(parent,
+            self.appendStringToBody(parent,
                 g.angleBrackets(' ' + self.methodName + ' methods ') + '\n\n')
     #@-node:ekr.20070707073044.1:addRef
+    #@+node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
+    def appendStringToBody (self,p,s,encoding="utf-8"):
+
+        '''Similar to c.appendStringToBody,
+        but does not recolor the text or redraw the screen.'''
+
+        return self.importCommands.appendStringToBody(p,s,encoding)
+
+    def setBodyString (self,p,s,encoding="utf-8"):
+
+        '''Similar to c.setBodyString,
+        but does not recolor the text or redraw the screen.'''
+
+        return self.importCommands.setBodyString(p,s,encoding)
+    #@-node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
     #@+node:ekr.20070705144309:createDeclsNode
     def createDeclsNode (self,parent,s):
 
@@ -1950,7 +2021,7 @@ class baseScannerClass:
     #@+node:ekr.20070703122141.77:createHeadline
     def createHeadline (self,parent,body,headline):
 
-        # g.trace('parent,headline:',parent.headString(),headline)
+        # g.trace('parent,headline:',parent.h,headline)
 
         # Create the node.
         p = parent.insertAsLastChild()
@@ -1958,7 +2029,7 @@ class baseScannerClass:
 
         # Set the body.
         if body:
-            self.c.setBodyString(p,body,self.encoding)
+            self.setBodyString(p,body,self.encoding)
         return p
     #@-node:ekr.20070703122141.77:createHeadline
     #@+node:ekr.20070703122141.79:getLeadingIndent
@@ -2004,25 +2075,11 @@ class baseScannerClass:
     #@+node:ekr.20070705085335:insertIgnoreDirective
     def insertIgnoreDirective (self,parent):
 
-        self.c.appendStringToBody(parent,'@ignore')
+        self.appendStringToBody(parent,'@ignore')
 
         if not g.unitTesting:
             g.es_print('inserting @ignore',color='blue')
     #@-node:ekr.20070705085335:insertIgnoreDirective
-    #@+node:ekr.20070703122141.81:massageComment (not used)
-    # def massageComment (self,s):
-
-        # '''Return s with leading and trailing whitespace removed and all other
-        # runs of whitespace and newlines converted to a single blank.'''
-
-        # s = s.strip()
-        # s = s.replace('\n',' ')
-        # s = s.replace('\r',' ')
-        # s = s.replace('\t',' ')
-        # s = s.replace('  ',' ')
-        # s = s.strip()
-        # return s
-    #@-node:ekr.20070703122141.81:massageComment (not used)
     #@+node:ekr.20070707113832.1:putClass & helpers
     def putClass (self,s,i,sigEnd,codeEnd,start,parent):
 
@@ -2059,7 +2116,8 @@ class baseScannerClass:
         undentVal = self.getLeadingIndent(classHead,0)
 
         # Call the helper to parse the inner part of the class.
-        putRef,bodyIndent,classDelim,decls,trailing = self.putClassHelper(s,i,codeEnd,class_node)
+        putRef,bodyIndent,classDelim,decls,trailing = self.putClassHelper(
+            s,i,codeEnd,class_node)
         # g.trace('bodyIndent',bodyIndent,'undentVal',undentVal)
 
         # Set the body of the class node.
@@ -2090,7 +2148,7 @@ class baseScannerClass:
 
         c = self.c
 
-        c.appendStringToBody(class_node,s) 
+        self.appendStringToBody(class_node,s) 
     #@-node:ekr.20070707190351:appendTextToClassNode
     #@+node:ekr.20070703122141.105:createClassNodePrefix
     def createClassNodePrefix (self):
@@ -2204,10 +2262,12 @@ class baseScannerClass:
 
         c = self.c
 
-        c.appendStringToBody(p,'%s@language %s\n@tabwidth %d\n' % (
+        self.appendStringToBody(p,'%s@language %s\n@tabwidth %d\n' % (
             self.rootLine,self.language,self.tab_width))
     #@-node:ekr.20070705094630:putRootText
-    #@+node:ekr.20070703122141.88:undentBody & undentBy
+    #@+node:ekr.20090122201952.5:setBodyString
+    #@-node:ekr.20090122201952.5:setBodyString
+    #@+node:ekr.20070703122141.88:undentBody
     def undentBody (self,s,ignoreComments=True):
 
         '''Remove the first line's leading indentation from all lines of s.'''
@@ -2229,12 +2289,36 @@ class baseScannerClass:
             result = self.undentBy(s,undentVal)
             if trace: g.trace('after...\n',g.listToString(g.splitLines(result)))
             return result
-
+    #@nonl
+    #@-node:ekr.20070703122141.88:undentBody
+    #@+node:ekr.20081216090156.1:undentBy
     def undentBy (self,s,undentVal):
-        return ''.join(
-            [g.removeLeadingWhitespace(line,undentVal,self.tab_width)
-                for line in g.splitLines(s)])
-    #@-node:ekr.20070703122141.88:undentBody & undentBy
+
+        '''Remove leading whitespace equivalent to undentVal from each line.
+        add an underindentEscapeString for underindented line.'''
+
+        # return ''.join(
+            # [g.removeLeadingWhitespace(line,undentVal,self.tab_width)
+                # for line in g.splitLines(s)])
+
+        trace = False and not g.app.unitTesting
+        tag = self.c.atFileCommands.underindentEscapeString
+        result = [] ; tab_width = self.tab_width
+        for line in g.splitlines(s):
+            lws_s = g.get_leading_ws(line)
+            lws = g.computeWidth(lws_s,tab_width)
+            s = g.removeLeadingWhitespace(line,undentVal,tab_width)
+            n = lws - undentVal
+            if s.strip() and lws < undentVal:
+                if trace: g.trace('undentVal: %s, lws: %s, %s' % (
+                    undentVal,lws,repr(line)))
+                result.append("%s%s%s" % (tag,undentVal-lws,s.lstrip()))
+            else:
+                result.append(s)
+
+        return ''.join(result)
+
+    #@-node:ekr.20081216090156.1:undentBy
     #@+node:ekr.20070801074524:underindentedComment & underindentedLine
     def underindentedComment (self,line):
 
@@ -2334,7 +2418,7 @@ class baseScannerClass:
         # Finish adding to the parent's body text.
         self.addRef(parent)
         if start < len(s):
-            self.c.appendStringToBody(parent,s[start:]) 
+            self.appendStringToBody(parent,s[start:]) 
     #@+node:ekr.20071018084830:scanHelper
     def scanHelper(self,s,i,end,parent,kind):
 
@@ -2400,7 +2484,7 @@ class baseScannerClass:
 
         If no matching is found i is set to len(s)'''
 
-        trace = False
+        trace = False and not g.unitTesting
         start = i
         if delim1 is None: delim1 = self.blockDelim1
         if delim2 is None: delim2 = self.blockDelim2
@@ -2445,7 +2529,7 @@ class baseScannerClass:
                         i = i2 + len(z)
                         break
                 if level <= 0:
-                    if trace: g.trace('returns\n',repr(s[start:i]))
+                    if trace: g.trace('returns:',repr(s[start:i]))
                     return i
 
             else: i += 1
@@ -2849,6 +2933,9 @@ class baseScannerClass:
         self.mismatchWarningGiven = False
         changed = c.isChanged()
 
+        # Use @verbatim to escape section references
+        s = self.escapeFalseSectionReferences(s)
+
         # Check for intermixed blanks and tabs.
         if self.strict or self.atAutoWarnsAboutLeadingWhitespace:
             self.checkBlanksAndTabs(s)
@@ -3014,8 +3101,10 @@ class elispScanner (baseScannerClass):
         self.sigStart = i
         self.codeEnd = self.sigEnd = self.sigId = None
         if not g.match(s,i,'('): return False
+
         end = self.skipBlock(s,i)
-        if not g.match(s,end,')'): return False
+        # g.trace('%3s %15s block: %s' % (i,repr(s[i:i+10]),repr(s[i:end])))
+        if not g.match(s,end-1,')'): return False
 
         i = g.skip_ws(s,i+1)
         if not g.match_word(s,i,'defun'): return False
@@ -3090,7 +3179,7 @@ class javaScriptScanner (baseScannerClass):
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='java')
+        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='javascript')
             # The langauge is used to set comment delims.
 
         # Set the parser delims.

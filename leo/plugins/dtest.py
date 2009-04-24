@@ -54,6 +54,7 @@ import leo.core.leoGlobals as g
 def init ():
 
     leoPlugins.registerHandler('after-create-leo-frame', DT)
+    g.plugin_signon(__name__)
 
     return True
 #@-node:ekr.20070119094733.5:init
@@ -66,7 +67,7 @@ class DT(baseLeoPlugin):
     >>> print "hello world"
     hello world
     >>> g.es('hello world')
-    >>> print c.currentPosition().headString()
+    >>> print c.p.h
     Docstring
     >>> import notfound
     Traceback (most recent call last):

@@ -31,7 +31,9 @@ __plugin_name__ = "Footprints"
 #@+node:pap.20041020001240.2:<< imports >>
 import leo.core.leoGlobals as g 
 import leo.core.leoPlugins as leoPlugins 
-import leo.core.leoTkinterTree as leoTkinterTree 
+
+import leo.plugins.tkGui as tkGui
+leoTkinterTree = tkGui.leoTkinterTree
 
 try: 
     import Tkinter as Tk 
@@ -114,8 +116,8 @@ def installDrawMethod(tags, kw):
         return 
 
     g.funcToMethod(doFootprint, 
-                 leoTkinterTree.leoTkinterTree, 
-                 "setUnselectedLabelState") 
+        leoTkinterTree, 
+        "setUnselectedLabelState") 
 
     registered = True 
 

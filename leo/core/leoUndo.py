@@ -108,7 +108,7 @@ class undoer:
         # New in 4.2...
         self.optionalIvars = []
 
-        # Set the following ivars to keep pychecker happy.
+        # Set the following ivars to keep pylint happy.
         self.afterTree = None
         self.beforeTree = None
         self.children = None
@@ -329,7 +329,7 @@ class undoer:
             u.realRedoMenuLabel = realLabel
 
     def setUndoType (self,theType):
-        # g.trace(theType,g.callers())
+        # g.trace(theType,g.callers(4))
 
         u = self ; frame = u.c.frame
         if type(theType) != type(''):
@@ -598,10 +598,10 @@ class undoer:
 
         bunch.dirtyVnodeList = dirtyVnodeList
 
-        bunch.newBody = p.bodyString()
+        bunch.newBody = p.b
         bunch.newChanged = u.c.isChanged()
         bunch.newDirty = p.isDirty()
-        bunch.newHead = p.headString()
+        bunch.newHead = p.h
         bunch.newMarked = p.isMarked()
         bunch.newSel = w.getSelectionRange()
 
@@ -909,15 +909,15 @@ class undoer:
 
         bunch = u.createCommonBunch(p)
 
-        bunch.oldBody = oldBody or p.bodyString()
-        bunch.oldHead = oldHead or p.headString()
+        bunch.oldBody = oldBody or p.b
+        bunch.oldHead = oldHead or p.h
 
         return bunch
     #@-node:ekr.20050315133212.2:beforeChangeNodeContents
     #@+node:ekr.20050315134017.6:beforeChangeTree
     def beforeChangeTree (self,p):
 
-        # g.trace(p.headString())
+        # g.trace(p.h)
 
         u = self ; c = u.c ; w = c.frame.body.bodyCtrl
 
@@ -931,7 +931,7 @@ class undoer:
     #@+node:ekr.20050424161505.1:beforeClearRecentFiles
     def beforeClearRecentFiles (self):
 
-        u = self ; p = u.c.currentPosition()
+        u = self ; p = u.c.p
 
         bunch = u.createCommonBunch(p)
         bunch.oldRecentFiles = g.app.config.recentFiles[:]
@@ -1036,7 +1036,7 @@ class undoer:
             oldChanged = c.isChanged(),
             oldDirty = p.isDirty(),
             oldMarked = p.isMarked(),
-            oldSel = w.getSelectionRange(),
+            oldSel = w and w.getSelectionRange() or None,
             p = p.copy(),
         )
     #@-node:ekr.20050318085432.2:createCommonBunch
@@ -1197,8 +1197,7 @@ class undoer:
         # Undo: Given newText, recreate oldText.
         # Redo: Given oldText, recreate oldText.
         # 
-        # The "given" texts for the undo and redo routines are simply 
-        # p.bodyString().
+        # The "given" texts for the undo and redo routines are simply p.b.
         #@-at
         #@@c
 
@@ -1380,14 +1379,16 @@ class undoer:
 
         '''Redo the operation undone by the last undo.'''
 
-        u = self ; c = u.c ; trace = False
+        trace = False and not g.unitTesting
+        u = self ; c = u.c
+        w = c.frame.body.bodyCtrl
 
         if not u.canRedo():
             if trace: g.trace('cant redo',u.undoMenuLabel,u.redoMenuLabel)
             return
         if not u.getBead(u.bead+1):
             g.trace('no bead') ; return
-        if not c.currentPosition():
+        if not c.p:
             g.trace('no current position') ; return
 
         if trace: g.trace(u.dumpBead(u.bead))
@@ -1401,15 +1402,17 @@ class undoer:
         c.frame.body.updateEditors() # New in Leo 4.4.8.
         if 0: # Don't do this: it interferes with selection ranges.
             # This strange code forces a recomputation of the root position.
-            c.selectPosition(c.currentPosition())
+            c.selectPosition(c.p)
         else:
-            c.setCurrentPosition(c.currentPosition())
+            c.setCurrentPosition(c.p)
         c.setChanged(True)
-        c.redraw()
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
-        c.redraw_now()
-        c.recolor_now()
+        i,j = w.getSelectionRange()
+        ins = w.getInsertPoint()
+        c.redraw()
+        c.recolor()
         c.bodyWantsFocusNow()
+        w.setSelectionRange(i,j,insert=ins)
         u.redoing = False
         u.bead += 1
         u.setUndoTypes()
@@ -1609,6 +1612,8 @@ class undoer:
 
         # Restore the headline.
         u.p.initHeadString(u.newHead)
+
+        # This is required so.  Otherwise redraw will revert the change!
         c.frame.tree.setHeadline(u.p,u.newHead) # New in 4.4b2.
 
         # g.trace('newHead',u.newHead,'revert',c.frame.tree.revertHeadline)
@@ -1649,7 +1654,8 @@ class undoer:
 
         parent_v = u.p._parentVnode()
         parent_v.t.children = u.newChildren
-        c.setPositionAfterSort(u.sortChildren)
+        p = c.setPositionAfterSort(u.sortChildren)
+        c.setCurrentPosition(p)
     #@nonl
     #@-node:ekr.20080425060424.4:redoSort
     #@+node:ekr.20050318085432.8:redoTree
@@ -1667,7 +1673,7 @@ class undoer:
     #@+node:EKR.20040526075238.5:redoTyping
     def redoTyping (self):
 
-        u = self ; c = u.c ; current = c.currentPosition()
+        u = self ; c = u.c ; current = c.p
         w = c.frame.body.bodyCtrl
 
         # selectPosition causes recoloring, so avoid if possible.
@@ -1701,14 +1707,16 @@ class undoer:
 
         """Undo the operation described by the undo parameters."""
 
-        u = self ; c = u.c ; trace = False
+        trace = False and not g.unitTesting
+        u = self ; c = u.c
+        w = c.frame.body.bodyCtrl
 
         if not u.canUndo():
             if trace: g.trace('cant undo',u.undoMenuLabel,u.redoMenuLabel)
             return
         if not u.getBead(u.bead):
             g.trace('no bead') ; return
-        if not c.currentPosition():
+        if not c.p:
             g.trace('no current position') ; return
 
         if trace: g.trace(u.dumpBead(u.bead))
@@ -1722,15 +1730,17 @@ class undoer:
         c.frame.body.updateEditors() # New in Leo 4.4.8.
         if 0: # Don't do this: it interferes with selection ranges.
             # This strange code forces a recomputation of the root position.
-            c.selectPosition(c.currentPosition())
+            c.selectPosition(c.p)
         else:
-            c.setCurrentPosition(c.currentPosition())
+            c.setCurrentPosition(c.p)
         c.setChanged(True)
-        c.redraw()
         # New in Leo 4.5: Redrawing *must* be done here before setting u.undoing to False.
-        c.redraw_now()
-        c.recolor_now()
+        i,j = w.getSelectionRange()
+        ins = w.getInsertPoint()
+        c.redraw()
+        c.recolor()
         c.bodyWantsFocusNow()
+        w.setSelectionRange(i,j,insert=ins)
         u.undoing = False
         u.bead -= 1
         u.setUndoTypes()
@@ -1927,6 +1937,8 @@ class undoer:
         c.frame.body.recolor(u.p,incremental=False)
 
         u.p.initHeadString(u.oldHead)
+
+        # This is required.  Otherwise c.redraw will revert the change!
         c.frame.tree.setHeadline(u.p,u.oldHead)
 
         if u.groupCount == 0 and u.oldSel:
@@ -1975,7 +1987,7 @@ class undoer:
         #@    << Compute the result using p's body text >>
         #@+node:ekr.20061106105812.1:<< Compute the result using p's body text >>
         # Recreate the text using the present body text.
-        body = p.bodyString()
+        body = p.b
         body = g.toUnicode(body,"utf-8")
         body_lines = body.split('\n')
         s = []
@@ -2021,7 +2033,7 @@ class undoer:
 
         # Replace data in tree with old data.
         u.restoreTree(old_data)
-        c.setBodyString(p,p.bodyString())
+        c.setBodyString(p,p.b)
 
         return p # Nothing really changes.
     #@-node:ekr.20050408100042:undoRedoTree
@@ -2032,8 +2044,9 @@ class undoer:
 
         parent_v = u.p._parentVnode()
         parent_v.t.children = u.oldChildren
-        c.setPositionAfterSort(u.sortChildren)
-
+        p = c.setPositionAfterSort(u.sortChildren)
+        c.setCurrentPosition(p)
+    #@nonl
     #@-node:ekr.20080425060424.5:undoSort
     #@+node:ekr.20050318085713.2:undoTree
     def undoTree (self):
@@ -2050,7 +2063,7 @@ class undoer:
     #@+node:EKR.20040526090701.4:undoTyping
     def undoTyping (self):
 
-        u = self ; c = u.c ; current = c.currentPosition()
+        u = self ; c = u.c ; current = c.p
         w = c.frame.body.bodyCtrl
 
         # selectPosition causes recoloring, so don't do this unless needed.

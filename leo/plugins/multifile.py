@@ -220,7 +220,7 @@ def scanForMultiPath (c):
         positions.reverse()
         prefix = ''
         for p in positions:
-            lines = p.bodyString().split('\n')
+            lines = p.b.split('\n')
             # Calculate the prefix fisrt.
             for s in lines:
                 if s.startswith(multiprefix):

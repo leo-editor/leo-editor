@@ -165,7 +165,7 @@ class paramClass:
                 break
             return
 
-        bodys = node.bodyString()
+        bodys = node.b
         # tn = leoNodes.tnode(bodys,sr)
         v = current.insertAsNthChild(0) #,tn)
         v.setBodyString(bodys)
@@ -190,13 +190,13 @@ class paramClass:
 
         bnode = v
         while bnode:
-            if bnode.headString() == tag:
+            if bnode.h == tag:
                 return bnode
             bnode = bnode.back()
 
         nnode = v
         while nnode:
-            if nnode.headString() == tag:
+            if nnode.h == tag:
                 return nnode
             nnode = nnode.next()
 

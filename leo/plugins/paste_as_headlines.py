@@ -68,7 +68,7 @@ def createPasteAsHeadlinesMenu (tag,keywords):
 def paste_as_headlines(c):
     # g.es("Starting...")
 
-    currentPos = c.currentPosition() 
+    currentPos = c.p 
     clipText = g.app.gui.getTextFromClipboard()
     # Leo won't display curly quotes properly, so replace them with normal quotes
     clipText = clipText.replace(u'” “', '" "')

@@ -577,7 +577,7 @@ class baseTangleCommands:
     def tangle(self,event=None,p=None):
 
         c = self.c
-        if not p: p = c.currentPosition()
+        if not p: p = c.p
         self.initTangleCommand()
 
         # Paul Paterson's patch.
@@ -625,7 +625,7 @@ class baseTangleCommands:
         self.initTangleCommand()
         any_marked = False
         while p:
-            is_ignore, i = g.is_special(p.bodyString(),0,"@ignore")
+            is_ignore, i = g.is_special(p.b,0,"@ignore")
             # Only tangle marked and unvisited nodes.
             if is_ignore:
                 p.moveToNodeAfterTree()
@@ -737,7 +737,7 @@ class baseTangleCommands:
     #@+node:ekr.20031218072017.3478:untangle
     def untangle(self,event=None):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         self.initUntangleCommand()
 
         self.untangleTree(p,report_errors)
@@ -815,7 +815,7 @@ class baseTangleCommands:
         c = self.c
         #@    << Set path & root_name to the file specified in the @root directive >>
         #@+node:ekr.20031218072017.3483:<< Set path & root_name to the file specified in the @root directive >>
-        s = root.bodyString()
+        s = root.b
         i = 0
         while i < len(s):
             code, junk = self.token_type(s,i,report_errors)
@@ -933,7 +933,7 @@ class baseTangleCommands:
 
                         end = p.threadNext()
                         while end and end != afterUnit:
-                            flag, i = g.is_special(end.bodyString(),0,"@root")
+                            flag, i = g.is_special(end.b,0,"@root")
                             if flag and not p.isAncestorOf(end):
                                 break
                             end.moveToThreadNext()
@@ -1021,7 +1021,7 @@ class baseTangleCommands:
 
         # g.trace(p)
         c = self.c
-        s = p.bodyString()
+        s = p.b
         code_seen = False ; code = doc = None ; i = 0
         anyChanged = False
 
@@ -1319,7 +1319,7 @@ class baseTangleCommands:
 
     def skip_headline(self,p):
 
-        self.header = s = p.headString()
+        self.header = s = p.h
         # Set self.header_name.
         j = i = g.skip_ws(s,0)
         i, kind, end = self.is_section_name(s,i)
@@ -2892,7 +2892,7 @@ class baseTangleCommands:
     def update_def (self,name,part_number,head,code,tail,is_root_flag): # Doc parts are never updated!
 
         # g.trace(name,part_number,code)
-        p = self.p ; body = p.bodyString()
+        p = self.p ; body = p.b
         if not head: head = ""
         if not tail: tail = ""
         if not code: code = ""
@@ -2939,7 +2939,7 @@ class baseTangleCommands:
         if code and self.forgiving_compare(name,part,code,ucode):
             return false_ret # Not an error.
         # Update the body.
-        g.es("***Updating:",p.headString())
+        g.es("***Updating:",p.h)
         i = g.skip_blank_lines(ucode,0)
         ucode = ucode[i:]
         ucode = ucode.rstrip()
@@ -2964,7 +2964,8 @@ class baseTangleCommands:
         c.setChanged(True)
         p.setDirty()
         p.setMarked()
-        c.redraw()
+
+        c.update_after_icons_changed()
     #@-node:ekr.20031218072017.3575:update_current_vnode
     #@-node:ekr.20031218072017.3544:untangle
     #@+node:ekr.20031218072017.3576:utility methods
@@ -3233,7 +3234,7 @@ class baseTangleCommands:
     #@+node:ekr.20031218072017.3594:setRootFromHeadline
     def setRootFromHeadline (self,p):
 
-        s = p.headString()
+        s = p.h
 
         if s[0:5] == "@root":
             i,self.start_mode = g.scanAtRootOptions(s,0)
@@ -3416,7 +3417,7 @@ class baseTangleCommands:
         print_mode_changed = False
         self.init_directive_ivars()
         if p:
-            s = p.bodyString()
+            s = p.b
             #@        << Collect @first attributes >>
             #@+node:ekr.20080923124254.17:<< Collect @first attributes >>
             #@+at 

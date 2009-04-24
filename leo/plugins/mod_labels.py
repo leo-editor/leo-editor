@@ -42,7 +42,9 @@ import leo.core.leoAtFile as leoAtFile
 import leo.core.leoCommands as leoCommands
 import leo.core.leoPlugins as leoPlugins
 
-from leoTkinterDialog import tkinterListBoxDialog, leoTkinterDialog
+import leo.plugins.tkGui as tkGui
+leoTkinterDialog = tkGui.leoTkinterDialog
+tkinterListBoxDialog = tkGui.tkinterListBoxDialog
 
 if 0: # Not anymore
     from leoGlobals import * # required by read :-(.
@@ -56,7 +58,7 @@ import pickle
 #@nonl
 #@-node:ekr.20050301095332.2:<<imports>>
 #@nl
-__version__ = "1.5"
+__version__ = "1.6"
 #@<< version history >>
 #@+node:ekr.20050301103957:<< version history >>
 #@@killcolor
@@ -77,8 +79,7 @@ __version__ = "1.5"
 #     - Added atFile.copyAllTempBodyStringsToTnodes method.
 #       This method contains the following code:
 #         if hasattr(c,'mod_label_controller'):
-#             c.mod_label_controller.add_label(p,"before 
-# change:",p.bodyString())
+#             c.mod_label_controller.add_label(p,"before change:",p.b)
 # - Renamed handle_mark_labels to labelsController.
 # - Moved onCreateOptionalMenus into labelsController class.
 # - Replaced g.top() by self.c.
@@ -88,6 +89,7 @@ __version__ = "1.5"
 # - Replaced self.iterator by self.c.allNodes_iter
 # 1.4 EKR: Removed call to Pmw.initialise.  This is now done in Leo's core.
 # 1.5 EKR: Added event=None to argument list for all commands in the menu.
+# 1.6 EKR: Import tkGui as needed.
 #@-at
 #@nonl
 #@-node:ekr.20050301103957:<< version history >>
@@ -307,7 +309,7 @@ class labelsController(object):
         # same name
         child = v.firstChild()
         while child:
-            if child.headString() == labelname:
+            if child.h == labelname:
                 return child
             child = child.next()
         child = self.c.insertHeadline(op_name="Insert Node")
@@ -373,7 +375,7 @@ class labelsController(object):
         """
         Returns the current node and it's labels, if any.
         """
-        p = self.c.currentPosition()
+        p = self.c.p
         label_dict = self.get_labels_dict(p)
         return p, label_dict
     #@nonl
@@ -384,7 +386,7 @@ class labelsController(object):
         Get the sorted list of labels for the current node.
         """
 
-        label_dict = self.get_labels_dict(self.c.currentPosition())
+        label_dict = self.get_labels_dict(self.c.p)
         labellist = label_dict.keys()
         labellist.sort()
         return labellist
@@ -581,7 +583,7 @@ class labelsController(object):
         result, widget, labellist = self.show_labels(title="Mark nodes with label")
         if result == 'OK':
             labelname = widget.dialog.get()
-            self.add_label(self.c.currentPosition(), labelname, '')
+            self.add_label(self.c.p, labelname, '')
     #@nonl
     #@-node:ekr.20050301095332.47:menu_add_label
     #@-node:ekr.20050301095332.44:Creating labels and marking nodes
@@ -595,7 +597,7 @@ class labelsController(object):
         title = "Creating subnode"
         label_text = "Existing labels (on this node)"
 
-        p = self.c.currentPosition()
+        p = self.c.p
         labels = self.get_labels_dict(p)
 
         if labels is None:
@@ -658,7 +660,7 @@ class labelsController(object):
         child = v.firstChild()
         labelnames_dict = {}
         while child:
-            headline = child.headString()
+            headline = child.h
             if headline in labelnames:
                 labelnames_dict[headline] = child
             child = child.next()
@@ -681,7 +683,7 @@ class labelsController(object):
         labelname = widget.dialog.get()
         if labelname in labelnames:
             child = labelnames_dict[labelname]
-            labels[labelname] = child.bodyString()
+            labels[labelname] = child.b
             self.set_labels_dict(v, labels)
 
             # now delete the subnode
@@ -708,14 +710,14 @@ class labelsController(object):
                 if labels_dict:
                     if labels_dict.has_key(labelname):
                         child = p.firstChild()
-                        while child and child.headString() != labelname:
+                        while child and child.h != labelname:
                             child = child.next()
                         if child:
                             nodes_to_delete.append(child)
             for p in nodes_to_delete:
                 parent = p.parent()
                 parent_dict = self.get_labels_dict(parent)
-                parent_dict[p.headString()] = p.bodyString()
+                parent_dict[p.h] = p.b
                 self.set_labels_dict(p, parent_dict)
 
                 # now delete the child
@@ -746,14 +748,14 @@ class labelsController(object):
                 if labels_dict:
                     for labelname in labels_dict.keys():
                         child = p.firstChild()
-                        while child and child.headString() != labelname:
+                        while child and child.h != labelname:
                             child = child.next()
                         if child:
                             nodes_to_delete.append(child)
             for p in nodes_to_delete:
                 parent = v.parent()
                 parent_dict = self.get_labels_dict(parent)
-                parent_dict[p.headString()] = p.bodyString()
+                parent_dict[p.h] = p.b
                 self.set_labels_dict(parent, parent_dict)
 
                 # now delete the child
@@ -775,7 +777,7 @@ class labelsController(object):
             tnodes[node.t] = None
             return result
 
-        currentPosition = self.c.currentPosition()
+        currentPosition = self.c.p
         # 1. Get the name of a label.
         result, widget, labellist = self.show_labels()
         if result == 'Cancel':

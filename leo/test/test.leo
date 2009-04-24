@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="68" left="269" height="809" width="867"/>
+	<global_window_position top="49" left="506" height="721" width="769"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -17,28 +17,23 @@
 </v>
 <v t="ekr.20070603190944"><vh>@chapter xyz</vh>
 <v t="ekr.20070603190944.1"><vh>xyz node 1</vh></v>
-<v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
+<v t="ekr.20071206070207"></v>
 </v>
 </v>
 <v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
-<v t="ekr.20070701090143"><vh>@@bool force_newlines_in_at_nosent_bodies = False</vh></v>
-<v t="ekr.20080610144053.1"><vh>@bool body_pane_wraps = True</vh></v>
 <v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20080811112727.1"><vh>@@@bool suppress_import_parsing = True</vh></v>
 <v t="ekr.20080529111617.1"><vh>plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
-<v t="ekr.20070723091227.2"><vh>@int  port = 8080</vh></v>
-<v t="ekr.20070723091227.3"><vh>@string rst_http_attributename = 'rst_http_attribute'</vh></v>
+<v t="ekr.20070723091227.2"><vh>@int</vh>
+<v t="ekr.20090316115500.1"><vh>port = 8080</vh></v>
 </v>
-<v t="ekr.20070305085403"><vh>vim plugin</vh>
-<v t="ekr.20070305085403.1"><vh>@string vim_cmd = c:\vim\vim63\gvim --servername LEO</vh></v>
-<v t="ekr.20070305085403.2"><vh>@string vim_exe = c:\vim\vim63\gvim</vh></v>
+<v t="ekr.20070723091227.3"><vh>@string rst_http_attributename = 'rst_http_attribute'</vh></v>
 </v>
 <v t="ekr.20080529111617.2"><vh>cleo</vh>
 <v t="ekr.20080529111617.3"><vh>@color cleo_color_prog_green =</vh></v>
@@ -81,6 +76,7 @@
 </v>
 <v t="ekr.20070531104646"><vh>@@button da-comp</vh></v>
 <v t="ekr.20070531103315"><vh>@@button da-expand</vh></v>
+<v t="ekr.20081025105942.1"><vh>@@button dir</vh></v>
 <v t="ekr.20070530072113"><vh>@@button hide-ch</vh></v>
 <v t="ekr.20061030041200"><vh>@@button iron-py @key=Alt-5</vh></v>
 <v t="ekr.20071025192258"><vh>@@button local-tests @key=Alt+4</vh></v>
@@ -123,6 +119,30 @@
 </v>
 <v t="ekr.20080214091706.2"><vh>@@command ekr-command</vh></v>
 <v t="ekr.20080823154546.1"><vh>@@command parse-python @key = Alt-5</vh></v>
+<v t="edward.20081127113749.2"><vh>@@command complete-previous</vh>
+<v t="edward.20081127113749.3"><vh>WordCompleter</vh>
+<v t="edward.20081127113749.4"><vh>complete_word</vh>
+<v t="edward.20081127113749.5"><vh>&lt;&lt;backward search&gt;&gt;</vh>
+<v t="edward.20081127113749.6"><vh>&lt;&lt;counter check&gt;&gt;</vh></v>
+</v>
+<v t="edward.20081127113749.7"><vh>&lt;&lt;forward search&gt;&gt;</vh>
+<v t="edward.20081127113749.6"></v>
+</v>
+<v t="edward.20081127113749.8"><vh>&lt;&lt;clean up and exit&gt;&gt;</vh></v>
+</v>
+<v t="edward.20081127113749.9"><vh>acceptable_word</vh></v>
+<v t="edward.20081127113749.10"><vh>undo_replacement</vh></v>
+<v t="edward.20081127113749.11"><vh>redo_replacement</vh></v>
+<v t="edward.20081127113749.12"><vh>exit</vh></v>
+<v t="edward.20081127113749.13"><vh>run</vh></v>
+<v t="edward.20081127113749.14"><vh>adjust</vh></v>
+</v>
+<v t="edward.20081127113749.15"><vh>getCurrentWord</vh></v>
+</v>
+<v t="edward.20081127113749.16"><vh>@@command complete-next</vh>
+<v t="edward.20081127113749.3"></v>
+<v t="edward.20081127113749.15"></v>
+</v>
 </v>
 <v t="ekr.20071026102420.3"><vh>Scripts</vh>
 <v t="ekr.20071129103842"><vh>create-at-auto-nodes</vh></v>
@@ -136,7 +156,7 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
-<v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"></v>
 <v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
 <v t="ekr.20070929122956"><vh>Data trees</vh>
@@ -189,68 +209,6 @@
 <v t="ekr.20070528111805"><vh>FrontWindowCapture.pyw</vh></v>
 <v t="ekr.20070609085533"><vh>@@url c:\prog\wink\ChangeViewMenu.htm</vh></v>
 </v>
-<v t="edreamleo.20080110083531"><vh>gtk stuff</vh>
-<v t="edreamleo.20080110130828"><vh>createWindow</vh></v>
-<v t="bob.20080111200056"><vh>@@thin gtkOutlineDemo.py</vh>
-<v t="bob.20080111194559"><vh>GtkLeoTreeDemo</vh>
-<v t="bob.20080113184034"><vh>__init__</vh></v>
-<v t="bob.20080113183321"><vh>onButtonPress</vh></v>
-<v t="bob.20080113183321.1"><vh>onButtonRelease</vh></v>
-</v>
-<v t="bob.20080113170657"><vh>loadIcon</vh></v>
-<v t="bob.20080113133525"><vh>loadIcons</vh></v>
-<v t="bob.20080113141134"><vh>name2Color</vh></v>
-<v t="bob.20080113170041"><vh>getImage</vh></v>
-<v t="bob.20080114060133"><vh>getHeadlineFont</vh></v>
-<v t="bob.20080111201957.77"><vh>class OutlineCanvasPanel</vh>
-<v t="bob.20080111201957.78"><vh>__init__</vh></v>
-<v t="bob.20080111201957.79"><vh>showEntry</vh></v>
-<v t="bob.20080111201957.80"><vh>hideEntry</vh></v>
-<v t="bob.20080111201957.81"><vh>getPositions</vh></v>
-<v t="bob.20080111201957.87"><vh>onScrollVertical</vh></v>
-<v t="bob.20080113090336"><vh>onScrollHorizontal</vh></v>
-<v t="bob.20080111201957.88"><vh>onScrollRelative</vh></v>
-<v t="bob.20080111201957.90"><vh>vscrollUpdate</vh></v>
-<v t="bob.20080111201957.91"><vh>hscrollUpdate</vh></v>
-<v t="bob.20080111201957.92"><vh>update</vh></v>
-<v t="bob.20080111201957.93"><vh>redraw</vh></v>
-<v t="bob.20080111201957.94"><vh>refresh</vh></v>
-<v t="bob.20080111201957.95"><vh>GetName</vh></v>
-</v>
-<v t="bob.20080111201957.96"><vh>class OutlineCanvas</vh>
-<v t="bob.20080111201957.97"><vh>__init__</vh>
-<v t="bob.20080111201957.98"><vh>&lt;&lt; define ivars &gt;&gt;</vh></v>
-<v t="bob.20080111201957.99"><vh>&lt;&lt; create bindings &gt;&gt;</vh></v>
-</v>
-<v t="bob.20080111201957.101"><vh>hitTest</vh></v>
-<v t="bob.20080111201957.102"><vh>_createNewBuffer</vh></v>
-<v t="bob.20080111201957.103"><vh>vscrollTo</vh></v>
-<v t="bob.20080113073006"><vh>hscrollTo</vh></v>
-<v t="bob.20080111201957.104"><vh>resize</vh></v>
-<v t="bob.20080112173505"><vh>redraw</vh></v>
-<v t="bob.20080111201957.106"><vh>update</vh>
-<v t="bob.20080111201957.107"><vh>&lt;&lt; find height of tree and position of currentNode &gt;&gt;</vh></v>
-</v>
-<v t="bob.20080111201957.109"><vh>onPaint</vh></v>
-<v t="bob.20080112090335"><vh>onMap</vh></v>
-<v t="bob.20080112224841"><vh>onSize</vh></v>
-<v t="bob.20080111201957.105"><vh>refresh</vh></v>
-<v t="bob.20080111201957.110"><vh>contextChanged</vh></v>
-<v t="bob.20080111201957.111"><vh>requestLineHeight</vh></v>
-<v t="bob.20080111201957.112"><vh>def draw</vh>
-<v t="bob.20080111201957.113"><vh>&lt;&lt; draw tree &gt;&gt;</vh>
-<v t="bob.20080111201957.114"><vh>&lt;&lt; set up object &gt;&gt;</vh></v>
-<v t="bob.20080111201957.115"><vh>&lt;&lt; draw text &gt;&gt;</vh>
-<v t="bob.20080111201957.116"><vh>&lt;&lt; draw user icons &gt;&gt;</vh></v>
-</v>
-<v t="bob.20080111201957.117"><vh>&lt;&lt; draw lines &gt;&gt;</vh></v>
-<v t="bob.20080111201957.118"><vh>&lt;&lt; draw bitmaps &gt;&gt;</vh></v>
-<v t="bob.20080111201957.119"><vh>&lt;&lt; draw focus &gt;&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-</v>
 <v t="ekr.20080503202744.3"><vh>Rope</vh></v>
 <v t="ekr.20080531131542.1"><vh>mxTextTools proto</vh>
 <v t="ekr.20080531141227.1"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
@@ -259,7 +217,7 @@
 </v>
 <v t="ekr.20080806145258.12"><vh>Prototype of Leo in Ajax</vh>
 <v t="ekr.20080806145258.13"><vh>To do</vh></v>
-<v t="ekr.20080806145258.14"><vh>@button Leo2DHTML</vh>
+<v t="ekr.20080806145258.14"><vh>@@button Leo2DHTML</vh>
 <v t="ekr.20080806145258.15"><vh>&lt;&lt; about LeoToHTML &gt;&gt;</vh></v>
 <v t="ekr.20080806145258.16"><vh>&lt;&lt; define dhtml stuff &gt;&gt;</vh></v>
 <v t="ekr.20080806145258.17"><vh>escape</vh></v>
@@ -298,44 +256,39 @@
 </v>
 <v t="ekr.20080811113441.2"><vh>Running body text as a windows script</vh>
 <v t="ekr.20080807115344.1"><vh>Windows script</vh></v>
-<v t="ekr.20080807114145.2"><vh>@button run-windows-script</vh>
+<v t="ekr.20080807114145.2"><vh>@@button run-windows-script</vh>
 <v t="ekr.20080807115344.5"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20080807115344.2"><vh>class MySite</vh></v>
 <v t="ekr.20080807115344.3"><vh>class Application</vh></v>
 <v t="ekr.20080807115344.4"><vh>RunCode</vh></v>
 </v>
 </v>
-<v t="ekr.20080929112400.1"><vh>qt proto</vh></v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
-<v t="ekr.20080531080812.1"><vh>tracer test</vh></v>
-<v t="ekr.20080604101239.1"><vh>Test misspelled word at index 0</vh></v>
+<v t="ekr.20090309064612.1"><vh> Future features/bug fixes (do not delete)</vh>
+<v t="ekr.20081216091605.2"><vh>@@auto under_indent.py</vh>
+<v t="ekr.20090122211549.1"><vh>class test</vh>
+<v t="ekr.20090122211549.2"><vh>spam</vh></v>
+</v>
+</v>
+<v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions</vh></v>
 <v t="ekr.20080610144233.1"><vh>Wrap test</vh></v>
+</v>
+<v t="ekr.20090309064612.2"><vh>Example scripts</vh>
+<v t="ekr.20080701130406.1"><vh>Run pylint on plugins</vh></v>
 <v t="ekr.20080617170334.1"><vh>Determining key values</vh></v>
-<v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
-<v t="ekr.20080701130406.1"><vh>plugins</vh></v>
 <v t="ekr.20080920101658.1"><vh>getInput</vh></v>
-<v t="ekr.20080923173133.1"><vh>scan-directives hook</vh></v>
-<v t="ekr.20080930114036.1"><vh>icon stuff</vh>
+<v t="ekr.20080917063615.1"><vh>getSettingSource</vh></v>
+<v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
+</v>
+<v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
 <v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
 <v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
 <v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
 <v t="ekr.20080930085514.1"><vh>clear icon bar</vh></v>
 </v>
-<v t="ekr.20080917063615.1"><vh>getSettingSource</vh></v>
-<v t="ekr.20080924081821.1"><vh>test of autoCompleter.getExternalCompletions</vh></v>
-<v t="ekr.20081003094737.1"><vh>Unicode tests</vh>
-<v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
-<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
-</v>
-<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
-<v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
-<v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
-<v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
-<v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
-<v t="ekr.20080923073240.2" a="E"><vh>@path {{c.config.getString('test')}}</vh>
-<v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
-</v>
+<v t="ekr.20090309065826.1"><vh>Print stats</vh>
+<v t="ekr.20090205070715.1"><vh>print colorer stats</vh></v>
 </v>
 <v t="ekr.20080813080809.1"><vh>Tests for @shadow</vh>
 <v t="ekr.20080807091001.1"><vh>@@shadow python-import-test.py</vh>
@@ -347,7 +300,7 @@
 </v>
 <v t="ekr.20080812112440.1"><vh>@@shadow at-shadow-test.ini</vh></v>
 <v t="ekr.20080812135254.1"><vh>@@shadow at-unknown-shadow-test.xyzzy</vh></v>
-<v t="ekr.20080801160915.1" a="E"><vh>@@shadow TerryBrownTest.py</vh>
+<v t="ekr.20080801160915.1"><vh>@@shadow TerryBrownTest.py</vh>
 <v t="ekr.20080803120643.1"><vh>spam</vh></v>
 </v>
 <v t="ekr.20080812102914.1"><vh>@@nosent at-nosent-test.py</vh>
@@ -370,1207 +323,218 @@
 <v t="ekr.20081001110047.3"><vh>eggs</vh></v>
 </v>
 </v>
-<v t="ekr.20081006070847.2"><vh>path convenience methods</vh></v>
+<v t="ekr.20090309064612.3"><vh>Tests of new features</vh>
+<v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
+<v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
+<v t="edward.20081221145716.1"><vh>decorator test 2</vh></v>
 </v>
-<v t="ekr.20081020082611.1"><vh>Calling a base class method</vh></v>
-<v t="ekr.20081025105942.1"><vh>@button dir</vh></v>
-<v t="ekr.20081103064258.1"><vh>saveAs hacks</vh></v>
-<v t="ekr.20081104102617.1"><vh>NewHeadline</vh></v>
+<v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
+<v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
+<v t="ekr.20090201162523.1"><vh>Macro test</vh>
+<v t="ekr.20090201192257.1"><vh>@test macro ab</vh></v>
+</v>
+<v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
+<v t="ekr.20090128112453.1" key="550378797a71002e"><vh>Property tests</vh></v>
+<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
+<v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
+<v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
+<v t="ekr.20080922164255.1"></v>
+<v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
+<v t="ekr.20080923073240.2"><vh>@path {{c.config.getString('test')}}</vh>
+<v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20090309064612.5"><vh>Tests of recent bug fixes</vh>
+<v t="ekr.20090304173642.1"><vh>@@button moveAfterRoot</vh></v>
+<v t="ekr.20090306060447.1"><vh>@@button totop</vh>
+<v t="ekr.20090306060447.2"><vh>toplevel</vh>
+<v t="ekr.20090306060447.3"><vh>one</vh>
+<v t="ekr.20090306060447.4"><vh>foo</vh></v>
+<v t="ekr.20090306060447.5"><vh>bar</vh></v>
+</v>
+<v t="ekr.20090306060447.6"><vh>two</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20081003094737.1"><vh>Unicode tests</vh>
+<v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
+<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
-<t tx="bob.20080111194559">@first
-
-
-class GtkLeoTreeDemo(object):
-
-
-    @others</t>
-<t tx="bob.20080111200056">@first #!/usr/bin/python
-import sys, os
-
-
-
-import pygtk
-pygtk.require('2.0')
-import gtk
-
-import pango
-import cairo
-
+<t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
+word_completer_key = 'back_word_completer'
 @others
-
-def abspath(*args):
-    return os.path.abspath(os.path.join(*args))
-
-
-
-if __name__ == "__main__": 
-
-    leoDir = abspath(sys.path[0],'..')
-    sys.path[1:1] = [abspath(leoDir, '..')]
-
-    import leo.core.leoGlobals as g
-    g.g = g
-
-    import leo.core.leoBridge as leoBridge
-
-    controller = leoBridge.controller(gui='nullGui')
-    c = controller.openLeoFile(abspath(leoDir, 'test', 'unitTest.leo'))
-
-    outlineFont = ''
-
-    colors = g.importExtension('colors')
-
-    GtkLeoTreeDemo()
-
-    gtk.main()
-
-
+completer = g.app.config.get(c,word_completer_key,'WordCompleter')
+if completer is None:
+    completer = WordCompleter(p,c,back=True)
+    g.app.config.set(c,word_completer_key,'WordCompleter',completer)
+    completer.run()
+else:
+    completer.adjust(p, c.frame.body.getInsertPoint())
+    completer.complete_word()
 </t>
-<t tx="bob.20080111201957.77">
-class OutlineCanvasPanel(object):
-    """A class to mimic a scrolled window to contain an OutlineCanvas."""
-
+<t tx="edward.20081127113749.3">class WordCompleter:
+    def __init__(self, p, c, back=True):
+        self.p = p.copy()
+        self.c = c
+        self.back = back
+        self.pos = -1
     @others
 </t>
-<t tx="bob.20080111201957.78">
-def __init__(self, parent, leoTree, name):
-    """Create an OutlineCanvasPanel instance."""
-
-    #g.trace('OutlineCanvasPanel')
-
-    #self._leoTree = leoTree
-    #self.c = leoTree.c
-    self.c = c
-
-    self._x = 0
-    self._y = 0
-
-    self._canvas = canvas = OutlineCanvas(self)
-    #canvas.resize(400, 300)
-
-    self._table = gtk.Table(2,2)
-
-    self._hscrollbar = gtk.HScrollbar()
-    self._vscrollbar = gtk.VScrollbar()
-
-    self._hadj = h = self._hscrollbar.get_adjustment()
-    self._vadj = v = self._vscrollbar.get_adjustment()
-
-    self._hscrollbar.set_range(0, 10)
-    self._vscrollbar.set_range(0, 20)
-
-
-    v.connect('value-changed', self.onScrollVertical)
-    h.connect('value-changed', self.onScrollHorizontal)
-
-    self._table.attach(self._hscrollbar, 0, 1, 1, 2, yoptions=0)
-    self._table.attach(self._vscrollbar, 1, 2, 0, 1, xoptions=0)
-
-
-    options = gtk.SHRINK | gtk.FILL | gtk.EXPAND
-    self._table.attach(self._canvas, 0, 1, 0, 1, options, options)
-
-    parent.add(self._table)
-
-    self._canvas.set_events(
-        gtk.gdk.POINTER_MOTION_MASK |
-                gtk.gdk.POINTER_MOTION_HINT_MASK
-    )
-
-
-    #self._entry = wx.TextCtrl(self._canvas,
-    #    style = wx.SIMPLE_BORDER | wx.WANTS_CHARS
-    #)
-
-    #self._entry._virtualTop = -1000
-    #self._entry.Hide()
-    #self._canvas._widgets.append(self._entry)
-
-    #self._canvas.update()
-
-
-    # self.Bind(wx.EVT_SIZE, self.onSize)
-
-
-    #self.SetBackgroundColour(self._leoTree.outline_pane_background_color)
-
-    #self.Bind(wx.EVT_CHAR,
-    #    lambda event, self=self._leoTree: onGlobalChar(self, event)
-    #)
-
-    #self.onScroll(wx.HORIZONTAL, 0)
-
-</t>
-<t tx="bob.20080111201957.79">showcount = 0
-def showEntry(self):
-
-    # self.showcount +=1
-
-    # print
-    # g.trace(self.showcount, g.callers(20))
-    # print
-
-    entry = self._entry
-    canvas = self._canvas
-
-    ep = self._leoTree.editPosition()
-
-    if not ep:
-        return self.hideEntry()
-
-
-    for sp in canvas._positions:
-        if ep == sp:
-            break
-    else:
-        return self.hideEntry()
-
-    x, y, width, height = sp._textBoxRect
-    #g.pr('	', x, y, width , height)
-
-    entry._virtualTop = canvas._virtualTop + y -2
-
-    entry.MoveXY(x - 2, y -2)
-    entry.SetSize((max(width + 4, 100), -1))
-
-    tw = self._leoTree.headlineTextWidget
-
-    range = tw.getSelectionRange()
-    tw.setInsertPoint(0)
-    #tw.setInsertPoint(len(sp.headString()))
-    tw.setSelectionRange(*range)
-    entry.Show()
-</t>
-<t tx="bob.20080111201957.80">
-def hideEntry(self):
-
-    entry = self._entry
-    entry._virtualTop = -1000
-    entry.MoveXY(0, -1000)
-
-    entry.Hide()
-</t>
-<t tx="bob.20080111201957.81">
-def getPositions(self):
-    return self._canvas._positions</t>
-<t tx="bob.20080111201957.87">def onScrollVertical(self, adjustment):
-    """Scroll the outline vertically to a new position."""
-
-    self._canvas.vscrollTo(int(adjustment.value))</t>
-<t tx="bob.20080111201957.88">
-def onScrollRelative(self, orient, value):
-
-    return self.onScroll(orient, self.GetScrollPos(orient) + value)
-</t>
-<t tx="bob.20080111201957.90">
-def vscrollUpdate(self):
-    """Set the vertical scroll bar to match current conditions."""
-
-    canvas = self._canvas
-
-    oldtop = top = canvas._virtualTop
-    canvasHeight = canvas.get_allocation().height
-    treeHeight = canvas._treeHeight
-
-    if (treeHeight - top) &lt; canvasHeight:
-        top = treeHeight - canvasHeight
-
-    if top &lt; 0 :
-        top = 0
-
-    if oldtop != top:
-        canvas._virtualTop = top
-        canvas.redraw()
-        top = canvas._virtualTop
-
-    #self.showEntry()
-
-    self._vadj.set_all(
-        top, #value
-        0, #lower
-        treeHeight, #upper
-        canvasHeight * 0.1, #step_increment
-        canvasHeight * 0.9, #page_increment
-        canvasHeight #page-size
-    )
-
-
-</t>
-<t tx="bob.20080111201957.91">
-def hscrollUpdate(self):
-    """Set the vertical scroll bar to match current conditions."""
-
-    canvas = self._canvas
-
-    oldleft = left = canvas._virtualLeft
-    canvasWidth = canvas.get_allocation().width
-    treeWidth = canvas._treeWidth
-
-    if (treeWidth - left) &lt; canvasWidth:
-        left = treeWidth - canvasWidth
-
-    if left &lt; 0 :
-        left = 0
-
-    if oldleft != left:
-        canvas._virtualLeft = left
-        canvas.redraw()
-        left = canvas._virtualLeft
-
-    #self.showEntry()
-
-    self._hadj.set_all(
-        left, #value
-        0, #lower
-        treeWidth, #upper
-        canvasWidth * 0.1, #step_increment
-        canvasWidth * 0.9, #page_increment
-        canvasWidth #page-size
-    )
-
-</t>
-<t tx="bob.20080111201957.92">
-def update(self):
-    self._canvas.update()
-
-
-</t>
-<t tx="bob.20080111201957.93">
-def redraw(self):
-    self._canvas.redraw()</t>
-<t tx="bob.20080111201957.94">def refresh(self):
-    self._canvas.refresh()</t>
-<t tx="bob.20080111201957.95">def GetName(self):
-    return 'canvas'
-
-getName = GetName</t>
-<t tx="bob.20080111201957.96">class OutlineCanvas(gtk.DrawingArea):
-    """Implements a virtual view of a leo outline tree.
-
-    The class uses an off-screen buffer for drawing which it
-    blits to the window during paint calls for expose events, etc,
-
-    A redraw is only required when the size of the canvas changes,
-    a scroll event occurs, or if the outline changes.
-
-    """
-    @others
-</t>
-<t tx="bob.20080111201957.97">def __init__(self, parent):
-    """Create an OutlineCanvas instance."""
-
-    #g.trace('OutlineCanvas')
-
-    self.c = c = parent.c
-
-    self._parent = parent
-    #self.leoTree = parent.leoTree
-
-
-    &lt;&lt; define ivars &gt;&gt;
-
-    gtk.DrawingArea.__init__(self)
-    self._pangoLayout = self.create_pango_layout("Wq")
-
-
-    # g.trace()
-
-
-    self._font = pango.FontDescription(outlineFont)
-
-    self._pangoLayout.set_font_description(self._font)
-
-
-    self._buffer = None
-
-    self.contextChanged()
-
-    #self.Bind(wx.EVT_PAINT, self.onPaint)
-
-    self.connect('map-event', self.onMap)
-
-
-    #for o in (self, parent):
-    #    &lt;&lt; create  bindings &gt;&gt;
-
-@
-self.box_padding = 5 # extra padding between box and icon
-self.box_width = 9 + self.box_padding
-self.icon_width = 20
-self.text_indent = 4 # extra padding between icon and tex
-
-self.hline_y = 7 # Vertical offset of horizontal line
-self.root_left = 7 + self.box_width
-self.root_top = 2
-
-self.default_line_height = 17 + 2 # default if can't set line_height from font.
-self.line_height = self.default_line_height
-
-</t>
-<t tx="bob.20080111201957.98">#self._icons = icons
-
-self._widgets = []
-
-self.drag_p = None
-
-self._size =  [1000, 1000]
-
-self._virtualTop = 0
-self._virtualLeft = 0
-
-self._textIndent = 30
-
-self._xPad = 30
-self._yPad = 2
-
-self._treeHeight = 500
-self._treeWidth = 500
-
-self._positions = []
-
-self._fontHeight = None
-self._iconSize = [20, 11]
-
-self._clickBoxSize = None
-self._lineHeight =  10
-self._requestedLineHeight = 10
-
-self._yTextOffset = None
-self._yIconOffset = None
-
-self._clickBoxCenterOffset = None
-
-self._clickBoxOffset = None
-
-
-</t>
-<t tx="bob.20080111201957.99"># onmouse = self._leoTree.onMouse
-
-# for e, s in (
-   # ( wx.EVT_LEFT_DOWN,     'LeftDown'),
-   # ( wx.EVT_LEFT_UP,       'LeftUp'),
-   # ( wx.EVT_LEFT_DCLICK,   'LeftDoubleClick'),
-   # ( wx.EVT_MIDDLE_DOWN,   'MiddleDown'),
-   # ( wx.EVT_MIDDLE_UP,     'MiddleUp'),
-   # ( wx.EVT_MIDDLE_DCLICK, 'MiddleDoubleClick'),
-   # ( wx.EVT_RIGHT_DOWN,    'RightDown'),
-   # ( wx.EVT_RIGHT_UP,      'RightUp'),
-   # ( wx.EVT_RIGHT_DCLICK,  'RightDoubleClick'),
-   # ( wx.EVT_MOTION,        'Motion')
-# ):
-    # o.Bind(e, lambda event, type=s: onmouse(event, type))
-
-
-
-# #self.Bind(wx.EVT_KEY_UP, self._leoTree.onChar)
-# #self.Bind(wx.EVT_KEY_DOWN, lambda event: self._leoTree.onKeyDown(event))
-
-# self.Bind(wx.EVT_CHAR,
-    # lambda event, self=self._leoTree: onGlobalChar(self, event)
-# )
-
-</t>
-<t tx="bob.20080111201957.101">def hitTest(self, x, y):
-    result = self._hitTest(point)
-    g.trace(result)
-    return result
-
-def hitTest(self, xx, yy):
-
-    for sp in self._positions:
-
-        if yy &lt; (sp._top + self._lineHeight):
-
-            x, y, w, h = sp._clickBoxRect
-            if xx &gt; x  and xx &lt; (x + w) and yy &gt; y and yy &lt; (y + h):
-                return sp, 'ClickBox'
-
-            x, y, w, h = sp._iconBoxRect
-            if xx &gt; x  and xx &lt; (x + w) and yy &gt; y and yy &lt; (y + h):
-                return sp, 'IconBox'
-
-            x, y, w, h = sp._textBoxRect
-            if xx &gt; x  and xx &lt; (x + w) and yy &gt; y and yy &lt; (y + h): 
-                return sp, 'TextBox'
-
-            i = -1  
-            for x, y, w, h in sp._headStringIcons:
-                i += 1
-                if xx &gt; x  and xx &lt; (x + w) and yy &gt; y and yy &lt;(y + h):
-                   return sp, i
-
-            return sp, 'Headline'
-
-    return None, 'Canvas'
-
-</t>
-<t tx="bob.20080111201957.102">def _createNewBuffer(self):
-    """Create a new buffer for drawing."""
-
-
-    if not self.window:
-        g.trace('no window !!!!!!!!!!!!!!!!')
-        g.trace(g.callers())
-        return
-
-
-    w, h = self.window.get_size()
-    #g.trace(g.callers())
-
-
-    if self._buffer:
-        bw, bh = self._buffer.get_size()
-        if bw &gt;= w and bh &gt;= h:
-            return
-
-    self._buffer = gtk.gdk.Pixmap(self.window, w, h)
-
-
-
-
-
-</t>
-<t tx="bob.20080111201957.103">
-def vscrollTo(self, pos):
-    """Scroll the canvas vertically to the specified position."""
-
-    canvasHeight = self.get_allocation().height
-    if (self._treeHeight - canvasHeight) &lt; pos :
-        pos = self._treeHeight - canvasHeight
-
-    pos = max(0, pos)
-
-    self._virtualTop = pos
-
-    self.redraw()
-</t>
-<t tx="bob.20080111201957.104">
-def resize(self):
-    """Resize the outline canvas and, if required, create and draw on a new buffer."""
-
-    c = self.c
-
-    #c.beginUpdate()     #lock out events
-    if 1: #try:
-
-        self._createNewBuffer()
-
-        #self._parent.hscrollUpdate()
-
-
-        self.draw()
-        self.refresh()
-
-
-    #finally:
-    #    c.endUpdate(False)
-
-
-    return True
-
-
-
-
-
-</t>
-<t tx="bob.20080111201957.105">
-#def refresh(self):
-    # """Renders the offscreen buffer to the outline canvas."""
-    # return
-
-    # #g.pr('refresh')
-    # wx.ClientDC(self).BlitPointSize((0,0), self._size, self._buffer, (0, 0))
-
-refresh = onPaint</t>
-<t tx="bob.20080111201957.106">
-def update(self):
-    """Do a full update assuming the tree has been changed."""
-
-    c = self.c
-
-    canvasHeight = self.get_allocation().height
-
-    hoistFlag = bool(self.c.hoistStack)
-
-    if hoistFlag:
-        stk = [self.c.hoistStack[-1].p]
-    else:
-        stk = [self.c.rootPosition()]
-
-    &lt;&lt; find height of tree and position of currentNode &gt;&gt;
-
-    if (self._treeHeight - self._virtualTop) &lt; canvasHeight:
-        self._virtualTop = self._treeHeight - canvasHeight
-
-    # if (self._treeHeight - self._virtualTop) &lt; canvasHeight:
-        # self._virtualTop = self._treeHeight - canvasHeight
-
-    self.contextChanged()
-
-    self.redraw()
-    self._parent.vscrollUpdate()
-    self._parent.hscrollUpdate()
-
-
-</t>
-<t tx="bob.20080111201957.107">
-# Find the number of visible nodes in the outline.
-
-cp = c.currentPosition().copy()
-cpCount = None
-
-count = 0
-while stk:
-
-    p = stk.pop()
-
-    while p:
-
-
-        if stk or not hoistFlag:
-            newp = p.next()
+<t tx="edward.20081127113749.4">def complete_word(self):
+    txt = self.chunk
+    word = self.word
+    try:
+        if self.back:
+            &lt;&lt;backward search&gt;&gt;
         else:
-            newp = None
-
-        if cp and cp == p:
-            cpCount = count
-            cp = False
-
-        count += 1
-
-        if p.isExpanded() and p.hasFirstChild():
-            stk.append(newp)
-            p = p.firstChild()
-            continue
-
-        p = newp
-
-lineHeight = self._lineHeight
-
-self._treeHeight = count * lineHeight
-g.trace( 'treeheight ', self._treeHeight)
-
-if cpCount is not None:
-    cpTop = cpCount * lineHeight
-
-    if cpTop &lt; self._virtualTop:
-        self._virtualTop = cpTop
-
-    elif cpTop + lineHeight &gt; self._virtualTop + canvasHeight:
-        self._virtualTop += (cpTop + lineHeight) - (self._virtualTop + canvasHeight)
-
-
-
-</t>
-<t tx="bob.20080111201957.109">
-def onPaint(self, *args):
-    """Renders the off-screen buffer to the outline canvas."""
-
-    # w, h are needed because the buffer may be bigger than the window.
-
-    w, h = self.window.get_size()
-
-    # We use self.style.black_gc only because we need a gc, it has no relavence.
-
-    self.window.draw_drawable(self.style.black_gc ,self._buffer, 0, 0, 0, 0, w, h)
-</t>
-<t tx="bob.20080111201957.110">def contextChanged(self):
-    """Adjust canvas attributes after a change in context.
-
-    This should be called after setting or changing fonts or icon size or
-    anything that effects the tree display.
-
-    """
-
-    self._pangoLayout.set_text('Wy')
-    self._fontHeight = self._pangoLayout.get_pixel_size()[1]
-    self._iconSize = (20, 11) #(icons[0].GetWidth(), icons[0].GetHeight())
-
-    self._clickBoxSize = (9, 9) #(plusBoxIcon.GetWidth(), plusBoxIcon.GetHeight())
-
-    self._lineHeight = max(
-        self._fontHeight,
-        self._iconSize[1],
-        self._requestedLineHeight
-    ) + 2 * self._yPad
-
-    # y offsets
-
-    self._yTextOffset = (self._lineHeight - self._fontHeight)//2
-
-    self._yIconOffset = (self._lineHeight - self._iconSize[1])//2
-
-    self._clickBoxCenterOffset = (
-        -self._textIndent*2 + self._iconSize[0]//2,
-        self._lineHeight//2
-    )
-
-    self._clickBoxOffset = (
-        self._clickBoxCenterOffset[0] - self._clickBoxSize[0]//2,
-        (self._lineHeight  - self._clickBoxSize[1])//2
-    )
-
-
-</t>
-<t tx="bob.20080111201957.111">def requestLineHeight(height):
-    """Request a minimum height for lines."""
-
-    assert int(height) and height &lt; 200
-    self.requestedHeight = height
-    self.beginUpdate()
-    self.endUpdate()
-</t>
-<t tx="bob.20080111201957.112">
-def draw(self, *args):
-    """Draw the outline on the off-screen buffer."""
-
-    r, g, b = colors.getColorRGB('leoyellow')
-    r, g, b = r/255.0, g/255.0, b/255.0
-
-    x, y, canvasWidth, canvasHeight = self.get_allocation()
-
-
-    pangoLayout = self._pangoLayout
-
-
-    cr = self._buffer.cairo_create()
-
-
-    cr.set_source_rgb(r, g, b)
-    cr.rectangle(x, y, canvasWidth, canvasHeight)
-    cr.fill()
-
-    c = self.c
-
-
-    top = self._virtualTop
-    if top &lt; 0:
-        self._virtualTop = top = 0
-
-    left = self._virtualLeft
-    if left &lt; 0:
-        self._virtualLeft = left = 0   
-
-
-    bottom = top + canvasHeight
-
-
-    textIndent = self._textIndent
-    treeWidth = self._treeWidth
-
-    yPad = self._yPad
-    xPad = self._xPad - left
-
-    yIconOffset = self._yIconOffset
-
-    yTextOffset = self._yTextOffset
-
-    clickBoxOffset_x, clickBoxOffset_y = self._clickBoxOffset
-
-    clickBoxCenterOffset_x, clickBoxCenterOffset_y = \
-        self._clickBoxCenterOffset
-
-    clickBoxSize_w, clickBoxSize_h = self._clickBoxSize
-
-    iconSize_w, iconSize_h = self._iconSize
-
-    lineHeight = self._lineHeight
-    halfLineHeight = lineHeight//2
-
-    &lt;&lt; draw tree &gt;&gt;
-
-    #self._parent.showEntry()
-
-    return True
-
-
-
-
-
-
-</t>
-<t tx="bob.20080111201957.113">y = 0
-
-hoistFlag = bool(c.hoistStack)
-
-if hoistFlag:
-    stk = [c.hoistStack[-1].p]
-else:
-    stk = [c.rootPosition()]
-
-self._positions = positions = []
-
-@
-My original reason for writing the loop this way was to make it as fast as
-possible. Perhaps I was being a bit too paranoid and we should change back to
-more conventional iterations, on the other hand if it ain't broke don't fix it.
-@c
-
-
-while stk:
-
-    p = stk.pop()
-
-    while p:
-
-        if stk or not hoistFlag:
-            newp = p.next()
-        else:
-            newp = None
-
-        mytop = y
-        y = y + lineHeight
-
-        if mytop &gt; bottom:
-            stk = []
-            p = None
-            break
-
-        if y &gt; top:
-
-            sp = p.copy()
-
-            &lt;&lt; setup object &gt;&gt;
-
-            positions.append(sp)
-
-            treeWidth = max(
-                treeWidth,
-                textSize_w + xTextOffset + left
-            )
-
-        if p.isExpanded() and p.hasFirstChild():
-            stk.append(newp)
-            p = p.firstChild()
-            continue
-
-        p = newp
-
-if treeWidth &gt; self._treeWidth:
-    # theoretically this could be recursive
-    # but its unlikely ...
-    self._treeWidth = treeWidth
-    self._parent.hscrollUpdate()
-
-if not positions:
-    #g.trace('No positions!')
-    return
-
-self._virtualTop =  positions[0]._virtualTop
-
-
-# try:
-    # result = self._leoTree.drawTreeHook(self)
-    # g.pr('result =', result)
-# except:
-    # result = False
-    # g.pr('result is False')
-
-# if hasattr(self._leoTree, 'drawTreeHook'):
-    # try:
-        # result = self._leoTree.drawTreeHook(self)
-    # except:
-        # result = False
-# else:
-    # #g.pr('drawTreeHook not known')
-    # result = None
-
-# if not result:
-if 1:
-    &lt;&lt; draw text &gt;&gt;
-    &lt;&lt; draw lines &gt;&gt;
-    &lt;&lt; draw bitmaps &gt;&gt;
-
-    &lt;&lt; draw focus &gt;&gt;
-
-
-
-
-</t>
-<t tx="bob.20080111201957.114"># depth: the depth of indentation relative to the current hoist.
-sp._depth = len(stk)
-
-# virtualTop: top of the line in virtual canvas coordinates
-sp._virtualTop =  mytop
-
-# top: top of the line in real canvas coordinates
-sp._top = mytop - top
-
-
-pangoLayout.set_text(sp.headString())
-
-textSize_w, textSize_h = pangoLayout.get_pixel_size()
-
-xTextOffset = ((sp._depth +1) * textIndent) + xPad
-
-textPos_x = xTextOffset # - self._hadj.value
-textPos_y =  sp._top + yTextOffset
-
-iconPos_x = textPos_x - textIndent
-iconPos_y = textPos_y + yIconOffset
-
-clickBoxPos_x = textPos_x + clickBoxOffset_x
-clickBoxPos_y = textPos_y + clickBoxOffset_y
-
-sp._clickBoxCenter_x = clickBoxPos_x + clickBoxCenterOffset_x
-sp._clickBoxCenter_y = clickBoxPos_y + clickBoxCenterOffset_y
-
-sp._textBoxRect = [textPos_x, textPos_y, textSize_w, textSize_h]
-sp._iconBoxRect = [iconPos_x, iconPos_y, iconSize_w, iconSize_h]
-sp._clickBoxRect = [clickBoxPos_x, clickBoxPos_y, clickBoxSize_w, clickBoxSize_h]
-
-sp._icon = icons[p.v.computeIcon()]
-
-
-if sp.hasFirstChild():
-    sp._clickBoxIcon = plusBoxIcon
-    if sp.isExpanded():
-        sp._clickBoxIcon = minusBoxIcon
-else:
-    sp._clickBoxIcon = None
-
-sp._clickRegions = []
-
-</t>
-<t tx="bob.20080111201957.115">
-current = c.currentPosition()
-
-
-
-for sp in positions:
-
-    &lt;&lt; draw user icons &gt;&gt;
-
-    # if current and current == sp:
-        # dc.SetBrush(wx.LIGHT_GREY_BRUSH)
-        # dc.SetPen(wx.LIGHT_GREY_PEN)
-        # dc.DrawRectangleRect(
-            # wx.Rect(*sp._textBoxRect).Inflate(3, 3)
-        # )
-        # current = False
-        # #dc.SetBrush(wx.TRANSPARENT_BRUSH)
-        # #dc.SetPen(wx.BLACK_PEN)
-
-
-    pangoLayout.set_text(sp.headString())
-    x, y, w, h = sp._textBoxRect
-    cr.set_source_rgb(0, 0, 0)
-    cr.move_to(x, y)
-    #cr.update_layout(pangoLayout)
-    cr.show_layout(pangoLayout)
-
-
-</t>
-<t tx="bob.20080111201957.116">
-
-try:
-    headStringIcons = sp.v.t.unknownAttributes.get('icons', [])
-except:
-    headStringIcons = None
-
-sp._headStringIcons = hsi = []
-
-if headStringIcons:
-
-    for headStringIcon in headStringIcons:
-        try:
-            image = globalImages[headStringIcon['relPath']]
-        except KeyError:
-            path = headStringIcon['relPath']
-            image = getImage(path)
-            if image is None:
-                return
-
-
-        x, y, w, h = sp._textBoxRect
-
-        hsi.append((x, y, image.get_width(), image.get_height()))       
-
-        cr.set_source_pixbuf(image, x, y)
-        cr.paint()
-
-        sp._textBoxRect[0] = x + image.get_width() + 5
-
-</t>
-<t tx="bob.20080111201957.117"></t>
-<t tx="bob.20080111201957.118">
-for sp in positions:
-
-    x, y, w, h = sp._iconBoxRect
-
-    cr.set_source_pixbuf(sp._icon,x,y)
-    cr.paint()
-    #cr.stroke()
-
-    if sp._clickBoxIcon:
-        x, y, w, h = sp._clickBoxRect
-        cr.set_source_pixbuf(sp._clickBoxIcon, x, y)
-        cr.paint()
-
-@
-  ctx = da.window.cairo_create()
-  # You can put ctx.scale(..) or ctx.rotate(..) here, if you need some
-  ct = gtk.gdk.CairoContext(ctx)
-  ct.set_source_pixbuf(pixbuf,0,0)
-  ctx.paint()
-  ctx.stroke()
-
-
-
-
-</t>
-<t tx="bob.20080111201957.119">if 0:
-    dc.SetBrush(wx.TRANSPARENT_BRUSH)
-    if self._leoTree.hasFocus():
-        dc.SetPen(wx.BLACK_PEN)
-    #else:
-    #    dc.SetPen(wx.GREEN_PEN)
-        dc.DrawRectanglePointSize( (0,0), self.GetSize())</t>
-<t tx="bob.20080112090335">def onMap(self, *args):
-    self._createNewBuffer()
-    self.update()
-    self.connect('expose-event', self.onPaint)
-    self.connect("size-allocate", self.onSize)
-</t>
-<t tx="bob.20080112173505">def redraw(self):
-    self.draw()
-    self.refresh()
-</t>
-<t tx="bob.20080112224841">def onSize(self, *args):
-    """React to changes in the size of the outlines display area."""
-
-
-    c = self.c
-    c.beginUpdate()
-    try:
-        self.resize()
-        self._parent.vscrollUpdate()
-        self._parent.hscrollUpdate()
-    finally:
-        c.endUpdate(False)
-
-
-</t>
-<t tx="bob.20080113073006">def hscrollTo(self, pos):
-    """Scroll the canvas vertically to the specified position."""
-
-    canvasWidth = self.get_allocation().width
-
-    #g.trace(pos)
-
-    if (self._treeWidth - canvasWidth) &lt; pos :
-        pos = min(0, self._treeWidth - canvasWidth)
-
-    pos = max( 0, pos)
-
-    self._virtualLeft = pos
-
-    self.redraw()
-</t>
-<t tx="bob.20080113090336">def onScrollHorizontal(self, adjustment):
-    """Scroll the outline horizontally to a new position.
-
-    """
-    self._canvas.hscrollTo(int(adjustment.value))
-</t>
-<t tx="bob.20080113133525">def loadIcons():
-
-    global icons, plusBoxIcon, minusBoxIcon, appIcon, namedIcons, globalImages
-
-    import cStringIO
-
-
-
-    icons = []
-    namedIcons = {}
-
-
-    path = g.os_path_abspath(g.os_path_join(g.app.loadDir, '..', 'Icons'))
-    if g.os_path_exists(g.os_path_join(path, 'box01.GIF')):
-        ext = '.GIF'
-    else:
-        ext = '.gif'
-
-    for i in range(16):
-        icon = loadIcon(g.os_path_join(path, 'box%02d'%i + ext))
-        icons.append(icon)
-
-
-
-    for name in (
-        'lt_arrow_enabled',
-        'rt_arrow_enabled',
-        'lt_arrow_disabled',
-        'rt_arrow_disabled',
-        'plusnode',
-        'minusnode'
-    ):
-        icon = loadIcon(g.os_path_join(path, name + '.gif'))
-        if icon:
-            namedIcons[name] = icon
-
-    plusBoxIcon = namedIcons['plusnode']
-    minusBoxIcon = namedIcons['minusnode']
-
-    globalImages = {}
-
-</t>
-<t tx="bob.20080113141134">
-
-def name2color(name, default=None, cairo=False):
-
-
-
-
-    if isinstance(name, cls ):
-        return name
-
-    color = colors.getColorRGB(name)
-
-    if color is None:
-        if default:
-            return name2color(default)
-        else:
-            return None
-
-    r, g, b = color
-
-    if cairo:
-        return r/255.0, g/255.0, b/255.0 
-
-    return gtk.gdk.Color(r,g,b)
-</t>
-<t tx="bob.20080113170041">def getImage (relPath, force=False):
-
-
-    if not force and relPath in globalImages:
-        image = globalImages[relPath]
-        g.es('cach ', image, image.get_height(), getColor('magenta'))
-        return image, image.get_height()
-
-    try:
-        path = g.os_path_normpath(g.os_path_join(g.app.loadDir,"..","Icons", relPath))
-        globalImages[relPath] = image = loadIcon(path)
-        return image
-
-    except Exception:
-        pass
-
-    try:
-        path = g.os_path_normpath(relPath)
-        localImages[relPath] =  image = loadIcon(path)
-        return image
-    except Exception:
-        pass
-
-    return None
-</t>
-<t tx="bob.20080113170657">def loadIcon(fname):
-
-    try:
-        icon = gtk.gdk.pixbuf_new_from_file(fname)
+            &lt;&lt;forward search&gt;&gt;
+        &lt;&lt;clean up and exit&gt;&gt;
     except:
-        icon = None
+        self.exit()
+        g.es_exception()</t>
+<t tx="edward.20081127113749.5">p = self.search_pos
+start = -1
+counter = 0
+while p:
+    &lt;&lt;counter check&gt;&gt;
+    i = txt.rfind(word, 0, start)
+    if i == -1:
+        p.moveToThreadBack()
+        if p:self.chunk = txt = p.bodyString()
+        start = -1
+    else:
+        if self.acceptable_word(i, txt, word):
+            self.chunk = txt[:i+len(word)-1]
+            return
+        start = i+len(word)-1</t>
+<t tx="edward.20081127113749.6">counter+=1
+if counter &gt; 10000:
+    g.es_trace("counter max")
+    break</t>
+<t tx="edward.20081127113749.7">p = self.search_pos
+start = 0
+counter = 0
+while p:
+    &lt;&lt;counter check&gt;&gt;
+    i = txt.find(word, start)
+    if i == -1:
+        p.moveToThreadNext()
+        if p:self.chunk = txt = p.bodyString()
+        start = 0
+    else:
+        if self.acceptable_word(i, txt, word):
+            self.chunk = txt[i+1:]
+            return
+        start = i+1</t>
+<t tx="edward.20081127113749.8">if len(self.tried) &gt; 1:
+    # there was some tries so we need to restore
+    self.c.setBodyString(self.p, self.before+self.word+self.after)
+    self.c.frame.body.setInsertPoint(self.pos)
+return self.exit()</t>
+<t tx="edward.20081127113749.9">@ if found word for the first time then try it
+@c
+def acceptable_word(self, i, txt, word):
+    if i == 0 or wordsep.find(txt[i-1]) != -1:
+        j = i+len(word)
+        while j &lt; len(txt) and wordsep.find(txt[j]) &lt; 0:
+            j += 1
+        nword = txt[i:j]
+        if nword not in self.tried:
+            self.tried[nword] = 1
+            u = self.c.undoer
+            bunch = u.createCommonBunch(p)
+            bunch.oldBody = p.bodyString()
+            bunch.insertPos = self.pos
+            # Set the type &amp; helpers.
+            bunch.kind = 'node'
+            bunch.undoType = 'complete word'
+            bunch.undoHelper = self.undo_replacement
+            bunch.redoHelper = self.redo_replacement
+            bunch.newBody = newBody = self.before+nword+self.after
 
-    if icon and icon.get_width()&gt;0:
-        return icon
+            self.c.setBodyString(self.p, newBody)
+            self.c.frame.body.setInsertPoint(self.pos)
 
-    g.pr('Can not load icon from', fname)
+            bunch.dirtyVnodeList = [p.v]
+            bunch.newChanged = u.c.isChanged()
+            bunch.newDirty = p.isDirty()
+            bunch.newMarked = p.isMarked()
+
+            u.pushBead(bunch)
+
+            return True
+    return False
 </t>
-<t tx="bob.20080113183321">def onButtonPress(self, w, event, *args):
-
-    codes = {
-        gtk.gdk.BUTTON_PRESS: 'click',
-        gtk.gdk._2BUTTON_PRESS: 'double_click',
-        gtk.gdk._3BUTTON_PRESS: 'triple_click',
-        gtk.gdk.BUTTON_RELEASE: 'release'
-    }
-
-
-    sp, item = self.canvas.hitTest(event.x, event.y)
-    g.pr(
-        codes[event.type], '%s[%s]: %s'%(
-            g.choose(isinstance(item, int), 'headStringIcon[%s]'%item, item),
-            'button-%s'%event.button,
-            sp.headString()
-        ))
-
-    if item == 'ClickBox' and event.button == 1:
-        if sp.isExpanded():
-            sp.contract()
+<t tx="edward.20081127113749.10">def undo_replacement(self):
+    u = self.c.undoer; c=self.c; p=u.p
+    bunch = u.getBead(u.bead)
+    c.setBodyString(p, bunch.oldBody)
+    c.frame.body.setInsertPoint(bunch.insertPos)</t>
+<t tx="edward.20081127113749.11">def redo_replacement(self):
+    c = self.c; u=c.undoer; bunch=u.getBead(u.bead+1)
+    c.setBodyString(bunch.p, bunch.newBody)
+    c.frame.body.setInsertPoint(bunch.insertPos)</t>
+<t tx="edward.20081127113749.12">def exit(self):
+    #g.app.config.set(c,word_completer_key,'WordCompleter',None)
+    #g.app.config.set(c,'next_word_completer','WordCompleter',None)
+    self.pos = -1</t>
+<t tx="edward.20081127113749.13">def run(self):
+    self.adjust(self.p, c.frame.body.getInsertPoint())
+    self.complete_word()
+</t>
+<t tx="edward.20081127113749.14">def adjust(self, p, pos):
+    if p != self.p or pos != self.pos:
+        self.p = p.copy()
+        self.pos = pos
+        bs = p.bodyString()
+        word = getCurrentWord(bs, pos)
+        self.word = word
+        self.before = bs[:pos-len(word)]
+        self.after = bs[pos:]
+        self.search_pos = p.copy()
+        if self.back:
+            self.chunk = self.before
         else:
-            sp.expand()
-
-        self.canvas.update()
-</t>
-<t tx="bob.20080113183321.1"></t>
-<t tx="bob.20080113184034">def __init__(self):
-
-    #for n in c.allNodes_iter():
-    #    g.pr(n.headString())
-
-
-    window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-    window.set_title("gtkLeo Outline Widget Demo")
-    window.connect("destroy", lambda w: gtk.main_quit())
-    window.set_size_request(10, 10)
-    window.resize(400, 300)
-
-    loadIcons()
-
-    self.panel = OutlineCanvasPanel(window, c, 'canvas')
-
-    self.canvas = canvas = self.panel._canvas
-    g.trace(canvas)
-
-    canvas.set_events(gtk.gdk.ALL_EVENTS_MASK)
-    canvas.connect('button_press_event', self.onButtonPress)
-    #canvas.connect('button_release_event', self.onButtonPress)
-
-    window.show_all()
-
-
-
-</t>
-<t tx="bob.20080114060133"></t>
-<t tx="edreamleo.20080110083531">import gtk
-
+            self.chunk = self.after
+        self.tried = {word:1}</t>
+<t tx="edward.20081127113749.15">def getCurrentWord(s, pos):
+    i = pos-1
+    while i&gt;=0 and wordsep.find(s[i]) &lt; 0:
+         i -= 1
+    return s[i+1:pos]</t>
+<t tx="edward.20081127113749.16">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
+word_completer_key = 'next_word_completer'
 @others
+completer = g.app.config.get(c,word_completer_key,'WordCompleter')
+if completer is None:
+    completer = WordCompleter(p, c, back=False)
+    g.app.config.set(c, word_completer_key, 'WordCompleter', completer)
+    completer.run()
+else:
+    completer.adjust(p, c.frame.body.getInsertPoint())
+    completer.complete_word()
 
-createWindow()
+</t>
+<t tx="edward.20081221145716.1">def debug(f,*args,**keys):
+    if 1:
+        def debugCallback(*args,**keys):
+            print f.__name__,args,keys
+            f(*args,**keys)
+            print 'after',f.__name__
+        return debugCallback
+    else:
+        print 'in debug'
+        return f
+@debug
+def spam(a=5):
+    g.trace(a,g.callers(4))
 
-gtk.main()</t>
-<t tx="edreamleo.20080110130828">def createWindow():
-
-    def onKeyUp(w,event):
-        g.trace(event.state,event.keyval,event.string)
-
-    window = gtk.Window()
-    window.set_title("Hello World")
-
-    # button = gtk.Button("-----Press me-----")
-    # button.connect("clicked",onButtonPressed)
-    # window.add(button)
-
-    splitter1 = gtk.VPaned()
-    window.add(splitter1)
-
-    tree = gtk.TextView()
-    buf1 = tree.get_buffer()
-    buf1.set_text("tree")
-
-    body = gtk.TextView()
-    buf2 = body.get_buffer()
-    buf2.set_text("body")
-    body.connect("key_release_event",onKeyUp)
-
-    splitter1.add(tree)
-    splitter1.add2(body)
-
-    window.connect("delete-event",gtk.main_quit)
-    window.show_all()
-    return window
+spam(3)
+spam(a=4)
 </t>
 <t tx="ekr.20041001211817">import os
 
@@ -1892,15 +856,8 @@ g.es("done",color="blue")
     return child
 </t>
 <t tx="ekr.20070224123943"></t>
-<t tx="ekr.20070305085403">For MacOS X (darwin) the following are typical defaults:
-
-vim_cmd = /Applications/gvim.app/Contents/MacOS/gvim --servername LEO
-vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
-</t>
-<t tx="ekr.20070305085403.1"></t>
-<t tx="ekr.20070305085403.2"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121">g.app.gui.set_focus(c,w)</t>
+<t tx="ekr.20070416075121"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070504080933">This option applies to directories specified in filenames in all kinds of @file trees, and to filenames specified in the @path directive.
 
@@ -2177,7 +1134,6 @@ pyrexc = r'c:\prog\Pyrex-0.9.6.4\pyrexc.py'
 os.system(r'%s %s %s' % (python,pyrexc,theFile))
 
 # Use pyrex/Demos/setup.py to create module on Linux.</t>
-<t tx="ekr.20070701090143"></t>
 <t tx="ekr.20070723091227">
         
         
@@ -2490,40 +1446,52 @@ g.pr('row',row,'col',col)</t>
 <t tx="ekr.20071025192258">import leoTest
 leoTest.doTests (c,all=False)</t>
 <t tx="ekr.20071025193940"># Caution: you will have to disable cursesGui in an external editor
-# if you enable the cursesGui plugin it here
+# if you enable the cursesGui plugin here
+
+# Important: if you want to specify a gui plugin here,
+# enable that plugin first.
 
 # qtGui.py
+# tkGui.py
 
 plugins_menu.py
 
-# base64Packager.py
+# leoOPML.py
+# graphed.py
+
+# not normally enabled by default.  Recently changed.
+# EditAttributes.py
+# UASearch.py
+# active_path.py
+# cleo.py
+# datenodes.py
+# mod_labels.py
+# newButtons.py
 # searchbox.py
 
-# active_path.py
+# This works only with tk.  It is not needed for qt.
+# threading_colorizer.py
+
 # open_shell.py
+# dtest.py
+quicksearch.py
 ipython.py
-# cleo.py
-# open_with.py
+open_with.py
 rClick.py
-# toolbar.py
-# autotrees.py
+toolbar.py
 
 # add_directives.py # scan-directives hook not ready.
 # color_markup.py # Does not work with threading colorizer.
-threading_colorizer.py
 rst3.py
 UNL.py
-open_with.py
-mod_scripting.py
 
+mod_scripting.py
 nav_buttons.py
 nodenavigator.py
-# hoist.py
 image.py
-leo_to_html.py
-
-# vim.py
-# print_cp.py
+#### leo_to_html.py
+vim.py
+#### xemacs.py
 </t>
 <t tx="ekr.20071026102420.2"></t>
 <t tx="ekr.20071026102420.3"></t>
@@ -2556,27 +1524,22 @@ if frame and not frame1:
 
 import glob,os
 
-reallyCreate = False
-baseDir = r'c:\Python25\Lib\site-packages\pubsub'
-dirs = ('',) #'Extensions','UserConfig',)
+reallyCreate = True
+baseDir = r'c:\leo.repo\pythoscope\lib2to3\pgen2'
+dirs = (r'',)
 g.pr('-----')
 
-c.beginUpdate()
-try:
-    for theDir in dirs:
-        pattern = g.os_path_join(baseDir,theDir,'*.py')
-        files = glob.glob(pattern)
-        g.pr(pattern)
-        # g.pr(g.listToString(files))
-        for name in files:
-            h = '@auto %s' % (name[len(baseDir) + 1:].strip())
-            g.pr('creating',h)
-            if reallyCreate:
-                child = p.insertAsLastChild()
-                child.initHeadString(h)
-finally:
-    c.endUpdate()
-</t>
+for theDir in dirs:
+    pattern = g.os_path_join(baseDir,theDir,'*.py')
+    files = glob.glob(pattern)
+    g.pr(pattern)
+    # g.pr(g.listToString(files))
+    for name in files:
+        h = '@auto %s' % (name[len(baseDir) + 1:].strip())
+        g.pr('creating',h)
+        if reallyCreate:
+            child = p.insertAsLastChild()
+            child.initHeadString(h)</t>
 <t tx="ekr.20071206070207"></t>
 <t tx="ekr.20080105115712"># This hangs Leo while pylint is running.
 import pylint.lint as lint
@@ -2825,7 +1788,6 @@ lineTable = (
 f = file(path)
 s = f.read()
 f.close()</t>
-<t tx="ekr.20080604101239.1">Martin Lëwis and friends.</t>
 <t tx="ekr.20080604104453.5">@nocolor
 
 This setting determines the initial binding for otherwise-unbound keystrokes
@@ -2836,9 +1798,6 @@ The valid values are::
 command:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
-<t tx="ekr.20080610144053.1">True: Wrap body text.
-
-</t>
 <t tx="ekr.20080610144233.1">aaaaaaaaaaaa bbbbbbbbbbbbbbbbbb cccccccccccccccc ddddddddddddddddddd eeeeeeeeeeeeeee ffffffffffffffffff ggggggggggggggggggggg hhhhhhhhhhhhhhhh iiiiiiiiiiiii jjjjjjjjjjjjjjjj kkkkkkkkkkkkkk llllllllllllll mmmmmmmmmmmmmmmmm nnnnnnnnnnnn ooooooooo</t>
 <t tx="ekr.20080617170334.1">@first # -*- coding: utf-8 -*-
 
@@ -3517,8 +2476,6 @@ from win32com.axscript import axscript
 from win32com.axscript.server import axsite
 import pythoncom
 import win32com.server.util</t>
-<t tx="ekr.20080811112727.1">False: (recommended) Enable import parsing for @shadow and @auto
-True: @shadow and @auto create a single node for the entire file.</t>
 <t tx="ekr.20080811113441.2"></t>
 <t tx="ekr.20080812102914.1">root first line
 @others
@@ -3622,7 +2579,10 @@ else:
         rst3.onCreate('tag',{'c':c})
     else:
         # Ask to be removed.
-        g.app.scriptDict['removeMe'] = True</t>
+        g.app.scriptDict['removeMe'] = True
+
+print 'done'
+</t>
 <t tx="ekr.20080917063615.1">aList = (
 'aspellbindir',
 'wholeword',
@@ -3665,11 +2625,6 @@ print g.os_path_finalize(path,c=c)</t>
 =
 c:\leo.repo\trunk\leo\test\eval-test.txt</t>
 <t tx="ekr.20080923073240.2"></t>
-<t tx="ekr.20080923173133.1">@markup wiki
-
-@
-
-''text''                # write text in italics</t>
 <t tx="ekr.20080924033317.1">@language c
 
 @others</t>
@@ -3690,17 +2645,6 @@ print 'theObject',theObject and theObject.__class__
 print 'len(completions)',len(aList)
 print g.listToString(aList, tag='completion list', sort=True, indent='')
 </t>
-<t tx="ekr.20080929112400.1">import PyQt4.Qt as qt
-import sys
-
-a=qt.QApplication(sys.argv)
-parent = None
-w=qt.QPushButton("Hello World",parent) # No parent: top-level.
-# a.setMainWidget(w)
-w.show()
-# print g.listToString(dir(a),sort=True)
-a.exec_()
-</t>
 <t tx="ekr.20080930080501.1">c.frame.iconBar.addRow()
 c.frame.addIconButton(text="New")</t>
 <t tx="ekr.20080930083052.1">c.frame.hideIconBar()</t>
@@ -3715,59 +2659,126 @@ c.frame.addIconButton(text="New")</t>
     
     pass</t>
 <t tx="ekr.20081003094737.1"></t>
-<t tx="ekr.20081006070847.2"># aList = g.get_directives_dict_list(p)
-# path = c.scanAtPathDirectives(aList)
-# filename = p.isAnyAtFileNode()
-# print g.os_path_finalize_join(path,filename)
-
-print c.getNodePath (p)
-
-print c.getNodeFileName(p)
-
-</t>
-<t tx="ekr.20081020082611.1">class baseClass:
-
-    def foo(self):
-        g.trace('baseClass')
-
-class subClass (baseClass):
-
-    def foo(self):
-        g.trace('subClass')
-        baseClass.foo(self)
-
-z = subClass()
-z.foo()
-</t>
 <t tx="ekr.20081025105942.1">import os
 os.system("dir")</t>
-<t tx="ekr.20081103064258.1">fileName = r'c:\prog\test\test3.leo'
+<t tx="ekr.20081205104320.1"># import os
+tag = '#!/bin/bash\n'
+s = g.getScript(c,p,
+    useSelectedText=False,
+    forcePythonSentinels=False,
+    useSentinels=True)
+if not s.startswith(tag):
+    s = tag + s
+print s
+os.system(s)
+</t>
+<t tx="ekr.20081216091605.2">@language python
+@tabwidth -4
+@others
+</t>
+<t tx="ekr.20090122211549.1">
+class test:
+    
+    '''Class docstring
+test line 2'''
+    @others
+</t>
+<t tx="ekr.20090122211549.2">
+def spam (self):
+
+    '''Spam docstring.
+\\-4spam line 2'''
+
+    pass
+</t>
+<t tx="ekr.20090128112453.1"># print p.b
+# p.b = p.b + '\n# new'
+# p.h = p.h + 'z'
+
+print c.p
 
 if 0:
+    print p.v.u
+    print p.v.u.get('key')
+    p.v.u['key'] = 'abc'
+    print p.v.u.get('key')
+    p.v.u = {'key':'xyz'}
+    # p.v.u = 'abc'
+    print p.v.u
 
-    def myRun(*args,**keys):
-        return fileName
-    
-    old = g.app.gui.runSaveFileDialog
-    try:
-        g.app.gui.runSaveFileDialog = myRun
-        c.saveAs()
-    finally:
-        g.app.gui.runSaveFileDialog = old
-        
-w = g.app.gui.get_focus(c)
-c.mFileName = g.ensure_extension(fileName, ".leo")
-c.frame.title = c.mFileName
-c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
-# Calls c.setChanged(False) if no error.
-c.fileCommands.saveAs(c.mFileName)
-c.updateRecentFiles(c.mFileName)
-g.chdir(c.mFileName)
-c.redraw()
-# c.redraw_after_icons_changed(all=True)
-c.widgetWantsFocusNow(w)</t>
-<t tx="ekr.20081104102617.1">c.frame.lift()
-c.bodyWantsFocusNow()</t>
+if 0:
+    print p.v.t.u
+    print p.v.t.u.get('t-key')
+    p.v.t.u['t-key'] = 'pdq'
+    print p.v.t.u.get('t-key')
+    # p.v.t.u = {'key':'pdq'}
+    # # p.v.t.u = 'pdq'
+    # print p.v.t.u</t>
+<t tx="ekr.20090128131130.1">aList = g.posList(c) # Start with all positions
+print len(aList)
+aList2 = aList.select('plugin',regex=False,removeClones=True)
+print aList2.dump(sort=True)
+aList3 = aList2.select('http')
+print aList3.dump()
+
+# To see the docstring, enable auto-completion and type g.posList?
+# g.posList</t>
+<t tx="ekr.20090201162523.1"># define a macro: ctrl-f ab ctrl-r AB
+pass</t>
+<t tx="ekr.20090201192257.1">b = p.b
+try:
+    w = c.frame.body.bodyCtrl
+    w.setInsertPoint(0)
+    m = c.macroCommands
+    fn = g.os_path_finalize_join(g.app.loadDir,'..','..','ekr-macros.txt')
+    f = open(fn)
+    m.loadMacros(f)
+    macro = m.namedMacros.get('ab')
+    m.executeMacro(macro)
+finally:
+    assert p.b =='ab' + b,p.b
+    p.b = b
+</t>
+<t tx="ekr.20090205070715.1">#colorer = c.frame.body.colorizer.highlighter.colorer
+g.es ('total characters: %s, keywords: %s, leo_keywords: %s' % (
+    colorer.totalChars,
+    colorer.totalKeywordsCalls,
+    colorer.totalLeoKeywordsCalls))</t>
+<t tx="ekr.20090218112656.1"># 'self' is now defined in @test and @suite nodes.
+a,b = 1,2
+self.assertEqual(a,b)</t>
+<t tx="ekr.20090304173642.1">new_node = c.p.insertAsLastChild()
+new_node.initHeadString("I am a new node")
+new_node.moveAfter(c.rootPosition())
+c.redraw()</t>
+<t tx="ekr.20090306060447.1">p = g.findTopLevelNode(c, 'toplevel')
+p2 = g.findNodeInChildren(c, p, 'one')
+c.selectPosition(p2)
+# c.redraw_after_select(p2)
+
+@
+Create a top level node "toplevel"
+give it two children, "one", and "two"
+give "one" two children, "foo" and "bar"
+Leaving "one" expanded, collapse "toplevel"
+save the file
+revert the file
+click the "totop" button.
+
+"one" appears to have no children... !
+
+collapse and expand "toplevel", phew, the children have returned</t>
+<t tx="ekr.20090306060447.2"></t>
+<t tx="ekr.20090306060447.3"></t>
+<t tx="ekr.20090306060447.4"></t>
+<t tx="ekr.20090306060447.5"></t>
+<t tx="ekr.20090306060447.6"></t>
+<t tx="ekr.20090309064612.1"></t>
+<t tx="ekr.20090309064612.2"></t>
+<t tx="ekr.20090309064612.3"></t>
+<t tx="ekr.20090309064612.4"></t>
+<t tx="ekr.20090309064612.5"></t>
+<t tx="ekr.20090309065826.1"></t>
+<t tx="ekr.20090316115500.1"></t>
 </tnodes>
 </leo_file>

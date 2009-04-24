@@ -98,7 +98,7 @@ def create_import_cisco_menu (tag,keywords):
 def importCiscoConfig(c):
 
     if not c or not c.exists: return
-    current = c.currentPosition()
+    current = c.p
     #@    << open file >>
     #@+node:edream.110203113231.673:<< open file >>
     name = tkFileDialog.askopenfilename(
@@ -211,7 +211,7 @@ def importCiscoConfig(c):
     # scan through the created outline and add children
     for child in children:
         # extract the key from the headline. Uhm... :)
-        key = child.headString().split('<<'
+        key = child.h.split('<<'
             )[1].split('>>')[0].strip()
         if blocks.has_key(key):
             if type(blocks[key][0]) == type(''):

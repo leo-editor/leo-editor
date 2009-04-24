@@ -58,7 +58,7 @@ navigate to the nodes 'by hand' by following the arrows in the UNL.
 #@@language python
 #@@tabwidth -4
 
-__version__ = "0.10"
+__version__ = "0.11"
 #@<< version history >>
 #@+node:rogererens.20041014104353:<< version history >>
 #@+at
@@ -76,6 +76,7 @@ __version__ = "0.10"
 # - 0.9 EKR: Fixed bug reported by Terry Brown:
 #     Replaced calls to findNodeInTree by findNodeInChildren.
 # - 0.10 TB: Added recursive search so that the longest match will be found.
+# - 0.11 EKR: This gui is now gui-independent.
 #@-at
 #@nonl
 #@-node:rogererens.20041014104353:<< version history >>
@@ -106,13 +107,13 @@ def init ():
     if g.app.gui is None:
         g.app.createTkGui(__file__)
 
-    if g.app.gui.guiName() in ('tkinter','wxPython'):
-        leoPlugins.registerHandler("after-create-leo-frame", createStatusLine)
-        leoPlugins.registerHandler("select2", onSelect2)    # show UNL
-        leoPlugins.registerHandler("@url1", onUrl1)         # jump to URL or UNL
+    leoPlugins.registerHandler(
+        "after-create-leo-frame", createStatusLine)
+    leoPlugins.registerHandler("select2", onSelect2) # show UNL
+    leoPlugins.registerHandler("@url1", onUrl1) # jump to URL or UNL
 
-        g.plugin_signon(__name__)
-        return True
+    g.plugin_signon(__name__)
+    return True
 #@-node:ekr.20070112173134:init
 #@+node:rogererens.20041013082304.1:createStatusLine
 def createStatusLine(tag,keywords):
@@ -142,7 +143,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=[0], maxp=[None]):
 
     for i in nds:
 
-        if unlList[depth] == i.headString():
+        if unlList[depth] == i.h:
 
             if depth+1 == len(unlList):  # found it
                 moveToP(c, i)
@@ -151,7 +152,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=[0], maxp=[None]):
                 if maxdepth[0] < depth+1:
                     maxdepth[0] = depth+1
                     maxp[0] = i.copy()
-                    g.es(i.headString())
+                    g.es(i.h)
                 if recursiveUNLSearch(unlList, c, depth+1, i, maxdepth, maxp):
                     return True
                 # else keep looking through nds
@@ -208,7 +209,9 @@ def onUrl1 (tag,keywords):
 
         if urlProtocol == "file":
             if urlTuple[2].endswith(".leo"):
-                c.frame.top.update_idletasks() # Clear remaining events, so they don't interfere.
+                if hasattr(c.frame.top, 'update_idletasks'):
+                    # this is Tk only - TNB
+                    c.frame.top.update_idletasks() # Clear remaining events, so they don't interfere.
                 ok,frame = g.openWithFileName(urlTuple[2], c)
                 if ok:
                     #@                    << go to the node>>
@@ -268,12 +271,12 @@ def onSelect2 (tag,keywords):
 
     c = keywords.get("c")
 
-    # c.currentPosition() is not valid while using the settings panel.
+    # c.p is not valid while using the settings panel.
     new_p = keywords.get('new_p')
     if not new_p: return    
 
     c.frame.clearStatusLine()
-    myList = [p.headString() for p in new_p.self_and_parents_iter()]
+    myList = [p.h for p in new_p.self_and_parents_iter()]
     myList.reverse()
 
     # Rich has reported using ::

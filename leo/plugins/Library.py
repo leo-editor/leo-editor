@@ -307,8 +307,8 @@ class Library(object):
     #@+node:ekr.20050328092641.13:addCurrentNode
     def addCurrentNode (self):
 
-        c = self.c ; p = c.currentPosition()
-        hs = str(p.headString())
+        c = self.c ; p = c.p
+        hs = str(p.h)
         s = c.fileCommands.putLeoOutline()
         self.add(hs,s)
         self.setListContents()

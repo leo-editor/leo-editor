@@ -362,7 +362,7 @@ class Lassoer(object):
     #@+node:mork.20041018131258.9:addForMove
     def addForMove (self,event=None):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         aList = self.mvForM ; justRmv = p in aList
         # g.trace(justRmv)
 
@@ -378,7 +378,7 @@ class Lassoer(object):
     #@+node:mork.20041019102247:addForCopy
     def addForCopy (self,event=None):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         aList = self.mvForCopy
         justRmv = p in aList
 
@@ -394,7 +394,7 @@ class Lassoer(object):
     #@+node:mork.20041019102247.1:addForClone
     def addForClone (self,event=None):
 
-        c = self.c ; p = self.c.currentPosition()
+        c = self.c ; p = c.p
         aList = self.mvForClone ; justRmv = p in aList
 
         self.remove(p)
@@ -421,7 +421,7 @@ class Lassoer(object):
     #@+node:mork.20041019121125:markTarget
     def markTarget (self,event=None):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
 
         if p == self.moveNode:
             self.moveNode = None

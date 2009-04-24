@@ -128,7 +128,7 @@ def writeNodeAndTree (c, word, header_style, level,
         # encoding = c.config.default_derived_file_encoding
         encoding = sys.getdefaultencoding()
     # 
-    s = vnode.bodyString()
+    s = vnode.b
     s = g.toEncodedString(s,encoding,reportErrors=True)
     doPara(word,s)
     #
@@ -138,7 +138,7 @@ def writeNodeAndTree (c, word, header_style, level,
         else:
             thishead = ""
         child = vnode.nthChild(i)
-        h = child.headString()
+        h = child.h
         h = g.toEncodedString(h,encoding,reportErrors=True)
         doPara(word,"%s %s" % (thishead,h),"%s %d" % (header_style,min(level,maxlevel)))
         writeNodeAndTree(c,word,header_style,level+1,maxlevel,usesections,thishead,child)

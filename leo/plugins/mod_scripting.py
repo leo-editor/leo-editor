@@ -166,7 +166,7 @@ def init ():
         g.app.createTkGui(__file__)
 
     # This plugin is now gui-independent.            
-    ok = g.app.gui.guiName() in ('tkinter','wxPython','nullGui')
+    ok = g.app.gui.guiName() in ('qt','tkinter','wxPython','nullGui')
 
     if ok:
 
@@ -255,7 +255,7 @@ class scriptingController:
         self.createCommonCommands()
         # Last, scan for user-defined nodes.
         def startswith(p,s):
-            return g.match_word(p.headString(),0,s)
+            return g.match_word(p.h,0,s)
         for p in c.allNodes_iter():
             if self.atButtonNodes and startswith(p,'@button'): 
                 self.handleAtButtonNode(p)
@@ -295,10 +295,9 @@ class scriptingController:
         if shortcut:
             statusLine = '%s = %s' % (statusLine,shortcut)
 
-        # This helper is also called by the script-button callback.
         b = self.createAtButtonFromSettingHelper(h,script,statusLine,shortcut)
     #@+node:ekr.20070926085149:createAtButtonFromSettingHelper & callback
-    def createAtButtonFromSettingHelper (self,args,h,script,statusLine,shortcut,bg='LightSteelBlue2'):
+    def createAtButtonFromSettingHelper (self,h,script,statusLine,shortcut,bg='LightSteelBlue2'):
 
         '''Create a button from an @button node.
 
@@ -394,8 +393,8 @@ class scriptingController:
         '''Called when user presses the 'run-script' button or executes the run-script command.'''
 
         c = self.c
-        p = c.currentPosition()
-        h = p.headString()
+        p = c.p
+        h = p.h
         args = self.getArgs(h)
         c.executeScript(args=args,p=p,useSelectedText=True,silent=True)
 
@@ -421,7 +420,7 @@ class scriptingController:
 
         '''Called when user presses the 'debug-script' button or executes the debug-script command.'''
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
 
         script = g.getScript(c,p,useSelectedText=True,useSentinels=False)
         if script:
@@ -464,7 +463,7 @@ class scriptingController:
                     f.write('# Predefine c, g and p.\n')
                     f.write('import leo.core.leoGlobals as g\n')
                     f.write('c = g.app.scriptDict.get("c")\n')
-                    f.write('p = c.currentPosition()\n')
+                    f.write('p = c.p\n')
                     f.write('# Actual script starts here.\n')
                     f.write(script + '\n')
                 finally:
@@ -499,7 +498,7 @@ class scriptingController:
 
         '''Called when the user presses the 'script-button' button or executes the script-button command.'''
 
-        c = self.c ; p = c.currentPosition(); h = p.headString()
+        c = self.c ; p = c.p; h = p.h
         buttonText = self.getButtonText(h)
         shortcut = self.getShortcut(h)
         statusLine = "Run Script: %s" % buttonText
@@ -519,7 +518,7 @@ class scriptingController:
         The @key=shortcut does not appear in the button's name, but
         it *does* appear in the statutus line shown when the mouse moves over the button.'''
 
-        c = self.c ; h = p.headString()
+        c = self.c ; h = p.h
         shortcut = self.getShortcut(h)
         statusLine = 'Local script button'
         if shortcut:
@@ -539,7 +538,7 @@ class scriptingController:
 
         '''Handle @command name [@key[=]shortcut].'''
 
-        c = self.c ; k = c.keyHandler ; h = p.headString()
+        c = self.c ; k = c.keyHandler ; h = p.h
         if not h.strip(): return
 
         #@    << get the commandName and optional shortcut >>
@@ -577,7 +576,7 @@ class scriptingController:
 
         c = self.c
         tag = "@plugin"
-        h = p.headString()
+        h = p.h
         assert(g.match(h,0,tag))
 
         # Get the name of the module.
@@ -608,7 +607,7 @@ class scriptingController:
 
         c = self.c
         tag = "@script"
-        h = p.headString()
+        h = p.h
         assert(g.match(h,0,tag))
         name = h[len(tag):].strip()
         args = self.getArgs(h)
@@ -693,7 +692,7 @@ class scriptingController:
             g.es(c.disableCommandsMessage,color='blue')
         else:
             g.app.scriptDict = {}
-            h = p.headString()
+            h = p.h
             args = self.getArgs(h)
             c.executeScript(args=args,p=p,silent=True)
             # Remove the button if the script asks to be removed.

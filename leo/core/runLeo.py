@@ -8,22 +8,6 @@
 #@@language python
 #@@tabwidth -4
 
-#@<< import pychecker >>
-#@+node:ekr.20031218072017.2606:<< Import pychecker >>
-#@@color
-
-# See pycheckrc file in leoDist.leo for a list of erroneous warnings to be suppressed.
-
-if 0: # Set to 1 for lint-like testing.
-      # Use t23.bat: only on Python 2.3.
-
-    try:
-        import pychecker.checker
-        print('\npychecker.checker running...')
-    except Exception:
-        print('\nCan not import pychecker\n')
-#@-node:ekr.20031218072017.2606:<< Import pychecker >>
-#@nl
 #@<< imports and inits >>
 #@+node:ekr.20080921091311.1:<< imports and inits >>
 # import pdb ; pdb = pdb.set_trace
@@ -95,10 +79,15 @@ def run(fileName=None,pymacs=None,*args,**keywords):
 
     """Initialize and run Leo"""
 
+    trace = False and not g.unitTesting
+    if trace: print ('runLeo.run: sys.argv %s' % sys.argv)
     if not isValidPython(): return
     g.computeStandardDirectories()
     adjustSysPath()
-    script,windowFlag = scanOptions()
+    fileName2,gui,script,windowFlag = scanOptions()
+    if fileName2: fileName = fileName2
+    # print ('runLeo.run: sys.argv %s' % sys.argv)
+    # print ('runLeo.run: fileName %s' % fileName)
     if pymacs: script,windowFlag = None,False
     verbose = script is None
     initApp(verbose)
@@ -108,9 +97,10 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     # This means if-gui has effect only in per-file settings.
     g.app.config.readSettingsFiles(fileName,verbose)
     g.app.setEncoding()
-    createSpecialGui(pymacs,script,windowFlag)
+    createSpecialGui(gui,pymacs,script,windowFlag)
     g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
     if g.app.killed: return # Support for g.app.forceShutdown.
+    # g.trace('g.app.gui after plugins loaded',g.app.gui)
     if g.app.gui == None: g.app.createTkGui() # Creates global windows.
     g.init_sherlock(args)  # Init tracing and statistics.
     if g.app and g.app.use_psyco: startPsyco()
@@ -120,7 +110,8 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     c,frame = createFrame(fileName,relativeFileName,script)
     if not frame: return
     finishInitApp(c)
-    p = c.currentPosition()
+    p = c.p
+    g.app.initComplete = True
     g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
     if c.config.getBool('allow_idle_time_hook'): g.enableIdleTimeHook()
     initFocusAndDraw(c,fileName)
@@ -143,6 +134,17 @@ def adjustSysPath ():
 def createFrame (fileName,relativeFileName,script):
 
     """Create a LeoFrame during Leo's startup process."""
+
+    # Only allow .zip and .leo files.
+    if fileName:
+        table = ('.leo','.zip',)
+        for ext in table:
+            if fileName.endswith(ext):
+                break
+        else:
+            g.es_print('invalid Leo file extension: %s' % (
+                relativeFileName))
+            fileName = relativeFileName = None
 
     # New in Leo 4.6: support for 'default_leo_file' setting.
     if not fileName and not script:
@@ -172,7 +174,7 @@ def createFrame (fileName,relativeFileName,script):
     g.doHook("new",old_c=None,c=c,new_c=c)
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.currentPosition()
+    p = c.p
     if not g.doHook("menu1",c=frame.c,p=p,v=p):
         frame.menu.createMenuBar(frame)
         c.updateRecentFiles(relativeFileName or fileName)
@@ -183,12 +185,13 @@ def createFrame (fileName,relativeFileName,script):
     if fileName:
         g.es_print("file not found:",fileName,color='red')
 
+    c.redraw()
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
-def createSpecialGui(pymacs,script,windowFlag):
+def createSpecialGui(gui,pymacs,script,windowFlag):
 
-    if g.isPython3:
+    if False and g.isPython3:
         # Create the curses gui.
         leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
     elif pymacs:
@@ -203,6 +206,10 @@ def createSpecialGui(pymacs,script,windowFlag):
             sys.args = []
         else:
             createNullGuiWithScript(script)
+    elif gui == 'qt':   g.app.createQtGui()
+    elif gui == 'tk':   g.app.createTkGui()
+    elif gui == 'wx':   g.app.createWxGui()
+#@nonl
 #@+node:ekr.20031218072017.1938:createNullGuiWithScript
 def createNullGuiWithScript (script):
 
@@ -262,7 +269,6 @@ def completeFileName (fileName):
     except Exception: pass
 
     relativeFileName = fileName
-    ### fileName = g.os_path_finalize_join(os.getcwd(),fileName)
     fileName = g.os_path_finalize(fileName)
 
     junk,ext = g.os_path_splitext(fileName)
@@ -287,7 +293,7 @@ def initFocusAndDraw(c,fileName):
     w = g.app.gui.get_focus(c)
 
     if not fileName:
-        c.redraw_now()
+        c.redraw()
 
     # Respect c's focus wishes if posssible.
     if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
@@ -453,17 +459,23 @@ def profile_leo ():
     import cProfile as profile
     import pstats
     import leo.core.leoGlobals as g
+    import os
 
     # name = r"c:\leo.repo\trunk\leo\test\leoProfile.txt"
-    name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
+    # name = g.os_path_finalize_join(g.app.loadDir,'..','test','leoProfile.txt')
+    theDir = os.getcwd()
 
-    profile.run('leo.run()',name)
-
+    # On Windows, name must be a plain string. An apparent cProfile bug.
+    name = str(g.os_path_normpath(g.os_path_join(theDir,'leoProfile.txt')))
+    print ('profiling to %s' % name)
+    profile.run('import leo ; leo.run()',name)
     p = pstats.Stats(name)
     p.strip_dirs()
     p.sort_stats('module','calls','time','name')
     reFiles='leoAtFile.py:|leoFileCommands.py:|leoGlobals.py|leoNodes.py:'
     p.print_stats(reFiles)
+
+prof = profile_leo
 #@-node:ekr.20031218072017.2607:profile_leo
 #@+node:ekr.20041130093254:reportDirectories
 def reportDirectories(verbose):
@@ -483,9 +495,12 @@ def scanOptions():
 
     parser = optparse.OptionParser()
     parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('-f', '--file',   dest="fileName")
+    parser.add_option('--gui',          dest="gui")
     parser.add_option('--silent',       action="store_true",dest="silent")
     parser.add_option('--script',       dest="script")
     parser.add_option('--script-window',dest="script_window")
+    parser.add_option('--ipython',      action="store_true",dest="use_ipython")
 
     # Parse the options, and remove them from sys.argv.
     options, args = parser.parse_args()
@@ -502,6 +517,17 @@ def scanOptions():
             g.app.oneConfigFilename = path
         else:
             g.es_print('Invalid -c option: file not found:',path,color='red')
+
+    # -f or --file
+    fileName = options.fileName
+
+    # -- gui
+    gui = options.gui
+    if gui:
+        gui = gui.lower()
+        if gui not in ('tk','qt','wx'):
+            g.trace('unknown gui: %s' % gui)
+            gui = None
 
     # --script
     script_path = options.script
@@ -530,10 +556,12 @@ def scanOptions():
     g.app.silentMode = options.silent
     # g.trace('silentMode',g.app.silentMode)
 
+    # --ipython
+
+    g.app.useIpython = options.use_ipython
     # Compute the return values.
     windowFlag = script and script_path_w
-    return script, windowFlag
-#@nonl
+    return fileName, gui, script, windowFlag
 #@-node:ekr.20080521132317.2:scanOptions
 #@+node:ekr.20040411081633:startPsyco
 def startPsyco ():

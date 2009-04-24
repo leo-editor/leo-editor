@@ -281,7 +281,7 @@ class leoGui:
         self.oops()
 
     def createFindTab (self,c,parentFrame):
-        """Create a Tkinter find tab in the indicated frame."""
+        """Create a find tab in the indicated frame."""
         self.oops()
 
     def createFontPanel (self,c):
@@ -352,8 +352,11 @@ class leoGui:
         '''Return the keysym value of an event.'''
         return event and event.keysym
 
+    def eventStroke (self,event,c=None):
+        return event and hasattr(event,'stroke') and event.stroke or ''
+
     def eventWidget (self,event,c=None):
-        '''Return the widget field of an event.'''   
+        '''Return the widget field of an event.'''
         return event and event.widget
 
     def eventXY (self,event,c=None):
@@ -361,7 +364,6 @@ class leoGui:
             return event.x,event.y
         else:
             return 0,0
-    #@nonl
     #@-node:ekr.20061031132907:Events (leoGui)
     #@+node:ekr.20070212145124:getFullVersion
     def getFullVersion (self,c):
@@ -445,7 +447,7 @@ class leoGui:
 
         '''A gui-independent wrapper for gui events.'''
 
-        def __init__ (self,event,c):
+        def __init__ (self,event,c,stroke=None):
 
             # g.trace('leoKeyEvent(leoGui)')
             self.actualEvent = event
@@ -453,6 +455,7 @@ class leoGui:
             self.char   = hasattr(event,'char') and event.char or ''
             self.keysym = hasattr(event,'keysym') and event.keysym or ''
             self.state  = hasattr(event,'state') and event.state or 0
+            self.stroke = hasattr(event,'stroke') and event.stroke or ''
             self.w      = hasattr(event,'widget') and event.widget or None
             self.x      = hasattr(event,'x') and event.x or 0
             self.y      = hasattr(event,'y') and event.y or 0
@@ -464,11 +467,18 @@ class leoGui:
                 # Translate keysyms for ascii characters to the character itself.
                 self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
 
+            if stroke and not self.stroke:
+                self.stroke = self.actualEvent.stroke = stroke
+
             self.widget = self.w
 
         def __repr__ (self):
 
-            return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (repr(self.char),repr(self.keysym))
+            if self.stroke:
+                return 'leoGui.leoKeyEvent: stroke: %s' % (repr(self.stroke))
+            else:
+                return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
+                    repr(self.char),repr(self.keysym))
     #@nonl
     #@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
     #@-node:ekr.20070228154059:May be defined in subclasses
@@ -538,6 +548,9 @@ class nullGui(leoGui):
             g.trace("nullGui",g.callers(4))
     #@-node:ekr.20031218072017.2230:oops
     #@+node:ekr.20070301171901:do nothings
+    def alert (self,message):
+        pass
+
     def attachLeoIcon (self,w):
         pass
 
@@ -550,10 +563,17 @@ class nullGui(leoGui):
     def finishCreate (self):
         pass
 
+    def getIconImage (self, name):
+        return None
+
+    def getTreeImage(self,c,path):
+        return None
+
     def getTextFromClipboard (self):
         return self.clipboardContents
 
-    def get_focus(self,frame):
+    def get_focus(self,frame=None):
+        if not frame: return None
         return self.focusWidget or (hasattr(frame,'body') and frame.body.bodyCtrl) or None 
 
     def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
@@ -578,7 +598,7 @@ class nullGui(leoGui):
         self.oops()
 
     def createFindTab (self,c,parentFrame):
-        """Create a Tkinter find tab in the indicated frame."""
+        """Create a find tab in the indicated frame."""
         return leoFind.nullFindTab(c,parentFrame)
 
     def createLeoFrame(self,title):
@@ -682,6 +702,14 @@ class unitTestGui(nullGui):
 
         pass # This method keeps pylint happy.
     #@-node:ekr.20071128094234.1:createSpellTab
+    #@+node:ekr.20081119083601.1:toUnicode
+    def toUnicode (self,s):
+
+        if g.isPython3:
+            return s
+        else:
+            return unicode(s)
+    #@-node:ekr.20081119083601.1:toUnicode
     #@-others
 #@-node:ekr.20031218072017.3742:class unitTestGui (nullGui)
 #@-others
