@@ -196,92 +196,239 @@ class DynamicWindow(QtGui.QMainWindow):
             else:
                 event.ignore()
     #@-node:ekr.20081121105001.202:closeEvent (DynanicWindow)
-    #@+node:ekr.20090423070717.14:createMainWindow (replaces qt_main.ui)
+    #@+node:ekr.20090423070717.14:createMainWindow & helpers
     # Called instead of uic.loadUi(ui_description_file, self)
 
     def createMainWindow (self):
 
-        '''Create the component ivars of the main window.'''
+        '''Create the component ivars of the main window.
 
+        Copied/adapted from qt_main.py'''
+
+        MainWindow = self
         self.ui = self
 
-        if 1: # Just use the code in qt_main.py
-            self.setupUI()
-            self.retranslateUi()
-        else: # Use refactored code.
-            checkBoxes = '''checkBoxWholeWord checkBoxIgnoreCase
-            checkBoxWrapAround checkBoxReverse checkBoxRexexp checkBoxMarkFinds
-            checkBoxEntireOutline checkBoxSubroutineOnly checkBoxNodeOnly
-            checkBoxSearchHeadline checkBoxSearchBody checkBoxMarkChanges
-            '''.strip().split()
+        MainWindow.setWindowTitle(self.tr("Leo"))
+        self.createContainers()
+        self.treeWidget = self.createTree()
+        self.createLog()
+        self.richTextEdit = self.createBody()
+        self.lineEdit = self.createMiniBuffer()
+        self.menubar = self.createMenuBar()
+        self.statusBar = self.createStatusBar()
 
-            for z in checkBoxes:
-                setattr(self,z,QtGui.QCheckBox())
+        # Actions
+        if 0:
+            self.actionOpen = QtGui.QAction(MainWindow)
+            self.actionOpen.setObjectName("actionOpen")
+            self.actionSave = QtGui.QAction(MainWindow)
+            self.actionSave.setObjectName("actionSave")
+            self.actionIPython = QtGui.QAction(MainWindow)
+            self.actionIPython.setObjectName("actionIPython")
 
-            for z in ('findPattern','findChange'):
-                setattr(self,z,QtGui.QLineEdit())
+        # Signals
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+    #@+node:ekr.20090424085523.43:createBody
+    def createBody (self):
 
-            self.lineEdit = QtGui.QLineEdit()
-            self.richTextEdit = QtGui.QTextEdit()
-            self.splitter = QtGui.QSplitter()
-            self.splitter_2 = QtGui.QSplitter()
-            self.stackedWidget = QtGui.QStackedWidget()
-            self.tabWidget = QtGui.QTabWidget()
-            self.treeWidget = QtGui.QTreeWidget()
+        frame = QtGui.QWidget()
+        frame.setObjectName("page_2")
 
-            self.setMainWindowProperties()
-    #@+node:ekr.20090423070717.15:setMainWindowProperties
-    def setMainWindowProperties (self):
+        vLayout = QtGui.QVBoxLayout(frame)
+        vLayout.setObjectName("body-vLayout")
 
-        '''
-        <property name="geometry" >
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>691</width>
-          <height>635</height>
-         </rect>
-        </property>
-        <property name="windowTitle" >
-         <string>Leo</string>
-        </property>
-        <property name="dockNestingEnabled" >
-         <bool>false</bool>
-        </property>
-        <property name="dockOptions" >
-         <set>QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
-        </property>
-        '''
-    #@-node:ekr.20090423070717.15:setMainWindowProperties
-    #@-node:ekr.20090423070717.14:createMainWindow (replaces qt_main.ui)
-    #@+node:ekr.20090424085523.37:retranslateUi
-    def retranslateUi(self):
+        w = QtGui.QTextEdit(frame)
+        w.setObjectName("richTextEdit")
+        vLayout.addWidget(w)
+
+        # Stacked widget.  This ivar *is* used at present.
+        self.stackedWidget = sw = QtGui.QStackedWidget(self.splitter_2)
+        sw.setAcceptDrops(True)
+        sw.setObjectName("stackedWidget")
+        sw.setCurrentIndex(0)
+        sw.addWidget(frame)
+
+        self.verticalLayout.addWidget(self.splitter_2)
+
+        return w
+    #@-node:ekr.20090424085523.43:createBody
+    #@+node:ekr.20090424085523.41:createContainers
+    def createContainers (self):
+
         MainWindow = self
-        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Leo", None, QtGui.QApplication.UnicodeUTF8))
-        self.treeWidget.headerItem().setText(0, QtGui.QApplication.translate("MainWindow", "1", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("MainWindow", "Tab 1", None, QtGui.QApplication.UnicodeUTF8))
-        # self.checkBoxWholeWord.setText(QtGui.QApplication.translate("MainWindow", "Whole Word", None, QtGui.QApplication.UnicodeUTF8))
-        # self.checkBoxEntireOutline.setText(QtGui.QApplication.translate("MainWindow", "Entire Outline", None, QtGui.QApplication.UnicodeUTF8))
-        # self.checkBoxIgnoreCase.setText(QtGui.QApplication.translate("MainWindow", "Ignore Case", None, QtGui.QApplication.UnicodeUTF8))
-        # self.checkBoxSubroutineOnly.setText(QtGui.QApplication.translate("MainWindow", "Subroutine Only", None, QtGui.QApplication.UnicodeUTF8))
-        # self.checkBoxWrapAround.setText(QtGui.QApplication.translate("MainWindow", "Wrap Around", None, QtGui.QApplication.UnicodeUTF8))
-        # self.checkBoxNodeOnly.setText(QtGui.QApplication.translate("MainWindow", "Node Only", None, QtGui.QApplication.UnicodeUTF8))
-        # self.checkBoxReverse.setText(QtGui.QApplication.translate("MainWindow", "Reverse", None, QtGui.QApplication.UnicodeUTF8))
-        # self.checkBoxSearchHeadline.setText(QtGui.QApplication.translate("MainWindow", "Search Headline", None, QtGui.QApplication.UnicodeUTF8))
-        # self.checkBoxRexexp.setText(QtGui.QApplication.translate("MainWindow", "Regexp", None, QtGui.QApplication.UnicodeUTF8))
-        # self.checkBoxSearchBody.setText(QtGui.QApplication.translate("MainWindow", "Search Body", None, QtGui.QApplication.UnicodeUTF8))
-        # self.checkBoxMarkFinds.setText(QtGui.QApplication.translate("MainWindow", "Mark Finds", None, QtGui.QApplication.UnicodeUTF8))
-        # self.checkBoxMarkChanges.setText(QtGui.QApplication.translate("MainWindow", "Mark Changes", None, QtGui.QApplication.UnicodeUTF8))
-        # self.label_2.setText(QtGui.QApplication.translate("MainWindow", "Find:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("MainWindow", "Change:", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("MainWindow", "Tab 2", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QtGui.QApplication.translate("MainWindow", "Page", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("MainWindow", "Minibuffer", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionOpen.setText(QtGui.QApplication.translate("MainWindow", "Open", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionSave.setText(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionIPython.setText(QtGui.QApplication.translate("MainWindow", "IPython", None, QtGui.QApplication.UnicodeUTF8))
 
-    #@-node:ekr.20090424085523.37:retranslateUi
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(957, 778)
+
+        self.centralwidget = QtGui.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+
+        MainWindow.setCentralWidget(self.centralwidget)
+
+        self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
+        self.verticalLayout.setObjectName("verticalLayout")
+
+        self.splitter_2 = QtGui.QSplitter(self.centralwidget)
+        self.splitter_2.setOrientation(QtCore.Qt.Vertical)
+        self.splitter_2.setObjectName("splitter_2")
+
+        self.splitter = QtGui.QSplitter(self.splitter_2)
+        self.splitter.setOrientation(QtCore.Qt.Horizontal)
+        self.splitter.setObjectName("splitter")
+    #@-node:ekr.20090424085523.41:createContainers
+    #@+node:ekr.20090424085523.38:createFindTab & helpers
+    def createFindTab (self,tab):
+
+        # This is an ivar for communication with createFindText and createFindCheckBox, etc.
+        self.findGrid = QtGui.QGridLayout(tab)
+        self.findGrid.setObjectName("findGridLayout")
+
+        newBox = self.createFindCheckBox
+
+        self.findPattern = self.createFindText('findPattern',0,1)
+        self.findChange  = self.createFindText('findChange',1,1)
+
+        self.checkBoxWholeWord      = newBox('checkBoxWholeWord','Whole &Word',2,0)
+        self.checkBoxEntireOutline  = newBox('checkBoxEntireOutline','Entire Outline',2,1)
+        self.checkBoxIgnoreCase     = newBox('checkBoxIgnoreCase','&Ignore Case',3,0)
+        self.checkBoxSubroutineOnly = newBox('checkBoxSubroutineOnly','Subroutine Only',3,1)
+        self.checkBoxWrapAround     = newBox('checkBoxWrapAround','Wrap &Around',4,0)
+        self.checkBoxNodeOnly       = newBox('checkBoxNodeOnly','&Node Only',4,1)
+        self.checkBoxReverse        = newBox('checkBoxReverse','Reverse',5,0)
+        self.checkBoxSearchHeadline = newBox('checkBoxSearchHeadline','Search Headline',5,1)
+        self.checkBoxRexexp         = newBox('checkBoxRexexp','Regexp',6,0)
+        self.checkBoxSearchBody     = newBox('checkBoxSearchBody','Search Body',6,1)
+        self.checkBoxMarkFinds      = newBox('checkBoxMarkFinds','Mark Finds',7,0)
+        self.checkBoxMarkChanges    = newBox('checkBoxMarkChanges','Mark Changes',7,1)
+
+        # The Find: label
+        lab2 = QtGui.QLabel(tab)
+        lab2.setObjectName("label_2")
+        lab2.setText(self.tr("Find:"))
+        self.findGrid.addWidget(lab2, 0, 0, 1, 1)
+
+        # The Change: label
+        self.lab3 = QtGui.QLabel(tab)
+        self.lab3.setObjectName("lab3")
+        self.lab3.setText(self.tr("Change:"))
+        self.findGrid.addWidget(self.lab3, 1, 0, 1, 1)
+
+        self.tabWidget.addTab(tab, "")
+        self.tabWidget.setTabText(self.tabWidget.indexOf(tab),'Tab 2')
+            # Must be Tab 2: changed to 'Find' by qtLog.finishCreate.
+    #@+node:ekr.20090424085523.39:createFindCheckBox
+    def createFindCheckBox (self,name,label,row,col):
+
+        layout = self.findGrid
+        tab = self.findTab
+
+        w = QtGui.QCheckBox(tab)
+        w.setObjectName(name)
+        # w.setText(label)
+        w.setText(
+            QtGui.QApplication.translate("MainWindow",label,None,
+            QtGui.QApplication.UnicodeUTF8))
+
+        layout.addWidget(w,row,col, 1, 1)
+
+        return w
+    #@nonl
+    #@-node:ekr.20090424085523.39:createFindCheckBox
+    #@+node:ekr.20090424085523.40:createFindText
+    def createFindText (self,name,row,col):
+
+        layout = self.findGrid
+        tab = self.findTab
+
+        w = QtGui.QLineEdit(tab)
+        w.setObjectName(name)
+        layout.addWidget(w,row,col,1, 1)
+
+        return w
+    #@-node:ekr.20090424085523.40:createFindText
+    #@-node:ekr.20090424085523.38:createFindTab & helpers
+    #@+node:ekr.20090424085523.42:createLog
+    def createLog (self):
+
+        self.tabWidget = QtGui.QTabWidget(self.splitter)
+        self.tabWidget.setObjectName("tabWidget")
+
+        # Create Find tab.
+        self.findTab = QtGui.QWidget()
+        self.findTab.setObjectName('find-tab')
+        self.createFindTab(self.findTab)
+
+        self.tabWidget.setCurrentIndex(1)
+    #@-node:ekr.20090424085523.42:createLog
+    #@+node:ekr.20090424085523.45:createMenuBar
+    def createMenuBar (self):
+
+        MainWindow = self
+
+        w = QtGui.QMenuBar(MainWindow)
+        w.setGeometry(QtCore.QRect(0, 0, 957, 22))
+        w.setObjectName("menubar")
+
+        MainWindow.setMenuBar(w)
+
+        return w
+    #@-node:ekr.20090424085523.45:createMenuBar
+    #@+node:ekr.20090424085523.44:createMiniBuffer
+    def createMiniBuffer (self):
+
+        hLayout = QtGui.QHBoxLayout()
+        hLayout.setObjectName("horizontalLayout")
+
+        lab = QtGui.QLabel(self.centralwidget)
+        lab.setObjectName("minibuffer-label")
+        lab.setText(self.tr("Minibuffer:"))
+        hLayout.addWidget(lab)
+
+        w = QtGui.QLineEdit(self.centralwidget)
+        w.setObjectName("lineEdit")
+        hLayout.addWidget(w)
+
+        self.verticalLayout.addLayout(hLayout)
+        lab.setBuddy(w)
+
+        return w
+    #@nonl
+    #@-node:ekr.20090424085523.44:createMiniBuffer
+    #@+node:ekr.20090424085523.46:createStatusBar
+    def createStatusBar (self):
+
+        MainWindow = self
+
+        w = QtGui.QStatusBar(MainWindow)
+        w.setObjectName("statusbar")
+        MainWindow.setStatusBar(w)
+
+        return w
+    #@-node:ekr.20090424085523.46:createStatusBar
+    #@+node:ekr.20090424085523.47:createTree
+    def createTree (self):
+
+        MainWindow = self
+
+        w = QtGui.QTreeWidget(self.splitter)
+        w.setObjectName("treeWidget")
+        w.headerItem().setText(0,self.tr("1"))
+
+        #### Is this correct????
+        QtCore.QObject.connect(w,
+            QtCore.SIGNAL("itemSelectionChanged()"),
+            MainWindow.showNormal)
+
+        return w
+    #@-node:ekr.20090424085523.47:createTree
+    #@+node:ekr.20090424085523.48:tr
+    def tr(self,s):
+
+        return QtGui.QApplication.translate(
+            'MainWindow',s,None,QtGui.QApplication.UnicodeUTF8)
+    #@nonl
+    #@-node:ekr.20090424085523.48:tr
+    #@-node:ekr.20090423070717.14:createMainWindow & helpers
     #@+node:edward.20081129091117.1:setSplitDirection (dynamicWindow)
     def setSplitDirection (self,orientation='vertical'):
 
@@ -339,228 +486,6 @@ class DynamicWindow(QtGui.QMainWindow):
     '''
     #@-node:ekr.20081121105001.204:defaultStyleSheet
     #@-node:ekr.20081121105001.203:setStyleSheets & helper
-    #@+node:ekr.20090423125449.1:setupUI (DynamicWindow)
-    def setupUI(self):
-
-        '''Copied/adapted from qt_main.py'''
-
-        MainWindow = self
-
-        # Main window
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(957, 778)
-
-        self.centralwidget = QtGui.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-
-        self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
-        self.verticalLayout.setObjectName("verticalLayout")
-
-        self.splitter_2 = QtGui.QSplitter(self.centralwidget)
-        self.splitter_2.setOrientation(QtCore.Qt.Vertical)
-        self.splitter_2.setObjectName("splitter_2")
-
-        self.splitter = QtGui.QSplitter(self.splitter_2)
-        self.splitter.setOrientation(QtCore.Qt.Horizontal)
-        self.splitter.setObjectName("splitter")
-
-        # Tree.
-        self.treeWidget = QtGui.QTreeWidget(self.splitter)
-        self.treeWidget.setObjectName("treeWidget")
-
-        self.tabWidget = QtGui.QTabWidget(self.splitter)
-        self.tabWidget.setObjectName("tabWidget")
-
-        # Log frame.
-        self.tab = QtGui.QWidget()
-        self.tab.setObjectName("tab")
-
-        self.verticalLayout_3 = QtGui.QVBoxLayout(self.tab)
-        self.verticalLayout_3.setObjectName("verticalLayout_3")
-
-        self.textBrowser = QtGui.QTextBrowser(self.tab)
-        self.textBrowser.setObjectName("textBrowser")
-
-        self.verticalLayout_3.addWidget(self.textBrowser)
-        self.tabWidget.addTab(self.tab, "")
-
-        # Create Find tab
-        self.tab_2 = QtGui.QWidget()
-        self.tab_2.setObjectName("tab_2")
-        self.createFindTab(self.tab_2)
-
-        # Tab 3.
-        self.label_3 = QtGui.QLabel(self.tab_2)
-        self.label_3.setObjectName("label_3")
-        self.gridLayout.addWidget(self.label_3, 1, 0, 1, 1)
-        self.tabWidget.addTab(self.tab_2, "")
-        self.tab_3 = QtGui.QWidget()
-        self.tab_3.setObjectName("tab_3")
-        self.tabWidget.addTab(self.tab_3, "")
-
-        # Stacked widget.
-        self.stackedWidget = QtGui.QStackedWidget(self.splitter_2)
-        self.stackedWidget.setAcceptDrops(True)
-        self.stackedWidget.setObjectName("stackedWidget")
-
-        # page_2 tab
-        self.page = QtGui.QWidget()
-        self.page.setObjectName("page")
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.page)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.textEdit = Qsci.QsciScintilla(self.page)
-        self.textEdit.setObjectName("textEdit")
-        self.verticalLayout_2.addWidget(self.textEdit)
-        self.stackedWidget.addWidget(self.page)
-        self.page_2 = QtGui.QWidget()
-        self.page_2.setObjectName("page_2")
-        self.verticalLayout_4 = QtGui.QVBoxLayout(self.page_2)
-        self.verticalLayout_4.setObjectName("verticalLayout_4")
-
-        # Body pane
-        self.richTextEdit = QtGui.QTextEdit(self.page_2)
-        self.richTextEdit.setObjectName("richTextEdit")
-        self.verticalLayout_4.addWidget(self.richTextEdit)
-
-        self.stackedWidget.addWidget(self.page_2)
-        self.verticalLayout.addWidget(self.splitter_2)
-
-        # Minibuffer
-        self.horizontalLayout = QtGui.QHBoxLayout()
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.label = QtGui.QLabel(self.centralwidget)
-        self.label.setObjectName("label")
-        self.horizontalLayout.addWidget(self.label)
-        self.lineEdit = QtGui.QLineEdit(self.centralwidget)
-        self.lineEdit.setObjectName("lineEdit")
-        self.horizontalLayout.addWidget(self.lineEdit)
-        self.verticalLayout.addLayout(self.horizontalLayout)
-        self.label.setBuddy(self.lineEdit)
-
-        MainWindow.setCentralWidget(self.centralwidget)
-
-        # Menu bar
-        self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 957, 22))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-
-        # Status bar
-        self.statusbar = QtGui.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-
-        # Actions
-        self.actionOpen = QtGui.QAction(MainWindow)
-        self.actionOpen.setObjectName("actionOpen")
-        self.actionSave = QtGui.QAction(MainWindow)
-        self.actionSave.setObjectName("actionSave")
-        self.actionIPython = QtGui.QAction(MainWindow)
-        self.actionIPython.setObjectName("actionIPython")
-
-        # Init
-        #### self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
-        self.stackedWidget.setCurrentIndex(0)
-
-        # Signals.
-        QtCore.QObject.connect(self.treeWidget,
-            QtCore.SIGNAL("itemSelectionChanged()"), MainWindow.showNormal)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-    #@+node:ekr.20090424085523.38:createFindTab
-    def createFindTab (self,tab):
-
-        self.gridLayout = QtGui.QGridLayout(tab)
-        self.gridLayout.setObjectName("gridLayout")
-
-        self.findPattern = QtGui.QLineEdit(tab)
-        self.findPattern.setObjectName("findPattern")
-
-        self.gridLayout.addWidget(self.findPattern, 0, 1, 1, 1)
-
-        self.findChange = QtGui.QLineEdit(tab)
-        self.findChange.setObjectName("findChange")
-
-        self.gridLayout.addWidget(self.findChange, 1, 1, 1, 1)
-
-        self.checkBoxWholeWord = QtGui.QCheckBox(tab)
-        self.checkBoxWholeWord.setObjectName("checkBoxWholeWord")
-
-        self.gridLayout.addWidget(self.checkBoxWholeWord, 2, 0, 1, 1)
-
-        self.checkBoxEntireOutline = QtGui.QCheckBox(tab)
-        self.checkBoxEntireOutline.setObjectName("checkBoxEntireOutline")
-
-        self.gridLayout.addWidget(self.checkBoxEntireOutline, 2, 1, 1, 1)
-
-        self.checkBoxIgnoreCase = QtGui.QCheckBox(tab)
-        self.checkBoxIgnoreCase.setObjectName("checkBoxIgnoreCase")
-
-        self.gridLayout.addWidget(self.checkBoxIgnoreCase, 3, 0, 1, 1)
-
-        self.checkBoxSubroutineOnly = QtGui.QCheckBox(tab)
-        self.checkBoxSubroutineOnly.setObjectName("checkBoxSubroutineOnly")
-
-        self.gridLayout.addWidget(self.checkBoxSubroutineOnly, 3, 1, 1, 1)
-
-        self.checkBoxWrapAround = QtGui.QCheckBox(tab)
-        self.checkBoxWrapAround.setObjectName("checkBoxWrapAround")
-
-        self.gridLayout.addWidget(self.checkBoxWrapAround, 4, 0, 1, 1)
-
-        self.checkBoxNodeOnly = QtGui.QCheckBox(tab)
-        self.checkBoxNodeOnly.setObjectName("checkBoxNodeOnly")
-
-        self.gridLayout.addWidget(self.checkBoxNodeOnly, 4, 1, 1, 1)
-
-        self.checkBoxReverse = QtGui.QCheckBox(tab)
-        self.checkBoxReverse.setObjectName("checkBoxReverse")
-
-        self.gridLayout.addWidget(self.checkBoxReverse, 5, 0, 1, 1)
-
-        self.checkBoxSearchHeadline = QtGui.QCheckBox(tab)
-        self.checkBoxSearchHeadline.setObjectName("checkBoxSearchHeadline")
-
-        self.gridLayout.addWidget(self.checkBoxSearchHeadline, 5, 1, 1, 1)
-
-        self.checkBoxRexexp = QtGui.QCheckBox(tab)
-        self.checkBoxRexexp.setObjectName("checkBoxRexexp")
-
-        self.gridLayout.addWidget(self.checkBoxRexexp, 6, 0, 1, 1)
-
-        self.checkBoxSearchBody = QtGui.QCheckBox(tab)
-        self.checkBoxSearchBody.setObjectName("checkBoxSearchBody")
-
-        self.gridLayout.addWidget(self.checkBoxSearchBody, 6, 1, 1, 1)
-
-        self.checkBoxMarkFinds = QtGui.QCheckBox(tab)
-        self.checkBoxMarkFinds.setObjectName("checkBoxMarkFinds")
-
-        self.gridLayout.addWidget(self.checkBoxMarkFinds, 7, 0, 1, 1)
-
-        self.checkBoxMarkChanges = QtGui.QCheckBox(tab)
-        self.checkBoxMarkChanges.setObjectName("checkBoxMarkChanges")
-
-        self.gridLayout.addWidget(self.checkBoxMarkChanges, 7, 1, 1, 1)
-
-        self.label_2 = QtGui.QLabel(tab)
-        self.label_2.setObjectName("label_2")
-        self.gridLayout.addWidget(self.label_2, 0, 0, 1, 1)
-
-        self.checkBoxWholeWord.setText(QtGui.QApplication.translate("MainWindow", "Whole Word", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBoxEntireOutline.setText(QtGui.QApplication.translate("MainWindow", "Entire Outline", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBoxIgnoreCase.setText(QtGui.QApplication.translate("MainWindow", "Ignore Case", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBoxSubroutineOnly.setText(QtGui.QApplication.translate("MainWindow", "Subroutine Only", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBoxWrapAround.setText(QtGui.QApplication.translate("MainWindow", "Wrap Around", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBoxNodeOnly.setText(QtGui.QApplication.translate("MainWindow", "Node Only", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBoxReverse.setText(QtGui.QApplication.translate("MainWindow", "Reverse", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBoxSearchHeadline.setText(QtGui.QApplication.translate("MainWindow", "Search Headline", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBoxRexexp.setText(QtGui.QApplication.translate("MainWindow", "Regexp", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBoxSearchBody.setText(QtGui.QApplication.translate("MainWindow", "Search Body", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBoxMarkFinds.setText(QtGui.QApplication.translate("MainWindow", "Mark Finds", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBoxMarkChanges.setText(QtGui.QApplication.translate("MainWindow", "Mark Changes", None, QtGui.QApplication.UnicodeUTF8))
-    #@-node:ekr.20090424085523.38:createFindTab
-    #@-node:ekr.20090423125449.1:setupUI (DynamicWindow)
     #@-others
 
 #@-node:ekr.20081121105001.200:class  DynamicWindow (QtGui.QMainWindow)

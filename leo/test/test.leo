@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="3,8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -157,7 +157,7 @@
 </v>
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"></v>
-<v t="ekr.20070517160058.1" a="E"><vh>Prototypes</vh>
+<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
 <v t="ekr.20070929122956"><vh>Data trees</vh>
 <v t="ekr.20070929114617"><vh>@graph-target</vh></v>
@@ -264,7 +264,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071105085941" a="E"><vh>Tests</vh>
+<v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20090309064612.1"><vh> Future features/bug fixes (do not delete)</vh>
 <v t="ekr.20081216091605.2"><vh>@@auto under_indent.py</vh>
 <v t="ekr.20090122211549.1"><vh>class test</vh>
@@ -361,7 +361,6 @@
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
-<v t="ekr.20090408131749.1"><vh>NewHeadline</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2781,6 +2780,5 @@ collapse and expand "toplevel", phew, the children have returned</t>
 <t tx="ekr.20090309064612.5"></t>
 <t tx="ekr.20090309065826.1"></t>
 <t tx="ekr.20090316115500.1"></t>
-<t tx="ekr.20090408131749.1"></t>
 </tnodes>
 </leo_file>
