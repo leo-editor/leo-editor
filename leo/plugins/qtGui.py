@@ -1830,7 +1830,6 @@ class leoQtFrame (leoFrame.leoFrame):
         #@+node:ekr.20081121105001.265:update
         def update (self):
             if g.app.killed: return
-            #### if not useUI: return ###
 
             c = self.c ; body = c.frame.body
 
@@ -2205,8 +2204,6 @@ class leoQtFrame (leoFrame.leoFrame):
     # It is the only general-purpose splitter code in Leo.
 
     def divideAnySplitter (self, frac, splitter ):#verticalFlag, bar, pane1, pane2):
-
-        #### if not useUI: return
 
         sizes = splitter.sizes()
 
@@ -2841,11 +2838,6 @@ class leoQtLog (leoFrame.leoLog):
     # All output to the log stream eventually comes here.
     def put (self,s,color=None,tabName='Log'):
 
-        ####
-        # if not useUI:
-            # print(s)
-            # return
-
         c = self.c
         if g.app.quitting or not c or not c.exists:
             return
@@ -2882,11 +2874,6 @@ class leoQtLog (leoFrame.leoLog):
 
         if g.app.quitting:
             return
-
-        #### 
-        # if not useUI:
-            # print('')
-            # return
 
         if tabName:
             self.selectTab(tabName)
@@ -2995,8 +2982,6 @@ class leoQtLog (leoFrame.leoLog):
 
     #@+node:ekr.20081121105001.336:selectHelper
     def selectHelper (self,tabName,createText):
-
-        #### if not useUI: return True ###
 
         w = self.tabWidget
 
@@ -5608,11 +5593,8 @@ class leoQtColorizer:
         self.language = 'python' # set by scanColorDirectives.
 
         # Step 2: create the highlighter.
-        if True: #### useUI:
-            self.highlighter = leoQtSyntaxHighlighter(c,w,colorizer=self)
-            self.colorer = self.highlighter.colorer
-        else:
-            self.enabled = False
+        self.highlighter = leoQtSyntaxHighlighter(c,w,colorizer=self)
+        self.colorer = self.highlighter.colorer
 
         # Step 3: finish enabling.
         if self.enabled:
