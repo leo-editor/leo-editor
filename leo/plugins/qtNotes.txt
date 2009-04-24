@@ -2823,7 +2823,7 @@ def put_helper(self,s,w):
 #@+node:ekr.20081121105001.265:update
 def update (self):
     if g.app.killed: return
-    if not useUI: return ###
+    #### if not useUI: return ###
 
     c = self.c ; body = c.frame.body
 
@@ -3197,7 +3197,7 @@ def divideLeoSplitter2 (self, frac, verticalFlag):
 
 def divideAnySplitter (self, frac, splitter ):#verticalFlag, bar, pane1, pane2):
 
-    if not useUI: return
+    #### if not useUI: return
 
     sizes = splitter.sizes()
 
