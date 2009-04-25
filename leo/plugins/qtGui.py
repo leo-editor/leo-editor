@@ -334,9 +334,6 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ekr.20090424085523.40:createFindText
     def createFindText (self,parent,layout,name,row,col):
 
-        # layout = self.findGrid
-        # tab = self.findTab
-
         w = QtGui.QLineEdit(parent)
         w.setObjectName(name)
         layout.addWidget(w,row,col,1, 1)
@@ -375,11 +372,11 @@ class DynamicWindow(QtGui.QMainWindow):
         logFrame.setFrameShape(QtGui.QFrame.NoFrame)
         logFrame.setFrameShadow(QtGui.QFrame.Plain)
         logFrame.setLineWidth(1)
-        logFrame.setObjectName("leo_log_frame")
+        logFrame.setObjectName("logFrame")
 
         outerGrid = QtGui.QGridLayout(logFrame)
         outerGrid.setMargin(0)
-        outerGrid.setObjectName("leo_log_grid")
+        outerGrid.setObjectName("logGrid")
 
         innerFrame = QtGui.QFrame(logFrame)
         self.setSizePolicy(innerFrame,
@@ -387,11 +384,11 @@ class DynamicWindow(QtGui.QMainWindow):
             kind2=QtGui.QSizePolicy.Expanding)
         innerFrame.setFrameShape(QtGui.QFrame.NoFrame)
         innerFrame.setFrameShadow(QtGui.QFrame.Plain)
-        innerFrame.setObjectName("leo_log_inner_frame")
+        innerFrame.setObjectName("logInnerFrame")
 
         innerGrid = QtGui.QGridLayout(innerFrame)
         innerGrid.setMargin(0)
-        innerGrid.setObjectName("gridLayout_7")
+        innerGrid.setObjectName("logInnerGrid")
 
         tabWidget = QtGui.QTabWidget(innerFrame)
         self.setSizePolicy(tabWidget)
@@ -402,10 +399,8 @@ class DynamicWindow(QtGui.QMainWindow):
 
         findTab = QtGui.QWidget()
         findTab.setObjectName('findTab')
+        tabWidget.addTab(findTab,'Find')
         self.createFindTab(findTab)
-        tabWidget.addTab(findTab,'')
-        tabWidget.setTabText(tabWidget.indexOf(findTab),'Tab 2')
-            # Must be Tab 2: changed to 'Find' by qtLog.finishCreate.
 
         spellTab = QtGui.QWidget()
         spellTab.setObjectName('spellTab')
@@ -706,9 +701,11 @@ class DynamicWindow(QtGui.QMainWindow):
     def setSplitDirection (self,orientation='vertical'):
 
         vert = orientation and orientation.lower().startswith('v')
+        h,v = QtCore.Qt.Horizontal,QtCore.Qt.Vertical
 
-        orientation1 = g.choose(vert,QtCore.Qt.Horizontal, QtCore.Qt.Vertical)
-        orientation2 = g.choose(vert,QtCore.Qt.Vertical, QtCore.Qt.Horizontal)
+        orientation1 = g.choose(vert,h,v)
+        orientation2 = g.choose(vert,v,h)
+
         self.splitter.setOrientation(orientation1)
         self.splitter_2.setOrientation(orientation2)
 
@@ -2957,7 +2954,7 @@ class leoQtLog (leoFrame.leoLog):
 
         # Rename the 'Tab 2' tab to 'Find'.
         for i in range(w.count()):
-            if w.tabText(i) == 'Tab 2':
+            if w.tabText(i) in ('Find','Tab 2'):
                 w.setTabText(i,'Find')
                 self.contentsDict['Find'] = w.currentWidget()
                 break
