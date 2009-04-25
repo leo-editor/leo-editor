@@ -718,6 +718,7 @@ aType
 aTypeSpec
 aa
 aaa
+aaaaaaaaaaaa
 abc
 accel
 accept_connect
