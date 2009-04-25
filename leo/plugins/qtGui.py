@@ -187,94 +187,80 @@ class DynamicWindow(QtGui.QMainWindow):
         self.ui = self
 
         self.setMainWindowOptions()
-        self.centralwidget = self.createCentralWidget()
+        self.createCentralWidget()
         self.createLayout(self.centralwidget)
             # Creates .verticalLayout, .splitter and .splitter_2.
-        self.treeWidget = self.createTree(self.splitter)
+        self.createTree(self.splitter)
         self.createLog(self.splitter)
-        self.richTextEdit = self.createBody(self.splitter_2)
-        self.lineEdit = self.createMiniBuffer(self.centralwidget)
-        self.menubar = self.createMenuBar()
-        self.statusBar = self.createStatusBar()
+        self.createBody(self.splitter_2)
+        self.createMiniBuffer(self.centralwidget)
+        self.createMenuBar()
+        self.createStatusBar()
 
         # Signals
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
     #@+node:ekr.20090424085523.43:createBody
     def createBody (self,parent):
 
-        self.leo_body_frame = f = QtGui.QFrame(parent)
-        self.setSizePolicy(f)
-        f.setFrameShape(QtGui.QFrame.NoFrame)
-        f.setFrameShadow(QtGui.QFrame.Plain)
-        f.setLineWidth(1)
-        f.setObjectName("leo_body_frame")
+        bodyFrame = QtGui.QFrame(parent)
+        self.setSizePolicy(bodyFrame)
+        bodyFrame.setFrameShape(QtGui.QFrame.NoFrame)
+        bodyFrame.setFrameShadow(QtGui.QFrame.Plain)
+        bodyFrame.setLineWidth(1)
+        bodyFrame.setObjectName("leo_body_frame")
 
-        self.leo_body_grid = grid = QtGui.QGridLayout(self.leo_body_frame)
+        grid = QtGui.QGridLayout(bodyFrame)
         grid.setMargin(0)
         grid.setObjectName("leo_body_grid")
 
-        self.leo_body_inner_frame = f = QtGui.QFrame(self.leo_body_frame)
-        self.setSizePolicy(f,kind1 = QtGui.QSizePolicy.Expanding)
-        f.setFrameShape(QtGui.QFrame.NoFrame)
-        f.setFrameShadow(QtGui.QFrame.Plain)
-        f.setLineWidth(1)
-        f.setObjectName("leo_body_inner_frame")
+        innerFrame = QtGui.QFrame(bodyFrame)
+        self.setSizePolicy(innerFrame,kind1 = QtGui.QSizePolicy.Expanding)
+        innerFrame.setFrameShape(QtGui.QFrame.NoFrame)
+        innerFrame.setFrameShadow(QtGui.QFrame.Plain)
+        innerFrame.setLineWidth(1)
+        innerFrame.setObjectName("leo_body_inner_frame")
 
-        self.grid = grid = QtGui.QGridLayout(self.leo_body_inner_frame)
-        grid.setMargin(0)
-        grid.setObjectName("leo_body_inner_grid")
+        innerGrid = QtGui.QGridLayout(innerFrame)
+        innerGrid.setMargin(0)
+        innerGrid.setObjectName("leo_body_inner_grid")
 
-        self.stackedWidget = sw = QtGui.QStackedWidget(self.leo_body_inner_frame)
+        sw = QtGui.QStackedWidget(innerFrame)
         self.setSizePolicy(sw)
         sw.setAcceptDrops(True)
         sw.setLineWidth(1)
-        sw.setObjectName("stackedWidget")
+        sw.setObjectName("body-stackedWidget")
 
-        self.page_2 = QtGui.QWidget()
-        self.page_2.setObjectName("page_2")
+        page2 = QtGui.QWidget()
+        page2.setObjectName("page_2")
 
-        self.verticalBodyLayout= vLayout = QtGui.QVBoxLayout(self.page_2)
+        vLayout = QtGui.QVBoxLayout(page2)
         vLayout.setSpacing(6)
         vLayout.setMargin(0)
-        vLayout.setObjectName("verticalLayout_4")
+        vLayout.setObjectName("body-vLayout")
 
-        self.richTextEdit = w = QtGui.QTextEdit(self.page_2)
-        w.setFrameShape(QtGui.QFrame.NoFrame)
-        w.setFrameShadow(QtGui.QFrame.Plain)
-        w.setLineWidth(0)
-        w.setObjectName("richTextEdit")
+        body = QtGui.QTextEdit(page2)
+        body.setFrameShape(QtGui.QFrame.NoFrame)
+        body.setFrameShadow(QtGui.QFrame.Plain)
+        body.setLineWidth(0)
+        body.setObjectName("richTextEdit")
 
-        vLayout.addWidget(w)
-        sw.addWidget(self.page_2)
-
-        self.grid.addWidget(sw, 0, 0, 1, 1)
-        self.leo_body_grid.addWidget(self.leo_body_inner_frame, 0, 0, 1, 1)
+        # Pack.
+        vLayout.addWidget(body)
+        sw.addWidget(page2)
+        innerGrid.addWidget(sw, 0, 0, 1, 1)
+        grid.addWidget(innerFrame, 0, 0, 1, 1)
         self.verticalLayout.addWidget(parent)
 
-        return w
-
-    #@+at
-    #     OLD CODE (works)
-    # 
-    #     frame = QtGui.QWidget()
-    #     frame.setObjectName("bodyFrame")
-    # 
-    #     vLayout = QtGui.QVBoxLayout(frame)
-    #     vLayout.setObjectName("body-vLayout")
-    # 
-    #     w = QtGui.QTextEdit(frame)
-    #     w.setObjectName("richTextEdit")
-    #     vLayout.addWidget(w)
-    # 
-    #     # Stacked widget.  This ivar *is* used at present.
-    #     self.stackedWidget = sw = QtGui.QStackedWidget(parent)
-    #     sw.setAcceptDrops(True)
-    #     sw.setObjectName("stackedWidget")
-    #     sw.setCurrentIndex(0)
-    #     sw.addWidget(frame)
-    # 
-    #     return w
-    #@-at
+        # official ivars
+        self.stackedWidget = sw # used by leoQtBody
+        self.richTextEdit = body
+        # self.leo_body_frame = bodyFrame
+        # self.leo_body_inner_frame = innerFrame
+        # self.leo_body_grid = grid
+        # self.grid = innerGrid
+        # self.page_2 = page2
+        # self.verticalBodyLayout= vLayout
+    #@nonl
     #@-node:ekr.20090424085523.43:createBody
     #@+node:ekr.20090425072841.12:createCentralWidget
     def createCentralWidget (self):
@@ -286,15 +272,16 @@ class DynamicWindow(QtGui.QMainWindow):
 
         MainWindow.setCentralWidget(w)
 
-        return w
+        # Official ivars.
+        self.centralwidget = w
     #@-node:ekr.20090425072841.12:createCentralWidget
     #@+node:ekr.20090424085523.39:createFindCheckBox
-    def createFindCheckBox (self,name,label,row,col):
+    def createFindCheckBox (self,parent,layout,name,label,row,col):
 
-        layout = self.findGrid
-        tab = self.findTab
+        # layout = self.findGrid
+        # tab = self.findTab
 
-        w = QtGui.QCheckBox(tab)
+        w = QtGui.QCheckBox(parent)
         w.setObjectName(name)
         # w.setText(label)
         w.setText(
@@ -309,14 +296,14 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ekr.20090424085523.38:createFindTab
     def createFindTab (self,parent):
 
-        # This is an ivar for communication with createFindText and createFindCheckBox, etc.
-        self.findGrid = QtGui.QGridLayout(parent)
-        self.findGrid.setObjectName("findGridLayout")
+        findGrid = QtGui.QGridLayout(parent)
+        findGrid.setObjectName("findGridLayout")
 
-        newBox = self.createFindCheckBox
+        def newBox(name,label,row,col):
+            return self.createFindCheckBox(parent,findGrid,name,label,row,col)
 
-        self.findPattern = self.createFindText('findPattern',0,1)
-        self.findChange  = self.createFindText('findChange',1,1)
+        self.findPattern = self.createFindText(parent,findGrid,'findPattern',0,1)
+        self.findChange  = self.createFindText(parent,findGrid,'findChange',1,1)
 
         self.checkBoxWholeWord      = newBox('checkBoxWholeWord','Whole &Word',2,0)
         self.checkBoxEntireOutline  = newBox('checkBoxEntireOutline','Entire Outline',2,1)
@@ -335,115 +322,106 @@ class DynamicWindow(QtGui.QMainWindow):
         lab2 = QtGui.QLabel(parent)
         lab2.setObjectName("label_2")
         lab2.setText(self.tr("Find:"))
-        self.findGrid.addWidget(lab2, 0, 0, 1, 1)
+        findGrid.addWidget(lab2, 0, 0, 1, 1)
 
         # The Change: label
         lab3 = QtGui.QLabel(parent)
         lab3.setObjectName("lab3")
         lab3.setText(self.tr("Change:"))
-        self.findGrid.addWidget(lab3, 1, 0, 1, 1)
-
-        self.tabWidget.addTab(parent, "")
-        self.tabWidget.setTabText(self.tabWidget.indexOf(parent),'Tab 2')
-            # Must be Tab 2: changed to 'Find' by qtLog.finishCreate.
+        findGrid.addWidget(lab3, 1, 0, 1, 1)
+    #@nonl
     #@-node:ekr.20090424085523.38:createFindTab
     #@+node:ekr.20090424085523.40:createFindText
-    def createFindText (self,name,row,col):
+    def createFindText (self,parent,layout,name,row,col):
 
-        layout = self.findGrid
-        tab = self.findTab
+        # layout = self.findGrid
+        # tab = self.findTab
 
-        w = QtGui.QLineEdit(tab)
+        w = QtGui.QLineEdit(parent)
         w.setObjectName(name)
         layout.addWidget(w,row,col,1, 1)
 
         return w
     #@-node:ekr.20090424085523.40:createFindText
     #@+node:ekr.20090424085523.41:createLayout
-    def createLayout (self,frame):
+    def createLayout (self,parent):
 
-        MainWindow = self
-
-        self.verticalLayout = vLayout = QtGui.QVBoxLayout(frame)
+        vLayout = QtGui.QVBoxLayout(parent)
         vLayout.setSpacing(0)
         vLayout.setMargin(3)
         vLayout.setObjectName("verticalLayout")
 
-        self.splitter_2 = splitter2 = QtGui.QSplitter(frame)
+        splitter2 = QtGui.QSplitter(parent)
         splitter2.setOrientation(QtCore.Qt.Vertical)
         splitter2.setObjectName("splitter_2")
 
-        self.splitter = splitter = QtGui.QSplitter(splitter2)
+        splitter = QtGui.QSplitter(splitter2)
         splitter.setOrientation(QtCore.Qt.Horizontal)
         splitter.setObjectName("splitter")
 
-        self.setSizePolicy(self.splitter)
+        self.setSizePolicy(splitter)
+        vLayout.addWidget(splitter2)
 
-        # sizePolicy = QtGui.QSizePolicy(
-            # QtGui.QSizePolicy.Ignored,QtGui.QSizePolicy.Ignored)
-        # sizePolicy.setHorizontalStretch(0)
-        # sizePolicy.setVerticalStretch(0)
-        # sizePolicy.setHeightForWidth(
-            # self.splitter.sizePolicy().hasHeightForWidth())
-        # self.splitter.setSizePolicy(sizePolicy)
-
-        vLayout.addWidget(self.splitter_2)
+        # Official ivars
+        self.verticalLayout = vLayout
+        self.splitter = splitter
+        self.splitter_2 = splitter2
     #@-node:ekr.20090424085523.41:createLayout
     #@+node:ekr.20090424085523.42:createLog
     def createLog (self,parent):
 
-        if 0: # old code
-            self.tabWidget = QtGui.QTabWidget(parent)
-            self.tabWidget.setObjectName("logTabWidget")
-            self.findTab = QtGui.QWidget()
-            self.findTab.setObjectName('findTab')
-            self.spellTab = QtGui.QWidget()
-            self.spellTab.setObjectName('spellTab')
-            self.tabWidget.addTab(self.spellTab,'Spell')
-        else:
-            self.leo_log_frame = f = QtGui.QFrame(parent)
-            self.setSizePolicy(f,kind2 = QtGui.QSizePolicy.Minimum)
-            f.setFrameShape(QtGui.QFrame.NoFrame)
-            f.setFrameShadow(QtGui.QFrame.Plain)
-            f.setLineWidth(1)
-            f.setObjectName("leo_log_frame")
+        logFrame = QtGui.QFrame(parent)
+        self.setSizePolicy(logFrame,kind2 = QtGui.QSizePolicy.Minimum)
+        logFrame.setFrameShape(QtGui.QFrame.NoFrame)
+        logFrame.setFrameShadow(QtGui.QFrame.Plain)
+        logFrame.setLineWidth(1)
+        logFrame.setObjectName("leo_log_frame")
 
-            self.leo_log_grid = grid = QtGui.QGridLayout(self.leo_log_frame)
-            grid.setMargin(0)
-            grid.setObjectName("leo_log_grid")
+        outerGrid = QtGui.QGridLayout(logFrame)
+        outerGrid.setMargin(0)
+        outerGrid.setObjectName("leo_log_grid")
 
-            self.leo_log_inner_frame = f = QtGui.QFrame(self.leo_log_frame)
-            self.setSizePolicy(f,
-                kind1=QtGui.QSizePolicy.Preferred,
-                kind2=QtGui.QSizePolicy.Expanding)
-            f.setFrameShape(QtGui.QFrame.NoFrame)
-            f.setFrameShadow(QtGui.QFrame.Plain)
-            f.setObjectName("leo_log_inner_frame")
+        innerFrame = QtGui.QFrame(logFrame)
+        self.setSizePolicy(innerFrame,
+            kind1=QtGui.QSizePolicy.Preferred,
+            kind2=QtGui.QSizePolicy.Expanding)
+        innerFrame.setFrameShape(QtGui.QFrame.NoFrame)
+        innerFrame.setFrameShadow(QtGui.QFrame.Plain)
+        innerFrame.setObjectName("leo_log_inner_frame")
 
-            self.gridLayout_7 = QtGui.QGridLayout(self.leo_log_inner_frame)
-            self.gridLayout_7.setMargin(0)
-            self.gridLayout_7.setObjectName("gridLayout_7")
+        innerGrid = QtGui.QGridLayout(innerFrame)
+        innerGrid.setMargin(0)
+        innerGrid.setObjectName("gridLayout_7")
 
-            self.tabWidget = QtGui.QTabWidget(self.leo_log_inner_frame)
-            self.setSizePolicy(self.tabWidget)
-            self.tabWidget.setObjectName("logTabWidget")
+        tabWidget = QtGui.QTabWidget(innerFrame)
+        self.setSizePolicy(tabWidget)
+        tabWidget.setObjectName("logTabWidget")
 
-            self.findTab = QtGui.QWidget()
-            self.findTab.setObjectName('findTab')
+        innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
+        outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
 
-            self.spellTab = QtGui.QWidget()
-            self.spellTab.setObjectName('spellTab')
-            self.tabWidget.addTab(self.spellTab,'Spell')
+        findTab = QtGui.QWidget()
+        findTab.setObjectName('findTab')
+        self.createFindTab(findTab)
+        tabWidget.addTab(findTab,'')
+        tabWidget.setTabText(tabWidget.indexOf(findTab),'Tab 2')
+            # Must be Tab 2: changed to 'Find' by qtLog.finishCreate.
 
-            self.gridLayout_7.addWidget(self.tabWidget, 0, 0, 1, 1)
+        spellTab = QtGui.QWidget()
+        spellTab.setObjectName('spellTab')
+        tabWidget.addTab(spellTab,'Spell')
+        self.createSpellTab(spellTab)
 
-            self.leo_log_grid.addWidget(self.leo_log_inner_frame, 0, 0, 1, 1)
+        tabWidget.setCurrentIndex(1)
 
-        self.createFindTab(self.findTab)
-        self.createSpellTab(self.spellTab)
-
-        self.tabWidget.setCurrentIndex(1)
-    #@nonl
+        # Official ivars
+        self.tabWidget = tabWidget # Used by leoQtLog.
+        # self.leo_log_frame = logFrame
+        # self.leo_log_grid = outerGrid
+        # self.findTab = findTab
+        # self.spellTab = spellTab
+        # self.leo_log_inner_frame = innerFrame
+        # self.leo_log_inner_grid = innerGrid
     #@-node:ekr.20090424085523.42:createLog
     #@+node:ekr.20090424085523.45:createMenuBar
     def createMenuBar (self):
@@ -456,9 +434,10 @@ class DynamicWindow(QtGui.QMainWindow):
 
         MainWindow.setMenuBar(w)
 
-        return w
+        # Official ivars.
+        self.menubar = w
     #@-node:ekr.20090424085523.45:createMenuBar
-    #@+node:ekr.20090424085523.44:createMiniBuffer
+    #@+node:ekr.20090424085523.44:createMiniBuffer (revise)
     def createMiniBuffer (self,parent):
 
         hLayout = QtGui.QHBoxLayout()
@@ -476,7 +455,8 @@ class DynamicWindow(QtGui.QMainWindow):
 
         self.verticalLayout.addLayout(hLayout)
 
-        return w
+        # Official ivars.
+        self.lineEdit = w
 
     #@+at
     #     self.leo_minibuffer_frame = QtGui.QFrame(self.centralwidget)
@@ -503,7 +483,7 @@ class DynamicWindow(QtGui.QMainWindow):
     #     self.leo_minibuffer_layout.addWidget(self.lineEdit)
     #     self.verticalLayout.addWidget(self.leo_minibuffer_frame)
     #@-at
-    #@-node:ekr.20090424085523.44:createMiniBuffer
+    #@-node:ekr.20090424085523.44:createMiniBuffer (revise)
     #@+node:ekr.20090424085523.51:createSpellButton
     def createSpellButton (self,name,label,row,col):
 
@@ -599,72 +579,7 @@ class DynamicWindow(QtGui.QMainWindow):
         QtCore.QObject.connect(self.leo_spell_listBox,
             QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"),
             self.do_leo_spell_btn_FindChange)
-
-        # self.leo_spell_panel = QtGui.QFrame(self.leo_spell_tab)
-
-        # self.leo_spell_panel.setAutoFillBackground(False)
-        # self.leo_spell_panel.setFrameShape(QtGui.QFrame.NoFrame)
-        # self.leo_spell_panel.setFrameShadow(QtGui.QFrame.Plain)
-        # self.leo_spell_panel.setLineWidth(0)
-        # self.leo_spell_panel.setObjectName("leo_spell_panel")
-
-        # self.verticalLayout_6 = QtGui.QVBoxLayout(self.leo_spell_panel)
-        # self.verticalLayout_6.setMargin(0)
-        # self.verticalLayout_6.setObjectName("verticalLayout_6")
-
-        # self.gridLayout_6 = QtGui.QGridLayout()
-        # self.gridLayout_6.setSpacing(2)
-        # self.gridLayout_6.setObjectName("gridLayout_6")
-
-            # self.leo_spell_btn_Add = QtGui.QPushButton(self.leo_spell_panel)
-            # self.leo_spell_btn_Add.setObjectName("leo_spell_btn_Add")
-            # self.gridLayout_6.addWidget(self.leo_spell_btn_Add, 2, 1, 1, 1)
-            # self.leo_spell_btn_Find = QtGui.QPushButton(self.leo_spell_panel)
-            # self.leo_spell_btn_Find.setObjectName("leo_spell_btn_Find")
-            # self.gridLayout_6.addWidget(self.leo_spell_btn_Find, 2, 0, 1, 1)
-            # self.leo_spell_btn_Change = QtGui.QPushButton(self.leo_spell_panel)
-            # self.leo_spell_btn_Change.setObjectName("leo_spell_btn_Change")
-            # self.gridLayout_6.addWidget(self.leo_spell_btn_Change, 3, 0, 1, 1)
-            # self.leo_spell_btn_FindChange = QtGui.QPushButton(self.leo_spell_panel)
-            # self.leo_spell_btn_FindChange.setObjectName("leo_spell_btn_FindChange")
-            # self.gridLayout_6.addWidget(self.leo_spell_btn_FindChange, 3, 1, 1, 1)
-            # self.leo_spell_btn_Ignore = QtGui.QPushButton(self.leo_spell_panel)
-            # self.leo_spell_btn_Ignore.setObjectName("leo_spell_btn_Ignore")
-            # self.gridLayout_6.addWidget(self.leo_spell_btn_Ignore, 4, 0, 1, 1)
-            # self.leo_spell_btn_Hide = QtGui.QPushButton(self.leo_spell_panel)
-            # self.leo_spell_btn_Hide.setCheckable(False)
-            # self.leo_spell_btn_Hide.setObjectName("leo_spell_btn_Hide")
-            # self.gridLayout_6.addWidget(self.leo_spell_btn_Hide, 4, 1, 1, 1)
-
-        # spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        # self.gridLayout_6.addItem(spacerItem, 5, 0, 1, 1)
-
-        # self.leo_spell_listBox = QtGui.QListWidget(self.leo_spell_panel)
-            # sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding,
-            # QtGui.QSizePolicy.Expanding)
-            # sizePolicy.setHorizontalStretch(0)
-            # sizePolicy.setVerticalStretch(0)
-            # sizePolicy.setHeightForWidth(self.leo_spell_listBox.sizePolicy().hasHeightForWidth())
-            # self.leo_spell_listBox.setSizePolicy(sizePolicy)
-        # self.leo_spell_listBox.setMinimumSize(QtCore.QSize(0, 0))
-        # self.leo_spell_listBox.setMaximumSize(QtCore.QSize(150, 150))
-        # self.leo_spell_listBox.setObjectName("leo_spell_listBox")
-
-        # self.gridLayout_6.addWidget(self.leo_spell_listBox, 1, 0, 1, 2)
-        # spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        # self.gridLayout_6.addItem(spacerItem1, 2, 2, 1, 1)
-        # self.leo_spell_label = QtGui.QLabel(self.leo_spell_panel)
-        # self.leo_spell_label.setObjectName("leo_spell_label")
-
-        # self.gridLayout_6.addWidget(self.leo_spell_label, 0, 0, 1, 2)
-
-        # self.verticalLayout_6.addLayout(self.gridLayout_6)
-        # self.verticalLayout_5.addWidget(self.leo_spell_panel)
-
-        # self.tabWidget.addTab(self.leo_spell_tab, "")
-
-        # self.gridLayout_7.addWidget(self.tabWidget, 0, 0, 1, 1)
-        # self.leo_log_grid.addWidget(self.leo_log_inner_frame, 0, 0, 1, 1)
+    #@nonl
     #@-node:ekr.20090424085523.50:createSpellTab
     #@+node:ekr.20090424085523.46:createStatusBar
     def createStatusBar (self):
@@ -675,56 +590,60 @@ class DynamicWindow(QtGui.QMainWindow):
         w.setObjectName("statusbar")
         MainWindow.setStatusBar(w)
 
-        return w
+        # Official ivars.
+        self.statusBar = w
     #@-node:ekr.20090424085523.46:createStatusBar
     #@+node:ekr.20090424085523.47:createTree
     def createTree (self,parent):
 
-        MainWindow = self
+        # Outline frame.
+        treeFrame = QtGui.QFrame(parent)
+        self.setSizePolicy(treeFrame,kind2=QtGui.QSizePolicy.Expanding)
+        treeFrame.setFrameShape(QtGui.QFrame.NoFrame)
+        treeFrame.setFrameShadow(QtGui.QFrame.Plain)
+        treeFrame.setLineWidth(1)
+        treeFrame.setObjectName("leo_outline_frame")
 
-        if 0: # works
-            w = QtGui.QTreeWidget(parent)
-            w.setObjectName("treeWidget")
-            w.headerItem().setText(0,self.tr("1"))
-        else:
-            self.leo_outline_frame = f = QtGui.QFrame(parent)
-            self.setSizePolicy(f,kind2=QtGui.QSizePolicy.Expanding)
-            f.setFrameShape(QtGui.QFrame.NoFrame)
-            f.setFrameShadow(QtGui.QFrame.Plain)
-            f.setLineWidth(1)
-            f.setObjectName("leo_outline_frame")
+        # Outer grid.
+        grid = QtGui.QGridLayout(treeFrame)
+        grid.setMargin(0)
+        grid.setObjectName("leo_outline_grid")
 
-            self.leo_outline_grid = grid = QtGui.QGridLayout(self.leo_outline_frame)
-            grid.setMargin(0)
-            grid.setObjectName("leo_outline_grid")
+        # Inner frame.
+        innerFrame = QtGui.QFrame(treeFrame)
+        self.setSizePolicy(innerFrame,kind1=QtGui.QSizePolicy.Preferred)
+        innerFrame.setFrameShape(QtGui.QFrame.NoFrame)
+        innerFrame.setFrameShadow(QtGui.QFrame.Plain)
+        innerFrame.setObjectName("leo_outline_inner_frame")
 
-            self.leo_outline_inner_frame = f = QtGui.QFrame(self.leo_outline_frame)
-            self.setSizePolicy(f,kind1=QtGui.QSizePolicy.Preferred)
-            f.setFrameShape(QtGui.QFrame.NoFrame)
-            f.setFrameShadow(QtGui.QFrame.Plain)
-            f.setObjectName("leo_outline_inner_frame")
+        # Inner grid.
+        innerGrid = QtGui.QGridLayout(innerFrame)
+        innerGrid.setMargin(0)
+        innerGrid.setObjectName("leo_outline_inner_grid")
 
-            self.gridLayout_3 = QtGui.QGridLayout(self.leo_outline_inner_frame)
-            self.gridLayout_3.setMargin(0)
-            self.gridLayout_3.setObjectName("gridLayout_3")
+        # Tree widget.
+        treeWidget = QtGui.QTreeWidget(innerFrame)
+        self.setSizePolicy(treeWidget)
+        treeWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        treeWidget.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        treeWidget.setHeaderHidden(False)
+        treeWidget.setObjectName("leo_treeWidget")
 
-            self.treeWidget = w = QtGui.QTreeWidget(self.leo_outline_inner_frame)
-            self.setSizePolicy(w)
+        # Pack.
+        innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
+        grid.addWidget(innerFrame, 0, 0, 1, 1)
 
-            w.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-            w.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-            w.setHeaderHidden(False)
-            w.setObjectName("treeWidget")
-
-            self.gridLayout_3.addWidget(self.treeWidget, 0, 0, 1, 1)
-            self.leo_outline_grid.addWidget(self.leo_outline_inner_frame, 0, 0, 1, 1)
-
-        ### Is this correct??
-        QtCore.QObject.connect(w,
+        # Signals.
+        QtCore.QObject.connect(treeWidget,
             QtCore.SIGNAL("itemSelectionChanged()"),
-            MainWindow.showNormal)
+            self.showNormal)
 
-        return w
+        # Official ivars...
+        self.treeWidget = treeWidget
+        # self.leo_outline_frame = treeFrame
+        # self.leo_outline_grid = grid
+        # self.leo_outline_inner_frame = innerFrame
+    #@nonl
     #@-node:ekr.20090424085523.47:createTree
     #@+node:ekr.20090425072841.2:setMainWindowOptions
     def setMainWindowOptions (self):
