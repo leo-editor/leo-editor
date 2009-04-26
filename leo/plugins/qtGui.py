@@ -188,7 +188,7 @@ class DynamicWindow(QtGui.QMainWindow):
 
         self.setMainWindowOptions()
         self.createCentralWidget()
-        self.createLayout(self.centralwidget)
+        self.createMainLayout(self.centralwidget)
             # Creates .verticalLayout, .splitter and .splitter_2.
         self.createTree(self.splitter)
         self.createLog(self.splitter)
@@ -202,49 +202,20 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ekr.20090424085523.43:createBody
     def createBody (self,parent):
 
-        bodyFrame = QtGui.QFrame(parent)
-        self.setSizePolicy(bodyFrame)
-        bodyFrame.setFrameShape(QtGui.QFrame.NoFrame)
-        bodyFrame.setFrameShadow(QtGui.QFrame.Plain)
-        bodyFrame.setLineWidth(1)
-        bodyFrame.setObjectName("leo_body_frame")
-
-        grid = QtGui.QGridLayout(bodyFrame)
-        grid.setMargin(0)
-        grid.setObjectName("leo_body_grid")
-
-        innerFrame = QtGui.QFrame(bodyFrame)
-        self.setSizePolicy(innerFrame,kind1 = QtGui.QSizePolicy.Expanding)
-        innerFrame.setFrameShape(QtGui.QFrame.NoFrame)
-        innerFrame.setFrameShadow(QtGui.QFrame.Plain)
-        innerFrame.setLineWidth(1)
-        innerFrame.setObjectName("leo_body_inner_frame")
-
-        innerGrid = QtGui.QGridLayout(innerFrame)
-        innerGrid.setMargin(0)
-        innerGrid.setObjectName("leo_body_inner_grid")
-
-        sw = QtGui.QStackedWidget(innerFrame)
-        self.setSizePolicy(sw)
-        sw.setAcceptDrops(True)
-        sw.setLineWidth(1)
-        sw.setObjectName("body-stackedWidget")
-
+        # Create widgets.
+        bodyFrame = self.createFrame(parent,'bodyFrame')
+        innerFrame = self.createFrame(bodyFrame,
+            name='innerBodyFrame',
+            hPolicy=QtGui.QSizePolicy.Expanding)
+        sw = self.createStackedWidget(innerFrame,'bodyStackedWidget')
         page2 = QtGui.QWidget()
-        page2.setObjectName("page_2")
+        self.setName(page2,'bodyPage2')
+        body = self.createText(page2,'richTextEdit')
 
-        vLayout = QtGui.QVBoxLayout(page2)
-        vLayout.setSpacing(6)
-        vLayout.setMargin(0)
-        vLayout.setObjectName("body-vLayout")
-
-        body = QtGui.QTextEdit(page2)
-        body.setFrameShape(QtGui.QFrame.NoFrame)
-        body.setFrameShadow(QtGui.QFrame.Plain)
-        body.setLineWidth(0)
-        body.setObjectName("richTextEdit")
-
-        # Pack.
+        # Pack
+        vLayout = self.createVLayout(page2,'bodyVLayout',spacing=6)
+        grid = self.createGrid(bodyFrame,'bodyGrid')
+        innerGrid = self.createGrid(innerFrame,'bodyInnerGrid')
         vLayout.addWidget(body)
         sw.addWidget(page2)
         innerGrid.addWidget(sw, 0, 0, 1, 1)
@@ -260,7 +231,6 @@ class DynamicWindow(QtGui.QMainWindow):
         # self.grid = innerGrid
         # self.page_2 = page2
         # self.verticalBodyLayout= vLayout
-    #@nonl
     #@-node:ekr.20090424085523.43:createBody
     #@+node:ekr.20090425072841.12:createCentralWidget
     def createCentralWidget (self):
@@ -275,11 +245,14 @@ class DynamicWindow(QtGui.QMainWindow):
         # Official ivars.
         self.centralwidget = w
     #@-node:ekr.20090425072841.12:createCentralWidget
+    #@+node:ekr.20090426083450.10:createContainer
+    def createContainer (self,parent):
+
+        pass
+    #@nonl
+    #@-node:ekr.20090426083450.10:createContainer
     #@+node:ekr.20090424085523.39:createFindCheckBox
     def createFindCheckBox (self,parent,layout,name,label,row,col):
-
-        # layout = self.findGrid
-        # tab = self.findTab
 
         w = QtGui.QCheckBox(parent)
         w.setObjectName(name)
@@ -319,15 +292,17 @@ class DynamicWindow(QtGui.QMainWindow):
         self.checkBoxMarkChanges    = newBox('checkBoxMarkChanges','Mark Changes',7,1)
 
         # The Find: label
-        lab2 = QtGui.QLabel(parent)
-        lab2.setObjectName("label_2")
-        lab2.setText(self.tr("Find:"))
+        lab2 = self.createLabel(parent,'findLabel','Find:')
+        # lab2 = QtGui.QLabel(parent)
+        # lab2.setObjectName("label_2")
+        # lab2.setText(self.tr("Find:"))
         findGrid.addWidget(lab2, 0, 0, 1, 1)
 
         # The Change: label
-        lab3 = QtGui.QLabel(parent)
-        lab3.setObjectName("lab3")
-        lab3.setText(self.tr("Change:"))
+        lab3 = self.createLabel(parent,'changeLabel','Change:')
+        # lab3 = QtGui.QLabel(parent)
+        # lab3.setObjectName("lab3")
+        # lab3.setText(self.tr("Change:"))
         findGrid.addWidget(lab3, 1, 0, 1, 1)
     #@nonl
     #@-node:ekr.20090424085523.38:createFindTab
@@ -340,13 +315,53 @@ class DynamicWindow(QtGui.QMainWindow):
 
         return w
     #@-node:ekr.20090424085523.40:createFindText
-    #@+node:ekr.20090424085523.41:createLayout
-    def createLayout (self,parent):
+    #@+node:ekr.20090426083450.11:createFrame
+    def createFrame (self,parent,name,
+        hPolicy=None,vPolicy=None,
+        lineWidth = 1,
+        shadow = QtGui.QFrame.Plain,
+        shape = QtGui.QFrame.NoFrame,
+    ):
+
+        w = QtGui.QFrame(parent)
+        self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
+        w.setFrameShape(shape)
+        w.setFrameShadow(shadow)
+        w.setLineWidth(lineWidth)
+        self.setName(w,name)
+        return w
+    #@-node:ekr.20090426083450.11:createFrame
+    #@+node:ekr.20090426083450.12:createGrid
+    def createGrid (self,parent,name,margin=0,spacing=0):
+
+        w = QtGui.QGridLayout(parent)
+        w.setMargin(margin)
+        w.setSpacing(spacing)
+        self.setName(w,name)
+        return w
+    #@nonl
+    #@-node:ekr.20090426083450.12:createGrid
+    #@+node:ekr.20090426083450.19:createHLayout & createVLayout
+    def createHLayout (self,parent,name,margin=0,spacing=0):
+
+        hLayout = QtGui.QHBoxLayout(parent)
+        hLayout.setSpacing(spacing)
+        hLayout.setMargin(margin)
+        self.setName(hLayout,name)
+        return hLayout
+
+    def createVLayout (self,parent,name,margin=0,spacing=0):
 
         vLayout = QtGui.QVBoxLayout(parent)
-        vLayout.setSpacing(0)
-        vLayout.setMargin(3)
-        vLayout.setObjectName("verticalLayout")
+        vLayout.setSpacing(spacing)
+        vLayout.setMargin(margin)
+        self.setName(vLayout,name)
+        return vLayout
+    #@-node:ekr.20090426083450.19:createHLayout & createVLayout
+    #@+node:ekr.20090424085523.41:createMainLayout
+    def createMainLayout (self,parent):
+
+        vLayout = self.createVLayout(parent,'mainVLayout',margin=3)
 
         splitter2 = QtGui.QSplitter(parent)
         splitter2.setOrientation(QtCore.Qt.Vertical)
@@ -363,38 +378,46 @@ class DynamicWindow(QtGui.QMainWindow):
         self.verticalLayout = vLayout
         self.splitter = splitter
         self.splitter_2 = splitter2
-    #@-node:ekr.20090424085523.41:createLayout
+    #@-node:ekr.20090424085523.41:createMainLayout
+    #@+node:ekr.20090426083450.14:createLabel
+    def createLabel (self,parent,name,label):
+
+        w = QtGui.QLabel(parent)
+        self.setName(w,name)
+        w.setText(self.tr(label))
+        return w
+    #@-node:ekr.20090426083450.14:createLabel
+    #@+node:ekr.20090426083450.16:createText
+    def createText (self,parent,name,
+        # hPolicy=None,vPolicy=None,
+        lineWidth = 0,
+        shadow = QtGui.QFrame.Plain,
+        shape = QtGui.QFrame.NoFrame,
+    ):
+
+        w = QtGui.QTextEdit(parent)
+        # self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
+        w.setFrameShape(shape)
+        w.setFrameShadow(shadow)
+        w.setLineWidth(lineWidth)
+        self.setName(w,name)
+        return w
+    #@-node:ekr.20090426083450.16:createText
     #@+node:ekr.20090424085523.42:createLog
     def createLog (self,parent):
 
-        logFrame = QtGui.QFrame(parent)
-        self.setSizePolicy(logFrame,kind2 = QtGui.QSizePolicy.Minimum)
-        logFrame.setFrameShape(QtGui.QFrame.NoFrame)
-        logFrame.setFrameShadow(QtGui.QFrame.Plain)
-        logFrame.setLineWidth(1)
-        logFrame.setObjectName("logFrame")
+        # Create widgets.
+        logFrame = self.createFrame(parent,'logFrame',
+            vPolicy = QtGui.QSizePolicy.Minimum)
+        innerFrame = self.createFrame(logFrame,'logInnerFrame',
+            hPolicy=QtGui.QSizePolicy.Preferred,
+            vPolicy=QtGui.QSizePolicy.Expanding)
+        tabWidget = self.createTabWidget(innerFrame,'logTabWidget')
 
-        outerGrid = QtGui.QGridLayout(logFrame)
-        outerGrid.setMargin(0)
-        outerGrid.setObjectName("logGrid")
-
-        innerFrame = QtGui.QFrame(logFrame)
-        self.setSizePolicy(innerFrame,
-            kind1=QtGui.QSizePolicy.Preferred,
-            kind2=QtGui.QSizePolicy.Expanding)
-        innerFrame.setFrameShape(QtGui.QFrame.NoFrame)
-        innerFrame.setFrameShadow(QtGui.QFrame.Plain)
-        innerFrame.setObjectName("logInnerFrame")
-
-        innerGrid = QtGui.QGridLayout(innerFrame)
-        innerGrid.setMargin(0)
-        innerGrid.setObjectName("logInnerGrid")
-
-        tabWidget = QtGui.QTabWidget(innerFrame)
-        self.setSizePolicy(tabWidget)
-        tabWidget.setObjectName("logTabWidget")
-
+        # Pack
+        innerGrid = self.createGrid(innerFrame,'logInnerGrid')
         innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
+        outerGrid = self.createGrid(logFrame,'logGrid')
         outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
 
         findTab = QtGui.QWidget()
@@ -435,27 +458,24 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ekr.20090424085523.44:createMiniBuffer
     def createMiniBuffer (self,parent):
 
-        frame = QtGui.QFrame(self.centralwidget)
-        self.setSizePolicy(frame,
-            kind1 = QtGui.QSizePolicy.MinimumExpanding,
-            kind2 = QtGui.QSizePolicy.Fixed)
+        # Create widgets.
+        frame = self.createFrame(self.centralwidget,'minibufferFrame',
+            hPolicy = QtGui.QSizePolicy.MinimumExpanding,
+            vPolicy = QtGui.QSizePolicy.Fixed)
         frame.setMinimumSize(QtCore.QSize(100, 0))
-        frame.setBaseSize(QtCore.QSize(0, 0))
-        frame.setMidLineWidth(0)
-        frame.setObjectName("leo_minibuffer_frame")
-
-        hLayout = QtGui.QHBoxLayout(frame)
-        hLayout.setSpacing(4)
-        hLayout.setContentsMargins(3, 2, 2, 0)
-        hLayout.setObjectName("leo_minibuffer_layout")
-
-        label = QtGui.QLabel(frame)
-        label.setObjectName("label")
-        label.setText(self.tr("Minibuffer:"))
-        hLayout.addWidget(label)
-
+        label = self.createLabel(frame,'minibufferLabel','Minibuffer:')
         lineEdit = QtGui.QLineEdit(frame)
-        lineEdit.setObjectName("lineEdit")
+        # self.setName(lineEdit,'lineEdit')
+        lineEdit.setObjectName('lineEdit') # name important.
+
+        # Pack.
+        hLayout = self.createHLayout(frame,'minibufferHLayout',spacing=4)
+        hLayout.setContentsMargins(3, 2, 2, 0)
+        # hLayout = QtGui.QHBoxLayout(frame)
+        # hLayout.setSpacing(4)
+        # hLayout.setContentsMargins(3, 2, 2, 0)
+        # hLayout.setObjectName("leo_minibuffer_layout")
+        hLayout.addWidget(label)
         hLayout.addWidget(lineEdit)
         self.verticalLayout.addWidget(frame)
         label.setBuddy(lineEdit)
@@ -464,7 +484,6 @@ class DynamicWindow(QtGui.QMainWindow):
         self.lineEdit = lineEdit
         # self.leo_minibuffer_frame = frame
         # self.leo_minibuffer_layout = layout
-    #@nonl
     #@-node:ekr.20090424085523.44:createMiniBuffer
     #@+node:ekr.20090424085523.51:createSpellButton
     def createSpellButton (self,parent,layout,name,label,row,col):
@@ -482,25 +501,10 @@ class DynamicWindow(QtGui.QMainWindow):
 
         MainWindow = self
 
-        vLayout = QtGui.QVBoxLayout(parent)
-        vLayout.setSpacing(0)
-        vLayout.setMargin(2)
-        vLayout.setObjectName("spell-vLayout")
-
-        spellFrame = QtGui.QFrame(parent)
-        spellFrame.setAutoFillBackground(False)
-        spellFrame.setFrameShape(QtGui.QFrame.NoFrame)
-        spellFrame.setFrameShadow(QtGui.QFrame.Plain)
-        spellFrame.setLineWidth(0)
-        spellFrame.setObjectName("leo_spell_panel")
-
-        vLayout2 = QtGui.QVBoxLayout(spellFrame)
-        vLayout2.setMargin(0)
-        vLayout2.setObjectName("spell-vLayout2")
-
-        gridLayout = QtGui.QGridLayout()
-        gridLayout.setSpacing(2)
-        gridLayout.setObjectName("gridLayout_6")
+        vLayout = self.createVLayout(parent,'spellVLayout',margin=2)
+        spellFrame = self.createFrame(parent,'spellFrame')
+        vLayout2 = self.createVLayout(spellFrame,'spellVLayout')
+        gridLayout = self.createGrid(None,'spellGrid',spacing=2)
 
         addButton = self.createSpellButton(
             spellFrame,gridLayout,'spellAddButton','Add',2,1)
@@ -573,6 +577,19 @@ class DynamicWindow(QtGui.QMainWindow):
         self.leo_spell_listBox = listBox # Must exist
         self.leo_spell_label = lab # Must exist (!!)
     #@-node:ekr.20090424085523.50:createSpellTab
+    #@+node:ekr.20090426083450.18:createStackedWidget
+    def createStackedWidget (self,parent,name,
+        lineWidth = 1,
+        hPolicy=None,vPolicy=None,
+    ):
+
+        w = QtGui.QStackedWidget(parent)
+        self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
+        w.setAcceptDrops(True)
+        w.setLineWidth(1)
+        self.setName(w,name)
+        return w
+    #@-node:ekr.20090426083450.18:createStackedWidget
     #@+node:ekr.20090424085523.46:createStatusBar
     def createStatusBar (self,parent):
 
@@ -583,45 +600,29 @@ class DynamicWindow(QtGui.QMainWindow):
         # Official ivars.
         self.statusBar = w
     #@-node:ekr.20090424085523.46:createStatusBar
+    #@+node:ekr.20090426083450.17:createTabWidget
+    def createTabWidget (self,parent,name,hPolicy=None,vPolicy=None):
+
+        w = QtGui.QTabWidget(parent)
+        self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
+        self.setName(w,name)
+        return w
+    #@-node:ekr.20090426083450.17:createTabWidget
     #@+node:ekr.20090424085523.47:createTree
     def createTree (self,parent):
 
-        # Outline frame.
-        treeFrame = QtGui.QFrame(parent)
-        self.setSizePolicy(treeFrame,kind2=QtGui.QSizePolicy.Expanding)
-        treeFrame.setFrameShape(QtGui.QFrame.NoFrame)
-        treeFrame.setFrameShadow(QtGui.QFrame.Plain)
-        treeFrame.setLineWidth(1)
-        treeFrame.setObjectName("leo_outline_frame")
-
-        # Outer grid.
-        grid = QtGui.QGridLayout(treeFrame)
-        grid.setMargin(0)
-        grid.setObjectName("leo_outline_grid")
-
-        # Inner frame.
-        innerFrame = QtGui.QFrame(treeFrame)
-        self.setSizePolicy(innerFrame,kind1=QtGui.QSizePolicy.Preferred)
-        innerFrame.setFrameShape(QtGui.QFrame.NoFrame)
-        innerFrame.setFrameShadow(QtGui.QFrame.Plain)
-        innerFrame.setObjectName("leo_outline_inner_frame")
-
-        # Inner grid.
-        innerGrid = QtGui.QGridLayout(innerFrame)
-        innerGrid.setMargin(0)
-        innerGrid.setObjectName("leo_outline_inner_grid")
-
-        # Tree widget.
-        treeWidget = QtGui.QTreeWidget(innerFrame)
-        self.setSizePolicy(treeWidget)
-        treeWidget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        treeWidget.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        treeWidget.setHeaderHidden(False)
-        treeWidget.setObjectName("leo_treeWidget")
+        # Create widgets.
+        treeFrame = self.createFrame(parent,'outlineFrame',
+            vPolicy = QtGui.QSizePolicy.Expanding)
+        innerFrame = self.createFrame(treeFrame,'outlineInnerFrame',
+            hPolicy = QtGui.QSizePolicy.Preferred)
+        treeWidget = self.createTreeWidget(innerFrame,'treeWidget')
 
         # Pack.
-        innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
+        grid = self.createGrid(treeFrame,'outlineGrid')
         grid.addWidget(innerFrame, 0, 0, 1, 1)
+        innerGrid = self.createGrid(innerFrame,'outlineInnerGrid')
+        innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
 
         # Signals.
         QtCore.QObject.connect(treeWidget,
@@ -633,8 +634,18 @@ class DynamicWindow(QtGui.QMainWindow):
         # self.leo_outline_frame = treeFrame
         # self.leo_outline_grid = grid
         # self.leo_outline_inner_frame = innerFrame
-    #@nonl
     #@-node:ekr.20090424085523.47:createTree
+    #@+node:ekr.20090426083450.15:createTreeWidget
+    def createTreeWidget (self,parent,name):
+
+        w = QtGui.QTreeWidget(parent)
+        self.setSizePolicy(w)
+        w.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        w.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        w.setHeaderHidden(False)
+        self.setName(w,name)
+        return w
+    #@-node:ekr.20090426083450.15:createTreeWidget
     #@+node:ekr.20090425072841.2:setMainWindowOptions
     def setMainWindowOptions (self):
 
@@ -647,8 +658,16 @@ class DynamicWindow(QtGui.QMainWindow):
             QtGui.QMainWindow.AllowTabbedDocks |
             QtGui.QMainWindow.AnimatedDocks)
     #@-node:ekr.20090425072841.2:setMainWindowOptions
+    #@+node:ekr.20090426083450.13:setName
+    def setName (self,widget,name):
+
+         if name:
+            # if not name.startswith('leo_'):
+                # name = 'leo_' + name
+            widget.setObjectName(name)
+    #@-node:ekr.20090426083450.13:setName
     #@+node:ekr.20090425072841.14:setSizePolicy
-    def setSizePolicy (self,parent,kind1=None,kind2=None):
+    def setSizePolicy (self,widget,kind1=None,kind2=None):
 
         if kind1 is None: kind1 = QtGui.QSizePolicy.Ignored
         if kind2 is None: kind2 = QtGui.QSizePolicy.Ignored
@@ -658,9 +677,9 @@ class DynamicWindow(QtGui.QMainWindow):
         sizePolicy.setVerticalStretch(0)
 
         sizePolicy.setHeightForWidth(
-            parent.sizePolicy().hasHeightForWidth())
+            widget.sizePolicy().hasHeightForWidth())
 
-        parent.setSizePolicy(sizePolicy)
+        widget.setSizePolicy(sizePolicy)
     #@-node:ekr.20090425072841.14:setSizePolicy
     #@+node:ekr.20090424085523.48:tr
     def tr(self,s):
