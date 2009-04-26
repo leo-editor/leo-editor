@@ -432,53 +432,40 @@ class DynamicWindow(QtGui.QMainWindow):
         # Official ivars.
         self.menubar = w
     #@-node:ekr.20090424085523.45:createMenuBar
-    #@+node:ekr.20090424085523.44:createMiniBuffer (revise)
+    #@+node:ekr.20090424085523.44:createMiniBuffer
     def createMiniBuffer (self,parent):
 
-        hLayout = QtGui.QHBoxLayout()
-        hLayout.setObjectName("horizontalLayout")
+        frame = QtGui.QFrame(self.centralwidget)
+        self.setSizePolicy(frame,
+            kind1 = QtGui.QSizePolicy.MinimumExpanding,
+            kind2 = QtGui.QSizePolicy.Fixed)
+        frame.setMinimumSize(QtCore.QSize(100, 0))
+        frame.setBaseSize(QtCore.QSize(0, 0))
+        frame.setMidLineWidth(0)
+        frame.setObjectName("leo_minibuffer_frame")
 
-        lab = QtGui.QLabel(parent)
-        lab.setObjectName("minibuffer-label")
-        lab.setText(self.tr("Minibuffer:"))
-        hLayout.addWidget(lab)
+        hLayout = QtGui.QHBoxLayout(frame)
+        hLayout.setSpacing(4)
+        hLayout.setContentsMargins(3, 2, 2, 0)
+        hLayout.setObjectName("leo_minibuffer_layout")
 
-        w = QtGui.QLineEdit(self.centralwidget)
-        w.setObjectName("lineEdit")
-        lab.setBuddy(w)
-        hLayout.addWidget(w)
+        label = QtGui.QLabel(frame)
+        label.setObjectName("label")
+        label.setText(self.tr("Minibuffer:"))
+        hLayout.addWidget(label)
 
-        self.verticalLayout.addLayout(hLayout)
+        lineEdit = QtGui.QLineEdit(frame)
+        lineEdit.setObjectName("lineEdit")
+        hLayout.addWidget(lineEdit)
+        self.verticalLayout.addWidget(frame)
+        label.setBuddy(lineEdit)
 
         # Official ivars.
-        self.lineEdit = w
-
-    #@+at
-    #     self.leo_minibuffer_frame = QtGui.QFrame(self.centralwidget)
-    #     sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, 
-    # QtGui.QSizePolicy.Fixed)
-    #     sizePolicy.setHorizontalStretch(0)
-    #     sizePolicy.setVerticalStretch(0)
-    # sizePolicy.setHeightForWidth(self.leo_minibuffer_frame.sizePolicy().hasHeightForWidth())
-    #     self.leo_minibuffer_frame.setSizePolicy(sizePolicy)
-    #     self.leo_minibuffer_frame.setMinimumSize(QtCore.QSize(100, 0))
-    #     self.leo_minibuffer_frame.setBaseSize(QtCore.QSize(0, 0))
-    #     self.leo_minibuffer_frame.setMidLineWidth(0)
-    #     self.leo_minibuffer_frame.setObjectName("leo_minibuffer_frame")
-    #     self.leo_minibuffer_layout = 
-    # QtGui.QHBoxLayout(self.leo_minibuffer_frame)
-    #     self.leo_minibuffer_layout.setSpacing(4)
-    #     self.leo_minibuffer_layout.setContentsMargins(3, 2, 2, 0)
-    #     self.leo_minibuffer_layout.setObjectName("leo_minibuffer_layout")
-    #     self.label = QtGui.QLabel(self.leo_minibuffer_frame)
-    #     self.label.setObjectName("label")
-    #     self.leo_minibuffer_layout.addWidget(self.label)
-    #     self.lineEdit = QtGui.QLineEdit(self.leo_minibuffer_frame)
-    #     self.lineEdit.setObjectName("lineEdit")
-    #     self.leo_minibuffer_layout.addWidget(self.lineEdit)
-    #     self.verticalLayout.addWidget(self.leo_minibuffer_frame)
-    #@-at
-    #@-node:ekr.20090424085523.44:createMiniBuffer (revise)
+        self.lineEdit = lineEdit
+        # self.leo_minibuffer_frame = frame
+        # self.leo_minibuffer_layout = layout
+    #@nonl
+    #@-node:ekr.20090424085523.44:createMiniBuffer
     #@+node:ekr.20090424085523.51:createSpellButton
     def createSpellButton (self,name,label,row,col):
 

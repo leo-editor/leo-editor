@@ -4409,6 +4409,8 @@ if 1:
     vScroll.setValue(vPos+10)
 #@nonl
 #@-node:ekr.20090223065019.11:Make Leo's page-up/page-down commands funtional
+#@+node:ekr.20090426075320.10:mark command reverts headline
+#@-node:ekr.20090426075320.10:mark command reverts headline
 #@-node:ekr.20090406071640.17:First
 #@-node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20081121105001.185:Scripts
