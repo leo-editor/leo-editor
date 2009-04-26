@@ -195,7 +195,7 @@ class DynamicWindow(QtGui.QMainWindow):
         self.createBody(self.splitter_2)
         self.createMiniBuffer(self.centralwidget)
         self.createMenuBar()
-        self.createStatusBar()
+        self.createStatusBar(MainWindow)
 
         # Signals
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -467,12 +467,12 @@ class DynamicWindow(QtGui.QMainWindow):
     #@nonl
     #@-node:ekr.20090424085523.44:createMiniBuffer
     #@+node:ekr.20090424085523.51:createSpellButton
-    def createSpellButton (self,name,label,row,col):
+    def createSpellButton (self,parent,layout,name,label,row,col):
 
-        w = QtGui.QPushButton(self.spellFrame)
+        w = QtGui.QPushButton(parent)
         w.setObjectName(name)
         w.setText(self.tr(label))
-        self.spellGrid.addWidget(w,row,col,1,1)
+        layout.addWidget(w,row,col,1,1)
 
         return w
     #@nonl
@@ -487,38 +487,43 @@ class DynamicWindow(QtGui.QMainWindow):
         vLayout.setMargin(2)
         vLayout.setObjectName("spell-vLayout")
 
-        self.spellFrame = spellFrame = f = QtGui.QFrame(parent)
-
-        f.setAutoFillBackground(False)
-        f.setFrameShape(QtGui.QFrame.NoFrame)
-        f.setFrameShadow(QtGui.QFrame.Plain)
-        f.setLineWidth(0)
-        f.setObjectName("leo_spell_panel")
+        spellFrame = QtGui.QFrame(parent)
+        spellFrame.setAutoFillBackground(False)
+        spellFrame.setFrameShape(QtGui.QFrame.NoFrame)
+        spellFrame.setFrameShadow(QtGui.QFrame.Plain)
+        spellFrame.setLineWidth(0)
+        spellFrame.setObjectName("leo_spell_panel")
 
         vLayout2 = QtGui.QVBoxLayout(spellFrame)
         vLayout2.setMargin(0)
         vLayout2.setObjectName("spell-vLayout2")
 
-        self.spellGrid = gridLayout = QtGui.QGridLayout()
+        gridLayout = QtGui.QGridLayout()
         gridLayout.setSpacing(2)
         gridLayout.setObjectName("gridLayout_6")
 
-        addButton = self.createSpellButton('spellAddButton','Add',2,1)
+        addButton = self.createSpellButton(
+            spellFrame,gridLayout,'spellAddButton','Add',2,1)
         self.leo_spell_btn_Add = addButton
 
-        findButton = self.createSpellButton('spellFindButton','Find',2,0)
+        findButton = self.createSpellButton(
+            spellFrame,gridLayout,'spellFindButton','Find',2,0)
         self.leo_spell_btn_Find = findButton
 
-        changeButton = self.createSpellButton('spellChangeButton','Change',3,0)
+        changeButton = self.createSpellButton(
+            spellFrame,gridLayout,'spellChangeButton','Change',3,0)
         self.leo_spell_btn_Change = changeButton
 
-        changeFindButton = self.createSpellButton('spellFindChangeButton','Change,Find',3,1)
+        changeFindButton = self.createSpellButton(
+            spellFrame,gridLayout,'spellFindChangeButton','Change,Find',3,1)
         self.leo_spell_btn_FindChange = changeFindButton
 
-        ignoreButton = self.createSpellButton('spellIgnoreButton','Ignore',4,0)
+        ignoreButton = self.createSpellButton(
+            spellFrame,gridLayout,'spellIgnoreButton','Ignore',4,0)
         self.leo_spell_btn_Ignore = ignoreButton
 
-        hideButton = self.createSpellButton('spellHideButton','Hide',4,1)
+        hideButton = self.createSpellButton(
+            spellFrame,gridLayout,'spellHideButton','Hide',4,1)
         self.leo_spell_btn_Hide = hideButton
         hideButton.setCheckable(False)
 
@@ -526,7 +531,7 @@ class DynamicWindow(QtGui.QMainWindow):
             QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         gridLayout.addItem(spacerItem, 5, 0, 1, 1)
 
-        self.leo_spell_listBox = listBox = QtGui.QListWidget(spellFrame)
+        listBox = QtGui.QListWidget(spellFrame)
         self.setSizePolicy(listBox,
             kind1 = QtGui.QSizePolicy.MinimumExpanding,
             kind2 = QtGui.QSizePolicy.Expanding)
@@ -540,10 +545,10 @@ class DynamicWindow(QtGui.QMainWindow):
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         gridLayout.addItem(spacerItem1, 2, 2, 1, 1)
 
-        self.leo_spell_label = QtGui.QLabel(spellFrame)
-        self.leo_spell_label.setObjectName("leo_spell_label")
+        lab = QtGui.QLabel(spellFrame)
+        lab.setObjectName("leo_spell_label")
 
-        gridLayout.addWidget(self.leo_spell_label, 0, 0, 1, 2)
+        gridLayout.addWidget(lab, 0, 0, 1, 2)
 
         vLayout2.addLayout(gridLayout)
         vLayout.addWidget(spellFrame)
@@ -558,19 +563,22 @@ class DynamicWindow(QtGui.QMainWindow):
         connect(hideButton,     self.do_leo_spell_btn_Hide)
         connect(ignoreButton,   self.do_leo_spell_btn_Ignore)
 
-        QtCore.QObject.connect(self.leo_spell_listBox,
+        QtCore.QObject.connect(listBox,
             QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"),
             self.do_leo_spell_btn_FindChange)
-    #@nonl
+
+        # Official ivars.
+        self.spellFrame = spellFrame
+        self.spellGrid = gridLayout
+        self.leo_spell_listBox = listBox # Must exist
+        self.leo_spell_label = lab # Must exist (!!)
     #@-node:ekr.20090424085523.50:createSpellTab
     #@+node:ekr.20090424085523.46:createStatusBar
-    def createStatusBar (self):
+    def createStatusBar (self,parent):
 
-        MainWindow = self
-
-        w = QtGui.QStatusBar(MainWindow)
+        w = QtGui.QStatusBar(parent)
         w.setObjectName("statusbar")
-        MainWindow.setStatusBar(w)
+        parent.setStatusBar(w)
 
         # Official ivars.
         self.statusBar = w
