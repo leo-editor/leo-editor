@@ -554,6 +554,7 @@ class DynamicWindow(QtGui.QMainWindow):
         # Check boxes and radio buttons.
         # Radio buttons are mutually exclusive because they have the same parent.
         def mungeName(name):
+            # The value returned here is significant: it creates an ivar.
             return 'checkBox%s' % label.replace(' ','').replace('&','')
 
         table = (
@@ -577,9 +578,6 @@ class DynamicWindow(QtGui.QMainWindow):
             w = func(parent,name,label)
             grid.addWidget(w,row,col)
             setattr(self,name,w)
-
-        # Accomondate a typo in qt designer.
-        # self.checkBoxRexexp = self.checkBoxRegexp
 
         # Official ivars (in addition to setattr ivars).
         self.findPattern = findPattern
