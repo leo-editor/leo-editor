@@ -579,7 +579,7 @@ class DynamicWindow(QtGui.QMainWindow):
             setattr(self,name,w)
 
         # Accomondate a typo in qt designer.
-        self.checkBoxRexexp = self.checkBoxRegexp
+        # self.checkBoxRexexp = self.checkBoxRegexp
 
         # Official ivars (in addition to setattr ivars).
         self.findPattern = findPattern
@@ -1563,7 +1563,7 @@ class leoQtFindTab (leoFind.findTab):
             ('ignore_case',     w.checkBoxIgnoreCase),
             ('wrap',            w.checkBoxWrapAround),
             ('reverse',         w.checkBoxReverse),
-            ('pattern_match',   w.checkBoxRexexp), # A typo.
+            ('pattern_match',   w.checkBoxRegexp), # A typo.
             ('mark_finds',      w.checkBoxMarkFinds),
             ('entire_outline',  w.checkBoxEntireOutline),
             ('suboutline_only', w.checkBoxSubroutineOnly),  
