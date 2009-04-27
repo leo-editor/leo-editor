@@ -3667,8 +3667,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Smart home:
         Position the point at the first non-blank character on the line,
-        or the start of the line if already at the first-non-blank character,
-        or to the start of the next line if already at the start of a line.'''
+        or the start of the line if already there.''',
 
         w = self.editWidget(event)
         if not w: return
@@ -3677,22 +3676,15 @@ class editCommandsClass (baseEditCommandsClass):
         ins = w.getInsertPoint()
         if ins == 0 or not(s): return
 
-        # None of the other cursor move commands are undoable.
-        # self.beginCommand(undoType='back-to-home')
-
+        # Toggle back and forth between start of line and first-non-blank character.
         i,j = g.getLine(s,ins)
-        if ins == i:
-            i,j = g.getLine(s,i-1)
         i1 = i
-
         while i < j and s[i] in (' \t'):
             i += 1
-
-        if i1 < ins <= i: i = i1
+        if i == ins:
+            i = i1
 
         self.moveToHelper(event,i,extend=False)
-
-        # self.endCommand(changed=True,setLabel=True)
     #@-node:ekr.20081123102100.1:backToHome
     #@+node:ekr.20050920084036.75:backToIndentation
     def backToIndentation (self,event):
@@ -3901,7 +3893,7 @@ class editCommandsClass (baseEditCommandsClass):
         w = self.editWidget(event)
         s = w.getAllText() ; ins = w.getInsertPoint()
         junk,i = g.getLine(s,ins)
-        if ins == i-1: junk,i = g.getLine(s,i)
+        # if ins == i-1: junk,i = g.getLine(s,i)
         if g.match(s,i-1,'\n'): i -= 1
         self.moveToHelper(event,i,extend=False)
 

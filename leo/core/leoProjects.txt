@@ -380,6 +380,43 @@ def startsString(self,s,i):
 #@-node:ekr.20070711060113.2:Overrides
 #@-node:ekr.20070711060113:class elispScanner
 #@-node:ekr.20090401093731.1:Fixed elisp importer problem
+#@+node:ekr.20090427103358.1:Fixed back-to-home so it works as expected
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/367462
+
+The expected/customary behaviour (one you get used to in almost every editor) is:
+
+End: always move to end of line
+Home: Move to first visible chararacter on the line. When pressing home again, move to column zero. If Home is pressed one more time, move to first visible character again.
+
+This is also the way emacs behaves, though ctrl+a always moves to column zero.
+#@nonl
+#@+node:ekr.20081123102100.1:backToHome
+def backToHome (self,event):
+
+    '''Smart home:
+    Position the point at the first non-blank character on the line,
+    or the start of the line if already there.''',
+
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    if ins == 0 or not(s): return
+
+    # Toggle back and forth between start of line and first-non-blank character.
+    i,j = g.getLine(s,ins)
+    i1 = i
+    while i < j and s[i] in (' \t'):
+        i += 1
+    if i == ins:
+        i = i1
+
+    self.moveToHelper(event,i,extend=False)
+#@-node:ekr.20081123102100.1:backToHome
+#@-node:ekr.20090427103358.1:Fixed back-to-home so it works as expected
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@-node:ekr.20090401105902.3:Features

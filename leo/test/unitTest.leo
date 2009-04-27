@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -1250,6 +1250,21 @@
 <v t="ekr.20061101121602.112"><vh>before sel=4.13,4.13</vh></v>
 <v t="ekr.20061101121602.113"><vh>after sel=4.8,4.8</vh></v>
 </v>
+<v t="ekr.20090427104851.7"><vh>@test back-to-home (at start of line)</vh>
+<v t="ekr.20090427104851.8"><vh>work</vh></v>
+<v t="ekr.20090427104851.9"><vh>before sel=2.0,2.0</vh></v>
+<v t="ekr.20090427104851.10"><vh>after sel=2.4,2.4</vh></v>
+</v>
+<v t="ekr.20090427104851.15"><vh>@test back-to-home (at indentation</vh>
+<v t="ekr.20090427104851.16"><vh>work</vh></v>
+<v t="ekr.20090427104851.17"><vh>before sel=2.4,2.4</vh></v>
+<v t="ekr.20090427104851.18"><vh>after sel=2.0,2.0</vh></v>
+</v>
+<v t="ekr.20090427104851.11"><vh>@test back-to-home (at end of line)</vh>
+<v t="ekr.20090427104851.12"><vh>work</vh></v>
+<v t="ekr.20090427104851.13"><vh>before sel=2.12,2.12</vh></v>
+<v t="ekr.20090427104851.14"><vh>after sel=2.4,2.4</vh></v>
+</v>
 <v t="ekr.20061101121602.114"><vh>@test back-word</vh>
 <v t="ekr.20061101121602.115"><vh>work</vh></v>
 <v t="ekr.20061101121602.116"><vh>before sel=1.183,1.183</vh></v>
@@ -2476,6 +2491,7 @@
 </v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
+<v t="ekr.20071113192611"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -22128,6 +22144,30 @@ g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.elispUnitTest(p,s=s,showTree=False)
 </t>
+<t tx="ekr.20090427104851.7">import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)</t>
+<t tx="ekr.20090427104851.8">if a:
+    b = 'xyz'</t>
+<t tx="ekr.20090427104851.9">if a:
+    b = 'xyz'</t>
+<t tx="ekr.20090427104851.10">if a:
+    b = 'xyz'</t>
+<t tx="ekr.20090427104851.11">import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)</t>
+<t tx="ekr.20090427104851.12">if a:
+    b = 'xyz'</t>
+<t tx="ekr.20090427104851.13">if a:
+    b = 'xyz'</t>
+<t tx="ekr.20090427104851.14">if a:
+    b = 'xyz'</t>
+<t tx="ekr.20090427104851.15">import leo.core.leoTest as leoTest
+leoTest.runEditCommandTest(c,p)</t>
+<t tx="ekr.20090427104851.16">if a:
+    b = 'xyz'</t>
+<t tx="ekr.20090427104851.17">if a:
+    b = 'xyz'</t>
+<t tx="ekr.20090427104851.18">if a:
+    b = 'xyz'</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
 import random,fnmatch
 
