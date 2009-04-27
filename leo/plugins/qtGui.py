@@ -190,17 +190,18 @@ class DynamicWindow(QtGui.QMainWindow):
         self.createCentralWidget()
         self.createMainLayout(self.centralwidget)
             # Creates .verticalLayout, .splitter and .splitter_2.
-        self.createTree(self.splitter)
-        self.createLog(self.splitter)
-        self.createBody(self.splitter_2)
+        self.createOutlinePane(self.splitter)
+        self.createLogPane(self.splitter)
+        self.createBodyPane(self.splitter_2)
         self.createMiniBuffer(self.centralwidget)
         self.createMenuBar()
         self.createStatusBar(MainWindow)
 
         # Signals
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-    #@+node:ekr.20090424085523.43:createBody
-    def createBody (self,parent):
+    #@+node:ekr.20090426183711.10:top-level
+    #@+node:ekr.20090424085523.43:createBodyPane
+    def createBodyPane (self,parent):
 
         # Create widgets.
         bodyFrame = self.createFrame(parent,'bodyFrame')
@@ -231,7 +232,7 @@ class DynamicWindow(QtGui.QMainWindow):
         # self.grid = innerGrid
         # self.page_2 = page2
         # self.verticalBodyLayout= vLayout
-    #@-node:ekr.20090424085523.43:createBody
+    #@-node:ekr.20090424085523.43:createBodyPane
     #@+node:ekr.20090425072841.12:createCentralWidget
     def createCentralWidget (self):
 
@@ -245,166 +246,8 @@ class DynamicWindow(QtGui.QMainWindow):
         # Official ivars.
         self.centralwidget = w
     #@-node:ekr.20090425072841.12:createCentralWidget
-    #@+node:ekr.20090426083450.10:createContainer
-    def createContainer (self,parent):
-
-        pass
-    #@nonl
-    #@-node:ekr.20090426083450.10:createContainer
-    #@+node:ekr.20090424085523.39:createFindCheckBox
-    def createFindCheckBox (self,parent,layout,name,label,row,col):
-
-        w = QtGui.QCheckBox(parent)
-        w.setObjectName(name)
-        # w.setText(label)
-        w.setText(
-            QtGui.QApplication.translate("MainWindow",label,None,
-            QtGui.QApplication.UnicodeUTF8))
-
-        layout.addWidget(w,row,col, 1, 1)
-
-        return w
-    #@nonl
-    #@-node:ekr.20090424085523.39:createFindCheckBox
-    #@+node:ekr.20090424085523.38:createFindTab
-    def createFindTab (self,parent):
-
-        findGrid = QtGui.QGridLayout(parent)
-        findGrid.setObjectName("findGridLayout")
-
-        def newBox(name,label,row,col):
-            return self.createFindCheckBox(parent,findGrid,name,label,row,col)
-
-        self.findPattern = self.createFindText(parent,findGrid,'findPattern',0,1)
-        self.findChange  = self.createFindText(parent,findGrid,'findChange',1,1)
-
-        self.checkBoxWholeWord      = newBox('checkBoxWholeWord','Whole &Word',2,0)
-        self.checkBoxEntireOutline  = newBox('checkBoxEntireOutline','Entire Outline',2,1)
-        self.checkBoxIgnoreCase     = newBox('checkBoxIgnoreCase','&Ignore Case',3,0)
-        self.checkBoxSubroutineOnly = newBox('checkBoxSubroutineOnly','Subroutine Only',3,1)
-        self.checkBoxWrapAround     = newBox('checkBoxWrapAround','Wrap &Around',4,0)
-        self.checkBoxNodeOnly       = newBox('checkBoxNodeOnly','&Node Only',4,1)
-        self.checkBoxReverse        = newBox('checkBoxReverse','Reverse',5,0)
-        self.checkBoxSearchHeadline = newBox('checkBoxSearchHeadline','Search Headline',5,1)
-        self.checkBoxRexexp         = newBox('checkBoxRexexp','Regexp',6,0)
-        self.checkBoxSearchBody     = newBox('checkBoxSearchBody','Search Body',6,1)
-        self.checkBoxMarkFinds      = newBox('checkBoxMarkFinds','Mark Finds',7,0)
-        self.checkBoxMarkChanges    = newBox('checkBoxMarkChanges','Mark Changes',7,1)
-
-        # The Find: label
-        lab2 = self.createLabel(parent,'findLabel','Find:')
-        # lab2 = QtGui.QLabel(parent)
-        # lab2.setObjectName("label_2")
-        # lab2.setText(self.tr("Find:"))
-        findGrid.addWidget(lab2, 0, 0, 1, 1)
-
-        # The Change: label
-        lab3 = self.createLabel(parent,'changeLabel','Change:')
-        # lab3 = QtGui.QLabel(parent)
-        # lab3.setObjectName("lab3")
-        # lab3.setText(self.tr("Change:"))
-        findGrid.addWidget(lab3, 1, 0, 1, 1)
-    #@nonl
-    #@-node:ekr.20090424085523.38:createFindTab
-    #@+node:ekr.20090424085523.40:createFindText
-    def createFindText (self,parent,layout,name,row,col):
-
-        w = QtGui.QLineEdit(parent)
-        w.setObjectName(name)
-        layout.addWidget(w,row,col,1, 1)
-
-        return w
-    #@-node:ekr.20090424085523.40:createFindText
-    #@+node:ekr.20090426083450.11:createFrame
-    def createFrame (self,parent,name,
-        hPolicy=None,vPolicy=None,
-        lineWidth = 1,
-        shadow = QtGui.QFrame.Plain,
-        shape = QtGui.QFrame.NoFrame,
-    ):
-
-        w = QtGui.QFrame(parent)
-        self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
-        w.setFrameShape(shape)
-        w.setFrameShadow(shadow)
-        w.setLineWidth(lineWidth)
-        self.setName(w,name)
-        return w
-    #@-node:ekr.20090426083450.11:createFrame
-    #@+node:ekr.20090426083450.12:createGrid
-    def createGrid (self,parent,name,margin=0,spacing=0):
-
-        w = QtGui.QGridLayout(parent)
-        w.setMargin(margin)
-        w.setSpacing(spacing)
-        self.setName(w,name)
-        return w
-    #@nonl
-    #@-node:ekr.20090426083450.12:createGrid
-    #@+node:ekr.20090426083450.19:createHLayout & createVLayout
-    def createHLayout (self,parent,name,margin=0,spacing=0):
-
-        hLayout = QtGui.QHBoxLayout(parent)
-        hLayout.setSpacing(spacing)
-        hLayout.setMargin(margin)
-        self.setName(hLayout,name)
-        return hLayout
-
-    def createVLayout (self,parent,name,margin=0,spacing=0):
-
-        vLayout = QtGui.QVBoxLayout(parent)
-        vLayout.setSpacing(spacing)
-        vLayout.setMargin(margin)
-        self.setName(vLayout,name)
-        return vLayout
-    #@-node:ekr.20090426083450.19:createHLayout & createVLayout
-    #@+node:ekr.20090424085523.41:createMainLayout
-    def createMainLayout (self,parent):
-
-        vLayout = self.createVLayout(parent,'mainVLayout',margin=3)
-
-        splitter2 = QtGui.QSplitter(parent)
-        splitter2.setOrientation(QtCore.Qt.Vertical)
-        splitter2.setObjectName("splitter_2")
-
-        splitter = QtGui.QSplitter(splitter2)
-        splitter.setOrientation(QtCore.Qt.Horizontal)
-        splitter.setObjectName("splitter")
-
-        self.setSizePolicy(splitter)
-        vLayout.addWidget(splitter2)
-
-        # Official ivars
-        self.verticalLayout = vLayout
-        self.splitter = splitter
-        self.splitter_2 = splitter2
-    #@-node:ekr.20090424085523.41:createMainLayout
-    #@+node:ekr.20090426083450.14:createLabel
-    def createLabel (self,parent,name,label):
-
-        w = QtGui.QLabel(parent)
-        self.setName(w,name)
-        w.setText(self.tr(label))
-        return w
-    #@-node:ekr.20090426083450.14:createLabel
-    #@+node:ekr.20090426083450.16:createText
-    def createText (self,parent,name,
-        # hPolicy=None,vPolicy=None,
-        lineWidth = 0,
-        shadow = QtGui.QFrame.Plain,
-        shape = QtGui.QFrame.NoFrame,
-    ):
-
-        w = QtGui.QTextEdit(parent)
-        # self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
-        w.setFrameShape(shape)
-        w.setFrameShadow(shadow)
-        w.setLineWidth(lineWidth)
-        self.setName(w,name)
-        return w
-    #@-node:ekr.20090426083450.16:createText
-    #@+node:ekr.20090424085523.42:createLog
-    def createLog (self,parent):
+    #@+node:ekr.20090424085523.42:createLogPane
+    def createLogPane (self,parent):
 
         # Create widgets.
         logFrame = self.createFrame(parent,'logFrame',
@@ -440,7 +283,28 @@ class DynamicWindow(QtGui.QMainWindow):
         # self.spellTab = spellTab
         # self.leo_log_inner_frame = innerFrame
         # self.leo_log_inner_grid = innerGrid
-    #@-node:ekr.20090424085523.42:createLog
+    #@-node:ekr.20090424085523.42:createLogPane
+    #@+node:ekr.20090424085523.41:createMainLayout
+    def createMainLayout (self,parent):
+
+        vLayout = self.createVLayout(parent,'mainVLayout',margin=3)
+
+        splitter2 = QtGui.QSplitter(parent)
+        splitter2.setOrientation(QtCore.Qt.Vertical)
+        splitter2.setObjectName("splitter_2")
+
+        splitter = QtGui.QSplitter(splitter2)
+        splitter.setOrientation(QtCore.Qt.Horizontal)
+        splitter.setObjectName("splitter")
+
+        self.setSizePolicy(splitter)
+        vLayout.addWidget(splitter2)
+
+        # Official ivars
+        self.verticalLayout = vLayout
+        self.splitter = splitter
+        self.splitter_2 = splitter2
+    #@-node:ekr.20090424085523.41:createMainLayout
     #@+node:ekr.20090424085523.45:createMenuBar
     def createMenuBar (self):
 
@@ -485,131 +349,8 @@ class DynamicWindow(QtGui.QMainWindow):
         # self.leo_minibuffer_frame = frame
         # self.leo_minibuffer_layout = layout
     #@-node:ekr.20090424085523.44:createMiniBuffer
-    #@+node:ekr.20090424085523.51:createSpellButton
-    def createSpellButton (self,parent,layout,name,label,row,col):
-
-        w = QtGui.QPushButton(parent)
-        w.setObjectName(name)
-        w.setText(self.tr(label))
-        layout.addWidget(w,row,col,1,1)
-
-        return w
-    #@nonl
-    #@-node:ekr.20090424085523.51:createSpellButton
-    #@+node:ekr.20090424085523.50:createSpellTab
-    def createSpellTab (self,parent):
-
-        MainWindow = self
-
-        vLayout = self.createVLayout(parent,'spellVLayout',margin=2)
-        spellFrame = self.createFrame(parent,'spellFrame')
-        vLayout2 = self.createVLayout(spellFrame,'spellVLayout')
-        gridLayout = self.createGrid(None,'spellGrid',spacing=2)
-
-        addButton = self.createSpellButton(
-            spellFrame,gridLayout,'spellAddButton','Add',2,1)
-        self.leo_spell_btn_Add = addButton
-
-        findButton = self.createSpellButton(
-            spellFrame,gridLayout,'spellFindButton','Find',2,0)
-        self.leo_spell_btn_Find = findButton
-
-        changeButton = self.createSpellButton(
-            spellFrame,gridLayout,'spellChangeButton','Change',3,0)
-        self.leo_spell_btn_Change = changeButton
-
-        changeFindButton = self.createSpellButton(
-            spellFrame,gridLayout,'spellFindChangeButton','Change,Find',3,1)
-        self.leo_spell_btn_FindChange = changeFindButton
-
-        ignoreButton = self.createSpellButton(
-            spellFrame,gridLayout,'spellIgnoreButton','Ignore',4,0)
-        self.leo_spell_btn_Ignore = ignoreButton
-
-        hideButton = self.createSpellButton(
-            spellFrame,gridLayout,'spellHideButton','Hide',4,1)
-        self.leo_spell_btn_Hide = hideButton
-        hideButton.setCheckable(False)
-
-        spacerItem = QtGui.QSpacerItem(20, 40,
-            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        gridLayout.addItem(spacerItem, 5, 0, 1, 1)
-
-        listBox = QtGui.QListWidget(spellFrame)
-        self.setSizePolicy(listBox,
-            kind1 = QtGui.QSizePolicy.MinimumExpanding,
-            kind2 = QtGui.QSizePolicy.Expanding)
-        listBox.setMinimumSize(QtCore.QSize(0, 0))
-        listBox.setMaximumSize(QtCore.QSize(150, 150))
-        listBox.setObjectName("leo_spell_listBox")
-
-        gridLayout.addWidget(listBox, 1, 0, 1, 2)
-
-        spacerItem1 = QtGui.QSpacerItem(40, 20,
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        gridLayout.addItem(spacerItem1, 2, 2, 1, 1)
-
-        lab = QtGui.QLabel(spellFrame)
-        lab.setObjectName("leo_spell_label")
-
-        gridLayout.addWidget(lab, 0, 0, 1, 2)
-
-        vLayout2.addLayout(gridLayout)
-        vLayout.addWidget(spellFrame)
-
-        def connect(button,f):
-            QtCore.QObject.connect(button,QtCore.SIGNAL("clicked()"),f)
-
-        connect(addButton,      self.do_leo_spell_btn_Add)
-        connect(changeButton,   self.do_leo_spell_btn_Change)
-        connect(findButton,     self.do_leo_spell_btn_Find)
-        connect(changeFindButton, self.do_leo_spell_btn_FindChange)
-        connect(hideButton,     self.do_leo_spell_btn_Hide)
-        connect(ignoreButton,   self.do_leo_spell_btn_Ignore)
-
-        QtCore.QObject.connect(listBox,
-            QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"),
-            self.do_leo_spell_btn_FindChange)
-
-        # Official ivars.
-        self.spellFrame = spellFrame
-        self.spellGrid = gridLayout
-        self.leo_spell_listBox = listBox # Must exist
-        self.leo_spell_label = lab # Must exist (!!)
-    #@-node:ekr.20090424085523.50:createSpellTab
-    #@+node:ekr.20090426083450.18:createStackedWidget
-    def createStackedWidget (self,parent,name,
-        lineWidth = 1,
-        hPolicy=None,vPolicy=None,
-    ):
-
-        w = QtGui.QStackedWidget(parent)
-        self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
-        w.setAcceptDrops(True)
-        w.setLineWidth(1)
-        self.setName(w,name)
-        return w
-    #@-node:ekr.20090426083450.18:createStackedWidget
-    #@+node:ekr.20090424085523.46:createStatusBar
-    def createStatusBar (self,parent):
-
-        w = QtGui.QStatusBar(parent)
-        w.setObjectName("statusbar")
-        parent.setStatusBar(w)
-
-        # Official ivars.
-        self.statusBar = w
-    #@-node:ekr.20090424085523.46:createStatusBar
-    #@+node:ekr.20090426083450.17:createTabWidget
-    def createTabWidget (self,parent,name,hPolicy=None,vPolicy=None):
-
-        w = QtGui.QTabWidget(parent)
-        self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
-        self.setName(w,name)
-        return w
-    #@-node:ekr.20090426083450.17:createTabWidget
-    #@+node:ekr.20090424085523.47:createTree
-    def createTree (self,parent):
+    #@+node:ekr.20090424085523.47:createOutlinePane
+    def createOutlinePane (self,parent):
 
         # Create widgets.
         treeFrame = self.createFrame(parent,'outlineFrame',
@@ -634,18 +375,17 @@ class DynamicWindow(QtGui.QMainWindow):
         # self.leo_outline_frame = treeFrame
         # self.leo_outline_grid = grid
         # self.leo_outline_inner_frame = innerFrame
-    #@-node:ekr.20090424085523.47:createTree
-    #@+node:ekr.20090426083450.15:createTreeWidget
-    def createTreeWidget (self,parent,name):
+    #@-node:ekr.20090424085523.47:createOutlinePane
+    #@+node:ekr.20090424085523.46:createStatusBar
+    def createStatusBar (self,parent):
 
-        w = QtGui.QTreeWidget(parent)
-        self.setSizePolicy(w)
-        w.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
-        w.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        w.setHeaderHidden(False)
-        self.setName(w,name)
-        return w
-    #@-node:ekr.20090426083450.15:createTreeWidget
+        w = QtGui.QStatusBar(parent)
+        w.setObjectName("statusbar")
+        parent.setStatusBar(w)
+
+        # Official ivars.
+        self.statusBar = w
+    #@-node:ekr.20090424085523.46:createStatusBar
     #@+node:ekr.20090425072841.2:setMainWindowOptions
     def setMainWindowOptions (self):
 
@@ -658,6 +398,250 @@ class DynamicWindow(QtGui.QMainWindow):
             QtGui.QMainWindow.AllowTabbedDocks |
             QtGui.QMainWindow.AnimatedDocks)
     #@-node:ekr.20090425072841.2:setMainWindowOptions
+    #@-node:ekr.20090426183711.10:top-level
+    #@+node:ekr.20090426183711.11:widgets
+    #@+node:ekr.20090426083450.10:createContainer (to do)
+    def createContainer (self,parent):
+
+        pass
+    #@nonl
+    #@-node:ekr.20090426083450.10:createContainer (to do)
+    #@+node:ekr.20090426083450.11:createFrame
+    def createFrame (self,parent,name,
+        hPolicy=None,vPolicy=None,
+        lineWidth = 1,
+        shadow = QtGui.QFrame.Plain,
+        shape = QtGui.QFrame.NoFrame,
+    ):
+
+        w = QtGui.QFrame(parent)
+        self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
+        w.setFrameShape(shape)
+        w.setFrameShadow(shadow)
+        w.setLineWidth(lineWidth)
+        self.setName(w,name)
+        return w
+    #@-node:ekr.20090426083450.11:createFrame
+    #@+node:ekr.20090426083450.12:createGrid
+    def createGrid (self,parent,name,margin=0,spacing=0):
+
+        w = QtGui.QGridLayout(parent)
+        w.setMargin(margin)
+        w.setSpacing(spacing)
+        self.setName(w,name)
+        return w
+    #@nonl
+    #@-node:ekr.20090426083450.12:createGrid
+    #@+node:ekr.20090426083450.19:createHLayout & createVLayout
+    def createHLayout (self,parent,name,margin=0,spacing=0):
+
+        hLayout = QtGui.QHBoxLayout(parent)
+        hLayout.setSpacing(spacing)
+        hLayout.setMargin(margin)
+        self.setName(hLayout,name)
+        return hLayout
+
+    def createVLayout (self,parent,name,margin=0,spacing=0):
+
+        vLayout = QtGui.QVBoxLayout(parent)
+        vLayout.setSpacing(spacing)
+        vLayout.setMargin(margin)
+        self.setName(vLayout,name)
+        return vLayout
+    #@-node:ekr.20090426083450.19:createHLayout & createVLayout
+    #@+node:ekr.20090426083450.14:createLabel
+    def createLabel (self,parent,name,label):
+
+        w = QtGui.QLabel(parent)
+        self.setName(w,name)
+        w.setText(self.tr(label))
+        return w
+    #@-node:ekr.20090426083450.14:createLabel
+    #@+node:ekr.20090426083450.18:createStackedWidget
+    def createStackedWidget (self,parent,name,
+        lineWidth = 1,
+        hPolicy=None,vPolicy=None,
+    ):
+
+        w = QtGui.QStackedWidget(parent)
+        self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
+        w.setAcceptDrops(True)
+        w.setLineWidth(1)
+        self.setName(w,name)
+        return w
+    #@-node:ekr.20090426083450.18:createStackedWidget
+    #@+node:ekr.20090426083450.17:createTabWidget
+    def createTabWidget (self,parent,name,hPolicy=None,vPolicy=None):
+
+        w = QtGui.QTabWidget(parent)
+        self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
+        self.setName(w,name)
+        return w
+    #@-node:ekr.20090426083450.17:createTabWidget
+    #@+node:ekr.20090426083450.16:createText
+    def createText (self,parent,name,
+        # hPolicy=None,vPolicy=None,
+        lineWidth = 0,
+        shadow = QtGui.QFrame.Plain,
+        shape = QtGui.QFrame.NoFrame,
+    ):
+
+        w = QtGui.QTextEdit(parent)
+        # self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
+        w.setFrameShape(shape)
+        w.setFrameShadow(shadow)
+        w.setLineWidth(lineWidth)
+        self.setName(w,name)
+        return w
+    #@-node:ekr.20090426083450.16:createText
+    #@+node:ekr.20090426083450.15:createTreeWidget
+    def createTreeWidget (self,parent,name):
+
+        w = QtGui.QTreeWidget(parent)
+        self.setSizePolicy(w)
+        w.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        w.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        w.setHeaderHidden(False)
+        self.setName(w,name)
+        return w
+    #@-node:ekr.20090426083450.15:createTreeWidget
+    #@-node:ekr.20090426183711.11:widgets
+    #@+node:ekr.20090426183711.12:log tabs
+    #@+node:ekr.20090424085523.39:createFindCheckBox
+    def createFindCheckBox (self,parent,layout,name,label,row,col):
+
+        w = QtGui.QCheckBox(parent)
+        w.setObjectName(name)
+        # w.setText(label)
+        w.setText(
+            QtGui.QApplication.translate("MainWindow",label,None,
+            QtGui.QApplication.UnicodeUTF8))
+
+        layout.addWidget(w,row,col, 1, 1)
+
+        return w
+    #@nonl
+    #@-node:ekr.20090424085523.39:createFindCheckBox
+    #@+node:ekr.20090424085523.38:createFindTab
+    def createFindTab (self,parent):
+
+        findGrid = QtGui.QGridLayout(parent)
+        findGrid.setObjectName("findGridLayout")
+
+        def newBox(name,label,row,col):
+            return self.createFindCheckBox(parent,findGrid,name,label,row,col)
+
+        self.findPattern = self.createFindText(parent,findGrid,'findPattern',0,1)
+        self.findChange  = self.createFindText(parent,findGrid,'findChange',1,1)
+
+        self.checkBoxWholeWord      = newBox('checkBoxWholeWord','Whole &Word',2,0)
+        self.checkBoxEntireOutline  = newBox('checkBoxEntireOutline','Entire Outline',2,1)
+        self.checkBoxIgnoreCase     = newBox('checkBoxIgnoreCase','&Ignore Case',3,0)
+        self.checkBoxSubroutineOnly = newBox('checkBoxSubroutineOnly','Subroutine Only',3,1)
+        self.checkBoxWrapAround     = newBox('checkBoxWrapAround','Wrap &Around',4,0)
+        self.checkBoxNodeOnly       = newBox('checkBoxNodeOnly','&Node Only',4,1)
+        self.checkBoxReverse        = newBox('checkBoxReverse','Reverse',5,0)
+        self.checkBoxSearchHeadline = newBox('checkBoxSearchHeadline','Search Headline',5,1)
+        self.checkBoxRexexp         = newBox('checkBoxRexexp','Regexp',6,0)
+        self.checkBoxSearchBody     = newBox('checkBoxSearchBody','Search Body',6,1)
+        self.checkBoxMarkFinds      = newBox('checkBoxMarkFinds','Mark Finds',7,0)
+        self.checkBoxMarkChanges    = newBox('checkBoxMarkChanges','Mark Changes',7,1)
+
+        # Labels.
+        lab2 = self.createLabel(parent,'findLabel','Find:')
+        lab3 = self.createLabel(parent,'changeLabel','Change:')
+
+        # Pack.
+        findGrid.addWidget(lab2, 0, 0, 1, 1)
+        findGrid.addWidget(lab3, 1, 0, 1, 1)
+    #@nonl
+    #@-node:ekr.20090424085523.38:createFindTab
+    #@+node:ekr.20090424085523.40:createFindText
+    def createFindText (self,parent,layout,name,row,col):
+
+        w = QtGui.QLineEdit(parent)
+        w.setObjectName(name)
+        layout.addWidget(w,row,col,1, 1)
+
+        return w
+    #@-node:ekr.20090424085523.40:createFindText
+    #@+node:ekr.20090424085523.51:createSpellButton
+    def createSpellButton (self,parent,layout,name,label,row,col):
+
+        w = QtGui.QPushButton(parent)
+        w.setObjectName(name)
+        w.setText(self.tr(label))
+        layout.addWidget(w,row,col,1,1)
+
+        return w
+    #@nonl
+    #@-node:ekr.20090424085523.51:createSpellButton
+    #@+node:ekr.20090424085523.50:createSpellTab
+    def createSpellTab (self,parent):
+
+        MainWindow = self
+
+        vLayout = self.createVLayout(parent,'spellVLayout',margin=2)
+        spellFrame = self.createFrame(parent,'spellFrame')
+        vLayout2 = self.createVLayout(spellFrame,'spellVLayout')
+        gridLayout = self.createGrid(None,'spellGrid',spacing=2)
+
+        table = (
+            ('Add',     'Add',2,1,          self.do_leo_spell_btn_Add),
+            ('Find',    'Find',2,0,         self.do_leo_spell_btn_Find),
+            ('Change',  'Change',3,0,       self.do_leo_spell_btn_Change),
+            ('FindChange','Change,Find',3,1,self.do_leo_spell_btn_FindChange),
+            ('Ignore',  'Ignore',4,0,       self.do_leo_spell_btn_Ignore),
+            ('Hide',    'Hide',4,1,         self.do_leo_spell_btn_Hide),
+        )
+        for (ivar,label,row,col,func) in table:
+            name = 'spell_%s_button' % label
+            button = self.createSpellButton(
+                spellFrame,gridLayout,name,label,row,col)
+            QtCore.QObject.connect(button,
+                QtCore.SIGNAL("clicked()"),func)
+            # The name of this ivar is significant.
+            setattr(self,'leo_spell_btn_%s' % (ivar),button)
+
+        self.leo_spell_btn_Hide.setCheckable(False)
+
+        spacerItem = QtGui.QSpacerItem(20, 40,
+            QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+
+        gridLayout.addItem(spacerItem, 5, 0, 1, 1)
+
+        listBox = QtGui.QListWidget(spellFrame)
+        self.setSizePolicy(listBox,
+            kind1 = QtGui.QSizePolicy.MinimumExpanding,
+            kind2 = QtGui.QSizePolicy.Expanding)
+        listBox.setMinimumSize(QtCore.QSize(0, 0))
+        listBox.setMaximumSize(QtCore.QSize(150, 150))
+        listBox.setObjectName("leo_spell_listBox")
+
+        gridLayout.addWidget(listBox, 1, 0, 1, 2)
+
+        spacerItem1 = QtGui.QSpacerItem(40, 20,
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        gridLayout.addItem(spacerItem1, 2, 2, 1, 1)
+
+        lab = self.createLabel(spellFrame,'spellLabel','spellLabel')
+
+        gridLayout.addWidget(lab, 0, 0, 1, 2)
+        vLayout2.addLayout(gridLayout)
+        vLayout.addWidget(spellFrame)
+
+        QtCore.QObject.connect(listBox,
+            QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"),
+            self.do_leo_spell_btn_FindChange)
+
+        # Official ivars.
+        self.spellFrame = spellFrame
+        self.spellGrid = gridLayout
+        self.leo_spell_listBox = listBox # Must exist
+        self.leo_spell_label = lab # Must exist (!!)
+    #@-node:ekr.20090424085523.50:createSpellTab
+    #@-node:ekr.20090426183711.12:log tabs
+    #@+node:ekr.20090426183711.13:utils
     #@+node:ekr.20090426083450.13:setName
     def setName (self,widget,name):
 
@@ -688,6 +672,7 @@ class DynamicWindow(QtGui.QMainWindow):
             'MainWindow',s,None,QtGui.QApplication.UnicodeUTF8)
     #@nonl
     #@-node:ekr.20090424085523.48:tr
+    #@-node:ekr.20090426183711.13:utils
     #@-node:ekr.20090423070717.14:createMainWindow & helpers
     #@+node:leohag.20081203210510.17:do_leo_spell_btn_*
     def doSpellBtn(self, btn):
