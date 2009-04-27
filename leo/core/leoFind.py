@@ -1447,6 +1447,7 @@ class leoFind:
 
         # Set ivars from radio buttons. Convert these to 1 or 0.
         search_scope = self.svarDict["radio-search-scope"].get()
+        # g.trace('radio-search-scope',search_scope)
         self.suboutline_only = g.choose(search_scope == "suboutline-only",1,0)
         self.node_only       = g.choose(search_scope == "node-only",1,0)
         self.selection       = g.choose(search_scope == "selection-only",1,0)

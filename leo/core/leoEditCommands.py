@@ -7692,19 +7692,15 @@ class searchCommandsClass (baseEditCommandsClass):
     def setFindScopeEveryWhere (self, event):
         '''Set the 'Entire Outline' radio button in the Find tab.'''
         return self.setFindScope('entire-outline')
-
     def setFindScopeNodeOnly  (self, event):
         '''Set the 'Node Only' radio button in the Find tab.'''
         return self.setFindScope('node-only')
-
     def setFindScopeSuboutlineOnly (self, event):
         '''Set the 'Suboutline Only' radio button in the Find tab.'''
         return self.setFindScope('suboutline-only')
-
     def showFindOptions (self,event):
         '''Show all Find options in the minibuffer label area.'''
         self.getHandler().showFindOptions()
-
     def toggleFindCollapesNodes(self,event):
         '''Toggle the 'Collapse Nodes' checkbox in the find tab.'''
         # return self.toggleOption('collapse_nodes')
@@ -7712,11 +7708,9 @@ class searchCommandsClass (baseEditCommandsClass):
         val = c.config.getBool('collapse_nodes_during_finds')
         c.config.set(p,'collapse_nodes_during_finds',not val)
         g.es('collapse_nodes_during_finds',c.config.getBool('collapse_nodes_during_finds'))
-
     def toggleIgnoreCaseOption     (self, event):
         '''Toggle the 'Ignore Case' checkbox in the Find tab.'''
         return self.toggleOption('ignore_case')
-
     def toggleMarkChangesOption (self, event):
         '''Toggle the 'Mark Changes' checkbox in the Find tab.'''
         return self.toggleOption('mark_changes')
@@ -7729,25 +7723,22 @@ class searchCommandsClass (baseEditCommandsClass):
     def toggleReverseOption        (self, event):
         '''Toggle the 'Reverse' checkbox in the Find tab.'''
         return self.toggleOption('reverse')
-
     def toggleSearchBodyOption (self, event):
         '''Set the 'Search Body' checkbox in the Find tab.'''
         return self.toggleOption('search_body')
-
     def toggleSearchHeadlineOption (self, event):
         '''Toggle the 'Search Headline' checkbox in the Find tab.'''
         return self.toggleOption('search_headline')
-
     def toggleWholeWordOption (self, event):
         '''Toggle the 'Whole Word' checkbox in the Find tab.'''
         return self.toggleOption('whole_word')
-
     def toggleWrapSearchOption (self, event):
         '''Toggle the 'Wrap Around' checkbox in the Find tab.'''
         return self.toggleOption('wrap')
-
-    def setFindScope (self, where):  self.getHandler().setFindScope(where)
-    def toggleOption (self, ivar):   self.getHandler().toggleOption(ivar)
+    def setFindScope (self, where):
+        self.getHandler().setFindScope(where)
+    def toggleOption (self, ivar):
+        self.getHandler().toggleOption(ivar)
     #@-node:ekr.20060123115459:Find options wrappers
     #@+node:ekr.20060124093828:Find wrappers
     def changeAll(self,event=None):
