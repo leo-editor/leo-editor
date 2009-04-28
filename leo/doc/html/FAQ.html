@@ -253,21 +253,110 @@ hr { /* EKR */
 
 <!-- rst3: filename: html\FAQ.html -->
 <p>This is Leo's Frequently Asked Questions document.</p>
-<!-- .. contents:: -->
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#getting-leo" id="id4">Getting Leo</a><ul>
+<li><a class="reference internal" href="#where-can-i-get-official-releases-of-leo" id="id5">Where can I get official releases of Leo?</a></li>
+<li><a class="reference internal" href="#how-do-i-use-bzr-to-get-the-latest-sources-from-leo-s-launchpad-site" id="id6">How do I use bzr to get the latest sources from Leo's launchpad site?</a></li>
+<li><a class="reference internal" href="#how-can-i-get-recent-bzr-snapshots-of-leo" id="id7">How can I get recent bzr snapshots of Leo?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installing-leo" id="id8">Installing Leo</a><ul>
+<li><a class="reference internal" href="#leo-s-installer-failed-what-do-i-do" id="id9">Leo's installer failed, what do I do?</a></li>
+<li><a class="reference internal" href="#nothing-or-almost-nothing-happens-when-i-start-leo-what-should-i-do" id="id10">Nothing (or almost nothing) happens when I start Leo.  What should I do?</a></li>
+<li><a class="reference internal" href="#leo-is-hanging-on-my-linux-box-what-should-i-do" id="id11">Leo is hanging on my Linux box.  What should I do?</a></li>
+<li><a class="reference internal" href="#running-python-setup-py-install-from-the-leo-directory-doesn-t-work-why-not" id="id12">Running Python setup.py install from the leo directory doesn't work.  Why not?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#learning-to-use-leo" id="id13">Learning to use Leo</a><ul>
+<li><a class="reference internal" href="#what-s-the-best-way-to-learn-to-use-leo" id="id14">What's the best way to learn to use Leo?</a></li>
+<li><a class="reference internal" href="#why-should-i-use-clones" id="id15">Why should I use clones?</a></li>
+<li><a class="reference internal" href="#which-should-i-use-root-trees-or-file-trees" id="id16">Which should I use: &#64;root trees or &#64;file trees?</a></li>
+<li><a class="reference internal" href="#when-is-using-a-section-better-than-using-a-method" id="id17">When is using a section better than using a method?</a></li>
+<li><a class="reference internal" href="#when-is-deleting-a-node-dangerous" id="id18">When is deleting a node dangerous?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#how-should-i-use-leo-with-bzr" id="id19">How should I use Leo with bzr?</a></li>
+<li><a class="reference internal" href="#using-derived-files" id="id20">Using derived files</a><ul>
+<li><a class="reference internal" href="#how-do-i-inhibit-sentinels-in-derived-files" id="id21">How do I inhibit sentinels in derived files?</a></li>
+<li><a class="reference internal" href="#how-do-i-prevent-leo-from-expanding-sections" id="id22">How do I prevent Leo from expanding sections?</a></li>
+<li><a class="reference internal" href="#how-can-i-create-javascript-comments" id="id23">How can I create Javascript comments?</a></li>
+<li><a class="reference internal" href="#how-can-i-disable-php-comments" id="id24">How can I disable PHP comments?</a></li>
+<li><a class="reference internal" href="#how-can-i-use-leo-with-unsuppoorted-languages" id="id25">How can I use Leo with unsuppoorted languages?</a></li>
+<li><a class="reference internal" href="#how-do-i-make-derived-files-start-with-a-shebang-line" id="id26">How do I make derived files start with a shebang line?</a></li>
+<li><a class="reference internal" href="#how-do-i-use-leo-to-create-cweb-files" id="id27">How do I use Leo to create CWEB files?</a></li>
+<li><a class="reference internal" href="#can-file-trees-contain-material-not-in-the-derived-file" id="id28">Can &#64;file trees contain material not in the derived file?</a></li>
+<li><a class="reference internal" href="#how-can-i-use-leo-with-older-c-compilers" id="id29">How can I use Leo with older C compilers</a></li>
+<li><a class="reference internal" href="#why-can-t-i-use-ignore-directives-in-thin-and-file-trees" id="id30">Why can't I use &#64;ignore directives in &#64;thin and &#64;file trees?</a></li>
+<li><a class="reference internal" href="#how-can-i-avoid-getting-long-lines-in-derived-files" id="id31">How can I avoid getting long lines in derived files?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#customizing-leo" id="id32">Customizing Leo</a><ul>
+<li><a class="reference internal" href="#how-can-i-add-support-for-a-new-language" id="id33">How can I add support for a new language?</a></li>
+<li><a class="reference internal" href="#how-do-i-submit-a-plugin" id="id34">How do I submit a plugin?</a></li>
+<li><a class="reference internal" href="#how-do-i-add-a-new-menu-item-from-a-plugin" id="id35">How do I add a new menu item from a plugin?</a></li>
+<li><a class="reference internal" href="#how-can-i-use-leo-s-legacy-key-bindings" id="id36">How can I use Leo's legacy key bindings?</a></li>
+<li><a class="reference internal" href="#how-can-i-enable-and-disable-support-for-psyco" id="id37">How can I enable and disable support for psyco?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tips-and-techniques" id="id38">Tips and techniques</a><ul>
+<li><a class="reference internal" href="#what-is-an-easy-way-to-profile-code" id="id39">What is an easy way to profile code?</a></li>
+<li><a class="reference internal" href="#how-can-i-do-a-simple-find-and-replace" id="id40">How can I do a simple find and replace?</a></li>
+<li><a class="reference internal" href="#how-can-i-use-leo-to-develop-leo-itself" id="id41">How can I use Leo to develop Leo itself?</a></li>
+<li><a class="reference internal" href="#how-can-i-import-many-files-at-once" id="id42">How can I import many files at once?</a></li>
+<li><a class="reference internal" href="#how-can-i-use-two-copies-of-leo-to-advantage" id="id43">How can I use two copies of Leo to advantage?</a></li>
+<li><a class="reference internal" href="#how-can-i-display-graphics-in-leo" id="id44">How can I display graphics in Leo?</a></li>
+<li><a class="reference internal" href="#how-can-i-create-a-template-leo-file" id="id45">How can I create a template .leo file?</a></li>
+<li><a class="reference internal" href="#how-can-i-show-leo-files-with-excel" id="id46">How can I show Leo files with Excel?</a></li>
+<li><a class="reference internal" href="#how-can-i-reuse-button-nodes-in-multiple-files" id="id47">How can I reuse &#64;button nodes in multiple files?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#trouble-shooting" id="id48">Trouble shooting</a><ul>
+<li><a class="reference internal" href="#how-do-i-get-help" id="id49">How do I get help?</a></li>
+<li><a class="reference internal" href="#how-do-i-report-bugs" id="id50">How do I report bugs?</a></li>
+<li><a class="reference internal" href="#my-old-leo-files-won-t-load-using-leo-4-5-or-later-what-should-i-do" id="id51">My old .leo files won't load using Leo 4.5 or later. What should I do?</a></li>
+<li><a class="reference internal" href="#can-i-scroll-the-outline-pane-with-the-mouse-wheel" id="id52">Can I scroll the outline pane with the mouse wheel?</a></li>
+<li><a class="reference internal" href="#control-shift-backspace-doesn-t-work-what-should-i-do" id="id53">Control-Shift backspace doesn't work.  What should I do?</a></li>
+<li><a class="reference internal" href="#error-messages-from-the-rst3-plugin-aren-t-helpful-what-can-i-do" id="id54">Error messages from the rst3 plugin aren't helpful. What can I do?</a></li>
+<li><a class="reference internal" href="#how-can-i-run-leo-from-a-console-window" id="id55">How can I run Leo from a console window?</a></li>
+<li><a class="reference internal" href="#how-can-i-use-python-s-pdb-debugger-with-leo" id="id56">How can I use Python's pdb debugger with Leo?</a></li>
+<li><a class="reference internal" href="#i-can-t-write-imported-files-what-s-going-on" id="id57">I can't write Imported files.  What's going on?</a></li>
+<li><a class="reference internal" href="#i-don-t-see-the-leo-icon-in-leo-windows" id="id58">I don't see the Leo icon in Leo windows</a></li>
+<li><a class="reference internal" href="#leo-doesn-t-recognize-commands-with-the-caps-lock-key-down" id="id59">Leo doesn't recognize commands with the caps-lock key down</a></li>
+<li><a class="reference internal" href="#id1" id="id60">Leo is hanging on my Linux box.  What should I do?</a></li>
+<li><a class="reference internal" href="#leo-s-recent-files-menu-doesn-t-work-from-a-cvs-shandbox-what-s-going-on" id="id61">Leo's Recent Files menu doesn't work from a cvs shandbox.  What's going on?</a></li>
+<li><a class="reference internal" href="#id2" id="id62">Nothing (or almost nothing) happens when I start Leo.  What should I do?</a></li>
+<li><a class="reference internal" href="#the-new-python-decorator-syntax-causes-problems-what-can-i-do" id="id63">The new Python decorator syntax causes problems.  What can I do?</a></li>
+<li><a class="reference internal" href="#id3" id="id64">Running Python setup.py install from the leo directory doesn't work.  Why not?</a></li>
+<li><a class="reference internal" href="#i-can-t-run-the-leobridge-module-outside-of-leo-core-what-should-i-do" id="id65">I can't run the LeoBridge module outside of leo/core.  What should I do?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#unicode-issues" id="id66">Unicode issues</a><ul>
+<li><a class="reference internal" href="#i-can-not-enter-non-ascii-characters-what-can-i-do" id="id67">I can not enter non-ascii characters.  What can I do?</a></li>
+<li><a class="reference internal" href="#some-characters-in-derived-files-look-funny-what-can-i-do" id="id68">Some characters in derived files look funny. What can I do?</a></li>
+<li><a class="reference internal" href="#i-get-weird-results-when-defining-unicode-strings-in-scripts-what-is-going-on" id="id69">I get weird results when defining unicode strings in scripts.  What is going on?</a></li>
+<li><a class="reference internal" href="#some-characters-are-garbled-when-importing-files-what-can-i-do" id="id70">Some characters are garbled when importing files. What can I do?</a></li>
+<li><a class="reference internal" href="#python-s-print-statement-shows-byte-hash-for-unicode-characters-what-can-i-do" id="id71">Python's print statement shows 'byte hash' for unicode characters.  What can I do?</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>..toc</p>
 <!-- Links used in this document... -->
 <!-- - - - - - External links. -->
 <!-- - - - - - Relative links into Leo's documentation. -->
 <!-- - - - - - References to the glossary: the glossary now contains references to the tutorial. -->
 <div class="section" id="getting-leo">
-<h1>Getting Leo</h1>
+<h1><a class="toc-backref" href="#id4">Getting Leo</a></h1>
 <div class="section" id="where-can-i-get-official-releases-of-leo">
-<h2>Where can I get official releases of Leo?</h2>
+<h2><a class="toc-backref" href="#id5">Where can I get official releases of Leo?</a></h2>
 <p>You can get the latest official releases of Leo at
 <a class="reference external" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106</a></p>
 <p>However, if at all possible, it is better to use bzr to get the latest sources.  See the next entry.</p>
 </div>
 <div class="section" id="how-do-i-use-bzr-to-get-the-latest-sources-from-leo-s-launchpad-site">
-<h2>How do I use bzr to get the latest sources from Leo's launchpad site?</h2>
+<h2><a class="toc-backref" href="#id6">How do I use bzr to get the latest sources from Leo's launchpad site?</a></h2>
 <p>Many users will want to track the development version of Leo, in order to stay
 on top of the latest features and bugfixes. Running the development version is
 quite safe and easy, and it's also a requirement if you want to contribute to
@@ -313,14 +402,14 @@ to be reviewed and merged to trunk.</p>
 <p>-- Ville M. Vainio - vivainio.googlepages.com</p>
 </div>
 <div class="section" id="how-can-i-get-recent-bzr-snapshots-of-leo">
-<h2>How can I get recent bzr snapshots of Leo?</h2>
+<h2><a class="toc-backref" href="#id7">How can I get recent bzr snapshots of Leo?</a></h2>
 <p>Daily snapshots are available at <a class="reference external" href="http://www.greygreen.org/leo/">http://www.greygreen.org/leo/</a></p>
 </div>
 </div>
 <div class="section" id="installing-leo">
-<h1>Installing Leo</h1>
+<h1><a class="toc-backref" href="#id8">Installing Leo</a></h1>
 <div class="section" id="leo-s-installer-failed-what-do-i-do">
-<h2>Leo's installer failed, what do I do?</h2>
+<h2><a class="toc-backref" href="#id9">Leo's installer failed, what do I do?</a></h2>
 <p>&#64;nocolor</p>
 <p>You can simply unpack Leo anywhere and run from there.  You don't need the
 installer.</p>
@@ -338,7 +427,7 @@ python launchLeo.py --gui=qt leo\core\leoPyRef.leo
 </pre>
 </div>
 <div class="section" id="nothing-or-almost-nothing-happens-when-i-start-leo-what-should-i-do">
-<h2>Nothing (or almost nothing) happens when I start Leo.  What should I do?</h2>
+<h2><a class="toc-backref" href="#id10">Nothing (or almost nothing) happens when I start Leo.  What should I do?</a></h2>
 <p>Missing modules can cause installation problems.
 If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file
 as described at <a class="reference external" href="install.html#how-to-install-leo-on-windows">How to install Leo on Windows</a>.
@@ -347,7 +436,7 @@ be sure to <a class="reference internal" href="#how-can-i-run-leo-from-a-console
 because as a last resort Leo prints error messages to the console.</p>
 </div>
 <div class="section" id="leo-is-hanging-on-my-linux-box-what-should-i-do">
-<h2>Leo is hanging on my Linux box.  What should I do?</h2>
+<h2><a class="toc-backref" href="#id11">Leo is hanging on my Linux box.  What should I do?</a></h2>
 <p>From: <a class="reference external" href="http://sourceforge.net/forum/message.php?msg_id=1685399">http://sourceforge.net/forum/message.php?msg_id=1685399</a></p>
 <p>When building Tcl on Linux, do not specify &quot;--enable-threads&quot;
 Only use Tcl with the default &quot;threads not enabled&quot; case.</p>
@@ -361,15 +450,15 @@ Only use Tcl with the default &quot;threads not enabled&quot; case.</p>
 </ul>
 </div>
 <div class="section" id="running-python-setup-py-install-from-the-leo-directory-doesn-t-work-why-not">
-<h2>Running Python setup.py install from the leo directory doesn't work.  Why not?</h2>
+<h2><a class="toc-backref" href="#id12">Running Python setup.py install from the leo directory doesn't work.  Why not?</a></h2>
 <p>Leo's setup.py script is intended only to create source distributions. It can't
 be used to install Leo because Leo is not a Python package.</p>
 </div>
 </div>
 <div class="section" id="learning-to-use-leo">
-<h1>Learning to use Leo</h1>
+<h1><a class="toc-backref" href="#id13">Learning to use Leo</a></h1>
 <div class="section" id="what-s-the-best-way-to-learn-to-use-leo">
-<h2>What's the best way to learn to use Leo?</h2>
+<h2><a class="toc-backref" href="#id14">What's the best way to learn to use Leo?</a></h2>
 <p>First, read the <a class="reference external" href="intro.html">tutorial</a>. This will be enough to get you started if you just
 want to use Leo as an <a class="reference external" href="glossary.html#outliner">outliner</a>. If you intend to use Leo for programming, read
 the <a class="reference external" href="intro.html#quick-start-for-programmers">Quick start for programmers</a>, then look at Leo's source code in the file <tt class="docutils literal"><span class="pre">LeoPy.leo</span></tt>.
@@ -384,12 +473,12 @@ It shows how to define more than one class in single file.</li>
 </ul>
 </div>
 <div class="section" id="why-should-i-use-clones">
-<h2>Why should I use clones?</h2>
+<h2><a class="toc-backref" href="#id15">Why should I use clones?</a></h2>
 <p>You will lose much of Leo's power if you don't use clones.
 See <a class="reference external" href="intro.html#clones-views">Clones &amp; views</a> for full details.</p>
 </div>
 <div class="section" id="which-should-i-use-root-trees-or-file-trees">
-<h2>Which should I use: &#64;root trees or &#64;file trees?</h2>
+<h2><a class="toc-backref" href="#id16">Which should I use: &#64;root trees or &#64;file trees?</a></h2>
 <p>Use <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees (including <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees) unless you are <em>sure</em> you must
 have the extra flexibility of <a class="reference external" href="glossary.html#root">&#64;root</a> trees.
 Indeed, <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees are much easier to use than <a class="reference external" href="glossary.html#root">&#64;root</a> trees:</p>
@@ -407,7 +496,7 @@ so that a section may be referenced in several <a class="reference external" hre
 </ul>
 </div>
 <div class="section" id="when-is-using-a-section-better-than-using-a-method">
-<h2>When is using a section better than using a method?</h2>
+<h2><a class="toc-backref" href="#id17">When is using a section better than using a method?</a></h2>
 <p>Use methods for any code that is used (called or referenced) more than once.</p>
 <p><a class="reference external" href="glossary.html#sections">Sections</a> are convenient in the following circumstances:</p>
 <ul>
@@ -433,7 +522,7 @@ This is surprisingly easy and safe to do, <em>provided</em> the section is used 
 and convert them to functions or methods if they need to be used in several places.</p>
 </div>
 <div class="section" id="when-is-deleting-a-node-dangerous">
-<h2>When is deleting a node dangerous?</h2>
+<h2><a class="toc-backref" href="#id18">When is deleting a node dangerous?</a></h2>
 <p>A <strong>dangerous</strong> delete is a deletion of a node so that all the data in the node is deleted <em>everywhere</em> in an outline.  The data is gone, to be retrieved only via undo or via backups.  It may not be obvious which deletes are dangerous in an outline containing clones.  Happily, there is a very simple rule of thumb:</p>
 <pre class="literal-block">
 Deleting a non-cloned node is *always* dangerous.
@@ -470,7 +559,7 @@ Deleting a cloned node is *never* dangerous.
 </div>
 </div>
 <div class="section" id="how-should-i-use-leo-with-bzr">
-<h1>How should I use Leo with bzr?</h1>
+<h1><a class="toc-backref" href="#id19">How should I use Leo with bzr?</a></h1>
 <p>Using <a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> trees can eliminate most problems with using Leo in cvs environments:</p>
 <ul>
 <li><p class="first">Developers should use <a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> trees to create derived files in any kind of cooperative environment.</p>
@@ -495,9 +584,9 @@ My local copy can contain nodes other than <tt class="docutils literal"><span cl
 </ul>
 </div>
 <div class="section" id="using-derived-files">
-<h1>Using derived files</h1>
+<h1><a class="toc-backref" href="#id20">Using derived files</a></h1>
 <div class="section" id="how-do-i-inhibit-sentinels-in-derived-files">
-<h2>How do I inhibit sentinels in derived files?</h2>
+<h2><a class="toc-backref" href="#id21">How do I inhibit sentinels in derived files?</a></h2>
 <p>You have two options, depending on whether you want to be able to use sections
 or not.</p>
 <ul class="simple">
@@ -515,7 +604,7 @@ you change the derived file in an external editor.</li>
 </ul>
 </div>
 <div class="section" id="how-do-i-prevent-leo-from-expanding-sections">
-<h2>How do I prevent Leo from expanding sections?</h2>
+<h2><a class="toc-backref" href="#id22">How do I prevent Leo from expanding sections?</a></h2>
 <p>You have two options, depending on whether you want sentinel lines in your
 derived file or not.</p>
 <ul class="simple">
@@ -532,7 +621,7 @@ so Leo does not update <tt class="docutils literal"><span class="pre">&#64;asis<
 </ul>
 </div>
 <div class="section" id="how-can-i-create-javascript-comments">
-<h2>How can I create Javascript comments?</h2>
+<h2><a class="toc-backref" href="#id23">How can I create Javascript comments?</a></h2>
 <p><strong>Question</strong>: I'm writing a Windows Script Component, which is an XML file with
 a CData section containing javascript. I can get the XML as I want it by using
 <tt class="docutils literal"><span class="pre">&#64;language</span> <span class="pre">html</span></tt>, but how can I get the tangling comments inside the CData
@@ -550,7 +639,7 @@ you must change back to previous delimiters using another <tt class="docutils li
 <p>In <a class="reference external" href="glossary.html#root">&#64;root</a> trees you can work around this problem using the <tt class="docutils literal"><span class="pre">&#64;silent</span></tt> <a class="reference external" href="glossary.html#directive">directive</a>.</p>
 </div>
 <div class="section" id="how-can-i-disable-php-comments">
-<h2>How can I disable PHP comments?</h2>
+<h2><a class="toc-backref" href="#id24">How can I disable PHP comments?</a></h2>
 <p>By Zvi Boshernitzan:
 I was having trouble disabling <tt class="docutils literal"><span class="pre">&lt;?php</span></tt> with comments (and couldn't override the
 comment character for the start of the page).
@@ -580,7 +669,7 @@ echo &quot;hi&quot;;
 </pre>
 </div>
 <div class="section" id="how-can-i-use-leo-with-unsuppoorted-languages">
-<h2>How can I use Leo with unsuppoorted languages?</h2>
+<h2><a class="toc-backref" href="#id25">How can I use Leo with unsuppoorted languages?</a></h2>
 <p>Here is a posting which might be helpful:
 <a class="reference external" href="http://sourceforge.net/forum/message.php?msg_id=2300457">http://sourceforge.net/forum/message.php?msg_id=2300457</a> The <tt class="docutils literal"><span class="pre">&#64;first</span></tt>
 <a class="reference external" href="glossary.html#directive">directive</a> is the key to output usable code in unsupported languages. For
@@ -607,7 +696,7 @@ $ENDIF &lt;-... Until here!
 making comments parseable by a BASIC (or other language.)</p>
 </div>
 <div class="section" id="how-do-i-make-derived-files-start-with-a-shebang-line">
-<h2>How do I make derived files start with a shebang line?</h2>
+<h2><a class="toc-backref" href="#id26">How do I make derived files start with a shebang line?</a></h2>
 <p>Use the &#64;first <a class="reference external" href="glossary.html#directive">directive</a> in <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees or <a class="reference external" href="glossary.html#nosent">&#64;nosent</a> trees.
 Use the &#64;silent directive in <a class="reference external" href="glossary.html#root">&#64;root</a> trees.</p>
 <p>The <tt class="docutils literal"><span class="pre">&#64;first</span></tt> directive puts lines at the very start of files derived from <tt class="docutils literal"><span class="pre">&#64;file</span></tt>.
@@ -628,14 +717,14 @@ More than one <tt class="docutils literal"><span class="pre">&#64;first</span></
 </pre>
 </div>
 <div class="section" id="how-do-i-use-leo-to-create-cweb-files">
-<h2>How do I use Leo to create CWEB files?</h2>
+<h2><a class="toc-backref" href="#id27">How do I use Leo to create CWEB files?</a></h2>
 <p>Leo has good support for <a class="reference external" href="glossary.html#cweb">CWEB</a>.
 <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees can organize any part of CWEB code using <em>noweb</em> sections.
 You can also use <a class="reference external" href="glossary.html#asis-trees">&#64;asis</a>, <a class="reference external" href="glossary.html#noref">&#64;noref</a> or <a class="reference external" href="glossary.html#nosent">&#64;nosent</a> trees to create cweb files.
 See <a class="reference external" href="directives.html#cweb-mode">CWEB mode</a> for full details.</p>
 </div>
 <div class="section" id="can-file-trees-contain-material-not-in-the-derived-file">
-<h2>Can &#64;file trees contain material not in the derived file?</h2>
+<h2><a class="toc-backref" href="#id28">Can &#64;file trees contain material not in the derived file?</a></h2>
 <p>No.  Everything in an <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees must be part of the derived file: orphan and
 <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> nodes are invalid in <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees. This restriction should not be
 troublesome. For example, you can organize your outline like this:</p>
@@ -648,7 +737,7 @@ troublesome. For example, you can organize your outline like this:</p>
 So you simply create a new <a class="reference external" href="glossary.html#node">node</a>, called myClass, that holds your <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees and stuff you don't want in the <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees.</p>
 </div>
 <div class="section" id="how-can-i-use-leo-with-older-c-compilers">
-<h2>How can I use Leo with older C compilers</h2>
+<h2><a class="toc-backref" href="#id29">How can I use Leo with older C compilers</a></h2>
 <p>By Rich Ries.
 Some older C compilers don't understand the &quot;//&quot; comment symbol, so using <tt class="docutils literal"><span class="pre">&#64;language</span> <span class="pre">C</span></tt> won't work.
 Moreover, the following does not always work either:</p>
@@ -671,7 +760,7 @@ The C compiler is happy: the C preprocessor strips out the offending line before
 compiler gets it.</p>
 </div>
 <div class="section" id="why-can-t-i-use-ignore-directives-in-thin-and-file-trees">
-<h2>Why can't I use &#64;ignore directives in &#64;thin and &#64;file trees?</h2>
+<h2><a class="toc-backref" href="#id30">Why can't I use &#64;ignore directives in &#64;thin and &#64;file trees?</a></h2>
 <p>&#64;ignore can only be used in the root node of &#64;file trees.  It tells Leo to ignore the tree.</p>
 <p>The &#64;ignore directive can not be used elsewhere in &#64;thin trees and &#64;file trees
 because of the way Leo recreates outlines from derived files. This is an
@@ -684,7 +773,7 @@ For a few more details, see <a class="reference external" href="history.html#leo
 </ul>
 </div>
 <div class="section" id="how-can-i-avoid-getting-long-lines-in-derived-files">
-<h2>How can I avoid getting long lines in derived files?</h2>
+<h2><a class="toc-backref" href="#id31">How can I avoid getting long lines in derived files?</a></h2>
 <p><strong>Question</strong>: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?</p>
@@ -698,9 +787,9 @@ relative to the derived file, not to the curent node. The relation
 </div>
 </div>
 <div class="section" id="customizing-leo">
-<h1>Customizing Leo</h1>
+<h1><a class="toc-backref" href="#id32">Customizing Leo</a></h1>
 <div class="section" id="how-can-i-add-support-for-a-new-language">
-<h2>How can I add support for a new language?</h2>
+<h2><a class="toc-backref" href="#id33">How can I add support for a new language?</a></h2>
 <p>See the instructions are in <tt class="docutils literal"><span class="pre">LeoPy.leo</span></tt> in:</p>
 <pre class="literal-block">
 ``Notes:How To:How to add support for a new language section.
@@ -710,7 +799,7 @@ Coming in Leo 4.4: Leo will use <tt class="docutils literal"><span class="pre">J
 To add support for a new language, just add another such description file.</p>
 </div>
 <div class="section" id="how-do-i-submit-a-plugin">
-<h2>How do I submit a plugin?</h2>
+<h2><a class="toc-backref" href="#id34">How do I submit a plugin?</a></h2>
 <p>You have two options:</p>
 <ul class="simple">
 <li>Get cvs write access, and add the <a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> file to the plugins directory.</li>
@@ -719,7 +808,7 @@ That's all you need to do.  In particular that there is no need to change <tt cl
 </ul>
 </div>
 <div class="section" id="how-do-i-add-a-new-menu-item-from-a-plugin">
-<h2>How do I add a new menu item from a plugin?</h2>
+<h2><a class="toc-backref" href="#id35">How do I add a new menu item from a plugin?</a></h2>
 <p><tt class="docutils literal"><span class="pre">c.frame.menu.createMenuItemsFromTable</span></tt> will append items to the end of an existing menu.
 For example, the following script will add a new item at the end of the 'File' menu:</p>
 <pre class="literal-block">
@@ -743,7 +832,7 @@ fileMenu.insert(3,'command',label='Test2',command=callback)
 </pre>
 </div>
 <div class="section" id="how-can-i-use-leo-s-legacy-key-bindings">
-<h2>How can I use Leo's legacy key bindings?</h2>
+<h2><a class="toc-backref" href="#id36">How can I use Leo's legacy key bindings?</a></h2>
 <p>You can 'revert' to old key bindings as follows:</p>
 <ol class="arabic simple">
 <li>Open leoSettings.leo.</li>
@@ -766,7 +855,7 @@ It should <strong>not</strong> be a child of the node
 </ol>
 </div>
 <div class="section" id="how-can-i-enable-and-disable-support-for-psyco">
-<h2>How can I enable and disable support for psyco?</h2>
+<h2><a class="toc-backref" href="#id37">How can I enable and disable support for psyco?</a></h2>
 <p>Find the &#64;thin leoApp.py node in leoPy.leo.
 In the ctor for the LeoApp class set <tt class="docutils literal"><span class="pre">self.use_psyco</span></tt> to True or False.
 You will find this ctor in the node:</p>
@@ -778,9 +867,9 @@ Leo uses g.app.use_psyco before processing configuration settings.</p>
 </div>
 </div>
 <div class="section" id="tips-and-techniques">
-<h1>Tips and techniques</h1>
+<h1><a class="toc-backref" href="#id38">Tips and techniques</a></h1>
 <div class="section" id="what-is-an-easy-way-to-profile-code">
-<h2>What is an easy way to profile code?</h2>
+<h2><a class="toc-backref" href="#id39">What is an easy way to profile code?</a></h2>
 <p>I had a need to figure out why a part of some python code I had written
 was taking too long.</p>
 <p>I pulled the code into LEO and the relevant part of the outline looked
@@ -819,7 +908,7 @@ to create a wrapper around the code and did not need to litter my code
 with debug or profiling statements.  -- Kayvan</p>
 </div>
 <div class="section" id="how-can-i-do-a-simple-find-and-replace">
-<h2>How can I do a simple find and replace?</h2>
+<h2><a class="toc-backref" href="#id40">How can I do a simple find and replace?</a></h2>
 <p>The 'official' way to start a replace command is:</p>
 <pre class="literal-block">
 &lt;Ctrl-shift-r&gt;find-pattern&lt;return&gt;replace-text&lt;return&gt;
@@ -847,7 +936,7 @@ You can type the <cite>&lt;alt-ctrl&gt;</cite> keys anytime after <cite>&lt;ctrl
 You can also type multiple <cite>&lt;alt-ctrl-keys&gt;</cite> to toggle multiple checkboxes.</p>
 </div>
 <div class="section" id="how-can-i-use-leo-to-develop-leo-itself">
-<h2>How can I use Leo to develop Leo itself?</h2>
+<h2><a class="toc-backref" href="#id41">How can I use Leo to develop Leo itself?</a></h2>
 <p>The trick is to create a workflow that separates editing from testing. Putting
 test code in <tt class="docutils literal"><span class="pre">LeoPy.leo</span></tt> would waste a lot of time. To run tests you would
 have to exit Leo and reload <tt class="docutils literal"><span class="pre">LeoPy.leo</span></tt>. A much quicker way is to put all test
@@ -880,7 +969,7 @@ I can create and organize those tests and when I am done, ''test.leo'' is a log 
 </ul>
 </div>
 <div class="section" id="how-can-i-import-many-files-at-once">
-<h2>How can I import many files at once?</h2>
+<h2><a class="toc-backref" href="#id42">How can I import many files at once?</a></h2>
 <p>The Import Files dialog allows you to select multiple files provided you are running Python 2.3 or above.
 There is also an importFiles script in <tt class="docutils literal"><span class="pre">LeoPy.leo</span></tt>.  You can use that script as follows:</p>
 <pre class="literal-block">
@@ -891,7 +980,7 @@ leoImport.importFiles(aDirectory, &quot;.py&quot;)
 You could use &quot;.c&quot; to import all .c files, etc.</p>
 </div>
 <div class="section" id="how-can-i-use-two-copies-of-leo-to-advantage">
-<h2>How can I use two copies of Leo to advantage?</h2>
+<h2><a class="toc-backref" href="#id43">How can I use two copies of Leo to advantage?</a></h2>
 <p>By Rich Ries.
 I often rework C code that's already been &quot;Leo-ized&quot;--the first pass was quick
 and dirty to get it going. When I do subsequent passes, I wind up with subnodes
@@ -906,7 +995,7 @@ but the first editor will stay focused on the main <a class="reference external"
 do than to describe!</p>
 </div>
 <div class="section" id="how-can-i-display-graphics-in-leo">
-<h2>How can I display graphics in Leo?</h2>
+<h2><a class="toc-backref" href="#id44">How can I display graphics in Leo?</a></h2>
 <p>One way is to link directly to the media file from a Leo <a class="reference external" href="glossary.html#node">node</a> (with <tt class="docutils literal"><span class="pre">&#64;url</span></tt>)
 and write a scriptbutton to wrap all URL-nodes under the current <a class="reference external" href="glossary.html#node">node</a> in a
 single HTML page (using the HTML browser trick at
@@ -932,7 +1021,7 @@ HTML code (e.g. an image link gets mapped to an &lt;img&gt; HTML tag, a link to 
 Flash file gets mapped to an &lt;embed&gt; tag, etc).</p>
 </div>
 <div class="section" id="how-can-i-create-a-template-leo-file">
-<h2>How can I create a template .leo file?</h2>
+<h2><a class="toc-backref" href="#id45">How can I create a template .leo file?</a></h2>
 <p><strong>Question</strong>:
 It would be nice if Leo could open empty files. I tend to be &quot;document oriented&quot;
 rather than &quot;application oriented&quot; in my thinking and prefer &quot;create empty file
@@ -960,7 +1049,7 @@ of the file you saved. This can be useful because you could make a template Leo
 file containing some standard <a class="reference external" href="glossary.html#nodes">nodes</a> that you always have and then save this.</p>
 </div>
 <div class="section" id="how-can-i-show-leo-files-with-excel">
-<h2>How can I show Leo files with Excel?</h2>
+<h2><a class="toc-backref" href="#id46">How can I show Leo files with Excel?</a></h2>
 <p>From: <a class="reference external" href="http://sourceforge.net/forum/message.php?msg_id=3240374">http://sourceforge.net/forum/message.php?msg_id=3240374</a>
 Using Leo's <tt class="docutils literal"><span class="pre">File-Export-Flatten</span> <span class="pre">Outline</span></tt> commands creates a <tt class="docutils literal"><span class="pre">MORE</span></tt> style outline which places
 all Leo body sections on the left margin.
@@ -1007,7 +1096,7 @@ this in the leo body:</p>
 independent of where the block of three cells exists on the sheet.</p>
 </div>
 <div class="section" id="how-can-i-reuse-button-nodes-in-multiple-files">
-<h2>How can I reuse &#64;button nodes in multiple files?</h2>
+<h2><a class="toc-backref" href="#id47">How can I reuse &#64;button nodes in multiple files?</a></h2>
 <p>By Rich Ries</p>
 <p>There is no direct way to make script buttons available in multiple Leo files.
 Sure, you could copy and paste the &#64;button nodes, but there is a slightly
@@ -1027,13 +1116,13 @@ need to select the Template you want.)</li>
 </div>
 </div>
 <div class="section" id="trouble-shooting">
-<h1>Trouble shooting</h1>
+<h1><a class="toc-backref" href="#id48">Trouble shooting</a></h1>
 <div class="section" id="how-do-i-get-help">
-<h2>How do I get help?</h2>
+<h2><a class="toc-backref" href="#id49">How do I get help?</a></h2>
 <p>All questions are welcome at <a class="reference external" href="http://groups.google.com/group/leo-editor">http://groups.google.com/group/leo-editor</a></p>
 </div>
 <div class="section" id="how-do-i-report-bugs">
-<h2>How do I report bugs?</h2>
+<h2><a class="toc-backref" href="#id50">How do I report bugs?</a></h2>
 <p>You can discuss possible bugs at
 <a class="reference external" href="http://groups.google.com/group/leo-editor">http://groups.google.com/group/leo-editor</a></p>
 <p>Please report bugs at
@@ -1050,7 +1139,7 @@ need to select the Template you want.)</li>
 somebody will be able to understand the report as it stands.</p>
 </div>
 <div class="section" id="my-old-leo-files-won-t-load-using-leo-4-5-or-later-what-should-i-do">
-<h2>My old .leo files won't load using Leo 4.5 or later. What should I do?</h2>
+<h2><a class="toc-backref" href="#id51">My old .leo files won't load using Leo 4.5 or later. What should I do?</a></h2>
 <p>In version 4.5, Leo changed to using a sax parser for .leo files. This can cause
 problems if your .leo file contains invalid characters.
 Bugs in previous versions of Leo permitted these bad charactgers to appear.</p>
@@ -1073,7 +1162,7 @@ Remove the invalid character, save the .leo file.</p>
 <p>Repeat steps 1 and 2 until all invalid characters are gone.</p>
 </div>
 <div class="section" id="can-i-scroll-the-outline-pane-with-the-mouse-wheel">
-<h2>Can I scroll the outline pane with the mouse wheel?</h2>
+<h2><a class="toc-backref" href="#id52">Can I scroll the outline pane with the mouse wheel?</a></h2>
 <p>This is a known bug in Tk that prevents this on Windows. The obvious Tk code
 causes a hard crash in the Python dll: it's the only time Leo has taken such a
 hard crash. The <tt class="docutils literal"><span class="pre">UniversalScrolling</span></tt> plugin is an attempt at a workaround.</p>
@@ -1081,7 +1170,7 @@ hard crash. The <tt class="docutils literal"><span class="pre">UniversalScrollin
 createTkTreeCanvas in leoTkinterFrame.py</p>
 </div>
 <div class="section" id="control-shift-backspace-doesn-t-work-what-should-i-do">
-<h2>Control-Shift backspace doesn't work.  What should I do?</h2>
+<h2><a class="toc-backref" href="#id53">Control-Shift backspace doesn't work.  What should I do?</a></h2>
 <p>By Dave Hein: The cause of the keymapping problem is a issue with the X11
 keyboard mapping, not with Tk. If you have this problem on your system, issue
 the command:</p>
@@ -1110,7 +1199,7 @@ able to get xmodmap to make this change during X11 startup (again because of
 conflicts with xdb). But I'm working on that as well.</p>
 </div>
 <div class="section" id="error-messages-from-the-rst3-plugin-aren-t-helpful-what-can-i-do">
-<h2>Error messages from the rst3 plugin aren't helpful. What can I do?</h2>
+<h2><a class="toc-backref" href="#id54">Error messages from the rst3 plugin aren't helpful. What can I do?</a></h2>
 <p>For the most part, <a class="reference external" href="http://docutils.sourceforge.net/">docutils</a> does a good job of reporting errors. <a class="reference external" href="http://docutils.sourceforge.net/">docutils</a> prints
 a message to the console and inserts an unmistakable error message in the
 generated .html file. <strong>Important</strong>: On Windows it is helpful to <a class="reference internal" href="#how-can-i-run-leo-from-a-console-window">Run Leo from a
@@ -1162,7 +1251,7 @@ easy enough to do (when using the <a class="reference external" href="rstplugin3
 </ol>
 </div>
 <div class="section" id="how-can-i-run-leo-from-a-console-window">
-<h2>How can I run Leo from a console window?</h2>
+<h2><a class="toc-backref" href="#id55">How can I run Leo from a console window?</a></h2>
 <p>Leo (and other programs) often send more detailed error messages to <tt class="docutils literal"><span class="pre">stderr</span></tt>,
 the output stream that goes to the console window. In Linux and MacOS
 environments, python programs normally execute with the console window visible.
@@ -1171,7 +1260,7 @@ files with <tt class="docutils literal"><span class="pre">python.exe</span></tt>
 to do this, see <a class="reference external" href="install.html#how-to-associate-leo-with-leo-files-on-windows">Associating Leo with .leo Files</a>.</p>
 </div>
 <div class="section" id="how-can-i-use-python-s-pdb-debugger-with-leo">
-<h2>How can I use Python's pdb debugger with Leo?</h2>
+<h2><a class="toc-backref" href="#id56">How can I use Python's pdb debugger with Leo?</a></h2>
 <p>Just run Leo in a console window. At the point you want to drop into the
 debugger, execute this line:</p>
 <pre class="literal-block">
@@ -1194,7 +1283,7 @@ g.trace(x,g.callers(5))
 <p>Used this way, g.trace shows you patterns that will be invisible using pdb.</p>
 </div>
 <div class="section" id="i-can-t-write-imported-files-what-s-going-on">
-<h2>I can't write Imported files.  What's going on?</h2>
+<h2><a class="toc-backref" href="#id57">I can't write Imported files.  What's going on?</a></h2>
 <p>The import commands insert <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> <a class="reference external" href="glossary.html#directives">directives</a> in the top-level <a class="reference external" href="glossary.html#node">node</a>.
 Leo does this so that you won't accidentally overwrite your files after importing them.
 Change the filename following <tt class="docutils literal"><span class="pre">&#64;file</span></tt> or <tt class="docutils literal"><span class="pre">&#64;root</span></tt> as desired,
@@ -1202,7 +1291,7 @@ then remove the <tt class="docutils literal"><span class="pre">&#64;ignore</span
 Saving the outline will then create the <a class="reference external" href="glossary.html#derived-file">derived file</a>.</p>
 </div>
 <div class="section" id="i-don-t-see-the-leo-icon-in-leo-windows">
-<h2>I don't see the Leo icon in Leo windows</h2>
+<h2><a class="toc-backref" href="#id58">I don't see the Leo icon in Leo windows</a></h2>
 <p>For versions of Leo before 4.0 and for versions of Python before 2.3,
 Leo will draw a Leo icon in Leo windows only if you have installed Fredrik Lundh's PIL and tkIcon packages.</p>
 <ul class="simple">
@@ -1211,12 +1300,12 @@ Leo will draw a Leo icon in Leo windows only if you have installed Fredrik Lundh
 </ul>
 </div>
 <div class="section" id="leo-doesn-t-recognize-commands-with-the-caps-lock-key-down">
-<h2>Leo doesn't recognize commands with the caps-lock key down</h2>
+<h2><a class="toc-backref" href="#id59">Leo doesn't recognize commands with the caps-lock key down</a></h2>
 <p>This is a known bug in Tk/Tkinter and there is no good workaround. Some
 keyboards allow you to disable the caps-lock key.</p>
 </div>
 <div class="section" id="id1">
-<h2>Leo is hanging on my Linux box.  What should I do?</h2>
+<h2><a class="toc-backref" href="#id60">Leo is hanging on my Linux box.  What should I do?</a></h2>
 <p>From: <a class="reference external" href="http://sourceforge.net/forum/message.php?msg_id=1685399">http://sourceforge.net/forum/message.php?msg_id=1685399</a></p>
 <p>When building Tcl on Linux, do not specify &quot;--enable-threads&quot;
 Only use Tcl with the default &quot;threads not enabled&quot; case.</p>
@@ -1230,12 +1319,12 @@ Only use Tcl with the default &quot;threads not enabled&quot; case.</p>
 </ul>
 </div>
 <div class="section" id="leo-s-recent-files-menu-doesn-t-work-from-a-cvs-shandbox-what-s-going-on">
-<h2>Leo's Recent Files menu doesn't work from a cvs shandbox.  What's going on?</h2>
+<h2><a class="toc-backref" href="#id61">Leo's Recent Files menu doesn't work from a cvs shandbox.  What's going on?</a></h2>
 <p>You must create .leoRecentFiles.txt in the config directory.
 .leoRecentFiles.txt is part of the standard releases but is not part of the cvs repository.</p>
 </div>
 <div class="section" id="id2">
-<h2>Nothing (or almost nothing) happens when I start Leo.  What should I do?</h2>
+<h2><a class="toc-backref" href="#id62">Nothing (or almost nothing) happens when I start Leo.  What should I do?</a></h2>
 <p>Missing modules can cause installation problems.
 If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file
 as described at <a class="reference external" href="install.html#how-to-install-leo-on-windows">How to install Leo on Windows</a>.
@@ -1244,7 +1333,7 @@ be sure to <a class="reference internal" href="#how-can-i-run-leo-from-a-console
 because as a last resort Leo prints error messages to the console.</p>
 </div>
 <div class="section" id="the-new-python-decorator-syntax-causes-problems-what-can-i-do">
-<h2>The new Python decorator syntax causes problems.  What can I do?</h2>
+<h2><a class="toc-backref" href="#id63">The new Python decorator syntax causes problems.  What can I do?</a></h2>
 <p>Python's <a class="reference external" href="http://www.python.org/peps/pep-0318.html">decorator</a> syntax is ill-conceived.
 This syntax file hack works well enough anyway to work with Leo <tt class="docutils literal"><span class="pre">&#64;</span></tt> markup:</p>
 <pre class="literal-block">
@@ -1253,12 +1342,12 @@ syn match   pythonDecorator &quot;&#64;\S\S+&quot; display nextgroup=pythonFunct
 </pre>
 </div>
 <div class="section" id="id3">
-<h2>Running Python setup.py install from the leo directory doesn't work.  Why not?</h2>
+<h2><a class="toc-backref" href="#id64">Running Python setup.py install from the leo directory doesn't work.  Why not?</a></h2>
 <p>Leo's setup.py script is intended only to create source distributions. It can't
 be used to install Leo because Leo is not a Python package.</p>
 </div>
 <div class="section" id="i-can-t-run-the-leobridge-module-outside-of-leo-core-what-should-i-do">
-<h2>I can't run the LeoBridge module outside of leo/core.  What should I do?</h2>
+<h2><a class="toc-backref" href="#id65">I can't run the LeoBridge module outside of leo/core.  What should I do?</a></h2>
 <p>Question and answer from plumloco.</p>
 <p>Add the equivalent of:</p>
 <pre class="literal-block">
@@ -1291,13 +1380,13 @@ problem.</p>
 </div>
 </div>
 <div class="section" id="unicode-issues">
-<h1>Unicode issues</h1>
+<h1><a class="toc-backref" href="#id66">Unicode issues</a></h1>
 <div class="section" id="i-can-not-enter-non-ascii-characters-what-can-i-do">
-<h2>I can not enter non-ascii characters.  What can I do?</h2>
+<h2><a class="toc-backref" href="#id67">I can not enter non-ascii characters.  What can I do?</a></h2>
 <p>Set &#64;bool ignore_unbound_non_ascii_keys = False in LeoSettings.leo or myLeoSettings.leo.</p>
 </div>
 <div class="section" id="some-characters-in-derived-files-look-funny-what-can-i-do">
-<h2>Some characters in derived files look funny. What can I do?</h2>
+<h2><a class="toc-backref" href="#id68">Some characters in derived files look funny. What can I do?</a></h2>
 <p>Internally, Leo represents all strings as unicode. Leo translates from a
 particular encoding to <a class="reference external" href="http://www.unicode.org/">Unicode</a> when reading .leo files or <a class="reference external" href="glossary.html#derived-files">derived files</a>. Leo
 translates from <a class="reference external" href="http://www.unicode.org/">Unicode</a> to a particular encoding when writing <a class="reference external" href="glossary.html#derived-files">derived files</a>. You
@@ -1348,7 +1437,7 @@ Therefore, setting the <tt class="docutils literal"><span class="pre">tk_encodin
 </dl>
 </div>
 <div class="section" id="i-get-weird-results-when-defining-unicode-strings-in-scripts-what-is-going-on">
-<h2>I get weird results when defining unicode strings in scripts.  What is going on?</h2>
+<h2><a class="toc-backref" href="#id69">I get weird results when defining unicode strings in scripts.  What is going on?</a></h2>
 <p>Add the following to the start of your scripts:</p>
 <pre class="literal-block">
 &#64;first # -*- coding: utf-8 -*-
@@ -1378,7 +1467,7 @@ u = 'a-\u0233-\u8ce2-z'
 </pre>
 </div>
 <div class="section" id="some-characters-are-garbled-when-importing-files-what-can-i-do">
-<h2>Some characters are garbled when importing files. What can I do?</h2>
+<h2><a class="toc-backref" href="#id70">Some characters are garbled when importing files. What can I do?</a></h2>
 <p>The encoding used in the file being imported doesn't match the encoding in effect for Leo.
 You have two options:</p>
 <ul class="simple">
@@ -1388,7 +1477,7 @@ doing the <tt class="docutils literal"><span class="pre">Import</span></tt> <a c
 </ul>
 </div>
 <div class="section" id="python-s-print-statement-shows-byte-hash-for-unicode-characters-what-can-i-do">
-<h2>Python's print statement shows 'byte hash' for unicode characters.  What can I do?</h2>
+<h2><a class="toc-backref" href="#id71">Python's print statement shows 'byte hash' for unicode characters.  What can I do?</a></h2>
 <p>First, you must change Python's default encoding to something other than 'ascii'.  To do this, put the following in your sitecustomize.py file in Python's Lib folder:</p>
 <pre class="literal-block">
 import sys

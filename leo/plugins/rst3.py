@@ -56,6 +56,7 @@ import leo.core.leoPlugins as leoPlugins
 
 import os
 import HTMLParser
+# import optparse
 import pprint
 import StringIO
 import sys
@@ -1274,26 +1275,16 @@ class rstClass:
 
         return ok
     #@-node:ekr.20050805162550.21:writeSpecialTree
-    #@+node:ekr.20050809082854.1:writeToDocutils (sets argv)
+    #@+node:ekr.20050809082854.1:writeToDocutils (sets argv) & helper
     def writeToDocutils (self,s):
 
         '''Send s to docutils using the writer implied by self.ext and return the result.'''
 
         openDirectory = self.c.frame.openDirectory
-        #pub = docutils.core.Publisher()
-        #pub.source      = docutils.io.StringInput(source=s)
-        #pub.destination = docutils.io.StringOutput(pub.settings,encoding=self.encoding)
-        #pub.set_reader('standalone',None,'restructuredtext')
-
-        overrides = { 'output_encoding': self.encoding }        # MWC -- define override structure
+        overrides = { 'output_encoding': self.encoding }
 
         # Compute the args list if the stylesheet path does not exist.
-        args = self.getOption('publish_argv_for_missing_stylesheets') or ''
-        args = args1 = args.strip()
-        if not args: args = []
-        elif args.find(',') == -1: args = [args]
-        else: args = args.split(',')
-        # g.trace('args',repr(args))
+        styleSheetArgsDict = self.handleMissingStyleSheetArgs()
 
         for ext,writer in (
             ('.html','html'),
@@ -1307,11 +1298,6 @@ class rstClass:
             g.es_print('unknown docutils extension: %s' % (self.ext),color='red')
             return ''
 
-        # The actual file is gotten by: writers.get_writer_class(writer_name)
-        # There is a list of aliases in the __init__ file in the writers folder.
-        # If no such alias exists, docutils tries to import the actual name give.
-        #pub.set_writer(writer)
-
         # Make the stylesheet path relative to the directory containing the output file.
         rel_stylesheet_path = self.getOption('stylesheet_path') or ''
 
@@ -1324,27 +1310,24 @@ class rstClass:
 
         res = ""
         if g.os_path_exists(path):
-            if self.ext == '.pdf':
-                # return pub.publish(argv=[])
-                pass
-            else:
+            if self.ext != '.pdf':
                 overrides['stylesheet'] = path
                 overrides['stylesheet_path'] = None
-                #return pub.publish(argv=['--stylesheet=%s' % path])
+        elif styleSheetArgsDict:
+            overrides.update(styleSheetArgsDict)
+                # MWC add args to settings
+        elif rel_stylesheet_path == stylesheet_path:
+            g.es_print('stylesheet not found: %s' % (path),color='red')
         else:
-            if not args1:
-                if rel_stylesheet_path == stylesheet_path:
-                    g.es_print('stylesheet not found: %s' % (path),color='red')
-                else:
-                    g.es_print('stylesheet not found',color='red')
-                    g.es_print('open directory: %s' % (self.c.frame.openDirectory),color='red')
-                    g.es_print('relative path: %s' % (rel_stylesheet_path),color='red')
-                    g.es_print('absolute path: %s' % (path),color='red')       
-            #return pub.publish(argv=args)
-            overrides.update(args)     # MWC add args to settings
+            g.es_print('stylesheet not found',color='red')
+            g.es_print('open directory: %s' % (
+                self.c.frame.openDirectory),color='red')
+            g.es_print('relative path: %s' % (
+                rel_stylesheet_path),color='red')
+            g.es_print('absolute path: %s' % (path),color='red')  
 
-        # MWC -- Note:  Forcing all logic above to fall through to here
         try:
+            # All paths now come through here.
             res = docutils.core.publish_string(source=s,
                     reader_name='standalone',
                     parser_name='restructuredtext',
@@ -1352,8 +1335,41 @@ class rstClass:
                     settings_overrides=overrides)
         except docutils.ApplicationError, error:
             g.es_print('Error (%s): %s' % (error.__class__.__name__, error))
-        return res            
-    #@-node:ekr.20050809082854.1:writeToDocutils (sets argv)
+        return res
+    #@nonl
+    #@+node:ekr.20090428082801.64:handleMissingStyleSheetArgs
+    def handleMissingStyleSheetArgs (self):
+
+        '''Parse the publish_argv_for_missing_stylesheets option,
+        returning a dict containing the parsed args.'''
+
+        return {} ####
+
+        d = {}
+        s = self.getOption('publish_argv_for_missing_stylesheets')
+        if not s: return d
+
+        args = s.strip()
+        if args.find(',') == -1:
+            args = [args]
+        else:
+            args = args.split(',')
+
+        for arg in args:
+            data = arg.split('=')
+            if len(data) == 1:
+                key = data[0]
+                d[key] = ""
+            elif len(data) == 2:
+                key,value = data
+                d[key] = value
+            else:
+                g.es_print('bad option: %s' % s,color='red')
+                break
+
+        return d
+    #@-node:ekr.20090428082801.64:handleMissingStyleSheetArgs
+    #@-node:ekr.20050809082854.1:writeToDocutils (sets argv) & helper
     #@+node:ekr.20060525102337:writeNodeToString (New in 4.4.1)
     def writeNodeToString (self,p=None,ext=None):
 

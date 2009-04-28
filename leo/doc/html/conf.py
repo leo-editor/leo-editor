@@ -34,7 +34,7 @@ source_suffix = '.html.txt'
 #source_encoding = 'utf-8'
 
 # The master toctree document.
-master_doc = 'leo_toc'
+master_doc = 'leo_toc' # don't use any prefix.
 
 # General information about the project.
 project = u'Leo'
