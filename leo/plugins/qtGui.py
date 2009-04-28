@@ -5871,8 +5871,9 @@ class leoQtColorizer:
         self.count += 1 # For unit testing.
 
         if self.enabled:
+            oldLanguage = self.language
             self.updateSyntaxColorer(p) # sets self.flag.
-            if self.flag and not incremental:
+            if self.flag and (oldLanguage != self.language or not incremental):
                 self.highlighter.rehighlight(p)
 
         return "ok" # For unit testing.
@@ -5947,7 +5948,7 @@ class leoQtColorizer:
             #@-node:ekr.20090226105328.14:<< Test for @root, @root-doc or @root-code >>
             #@nl
 
-        if trace: g.trace(self.language)
+        if trace: g.trace(self.language,g.callers(4))
 
         return self.language # For use by external routines.
     #@-node:ekr.20090226105328.12:scanColorDirectives (leoQtColorizer)
@@ -6152,9 +6153,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         if trace:
             g.trace('%s calls to recolor' % (
                 self.colorer.recolorCount-n))
-
-
-
+    #@nonl
     #@-node:ekr.20081206062411.15:rehighlight
     #@-others
 #@-node:ekr.20081205131308.27:leoQtSyntaxHighlighter
@@ -7578,24 +7577,17 @@ class jEditColorizer:
         trace = False and not g.unitTesting
         verbose = False ; traceMatch = False
 
-        # Return immediately if syntax coloring has been disabled.
-        # if self.colorizer.killColorFlag or not self.colorizer.enabled:
-            # self.highlighter.setCurrentBlockState(-1)
-            # if trace and (self.initFlag or verbose):
-                # self.initFlag = False
-                # g.trace('immediate return')
-            # return
-
         # Reload all_s if the widget's text is known to have changed.
         if self.initFlag:
             self.initFlag = False
             if self.colorizer.checkStartKillColor():
                 self.all_s = None
-                return 
+                return
 
             self.all_s = self.w.getAllText()
-            if trace and verbose:
-                g.trace('**** set all_s: %s' % len(self.all_s),g.callers(5))
+            if trace:
+                g.trace('**** set all_s: %s %s' % (
+                    self.colorizer.language,len(self.all_s)),g.callers(5))
 
         all_s = self.all_s
         if not all_s: return
@@ -7689,25 +7681,49 @@ class jEditColorizer:
                offset,len(all_s),g.callers(5),repr(s),repr(s2)))
         return s == s2
     #@-node:ekr.20090213102946.10:checkRecolor
+    #@+node:ekr.20090427163556.11:computeColorStateName
+    def computeColorStateName (self):
+
+        if self.colorizer.killColorFlag:
+            color = 'killcolor.'
+        elif self.colorizer.flag in (True,None):
+            color = ''
+        else:
+            color = 'nocolor.'
+
+        return color
+
+    #@-node:ekr.20090427163556.11:computeColorStateName
+    #@+node:ekr.20090427163556.14:computeDefaultStateName
+    def computeDefaultStateName (self):
+
+        languageState = self.computeLanguageStateName()
+        colorState = self.computeColorStateName()
+
+        return '%s%s%s' % (languageState,colorState,self.defaultState)
+    #@-node:ekr.20090427163556.14:computeDefaultStateName
+    #@+node:ekr.20090427163556.13:computeLanguageStateName
+    def computeLanguageStateName (self):
+
+        language = self.colorizer.language or ''
+
+        return g.choose(language, '%s.' % language,'')
+    #@-node:ekr.20090427163556.13:computeLanguageStateName
     #@+node:ekr.20090211072718.14:computeStateName
     def computeStateName (self,lastFunc,lastMatch,lastN,minimalMatch):
 
-        if self.colorizer.killColorFlag:
-            colorState = 'killcolor.'
-        else:
-            colorState = g.choose(
-                self.colorizer.flag in (True,None),'','nocolor.')
-
         if lastFunc:
+            languageState = self.computeLanguageStateName()
+            colorState = self.computeColorStateName()
+
             matchString = g.choose(minimalMatch,
                 minimalMatch,
                 self.all_s[lastMatch:lastMatch+lastN])
-            name = '%s%s:%s' % (
-                colorState,lastFunc.__name__,matchString)
-        else:
-            name = '%s%s' % (colorState,self.defaultState)
 
-        # g.trace(repr(lastFlag),name)
+            name = '%s%s%s:%s' % (
+                languageState,colorState,lastFunc.__name__,matchString)
+        else:
+            name = self.computeDefaultStateName()
 
         return name
     #@-node:ekr.20090211072718.14:computeStateName
@@ -7724,12 +7740,11 @@ class jEditColorizer:
                 lastFunc=None,
                 lastMatch=0,
                 lastN=0,
-                stateName = self.defaultState)
+                stateName = self.computeDefaultStateName())
         else:
             bunch = self.stateDict.get(n)
             assert bunch,'n=%s' % (n)
             return bunch
-    #@nonl
     #@-node:ekr.20090211072718.2:getPrevState
     #@+node:ekr.20090211072718.3:setCurrentState
     def setCurrentState (self,s,offset,limit,
