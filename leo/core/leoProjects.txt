@@ -510,6 +510,61 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
     return result
 #@-node:ekr.20041113113140:loadOnePlugin
 #@-node:ekr.20090428075532.1:Added patch for startup logic
+#@+node:ekr.20090428075532.2:Fixed rst3 problem
+@nocolor-node
+
+http://mail.google.com/mail/#inbox/11ef0076a3f4d866
+
+today I've updated my leo installation and downloaded leo from trunk.
+When trying to generate a pdf document with the rst3 plugin the
+following error appears in the log pane:
+
+Traceback (most recent call last):
+
+ File "/usr/local/src/leo-editor/leo/plugins/rst3.py", line 1244, in
+writeSpecialTree
+   output = self.writeToDocutils(self.source)
+
+ File "/usr/local/src/leo-editor/leo/plugins/rst3.py", line 1344, in
+writeToDocutils
+   overrides.update(args)     # MWC add args to settings
+
+ValueError: dictionary update sequence element #0 has length 13; 2 is
+required
+
+It seems that the problem comes from the node containing my
+@rst_options:
+
+@nocolor
+
+@ @rst-options
+default_path=./latex
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+write_intermediate_file = False
+verbose=True
+publish_argv_for_missing_stylesheets=--language=ca,--use-latex-toc,--
+output-encoding=utf-8,--stylesheet=/home/vmas/.leo/custom_style.sty
+@c
+
+In rst3.py, inserting a g.es_print line just before the
+overrides.update(args) one can see that the arguments passed to option
+publish_argv_for_missing_stylesheets are passed to the overrides
+dictionary as a list:
+
+[u'--language=ca', u'--use-latex-toc', u'--output-encoding=utf-8', u'--
+stylesheet=/home/vmas/.leo/custom_style.sty']
+
+which is neither a dictionary nor an iterable of key/value pairs so
+the error is raised. Hope it helps to fix the problem.
+
+Vicent
+#@nonl
+#@-node:ekr.20090428075532.2:Fixed rst3 problem
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@-node:ekr.20090401105902.3:Features

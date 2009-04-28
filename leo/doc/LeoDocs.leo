@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="3,3"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -58,7 +58,7 @@
 marks="ekr.20080306071848,"
 expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20090428101858.1"><vh>How to generate Leo's Sphinx docs</vh></v>
 <v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
 <v t="ekr.20090401113141.2"><vh>@rst c:\prog\test\test.html</vh>
@@ -66,7 +66,7 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 <v t="ekr.20090428102353.1"><vh>@auto html\leo_toc.html.txt</vh></v>
-<v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
+<v t="ekr.20090428133936.2" tnodeList="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -288,9 +288,9 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050828210721.1"><vh>@pagewidth</vh></v>
 <v t="ekr.20050828061501.40"><vh>@raw and @end_raw</vh></v>
 <v t="ekr.20080730212711.51"><vh>\@root</vh></v>
-<v t="ekr.20050828061501.41"><vh>@root-code and @root-doc</vh></v>
+<v t="ekr.20050828061501.41"><vh>\@root-code and @root-doc</vh></v>
 <v t="ekr.20080730212711.41"><vh>\@shadow</vh></v>
-<v t="ekr.20050828210721.2"><vh>@tabwidth</vh></v>
+<v t="ekr.20050828210721.2"><vh>\@tabwidth</vh></v>
 <v t="ekr.20080730212711.44"><vh>\@thin</vh></v>
 <v t="ekr.20080729064227.3"><vh>@unit</vh></v>
 <v t="ekr.20050828061501.50"><vh>@verbose, @terse, @quiet and @silent</vh></v>
@@ -969,7 +969,29 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20050914132220"><vh>Other docs</vh>
+</v>
+<v t="ekr.20090324085713.1"><vh>Other docs</vh>
+<v t="ekr.20070701090840"><vh>Old preface</vh></v>
+<v t="ekr.20090101095717.1"><vh>Stories</vh>
+<v t="ekr.20090101095717.2"><vh>Introduction (iLeo, revised)</vh></v>
+<v t="ekr.20090101095717.3" rst_http_attribute="5d71002855443c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3122206e616d653d22687474702d6e6f64652d6d61726b65722d31223e710155043c2f613e71025d710328553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710455063c2f6469763e71055d71062855063c626f64793e710755073c2f626f64793e71085d71092855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710a55073c2f68746d6c3e710b4e65656555243c64697620636c6173733d2273656374696f6e222069643d226f76657276696577223e0a710c55493c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643122206e616d653d226f76657276696577223e4f766572766965773c2f613e3c2f68313e0a710d652e"><vh>Commonly used classes (scripting intro, revised)</vh></v>
+<v t="ekr.20090101095717.4"><vh>Intro to scripting Leo</vh></v>
+<v t="ekr.20090101095717.5"><vh>@rst-no-head preface</vh></v>
+<v t="ekr.20090101095717.6"><vh>@rst-ignore  @rst-no-head preface (old)</vh></v>
+<v t="ekr.20090101095717.7"><vh>New preface</vh></v>
+</v>
+<v t="ekr.20090219024526.1"><vh>Copy of wiki</vh>
+<v t="ekr.20090219024526.5"><vh>top level</vh>
+<v t="ekr.20090219024526.3"><vh>Outlines and Nodes</vh></v>
+<v t="ekr.20090219090426.1"><vh>Clones and Views</vh></v>
+<v t="ekr.20090219090426.2"><vh>External Files</vh></v>
+<v t="ekr.20090219090426.3"><vh>First Steps for Newbies</vh></v>
+<v t="ekr.20090219090426.4"><vh>The rst3 and ipython plugins</vh></v>
+<v t="ekr.20090219024526.2"><vh>Scripting Leo: Commanders, Nodes and Positions</vh></v>
+<v t="ekr.20090219024526.4"><vh>Scripting Leo: Script Buttons and Node Types</vh></v>
+<v t="ekr.20090219090426.5"><vh>Scripting Leo: Directives and Sections</vh></v>
+</v>
+</v>
 <v t="ekr.20051203084745"><vh>JythonShell help</vh>
 <v t="ekr.20051203085709"><vh>original</vh></v>
 <v t="ekr.20051203084850"><vh>@rst html\jythonShell.html</vh>
@@ -1121,36 +1143,6 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060608111953.58"><vh>showSuccess</vh></v>
 </v>
 <v t="ekr.20060608111953.59"><vh>Must be overridden in subclasses</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20090324085713.1"><vh>Other docs</vh>
-<v t="ekr.20070701090840"><vh>Old preface</vh></v>
-<v t="ekr.20050831184021.2"><vh>Table of contents (No longer used)</vh>
-<v t="ekr.20080730212711.29"><vh>@@thin html\leo_TOC.html</vh>
-<v t="ekr.20080730212711.30"><vh>&lt;&lt;head&gt;&gt;</vh></v>
-<v t="ekr.20080730212711.36"><vh>&lt;&lt; body &gt;&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20090101095717.1"><vh>Stories</vh>
-<v t="ekr.20090101095717.2"><vh>Introduction (iLeo, revised)</vh></v>
-<v t="ekr.20090101095717.3" rst_http_attribute="5d71002855443c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3122206e616d653d22687474702d6e6f64652d6d61726b65722d31223e710155043c2f613e71025d710328553f3c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710455063c2f6469763e71055d71062855063c626f64793e710755073c2f626f64793e71085d71092855433c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710a55073c2f68746d6c3e710b4e65656555243c64697620636c6173733d2273656374696f6e222069643d226f76657276696577223e0a710c55493c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643122206e616d653d226f76657276696577223e4f766572766965773c2f613e3c2f68313e0a710d652e"><vh>Commonly used classes (scripting intro, revised)</vh></v>
-<v t="ekr.20090101095717.4"><vh>Intro to scripting Leo</vh></v>
-<v t="ekr.20090101095717.5"><vh>@rst-no-head preface</vh></v>
-<v t="ekr.20090101095717.6"><vh>@rst-ignore  @rst-no-head preface (old)</vh></v>
-<v t="ekr.20090101095717.7"><vh>New preface</vh></v>
-</v>
-<v t="ekr.20090219024526.1"><vh>Copy of wiki</vh>
-<v t="ekr.20090219024526.5"><vh>top level</vh>
-<v t="ekr.20090219024526.3"><vh>Outlines and Nodes</vh></v>
-<v t="ekr.20090219090426.1"><vh>Clones and Views</vh></v>
-<v t="ekr.20090219090426.2"><vh>External Files</vh></v>
-<v t="ekr.20090219090426.3"><vh>First Steps for Newbies</vh></v>
-<v t="ekr.20090219090426.4"><vh>The rst3 and ipython plugins</vh></v>
-<v t="ekr.20090219024526.2"><vh>Scripting Leo: Commanders, Nodes and Positions</vh></v>
-<v t="ekr.20090219024526.4"><vh>Scripting Leo: Script Buttons and Node Types</vh></v>
-<v t="ekr.20090219090426.5"><vh>Scripting Leo: Directives and Sections</vh></v>
 </v>
 </v>
 </v>
@@ -7252,6 +7244,7 @@ verbose=True
 @c
 
 @language rest
+@tabwidth -4
 
 These are the sources for the html version of Leo's users guide,
 as well as the documentation for the rst3 plugin used to create the actual html files.
@@ -7259,14 +7252,7 @@ as well as the documentation for the rst3 plugin used to create the actual html 
 These sources contain reStructuredText_ (rST) markup that is easy to read.
 See http://docutils.sourceforge.net/docs/user/rst/quickstart.html for an introduction to rST.
 
-To create the html files, choose one of the @rst nodes and run the rst3 plugin
-by clicking on the blue 'rst' button in the icon area.
-
-**Important**:
-The following @ignore is needed so that discussions of @file, @root, etc. do not create derived files!
-
-@ignore
-@tabwidth -4</t>
+See the node "How to generate Leo's Sphinx docs" for details about making these docs.</t>
 <t tx="ekr.20040414172212">############
 Front Matter
 ############
@@ -12433,7 +12419,6 @@ The benefits of the new workflow:
 - test.leo is the perfect place to develop test.
   I can create and organize those tests and when I am done, ''test.leo'' is a log of my work.</t>
 <t tx="ekr.20050831184021.1">@language rest</t>
-<t tx="ekr.20050831184021.2">@language html</t>
 <t tx="ekr.20050831184021.3">@language rest</t>
 <t tx="ekr.20050831184021.4">@language rest</t>
 <t tx="ekr.20050831184021.5">@language rest</t>
@@ -15054,7 +15039,6 @@ The highlights of 4.3.2:
 - Improved the Pretty Printing command.
 
 - The usual assortment of bug fixes.</t>
-<t tx="ekr.20050914132220"></t>
 <t tx="ekr.20050916065715">@killcolor
 https://sourceforge.net/forum/message.php?msg_id=3341105
 By: rogererens
@@ -28644,320 +28628,6 @@ The crucial ideas and algorithms underlying @shadow trees are the invention of B
 <t tx="ekr.20080730212711.16">.. Links
 .. _`@auto trees`:          directives.html#auto    
 </t>
-<t tx="ekr.20080730212711.29">@first &lt;?xml version="1.0" encoding="utf-8" ?&gt;
-@first &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
-
-@language html
-@tabwidth -4
-
-&lt;!-- Last Modified: July 31, 2008 --&gt;
-&lt;!-- Author: Edward K. Ream, edreamleo@gmail.com --&gt;
-
-&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
-&lt;head&gt;
-&lt;&lt;head&gt;&gt;
-&lt;/head&gt;
-
-&lt;body bgcolor="#fffbdc"&gt;
-&lt;&lt; body &gt;&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-
-</t>
-<t tx="ekr.20080730212711.30">&lt;title&gt;Leo's Table of contents&lt;/title&gt;
-
-&lt;meta name="description"
-    content="This page is the table of contents for Leo."/&gt;
-
-&lt;style type="text/css"&gt;
-
-/* EKR 10/19/06 */
-/* some browsers require imported rules to precede all rulesets */
-@import url(leo_rst.css);
-@import url(silver_city.css);
-
-.first {
-  margin-top: 0 }
-
-.last {
-  margin-bottom: 0 }
-
-a.toc-backref {
-  text-decoration: none ;
-  color: black }
-
-dd {
-  margin-bottom: 0.5em }
-
-div.abstract {
-  margin: 2em 5em }
-
-div.abstract p.topic-title {
-  font-weight: bold ;
-  text-align: center }
-
-div.attention, div.caution, div.danger, div.error, div.hint,
-div.important, div.note, div.tip, div.warning, div.admonition {
-  margin: 2em ;
-  border: medium outset ;
-  padding: 1em }
-
-div.attention p.admonition-title, div.caution p.admonition-title,
-div.danger p.admonition-title, div.error p.admonition-title,
-div.warning p.admonition-title {
-  color: red ;
-  font-weight: bold ;
-  font-family: sans-serif }
-
-div.hint p.admonition-title, div.important p.admonition-title,
-div.note p.admonition-title, div.tip p.admonition-title,
-div.admonition p.admonition-title {
-  font-weight: bold ;
-  font-family: sans-serif }
-
-div.dedication {
-  margin: 2em 5em ;
-  text-align: center ;
-  font-style: italic }
-
-div.dedication p.topic-title {
-  font-weight: bold ;
-  font-style: normal }
-
-div.figure {
-  margin-left: 2em }
-
-div.footer, div.header {
-  font-size: smaller }
-
-div.sidebar {
-  margin-left: 1em ;
-  border: medium outset ;
-  padding: 0em 1em ;
-  background-color: #ffffee ;
-  width: 40% ;
-  float: right ;
-  clear: right }
-
-div.sidebar p.rubric {
-  font-family: sans-serif ;
-  font-size: medium }
-
-div.system-messages {
-  margin: 5em }
-
-div.system-messages h1 {
-  color: red }
-
-div.system-message {
-  border: medium outset ;
-  padding: 1em }
-
-div.system-message p.system-message-title {
-  color: red ;
-  font-weight: bold }
-
-div.topic {
-  margin: 2em }
-
-h1.title {
-  text-align: center }
-
-h2.subtitle {
-  text-align: center }
-
-ol.simple, ul.simple {
-  margin-bottom: 1em }
-
-ol.arabic {
-  list-style: decimal }
-
-ol.loweralpha {
-  list-style: lower-alpha }
-
-ol.upperalpha {
-  list-style: upper-alpha }
-
-ol.lowerroman {
-  list-style: lower-roman }
-
-ol.upperroman {
-  list-style: upper-roman }
-
-p.attribution {
-  text-align: right ;
-  margin-left: 50% }
-
-p.caption {
-  font-style: italic }
-
-p.credits {
-  font-style: italic ;
-  font-size: smaller }
-
-p.label {
-  white-space: nowrap }
-
-p.rubric {
-  font-weight: bold ;
-  font-size: larger ;
-  color: maroon ;
-  text-align: center }
-
-p.sidebar-title {
-  font-family: sans-serif ;
-  font-weight: bold ;
-  font-size: larger }
-
-p.sidebar-subtitle {
-  font-family: sans-serif ;
-  font-weight: bold }
-
-p.topic-title {
-  font-weight: bold }
-
-pre.address {
-  margin-bottom: 0 ;
-  margin-top: 0 ;
-  font-family: serif ;
-  font-size: 100% }
-
-pre.line-block {
-  font-family: serif ;
-  font-size: 100% }
-
-pre.literal-block, pre.doctest-block {
-  margin-left: 2em ;
-  margin-right: 2em ;}
-  /*background-color: #eeeeee }*/
-  /*for some reason i can't overide in an import*/
-
-span.classifier {
-  font-family: sans-serif ;
-  font-style: oblique }
-
-span.classifier-delimiter {
-  font-family: sans-serif ;
-  font-weight: bold }
-
-span.interpreted {
-  font-family: sans-serif }
-
-span.option {
-  white-space: nowrap }
-
-span.option-argument {
-  font-style: italic }
-
-span.pre {
-  white-space: pre }
-
-span.problematic {
-  color: red }
-
-table {
-  margin-top: 0.5em ;
-  margin-bottom: 0.5em }
-
-table.citation {
-  border-left: solid thin gray ;
-  padding-left: 0.5ex }
-
-table.docinfo {
-  margin: 2em 4em }
-
-table.footnote {
-  border-left: solid thin black ;
-  padding-left: 0.5ex }
-
-td, th {
-  padding-left: 0.5em ;
-  padding-right: 0.5em ;
-  vertical-align: top }
-
-th.docinfo-name, th.field-name {
-  font-weight: bold ;
-  text-align: left ;
-  white-space: nowrap }
-
-h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
-  font-size: 100% }
-
-/*for some reason, the following isn't being overridden by the imports
-at the end of this style sheet so I've commented it out*/
-/*tt {
-  background-color: #eeeeee }*/
-
-ul.auto-toc {
-  list-style-type: none }
-
-hr { /* EKR */
-  width: 100%;
-  height: 1pt;
-  color: gray;
-}
-&lt;/style&gt;
-</t>
-<t tx="ekr.20080730212711.36">&lt;div class="document"&gt;
-
-&lt;p&gt;&lt;img alt="blank" src="Blank.gif" /&gt; &lt;a class="reference" href="front.html"&gt;&lt;img alt="leo" src="leo.gif" /&gt;&lt;/a&gt; &lt;a class="reference" href="frontMatter.html"&gt;&lt;img alt="next" src="arrow_rt.gif" /&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;div class="section" id="leo-s-users-guide"&gt;
-&lt;h1&gt;Leo's Users Guide&lt;/h1&gt;
-
-&lt;p&gt;&lt;strong&gt;Important&lt;/strong&gt;:
-LeoDocs.leo (included in all Leo distributions) contains the full source code for
-all parts of Leo's Users Guide.&lt;/p&gt;
-
-&lt;div class="section" id="table-of-contents"&gt;
-&lt;h2&gt;Table of Contents&lt;/h2&gt;
-
-&lt;a class="reference" href="frontMatter.html"&gt;Front Matter&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="preface.html"&gt;Preface&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="testimonials.html"&gt;What people are saying about Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="FAQ.html"&gt;FAQ&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="install.html"&gt;Chapter 1: Installing Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="intro.html"&gt;Chapter 2: A Tutorial Introduction to Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="outlines.html"&gt;Chapter 3: Using Leo's Outlines&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="directives.html"&gt;Chapter 4: Writing Programs in Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="commands.html"&gt;Chapter 5: Using Leo's Commands&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="design.html"&gt;Chapter 6: Leo and Literate Programming&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="scripting.html"&gt;Chapter 7: Scripting Leo with Python&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="customizing.html"&gt;Chapter 8: Customizing Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="history.html"&gt;Chapter 9: History of Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="theory.html"&gt;Chapter 10: Theory of Operation&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="whitepapers.html"&gt;Chapter 11: White Papers&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="plugins.html"&gt;Chapter 12: Plugins&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="writingPlugins.html"&gt;Chapter 13: Writing Plugins&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="rstplugin3.html"&gt;Chapter 14: Using the Rst3 Plugin&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="coloring.html"&gt;Chapter 15: Controlling Syntax Coloring&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="debuggers.html"&gt;Chapter 16: Debugging with Leo&lt;/a&gt;&lt;br&gt;
-
-&lt;a class="reference" href="zodb.html"&gt;Chapter 17: Using ZODB with Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="emacs.html"&gt;Chapter 18: Leo and Emacs&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="leoBridge.html"&gt;Chapter 19: Embedding Leo with the leoBridge Module&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="unitTesting.html"&gt;Chapter 20: Unit testing with Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="IPythonBridge.html"&gt;Chapter 21: ILeo - the IPython bridge&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="vimBindings.html"&gt;Chapter 22: Using Vim with Leo&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="atShadow.html"&gt;Chapter 23: Eliminating sentinel lines with @shadow&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="appendices.html"&gt;Appendices&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="glossary.html"&gt;Glossary&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-5.html"&gt;What's new in Leo 4.5&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-4-8.html"&gt;What's new in Leo 4.4.7 and 4.4.8&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-4-6.html"&gt;What's new in Leo 4.4.6&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-4-5.html"&gt;What's new in Leo 4.4.5&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-4-4.html"&gt;What's new in Leo 4.4.4&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-4-3.html"&gt;What's new in Leo 4.4.3&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-4-2.html"&gt;What's new in Leo 4.4.2&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-4-1.html"&gt;What's new in Leo 4.4.1&lt;/a&gt;&lt;br&gt;
-&lt;a class="reference" href="new-4-4.html"&gt;What's new in Leo 4.4&lt;/a&gt;&lt;br&gt;
-
-&lt;hr class="docutils" /&gt;
-&lt;p&gt;&lt;a class="reference" href="front.html"&gt;&lt;img alt="leo" src="leo.gif" /&gt;&lt;/a&gt; &lt;a class="reference" href="frontMatter.html"&gt;&lt;img alt="next" src="arrow_rt.gif" /&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;</t>
 <t tx="ekr.20080730212711.39">Using @shadow trees is the best choice when you want to have the full power of
 Leo's outlines, but wish to retain the source files in their original format,
 without Leo sentinels (markup) in comments in the source file. 
@@ -31011,7 +30681,18 @@ into the node, along with @language or @nocolor directives as
 appropriate.  These added directives will not change the file when it
 gets written because no sentinels are written.</t>
 <t tx="ekr.20090324085713.1">@language rest
-</t>
+
+@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = False
+verbose=True
+@c</t>
 <t tx="ekr.20090324085713.2">Leo 4.6 beta 1                                       March 23, 2009
 
 Leo 4.6 b1 is now available at:
@@ -31358,69 +31039,6 @@ including the name of the master toctree document, leo_toc.html.txt.
 - From this file, run rst3 on desired tree.
 - cd leo\docs\html
 - make html
-</t>
-<t tx="ekr.20090428102353.1">@nocolor
-.. Leo documentation documentation master file, created by
-   sphinx-quickstart on Mon Mar 30 16:39:02 2009.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Leo's Users Guide
-==================
-
-Contents:
-
-.. toctree::
-   :maxdepth: 1
-   :glob:
-
-   frontMatter   
-   preface
-   testimonials
-   FAQ
-   install
-   intro
-   outlines
-   directives
-   commands
-   design
-   scripting
-   customizing
-   history
-   theory
-   whitepapers
-   plugins
-   writingPlugins
-   rstplugin3
-   coloring
-   debuggers
-   zodb
-   emacs
-   leoBridge
-   unitTesting
-   IPythonBridge
-   vimBindings
-   atShadow
-   appendices
-   glossary
-   new-4-6
-   new-4-5
-   new-4-4-8
-   new-4-4-6
-   new-4-4-5
-   new-4-4-4
-   new-4-4-3
-   new-4-4-2
-   new-4-4-1
-   new-4-4
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
 </t>
 <t tx="ekr.20090428133936.2">@language python
 # -*- coding: utf-8 -*-
