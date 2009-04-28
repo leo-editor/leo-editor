@@ -383,6 +383,14 @@ def getEnabledFiles (s,plugins_path):
 #@+node:ekr.20041113113140:loadOnePlugin
 def loadOnePlugin (moduleOrFileName, verbose=False):
 
+    # Prevent Leo from crashing if .leoID.txt does not exist.
+    if g.app.config is None:
+       print ('No g.app.config, making stub...')
+       class StubConfig:
+           def getBool(self, c, setting):
+               return False
+       g.app.config = StubConfig()
+
     global loadedModules,loadingModuleNameStack
 
     verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
