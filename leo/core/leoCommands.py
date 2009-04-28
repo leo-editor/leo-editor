@@ -288,10 +288,11 @@ class baseCommands (object):
         # Controller-specific pickleshare db at /foo/bar.leo_db/
 
         import leo.external.pickleshare
+        import hashlib
         pth, bname = os.path.split(self.mFileName)
 
         if pth and bname:
-            dbdirname = '%s/.%s_db' % (pth, bname)
+            dbdirname = g.app.homeLeoDir + "/db/" + bname + "_" + hashlib.md5(self.mFileName).hexdigest()
             self.db = leo.external.pickleshare.PickleShareDB(dbdirname)
         else:
             self.db = None
