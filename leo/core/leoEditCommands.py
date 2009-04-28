@@ -3875,8 +3875,7 @@ class editCommandsClass (baseEditCommandsClass):
         w = self.editWidget(event)
         s = w.getAllText() ; ins = w.getInsertPoint()
         i,junk = g.getLine(s,ins)
-        if i > 0 and i == ins:
-            i,junk = g.getLine(s,i-1)
+        # if i > 0 and i == ins: i,junk = g.getLine(s,i-1)
         self.moveToHelper(event,i,extend=False)
 
     def beginningOfLineExtendSelection (self,event):
@@ -3884,8 +3883,7 @@ class editCommandsClass (baseEditCommandsClass):
         w = self.editWidget(event)
         s = w.getAllText() ; ins = w.getInsertPoint()
         i,junk = g.getLine(s,ins)
-        if i > 0 and i == ins:
-            i,junk = g.getLine(s,i-1)
+        # if i > 0 and i == ins: i,junk = g.getLine(s,i-1)
         self.moveToHelper(event,i,extend=True)
 
     def endOfLine (self,event): # passed
@@ -3902,7 +3900,7 @@ class editCommandsClass (baseEditCommandsClass):
         w = self.editWidget(event)
         s = w.getAllText() ; ins = w.getInsertPoint()
         junk,i = g.getLine(s,ins)
-        if ins == i-1: junk,i = g.getLine(s,i)
+        # if ins == i-1: junk,i = g.getLine(s,i)
         if g.match(s,i-1,'\n'): i -= 1
         self.moveToHelper(event,i,extend=True)
 
