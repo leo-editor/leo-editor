@@ -21,8 +21,6 @@ Most important projects:
 - key handling.
 - multiple body editors.
 - bugs.
-#@+node:ekr.20090407095245.1:Urgent: don't spray leo_db files around file system
-#@-node:ekr.20090407095245.1:Urgent: don't spray leo_db files around file system
 #@+node:ekr.20090324100430.1:Major bug: deleting @chapter node doesn't work
 @nocolor-node
 _unlink: can not happen: bad child index: 4, len(children): 2
