@@ -21,7 +21,6 @@ Most important projects:
 - key handling.
 - multiple body editors.
 - bugs.
-#@+node:ekr.20090409055258.1:Next (some urgent)
 #@+node:ekr.20090407095245.1:Urgent: don't spray leo_db files around file system
 #@-node:ekr.20090407095245.1:Urgent: don't spray leo_db files around file system
 #@+node:ekr.20090324100430.1:Major bug: deleting @chapter node doesn't work
@@ -135,10 +134,257 @@ def removeChapterByName (self,name):
     c.redraw()
 #@-node:ekr.20070606075434:cc.removeChapterByName
 #@-node:ekr.20090324100430.1:Major bug: deleting @chapter node doesn't work
+#@+node:ekr.20090409055258.2:Easy
 #@+node:ekr.20090404051241.2:Use sphinx-level markup to generate index entries
 See http://sphinx.pocoo.org/markup/desc.html
 #@nonl
 #@-node:ekr.20090404051241.2:Use sphinx-level markup to generate index entries
+#@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
+#@-node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
+#@+node:ekr.20090402072059.2:clone-find-all-once
+@
+
+First do a normal clone-find-all for the word "clone". Then click the script
+button and do it again. Notice that children of previously found nodes don't get
+added again in the modified version.
+#@nonl
+#@+node:ekr.20060128080201:cloneFindAll
+def cloneFindAll (self,event):
+
+    c = self.c ; k = self.k ; tag = 'clone-find-all'
+    state = k.getState(tag)
+
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if not w: return
+        self.setupArgs(forward=None,regexp=None,word=None)
+        k.setLabelBlue('Clone Find All: ',protect=True)
+        k.getArg(event,tag,1,self.cloneFindAll)
+    else:
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg,cloneFindAll=True)
+        c.treeWantsFocus()
+#@-node:ekr.20060128080201:cloneFindAll
+#@+node:ekr.20060128075225:cloneFindAllCommand
+def cloneFindAllCommand (self,event=None):
+
+    self.setup_command()
+    self.clone_find_all = True
+    self.findAll()
+    self.clone_find_all = False
+#@-node:ekr.20060128075225:cloneFindAllCommand
+#@+node:ekr.20031218072017.3073:findAll
+def findAll(self):
+
+    c = self.c ; w = self.s_ctrl ; u = c.undoer
+    undoType = 'Clone Find All'
+    if not self.checkArgs():
+        return
+    self.initInHeadline()
+    if self.clone_find_all:
+        self.p = None # Restore will select the root position.
+    data = self.save()
+    self.initBatchCommands()
+    count = 0 ; clones = []
+    while 1:
+        pos, newpos = self.findNextMatch()
+        if pos is None: break
+        count += 1
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if not self.clone_find_all:
+            self.printLine(line,allFlag=True)
+        if self.clone_find_all and self.p.v.t not in clones:
+            # g.trace(self.p.v.t,self.p.h)
+            if not clones:
+                undoData = u.beforeInsertNode(c.p)
+                << create the found node >>
+            clones.append(self.p.v.t)
+            << create a clone of p under the find node >>
+
+    if self.clone_find_all and clones:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        c.selectPosition(found)
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw()
+    g.es("found",count,"matches")
+#@+node:ekr.20051113110735:<< create the found node >>
+oldRoot = c.rootPosition()
+found = oldRoot.insertAfter()
+found.moveToRoot(oldRoot)
+c.setHeadString(found,'Found: ' + self.find_text)
+c.setRootPosition(found) # New in Leo 4.5.
+#@-node:ekr.20051113110735:<< create the found node >>
+#@+node:ekr.20051113110851:<< create a clone of p under the find node >>
+q = self.p.clone()
+q.moveToLastChildOf(found)
+#@-node:ekr.20051113110851:<< create a clone of p under the find node >>
+#@-node:ekr.20031218072017.3073:findAll
+#@+node:ekr.20090402072059.4:@@@button my clone find all
+import leo.core.leoFind as leoFind 
+
+def new_find_all(self):
+    << do some initial stuff >>
+
+
+    while 1:
+        pos, newpos = self.findNextMatch()
+        if pos is None: break
+
+        if count % 10 == 0 and count > 0:
+            g.es("still searching, matches found: ", count)
+
+        << Skip node if it's a child of a previously found node >>
+
+        count += 1
+
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if not self.clone_find_all:
+            self.printLine(line,allFlag=True)
+        if self.clone_find_all and self.p.v.t not in clones:
+            # g.trace(self.p.v.t,self.p.h)
+            if not clones:
+                undoData = u.beforeInsertNode(c.p)
+                << create the found node >>
+            clones.append(self.p.v.t)
+            positions.append(self.p)
+            << create a clone of p under the find node >>
+
+    if self.clone_find_all and clones:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        c.selectPosition(found)
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw()
+    g.es("found",count,"matches")
+
+
+leoFind.leoFind.findAll = new_find_all
+
+c.executeMinibufferCommand("clone-find-all") 
+#@+node:ekr.20090402072059.5:<< do some initial stuff >>
+g.es("findAll..., self: ", self)
+
+c = self.c ; w = self.s_ctrl ; u = c.undoer
+undoType = 'Clone Find All'
+if not self.checkArgs():
+    return
+self.initInHeadline()
+if self.clone_find_all:
+    self.p = None # Restore will select the root position.
+data = self.save()
+self.initBatchCommands()
+count = 0 ; clones = []; positions = []
+#@nonl
+#@-node:ekr.20090402072059.5:<< do some initial stuff >>
+#@+node:ekr.20090402072059.6:<< create the found node >>
+oldRoot = c.rootPosition()
+found = oldRoot.insertAfter()
+found.moveToRoot(oldRoot)
+c.setHeadString(found,'Found: ' + self.find_text)
+c.setRootPosition(found) # New in Leo 4.5.
+#@-node:ekr.20090402072059.6:<< create the found node >>
+#@+node:ekr.20090402072059.7:<< create a clone of p under the find node >>
+q = self.p.clone()
+q.moveToLastChildOf(found)
+#@-node:ekr.20090402072059.7:<< create a clone of p under the find node >>
+#@+node:ekr.20090402072059.8:<< Skip node if it's a child of a previously found node >>
+<< def: is a child of b >>
+
+is_child_of_previous = False
+for previously_found in positions:
+    if is_a_child_of_b(self.p, previously_found):
+        is_child_of_previous = True
+        break
+
+if is_child_of_previous:
+    continue
+#@nonl
+#@+node:ekr.20090402072059.9:<< def: is a child of b >>
+
+def is_a_child_of_b(a, b):
+    for child in b.children_iter():
+        if a.t == child.t:
+            return True
+        if is_a_child_of_b(a, child):
+            return True
+    return False
+#@nonl
+#@-node:ekr.20090402072059.9:<< def: is a child of b >>
+#@-node:ekr.20090402072059.8:<< Skip node if it's a child of a previously found node >>
+#@-node:ekr.20090402072059.4:@@@button my clone find all
+#@-node:ekr.20090402072059.2:clone-find-all-once
+#@+node:ekr.20090228065229.2:Honor @path in rst3 plugin
+#@+node:ekr.20090402072059.12:Investigate problem with rst3 paths
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/9cdfeec1fb9f02a8
+
+On Sat, Mar 28, 2009 at 11:38 AM, VR <viktor.ransmayr@gmail.com> wrote:
+
+Hi Edward,
+
+while further investigating the problem reported this morning
+(http://groups.google.com/group/leo-editor/browse_thread/thread/
+4ec30df3f1db8db3)
+I found another problem with the executable installer.
+
+If you open an outline from a given directory simply by double-
+clicking on the outline
+and you create an derived file from it, eg. an HTML-File via the rst3
+plugin it is saved
+to
+
+"C:\Python26\Lib\site-packages\Leo-4-6-b1\2009\03\LE-2009-03-28.html"
+
+instead of
+
+"C:\Dokumente und Einstellungen\VR\Eigene Dateien\WLog
+\2009\03\LE-2009-03-28.html"
+
+A Leo 4.6.b1 installation created via the ZIP-Archive behaves
+properly.
+#@nonl
+#@-node:ekr.20090402072059.12:Investigate problem with rst3 paths
+#@-node:ekr.20090228065229.2:Honor @path in rst3 plugin
+#@+node:ekr.20090219085600.1:Fix new relative-path-name problem
+@nocolor
+
+http://mail.google.com/mail/#inbox/11f8d37e8ed0349b
+
+Just to make an observation: the @path machinery in leo no longer
+works as expected in terms of relative paths.
+
+For some reason, running my (http://leo.zwiki.org/LeoDirectory) script
+with the default setting of relative_paths=True in leo trunk (revno:
+1584)
+causes some funny behaviour :
+
+- only the top two directories have .leo_shadow directories created
+- all python files are inexplicably copied to the root directory of
+the project
+
+The script works as normal if I change the setting to
+relative_paths=False, but I tend to not prefer this setting as it
+hardcodes the subdirectories in the project with absolute @paths,
+which one would have to modify by hand if the leo project directory is
+moved.
+
+Best,
+
+AliaK
+#@nonl
+#@-node:ekr.20090219085600.1:Fix new relative-path-name problem
+#@-node:ekr.20090409055258.2:Easy
+#@+node:ekr.20090409055258.1:Important
 #@+node:ekr.20090402072059.23:Round-tripping rST files
 @nocolor-node
 
@@ -851,11 +1097,11 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 t
 #@nonl
 #@-node:ekr.20090421121858.1:bzr branch for link nodes
-#@-node:ekr.20090409055258.1:Next (some urgent)
 #@+node:ekr.20090402072059.11:What should be done about @enabled-plugins nodes?
 # It's very confusing.
 #@nonl
 #@-node:ekr.20090402072059.11:What should be done about @enabled-plugins nodes?
+#@-node:ekr.20090409055258.1:Important
 #@+node:ekr.20080922115725.1:Finish @shadow
 # Allow block comments in private shadow files.
 # Compute delims using the private shadow file, not the file extension!

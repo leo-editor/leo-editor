@@ -417,6 +417,99 @@ def backToHome (self,event):
     self.moveToHelper(event,i,extend=False)
 #@-node:ekr.20081123102100.1:backToHome
 #@-node:ekr.20090427103358.1:Fixed back-to-home so it works as expected
+#@+node:ekr.20090428075532.1:Added patch for startup logic
+@nocolor-node
+
+Insert at beginning of the loadOnePlugin::
+
+   if g.app.config is None:
+       print "No g.app.config, making stub..."
+       class StubConfig:
+           def getBool(self, c, setting):
+               return False
+       g.app.config = StubConfig()
+
+This hack prevents leo from crashing and allows the gui prompt for a
+leoID to come up.  I think this is a better solution than asking users
+to manually create the .leoID.txt file and figure out where it goes.
+#@+node:ekr.20041113113140:loadOnePlugin
+def loadOnePlugin (moduleOrFileName, verbose=False):
+
+    # Prevent Leo from crashing if .leoID.txt does not exist.
+    if g.app.config is None:
+       print ('No g.app.config, making stub...')
+       class StubConfig:
+           def getBool(self, c, setting):
+               return False
+       g.app.config = StubConfig()
+
+    global loadedModules,loadingModuleNameStack
+
+    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
+    if moduleOrFileName.endswith('.py'):
+        moduleName = moduleOrFileName [:-3]
+    else:
+        moduleName = moduleOrFileName
+    moduleName = g.shortFileName(moduleName)
+
+    if isLoaded(moduleName):
+        module = loadedModules.get(moduleName)
+        if verbose:
+            g.es_print('plugin',moduleName,'already loaded',color="blue")
+        return module
+
+    plugins_path = g.os_path_join(g.app.loadDir,"..","plugins")
+    moduleName = g.toUnicode(moduleName,g.app.tkEncoding)
+
+    # This import will typically result in calls to registerHandler.
+    # if the plugin does _not_ use the init top-level function.
+    loadingModuleNameStack.append(moduleName)
+    result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
+    loadingModuleNameStack.pop()
+
+    if result:
+        loadingModuleNameStack.append(moduleName)
+        if hasattr(result,'init'):
+            try:
+                # Indicate success only if init_result is True.
+                init_result = result.init()
+                # g.trace('result',result,'init_result',init_result)
+                if init_result:
+                    loadedModules[moduleName] = result
+                    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
+                else:
+                    if verbose and not g.app.initing:
+                        g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
+                    result = None
+            except Exception:
+                g.es('exception loading plugin',color='red')
+                g.es_exception()
+                result = None
+        else:
+            # No top-level init function.
+            # Guess that the module was loaded correctly,
+            # but do *not* load the plugin if we are unit testing.
+            g.trace('no init()',moduleName)
+            if g.app.unitTesting:
+                result = None
+                loadedModules[moduleName] = None
+            else:
+                loadedModules[moduleName] = result
+        loadingModuleNameStack.pop()
+
+    if g.unitTesting or g.app.batchMode or g.app.inBridge:
+        pass
+    elif result is None:
+        if warn_on_failure or (verbose and not g.app.initing): # or not g.app.unitTesting:
+            g.es_print('can not load enabled plugin:',moduleName,color="red")
+    elif verbose:
+        g.es_print('loaded plugin:',moduleName,color="blue")
+
+    return result
+#@-node:ekr.20041113113140:loadOnePlugin
+#@-node:ekr.20090428075532.1:Added patch for startup logic
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@-node:ekr.20090401105902.3:Features

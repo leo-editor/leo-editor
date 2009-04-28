@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -154,6 +154,7 @@
 <v t="ekr.20070517070854"><vh>run script in nullGui</vh></v>
 <v t="ekr.20070517071510"><vh>run script with leoBridge</vh></v>
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
+<v t="ekr.20090428081009.1"><vh>patching auto-completion table</vh></v>
 </v>
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"></v>
@@ -324,16 +325,15 @@
 </v>
 </v>
 <v t="ekr.20090309064612.3"><vh>Tests of new features</vh>
+<v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
 <v t="edward.20081221145716.1"><vh>decorator test 2</vh></v>
 </v>
-<v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
-<v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
 <v t="ekr.20090201162523.1"><vh>Macro test</vh>
 <v t="ekr.20090201192257.1"><vh>@test macro ab</vh></v>
 </v>
-<v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
+<v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
 <v t="ekr.20090128112453.1" key="550378797a71002e"><vh>Property tests</vh></v>
 <v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
 <v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
@@ -344,25 +344,13 @@
 <v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20090309064612.5"><vh>Tests of recent bug fixes</vh>
-<v t="ekr.20090304173642.1"><vh>@@button moveAfterRoot</vh></v>
-<v t="ekr.20090306060447.1"><vh>@@button totop</vh>
-<v t="ekr.20090306060447.2"><vh>toplevel</vh>
-<v t="ekr.20090306060447.3"><vh>one</vh>
-<v t="ekr.20090306060447.4"><vh>foo</vh></v>
-<v t="ekr.20090306060447.5"><vh>bar</vh></v>
-</v>
-<v t="ekr.20090306060447.6"><vh>two</vh></v>
-</v>
-</v>
+<v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
 </v>
 <v t="ekr.20081003094737.1"><vh>Unicode tests</vh>
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
 </v>
-<v t="ekr.20090427163828.1"><vh>Syntax coloring test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2748,47 +2736,24 @@ g.es ('total characters: %s, keywords: %s, leo_keywords: %s' % (
 <t tx="ekr.20090218112656.1"># 'self' is now defined in @test and @suite nodes.
 a,b = 1,2
 self.assertEqual(a,b)</t>
-<t tx="ekr.20090304173642.1">new_node = c.p.insertAsLastChild()
-new_node.initHeadString("I am a new node")
-new_node.moveAfter(c.rootPosition())
-c.redraw()</t>
-<t tx="ekr.20090306060447.1">p = g.findTopLevelNode(c, 'toplevel')
-p2 = g.findNodeInChildren(c, p, 'one')
-c.selectPosition(p2)
-# c.redraw_after_select(p2)
-
-@
-Create a top level node "toplevel"
-give it two children, "one", and "two"
-give "one" two children, "foo" and "bar"
-Leaving "one" expanded, collapse "toplevel"
-save the file
-revert the file
-click the "totop" button.
-
-"one" appears to have no children... !
-
-collapse and expand "toplevel", phew, the children have returned</t>
-<t tx="ekr.20090306060447.2"></t>
-<t tx="ekr.20090306060447.3"></t>
-<t tx="ekr.20090306060447.4"></t>
-<t tx="ekr.20090306060447.5"></t>
-<t tx="ekr.20090306060447.6"></t>
 <t tx="ekr.20090309064612.1"></t>
 <t tx="ekr.20090309064612.2"></t>
 <t tx="ekr.20090309064612.3"></t>
 <t tx="ekr.20090309064612.4"></t>
-<t tx="ekr.20090309064612.5"></t>
 <t tx="ekr.20090309065826.1"></t>
 <t tx="ekr.20090316115500.1"></t>
-<t tx="ekr.20090427163828.1"># change to @language and @color directives must have immediate effect.
+<t tx="ekr.20090428081009.1">import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
+from PyQt4 import uic
 
-@language python
+table = (
+    (['QtGui'],'object',QtGui),
+    (['QtCore'],'object',QtCore),
+)
 
-'''docstring
-line 2'''
+c.k.autoCompleter.defineObjectDict(table)
+print c.k.autoCompleter.objectDict.keys()
 
-abc = 2
-</t>
+# print c.k.autoCompleter.objectDict.get('QtCore')</t>
 </tnodes>
 </leo_file>
