@@ -4733,7 +4733,10 @@ class leoQtGui(leoGui.leoGui):
             # cb.clear()  # unnecessary, breaks on some Qt versions
             if type(s) == type(''):
                 s = g.app.gui.toUnicode(s)
+
+            QtGui.QApplication.processEvents()
             cb.setText(s)
+            QtGui.QApplication.processEvents()
             if trace: g.trace(len(s),type(s))
         else:
             g.trace('no clipboard!')
@@ -4745,6 +4748,7 @@ class leoQtGui(leoGui.leoGui):
         trace = False and not g.unitTesting
         cb = self.qtApp.clipboard()
         if cb:
+            QtGui.QApplication.processEvents()
             s = cb.text()
             if trace: g.trace (len(s),type(s))
             s = g.app.gui.toUnicode(s)
