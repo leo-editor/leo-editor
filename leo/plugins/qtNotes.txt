@@ -4411,6 +4411,527 @@ if 1:
 #@-node:ekr.20090223065019.11:Make Leo's page-up/page-down commands funtional
 #@+node:ekr.20090426075320.10:mark command reverts headline
 #@-node:ekr.20090426075320.10:mark command reverts headline
+#@+node:ekr.20090418064921.1:New bugs
+#@+node:ekr.20090418064921.2:Installer doesn't always work
+Private communication: http://mail.google.com/mail/#inbox/120adc6d16caac24
+#@nonl
+#@-node:ekr.20090418064921.2:Installer doesn't always work
+#@+node:ekr.20090418064921.12:Qt, vim bindings
+http://groups.google.com/group/leo-editor/browse_thread/thread/7285ac185355efb1
+#@nonl
+#@-node:ekr.20090418064921.12:Qt, vim bindings
+#@+node:ekr.20090418064921.13:Make a central repository for leo_db files
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ec30df3f1db8db3
+#@-node:ekr.20090418064921.13:Make a central repository for leo_db files
+#@+node:ekr.20090418064921.14:Add an explicite toc to the faq
+#@-node:ekr.20090418064921.14:Add an explicite toc to the faq
+#@+node:ekr.20090418064921.17:Urgent: Lost files with @shadow
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ff4c0be55b15ce7a
+
+Yesterday I imported some windows batch files to @file, changed them
+to @shadow, and used @path to shorten the node name. Today Leo has
+lost track of the shadow files (the body text is empty), and when I
+attempted to re-link one Leo zeroed out the target (overwrote an empty
+file). This is the procedure I followed (not as linear as written, I
+was experimenting):
+
+0. Opened H:\work.leo
+1. File > Import to @file: y:\scripts\xc-backup.bat
+2. Change heading '@file y:\scripts\xc-backup.bat' to '@shadow xc-
+backup.bat'
+3. Change body text:
+   - removed '@ignore'
+   + added '@path y:\scripts\'
+   + added and changed some other miscelaneous text
+4. Saved
+5. Verified contents xc-backup.bat is as expected with external
+editor.
+
+Repeated half a dozen times with other files.
+
+Today when I opened H:\work.leo the body text of all @shadow files
+were blank. This is the log:
+
+   reading: H:\work.leo
+   reading: @shadow xc-backup.bat
+   can not open @shadow H:\xc-backup.bat
+   created directory: H:\.leo_shadow
+   created:   H:\.leo_shadow\xxc-backup.bat
+   created:   H:\xc-backup.bat
+
+It's trying to read .leo_shadow from the the wrong location and
+creating a new one when it is not found. Thinking to re-establish the
+link I added '@path y:\scripts\' to '@shadow xc-backup.bat' heading
+and Saved, log:
+
+   @shadow xc-backup.bat not written:
+   no children and less than 10 characters (excluding directives)
+
+To make the body text longer than 10 characters I added '@language
+batch' and saved again:
+
+   errors writing: <string-file>
+   Orphan node:  @shadow xc-backup.bat
+   parent node: @shadow xc-backup.bat
+   not written:
+   wrote:     y:\scripts\.leo_shadow\xxc-backup.bat
+   wrote:     y:\scripts\xc-backup.bat
+
+   errors writing: <string-file>
+   Orphan node:  @shadow xc-backup.bat
+   parent node: @shadow xc-backup.bat
+
+(Note: I may not have split the log at the right points in the 3
+indented sections above.)
+
+**Big Mistake** as at this point the *pre-existing* shadow and real
+file were overwritten with *empty* content. Now in this particular
+instance I'm okay as I'm working on svn checked out files and only an
+hours worth of experimenting is lost, not real work. If this had
+happened a day earlier though I'd have been some sore as I'd
+previously been working without a net (no version control).
+
+So that covers what did happen, what I expected to happen is:
+
+1. H:\work.leo would remember the @path
+2. When [1] failed, re-establishing the @path link would cause Leo to
+discover that there was a pre-existing .leo_shadow copy of that node
+and a) automatically read y:\.leo_shadow\xxc-backup.bat and fill in
+the body text, b) present a merge or conflict dialog/message and offer
+instructions for how to reconcile, or c) warn the files already
+existed and confirm overwrite.
+
+It is now clear @path is not safe when the .leo file is in a different
+location from the shadow files, or perhaps not at all? I initially
+tried to put @path in a parent heading, but the child nodes ignored
+it:
+
+-[]Scripts
+   @path y:\scripts
+   -[]@shadow xc-backup.bat
+      @language batch
+      rem A script to backup....
+      ...etc.
+
+Anyway, was my bumbling attempt to fix the broken link the problem, or
+the fact the link was broken in the first place? If the latter, why
+did it break and how to avoid it in future? is there a safe way to re-
+establish the links with the remaining 5 @shadow files or should I
+just start over and not use @path? Are there examples deomonstrating
+the proper use of @path?
+
+thanks,
+
+-matt 
+#@nonl
+#@-node:ekr.20090418064921.17:Urgent: Lost files with @shadow
+#@+node:ekr.20090421121914.11:Urgent: fix the tkinter problem in Terry's code
+#@-node:ekr.20090421121914.11:Urgent: fix the tkinter problem in Terry's code
+#@+node:ekr.20090418064921.15:Today: Add patch for startup logic
+
+I just got a new laptop with Windows Vista and have been spending the
+last few days migrating my life over to it.
+I ran into the bug that has been mentioned a time or two caused by the
+lack of the .leoID.txt file.
+
+I inserted this at the beginning of the loadOnePlugin function in leo/
+core/leoPlugins.py
+
+   if g.app.config is None:
+       print "No g.app.config, making stub..."
+       class StubConfig:
+           def getBool(self, c, setting):
+               return False
+       g.app.config = StubConfig()
+
+This hack prevents leo from crashing and allows the gui prompt for a
+leoID to come up.  I think this is a better solution than asking users
+to manually create the .leoID.txt file and figure out where it goes.
+This isn't a good fix, but it is a decent temporary solution until the
+real bug is fixed.
+
+By the way, I tried for a while to figure out the proper way to submit
+this fix... but bzr is just too confusing for me.  What's the standard
+way to submit fixes such as this?
+#@nonl
+#@-node:ekr.20090418064921.15:Today: Add patch for startup logic
+#@+node:ekr.20090418064921.16:Today: fix rst3 problem
+@nocolor-node
+
+http://mail.google.com/mail/#inbox/11ef0076a3f4d866
+
+today I've updated my leo installation and downloaded leo from trunk.
+When trying to generate a pdf document with the rst3 plugin the
+following error appears in the log pane:
+
+Traceback (most recent call last):
+
+ File "/usr/local/src/leo-editor/leo/plugins/rst3.py", line 1244, in
+writeSpecialTree
+   output = self.writeToDocutils(self.source)
+
+ File "/usr/local/src/leo-editor/leo/plugins/rst3.py", line 1344, in
+writeToDocutils
+   overrides.update(args)     # MWC add args to settings
+
+ValueError: dictionary update sequence element #0 has length 13; 2 is
+required
+
+It seems that the problem comes from the node containing my
+@rst_options:
+
+@nocolor
+
+@ @rst-options
+default_path=./latex
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+write_intermediate_file = False
+verbose=True
+publish_argv_for_missing_stylesheets=--language=ca,--use-latex-toc,--
+output-encoding=utf-8,--stylesheet=/home/vmas/.leo/custom_style.sty
+@c
+
+In rst3.py, inserting a g.es_print line just before the
+overrides.update(args) one can see that the arguments passed to option
+publish_argv_for_missing_stylesheets are passed to the overrides
+dictionary as a list:
+
+[u'--language=ca', u'--use-latex-toc', u'--output-encoding=utf-8', u'--
+stylesheet=/home/vmas/.leo/custom_style.sty']
+
+which is neither a dictionary nor an iterable of key/value pairs so
+the error is raised. Hope it helps to fix the problem.
+
+Vicent
+#@nonl
+#@-node:ekr.20090418064921.16:Today: fix rst3 problem
+#@-node:ekr.20090418064921.1:New bugs
+#@+node:ekr.20090409055330.10:Make sure change-all honors node-only and suboutline-only settings
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/430287018f9d773d
+
+The following problem hits rev 1633, qt plugin (untested with tk plugin). The
+command Find --> Change All *always* acts on *every node*. It ignores the
+checkboxes selection made by the user. Even if you select the "Node Only"
+checkbox the changes are aplied to the whole tree (headline text and body text).
+#@nonl
+#@+node:ekr.20081121105001.235:class leoQtFindTab (findTab)
+class leoQtFindTab (leoFind.findTab):
+
+    '''A subclass of the findTab class containing all Qt Gui code.'''
+
+    if 0: # We can use the base-class ctor.
+        def __init__ (self,c,parentFrame):
+            leoFind.findTab.__init__(self,c,parentFrame)
+                # Init the base class.
+                # Calls initGui, createFrame, createBindings & init(c), in that order.
+
+    # Define these to suppress oops messages.
+    def createBindings (self): pass
+    def createFindTab (self,c,parentFrame): pass
+    def createFrame (self,parentFrame): pass
+
+    @others
+#@+node:ekr.20081121105001.236: Birth: called from leoFind ctor
+# leoFind.__init__ calls initGui, createFrame, createBindings & init, in that order.
+#@+node:ekr.20081121105001.237:initGui
+def initGui (self):
+
+    owner = self
+
+    self.svarDict = {}
+        # Keys are ivar names, values are svar objects.
+
+    for ivar in self.intKeys:
+        self.svarDict[ivar] = self.svar(owner,ivar)
+
+    # Add a hack for 'entire_outline' radio button.
+    ivar = 'entire_outline'
+    self.svarDict[ivar] = self.svar(owner,ivar)
+
+    for ivar in self.newStringKeys:
+        # "radio-find-type", "radio-search-scope"
+        self.svarDict[ivar] = self.svar(owner,ivar)
+#@-node:ekr.20081121105001.237:initGui
+#@+node:ekr.20081121105001.238:init (qtFindTab) & helpers
+def init (self,c):
+
+    '''Init the widgets of the 'Find' tab.'''
+
+    # g.trace('leoQtFindTab.init')
+
+    self.createIvars()
+    self.initIvars()
+    self.initTextWidgets()
+    self.initCheckBoxes()
+    self.initRadioButtons()
+#@+node:ekr.20081121105001.239:createIvars
+def createIvars (self):
+
+    c = self.c ; w = c.frame.top.ui # A Window ui object.
+
+    # Bind boxes to Window objects.
+    self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
+    data = (
+        ('find_ctrl',       findTextWrapper(w.findPattern,'find-widget',c)),
+        ('change_ctrl',     findTextWrapper(w.findChange,'change-widget',c)),
+        ('whole_word',      w.checkBoxWholeWord),
+        ('ignore_case',     w.checkBoxIgnoreCase),
+        ('wrap',            w.checkBoxWrapAround),
+        ('reverse',         w.checkBoxReverse),
+        ('pattern_match',   w.checkBoxRegexp),
+        ('mark_finds',      w.checkBoxMarkFinds),
+        ('entire_outline',  w.checkBoxEntireOutline),
+        ('suboutline_only', w.checkBoxSubroutineOnly),  
+        ('node_only',       w.checkBoxNodeOnly),
+        ('search_headline', w.checkBoxSearchHeadline),
+        ('search_body',     w.checkBoxSearchBody),
+        ('mark_changes',    w.checkBoxMarkChanges),
+        ('batch', None),
+    )
+    for ivar,widget in data:
+        setattr(self,ivar,widget)
+        self.widgetsDict[ivar] = widget
+        # g.trace(ivar,widget)
+#@-node:ekr.20081121105001.239:createIvars
+#@+node:ekr.20081121105001.240:initIvars
+def initIvars(self):
+
+    c = self.c
+
+    # Separate c.ivars are much more convenient than a svarDict.
+    for ivar in self.intKeys:
+        # Get ivars from @settings.
+        val = c.config.getBool(ivar)
+        setattr(self,ivar,val)
+        val = g.choose(val,1,0)
+        svar = self.svarDict.get(ivar)
+        if svar:
+            svar.set(val)
+
+        # g.trace(ivar,val)
+#@-node:ekr.20081121105001.240:initIvars
+#@+node:ekr.20081121105001.241:initTextWidgets
+def initTextWidgets(self):
+
+    '''Init the find/change text areas.'''
+
+    c = self.c
+
+    table = (
+        (self.find_ctrl,    "find_text",    '<find pattern here>'),
+        (self.change_ctrl,  "change_text",  ''),
+    )
+
+    for w,setting,defaultText in table:
+        # w is a textWrapper object
+        w.setAllText(c.config.getString(setting) or defaultText)
+#@-node:ekr.20081121105001.241:initTextWidgets
+#@+node:ekr.20081121105001.242:initCheckBoxes
+def initCheckBoxes (self):
+
+    for ivar,key in (
+        ("pattern_match","pattern-search"),
+    ):
+        svar = self.svarDict[ivar].get()
+        if svar:
+            self.svarDict["radio-find-type"].set(key)
+            w = self.widgetsDict.get(key)
+            if w: w.setChecked(True)
+            break
+    else:
+        self.svarDict["radio-find-type"].set("plain-search")
+
+    aList = (
+        'ignore_case','mark_changes','mark_finds',
+        'pattern_match','reverse','search_body','search_headline',
+        'whole_word','wrap',
+        'node_only','suboutline_only','entire_outline',
+    )
+
+    for ivar in aList:
+        svar = self.svarDict.get(ivar)
+        if svar:
+            # w is a QCheckBox or a QRadioButton.
+            w = self.widgetsDict.get(ivar)
+            if w:
+                val = svar.get()
+                svar.setWidget(w)
+                svar.set(val)
+                if isinstance(w,QtGui.QCheckBox):
+                    def checkBoxCallback(val,svar=svar):
+                        svar.set(val)
+                    w.connect(w,
+                        QtCore.SIGNAL("stateChanged(int)"),
+                        checkBoxCallback)
+                else:
+                    def radioButtonCallback(val,svar=svar):
+                        svar.set(val)
+                    w.connect(w,
+                        QtCore.SIGNAL("clicked(bool)"),
+                        radioButtonCallback)
+            else: g.trace('*** no w',ivar)
+        else: g.trace('*** no svar',ivar)
+#@-node:ekr.20081121105001.242:initCheckBoxes
+#@+node:ekr.20081121105001.243:initRadioButtons
+def initRadioButtons (self):
+
+    scopeSvar = self.svarDict.get('radio-search-scope')
+
+    table = (
+        ("suboutline_only","suboutline-only"),
+        ("node_only","node-only"))
+
+    for ivar,key in table:
+        svar = self.svarDict.get(ivar)
+        if svar:
+            val = svar.get()
+            if val:
+                scopeSvar.init(key)
+                break
+    else:
+        scopeSvar.init('entire-outline')
+        self.svarDict.get('entire_outline').init(True)
+
+    w = self.widgetsDict.get(key)
+    if w: w.setChecked(True)
+
+    # g.trace(scopeSvar.get())
+#@-node:ekr.20081121105001.243:initRadioButtons
+#@-node:ekr.20081121105001.238:init (qtFindTab) & helpers
+#@-node:ekr.20081121105001.236: Birth: called from leoFind ctor
+#@+node:ekr.20081121105001.244:class svar
+class svar:
+    '''A class like Tk's IntVar and StringVar classes.'''
+
+    @others
+
+#@+node:ekr.20090427112929.10:svar.ctor
+def __init__(self,owner,ivar):
+
+    self.ivar = ivar
+    self.owner = owner
+    self.radioButtons = ['node_only','suboutline_only','entire_outline']
+    self.trace = False
+    self.val = None
+    self.w = None
+
+def __repr__(self):
+    return '<svar %s>' % self.ivar
+#@nonl
+#@-node:ekr.20090427112929.10:svar.ctor
+#@+node:ekr.20090427112929.12:get
+def get (self):
+    if self.w:
+        val = self.w.isChecked()
+        if self.trace: g.trace('qt svar %15s = %s' % (self.ivar,val))
+    else:
+        val = self.val
+    return val
+#@nonl
+#@-node:ekr.20090427112929.12:get
+#@+node:ekr.20090427112929.13:init
+def init (self,val):
+
+    '''Init the svar, but do *not* init radio buttons.
+    (This is called from initRadioButtons).'''
+
+    if val in (0,1):
+        self.val = bool(val)
+    else:
+        self.val = val # Don't contain the scope values!
+
+    if self.w:
+        self.w.setChecked(bool(val))
+
+    if self.trace: g.trace('qt svar %15s = %s' % (self.ivar,val))
+#@-node:ekr.20090427112929.13:init
+#@+node:ekr.20090427112929.17:set
+def set (self,val):
+
+    '''Init the svar and update the radio buttons.'''
+
+    self.init(val)
+
+    if self.ivar in self.radioButtons:
+        self.owner.initRadioButtons()
+    elif self.ivar == 'radio-search-scope':
+        self.setRadioScope(val)
+
+
+#@-node:ekr.20090427112929.17:set
+#@+node:ekr.20090427112929.18:setRadioScope
+def setRadioScope (self,val):
+
+    '''Update the svars corresponding to the scope value.'''
+
+    table = (
+        ("suboutline_only","suboutline-only"),
+        ("node_only","node-only"),
+        ("entire_outline","entire-outline"))
+
+    for ivar,val2 in table:
+        if val == val2:
+            svar = self.owner.svarDict.get(ivar)
+            val = svar.get()
+            svar.init(True)
+#@-node:ekr.20090427112929.18:setRadioScope
+#@+node:ekr.20090427112929.15:setWidget
+def setWidget(self,w):
+
+    self.w = w
+#@-node:ekr.20090427112929.15:setWidget
+#@-node:ekr.20081121105001.244:class svar
+#@+node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
+# This is the same as the Tk code because we simulate Tk svars.
+#@nonl
+#@+node:ekr.20081121105001.246:getOption
+def getOption (self,ivar):
+
+    var = self.svarDict.get(ivar)
+
+    if var:
+        val = var.get()
+        # g.trace('ivar %s = %s' % (ivar,val))
+        return val
+    else:
+        # g.trace('bad ivar name: %s' % ivar)
+        return None
+#@-node:ekr.20081121105001.246:getOption
+#@+node:ekr.20081121105001.247:setOption
+def setOption (self,ivar,val):
+
+    if ivar in self.intKeys:
+        if val is not None:
+            svar = self.svarDict.get(ivar)
+            svar.set(val)
+            # g.trace('ivar %s = %s' % (ivar,val))
+
+    elif not g.app.unitTesting:
+        g.trace('oops: bad find ivar %s' % ivar)
+#@-node:ekr.20081121105001.247:setOption
+#@+node:ekr.20081121105001.248:toggleOption
+def toggleOption (self,ivar):
+
+    if ivar in self.intKeys:
+        var = self.svarDict.get(ivar)
+        val = not var.get()
+        var.set(val)
+        # g.trace('%s = %s' % (ivar,val),var)
+    else:
+        g.trace('oops: bad find ivar %s' % ivar)
+#@-node:ekr.20081121105001.248:toggleOption
+#@-node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
+#@-node:ekr.20081121105001.235:class leoQtFindTab (findTab)
+#@-node:ekr.20090409055330.10:Make sure change-all honors node-only and suboutline-only settings
 #@-node:ekr.20090406071640.17:First
 #@-node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20081121105001.185:Scripts
