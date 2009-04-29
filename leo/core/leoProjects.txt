@@ -567,6 +567,69 @@ Vicent
 #@-node:ekr.20090428075532.2:Fixed rst3 problem
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
+#@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
+#@+node:ekr.20050920084036.259:getPublicCommands (searchCommandsClass)
+def getPublicCommands (self):
+
+    return {
+        'clone-find-all':                       self.cloneFindAll,
+        'find-clone-all':                       self.cloneFindAll, # Synonym.
+
+        'find-all':                             self.findAll,
+        'change-all':                           self.changeAll,
+
+        # Thin wrappers on Find tab
+        'change':                               self.findTabChange,
+        'change-then-find':                     self.findTabChangeThenFind,
+        'find-next':                            self.findTabFindNext,
+        'find-prev':                            self.findTabFindPrev,
+
+        'hide-find-tab':                        self.hideFindTab,
+
+        'isearch-forward':                      self.isearchForward,
+        'isearch-backward':                     self.isearchBackward,
+        'isearch-forward-regexp':               self.isearchForwardRegexp,
+        'isearch-backward-regexp':              self.isearchBackwardRegexp,
+        'isearch-with-present-options':         self.isearchWithPresentOptions,
+
+        'open-find-tab':                        self.openFindTab,
+
+        'replace-string':                       self.replaceString,
+
+        're-search-forward':                    self.reSearchForward,
+        're-search-backward':                   self.reSearchBackward,
+
+        'search-again':                         self.findAgain,
+        # Uses existing search pattern.
+
+        'search-forward':                       self.searchForward,
+        'search-backward':                      self.searchBackward,
+        'search-with-present-options':          self.searchWithPresentOptions,
+        # Prompts for search pattern.
+
+        'set-find-everywhere':                  self.setFindScopeEveryWhere,
+        'set-find-node-only':                   self.setFindScopeNodeOnly,
+        'set-find-suboutline-only':             self.setFindScopeSuboutlineOnly,
+
+        'show-find-options':                    self.showFindOptions,
+
+        'toggle-find-collapses_nodes':          self.toggleFindCollapesNodes,
+
+        'toggle-find-ignore-case-option':       self.toggleIgnoreCaseOption,
+        'toggle-find-in-body-option':           self.toggleSearchBodyOption,
+        'toggle-find-in-headline-option':       self.toggleSearchHeadlineOption,
+        'toggle-find-mark-changes-option':      self.toggleMarkChangesOption,
+        'toggle-find-mark-finds-option':        self.toggleMarkFindsOption,
+        'toggle-find-regex-option':             self.toggleRegexOption,
+        'toggle-find-reverse-option':           self.toggleReverseOption,
+        'toggle-find-word-option':              self.toggleWholeWordOption,
+        'toggle-find-wrap-around-option':       self.toggleWrapSearchOption,
+
+        'word-search-forward':                  self.wordSearchForward,
+        'word-search-backward':                 self.wordSearchBackward,
+    }
+#@-node:ekr.20050920084036.259:getPublicCommands (searchCommandsClass)
+#@-node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
 #@-node:ekr.20090401105902.3:Features
 #@-node:ekr.20080917153158.11:4.6 b2
 #@-all
