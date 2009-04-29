@@ -2,1235 +2,111 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090304084841.10:Asap
-#@+node:ekr.20090318091009.12:Script errors mess up syntax coloring
-#@-node:ekr.20090318091009.12:Script errors mess up syntax coloring
-#@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
-http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
-#@nonl
-#@-node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
-#@+node:ekr.20090304084841.15:Complete open-with menu
-#@-node:ekr.20090304084841.15:Complete open-with menu
-#@+node:ekr.20090128083504.1:Fix rclick
-@nocolor-node
-
-rClick
-
-
-After the qt-plugin merge (rev 1251 ), the image plugin no longer works. I
-couldn't find any mention of gsimage in the diff.
-
- # Erase image if it was previously displayed
-             a = g.app ; c = keywords.get("c")
-
--            if a.gsimage:
-+            if getattr(a, 'gsimage', None):
-                 try:
-                     c.frame.body.bodyCtrl.delete(a.gsimage)
-                 except:
-#@-node:ekr.20090128083504.1:Fix rclick
-#@+node:ekr.20081215074704.21:Add drag and drop
-#@-node:ekr.20081215074704.21:Add drag and drop
-#@+node:ekr.20081124094918.1:Fix problems with scim
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/59c1e5d6acaf4de0
-
-I've some more information about the problems with accent previously
-reported:
-- I can confirm that they are caused by the interaction scim+leo (with
-and without the qt plugin). If scim is not started leo works fine. If
-scim is running the problems appear and are slightly different with
-and without the qt plugin. The workaround is obvious: don't use leo
-and scim at the same time :-)
-- accents are not working in the qt plugin when scintilla is used. If
-qt-use-scintilla=False I can write this:
-
-àáä (the same for the rest of vowels)
-
-but if qt-use-scintilla=True when I enter the same sequence in the
-keyboard I get:
-
-`aaa (the same for the rest of vowels)
-
-- the problem with the ñ character (reported previously too) is only
-present in the qt plugin (both with and without scintilla)
-#@-node:ekr.20081124094918.1:Fix problems with scim
-#@+node:ekr.20090401110027.1:Make sure qt plugin supports user icons
-#@-node:ekr.20090401110027.1:Make sure qt plugin supports user icons
-#@-node:ekr.20090304084841.10:Asap
-#@+node:ekr.20090304084841.11:Later
-#@+node:ekr.20081215074704.21:Add drag and drop
-#@-node:ekr.20081215074704.21:Add drag and drop
-#@+node:ekr.20081121105001.151:Clean up settings
-#@+node:ekr.20081121105001.150:QScintilla stuff
-#@-node:ekr.20081121105001.150:QScintilla stuff
-#@-node:ekr.20081121105001.151:Clean up settings
-#@+node:ekr.20081215162017.4:Allow coloring of script buttons
-@nocolor-node
-
-Use @string qt-button-color = lightSteelBlue
-
-The following does *not* work in @data qt-gui-plugin-style-sheet::
-
-    QPushButton {
-        background-color: red;
-    }
-#@+node:ekr.20090406111739.12:setWidgetColor (qtGui)
-badWidgetColors = []
-
-def setWidgetColor (self,w,widgetKind,selector,colorName):
-
-    if not colorName: return
-
-    if QtGui.QColor(colorName).isValid():
-        g.app.gui.setStyleSetting(w,widgetKind,selector,colorName)
-    elif colorName not in self.badWidgetColors:
-        self.badWidgetColors.append(colorName)
-        g.es_print('bad widget color %s for %s' % (
-            colorName,widgetKind),color='blue')
-#@-node:ekr.20090406111739.12:setWidgetColor (qtGui)
-#@+node:ekr.20090406111739.13:setStyleSetting (qtGui)
-def setStyleSetting(self,w,widgetKind,selector,val):
-
-    '''Set the styleSheet for w to
-       "%s { %s: %s; }  % (widgetKind,selector,val)"
-    '''
-
-    s = '%s { %s: %s; }' % (widgetKind,selector,val)
-
-    try:
-        w.setStyleSheet(s)
-    except Exception:
-        g.es_print('bad style sheet: %s' % s)
-        g.es_exception()
-#@-node:ekr.20090406111739.13:setStyleSetting (qtGui)
-#@+node:ekr.20081121105001.266:class qtIconBarClass
-class qtIconBarClass:
-
-    '''A class representing the singleton Icon bar'''
-
-    @others
-#@+node:ekr.20081121105001.267: ctor
-def __init__ (self,c,parentFrame):
-
-    self.c = c
-    self.parentFrame = parentFrame
-    self.w = c.frame.top.iconBar # A QToolBar.
-    self.actions = []
-
-    # Options
-    self.buttonColor = c.config.getString('qt-button-color')
-
-    # g.app.iconWidgetCount = 0
-#@-node:ekr.20081121105001.267: ctor
-#@+node:ekr.20081121105001.268: do-nothings
-def addRow(self,height=None):   pass
-def getFrame (self):            return None
-def getNewFrame (self):         return None
-def pack (self):                pass
-def unpack (self):              pass
-
-hide = unpack
-show = pack
-#@-node:ekr.20081121105001.268: do-nothings
-#@+node:ekr.20081121105001.269:add
-def add(self,*args,**keys):
-
-    '''Add a button to the icon bar.'''
-
-    c = self.c
-    command = keys.get('command')
-    text = keys.get('text')
-    if not text: return
-
-    # imagefile = keys.get('imagefile')
-    # image = keys.get('image')
-
-    class leoIconBarButton (QtGui.QWidgetAction):
-        def __init__ (self,parent,text,toolbar):
-            QtGui.QWidgetAction.__init__(self,parent)
-            self.button = None # set below
-            self.text = text
-            self.toolbar = toolbar
-        def createWidget (self,parent):
-            self.button = b = QtGui.QPushButton(self.text,parent)
-            g.app.gui.setWidgetColor(b,
-                widgetKind='QPushButton',
-                selector='background-color',
-                colorName = self.toolbar.buttonColor)
-            return b
-
-    action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
-    self.w.addAction(action)
-
-    self.actions.append(action)
-    b = self.w.widgetForAction(action)
-
-    b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-
-    def delete_callback(action=action,):
-        self.w.removeAction(action)
-
-    b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
-
-    b.addAction(rb)
-    rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
-
-    if command:
-        def button_callback(c=c,command=command):
-            g.trace('command',command.__name__)
-            val = command()
-            if c.exists:
-                c.bodyWantsFocus()
-                c.outerUpdate()
-            return val
-
-        self.w.connect(b,
-            QtCore.SIGNAL("clicked()"),
-            button_callback)
-
-    return action
-#@-node:ekr.20081121105001.269:add
-#@+node:ekr.20081121105001.270:addRowIfNeeded
-def addRowIfNeeded (self):
-
-    '''Add a new icon row if there are too many widgets.'''
-
-    # n = g.app.iconWidgetCount
-
-    # if n >= self.widgets_per_row:
-        # g.app.iconWidgetCount = 0
-        # self.addRow()
-
-    # g.app.iconWidgetCount += 1
-#@-node:ekr.20081121105001.270:addRowIfNeeded
-#@+node:ekr.20081121105001.271:addWidget
-def addWidget (self,w):
-
-    self.w.addWidget(w)
-#@-node:ekr.20081121105001.271:addWidget
-#@+node:ekr.20081121105001.272:clear
-def clear(self):
-
-    """Destroy all the widgets in the icon bar"""
-
-    self.w.clear()
-    self.actions = []
-
-    g.app.iconWidgetCount = 0
-#@-node:ekr.20081121105001.272:clear
-#@+node:ekr.20081121105001.273:deleteButton
-def deleteButton (self,w):
-    """ w is button """
-
-    #g.trace(w, '##')    
-
-    self.w.removeAction(w)
-
-    self.c.bodyWantsFocus()
-    self.c.outerUpdate()
-#@-node:ekr.20081121105001.273:deleteButton
-#@+node:ekr.20081121105001.274:setCommandForButton
-def setCommandForButton(self,button,command):
-
-    if command:
-        # button is a leoIconBarButton.
-        QtCore.QObject.connect(button.button,
-            QtCore.SIGNAL("clicked()"),command)
-#@-node:ekr.20081121105001.274:setCommandForButton
-#@-node:ekr.20081121105001.266:class qtIconBarClass
-#@-node:ekr.20081215162017.4:Allow coloring of script buttons
-#@+node:ekr.20081215074704.20:Change background color of body pane depending on focus
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/1cce885a697d0236/5aea5d0587b47b92?lnk=gst&q=command+and+insert#5aea5d0587b47b92
-
-Set focus in/out events.
-#@nonl
-#@+node:ekr.20081121105001.203:setStyleSheets & helper
-styleSheet_inited = False
-
-def setStyleSheets(self):
-
-    trace = False
-    c = self.c
-
-    sheet = c.config.getData('qt-gui-plugin-style-sheet')
-    if sheet:
-        sheet = '\n'.join(sheet)
-        if trace: g.trace(len(sheet))
-        self.ui.setStyleSheet(sheet or self.default_sheet())
-    else:
-        if trace: g.trace('no style sheet')
-#@+node:ekr.20081121105001.204:defaultStyleSheet
-def defaultStyleSheet (self):
-
-    '''Return a reasonable default style sheet.'''
-
-    # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
-    return '''\
-
-/* A QWidget: supports only background attributes.*/
-QSplitter::handle {
-
-    background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
-}
-QSplitter {
-    border-color: white;
-    background-color: white;
-    border-width: 3px;
-    border-style: solid;
-}
-QTreeWidget {
-    background-color: #ffffec; /* Leo's traditional tree color */
-}
-/* Not supported. */
-QsciScintilla {
-    background-color: pink;
-}
-'''
-#@-node:ekr.20081121105001.204:defaultStyleSheet
-#@-node:ekr.20081121105001.203:setStyleSheets & helper
-#@+node:ekr.20081121105001.205:class leoQtBody (leoBody)
-class leoQtBody (leoFrame.leoBody):
-
-    """A class that represents the body pane of a Qt window."""
-
-    @others
-#@+node:ekr.20081121105001.206: Birth
-#@+node:ekr.20081121105001.207: ctor (qtBody)
-def __init__ (self,frame,parentFrame):
-
-    trace = False and not g.unitTesting
-
-    # Call the base class constructor.
-    leoFrame.leoBody.__init__(self,frame,parentFrame)
-
-    c = self.c
-    assert c.frame == frame and frame.c == c
-
-    self.useScintilla = c.config.getBool('qt-use-scintilla')
-    self.selectedBackgroundColor = c.config.getString('selected-background-color')
-    self.unselectedBackgroundColor = c.config.getString('unselected-background-color')
-
-    # Set the actual gui widget.
-    if self.useScintilla:
-        self.widget = w = leoQScintillaWidget(
-            c.frame.top.textEdit,
-            name='body',c=c)
-        self.bodyCtrl = w # The widget as seen from Leo's core.
-        self.colorizer = leoColor.nullColorizer(c)
-    else:
-        top = c.frame.top
-        sw = top.ui.stackedWidget
-        qtWidget = top.ui.richTextEdit # A QTextEdit.
-        sw.setCurrentIndex(1)
-        self.widget = w = leoQTextEditWidget(
-            qtWidget,name = 'body',c=c)
-        self.bodyCtrl = w # The widget as seen from Leo's core.
-
-        # Hook up the QSyntaxHighlighter
-        self.colorizer = leoQtColorizer(c,w.widget)
-        w.acceptRichText = False
-
-    # Config stuff.
-    self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
-    wrap = c.config.getBool('body_pane_wraps')
-    # g.trace('wrap',wrap,self.widget.widget)
-    if self.useScintilla:
-        pass
-    else:
-        self.widget.widget.setWordWrapMode(g.choose(wrap,
-            QtGui.QTextOption.WordWrap,
-            QtGui.QTextOption.NoWrap))
-    wrap = g.choose(wrap,"word","none")
-    self.wrapState = wrap
-
-    # For multiple body editors.
-    self.editor_name = None
-    self.editor_v = None
-    self.numberOfEditors = 1
-    self.totalNumberOfEditors = 1
-
-    if trace: print('qtBody.__init__ %s' % self.widget)
-#@-node:ekr.20081121105001.207: ctor (qtBody)
-#@+node:ekr.20081121105001.208:createBindings (qtBody)
-def createBindings (self,w=None):
-
-    '''(qtBody) Create gui-dependent bindings.
-    These are *not* made in nullBody instances.'''
-
-    # frame = self.frame ; c = self.c ; k = c.k
-    # if not w: w = self.widget
-
-    # c.bind(w,'<Key>', k.masterKeyHandler)
-
-    # def onFocusOut(event,c=c):
-        # # This interferes with inserting new nodes.
-            # # c.k.setDefaultInputState()
-        # self.setEditorColors(
-            # bg=c.k.unselected_body_bg_color,
-            # fg=c.k.unselected_body_fg_color)
-        # # This is required, for example, when typing Alt-Shift-anyArrow in insert mode.
-        # # But we suppress coloring in the widget.
-        # oldState = k.unboundKeyAction
-        # k.unboundKeyAction = k.defaultUnboundKeyAction
-        # c.k.showStateAndMode(w=g.app.gui.get_focus(c))
-        # k.unboundKeyAction = oldState
-
-    # def onFocusIn(event,c=c):
-        # # g.trace('callback')
-        # c.k.setDefaultInputState()
-        # c.k.showStateAndMode()  # TNB - fix color when window manager returns focus to Leo
-
-    # c.bind(w,'<FocusOut>', onFocusOut)
-    # c.bind(w,'<FocusIn>', onFocusIn)
-
-    # table = [
-        # ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
-        # ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
-        # ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
-        # ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
-        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
-    # ]
-
-    # table2 = (
-        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
-    # )
-
-    # if c.config.getBool('allow_middle_button_paste'):
-        # table.extend(table2)
-
-    # for kind,func,handler in table:
-        # def bodyClickCallback(event,handler=handler,func=func):
-            # return handler(event,func)
-
-        # c.bind(w,kind,bodyClickCallback)
-#@-node:ekr.20081121105001.208:createBindings (qtBody)
-#@+node:ekr.20081121105001.209:get_name
-def getName (self):
-
-    return 'body-widget'
-#@-node:ekr.20081121105001.209:get_name
-#@-node:ekr.20081121105001.206: Birth
-#@+node:ekr.20081121105001.210:Do-nothings
-
-# Configuration will be handled by style sheets.
-def cget(self,*args,**keys):        return None
-def configure (self,*args,**keys):  pass
-def setEditorColors (self,bg,fg):   pass
-
-def oops (self):
-    g.trace('qtBody',g.callers(3))
-#@-node:ekr.20081121105001.210:Do-nothings
-#@+node:ekr.20081121105001.211:High-level interface to self.widget
-def appendText (self,s):
-    return self.widget.appendText(s)
-
-def bind (self,kind,*args,**keys):
-    return self.widget.bind(kind,*args,**keys)
-
-def deleteTextSelection (self):
-    return self.widget.deleteTextSelection()
-
-def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
-    return self.widget(i,bg,fg,flashes,delay)
-
-def get(self,i,j=None):
-    return self.widget.get(i,j)
-
-def getAllText (self):
-    return self.widget.getAllText()
-
-def getFocus (self):
-    return self.widget.getFocus()
-
-def getInsertPoint(self):
-    return self.widget.getInsertPoint()
-
-def getSelectedText (self):
-    return self.widget.getSelectedText()
-
-def getSelectionRange (self,sort=True):
-    return self.widget.getSelectionRange(sort)
-
-def getYScrollPosition (self):
-    return self.widget.getYScrollPosition()
-
-def insert(self,i,s):
-    return self.widget.insert(i,s)
-
-def scrollLines (self,n):
-    return self.widget.scrollLines(n)
-
-def see(self,index):
-    return self.widget.see(index)
-
-def seeInsertPoint(self):
-    return self.widget.seeInsertPoint()
-
-def setAllText (self,s):
-    return self.widget.setAllText(s)
-
-def setBackgroundColor (self,color):
-    return self.widget.setBackgroundColor(color)
-
-def setFocus (self):
-    return self.widget.setFocus()
-
-def setForegroundColor (self,color):
-    return self.widget.setForegroundColor(color)
-
-def setInsertPoint (self,pos):
-    return self.widget.setInsertPoint(pos)
-
-def setSelectionRange (self,sel):
-    i,j = sel
-    return self.widget.setSelectionRange(i,j)
-
-def setYScrollPosition (self,i):
-    return self.widget.setYScrollPosition(i)
-#@-node:ekr.20081121105001.211:High-level interface to self.widget
-#@+node:ekr.20081121105001.212:Editors (qtBody)
-#@+node:ekr.20081121105001.214:packEditorLabelWidget
-def packEditorLabelWidget (self,w):
-
-    '''Create a Tk label widget.'''
-
-    # if not hasattr(w,'leo_label') or not w.leo_label:
-        # # g.trace('w.leo_frame',id(w.leo_frame))
-        # w.pack_forget()
-        # w.leo_label = Tk.Label(w.leo_frame)
-        # w.leo_label.pack(side='top')
-        # w.pack(expand=1,fill='both')
-#@nonl
-#@-node:ekr.20081121105001.214:packEditorLabelWidget
-#@+node:ekr.20081121105001.215:entries
-if 1:
-    @others
-#@nonl
-#@+node:ekr.20081121105001.216:addEditor & helpers (qtBody)
-# An override of leoFrame.addEditor.
-
-def addEditor (self,event=None):
-
-    '''Add another editor to the body pane.'''
-
-    g.es_print('add-editor not supported yet',color='red')
-    return
-
-    trace = True and not g.unitTesting
-
-    bodyCtrl = self.c.frame.body.bodyCtrl # A leoQTextEditWidget
-    self.editorWidgets['1'] = bodyCtrl
-    c = self.c ; p = c.currentPosition()
-    self.totalNumberOfEditors += 1
-    self.numberOfEditors += 1
-
-    if self.numberOfEditors == 2:
-        # Inject the ivars into the first editor.
-        # The name of the last editor need not be '1'
-        d = self.editorWidgets ; keys = d.keys()
-        if len(keys) == 1:
-            w_old = d.get(keys[0])
-            if trace: g.trace('w_old',w_old)
-            self.updateInjectedIvars(w_old,p)
-            self.selectLabel(w_old) # Immediately create the label in the old editor.
-        else:
-            g.trace('can not happen: unexpected editorWidgets',d)
-
-    name = '%d' % self.totalNumberOfEditors
-
-    f,w = self.createEditorFrame()
-    self.createEditorWidget(f,name,p,w)
-    self.editorWidgets[name] = w
-
-    # for pane in panes:
-        # self.pb.configurepane(pane,size=minSize)
-
-    # self.pb.updatelayout()
-    if trace: g.trace('w',w)
-    c.frame.body.bodyCtrl = w
-
-    self.updateInjectedIvars(w,p)
-    self.selectLabel(w)
-    self.selectEditor(w)
-    self.updateEditors()
-    c.bodyWantsFocusNow()
-#@+node:ekr.20081121105001.213:createEditorFrame
-def createEditorFrame (self):
-
-    f = self.c.frame
-    inner_f = f.top.ui.leo_body_inner_frame
-    body = leoQtBody(f,None)
-    w = body.widget.widget
-
-    inner_f.layout().addWidget(w,0,1)
-    w.setFocus()
-
-    return inner_f,body.widget
-#@-node:ekr.20081121105001.213:createEditorFrame
-#@+node:ekr.20081121105001.217:createEditorWidget
-def createEditorWidget (self,f,name,p,w):
-
-    trace = False and not g.unitTesting
-    c = self.c
-
-    if trace: g.trace(p.h,w)
-    #### w = self.createTextWidget(f,name,p,w)
-    self.updateInjectedIvars(w,p)
-    w.delete(0,'end')
-    w.insert('end',p.bodyString())
-    w.see(0)
-    ##self.setFontFromConfig(w=w)
-    ##self.setColorFromConfig(w=w)
-    self.createBindings(w=w)
-    c.k.completeAllBindingsForWidget(w)
-    self.recolorWidget(p,w)
-
-    #### return w
-#@-node:ekr.20081121105001.217:createEditorWidget
-#@+node:ekr.20090318091009.14:createTextWidget (not used)
-def createTextWidget (self,parentFrame,name,p,w):
-
-    c = self.c
-
-    # # parentFrame.configure(bg='LightSteelBlue1')
-
-    # # wrap = c.config.getBool('body_pane_wraps')
-    # # wrap = g.choose(wrap,"word","none")
-
-    # Setgrid=1 cause severe problems with the font panel.
-    #### w = leoQTextEditWidget (widget,name,c)
-
-
-    # # bodyBar = Tk.Scrollbar(parentFrame,name='bodyBar')
-
-    # # def yscrollCallback(x,y,bodyBar=bodyBar,w=w):
-        # # # g.trace(x,y,g.callers())
-        # # if hasattr(w,'leo_scrollBarSpot'):
-            # # w.leo_scrollBarSpot = (x,y)
-        # # return bodyBar.set(x,y)
-
-    # # body['yscrollcommand'] = yscrollCallback # bodyBar.set
-
-    # # bodyBar['command'] =  body.yview
-    # # bodyBar.pack(side="right", fill="y")
-
-    # # # Always create the horizontal bar.
-    # # bodyXBar = Tk.Scrollbar(
-        # # parentFrame,name='bodyXBar',orient="horizontal")
-    # # body['xscrollcommand'] = bodyXBar.set
-    # # bodyXBar['command'] = body.xview
-
-    # # if wrap == "none":
-        # # # g.trace(parentFrame)
-        # # bodyXBar.pack(side="bottom", fill="x")
-
-    # # body.pack(expand=1,fill="both")
-
-    # # self.wrapState = wrap
-
-    # # if 0: # Causes the cursor not to blink.
-        # # body.configure(insertofftime=0)
-
-    # Inject ivars
-    if name == '1':
-        w.leo_p = w.leo_v = None # Will be set when the second editor is created.
-    else:
-        w.leo_p = p.copy()
-        w.leo_v = w.leo_p.v
-
-    w.leo_active = True
-    # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
-    w.leo_bodyBar = None #### bodyBar # 2007/10/31
-    w.leo_bodyXBar = None #### bodyXBar # 2007/10/31
-    w.leo_chapter = None
-    w.leo_frame = parentFrame
-    w.leo_name = name
-    w.leo_label = None
-    w.leo_label_s = None
-    w.leo_scrollBarSpot = None
-    w.leo_insertSpot = None
-    w.leo_selection = None
-
-    #### return w
-#@-node:ekr.20090318091009.14:createTextWidget (not used)
-#@-node:ekr.20081121105001.216:addEditor & helpers (qtBody)
-#@+node:ekr.20081121105001.218:assignPositionToEditor
-def assignPositionToEditor (self,p):
-
-    '''Called *only* from tree.select to select the present body editor.'''
-
-    c = self.c ; cc = c.chapterController ; w = c.frame.body.bodyCtrl
-
-    # self.updateInjectedIvars(w,p)
-    # self.selectLabel(w)
-
-    # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.h)
-#@-node:ekr.20081121105001.218:assignPositionToEditor
-#@+node:ekr.20081121105001.219:cycleEditorFocus
-def cycleEditorFocus (self,event=None):
-
-    '''Cycle keyboard focus between the body text editors.'''
-
-    # c = self.c ; d = self.editorWidgets ; w = c.frame.body.bodyCtrl
-    # values = d.values()
-    # if len(values) > 1:
-        # i = values.index(w) + 1
-        # if i == len(values): i = 0
-        # w2 = d.values()[i]
-        # assert(w!=w2)
-        # self.selectEditor(w2)
-        # c.frame.body.bodyCtrl = w2
-        # # g.pr('***',g.app.gui.widget_name(w2),id(w2))
-
-    # return 'break'
-#@-node:ekr.20081121105001.219:cycleEditorFocus
-#@+node:ekr.20081121105001.220:deleteEditor
-def deleteEditor (self,event=None):
-
-    '''Delete the presently selected body text editor.'''
-
-    # c = self.c ; w = c.frame.body.bodyCtrl ; d = self.editorWidgets
-
-    # if len(d.keys()) == 1: return
-
-    # name = w.leo_name
-
-    # del d [name] 
-    # self.pb.delete(name)
-    # panes = self.pb.panes()
-    # minSize = float(1.0/float(len(panes)))
-
-    # for pane in panes:
-        # self.pb.configurepane(pane,size=minSize)
-
-    # # Select another editor.
-    # w = d.values()[0]
-    # # c.frame.body.bodyCtrl = w # Don't do this now?
-    # self.numberOfEditors -= 1
-    # self.selectEditor(w)
-#@-node:ekr.20081121105001.220:deleteEditor
-#@+node:ekr.20081121105001.221:findEditorForChapter (leoBody)
-def findEditorForChapter (self,chapter,p):
-
-    '''Return an editor to be assigned to chapter.'''
-
-    return self.c.frame.body.bodyCtrl
-
-    # c = self.c ; d = self.editorWidgets ; values = d.values()
-
-    # # First, try to match both the chapter and position.
-    # if p:
-        # for w in values:
-            # if (
-                # hasattr(w,'leo_chapter') and w.leo_chapter == chapter and
-                # hasattr(w,'leo_p') and w.leo_p and w.leo_p == p
-            # ):
-                # # g.trace('***',id(w),'match chapter and p',p.h)
-                # return w
-
-    # # Next, try to match just the chapter.
-    # for w in values:
-        # if hasattr(w,'leo_chapter') and w.leo_chapter == chapter:
-            # # g.trace('***',id(w),'match only chapter',p.h)
-            # return w
-
-    # # As a last resort, return the present editor widget.
-    # # g.trace('***',id(self.bodyCtrl),'no match',p.h)
-    # return c.frame.body.bodyCtrl
-#@-node:ekr.20081121105001.221:findEditorForChapter (leoBody)
-#@+node:ekr.20081121105001.222:select/unselectLabel
-def unselectLabel (self,w):
-
-    pass
-
-    # self.createChapterIvar(w)
-    # self.packEditorLabelWidget(w)
-    # s = self.computeLabel(w)
-    # if hasattr(w,'leo_label') and w.leo_label:
-        # w.leo_label.configure(text=s,bg='LightSteelBlue1')
-
-def selectLabel (self,w):
-
-    pass
-
-    # if self.numberOfEditors > 1:
-        # self.createChapterIvar(w)
-        # self.packEditorLabelWidget(w)
-        # s = self.computeLabel(w)
-        # # g.trace(s,g.callers())
-        # if hasattr(w,'leo_label') and w.leo_label:
-            # w.leo_label.configure(text=s,bg='white')
-    # elif hasattr(w,'leo_label') and w.leo_label:
-        # w.leo_label.pack_forget()
-        # w.leo_label = None
-#@-node:ekr.20081121105001.222:select/unselectLabel
-#@+node:ekr.20081121105001.223:selectEditor & helpers
-selectEditorLockout = False
-
-def selectEditor(self,w):
-
-    '''Select editor w and node w.leo_p.'''
-
-    return self.c.frame.body.bodyCtrl
-
-    #  Called by body.onClick and whenever w must be selected.
-    # trace = False
-    # c = self.c
-    # if not w: return self.c.frame.body.bodyCtrl
-    # if self.selectEditorLockout: return
-
-    # if w and w == self.c.frame.body.bodyCtrl:
-        # if w.leo_p and w.leo_p != c.currentPosition():
-            # c.selectPosition(w.leo_p)
-            # c.bodyWantsFocusNow()
-        # return
-
-    # try:
-        # val = None
-        # self.selectEditorLockout = True
-        # val = self.selectEditorHelper(w)
-    # finally:
-        # self.selectEditorLockout = False
-
-    # return val # Don't put a return in a finally clause.
-#@+node:ekr.20081121105001.224:selectEditorHelper
-def selectEditorHelper (self,w):
-
-    c = self.c ; cc = c.chapterController ; d = self.editorWidgets
-
-    trace = False
-
-    if not w.leo_p:
-        g.trace('no w.leo_p') 
-        return 'break'
-
-    if trace:
-        g.trace('==1',id(w),
-            hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
-            hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
-
-    self.inactivateActiveEditor(w)
-
-    # The actual switch.
-    c.frame.body.bodyCtrl = w
-    w.leo_active = True
-
-    self.switchToChapter(w)
-    self.selectLabel(w)
-
-    if not self.ensurePositionExists(w):
-        g.trace('***** no position editor!')
-        return 'break'
-
-    if trace:
-        g.trace('==2',id(w),
-            hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
-            hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
-
-    # g.trace('expanding ancestors of ',w.leo_p.h,g.callers())
-    c.expandAllAncestors(w.leo_p)
-    c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
-    c.redraw()
-
-    c.recolor_now()
-    << restore the selection, insertion point and the scrollbar >>
-    c.bodyWantsFocusNow()
-    return 'break'
-#@+node:ekr.20081121105001.225:<< restore the selection, insertion point and the scrollbar >>
-# g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
-
-if w.leo_insertSpot:
-    w.setInsertPoint(w.leo_insertSpot)
-else:
-    w.setInsertPoint(0)
-
-if w.leo_scrollBarSpot is not None:
-    first,last = w.leo_scrollBarSpot
-    w.yview('moveto',first)
-else:
-    w.seeInsertPoint()
-
-if w.leo_selection:
-    try:
-        start,end = w.leo_selection
-        w.setSelectionRange(start,end)
-    except Exception:
-        pass
-#@-node:ekr.20081121105001.225:<< restore the selection, insertion point and the scrollbar >>
-#@-node:ekr.20081121105001.224:selectEditorHelper
-#@-node:ekr.20081121105001.223:selectEditor & helpers
-#@+node:ekr.20081121105001.226:updateEditors
-# Called from addEditor and assignPositionToEditor
-
-def updateEditors (self):
-
-    pass
-
-    # c = self.c ; p = c.currentPosition()
-    # d = self.editorWidgets
-    # if len(d.keys()) < 2: return # There is only the main widget.
-
-    # for key in d:
-        # w = d.get(key)
-        # v = w.leo_v
-        # if v and v == p.v and w != c.frame.body.bodyCtrl:
-            # w.delete(0,'end')
-            # w.insert('end',p.bodyString())
-            # # g.trace('update',w,v)
-            # self.recolorWidget(p,w)
-
-    # c.bodyWantsFocus()
-#@-node:ekr.20081121105001.226:updateEditors
-#@-node:ekr.20081121105001.215:entries
-#@+node:ekr.20081121105001.227:utils
-#@+node:ekr.20081121105001.228:computeLabel
-def computeLabel (self,w):
-
-    s = w.leo_label_s
-
-    if hasattr(w,'leo_chapter') and w.leo_chapter:
-        s = '%s: %s' % (w.leo_chapter.name,s)
-
-    return s
-#@-node:ekr.20081121105001.228:computeLabel
-#@+node:ekr.20081121105001.229:createChapterIvar
-def createChapterIvar (self,w):
-
-    c = self.c ; cc = c.chapterController
-
-    if not hasattr(w,'leo_chapter') or not w.leo_chapter:
-        if cc and self.use_chapters:
-            w.leo_chapter = cc.getSelectedChapter()
-        else:
-            w.leo_chapter = None
-#@-node:ekr.20081121105001.229:createChapterIvar
-#@+node:ekr.20081121105001.230:ensurePositionExists
-def ensurePositionExists(self,w):
-
-    '''Return True if w.leo_p exists or can be reconstituted.'''
-
-    c = self.c
-
-    if c.positionExists(w.leo_p):
-        return True
-    else:
-        g.trace('***** does not exist',w.leo_name)
-        for p2 in c.all_positions_with_unique_vnodes_iter():
-            if p2.v and p2.v == w.leo_v:
-                w.leo_p = p2.copy()
-                return True
-        else:
-             # This *can* happen when selecting a deleted node.
-            w.leo_p = c.currentPosition()
-            return False
-#@-node:ekr.20081121105001.230:ensurePositionExists
-#@+node:ekr.20081121105001.231:inactivateActiveEditor
-def inactivateActiveEditor(self,w):
-
-    '''Inactivate the previously active editor.'''
-
-    d = self.editorWidgets
-
-    # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
-    for key in d:
-        w2 = d.get(key)
-        if w2 != w and w2.leo_active:
-            w2.leo_active = False
-            self.unselectLabel(w2)
-            w2.leo_scrollBarSpot = w2.yview()
-            w2.leo_insertSpot = w2.getInsertPoint()
-            w2.leo_selection = w2.getSelectionRange()
-            # g.trace('inactive:',id(w2),'scroll',w2.leo_scrollBarSpot,'ins',w2.leo_insertSpot)
-            # g.trace('inactivate',id(w2))
-            return
-#@-node:ekr.20081121105001.231:inactivateActiveEditor
-#@+node:ekr.20081121105001.232:recolorWidget
-def recolorWidget (self,p,w):
-
-    c = self.c ; old_w = c.frame.body.bodyCtrl
-
-    # g.trace('w',id(w),p.h,len(w.getAllText()))
-
-    # Save.
-    c.frame.body.bodyCtrl = w
-    try:
-        # c.recolor_now(interruptable=False) # Force a complete recoloring.
-        c.frame.body.colorizer.colorize(p,incremental=False,interruptable=False)
-    finally:
-        # Restore.
-        c.frame.body.bodyCtrl = old_w
-#@-node:ekr.20081121105001.232:recolorWidget
-#@+node:ekr.20081121105001.233:switchToChapter (leoBody)
-def switchToChapter (self,w):
-
-    '''select w.leo_chapter.'''
-
-    c = self.c ; cc = c.chapterController
-
-    if hasattr(w,'leo_chapter') and w.leo_chapter:
-        chapter = w.leo_chapter
-        name = chapter and chapter.name
-        oldChapter = cc.getSelectedChapter()
-        if chapter != oldChapter:
-            # g.trace('===','old',oldChapter.name,'new',name,w.leo_p)
-            cc.selectChapterByName(name)
-            c.bodyWantsFocusNow()
-#@-node:ekr.20081121105001.233:switchToChapter (leoBody)
-#@+node:ekr.20081121105001.234:updateInjectedIvars
-# Called from addEditor and assignPositionToEditor.
-
-def updateInjectedIvars (self,w,p):
-
-    c = self.c ; cc = c.chapterController
-
-    if cc and self.use_chapters:
-        w.leo_chapter = cc.getSelectedChapter()
-    else:
-        w.leo_chapter = None
-
-    w.leo_p = p.copy()
-    w.leo_v = w.leo_p.v
-    w.leo_label_s = p.h
-
-    # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.h)
-#@-node:ekr.20081121105001.234:updateInjectedIvars
-#@-node:ekr.20081121105001.227:utils
-#@-node:ekr.20081121105001.212:Editors (qtBody)
-#@+node:ekr.20090406071640.13:Event handlers called from eventFilter
-def onFocusIn (self):
-    self.onFocusHelper(self.selectedBackgroundColor)
-
-def onFocusOut (self):
-    self.onFocusHelper(self.unselectedBackgroundColor)
-
-badFocusColors = []
-
-def onFocusHelper(self,name):
-
-    if not name: return
-
-    if QtGui.QColor(name).isValid():
-        s = 'QTextEdit#richTextEdit { background-color: %s; }' % name
-        self.widget.widget.setStyleSheet(s)
-    elif name not in self.badFocusColors:
-        self.badFocusColors.append(name)
-        g.es_print('invalid body background color: %s' % (name),color='blue')
-#@-node:ekr.20090406071640.13:Event handlers called from eventFilter
-#@-node:ekr.20081121105001.205:class leoQtBody (leoBody)
-#@+node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
-def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
-
-    self.widget = widget
-    self.c = c or self.widget.c
-
-    # Init the base class.
-    leoFrame.baseTextWidget.__init__(
-        self,c,baseClassName='leoQtBaseTextWidget',
-        name=name,
-        widget=widget,
-        highLevelInterface=True)
-
-    # Init ivars.
-    self.tags = {}
-    self.configDict = {} # Keys are tags, values are colors (names or values).
-    self.useScintilla = False # This is used!
-
-    if not c: return # Can happen.
-
-    # Hook up qt events.
-    self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
-    self.widget.installEventFilter(self.ev_filter)
-
-    self.widget.connect(self.widget,
-        QtCore.SIGNAL("textChanged()"),self.onTextChanged)
-
-    self.widget.connect(self.widget,
-        QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
-
-    self.injectIvars(c)
-#@-node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
-#@+node:ekr.20081121105001.168:eventFilter
-def eventFilter(self, obj, event):
-
-    trace = False and not g.unitTesting
-    verbose = False
-    traceEvent = False and not g.unitTesting
-    traceFocus = False and not g.unitTesting
-    c = self.c ; k = c.k
-    eventType = event.type()
-    ev = QtCore.QEvent
-    gui = g.app.gui
-    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
-
-    if traceFocus: self.traceFocus(eventType,obj)
-
-    # A hack. QLineEdit generates ev.KeyRelease only.
-    if eventType in (ev.KeyPress,ev.KeyRelease):
-        p = c.currentPosition()
-        isEditWidget = obj == c.frame.tree.edit_widget(p)
-        self.keyIsActive = g.choose(
-            isEditWidget,
-            eventType == ev.KeyRelease,
-            eventType == ev.KeyPress)
-    else:
-        self.keyIsActive = False
-
-    if eventType == ev.WindowActivate:
-        gui.onActivateEvent(event,c,obj,self.tag)
-        override = False ; tkKey = None
-    elif eventType == ev.WindowDeactivate:
-        gui.onDeactivateEvent(event,c,obj,self.tag)
-        override = False ; tkKey = None
-    elif eventType in kinds:
-        tkKey,ch,ignore = self.toTkKey(event)
-        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
-        if ignore:
-            override = False
-        elif self.isSpecialOverride(tkKey,ch):
-            override = True
-        elif k.inState():
-            override = not ignore # allow all keystrokes.
-        else:
-            override = len(aList) > 0
-    else:
-        override = False ; tkKey = '<no key>'
-        if self.tag == 'body':
-            if eventType == ev.FocusIn:
-                c.frame.body.onFocusIn()
-            elif eventType == ev.FocusOut:
-                c.frame.body.onFocusOut()
-
-    if self.keyIsActive:
-        stroke = self.toStroke(tkKey,ch)
-        if override:
-            if trace and not ignore: g.trace('bound',repr(stroke))
-            w = self.w # Pass the wrapper class, not the wrapped widget.
-            leoEvent = leoKeyEvent(event,c,w,ch,tkKey,stroke)
-            ret = k.masterKeyHandler(leoEvent,stroke=stroke)
-            c.outerUpdate()
-        # else:
-            # if (stroke): # and not stroke.startswith('Alt+') and 
-                    # not stroke.startswith('Ctrl+') and
-                    # not stroke in ('PgDn','PgUp')):
-                # g.trace(self.tag,'unbound',tkKey,stroke)
-
-    if traceEvent: self.traceEvent(obj,event,tkKey,override)
-
-    return override
-#@-node:ekr.20081121105001.168:eventFilter
-#@+node:ekr.20090406071640.13:Event handlers called from eventFilter
-def onFocusIn (self):
-    self.onFocusHelper(self.selectedBackgroundColor)
-
-def onFocusOut (self):
-    self.onFocusHelper(self.unselectedBackgroundColor)
-
-badFocusColors = []
-
-def onFocusHelper(self,name):
-
-    if not name: return
-
-    if QtGui.QColor(name).isValid():
-        s = 'QTextEdit#richTextEdit { background-color: %s; }' % name
-        self.widget.widget.setStyleSheet(s)
-    elif name not in self.badFocusColors:
-        self.badFocusColors.append(name)
-        g.es_print('invalid body background color: %s' % (name),color='blue')
-#@-node:ekr.20090406071640.13:Event handlers called from eventFilter
-#@-node:ekr.20081215074704.20:Change background color of body pane depending on focus
-#@+node:ekr.20081124094918.1:Fix problems with scim
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/59c1e5d6acaf4de0
-
-I've some more information about the problems with accent previously
-reported:
-- I can confirm that they are caused by the interaction scim+leo (with
-and without the qt plugin). If scim is not started leo works fine. If
-scim is running the problems appear and are slightly different with
-and without the qt plugin. The workaround is obvious: don't use leo
-and scim at the same time :-)
-- accents are not working in the qt plugin when scintilla is used. If
-qt-use-scintilla=False I can write this:
-
-àáä (the same for the rest of vowels)
-
-but if qt-use-scintilla=True when I enter the same sequence in the
-keyboard I get:
-
-`aaa (the same for the rest of vowels)
-
-- the problem with the ñ character (reported previously too) is only
-present in the qt plugin (both with and without scintilla)
-#@-node:ekr.20081124094918.1:Fix problems with scim
-#@+node:ekr.20090223065019.11:Make Leo's page-up/page-down commands funtional
-# This will be needed for vim.
-
-if 0:
-    tree = c.frame.tree
-    hs,vs = tree.getScroll()
-    print hs,vs
-    tree.setVScroll(bs+10)
-
-if 1:
-    w = c.frame.body.bodyCtrl.widget
-    hScroll = w.horizontalScrollBar()
-    vScroll = w.verticalScrollBar()
-    hPos = hScroll.sliderPosition()
-    vPos = vScroll.sliderPosition()
-    print hPos,vPos
-    vScroll.setValue(vPos+10)
-#@nonl
-#@-node:ekr.20090223065019.11:Make Leo's page-up/page-down commands funtional
-#@-node:ekr.20090304084841.11:Later
 #@+node:ekr.20090406071640.17:First
-#@+node:ekr.20090406111739.10:Let gui handle hard part of next/prev-line commands
+#@+node:ekr.20090418064921.17:Urgent: Lost files with @shadow
 @nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/ef04b185f74f4926
+http://groups.google.com/group/leo-editor/browse_thread/thread/ff4c0be55b15ce7a
 
-This is a little difficult to describe in words, but trying it out
-should, I hope make the issue clear enough.
+Yesterday I imported some windows batch files to @file, changed them
+to @shadow, and used @path to shorten the node name. Today Leo has
+lost track of the shadow files (the body text is empty), and when I
+attempted to re-link one Leo zeroed out the target (overwrote an empty
+file). This is the procedure I followed (not as linear as written, I
+was experimenting):
 
-(1) Start by setting body_pane_wraps to true.
+0. Opened H:\work.leo
+1. File > Import to @file: y:\scripts\xc-backup.bat
+2. Change heading '@file y:\scripts\xc-backup.bat' to '@shadow xc-
+backup.bat'
+3. Change body text:
+   - removed '@ignore'
+   + added '@path y:\scripts\'
+   + added and changed some other miscelaneous text
+4. Saved
+5. Verified contents xc-backup.bat is as expected with external
+editor.
 
-(2) Create a very long line of e.g. 500 characters, which is wrapped
-around on the body pane. (E.g. paste in a paragraph from a Word
-document). This text will then be wrapped onscreen into roughly 8
-lines of 70 characters.
+Repeated half a dozen times with other files.
 
-(3) The up and down arrows do not behave as expected.
+Today when I opened H:\work.leo the body text of all @shadow files
+were blank. This is the log:
 
-I'd expect that in this scenario, pressing the down arrow key should
-go to go to the next line down as it currently appears *onscreen* --
-so in this example, I'd expect to have to press the down arrow several
-times to get to the end of the paragraph.  This is the way that Emacs
-works when it is in word wrap mode, and is of course is the way that
-all word processors work. However, Leo does not play this way, and
-takes you right to the end of the line (i.e. to the last of the 500
-characters) when you press the down key once. This makes editing plain
-text (e.g. using Leo as an outliner) rather more tricky than it ought
-to be. Would it be possible to change the effect of Previous-Line and
-Next-Line when in word wrap mode, so that they behave as other text
-editors and word processors do?
+   reading: H:\work.leo
+   reading: @shadow xc-backup.bat
+   can not open @shadow H:\xc-backup.bat
+   created directory: H:\.leo_shadow
+   created:   H:\.leo_shadow\xxc-backup.bat
+   created:   H:\xc-backup.bat
 
-============================
+It's trying to read .leo_shadow from the the wrong location and
+creating a new one when it is not found. Thinking to re-establish the
+link I added '@path y:\scripts\' to '@shadow xc-backup.bat' heading
+and Saved, log:
 
-This is a long-standing problem.  It's tricky to fix in a straightforward
-way.
+   @shadow xc-backup.bat not written:
+   no children and less than 10 characters (excluding directives)
 
-However, I just realized that there might be a clever way: the commands
-could let the gui handle the hard part of the command (the actual move) and
-then the commands could detect the resulting row/col numbers as they must.
+To make the body text longer than 10 characters I added '@language
+batch' and saved again:
 
-I've been putting this off, I'll see if this more clever way will work soon. 
+   errors writing: <string-file>
+   Orphan node:  @shadow xc-backup.bat
+   parent node: @shadow xc-backup.bat
+   not written:
+   wrote:     y:\scripts\.leo_shadow\xxc-backup.bat
+   wrote:     y:\scripts\xc-backup.bat
+
+   errors writing: <string-file>
+   Orphan node:  @shadow xc-backup.bat
+   parent node: @shadow xc-backup.bat
+
+(Note: I may not have split the log at the right points in the 3
+indented sections above.)
+
+**Big Mistake** as at this point the *pre-existing* shadow and real
+file were overwritten with *empty* content. Now in this particular
+instance I'm okay as I'm working on svn checked out files and only an
+hours worth of experimenting is lost, not real work. If this had
+happened a day earlier though I'd have been some sore as I'd
+previously been working without a net (no version control).
+
+So that covers what did happen, what I expected to happen is:
+
+1. H:\work.leo would remember the @path
+2. When [1] failed, re-establishing the @path link would cause Leo to
+discover that there was a pre-existing .leo_shadow copy of that node
+and a) automatically read y:\.leo_shadow\xxc-backup.bat and fill in
+the body text, b) present a merge or conflict dialog/message and offer
+instructions for how to reconcile, or c) warn the files already
+existed and confirm overwrite.
+
+It is now clear @path is not safe when the .leo file is in a different
+location from the shadow files, or perhaps not at all? I initially
+tried to put @path in a parent heading, but the child nodes ignored
+it:
+
+-[]Scripts
+   @path y:\scripts
+   -[]@shadow xc-backup.bat
+      @language batch
+      rem A script to backup....
+      ...etc.
+
+Anyway, was my bumbling attempt to fix the broken link the problem, or
+the fact the link was broken in the first place? If the latter, why
+did it break and how to avoid it in future? is there a safe way to re-
+establish the links with the remaining 5 @shadow files or should I
+just start over and not use @path? Are there examples deomonstrating
+the proper use of @path?
+
+thanks,
+
+-matt 
 #@nonl
-#@-node:ekr.20090406111739.10:Let gui handle hard part of next/prev-line commands
+#@-node:ekr.20090418064921.17:Urgent: Lost files with @shadow
+#@+node:ekr.20090421121914.11:Urgent: fix the tkinter problem in Terry's code
+#@-node:ekr.20090421121914.11:Urgent: fix the tkinter problem in Terry's code
 #@+node:ekr.20081215162017.5:Support multiple body editors
 #@+node:ekr.20090318091009.13:Prototype code
 @color
@@ -3254,6 +2130,8 @@ def OnControlKeyUp (self,event=None):
 #@+node:ekr.20081121105001.291:OnActivateBody (qtFrame)
 def OnActivateBody (self,event=None):
 
+    pass
+
     # try:
         # frame = self ; c = frame.c
         # c.setLog()
@@ -3264,7 +2142,8 @@ def OnActivateBody (self,event=None):
     # except:
         # g.es_event_exception("activate body")
 
-    return 'break'
+    ###  return 'break'
+
 #@-node:ekr.20081121105001.291:OnActivateBody (qtFrame)
 #@+node:ekr.20081121105001.292:OnActivateLeoEvent, OnDeactivateLeoEvent
 def OnActivateLeoEvent(self,event=None):
@@ -3288,7 +2167,7 @@ def OnActivateTree (self,event=None):
             # OnActivateTree can get called when the tree gets DE-activated!!
             c.bodyWantsFocus()
 
-    except:
+    except Exception:
         g.es_event_exception("activate tree")
 #@-node:ekr.20081121105001.293:OnActivateTree
 #@+node:ekr.20081121105001.294:OnBodyClick, OnBodyRClick (Events)
@@ -4390,6 +3269,1229 @@ def selectLabel (self,w):
         # w.leo_label = None
 #@-node:ekr.20081121105001.222:select/unselectLabel
 #@-node:ekr.20081215162017.5:Support multiple body editors
+#@+node:ekr.20090429101847.10:Support canvas widgets in all panes
+http://groups.google.com/group/leo-editor/browse_thread/thread/9ac06147e75fc042
+#@nonl
+#@-node:ekr.20090429101847.10:Support canvas widgets in all panes
+#@+node:ekr.20090426075320.10:mark command reverts headline
+#@-node:ekr.20090426075320.10:mark command reverts headline
+#@-node:ekr.20090406071640.17:First
+#@+node:ekr.20090304084841.10:Asap
+#@+node:ekr.20090318091009.12:Script errors mess up syntax coloring
+#@-node:ekr.20090318091009.12:Script errors mess up syntax coloring
+#@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
+http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
+#@nonl
+#@-node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
+#@+node:ekr.20090304084841.15:Complete open-with menu
+#@-node:ekr.20090304084841.15:Complete open-with menu
+#@+node:ekr.20090128083504.1:Fix rclick
+@nocolor-node
+
+rClick
+
+
+After the qt-plugin merge (rev 1251 ), the image plugin no longer works. I
+couldn't find any mention of gsimage in the diff.
+
+ # Erase image if it was previously displayed
+             a = g.app ; c = keywords.get("c")
+
+-            if a.gsimage:
++            if getattr(a, 'gsimage', None):
+                 try:
+                     c.frame.body.bodyCtrl.delete(a.gsimage)
+                 except:
+#@-node:ekr.20090128083504.1:Fix rclick
+#@+node:ekr.20081215074704.21:Add drag and drop
+#@-node:ekr.20081215074704.21:Add drag and drop
+#@+node:ekr.20081124094918.1:Fix problems with scim
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/59c1e5d6acaf4de0
+
+I've some more information about the problems with accent previously
+reported:
+- I can confirm that they are caused by the interaction scim+leo (with
+and without the qt plugin). If scim is not started leo works fine. If
+scim is running the problems appear and are slightly different with
+and without the qt plugin. The workaround is obvious: don't use leo
+and scim at the same time :-)
+- accents are not working in the qt plugin when scintilla is used. If
+qt-use-scintilla=False I can write this:
+
+àáä (the same for the rest of vowels)
+
+but if qt-use-scintilla=True when I enter the same sequence in the
+keyboard I get:
+
+`aaa (the same for the rest of vowels)
+
+- the problem with the ñ character (reported previously too) is only
+present in the qt plugin (both with and without scintilla)
+#@-node:ekr.20081124094918.1:Fix problems with scim
+#@+node:ekr.20090401110027.1:Make sure qt plugin supports user icons
+#@-node:ekr.20090401110027.1:Make sure qt plugin supports user icons
+#@+node:ekr.20090418064921.2:Installer doesn't always work
+Private communication: http://mail.google.com/mail/#inbox/120adc6d16caac24
+#@nonl
+#@-node:ekr.20090418064921.2:Installer doesn't always work
+#@+node:ekr.20090406111739.10:Let gui handle hard part of next/prev-line commands
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ef04b185f74f4926
+
+This is a little difficult to describe in words, but trying it out
+should, I hope make the issue clear enough.
+
+(1) Start by setting body_pane_wraps to true.
+
+(2) Create a very long line of e.g. 500 characters, which is wrapped
+around on the body pane. (E.g. paste in a paragraph from a Word
+document). This text will then be wrapped onscreen into roughly 8
+lines of 70 characters.
+
+(3) The up and down arrows do not behave as expected.
+
+I'd expect that in this scenario, pressing the down arrow key should
+go to go to the next line down as it currently appears *onscreen* --
+so in this example, I'd expect to have to press the down arrow several
+times to get to the end of the paragraph.  This is the way that Emacs
+works when it is in word wrap mode, and is of course is the way that
+all word processors work. However, Leo does not play this way, and
+takes you right to the end of the line (i.e. to the last of the 500
+characters) when you press the down key once. This makes editing plain
+text (e.g. using Leo as an outliner) rather more tricky than it ought
+to be. Would it be possible to change the effect of Previous-Line and
+Next-Line when in word wrap mode, so that they behave as other text
+editors and word processors do?
+
+============================
+
+This is a long-standing problem.  It's tricky to fix in a straightforward
+way.
+
+However, I just realized that there might be a clever way: the commands
+could let the gui handle the hard part of the command (the actual move) and
+then the commands could detect the resulting row/col numbers as they must.
+
+I've been putting this off, I'll see if this more clever way will work soon. 
+#@nonl
+#@-node:ekr.20090406111739.10:Let gui handle hard part of next/prev-line commands
+#@+node:ekr.20090418064921.12:Qt, vim bindings
+http://groups.google.com/group/leo-editor/browse_thread/thread/7285ac185355efb1
+#@nonl
+#@-node:ekr.20090418064921.12:Qt, vim bindings
+#@-node:ekr.20090304084841.10:Asap
+#@+node:ekr.20090304084841.11:Later
+#@+node:ekr.20081215074704.21:Add drag and drop
+#@-node:ekr.20081215074704.21:Add drag and drop
+#@+node:ekr.20081121105001.151:Clean up settings
+#@+node:ekr.20081121105001.150:QScintilla stuff
+#@-node:ekr.20081121105001.150:QScintilla stuff
+#@-node:ekr.20081121105001.151:Clean up settings
+#@+node:ekr.20081215162017.4:Allow coloring of script buttons
+@nocolor-node
+
+Use @string qt-button-color = lightSteelBlue
+
+The following does *not* work in @data qt-gui-plugin-style-sheet::
+
+    QPushButton {
+        background-color: red;
+    }
+#@+node:ekr.20090406111739.12:setWidgetColor (qtGui)
+badWidgetColors = []
+
+def setWidgetColor (self,w,widgetKind,selector,colorName):
+
+    if not colorName: return
+
+    if QtGui.QColor(colorName).isValid():
+        g.app.gui.setStyleSetting(w,widgetKind,selector,colorName)
+    elif colorName not in self.badWidgetColors:
+        self.badWidgetColors.append(colorName)
+        g.es_print('bad widget color %s for %s' % (
+            colorName,widgetKind),color='blue')
+#@-node:ekr.20090406111739.12:setWidgetColor (qtGui)
+#@+node:ekr.20090406111739.13:setStyleSetting (qtGui)
+def setStyleSetting(self,w,widgetKind,selector,val):
+
+    '''Set the styleSheet for w to
+       "%s { %s: %s; }  % (widgetKind,selector,val)"
+    '''
+
+    s = '%s { %s: %s; }' % (widgetKind,selector,val)
+
+    try:
+        w.setStyleSheet(s)
+    except Exception:
+        g.es_print('bad style sheet: %s' % s)
+        g.es_exception()
+#@-node:ekr.20090406111739.13:setStyleSetting (qtGui)
+#@+node:ekr.20081121105001.266:class qtIconBarClass
+class qtIconBarClass:
+
+    '''A class representing the singleton Icon bar'''
+
+    @others
+#@+node:ekr.20081121105001.267: ctor
+def __init__ (self,c,parentFrame):
+
+    self.c = c
+    self.parentFrame = parentFrame
+    self.w = c.frame.top.iconBar # A QToolBar.
+    self.actions = []
+
+    # Options
+    self.buttonColor = c.config.getString('qt-button-color')
+
+    # g.app.iconWidgetCount = 0
+#@-node:ekr.20081121105001.267: ctor
+#@+node:ekr.20081121105001.268: do-nothings
+def addRow(self,height=None):   pass
+def getFrame (self):            return None
+def getNewFrame (self):         return None
+def pack (self):                pass
+def unpack (self):              pass
+
+hide = unpack
+show = pack
+#@-node:ekr.20081121105001.268: do-nothings
+#@+node:ekr.20081121105001.269:add
+def add(self,*args,**keys):
+
+    '''Add a button to the icon bar.'''
+
+    c = self.c
+    command = keys.get('command')
+    text = keys.get('text')
+    if not text: return
+
+    # imagefile = keys.get('imagefile')
+    # image = keys.get('image')
+
+    class leoIconBarButton (QtGui.QWidgetAction):
+        def __init__ (self,parent,text,toolbar):
+            QtGui.QWidgetAction.__init__(self,parent)
+            self.button = None # set below
+            self.text = text
+            self.toolbar = toolbar
+        def createWidget (self,parent):
+            self.button = b = QtGui.QPushButton(self.text,parent)
+            g.app.gui.setWidgetColor(b,
+                widgetKind='QPushButton',
+                selector='background-color',
+                colorName = self.toolbar.buttonColor)
+            return b
+
+    action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
+    self.w.addAction(action)
+
+    self.actions.append(action)
+    b = self.w.widgetForAction(action)
+
+    b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+
+    def delete_callback(action=action,):
+        self.w.removeAction(action)
+
+    b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
+
+    b.addAction(rb)
+    rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
+
+    if command:
+        def button_callback(c=c,command=command):
+            g.trace('command',command.__name__)
+            val = command()
+            if c.exists:
+                c.bodyWantsFocus()
+                c.outerUpdate()
+            return val
+
+        self.w.connect(b,
+            QtCore.SIGNAL("clicked()"),
+            button_callback)
+
+    return action
+#@-node:ekr.20081121105001.269:add
+#@+node:ekr.20081121105001.270:addRowIfNeeded
+def addRowIfNeeded (self):
+
+    '''Add a new icon row if there are too many widgets.'''
+
+    # n = g.app.iconWidgetCount
+
+    # if n >= self.widgets_per_row:
+        # g.app.iconWidgetCount = 0
+        # self.addRow()
+
+    # g.app.iconWidgetCount += 1
+#@-node:ekr.20081121105001.270:addRowIfNeeded
+#@+node:ekr.20081121105001.271:addWidget
+def addWidget (self,w):
+
+    self.w.addWidget(w)
+#@-node:ekr.20081121105001.271:addWidget
+#@+node:ekr.20081121105001.272:clear
+def clear(self):
+
+    """Destroy all the widgets in the icon bar"""
+
+    self.w.clear()
+    self.actions = []
+
+    g.app.iconWidgetCount = 0
+#@-node:ekr.20081121105001.272:clear
+#@+node:ekr.20081121105001.273:deleteButton
+def deleteButton (self,w):
+    """ w is button """
+
+    #g.trace(w, '##')    
+
+    self.w.removeAction(w)
+
+    self.c.bodyWantsFocus()
+    self.c.outerUpdate()
+#@-node:ekr.20081121105001.273:deleteButton
+#@+node:ekr.20081121105001.274:setCommandForButton
+def setCommandForButton(self,button,command):
+
+    if command:
+        # button is a leoIconBarButton.
+        QtCore.QObject.connect(button.button,
+            QtCore.SIGNAL("clicked()"),command)
+#@-node:ekr.20081121105001.274:setCommandForButton
+#@-node:ekr.20081121105001.266:class qtIconBarClass
+#@-node:ekr.20081215162017.4:Allow coloring of script buttons
+#@+node:ekr.20081215074704.20:Change background color of body pane depending on focus
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/1cce885a697d0236/5aea5d0587b47b92?lnk=gst&q=command+and+insert#5aea5d0587b47b92
+
+Set focus in/out events.
+#@nonl
+#@+node:ekr.20081121105001.203:setStyleSheets & helper
+styleSheet_inited = False
+
+def setStyleSheets(self):
+
+    trace = False
+    c = self.c
+
+    sheet = c.config.getData('qt-gui-plugin-style-sheet')
+    if sheet:
+        sheet = '\n'.join(sheet)
+        if trace: g.trace(len(sheet))
+        self.ui.setStyleSheet(sheet or self.default_sheet())
+    else:
+        if trace: g.trace('no style sheet')
+#@+node:ekr.20081121105001.204:defaultStyleSheet
+def defaultStyleSheet (self):
+
+    '''Return a reasonable default style sheet.'''
+
+    # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
+    return '''\
+
+/* A QWidget: supports only background attributes.*/
+QSplitter::handle {
+
+    background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
+}
+QSplitter {
+    border-color: white;
+    background-color: white;
+    border-width: 3px;
+    border-style: solid;
+}
+QTreeWidget {
+    background-color: #ffffec; /* Leo's traditional tree color */
+}
+/* Not supported. */
+QsciScintilla {
+    background-color: pink;
+}
+'''
+#@-node:ekr.20081121105001.204:defaultStyleSheet
+#@-node:ekr.20081121105001.203:setStyleSheets & helper
+#@+node:ekr.20081121105001.205:class leoQtBody (leoBody)
+class leoQtBody (leoFrame.leoBody):
+
+    """A class that represents the body pane of a Qt window."""
+
+    @others
+#@+node:ekr.20081121105001.206: Birth
+#@+node:ekr.20081121105001.207: ctor (qtBody)
+def __init__ (self,frame,parentFrame):
+
+    trace = False and not g.unitTesting
+
+    # Call the base class constructor.
+    leoFrame.leoBody.__init__(self,frame,parentFrame)
+
+    c = self.c
+    assert c.frame == frame and frame.c == c
+
+    self.useScintilla = c.config.getBool('qt-use-scintilla')
+    self.selectedBackgroundColor = c.config.getString('selected-background-color')
+    self.unselectedBackgroundColor = c.config.getString('unselected-background-color')
+
+    # Set the actual gui widget.
+    if self.useScintilla:
+        self.widget = w = leoQScintillaWidget(
+            c.frame.top.textEdit,
+            name='body',c=c)
+        self.bodyCtrl = w # The widget as seen from Leo's core.
+        self.colorizer = leoColor.nullColorizer(c)
+    else:
+        top = c.frame.top
+        sw = top.ui.stackedWidget
+        qtWidget = top.ui.richTextEdit # A QTextEdit.
+        sw.setCurrentIndex(1)
+        self.widget = w = leoQTextEditWidget(
+            qtWidget,name = 'body',c=c)
+        self.bodyCtrl = w # The widget as seen from Leo's core.
+
+        # Hook up the QSyntaxHighlighter
+        self.colorizer = leoQtColorizer(c,w.widget)
+        w.acceptRichText = False
+
+    # Config stuff.
+    self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
+    wrap = c.config.getBool('body_pane_wraps')
+    # g.trace('wrap',wrap,self.widget.widget)
+    if self.useScintilla:
+        pass
+    else:
+        self.widget.widget.setWordWrapMode(g.choose(wrap,
+            QtGui.QTextOption.WordWrap,
+            QtGui.QTextOption.NoWrap))
+    wrap = g.choose(wrap,"word","none")
+    self.wrapState = wrap
+
+    # For multiple body editors.
+    self.editor_name = None
+    self.editor_v = None
+    self.numberOfEditors = 1
+    self.totalNumberOfEditors = 1
+
+    if trace: print('qtBody.__init__ %s' % self.widget)
+#@-node:ekr.20081121105001.207: ctor (qtBody)
+#@+node:ekr.20081121105001.208:createBindings (qtBody)
+def createBindings (self,w=None):
+
+    '''(qtBody) Create gui-dependent bindings.
+    These are *not* made in nullBody instances.'''
+
+    # frame = self.frame ; c = self.c ; k = c.k
+    # if not w: w = self.widget
+
+    # c.bind(w,'<Key>', k.masterKeyHandler)
+
+    # def onFocusOut(event,c=c):
+        # # This interferes with inserting new nodes.
+            # # c.k.setDefaultInputState()
+        # self.setEditorColors(
+            # bg=c.k.unselected_body_bg_color,
+            # fg=c.k.unselected_body_fg_color)
+        # # This is required, for example, when typing Alt-Shift-anyArrow in insert mode.
+        # # But we suppress coloring in the widget.
+        # oldState = k.unboundKeyAction
+        # k.unboundKeyAction = k.defaultUnboundKeyAction
+        # c.k.showStateAndMode(w=g.app.gui.get_focus(c))
+        # k.unboundKeyAction = oldState
+
+    # def onFocusIn(event,c=c):
+        # # g.trace('callback')
+        # c.k.setDefaultInputState()
+        # c.k.showStateAndMode()  # TNB - fix color when window manager returns focus to Leo
+
+    # c.bind(w,'<FocusOut>', onFocusOut)
+    # c.bind(w,'<FocusIn>', onFocusIn)
+
+    # table = [
+        # ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
+        # ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
+        # ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
+        # ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
+        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    # ]
+
+    # table2 = (
+        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    # )
+
+    # if c.config.getBool('allow_middle_button_paste'):
+        # table.extend(table2)
+
+    # for kind,func,handler in table:
+        # def bodyClickCallback(event,handler=handler,func=func):
+            # return handler(event,func)
+
+        # c.bind(w,kind,bodyClickCallback)
+#@-node:ekr.20081121105001.208:createBindings (qtBody)
+#@+node:ekr.20081121105001.209:get_name
+def getName (self):
+
+    return 'body-widget'
+#@-node:ekr.20081121105001.209:get_name
+#@-node:ekr.20081121105001.206: Birth
+#@+node:ekr.20081121105001.210:Do-nothings
+
+# Configuration will be handled by style sheets.
+def cget(self,*args,**keys):        return None
+def configure (self,*args,**keys):  pass
+def setEditorColors (self,bg,fg):   pass
+
+def oops (self):
+    g.trace('qtBody',g.callers(3))
+#@-node:ekr.20081121105001.210:Do-nothings
+#@+node:ekr.20081121105001.211:High-level interface to self.widget
+def appendText (self,s):
+    return self.widget.appendText(s)
+
+def bind (self,kind,*args,**keys):
+    return self.widget.bind(kind,*args,**keys)
+
+def deleteTextSelection (self):
+    return self.widget.deleteTextSelection()
+
+def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+    return self.widget(i,bg,fg,flashes,delay)
+
+def get(self,i,j=None):
+    return self.widget.get(i,j)
+
+def getAllText (self):
+    return self.widget.getAllText()
+
+def getFocus (self):
+    return self.widget.getFocus()
+
+def getInsertPoint(self):
+    return self.widget.getInsertPoint()
+
+def getSelectedText (self):
+    return self.widget.getSelectedText()
+
+def getSelectionRange (self,sort=True):
+    return self.widget.getSelectionRange(sort)
+
+def getYScrollPosition (self):
+    return self.widget.getYScrollPosition()
+
+def insert(self,i,s):
+    return self.widget.insert(i,s)
+
+def scrollLines (self,n):
+    return self.widget.scrollLines(n)
+
+def see(self,index):
+    return self.widget.see(index)
+
+def seeInsertPoint(self):
+    return self.widget.seeInsertPoint()
+
+def setAllText (self,s):
+    return self.widget.setAllText(s)
+
+def setBackgroundColor (self,color):
+    return self.widget.setBackgroundColor(color)
+
+def setFocus (self):
+    return self.widget.setFocus()
+
+def setForegroundColor (self,color):
+    return self.widget.setForegroundColor(color)
+
+def setInsertPoint (self,pos):
+    return self.widget.setInsertPoint(pos)
+
+def setSelectionRange (self,sel):
+    i,j = sel
+    return self.widget.setSelectionRange(i,j)
+
+def setYScrollPosition (self,i):
+    return self.widget.setYScrollPosition(i)
+#@-node:ekr.20081121105001.211:High-level interface to self.widget
+#@+node:ekr.20081121105001.212:Editors (qtBody)
+#@+node:ekr.20081121105001.214:packEditorLabelWidget
+def packEditorLabelWidget (self,w):
+
+    '''Create a Tk label widget.'''
+
+    # if not hasattr(w,'leo_label') or not w.leo_label:
+        # # g.trace('w.leo_frame',id(w.leo_frame))
+        # w.pack_forget()
+        # w.leo_label = Tk.Label(w.leo_frame)
+        # w.leo_label.pack(side='top')
+        # w.pack(expand=1,fill='both')
+#@nonl
+#@-node:ekr.20081121105001.214:packEditorLabelWidget
+#@+node:ekr.20081121105001.215:entries
+if 1:
+    @others
+#@nonl
+#@+node:ekr.20081121105001.216:addEditor & helpers (qtBody)
+# An override of leoFrame.addEditor.
+
+def addEditor (self,event=None):
+
+    '''Add another editor to the body pane.'''
+
+    g.es_print('add-editor not supported yet',color='red')
+    return
+
+    trace = True and not g.unitTesting
+
+    bodyCtrl = self.c.frame.body.bodyCtrl # A leoQTextEditWidget
+    self.editorWidgets['1'] = bodyCtrl
+    c = self.c ; p = c.currentPosition()
+    self.totalNumberOfEditors += 1
+    self.numberOfEditors += 1
+
+    if self.numberOfEditors == 2:
+        # Inject the ivars into the first editor.
+        # The name of the last editor need not be '1'
+        d = self.editorWidgets ; keys = d.keys()
+        if len(keys) == 1:
+            w_old = d.get(keys[0])
+            if trace: g.trace('w_old',w_old)
+            self.updateInjectedIvars(w_old,p)
+            self.selectLabel(w_old) # Immediately create the label in the old editor.
+        else:
+            g.trace('can not happen: unexpected editorWidgets',d)
+
+    name = '%d' % self.totalNumberOfEditors
+
+    f,w = self.createEditorFrame()
+    self.createEditorWidget(f,name,p,w)
+    self.editorWidgets[name] = w
+
+    # for pane in panes:
+        # self.pb.configurepane(pane,size=minSize)
+
+    # self.pb.updatelayout()
+    if trace: g.trace('w',w)
+    c.frame.body.bodyCtrl = w
+
+    self.updateInjectedIvars(w,p)
+    self.selectLabel(w)
+    self.selectEditor(w)
+    self.updateEditors()
+    c.bodyWantsFocusNow()
+#@+node:ekr.20081121105001.213:createEditorFrame
+def createEditorFrame (self):
+
+    f = self.c.frame
+    inner_f = f.top.ui.leo_body_inner_frame
+    body = leoQtBody(f,None)
+    w = body.widget.widget
+
+    inner_f.layout().addWidget(w,0,1)
+    w.setFocus()
+
+    return inner_f,body.widget
+#@-node:ekr.20081121105001.213:createEditorFrame
+#@+node:ekr.20081121105001.217:createEditorWidget
+def createEditorWidget (self,f,name,p,w):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    if trace: g.trace(p.h,w)
+    #### w = self.createTextWidget(f,name,p,w)
+    self.updateInjectedIvars(w,p)
+    w.delete(0,'end')
+    w.insert('end',p.bodyString())
+    w.see(0)
+    ##self.setFontFromConfig(w=w)
+    ##self.setColorFromConfig(w=w)
+    self.createBindings(w=w)
+    c.k.completeAllBindingsForWidget(w)
+    self.recolorWidget(p,w)
+
+    #### return w
+#@-node:ekr.20081121105001.217:createEditorWidget
+#@+node:ekr.20090318091009.14:createTextWidget (not used)
+def createTextWidget (self,parentFrame,name,p,w):
+
+    c = self.c
+
+    # # parentFrame.configure(bg='LightSteelBlue1')
+
+    # # wrap = c.config.getBool('body_pane_wraps')
+    # # wrap = g.choose(wrap,"word","none")
+
+    # Setgrid=1 cause severe problems with the font panel.
+    #### w = leoQTextEditWidget (widget,name,c)
+
+
+    # # bodyBar = Tk.Scrollbar(parentFrame,name='bodyBar')
+
+    # # def yscrollCallback(x,y,bodyBar=bodyBar,w=w):
+        # # # g.trace(x,y,g.callers())
+        # # if hasattr(w,'leo_scrollBarSpot'):
+            # # w.leo_scrollBarSpot = (x,y)
+        # # return bodyBar.set(x,y)
+
+    # # body['yscrollcommand'] = yscrollCallback # bodyBar.set
+
+    # # bodyBar['command'] =  body.yview
+    # # bodyBar.pack(side="right", fill="y")
+
+    # # # Always create the horizontal bar.
+    # # bodyXBar = Tk.Scrollbar(
+        # # parentFrame,name='bodyXBar',orient="horizontal")
+    # # body['xscrollcommand'] = bodyXBar.set
+    # # bodyXBar['command'] = body.xview
+
+    # # if wrap == "none":
+        # # # g.trace(parentFrame)
+        # # bodyXBar.pack(side="bottom", fill="x")
+
+    # # body.pack(expand=1,fill="both")
+
+    # # self.wrapState = wrap
+
+    # # if 0: # Causes the cursor not to blink.
+        # # body.configure(insertofftime=0)
+
+    # Inject ivars
+    if name == '1':
+        w.leo_p = w.leo_v = None # Will be set when the second editor is created.
+    else:
+        w.leo_p = p.copy()
+        w.leo_v = w.leo_p.v
+
+    w.leo_active = True
+    # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
+    w.leo_bodyBar = None #### bodyBar # 2007/10/31
+    w.leo_bodyXBar = None #### bodyXBar # 2007/10/31
+    w.leo_chapter = None
+    w.leo_frame = parentFrame
+    w.leo_name = name
+    w.leo_label = None
+    w.leo_label_s = None
+    w.leo_scrollBarSpot = None
+    w.leo_insertSpot = None
+    w.leo_selection = None
+
+    #### return w
+#@-node:ekr.20090318091009.14:createTextWidget (not used)
+#@-node:ekr.20081121105001.216:addEditor & helpers (qtBody)
+#@+node:ekr.20081121105001.218:assignPositionToEditor
+def assignPositionToEditor (self,p):
+
+    '''Called *only* from tree.select to select the present body editor.'''
+
+    c = self.c ; cc = c.chapterController ; w = c.frame.body.bodyCtrl
+
+    # self.updateInjectedIvars(w,p)
+    # self.selectLabel(w)
+
+    # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.h)
+#@-node:ekr.20081121105001.218:assignPositionToEditor
+#@+node:ekr.20081121105001.219:cycleEditorFocus
+def cycleEditorFocus (self,event=None):
+
+    '''Cycle keyboard focus between the body text editors.'''
+
+    # c = self.c ; d = self.editorWidgets ; w = c.frame.body.bodyCtrl
+    # values = d.values()
+    # if len(values) > 1:
+        # i = values.index(w) + 1
+        # if i == len(values): i = 0
+        # w2 = d.values()[i]
+        # assert(w!=w2)
+        # self.selectEditor(w2)
+        # c.frame.body.bodyCtrl = w2
+        # # g.pr('***',g.app.gui.widget_name(w2),id(w2))
+
+    # return 'break'
+#@-node:ekr.20081121105001.219:cycleEditorFocus
+#@+node:ekr.20081121105001.220:deleteEditor
+def deleteEditor (self,event=None):
+
+    '''Delete the presently selected body text editor.'''
+
+    # c = self.c ; w = c.frame.body.bodyCtrl ; d = self.editorWidgets
+
+    # if len(d.keys()) == 1: return
+
+    # name = w.leo_name
+
+    # del d [name] 
+    # self.pb.delete(name)
+    # panes = self.pb.panes()
+    # minSize = float(1.0/float(len(panes)))
+
+    # for pane in panes:
+        # self.pb.configurepane(pane,size=minSize)
+
+    # # Select another editor.
+    # w = d.values()[0]
+    # # c.frame.body.bodyCtrl = w # Don't do this now?
+    # self.numberOfEditors -= 1
+    # self.selectEditor(w)
+#@-node:ekr.20081121105001.220:deleteEditor
+#@+node:ekr.20081121105001.221:findEditorForChapter (leoBody)
+def findEditorForChapter (self,chapter,p):
+
+    '''Return an editor to be assigned to chapter.'''
+
+    return self.c.frame.body.bodyCtrl
+
+    # c = self.c ; d = self.editorWidgets ; values = d.values()
+
+    # # First, try to match both the chapter and position.
+    # if p:
+        # for w in values:
+            # if (
+                # hasattr(w,'leo_chapter') and w.leo_chapter == chapter and
+                # hasattr(w,'leo_p') and w.leo_p and w.leo_p == p
+            # ):
+                # # g.trace('***',id(w),'match chapter and p',p.h)
+                # return w
+
+    # # Next, try to match just the chapter.
+    # for w in values:
+        # if hasattr(w,'leo_chapter') and w.leo_chapter == chapter:
+            # # g.trace('***',id(w),'match only chapter',p.h)
+            # return w
+
+    # # As a last resort, return the present editor widget.
+    # # g.trace('***',id(self.bodyCtrl),'no match',p.h)
+    # return c.frame.body.bodyCtrl
+#@-node:ekr.20081121105001.221:findEditorForChapter (leoBody)
+#@+node:ekr.20081121105001.222:select/unselectLabel
+def unselectLabel (self,w):
+
+    pass
+
+    # self.createChapterIvar(w)
+    # self.packEditorLabelWidget(w)
+    # s = self.computeLabel(w)
+    # if hasattr(w,'leo_label') and w.leo_label:
+        # w.leo_label.configure(text=s,bg='LightSteelBlue1')
+
+def selectLabel (self,w):
+
+    pass
+
+    # if self.numberOfEditors > 1:
+        # self.createChapterIvar(w)
+        # self.packEditorLabelWidget(w)
+        # s = self.computeLabel(w)
+        # # g.trace(s,g.callers())
+        # if hasattr(w,'leo_label') and w.leo_label:
+            # w.leo_label.configure(text=s,bg='white')
+    # elif hasattr(w,'leo_label') and w.leo_label:
+        # w.leo_label.pack_forget()
+        # w.leo_label = None
+#@-node:ekr.20081121105001.222:select/unselectLabel
+#@+node:ekr.20081121105001.223:selectEditor & helpers
+selectEditorLockout = False
+
+def selectEditor(self,w):
+
+    '''Select editor w and node w.leo_p.'''
+
+    return self.c.frame.body.bodyCtrl
+
+    #  Called by body.onClick and whenever w must be selected.
+    # trace = False
+    # c = self.c
+    # if not w: return self.c.frame.body.bodyCtrl
+    # if self.selectEditorLockout: return
+
+    # if w and w == self.c.frame.body.bodyCtrl:
+        # if w.leo_p and w.leo_p != c.currentPosition():
+            # c.selectPosition(w.leo_p)
+            # c.bodyWantsFocusNow()
+        # return
+
+    # try:
+        # val = None
+        # self.selectEditorLockout = True
+        # val = self.selectEditorHelper(w)
+    # finally:
+        # self.selectEditorLockout = False
+
+    # return val # Don't put a return in a finally clause.
+#@+node:ekr.20081121105001.224:selectEditorHelper
+def selectEditorHelper (self,w):
+
+    c = self.c ; cc = c.chapterController ; d = self.editorWidgets
+
+    trace = False
+
+    if not w.leo_p:
+        g.trace('no w.leo_p') 
+        return 'break'
+
+    if trace:
+        g.trace('==1',id(w),
+            hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
+            hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
+
+    self.inactivateActiveEditor(w)
+
+    # The actual switch.
+    c.frame.body.bodyCtrl = w
+    w.leo_active = True
+
+    self.switchToChapter(w)
+    self.selectLabel(w)
+
+    if not self.ensurePositionExists(w):
+        g.trace('***** no position editor!')
+        return 'break'
+
+    if trace:
+        g.trace('==2',id(w),
+            hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
+            hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
+
+    # g.trace('expanding ancestors of ',w.leo_p.h,g.callers())
+    c.expandAllAncestors(w.leo_p)
+    c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
+    c.redraw()
+
+    c.recolor_now()
+    << restore the selection, insertion point and the scrollbar >>
+    c.bodyWantsFocusNow()
+    return 'break'
+#@+node:ekr.20081121105001.225:<< restore the selection, insertion point and the scrollbar >>
+# g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
+
+if w.leo_insertSpot:
+    w.setInsertPoint(w.leo_insertSpot)
+else:
+    w.setInsertPoint(0)
+
+if w.leo_scrollBarSpot is not None:
+    first,last = w.leo_scrollBarSpot
+    w.yview('moveto',first)
+else:
+    w.seeInsertPoint()
+
+if w.leo_selection:
+    try:
+        start,end = w.leo_selection
+        w.setSelectionRange(start,end)
+    except Exception:
+        pass
+#@-node:ekr.20081121105001.225:<< restore the selection, insertion point and the scrollbar >>
+#@-node:ekr.20081121105001.224:selectEditorHelper
+#@-node:ekr.20081121105001.223:selectEditor & helpers
+#@+node:ekr.20081121105001.226:updateEditors
+# Called from addEditor and assignPositionToEditor
+
+def updateEditors (self):
+
+    pass
+
+    # c = self.c ; p = c.currentPosition()
+    # d = self.editorWidgets
+    # if len(d.keys()) < 2: return # There is only the main widget.
+
+    # for key in d:
+        # w = d.get(key)
+        # v = w.leo_v
+        # if v and v == p.v and w != c.frame.body.bodyCtrl:
+            # w.delete(0,'end')
+            # w.insert('end',p.bodyString())
+            # # g.trace('update',w,v)
+            # self.recolorWidget(p,w)
+
+    # c.bodyWantsFocus()
+#@-node:ekr.20081121105001.226:updateEditors
+#@-node:ekr.20081121105001.215:entries
+#@+node:ekr.20081121105001.227:utils
+#@+node:ekr.20081121105001.228:computeLabel
+def computeLabel (self,w):
+
+    s = w.leo_label_s
+
+    if hasattr(w,'leo_chapter') and w.leo_chapter:
+        s = '%s: %s' % (w.leo_chapter.name,s)
+
+    return s
+#@-node:ekr.20081121105001.228:computeLabel
+#@+node:ekr.20081121105001.229:createChapterIvar
+def createChapterIvar (self,w):
+
+    c = self.c ; cc = c.chapterController
+
+    if not hasattr(w,'leo_chapter') or not w.leo_chapter:
+        if cc and self.use_chapters:
+            w.leo_chapter = cc.getSelectedChapter()
+        else:
+            w.leo_chapter = None
+#@-node:ekr.20081121105001.229:createChapterIvar
+#@+node:ekr.20081121105001.230:ensurePositionExists
+def ensurePositionExists(self,w):
+
+    '''Return True if w.leo_p exists or can be reconstituted.'''
+
+    c = self.c
+
+    if c.positionExists(w.leo_p):
+        return True
+    else:
+        g.trace('***** does not exist',w.leo_name)
+        for p2 in c.all_positions_with_unique_vnodes_iter():
+            if p2.v and p2.v == w.leo_v:
+                w.leo_p = p2.copy()
+                return True
+        else:
+             # This *can* happen when selecting a deleted node.
+            w.leo_p = c.currentPosition()
+            return False
+#@-node:ekr.20081121105001.230:ensurePositionExists
+#@+node:ekr.20081121105001.231:inactivateActiveEditor
+def inactivateActiveEditor(self,w):
+
+    '''Inactivate the previously active editor.'''
+
+    d = self.editorWidgets
+
+    # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
+    for key in d:
+        w2 = d.get(key)
+        if w2 != w and w2.leo_active:
+            w2.leo_active = False
+            self.unselectLabel(w2)
+            w2.leo_scrollBarSpot = w2.yview()
+            w2.leo_insertSpot = w2.getInsertPoint()
+            w2.leo_selection = w2.getSelectionRange()
+            # g.trace('inactive:',id(w2),'scroll',w2.leo_scrollBarSpot,'ins',w2.leo_insertSpot)
+            # g.trace('inactivate',id(w2))
+            return
+#@-node:ekr.20081121105001.231:inactivateActiveEditor
+#@+node:ekr.20081121105001.232:recolorWidget
+def recolorWidget (self,p,w):
+
+    c = self.c ; old_w = c.frame.body.bodyCtrl
+
+    # g.trace('w',id(w),p.h,len(w.getAllText()))
+
+    # Save.
+    c.frame.body.bodyCtrl = w
+    try:
+        # c.recolor_now(interruptable=False) # Force a complete recoloring.
+        c.frame.body.colorizer.colorize(p,incremental=False,interruptable=False)
+    finally:
+        # Restore.
+        c.frame.body.bodyCtrl = old_w
+#@-node:ekr.20081121105001.232:recolorWidget
+#@+node:ekr.20081121105001.233:switchToChapter (leoBody)
+def switchToChapter (self,w):
+
+    '''select w.leo_chapter.'''
+
+    c = self.c ; cc = c.chapterController
+
+    if hasattr(w,'leo_chapter') and w.leo_chapter:
+        chapter = w.leo_chapter
+        name = chapter and chapter.name
+        oldChapter = cc.getSelectedChapter()
+        if chapter != oldChapter:
+            # g.trace('===','old',oldChapter.name,'new',name,w.leo_p)
+            cc.selectChapterByName(name)
+            c.bodyWantsFocusNow()
+#@-node:ekr.20081121105001.233:switchToChapter (leoBody)
+#@+node:ekr.20081121105001.234:updateInjectedIvars
+# Called from addEditor and assignPositionToEditor.
+
+def updateInjectedIvars (self,w,p):
+
+    c = self.c ; cc = c.chapterController
+
+    if cc and self.use_chapters:
+        w.leo_chapter = cc.getSelectedChapter()
+    else:
+        w.leo_chapter = None
+
+    w.leo_p = p.copy()
+    w.leo_v = w.leo_p.v
+    w.leo_label_s = p.h
+
+    # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.h)
+#@-node:ekr.20081121105001.234:updateInjectedIvars
+#@-node:ekr.20081121105001.227:utils
+#@-node:ekr.20081121105001.212:Editors (qtBody)
+#@+node:ekr.20090406071640.13:Event handlers called from eventFilter
+def onFocusIn (self):
+    self.onFocusHelper(self.selectedBackgroundColor)
+
+def onFocusOut (self):
+    self.onFocusHelper(self.unselectedBackgroundColor)
+
+badFocusColors = []
+
+def onFocusHelper(self,name):
+
+    if not name: return
+
+    if QtGui.QColor(name).isValid():
+        s = 'QTextEdit#richTextEdit { background-color: %s; }' % name
+        self.widget.widget.setStyleSheet(s)
+    elif name not in self.badFocusColors:
+        self.badFocusColors.append(name)
+        g.es_print('invalid body background color: %s' % (name),color='blue')
+#@-node:ekr.20090406071640.13:Event handlers called from eventFilter
+#@-node:ekr.20081121105001.205:class leoQtBody (leoBody)
+#@+node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
+def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
+
+    self.widget = widget
+    self.c = c or self.widget.c
+
+    # Init the base class.
+    leoFrame.baseTextWidget.__init__(
+        self,c,baseClassName='leoQtBaseTextWidget',
+        name=name,
+        widget=widget,
+        highLevelInterface=True)
+
+    # Init ivars.
+    self.tags = {}
+    self.configDict = {} # Keys are tags, values are colors (names or values).
+    self.useScintilla = False # This is used!
+
+    if not c: return # Can happen.
+
+    # Hook up qt events.
+    self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
+    self.widget.installEventFilter(self.ev_filter)
+
+    self.widget.connect(self.widget,
+        QtCore.SIGNAL("textChanged()"),self.onTextChanged)
+
+    self.widget.connect(self.widget,
+        QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
+
+    self.injectIvars(c)
+#@-node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
+#@+node:ekr.20081121105001.168:eventFilter
+def eventFilter(self, obj, event):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    traceEvent = False and not g.unitTesting
+    traceFocus = False and not g.unitTesting
+    c = self.c ; k = c.k
+    eventType = event.type()
+    ev = QtCore.QEvent
+    gui = g.app.gui
+    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
+
+    if traceFocus: self.traceFocus(eventType,obj)
+
+    # A hack. QLineEdit generates ev.KeyRelease only.
+    if eventType in (ev.KeyPress,ev.KeyRelease):
+        p = c.currentPosition()
+        isEditWidget = obj == c.frame.tree.edit_widget(p)
+        self.keyIsActive = g.choose(
+            isEditWidget,
+            eventType == ev.KeyRelease,
+            eventType == ev.KeyPress)
+    else:
+        self.keyIsActive = False
+
+    if eventType == ev.WindowActivate:
+        gui.onActivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    elif eventType == ev.WindowDeactivate:
+        gui.onDeactivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    elif eventType in kinds:
+        tkKey,ch,ignore = self.toTkKey(event)
+        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+        if ignore:
+            override = False
+        elif self.isSpecialOverride(tkKey,ch):
+            override = True
+        elif k.inState():
+            override = not ignore # allow all keystrokes.
+        else:
+            override = len(aList) > 0
+    else:
+        override = False ; tkKey = '<no key>'
+        if self.tag == 'body':
+            if eventType == ev.FocusIn:
+                c.frame.body.onFocusIn()
+            elif eventType == ev.FocusOut:
+                c.frame.body.onFocusOut()
+
+    if self.keyIsActive:
+        stroke = self.toStroke(tkKey,ch)
+        if override:
+            if trace and not ignore: g.trace('bound',repr(stroke))
+            w = self.w # Pass the wrapper class, not the wrapped widget.
+            leoEvent = leoKeyEvent(event,c,w,ch,tkKey,stroke)
+            ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+            c.outerUpdate()
+        # else:
+            # if (stroke): # and not stroke.startswith('Alt+') and 
+                    # not stroke.startswith('Ctrl+') and
+                    # not stroke in ('PgDn','PgUp')):
+                # g.trace(self.tag,'unbound',tkKey,stroke)
+
+    if traceEvent: self.traceEvent(obj,event,tkKey,override)
+
+    return override
+#@-node:ekr.20081121105001.168:eventFilter
+#@+node:ekr.20090406071640.13:Event handlers called from eventFilter
+def onFocusIn (self):
+    self.onFocusHelper(self.selectedBackgroundColor)
+
+def onFocusOut (self):
+    self.onFocusHelper(self.unselectedBackgroundColor)
+
+badFocusColors = []
+
+def onFocusHelper(self,name):
+
+    if not name: return
+
+    if QtGui.QColor(name).isValid():
+        s = 'QTextEdit#richTextEdit { background-color: %s; }' % name
+        self.widget.widget.setStyleSheet(s)
+    elif name not in self.badFocusColors:
+        self.badFocusColors.append(name)
+        g.es_print('invalid body background color: %s' % (name),color='blue')
+#@-node:ekr.20090406071640.13:Event handlers called from eventFilter
+#@-node:ekr.20081215074704.20:Change background color of body pane depending on focus
+#@+node:ekr.20081124094918.1:Fix problems with scim
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/59c1e5d6acaf4de0
+
+I've some more information about the problems with accent previously
+reported:
+- I can confirm that they are caused by the interaction scim+leo (with
+and without the qt plugin). If scim is not started leo works fine. If
+scim is running the problems appear and are slightly different with
+and without the qt plugin. The workaround is obvious: don't use leo
+and scim at the same time :-)
+- accents are not working in the qt plugin when scintilla is used. If
+qt-use-scintilla=False I can write this:
+
+àáä (the same for the rest of vowels)
+
+but if qt-use-scintilla=True when I enter the same sequence in the
+keyboard I get:
+
+`aaa (the same for the rest of vowels)
+
+- the problem with the ñ character (reported previously too) is only
+present in the qt plugin (both with and without scintilla)
+#@-node:ekr.20081124094918.1:Fix problems with scim
 #@+node:ekr.20090223065019.11:Make Leo's page-up/page-down commands funtional
 # This will be needed for vim.
 
@@ -4409,530 +4511,7 @@ if 1:
     vScroll.setValue(vPos+10)
 #@nonl
 #@-node:ekr.20090223065019.11:Make Leo's page-up/page-down commands funtional
-#@+node:ekr.20090426075320.10:mark command reverts headline
-#@-node:ekr.20090426075320.10:mark command reverts headline
-#@+node:ekr.20090418064921.1:New bugs
-#@+node:ekr.20090418064921.2:Installer doesn't always work
-Private communication: http://mail.google.com/mail/#inbox/120adc6d16caac24
-#@nonl
-#@-node:ekr.20090418064921.2:Installer doesn't always work
-#@+node:ekr.20090418064921.12:Qt, vim bindings
-http://groups.google.com/group/leo-editor/browse_thread/thread/7285ac185355efb1
-#@nonl
-#@-node:ekr.20090418064921.12:Qt, vim bindings
-#@+node:ekr.20090418064921.13:Make a central repository for leo_db files
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ec30df3f1db8db3
-#@-node:ekr.20090418064921.13:Make a central repository for leo_db files
-#@+node:ekr.20090418064921.14:Add an explicite toc to the faq
-#@-node:ekr.20090418064921.14:Add an explicite toc to the faq
-#@+node:ekr.20090418064921.17:Urgent: Lost files with @shadow
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ff4c0be55b15ce7a
-
-Yesterday I imported some windows batch files to @file, changed them
-to @shadow, and used @path to shorten the node name. Today Leo has
-lost track of the shadow files (the body text is empty), and when I
-attempted to re-link one Leo zeroed out the target (overwrote an empty
-file). This is the procedure I followed (not as linear as written, I
-was experimenting):
-
-0. Opened H:\work.leo
-1. File > Import to @file: y:\scripts\xc-backup.bat
-2. Change heading '@file y:\scripts\xc-backup.bat' to '@shadow xc-
-backup.bat'
-3. Change body text:
-   - removed '@ignore'
-   + added '@path y:\scripts\'
-   + added and changed some other miscelaneous text
-4. Saved
-5. Verified contents xc-backup.bat is as expected with external
-editor.
-
-Repeated half a dozen times with other files.
-
-Today when I opened H:\work.leo the body text of all @shadow files
-were blank. This is the log:
-
-   reading: H:\work.leo
-   reading: @shadow xc-backup.bat
-   can not open @shadow H:\xc-backup.bat
-   created directory: H:\.leo_shadow
-   created:   H:\.leo_shadow\xxc-backup.bat
-   created:   H:\xc-backup.bat
-
-It's trying to read .leo_shadow from the the wrong location and
-creating a new one when it is not found. Thinking to re-establish the
-link I added '@path y:\scripts\' to '@shadow xc-backup.bat' heading
-and Saved, log:
-
-   @shadow xc-backup.bat not written:
-   no children and less than 10 characters (excluding directives)
-
-To make the body text longer than 10 characters I added '@language
-batch' and saved again:
-
-   errors writing: <string-file>
-   Orphan node:  @shadow xc-backup.bat
-   parent node: @shadow xc-backup.bat
-   not written:
-   wrote:     y:\scripts\.leo_shadow\xxc-backup.bat
-   wrote:     y:\scripts\xc-backup.bat
-
-   errors writing: <string-file>
-   Orphan node:  @shadow xc-backup.bat
-   parent node: @shadow xc-backup.bat
-
-(Note: I may not have split the log at the right points in the 3
-indented sections above.)
-
-**Big Mistake** as at this point the *pre-existing* shadow and real
-file were overwritten with *empty* content. Now in this particular
-instance I'm okay as I'm working on svn checked out files and only an
-hours worth of experimenting is lost, not real work. If this had
-happened a day earlier though I'd have been some sore as I'd
-previously been working without a net (no version control).
-
-So that covers what did happen, what I expected to happen is:
-
-1. H:\work.leo would remember the @path
-2. When [1] failed, re-establishing the @path link would cause Leo to
-discover that there was a pre-existing .leo_shadow copy of that node
-and a) automatically read y:\.leo_shadow\xxc-backup.bat and fill in
-the body text, b) present a merge or conflict dialog/message and offer
-instructions for how to reconcile, or c) warn the files already
-existed and confirm overwrite.
-
-It is now clear @path is not safe when the .leo file is in a different
-location from the shadow files, or perhaps not at all? I initially
-tried to put @path in a parent heading, but the child nodes ignored
-it:
-
--[]Scripts
-   @path y:\scripts
-   -[]@shadow xc-backup.bat
-      @language batch
-      rem A script to backup....
-      ...etc.
-
-Anyway, was my bumbling attempt to fix the broken link the problem, or
-the fact the link was broken in the first place? If the latter, why
-did it break and how to avoid it in future? is there a safe way to re-
-establish the links with the remaining 5 @shadow files or should I
-just start over and not use @path? Are there examples deomonstrating
-the proper use of @path?
-
-thanks,
-
--matt 
-#@nonl
-#@-node:ekr.20090418064921.17:Urgent: Lost files with @shadow
-#@+node:ekr.20090421121914.11:Urgent: fix the tkinter problem in Terry's code
-#@-node:ekr.20090421121914.11:Urgent: fix the tkinter problem in Terry's code
-#@+node:ekr.20090418064921.15:Today: Add patch for startup logic
-
-I just got a new laptop with Windows Vista and have been spending the
-last few days migrating my life over to it.
-I ran into the bug that has been mentioned a time or two caused by the
-lack of the .leoID.txt file.
-
-I inserted this at the beginning of the loadOnePlugin function in leo/
-core/leoPlugins.py
-
-   if g.app.config is None:
-       print "No g.app.config, making stub..."
-       class StubConfig:
-           def getBool(self, c, setting):
-               return False
-       g.app.config = StubConfig()
-
-This hack prevents leo from crashing and allows the gui prompt for a
-leoID to come up.  I think this is a better solution than asking users
-to manually create the .leoID.txt file and figure out where it goes.
-This isn't a good fix, but it is a decent temporary solution until the
-real bug is fixed.
-
-By the way, I tried for a while to figure out the proper way to submit
-this fix... but bzr is just too confusing for me.  What's the standard
-way to submit fixes such as this?
-#@nonl
-#@-node:ekr.20090418064921.15:Today: Add patch for startup logic
-#@+node:ekr.20090418064921.16:Today: fix rst3 problem
-@nocolor-node
-
-http://mail.google.com/mail/#inbox/11ef0076a3f4d866
-
-today I've updated my leo installation and downloaded leo from trunk.
-When trying to generate a pdf document with the rst3 plugin the
-following error appears in the log pane:
-
-Traceback (most recent call last):
-
- File "/usr/local/src/leo-editor/leo/plugins/rst3.py", line 1244, in
-writeSpecialTree
-   output = self.writeToDocutils(self.source)
-
- File "/usr/local/src/leo-editor/leo/plugins/rst3.py", line 1344, in
-writeToDocutils
-   overrides.update(args)     # MWC add args to settings
-
-ValueError: dictionary update sequence element #0 has length 13; 2 is
-required
-
-It seems that the problem comes from the node containing my
-@rst_options:
-
-@nocolor
-
-@ @rst-options
-default_path=./latex
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-write_intermediate_file = False
-verbose=True
-publish_argv_for_missing_stylesheets=--language=ca,--use-latex-toc,--
-output-encoding=utf-8,--stylesheet=/home/vmas/.leo/custom_style.sty
-@c
-
-In rst3.py, inserting a g.es_print line just before the
-overrides.update(args) one can see that the arguments passed to option
-publish_argv_for_missing_stylesheets are passed to the overrides
-dictionary as a list:
-
-[u'--language=ca', u'--use-latex-toc', u'--output-encoding=utf-8', u'--
-stylesheet=/home/vmas/.leo/custom_style.sty']
-
-which is neither a dictionary nor an iterable of key/value pairs so
-the error is raised. Hope it helps to fix the problem.
-
-Vicent
-#@nonl
-#@-node:ekr.20090418064921.16:Today: fix rst3 problem
-#@-node:ekr.20090418064921.1:New bugs
-#@+node:ekr.20090409055330.10:Make sure change-all honors node-only and suboutline-only settings
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/430287018f9d773d
-
-The following problem hits rev 1633, qt plugin (untested with tk plugin). The
-command Find --> Change All *always* acts on *every node*. It ignores the
-checkboxes selection made by the user. Even if you select the "Node Only"
-checkbox the changes are aplied to the whole tree (headline text and body text).
-#@nonl
-#@+node:ekr.20081121105001.235:class leoQtFindTab (findTab)
-class leoQtFindTab (leoFind.findTab):
-
-    '''A subclass of the findTab class containing all Qt Gui code.'''
-
-    if 0: # We can use the base-class ctor.
-        def __init__ (self,c,parentFrame):
-            leoFind.findTab.__init__(self,c,parentFrame)
-                # Init the base class.
-                # Calls initGui, createFrame, createBindings & init(c), in that order.
-
-    # Define these to suppress oops messages.
-    def createBindings (self): pass
-    def createFindTab (self,c,parentFrame): pass
-    def createFrame (self,parentFrame): pass
-
-    @others
-#@+node:ekr.20081121105001.236: Birth: called from leoFind ctor
-# leoFind.__init__ calls initGui, createFrame, createBindings & init, in that order.
-#@+node:ekr.20081121105001.237:initGui
-def initGui (self):
-
-    owner = self
-
-    self.svarDict = {}
-        # Keys are ivar names, values are svar objects.
-
-    for ivar in self.intKeys:
-        self.svarDict[ivar] = self.svar(owner,ivar)
-
-    # Add a hack for 'entire_outline' radio button.
-    ivar = 'entire_outline'
-    self.svarDict[ivar] = self.svar(owner,ivar)
-
-    for ivar in self.newStringKeys:
-        # "radio-find-type", "radio-search-scope"
-        self.svarDict[ivar] = self.svar(owner,ivar)
-#@-node:ekr.20081121105001.237:initGui
-#@+node:ekr.20081121105001.238:init (qtFindTab) & helpers
-def init (self,c):
-
-    '''Init the widgets of the 'Find' tab.'''
-
-    # g.trace('leoQtFindTab.init')
-
-    self.createIvars()
-    self.initIvars()
-    self.initTextWidgets()
-    self.initCheckBoxes()
-    self.initRadioButtons()
-#@+node:ekr.20081121105001.239:createIvars
-def createIvars (self):
-
-    c = self.c ; w = c.frame.top.ui # A Window ui object.
-
-    # Bind boxes to Window objects.
-    self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
-    data = (
-        ('find_ctrl',       findTextWrapper(w.findPattern,'find-widget',c)),
-        ('change_ctrl',     findTextWrapper(w.findChange,'change-widget',c)),
-        ('whole_word',      w.checkBoxWholeWord),
-        ('ignore_case',     w.checkBoxIgnoreCase),
-        ('wrap',            w.checkBoxWrapAround),
-        ('reverse',         w.checkBoxReverse),
-        ('pattern_match',   w.checkBoxRegexp),
-        ('mark_finds',      w.checkBoxMarkFinds),
-        ('entire_outline',  w.checkBoxEntireOutline),
-        ('suboutline_only', w.checkBoxSubroutineOnly),  
-        ('node_only',       w.checkBoxNodeOnly),
-        ('search_headline', w.checkBoxSearchHeadline),
-        ('search_body',     w.checkBoxSearchBody),
-        ('mark_changes',    w.checkBoxMarkChanges),
-        ('batch', None),
-    )
-    for ivar,widget in data:
-        setattr(self,ivar,widget)
-        self.widgetsDict[ivar] = widget
-        # g.trace(ivar,widget)
-#@-node:ekr.20081121105001.239:createIvars
-#@+node:ekr.20081121105001.240:initIvars
-def initIvars(self):
-
-    c = self.c
-
-    # Separate c.ivars are much more convenient than a svarDict.
-    for ivar in self.intKeys:
-        # Get ivars from @settings.
-        val = c.config.getBool(ivar)
-        setattr(self,ivar,val)
-        val = g.choose(val,1,0)
-        svar = self.svarDict.get(ivar)
-        if svar:
-            svar.set(val)
-
-        # g.trace(ivar,val)
-#@-node:ekr.20081121105001.240:initIvars
-#@+node:ekr.20081121105001.241:initTextWidgets
-def initTextWidgets(self):
-
-    '''Init the find/change text areas.'''
-
-    c = self.c
-
-    table = (
-        (self.find_ctrl,    "find_text",    '<find pattern here>'),
-        (self.change_ctrl,  "change_text",  ''),
-    )
-
-    for w,setting,defaultText in table:
-        # w is a textWrapper object
-        w.setAllText(c.config.getString(setting) or defaultText)
-#@-node:ekr.20081121105001.241:initTextWidgets
-#@+node:ekr.20081121105001.242:initCheckBoxes
-def initCheckBoxes (self):
-
-    for ivar,key in (
-        ("pattern_match","pattern-search"),
-    ):
-        svar = self.svarDict[ivar].get()
-        if svar:
-            self.svarDict["radio-find-type"].set(key)
-            w = self.widgetsDict.get(key)
-            if w: w.setChecked(True)
-            break
-    else:
-        self.svarDict["radio-find-type"].set("plain-search")
-
-    aList = (
-        'ignore_case','mark_changes','mark_finds',
-        'pattern_match','reverse','search_body','search_headline',
-        'whole_word','wrap',
-        'node_only','suboutline_only','entire_outline',
-    )
-
-    for ivar in aList:
-        svar = self.svarDict.get(ivar)
-        if svar:
-            # w is a QCheckBox or a QRadioButton.
-            w = self.widgetsDict.get(ivar)
-            if w:
-                val = svar.get()
-                svar.setWidget(w)
-                svar.set(val)
-                if isinstance(w,QtGui.QCheckBox):
-                    def checkBoxCallback(val,svar=svar):
-                        svar.set(val)
-                    w.connect(w,
-                        QtCore.SIGNAL("stateChanged(int)"),
-                        checkBoxCallback)
-                else:
-                    def radioButtonCallback(val,svar=svar):
-                        svar.set(val)
-                    w.connect(w,
-                        QtCore.SIGNAL("clicked(bool)"),
-                        radioButtonCallback)
-            else: g.trace('*** no w',ivar)
-        else: g.trace('*** no svar',ivar)
-#@-node:ekr.20081121105001.242:initCheckBoxes
-#@+node:ekr.20081121105001.243:initRadioButtons
-def initRadioButtons (self):
-
-    scopeSvar = self.svarDict.get('radio-search-scope')
-
-    table = (
-        ("suboutline_only","suboutline-only"),
-        ("node_only","node-only"))
-
-    for ivar,key in table:
-        svar = self.svarDict.get(ivar)
-        if svar:
-            val = svar.get()
-            if val:
-                scopeSvar.init(key)
-                break
-    else:
-        scopeSvar.init('entire-outline')
-        self.svarDict.get('entire_outline').init(True)
-
-    w = self.widgetsDict.get(key)
-    if w: w.setChecked(True)
-
-    # g.trace(scopeSvar.get())
-#@-node:ekr.20081121105001.243:initRadioButtons
-#@-node:ekr.20081121105001.238:init (qtFindTab) & helpers
-#@-node:ekr.20081121105001.236: Birth: called from leoFind ctor
-#@+node:ekr.20081121105001.244:class svar
-class svar:
-    '''A class like Tk's IntVar and StringVar classes.'''
-
-    @others
-
-#@+node:ekr.20090427112929.10:svar.ctor
-def __init__(self,owner,ivar):
-
-    self.ivar = ivar
-    self.owner = owner
-    self.radioButtons = ['node_only','suboutline_only','entire_outline']
-    self.trace = False
-    self.val = None
-    self.w = None
-
-def __repr__(self):
-    return '<svar %s>' % self.ivar
-#@nonl
-#@-node:ekr.20090427112929.10:svar.ctor
-#@+node:ekr.20090427112929.12:get
-def get (self):
-    if self.w:
-        val = self.w.isChecked()
-        if self.trace: g.trace('qt svar %15s = %s' % (self.ivar,val))
-    else:
-        val = self.val
-    return val
-#@nonl
-#@-node:ekr.20090427112929.12:get
-#@+node:ekr.20090427112929.13:init
-def init (self,val):
-
-    '''Init the svar, but do *not* init radio buttons.
-    (This is called from initRadioButtons).'''
-
-    if val in (0,1):
-        self.val = bool(val)
-    else:
-        self.val = val # Don't contain the scope values!
-
-    if self.w:
-        self.w.setChecked(bool(val))
-
-    if self.trace: g.trace('qt svar %15s = %s' % (self.ivar,val))
-#@-node:ekr.20090427112929.13:init
-#@+node:ekr.20090427112929.17:set
-def set (self,val):
-
-    '''Init the svar and update the radio buttons.'''
-
-    self.init(val)
-
-    if self.ivar in self.radioButtons:
-        self.owner.initRadioButtons()
-    elif self.ivar == 'radio-search-scope':
-        self.setRadioScope(val)
-
-
-#@-node:ekr.20090427112929.17:set
-#@+node:ekr.20090427112929.18:setRadioScope
-def setRadioScope (self,val):
-
-    '''Update the svars corresponding to the scope value.'''
-
-    table = (
-        ("suboutline_only","suboutline-only"),
-        ("node_only","node-only"),
-        ("entire_outline","entire-outline"))
-
-    for ivar,val2 in table:
-        if val == val2:
-            svar = self.owner.svarDict.get(ivar)
-            val = svar.get()
-            svar.init(True)
-#@-node:ekr.20090427112929.18:setRadioScope
-#@+node:ekr.20090427112929.15:setWidget
-def setWidget(self,w):
-
-    self.w = w
-#@-node:ekr.20090427112929.15:setWidget
-#@-node:ekr.20081121105001.244:class svar
-#@+node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
-# This is the same as the Tk code because we simulate Tk svars.
-#@nonl
-#@+node:ekr.20081121105001.246:getOption
-def getOption (self,ivar):
-
-    var = self.svarDict.get(ivar)
-
-    if var:
-        val = var.get()
-        # g.trace('ivar %s = %s' % (ivar,val))
-        return val
-    else:
-        # g.trace('bad ivar name: %s' % ivar)
-        return None
-#@-node:ekr.20081121105001.246:getOption
-#@+node:ekr.20081121105001.247:setOption
-def setOption (self,ivar,val):
-
-    if ivar in self.intKeys:
-        if val is not None:
-            svar = self.svarDict.get(ivar)
-            svar.set(val)
-            # g.trace('ivar %s = %s' % (ivar,val))
-
-    elif not g.app.unitTesting:
-        g.trace('oops: bad find ivar %s' % ivar)
-#@-node:ekr.20081121105001.247:setOption
-#@+node:ekr.20081121105001.248:toggleOption
-def toggleOption (self,ivar):
-
-    if ivar in self.intKeys:
-        var = self.svarDict.get(ivar)
-        val = not var.get()
-        var.set(val)
-        # g.trace('%s = %s' % (ivar,val),var)
-    else:
-        g.trace('oops: bad find ivar %s' % ivar)
-#@-node:ekr.20081121105001.248:toggleOption
-#@-node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
-#@-node:ekr.20081121105001.235:class leoQtFindTab (findTab)
-#@-node:ekr.20090409055330.10:Make sure change-all honors node-only and suboutline-only settings
-#@-node:ekr.20090406071640.17:First
+#@-node:ekr.20090304084841.11:Later
 #@-node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20081121105001.185:Scripts
 #@+node:ekr.20081121105001.186:Script to display Qt font database

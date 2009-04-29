@@ -11,23 +11,7 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
 #@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
 #@-node:ekr.20090323080711.3:Docs
 #@+node:ekr.20090131200406.9:Bugs
-#@+node:ekr.20090304084910.2:Asap
-@nocolor-node
-
-Most important projects:
-
-** Everything is @shadow.
-- Improve docs.
-- key handling.
-- multiple body editors.
-- bugs.
 #@+node:ekr.20090409055258.2:Easy
-#@+node:ekr.20090404051241.2:Use sphinx-level markup to generate index entries
-See http://sphinx.pocoo.org/markup/desc.html
-#@nonl
-#@-node:ekr.20090404051241.2:Use sphinx-level markup to generate index entries
-#@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
-#@-node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
 #@+node:ekr.20090402072059.2:clone-find-all-once
 @
 
@@ -209,39 +193,6 @@ def is_a_child_of_b(a, b):
 #@-node:ekr.20090402072059.8:<< Skip node if it's a child of a previously found node >>
 #@-node:ekr.20090402072059.4:@@@button my clone find all
 #@-node:ekr.20090402072059.2:clone-find-all-once
-#@+node:ekr.20090228065229.2:Honor @path in rst3 plugin
-#@+node:ekr.20090402072059.12:Investigate problem with rst3 paths
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/9cdfeec1fb9f02a8
-
-On Sat, Mar 28, 2009 at 11:38 AM, VR <viktor.ransmayr@gmail.com> wrote:
-
-Hi Edward,
-
-while further investigating the problem reported this morning
-(http://groups.google.com/group/leo-editor/browse_thread/thread/
-4ec30df3f1db8db3)
-I found another problem with the executable installer.
-
-If you open an outline from a given directory simply by double-
-clicking on the outline
-and you create an derived file from it, eg. an HTML-File via the rst3
-plugin it is saved
-to
-
-"C:\Python26\Lib\site-packages\Leo-4-6-b1\2009\03\LE-2009-03-28.html"
-
-instead of
-
-"C:\Dokumente und Einstellungen\VR\Eigene Dateien\WLog
-\2009\03\LE-2009-03-28.html"
-
-A Leo 4.6.b1 installation created via the ZIP-Archive behaves
-properly.
-#@nonl
-#@-node:ekr.20090402072059.12:Investigate problem with rst3 paths
-#@-node:ekr.20090228065229.2:Honor @path in rst3 plugin
 #@+node:ekr.20090219085600.1:Fix new relative-path-name problem
 @nocolor
 
@@ -271,6 +222,47 @@ AliaK
 #@nonl
 #@-node:ekr.20090219085600.1:Fix new relative-path-name problem
 #@-node:ekr.20090409055258.2:Easy
+#@+node:ekr.20090304084910.2:Asap
+@nocolor-node
+
+Most important projects:
+
+** Everything is @shadow.
+- Improve docs.
+- key handling.
+- multiple body editors.
+- bugs.
+#@+node:ekr.20090228065229.2:Honor @path in rst3 plugin
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/9cdfeec1fb9f02a8
+
+On Sat, Mar 28, 2009 at 11:38 AM, VR <viktor.ransmayr@gmail.com> wrote:
+
+Hi Edward,
+
+while further investigating the problem reported this morning
+(http://groups.google.com/group/leo-editor/browse_thread/thread/
+4ec30df3f1db8db3)
+I found another problem with the executable installer.
+
+If you open an outline from a given directory simply by double-
+clicking on the outline
+and you create an derived file from it, eg. an HTML-File via the rst3
+plugin it is saved
+to
+
+"C:\Python26\Lib\site-packages\Leo-4-6-b1\2009\03\LE-2009-03-28.html"
+
+instead of
+
+"C:\Dokumente und Einstellungen\VR\Eigene Dateien\WLog
+\2009\03\LE-2009-03-28.html"
+
+A Leo 4.6.b1 installation created via the ZIP-Archive behaves
+properly.
+#@nonl
+#@-node:ekr.20090228065229.2:Honor @path in rst3 plugin
 #@+node:ekr.20090409055258.1:Important
 #@+node:ekr.20090324100430.1:Major bug: deleting @chapter node doesn't work
 @nocolor-node
