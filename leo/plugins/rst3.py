@@ -1325,6 +1325,7 @@ class rstClass:
                 overrides['stylesheet'] = path
                 overrides['stylesheet_path'] = None
         elif styleSheetArgsDict:
+            g.es_print('using publish_argv_for_missing_stylesheets',styleSheetArgsDict)
             overrides.update(styleSheetArgsDict)
                 # MWC add args to settings
         elif rel_stylesheet_path == stylesheet_path:
@@ -1368,10 +1369,10 @@ class rstClass:
             data = arg.split('=')
             if len(data) == 1:
                 key = data[0]
-                d[key] = ""
+                d[str(key)] = ""
             elif len(data) == 2:
                 key,value = data
-                d[key] = value
+                d[str(key)] = str(value)
             else:
                 g.es_print('bad option: %s' % s,color='red')
                 break
