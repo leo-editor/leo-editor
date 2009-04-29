@@ -109,7 +109,7 @@ class LeoApp:
         self.language_delims_dict = {
             # Keys are languages, values are 1,2 or 3-tuples of delims.
             "ada"           : "--",
-            "batch"         : "REM", # Leo 4.5.1
+            "batch"         : "REM_", # Use the REM hack.
             "actionscript"  : "// /* */", #jason 2003-07-03
             "autohotkey"    : "; /* */", #TL - AutoHotkey language
             "c"             : "// /* */", # C, C++ or objective C.
