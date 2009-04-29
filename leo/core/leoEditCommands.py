@@ -7547,6 +7547,7 @@ class searchCommandsClass (baseEditCommandsClass):
 
         return {
             'clone-find-all':                       self.cloneFindAll,
+            'find-clone-all':                       self.cloneFindAll, # Synonym.
 
             'find-all':                             self.findAll,
             'change-all':                           self.changeAll,
