@@ -63,9 +63,11 @@ def isTestNode (p):
     # return g.match_word(h,0,"@testcase") or g.match_word(h,0,"@test-case")
 #@-node:ekr.20051104075904.3:isSuiteNode and isTestNode
 #@+node:ekr.20051104075904.4:doTests...
-def doTests(c,all,verbosity=1):
+def doTests(c,all=None,p=None,verbosity=1):
 
-    if all:
+    if p:
+        pass
+    elif all:
         p = c.rootPosition()
     else:
         p = c.p

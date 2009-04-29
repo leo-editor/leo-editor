@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="253" height="827" width="1022"/>
+	<global_window_position top="49" left="158" height="827" width="1117"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4,7,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -970,7 +970,7 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20090324085713.1"><vh>Other docs</vh>
+<v t="ekr.20090324085713.1" a="E"><vh>Other docs</vh>
 <v t="ekr.20070701090840"><vh>Old preface</vh></v>
 <v t="ekr.20090101095717.1"><vh>Stories</vh>
 <v t="ekr.20090101095717.2"><vh>Introduction (iLeo, revised)</vh></v>
@@ -1144,6 +1144,9 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 <v t="ekr.20060608111953.59"><vh>Must be overridden in subclasses</vh></v>
 </v>
+</v>
+<v t="ekr.20090429074754.1" a="E"><vh>Test of publish_argv_for_missing_stylesheets</vh>
+<v t="ekr.20090429074754.2"><vh>@rst test.html</vh></v>
 </v>
 </v>
 <v t="edream.110203163054.46"><vh>Release Notes</vh>
@@ -31260,6 +31263,20 @@ latex_documents = [
 # If false, no module index is generated.
 #latex_use_modindex = True
 </t>
+<t tx="ekr.20090429074754.1"></t>
+<t tx="ekr.20090429074754.2">@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+write_intermediate_file = False
+verbose=True
+publish_argv_for_missing_stylesheets=--language=ca,--use-latex-toc,--output-encoding=utf-8,--stylesheet=custom_style.sty
+@c
+
+This is a test</t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?

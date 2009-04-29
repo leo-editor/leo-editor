@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="54" left="425" height="822" width="821"/>
+	<global_window_position top="54" left="425" height="822" width="852"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6,2,7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -739,7 +739,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20060205165937"><vh>Doctests</vh>
 <v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
 </v>
@@ -762,7 +762,7 @@
 <v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
 <v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20050120095423" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20050120095423" a="E" annotate="7d71002e"><vh>Plugins</vh>
 <v t="ekr.20080309193654.1"><vh>@ignore</vh>
 <v t="ekr.20050120095423.21"><vh>print all loaded plugins</vh></v>
 <v t="ekr.20050218015346"><vh>@suite run all plugin test routines</vh>
@@ -811,6 +811,7 @@
 <v t="ekr.20061110112507"><vh>@test mnplugins.insertBodystamp</vh></v>
 <v t="ekr.20061110115517"><vh>@test macros.parameterize</vh></v>
 <v t="ekr.20060203201949" annotate="7d71002e"><vh>@test restore the screen</vh></v>
+<v t="ekr.20090429081126.3"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
 <v t="ekr.20090201140204.1"><vh>gui plugins</vh>
 <v t="ekr.20090201140204.2"><vh>@test c.vnode2position</vh></v>
 <v t="ekr.20090201135611.3"><vh>@test position2Item</vh></v>
@@ -22167,6 +22168,15 @@ leoTest.runEditCommandTest(c,p)</t>
     b = 'xyz'</t>
 <t tx="ekr.20090427104851.18">if a:
     b = 'xyz'</t>
+<t tx="ekr.20090429081126.3">import leo.plugins.rst3 as rst3
+x = rst3.rstClass(c)
+
+assert x.handleMissingStyleSheetArgs(s=None) == {}
+
+s = '--language=ca,--use-latex-toc'
+assert x.handleMissingStyleSheetArgs(s=s) == {
+    '--language':'ca','--use-latex-toc':''}
+    </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
 import random,fnmatch
 

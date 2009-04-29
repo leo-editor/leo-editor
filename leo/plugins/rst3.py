@@ -53,6 +53,7 @@ __version__ = '1.23'
 #@+node:ekr.20050805162550.2:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
+import leo.core.leoTest as leoTest
 
 import os
 import HTMLParser
@@ -267,6 +268,16 @@ else:
     code_block.options = {}
 
 #@-node:ekr.20050806101253:code_block
+#@+node:ekr.20090429055156.63:runUnitTests
+def runUnitTests(c):
+
+    controller = rstClass(c)
+    p = g.findNodeAnywhere('UnitTests')
+    if p:
+        leoTest.doTests(c,p=p
+        )
+
+#@-node:ekr.20090429055156.63:runUnitTests
 #@-node:ekr.20050805162550.4:Module level
 #@+node:ekr.20050805162550.39:html parser classes
 #@+doc
@@ -1281,7 +1292,7 @@ class rstClass:
         '''Send s to docutils using the writer implied by self.ext and return the result.'''
 
         openDirectory = self.c.frame.openDirectory
-        overrides = { 'output_encoding': self.encoding }
+        overrides = {'output_encoding': self.encoding }
 
         # Compute the args list if the stylesheet path does not exist.
         styleSheetArgsDict = self.handleMissingStyleSheetArgs()
@@ -1336,17 +1347,15 @@ class rstClass:
         except docutils.ApplicationError, error:
             g.es_print('Error (%s): %s' % (error.__class__.__name__, error))
         return res
-    #@nonl
     #@+node:ekr.20090428082801.64:handleMissingStyleSheetArgs
-    def handleMissingStyleSheetArgs (self):
+    def handleMissingStyleSheetArgs (self,s=None):
 
         '''Parse the publish_argv_for_missing_stylesheets option,
         returning a dict containing the parsed args.'''
 
-        return {} ####
-
         d = {}
-        s = self.getOption('publish_argv_for_missing_stylesheets')
+        if not s:
+            s = self.getOption('publish_argv_for_missing_stylesheets')
         if not s: return d
 
         args = s.strip()
