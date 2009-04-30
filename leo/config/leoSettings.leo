@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,12,3,2,1"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,14,13,3,3"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -387,14 +387,14 @@
 <v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
 <v t="ekr.20060926161207.2" annotate="7d71002e"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
-<v t="ekr.20051007200824" a="E" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
+<v t="ekr.20051007200824" annotate="7d71002e"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257" annotate="7d71002e"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1" annotate="7d71002e"><vh>About shortcut specifiers</vh></v>
 <v t="ekr.20060116090646"><vh>Reference for function keys</vh></v>
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101" a="E" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 <v t="ekr.20060110141538" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
@@ -402,7 +402,7 @@
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
 <v t="ekr.20060112112006"><vh>@shortcuts Emacs: missing</vh></v>
 </v>
-<v t="ekr.20060110141538.1" a="E" annotate="7d71002e"><vh>@keys No bindings</vh>
+<v t="ekr.20060110141538.1" annotate="7d71002e"><vh>@keys No bindings</vh>
 <v t="ekr.20051218202206" annotate="7d71002e"><vh>@shortcuts No bindings: A-E</vh></v>
 <v t="ekr.20060112093227.1"><vh>@shortcuts No bindings: F-M</vh></v>
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
@@ -1002,7 +1002,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1078,7 +1078,7 @@
 <v t="ekr.20090406071640.18"><vh>@@string selected-background-color = #fdf5f5</vh></v>
 <v t="ekr.20090406071640.19"><vh>@@string unselected-background-color = #f2fdff</vh></v>
 </v>
-<v t="ekr.20071213060239"><vh>rst3 plugin</vh>
+<v t="ekr.20071213060239" a="E"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
 <v t="ekr.20071213061454"><vh>@bool rst3_clear_http_attributes = False</vh></v>
 <v t="ekr.20071213061454.1"><vh>@bool rst3_http_server_support = False</vh></v>
@@ -1098,10 +1098,11 @@
 <v t="ekr.20071213061811.2"><vh>@bool rst3_verbose = True</vh></v>
 <v t="ekr.20071213061811.3"><vh>@bool rst3_write_intermediate_file = False</vh></v>
 </v>
-<v t="ekr.20071213060514.1"><vh>rst3 mode options</vh>
+<v t="ekr.20071213060514.1" a="E"><vh>rst3 mode options</vh>
 <v t="ekr.20071213061923"><vh>@bool rst3_code_mode = False</vh></v>
 <v t="ekr.20071213061923.1"><vh>@bool rst3_doc_only_mode = False</vh></v>
 <v t="ekr.20071213061923.2"><vh>@bool rst3_generate_rst = True</vh></v>
+<v t="ekr.20090430075506.7"><vh>@bool rst3_generate_rst_header_comment = True</vh></v>
 </v>
 <v t="ekr.20071213060514.2"><vh>rst3 formatting options</vh>
 <v t="ekr.20071213061930.1"><vh>@bool rst3_show_headlines = True</vh></v>
@@ -7846,6 +7847,12 @@ demote              = Ctrl-Shift-]  # Ctrl-}
 move-past-close     = Alt-Shift-0   # Alt-parenright
 promote             = Ctrl-Shift-[  # Ctrl-{
 </t>
+<t tx="ekr.20090430075506.7">True: write comment line of the form:
+    
+.. rst3: filename: &lt;filename&gt;
+
+at start of intermediate file. Requires rst3_generate_rst and
+rst3_write_intermediate_file options both to be true.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
