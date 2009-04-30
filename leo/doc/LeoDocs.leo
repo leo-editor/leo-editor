@@ -9683,6 +9683,16 @@ generate_rst (default: True)
     A master switch.
     True: generate rST markup for rST sections and rST code-blocks.
     False: don't generate rST markup and ignore @ @rst-markup doc parts.
+    
+generate_rst_header_comment (default: True)
+
+    This option has effect only if the generate_rst and write_intermediate_file
+    options are both True. When this option is in effect, Leo writes a comment
+    line of the form::
+
+        .. rst3: filename: &lt;filename&gt;
+
+    at the start of intermediate files.
 
 number_code_lines (default: True)
     Controls whether to number code lines in code mode.
@@ -31170,7 +31180,7 @@ html_theme_options = {
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
+html_theme_path = ["_themes"]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "&lt;project&gt; v&lt;release&gt; documentation".
@@ -31202,7 +31212,7 @@ html_static_path = ['_static']
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-# html_sidebars = {'FAQ':'noSideBar.txt'}
+html_sidebars = {'FAQ':'noSideBar.txt'}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.

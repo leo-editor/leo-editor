@@ -347,6 +347,18 @@ in root &#64;rst nodes.</dd>
 <dd>A master switch.
 True: generate rST markup for rST sections and rST code-blocks.
 False: don't generate rST markup and ignore &#64; &#64;rst-markup doc parts.</dd>
+</dl>
+<p>generate_rst_header_comment (default: True)</p>
+<blockquote>
+<p>This option has effect only if the generate_rst and write_intermediate_file
+options are both True. When this option is in effect, Leo writes a comment
+line of the form:</p>
+<pre class="literal-block">
+.. rst3: filename: &lt;filename&gt;
+</pre>
+<p>at the start of intermediate files.</p>
+</blockquote>
+<dl class="docutils">
 <dt>number_code_lines (default: True)</dt>
 <dd>Controls whether to number code lines in code mode.
 This option has no effect in rst mode.</dd>
