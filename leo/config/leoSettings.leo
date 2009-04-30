@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="84" left="155" height="827" width="820"/>
+	<global_window_position top="84" left="155" height="827" width="1111"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,14,5,8"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -98,7 +98,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -1002,7 +1002,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1010,7 +1010,7 @@
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20080328105334.1" a="E"><vh>cleo</vh>
+<v t="ekr.20080328105334.1"><vh>cleo</vh>
 <v t="ekr.20080602174756.1"><vh>@bool cleo_color_ignore = True</vh></v>
 <v t="ekr.20080328105334.2"><vh>@color cleo_color_prog_green =</vh></v>
 <v t="ekr.20080328105334.3"><vh>@color cleo_color_prog_red =</vh></v>
@@ -1022,7 +1022,7 @@
 <v t="ekr.20080328105334.9"><vh>@string cleo_time_name = days</vh></v>
 <v t="tbrown.20090430112929.1"><vh>@string cleo_icon_path = cleo</vh></v>
 </v>
-<v t="ekr.20060807103220" a="E"><vh>datenodes plugin</vh>
+<v t="ekr.20060807103220"><vh>datenodes plugin</vh>
 <v t="ekr.20060807103220.1"><vh>@string datenodes_body_text = To do...</vh></v>
 <v t="ekr.20060807103220.2"><vh>@string datenodes_day_node_headline = %Y-%m-%d</vh></v>
 <v t="ekr.20060807103220.3"><vh>@string datenodes_month_node_day_headline = %d: %A</vh></v>
@@ -1116,6 +1116,7 @@
 <v t="ekr.20071213062019.1"><vh>@bool rst3_show_leo_directives = True</vh></v>
 <v t="ekr.20071213062019.2"><vh>@bool rst3_show_markup_doc_parts = False</vh></v>
 <v t="ekr.20071213062019.3"><vh>@bool rst3_show_options_doc_parts = False</vh></v>
+<v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
 </v>
 <v t="ekr.20071213060607"><vh>rst3 options: names of headline commands</vh>
 <v t="ekr.20071213062019.4"><vh>@string rst3_code_prefix = @rst-code</vh></v>
@@ -1209,7 +1210,7 @@
 <v t="ekr.20041213105954.1"><vh>Log pane options</vh>
 <v t="ekr.20041119052015.1"><vh>@bool log_pane_wraps = False</vh></v>
 </v>
-<v t="ekr.20041119034357.56" a="E"><vh>Options for new windows</vh>
+<v t="ekr.20041119034357.56"><vh>Options for new windows</vh>
 <v t="ekr.20071024145953"><vh>@bool big_outline_pane = False</vh></v>
 <v t="ekr.20060930085332"><vh>@bool outline_pane_has_initial_focus = False</vh></v>
 <v t="ekr.20041119034357.59"><vh>@strings[vertical,horizontal] initial_splitter_orientation = vertical</vh></v>
@@ -1258,9 +1259,9 @@
 <v t="TL.20090307074930.13"><vh>@mode tree-double-click-node</vh></v>
 <v t="TL.20090307074930.14"><vh>@mode focus-to-tree</vh></v>
 <v t="TL.20090307074930.15"><vh>@mode focus-to-body</vh></v>
-<v t="TL.20090307074930.16" a="E"><vh>@mode body-command-line</vh>
+<v t="TL.20090307074930.16"><vh>@mode body-command-line</vh>
 <v t="TL.20090307074930.17"><vh>@mode body-command-revert</vh></v>
-<v t="TL.20090307074930.18" a="E"><vh>@mode body-command-save</vh>
+<v t="TL.20090307074930.18"><vh>@mode body-command-save</vh>
 <v t="TL.20090307074930.19"><vh>@mode body-command-save-quit</vh>
 <v t="TL.20090307074930.20"><vh>@mode body-command-save-quit-return</vh></v>
 </v>
@@ -1281,7 +1282,7 @@
 <v t="TL.20090307074930.30"><vh>@mode body-shift-z-save-quit</vh></v>
 </v>
 </v>
-<v t="TL.20090307074930.31" a="E"><vh>@shortcuts - vi in Outline pane</vh>
+<v t="TL.20090307074930.31"><vh>@shortcuts - vi in Outline pane</vh>
 <v t="TL.20090307074930.32"><vh>@mode tree-yank-object</vh></v>
 <v t="TL.20090307074930.33"><vh>@mode tree-change-object</vh></v>
 <v t="TL.20090307074930.34"><vh>@mode tree-delete-text-object</vh></v>
@@ -1321,7 +1322,7 @@
 <v t="TL.20090307074930.66"><vh>@mode body-search-all-nodes</vh></v>
 <v t="TL.20090307074930.67"><vh>@mode body-search-toggle-headline</vh></v>
 <v t="TL.20090307074930.68"><vh>@mode body-search-toggle-body</vh></v>
-<v t="TL.20090307074930.69" a="E"><vh>@mode body-search-toggle-mark</vh>
+<v t="TL.20090307074930.69"><vh>@mode body-search-toggle-mark</vh>
 <v t="TL.20090307074930.70"><vh>@mode body-search-toggle-mark-finds</vh></v>
 <v t="TL.20090307074930.71"><vh>@mode body-search-toggle-mark-changes</vh></v>
 </v>
@@ -1346,7 +1347,7 @@
 <v t="TL.20090307074930.88"><vh>@mode body-delete-to-beginning-of-sentence</vh></v>
 <v t="TL.20090307074930.89"><vh>@mode body-delete-to-end-of-paragraph</vh></v>
 <v t="TL.20090307074930.90"><vh>@mode body-delete-to-beginning-of-paragraph</vh></v>
-<v t="TL.20090307074930.91" a="E"><vh>@mode body-delete-to-g-object</vh>
+<v t="TL.20090307074930.91"><vh>@mode body-delete-to-g-object</vh>
 <v t="TL.20090307074930.92"><vh>@mode body-delete-to-beginning-of-buffer</vh></v>
 </v>
 <v t="TL.20090307074930.93"><vh>@mode body-delete-to-end-of-buffer</vh></v>
@@ -7854,6 +7855,21 @@ promote             = Ctrl-Shift-[  # Ctrl-{
 
 at start of intermediate file. Requires rst3_generate_rst and
 rst3_write_intermediate_file options both to be true.</t>
+<t tx="ekr.20090430173906.1">@nocolor-node
+
+The rST markup string preceding code parts.
+
+The default for the C, Perl, Python and Ruby languages is: 
+
+'**code**:\n\n.. code-block:: %s\n' % language.title()
+
+The default for all other languages is:
+    
+'**code**:\n\n.. class:: code\n..\n\n::\n'
+
+A reasonable alternative would be:
+    
+'\n.. class:: code\n..\n\n::\n'</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
