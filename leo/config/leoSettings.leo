@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,14,13,3,3"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -98,7 +98,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -1002,7 +1002,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1078,7 +1078,7 @@
 <v t="ekr.20090406071640.18"><vh>@@string selected-background-color = #fdf5f5</vh></v>
 <v t="ekr.20090406071640.19"><vh>@@string unselected-background-color = #f2fdff</vh></v>
 </v>
-<v t="ekr.20071213060239" a="E"><vh>rst3 plugin</vh>
+<v t="ekr.20071213060239"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
 <v t="ekr.20071213061454"><vh>@bool rst3_clear_http_attributes = False</vh></v>
 <v t="ekr.20071213061454.1"><vh>@bool rst3_http_server_support = False</vh></v>
@@ -1098,7 +1098,7 @@
 <v t="ekr.20071213061811.2"><vh>@bool rst3_verbose = True</vh></v>
 <v t="ekr.20071213061811.3"><vh>@bool rst3_write_intermediate_file = False</vh></v>
 </v>
-<v t="ekr.20071213060514.1" a="E"><vh>rst3 mode options</vh>
+<v t="ekr.20071213060514.1"><vh>rst3 mode options</vh>
 <v t="ekr.20071213061923"><vh>@bool rst3_code_mode = False</vh></v>
 <v t="ekr.20071213061923.1"><vh>@bool rst3_doc_only_mode = False</vh></v>
 <v t="ekr.20071213061923.2"><vh>@bool rst3_generate_rst = True</vh></v>

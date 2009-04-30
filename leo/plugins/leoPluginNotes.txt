@@ -5,6 +5,13 @@
 #@-node:ekr.20090430075506.6:To do
 #@+node:ekr.20090430075506.5:4.6 b2 projects
 #@+node:ekr.20090430075506.1:Honor @path in rst3 plugin
+@nocolor-node
+
+The rst3 plugin now honors any @path directive that appears as the ancestor of
+an @rst node. As always, such @path directives affect only relative paths:
+absolute paths in @rst nodes override any @path directive. The exact rules can
+be seen in the code in the computeOutputFileName method.
+#@nonl
 #@+node:ekr.20050809075309:initWrite
 def initWrite (self,p,encoding=None):
 
@@ -47,6 +54,28 @@ def computeOutputFileName (self,fileName):
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/50c1d4dc5695414e/aa061a6c1f9b3ecd?lnk=gst&q=rst+option#aa061a6c1f9b3ecd
+
+The rst3 plugin now supports the generate_rst_header_comment option. This option
+is True by default. This option has effect only if the generate_rst and
+write_intermediate_file options are both True. When this option is in effect,
+Leo will write a comment line of the form:
+
+.. rst3: filename: <filename>
+
+at the start of intermediate files.
+
+You can set this option in @ @rst-option doc parts like this::
+
+    @ @rst-options
+    generate_rst=True
+    generate_rst_header_comment = True
+    write_intermediate_file = True
+    @c
+
+The following node now appears in leoSettings.leo:
+
+@bool rst3_generate_rst_header_comment = True
+#@nonl
 #@+node:ekr.20050805162550.8:class rstClass
 class rstClass:
 
