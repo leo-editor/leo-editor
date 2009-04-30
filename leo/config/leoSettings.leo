@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="455" height="827" width="820"/>
+	<global_window_position top="84" left="155" height="827" width="820"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,14,5,8"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -98,7 +98,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -1002,7 +1002,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051123100536" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051123100536" a="E" annotate="7d71002e"><vh>Plugins</vh>
 <v t="vivainio.20080307190927"><vh>IPython</vh>
 <v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
 </v>
@@ -1010,7 +1010,7 @@
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20080328105334.1"><vh>cleo</vh>
+<v t="ekr.20080328105334.1" a="E"><vh>cleo</vh>
 <v t="ekr.20080602174756.1"><vh>@bool cleo_color_ignore = True</vh></v>
 <v t="ekr.20080328105334.2"><vh>@color cleo_color_prog_green =</vh></v>
 <v t="ekr.20080328105334.3"><vh>@color cleo_color_prog_red =</vh></v>
@@ -1019,9 +1019,10 @@
 <v t="ekr.20080328105334.6"><vh>@float cleo_time_init = 1.0</vh></v>
 <v t="ekr.20080328105334.7"><vh>@int cleo_prog_scale = 1</vh></v>
 <v t="ekr.20080328105334.5"><vh>@int cleo_prog_width = 18</vh></v>
-<v t="ekr.20080328105334.9"><vh>@string cleo_time_name = 'days'</vh></v>
+<v t="ekr.20080328105334.9"><vh>@string cleo_time_name = days</vh></v>
+<v t="tbrown.20090430112929.1"><vh>@string cleo_icon_path = cleo</vh></v>
 </v>
-<v t="ekr.20060807103220"><vh>datenodes plugin</vh>
+<v t="ekr.20060807103220" a="E"><vh>datenodes plugin</vh>
 <v t="ekr.20060807103220.1"><vh>@string datenodes_body_text = To do...</vh></v>
 <v t="ekr.20060807103220.2"><vh>@string datenodes_day_node_headline = %Y-%m-%d</vh></v>
 <v t="ekr.20060807103220.3"><vh>@string datenodes_month_node_day_headline = %d: %A</vh></v>
@@ -7870,6 +7871,8 @@ but you can still see where things come from before you load them.
 False: don't use submenus for multiple path entries, unless recent_files_group
 is true (and recent_files_omit_directories is False)
 </t>
+<t tx="tbrown.20090430112929.1">path to cleo icons relative to Leo icon dir
+e.g. cleo or cleo/small</t>
 <t tx="vivainio.20080307185812"></t>
 <t tx="vivainio.20080307190927"></t>
 </tnodes>

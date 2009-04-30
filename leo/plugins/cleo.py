@@ -334,6 +334,8 @@ class cleoController:
         if pri: pri = int(pri)
         if pri in self.priorities:
             cleo_icon_path = self.c.config.getString('cleo_icon_path')
+            if not cleo_icon_path:
+                cleo_icon_path = 'cleo'  # relative to leo Icons dir
             iconDir = g.os_path_abspath(
               g.os_path_normpath(
                 g.os_path_join(g.app.loadDir,"..","Icons")))
@@ -1422,4 +1424,3 @@ class cleoController:
 #@nonl
 #@-node:tbrown.20060828111141:@thin cleo.py
 #@-leo
-
