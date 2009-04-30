@@ -33,6 +33,272 @@ well, but this is then also treated as @rst3 input (which in this case, is not
 what I want).
 #@nonl
 #@-node:ekr.20090430120622.2:post
+#@+node:ekr.20050811101550.1:writeBody & helpers
+def writeBody (self,p):
+
+    # remove trailing cruft and split into lines.
+    lines = p.b.rstrip().split('\n') 
+
+    if self.getOption('code_mode'):
+        if not self.getOption('show_options_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-options',
+                retainContents=False)
+        if not self.getOption('show_markup_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-markup',
+                retainContents=False)
+        if not self.getOption('show_leo_directives'):
+            lines = self.removeLeoDirectives(lines)
+        lines = self.handleCodeMode(lines)
+    elif self.getOption('doc_only_mode'):
+        # New in version 1.15
+        lines = self.handleDocOnlyMode(p,lines)
+    else:
+        lines = self.handleSpecialDocParts(lines,'@rst-options',
+            retainContents=False)
+        lines = self.handleSpecialDocParts(lines,'@rst-markup',
+            retainContents=self.getOption('generate_rst'))
+        if self.getOption('show_doc_parts_in_rst_mode') is True:
+            pass  # original behaviour, treat as plain text
+        elif self.getOption('show_doc_parts_in_rst_mode'):
+            # use value as class for content
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
+        else:  # option evaluates to false, cut them out
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=False)
+        lines = self.removeLeoDirectives(lines)
+        if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
+            lines = self.replaceCodeBlockDirectives(lines)
+
+    s = '\n'.join(lines).strip()
+    if s:
+        self.write('%s\n\n' % s)
+#@+node:ekr.20050811150541:handleCodeMode & helper
+def handleCodeMode (self,lines):
+
+    '''Handle the preprocessed body text in code mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - Everything else gets put into a code-block directive.'''
+
+    result = [] ; n = 0 ; code = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if (
+            self.isSpecialDocPart(s,'@rst-markup') or
+            (self.getOption('show_doc_parts_as_paragraphs') and self.isSpecialDocPart(s,None))
+        ):
+            if code:
+                self.finishCodePart(result,code)
+                code = []
+            result.append('')
+            n, lines2 = self.getDocPart(lines,n)
+            result.extend(lines2)
+        elif not s.strip() and not code:
+            pass # Ignore blank lines before the first code block.
+        elif not code: # Start the code block.
+            result.append('')
+            result.append(self.code_block_string)
+            code.append(s)
+        else: # Continue the code block.
+            code.append(s)
+
+    if code:
+        self.finishCodePart(result,code)
+        code = []
+    return self.rstripList(result)
+#@nonl
+#@+node:ekr.20050811152104:formatCodeModeLine
+def formatCodeModeLine (self,s,n,numberOption):
+
+    if not s.strip(): s = ''
+
+    if numberOption:
+        return '\t%d: %s' % (n,s)
+    else:
+        return '\t%s' % s
+#@nonl
+#@-node:ekr.20050811152104:formatCodeModeLine
+#@+node:ekr.20050813155021:rstripList
+def rstripList (self,theList):
+
+    '''Removed trailing blank lines from theList.'''
+
+    s = '\n'.join(theList).rstrip()
+    return s.split('\n')
+#@nonl
+#@-node:ekr.20050813155021:rstripList
+#@+node:ekr.20050813160208:finishCodePart
+def finishCodePart (self,result,code):
+
+    numberOption = self.getOption('number_code_lines')
+    code = self.rstripList(code)
+    i = 0
+    for line in code:
+        i += 1
+        result.append(self.formatCodeModeLine(line,i,numberOption))
+#@nonl
+#@-node:ekr.20050813160208:finishCodePart
+#@-node:ekr.20050811150541:handleCodeMode & helper
+#@+node:ekr.20060608094815:handleDocOnlyMode
+def handleDocOnlyMode (self,p,lines):
+
+    '''Handle the preprocessed body text in doc_only mode as follows:
+
+    - Blank lines are copied after being cleaned.
+    - @ @rst-markup lines get copied as is.
+    - All doc parts get copied.
+    - All code parts are ignored.'''
+
+    ignore              = self.getOption('ignore_this_headline')
+    showHeadlines       = self.getOption('show_headlines')
+    showThisHeadline    = self.getOption('show_this_headline')
+    showOrganizers      = self.getOption('show_organizer_nodes')
+
+    result = [] ; n = 0
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if self.isSpecialDocPart(s,'@rst-options'):
+            n, lines2 = self.getDocPart(lines,n) # ignore.
+        elif self.isAnyDocPart(s):
+            # Handle any other doc part, including @rst-markup.
+            n, lines2 = self.getDocPart(lines,n)
+            if lines2: result.extend(lines2)
+    if not result: result = []
+    if showHeadlines:
+        if result or showThisHeadline or showOrganizers or p == self.topNode:
+            # g.trace(len(result),p.h)
+            self.writeHeadlineHelper(p)
+    return result
+#@nonl
+#@-node:ekr.20060608094815:handleDocOnlyMode
+#@+node:ekr.20060608094815.1:isAnyDocPart
+def isAnyDocPart (self,s):
+
+    if s.startswith('@doc'):
+        return True
+    elif not s.startswith('@'):
+        return False
+    else:
+        return len(s) == 1 or s[1].isspace()
+#@nonl
+#@-node:ekr.20060608094815.1:isAnyDocPart
+#@+node:ekr.20050811153208:isSpecialDocPart
+def isSpecialDocPart (self,s,kind):
+
+    '''Return True if s is a special doc part of the indicated kind.
+
+    If kind is None, return True if s is any doc part.'''
+
+    if s.startswith('@') and len(s) > 1 and s[1].isspace():
+        if kind:
+            i = g.skip_ws(s,1)
+            result = g.match_word(s,i,kind)
+        else:
+            result = True
+    elif not kind:
+        result = g.match_word(s,0,'@doc') or g.match_word(s,0,'@')
+    else:
+        result = False
+
+    return result
+#@nonl
+#@-node:ekr.20050811153208:isSpecialDocPart
+#@+node:ekr.20050811163802:isAnySpecialDocPart
+def isAnySpecialDocPart (self,s):
+
+    for kind in (
+        '@rst-markup',
+        '@rst-option',
+        '@rst-options',
+    ):
+        if self.isSpecialDocPart(s,kind):
+            return True
+
+    return False
+#@-node:ekr.20050811163802:isAnySpecialDocPart
+#@+node:ekr.20050811105438:removeLeoDirectives
+def removeLeoDirectives (self,lines):
+
+    '''Remove all Leo directives, except within literal blocks.'''
+
+    n = 0 ; result = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if s.strip().endswith('::'):
+            n, lit = self.skip_literal_block(lines,n-1)
+            result.extend(lit)
+        elif s.startswith('@') and not self.isAnySpecialDocPart(s):
+            for key in self.leoDirectivesList:
+                if g.match_word(s,0,key):
+                    # g.trace('removing %s' % s)
+                    break
+            else:
+                result.append(s)
+        else:
+            result.append(s)
+
+    return result
+#@nonl
+#@-node:ekr.20050811105438:removeLeoDirectives
+#@+node:ekr.20050811105438.1:handleSpecialDocParts
+def handleSpecialDocParts (self,lines,kind,retainContents,asClass=None):
+
+    # g.trace(kind,g.listToString(lines))
+
+    result = [] ; n = 0
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if s.strip().endswith('::'):
+            n, lit = self.skip_literal_block(lines,n-1)
+            result.extend(lit)
+        elif self.isSpecialDocPart(s,kind):
+            n, lines2 = self.getDocPart(lines,n)
+            if retainContents:
+                result.extend([''])
+                if asClass:
+                    result.extend(['.. container:: '+asClass, ''])
+                    if 'literal' in asClass.split():
+                        result.extend(['  ::', ''])
+                    for l2 in lines2: result.append('    '+l2)
+                else:
+                    result.extend(lines2)
+                result.extend([''])
+        else:
+            result.append(s)
+
+    return result
+#@-node:ekr.20050811105438.1:handleSpecialDocParts
+#@+node:ekr.20050805162550.30:replaceCodeBlockDirectives
+def replaceCodeBlockDirectives (self,lines):
+
+    '''Replace code-block directive, but not in literal blocks.'''
+
+    n = 0 ; result = []
+    while n < len(lines):
+        s = lines [n] ; n += 1
+        if s.strip().endswith('::'):
+            n, lit = self.skip_literal_block(lines,n-1)
+            result.extend(lit)
+        else:
+            i = g.skip_ws(s,0)
+            if g.match(s,i,'..'):
+                i = g.skip_ws(s,i+2)
+                if g.match_word(s,i,'code-block'):
+                    if 1: # Create a literal block to hold the code.
+                        result.append('::\n')
+                    else: # This 'annotated' literal block is confusing.
+                        result.append('%s code::\n' % s[i+len('code-block'):])
+                else:
+                    result.append(s)
+            else:
+                result.append(s)
+
+    return result
+#@nonl
+#@-node:ekr.20050805162550.30:replaceCodeBlockDirectives
+#@-node:ekr.20050811101550.1:writeBody & helpers
 #@-node:ekr.20090430102730.3:Add expand_noweb_references for rst3 plugin
 #@-node:ekr.20090430075506.6:To do
 #@+node:ekr.20090430075506.5:4.6 b2 projects
@@ -277,6 +543,7 @@ def createDefaultOptionsDict(self):
         'rst3_stylesheet_path': None, # Bug fix: must be None, not ''.
         'rst3_publish_argv_for_missing_stylesheets': None,
         # Global options...
+        'rst3_code_block_string': '',
         'rst3_number_code_lines': True,
         'rst3_underline_characters': '''#=+*^~"'`-:><_''',
         'rst3_verbose':True,
@@ -349,7 +616,10 @@ def initCodeBlockString(self,p):
 
     # g.trace('language',language,'language.title()',language.title(),p.h)
 
-    if syntax and language in ('python','ruby','perl','c'):
+    s = self.getOption('code_block_string')
+    if s:
+        self.code_block_string = s.replace('\\n','\n')
+    elif syntax and language in ('python','ruby','perl','c'):
         self.code_block_string = '**code**:\n\n.. code-block:: %s\n' % language.title()
     else:
         self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n'
@@ -1614,6 +1884,7 @@ def createDefaultOptionsDict(self):
         'rst3_stylesheet_path': None, # Bug fix: must be None, not ''.
         'rst3_publish_argv_for_missing_stylesheets': None,
         # Global options...
+        'rst3_code_block_string': '',
         'rst3_number_code_lines': True,
         'rst3_underline_characters': '''#=+*^~"'`-:><_''',
         'rst3_verbose':True,

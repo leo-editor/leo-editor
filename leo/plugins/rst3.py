@@ -773,6 +773,7 @@ class rstClass:
             'rst3_stylesheet_path': None, # Bug fix: must be None, not ''.
             'rst3_publish_argv_for_missing_stylesheets': None,
             # Global options...
+            'rst3_code_block_string': '',
             'rst3_number_code_lines': True,
             'rst3_underline_characters': '''#=+*^~"'`-:><_''',
             'rst3_verbose':True,
@@ -845,7 +846,10 @@ class rstClass:
 
         # g.trace('language',language,'language.title()',language.title(),p.h)
 
-        if syntax and language in ('python','ruby','perl','c'):
+        s = self.getOption('code_block_string')
+        if s:
+            self.code_block_string = s.replace('\\n','\n')
+        elif syntax and language in ('python','ruby','perl','c'):
             self.code_block_string = '**code**:\n\n.. code-block:: %s\n' % language.title()
         else:
             self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n'

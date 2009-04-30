@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="393" height="954" width="882"/>
+	<global_window_position top="71" left="402" height="954" width="882"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -351,8 +351,16 @@
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
 </v>
+<v t="ekr.20090430124352.2"><vh>@rst-no-headlines</vh></v>
 <v t="ekr.20090430080001.1" a="E"><vh>@path c:\prog\test</vh>
-<v t="ekr.20090430080001.2"><vh>@rst test.html</vh></v>
+<v t="ekr.20090430080001.2" a="E"><vh>@rst test.html</vh>
+<v t="ekr.20090430124352.10" a="E"><vh>@rst-code</vh>
+<v t="ekr.20090430124352.9" a="E"><vh>&lt;&lt; section a &gt;&gt;</vh>
+<v t="ekr.20090430124352.11"><vh>&lt;&lt; section c &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20090430124352.5"><vh>&lt;&lt; section b&gt;&gt;</vh></v>
+</v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -2758,9 +2766,33 @@ c.k.autoCompleter.defineObjectDict(table)
 print c.k.autoCompleter.objectDict.keys()
 
 # print c.k.autoCompleter.objectDict.get('QtCore')</t>
-<t tx="ekr.20090430080001.1"></t>
-<t tx="ekr.20090430080001.2">@ @rst-options
+<t tx="ekr.20090430080001.1">@language rest
+</t>
+<t tx="ekr.20090430080001.2">.. test of sections references
+
+@ @rst-options
+code_block_string =\n.. class:: code\n..\n\n::\n
 code_mode=False
+generate_rst=True
+generate_rst_header_comment = True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=c:\leo.repo\trunk\leo\doc
+stylesheet_name=noweb.css
+write_intermediate_file = True
+verbose=True
+@c
+
+#####################
+About the foo module
+#####################
+
+
+</t>
+<t tx="ekr.20090430124352.2">@ @rst-options
+code_mode=True
 generate_rst=True
 generate_rst_header_comment = True
 http_server_support = False
@@ -2771,7 +2803,27 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 verbose=True
 @c
+</t>
+<t tx="ekr.20090430124352.5">This is a doc part::
 
-This is a test</t>
+    section b, line 1
+    section b, line 2</t>
+<t tx="ekr.20090430124352.9">@ This is a doc part
+@c
+
+section a, line 1
+section a, line 2
+&lt;&lt; section c &gt;&gt;
+section a, last line</t>
+<t tx="ekr.20090430124352.10">@ @rst-options
+number_code_lines = False
+show_doc_parts_as_paragraphs = True
+</t>
+<t tx="ekr.20090430124352.11">@ This is section c.
+@c
+
+section c, line 1
+section c, line 2
+    section c, line 3</t>
 </tnodes>
 </leo_file>
