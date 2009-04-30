@@ -3,66 +3,6 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6
 #@+node:ekr.20090304084910.2:Asap
-#@+node:ekr.20090228065229.2:Honor @path in rst3 plugin
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/9cdfeec1fb9f02a8
-
-On Sat, Mar 28, 2009 at 11:38 AM, VR <viktor.ransmayr@gmail.com> wrote:
-
-Hi Edward,
-
-while further investigating the problem reported this morning
-(http://groups.google.com/group/leo-editor/browse_thread/thread/
-4ec30df3f1db8db3)
-I found another problem with the executable installer.
-
-If you open an outline from a given directory simply by double-
-clicking on the outline
-and you create an derived file from it, eg. an HTML-File via the rst3
-plugin it is saved
-to
-
-"C:\Python26\Lib\site-packages\Leo-4-6-b1\2009\03\LE-2009-03-28.html"
-
-instead of
-
-"C:\Dokumente und Einstellungen\VR\Eigene Dateien\WLog
-\2009\03\LE-2009-03-28.html"
-
-A Leo 4.6.b1 installation created via the ZIP-Archive behaves
-properly.
-#@nonl
-#@-node:ekr.20090228065229.2:Honor @path in rst3 plugin
-#@+node:ekr.20090123073710.4:Fix rst3 bug
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/50c1d4dc5695414e/aa061a6c1f9b3ecd?lnk=gst&q=rst+option#aa061a6c1f9b3ecd
-
-Thank you for the link, but I do not believe that Docutils is the
-culprit in my case.  My node header appears as:
-
-        @rst test/source/.templates/layout.rst
-
-The rst3.py code section dealing with writing to Docutils for the
-above case appears to fall between lines 1129 and 1200.  Docutils is
-employed when :
-
-        line 1155       if h.startswith('@rst')
-        line 1187       if self.ext in ('.htm','.html','.tex','.pdf'):
-
-Otherwise, I believe that rst3.py computes the first line and writes
-the output file itself.  In my referenced usage cases, I am simply
-employing Leo to concatenate "body" code to create Jinja2 templates
-and css files.  I love the way that Leo makes the most tedious
-documentation efforts less painful.  I have not fully explored other
-ways of generating the output within Leo without the added first two
-lines, but was hoping for a quick fix or alternate Leo setup rather
-than scripting a solution to strip the extra lines.
-
-Bernie Pursley
-Simsbury, CT
-#@-node:ekr.20090123073710.4:Fix rst3 bug
 #@+node:ekr.20090324100430.1:Major bug: deleting @chapter node doesn't work
 @nocolor-node
 _unlink: can not happen: bad child index: 4, len(children): 2

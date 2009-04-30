@@ -2,293 +2,51 @@
 #@+node:ekr.20090430075506.3:@thin leoPluginNotes.txt
 #@+all
 #@+node:ekr.20090430075506.6:To do
-#@+node:ekr.20090430075506.2:Fix rst3 bug
+#@-node:ekr.20090430075506.6:To do
+#@+node:ekr.20090430075506.5:4.6 b2 projects
+#@+node:ekr.20090430075506.1:Honor @path in rst3 plugin
+#@+node:ekr.20050809075309:initWrite
+def initWrite (self,p,encoding=None):
+
+    self.initOptionsFromSettings() # Still needed.
+
+    # Set the encoding from any parent @encoding directive.
+    # This can be overridden by @rst-option encoding=whatever.
+    c = self.c
+    d = c.scanAllDirectives(p)
+    self.encoding = encoding or d.get('encoding') or self.defaultEncoding
+    self.path = d.get('path') or ''
+
+    # g.trace('path:',self.path)
+#@-node:ekr.20050809075309:initWrite
+#@+node:ekr.20051202070028:computeOutputFileName
+def computeOutputFileName (self,fileName):
+
+    openDirectory = self.c.frame.openDirectory
+    default_path = self.getOption('default_path')
+
+    # if default_path:
+        # default_path = g.os_path_finalize(default_path)
+
+    # g.trace('default_path',default_path,'fileName',fileName)
+
+    if default_path:
+        path = g.os_path_finalize_join(self.path,default_path,fileName)
+    elif self.path:
+        path = g.os_path_finalize_join(self.path,fileName)
+    elif openDirectory:
+        path = g.os_path_finalize_join(self.path,openDirectory,fileName)
+    else:
+        path = g.os_path_finalize_join(fileName)
+
+    return path
+#@nonl
+#@-node:ekr.20051202070028:computeOutputFileName
+#@-node:ekr.20090430075506.1:Honor @path in rst3 plugin
+#@+node:ekr.20090430075506.2:Added support for generate_rst_header_comment option
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/50c1d4dc5695414e/aa061a6c1f9b3ecd?lnk=gst&q=rst+option#aa061a6c1f9b3ecd
-
-Thank you for the link, but I do not believe that Docutils is the
-culprit in my case.  My node header appears as:
-
-        @rst test/source/.templates/layout.rst
-
-The rst3.py code section dealing with writing to Docutils for the
-above case appears to fall between lines 1129 and 1200.  Docutils is
-employed when :
-
-        line 1155       if h.startswith('@rst')
-        line 1187       if self.ext in ('.htm','.html','.tex','.pdf'):
-
-Otherwise, I believe that rst3.py computes the first line and writes
-the output file itself.  In my referenced usage cases, I am simply
-employing Leo to concatenate "body" code to create Jinja2 templates
-and css files.  I love the way that Leo makes the most tedious
-documentation efforts less painful.  I have not fully explored other
-ways of generating the output within Leo without the added first two
-lines, but was hoping for a quick fix or alternate Leo setup rather
-than scripting a solution to strip the extra lines.
-
-Bernie Pursley
-Simsbury, CT
-#@+node:ekr.20050811173750:scanHeadlineForOptions
-def scanHeadlineForOptions (self,p):
-
-    '''Return a dictionary containing the options implied by p's headline.'''
-
-    h = p.h.strip()
-
-    if p == self.topNode:
-        return {} # Don't mess with the root node.
-    elif g.match_word(h,0,self.getOption('option_prefix')): # '@rst-option'
-        s = h [len(self.option_prefix):]
-        return self.scanOption(p,s)
-    elif g.match_word(h,0,self.getOption('options_prefix')): # '@rst-options'
-        return self.scanOptions(p,p.b)
-    else:
-        # Careful: can't use g.match_word because options may have '-' chars.
-        i = g.skip_id(h,0,chars='@-')
-        word = h[0:i]
-
-        for prefix,ivar,val in (
-            ('code_prefix','code_mode',True), # '@rst-code'
-            ('doc_mode_prefix','doc_only_mode',True), # @rst-doc-only.
-            ('default_path_prefix','default_prefix',''), # '@rst-default-path'
-            ('rst_prefix','code_mode',False), # '@rst'
-            ('ignore_headline_prefix','ignore_this_headline',True), # '@rst-no-head'
-            ('show_headline_prefix','show_this_headline',True), # '@rst-head'  
-            ('ignore_headlines_prefix','show_headlines',False), # '@rst-no-headlines'
-            ('ignore_prefix','ignore_this_tree',True),      # '@rst-ignore'
-            ('ignore_node_prefix','ignore_this_node',True), # '@rst-ignore-node'
-            ('ignore_tree_prefix','ignore_this_tree',True), # '@rst-ignore-tree'
-            ('preformat_prefix','preformat_this_node',True), # '@rst-preformat
-        ):
-            prefix = self.getOption(prefix)
-            if prefix and word == prefix: # Do _not_ munge this prefix!
-                d = { ivar: val }
-                if ivar != 'code_mode':
-                    d ['code_mode'] = False # Enter rst mode.
-                    d ['doc_only_mode'] = False
-                # Special case: Treat a bare @rst like @rst-no-head
-                if h == self.getOption('rst_prefix'):
-                    d ['ignore_this_headline'] = True
-                # g.trace(repr(h),repr(prefix),ivar,d)
-                return d
-
-        if h.startswith('@rst'):
-            g.trace('word',word,'rst_prefix',self.getOption('rst_prefix'))
-            g.trace('unknown kind of @rst headline',p.h)
-
-        return {}
-#@-node:ekr.20050811173750:scanHeadlineForOptions
-#@+node:ekr.20050805162550.17:processTree
-def processTree(self,p,ext,toString,justOneFile):
-
-    '''Process all @rst nodes in a tree.'''
-
-    self.preprocessTree(p)
-    found = False ; self.stringOutput = ''
-    p = p.copy() ; after= p.nodeAfterTree()
-    while p and p != after:
-        h = p.h.strip()
-        if g.match_word(h,0,"@rst"):
-            self.outputFileName = h[4:].strip()
-            if (
-                (self.outputFileName and self.outputFileName[0] != '-') or
-                (toString and not self.outputFileName)
-            ):
-                found = True
-                self.toplevel = p.level() # Define toplevel separately for each rst file.
-                if toString:
-                    self.ext = ext
-                else:
-                    self.ext = g.os_path_splitext(self.outputFileName)[1].lower()
-                # g.trace('ext',self.ext,self.outputFileName)
-                if self.ext in ('.htm','.html','.tex','.pdf'):
-                    ok = self.writeSpecialTree(p,toString=toString,justOneFile=justOneFile)
-                else:
-                    ok = self.writeNormalTree(p,toString=toString)
-                self.scanAllOptions(p) # Restore the top-level verbose setting.
-                if toString:
-                    return p.copy(),self.stringOutput
-                else:
-                    if ok: self.report(self.outputFileName)
-                p.moveToNodeAfterTree()
-            else:
-                p.moveToThreadNext()
-        else: p.moveToThreadNext()
-    if not found:
-        g.es('No @rst nodes in selected tree',color='blue')
-    return None,None
-#@-node:ekr.20050805162550.17:processTree
-#@+node:ekr.20050809080925:writeNormalTree
-def writeNormalTree (self,p,toString=False):
-
-    self.initWrite(p)
-
-    # Always write to a string first.
-    self.outputFile = StringIO.StringIO()
-    self.writeTree(p)
-    self.source = self.stringOutput = self.outputFile.getvalue()
-
-    # Copy to a file if requested.
-    if not toString:
-        # Comput the output file name *after* calling writeTree.
-        self.outputFileName = self.computeOutputFileName(self.outputFileName)
-        self.outputFile = open(self.outputFileName,'w')
-        self.outputFile.write(self.stringOutput)
-        self.outputFile.close()
-
-    return True
-#@-node:ekr.20050809080925:writeNormalTree
-#@+node:ekr.20050805162550.21:writeSpecialTree
-def writeSpecialTree (self,p,toString,justOneFile):
-
-    c = self.c
-    isHtml = self.ext in ('.html','.htm')
-    if isHtml and not SilverCity:
-        if not self.silverCityWarningGiven:
-            self.silverCityWarningGiven = True
-            g.es('SilverCity not present so no syntax highlighting')
-
-    self.initWrite(p,encoding=g.choose(isHtml,'utf-8','iso-8859-1'))
-    self.outputFile = StringIO.StringIO()
-    self.writeTree(p)
-    self.source = self.outputFile.getvalue()
-    self.outputFile = None
-
-    if not toString:
-        # Compute this here for use by intermediate file.
-        self.outputFileName = self.computeOutputFileName(self.outputFileName)
-
-        # Create the directory if it doesn't exist.
-        theDir, junk = g.os_path_split(self.outputFileName)
-        theDir = c.os_path_finalize(theDir)
-        if not g.os_path_exists(theDir):
-            ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
-            if not ok:
-                g.es_print('did not create:',theDir,color='red')
-                return False
-
-        # if not os.access(theDir,os.F_OK):
-            # os.mkdir(theDir)
-
-        if self.getOption('write_intermediate_file'):
-            name = self.outputFileName + '.txt'
-            f = open(name,'w')
-            f.write(self.source)
-            f.close()
-            self.report(name)
-
-    try:
-        output = self.writeToDocutils(self.source)
-        ok = True
-    except Exception:
-        g.pr('Exception in docutils')
-        g.es_exception()
-        ok = False
-
-    if ok:
-        if isHtml:
-            import re
-            idxTitle = output.find('<title></title>')
-            if idxTitle > -1:
-                m = re.search('<h1>([^<]*)</h1>', output)
-                if not m:
-                    m = re.search('<h1><[^>]+>([^<]*)</a></h1>', output)
-                if m:
-                    output = output.replace(
-                        '<title></title>',
-                        '<title>%s</title>' % m.group(1)
-                    )
-
-
-        if toString:
-            self.stringOutput = output
-        else:
-            # Write the file to the directory containing the .leo file.
-            f = open(self.outputFileName,'w')
-            f.write(output)
-            f.close()
-            self.http_endTree(self.outputFileName, p, justOneFile=justOneFile)
-
-    return ok
-#@-node:ekr.20050805162550.21:writeSpecialTree
-#@+node:ekr.20050805162550.23:writeTree
-def writeTree(self,p):
-
-    '''Write p's tree to self.outputFile.'''
-
-    self.scanAllOptions(p)
-
-    # g.trace(self.getOption('generate_rst_header_comment'))
-
-    if self.getOption('generate_rst'):
-        if self.getOption('generate_rst_header_comment'):
-            self.write(self.rstComment(
-                'rst3: filename: %s\n\n' % self.outputFileName))
-
-    # We can't use an iterator because we may skip parts of the tree.
-    p = p.copy() # Only one copy is needed for traversal.
-    self.topNode = p.copy() # Indicate the top of this tree.
-    after = p.nodeAfterTree()
-
-    while p and p != after:
-        self.writeNode(p)
-#@-node:ekr.20050805162550.23:writeTree
-#@+node:ekr.20050808064245:createDefaultOptionsDict
-def createDefaultOptionsDict(self):
-
-    # Warning: changing the names of options changes the names of the corresponding ivars.
-
-    self.defaultOptionsDict = {
-        # Http options...
-        'rst3_clear_http_attributes':   False,
-        'rst3_http_server_support':     False,
-        'rst3_http_attributename':      'rst_http_attribute',
-        'rst3_node_begin_marker':       'http-node-marker-',
-        # Path options...
-        'rst3_default_path': None, # New in Leo 4.4a4 # Bug fix: must be None, not ''.
-        'rst3_stylesheet_name': 'default.css',
-        'rst3_stylesheet_path': None, # Bug fix: must be None, not ''.
-        'rst3_publish_argv_for_missing_stylesheets': None,
-        # Global options...
-        'rst3_number_code_lines': True,
-        'rst3_underline_characters': '''#=+*^~"'`-:><_''',
-        'rst3_verbose':True,
-        'rst3_write_intermediate_file': False, # Used only if generate_rst is True.
-        # Mode options...
-        'rst3_code_mode': False, # True: generate rst markup from @code and @doc parts.
-        'rst3_doc_only_mode': False, # True: generate only from @doc parts.
-        'rst3_generate_rst': True, # True: generate rst markup.  False: generate plain text.
-        'rst3_generate_rst_header_comment': True,
-            # True generate header comment (requires generate_rst option)
-        # Formatting options that apply to both code and rst modes....
-        'rst3_show_headlines': True,  # Can be set by @rst-no-head headlines.
-        'rst3_show_organizer_nodes': True,
-        'rst3_show_options_nodes': False,
-        'rst3_strip_at_file_prefixes': True,
-        'rst3_show_doc_parts_in_rst_mode': True,
-        # Formatting options that apply only to code mode.
-        'rst3_show_doc_parts_as_paragraphs': False,
-        'rst3_show_leo_directives': True,
-        'rst3_show_markup_doc_parts': False,
-        'rst3_show_options_doc_parts': False,
-        # *Names* of headline commands...
-        'rst3_code_prefix':             '@rst-code',     # Enter code mode.
-        'rst3_doc_only_prefix':         '@rst-doc-only', # Enter doc-only mode.
-        'rst3_rst_prefix':              '@rst',          # Enter rst mode.
-        'rst3_ignore_headline_prefix':  '@rst-no-head',
-        'rst3_ignore_headlines_prefix': '@rst-no-headlines',
-        'rst3_ignore_node_prefix':      '@rst-ignore-node',
-        'rst3_ignore_prefix':           '@rst-ignore',
-        'rst3_ignore_tree_prefix':      '@rst-ignore-tree',
-        'rst3_option_prefix':           '@rst-option',
-        'rst3_options_prefix':          '@rst-options',
-        'rst3_preformat_prefix':        '@rst-preformat',
-        'rst3_show_headline_prefix':    '@rst-head',
-    }
-#@nonl
-#@-node:ekr.20050808064245:createDefaultOptionsDict
 #@+node:ekr.20050805162550.8:class rstClass
 class rstClass:
 
@@ -1756,48 +1514,83 @@ def http_attribute_iter (self, p):
 #@-node:ekr.20050805162550.34:http_endTree & helpers
 #@-node:ekr.20050805162550.33:Support for http plugin
 #@-node:ekr.20050805162550.8:class rstClass
-#@-node:ekr.20090430075506.2:Fix rst3 bug
-#@-node:ekr.20090430075506.6:To do
-#@+node:ekr.20090430075506.5:4.6 b2 projects
-#@+node:ekr.20090430075506.1:Honor @path in rst3 plugin
-#@+node:ekr.20050809075309:initWrite
-def initWrite (self,p,encoding=None):
+#@+node:ekr.20050805162550.23:writeTree
+def writeTree(self,p):
 
-    self.initOptionsFromSettings() # Still needed.
+    '''Write p's tree to self.outputFile.'''
 
-    # Set the encoding from any parent @encoding directive.
-    # This can be overridden by @rst-option encoding=whatever.
-    c = self.c
-    d = c.scanAllDirectives(p)
-    self.encoding = encoding or d.get('encoding') or self.defaultEncoding
-    self.path = d.get('path') or ''
+    self.scanAllOptions(p)
 
-    # g.trace('path:',self.path)
-#@-node:ekr.20050809075309:initWrite
-#@+node:ekr.20051202070028:computeOutputFileName
-def computeOutputFileName (self,fileName):
+    # g.trace(self.getOption('generate_rst_header_comment'))
 
-    openDirectory = self.c.frame.openDirectory
-    default_path = self.getOption('default_path')
+    if self.getOption('generate_rst'):
+        if self.getOption('generate_rst_header_comment'):
+            self.write(self.rstComment(
+                'rst3: filename: %s\n\n' % self.outputFileName))
 
-    # if default_path:
-        # default_path = g.os_path_finalize(default_path)
+    # We can't use an iterator because we may skip parts of the tree.
+    p = p.copy() # Only one copy is needed for traversal.
+    self.topNode = p.copy() # Indicate the top of this tree.
+    after = p.nodeAfterTree()
 
-    # g.trace('default_path',default_path,'fileName',fileName)
+    while p and p != after:
+        self.writeNode(p)
+#@-node:ekr.20050805162550.23:writeTree
+#@+node:ekr.20050808064245:createDefaultOptionsDict
+def createDefaultOptionsDict(self):
 
-    if default_path:
-        path = g.os_path_finalize_join(self.path,default_path,fileName)
-    elif self.path:
-        path = g.os_path_finalize_join(self.path,fileName)
-    elif openDirectory:
-        path = g.os_path_finalize_join(self.path,openDirectory,fileName)
-    else:
-        path = g.os_path_finalize_join(fileName)
+    # Warning: changing the names of options changes the names of the corresponding ivars.
 
-    return path
+    self.defaultOptionsDict = {
+        # Http options...
+        'rst3_clear_http_attributes':   False,
+        'rst3_http_server_support':     False,
+        'rst3_http_attributename':      'rst_http_attribute',
+        'rst3_node_begin_marker':       'http-node-marker-',
+        # Path options...
+        'rst3_default_path': None, # New in Leo 4.4a4 # Bug fix: must be None, not ''.
+        'rst3_stylesheet_name': 'default.css',
+        'rst3_stylesheet_path': None, # Bug fix: must be None, not ''.
+        'rst3_publish_argv_for_missing_stylesheets': None,
+        # Global options...
+        'rst3_number_code_lines': True,
+        'rst3_underline_characters': '''#=+*^~"'`-:><_''',
+        'rst3_verbose':True,
+        'rst3_write_intermediate_file': False, # Used only if generate_rst is True.
+        # Mode options...
+        'rst3_code_mode': False, # True: generate rst markup from @code and @doc parts.
+        'rst3_doc_only_mode': False, # True: generate only from @doc parts.
+        'rst3_generate_rst': True, # True: generate rst markup.  False: generate plain text.
+        'rst3_generate_rst_header_comment': True,
+            # True generate header comment (requires generate_rst option)
+        # Formatting options that apply to both code and rst modes....
+        'rst3_show_headlines': True,  # Can be set by @rst-no-head headlines.
+        'rst3_show_organizer_nodes': True,
+        'rst3_show_options_nodes': False,
+        'rst3_strip_at_file_prefixes': True,
+        'rst3_show_doc_parts_in_rst_mode': True,
+        # Formatting options that apply only to code mode.
+        'rst3_show_doc_parts_as_paragraphs': False,
+        'rst3_show_leo_directives': True,
+        'rst3_show_markup_doc_parts': False,
+        'rst3_show_options_doc_parts': False,
+        # *Names* of headline commands...
+        'rst3_code_prefix':             '@rst-code',     # Enter code mode.
+        'rst3_doc_only_prefix':         '@rst-doc-only', # Enter doc-only mode.
+        'rst3_rst_prefix':              '@rst',          # Enter rst mode.
+        'rst3_ignore_headline_prefix':  '@rst-no-head',
+        'rst3_ignore_headlines_prefix': '@rst-no-headlines',
+        'rst3_ignore_node_prefix':      '@rst-ignore-node',
+        'rst3_ignore_prefix':           '@rst-ignore',
+        'rst3_ignore_tree_prefix':      '@rst-ignore-tree',
+        'rst3_option_prefix':           '@rst-option',
+        'rst3_options_prefix':          '@rst-options',
+        'rst3_preformat_prefix':        '@rst-preformat',
+        'rst3_show_headline_prefix':    '@rst-head',
+    }
 #@nonl
-#@-node:ekr.20051202070028:computeOutputFileName
-#@-node:ekr.20090430075506.1:Honor @path in rst3 plugin
+#@-node:ekr.20050808064245:createDefaultOptionsDict
+#@-node:ekr.20090430075506.2:Added support for generate_rst_header_comment option
 #@-node:ekr.20090430075506.5:4.6 b2 projects
 #@-all
 #@nonl

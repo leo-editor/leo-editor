@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="3,3"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -58,7 +58,7 @@
 marks="ekr.20080306071848,"
 expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20090428101858.1"><vh>How to generate Leo's Sphinx docs</vh></v>
 <v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
 <v t="ekr.20090401113141.2"><vh>@rst c:\prog\test\test.html</vh>
@@ -66,7 +66,7 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 <v t="ekr.20090428102353.1"><vh>@auto html\leo_toc.html.txt</vh></v>
-<v t="ekr.20090428133936.2" a="O"><vh>@edit html\conf.py</vh></v>
+<v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>
 <v t="ekr.20050812134441"><vh>@rst-no-head Links</vh></v>
@@ -107,7 +107,7 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.1" a="E"><vh>FAQ</vh>
+<v t="ekr.20050831195331.1"><vh>FAQ</vh>
 <v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20090212054250.5"><vh>Getting Leo</vh>
@@ -970,7 +970,7 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20090324085713.1" a="E"><vh>Other docs</vh>
+<v t="ekr.20090324085713.1"><vh>Other docs</vh>
 <v t="ekr.20070701090840"><vh>Old preface</vh></v>
 <v t="ekr.20090101095717.1"><vh>Stories</vh>
 <v t="ekr.20090101095717.2"><vh>Introduction (iLeo, revised)</vh></v>
@@ -31202,7 +31202,7 @@ html_static_path = ['_static']
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-# html_sidebars = {}
+# html_sidebars = {'FAQ':'noSideBar.txt'}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.

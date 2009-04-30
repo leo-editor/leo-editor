@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -350,6 +350,9 @@
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
+</v>
+<v t="ekr.20090430080001.1" a="E"><vh>@path c:\prog\test</vh>
+<v t="ekr.20090430080001.2"><vh>@rst test.html</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2570,7 +2573,7 @@ else:
         # Ask to be removed.
         g.app.scriptDict['removeMe'] = True
 
-print 'done'
+# print 'done'
 </t>
 <t tx="ekr.20080917063615.1">aList = (
 'aspellbindir',
@@ -2755,5 +2758,20 @@ c.k.autoCompleter.defineObjectDict(table)
 print c.k.autoCompleter.objectDict.keys()
 
 # print c.k.autoCompleter.objectDict.get('QtCore')</t>
+<t tx="ekr.20090430080001.1"></t>
+<t tx="ekr.20090430080001.2">@ @rst-options
+code_mode=False
+generate_rst=True
+generate_rst_header_comment = True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = True
+verbose=True
+@c
+
+This is a test</t>
 </tnodes>
 </leo_file>
