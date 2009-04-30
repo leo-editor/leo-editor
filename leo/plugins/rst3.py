@@ -668,6 +668,7 @@ class rstClass:
         self.ext = None # The file extension.
         self.outputFileName = None # The name of the file being written.
         self.outputFile = None # The open file being written.
+        self.path = '' # The path from any @path directive.
         self.source = None # The written source as a string.
         #@nonl
         #@-node:ekr.20050805162550.11:<< init ivars >>
@@ -780,6 +781,8 @@ class rstClass:
             'rst3_code_mode': False, # True: generate rst markup from @code and @doc parts.
             'rst3_doc_only_mode': False, # True: generate only from @doc parts.
             'rst3_generate_rst': True, # True: generate rst markup.  False: generate plain text.
+            'rst3_generate_rst_header_comment': True,
+                # True generate header comment (requires generate_rst option)
             # Formatting options that apply to both code and rst modes....
             'rst3_show_headlines': True,  # Can be set by @rst-no-head headlines.
             'rst3_show_organizer_nodes': True,
@@ -1068,6 +1071,7 @@ class rstClass:
         # self.dumpSettings()
         if self.rst3_all:
             self.setOption("generate_rst", True, "rst3_all")
+            self.setOption("generate_rst_header_comment",True, "rst3_all")
             self.setOption("http_server_support", True, "rst3_all")
             self.setOption("write_intermediate_file", True, "rst3_all")
     #@+node:ekr.20050805162550.13:initOptionsFromSettings
@@ -1135,7 +1139,9 @@ class rstClass:
         c = self.c
         d = c.scanAllDirectives(p)
         self.encoding = encoding or d.get('encoding') or self.defaultEncoding
+        self.path = d.get('path') or ''
 
+        # g.trace('path:',self.path)
     #@-node:ekr.20050809075309:initWrite
     #@+node:ekr.20050809080925:writeNormalTree
     def writeNormalTree (self,p,toString=False):
@@ -1325,19 +1331,18 @@ class rstClass:
                 overrides['stylesheet'] = path
                 overrides['stylesheet_path'] = None
         elif styleSheetArgsDict:
-            g.es_print('using publish_argv_for_missing_stylesheets',styleSheetArgsDict)
+            g.es_print('using publish_argv_for_missing_stylesheets',
+                styleSheetArgsDict)
             overrides.update(styleSheetArgsDict)
                 # MWC add args to settings
         elif rel_stylesheet_path == stylesheet_path:
             g.es_print('stylesheet not found: %s' % (path),color='red')
         else:
-            g.es_print('stylesheet not found',color='red')
-            g.es_print('open directory: %s' % (
-                self.c.frame.openDirectory),color='red')
-            g.es_print('relative path: %s' % (
-                rel_stylesheet_path),color='red')
-            g.es_print('absolute path: %s' % (path),color='red')  
-
+            g.es_print('stylesheet not found\n',path,color='red')
+            if self.path:g.es_print('@path:', self.path)
+            g.es_print('open path:',self.c.frame.openDirectory)
+            if rel_stylesheet_path:
+                g.es_print('relative path:', rel_stylesheet_path)
         try:
             # All paths now come through here.
             res = docutils.core.publish_string(source=s,
@@ -1838,8 +1843,12 @@ class rstClass:
 
         self.scanAllOptions(p)
 
+        # g.trace(self.getOption('generate_rst_header_comment'))
+
         if self.getOption('generate_rst'):
-            self.write(self.rstComment('rst3: filename: %s\n\n' % self.outputFileName))
+            if self.getOption('generate_rst_header_comment'):
+                self.write(self.rstComment(
+                    'rst3: filename: %s\n\n' % self.outputFileName))
 
         # We can't use an iterator because we may skip parts of the tree.
         p = p.copy() # Only one copy is needed for traversal.
@@ -1848,7 +1857,6 @@ class rstClass:
 
         while p and p != after:
             self.writeNode(p)
-    #@nonl
     #@-node:ekr.20050805162550.23:writeTree
     #@-node:ekr.20050809074827:write methods
     #@+node:ekr.20050810083314:Utils
@@ -1858,19 +1866,19 @@ class rstClass:
         openDirectory = self.c.frame.openDirectory
         default_path = self.getOption('default_path')
 
-        if default_path:
-            default_path = g.os_path_finalize(default_path)
+        # if default_path:
+            # default_path = g.os_path_finalize(default_path)
 
         # g.trace('default_path',default_path,'fileName',fileName)
 
         if default_path:
-            path = g.os_path_finalize_join(default_path,fileName)
+            path = g.os_path_finalize_join(self.path,default_path,fileName)
+        elif self.path:
+            path = g.os_path_finalize_join(self.path,fileName)
         elif openDirectory:
-            path = g.os_path_finalize_join(openDirectory,fileName)
+            path = g.os_path_finalize_join(self.path,openDirectory,fileName)
         else:
-            path = g.os_path_finalize(fileName)
-
-        # g.trace('path',path)
+            path = g.os_path_finalize_join(fileName)
 
         return path
     #@nonl
