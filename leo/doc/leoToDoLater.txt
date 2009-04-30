@@ -781,29 +781,38 @@ As an example:
 # 4 
 # 5 
 @verbatim
+@verbatim
 #@verbatim
 #@+leo 
+@verbatim
 @verbatim
 #@verbatim
 #@+node:0::@file /tmp/firstcheck.py 
 @verbatim
+@verbatim
 #@verbatim
 #@+body 
 @verbatim
-#@verbatim
-#@@first 
 @verbatim
 #@verbatim
 #@@first 
 @verbatim
-#@verbatim
-#@@first 
 @verbatim
 #@verbatim
 #@@first 
 @verbatim
+@verbatim
 #@verbatim
 #@@first 
+@verbatim
+@verbatim
+#@verbatim
+#@@first 
+@verbatim
+@verbatim
+#@verbatim
+#@@first 
+@verbatim
 @verbatim
 #@verbatim
 #@+doc 
@@ -811,18 +820,23 @@ As an example:
 # How many firsts do I get? 
 
 @verbatim
+@verbatim
 #@verbatim
 #@-doc 
+@verbatim
 @verbatim
 #@verbatim
 #@@c 
 Start code. 
 @verbatim
+@verbatim
 #@verbatim
 #@-body 
 @verbatim
+@verbatim
 #@verbatim
 #@-node:0::@file /tmp/firstcheck.py 
+@verbatim
 @verbatim
 #@verbatim
 #@-leo 
@@ -1045,6 +1059,23 @@ so there's no rush.
 -- David
 #@nonl
 #@-node:ekr.20050328093147.1:Report: improving installer
+#@+node:ekr.20070929125944:Emulate Orange's download philosophy
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=4543089
+By: billp9619
+
+from the download page:
+
+If it's the first time you hear about Python, this is the installation for you.
+The packages includes complete Orange, Python, Windows Extensions for Python
+(PythonWin), Numeric Python, Qt 2.2 non-commercial, PyQt, PyQwt and GraphViz.
+
+Leo should copy this download philosophy.
+
+
+
+#@-node:ekr.20070929125944:Emulate Orange's download philosophy
 #@-node:ekr.20050509085713:Installer
 #@+node:ekr.20041228085245:Options & settings
 #@+node:ekr.20031218072017.740:Disallow writes outside a "top-level" folder

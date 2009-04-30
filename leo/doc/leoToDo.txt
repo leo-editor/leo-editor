@@ -1,8 +1,399 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20080814103428.4:4.6
-#@+node:ekr.20090304084910.2:Asap
+#@+node:ekr.20080814103428.4:4.6 qt gui
+#@+node:ekr.20090430092048.1:Before 4.6 b2
+#@+node:ekr.20080922115725.1:Finish @shadow
+# Allow block comments in private shadow files.
+# Compute delims using the private shadow file, not the file extension!
+# Can @shadow mark externally changed nodes?
+#@nonl
+#@+node:ekr.20081004102201.2:Log file for @shadow
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
+#@nonl
+#@-node:ekr.20081004102201.2:Log file for @shadow
+#@+node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
+#@-node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
+#@+node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
+
+@color
+#@nonl
+#@+node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    x = self ; trace = False ; verbose = True
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old:',old_i,prev_old_j)
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new:',new_i,prev_new_j)
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,new_private_lines_wtr,
+        marker, limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40:<< init vars >>
+new_private_lines_wtr = sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
+#@nonl
+#@-node:ekr.20080708094444.40:<< init vars >>
+#@+node:ekr.20080708094444.39:<< define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.h)
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@-node:ekr.20080708094444.39:<< define print_tags >>
+#@+node:ekr.20080708192807.2:<< about this loop >>
+@
+
+This loop writes all output lines using a single writer: new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips (deletes)
+all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
+is less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from the
+old_private_lines_rdr explicitly. This explains why opcode handlers for the
+'insert' and 'delete' opcodes are identical.
+#@-node:ekr.20080708192807.2:<< about this loop >>
+#@+node:ekr.20080708192807.5:<< Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace(tag,'old_i',old_i,'limit',limit)
+
+if tag == 'insert' and limit >= old_private_lines_rdr.size():
+    pass
+else:
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+if tag == 'equal':
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index()
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag in ('insert','replace'):
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index()
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if x.is_sentinel(line,marker):
+            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Leave new_public_lines_rdr unchanged.
+    pass
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@nonl
+#@-node:ekr.20080708192807.5:<< Handle the opcode >>
+#@+node:ekr.20080708094444.45:<< do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@-node:ekr.20080708094444.45:<< do final correctness check >>
+#@-node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
+#@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
+#@+node:ekr.20081028060510.1:Fix @shadow crasher
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
+
+I think Leo crashes when attempting to load a shadow file that starts
+with a line feed character. [EKR: it's the missing file extension]
+
+Here's the stack trace:
+
+Traceback (most recent call last):
+ File "/home/jesse/leo-editor/launchLeo.py", line 8, in <module>
+   leo.core.runLeo.run()
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 120, in run
+   c,frame = createFrame(fileName,relativeFileName,script)
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 156, in
+createFrame
+   ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+ File "/home/jesse/leo-editor/leo/core/leoGlobals.py", line 2211, in
+openWithFileName
+   readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 851,
+in open
+   silent=silent)
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 758,
+in getLeoFile
+   c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 535, in
+readAll
+   at.readOneAtShadowNode (fileName,p)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 684, in
+readOneAtShadowNode
+   at.writeOneAtShadowNode(p,toString=False,force=True)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2588, in
+writeOneAtShadowNode
+   at.writeOpenFile(root,nosentinels=not
+sentinels,toString=False,atAuto=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2842, in
+writeOpenFile
+   at.putBody(root,fromString=fromString)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2914, in
+putBody
+   at.putCodeLine(s,i)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 3137, in
+putCodeLine
+   if g.match(s,k,self.startSentinelComment + '@'):
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
+#@nonl
+#@-node:ekr.20081028060510.1:Fix @shadow crasher
+#@+node:ekr.20090402072059.13:Create a general mechanism for aux (shadow, _db) files
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ec30df3f1db8db3
+
+On Sat, Mar 28, 2009 at 3:24 AM, VR <viktor.ransmayr@gmail.com> wrote:
+
+
+    When I tried to de-install Leo-4.6b1 I succeeded, but the program
+    reported that 5 directories
+    were not removed.
+
+    Three of the directories where
+
+    1) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\config
+    2) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\doc
+    3) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\plugins
+
+    [containing]
+
+
+    a) .leoSettings.leo_db
+    b) .leoDocs.leo_db
+    c) .leo_shadow
+    d) .leoPluginsRef.leo_db
+
+
+Thanks for this report. I think it is important, and needs a good solution.
+
+I dislike all these files being sprayed around the file system. I'd like to see
+these files placed somewhere the ~/.leo directory. Is there a reason why this
+would be a bad idea?
+
+Similarly, we might also prefer to have shadow files place in, say,
+~/.leo/shadow_files.
+
+In both cases, I think we want to create files that indicate their location.
+Either that, or mirror their location in (subdirectories) ~/.leo. In other
+words, this is a general problem, and it would be good to have a robust, general
+solution.
+#@nonl
+#@-node:ekr.20090402072059.13:Create a general mechanism for aux (shadow, _db) files
+#@-node:ekr.20080922115725.1:Finish @shadow
+#@+node:ekr.20090430092048.2:Urgent: Lost files with @shadow
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ff4c0be55b15ce7a
+
+Yesterday I imported some windows batch files to @file, changed them
+to @shadow, and used @path to shorten the node name. Today Leo has
+lost track of the shadow files (the body text is empty), and when I
+attempted to re-link one Leo zeroed out the target (overwrote an empty
+file). This is the procedure I followed (not as linear as written, I
+was experimenting):
+
+0. Opened H:\work.leo
+1. File > Import to @file: y:\scripts\xc-backup.bat
+2. Change heading '@file y:\scripts\xc-backup.bat' to '@shadow xc-
+backup.bat'
+3. Change body text:
+   - removed '@ignore'
+   + added '@path y:\scripts\'
+   + added and changed some other miscelaneous text
+4. Saved
+5. Verified contents xc-backup.bat is as expected with external
+editor.
+
+Repeated half a dozen times with other files.
+
+Today when I opened H:\work.leo the body text of all @shadow files
+were blank. This is the log:
+
+   reading: H:\work.leo
+   reading: @shadow xc-backup.bat
+   can not open @shadow H:\xc-backup.bat
+   created directory: H:\.leo_shadow
+   created:   H:\.leo_shadow\xxc-backup.bat
+   created:   H:\xc-backup.bat
+
+It's trying to read .leo_shadow from the the wrong location and
+creating a new one when it is not found. Thinking to re-establish the
+link I added '@path y:\scripts\' to '@shadow xc-backup.bat' heading
+and Saved, log:
+
+   @shadow xc-backup.bat not written:
+   no children and less than 10 characters (excluding directives)
+
+To make the body text longer than 10 characters I added '@language
+batch' and saved again:
+
+   errors writing: <string-file>
+   Orphan node:  @shadow xc-backup.bat
+   parent node: @shadow xc-backup.bat
+   not written:
+   wrote:     y:\scripts\.leo_shadow\xxc-backup.bat
+   wrote:     y:\scripts\xc-backup.bat
+
+   errors writing: <string-file>
+   Orphan node:  @shadow xc-backup.bat
+   parent node: @shadow xc-backup.bat
+
+(Note: I may not have split the log at the right points in the 3
+indented sections above.)
+
+**Big Mistake** as at this point the *pre-existing* shadow and real
+file were overwritten with *empty* content. Now in this particular
+instance I'm okay as I'm working on svn checked out files and only an
+hours worth of experimenting is lost, not real work. If this had
+happened a day earlier though I'd have been some sore as I'd
+previously been working without a net (no version control).
+
+So that covers what did happen, what I expected to happen is:
+
+1. H:\work.leo would remember the @path
+2. When [1] failed, re-establishing the @path link would cause Leo to
+discover that there was a pre-existing .leo_shadow copy of that node
+and a) automatically read y:\.leo_shadow\xxc-backup.bat and fill in
+the body text, b) present a merge or conflict dialog/message and offer
+instructions for how to reconcile, or c) warn the files already
+existed and confirm overwrite.
+
+It is now clear @path is not safe when the .leo file is in a different
+location from the shadow files, or perhaps not at all? I initially
+tried to put @path in a parent heading, but the child nodes ignored
+it:
+
+-[]Scripts
+   @path y:\scripts
+   -[]@shadow xc-backup.bat
+      @language batch
+      rem A script to backup....
+      ...etc.
+
+Anyway, was my bumbling attempt to fix the broken link the problem, or
+the fact the link was broken in the first place? If the latter, why
+did it break and how to avoid it in future? is there a safe way to re-
+establish the links with the remaining 5 @shadow files or should I
+just start over and not use @path? Are there examples deomonstrating
+the proper use of @path?
+
+thanks,
+
+-matt 
+#@nonl
+#@-node:ekr.20090430092048.2:Urgent: Lost files with @shadow
 #@+node:ekr.20090324100430.1:Major bug: deleting @chapter node doesn't work
 @nocolor-node
 _unlink: can not happen: bad child index: 4, len(children): 2
@@ -815,308 +1206,135 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
     return sax_node
 #@-node:ekr.20060919110638.14:parse_leo_file
 #@-node:ekr.20090402072059.14:Investigate read crash
-#@+node:ekr.20080922115725.1:Finish @shadow
-# Allow block comments in private shadow files.
-# Compute delims using the private shadow file, not the file extension!
-# Can @shadow mark externally changed nodes?
-#@nonl
-#@+node:ekr.20081004102201.2:Log file for @shadow
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
-#@nonl
-#@-node:ekr.20081004102201.2:Log file for @shadow
-#@+node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
-#@-node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
-#@+node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
-
-@color
-#@nonl
-#@+node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
-def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
-
-    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
-
-    We compare the old and new public lines, create diffs and
-    propagate the diffs to the new private lines, copying sentinels as well.
-
-    We have two invariants:
-    1. We *never* delete any sentinels.
-    2. Insertions that happen at the boundary between nodes will be put at
-       the end of a node.  However, insertions must always be done within sentinels.
-    '''
-
-    x = self ; trace = False ; verbose = True
-    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
-    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
-
-    << init vars >>
-    << define print_tags >>
-
-    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
-    prev_old_j = 0 ; prev_new_j = 0
-
-    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
-
-        << About this loop >>
-
-        # Verify that SequenceMatcher never leaves gaps.
-        if old_i != prev_old_j: # assert old_i == prev_old_j
-            x.error('can not happen: gap in old:',old_i,prev_old_j)
-        if new_i != prev_new_j: # assert new_i == prev_new_j
-            x.error('can not happen: gap in new:',new_i,prev_new_j)
-
-        << Handle the opcode >>
-
-        # Remember the ends of the previous tag ranges.
-        prev_old_j = old_j
-        prev_new_j = new_j
-
-    # Copy all unwritten sentinels.
-    self.copy_sentinels(
-        old_private_lines_rdr,new_private_lines_wtr,
-        marker, limit = old_private_lines_rdr.size())
-
-    # Get the result.
-    result = new_private_lines_wtr.getlines()
-    if 1:
-        << do final correctness check>>
-    return result
-#@+node:ekr.20080708094444.40:<< init vars >>
-new_private_lines_wtr = sourcewriter(self)
-# collects the contents of the new file.
-
-new_public_lines_rdr = sourcereader(self,new_public_lines)
-    # Contains the changed source code.
-
-old_public_lines_rdr = sourcereader(self,old_public_lines)
-    # this is compared to new_public_lines_rdr to find out the changes.
-
-old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
-    # This is the file which is currently produced by Leo, with sentinels.
-
-# Check that all ranges returned by get_opcodes() are contiguous
-old_old_j, old_i2_modified_lines = -1,-1
-
-tag = old_i = old_j = new_i = new_j = None
-#@nonl
-#@-node:ekr.20080708094444.40:<< init vars >>
-#@+node:ekr.20080708094444.39:<< define print_tags >>
-def print_tags(tag, old_i, old_j, new_i, new_j, message):
-
-    sep1 = '=' * 10 ; sep2 = '-' * 20
-
-    g.pr('\n',sep1,message,sep1,p and p.h)
-
-    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
-
-    g.pr('\n',sep2)
-
-    table = (
-        (old_private_lines_rdr,'old private lines'),
-        (old_public_lines_rdr,'old public lines'),
-        (new_public_lines_rdr,'new public lines'),
-        (new_private_lines_wtr,'new private lines'),
-    )
-
-    for f,tag in table:
-        f.dump(tag)
-        g.pr(sep2)
-
-
-#@-node:ekr.20080708094444.39:<< define print_tags >>
-#@+node:ekr.20080708192807.2:<< about this loop >>
-@
-
-This loop writes all output lines using a single writer: new_private_lines_wtr.
-
-The output lines come from two, and *only* two readers:
-
-1. old_private_lines_rdr delivers the complete original sources. All
-   sentinels and unchanged regular lines come from this reader.
-
-2. new_public_lines_rdr delivers the new, changed sources. All inserted or
-   replacement text comes from this reader.
-
-Each time through the loop, the following are true:
-
-- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
-
-- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
-
-At the start of the loop, the call to copy_sentinels effectively skips (deletes)
-all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
-is less than mapping[old_i].
-
-As a result, the opcode handlers do not need to delete elements from the
-old_private_lines_rdr explicitly. This explains why opcode handlers for the
-'insert' and 'delete' opcodes are identical.
-#@-node:ekr.20080708192807.2:<< about this loop >>
-#@+node:ekr.20080708192807.5:<< Handle the opcode >>
-# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
-# In this special case, we must do the insert before the sentinels.
-limit=mapping[old_i]
-
-if trace: g.trace(tag,'old_i',old_i,'limit',limit)
-
-if tag == 'insert' and limit >= old_private_lines_rdr.size():
-    pass
-else:
-    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
-    # Because of this, nothing has to be explicitly deleted below.
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-
-if tag == 'equal':
-    # Copy all lines (including sentinels) from the old private file to the new private file.
-    start = old_private_lines_rdr.index()
-    while old_private_lines_rdr.index() <= mapping[old_j-1]:
-        line = old_private_lines_rdr.get()
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
-
-    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
-    new_public_lines_rdr.sync(new_j)
-
-elif tag in ('insert','replace'):
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Copy lines from new_public_lines_rdr up to new_j.
-    start = new_public_lines_rdr.index()
-    while new_public_lines_rdr.index() < new_j:
-        line = new_public_lines_rdr.get()
-        if x.is_sentinel(line,marker):
-            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-
-elif tag=='delete':
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Leave new_public_lines_rdr unchanged.
-    pass
-
-else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
-
-if trace and verbose:
-    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
-#@nonl
-#@-node:ekr.20080708192807.5:<< Handle the opcode >>
-#@+node:ekr.20080708094444.45:<< do final correctness check >>
-t_sourcelines, t_sentinel_lines = self.separate_sentinels(
-    new_private_lines_wtr.lines, marker)
-
-self.check_the_final_output(
-    new_private_lines   = result,
-    new_public_lines    = new_public_lines,
-    sentinel_lines      = t_sentinel_lines,
-    marker              = marker)
-#@-node:ekr.20080708094444.45:<< do final correctness check >>
-#@-node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
-#@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
-#@+node:ekr.20081028060510.1:Fix @shadow crasher
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
-
-I think Leo crashes when attempting to load a shadow file that starts
-with a line feed character. [EKR: it's the missing file extension]
-
-Here's the stack trace:
-
-Traceback (most recent call last):
- File "/home/jesse/leo-editor/launchLeo.py", line 8, in <module>
-   leo.core.runLeo.run()
- File "/home/jesse/leo-editor/leo/core/runLeo.py", line 120, in run
-   c,frame = createFrame(fileName,relativeFileName,script)
- File "/home/jesse/leo-editor/leo/core/runLeo.py", line 156, in
-createFrame
-   ok, frame = g.openWithFileName(relativeFileName or fileName,None)
- File "/home/jesse/leo-editor/leo/core/leoGlobals.py", line 2211, in
-openWithFileName
-   readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
- File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 851,
-in open
-   silent=silent)
- File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 758,
-in getLeoFile
-   c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 535, in
-readAll
-   at.readOneAtShadowNode (fileName,p)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 684, in
-readOneAtShadowNode
-   at.writeOneAtShadowNode(p,toString=False,force=True)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2588, in
-writeOneAtShadowNode
-   at.writeOpenFile(root,nosentinels=not
-sentinels,toString=False,atAuto=False)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2842, in
-writeOpenFile
-   at.putBody(root,fromString=fromString)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2914, in
-putBody
-   at.putCodeLine(s,i)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 3137, in
-putCodeLine
-   if g.match(s,k,self.startSentinelComment + '@'):
-TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
-#@nonl
-#@-node:ekr.20081028060510.1:Fix @shadow crasher
-#@+node:ekr.20090402072059.13:Create a general mechanism for aux (shadow, _db) files
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ec30df3f1db8db3
-
-On Sat, Mar 28, 2009 at 3:24 AM, VR <viktor.ransmayr@gmail.com> wrote:
-
-
-    When I tried to de-install Leo-4.6b1 I succeeded, but the program
-    reported that 5 directories
-    were not removed.
-
-    Three of the directories where
-
-    1) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\config
-    2) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\doc
-    3) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\plugins
-
-    [containing]
-
-
-    a) .leoSettings.leo_db
-    b) .leoDocs.leo_db
-    c) .leo_shadow
-    d) .leoPluginsRef.leo_db
-
-
-Thanks for this report. I think it is important, and needs a good solution.
-
-I dislike all these files being sprayed around the file system. I'd like to see
-these files placed somewhere the ~/.leo directory. Is there a reason why this
-would be a bad idea?
-
-Similarly, we might also prefer to have shadow files place in, say,
-~/.leo/shadow_files.
-
-In both cases, I think we want to create files that indicate their location.
-Either that, or mirror their location in (subdirectories) ~/.leo. In other
-words, this is a general problem, and it would be good to have a robust, general
-solution.
-#@nonl
-#@-node:ekr.20090402072059.13:Create a general mechanism for aux (shadow, _db) files
-#@-node:ekr.20080922115725.1:Finish @shadow
-#@+node:ekr.20090402072059.11:What should be done about @enabled-plugins nodes?
-# It's very confusing.
-#@nonl
-#@-node:ekr.20090402072059.11:What should be done about @enabled-plugins nodes?
-#@-node:ekr.20090304084910.2:Asap
-#@+node:ekr.20090323080711.3:Docs
-#@+node:ekr.20090226080753.6:Finish the wiki intro
-#@-node:ekr.20090226080753.6:Finish the wiki intro
+#@+node:ekr.20090430092048.4:Fix all qt bugs
+# See qtGui.leo
+#@-node:ekr.20090430092048.4:Fix all qt bugs
+#@-node:ekr.20090430092048.1:Before 4.6 b2
+#@+node:ekr.20090430092048.7:Before 4.6 final
 #@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
 http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
 #@nonl
 #@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-#@-node:ekr.20090323080711.3:Docs
+#@+node:ekr.20090430092048.5:Add new rst3 option
+# See leoPlugins.leo
+#@nonl
+#@-node:ekr.20090430092048.5:Add new rst3 option
+#@+node:ekr.20090430092048.3:Rewrite docs using stories
+#@+node:ekr.20090226080753.6:Finish the wiki intro
+#@-node:ekr.20090226080753.6:Finish the wiki intro
+#@-node:ekr.20090430092048.3:Rewrite docs using stories
+#@+node:ekr.20070220082124:Make sure Leo can generate Latex
+#@-node:ekr.20070220082124:Make sure Leo can generate Latex
+#@+node:ekr.20070615063616.1:Create Debian package
+#@-node:ekr.20070615063616.1:Create Debian package
+#@-node:ekr.20090430092048.7:Before 4.6 final
+#@+node:ekr.20060306194040:Leo Video
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3615177
+By: ktenney
+
+High on my ToLearn list is vnc2swf
+http://www.unixuser.org/~euske/vnc2swf/
+
+
+http://sourceforge.net/forum/message.php?msg_id=3615278
+By: James
+
+A lot of people are now using Wink for demonstrations
+(http://www.debugmode.com/wink/), it's is free and seems to work well.
+
+Check out http://murl.se/11332
+At the bottom they talk about tools and techniques.
+http://showmedo.com seems like it would be a good
+place to host vids also.
+
+I've listened/watched a fair number of things like this;
+my recomendation is to get a good microphone and
+pre-amp to record your voice, and prepare the audio
+track carefully. It is so aggravating when
+it's hard to discern the words being spoken.
+
+Thanks,
+Kent
+#@nonl
+#@+node:ekr.20060531134434:Tutorials
+http://sourceforge.net/forum/message.php?msg_id=3758271
+
+From: Rich
+
+Tutorials would be great. I use Liberty BASIC, (http://libertybasic.conforums.com)
+and it has a very good tutorial -- leads the beginner by the hand through much
+of the language. Also the help file has working code snippets
+to cut-n-paste-n-play-with. I'd like to see something like:
+
+[Buttons]
+...[What are Buttons good for?]
+...[How do I make my own buttons?]
+......[Some commands you can use with buttons]
+......[Where to find button commands]
+#@nonl
+#@-node:ekr.20060531134434:Tutorials
+#@+node:ekr.20060531134434.1:Screencasts
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3758303
+By: ktenney
+
+My sense is that documentation/screencasts has the
+greatest potential for expanding Leo's mindshare.
+
+I really like those produced by the good folks
+at Dabo;
+http://leafe.com/screencasts/
+http://leafe.com/screencasts/populategrid.html
+
+The TurboGears people have taken this to the extreme;
+http://www.turbogears.org/ultimate.html
+
+Leo is different enough that it warrants a 
+demonstration of it's advantages.
+
+-------------------
+
+https://sourceforge.net/forum/message.php?msg_id=4396251
+By: ktenney
+
+2 good screencasts on making screencasts;
+
+http://murl.se/26296
+#@-node:ekr.20060531134434.1:Screencasts
+#@+node:ekr.20060829103523:Render Leo slideshows
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=3889246
+By: terry_n_brown
+
+Three packages that might be candidates for "rendering" slides authored in Leo:
+
+MagicPoint: http://member.wide.ad.jp/wg/mgp/
+
+  uses a text file format that leo could produce
+
+Slidy: http://www.w3.org/Talks/Tools/Slidy/
+
+  uses XHTML / canned Java script
+
+S5: http://meyerweb.com/eric/tools/s5/
+
+  Similar to Slidy I think, haven't looked at it
+#@nonl
+#@-node:ekr.20060829103523:Render Leo slideshows
+#@-node:ekr.20060306194040:Leo Video
+#@-node:ekr.20080814103428.4:4.6 qt gui
+#@+node:ekr.20071211093011:4.7 flexibility
+@nocolor-node
+
+Flexibility:
+
+- Flexitble file format
+- Better bindings
+- autocompleter
+- Support for Python 3.x.
+#@nonl
 #@+node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20081215070651.4:Minor bugs 7
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
@@ -2582,333 +2800,6 @@ Drat.  I suppose building in unicode smarts: filtering 'general punctuation' cha
 http://www.fileformat.info/info/unicode/char/2026/index.htm
 #@nonl
 #@-node:ekr.20080509065556.2:Fix mod_tempfname plugin
-#@+node:ekr.20090223065025.4:Fix page up/down problem
-@
-
-At present, the qt gui sends PgUp and PgDn directly to the widget.
-
-That is, the plugin does not handle scrolling properly.
-
-This will become an issue for vim bindings.
-#@nonl
-#@+node:ekr.20061031131434.146:masterKeyHandler & helpers
-master_key_count = 0
-
-def masterKeyHandler (self,event,stroke=None):
-
-    '''This is the handler for almost all key bindings.'''
-
-    << define vars >>
-    trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
-    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-    verbose = True
-
-    if keysym in special_keys:
-        if trace and verbose: g.trace('keysym',keysym)
-        return None
-    if traceGC: g.printNewObjects('masterKey 1')
-    if trace:
-        g.trace('stroke:',repr(stroke),'keysym:',
-            repr(event.keysym),'ch:',repr(event.char),'state',state)
-        # g.trace('callers',g.callers(5))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
-
-    # if stroke == 'Return': g.pdb()
-
-    # Handle keyboard-quit first.
-    if k.abortAllModesKey and stroke == k.abortAllModesKey:
-        # g.trace('special case')
-        if c.macroCommands.recordingMacro:
-            c.macroCommands.endKbdMacro()
-            return 'break'
-        else:
-            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
-
-    if k.inState():
-        # This will return unless k.autoCompleterStateHandler
-        # (called from k.callStateFunction) returns 'do-standard-keys'
-        << handle mode bindings >>
-
-    if traceGC: g.printNewObjects('masterKey 2')
-
-    if stroke and isPlain:
-        << handle special cases for plain keys >>
-
-    << handle per-pane bindings >>
-
-    if traceGC: g.printNewObjects('masterKey 5')
-
-    return k.handleUnboundKeys(event,char,keysym,stroke)
-#@+node:ekr.20061031131434.147:<< define vars >>
-k = self ; c = k.c ; gui = g.app.gui
-
-if event:
-    # This is a leoGui base class event.
-    event = gui.leoKeyEvent(event,c,stroke=stroke)
-
-w = event.widget
-char = event.char
-keysym = event.keysym
-if stroke and not keysym:
-    event.keysym = keysym = stroke
-
-w_name = c.widget_name(w)
-state = k.state.kind
-
-special_keys = (
-    'Alt_L','Alt_R',
-    'Caps_Lock','Control_L','Control_R',
-    'Meta_L','Meta_R', # Meta support.
-    'Num_Lock',
-    'Shift_L','Shift_R',
-    'Win_L','Win_R',
-)
-
-self.master_key_count += 1
-
-isPlain =  k.isPlainKey(stroke)
-#@nonl
-#@-node:ekr.20061031131434.147:<< define vars >>
-#@+node:ekr.20061031131434.149:<< handle mode bindings >>
-# First, honor minibuffer bindings for all except user modes.
-
-if state in ('getArg','getFileName','full-command','auto-complete'):
-    if k.handleMiniBindings(event,state,stroke):
-        return 'break'
-
-# Second, honor general modes.
-if state == 'getArg':
-    return k.getArg(event,stroke=stroke)
-elif state == 'getFileName':
-    return k.getFileName(event)
-elif state in ('full-command','auto-complete'):
-    # Do the default state action.
-    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
-    val = k.callStateFunction(event) # Calls end-command.
-    if val != 'do-standard-keys': return 'break'
-
-# Third, pass keys to user modes.
-else:
-    d =  k.masterBindingsDict.get(state)
-    if d:
-        b = d.get(stroke)
-        if b:
-            if trace: g.trace('calling generalModeHandler',stroke)
-            k.generalModeHandler (event,
-                commandName=b.commandName,func=b.func,
-                modeName=state,nextMode=b.nextMode)
-            return 'break'
-        else:
-            # New in Leo 4.5: unbound keys end mode.
-            if trace: g.trace('unbound key ends mode',stroke,state)
-            k.endMode(event)
-    else:
-        # New in 4.4b4.
-        handler = k.getStateHandler()
-        if handler:
-            handler(event)
-        else:
-            g.trace('No state handler for %s' % state)
-        return 'break'
-#@-node:ekr.20061031131434.149:<< handle mode bindings >>
-#@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
-# g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
-
-# Important: only keys bound somewhere have a stroke.
-# All unbound plain keys will be handled by handleUnboundKeys.
-
-if k.unboundKeyAction in ('insert','overwrite'):
-
-    for key in (k.unboundKeyAction,'body','log','text','all'):
-        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
-        d = k.masterBindingsDict.get(key,{})
-        if d:
-            b = d.get(stroke)
-            if b and b.commandName == 'auto-complete':
-                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
-                k.masterCommand(event,b.func,b.stroke,b.commandName)
-                return 'break'
-
-    if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
-    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-    return 'break'
-
-# Bound   plain keys in command mode are by the per-pane logic.
-# Unbound plain keys in command mode are ignored by handleUnboundKeys.
-
-# This code ignores all command-state keys if we are not in a text widget.
-elif k.unboundKeyAction == 'command':
-    if not g.app.gui.isTextWidget(w):
-        c.onCanvasKey(event)
-        return 'break'
-#@nonl
-#@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
-#@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
-keyStatesTuple = ('command','insert','overwrite')
-
-# g.trace('w_name',w_name,'stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
-
-for key,name in (
-    # Order here is similar to bindtags order.
-    ('command',None),
-    ('insert',None),
-    ('overwrite',None),
-    ('button',None),
-    ('body','body'),
-    ('text','head'), # Important: text bindings in head before tree bindings.
-    ('tree','head'),
-    ('tree','canvas'),
-    ('log', 'log'),
-    ('text','log'),
-    ('text',None),
-    ('all',None),
-):
-    if (
-        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
-        name and w_name.startswith(name) or
-        key in ('text','all') and g.app.gui.isTextWidget(w) or
-        key in ('button','all')
-    ):
-        d = k.masterBindingsDict.get(key,{})
-        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-        # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
-        if d:
-            b = d.get(stroke)
-            if b:
-                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                if traceGC: g.printNewObjects('masterKey 3')
-                return k.masterCommand(event,b.func,b.stroke,b.commandName)
-#@-node:ekr.20061031131434.150:<< handle per-pane bindings >>
-#@+node:ekr.20061031131434.108:callStateFunction
-def callStateFunction (self,event):
-
-    k = self ; val = None ; ch = g.app.gui.eventChar(event)
-
-    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
-
-    if k.state.kind:
-        if (
-            k.ignore_unbound_non_ascii_keys and
-            ch and ch not in ('\b','\n','\r','\t') and
-            (ord(ch) < 32 or ord(ch) > 128)
-        ):
-            # g.trace('non-ascii',ord(ch))
-            pass
-        elif k.state.handler:
-            val = k.state.handler(event)
-            if val != 'continue':
-                k.endCommand(event,k.commandName)
-        else:
-            g.es_print('no state function for',k.state.kind,color='red')
-
-    return val
-#@-node:ekr.20061031131434.108:callStateFunction
-#@+node:ekr.20061031131434.152:handleMiniBindings
-def handleMiniBindings (self,event,state,stroke):
-
-    k = self ; c = k.c
-    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
-
-    # Special case for bindings handled in k.getArg:
-    if state in ('getArg','full-command'):
-        if stroke in ('BackSpace','Return','Tab','Escape'):
-            return False
-
-    if not state.startswith('auto-'):
-        # New in Leo 4.5: ignore plain key binding in the minibuffer.
-        if not stroke or k.isPlainKey(stroke):
-            if trace: g.trace('plain key',stroke)
-            return False
-        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
-        # for all single-line editing commands.
-        for pane in ('mini','all','text'):
-            d = k.masterBindingsDict.get(pane)
-            if d:
-                b = d.get(stroke)
-                if b:
-                    if b.commandName == 'replace-string' and state == 'getArg':
-                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
-                        return False # Let getArg handle it.
-                    elif b.commandName not in k.singleLineCommandList:
-                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True)
-                    else:
-                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
-                        c.minibufferWantsFocusNow() # New in Leo 4.5.
-                    # Pass this on for macro recording.
-                    k.masterCommand(event,b.func,stroke,b.commandName)
-                    # Careful: the command could exit.
-                    if c.exists and not k.silentMode:
-                        c.minibufferWantsFocus()
-                    return True
-
-    return False
-#@-node:ekr.20061031131434.152:handleMiniBindings
-#@+node:ekr.20080510095819.1:k.handleUnboudKeys
-def handleUnboundKeys (self,event,char,keysym,stroke):
-
-    k = self ; c = k.c ; trace = False
-    modesTuple = ('insert','overwrite')
-
-    if trace:
-        # if stroke: g.trace('***unexpected stroke***')
-        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
-
-    if k.unboundKeyAction == 'command':
-        # Ignore all unbound characters in command mode.
-        w = g.app.gui.get_focus(c)
-        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
-            c.onCanvasKey(event)
-        return 'break'
-
-    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
-        # insert/overwrite normal character.  <Return> is *not* a normal character.
-        if trace: g.trace('plain key in insert mode',repr(stroke))
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-
-    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
-        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
-        if trace: g.trace('ignoring unbound non-ascii key')
-        return 'break'
-
-    elif keysym.find('Escape') != -1:
-        # Never insert escape characters.
-        return 'break'
-
-    else:
-        if trace: g.trace(repr(stroke),'no func')
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-#@-node:ekr.20080510095819.1:k.handleUnboudKeys
-#@-node:ekr.20061031131434.146:masterKeyHandler & helpers
-#@+node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
-def scrollOutlineDownLine (self,event=None):
-    '''Scroll the outline pane down one line.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if b < 1.0:
-        self.c.frame.tree.canvas.yview_scroll(1,"unit")
-
-def scrollOutlineDownPage (self,event=None):
-    '''Scroll the outline pane down one page.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if b < 1.0:
-        self.c.frame.tree.canvas.yview_scroll(1,"page")
-
-def scrollOutlineUpLine (self,event=None):
-    '''Scroll the outline pane up one line.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if a > 0.0:
-        self.c.frame.tree.canvas.yview_scroll(-1,"unit")
-
-def scrollOutlineUpPage (self,event=None):
-    '''Scroll the outline pane up one page.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if a > 0.0:
-        self.c.frame.tree.canvas.yview_scroll(-1,"page")
-#@-node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
-#@-node:ekr.20090223065025.4:Fix page up/down problem
 #@+node:ekr.20090202064534.1:Remove bad archived position message?
 bad archived position: bad index="3", len(children)="1"
 restoreDescendentAttributes: can not find vnode (duA):
@@ -3173,1090 +3064,6 @@ give me the warning about the undefined section, and exit.
 #@-node:ekr.20080412053100.1:Look into undefined-section behavior
 #@-node:ekr.20080517102922.1:File bugs 8
 #@-node:ekr.20090131200406.9:Bugs
-#@+node:ekr.20090210093316.1:Features
-#@+node:ekr.20090402072059.23:Round-tripping rST files
-@nocolor-node
-
-- Create Leo directive corresponding to underline_characters option
-    default: '''#=+*^~"'`-:><_'''
-#@nonl
-#@-node:ekr.20090402072059.23:Round-tripping rST files
-#@+node:ekr.20090131200406.12:Improve rst3 plugin
-#@+node:ekr.20090123073710.5:Fix recent rst3 problem
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/11e39245e0a4191f/2c92fa7f1a9684f4#2c92fa7f1a9684f4
-
-today I've updated my leo installation and downloaded leo from trunk.
-When trying to generate a pdf document with the rst3 plugin the
-following error appears in the log pane:
-
-Traceback (most recent call last):
-
-  File "/usr/local/src/leo-editor/leo/plugins/rst3.py", line 1244, in
-writeSpecialTree
-    output = self.writeToDocutils(self.source)
-
-  File "/usr/local/src/leo-editor/leo/plugins/rst3.py", line 1344, in
-writeToDocutils
-    overrides.update(args)     # MWC add args to settings
-
-ValueError: dictionary update sequence element #0 has length 13; 2 is
-required
-
-It seems that the problem comes from the node containing my
-@rst_options:
-
-@nocolor
-
-@ @rst-options
-default_path=./latex
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-write_intermediate_file = False
-verbose=True
-publish_argv_for_missing_stylesheets=--language=ca,--use-latex-toc,--
-output-encoding=utf-8,--stylesheet=/home/vmas/.leo/custom_style.sty
-@c
-
-In rst3.py, inserting a g.es_print line just before the
-overrides.update(args) one can see that the arguments passed to option
-publish_argv_for_missing_stylesheets are passed to the overrides
-dictionary as a list:
-
-[u'--language=ca', u'--use-latex-toc', u'--output-encoding=utf-8', u'--
-stylesheet=/home/vmas/.leo/custom_style.sty']
-
-which is neither a dictionary nor an iterable of key/value pairs so
-the error is raised. Hope it helps to fix the problem. 
-#@nonl
-#@-node:ekr.20090123073710.5:Fix recent rst3 problem
-#@+node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
-
-> What would work for me is if named sections in a @rst subtree
-> would work exactly as they work for other derived files: they
-> get inserted at the place where they are referenced.
-
-- Add support for the following options:
-    - expand_noweb_references: default False for compatibility.
-    - ignore_noweb definitions: default False for compatibility.
-
-- When expand_noweb_references is True, definitions (typically clones)
-  must be descendants of the referencing node (in the @rst tree)
-#@-node:ekr.20080908065235.1:Add expand_noweb_references for rst3 plugin
-#@-node:ekr.20090131200406.12:Improve rst3 plugin
-#@+node:ekr.20090421121858.1:bzr branch for link nodes
-t
-#@nonl
-#@-node:ekr.20090421121858.1:bzr branch for link nodes
-#@+node:ekr.20090201122309.5:Improve macro commands
-@nocolor-node
-
-- The recording logic now returns the entire event.
-- The leoKeyEvent ctor now gets the stroke from self.actualEvent.
-- Recording ends with ctrl-g: a small changed to k.masterKeyHandler.
-- Playing back the macro just calls k.masterKeyHandler.
-- Pickle the minimal representation of a key event, namely the stroke.
-
-#@+node:ekr.20070228160107:class leoKeyEvent (leoGui)
-class leoKeyEvent:
-
-    '''A gui-independent wrapper for gui events.'''
-
-    def __init__ (self,event,c,stroke=None):
-
-        # g.trace('leoKeyEvent(leoGui)')
-        self.actualEvent = event
-        self.c      = c # Required to access c.k tables.
-        self.char   = hasattr(event,'char') and event.char or ''
-        self.keysym = hasattr(event,'keysym') and event.keysym or ''
-        self.state  = hasattr(event,'state') and event.state or 0
-        self.stroke = hasattr(event,'stroke') and event.stroke or ''
-        self.w      = hasattr(event,'widget') and event.widget or None
-        self.x      = hasattr(event,'x') and event.x or 0
-        self.y      = hasattr(event,'y') and event.y or 0
-        # Support for fastGotoNode plugin
-        self.x_root = hasattr(event,'x_root') and event.x_root or 0
-        self.y_root = hasattr(event,'y_root') and event.y_root or 0
-
-        if self.keysym and c.k:
-            # Translate keysyms for ascii characters to the character itself.
-            self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
-
-        if stroke and not self.stroke:
-            self.stroke = self.actualEvent.stroke = stroke
-
-        self.widget = self.w
-
-    def __repr__ (self):
-
-        if self.stroke:
-            return 'leoGui.leoKeyEvent: stroke: %s' % (repr(self.stroke))
-        else:
-            return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
-                repr(self.char),repr(self.keysym))
-#@nonl
-#@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
-#@+node:ekr.20061031131434.146:masterKeyHandler & helpers
-master_key_count = 0
-
-def masterKeyHandler (self,event,stroke=None):
-
-    '''This is the handler for almost all key bindings.'''
-
-    << define vars >>
-    trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
-    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-    verbose = True
-
-    if keysym in special_keys:
-        if trace and verbose: g.trace('keysym',keysym)
-        return None
-    if traceGC: g.printNewObjects('masterKey 1')
-    if trace:
-        g.trace('stroke:',repr(stroke),'keysym:',
-            repr(event.keysym),'ch:',repr(event.char),'state',state)
-        # g.trace('callers',g.callers(5))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
-
-    # if stroke == 'Return': g.pdb()
-
-    # Handle keyboard-quit first.
-    if k.abortAllModesKey and stroke == k.abortAllModesKey:
-        # g.trace('special case')
-        if c.macroCommands.recordingMacro:
-            c.macroCommands.endKbdMacro()
-            return 'break'
-        else:
-            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
-
-    if k.inState():
-        # This will return unless k.autoCompleterStateHandler
-        # (called from k.callStateFunction) returns 'do-standard-keys'
-        << handle mode bindings >>
-
-    if traceGC: g.printNewObjects('masterKey 2')
-
-    if stroke and isPlain:
-        << handle special cases for plain keys >>
-
-    << handle per-pane bindings >>
-
-    if traceGC: g.printNewObjects('masterKey 5')
-
-    return k.handleUnboundKeys(event,char,keysym,stroke)
-#@+node:ekr.20061031131434.147:<< define vars >>
-k = self ; c = k.c ; gui = g.app.gui
-
-if event:
-    # This is a leoGui base class event.
-    event = gui.leoKeyEvent(event,c,stroke=stroke)
-
-w = event.widget
-char = event.char
-keysym = event.keysym
-if stroke and not keysym:
-    event.keysym = keysym = stroke
-
-w_name = c.widget_name(w)
-state = k.state.kind
-
-special_keys = (
-    'Alt_L','Alt_R',
-    'Caps_Lock','Control_L','Control_R',
-    'Meta_L','Meta_R', # Meta support.
-    'Num_Lock',
-    'Shift_L','Shift_R',
-    'Win_L','Win_R',
-)
-
-self.master_key_count += 1
-
-isPlain =  k.isPlainKey(stroke)
-#@nonl
-#@-node:ekr.20061031131434.147:<< define vars >>
-#@+node:ekr.20061031131434.149:<< handle mode bindings >>
-# First, honor minibuffer bindings for all except user modes.
-
-if state in ('getArg','getFileName','full-command','auto-complete'):
-    if k.handleMiniBindings(event,state,stroke):
-        return 'break'
-
-# Second, honor general modes.
-if state == 'getArg':
-    return k.getArg(event,stroke=stroke)
-elif state == 'getFileName':
-    return k.getFileName(event)
-elif state in ('full-command','auto-complete'):
-    # Do the default state action.
-    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
-    val = k.callStateFunction(event) # Calls end-command.
-    if val != 'do-standard-keys': return 'break'
-
-# Third, pass keys to user modes.
-else:
-    d =  k.masterBindingsDict.get(state)
-    if d:
-        b = d.get(stroke)
-        if b:
-            if trace: g.trace('calling generalModeHandler',stroke)
-            k.generalModeHandler (event,
-                commandName=b.commandName,func=b.func,
-                modeName=state,nextMode=b.nextMode)
-            return 'break'
-        else:
-            # New in Leo 4.5: unbound keys end mode.
-            if trace: g.trace('unbound key ends mode',stroke,state)
-            k.endMode(event)
-    else:
-        # New in 4.4b4.
-        handler = k.getStateHandler()
-        if handler:
-            handler(event)
-        else:
-            g.trace('No state handler for %s' % state)
-        return 'break'
-#@-node:ekr.20061031131434.149:<< handle mode bindings >>
-#@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
-# g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
-
-# Important: only keys bound somewhere have a stroke.
-# All unbound plain keys will be handled by handleUnboundKeys.
-
-if k.unboundKeyAction in ('insert','overwrite'):
-
-    for key in (k.unboundKeyAction,'body','log','text','all'):
-        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
-        d = k.masterBindingsDict.get(key,{})
-        if d:
-            b = d.get(stroke)
-            if b and b.commandName == 'auto-complete':
-                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
-                k.masterCommand(event,b.func,b.stroke,b.commandName)
-                return 'break'
-
-    if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
-    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-    return 'break'
-
-# Bound   plain keys in command mode are by the per-pane logic.
-# Unbound plain keys in command mode are ignored by handleUnboundKeys.
-
-# This code ignores all command-state keys if we are not in a text widget.
-elif k.unboundKeyAction == 'command':
-    if not g.app.gui.isTextWidget(w):
-        c.onCanvasKey(event)
-        return 'break'
-#@nonl
-#@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
-#@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
-keyStatesTuple = ('command','insert','overwrite')
-
-# g.trace('w_name',w_name,'stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
-
-for key,name in (
-    # Order here is similar to bindtags order.
-    ('command',None),
-    ('insert',None),
-    ('overwrite',None),
-    ('button',None),
-    ('body','body'),
-    ('text','head'), # Important: text bindings in head before tree bindings.
-    ('tree','head'),
-    ('tree','canvas'),
-    ('log', 'log'),
-    ('text','log'),
-    ('text',None),
-    ('all',None),
-):
-    if (
-        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
-        name and w_name.startswith(name) or
-        key in ('text','all') and g.app.gui.isTextWidget(w) or
-        key in ('button','all')
-    ):
-        d = k.masterBindingsDict.get(key,{})
-        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-        # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
-        if d:
-            b = d.get(stroke)
-            if b:
-                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                if traceGC: g.printNewObjects('masterKey 3')
-                return k.masterCommand(event,b.func,b.stroke,b.commandName)
-#@-node:ekr.20061031131434.150:<< handle per-pane bindings >>
-#@+node:ekr.20061031131434.108:callStateFunction
-def callStateFunction (self,event):
-
-    k = self ; val = None ; ch = g.app.gui.eventChar(event)
-
-    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
-
-    if k.state.kind:
-        if (
-            k.ignore_unbound_non_ascii_keys and
-            ch and ch not in ('\b','\n','\r','\t') and
-            (ord(ch) < 32 or ord(ch) > 128)
-        ):
-            # g.trace('non-ascii',ord(ch))
-            pass
-        elif k.state.handler:
-            val = k.state.handler(event)
-            if val != 'continue':
-                k.endCommand(event,k.commandName)
-        else:
-            g.es_print('no state function for',k.state.kind,color='red')
-
-    return val
-#@-node:ekr.20061031131434.108:callStateFunction
-#@+node:ekr.20061031131434.152:handleMiniBindings
-def handleMiniBindings (self,event,state,stroke):
-
-    k = self ; c = k.c
-    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
-
-    # Special case for bindings handled in k.getArg:
-    if state in ('getArg','full-command'):
-        if stroke in ('BackSpace','Return','Tab','Escape'):
-            return False
-
-    if not state.startswith('auto-'):
-        # New in Leo 4.5: ignore plain key binding in the minibuffer.
-        if not stroke or k.isPlainKey(stroke):
-            if trace: g.trace('plain key',stroke)
-            return False
-        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
-        # for all single-line editing commands.
-        for pane in ('mini','all','text'):
-            d = k.masterBindingsDict.get(pane)
-            if d:
-                b = d.get(stroke)
-                if b:
-                    if b.commandName == 'replace-string' and state == 'getArg':
-                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
-                        return False # Let getArg handle it.
-                    elif b.commandName not in k.singleLineCommandList:
-                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True)
-                    else:
-                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
-                        c.minibufferWantsFocusNow() # New in Leo 4.5.
-                    # Pass this on for macro recording.
-                    k.masterCommand(event,b.func,stroke,b.commandName)
-                    # Careful: the command could exit.
-                    if c.exists and not k.silentMode:
-                        c.minibufferWantsFocus()
-                    return True
-
-    return False
-#@-node:ekr.20061031131434.152:handleMiniBindings
-#@+node:ekr.20080510095819.1:k.handleUnboudKeys
-def handleUnboundKeys (self,event,char,keysym,stroke):
-
-    k = self ; c = k.c ; trace = False
-    modesTuple = ('insert','overwrite')
-
-    if trace:
-        # if stroke: g.trace('***unexpected stroke***')
-        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
-
-    if k.unboundKeyAction == 'command':
-        # Ignore all unbound characters in command mode.
-        w = g.app.gui.get_focus(c)
-        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
-            c.onCanvasKey(event)
-        return 'break'
-
-    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
-        # insert/overwrite normal character.  <Return> is *not* a normal character.
-        if trace: g.trace('plain key in insert mode',repr(stroke))
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-
-    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
-        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
-        if trace: g.trace('ignoring unbound non-ascii key')
-        return 'break'
-
-    elif keysym.find('Escape') != -1:
-        # Never insert escape characters.
-        return 'break'
-
-    else:
-        if trace: g.trace(repr(stroke),'no func')
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-#@-node:ekr.20080510095819.1:k.handleUnboudKeys
-#@-node:ekr.20061031131434.146:masterKeyHandler & helpers
-#@+node:ekr.20061031131434.105:masterCommand & helpers
-def masterCommand (self,event,func,stroke,commandName=None):
-
-    '''This is the central dispatching method.
-    All commands and keystrokes pass through here.'''
-
-    k = self ; c = k.c ; gui = g.app.gui
-    trace = False or k.traceMasterCommand ; verbose = False
-    traceGC = False
-    if traceGC: g.printNewObjects('masterCom 1')
-
-    c.setLog()
-    c.startRedrawCount = c.frame.tree.redrawCount
-    k.stroke = stroke # Set this global for general use.
-    keysym = gui.eventKeysym(event)
-    ch = gui.eventChar(event)
-    w = gui.eventWidget(event)
-    state = event and hasattr(event,'state') and event.state or 0
-    k.func = func
-    k.funcReturn = None # For unit testing.
-    commandName = commandName or func and func.__name__ or '<no function>'
-    << define specialKeysyms >>
-    special = keysym in specialKeysyms
-    interesting = func is not None
-    inserted = not special
-
-    if trace: #  and interesting:
-        g.trace(
-            # 'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),'keysym:',repr(keysym),
-            'w:',w and c.widget_name(w),'func:',func and func.__name__
-        )
-
-    if inserted:
-        # g.trace(stroke,keysym)
-        << add character to history >>
-
-    # We *must not* interfere with the global state in the macro class.
-    if c.macroCommands.recordingMacro:
-        c.macroCommands.startKbdMacro(event)
-        return 'break'
-
-    # g.trace(stroke,k.abortAllModesKey)
-
-    if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
-        k.keyboardQuit(event)
-        k.endCommand(event,commandName)
-        return 'break'
-
-    if special: # Don't pass these on.
-        return 'break' 
-
-    if 0: # *** This is now handled by k.masterKeyHandler.
-        if k.inState():
-            val = k.callStateFunction(event) # Calls end-command.
-            if val != 'do-func': return 'break'
-            g.trace('Executing key outside of mode')
-
-    if k.regx.iter:
-        try:
-            k.regXKey = keysym
-            k.regx.iter.next() # EKR: next() may throw StopIteration.
-        except StopIteration:
-            pass
-        return 'break'
-
-    if k.abbrevOn:
-        expanded = c.abbrevCommands.expandAbbrev(event)
-        if expanded: return 'break'
-
-    if func: # Func is an argument.
-        if commandName == 'propagate-key-event':
-            # Do *nothing* with the event.
-            return k.propagateKeyEvent(event)
-        elif commandName.startswith('specialCallback'):
-            # The callback function will call c.doCommand
-            if trace: g.trace('calling specialCallback for',commandName)
-            val = func(event)
-            # k.simulateCommand uses k.funcReturn.
-            k.funcReturn = k.funcReturn or val # For unit tests.
-        else:
-            # Call c.doCommand directly
-            if trace: g.trace('calling command directly',commandName)
-            c.doCommand(func,commandName,event=event)
-        if c.exists:
-            k.endCommand(event,commandName)
-            c.frame.updateStatusLine()
-        if traceGC: g.printNewObjects('masterCom 2')
-        return 'break'
-    elif k.inState():
-        return 'break' #Ignore unbound keys in a state.
-    else:
-        if traceGC: g.printNewObjects('masterCom 3')
-        val = k.handleDefaultChar(event,stroke)
-        if c.exists:
-            c.frame.updateStatusLine()
-        if traceGC: g.printNewObjects('masterCom 4')
-        return val
-#@nonl
-#@+node:ekr.20061031131434.106:<< define specialKeysyms >>
-specialKeysyms = (
-    'Alt_L','Alt_R',
-    'Meta_L','Meta_R', # Meta support.
-    'Caps_Lock','Control_L','Control_R',
-    'Num_Lock',
-    'Shift_L','Shift_R',
-)
-#@nonl
-#@-node:ekr.20061031131434.106:<< define specialKeysyms >>
-#@+node:ekr.20061031131434.107:<< add character to history >>
-if stroke or len(ch) > 0:
-    if len(keyHandlerClass.lossage) > 99:
-        keyHandlerClass.lossage.pop()
-
-    # This looks like a memory leak, but isn't.
-    keyHandlerClass.lossage.insert(0,(ch,stroke),)
-#@-node:ekr.20061031131434.107:<< add character to history >>
-#@+node:ekr.20061031131434.109:callKeystrokeFunction (not used)
-def callKeystrokeFunction (self,event):
-
-    '''Handle a quick keystroke function.
-    Return the function or None.'''
-
-    k = self
-    numberOfArgs, func = k.keystrokeFunctionDict [k.stroke]
-
-    if func:
-        func(event)
-        commandName = k.inverseCommandsDict.get(func) # Get the emacs command name.
-        k.endCommand(event,commandName)
-
-    return func
-#@-node:ekr.20061031131434.109:callKeystrokeFunction (not used)
-#@+node:ekr.20061031131434.110:k.handleDefaultChar
-def handleDefaultChar(self,event,stroke):
-
-    k = self ; c = k.c
-    w = event and event.widget
-    name = c.widget_name(w)
-    trace = False
-
-    if trace: g.trace('widget_name',name,'stroke',stroke)
-
-    if stroke and (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1):
-        if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
-        return 'break'
-
-    if name.startswith('body'):
-        action = k.unboundKeyAction
-        if action in ('insert','overwrite'):
-            c.editCommands.selfInsertCommand(event,action=action)
-        else: # Ignore the key
-            if trace: g.trace('ignoring',stroke)
-        return 'break'
-    elif name.startswith('head'):
-        c.frame.tree.onHeadlineKey(event)
-        return 'break'
-    elif name.startswith('canvas'):
-        if not stroke: # Not exactly right, but it seems to be good enough.
-            c.onCanvasKey(event) # New in Leo 4.4.2
-        return 'break'
-    else:
-        # Let the widget handle the event.
-        # ch = event and event.char ; g.trace('to tk:',name,repr(ch))
-        return None
-#@-node:ekr.20061031131434.110:k.handleDefaultChar
-#@-node:ekr.20061031131434.105:masterCommand & helpers
-#@+node:ekr.20050920084036.190:macroCommandsClass
-class macroCommandsClass (baseEditCommandsClass):
-
-    '''Define the following commands:
-
-    call-kbd-macro
-    call-last-kbd-macro
-    load-kbd-macros
-    name-last-kbd-macro
-    print-macros
-    save-kbd-macros
-    start-kbd-macro
-    '''
-
-    @others
-#@nonl
-#@+node:ekr.20050920084036.191: ctor
-def __init__ (self,c):
-
-    baseEditCommandsClass.__init__(self,c) # init the base class.
-
-    self.lastMacro = None
-    self.macros = []
-    self.macro = []
-    self.namedMacros = {}
-
-    # Important: we must not interfere with k.state in startKbdMacro!
-    self.recordingMacro = False
-#@-node:ekr.20050920084036.191: ctor
-#@+node:ekr.20050920084036.192: getPublicCommands
-def getPublicCommands (self):
-
-    return {
-        'call-last-kbd-macro':  self.callLastKeyboardMacro,
-        'call-kbd-macro':       self.callNamedMacro,
-        'print-macros':         self.printMacros,
-        'name-last-kbd-macro':  self.nameLastKbdMacro,
-        'load-kbd-macros':      self.loadFile,
-        'save-kbd-macros':      self.saveMacros,
-        'start-kbd-macro':      self.startKbdMacro,
-    }
-#@-node:ekr.20050920084036.192: getPublicCommands
-#@+node:ekr.20050920085536.15:addToDoAltX (common helper)
-# Called from loadFile and nameLastKbdMacro.
-
-def addToDoAltX (self,name,macro):
-
-    '''Adds macro to Alt-X commands.'''
-
-    k= self ; c = k.c
-
-    g.trace(name,macro)
-
-    if name in c.commandsDict:
-        return False
-
-    def func (event,macro=macro):
-        return self.executeMacro(macro)
-
-    c.commandsDict [name] = func
-    self.namedMacros [name] = macro
-    return True
-#@-node:ekr.20050920085536.15:addToDoAltX (common helper)
-#@+node:ekr.20050920084036.202:callLastKeyboardMacro
-# Called from universal-command.
-
-def callLastKeyboardMacro (self,event):
-
-    '''Call the last recorded keyboard macro.'''
-
-    if self.lastMacro:
-        self.executeMacro(self.lastMacro)
-#@nonl
-#@-node:ekr.20050920084036.202:callLastKeyboardMacro
-#@+node:ekr.20050920084036.194:callNamedMacro
-def callNamedMacro (self,event):
-
-    '''Prompts for a macro name to save, then executes it.'''
-
-    k = self.k ; tag = 'macro-name'
-    state = k.getState(tag)
-    prompt = 'Call macro named: '
-
-    if state == 0:
-        k.setLabelBlue(prompt,protect=True)
-        k.getArg(event,tag,1,self.callNamedMacro)
-    else:
-        macro = self.namedMacros.get(k.arg)
-        # Must do this first!
-        k.clearState()
-        if macro:
-            self.executeMacro(macro)
-        else:
-            g.es('no macro named %s' % k.arg)
-        k.resetLabel()
-
-#@-node:ekr.20050920084036.194:callNamedMacro
-#@+node:ekr.20050920084036.206:endKbdMacro
-def endKbdMacro (self,event=None):
-
-    '''Stop recording a keyboard macro.'''
-
-    k = self.k
-    self.recordingMacro = False
-        # Tell k.masterKeyHandler and masterCommandHandler we are done.
-
-    if self.macro:
-        # self.macro = self.macro [: -4]
-        self.macros.insert(0,self.macro)
-        self.lastMacro = self.macro[:]
-        self.macro = []
-        k.setLabelBlue('Keyboard macro defined, not named')
-    else:
-        k.setLabelBlue('Empty keyboard macro')
-#@-node:ekr.20050920084036.206:endKbdMacro
-#@+node:ekr.20050920084036.203:executeMacro
-def executeMacro (self,macro):
-
-    c = self.c ; k = self.k
-
-    c.bodyWantsFocusNow()
-
-    for event in macro:
-        # New in Leo 4.6: macro entries are leoKeyEvents.
-        g.trace(event.stroke)
-        k.masterKeyHandler(event,stroke=event.stroke)
-#@-node:ekr.20050920084036.203:executeMacro
-#@+node:ekr.20050920084036.196:loadFile & helper
-def loadFile (self,event):
-
-    '''Asks for a macro file name to load.'''
-
-    fileName = g.app.gui.runOpenFileDialog(
-        title = 'Open Macro File',
-        filetypes = [("Text","*.txt"), ("All files","*")],
-        defaultextension = ".txt")
-
-    if not fileName: return
-
-    try:
-        f = open(fileName)
-        self.loadMacros(f)
-    except IOError:
-        g.es('can not open',fileName)
-#@+node:ekr.20050920084036.197:loadMacros
-def loadMacros (self,f):
-
-    '''Loads a macro file into the macros dictionary.'''
-
-    c = self.c ; w = c.frame.body.bodyCtrl
-    try:
-        d = pickle.load(f)
-    except pickle.UnpicklingError:
-        g.es('error unpickling %s' % f.name)
-        return
-
-    # g.trace(f.name,d)
-
-    for name in d:
-        aList = d.get(name)
-        macro = []
-        for stroke in aList:
-            # Create a dummy event with just enough attribute
-            # to keep k.masterKeyHandler happy
-            actualEvent = g.Bunch(stroke=stroke,char=stroke,widget=w)
-            event = g.app.gui.leoKeyEvent(actualEvent,c)
-            macro.append(event)
-        self.addToDoAltX(name,macro)
-            # sets self.namedMacros[name]=macro
-
-
-#@-node:ekr.20050920084036.197:loadMacros
-#@-node:ekr.20050920084036.196:loadFile & helper
-#@+node:ekr.20050920084036.198:nameLastKbdMacro
-def nameLastKbdMacro (self,event):
-
-    '''Prompt for the name to be given to the last recorded macro.'''
-
-    k = self.k ; state = k.getState('name-macro')
-
-    if state == 0:
-        k.setLabelBlue('Name of macro: ',protect=True)
-        k.getArg(event,'name-macro',1,self.nameLastKbdMacro)
-    else:
-        k.clearState()
-        name = k.arg
-        self.addToDoAltX(name,self.lastMacro)
-        k.setLabelGrey('Macro defined: %s' % name)
-#@-node:ekr.20050920084036.198:nameLastKbdMacro
-#@+node:ekr.20090201152408.1:printMacros
-def printMacros (self,event=None):
-
-    names = [z for z in self.namedMacros]
-    g.es(''.join(names),tabName='Macros')
-#@-node:ekr.20090201152408.1:printMacros
-#@+node:ekr.20050920084036.199:saveMacros & helpers
-def saveMacros (self,event=None):
-
-    '''Asks for a file name and saves it.'''
-
-    fileName = g.app.gui.runSaveFileDialog(
-        initialfile = None,
-        title='Save Macros',
-        filetypes = [("Text","*.txt"), ("All files","*")],
-        defaultextension = ".txt")
-
-    if not fileName: return
-
-    try:
-        f = open(fileName,'a+')
-        f.seek(0)
-        if f:
-            self.saveMacrosHelper(f)
-    except IOError:
-        g.es('can not create',fileName)
-
-#@+node:ekr.20050920084036.200:saveMacrosHelper
-def saveMacrosHelper( self,f):
-
-    '''Saves all named macros.'''
-
-    # fname = f.name
-    # try:
-        # macros = pickle.load( f )
-    # except Exception:
-        # macros = {}
-    # f.close()
-
-    d = {}
-    for name in self.namedMacros:
-        macro = self.namedMacros.get(name)
-        # Just save the essential part of the event.
-        # It must be picklable.
-        aList = [event.stroke for event in macro]
-        g.trace(name,aList)
-        d[name] = aList
-        # f = open( fname, 'w' )
-        pickle.dump(d, f )
-        f.close()
-#@-node:ekr.20050920084036.200:saveMacrosHelper
-#@-node:ekr.20050920084036.199:saveMacros & helpers
-#@+node:ekr.20050920084036.204:startKbdMacro
-def startKbdMacro (self,event):
-
-    '''Start recording a keyboard macro.'''
-
-    k = self.k
-
-    if not self.recordingMacro:
-        self.recordingMacro = True
-            # A flag for k.masterCommandHandler & k.masterKeyHandler.
-        k.setLabelBlue('Recording macro. ctrl-g to end...',protect=True)
-    else:
-        g.trace(event)
-        self.macro.append(event)
-#@-node:ekr.20050920084036.204:startKbdMacro
-#@-node:ekr.20050920084036.190:macroCommandsClass
-#@-node:ekr.20090201122309.5:Improve macro commands
-#@+node:ekr.20090218115025.3:Why are attributes pickled by default?
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/326a221f4c698f7a
-
-> On Wed, Feb 18, 2009 at 12:12 PM, Kent Tenney <ktenney@gmail.com> wrote:
->>
->> Currently, Leo pickles the value of unknown attributes unless
->> the name starts with 'str_'
->>
->> Running the following code in node 'UA'
->>
->> p = c.currentPosition()
->> p.v.u = {'hello':'world', 'str_hello':'world'}
->>
->> results in the following in the .leo file:
->>
->> <v t="ktenney.20090218114928.367" str_hello="world"
->> hello="5505776f726c6471002e"><vh>UA</vh></v>
->>
->> I think this is surprising, Python-centric and contrary to the
->> spirit of Leo as a flexible data management platform.
->
-> I suppose your point is that you can't create an arbitrarily named attribute
-> with a string value. Does that create a real problem?
-
-It requires a translation layer, either to (un)munge the name or
-(un)pickle. Real problem?
-
-Let's say each time I think 'I can use UAs to store that' I change
-my mind when I realize my values will be in a pickle. (I really don't
-want to name all my attributes str_xxx)
-
-> As far as being Python-centric, can you suggest any other way of converting
-> arbitrary data to a text string?
-
-How is it done in any other XML file?
-I've not used XML for arbitrary data, but it probably can be done.
-
-> Why would that way be better than pickle?
-
-My suspicion is that UAs would be used more for
-storing text and numbers (as seems common for XML files)
-than Python data objects.
-
-Does Leo use UAs to store pickles?
-
-I'm sure pickling capability is great, but I'm not convinced
-it should be the _default._
-
-No big deal.
-#@nonl
-#@-node:ekr.20090218115025.3:Why are attributes pickled by default?
-#@+node:ekr.20090402072059.2:clone-find-all-once
-@
-
-First do a normal clone-find-all for the word "clone". Then click the script
-button and do it again. Notice that children of previously found nodes don't get
-added again in the modified version.
-#@nonl
-#@+node:ekr.20060128080201:cloneFindAll
-def cloneFindAll (self,event):
-
-    c = self.c ; k = self.k ; tag = 'clone-find-all'
-    state = k.getState(tag)
-
-    if state == 0:
-        w = self.editWidget(event) # sets self.w
-        if not w: return
-        self.setupArgs(forward=None,regexp=None,word=None)
-        k.setLabelBlue('Clone Find All: ',protect=True)
-        k.getArg(event,tag,1,self.cloneFindAll)
-    else:
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
-        self.generalSearchHelper(k.arg,cloneFindAll=True)
-        c.treeWantsFocus()
-#@-node:ekr.20060128080201:cloneFindAll
-#@+node:ekr.20060128075225:cloneFindAllCommand
-def cloneFindAllCommand (self,event=None):
-
-    self.setup_command()
-    self.clone_find_all = True
-    self.findAll()
-    self.clone_find_all = False
-#@-node:ekr.20060128075225:cloneFindAllCommand
-#@+node:ekr.20031218072017.3073:findAll
-def findAll(self):
-
-    c = self.c ; w = self.s_ctrl ; u = c.undoer
-    undoType = 'Clone Find All'
-    if not self.checkArgs():
-        return
-    self.initInHeadline()
-    if self.clone_find_all:
-        self.p = None # Restore will select the root position.
-    data = self.save()
-    self.initBatchCommands()
-    count = 0 ; clones = []
-    while 1:
-        pos, newpos = self.findNextMatch()
-        if pos is None: break
-        count += 1
-        s = w.getAllText()
-        i,j = g.getLine(s,pos)
-        line = s[i:j]
-        if not self.clone_find_all:
-            self.printLine(line,allFlag=True)
-        if self.clone_find_all and self.p.v.t not in clones:
-            # g.trace(self.p.v.t,self.p.h)
-            if not clones:
-                undoData = u.beforeInsertNode(c.p)
-                << create the found node >>
-            clones.append(self.p.v.t)
-            << create a clone of p under the find node >>
-
-    if self.clone_find_all and clones:
-        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
-        c.selectPosition(found)
-        c.setChanged(True)
-
-    self.restore(data)
-    c.redraw()
-    g.es("found",count,"matches")
-#@+node:ekr.20051113110735:<< create the found node >>
-oldRoot = c.rootPosition()
-found = oldRoot.insertAfter()
-found.moveToRoot(oldRoot)
-c.setHeadString(found,'Found: ' + self.find_text)
-c.setRootPosition(found) # New in Leo 4.5.
-#@-node:ekr.20051113110735:<< create the found node >>
-#@+node:ekr.20051113110851:<< create a clone of p under the find node >>
-q = self.p.clone()
-q.moveToLastChildOf(found)
-#@-node:ekr.20051113110851:<< create a clone of p under the find node >>
-#@-node:ekr.20031218072017.3073:findAll
-#@+node:ekr.20090402072059.4:@@@button my clone find all
-import leo.core.leoFind as leoFind 
-
-def new_find_all(self):
-    << do some initial stuff >>
-
-
-    while 1:
-        pos, newpos = self.findNextMatch()
-        if pos is None: break
-
-        if count % 10 == 0 and count > 0:
-            g.es("still searching, matches found: ", count)
-
-        << Skip node if it's a child of a previously found node >>
-
-        count += 1
-
-        s = w.getAllText()
-        i,j = g.getLine(s,pos)
-        line = s[i:j]
-        if not self.clone_find_all:
-            self.printLine(line,allFlag=True)
-        if self.clone_find_all and self.p.v.t not in clones:
-            # g.trace(self.p.v.t,self.p.h)
-            if not clones:
-                undoData = u.beforeInsertNode(c.p)
-                << create the found node >>
-            clones.append(self.p.v.t)
-            positions.append(self.p)
-            << create a clone of p under the find node >>
-
-    if self.clone_find_all and clones:
-        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
-        c.selectPosition(found)
-        c.setChanged(True)
-
-    self.restore(data)
-    c.redraw()
-    g.es("found",count,"matches")
-
-
-leoFind.leoFind.findAll = new_find_all
-
-c.executeMinibufferCommand("clone-find-all") 
-#@+node:ekr.20090402072059.5:<< do some initial stuff >>
-g.es("findAll..., self: ", self)
-
-c = self.c ; w = self.s_ctrl ; u = c.undoer
-undoType = 'Clone Find All'
-if not self.checkArgs():
-    return
-self.initInHeadline()
-if self.clone_find_all:
-    self.p = None # Restore will select the root position.
-data = self.save()
-self.initBatchCommands()
-count = 0 ; clones = []; positions = []
-#@nonl
-#@-node:ekr.20090402072059.5:<< do some initial stuff >>
-#@+node:ekr.20090402072059.6:<< create the found node >>
-oldRoot = c.rootPosition()
-found = oldRoot.insertAfter()
-found.moveToRoot(oldRoot)
-c.setHeadString(found,'Found: ' + self.find_text)
-c.setRootPosition(found) # New in Leo 4.5.
-#@-node:ekr.20090402072059.6:<< create the found node >>
-#@+node:ekr.20090402072059.7:<< create a clone of p under the find node >>
-q = self.p.clone()
-q.moveToLastChildOf(found)
-#@-node:ekr.20090402072059.7:<< create a clone of p under the find node >>
-#@+node:ekr.20090402072059.8:<< Skip node if it's a child of a previously found node >>
-<< def: is a child of b >>
-
-is_child_of_previous = False
-for previously_found in positions:
-    if is_a_child_of_b(self.p, previously_found):
-        is_child_of_previous = True
-        break
-
-if is_child_of_previous:
-    continue
-#@nonl
-#@+node:ekr.20090402072059.9:<< def: is a child of b >>
-
-def is_a_child_of_b(a, b):
-    for child in b.children_iter():
-        if a.t == child.t:
-            return True
-        if is_a_child_of_b(a, child):
-            return True
-    return False
-#@nonl
-#@-node:ekr.20090402072059.9:<< def: is a child of b >>
-#@-node:ekr.20090402072059.8:<< Skip node if it's a child of a previously found node >>
-#@-node:ekr.20090402072059.4:@@@button my clone find all
-#@-node:ekr.20090402072059.2:clone-find-all-once
-#@-node:ekr.20090210093316.1:Features
-#@-node:ekr.20080814103428.4:4.6
-#@+node:ekr.20071211093011:4.7  autocompletion & vim
 #@+node:ekr.20090316072136.8:Defer loading of files?
 @nocolor-node
 
@@ -8438,6 +7245,10 @@ key to be re-executed.
 #@-node:ekr.20080616110054.2:Support vim dot command
 #@-node:ekr.20080603052650.466:Fix vim problems
 #@+node:ekr.20080730212711.7:Improve plugins
+#@+node:ekr.20090402072059.11:What should be done about @enabled-plugins nodes?
+# It's very confusing.
+#@nonl
+#@-node:ekr.20090402072059.11:What should be done about @enabled-plugins nodes?
 #@+node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@-node:ekr.20080313032655.2:Once a plugin is enabled, it is always enabled
 #@+node:ekr.20080923200153.1:Support scan-directives hook again?
@@ -9076,14 +7887,1021 @@ def revert (self,event=None):
 #@-node:ekr.20031218072017.2837:revert
 #@-node:ekr.20031218072017.2820:top level (file menu)
 #@-node:ekr.20061002093442:Add opml support to new,open, save commands
-#@-node:ekr.20090131200406.15:File features
-#@+node:ekr.20081215070651.5:Features 16
-#@+node:ekr.20081211085314.1:Smart Alt-RtArrow/Alt-LtArrow keys
+#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
+#@nonl
+#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
+#@+node:ekr.20090218115025.3:Why are attributes pickled by default?
 @nocolor-node
 
-Move up or down if can't move left or right.
+http://groups.google.com/group/leo-editor/browse_thread/thread/326a221f4c698f7a
+
+> On Wed, Feb 18, 2009 at 12:12 PM, Kent Tenney <ktenney@gmail.com> wrote:
+>>
+>> Currently, Leo pickles the value of unknown attributes unless
+>> the name starts with 'str_'
+>>
+>> Running the following code in node 'UA'
+>>
+>> p = c.currentPosition()
+>> p.v.u = {'hello':'world', 'str_hello':'world'}
+>>
+>> results in the following in the .leo file:
+>>
+>> <v t="ktenney.20090218114928.367" str_hello="world"
+>> hello="5505776f726c6471002e"><vh>UA</vh></v>
+>>
+>> I think this is surprising, Python-centric and contrary to the
+>> spirit of Leo as a flexible data management platform.
+>
+> I suppose your point is that you can't create an arbitrarily named attribute
+> with a string value. Does that create a real problem?
+
+It requires a translation layer, either to (un)munge the name or
+(un)pickle. Real problem?
+
+Let's say each time I think 'I can use UAs to store that' I change
+my mind when I realize my values will be in a pickle. (I really don't
+want to name all my attributes str_xxx)
+
+> As far as being Python-centric, can you suggest any other way of converting
+> arbitrary data to a text string?
+
+How is it done in any other XML file?
+I've not used XML for arbitrary data, but it probably can be done.
+
+> Why would that way be better than pickle?
+
+My suspicion is that UAs would be used more for
+storing text and numbers (as seems common for XML files)
+than Python data objects.
+
+Does Leo use UAs to store pickles?
+
+I'm sure pickling capability is great, but I'm not convinced
+it should be the _default._
+
+No big deal.
 #@nonl
-#@-node:ekr.20081211085314.1:Smart Alt-RtArrow/Alt-LtArrow keys
+#@-node:ekr.20090218115025.3:Why are attributes pickled by default?
+#@-node:ekr.20090131200406.15:File features
+#@+node:ekr.20090210093316.1:Features
+#@+node:ekr.20090402072059.23:Round-tripping rST files
+@nocolor-node
+
+- Create Leo directive corresponding to underline_characters option
+    default: '''#=+*^~"'`-:><_'''
+#@nonl
+#@-node:ekr.20090402072059.23:Round-tripping rST files
+#@+node:ekr.20090421121858.1:bzr branch for link nodes
+t
+#@nonl
+#@-node:ekr.20090421121858.1:bzr branch for link nodes
+#@+node:ekr.20090201122309.5:Improve macro commands
+@nocolor-node
+
+- The recording logic now returns the entire event.
+- The leoKeyEvent ctor now gets the stroke from self.actualEvent.
+- Recording ends with ctrl-g: a small changed to k.masterKeyHandler.
+- Playing back the macro just calls k.masterKeyHandler.
+- Pickle the minimal representation of a key event, namely the stroke.
+
+#@+node:ekr.20070228160107:class leoKeyEvent (leoGui)
+class leoKeyEvent:
+
+    '''A gui-independent wrapper for gui events.'''
+
+    def __init__ (self,event,c,stroke=None):
+
+        # g.trace('leoKeyEvent(leoGui)')
+        self.actualEvent = event
+        self.c      = c # Required to access c.k tables.
+        self.char   = hasattr(event,'char') and event.char or ''
+        self.keysym = hasattr(event,'keysym') and event.keysym or ''
+        self.state  = hasattr(event,'state') and event.state or 0
+        self.stroke = hasattr(event,'stroke') and event.stroke or ''
+        self.w      = hasattr(event,'widget') and event.widget or None
+        self.x      = hasattr(event,'x') and event.x or 0
+        self.y      = hasattr(event,'y') and event.y or 0
+        # Support for fastGotoNode plugin
+        self.x_root = hasattr(event,'x_root') and event.x_root or 0
+        self.y_root = hasattr(event,'y_root') and event.y_root or 0
+
+        if self.keysym and c.k:
+            # Translate keysyms for ascii characters to the character itself.
+            self.keysym = c.k.guiBindNamesInverseDict.get(self.keysym,self.keysym)
+
+        if stroke and not self.stroke:
+            self.stroke = self.actualEvent.stroke = stroke
+
+        self.widget = self.w
+
+    def __repr__ (self):
+
+        if self.stroke:
+            return 'leoGui.leoKeyEvent: stroke: %s' % (repr(self.stroke))
+        else:
+            return 'leoGui.leoKeyEvent: char: %s, keysym: %s' % (
+                repr(self.char),repr(self.keysym))
+#@nonl
+#@-node:ekr.20070228160107:class leoKeyEvent (leoGui)
+#@+node:ekr.20061031131434.146:masterKeyHandler & helpers
+master_key_count = 0
+
+def masterKeyHandler (self,event,stroke=None):
+
+    '''This is the handler for almost all key bindings.'''
+
+    << define vars >>
+    trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
+    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+    verbose = True
+
+    if keysym in special_keys:
+        if trace and verbose: g.trace('keysym',keysym)
+        return None
+    if traceGC: g.printNewObjects('masterKey 1')
+    if trace:
+        g.trace('stroke:',repr(stroke),'keysym:',
+            repr(event.keysym),'ch:',repr(event.char),'state',state)
+        # g.trace('callers',g.callers(5))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    # if stroke == 'Return': g.pdb()
+
+    # Handle keyboard-quit first.
+    if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        # g.trace('special case')
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.endKbdMacro()
+            return 'break'
+        else:
+            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+
+    if k.inState():
+        # This will return unless k.autoCompleterStateHandler
+        # (called from k.callStateFunction) returns 'do-standard-keys'
+        << handle mode bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 2')
+
+    if stroke and isPlain:
+        << handle special cases for plain keys >>
+
+    << handle per-pane bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 5')
+
+    return k.handleUnboundKeys(event,char,keysym,stroke)
+#@+node:ekr.20061031131434.147:<< define vars >>
+k = self ; c = k.c ; gui = g.app.gui
+
+if event:
+    # This is a leoGui base class event.
+    event = gui.leoKeyEvent(event,c,stroke=stroke)
+
+w = event.widget
+char = event.char
+keysym = event.keysym
+if stroke and not keysym:
+    event.keysym = keysym = stroke
+
+w_name = c.widget_name(w)
+state = k.state.kind
+
+special_keys = (
+    'Alt_L','Alt_R',
+    'Caps_Lock','Control_L','Control_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Num_Lock',
+    'Shift_L','Shift_R',
+    'Win_L','Win_R',
+)
+
+self.master_key_count += 1
+
+isPlain =  k.isPlainKey(stroke)
+#@nonl
+#@-node:ekr.20061031131434.147:<< define vars >>
+#@+node:ekr.20061031131434.149:<< handle mode bindings >>
+# First, honor minibuffer bindings for all except user modes.
+
+if state in ('getArg','getFileName','full-command','auto-complete'):
+    if k.handleMiniBindings(event,state,stroke):
+        return 'break'
+
+# Second, honor general modes.
+if state == 'getArg':
+    return k.getArg(event,stroke=stroke)
+elif state == 'getFileName':
+    return k.getFileName(event)
+elif state in ('full-command','auto-complete'):
+    # Do the default state action.
+    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
+    val = k.callStateFunction(event) # Calls end-command.
+    if val != 'do-standard-keys': return 'break'
+
+# Third, pass keys to user modes.
+else:
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        b = d.get(stroke)
+        if b:
+            if trace: g.trace('calling generalModeHandler',stroke)
+            k.generalModeHandler (event,
+                commandName=b.commandName,func=b.func,
+                modeName=state,nextMode=b.nextMode)
+            return 'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            if trace: g.trace('unbound key ends mode',stroke,state)
+            k.endMode(event)
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            handler(event)
+        else:
+            g.trace('No state handler for %s' % state)
+        return 'break'
+#@-node:ekr.20061031131434.149:<< handle mode bindings >>
+#@+node:ekr.20080510153327.4:<< handle special cases for plain keys >>
+# g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
+
+# Important: only keys bound somewhere have a stroke.
+# All unbound plain keys will be handled by handleUnboundKeys.
+
+if k.unboundKeyAction in ('insert','overwrite'):
+
+    for key in (k.unboundKeyAction,'body','log','text','all'):
+        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
+        d = k.masterBindingsDict.get(key,{})
+        if d:
+            b = d.get(stroke)
+            if b and b.commandName == 'auto-complete':
+                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
+                k.masterCommand(event,b.func,b.stroke,b.commandName)
+                return 'break'
+
+    if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
+    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+    return 'break'
+
+# Bound   plain keys in command mode are by the per-pane logic.
+# Unbound plain keys in command mode are ignored by handleUnboundKeys.
+
+# This code ignores all command-state keys if we are not in a text widget.
+elif k.unboundKeyAction == 'command':
+    if not g.app.gui.isTextWidget(w):
+        c.onCanvasKey(event)
+        return 'break'
+#@nonl
+#@-node:ekr.20080510153327.4:<< handle special cases for plain keys >>
+#@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
+keyStatesTuple = ('command','insert','overwrite')
+
+# g.trace('w_name',w_name,'stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
+
+for key,name in (
+    # Order here is similar to bindtags order.
+    ('command',None),
+    ('insert',None),
+    ('overwrite',None),
+    ('button',None),
+    ('body','body'),
+    ('text','head'), # Important: text bindings in head before tree bindings.
+    ('tree','head'),
+    ('tree','canvas'),
+    ('log', 'log'),
+    ('text','log'),
+    ('text',None),
+    ('all',None),
+):
+    if (
+        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+        name and w_name.startswith(name) or
+        key in ('text','all') and g.app.gui.isTextWidget(w) or
+        key in ('button','all')
+    ):
+        d = k.masterBindingsDict.get(key,{})
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+        # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
+        if d:
+            b = d.get(stroke)
+            if b:
+                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                if traceGC: g.printNewObjects('masterKey 3')
+                return k.masterCommand(event,b.func,b.stroke,b.commandName)
+#@-node:ekr.20061031131434.150:<< handle per-pane bindings >>
+#@+node:ekr.20061031131434.108:callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@-node:ekr.20061031131434.108:callStateFunction
+#@+node:ekr.20061031131434.152:handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('BackSpace','Return','Tab','Escape'):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName == 'replace-string' and state == 'getArg':
+                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
+                        return False # Let getArg handle it.
+                    elif b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit(event,hideTabs=True)
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocusNow() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@-node:ekr.20061031131434.152:handleMiniBindings
+#@+node:ekr.20080510095819.1:k.handleUnboudKeys
+def handleUnboundKeys (self,event,char,keysym,stroke):
+
+    k = self ; c = k.c ; trace = False
+    modesTuple = ('insert','overwrite')
+
+    if trace:
+        # if stroke: g.trace('***unexpected stroke***')
+        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        return 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
+        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
+        if trace: g.trace('ignoring unbound non-ascii key')
+        return 'break'
+
+    elif keysym.find('Escape') != -1:
+        # Never insert escape characters.
+        return 'break'
+
+    else:
+        if trace: g.trace(repr(stroke),'no func')
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+#@-node:ekr.20080510095819.1:k.handleUnboudKeys
+#@-node:ekr.20061031131434.146:masterKeyHandler & helpers
+#@+node:ekr.20061031131434.105:masterCommand & helpers
+def masterCommand (self,event,func,stroke,commandName=None):
+
+    '''This is the central dispatching method.
+    All commands and keystrokes pass through here.'''
+
+    k = self ; c = k.c ; gui = g.app.gui
+    trace = False or k.traceMasterCommand ; verbose = False
+    traceGC = False
+    if traceGC: g.printNewObjects('masterCom 1')
+
+    c.setLog()
+    c.startRedrawCount = c.frame.tree.redrawCount
+    k.stroke = stroke # Set this global for general use.
+    keysym = gui.eventKeysym(event)
+    ch = gui.eventChar(event)
+    w = gui.eventWidget(event)
+    state = event and hasattr(event,'state') and event.state or 0
+    k.func = func
+    k.funcReturn = None # For unit testing.
+    commandName = commandName or func and func.__name__ or '<no function>'
+    << define specialKeysyms >>
+    special = keysym in specialKeysyms
+    interesting = func is not None
+    inserted = not special
+
+    if trace: #  and interesting:
+        g.trace(
+            # 'stroke: ',stroke,'state:','%x' % state,'ch:',repr(ch),'keysym:',repr(keysym),
+            'w:',w and c.widget_name(w),'func:',func and func.__name__
+        )
+
+    if inserted:
+        # g.trace(stroke,keysym)
+        << add character to history >>
+
+    # We *must not* interfere with the global state in the macro class.
+    if c.macroCommands.recordingMacro:
+        c.macroCommands.startKbdMacro(event)
+        return 'break'
+
+    # g.trace(stroke,k.abortAllModesKey)
+
+    if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
+        k.keyboardQuit(event)
+        k.endCommand(event,commandName)
+        return 'break'
+
+    if special: # Don't pass these on.
+        return 'break' 
+
+    if 0: # *** This is now handled by k.masterKeyHandler.
+        if k.inState():
+            val = k.callStateFunction(event) # Calls end-command.
+            if val != 'do-func': return 'break'
+            g.trace('Executing key outside of mode')
+
+    if k.regx.iter:
+        try:
+            k.regXKey = keysym
+            k.regx.iter.next() # EKR: next() may throw StopIteration.
+        except StopIteration:
+            pass
+        return 'break'
+
+    if k.abbrevOn:
+        expanded = c.abbrevCommands.expandAbbrev(event)
+        if expanded: return 'break'
+
+    if func: # Func is an argument.
+        if commandName == 'propagate-key-event':
+            # Do *nothing* with the event.
+            return k.propagateKeyEvent(event)
+        elif commandName.startswith('specialCallback'):
+            # The callback function will call c.doCommand
+            if trace: g.trace('calling specialCallback for',commandName)
+            val = func(event)
+            # k.simulateCommand uses k.funcReturn.
+            k.funcReturn = k.funcReturn or val # For unit tests.
+        else:
+            # Call c.doCommand directly
+            if trace: g.trace('calling command directly',commandName)
+            c.doCommand(func,commandName,event=event)
+        if c.exists:
+            k.endCommand(event,commandName)
+            c.frame.updateStatusLine()
+        if traceGC: g.printNewObjects('masterCom 2')
+        return 'break'
+    elif k.inState():
+        return 'break' #Ignore unbound keys in a state.
+    else:
+        if traceGC: g.printNewObjects('masterCom 3')
+        val = k.handleDefaultChar(event,stroke)
+        if c.exists:
+            c.frame.updateStatusLine()
+        if traceGC: g.printNewObjects('masterCom 4')
+        return val
+#@nonl
+#@+node:ekr.20061031131434.106:<< define specialKeysyms >>
+specialKeysyms = (
+    'Alt_L','Alt_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Caps_Lock','Control_L','Control_R',
+    'Num_Lock',
+    'Shift_L','Shift_R',
+)
+#@nonl
+#@-node:ekr.20061031131434.106:<< define specialKeysyms >>
+#@+node:ekr.20061031131434.107:<< add character to history >>
+if stroke or len(ch) > 0:
+    if len(keyHandlerClass.lossage) > 99:
+        keyHandlerClass.lossage.pop()
+
+    # This looks like a memory leak, but isn't.
+    keyHandlerClass.lossage.insert(0,(ch,stroke),)
+#@-node:ekr.20061031131434.107:<< add character to history >>
+#@+node:ekr.20061031131434.109:callKeystrokeFunction (not used)
+def callKeystrokeFunction (self,event):
+
+    '''Handle a quick keystroke function.
+    Return the function or None.'''
+
+    k = self
+    numberOfArgs, func = k.keystrokeFunctionDict [k.stroke]
+
+    if func:
+        func(event)
+        commandName = k.inverseCommandsDict.get(func) # Get the emacs command name.
+        k.endCommand(event,commandName)
+
+    return func
+#@-node:ekr.20061031131434.109:callKeystrokeFunction (not used)
+#@+node:ekr.20061031131434.110:k.handleDefaultChar
+def handleDefaultChar(self,event,stroke):
+
+    k = self ; c = k.c
+    w = event and event.widget
+    name = c.widget_name(w)
+    trace = False
+
+    if trace: g.trace('widget_name',name,'stroke',stroke)
+
+    if stroke and (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1):
+        if trace: g.trace('*** ignoring unbound ctrl/alt key:',stroke)
+        return 'break'
+
+    if name.startswith('body'):
+        action = k.unboundKeyAction
+        if action in ('insert','overwrite'):
+            c.editCommands.selfInsertCommand(event,action=action)
+        else: # Ignore the key
+            if trace: g.trace('ignoring',stroke)
+        return 'break'
+    elif name.startswith('head'):
+        c.frame.tree.onHeadlineKey(event)
+        return 'break'
+    elif name.startswith('canvas'):
+        if not stroke: # Not exactly right, but it seems to be good enough.
+            c.onCanvasKey(event) # New in Leo 4.4.2
+        return 'break'
+    else:
+        # Let the widget handle the event.
+        # ch = event and event.char ; g.trace('to tk:',name,repr(ch))
+        return None
+#@-node:ekr.20061031131434.110:k.handleDefaultChar
+#@-node:ekr.20061031131434.105:masterCommand & helpers
+#@+node:ekr.20050920084036.190:macroCommandsClass
+class macroCommandsClass (baseEditCommandsClass):
+
+    '''Define the following commands:
+
+    call-kbd-macro
+    call-last-kbd-macro
+    load-kbd-macros
+    name-last-kbd-macro
+    print-macros
+    save-kbd-macros
+    start-kbd-macro
+    '''
+
+    @others
+#@nonl
+#@+node:ekr.20050920084036.191: ctor
+def __init__ (self,c):
+
+    baseEditCommandsClass.__init__(self,c) # init the base class.
+
+    self.lastMacro = None
+    self.macros = []
+    self.macro = []
+    self.namedMacros = {}
+
+    # Important: we must not interfere with k.state in startKbdMacro!
+    self.recordingMacro = False
+#@-node:ekr.20050920084036.191: ctor
+#@+node:ekr.20050920084036.192: getPublicCommands
+def getPublicCommands (self):
+
+    return {
+        'call-last-kbd-macro':  self.callLastKeyboardMacro,
+        'call-kbd-macro':       self.callNamedMacro,
+        'print-macros':         self.printMacros,
+        'name-last-kbd-macro':  self.nameLastKbdMacro,
+        'load-kbd-macros':      self.loadFile,
+        'save-kbd-macros':      self.saveMacros,
+        'start-kbd-macro':      self.startKbdMacro,
+    }
+#@-node:ekr.20050920084036.192: getPublicCommands
+#@+node:ekr.20050920085536.15:addToDoAltX (common helper)
+# Called from loadFile and nameLastKbdMacro.
+
+def addToDoAltX (self,name,macro):
+
+    '''Adds macro to Alt-X commands.'''
+
+    k= self ; c = k.c
+
+    g.trace(name,macro)
+
+    if name in c.commandsDict:
+        return False
+
+    def func (event,macro=macro):
+        return self.executeMacro(macro)
+
+    c.commandsDict [name] = func
+    self.namedMacros [name] = macro
+    return True
+#@-node:ekr.20050920085536.15:addToDoAltX (common helper)
+#@+node:ekr.20050920084036.202:callLastKeyboardMacro
+# Called from universal-command.
+
+def callLastKeyboardMacro (self,event):
+
+    '''Call the last recorded keyboard macro.'''
+
+    if self.lastMacro:
+        self.executeMacro(self.lastMacro)
+#@nonl
+#@-node:ekr.20050920084036.202:callLastKeyboardMacro
+#@+node:ekr.20050920084036.194:callNamedMacro
+def callNamedMacro (self,event):
+
+    '''Prompts for a macro name to save, then executes it.'''
+
+    k = self.k ; tag = 'macro-name'
+    state = k.getState(tag)
+    prompt = 'Call macro named: '
+
+    if state == 0:
+        k.setLabelBlue(prompt,protect=True)
+        k.getArg(event,tag,1,self.callNamedMacro)
+    else:
+        macro = self.namedMacros.get(k.arg)
+        # Must do this first!
+        k.clearState()
+        if macro:
+            self.executeMacro(macro)
+        else:
+            g.es('no macro named %s' % k.arg)
+        k.resetLabel()
+
+#@-node:ekr.20050920084036.194:callNamedMacro
+#@+node:ekr.20050920084036.206:endKbdMacro
+def endKbdMacro (self,event=None):
+
+    '''Stop recording a keyboard macro.'''
+
+    k = self.k
+    self.recordingMacro = False
+        # Tell k.masterKeyHandler and masterCommandHandler we are done.
+
+    if self.macro:
+        # self.macro = self.macro [: -4]
+        self.macros.insert(0,self.macro)
+        self.lastMacro = self.macro[:]
+        self.macro = []
+        k.setLabelBlue('Keyboard macro defined, not named')
+    else:
+        k.setLabelBlue('Empty keyboard macro')
+#@-node:ekr.20050920084036.206:endKbdMacro
+#@+node:ekr.20050920084036.203:executeMacro
+def executeMacro (self,macro):
+
+    c = self.c ; k = self.k
+
+    c.bodyWantsFocusNow()
+
+    for event in macro:
+        # New in Leo 4.6: macro entries are leoKeyEvents.
+        g.trace(event.stroke)
+        k.masterKeyHandler(event,stroke=event.stroke)
+#@-node:ekr.20050920084036.203:executeMacro
+#@+node:ekr.20050920084036.196:loadFile & helper
+def loadFile (self,event):
+
+    '''Asks for a macro file name to load.'''
+
+    fileName = g.app.gui.runOpenFileDialog(
+        title = 'Open Macro File',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    if not fileName: return
+
+    try:
+        f = open(fileName)
+        self.loadMacros(f)
+    except IOError:
+        g.es('can not open',fileName)
+#@+node:ekr.20050920084036.197:loadMacros
+def loadMacros (self,f):
+
+    '''Loads a macro file into the macros dictionary.'''
+
+    c = self.c ; w = c.frame.body.bodyCtrl
+    try:
+        d = pickle.load(f)
+    except pickle.UnpicklingError:
+        g.es('error unpickling %s' % f.name)
+        return
+
+    # g.trace(f.name,d)
+
+    for name in d:
+        aList = d.get(name)
+        macro = []
+        for stroke in aList:
+            # Create a dummy event with just enough attribute
+            # to keep k.masterKeyHandler happy
+            actualEvent = g.Bunch(stroke=stroke,char=stroke,widget=w)
+            event = g.app.gui.leoKeyEvent(actualEvent,c)
+            macro.append(event)
+        self.addToDoAltX(name,macro)
+            # sets self.namedMacros[name]=macro
+
+
+#@-node:ekr.20050920084036.197:loadMacros
+#@-node:ekr.20050920084036.196:loadFile & helper
+#@+node:ekr.20050920084036.198:nameLastKbdMacro
+def nameLastKbdMacro (self,event):
+
+    '''Prompt for the name to be given to the last recorded macro.'''
+
+    k = self.k ; state = k.getState('name-macro')
+
+    if state == 0:
+        k.setLabelBlue('Name of macro: ',protect=True)
+        k.getArg(event,'name-macro',1,self.nameLastKbdMacro)
+    else:
+        k.clearState()
+        name = k.arg
+        self.addToDoAltX(name,self.lastMacro)
+        k.setLabelGrey('Macro defined: %s' % name)
+#@-node:ekr.20050920084036.198:nameLastKbdMacro
+#@+node:ekr.20090201152408.1:printMacros
+def printMacros (self,event=None):
+
+    names = [z for z in self.namedMacros]
+    g.es(''.join(names),tabName='Macros')
+#@-node:ekr.20090201152408.1:printMacros
+#@+node:ekr.20050920084036.199:saveMacros & helpers
+def saveMacros (self,event=None):
+
+    '''Asks for a file name and saves it.'''
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile = None,
+        title='Save Macros',
+        filetypes = [("Text","*.txt"), ("All files","*")],
+        defaultextension = ".txt")
+
+    if not fileName: return
+
+    try:
+        f = open(fileName,'a+')
+        f.seek(0)
+        if f:
+            self.saveMacrosHelper(f)
+    except IOError:
+        g.es('can not create',fileName)
+
+#@+node:ekr.20050920084036.200:saveMacrosHelper
+def saveMacrosHelper( self,f):
+
+    '''Saves all named macros.'''
+
+    # fname = f.name
+    # try:
+        # macros = pickle.load( f )
+    # except Exception:
+        # macros = {}
+    # f.close()
+
+    d = {}
+    for name in self.namedMacros:
+        macro = self.namedMacros.get(name)
+        # Just save the essential part of the event.
+        # It must be picklable.
+        aList = [event.stroke for event in macro]
+        g.trace(name,aList)
+        d[name] = aList
+        # f = open( fname, 'w' )
+        pickle.dump(d, f )
+        f.close()
+#@-node:ekr.20050920084036.200:saveMacrosHelper
+#@-node:ekr.20050920084036.199:saveMacros & helpers
+#@+node:ekr.20050920084036.204:startKbdMacro
+def startKbdMacro (self,event):
+
+    '''Start recording a keyboard macro.'''
+
+    k = self.k
+
+    if not self.recordingMacro:
+        self.recordingMacro = True
+            # A flag for k.masterCommandHandler & k.masterKeyHandler.
+        k.setLabelBlue('Recording macro. ctrl-g to end...',protect=True)
+    else:
+        g.trace(event)
+        self.macro.append(event)
+#@-node:ekr.20050920084036.204:startKbdMacro
+#@-node:ekr.20050920084036.190:macroCommandsClass
+#@-node:ekr.20090201122309.5:Improve macro commands
+#@+node:ekr.20090402072059.2:clone-find-all-once
+@
+
+First do a normal clone-find-all for the word "clone". Then click the script
+button and do it again. Notice that children of previously found nodes don't get
+added again in the modified version.
+#@nonl
+#@+node:ekr.20060128080201:cloneFindAll
+def cloneFindAll (self,event):
+
+    c = self.c ; k = self.k ; tag = 'clone-find-all'
+    state = k.getState(tag)
+
+    if state == 0:
+        w = self.editWidget(event) # sets self.w
+        if not w: return
+        self.setupArgs(forward=None,regexp=None,word=None)
+        k.setLabelBlue('Clone Find All: ',protect=True)
+        k.getArg(event,tag,1,self.cloneFindAll)
+    else:
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        self.generalSearchHelper(k.arg,cloneFindAll=True)
+        c.treeWantsFocus()
+#@-node:ekr.20060128080201:cloneFindAll
+#@+node:ekr.20060128075225:cloneFindAllCommand
+def cloneFindAllCommand (self,event=None):
+
+    self.setup_command()
+    self.clone_find_all = True
+    self.findAll()
+    self.clone_find_all = False
+#@-node:ekr.20060128075225:cloneFindAllCommand
+#@+node:ekr.20031218072017.3073:findAll
+def findAll(self):
+
+    c = self.c ; w = self.s_ctrl ; u = c.undoer
+    undoType = 'Clone Find All'
+    if not self.checkArgs():
+        return
+    self.initInHeadline()
+    if self.clone_find_all:
+        self.p = None # Restore will select the root position.
+    data = self.save()
+    self.initBatchCommands()
+    count = 0 ; clones = []
+    while 1:
+        pos, newpos = self.findNextMatch()
+        if pos is None: break
+        count += 1
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if not self.clone_find_all:
+            self.printLine(line,allFlag=True)
+        if self.clone_find_all and self.p.v.t not in clones:
+            # g.trace(self.p.v.t,self.p.h)
+            if not clones:
+                undoData = u.beforeInsertNode(c.p)
+                << create the found node >>
+            clones.append(self.p.v.t)
+            << create a clone of p under the find node >>
+
+    if self.clone_find_all and clones:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        c.selectPosition(found)
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw()
+    g.es("found",count,"matches")
+#@+node:ekr.20051113110735:<< create the found node >>
+oldRoot = c.rootPosition()
+found = oldRoot.insertAfter()
+found.moveToRoot(oldRoot)
+c.setHeadString(found,'Found: ' + self.find_text)
+c.setRootPosition(found) # New in Leo 4.5.
+#@-node:ekr.20051113110735:<< create the found node >>
+#@+node:ekr.20051113110851:<< create a clone of p under the find node >>
+q = self.p.clone()
+q.moveToLastChildOf(found)
+#@-node:ekr.20051113110851:<< create a clone of p under the find node >>
+#@-node:ekr.20031218072017.3073:findAll
+#@+node:ekr.20090402072059.4:@@@button my clone find all
+import leo.core.leoFind as leoFind 
+
+def new_find_all(self):
+    << do some initial stuff >>
+
+
+    while 1:
+        pos, newpos = self.findNextMatch()
+        if pos is None: break
+
+        if count % 10 == 0 and count > 0:
+            g.es("still searching, matches found: ", count)
+
+        << Skip node if it's a child of a previously found node >>
+
+        count += 1
+
+        s = w.getAllText()
+        i,j = g.getLine(s,pos)
+        line = s[i:j]
+        if not self.clone_find_all:
+            self.printLine(line,allFlag=True)
+        if self.clone_find_all and self.p.v.t not in clones:
+            # g.trace(self.p.v.t,self.p.h)
+            if not clones:
+                undoData = u.beforeInsertNode(c.p)
+                << create the found node >>
+            clones.append(self.p.v.t)
+            positions.append(self.p)
+            << create a clone of p under the find node >>
+
+    if self.clone_find_all and clones:
+        u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
+        c.selectPosition(found)
+        c.setChanged(True)
+
+    self.restore(data)
+    c.redraw()
+    g.es("found",count,"matches")
+
+
+leoFind.leoFind.findAll = new_find_all
+
+c.executeMinibufferCommand("clone-find-all") 
+#@+node:ekr.20090402072059.5:<< do some initial stuff >>
+g.es("findAll..., self: ", self)
+
+c = self.c ; w = self.s_ctrl ; u = c.undoer
+undoType = 'Clone Find All'
+if not self.checkArgs():
+    return
+self.initInHeadline()
+if self.clone_find_all:
+    self.p = None # Restore will select the root position.
+data = self.save()
+self.initBatchCommands()
+count = 0 ; clones = []; positions = []
+#@nonl
+#@-node:ekr.20090402072059.5:<< do some initial stuff >>
+#@+node:ekr.20090402072059.6:<< create the found node >>
+oldRoot = c.rootPosition()
+found = oldRoot.insertAfter()
+found.moveToRoot(oldRoot)
+c.setHeadString(found,'Found: ' + self.find_text)
+c.setRootPosition(found) # New in Leo 4.5.
+#@-node:ekr.20090402072059.6:<< create the found node >>
+#@+node:ekr.20090402072059.7:<< create a clone of p under the find node >>
+q = self.p.clone()
+q.moveToLastChildOf(found)
+#@-node:ekr.20090402072059.7:<< create a clone of p under the find node >>
+#@+node:ekr.20090402072059.8:<< Skip node if it's a child of a previously found node >>
+<< def: is a child of b >>
+
+is_child_of_previous = False
+for previously_found in positions:
+    if is_a_child_of_b(self.p, previously_found):
+        is_child_of_previous = True
+        break
+
+if is_child_of_previous:
+    continue
+#@nonl
+#@+node:ekr.20090402072059.9:<< def: is a child of b >>
+
+def is_a_child_of_b(a, b):
+    for child in b.children_iter():
+        if a.t == child.t:
+            return True
+        if is_a_child_of_b(a, child):
+            return True
+    return False
+#@nonl
+#@-node:ekr.20090402072059.9:<< def: is a child of b >>
+#@-node:ekr.20090402072059.8:<< Skip node if it's a child of a previously found node >>
+#@-node:ekr.20090402072059.4:@@@button my clone find all
+#@-node:ekr.20090402072059.2:clone-find-all-once
 #@+node:ekr.20081202093528.2:Put new commands in leoEditCommands.py
 #@+node:ekr.20081202093528.19:@command complete-previous
 wordsep = u'., -+\n\r[]{}<>=-+*&%$#@!"\'?/\\|^()~`:;'
@@ -9486,10 +9304,6 @@ for p in c.allNodes_iter():
 #@-node:ekr.20070624135822:Templates for common code fragments
 #@+node:ekr.20081119132758.2:Support @ifgui in settings trees
 #@-node:ekr.20081119132758.2:Support @ifgui in settings trees
-#@+node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
-xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"
-#@nonl
-#@-node:ekr.20071003104917:Make http://edreamleo.org/namespaces/leo-python-editor/1.1 Leo's official namespace
 #@+node:ekr.20080803063553.4:Allow translation/abbreviation for any Leo directive, including headline directives
 #@-node:ekr.20080803063553.4:Allow translation/abbreviation for any Leo directive, including headline directives
 #@+node:ekr.20080826074455.1:Look into ttk for Python 2.6
@@ -9578,9 +9392,8 @@ down some data. If the headline string is too long, the cursor goes
 beyond the visible area. When modifying a node headline, is it
 possible to make leo to auto-scroll, so the cursor is always visible? 
 #@-node:ekr.20080806054207.3:Auto scroll outline pane if headline would become invisible
-#@-node:ekr.20081215070651.5:Features 16
-#@-node:ekr.20071211093011:4.7  autocompletion & vim
-#@+node:ekr.20071211091355:Other/Minor
+#@-node:ekr.20090210093316.1:Features
+#@+node:ekr.20071211091355:Other features
 #@+node:ekr.20071001052501:Versioning for nodes
 @nocolor
 
@@ -9593,8 +9406,6 @@ SCS as a back-up system, saving many (uninteresting) intermediate steps while
 implementing a new feature.
 #@nonl
 #@-node:ekr.20071001052501:Versioning for nodes
-#@+node:ekr.20070220082124:Make sure Leo can generate Latex
-#@-node:ekr.20070220082124:Make sure Leo can generate Latex
 #@+node:ekr.20070521105645:Improve api docs with epydoc?
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=4319363
@@ -9643,124 +9454,8 @@ Edward
 
 P.S.  I think it would be good style to append "Class" to the name of each command class. This makes it clear that self.myCommandClass(self) is a ctor.
 #@-node:ekr.20080628095358.1:Make each Leo command a class
-#@-node:ekr.20071211091355:Other/Minor
-#@+node:ekr.20071029082025:Improve distribution
-#@+node:ekr.20070929125944:Emulate Orange's download philosophy
-@nocolor
-
-http://sourceforge.net/forum/message.php?msg_id=4543089
-By: billp9619
-
-from the download page:
-
-If it's the first time you hear about Python, this is the installation for you.
-The packages includes complete Orange, Python, Windows Extensions for Python
-(PythonWin), Numeric Python, Qt 2.2 non-commercial, PyQt, PyQwt and GraphViz.
-
-Leo should copy this download philosophy.
-
-
-
-#@-node:ekr.20070929125944:Emulate Orange's download philosophy
-#@+node:ekr.20070615063616.1:Create Debian package
-#@-node:ekr.20070615063616.1:Create Debian package
-#@-node:ekr.20071029082025:Improve distribution
-#@+node:ekr.20060306194040:Leo Video
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3615177
-By: ktenney
-
-High on my ToLearn list is vnc2swf
-http://www.unixuser.org/~euske/vnc2swf/
-
-
-http://sourceforge.net/forum/message.php?msg_id=3615278
-By: James
-
-A lot of people are now using Wink for demonstrations
-(http://www.debugmode.com/wink/), it's is free and seems to work well.
-
-Check out http://murl.se/11332
-At the bottom they talk about tools and techniques.
-http://showmedo.com seems like it would be a good
-place to host vids also.
-
-I've listened/watched a fair number of things like this;
-my recomendation is to get a good microphone and
-pre-amp to record your voice, and prepare the audio
-track carefully. It is so aggravating when
-it's hard to discern the words being spoken.
-
-Thanks,
-Kent
-#@nonl
-#@+node:ekr.20060531134434:Tutorials
-http://sourceforge.net/forum/message.php?msg_id=3758271
-
-From: Rich
-
-Tutorials would be great. I use Liberty BASIC, (http://libertybasic.conforums.com)
-and it has a very good tutorial -- leads the beginner by the hand through much
-of the language. Also the help file has working code snippets
-to cut-n-paste-n-play-with. I'd like to see something like:
-
-[Buttons]
-...[What are Buttons good for?]
-...[How do I make my own buttons?]
-......[Some commands you can use with buttons]
-......[Where to find button commands]
-#@nonl
-#@-node:ekr.20060531134434:Tutorials
-#@+node:ekr.20060531134434.1:Screencasts
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3758303
-By: ktenney
-
-My sense is that documentation/screencasts has the
-greatest potential for expanding Leo's mindshare.
-
-I really like those produced by the good folks
-at Dabo;
-http://leafe.com/screencasts/
-http://leafe.com/screencasts/populategrid.html
-
-The TurboGears people have taken this to the extreme;
-http://www.turbogears.org/ultimate.html
-
-Leo is different enough that it warrants a 
-demonstration of it's advantages.
-
--------------------
-
-https://sourceforge.net/forum/message.php?msg_id=4396251
-By: ktenney
-
-2 good screencasts on making screencasts;
-
-http://murl.se/26296
-#@-node:ekr.20060531134434.1:Screencasts
-#@+node:ekr.20060829103523:Render Leo slideshows
-@nocolor
-
-http://sourceforge.net/forum/message.php?msg_id=3889246
-By: terry_n_brown
-
-Three packages that might be candidates for "rendering" slides authored in Leo:
-
-MagicPoint: http://member.wide.ad.jp/wg/mgp/
-
-  uses a text file format that leo could produce
-
-Slidy: http://www.w3.org/Talks/Tools/Slidy/
-
-  uses XHTML / canned Java script
-
-S5: http://meyerweb.com/eric/tools/s5/
-
-  Similar to Slidy I think, haven't looked at it
-#@nonl
-#@-node:ekr.20060829103523:Render Leo slideshows
-#@-node:ekr.20060306194040:Leo Video
+#@-node:ekr.20071211091355:Other features
+#@-node:ekr.20071211093011:4.7 flexibility
 #@-all
 
 Major projects:

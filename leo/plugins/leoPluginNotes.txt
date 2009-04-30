@@ -2,6 +2,22 @@
 #@+node:ekr.20090430075506.3:@thin leoPluginNotes.txt
 #@+all
 #@+node:ekr.20090430075506.6:To do
+#@+node:ekr.20090430102730.3:Add expand_noweb_references for rst3 plugin
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
+
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
+
+- Add support for the following options:
+    - expand_noweb_references: default False for compatibility.
+    - ignore_noweb definitions: default False for compatibility.
+
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
+#@-node:ekr.20090430102730.3:Add expand_noweb_references for rst3 plugin
 #@-node:ekr.20090430075506.6:To do
 #@+node:ekr.20090430075506.5:4.6 b2 projects
 #@+node:ekr.20090430075506.1:Honor @path in rst3 plugin
