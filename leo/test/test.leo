@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5,0,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -2771,7 +2771,6 @@ print c.k.autoCompleter.objectDict.keys()
 <t tx="ekr.20090430080001.2">.. test of sections references
 
 @ @rst-options
-code_block_string =\n.. class:: code\n..\n\n::\n
 code_mode=False
 generate_rst=True
 generate_rst_header_comment = True
@@ -2818,6 +2817,7 @@ section a, last line</t>
 <t tx="ekr.20090430124352.10">@ @rst-options
 number_code_lines = False
 show_doc_parts_as_paragraphs = True
+code_block_string =\n.. class:: code\n..\n\n::\n
 </t>
 <t tx="ekr.20090430124352.11">@ This is section c.
 @c
