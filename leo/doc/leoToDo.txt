@@ -1211,6 +1211,8 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 #@-node:ekr.20090430092048.4:Fix all qt bugs
 #@-node:ekr.20090430092048.1:Before 4.6 b2
 #@+node:ekr.20090430092048.7:Before 4.6 final
+#@+node:ekr.20090430122648.1:Generate pdf versions of docs
+#@-node:ekr.20090430122648.1:Generate pdf versions of docs
 #@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
 http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
 #@nonl
@@ -1223,8 +1225,6 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
 #@+node:ekr.20090226080753.6:Finish the wiki intro
 #@-node:ekr.20090226080753.6:Finish the wiki intro
 #@-node:ekr.20090430092048.3:Rewrite docs using stories
-#@+node:ekr.20070220082124:Make sure Leo can generate Latex
-#@-node:ekr.20070220082124:Make sure Leo can generate Latex
 #@+node:ekr.20070615063616.1:Create Debian package
 #@-node:ekr.20070615063616.1:Create Debian package
 #@-node:ekr.20090430092048.7:Before 4.6 final
