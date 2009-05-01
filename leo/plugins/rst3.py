@@ -788,6 +788,7 @@ class rstClass:
             'rst3_show_headlines': True,  # Can be set by @rst-no-head headlines.
             'rst3_show_organizer_nodes': True,
             'rst3_show_options_nodes': False,
+            'rst3_show_sections': True,
             'rst3_strip_at_file_prefixes': True,
             'rst3_show_doc_parts_in_rst_mode': True,
             # Formatting options that apply only to code mode.
@@ -1784,10 +1785,13 @@ class rstClass:
 
         if not h.strip(): return
 
-        if self.getOption('generate_rst'):
-            self.write('%s\n%s\n' % (h,self.underline(h,p)))
+        if self.getOption('show_sections'):
+            if self.getOption('generate_rst'):
+                self.write('%s\n%s\n' % (h,self.underline(h,p)))
+            else:
+                self.write('\n%s\n' % h)
         else:
-            self.write('\n%s\n' % h)
+            self.write('\n**%s**\n\n' % h.replace('*',''))
     #@-node:ekr.20060608102001:writeHeadlineHelper
     #@-node:ekr.20050805162550.26:writeHeadline & helper
     #@+node:ekr.20050810083057:writeNode
