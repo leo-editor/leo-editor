@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="3,21,0,3"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -54,11 +54,9 @@
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848" a="M"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
-<v t="ekr.20080301071818.1"
-marks="ekr.20080306071848,"
-expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
+<v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20090428101858.1"><vh>How to generate Leo's Sphinx docs</vh></v>
 <v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
 <v t="ekr.20090401113141.2"><vh>@rst c:\prog\test\test.html</vh>
@@ -111,25 +109,32 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links</vh></v>
 <v t="ekr.20090212054250.5"><vh>Getting Leo</vh>
+<v t="ekr.20090501091345.2"><vh>@rst-option show-sections = False</vh>
 <v t="ekr.20090212054250.6"><vh>Where can I get official releases of Leo?</vh></v>
 <v t="ekr.20080603124653.1"><vh>How do I use bzr to get the latest sources from Leo's launchpad site?</vh></v>
 <v t="ekr.20090212054250.7"><vh>How can I get recent bzr snapshots of Leo?</vh></v>
 </v>
+</v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
+<v t="ekr.20090501093330.1"><vh>@rst-option show-sections = False</vh>
 <v t="ekr.20090202191501.7"><vh>Leo's installer failed, what do I do?</vh></v>
 <v t="ekr.20060329101442"><vh>Nothing (or almost nothing) happens when I start Leo.  What should I do?</vh></v>
 <v t="ekr.20050830115714.75"><vh>Leo is hanging on my Linux box.  What should I do?</vh></v>
 <v t="ekr.20070623145346.1"><vh>Running Python setup.py install from the leo directory doesn't work.  Why not?</vh></v>
 </v>
+</v>
 <v t="ekr.20050830115714.1"><vh>Learning to use Leo</vh>
+<v t="ekr.20090501093330.2"><vh>@rst-option show-sections = False</vh>
 <v t="ekr.20050830115714.2"><vh>What's the best way to learn to use Leo?</vh></v>
 <v t="ekr.20050830115714.4"><vh>Why should I use clones?</vh></v>
 <v t="ekr.20050830115714.5"><vh>Which should I use: @root trees or @file trees?</vh></v>
 <v t="ekr.20050830115714.7"><vh>When is using a section better than using a method?</vh></v>
 <v t="ekr.20060111192108"><vh>When is deleting a node dangerous?</vh></v>
 </v>
+</v>
 <v t="ekr.20050830115714.12"><vh>How should I use Leo with bzr?</vh></v>
 <v t="ekr.20050830115714.13"><vh>Using derived files</vh>
+<v t="ekr.20090501093330.3"><vh>@rst-option show-sections = False</vh>
 <v t="ekr.20050830115714.14"><vh>How do I inhibit sentinels in derived files?</vh></v>
 <v t="ekr.20050830115714.16"><vh>How do I prevent Leo from expanding sections?</vh></v>
 <v t="ekr.20050830115714.18"><vh>How can I create Javascript comments?</vh></v>
@@ -142,14 +147,18 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20060529053407"><vh>Why can't I use @ignore directives in @thin and @file trees?</vh></v>
 <v t="shadow.20080825171547.9"><vh>How can I avoid getting long lines in derived files?</vh></v>
 </v>
+</v>
 <v t="ekr.20050830115714.26"><vh>Customizing Leo</vh>
+<v t="ekr.20090501093330.4"><vh>@rst-option show-sections = False</vh>
 <v t="ekr.20050830115714.29"><vh>How can I add support for a new language?</vh></v>
 <v t="ekr.20050830115714.30"><vh>How do I submit a plugin?</vh></v>
 <v t="ekr.20050830120844"><vh>How do I add a new menu item from a plugin?</vh></v>
 <v t="ekr.20060805094325"><vh>How can I use Leo's legacy key bindings?</vh></v>
 <v t="ekr.20060915112109"><vh>How can I enable and disable support for psyco?</vh></v>
 </v>
+</v>
 <v t="ekr.20050830115714.118"><vh>Tips and techniques</vh>
+<v t="ekr.20090501093330.5"><vh>@rst-option show-sections = False</vh>
 <v t="ekr.20080527063511.1"><vh>What is an easy way to profile code?</vh></v>
 <v t="ekr.20070622185234"><vh>How can I do a simple find and replace?</vh></v>
 <v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
@@ -160,7 +169,9 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20050830115714.116"><vh>How can I show Leo files with Excel?</vh></v>
 <v t="ekr.20060822111759"><vh>How can I reuse @button nodes in multiple files?</vh></v>
 </v>
+</v>
 <v t="ekr.20050830115714.76"><vh>Trouble shooting</vh>
+<v t="ekr.20090501093330.6"><vh>@rst-option show-sections = False</vh>
 <v t="ekr.20090130144433.1"><vh>How do I get help?</vh></v>
 <v t="ekr.20090130144433.2"><vh>How do I report bugs?</vh></v>
 <v t="ekr.20080813064908.2"><vh>My old .leo files won't load using Leo 4.5 or later. What should I do?</vh></v>
@@ -180,12 +191,15 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20070623145346.1"></v>
 <v t="ekr.20070816092449"><vh>I can't run the LeoBridge module outside of leo/core.  What should I do?</vh></v>
 </v>
+</v>
 <v t="ekr.20071026055929"><vh>Unicode issues</vh>
+<v t="ekr.20090501093330.7"><vh>@rst-option show-sections = False</vh>
 <v t="ekr.20061021164213"><vh>I can not enter non-ascii characters.  What can I do?</vh></v>
 <v t="ekr.20050830115714.9"><vh>Some characters in derived files look funny. What can I do?</vh></v>
 <v t="ekr.20060917130130"><vh>I get weird results when defining unicode strings in scripts.  What is going on?</vh></v>
 <v t="ekr.20050830115714.10"><vh>Some characters are garbled when importing files. What can I do?</vh></v>
 <v t="ekr.20071026055929.1"><vh>Python's print statement shows 'byte hash' for unicode characters.  What can I do?</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -685,12 +699,12 @@ expanded="ekr.20080301075734.4,"><vh>@thin html/front.html</vh></v>
 <v t="ekr.20071021101506"><vh>@rst-ignore menu convenience routines</vh></v>
 </v>
 </v>
-<v t="ekr.20050831184021.1"><vh>Chapter 14: Using the rst3 plugin</vh>
-<v t="ekr.20050818163826"><vh>@rst html\rstplugin3.html</vh>
+<v t="ekr.20050831184021.1" a="E"><vh>Chapter 14: Using the rst3 plugin</vh>
+<v t="ekr.20050818163826" a="E"><vh>@rst html\rstplugin3.html</vh>
 <v t="ekr.20050818163826.1"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050818163826.2"><vh>Overview</vh></v>
 <v t="ekr.20050818163826.3"><vh>Comparison with previous rst plugins</vh></v>
-<v t="ekr.20050818163826.4"><vh>Options</vh>
+<v t="ekr.20050818163826.4" a="E"><vh>Options</vh>
 <v t="ekr.20050818163826.5"><vh>Options supporting the http plugin</vh></v>
 <v t="ekr.20050818163826.6"><vh>Options that set command names</vh></v>
 </v>
@@ -9697,6 +9711,18 @@ generate_rst_header_comment (default: True)
 number_code_lines (default: True)
     Controls whether to number code lines in code mode.
     This option has no effect in rst mode.
+    
+publish-argv-for-missing-stylesheets (Default: '')
+    The arguments to be passed to docutils.core.Publisher().publish()
+    when no stylesheet is in effect.
+    This is a string that represents a comma-separated list of strings:
+    For example, the option::
+
+        publish-argv-for-missing-stylesheets=--language=de,--documentclass=report,--use-latex-toc
+        
+    results in the call::
+        
+        publish(['--language=de','--documentclass=report','--use-latex-toc'])
 
 show_doc_parts_as_paragraphs (default: False)
     True: Move doc parts outside of the code-block directive in code mode.
@@ -9761,6 +9787,12 @@ show_organizer_nodes (default: True)
     True: generate rST sections for nodes that do not contain body text.
     This option has no effect unless the rST section would otherwise be written.
     
+show_sections (default: True)
+    True: generate rST sections corresponding to headlines.
+    False: don't generate sections.  Instead, generate lines of the form::
+
+        **headline**
+    
 strip_at_file_prefixes (default: True)
     True: remove @auto, @file, @nosent and @thin from the start of headlines.
 
@@ -9781,20 +9813,7 @@ write_intermediate_file (default: False)
     True: writes intermediate files before sending them to docutils.
     This option only applies to .htm, .html and .tex files.
     The name of the intermediate file has the name of the output file with .txt appended.
-    This option has effect only if the generate_rst option is True.
-    
-publish-argv-for-missing-stylesheets (Default: '')
-    The arguments to be passed to docutils.core.Publisher().publish()
-    when no stylesheet is in effect.
-    This is a string that represents a comma-separated list of strings:
-    For example, the option::
-
-        publish-argv-for-missing-stylesheets=--language=de,--documentclass=report,--use-latex-toc
-        
-    results in the call::
-        
-        publish(['--language=de','--documentclass=report','--use-latex-toc'])
-</t>
+    This option has effect only if the generate_rst option is True.</t>
 <t tx="ekr.20050818163826.5">The following options are for the use of Bernhard Mulder's http plugin.  The http plugin creates an http server running on a local port, typically 8080.  When the http plugin is running you will see a purple message in the log window that looks something like this::
 
     http serving enabled on port 8080, version 0.91
@@ -11788,8 +11807,8 @@ FAQ
 
 This is Leo's Frequently Asked Questions document.
 
-.. contents::
-    :depth: 2
+.. .. contents::
+..    :depth: 2
 
 </t>
 <t tx="ekr.20050830115714.1"></t>
@@ -31180,7 +31199,7 @@ html_theme_options = {
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = ["_themes"]
+#html_theme_path = ["_themes"]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "&lt;project&gt; v&lt;release&gt; documentation".
@@ -31212,7 +31231,7 @@ html_static_path = ['_static']
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-html_sidebars = {'FAQ':'noSideBar.txt'}
+# html_sidebars = {'FAQ':'noSideBar.txt'}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
@@ -31288,6 +31307,14 @@ publish_argv_for_missing_stylesheets=--language=ca,--use-latex-toc,--output-enco
 @c
 
 This is a test</t>
+<t tx="ekr.20090501091345.2"></t>
+<t tx="ekr.20090501093330.1"></t>
+<t tx="ekr.20090501093330.2"></t>
+<t tx="ekr.20090501093330.3"></t>
+<t tx="ekr.20090501093330.4"></t>
+<t tx="ekr.20090501093330.5"></t>
+<t tx="ekr.20090501093330.6"></t>
+<t tx="ekr.20090501093330.7"></t>
 <t tx="shadow.20080825171547.9">**Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
 line when it gets written to the derived file?
