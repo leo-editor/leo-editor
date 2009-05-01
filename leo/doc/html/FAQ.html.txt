@@ -1,0 +1,1328 @@
+.. rst3: filename: html\FAQ.html
+
+####
+FAQ
+####
+
+This is Leo's Frequently Asked Questions document.
+
+.. .. contents::
+..    :depth: 2
+
+.. Links used in this document...
+
+.. ----- External links.
+
+.. _`cvs repository`:   http://sourceforge.net/cvs/?group_id=3458
+.. _decorator:          http://www.python.org/peps/pep-0318.html
+.. _docutils:           http://docutils.sourceforge.net/
+.. _unicode:            http://www.unicode.org/
+.. _`bzr repository`:   https//code.launchpad.net/leo-editor/
+
+.. ----- Relative links into Leo's documentation.
+
+.. _`Associating Leo with .leo Files`:  install.html#how-to-associate-leo-with-leo-files-on-windows
+.. _`How to install Leo on Windows`:    install.html#how-to-install-leo-on-windows
+
+.. _`CWEB mode`:                                directives.html#cweb-mode
+.. _command:                                    commands.html
+.. _commands:                                   commands.html
+.. _`quick start for programmers`:              intro.html#quick-start-for-programmers
+.. _`rst3 plugin`:                              rstplugin3.html
+.. _`Run Leo from a console window`:            `How can I run Leo from a console window?`_
+.. _`Tangle and Untangle`:                      commands.html#tangling-an-outline-producing-derived-files
+.. _tutorial:                                   intro.html
+.. _`Leo 4.0: Eliminating error 'recovery'`:    history.html#leo-4-0-eliminating-error-recovery
+.. _`Chapter 9: History of Leo`:                history.html
+
+.. ----- References to the glossary: the glossary now contains references to the tutorial.
+.. _`@asis`:                glossary.html#asis-trees
+.. _`@file`:                glossary.html#file-trees
+.. _`@others directive`:    glossary.html#others
+.. _`@noref`:               glossary.html#noref
+.. _`@nosent`:              glossary.html#nosent
+.. _`@root`:                glossary.html#root
+.. _`@thin`:                glossary.html#thin-trees
+.. _`@unit`:                glossary.html#unit
+.. _`body text`:            glossary.html#body-text
+.. _cweb:                   glossary.html#cweb
+.. _directive:              glossary.html#directive
+.. _directives:             glossary.html#directives
+.. _`derived file`:         glossary.html#derived-file
+.. _`derived files`:        glossary.html#derived-files
+.. _headline:               glossary.html#headline
+.. _headlines:              glossary.html#headlines
+.. _node:                   glossary.html#node
+.. _nodes:                  glossary.html#nodes
+.. _outliner:               glossary.html#outliner
+.. _sections:               glossary.html#sections
+.. _`section name`:         glossary.html#section-name
+.. _`section names`:        glossary.html#section-names
+.. _sentinels:              glossary.html#sentinels
+.. _`sentinel line`:        glossary.html#sentinel
+.. _`sentinel lines`:       glossary.html#sentinel
+.. _setting:                glossary.html#setting
+.. _settings:               glossary.html#settings
+.. _tangle:                 glossary.html#tangle
+.. _untangle:               glossary.html#untangle
+
+Getting Leo
++++++++++++
+
+
+**Where can I get official releases of Leo?**
+
+You can get the latest official releases of Leo at
+http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
+
+However, if at all possible, it is better to use bzr to get the latest sources.  See the next entry.
+
+
+**How do I use bzr to get the latest sources from Leo's launchpad site?**
+
+Many users will want to track the development version of Leo, in order to stay
+on top of the latest features and bugfixes. Running the development version is
+quite safe and easy, and it's also a requirement if you want to contribute to
+Leo.
+
+1. First, you need to get Bazaar (bzr) from http://bazaar-vcs.org. For windows
+   users we recommend the standalone installer - the python installer may have
+   problems pushing to Launchpad. Plain bzr installer only contains the command
+   line version, so you might want to augment that with a friendly GUI - qbzr is
+   recommended as it's the easiest one to install. It provides command like
+   ``bzr qlog``, ``bzr qannotate`` etc.
+
+2. Get Leo from launchpad by doing::
+
+    bzr branch lp:leo-editor
+
+And that's it! You can run the launchLeo script (in the top-level branch directory) directly.
+When you want to refresh the code with latest modifications from Launchpad, run ``bzr pull``.
+
+If you make modifications to Leo (with the interest in sharing them with the Leo
+community), you can check them in to your local branch by doing ``bzr checkin``.
+Now, to actually request your changes to be merged to Leo trunk, you need a
+Launchpad account with RSA keys in place. There is showmedo video about how to
+accomplish this on Windows using puttygen and pageant at
+``http://showmedo.com/videos/video?name=1510070&fromSeriesID=151``.
+
+After your Launchpad account is set up, go to
+``https://launchpad.net/leo-editor``, choose Code tab -> Register Branch, select
+Branch type "Hosted" and fill in descriptive details about the branch. After
+that, go to the branch home page from Code tab again, and copy-paste the push
+command line to terminal. For example, for branch::
+
+ https://code.launchpad.net/~leo-editor-team/leo-editor/mod_rclick
+
+The push command is::
+
+ bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/mod_rclick
+
+You may wish to add --remember command line option to bzr push, to direct all
+future pushes to that location. Then, you only need to execute ``bzr push``.
+
+After your branch is pushed, you can email the Leo mailing list and request it
+to be reviewed and merged to trunk.
+
+-- Ville M. Vainio - vivainio.googlepages.com
+
+
+**How can I get recent bzr snapshots of Leo?**
+
+Daily snapshots are available at http://www.greygreen.org/leo/
+
+Installing Leo
+++++++++++++++
+
+
+**Leo's installer failed, what do I do?**
+
+@nocolor
+
+You can simply unpack Leo anywhere and run from there.  You don't need the
+installer.
+
+From a console window, cd to the top-level leo folder.  Run Leo as follows::
+
+    python launchLeo.py
+
+To run Leo with Qt look and feel, use the --gui=qt option::
+
+    python launchLeo.py --gui=qt
+
+To load Leo's source, load leoPyRef.leo::
+
+    python launchLeo.py --gui=qt leo\core\leoPyRef.leo
+
+
+**Nothing (or almost nothing) happens when I start Leo.  What should I do?**
+
+Missing modules can cause installation problems.
+If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file
+as described at `How to install Leo on Windows`_.
+However you are installing Leo,
+be sure to `run Leo from a console window`_
+because as a last resort Leo prints error messages to the console.
+
+
+**Leo is hanging on my Linux box.  What should I do?**
+
+From: http://sourceforge.net/forum/message.php?msg_id=1685399
+
+When building Tcl on Linux, do not specify "--enable-threads"
+Only use Tcl with the default "threads not enabled" case.
+
+Here is how to build Tk without thread support:
+
+- Go to www.tcl.tk, and download the sources for Tcl and Tk.
+- Build those two pack's as is told in the "How to Compile Tcl Source Releases"
+- Go to www.python.org and download your favorite Python (2.3.5 for me).
+- Build it as is told on the download page.
+- Enjoy using Leo on Linux.
+
+
+**Running Python setup.py install from the leo directory doesn't work.  Why not?**
+
+Leo's setup.py script is intended only to create source distributions. It can't
+be used to install Leo because Leo is not a Python package.
+
+Learning to use Leo
++++++++++++++++++++
+
+
+**What's the best way to learn to use Leo?**
+
+First, read the tutorial_. This will be enough to get you started if you just
+want to use Leo as an outliner_. If you intend to use Leo for programming, read
+the `Quick start for programmers`_, then look at Leo's source code in the file ``LeoPy.leo``.
+Spend 5 or 10 minutes browsing through the outline. Don't worry about details;
+just look for the following common usage patterns:
+
+-   The (Projects) tree shows how to use clones to represent tasks.
+
+-   Study ``@file leoNodes.py``.
+    It shows how to define more than one class in single file.
+
+-   Most other files show how to use a single ``@others`` directive to define one class.
+
+-   Most methods are defined using ``@others``, *not* section definition nodes.
+
+
+**Why should I use clones?**
+
+.. _`Clones & views`:   intro.html#clones-views
+
+You will lose much of Leo's power if you don't use clones.
+See `Clones & views`_ for full details.
+
+
+**Which should I use: @root trees or @file trees?**
+
+Use `@file`_ trees (including ``@thin`` trees) unless you are *sure* you must
+have the extra flexibility of `@root`_ trees.
+Indeed, `@file`_ trees are much easier to use than `@root`_ trees:
+
+- `@file`_ trees use less markup than `@root`_ trees.
+  In particular, the `@others directive`_ is valid only within `@file`_ trees.
+
+- You must explicitly tangle_ and untangle_ `@root`_ trees using the `Tangle and Untangle`_ commands.
+
+However, `@root`_ trees are more flexible than `@file`_ trees:
+
+- Sections_ may be defined anywhere within `@root`_ trees.
+  Moreover, the `@unit`_ directive_ expands the scope of section definitions in `@root`_ trees
+  so that a section may be referenced in several `@root`_ trees.
+
+- The meaning of section definitions in `@root`_ trees are independent of their position within the tree.
+
+
+**When is using a section better than using a method?**
+
+Use methods for any code that is used (called or referenced) more than once.
+
+Sections_ are convenient in the following circumstances:
+
+-   When you want to refer to snippets of code the can not be turned into methods.
+    For example, many plugins start with the code like this::
+
+    << docstring >>
+    << imports >>
+    << version history >>
+    << globals >>
+
+    None of these sections could be replaced by methods.
+
+-   When you want to refer to a snippet of code that shares local variables with the enclosing code.
+    This is surprisingly easy and safe to do, *provided* the section is used only in one place.
+    `Section names`_ in such contexts can be clearer than method names.  For example::
+
+    << init ivars for writing >>
+
+In short, I create sections when convenient,
+and convert them to functions or methods if they need to be used in several places.
+
+
+**When is deleting a node dangerous?**
+
+A **dangerous** delete is a deletion of a node so that all the data in the node is deleted *everywhere* in an outline.  The data is gone, to be retrieved only via undo or via backups.  It may not be obvious which deletes are dangerous in an outline containing clones.  Happily, there is a very simple rule of thumb::
+
+    Deleting a non-cloned node is *always* dangerous.
+    Deleting a cloned node is *never* dangerous.
+
+We could also consider a delete to be dangerous **if it results in a node being omitted from a derived file.**  This can happen as follows.  Suppose we have the following outline (As usual, A' indicates that A is marked with a clone mark)::
+
+    - @thin spam.py
+        - A'
+            - B
+    - Projects
+        - A'
+            - B
+
+Now suppose we clone B, and move the clone so the tree looks like this::
+
+    - @thin spam.py
+        - A'
+            - B'
+    - Projects
+        - A'
+            - B'
+        - B'
+
+If (maybe much later), we eliminate B' as a child of A will get::
+
+    - @thin spam.py
+        - A'
+    - Projects
+        - A'
+        - B
+
+B has not been destroyed, but B is gone from @thin spam.py! So in this sense deleting a clone node can also be called dangerous.
+
+How should I use Leo with bzr?
+++++++++++++++++++++++++++++++
+
+Using `@thin`_ trees can eliminate most problems with using Leo in cvs environments:
+
+-   Developers should use `@thin`_ trees to create derived files in any kind of cooperative environment.
+
+-   The cvs repository contains "reference" .leo files.
+    These reference files should contain nothing but ``@thin`` nodes.
+    Reference files will change only when new derived files get added to the project.
+
+    **Important**:
+    Leo's `bzr repository`_ contains the *reference* versions of the following .leo files:
+    ``LeoPyRef.leo`` and ``LeoPluginsRef.leo``.
+    However,  Leo's distributions contain the *non-reference* versions of those files:
+    ``LeoPy.leo`` and ``LeoPlugins.leo``.
+    These two files have many ``@thin`` nodes.
+    There is no reference file for ``test.leo`` even though it contains ``@thin leoTest.py``.
+    It would be clumsy to use testRef.leo, and there is less need to do so.
+    
+-   Developers will use local copies of reference files for their own work.
+    For example, instead of using ``LeoPyRef.leo`` directly,
+    I use a copy called ``LeoPy.leo``.
+    My local copy can contain nodes other than ``@thin`` nodes.
+
+Using derived files
++++++++++++++++++++
+
+
+**How do I inhibit sentinels in derived files?**
+
+You have two options, depending on whether you want to be able to use sections
+or not.
+
+-   Use `@nosent`_ trees.
+    Files derived from ``@nosent`` trees contain no sentinels_.
+    However, Leo create the `derived file`_ just as in `@file`_ trees.
+    In particular, Leo expands section references and understands the ``@others`` directive.
+
+-   Use `@asis`_ trees.
+    Files derived from ``@asis`` trees contain no sentinels_.
+    Moreover, Leo does not expand section references in ``asis`` trees.
+    In other words, Leo creates the `derived file` simply by writing all body text in outline order.
+    Leo can't update the outline unless the derived file contains sentinels,
+    so Leo does not update ``@nosent`` trees or ``@asis`` trees automatically when
+    you change the derived file in an external editor.
+
+
+**How do I prevent Leo from expanding sections?**
+
+You have two options, depending on whether you want sentinel lines in your
+derived file or not.
+
+-   Use `@noref`_ trees.
+    Leo creates files derived from ``@noref`` trees by writing all the nodes of the
+    tree to the derived file in outline order.
+    The derived file *does* contain some sentinels,
+    so you *can* update ``@noref`` trees from changes made to derived files.
+
+-   Use `@asis`_ trees.
+    Files derived from ``@asis`` trees contain no sentinels.
+    Leo creates the derived file simply by writing all body text in outline order.
+    Leo can't update the outline unless the derived file contains sentinels,
+    so Leo does not update ``@asis`` trees automatically when you change the derived file in an external editor.
+
+
+**How can I create Javascript comments?**
+
+**Question**: I'm writing a Windows Script Component, which is an XML file with
+a CData section containing javascript. I can get the XML as I want it by using
+``@language html``, but how can I get the tangling comments inside the CData
+section to be java-style comments rather than html ones?
+
+**Answer**: In `@file`_ trees you use the ``@delims`` directive_ to change comment delimiters.
+For example::
+
+    @delims /* */ 
+    Javascript stuff 
+    @delims <-- --> 
+    HTML stuff
+
+**Important**: Leo can not revert to previous delimiters automatically;
+you must change back to previous delimiters using another ``@delims`` directive_.
+
+In `@root`_ trees you can work around this problem using the ``@silent`` directive_.
+
+
+**How can I disable PHP comments?**
+
+By Zvi Boshernitzan:
+I was having trouble disabling ``<?php`` with comments (and couldn't override the
+comment character for the start of the page).
+Finally, I found a solution that worked, using php's heredoc string syntax::
+
+    @first <?php
+    @first $comment = <<<EOD
+    EOD;
+    
+    // php code goes here.
+    echo "boogie";
+    
+    $comment2 = <<<EOD
+    @last EOD;
+    @last ?>
+
+or::
+
+    @first <?php
+    @first /*
+    */
+    
+    echo "hi";
+    
+    @delims /* */
+    @last ?>
+
+
+**How can I use Leo with unsuppoorted languages?**
+
+Here is a posting which might be helpful:
+http://sourceforge.net/forum/message.php?msg_id=2300457 The ``@first``
+directive_ is the key to output usable code in unsupported languages. For
+example, to use Leo with the Basic language, use the following::
+
+    @first $IFDEF LEOHEADER
+    @delims '
+    @c
+    $ENDIF
+
+So this would enable a basic compiler to "jump" over the "true" LEO-header-lines.
+Like this::
+
+    $IFDEF LEOHEADER <-conditional compilation directive 
+    #@+leo-ver=4 <-these lines not compiled
+    #@+node:@file QParser005.INC
+    #@@first
+    #@delims ' 
+    '@@c
+    $ENDIF <-... Until here!
+    <rest of derived code file ... >
+
+This changes the comment symbol the apostrophe,
+making comments parseable by a BASIC (or other language.)
+
+
+**How do I make derived files start with a shebang line?**
+
+Use the @first directive_ in `@file`_ trees or `@nosent`_ trees.
+Use the @silent directive in `@root`_ trees.
+
+The ``@first`` directive puts lines at the very start of files derived from ``@file``.
+For example, the body text of ``@file spam.py`` might be::
+
+    @first #! /usr/bin/env python
+
+The body text of ``@file foo.perl`` might be::
+
+    @first #/usr/bin/perl
+
+Leo recognizes the ``@first`` directive_ only at the start of the body text of `@file`_ nodes.
+No text may precede ``@first`` directives_.
+More than one ``@first`` directive may exist, like this::
+
+    @first #! /usr/bin/env python
+    @first # more comments.
+
+
+**How do I use Leo to create CWEB files?**
+
+Leo has good support for `CWEB`_.
+`@file`_ trees can organize any part of CWEB code using *noweb* sections.
+You can also use `@asis`_, `@noref`_ or `@nosent`_ trees to create cweb files.
+See `CWEB mode`_ for full details.
+
+
+**Can @file trees contain material not in the derived file?**
+
+No.  Everything in an `@file`_ trees must be part of the derived file: orphan and
+``@ignore`` nodes are invalid in ``@file`` trees. This restriction should not be
+troublesome. For example, you can organize your outline like this::
+
+    + myClass
+    ..+ ignored stuff
+    ..+ @file myClass
+
+(As usual, + denotes a headline.)
+So you simply create a new node_, called myClass, that holds your `@file`_ trees and stuff you don't want in the `@file`_ trees.
+
+
+**How can I use Leo with older C compilers**
+
+By Rich Ries.
+Some older C compilers don't understand the "//" comment symbol, so using ``@language C`` won't work.
+Moreover, the following does not always work either::
+
+    @comment /* */
+
+This generates the following sentinel line::
+
+    /*@@comment /* */*/"
+
+in the output file, and not all C compilers allow nested comments, so the last ``*\/`` generates an error.
+The solution is to use::
+
+    #if 0
+    @comment /* */
+    #endif
+
+Leo is happy: it recognizes the ``@comment`` directive_.
+The C compiler is happy: the C preprocessor strips out the offending line before the C
+compiler gets it.
+
+
+**Why can't I use @ignore directives in @thin and @file trees?**
+
+@ignore can only be used in the root node of @file trees.  It tells Leo to ignore the tree.
+
+The @ignore directive can not be used elsewhere in @thin trees and @file trees
+because of the way Leo recreates outlines from derived files. This is an
+absolutely crucial restriction and will never go away.
+For a few more details, see `Leo 4.0: Eliminating error 'recovery'`_ in `Chapter 9: History of Leo`_.
+
+There are several workaround, as shown in LeoPy.leo:
+
+- keep notes in the outline outside of any derived file.
+
+- Use @all to gather notes in a derived file, as in done in @thin leoProjects.txt.
+
+
+**How can I avoid getting long lines in derived files?**
+
+**Question**: I must follow a coding standard when writing source code. It
+includes a maximum line length restriction. How can I know the length of a
+line when it gets written to the derived file?
+
+**Answer**: If a node belongs to a derived file hierarchy, its body might get
+indented when it is written to the derived file. It happens when an
+`@others directive`_ or a `section name`_ appears indented in a higher-level
+node body. While (**line**, **col**) in status area show the line and column
+containing the body text's cursor, **fcol** shows the cursor coordinate
+relative to the derived file, not to the curent node. The relation
+**fcol >= col** is always true.
+
+Customizing Leo
++++++++++++++++
+
+
+**How can I add support for a new language?**
+
+See the instructions are in ``LeoPy.leo`` in::
+
+    ``Notes:How To:How to add support for a new language section.
+
+This section contains clones of all relevant parts of Leo that you will change.
+Coming in Leo 4.4: Leo will use ``JEdit``'s language description files to drive the syntax colorer.
+To add support for a new language, just add another such description file.
+
+
+**How do I submit a plugin?**
+
+You have two options: 
+ 
+-   Get cvs write access, and add the `@thin`_ file to the plugins directory.
+
+-   Just send the `@thin`_ file to me at edreamleo@gmail.com.
+    That's all you need to do.  In particular that there is no need to change ``leoPlugins.leo``.
+
+
+**How do I add a new menu item from a plugin?**
+
+``c.frame.menu.createMenuItemsFromTable`` will append items to the end of an existing menu.
+For example, the following script will add a new item at the end of the 'File' menu::
+
+    def callback(*args,**keys):
+        g.trace()
+    
+    table = (("Test1",None,callback),)
+    
+    c.frame.menu.createMenuItemsFromTable('File',table)
+
+Plugins can do anything that can be done with ``Tk`` using the menu returned by ``c.frame.menu.getMenu``.
+For example, here is a script that adds a Test menu item after the 'Open With' menu item in the File menu::
+
+    def callback(*args,**keys):
+        g.trace()
+    
+    fileMenu = c.frame.menu.getMenu('File')
+
+    # 3 is the position in the menu.  Other kinds of indices are possible.
+    fileMenu.insert(3,'command',label='Test2',command=callback)
+
+
+**How can I use Leo's legacy key bindings?**
+
+You can 'revert' to old key bindings as follows:
+
+1. Open leoSettings.leo.
+
+2. Find the node 'Keyboard shortcuts'.
+
+3. Disable the old bindings by moving the node
+   '@keys EKR bindings: Emacs keys + modes'
+   so that it is a child of the node:
+   '@ignore Unused key bindings'.
+
+4. Notice that there are two child nodes of the node
+   '@ignore Unused key bindings'
+   that refer to legacy key bindings:
+    
+   - '@keys Legacy Leo shortcuts with important Emacs bindings'
+
+   - '@keys Legacy Leo bindings'.
+
+5. Move **one** of these two legacy nodes up one level so that it is a child of the node
+   'Keyboard shortcuts'.
+   It should **not** be a child of the node
+   '@ignore Unused key bindings'.
+
+
+**How can I enable and disable support for psyco?**
+
+Find the @thin leoApp.py node in leoPy.leo.
+In the ctor for the LeoApp class set ``self.use_psyco`` to True or False.
+You will find this ctor in the node::
+    
+    Code-->Core classes...-->@thin leoApp.py-->app.__init__
+    
+Note that this ivar can not be set using settings in leoSettings.leo because
+Leo uses g.app.use_psyco before processing configuration settings.
+
+Tips and techniques
++++++++++++++++++++
+
+
+**What is an easy way to profile code?**
+
+I had a need to figure out why a part of some python code I had written
+was taking too long.
+
+I pulled the code into LEO and the relevant part of the outline looked
+something like this::
+
+    + Main module
+    -- Generate cryptographic key
+    -- Hashing algorithm
+
+etc. So I cloned just the segment I wanted to profile and pulled it under a new
+section::
+
+    + Main module
+    -- [clone] Generate cryptographic key
+    -- Hashing algorithm
+    
+    + Profiling Experiment
+    -- [clone] Generate cryptographic key
+
+And in the body of the "Profiling experiment", I used this code::
+
+    code_under_here = """
+    @others
+    """
+
+    from timeit import Timer
+    t = Timer("print my_key_generator()", code_under_here)
+    print t.timeit(number = 10)
+
+And then I hit Control-B to execute the Profiling Experiment body. This
+let me make adjustments to the code in the clone body and keep hitting
+Control-B to execute the code with the timeit module to see immediately
+if what I had done was making a difference.
+
+The great thing about this was that I just used the LEO @others construct
+to create a wrapper around the code and did not need to litter my code
+with debug or profiling statements.  -- Kayvan
+
+
+**How can I do a simple find and replace?**
+
+The 'official' way to start a replace command is::
+
+    <Ctrl-shift-r>find-pattern<return>replace-text<return>
+
+But suppose you with start with::
+    
+    <ctrl-f>find-pattern
+
+and then realize you want to do a replace instead of a find.
+No problem.  The following also works::
+
+    <Ctrl-f>find-pattern<Ctrl-shift-r>replace-text<return>
+    
+In other words, you can think of `<ctrl-f>` as meaning 'show the find dialog'.
+There is another trick you should know.
+After typing `<ctrl-f>` or `<shift-ctrl-r>` you can use `<alt-ctrl>` keys to set or clear find options.
+For example::
+
+    <ctrl-f><alt-ctrl-w><find-pattern><return>
+
+That is, `<ctrl-f>`shows the find dialog,
+`<alt-ctrl-w>` toggles the Whole Word checkbox and
+`<return>` starts the search.
+You can type the `<alt-ctrl>` keys anytime after `<ctrl-f>` (or `<shift-ctrl-r>`) and before `<return>`. 
+You can also type multiple `<alt-ctrl-keys>` to toggle multiple checkboxes.
+
+
+**How can I use Leo to develop Leo itself?**
+
+The trick is to create a workflow that separates editing from testing. Putting
+test code in ``LeoPy.leo`` would waste a lot of time. To run tests you would
+have to exit Leo and reload ``LeoPy.leo``. A much quicker way is to put all test
+code in a ``test.leo`` file. So to change and test code, do the following:
+
+1. Save ``LeoPy.leo`` but do **not** exit Leo. 
+
+2. Quit the copy of Leo running test.leo, then reload test.leo.
+
+3. Run test scripts from test.leo.
+
+That's all. Python will recompile any changed .py files in the new copy of Leo.
+**Note**: I create a batch file called t.bat that runs test.leo, so to the
+"edit-reload-test" cycle is just:
+
+1. Control-S (in ``LeoPy.leo``: saves the .leo file)
+2. t         (in a console window: runs test.leo, compiling all changed .py files as a side effect)
+3. Control-E (in test.leo: runs the test script)
+
+The benefits of the new workflow:
+
+- test.leo loads  _much_ more quickly than ``LeoPy.leo`` does.
+  This new approach can increase the speed of the edit-reload-test cycle by more than a factor of 10.
+  Hitting Control-S, t, Control-E takes about 5 seconds.
+
+- ``LeoPy.leo`` runs with the *old* code,
+  so it is much easier to fix syntax errors or exceptions in the *new* code:
+  just fix the problem and save ``LeoPy.leo`` *without* closing ``LeoPy.leo``,
+  then restart test.leo.
+  You run your tests on the new code, but you edit the new code with the old, stable code.
+
+- test.leo is the perfect place to develop test.
+  I can create and organize those tests and when I am done, ''test.leo'' is a log of my work.
+
+
+**How can I import many files at once?**
+
+The Import Files dialog allows you to select multiple files provided you are running Python 2.3 or above.
+There is also an importFiles script in ``LeoPy.leo``.  You can use that script as follows::
+
+    import leo.core.leoImport as leoImport
+    leoImport.importFiles(aDirectory, ".py")
+
+This will import all .py files from aDirectory, which should be a full path to a particular directory.
+You could use ".c" to import all .c files, etc.
+
+
+**How can I use two copies of Leo to advantage?**
+
+By Rich Ries.
+I often rework C code that's already been "Leo-ized"--the first pass was quick
+and dirty to get it going. When I do subsequent passes, I wind up with subnodes
+that are out of order with the sequence found in the main node_. It's not a big
+deal, but I like 'em ordered. With just one editor pane, clicking on the node_ to
+move would switch focus to that node_. I'd then need to re-focus on the main
+node_. A minor nuisance, but it does slow you down.
+
+My solution is to open a second editor with its focus on the main node_. Switch
+to the other editor, and, referring to the first editor pane, move the nodes as
+you like. The second editor's pane will change focus to the node_ you're moving,
+but the first editor will stay focused on the main node_. It's a lot easier to
+do than to describe!
+
+
+**How can I display graphics in Leo?**
+
+One way is to link directly to the media file from a Leo node_ (with ``@url``)
+and write a scriptbutton to wrap all URL-nodes under the current node_ in a
+single HTML page (using the HTML browser trick at
+http://sourceforge.net/forum/forum.php?thread_id=1201579&forum_id=10226).
+
+Then, you can view your media in two ways:
+
+-   Individually. You can directly click on the ``@url`` link to display the media
+    in the browser (assuming you have your MIME/filetype associations set up
+    correctly for your browser).
+
+-   In a group. You can click on a script button (you have to code this yourself,
+    very simple) which should collect all ``@url`` nodes_ under the current node_
+    and dynamically generate a HTML page displaying either links to or embedded
+    versions of the media (using the HTML trick described above to invoke the
+    browser). This way, you can create collections of ``@url`` nodes under a
+    single node_ (like a bookmark folder), and press a single button to view the
+    ``@url`` collection as a single entity in the browser (with all browser
+    capabilities like displaying the media).
+    
+You could probably generalize this idea of "collect all ``@url`` nodes under current
+node_ and display as HTML in browser" into a general-purpose plugin. However,
+the plugin would have to be somewhat smart in mapping a link to its corresponding
+HTML code (e.g. an image link gets mapped to an <img> HTML tag, a link to a
+Flash file gets mapped to an <embed> tag, etc).
+
+
+**How can I create a template .leo file?**
+
+**Question**:
+It would be nice if Leo could open empty files. I tend to be "document oriented"
+rather than "application oriented" in my thinking and prefer "create empty file
+at location -> open it with program" to "start program -> create new file ->
+save it at location".
+
+**Answer** by Paul Paterson:
+If you are on Windows 98/2000/XP then the procedure is as follows...
+
+1. Start Leo
+2. Click New
+3. Click Save as...
+4. Save the file as "c:\windows\shellnew\leofile.leo" (or c:\winnt for 2000/XP)
+5. Open regedit "start...run...regedit"
+6. Open HKEY_CLASSES_ROOT and find the ".leo" extension type
+7. Go New ... Key from the context menu 
+8. Call the new key ShellNew 
+9. Select the new key, right-click, choose New...String Value from the context menu
+10. Call it FileName 
+11. Double-click on the string, and modify it to be the filename of the leofile.leo file you created,
+    including the extension
+12. Exit the registry editor and restart Windows Explorer (you may need to reboot on Windows 98)
+
+Now you should have a New:Leo File option in Explorer. This creates a duplicate
+of the file you saved. This can be useful because you could make a template Leo
+file containing some standard nodes_ that you always have and then save this.
+
+
+**How can I show Leo files with Excel?**
+
+From: http://sourceforge.net/forum/message.php?msg_id=3240374
+Using Leo's ``File-Export-Flatten Outline`` commands creates a ``MORE`` style outline which places
+all Leo body sections on the left margin.
+The headlines_ are indented with tabs which Excel will read as a tab delimited format.
+Once inside Excel there are benefits.
+
+1.  The most obvious benefit inside Excel is that the body sections (Excel first
+    column) can be selected easily and highlighted with a different font color.
+    This makes the ``MORE`` format very readable. Save a copy of your sheet as HTML
+    and now you have a web page with the body sections highlighted.
+
+2.  It is possible to hide columns in Excel.
+    Hiding the first column leaves just the headlines showing.
+
+3.  Formulas based on searching for a string can do calculations in Excel.
+    For example if a heading ``"Current Assets"`` appears on level 4 then the body formula::
+
+        =INDEX(A:A,MATCH("Current Assets",D:D,0)+1)
+
+    will retrieve it.
+    The +1 after match looks down one row below the matched headline.
+    The trick is to place all your headlines in quotes because Excel will see ``+ "Current Assets"``
+    from the ``MORE`` outline.
+    When Excel tries without the quotes it thinks it is a range name and
+    displays a ``#N/A`` error instead of the headline.
+    Also you must place a child node_ below to get the + sign instead of a - sign which would give a
+    ``MORE`` headline of  ``-"Current assets"`` , also is an error.
+
+I think there is some interesting possibility here because of the enforcement of
+Leo `body text`_ being always in the first column. The Leo outline provides
+additional reference to organizing the problem not typical of spreadsheet
+models. Beyond scripting in Python, Excel is good at doing interrelated
+calculations and detecting problems like circular references. In Excel
+Tools-Options-General is a setting for r1c1 format which then shows numbers
+instead of letters for column references. Using this would allow entries like
+this in the leo body::
+
+    1000
+    3500
+    =R[-1]C+R[-2]C
+
+In Excel you would see 4500 below those two numbers. This is completely
+independent of where the block of three cells exists on the sheet.
+
+
+**How can I reuse @button nodes in multiple files?**
+
+By Rich Ries
+
+There is no direct way to make script buttons available in multiple Leo files.
+Sure, you could copy and paste the @button nodes, but there is a slightly
+easier way using the "New Buttons" plugin.
+
+1) Create and test and debug your desired Script Button.
+
+2) With the Script Button node selected, run Plugins --> New buttons --> Make Template From
+
+Open a new Leo file.
+
+3) Assuming you have only the one New Button Template defined, left-click the
+   New button, and a new node will be added to your outline. (Otherwise, you'll
+   need to select the Template you want.)
+
+4) Press [Script Button] to create the new script button.
+
+It's easier to *do* this than to *explain* it!
+
+Trouble shooting
+++++++++++++++++
+
+
+**How do I get help?**
+
+All questions are welcome at http://groups.google.com/group/leo-editor
+
+
+**How do I report bugs?**
+
+You can discuss possible bugs at
+http://groups.google.com/group/leo-editor
+
+Please report bugs at
+http://bugs.launchpad.net/leo-editor
+
+When reporting a bug, please include *all* of the following:
+
+- The version of Leo used.
+
+- The version of Python used.
+
+- The platform or platforms used: Linux, Windows, MacOs.
+
+- A clear description of the problem.
+
+- Information sufficient to recreate the problem.
+
+It's polite to make the bug report self contained, so that six weeks later
+somebody will be able to understand the report as it stands.
+
+
+**My old .leo files won't load using Leo 4.5 or later. What should I do?**
+
+In version 4.5, Leo changed to using a sax parser for .leo files. This can cause
+problems if your .leo file contains invalid characters.
+Bugs in previous versions of Leo permitted these bad charactgers to appear.
+
+The sax parser complains that these characters are not valid in .xml files.
+Remove these invalid characters as follows:
+
+1. Run Leo from a console, and load the .leo file.
+   Near the bottom of the error message you will see a line like::
+
+    SAXParseException: <unknown>:123:25: not well-formed (invalid token)
+    
+   This line reports a bad character at character 25 of line 123.
+
+2. Open the .leo file in an external editor.
+   The Scite editor, http://www.scintilla.org/SciTE.html,
+   is a good choice because it clearly shows non-printing characters.
+   Remove the invalid character, save the .leo file.
+   
+Repeat steps 1 and 2 until all invalid characters are gone.
+
+
+**Can I scroll the outline pane with the mouse wheel?**
+
+This is a known bug in Tk that prevents this on Windows. The obvious Tk code
+causes a hard crash in the Python dll: it's the only time Leo has taken such a
+hard crash. The ``UniversalScrolling`` plugin is an attempt at a workaround.
+
+Scrolling with the mouse wheel may be possible on Linux. See the code in
+createTkTreeCanvas in leoTkinterFrame.py
+
+
+**Control-Shift backspace doesn't work.  What should I do?**
+
+By Dave Hein: The cause of the keymapping problem is a issue with the X11
+keyboard mapping, not with Tk. If you have this problem on your system, issue
+the command::
+
+    xmodmap -pke 
+
+and look in the results for the line for keycode 22. I'll bet it shows something like::
+
+    keycode 22 = BackSpace Terminate_Server
+
+That second token ("Terminate_Server") is what is supposed to be mapped to
+Shift-Backspace. You want this second token to be either not present or to be
+BackSpace. To fix this, create a file (e.g. .Xmodmap) and give it the content::
+
+    keycode 22 = BackSpace
+
+then run the command::
+
+    xmodmap .Xmodmap
+
+This fixes the problem. On my system this also disables the ability to terminate
+the X server using Ctrl-Alt-BackSpace. This is because of some conflict with xdb
+(xdb is the newer keyboard mapping facility in XFree86; xmodmap is the old
+original X11 keyboard mapping facility). I'm still working on that. I'm also not
+able to get xmodmap to make this change during X11 startup (again because of
+conflicts with xdb). But I'm working on that as well.
+
+
+**Error messages from the rst3 plugin aren't helpful. What can I do?**
+
+For the most part, docutils_ does a good job of reporting errors. docutils_ prints
+a message to the console and inserts an unmistakable error message in the
+generated .html file. **Important**: On Windows it is helpful to `Run Leo from a
+console window`_.
+
+However, in some cases, docutils_ crashes instead of properly reporting the
+problem. There are several workarounds:
+
+1.  The crashes I have seen arise from the following bug in docutils.
+    **Hyperlinks in image:: markup must be lower case**.  This will work::
+
+        .. .. |back| image:: arrow_lt.gif
+            :target: faq_
+
+    This will **crash**::
+
+        .. .. |back| image:: arrow_lt.gif
+            :target: FAQ_
+
+    So avoid this crash by making sure to use lower case targets in ``:target:`` markup.
+
+2.  You can change the docutils_ source slightly so that it prints a traceback when it
+    crashes. (The rst3 plugin should be able to do this, but I haven't figured
+    out how yet.) It's easy enough to do this:
+
+    - Find the file ``core.py`` in top-level ``docutils`` folder.
+      Typically this folder will be in Python's ``site-packages`` folder.
+
+    - Open ``core.py`` in some editor other than Leo.
+
+    - Find the method called ``report_Exceptions``.
+
+    - Insert the following lines at the very start of this method::
+
+        print 'EKR: added traceback'
+        import traceback ; traceback.print_exc()
+
+    This will cause a traceback whenever docutils_ crashes. I have found that
+    such tracebacks are generally enough to locate the general area of the
+    problem. **Note**: These tracebacks go to the console window, so you should
+    `Run Leo from a console window`_.
+
+3.  As a last resort, you can isolate syntax errors by reducing your input files
+    until they work again, then adding sections until you get a crash. This is
+    easy enough to do (when using the `rst3 plugin`_) by change a headline ``x`` to
+    ``@rst-ignore-tree x``.
+
+
+**How can I run Leo from a console window?**
+
+Leo (and other programs) often send more detailed error messages to ``stderr``,
+the output stream that goes to the console window. In Linux and MacOS
+environments, python programs normally execute with the console window visible.
+On Windows, can run Leo with the console window visible by associating .leo
+files with ``python.exe`` *not* ``pythonw.exe``. For full instructions about how
+to do this, see `Associating Leo with .leo Files`_.
+
+
+**How can I use Python's pdb debugger with Leo?**
+
+Just run Leo in a console window. At the point you want to drop into the
+debugger, execute this line::
+
+    g.pdb()
+
+All output from pdb goes to stdout, which is the console window. It would be
+good to create a subclass of pdb.Pdb that uses Leo's log pane rather than a
+console window, but I haven't done that. It could be done easily enough in a
+plugin...
+
+**Important**: I recommend using g.trace instead of pdb.  For example::
+
+    g.trace(x)
+
+prints the name of the function or method containing the trace, and the value of
+x. g.callers is often useful in combination with g.trace. g.callers(5)
+returns the last 5 entries of the call stack. For example::
+
+    g.trace(x,g.callers(5))
+
+Used this way, g.trace shows you patterns that will be invisible using pdb.
+
+
+**I can't write Imported files.  What's going on?**
+
+The import commands insert ``@ignore`` directives_ in the top-level node_.
+Leo does this so that you won't accidentally overwrite your files after importing them.
+Change the filename following ``@file`` or ``@root`` as desired,
+then remove the ``@ignore`` directive_.
+Saving the outline will then create the `derived file`_.
+
+
+**I don't see the Leo icon in Leo windows**
+
+For versions of Leo before 4.0 and for versions of Python before 2.3,
+Leo will draw a Leo icon in Leo windows only if you have installed Fredrik Lundh's PIL and tkIcon packages.
+
+-   Download PIL from http://www.pythonware.com/downloads/index.htm#pil
+
+-   Download tkIcon from http://www.effbot.org/downloads/#tkIcon
+
+
+**Leo doesn't recognize commands with the caps-lock key down**
+
+This is a known bug in Tk/Tkinter and there is no good workaround. Some
+keyboards allow you to disable the caps-lock key.
+
+
+**Leo is hanging on my Linux box.  What should I do?**
+
+From: http://sourceforge.net/forum/message.php?msg_id=1685399
+
+When building Tcl on Linux, do not specify "--enable-threads"
+Only use Tcl with the default "threads not enabled" case.
+
+Here is how to build Tk without thread support:
+
+- Go to www.tcl.tk, and download the sources for Tcl and Tk.
+- Build those two pack's as is told in the "How to Compile Tcl Source Releases"
+- Go to www.python.org and download your favorite Python (2.3.5 for me).
+- Build it as is told on the download page.
+- Enjoy using Leo on Linux.
+
+
+**Leo's Recent Files menu doesn't work from a cvs shandbox.  What's going on?**
+
+You must create .leoRecentFiles.txt in the config directory.
+.leoRecentFiles.txt is part of the standard releases but is not part of the cvs repository.
+
+
+**Nothing (or almost nothing) happens when I start Leo.  What should I do?**
+
+Missing modules can cause installation problems.
+If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file
+as described at `How to install Leo on Windows`_.
+However you are installing Leo,
+be sure to `run Leo from a console window`_
+because as a last resort Leo prints error messages to the console.
+
+
+**The new Python decorator syntax causes problems.  What can I do?**
+
+Python's decorator_ syntax is ill-conceived.
+This syntax file hack works well enough anyway to work with Leo ``@`` markup::
+
+    syn region leoComment start="^@\s*" end="^@c\s*$"
+    syn match   pythonDecorator	"@\S\S+" display nextgroup=pythonFunction skipwhite
+
+
+**Running Python setup.py install from the leo directory doesn't work.  Why not?**
+
+Leo's setup.py script is intended only to create source distributions. It can't
+be used to install Leo because Leo is not a Python package.
+
+
+**I can't run the LeoBridge module outside of leo/core.  What should I do?**
+
+Question and answer from plumloco.
+
+Add the equivalent of::
+ 
+    import sys 
+    leocore = "path/to/leo/core" 
+    if leocore not in sys.path: sys.path.append(leocore) 
+    import leo.core.leoBridge as leoBridge
+ 
+at the head of each file that uses leoBridge.
+
+The problem is not importing leoBridge itself but (if I use 'from leo.core') the
+importing of plugins, who get a different leoGlobals from leoBridge, without
+g.app etc, and so do not work if they rely on dynamic values in g.etc.
+
+> Why can't you simply add leo/core to sys.path in sitecustomize.py?  
+ 
+Putting leo\core on the python path as you suggest would put forty python modules
+in the global module namespace for all python programs when I want just one.
+Also, I have a safe working copy of leo and a cvs/testing version. I would wish
+to test any programs against the testing version while using the working
+version, but both /core directories can't be exposed at the same time.
+
+> Do you need plugins while running from the leoBridge? 
+ 
+Afraid so, at least the rst3 plugin. The solution I am using now is to place::
+ 
+    sys.modules['leoGlobals'] = leoGlobals  
+ 
+in leoBridge after import leo.core.leoGlobals as leoGlobals
+
+This allows my scripts
+to be portable over the several computers/platforms I need to use them on, and
+makes testing scripts against multiple leo versions easy. It does mean that my
+scripts are not portable to other leo users but that is not likely to be a
+problem.
+
+Unicode issues
+++++++++++++++
+
+
+**I can not enter non-ascii characters.  What can I do?**
+
+Set @bool ignore_unbound_non_ascii_keys = False in LeoSettings.leo or myLeoSettings.leo.
+
+
+**Some characters in derived files look funny. What can I do?**
+
+Internally, Leo represents all strings as unicode. Leo translates from a
+particular encoding to Unicode_ when reading .leo files or `derived files`_. Leo
+translates from Unicode_ to a particular encoding when writing `derived files`_. You
+may see strange looking characters if your text editor is expecting a different
+encoding. The encoding used in any `derived file`_ is shown in the ``#@+leo`` `sentinel line`_
+like this::
+
+    #@+leo-encoding=iso-8859-1.
+
+**Exception**: the encoding is ``UTF-8`` if no ``-encoding=`` field exists.
+You can also use the ``@encoding`` directive_ to set the encoding for individual `derived files`_.
+If no ``@encoding`` directive_ is in effect,
+Leo uses the following settings_ to translate to and from unicode:
+
+default_derived_file_encoding
+    The encoding used for derived files if no ``@encoding`` directive_ is in effect.
+    This setting also controls the encoding of files created by the ``Tangle`` commands.
+    The default is ``UTF-8`` (case not important).
+
+new_leo_file_encoding
+    The encoding specified in the following line of new .leo files::
+
+        <?xml version="1.0" encoding="UTF-8">
+
+    The default is ``UTF-8`` (upper case for compatibility for old versions of Leo).
+    **Important**: once a .leo file is created the ``<?xml...">`` line can only be changed by hand.
+    This may cause unicode errors the next time the .leo file is loaded,
+    so you should change the ``<?xml...">`` line by hand only when first creating a .leo file.
+    
+tk_encoding
+    The encoding that Leo uses to communicate with Tk text widgets.
+    You would typically use this setting only in an emergency.
+    The section called::
+
+        << set app.tkEncoding >>
+
+    in app.finishCreate sets this encoding as follows:
+    
+    a) using the ``tk_encoding`` setting if it exists,
+    b) using ``locale.getpreferredencoding`` if it exists,
+       or the equivalent code in pre-python 2.3 versions,
+    c) using ``sys.getdefaultencoding``
+    d) defaulting to ``"utf-8"``
+    
+    Neither b nor c are guaranteed to give a valid encoding in all systems,
+    and Leo will ignore invalid encodings returned from b or c.
+    Therefore, setting the ``tk_encoding`` setting may be needed.
+
+
+**I get weird results when defining unicode strings in scripts.  What is going on?**
+
+Add the following to the start of your scripts::
+    
+    @first # -*- coding: utf-8 -*-
+
+Without this line, constructs such as::
+
+    u = u'a-é-賢-z'
+    u = 'a-é-賢-z'
+
+will not work when executed with Leo's execute script command.
+Indeed, the Execute Script command creates the script by writing the tree
+containing the script to a string. This is done using Leo's write logic, and
+this logic converts the unicode input to a utf-8 encoded string. So *all
+non-ascii characters* (including both the é and 賢 characters) get converted to
+their equivalent in the utf-8 encoding. Call these encoding <e1> and <e2>. In
+effect the script becomes::
+
+    u = u'a-<e1>-<e2>-z'
+    u = 'a-<e2>-<e>-z'
+
+which is certainly *not* what the script writer intended!
+Rather than defining strings using actual characters, Instead, one should use
+the equivalent escape sequences. For example::
+
+    u = u'a-\u0233-\u8ce2-z'
+    u = 'a-\u0233-\u8ce2-z'
+
+
+**Some characters are garbled when importing files. What can I do?**
+
+The encoding used in the file being imported doesn't match the encoding in effect for Leo.
+You have two options:
+
+- Use the ``@encoding`` directive_ in an ancestor of the node_ selected when
+  doing the ``Import`` command_ to specify the encoding of file to be imported.
+
+- Set the ``tk_encoding`` setting_ (see the previous answer) to the encoding you normally use.
+
+
+**Python's print statement shows 'byte hash' for unicode characters.  What can I do?**
+
+First, you must change Python's default encoding to something other than 'ascii'.  To do this, put the following in your sitecustomize.py file in Python's Lib folder::
+ 
+    import sys 
+    sys.setdefaultencoding('utf-8') # 'iso-8859-1' is another choice.
+ 
+You must restart Python after doing this: sys.setdefaultencoding can not be called after Python starts up. 
+ 
+Leo's g.es_print and g.pr functions attempts to convert incoming arguments to unicode using the default encoding.
+For example, the following Leo script shows various ways of printing La Peña properly::
+ 
+    @first # -*- coding: utf-8 -*-
+
+    import sys
+    e = sys.getdefaultencoding()
+    print 'encoding',e
+    table = (
+        'La Peña',
+        unicode('La Peña','utf-8'),
+        u'La Peña',
+        u'La Pe\xf1a',
+    )
+    
+    for s in table:
+        print type(s)
+        g.es_print('g.es_print',s)
+        if type(s) != type(u'a'):
+            s = unicode(s,e)
+        print 'print     ',s
+        print 'repr(s)   ',repr(s)
+ 
+For still more details, see:
+http://www.diveintopython.org/xml_processing/unicode.html
+

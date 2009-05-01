@@ -1,0 +1,117 @@
+.. rst3: filename: html\new-4-6.html
+
+#######################################
+What's New in Leo 4.6
+#######################################
+
+.. .. contents::
+
+.. Links used in this document.
+.. .. _`Chapter 23`:           atShadow.html
+
+Improved file handling
+++++++++++++++++++++++
+
+- Leo opens a default .leo file if no other is specified,
+  using the @string default_leo_file setting.
+  The default for this setting is ``~/.leo/workbook.leo``
+
+- Added escapes for underindented lines.
+  The escape is specified by the @string underindent-escape-string setting.
+  By default, this escape is ``\-``
+  If a line starts with \-N, Leo will write the line with N fewer spaces than expected.
+
+- Leo now warns when attempting to write a file that has been changed outside of Leo.
+  This prevents bzr reversions.
+
+New code features
++++++++++++++++++
+
+- Added autoCompleter.getExternalCompletions.
+  See http://groups.google.com/group/leo-editor/browse_thread/thread/4ad91984a6d0acac
+  
+- Added g.posList.
+
+- c.config.doEnabledPlugins sets g.app.config.enabledPluginsFileName
+
+- Added the following properties:
+    - p.b, t.b and v.b return the body string of the position or node.
+    - p.h, t.h and v.h return the head string of the position or node.
+    - p.gnx, t.gnx and v.gnx return the gnx of the position or node.
+
+- Added script to leoSettings.leo to ensure all menu items are valid.
+
+- c.config.getSettingSource(setting_name)
+  returns the name of the file which Leo used to determine the setting:
+
+    - D indicates default settings.
+    - F indicates the file being loaded
+    - L indicates leoSettings.leo
+    - M indicates myLeoSettings.leo
+
+- Predefined 'self' in @test/@suite nodes.
+
+- Added c.getNodePath and c.getNodeFileName.
+  See http://groups.google.com/group/leo-editor/browse_thread/thread/3b5f1232ecc6bba7
+
+New command-line options
+++++++++++++++++++++++++
+
+- The --config command-line option specifies a single config (.leo) file
+  to use for configuration.
+  See http://groups.google.com/group/leo-editor/browse_thread/thread/f3f95d93bcd93b94
+
+- The --file=fileName command-line option load a file.
+  Only .zip and .leo extensions are allowed at present.
+
+- The --gui=name command-line option specifies the gui to use.
+  The valid values are --gui=qt, --gui=tk and
+
+New commands
+++++++++++++
+
+- Added smart home (back-to-home) command.
+ 
+- Added support for standard behavior of Tab and Shift-Tab keys.
+  The tab key indents the text selection, if there is one;
+  otherwise, the tab key insert a tab or blanks, depending on the @tabwidth setting.
+  Shift-Tab always unindents one or more lines.
+
+- The open command creates @edit nodes when opening non-.leo files
+  The open file dialog now shows all files by default.
+  Selecting a non-.leo file will load that file into a new node in the present outline.
+
+- Added added pdb minibuffer command.
+  This works, but stops Leo in the middle of the command-handling logic.
+  You may get the commander c by stepping out into
+  k.masterKeyHandler or k.masterCommandHandler.
+  Using c, you can then get all other info.
+
+- Improved the isearch commands
+
+New and improved directives
++++++++++++++++++++++++++++
+
+- Added @nocolor-node directive.
+
+- Improved @path handling.
+
+New settings
+++++++++++++
+
+- @string default_leo_file = ~/.leo/workbook.leo
+
+- @string underindent-escape-string = \-
+
+- @int icon_bar_widgets_per_row
+
+- Added support for meta keys.
+  http://groups.google.com/group/leo-editor/browse_thread/thread/b6a39ed672a28c65?pli=1
+
+Plugins
++++++++
+
+- Improved nav_buttons plugin and corresponding nodeHistory class.
+- Created qtGui and tkGui plugins.
+- Created leoGuiPluginsRef.leo.
+

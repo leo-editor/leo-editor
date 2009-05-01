@@ -1,0 +1,140 @@
+.. rst3: filename: html\new-4-4-2.html
+
+##########################################
+What's New in Leo 4.4.2
+##########################################
+
+This page summarizes the changes made in Leo 4.4.2
+For full details see the release notes section in LeoDocs.leo.
+
+.. .. contents::
+
+.. Links used in this document.
+.. _Emacs:                          http://www.xemacs.org/
+.. _pymacs:                         http://pymacs.progiciels-bpi.ca/index.html
+.. _`Chapter 18: Leo and Emacs`:    emacs.html
+
+A major code reorg
+++++++++++++++++++
+
+Leo's vnode and tnode classes are now completely independent of the rest of Leo.
+Some api's have been changed.  This 'big reorg' and may affect scripts and plugins.
+
+New commands
+++++++++++++
+
+::
+    
+    extend-to-line
+    extend-to-paragraph
+    extend-to-sentence
+    forward-end-word
+    forward-end-word-extend-selection
+
+New features
+++++++++++++
+
+- Added support for controlling Leo from Emacs_ with pymacs_.
+  See `Chapter 18: Leo and Emacs`_ for full details.
+- Added Minibuffer and Settings submenus of the Cmds menu.
+- At long last Leo creates a proper help menu on the Mac.
+- Added a new convention for menu tables. If the first item (a string
+  representing the menu label) starts with '*' Leo will convert hyphens to
+  spaces and upcase the label. This convention allows a single string to
+  represent both the menu label and its associated minibuffer command. As part
+  of this reorganization, all menu tables in Leo's core now use only strings.
+  This is an essential precondition to supporting @menu nodes in
+  leoSettings.leo.
+- Leo's Help menu now contains the Open scripts.leo command.
+- Leo uses ctypes to import Aspell when run from Python 2.5 or later.
+  Leo no longer needs Python-specific versions of aspell.dll.
+- Added support for x-windows middle-button paste.
+  This only works when the paste is made in the pane containing the selected text.
+- Leo looks for myLeoSettings.leo files in the same place Leo looks for leoSettings.leo files.
+- Created three scripts (in test.leo) that help create unit tests for Leo's edit commands.
+  Create Created runEditCommandTest for use by these scripts.
+- Improved print-bindings command.
+  The bindings are sorted by prefix: this is a big help in understanding bindings.
+  For each prefix, first print items with only a single character after the prefix.
+- Made writing .leo files faster.
+  The new code almost exactly twice as fast as the old.
+- Added p.archivedPosition.
+  This is a key first step towards Leap 204.
+- Integrated sax with read logic.
+- You can now store settings in myLeoSettings.leo without fear of those settings
+  being changed by cvs updates or in future versions of Leo.
+- Eliminated unnecessary redraws when moving the cursor in the outline pane.
+- Much faster navigation through the outline using Alt-arrow keys.
+- When focus is in the outline pane, you can move to headlines by typing the first letter of headlines.
+- The find command now closes nodes not needed to show the node containing the present match.
+- Numerous changes that make Leo easier to use without using a mouse.
+- Many new minibuffer commands now appear in the Cmds menu.
+
+Further improved outline navigation:
+    
+- Generalized navigation in outline pane to ignore @file, @thin, etc prefixes.
+- Made outline navigation cumulative.
+  When keystrokes in the outline pane are typed 'close' together Leo first tries to look
+  for prefix + ch, where ch is the character just typed and prefix is the previous match.
+  The term 'close together' is specified by the setting @float outline_nav_extend_delay.
+  The outline search revers to a single-character if the extended search
+  fails, so in fact the delay is not too significant. In practice everything works
+  well without me thinking at all about what is happening.
+
+New and improved plugins
+++++++++++++++++++++++++
+
+- Improved the mod_scripting plugin. Every button created by the plugin creates
+  a corresponding command. The command name is the 'cleaned' version of the
+  button name. Likewise, the plugin also creates a delete-x-button command,
+  where x is the command name as just discussed. So now you can delete script
+  buttons without right-clicking.
+- Made 'About Plugin' dialog scrollable.
+- Fixed bugs in groupoperations, multifile, nodenavigator and shortcut_button plugins.
+- The rst3 plugin now registers the rst3-process-tree command.
+- The leoOPML.py plugin defines commands to read and write OPML files.
+- The slideshow.py plugin allows Leo to run slideshows defined by @slideshow and @slide nodes.
+- The leo_to_rtf and leo_to_html plugins create rtf and html files from Leo outlines.
+- The paste_as_headlines.py plugins creates multiple headlines at once.
+- The word_count.py plugin.
+
+Improved the mod_scripting plugin:
+
+- Made showing the Run Script button optional.
+- The Script Button button now creates the press-script-button-button command.
+- A new utility method does a much better job of massaging button and command names.
+
+Settings
+++++++++
+
+- Removed .leoRecentFiles.txt from the distribution and cvs and added @bool
+  write_recent_files_as_needed. The presence or absence of .leoRecentFiles.txt
+  no longer controls whether Leo creates and updates .leoRecentFiles.txt.
+- Added @bool insert_new_nodes_at_end.
+- Added @bool select_all_text_when_editing_headlines.
+  Creating a new node always selects the entire text, regardless of this option.
+- Leo looks for myLeoSettings.leo files in the same place Leo looks for leoSettings.leo files.
+- Added settings for all mod_scripting switches.
+- Added @bool collapse_nodes_during_finds.
+  This greatly speeds searches that used to open many nodes.
+  See: http://sourceforge.net/forum/message.php?msg_id=3935780
+- Added @bool outline_pane_has_initial_focus.
+- Added @bool sparse_move_outline_left.
+- Added bindings for Alt-Shift-Arrow keys to force an outline move.
+- Added @bool use_sax_based_read = False.
+  True:  Use a sax-based parser to read .leo files.
+  This is slower than using Leo's legacy xml parser, but may solve some unicode problems.
+
+Changed default settings::
+    
+    focus-to-body = Alt-D
+    focus-to-tree = Alt-T
+    toggle-extend-mode = Alt-3
+
+ZODB scripting
+++++++++++++++
+
+Leo's vnode and tnode classes can optionally be compatible with ZODB databases,
+i.e., they can optionally derive from ZODB.Persistence.Persistent.
+See Chapter 17: Using ZODB with Leo for details.
+

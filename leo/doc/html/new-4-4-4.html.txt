@@ -1,0 +1,318 @@
+.. rst3: filename: html\new-4-4-4.html
+
+##########################################
+What's New in Leo 4.4.4
+##########################################
+
+Leo 4.4.4 contains many important features originally planned for later releases.
+The highlights of Leo 4.4.4:
+    
+- **The Great Graph Aha**:
+  A Leo outline doesn't have to *be* an arbitrary graph in order to *represent* an arbitrary graph.
+  
+  That is, simple scripts allow Leo outlines to represent arbitrary
+  directed graphs. There is no need for a separate 'graph world'. The graphed.py
+  plugin is a direct result of this Aha. It allows you to create general graphs
+  from Leo outlines.
+  
+- Support for **@auto nodes**.  Such nodes allow people to collaborate using Leo
+  without inserting Leo sentinels in the files Leo generates.
+  
+- **@menus trees** in settings files create all of Leo's menus.  It is now dead
+  easy to make Leo's menus look the way you want.
+
+- **@buttons trees** in settings files create common @button nodes created in all
+  Leo outlines.
+
+- A new, faster, **colorizer plugin** replaces the __jEdit_colorizer__ plugin.
+  
+- New commands for **resolving cvs conflicts**.
+
+- Leo's core is now compatible with jython.
+    
+.. .. contents::
+
+.. Links used in this document.
+.. _`leoBridge chapter`:    leoBridge.html
+.. _`debugging with Leo`:   debuggers.html
+
+The Great Graph Aha
++++++++++++++++++++
+
+The Great Graph Aha is:
+
+A Leo outline doesn't have to *be* an arbitrary graph in order to *represent* an arbitrary graph.
+
+So the graph world is unnecessary because we can use Leo nodes and trees as data
+to other graphing packages.** That is, Python scripts can build arbitrary graphs
+using Leo's existing nodes and trees. And Python scripts can manipulate those
+graphs. And Python scripts could do the reverse: manipulate the Leo outline by
+traversing general graphs. So there is no need to complicate Leo's fundamental
+data structures. Hurray! Instead, we build on the strengths of already existing
+graphing packages.
+
+The Great Graph Aha created the opportunity for immediate action:
+ 
+1. test.leo contains the essential scripts to implement graphs in Leo files.
+   These short, simple, self-contained, easily modifiable scripts make possible
+   everything ever envisaged by the (now-defunct) graph world project::
+ 
+    leo2graph: convert a normal Leo tree to a NetworkX graph. 
+    at-graph2graph: convert an @graph tree to a NetworkX graph. 
+    at-networkx2graph: convert an @networkx tree to a NetworkX graph 
+    at-networkx2at-graph: create an @graph tree from an @networkx tree.
+
+2. The graphed plugin allows users to manipulate parts of Leo outlines as if
+they were general graphs. It is still early days for this exciting plugin.
+
+Added support for @auto files
++++++++++++++++++++++++++++++
+
+What @auto does
+***************
+
+@auto trees allows people to use Leo in collaborative environments without using
+sentinels in the files Leo generates. In contrast to @nosent, @auto trees can
+change when the corresponding file changes outside of Leo.
+
+Leo will automatically recreate (import) all @auto trees when reading a .leo
+file, and will write all dirty @auto trees when saving a .leo file. There are
+two exceptions to this statement:
+    
+1. Leo will never read (import) or write an @auto tree if
+the root @auto tree is under the influence of an @ignore directive.
+
+2. Saving a .leo file does not save @auto nodes if a) they haven't been changed
+or b) they do not contain a **significant** amount of information. An @auto tree
+contains a significant amount of information if it has  children or if the
+root node contains more than 10 characters.
+
+Leo creates @auto trees by parsing the corresponding derived file. Parsers
+create descendant nodes of the @auto tree: one node for each class, method and
+function in the derived file.
+
+Parsers presently exist for C, elisp, Java, Pascal, PHP and Python. Leo
+determines the language using the file's extension. If no parser exists for a
+language, the entire body of an @auto tree contains a significant amount of information if it has any children or if the root node contains more than 10 non-blank lines. the derived file is copied to the body of the @auto
+node.
+
+Leo does not write the contents of @auto trees to .leo files. In this respect,
+@auto trees work much like @thin trees. @auto trees whose root node is under the
+scope of an @ignore directive *will* be written to the .leo, just like @thin
+trees.
+
+Perfect import checks
+*********************
+
+Leo performs several checks to ensure that the result of importing an external
+file will be equivalent to the file that writing the @auto tree would produce.
+
+These checks can produces **errors** or **warnings**. Errors indicate a
+potentially serious problem. Leo inserts an @ignore directive in the @auto tree
+if any error is found. This @ignore directive prevents the @auto tree from
+modifying the external file. If you @ignore directive, a later write of the
+@auto tree will attempt to fix the problems that gave rise to the errors. There
+are no guarantees however.
+
+**Strict languages** are languages like Python for which leading whitespace is
+especially significant. Before importing a file for a strict language, Leo
+**regularizes** the leading whitespace of all lines of the original source file.
+That is, Leo converts blanks to tabs or tabs to blanks depending on the value of
+the @tabwidth directive in effect for the @auto node. Leo cannot guarantee to
+reproduce the original source file exactly if problems are discovered while
+regularizing leading whitespace.
+
+After importing a file, Leo verifies that writing the @auto node would create
+the same file as the original file. For strict languages, the comparison must be
+exact, or nearly so. For non-strict languages, differences in leading whitespace
+generate warnings, not errors.
+
+File comparison mismatches can arise for several reasons:
+    
+1. Bugs in the import parsers. Please report any suspected bugs immediately.
+
+2. Underindented lines in classes, methods or functions in strict languages. An
+   **underindented line** is a line that is indented less then the starting line
+   of the class, method or function in which it appears. Leo outlines can not
+   represent such lines exactly: every line of node implicitly has at least the
+   indentation of any unindented line of the node.
+
+Leo will issue a warning (not an error) for underindented Python comment lines.
+Such lines can not change the meaning of Python programs.
+
+Commands related to @auto
+*************************
+
+Three new commands in the File:Read/Write menu allow you to manually read and
+write @auto nodes from the presently selected outline. As always, an @ignore
+directive in the @auto node or its ancestors will suppress any of these
+commands:
+
+- The Read @auto Nodes (read-at-auto-nodes) command reads all @auto nodes in the
+  presently selected outline. An @ignore directive will suppress this import.
+
+- The Write @auto Nodes (write-at-auto-nodes) command writes all @auto nodes. An
+  @ignore directive will suppress this import. Caution: the write will occur even
+  if Leo has not previously read the @auto node.
+
+- The Write Dirty @auto Nodes (write-dirty-at-auto-nodes) is the same as the
+  write-at-auto-nodes command, except that only changed @auto trees are written.
+
+Most users will rarely use these explicit commands, because reading and writing
+.leo files handles @auto nodes well enough. However, you can use the
+read-at-auto-nodes command to update @auto nodes without having to reload the
+.leo file.
+
+Extending the code: adding new parsers
+**************************************
+
+All present parsers are short overrides of a powerful base parser class. Thus,
+it would be simple to add support for other languages. See the node
+
+@thin leoImport.py-->Import-->Scanners for createOutline
+
+in leoPy.leo to see how easy it is to create new parsers.
+
+New commands for resolving cvs conflicts
+++++++++++++++++++++++++++++++++++++++++
+
+The so-called resolve-cvs-conflict project has resolved itself into small,
+easily understood commands.
+    
+The **read-file-into-node** command prompts for a filename, and creates an node
+whose headline is @read-file-into-node <filename> and whose body text is the
+entire contents of the file.
+
+The **write-file-from-node** command writes the body text of the selected not to a file.
+If the headline of the presently selected node starts with @read-file-into-node
+the command use the filename that follows in the headline. Otherwise, the
+command prompts for a filename.
+   
+When a cvs conflict occurs, the user will:
+    
+- read the file into a node using the read-file-into-node command,
+
+- fix the conflict, as with any other editor, and
+
+- write the file with the write-file-from-node command.
+
+Any file can be fixed in this way, including derived files and .leo files. The
+only complication is that the user must not change sentinel lines. Two new
+commands check the contents of a node: The **check-derived-file** and
+**check-leo-file** commands tell whether a trial read of the presently selected
+node can be done successfully. The check-derived-file command assumes the body
+text is a derived file; the check-leo-file command assumes the body text is an
+entire .leo file.
+
+The **compare-leo-outlines** command prompts for another (presumably similar)
+.leo file that will be compared with the presently selected outline file (main
+window). It then creates clones of all inserted, deleted and changed nodes.
+
+New kinds of settings trees
++++++++++++++++++++++++++++
+
+@buttons trees
+**************
+
+All @buttons tree in a settings file defines global buttons that are created in
+the icon area of all .leo files. You define @button nodes in the @buttons tree
+as usual.
+
+@menus trees
+************
+
+Leo creates its menus from the @menu and @item nodes in the @menus tree. Within
+@menus trees, @menu nodes create menus and @item nodes create menu items.
+
+The menu name always follows @menu. If the menu name is 'Plugins', Leo will
+create the Plugins menu and populate the menu by calling the
+'create-optional-menus' hook. This creates the Plugins menu as usual. Nested
+@menu nodes define submenus.
+
+The command name follows @item. If the body text of an @item node exists, this
+body text is the menu name. Otherwise, the menu name is the command name.
+However, if the command name starts with a '*', hyphens are removed from the
+menu name. Menu names and command names may contain a single ampersand (&). If
+present, the following character is underlined in the name. If the command name
+in an @item node is just a hyphen (-), the item represents a menu separator.
+
+New plugins
++++++++++++
+
+- The graphed plugin allows users to manipulate parts of Leo outlines as if they
+  were general graphs. It is still early days for this exciting plugin.
+
+- The threading_colorizer plugin replaces the __jEdit_colorizer__ plugin. This
+  plugin features an elegant new algorithm that has much better performance and
+  eliminates almost all flash.
+
+Leo's core is now compatible with jython
+++++++++++++++++++++++++++++++++++++++++
+
+Essentially all of Leo's startup code now runs with jython 2.2 and the (unfinished!) swing gui.
+
+Improved prototype for icons in headlines
++++++++++++++++++++++++++++++++++++++++++
+
+The prototype in test.leo now will use PIL (Python Imaging Library) if
+available, so many more kinds of icons can be used. Buttons now exist to add
+icons to do the following:
+    
+- Add any icon to any node.
+- Delete all icons from a single node or the entire tree.
+- Print the icon files associated with a node.
+- Print the sizes of icons in a directory.
+
+Fixed a bug in the icon handling in the outline widget that caused
+duplicate icons not to be drawn properly.
+
+Minor improvements
+++++++++++++++++++
+
+- See the release notes for a list of bugs fixed in Leo 4.4.4.
+
+- Added the 'clear-all-marks' hook.
+
+- Added button font setting. See the node: "@settings-->Fonts-->@font button font" in leoSettings.leo.
+
+- Plugins and scripts may call the c.frame.canvas.createCanvas method to create a
+  log tab containing a Tk.Canvas widget. Here is an example script::
+    
+    log = c.frame.log ; tag = 'my-canvas'
+    w = log.canvasDict.get(tag)
+    if not w:
+        w = log.createCanvas(tag)
+        w.configure(bg='yellow')
+    log.selectTab(tag)
+
+- Improved the yank and yank-pop commands and added @bool add_ws_to_kill_ring setting.
+
+- Improved the debug command: it now adds the following code to the beginning of debug scripts::
+    
+    class G:
+        def es(s,c=None):
+          pass
+    g = G()
+    
+- Added the @bool rst3 strip_at_file_prefixes setting.
+
+- Added the g.app.inBridge ivar.
+
+- Added @bool big_outline_pane setting. False (legacy): Top pane contains outline and log panes.
+  True: Top pane contains only the outline pane.  Bottom pane contains body and log panes.
+
+Summary of new commands
++++++++++++++++++++++++
+
+::
+
+    check-derived-file
+    check-leo-file
+    compare-leo-outlines
+    insert-child
+    read-at-auto-nodes
+    read-file-into-node
+    write-at-auto-nodes
+    write-dirty-at-auto-nodes
+    write-file-from-node
+

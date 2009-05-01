@@ -26,7 +26,6 @@ leo/doc/_build/*
 leo/doc/_build
 leo/doc/_static
 leo/doc/_templates
-leo/doc/html/*.html.txt
 leo/doc/html/_static
 
 

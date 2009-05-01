@@ -1,0 +1,383 @@
+.. rst3: filename: html\install.html
+
+##########################################
+Chapter 1: Installing Leo
+##########################################
+
+This chapter tells how to install and run_ Leo.
+
+**Important**:
+    
+If you have *any* problems installing Leo,
+please ask for help on Leo's help forum:
+
+.. Links used in this document...
+.. _`Pmw`:                  http://pmw.sourceforge.net/
+.. _run:                    `Running Leo`_
+.. _`run Leo`:              `Running Leo`_
+.. _`Leo's download page`:  http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
+.. _`associated .leo files with Leo`:   `How to associate Leo with .leo files on Windows`_
+
+System requirements
++++++++++++++++++++
+
+Leo will work on any platform that supports Python 2.4 or later and Tk 8.4 or later.
+
+-   Download the latest version of Leo from `Leo's download page`_.
+
+-   Download Python from: http://python.org/
+
+-   Most installations of Python have Tk pre-installed.
+    If your doesn't, you may download it from: http://tcl.activestate.com/software/tcltk/
+    
+    **Warning**: When building Tcl on Linux, do **not** specify
+    "--enable-threads".
+    Only use Tcl with the default "threads not enabled" case.
+
+-   Leo uses `Pmw`_ (Python Mega Widgets). Leo's extensions folder contains a copy
+    of Pmw for use if needed. Leo first tries to import Pmw normally. If that
+    fails, Leo will use the version of Pmw in the extensions folder.
+
+Leo's HOME directory
+++++++++++++++++++++
+
+Python's HOME environment variable specifies Leo's HOME directory.
+See http://docs.python.org/lib/os-procinfo.html for details.
+
+Leo uses os.expanduser('~') to determine the HOME directory if no HOME environment variable exists.
+
+Leo puts several files in your HOME/.leo directory:
+.leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
+
+How to install Leo on Linux
++++++++++++++++++++++++++++
+
+Download the latest version of Leo (a .zip file) from `Leo's download page`_.
+   
+Unzip the downloaded .zip file into the **unpacked folder** in your home directory.
+The unpacked folder will be called something like leo-4-5.
+
+You now have two choices:
+    
+1. You can run Leo from your home directory.
+   Just add  ~/leo-4-5 to your path.
+
+2. You can install leo into /usr/local/lib and /usr/local/bin by running Leo's install script as follows::
+    
+    cd ~/leo-4-4-3-final
+    chmod u+x install
+    sudo ./install
+    
+The install script will instruct you to add /usr/local/bin to your path.
+You can, instead, add the following link::
+
+    sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.5/site-packages/
+
+Now you are ready to `run Leo`_.
+
+Installing Leo on Windows
++++++++++++++++++++++++++
+
+Leo is distributed either as an executable installer (.exe) file or as a .zip file.
+
+To install Leo using the executable installer:
+    
+    1. Download the latest version of Leo's installer from `Leo's download page`_.
+       The installer will be called something like LeoSetup-4-5.exe.
+       
+    2. Run the installer.
+       By default, the install will install Leo an **unpacked folder** called something like Leo-4-5 in your ``Python\Lib\site-packages`` directory.
+
+To install Leo from the .zip file:
+    
+    1. Download the latest version of Leo (a .zip file) from `Leo's download page`_.  
+
+    2. Unzip the .zip file.  The **unpacked folder** will have a name like Leo-x-y,
+       where x and y are version numbers.  For example, Leo-4-5 or Leo-4-5-b3.
+    
+    3. Place the unpacked folder in the 'Program Files' folder or any convenient location.
+    
+    4. Place the location of the unpacked folder to your python path.
+       One way to do this is adding something like the following to python/Lib/sitecustomize.py::
+
+        import sys
+        sys.path.append(r'c:\Program Files\Leo-4-5')
+            
+Another way is to append the path to the unpacked folder to the Windows PYTHONPATH environment variable.
+
+Now that you have installed Leo and told Python where to find Leo,
+you are ready to `run Leo`_.
+
+**Note**:
+If you haven't already created a HOME environment variable, it would be good to
+define home to be "%USERPROFILE%\My Documents".  You can check whether HOME exists
+by typing 'echo %HOME%' (without the quotes) in a console window.
+
+How to associate Leo with .leo files on Windows
+***********************************************
+
+Leo will open .leo files automatically provided that you associate leo.py with .leo files.
+Here is how to open Leo when double-clicking a .leo file on Windows 2K or XP:
+
+-   In Windows 2K or XP, go to ``Start->Settings->Control panel``, open the ``Folder Options`` tab.
+-   Select the ``file types`` tab. Press the ``New`` button.
+-   Enter ``Leo`` into the ``Create New File Extension`` field. Press OK.
+-   With ``Leo`` still highlighted in the ``Registered File Types`` list box, press the ``Advanced`` button.
+-   Change the default file type field to something like ``Leo Literate Outline``.
+-   Press the ``Icon`` button and browse to the ``LeoDoc`` icon in Leo's ``Icons`` folder.
+-   Click OK. This gets the icons right and registers the description of the .leo file.
+
+You now have to tell windows what to do to open the file properly:
+
+-   Press the new button to open the ``New Action`` window.
+-   In the ``Action`` field type ``Open``, then type **one** of the following lines::
+
+    <python install dir>\pythonw.exe   <path-to-unpacked-folder>\launchLeo.py "%1"
+    <python install dir>\python.exe -i <path-to-unpacked-folder>\launchLeo.py "%1"
+    
+**Important**: <path-to-unpacked-folder> refers to the full path to the directory with a name like Leo-x-y,
+where x and y are version numbers.
+This unpacked folder must contain a folder called 'leo'.
+
+**Important**: The -i option is not valid when using pythonw.exe.
+Any call to pythonw -i will cause pythonw.exe to exit immediately.
+
+The first  line opens Leo files with no console window.
+The second line opens Leo files with a console window and leaves the window open after Leo exits.
+You should now be able to double click on a leo file in explorer with Leo.
+
+Installing Leo on MacOS X
++++++++++++++++++++++++++
+
+By Randall Voth:
+Leo works reliably only on MacOS X 10.3 (Panther) and above.
+To run Leo on Macintosh OS X 10:
+
+1.  Download and install ``MacPython 2.3 for Panther addons``.
+    Python is already included in OS X 10.3 so only the addons are necessary at
+    http://www.cwi.nl/~jack/macpython.html
+
+2.  Download and install TclTkAqua from http://tcltkaqua.sourceforge.net/
+
+3.  Run the PackageManager found in ``/Applications/MacPython-2.3`` and  
+    install ``_tkinter-2.3-binary`` by clicking on the package in the list  
+    and clicking the [Install:] button with ``Install dependencies`` checked.
+
+4.  Download Leo (platform independent source.zip) from http://leo.sourceforge.net/
+
+5.  Unzip the contents into a directory by double-clicking the downloaded file.
+    Typically you would put the Leo folder into the ``Applications`` directory.
+
+6.  Control-click on ``/path_to_unzipped_dir/leo/core/leo.py`` and open with ``PythonLauncher``.
+
+7.  It is a good idea to set ``PythonLauncher`` as the default program to  
+    open python scripts by clicking on ``leo.py``, choosing Get Info from the  
+    Finder's File menu, and selecting "PythonLauncher" as the default  
+    program to ``Open With:``
+    By clicking the ``Change All...`` button, all python scripts will be  
+    opened with ``PythonLauncher``.
+    
+8.  Download ``Pmw`` from http://pmw.sourceforge.net/
+    ``Pmw`` must be installed in order to use the Settings panel.
+    Drag the downloaded gzip file into
+    ``/System/Library/Frameworks/Python.framework/Versions/2.3/lib/python2.3/site-packages``
+    Double click on it to unzip and untar the file into a folder to make it available to Python
+
+How to use Platypus to create a Mac launcher for Leo
+****************************************************
+
+This documents how I used Platypus 3.0 to create MacLeo, the MacOS X launcher
+for Leo. You don't need Platypus to _use_ MacLeo, but you do need Platypus to
+*create* MacLeo. You may download Platypus 3.0 from http://sveinbjorn.vefsyn.is/platypus
+Platypus creates something called an "application bundle," essentially a wrapper
+for the shell script called openLeoScript.sh.
+
+At present this script contains just::
+
+    #!/bin/sh
+    # $2 only works if .leo is one of the extensions.
+    /usr/bin/pythonw ~/leo/core/leo.py $2
+
+In detail, here is how I created MacLeo:
+
+1.  Open Platypus.
+
+2.  Set the Platypus settings::
+
+	- Name: MacLeo
+	- Script type: shell
+	- Icon: Python Icon
+		- Using the standard Leo outline doesn't work, but one could be created…
+	- Script Path: /Users/edream/dist/Platypus 3.0/openLeoScript.sh
+	- Is droppable checkbox (checked)
+		- Edit Types:  .leo only, not *, not folders.
+		- N.B.  There MUST be a period in front of .leo!  Otherwise $2 will be empty in the script.
+	- Output: None (progress bar and text window appear to be essentially useless)
+
+3.  Hit the create button to create MacLeo.
+
+How to create MacOS X .pkg files
+********************************
+
+This tells how I created ``leo-4-3-a3.pkg`` using ``PackageMaker``.
+
+``PackageMaker`` is included in the ``Xtools`` disk that comes with MacOS X. Installing
+``PackageMaker`` was easy, but I don't remember the details.
+
+1.  Make sure ``~/dist/make-leo-dist`` contains a folder called ``leo-(version)``.
+    The ``~/dist/make-leo-dist/leo-(version)`` folder should contain a *folder* called just ``leo``.
+    This is the folder that should have the files to be distributed.
+    I got this folder by downloading ``leo-4-3-a3.zip``, the official a3 distribution.
+
+2.  Open ``PackageMaker`` by double-clicking the file ``~/dist/LeoPackage.pmsp``
+    I originally created this .pmsp file in ``PackageMaker``.
+    It will be included in the next official release.  I'll also add it to cvs.
+    ``LeoPackage.pmsp`` contains most of the information needed to create the .pkg file,
+    but even without the .pmsp file using ``PackageMaker`` is pretty self-explanatory
+
+3.  Update the description in the ``PackageMaker`` dialog.
+    This should be similar to the readme file.
+
+4. Browse to ``~/dist/make-leo-dist/leo-(version)`` in the ``Files`` tab in the ``PackageMaker`` dialog.
+
+5.  Choose ``Make Package`` from the ``PackageMaker File`` menu.
+    If necessary, set the file name to ``Leo.pkg``.  This will create ``Leo.pkg``.
+
+6.  Quit ``PackageMaker``.  Choose 'yes' when prompted to save ``LeoPackage.pmsp``.
+
+Tracking the development version
+++++++++++++++++++++++++++++++++
+
+Many users will want to track the development version of Leo, in order to stay
+on top of the latest features and bugfixes. Running the development version is
+quite safe and easy, and it's also a requirement if you want to contribute to
+Leo.
+
+1. First, you need to get Bazaar (bzr) from http://bazaar-vcs.org. For windows
+   users we recommend the standalone installer - the python installer may have
+   problems pushing to Launchpad. Plain bzr installer only contains the command
+   line version, so you might want to augment that with a friendly GUI - qbzr is
+   recommended as it's the easiest one to install. It provides command like
+   ``bzr qlog``, ``bzr qannotate`` etc.
+
+2. Get Leo from launchpad by doing::
+
+     bzr branch lp:leo-editor
+     
+And that's it! You can run leo/core/leo.py directly. When you want to refresh the
+code with latest modifications from Launchpad, run ``bzr pull``.
+
+If you make modifications to Leo (with the interest in sharing them with the Leo
+community), you can check them in to your local branch by doing ``bzr checkin``.
+Now, to actually request your changes to be merged to Leo trunk, you need a
+Launchpad account with RSA keys in place. There is showmedo video about how to
+accomplish this in Windows using puttygen and pageant at
+``http://showmedo.com/videos/video?name=1510070&fromSeriesID=151``.
+
+After your Launchpad account is set up, go to
+``https://launchpad.net/leo-editor``, choose "Code" tab -> Register Branch,
+select Branch type "Hosted" and fill in descriptive details about the branch.
+After that, go to the branch home page from Code tab again, and copy-paste the
+push command line to terminal. For example, for branch::
+
+    https://code.launchpad.net/~leo-editor-team/leo-editor/mod_rclick
+    
+The push command is::
+
+    bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/mod_rclick    
+
+You may wish to add --remember command line option to bzr push, to direct all
+future pushes to that location. Then, you only need to execute ``bzr push``.
+
+After your branch is pushed, you can email the Leo mailing list and request it
+to be reviewed and merged to trunk.
+
+Running Leo
++++++++++++
+
+You can run Leo from a Python interpreter as follows::
+
+    import leo
+    leo.run() # runs Leo, opening a new outline or,
+    leo.run(fileName=aFileName) # runs Leo, opening the given file name.
+    
+Another way to run Leo is as follows::
+
+    cd <path-to-launchLeo.py>
+    python launchLeo.py %1
+
+Here are some tips that may make running Leo easier:
+
+**Linux**
+    The following shell script will allow you to open foo.leo files by typing leo foo::
+    
+        #!/bin/sh 
+        python <leopath>launchLeo.py $1
+    
+    where <leopath> is the path to the directory containing the leo directory. 
+
+**Windows**
+    If you have `associated .leo files with Leo`_ you may run Leo by double-clicking any .leo file.
+    You can also use a batch file.
+    Put the following .bat file in c:\\Windows::
+
+        cd <path-to-leo>
+        c:\python25\python <path-to-leo>launchLeo.py %1
+        
+    where <path-to-leo> is the path to the directory *containing* the leo directory.
+
+    This opens the file specified by the first argument (%1).
+
+The first time you start Leo, a dialog will ask you for a unique identifier. If
+you are using cvs, use your cvs login name. Otherwise your initials will do. Leo
+stores this identifier in the file ``.leoID.txt``. Leo attempts to create
+``leoID.txt`` in the .leo sub-directory of your home directory, then in Leo's config directory, and
+finally in Leo's core directory. You can change this identifier at any time by
+editing ``.leoID.txt``.
+
+Running Leo in batch mode
++++++++++++++++++++++++++
+
+On startup, Leo looks for two arguments of the form::
+
+    --script scriptFile
+
+If found, Leo enters batch mode. In batch mode Leo does not show any windows.
+Leo assumes the scriptFile contains a Python script and executes the contents of
+that file using Leo's ``Execute Script`` command. By default, Leo sends all
+output to the console window. Scripts in the scriptFile may disable or enable
+this output by calling ``app.log.disable`` or ``app.log.enable``
+
+Scripts in the scriptFile may execute any of Leo's commands except the ``Edit Body``
+and ``Edit Headline`` commands. Those commands require interaction with the user.
+For example, the following batch script reads a Leo file and prints all the
+headlines in that file::
+
+    path = r"<path-to-folder-containing-the-leo-folder>\leo\test\test.leo"
+   
+    g.app.log.disable() # disable reading messages while opening the file
+    flag,newFrame = g.openWithFileName(path,None)
+    g.app.log.enable() # re-enable the log.
+    
+    for p in newFrame.c.allNodes_iter():
+        g.es(g.toEncodedString(p.h,"utf-8"))
+
+How to install the Aspell spell checker
++++++++++++++++++++++++++++++++++++++++
+
+You must install the Aspell package if you want to use Leo's Spell tab.
+
+1.  Download and install the Aspell package from http://aspell.sourceforge.net/
+    Typically this will create a directory called Aspell/bin
+
+2.  If you are using Python 2.3 or Python 2.4 you must copy a dll
+    from Leo's extensions folder to the Aspell/bin directory.
+    This step is *not* needed if you are using Python 2.5 or later.
+    Leo's extensions folder comes with two dll's: aspell23.pyd and aspell24.pyd,
+    for Python 2.3 and 2.4 respectively.
+    Make a copy of the appropriate dll, **rename it** to be aspell.pyd,
+    and copy the renamed aspell.pyd file to Aspell/bin.
+
+3.  Specify the location of the Aspell and Aspell/bin directories using
+    the aspell_dir and aspell_bin_dir settings in LeoSettings.leo.
+

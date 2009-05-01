@@ -1,0 +1,119 @@
+.. rst3: filename: html\new-4-4-1.html
+
+##########################################
+What's New in Leo 4.4.1
+##########################################
+
+This page summarizes the changes made in Leo 4.4.1.
+For full details see the release notes section in LeoDocs.leo.
+
+The main features of Leo 4.4.1 are:
+
+- Multiple editors in Leo's body pane and
+- A new colorizer plugin controlled by jEdit language description files.
+- Search commands now support regex replace patterns: \1, \2, etc.
+- Support for external debuggers: see http://webpages.charter.net/edreamleo/debuggers.html
+- The scripting plugin now creates a Debug Script button.
+- Several new commands including run-unit-test, python-help and toggle-invisibles.
+- The help-for-command commands now contains information for almost all commands.
+- A new shortcut_button plugin.
+
+.. .. contents::
+
+.. Links used in this document.
+
+New commands
+++++++++++++
+
+::
+    
+    cycle-focus
+    debug
+    find-character
+    find-word
+    hide-invisibles 
+    isearch-with-present-options
+    open-users-guide
+    python-help
+    run-unit-test
+    toggle-autocompleter
+    toggle-calltips
+    toggle-invisibles
+
+New features
+++++++++++++
+
+- Removed warning about changed node.
+- Added scroll-outline-left/right commands.
+- Leo outputs decorators correctly, assuming the decorator does not conflict with a Leo directive.
+- Wrote script to convert g.es to g.et where appropriate.
+  The first step in translating all Leo messages.
+- Leo highlights (flashes) matching brackets when typing typing (, ), [, ], { or }.
+- Fixed long-standing problem reporting indentation errors.
+- Fixed long-standing bug in Remove Sentinels command.
+- Fixed long-standing bugs in import commands.
+- The scroll-up/down commands now scroll the outline if focus is in outline pane.
+  However, his can be done better using per-pane bindings as in the default leoSettings.leo.
+- Incremental searches are (properly) confined to a single body text.
+- Backspace now handled properly in incremental searches.
+- The add-editor command adds a new editor in the body pane.
+  The delete-editor command deletes the presently selected editor,
+  and the cycle-editor-focus command cycles focus between editors in the body text.
+- The standard \1, \2, etc. replacements can now be performed in regular expression searches.
+- The standard escapes \n and \t are now valid in plain searches.
+- The shortcut for the replace-string command now changes from the find command
+  to the replace command.
+
+New and improved plugins
+++++++++++++++++++++++++
+
+- The slideshow plugin
+- The mod_scripting plugin now creates a press-x-button command for every button 'x'.
+  You can specify settings for such commands using @shortcuts nodes.
+- The shortcut_button plugin plugin creates a 'Shortcut' button in the icon area.
+  Pressing the Shortcut button creates *another* button which when pressed
+  will select the presently selected node at the time the button was created.
+- Added Debug button to scripting plugin.
+
+New settings
+++++++++++++
+
+::
+
+    @bool autoindent_in_nocolor_mode
+    @bool flash_matching_brackets
+    @bool idle_redraw
+    @bool trace_bind_key_exceptions
+    @bool warn_about_redefined_shortcuts
+    @color flash_brackets_background_color
+    @color flash_brackets_foreground_color
+    @int flash-brackets-delay
+    @int flash_brackets_count
+    @string close_flash_brackets
+    @string open_flash_brackets
+    @string editor_orientation
+
+Improved settings
++++++++++++++++++
+
+- Added @font menu font setting.
+- Added support for commands to be executed on entry to a mode.
+- Added support for bindings that are active only in command, enter and insert key states.
+- Added support for @abbrev nodes in leoSettings.leo.
+- Improved check bindings script in leoSettings.leo.
+- Allow @mode outside of leoSettings.leo.
+- Added warnings about the @bool expanded_click_area setting.
+
+Minor improvements
+++++++++++++++++++
+
+- The print-bindings command now properly sorts bindings.
+- The help-for-command command now works for almost all commands.
+- Improved filename completion.
+- Better listings for print-commands and print-bindings &amp; mode-help commands.
+- Allow shortcuts to be overridden outside of leoSettings.leo.
+- Finished Cmds menu.
+- Improved show-fonts command.
+- Strip quotes from color, font settings.
+- Warn about invalid Enter and Leave key bindings.
+
