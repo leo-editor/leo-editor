@@ -362,6 +362,19 @@ line of the form:</p>
 <dt>number_code_lines (default: True)</dt>
 <dd>Controls whether to number code lines in code mode.
 This option has no effect in rst mode.</dd>
+<dt>publish-argv-for-missing-stylesheets (Default: '')</dt>
+<dd><p class="first">The arguments to be passed to docutils.core.Publisher().publish()
+when no stylesheet is in effect.
+This is a string that represents a comma-separated list of strings:
+For example, the option:</p>
+<pre class="literal-block">
+publish-argv-for-missing-stylesheets=--language=de,--documentclass=report,--use-latex-toc
+</pre>
+<p>results in the call:</p>
+<pre class="last literal-block">
+publish(['--language=de','--documentclass=report','--use-latex-toc'])
+</pre>
+</dd>
 <dt>show_doc_parts_as_paragraphs (default: False)</dt>
 <dd>True: Move doc parts outside of the code-block directive in code mode.
 This option has no effect in rst mode.
@@ -416,6 +429,13 @@ This option has no effect in rst mode.</dd>
 <dt>show_organizer_nodes (default: True)</dt>
 <dd>True: generate rST sections for nodes that do not contain body text.
 This option has no effect unless the rST section would otherwise be written.</dd>
+<dt>show_sections (default: True)</dt>
+<dd><p class="first">True: generate rST sections corresponding to headlines.
+False: don't generate sections.  Instead, generate lines of the form:</p>
+<pre class="last literal-block">
+**headline**
+</pre>
+</dd>
 <dt>strip_at_file_prefixes (default: True)</dt>
 <dd>True: remove &#64;auto, &#64;file, &#64;nosent and &#64;thin from the start of headlines.</dd>
 <dt>stylesheet_name (default: 'default.css')</dt>
@@ -432,19 +452,6 @@ The first character is reserved so you can specify the top-level section explici
 This option only applies to .htm, .html and .tex files.
 The name of the intermediate file has the name of the output file with .txt appended.
 This option has effect only if the generate_rst option is True.</dd>
-<dt>publish-argv-for-missing-stylesheets (Default: '')</dt>
-<dd><p class="first">The arguments to be passed to docutils.core.Publisher().publish()
-when no stylesheet is in effect.
-This is a string that represents a comma-separated list of strings:
-For example, the option:</p>
-<pre class="literal-block">
-publish-argv-for-missing-stylesheets=--language=de,--documentclass=report,--use-latex-toc
-</pre>
-<p>results in the call:</p>
-<pre class="last literal-block">
-publish(['--language=de','--documentclass=report','--use-latex-toc'])
-</pre>
-</dd>
 </dl>
 <div class="section" id="options-supporting-the-http-plugin">
 <h2>Options supporting the http plugin</h2>
