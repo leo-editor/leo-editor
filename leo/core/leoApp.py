@@ -138,6 +138,8 @@ class LeoApp:
             "python"        : "#",
             "rapidq"        : "'", # fil 2004-march-11
             "rebol"         : ";",  # jason 2003-07-03
+            "rest"          : "..",
+            "rst"           : "..",
             "ruby"          : "#",  # thyrsus 2008-11-05
             "shell"         : "#",  # shell scripts
             "tcltk"         : "#",
@@ -180,6 +182,8 @@ class LeoApp:
             "plsql"         : "sql", # qt02537 2005-05-27
             "rapidq"        : "bas", # fil 2004-march-11
             "rebol"         : "r",    # jason 2003-07-03
+            "rst"           : "rst",
+            "rst"           : "rest",
             "ruby"          : "rb",   # thyrsus 2008-11-05
             "shell"         : "sh",   # DS 4/1/04
             "tex"           : "tex",
@@ -221,6 +225,8 @@ class LeoApp:
             "sql"   : "plsql", # qt02537 2005-05-27
             "r"     : "rebol",
             "rb"    : "ruby", # thyrsus 2008-11-05
+            "rest"  : "rst",
+            "rst"   : "rst",
             "sh"    : "shell",
             "tex"   : "tex",
             "txt"   : "plain",

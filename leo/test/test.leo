@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5,0,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -352,9 +352,9 @@
 </v>
 </v>
 <v t="ekr.20090430124352.2"><vh>@rst-no-headlines</vh></v>
-<v t="ekr.20090430080001.1" a="E"><vh>@path c:\prog\test</vh>
-<v t="ekr.20090430080001.2" a="E"><vh>@rst test.html</vh>
-<v t="ekr.20090430124352.10" a="E"><vh>@rst-code</vh>
+<v t="ekr.20090430080001.1"><vh>@path c:\prog\test</vh>
+<v t="ekr.20090430080001.2"><vh>@rst test.html</vh>
+<v t="ekr.20090430124352.10"><vh>@rst-code</vh>
 <v t="ekr.20090430124352.9" a="E"><vh>&lt;&lt; section a &gt;&gt;</vh>
 <v t="ekr.20090430124352.11"><vh>&lt;&lt; section c &gt;&gt;</vh></v>
 </v>
@@ -362,6 +362,10 @@
 </v>
 </v>
 </v>
+<v t="ekr.20090501105822.1" a="E"><vh>import rst</vh>
+<v t="ekr.20090501105822.2"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20090501110438.1"><vh>import</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2825,5 +2829,41 @@ code_block_string =\n.. class:: code\n..\n\n::\n
 section c, line 1
 section c, line 2
     section c, line 3</t>
+<t tx="ekr.20090501105822.1">@tabwidth -4
+
+x = c.importCommands
+parent = g.findTopLevelNode(c,'import')
+&lt;&lt; define s &gt;&gt;
+try:
+    x.createOutline(fileName='test.rst',parent=parent,s=s)
+finally:
+    child = parent.firstChild()
+    if child:
+        child.expand()
+        c.redraw(child)
+    else:
+        c.redraw(parent)</t>
+<t tx="ekr.20090501105822.2">s = '''
+
+.. toc
+
+=====
+top
+=====
+
+The top section
+
+section 1
+---------
+
+abc
+
+section 2
+---------
+
+xyz
+'''
+</t>
+<t tx="ekr.20090501110438.1"></t>
 </tnodes>
 </leo_file>

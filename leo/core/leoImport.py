@@ -80,6 +80,8 @@ class leoImportCommands (scanUtility):
             '.pas':     self.scanPascalText,
             '.py':      self.scanPythonText,
             '.pyw':     self.scanPythonText,
+            '.rest':    self.scanRstText,
+            '.rst':     self.scanRstText,
             '.xml':     self.scanXmlText,
         }
     #@-node:ekr.20080825131124.3:createImportDispatchDict
@@ -852,7 +854,6 @@ class leoImportCommands (scanUtility):
 
         p.contract()
         return p
-    #@nonl
     #@-node:ekr.20031218072017.3210:createOutline (leoImport)
     #@+node:ekr.20070806111212:readAtAutoNodes (importCommands) & helper
     def readAtAutoNodes (self):
@@ -1512,6 +1513,9 @@ class leoImportCommands (scanUtility):
     def pythonUnitTest(self,p,fileName=None,s=None,showTree=False):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.py')
 
+    def rstUnitTest(self,p,fileName=None,s=None,showTree=False):
+        return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.rst')
+
     def textUnitTest(self,p,fileName=None,s=None,showTree=False):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.txt')
 
@@ -1641,6 +1645,13 @@ class leoImportCommands (scanUtility):
 
         scanner.run(s,parent)
     #@-node:ekr.20070703122141.99:scanPythonText
+    #@+node:ekr.20090501095634.48:scanRstText
+    def scanRstText (self,s,parent,atAuto=False):
+
+        scanner = rstScanner(importCommands=self,atAuto=atAuto)
+
+        scanner.run(s,parent)
+    #@-node:ekr.20090501095634.48:scanRstText
     #@+node:ekr.20071214072145:scanXmlText
     def scanXmlText (self,s,parent,atAuto=False):
 
@@ -3691,6 +3702,191 @@ class pythonScanner (baseScannerClass):
     #@-node:ekr.20070803101619:skipSigTail
     #@-others
 #@-node:ekr.20070703122141.100:class pythonScanner
+#@+node:ekr.20090501095634.41:class rstScanner
+class rstScanner (baseScannerClass):
+
+    #@    @+others
+    #@+node:ekr.20090501095634.42: __init__
+    def __init__ (self,importCommands,atAuto):
+
+        # Init the base class.
+        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='rst')
+
+        # Scanner overrides
+        self.blockDelim1 = self.blockDelim2 = None
+        self.classTags = []
+        self.functionTags = []
+        self.hasClasses = False
+        self.lineCommentDelim = '..'
+        self.outerBlockDelim1 = None
+        self.sigFailTokens = []
+        self.strict = True # We want to preserve whitespace
+    #@-node:ekr.20090501095634.42: __init__
+    #@+node:ekr.20090501095634.46:isUnderLine
+    def isUnderLine(self,s):
+
+        '''Return True if s consists of only rST underline characters.'''
+
+        if not s.strip(): return False
+
+        u = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+
+        for ch in s.lstrip(): # ignore leading whitespace.
+            if ch == '\n':
+                return True
+            if ch not in u:
+                return False
+        return True
+    #@-node:ekr.20090501095634.46:isUnderLine
+    #@+node:ekr.20090501095634.51:putFunction (to be revised)
+    def putFunction (self,s,sigStart,codeEnd,start,parent):
+
+        '''Create a node of parent for a function defintion.'''
+
+        trace = False and self.trace
+
+        # Enter a new function: save the old function info.
+        oldStartSigIndent = self.startSigIndent
+
+        if self.sigId:
+            headline = self.sigId
+        else:
+            g.trace('Can not happen: no sigId')
+            headline = 'unknown function'
+
+        body1 = s[start:sigStart]
+        # Adjust start backwards to get a better undent.
+        if body1.strip():
+            while start > 0 and s[start-1] in (' ','\t'):
+                start -= 1
+
+        body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
+
+        body2 = self.undentBody(s[sigStart:codeEnd])
+        body = body1 + body2
+        if trace: g.trace('body\n%s' % body)
+
+        tail = body[len(body.rstrip()):]
+        if not '\n' in tail:
+            self.warning(
+                'function %s does not end with a newline; one will be added\n%s' % (
+                    self.sigId,g.get_line(s,codeEnd)))
+            # g.trace(g.callers())
+
+        self.createFunctionNode(headline,body,parent)
+
+        # Exit the function: restore the function info.
+        self.startSigIndent = oldStartSigIndent
+    #@-node:ekr.20090501095634.51:putFunction (to be revised)
+    #@+node:ekr.20090501095634.52:scanHelper
+    def scanHelper(self,s,i,end,parent,kind):
+
+        '''Common scanning code used by both scan and putClassHelper.'''
+
+        # g.trace(g.callers())
+        # g.trace('i',i,g.get_line(s,i))
+        assert kind in ('class','outer')
+        start = i ; putRef = False ; bodyIndent = None
+        while i < end:
+            progress = i
+            if s[i] in (' ','\t','\n'):
+                i += 1 # Prevent lookahead below, and speed up the scan.
+            # # # elif self.startsComment(s,i):
+                # # # i = self.skipComment(s,i)
+            # # # elif self.startsString(s,i):
+                # # # i = self.skipString(s,i)
+            # # # elif self.startsClass(s,i):  # Sets sigStart,sigEnd & codeEnd ivars.
+                # # # putRef = True
+                # # # if bodyIndent is None: bodyIndent = self.getIndent(s,i)
+                # # # end2 = self.codeEnd # putClass may change codeEnd ivar.
+                # # # self.putClass(s,i,self.sigEnd,self.codeEnd,start,parent)
+                # # # i = start = end2
+            elif self.startsFunction(s,i): # Sets sigStart,sigEnd & codeEnd ivars.
+                putRef = True
+                if bodyIndent is None: bodyIndent = self.getIndent(s,i)
+                self.putFunction(s,self.sigStart,self.codeEnd,start,parent)
+                i = start = self.codeEnd
+            # # # elif self.startsId(s,i):
+                # # # i = self.skipId(s,i)
+            # # # elif kind == 'outer' and g.match(s,i,self.outerBlockDelim1): # Do this after testing for classes.
+                # # # i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
+                # # # # Bug fix: 2007/11/8: do *not* set start: we are just skipping the block.
+            else: i += 1
+            assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+
+        return start,putRef,bodyIndent
+    #@-node:ekr.20090501095634.52:scanHelper
+    #@+node:ekr.20090501095634.50:startsComment & startsString
+    # No comment or string affects parsing.
+
+    def startsComment (self,s,i):
+        return False
+
+    def startsString (self,s,i):
+        return False
+    #@-node:ekr.20090501095634.50:startsComment & startsString
+    #@+node:ekr.20090501095634.45:startsHelper
+    def startsHelper(self,s,i,kind,tags):
+
+        '''return True if s[i:] starts a class or function.
+        Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
+
+        trace = False and not g.unitTesting
+        ok,name,next = self.startsSection(s,i)
+        if not ok: return False
+
+        self.sigStart = g.find_line_start(s,i)
+        self.sigEnd = next
+        self.sigId = name.strip()
+        i = next + 1
+
+        while i < len(s):
+            progress = i
+            i,j = g.getLine(s,i)
+            # if trace: g.trace(repr(s[i:j]))
+            ok,name,next = self.startsSection(s,i)
+            if ok:
+                self.codeEnd = i
+                break
+            else:
+                i = j
+            assert i > progress
+        else:
+            self.codeEnd = len(s)
+
+        if trace: g.trace('found...\n%s' % s[self.sigStart:self.codeEnd])
+        return True
+    #@nonl
+    #@-node:ekr.20090501095634.45:startsHelper
+    #@+node:ekr.20090501095634.47:startsSection
+    def startsSection (self,s,i):
+
+        trace = False and not g.unitTesting
+        i1,j = g.getLine(s,i)
+        line = s[i1:j]
+
+        if self.isUnderLine(line): # a preceding underline.
+            name_i = g.skip_line(s,i1)
+            name_i,name_j = g.getLine(s,name_i)
+            name = s[name_i:name_j]
+            next_i = g.skip_line(s,name_i)
+            i,j = g.getLine(s,next_i)
+            line2 = s[i:j]
+            if trace: g.trace('line1 %s\nname %s\nline2 %s' % (
+                repr(line),repr(name),repr(line2)))
+        else:
+            name = line
+            i = g.skip_line(s,i1)
+            i,j = g.getLine(s,i)
+            line2 = s[i:j]
+            if trace: g.trace('name %s\nline %s' % (
+                repr(name),repr(line2)))
+
+        ok = self.isUnderLine(line2)
+        return ok,name,i
+    #@-node:ekr.20090501095634.47:startsSection
+    #@-others
+#@-node:ekr.20090501095634.41:class rstScanner
 #@+node:ekr.20071214072145.1:class xmlScanner
 class xmlScanner (baseScannerClass):
 
