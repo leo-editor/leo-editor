@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="49" left="158" height="827" width="1117"/>
+	<global_window_position top="86" left="62" height="827" width="1117"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="3,21,0,3"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="3,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -52,7 +52,7 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20080301071818"><vh>Home page</vh>
+<v t="ekr.20080301071818" a="E"><vh>Home page</vh>
 <v t="ekr.20080306071848" a="M"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
@@ -699,7 +699,7 @@
 <v t="ekr.20071021101506"><vh>@rst-ignore menu convenience routines</vh></v>
 </v>
 </v>
-<v t="ekr.20050831184021.1" a="E"><vh>Chapter 14: Using the rst3 plugin</vh>
+<v t="ekr.20050831184021.1"><vh>Chapter 14: Using the rst3 plugin</vh>
 <v t="ekr.20050818163826" a="E"><vh>@rst html\rstplugin3.html</vh>
 <v t="ekr.20050818163826.1"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050818163826.2"><vh>Overview</vh></v>
@@ -31072,7 +31072,12 @@ including the name of the master toctree document, leo_toc.html.txt.
 - From this file, run rst3 on desired tree.
 - cd leo\docs\html
 - make html
-</t>
+
+4. To create pdf (probably easiest on Linux, with necessary latex packages installed):
+
+- make latex
+- cd _build/latex
+- make all-pdf</t>
 <t tx="ekr.20090428133936.2">@language python
 # -*- coding: utf-8 -*-
 #
