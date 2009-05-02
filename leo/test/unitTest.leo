@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7,1"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2029,7 +2029,6 @@
 </v>
 <v t="ekr.20090501123949.2"><vh>rST tests</vh>
 <v t="ekr.20090501123949.3"><vh>@test decorator test</vh></v>
-<v t="ekr.20090501124751.3"><vh>@test decorator test (indented)</vh></v>
 </v>
 <v t="ekr.20071020075538.64"><vh>Java tests</vh>
 <v t="ekr.20071020075538.65"><vh>@test java interface test1</vh></v>
@@ -2496,7 +2495,7 @@
 </v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
-<v t="ekr.20090501123949.2" a="E"></v>
+<v t="ekr.20090501123949.2"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -22197,6 +22196,11 @@ section 1
 
 abc
 
+section 1.1
+~~~~~~~~~~~
+
+pdq
+
 section 2
 ---------
 
@@ -22206,29 +22210,6 @@ xyz
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20090501124751.3">s = '''\
-.. toc
-
-=====
-top
-=====
-
-The top section
-
-    section 1
-    ---------
-    
-    abc
-
-section 2
----------
-
-xyz
-'''
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.rstUnitTest(p,s=s,showTree=True)</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
 import random,fnmatch
 
