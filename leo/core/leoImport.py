@@ -3721,29 +3721,29 @@ class rstScanner (baseScannerClass):
         self.outerBlockDelim1 = None
         self.sigFailTokens = []
         self.strict = True # We want to preserve whitespace
+        self.underlines1 = [] # Underlining characters for underlines.
+        self.underlines2 = [] # Underlining characters for over/underlines.
     #@-node:ekr.20090501095634.42: __init__
     #@+node:ekr.20090501095634.46:isUnderLine
     def isUnderLine(self,s):
 
         '''Return True if s consists of only rST underline characters.'''
 
-        if not s.strip(): return False
+        if not s: return False
 
         u = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
 
-        for ch in s.lstrip(): # ignore leading whitespace.
-            if ch == '\n':
-                return True
+        for ch in s:
             if ch not in u:
                 return False
         return True
     #@-node:ekr.20090501095634.46:isUnderLine
-    #@+node:ekr.20090501095634.51:putFunction (to be revised)
+    #@+node:ekr.20090501095634.51:putFunction (to be revised?)
     def putFunction (self,s,sigStart,codeEnd,start,parent):
 
         '''Create a node of parent for a function defintion.'''
 
-        trace = False and self.trace
+        trace = False and not g.unitTesting
 
         # Enter a new function: save the old function info.
         oldStartSigIndent = self.startSigIndent
@@ -3764,7 +3764,7 @@ class rstScanner (baseScannerClass):
 
         body2 = self.undentBody(s[sigStart:codeEnd])
         body = body1 + body2
-        if trace: g.trace('body\n%s' % body)
+        if trace: g.trace('body\n%s' % body,'\n',g.callers(4))
 
         tail = body[len(body.rstrip()):]
         if not '\n' in tail:
@@ -3777,7 +3777,7 @@ class rstScanner (baseScannerClass):
 
         # Exit the function: restore the function info.
         self.startSigIndent = oldStartSigIndent
-    #@-node:ekr.20090501095634.51:putFunction (to be revised)
+    #@-node:ekr.20090501095634.51:putFunction (to be revised?)
     #@+node:ekr.20090501095634.52:scanHelper
     def scanHelper(self,s,i,end,parent,kind):
 
@@ -3816,15 +3816,18 @@ class rstScanner (baseScannerClass):
 
         return start,putRef,bodyIndent
     #@-node:ekr.20090501095634.52:scanHelper
-    #@+node:ekr.20090501095634.50:startsComment & startsString
-    # No comment or string affects parsing.
+    #@+node:ekr.20090501095634.50:startsComment/ID/String
+    # These do not affect parsing.
 
     def startsComment (self,s,i):
         return False
 
+    def startsID (self,s,i):
+        return False
+
     def startsString (self,s,i):
         return False
-    #@-node:ekr.20090501095634.50:startsComment & startsString
+    #@-node:ekr.20090501095634.50:startsComment/ID/String
     #@+node:ekr.20090501095634.45:startsHelper
     def startsHelper(self,s,i,kind,tags):
 
@@ -3832,8 +3835,8 @@ class rstScanner (baseScannerClass):
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
 
         trace = False and not g.unitTesting
-        ok,name,next = self.startsSection(s,i)
-        if not ok: return False
+        kind,name,next,ch = self.startsSection(s,i)
+        if kind == 'plain': return False
 
         self.sigStart = g.find_line_start(s,i)
         self.sigEnd = next
@@ -3844,8 +3847,8 @@ class rstScanner (baseScannerClass):
             progress = i
             i,j = g.getLine(s,i)
             # if trace: g.trace(repr(s[i:j]))
-            ok,name,next = self.startsSection(s,i)
-            if ok:
+            kind,name,next,ch = self.startsSection(s,i)
+            if kind in ('over','under'):
                 self.codeEnd = i
                 break
             else:
@@ -3861,29 +3864,66 @@ class rstScanner (baseScannerClass):
     #@+node:ekr.20090501095634.47:startsSection
     def startsSection (self,s,i):
 
+        '''Scan a line and possible one or two other lines,
+        looking for an underlined or overlined/underlined name.
+
+        Return (kind,name,i):
+            kind: in ('under','over','plain')
+            name: the name of the underlined or overlined line.
+            i: the following character if kind is not 'plain'
+            ch: the underlining and possibly overlining character.
+        '''
+
         trace = False and not g.unitTesting
         i1,j = g.getLine(s,i)
-        line = s[i1:j]
+        line = s[i1:j].strip()
+        ch,kind = '','plain' # defaults.
 
-        if self.isUnderLine(line): # a preceding underline.
+        if self.isUnderLine(line): # an overline.
             name_i = g.skip_line(s,i1)
             name_i,name_j = g.getLine(s,name_i)
-            name = s[name_i:name_j]
+            name = s[name_i:name_j].strip()
             next_i = g.skip_line(s,name_i)
             i,j = g.getLine(s,next_i)
-            line2 = s[i:j]
-            if trace: g.trace('line1 %s\nname %s\nline2 %s' % (
-                repr(line),repr(name),repr(line2)))
+            line2 = s[i:j].strip()
+            n1,n2,n3 = len(line),len(name),len(line2)
+            ch1,ch3 = line[0],line2 and line2[0]
+            ok = (self.isUnderLine(line2) and
+                n1 >= n2 and n2 > 0 and n3 >= n2 and ch1 == ch3)
+            if ok:
+                ch,kind = ch1,'over'
+                if ch1 not in self.underlines2:
+                    self.underlines2.append(ch1)
+                    if trace: g.trace('underlines2',self.underlines2,name)
+                if trace: g.trace('\nline  %s\nname  %s\nline2 %s' % (
+                    repr(line),repr(name),repr(line2)))
         else:
-            name = line
+            name = line.strip()
             i = g.skip_line(s,i1)
             i,j = g.getLine(s,i)
-            line2 = s[i:j]
-            if trace: g.trace('name %s\nline %s' % (
-                repr(name),repr(line2)))
-
-        ok = self.isUnderLine(line2)
-        return ok,name,i
+            line2 = s[i:j].strip()
+            n1,n2 = len(name),len(line2)
+            # look ahead two lines.
+            i3,j3 = g.getLine(s,j)
+            name2 = s[i3:j3].strip()
+            i4,j4 = g.getLine(s,j3)
+            line4 = s[i4:j4].strip()
+            n3,n4 = len(name2),len(line4)
+            overline = (
+                self.isUnderLine(line2) and
+                self.isUnderLine(line4) and
+                n3 > 0 and n2 >= n3 and n4 >= n3)
+            ok = (not overline and self.isUnderLine(line2) and
+                n1 > 0 and n2 >= n1)
+            ### ok = self.isUnderLine(line2) and n1 > 0 and n2 >= n1
+            if ok:
+                ch,kind = line2[0],'under'
+                if ch not in self.underlines1:
+                    self.underlines1.append(ch)
+                    if trace: g.trace('underlines1',self.underlines1,name)
+                if trace: g.trace('\nname  %s\nline2 %s' % (
+                    repr(name),repr(line2)))
+        return kind,name,i,ch
     #@-node:ekr.20090501095634.47:startsSection
     #@-others
 #@-node:ekr.20090501095634.41:class rstScanner
