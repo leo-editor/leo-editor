@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -351,7 +351,6 @@
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
 </v>
-<v t="ekr.20090430124352.2"><vh>@rst-no-headlines</vh></v>
 <v t="ekr.20090430080001.1"><vh>@path c:\prog\test</vh>
 <v t="ekr.20090430080001.2"><vh>@rst test.html</vh>
 <v t="ekr.20090430124352.10"><vh>@rst-code</vh>
@@ -367,7 +366,6 @@
 </v>
 <v t="ekr.20090501110438.1"><vh>import</vh></v>
 <v t="ekr.20090503095856.1"><vh>leoRst test</vh></v>
-<v t="ekr.20090505050458.1"><vh>NewHeadline</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2796,19 +2794,6 @@ About the foo module
 
 
 </t>
-<t tx="ekr.20090430124352.2">@ @rst-options
-code_mode=True
-generate_rst=True
-generate_rst_header_comment = True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-</t>
 <t tx="ekr.20090430124352.5">This is a doc part::
 
     section b, line 1
@@ -2874,6 +2859,5 @@ xyz
 <t tx="ekr.20090501110438.1"></t>
 <t tx="ekr.20090503095856.1">x = c.rstCommands
 print x</t>
-<t tx="ekr.20090505050458.1">c.k.simulateCommand('print-bindings')</t>
 </tnodes>
 </leo_file>

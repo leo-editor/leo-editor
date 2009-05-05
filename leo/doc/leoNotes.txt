@@ -64,6 +64,9 @@ for example, gutsy, hardy, intrepid.
 #@+node:ekr.20090502071837.103:Cool projects
 These are projects that eventually I'd like to follow up on.
 
+- Caliopy
+  http://www.caliopywork.org/
+
 - Fuse (pyfuse) Leo as a file system.
   http://leo.zwiki.org/LeoAsAFileSystem
 
@@ -73,8 +76,9 @@ These are projects that eventually I'd like to follow up on.
 - rope: Python refactoring library.
   http://rope.sourceforge.net/
 
+- Tomboy: wiki-like notes
+  http://projects.gnome.org/tomboy/index.html
 
-#@nonl
 #@-node:ekr.20090502071837.103:Cool projects
 #@+node:ekr.20070614094933:EasyInstall installation notes--XP
 C:\prog>c:\python25\python ez_setup.py
