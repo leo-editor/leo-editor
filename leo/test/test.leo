@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -362,10 +362,12 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090501105822.1" a="E"><vh>import rst</vh>
+<v t="ekr.20090501105822.1"><vh>import rst</vh>
 <v t="ekr.20090501105822.2"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20090501110438.1"><vh>import</vh></v>
+<v t="ekr.20090503095856.1"><vh>leoRst test</vh></v>
+<v t="ekr.20090505050458.1"><vh>NewHeadline</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2870,5 +2872,8 @@ xyz
 '''
 </t>
 <t tx="ekr.20090501110438.1"></t>
+<t tx="ekr.20090503095856.1">x = c.rstCommands
+print x</t>
+<t tx="ekr.20090505050458.1">c.k.simulateCommand('print-bindings')</t>
 </tnodes>
 </leo_file>

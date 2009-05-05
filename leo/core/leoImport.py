@@ -2043,6 +2043,12 @@ class baseScannerClass (scanUtility):
             self.setBodyString(p,body,self.encoding)
         return p
     #@-node:ekr.20070703122141.77:createHeadline
+    #@+node:ekr.20090502071837.1:endGen
+    def endGen (self,s):
+
+        '''Do any language-specific post-processing.'''
+        pass
+    #@-node:ekr.20090502071837.1:endGen
     #@+node:ekr.20070703122141.79:getLeadingIndent
     def getLeadingIndent (self,s,i,ignoreComments=True):
 
@@ -2429,7 +2435,10 @@ class baseScannerClass (scanUtility):
         # Finish adding to the parent's body text.
         self.addRef(parent)
         if start < len(s):
-            self.appendStringToBody(parent,s[start:]) 
+            self.appendStringToBody(parent,s[start:])
+
+        # Do any language-specific post-processing.
+        self.endGen(s)
     #@+node:ekr.20071018084830:scanHelper
     def scanHelper(self,s,i,end,parent,kind):
 
@@ -3721,9 +3730,24 @@ class rstScanner (baseScannerClass):
         self.outerBlockDelim1 = None
         self.sigFailTokens = []
         self.strict = True # We want to preserve whitespace
+        self.underlines = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~" # valid rst underlines.
         self.underlines1 = [] # Underlining characters for underlines.
         self.underlines2 = [] # Underlining characters for over/underlines.
     #@-node:ekr.20090501095634.42: __init__
+    #@+node:ekr.20090502071837.2:endGen
+    def endGen (self,s):
+
+        '''Remember the underlining characters in the root's uA.'''
+
+        p = self.root
+        if p:
+            tag = 'rst-import'
+            d = p.v.u.get(tag,{})
+            d ['underlines1'] = ''.join(str(self.underlines1))
+            d ['underlines2'] = ''.join(str(self.underlines2))
+            p.v.u [tag] = d
+
+    #@-node:ekr.20090502071837.2:endGen
     #@+node:ekr.20090501095634.46:isUnderLine
     def isUnderLine(self,s):
 
@@ -3731,91 +3755,12 @@ class rstScanner (baseScannerClass):
 
         if not s: return False
 
-        u = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
-
         for ch in s:
-            if ch not in u:
+            if ch not in self.underlines:
                 return False
+
         return True
     #@-node:ekr.20090501095634.46:isUnderLine
-    #@+node:ekr.20090501095634.51:putFunction (to be revised?)
-    def putFunction (self,s,sigStart,codeEnd,start,parent):
-
-        '''Create a node of parent for a function defintion.'''
-
-        trace = False and not g.unitTesting
-
-        # Enter a new function: save the old function info.
-        oldStartSigIndent = self.startSigIndent
-
-        if self.sigId:
-            headline = self.sigId
-        else:
-            g.trace('Can not happen: no sigId')
-            headline = 'unknown function'
-
-        body1 = s[start:sigStart]
-        # Adjust start backwards to get a better undent.
-        if body1.strip():
-            while start > 0 and s[start-1] in (' ','\t'):
-                start -= 1
-
-        body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
-
-        body2 = self.undentBody(s[sigStart:codeEnd])
-        body = body1 + body2
-        if trace: g.trace('body\n%s' % body,'\n',g.callers(4))
-
-        tail = body[len(body.rstrip()):]
-        if not '\n' in tail:
-            self.warning(
-                'function %s does not end with a newline; one will be added\n%s' % (
-                    self.sigId,g.get_line(s,codeEnd)))
-            # g.trace(g.callers())
-
-        self.createFunctionNode(headline,body,parent)
-
-        # Exit the function: restore the function info.
-        self.startSigIndent = oldStartSigIndent
-    #@-node:ekr.20090501095634.51:putFunction (to be revised?)
-    #@+node:ekr.20090501095634.52:scanHelper
-    def scanHelper(self,s,i,end,parent,kind):
-
-        '''Common scanning code used by both scan and putClassHelper.'''
-
-        # g.trace(g.callers())
-        # g.trace('i',i,g.get_line(s,i))
-        assert kind in ('class','outer')
-        start = i ; putRef = False ; bodyIndent = None
-        while i < end:
-            progress = i
-            if s[i] in (' ','\t','\n'):
-                i += 1 # Prevent lookahead below, and speed up the scan.
-            # # # elif self.startsComment(s,i):
-                # # # i = self.skipComment(s,i)
-            # # # elif self.startsString(s,i):
-                # # # i = self.skipString(s,i)
-            # # # elif self.startsClass(s,i):  # Sets sigStart,sigEnd & codeEnd ivars.
-                # # # putRef = True
-                # # # if bodyIndent is None: bodyIndent = self.getIndent(s,i)
-                # # # end2 = self.codeEnd # putClass may change codeEnd ivar.
-                # # # self.putClass(s,i,self.sigEnd,self.codeEnd,start,parent)
-                # # # i = start = end2
-            elif self.startsFunction(s,i): # Sets sigStart,sigEnd & codeEnd ivars.
-                putRef = True
-                if bodyIndent is None: bodyIndent = self.getIndent(s,i)
-                self.putFunction(s,self.sigStart,self.codeEnd,start,parent)
-                i = start = self.codeEnd
-            # # # elif self.startsId(s,i):
-                # # # i = self.skipId(s,i)
-            # # # elif kind == 'outer' and g.match(s,i,self.outerBlockDelim1): # Do this after testing for classes.
-                # # # i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
-                # # # # Bug fix: 2007/11/8: do *not* set start: we are just skipping the block.
-            else: i += 1
-            assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
-
-        return start,putRef,bodyIndent
-    #@-node:ekr.20090501095634.52:scanHelper
     #@+node:ekr.20090501095634.50:startsComment/ID/String
     # These do not affect parsing.
 

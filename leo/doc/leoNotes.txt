@@ -61,6 +61,21 @@ The prefix doesn't matter, but the contents of these files must contain the prop
 for example, gutsy, hardy, intrepid.
 #@nonl
 #@-node:ekr.20081113095540.1:Bzr/ubuntu notes
+#@+node:ekr.20090502071837.103:Cool projects
+These are projects that eventually I'd like to follow up on.
+
+- Fuse (pyfuse) Leo as a file system.
+  http://leo.zwiki.org/LeoAsAFileSystem
+
+- pythoscope: create unit tests automatically.
+  http://pythoscope.org/
+
+- rope: Python refactoring library.
+  http://rope.sourceforge.net/
+
+
+#@nonl
+#@-node:ekr.20090502071837.103:Cool projects
 #@+node:ekr.20070614094933:EasyInstall installation notes--XP
 C:\prog>c:\python25\python ez_setup.py
 Downloading http://cheeseshop.python.org/packages/2.5/s/setuptools/setuptools-0.6c6-py2.5.egg
@@ -3691,6 +3706,44 @@ def updateBackTab (self,p,w):
     c.dedentBody()
 #@nonl
 #@-node:ekr.20090317090343.3:updateBackTab
+#@+node:ekr.20090501095634.52:scanHelper (rst importer)
+def scanHelper(self,s,i,end,parent,kind):
+
+    '''Common scanning code used by both scan and putClassHelper.'''
+
+    # g.trace(g.callers())
+    # g.trace('i',i,g.get_line(s,i))
+    assert kind in ('class','outer')
+    start = i ; putRef = False ; bodyIndent = None
+    while i < end:
+        progress = i
+        if s[i] in (' ','\t','\n'):
+            i += 1 # Prevent lookahead below, and speed up the scan.
+        # # # elif self.startsComment(s,i):
+            # # # i = self.skipComment(s,i)
+        # # # elif self.startsString(s,i):
+            # # # i = self.skipString(s,i)
+        # # # elif self.startsClass(s,i):  # Sets sigStart,sigEnd & codeEnd ivars.
+            # # # putRef = True
+            # # # if bodyIndent is None: bodyIndent = self.getIndent(s,i)
+            # # # end2 = self.codeEnd # putClass may change codeEnd ivar.
+            # # # self.putClass(s,i,self.sigEnd,self.codeEnd,start,parent)
+            # # # i = start = end2
+        elif self.startsFunction(s,i): # Sets sigStart,sigEnd & codeEnd ivars.
+            putRef = True
+            if bodyIndent is None: bodyIndent = self.getIndent(s,i)
+            self.putFunction(s,self.sigStart,self.codeEnd,start,parent)
+            i = start = self.codeEnd
+        # # # elif self.startsId(s,i):
+            # # # i = self.skipId(s,i)
+        # # # elif kind == 'outer' and g.match(s,i,self.outerBlockDelim1): # Do this after testing for classes.
+            # # # i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
+            # # # # Bug fix: 2007/11/8: do *not* set start: we are just skipping the block.
+        else: i += 1
+        assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+
+    return start,putRef,bodyIndent
+#@-node:ekr.20090501095634.52:scanHelper (rst importer)
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node

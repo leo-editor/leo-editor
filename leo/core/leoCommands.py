@@ -110,6 +110,7 @@ class baseCommands (object):
         import leo.core.leoEditCommands as leoEditCommands
         import leo.core.leoFileCommands as leoFileCommands
         import leo.core.leoImport as leoImport
+        import leo.core.leoRst as leoRst
         import leo.core.leoShadow as leoShadow
         import leo.core.leoTangle as leoTangle
         import leo.core.leoUndo as leoUndo
@@ -121,6 +122,7 @@ class baseCommands (object):
         self.importCommands = leoImport.leoImportCommands(c)
         self.tangleCommands = leoTangle.tangleCommands(c)
         leoEditCommands.createEditCommanders(c)
+        self.rstCommands = leoRst.rstCommands(c)
 
         if 0:
             g.pr("\n*** using Null undoer ***\n")
@@ -5739,9 +5741,9 @@ class baseCommands (object):
         theCopyright = (
             "Copyright 1999-2009 by Edward K. Ream\n" +
             "All Rights Reserved\n" +
-            "Leo is distributed under the Python License")
+            "Leo is distributed under the MIT License")
         url = "http://webpages.charter.net/edreamleo/front.html"
-        email = "edreamleo@charter.net"
+        email = "edreamleo@gmail.com"
 
         g.app.gui.runAboutLeoDialog(c,version,theCopyright,url,email)
     #@-node:ekr.20031218072017.2939:about (version number & date)
