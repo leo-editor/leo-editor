@@ -674,7 +674,9 @@ class baseFileCommands:
 
         if reassignIndices:
             for p2 in p.self_and_subtree_iter():
-                p2.v.t.fileIndex = None
+                ### p2.v.t.fileIndex = None
+                # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
+                p2.v.t.fileIndex = g.app.nodeIndices.getNewIndex()
 
         self.initAllParents()
 
@@ -1696,6 +1698,7 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.1577:putTnode
     def putTnode (self,t):
 
+        ### Could be eliminated.
         # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
         if not t.fileIndex:
             g.trace('can not happen: no index for tnode',t)
@@ -1733,6 +1736,7 @@ class baseFileCommands:
         tnodes = {}
         nodeIndices = g.app.nodeIndices
         for p in theIter:
+            ### Could be eliminated. 
             # New in Leo 4.4.8: assign file indices here.
             if not p.v.t.fileIndex:
                 p.v.t.fileIndex = nodeIndices.getNewIndex()
@@ -1772,6 +1776,7 @@ class baseFileCommands:
 
         #@    << Set gnx = tnode index >>
         #@+node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
+        ### Could be eliminated.
         # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
         if not v.t.fileIndex:
             v.t.fileIndex = g.app.nodeIndices.getNewIndex()
@@ -2270,6 +2275,7 @@ class baseFileCommands:
             if theList:
                 sList = []
                 for t in theList:
+                    ### Could be eliminated.
                     # New in Leo 4.4.8.  Assign t.fileIndex here as needed.
                     if not t.fileIndex:
                         t.fileIndex = g.app.nodeIndices.getNewIndex()
@@ -2305,6 +2311,7 @@ class baseFileCommands:
         d = {}
         nodeIndices = g.app.nodeIndices
         for t,d2 in aList:
+            ### Could be eliminated.
             # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
             if not t.fileIndex:
                 t.fileIndex = g.app.nodeIndices.getNewIndex()
@@ -2364,6 +2371,7 @@ class baseFileCommands:
         if tnodeList:
             # g.trace("%4d" % len(tnodeList),v)
             for t in tnodeList:
+                ### Can this be eliminated?
                 try: # Will fail for None or any pre 4.1 file index.
                     junk,junk,junk = t.fileIndex
                 except Exception:

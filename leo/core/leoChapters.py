@@ -494,10 +494,14 @@ class chapterController:
         c.setRootPosition(p)
         cc.chaptersNode = p.copy()
         t = p.v.t
+
+        ### t.fileIndex is now allocated immedately.
         if t.fileIndex:
-            self.error('***** t.fileIndex already exists')
+            pass
+            ### self.error('***** t.fileIndex already exists')
         else:
             t.setFileIndex(g.app.nodeIndices.getNewIndex())
+
         c.setChanged(True)
     #@-node:ekr.20070325101652:cc.createChaptersNode
     #@+node:ekr.20070325063303.2:cc.createChapterNode
