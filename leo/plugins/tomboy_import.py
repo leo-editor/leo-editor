@@ -86,26 +86,51 @@ def parsenote(cont):
     #b = "".join(el.text for el in body.getiterator())
     b = ET.tostring(body)
     b = strip_tags(b)
-    print "body",b
+    #print "body",b
     return title, b
 
-def capturenotes(pos):
+def pos_for_gnx(c,gnx):
+    #print "match",gnx
+    for pos in c.allNodes_iter():
+        pos = pos.copy()
+        #print pos.gnx, pos.h
+        if pos.gnx == gnx:
+            return pos.copy()
+    return None
+
+def capturenotes(c,pos):
     import glob, os
     notes = glob.glob(os.path.expanduser('~/.tomboy/*.note'))
+
+    # map tomboy file name => gnx
+    old_nodes = c.db.get('tomboy_notes', {})
+
     for no in notes:
         fname = os.path.basename(no)
         title, body = parsenote(open(no))
-        print body
-        po = pos.insertAsLastChild()
+
+        po = None
+        if fname in old_nodes:
+
+            po = pos_for_gnx(c,old_nodes[fname])
+            if po is not None:
+                g.es('tomboy: Updating note "%s"' % title)
+
+        if po is None:
+            g.es('tomboy: Creating note "%s"' % title)
+            po = pos.insertAsLastChild()
+
         po.h = title
-        po.b = body
+        po.b = body        
+        old_nodes[fname] = po.gnx
+    c.db['tomboy_notes'] = old_nodes
 
 def tomboy_act_on_node(c,p,event):
-    print 'act', `p.h`
+    #print 'act', `p.h`
     if not p.h == 'tomboy':
         raise leoPlugins.TryNext
 
-    capturenotes(p)
+    capturenotes(c,p)
 
 def tomboy_install():
     g.act_on_node.add(tomboy_act_on_node, 99)
