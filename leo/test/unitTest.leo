@@ -1828,6 +1828,7 @@
 <v t="ekr.20080822160527.1" round-trip-u.uA="58060000006368696c643171002e"><vh>uA_test_shadow_file declarations</vh></v>
 </v>
 </v>
+<v t="ekr.20090507084947.5152"><vh>@test t.fileIndex remains the same</vh></v>
 <v t="ekr.20071113202045" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113193527"><vh>leoFind</vh>
@@ -2495,7 +2496,6 @@
 </v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
-<v t="ekr.20090501123949.2"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -22210,6 +22210,8 @@ xyz
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090507084947.5152">assert p.v.t.fileIndex == ('ekr', '20090507084947', 5152)
+</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
 import random,fnmatch
 
