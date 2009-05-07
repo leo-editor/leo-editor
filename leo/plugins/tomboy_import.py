@@ -2,26 +2,32 @@
 #@+node:ville.20090503124249.1:@thin tomboy_import.py
 #@<< docstring >>
 #@+node:ville.20090503124249.2:<< docstring >>
-''' This plugin adds a possibility to import the notes created in Tomboy / gnote
+'''This plugin adds a possibility to import the notes created in Tomboy / gnote
 
 Usage:
 
   * Create a node with the headline 'tomboy'
   * Select the node, and do alt+x act-on-node    
   * The notes will appear as children of 'tomboy' node
+  * The next time you do act-on-node, existing notes will be updated (they don't need to 
+    be under 'tomboy' node anymore) and new notes added.
+
 '''
 #@-node:ville.20090503124249.2:<< docstring >>
 #@nl
 
-__version__ = '0.0'
+__version__ = '0.1'
 #@<< version history >>
 #@+node:ville.20090503124249.3:<< version history >>
 #@@killcolor
 #@+at
 # 
-# Put notes about each version here.
+# 0.1 Ville M. Vainio:
+# 
+#     * Functional version, has unidirectional (import) support with
+#       updates. Strips html.
+# 
 #@-at
-#@nonl
 #@-node:ville.20090503124249.3:<< version history >>
 #@nl
 
@@ -131,6 +137,7 @@ def tomboy_act_on_node(c,p,event):
         raise leoPlugins.TryNext
 
     capturenotes(c,p)
+    c.redraw_now()
 
 def tomboy_install():
     g.act_on_node.add(tomboy_act_on_node, 99)
