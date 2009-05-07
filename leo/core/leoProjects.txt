@@ -565,6 +565,110 @@ the error is raised. Hope it helps to fix the problem.
 Vicent
 #@nonl
 #@-node:ekr.20090428075532.2:Fixed rst3 problem
+#@+node:ekr.20090507065104.1:Allocate gnx's when nodes are created
+# This is reasonable now that old-style file indices are extremely rare.
+#@nonl
+#@+node:ekr.20031218072017.3344:v.__init__
+def __init__ (self,context,t=None):
+
+    if g.unified_nodes:
+        assert t is None
+    elif t is None:
+        t = tnode()
+
+    # To support ZODB the code must set v._p_changed = 1 whenever
+    # v.unknownAttributes or any mutable vnode object changes.
+
+    self.context = context # The context containing context.hiddenRootNode.
+        # Required for trees, so we can compute top-level siblings.
+        # It is named .context rather than .c to emphasize its limited usage.
+
+    self.iconVal = 0
+    self.parents = [] # List of all parents of this node.
+        # This list will have 1 member unless the parent node is a clone.
+        # In particular, cloned nodes do *not* share parents.
+    self.statusBits = 0 # status bits
+
+    if g.unified_nodes: # vnodes contain all tnode info.
+        self.t = self 
+        self.cloneIndex = 0 # For Pre-3.12 files.  Zero for @file nodes
+        self.fileIndex = None # The immutable file index for this tnode.
+        self.insertSpot = None # Location of previous insert point.
+        self.scrollBarSpot = None # Previous value of scrollbar position.
+        self.selectionLength = 0 # The length of the selected body text.
+        self.selectionStart = 0 # The start of the selected body text.
+
+        # Convert everything to unicode...
+        if g.isPython3:
+            self._headString = ''
+            self._bodyString = ''
+        else:
+            self._headString = unicode('')
+            self._bodyString = unicode('')
+
+        self.children = [] # List of all children of this node.
+        self.vnodeList = []
+            # List of all vnodes pointing to this tnode.
+            # v is a clone iff len(v.vnodeList) > 1.
+
+        # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
+        self.fileIndex = g.app.nodeIndices.getNewIndex()
+    else:
+        self.t = t # The tnode.
+#@nonl
+#@-node:ekr.20031218072017.3344:v.__init__
+#@+node:ekr.20031218072017.2006:t.__init__
+def __init__ (self,bodyString=None,headString='NewHeadline'):
+
+    # To support ZODB the code must set t._p_changed = 1 whenever
+    # t.vnodeList, t.unknownAttributes or any mutable tnode attribute changes.
+
+    self.cloneIndex = 0 # For Pre-3.12 files.  Zero for @file nodes
+    self.fileIndex = None # The immutable file index for this tnode.
+    self.insertSpot = None # Location of previous insert point.
+    self.scrollBarSpot = None # Previous value of scrollbar position.
+    self.selectionLength = 0 # The length of the selected body text.
+    self.selectionStart = 0 # The start of the selected body text.
+    self.statusBits = 0 # status bits
+
+    # Convert everything to unicode...
+    self._headString = g.toUnicode(headString,g.app.tkEncoding)
+    self._bodyString = g.toUnicode(bodyString,g.app.tkEncoding)
+
+    self.children = [] # List of all children of this node.
+    self.vnodeList = []
+        # List of all vnodes pointing to this tnode.
+        # v is a clone iff len(v.t.vnodeList) > 1.
+
+    # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
+    self.fileIndex = g.app.nodeIndices.getNewIndex()
+#@nonl
+#@-node:ekr.20031218072017.2006:t.__init__
+#@+node:ekr.20070325101652:cc.createChaptersNode
+def createChaptersNode (self):
+
+    cc = self ; c = cc.c ; root = c.rootPosition()
+
+    # Create the node with a postion method
+    # so we don't involve the undo logic.
+    # g.trace('root',root)
+    p = root.insertAsLastChild()
+    p.initHeadString('@chapters')
+    p.moveToRoot(oldRoot=root)
+    c.setRootPosition(p)
+    cc.chaptersNode = p.copy()
+    t = p.v.t
+
+    ### t.fileIndex is now allocated immedately.
+    if t.fileIndex:
+        pass
+        ### self.error('***** t.fileIndex already exists')
+    else:
+        t.setFileIndex(g.app.nodeIndices.getNewIndex())
+
+    c.setChanged(True)
+#@-node:ekr.20070325101652:cc.createChaptersNode
+#@-node:ekr.20090507065104.1:Allocate gnx's when nodes are created
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
