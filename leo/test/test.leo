@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -366,6 +366,8 @@
 </v>
 <v t="ekr.20090501110438.1"><vh>import</vh></v>
 <v t="ekr.20090503095856.1"><vh>leoRst test</vh></v>
+<v t="ekr.20090507082111.1904"><vh>test creation of gnx's</vh></v>
+<v t="ekr.20090507082535.1906"><vh>NewHeadline</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2859,5 +2861,16 @@ xyz
 <t tx="ekr.20090501110438.1"></t>
 <t tx="ekr.20090503095856.1">x = c.rstCommands
 print x</t>
+<t tx="ekr.20090507082111.1904">print "---- inserting ----"
+p2 = p.insertAsLastChild().copy()
+p3 = p.insertAsLastChild().copy()
+
+print [p2.gnx, p3.gnx]
+
+children = p.children_iter()
+print [p.gnx for p in children]
+
+c.redraw()</t>
+<t tx="ekr.20090507082535.1906"></t>
 </tnodes>
 </leo_file>

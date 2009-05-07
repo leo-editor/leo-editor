@@ -76,6 +76,9 @@ if not g.unified_nodes:
             self.vnodeList = []
                 # List of all vnodes pointing to this tnode.
                 # v is a clone iff len(v.t.vnodeList) > 1.
+
+            # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
+            self.fileIndex = g.app.nodeIndices.getNewIndex()
         #@nonl
         #@-node:ekr.20031218072017.2006:t.__init__
         #@+node:ekr.20031218072017.3323:t.__repr__ & t.__str__
@@ -361,6 +364,9 @@ class vnode (baseVnode):
             self.vnodeList = []
                 # List of all vnodes pointing to this tnode.
                 # v is a clone iff len(v.vnodeList) > 1.
+
+            # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
+            self.fileIndex = g.app.nodeIndices.getNewIndex()
         else:
             self.t = t # The tnode.
     #@nonl

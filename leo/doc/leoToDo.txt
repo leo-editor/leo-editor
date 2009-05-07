@@ -783,7 +783,9 @@ def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
 
     if reassignIndices:
         for p2 in p.self_and_subtree_iter():
-            p2.v.t.fileIndex = None
+            ### p2.v.t.fileIndex = None
+            # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
+            p2.v.t.fileIndex = g.app.nodeIndices.getNewIndex()
 
     self.initAllParents()
 
@@ -2890,6 +2892,7 @@ of the nodes would load from the file.
 #@+node:ekr.20031218072017.1577:putTnode
 def putTnode (self,t):
 
+    ### Could be eliminated.
     # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
     if not t.fileIndex:
         g.trace('can not happen: no index for tnode',t)

@@ -64,7 +64,7 @@ for example, gutsy, hardy, intrepid.
 #@+node:ekr.20090502071837.103:Cool projects
 These are projects that eventually I'd like to follow up on.
 
-- Caliopy
+- Caliopy: integrate Leo with many scientific computing tools.
   http://www.caliopywork.org/
 
 - Fuse (pyfuse) Leo as a file system.
