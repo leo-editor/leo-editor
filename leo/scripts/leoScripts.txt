@@ -337,6 +337,47 @@ for p in p.self_and_subtree_iter():
        g.es("File %s is now shadowed" % filename)
 #@nonl
 #@-node:@@button shadow
+#@+node:@@button git-dump
+""" Dump nodes to ~/.leo/dump git repository.
+
+Before using this, you need to:
+    mkdir ~/.leo/dump; cd ~/.leo/dump; git init
+
+"""
+
+import os
+flatroot = os.path.expanduser('~/.leo/dump')
+assert os.path.isdir(flatroot)
+
+hl = []
+
+def dump_nodes():
+    for p in c.all_positions_with_unique_tnodes_iter():
+        name, date, num = p.t.fileIndex
+        gnx = '%s%s%s' % (name, date, num)
+        hl.append('<a href="%s">%s%s</a><br/>' % (gnx, '-' * p.level(), p.h))
+        fname = gnx
+        open(fname,'w').write(p.b)
+        print "wrote", fname
+
+os.chdir(flatroot)
+
+dump_nodes()
+lis = "\n".join(hl)
+
+html = "<body>\n<tt>\n" + lis + "\n</tt></body>"
+
+#titlename = c.frame.getTitle() + '.html'
+titlename = 'index.html'
+open(titlename,'w').write(html)
+
+g.es("committing to " + flatroot)
+
+os.system('git add *')
+os.system('git commit -m "Leo autocommit"')
+g.es("committed")
+
+#@-node:@@button git-dump
 #@-node:Contributed @button nodes
 #@+node:Find scripts
 #@+node:Find and replace all functions in leoGlobals.py
@@ -5329,8 +5370,10 @@ import string
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@count 10000
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -15031,6 +15074,49 @@ for line in lines:
 f.close()
 print '%d records' % n
 #@-node:munge-db
+#@+node:pos_to_archive and archive_to_pos (should be in core?)
+def pos_to_archive(p):
+    """ Archived version of position in format gnx1:gnx2:gnx3 
+
+    This is more tolerant to tree modification than children index version 
+    given by p.archivedPosition()
+
+    Counterpart of archive_to_pos.
+    """
+
+    ps = [po.gnx for po in p.self_and_parents_iter()]
+    ps.reverse()
+    return ":".join(ps)
+
+def sibling_by_gnx(p, gnx):
+    """ Look through siblings of p for a node with specified gnx """
+    for po in p.siblings_iter():
+        #g.es('test' , po, po.gnx)
+        if po.gnx == gnx:
+            return po
+    raise IndexError("Pos %s has no sibling gnx = %s" % (p,gnx))            
+
+def archive_to_pos(c,s):
+    """ Convert gnx1:gnx2:gnx3 string representation of position to a real position 
+
+    Counterpart of pos_to_archive.
+
+    """
+
+    ps = s.split(':')
+
+    cur = c.rootPosition()
+    for gnx in ps[:-1]:
+        ne = sibling_by_gnx(cur, gnx)
+        cur = ne.firstChild()
+
+    return sibling_by_gnx(cur, ps[-1]).copy()
+
+arc= pos_to_archive(p)
+po = archive_to_pos(c, arc)
+
+assert po == p
+#@-node:pos_to_archive and archive_to_pos (should be in core?)
 #@-node:Others
 #@+node:Prototypes
 #@+node:Debugger canvas
