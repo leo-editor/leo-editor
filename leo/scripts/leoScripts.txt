@@ -337,6 +337,47 @@ for p in p.self_and_subtree_iter():
        g.es("File %s is now shadowed" % filename)
 #@nonl
 #@-node:ekr.20060824181946:@@button shadow
+#@+node:ville.20090508224531.9799:@@button git-dump
+""" Dump nodes to ~/.leo/dump git repository.
+
+Before using this, you need to:
+    mkdir ~/.leo/dump; cd ~/.leo/dump; git init
+
+"""
+
+import os
+flatroot = os.path.expanduser('~/.leo/dump')
+assert os.path.isdir(flatroot)
+
+hl = []
+
+def dump_nodes():
+    for p in c.all_positions_with_unique_tnodes_iter():
+        name, date, num = p.t.fileIndex
+        gnx = '%s%s%s' % (name, date, num)
+        hl.append('<a href="%s">%s%s</a><br/>' % (gnx, '-' * p.level(), p.h))
+        fname = gnx
+        open(fname,'w').write(p.b)
+        print "wrote", fname
+
+os.chdir(flatroot)
+
+dump_nodes()
+lis = "\n".join(hl)
+
+html = "<body>\n<tt>\n" + lis + "\n</tt></body>"
+
+#titlename = c.frame.getTitle() + '.html'
+titlename = 'index.html'
+open(titlename,'w').write(html)
+
+g.es("committing to " + flatroot)
+
+os.system('git add *')
+os.system('git commit -m "Leo autocommit"')
+g.es("committed")
+
+#@-node:ville.20090508224531.9799:@@button git-dump
 #@-node:ekr.20060531090036:Contributed @button nodes
 #@+node:ekr.20051110105946:Find scripts
 #@+node:ekr.20051110105027.159:Find and replace all functions in leoGlobals.py
@@ -1852,7 +1893,7 @@ def gen_let_bindings (self,token,indent):
 #@-node:ekr.20071104221525.117:gen_let_bindings
 #@-node:ekr.20071104221525.116:gen_let & helper
 #@+node:ekr.20071104221525.118:put...
-#@+node:ekr.20071104221525.119:put 
+#@+node:ekr.20071104221525.119:put
 def put (self,kind,val,indent,result):
 
     '''Append one or more lines of output to result.'''
@@ -1868,7 +1909,7 @@ def put (self,kind,val,indent,result):
         s = '%s%s' % (leading,str(kind))
 
     result.append(s)
-#@-node:ekr.20071104221525.119:put 
+#@-node:ekr.20071104221525.119:put
 #@+node:ekr.20071104221525.120:put_token
 def put_token (self,token,indent,result):
 
@@ -5330,8 +5371,10 @@ import string
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@count 10000
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -13156,7 +13199,7 @@ if sde: print sde
 #@+node:ekr.20051025070722.1:Running tcl scripts from the body pane
 @language tcltk
 #@nonl
-#@+node:ekr.20051024223801:run tcl 
+#@+node:ekr.20051024223801:run tcl
 # To use this script, you must make this a script button, either with the
 # 'Script Button' button or by making this an @button node.
 
@@ -13167,7 +13210,7 @@ if sde: print sde
 s = g.getScript(c,p,forcePythonSentinels=False)
 g.es(g.app.root.tk.eval(s))
 #@nonl
-#@-node:ekr.20051024223801:run tcl 
+#@-node:ekr.20051024223801:run tcl
 #@+node:ekr.20051024223801.1:My first tcl script
 # This is a comment
 set x 50
@@ -16161,6 +16204,49 @@ finally:
     print 'closing ZODB'
     db.close()
 #@-node:ekr.20050824190822:Zope test
+#@+node:ville.20090508224531.9800:pos_to_archive, archive_to_pos
+def pos_to_archive(p):
+    """ Archived version of position in format gnx1:gnx2:gnx3 
+
+    This is more tolerant to tree modification than children index version 
+    given by p.archivedPosition()
+
+    Counterpart of archive_to_pos
+    """
+
+    ps = [po.gnx for po in p.self_and_parents_iter()]
+    ps.reverse()
+    return ":".join(ps)
+
+def sibling_by_gnx(p, gnx):
+    """ Look through siblings of p for a node with specified gnx """
+    for po in p.siblings_iter():
+        #g.es('test' , po, po.gnx)
+        if po.gnx == gnx:
+            return po
+    raise IndexError("Pos %s has no sibling gnx = %s" % (p,gnx))            
+
+def archive_to_pos(c,s):
+    """ Convert gnx1:gnx2:gnx3 string representation of position to a real position 
+
+    Counterpart of pos_to_archive.
+
+    """
+
+    ps = s.split(':')
+
+    cur = c.rootPosition()
+    for gnx in ps[:-1]:
+        ne = sibling_by_gnx(cur, gnx)
+        cur = ne.firstChild()
+
+    return sibling_by_gnx(cur, ps[-1]).copy()
+
+arc= pos_to_archive(p)
+po = archive_to_pos(c, arc)
+
+assert po == p
+#@-node:ville.20090508224531.9800:pos_to_archive, archive_to_pos
 #@-node:ekr.20041126132604:Prototypes
 #@+node:ekr.20051104082151:Reports
 #@+node:EKR.20040517074600.8:Count pages
