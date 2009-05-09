@@ -2871,7 +2871,7 @@ children = p.children_iter()
 print [p.gnx for p in children]
 
 c.redraw()</t>
-<t tx="ekr.20090507082535.1906">import getpass,imaplib,os
+<t tx="ekr.20090507082535.1906">import email,getpass,imaplib,os
 
 username = 'edreamleo@gmail.com'
 passfile = os.path.expanduser('~/gmailpass.txt')
@@ -2889,20 +2889,15 @@ typ, data = M.search(None, 'ALL')
 for num in data[0].split():
     typ, data = M.fetch(num,'(RFC822)')
     s = data[0][1]
-    s = s.replace('\r','')
-    i = s.find('\n\n')
-    if i == -1:
-        head = '' ; tail = s
-    else:
-        head,tail = s[:i+2],s[i+2:].lstrip()
-    print 'Message %3s %s' % (num,len(tail))
+    m = email.message_from_string(s)
+    # for z in m.keys(): print z
+    payload = m.get_payload()
     p2 = p.insertAsLastChild()
-    p2.setHeadString('mail %s' % num)
-    p2.setBodyString('@nocolor\n\n' + tail)
-    if head:
-        p3 = p2.insertAsLastChild()
-        p3.setHeadString('head %s' % num)
-        p3.setBodyString(head)
+    date,from_s,subject = m['date'],m['from'],m['subject']
+    p2.setHeadString(subject)
+    body = '@nocolor\n\n%s\n%s\n%s\n\n%s' % (
+        date,from_s,subject,payload)
+    p2.setBodyString(body)
 print 'done'
 M.close()
 M.logout()
