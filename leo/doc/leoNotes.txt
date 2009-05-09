@@ -62,13 +62,26 @@ for example, gutsy, hardy, intrepid.
 #@nonl
 #@-node:ekr.20081113095540.1:Bzr/ubuntu notes
 #@+node:ekr.20090502071837.103:Cool projects
-These are projects that eventually I'd like to follow up on.
+@nocolor
+
+These are projects that3 I'd like to follow up on.
 
 - Caliopy: integrate Leo with many scientific computing tools.
   http://www.caliopywork.org/
 
 - Fuse (pyfuse) Leo as a file system.
   http://leo.zwiki.org/LeoAsAFileSystem
+
+- Manuel: rST testing tool
+  http://pypi.python.org/pypi/manuel/1.0.0a3
+  Manuel parses documents, evaluates their contents,
+  then formats the result of the evaluation.
+
+- Pyjamas: AJAX tool kit.
+  http://pyjs.org/
+
+- Pysmell: python IDE completion helper.
+  http://code.google.com/p/pysmell/
 
 - pythoscope: create unit tests automatically.
   http://pythoscope.org/
