@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -367,7 +367,7 @@
 <v t="ekr.20090501110438.1"><vh>import</vh></v>
 <v t="ekr.20090503095856.1"><vh>leoRst test</vh></v>
 <v t="ekr.20090507082111.1904"><vh>test creation of gnx's</vh></v>
-<v t="ekr.20090507082535.1906"><vh>NewHeadline</vh></v>
+<v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2871,6 +2871,41 @@ children = p.children_iter()
 print [p.gnx for p in children]
 
 c.redraw()</t>
-<t tx="ekr.20090507082535.1906"></t>
+<t tx="ekr.20090507082535.1906">import getpass,imaplib,os
+
+username = 'edreamleo@gmail.com'
+passfile = os.path.expanduser('~/gmailpass.txt')
+M = imaplib.IMAP4_SSL('imap.gmail.com',993)
+try:
+    f = open(passfile)
+    password = f.read()
+    M.login(username,password)
+except IOError:
+    g.es_print('file not found: %s' % (passfile),color='red')
+    # M.login(username, getpass.getpass())
+
+M.select()
+typ, data = M.search(None, 'ALL')
+for num in data[0].split():
+    typ, data = M.fetch(num,'(RFC822)')
+    s = data[0][1]
+    s = s.replace('\r','')
+    i = s.find('\n\n')
+    if i == -1:
+        head = '' ; tail = s
+    else:
+        head,tail = s[:i+2],s[i+2:].lstrip()
+    print 'Message %3s %s' % (num,len(tail))
+    p2 = p.insertAsLastChild()
+    p2.setHeadString('mail %s' % num)
+    p2.setBodyString('@nocolor\n\n' + tail)
+    if head:
+        p3 = p2.insertAsLastChild()
+        p3.setHeadString('head %s' % num)
+        p3.setBodyString(head)
+print 'done'
+M.close()
+M.logout()
+c.redraw()</t>
 </tnodes>
 </leo_file>
