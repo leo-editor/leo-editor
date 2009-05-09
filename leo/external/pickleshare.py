@@ -28,14 +28,13 @@ advanced features of a "real" object database.
 
 Installation guide: easy_install pickleshare
 
-Author: Ville Vainio <vivainio@gmail.com>
+Author: Ville M. Vainio <vivainio@gmail.com>
 License: MIT open source license.
 
 """
 
 from leo.external.path import path as Path
 import os,stat,time
-import cPickle as pickle
 import UserDict
 import warnings
 import glob
@@ -47,14 +46,42 @@ _sentinel = object()
 
 class PickleShareDB(UserDict.DictMixin):
     """ The main 'connection' object for PickleShare database """
-    def __init__(self,root):
-        """ Return a db object that will manage the specied directory"""
+    def __init__(self,root, protocol = 'pickle'):
+        """ Initialize a PickleShare object that will manage the specied directory
+        
+        root: The directory that contains the data. Created if it doesn't exist.
+        
+        protocol: one of 
+        
+            * 'pickle' (universal, default) 
+            * 'marshal' (fast, limited type support)
+            * 'json' : brief, human-readable, very limited type support
+        
+        Protol 'json' requires installation of simplejson module
+        """
         self.root = Path(root).expanduser().abspath()
         if not self.root.isdir():
             self.root.makedirs()
         # cache has { 'key' : (obj, orig_mod_time) }
         self.cache = {}
         
+        # protocol:
+        # self.dumper(value, fileobj)
+        # self.loader(fileobj)
+        
+        if protocol == 'pickle':
+            import cPickle as pickle
+            
+            self.loader = pickle.load
+            self.dumper = pickle.dump
+        elif protocol == 'marshal':
+            import marshal
+            self.loader = marshal.load
+            self.dumper = marshal.dump
+        elif protocol == 'json':
+            import simplejson
+            self.loader = simplejson.load
+            self.dumper = simplejson.dump
 
     def __getitem__(self,key):
         """ db['key'] reading """
@@ -68,7 +95,7 @@ class PickleShareDB(UserDict.DictMixin):
             return self.cache[fil][0]
         try:
             # The cached item has expired, need to read
-            obj = pickle.load(fil.open())
+            obj = self.loader(fil.open())
         except:
             raise KeyError(key)
             
@@ -81,7 +108,7 @@ class PickleShareDB(UserDict.DictMixin):
         parent = fil.parent
         if parent and not parent.isdir():
             parent.makedirs()
-        pickled = pickle.dump(value,fil.open('w'))
+        pickled = self.dumper(value,fil.open('w'))
         try:
             self.cache[fil] = (value,fil.mtime)
         except OSError,e:

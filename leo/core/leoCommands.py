@@ -7087,7 +7087,11 @@ class baseCommands (object):
     #@+node:ekr.20040803140033.2:c.rootPosition
     def rootPosition(self):
 
-        """Return the root position."""
+        """Return the root position.
+
+        Root position is the first position in the document. Other
+        top level positions are siblings of this node.
+        """
 
         c = self
 
@@ -7098,7 +7102,6 @@ class baseCommands (object):
 
     # For compatibiility with old scripts.
     rootVnode = rootPosition
-    #@nonl
     #@-node:ekr.20040803140033.2:c.rootPosition
     #@+node:ekr.20070609122713:c.visLimit
     def visLimit (self):
