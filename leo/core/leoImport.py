@@ -781,14 +781,11 @@ class leoImportCommands (scanUtility):
         c = self.c ; u = c.undoer ; s1 = s
 
         # New in Leo 4.4.7: honor @path directives.
-
         self.scanDefaultDirectory(parent) # sets .defaultDirectory.
         fileName = c.os_path_finalize_join(self.default_directory,fileName)
         junk,self.fileName = g.os_path_split(fileName)
         self.methodName,self.fileType = g.os_path_splitext(self.fileName)
         self.setEncoding(p=parent,atAuto=atAuto)
-        # g.trace(self.fileName,self.fileType)
-        # All file types except the following just get copied to the parent node.
         if not ext: ext = self.fileType
         ext = ext.lower()
         if not s:
@@ -810,7 +807,6 @@ class leoImportCommands (scanUtility):
                 return None
             #@-node:ekr.20031218072017.3211:<< Read file into s >>
             #@nl
-
         #@    << convert s to the proper encoding >>
         #@+node:ekr.20080212092908:<< convert s to the proper encoding >>
         if s and fileName.endswith('.py'):
@@ -850,6 +846,7 @@ class leoImportCommands (scanUtility):
         if func and not c.config.getBool('suppress_import_parsing',default=False):
             func(s,p,atAuto=atAuto)
         else:
+            # Just copy the file to the parent node.
             self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
 
         p.contract()
@@ -1739,9 +1736,11 @@ class baseScannerClass (scanUtility):
         self.fileType = ic.fileType # The extension,  '.py', '.c', etc.
         self.file_s = '' # The complete text to be parsed.
         self.fullChecks = c.config.getBool('full_import_checks')
+        self.functionSpelling = 'function' # for error message.
         self.importCommands = ic
         self.indentRefFlag = None # None, True or False.
         self.language = language
+        self.lastParent = None # The last generated parent node (used only by rstScanner).
         self.methodName = ic.methodName # x, as in < < x methods > > =
         self.methodsSeen = False
         self.mismatchWarningGiven = False
@@ -1974,6 +1973,15 @@ class baseScannerClass (scanUtility):
     # None of these methods should ever need to be overridden in subclasses.
     # 
     #@-at
+    #@+node:ekr.20090512080015.5800:adjustParent
+    def adjustParent (self,parent,headline):
+
+        '''Return the effective parent.
+
+        This is overridden by the rstScanner class.'''
+
+        return parent
+    #@-node:ekr.20090512080015.5800:adjustParent
     #@+node:ekr.20070707073044.1:addRef
     def addRef (self,parent):
 
@@ -2026,7 +2034,7 @@ class baseScannerClass (scanUtility):
             self.methodsSeen = True
 
         # Create the node.
-        self.createHeadline(parent,prefix + body,headline)
+        return self.createHeadline(parent,prefix + body,headline)
 
     #@-node:ekr.20070707085612:createFunctionNode
     #@+node:ekr.20070703122141.77:createHeadline
@@ -2234,12 +2242,15 @@ class baseScannerClass (scanUtility):
         return putRef,bodyIndent,classDelim,decls,trailing
     #@-node:ekr.20070707171329:putClassHelper
     #@-node:ekr.20070707113832.1:putClass & helpers
-    #@+node:ekr.20070707082432:putFunction
+    #@+node:ekr.20070707082432:putFunction (baseScannerClass)
     def putFunction (self,s,sigStart,codeEnd,start,parent):
 
         '''Create a node of parent for a function defintion.'''
 
-        trace = False and self.trace
+        trace = False and not g.unitTesting
+        verbose = False
+
+        if trace: g.trace(parent.h)
 
         # Enter a new function: save the old function info.
         oldStartSigIndent = self.startSigIndent
@@ -2251,7 +2262,7 @@ class baseScannerClass (scanUtility):
             headline = 'unknown function'
 
         body1 = s[start:sigStart]
-        # Bug fix: 2007/20/31: adjust start backwards to get a better undent.
+        # Adjust start backwards to get a better undent.
         if body1.strip():
             while start > 0 and s[start-1] in (' ','\t'):
                 start -= 1
@@ -2260,20 +2271,20 @@ class baseScannerClass (scanUtility):
 
         body2 = self.undentBody(s[sigStart:codeEnd])
         body = body1 + body2
-        if trace: g.trace('body\n%s' % body)
+        if trace and verbose: g.trace('body\n%s' % body)
 
         tail = body[len(body.rstrip()):]
         if not '\n' in tail:
             self.warning(
-                'function %s does not end with a newline; one will be added\n%s' % (
-                    self.sigId,g.get_line(s,codeEnd)))
-            # g.trace(g.callers())
+                '%s %s does not end with a newline; one will be added\n%s' % (
+                self.functionSpelling,self.sigId,g.get_line(s,codeEnd)))
 
-        self.createFunctionNode(headline,body,parent)
+        parent = self.adjustParent(parent,headline)
+        self.lastParent = self.createFunctionNode(headline,body,parent)
 
         # Exit the function: restore the function info.
         self.startSigIndent = oldStartSigIndent
-    #@-node:ekr.20070707082432:putFunction
+    #@-node:ekr.20070707082432:putFunction (baseScannerClass)
     #@+node:ekr.20070705094630:putRootText
     def putRootText (self,p):
 
@@ -3724,16 +3735,73 @@ class rstScanner (baseScannerClass):
         # Scanner overrides
         self.blockDelim1 = self.blockDelim2 = None
         self.classTags = []
+        self.functionSpelling = 'section'
         self.functionTags = []
         self.hasClasses = False
         self.lineCommentDelim = '..'
         self.outerBlockDelim1 = None
         self.sigFailTokens = []
         self.strict = True # We want to preserve whitespace
+
+        # Ivars unique to rst scanning & code generation.
+        self.lastParent = None # The previous parent.
+        self.lastSectionLevel = 0 # The section level of previous section.
+        self.sectionLevel = 0 # The section level of the just-parsed section.
+        self.underlineCh = '' # The underlining character of the last-parsed section.
         self.underlines = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~" # valid rst underlines.
         self.underlines1 = [] # Underlining characters for underlines.
         self.underlines2 = [] # Underlining characters for over/underlines.
     #@-node:ekr.20090501095634.42: __init__
+    #@+node:ekr.20090512080015.5798:adjustParent
+    def adjustParent (self,parent,headline):
+        # parent not used here (it is used by the base-class method).
+        # headline used only for traces.
+
+        '''Return the proper parent of the new node.'''
+
+        trace = False and not g.unitTesting
+
+        if not self.lastParent: self.lastParent = self.root
+        level,lastLevel = self.sectionLevel,self.lastSectionLevel
+        lastParent = self.lastParent
+
+        if level == 0:
+            parent = self.root
+        elif level <= lastLevel:
+            parent = lastParent.parent()
+            while level < lastLevel:
+                level += 1
+                parent = parent.parent()
+        else: # level > lastLevel.
+            level -= 1
+            parent = lastParent
+            while level > lastLevel:
+                level -= 1
+                h2 = '@rst-no-head' ; body = ''
+                parent = self.createFunctionNode(h2,body,parent)
+
+        if trace: g.trace('level %s lastLevel %s %s returns %s' % (
+            level,lastLevel,headline,parent.h))
+
+        return parent
+    #@-node:ekr.20090512080015.5798:adjustParent
+    #@+node:ekr.20090512080015.5797:computeSectionLevel
+    def computeSectionLevel (self,ch,kind):
+
+        '''Return the section level of the underlining character ch.'''
+
+        # Can't use g.choose here.
+        if kind == 'over':
+            assert ch in self.underlines2
+            level = 0
+        else:
+            level = 1 + self.underlines1.index(ch)
+
+        # g.trace('kind: %s ch: %s under2: %s under1: %s' % (
+            # kind,ch,self.underlines2,self.underlines1))
+
+        return level
+    #@-node:ekr.20090512080015.5797:computeSectionLevel
     #@+node:ekr.20090502071837.2:endGen
     def endGen (self,s):
 
@@ -3780,9 +3848,13 @@ class rstScanner (baseScannerClass):
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
 
         trace = False and not g.unitTesting
+        verbose = False
         kind,name,next,ch = self.startsSection(s,i)
         if kind == 'plain': return False
 
+        self.underlineCh = ch
+        self.lastSectionLevel = self.sectionLevel
+        self.sectionLevel = self.computeSectionLevel(ch,kind)
         self.sigStart = g.find_line_start(s,i)
         self.sigEnd = next
         self.sigId = name.strip()
@@ -3802,7 +3874,11 @@ class rstScanner (baseScannerClass):
         else:
             self.codeEnd = len(s)
 
-        if trace: g.trace('found...\n%s' % s[self.sigStart:self.codeEnd])
+        if trace:
+            if verbose:
+                g.trace('found...\n%s' % s[self.sigStart:self.codeEnd])
+            else:
+                g.trace('level %s %s' % (self.sectionLevel,self.sigId))
         return True
     #@nonl
     #@-node:ekr.20090501095634.45:startsHelper
@@ -3860,7 +3936,6 @@ class rstScanner (baseScannerClass):
                 n3 > 0 and n2 >= n3 and n4 >= n3)
             ok = (not overline and self.isUnderLine(line2) and
                 n1 > 0 and n2 >= n1)
-            ### ok = self.isUnderLine(line2) and n1 > 0 and n2 >= n1
             if ok:
                 ch,kind = line2[0],'under'
                 if ch not in self.underlines1:
