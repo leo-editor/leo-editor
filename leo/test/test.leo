@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="71" left="402" height="954" width="882"/>
+	<global_window_position top="85" left="333" height="954" width="882"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -104,7 +104,7 @@
 <v t="ekr.20060904111037"><vh>@@button opml-read</vh></v>
 </v>
 </v>
-<v t="ekr.20080915095329.1"><vh>@button rst3</vh></v>
+<v t="ekr.20080915095329.1"><vh>@@button rst3</vh></v>
 </v>
 <v t="ekr.20070410063214"><vh>Commands</vh>
 <v t="ekr.20060924180049"><vh>@@command clones-tab</vh>
@@ -350,7 +350,7 @@
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
 </v>
-</v>
+<v t="ekr.20090507082111.1904"><vh>test creation of gnx's</vh></v>
 <v t="ekr.20090430080001.1"><vh>@path c:\prog\test</vh>
 <v t="ekr.20090430080001.2"><vh>@rst test.html</vh>
 <v t="ekr.20090430124352.10"><vh>@rst-code</vh>
@@ -361,12 +361,13 @@
 </v>
 </v>
 </v>
+</v>
+<v t="ekr.20090510080933.1908" a="E"><vh>Rst stuff</vh>
 <v t="ekr.20090501105822.1"><vh>import rst</vh>
 <v t="ekr.20090501105822.2"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
 </v>
+</v>
 <v t="ekr.20090501110438.1"><vh>import</vh></v>
-<v t="ekr.20090503095856.1"><vh>leoRst test</vh></v>
-<v t="ekr.20090507082111.1904"><vh>test creation of gnx's</vh></v>
 <v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
 </vnodes>
 <tnodes>
@@ -1488,7 +1489,7 @@ toolbar.py
 
 # add_directives.py # scan-directives hook not ready.
 # color_markup.py # Does not work with threading colorizer.
-rst3.py
+#### rst3.py
 UNL.py
 
 mod_scripting.py
@@ -2845,22 +2846,37 @@ The top section
 section 1
 ---------
 
-abc
-
-section 1.1
-~~~~~~~~~~~
-
-pdq
+section 1, line 1
+--
+selction 1, line 2
 
 section 2
 ---------
 
-xyz
+section 2, line 1
+
+section 2.1
+~~~~~~~~~~~
+
+section 2.1, line 1
+
+section 2.1.1
+.............
+
+section 2.2.1 line 1
+
+section 3
+---------
+
+section 3, line 1
+
+section 3.1.1
+.............
+
+section 3.1.1, line 1
 '''
 </t>
 <t tx="ekr.20090501110438.1"></t>
-<t tx="ekr.20090503095856.1">x = c.rstCommands
-print x</t>
 <t tx="ekr.20090507082111.1904">print "---- inserting ----"
 p2 = p.insertAsLastChild().copy()
 p3 = p.insertAsLastChild().copy()
@@ -2895,12 +2911,15 @@ for num in data[0].split():
     p2 = p.insertAsLastChild()
     date,from_s,subject = m['date'],m['from'],m['subject']
     p2.setHeadString(subject)
-    body = '@nocolor\n\n%s\n%s\n%s\n\n%s' % (
+    body = '@nocolor\n\nDate: %s\nFrom: %s\nSubject: %s\n\n%s' % (
         date,from_s,subject,payload)
     p2.setBodyString(body)
 print 'done'
 M.close()
 M.logout()
 c.redraw()</t>
+<t tx="ekr.20090510080933.1908">for z in dir(c.rstCommands):
+    print z
+</t>
 </tnodes>
 </leo_file>

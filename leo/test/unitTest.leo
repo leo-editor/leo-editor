@@ -2029,7 +2029,7 @@
 <v t="ekr.20080901083414.1"><vh>@test unindent in triple string does not end function</vh></v>
 </v>
 <v t="ekr.20090501123949.2"><vh>rST tests</vh>
-<v t="ekr.20090501123949.3"><vh>@test decorator test</vh></v>
+<v t="ekr.20090501123949.3"><vh>@test rST import test</vh></v>
 </v>
 <v t="ekr.20071020075538.64"><vh>Java tests</vh>
 <v t="ekr.20071020075538.65"><vh>@test java interface test1</vh></v>
@@ -16667,7 +16667,7 @@ plugins_menu.py
 # cleo.py
 open_with.py
 mod_scripting.py
-rst3.py
+#### rst3.py
 UNL.py
 nav_buttons.py
 hoist.py
@@ -22183,6 +22183,7 @@ assert x.handleMissingStyleSheetArgs(s=s) == {
     </t>
 <t tx="ekr.20090501123949.2"></t>
 <t tx="ekr.20090501123949.3">s = '''\
+
 .. toc
 
 =====
@@ -22194,17 +22195,34 @@ The top section
 section 1
 ---------
 
-abc
-
-section 1.1
-~~~~~~~~~~~
-
-pdq
+section 1, line 1
+--
+selction 1, line 2
 
 section 2
 ---------
 
-xyz
+section 2, line 1
+
+section 2.1
+~~~~~~~~~~~
+
+section 2.1, line 1
+
+section 2.1.1
+.............
+
+section 2.2.1 line 1
+
+section 3
+---------
+
+section 3, line 1
+
+section 3.1.1
+.............
+
+section 3.1.1, line 1
 '''
 
 g.app.unitTestDict ['expectedErrors'] = None
