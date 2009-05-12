@@ -232,7 +232,7 @@ class baseEditCommandsClass:
 #@nl
 
 #@+others
-#@+node:ekr.20050924100713: Module level...
+#@+node:ekr.20050924100713: Module level... (leoEditCommands)
 #@+node:ekr.20050920084720:createEditCommanders (leoEditCommands module)
 def createEditCommanders (c):
 
@@ -280,7 +280,7 @@ def initAllEditCommanders (c):
         theInstance = getattr(c,name)
         theInstance.init()
 #@-node:ekr.20050924100713.1:initAllEditCommanders
-#@-node:ekr.20050924100713: Module level...
+#@-node:ekr.20050924100713: Module level... (leoEditCommands)
 #@+node:ekr.20050920084036.13:abbrevCommandsClass (test)
 #@+at
 # 
