@@ -14,24 +14,20 @@ available.'''
 #@-node:ekr.20090502071837.4:<< docstring >>
 #@nl
 
-### bwm_file = open("bwm_file", "w")
+if 0:
+    bwm_file = open("bwm_file", "w")
 
 #@<< imports >>
 #@+node:ekr.20090502071837.5:<< imports >>
 import leo.core.leoGlobals as g
-# import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
+import leo.core.leoCommands as commands
 
 import os
 import HTMLParser
 import pprint
 import StringIO
 import sys
-
-###
-# Make sure the present directory in in sys.path.
-# dir,junk = os.path.split(__file__)
-# if dir not in sys.path: sys.path.append(dir)
 
 try:
     import leo.plugins.mod_http as mod_http
@@ -49,68 +45,19 @@ except ImportError:
 try:
     import SilverCity
 except ImportError:
-    if '--silent' not in sys.argv and not g.unitTesting and not g.app.batchMode:
-        g.pr('rst3 plugin: SilverCity not loaded')
     SilverCity = None
 #@-node:ekr.20090502071837.5:<< imports >>
 #@nl
 
-### controllers = {} # For use by @button rst3 code.
-
 #@+others
-#@+node:ekr.20090502071837.9:Module level (not used)
-if 0:
-
-    #@    @+others
-    #@+node:ekr.20090502071837.10: init
-    def init ():
-
-        ok = docutils is not None # Ok for unit testing.
-
-        if ok:
-            leoPlugins.registerHandler('after-create-leo-frame', onCreate)
-            g.plugin_signon(__name__)
-        else:
-            s = 'rst3 plugin not loaded: can not load docutils'
-            g.es_print(s,color='red')
-
-        return ok
-    #@-node:ekr.20090502071837.10: init
-    #@+node:ekr.20090502071837.11:onCreate
-    def onCreate(tag, keywords):
-
-        c = keywords.get('new_c') or keywords.get('c')
-
-        # g.trace('(rst3 plugin)',c)
-
-        if c:
-            global controllers
-            controllers[c] = rstClass(c)
-
-            # Warning: Do not return anything but None here!
-            # Doing so suppresses the loadeing of other 'new' or 'open2' hooks!
-    #@nonl
-    #@-node:ekr.20090502071837.11:onCreate
-    #@+node:ekr.20090502071837.13:runUnitTests
-    def runUnitTests(c):
-
-        controller = rstClass(c)
-        p = g.findNodeAnywhere('UnitTests')
-        if p:
-            leoTest.doTests(c,p=p)
-
-    #@-node:ekr.20090502071837.13:runUnitTests
-    #@-others
-#@nonl
-#@-node:ekr.20090502071837.9:Module level (not used)
 #@+node:ekr.20090502071837.12:code_block
-def code_block (name,arguments,options,content,lineno,content_offset,block_text,state,state_machine):
+def code_block (name,arguments,options,
+    content,lineno,content_offset,block_text,state,state_machine):
 
     '''Implement the code-block directive for docutils.'''
 
     try:
         language = arguments [0]
-        # g.trace(language)
         # See http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/252170
         module = SilverCity and getattr(SilverCity,language)
         generator = module and getattr(module,language+"HTMLGenerator")
@@ -145,7 +92,7 @@ if docutils:
     docutils.parsers.rst.directives.register_directive('code-block',code_block)
 else:
     code_block.options = {}
-
+#@nonl
 #@-node:ekr.20090502071837.12:code_block
 #@+node:ekr.20090502071837.14:html parser classes
 #@+doc
@@ -546,15 +493,17 @@ class rstCommands:
         self.initSingleNodeOptions()
         ### self.addMenu()
     #@-node:ekr.20090502071837.35: ctor (rstClass)
-    #@+node:ekr.20090502071837.102: getPublicCommands (editCommandsClass)
+    #@+node:ekr.20090502071837.102: getPublicCommands
     def getPublicCommands (self):        
 
         c = self.c
 
         return {
-            # 'write-rst-file';       self.writeRstFile,
+            'rst3':                 self.rst3, # Formerly write-restructured-text.
+            'import-rst':           self.importRst,
+            'write-at-auto-rst':    self.writeAtAutoRst
         }
-    #@-node:ekr.20090502071837.102: getPublicCommands (editCommandsClass)
+    #@-node:ekr.20090502071837.102: getPublicCommands
     #@+node:ekr.20090502071837.37:addMenu
     def addMenu (self):
 
@@ -575,6 +524,13 @@ class rstCommands:
         c.frame.menu.createMenuEntries(editMenu,table,dynamicMenu=True)
     #@nonl
     #@-node:ekr.20090502071837.37:addMenu
+    #@+node:ekr.20090511055302.5792:finishCreate
+    def finishCreate(self):
+
+        c = self.c
+        d = self.getPublicCommands()
+        c.commandsDict.update(d)
+    #@-node:ekr.20090511055302.5792:finishCreate
     #@+node:ekr.20090502071837.38:initHeadlineCommands
     def initHeadlineCommands (self):
 
@@ -630,6 +586,29 @@ class rstCommands:
     #@nonl
     #@-node:ekr.20090502071837.40:munge
     #@-node:ekr.20090502071837.34: Birth & init
+    #@+node:ekr.20090511055302.5789:commands
+    #@+node:ekr.20090511055302.5793:rst3
+    def rst3 (self,event=None):
+
+        '''Write all @rst nodes.'''
+
+        # This used to be the called the write-restructured-text command.
+
+        self.processTopTree(self.c.p)
+    #@-node:ekr.20090511055302.5793:rst3
+    #@+node:ekr.20090511055302.5790:importRst
+    def importRst(self,event=None):
+
+        g.trace(self,event)
+    #@-node:ekr.20090511055302.5790:importRst
+    #@+node:ekr.20090511055302.5791:writeAtAutoRst
+    def writeAtAutoRst(self,event=None):
+
+        '''Write an @auto node assumed to contain restructured text.'''
+
+        g.trace('not ready yet')
+    #@-node:ekr.20090511055302.5791:writeAtAutoRst
+    #@-node:ekr.20090511055302.5789:commands
     #@+node:ekr.20090502071837.41:options...
     #@+node:ekr.20090502071837.42:createDefaultOptionsDict
     def createDefaultOptionsDict(self):
@@ -1749,11 +1728,6 @@ class rstCommands:
         openDirectory = self.c.frame.openDirectory
         default_path = self.getOption('default_path')
 
-        # if default_path:
-            # default_path = g.os_path_finalize(default_path)
-
-        # g.trace('default_path',default_path,'fileName',fileName)
-
         if default_path:
             path = g.os_path_finalize_join(self.path,default_path,fileName)
         elif self.path:
@@ -1963,6 +1937,5 @@ class rstCommands:
     #@-others
 #@-node:ekr.20090502071837.33:class rstCommands
 #@-others
-#@nonl
 #@-node:ekr.20090502071837.3:@thin leoRst.py
 #@-leo
