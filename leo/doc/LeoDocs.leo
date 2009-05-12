@@ -9,11 +9,11 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="3,0"><vh>Startup</vh>
+<v t="ekr.20070610174018" a="E" str_leo_pos="0,1,1"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
-<v t="ekr.20050404094627"><vh>Buttons</vh>
+<v t="ekr.20050404094627" a="E"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
-<v t="ekr.20050812090111"><vh>@button rst3</vh></v>
+<v t="ekr.20050812090111"><vh>@@button rst3</vh></v>
 <v t="ekr.20050901054622"><vh>@@button Save</vh></v>
 <v t="ekr.20050901055150"><vh>@@button promote</vh></v>
 <v t="ekr.20050901060119"><vh>@@button def list</vh>
@@ -1159,7 +1159,7 @@
 <v t="ekr.20060608111953.59"><vh>Must be overridden in subclasses</vh></v>
 </v>
 </v>
-<v t="ekr.20090429074754.1" a="E"><vh>Test of publish_argv_for_missing_stylesheets</vh>
+<v t="ekr.20090429074754.1"><vh>Test of publish_argv_for_missing_stylesheets</vh>
 <v t="ekr.20090429074754.2"><vh>@rst test.html</vh></v>
 </v>
 </v>
@@ -31269,15 +31269,15 @@ htmlhelp_basename = 'Leodoc'
 # -- Options for LaTeX output --------------------------------------------------
 
 # The paper size ('letter' or 'a4').
-#latex_paper_size = 'letter'
+latex_paper_size = 'a4'
 
 # The font size ('10pt', '11pt' or '12pt').
 #latex_font_size = '10pt'
 
 # Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title, author, documentclass [howto/manual]).
+# tex_documents(source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Leodocumentation.tex', u'Leo',
+  ('leo_toc', 'Leodocumentation.tex', u'Leo',
    u'Edward K. Ream', 'manual'),
 ]
 
