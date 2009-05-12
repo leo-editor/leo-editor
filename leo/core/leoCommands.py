@@ -22,6 +22,7 @@ if g.app and g.app.use_psyco:
     # import leo.core.leoEditCommands as leoEditCommands
     # import leo.core.leoFileCommands as leoFileCommands
     # import leo.core.leoImport as leoImport
+    # import leo.core.leoRst as leoRst
     # import leo.core.leoTangle as leoTangle
     # import leo.core.leoUndo as leoUndo
 
@@ -115,11 +116,11 @@ class baseCommands (object):
         import leo.core.leoTangle as leoTangle
         import leo.core.leoUndo as leoUndo
 
-
         self.shadowController = leoShadow.shadowController(c)
         self.fileCommands   = leoFileCommands.fileCommands(c)
         self.atFileCommands = leoAtFile.atFile(c)
         self.importCommands = leoImport.leoImportCommands(c)
+        self.rstCommands    = leoRst.rstCommands(c)
         self.tangleCommands = leoTangle.tangleCommands(c)
         leoEditCommands.createEditCommanders(c)
         self.rstCommands = leoRst.rstCommands(c)
@@ -157,6 +158,7 @@ class baseCommands (object):
             # A 'real' .leo file.
             import leo.core.leoEditCommands as leoEditCommands
             c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
+            self.rstCommands.finishCreate()
             k.finishCreate()
         else:
             # A leoSettings.leo file.
