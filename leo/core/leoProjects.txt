@@ -738,6 +738,8 @@ def getPublicCommands (self):
 #@+node:ekr.20090511055302.5784:Integrate leoRst.py into Leo
 #@+node:ekr.20090512080015.5801:import-files-recursively command?
 How would the command specify settings?
+
+A line added to test bzr push.
 #@-node:ekr.20090512080015.5801:import-files-recursively command?
 #@+node:ekr.20090511055302.10653:Re rst3 plugin
 #@+node:ekr.20050920093543:c.finishCreate & helper
