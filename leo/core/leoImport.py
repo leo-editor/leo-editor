@@ -3781,6 +3781,8 @@ class rstScanner (baseScannerClass):
                 h2 = '@rst-no-head' ; body = ''
                 parent = self.createFunctionNode(h2,body,parent)
 
+        if not parent: parent = self.root
+
         if trace: g.trace('level %s lastLevel %s %s returns %s' % (
             level,lastLevel,headline,parent.h))
 
