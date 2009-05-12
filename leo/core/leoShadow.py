@@ -939,7 +939,7 @@ class shadowController:
 #@+node:ekr.20080708094444.12:class sourcereader
 class sourcereader:
     """
-    A simple class to read lines sequentially.
+    A class to read lines sequentially.
 
     The class keeps an internal index, so that each
     call to get returns the next line.
@@ -950,9 +950,6 @@ class sourcereader:
     The index is the *next* line to be returned.
 
     The line numbering starts from 0.
-
-    The code might be expanded inline once the plugin
-    is considered stable
     """
     #@    @+others
     #@+node:ekr.20080708094444.13:__init__
