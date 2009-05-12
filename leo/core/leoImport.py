@@ -80,6 +80,7 @@ class leoImportCommands (scanUtility):
             '.pas':     self.scanPascalText,
             '.py':      self.scanPythonText,
             '.pyw':     self.scanPythonText,
+            '.txt':     self.scanRstText, # A reasonable default.
             '.rest':    self.scanRstText,
             '.rst':     self.scanRstText,
             '.xml':     self.scanXmlText,
