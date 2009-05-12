@@ -599,7 +599,7 @@ class rstCommands:
     #@+node:ekr.20090511055302.5790:importRst
     def importRst(self,event=None):
 
-        g.trace(self,event)
+        g.trace('not ready yet')
     #@-node:ekr.20090511055302.5790:importRst
     #@+node:ekr.20090511055302.5791:writeAtAutoRst
     def writeAtAutoRst(self,event=None):
