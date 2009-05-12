@@ -362,14 +362,14 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090510080933.1908" a="E"><vh>Rst stuff</vh>
-<v t="ekr.20090501105822.1" a="E"><vh>import rst</vh>
+<v t="ekr.20090510080933.1908"><vh>Rst stuff</vh>
+<v t="ekr.20090501105822.1"><vh>import rst</vh>
 <v t="ekr.20090501105822.2"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
 </v>
 </v>
 <v t="ekr.20090501110438.1"><vh>import</vh></v>
 <v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
-<v t="ekr.20090512121208.1908"><vh>@auto rst-test.txt</vh></v>
+<v t="ekr.20090512121208.1908" rst-import="7d710028550b756e6465726c696e657332710155065b75273d275d7102550b756e6465726c696e657331710355125b75272d272c2075277e272c2075272e275d7104752e"><vh>@auto rst-test.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
