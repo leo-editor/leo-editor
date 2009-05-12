@@ -735,26 +735,10 @@ def getPublicCommands (self):
 #@-node:ekr.20050920084036.259:getPublicCommands (searchCommandsClass)
 #@-node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
 #@-node:ekr.20090401105902.3:Features
-#@+node:ekr.20090511055302.5784:Integrate leoRst3.py into Leo
-@nocolor-node
-
-- Create import-files-recursively command?
-  How does the script specify settings?
-
-- How to indicate that an @auto file (say a .txt file) should be imported as rST?
-
-  * At present, rstUnitTest uses a file extension of .rst, and that specifies the parser.
-
-  Possible, but clusmsy:
-    @auto-rst
-    @auto [language]
-
-  Better.  More general, does not create a directive line in the output file:
-
-    @ua at-auto:language=rest
-
-    This should override the parser given by the file extension.
-#@nonl
+#@+node:ekr.20090511055302.5784:Integrate leoRst.py into Leo
+#@+node:ekr.20090512080015.5801:import-files-recursively command?
+How would the command specify settings?
+#@-node:ekr.20090512080015.5801:import-files-recursively command?
 #@+node:ekr.20090511055302.10653:Re rst3 plugin
 #@+node:ekr.20050920093543:c.finishCreate & helper
 def finishCreate (self,initEditCommanders=True):  # New in 4.4.
@@ -978,7 +962,7 @@ def rst3 (self,event=None):
 #@+node:ekr.20090511055302.5790:importRst
 def importRst(self,event=None):
 
-    g.trace(self,event)
+    g.trace('not ready yet')
 #@-node:ekr.20090511055302.5790:importRst
 #@+node:ekr.20090511055302.5791:writeAtAutoRst
 def writeAtAutoRst(self,event=None):
@@ -2310,125 +2294,6 @@ def http_attribute_iter (self, p):
 #@-node:ekr.20090502071837.95:Support for http plugin
 #@-node:ekr.20090502071837.33:class rstCommands
 #@-node:ekr.20090511055302.10653:Re rst3 plugin
-#@+node:ekr.20090511055302.10654:Add support for @ua
-@nocolor-node
-
-Syntax:  @ua dictionary:key=value
-Value must be a string.
-
-To do:
-
-Read/write code should (mostly?) ignore this:
-    - Do not write the @ua directive to external files.
-    - @auto code for @rst will write @ua at-auto:language=rest.
-#@nonl
-#@-node:ekr.20090511055302.10654:Add support for @ua
-#@+node:ekr.20090511055302.10652:Import code...
-#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
-def readOneAtAutoNode (self,fileName,p):
-
-    at = self ; c = at.c ; ic = c.importCommands
-
-    oldChanged = c.isChanged()
-    at.scanDefaultDirectory(p,importing=True) # Set default_directory
-    fileName = c.os_path_finalize_join(at.default_directory,fileName)
-
-    if not g.unitTesting:
-        g.es("reading:",p.h)
-
-    # Delete all children.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
-
-    if ic.errors:
-        g.es_print('errors inhibited read @auto',fileName,color='red')
-
-    if ic.errors or not g.os_path_exists(fileName):
-        #c.setBodyString(p,'')
-        p.clearDirty()
-        c.setChanged(oldChanged)
-    else:
-        g.doHook('after-auto', p = p)  # call after-auto callbacks
-#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
-#@+node:ekr.20031218072017.3210:createOutline (leoImport)
-def createOutline (self,fileName,parent,
-    atAuto=False,atShadow=False,s=None,ext=None):
-
-    c = self.c ; u = c.undoer ; s1 = s
-
-    # New in Leo 4.4.7: honor @path directives.
-    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-    fileName = c.os_path_finalize_join(self.default_directory,fileName)
-    junk,self.fileName = g.os_path_split(fileName)
-    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
-    self.setEncoding(p=parent,atAuto=atAuto)
-    if not ext: ext = self.fileType
-    ext = ext.lower()
-    if not s:
-        << Read file into s >>
-    << convert s to the proper encoding >>
-
-    # Create the top-level headline.
-    if atAuto:
-        p = parent.copy()
-        p.setBodyString('')
-    else:
-        undoData = u.beforeInsertNode(parent)
-        p = parent.insertAsLastChild()
-
-        if self.treeType == "@file":
-            p.initHeadString("@file " + fileName)
-        else:
-            # @root nodes don't have @root in the headline.
-            p.initHeadString(fileName)
-        u.afterInsertNode(p,'Import',undoData)
-
-    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
-
-    func = self.importDispatchDict.get(ext)
-    if func and not c.config.getBool('suppress_import_parsing',default=False):
-        func(s,p,atAuto=atAuto)
-    else:
-        # Just copy the file to the parent node.
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-
-    p.contract()
-    return p
-#@+node:ekr.20031218072017.3211:<< Read file into s >>
-try:
-    fileName = c.os_path_finalize(fileName)
-    theFile = open(fileName)
-    s = theFile.read()
-    theFile.close()
-except IOError:
-    if atShadow: kind = '@shadow '
-    elif atAuto: kind = '@auto '
-    else: kind = ''
-    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
-    g.es("can not open", "%s%s" % (kind,fileName),color='red')
-    # g.trace(g.callers())
-    leoTest.fail()
-    return None
-#@-node:ekr.20031218072017.3211:<< Read file into s >>
-#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
-if s and fileName.endswith('.py'):
-    # Python's encoding comments override everything else.
-    lines = g.splitLines(s)
-    tag = '# -*- coding:' ; tag2 = '-*-'
-    n1,n2 = len(tag),len(tag2)
-    line1 = lines[0].strip()
-    if line1.startswith(tag) and line1.endswith(tag2):
-        e = line1[n1:-n2].strip()
-        if e and g.isValidEncoding(e):
-            # g.pr('found',e,'in',line1)
-            self.encoding = e
-
-s = g.toUnicode(s,self.encoding)
-#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
-#@-node:ekr.20031218072017.3210:createOutline (leoImport)
-#@-node:ekr.20090511055302.10652:Import code...
 #@+node:ekr.20090512080015.5794:Indent rst3 nodes based on underlining level
 #@+node:ekr.20070703122141.65:<< class baseScannerClass >>
 class baseScannerClass (scanUtility):
@@ -4027,7 +3892,127 @@ def startsSection (self,s,i):
 #@-node:ekr.20090501095634.47:startsSection
 #@-node:ekr.20090501095634.41:class rstScanner
 #@-node:ekr.20090512080015.5794:Indent rst3 nodes based on underlining level
-#@-node:ekr.20090511055302.5784:Integrate leoRst3.py into Leo
+#@+node:ekr.20090511055302.10652:Support @auto for general rST files
+@nocolor-node
+
+* How can we test @auto-rst with minimal changes?
+    - *Temporily* add support for import-rst-file or @auto-rst.
+      Should this command be in leoRst.py?  leoAtFile.py?, leoImport.py?
+
+* Add language keyword arg to createOutline.
+
+* Add support for @ua to read/writeOneAtAutoNode.
+    - isSignificant should ignore @ua lines?
+
+- @ua at-auto:language=rest
+  This should override the parser given by the file extension.
+#@nonl
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        #c.setBodyString(p,'')
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,
+    atAuto=False,atShadow=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = c.os_path_finalize_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    func = self.importDispatchDict.get(ext)
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
+    else:
+        # Just copy the file to the parent node.
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = c.os_path_finalize(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    if atShadow: kind = '@shadow '
+    elif atAuto: kind = '@auto '
+    else: kind = ''
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (kind,fileName),color='red')
+    # g.trace(g.callers())
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # g.pr('found',e,'in',line1)
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@-node:ekr.20090511055302.10652:Support @auto for general rST files
+#@-node:ekr.20090511055302.5784:Integrate leoRst.py into Leo
 #@-node:ekr.20080917153158.11:4.6 b2
 #@-all
 #@nonl

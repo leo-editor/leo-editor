@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -363,12 +363,13 @@
 </v>
 </v>
 <v t="ekr.20090510080933.1908" a="E"><vh>Rst stuff</vh>
-<v t="ekr.20090501105822.1"><vh>import rst</vh>
+<v t="ekr.20090501105822.1" a="E"><vh>import rst</vh>
 <v t="ekr.20090501105822.2"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
 </v>
 </v>
 <v t="ekr.20090501110438.1"><vh>import</vh></v>
 <v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
+<v t="ekr.20090512121208.1908"><vh>@auto rst-test.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2848,7 +2849,7 @@ section 1
 
 section 1, line 1
 --
-selction 1, line 2
+section 1, line 2
 
 section 2
 ---------
