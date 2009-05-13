@@ -2048,16 +2048,6 @@ class baseScannerClass (scanUtility):
         return body
 
     #@-node:ekr.20090512153903.5806:computeBody (baseScannerClass)
-    #@+node:ekr.20070705144309:createDeclsNode
-    def createDeclsNode (self,parent,s):
-
-        '''Create a child node of parent containing s.'''
-
-        # Create the node for the decls.
-        headline = self.methodName + ' declarations'
-        body = self.undentBody(s)
-        self.createHeadline(parent,body,headline)
-    #@-node:ekr.20070705144309:createDeclsNode
     #@+node:ekr.20070707085612:createFunctionNode
     def createFunctionNode (self,headline,body,parent):
 
@@ -3859,6 +3849,10 @@ class rstScanner (baseScannerClass):
             d ['underlines2'] = underlines2
             # g.trace(repr(underlines1),repr(underlines2))
             p.v.u [tag] = d
+
+        # Append a warning to the root node.
+        warning = '\n.. warning: this node is ignored when writing the output file.\n'
+        self.root.b = self.root.b + warning
     #@-node:ekr.20090502071837.2:endGen
     #@+node:ekr.20090501095634.46:isUnderLine
     def isUnderLine(self,s):
