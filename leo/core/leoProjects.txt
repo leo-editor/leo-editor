@@ -439,6 +439,8 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
     if g.app.config is None:
        print ('No g.app.config, making stub...')
        class StubConfig:
+           def __init__(self):
+               self.enabledPluginsFileName = ''
            def getBool(self, c, setting):
                return False
        g.app.config = StubConfig()

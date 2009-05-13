@@ -284,8 +284,8 @@ def initApp (verbose):
 
     # Force the user to set g.app.leoID.
     g.app.setLeoID(verbose=verbose)
-    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
     g.app.config = leoConfig.configClass()
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
 #@-node:ekr.20080921091311.2:initApp
 #@+node:ekr.20080921060401.6:initFocusAndDraw
 def initFocusAndDraw(c,fileName):

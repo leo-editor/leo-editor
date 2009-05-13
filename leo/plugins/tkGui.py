@@ -1679,7 +1679,7 @@ class tkinterAskLeoID (leoTkinterDialog):
         if c:
             c.bind(self.top,"<Key>", self.onKey)
         else:
-            g.trace('can not use c.bind')
+            # g.trace('can not use c.bind')
             self.top.bind("<Key>", self.onKey)
 
         message = (

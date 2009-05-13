@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -370,6 +370,7 @@
 <v t="ekr.20090501110438.1"><vh>import</vh></v>
 <v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
 <v t="ekr.20090513115300.1919"><vh>underline_characters</vh></v>
+<v t="ekr.20090513154754.1912"><vh>@rst-no-head rst-test declarations</vh></v>
 <v t="ekr.20090512121208.1908" a="E" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355033d2b2a7104752e"><vh>@auto rst-test.txt</vh></v>
 </vnodes>
 <tnodes>
@@ -2926,5 +2927,10 @@ c.redraw()</t>
 <t tx="ekr.20090513115300.1919">@ @rst-options
 underline_characters=#=+*^~"\'`-:&gt;&lt;_
 @c</t>
+<t tx="ekr.20090513154754.1912">..changed 4
+
+.. toc
+
+</t>
 </tnodes>
 </leo_file>
