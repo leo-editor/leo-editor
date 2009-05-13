@@ -752,20 +752,6 @@ How would the command specify settings?
 A line added to test bzr push.
 #@-node:ekr.20090512080015.5801:import-files-recursively command?
 #@+node:ekr.20090512080015.5794:rst scanning
-@nocolor-node
-
-Phase 2:
-
-- (Done) Remove section names and underlining from nodes.
-
-- Add support for rst-write to leoAtFile.py.
-
-   To do:
-       - Get underlining characters from root ua.
-       - Don't generate .. rst3: filename line.
-       - Generate over/underlines for top-level section names.
-       - Don't generate Leo directives (on write??)
-#@nonl
 #@+node:ekr.20070703122141.65:<< class baseScannerClass >>
 class baseScannerClass (scanUtility):
 
@@ -2451,11 +2437,7 @@ def startsSection (self,s,i):
 #@+node:ekr.20090511055302.10652:Support @auto for general rST files
 @nocolor-node
 
-To do:
-
-- Process @ @rst-options in root node.
-
-- Forgiving compare of underlining lines in the import check.
+To do: process @ @rst-options in root node.
 #@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
 def readOneAtAutoNode (self,fileName,p):
 
