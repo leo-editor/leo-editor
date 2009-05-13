@@ -2483,7 +2483,7 @@ class atFile:
         else:
             g.es("no @auto nodes in the selected tree")
     #@-node:ekr.20070806140208:writeAtAutoNodesHelper
-    #@+node:ekr.20070806141607:writeOneAtAutoNode & helper
+    #@+node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
     def writeOneAtAutoNode(self,p,toString,force):
 
         '''Write p, an @auto node.
@@ -2512,7 +2512,10 @@ class atFile:
 
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
         if ok:
-            at.writeOpenFile(root,nosentinels=True,toString=toString)
+            if self.isRstFile(fileName):
+                c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
+            else:
+                at.writeOpenFile(root,nosentinels=True,toString=toString)
             at.closeWriteFile() # Sets stringOutput if toString is True.
             if at.errors == 0:
                 at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
@@ -2525,6 +2528,17 @@ class atFile:
             g.es("not written:",at.outputFileName)
 
         return ok
+    #@+node:ekr.20090512153903.5805:isRstFile
+    def isRstFile (self,fileName):
+
+        if not fileName: return False
+
+        junk,ext = g.os_path_splitext(fileName)
+
+        g.trace(fileName,ext)
+
+        return ext in ('.rst','.rest','.txt')
+    #@-node:ekr.20090512153903.5805:isRstFile
     #@+node:ekr.20071019141745:shouldWriteAtAutoNode
     #@+at 
     #@nonl
@@ -2563,7 +2577,7 @@ class atFile:
         else: # The @auto tree is dirty and contains significant info.
             return True
     #@-node:ekr.20071019141745:shouldWriteAtAutoNode
-    #@-node:ekr.20070806141607:writeOneAtAutoNode & helper
+    #@-node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
     #@-node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtAutoNodes (atFile) & helpers
     #@+node:ekr.20090225080846.5:writeOneAtEditNode
     # Similar to writeOneAtAutoNode.
