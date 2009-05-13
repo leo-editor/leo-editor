@@ -751,580 +751,6 @@ How would the command specify settings?
 
 A line added to test bzr push.
 #@-node:ekr.20090512080015.5801:import-files-recursively command?
-#@+node:ekr.20090511055302.10652:Support @auto for general rST files
-@nocolor-node
-
-To do:
-
-- Use rst importer only for @auto-rst.
-#@+node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
-def checkTrialWrite (self,s1=None,s2=None):
-
-    '''Return True if a trial write produces the original file.'''
-
-    # s1 and s2 are for unit testing.
-
-    c = self.c ; at = c.atFileCommands
-
-    if s1 is None and s2 is None:
-        if True and self.isRst: # Errors writing file at present...
-            outputFile = StringIO.StringIO()
-            c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile)
-            s1,s2 = self.file_s,outputFile.getvalue()
-        else:
-            at.write(self.root,
-                nosentinels=True,thinFile=False,
-                scriptWrite=False,toString=True)
-            s1,s2 = self.file_s, at.stringOutput
-
-    s1 = g.toUnicode(s1,self.encoding)
-    s2 = g.toUnicode(s2,self.encoding)
-
-    # Make sure we have a trailing newline in both strings.
-    s1 = s1.replace('\r','')
-    s2 = s2.replace('\r','')
-    if not s1.endswith('\n'): s1 = s1 + '\n'
-    if not s2.endswith('\n'): s2 = s2 + '\n'
-
-    if s1 == s2: return True
-
-    lines1 = g.splitLines(s1) ; n1 = len(lines1)
-    lines2 = g.splitLines(s2) ; n2 = len(lines2)
-
-    # g.trace('lines1',lines1)
-    # g.trace('lines2',lines2)
-
-    ok = True ; bad_i = 0
-    for i in range(max(n1,n2)):
-        ok = self.compareHelper(lines1,lines2,i,self.strict)
-        if not ok:
-            bad_i = i + 1
-            break
-
-    if g.app.unitTesting:
-        d = g.app.unitTestDict
-        # g.trace('expected',d.get('expectedMismatchLine'),'actual',d.get('actualMismatchLine'))
-        ok = d.get('expectedMismatchLine') == d.get('actualMismatchLine')
-        # Unit tests do not generate errors unless the mismatch line does not match.
-        if not ok: d['fail'] = g.callers() # 2008/10/3
-
-    if not ok:
-        self.reportMismatch(lines1,lines2,bad_i)
-
-    return ok
-#@-node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
-#@+node:ekr.20070730093735:compareHelper & helper
-def compareHelper (self,lines1,lines2,i,strict):
-
-    '''Compare lines1[i] and lines2[i].
-    strict is True if leading whitespace is very significant.'''
-
-    def pr(*args,**keys): #compareHelper
-        g.es_print(color='blue',*args,**keys)
-
-    def pr_mismatch(i,line1,line2):
-        g.es_print('first mismatched line at line',str(i+1))
-        g.es_print('original line: ',line1)
-        g.es_print('generated line:',line2)
-
-    d = g.app.unitTestDict
-    expectedMismatch = g.app.unitTesting and d.get('expectedMismatchLine')
-    enableWarning = not self.mismatchWarningGiven and self.atAutoWarnsAboutLeadingWhitespace
-    messageKind = None
-
-    if i >= len(lines1):
-        if self.isRst:
-            return True # ignore extra lines.
-        if i != expectedMismatch or not g.unitTesting:
-            pr('extra lines')
-            for line in lines2[i:]:
-                pr(repr(line))
-        d ['actualMismatchLine'] = i
-        return False
-
-    if i >= len(lines2):
-        if i != expectedMismatch or not g.unitTesting:
-            g.es_print('missing lines')
-            for line in lines2[i:]:
-                g.es_print('',repr(line))
-        d ['actualMismatchLine'] = i
-        return False
-
-    line1,line2 = lines1[i],lines2[i]
-
-    if line1 == line2:
-        return True # An exact match.
-    elif not line1.strip() and not line2.strip():
-        return True # Blank lines compare equal.
-    elif self.isRst and self.compareRstUnderlines(line1,line2):
-        return True
-    elif strict:
-        s1,s2 = line1.lstrip(),line2.lstrip()
-        messageKind = g.choose(
-            s1 == s2 and self.startsComment(s1,0) and self.startsComment(s2,0),
-            'comment','error')
-    else:
-        s1,s2 = line1.lstrip(),line2.lstrip()
-        messageKind = g.choose(s1==s2,'warning','error')
-
-    if g.unitTesting:
-        d ['actualMismatchLine'] = i+1
-        ok = i+1 == expectedMismatch
-        if not ok:  pr_mismatch(i,line1,line2)
-        return ok
-    elif strict:
-        if enableWarning:
-            self.mismatchWarningGiven = True
-            if messageKind == 'comment':
-                self.warning('mismatch in leading whitespace before comment')
-            else:
-                self.error('mismatch in leading whitespace')
-            pr_mismatch(i,line1,line2)
-        return messageKind == 'comment' # Only mismatched comment lines are valid.
-    else:
-        if enableWarning:
-            self.mismatchWarningGiven = True
-            self.checkLeadingWhitespace(line1)
-            self.warning('mismatch in leading whitespace')
-            pr_mismatch(i,line1,line2)
-        return messageKind in ('comment','warning') # Only errors are invalid.
-#@nonl
-#@+node:ekr.20090513073632.5735:compareRstUnderlines
-def compareRstUnderlines(self,s1,s2):
-
-    s1,s2 = s1.rstrip(),s2.rstrip()
-    n1, n2 = len(s1),len(s2)
-    ch1 = n1 and s1[0] or ''
-    ch2 = n2 and s2[0] or ''
-
-    val = (
-        n1 >= 4 and n2 >= 4 and # Underlinings must be at least 4 long.
-        ch1 == ch2 and # The underlining characters must match.
-        s1 == ch1 * n1 and # The line must consist only of underlining characters.
-        s2 == ch2 * n2)
-
-    return val
-#@-node:ekr.20090513073632.5735:compareRstUnderlines
-#@-node:ekr.20070730093735:compareHelper & helper
-#@+node:ekr.20031218072017.3210:createOutline (leoImport)
-def createOutline (self,fileName,parent,
-    atAuto=False,atShadow=False,s=None,ext=None):
-
-    c = self.c ; u = c.undoer ; s1 = s
-
-    # New in Leo 4.4.7: honor @path directives.
-    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-    fileName = c.os_path_finalize_join(self.default_directory,fileName)
-    junk,self.fileName = g.os_path_split(fileName)
-    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
-    self.setEncoding(p=parent,atAuto=atAuto)
-    if not ext: ext = self.fileType
-    ext = ext.lower()
-    if not s:
-        << Read file into s >>
-    << convert s to the proper encoding >>
-
-    # Create the top-level headline.
-    if atAuto:
-        p = parent.copy()
-        p.setBodyString('')
-    else:
-        undoData = u.beforeInsertNode(parent)
-        p = parent.insertAsLastChild()
-
-        if self.treeType == "@file":
-            p.initHeadString("@file " + fileName)
-        else:
-            # @root nodes don't have @root in the headline.
-            p.initHeadString(fileName)
-        u.afterInsertNode(p,'Import',undoData)
-
-    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
-
-    func = self.importDispatchDict.get(ext)
-    if func and not c.config.getBool('suppress_import_parsing',default=False):
-        func(s,p,atAuto=atAuto)
-    else:
-        # Just copy the file to the parent node.
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-
-    p.contract()
-    return p
-#@+node:ekr.20031218072017.3211:<< Read file into s >>
-try:
-    fileName = c.os_path_finalize(fileName)
-    theFile = open(fileName)
-    s = theFile.read()
-    theFile.close()
-except IOError:
-    if atShadow: kind = '@shadow '
-    elif atAuto: kind = '@auto '
-    else: kind = ''
-    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
-    g.es("can not open", "%s%s" % (kind,fileName),color='red')
-    # g.trace(g.callers())
-    leoTest.fail()
-    return None
-#@-node:ekr.20031218072017.3211:<< Read file into s >>
-#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
-if s and fileName.endswith('.py'):
-    # Python's encoding comments override everything else.
-    lines = g.splitLines(s)
-    tag = '# -*- coding:' ; tag2 = '-*-'
-    n1,n2 = len(tag),len(tag2)
-    line1 = lines[0].strip()
-    if line1.startswith(tag) and line1.endswith(tag2):
-        e = line1[n1:-n2].strip()
-        if e and g.isValidEncoding(e):
-            # g.pr('found',e,'in',line1)
-            self.encoding = e
-
-s = g.toUnicode(s,self.encoding)
-#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
-#@-node:ekr.20031218072017.3210:createOutline (leoImport)
-#@+node:ekr.20090502071837.46:preprocessTree & helpers
-def preprocessTree (self,root):
-
-    self.tnodeOptionDict = {}
-
-    # Bug fix 12/4/05: must preprocess parents too.
-    for p in root.parents_iter():
-        self.preprocessNode(p)
-
-    for p in root.self_and_subtree_iter():
-        self.preprocessNode(p)
-
-    if 0:
-        g.trace(root.h)
-        for key in self.tnodeOptionDict.keys():
-            g.trace(key)
-            g.printDict(self.tnodeOptionDict.get(key))
-#@nonl
-#@+node:ekr.20090502071837.47:preprocessNode
-def preprocessNode (self,p):
-
-    d = self.tnodeOptionDict.get(p.v.t)
-    if d is None:
-        d = self.scanNodeForOptions(p)
-        self.tnodeOptionDict [p.v.t] = d
-#@nonl
-#@-node:ekr.20090502071837.47:preprocessNode
-#@+node:ekr.20090502071837.48:parseOptionLine
-def parseOptionLine (self,s):
-
-    '''Parse a line containing name=val and return (name,value) or None.
-
-    If no value is found, default to True.'''
-
-    s = s.strip()
-    if s.endswith(','): s = s[:-1]
-    # Get name.  Names may contain '-' and '_'.
-    i = g.skip_id(s,0,chars='-_')
-    name = s [:i]
-    if not name: return None
-    j = g.skip_ws(s,i)
-    if g.match(s,j,'='):
-        val = s [j+1:].strip()
-        # g.trace(val)
-        return name,val
-    else:
-        # g.trace('*True')
-        return name,'True'
-#@nonl
-#@-node:ekr.20090502071837.48:parseOptionLine
-#@+node:ekr.20090502071837.49:scanForOptionDocParts
-def scanForOptionDocParts (self,p,s):
-
-    '''Return a dictionary containing all options from @rst-options doc parts in p.
-    Multiple @rst-options doc parts are allowed: this code aggregates all options.
-    '''
-
-    d = {} ; n = 0 ; lines = g.splitLines(s)
-    while n < len(lines):
-        line = lines[n] ; n += 1
-        if line.startswith('@'):
-            i = g.skip_ws(line,1)
-            for kind in ('@rst-options','@rst-option'):
-                if g.match_word(line,i,kind):
-                    # Allow options on the same line.
-                    line = line[i+len(kind):]
-                    d.update(self.scanOption(p,line))
-                    # Add options until the end of the doc part.
-                    while n < len(lines):
-                        line = lines[n] ; n += 1 ; found = False
-                        for stop in ('@c','@code', '@'):
-                            if g.match_word(line,0,stop):
-                                found = True ; break
-                        if found:
-                            break
-                        else:
-                            d.update(self.scanOption(p,line))
-                    break
-    return d
-#@nonl
-#@-node:ekr.20090502071837.49:scanForOptionDocParts
-#@+node:ekr.20090502071837.50:scanHeadlineForOptions
-def scanHeadlineForOptions (self,p):
-
-    '''Return a dictionary containing the options implied by p's headline.'''
-
-    h = p.h.strip()
-
-    if p == self.topNode:
-        return {} # Don't mess with the root node.
-    elif g.match_word(h,0,self.getOption('option_prefix')): # '@rst-option'
-        s = h [len(self.option_prefix):]
-        return self.scanOption(p,s)
-    elif g.match_word(h,0,self.getOption('options_prefix')): # '@rst-options'
-        return self.scanOptions(p,p.b)
-    else:
-        # Careful: can't use g.match_word because options may have '-' chars.
-        i = g.skip_id(h,0,chars='@-')
-        word = h[0:i]
-
-        for prefix,ivar,val in (
-            ('code_prefix','code_mode',True), # '@rst-code'
-            ('doc_mode_prefix','doc_only_mode',True), # @rst-doc-only.
-            ('default_path_prefix','default_prefix',''), # '@rst-default-path'
-            ('rst_prefix','code_mode',False), # '@rst'
-            ('ignore_headline_prefix','ignore_this_headline',True), # '@rst-no-head'
-            ('show_headline_prefix','show_this_headline',True), # '@rst-head'  
-            ('ignore_headlines_prefix','show_headlines',False), # '@rst-no-headlines'
-            ('ignore_prefix','ignore_this_tree',True),      # '@rst-ignore'
-            ('ignore_node_prefix','ignore_this_node',True), # '@rst-ignore-node'
-            ('ignore_tree_prefix','ignore_this_tree',True), # '@rst-ignore-tree'
-            ('preformat_prefix','preformat_this_node',True), # '@rst-preformat
-        ):
-            prefix = self.getOption(prefix)
-            if prefix and word == prefix: # Do _not_ munge this prefix!
-                d = { ivar: val }
-                if ivar != 'code_mode':
-                    d ['code_mode'] = False # Enter rst mode.
-                    d ['doc_only_mode'] = False
-                # Special case: Treat a bare @rst like @rst-no-head
-                if h == self.getOption('rst_prefix'):
-                    d ['ignore_this_headline'] = True
-                # g.trace(repr(h),repr(prefix),ivar,d)
-                return d
-
-        if h.startswith('@rst'):
-            g.trace('word',word,'rst_prefix',self.getOption('rst_prefix'))
-            g.trace('unknown kind of @rst headline',p.h)
-
-        return {}
-#@-node:ekr.20090502071837.50:scanHeadlineForOptions
-#@+node:ekr.20090502071837.51:scanNodeForOptions
-def scanNodeForOptions (self,p):
-
-    '''Return a dictionary containing all the option-name:value entries in p.
-
-    Such entries may arise from @rst-option or @rst-options in the headline,
-    or from @ @rst-options doc parts.'''
-
-    h = p.h
-
-    d = self.scanHeadlineForOptions(p)
-
-    d2 = self.scanForOptionDocParts(p,p.b)
-
-    # A fine point: body options over-ride headline options.
-    d.update(d2)
-
-    return d
-#@nonl
-#@-node:ekr.20090502071837.51:scanNodeForOptions
-#@+node:ekr.20090502071837.52:scanOption
-def scanOption (self,p,s):
-
-    '''Return { name:val } if s is a line of the form name=val.
-    Otherwise return {}'''
-
-    if not s.strip() or s.strip().startswith('..'): return {}
-
-    data = self.parseOptionLine(s)
-
-    if data:
-        name,val = data
-        fullName = 'rst3_' + self.munge(name)
-        if fullName in self.defaultOptionsDict.keys():
-            if   val.lower() == 'true': val = True
-            elif val.lower() == 'false': val = False
-            # g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
-            return { self.munge(name): val }
-        else:
-            g.es_print('ignoring unknown option: %s' % (name),color='red')
-            return {}
-    else:
-        g.trace(repr(s))
-        s2 = 'bad rst3 option in %s: %s' % (p.h,s)
-        g.es_print(s2,color='red')
-        return {}
-#@-node:ekr.20090502071837.52:scanOption
-#@+node:ekr.20090502071837.53:scanOptions
-def scanOptions (self,p,s):
-
-    '''Return a dictionary containing all the options in s.'''
-
-    d = {}
-
-    for line in g.splitLines(s):
-        d2 = self.scanOption(p,line)
-        if d2: d.update(d2)
-
-    return d
-#@nonl
-#@-node:ekr.20090502071837.53:scanOptions
-#@-node:ekr.20090502071837.46:preprocessTree & helpers
-#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
-def readOneAtAutoNode (self,fileName,p):
-
-    at = self ; c = at.c ; ic = c.importCommands
-
-    oldChanged = c.isChanged()
-    at.scanDefaultDirectory(p,importing=True) # Set default_directory
-    fileName = c.os_path_finalize_join(at.default_directory,fileName)
-
-    if not g.unitTesting:
-        g.es("reading:",p.h)
-
-    # Delete all children.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
-
-    if ic.errors:
-        g.es_print('errors inhibited read @auto',fileName,color='red')
-
-    if ic.errors or not g.os_path_exists(fileName):
-        #c.setBodyString(p,'')
-        p.clearDirty()
-        c.setChanged(oldChanged)
-    else:
-        g.doHook('after-auto', p = p)  # call after-auto callbacks
-#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
-#@+node:ekr.20090502071837.93:underline
-def underline (self,s,p):
-
-    '''Return the underlining string to be used at the given level for string s.
-    This includes the headline, and possibly a leading overlining line.
-    '''
-
-    if self.atAutoWrite:
-        # We generate overlines for top-level sections.
-        u = self.atAutoWriteUnderlines
-        level = max(0,p.level()-self.topLevel-1)
-        ch = u [level]
-        n = max(4,len(s))
-        # g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
-        if level == 0:
-            return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
-        else:
-            return '%s\n%s\n\n' % (p.h,ch*n)
-    else:
-        # The user is responsible for top-level overlining.
-        u = self.getOption('underline_characters') #  '''#=+*^~"'`-:><_'''
-        level = max(0,p.level()-self.topLevel)
-        level = min(level+1,len(u)-1) # Reserve the first character for explicit titles.
-        ch = u [level]
-        # g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
-        n = max(4,len(s))
-        ### return ch * n + '\n'
-        return '%s\n%s\n' % (p.h,ch*n) # Must be equivalent to old code.
-#@-node:ekr.20090502071837.93:underline
-#@+node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
-def writeAtAutoFile (self,p,fileName,outputFile):
-
-    '''Write an @auto tree containing imported rST code.
-    The caller will close the output file.'''
-
-    # To do: process @ @rst-options in root node. (and change the warning).
-    # To do: forgiving compare of underlining lines in the import check.
-
-    try:
-        self.atAutoWrite = True
-        self.initAtAutoWrite(p,fileName,outputFile)
-        self.topNode = p.copy() # Indicate the top of this tree.
-        self.topLevel = p.level()
-        after = p.nodeAfterTree()
-        p = p.firstChild() # A (temporary?) hack: ignore the root node.
-        while p and p != after:
-            self.writeNode(p) # side effect: advances p
-    finally:
-        self.atAutoWrite = False
-#@+node:ekr.20090513073632.5733:setAtAutoWriteOptions
-def initAtAutoWrite(self,p,fileName,outputFile):
-
-    # Set up for a standard write.
-    self.createDefaultOptionsDict()
-    self.tnodeOptionDict = {}
-    self.scanAllOptions(p)
-    self.initWrite(p)
-    self.preprocessTree(p) # Allow @ @rst-options, for example.
-
-    # Do the overrides.
-    self.outputFile = outputFile
-    self.outputFileName = fileName
-
-    # Set underlining characters.
-    d = self.tnodeOptionDict.get(p.v.t) # Set by preprocessTree.
-    underlines = d.get('underline_characters')
-    if underlines:
-        self.atAutoWriteUnderlines = underlines
-    else:
-        d = p.v.u.get('rst-import',{})
-        underlines2 = d.get('underlines2','#')
-        underlines1 = d.get('underlines1','=+*^~"\'`-:><_') # The standard defaults.
-        if len(underlines2) > 1:
-            underlines2 = underlines2[0]
-            g.trace('too many top-level underlines, using %s' % (
-                underlines2),color='blue')
-        self.atAutoWriteUnderlines = underlines2 + underlines1
-
-#@-node:ekr.20090513073632.5733:setAtAutoWriteOptions
-#@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
-#@+node:ekr.20090502071837.84:writeHeadlineHelper
-def writeHeadlineHelper (self,p):
-
-    h = p.h.strip()
-
-    # Remove any headline command before writing the headline.
-    i = g.skip_id(h,0,chars='@-')
-    word = h [:i]
-    if word:
-        # Never generate a section for @rst-option or @rst-options or @rst-no-head.
-        if word in (
-            self.getOption('option_prefix'),
-            self.getOption('options_prefix'),
-            self.getOption('ignore_headline_prefix'), # Bug fix: 2009-5-13
-            self.getOption('ignore_headlines_prefix'),  # Bug fix: 2009-5-13
-        ):
-            return
-        # Remove all other headline commands from the headline.
-        for prefix in self.headlineCommands:
-            if word == prefix:
-                h = h [len(word):].strip()
-                break
-
-        # New in Leo 4.4.4.
-        if word.startswith('@'):
-            if self.getOption('strip_at_file_prefixes'):
-                for s in ('@auto','@file','@nosent','@thin',):
-                    if g.match_word(word,0,s):
-                        h = h [len(s):].strip()
-
-    if not h.strip(): return
-
-    if self.getOption('show_sections'):
-        if self.getOption('generate_rst'):
-            # self.write('%s\n%s\n' % (h,self.underline(h,p)))
-            self.write(self.underline(h,p))
-        else:
-            self.write('\n%s\n' % h)
-    else:
-        self.write('\n**%s**\n\n' % h.replace('*',''))
-#@-node:ekr.20090502071837.84:writeHeadlineHelper
-#@-node:ekr.20090511055302.10652:Support @auto for general rST files
 #@+node:ekr.20090512080015.5794:rst scanning
 #@+node:ekr.20070703122141.65:<< class baseScannerClass >>
 class baseScannerClass (scanUtility):
@@ -1597,9 +1023,10 @@ def reportMismatch (self,lines1,lines2,bad_i):
 
     kind = g.choose(self.atAuto,'@auto','import command')
 
+
     self.error(
         '%s did not import %s perfectly\nfirst mismatched line: %d\n%s' % (
-            kind,self.root.h,bad_i,repr(lines2[bad_i-1])))
+            kind,self.root.h,bad_i,repr(lines2[max(0,bad_i-1)])))
 
     if len(lines1) < 100:
         pr('input...')
@@ -1631,9 +1058,10 @@ def addRef (self,parent):
 
     c = self.c
 
-    # g.trace(parent.h)
+    if self.isRst:
+        return
 
-    if self.treeType == '@file' and not self.isRst:
+    if self.treeType == '@file':
         self.appendStringToBody(parent,'@others\n')
 
     if self.treeType == '@root' and self.methodsSeen:
@@ -3009,6 +2437,584 @@ def startsSection (self,s,i):
 #@-node:ekr.20090501095634.47:startsSection
 #@-node:ekr.20090501095634.41:class rstScanner
 #@-node:ekr.20090512080015.5794:rst scanning
+#@+node:ekr.20090511055302.10652:Support @auto for general rST files
+@nocolor-node
+
+To do:
+
+- Generalize warning message in genEnd.
+- Revise rst chapter.
+- rst3 command applied to @auto-rst node should work.
+- Use rst importer only for @auto-rst.
+    - eliminate isRstFile.
+#@+node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
+def checkTrialWrite (self,s1=None,s2=None):
+
+    '''Return True if a trial write produces the original file.'''
+
+    # s1 and s2 are for unit testing.
+
+    c = self.c ; at = c.atFileCommands
+
+    if s1 is None and s2 is None:
+        if True and self.isRst: # Errors writing file at present...
+            outputFile = StringIO.StringIO()
+            c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile)
+            s1,s2 = self.file_s,outputFile.getvalue()
+        else:
+            at.write(self.root,
+                nosentinels=True,thinFile=False,
+                scriptWrite=False,toString=True)
+            s1,s2 = self.file_s, at.stringOutput
+
+    s1 = g.toUnicode(s1,self.encoding)
+    s2 = g.toUnicode(s2,self.encoding)
+
+    # Make sure we have a trailing newline in both strings.
+    s1 = s1.replace('\r','')
+    s2 = s2.replace('\r','')
+    if not s1.endswith('\n'): s1 = s1 + '\n'
+    if not s2.endswith('\n'): s2 = s2 + '\n'
+
+    if s1 == s2: return True
+
+    lines1 = g.splitLines(s1) ; n1 = len(lines1)
+    lines2 = g.splitLines(s2) ; n2 = len(lines2)
+
+    # g.trace('lines1',lines1)
+    # g.trace('lines2',lines2)
+
+    ok = True ; bad_i = 0
+    for i in range(max(n1,n2)):
+        ok = self.compareHelper(lines1,lines2,i,self.strict)
+        if not ok:
+            bad_i = i + 1
+            break
+
+    if g.app.unitTesting:
+        d = g.app.unitTestDict
+        # g.trace('expected',d.get('expectedMismatchLine'),'actual',d.get('actualMismatchLine'))
+        ok = d.get('expectedMismatchLine') == d.get('actualMismatchLine')
+        # Unit tests do not generate errors unless the mismatch line does not match.
+        if not ok: d['fail'] = g.callers() # 2008/10/3
+
+    if not ok:
+        self.reportMismatch(lines1,lines2,bad_i)
+
+    return ok
+#@-node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
+#@+node:ekr.20070730093735:compareHelper & helper
+def compareHelper (self,lines1,lines2,i,strict):
+
+    '''Compare lines1[i] and lines2[i].
+    strict is True if leading whitespace is very significant.'''
+
+    def pr(*args,**keys): #compareHelper
+        g.es_print(color='blue',*args,**keys)
+
+    def pr_mismatch(i,line1,line2):
+        g.es_print('first mismatched line at line',str(i+1))
+        g.es_print('original line: ',line1)
+        g.es_print('generated line:',line2)
+
+    d = g.app.unitTestDict
+    expectedMismatch = g.app.unitTesting and d.get('expectedMismatchLine')
+    enableWarning = not self.mismatchWarningGiven and self.atAutoWarnsAboutLeadingWhitespace
+    messageKind = None
+
+    if i >= len(lines1):
+        if self.isRst:
+            return True # ignore extra lines.
+        if i != expectedMismatch or not g.unitTesting:
+            pr('extra lines')
+            for line in lines2[i:]:
+                pr(repr(line))
+        d ['actualMismatchLine'] = i
+        return False
+
+    if i >= len(lines2):
+        if i != expectedMismatch or not g.unitTesting:
+            g.es_print('missing lines')
+            for line in lines2[i:]:
+                g.es_print('',repr(line))
+        d ['actualMismatchLine'] = i
+        return False
+
+    line1,line2 = lines1[i],lines2[i]
+
+    if line1 == line2:
+        return True # An exact match.
+    elif not line1.strip() and not line2.strip():
+        return True # Blank lines compare equal.
+    elif self.isRst and self.compareRstUnderlines(line1,line2):
+        return True
+    elif strict:
+        s1,s2 = line1.lstrip(),line2.lstrip()
+        messageKind = g.choose(
+            s1 == s2 and self.startsComment(s1,0) and self.startsComment(s2,0),
+            'comment','error')
+    else:
+        s1,s2 = line1.lstrip(),line2.lstrip()
+        messageKind = g.choose(s1==s2,'warning','error')
+
+    if g.unitTesting:
+        d ['actualMismatchLine'] = i+1
+        ok = i+1 == expectedMismatch
+        if not ok:  pr_mismatch(i,line1,line2)
+        return ok
+    elif strict:
+        if enableWarning:
+            self.mismatchWarningGiven = True
+            if messageKind == 'comment':
+                self.warning('mismatch in leading whitespace before comment')
+            else:
+                self.error('mismatch in leading whitespace')
+            pr_mismatch(i,line1,line2)
+        return messageKind == 'comment' # Only mismatched comment lines are valid.
+    else:
+        if enableWarning:
+            self.mismatchWarningGiven = True
+            self.checkLeadingWhitespace(line1)
+            self.warning('mismatch in leading whitespace')
+            pr_mismatch(i,line1,line2)
+        return messageKind in ('comment','warning') # Only errors are invalid.
+#@nonl
+#@+node:ekr.20090513073632.5735:compareRstUnderlines
+def compareRstUnderlines(self,s1,s2):
+
+    s1,s2 = s1.rstrip(),s2.rstrip()
+    n1, n2 = len(s1),len(s2)
+    ch1 = n1 and s1[0] or ''
+    ch2 = n2 and s2[0] or ''
+
+    val = (
+        n1 >= 4 and n2 >= 4 and # Underlinings must be at least 4 long.
+        ch1 == ch2 and # The underlining characters must match.
+        s1 == ch1 * n1 and # The line must consist only of underlining characters.
+        s2 == ch2 * n2)
+
+    return val
+#@-node:ekr.20090513073632.5735:compareRstUnderlines
+#@-node:ekr.20070730093735:compareHelper & helper
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,
+    atAuto=False,atShadow=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = c.os_path_finalize_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    func = self.importDispatchDict.get(ext)
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
+    else:
+        # Just copy the file to the parent node.
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = c.os_path_finalize(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    if atShadow: kind = '@shadow '
+    elif atAuto: kind = '@auto '
+    else: kind = ''
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (kind,fileName),color='red')
+    # g.trace(g.callers())
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # g.pr('found',e,'in',line1)
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20090502071837.46:preprocessTree & helpers
+def preprocessTree (self,root):
+
+    self.tnodeOptionDict = {}
+
+    # Bug fix 12/4/05: must preprocess parents too.
+    for p in root.parents_iter():
+        self.preprocessNode(p)
+
+    for p in root.self_and_subtree_iter():
+        self.preprocessNode(p)
+
+    if 0:
+        g.trace(root.h)
+        for key in self.tnodeOptionDict.keys():
+            g.trace(key)
+            g.printDict(self.tnodeOptionDict.get(key))
+#@nonl
+#@+node:ekr.20090502071837.47:preprocessNode
+def preprocessNode (self,p):
+
+    d = self.tnodeOptionDict.get(p.v.t)
+    if d is None:
+        d = self.scanNodeForOptions(p)
+        self.tnodeOptionDict [p.v.t] = d
+#@nonl
+#@-node:ekr.20090502071837.47:preprocessNode
+#@+node:ekr.20090502071837.48:parseOptionLine
+def parseOptionLine (self,s):
+
+    '''Parse a line containing name=val and return (name,value) or None.
+
+    If no value is found, default to True.'''
+
+    s = s.strip()
+    if s.endswith(','): s = s[:-1]
+    # Get name.  Names may contain '-' and '_'.
+    i = g.skip_id(s,0,chars='-_')
+    name = s [:i]
+    if not name: return None
+    j = g.skip_ws(s,i)
+    if g.match(s,j,'='):
+        val = s [j+1:].strip()
+        # g.trace(val)
+        return name,val
+    else:
+        # g.trace('*True')
+        return name,'True'
+#@nonl
+#@-node:ekr.20090502071837.48:parseOptionLine
+#@+node:ekr.20090502071837.49:scanForOptionDocParts
+def scanForOptionDocParts (self,p,s):
+
+    '''Return a dictionary containing all options from @rst-options doc parts in p.
+    Multiple @rst-options doc parts are allowed: this code aggregates all options.
+    '''
+
+    d = {} ; n = 0 ; lines = g.splitLines(s)
+    while n < len(lines):
+        line = lines[n] ; n += 1
+        if line.startswith('@'):
+            i = g.skip_ws(line,1)
+            for kind in ('@rst-options','@rst-option'):
+                if g.match_word(line,i,kind):
+                    # Allow options on the same line.
+                    line = line[i+len(kind):]
+                    d.update(self.scanOption(p,line))
+                    # Add options until the end of the doc part.
+                    while n < len(lines):
+                        line = lines[n] ; n += 1 ; found = False
+                        for stop in ('@c','@code', '@'):
+                            if g.match_word(line,0,stop):
+                                found = True ; break
+                        if found:
+                            break
+                        else:
+                            d.update(self.scanOption(p,line))
+                    break
+    return d
+#@nonl
+#@-node:ekr.20090502071837.49:scanForOptionDocParts
+#@+node:ekr.20090502071837.50:scanHeadlineForOptions
+def scanHeadlineForOptions (self,p):
+
+    '''Return a dictionary containing the options implied by p's headline.'''
+
+    h = p.h.strip()
+
+    if p == self.topNode:
+        return {} # Don't mess with the root node.
+    elif g.match_word(h,0,self.getOption('option_prefix')): # '@rst-option'
+        s = h [len(self.option_prefix):]
+        return self.scanOption(p,s)
+    elif g.match_word(h,0,self.getOption('options_prefix')): # '@rst-options'
+        return self.scanOptions(p,p.b)
+    else:
+        # Careful: can't use g.match_word because options may have '-' chars.
+        i = g.skip_id(h,0,chars='@-')
+        word = h[0:i]
+
+        for prefix,ivar,val in (
+            ('code_prefix','code_mode',True), # '@rst-code'
+            ('doc_mode_prefix','doc_only_mode',True), # @rst-doc-only.
+            ('default_path_prefix','default_prefix',''), # '@rst-default-path'
+            ('rst_prefix','code_mode',False), # '@rst'
+            ('ignore_headline_prefix','ignore_this_headline',True), # '@rst-no-head'
+            ('show_headline_prefix','show_this_headline',True), # '@rst-head'  
+            ('ignore_headlines_prefix','show_headlines',False), # '@rst-no-headlines'
+            ('ignore_prefix','ignore_this_tree',True),      # '@rst-ignore'
+            ('ignore_node_prefix','ignore_this_node',True), # '@rst-ignore-node'
+            ('ignore_tree_prefix','ignore_this_tree',True), # '@rst-ignore-tree'
+            ('preformat_prefix','preformat_this_node',True), # '@rst-preformat
+        ):
+            prefix = self.getOption(prefix)
+            if prefix and word == prefix: # Do _not_ munge this prefix!
+                d = { ivar: val }
+                if ivar != 'code_mode':
+                    d ['code_mode'] = False # Enter rst mode.
+                    d ['doc_only_mode'] = False
+                # Special case: Treat a bare @rst like @rst-no-head
+                if h == self.getOption('rst_prefix'):
+                    d ['ignore_this_headline'] = True
+                # g.trace(repr(h),repr(prefix),ivar,d)
+                return d
+
+        if h.startswith('@rst'):
+            g.trace('word',word,'rst_prefix',self.getOption('rst_prefix'))
+            g.trace('unknown kind of @rst headline',p.h)
+
+        return {}
+#@-node:ekr.20090502071837.50:scanHeadlineForOptions
+#@+node:ekr.20090502071837.51:scanNodeForOptions
+def scanNodeForOptions (self,p):
+
+    '''Return a dictionary containing all the option-name:value entries in p.
+
+    Such entries may arise from @rst-option or @rst-options in the headline,
+    or from @ @rst-options doc parts.'''
+
+    h = p.h
+
+    d = self.scanHeadlineForOptions(p)
+
+    d2 = self.scanForOptionDocParts(p,p.b)
+
+    # A fine point: body options over-ride headline options.
+    d.update(d2)
+
+    return d
+#@nonl
+#@-node:ekr.20090502071837.51:scanNodeForOptions
+#@+node:ekr.20090502071837.52:scanOption
+def scanOption (self,p,s):
+
+    '''Return { name:val } if s is a line of the form name=val.
+    Otherwise return {}'''
+
+    if not s.strip() or s.strip().startswith('..'): return {}
+
+    data = self.parseOptionLine(s)
+
+    if data:
+        name,val = data
+        fullName = 'rst3_' + self.munge(name)
+        if fullName in self.defaultOptionsDict.keys():
+            if   val.lower() == 'true': val = True
+            elif val.lower() == 'false': val = False
+            # g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
+            return { self.munge(name): val }
+        else:
+            g.es_print('ignoring unknown option: %s' % (name),color='red')
+            return {}
+    else:
+        g.trace(repr(s))
+        s2 = 'bad rst3 option in %s: %s' % (p.h,s)
+        g.es_print(s2,color='red')
+        return {}
+#@-node:ekr.20090502071837.52:scanOption
+#@+node:ekr.20090502071837.53:scanOptions
+def scanOptions (self,p,s):
+
+    '''Return a dictionary containing all the options in s.'''
+
+    d = {}
+
+    for line in g.splitLines(s):
+        d2 = self.scanOption(p,line)
+        if d2: d.update(d2)
+
+    return d
+#@nonl
+#@-node:ekr.20090502071837.53:scanOptions
+#@-node:ekr.20090502071837.46:preprocessTree & helpers
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        #c.setBodyString(p,'')
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20090502071837.93:underline
+def underline (self,s,p):
+
+    '''Return the underlining string to be used at the given level for string s.
+    This includes the headline, and possibly a leading overlining line.
+    '''
+
+    if self.atAutoWrite:
+        # We generate overlines for top-level sections.
+        u = self.atAutoWriteUnderlines
+        level = max(0,p.level()-self.topLevel-1)
+        ch = u [level]
+        n = max(4,len(s))
+        # g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+        if level == 0:
+            return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
+        else:
+            return '%s\n%s\n\n' % (p.h,ch*n)
+    else:
+        # The user is responsible for top-level overlining.
+        u = self.getOption('underline_characters') #  '''#=+*^~"'`-:><_'''
+        level = max(0,p.level()-self.topLevel)
+        level = min(level+1,len(u)-1) # Reserve the first character for explicit titles.
+        ch = u [level]
+        # g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+        n = max(4,len(s))
+        ### return ch * n + '\n'
+        return '%s\n%s\n' % (p.h,ch*n) # Must be equivalent to old code.
+#@-node:ekr.20090502071837.93:underline
+#@+node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
+def writeAtAutoFile (self,p,fileName,outputFile):
+
+    '''Write an @auto tree containing imported rST code.
+    The caller will close the output file.'''
+
+    # To do: process @ @rst-options in root node. (and change the warning).
+    # To do: forgiving compare of underlining lines in the import check.
+
+    try:
+        self.atAutoWrite = True
+        self.initAtAutoWrite(p,fileName,outputFile)
+        self.topNode = p.copy() # Indicate the top of this tree.
+        self.topLevel = p.level()
+        after = p.nodeAfterTree()
+        p = p.firstChild() # A (temporary?) hack: ignore the root node.
+        while p and p != after:
+            self.writeNode(p) # side effect: advances p
+    finally:
+        self.atAutoWrite = False
+#@+node:ekr.20090513073632.5733:setAtAutoWriteOptions
+def initAtAutoWrite(self,p,fileName,outputFile):
+
+    # Set up for a standard write.
+    self.createDefaultOptionsDict()
+    self.tnodeOptionDict = {}
+    self.scanAllOptions(p)
+    self.initWrite(p)
+    self.preprocessTree(p) # Allow @ @rst-options, for example.
+
+    # Do the overrides.
+    self.outputFile = outputFile
+    self.outputFileName = fileName
+
+    # Set underlining characters.
+    d = self.tnodeOptionDict.get(p.v.t) # Set by preprocessTree.
+    underlines = d.get('underline_characters')
+    if underlines:
+        self.atAutoWriteUnderlines = underlines
+    else:
+        d = p.v.u.get('rst-import',{})
+        underlines2 = d.get('underlines2','#')
+        underlines1 = d.get('underlines1','=+*^~"\'`-:><_') # The standard defaults.
+        if len(underlines2) > 1:
+            underlines2 = underlines2[0]
+            g.trace('too many top-level underlines, using %s' % (
+                underlines2),color='blue')
+        self.atAutoWriteUnderlines = underlines2 + underlines1
+
+#@-node:ekr.20090513073632.5733:setAtAutoWriteOptions
+#@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
+#@+node:ekr.20090502071837.84:writeHeadlineHelper
+def writeHeadlineHelper (self,p):
+
+    h = p.h.strip()
+
+    # Remove any headline command before writing the headline.
+    i = g.skip_id(h,0,chars='@-')
+    word = h [:i]
+    if word:
+        # Never generate a section for @rst-option or @rst-options or @rst-no-head.
+        if word in (
+            self.getOption('option_prefix'),
+            self.getOption('options_prefix'),
+            self.getOption('ignore_headline_prefix'), # Bug fix: 2009-5-13
+            self.getOption('ignore_headlines_prefix'),  # Bug fix: 2009-5-13
+        ):
+            return
+        # Remove all other headline commands from the headline.
+        for prefix in self.headlineCommands:
+            if word == prefix:
+                h = h [len(word):].strip()
+                break
+
+        # New in Leo 4.4.4.
+        if word.startswith('@'):
+            if self.getOption('strip_at_file_prefixes'):
+                for s in ('@auto','@file','@nosent','@thin',):
+                    if g.match_word(word,0,s):
+                        h = h [len(s):].strip()
+
+    if not h.strip(): return
+
+    if self.getOption('show_sections'):
+        if self.getOption('generate_rst'):
+            # self.write('%s\n%s\n' % (h,self.underline(h,p)))
+            self.write(self.underline(h,p))
+        else:
+            self.write('\n%s\n' % h)
+    else:
+        self.write('\n**%s**\n\n' % h.replace('*',''))
+#@-node:ekr.20090502071837.84:writeHeadlineHelper
+#@-node:ekr.20090511055302.10652:Support @auto for general rST files
 #@-node:ekr.20090511055302.5784:Rst projects
 #@-node:ekr.20080917153158.11:4.6 b2
 #@-all

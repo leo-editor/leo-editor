@@ -1980,9 +1980,10 @@ class baseScannerClass (scanUtility):
 
         kind = g.choose(self.atAuto,'@auto','import command')
 
+
         self.error(
             '%s did not import %s perfectly\nfirst mismatched line: %d\n%s' % (
-                kind,self.root.h,bad_i,repr(lines2[bad_i-1])))
+                kind,self.root.h,bad_i,repr(lines2[max(0,bad_i-1)])))
 
         if len(lines1) < 100:
             pr('input...')
@@ -2017,9 +2018,10 @@ class baseScannerClass (scanUtility):
 
         c = self.c
 
-        # g.trace(parent.h)
+        if self.isRst:
+            return
 
-        if self.treeType == '@file' and not self.isRst:
+        if self.treeType == '@file':
             self.appendStringToBody(parent,'@others\n')
 
         if self.treeType == '@root' and self.methodsSeen:
