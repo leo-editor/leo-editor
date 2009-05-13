@@ -756,7 +756,6 @@ A line added to test bzr push.
 
 To do:
 
-- Don't generate @others for rst imports.
 - Use rst importer only for @auto-rst.
 #@+node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
 def checkTrialWrite (self,s1=None,s2=None):
