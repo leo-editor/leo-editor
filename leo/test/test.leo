@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -369,7 +369,7 @@
 </v>
 <v t="ekr.20090501110438.1"><vh>import</vh></v>
 <v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
-<v t="ekr.20090512121208.1908" rst-import="7d710028550b756e6465726c696e657332710155065b75273d275d7102550b756e6465726c696e657331710355125b75272d272c2075277e272c2075272e275d7104752e"><vh>@auto rst-test.txt</vh></v>
+<v t="ekr.20090512121208.1908" a="E" rst-import="7d710028550b756e6465726c696e657332710155013d7102550b756e6465726c696e657331710355032d7e2e7104752e"><vh>@auto rst-test.txt</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
