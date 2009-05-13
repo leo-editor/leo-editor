@@ -1073,7 +1073,12 @@ def computeBody (self,s,start,sigStart,codeEnd):
     trace = False and not g.unitTesting
 
     body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
-    body2 = self.undentBody(s[sigStart:codeEnd])
+
+    if self.isRst:
+        # Discard the entire signature.
+        body2 = self.undentBody(s[self.sigEnd+1:codeEnd])
+    else:
+        body2 = self.undentBody(s[sigStart:codeEnd])
     body = body1 + body2
 
     if trace and verbose: g.trace('body\n%s' % body)
@@ -2142,13 +2147,19 @@ def putFunction (self,s,sigStart,codeEnd,start,parent):
     # Exit the function: restore the function info.
     self.startSigIndent = oldStartSigIndent
 #@-node:ekr.20070707082432:putFunction (baseScannerClass)
+#@clone 2
 #@+node:ekr.20090512153903.5806:computeBody (baseScannerClass)
 def computeBody (self,s,start,sigStart,codeEnd):
 
     trace = False and not g.unitTesting
 
     body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
-    body2 = self.undentBody(s[sigStart:codeEnd])
+
+    if self.isRst:
+        # Discard the entire signature.
+        body2 = self.undentBody(s[self.sigEnd+1:codeEnd])
+    else:
+        body2 = self.undentBody(s[sigStart:codeEnd])
     body = body1 + body2
 
     if trace and verbose: g.trace('body\n%s' % body)
@@ -2228,31 +2239,6 @@ def adjustParent (self,parent,headline):
 
     return parent
 #@-node:ekr.20090512080015.5798:adjustParent
-#@+node:ekr.20090512153903.5808:computeBody
-def computeBody (self,s,start,sigStart,codeEnd):
-
-    trace = False and not g.unitTesting
-
-    assert codeEnd == self.codeEnd
-    assert sigStart == self.sigStart
-
-    body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
-
-    # Unlike the base-class method, we delete the entire signature.
-    body2 = self.undentBody(s[self.sigEnd+1:codeEnd])
-    body = body1 + body2
-
-    if trace and verbose: g.trace('body\n%s' % body)
-
-    tail = body[len(body.rstrip()):]
-    if not '\n' in tail:
-        self.warning(
-            'section %s does not end with a newline; one will be added\n%s' % (
-            self.sigId,g.get_line(s,codeEnd)))
-
-    return body
-
-#@-node:ekr.20090512153903.5808:computeBody
 #@+node:ekr.20090512080015.5797:computeSectionLevel
 def computeSectionLevel (self,ch,kind):
 
@@ -2429,20 +2415,28 @@ def startsSection (self,s,i):
 #@-node:ekr.20090501095634.47:startsSection
 #@-node:ekr.20090501095634.41:class rstScanner
 #@-node:ekr.20090512080015.5794:rst scanning
-#@+node:ekr.20090511055302.10652:Support @auto for general rST files
+#@+node:ekr.20090513073632.5734:Maybe not: support @ua
 @nocolor-node
-
-* How can we test @auto-rst with minimal changes?
-    - *Temporily* add support for import-rst-file or @auto-rst.
-      Should this command be in leoRst.py?  leoAtFile.py?, leoImport.py?
-
-* Add language keyword arg to createOutline.
 
 * Add support for @ua to read/writeOneAtAutoNode.
     - isSignificant should ignore @ua lines?
 
 - @ua at-auto:language=rest
   This should override the parser given by the file extension.
+#@nonl
+#@-node:ekr.20090513073632.5734:Maybe not: support @ua
+#@+node:ekr.20090511055302.10652:Support @auto for general rST files
+@nocolor-node
+
+To do:
+
+- Put a warning comment in the root node saying that this node is ignore.
+
+- Forgiving compare of underlining lines in the import check.
+
+- Fix buglet: @rst-no-head x node writes x.
+
+- Don't override 
 #@nonl
 #@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
 def readOneAtAutoNode (self,fileName,p):
@@ -2642,6 +2636,8 @@ def writeAtAutoFile (self,p,fileName,outputFile):
     The caller will close the output file.'''
 
     # To do: (done by ignoring root) ignore standard Leo directives in root node.
+        # Put a warning comment in the root node.
+    # To do: forgiving compare of underlining lines in the import check.
     # To do: @rst-no-head x node writes x.
 
     try:

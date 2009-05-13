@@ -972,6 +972,8 @@ class rstCommands:
         The caller will close the output file.'''
 
         # To do: (done by ignoring root) ignore standard Leo directives in root node.
+            # Put a warning comment in the root node.
+        # To do: forgiving compare of underlining lines in the import check.
         # To do: @rst-no-head x node writes x.
 
         try:

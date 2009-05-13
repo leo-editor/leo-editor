@@ -2029,7 +2029,12 @@ class baseScannerClass (scanUtility):
         trace = False and not g.unitTesting
 
         body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
-        body2 = self.undentBody(s[sigStart:codeEnd])
+
+        if self.isRst:
+            # Discard the entire signature.
+            body2 = self.undentBody(s[self.sigEnd+1:codeEnd])
+        else:
+            body2 = self.undentBody(s[sigStart:codeEnd])
         body = body1 + body2
 
         if trace and verbose: g.trace('body\n%s' % body)
@@ -3811,31 +3816,6 @@ class rstScanner (baseScannerClass):
 
         return parent
     #@-node:ekr.20090512080015.5798:adjustParent
-    #@+node:ekr.20090512153903.5808:computeBody
-    def computeBody (self,s,start,sigStart,codeEnd):
-
-        trace = False and not g.unitTesting
-
-        assert codeEnd == self.codeEnd
-        assert sigStart == self.sigStart
-
-        body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
-
-        # Unlike the base-class method, we delete the entire signature.
-        body2 = self.undentBody(s[self.sigEnd+1:codeEnd])
-        body = body1 + body2
-
-        if trace and verbose: g.trace('body\n%s' % body)
-
-        tail = body[len(body.rstrip()):]
-        if not '\n' in tail:
-            self.warning(
-                'section %s does not end with a newline; one will be added\n%s' % (
-                self.sigId,g.get_line(s,codeEnd)))
-
-        return body
-
-    #@-node:ekr.20090512153903.5808:computeBody
     #@+node:ekr.20090512080015.5797:computeSectionLevel
     def computeSectionLevel (self,ch,kind):
 
