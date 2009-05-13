@@ -2019,7 +2019,7 @@ class baseScannerClass (scanUtility):
 
         # g.trace(parent.h)
 
-        if self.treeType == '@file':
+        if self.treeType == '@file' and not self.isRst:
             self.appendStringToBody(parent,'@others\n')
 
         if self.treeType == '@root' and self.methodsSeen:
@@ -3776,7 +3776,7 @@ class rstScanner (baseScannerClass):
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='rst')
+        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='rest')
 
         # Scanner overrides
         self.blockDelim1 = self.blockDelim2 = None
