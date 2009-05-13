@@ -2161,7 +2161,6 @@ def putFunction (self,s,sigStart,codeEnd,start,parent):
     # Exit the function: restore the function info.
     self.startSigIndent = oldStartSigIndent
 #@-node:ekr.20070707082432:putFunction (baseScannerClass)
-#@clone 2
 #@+node:ekr.20090512153903.5806:computeBody (baseScannerClass)
 def computeBody (self,s,start,sigStart,codeEnd):
 
@@ -2298,8 +2297,10 @@ def endGen (self,s):
         p.v.u [tag] = d
 
     # Append a warning to the root node.
-    warning = '\n.. warning: this node is ignored when writing the output file.\n'
-    self.root.b = self.root.b + warning
+    warning1 = 'Warning: this node is ignored when writing the output file.'
+    warning2 = 'However, @ @rst-options are recognized in this node.'
+
+    self.root.b = self.root.b + '\n.. %s\n.. %s\n' % (warning1,warning2)
 #@-node:ekr.20090502071837.2:endGen
 #@+node:ekr.20090501095634.46:isUnderLine
 def isUnderLine(self,s):
@@ -2437,7 +2438,10 @@ def startsSection (self,s,i):
 #@+node:ekr.20090511055302.10652:Support @auto for general rST files
 @nocolor-node
 
-To do: process @ @rst-options in root node.
+To do:
+
+- Change warning in root node.
+- Use rst importer only for @auto-rst.
 #@+node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
 def checkTrialWrite (self,s1=None,s2=None):
 
