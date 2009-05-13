@@ -2435,8 +2435,6 @@ To do:
 - Forgiving compare of underlining lines in the import check.
 
 - Fix buglet: @rst-no-head x node writes x.
-
-- Don't override 
 #@nonl
 #@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
 def readOneAtAutoNode (self,fileName,p):
