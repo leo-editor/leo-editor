@@ -1865,7 +1865,7 @@ class baseScannerClass (scanUtility):
 
         return ok
     #@-node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
-    #@+node:ekr.20070730093735:compareHelper
+    #@+node:ekr.20070730093735:compareHelper & helper
     def compareHelper (self,lines1,lines2,i,strict):
 
         '''Compare lines1[i] and lines2[i].
@@ -1908,6 +1908,8 @@ class baseScannerClass (scanUtility):
             return True # An exact match.
         elif not line1.strip() and not line2.strip():
             return True # Blank lines compare equal.
+        elif self.isRst and self.compareRstUnderlines(line1,line2):
+            return True
         elif strict:
             s1,s2 = line1.lstrip(),line2.lstrip()
             messageKind = g.choose(
@@ -1939,7 +1941,23 @@ class baseScannerClass (scanUtility):
                 pr_mismatch(i,line1,line2)
             return messageKind in ('comment','warning') # Only errors are invalid.
     #@nonl
-    #@-node:ekr.20070730093735:compareHelper
+    #@+node:ekr.20090513073632.5735:compareRstUnderlines
+    def compareRstUnderlines(self,s1,s2):
+
+        s1,s2 = s1.rstrip(),s2.rstrip()
+        n1, n2 = len(s1),len(s2)
+        ch1 = n1 and s1[0] or ''
+        ch2 = n2 and s2[0] or ''
+
+        val = (
+            n1 >= 4 and n2 >= 4 and # Underlinings must be at least 4 long.
+            ch1 == ch2 and # The underlining characters must match.
+            s1 == ch1 * n1 and # The line must consist only of underlining characters.
+            s2 == ch2 * n2)
+
+        return val
+    #@-node:ekr.20090513073632.5735:compareRstUnderlines
+    #@-node:ekr.20070730093735:compareHelper & helper
     #@+node:ekr.20071110144948:checkLeadingWhitespace
     def checkLeadingWhitespace (self,line):
 
@@ -2048,6 +2066,16 @@ class baseScannerClass (scanUtility):
         return body
 
     #@-node:ekr.20090512153903.5806:computeBody (baseScannerClass)
+    #@+node:ekr.20090513073632.5737:createDeclsNode
+    def createDeclsNode (self,parent,s):
+
+        '''Create a child node of parent containing s.'''
+
+        # Create the node for the decls.
+        headline = '%s declarations' % self.methodName
+        body = self.undentBody(s)
+        self.createHeadline(parent,body,headline)
+    #@-node:ekr.20090513073632.5737:createDeclsNode
     #@+node:ekr.20070707085612:createFunctionNode
     def createFunctionNode (self,headline,body,parent):
 

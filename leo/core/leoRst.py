@@ -971,7 +971,7 @@ class rstCommands:
         '''Write an @auto tree containing imported rST code.
         The caller will close the output file.'''
 
-        # To do: process @ @rst-options in root node.
+        # To do: process @ @rst-options in root node. (and change the warning).
         # To do: forgiving compare of underlining lines in the import check.
 
         try:
