@@ -2438,242 +2438,6 @@ def startsSection (self,s,i):
 @nocolor-node
 
 To do: process @ @rst-options in root node.
-#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
-def readOneAtAutoNode (self,fileName,p):
-
-    at = self ; c = at.c ; ic = c.importCommands
-
-    oldChanged = c.isChanged()
-    at.scanDefaultDirectory(p,importing=True) # Set default_directory
-    fileName = c.os_path_finalize_join(at.default_directory,fileName)
-
-    if not g.unitTesting:
-        g.es("reading:",p.h)
-
-    # Delete all children.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
-
-    if ic.errors:
-        g.es_print('errors inhibited read @auto',fileName,color='red')
-
-    if ic.errors or not g.os_path_exists(fileName):
-        #c.setBodyString(p,'')
-        p.clearDirty()
-        c.setChanged(oldChanged)
-    else:
-        g.doHook('after-auto', p = p)  # call after-auto callbacks
-#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
-#@+node:ekr.20031218072017.3210:createOutline (leoImport)
-def createOutline (self,fileName,parent,
-    atAuto=False,atShadow=False,s=None,ext=None):
-
-    c = self.c ; u = c.undoer ; s1 = s
-
-    # New in Leo 4.4.7: honor @path directives.
-    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
-    fileName = c.os_path_finalize_join(self.default_directory,fileName)
-    junk,self.fileName = g.os_path_split(fileName)
-    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
-    self.setEncoding(p=parent,atAuto=atAuto)
-    if not ext: ext = self.fileType
-    ext = ext.lower()
-    if not s:
-        << Read file into s >>
-    << convert s to the proper encoding >>
-
-    # Create the top-level headline.
-    if atAuto:
-        p = parent.copy()
-        p.setBodyString('')
-    else:
-        undoData = u.beforeInsertNode(parent)
-        p = parent.insertAsLastChild()
-
-        if self.treeType == "@file":
-            p.initHeadString("@file " + fileName)
-        else:
-            # @root nodes don't have @root in the headline.
-            p.initHeadString(fileName)
-        u.afterInsertNode(p,'Import',undoData)
-
-    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
-
-    func = self.importDispatchDict.get(ext)
-    if func and not c.config.getBool('suppress_import_parsing',default=False):
-        func(s,p,atAuto=atAuto)
-    else:
-        # Just copy the file to the parent node.
-        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-
-    p.contract()
-    return p
-#@+node:ekr.20031218072017.3211:<< Read file into s >>
-try:
-    fileName = c.os_path_finalize(fileName)
-    theFile = open(fileName)
-    s = theFile.read()
-    theFile.close()
-except IOError:
-    if atShadow: kind = '@shadow '
-    elif atAuto: kind = '@auto '
-    else: kind = ''
-    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
-    g.es("can not open", "%s%s" % (kind,fileName),color='red')
-    # g.trace(g.callers())
-    leoTest.fail()
-    return None
-#@-node:ekr.20031218072017.3211:<< Read file into s >>
-#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
-if s and fileName.endswith('.py'):
-    # Python's encoding comments override everything else.
-    lines = g.splitLines(s)
-    tag = '# -*- coding:' ; tag2 = '-*-'
-    n1,n2 = len(tag),len(tag2)
-    line1 = lines[0].strip()
-    if line1.startswith(tag) and line1.endswith(tag2):
-        e = line1[n1:-n2].strip()
-        if e and g.isValidEncoding(e):
-            # g.pr('found',e,'in',line1)
-            self.encoding = e
-
-s = g.toUnicode(s,self.encoding)
-#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
-#@-node:ekr.20031218072017.3210:createOutline (leoImport)
-#@+node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
-def writeOneAtAutoNode(self,p,toString,force):
-
-    '''Write p, an @auto node.
-
-    File indices *must* have already been assigned.'''
-
-    at = self ; c = at.c ; root = p.copy()
-
-    fileName = p.atAutoNodeName()
-    if not fileName: return False
-
-    at.scanDefaultDirectory(p,importing=True) # Set default_directory
-    fileName = c.os_path_finalize_join(at.default_directory,fileName)
-    exists = g.os_path_exists(fileName)
-
-    if not toString and not self.shouldWriteAtAutoNode(p,exists,force):
-        return False
-
-    # This code is similar to code in at.write.
-    c.endEditing() # Capture the current headline.
-    at.targetFileName = g.choose(toString,"<string-file>",fileName)
-    at.initWriteIvars(root,at.targetFileName,
-        atAuto=True,
-        nosentinels=True,thinFile=False,scriptWrite=False,
-        toString=toString)
-
-    ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
-    if ok:
-        if self.isRstFile(fileName):
-            c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
-        else:
-            at.writeOpenFile(root,nosentinels=True,toString=toString)
-        at.closeWriteFile() # Sets stringOutput if toString is True.
-        if at.errors == 0:
-            at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
-        else:
-            g.es("not written:",at.outputFileName)
-            root.setDirty() # New in Leo 4.4.8.
-
-    elif not toString:
-        root.setDirty() # Make _sure_ we try to rewrite this file.
-        g.es("not written:",at.outputFileName)
-
-    return ok
-#@+node:ekr.20090512153903.5805:isRstFile
-def isRstFile (self,fileName):
-
-    if not fileName: return False
-
-    junk,ext = g.os_path_splitext(fileName)
-
-    g.trace(fileName,ext)
-
-    return ext in ('.rst','.rest','.txt')
-#@-node:ekr.20090512153903.5805:isRstFile
-#@+node:ekr.20071019141745:shouldWriteAtAutoNode
-@ Much thought went into this decision tree:
-
-- We do not want decisions to depend on past history.  That's too confusing.
-- We must ensure that the file will be written if the user does significant work.
-- We must ensure that the user can create an @auto x node at any time
-  without risk of of replacing x with empty or insignificant information.
-- We want the user to be able to create an @auto node which will be populated the next time the .leo file is opened.
-- We don't want minor import imperfections to be written to the @auto file.
-- The explicit commands that read and write @auto trees must always be honored.
-@c
-
-def shouldWriteAtAutoNode (self,p,exists,force):
-
-    '''Return True if we should write the @auto node at p.'''
-
-    if force: # We are executing write-at-auto-node or write-dirty-at-auto-nodes.
-        return True
-    elif not exists: # We can write a non-existent file without danger.
-        return True
-    elif not p.isDirty(): # There is nothing new to write.
-        return False
-    elif not self.isSignificantTree(p): # There is noting of value to write.
-        g.es_print(p.h,'not written:',color='red')
-        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
-        return False
-    else: # The @auto tree is dirty and contains significant info.
-        return True
-#@-node:ekr.20071019141745:shouldWriteAtAutoNode
-#@-node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
-#@clone 2
-#@+node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
-def writeAtAutoFile (self,p,fileName,outputFile):
-
-    '''Write an @auto tree containing imported rST code.
-    The caller will close the output file.'''
-
-    # To do: process @ @rst-options in root node. (and change the warning).
-    # To do: forgiving compare of underlining lines in the import check.
-
-    try:
-        self.atAutoWrite = True
-        self.initAtAutoWrite(p,fileName,outputFile)
-        self.topNode = p.copy() # Indicate the top of this tree.
-        self.topLevel = p.level()
-        after = p.nodeAfterTree()
-        p = p.firstChild() # A (temporary?) hack: ignore the root node.
-        while p and p != after:
-            self.writeNode(p) # side effect: advances p
-    finally:
-        self.atAutoWrite = False
-#@+node:ekr.20090513073632.5733:setAtAutoWriteOptions
-def initAtAutoWrite(self,p,fileName,outputFile):
-
-    # Set up for a standard write.
-    self.createDefaultOptionsDict()
-    self.tnodeOptionDict = {}
-    self.scanAllOptions(p)
-    self.initWrite(p)
-
-    # Do the overrides.
-    self.outputFile = outputFile
-    self.outputFileName = fileName
-
-    # Set underlining characters.
-    d = p.v.u.get('rst-import',{})
-    underlines2 = d.get('underlines2','#')
-    underlines1 = d.get('underlines1','=+*^~"\'`-:><_') # The standard defaults.
-    if len(underlines2) > 1:
-        underlines2 = underlines2[0]
-        g.trace('too many top-level underlines, using %s' % (
-            underlines2),color='blue')
-    self.atAutoWriteUnderlines = underlines2 + underlines1
-
-#@-node:ekr.20090513073632.5733:setAtAutoWriteOptions
-#@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
 #@+node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
 def checkTrialWrite (self,s1=None,s2=None):
 
@@ -2823,6 +2587,303 @@ def compareRstUnderlines(self,s1,s2):
     return val
 #@-node:ekr.20090513073632.5735:compareRstUnderlines
 #@-node:ekr.20070730093735:compareHelper & helper
+#@+node:ekr.20031218072017.3210:createOutline (leoImport)
+def createOutline (self,fileName,parent,
+    atAuto=False,atShadow=False,s=None,ext=None):
+
+    c = self.c ; u = c.undoer ; s1 = s
+
+    # New in Leo 4.4.7: honor @path directives.
+    self.scanDefaultDirectory(parent) # sets .defaultDirectory.
+    fileName = c.os_path_finalize_join(self.default_directory,fileName)
+    junk,self.fileName = g.os_path_split(fileName)
+    self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+    self.setEncoding(p=parent,atAuto=atAuto)
+    if not ext: ext = self.fileType
+    ext = ext.lower()
+    if not s:
+        << Read file into s >>
+    << convert s to the proper encoding >>
+
+    # Create the top-level headline.
+    if atAuto:
+        p = parent.copy()
+        p.setBodyString('')
+    else:
+        undoData = u.beforeInsertNode(parent)
+        p = parent.insertAsLastChild()
+
+        if self.treeType == "@file":
+            p.initHeadString("@file " + fileName)
+        else:
+            # @root nodes don't have @root in the headline.
+            p.initHeadString(fileName)
+        u.afterInsertNode(p,'Import',undoData)
+
+    self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
+
+    func = self.importDispatchDict.get(ext)
+    if func and not c.config.getBool('suppress_import_parsing',default=False):
+        func(s,p,atAuto=atAuto)
+    else:
+        # Just copy the file to the parent node.
+        self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+
+    p.contract()
+    return p
+#@+node:ekr.20031218072017.3211:<< Read file into s >>
+try:
+    fileName = c.os_path_finalize(fileName)
+    theFile = open(fileName)
+    s = theFile.read()
+    theFile.close()
+except IOError:
+    if atShadow: kind = '@shadow '
+    elif atAuto: kind = '@auto '
+    else: kind = ''
+    # g.trace('c.frame.openDirectory',c.frame.openDirectory)
+    g.es("can not open", "%s%s" % (kind,fileName),color='red')
+    # g.trace(g.callers())
+    leoTest.fail()
+    return None
+#@-node:ekr.20031218072017.3211:<< Read file into s >>
+#@+node:ekr.20080212092908:<< convert s to the proper encoding >>
+if s and fileName.endswith('.py'):
+    # Python's encoding comments override everything else.
+    lines = g.splitLines(s)
+    tag = '# -*- coding:' ; tag2 = '-*-'
+    n1,n2 = len(tag),len(tag2)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            # g.pr('found',e,'in',line1)
+            self.encoding = e
+
+s = g.toUnicode(s,self.encoding)
+#@-node:ekr.20080212092908:<< convert s to the proper encoding >>
+#@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20090502071837.46:preprocessTree & helpers
+def preprocessTree (self,root):
+
+    self.tnodeOptionDict = {}
+
+    # Bug fix 12/4/05: must preprocess parents too.
+    for p in root.parents_iter():
+        self.preprocessNode(p)
+
+    for p in root.self_and_subtree_iter():
+        self.preprocessNode(p)
+
+    if 0:
+        g.trace(root.h)
+        for key in self.tnodeOptionDict.keys():
+            g.trace(key)
+            g.printDict(self.tnodeOptionDict.get(key))
+#@nonl
+#@+node:ekr.20090502071837.47:preprocessNode
+def preprocessNode (self,p):
+
+    d = self.tnodeOptionDict.get(p.v.t)
+    if d is None:
+        d = self.scanNodeForOptions(p)
+        self.tnodeOptionDict [p.v.t] = d
+#@nonl
+#@-node:ekr.20090502071837.47:preprocessNode
+#@+node:ekr.20090502071837.48:parseOptionLine
+def parseOptionLine (self,s):
+
+    '''Parse a line containing name=val and return (name,value) or None.
+
+    If no value is found, default to True.'''
+
+    s = s.strip()
+    if s.endswith(','): s = s[:-1]
+    # Get name.  Names may contain '-' and '_'.
+    i = g.skip_id(s,0,chars='-_')
+    name = s [:i]
+    if not name: return None
+    j = g.skip_ws(s,i)
+    if g.match(s,j,'='):
+        val = s [j+1:].strip()
+        # g.trace(val)
+        return name,val
+    else:
+        # g.trace('*True')
+        return name,'True'
+#@nonl
+#@-node:ekr.20090502071837.48:parseOptionLine
+#@+node:ekr.20090502071837.49:scanForOptionDocParts
+def scanForOptionDocParts (self,p,s):
+
+    '''Return a dictionary containing all options from @rst-options doc parts in p.
+    Multiple @rst-options doc parts are allowed: this code aggregates all options.
+    '''
+
+    d = {} ; n = 0 ; lines = g.splitLines(s)
+    while n < len(lines):
+        line = lines[n] ; n += 1
+        if line.startswith('@'):
+            i = g.skip_ws(line,1)
+            for kind in ('@rst-options','@rst-option'):
+                if g.match_word(line,i,kind):
+                    # Allow options on the same line.
+                    line = line[i+len(kind):]
+                    d.update(self.scanOption(p,line))
+                    # Add options until the end of the doc part.
+                    while n < len(lines):
+                        line = lines[n] ; n += 1 ; found = False
+                        for stop in ('@c','@code', '@'):
+                            if g.match_word(line,0,stop):
+                                found = True ; break
+                        if found:
+                            break
+                        else:
+                            d.update(self.scanOption(p,line))
+                    break
+    return d
+#@nonl
+#@-node:ekr.20090502071837.49:scanForOptionDocParts
+#@+node:ekr.20090502071837.50:scanHeadlineForOptions
+def scanHeadlineForOptions (self,p):
+
+    '''Return a dictionary containing the options implied by p's headline.'''
+
+    h = p.h.strip()
+
+    if p == self.topNode:
+        return {} # Don't mess with the root node.
+    elif g.match_word(h,0,self.getOption('option_prefix')): # '@rst-option'
+        s = h [len(self.option_prefix):]
+        return self.scanOption(p,s)
+    elif g.match_word(h,0,self.getOption('options_prefix')): # '@rst-options'
+        return self.scanOptions(p,p.b)
+    else:
+        # Careful: can't use g.match_word because options may have '-' chars.
+        i = g.skip_id(h,0,chars='@-')
+        word = h[0:i]
+
+        for prefix,ivar,val in (
+            ('code_prefix','code_mode',True), # '@rst-code'
+            ('doc_mode_prefix','doc_only_mode',True), # @rst-doc-only.
+            ('default_path_prefix','default_prefix',''), # '@rst-default-path'
+            ('rst_prefix','code_mode',False), # '@rst'
+            ('ignore_headline_prefix','ignore_this_headline',True), # '@rst-no-head'
+            ('show_headline_prefix','show_this_headline',True), # '@rst-head'  
+            ('ignore_headlines_prefix','show_headlines',False), # '@rst-no-headlines'
+            ('ignore_prefix','ignore_this_tree',True),      # '@rst-ignore'
+            ('ignore_node_prefix','ignore_this_node',True), # '@rst-ignore-node'
+            ('ignore_tree_prefix','ignore_this_tree',True), # '@rst-ignore-tree'
+            ('preformat_prefix','preformat_this_node',True), # '@rst-preformat
+        ):
+            prefix = self.getOption(prefix)
+            if prefix and word == prefix: # Do _not_ munge this prefix!
+                d = { ivar: val }
+                if ivar != 'code_mode':
+                    d ['code_mode'] = False # Enter rst mode.
+                    d ['doc_only_mode'] = False
+                # Special case: Treat a bare @rst like @rst-no-head
+                if h == self.getOption('rst_prefix'):
+                    d ['ignore_this_headline'] = True
+                # g.trace(repr(h),repr(prefix),ivar,d)
+                return d
+
+        if h.startswith('@rst'):
+            g.trace('word',word,'rst_prefix',self.getOption('rst_prefix'))
+            g.trace('unknown kind of @rst headline',p.h)
+
+        return {}
+#@-node:ekr.20090502071837.50:scanHeadlineForOptions
+#@+node:ekr.20090502071837.51:scanNodeForOptions
+def scanNodeForOptions (self,p):
+
+    '''Return a dictionary containing all the option-name:value entries in p.
+
+    Such entries may arise from @rst-option or @rst-options in the headline,
+    or from @ @rst-options doc parts.'''
+
+    h = p.h
+
+    d = self.scanHeadlineForOptions(p)
+
+    d2 = self.scanForOptionDocParts(p,p.b)
+
+    # A fine point: body options over-ride headline options.
+    d.update(d2)
+
+    return d
+#@nonl
+#@-node:ekr.20090502071837.51:scanNodeForOptions
+#@+node:ekr.20090502071837.52:scanOption
+def scanOption (self,p,s):
+
+    '''Return { name:val } if s is a line of the form name=val.
+    Otherwise return {}'''
+
+    if not s.strip() or s.strip().startswith('..'): return {}
+
+    data = self.parseOptionLine(s)
+
+    if data:
+        name,val = data
+        fullName = 'rst3_' + self.munge(name)
+        if fullName in self.defaultOptionsDict.keys():
+            if   val.lower() == 'true': val = True
+            elif val.lower() == 'false': val = False
+            # g.trace('%24s %8s %s' % (self.munge(name),val,p.h))
+            return { self.munge(name): val }
+        else:
+            g.es_print('ignoring unknown option: %s' % (name),color='red')
+            return {}
+    else:
+        g.trace(repr(s))
+        s2 = 'bad rst3 option in %s: %s' % (p.h,s)
+        g.es_print(s2,color='red')
+        return {}
+#@-node:ekr.20090502071837.52:scanOption
+#@+node:ekr.20090502071837.53:scanOptions
+def scanOptions (self,p,s):
+
+    '''Return a dictionary containing all the options in s.'''
+
+    d = {}
+
+    for line in g.splitLines(s):
+        d2 = self.scanOption(p,line)
+        if d2: d.update(d2)
+
+    return d
+#@nonl
+#@-node:ekr.20090502071837.53:scanOptions
+#@-node:ekr.20090502071837.46:preprocessTree & helpers
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+    if ic.errors:
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        #c.setBodyString(p,'')
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
 #@+node:ekr.20090502071837.93:underline
 def underline (self,s,p):
 
@@ -2852,6 +2913,57 @@ def underline (self,s,p):
         ### return ch * n + '\n'
         return '%s\n%s\n' % (p.h,ch*n) # Must be equivalent to old code.
 #@-node:ekr.20090502071837.93:underline
+#@+node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
+def writeAtAutoFile (self,p,fileName,outputFile):
+
+    '''Write an @auto tree containing imported rST code.
+    The caller will close the output file.'''
+
+    # To do: process @ @rst-options in root node. (and change the warning).
+    # To do: forgiving compare of underlining lines in the import check.
+
+    try:
+        self.atAutoWrite = True
+        self.initAtAutoWrite(p,fileName,outputFile)
+        self.topNode = p.copy() # Indicate the top of this tree.
+        self.topLevel = p.level()
+        after = p.nodeAfterTree()
+        p = p.firstChild() # A (temporary?) hack: ignore the root node.
+        while p and p != after:
+            self.writeNode(p) # side effect: advances p
+    finally:
+        self.atAutoWrite = False
+#@+node:ekr.20090513073632.5733:setAtAutoWriteOptions
+def initAtAutoWrite(self,p,fileName,outputFile):
+
+    # Set up for a standard write.
+    self.createDefaultOptionsDict()
+    self.tnodeOptionDict = {}
+    self.scanAllOptions(p)
+    self.initWrite(p)
+    self.preprocessTree(p) # Allow @ @rst-options, for example.
+
+    # Do the overrides.
+    self.outputFile = outputFile
+    self.outputFileName = fileName
+
+    # Set underlining characters.
+    d = self.tnodeOptionDict.get(p.v.t) # Set by preprocessTree.
+    underlines = d.get('underline_characters')
+    if underlines:
+        self.atAutoWriteUnderlines = underlines
+    else:
+        d = p.v.u.get('rst-import',{})
+        underlines2 = d.get('underlines2','#')
+        underlines1 = d.get('underlines1','=+*^~"\'`-:><_') # The standard defaults.
+        if len(underlines2) > 1:
+            underlines2 = underlines2[0]
+            g.trace('too many top-level underlines, using %s' % (
+                underlines2),color='blue')
+        self.atAutoWriteUnderlines = underlines2 + underlines1
+
+#@-node:ekr.20090513073632.5733:setAtAutoWriteOptions
+#@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
 #@+node:ekr.20090502071837.84:writeHeadlineHelper
 def writeHeadlineHelper (self,p):
 

@@ -2535,7 +2535,7 @@ class atFile:
 
         junk,ext = g.os_path_splitext(fileName)
 
-        g.trace(fileName,ext)
+        # g.trace(fileName,ext)
 
         return ext in ('.rst','.rest','.txt')
     #@-node:ekr.20090512153903.5805:isRstFile

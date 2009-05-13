@@ -993,20 +993,26 @@ class rstCommands:
         self.tnodeOptionDict = {}
         self.scanAllOptions(p)
         self.initWrite(p)
+        self.preprocessTree(p) # Allow @ @rst-options, for example.
 
         # Do the overrides.
         self.outputFile = outputFile
         self.outputFileName = fileName
 
         # Set underlining characters.
-        d = p.v.u.get('rst-import',{})
-        underlines2 = d.get('underlines2','#')
-        underlines1 = d.get('underlines1','=+*^~"\'`-:><_') # The standard defaults.
-        if len(underlines2) > 1:
-            underlines2 = underlines2[0]
-            g.trace('too many top-level underlines, using %s' % (
-                underlines2),color='blue')
-        self.atAutoWriteUnderlines = underlines2 + underlines1
+        d = self.tnodeOptionDict.get(p.v.t) # Set by preprocessTree.
+        underlines = d.get('underline_characters')
+        if underlines:
+            self.atAutoWriteUnderlines = underlines
+        else:
+            d = p.v.u.get('rst-import',{})
+            underlines2 = d.get('underlines2','#')
+            underlines1 = d.get('underlines1','=+*^~"\'`-:><_') # The standard defaults.
+            if len(underlines2) > 1:
+                underlines2 = underlines2[0]
+                g.trace('too many top-level underlines, using %s' % (
+                    underlines2),color='blue')
+            self.atAutoWriteUnderlines = underlines2 + underlines1
 
     #@-node:ekr.20090513073632.5733:setAtAutoWriteOptions
     #@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
