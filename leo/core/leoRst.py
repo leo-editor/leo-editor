@@ -441,8 +441,6 @@ class rstCommands:
 
         global SilverCity
 
-        # g.trace('rst3.py:rstClass',g.callers())
-
         self.c = c
         #@    << init ivars >>
         #@+node:ekr.20090502071837.36:<< init ivars >>
@@ -455,7 +453,7 @@ class rstCommands:
         # Formatting...
         self.code_block_string = ''
         self.node_counter = 0
-        self.toplevel = 0
+        self.topLevel = 0
         self.topNode = None
         self.use_alternate_code_block = SilverCity is None
 
@@ -475,6 +473,8 @@ class rstCommands:
         # Set to True by the button which processes all @rst trees.
 
         # For writing.
+        self.atAutoWrite = False # True, special cases for writeAtAutoFile.
+        self.atAutoWriteUnderlines = '' # Forced underlines for writeAtAutoFile.
         self.defaultEncoding = 'utf-8'
         self.leoDirectivesList = g.globalDirectiveList
         self.encoding = self.defaultEncoding
@@ -486,12 +486,10 @@ class rstCommands:
         #@nonl
         #@-node:ekr.20090502071837.36:<< init ivars >>
         #@nl
-
         self.createDefaultOptionsDict()
         self.initOptionsFromSettings() # Still needed.
         self.initHeadlineCommands() # Only needs to be done once.
         self.initSingleNodeOptions()
-        ### self.addMenu()
     #@-node:ekr.20090502071837.35: ctor (rstClass)
     #@+node:ekr.20090502071837.102: getPublicCommands
     def getPublicCommands (self):        
@@ -499,31 +497,9 @@ class rstCommands:
         c = self.c
 
         return {
-            'rst3':                 self.rst3, # Formerly write-restructured-text.
-            'import-rst':           self.importRst,
-            'write-at-auto-rst':    self.writeAtAutoRst
+            'rst3': self.rst3, # Formerly write-restructured-text.
         }
     #@-node:ekr.20090502071837.102: getPublicCommands
-    #@+node:ekr.20090502071837.37:addMenu
-    def addMenu (self):
-
-        c = self.c ; editMenu = c.frame.menu.getMenu('Edit')
-
-        def rst3PluginCallback (event=None):
-            self.processTopTree(c.p)
-
-        c.k.registerCommand('write-restructured-text',shortcut=None,
-            func=rst3PluginCallback,pane='all',verbose=False)
-
-        table = (
-            ("-",None,None),
-            ### ("Write Restructed Text","",rst3PluginCallback),
-            '&write-restructured-text',
-        )
-
-        c.frame.menu.createMenuEntries(editMenu,table,dynamicMenu=True)
-    #@nonl
-    #@-node:ekr.20090502071837.37:addMenu
     #@+node:ekr.20090511055302.5792:finishCreate
     def finishCreate(self):
 
@@ -586,8 +562,7 @@ class rstCommands:
     #@nonl
     #@-node:ekr.20090502071837.40:munge
     #@-node:ekr.20090502071837.34: Birth & init
-    #@+node:ekr.20090511055302.5789:commands
-    #@+node:ekr.20090511055302.5793:rst3
+    #@+node:ekr.20090511055302.5793:rst3 command
     def rst3 (self,event=None):
 
         '''Write all @rst nodes.'''
@@ -595,20 +570,7 @@ class rstCommands:
         # This used to be the called the write-restructured-text command.
 
         self.processTopTree(self.c.p)
-    #@-node:ekr.20090511055302.5793:rst3
-    #@+node:ekr.20090511055302.5790:importRst
-    def importRst(self,event=None):
-
-        g.trace('not ready yet')
-    #@-node:ekr.20090511055302.5790:importRst
-    #@+node:ekr.20090511055302.5791:writeAtAutoRst
-    def writeAtAutoRst(self,event=None):
-
-        '''Write an @auto node assumed to contain restructured text.'''
-
-        g.trace('not ready yet')
-    #@-node:ekr.20090511055302.5791:writeAtAutoRst
-    #@-node:ekr.20090511055302.5789:commands
+    #@-node:ekr.20090511055302.5793:rst3 command
     #@+node:ekr.20090502071837.41:options...
     #@+node:ekr.20090502071837.42:createDefaultOptionsDict
     def createDefaultOptionsDict(self):
@@ -886,7 +848,6 @@ class rstCommands:
             s2 = 'bad rst3 option in %s: %s' % (p.h,s)
             g.es_print(s2,color='red')
             return {}
-    #@nonl
     #@-node:ekr.20090502071837.52:scanOption
     #@+node:ekr.20090502071837.53:scanOptions
     def scanOptions (self,p,s):
@@ -973,17 +934,19 @@ class rstCommands:
     #@+node:ekr.20090502071837.57:setOption
     def setOption (self,name,val,tag):
 
+        # if name == 'rst3_underline_characters':
+            # g.trace(name,val,g.callers(4))
+
         ivar = self.munge(name)
 
-        bwm = False
-        if bwm:
-            if not self.optionsDict.has_key(ivar):
-                g.trace('init %24s %20s %s %s' % (ivar, val, tag, self))
-            elif self.optionsDict.get(ivar) != val:
-                g.trace('set  %24s %20s %s %s' % (ivar, val, tag, self))
+        # bwm = False
+        # if bwm:
+            # if not self.optionsDict.has_key(ivar):
+                # g.trace('init %24s %20s %s %s' % (ivar, val, tag, self))
+            # elif self.optionsDict.get(ivar) != val:
+                # g.trace('set  %24s %20s %s %s' % (ivar, val, tag, self))
 
         self.optionsDict [ivar] = val
-    #@nonl
     #@-node:ekr.20090502071837.57:setOption
     #@-node:ekr.20090502071837.41:options...
     #@+node:ekr.20090502071837.58:write methods
@@ -1002,6 +965,51 @@ class rstCommands:
 
         # g.trace('path:',self.path)
     #@-node:ekr.20090502071837.60:initWrite
+    #@+node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
+    def writeAtAutoFile (self,p,fileName,outputFile):
+
+        '''Write an @auto tree containing imported rST code.
+        The caller will close the output file.'''
+
+        # To do: (done by ignoring root) ignore standard Leo directives in root node.
+        # To do: @rst-no-head x node writes x.
+
+        try:
+            self.atAutoWrite = True
+            self.initAtAutoWrite(p,fileName,outputFile)
+            self.topNode = p.copy() # Indicate the top of this tree.
+            self.topLevel = p.level()
+            after = p.nodeAfterTree()
+            p = p.firstChild() # A (temporary?) hack: ignore the root node.
+            while p and p != after:
+                self.writeNode(p) # side effect: advances p
+        finally:
+            self.atAutoWrite = False
+    #@+node:ekr.20090513073632.5733:setAtAutoWriteOptions
+    def initAtAutoWrite(self,p,fileName,outputFile):
+
+        # Set up for a standard write.
+        self.createDefaultOptionsDict()
+        self.tnodeOptionDict = {}
+        self.scanAllOptions(p)
+        self.initWrite(p)
+
+        # Do the overrides.
+        self.outputFile = outputFile
+        self.outputFileName = fileName
+
+        # Set underlining characters.
+        d = p.v.u.get('rst-import',{})
+        underlines2 = d.get('underlines2','#')
+        underlines1 = d.get('underlines1','=+*^~"\'`-:><_') # The standard defaults.
+        if len(underlines2) > 1:
+            underlines2 = underlines2[0]
+            g.trace('too many top-level underlines, using %s' % (
+                underlines2),color='blue')
+        self.atAutoWriteUnderlines = underlines2 + underlines1
+
+    #@-node:ekr.20090513073632.5733:setAtAutoWriteOptions
+    #@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
     #@+node:ekr.20090502071837.61:writeNormalTree
     def writeNormalTree (self,p,toString=False):
 
@@ -1055,7 +1063,7 @@ class rstCommands:
                     (toString and not self.outputFileName)
                 ):
                     found = True
-                    self.toplevel = p.level() # Define toplevel separately for each rst file.
+                    self.topLevel = p.level() # Define toplevel separately for each rst file.
                     if toString:
                         self.ext = ext
                     else:
@@ -1360,6 +1368,7 @@ class rstCommands:
         s = '\n'.join(lines).strip()
         if s:
             self.write('%s\n\n' % s)
+    #@nonl
     #@+node:ekr.20090502071837.72:handleCodeMode & helper
     def handleCodeMode (self,lines):
 
@@ -1641,7 +1650,8 @@ class rstCommands:
 
         if self.getOption('show_sections'):
             if self.getOption('generate_rst'):
-                self.write('%s\n%s\n' % (h,self.underline(h,p)))
+                # self.write('%s\n%s\n' % (h,self.underline(h,p)))
+                self.write(self.underline(h,p))
             else:
                 self.write('\n%s\n' % h)
         else:
@@ -1716,9 +1726,8 @@ class rstCommands:
         p = p.copy() # Only one copy is needed for traversal.
         self.topNode = p.copy() # Indicate the top of this tree.
         after = p.nodeAfterTree()
-
         while p and p != after:
-            self.writeNode(p)
+            self.writeNode(p) # Side effect: advances p.
     #@-node:ekr.20090502071837.87:writeTree
     #@-node:ekr.20090502071837.58:write methods
     #@+node:ekr.20090502071837.88:Utils
@@ -1765,21 +1774,31 @@ class rstCommands:
     #@+node:ekr.20090502071837.93:underline
     def underline (self,s,p):
 
-        '''Return the underlining string to be used at the given level for string s.'''
+        '''Return the underlining string to be used at the given level for string s.
+        This includes the headline, and possibly a leading overlining line.
+        '''
 
-        u = self.getOption('underline_characters') #  '''#=+*^~"'`-:><_'''
-
-        level = max(0,p.level()-self.toplevel)
-        level = min(level+1,len(u)-1) # Reserve the first character for explicit titles.
-
-        ch = u [level]
-
-        # g.trace(self.toplevel,p.level(),level,repr(ch),p.h)
-
-        n = max(4,len(s))
-
-        return ch * n + '\n'
-    #@nonl
+        if self.atAutoWrite:
+            # We generate overlines for top-level sections.
+            u = self.atAutoWriteUnderlines
+            level = max(0,p.level()-self.topLevel-1)
+            ch = u [level]
+            n = max(4,len(s))
+            # g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+            if level == 0:
+                return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
+            else:
+                return '%s\n%s\n\n' % (p.h,ch*n)
+        else:
+            # The user is responsible for top-level overlining.
+            u = self.getOption('underline_characters') #  '''#=+*^~"'`-:><_'''
+            level = max(0,p.level()-self.topLevel)
+            level = min(level+1,len(u)-1) # Reserve the first character for explicit titles.
+            ch = u [level]
+            # g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+            n = max(4,len(s))
+            ### return ch * n + '\n'
+            return '%s\n%s\n' % (p.h,ch*n) # Must be equivalent to old code.
     #@-node:ekr.20090502071837.93:underline
     #@+node:ekr.20090502071837.94:write
     def write (self,s):
