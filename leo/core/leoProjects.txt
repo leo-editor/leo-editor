@@ -2425,9 +2425,7 @@ def startsSection (self,s,i):
 
 To do:
 
-- Put a warning comment in the root node saying that this node is ignore.
-
-- Process @ @rst-options in root node?
+- Process @ @rst-options in root node.
 
 - Forgiving compare of underlining lines in the import check.
 #@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
@@ -2627,10 +2625,8 @@ def writeAtAutoFile (self,p,fileName,outputFile):
     '''Write an @auto tree containing imported rST code.
     The caller will close the output file.'''
 
-    # To do: (done by ignoring root) ignore standard Leo directives in root node.
-        # Put a warning comment in the root node.
+    # To do: process @ @rst-options in root node.
     # To do: forgiving compare of underlining lines in the import check.
-    # To do: @rst-no-head x node writes x.
 
     try:
         self.atAutoWrite = True
