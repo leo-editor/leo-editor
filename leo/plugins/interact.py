@@ -22,7 +22,10 @@ For the `bash` button the execution directory is either the directory
 containing the `.leo` file, or any other path as specified by ancestor
 `@path` nodes.
 
-Currently the `psql` button just connects to the default database.
+Currently the `psql` button just connects to the default database.  ";"
+is required at the end of SQL statements.
+
+Requires `pexpect` module.
 """
 # 0.1 by Terry Brown, 2009-05-12
 import leo.core.leoGlobals as g
@@ -41,6 +44,8 @@ def onCreate(tag, keywords):
 class Interact(object):
     def __init__(self, c):
         self.c = c
+    def available(self):
+        raise NotImplementedError
     def run(self, p):
         raise NotImplementedError
     def buttonText(self):
@@ -55,8 +60,15 @@ class InteractPSQL(Interact):
         Interact.__init__(self, c)
         prompts = ' '.join(['--set PROMPT%d=%s'%(i,self.prompt) for i in range(1,4)])
         prompts += ' --pset pager=off'
-        c.psqlLink = pexpect.spawn('psql %s'%prompts)
-        c.psqlLink.leftover = ''
+        self._available = True
+        try:
+            self.psqlLink = pexpect.spawn('psql %s'%prompts)
+            self.leftover = ''
+        except pexpect.ExceptionPexpect:
+            self._available = False
+
+    def available(self):
+        return self._available
 
     def buttonText(self):
         return "psql"
@@ -74,10 +86,10 @@ class InteractPSQL(Interact):
         if q is None:
             g.es('No valid / uncommented query')
         else:
-            c.psqlLink.send(q.strip()+'\n')
+            self.psqlLink.send(q.strip()+'\n')
             ans = []
             maxlen=100
-            for d in self.psqlReader(c.psqlLink):
+            for d in self.psqlReader(self.psqlLink):
                 if d.strip():
                     ans.append(d)
                     if len(ans) > maxlen:
@@ -99,22 +111,22 @@ class InteractPSQL(Interact):
         while not timeout:
             dat = []
             try:
-                dat = proc.leftover + proc.read_nonblocking(size=10240,timeout=1)
-                proc.leftover = ''
+                dat = self.leftover + proc.read_nonblocking(size=10240,timeout=1)
+                self.leftover = ''
                 #X print dat
                 if not(dat.endswith('\n')):
                     if '\n' in dat:
-                        dat, proc.leftover = dat.rsplit('\n',1)
+                        dat, self.leftover = dat.rsplit('\n',1)
                     else:
                         time.sleep(0.5)
-                        proc.leftover = dat
+                        self.leftover = dat
                         dat = None
                 if dat:
                     dat = dat.split("\n")
             except pexpect.TIMEOUT:
                 timeout = True
 
-            #X if proc.leftover == self.prompt:
+            #X if self.leftover == self.prompt:
             #X     timeout = True
 
             if dat:
@@ -130,15 +142,24 @@ class InteractBASH(Interact):
 
     def __init__(self, c):
         Interact.__init__(self, c)
-        self.bashLink = pexpect.spawn('bash -i')
-        self.bashLink.send("PS1='> '\n")
-        self.bashLink.send("unalias ls\n")
-        self.leftover = ''
+        self._available = True
+        try:
+            self.bashLink = pexpect.spawn('bash -i')
+            self.bashLink.setwinsize(30,256)
+            # stop bash emitting chars for long lines
+            self.bashLink.send("PS1='> '\n")
+            self.bashLink.send("unalias ls\n")
+            self.leftover = ''
+        except pexpect.ExceptionPexpect:
+            self._available = False
 
     def buttonText(self):
         return "bash"
     def statusText(self):
         return "send headline or body to bash session"
+
+    def available(self):
+        return self._available
 
     def run(self, p):
         c = self.c
@@ -250,13 +271,14 @@ class InteractController:
 
         mb = InteractButton(c, class_)
 
-        b = sc.createIconButton(
-            text = mb.interactor.buttonText(),
-            command = mb.run,
-            shortcut = None,
-            statusLine = mb.interactor.statusText(),
-            bg = "LightBlue",
-        )
+        if mb.available():
+            b = sc.createIconButton(
+                text = mb.interactor.buttonText(),
+                command = mb.run,
+                shortcut = None,
+                statusLine = mb.interactor.statusText(),
+                bg = "LightBlue",
+            )
 class InteractButton:
 
     """contains target data and function for moving node"""
@@ -273,3 +295,5 @@ class InteractButton:
         p = c.p
         self.interactor.run(p)
         c.redraw()
+    def available(self):
+        return self.interactor.available()
