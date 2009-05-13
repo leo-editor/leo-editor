@@ -13,6 +13,7 @@
 import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
 import string
+import StringIO
 
 #@<< class scanUtility >>
 #@+node:sps.20081112093624.1:<< class scanUtility >>
@@ -1740,6 +1741,7 @@ class baseScannerClass (scanUtility):
         self.functionSpelling = 'function' # for error message.
         self.importCommands = ic
         self.indentRefFlag = None # None, True or False.
+        self.isRst = False
         self.language = language
         self.lastParent = None # The last generated parent node (used only by rstScanner).
         self.methodName = ic.methodName # x, as in < < x methods > > =
@@ -1759,7 +1761,7 @@ class baseScannerClass (scanUtility):
         self.tab_ws = '' # Set in run: the whitespace equivalent to one tab.
         self.trace = False or ic.trace # = c.config.getBool('trace_import')
         self.treeType = ic.treeType # '@root' or '@file'
-        self.webType = ic.webType # 'cweb' or 'noweb'  
+        self.webType = ic.webType # 'cweb' or 'noweb'
 
         # Compute language ivars.
         delim1,junk,junk = g.set_delims_from_language(language)
@@ -1807,7 +1809,7 @@ class baseScannerClass (scanUtility):
         else:
             return True
     #@-node:ekr.20070703122141.102:check
-    #@+node:ekr.20070703122141.104:checkTrialWrite
+    #@+node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
     def checkTrialWrite (self,s1=None,s2=None):
 
         '''Return True if a trial write produces the original file.'''
@@ -1817,10 +1819,15 @@ class baseScannerClass (scanUtility):
         c = self.c ; at = c.atFileCommands
 
         if s1 is None and s2 is None:
-            at.write(self.root,
-                nosentinels=True,thinFile=False,
-                scriptWrite=False,toString=True)
-            s1,s2 = self.file_s, at.stringOutput
+            if True and self.isRst: # Errors writing file at present...
+                outputFile = StringIO.StringIO()
+                c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile)
+                s1,s2 = self.file_s,outputFile.getvalue()
+            else:
+                at.write(self.root,
+                    nosentinels=True,thinFile=False,
+                    scriptWrite=False,toString=True)
+                s1,s2 = self.file_s, at.stringOutput
 
         s1 = g.toUnicode(s1,self.encoding)
         s2 = g.toUnicode(s2,self.encoding)
@@ -1857,7 +1864,7 @@ class baseScannerClass (scanUtility):
             self.reportMismatch(lines1,lines2,bad_i)
 
         return ok
-    #@-node:ekr.20070703122141.104:checkTrialWrite
+    #@-node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
     #@+node:ekr.20070730093735:compareHelper
     def compareHelper (self,lines1,lines2,i,strict):
 
@@ -1878,6 +1885,8 @@ class baseScannerClass (scanUtility):
         messageKind = None
 
         if i >= len(lines1):
+            if self.isRst:
+                return True # ignore extra lines.
             if i != expectedMismatch or not g.unitTesting:
                 pr('extra lines')
                 for line in lines2[i:]:
@@ -2014,6 +2023,26 @@ class baseScannerClass (scanUtility):
 
         return self.importCommands.setBodyString(p,s,encoding)
     #@-node:ekr.20090122201952.6:appendStringToBody & setBodyString (baseScannerClass)
+    #@+node:ekr.20090512153903.5806:computeBody (baseScannerClass)
+    def computeBody (self,s,start,sigStart,codeEnd):
+
+        trace = False and not g.unitTesting
+
+        body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
+        body2 = self.undentBody(s[sigStart:codeEnd])
+        body = body1 + body2
+
+        if trace and verbose: g.trace('body\n%s' % body)
+
+        tail = body[len(body.rstrip()):]
+        if not '\n' in tail:
+            self.warning(
+                '%s %s does not end with a newline; one will be added\n%s' % (
+                self.functionSpelling,self.sigId,g.get_line(s,codeEnd)))
+
+        return body
+
+    #@-node:ekr.20090512153903.5806:computeBody (baseScannerClass)
     #@+node:ekr.20070705144309:createDeclsNode
     def createDeclsNode (self,parent,s):
 
@@ -2268,17 +2297,10 @@ class baseScannerClass (scanUtility):
             while start > 0 and s[start-1] in (' ','\t'):
                 start -= 1
 
-        body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
-
-        body2 = self.undentBody(s[sigStart:codeEnd])
-        body = body1 + body2
-        if trace and verbose: g.trace('body\n%s' % body)
-
-        tail = body[len(body.rstrip()):]
-        if not '\n' in tail:
-            self.warning(
-                '%s %s does not end with a newline; one will be added\n%s' % (
-                self.functionSpelling,self.sigId,g.get_line(s,codeEnd)))
+        # body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
+        # body2 = self.undentBody(s[sigStart:codeEnd])
+        # body = body1 + body2
+        body = self.computeBody(s,start,sigStart,codeEnd)
 
         parent = self.adjustParent(parent,headline)
         self.lastParent = self.createFunctionNode(headline,body,parent)
@@ -3739,6 +3761,7 @@ class rstScanner (baseScannerClass):
         self.functionSpelling = 'section'
         self.functionTags = []
         self.hasClasses = False
+        self.isRst = True
         self.lineCommentDelim = '..'
         self.outerBlockDelim1 = None
         self.sigFailTokens = []
@@ -3788,6 +3811,31 @@ class rstScanner (baseScannerClass):
 
         return parent
     #@-node:ekr.20090512080015.5798:adjustParent
+    #@+node:ekr.20090512153903.5808:computeBody
+    def computeBody (self,s,start,sigStart,codeEnd):
+
+        trace = False and not g.unitTesting
+
+        assert codeEnd == self.codeEnd
+        assert sigStart == self.sigStart
+
+        body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
+
+        # Unlike the base-class method, we delete the entire signature.
+        body2 = self.undentBody(s[self.sigEnd+1:codeEnd])
+        body = body1 + body2
+
+        if trace and verbose: g.trace('body\n%s' % body)
+
+        tail = body[len(body.rstrip()):]
+        if not '\n' in tail:
+            self.warning(
+                'section %s does not end with a newline; one will be added\n%s' % (
+                self.sigId,g.get_line(s,codeEnd)))
+
+        return body
+
+    #@-node:ekr.20090512153903.5808:computeBody
     #@+node:ekr.20090512080015.5797:computeSectionLevel
     def computeSectionLevel (self,ch,kind):
 
@@ -3805,6 +3853,16 @@ class rstScanner (baseScannerClass):
 
         return level
     #@-node:ekr.20090512080015.5797:computeSectionLevel
+    #@+node:ekr.20090512153903.5810:createDeclsNode
+    def createDeclsNode (self,parent,s):
+
+        '''Create a child node of parent containing s.'''
+
+        # Create the node for the decls.
+        headline = '@rst-no-head' ###  %s declarations' % self.methodName
+        body = self.undentBody(s)
+        self.createHeadline(parent,body,headline)
+    #@-node:ekr.20090512153903.5810:createDeclsNode
     #@+node:ekr.20090502071837.2:endGen
     def endGen (self,s):
 
@@ -3814,10 +3872,12 @@ class rstScanner (baseScannerClass):
         if p:
             tag = 'rst-import'
             d = p.v.u.get(tag,{})
-            d ['underlines1'] = ''.join(str(self.underlines1))
-            d ['underlines2'] = ''.join(str(self.underlines2))
+            underlines1 = ''.join([str(z) for z in self.underlines1])
+            underlines2 = ''.join([str(z) for z in self.underlines2])
+            d ['underlines1'] = underlines1
+            d ['underlines2'] = underlines2
+            # g.trace(repr(underlines1),repr(underlines2))
             p.v.u [tag] = d
-
     #@-node:ekr.20090502071837.2:endGen
     #@+node:ekr.20090501095634.46:isUnderLine
     def isUnderLine(self,s):
@@ -3915,6 +3975,7 @@ class rstScanner (baseScannerClass):
             ok = (self.isUnderLine(line2) and
                 n1 >= n2 and n2 > 0 and n3 >= n2 and ch1 == ch3)
             if ok:
+                i += n3 # bug fix.
                 ch,kind = ch1,'over'
                 if ch1 not in self.underlines2:
                     self.underlines2.append(ch1)
@@ -3940,6 +4001,7 @@ class rstScanner (baseScannerClass):
             ok = (not overline and self.isUnderLine(line2) and
                 n1 > 0 and n2 >= n1)
             if ok:
+                i += n2 # Bug fix.
                 ch,kind = line2[0],'under'
                 if ch not in self.underlines1:
                     self.underlines1.append(ch)
