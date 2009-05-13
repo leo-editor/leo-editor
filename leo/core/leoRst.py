@@ -1628,12 +1628,17 @@ class rstCommands:
 
         h = p.h.strip()
 
-        # Remove any headline command before writing the 
+        # Remove any headline command before writing the headline.
         i = g.skip_id(h,0,chars='@-')
         word = h [:i]
         if word:
-            # Never generate a section for @rst-option or @rst-options.
-            if word in (self.getOption('option_prefix'),self.getOption('options_prefix')):
+            # Never generate a section for @rst-option or @rst-options or @rst-no-head.
+            if word in (
+                self.getOption('option_prefix'),
+                self.getOption('options_prefix'),
+                self.getOption('ignore_headline_prefix'), # Bug fix: 2009-5-13
+                self.getOption('ignore_headlines_prefix'),  # Bug fix: 2009-5-13
+            ):
                 return
             # Remove all other headline commands from the headline.
             for prefix in self.headlineCommands:

@@ -3806,7 +3806,8 @@ class rstScanner (baseScannerClass):
             parent = lastParent
             while level > lastLevel:
                 level -= 1
-                h2 = '@rst-no-head' ; body = ''
+                h2 = '@rst-no-head %s' % headline
+                body = ''
                 parent = self.createFunctionNode(h2,body,parent)
 
         if not parent: parent = self.root
@@ -3839,7 +3840,7 @@ class rstScanner (baseScannerClass):
         '''Create a child node of parent containing s.'''
 
         # Create the node for the decls.
-        headline = '@rst-no-head' ###  %s declarations' % self.methodName
+        headline = '@rst-no-head %s declarations' % self.methodName
         body = self.undentBody(s)
         self.createHeadline(parent,body,headline)
     #@-node:ekr.20090512153903.5810:createDeclsNode

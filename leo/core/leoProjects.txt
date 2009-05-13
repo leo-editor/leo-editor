@@ -736,6 +736,16 @@ def getPublicCommands (self):
 #@-node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
 #@-node:ekr.20090401105902.3:Features
 #@+node:ekr.20090511055302.5784:Rst projects
+#@+node:ekr.20090513073632.5734:Maybe not: support @ua
+@nocolor-node
+
+* Add support for @ua to read/writeOneAtAutoNode.
+    - isSignificant should ignore @ua lines?
+
+- @ua at-auto:language=rest
+  This should override the parser given by the file extension.
+#@nonl
+#@-node:ekr.20090513073632.5734:Maybe not: support @ua
 #@+node:ekr.20090512080015.5801:import-files-recursively command?
 How would the command specify settings?
 
@@ -2229,7 +2239,8 @@ def adjustParent (self,parent,headline):
         parent = lastParent
         while level > lastLevel:
             level -= 1
-            h2 = '@rst-no-head' ; body = ''
+            h2 = '@rst-no-head %s' % headline
+            body = ''
             parent = self.createFunctionNode(h2,body,parent)
 
     if not parent: parent = self.root
@@ -2262,7 +2273,7 @@ def createDeclsNode (self,parent,s):
     '''Create a child node of parent containing s.'''
 
     # Create the node for the decls.
-    headline = '@rst-no-head' ###  %s declarations' % self.methodName
+    headline = '@rst-no-head %s declarations' % self.methodName
     body = self.undentBody(s)
     self.createHeadline(parent,body,headline)
 #@-node:ekr.20090512153903.5810:createDeclsNode
@@ -2415,22 +2426,14 @@ def startsSection (self,s,i):
 #@-node:ekr.20090501095634.47:startsSection
 #@-node:ekr.20090501095634.41:class rstScanner
 #@-node:ekr.20090512080015.5794:rst scanning
-#@+node:ekr.20090513073632.5734:Maybe not: support @ua
-@nocolor-node
-
-* Add support for @ua to read/writeOneAtAutoNode.
-    - isSignificant should ignore @ua lines?
-
-- @ua at-auto:language=rest
-  This should override the parser given by the file extension.
-#@nonl
-#@-node:ekr.20090513073632.5734:Maybe not: support @ua
 #@+node:ekr.20090511055302.10652:Support @auto for general rST files
 @nocolor-node
 
 To do:
 
 - Put a warning comment in the root node saying that this node is ignore.
+
+- Process @ @rst-options in root node?
 
 - Forgiving compare of underlining lines in the import check.
 
@@ -2834,6 +2837,47 @@ def underline (self,s,p):
         ### return ch * n + '\n'
         return '%s\n%s\n' % (p.h,ch*n) # Must be equivalent to old code.
 #@-node:ekr.20090502071837.93:underline
+#@+node:ekr.20090502071837.84:writeHeadlineHelper
+def writeHeadlineHelper (self,p):
+
+    h = p.h.strip()
+
+    # Remove any headline command before writing the headline.
+    i = g.skip_id(h,0,chars='@-')
+    word = h [:i]
+    if word:
+        # Never generate a section for @rst-option or @rst-options or @rst-no-head.
+        if word in (
+            self.getOption('option_prefix'),
+            self.getOption('options_prefix'),
+            self.getOption('ignore_headline_prefix'), # Bug fix: 2009-5-13
+            self.getOption('ignore_headlines_prefix'),  # Bug fix: 2009-5-13
+        ):
+            return
+        # Remove all other headline commands from the headline.
+        for prefix in self.headlineCommands:
+            if word == prefix:
+                h = h [len(word):].strip()
+                break
+
+        # New in Leo 4.4.4.
+        if word.startswith('@'):
+            if self.getOption('strip_at_file_prefixes'):
+                for s in ('@auto','@file','@nosent','@thin',):
+                    if g.match_word(word,0,s):
+                        h = h [len(s):].strip()
+
+    if not h.strip(): return
+
+    if self.getOption('show_sections'):
+        if self.getOption('generate_rst'):
+            # self.write('%s\n%s\n' % (h,self.underline(h,p)))
+            self.write(self.underline(h,p))
+        else:
+            self.write('\n%s\n' % h)
+    else:
+        self.write('\n**%s**\n\n' % h.replace('*',''))
+#@-node:ekr.20090502071837.84:writeHeadlineHelper
 #@-node:ekr.20090511055302.10652:Support @auto for general rST files
 #@-node:ekr.20090511055302.5784:Rst projects
 #@-node:ekr.20080917153158.11:4.6 b2
