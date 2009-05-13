@@ -3881,10 +3881,13 @@ class rstScanner (baseScannerClass):
             p.v.u [tag] = d
 
         # Append a warning to the root node.
-        warning1 = 'Warning: this node is ignored when writing the output file.'
-        warning2 = 'However, @ @rst-options are recognized in this node.'
-
-        self.root.b = self.root.b + '\n.. %s\n.. %s\n' % (warning1,warning2)
+        warningLines = (
+            'Warning: this node is ignored when writing this file.',
+            'However, @ @rst-options are recognized in this node.',
+        )
+        lines = ['.. %s' % (z) for z in warningLines]
+        warning = '\n%s\n' % '\n'.join(lines)
+        self.root.b = self.root.b + warning
     #@-node:ekr.20090502071837.2:endGen
     #@+node:ekr.20090501095634.46:isUnderLine
     def isUnderLine(self,s):

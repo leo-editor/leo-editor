@@ -671,6 +671,107 @@ def createChaptersNode (self):
     c.setChanged(True)
 #@-node:ekr.20070325101652:cc.createChaptersNode
 #@-node:ekr.20090507065104.1:Allocate gnx's when nodes are created
+#@+node:ekr.20090513153807.5743:Fixed crasher when creating .leoID.txt
+exception loading plugin
+Traceback (most recent call last):
+
+  File "C:\leo.repo\trunk\leo\core\leoPlugins.py", line 429, in loadOnePlugin
+    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
+
+AttributeError: StubConfig instance has no attribute 'enabledPluginsFileName'
+
+leoID='ekr'
+.leoID.txt created in C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo
+load 
+#@nonl
+#@+node:ekr.20080921091311.2:initApp
+def initApp (verbose):
+
+    # Force the user to set g.app.leoID.
+    g.app.setLeoID(verbose=verbose)
+    g.app.config = leoConfig.configClass()
+    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+#@-node:ekr.20080921091311.2:initApp
+#@+node:ekr.20041113113140:loadOnePlugin
+def loadOnePlugin (moduleOrFileName, verbose=False):
+
+    # Prevent Leo from crashing if .leoID.txt does not exist.
+    if g.app.config is None:
+       print ('No g.app.config, making stub...')
+       class StubConfig:
+           def __init__(self):
+               self.enabledPluginsFileName = ''
+           def getBool(self, c, setting):
+               return False
+       g.app.config = StubConfig()
+
+    global loadedModules,loadingModuleNameStack
+
+    verbose = False or verbose or g.app.config.getBool(c=None,setting='trace_plugins')
+    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
+    if moduleOrFileName.endswith('.py'):
+        moduleName = moduleOrFileName [:-3]
+    else:
+        moduleName = moduleOrFileName
+    moduleName = g.shortFileName(moduleName)
+
+    if isLoaded(moduleName):
+        module = loadedModules.get(moduleName)
+        if verbose:
+            g.es_print('plugin',moduleName,'already loaded',color="blue")
+        return module
+
+    plugins_path = g.os_path_join(g.app.loadDir,"..","plugins")
+    moduleName = g.toUnicode(moduleName,g.app.tkEncoding)
+
+    # This import will typically result in calls to registerHandler.
+    # if the plugin does _not_ use the init top-level function.
+    loadingModuleNameStack.append(moduleName)
+    result = g.importFromPath(moduleName,plugins_path,pluginName=moduleName,verbose=True)
+    loadingModuleNameStack.pop()
+
+    if result:
+        loadingModuleNameStack.append(moduleName)
+        if hasattr(result,'init'):
+            try:
+                # Indicate success only if init_result is True.
+                init_result = result.init()
+                # g.trace('result',result,'init_result',init_result)
+                if init_result:
+                    loadedModules[moduleName] = result
+                    loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
+                else:
+                    if verbose and not g.app.initing:
+                        g.es_print('loadOnePlugin: failed to load module',moduleName,color="red")
+                    result = None
+            except Exception:
+                g.es('exception loading plugin',color='red')
+                g.es_exception()
+                result = None
+        else:
+            # No top-level init function.
+            # Guess that the module was loaded correctly,
+            # but do *not* load the plugin if we are unit testing.
+            g.trace('no init()',moduleName)
+            if g.app.unitTesting:
+                result = None
+                loadedModules[moduleName] = None
+            else:
+                loadedModules[moduleName] = result
+        loadingModuleNameStack.pop()
+
+    if g.unitTesting or g.app.batchMode or g.app.inBridge:
+        pass
+    elif result is None:
+        if warn_on_failure or (verbose and not g.app.initing): # or not g.app.unitTesting:
+            g.es_print('can not load enabled plugin:',moduleName,color="red")
+    elif verbose:
+        g.es_print('loaded plugin:',moduleName,color="blue")
+
+    return result
+#@-node:ekr.20041113113140:loadOnePlugin
+#@-node:ekr.20090513153807.5743:Fixed crasher when creating .leoID.txt
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
@@ -2301,10 +2402,13 @@ def endGen (self,s):
         p.v.u [tag] = d
 
     # Append a warning to the root node.
-    warning1 = 'Warning: this node is ignored when writing the output file.'
-    warning2 = 'However, @ @rst-options are recognized in this node.'
-
-    self.root.b = self.root.b + '\n.. %s\n.. %s\n' % (warning1,warning2)
+    warningLines = (
+        'Warning: this node is ignored when writing this file.',
+        'However, @ @rst-options are recognized in this node.',
+    )
+    lines = ['.. %s' % (z) for z in warningLines]
+    warning = '\n%s\n' % '\n'.join(lines)
+    self.root.b = self.root.b + warning
 #@-node:ekr.20090502071837.2:endGen
 #@+node:ekr.20090501095634.46:isUnderLine
 def isUnderLine(self,s):
@@ -2444,9 +2548,10 @@ def startsSection (self,s,i):
 
 To do:
 
-- Generalize warning message in genEnd.
-- Revise rst chapter.
+- Revise rst chapter of Leo's documentation.
+
 - rst3 command applied to @auto-rst node should work.
+
 - Use rst importer only for @auto-rst.
     - eliminate isRstFile.
 #@+node:ekr.20070703122141.104:checkTrialWrite (baseScannerClass)
@@ -2674,6 +2779,31 @@ if s and fileName.endswith('.py'):
 s = g.toUnicode(s,self.encoding)
 #@-node:ekr.20080212092908:<< convert s to the proper encoding >>
 #@-node:ekr.20031218072017.3210:createOutline (leoImport)
+#@+node:ekr.20090502071837.2:endGen
+def endGen (self,s):
+
+    '''Remember the underlining characters in the root's uA.'''
+
+    p = self.root
+    if p:
+        tag = 'rst-import'
+        d = p.v.u.get(tag,{})
+        underlines1 = ''.join([str(z) for z in self.underlines1])
+        underlines2 = ''.join([str(z) for z in self.underlines2])
+        d ['underlines1'] = underlines1
+        d ['underlines2'] = underlines2
+        # g.trace(repr(underlines1),repr(underlines2))
+        p.v.u [tag] = d
+
+    # Append a warning to the root node.
+    warningLines = (
+        'Warning: this node is ignored when writing this file.',
+        'However, @ @rst-options are recognized in this node.',
+    )
+    lines = ['.. %s' % (z) for z in warningLines]
+    warning = '\n%s\n' % '\n'.join(lines)
+    self.root.b = self.root.b + warning
+#@-node:ekr.20090502071837.2:endGen
 #@+node:ekr.20090502071837.46:preprocessTree & helpers
 def preprocessTree (self,root):
 
@@ -2929,9 +3059,6 @@ def writeAtAutoFile (self,p,fileName,outputFile):
 
     '''Write an @auto tree containing imported rST code.
     The caller will close the output file.'''
-
-    # To do: process @ @rst-options in root node. (and change the warning).
-    # To do: forgiving compare of underlining lines in the import check.
 
     try:
         self.atAutoWrite = True
