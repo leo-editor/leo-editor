@@ -2048,6 +2048,12 @@ class baseScannerClass (scanUtility):
 
         trace = False and not g.unitTesting
 
+        body1 = s[start:sigStart]
+        # Adjust start backwards to get a better undent.
+        if body1.strip():
+            while start > 0 and s[start-1] in (' ','\t'):
+                start -= 1
+
         body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
 
         if self.isRst:
@@ -2316,17 +2322,7 @@ class baseScannerClass (scanUtility):
             g.trace('Can not happen: no sigId')
             headline = 'unknown function'
 
-        body1 = s[start:sigStart]
-        # Adjust start backwards to get a better undent.
-        if body1.strip():
-            while start > 0 and s[start-1] in (' ','\t'):
-                start -= 1
-
-        # body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
-        # body2 = self.undentBody(s[sigStart:codeEnd])
-        # body = body1 + body2
         body = self.computeBody(s,start,sigStart,codeEnd)
-
         parent = self.adjustParent(parent,headline)
         self.lastParent = self.createFunctionNode(headline,body,parent)
 
