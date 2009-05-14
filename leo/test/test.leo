@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -324,28 +324,6 @@
 <v t="ekr.20081001110047.3"><vh>eggs</vh></v>
 </v>
 </v>
-<v t="ekr.20090309064612.3"><vh>Tests of new features</vh>
-<v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
-<v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
-<v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
-<v t="edward.20081221145716.1"><vh>decorator test 2</vh></v>
-</v>
-<v t="ekr.20090201162523.1"><vh>Macro test</vh>
-<v t="ekr.20090201192257.1"><vh>@test macro ab</vh></v>
-</v>
-<v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
-<v t="ekr.20090128112453.1" key="550378797a71002e"><vh>Property tests</vh></v>
-<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
-<v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
-<v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
-<v t="ekr.20080922164255.1"></v>
-<v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
-<v t="ekr.20080923073240.2"><vh>@path {{c.config.getString('test')}}</vh>
-<v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
-</v>
-</v>
-<v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
-</v>
 <v t="ekr.20081003094737.1"><vh>Unicode tests</vh>
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
@@ -361,6 +339,32 @@
 </v>
 </v>
 </v>
+<v t="ekr.20090309064612.3"><vh>Tests of new features</vh>
+<v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
+<v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
+<v t="edward.20081221145716.1"><vh>decorator test 2</vh></v>
+</v>
+<v t="ekr.20090201162523.1"><vh>Macro test</vh>
+<v t="ekr.20090201192257.1"><vh>@@test macro ab</vh></v>
+</v>
+<v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
+<v t="ekr.20090128112453.1" key="550378797a71002e"><vh>Property tests</vh></v>
+<v t="ekr.20080922164656.1"><vh>Tests of path expressions</vh>
+<v t="ekr.20080921144924.1"><vh>Tests of g.os_path_finalize</vh></v>
+<v t="ekr.20080922142953.1"><vh>test os_pathExpression</vh></v>
+<v t="ekr.20080922164255.1"></v>
+<v t="ekr.20080922164255.2"><vh>@@shadow {{c.config.getString('test')}}/eval-shadow-test.txt</vh></v>
+<v t="ekr.20080923073240.2"><vh>@path {{c.config.getString('test')}}</vh>
+<v t="ekr.20080923073240.1"><vh>@@thin eval-thin-test.txt</vh></v>
+</v>
+</v>
+<v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
+</v>
+</v>
+<v t="ekr.20090514103332.1929" a="E"><vh>Unit tests</vh>
+<v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
+<v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
+<v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
 <v t="ekr.20090510080933.1908"><vh>Rst stuff</vh>
 <v t="ekr.20090501105822.1"><vh>import rst</vh>
@@ -371,7 +375,8 @@
 <v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
 <v t="ekr.20090513115300.1919"><vh>underline_characters</vh></v>
 <v t="ekr.20090513154754.1912"><vh>@rst-no-head rst-test declarations</vh></v>
-<v t="ekr.20090512121208.1908" a="E" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355033d2b2a7104752e"><vh>@auto rst-test.txt</vh></v>
+<v t="ekr.20090512121208.1908" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355033d2b2a7104752e"><vh>@auto rst-test.txt</vh></v>
+<v t="ekr.20090514081019.1925"><vh>Failed unit tests with nullGui</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2744,6 +2749,7 @@ try:
     f = open(fn)
     m.loadMacros(f)
     macro = m.namedMacros.get('ab')
+    assert macro
     m.executeMacro(macro)
 finally:
     assert p.b =='ab' + b,p.b
@@ -2755,8 +2761,7 @@ g.es ('total characters: %s, keywords: %s, leo_keywords: %s' % (
     colorer.totalKeywordsCalls,
     colorer.totalLeoKeywordsCalls))</t>
 <t tx="ekr.20090218112656.1"># 'self' is now defined in @test and @suite nodes.
-a,b = 1,2
-self.assertEqual(a,b)</t>
+self.assertEqual(1,1)</t>
 <t tx="ekr.20090309064612.1"></t>
 <t tx="ekr.20090309064612.2"></t>
 <t tx="ekr.20090309064612.3"></t>
@@ -2932,5 +2937,697 @@ underline_characters=#=+*^~"\'`-:&gt;&lt;_
 .. toc
 
 </t>
+<t tx="ekr.20090514073218.1923">import leo.core.leoTest as leoTest
+
+if False:
+    # Run tests locally.
+    leoTest.doTests(c,all=True)
+else:
+    # Run tests externally.
+    path = 'test.leo' # path is relative to leo\test directory
+    leoTest.runUnitTestLeoFile(gui='nullGui',path=path,silent=False)
+</t>
+<t tx="ekr.20090514081019.1925">@killcolor
+
+
+
+leoDynamicTest.py: argv: [
+    'C:\\leo.repo\\trunk\\leo\\core\\leoDynamicTest.py',
+    'C:\\leo.repo\\trunk\\leo\\test\\unitTest.leo', '--silent', '
+    --gui=nullGui', '--path=C:\\leo.repo\\trunk\\leo\\test\\unitTest.leo']
+Using menus from leoSettings.leo
+reading C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+@enabled-plugins found in leoSettings.leo
+@enabled-plugins found in leoSettings.leo
+created directory: C:\leo.repo\trunk\leo\test\unittest\.leo_shadow
+leoDynamicTests.leo unitTest.leo
+found  2 doctests for leoGlobals
+found  1 doctests for leoTest
+@suite test syntax of all plugins
+.......first mismatched line at line 1
+original line:  .. Leo documentation documentation master file, created by
+
+generated line: \\-3.. Leo documentation documentation master file, created by
+
+input...
+  0 .. Leo documentation documentation master file, created by
+  1    sphinx-quickstart on Mon Mar 30 16:39:02 2009.
+  2    You can adapt this file completely to your liking, but it should at least
+  3    contain the root `toctree` directive.
+  4
+  5 Leo's Users Guide
+  6 ==================
+  7
+  8 Contents:
+  9
+ 10 .. toctree::
+ 11    :maxdepth: 1
+ 12    :glob:
+ 13
+ 14    frontMatter
+ 15    preface
+ 16    testimonials
+ 17    FAQ
+ 18    install
+ 19    intro
+ 20    outlines
+ 21    directives
+ 22    commands
+ 23    design
+ 24    scripting
+ 25    customizing
+ 26    history
+ 27    theory
+ 28    whitepapers
+ 29    plugins
+ 30    writingPlugins
+ 31    rstplugin3
+ 32    coloring
+ 33    debuggers
+ 34    zodb
+ 35    emacs
+ 36    leoBridge
+ 37    unitTesting
+ 38    IPythonBridge
+ 39    vimBindings
+ 40    atShadow
+ 41    appendices
+ 42    glossary
+ 43    new-4-6
+ 44    new-4-5
+ 45    new-4-4-8
+ 46    new-4-4-6
+ 47    new-4-4-5
+ 48    new-4-4-4
+ 49    new-4-4-3
+ 50    new-4-4-2
+ 51    new-4-4-1
+ 52    new-4-4
+ 53
+ 54 Indices and tables
+ 55 ==================
+ 56
+ 57 * :ref:`genindex`
+ 58 * :ref:`modindex`
+ 59 * :ref:`search`
+ 60
+output...
+  0 \\-3.. Leo documentation documentation master file, created by
+  1 sphinx-quickstart on Mon Mar 30 16:39:02 2009.
+  2 You can adapt this file completely to your liking, but it should at least
+  3 contain the root `toctree` directive.
+  4
+errors inhibited read @auto C:\leo.repo\trunk\leo\doc\html\leo_toc.html.txt
+...........
+End of general unit tests
+...........................................................................................................................................
+End of plugins unit tests
+........................
+End of leoAtFile tests
+.....................................
+End of leoColor tests
+...FFFFFFF......
+End of leoCommands tests
+.....
+End of leoConfig tests
+....................................................................................................FF.............F..EF.........EF....F..F.
+......
+End of leoEditCommands tests.
+...........
+End of leoFileCommands tests.
+.EEEE...FFF......test of at.printError: La Pe├▒a
+.....................................................................................................................
+End of leoImport tests.
+.........................F...........F..............
+End of leoNodes tests.
+................................................no text selected
+compareOutlines failed
+p1 &lt;pos 78971856 childIndex: 0 lvl: 5 [5] tempNode&gt; &lt;vnode 21722224:'tempNode'&gt;
+p2 &lt;pos 78971696 childIndex: 1 lvl: 6 [6] after&gt; &lt;vnode 21722544:'after'&gt;
+p1.body
+u'@language python\n\ndef addCommentTest():\n\n    if 1:\n        a = 2\n        b = 3\n        \n    pass'
+p2.body
+u'@language python\n\ndef addCommentTest():\n\n    # if 1:\n        # a = 2\n        # b = 3\n        \n    pass'
+FcompareOutlines failed
+p1 &lt;pos 78973936 childIndex: 0 lvl: 5 [5] tempNode&gt; &lt;vnode 21722224:'tempNode'&gt;
+p2 &lt;pos 78974512 childIndex: 1 lvl: 6 [6] after&gt; &lt;vnode 21722928:'after'&gt;
+p1.body
+u'@tabwidth -4\n\nline 1\n    line 2\n      line 3\nline4'
+p2.body
+u'@tabwidth -4\n\nline 1\n\tline 2\n\t  line 3\nline4'
+FcompareOutlines failed
+p1 &lt;pos 78972912 childIndex: 0 lvl: 5 [5] tempNode&gt; &lt;vnode 21722224:'tempNode'&gt;
+p2 &lt;pos 78973936 childIndex: 1 lvl: 6 [6] after&gt; &lt;vnode 21723312:'after'&gt;
+p1.body
+u'@tabwidth -4\n\nline 1\n\tline 2\n\t  line 3\nline4'
+p2.body
+u'@tabwidth -4\n\nline 1\n    line 2\n      line 3\nline4'
+FcompareOutlines failed
+p1 &lt;pos 78974544 childIndex: 0 lvl: 5 [5] tempNode&gt; &lt;vnode 21722224:'tempNode'&gt;
+p2 &lt;pos 78974512 childIndex: 1 lvl: 6 [6] after&gt; &lt;vnode 21723696:'after'&gt;
+p1.body
+u'@tabwidth -4\n\nline 1\n    line 2\n      line 3\nline4'
+p2.body
+u'@tabwidth -4\n\nline 1\n\tline 2\n\t  line 3\nline4'
+FcompareOutlines failed
+p1 &lt;pos 78971696 childIndex: 0 lvl: 5 [5] tempNode&gt; &lt;vnode 21722224:'tempNode'&gt;
+p2 &lt;pos 78974512 childIndex: 1 lvl: 6 [6] after&gt; &lt;vnode 21724080:'after'&gt;
+p1.body
+u'@tabwidth -4\n\nline 1\n\tline 2\n\t  line 3\nline4'
+p2.body
+u'@tabwidth -4\n\nline 1\n    line 2\n      line 3\nline4'
+FcompareOutlines failed
+p1 &lt;pos 78974512 childIndex: 0 lvl: 5 [5] tempNode&gt; &lt;vnode 21722224:'tempNode'&gt;
+p2 &lt;pos 78973936 childIndex: 1 lvl: 6 [6] after&gt; &lt;vnode 21724464:'after'&gt;
+p1.body
+u'line 1\n    line 2\n    line 3\nline 4'
+p2.body
+u'line 1\nline 2\nline 3\nline 4'
+Fno text selected
+compareOutlines failed
+p1 &lt;pos 78973936 childIndex: 0 lvl: 5 [5] tempNode&gt; &lt;vnode 21722224:'tempNode'&gt;
+p2 &lt;pos 78971856 childIndex: 1 lvl: 6 [6] after&gt; &lt;vnode 21724848:'after'&gt;
+p1.body
+u'@language python\n\ndef deleteCommentTest():\n\n    # if 1:\n        # a = 2\n        # b = 3\n        \n    pass'
+p2.body
+u'@language python\n\ndef deleteCommentTest():\n\n    if 1:\n        a = 2\n        b = 3\n        \n    pass'
+FcompareOutlines failed
+p1 &lt;pos 78974544 childIndex: 0 lvl: 5 [5] tempNode&gt; &lt;vnode 21722224:'tempNode'&gt;
+p2 &lt;pos 78973936 childIndex: 1 lvl: 6 [6] after&gt; &lt;vnode 21823568:'after'&gt;
+p1.numberOfChildren()=0, p2.numberOfChildren()=1
+p1.body
+u'before\n    &lt;&lt; section &gt;&gt;\n    sec line 1\n        sec line 2 indented\nsec line 3\nafter'
+p2.body
+u'before\nafter'
+F.compareOutlines failed
+p1 &lt;pos 78971856 childIndex: 0 lvl: 5 [5] tempNode&gt; &lt;vnode 21722224:'tempNode'&gt;
+p2 &lt;pos 78973936 childIndex: 1 lvl: 6 [6] after&gt; &lt;vnode 21824432:'after'&gt;
+p1.numberOfChildren()=0, p2.numberOfChildren()=1
+p1.body
+u'before\n    &lt;&lt; section &gt;&gt;\n    sec line 1\n        sec line 2 indented\nsec line 3\nafter'
+p2.body
+u'before\n    &lt;&lt; section &gt;&gt;\nafter'
+F.
+End of leoUndo tests.
+..tree.redrawCount: 832
+.................................................................
+End of leoImport tests.
+.
+======================================================================
+ERROR: @test findWordInLine
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 14, in &lt;module&gt;
+    assert i == 2, 'expected 2, got' % (i)
+TypeError: not all arguments converted during string formatting
+
+======================================================================
+ERROR: @test inserting a new node can be undone and redone
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 5, in &lt;module&gt;
+    assert u.undoMenuLabel == 'Undo Insert Node',repr(c.undoMenuLabel)
+AttributeError: 'Commands' object has no attribute 'undoMenuLabel'
+
+======================================================================
+ERROR: @test minbuffer find commands
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 14, in &lt;module&gt;
+    c.k.simulateCommand(command)
+  File "C:\leo.repo\trunk\leo\core\leoKeys.py", line 3064, in simulateCommand
+    k.masterCommand(event,func,stroke)
+  File "C:\leo.repo\trunk\leo\core\leoKeys.py", line 2539, in masterCommand
+    c.doCommand(func,commandName,event=event)
+  File "C:\leo.repo\trunk\leo\core\leoCommands.py", line 363, in doCommand
+    val = command(event)
+  File "C:\leo.repo\trunk\leo\core\leoEditCommands.py", line 7773, in reSearchForward
+    self.getHandler().reSearchForward(event)
+  File "C:\leo.repo\trunk\leo\core\leoEditCommands.py", line 7681, in getHandler
+    self.openFindTab(show=show)
+  File "C:\leo.repo\trunk\leo\core\leoEditCommands.py", line 7622, in openFindTab
+    self.findTabHandler = g.app.gui.createFindTab(c,f)
+  File "C:\leo.repo\trunk\leo\core\leoGui.py", line 602, in createFindTab
+    return leoFind.nullFindTab(c,parentFrame)
+  File "C:\leo.repo\trunk\leo\core\leoFind.py", line 1501, in __init__
+    self.init(c) # New in 4.3: init only once.
+  File "C:\leo.repo\trunk\leo\core\leoFind.py", line 1688, in init
+    svar = self.svarDict[ivar].get()
+KeyError: 'entire-outline'
+
+======================================================================
+ERROR: @test set find mode commands
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 13, in &lt;module&gt;
+    c.k.simulateCommand(command)
+  File "C:\leo.repo\trunk\leo\core\leoKeys.py", line 3064, in simulateCommand
+    k.masterCommand(event,func,stroke)
+  File "C:\leo.repo\trunk\leo\core\leoKeys.py", line 2539, in masterCommand
+    c.doCommand(func,commandName,event=event)
+  File "C:\leo.repo\trunk\leo\core\leoCommands.py", line 363, in doCommand
+    val = command(event)
+  File "C:\leo.repo\trunk\leo\core\leoEditCommands.py", line 7693, in setFindScopeEveryWhere
+    return self.setFindScope('entire-outline')
+  File "C:\leo.repo\trunk\leo\core\leoEditCommands.py", line 7738, in setFindScope
+    self.getHandler().setFindScope(where)
+  File "C:\leo.repo\trunk\leo\core\leoEditCommands.py", line 7089, in setFindScope
+    var = h.svarDict['radio-search-scope'].get()
+AttributeError: 'NoneType' object has no attribute 'svarDict'
+
+======================================================================
+ERROR: @test show-find-options
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 3, in &lt;module&gt;
+    c.k.simulateCommand('show-find-options')
+  File "C:\leo.repo\trunk\leo\core\leoKeys.py", line 3064, in simulateCommand
+    k.masterCommand(event,func,stroke)
+  File "C:\leo.repo\trunk\leo\core\leoKeys.py", line 2539, in masterCommand
+    c.doCommand(func,commandName,event=event)
+  File "C:\leo.repo\trunk\leo\core\leoCommands.py", line 363, in doCommand
+    val = command(event)
+  File "C:\leo.repo\trunk\leo\core\leoEditCommands.py", line 7702, in showFindOptions
+    self.getHandler().showFindOptions()
+  File "C:\leo.repo\trunk\leo\core\leoEditCommands.py", line 7109, in showFindOptions
+    head  = self.getOption('search_headline')
+  File "C:\leo.repo\trunk\leo\core\leoEditCommands.py", line 7098, in getOption
+    def getOption (self,ivar):          return self.finder.getOption(ivar)
+AttributeError: 'NoneType' object has no attribute 'getOption'
+
+======================================================================
+ERROR: @test togle find options commands
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 17, in &lt;module&gt;
+    c.k.simulateCommand(command)
+  File "C:\leo.repo\trunk\leo\core\leoKeys.py", line 3064, in simulateCommand
+    k.masterCommand(event,func,stroke)
+  File "C:\leo.repo\trunk\leo\core\leoKeys.py", line 2539, in masterCommand
+    c.doCommand(func,commandName,event=event)
+  File "C:\leo.repo\trunk\leo\core\leoCommands.py", line 363, in doCommand
+    val = command(event)
+  File "C:\leo.repo\trunk\leo\core\leoEditCommands.py", line 7712, in toggleIgnoreCaseOption
+    return self.toggleOption('ignore_case')
+  File "C:\leo.repo\trunk\leo\core\leoEditCommands.py", line 7740, in toggleOption
+    self.getHandler().toggleOption(ivar)
+  File "C:\leo.repo\trunk\leo\core\leoEditCommands.py", line 7100, in toggleOption
+    def toggleOption (self,ivar):       self.finder.toggleOption(ivar)
+AttributeError: 'NoneType' object has no attribute 'toggleOption'
+
+======================================================================
+FAIL: @test simpleHangingIndent
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 7, in &lt;module&gt;
+    leoTest.singleParagraphTest(c,p,5,8)
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1527, in __init__
+    reformatParagraphTest.__init__(self,c,p)
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1382, in __init__
+    self.go()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1389, in go
+    self.runTest()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1536, in runTest
+    self.checkText()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1415, in checkText
+    + "\n  Actual text: " + repr(newLines[i])
+AssertionError: Mismatch on line 0.
+Expected text: u'Honor this line that has a hanging\n'
+  Actual text: u'Honor this line that has a hanging indentation, please.  Hanging\n'
+
+======================================================================
+FAIL: @test testSimpleHangingIndentVar1
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 7, in &lt;module&gt;
+    leoTest.singleParagraphTest(c,p,5,8)
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1527, in __init__
+    reformatParagraphTest.__init__(self,c,p)
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1382, in __init__
+    self.go()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1389, in go
+    self.runTest()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1536, in runTest
+    self.checkText()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1415, in checkText
+    + "\n  Actual text: " + repr(newLines[i])
+AssertionError: Mismatch on line 0.
+Expected text: u'Honor this line that has a hanging\n'
+  Actual text: u'Honor this line that has\n'
+
+======================================================================
+FAIL: @test simpleHangingIndentVar2
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 7, in &lt;module&gt;
+    leoTest.singleParagraphTest(c,p,5,8)
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1527, in __init__
+    reformatParagraphTest.__init__(self,c,p)
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1382, in __init__
+    self.go()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1389, in go
+    self.runTest()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1536, in runTest
+    self.checkText()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1415, in checkText
+    + "\n  Actual text: " + repr(newLines[i])
+AssertionError: Mismatch on line 0.
+Expected text: u'Honor this line that has a hanging\n'
+  Actual text: u'Honor this line that \n'
+
+======================================================================
+FAIL: @test multiParagraphTest
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 7, in &lt;module&gt;
+    leoTest.multiParagraphTest(c,p)
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1382, in __init__
+    self.go()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1389, in go
+    self.runTest()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1549, in runTest
+    self.checkPosition(13,0)
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1400, in checkPosition
+    assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
+AssertionError: Got row 1.  Expected 13
+
+======================================================================
+FAIL: @test multiParagraphWithListTest
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 8, in &lt;module&gt;
+    leoTest.multiParagraphWithListTest(c,p)
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1382, in __init__
+    self.go()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1389, in go
+    self.runTest()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1571, in runTest
+    self.checkPosition(4,0)
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1400, in checkPosition
+    assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
+AssertionError: Got row 1.  Expected 4
+
+======================================================================
+FAIL: @test leadingWSOnEmptyLinesTest
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 18, in &lt;module&gt;
+    leoTest.leadingWSOnEmptyLinesTest(c,p)
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1382, in __init__
+    self.go()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1389, in go
+    self.runTest()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1597, in runTest
+    self.checkPosition(4,0)
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1400, in checkPosition
+    assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
+AssertionError: Got row 1.  Expected 4
+
+======================================================================
+FAIL: @test directiveBreaksParagraphTest
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 5, in &lt;module&gt;
+    leoTest.directiveBreaksParagraphTest(c,p)
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1382, in __init__
+    self.go()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1389, in go
+    self.runTest()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1623, in runTest
+    self.checkPosition(13,0) # at next paragraph
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1400, in checkPosition
+    assert expRow == row, "Got row %d.  Expected %d" % (row,expRow)
+AssertionError: Got row 1.  Expected 13
+
+======================================================================
+FAIL: @test selfInsertCommand-2 (replacing tabs)
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 14, in &lt;module&gt;
+    assert result.endswith('\n    ###abcdef'),'result\n%s' % (repr(result))
+AssertionError: result
+u'z\n    Y\n    X\n    c\nb\nA\n'
+
+======================================================================
+FAIL: @test set-fill-prefix
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 9, in &lt;module&gt;
+    assert c.editCommands.fillPrefix == 'xxxx.yyyy'
+AssertionError
+
+======================================================================
+FAIL: @test capitalizeHelper
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 12, in &lt;module&gt;
+    assert word == result, 'Expected %s, got: %s' % (result,repr(word))
+AssertionError: Expected Targetword, got: u'fore\naaaY1'
+
+======================================================================
+FAIL: @test findWord
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 14, in &lt;module&gt;
+    assert i == 10, 'expected 15, got %s' % (i)
+AssertionError: expected 15, got 0
+
+======================================================================
+FAIL: @test inserting a new node draws the screen exactly once
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 11, in &lt;module&gt;
+    assert n2 == n + 1,'redraws: %d' % (n2 - n)
+AssertionError: redraws: 2
+
+======================================================================
+FAIL: @test paste from menu into headline sticks
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 24, in &lt;module&gt;
+    assert p.h == h + paste,'oops1: expected: %s, got %s' % (h + paste,p.h)
+AssertionError: oops1: expected: Test headline abcABC, got Test headline abc
+
+======================================================================
+FAIL: @test selecting new node retains paste in headline
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 20, in &lt;module&gt;
+    assert p.h == h + paste
+AssertionError
+
+======================================================================
+FAIL: @test c.frame.pasteText
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 13, in &lt;module&gt;
+    assert len(s2) == len(s) + len('target')
+AssertionError
+
+======================================================================
+FAIL: @test c.frame.pasteText 2
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 10, in &lt;module&gt;
+    assert s == s2, 'w.getAllText() != p.b: len(w)=%d, len(p)=%d' % (len(s),len(s2))
+AssertionError: w.getAllText() != p.b: len(w)=0, len(p)=590
+
+======================================================================
+FAIL: @test leoBody.getInsertLines
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 11, in &lt;module&gt;
+    assert before == '# line 1\n','Got %s' % repr(before)
+AssertionError: Got u''
+
+======================================================================
+FAIL: @test p.setBodyStringOrPane
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 15, in &lt;module&gt;
+    "c.setBodyString failed: %s, %s" % (repr(s),repr(after))
+AssertionError: c.setBodyString failed: u'', 'after'
+
+======================================================================
+FAIL: @test insert node
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 186, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 21, in &lt;module&gt;
+    assert p == p2,         'fail 3'
+AssertionError: fail 3
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1096, in runTest
+    self.editBody()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1082, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: addComments: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1096, in runTest
+    self.editBody()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1082, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertAllBlanks: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1096, in runTest
+    self.editBody()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1082, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertAllTabs: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1096, in runTest
+    self.editBody()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1082, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertBlanks: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1096, in runTest
+    self.editBody()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1082, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: convertTabs: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1096, in runTest
+    self.editBody()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1082, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: dedentBody: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1096, in runTest
+    self.editBody()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1082, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: deleteComments: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1096, in runTest
+    self.editBody()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1082, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: extract: before undo1
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.editBodyTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1096, in runTest
+    self.editBody()
+  File "C:\leo.repo\trunk\leo\core\leoTest.py", line 1082, in editBody
+    assert u.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
+AssertionError: extractSection: before undo1
+
+----------------------------------------------------------------------
+Ran 709 tests in 62.594s
+
+FAILED (failures=28, errors=6)
+</t>
+<t tx="ekr.20090514101216.1927"># 'self' is now defined in @test and @suite nodes.
+self.assertNotEqual(1,2)</t>
+<t tx="ekr.20090514103332.1929"></t>
 </tnodes>
 </leo_file>
