@@ -126,7 +126,7 @@ def onUnselect (tag,keywords):
             # Erase image if it was previously displayed
             a = g.app ; c = keywords.get("c")
 
-            if a.gsimage:
+            if getattr(a, 'gsimage', None):
                 try:
                     c.frame.body.bodyCtrl.delete(a.gsimage)
                 except:
