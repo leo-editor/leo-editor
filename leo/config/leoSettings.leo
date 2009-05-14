@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,0,0,1"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,7,1"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -99,8 +99,8 @@
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
 <v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
-<v t="ekr.20070926132045" a="E"><vh>Common @button nodes</vh>
-<v t="ekr.20070926082407" a="E"><vh>@buttons</vh>
+<v t="ekr.20070926132045"><vh>Common @button nodes</vh>
+<v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
 <v t="ekr.20071009135515"><vh>@@button rst3</vh></v>
 </v>
@@ -318,13 +318,14 @@
 </v>
 </v>
 </v>
-<v t="ekr.20061003173413"><vh>File options</vh>
+<v t="ekr.20061003173413" a="E"><vh>File options</vh>
 <v t="ekr.20041119034357.7"><vh>.leo file options</vh>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
 <v t="ekr.20061004150211"></v>
 <v t="ekr.20080921060401.3"><vh>@string default_leo_file = ~/.leo/workbook.leo</vh></v>
 </v>
+<v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
 <v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
 <v t="ekr.20061009190510"></v>
 <v t="tbrown.20081003103821.1"><vh>@bool recent_files_group = False</vh></v>
@@ -7870,6 +7871,7 @@ The default for all other languages is:
 A reasonable alternative would be:
     
 '\n.. class:: code\n..\n\n::\n'</t>
+<t tx="ekr.20090514111518.8379"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

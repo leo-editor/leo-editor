@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -361,7 +361,7 @@
 <v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
 </v>
 </v>
-<v t="ekr.20090514103332.1929" a="E"><vh>Unit tests</vh>
+<v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
 <v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
@@ -377,6 +377,7 @@
 <v t="ekr.20090513154754.1912"><vh>@rst-no-head rst-test declarations</vh></v>
 <v t="ekr.20090512121208.1908" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355033d2b2a7104752e"><vh>@auto rst-test.txt</vh></v>
 <v t="ekr.20090514081019.1925"><vh>Failed unit tests with nullGui</vh></v>
+<v t="ekr.20090514114254.1931" a="M"><vh>@thin test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'

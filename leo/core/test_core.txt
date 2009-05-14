@@ -6,6 +6,7 @@
 # Run these tests with either:
 # 
 # - Alt-5, run-unit-tests
+# - run-all-unit-tests
 # - Alt-7, run-all-core-tests
 # 
 # The run-all-core-tests script button allows you to choose the gui.

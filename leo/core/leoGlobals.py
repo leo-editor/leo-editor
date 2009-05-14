@@ -5260,7 +5260,13 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
     Return the expansion of all of node p's body text if there
     is p is not the current node or if there is no text selection.'''
 
-    at = c.atFileCommands ; w = c.frame.body.bodyCtrl
+    # New in Leo 4.6 b2: use a pristine atFile handler
+    # so there can be no conflict with c.atFileCommands.
+    # at = c.atFileCommands
+    import leo.core.leoAtFile as leoAtFile
+    at = leoAtFile.atFile(c)
+
+    w = c.frame.body.bodyCtrl
     p1 = p and p.copy()
     if not p:
         p = c.p

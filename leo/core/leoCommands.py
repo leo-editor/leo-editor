@@ -4009,7 +4009,9 @@ class baseCommands (object):
         return result
     #@-node:ekr.20040723094220.1:checkAllPythonCode
     #@+node:ekr.20040723094220.3:checkPythonCode
-    def checkPythonCode (self,event=None,unittest=False,ignoreAtIgnore=True,suppressErrors=False):
+    def checkPythonCode (self,event=None,
+        unittest=False,ignoreAtIgnore=True,
+        suppressErrors=False,checkOnSave=False):
 
         '''Check the selected tree for syntax and tab errors.'''
 
@@ -4021,7 +4023,7 @@ class baseCommands (object):
         for p in c.p.self_and_subtree_iter():
 
             count += 1
-            if not unittest:
+            if not unittest and not checkOnSave:
                 #@            << print dots >>
                 #@+node:ekr.20040723094220.4:<< print dots >>
                 if count % 100 == 0:
@@ -4060,6 +4062,7 @@ class baseCommands (object):
         if not body: return
 
         try:
+            import parser
             compiler.parse(body + '\n')
         except (parser.ParserError,SyntaxError):
             if not suppressErrors:
@@ -4069,6 +4072,9 @@ class baseCommands (object):
             else:
                 g.es_exception(full=False,color="black")
                 c.setMarked(p)
+        except Exception:
+            g.es_print('unexpected exception')
+            g.es_exception()
 
         c.tabNannyNode(p,h,body,unittest,suppressErrors)
     #@-node:ekr.20040723094220.5:checkPythonNode
