@@ -3,14 +3,15 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="37" left="323" height="977" width="950"/>
+	<global_window_position top="37" left="234" height="977" width="1039"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20051031040240" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
+<v t="ekr.20090514093345.6054"><vh>Disabled buttons</vh>
 <v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
 <v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
 <v t="ekr.20071001054335"><vh>@@button split-defs</vh></v>
@@ -44,6 +45,7 @@
 <v t="ekr.20060910141935.2"><vh>@@button zodb-write</vh></v>
 </v>
 </v>
+</v>
 <v t="ekr.20080312060129.6"><vh>Commands</vh>
 <v t="ekr.20060531093331"><vh>@@command clones-tab</vh>
 <v t="ekr.20060531093331.1"><vh>class cloneNavigator</vh>
@@ -68,18 +70,20 @@
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
 <v t="ekr.20060217111834"><vh>@url http://docs.python.org/lib/re-syntax.html</vh></v>
-<v t="ekr.20060908104329"><vh>@url file:c:/prog/tigris-cvs/leo/doc/leoDocs.leo#Users Guide</vh></v>
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.3"><vh>Projects</vh>
-<v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d71002855013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c68067573550a302e302e352e31382e30710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@thin leoProjects.txt</vh></v>
-</v>
-<v t="ekr.20090113083258.3"><vh>Unit tests</vh>
-<v t="ekr.20090113083258.1"><vh>@thin test_core.txt</vh></v>
+<v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c68067573732e"
+expanded="ekr.20090502071837.46,ekr.20070627135407,ekr.20070627140344,"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20040117181936"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
+</v>
+<v t="ekr.20090113083258.3"><vh>Unit tests</vh>
+<v t="ekr.20090514093345.6053"><vh>@button run-all-core-tests @key = Alt-7</vh></v>
+<v t="ekr.20090113083258.1"
+expanded="ekr.20090201135500.1,"><vh>@thin test_core.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20090128070032.1"><vh>  How to profile Leo</vh></v>
@@ -87,7 +91,8 @@
 <v t="ekr.20040629121554.1"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@thin leoApp.py</vh></v>
-<v t="ekr.20041005105605.1"><vh>@thin leoAtFile.py</vh></v>
+<v t="ekr.20041005105605.1"
+expanded="ekr.20041005105605.133,ekr.20041005105605.134,ekr.20070806105859,ekr.20070806141607,"><vh>@thin leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
@@ -96,10 +101,13 @@
 <v t="ekr.20050710142719"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@thin leoFileCommands.py</vh></v>
 <v t="ekr.20031218072017.3093"><vh>@thin leoGlobals.py</vh></v>
-<v t="ekr.20031218072017.3206"><vh>@thin leoImport.py</vh></v>
+<v t="ekr.20031218072017.3206"
+expanded="ekr.20070713075450,"><vh>@thin leoImport.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@thin leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@thin leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@thin leoPymacs.py</vh></v>
+<v t="ekr.20090502071837.3"
+expanded="ekr.20090502071837.46,"><vh>@thin leoRst.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@thin leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@thin leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@thin leoUndo.py</vh></v>
@@ -116,8 +124,10 @@
 </v>
 <v t="ekr.20080730161153.8"><vh>Test classes</vh>
 <v t="ekr.20080730161153.2"><vh>@thin leoBridgeTest.py</vh></v>
-<v t="ekr.20080730161153.5"><vh>@thin leoDynamicTest.py</vh></v>
-<v t="ekr.20051104075904" annotate="285808000000616e6e6f7461746571007d71017471022e" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@thin leoTest.py</vh></v>
+<v t="ekr.20080730161153.5"
+expanded="ekr.20080730161153.6,"><vh>@thin leoDynamicTest.py</vh></v>
+<v t="ekr.20051104075904" annotate="285808000000616e6e6f7461746571007d71017471022e" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"
+expanded="ekr.20070627140344,"><vh>@thin leoTest.py</vh></v>
 </v>
 </v>
 </vnodes>
@@ -289,7 +299,6 @@ def gotoSelectedPosition(event,lb=self.lb,c=c,positions=clones):
     c.selectPosition(p)
     return
 self.lb.bind(g.angleBrackets("ListboxSelect"), gotoSelectedPosition)</t>
-<t tx="ekr.20060908104329"></t>
 <t tx="ekr.20060910141935"></t>
 <t tx="ekr.20060910141935.1"># c.k.simulateCommand('read-zodb-file')
 
@@ -808,5 +817,16 @@ To gather statistics, do the following in a console window, not idle:
 Intermediate data is written to cwd.leoProfile.txt.
 The statistics are written to stdout.
 </t>
+<t tx="ekr.20090514093345.6053">'''
+Run all the unit tests in the .leo file given by the path.
+The path is relative to the leo\test directory.
+'''
+
+import leo.core.leoTest as leoTest
+
+leoTest.runUnitTestLeoFile(gui='nullGui',path='../core/leoPy.leo')
+
+g.es_print('unit tests done',color='blue')</t>
+<t tx="ekr.20090514093345.6054"></t>
 </tnodes>
 </leo_file>
