@@ -74,6 +74,7 @@ def doTests(c,all=None,p=None,verbosity=1):
     p1 = p.copy()
 
     try:
+        found = False
         g.unitTesting = g.app.unitTesting = True
         g.app.unitTestDict["fail"] = False
         g.app.unitTestDict['c'] = c
@@ -93,25 +94,28 @@ def doTests(c,all=None,p=None,verbosity=1):
                 p.moveToNodeAfterTree()
             elif isTestNode(p): # @test
                 test = makeTestCase(c,p)
-                if test: suite.addTest(test)
+                if test:
+                    suite.addTest(test) ; found = True
                 p.moveToThreadNext()
             elif isSuiteNode(p): # @suite
                 # g.trace(p.h)
                 test = makeTestSuite(c,p)
-                if test: suite.addTest(test)
+                if test:
+                    suite.addTest(test) ; found = True
                 p.moveToThreadNext()
             else:
                 p.moveToThreadNext()
 
         # Verbosity: 1: print just dots.
-        res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
-        # put info to db as well
-
-        key = 'unittest/cur/fail'
-        archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
-        c.db[key] = archive
-
-        #g.pdb()
+        if found:
+            res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
+            # put info to db as well
+            key = 'unittest/cur/fail'
+            archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
+            c.db[key] = archive
+        else:
+            g.es_print('no @test or @suite nodes in %s outline' % (
+                g.choose(all,'entire','selected')),color='red')
     finally:
         c.setChanged(changed) # Restore changed state.
         if g.app.unitTestDict.get('restoreSelectedNode',True):
@@ -683,6 +687,26 @@ def runLeoTest(c,path,verbose=False,full=False):
             g.app.closeLeoWindow(frame)
         c.frame.update() # Restored in Leo 4.4.8.
 #@-node:ekr.20051104075904.42:runLeoTest
+#@+node:ekr.20090514072254.5746:runUnitTestLeoFile
+def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
+
+    '''Run all unit tests in path (a .leo file) in a pristine environment.'''
+
+    # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test',path)
+    leo  = g.os_path_finalize_join(g.app.loadDir,'..','core','leoDynamicTest.py')
+
+    if sys.platform.startswith('win'): 
+        if ' ' in leo: leo = '"' + leo + '"'
+        if ' ' in path: path = '"' + path + '"'
+
+    guiArg = '--gui=%s' % gui
+    pathArg = '--path=%s' % path
+    args = [sys.executable,leo,path,guiArg,pathArg]
+    if silent: args.append('--silent')
+
+    os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
+#@-node:ekr.20090514072254.5746:runUnitTestLeoFile
 #@+node:ekr.20070627135407:runTestsExternally & helper class
 def runTestsExternally (c,all):
 
@@ -801,60 +825,41 @@ def runTestsExternally (c,all):
         #@-node:ekr.20070705075604.3:isUnitTestNode
         #@-node:ekr.20070627135336.9:createOutline & helpers
         #@+node:ekr.20070627140344.2:runTests
-        def runTests (self):
+        def runTests (self,gui='nullGui',trace=False):
 
             '''
             Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo in a separate process.
             '''
 
-            trace = False
+            trace = False or trace
             if trace: import time
             kind = g.choose(self.all,'all ','')
             g.es('running',kind,'unit tests',color='blue')
-            g.pr('creating: %s' % (self.fileName))
+            print('creating: %s' % (self.fileName))
             c = self.c ; p = c.p
             if trace: t1 = time.time()
             found = self.searchOutline(p.copy())
             if trace:
-                 t2 = time.time() ; g.pr('find:  %0.2f' % (t2-t1))
+                 t2 = time.time() ; print('find:  %0.2f' % (t2-t1))
             if found:
-                gui = leoGui.nullGui("nullGui")
-                c2 = c.new(gui=gui)
+                theGui = leoGui.nullGui("nullGui")
+                c2 = c.new(gui=theGui)
                 if trace:
-                    t3 = time.time() ; g.pr('gui:   %0.2f' % (t3-t2))
+                    t3 = time.time() ; print('gui:   %0.2f' % (t3-t2))
                 found = self.createOutline(c2)
                 if trace:
-                    t4 = time.time() ; g.pr('copy:  %0.2f' % (t4-t3))
+                    t4 = time.time() ; print('copy:  %0.2f' % (t4-t3))
                 self.createFileFromOutline(c2)
                 if trace:
-                    t5 = time.time() ; g.pr('write: %0.2f' % (t5-t4))
-                self.runLeoDynamicTest()
+                    t5 = time.time() ; print('write: %0.2f' % (t5-t4))
+                runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo',silent=True)
                 if trace:
-                    t6 = time.time() ; g.pr('run:   %0.2f' % (t6-t5))
+                    t6 = time.time() ; print('run:   %0.2f' % (t6-t5))
                 c.selectPosition(p.copy())
             else:
-                g.es_print('no @test or @suite nodes in selected outline')
+                g.es_print('no @test or @suite nodes in %s outline' % (
+                    g.choose(self.all,'entire','selected')),color='red')
         #@-node:ekr.20070627140344.2:runTests
-        #@+node:ekr.20070627135336.11:runLeoDynamicTest
-        def runLeoDynamicTest (self,gui='nullGui'):
-
-            '''Run test/leoDynamicTest.py in a pristine environment.'''
-
-            # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
-            path = g.os_path_finalize_join(
-                g.app.loadDir,'leoDynamicTest.py')
-
-            if ' ' in path and sys.platform.startswith('win'): 
-                path = '"' + path + '"'
-
-            args = [sys.executable, path, '--silent' '--gui=%s' % (gui)]  
-
-            # srcDir = g.os_path_finalize_join(g.app.loadDir,'..','src')
-            # srcDir = g.os_path_finalize_join(g.app.loadDir,'..')
-            # os.chdir(srcDir)
-
-            os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
-        #@-node:ekr.20070627135336.11:runLeoDynamicTest
         #@+node:ekr.20070627135336.8:searchOutline
         def searchOutline (self,p):
 
@@ -935,15 +940,15 @@ def runAtFileTest(c,p):
     except AssertionError:
         #@        << dump result and expected >>
         #@+node:ekr.20051104075904.45:<< dump result and expected >>
-        g.pr('\n','-' * 20)
-        g.pr("result...")
+        print('\n','-' * 20)
+        print("result...")
         for line in g.splitLines(result):
-            g.pr("%3d" % len(line),repr(line))
-        g.pr('-' * 20)
-        g.pr("expected...")
+            print("%3d" % len(line),repr(line))
+        print('-' * 20)
+        print("expected...")
         for line in g.splitLines(expected):
-            g.pr("%3d" % len(line),repr(line))
-        g.pr('-' * 20)
+            print("%3d" % len(line),repr(line))
+        print('-' * 20)
         #@-node:ekr.20051104075904.45:<< dump result and expected >>
         #@nl
         raise
