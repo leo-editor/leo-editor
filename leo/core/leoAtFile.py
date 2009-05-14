@@ -2730,6 +2730,11 @@ class atFile:
         fn = c.os_path_finalize_join(at.default_directory,fn)
         exists = g.os_path_exists(fn)
 
+        if (root and self.checkPythonCodeOnWrite and
+            self.targetFileName and self.targetFileName.endswith('.py')
+        ):
+            self.checkPythonCode(root)
+
         if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
             return False
 
@@ -4330,8 +4335,8 @@ class atFile:
                 self.fileChangedFlag = False
                 return False
             else:
-                if (root and self.checkPythonCodeOnWrite
-                    and self.targetFileName.endswith('.py')
+                if (root and self.checkPythonCodeOnWrite and
+                    self.targetFileName and self.targetFileName.endswith('.py')
                 ):
                     self.checkPythonCode(root)
                 #@            << report if the files differ only in line endings >>
