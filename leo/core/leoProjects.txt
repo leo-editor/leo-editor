@@ -837,7 +837,6 @@ def getPublicCommands (self):
     }
 #@-node:ekr.20050920084036.259:getPublicCommands (searchCommandsClass)
 #@-node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
-#@-node:ekr.20090401105902.3:Features
 #@+node:ekr.20090511055302.5784:Rst projects
 #@+node:ekr.20090513073632.5734:Maybe not: support @ua
 @nocolor-node
@@ -3137,6 +3136,464 @@ def writeHeadlineHelper (self,p):
 #@-node:ekr.20090502071837.84:writeHeadlineHelper
 #@-node:ekr.20090511055302.10652:Support @auto for general rST files
 #@-node:ekr.20090511055302.5784:Rst projects
+#@+node:ekr.20090514072254.5744:Improved unit testing .leo files
+@nocolor-node
+
+What I did:
+
+- leoDynamicTest.py now supports a --path argument giving the .leo file.
+  Duh!  This is so useful!
+
+- leoDynamicTest.py now honors the --silent argument.
+
+- leoTest.runUnitTestLeoFile runs all unit tests in a given .leo file
+  in a separate process.
+
+- leoTest.runTestsExternally calls runUnitTestLeoFile after creating
+  dynamicUnitTest.leo.
+
+- When reporting that no unit tests were found, all unit tests commands tell
+  whether the entire outline or just the selected outline was searched.
+  This fixes sometimes-misleading error messages.
+
+- test.leo contains a 'run-test.leo-tests' button.
+
+- leoPy.leo contains a 'run-all-core-tests' button.
+#@nonl
+#@+node:ekr.20090514093345.6052:An example script
+'''
+Run all the unit tests in the .leo file given by the path.
+The path is relative to the leo\test directory.
+'''
+
+import leo.core.leoTest as leoTest
+
+leoTest.runUnitTestLeoFile(gui='nullGui',path='../core/leoPy.leo')
+
+g.es_print('unit tests done',color='blue')
+#@nonl
+#@-node:ekr.20090514093345.6052:An example script
+#@+node:ekr.20090514072254.5746:runUnitTestLeoFile
+def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
+
+    '''Run all unit tests in path (a .leo file) in a pristine environment.'''
+
+    # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test',path)
+    leo  = g.os_path_finalize_join(g.app.loadDir,'..','core','leoDynamicTest.py')
+
+    if sys.platform.startswith('win'): 
+        if ' ' in leo: leo = '"' + leo + '"'
+        if ' ' in path: path = '"' + path + '"'
+
+    guiArg = '--gui=%s' % gui
+    pathArg = '--path=%s' % path
+    args = [sys.executable,leo,path,guiArg,pathArg]
+    if silent: args.append('--silent')
+
+    os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
+#@-node:ekr.20090514072254.5746:runUnitTestLeoFile
+#@+node:ekr.20060328121145:runUnitTest commands
+def runAllUnitTestsLocally (self,event=None):
+    '''Run all unit tests contained in the presently selected outline.
+    Tests are run in the outline's process, so tests *can* change the outline.'''
+    c = self.c
+    leoTest.doTests(c,all=True)
+
+def runUnitTestsLocally (self,event=None):
+    '''Run all unit tests contained in the presently selected outline.
+    Tests are run in the outline's process, so tests *can* change the outline.'''
+    c = self.c
+    leoTest.doTests(c,all=False)
+
+def runAllUnitTests (self,event=None):
+    '''Run all unit tests contained in the entire outline.
+    Tests are run in an external process, so tests *cannot* change the outline.'''
+    c = self.c
+    leoTest.runTestsExternally(c,all=True)
+
+def runUnitTests(self,event=None):
+    '''Run all unit tests contained in the presently selected outline
+    Tests are run in an external process, so tests *cannot* change the outline.'''
+    c = self.c
+    leoTest.runTestsExternally(c,all=False)
+#@-node:ekr.20060328121145:runUnitTest commands
+#@+node:ekr.20051104075904.4:doTests...
+def doTests(c,all=None,p=None,verbosity=1):
+
+    if p:
+        pass
+    elif all:
+        p = c.rootPosition()
+    else:
+        p = c.p
+    p1 = p.copy()
+
+    try:
+        found = False
+        g.unitTesting = g.app.unitTesting = True
+        g.app.unitTestDict["fail"] = False
+        g.app.unitTestDict['c'] = c
+        g.app.unitTestDict['g'] = g
+        g.app.unitTestDict['p'] = p and p.copy()
+
+        # c.undoer.clearUndoState() # New in 4.3.1.
+        changed = c.isChanged()
+        suite = unittest.makeSuite(unittest.TestCase)
+
+        # New in Leo 4.4.8: ignore everything in @ignore trees.
+        if all: last = None
+        else:   last = p.nodeAfterTree()
+        while p and p != last:
+            h = p.h
+            if g.match_word(h,0,'@ignore'):
+                p.moveToNodeAfterTree()
+            elif isTestNode(p): # @test
+                test = makeTestCase(c,p)
+                if test:
+                    suite.addTest(test) ; found = True
+                p.moveToThreadNext()
+            elif isSuiteNode(p): # @suite
+                # g.trace(p.h)
+                test = makeTestSuite(c,p)
+                if test:
+                    suite.addTest(test) ; found = True
+                p.moveToThreadNext()
+            else:
+                p.moveToThreadNext()
+
+        # Verbosity: 1: print just dots.
+        if found:
+            res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
+            # put info to db as well
+            key = 'unittest/cur/fail'
+            archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
+            c.db[key] = archive
+        else:
+            g.es_print('no @test or @suite nodes in %s outline' % (
+                g.choose(all,'entire','selected')),color='red')
+    finally:
+        c.setChanged(changed) # Restore changed state.
+        if g.app.unitTestDict.get('restoreSelectedNode',True):
+            c.redraw(p1)
+        g.unitTesting = g.app.unitTesting = False
+#@+node:ekr.20051104075904.5:class generalTestCase
+class generalTestCase(unittest.TestCase):
+
+    """Create a unit test from a snippet of code."""
+
+    @others
+#@+node:ekr.20051104075904.6:__init__
+def __init__ (self,c,p):
+
+     # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.p = p.copy()
+#@-node:ekr.20051104075904.6:__init__
+#@+node:ekr.20051104075904.7: fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+#@-node:ekr.20051104075904.7: fail
+#@+node:ekr.20051104075904.9:tearDown
+def tearDown (self):
+
+    pass
+
+    # Restore the outline.
+    self.c.outerUpdate()
+#@nonl
+#@-node:ekr.20051104075904.9:tearDown
+#@+node:ekr.20051104075904.8:setUp
+def setUp (self):
+
+    c = self.c ; p = self.p
+
+    c.selectPosition(p)
+#@-node:ekr.20051104075904.8:setUp
+#@+node:ekr.20051104075904.10:runTest
+def runTest (self,define_g = True):
+
+    c = self.c ; p = self.p.copy()
+    script = g.getScript(c,p).strip()
+    # print ('p',p,'len(script)',len(script))
+    self.assert_(script)
+    writeScriptFile = c.config.getBool('write_script_file')
+
+    # import leo.core.leoGlobals as g
+
+    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    if define_g:
+        d = {'c':c,'g':g,'p':p,'self':self,}
+    else:
+        d = {'self':self,}
+
+    script = script + '\n'
+    # g.trace(type(script),script)
+
+    # Execute the script. Let unit test handle any errors!
+
+    if writeScriptFile:
+        scriptFile = c.writeScriptFile(script)
+        execfile(scriptFile,d)
+    else:
+        exec(script,d)
+
+    # if 0: # debug
+        # import pdb
+        # pdb.run(script+'\n',d)
+    # else:
+        # exec script + '\n' in d
+#@-node:ekr.20051104075904.10:runTest
+#@+node:ekr.20051104075904.11:shortDescription
+def shortDescription (self):
+
+    s = self.p.h
+
+    # g.trace(s)
+
+    return s + '\n'
+#@-node:ekr.20051104075904.11:shortDescription
+#@-node:ekr.20051104075904.5:class generalTestCase
+#@+node:ekr.20051104075904.12:makeTestSuite
+@ This code executes the script in an @suite node.  This code assumes:
+- The script creates a one or more unit tests.
+- The script puts the result in g.app.scriptDict["suite"]
+@c
+
+def makeTestSuite (c,p):
+
+    """Create a suite of test cases by executing the script in an @suite node."""
+
+    # import leo.core.leoGlobals as g
+    p = p.copy()
+
+    h = p.h
+    script = g.getScript(c,p).strip()
+    if not script:
+        g.pr("no script in %s" % h)
+        return None
+
+    try:
+        exec(script + '\n',{'c':c,'g':g,'p':p})
+        suite = g.app.scriptDict.get("suite")
+        if not suite:
+            g.pr("%s script did not set g.app.scriptDict" % h)
+        return suite
+    except Exception:
+        g.trace('Exception creating test cases for %s' % p.h)
+        g.es_exception()
+        return None
+#@-node:ekr.20051104075904.12:makeTestSuite
+#@+node:ekr.20051104075904.13:makeTestCase
+def makeTestCase (c,p):
+
+    p = p.copy()
+
+    if p.b.strip():
+        return generalTestCase(c,p)
+    else:
+        return None
+#@-node:ekr.20051104075904.13:makeTestCase
+#@-node:ekr.20051104075904.4:doTests...
+#@+node:ekr.20070627135407:runTestsExternally & helper class
+def runTestsExternally (c,all):
+
+    @others
+
+    runner = runTestHelperClass(c,all)
+    runner.runTests()
+#@+node:ekr.20070627140344:class runTestHelperClass
+class runTestHelperClass:
+
+    '''A helper class to run tests externally.'''
+
+    @others
+#@+node:ekr.20070627140344.1: ctor: runTestHelperClass
+def __init__(self,c,all):
+
+    self.c = c
+    self.all = all
+
+    self.copyRoot = None # The root of copied tree.
+    self.fileName = 'dynamicUnitTest.leo'
+    self.root = None # The root of the tree to copy when self.all is False.
+    self.tags = ('@test','@suite','@unittests','@unit-tests')
+#@-node:ekr.20070627140344.1: ctor: runTestHelperClass
+#@+node:ekr.20070627135336.10:createFileFromOutline
+def createFileFromOutline (self,c2):
+
+    '''Write c's outline to test/dynamicUnitTest.leo.'''
+
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test', self.fileName)
+
+    c2.selectPosition(c2.rootPosition())
+    c2.mFileName = path
+    c2.fileCommands.save(path)
+    c2.close()
+#@-node:ekr.20070627135336.10:createFileFromOutline
+#@+node:ekr.20070627135336.9:createOutline & helpers
+def createOutline (self,c2):
+
+    '''Create a unit test ouline containing all @test and @suite nodes in p's outline.'''
+
+    c = self.c ; markTag = '@mark-for-unit-tests'
+    self.copyRoot = c2.rootPosition()
+    self.copyRoot.initHeadString('All unit tests')
+    c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
+    self.seen = []
+    << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+
+    self.copyRoot.expand()
+    for p,limit,lookForMark,lookForNodes in (
+        (p1,limit1,lookForMark1,lookForNodes1),
+        (p2,limit2,lookForMark2,lookForNodes2),
+    ):
+        while p and p != limit:
+            h = p.h
+            if p.v.t in self.seen:
+                p.moveToNodeAfterTree()
+            elif lookForMark and h.startswith(markTag):
+                self.addMarkTree(p)
+                p.moveToNodeAfterTree()
+            elif lookForNodes and self.isUnitTestNode(p):
+                self.addNode(p)
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+#@nonl
+#@+node:ekr.20070705065154:<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+if self.all:
+    # A single pass looks for all tags everywhere.
+    p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,True
+    p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
+else:
+    # The first pass looks everywhere for only for @mark-for-unit-tests,
+    p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,False
+    # The second pass looks in the selected tree for everything except @mark-for-unit-tests.
+    # There is no second pass if the present node is an @mark-for-unit-test node.
+    p = c.p
+    if p.h.startswith(markTag):
+        p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
+    else:
+        p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
+#@nonl
+#@-node:ekr.20070705065154:<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+#@+node:ekr.20070705080413:addMarkTree
+def addMarkTree (self,p):
+
+    # g.trace(len(self.seen),p.h)
+
+    self.seen.append(p.v.t)
+
+    for p in p.subtree_iter():
+        if self.isUnitTestNode(p) and not p.v.t in self.seen:
+            self.addNode(p)
+#@-node:ekr.20070705080413:addMarkTree
+#@+node:ekr.20070705065154.1:addNode
+def addNode(self,p):
+
+    '''
+    Add an @test, @suite or an @unit-tests tree as the last child of self.copyRoot.
+    '''
+
+    # g.trace(len(self.seen),p.h)
+
+    p2 = p.copyTreeAfter()
+    p2.moveToLastChildOf(self.copyRoot)
+
+    self.seen.append(p.v.t)
+#@-node:ekr.20070705065154.1:addNode
+#@+node:ekr.20070705075604.3:isUnitTestNode
+def isUnitTestNode (self,p):
+
+    h = p.h
+    for tag in self.tags:
+        if h.startswith(tag):
+            return True
+    else:
+        return False
+#@-node:ekr.20070705075604.3:isUnitTestNode
+#@-node:ekr.20070627135336.9:createOutline & helpers
+#@+node:ekr.20070627140344.2:runTests
+def runTests (self,gui='nullGui',trace=False):
+
+    '''
+    Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo in a separate process.
+    '''
+
+    trace = False or trace
+    if trace: import time
+    kind = g.choose(self.all,'all ','')
+    g.es('running',kind,'unit tests',color='blue')
+    print('creating: %s' % (self.fileName))
+    c = self.c ; p = c.p
+    if trace: t1 = time.time()
+    found = self.searchOutline(p.copy())
+    if trace:
+         t2 = time.time() ; print('find:  %0.2f' % (t2-t1))
+    if found:
+        theGui = leoGui.nullGui("nullGui")
+        c2 = c.new(gui=theGui)
+        if trace:
+            t3 = time.time() ; print('gui:   %0.2f' % (t3-t2))
+        found = self.createOutline(c2)
+        if trace:
+            t4 = time.time() ; print('copy:  %0.2f' % (t4-t3))
+        self.createFileFromOutline(c2)
+        if trace:
+            t5 = time.time() ; print('write: %0.2f' % (t5-t4))
+        runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo',silent=True)
+        if trace:
+            t6 = time.time() ; print('run:   %0.2f' % (t6-t5))
+        c.selectPosition(p.copy())
+    else:
+        g.es_print('no @test or @suite nodes in %s outline' % (
+            g.choose(self.all,'entire','selected')),color='red')
+#@-node:ekr.20070627140344.2:runTests
+#@+node:ekr.20070627135336.8:searchOutline
+def searchOutline (self,p):
+
+    c = self.c ; p = c.p
+    iter = g.choose(self.all,c.all_positions_with_unique_tnodes_iter,p.self_and_subtree_iter)
+
+    # First, look down the tree.
+    for p in iter():
+        h = p.h
+        for s in self.tags:
+            if h.startswith(s):
+                self.root = c.p
+                return True
+
+    # Next, look up the tree.
+    if not self.all:   
+        for p in c.p.parents_iter():
+            h = p.h
+            for s in self.tags:
+                if h.startswith(s):
+                    c.selectPosition(p)
+                    self.root = p.copy()
+                    return True
+
+    # Finally, look for all @mark-for-unit-test nodes.
+    for p in c.all_positions_with_unique_tnodes_iter():
+        if p.h.startswith('@mark-for-unit-test'):
+            return True
+
+    return False
+#@-node:ekr.20070627135336.8:searchOutline
+#@-node:ekr.20070627140344:class runTestHelperClass
+#@-node:ekr.20070627135407:runTestsExternally & helper class
+#@-node:ekr.20090514072254.5744:Improved unit testing .leo files
+#@-node:ekr.20090401105902.3:Features
 #@-node:ekr.20080917153158.11:4.6 b2
 #@-all
 #@nonl

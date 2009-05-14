@@ -3,14 +3,14 @@
 #@+at
 # This is a good place for running tests during development.
 # 
-# All unit tests should eventually be placed in unitTest.leo.
-# running unit tests there allows you to choose the gui.
+# Run these tests with either:
 # 
-# Run these tests with alt-5, run-unit-tests, so that the last
-# saved code is used.
+# - Alt-5, run-unit-tests
+# - Alt-7, run-all-core-tests
+# 
+# The run-all-core-tests script button allows you to choose the gui.
 #@-at
 #@@c
-
 
 #@+all
 #@+node:ekr.20090201135500.1:Check base classes & ivars
