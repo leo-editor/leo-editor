@@ -2730,11 +2730,6 @@ class atFile:
         fn = c.os_path_finalize_join(at.default_directory,fn)
         exists = g.os_path_exists(fn)
 
-        if (root and self.checkPythonCodeOnWrite and
-            self.targetFileName and self.targetFileName.endswith('.py')
-        ):
-            self.checkPythonCode(root)
-
         if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
             return False
 
@@ -2788,6 +2783,8 @@ class atFile:
             x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
             at.replaceFileWithString(private_fn,at.private_s)
             at.replaceFileWithString(fn,at.public_s)
+
+        self.checkPythonCode(root,s=at.private_s,targetFn=fn)
 
         if at.errors == 0:
             root.clearOrphan()
@@ -3799,6 +3796,92 @@ class atFile:
     #@-node:ekr.20041005105605.194:putSentinel (applies cweb hack) 4.x
     #@-node:ekr.20041005105605.187:Writing 4,x sentinels...
     #@+node:ekr.20041005105605.196:Writing 4.x utils...
+    #@+node:ekr.20090514111518.5661:checkPythonCode (leoAtFile) & helpers
+    def checkPythonCode (self,root,s=None,targetFn=None):
+
+        c = self.c
+
+        if not targetFn: targetFn = self.targetFileName
+
+        if targetFn and targetFn.endswith('.py') and self.checkPythonCodeOnWrite:
+            try:
+                if not s: s = open(self.outputFileName).read()
+            except IOError:
+                g.trace('can not happen',g.callers(4))
+                return
+
+            # It's too slow to check each node separately.
+            ok = self.checkPythonSyntax(root,s)
+
+            # Syntax checking catches most indentation problems.
+            if False:
+                if ok: self.tabNannyNode(root,s)
+    #@nonl
+    #@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
+    def checkPythonSyntax (self,p,body):
+
+        try:
+            import compiler,parser
+            ok = True
+            compiler.parse(body + '\n')
+        except (parser.ParserError,SyntaxError):
+            self.syntaxError(p)
+            p.setMarked()
+            ok = False
+        except Exception:
+            g.trace("unexpected exception")
+            g.es_exception()
+            ok = False
+
+        return ok
+    #@nonl
+    #@+node:ekr.20090514111518.5666:syntaxError
+    def syntaxError(self,p):
+
+        import traceback
+
+        g.es_print("Syntax error in: %s" % (p.h),color="red")
+
+        # Similar to g.es_exception(full=False)
+        typ,val,tb = sys.exc_info()
+        lines = traceback.format_exception_only(typ,val)
+        for line in lines[1:]:
+            g.es_print(line)
+    #@-node:ekr.20090514111518.5666:syntaxError
+    #@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
+    #@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
+    def tabNannyNode (self,p,body):
+
+        try:
+            import parser,tabnanny,tokenize
+            readline = g.readLinesClass(body).next
+            tabnanny.process_tokens(tokenize.generate_tokens(readline))
+        except parser.ParserError:
+            junk, msg, junk = sys.exc_info()
+            g.es("ParserError in",p.h,color="red")
+            g.es('',str(msg))
+            p.setMarked()
+        except tokenize.TokenError:
+            junk, msg, junk = sys.exc_info()
+            g.es("TokenError in",headline,color="red")
+            g.es('',str(msg))
+            p.setMarked()
+        except tabnanny.NannyNag:
+            junk, nag, junk = sys.exc_info()
+            badline = nag.get_lineno()
+            line    = nag.get_line()
+            message = nag.get_msg()
+            g.es("indentation error in",headline,"line",badline,color="red")
+            g.es(message)
+            line2 = repr(str(line))[1:-1]
+            g.es("offending line:\n",line2)
+            p.setMarked()
+        except Exception:
+            g.trace("unexpected exception")
+            g.es_exception()
+    #@nonl
+    #@-node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
+    #@-node:ekr.20090514111518.5661:checkPythonCode (leoAtFile) & helpers
     #@+node:ekr.20080712150045.3:closeStringFile
     def closeStringFile (self,theFile):
 
@@ -4335,10 +4418,7 @@ class atFile:
                 self.fileChangedFlag = False
                 return False
             else:
-                if (root and self.checkPythonCodeOnWrite and
-                    self.targetFileName and self.targetFileName.endswith('.py')
-                ):
-                    self.checkPythonCode(root)
+                self.checkPythonCode(root)
                 #@            << report if the files differ only in line endings >>
                 #@+node:ekr.20041019090322:<< report if the files differ only in line endings >>
                 if (
@@ -4376,81 +4456,6 @@ class atFile:
             # No original file to change. Return value tested by a unit test.
             self.fileChangedFlag = False 
             return False
-    #@+node:ekr.20090514111518.5661:checkPythonCode (leoAtFile) & helpers
-    def checkPythonCode (self,root):
-
-        c = self.c
-
-        for p in root.self_and_subtree_iter(copy='True'):
-            body = g.getScript(c,p)
-            if body.strip():
-                ok = self.checkPythonSyntax(p,body)
-                if ok: self.tabNannyNode(p,body)
-    #@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
-    def checkPythonSyntax (self,p,body):
-
-        try:
-            import compiler,parser
-            ok = True
-            compiler.parse(body + '\n')
-        except (parser.ParserError,SyntaxError):
-            self.syntaxError(p)
-            p.setMarked()
-            ok = False
-        except Exception:
-            g.trace("unexpected exception")
-            g.es_exception()
-            ok = False
-
-        return ok
-    #@nonl
-    #@+node:ekr.20090514111518.5666:syntaxError
-    def syntaxError(self,p):
-
-        import traceback
-
-        g.es_print("Syntax error in: %s" % (p.h),color="red")
-
-        # Similar to g.es_exception(full=False)
-        typ,val,tb = sys.exc_info()
-        lines = traceback.format_exception_only(typ,val)
-        for line in lines[1:]:
-            g.es_print(line)
-    #@-node:ekr.20090514111518.5666:syntaxError
-    #@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
-    #@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
-    def tabNannyNode (self,p,body):
-
-        try:
-            import parser,tabnanny,tokenize
-            readline = g.readLinesClass(body).next
-            tabnanny.process_tokens(tokenize.generate_tokens(readline))
-        except parser.ParserError:
-            junk, msg, junk = sys.exc_info()
-            g.es("ParserError in",p.h,color="red")
-            g.es('',str(msg))
-            p.setMarked()
-        except tokenize.TokenError:
-            junk, msg, junk = sys.exc_info()
-            g.es("TokenError in",headline,color="red")
-            g.es('',str(msg))
-            p.setMarked()
-        except tabnanny.NannyNag:
-            junk, nag, junk = sys.exc_info()
-            badline = nag.get_lineno()
-            line    = nag.get_line()
-            message = nag.get_msg()
-            g.es("indentation error in",headline,"line",badline,color="red")
-            g.es(message)
-            line2 = repr(str(line))[1:-1]
-            g.es("offending line:\n",line2)
-            p.setMarked()
-        except Exception:
-            g.trace("unexpected exception")
-            g.es_exception()
-    #@nonl
-    #@-node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
-    #@-node:ekr.20090514111518.5661:checkPythonCode (leoAtFile) & helpers
     #@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent
     #@+node:ekr.20041005105605.216:warnAboutOrpanAndIgnoredNodes
     # Called from writeOpenFile.
