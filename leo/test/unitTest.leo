@@ -2030,6 +2030,7 @@
 </v>
 <v t="ekr.20090501123949.2"><vh>rST tests</vh>
 <v t="ekr.20090501123949.3"><vh>@test rST import test</vh></v>
+<v t="ekr.20090515113311.5156"><vh>@test rST import test (no double-underlines)</vh></v>
 </v>
 <v t="ekr.20071020075538.64"><vh>Java tests</vh>
 <v t="ekr.20071020075538.65"><vh>@test java interface test1</vh></v>
@@ -22230,6 +22231,50 @@ g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)</t>
 <t tx="ekr.20090507084947.5152">assert p.v.t.fileIndex == ('ekr', '20090507084947', 5152)
 </t>
+<t tx="ekr.20090515113311.5156">s = '''\
+.. toc
+
+top
+====
+
+The top section
+
+section 1
+---------
+
+section 1, line 1
+--
+selction 1, line 2
+
+section 2
+---------
+
+section 2, line 1
+
+section 2.1
+~~~~~~~~~~~
+
+section 2.1, line 1
+
+section 2.1.1
+.............
+
+section 2.2.1 line 1
+
+section 3
+---------
+
+section 3, line 1
+
+section 3.1.1
+.............
+
+section 3.1.1, line 1
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
 import random,fnmatch
 

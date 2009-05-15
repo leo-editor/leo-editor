@@ -9,9 +9,9 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" a="E" str_leo_pos="0,1,1"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
-<v t="ekr.20050404094627" a="E"><vh>Buttons</vh>
+<v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
 <v t="ekr.20050812090111"><vh>@@button rst3</vh></v>
 <v t="ekr.20050901054622"><vh>@@button Save</vh></v>
@@ -52,18 +52,18 @@
 <v t="ekr.20080923181012.1"><vh>@@rst ../test/new-directory/test.html</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20080301071818" a="E"><vh>Home page</vh>
+<v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848" a="M"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
+<v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20090428101858.1"><vh>How to generate Leo's Sphinx docs</vh></v>
 <v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
 <v t="ekr.20090401113141.2"><vh>@rst c:\prog\test\test.html</vh>
 <v t="ekr.20090401113141.4"><vh>section 1</vh></v>
 </v>
 </v>
-<v t="ekr.20090428102353.1"><vh>@auto html\leo_toc.html.txt</vh></v>
+<v t="ekr.20090428102353.1" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e657331710355013d7104752e"><vh>@auto html\leo_toc.html.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 <v t="ekr.20050831184021.3"><vh>Front matter</vh>
 <v t="ekr.20040414172212"><vh>@rst html\frontMatter.html</vh>

@@ -1010,6 +1010,8 @@ class rstCommands:
                 g.trace('too many top-level underlines, using %s' % (
                     underlines2),color='blue')
             self.atAutoWriteUnderlines = underlines2 + underlines1
+            self.underlines1 = underlines1
+            self.underlines2 = underlines2
 
     #@-node:ekr.20090513073632.5733:setAtAutoWriteOptions
     #@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
@@ -1658,7 +1660,6 @@ class rstCommands:
 
         if self.getOption('show_sections'):
             if self.getOption('generate_rst'):
-                # self.write('%s\n%s\n' % (h,self.underline(h,p)))
                 self.write(self.underline(h,p))
             else:
                 self.write('\n%s\n' % h)
@@ -1779,20 +1780,30 @@ class rstCommands:
         return '.. %s' % s
     #@nonl
     #@-node:ekr.20090502071837.92:rstComment
-    #@+node:ekr.20090502071837.93:underline
+    #@+node:ekr.20090502071837.93:underline (leoRst)
     def underline (self,s,p):
 
         '''Return the underlining string to be used at the given level for string s.
         This includes the headline, and possibly a leading overlining line.
         '''
 
+        trace = False and not g.unitTesting
+
         if self.atAutoWrite:
-            # We generate overlines for top-level sections.
+            # We *might* generate overlines for top-level sections.
             u = self.atAutoWriteUnderlines
-            level = max(0,p.level()-self.topLevel-1)
-            ch = u [level]
+            level = p.level()-self.topLevel
+
+            # This is tricky. The index n depends on several factors.
+            if self.underlines2:
+                level -= 1 # There *is* a double-underlined section.
+                n = level
+            else:
+                n = level-1
+            if 0 <= n < len(u): ch = u[n]
+            else: ch = u[-1]
             n = max(4,len(s))
-            # g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+            if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
             if level == 0:
                 return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
             else:
@@ -1803,11 +1814,10 @@ class rstCommands:
             level = max(0,p.level()-self.topLevel)
             level = min(level+1,len(u)-1) # Reserve the first character for explicit titles.
             ch = u [level]
-            # g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+            if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
             n = max(4,len(s))
-            ### return ch * n + '\n'
             return '%s\n%s\n' % (p.h,ch*n) # Must be equivalent to old code.
-    #@-node:ekr.20090502071837.93:underline
+    #@-node:ekr.20090502071837.93:underline (leoRst)
     #@+node:ekr.20090502071837.94:write
     def write (self,s):
 

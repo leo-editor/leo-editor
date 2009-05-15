@@ -1975,9 +1975,6 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20070911110507:reportMismatch
     def reportMismatch (self,lines1,lines2,bad_i):
 
-        def pr(*args,**keys): # reportMismatch
-            g.es_print(color='blue',*args,**keys)
-
         kind = g.choose(self.atAuto,'@auto','import command')
 
         x2 = max(0,min(bad_i-1,len(lines2)-1))
@@ -1986,12 +1983,14 @@ class baseScannerClass (scanUtility):
                 kind,self.root.h,bad_i,repr(lines2[x2])))
 
         if len(lines1) < 100:
-            pr('input...')
+            aList = []
+            aList.append('input...')
             for i in range(len(lines1)):
-                pr('%3d %s' % (i,repr(lines1[i])))
-            pr('output...')
+                aList.append('%3d %s' % (i,repr(lines1[i])))
+            aList.append('output...')
             for i in range(len(lines2)):
-                pr('%3d %s' % (i,repr(lines2[i])))
+                aList.append('%3d %s' % (i,repr(lines2[i])))
+            g.es_print('\n'.join(aList),color='blue')
 
         return False
     #@-node:ekr.20070911110507:reportMismatch
@@ -2018,7 +2017,7 @@ class baseScannerClass (scanUtility):
 
         c = self.c
 
-        if self.isRst:
+        if self.isRst and not self.atAuto:
             return
 
         if self.treeType == '@file':
@@ -2317,7 +2316,7 @@ class baseScannerClass (scanUtility):
         trace = False and not g.unitTesting
         verbose = False
 
-        if trace: g.trace(parent.h)
+        # if trace: g.trace(start,sigStart,self.sigEnd,codeEnd)
 
         # Enter a new function: save the old function info.
         oldStartSigIndent = self.startSigIndent
@@ -2329,6 +2328,11 @@ class baseScannerClass (scanUtility):
             headline = 'unknown function'
 
         body = self.computeBody(s,start,sigStart,codeEnd)
+
+        if trace:
+            g.trace('parent',parent.h)
+            if verbose: g.trace('**body...\n',body)
+
         parent = self.adjustParent(parent,headline)
         self.lastParent = self.createFunctionNode(headline,body,parent)
 
@@ -3807,39 +3811,45 @@ class rstScanner (baseScannerClass):
     #@-node:ekr.20090501095634.42: __init__
     #@+node:ekr.20090512080015.5798:adjustParent
     def adjustParent (self,parent,headline):
-        # parent not used here (it is used by the base-class method).
-        # headline used only for traces.
 
         '''Return the proper parent of the new node.'''
 
         trace = False and not g.unitTesting
 
-        if not self.lastParent: self.lastParent = self.root
         level,lastLevel = self.sectionLevel,self.lastSectionLevel
         lastParent = self.lastParent
 
-        if level == 0:
-            parent = self.root
-        elif level <= lastLevel:
-            parent = lastParent.parent()
-            while level < lastLevel:
-                level += 1
-                parent = parent.parent()
-        else: # level > lastLevel.
-            level -= 1
-            parent = lastParent
-            while level > lastLevel:
+        if trace: g.trace('**entry level: %s lastLevel: %s lastParent: %s' % (
+            level,lastLevel,lastParent and lastParent.h or '<none>'))
+
+        if self.lastParent:
+
+            if level <= lastLevel:
+                parent = lastParent.parent()
+                while level < lastLevel:
+                    level += 1
+                    parent = parent.parent()
+            else: # level > lastLevel.
                 level -= 1
-                h2 = '@rst-no-head %s' % headline
-                body = ''
-                parent = self.createFunctionNode(h2,body,parent)
+                parent = lastParent
+                while level > lastLevel:
+                    level -= 1
+                    h2 = '@rst-no-head %s' % headline
+                    body = ''
+                    parent = self.createFunctionNode(h2,body,parent)
+
+        else:
+            assert self.root
+            self.lastParent = self.root
 
         if not parent: parent = self.root
 
         if trace: g.trace('level %s lastLevel %s %s returns %s' % (
             level,lastLevel,headline,parent.h))
 
-        return parent
+        #self.lastSectionLevel = self.sectionLevel
+        self.lastParent = parent.copy()
+        return parent.copy()
     #@-node:ekr.20090512080015.5798:adjustParent
     #@+node:ekr.20090512080015.5797:computeSectionLevel
     def computeSectionLevel (self,ch,kind):
@@ -3853,8 +3863,9 @@ class rstScanner (baseScannerClass):
         else:
             level = 1 + self.underlines1.index(ch)
 
-        # g.trace('kind: %s ch: %s under2: %s under1: %s' % (
-            # kind,ch,self.underlines2,self.underlines1))
+        if False:
+            g.trace('level: %s kind: %s ch: %s under2: %s under1: %s' % (
+                level,kind,ch,self.underlines2,self.underlines1))
 
         return level
     #@-node:ekr.20090512080015.5797:computeSectionLevel
@@ -3881,6 +3892,8 @@ class rstScanner (baseScannerClass):
             underlines2 = ''.join([str(z) for z in self.underlines2])
             d ['underlines1'] = underlines1
             d ['underlines2'] = underlines2
+            self.underlines1 = underlines1
+            self.underlines2 = underlines2
             # g.trace(repr(underlines1),repr(underlines2))
             p.v.u [tag] = d
 
@@ -3937,19 +3950,20 @@ class rstScanner (baseScannerClass):
         self.sigId = name.strip()
         i = next + 1
 
+        if trace: g.trace('sigId',self.sigId,'next',next)
+
         while i < len(s):
             progress = i
             i,j = g.getLine(s,i)
-            # if trace: g.trace(repr(s[i:j]))
             kind,name,next,ch = self.startsSection(s,i)
+            if trace and verbose: g.trace(kind,repr(s[i:j]))
             if kind in ('over','under'):
-                self.codeEnd = i
                 break
             else:
                 i = j
             assert i > progress
-        else:
-            self.codeEnd = len(s)
+
+        self.codeEnd = i
 
         if trace:
             if verbose:
@@ -3957,7 +3971,6 @@ class rstScanner (baseScannerClass):
             else:
                 g.trace('level %s %s' % (self.sectionLevel,self.sigId))
         return True
-    #@nonl
     #@-node:ekr.20090501095634.45:startsHelper
     #@+node:ekr.20090501095634.47:startsSection
     def startsSection (self,s,i):
@@ -3993,7 +4006,7 @@ class rstScanner (baseScannerClass):
                 ch,kind = ch1,'over'
                 if ch1 not in self.underlines2:
                     self.underlines2.append(ch1)
-                    if trace: g.trace('underlines2',self.underlines2,name)
+                    # if trace: g.trace('underlines2',self.underlines2,name)
                 if trace: g.trace('\nline  %s\nname  %s\nline2 %s' % (
                     repr(line),repr(name),repr(line2)))
         else:
@@ -4019,7 +4032,7 @@ class rstScanner (baseScannerClass):
                 ch,kind = line2[0],'under'
                 if ch not in self.underlines1:
                     self.underlines1.append(ch)
-                    if trace: g.trace('underlines1',self.underlines1,name)
+                    # if trace: g.trace('underlines1',self.underlines1,name)
                 if trace: g.trace('\nname  %s\nline2 %s' % (
                     repr(name),repr(line2)))
         return kind,name,i,ch
