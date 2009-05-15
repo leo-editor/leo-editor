@@ -1813,8 +1813,9 @@ class rstCommands:
 
         s = self.encode(s)
 
+        # g.trace(repr(s),g.callers(4))
+
         self.outputFile.write(s)
-    #@nonl
     #@-node:ekr.20090502071837.94:write
     #@-node:ekr.20090502071837.88:Utils
     #@+node:ekr.20090502071837.95:Support for http plugin
