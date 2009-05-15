@@ -1980,18 +1980,18 @@ class baseScannerClass (scanUtility):
 
         kind = g.choose(self.atAuto,'@auto','import command')
 
-
+        x2 = max(0,min(bad_i-1,len(lines2)-1))
         self.error(
             '%s did not import %s perfectly\nfirst mismatched line: %d\n%s' % (
-                kind,self.root.h,bad_i,repr(lines2[max(0,bad_i-1)])))
+                kind,self.root.h,bad_i,repr(lines2[x2])))
 
         if len(lines1) < 100:
             pr('input...')
             for i in range(len(lines1)):
-                pr('%3d %s' % (i,lines1[i]),newline=False)
+                pr('%3d %s' % (i,repr(lines1[i])))
             pr('output...')
             for i in range(len(lines2)):
-                pr('%3d %s' % (i,lines2[i]),newline=False)
+                pr('%3d %s' % (i,repr(lines2[i])))
 
         return False
     #@-node:ekr.20070911110507:reportMismatch
@@ -2054,12 +2054,12 @@ class baseScannerClass (scanUtility):
             while start > 0 and s[start-1] in (' ','\t'):
                 start -= 1
 
-        body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
-
         if self.isRst:
-            # Discard the entire signature.
-            body2 = self.undentBody(s[self.sigEnd+1:codeEnd])
+            # Never indent any text; discard the entire signature.
+            body1 = s[start:sigStart]
+            body2 = s[self.sigEnd+1:codeEnd]
         else:
+            body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
             body2 = self.undentBody(s[sigStart:codeEnd])
         body = body1 + body2
 
@@ -2073,6 +2073,12 @@ class baseScannerClass (scanUtility):
 
         return body
 
+    #@+node:ekr.20090515065255.5678:@test
+    if g.app.unitTesting:
+
+        pass
+    #@nonl
+    #@-node:ekr.20090515065255.5678:@test
     #@-node:ekr.20090512153903.5806:computeBody (baseScannerClass)
     #@+node:ekr.20090513073632.5737:createDeclsNode
     def createDeclsNode (self,parent,s):
@@ -2347,6 +2353,9 @@ class baseScannerClass (scanUtility):
         trace = False
         if trace: g.trace('before...\n',g.listToString(g.splitLines(s)))
 
+        if self.isRst:
+            return s # Never unindent rst code.
+
         # Copy an @code line as is.
         # i = 0
         # if g.match(s,i,'@code'):
@@ -2361,7 +2370,6 @@ class baseScannerClass (scanUtility):
             result = self.undentBy(s,undentVal)
             if trace: g.trace('after...\n',g.listToString(g.splitLines(result)))
             return result
-    #@nonl
     #@-node:ekr.20070703122141.88:undentBody
     #@+node:ekr.20081216090156.1:undentBy
     def undentBy (self,s,undentVal):
@@ -2369,11 +2377,11 @@ class baseScannerClass (scanUtility):
         '''Remove leading whitespace equivalent to undentVal from each line.
         add an underindentEscapeString for underindented line.'''
 
-        # return ''.join(
-            # [g.removeLeadingWhitespace(line,undentVal,self.tab_width)
-                # for line in g.splitLines(s)])
-
         trace = False and not g.app.unitTesting
+
+        if self.isRst:
+            return s # Never unindent rst code.
+
         tag = self.c.atFileCommands.underindentEscapeString
         result = [] ; tab_width = self.tab_width
         for line in g.splitlines(s):
