@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -367,17 +367,23 @@
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
 <v t="ekr.20090510080933.1908"><vh>Rst stuff</vh>
-<v t="ekr.20090501105822.1"><vh>import rst</vh>
+<v t="ekr.20090501105822.1" a="E"><vh>import rst</vh>
 <v t="ekr.20090501105822.2"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
 </v>
 </v>
 <v t="ekr.20090501110438.1"><vh>import</vh></v>
 <v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
 <v t="ekr.20090513115300.1919"><vh>underline_characters</vh></v>
-<v t="ekr.20090513154754.1912"><vh>@rst-no-head rst-test declarations</vh></v>
 <v t="ekr.20090512121208.1908" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355033d2b2a7104752e"><vh>@auto rst-test.txt</vh></v>
 <v t="ekr.20090514081019.1925"><vh>Failed unit tests with nullGui</vh></v>
 <v t="ekr.20090514114254.1931" a="M"><vh>@thin test.py</vh></v>
+<v t="ekr.20090515070748.1932" a="E" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355013d7104752e"><vh>@auto c:/prog/test/readme.rst</vh>
+<v t="ekr.20090515074346.1934" a="E"><vh>Zope3</vh>
+<v t="ekr.20090515074346.1935"><vh>zope.interface:/README.txt</vh></v>
+<v t="ekr.20090515074346.1936"><vh>zope.interface:/human.txt</vh></v>
+<v t="ekr.20090515074346.1937"><vh>zope.interface:/adapter.txt</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2933,11 +2939,6 @@ c.redraw()</t>
 <t tx="ekr.20090513115300.1919">@ @rst-options
 underline_characters=#=+*^~"\'`-:&gt;&lt;_
 @c</t>
-<t tx="ekr.20090513154754.1912">..changed 4
-
-.. toc
-
-</t>
 <t tx="ekr.20090514073218.1923">import leo.core.leoTest as leoTest
 
 if False:
@@ -3630,5 +3631,36 @@ FAILED (failures=28, errors=6)
 <t tx="ekr.20090514101216.1927"># 'self' is now defined in @test and @suite nodes.
 self.assertNotEqual(1,2)</t>
 <t tx="ekr.20090514103332.1929"></t>
+<t tx="ekr.20090515070748.1932">@language rest
+@tabwidth -4
+
+.. Warning: this node is ignored when writing this file.
+.. However, @ @rst-options are recognized in this node.
+@ignore</t>
+<t tx="ekr.20090515074346.1934">
+The doc shipped with source
+
+</t>
+<t tx="ekr.20090515074346.1935">
+.. includedoc:: zope.interface:/README.txt
+
+</t>
+<t tx="ekr.20090515074346.1936">
+.. includedoc:: zope.interface:/human.txt 
+
+</t>
+<t tx="ekr.20090515074346.1937">
+.. includedoc:: zope.interface:/adapter.txt
+
+\.. includedoc:: persistent.:/README.txt
+\.. includedoc:: persistent.tests:/persistent.txt
+.. includedoc:: ZODB.FileStorage:/zconfig.txt
+.. includedoc:: ZODB.:/collaborations.txt
+.. includedoc:: ZODB.:/cross-database-references.txt
+.. includedoc:: ZODB.:/ConflictResolution.txt
+.. includedoc:: ZODB.:/utils.txt
+.. includedoc:: ZODB.scripts:/README.txt
+
+</t>
 </tnodes>
 </leo_file>
