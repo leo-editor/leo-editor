@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,3,4"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2051,11 +2051,21 @@
 <v t="ekr.20071024102639"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20071020075538.79"><vh>@test collapse-all</vh></v>
 </v>
-<v t="ekr.20090501123949.2"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090501123949.2" a="E"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090501123949.3"><vh>@test rST import test</vh></v>
 <v t="ekr.20090515113311.5156"><vh>@test rST import test (no double-underlines)</vh></v>
 <v t="ekr.20090515124521.5158"><vh>@test rST import test: long underlines</vh></v>
 <v t="ekr.20090515124521.5163"><vh>@test rST import test: long overlines</vh></v>
+<v t="ekr.20090515130638.5162"><vh>@test rST import test: trailing whitespace</vh>
+<v t="ekr.20090515130638.5163" rst-import="7d710028550b756e6465726c696e657332710155013d7102550b756e6465726c696e657331710355007104752e"><vh>@file C:\leo.repo\trunk\leo\test\rST import test: trailing whitespace</vh>
+<v t="ekr.20090515130638.5164"><vh>@rst-no-head rST import test: trailing whitespace declarations</vh></v>
+<v t="ekr.20090515130638.5165"><vh>top</vh></v>
+</v>
+<v t="ekr.20090515130638.5166" rst-import="7d710028550b756e6465726c696e657332710155013d7102550b756e6465726c696e657331710355007104752e"><vh>@file C:\leo.repo\trunk\leo\test\rST import test: trailing whitespace</vh>
+<v t="ekr.20090515130638.5167"><vh>@rst-no-head rST import test: trailing whitespace declarations</vh></v>
+<v t="ekr.20090515130638.5168"><vh>top</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20071113145804.2"><vh> Test files</vh></v>
 <v t="ekr.20071113145804.3"><vh>Other tests</vh></v>
@@ -2499,7 +2509,7 @@
 </v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
-<v t="ekr.20071113193624.1"></v>
+<v t="ekr.20071113193624.1" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -22302,6 +22312,47 @@ The top section
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090515130638.5162">s = '''\
+.. toc
+
+.. The section name contains trailing whitespace.
+
+======
+top 
+======
+
+The top section.
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090515130638.5163">@language rest
+@tabwidth -4
+
+.. Warning: this node is ignored when writing this file.
+.. However, @ @rst-options are recognized in this node.
+@ignore</t>
+<t tx="ekr.20090515130638.5164">.. toc
+
+</t>
+<t tx="ekr.20090515130638.5165">
+The top section
+</t>
+<t tx="ekr.20090515130638.5166">@language rest
+@tabwidth -4
+
+.. Warning: this node is ignored when writing this file.
+.. However, @ @rst-options are recognized in this node.
+@ignore</t>
+<t tx="ekr.20090515130638.5167">.. toc
+
+.. The section name contains trailing whitespace.
+
+</t>
+<t tx="ekr.20090515130638.5168">
+The top section
+</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
 import random,fnmatch
 

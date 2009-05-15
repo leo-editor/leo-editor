@@ -1945,6 +1945,9 @@ class baseScannerClass (scanUtility):
     def compareRstUnderlines(self,s1,s2):
 
         s1,s2 = s1.rstrip(),s2.rstrip()
+        if s1 == s2:
+            return True # Don't worry about trailing whitespace.
+
         n1, n2 = len(s1),len(s2)
         ch1 = n1 and s1[0] or ''
         ch2 = n2 and s2[0] or ''
