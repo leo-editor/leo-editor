@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2028,10 +2028,6 @@
 <v t="ekr.20080901083414.24"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
 <v t="ekr.20080901083414.1"><vh>@test unindent in triple string does not end function</vh></v>
 </v>
-<v t="ekr.20090501123949.2"><vh>rST tests</vh>
-<v t="ekr.20090501123949.3"><vh>@test rST import test</vh></v>
-<v t="ekr.20090515113311.5156"><vh>@test rST import test (no double-underlines)</vh></v>
-</v>
 <v t="ekr.20071020075538.64"><vh>Java tests</vh>
 <v t="ekr.20071020075538.65"><vh>@test java interface test1</vh></v>
 <v t="ekr.20071020075538.66"><vh>@test java interface test2</vh></v>
@@ -2054,6 +2050,12 @@
 </v>
 <v t="ekr.20071024102639"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20071020075538.79"><vh>@test collapse-all</vh></v>
+</v>
+<v t="ekr.20090501123949.2"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090501123949.3"><vh>@test rST import test</vh></v>
+<v t="ekr.20090515113311.5156"><vh>@test rST import test (no double-underlines)</vh></v>
+<v t="ekr.20090515124521.5158"><vh>@test rST import test: long underlines</vh></v>
+<v t="ekr.20090515124521.5163"><vh>@test rST import test: long overlines</vh></v>
 </v>
 <v t="ekr.20071113145804.2"><vh> Test files</vh></v>
 <v t="ekr.20071113145804.3"><vh>Other tests</vh></v>
@@ -2170,10 +2172,10 @@
 </v>
 <v t="ekr.20071113202452" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113200638.8" a="E"><vh>leoPlugins</vh>
+<v t="ekr.20071113200638.8"><vh>leoPlugins</vh>
 <v t="ekr.20071113145804.30"><vh>@test getHandlersForTag</vh></v>
 </v>
-<v t="ekr.20080729200342.1" a="E"><vh>leoShadow</vh>
+<v t="ekr.20080729200342.1"><vh>leoShadow</vh>
 <v t="ekr.20080729200342.2"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
 <v t="ekr.20080729200342.3"><vh>@shadow-tests</vh>
 <v t="ekr.20080804124245.1"><vh>passed</vh></v>
@@ -2388,7 +2390,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080729200342.119" a="E"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20080729200342.119"><vh>Other unit tests of shadowController</vh>
 <v t="ekr.20080729200342.120"><vh>@test x.baseDirName</vh></v>
 <v t="ekr.20080729200342.121"><vh>@test x.pathName</vh></v>
 <v t="ekr.20080729200342.122"><vh>@test x.dirName</vh></v>
@@ -2403,7 +2405,7 @@
 <v t="ekr.20080812114335.1"><vh>@test x.markerFromExtension</vh></v>
 <v t="ekr.20080822075239.1"><vh>@@test (minitest) x.show_error</vh></v>
 </v>
-<v t="ekr.20080729200342.130" a="E"><vh>Unit tests for atFileCommands</vh>
+<v t="ekr.20080729200342.130"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20080729200342.131"><vh>@test at.open/closeStringFile</vh></v>
 <v t="ekr.20080729200342.132"><vh>@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20080729200342.133"><vh>@test at.readOneAtShadowNode</vh>
@@ -2416,14 +2418,14 @@
 </v>
 <v t="ekr.20080729200342.138"><vh>@test delete unittest shadow directory</vh></v>
 </v>
-<v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
+<v t="ekr.20071113200638.1"><vh>leoTangle</vh>
 <v t="ekr.20071113090055.1"><vh>@test tangle.scanAllDirectives</vh></v>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
 <v t="ekr.20071127194743.1"><vh>#@root</vh></v>
 <v t="ekr.20071127194743.2"><vh>Output</vh></v>
 </v>
 </v>
-<v t="ekr.20071113200638.2" a="E"><vh>leoTest</vh>
+<v t="ekr.20071113200638.2"><vh>leoTest</vh>
 <v t="ekr.20071113145804.25"><vh>@test unit testing with embedded class</vh></v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
@@ -22270,6 +22272,31 @@ section 3.1.1
 .............
 
 section 3.1.1, line 1
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090515124521.5158">s = '''\
+.. toc
+
+top
+-------------
+
+The top section
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090515124521.5163">s = '''\
+.. toc
+
+======
+top
+======
+
+The top section
 '''
 
 g.app.unitTestDict ['expectedErrors'] = None
