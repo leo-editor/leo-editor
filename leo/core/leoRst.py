@@ -1375,7 +1375,7 @@ class rstCommands:
             # Preserve rst whitespace: uses lines = g.splitLines(p.b)
             s = ''.join(lines)
             if not self.atAutoWrite:
-                s += '\n' # Make sure all nodes end with a blank line.
+                s += '\n\n' # Make sure all nodes end with a blank line.
             self.write(s)
         else:
             # Old code: uses lines = p.b.rstrip().split('\n')
@@ -1640,6 +1640,8 @@ class rstCommands:
 
         ### h = p.h.strip()
         h = p.h
+        if not self.atAutoWrite:
+            h = h.strip()
 
         # Remove any headline command before writing the headline.
         i = g.skip_ws(h,0) ###
@@ -1671,9 +1673,9 @@ class rstCommands:
 
         if self.getOption('show_sections'):
             if self.getOption('generate_rst'):
-                self.write(self.underline(h,p))
+                self.write(self.underline(h,p)) # Used by @auto-rst.
             else:
-                self.write('\n%s\n' % h)
+                self.write('\n%s\n\n' % h)
         else:
             self.write('\n**%s**\n\n' % h.replace('*',''))
     #@nonl
@@ -1830,7 +1832,8 @@ class rstCommands:
             ch = u [level]
             if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
             n = max(4,len(s))
-            return '%s\n%s\n' % (p.h,ch*n) # Must be equivalent to old code.
+            # return '%s\n%s\n' % (p.h,ch*n) # Must be equivalent to old code.
+            return '%s\n%s\n\n' % (p.h.strip(),ch*n) # Must be equivalent to old code.
     #@-node:ekr.20090502071837.93:underline (leoRst)
     #@+node:ekr.20090502071837.94:write (leoRst)
     def write (self,s):
