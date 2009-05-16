@@ -3050,7 +3050,8 @@ class baseScannerClass (scanUtility):
 
         # Check for intermixed blanks and tabs.
         if self.strict or self.atAutoWarnsAboutLeadingWhitespace:
-            self.checkBlanksAndTabs(s)
+            if not self.isRst:
+                self.checkBlanksAndTabs(s)
 
         # Regularize leading whitespace for strict languages only.
         if self.strict: s = self.regularizeWhitespace(s) 
