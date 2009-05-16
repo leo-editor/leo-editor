@@ -3398,6 +3398,8 @@ def os_path_expandExpression (s,**keys):
         g.trace('can not happen: no c',g.callers())
         return s
 
+    if not s: return ''
+
     i = s.find('{{')
     j = s.find('}}')
     if -1 < i < j:
