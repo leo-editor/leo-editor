@@ -375,9 +375,9 @@
 <v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
 <v t="ekr.20090513115300.1919"><vh>underline_characters</vh></v>
 <v t="ekr.20090512121208.1908" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355033d2b2a7104752e"><vh>@auto rst-test.txt</vh></v>
-<v t="ekr.20090514081019.1925"><vh>Failed unit tests with nullGui</vh></v>
 <v t="ekr.20090514114254.1931" a="M"><vh>@thin test.py</vh></v>
 <v t="ekr.20090515070748.1932" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355013d7104752e"><vh>@auto c:/prog/test/readme.rst</vh></v>
+<v t="ekr.20090514081019.1925"><vh>Failed unit tests with nullGui</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
