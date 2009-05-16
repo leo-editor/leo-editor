@@ -949,7 +949,7 @@ class rstCommands:
         self.optionsDict [ivar] = val
     #@-node:ekr.20090502071837.57:setOption
     #@-node:ekr.20090502071837.41:options...
-    #@+node:ekr.20090502071837.58:write methods
+    #@+node:ekr.20090502071837.58:write methods (leoRst)
     #@+node:ekr.20090502071837.59: Top-level write code
     #@+node:ekr.20090502071837.60:initWrite
     def initWrite (self,p,encoding=None):
@@ -1337,7 +1337,8 @@ class rstCommands:
     def writeBody (self,p):
 
         # remove trailing cruft and split into lines.
-        lines = p.b.rstrip().split('\n') 
+        ### lines = p.b.rstrip().split('\n')
+        lines = g.splitLines(p.b)
 
         if self.getOption('code_mode'):
             if not self.getOption('show_options_doc_parts'):
@@ -1370,9 +1371,17 @@ class rstCommands:
             if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
                 lines = self.replaceCodeBlockDirectives(lines)
 
-        s = '\n'.join(lines).strip()
-        if s:
-            self.write('%s\n\n' % s)
+        if 1:
+            # Preserve rst whitespace: uses lines = g.splitLines(p.b)
+            s = ''.join(lines)
+            if not self.atAutoWrite:
+                s += '\n' # Make sure all nodes end with a blank line.
+            self.write(s)
+        else:
+            # Old code: uses lines = p.b.rstrip().split('\n')
+            s = '\n'.join(lines).strip()
+            if s:
+                self.write('%s\n\n' % s)
     #@nonl
     #@+node:ekr.20090502071837.72:handleCodeMode & helper
     def handleCodeMode (self,lines):
@@ -1629,11 +1638,13 @@ class rstCommands:
     #@+node:ekr.20090502071837.84:writeHeadlineHelper
     def writeHeadlineHelper (self,p):
 
-        h = p.h.strip()
+        ### h = p.h.strip()
+        h = p.h
 
         # Remove any headline command before writing the headline.
+        i = g.skip_ws(h,0) ###
         i = g.skip_id(h,0,chars='@-')
-        word = h [:i]
+        word = h [:i].strip() ###
         if word:
             # Never generate a section for @rst-option or @rst-options or @rst-no-head.
             if word in (
@@ -1665,6 +1676,7 @@ class rstCommands:
                 self.write('\n%s\n' % h)
         else:
             self.write('\n**%s**\n\n' % h.replace('*',''))
+    #@nonl
     #@-node:ekr.20090502071837.84:writeHeadlineHelper
     #@-node:ekr.20090502071837.83:writeHeadline & helper
     #@+node:ekr.20090502071837.85:writeNode
@@ -1738,7 +1750,7 @@ class rstCommands:
         while p and p != after:
             self.writeNode(p) # Side effect: advances p.
     #@-node:ekr.20090502071837.87:writeTree
-    #@-node:ekr.20090502071837.58:write methods
+    #@-node:ekr.20090502071837.58:write methods (leoRst)
     #@+node:ekr.20090502071837.88:Utils
     #@+node:ekr.20090502071837.89:computeOutputFileName
     def computeOutputFileName (self,fileName):
@@ -1805,9 +1817,11 @@ class rstCommands:
             n = max(4,len(s))
             if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
             if level == 0:
-                return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
+                ### return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
+                return '%s\n%s\n%s\n' % (ch*n,p.h,ch*n)
             else:
-                return '%s\n%s\n\n' % (p.h,ch*n)
+                ### return '%s\n%s\n\n' % (p.h,ch*n)
+                return '%s\n%s\n' % (p.h,ch*n)
         else:
             # The user is responsible for top-level overlining.
             u = self.getOption('underline_characters') #  '''#=+*^~"'`-:><_'''
@@ -1818,15 +1832,15 @@ class rstCommands:
             n = max(4,len(s))
             return '%s\n%s\n' % (p.h,ch*n) # Must be equivalent to old code.
     #@-node:ekr.20090502071837.93:underline (leoRst)
-    #@+node:ekr.20090502071837.94:write
+    #@+node:ekr.20090502071837.94:write (leoRst)
     def write (self,s):
 
         s = self.encode(s)
 
-        # g.trace(repr(s),g.callers(4))
+        # g.trace(repr(s),g.callers(2))
 
         self.outputFile.write(s)
-    #@-node:ekr.20090502071837.94:write
+    #@-node:ekr.20090502071837.94:write (leoRst)
     #@-node:ekr.20090502071837.88:Utils
     #@+node:ekr.20090502071837.95:Support for http plugin
     #@+node:ekr.20090502071837.96:http_addNodeMarker

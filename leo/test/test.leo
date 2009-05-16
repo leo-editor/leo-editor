@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -374,9 +374,25 @@
 <v t="ekr.20090501110438.1"><vh>import</vh></v>
 <v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
 <v t="ekr.20090513115300.1919"><vh>underline_characters</vh></v>
-<v t="ekr.20090512121208.1908" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355033d2b2a7104752e"><vh>@auto rst-test.txt</vh></v>
+<v t="ekr.20090512121208.1908" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355033d2b2a7104752e"><vh>@auto rst-test.txt</vh>
+<v t="ekr.20090516080347.1925"><vh>@rst-no-head rst-test declarations</vh></v>
+<v t="ekr.20090516080347.1926"><vh>top
+</vh>
+<v t="ekr.20090516080347.1927"><vh>section 1</vh></v>
+<v t="ekr.20090516080347.1928"><vh>section 2</vh>
+<v t="ekr.20090516080347.1929"><vh>section 2.1</vh>
+<v t="ekr.20090516080347.1930"><vh>section 2.1.1</vh></v>
+</v>
+</v>
+<v t="ekr.20090516080347.1931"><vh>section 3</vh>
+<v t="ekr.20090516080347.1932"><vh>@rst-no-head section 3.1.1</vh>
+<v t="ekr.20090516080347.1933"><vh>section 3.1.1</vh></v>
+</v>
+</v>
+</v>
+</v>
 <v t="ekr.20090514114254.1931" a="M"><vh>@thin test.py</vh></v>
-<v t="ekr.20090515070748.1932" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355013d7104752e"><vh>@auto c:/prog/test/readme.rst</vh></v>
+<v t="ekr.20090515070748.1932" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355012d7104752e"><vh>@auto c:/prog/test/readme.rst</vh></v>
 <v t="ekr.20090514081019.1925"><vh>Failed unit tests with nullGui</vh></v>
 </vnodes>
 <tnodes>
@@ -2930,6 +2946,13 @@ c.redraw()</t>
 <t tx="ekr.20090510080933.1908">for z in dir(c.rstCommands):
     print z
 </t>
+<t tx="ekr.20090512121208.1908">@language rest
+@tabwidth -4
+@others
+
+.. Warning: this node is ignored when writing this file.
+.. However, @ @rst-options are recognized in this node.
+@ignore</t>
 <t tx="ekr.20090513115300.1919">@ @rst-options
 underline_characters=#=+*^~"\'`-:&gt;&lt;_
 @c</t>
@@ -3625,5 +3648,41 @@ FAILED (failures=28, errors=6)
 <t tx="ekr.20090514101216.1927"># 'self' is now defined in @test and @suite nodes.
 self.assertNotEqual(1,2)</t>
 <t tx="ekr.20090514103332.1929"></t>
+<t tx="ekr.20090516080347.1925">..changed 4
+
+.. toc
+
+</t>
+<t tx="ekr.20090516080347.1926">
+The top section
+
+</t>
+<t tx="ekr.20090516080347.1927">
+section 1, line 1
+--
+section 1, line 2
+
+</t>
+<t tx="ekr.20090516080347.1928">
+section 2, line 1
+
+</t>
+<t tx="ekr.20090516080347.1929">
+section 2.1, line 1
+
+</t>
+<t tx="ekr.20090516080347.1930">
+section 2.2.1 line 1
+
+</t>
+<t tx="ekr.20090516080347.1931">
+section 3, line 1
+
+</t>
+<t tx="ekr.20090516080347.1932"></t>
+<t tx="ekr.20090516080347.1933">
+section 3.1.1, line 1
+
+</t>
 </tnodes>
 </leo_file>

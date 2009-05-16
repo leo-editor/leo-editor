@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7,3,4"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -2051,7 +2051,7 @@
 <v t="ekr.20071024102639"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20071020075538.79"><vh>@test collapse-all</vh></v>
 </v>
-<v t="ekr.20090501123949.2" a="E"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090501123949.2"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090501123949.3"><vh>@test rST import test</vh></v>
 <v t="ekr.20090515113311.5156"><vh>@test rST import test (no double-underlines)</vh></v>
 <v t="ekr.20090515124521.5158"><vh>@test rST import test: long underlines</vh></v>
@@ -2509,7 +2509,7 @@
 </v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
-<v t="ekr.20071113193624.1" a="E"></v>
+<v t="ekr.20071113193624.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor

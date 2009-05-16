@@ -1819,7 +1819,7 @@ class baseScannerClass (scanUtility):
         c = self.c ; at = c.atFileCommands
 
         if s1 is None and s2 is None:
-            if True and self.isRst: # Errors writing file at present...
+            if self.isRst: # Errors writing file at present...
                 outputFile = StringIO.StringIO()
                 c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile)
                 s1,s2 = self.file_s,outputFile.getvalue()
@@ -1871,6 +1871,8 @@ class baseScannerClass (scanUtility):
         '''Compare lines1[i] and lines2[i].
         strict is True if leading whitespace is very significant.'''
 
+        trace = True and not g.unitTesting
+
         def pr(*args,**keys): #compareHelper
             g.es_print(color='blue',*args,**keys)
 
@@ -1919,6 +1921,11 @@ class baseScannerClass (scanUtility):
             s1,s2 = line1.lstrip(),line2.lstrip()
             messageKind = g.choose(s1==s2,'warning','error')
 
+        # if trace:
+            # g.es_print('original line: ',line1)
+            # g.es_print('generated line:',line2)
+            # return True # continue checking.
+
         if g.unitTesting:
             d ['actualMismatchLine'] = i+1
             ok = i+1 == expectedMismatch
@@ -1940,7 +1947,6 @@ class baseScannerClass (scanUtility):
                 self.warning('mismatch in leading whitespace')
                 pr_mismatch(i,line1,line2)
             return messageKind in ('comment','warning') # Only errors are invalid.
-    #@nonl
     #@+node:ekr.20090513073632.5735:compareRstUnderlines
     def compareRstUnderlines(self,s1,s2):
 
@@ -1953,7 +1959,7 @@ class baseScannerClass (scanUtility):
         ch2 = n2 and s2[0] or ''
 
         val = (
-            n1 >= 4 and n2 >= 4 and # Underlinings must be at least 4 long.
+            n1 >= 2 and n2 >= 2 and # Underlinings must be at least 2 long.
             ch1 == ch2 and # The underlining characters must match.
             s1 == ch1 * n1 and # The line must consist only of underlining characters.
             s2 == ch2 * n2)
@@ -1978,6 +1984,9 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20070911110507:reportMismatch
     def reportMismatch (self,lines1,lines2,bad_i):
 
+        trace = True and not g.unitTesting
+        verbose = True
+
         kind = g.choose(self.atAuto,'@auto','import command')
 
         x2 = max(0,min(bad_i-1,len(lines2)-1))
@@ -1985,14 +1994,27 @@ class baseScannerClass (scanUtility):
             '%s did not import %s perfectly\nfirst mismatched line: %d\n%s' % (
                 kind,self.root.h,bad_i,repr(lines2[x2])))
 
-        if len(lines1) < 100:
+        maxlines = 200
+        if trace or len(lines1) < maxlines:
             aList = []
-            aList.append('input...')
-            for i in range(len(lines1)):
-                aList.append('%3d %s' % (i,repr(lines1[i])))
-            aList.append('output...')
-            for i in range(len(lines2)):
-                aList.append('%3d %s' % (i,repr(lines2[i])))
+            if True: # intermix lines.
+                n1,n2 = len(lines1),len(lines2)
+                for i in range(min(maxlines,max(n1,n2))):
+                    if i < n1: line1 = repr(lines1[i])
+                    else:      line1 = '<eof>'
+                    if i < n2: line2 = repr(lines2[i])
+                    else:      line2 = '<eof>'
+                    if verbose or line1 != line2:
+                        aList.append('%3d %s' % (i,line1))
+                        aList.append('%3d %s' % (i,line2))
+            else:
+                aList.append('input...')
+                for i in range(len(lines1)):
+                    aList.append('%3d %s' % (i,repr(lines1[i])))
+                aList.append('output...')
+                for i in range(len(lines2)):
+                    aList.append('%3d %s' % (i,repr(lines2[i])))
+
             g.es_print('\n'.join(aList),color='blue')
 
         return False
@@ -3801,7 +3823,7 @@ class rstScanner (baseScannerClass):
         self.lineCommentDelim = '..'
         self.outerBlockDelim1 = None
         self.sigFailTokens = []
-        self.strict = True # We want to preserve whitespace
+        self.strict = False # Mismatches in leading whitespace are irrelevant.
 
         # Ivars unique to rst scanning & code generation.
         self.lastParent = None # The previous parent.
@@ -3950,7 +3972,7 @@ class rstScanner (baseScannerClass):
         self.sectionLevel = self.computeSectionLevel(ch,kind)
         self.sigStart = g.find_line_start(s,i)
         self.sigEnd = next
-        self.sigId = name.strip()
+        self.sigId = name ##.strip()
         i = next + 1
 
         if trace: g.trace('sigId',self.sigId,'next',next)
