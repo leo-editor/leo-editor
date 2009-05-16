@@ -6,6 +6,7 @@ Front Matter
 
 .. .. contents::
 
+
 .. External links...
 .. _`Open Software`:    http://www.opensource.org/
 .. _Python:             http://www.python.org/
@@ -19,6 +20,7 @@ Front Matter
 .. _plugins:            intro.html#plugins-settings
 .. _scripting:          intro.html#scripting-leo
 .. _users:              http://sourceforge.net/projects/leo/
+
 
 Acknowledgements
 ++++++++++++++++
@@ -72,6 +74,7 @@ Davide Salomoni,
 Ed Taekema, Kent Tenney, Brian Theado,
 Ville M. Vainio,
 Steve Zatz.
+
 
 The following deserve special mention:
 David Brock wrote TSyntaxMemo.

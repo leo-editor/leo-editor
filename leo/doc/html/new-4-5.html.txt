@@ -9,6 +9,7 @@ What's New in Leo 4.5
 .. Links used in this document.
 .. _`Chapter 23`:           atShadow.html
 
+
 Major new features
 ++++++++++++++++++
 
@@ -20,6 +21,7 @@ Major new features
 
 - Allow v.uA's in @thin and @shadow nodes.
   See http://groups.google.com/group/leo-editor/browse_thread/thread/750bb3099090f5b
+
 
 Major code reorganizations
 ++++++++++++++++++++++++++
@@ -43,6 +45,7 @@ Major code reorganizations
   
 - Leo is now ready for Python 3.x:
   Change most print statements to calls to g.pr.
+
 
 Minor new features
 ++++++++++++++++++

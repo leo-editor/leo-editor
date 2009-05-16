@@ -15,6 +15,7 @@ instantly hooked.
 
 .. .. contents::
 
+
 .. External links...
 .. _docutils:             http://docutils.sourceforge.net
 .. _LaTeX:                http://www.latex-project.org/
@@ -26,6 +27,7 @@ instantly hooked.
 .. _`Chapter 8\: Customizing Leo`:      customizing.html
 .. _`Chapter 13\: Writing Plugins`:     writingPlugins.html
 .. _`Creating script buttons`:          scripting.html#creating-script-buttons
+
 
 Enabling plugins
 ++++++++++++++++
@@ -45,8 +47,11 @@ Notes:
 - g.app.gui.getEnabledPlugins contains the last value last processed
    @enabled-plugins node.
 
+
 Body pane
 +++++++++
+
+
 
 arrows.py
 *********
@@ -75,6 +80,7 @@ Full details can be found in the plugins docstring.
 Many executable howto's, demos and examples can be found in::
 
     test/testAtPopup.leo
+
 
 autocompleter.py
 ****************
@@ -155,6 +161,8 @@ Send output from the Execute Script command to the end of the body pane.
 
 Commands & directives
 +++++++++++++++++++++
+
+
 
 add_directives.py
 *****************
@@ -345,6 +353,7 @@ macros.py
 *********
 
 Creates new nodes containing parameterized section references.
+
 
 mod_autosave.py
 ***************
@@ -559,6 +568,8 @@ Script examples:
       
          g.os.system('"Start /b ' + pClicked.bodyString() + '"')
 
+
+
 outline_export.py
 *****************
 
@@ -586,6 +597,7 @@ been provided. You may, however, override any methods you like. You could even
 define your own class entirely, provided you implement the prettyPrintNode
 method.
 
+
 scheduler.py
 ************
 
@@ -612,6 +624,7 @@ it should be able to determine its excel data. It then creates a dialog with the
 data presented as in a table for the user to see it. Requires Pmw and the
 tktable widget at http://sourceforge.net/projects/tktable.
 
+
 templates.py
 ************
 
@@ -637,6 +650,8 @@ the text as a node. Templates once marked are stored across sessions. Do not put
 a template in a thin file, as your template mark will be erased between
 sessions.
 
+
+
 word_cound.py
 *************
 
@@ -649,6 +664,8 @@ The Word Count... menu has a shortcut key of 'W'.
 Dialogs
 +++++++
 
+
+
 gtkDialogs
 **********
 
@@ -657,8 +674,12 @@ gtkDialogs replaces Tk's file dialogs with Gtk file chooser dialogs.
 The plugin is aimed mainly at Linux users with pyGtk installed on their systems,
 but it should work on on any system that support Gtk2 and pyGtk.
 
+
+
 Debugging &  testing
 ++++++++++++++++++++
+
+
 
 failed_import.py
 ****************
@@ -692,6 +713,8 @@ Trace the most common hooks, but not key, drag or idle hooks.
 
 External editors & Open With
 ++++++++++++++++++++++++++++
+
+
 
 mod_tempfname.py
 ****************
@@ -811,6 +834,8 @@ changes will appear in Leo.
 
 Files
 +++++
+
+
 
 empty_leo_file.py
 *****************
@@ -932,6 +957,7 @@ Preprocess ``@file-nosent`` nodes: make sure each subnode ends
 with exactly one newline, replace all tabs with spaces, and
 add a newline before class and functions in the derived file.
 
+
 leoToRTF
 ********
 
@@ -1019,6 +1045,8 @@ Here are the settings that control the format of .opml files. The default values
 Guis
 ++++
 
+
+
 __wx_alt_gui.py
 ***************
 
@@ -1032,8 +1060,12 @@ made to keep it working on Windows as well.
 
 Work on this project has now halted in favor of a gtkLeo plugin.
 
+
+
 Icon and status areas
 +++++++++++++++++++++
+
+
 
 chapter_hoist.py
 ****************
@@ -1060,6 +1092,7 @@ hoist.py
 
 Add Hoist/De-Hoist buttons to the toolbar.
 
+
 nodenavigator.py
 ****************
 
@@ -1076,6 +1109,7 @@ automatically does a search. Repeated searches can be done by clicking the "GO"
 button. The combo box also stores a list of previous searches, which can be
 selected to quickly repeat a search. When activating a previous search the
 original search mode is used.
+
 
 shortcut_button.py
 ******************
@@ -1104,6 +1138,7 @@ This plugin provides:
 
 see test/testToolbar.leo for demo's and howto's
 see test/testAtPopup.leo for examples of enhanced buttons
+
 
 UNL.py
 ******
@@ -1161,6 +1196,8 @@ papers that form the basis of this project.
 Menus & translations
 ++++++++++++++++++++
 
+
+
 chinese_menu.py
 ***************
 
@@ -1181,6 +1218,8 @@ Adds pie menus.  See http://www.piemenus.com/
 Nodes
 +++++
 
+
+
 at_folder.py
 ************
 
@@ -1193,6 +1232,7 @@ easier from leo. Moreover, I add another feature to allow you to group files(in
 leo) into children of another group. This will help when there are many files in
 that folder. You can logically group it in leo (or even clone it to many
 groups), while keep every files in a flat/single directory on your computer.
+
 
 at_produce.py
 *************
@@ -1261,6 +1301,7 @@ You can do this as a standard plugin, but as an AutoTrees handler you,
 - don't need to write code that interacts with the tree (this is done for you)
 - get centralized management
 - can still do everything else you could as a normal plugin
+
 
 base64Packager.py
 *****************
@@ -1426,8 +1467,11 @@ Launches (starts) a file given by a headline when double-clicking the icon.
 Ignores headlines starting with an '@'. Uses the ``@folder`` path if the headline
 is under an ``@folder`` headline. Otherwise the path is relative to the Leo file.
 
+
 Plugins manager & menu
 ++++++++++++++++++++++
+
+
 
 leoupdate.py
 ************
@@ -1446,6 +1490,7 @@ A plugin to manage Leo's Plugins:
 - Shows plugin details.
 - Checks for conflicting hook handlers.
 - Checks for and updates plugins from the web.
+
 
 plugins_menu.py
 ***************
@@ -1472,6 +1517,8 @@ range is used internally for sorting alphabetically.
 
 Scripting
 +++++++++
+
+
 
 dyna_menu
 *********
@@ -1514,6 +1561,8 @@ to True in this plugin.
 Servers
 +++++++
 
+
+
 mod_http.py
 ***********
 
@@ -1540,6 +1589,8 @@ To enable this plugin put this into your file::
 Spell checking
 ++++++++++++++
 
+
+
 spellpyx.py
 ***********
 
@@ -1558,6 +1609,8 @@ Spelling...`` script button. LeoDocs.leo contains such a script button.
 
 Text formatting
 +++++++++++++++
+
+
 
 Leo to AsciiDoc
 ***************
@@ -1679,6 +1732,8 @@ Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 Windows
 +++++++
 
+
+
 cleo.py
 *******
 
@@ -1752,4 +1807,5 @@ URLloader.py
 
 This plugin uses Python's urllib module to download files and import them into Leo.
 It requires the TabbedLog plugin.
+
 

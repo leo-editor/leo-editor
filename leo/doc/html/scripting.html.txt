@@ -1,5 +1,6 @@
 .. rst3: filename: html\scripting.html
 
+
 ####################################
 Chapter 7: Scripting Leo with Python
 ####################################
@@ -39,6 +40,7 @@ chapter.
 .. _chapter6:       design.html
 .. _chapter8:       customizing.html
 .. _`rst3 plugin`:  rstplugin3.html
+
 
 Commonly used classes
 +++++++++++++++++++++
@@ -118,6 +120,7 @@ than the internal ivars of these classes. Doing so will ensure that the script
 is as simple as possible and that the script will continue to work regardless of
 future changes to the internals of these classes.
 
+
 Predefined objects
 ++++++++++++++++++
 
@@ -133,6 +136,7 @@ script will print every headline in the Leo outline in which the script occurs.
     
     for p in c.allNodes_iter():
         print p.h
+
 
 g.es writes to the log pane
 +++++++++++++++++++++++++++
@@ -232,6 +236,7 @@ using the following methods::
   
 - color is a tk color name, even when using the qt gui plugin.
 
+
 Ensuring that positions are valid
 +++++++++++++++++++++++++++++++++
 
@@ -248,6 +253,7 @@ The following code will find a position p2 describing the same node as p::
                 c.selectPosition(p2)
         else:
             print 'position no longer exists'
+
 
 About copying positions
 +++++++++++++++++++++++
@@ -292,6 +298,7 @@ Traversing outlines
 The proper way to traverse an outline is with an iterator.
 Iterators are defined only by the position class;
 vnodes can not have iterators because vnodes may appear in multiple places in an outline.
+
 
 c.allNodes_iter
 ***************
@@ -344,7 +351,7 @@ The ``p.self_and_parents_iter`` iterator returns a list of all parents of positi
     current = p.copy()
     g.es("inclusive parents of %s" % current.h,color="purple")
     for p in current.self_and_parents_iter():
-        g.es(p.h)
+        g.es(p.h)    
 
 p.siblings_iter & p.following_siblings_iter
 *******************************************
@@ -447,6 +454,7 @@ This pattern is no longer useful: as of Leo 4.5 b2,
 c.beginUpdate() does nothing,
 c.endUpdate() is equivalent to c.redraw(),
 and c.endUpdate(False) does nothing.
+
 
 Invoking commands from scripts
 ++++++++++++++++++++++++++++++
@@ -872,6 +880,7 @@ widget. Here is an example script::
         w.configure(bg='yellow')
     log.selectTab(tag)
 
+
 Invoking dialogs using the g.app.gui class
 ++++++++++++++++++++++++++++++++++++++++++
 
@@ -915,7 +924,8 @@ Scripts can delete icons from the presently selected node using the following me
  
     c.editCommands.deleteFirstIcon() 
     c.editCommands.deleteLastIcon() 
-    c.editCommands.deleteNodeIcons()
+    c.editCommands.deleteNodeIcons() 
+
 
 Customizing panes with different widgets
 ++++++++++++++++++++++++++++++++++++++++
@@ -1067,12 +1077,14 @@ print the full path to the created file::
        name = g.os_path_finalize_join(path,name)
        g.es(name)
 
+
 Summary of the vnode and position classes
 +++++++++++++++++++++++++++++++++++++++++
 
 Most scripts will use methods of the position class to access information in an
 outline. The following sections summarizes the most useful methods that your
 scripts can use. For a complete list, see the ``leoNodes.py`` in of ``LeoPy.leo``.
+
 
 Iterators
 *********
@@ -1225,6 +1237,7 @@ headlines in that file::
     for p in newFrame.c.allNodes_iter():
         g.es(g.toEncodedString(p.h,"utf-8"))
 
+
 Getting interactive input from scripts
 ++++++++++++++++++++++++++++++++++++++
 
@@ -1277,4 +1290,5 @@ The following lines handle state 1::
 
 k.arg is the value returned by k.getArg.
 This example code just prints the value of k.arg and clears the input state.
+
 

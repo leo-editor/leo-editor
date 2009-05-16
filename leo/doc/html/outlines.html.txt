@@ -12,6 +12,7 @@ This chapter tells how to use Leo's outlines.
 .. _`Chapter 4\: Writing Programs in Leo`:          directives.html
 .. _`Clones and views`:                             intro.html#clones-views
 
+
 Autocompletion and calltips
 +++++++++++++++++++++++++++
 
@@ -87,6 +88,7 @@ Creating and destroying nodes
 
 The ``Insert Node`` command inserts a new node into the outline. The
 ``Delete Node`` command deletes a node and all its children.
+
 
 Creating and destroying multiple body editors
 +++++++++++++++++++++++++++++++++++++++++++++
@@ -288,7 +290,8 @@ cutting or pasting them. Cutting and pasting outlines preserves clones, but the
 links between clones only exist within the part of the outline that was pasted.
 Therefore, if you are cutting and pasting an outline containing clones it is
 best to cut and paste the _entire_ outline. Alternatively, you can paste part of
-an outline, then delete all clones.
+an outline, then delete all clones. 
+
 
 Navigating through the outline
 ++++++++++++++++++++++++++++++
@@ -311,7 +314,7 @@ the previous match. The term 'close together' is defined by the setting:
  
 The outline nav search reverts to a single-character search if the extended
 search fails, so in fact the delay is not too significant. In practice
-everything works well without thinking about what is happening.
+everything works well without thinking about what is happening. 
 
 Opening URL's automatically
 +++++++++++++++++++++++++++

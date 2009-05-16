@@ -6,10 +6,12 @@ What People Are Saying About Leo
 
 .. .. contents::
 
+
 .. Relative links...
 
 .. _quotes:         testimonials.html
 .. _toc:            leo_TOC.html
+
 
 Leo is revolutionary
 ++++++++++++++++++++
@@ -89,6 +91,7 @@ Leo is a flexible, powerful IDE
 
 I think you're really showing what open source can do and your current trajectory puts you on track to kick Emacs into the dustbin of computing history. -- Dan Winkler
 
+
 Leo is a superb outliner
 ++++++++++++++++++++++++
 
@@ -121,6 +124,7 @@ the infos needed for the project with your project. With Leo you can do this
 too, but if you change text in one place IT IS UPDATED IN THE OTHER PLACE TOO!
 This is a feature I did not see with any other outliner (and I tried a few).
 Amazing! Leo directly supports the way I work!" -- F. Geiger
+
 
 Leo is an excellent PIM
 +++++++++++++++++++++++
@@ -181,8 +185,11 @@ Leo is stable, well designed and well supported
 - Eliminating vast amounts of menial programming labour.
 - Tirelessly and patiently supporting users, and catering to a wide range of feature requests."  -- David McNab
 
+
 Longer quotes...
 ++++++++++++++++
+
+
 
 Speed Ream's slashdot article
 *****************************
@@ -308,6 +315,7 @@ knowledge is a flexible thing where I can reorganize and prioritize and
 massage the data to my heart's content as I learn more about it and 
 decide to use it in different ways for different purposes.  It's the 
 difference between the pick axe and the steam shovel for me.
+
 
 Dan Winkler 3
 *************

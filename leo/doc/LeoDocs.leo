@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="3,12"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -56,7 +56,7 @@
 <v t="ekr.20080306071848" a="M"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20040414161647"><vh>Users Guide</vh>
+<v t="ekr.20040414161647" a="E"><vh>Users Guide</vh>
 <v t="ekr.20090428101858.1"><vh>How to generate Leo's Sphinx docs</vh></v>
 <v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
 <v t="ekr.20090401113141.2"><vh>@rst c:\prog\test\test.html</vh>

@@ -6,11 +6,13 @@ Appendices
 
 .. .. contents::
 
+
 .. Relative links.
 .. _`Chapter 13: Writing plugins`:   writingPlugins.html
 
 .. References to the glossary.
 .. _`sentinel lines`:             glossary.html#sentinel-lines
+
 
 Bugs
 ++++
@@ -132,6 +134,7 @@ Missing root part
 ``Unterminated section: <<< section name >>>``
     The end of the file was reached before encountering the end sentinel line for ``<< section name >>``.
     This is likely the result of adding, deleting or altering a sentinel line.
+
 
 Errors while reading @file nodes
 ++++++++++++++++++++++++++++++++
@@ -310,6 +313,7 @@ These elements must appear in this order.
     **New in 4.0**:
     Plugins and scripts may add attributes to ``<v>`` and ``<t>`` elements.
     See `Chapter 13: Writing plugins`_ for details.
+
 
 Format of derived files
 +++++++++++++++++++++++

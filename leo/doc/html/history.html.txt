@@ -24,6 +24,7 @@ Here are the most important dates in Leo's history:
 .. Absolute links..
 .. _OPML:   http://en.wikipedia.org/wiki/OPML
 
+
 Beginnings
 ++++++++++
 
@@ -35,6 +36,7 @@ literate programs more understandable. In January 1996 the fog of confusion
 suddenly cleared. I summarized my thinking with the phrase, **web are outlines
 in disguise**. I suspected that outline views were the key to literate
 programming, but many details remained obscure.
+
 
 Breakthrough
 ++++++++++++
@@ -126,6 +128,7 @@ became fully operational in early 2002. It was probably about this time that I c
 noweb as Leo's preferred markup language. My decision not to support noweb's
 escape sequences made Leo's read code much more robust.
 
+
 Leo 3.x: Continuous improvement
 +++++++++++++++++++++++++++++++
 
@@ -143,6 +146,7 @@ Many improvements were at last easy enough to do:
 - 3.12 fixed a huge memory leak.
 - 3.12 Final, the last 3.x version, appeared July 17, 2003.
 
+
 Leo 4.0: Eliminating error 'recovery'
 +++++++++++++++++++++++++++++++++++++
 
@@ -156,6 +160,7 @@ information in derived files. This made the read code much more robust, and
 eliminated all the previous unworkable error recovery schemes. At last Leo
 was on a completely firm foundation.
 
+
 Leo 4.1: The debut of gnx's
 +++++++++++++++++++++++++++
 
@@ -164,6 +169,7 @@ nodes in .leo files with nodes in derived files. At the time, there was
 still intense discussions about protecting the logical consistency of
 outlines. ``@thin`` was later to solve all those problems, but nobody knew
 that then.
+
 
 Leo 4.2: Complete at last
 +++++++++++++++++++++++++
@@ -237,6 +243,7 @@ Leo 4.4.4 Improvements
 Leo 4.4.1 through 4.4.8 contained many incremental improvements,
 as documented in Chapters 15 through 21 of this Users Guide.
 
+
 Leo 4.4.1
 *********
 
@@ -267,6 +274,7 @@ Leo 4.4.3
 - Added better support for the winpdb debugger.
 - Added support for @enabled-plugins and @open-with nodes in settings files.
 
+
 Leo 4.4.4
 *********
 
@@ -279,15 +287,18 @@ Leo 4.4.4
 - Made Leo compatible with jython.
 - Added better support for icons in headlines.
 
+
 Leo 4.4.5
 *********
 
 - Leo now recognizes directives in headlines.
 - Added support for @rst-preformat nodes to the rst3 plugin.
 
+
 Leo 4.4.7 and Leo 4.4.8
 ***********************
 
 - Added the ILeo, the IPython bridge. See `Chapter 21: ILeo - the IPython bridge`_.
 - Added support for translating messages to Leo's log.
+
 

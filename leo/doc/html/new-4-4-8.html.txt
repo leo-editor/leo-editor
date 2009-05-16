@@ -11,6 +11,7 @@ What's New in Leo 4.4.7 and Leo 4.4.8
 .. _`debugging with Leo`:   debuggers.html
 .. _gettext: http://docs.python.org/lib/module-gettext.html
 
+
 New features
 ++++++++++++
 
@@ -45,4 +46,5 @@ New settings
 - Added support for @bool open_with_save_on_update setting. If True, Leo will
   automatically save the outline whenever an external editor changes the
   outline.
+
 

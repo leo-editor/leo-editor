@@ -8,6 +8,7 @@ This chapter several topics relating to the Emacs editor.
 
 .. .. contents::
 
+
 .. Links
 .. _elisp:              http://en.wikipedia.org/wiki/Emacs_Lisp
 .. _Emacs:              http://www.xemacs.org/
@@ -15,6 +16,7 @@ This chapter several topics relating to the Emacs editor.
 .. _`Installing ZODB`:  http://www.zope.org/Wikis/ZODB/guide/node3.html#SECTION000310000000000000000
 .. _pymacs:             http://pymacs.progiciels-bpi.ca/index.html
 .. _`Chapter 8: Customizing Leo`:   customizing.html
+
 
 Controlling Leo from Emacs using Pymacs
 +++++++++++++++++++++++++++++++++++++++
@@ -179,6 +181,7 @@ The leoPymacs module is intended to be called from Emacs using pymacs.  It conta
   c may be None, in which case a dummy commander is created in which to run the script.
   In the executed script, p is set to c.p if no p argument is specified.
   Returns g.app.scriptResult, where g.app is the hidden app.
+
 
 The minibuffer
 ++++++++++++++

@@ -13,6 +13,7 @@ This chapter will be of use primarily to those wanting to change Leo's code.
 .. _`Chapter 9\: History of Leo`:   history.html
 .. _`Chapter 11\: White Papers`:    whitepapers.html
 
+
 Overview
 ++++++++
 
@@ -383,6 +384,8 @@ I first came across it in the documentation for Apple's Yellow Box classes.
 
 Key bindings
 ++++++++++++
+
+
 
 leoKeys.py handles key bindings.
 There are two kinds of bindings, gui bindings and pane bindings.

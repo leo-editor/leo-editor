@@ -36,6 +36,7 @@ The highlights of Leo 4.4.4:
 .. _`leoBridge chapter`:    leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
 
+
 The Great Graph Aha
 +++++++++++++++++++
 
@@ -67,6 +68,8 @@ they were general graphs. It is still early days for this exciting plugin.
 
 Added support for @auto files
 +++++++++++++++++++++++++++++
+
+
 
 What @auto does
 ***************
@@ -163,6 +166,7 @@ Most users will rarely use these explicit commands, because reading and writing
 read-at-auto-nodes command to update @auto nodes without having to reload the
 .leo file.
 
+
 Extending the code: adding new parsers
 **************************************
 
@@ -172,6 +176,8 @@ it would be simple to add support for other languages. See the node
 @thin leoImport.py-->Import-->Scanners for createOutline
 
 in leoPy.leo to see how easy it is to create new parsers.
+
+
 
 New commands for resolving cvs conflicts
 ++++++++++++++++++++++++++++++++++++++++
@@ -211,6 +217,8 @@ window). It then creates clones of all inserted, deleted and changed nodes.
 New kinds of settings trees
 +++++++++++++++++++++++++++
 
+
+
 @buttons trees
 **************
 
@@ -245,6 +253,7 @@ New plugins
 - The threading_colorizer plugin replaces the __jEdit_colorizer__ plugin. This
   plugin features an elegant new algorithm that has much better performance and
   eliminates almost all flash.
+
 
 Leo's core is now compatible with jython
 ++++++++++++++++++++++++++++++++++++++++

@@ -22,6 +22,7 @@ The highlights of Leo 4.4.3:
 .. _`leoBridge chapter`:    leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
 
+
 Important new features
 **********************
 
@@ -100,6 +101,7 @@ New commands
     save-file-as-zipped
     select-chapter
 
+
 New settings
 ************
 
@@ -118,6 +120,10 @@ New settings
 
 For details of these new settings, see leoSettings.leo
 
+
+
+
+
 Plugins
 *******
 
@@ -127,6 +133,7 @@ Plugins
 - Changed bindings in the UniversalScrolling plugin.
 
 - Registered the write-restructured-text command in rst3 plugin.
+
 
 Minor improvements
 ******************
@@ -153,4 +160,5 @@ Minor improvements
 - changeAll now works like findAll
 
 - Clear status line in repeat-complex-command.
+
 

@@ -14,6 +14,7 @@ See `Specifying settings`_ for a description of how to change Leo's settings.
 .. _`rst3 plugin`:                              glossary.html#rst3-plugin
 .. _`Specifying settings`:                      commands.html#specifying-settings
 
+
 Specifying settings
 +++++++++++++++++++
 
@@ -49,6 +50,7 @@ There are four kinds of settings files:
    various places on the file system.
 
 The following sections describe the kinds of nodes in @settings trees.
+
 
 Configuration directories
 *************************
@@ -238,12 +240,14 @@ are created in the icon area of all .leo files.
 All @button nodes in the @commands tree create global buttons.
 All @button nodes outside the commands tree create buttons local to the settings file.
 
+
 \@commands
 ^^^^^^^^^^
 
 An @commands tree in a settings file defines global commands.
 All @command nodes in the @commands tree create global commands.
 All @command nodes outside the commands tree create commands local to the settings file.
+
 
 \@data
 ^^^^^^
@@ -296,6 +300,8 @@ The body text contains a list of settings for a font.  For example::
     body_text_font_weight = None
 
 **Important**: you can use the show-fonts minibuffer command to guide you in making these settings.
+
+
 
 \@menuat
 ^^^^^^^^
@@ -541,4 +547,5 @@ Leo now contains support for translating messages sent to Leo's log:
   to create catalogs of all scripts that need to be translated. Such catalogs
   are used by Python's gettext module. (This script was also used to check that
   the proper arguments to g.es and g.es_print were translated.)
+
 

@@ -6,6 +6,7 @@ Chapter 13: Writing Plugins
 
 .. .. contents::
 
+
 .. External links...
 .. _docutils:             http://docutils.sourceforge.net
 .. _LaTeX:                http://www.latex-project.org/
@@ -16,6 +17,7 @@ Chapter 13: Writing Plugins
 .. _`Event handlers`:                           scripting.html#event-handlers
 .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
 .. _`Chapter 8\: Customizing Leo`:              customizing.html
+
 
 Overview
 ++++++++
@@ -41,6 +43,7 @@ Writing plugins is quite similar to writing any other Leo script.  See
    details, see the section called `event handlers`_ in Leo's scripting chapter.
    
 The rest of this chapters discusses topics related specifically to plugins.
+
 
 Support for unit testing
 ++++++++++++++++++++++++

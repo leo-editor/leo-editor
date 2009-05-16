@@ -4,6 +4,7 @@
 Glossary
 ############
 
+
 .. Links used in this document.
 
 .. ----- External links.
@@ -38,6 +39,7 @@ Glossary
 .. _`leo directives`:               intro.html#leo-directives
 .. _`quick start for programmers`:  intro.html#quick-start-for-programmers
 .. _`sentinels lines`:              intro.html#sentinel-lines
+
 
 **Important**: We often refer to outline_ nodes_ by the directives_ they contain.
 For example, an `@root node`_ is a node containing an @root directive_, etc.

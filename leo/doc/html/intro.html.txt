@@ -101,6 +101,7 @@ For full details, see `Chapter 7: Scripting Leo with Python`_.
 
 .. |leoMainWindow| image:: PCWindow.gif
 
+
 Introduction
 ++++++++++++
 
@@ -112,6 +113,7 @@ You should see Leo's main window, something like this:
 **Note**: the actual contents of the icon area at the top depends on what plugins are active.
 
 |leoMainWindow|
+
 
 Leo's main window
 *****************
@@ -188,6 +190,7 @@ commands from the Outline menu:
 You enter `body text`_ for any node by selecting the node's headline in the
 outline pane and then typing in the body pane. Leo has a full range of `editing
 commands`_ that apply to the body pane.
+
 
 Unique features of Leo
 ++++++++++++++++++++++
@@ -423,12 +426,14 @@ you might save yourself some extra work.
 `@auto trees`_ allow you to edit derived files that do not contain sentinels.
 Leo imports such derived files every time Leo reads the .leo file.
 
+
 Beginner`s reference guide
 **************************
 
 This section covers all the details of programming with Leo that beginners are likely to need.
 `Chapter 4: Writing Programs in Leo`_ is the full reference guide.
 I recommend avoiding that chapter until you have been programming with Leo for some time.
+
 
 Syntax of section names
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -546,6 +551,8 @@ tree containing orphan nodes, and does not save the derived file. Instead Leo
 saves the information in the `@thin`_ tree in the .leo file. No information is
 lost; Leo will load the `@thin`_ tree from the .leo file the next time Leo
 opens the .leo file.
+
+
 
 Sentinel lines
 ^^^^^^^^^^^^^^
@@ -672,6 +679,7 @@ One last word about style. The world won't end if you happen to use bad style by
 mistake: you just might cause a bit more work for yourself than was strictly
 necessary. Feel free to invent your own style of using Leo. Still, it would be
 wise to "know the rules before you break them."
+
 
 Scripting Leo
 *************

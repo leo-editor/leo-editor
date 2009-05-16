@@ -20,8 +20,10 @@ The crucial ideas and algorithms underlying @shadow trees are the invention of B
 
 .. .. contents::
 
+
 .. Links
-.. _`@auto trees`:          directives.html#auto
+.. _`@auto trees`:          directives.html#auto    
+
 
 Overview
 ++++++++
@@ -78,6 +80,7 @@ After the first import, updates are made using the update algorithm.
 **Note**: just as for @auto, Leo will never read (import) or write an @shadow tree if
 the @shadow node is under the influence of an @ignore directive.
 
+
 What the update algorithm does
 ++++++++++++++++++++++++++++++
 
@@ -106,6 +109,7 @@ result of deleting lines.
 Step 3 is the clever part. To see all the details of how the algorithm works,
 please study the x.propagate_changed_lines method in leoShadow.py. This code is
 heavily commented.
+
 
 Aha: boundary cases don't matter
 ++++++++++++++++++++++++++++++++
@@ -137,4 +141,5 @@ these two cases **does not matter**, for three very important reasons:
    need to be moved across the boundary.
    
 Understanding these three reasons finally convinced me that @shadow could be made to work reliably.
+
 

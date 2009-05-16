@@ -8,6 +8,7 @@ Chapter 14: Using the rst3 plugin
 
 .. .. contents::
 
+
 .. rST links used in this document...
 
 .. External links...
@@ -19,6 +20,7 @@ Chapter 14: Using the rst3 plugin
 .. Hard links to Leo's web site...
 .. _ListManagerDocs.html: http://webpages.charter.net/edreamleo/ListManagerDocs.html
 .. _wxListManager.leo:    http://webpages.charter.net/edreamleo/wxListManager.leo
+
 
 Overview
 ++++++++
@@ -435,6 +437,7 @@ For example, the root of the file that generated this documentation contains::
     @settings
         @bool rst3_write_intermediate_file = True
 
+
 The code-block directive
 ++++++++++++++++++++++++
 
@@ -463,6 +466,7 @@ The result looks like this if the SilverCity syntax coloring module has been ins
     .. import leo.core.leoGlobals as g
 
 See the tree called "Scripting chapter using the rst plugin" in LeoDocs.leo for many examples of how to use code-blocks.
+
 
 Required cascading style sheets
 +++++++++++++++++++++++++++++++
