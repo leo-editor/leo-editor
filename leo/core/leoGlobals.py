@@ -89,7 +89,12 @@ globalDirectiveList = [
 #@-node:EKR.20040610094819:<< define global data structures >>
 #@nl
 
-g = None # Set by startup logic to this module.
+# Give g a temporary value so tests for g.unitTesting will work in this file.
+class gClass:
+    def __init__(self):
+        self.unitTesting = False
+
+g = gClass() # Set later by startup logic to this module.
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
 isPython3 = sys.version_info >= (3,0,0)
@@ -5131,6 +5136,26 @@ def computeWindowTitle (fileName):
             title = fn
         return title
 #@-node:ekr.20031218072017.3103:g.computeWindowTitle
+#@+node:ekr.20090516135452.5777:g.ensureTrailingNewlines & tests
+def ensureTrailingNewlines (s,n):
+
+    s = g.removeTrailing(s,'\t\n\r ')
+    return s + '\n' * n
+
+
+#@+node:ekr.20090516135452.5778:@test ensureTrailingNewlines
+if g.unitTesting:
+
+    s = 'aa bc \n \n\t\n'
+    s2 = 'aa bc'
+
+    for i in range(3):
+        result = g.ensureTrailingNewlines(s,i)
+        val = s2 + ('\n' * i)
+        assert result == val, 'expected %s, got %s' % (
+            repr(val),repr(result))
+#@-node:ekr.20090516135452.5778:@test ensureTrailingNewlines
+#@-node:ekr.20090516135452.5777:g.ensureTrailingNewlines & tests
 #@+node:ekr.20031218072017.3138:g.executeScript
 def executeScript (name):
 
@@ -5367,6 +5392,34 @@ def prettyPrintType (obj):
         if theType.endswith("'>"): theType = theType[:-2]
         return theType
 #@-node:ekr.20060221083356:g.prettyPrintType
+#@+node:ekr.20090516135452.5776:g.removeTrailing and removeTrailingWs & tests
+# Warning: g.removeTrailingWs already exists.
+# Do not change it!
+
+def removeTrailing (s,chars):
+
+    '''Remove all characters in chars from the end of s.'''
+
+    i = len(s)-1
+    while i >= 0 and s[i] in chars:
+        i -= 1
+    i += 1
+    return s[:i]
+#@+node:ekr.20090516135452.5779:@test removeTrailing
+if g.unitTesting:
+
+    s = 'aa bc \n \n\t\n'
+    table = (
+        ('\t\n ','aa bc'),
+        ('abc\t\n ',''),
+        ('c\t\n ','aa b'),
+    )
+
+    for arg,val in table:
+        result = g.removeTrailing(s,arg)
+        assert result == val, 'expected %s, got %s' % (val,result)
+#@-node:ekr.20090516135452.5779:@test removeTrailing
+#@-node:ekr.20090516135452.5776:g.removeTrailing and removeTrailingWs & tests
 #@+node:ekr.20060410112600:g.stripBrackets
 def stripBrackets (s):
 
@@ -5825,7 +5878,7 @@ def removeExtraLws (s,tab_width):
 
     return result
 #@-node:ekr.20050211120242.2:g.removeExtraLws
-#@+node:ekr.20031218072017.3203:removeTrailingWs
+#@+node:ekr.20031218072017.3203:removeTrailingWs & test
 # Warning: string.rstrip also removes newlines!
 
 def removeTrailingWs(s):
@@ -5834,7 +5887,21 @@ def removeTrailingWs(s):
     while j >= 0 and (s[j] == ' ' or s[j] == '\t'):
         j -= 1
     return s[:j+1]
-#@-node:ekr.20031218072017.3203:removeTrailingWs
+#@+node:ekr.20090516135452.5856:@test removeTrailingWs
+if g.unitTesting:
+
+    table = (
+        ('a a\t','a a'),
+        ('a a\t\n','a a\t\n'),
+        ('a a ','a a'),
+    )
+
+    for s,val in table:
+        result = g.removeTrailingWs(s)
+        assert result == val, 'expected %s, got %s' % (
+            repr(val),repr(result))
+#@-node:ekr.20090516135452.5856:@test removeTrailingWs
+#@-node:ekr.20031218072017.3203:removeTrailingWs & test
 #@+node:ekr.20031218072017.3204:skip_leading_ws
 # Skips leading up to width leading whitespace.
 
