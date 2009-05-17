@@ -1375,7 +1375,9 @@ class rstCommands:
             # Preserve rst whitespace: uses lines = g.splitLines(p.b)
             s = ''.join(lines)
             if not self.atAutoWrite:
-                s += '\n\n' # Make sure all nodes end with a blank line.
+                # s += '\n\n' # Make sure all nodes end with a blank line.
+                # Don't accumulate more and more trailing newlines!
+                s = g.ensureTrailingNewlines(s,2)
             self.write(s)
         else:
             # Old code: uses lines = p.b.rstrip().split('\n')
@@ -1819,10 +1821,8 @@ class rstCommands:
             n = max(4,len(s))
             if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
             if level == 0:
-                ### return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
                 return '%s\n%s\n%s\n' % (ch*n,p.h,ch*n)
             else:
-                ### return '%s\n%s\n\n' % (p.h,ch*n)
                 return '%s\n%s\n' % (p.h,ch*n)
         else:
             # The user is responsible for top-level overlining.
@@ -1832,8 +1832,7 @@ class rstCommands:
             ch = u [level]
             if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
             n = max(4,len(s))
-            # return '%s\n%s\n' % (p.h,ch*n) # Must be equivalent to old code.
-            return '%s\n%s\n\n' % (p.h.strip(),ch*n) # Must be equivalent to old code.
+            return '%s\n%s\n\n' % (p.h.strip(),ch*n)
     #@-node:ekr.20090502071837.93:underline (leoRst)
     #@+node:ekr.20090502071837.94:write (leoRst)
     def write (self,s):
