@@ -9,8 +9,6 @@ This is Leo's Frequently Asked Questions document.
 .. .. contents::
 ..    :depth: 2
 
-
-
 .. Links used in this document...
 
 .. ----- External links.
@@ -67,7 +65,6 @@ This is Leo's Frequently Asked Questions document.
 .. _settings:               glossary.html#settings
 .. _tangle:                 glossary.html#tangle
 .. _untangle:               glossary.html#untangle
-
 
 Getting Leo
 +++++++++++
@@ -190,7 +187,6 @@ Here is how to build Tk without thread support:
 - Go to www.python.org and download your favorite Python (2.3.5 for me).
 - Build it as is told on the download page.
 - Enjoy using Leo on Linux.
-
 
 
 **Running Python setup.py install from the leo directory doesn't work.  Why not?**
@@ -491,7 +487,6 @@ Leo has good support for `CWEB`_.
 `@file`_ trees can organize any part of CWEB code using *noweb* sections.
 You can also use `@asis`_, `@noref`_ or `@nosent`_ trees to create cweb files.
 See `CWEB mode`_ for full details.
-
 
 
 **Can @file trees contain material not in the derived file?**
@@ -798,7 +793,6 @@ but the first editor will stay focused on the main node_. It's a lot easier to
 do than to describe!
 
 
-
 **How can I display graphics in Leo?**
 
 One way is to link directly to the media file from a Leo node_ (with ``@url``)
@@ -964,7 +958,6 @@ It's polite to make the bug report self contained, so that six weeks later
 somebody will be able to understand the report as it stands.
 
 
-
 **My old .leo files won't load using Leo 4.5 or later. What should I do?**
 
 In version 4.5, Leo changed to using a sax parser for .leo files. This can cause
@@ -989,7 +982,6 @@ Remove these invalid characters as follows:
 Repeat steps 1 and 2 until all invalid characters are gone.
 
 
-
 **Can I scroll the outline pane with the mouse wheel?**
 
 This is a known bug in Tk that prevents this on Windows. The obvious Tk code
@@ -998,7 +990,6 @@ hard crash. The ``UniversalScrolling`` plugin is an attempt at a workaround.
 
 Scrolling with the mouse wheel may be possible on Linux. See the code in
 createTkTreeCanvas in leoTkinterFrame.py
-
 
 
 **Control-Shift backspace doesn't work.  What should I do?**
@@ -1135,7 +1126,6 @@ Leo will draw a Leo icon in Leo windows only if you have installed Fredrik Lundh
 -   Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 
 
-
 **Leo doesn't recognize commands with the caps-lock key down**
 
 This is a known bug in Tk/Tkinter and there is no good workaround. Some
@@ -1158,12 +1148,10 @@ Here is how to build Tk without thread support:
 - Enjoy using Leo on Linux.
 
 
-
 **Leo's Recent Files menu doesn't work from a cvs shandbox.  What's going on?**
 
 You must create .leoRecentFiles.txt in the config directory.
 .leoRecentFiles.txt is part of the standard releases but is not part of the cvs repository.
-
 
 
 **Nothing (or almost nothing) happens when I start Leo.  What should I do?**
@@ -1324,7 +1312,6 @@ the equivalent escape sequences. For example::
     u = 'a-\u0233-\u8ce2-z'
 
 
-
 **Some characters are garbled when importing files. What can I do?**
 
 The encoding used in the file being imported doesn't match the encoding in effect for Leo.
@@ -1369,6 +1356,5 @@ For example, the following Leo script shows various ways of printing La Peña pr
         print 'repr(s)   ',repr(s)
  
 For still more details, see:
-http://www.diveintopython.org/xml_processing/unicode.html 
-
+http://www.diveintopython.org/xml_processing/unicode.html
 

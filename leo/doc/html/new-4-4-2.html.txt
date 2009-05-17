@@ -14,7 +14,6 @@ For full details see the release notes section in LeoDocs.leo.
 .. _pymacs:                         http://pymacs.progiciels-bpi.ca/index.html
 .. _`Chapter 18: Leo and Emacs`:    emacs.html
 
-
 A major code reorg
 ++++++++++++++++++
 
@@ -31,7 +30,6 @@ New commands
     extend-to-sentence
     forward-end-word
     forward-end-word-extend-selection
-
 
 New features
 ++++++++++++
@@ -132,7 +130,6 @@ Changed default settings::
     focus-to-body = Alt-D
     focus-to-tree = Alt-T
     toggle-extend-mode = Alt-3
-
 
 ZODB scripting
 ++++++++++++++

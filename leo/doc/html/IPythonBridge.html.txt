@@ -43,8 +43,6 @@ painless and powerful.
 
 .. .. contents::
 
-
-
 .. Links
 .. _discussions:            http://sourceforge.net/forum/forum.php?thread_id=1911662&forum_id=10226
 .. _ipython:                http://ipython.scipy.org/
@@ -53,7 +51,6 @@ painless and powerful.
 .. _extensionAPI:           http://ipython.scipy.org/moin/IpythonExtensionApi
 .. _`The Ipython Extension API`: extensionAPI_
 .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
-
 
 Introduction
 ++++++++++++
@@ -76,7 +73,6 @@ Obviously, you can save the Leo document as usual - this is a great advantage
 of ILeo over using %edit, you can save your experimental scripts all at one
 time, without having to organize them into script/module files (before you
 really want to, of course!)
-
 
 Installation and startup
 ++++++++++++++++++++++++
@@ -166,7 +162,6 @@ through IPython translation mechanism but use the direct python 'exec' statement
 history, and sometimes it is safer (and more efficient) to execute things as
 plain Python statements. Large class definitions are good candidates for P
 nodes.
-
 
 Accessing Leo nodes from IPython
 ++++++++++++++++++++++++++++++++
@@ -277,7 +272,6 @@ LeoNodes are iterable, so to see the headlines of all the children of 'spam' do:
     for n in wb.spam:
         print n.h
 
-
 @cl definitions
 +++++++++++++++
 
@@ -387,7 +381,6 @@ nodes with arbitrary headlines, or to provide aliases to other nodes. If
 multiple @a nodes are attached as children of a node, all the names can be used
 to access the same object.
 
-
 Launching ILeo from IPython
 +++++++++++++++++++++++++++
 
@@ -446,7 +439,6 @@ with U (yes, this is completely useless!)::
 try) - typically, you don't need to care about it and can usually omit the
 argument altogether)
 
-
 Example code snippets
 +++++++++++++++++++++
 
@@ -477,7 +469,6 @@ IPython, you can sort a node 'foo' in-place by doing ``sort_node(wb.foo)``)::
         lines = n.l
         lines.sort()
         n.l = lines
-
 
 Example use case: pylab
 +++++++++++++++++++++++
@@ -575,7 +566,6 @@ Opens the variable s for editing. Press alt+I to push the new value to IPython.
     
 Opens IPython interactive history (both input and output) in Leo.
 
-
 Acknowledgements and history
 ++++++++++++++++++++++++++++
 
@@ -593,6 +583,4 @@ promising technologies.
 
 Discussions_ on SourceForge show how the goal of close cooperation between Leo and IPython went from
 vague dream to completed reality over the span of about 10 days.
-
-
 

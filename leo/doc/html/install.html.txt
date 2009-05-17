@@ -11,14 +11,12 @@ This chapter tells how to install and run_ Leo.
 If you have *any* problems installing Leo,
 please ask for help on Leo's help forum:
 
-
 .. Links used in this document...
 .. _`Pmw`:                  http://pmw.sourceforge.net/
 .. _run:                    `Running Leo`_
 .. _`run Leo`:              `Running Leo`_
 .. _`Leo's download page`:  http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 .. _`associated .leo files with Leo`:   `How to associate Leo with .leo files on Windows`_
-
 
 System requirements
 +++++++++++++++++++
@@ -51,8 +49,6 @@ Leo uses os.expanduser('~') to determine the HOME directory if no HOME environme
 Leo puts several files in your HOME/.leo directory:
 .leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
 
-
-
 How to install Leo on Linux
 +++++++++++++++++++++++++++
 
@@ -78,7 +74,6 @@ You can, instead, add the following link::
     sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.5/site-packages/
 
 Now you are ready to `run Leo`_.
-
 
 Installing Leo on Windows
 +++++++++++++++++++++++++
@@ -367,7 +362,6 @@ headlines in that file::
     for p in newFrame.c.allNodes_iter():
         g.es(g.toEncodedString(p.h,"utf-8"))
 
-
 How to install the Aspell spell checker
 +++++++++++++++++++++++++++++++++++++++
 
@@ -386,5 +380,4 @@ You must install the Aspell package if you want to use Leo's Spell tab.
 
 3.  Specify the location of the Aspell and Aspell/bin directories using
     the aspell_dir and aspell_bin_dir settings in LeoSettings.leo.
-
 

@@ -22,7 +22,6 @@ The main features of Leo 4.4.1 are:
 
 .. Links used in this document.
 
-
 New commands
 ++++++++++++
 
@@ -76,7 +75,6 @@ New and improved plugins
   will select the presently selected node at the time the button was created.
 - Added Debug button to scripting plugin.
 
-
 New settings
 ++++++++++++
 
@@ -105,7 +103,6 @@ Improved settings
 - Improved check bindings script in leoSettings.leo.
 - Allow @mode outside of leoSettings.leo.
 - Added warnings about the @bool expanded_click_area setting.
-
 
 Minor improvements
 ++++++++++++++++++

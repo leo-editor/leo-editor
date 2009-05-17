@@ -30,7 +30,6 @@ The main features of Leo 4.4 are:
 
 .. Links used in this document.
 
-
 New commands
 ++++++++++++
 
@@ -131,7 +130,6 @@ New commands
     word-search-backward
     word-search-forward
 
-
 New features
 ++++++++++++
 
@@ -188,7 +186,6 @@ if not w:
 ..w.configure(bg='yellow')
 
 log.selectTab(tag)
-
 
 New and improved plugins
 ++++++++++++++++++++++++

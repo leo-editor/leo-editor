@@ -22,7 +22,6 @@ then continues with a discussion of commands in each of Leo's menus.
 .. _`Creating script buttons`:                          scripting.html#creating-script-buttons
 .. _`Tangling @root trees with the Tangle commands`:    directives.html#tangling-root-trees-with-the-tangle-commands
 
-
 The minibuffer
 ++++++++++++++
 
@@ -798,14 +797,12 @@ redoing an operation moves the bead pointer forwards. The ``Undo`` command is
 disabled when the bead pointer moves in front of the first bead; the ``Redo``
 command is disabled when the bead pointer points to the last bead.
 
-
 Cutting, pasting and selecting text
 ***********************************
 
 Leo supports the standard editing commands: ``Cut``, ``Copy``, ``Paste``,
 ``Clear`` and ``Select All``. These commands work with either headline or body
 text.
-
 
 Shifting body text
 ******************
@@ -1031,7 +1028,6 @@ Go To Line Number
 
 The ``Go To Line Number`` command selects the locations in your outlines corresponding to a line in a derived file.
 
-
 Inserting the date and time
 ***************************
 
@@ -1194,7 +1190,6 @@ The Window Menu
 -   The ``Open Compare Window`` command opens a dialog that allows you to compare
     two files, one containing sentinels and one not.
 
-
 The Help Menu
 +++++++++++++
 
@@ -1209,6 +1204,4 @@ The Help Menu
 -   The ``Open LeoDocs.leo`` command opens ``LeoDocs.leo``.
 -   The ``Open LeoPlugins.leo`` command opens ``LeoPlugins.leo``.
 -   The ``Open LeoSettings.leo`` command opens ``LeoSettings.leo``.
-
-
 

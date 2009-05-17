@@ -1981,7 +1981,7 @@ class baseScannerClass (scanUtility):
 
         return ok
     #@-node:ekr.20071110144948:checkLeadingWhitespace
-    #@+node:ekr.20070911110507:reportMismatch
+    #@+node:ekr.20070911110507:reportMismatch & test
     def reportMismatch (self,lines1,lines2,bad_i):
 
         trace = True and not g.unitTesting
@@ -2018,7 +2018,18 @@ class baseScannerClass (scanUtility):
             g.es_print('\n'.join(aList),color='blue')
 
         return False
-    #@-node:ekr.20070911110507:reportMismatch
+    #@+node:ekr.20090517020744.5785:@test reportMismatch
+    if g.unitTesting:
+
+        import leo.core.leoImport as leoImport
+        ic = c.importCommands
+        scanner = leoImport.rstScanner(importCommands=ic,atAuto=True)
+        f = scanner.reportMismatch
+
+        # Why is leoSettings.leo scanned twice in dynamicUnitTest.leo?
+    #@nonl
+    #@-node:ekr.20090517020744.5785:@test reportMismatch
+    #@-node:ekr.20070911110507:reportMismatch & test
     #@-node:ekr.20070808115837:Checking
     #@+node:ekr.20070706084535:Code generation
     #@+at 

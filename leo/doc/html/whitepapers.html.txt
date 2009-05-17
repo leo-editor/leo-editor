@@ -10,7 +10,6 @@ I wrote the third in November 2004, and rewrote it in February 2006.
 
 .. .. contents::
 
-
 .. External links...
 .. _pychecker:              http://pychecker.sourceforge.net/
 .. _`region inference`:     http://en.wikipedia.org/wiki/Region_inference
@@ -21,7 +20,6 @@ I wrote the third in November 2004, and rewrote it in February 2006.
 .. _`Rst3 plugin`:          rstplugin3.html
 .. _`Scripting plugin`:     plugins.html#mod-scripting
 .. _`test buttons`:         scripting.html#test-and-suite-nodes
-
 
 Tk is the future of Leo
 +++++++++++++++++++++++
@@ -68,7 +66,6 @@ C++ syntax to Python. While doing so, I had an Aha experience. Python is more
 than an incremental improvement over Smalltalk or C++ or objective-C; it is
 "something completely different". The rest of this post tries to explain this
 difference.
-
 
 Clarity
 *******
@@ -184,7 +181,6 @@ so I would do some things differently today. However, the design discussed below
 still seems relevant today. Indeed, attention to low-level details can make a
 huge difference.
 
-
 Lifetime allocation
 *******************
 
@@ -233,8 +229,6 @@ Lifetime-based allocation is a superb invention:
 Importantly, the speed of the else clause makes absolutely no difference because
 it is so seldom executed. Thus, it uses a function call. Clearly then, this code
 is optimal: it could not be improved even if coded in assembly language.
-
-
 
 Typical lifetimes
 *****************
@@ -292,5 +286,4 @@ lifetime. Another reason why lifetimes are not a standard technique is that they
 are a potentially dangerous optimization. Errors in specifying lifetimes will
 result in dangling pointer references. But this danger might disappear if pypy
 could deduce lifetimes automatically.
-
 

@@ -9,7 +9,6 @@ What's New in Leo 4.6
 .. Links used in this document.
 .. .. _`Chapter 23`:           atShadow.html
 
-
 Improved file handling
 ++++++++++++++++++++++
 
@@ -24,7 +23,6 @@ Improved file handling
 
 - Leo now warns when attempting to write a file that has been changed outside of Leo.
   This prevents bzr reversions.
-
 
 New code features
 +++++++++++++++++

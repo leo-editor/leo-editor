@@ -7,10 +7,8 @@ Chapter 20: Unit testing with Leo
 This chapter describes how you can execute Python unit test from within Leo outlines.
 
 .. .. contents::
-    
 
 .. Links
-
 
 Overview
 ++++++++
@@ -91,7 +89,6 @@ just like in other scripts.  Thus, the line::
     
 is not needed.  However, it prevents pychecker warnings that c and p are undefined.
 
-
 Using @suite nodes
 ++++++++++++++++++
 
@@ -130,7 +127,6 @@ section references, etc. For example::
             suite.addTest(test)
         g.app.scriptDict['suite'] = suite
 
-
 How the unit test commands work
 +++++++++++++++++++++++++++++++
 
@@ -159,7 +155,6 @@ following:
      different from as described, but they usually don't matter. If you *really*
      care, see the source code for leoTests.doTests.
 
-
 @button timer
 +++++++++++++
 
@@ -172,7 +167,6 @@ The contents of @button timer is::
     
 runTimerOnNode executes the script in the presently selected node using timit.Timer and prints the results.
 
-
 @button profile
 +++++++++++++++
 
@@ -184,5 +178,4 @@ The contents of @button profile is::
     leoTest.runProfileOnNode(p,outputPath=None) # Defaults to leo\test\profileStats.txt
     
 runProfileOnNode runs the Python profiler on the script in the selected node, then reports the stats.
-
 

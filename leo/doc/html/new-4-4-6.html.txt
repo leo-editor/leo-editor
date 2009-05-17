@@ -12,7 +12,6 @@ Leo 4.4.6 fixes all known bugs and adds a few new features.
 .. _`leoBridge chapter`:    leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
 
-
 New commands
 ++++++++++++
 
@@ -29,7 +28,6 @@ New features
 - Added support for @auto xml and @auto javascript.
   Use @data import_xml_tags setting to specify the xml tags that act as organizers.
   Javascript regexps that look like section references cause problems, but that can not be helped.
-
 
 New settings
 ++++++++++++

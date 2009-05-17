@@ -14,9 +14,7 @@ Using the leoBridge module, host programs can get access to:
 
 .. .. contents::
 
-
 .. Links
-
 
 The basics
 ++++++++++
@@ -109,7 +107,6 @@ Here it is, stripped of its sentinel lines::
     if __name__ == '__main__':
         main()
 
-
 Running leoBridge from within Leo
 +++++++++++++++++++++++++++++++++
 
@@ -169,6 +166,4 @@ at the end of script B, and back in script A, after you've rebuilt
 
     g.app.gui.replaceClipboardWith(response)
     c.pasteOutline()
-
-
 

@@ -8,9 +8,7 @@ This chapter describes Leo's vim-like bindings, including how to install them.
 
 .. .. contents::
 
-
 .. Links
-
 
 Vim bindings
 ++++++++++++
@@ -29,7 +27,6 @@ The same procedure is performed to update to a new version.
 Note: Place any local customized key bindings in a separate
 "@keys My Vi" node in the myLeoSettings.leo file to prevent
 them from being overwritten when updating to a new version.
-
 
 General commands
 ****************
@@ -80,7 +77,6 @@ Miscellaneous commands::
     =           Simulate double-click on current node's icon box
     Alt-G       Go to specified line number (relative to derived file)
     Ctrl-:      Enter Leo's command line
-
 
 Body pane commands
 ******************
@@ -272,7 +268,6 @@ Node commands::
        Ctrl-LtArrow    Mapped to "Ctrl-h" for convenience
        Ctrl-RtArrow    Mapped to "Ctrl-l" for convenience
 
-
 Outline commands
 ****************
 
@@ -412,7 +407,6 @@ Outline scroll commands::
        Ctrl-b    Mapped to Ctrl-y until scroll up by pane's height supported
        Ctrl-f    Mapped to Ctrl-e until scroll down by pane's height supported
 
-
 Commands not supported
 **********************
 
@@ -434,7 +428,6 @@ Notable missing body pane commands::
     z<movement> Slide buffer to put current line at top/middle/bottom of pane
     '<command>  Go to line of last edit, jump, ...
     `<command>  Go to character of last edit, jump, ...
-
 
 Avoiding changes to 'tag' files
 +++++++++++++++++++++++++++++++

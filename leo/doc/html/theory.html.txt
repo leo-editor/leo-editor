@@ -13,7 +13,6 @@ This chapter will be of use primarily to those wanting to change Leo's code.
 .. _`Chapter 9\: History of Leo`:   history.html
 .. _`Chapter 11\: White Papers`:    whitepapers.html
 
-
 Overview
 ++++++++
 

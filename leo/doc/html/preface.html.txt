@@ -21,7 +21,6 @@ Preface
 
 .. _`Chapter 14\: Using the Rst3 Plugin`:           rstplugin3.html
 
-
 Why, oh why, would anyone be interested in Leo? After all, Emacs and Vim are 
 superb text editors, and Visual Studio and Eclipse are great IDE's. How can Leo possibly compete with such strong competition? What does Leo offer that these other tools don't? 
 

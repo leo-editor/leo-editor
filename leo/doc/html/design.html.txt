@@ -38,7 +38,6 @@ This chapter discusses Leo's relationship with traditional `literate programming
 .. _tree:                   glossary.html#tree
 .. _untangling:             glossary.html#untangling
 
-
 Why I like Literate Programming
 +++++++++++++++++++++++++++++++
 

@@ -8,11 +8,9 @@ This chapter discusses how to write Leo scripts that store and retrieve data usi
 
 .. .. contents::
 
-
 .. External links...
 .. _ZODB:               http://www.zope.org/Wikis/ZODB/guide/zodb.html
 .. _`Installing ZODB`:  http://www.zope.org/Wikis/ZODB/guide/node3.html#SECTION000310000000000000000
-
 
 Configuring Leo to use zodb
 +++++++++++++++++++++++++++
@@ -119,7 +117,6 @@ The following script reads a tree of vnodes from zodb and sets p as the root pos
     finally:
         get_transaction().commit()
         connection.close()
-
 
 About connections
 +++++++++++++++++

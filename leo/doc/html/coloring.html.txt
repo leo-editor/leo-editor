@@ -19,7 +19,6 @@ in this chapter.
 
 .. .. contents::
 
-
 .. External links...
 .. _jEdit:                      http://www.jedit.org/
 .. _`jEdit's documentation`:    http://www.jedit.org/42docs/users-guide/writing-modes-part.html
@@ -27,7 +26,6 @@ in this chapter.
 .. Relative links...
 .. _`Ruleset name`:      `Ruleset names`_
 .. _`Chapter 8`:           customizing.html
-
 
 Files
 +++++

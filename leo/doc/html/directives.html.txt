@@ -4,7 +4,6 @@
 Chapter 4: Writing Programs in Leo
 #####################################
 
-
 .. External links...
 .. _`CWEB`:     http://www-cs-faculty.stanford.edu/~knuth/cweb.html
 .. _`noweb`:    http://www.eecs.harvard.edu/~nr/noweb/
@@ -14,7 +13,6 @@ Chapter 4: Writing Programs in Leo
 .. _front:                  front.html
 .. _`Leo's tutorial`:       intro.html
 .. _`@auto reference`:      directives#id1
-
 
 This chapter is a *reference guide* to computer programming with Leo.
 This chapter does *not* teach you how to use Leo:
@@ -200,7 +198,6 @@ Reference: all about directives
 
 The following sections give full details about each directive.
 The directives listed here may appear in headlines or body text.
-
 
 @ and @doc
 **********
@@ -432,7 +429,6 @@ if they do not contain a **significant** amount of information. An @edit tree
 contains a significant amount of information if it has children or if the root
 node contains more than 10 characters.
 
-
 @encoding
 *********
 
@@ -449,7 +445,7 @@ The ``utf-8`` encoding is used by default.
 The ``utf-8`` encoding is a "lossless" encoding (it can represent all unicode code points),
 so encoding and decoding to and from ``utf-8`` plain strings will never cause a problem.
 When reading or writing a character not in a "lossy" encoding (such as ``iso-8859-1``),
-Leo converts such characters to ``'?'`` and issues a warning. 
+Leo converts such characters to ``'?'`` and issues a warning.
 
 \@file
 ******
@@ -457,7 +453,6 @@ Leo converts such characters to ``'?'`` and issues a warning.
 Creates an external file containing sentinels.
 Thin external files contain simpler sentinels than @thin.
 The @file tree in the outline contains a copy of all information in the external file.
-
 
 @first
 ******
@@ -640,8 +635,6 @@ For example::
 
 This setting only affects how Leo reformats doc parts, and how the ``Tangle`` command outputs block comments.
 
-
-
 @raw and @end_raw
 *****************
 
@@ -650,7 +643,6 @@ The ``@raw`` directive starts a section of "raw" text.
 The ``@end_raw`` directive ends such a section, as does the end of body text.
 No section references are recognized within raw text,
 and no additional leading whitespace is generated within raw text when writing the external file.
-
 
 \@root
 ******
@@ -743,7 +735,6 @@ than external files created from ``@file`` trees.
 Thin exteral files contain all information needed to recreate the ``@thin`` tree in the outline.
 
 The ``@all`` directive is valid only in ``@thin`` trees, not ``@file`` trees.
-
 
 @unit
 *****
@@ -929,7 +920,6 @@ Most users will rarely use these explicit commands, because reading and writing
 read-at-auto-nodes command to update @auto nodes without having to reload the
 .leo file.
 
-
 \@edit
 ******
 
@@ -950,7 +940,6 @@ gets written because no sentinels are written.
 Creates an external file containing sentinels.
 Thin external files contain simpler sentinels than @thin.
 The @file tree in the outline contains a copy of all information in the external file.
-
 
 \@nosent
 ********
@@ -1015,7 +1004,6 @@ However, ``@root`` trees are more flexible than ``@file`` trees:
   so that a section may be referenced in several ``@root`` trees.
 
 - The meaning of section definitions in ``@root`` trees are independent of their position within the tree.
-
 
 Sections and section definitions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1241,7 +1229,6 @@ than external files created from ``@file`` trees.
 Thin exteral files contain all information needed to recreate the ``@thin`` tree in the outline.
 
 The ``@all`` directive is valid only in ``@thin`` trees, not ``@file`` trees.
-
 
 \@shadow
 ********

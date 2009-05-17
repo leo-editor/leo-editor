@@ -20,7 +20,6 @@ The highlights of Leo 4.4.5:
 .. _`leoBridge chapter`:    leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
 
-
 Bug fixed
 +++++++++
 
@@ -56,7 +55,6 @@ New commands
     sort-lines-ignoring-case
     toggle-collapse_nodes_during_finds
 
-
 New settings
 ++++++++++++
 
@@ -76,5 +74,4 @@ New settings
 - @bool vim_plugin_opens_url_nodes
 
   vim.py does not open url nodes if this setting is False.
-
 
