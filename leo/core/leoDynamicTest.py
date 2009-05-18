@@ -11,6 +11,7 @@ cwd = os.getcwd()
 if cwd not in sys.path:
     sys.path.append(cwd)
 
+import time
 import leo.core.leoBridge as leoBridge
 import leo.core.leoPlugins as leoPlugins # leoPlugins.init must be called.
 
@@ -20,21 +21,29 @@ import leo.core.leoPlugins as leoPlugins # leoPlugins.init must be called.
 #@+node:ekr.20080730161153.6:main & helpers
 def main ():
 
+    trace = False
     tag = 'leoDynamicTests.leo'
+    if trace: t1 = time.time()
 
     # Setting verbose=True prints messages that would be sent to the log pane.
     path,gui,silent = scanOptions()
 
-    # print ('leoDynamicTest.py.main: gui=%s, silent=%s' % (gui,silent))
+    # Not loading plugins and not reading settings speeds things up considerably.
+    bridge = leoBridge.controller(gui=gui,
+        loadPlugins=False,readSettings=False,verbose=False)
 
-    bridge = leoBridge.controller(gui=gui,verbose=False)
+    if trace:
+         t2 = time.time() ; print('%s open bridge:  %0.2fsec' % (tag,t2-t1))
+
     if bridge.isOpen():
         g = bridge.globals()
         g.app.silentMode = silent
         path = g.os_path_finalize_join(g.app.loadDir,'..','test',path)
         c = bridge.openLeoFile(path)
-        g.es('%s %s' % (tag,c.shortFileName()))
+        if trace:
+            t3 = time.time() ; print('%s open file: %0.2fsec' % (tag,t3-t2))
         runUnitTests(c,g)
+#@nonl
 #@+node:ekr.20080730161153.7:runUnitTests
 def runUnitTests (c,g):
 
@@ -42,7 +51,6 @@ def runUnitTests (c,g):
     #g.es_print('running dynamic unit tests...')
     c.selectPosition(p)
     c.debugCommands.runAllUnitTestsLocally()
-#@nonl
 #@-node:ekr.20080730161153.7:runUnitTests
 #@+node:ekr.20090121164439.6176:scanOptions
 def scanOptions():
@@ -77,7 +85,7 @@ def scanOptions():
 #@-others
 
 if __name__ == '__main__':
-    if True:
+    if False:
         print('leoDynamicTest.py: argv...')
         for z in sys.argv[2:]: print('  %s' % repr(z))
     leoPlugins.init() # Necessary.
