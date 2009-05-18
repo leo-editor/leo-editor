@@ -2991,7 +2991,6 @@ class editCommandsClass (baseEditCommandsClass):
             w.insert(i,ch)
             w.setInsertPoint(i+1)
             if inBrackets and self.flashMatchingBrackets:
-
                 self.flashMatchingBracketsHelper(w,i,ch)               
         else:
             return 'break' # This method *always* returns 'break'
