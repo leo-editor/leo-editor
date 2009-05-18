@@ -743,8 +743,12 @@ def runTestsExternally (c,all):
         #@+node:ekr.20070627135336.9:createOutline & helpers
         def createOutline (self,c2):
 
-            '''Create a unit test ouline containing all @test and @suite nodes in p's outline.'''
+            '''Create a unit test ouline containing
 
+            - all children of any @mark-for-unit-tests node anywhere in the outline.
+            - all @test and @suite nodes in p's outline.'''
+
+            trace = False
             c = self.c ; markTag = '@mark-for-unit-tests'
             self.copyRoot = c2.rootPosition()
             self.copyRoot.initHeadString('All unit tests')
@@ -775,6 +779,8 @@ def runTestsExternally (c,all):
                 (p1,limit1,lookForMark1,lookForNodes1),
                 (p2,limit2,lookForMark2,lookForNodes2),
             ):
+                if trace: g.trace('look for: mark %s nodes %s\nroot %s\nlimit %s' % (
+                    lookForMark,lookForNodes,p.h,limit and limit.h or '<none>'))
                 while p and p != limit:
                     h = p.h
                     if p.v.t in self.seen:
@@ -791,13 +797,13 @@ def runTestsExternally (c,all):
         #@+node:ekr.20070705080413:addMarkTree
         def addMarkTree (self,p):
 
-            # g.trace(len(self.seen),p.h)
+            # Add the entire @mark-for-unit-tests tree.
+            self.addNode(p)
 
-            self.seen.append(p.v.t)
-
-            for p in p.subtree_iter():
-                if self.isUnitTestNode(p) and not p.v.t in self.seen:
-                    self.addNode(p)
+            # for p in p.subtree_iter():
+                # # if self.isUnitTestNode(p) and not p.v.t in self.seen:
+                # if not p.v.t in self.seen: # Add *all* nodes.
+                    # self.addNode(p)
         #@-node:ekr.20070705080413:addMarkTree
         #@+node:ekr.20070705065154.1:addNode
         def addNode(self,p):
@@ -806,12 +812,13 @@ def runTestsExternally (c,all):
             Add an @test, @suite or an @unit-tests tree as the last child of self.copyRoot.
             '''
 
-            # g.trace(len(self.seen),p.h)
+            # g.trace(p.h)
 
             p2 = p.copyTreeAfter()
             p2.moveToLastChildOf(self.copyRoot)
 
-            self.seen.append(p.v.t)
+            for p2 in p.self_and_subtree_iter():
+                self.seen.append(p2.v.t)
         #@-node:ekr.20070705065154.1:addNode
         #@+node:ekr.20070705075604.3:isUnitTestNode
         def isUnitTestNode (self,p):
@@ -828,33 +835,26 @@ def runTestsExternally (c,all):
         def runTests (self,gui='nullGui',trace=False):
 
             '''
-            Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo in a separate process.
+            Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
+            in a separate process.
             '''
 
             trace = False or trace
-            if trace: import time
-            kind = g.choose(self.all,'all ','')
-            g.es('running',kind,'unit tests',color='blue')
-            print('creating: %s' % (self.fileName))
+            import time
+            kind = g.choose(self.all,'all ','selected')
             c = self.c ; p = c.p
-            if trace: t1 = time.time()
+            t1 = time.time()
             found = self.searchOutline(p.copy())
-            if trace:
-                 t2 = time.time() ; print('find:  %0.2f' % (t2-t1))
             if found:
                 theGui = leoGui.nullGui("nullGui")
                 c2 = c.new(gui=theGui)
-                if trace:
-                    t3 = time.time() ; print('gui:   %0.2f' % (t3-t2))
                 found = self.createOutline(c2)
-                if trace:
-                    t4 = time.time() ; print('copy:  %0.2f' % (t4-t3))
                 self.createFileFromOutline(c2)
-                if trace:
-                    t5 = time.time() ; print('write: %0.2f' % (t5-t4))
+                t2 = time.time()
+                print('created %s unit tests in %0.2fsec in %s' % (
+                    kind,t2-t1,self.fileName))
+                g.es('created %s unit tests' % (kind),color='blue')
                 runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo',silent=True)
-                if trace:
-                    t6 = time.time() ; print('run:   %0.2f' % (t6-t5))
                 c.selectPosition(p.copy())
             else:
                 g.es_print('no @test or @suite nodes in %s outline' % (
