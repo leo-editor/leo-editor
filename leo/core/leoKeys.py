@@ -3314,11 +3314,6 @@ class keyHandlerClass:
         if trace:
             g.trace('stroke:',repr(stroke),'keysym:',
                 repr(event.keysym),'ch:',repr(event.char),'state',state)
-            # g.trace('callers',g.callers(5))
-                # 'state.kind:',k.state.kind),'\n',g.callers())
-            # if (self.master_key_count % 100) == 0: g.printGcSummary()
-
-        # if stroke == 'Return': g.pdb()
 
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
@@ -3525,20 +3520,21 @@ class keyHandlerClass:
     #@+node:ekr.20080510095819.1:k.handleUnboudKeys
     def handleUnboundKeys (self,event,char,keysym,stroke):
 
-        k = self ; c = k.c ; trace = False
+        trace = False and not g.unitTesting
+        k = self ; c = k.c
         modesTuple = ('insert','overwrite')
 
-        if trace:
-            # if stroke: g.trace('***unexpected stroke***')
-            g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
-                # 'state.kind:',k.state.kind),'\n',g.callers())
-            # if (self.master_key_count % 100) == 0: g.printGcSummary()
+        if trace: g.trace('ch: %s keysym: %s stroke %s' % (
+            repr(event.char),repr(event.keysym),repr(stroke)))
 
         if k.unboundKeyAction == 'command':
             # Ignore all unbound characters in command mode.
             w = g.app.gui.get_focus(c)
             if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
                 c.onCanvasKey(event)
+            return 'break'
+
+        elif k.isFKey(stroke):
             return 'break'
 
         elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
@@ -4384,6 +4380,16 @@ class keyHandlerClass:
     #@-node:ekr.20061031131434.180:traceBinding
     #@-node:ekr.20061031131434.167:Shared helpers
     #@+node:ekr.20061031131434.181:Shortcuts (keyHandler)
+    #@+node:ekr.20090518072506.8494:isFKey
+    def isFKey (self,shortcut):
+
+
+        if not shortcut: return False
+
+        s = shortcut.lower()
+
+        return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
+    #@-node:ekr.20090518072506.8494:isFKey
     #@+node:ekr.20061031131434.182:isPlainKey
     def isPlainKey (self,shortcut):
 
@@ -4407,7 +4413,7 @@ class keyHandlerClass:
             )
 
             # g.trace(isPlain,repr(shortcut))
-            return isPlain
+            return isPlain and not self.isFKey(shortcut)
     #@-node:ekr.20061031131434.182:isPlainKey
     #@+node:ekr.20061031131434.184:shortcutFromSetting (uses k.guiBindNamesDict)
     def shortcutFromSetting (self,setting,addKey=True):
