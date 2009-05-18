@@ -246,6 +246,65 @@ for ivar in (
 #@nonl
 #@-node:ekr.20090201135500.9:@test official g.app ivars
 #@-node:ekr.20090201135500.1:Check base classes & ivars
+#@+node:ekr.20090517020744.5918:Not valid in leoGlobals.py
+#@+node:ekr.20090517020744.5905:@test g.scanAtPathDirectives
+if g.unitTesting:
+
+    if 0:
+        print 'c',c
+        for z in c.allNodes_iter(): print '.'*z.level(),z.h
+
+    table = (
+        # at-path-test1.py does not use an @path directive.
+        '@thin at-path-test2.py',
+        '@thin at-path-test3.py',
+    )
+
+    for h in table:
+        p2 = g.findNodeAnywhere(c,h)
+        # Kludge.  Because of the @thin bug, @thin has a child called @thin.
+        p2 = p2.firstChild()
+        assert p2,h
+        aList = g.get_directives_dict_list(p2)
+        s = c.scanAtPathDirectives(aList,force=True)
+        end = g.os_path_normpath(r'leo/test/unittest')
+
+        assert s.endswith(end),'for %s\nexpected to end with %s\ngot %s' % (
+            h,repr(end),repr(s))
+#@nonl
+#@-node:ekr.20090517020744.5905:@test g.scanAtPathDirectives
+#@+node:ekr.20090517020744.5908:@@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py
+greatGrandChild = p.firstChild().firstChild().firstChild()
+aList = g.get_directives_dict_list(greatGrandChild)
+s = c.scanAtPathDirectives(aList,force=True)
+end = g.os_path_normpath(r'leo/test/unittest')
+
+assert s.endswith(end),repr(s)
+#@nonl
+#@-node:ekr.20090517020744.5908:@@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py
+#@+node:ekr.20090517020744.5903:@@test g.scanAtPathDirectives ../test/unittest/at-path-test1.py
+aList = g.get_directives_dict_list(p.firstChild())
+s = c.scanAtPathDirectives(aList,force=True)
+end = g.os_path_normpath(r'leo/test')
+
+assert s.endswith(end),repr(s)
+#@nonl
+#@-node:ekr.20090517020744.5903:@@test g.scanAtPathDirectives ../test/unittest/at-path-test1.py
+#@+node:ekr.20090517020744.5876:@@test g.get_directives_dict
+# This will work regardless of where this method is.
+@language python
+@tabwidth -4
+# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
+@pagewidth 120
+
+d = c.atFileCommands.scanAllDirectives(p)
+# print d
+assert d.get('language') == 'python'
+assert d.get('tabwidth') == -4
+# assert d.get('path').endswith('xyzzy')
+assert d.get('pagewidth') == 120
+#@-node:ekr.20090517020744.5876:@@test g.get_directives_dict
+#@-node:ekr.20090517020744.5918:Not valid in leoGlobals.py
 #@-all
 #@nonl
 #@-node:ekr.20090113083258.1:@thin test_core.txt

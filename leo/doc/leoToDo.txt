@@ -990,6 +990,8 @@ def openWithFileName(fileName,old_c,
 
     """Create a Leo Frame for the indicated fileName if the file exists."""
 
+    trace = True
+
     if not fileName or len(fileName) == 0:
         return False, None
 
@@ -1015,7 +1017,7 @@ def openWithFileName(fileName,old_c,
         if old_c:
             # New in 4.4: We must read the file *twice*.
             # The first time sets settings for the later call to c.finishCreate.
-            # g.trace('***** prereading',fileName)
+            if trace: g.trace('***** prereading',fileName)
             c2 = g.app.config.openSettingsFile(fileName)
             if c2: g.app.config.updateSettings(c2,localFlag=True)
             g.doHook('open0')
@@ -1023,6 +1025,9 @@ def openWithFileName(fileName,old_c,
         # Open the file in binary mode to allow 0x1a in bodies & headlines.
         theFile,isZipped = g.openLeoOrZipFile(fileName)
         if not theFile: return False, None
+
+        # This call will take 3/4 sec. to open a file from the leoBridge.
+        # This is due to imports in c.__init__
         c,frame = app.newLeoCommanderAndFrame(
             fileName=fileName,
             relativeFileName=relativeFileName,
@@ -1033,8 +1038,10 @@ def openWithFileName(fileName,old_c,
 
     assert frame.c == c and c.frame == frame
     c.isZipped = isZipped
+
     frame.log.enable(enableLog)
     g.app.writeWaitingLog() # New in 4.3: write queued log first.
+
     if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
         c.setLog()
         if isLeo:
