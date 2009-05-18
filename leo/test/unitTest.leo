@@ -2510,7 +2510,6 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
 <v t="ekr.20071113193624.1"></v>
-<v t="ekr.20071113194033.3"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
