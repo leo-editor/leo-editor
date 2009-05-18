@@ -349,7 +349,7 @@ def loadHandlers(tag):
     s = g.app.config.getEnabledPlugins()
     if not s: return
 
-    if not g.app.silentMode:
+    if not g.app.silentMode and not g.app.batchMode:
         pr('@enabled-plugins found in %s' % (
             g.app.config.enabledPluginsFileName),color='blue')
 
