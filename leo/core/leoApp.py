@@ -491,6 +491,7 @@ class LeoApp:
         frame = gui.createLeoFrame(title)
 
         # Create the commander and its subcommanders.
+        # This takes about 3/4 sec when called by the leoBridge module.
         c = leoCommands.Commands(frame,fileName,relativeFileName=relativeFileName)
 
         if not app.initing:
@@ -501,9 +502,6 @@ class LeoApp:
 
         # Finish initing the subcommanders.
         c.undoer.clearUndoState() # Menus must exist at this point.
-
-        # if not g.app.initing:
-            # g.doHook("after-create-leo-frame",c=c)
 
         return c,frame
     #@-node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
