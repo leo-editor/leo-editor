@@ -5,11 +5,9 @@
 #@+node:ekr.20090518072506.8310:To do first
 #@+node:ekr.20090518072506.8311:Fix @thin bug!!
 #@-node:ekr.20090518072506.8311:Fix @thin bug!!
-#@+node:ekr.20090518072506.8312:Fix undo bug!!
-#@-node:ekr.20090518072506.8312:Fix undo bug!!
 #@+node:ekr.20090514111518.5660:Sorting can revert headline changes
 #@-node:ekr.20090514111518.5660:Sorting can revert headline changes
-#@+node:ekr.20090511055302.5784:Rst projects
+#@+node:ekr.20090511055302.5784:Finish rst.  @auto-rst
 @nocolor-node
 
 To do:
@@ -2800,7 +2798,9 @@ if g.unitTesting:
 #@nonl
 #@-node:ekr.20090517020744.5785:@test reportMismatch
 #@-node:ekr.20070911110507:reportMismatch & test
-#@-node:ekr.20090511055302.5784:Rst projects
+#@-node:ekr.20090511055302.5784:Finish rst.  @auto-rst
+#@+node:ekr.20090518072506.8492:Fix F12 bug
+#@-node:ekr.20090518072506.8492:Fix F12 bug
 #@-node:ekr.20090518072506.8310:To do first
 #@+node:ekr.20090430092048.1:Before 4.6 b2
 #@+node:ekr.20080922115725.1:Finish @shadow
@@ -6878,11 +6878,6 @@ def masterKeyHandler (self,event,stroke=None):
     if trace:
         g.trace('stroke:',repr(stroke),'keysym:',
             repr(event.keysym),'ch:',repr(event.char),'state',state)
-        # g.trace('callers',g.callers(5))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
-
-    # if stroke == 'Return': g.pdb()
 
     # Handle keyboard-quit first.
     if k.abortAllModesKey and stroke == k.abortAllModesKey:
@@ -7116,20 +7111,21 @@ def handleMiniBindings (self,event,state,stroke):
 #@+node:ekr.20080510095819.1:k.handleUnboudKeys
 def handleUnboundKeys (self,event,char,keysym,stroke):
 
-    k = self ; c = k.c ; trace = False
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
     modesTuple = ('insert','overwrite')
 
-    if trace:
-        # if stroke: g.trace('***unexpected stroke***')
-        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+    if trace: g.trace('ch: %s keysym: %s stroke %s' % (
+        repr(event.char),repr(event.keysym),repr(stroke)))
 
     if k.unboundKeyAction == 'command':
         # Ignore all unbound characters in command mode.
         w = g.app.gui.get_focus(c)
         if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
             c.onCanvasKey(event)
+        return 'break'
+
+    elif k.isFKey(stroke):
         return 'break'
 
     elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
@@ -7663,11 +7659,6 @@ def masterKeyHandler (self,event,stroke=None):
     if trace:
         g.trace('stroke:',repr(stroke),'keysym:',
             repr(event.keysym),'ch:',repr(event.char),'state',state)
-        # g.trace('callers',g.callers(5))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
-
-    # if stroke == 'Return': g.pdb()
 
     # Handle keyboard-quit first.
     if k.abortAllModesKey and stroke == k.abortAllModesKey:
@@ -7901,20 +7892,21 @@ def handleMiniBindings (self,event,state,stroke):
 #@+node:ekr.20080510095819.1:k.handleUnboudKeys
 def handleUnboundKeys (self,event,char,keysym,stroke):
 
-    k = self ; c = k.c ; trace = False
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
     modesTuple = ('insert','overwrite')
 
-    if trace:
-        # if stroke: g.trace('***unexpected stroke***')
-        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+    if trace: g.trace('ch: %s keysym: %s stroke %s' % (
+        repr(event.char),repr(event.keysym),repr(stroke)))
 
     if k.unboundKeyAction == 'command':
         # Ignore all unbound characters in command mode.
         w = g.app.gui.get_focus(c)
         if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
             c.onCanvasKey(event)
+        return 'break'
+
+    elif k.isFKey(stroke):
         return 'break'
 
     elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
@@ -8846,11 +8838,6 @@ def masterKeyHandler (self,event,stroke=None):
     if trace:
         g.trace('stroke:',repr(stroke),'keysym:',
             repr(event.keysym),'ch:',repr(event.char),'state',state)
-        # g.trace('callers',g.callers(5))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
-
-    # if stroke == 'Return': g.pdb()
 
     # Handle keyboard-quit first.
     if k.abortAllModesKey and stroke == k.abortAllModesKey:
@@ -9084,20 +9071,21 @@ def handleMiniBindings (self,event,state,stroke):
 #@+node:ekr.20080510095819.1:k.handleUnboudKeys
 def handleUnboundKeys (self,event,char,keysym,stroke):
 
-    k = self ; c = k.c ; trace = False
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
     modesTuple = ('insert','overwrite')
 
-    if trace:
-        # if stroke: g.trace('***unexpected stroke***')
-        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+    if trace: g.trace('ch: %s keysym: %s stroke %s' % (
+        repr(event.char),repr(event.keysym),repr(stroke)))
 
     if k.unboundKeyAction == 'command':
         # Ignore all unbound characters in command mode.
         w = g.app.gui.get_focus(c)
         if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
             c.onCanvasKey(event)
+        return 'break'
+
+    elif k.isFKey(stroke):
         return 'break'
 
     elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
@@ -10834,11 +10822,6 @@ def masterKeyHandler (self,event,stroke=None):
     if trace:
         g.trace('stroke:',repr(stroke),'keysym:',
             repr(event.keysym),'ch:',repr(event.char),'state',state)
-        # g.trace('callers',g.callers(5))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
-
-    # if stroke == 'Return': g.pdb()
 
     # Handle keyboard-quit first.
     if k.abortAllModesKey and stroke == k.abortAllModesKey:
@@ -11072,20 +11055,21 @@ def handleMiniBindings (self,event,state,stroke):
 #@+node:ekr.20080510095819.1:k.handleUnboudKeys
 def handleUnboundKeys (self,event,char,keysym,stroke):
 
-    k = self ; c = k.c ; trace = False
+    trace = False and not g.unitTesting
+    k = self ; c = k.c
     modesTuple = ('insert','overwrite')
 
-    if trace:
-        # if stroke: g.trace('***unexpected stroke***')
-        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+    if trace: g.trace('ch: %s keysym: %s stroke %s' % (
+        repr(event.char),repr(event.keysym),repr(stroke)))
 
     if k.unboundKeyAction == 'command':
         # Ignore all unbound characters in command mode.
         w = g.app.gui.get_focus(c)
         if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
             c.onCanvasKey(event)
+        return 'break'
+
+    elif k.isFKey(stroke):
         return 'break'
 
     elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
