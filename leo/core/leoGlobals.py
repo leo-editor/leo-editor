@@ -1271,7 +1271,7 @@ def _callerName (n=1,files=False):
         return '' # "<no caller name>"
 #@-node:ekr.20031218072017.3107:_callerName
 #@-node:ekr.20051023083258:callers & _callerName
-#@+node:ekr.20041105091148:g.pdb
+#@+node:ekr.20041105091148:g.pdb & test
 def pdb (message=''):
 
     """Fall into pdb."""
@@ -1281,7 +1281,37 @@ def pdb (message=''):
     if message:
         print message
     pdb.set_trace()
-#@-node:ekr.20041105091148:g.pdb
+#@+node:ekr.20090517020744.5880:@test g.pdb
+if g.unitTesting:
+
+    import sys
+
+    # Not a good unit test; it probably will never fail.
+    def aFunction(): pass
+    assert type(g.pdb)==type(aFunction), 'wrong type for g.pdb: %s' % type(g.pdb)
+
+    class myStdout:
+        def write(self,s):
+            pass # g.es('From pdb:',s)
+
+    class myStdin:
+        def readline (self):
+            return 'c' # Return 'c' (continue) for all requests for input.
+
+    def restore():
+        sys.stdout,sys.stdin = sys.__stdout__,sys.__stdin__
+
+    try:
+        sys.stdin = myStdin() # Essential
+        sys.stdout=myStdout() # Optional
+        g.pdb()
+        restore()
+        # assert False,'test of reraising'
+    except Exception:
+        restore()
+        raise
+#@-node:ekr.20090517020744.5880:@test g.pdb
+#@-node:ekr.20041105091148:g.pdb & test
 #@+node:ekr.20031218072017.3108:Dumps
 #@+node:ekr.20031218072017.3109:dump
 def dump(s):
@@ -4912,6 +4942,17 @@ def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
     c.frame.findPanel.init(c)
     c.showFindPanel()
 #@-node:ekr.20031218072017.2418:g.initScriptFind (set up dialog)
+#@+node:ekr.20090517020744.5888:@test pre-definition of g in scripts
+if g.unitTesting:
+
+    # print(g.listToString(dir()))
+
+    for ivar in ('c','g','p'):
+        assert ivar in dir()
+
+    assert hasattr(g.app,'tkEncoding')
+#@nonl
+#@-node:ekr.20090517020744.5888:@test pre-definition of g in scripts
 #@-node:ekr.20040327103735.2:Script Tools (leoGlobals.py)
 #@+node:ekr.20031218072017.1498:Unicode utils...
 #@+node:ekr.20090517020744.5859: Unicode tests
@@ -5187,7 +5228,7 @@ def isValidEncoding (encoding):
         return False
 #@nonl
 #@-node:ekr.20031218072017.1500:isValidEncoding
-#@+node:ekr.20031218072017.1501:reportBadChars
+#@+node:ekr.20031218072017.1501:reportBadChars & test
 def reportBadChars (s,encoding):
 
     if g.isPython3:  ### To do
@@ -5236,7 +5277,26 @@ def reportBadChars (s,encoding):
                     encoding.encode('ascii','replace'))
                 if not g.unitTesting:
                     g.es(s2,color='red')
-#@-node:ekr.20031218072017.1501:reportBadChars
+#@+node:ekr.20090517020744.5882:@test g.reportBadChars
+#@@first
+
+if g.unitTesting:
+
+    for s,encoding in (
+        ('aĂbĂ',  'ascii'),
+        (u'aĂbĂ', 'ascii'),
+        ('炰',    'ascii'),
+        (u'炰',   'ascii'),
+
+        ('aĂbĂ',  'utf-8'),
+        (u'aĂbĂ', 'utf-8'),
+        ('炰',    'utf-8'),
+        (u'炰',   'utf-8'),
+    ):
+
+        g.reportBadChars(s,encoding)
+#@-node:ekr.20090517020744.5882:@test g.reportBadChars
+#@-node:ekr.20031218072017.1501:reportBadChars & test
 #@+node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
 #@+node:ekr.20050208093800:g.toEncodedString
 def toEncodedString (s,encoding,reportErrors=False):
@@ -6005,7 +6065,7 @@ def stripBrackets (s):
         s = s[:-1]
     return s
 #@-node:ekr.20060410112600:g.stripBrackets
-#@+node:ekr.20061031102333.2:g.getWord & getLine
+#@+node:ekr.20061031102333.2:g.getWord & getLine & tests
 def getWord (s,i):
 
     '''Return i,j such that s[i:j] is the word surrounding s[i].'''
@@ -6040,7 +6100,30 @@ def getLine (s,i):
     # g.trace('i,j,k',i,j,k,repr(s[j:k]))
     return j,k
 #@nonl
-#@-node:ekr.20061031102333.2:g.getWord & getLine
+#@+node:ekr.20090517020744.5877:@test g.getLine
+if g.unitTesting:
+
+    s = 'a\ncd\n\ne'
+
+    for i,result in (
+        (-1,(0,2)), # One too few.
+        (0,(0,2)),(1,(0,2)),
+        (2,(2,5)),(3,(2,5)),(4,(2,5)),
+        (5,(5,6)),
+        (6,(6,7)),
+        (7,(6,7)), # One too many.
+    ):
+        j,k = g.getLine(s,i)
+        assert (j,k) == result, 'i: %d, expected %d,%d, got %d,%d' % (i,result[0],result[1],j,k)
+#@-node:ekr.20090517020744.5877:@test g.getLine
+#@+node:ekr.20090517020744.5879:@test g.getWord
+if g.unitTesting:
+
+    s = 'abc xy_z5 pdq'
+    i,j = g.getWord(s,5)
+    assert s[i:j] == 'xy_z5','got %s' % s[i:j]
+#@-node:ekr.20090517020744.5879:@test g.getWord
+#@-node:ekr.20061031102333.2:g.getWord & getLine & tests
 #@+node:ekr.20041219095213:import wrappers
 #@+at 
 #@nonl
@@ -6428,7 +6511,7 @@ def removeLeadingWhitespace (s,first_ws,tab_width):
         s = s[j:]
     return s
 #@-node:ekr.20031218072017.3202:removeLeadingWhitespace
-#@+node:ekr.20050211120242.2:g.removeExtraLws
+#@+node:ekr.20050211120242.2:g.removeExtraLws & test
 def removeExtraLws (s,tab_width):
 
     '''Remove extra indentation from one or more lines.
@@ -6456,7 +6539,18 @@ def removeExtraLws (s,tab_width):
             g.pr(repr(line))
 
     return result
-#@-node:ekr.20050211120242.2:g.removeExtraLws
+#@+node:ekr.20090517020744.5881:@test g.removeExtraLws
+if g.unitTesting:
+
+    for s,expected in (
+        (' a\n b\n c', 'a\nb\nc'),
+        (' \n  A\n    B\n  C\n', '\nA\n  B\nC\n'),
+    ):
+        result = g.removeExtraLws(s,c.tab_width)
+        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
+            repr(s),repr(expected),repr(result))
+#@-node:ekr.20090517020744.5881:@test g.removeExtraLws
+#@-node:ekr.20050211120242.2:g.removeExtraLws & test
 #@+node:ekr.20031218072017.3203:removeTrailingWs & test
 # Warning: string.rstrip also removes newlines!
 
