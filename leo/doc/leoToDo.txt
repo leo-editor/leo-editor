@@ -3,8 +3,31 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
 #@+node:ekr.20090518072506.8310:To do first
+#@+node:ekr.20090518072506.8495:Fix ctrl-s bug
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/375502
+
+r1795, Ubuntu 8.10, python 2.5.2, qt
+
+open a file. open another file. close the second file. ctrl-s save the first
+file. It saves, but the other file, which has been closed, re-opens.
+#@nonl
+#@-node:ekr.20090518072506.8495:Fix ctrl-s bug
 #@+node:ekr.20090518072506.8311:Fix @thin bug!!
+@nocolor-node
+
+It should be possible to using the already-existing gnx for the @thin node.
+#@nonl
 #@-node:ekr.20090518072506.8311:Fix @thin bug!!
+#@+node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
+@nocolor-node
+
+- update leoPyRef.leo.
+- Create a "moved to leoPy.leo" section in unitTest.leo.
+- Unit tests for leoImport.py can be gathered together.
+#@nonl
+#@-node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
 #@+node:ekr.20090514111518.5660:Sorting can revert headline changes
 #@-node:ekr.20090514111518.5660:Sorting can revert headline changes
 #@+node:ekr.20090511055302.5784:Finish rst.  @auto-rst
