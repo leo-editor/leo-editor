@@ -5525,14 +5525,15 @@ class leoQtEventFilter(QtCore.QObject):
     }
 
     def char2tkName (self,ch):
-        # g.trace(repr(ch))
-        return self.char2tkNameDict.get(ch)
+        val = self.char2tkNameDict.get(ch)
+        # g.trace(repr(ch),repr(val))
+        return val
     #@-node:ekr.20090407101640.10:char2tkName (new)
     #@+node:ekr.20081121105001.168:eventFilter
     def eventFilter(self, obj, event):
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         traceEvent = False and not g.unitTesting
         traceFocus = False and not g.unitTesting
         c = self.c ; k = c.k
@@ -5587,11 +5588,11 @@ class leoQtEventFilter(QtCore.QObject):
                 leoEvent = leoKeyEvent(event,c,w,ch,tkKey,stroke)
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
                 c.outerUpdate()
-            # else:
+            else:
                 # if (stroke): # and not stroke.startswith('Alt+') and 
                         # not stroke.startswith('Ctrl+') and
                         # not stroke in ('PgDn','PgUp')):
-                    # g.trace(self.tag,'unbound',tkKey,stroke)
+                if trace: g.trace(self.tag,'unbound',tkKey,stroke)
 
         if traceEvent: self.traceEvent(obj,event,tkKey,override)
 
@@ -5603,32 +5604,14 @@ class leoQtEventFilter(QtCore.QObject):
         '''Return True if tkKey is a special Tk key name.
         '''
 
-        if 1:
-            if tkKey:
-                return True
-            elif ch in self.flashers:
-                return True
-            else:
-                return False
+        return tkKey or ch in self.flashers
 
-        else: #### old code
-            trace = True and not g.unitTesting
-            c = self.c
-            d = c.k.guiBindNamesDict
-            table = [d.get(key) for key in d]
-            table.append('Tab')
-            #### table.append('Shift+Tab')
-            if tkKey in table:
-                if trace: g.trace('in table:',tkKey)
-                return True
-            elif len(tkKey) == 1:
-                return True # Must process all ascii keys.
-            # if tkKey:
-                # return True
-            elif ch in self.flashers:
-                return True
-            else:
-                return False
+        # if tkKey:
+            # return True
+        # elif ch in self.flashers:
+            # return True
+        # else:
+            # return False
     #@-node:ekr.20081121105001.182:isSpecialOverride (simplified)
     #@+node:ekr.20081121105001.172:qtKey
     def qtKey (self,event):
@@ -7887,6 +7870,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             highLevelInterface=True)
 
         # Init ivars.
+        self.changingText = False # A lockout for onTextChanged.
         self.tags = {}
         self.configDict = {} # Keys are tags, values are colors (names or values).
         self.useScintilla = False # This is used!
@@ -8123,7 +8107,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             if hasattr(c.frame,'statusLine'):
                 c.frame.statusLine.update()
     #@-node:ekr.20081208041503.499:onClick
-    #@+node:ekr.20081121105001.536:onTextChanged (qtTree)
+    #@+node:ekr.20081121105001.536:onTextChanged (qtText)
     def onTextChanged (self):
 
         '''Update Leo after the body has been changed.
@@ -8131,10 +8115,14 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.selecting is guaranteed to be True during
         the entire selection process.'''
 
-        trace = False ; verbose = False
+        trace = False and not g.unitTesting
+        verbose = False
         c = self.c ; p = c.currentPosition()
         tree = c.frame.tree ; w = self
 
+        if w.changingText:
+            if trace: g.trace('changing text')
+            return
         if tree.selecting:
             if trace and verbose: g.trace('selecting')
             return
@@ -8157,6 +8145,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         if trace and verbose:
             g.trace(p.h,len(oldText),len(newText))
+
+        g.trace('***entry***',g.callers(4))
 
         oldIns  = p.v.t.insertSpot
         i,j = p.v.t.selectionStart,p.v.t.selectionLength
@@ -8192,7 +8182,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # Allow incremental recoloring.
             c.incrementalRecolorFlag = True
             c.outerUpdate()
-    #@-node:ekr.20081121105001.536:onTextChanged (qtTree)
+    #@-node:ekr.20081121105001.536:onTextChanged (qtText)
     #@+node:ekr.20081121105001.537:indexWarning
     warningsDict = {}
 
@@ -8960,7 +8950,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         self.widget.ensureCursorVisible()
     #@-node:ekr.20081121105001.586:seeInsertPoint
-    #@+node:ekr.20081121105001.587:setAllText
+    #@+node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
     def setAllText(self,s,insert=None):
 
         '''Set the text of the widget.
@@ -8982,13 +8972,17 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         else: i,pos = insert,sb.sliderPosition()
 
         if trace: t1 = g.getTime()
-        w.setPlainText(s)
+        try:
+            self.changingText = True
+            w.setPlainText(s)
+        finally:
+            self.chaningText = False
         if trace: g.trace(g.timeSince(t1))
 
         self.setSelectionRange(i,i,insert=i)
         sb.setSliderPosition(pos)
     #@nonl
-    #@-node:ekr.20081121105001.587:setAllText
+    #@-node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
     #@+node:ekr.20081121105001.588:setInsertPoint
     def setInsertPoint(self,i):
 
