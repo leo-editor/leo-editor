@@ -30,6 +30,7 @@ __version__ = '0.0'
 #@+node:ville.20090314215508.7:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
+from leo.core import leoNodes
 
 from PyQt4.QtGui import QListWidget, QListWidgetItem
 from PyQt4 import QtCore
@@ -112,12 +113,19 @@ def install_qt_quicksearch_tab(c):
         c.frame.log.selectTab('Nav')
         wdg.ui.listWidget.setFocus()
 
+    def nodehistory(event):
+        c.frame.log.selectTab('Nav')
+        wdg.scon.doNodeHistory()
+
     c.k.registerCommand(
             'find-quick','Ctrl-Shift-f',focus_quicksearch_entry)
     c.k.registerCommand(
             'focus-to-nav', None,focus_to_nav)
     c.k.registerCommand(
             'find-quick-test-failures', None,show_unittest_failures)
+    c.k.registerCommand(
+            'history', None, nodehistory)
+
 
     c.frame.nav = wdg            
 
@@ -235,6 +243,11 @@ class QuickSearchController:
         bm = self.c.find_b(bpat)
         self.addBodyMatches(bm)
 
+    def doNodeHistory(self):
+        nh = leoNodes.poslist(po[0] for po in self.c.nodeHistory.beadList)
+        nh.reverse()
+        self.clear()
+        self.addHeadlineMatches(nh)
 #@-node:ville.20090314215508.12:QuickSearchController
 #@-others
 #@nonl
