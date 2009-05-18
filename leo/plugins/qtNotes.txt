@@ -6112,6 +6112,150 @@ def drawTopTree (self,p):
 #@nonl
 #@-node:ekr.20090129062500.12:drawTopTree
 #@-node:ekr.20090408131517.1:Fixed jittering tree pane
+#@+node:ekr.20090518094128.3832:Fixed undo bug
+#@+node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
+def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
+
+    self.widget = widget
+    self.c = c or self.widget.c
+
+    # Init the base class.
+    leoFrame.baseTextWidget.__init__(
+        self,c,baseClassName='leoQtBaseTextWidget',
+        name=name,
+        widget=widget,
+        highLevelInterface=True)
+
+    # Init ivars.
+    self.changingText = False # A lockout for onTextChanged.
+    self.tags = {}
+    self.configDict = {} # Keys are tags, values are colors (names or values).
+    self.useScintilla = False # This is used!
+
+    if not c: return # Can happen.
+
+    # Hook up qt events.
+    self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
+    self.widget.installEventFilter(self.ev_filter)
+
+    self.widget.connect(self.widget,
+        QtCore.SIGNAL("textChanged()"),self.onTextChanged)
+
+    self.widget.connect(self.widget,
+        QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
+
+    self.injectIvars(c)
+#@-node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
+#@+node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
+def setAllText(self,s,insert=None):
+
+    '''Set the text of the widget.
+
+    If insert is None, the insert point, selection range and scrollbars are initied.
+    Otherwise, the scrollbars are preserved.'''
+
+    trace = False and not g.unitTesting
+    c,w = self.c,self.widget
+    colorizer = c.frame.body.colorizer
+    highlighter = colorizer.highlighter
+    colorer = highlighter.colorer
+
+    # Set a hook for the colorer.
+    colorer.initFlag = True
+
+    sb = w.verticalScrollBar()
+    if insert is None: i,pos = 0,0
+    else: i,pos = insert,sb.sliderPosition()
+
+    if trace: t1 = g.getTime()
+    try:
+        self.changingText = True
+        w.setPlainText(s)
+    finally:
+        self.chaningText = False
+    if trace: g.trace(g.timeSince(t1))
+
+    self.setSelectionRange(i,i,insert=i)
+    sb.setSliderPosition(pos)
+#@nonl
+#@-node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
+#@+node:ekr.20081121105001.536:onTextChanged (qtText)
+def onTextChanged (self):
+
+    '''Update Leo after the body has been changed.
+
+    self.selecting is guaranteed to be True during
+    the entire selection process.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; p = c.currentPosition()
+    tree = c.frame.tree ; w = self
+
+    if w.changingText:
+        if trace: g.trace('changing text')
+        return
+    if tree.selecting:
+        if trace and verbose: g.trace('selecting')
+        return
+    if tree.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+    if not p:
+        return g.trace('*** no p')
+
+    newInsert = w.getInsertPoint()
+    newSel = w.getSelectionRange()
+    newText = w.getAllText() # Converts to unicode.
+
+    # Get the previous values from the tnode.
+    oldText = g.app.gui.toUnicode(p.v.t._bodyString)
+    if oldText == newText:
+        # This can happen as the result of undo.
+        # g.trace('*** unexpected non-change',color="red")
+        return
+
+    if trace and verbose:
+        g.trace(p.h,len(oldText),len(newText))
+
+    g.trace('***entry***',g.callers(4))
+
+    oldIns  = p.v.t.insertSpot
+    i,j = p.v.t.selectionStart,p.v.t.selectionLength
+    oldSel  = (i,j-i)
+    oldYview = None
+    undoType = 'Typing'
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,
+        oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+
+    # Update the tnode.
+    p.v.setBodyString(newText)
+    p.v.t.insertSpot = newInsert
+    i,j = newSel
+    i,j = self.toGuiIndex(i),self.toGuiIndex(j)
+    if i > j: i,j = j,i
+    p.v.t.selectionStart,p.v.t.selectionLength = (i,j-i)
+
+    # No need to redraw the screen.
+    if not self.useScintilla:
+        c.recolor()
+    if not c.changed and c.frame.initComplete:
+        c.setChanged(True)
+    c.frame.body.updateEditors()
+    # This will be called by onBodyChanged.
+    # c.frame.tree.updateIcon(p)
+
+    if 1: # This works, and is probably better.
+        # Set a hook for the colorer.
+        colorer = c.frame.body.colorizer.highlighter.colorer
+        colorer.initFlag = True
+    else:
+        # Allow incremental recoloring.
+        c.incrementalRecolorFlag = True
+        c.outerUpdate()
+#@-node:ekr.20081121105001.536:onTextChanged (qtText)
+#@-node:ekr.20090518094128.3832:Fixed undo bug
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20081121105001.181:isDangerous (no longer used)
