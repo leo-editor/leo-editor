@@ -2,8 +2,14 @@
 #@+node:ville.20090518182905.5419:@thin nav_qt.py
 #@<< docstring >>
 #@+node:ville.20090518182905.5420:<< docstring >>
-'''This docstring should be a clear, concise description of
-what the plugin does and how to use it.
+''' "Back" and "Forward" buttons for qt ui
+
+Creates "back" and "forward" buttons on button bar. These navigate
+the node history.
+
+This plugin does not need specific setup. If the plugin is loaded, the buttons 
+will be available. The buttons use the icon specified in the active Qt style
+
 '''
 #@-node:ville.20090518182905.5420:<< docstring >>
 #@nl
@@ -14,9 +20,8 @@ __version__ = '0.0'
 #@@killcolor
 #@+at
 # 
-# Put notes about each version here.
+# 0.1 Functionally complete version
 #@-at
-#@nonl
 #@-node:ville.20090518182905.5421:<< version history >>
 #@nl
 
