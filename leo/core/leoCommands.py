@@ -75,14 +75,17 @@ class baseCommands (object):
     #@+node:ekr.20031218072017.2812:c.__init__
     def __init__(self,frame,fileName,relativeFileName=None):
 
-        c = self
+        trace = False
+        c = self ; tag = 'Commands.__init__'
 
         self.requestedFocusWidget = None
         self.requestRedrawFlag = False
         self.requestedIconify = '' # 'iconify','deiconify'
         self.requestRecolorFlag = False
 
-        # print('Commands.__init__')
+        if trace:
+            print(tag)
+            import time ; t1 = time.clock()
         self.exists = True # Indicate that this class exists and has not been destroyed.
             # Do this early in the startup process so we can call hooks.
 
@@ -107,6 +110,7 @@ class baseCommands (object):
         # c.finishCreate creates the sub-commanders for edit commands.
 
         # Break circular import dependencies by importing here.
+        # These imports take almost 3/4 sec in the leoBridge.
         import leo.core.leoAtFile as leoAtFile
         import leo.core.leoEditCommands as leoEditCommands
         import leo.core.leoFileCommands as leoFileCommands
@@ -116,6 +120,8 @@ class baseCommands (object):
         import leo.core.leoTangle as leoTangle
         import leo.core.leoUndo as leoUndo
 
+        if trace: t2 = g.printDiffTime('%s: after imports' % (tag),t1)
+
         self.shadowController = leoShadow.shadowController(c)
         self.fileCommands   = leoFileCommands.fileCommands(c)
         self.atFileCommands = leoAtFile.atFile(c)
@@ -124,6 +130,8 @@ class baseCommands (object):
         self.tangleCommands = leoTangle.tangleCommands(c)
         leoEditCommands.createEditCommanders(c)
         self.rstCommands = leoRst.rstCommands(c)
+
+        if trace: t3 = g.printDiffTime('%s: after controllers created' % (tag),t2)
 
         if 0:
             g.pr("\n*** using Null undoer ***\n")
