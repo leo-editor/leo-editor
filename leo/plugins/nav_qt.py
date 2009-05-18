@@ -24,6 +24,7 @@ __version__ = '0.0'
 #@+node:ville.20090518182905.5422:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
+from PyQt4 import QtGui
 
 # Whatever other imports your plugins uses.
 #@nonl
@@ -66,9 +67,16 @@ class pluginController:
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
     #@-node:ville.20090518182905.5426:__init__
     #@+node:ville.20090518182905.5427:makeButtons
+
     def makeButtons(self):
-        self.c.frame.iconBar.add(text = '<<', command = self.clickPrev)
-        self.c.frame.iconBar.add(text = '>>', command = self.clickNext)
+        ib_w = self.c.frame.iconBar.w
+        icon_l = ib_w.style().standardIcon(QtGui.QStyle.SP_ArrowLeft)
+        icon_r = ib_w.style().standardIcon(QtGui.QStyle.SP_ArrowRight)
+        act_l = QtGui.QAction(icon_l, 'prev', ib_w)           
+        act_r = QtGui.QAction(icon_r, 'next', ib_w)           
+
+        self.c.frame.iconBar.add(qaction = act_l, command = self.clickPrev)
+        self.c.frame.iconBar.add(qaction = act_r, command = self.clickNext)
 
 
     #@-node:ville.20090518182905.5427:makeButtons
