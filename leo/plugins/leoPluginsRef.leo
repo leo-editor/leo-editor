@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="196" left="60" height="794" width="1174"/>
+	<global_window_position top="210" left="199" height="794" width="1174"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20041211035618" str_leo_pos="2,20,1"><vh>Startup</vh>
+<v t="ekr.20041211035618" str_leo_pos="2,13,3,5,3"><vh>Startup</vh>
 <v t="ekr.20070718131416"><vh>@chapters</vh></v>
 <v t="ekr.20050217093214"><vh>@settings</vh>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
@@ -33,8 +33,8 @@
 </v>
 <v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
-<v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
-<v t="ekr.20041114102139" a="E"><vh>Notes</vh>
+<v t="ekr.20050303051035" a="E"><vh> Templates: these show recommended ways of defining plugins.</vh>
+<v t="ekr.20041114102139"><vh>Notes</vh>
 <v t="ekr.20041114103913"><vh>About comments in the style guide</vh></v>
 <v t="ekr.20041114102139.1"><vh>About the root node</vh></v>
 <v t="ekr.20041114103913.1"><vh>About defining functions in separate nodes</vh></v>
@@ -54,7 +54,7 @@
 <v t="ekr.20050303051035.5"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20050303051101"><vh>init</vh></v>
 <v t="ekr.20050303051150"><vh>onCreate</vh></v>
-<v t="ekr.20050303051222"><vh>class pluginController</vh>
+<v t="ekr.20050303051222" a="E"><vh>class pluginController</vh>
 <v t="ekr.20050303051222.1"><vh>__init__</vh></v>
 </v>
 </v>
@@ -317,11 +317,14 @@
 <v t="ekr.20071004090250"><vh>@thin graphed.py</vh></v>
 </v>
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh></v>
-<v t="ekr.20040722135402"><vh>Icon and status areas</vh>
+<v t="ekr.20040722135402" a="E"><vh>Icon and status areas</vh>
 <v t="ekr.20060328125925"><vh>@thin chapter_hoist.py</vh></v>
 <v t="ekr.20040331072607"><vh>@thin hoist.py</vh></v>
 <v t="edream.110203113231.758"><vh>@thin nav_buttons.py</vh></v>
-<v t="pap.20051010170720"><vh>@thin newButtons.py</vh></v>
+<v t="ville.20090518182905.5419" a="EM"
+expanded="ville.20090518182905.5425,"><vh>@thin nav_qt.py</vh></v>
+<v t="pap.20051010170720"
+expanded="ekr.20060107123625,pap.20051010171746,"><vh>@thin newButtons.py</vh></v>
 <v t="ekr.20040108062655"><vh>@thin nodenavigator.py</vh></v>
 <v t="ekr.20040108095351"><vh>@thin rowcol.py</vh></v>
 <v t="ekr.20040107092135.2"><vh>@thin searchbox.py</vh></v>

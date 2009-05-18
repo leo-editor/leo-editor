@@ -2149,7 +2149,12 @@ class leoQtFrame (leoFrame.leoFrame):
             c = self.c
             command = keys.get('command')
             text = keys.get('text')
-            if not text: return
+            # able to specify low-level QAction directly (QPushButton not forced)
+            qaction = keys.get('qaction')
+
+            if not text and not qaction:
+                g.es('bad toolbar item')
+
 
             # imagefile = keys.get('imagefile')
             # image = keys.get('image')
@@ -2168,7 +2173,11 @@ class leoQtFrame (leoFrame.leoFrame):
                         colorName = self.toolbar.buttonColor)
                     return b
 
-            action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
+            if qaction is None:
+                action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
+            else:
+                action = qaction
+
             self.w.addAction(action)
 
             self.actions.append(action)
