@@ -13,6 +13,7 @@ import optparse
 #@+node:ekr.20080730161153.3:main & helpers
 def main (gui='nullGui'):
 
+    trace = False
     tag = 'leoTestBridge'
 
     # Setting verbose=True prints messages that would be sent to the log pane.
@@ -22,7 +23,7 @@ def main (gui='nullGui'):
         path = g.os_path_finalize_join(
             g.app.loadDir,'..','test','unitTest.leo')
         c = bridge.openLeoFile(path)
-        g.es('%s %s' % (tag,c.shortFileName()))
+        if trace: g.es('%s %s' % (tag,c.shortFileName()))
         runUnitTests(c,g)
 
     g.pr(tag,'done')
