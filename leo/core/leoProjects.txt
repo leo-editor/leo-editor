@@ -772,6 +772,423 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
     return result
 #@-node:ekr.20041113113140:loadOnePlugin
 #@-node:ekr.20090513153807.5743:Fixed crasher when creating .leoID.txt
+#@+node:ekr.20090517132234.5903:Investigated speed of external unit tests
+@nocolor-node
+
+- The g.Timing functions are weak.
+
+- The problem is imports in the Commands ctor. When executed the first time from
+  the bridge the imports take about 3/4 sec. on my machine. There is nothing
+  that can or should be done. Ctrl-5 is still hugely faster than opening
+  unitTest.leo!
+#@nonl
+#@+node:ekr.20031218072017.3137:Timing
+def getTime():
+    return time.clock()
+
+def esDiffTime(message, start):
+    delta = time.clock()-start
+    g.es('',"%s %6.3f sec." % (message,delta))
+    return time.clock()
+
+def printDiffTime(message, start):
+    delta = time.clock()-start
+    g.pr("%s %6.3f sec." % (message,delta))
+    return time.clock()
+
+def timeSince(start):
+    return "%6.3f sec." % (time.clock()-start)
+#@-node:ekr.20031218072017.3137:Timing
+#@+node:ekr.20070627135336.9:createOutline & helpers
+def createOutline (self,c2):
+
+    '''Create a unit test ouline containing
+
+    - all children of any @mark-for-unit-tests node anywhere in the outline.
+    - all @test and @suite nodes in p's outline.'''
+
+    trace = False
+    c = self.c ; markTag = '@mark-for-unit-tests'
+    self.copyRoot = c2.rootPosition()
+    self.copyRoot.initHeadString('All unit tests')
+    c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
+    self.seen = []
+    << set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+
+    self.copyRoot.expand()
+    for p,limit,lookForMark,lookForNodes in (
+        (p1,limit1,lookForMark1,lookForNodes1),
+        (p2,limit2,lookForMark2,lookForNodes2),
+    ):
+        if trace: g.trace('look for: mark %s nodes %s\nroot %s\nlimit %s' % (
+            lookForMark,lookForNodes,p.h,limit and limit.h or '<none>'))
+        while p and p != limit:
+            h = p.h
+            if p.v.t in self.seen:
+                p.moveToNodeAfterTree()
+            elif lookForMark and h.startswith(markTag):
+                self.addMarkTree(p)
+                p.moveToNodeAfterTree()
+            elif lookForNodes and self.isUnitTestNode(p):
+                self.addNode(p)
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+#@nonl
+#@+node:ekr.20070705065154:<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+if self.all:
+    # A single pass looks for all tags everywhere.
+    p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,True
+    p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
+else:
+    # The first pass looks everywhere for only for @mark-for-unit-tests,
+    p1,limit1,lookForMark1,lookForNodes1 = c.rootPosition(),None,True,False
+    # The second pass looks in the selected tree for everything except @mark-for-unit-tests.
+    # There is no second pass if the present node is an @mark-for-unit-test node.
+    p = c.p
+    if p.h.startswith(markTag):
+        p2,limit2,lookForMark2,lookForNodes2 = None,None,False,False
+    else:
+        p2,limit2,lookForMark2,lookForNodes2 = p,p.nodeAfterTree(),False,True
+#@nonl
+#@-node:ekr.20070705065154:<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
+#@+node:ekr.20070705080413:addMarkTree
+def addMarkTree (self,p):
+
+    # Add the entire @mark-for-unit-tests tree.
+    self.addNode(p)
+
+    # for p in p.subtree_iter():
+        # # if self.isUnitTestNode(p) and not p.v.t in self.seen:
+        # if not p.v.t in self.seen: # Add *all* nodes.
+            # self.addNode(p)
+#@-node:ekr.20070705080413:addMarkTree
+#@+node:ekr.20070705065154.1:addNode
+def addNode(self,p):
+
+    '''
+    Add an @test, @suite or an @unit-tests tree as the last child of self.copyRoot.
+    '''
+
+    # g.trace(p.h)
+
+    p2 = p.copyTreeAfter()
+    p2.moveToLastChildOf(self.copyRoot)
+
+    for p2 in p.self_and_subtree_iter():
+        self.seen.append(p2.v.t)
+#@-node:ekr.20070705065154.1:addNode
+#@+node:ekr.20070705075604.3:isUnitTestNode
+def isUnitTestNode (self,p):
+
+    h = p.h
+    for tag in self.tags:
+        if h.startswith(tag):
+            return True
+    else:
+        return False
+#@-node:ekr.20070705075604.3:isUnitTestNode
+#@-node:ekr.20070627135336.9:createOutline & helpers
+#@+node:ekr.20031218072017.3440:loadHandlers & helper
+def loadHandlers(tag):
+
+    """Load all enabled plugins from the plugins directory"""
+
+    def pr (*args,**keys):
+        if not g.app.unitTesting:
+            g.es_print(*args,**keys)
+
+    plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
+    files = glob.glob(g.os_path_join(plugins_path,"*.py"))
+    files = [g.os_path_finalize(theFile) for theFile in files]
+
+    s = g.app.config.getEnabledPlugins()
+    if not s: return
+
+    if not g.app.silentMode and not g.app.batchMode:
+        pr('@enabled-plugins found in %s' % (
+            g.app.config.enabledPluginsFileName),color='blue')
+
+    enabled_files = getEnabledFiles(s,plugins_path)
+
+    # Load plugins in the order they appear in the enabled_files list.
+    if files and enabled_files:
+        for theFile in enabled_files:
+            if theFile in files:
+                loadOnePlugin(theFile)
+
+    # Note: g.plugin_signon adds module names to g.app.loadedPlugins
+    if 0:
+        if g.app.loadedPlugins:
+            pr("%d plugins loaded" % (len(g.app.loadedPlugins)), color="blue")
+#@+node:ekr.20070224082131:getEnabledFiles
+def getEnabledFiles (s,plugins_path):
+
+    '''Return a list of plugins mentioned in non-comment lines of s.'''
+
+    enabled_files = []
+    for s in g.splitLines(s):
+        s = s.strip()
+        if s and not s.startswith('#'):
+            path = g.os_path_finalize_join(plugins_path,s)
+            enabled_files.append(path)
+
+    return enabled_files
+#@-node:ekr.20070224082131:getEnabledFiles
+#@-node:ekr.20031218072017.3440:loadHandlers & helper
+#@+node:ekr.20070227093629.6:createFrame (leoBridge)
+def createFrame (self,fileName):
+
+    '''Create a commander and frame for the given file.
+    Create a new frame if the fileName is empty or non-exisent.'''
+
+    g = self.g
+
+    trace = False
+
+    if fileName.strip():
+        if g.os_path_exists(fileName):
+            if trace:
+                import time ; t1 = time.time()
+            # This takes a long time due to imports in c.__init__
+            ok, frame = g.openWithFileName(fileName,None)
+            if trace:
+                t2 = time.time()
+                g.trace('g.openWithFileName: %0.2fsec' % (t2-t1))
+            if ok: return frame.c
+        else:
+            g.es_print('file not found', fileName,'creating new window')
+    # Create a new frame. Unlike leo.run, this is not a startup window.
+    c,frame = g.app.newLeoCommanderAndFrame(fileName=fileName)
+    frame.setInitialWindowGeometry()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+    # Call the 'new' hook for compatibility with plugins.
+    g.doHook("new",old_c=None,c=c,new_c=c)
+    return c
+#@-node:ekr.20070227093629.6:createFrame (leoBridge)
+#@+node:ekr.20031218072017.2052:g.openWithFileName
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
+
+    """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    trace = True
+
+    if not fileName or len(fileName) == 0:
+        return False, None
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    # Create a full, normalized, Unicode path name, preserving case.
+    relativeFileName = g.os_path_normpath(fileName)
+    fileName = g.os_path_finalize(fileName)
+    isZipped = fileName and zipfile.is_zipfile(fileName)
+    isLeo = isZipped or fileName.endswith('.leo')
+    # g.trace(relativeFileName,'-->',fileName)
+
+    # If the file is already open just bring its window to the front.
+    if isLeo:
+        theList = app.windowList
+        for frame in theList:
+            if munge(fileName) == munge(frame.c.mFileName):
+                frame.bringToFront()
+                frame.c.setLog()
+                frame.c.outerUpdate()
+                return True, frame
+        if old_c:
+            # New in 4.4: We must read the file *twice*.
+            # The first time sets settings for the later call to c.finishCreate.
+            if trace: g.trace('***** prereading',fileName)
+            c2 = g.app.config.openSettingsFile(fileName)
+            if c2: g.app.config.updateSettings(c2,localFlag=True)
+            g.doHook('open0')
+
+        # Open the file in binary mode to allow 0x1a in bodies & headlines.
+        theFile,isZipped = g.openLeoOrZipFile(fileName)
+        if not theFile: return False, None
+
+        # This call will take 3/4 sec. to open a file from the leoBridge.
+        # This is due to imports in c.__init__
+        c,frame = app.newLeoCommanderAndFrame(
+            fileName=fileName,
+            relativeFileName=relativeFileName,
+            gui=gui)
+    else:
+        c,frame = g.openWrapperLeoFile(old_c,fileName,gui)
+        if not c: return False,None
+
+    assert frame.c == c and c.frame == frame
+    c.isZipped = isZipped
+
+    frame.log.enable(enableLog)
+    g.app.writeWaitingLog() # New in 4.3: write queued log first.
+
+    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+        c.setLog()
+        if isLeo:
+            app.lockLog()
+            ok = frame.c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            if not ok:
+                g.app.closeLeoWindow(frame)
+                return False,frame
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+    # Bug fix in 4.4.
+    frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
+    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+    p = c.p
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+    if not g.doHook("menu1",c=c,p=p,v=p):
+        frame.menu.createMenuBar(frame)
+        c.updateRecentFiles(relativeFileName or fileName)
+        g.doHook("menu2",c=frame.c,p=p,v=p)
+        g.doHook("after-create-leo-frame",c=c)
+    # New in Leo 4.6: provide an official way for very late initialization.
+    c.frame.tree.initAfterLoad()
+    c.initAfterLoad()
+    c.redraw()
+    assert frame.c == c and c.frame == frame
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    # g.trace('c.chapterController',c.chapterController)
+    if c.chapterController:
+        c.chapterController.finishCreate()
+    k = c.k
+    if k:
+        k.setDefaultInputState()
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    if k:
+        k.showStateAndMode()
+
+    c.frame.initCompleteHint()
+
+    return True, frame
+#@-node:ekr.20031218072017.2052:g.openWithFileName
+#@+node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
+def newLeoCommanderAndFrame(self,
+    fileName=None,
+    relativeFileName=None,
+    gui=None,initEditCommanders=True,updateRecentFiles=True):
+
+    """Create a commander and its view frame for the Leo main window."""
+
+    app = self
+
+    import leo.core.leoCommands as leoCommands
+
+    if not fileName: fileName = ''
+    if not relativeFileName: relativeFileName = ''
+    if not gui: gui = g.app.gui
+    << compute the window title >>
+
+    # g.trace(fileName,relativeFileName)
+
+    # Create an unfinished frame to pass to the commanders.
+    frame = gui.createLeoFrame(title)
+
+    # Create the commander and its subcommanders.
+    # This takes about 3/4 sec when called by the leoBridge module.
+    c = leoCommands.Commands(frame,fileName,relativeFileName=relativeFileName)
+
+    if not app.initing:
+        g.doHook("before-create-leo-frame",c=c) # Was 'onCreate': too confusing.
+
+    frame.finishCreate(c)
+    c.finishCreate(initEditCommanders)
+
+    # Finish initing the subcommanders.
+    c.undoer.clearUndoState() # Menus must exist at this point.
+
+    return c,frame
+#@+node:ekr.20031218072017.2189:<< compute the window title >>
+# Set the window title and fileName
+if fileName:
+    title = g.computeWindowTitle(fileName)
+else:
+    s = "untitled"
+    n = g.app.numberOfWindows
+    if n > 0:
+        s += str(n)
+    title = g.computeWindowTitle(s)
+    g.app.numberOfWindows = n+1
+#@-node:ekr.20031218072017.2189:<< compute the window title >>
+#@-node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
+#@+node:ekr.20031218072017.2812:c.__init__
+def __init__(self,frame,fileName,relativeFileName=None):
+
+    trace = False
+    c = self ; tag = 'Commands.__init__'
+
+    self.requestedFocusWidget = None
+    self.requestRedrawFlag = False
+    self.requestedIconify = '' # 'iconify','deiconify'
+    self.requestRecolorFlag = False
+
+    if trace:
+        print(tag)
+        import time ; t1 = time.clock()
+    self.exists = True # Indicate that this class exists and has not been destroyed.
+        # Do this early in the startup process so we can call hooks.
+
+    # Init ivars with self.x instead of c.x to keep pylint happy
+    self.chapterController = None
+    self.frame = frame
+
+    self.hiddenRootNode = leoNodes.vnode(context=c)
+    self.hiddenRootNode.setHeadString('<hidden root vnode>')
+    self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
+    self.isZipped = False # May be set to True by g.openWithFileName.
+    self.mFileName = fileName
+        # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
+    self.mRelativeFileName = relativeFileName
+
+    self.initIvars()
+    self.nodeHistory = nodeHistory(c)
+    self.initConfigSettings()
+    c.setWindowPosition() # Do this after initing settings.
+
+    # initialize the sub-commanders.
+    # c.finishCreate creates the sub-commanders for edit commands.
+
+    # Break circular import dependencies by importing here.
+    # These imports take almost 3/4 sec in the leoBridge.
+    import leo.core.leoAtFile as leoAtFile
+    import leo.core.leoEditCommands as leoEditCommands
+    import leo.core.leoFileCommands as leoFileCommands
+    import leo.core.leoImport as leoImport
+    import leo.core.leoRst as leoRst
+    import leo.core.leoShadow as leoShadow
+    import leo.core.leoTangle as leoTangle
+    import leo.core.leoUndo as leoUndo
+
+    if trace: t2 = g.printDiffTime('%s: after imports' % (tag),t1)
+
+    self.shadowController = leoShadow.shadowController(c)
+    self.fileCommands   = leoFileCommands.fileCommands(c)
+    self.atFileCommands = leoAtFile.atFile(c)
+    self.importCommands = leoImport.leoImportCommands(c)
+    self.rstCommands    = leoRst.rstCommands(c)
+    self.tangleCommands = leoTangle.tangleCommands(c)
+    leoEditCommands.createEditCommanders(c)
+    self.rstCommands = leoRst.rstCommands(c)
+
+    if trace: t3 = g.printDiffTime('%s: after controllers created' % (tag),t2)
+
+    if 0:
+        g.pr("\n*** using Null undoer ***\n")
+        self.undoer = leoUndo.nullUndoer(self)
+    else:
+        self.undoer = leoUndo.undoer(self)
+#@-node:ekr.20031218072017.2812:c.__init__
+#@-node:ekr.20090517132234.5903:Investigated speed of external unit tests
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
