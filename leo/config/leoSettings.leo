@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="84" left="155" height="827" width="1111"/>
+	<global_window_position top="165" left="167" height="827" width="1111"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,7,1"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -98,7 +98,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -318,7 +318,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20061003173413" a="E"><vh>File options</vh>
+<v t="ekr.20061003173413"><vh>File options</vh>
 <v t="ekr.20041119034357.7"><vh>.leo file options</vh>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>
@@ -395,9 +395,9 @@
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101" a="E" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
-<v t="ekr.20060110141538" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
+<v t="ekr.20060110141538" a="E" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
 <v t="ekr.20060112090844"><vh>@shortcuts Emacs: F-M</vh></v>
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
@@ -409,7 +409,7 @@
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
+<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
 <v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
@@ -428,7 +428,7 @@
 </v>
 </v>
 <v t="ekr.20070925144552"><vh>Menus</vh>
-<v t="ekr.20070925144534"><vh>@menus</vh>
+<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
 <v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
@@ -494,7 +494,7 @@
 <v t="ekr.20070927051856"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.47"><vh>@item exit-leo</vh></v>
 </v>
-<v t="ekr.20070925144534.48"><vh>@menu &amp;Edit</vh>
+<v t="ekr.20070925144534.48" a="E"><vh>@menu &amp;Edit</vh>
 <v t="ekr.20070925144534.49"><vh>@item undo</vh></v>
 <v t="ekr.20070925144534.50"><vh>@item redo</vh></v>
 <v t="ekr.20070925144534.51"><vh>@item -</vh></v>
@@ -504,7 +504,7 @@
 <v t="ekr.20070925144534.55"><vh>@item backward-delete-char</vh></v>
 <v t="ekr.20070925144534.56"><vh>@item select-all</vh></v>
 <v t="ekr.20070925144534.57"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.58"><vh>@menu Edit &amp;Body...</vh>
+<v t="ekr.20070925144534.58" a="E"><vh>@menu Edit &amp;Body...</vh>
 <v t="ekr.20070925144534.59"><vh>@item *extract-&amp;section</vh></v>
 <v t="ekr.20070925144534.60"><vh>@item *extract-&amp;names</vh></v>
 <v t="ekr.20070925144534.61"><vh>@item *&amp;extract</vh></v>
@@ -6145,6 +6145,7 @@ contract-all                = Alt--
 edit-headline               = Ctrl-h
 delete-node                 = None
 demote                      = Ctrl-}
+demote                      = Ctrl-]
 expand-next-level           = None
 expand-node                 = Alt-]
 extract                     = Shift-Ctrl-D
@@ -6160,6 +6161,7 @@ move-outline-right          = Ctrl-R
 move-outline-up             = Ctrl-U
 paste-node                  = Shift-Ctrl-V
 promote                     = Ctrl-{
+promote                     = Ctrl-[
 remove-chapter              = None
 select-chapter              = None</t>
 <t tx="ekr.20060925060533.4">add-comments                        = Ctrl-parenleft
@@ -6171,13 +6173,11 @@ delete-char                         = Delete
 delete-comments                     = Ctrl-parenright
 delete-comments                     = Shift-Ctrl-0
 delete-spaces                       = None
-indent-region                       = Ctrl-]
 kill-line                           = Ctrl-k
 newline-and-indent                  = Ctrl-j
 paste-text                          = Ctrl-v
 reformat-paragraph                  = Shift-Ctrl-p
 split-line                          = None
-unindent-region                     = Ctrl-[
 unindent-region                     = Shift-tab
 yank                                = Ctrl-Y
 yank-pop                            = Alt-Y
