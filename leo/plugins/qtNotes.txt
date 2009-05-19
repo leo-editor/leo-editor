@@ -4,6 +4,8 @@
 #@+node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20090430102239.1:Before b2
 #@+node:ekr.20090430102239.2:Arrow keys do not work in headlines
+Especially shift-arrow keys.
+#@nonl
 #@-node:ekr.20090430102239.2:Arrow keys do not work in headlines
 #@+node:ekr.20090409055330.10:Make sure change-all honors node-only and suboutline-only settings
 @nocolor-node
@@ -2309,7 +2311,12 @@ def add(self,*args,**keys):
     c = self.c
     command = keys.get('command')
     text = keys.get('text')
-    if not text: return
+    # able to specify low-level QAction directly (QPushButton not forced)
+    qaction = keys.get('qaction')
+
+    if not text and not qaction:
+        g.es('bad toolbar item')
+
 
     # imagefile = keys.get('imagefile')
     # image = keys.get('image')
@@ -2328,7 +2335,11 @@ def add(self,*args,**keys):
                 colorName = self.toolbar.buttonColor)
             return b
 
-    action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
+    if qaction is None:
+        action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
+    else:
+        action = qaction
+
     self.w.addAction(action)
 
     self.actions.append(action)
@@ -3953,7 +3964,12 @@ def add(self,*args,**keys):
     c = self.c
     command = keys.get('command')
     text = keys.get('text')
-    if not text: return
+    # able to specify low-level QAction directly (QPushButton not forced)
+    qaction = keys.get('qaction')
+
+    if not text and not qaction:
+        g.es('bad toolbar item')
+
 
     # imagefile = keys.get('imagefile')
     # image = keys.get('image')
@@ -3972,7 +3988,11 @@ def add(self,*args,**keys):
                 colorName = self.toolbar.buttonColor)
             return b
 
-    action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
+    if qaction is None:
+        action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
+    else:
+        action = qaction
+
     self.w.addAction(action)
 
     self.actions.append(action)

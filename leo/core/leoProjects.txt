@@ -684,14 +684,6 @@ leoID='ekr'
 .leoID.txt created in C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo
 load 
 #@nonl
-#@+node:ekr.20080921091311.2:initApp
-def initApp (verbose):
-
-    # Force the user to set g.app.leoID.
-    g.app.setLeoID(verbose=verbose)
-    g.app.config = leoConfig.configClass()
-    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
-#@-node:ekr.20080921091311.2:initApp
 #@+node:ekr.20041113113140:loadOnePlugin
 def loadOnePlugin (moduleOrFileName, verbose=False):
 
@@ -972,7 +964,7 @@ def openWithFileName(fileName,old_c,
 
     """Create a Leo Frame for the indicated fileName if the file exists."""
 
-    trace = True
+    trace = False and not g.unitTesting
 
     if not fileName or len(fileName) == 0:
         return False, None
@@ -1234,6 +1226,7 @@ def __init__ (self,gui):
     self.startupWindow=False # True if initially opened window
     self.stylesheet = None # The contents of <?xml-stylesheet...?> line.
     self.tab_width = 0 # The tab width in effect in this pane.
+#@nonl
 #@+node:ekr.20080429051644.1:leoFrame.mustBeDefined
 # List of methods that must be defined either in the base class or a subclass.
 
@@ -1630,7 +1623,6 @@ def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
         changed = oldText != newText
     if trace: g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
     if not changed: return
-    if trace: g.trace(oldSel,newSel)
     c.undoer.setUndoTypingParams(p,undoType,
         oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
     p.v.setBodyString(newText)
@@ -6770,6 +6762,32 @@ def adjustTargetLanguage (self,fn):
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
 #@-node:ekr.20090514111518.5659:test .py files when saving them
+#@+node:ville.20090311193011.2:test select_h, select_b, find_h, find_b
+@color
+@language python
+
+pl = c.find_h('@thin.*py').select_h('class.*')
+print "Direct classes in thin nodes:",[e.h for e in pl]
+pl = pl.select_b(r"\(object\)")
+print "Subclass object",[e.h for e in pl]
+
+
+print "\n\nAll classes"
+pl = c.find_b(r'^class\s+(\w+).*:')
+#print pl
+for p in pl:
+    print "Node:",p.h
+    for match in p.matchiter:
+        print match.group(1)
+
+# find this node
+
+pl = c.find_h('@thin.*leoNotes')
+pl2 = pl.select_h('test select.*')
+
+print pl2
+#@nonl
+#@-node:ville.20090311193011.2:test select_h, select_b, find_h, find_b
 #@-node:ekr.20090401105902.3:Features
 #@-node:ekr.20080917153158.11:4.6 b2
 #@-all

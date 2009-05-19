@@ -20,14 +20,6 @@ file. It saves, but the other file, which has been closed, re-opens.
 It should be possible to using the already-existing gnx for the @thin node.
 #@nonl
 #@-node:ekr.20090518072506.8311:Fix @thin bug!!
-#@+node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
-@nocolor-node
-
-- update leoPyRef.leo.
-- Create a "moved to leoPy.leo" section in unitTest.leo.
-- Unit tests for leoImport.py can be gathered together.
-#@nonl
-#@-node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
 #@+node:ekr.20090514111518.5660:Sorting can revert headline changes
 #@-node:ekr.20090514111518.5660:Sorting can revert headline changes
 #@+node:ekr.20090511055302.5784:Finish rst.  @auto-rst
@@ -2822,8 +2814,14 @@ if g.unitTesting:
 #@-node:ekr.20090517020744.5785:@test reportMismatch
 #@-node:ekr.20070911110507:reportMismatch & test
 #@-node:ekr.20090511055302.5784:Finish rst.  @auto-rst
-#@+node:ekr.20090518072506.8492:Fix F12 bug
-#@-node:ekr.20090518072506.8492:Fix F12 bug
+#@+node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
+@nocolor-node
+
+- update leoPyRef.leo.
+- Create a "moved to leoPy.leo" section in unitTest.leo.
+- Unit tests for leoImport.py can be gathered together.
+#@nonl
+#@-node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
 #@-node:ekr.20090518072506.8310:To do first
 #@+node:ekr.20090430092048.1:Before 4.6 b2
 #@+node:ekr.20080922115725.1:Finish @shadow
@@ -3813,7 +3811,7 @@ def openWithFileName(fileName,old_c,
 
     """Create a Leo Frame for the indicated fileName if the file exists."""
 
-    trace = True
+    trace = False and not g.unitTesting
 
     if not fileName or len(fileName) == 0:
         return False, None
