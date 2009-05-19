@@ -2469,7 +2469,7 @@ def openWithFileName(fileName,old_c,
 
     """Create a Leo Frame for the indicated fileName if the file exists."""
 
-    trace = True
+    trace = False and not g.unitTesting
 
     if not fileName or len(fileName) == 0:
         return False, None
