@@ -2358,360 +2358,6 @@ def getBaseDirectory(c):
     else:
         return "" # No relative base given.
 #@-node:ekr.20031218072017.1264:g.getBaseDirectory (unchanged)
-#@+node:EKR.20040504154039:g.is_sentinel
-def is_sentinel (line,delims):
-
-    #@    << is_sentinel doc tests >>
-    #@+node:ekr.20040719161756:<< is_sentinel doc tests >>
-    """
-
-    Return True if line starts with a sentinel comment.
-
-    >>> import leo.core.leoGlobals as g
-    >>> py_delims = g.comment_delims_from_extension('.py')
-    >>> g.is_sentinel("#@+node",py_delims)
-    True
-    >>> g.is_sentinel("#comment",py_delims)
-    False
-
-    >>> c_delims = g.comment_delims_from_extension('.c')
-    >>> g.is_sentinel("//@+node",c_delims)
-    True
-    >>> g.is_sentinel("//comment",c_delims)
-    False
-
-    >>> html_delims = g.comment_delims_from_extension('.html')
-    >>> g.is_sentinel("<!--@+node-->",html_delims)
-    True
-    >>> g.is_sentinel("<!--comment-->",html_delims)
-    False
-
-    """
-    #@-node:ekr.20040719161756:<< is_sentinel doc tests >>
-    #@nl
-
-    delim1,delim2,delim3 = delims
-
-    line = line.lstrip()
-
-    if delim1:
-        return line.startswith(delim1+'@')
-    elif delim2 and delim3:
-        i = line.find(delim2+'@')
-        j = line.find(delim3)
-        return 0 == i < j
-    else:
-        g.trace("can't happen. delims: %s" % repr(delims),color="red")
-        return False
-#@-node:EKR.20040504154039:g.is_sentinel
-#@+node:ekr.20071114113736:g.makePathRelativeTo
-def makePathRelativeTo (fullPath,basePath):
-
-    if fullPath.startswith(basePath):
-        s = fullPath[len(basePath):]
-        if s.startswith(os.path.sep):
-            s = s[len(os.path.sep):]
-        return s
-    else:
-        return fullPath
-#@-node:ekr.20071114113736:g.makePathRelativeTo
-#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
-# This is a generalization of os.makedir.
-
-def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
-
-    """Attempt to make all non-existent directories"""
-
-    # g.trace('theDir',theDir,c.config.create_nonexistent_directories,g.callers())
-
-    if not force:
-        if c:
-            if not c.config.create_nonexistent_directories:
-                return None
-        elif not app.config.create_nonexistent_directories:
-            return None
-
-    if c:
-        theDir = g.os_path_expandExpression(theDir,c=c)
-
-    dir1 = theDir = g.os_path_normpath(theDir)
-
-    # Split theDir into all its component parts.
-    paths = []
-    while len(theDir) > 0:
-        head,tail=g.os_path_split(theDir)
-        if len(tail) == 0:
-            paths.append(head)
-            break
-        else:
-            paths.append(tail)
-            theDir = head
-    path = ""
-    paths.reverse()
-    for s in paths:
-        path = g.os_path_join(path,s)
-        if not g.os_path_exists(path):
-            try:
-                os.mkdir(path)
-                if verbose and not g.app.unitTesting:
-                    # g.trace('***callers***',g.callers(5))
-                    g.es_print("created directory:",path,color='red')
-            except Exception:
-                # g.trace(g.callers())
-                if verbose: g.es_print("exception creating directory:",path,color='red')
-                g.es_exception()
-                return None
-    return dir1 # All have been created.
-#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
-#@+node:ekr.20031218072017.2052:g.openWithFileName
-def openWithFileName(fileName,old_c,
-    enableLog=True,gui=None,readAtFileNodesFlag=True):
-
-    """Create a Leo Frame for the indicated fileName if the file exists."""
-
-    trace = False and not g.unitTesting
-
-    if not fileName or len(fileName) == 0:
-        return False, None
-
-    def munge(name):
-        return g.os_path_normpath(name or '').lower()
-
-    # Create a full, normalized, Unicode path name, preserving case.
-    relativeFileName = g.os_path_normpath(fileName)
-    fileName = g.os_path_finalize(fileName)
-    isZipped = fileName and zipfile.is_zipfile(fileName)
-    isLeo = isZipped or fileName.endswith('.leo')
-    # g.trace(relativeFileName,'-->',fileName)
-
-    # If the file is already open just bring its window to the front.
-    if isLeo:
-        theList = app.windowList
-        for frame in theList:
-            if munge(fileName) == munge(frame.c.mFileName):
-                frame.bringToFront()
-                frame.c.setLog()
-                frame.c.outerUpdate()
-                return True, frame
-        if old_c:
-            # New in 4.4: We must read the file *twice*.
-            # The first time sets settings for the later call to c.finishCreate.
-            if trace: g.trace('***** prereading',fileName)
-            c2 = g.app.config.openSettingsFile(fileName)
-            if c2: g.app.config.updateSettings(c2,localFlag=True)
-            g.doHook('open0')
-
-        # Open the file in binary mode to allow 0x1a in bodies & headlines.
-        theFile,isZipped = g.openLeoOrZipFile(fileName)
-        if not theFile: return False, None
-
-        # This call will take 3/4 sec. to open a file from the leoBridge.
-        # This is due to imports in c.__init__
-        c,frame = app.newLeoCommanderAndFrame(
-            fileName=fileName,
-            relativeFileName=relativeFileName,
-            gui=gui)
-    else:
-        c,frame = g.openWrapperLeoFile(old_c,fileName,gui)
-        if not c: return False,None
-
-    assert frame.c == c and c.frame == frame
-    c.isZipped = isZipped
-
-    frame.log.enable(enableLog)
-    g.app.writeWaitingLog() # New in 4.3: write queued log first.
-
-    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
-        c.setLog()
-        if isLeo:
-            app.lockLog()
-            ok = frame.c.fileCommands.open(
-                theFile,fileName,
-                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-            app.unlockLog()
-            if not ok:
-                g.app.closeLeoWindow(frame)
-                return False,frame
-            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
-                # The recent files list has been updated by c.updateRecentFiles.
-                z.c.config.setRecentFiles(g.app.config.recentFiles)
-    # Bug fix in 4.4.
-    frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
-    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-    p = c.p
-    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    if not g.doHook("menu1",c=c,p=p,v=p):
-        frame.menu.createMenuBar(frame)
-        c.updateRecentFiles(relativeFileName or fileName)
-        g.doHook("menu2",c=frame.c,p=p,v=p)
-        g.doHook("after-create-leo-frame",c=c)
-    # New in Leo 4.6: provide an official way for very late initialization.
-    c.frame.tree.initAfterLoad()
-    c.initAfterLoad()
-    c.redraw()
-    assert frame.c == c and c.frame == frame
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    # g.trace('c.chapterController',c.chapterController)
-    if c.chapterController:
-        c.chapterController.finishCreate()
-    k = c.k
-    if k:
-        k.setDefaultInputState()
-    if c.config.getBool('outline_pane_has_initial_focus'):
-        c.treeWantsFocusNow()
-    else:
-        c.bodyWantsFocusNow()
-    if k:
-        k.showStateAndMode()
-
-    c.frame.initCompleteHint()
-
-    return True, frame
-#@-node:ekr.20031218072017.2052:g.openWithFileName
-#@+node:ekr.20070412082527:g.openLeoOrZipFile
-def openLeoOrZipFile (fileName):
-
-    try:
-        isZipped = zipfile.is_zipfile(fileName)
-        if isZipped:
-            theFile = zipfile.ZipFile(fileName,'r')
-            # g.trace('opened zip file',theFile)
-        else:
-            # mode = g.choose(g.isPython3,'r','rb')
-            # 9/19/08: always use binary mode??
-            mode = 'rb'
-            theFile = open(fileName,mode)
-        return theFile,isZipped
-    except IOError:
-        # Do not use string + here: it will fail for non-ascii strings!
-        if not g.unitTesting:
-            g.es_print("can not open:",fileName,color="blue")
-        return None,False
-#@nonl
-#@-node:ekr.20070412082527:g.openLeoOrZipFile
-#@+node:ekr.20080921154026.1:g.openWrapperLeoFile
-def openWrapperLeoFile (old_c,fileName,gui):
-
-    '''Open a wrapper .leo file for the given file,
-    and import the file into .leo file.'''
-
-    # This code is similar to c.new, but different enough to be separate.
-    if not g.os_path_exists(fileName):
-        if not g.unitTesting:
-            g.es_print("can not open:",fileName,color="blue")
-        return None,None
-
-    c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=None,relativeFileName=None,gui=gui)
-
-    # Needed for plugins.
-    g.doHook("new",old_c=old_c,c=c,new_c=c)
-
-    # Use the config params to set the size and location of the window.
-    frame.setInitialWindowGeometry()
-    frame.deiconify()
-    frame.lift()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-
-    if 1: # Just read the file into the node.
-        try:
-            fileName = g.os_path_finalize(fileName)
-            f = open(fileName)
-            s = f.read()
-            f.close()
-        except IOError:
-            g.es_print("can not open: ",fileName,color='red')
-            return None,None
-        p = c.p
-        if p:
-            p.setHeadString(fileName)
-            p.setBodyString(s)
-    else:  # Import the file into the new outline.
-        junk,ext = g.os_path_splitext(fileName)
-        p = c.p
-        p = c.importCommands.createOutline(fileName,parent=p,atAuto=False,ext=ext)
-        c.setCurrentPosition(p)
-        c.moveOutlineLeft()
-        p = c.p
-        c.setCurrentPosition(p.back())
-        c.deleteOutline(op_name=None)
-        p = c.p
-        p.expand()
-
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
-
-    frame.c.setChanged(True) # Unlike new, we the outline should be marked changed.
-
-    if c.config.getBool('outline_pane_has_initial_focus'):
-        c.treeWantsFocusNow()
-    else:
-        c.bodyWantsFocusNow()
-
-    # c.redraw() # Only needed by menu commands.
-    return c,frame
-#@-node:ekr.20080921154026.1:g.openWrapperLeoFile
-#@+node:ekr.20031218072017.3120:g.readlineForceUnixNewline (Steven P. Schaefer)
-#@+at 
-#@nonl
-# Stephen P. Schaefer 9/7/2002
-# 
-# The Unix readline() routine delivers "\r\n" line end strings verbatim, while 
-# the windows versions force the string to use the Unix convention of using 
-# only "\n".  This routine causes the Unix readline to do the same.
-#@-at
-#@@c
-
-def readlineForceUnixNewline(f):
-
-    s = f.readline()
-    if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
-        s = s[0:-2] + "\n"
-    return s
-#@-node:ekr.20031218072017.3120:g.readlineForceUnixNewline (Steven P. Schaefer)
-#@+node:ekr.20031218072017.3124:g.sanitize_filename
-def sanitize_filename(s):
-
-    """Prepares string s to be a valid file name:
-
-    - substitute '_' whitespace and characters used special path characters.
-    - eliminate all other non-alphabetic characters.
-    - strip leading and trailing whitespace.
-    - return at most 128 characters."""
-
-    result = ""
-    for ch in s.strip():
-        if ch in string.ascii_letters:
-            result += ch
-        elif ch in string.whitespace: # Translate whitespace.
-            result += '_'
-        elif ch in ('.','\\','/',':'): # Translate special path characters.
-            result += '_'
-    while 1:
-        n = len(result)
-        result = result.replace('__','_')
-        if len(result) == n:
-            break
-    result = result.strip()
-    return result [:128]
-#@-node:ekr.20031218072017.3124:g.sanitize_filename
-#@+node:ekr.20060328150113:g.setGlobalOpenDir
-def setGlobalOpenDir (fileName):
-
-    if fileName:
-        g.app.globalOpenDir = g.os_path_dirname(fileName)
-        # g.es('current directory:',g.app.globalOpenDir)
-#@-node:ekr.20060328150113:g.setGlobalOpenDir
-#@+node:ekr.20031218072017.3125:g.shortFileName & shortFilename
-def shortFileName (fileName):
-
-    return g.os_path_basename(fileName)
-
-shortFilename = shortFileName
-#@-node:ekr.20031218072017.3125:g.shortFileName & shortFilename
 #@+node:tbrown.20090219095555.61:g.handleUrlInUrlNode
 def handleUrlInUrlNode(url):
 
@@ -2776,6 +2422,470 @@ def handleUrlInUrlNode(url):
     #@-node:tbrown.20090219095555.63:<< pass the url to the web browser >>
     #@nl
 #@-node:tbrown.20090219095555.61:g.handleUrlInUrlNode
+#@+node:EKR.20040504154039:g.is_sentinel
+def is_sentinel (line,delims):
+
+    #@    << is_sentinel doc tests >>
+    #@+node:ekr.20040719161756:<< is_sentinel doc tests >>
+    """
+
+    Return True if line starts with a sentinel comment.
+
+    >>> import leo.core.leoGlobals as g
+    >>> py_delims = g.comment_delims_from_extension('.py')
+    >>> g.is_sentinel("#@+node",py_delims)
+    True
+    >>> g.is_sentinel("#comment",py_delims)
+    False
+
+    >>> c_delims = g.comment_delims_from_extension('.c')
+    >>> g.is_sentinel("//@+node",c_delims)
+    True
+    >>> g.is_sentinel("//comment",c_delims)
+    False
+
+    >>> html_delims = g.comment_delims_from_extension('.html')
+    >>> g.is_sentinel("<!--@+node-->",html_delims)
+    True
+    >>> g.is_sentinel("<!--comment-->",html_delims)
+    False
+
+    """
+    #@-node:ekr.20040719161756:<< is_sentinel doc tests >>
+    #@nl
+
+    delim1,delim2,delim3 = delims
+
+    line = line.lstrip()
+
+    if delim1:
+        return line.startswith(delim1+'@')
+    elif delim2 and delim3:
+        i = line.find(delim2+'@')
+        j = line.find(delim3)
+        return 0 == i < j
+    else:
+        g.trace("can't happen. delims: %s" % repr(delims),color="red")
+        return False
+#@-node:EKR.20040504154039:g.is_sentinel
+#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+# This is a generalization of os.makedir.
+
+def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
+
+    """Attempt to make all non-existent directories"""
+
+    # g.trace('theDir',theDir,c.config.create_nonexistent_directories,g.callers())
+
+    if not force:
+        if c:
+            if not c.config.create_nonexistent_directories:
+                return None
+        elif not app.config.create_nonexistent_directories:
+            return None
+
+    if c:
+        theDir = g.os_path_expandExpression(theDir,c=c)
+
+    dir1 = theDir = g.os_path_normpath(theDir)
+
+    # Split theDir into all its component parts.
+    paths = []
+    while len(theDir) > 0:
+        head,tail=g.os_path_split(theDir)
+        if len(tail) == 0:
+            paths.append(head)
+            break
+        else:
+            paths.append(tail)
+            theDir = head
+    path = ""
+    paths.reverse()
+    for s in paths:
+        path = g.os_path_join(path,s)
+        if not g.os_path_exists(path):
+            try:
+                os.mkdir(path)
+                if verbose and not g.app.unitTesting:
+                    # g.trace('***callers***',g.callers(5))
+                    g.es_print("created directory:",path,color='red')
+            except Exception:
+                # g.trace(g.callers())
+                if verbose: g.es_print("exception creating directory:",path,color='red')
+                g.es_exception()
+                return None
+    return dir1 # All have been created.
+#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+#@+node:ekr.20071114113736:g.makePathRelativeTo
+def makePathRelativeTo (fullPath,basePath):
+
+    if fullPath.startswith(basePath):
+        s = fullPath[len(basePath):]
+        if s.startswith(os.path.sep):
+            s = s[len(os.path.sep):]
+        return s
+    else:
+        return fullPath
+#@-node:ekr.20071114113736:g.makePathRelativeTo
+#@+node:ekr.20070412082527:g.openLeoOrZipFile
+# This is used in several places besides g.openWithFileName.
+
+def openLeoOrZipFile (fileName):
+
+    try:
+        isZipped = zipfile.is_zipfile(fileName)
+        if isZipped:
+            theFile = zipfile.ZipFile(fileName,'r')
+            # g.trace('opened zip file',theFile)
+        else:
+            # mode = g.choose(g.isPython3,'r','rb')
+            # 9/19/08: always use binary mode??
+            mode = 'rb'
+            theFile = open(fileName,mode)
+        return theFile,isZipped
+    except IOError:
+        # Do not use string + here: it will fail for non-ascii strings!
+        if not g.unitTesting:
+            g.es_print("can not open:",fileName,color="blue")
+        return None,False
+#@nonl
+#@-node:ekr.20070412082527:g.openLeoOrZipFile
+#@+node:ekr.20090520055433.5945:g.openWithFileName & helpers
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
+
+    """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    trace = False and not g.unitTesting
+
+    if not fileName: return False, None
+    isLeo,fn,relFn = g.mungeFileName(fileName)
+
+    # Return if the file is already open.
+    c = g.findOpenFile(fn)
+    if c: return True,c.frame
+
+    # Open the file.
+    if isLeo:
+        c,theFile = g.openWithFileNameHelper(old_c,gui,fn,relFn)
+    else:
+        c,theFile = g.openWrapperLeoFile(old_c,fn,gui),None
+    if not c: return False,None
+
+    # Init the open file.
+    assert c.frame and c.frame.c == c
+    c.frame.log.enable(enableLog)
+    g.app.writeWaitingLog()
+    ok = g.handleOpenHooks(c,old_c,gui,fn,theFile,readAtFileNodesFlag)
+    if not ok: return False,None
+    g.createMenu(c,fn,relFn)
+    g.finishOpen(c)
+    return True,c.frame
+#@+node:ekr.20090520055433.5951:createMenu
+def createMenu(c,fileName,relativeFileName,):
+
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+
+    if not g.doHook("menu1",c=c,p=c.p,v=c.p):
+        c.frame.menu.createMenuBar(c.frame)
+        c.updateRecentFiles(relativeFileName or fileName)
+        g.doHook("menu2",c=c,p=c.p,v=c.p)
+        g.doHook("after-create-leo-frame",c=c)
+#@-node:ekr.20090520055433.5951:createMenu
+#@+node:ekr.20090520055433.5948:findOpenFile
+def findOpenFile(fileName):
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    for frame in g.app.windowList:
+        c = frame.c
+        if munge(fileName) == munge(c.mFileName):
+            frame.bringToFront()
+            c.setLog()
+            c.outerUpdate()
+            return c
+    return None
+#@-node:ekr.20090520055433.5948:findOpenFile
+#@+node:ekr.20090520055433.5952:finishOpen
+def finishOpen(c):
+
+    k = c.k
+    # New in Leo 4.6: provide an official way for very late initialization.
+    c.frame.tree.initAfterLoad()
+    c.initAfterLoad()
+    c.redraw()
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.chapterController:
+        c.chapterController.finishCreate()
+    if k:
+        k.setDefaultInputState()
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    if k:
+        k.showStateAndMode()
+    c.frame.initCompleteHint()
+    return True
+#@-node:ekr.20090520055433.5952:finishOpen
+#@+node:ekr.20090520055433.5950:handleOpenHooks
+def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
+
+    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+        c.setLog()
+        if theFile:
+            app.lockLog()
+            ok = c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            if not ok:
+                g.app.closeLeoWindow(c.frame)
+                return False
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+
+    # Bug fix in 4.4.
+    c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
+    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+    return True
+#@nonl
+#@-node:ekr.20090520055433.5950:handleOpenHooks
+#@+node:ekr.20090520055433.5954:mungeFileName
+def mungeFileName(fileName):
+
+    '''Create a full, normalized, Unicode path name, preserving case.'''
+
+    relFn = g.os_path_normpath(fileName)
+    fn = g.os_path_finalize(fileName)
+
+    isZipped = fn and zipfile.is_zipfile(fn)
+    isLeo = isZipped or fn.endswith('.leo')
+
+    return isLeo,fn,relFn
+#@-node:ekr.20090520055433.5954:mungeFileName
+#@+node:ekr.20090520055433.5946:openWithFileNameHelper
+def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
+
+    if old_c: g.preRead(old_c)
+    g.doHook('open0')
+
+    # Open the file in binary mode to allow 0x1a in bodies & headlines.
+    theFile,isZipped = g.openLeoOrZipFile(fileName)
+    if not theFile:
+        return None,None
+
+    # This call will take 3/4 sec. to open a file from the leoBridge.
+    # This is due to imports in c.__init__
+    c,frame = app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        gui=gui)
+
+    c.isZipped = isZipped
+    return c,theFile
+#@+node:ekr.20090520055433.5949:preRead
+def preRead(fileName):
+
+    '''Read the file for the first time,
+    setting the setting for a later call to finishCreate.
+    '''
+
+    c = g.app.config.openSettingsFile(fileName)
+    if c:
+        g.app.config.updateSettings(c,localFlag=True)
+#@-node:ekr.20090520055433.5949:preRead
+#@-node:ekr.20090520055433.5946:openWithFileNameHelper
+#@+node:ekr.20080921154026.1:openWrapperLeoFile
+def openWrapperLeoFile (old_c,fileName,gui):
+
+    '''Open a wrapper .leo file for the given file,
+    and import the file into .leo file.'''
+
+    # This code is similar to c.new, but different enough to be separate.
+    if not g.os_path_exists(fileName):
+        if not g.unitTesting:
+            g.es_print("can not open:",fileName,color="blue")
+        return None
+
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=old_c,c=c,new_c=c)
+
+    # Use the config params to set the size and location of the window.
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+
+    if 1: # Just read the file into the node.
+        try:
+            fileName = g.os_path_finalize(fileName)
+            f = open(fileName)
+            s = f.read()
+            f.close()
+        except IOError:
+            g.es_print("can not open: ",fileName,color='red')
+            return None
+        p = c.p
+        if p:
+            p.setHeadString(fileName)
+            p.setBodyString(s)
+    else:  # Import the file into the new outline.
+        junk,ext = g.os_path_splitext(fileName)
+        p = c.p
+        p = c.importCommands.createOutline(fileName,parent=p,atAuto=False,ext=ext)
+        c.setCurrentPosition(p)
+        c.moveOutlineLeft()
+        p = c.p
+        c.setCurrentPosition(p.back())
+        c.deleteOutline(op_name=None)
+        p = c.p
+        p.expand()
+
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+
+    frame.c.setChanged(True) # Unlike new, we the outline should be marked changed.
+
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+
+    # c.redraw() # Only needed by menu commands.
+    return c
+#@-node:ekr.20080921154026.1:openWrapperLeoFile
+#@-node:ekr.20090520055433.5945:g.openWithFileName & helpers
+#@+node:ekr.20080921154026.1:openWrapperLeoFile
+def openWrapperLeoFile (old_c,fileName,gui):
+
+    '''Open a wrapper .leo file for the given file,
+    and import the file into .leo file.'''
+
+    # This code is similar to c.new, but different enough to be separate.
+    if not g.os_path_exists(fileName):
+        if not g.unitTesting:
+            g.es_print("can not open:",fileName,color="blue")
+        return None
+
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=old_c,c=c,new_c=c)
+
+    # Use the config params to set the size and location of the window.
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+
+    if 1: # Just read the file into the node.
+        try:
+            fileName = g.os_path_finalize(fileName)
+            f = open(fileName)
+            s = f.read()
+            f.close()
+        except IOError:
+            g.es_print("can not open: ",fileName,color='red')
+            return None
+        p = c.p
+        if p:
+            p.setHeadString(fileName)
+            p.setBodyString(s)
+    else:  # Import the file into the new outline.
+        junk,ext = g.os_path_splitext(fileName)
+        p = c.p
+        p = c.importCommands.createOutline(fileName,parent=p,atAuto=False,ext=ext)
+        c.setCurrentPosition(p)
+        c.moveOutlineLeft()
+        p = c.p
+        c.setCurrentPosition(p.back())
+        c.deleteOutline(op_name=None)
+        p = c.p
+        p.expand()
+
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+
+    frame.c.setChanged(True) # Unlike new, we the outline should be marked changed.
+
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+
+    # c.redraw() # Only needed by menu commands.
+    return c
+#@-node:ekr.20080921154026.1:openWrapperLeoFile
+#@+node:ekr.20031218072017.3120:g.readlineForceUnixNewline (Steven P. Schaefer)
+#@+at 
+#@nonl
+# Stephen P. Schaefer 9/7/2002
+# 
+# The Unix readline() routine delivers "\r\n" line end strings verbatim, while 
+# the windows versions force the string to use the Unix convention of using 
+# only "\n".  This routine causes the Unix readline to do the same.
+#@-at
+#@@c
+
+def readlineForceUnixNewline(f):
+
+    s = f.readline()
+    if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
+        s = s[0:-2] + "\n"
+    return s
+#@-node:ekr.20031218072017.3120:g.readlineForceUnixNewline (Steven P. Schaefer)
+#@+node:ekr.20031218072017.3124:g.sanitize_filename
+def sanitize_filename(s):
+
+    """Prepares string s to be a valid file name:
+
+    - substitute '_' whitespace and characters used special path characters.
+    - eliminate all other non-alphabetic characters.
+    - strip leading and trailing whitespace.
+    - return at most 128 characters."""
+
+    result = ""
+    for ch in s.strip():
+        if ch in string.ascii_letters:
+            result += ch
+        elif ch in string.whitespace: # Translate whitespace.
+            result += '_'
+        elif ch in ('.','\\','/',':'): # Translate special path characters.
+            result += '_'
+    while 1:
+        n = len(result)
+        result = result.replace('__','_')
+        if len(result) == n:
+            break
+    result = result.strip()
+    return result [:128]
+#@-node:ekr.20031218072017.3124:g.sanitize_filename
+#@+node:ekr.20060328150113:g.setGlobalOpenDir
+def setGlobalOpenDir (fileName):
+
+    if fileName:
+        g.app.globalOpenDir = g.os_path_dirname(fileName)
+        # g.es('current directory:',g.app.globalOpenDir)
+#@-node:ekr.20060328150113:g.setGlobalOpenDir
+#@+node:ekr.20031218072017.3125:g.shortFileName & shortFilename
+def shortFileName (fileName):
+
+    return g.os_path_basename(fileName)
+
+shortFilename = shortFileName
+#@-node:ekr.20031218072017.3125:g.shortFileName & shortFilename
 #@+node:ekr.20050104135720:Used by tangle code & leoFileCommands
 #@+node:ekr.20031218072017.1241:g.update_file_if_changed
 # This is part of the tangle code.
