@@ -83,7 +83,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     if trace: print ('runLeo.run: sys.argv %s' % sys.argv)
 
     # Phase 1: before loading plugins.
-    # Scan options, set directories and read settings
+    # Scan options, set directories and read settings.
     if not isValidPython(): return
     fn,relFn,script = doPrePluginsInit(fileName,pymacs)
 
@@ -91,7 +91,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     g.doHook("start1") # Plugins may create a gui.
     if g.app.killed: return
 
-    # Phase 3: after loading plugins: create a frame.
+    # Phase 3: after loading plugins. Create a frame.
     ok = doPostPluginsInit(args,fn,relFn,script)
     if ok: g.app.gui.runMainLoop()
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
