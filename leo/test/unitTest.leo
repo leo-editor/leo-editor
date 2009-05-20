@@ -1851,7 +1851,7 @@
 <v t="ekr.20071113202153.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194033.3"><vh>leoGlobals</vh>
-<v t="ekr.20050208051418" annotate="7d71002e"><vh> Unicode tests</vh>
+<v t="ekr.20050208051418" a="E" annotate="7d71002e"><vh> Unicode tests</vh>
 <v t="ekr.20050206090416"><vh>@test open non-existent non-ascii directory</vh></v>
 <v t="ekr.20050208051418.1"><vh>@test can't open message in g.openWithFileName</vh></v>
 <v t="ekr.20050208051854"><vh>@test atFile.printError</vh></v>
@@ -1882,7 +1882,7 @@
 <v t="ekr.20050105084757.1"><vh>@test g.utils_remove</vh></v>
 <v t="ekr.20050105091547"><vh>@test g.utils_rename</vh></v>
 <v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
-<v t="ekr.20080917151620.8"><vh>Directives, new</vh>
+<v t="ekr.20080917151620.8" a="E"><vh>Directives, new</vh>
 <v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
 <v t="ekr.20080917151620.10"><vh>@test c.scanAtRootDirectives root-code</vh></v>
 <v t="ekr.20080917151620.11"><vh>@test c.scanAtRootDirectives root-doc</vh></v>
@@ -2509,6 +2509,7 @@
 </v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
+<v t="ekr.20071113194033.3"></v>
 <v t="ekr.20071113193624.1"></v>
 <v t="ekr.20090518125253.5176"><vh>Failed unit tests with nullGui</vh></v>
 </vnodes>
