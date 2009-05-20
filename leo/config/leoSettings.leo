@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="97" left="341" height="827" width="1111"/>
+	<global_window_position top="124" left="345" height="827" width="1111"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -6480,7 +6480,8 @@ threading_colorizer.py
 #zodb.py
 #quicksearch.py
 #tomboy_import.py
-#ctagscompleter.py</t>
+#ctagscompleter.py
+#colorize_headlines.py</t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
 False: Chapter commands do not exists.</t>
 <t tx="ekr.20070326094544"></t>

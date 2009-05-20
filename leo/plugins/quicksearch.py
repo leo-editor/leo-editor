@@ -20,9 +20,9 @@ __version__ = '0.0'
 #@@killcolor
 #@+at
 # 
-# Put notes about each version here.
+# 0.1 Ville M. Vainio <vivainio@gmail.com>: Fully functional version,
+# 
 #@-at
-#@nonl
 #@-node:ville.20090314215508.6:<< version history >>
 #@nl
 

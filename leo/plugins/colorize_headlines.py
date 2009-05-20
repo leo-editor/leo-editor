@@ -4,6 +4,10 @@
 #@+node:ville.20090310191936.11:<< docstring >>
 '''A plugin that manipulates appearance of individual tree widget items
 
+This plugin is mostly an example of how to change appearance of headlines - as
+such, it does a relatively mundane chore of highlighting @thin, @auto, @shadow
+nodes in bold.
+
 '''
 #@-node:ville.20090310191936.11:<< docstring >>
 #@nl
@@ -14,7 +18,7 @@ __version__ = '0.1'
 #@@killcolor
 #@+at
 # 
-# v 0.1: Initial version.
+# v 0.1 VMV: Initial version.
 #@-at
 #@nonl
 #@-node:ville.20090310191936.12:<< version history >>

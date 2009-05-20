@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="86" left="62" height="827" width="1117"/>
+	<global_window_position top="127" left="511" height="827" width="1117"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="3,12"><vh>Startup</vh>
+<v t="ekr.20070610174018" a="E" str_leo_pos="3,19,0,9,11"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -27,6 +27,7 @@
 <v t="ekr.20060525110135"><vh>@@button rst-&gt;pdf</vh></v>
 <v t="ekr.20060525110135.1"><vh>@@button rst-&gt;tex</vh></v>
 <v t="ekr.20060525110217"><vh>@@button rst-&gt;rst</vh></v>
+<v t="ville.20090520232034.6345"><vh>@button rst-preview</vh></v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
 <v t="ekr.20080923182326.1"><vh>@@bool create_nonexistent_directories = True</vh></v>
@@ -558,8 +559,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050912125144"><vh>Chapter 12: Plugins</vh>
-<v t="ekr.20050912125144.1"><vh>@rst html\plugins.html</vh>
+<v t="ekr.20050912125144" a="E"><vh>Chapter 12: Plugins</vh>
+<v t="ekr.20050912125144.1" a="E"><vh>@rst html\plugins.html</vh>
 <v t="ekr.20050912125735"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20070814104719"><vh>Enabling plugins</vh></v>
 <v t="ekr.20050912125735.868"><vh>Body pane</vh>
@@ -625,9 +626,10 @@
 <v t="bob.20080110221203"><vh>Guis</vh>
 <v t="bob.20080110221203.1"><vh>__wx_alt_gui.py</vh></v>
 </v>
-<v t="ekr.20050912125735.980"><vh>Icon and status areas</vh>
+<v t="ekr.20050912125735.980" a="E"><vh>Icon and status areas</vh>
 <v t="ekr.20060601112502"><vh>chapter_hoist.py</vh></v>
 <v t="ekr.20050912125735.981"><vh>nav_buttons.py</vh></v>
+<v t="ville.20090520232138.11304"><vh>nav_qt.py</vh></v>
 <v t="ekr.20050912125735.1008"><vh>newButtons.py</vh></v>
 <v t="ekr.20050912125735.1041"><vh>hoist.py</vh></v>
 <v t="ekr.20050912125735.1050"><vh>nodenavigator.py</vh></v>
@@ -635,6 +637,8 @@
 <v t="ekr.20060603081045"><vh>shortcut_button.py</vh></v>
 <v t="bobjack.20080613141524.2"><vh>toolbar.py</vh></v>
 <v t="ekr.20050912125735.1092"><vh>UNL.py</vh></v>
+<v t="ville.20090520232138.11305"><vh>quicksearch.py</vh></v>
+<v t="ville.20090520235245.10337"><vh>colorize_headlines.py</vh></v>
 </v>
 <v t="ekr.20050912125735.2786"><vh>LeoN</vh></v>
 <v t="ekr.20050912125735.2826"><vh>Menus &amp; translations</vh>
@@ -14621,7 +14625,7 @@ bold) are not displayed anymore. You can choose to display them selecting "Show
 Invisibles" from the Edit menu.</t>
 <t tx="ekr.20050912125735.974">Send output from the Execute Script command to the end of the body pane.</t>
 <t tx="ekr.20050912125735.980"></t>
-<t tx="ekr.20050912125735.981">Adds navigation buttons to icon bar.</t>
+<t tx="ekr.20050912125735.981">Adds navigation buttons to icon bar. Tk only.</t>
 <t tx="ekr.20050912125735.1008">Automatically add nodes for common tasks.</t>
 <t tx="ekr.20050912125735.1041">Add Hoist/De-Hoist buttons to the toolbar.
 </t>
@@ -31331,6 +31335,16 @@ node body. While (**line**, **col**) in status area show the line and column
 containing the body text's cursor, **fcol** shows the cursor coordinate
 relative to the derived file, not to the curent node. The relation
 **fcol &gt;= col** is always true.</t>
+<t tx="ville.20090520232034.6345">g.app.gui.runScrolledMessageDialog(c=c, msg = u'rst:' + p.b)</t>
+<t tx="ville.20090520232138.11304">Qt version of nav_buttons.py (history navigation)</t>
+<t tx="ville.20090520232138.11305">This plugin adds a fast-to-use search widget, in the style of "Find in files" feature of many editors.
+
+Just load the plugin, activate "Nav" tab, enter search text and press enter.</t>
+<t tx="ville.20090520235245.10337">A plugin that manipulates appearance of individual tree widget items.
+
+This plugin is mostly an example of how to change appearance of headlines - as
+such, it does a relatively mundane chore of highlighting @thin, @auto, @shadow
+nodes in bold.</t>
 <t tx="vivainio.20080302174639.1">ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
 integration in IDEs; most notably, you are able to store and manipulate **data**
