@@ -2732,7 +2732,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
         except IOError:
             g.es_print("can not open: ",fileName,color='red')
             return None
-        p = c.p
+        p = c.rootPosition()
         if p:
             p.setHeadString(fileName)
             p.setBodyString(s)
@@ -2797,7 +2797,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
         except IOError:
             g.es_print("can not open: ",fileName,color='red')
             return None
-        p = c.p
+        p = c.rootPosition()
         if p:
             p.setHeadString(fileName)
             p.setBodyString(s)

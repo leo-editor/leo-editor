@@ -338,15 +338,16 @@ def createFrame (fileName,relativeFileName,script):
     """Create a LeoFrame during Leo's startup process."""
 
     # Only allow .zip and .leo files.
-    if fileName:
-        table = ('.leo','.zip',)
-        for ext in table:
-            if fileName.endswith(ext):
-                break
-        else:
-            g.es_print('invalid Leo file extension: %s' % (
-                relativeFileName))
-            fileName = relativeFileName = None
+    if False: # We can open *any* file using g.openWithFileName.
+        if fileName:
+            table = ('.leo','.zip',)
+            for ext in table:
+                if fileName.endswith(ext):
+                    break
+            else:
+                g.es_print('invalid Leo file extension: %s' % (
+                    relativeFileName))
+                fileName = relativeFileName = None
 
     # New in Leo 4.6: support for 'default_leo_file' setting.
     if not fileName and not script:
@@ -354,6 +355,9 @@ def createFrame (fileName,relativeFileName,script):
         fileName = g.os_path_finalize(fileName)
         if fileName and g.os_path_exists(fileName):
             g.es_print('opening default_leo_file:',fileName,color='blue')
+            defaultFileName = fileName
+        else:
+            defaultFileName = None
 
     # Try to create a frame for the file.
     if fileName and g.os_path_exists(fileName):
@@ -361,6 +365,8 @@ def createFrame (fileName,relativeFileName,script):
         if ok: return frame.c,frame
 
     # Create a _new_ frame & indicate it is the startup window.
+    if not fileName: fileName = defaultFileName ###
+
     c,frame = g.app.newLeoCommanderAndFrame(
         fileName=fileName,
         relativeFileName=relativeFileName,
