@@ -2736,6 +2736,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
         if p:
             p.setHeadString('@edit %s' % fileName)
             p.setBodyString(s)
+            c.selectPosition(p)
     else:  # Import the file into the new outline.
         junk,ext = g.os_path_splitext(fileName)
         p = c.p
@@ -2801,6 +2802,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
         if p:
             p.setHeadString('@edit %s' % fileName)
             p.setBodyString(s)
+            c.selectPosition(p)
     else:  # Import the file into the new outline.
         junk,ext = g.os_path_splitext(fileName)
         p = c.p
