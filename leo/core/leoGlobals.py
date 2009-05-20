@@ -2670,7 +2670,7 @@ def mungeFileName(fileName):
 #@+node:ekr.20090520055433.5946:openWithFileNameHelper
 def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
 
-    if old_c: g.preRead(old_c)
+    if old_c: g.preRead(fileName)
     g.doHook('open0')
 
     # Open the file in binary mode to allow 0x1a in bodies & headlines.
@@ -2754,14 +2754,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
     if c.config.getBool('use_chapters') and c.chapterController:
         c.chapterController.finishCreate()
 
-    frame.c.setChanged(True) # Unlike new, we the outline should be marked changed.
-
-    if c.config.getBool('outline_pane_has_initial_focus'):
-        c.treeWantsFocusNow()
-    else:
-        c.bodyWantsFocusNow()
-
-    # c.redraw() # Only needed by menu commands.
+    frame.c.setChanged(True) # Mark the outline dirty.
     return c
 #@-node:ekr.20080921154026.1:openWrapperLeoFile
 #@-node:ekr.20090520055433.5945:g.openWithFileName & helpers
@@ -2820,14 +2813,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
     if c.config.getBool('use_chapters') and c.chapterController:
         c.chapterController.finishCreate()
 
-    frame.c.setChanged(True) # Unlike new, we the outline should be marked changed.
-
-    if c.config.getBool('outline_pane_has_initial_focus'):
-        c.treeWantsFocusNow()
-    else:
-        c.bodyWantsFocusNow()
-
-    # c.redraw() # Only needed by menu commands.
+    frame.c.setChanged(True) # Mark the outline dirty.
     return c
 #@-node:ekr.20080921154026.1:openWrapperLeoFile
 #@+node:ekr.20031218072017.3120:g.readlineForceUnixNewline (Steven P. Schaefer)

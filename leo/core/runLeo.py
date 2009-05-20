@@ -350,14 +350,13 @@ def createFrame (fileName,relativeFileName,script):
                 fileName = relativeFileName = None
 
     # New in Leo 4.6: support for 'default_leo_file' setting.
+    defaultFileName = None
     if not fileName and not script:
         fileName = g.app.config.getString(c=None,setting='default_leo_file')
         fileName = g.os_path_finalize(fileName)
         if fileName and g.os_path_exists(fileName):
             g.es_print('opening default_leo_file:',fileName,color='blue')
             defaultFileName = fileName
-        else:
-            defaultFileName = None
 
     # Try to create a frame for the file.
     if fileName and g.os_path_exists(fileName):
