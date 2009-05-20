@@ -6723,16 +6723,16 @@ def openWithFileName(fileName,old_c,
 
     # Open the file.
     if isLeo:
-        c,theFile = g.openWithFileNameHelper(old_c,gui,fn,relFn)
+        c,f = g.openWithFileNameHelper(old_c,gui,fn,relFn)
     else:
-        c,theFile = g.openWrapperLeoFile(old_c,fn,gui),None
+        c,f = g.openWrapperLeoFile(old_c,fn,gui),None
     if not c: return False,None
 
     # Init the open file.
     assert c.frame and c.frame.c == c
     c.frame.log.enable(enableLog)
     g.app.writeWaitingLog()
-    ok = g.handleOpenHooks(c,old_c,gui,fn,theFile,readAtFileNodesFlag)
+    ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
     if not ok: return False,None
     g.createMenu(c,fn,relFn)
     g.finishOpen(c)

@@ -2509,8 +2509,6 @@
 </v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
-<v t="ekr.20071113194033.3"></v>
-<v t="ekr.20071113193624.1"></v>
 <v t="ekr.20090518125253.5176"><vh>Failed unit tests with nullGui</vh></v>
 </vnodes>
 <tnodes>
