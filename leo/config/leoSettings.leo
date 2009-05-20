@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="165" left="167" height="827" width="1111"/>
+	<global_window_position top="97" left="341" height="827" width="1111"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="2,15"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -24,7 +24,7 @@
 <v t="ekr.20090203131919.1"><vh>@button Check menu commands</vh></v>
 </v>
 </v>
-<v t="ekr.20041119035137"><vh>About this file</vh>
+<v t="ekr.20041119035137" a="E"><vh>About this file</vh>
 <v t="ekr.20041122163623"><vh>Note about canonicalized names</vh></v>
 <v t="ekr.20041119035704"><vh> Basic setting nodes: @type-name setting-name = value</vh>
 <v t="ekr.20041119042929"><vh>@bool</vh></v>
@@ -55,7 +55,7 @@
 <v t="ekr.20041119035704.3"><vh>\@type type-name: base-type = [list of valid values]</vh></v>
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
-<v t="ekr.20061011082224"><vh>Candidates for settings in myLeoSettings.leo</vh>
+<v t="ekr.20061011082224" a="E"><vh>Candidates for settings in myLeoSettings.leo</vh>
 <v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
 <v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
@@ -98,7 +98,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -3501,7 +3501,7 @@ slave-menu =
 vertical: body pane on the botton</t>
 <t tx="ekr.20041119034357.1">@nocolor
 
-The @settings tree contains all active settings.  Settings outside this tree have no effect.t</t>
+The @settings tree contains all active settings.  Settings outside this tree have no effect.</t>
 <t tx="ekr.20041119034357.5">False: Leo writes leoSettings.leo files.</t>
 <t tx="ekr.20041119034357.7"></t>
 <t tx="ekr.20041119034357.8">Example:
@@ -6395,6 +6395,9 @@ UNL.py
 # Enabled by default in Leo 4.4.3. (order is important)
 # dtest.py
 nav_buttons.py
+nav_qt.py
+
+
 hoist.py
 image.py
 leo_to_html.py
@@ -6474,7 +6477,10 @@ threading_colorizer.py
 #xcc_nodes.py
 #xemacs.py
 #xsltWithNodes.py
-#zodb.py</t>
+#zodb.py
+#quicksearch.py
+#tomboy_import.py
+#ctagscompleter.py</t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
 False: Chapter commands do not exists.</t>
 <t tx="ekr.20070326094544"></t>
