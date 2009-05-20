@@ -6879,7 +6879,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
     frame.lift()
     frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
 
-    if 1: # Just read the file into the node.
+    if True: # Just read the file into the node.
         try:
             fileName = g.os_path_finalize(fileName)
             f = open(fileName)
@@ -6890,7 +6890,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
             return None
         p = c.rootPosition()
         if p:
-            p.setHeadString(fileName)
+            p.setHeadString('@edit %s' % fileName)
             p.setBodyString(s)
     else:  # Import the file into the new outline.
         junk,ext = g.os_path_splitext(fileName)
