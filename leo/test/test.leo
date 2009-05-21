@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -241,18 +241,7 @@
 <v t="ekr.20080806145258.32"><vh>print_leo_dot_js</vh></v>
 <v t="ekr.20080806145258.33"><vh>print_tree</vh></v>
 </v>
-<v t="ekr.20080806145258.1"><vh>@@thin cgi-bin/leo.js</vh>
-<v t="ekr.20080806145258.2"><vh>getElementbyClass</vh></v>
-<v t="ekr.20080806145258.3"><vh>contractcontent</vh></v>
-<v t="ekr.20080806145258.4"><vh>expandcontent</vh></v>
-<v t="ekr.20080806145258.5"><vh>revivecontent</vh></v>
-<v t="ekr.20080806145258.6"><vh>get_cookie</vh></v>
-<v t="ekr.20080806145258.7"><vh>getselectedItem</vh></v>
-<v t="ekr.20080806145258.8"><vh>saveswitchstate</vh></v>
-<v t="ekr.20080806145258.9"><vh>do_onload</vh></v>
-<v t="ekr.20080806145258.10"><vh>format</vh></v>
-<v t="ekr.20080806145258.11"><vh>formatText</vh></v>
-</v>
+<v t="ekr.20080806145258.1"><vh>@@thin cgi-bin/leo.js</vh></v>
 <v t="ekr.20080806145258.34"><vh>@@thin jqueryTest.html</vh></v>
 </v>
 <v t="ekr.20080811113441.2"><vh>Running body text as a windows script</vh>
@@ -397,6 +386,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20090521120128.1961"><vh>@thin c:\leo.repo\trunk\leo\core\leoGlobals.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -1915,140 +1905,6 @@ for z in aList:
 </t>
 <t tx="ekr.20080803120643.1">def spam():
     pass</t>
-<t tx="ekr.20080806145258.1">@language javascript
-
-/**********************************************
-* Contractible Headers script- © Dynamic Drive (www.dynamicdrive.com)
-* This notice must stay intact for legal use. Last updated Mar 23rd, 2004.
-* Visit http://www.dynamicdrive.com/ for full source code
-***********************************************/
-
-// alert("start");
-
-var enablepersist="on" //Enable saving state of content structure using session cookies? (on/off)
-var collapseprevious="no" //Collapse previously open content when opening present? (yes/no)
-
-if (document.getElementById){
-    document.write('&lt;style type="text/css"&gt;')
-    document.write('.switchcontent{display:none;}')
-    document.write('&lt;\/style&gt;')
-}
-
-@others</t>
-<t tx="ekr.20080806145258.2">function getElementbyClass(classname){
-    ccollect=new Array()
-    var inc=0
-    var alltags=document.all? document.all : document.getElementsByTagName("*")
-    for (i=0; i&lt;alltags.length; i++){
-        if (alltags[i].className==classname)
-            ccollect[inc++]=alltags[i]
-    }
-}
-
-</t>
-<t tx="ekr.20080806145258.3">function contractcontent(omit){
-    var inc=0
-    while (ccollect[inc]){
-        if (ccollect[inc].id!=omit)
-        ccollect[inc].style.display="none"
-        inc++
-    }
-}
-</t>
-<t tx="ekr.20080806145258.4">function expandcontent(cid){
-    if (typeof ccollect!="undefined"){
-        if (collapseprevious=="yes")
-            contractcontent(cid)
-        document.getElementById(cid).style.display=(document.getElementById(cid).style.display!="block")? "block" : "none"
-    }
-}
-</t>
-<t tx="ekr.20080806145258.5">function revivecontent(){
-    contractcontent("omitnothing")
-    selectedItem=getselectedItem()
-    selectedComponents=selectedItem.split("|")
-    for (i=0; i&lt;selectedComponents.length-1; i++)
-        document.getElementById(selectedComponents[i]).style.display="block"
-}
-
-</t>
-<t tx="ekr.20080806145258.6">function get_cookie(Name) { 
-    var search = Name + "="
-    var returnvalue = "";
-    if (document.cookie.length &gt; 0) {
-        offset = document.cookie.indexOf(search)
-        if (offset != -1) { 
-            offset += search.length
-            end = document.cookie.indexOf(";", offset);
-            if (end == -1) end = document.cookie.length;
-            returnvalue=unescape(document.cookie.substring(offset, end))
-        }
-    }
-    return returnvalue;
-}
-
-</t>
-<t tx="ekr.20080806145258.7">function getselectedItem(){
-    if (get_cookie(window.location.pathname) != ""){
-        selectedItem=get_cookie(window.location.pathname)
-        return selectedItem
-    }
-    else
-        return ""
-}
-
-</t>
-<t tx="ekr.20080806145258.8">function saveswitchstate(){
-    var inc=0, selectedItem=""
-    while (ccollect[inc]){
-        if (ccollect[inc].style.display=="block")
-            selectedItem+=ccollect[inc].id+"|"
-        inc++
-    }
-    document.cookie=window.location.pathname+"="+selectedItem
-}
-
-</t>
-<t tx="ekr.20080806145258.9">function do_onload(){
-    // alert("do_onload");
-    uniqueidn=window.location.pathname+"firsttimeload"
-    getElementbyClass("switchcontent")
-    if (enablepersist=="on" &amp;&amp; typeof ccollect!="undefined"){
-        document.cookie=(get_cookie(uniqueidn)=="")? uniqueidn+"=1" : uniqueidn+"=0" 
-        firsttimeload=(get_cookie(uniqueidn)==1)? 1 : 0 //check if this is 1st page load
-        if (!firsttimeload)
-        revivecontent()
-    }
-}
-
-if (window.addEventListener)
-    window.addEventListener("load", do_onload, false)
-else if (window.attachEvent)
-    window.attachEvent("onload", do_onload)
-else if (document.getElementById)
-    window.onload=do_onload
-
-if (enablepersist=="on" &amp;&amp; document.getElementById)
-    window.onunload=saveswitchstate
-
-</t>
-<t tx="ekr.20080806145258.10">function format() {
-
-    return;
-
-    // var sections = document.getElementsByTagName("pre");  // EKR: was span.
-    // //alert("format:" + sections.length + "sections")
-    // for(i=0; i &lt; sections.length; i++) {
-        // formatText(sections[i]);
-    // }
-}
-</t>
-<t tx="ekr.20080806145258.11">function formatText(item) {
-
-    ;
-    // alert(item);
-}
-</t>
 <t tx="ekr.20080806145258.12">@nocolor
 
 Notes:
