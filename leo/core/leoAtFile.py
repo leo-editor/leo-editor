@@ -646,6 +646,8 @@ class atFile:
 
         Leo 4.5 and later can only read 4.x derived files.'''
 
+        g.trace(root.h,fileName)
+
         at = self ; ok = True
 
         firstLines,read_new,junk = at.scanHeader(theFile,fileName)
@@ -770,19 +772,24 @@ class atFile:
     #@+node:ekr.20041005105605.72:createThinChild4
     def createThinChild4 (self,gnxString,headline):
 
-        """Find or create a new *vnode* whose parent (also a vnode) is at.lastThinNode."""
+        """Find or create a new *vnode* whose parent (also a vnode) is at.lastThinNode.
+        This is called only for @thin trees."""
 
+        trace = False and not g.unitTesting
+        verbose = False
         at = self ; c = at.c ; indices = g.app.nodeIndices
         last = at.lastThinNode ; lastIndex = last.t.fileIndex
         gnx = indices.scanGnx(gnxString,0)
 
-        # New in Leo 4.4a5: Solve Read @file nodes problem (by LeoUser)
-        if self._forcedGnxPositionList and last in self._forcedGnxPositionList:
-            last.fileIndex = lastIndex =  gnx
-            self._forcedGnxPositionList.remove(last)
+        # New in Leo 4.4a5: Solve Read @thin nodes problem (by LeoUser)
+        if 0: ####
+            if self._forcedGnxPositionList and last in self._forcedGnxPositionList:
+                last.fileIndex = lastIndex =  gnx
+                self._forcedGnxPositionList.remove(last)
 
-        # g.trace("last",last,last.t.fileIndex)
-        # g.trace("args",indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
+        if trace and verbose: g.trace("last %s, gnx %s %s" % (
+            last,gnxString,headline))
+                #indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
 
         parent = at.lastThinNode # A vnode.
         children = parent.t.children
@@ -797,15 +804,15 @@ class atFile:
             if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
             else: clonedSibs = 0
             copies = n - clonedSibs
-            # g.trace(copies,headline)
+            if trace: g.trace(copies,headline)
         else:
             if indices.areEqual(gnx,lastIndex):
                 last.t.setVisited() # Supress warning/deletion of unvisited nodes.
-                # g.trace('last',last)
+                if trace:g.trace('found last',last)
                 return last
             if child:
                 child.t.setVisited() # Supress warning/deletion of unvisited nodes.
-                # g.trace('child',child)
+                if trace: g.trace('found child',child)
                 return child
             copies = 1 # Create exactly one copy.
 
@@ -835,18 +842,24 @@ class atFile:
                 t.vnodeList.append(child)
             child._linkAsNthChild(parent,parent.numberOfChildren())
 
+        if trace and verbose: g.trace('new node: %s' % child)
         child.t.setVisited() # Supress warning/deletion of unvisited nodes.
         return child
     #@-node:ekr.20041005105605.72:createThinChild4
     #@+node:ekr.20041005105605.73:findChild4
     def findChild4 (self,headline):
 
-        """Return the next tnode in at.root.t.tnodeList."""
+        """Return the next tnode in at.root.t.tnodeList.
+        This is called only for @file nodes"""
 
         # Note: tnodeLists are used _only_ when reading @file (not @thin) nodes.
         # tnodeLists compensate (a hack) for not having gnx's in derived files! 
 
+        trace = False and not g.unitTesting
         at = self ; v = at.root.v
+
+        if trace: g.trace('%s %s' % (
+            v.t.tnodeList[at.tnodeListIndex],headline))
 
         if not hasattr(v.t,"tnodeList"):
             at.readError("no tnodeList for " + repr(v))
@@ -880,6 +893,7 @@ class atFile:
 
         """Scan a 4.x derived file non-recursively."""
 
+        trace = False and not g.unitTesting
         at = self
         #@    << init ivars for scanText4 >>
         #@+node:ekr.20041005105605.75:<< init ivars for scanText4 >>
@@ -899,7 +913,12 @@ class atFile:
         at.endSentinelStack = [at.endLeo] # We have already handled the @+leo sentinel.
         at.out = [] ; at.outStack = []
         at.t = p.v.t ; at.tStack = []
-        at.lastThinNode = p.v ; at.thinNodeStack = [p.v]
+        if 1: ### New code: always identify root @thin node with self.root:
+            at.lastThinNode = None
+            at.thinNodeStack = []
+        else:
+            at.lastThinNode = p.v
+            at.thinNodeStack = [p.v]
 
         if 0: # Useful for debugging.
             if hasattr(p.v.t,"tnodeList"):
@@ -916,12 +935,12 @@ class atFile:
                 self.lineNumber += 1
                 if len(s) == 0: break
                 kind = at.sentinelKind4(s)
-                # g.trace(at.sentinelName(kind),s.strip())
                 if kind == at.noSentinel:
                     i = 0
                 else:
                     i = at.skipSentinelStart4(s,0)
                 func = at.dispatch_dict[kind]
+                if trace: g.trace(at.sentinelName(kind),s.strip(),func.__name__)
                 func(s,i)
         except AssertionError:
             junk, message, junk = sys.exc_info()
@@ -1053,6 +1072,7 @@ class atFile:
 
         """Read an @+node or @+middle sentinel."""
 
+        trace = False and not g.unitTesting
         at = self
         if middle:
             assert g.match(s,i,"+middle:"),'missing +middle'
@@ -1124,8 +1144,19 @@ class atFile:
             p = at.createImportedNode(at.root,headline)
             at.t = p.v.t
         elif at.thinFile:
-            at.thinNodeStack.append(at.lastThinNode)
-            at.lastThinNode = v = at.createThinChild4(gnx,headline)
+            if trace: g.trace('lastThinNode',at.lastThinNode.h)
+            if 1: # new code:
+                if at.thinNodeStack:
+                    at.thinNodeStack.append(at.lastThinNode)
+                    at.lastThinNode = v = at.createThinChild4(gnx,headline)
+                else:
+                    v = at.root.v
+                    assert(v)
+                    at.thinNodeStack.append(v)
+                    at.lastThinNode = v
+            else:
+                at.thinNodeStack.append(at.lastThinNode)
+                at.lastThinNode = v = at.createThinChild4(gnx,headline)
             at.t = v.t
         else:
             at.t = at.findChild4(headline)
@@ -1608,7 +1639,7 @@ class atFile:
         at.out.append(s[i:])
     #@-node:ekr.20041005105605.112:readVerbatim
     #@-node:ekr.20041005105605.100:Unpaired sentinels
-    #@+node:ekr.20041005105605.113:badEndSentinel, push/popSentinelStack
+    #@+node:ekr.20041005105605.113:badEndSentinel, popSentinelStack
     def badEndSentinel (self,expectedKind):
 
         """Handle a mismatched ending sentinel."""
@@ -1629,7 +1660,7 @@ class atFile:
             at.endSentinelStack.pop()
         else:
             at.badEndSentinel(expectedKind)
-    #@-node:ekr.20041005105605.113:badEndSentinel, push/popSentinelStack
+    #@-node:ekr.20041005105605.113:badEndSentinel, popSentinelStack
     #@-node:ekr.20041005105605.74:scanText4 & allies
     #@+node:ekr.20041005105605.114:sentinelKind4
     def sentinelKind4(self,s):
@@ -1936,6 +1967,7 @@ class atFile:
         """Reads one line from file using the present encoding"""
 
         s = g.readlineForceUnixNewline(theFile) # calls theFile.readline
+        # g.trace(repr(s),g.callers(4))
         u = g.toUnicode(s,self.encoding)
         return u
     #@-node:ekr.20041005105605.128:readLine
