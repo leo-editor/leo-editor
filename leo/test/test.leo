@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="85" left="333" height="954" width="882"/>
+	<global_window_position top="15" left="289" height="912" width="897"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -367,6 +367,8 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
+<v t="ekr.20090521070342.1907"><vh>@button show-rst</vh></v>
+<v t="ekr.20090521070342.1908"><vh>Sample rst</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -1484,6 +1486,7 @@ ipython.py
 open_with.py
 rClick.py
 toolbar.py
+scrolledmessage.py
 
 # add_directives.py # scan-directives hook not ready.
 # color_markup.py # Does not work with threading colorizer.
@@ -2871,5 +2874,14 @@ else:
 <t tx="ekr.20090514101216.1927"># 'self' is now defined in @test and @suite nodes.
 self.assertNotEqual(1,2)</t>
 <t tx="ekr.20090514103332.1929"></t>
+<t tx="ekr.20090521070342.1907">g.app.gui.runScrolledMessageDialog(c=c,msg=u'rst:'+p.b)</t>
+<t tx="ekr.20090521070342.1908">####
+top
+####
+
+- one
+- two
+- three
+- four</t>
 </tnodes>
 </leo_file>

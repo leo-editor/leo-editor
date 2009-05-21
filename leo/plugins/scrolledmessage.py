@@ -192,7 +192,7 @@ class ScrolledMessageDialog(object):
 
         top.addDockWidget(Qt.RightDockWidgetArea, dock)
 
-        dock.setFloating(True)
+        dock.setFloating(False)
 
         self.controls = {}
         self.controlFlags = {}
@@ -616,7 +616,7 @@ class ScrolledMessageController(object):
     #@+node:leohag.20081203143921.20:updateDialog
     def updateDialog(self, kw):
 
-        print(self.c, self.dialogs)
+        # print(self.c, self.dialogs)
 
         if  not kw['name']:
             # name = self.getUniqueName()
