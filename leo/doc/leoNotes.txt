@@ -5141,6 +5141,17 @@ def openWithFileName(fileName,old_c,
 
     return True, frame
 #@-node:ekr.20031218072017.2052:g.openWithFileName (OLD)
+#@+node:ekr.20090512153903.5805:isRstFile (no longer used)
+def isRstFile (self,fileName):
+
+    if not fileName: return False
+
+    junk,ext = g.os_path_splitext(fileName)
+
+    # g.trace(fileName,ext)
+
+    return ext in ('.rst','.rest','.txt')
+#@-node:ekr.20090512153903.5805:isRstFile (no longer used)
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node

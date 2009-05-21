@@ -2513,7 +2513,7 @@ class atFile:
 
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
         if ok:
-            if self.isRstFile(fileName):
+            if root.isAtAutoRstNode():
                 c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
             else:
                 at.writeOpenFile(root,nosentinels=True,toString=toString)
@@ -2529,17 +2529,6 @@ class atFile:
             g.es("not written:",at.outputFileName)
 
         return ok
-    #@+node:ekr.20090512153903.5805:isRstFile
-    def isRstFile (self,fileName):
-
-        if not fileName: return False
-
-        junk,ext = g.os_path_splitext(fileName)
-
-        # g.trace(fileName,ext)
-
-        return ext in ('.rst','.rest','.txt')
-    #@-node:ekr.20090512153903.5805:isRstFile
     #@+node:ekr.20071019141745:shouldWriteAtAutoNode
     #@+at 
     #@nonl

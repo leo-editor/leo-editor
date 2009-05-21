@@ -81,9 +81,9 @@ class leoImportCommands (scanUtility):
             '.pas':     self.scanPascalText,
             '.py':      self.scanPythonText,
             '.pyw':     self.scanPythonText,
-            '.txt':     self.scanRstText, # A reasonable default.
-            '.rest':    self.scanRstText,
-            '.rst':     self.scanRstText,
+            # '.txt':     self.scanRstText, # A reasonable default.
+            # '.rest':    self.scanRstText,
+            # '.rst':     self.scanRstText,
             '.xml':     self.scanXmlText,
         }
     #@-node:ekr.20080825131124.3:createImportDispatchDict
@@ -844,7 +844,11 @@ class leoImportCommands (scanUtility):
 
         self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-        func = self.importDispatchDict.get(ext)
+        if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
+            func = self.scanRstText
+        else:
+            func = self.importDispatchDict.get(ext)
+
         if func and not c.config.getBool('suppress_import_parsing',default=False):
             func(s,p,atAuto=atAuto)
         else:
