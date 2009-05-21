@@ -3458,6 +3458,18 @@ def plugin_signon(module_name,verbose=False):
 
     app.loadedPlugins.append(module_name)
 #@-node:ekr.20031218072017.1318:g.plugin_signon
+#@+node:ville.20090521164644.5924:g.command (decorator for creating global commands)
+class command:
+    """ Decorator to create global commands """
+    def __init__(self, name):
+        self.name = name
+
+    def __call__(self,func):
+        g.app.global_commands_dict[self.name] = func
+        return func
+
+
+#@-node:ville.20090521164644.5924:g.command (decorator for creating global commands)
 #@-node:ekr.20031218072017.3139:Hooks & plugins (leoGlobals)
 #@+node:ekr.20031218072017.3145:Most common functions...
 # These are guaranteed always to exist for scripts.
@@ -3607,6 +3619,8 @@ class posList(list):
     #@    << docstring for posList >>
     #@+node:ekr.20090130114732.2:<< docstring for posList >>
     '''A subclass of list for creating and selecting lists of positions.
+
+        This is deprecated, use leoNodes.poslist instead!
 
         aList = g.posList(c)
             # Creates a posList containing all positions in c.
