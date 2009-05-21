@@ -167,6 +167,13 @@ class baseCommands (object):
             import leo.core.leoEditCommands as leoEditCommands
             c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
             self.rstCommands.finishCreate()
+
+            # copy global commands to this controller    
+
+            for name,f in g.app.global_commands_dict.items():
+                k.registerCommand(name,shortcut = None, func = f, pane='all',verbose=False)        
+                pass
+
             k.finishCreate()
         else:
             # A leoSettings.leo file.

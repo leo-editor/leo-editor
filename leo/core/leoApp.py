@@ -259,7 +259,8 @@ class LeoApp:
             'unknown_language': 'none',
             'w'     : 'none', # cweb
         }
-        #@nonl
+
+        self.global_commands_dict = {}
         #@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
         #@nl
     #@-node:ekr.20031218072017.1416:app.__init__
@@ -497,8 +498,10 @@ class LeoApp:
         if not app.initing:
             g.doHook("before-create-leo-frame",c=c) # Was 'onCreate': too confusing.
 
+
         frame.finishCreate(c)
         c.finishCreate(initEditCommanders)
+
 
         # Finish initing the subcommanders.
         c.undoer.clearUndoState() # Menus must exist at this point.
