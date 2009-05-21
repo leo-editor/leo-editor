@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="44" left="381" height="936" width="884"/>
+	<global_window_position top="50" left="370" height="936" width="908"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20081121105001.1076" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20081121105001.1076" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20081121105001.1077"><vh>@chapters</vh></v>
 <v t="ekr.20081121105001.1078"><vh>@settings</vh>
 <v t="ekr.20081121105001.1079"><vh>@page http plugin</vh>
@@ -29,9 +29,8 @@
 <v t="ekr.20081121105001.1090"><vh>@@button change leo imports</vh></v>
 </v>
 <v t="ekr.20081121105001.1108"><vh>Notes</vh>
-<v t="ekr.20081121105001.147" a="E"
-marks="ekr.20090124174652.59,"
-expanded="ekr.20081121105001.205,ekr.20081121105001.212,ekr.20090322092751.12,"><vh>@thin qtNotes.txt</vh></v>
+<v t="ekr.20081121105001.147"
+expanded="ekr.20081121105001.572,"><vh>@thin qtNotes.txt</vh></v>
 </v>
 <v t="ekr.20081121105001.1110"><vh>Other guis</vh>
 <v t="ekr.20081121105001.12"><vh>@thin cursesGui.py</vh></v>
@@ -40,11 +39,65 @@ expanded="ekr.20081121105001.205,ekr.20081121105001.212,ekr.20090322092751.12,">
 <v t="ekr.20081121110412.2"><vh>@thin tkGui.py</vh></v>
 <v t="ekr.20090126093408.1"><vh>@thin wxGui.py</vh></v>
 </v>
+<v t="ekr.20081121105001.1092"><vh>Qt gui</vh>
+<v t="ekr.20081121105001.1093"><vh>QDesigner files</vh>
+<v t="ekr.20081121105001.1094"><vh>@auto ../test/qtui_generate.py</vh></v>
+<v t="ekr.20081121105001.1095"><vh>@auto qt_main.py</vh></v>
+<v t="ekr.20081121105001.1096"><vh>@auto qt_main.ui</vh></v>
+<v t="ekr.20081121105001.1097"><vh>@auto qt_quicksearch.py</vh></v>
+<v t="ekr.20081121105001.1098"><vh>@auto qt_quicksearch.ui</vh></v>
+</v>
+<v t="ekr.20090124174652.7"><vh>@thin baseNativeTree.py</vh></v>
+<v t="ekr.20081121105001.188"
+expanded="ekr.20081121105001.473,ekr.20081121105001.521,ekr.20081121105001.572,"><vh>@thin qtGui.py</vh></v>
+<v t="leohag.20081204085551.1"><vh>@thin scrolledmessage.py</vh></v>
+</v>
 <v t="ekr.20081121105001.148"><vh> qt To do</vh>
-<v t="ekr.20090316095604.11"><vh>Urgent 1</vh>
+<v t="ekr.20090430102239.1"><vh>Before b2</vh>
+<v t="ekr.20090430102239.2"><vh>Arrow keys do not work in headlines</vh></v>
+<v t="ekr.20090409055330.10"><vh>Make sure change-all honors node-only and suboutline-only settings</vh>
+<v t="ekr.20081121105001.235"><vh>class leoQtFindTab (findTab)</vh>
+<v t="ekr.20081121105001.236"><vh> Birth: called from leoFind ctor</vh>
+<v t="ekr.20081121105001.237"><vh>initGui</vh></v>
+<v t="ekr.20081121105001.238"><vh>init (qtFindTab) &amp; helpers</vh>
+<v t="ekr.20081121105001.239"><vh>createIvars</vh></v>
+<v t="ekr.20081121105001.240"><vh>initIvars</vh></v>
+<v t="ekr.20081121105001.241"><vh>initTextWidgets</vh></v>
+<v t="ekr.20081121105001.242"><vh>initCheckBoxes</vh></v>
+<v t="ekr.20081121105001.243"><vh>initRadioButtons</vh></v>
+</v>
+</v>
+<v t="ekr.20081121105001.244"><vh>class svar</vh>
+<v t="ekr.20090427112929.10"><vh>svar.ctor</vh></v>
+<v t="ekr.20090427112929.12"><vh>get</vh></v>
+<v t="ekr.20090427112929.13"><vh>init</vh></v>
+<v t="ekr.20090427112929.17"><vh>set</vh></v>
+<v t="ekr.20090427112929.18"><vh>setRadioScope</vh></v>
+<v t="ekr.20090427112929.15"><vh>setWidget</vh></v>
+</v>
+<v t="ekr.20081121105001.245"><vh>Support for minibufferFind class (qtFindTab)</vh>
+<v t="ekr.20081121105001.246"><vh>getOption</vh></v>
+<v t="ekr.20081121105001.247"><vh>setOption</vh></v>
+<v t="ekr.20081121105001.248"><vh>toggleOption</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20090430102239.3"><vh>Fix page up/down problem</vh>
+<v t="ekr.20090430102239.4"><vh>masterKeyHandler &amp; helpers</vh>
+<v t="ekr.20090430102239.5"><vh>&lt;&lt; define vars &gt;&gt;</vh></v>
+<v t="ekr.20090430102239.6"><vh>&lt;&lt; handle mode bindings &gt;&gt;</vh></v>
+<v t="ekr.20090430102239.7"><vh>&lt;&lt; handle special cases for plain keys &gt;&gt;</vh></v>
+<v t="ekr.20090430102239.8"><vh>&lt;&lt; handle per-pane bindings &gt;&gt;</vh></v>
+<v t="ekr.20090430102239.9"><vh>callStateFunction</vh></v>
+<v t="ekr.20090430102239.10"><vh>handleMiniBindings</vh></v>
+<v t="ekr.20090430102239.11"><vh>k.handleUnboudKeys</vh></v>
+</v>
+<v t="ekr.20090430102239.12"><vh>scrollOutlineUp/Down/Line/Page</vh></v>
+</v>
+<v t="ekr.20090421121914.11"><vh>Urgent: fix the tkinter problem in Terry's code</vh></v>
 <v t="ekr.20081215162017.5"><vh>Support multiple body editors</vh>
 <v t="ekr.20090318091009.13"><vh>Prototype code</vh></v>
-<v t="ekr.20081121105001.572"><vh> class leoQTextEditWidget</vh>
+<v t="ekr.20081121105001.572" a="E"><vh> class leoQTextEditWidget</vh>
 <v t="ekr.20081121105001.573"><vh>Birth</vh>
 <v t="ekr.20081121105001.574"><vh>ctor</vh></v>
 <v t="ekr.20081121105001.575"><vh>setFontFromConfig</vh></v>
@@ -63,12 +116,17 @@ expanded="ekr.20081121105001.205,ekr.20081121105001.212,ekr.20090322092751.12,">
 <v t="ekr.20090205153624.12"><vh>insert (avoid call to setAllText)</vh></v>
 <v t="ekr.20081121105001.585"><vh>see</vh></v>
 <v t="ekr.20081121105001.586"><vh>seeInsertPoint</vh></v>
-<v t="ekr.20081121105001.587"><vh>setAllText</vh></v>
+<v t="ekr.20081121105001.587"><vh>setAllText (leoQTextEditWidget)</vh></v>
 <v t="ekr.20081121105001.588"><vh>setInsertPoint</vh></v>
 <v t="ekr.20081121105001.589"><vh>setSelectionRangeHelper &amp; helper</vh>
 <v t="ekr.20081121105001.590"><vh>lengthHelper</vh></v>
 </v>
 <v t="ekr.20081121105001.591"><vh>setYScrollPosition</vh></v>
+<v t="ville.20090321082712.1"><vh> PythonIndex</vh>
+<v t="ville.20090321082712.2"><vh>toPythonIndex</vh></v>
+<v t="ville.20090321082712.3"><vh>toPythonIndexToRowCol</vh></v>
+</v>
+<v t="ville.20090324170325.63"><vh>get</vh></v>
 </v>
 </v>
 <v t="ekr.20081121110412.143"><vh>Editors (tkBody)</vh>
@@ -77,7 +135,7 @@ expanded="ekr.20081121105001.205,ekr.20081121105001.212,ekr.20090322092751.12,">
 <v t="ekr.20081121110412.146"><vh>setEditorColors</vh></v>
 </v>
 <v t="ekr.20081121110412.133"><vh>tkBody.createTextWidget</vh></v>
-<v t="ekr.20081121105001.205" a="E"><vh>class leoQtBody (leoBody)</vh>
+<v t="ekr.20081121105001.205"><vh>class leoQtBody (leoBody)</vh>
 <v t="ekr.20081121105001.206"><vh> Birth</vh>
 <v t="ekr.20081121105001.207"><vh> ctor (qtBody)</vh></v>
 <v t="ekr.20081121105001.208"><vh>createBindings (qtBody)</vh></v>
@@ -85,7 +143,7 @@ expanded="ekr.20081121105001.205,ekr.20081121105001.212,ekr.20090322092751.12,">
 </v>
 <v t="ekr.20081121105001.210"><vh>Do-nothings</vh></v>
 <v t="ekr.20081121105001.211"><vh>High-level interface to self.widget</vh></v>
-<v t="ekr.20081121105001.212" a="E"><vh>Editors (qtBody)</vh>
+<v t="ekr.20081121105001.212"><vh>Editors (qtBody)</vh>
 <v t="ekr.20081121105001.214"><vh>packEditorLabelWidget</vh></v>
 <v t="ekr.20081121105001.215"><vh>entries</vh>
 <v t="ekr.20081121105001.216"><vh>addEditor &amp; helpers (qtBody)</vh>
@@ -115,6 +173,7 @@ expanded="ekr.20081121105001.205,ekr.20081121105001.212,ekr.20090322092751.12,">
 <v t="ekr.20081121105001.234"><vh>updateInjectedIvars</vh></v>
 </v>
 </v>
+<v t="ekr.20090406071640.13"><vh>Event handlers called from eventFilter</vh></v>
 </v>
 <v t="ekr.20081121105001.249"><vh>class leoQtFrame</vh>
 <v t="ekr.20081121105001.250"><vh> Birth &amp; Death (qtFrame)</vh>
@@ -205,65 +264,43 @@ expanded="ekr.20081121105001.205,ekr.20081121105001.212,ekr.20090322092751.12,">
 </v>
 <v t="ekr.20081121105001.317"><vh>Qt bindings... (qtFrame)</vh></v>
 </v>
-<v t="ekr.20081121105001.212" a="E"></v>
+<v t="ekr.20081121105001.212"></v>
 <v t="ekr.20081121105001.214"></v>
 <v t="ekr.20081121105001.216"></v>
 <v t="ekr.20081121105001.222"></v>
 </v>
-</v>
-<v t="ekr.20090304084841.10"><vh>Asap 5</vh>
-<v t="ekr.20090318091009.12"><vh>Script errors mess up syntax coloring</vh></v>
+<v t="ekr.20090426075320.10"><vh>mark command reverts headline</vh></v>
 <v t="ekr.20081215074704.16"><vh>Mark finds doesn't work in Qt gui plugin</vh></v>
 <v t="ekr.20090304084841.15"><vh>Complete open-with menu</vh></v>
+<v t="ekr.20090223065019.11"><vh>Make Leo's page-up/page-down commands funtional</vh></v>
+<v t="ekr.20090318091009.12"><vh>Script errors mess up syntax coloring</vh></v>
+</v>
+<v t="ekr.20090430102239.13"><vh>Before 4.6 final</vh>
+<v t="ekr.20090429101847.10"><vh>Support canvas widgets in all panes</vh></v>
 <v t="ekr.20090128083504.1"><vh>Fix rclick</vh></v>
 </v>
 <v t="ekr.20090304084841.11"><vh>Later</vh>
 <v t="ekr.20081215074704.21"><vh>Add drag and drop</vh></v>
-<v t="ekr.20081121105001.151"><vh>Clean up settings</vh>
-<v t="ekr.20081121105001.150"><vh>QScintilla stuff</vh></v>
+<v t="ekr.20090418064921.12"><vh>Qt, vim bindings</vh></v>
+<v t="ekr.20081215162017.4"><vh>Allow coloring of script buttons</vh>
+<v t="ekr.20090406111739.12"><vh>setWidgetColor (qtGui)</vh></v>
+<v t="ekr.20090406111739.13"><vh>setStyleSetting (qtGui)</vh></v>
+<v t="ekr.20081121105001.266"></v>
 </v>
-<v t="ekr.20081215162017.4"><vh>Allow coloring of script buttons</vh></v>
-<v t="ekr.20081215074704.20"><vh>Change background color of body pane depending on focus</vh></v>
 <v t="ekr.20081124094918.1"><vh>Fix problems with scim</vh></v>
-<v t="ekr.20090223065019.11"><vh>Make Leo's page-up/page-down commands funtional</vh></v>
+<v t="ekr.20090406111739.10"><vh>Let gui handle hard part of next/prev-line commands</vh></v>
+<v t="ekr.20090401110027.1"><vh>Make sure qt plugin supports user icons</vh></v>
 </v>
 </v>
-<v t="ekr.20081121105001.1092"><vh>Qt gui</vh>
-<v t="ekr.20081121105001.1093"><vh>QDesigner files</vh>
-<v t="ekr.20081121105001.1094"><vh>@auto ../test/qtui_generate.py</vh></v>
-<v t="ekr.20081121105001.1095"><vh>@auto qt_main.py</vh></v>
-<v t="ekr.20081121105001.1096"><vh>@auto qt_main.ui</vh></v>
-<v t="ekr.20081121105001.1097"><vh>@auto qt_quicksearch.py</vh></v>
-<v t="ekr.20081121105001.1098"><vh>@auto qt_quicksearch.ui</vh></v>
-</v>
-<v t="ekr.20090124174652.7"
-marks="ekr.20090124174652.59,"><vh>@thin baseNativeTree.py</vh></v>
-<v t="ekr.20081121105001.188"
-expanded="ekr.20081121105001.205,ekr.20081121105001.212,"><vh>@thin qtGui.py</vh></v>
+<v t="ekr.20081121105001.490"><vh>runScrolledMessageDialog</vh>
+<v t="leohag.20081205043707.12"><vh>&lt;&lt; no c error&gt;&gt;</vh></v>
+<v t="leohag.20081205043707.14"><vh>&lt;&lt; load scrolledmessage plugin &gt;&gt;</vh></v>
+<v t="leohag.20081205043707.11"><vh>&lt;&lt; no dialog error &gt;&gt;</vh></v>
+<v t="leohag.20081205043707.13"><vh>&lt;&lt; emergency fallback &gt;&gt;</vh></v>
 </v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20081121105001.148"></t>
-<t tx="ekr.20081121105001.150">- Check event handling with QScintilla.
-- Experiment with sending &lt;shift-tab&gt; directly to QScintilla.
-- Call setLexer(0) for nocolor nodes.
-- Add settings for syntax coloring.
-- Make Scintilla handle Leo markup.
-- Install new Qt version and play with QScintilla.
-    From QScintilla change log:
-    2008/10/12 14:32:05  phil
-    QsciScintilla::setSelection() is now implemented using SCI_SETSEL so that the
-    carat can be left at either the start or the end of the selection.
-    Exposed QsciScintilla::positionFromLineIndex() and
-    QsciScintilla::lineIndexFromPosition().
-    - Fix problem with accented characters: see child node for notes.</t>
-<t tx="ekr.20081121105001.151">- Can style sheets really do the job?
-
-- Remove old-style Leo settings?
-
-- Add stylesheets for dialogs.
-    - Set font for dummy widget in style sheet, then copy that font.
-</t>
 <t tx="ekr.20081121105001.205">class leoQtBody (leoFrame.leoBody):
 
     """A class that represents the body pane of a Qt window."""
@@ -282,6 +319,8 @@ expanded="ekr.20081121105001.205,ekr.20081121105001.212,"><vh>@thin qtGui.py</vh
     assert c.frame == frame and frame.c == c
 
     self.useScintilla = c.config.getBool('qt-use-scintilla')
+    self.selectedBackgroundColor = c.config.getString('selected-background-color')
+    self.unselectedBackgroundColor = c.config.getString('unselected-background-color')
 
     # Set the actual gui widget.
     if self.useScintilla:
@@ -871,6 +910,223 @@ def updateInjectedIvars (self,w,p):
 
     # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.h)
 </t>
+<t tx="ekr.20081121105001.235">class leoQtFindTab (leoFind.findTab):
+
+    '''A subclass of the findTab class containing all Qt Gui code.'''
+
+    if 0: # We can use the base-class ctor.
+        def __init__ (self,c,parentFrame):
+            leoFind.findTab.__init__(self,c,parentFrame)
+                # Init the base class.
+                # Calls initGui, createFrame, createBindings &amp; init(c), in that order.
+
+    # Define these to suppress oops messages.
+    def createBindings (self): pass
+    def createFindTab (self,c,parentFrame): pass
+    def createFrame (self,parentFrame): pass
+
+    @others
+</t>
+<t tx="ekr.20081121105001.236"># leoFind.__init__ calls initGui, createFrame, createBindings &amp; init, in that order.
+</t>
+<t tx="ekr.20081121105001.237">def initGui (self):
+
+    owner = self
+
+    self.svarDict = {}
+        # Keys are ivar names, values are svar objects.
+
+    for ivar in self.intKeys:
+        self.svarDict[ivar] = self.svar(owner,ivar)
+
+    # Add a hack for 'entire_outline' radio button.
+    ivar = 'entire_outline'
+    self.svarDict[ivar] = self.svar(owner,ivar)
+
+    for ivar in self.newStringKeys:
+        # "radio-find-type", "radio-search-scope"
+        self.svarDict[ivar] = self.svar(owner,ivar)
+</t>
+<t tx="ekr.20081121105001.238">def init (self,c):
+
+    '''Init the widgets of the 'Find' tab.'''
+
+    # g.trace('leoQtFindTab.init')
+
+    self.createIvars()
+    self.initIvars()
+    self.initTextWidgets()
+    self.initCheckBoxes()
+    self.initRadioButtons()
+</t>
+<t tx="ekr.20081121105001.239">def createIvars (self):
+
+    c = self.c ; w = c.frame.top.ui # A Window ui object.
+
+    # Bind boxes to Window objects.
+    self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
+    data = (
+        ('find_ctrl',       findTextWrapper(w.findPattern,'find-widget',c)),
+        ('change_ctrl',     findTextWrapper(w.findChange,'change-widget',c)),
+        ('whole_word',      w.checkBoxWholeWord),
+        ('ignore_case',     w.checkBoxIgnoreCase),
+        ('wrap',            w.checkBoxWrapAround),
+        ('reverse',         w.checkBoxReverse),
+        ('pattern_match',   w.checkBoxRegexp),
+        ('mark_finds',      w.checkBoxMarkFinds),
+        ('entire_outline',  w.checkBoxEntireOutline),
+        ('suboutline_only', w.checkBoxSubroutineOnly),  
+        ('node_only',       w.checkBoxNodeOnly),
+        ('search_headline', w.checkBoxSearchHeadline),
+        ('search_body',     w.checkBoxSearchBody),
+        ('mark_changes',    w.checkBoxMarkChanges),
+        ('batch', None),
+    )
+    for ivar,widget in data:
+        setattr(self,ivar,widget)
+        self.widgetsDict[ivar] = widget
+        # g.trace(ivar,widget)
+</t>
+<t tx="ekr.20081121105001.240">def initIvars(self):
+
+    c = self.c
+
+    # Separate c.ivars are much more convenient than a svarDict.
+    for ivar in self.intKeys:
+        # Get ivars from @settings.
+        val = c.config.getBool(ivar)
+        setattr(self,ivar,val)
+        val = g.choose(val,1,0)
+        svar = self.svarDict.get(ivar)
+        if svar:
+            svar.set(val)
+
+        # g.trace(ivar,val)
+</t>
+<t tx="ekr.20081121105001.241">def initTextWidgets(self):
+
+    '''Init the find/change text areas.'''
+
+    c = self.c
+
+    table = (
+        (self.find_ctrl,    "find_text",    '&lt;find pattern here&gt;'),
+        (self.change_ctrl,  "change_text",  ''),
+    )
+
+    for w,setting,defaultText in table:
+        # w is a textWrapper object
+        w.setAllText(c.config.getString(setting) or defaultText)
+</t>
+<t tx="ekr.20081121105001.242">def initCheckBoxes (self):
+
+    for ivar,key in (
+        ("pattern_match","pattern-search"),
+    ):
+        svar = self.svarDict[ivar].get()
+        if svar:
+            self.svarDict["radio-find-type"].set(key)
+            w = self.widgetsDict.get(key)
+            if w: w.setChecked(True)
+            break
+    else:
+        self.svarDict["radio-find-type"].set("plain-search")
+
+    aList = (
+        'ignore_case','mark_changes','mark_finds',
+        'pattern_match','reverse','search_body','search_headline',
+        'whole_word','wrap',
+        'node_only','suboutline_only','entire_outline',
+    )
+
+    for ivar in aList:
+        svar = self.svarDict.get(ivar)
+        if svar:
+            # w is a QCheckBox or a QRadioButton.
+            w = self.widgetsDict.get(ivar)
+            if w:
+                val = svar.get()
+                svar.setWidget(w)
+                svar.set(val)
+                if isinstance(w,QtGui.QCheckBox):
+                    def checkBoxCallback(val,svar=svar):
+                        svar.set(val)
+                    w.connect(w,
+                        QtCore.SIGNAL("stateChanged(int)"),
+                        checkBoxCallback)
+                else:
+                    def radioButtonCallback(val,svar=svar):
+                        svar.set(val)
+                    w.connect(w,
+                        QtCore.SIGNAL("clicked(bool)"),
+                        radioButtonCallback)
+            else: g.trace('*** no w',ivar)
+        else: g.trace('*** no svar',ivar)
+</t>
+<t tx="ekr.20081121105001.243">def initRadioButtons (self):
+
+    scopeSvar = self.svarDict.get('radio-search-scope')
+
+    table = (
+        ("suboutline_only","suboutline-only"),
+        ("node_only","node-only"))
+
+    for ivar,key in table:
+        svar = self.svarDict.get(ivar)
+        if svar:
+            val = svar.get()
+            if val:
+                scopeSvar.init(key)
+                break
+    else:
+        scopeSvar.init('entire-outline')
+        self.svarDict.get('entire_outline').init(True)
+
+    w = self.widgetsDict.get(key)
+    if w: w.setChecked(True)
+
+    # g.trace(scopeSvar.get())
+</t>
+<t tx="ekr.20081121105001.244">class svar:
+    '''A class like Tk's IntVar and StringVar classes.'''
+
+    @others
+
+</t>
+<t tx="ekr.20081121105001.245"># This is the same as the Tk code because we simulate Tk svars.</t>
+<t tx="ekr.20081121105001.246">def getOption (self,ivar):
+
+    var = self.svarDict.get(ivar)
+
+    if var:
+        val = var.get()
+        # g.trace('ivar %s = %s' % (ivar,val))
+        return val
+    else:
+        # g.trace('bad ivar name: %s' % ivar)
+        return None
+</t>
+<t tx="ekr.20081121105001.247">def setOption (self,ivar,val):
+
+    if ivar in self.intKeys:
+        if val is not None:
+            svar = self.svarDict.get(ivar)
+            svar.set(val)
+            # g.trace('ivar %s = %s' % (ivar,val))
+
+    elif not g.app.unitTesting:
+        g.trace('oops: bad find ivar %s' % ivar)
+</t>
+<t tx="ekr.20081121105001.248">def toggleOption (self,ivar):
+
+    if ivar in self.intKeys:
+        var = self.svarDict.get(ivar)
+        val = not var.get()
+        var.set(val)
+        # g.trace('%s = %s' % (ivar,val),var)
+    else:
+        g.trace('oops: bad find ivar %s' % ivar)
+</t>
 <t tx="ekr.20081121105001.249">class leoQtFrame (leoFrame.leoFrame):
 
     """A class that represents a Leo window rendered in qt."""
@@ -1133,16 +1389,21 @@ def put_helper(self,s,w):
     # w.setEnabled(False)
 </t>
 <t tx="ekr.20081121105001.265">def update (self):
-
     if g.app.killed: return
+
     c = self.c ; body = c.frame.body
-    s = body.getAllText()
-    i = body.getInsertPoint()
-    # Compute row,col &amp; fcol
-    row,col = g.convertPythonIndexToRowCol(s,i)
+
+    # QTextEdit
+    te = body.widget.widget
+    cr = te.textCursor()
+    bl = cr.block()
+
+    col = cr.columnNumber()
+    row = bl.blockNumber() + 1
+    line = bl.text()
+
     if col &gt; 0:
-        s2 = s[i-col:i]
-        s2 = g.toUnicode(s2,g.app.tkEncoding)
+        s2 = line[0:col]        
         col = g.computeWidth (s2,c.tab_width)
     fcol = col + c.currentPosition().textOffset()
     self.put1(
@@ -1164,6 +1425,9 @@ def put_helper(self,s,w):
     self.w = c.frame.top.iconBar # A QToolBar.
     self.actions = []
 
+    # Options
+    self.buttonColor = c.config.getString('qt-button-color')
+
     # g.app.iconWidgetCount = 0
 </t>
 <t tx="ekr.20081121105001.268">def addRow(self,height=None):   pass
@@ -1182,18 +1446,39 @@ show = pack
     c = self.c
     command = keys.get('command')
     text = keys.get('text')
-    if not text: return
+    # able to specify low-level QAction directly (QPushButton not forced)
+    qaction = keys.get('qaction')
+
+    if not text and not qaction:
+        g.es('bad toolbar item')
+
 
     # imagefile = keys.get('imagefile')
     # image = keys.get('image')
 
-    action = self.w.addAction(text)
+    class leoIconBarButton (QtGui.QWidgetAction):
+        def __init__ (self,parent,text,toolbar):
+            QtGui.QWidgetAction.__init__(self,parent)
+            self.button = None # set below
+            self.text = text
+            self.toolbar = toolbar
+        def createWidget (self,parent):
+            self.button = b = QtGui.QPushButton(self.text,parent)
+            g.app.gui.setWidgetColor(b,
+                widgetKind='QPushButton',
+                selector='background-color',
+                colorName = self.toolbar.buttonColor)
+            return b
+
+    if qaction is None:
+        action = leoIconBarButton(parent=self.w,text=text,toolbar=self)
+    else:
+        action = qaction
+
+    self.w.addAction(action)
 
     self.actions.append(action)
     b = self.w.widgetForAction(action)
-
-    #b = QtGui.QPushButton(text,self.w)
-    #b.leo_buttonAction = self.addWidget(b)
 
     b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
 
@@ -1201,6 +1486,7 @@ show = pack
         self.w.removeAction(action)
 
     b.leo_removeAction = rb = QtGui.QAction('Remove Button' ,b)
+
     b.addAction(rb)
     rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
 
@@ -1213,8 +1499,8 @@ show = pack
                 c.outerUpdate()
             return val
 
-        self.w.connect(action,
-            QtCore.SIGNAL("triggered()"),
+        self.w.connect(b,
+            QtCore.SIGNAL("clicked()"),
             button_callback)
 
     return action
@@ -1257,8 +1543,9 @@ show = pack
 <t tx="ekr.20081121105001.274">def setCommandForButton(self,button,command):
 
     if command:
-        QtCore.QObject.connect(button,
-            QtCore.SIGNAL("triggered()"),command)
+        # button is a leoIconBarButton.
+        QtCore.QObject.connect(button.button,
+            QtCore.SIGNAL("clicked()"),command)
 </t>
 <t tx="ekr.20081121105001.275"></t>
 <t tx="ekr.20081121105001.276">def showMinibuffer (self):
@@ -1871,6 +2158,25 @@ def setTitle (self,s):
 def setTopGeometry(self,w,h,x,y,adjustSize=True):
     self.top.setGeometry(QtCore.QRect(x,y,w,h))
 </t>
+<t tx="ekr.20081121105001.490">def runScrolledMessageDialog (self, title='Message', label= '', msg='', c=None, **kw):
+
+    if g.unitTesting: return None
+
+    def send(title=title, label=label, msg=msg, c=c, kw=kw):
+        return g.doHook('scrolledMessage', title=title, label=label, msg=msg, c=c, **kw)
+
+    if not c or not c.exists:
+        &lt;&lt; no c error&gt;&gt;
+    else:        
+        retval = send()
+        if retval: return retval
+        &lt;&lt; load scrolledmessage plugin &gt;&gt;
+        retval = send()
+        if retval: return retval
+        &lt;&lt; no dialog error &gt;&gt;
+
+    &lt;&lt; emergency fallback &gt;&gt;
+</t>
 <t tx="ekr.20081121105001.572">class leoQTextEditWidget (leoQtBaseTextWidget):
 
     @others
@@ -1879,6 +2185,7 @@ def setTopGeometry(self,w,h,x,y,adjustSize=True):
 <t tx="ekr.20081121105001.574">def __init__ (self,widget,name,c=None):
 
     # widget is a QTextEdit.
+    # g.trace('leoQTextEditWidget',widget)
 
     # Init the base class.
     leoQtBaseTextWidget.__init__(self,widget,name,c=c)
@@ -2035,6 +2342,7 @@ def setTopGeometry(self,w,h,x,y,adjustSize=True):
 </t>
 <t tx="ekr.20081121105001.580">def getAllText(self):
 
+    #g.trace("getAllText", g.callers(5))
     w = self.widget
     s = unicode(w.toPlainText())
 
@@ -2095,7 +2403,11 @@ def setTopGeometry(self,w,h,x,y,adjustSize=True):
     else: i,pos = insert,sb.sliderPosition()
 
     if trace: t1 = g.getTime()
-    w.setPlainText(s)
+    try:
+        self.changingText = True
+        w.setPlainText(s)
+    finally:
+        self.chaningText = False
     if trace: g.trace(g.timeSince(t1))
 
     self.setSelectionRange(i,i,insert=i)
@@ -2348,13 +2660,17 @@ keyboard I get:
 present in the qt plugin (both with and without scintilla)
 </t>
 <t tx="ekr.20081215074704.16">http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590</t>
-<t tx="ekr.20081215074704.20">@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/1cce885a697d0236/5aea5d0587b47b92?lnk=gst&amp;q=command+and+insert#5aea5d0587b47b92
-
-Set focus in/out events.</t>
 <t tx="ekr.20081215074704.21"></t>
-<t tx="ekr.20081215162017.4"></t>
+<t tx="ekr.20081215162017.4">@nocolor-node
+
+Use @string qt-button-color = lightSteelBlue
+
+The following does *not* work in @data qt-gui-plugin-style-sheet::
+
+    QPushButton {
+        background-color: red;
+    }
+</t>
 <t tx="ekr.20081215162017.5"></t>
 <t tx="ekr.20090128083504.1">@nocolor-node
 
@@ -2423,16 +2739,29 @@ couldn't find any mention of gsimage in the diff.
         g.trace('%s calls to recolor' % (
             colorer.recolorCount-n))
 </t>
-<t tx="ekr.20090223065019.11"># This will be needed for vim.</t>
+<t tx="ekr.20090223065019.11"># This will be needed for vim.
+
+if 0:
+    tree = c.frame.tree
+    hs,vs = tree.getScroll()
+    print hs,vs
+    tree.setVScroll(bs+10)
+
+if 1:
+    w = c.frame.body.bodyCtrl.widget
+    hScroll = w.horizontalScrollBar()
+    vScroll = w.verticalScrollBar()
+    hPos = hScroll.sliderPosition()
+    vPos = vScroll.sliderPosition()
+    print hPos,vPos
+    vScroll.setValue(vPos+10)</t>
 <t tx="ekr.20090303095630.10"># def setScrollBarOrientation (self):
 
     # c = self.c
     # orientation = c.config.getString(jk13ab02xy04)
 </t>
-<t tx="ekr.20090304084841.10"></t>
 <t tx="ekr.20090304084841.11"></t>
 <t tx="ekr.20090304084841.15"></t>
-<t tx="ekr.20090316095604.11"></t>
 <t tx="ekr.20090318091009.12"></t>
 <t tx="ekr.20090318091009.13">@color
 
@@ -2511,6 +2840,508 @@ inner_f.layout().addWidget(w,0,1)</t>
 
     #### return w
 </t>
+<t tx="ekr.20090401110027.1"></t>
+<t tx="ekr.20090406071640.13">def onFocusIn (self):
+    self.onFocusHelper(self.selectedBackgroundColor)
+
+def onFocusOut (self):
+    self.onFocusHelper(self.unselectedBackgroundColor)
+
+badFocusColors = []
+
+def onFocusHelper(self,name):
+
+    if not name: return
+
+    if QtGui.QColor(name).isValid():
+        s = 'QTextEdit#richTextEdit { background-color: %s; }' % name
+        self.widget.widget.setStyleSheet(s)
+    elif name not in self.badFocusColors:
+        self.badFocusColors.append(name)
+        g.es_print('invalid body background color: %s' % (name),color='blue')
+</t>
+<t tx="ekr.20090406111739.10">@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ef04b185f74f4926
+
+This is a little difficult to describe in words, but trying it out
+should, I hope make the issue clear enough.
+
+(1) Start by setting body_pane_wraps to true.
+
+(2) Create a very long line of e.g. 500 characters, which is wrapped
+around on the body pane. (E.g. paste in a paragraph from a Word
+document). This text will then be wrapped onscreen into roughly 8
+lines of 70 characters.
+
+(3) The up and down arrows do not behave as expected.
+
+I'd expect that in this scenario, pressing the down arrow key should
+go to go to the next line down as it currently appears *onscreen* --
+so in this example, I'd expect to have to press the down arrow several
+times to get to the end of the paragraph.  This is the way that Emacs
+works when it is in word wrap mode, and is of course is the way that
+all word processors work. However, Leo does not play this way, and
+takes you right to the end of the line (i.e. to the last of the 500
+characters) when you press the down key once. This makes editing plain
+text (e.g. using Leo as an outliner) rather more tricky than it ought
+to be. Would it be possible to change the effect of Previous-Line and
+Next-Line when in word wrap mode, so that they behave as other text
+editors and word processors do?
+
+============================
+
+This is a long-standing problem.  It's tricky to fix in a straightforward
+way.
+
+However, I just realized that there might be a clever way: the commands
+could let the gui handle the hard part of the command (the actual move) and
+then the commands could detect the resulting row/col numbers as they must.
+
+I've been putting this off, I'll see if this more clever way will work soon. </t>
+<t tx="ekr.20090406111739.12">badWidgetColors = []
+
+def setWidgetColor (self,w,widgetKind,selector,colorName):
+
+    if not colorName: return
+
+    if QtGui.QColor(colorName).isValid():
+        g.app.gui.setStyleSetting(w,widgetKind,selector,colorName)
+    elif colorName not in self.badWidgetColors:
+        self.badWidgetColors.append(colorName)
+        g.es_print('bad widget color %s for %s' % (
+            colorName,widgetKind),color='blue')
+</t>
+<t tx="ekr.20090406111739.13">def setStyleSetting(self,w,widgetKind,selector,val):
+
+    '''Set the styleSheet for w to
+       "%s { %s: %s; }  % (widgetKind,selector,val)"
+    '''
+
+    s = '%s { %s: %s; }' % (widgetKind,selector,val)
+
+    try:
+        w.setStyleSheet(s)
+    except Exception:
+        g.es_print('bad style sheet: %s' % s)
+        g.es_exception()
+</t>
+<t tx="ekr.20090409055330.10">@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/430287018f9d773d
+
+The following problem hits rev 1633, qt plugin (untested with tk plugin). The
+command Find --&gt; Change All *always* acts on *every node*. It ignores the
+checkboxes selection made by the user. Even if you select the "Node Only"
+checkbox the changes are aplied to the whole tree (headline text and body text).</t>
+<t tx="ekr.20090418064921.12">http://groups.google.com/group/leo-editor/browse_thread/thread/7285ac185355efb1</t>
+<t tx="ekr.20090421121914.11"></t>
+<t tx="ekr.20090426075320.10"></t>
+<t tx="ekr.20090427112929.10">def __init__(self,owner,ivar):
+
+    self.ivar = ivar
+    self.owner = owner
+    self.radioButtons = ['node_only','suboutline_only','entire_outline']
+    self.trace = False
+    self.val = None
+    self.w = None
+
+def __repr__(self):
+    return '&lt;svar %s&gt;' % self.ivar</t>
+<t tx="ekr.20090427112929.12">def get (self):
+    if self.w:
+        val = self.w.isChecked()
+        if self.trace: g.trace('qt svar %15s = %s' % (self.ivar,val))
+    else:
+        val = self.val
+    return val</t>
+<t tx="ekr.20090427112929.13">def init (self,val):
+
+    '''Init the svar, but do *not* init radio buttons.
+    (This is called from initRadioButtons).'''
+
+    if val in (0,1):
+        self.val = bool(val)
+    else:
+        self.val = val # Don't contain the scope values!
+
+    if self.w:
+        self.w.setChecked(bool(val))
+
+    if self.trace: g.trace('qt svar %15s = %s' % (self.ivar,val))
+</t>
+<t tx="ekr.20090427112929.15">def setWidget(self,w):
+
+    self.w = w
+</t>
+<t tx="ekr.20090427112929.17">def set (self,val):
+
+    '''Init the svar and update the radio buttons.'''
+
+    self.init(val)
+
+    if self.ivar in self.radioButtons:
+        self.owner.initRadioButtons()
+    elif self.ivar == 'radio-search-scope':
+        self.setRadioScope(val)
+
+
+</t>
+<t tx="ekr.20090427112929.18">def setRadioScope (self,val):
+
+    '''Update the svars corresponding to the scope value.'''
+
+    table = (
+        ("suboutline_only","suboutline-only"),
+        ("node_only","node-only"),
+        ("entire_outline","entire-outline"))
+
+    for ivar,val2 in table:
+        if val == val2:
+            svar = self.owner.svarDict.get(ivar)
+            val = svar.get()
+            svar.init(True)
+</t>
+<t tx="ekr.20090429101847.10">http://groups.google.com/group/leo-editor/browse_thread/thread/9ac06147e75fc042</t>
+<t tx="ekr.20090430102239.1"></t>
+<t tx="ekr.20090430102239.2">Especially shift-arrow keys.</t>
+<t tx="ekr.20090430102239.3">@
+
+At present, the qt gui sends PgUp and PgDn directly to the widget.
+
+That is, the plugin does not handle scrolling properly.
+
+This will become an issue for vim bindings.</t>
+<t tx="ekr.20090430102239.4">master_key_count = 0
+
+def masterKeyHandler (self,event,stroke=None):
+
+    '''This is the handler for almost all key bindings.'''
+
+    &lt;&lt; define vars &gt;&gt;
+    trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
+    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+    verbose = True
+
+    if keysym in special_keys:
+        if trace and verbose: g.trace('keysym',keysym)
+        return None
+    if traceGC: g.printNewObjects('masterKey 1')
+    if trace:
+        g.trace('stroke:',repr(stroke),'keysym:',
+            repr(event.keysym),'ch:',repr(event.char),'state',state)
+        # g.trace('callers',g.callers(5))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    # if stroke == 'Return': g.pdb()
+
+    # Handle keyboard-quit first.
+    if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        # g.trace('special case')
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.endKbdMacro()
+            return 'break'
+        else:
+            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+
+    if k.inState():
+        # This will return unless k.autoCompleterStateHandler
+        # (called from k.callStateFunction) returns 'do-standard-keys'
+        &lt;&lt; handle mode bindings &gt;&gt;
+
+    if traceGC: g.printNewObjects('masterKey 2')
+
+    if stroke and isPlain:
+        &lt;&lt; handle special cases for plain keys &gt;&gt;
+
+    &lt;&lt; handle per-pane bindings &gt;&gt;
+
+    if traceGC: g.printNewObjects('masterKey 5')
+
+    return k.handleUnboundKeys(event,char,keysym,stroke)
+</t>
+<t tx="ekr.20090430102239.5">k = self ; c = k.c ; gui = g.app.gui
+
+if event:
+    # This is a leoGui base class event.
+    event = gui.leoKeyEvent(event,c,stroke=stroke)
+
+w = event.widget
+char = event.char
+keysym = event.keysym
+if stroke and not keysym:
+    event.keysym = keysym = stroke
+
+w_name = c.widget_name(w)
+state = k.state.kind
+
+special_keys = (
+    'Alt_L','Alt_R',
+    'Caps_Lock','Control_L','Control_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Num_Lock',
+    'Shift_L','Shift_R',
+    'Win_L','Win_R',
+)
+
+self.master_key_count += 1
+
+isPlain =  k.isPlainKey(stroke)</t>
+<t tx="ekr.20090430102239.6"># First, honor minibuffer bindings for all except user modes.
+
+if state in ('getArg','getFileName','full-command','auto-complete'):
+    if k.handleMiniBindings(event,state,stroke):
+        return 'break'
+
+# Second, honor general modes.
+if state == 'getArg':
+    return k.getArg(event,stroke=stroke)
+elif state == 'getFileName':
+    return k.getFileName(event)
+elif state in ('full-command','auto-complete'):
+    # Do the default state action.
+    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
+    val = k.callStateFunction(event) # Calls end-command.
+    if val != 'do-standard-keys': return 'break'
+
+# Third, pass keys to user modes.
+else:
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        b = d.get(stroke)
+        if b:
+            if trace: g.trace('calling generalModeHandler',stroke)
+            k.generalModeHandler (event,
+                commandName=b.commandName,func=b.func,
+                modeName=state,nextMode=b.nextMode)
+            return 'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            if trace: g.trace('unbound key ends mode',stroke,state)
+            k.endMode(event)
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            handler(event)
+        else:
+            g.trace('No state handler for %s' % state)
+        return 'break'
+</t>
+<t tx="ekr.20090430102239.7"># g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
+
+# Important: only keys bound somewhere have a stroke.
+# All unbound plain keys will be handled by handleUnboundKeys.
+
+if k.unboundKeyAction in ('insert','overwrite'):
+
+    for key in (k.unboundKeyAction,'body','log','text','all'):
+        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
+        d = k.masterBindingsDict.get(key,{})
+        if d:
+            b = d.get(stroke)
+            if b and b.commandName == 'auto-complete':
+                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
+                k.masterCommand(event,b.func,b.stroke,b.commandName)
+                return 'break'
+
+    if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
+    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+    return 'break'
+
+# Bound   plain keys in command mode are by the per-pane logic.
+# Unbound plain keys in command mode are ignored by handleUnboundKeys.
+
+# This code ignores all command-state keys if we are not in a text widget.
+elif k.unboundKeyAction == 'command':
+    if not g.app.gui.isTextWidget(w):
+        c.onCanvasKey(event)
+        return 'break'</t>
+<t tx="ekr.20090430102239.8">keyStatesTuple = ('command','insert','overwrite')
+
+# g.trace('w_name',w_name,'stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
+
+for key,name in (
+    # Order here is similar to bindtags order.
+    ('command',None),
+    ('insert',None),
+    ('overwrite',None),
+    ('button',None),
+    ('body','body'),
+    ('text','head'), # Important: text bindings in head before tree bindings.
+    ('tree','head'),
+    ('tree','canvas'),
+    ('log', 'log'),
+    ('text','log'),
+    ('text',None),
+    ('all',None),
+):
+    if (
+        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+        name and w_name.startswith(name) or
+        key in ('text','all') and g.app.gui.isTextWidget(w) or
+        key in ('button','all')
+    ):
+        d = k.masterBindingsDict.get(key,{})
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+        # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
+        if d:
+            b = d.get(stroke)
+            if b:
+                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                if traceGC: g.printNewObjects('masterKey 3')
+                return k.masterCommand(event,b.func,b.stroke,b.commandName)
+</t>
+<t tx="ekr.20090430102239.9">def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) &lt; 32 or ord(ch) &gt; 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+</t>
+<t tx="ekr.20090430102239.10">def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('BackSpace','Return','Tab','Escape'):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName == 'replace-string' and state == 'getArg':
+                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
+                        return False # Let getArg handle it.
+                    elif b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit(event,hideTabs=True)
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocusNow() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+</t>
+<t tx="ekr.20090430102239.11">def handleUnboundKeys (self,event,char,keysym,stroke):
+
+    k = self ; c = k.c ; trace = False
+    modesTuple = ('insert','overwrite')
+
+    if trace:
+        # if stroke: g.trace('***unexpected stroke***')
+        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        return 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  &lt;Return&gt; is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif k.ignore_unbound_non_ascii_keys and len(char) &gt; 1:
+        # (stroke.find('Alt+') &gt; -1 or stroke.find('Ctrl+') &gt; -1)):
+        if trace: g.trace('ignoring unbound non-ascii key')
+        return 'break'
+
+    elif keysym.find('Escape') != -1:
+        # Never insert escape characters.
+        return 'break'
+
+    else:
+        if trace: g.trace(repr(stroke),'no func')
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+</t>
+<t tx="ekr.20090430102239.12">def scrollOutlineDownLine (self,event=None):
+    '''Scroll the outline pane down one line.'''
+    a,b = self.c.frame.canvas.leo_treeBar.get()
+    if b &lt; 1.0:
+        self.c.frame.tree.canvas.yview_scroll(1,"unit")
+
+def scrollOutlineDownPage (self,event=None):
+    '''Scroll the outline pane down one page.'''
+    a,b = self.c.frame.canvas.leo_treeBar.get()
+    if b &lt; 1.0:
+        self.c.frame.tree.canvas.yview_scroll(1,"page")
+
+def scrollOutlineUpLine (self,event=None):
+    '''Scroll the outline pane up one line.'''
+    a,b = self.c.frame.canvas.leo_treeBar.get()
+    if a &gt; 0.0:
+        self.c.frame.tree.canvas.yview_scroll(-1,"unit")
+
+def scrollOutlineUpPage (self,event=None):
+    '''Scroll the outline pane up one page.'''
+    a,b = self.c.frame.canvas.leo_treeBar.get()
+    if a &gt; 0.0:
+        self.c.frame.tree.canvas.yview_scroll(-1,"page")
+</t>
+<t tx="ekr.20090430102239.13"></t>
+<t tx="leohag.20081205043707.11">g.es_print_error('The handler for the "scrolledMessage" hook appears to be missing or not working.\n\t%s'%g.callers())</t>
+<t tx="leohag.20081205043707.12">g.es_print_error('%s\n%s\n\t%s' % (
+    "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
+    "as a keyword argument",
+    g.callers()
+))</t>
+<t tx="leohag.20081205043707.13">
+b = QtGui.QMessageBox
+d = b(None) # c.frame.top)
+d.setWindowFlags(QtCore.Qt.Dialog) # That is, not a fixed size dialog.
+
+d.setWindowTitle(title)
+if msg: d.setText(msg)
+d.setIcon(b.Information)
+yes = d.addButton('Ok',b.YesRole)
+d.exec_()</t>
+<t tx="leohag.20081205043707.14">import leo.core.leoPlugins as leoPlugins
+sm = leoPlugins.getPluginModule('scrolledmessage')
+
+if not sm:
+    sm = leoPlugins.loadOnePlugin('scrolledmessage',verbose=True)
+    if sm:
+        g.es('scrolledmessage plugin loaded.', color='blue')
+        sm.onCreate('tag',{'c':c})
+</t>
 <t tx="leohag.20081208130321.12"># Divides the main or secondary splitter, using the key invariant.
 def divideLeoSplitter (self, verticalFlag, frac):
 
@@ -2564,6 +3395,93 @@ def divideAnySplitter (self, frac, splitter ):#verticalFlag, bar, pane1, pane2):
         bar.place(relx=frac)
         pane1.place(relwidth=frac)
         pane2.place(relwidth=1-frac)
+</t>
+<t tx="ville.20090321082712.1"></t>
+<t tx="ville.20090321082712.2">def toPythonIndex (self,index):
+
+    w = self
+    te = self.widget
+
+    if type(index) == type(99):
+        return index
+    elif index == '1.0':
+        return 0
+    elif index == 'end':
+        return w.getLastPosition()
+    else:
+        # g.trace(repr(index))
+        #s = w.getAllText()
+        doc = te.document()
+        data = index.split('.')
+        if len(data) == 2:
+            row,col = data
+            row,col = int(row),int(col)
+            bl = doc.findBlockByNumber(row-1)
+            return bl.position() + col
+
+
+            #i = g.convertRowColToPythonIndex(s,row-1,col)
+
+            # g.trace(index,row,col,i,g.callers(6))
+            #return i
+        else:
+            g.trace('bad string index: %s' % index)
+            return 0
+
+toGuiIndex = toPythonIndex
+</t>
+<t tx="ville.20090321082712.3">def toPythonIndexRowCol(self,index):
+    #print "use idx",index
+
+    if index == '1.0':
+        return 0, 0, 0
+    if index == 'end':
+        index = w.getLastPosition()
+
+    w = self 
+    te = self.widget
+    #print te
+    doc = te.document()
+    i = w.toPythonIndex(index)
+    bl = doc.findBlock(i)
+    row = bl.blockNumber()
+    col = i - bl.position()
+
+    #s = w.getAllText()
+    #i = w.toPythonIndex(index)
+    #row,col = g.convertPythonIndexToRowCol(s,i)
+    #print "idx",i,row,col
+    return i,row,col
+</t>
+<t tx="ville.20090324170325.63">def get(self,i,j=None):
+    i = self.toGuiIndex(i)
+    if j is None: 
+        j = i+1
+    else:
+        j = self.toGuiIndex(j)
+    te = self.widget
+    doc = te.document()
+    bl = doc.findBlock(i)
+    #row = bl.blockNumber()
+    #col = index - bl.position()
+
+    # common case, e.g. one character    
+    if bl.contains(j):
+        s = unicode(bl.text())
+        offset = i - bl.position()
+
+        ret = s[ offset : offset + (j-i)]
+        #print "fastget",ret
+        return ret
+
+    # the next implementation is much slower, but will have to do        
+
+    #g.trace('Slow get()', g.callers(5))
+    s = self.getAllText()
+    i = self.toGuiIndex(i)
+
+    j = self.toGuiIndex(j)
+    return s[i:j]
 </t>
 </tnodes>
 </leo_file>
