@@ -385,13 +385,10 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
 
     # Prevent Leo from crashing if .leoID.txt does not exist.
     if g.app.config is None:
-       print ('No g.app.config, making stub...')
-       class StubConfig:
-           def __init__(self):
-               self.enabledPluginsFileName = ''
-           def getBool(self, c, setting):
-               return False
-       g.app.config = StubConfig()
+        print ('No g.app.config, making stub...')
+        class StubConfig(g.nullObject):
+            pass
+        g.app.config = StubConfig()
 
     global loadedModules,loadingModuleNameStack
 
