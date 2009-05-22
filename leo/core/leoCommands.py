@@ -626,50 +626,16 @@ class baseCommands (object):
         c,frame = g.app.newLeoCommanderAndFrame(
             fileName=None,relativeFileName=None,gui=gui)
 
-        # Needed for plugins.
         g.doHook("new",old_c=self,c=c,new_c=c)
-        # Use the config params to set the size and location of the window.
         frame.setInitialWindowGeometry()
         frame.deiconify()
         frame.lift()
         frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-        v = leoNodes.vnode(context=c)
-        p = leoNodes.position(v)
-        v.initHeadString("NewHeadline")
-        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-        p._linkAsRoot(oldRoot=None)
-        c.setRootVnode(v) # New in Leo 4.4.2.
-        c.selectPosition(p)
-        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-        p = c.p
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(fileName=None)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
-
-        # chapterController.finishCreate must be called after the first real redraw
-        # because it requires a valid value for c.rootPosition().
-        useChapters = c.config.getBool('use_chapters') and c.chapterController
-        if useChapters:
-            c.chapterController.finishCreate()
-            frame.c.setChanged(False)
-            # Clear the changed flag set when creating the @chapters node.
-        else:
-            c.redraw(p)
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-        # Force a call to c.outerUpdate.
-        # This is needed when we execute this command from a menu.
-        c.outerUpdate()
-        c.frame.tree.initAfterLoad()
-        c.initAfterLoad()
-        c.frame.initCompleteHint()
-
+        c.frame.createFirstTreeNode()
+        g.createMenu(c)
+        g.finishOpen(c)
+        c.redraw()
         return c # For unit test.
-    #@nonl
     #@-node:ekr.20031218072017.1623:c.new
     #@+node:ekr.20031218072017.2821:c.open & helper
     def open (self,event=None):
