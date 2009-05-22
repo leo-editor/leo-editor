@@ -109,12 +109,7 @@ class nullObject:
 #@-node:ekr.20090521175848.5881:<< define the nullObject class >>
 #@nl
 
-# Give g a temporary value so tests for g.unitTesting will work in this file.
-# class gClass:
-    # def __init__(self):
-        # self.unitTesting = False
-
-g = nullObject() #### gClass() # Set later by startup logic to this module.
+g = nullObject() # Set later by startup logic to this module.
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
 isPython3 = sys.version_info >= (3,0,0)
@@ -2625,7 +2620,7 @@ def openWithFileName(fileName,old_c,
     g.finishOpen(c)
     return True,c.frame
 #@+node:ekr.20090520055433.5951:createMenu
-def createMenu(c,fileName,relativeFileName,):
+def createMenu(c,fileName=None,relativeFileName=None):
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
 
