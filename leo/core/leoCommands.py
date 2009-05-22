@@ -172,7 +172,6 @@ class baseCommands (object):
 
             for name,f in g.app.global_commands_dict.items():
                 k.registerCommand(name,shortcut = None, func = f, pane='all',verbose=False)        
-                pass
 
             k.finishCreate()
         else:
