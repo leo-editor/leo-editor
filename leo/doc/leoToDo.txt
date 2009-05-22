@@ -3,14 +3,16 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
 #@+node:ekr.20090518072506.8310:To do first
-#@+node:ekr.20090521064955.5945:Better message when checking syntax
-# The name of the offending node is not given, just the root node.
-#@nonl
-#@-node:ekr.20090521064955.5945:Better message when checking syntax
+#@+node:ekr.20090522055440.8590:Fix Ins key problem
+#@-node:ekr.20090522055440.8590:Fix Ins key problem
+#@+node:ekr.20090514111518.5660:Sorting can revert headline changes
+#@-node:ekr.20090514111518.5660:Sorting can revert headline changes
 #@+node:ekr.20090511055302.5784:Finish rst
 @nocolor-node
 
 To do:
+
+- Are there still rST import bugs?
 
 - Create better tests of reportMismatch.
     - Fix off-by-one error when there is an rst mismatch..
@@ -2795,8 +2797,15 @@ if g.unitTesting:
 #@-node:ekr.20070911110507:reportMismatch & test
 #@-node:ekr.20090521064955.5904:rst code generation
 #@-node:ekr.20090511055302.5784:Finish rst
-#@+node:ekr.20090514111518.5660:Sorting can revert headline changes
-#@-node:ekr.20090514111518.5660:Sorting can revert headline changes
+#@+node:ekr.20090512080015.5801:import-files-recursively command?
+How would the command specify settings?
+
+A line added to test bzr push.
+#@-node:ekr.20090512080015.5801:import-files-recursively command?
+#@+node:ekr.20090521064955.5945:Better message when checking syntax
+# The name of the offending node is not given, just the root node.
+#@nonl
+#@-node:ekr.20090521064955.5945:Better message when checking syntax
 #@+node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
 @nocolor-node
 
@@ -2805,11 +2814,6 @@ if g.unitTesting:
 - Unit tests for leoImport.py can be gathered together.
 #@nonl
 #@-node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
-#@+node:ekr.20090512080015.5801:import-files-recursively command?
-How would the command specify settings?
-
-A line added to test bzr push.
-#@-node:ekr.20090512080015.5801:import-files-recursively command?
 #@+node:ekr.20090518072506.8495:Fix ctrl-s bug
 @nocolor-node
 

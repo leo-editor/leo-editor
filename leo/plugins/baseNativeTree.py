@@ -168,7 +168,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         finally:
             self.redrawing = False
 
-        self.setItemForCurrentPosition(scroll=True)
+        self.setItemForCurrentPosition(scroll=scroll)
         c.requestRedrawFlag= False
 
         if trace:
@@ -572,7 +572,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if not p.isExpanded():
                 p.expand()
                 self.select(p) # Calls before/afterSelectHint.
-                self.full_redraw()
+                # Important: setting scroll=False here has no effect
+                # when a keystroke causes the expansion, but is a
+                # *big* improvement when clicking the outline.
+                self.full_redraw(scroll=False)
             else:
                 self.select(p)
         else:

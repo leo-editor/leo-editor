@@ -5889,249 +5889,6 @@ def traceFocuse (self,eventType,obj):
 #@-node:ekr.20090407080217.1:traceFocus
 #@-node:ekr.20081121105001.166:class leoQtEventFilter
 #@-node:ekr.20090406071640.1:Removed keyboard-specific key code
-#@+node:ekr.20090408131517.1:Fixed jittering tree pane
-@
-The problem appears only when scrollbars are present in the tree pane.
-
-It looks like a complete fix is to restore the vertical scrollbar position in
-drawTopTree.
-
-Important: setVScroll was not doing anything.
-#@nonl
-#@+node:ekr.20090124174652.122:Scroll bars
-def getScroll (self):
-
-    '''Return the hPos,vPos for the tree's scrollbars.'''
-
-    w = self.treeWidget
-    hScroll = w.horizontalScrollBar()
-    vScroll = w.verticalScrollBar()
-    hPos = hScroll.sliderPosition()
-    vPos = vScroll.sliderPosition()
-    return hPos,vPos
-
-def setHScroll (self,hPos):
-    w = self.treeWidget
-    hScroll = w.horizontalScrollBar()
-    hScroll.setValue(hPos)
-
-def setVScroll (self,vPos):
-    # g.trace(vPos)
-    w = self.treeWidget
-    vScroll = w.verticalScrollBar()
-    vScroll.setValue(vPos)
-#@nonl
-#@-node:ekr.20090124174652.122:Scroll bars
-#@+node:ekr.20090201080444.12:scrollToItem
-def scrollToItem (self,item):
-
-    w = self.treeWidget
-
-    # g.trace(self.traceItem(item),g.callers(4))
-
-    hPos,vPos = self.getScroll()
-
-    w.scrollToItem(item,w.PositionAtCenter)
-
-    self.setHScroll(0)
-#@-node:ekr.20090201080444.12:scrollToItem
-#@+node:ekr.20090124174652.17:full_redraw & helpers
-# forceDraw not used. It is used in the Tk code.
-
-def full_redraw (self,p=None,scroll=True,forceDraw=False):
-
-    '''Redraw all visible nodes of the tree.
-
-    Preserve the vertical scrolling unless scroll is True.'''
-
-    trace = False and not g.app.unitTesting
-    verbose = False
-    c = self.c
-
-    if self.busy():
-        return g.trace('*** full_redraw: busy!',g.callers(5))
-
-    if p is None:   p = c.currentPosition()
-    else:           c.setCurrentPosition(p)
-
-    self.redrawCount += 1
-    if trace: t1 = g.getTime()
-    self.initData()
-    self.nodeDrawCount = 0
-    try:
-        self.redrawing = True
-        self.drawTopTree(p)
-    finally:
-        self.redrawing = False
-
-    self.setItemForCurrentPosition(scroll=True)
-    c.requestRedrawFlag= False
-
-    if trace:
-        theTime = g.timeSince(t1)
-        callers = g.choose(verbose,g.callers(5),'')
-        g.trace('%s: scroll %5s drew %3s nodes in %s' % (
-            self.redrawCount,scroll,self.nodeDrawCount,theTime),callers)
-
-# Compatibility
-redraw = full_redraw 
-redraw_now = full_redraw
-#@+node:ekr.20090124174652.19:drawChildren
-def drawChildren (self,p,parent_item):
-
-    trace = False and not g.unitTesting
-
-    if trace: g.trace('children? %5s expanded? %5s %s' % (
-        p.hasChildren(),p.isExpanded(),p.h))
-
-    if not p:
-        return g.trace('can not happen: no p')
-
-    if p.hasChildren():
-        if p.isExpanded():
-            self.expandItem(parent_item)
-            child = p.firstChild()
-            while child:
-                self.drawTree(child,parent_item)
-                child.moveToNext()
-        else:
-            # Draw the hidden children.
-            child = p.firstChild()
-            while child:
-                self.drawNode(child,parent_item)
-                child.moveToNext()
-            self.contractItem(parent_item)
-    else:
-        self.contractItem(parent_item)
-#@-node:ekr.20090124174652.19:drawChildren
-#@+node:ekr.20090124174652.20:drawNode
-def drawNode (self,p,parent_item):
-
-    trace = False
-    c = self.c 
-    self.nodeDrawCount += 1
-
-    # Allocate the item.
-    item = self.createTreeItem(p,parent_item) 
-
-    # Do this now, so self.isValidItem will be true in setItemIcon.
-    self.rememberItem(p,item)
-
-    # Set the headline and maybe the icon.
-    self.setItemText(item,p.h)
-    if p:
-        self.drawItemIcon(p,item)
-
-    if trace: g.trace(self.traceItem(item))
-
-    return item
-#@-node:ekr.20090124174652.20:drawNode
-#@+node:ekr.20090129062500.12:drawTopTree
-def drawTopTree (self,p):
-
-    c = self.c
-    hPos,vPos = self.getScroll()
-    self.clear()
-    # Draw all top-level nodes and their visible descendants.
-    if c.hoistStack:
-        bunch = c.hoistStack[-1]
-        p = bunch.p ; h = p.h
-        if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
-            p = p.firstChild()
-            while p:
-                self.drawTree(p)
-                p.moveToNext()
-        else:
-            self.drawTree(p)
-    else:
-        p = c.rootPosition()
-        while p:
-            self.drawTree(p)
-            p.moveToNext()
-
-    # This method always retains previous scroll position.
-    self.setHScroll(hPos)
-    self.setVScroll(vPos)
-
-    self.repaint()
-#@nonl
-#@-node:ekr.20090129062500.12:drawTopTree
-#@+node:ekr.20090124174652.21:drawTree
-def drawTree (self,p,parent_item=None):
-
-    # Draw the (visible) parent node.
-    item = self.drawNode(p,parent_item)
-
-    # Draw all the visible children.
-    self.drawChildren(p,parent_item=item)
-
-
-#@-node:ekr.20090124174652.21:drawTree
-#@+node:ekr.20090124174652.22:initData
-def initData (self):
-
-    # g.trace('*****')
-
-    self.item2vnodeDict = {}
-    self.tnode2itemsDict = {}
-    self.vnode2itemsDict = {}
-#@-node:ekr.20090124174652.22:initData
-#@+node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
-def rememberItem (self,p,item):
-
-    self.rememberVnodeItem(p.v,item)
-
-def rememberVnodeItem (self,v,item):
-
-    # Update item2vnodeDict.
-    self.item2vnodeDict[item] = v
-
-    # Update tnode2itemsDict & vnode2itemsDict.
-    table = (
-        (self.tnode2itemsDict,v.t),
-        (self.vnode2itemsDict,v))
-
-    for d,key in table:
-        aList = d.get(key,[])
-        if item in aList:
-            g.trace('*** ERROR *** item already in list: %s, %s' % (item,aList))
-        else:
-            aList.append(item)
-        d[key] = aList
-#@nonl
-#@-node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
-#@-node:ekr.20090124174652.17:full_redraw & helpers
-#@+node:ekr.20090129062500.12:drawTopTree
-def drawTopTree (self,p):
-
-    c = self.c
-    hPos,vPos = self.getScroll()
-    self.clear()
-    # Draw all top-level nodes and their visible descendants.
-    if c.hoistStack:
-        bunch = c.hoistStack[-1]
-        p = bunch.p ; h = p.h
-        if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
-            p = p.firstChild()
-            while p:
-                self.drawTree(p)
-                p.moveToNext()
-        else:
-            self.drawTree(p)
-    else:
-        p = c.rootPosition()
-        while p:
-            self.drawTree(p)
-            p.moveToNext()
-
-    # This method always retains previous scroll position.
-    self.setHScroll(hPos)
-    self.setVScroll(vPos)
-
-    self.repaint()
-#@nonl
-#@-node:ekr.20090129062500.12:drawTopTree
-#@-node:ekr.20090408131517.1:Fixed jittering tree pane
 #@+node:ekr.20090518094128.3832:Fixed undo bug
 #@+node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
 def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
@@ -6276,167 +6033,223 @@ def onTextChanged (self):
         c.outerUpdate()
 #@-node:ekr.20081121105001.536:onTextChanged (qtText)
 #@-node:ekr.20090518094128.3832:Fixed undo bug
-#@-node:ekr.20090124101344.1:Recent
-#@+node:ekr.20081208155215.12:Unused
-#@+node:ekr.20081121105001.181:isDangerous (no longer used)
-def isDangerous (self,tkKey,ch):
+#@+node:ekr.20090522074815.3893:Fixed jiggle when clicking in outline
+@nocolor-node
+
+The fix was to change::
+
+    self.setItemForCurrentPosition(scroll=True)
+
+to::
+
+    self.setItemForCurrentPosition(scroll=scroll)
+
+in full_redraw and to call::
+
+    self.full_redraw(scroll=False)
+
+in onItemExpanded.
+#@nonl
+#@+node:ekr.20090124174652.42:onItemExpanded (nativeTree)
+def onItemExpanded (self,item):
+
+    '''Handle and tree-expansion event.'''
+
+    trace = False
+    verbose = False
+
+    if self.busy(): return
 
     c = self.c
+    if trace: g.trace(self.traceItem(item))
+    p = self.item2position(item)
 
-    if not c.frame.body.useScintilla: return False
+    if p:
+        # Important: do not set lockouts here.
+        # Only methods that actually generate events should set lockouts.
+        if not p.isExpanded():
+            p.expand()
+            self.select(p) # Calls before/afterSelectHint.
+            # Important: setting scroll=False here has no effect
+            # when a keystroke causes the expansion, but is a
+            # *big* improvement when clicking the outline.
+            self.full_redraw(scroll=False)
+        else:
+            self.select(p)
+    else:
+        self.error('no p')
 
-    arrows = ('home','end','left','right','up','down')
-    special = ('tab','backspace','period','parenright','parenleft')
+    c.outerUpdate()
+#@-node:ekr.20090124174652.42:onItemExpanded (nativeTree)
+#@+node:ekr.20090124174652.17:full_redraw & helpers
+# forceDraw not used. It is used in the Tk code.
 
-    key = tkKey.lower()
-    ch = ch.lower()
-    isAlt = key.find('alt') > -1
-    w = g.app.gui.get_focus()
-    inTree = w == self.c.frame.tree.treeWidget
+def full_redraw (self,p=None,scroll=True,forceDraw=False):
 
-    val = (
-        key in special or
-        ch in arrows and not inTree and not isAlt or
-        key == 'return' and not inTree # Just barely works.
-    )
+    '''Redraw all visible nodes of the tree.
 
-    # g.trace(tkKey,ch,val)
-    return val
-#@-node:ekr.20081121105001.181:isDangerous (no longer used)
-#@+node:ekr.20081121105001.171:isFKey (no longer used)
-def isFKey(self,ch):
+    Preserve the vertical scrolling unless scroll is True.'''
 
-    return (
-        ch and len(ch) in (2,3) and
-        ch[0].lower() == 'f' and
-        ch[1:].isdigit()
-    )
-#@-node:ekr.20081121105001.171:isFKey (no longer used)
-#@+node:ekr.20090407101640.12:No longer used key-shifting hack
-if 0: #### There are a horror.
+    trace = False and not g.app.unitTesting
+    verbose = False
+    c = self.c
 
-    @others
-#@nonl
-#@+node:ekr.20081121105001.175:keyboardUpper1
-def keyboardUpper1 (self,ch):
+    if self.busy():
+        return g.trace('*** full_redraw: busy!',g.callers(5))
 
-    '''A horrible, keyboard-dependent hack.
+    if p is None:   p = c.currentPosition()
+    else:           c.setCurrentPosition(p)
 
-    Return the upper-case version of the given character
-    whose original spelling has length == 1.'''
+    self.redrawCount += 1
+    if trace: t1 = g.getTime()
+    self.initData()
+    self.nodeDrawCount = 0
+    try:
+        self.redrawing = True
+        self.drawTopTree(p)
+    finally:
+        self.redrawing = False
 
-    d = {
-        '1':'exclam',
-        '2':'at',
-        '3':'numbersign',
-        '4':'dollar',
-        '5':'percent',
-        '6':'asciicircum',
-        '7':'ampersand',
-        '8':'asterisk',
-        '9':'parenleft',
-        '0':'parenright',
-    }
+    self.setItemForCurrentPosition(scroll=scroll)
+    c.requestRedrawFlag= False
 
-    # g.trace(ch,d.get(ch))
-    return d.get(ch)
+    if trace:
+        theTime = g.timeSince(t1)
+        callers = g.choose(verbose,g.callers(5),'')
+        g.trace('%s: scroll %5s drew %3s nodes in %s' % (
+            self.redrawCount,scroll,self.nodeDrawCount,theTime),callers)
 
-#@-node:ekr.20081121105001.175:keyboardUpper1
-#@+node:ekr.20081121105001.176:keyboardUpperLong
-def keyboardUpperLong (self,ch):
-
-    '''A horrible, keyboard-dependent hack.
-
-    Return the upper-case version of the given character
-    whose original spelling has length > 1.'''
+# Compatibility
+redraw = full_redraw 
+redraw_now = full_redraw
+#@+node:ekr.20090124174652.19:drawChildren
+def drawChildren (self,p,parent_item):
 
     trace = False and not g.unitTesting
-    d = {
-        '1':'exclam',
-        '2':'at',
-        '3':'numbersign',
-        '4':'dollar',
-        '5':'percent',
-        '6':'asciicircum',
-        '7':'ampersand',
-        '8':'asterisk',
-        '9':'parenleft',
-        '0':'parenright',
-        "quoteleft":    "asciitilde",
-        "minus":        "underscore",
-        "equal":        "plus",
-        "bracketleft":  "braceleft",
-        "bracketright": "braceright",
-        "semicolon":    "colon",
-        "quoteright":   "quotedbl",
-        "backslash":    "bar",
-        "comma":        "less",
-        "period":       "greater",
-        "slash":        "question",
-        "parenleft":    "parenleft", # Bug fix: 2008/11/24
-        "parenright":   "parenright", # Bug fix: 2008/11/24
-        "braceleft":    "braceleft", # Bug fix: 2009/4/5
-        "braceright":   "braceright", # Bug fix: 2009/4/5
-    }
-    if trace: g.trace(ch,d.get(ch))
-    val = d.get(ch)
-    return d.get(ch)
 
-    # The following does not work.
-    # if val:
-        # return val
-    # elif len(ch) > 1:
-        # return ch
-    # else:
-        # return None
+    if trace: g.trace('children? %5s expanded? %5s %s' % (
+        p.hasChildren(),p.isExpanded(),p.h))
 
-#@-node:ekr.20081121105001.176:keyboardUpperLong
-#@+node:ekr.20081121105001.177:shifted
-def shifted (self,mods,ch):
-    '''
-        A horrible, keyboard-dependent kludge.
-        return the shifted version of the letter.
-        return mods, ch.
-    '''
+    if not p:
+        return g.trace('can not happen: no p')
 
-    # Special tk symbols, like '&' have already
-    # been converted to names like 'ampersand'.
-
-    # These special characters should be handled in Leo's core.
-    noShiftList = ('Return','BackSpace','Tab',)
-
-    special = ('Home','End','Right','Left','Up','Down',)
-
-    if len(ch) == 1:
-        ch2 = self.keyboardUpper1(ch)
-        if ch2:
-            mods.remove('Shift')
-            ch = ch2
-        elif len(ch) == 1:
-            # Correct regardless of alt/ctrl mods.
-            mods.remove('Shift')
-            ch = ch.upper()
-        elif len(mods) == 1: # No alt/ctrl.
-            mods.remove('Shift')
+    if p.hasChildren():
+        if p.isExpanded():
+            self.expandItem(parent_item)
+            child = p.firstChild()
+            while child:
+                self.drawTree(child,parent_item)
+                child.moveToNext()
         else:
-            pass
-        # g.trace('ch',ch,'ch2',ch2,mods)
+            # Draw the hidden children.
+            child = p.firstChild()
+            while child:
+                self.drawNode(child,parent_item)
+                child.moveToNext()
+            self.contractItem(parent_item)
     else:
-        ch3 = self.keyboardUpperLong(ch)
-        if ch3: ch = ch3
+        self.contractItem(parent_item)
+#@-node:ekr.20090124174652.19:drawChildren
+#@+node:ekr.20090124174652.20:drawNode
+def drawNode (self,p,parent_item):
 
-        if ch3 or ch in noShiftList:
-            mods.remove('Shift')
-        elif ch in special:
-            pass # Allow the shift.
-        elif len(mods) == 1: # No alt/ctrl.
-            mods.remove('Shift')
+    trace = False
+    c = self.c 
+    self.nodeDrawCount += 1
+
+    # Allocate the item.
+    item = self.createTreeItem(p,parent_item) 
+
+    # Do this now, so self.isValidItem will be true in setItemIcon.
+    self.rememberItem(p,item)
+
+    # Set the headline and maybe the icon.
+    self.setItemText(item,p.h)
+    if p:
+        self.drawItemIcon(p,item)
+
+    if trace: g.trace(self.traceItem(item))
+
+    return item
+#@-node:ekr.20090124174652.20:drawNode
+#@+node:ekr.20090129062500.12:drawTopTree
+def drawTopTree (self,p):
+
+    c = self.c
+    hPos,vPos = self.getScroll()
+    self.clear()
+    # Draw all top-level nodes and their visible descendants.
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        p = bunch.p ; h = p.h
+        if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
+            p = p.firstChild()
+            while p:
+                self.drawTree(p)
+                p.moveToNext()
         else:
-            pass # Retain shift modifier for all special keys.
+            self.drawTree(p)
+    else:
+        p = c.rootPosition()
+        while p:
+            self.drawTree(p)
+            p.moveToNext()
 
-    return mods,ch
-#@-node:ekr.20081121105001.177:shifted
-#@-node:ekr.20090407101640.12:No longer used key-shifting hack
+    # This method always retains previous scroll position.
+    self.setHScroll(hPos)
+    self.setVScroll(vPos)
+
+    self.repaint()
+#@nonl
+#@-node:ekr.20090129062500.12:drawTopTree
+#@+node:ekr.20090124174652.21:drawTree
+def drawTree (self,p,parent_item=None):
+
+    # Draw the (visible) parent node.
+    item = self.drawNode(p,parent_item)
+
+    # Draw all the visible children.
+    self.drawChildren(p,parent_item=item)
+
+
+#@-node:ekr.20090124174652.21:drawTree
+#@+node:ekr.20090124174652.22:initData
+def initData (self):
+
+    # g.trace('*****')
+
+    self.item2vnodeDict = {}
+    self.tnode2itemsDict = {}
+    self.vnode2itemsDict = {}
+#@-node:ekr.20090124174652.22:initData
+#@+node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
+def rememberItem (self,p,item):
+
+    self.rememberVnodeItem(p.v,item)
+
+def rememberVnodeItem (self,v,item):
+
+    # Update item2vnodeDict.
+    self.item2vnodeDict[item] = v
+
+    # Update tnode2itemsDict & vnode2itemsDict.
+    table = (
+        (self.tnode2itemsDict,v.t),
+        (self.vnode2itemsDict,v))
+
+    for d,key in table:
+        aList = d.get(key,[])
+        if item in aList:
+            g.trace('*** ERROR *** item already in list: %s, %s' % (item,aList))
+        else:
+            aList.append(item)
+        d[key] = aList
+#@nonl
+#@-node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
+#@-node:ekr.20090124174652.17:full_redraw & helpers
+#@-node:ekr.20090522074815.3893:Fixed jiggle when clicking in outline
+#@-node:ekr.20090124101344.1:Recent
+#@+node:ekr.20081208155215.12:Unused
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl
