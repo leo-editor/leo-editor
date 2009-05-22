@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -386,7 +386,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090521120128.1961"><vh>@thin c:\leo.repo\trunk\leo\core\leoGlobals.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -1905,6 +1904,7 @@ for z in aList:
 </t>
 <t tx="ekr.20080803120643.1">def spam():
     pass</t>
+<t tx="ekr.20080806145258.1"></t>
 <t tx="ekr.20080806145258.12">@nocolor
 
 Notes:

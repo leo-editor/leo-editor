@@ -18,22 +18,9 @@ goto all
 
 :errors
 
-echo mod_scripting.py
-rem Harmless: E0611:489:scriptingController.runDebugScriptCommand: No name 'leoScriptModule' in module 'leo.core'
-REM call pylint.bat leo\plugins\mod_scripting.py        --disable-msg=E0611 --rcfile=leo\test\pylint-leo-rc.txt
-
-call pylint.bat leo\plugins\mod_scripting.py --rcfile=leo\test\pylint-leo-rc.txt
-
-goto done
-
-echo toolbar.py
-rem doesn't help: cd c:\leo.repo\trunk\leo\plugins
-rem call pylint.bat toolbar.py     --rcfile=c:\leo.repo\trunk\leo\test\pylint-leo-rc.txt
-rem cd c:\leo.repo\trunk
-rem Dangerous: many erroneous E1101 errors
-rem Harmless: W0221: Arguments number differs from overridden method
-rem Harmless: W0511: Fixme and to-do.
-call pylint.bat leo\plugins\toolbar.py     --disable-msg=E1101,W0221,W0511 --rcfile=leo\test\pylint-leo-rc.txt
+rem E0602:4528:isBytes: Undefined variable 'bytes'
+echo leoGlobals.py
+call pylint.bat leo\core\leoGlobals.py       --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 
