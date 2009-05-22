@@ -88,13 +88,33 @@ globalDirectiveList = [
 #@nonl
 #@-node:EKR.20040610094819:<< define global data structures >>
 #@nl
+#@<< define the nullObject class >>
+#@+node:ekr.20090521175848.5881:<< define the nullObject class >>
+# From the Python cookbook, recipe 5.23
+
+class nullObject:
+
+    """An object that does nothing, and does it very well."""
+
+    def __init__   (self,*args,**keys): pass
+    def __call__   (self,*args,**keys): return self
+    # def __len__    (self): return 0 ###
+    def __repr__   (self): return "nullObject"
+    def __str__    (self): return "nullObject"
+    def __nonzero__(self): return 0
+    def __delattr__(self,attr):     return self
+    def __getattr__(self,attr):     return self
+    def __setattr__(self,attr,val): return self
+
+#@-node:ekr.20090521175848.5881:<< define the nullObject class >>
+#@nl
 
 # Give g a temporary value so tests for g.unitTesting will work in this file.
-class gClass:
-    def __init__(self):
-        self.unitTesting = False
+# class gClass:
+    # def __init__(self):
+        # self.unitTesting = False
 
-g = gClass() # Set later by startup logic to this module.
+g = nullObject() #### gClass() # Set later by startup logic to this module.
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
 isPython3 = sys.version_info >= (3,0,0)
@@ -1045,6 +1065,7 @@ if g.unitTesting:
     #@@encoding utf-8
     #@@lineending crlf
 
+    c,p = g.getTestVars()
     d = c.scanAllDirectives(p)
     # print g.dictToString(d)
 
@@ -1065,6 +1086,7 @@ if g.unitTesting:
     #@+node:ekr.20090517020744.5891:@test c.scanAtRootDirectives root-code
     #@@root-code
 
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     s = c.scanAtRootDirectives(aList)
 
@@ -1074,6 +1096,7 @@ if g.unitTesting:
     #@+node:ekr.20090517020744.5892:@test c.scanAtRootDirectives root-doc
     #@@root-doc
 
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     s = c.scanAtRootDirectives(aList)
 
@@ -1090,6 +1113,7 @@ if g.unitTesting:
 
     # @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
 
+    c,p = g.getTestVars()
     d = g.get_directives_dict(p)
 
     # assert d.get('_p') == p # Never used, and a bad idea.
@@ -1103,18 +1127,21 @@ if g.unitTesting:
     #@+node:ekr.20090517020744.5894:@test g.scanAtHeaderDirectives header
     #@@header
 
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     g.scanAtHeaderDirectives(aList)
     #@-node:ekr.20090517020744.5894:@test g.scanAtHeaderDirectives header
     #@+node:ekr.20090517020744.5895:@test g.scanAtHeaderDirectives noheader
     #@@noheader
 
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     g.scanAtHeaderDirectives(aList)
     #@-node:ekr.20090517020744.5895:@test g.scanAtHeaderDirectives noheader
     #@+node:ekr.20090517020744.5896:@test g.scanAtLineendingDirectives cr
     #@@lineending cr
 
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     s = g.scanAtLineendingDirectives(aList)
 
@@ -1123,6 +1150,7 @@ if g.unitTesting:
     #@+node:ekr.20090517020744.5897:@test g.scanAtLineendingDirectives crlf
     #@@lineending crlf
 
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     s = g.scanAtLineendingDirectives(aList)
     # print ('@lineending: %s'%repr(s))
@@ -1132,6 +1160,7 @@ if g.unitTesting:
     #@+node:ekr.20090517020744.5898:@test g.scanAtLineendingDirectives lf
     #@@lineending lf
 
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     s = g.scanAtLineendingDirectives(aList)
 
@@ -1140,6 +1169,7 @@ if g.unitTesting:
     #@+node:ekr.20090517020744.5899:@test g.scanAtLineendingDirectives nl
     #@@lineending nl
 
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     s = g.scanAtLineendingDirectives(aList)
 
@@ -1150,6 +1180,7 @@ if g.unitTesting:
 
     import sys
 
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     s = g.scanAtLineendingDirectives(aList)
 
@@ -1161,6 +1192,7 @@ if g.unitTesting:
     #@+node:ekr.20090517020744.5901:@test g.scanAtPagewidthDirectives -40
     #@@pagewidth -40
 
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     n = g.scanAtPagewidthDirectives(aList)
 
@@ -1170,6 +1202,7 @@ if g.unitTesting:
     #@+node:ekr.20090517020744.5902:@test g.scanAtPagewidthDirectives 40
     #@@pagewidth 40
 
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     n = g.scanAtPagewidthDirectives(aList)
 
@@ -1179,6 +1212,7 @@ if g.unitTesting:
     #@+node:ekr.20090517020744.5912:@test g.scanAtTabwidthDirectives +6
     #@@tabwidth 6
 
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     n = g.scanAtTabwidthDirectives(aList)
 
@@ -1188,6 +1222,7 @@ if g.unitTesting:
     #@+node:ekr.20090517020744.5913:@test g.scanAtTabwidthDirectives -6
     #@@tabwidth -6
 
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     n = g.scanAtTabwidthDirectives(aList)
 
@@ -1197,6 +1232,7 @@ if g.unitTesting:
     #@+node:ekr.20090517020744.5914:@test g.scanAtWrapDirectives nowrap
     #@@nowrap
 
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     s = g.scanAtWrapDirectives(aList)
 
@@ -1206,6 +1242,7 @@ if g.unitTesting:
     #@+node:ekr.20090517020744.5915:@test g.scanAtWrapDirectives wrap
     #@@wrap
 
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     s = g.scanAtWrapDirectives(aList)
 
@@ -1213,6 +1250,7 @@ if g.unitTesting:
     #@nonl
     #@-node:ekr.20090517020744.5915:@test g.scanAtWrapDirectives wrap
     #@+node:ekr.20090517020744.5916:@test g.scanAtWrapDirectives wrap
+    c,p = g.getTestVars()
     aList = g.get_directives_dict_list(p)
     s = g.scanAtWrapDirectives(aList)
 
@@ -1285,6 +1323,8 @@ def pdb (message=''):
 if g.unitTesting:
 
     import sys
+
+    c,p = g.getTestVars()
 
     # Not a good unit test; it probably will never fail.
     def aFunction(): pass
@@ -1413,6 +1453,8 @@ def es_exception (full=True,c=None,color="red"):
     return fileName,n
 #@+node:ekr.20090517020744.5874:@test g.es_exception
 if g.unitTesting:
+
+    c,p = g.getTestVars()
 
     if c.config.redirect_execute_script_output_to_log_pane:
         pass # Test doesn't work when redirection is on.
@@ -2317,6 +2359,7 @@ if g.unitTesting:
 
     import types
 
+    c,p = g.getTestVars()
     theFile,theFileName = g.create_temp_file()
 
     assert type(theFile) == types.FileType, 'not file type'
@@ -2758,64 +2801,6 @@ def openWrapperLeoFile (old_c,fileName,gui):
     return c
 #@-node:ekr.20080921154026.1:openWrapperLeoFile
 #@-node:ekr.20090520055433.5945:g.openWithFileName & helpers
-#@+node:ekr.20080921154026.1:openWrapperLeoFile
-def openWrapperLeoFile (old_c,fileName,gui):
-
-    '''Open a wrapper .leo file for the given file,
-    and import the file into .leo file.'''
-
-    # This code is similar to c.new, but different enough to be separate.
-    if not g.os_path_exists(fileName):
-        if not g.unitTesting:
-            g.es_print("can not open:",fileName,color="blue")
-        return None
-
-    c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=None,relativeFileName=None,gui=gui)
-
-    # Needed for plugins.
-    g.doHook("new",old_c=old_c,c=c,new_c=c)
-
-    # Use the config params to set the size and location of the window.
-    frame.setInitialWindowGeometry()
-    frame.deiconify()
-    frame.lift()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-
-    if True: # Just read the file into the node.
-        try:
-            fileName = g.os_path_finalize(fileName)
-            f = open(fileName)
-            s = f.read()
-            f.close()
-        except IOError:
-            g.es_print("can not open: ",fileName,color='red')
-            return None
-        p = c.rootPosition()
-        if p:
-            p.setHeadString('@edit %s' % fileName)
-            p.setBodyString(s)
-            c.selectPosition(p)
-    else:  # Import the file into the new outline.
-        junk,ext = g.os_path_splitext(fileName)
-        p = c.p
-        p = c.importCommands.createOutline(fileName,parent=p,atAuto=False,ext=ext)
-        c.setCurrentPosition(p)
-        c.moveOutlineLeft()
-        p = c.p
-        c.setCurrentPosition(p.back())
-        c.deleteOutline(op_name=None)
-        p = c.p
-        p.expand()
-
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    if c.config.getBool('use_chapters') and c.chapterController:
-        c.chapterController.finishCreate()
-
-    frame.c.setChanged(True) # Mark the outline dirty.
-    return c
-#@-node:ekr.20080921154026.1:openWrapperLeoFile
 #@+node:ekr.20031218072017.3120:g.readlineForceUnixNewline (Steven P. Schaefer)
 #@+at 
 #@nonl
@@ -2919,6 +2904,7 @@ if g.unitTesting:
 
     import os
 
+    c,p = g.getTestVars()
     exists = g.os_path_exists
 
     path = g.os_path_join(g.app.testDir,'xyzzy')
@@ -3002,6 +2988,7 @@ if g.unitTesting:
 
     import os
 
+    c,p = g.getTestVars()
     exists = g.os_path_exists
     path = g.os_path_join(g.app.testDir,'xyzzy')
     path2 = g.os_path_join(g.app.testDir,'xyzzy2')
@@ -4975,6 +4962,7 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
 #@+node:ekr.20090517020744.5878:@test g.getScript strips crlf
 if g.unitTesting:
 
+    c,p = g.getTestVars()
     script = g.getScript(c,p) # This will get the text of this node.
     assert script.find('\r\n') == -1, repr(script)
 #@-node:ekr.20090517020744.5878:@test g.getScript strips crlf
@@ -5073,6 +5061,7 @@ if g.unitTesting:
 
 if g.unitTesting:
 
+    c,p = g.getTestVars()
     file = u'Ỗ'
     path = g.os_path_join('Ỗ','Ỗ')
     # print(g.toEncodedString(file,'utf-8'))
@@ -5086,17 +5075,18 @@ if g.unitTesting:
 
 if g.unitTesting:
 
+    c,p = g.getTestVars()
     old_c = c
     filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
     ok,frame = g.openWithFileName(filename,old_c)
     assert(not ok)
-#@nonl
 #@-node:ekr.20090517020744.5861:@test can't open message in g.openWithFileName
 #@+node:ekr.20090517020744.5862:@test atFile.printError
 #@@first
 
 if g.unitTesting:
 
+    c,p = g.getTestVars()
     at = c.atFileCommands
     at.errors = 0
 
@@ -5904,19 +5894,21 @@ bunch = Bunch
 #@+node:ekr.20031219074948.1:class nullObject
 # From the Python cookbook, recipe 5.23
 
-class nullObject:
+# This is now defined at the start of this file.
 
-    """An object that does nothing, and does it very well."""
+    # class nullObject:
 
-    def __init__   (self,*args,**keys): pass
-    def __call__   (self,*args,**keys): return self
-    # def __len__    (self): return 0 ###
-    def __repr__   (self): return "nullObject"
-    def __nonzero__ (self): return 0
+        # """An object that does nothing, and does it very well."""
 
-    def __delattr__(self,attr):     return self
-    def __getattr__(self,attr):     return self
-    def __setattr__(self,attr,val): return self
+        # def __init__   (self,*args,**keys): pass
+        # def __call__   (self,*args,**keys): return self
+        # # def __len__    (self): return 0 ###
+        # def __repr__   (self): return "nullObject"
+        # def __nonzero__ (self): return 0
+
+        # def __delattr__(self,attr):     return self
+        # def __getattr__(self,attr):     return self
+        # def __setattr__(self,attr,val): return self
 #@-node:ekr.20031219074948.1:class nullObject
 #@+node:ekr.20031218072017.3103:g.computeWindowTitle
 def computeWindowTitle (fileName):
@@ -6653,6 +6645,8 @@ def removeExtraLws (s,tab_width):
     return result
 #@+node:ekr.20090517020744.5881:@test g.removeExtraLws
 if g.unitTesting:
+
+    c,p = g.getTestVars()
 
     for s,expected in (
         (' a\n b\n c', 'a\nb\nc'),
