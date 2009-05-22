@@ -5380,8 +5380,10 @@ import string
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@count 10000
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -15085,6 +15087,41 @@ for line in lines:
 f.close()
 print '%d records' % n
 #@-node:ekr.20061018084920:munge-db
+#@+node:ville.20090522185354.16487:Call hierarchy tracing (using python 'trace' module)
+"""
+Analyzing program flow.
+
+Run (ctrl+b) this script after 
+
+cd ~/leo-editor
+python -m trace --trackcalls launchLeo.py --gui=qt >trace.txt
+
+"""
+
+tracefile = '~/leo-editor/trace.txt'
+
+import os
+
+
+tr = open( os.path.expanduser(tracefile))
+print tr
+top = p.insertAsLastChild().copy()
+top.h = 'trace session'
+cur = None
+no = None
+for l in tr:
+    if l.startswith('***'):
+        cur = top.insertAsLastChild().copy()
+        cur.h = os.path.basename(l.split()[1])
+    elif l.startswith('  -->'):
+        no = cur.insertAsLastChild().copy()
+        no.h = os.path.basename(l.split()[1].strip())
+    else:
+        if no:
+            no.b += l.strip() + '\n'
+
+    print ".",
+#@-node:ville.20090522185354.16487:Call hierarchy tracing (using python 'trace' module)
 #@-node:ekr.20051104082605:Others
 #@+node:ekr.20041126132604:Prototypes
 #@+node:ekr.20051011211253:Debugger canvas
