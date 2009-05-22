@@ -46,7 +46,6 @@ class leoImportCommands (scanUtility):
     def __init__ (self,c):
 
         self.c = c
-        self._forcedGnxPositionList = []
         self.default_directory = None # For @path logic.
         self.encoding = g.app.tkEncoding
         self.errors = 0
@@ -923,7 +922,6 @@ class leoImportCommands (scanUtility):
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAfter()
             if isThin:
-                at.forceGnxOnPosition(p)
                 p.initHeadString("@thin " + fileName)
                 at.read(p,thinFile=True)
             else:
@@ -935,11 +933,6 @@ class leoImportCommands (scanUtility):
         c.setChanged(True)
         u.afterChangeGroup(p,command)
         c.redraw(current)
-    #@+node:ekr.20051208100903.1:forceGnxOnPosition
-    def forceGnxOnPosition (self,p):
-
-        self._forcedGnxPositionList.append(p.v)
-    #@-node:ekr.20051208100903.1:forceGnxOnPosition
     #@-node:ekr.20031218072017.1810:importDerivedFiles
     #@+node:ekr.20031218072017.3212:importFilesCommand
     def importFilesCommand (self,files=None,treeType=None):
@@ -2026,6 +2019,7 @@ class baseScannerClass (scanUtility):
     if g.unitTesting:
 
         import leo.core.leoImport as leoImport
+        c,p = g.getTestVars()
         ic = c.importCommands
         scanner = leoImport.rstScanner(importCommands=ic,atAuto=True)
         f = scanner.reportMismatch
@@ -2102,7 +2096,7 @@ class baseScannerClass (scanUtility):
             body2 = self.undentBody(s[sigStart:codeEnd])
         body = body1 + body2
 
-        if trace and verbose: g.trace('body\n%s' % body)
+        # if trace: g.trace('body\n%s' % body)
 
         tail = body[len(body.rstrip()):]
         if not '\n' in tail:
