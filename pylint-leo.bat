@@ -83,7 +83,7 @@ call pylint.bat leo\core\leoTangle.py        --rcfile=leo\test\pylint-leo-rc.txt
 echo leoUndo.py
 call pylint.bat leo\core\leoUndo.py          --rcfile=leo\test\pylint-leo-rc.txt
 
-goto done
+REM goto done
 
 REM These have been moved into tkGui plugin
 REM call pylint.bat leo\core\leoTkinterDialog.py --rcfile=leo\test\pylint-leo-rc.txt

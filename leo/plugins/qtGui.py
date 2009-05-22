@@ -5512,11 +5512,11 @@ class leoQtEventFilter(QtCore.QObject):
         " " : "space",      
         "_" : "underscore",
         # Part 2: special Qt translations.
-        'Backspace': 'BackSpace',
-        'Backtab':   'Tab', # The shift mod will convert to 'Shift+Tab',
-        'Esc':       'Escape',
-        'Del':       'Delete',
-        'Ins':       'Insert',
+        'Backspace':'BackSpace',
+        'Backtab':  'Tab', # The shift mod will convert to 'Shift+Tab',
+        'Esc':      'Escape',
+        'Del':      'Delete',
+        'Ins':      'Return',
         # Comment these out to pass the key to the QTextWidget.
         # Use these to enable Leo's page-up/down commands.
             # 'PgDown':    'Next',
@@ -5614,13 +5614,6 @@ class leoQtEventFilter(QtCore.QObject):
         '''
 
         return tkKey or ch in self.flashers
-
-        # if tkKey:
-            # return True
-        # elif ch in self.flashers:
-            # return True
-        # else:
-            # return False
     #@-node:ekr.20081121105001.182:isSpecialOverride (simplified)
     #@+node:ekr.20081121105001.172:qtKey
     def qtKey (self,event):
