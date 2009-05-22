@@ -3666,7 +3666,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Smart home:
         Position the point at the first non-blank character on the line,
-        or the start of the line if already there.''',
+        or the start of the line if already there.'''
 
         w = self.editWidget(event)
         if not w: return
