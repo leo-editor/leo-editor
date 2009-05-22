@@ -90,9 +90,14 @@ class baseCommands (object):
             # Do this early in the startup process so we can call hooks.
 
         # Init ivars with self.x instead of c.x to keep pylint happy
+
+        # Debugging.
+        self.command_count = 0
+        self.trace_focus_count = 0
+
+        # Data.
         self.chapterController = None
         self.frame = frame
-
         self.hiddenRootNode = leoNodes.vnode(context=c)
         self.hiddenRootNode.setHeadString('<hidden root vnode>')
         self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
@@ -6470,8 +6475,6 @@ class baseCommands (object):
             incremental=incremental,interruptable=interruptable)
     #@-node:ekr.20080514131122.13:c.recolor_now
     #@+node:ekr.20080514131122.16:c.traceFocus
-    trace_focus_count = 0
-
     def traceFocus (self,w):
 
         c = self

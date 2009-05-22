@@ -86,6 +86,7 @@ class LeoApp:
         self.unicodeErrorGiven = True # True: suppres unicode tracebacks.
         self.unitTestDict = {} # For communication between unit tests and code.
         self.unitTesting = False # True if unit testing.
+        self.useIpython = False
         self.use_psyco = False # Can't be a config param because it is used before config module can be inited.
         self.user_xresources_path = None # Resource file for Tk/tcl.
         self.windowList = [] # Global list of all frames.  Does not include hidden root window.

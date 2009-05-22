@@ -2243,6 +2243,9 @@ class leoTree:
             # New in 3.12: keys vnodes, values are edit_widget (Tk.Text widgets)
             # New in 4.2: keys are vnodes, values are pairs (p,Tk.Text).
 
+        # Debugging.
+        self.redrawCount = 0
+
         # "public" ivars: correspond to setters & getters.
         self._editPosition = None
         self.redrawCount = 0 # For traces
@@ -3129,6 +3132,7 @@ class nullLog (leoLog):
         leoLog.__init__(self,frame,parentFrame)
 
         self.isNull = True
+        self.logNumber = 0
         self.logCtrl = self.createControl(parentFrame)
     #@-node:ekr.20041012083237:nullLog.__init__
     #@+node:ekr.20041012083237.1:createControl
@@ -3250,6 +3254,7 @@ class nullTree (leoTree):
         self.font = None
         self.fontName = None
         self.canvas = None
+        self.redrawCount = 0
         self.stayInTree = True
         self.trace_edit = False
         self.trace_select = False

@@ -2948,15 +2948,15 @@ if g.unitTesting:
 #@-node:ekr.20070911110507:reportMismatch & test
 #@-node:ekr.20090521064955.5904:rst code generation
 #@-node:ekr.20090511055302.5784:Finish rst
+#@+node:ekr.20090521064955.5945:Better message when checking syntax
+# The name of the offending node is not given, just the root node.
+#@nonl
+#@-node:ekr.20090521064955.5945:Better message when checking syntax
 #@+node:ekr.20090512080015.5801:import-files-recursively command?
 How would the command specify settings?
 
 A line added to test bzr push.
 #@-node:ekr.20090512080015.5801:import-files-recursively command?
-#@+node:ekr.20090521064955.5945:Better message when checking syntax
-# The name of the offending node is not given, just the root node.
-#@nonl
-#@-node:ekr.20090521064955.5945:Better message when checking syntax
 #@+node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
 @nocolor-node
 

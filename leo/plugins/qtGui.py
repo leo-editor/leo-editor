@@ -653,7 +653,7 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ekr.20090426083450.13:setName
     def setName (self,widget,name):
 
-         if name:
+        if name:
             # if not name.startswith('leo_'):
                 # name = 'leo_' + name
             widget.setObjectName(name)

@@ -13,14 +13,14 @@ REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
 
-REM goto errors
+REM goto essential_plugins
+goto errors
 goto all
 
 :errors
 
-rem E0602:4528:isBytes: Undefined variable 'bytes'
-echo leoGlobals.py
-call pylint.bat leo\core\leoGlobals.py       --rcfile=leo\test\pylint-leo-rc.txt
+echo leoFrame.py
+call pylint.bat leo\core\leoFrame.py         --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 
@@ -83,7 +83,7 @@ call pylint.bat leo\core\leoTangle.py        --rcfile=leo\test\pylint-leo-rc.txt
 echo leoUndo.py
 call pylint.bat leo\core\leoUndo.py          --rcfile=leo\test\pylint-leo-rc.txt
 
-REM goto done
+goto done
 
 REM These have been moved into tkGui plugin
 REM call pylint.bat leo\core\leoTkinterDialog.py --rcfile=leo\test\pylint-leo-rc.txt
