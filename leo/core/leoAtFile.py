@@ -130,11 +130,10 @@ class atFile:
         self.fileCommands = c.fileCommands
         self.testing = False # True: enable additional checks.
         self.errors = 0 # Make sure at.error() works even when not inited.
-        # New in Leo 4.4a5: For createThinChild4 (LeoUser).
-        self._forcedGnxPositionList = []
-            # Must be here, putting it in initReadIvars doesn't work.
 
-        self.checkPythonCodeOnWrite = c.config.getBool('check-python-code-on-write',default=True)
+        # User options.
+        self.checkPythonCodeOnWrite = c.config.getBool(
+            'check-python-code-on-write',default=True)
         self.underindentEscapeString = c.config.getString(
             'underindent-escape-string') or '\\-'
 
@@ -189,7 +188,6 @@ class atFile:
             # Save "permanent" ivars
             fileCommands = self.fileCommands
             dispatch_dict = self.dispatch_dict
-            _forcedGnxPositionList = self._forcedGnxPositionList
             # Clear all ivars.
             g.clearAllIvars(self)
             # Restore permanent ivars
@@ -197,7 +195,6 @@ class atFile:
             self.c = c
             self.fileCommands = fileCommands
             self.dispatch_dict = dispatch_dict
-            self._forcedGnxPositionList = _forcedGnxPositionList
 
         #@    << set defaults for arguments and options >>
         #@+node:ekr.20041005105605.11:<< set defaults for arguments and options >>
@@ -513,7 +510,7 @@ class atFile:
         return at.errors == 0
     #@-node:ekr.20041005105605.21:read (atFile)
     #@+node:ekr.20041005105605.26:readAll (atFile)
-    def readAll(self,root,partialFlag=False,forceGnx=False):
+    def readAll(self,root,partialFlag=False):
 
         """Scan vnodes, looking for @file nodes to read."""
 
@@ -536,8 +533,6 @@ class atFile:
                 p.moveToNodeAfterTree()
             elif p.isAtThinFileNode():
                 anyRead = True
-                if forceGnx: # New in Leo 4.4.2 b1: support for sax read.
-                    at.forceGnxOnPosition(p)
                 at.read(p,thinFile=True)
                 p.moveToNodeAfterTree()
             elif p.isAtAutoNode():
@@ -645,8 +640,6 @@ class atFile:
         '''Read an open derived file.
 
         Leo 4.5 and later can only read 4.x derived files.'''
-
-        g.trace(root.h,fileName)
 
         at = self ; ok = True
 
@@ -781,15 +774,8 @@ class atFile:
         last = at.lastThinNode ; lastIndex = last.t.fileIndex
         gnx = indices.scanGnx(gnxString,0)
 
-        # New in Leo 4.4a5: Solve Read @thin nodes problem (by LeoUser)
-        if 0: ####
-            if self._forcedGnxPositionList and last in self._forcedGnxPositionList:
-                last.fileIndex = lastIndex =  gnx
-                self._forcedGnxPositionList.remove(last)
-
         if trace and verbose: g.trace("last %s, gnx %s %s" % (
             last,gnxString,headline))
-                #indices.areEqual(gnx,last.t.fileIndex),gnxString,headline)
 
         parent = at.lastThinNode # A vnode.
         children = parent.t.children
@@ -1144,19 +1130,13 @@ class atFile:
             p = at.createImportedNode(at.root,headline)
             at.t = p.v.t
         elif at.thinFile:
-            if trace: g.trace('lastThinNode',at.lastThinNode.h)
-            if 1: # new code:
-                if at.thinNodeStack:
-                    at.thinNodeStack.append(at.lastThinNode)
-                    at.lastThinNode = v = at.createThinChild4(gnx,headline)
-                else:
-                    v = at.root.v
-                    assert(v)
-                    at.thinNodeStack.append(v)
-                    at.lastThinNode = v
-            else:
+            if at.thinNodeStack:
                 at.thinNodeStack.append(at.lastThinNode)
-                at.lastThinNode = v = at.createThinChild4(gnx,headline)
+                v = at.createThinChild4(gnx,headline)
+            else:
+                v = at.root.v
+                at.thinNodeStack.append(v)
+            at.lastThinNode = v
             at.t = v.t
         else:
             at.t = at.findChild4(headline)
@@ -3841,8 +3821,9 @@ class atFile:
     #@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
     def checkPythonSyntax (self,p,body):
 
+        import compiler,parser
+
         try:
-            import compiler,parser
             ok = True
             compiler.parse(body + '\n')
         except (parser.ParserError,SyntaxError):
@@ -3855,7 +3836,6 @@ class atFile:
             ok = False
 
         return ok
-    #@nonl
     #@+node:ekr.20090514111518.5666:syntaxError
     def syntaxError(self,p):
 
@@ -3873,8 +3853,9 @@ class atFile:
     #@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
     def tabNannyNode (self,p,body):
 
+        import parser,tabnanny,tokenize
+
         try:
-            import parser,tabnanny,tokenize
             readline = g.readLinesClass(body).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
         except parser.ParserError:
@@ -3884,7 +3865,7 @@ class atFile:
             p.setMarked()
         except tokenize.TokenError:
             junk, msg, junk = sys.exc_info()
-            g.es("TokenError in",headline,color="red")
+            g.es("TokenError in",p.h,color="red")
             g.es('',str(msg))
             p.setMarked()
         except tabnanny.NannyNag:
@@ -3892,7 +3873,7 @@ class atFile:
             badline = nag.get_lineno()
             line    = nag.get_line()
             message = nag.get_msg()
-            g.es("indentation error in",headline,"line",badline,color="red")
+            g.es("indentation error in",p.h,"line",badline,color="red")
             g.es(message)
             line2 = repr(str(line))[1:-1]
             g.es("offending line:\n",line2)
@@ -4556,13 +4537,6 @@ class atFile:
 
         g.es_print_error(*args,**keys)
     #@-node:ekr.20041005105605.220:atFile.error & printError
-    #@+node:ekr.20051219122720:atFile.forceGnxOnPosition
-    def forceGnxOnPosition (self,p):
-
-        # g.trace(p.h)
-
-        self._forcedGnxPositionList.append(p.v)
-    #@-node:ekr.20051219122720:atFile.forceGnxOnPosition
     #@+node:ekr.20080923070954.4:atFile.scanAllDirectives
     def scanAllDirectives(self,p,
         scripting=False,importing=False,
