@@ -499,6 +499,8 @@ class vnode (baseVnode):
     #@+node:ekr.20090521064955.5905:@test v.atAutoNodeName & v.atAutoRstNodeName
     if g.unitTesting:
 
+        c,p = g.getTestVars()
+
         table = (
             ('@auto-rst rst-file','rst-file','rst-file'),
             ('@auto x','x',''),
