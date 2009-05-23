@@ -67,6 +67,9 @@ for example, gutsy, hardy, intrepid.
 
 These are projects that3 I'd like to follow up on.
 
+Scripts-->@thin leoScripts.txt-->Others-->
+Call hierarchy tracing (using python 'trace' module)
+
 - Caliopy: integrate Leo with many scientific computing tools.
   http://www.caliopywork.org/
 
