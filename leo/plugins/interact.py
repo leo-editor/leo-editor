@@ -64,6 +64,8 @@ class InteractPSQL(Interact):
         try:
             self.psqlLink = pexpect.spawn('psql %s'%prompts)
             self.leftover = ''
+            for i in self.psqlReader(self.psqlLink):
+                pass  # eat the initial output as it isn't interesting
         except pexpect.ExceptionPexpect:
             self._available = False
 
@@ -150,6 +152,9 @@ class InteractBASH(Interact):
             self.bashLink.send("PS1='> '\n")
             self.bashLink.send("unalias ls\n")
             self.leftover = ''
+            for i in self.bashReader(self.bashLink):
+                pass  # eat the initial output as it isn't interesting
+                      # and in includes chrs leo can't encode currently
         except pexpect.ExceptionPexpect:
             self._available = False
 
