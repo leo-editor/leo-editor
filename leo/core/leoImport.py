@@ -1847,7 +1847,7 @@ class baseScannerClass (scanUtility):
         for i in range(max(n1,n2)):
             ok = self.compareHelper(lines1,lines2,i,self.strict)
             if not ok:
-                bad_i = i + 1
+                bad_i = i
                 break
 
         if g.app.unitTesting:
@@ -1986,7 +1986,7 @@ class baseScannerClass (scanUtility):
 
         kind = g.choose(self.atAuto,'@auto','import command')
 
-        x2 = max(0,min(bad_i-1,len(lines2)-1))
+        x2 = max(0,min(bad_i,len(lines2)-1))
         self.error(
             '%s did not import %s perfectly\nfirst mismatched line: %d\n%s' % (
                 kind,self.root.h,bad_i,repr(lines2[x2])))
@@ -2012,7 +2012,10 @@ class baseScannerClass (scanUtility):
                 for i in range(len(lines2)):
                     aList.append('%3d %s' % (i,repr(lines2[i])))
 
-            g.es_print('\n'.join(aList),color='blue')
+            if g.unitTesting:
+                assert '\n'.join(aList)
+            else:
+                g.es_print('\n'.join(aList),color='blue')
 
         return False
     #@+node:ekr.20090517020744.5785:@test reportMismatch
@@ -2020,12 +2023,16 @@ class baseScannerClass (scanUtility):
 
         import leo.core.leoImport as leoImport
         c,p = g.getTestVars()
+
         ic = c.importCommands
         scanner = leoImport.rstScanner(importCommands=ic,atAuto=True)
-        f = scanner.reportMismatch
+        scanner.root = p
+        s1 = ["abc",]
+        s2 = ["xyz",]
+
+        scanner.reportMismatch(s1,s2,1)
 
         # Why is leoSettings.leo scanned twice in dynamicUnitTest.leo?
-    #@nonl
     #@-node:ekr.20090517020744.5785:@test reportMismatch
     #@-node:ekr.20070911110507:reportMismatch & test
     #@-node:ekr.20070808115837:Checking
