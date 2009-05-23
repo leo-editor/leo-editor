@@ -22,7 +22,6 @@
 </v>
 <v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
-<v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
@@ -883,10 +882,6 @@ g.es("done",color="blue")
 <t tx="ekr.20070410063214"></t>
 <t tx="ekr.20070416075121"></t>
 <t tx="ekr.20070503085527"></t>
-<t tx="ekr.20070504080933">This option applies to directories specified in filenames in all kinds of @file trees, and to filenames specified in the @path directive.
-
-True:  Leo attempts to create directories if they do not exist.
-False: Leo never attempts to create directories.</t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui

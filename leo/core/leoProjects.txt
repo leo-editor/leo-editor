@@ -7249,6 +7249,164 @@ def createFirstTreeNode (self):
     c.setRootPosition(p) # New in 4.4.2.
 #@-node:ekr.20051009045404:createFirstTreeNode
 #@-node:ekr.20090522055440.8592:Fixed new command
+#@+node:ekr.20090522055440.8589:Why are nonexistent directories being created??
+# It was enabled in test.leo.
+#@nonl
+#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+# This is a generalization of os.makedir.
+
+def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
+
+    """Attempt to make all non-existent directories"""
+
+    trace = False and not g.unitTesting
+
+    if c:
+        create = c.config.create_nonexistent_directories
+    else:
+        create = g.app.config.create_nonexistent_directories
+
+    if trace: g.trace('c exists: %s force: %s create: %s dir: %s' % (
+        c is not None,force,create,theDir))
+
+    if not force and not create:
+        return None
+
+    if c: theDir = g.os_path_expandExpression(theDir,c=c)
+
+    dir1 = theDir = g.os_path_normpath(theDir)
+
+    # Split theDir into all its component parts.
+    paths = []
+    while len(theDir) > 0:
+        head,tail=g.os_path_split(theDir)
+        if len(tail) == 0:
+            paths.append(head)
+            break
+        else:
+            paths.append(tail)
+            theDir = head
+    path = ""
+    paths.reverse()
+    for s in paths:
+        path = g.os_path_join(path,s)
+        if not g.os_path_exists(path):
+            try:
+                os.mkdir(path)
+                if verbose and not g.app.unitTesting:
+                    # g.trace('***callers***',g.callers(5))
+                    g.es_print("created directory:",path,color='red')
+            except Exception:
+                # g.trace(g.callers())
+                if verbose: g.es_print("exception creating directory:",path,color='red')
+                g.es_exception()
+                return None
+    return dir1 # All have been created.
+#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+#@+node:ekr.20050328133444:computeStandardDirectories
+def computeStandardDirectories():
+
+    '''Set g.app.loadDir, g.app.homeDir, g.app.homeLeoDir and g.app.globalConfigDir.'''
+
+    if 0:
+        import sys
+        for s in sys.path: g.trace(s)
+
+    g.app.loadDir = g.computeLoadDir()
+        # Depends on g.app.tkEncoding: uses utf-8 for now.
+
+    g.app.leoDir = g.computeLeoDir()
+
+    g.app.homeDir = g.computeHomeDir()
+
+    # New in Leo 4.5 b4: create homeLeoDir if needed.
+    g.app.homeLeoDir = homeLeoDir = g.os_path_finalize(
+        g.os_path_join(g.app.homeDir,'.leo'))
+
+    if not g.os_path_exists(homeLeoDir):
+        g.makeAllNonExistentDirectories(homeLeoDir,force=True)
+
+    g.app.extensionsDir = g.os_path_finalize(
+        g.os_path_join(g.app.loadDir,'..','extensions'))
+
+    g.app.globalConfigDir = g.computeGlobalConfigDir()
+
+    g.app.testDir = g.os_path_finalize(
+        g.os_path_join(g.app.loadDir,'..','test'))
+
+    g.app.user_xresources_path = g.os_path_join(g.app.homeDir,'.leo_xresources')
+#@-node:ekr.20050328133444:computeStandardDirectories
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives
+
+def scanAtPathDirectives(self,aList,force=False):
+
+    '''Scan aList for @path directives.'''
+
+    c = self ; trace = False ; verbose = True
+
+    # Step 1: Compute the starting path.
+    # The correct fallback directory is the absolute path to the base.
+    if c.openDirectory:  # Bug fix: 2008/9/18
+        base = c.openDirectory
+    else:
+        base = g.app.config.relative_path_base_directory
+        if base and base == "!":    base = g.app.loadDir
+        elif base and base == ".":  base = c.openDirectory
+
+    if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
+
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+    if trace and verbose: g.trace('absbase',absbase)
+
+    # Step 2: look for @path directives.
+    paths = [] ; fileName = None
+    for d in aList:
+        # Look for @path directives.
+        path = d.get('path')
+        if path:
+            # Convert "path" or <path> to path.
+            path = g.computeRelativePath(path)
+            if path: paths.append(path)
+
+    # Add absbase and reverse the list.
+    paths.append(absbase)
+    paths.reverse()
+
+    if trace and verbose: g.trace('paths',paths)
+
+    # Step 3: Compute the full, effective, absolute path.
+    if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+    path = c.os_path_finalize_join(*paths)
+    if trace and verbose: g.trace('joined path:',path)
+
+    # Step 4: Make the path if necessary.
+    if path and not g.os_path_exists(path):
+        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
+        if not ok:
+            if force:
+                g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+            path = absbase # Bug fix: 2008/9/18
+
+    if trace: g.trace('returns',path)
+
+    return path
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives
+#@+node:ekr.20080710082231.19:x.makeShadowDirectory
+def makeShadowDirectory (self,fn):
+
+    '''Make a shadow directory for the **public** fn.'''
+
+    x = self ; path = x.shadowDirName(fn)
+
+    if not g.os_path_exists(path):
+
+        # Force the creation of the directories.
+        g.makeAllNonExistentDirectories(path,c=None,force=True)
+
+    return g.os_path_exists(path) and g.os_path_isdir(path)
+#@-node:ekr.20080710082231.19:x.makeShadowDirectory
+#@-node:ekr.20090522055440.8589:Why are nonexistent directories being created??
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
