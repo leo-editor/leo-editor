@@ -2513,17 +2513,20 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
 
     """Attempt to make all non-existent directories"""
 
-    # g.trace('theDir',theDir,c.config.create_nonexistent_directories,g.callers())
-
-    if not force:
-        if c:
-            if not c.config.create_nonexistent_directories:
-                return None
-        elif not app.config.create_nonexistent_directories:
-            return None
+    trace = False and not g.unitTesting
 
     if c:
-        theDir = g.os_path_expandExpression(theDir,c=c)
+        create = c.config.create_nonexistent_directories
+    else:
+        create = g.app.config.create_nonexistent_directories
+
+    if trace: g.trace('c exists: %s force: %s create: %s dir: %s' % (
+        c is not None,force,create,theDir))
+
+    if not force and not create:
+        return None
+
+    if c: theDir = g.os_path_expandExpression(theDir,c=c)
 
     dir1 = theDir = g.os_path_normpath(theDir)
 
