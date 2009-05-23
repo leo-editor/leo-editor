@@ -8148,7 +8148,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         if trace and verbose:
             g.trace(p.h,len(oldText),len(newText))
 
-        g.trace('***entry***',g.callers(4))
+        if trace: g.trace('***entry***',g.callers(4))
 
         oldIns  = p.v.t.insertSpot
         i,j = p.v.t.selectionStart,p.v.t.selectionLength
