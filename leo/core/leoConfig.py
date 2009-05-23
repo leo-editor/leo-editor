@@ -1293,12 +1293,14 @@ class configClass:
 
         Such initing must be done in setIvarsFromSettings.'''
 
+        trace = False and not g.unitTesting
+
         # N.B. The key is munged.
         bunch = self.ivarsDict.get(key)
         ivar = bunch.ivar # The actual name of the ivar.
         val = bunch.val
 
-        # g.trace('g.app.config',ivar,key,val)
+        if trace: g.trace('g.app.config',ivar,key,val)
         setattr(self,ivar,val)
     #@-node:ekr.20041117065611:initIvar
     #@-node:ekr.20041117065611.2:initIvarsFromSettings & helpers
@@ -1779,6 +1781,8 @@ class configClass:
         - Called from readSettingsFiles with c = None to init g.app.config ivars.
         - Called from c.__init__ to init corresponding commmander ivars.'''
 
+        trace = False and not g.unitTesting
+
         # Ingore temporary commanders created by readSettingsFiles.
         if not self.inited: return
 
@@ -1792,10 +1796,10 @@ class configClass:
                     kind = bunch.kind
                     val = self.get(c,key,kind) # Don't use bunch.val!
                     if c:
-                        # g.trace("%20s %s = %s" % (g.shortFileName(c.mFileName),ivar,val))
+                        if trace: g.trace("%20s %s = %s" % (g.shortFileName(c.mFileName),ivar,val))
                         setattr(c,ivar,val)
                     else:
-                        # g.trace("%20s %s = %s" % ('g.app.config',ivar,val))
+                        if trace: g.trace("%20s %s = %s" % ('g.app.config',ivar,val))
                         setattr(self,ivar,val)
     #@-node:ekr.20041228042224:setIvarsFromSettings (g.app.config)
     #@+node:ekr.20041201080436:appendToRecentFiles (g.app.config)
