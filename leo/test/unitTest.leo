@@ -1993,6 +1993,7 @@
 </v>
 <v t="ekr.20090401102321.1"><vh>elisp tests</vh>
 <v t="ekr.20090401102321.2"><vh>@test elisp functions</vh></v>
+<v t="ekr.20090525103204.5178"><vh>@test elisp 2</vh></v>
 </v>
 <v t="ekr.20080211092326"><vh>Pascal tests</vh>
 <v t="ekr.20080211092326.1"><vh>@test pascal-to-delphi interface</vh></v>
@@ -23020,6 +23021,23 @@ AssertionError: extractSection: before undo1
 Ran 709 tests in 62.594s
 
 FAILED (failures=28, errors=6)
+</t>
+<t tx="ekr.20090525103204.5178">s = '''\
+;;; comment
+;;; continue
+;;;
+
+(defun abc (a b)
+   (+ 1 2 3))
+
+; comm
+(defun cde (a b)
+   (+ 1 2 3))
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.elispUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
 import random,fnmatch
