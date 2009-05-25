@@ -3744,6 +3744,8 @@ class baseCommands (object):
         if p is None: p = c.p
         if not p: return
 
+        c.endEditing()
+
         undoType = g.choose(sortChildren,'Sort Children','Sort Siblings')
         parent_v = p._parentVnode()
         parent = p.parent()
