@@ -4,11 +4,6 @@
 #@+node:ekr.20080814103428.4:4.6 qt gui
 #@+node:ekr.20090518072506.8310:To do first
 #@+node:ekr.20090525113804.5776:High-priority bugs
-#@+node:ekr.20090525113804.5772:Apply Ville's patch
-@nocolor-node
-
-http://bugs.launchpad.net/leo-editor/+bug/379141
-#@-node:ekr.20090525113804.5772:Apply Ville's patch
 #@+node:ekr.20090525113804.5774:Fix minor @auto bug
 @nocolor-node
 
@@ -98,24 +93,6 @@ Traceback (most recent call last):
 SAXParseException: <unknown>:22:39: not well-formed (invalid token)
 #@nonl
 #@-node:ekr.20090525113804.5779:Fix file bug re unicode characters
-#@+node:ekr.20090525113804.5780:Don't copy @edit trees to outline
-http://bugs.launchpad.net/leo-editor/+bug/376634
-
-Repro steps:
-
-- Create node with headline @edit ~/foo.txt
-- Enter some text in body
-- Save (ctrl+s)
-
-Expected behaviour:
-
-- The body content does not appear in the .leo file, only in ~/foo.txt
-
-Actual behaviour:
-
-- The body content is both in ~/foo.txt and .leo file (as you can see by opening the .leo file in normal text editor)
-#@nonl
-#@-node:ekr.20090525113804.5780:Don't copy @edit trees to outline
 #@+node:ekr.20090525113804.5781:Fix urgent @shadow bug
 @nocolor-node
 

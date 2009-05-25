@@ -1763,13 +1763,15 @@ class baseFileCommands:
 
         fc = self ; c = fc.c ; v = p.v
         isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+        isEdit = p.isAtEditNode() and p.atEditNodeName().strip()
         isShadow = p.isAtShadowFileNode()
         isThin = p.isAtThinFileNode()
         isOrphan = p.isOrphan()
         if not isIgnore: isIgnore = p.isAtIgnoreNode()
 
-        if isIgnore:   forceWrite = True      # Always write full @ignore trees.
+        if   isIgnore: forceWrite = True      # Always write full @ignore trees.
         elif isAuto:   forceWrite = False     # Never write non-ignored @auto trees.
+        elif isEdit:   forceWrite = False     # Never write non-ignored @edit trees.
         elif isShadow: forceWrite = False     # Never write non-ignored @shadow trees.
         elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
         else:          forceWrite = True      # Write all other @file trees.

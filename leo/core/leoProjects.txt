@@ -10445,6 +10445,12 @@ def sortSiblings (self,event=None,cmp=None,key=None,p=None,sortChildren=False):
     c.redraw(p)
 #@-node:ekr.20050415134809.1:c.sortSiblings
 #@-node:ekr.20090514111518.5660:Fixed bug: sorting could revert headline changes
+#@+node:ekr.20090525113804.5780:Don't copy @edit trees to outline
+http://bugs.launchpad.net/leo-editor/+bug/376634
+
+The fix was to putVnodes.
+#@nonl
+#@-node:ekr.20090525113804.5780:Don't copy @edit trees to outline
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
