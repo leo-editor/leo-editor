@@ -10404,6 +10404,47 @@ def writeBody (self,p):
 #@nonl
 #@-node:ekr.20090502071837.71:writeBody & helpers
 #@-node:ekr.20090511055302.5784:Fixed rst import bug
+#@+node:ekr.20090514111518.5660:Fixed bug: sorting could revert headline changes
+#@+node:ekr.20050415134809.1:c.sortSiblings
+def sortSiblings (self,event=None,cmp=None,key=None,p=None,sortChildren=False):
+
+    '''Sort the siblings of a node.'''
+
+    c = self ; u = c.undoer
+    if p is None: p = c.p
+    if not p: return
+
+    c.endEditing()
+
+    undoType = g.choose(sortChildren,'Sort Children','Sort Siblings')
+    parent_v = p._parentVnode()
+    parent = p.parent()
+    oldChildren = parent_v.t.children[:]
+    newChildren = parent_v.t.children[:]
+
+    if key == None:
+        def lowerKey (self):
+            return (self.h.lower(), self)
+        key = lowerKey
+
+    if cmp: newChildren.sort(cmp,key=key)
+    else:   newChildren.sort(key=key)
+
+    # g.trace(g.listToString(newChildren))
+
+    bunch = u.beforeSort(p,undoType,oldChildren,newChildren,sortChildren)
+    parent_v.t.children = newChildren
+    if parent:
+        dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
+    else:
+        dirtyVnodeList = []
+    u.afterSort(p,bunch,dirtyVnodeList)
+
+    # Sorting destroys position p, and possibly the root position.
+    p = c.setPositionAfterSort(sortChildren)
+    c.redraw(p)
+#@-node:ekr.20050415134809.1:c.sortSiblings
+#@-node:ekr.20090514111518.5660:Fixed bug: sorting could revert headline changes
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -357,7 +357,6 @@
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
 <v t="ekr.20090521070342.1907"><vh>@button show-rst</vh></v>
-<v t="ekr.20090521070342.1908"><vh>Sample rst</vh></v>
 <v t="ekr.20090521100748.1911" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355022d3d7104752e"><vh>@@auto-rst c:\prog\test\readme-new.rst</vh>
 <v t="ekr.20090521114145.1913"><vh>Staging</vh>
 <v t="ekr.20090521114145.1914"><vh>Installing PIL</vh></v>
@@ -386,6 +385,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20090525112253.1942"><vh>@url http://webpages.charter.net/edreamleo/front.html</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2755,14 +2755,6 @@ else:
 self.assertNotEqual(1,2)</t>
 <t tx="ekr.20090514103332.1929"></t>
 <t tx="ekr.20090521070342.1907">g.app.gui.runScrolledMessageDialog(c=c,msg=u'rst:'+p.b)</t>
-<t tx="ekr.20090521070342.1908">####
-top
-####
-
-- one
-- two
-- three
-- four</t>
 <t tx="ekr.20090521100748.1911">@language rest
 @tabwidth -4
 @others
@@ -3210,5 +3202,6 @@ results in::
 If yes and yes, code which understands the -p syntax might be useful.
 </t>
 <t tx="ekr.20090525090210.1940"></t>
+<t tx="ekr.20090525112253.1942"></t>
 </tnodes>
 </leo_file>

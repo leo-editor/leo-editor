@@ -3,6 +3,138 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
 #@+node:ekr.20090518072506.8310:To do first
+#@+node:ekr.20090525113804.5776:High-priority bugs
+#@+node:ekr.20090525113804.5772:Apply Ville's patch
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/379141
+#@-node:ekr.20090525113804.5772:Apply Ville's patch
+#@+node:ekr.20090525113804.5774:Fix minor @auto bug
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/306671
+
+If a Leo editor window is opened, and the "NewHeadline" node is renamed to
+"@auto <path to some valid file>", and then the "File->Read/Write->Read @auto
+nodes" menu option is selected, the renamed node reverts to its previous name
+("NewHeadline"), and nothing is loaded into the node.
+#@nonl
+#@-node:ekr.20090525113804.5774:Fix minor @auto bug
+#@+node:ekr.20090525113804.5775:Fix vim bindings (dd) bug
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/353925
+
+The "Qt, vim bindings" post reports problems with Vim emulation commands with the Qt interface.
+Posting: http://groups.google.com/group/leo-editor/browse_frm/thread/7285ac185355efb1#
+
+It appears that the "kill-region" function, which deletes the selected text and places it in the clipboard in the Tk interface, does nothing in the Qt interface.
+
+TL
+#@nonl
+#@-node:ekr.20090525113804.5775:Fix vim bindings (dd) bug
+#@+node:ekr.20090525113804.5777:Fix dabbrev-expands bug
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/362048
+
+I have 'dabbrev-expands' bound to the F4 key. When I press F4 after
+the word "freq" in a body pane containing the word "frequency" then
+Leo 4.5.1 shows a hour-glass for a while before giving an empty
+dabbrev-expand: prompt in the minibuffer.
+
+If I back up one character, putting point between the e and q and then
+type F4, I get the expected behavior: the word "frequency" is inserted
+immediately.
+#@nonl
+#@-node:ekr.20090525113804.5777:Fix dabbrev-expands bug
+#@+node:ekr.20090525113804.5778:Fix lost anchor bug
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/363403
+
+qt gui, yesterdays leo, Ubuntu 8.10, python 2.5.2
+
+With a long body text you might place the cursor on a line, hold down Shift, and
+PgDn several pages to select a large block of text. The last PgDn may overshoot
+the range you want selected, so you should be able to use UpArrow to bring the
+bottom of the range back up to where you want it. However, on the first UpArrow
+the selection is lost and restarted from the current cursor position. I.e. you
+end up with just one line selected, instead of trimming one line of the
+selection of several pages, as intended.
+#@nonl
+#@-node:ekr.20090525113804.5778:Fix lost anchor bug
+#@+node:ekr.20090525113804.5779:Fix file bug re unicode characters
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/376189
+
+Ubuntu 8.10, python 2.5.2, qt, current bzr
+
+if this script:
+
+n = p.insertAsNthChild(0)
+n.b = 'test%cthis' % 27
+
+is run, and the file saved, leo can no longer read the file, but reports as below. May also apply to other characters.
+
+Traceback (most recent call last):
+
+  File "/mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/trunk/leo/core/leoFileCommands.py", line 1278, in parse_leo_file
+    parser.parse(theFile) # expat does not support parseString
+
+  File "/usr/lib/python2.5/xml/sax/expatreader.py", line 107, in parse
+    xmlreader.IncrementalParser.parse(self, source)
+
+  File "/usr/lib/python2.5/xml/sax/xmlreader.py", line 123, in parse
+    self.feed(buffer)
+
+  File "/usr/lib/python2.5/xml/sax/expatreader.py", line 211, in feed
+    self._err_handler.fatalError(exc)
+
+  File "/usr/lib/python2.5/xml/sax/handler.py", line 38, in fatalError
+    raise exception
+
+SAXParseException: <unknown>:22:39: not well-formed (invalid token)
+#@nonl
+#@-node:ekr.20090525113804.5779:Fix file bug re unicode characters
+#@+node:ekr.20090525113804.5780:Don't copy @edit trees to outline
+http://bugs.launchpad.net/leo-editor/+bug/376634
+
+Repro steps:
+
+- Create node with headline @edit ~/foo.txt
+- Enter some text in body
+- Save (ctrl+s)
+
+Expected behaviour:
+
+- The body content does not appear in the .leo file, only in ~/foo.txt
+
+Actual behaviour:
+
+- The body content is both in ~/foo.txt and .leo file (as you can see by opening the .leo file in normal text editor)
+#@nonl
+#@-node:ekr.20090525113804.5780:Don't copy @edit trees to outline
+#@+node:ekr.20090525113804.5781:Fix urgent @shadow bug
+@nocolor-node
+
+Has this been fixed???
+
+http://bugs.launchpad.net/leo-editor/+bug/378122
+
+When I create a @shadow node whose file extension is different to the @language
+I specify in the body the source file and it's x-equivalent are both created ok.
+However, when I close the leo file and then reopen it, the @shadow node does not
+reload.
+
+I get the error message in the log pane: Bad @+leo sentinel in:
+    C:\MyWork\.leo_shadow\xnoddy.erl
+
+I'm using Leo 4.5 final, build 1.244.
+#@nonl
+#@-node:ekr.20090525113804.5781:Fix urgent @shadow bug
+#@-node:ekr.20090525113804.5776:High-priority bugs
 #@+node:ekr.20090522161156.5884:Minor, easy
 #@+node:ekr.20090523070447.6476:Make sure rst3 command applied to @auto-rst node works
 #@-node:ekr.20090523070447.6476:Make sure rst3 command applied to @auto-rst node works
@@ -10,13 +142,6 @@
 # The name of the offending node is not given, just the root node.
 #@nonl
 #@-node:ekr.20090521064955.5945:Better message when checking syntax
-#@+node:ekr.20090514111518.5660:Sorting can revert headline changes
-#@-node:ekr.20090514111518.5660:Sorting can revert headline changes
-#@+node:ekr.20090512080015.5801:import-files-recursively command?
-How would the command specify settings?
-
-A line added to test bzr push.
-#@-node:ekr.20090512080015.5801:import-files-recursively command?
 #@+node:ekr.20090522113545.5884:pylint plugins
 @nocolor
 
@@ -52,6 +177,11 @@ E1103:604:ToolbarTkinterFrame.getIconWidgetFrame:
 E0602:116:open_in_emacs: Undefined variable '_exemacs_cmd'
 #@nonl
 #@-node:ekr.20090522113545.5884:pylint plugins
+#@+node:ekr.20090512080015.5801:import-files-recursively command?
+How would the command specify settings?
+
+A line added to test bzr push.
+#@-node:ekr.20090512080015.5801:import-files-recursively command?
 #@-node:ekr.20090522161156.5884:Minor, easy
 #@+node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
 @nocolor-node
