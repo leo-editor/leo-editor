@@ -994,6 +994,12 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             else:
                 if trace: g.trace('*** failed. no item for %s' % p.h)
     #@-node:ekr.20090124174652.60:setHeadline (nativeTree)
+    #@+node:ville.20090525205736.3928:getSelectedPositions (nativeTree)
+    def getSelectedPositions(self):
+        items = self.getSelectedItems()
+        pl = leoNodes.poslist(self.item2position(it) for it in items)
+        return pl
+    #@-node:ville.20090525205736.3928:getSelectedPositions (nativeTree)
     #@-node:ekr.20090124174652.52:Selecting & editing... (nativeTree)
     #@+node:ekr.20090124174652.78:Widget-dependent helpers
     #@+node:ekr.20090125063447.10:Drawing

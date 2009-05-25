@@ -7458,6 +7458,16 @@ class baseCommands (object):
 
     selectVnode = selectPosition
     #@-node:ekr.20031218072017.2997:c.selectPosition
+    #@+node:ville.20090525205736.12325:c.getSelectedPositions
+    def getSelectedPositions(self):
+        """ Get list (poslist) of currently selected positions
+
+        So far only makes sense on qt gui (which supports multiselection)
+        """
+        c = self
+        return c.frame.tree.getSelectedPositions()
+    #@nonl
+    #@-node:ville.20090525205736.12325:c.getSelectedPositions
     #@+node:ekr.20060923202156:c.onCanvasKey
     def onCanvasKey (self,event):
 
