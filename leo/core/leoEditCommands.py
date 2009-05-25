@@ -355,11 +355,9 @@ class abbrevCommandsClass (baseEditCommandsClass):
         '''Insert the common prefix of all dynamic abbrev's matching the present word.
         This corresponds to C-M-/ in Emacs.'''
 
-        k = self.k
+        c = self.c ; k = c.k ; p = c.p ; u = c.undoer
         w = self.editWidget(event)
         if not w: return
-        if g.app.gui.guiName() != 'tkinter':
-            return g.es('command not ready yet',color='blue')
 
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -370,8 +368,13 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if rlist:
             prefix = reduce(g.longestCommonPrefix,rlist)
             if prefix:
+                b = c.undoer.beforeChangeNodeContents(c.p,oldBody=p.b,oldHead=p.h)
                 w.delete(i,j)
                 w.insert(i,prefix)
+                p.b = w.getAllText()
+                c.undoer.afterChangeNodeContents(p,
+                    command='dabbrev-completion',bunch=b,dirtyVnodeList=[]) 
+    #@nonl
     #@-node:ekr.20050920084036.60:dynamicCompletion
     #@+node:ekr.20050920084036.59:dynamicExpansion
     def dynamicExpansion (self,event=None):
@@ -380,11 +383,9 @@ class abbrevCommandsClass (baseEditCommandsClass):
         by searching in the buffer for words starting with that abbreviation (dabbrev-expand).
         This corresponds to M-/ in Emacs.'''
 
-        k = self.k
+        c = self.c ; k = c.k ; p = c.p ; u = c.undoer
         w = self.editWidget(event)
         if not w: return
-        if g.app.gui.guiName() not in ('null','tkinter'):
-            return g.es('command not ready yet',color='blue')
 
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -395,11 +396,15 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if not rlist: return
         prefix = reduce(g.longestCommonPrefix,rlist)
         if prefix and prefix != txt:
+            b = c.undoer.beforeChangeNodeContents(c.p,oldBody=p.b,oldHead=p.h)
             w.delete(i,j)
             w.insert(i,prefix)
+            p.b = w.getAllText()
+            c.undoer.afterChangeNodeContents(p,
+                command='dabbrev-expands',bunch=b,dirtyVnodeList=[])
         else:
             self.dynamicExpandHelper(prefix,rlist,w)
-    #@+node:ekr.20070605110441:dynamicExpandHelper
+    #@+node:ekr.20070605110441:dynamicExpandHelper & test
     def dynamicExpandHelper (self,prefix=None,rlist=None,w=None):
 
         k = self.k ; tag = 'dabbrev-expand'
@@ -421,8 +426,15 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 i,j = g.getWord(s,ins)
                 w.delete(i,j)
                 w.insert(i,k.arg)
-    #@nonl
-    #@-node:ekr.20070605110441:dynamicExpandHelper
+    #@+node:ekr.20090525144314.6511:@test dynamicExpandHelper
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+
+        # A totally wimpy test.
+        c.abbrevCommands.dynamicExpandHelper(prefix='',rlist=None,w=None)
+    #@-node:ekr.20090525144314.6511:@test dynamicExpandHelper
+    #@-node:ekr.20070605110441:dynamicExpandHelper & test
     #@-node:ekr.20050920084036.59:dynamicExpansion
     #@+node:ekr.20050920084036.61:getDynamicList (helper)
     def getDynamicList (self,w,txt,rlist):

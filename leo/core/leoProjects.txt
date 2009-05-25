@@ -10500,6 +10500,145 @@ def killRegionHelper (self,event,deleteFlag):
     # self.removeRKeys(w)
 #@-node:ekr.20050920084036.182:killRegion & killRegionSave & helper
 #@-node:ekr.20090525113804.5775:Fixed vim bindings (dd) bug
+#@+node:ekr.20090525113804.5777:Fixed dabbrev-expands bug
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/362048
+
+I have 'dabbrev-expands' bound to the F4 key. When I press F4 after
+the word "freq" in a body pane containing the word "frequency" then
+Leo 4.5.1 shows a hour-glass for a while before giving an empty
+dabbrev-expand: prompt in the minibuffer.
+
+If I back up one character, putting point between the e and q and then
+type F4, I get the expected behavior: the word "frequency" is inserted
+immediately.
+
+What I did:
+
+- Removed "not ready messages".
+- Made the code undoable.
+- Added wimpy unit test.
+#@nonl
+#@+node:ekr.20050920084036.58:dynamic abbreviation...
+#@+node:ekr.20050920084036.60:dynamicCompletion
+def dynamicCompletion (self,event=None):
+
+    '''Insert the common prefix of all dynamic abbrev's matching the present word.
+    This corresponds to C-M-/ in Emacs.'''
+
+    c = self.c ; k = c.k ; p = c.p ; u = c.undoer
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i,j = g.getWord(s,ins)
+    txt = w.get(i,j)
+    rlist = []
+    self.getDynamicList(w,txt,rlist)
+    if rlist:
+        prefix = reduce(g.longestCommonPrefix,rlist)
+        if prefix:
+            b = c.undoer.beforeChangeNodeContents(c.p,oldBody=p.b,oldHead=p.h)
+            w.delete(i,j)
+            w.insert(i,prefix)
+            p.b = w.getAllText()
+            c.undoer.afterChangeNodeContents(p,
+                command='dabbrev-completion',bunch=b,dirtyVnodeList=[]) 
+#@nonl
+#@-node:ekr.20050920084036.60:dynamicCompletion
+#@+node:ekr.20050920084036.59:dynamicExpansion
+def dynamicExpansion (self,event=None):
+
+    '''Expand the word in the buffer before point as a dynamic abbrev,
+    by searching in the buffer for words starting with that abbreviation (dabbrev-expand).
+    This corresponds to M-/ in Emacs.'''
+
+    c = self.c ; k = c.k ; p = c.p ; u = c.undoer
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i,j = g.getWord(s,ins)
+    txt = w.get(i,j)
+    rlist = []
+    self.getDynamicList(w,txt,rlist)
+    if not rlist: return
+    prefix = reduce(g.longestCommonPrefix,rlist)
+    if prefix and prefix != txt:
+        b = c.undoer.beforeChangeNodeContents(c.p,oldBody=p.b,oldHead=p.h)
+        w.delete(i,j)
+        w.insert(i,prefix)
+        p.b = w.getAllText()
+        c.undoer.afterChangeNodeContents(p,
+            command='dabbrev-expands',bunch=b,dirtyVnodeList=[])
+    else:
+        self.dynamicExpandHelper(prefix,rlist,w)
+#@+node:ekr.20070605110441:dynamicExpandHelper & test
+def dynamicExpandHelper (self,prefix=None,rlist=None,w=None):
+
+    k = self.k ; tag = 'dabbrev-expand'
+    state = k.getState(tag)
+
+    if state == 0:
+        self.w = w
+        names = rlist ; event = None
+        prefix2 = 'dabbrev-expand: '
+        k.setLabelBlue(prefix2+prefix,protect=True)
+        k.getArg(event,tag,1,self.dynamicExpandHelper,prefix=prefix2,tabList=names)
+    else:
+        k.clearState()
+        k.resetLabel()
+        if k.arg:
+            w = self.w
+            s = w.getAllText()
+            ins = w.getInsertPoint()
+            i,j = g.getWord(s,ins)
+            w.delete(i,j)
+            w.insert(i,k.arg)
+#@+node:ekr.20090525144314.6511:@test dynamicExpandHelper
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    # A totally wimpy test.
+    c.abbrevCommands.dynamicExpandHelper(prefix='',rlist=None,w=None)
+#@-node:ekr.20090525144314.6511:@test dynamicExpandHelper
+#@-node:ekr.20070605110441:dynamicExpandHelper & test
+#@-node:ekr.20050920084036.59:dynamicExpansion
+#@+node:ekr.20050920084036.61:getDynamicList (helper)
+def getDynamicList (self,w,txt,rlist):
+
+    items = []
+    if self.globalDynamicAbbrevs:
+        for p in self.c.allNodes_iter():
+            s = p.b
+            if s:
+                items.extend(self.dynaregex.findall(s))
+    else:
+        # Make a big list of what we are considering a 'word'
+        s = w.getAllText()
+        items.append(self.dynaregex.findall(s))
+
+    # g.trace('txt',repr(txt),'len(items)',len(items))
+
+    if items:
+        for word in items:
+            if not word.startswith(txt) or word == txt:
+                continue
+                # dont need words that dont match or == the pattern
+            if word not in rlist:
+                rlist.append(word)
+            else:
+                rlist.remove(word)
+                rlist.append(word)
+
+    # g.trace('rlist',rlist)
+#@-node:ekr.20050920084036.61:getDynamicList (helper)
+#@-node:ekr.20050920084036.58:dynamic abbreviation...
+#@-node:ekr.20090525113804.5777:Fixed dabbrev-expands bug
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all

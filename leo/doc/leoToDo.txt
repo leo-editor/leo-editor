@@ -4,21 +4,6 @@
 #@+node:ekr.20080814103428.4:4.6 qt gui
 #@+node:ekr.20090518072506.8310:To do first
 #@+node:ekr.20090525113804.5776:High-priority bugs
-#@+node:ekr.20090525113804.5777:Fix dabbrev-expands bug
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/362048
-
-I have 'dabbrev-expands' bound to the F4 key. When I press F4 after
-the word "freq" in a body pane containing the word "frequency" then
-Leo 4.5.1 shows a hour-glass for a while before giving an empty
-dabbrev-expand: prompt in the minibuffer.
-
-If I back up one character, putting point between the e and q and then
-type F4, I get the expected behavior: the word "frequency" is inserted
-immediately.
-#@nonl
-#@-node:ekr.20090525113804.5777:Fix dabbrev-expands bug
 #@+node:ekr.20090525113804.5778:Fix lost anchor bug
 @nocolor-node
 
