@@ -483,6 +483,7 @@ class rstCommands:
         self.outputFile = None # The open file being written.
         self.path = '' # The path from any @path directive.
         self.source = None # The written source as a string.
+        self.trialWrite = False # True if doing a trialWrite.
         #@nonl
         #@-node:ekr.20090502071837.36:<< init ivars >>
         #@nl
@@ -966,12 +967,13 @@ class rstCommands:
         # g.trace('path:',self.path)
     #@-node:ekr.20090502071837.60:initWrite
     #@+node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
-    def writeAtAutoFile (self,p,fileName,outputFile):
+    def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
 
         '''Write an @auto tree containing imported rST code.
         The caller will close the output file.'''
 
         try:
+            self.trialWrite = trialWrite
             self.atAutoWrite = True
             self.initAtAutoWrite(p,fileName,outputFile)
             self.topNode = p.copy() # Indicate the top of this tree.
@@ -1337,7 +1339,6 @@ class rstCommands:
     def writeBody (self,p):
 
         # remove trailing cruft and split into lines.
-        ### lines = p.b.rstrip().split('\n')
         lines = g.splitLines(p.b)
 
         if self.getOption('code_mode'):
@@ -1371,20 +1372,16 @@ class rstCommands:
             if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
                 lines = self.replaceCodeBlockDirectives(lines)
 
-        if 1:
-            # Preserve rst whitespace: uses lines = g.splitLines(p.b)
-            s = ''.join(lines)
-            if not self.atAutoWrite:
-                # s += '\n\n' # Make sure all nodes end with a blank line.
-                # Don't accumulate more and more trailing newlines!
-                s = g.ensureTrailingNewlines(s,2)
-            self.write(s)
-        else:
-            # Old code: uses lines = p.b.rstrip().split('\n')
-            s = '\n'.join(lines).strip()
-            if s:
-                self.write('%s\n\n' % s)
+        # Write the lines.
+        s = ''.join(lines)
+        if not self.trialWrite:
+            # A little fib.  We don't alter the text when doing a trial write,
+            # so the perfect-import comparison will pass.
+            # We *do* ensure 2 newlines when doing a "real" write.
+            s = g.ensureTrailingNewlines(s,2)
+        self.write(s)
     #@nonl
+    #@-node:ekr.20090502071837.71:writeBody & helpers
     #@+node:ekr.20090502071837.72:handleCodeMode & helper
     def handleCodeMode (self,lines):
 
@@ -1610,7 +1607,6 @@ class rstCommands:
         return result
     #@nonl
     #@-node:ekr.20090502071837.82:replaceCodeBlockDirectives
-    #@-node:ekr.20090502071837.71:writeBody & helpers
     #@+node:ekr.20090502071837.83:writeHeadline & helper
     def writeHeadline (self,p):
 

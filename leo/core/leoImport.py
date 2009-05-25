@@ -1818,7 +1818,7 @@ class baseScannerClass (scanUtility):
         if s1 is None and s2 is None:
             if self.isRst: # Errors writing file at present...
                 outputFile = StringIO.StringIO()
-                c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile)
+                c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
                 s1,s2 = self.file_s,outputFile.getvalue()
             else:
                 at.write(self.root,
