@@ -1378,6 +1378,7 @@ class rstCommands:
             # A little fib.  We don't alter the text when doing a trial write,
             # so the perfect-import comparison will pass.
             # We *do* ensure 2 newlines when doing a "real" write.
+            s = g.ensureLeadingNewlines(s,1)
             s = g.ensureTrailingNewlines(s,2)
         self.write(s)
     #@nonl

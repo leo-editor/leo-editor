@@ -5921,14 +5921,31 @@ def computeWindowTitle (fileName):
             title = fn
         return title
 #@-node:ekr.20031218072017.3103:g.computeWindowTitle
-#@+node:ekr.20090516135452.5777:g.ensureTrailingNewlines & tests
+#@+node:ekr.20090516135452.5777:g.ensureLeading/TrailingNewlines & tests
+def ensureLeadingNewlines (s,n):
+
+    s = g.removeLeading(s,'\t\n\r ')
+    return ('\n' * n) + s
+
 def ensureTrailingNewlines (s,n):
 
     s = g.removeTrailing(s,'\t\n\r ')
     return s + '\n' * n
 
 
-#@+node:ekr.20090516135452.5778:@test ensureTrailingNewlines
+#@+node:ekr.20090516135452.5778:@test ensureLeadingNewlines
+if g.unitTesting:
+
+    s = ' \n \n\t\naa bc'
+    s2 = 'aa bc'
+
+    for i in range(3):
+        result = g.ensureLeadingNewlines(s,i)
+        val = ('\n' * i) + s2
+        assert result == val, 'expected %s, got %s' % (
+            repr(val),repr(result))
+#@-node:ekr.20090516135452.5778:@test ensureLeadingNewlines
+#@+node:ekr.20090525164505.5791:@test ensureTrailingNewlines
 if g.unitTesting:
 
     s = 'aa bc \n \n\t\n'
@@ -5939,8 +5956,8 @@ if g.unitTesting:
         val = s2 + ('\n' * i)
         assert result == val, 'expected %s, got %s' % (
             repr(val),repr(result))
-#@-node:ekr.20090516135452.5778:@test ensureTrailingNewlines
-#@-node:ekr.20090516135452.5777:g.ensureTrailingNewlines & tests
+#@-node:ekr.20090525164505.5791:@test ensureTrailingNewlines
+#@-node:ekr.20090516135452.5777:g.ensureLeading/TrailingNewlines & tests
 #@+node:ekr.20031218072017.3138:g.executeScript
 def executeScript (name):
 
@@ -6128,9 +6145,18 @@ def prettyPrintType (obj):
         if theType.endswith("'>"): theType = theType[:-2]
         return theType
 #@-node:ekr.20060221083356:g.prettyPrintType
-#@+node:ekr.20090516135452.5776:g.removeTrailing and removeTrailingWs & tests
+#@+node:ekr.20090516135452.5776:g.removeLeading/Trailing & tests
 # Warning: g.removeTrailingWs already exists.
 # Do not change it!
+
+def removeLeading (s,chars):
+
+    '''Remove all characters in chars from the front of s.'''
+
+    i = 0
+    while i < len(s) and s[i] in chars:
+        i += 1
+    return s[i:]
 
 def removeTrailing (s,chars):
 
@@ -6155,7 +6181,7 @@ if g.unitTesting:
         result = g.removeTrailing(s,arg)
         assert result == val, 'expected %s, got %s' % (val,result)
 #@-node:ekr.20090516135452.5779:@test removeTrailing
-#@-node:ekr.20090516135452.5776:g.removeTrailing and removeTrailingWs & tests
+#@-node:ekr.20090516135452.5776:g.removeLeading/Trailing & tests
 #@+node:ekr.20060410112600:g.stripBrackets
 def stripBrackets (s):
 
