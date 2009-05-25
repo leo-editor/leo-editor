@@ -1013,6 +1013,26 @@ class baseFileCommands:
     #@-node:EKR.20040627120120:restoreDescendentAttributes
     #@-node:ekr.20060919133249:Common
     #@+node:ekr.20060919104530:Sax (reading)
+    #@+node:ekr.20090525144314.6526:cleanSaxInputString & test
+    def cleanSaxInputString(self,s):
+
+        result = []
+
+        for ch in s:
+            if ord(ch) >= 32 or ch in ('\t','\r','\n'):
+                result.append(ch)
+
+        return ''.join(result)
+
+    # for i in range(32): print i,repr(chr(i))
+    #@+node:ekr.20090525144314.6527:@test cleanSaxInputString
+    if g.unitTesting:
+
+        s = 'test%cthis' % 27
+
+        print c.fileCommands.cleanSaxInputString(s)
+    #@-node:ekr.20090525144314.6527:@test cleanSaxInputString
+    #@-node:ekr.20090525144314.6526:cleanSaxInputString & test
     #@+node:ekr.20060919110638.4:createSaxVnodes & helpers
     def createSaxVnodes (self,saxRoot,reassignIndices):
 
@@ -1266,6 +1286,7 @@ class baseFileCommands:
             else:
                 if theFile:
                     s = theFile.read()
+                s = self.cleanSaxInputString(s)
                 theFile = cStringIO.StringIO(s)
             parser = xml.sax.make_parser()
             parser.setFeature(xml.sax.handler.feature_external_ges,1)

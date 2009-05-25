@@ -4,6 +4,10 @@
 #@+node:ekr.20080814103428.4:4.6 qt gui
 #@+node:ekr.20090518072506.8310:To do first
 #@+node:ekr.20090525113804.5776:High-priority bugs
+#@+node:ekr.20090525144314.6524:Make @url nodes work with qt gui
+#@-node:ekr.20090525144314.6524:Make @url nodes work with qt gui
+#@+node:ekr.20090525144314.6525:Tab appears in headlines if I type the tab character
+#@-node:ekr.20090525144314.6525:Tab appears in headlines if I type the tab character
 #@+node:ekr.20090525113804.5778:Fix lost anchor bug
 @nocolor-node
 
@@ -18,42 +22,10 @@ bottom of the range back up to where you want it. However, on the first UpArrow
 the selection is lost and restarted from the current cursor position. I.e. you
 end up with just one line selected, instead of trimming one line of the
 selection of several pages, as intended.
+
+This may be hard to fix, without taking over the qt code's handling of page up/down.
 #@nonl
 #@-node:ekr.20090525113804.5778:Fix lost anchor bug
-#@+node:ekr.20090525113804.5779:Fix file bug re unicode characters
-@nocolor-node
-
-http://bugs.launchpad.net/leo-editor/+bug/376189
-
-Ubuntu 8.10, python 2.5.2, qt, current bzr
-
-if this script:
-
-n = p.insertAsNthChild(0)
-n.b = 'test%cthis' % 27
-
-is run, and the file saved, leo can no longer read the file, but reports as below. May also apply to other characters.
-
-Traceback (most recent call last):
-
-  File "/mnt/usr1/usr1/home/tbrown/.gnome-desktop/Package/leo/bzr/leo.repo/trunk/leo/core/leoFileCommands.py", line 1278, in parse_leo_file
-    parser.parse(theFile) # expat does not support parseString
-
-  File "/usr/lib/python2.5/xml/sax/expatreader.py", line 107, in parse
-    xmlreader.IncrementalParser.parse(self, source)
-
-  File "/usr/lib/python2.5/xml/sax/xmlreader.py", line 123, in parse
-    self.feed(buffer)
-
-  File "/usr/lib/python2.5/xml/sax/expatreader.py", line 211, in feed
-    self._err_handler.fatalError(exc)
-
-  File "/usr/lib/python2.5/xml/sax/handler.py", line 38, in fatalError
-    raise exception
-
-SAXParseException: <unknown>:22:39: not well-formed (invalid token)
-#@nonl
-#@-node:ekr.20090525113804.5779:Fix file bug re unicode characters
 #@+node:ekr.20090525113804.5781:Fix urgent @shadow bug
 @nocolor-node
 
@@ -1214,6 +1186,7 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
         else:
             if theFile:
                 s = theFile.read()
+            s = self.cleanSaxInputString(s)
             theFile = cStringIO.StringIO(s)
         parser = xml.sax.make_parser()
         parser.setFeature(xml.sax.handler.feature_external_ges,1)
