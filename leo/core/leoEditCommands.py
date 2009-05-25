@@ -5806,13 +5806,12 @@ class killBufferCommandsClass (baseEditCommandsClass):
 
         w = self.editWidget(event)
         if not w: return
-        theRange = w.tag_ranges('sel')
-        if not theRange: return
-
-        s = w.get(theRange[0],theRange[-1])
+        i,j = w.getSelectionRange()
+        if i == j: return
+        s = w.getSelectedText()
         if deleteFlag:
             self.beginCommand(undoType='kill-region')
-            w.delete(theRange[0],theRange[-1])
+            w.delete(i,j)
             self.c.frame.body.forceFullRecolor()
             self.endCommand(changed=True,setLabel=True)
         self.addToKillBuffer(s)

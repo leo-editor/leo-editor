@@ -10464,6 +10464,42 @@ nodes" menu option is selected, the renamed node reverts to its previous name
 The fix was to insert a call to c.endEditing()
 #@nonl
 #@-node:ekr.20090525113804.5774:Fixed minor @auto bug
+#@+node:ekr.20090525113804.5775:Fixed vim bindings (dd) bug
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/353925
+
+The "kill-region" function did nothing when using the qt gui.
+
+The fix was to replace tag_ranges with w.getSelectionRange, etc.
+This was the only call to tag_ranges in the core.
+#@nonl
+#@+node:ekr.20050920084036.182:killRegion & killRegionSave & helper
+def killRegion (self,event):
+    '''Kill the text selection.'''
+    self.killRegionHelper(event,deleteFlag=True)
+
+def killRegionSave (self,event):
+    '''Add the selected text to the kill ring, but do not delete it.'''
+    self.killRegionHelper(event,deleteFlag=False)
+
+def killRegionHelper (self,event,deleteFlag):
+
+    w = self.editWidget(event)
+    if not w: return
+    i,j = w.getSelectionRange()
+    if i == j: return
+    s = w.getSelectedText()
+    if deleteFlag:
+        self.beginCommand(undoType='kill-region')
+        w.delete(i,j)
+        self.c.frame.body.forceFullRecolor()
+        self.endCommand(changed=True,setLabel=True)
+    self.addToKillBuffer(s)
+    g.app.gui.replaceClipboardWith(s)
+    # self.removeRKeys(w)
+#@-node:ekr.20050920084036.182:killRegion & killRegionSave & helper
+#@-node:ekr.20090525113804.5775:Fixed vim bindings (dd) bug
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all

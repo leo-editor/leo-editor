@@ -4,19 +4,6 @@
 #@+node:ekr.20080814103428.4:4.6 qt gui
 #@+node:ekr.20090518072506.8310:To do first
 #@+node:ekr.20090525113804.5776:High-priority bugs
-#@+node:ekr.20090525113804.5775:Fix vim bindings (dd) bug
-@nocolor-node
-
-http://bugs.launchpad.net/leo-editor/+bug/353925
-
-The "Qt, vim bindings" post reports problems with Vim emulation commands with the Qt interface.
-Posting: http://groups.google.com/group/leo-editor/browse_frm/thread/7285ac185355efb1#
-
-It appears that the "kill-region" function, which deletes the selected text and places it in the clipboard in the Tk interface, does nothing in the Qt interface.
-
-TL
-#@nonl
-#@-node:ekr.20090525113804.5775:Fix vim bindings (dd) bug
 #@+node:ekr.20090525113804.5777:Fix dabbrev-expands bug
 @nocolor-node
 
