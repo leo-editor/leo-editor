@@ -4,17 +4,6 @@
 #@+node:ekr.20080814103428.4:4.6 qt gui
 #@+node:ekr.20090518072506.8310:To do first
 #@+node:ekr.20090525113804.5776:High-priority bugs
-#@+node:ekr.20090525113804.5774:Fix minor @auto bug
-@nocolor-node
-
-http://bugs.launchpad.net/leo-editor/+bug/306671
-
-If a Leo editor window is opened, and the "NewHeadline" node is renamed to
-"@auto <path to some valid file>", and then the "File->Read/Write->Read @auto
-nodes" menu option is selected, the renamed node reverts to its previous name
-("NewHeadline"), and nothing is loaded into the node.
-#@nonl
-#@-node:ekr.20090525113804.5774:Fix minor @auto bug
 #@+node:ekr.20090525113804.5775:Fix vim bindings (dd) bug
 @nocolor-node
 

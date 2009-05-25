@@ -1299,6 +1299,9 @@ class baseCommands (object):
 
         '''Open a Leo outline from a .leo file, but do not read any derived files.'''
 
+        c = self
+        c.endEditing()
+
         fileName = g.app.gui.runOpenFileDialog(
             title="Read Outline Only",
             filetypes=[("Leo files", "*.leo"), ("All files", "*")],
@@ -1324,6 +1327,8 @@ class baseCommands (object):
         '''Read a file into a single node.'''
 
         c = self ; undoType = 'Read File Into Node'
+        c.endEditing()
+
         filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
         fileName = g.app.gui.runOpenFileDialog(
             title="Read File Into Node",filetypes=filetypes,defaultextension=None)
@@ -1349,6 +1354,7 @@ class baseCommands (object):
         '''Read all @auto nodes in the presently selected outline.'''
 
         c = self ; u = c.undoer ; p = c.p
+        c.endEditing()
 
         undoData = u.beforeChangeTree(p)
         c.importCommands.readAtAutoNodes()
@@ -1362,6 +1368,7 @@ class baseCommands (object):
 
         c = self ; u = c.undoer ; p = c.p
 
+        c.endEditing()
         undoData = u.beforeChangeTree(p)
         c.fileCommands.readAtFileNodes()
         u.afterChangeTree(p,'Read @file Nodes',undoData)
@@ -1374,6 +1381,7 @@ class baseCommands (object):
 
         c = self ; u = c.undoer ; p = c.p
 
+        c.endEditing()
         undoData = u.beforeChangeTree(p)
         c.atFileCommands.readAtShadowNodes(p)
         u.afterChangeTree(p,'Read @shadow Nodes',undoData)
@@ -1385,6 +1393,7 @@ class baseCommands (object):
         """Create a new outline from a 4.0 derived file."""
 
         c = self ; p = c.p
+        c.endEditing()
 
         types = [
             ("All files","*"),
@@ -1414,6 +1423,8 @@ class baseCommands (object):
         # Otherwise, prompt for a file name.
 
         c = self ; p = c.p
+        c.endEditing()
+
         h = p.h.rstrip()
         s = p.b
         tag = '@read-file-into-node'
@@ -7458,16 +7469,6 @@ class baseCommands (object):
 
     selectVnode = selectPosition
     #@-node:ekr.20031218072017.2997:c.selectPosition
-    #@+node:ville.20090525205736.12325:c.getSelectedPositions
-    def getSelectedPositions(self):
-        """ Get list (poslist) of currently selected positions
-
-        So far only makes sense on qt gui (which supports multiselection)
-        """
-        c = self
-        return c.frame.tree.getSelectedPositions()
-    #@nonl
-    #@-node:ville.20090525205736.12325:c.getSelectedPositions
     #@+node:ekr.20060923202156:c.onCanvasKey
     def onCanvasKey (self,event):
 
@@ -7561,6 +7562,16 @@ class baseCommands (object):
     #@nonl
     #@-node:ekr.20061002095711:c.navHelper
     #@-node:ekr.20060923202156:c.onCanvasKey
+    #@+node:ville.20090525205736.12325:c.getSelectedPositions
+    def getSelectedPositions(self):
+        """ Get list (poslist) of currently selected positions
+
+        So far only makes sense on qt gui (which supports multiselection)
+        """
+        c = self
+        return c.frame.tree.getSelectedPositions()
+    #@nonl
+    #@-node:ville.20090525205736.12325:c.getSelectedPositions
     #@-node:ekr.20031218072017.2990:Selecting & Updating (commands)
     #@+node:ekr.20031218072017.2999:Syntax coloring interface
     #@+at 

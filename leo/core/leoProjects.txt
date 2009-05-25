@@ -10451,6 +10451,19 @@ http://bugs.launchpad.net/leo-editor/+bug/376634
 The fix was to putVnodes.
 #@nonl
 #@-node:ekr.20090525113804.5780:Don't copy @edit trees to outline
+#@+node:ekr.20090525113804.5774:Fixed minor @auto bug
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/306671
+
+If a Leo editor window is opened, and the "NewHeadline" node is renamed to
+"@auto <path to some valid file>", and then the "File->Read/Write->Read @auto
+nodes" menu option is selected, the renamed node reverts to its previous name
+("NewHeadline"), and nothing is loaded into the node.
+
+The fix was to insert a call to c.endEditing()
+#@nonl
+#@-node:ekr.20090525113804.5774:Fixed minor @auto bug
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all

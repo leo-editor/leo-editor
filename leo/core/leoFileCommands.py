@@ -838,6 +838,7 @@ class baseFileCommands:
 
         c = self.c ; p = c.p
 
+        c.endEditing()
         c.atFileCommands.readAll(p,partialFlag=True)
         c.redraw()
 
