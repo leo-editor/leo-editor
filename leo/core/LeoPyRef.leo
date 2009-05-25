@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="57" left="161" height="977" width="1094"/>
+	<global_window_position top="351" left="173" height="656" width="1174"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20051031040240" str_leo_pos="5,3,5,1,13,3"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20090514093345.6054"><vh>Disabled buttons</vh>
 <v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
@@ -72,12 +72,12 @@
 <v t="ekr.20060217111834"><vh>@url http://docs.python.org/lib/re-syntax.html</vh></v>
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
-<v t="EKR.20040519090151.3"><vh>Projects</vh>
-<v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c68067573732e"><vh>@thin leoProjects.txt</vh></v>
+<v t="EKR.20040519090151.3" a="E"><vh>Projects</vh>
+<v t="EKR.20040429143933" a="E" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c68067573732e"
+expanded="ekr.20080917153158.11,ekr.20070703122141.65,ekr.20070808115837,ekr.20090401105902.3,ekr.20090514072254.5744,ekr.20070627135407,ekr.20070627140344,"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20040117181936"
-expanded="ekr.20070703122141.65,ekr.20070808115837,"><vh>@thin ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20040117181936"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20090113083258.3"><vh>Unit tests &amp; helper files</vh>
@@ -97,17 +97,19 @@ expanded="ekr.20070703122141.65,ekr.20070808115837,"><vh>@thin ../doc/leoToDo.tx
 </v>
 <v t="ekr.20090113083258.1"><vh>@thin test_core.txt</vh></v>
 </v>
-<v t="ekr.20031218072017.2406"><vh>Code</vh>
+<v t="ekr.20031218072017.2406" a="E"><vh>Code</vh>
 <v t="ekr.20090128070032.1"><vh>  How to profile Leo</vh></v>
 <v t="ekr.20081013084332.1"><vh>  Leo's MVC architecture</vh></v>
 <v t="ekr.20040629121554.1"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
-<v t="ekr.20031218072017.2604"><vh>Core classes</vh>
+<v t="ekr.20031218072017.2604" a="E"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@thin leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@thin leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
-<v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
+<v t="ekr.20070317085508.1" a="E"
+expanded="ekr.20070317085437,ekr.20070317085437.30,ekr.20070317130250,"><vh>@thin leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
-<v t="ekr.20031218072017.2810"><vh>@thin leoCommands.py</vh></v>
+<v t="ekr.20031218072017.2810" a="EM"
+expanded="ekr.20041118104831,ekr.20031218072017.2982,ekr.20060906211747,ekr.20060906211747.1,ekr.20031218072017.2990,"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20041117062700"
 expanded="ekr.20041213082558,"><vh>@thin leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@thin leoEditCommands.py</vh></v>
@@ -136,7 +138,8 @@ expanded="ekr.20070703122141.65,ekr.20070808115837,"><vh>@thin leoImport.py</vh>
 <v t="ekr.20080730161153.8"><vh>Test classes</vh>
 <v t="ekr.20080730161153.2"><vh>@thin leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@thin leoDynamicTest.py</vh></v>
-<v t="ekr.20051104075904" annotate="285808000000616e6e6f7461746571007d71017471022e" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@thin leoTest.py</vh></v>
+<v t="ekr.20051104075904" annotate="285808000000616e6e6f7461746571007d71017471022e" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"
+expanded="ekr.20070627135407,ekr.20070627140344,"><vh>@thin leoTest.py</vh></v>
 </v>
 </v>
 </vnodes>
