@@ -360,8 +360,9 @@ class DynamicWindow(QtGui.QMainWindow):
         innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
 
         # Signals.
-        QtCore.QObject.connect(treeWidget,
-            QtCore.SIGNAL("itemSelectionChanged()"),self.showNormal)
+        if False: # Ville's bug fix.
+            QtCore.QObject.connect(treeWidget,
+                QtCore.SIGNAL("itemSelectionChanged()"),self.showNormal)
 
         # Official ivars...
         self.treeWidget = treeWidget
