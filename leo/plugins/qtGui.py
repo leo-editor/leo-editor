@@ -4408,6 +4408,12 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w = self.treeWidget
         return w.currentItem()
     #@-node:ekr.20090124174652.105:getCurrentItem
+    #@+node:ville.20090525205736.3927:getSelectedItems
+    def getSelectedItems(self):
+        w = self.treeWidget    
+        return w.selectedItems()
+    #@nonl
+    #@-node:ville.20090525205736.3927:getSelectedItems
     #@+node:ekr.20090126120517.22:getItemText
     def getItemText (self,item):
 

@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="50" left="370" height="936" width="908"/>
+	<global_window_position top="72" left="119" height="936" width="1118"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20081121105001.1076" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20081121105001.1076" str_leo_pos="3,1,5,9"><vh>Startup</vh>
 <v t="ekr.20081121105001.1077"><vh>@chapters</vh></v>
 <v t="ekr.20081121105001.1078"><vh>@settings</vh>
 <v t="ekr.20081121105001.1079"><vh>@page http plugin</vh>
@@ -30,6 +30,7 @@
 </v>
 <v t="ekr.20081121105001.1108"><vh>Notes</vh>
 <v t="ekr.20081121105001.147"
+marks="ekr.20081121105001.264,"
 expanded="ekr.20081121105001.572,"><vh>@thin qtNotes.txt</vh></v>
 </v>
 <v t="ekr.20081121105001.1110"><vh>Other guis</vh>
@@ -39,7 +40,7 @@ expanded="ekr.20081121105001.572,"><vh>@thin qtNotes.txt</vh></v>
 <v t="ekr.20081121110412.2"><vh>@thin tkGui.py</vh></v>
 <v t="ekr.20090126093408.1"><vh>@thin wxGui.py</vh></v>
 </v>
-<v t="ekr.20081121105001.1092"><vh>Qt gui</vh>
+<v t="ekr.20081121105001.1092" a="E"><vh>Qt gui</vh>
 <v t="ekr.20081121105001.1093"><vh>QDesigner files</vh>
 <v t="ekr.20081121105001.1094"><vh>@auto ../test/qtui_generate.py</vh></v>
 <v t="ekr.20081121105001.1095"><vh>@auto qt_main.py</vh></v>
@@ -47,9 +48,11 @@ expanded="ekr.20081121105001.572,"><vh>@thin qtNotes.txt</vh></v>
 <v t="ekr.20081121105001.1097"><vh>@auto qt_quicksearch.py</vh></v>
 <v t="ekr.20081121105001.1098"><vh>@auto qt_quicksearch.ui</vh></v>
 </v>
-<v t="ekr.20090124174652.7"><vh>@thin baseNativeTree.py</vh></v>
-<v t="ekr.20081121105001.188"
-expanded="ekr.20081121105001.473,ekr.20081121105001.521,ekr.20081121105001.572,"><vh>@thin qtGui.py</vh></v>
+<v t="ekr.20090124174652.7" a="E"
+expanded="ekr.20090124174652.9,ekr.20090124174652.52,ekr.20090124174652.85,ekr.20090124174652.63,"><vh>@thin baseNativeTree.py</vh></v>
+<v t="ekr.20081121105001.188" a="E"
+marks="ekr.20081121105001.264,"
+expanded="ekr.20081121105001.194,ekr.20090124174652.102,ekr.20081121105001.473,ekr.20081121105001.509,ekr.20081121105001.521,ekr.20081121105001.572,"><vh>@thin qtGui.py</vh></v>
 <v t="leohag.20081204085551.1"><vh>@thin scrolledmessage.py</vh></v>
 </v>
 <v t="ekr.20081121105001.148"><vh> qt To do</vh>
@@ -195,7 +198,7 @@ expanded="ekr.20081121105001.473,ekr.20081121105001.521,ekr.20081121105001.572,"
 <v t="ekr.20081121105001.261"><vh>class qtStatusLineClass (qtFrame)</vh>
 <v t="ekr.20081121105001.262"><vh>ctor</vh></v>
 <v t="ekr.20081121105001.263"><vh> do-nothings</vh></v>
-<v t="ekr.20081121105001.264"><vh>clear, get &amp; put/1</vh></v>
+<v t="ekr.20081121105001.264" a="M"><vh>clear, get &amp; put/1</vh></v>
 <v t="ekr.20081121105001.265"><vh>update</vh></v>
 </v>
 <v t="ekr.20081121105001.266"><vh>class qtIconBarClass</vh>
@@ -290,6 +293,11 @@ expanded="ekr.20081121105001.473,ekr.20081121105001.521,ekr.20081121105001.572,"
 <v t="ekr.20081124094918.1"><vh>Fix problems with scim</vh></v>
 <v t="ekr.20090406111739.10"><vh>Let gui handle hard part of next/prev-line commands</vh></v>
 <v t="ekr.20090401110027.1"><vh>Make sure qt plugin supports user icons</vh></v>
+</v>
+<v t="ekr.20090522102224.3882"><vh>To do First</vh>
+<v t="ekr.20090430102239.2"></v>
+<v t="ekr.20090426075320.10"></v>
+<v t="ekr.20081215074704.16"></v>
 </v>
 </v>
 <v t="ekr.20081121105001.490"><vh>runScrolledMessageDialog</vh>
@@ -1385,6 +1393,9 @@ def put1(self,s,color=None):
 
 def put_helper(self,s,w):
     # w.setEnabled(True)
+    if sys.platform.startswith('linux'):
+        # Work around an apparent Qt bug.
+        s = g.toEncodedString(s,'ascii',reportErrors=False)
     w.setText(s)
     # w.setEnabled(False)
 </t>
@@ -3317,6 +3328,7 @@ def scrollOutlineUpPage (self,event=None):
         self.c.frame.tree.canvas.yview_scroll(-1,"page")
 </t>
 <t tx="ekr.20090430102239.13"></t>
+<t tx="ekr.20090522102224.3882"></t>
 <t tx="leohag.20081205043707.11">g.es_print_error('The handler for the "scrolledMessage" hook appears to be missing or not working.\n\t%s'%g.callers())</t>
 <t tx="leohag.20081205043707.12">g.es_print_error('%s\n%s\n\t%s' % (
     "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
