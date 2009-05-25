@@ -5381,8 +5381,10 @@ import string
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@count 10000
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -15103,7 +15105,7 @@ tracefile = '~/leo-editor/trace.txt'
 import os
 
 
-tr = open( os.path.expanduser(tracefile))
+tr = open(os.path.expanduser(tracefile))
 print tr
 top = p.insertAsLastChild().copy()
 top.h = 'trace session'

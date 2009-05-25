@@ -2082,6 +2082,9 @@ class leoQtFrame (leoFrame.leoFrame):
 
         def put_helper(self,s,w):
             # w.setEnabled(True)
+            if sys.platform.startswith('linux'):
+                # Work around an apparent Qt bug.
+                s = g.toEncodedString(s,'ascii',reportErrors=False)
             w.setText(s)
             # w.setEnabled(False)
         #@-node:ekr.20081121105001.264:clear, get & put/1

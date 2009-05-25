@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -316,6 +316,7 @@
 <v t="ekr.20081003094737.1"><vh>Unicode tests</vh>
 <v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
 <v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
+<v t="ekr.20090525090210.1940"><vh>Unicode characters: La Peña</vh></v>
 </v>
 <v t="ekr.20090507082111.1904"><vh>test creation of gnx's</vh></v>
 <v t="ekr.20090430080001.1"><vh>@path c:\prog\test</vh>
@@ -3208,5 +3209,6 @@ results in::
 
 If yes and yes, code which understands the -p syntax might be useful.
 </t>
+<t tx="ekr.20090525090210.1940"></t>
 </tnodes>
 </leo_file>
