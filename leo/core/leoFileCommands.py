@@ -1042,7 +1042,7 @@ class baseFileCommands:
 
         s = 'test%cthis' % 27
 
-        print c.fileCommands.cleanSaxInputString(s)
+        assert c.fileCommands.cleanSaxInputString(s) == 'testthis'
     #@-node:ekr.20090525144314.6527:@test cleanSaxInputString
     #@-node:ekr.20090525144314.6526:cleanSaxInputString & test
     #@+node:ekr.20060919110638.4:createSaxVnodes & helpers
