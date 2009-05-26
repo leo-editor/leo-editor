@@ -2,609 +2,8 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
-#@+node:ekr.20090518072506.8310:To do first
-#@+node:ekr.20090525113804.5776:High-priority bugs
-#@+node:ekr.20090525144314.6524:Make @url nodes work with qt gui
-#@-node:ekr.20090525144314.6524:Make @url nodes work with qt gui
-#@+node:ekr.20090525144314.6525:Tab appears in headlines if I type the tab character
-#@-node:ekr.20090525144314.6525:Tab appears in headlines if I type the tab character
-#@+node:ekr.20090525113804.5778:Fix lost anchor bug
-@nocolor-node
-
-http://bugs.launchpad.net/leo-editor/+bug/363403
-
-qt gui, yesterdays leo, Ubuntu 8.10, python 2.5.2
-
-With a long body text you might place the cursor on a line, hold down Shift, and
-PgDn several pages to select a large block of text. The last PgDn may overshoot
-the range you want selected, so you should be able to use UpArrow to bring the
-bottom of the range back up to where you want it. However, on the first UpArrow
-the selection is lost and restarted from the current cursor position. I.e. you
-end up with just one line selected, instead of trimming one line of the
-selection of several pages, as intended.
-
-This may be hard to fix, without taking over the qt code's handling of page up/down.
-#@nonl
-#@-node:ekr.20090525113804.5778:Fix lost anchor bug
-#@+node:ekr.20090525113804.5781:Fix urgent @shadow bug
-@nocolor-node
-
-Has this been fixed???
-
-http://bugs.launchpad.net/leo-editor/+bug/378122
-
-When I create a @shadow node whose file extension is different to the @language
-I specify in the body the source file and it's x-equivalent are both created ok.
-However, when I close the leo file and then reopen it, the @shadow node does not
-reload.
-
-I get the error message in the log pane: Bad @+leo sentinel in:
-    C:\MyWork\.leo_shadow\xnoddy.erl
-
-I'm using Leo 4.5 final, build 1.244.
-#@nonl
-#@-node:ekr.20090525113804.5781:Fix urgent @shadow bug
-#@-node:ekr.20090525113804.5776:High-priority bugs
-#@+node:ekr.20090522161156.5884:Minor, easy
-#@+node:ekr.20090523070447.6476:Make sure rst3 command applied to @auto-rst node works
-#@-node:ekr.20090523070447.6476:Make sure rst3 command applied to @auto-rst node works
-#@+node:ekr.20090521064955.5945:Better message when checking syntax
-# The name of the offending node is not given, just the root node.
-#@nonl
-#@-node:ekr.20090521064955.5945:Better message when checking syntax
-#@+node:ekr.20090522113545.5884:pylint plugins
-@nocolor
-
-************* Module leo.plugins.qtGui
-W0101:996:leoQtBody.addEditor: Unreachable code
-E1101:1826:leoQtFrame.__init__: Class 'leoQtFrame' has no 'instances' member
-c:\Python25\lib\site-packages\logilab_common-0.39.0-py2.5.egg\logilab\common\modutils.py:136: DeprecationWarning: The wxPython compatibility
- package is no longer automatically generated or actively maintained.  Please switch to the wx package as soon as possible.
-  module = load_module(curname, mp_file, mp_filename, mp_desc)
-E0602:5794:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
-E0602:5795:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
-E0602:5796:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
-E0602:5797:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
-E1103:7591:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastFunc' member (but some types could not be inferred)
-E1103:7591:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastMatch' member (but some types could not be inferred)
-E1103:7593:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastFlag' member (but some types could not be inferred)
-E1103:7612:jEditColorizer.recolor: Instance of 'Bunch' has no 'stateName' member (but some types could not be inferred)
-E1101:7837:jEditColorizer.setTag: Instance of 'jEditColorizer' has no 'tagCount' member
-E1101:7843:jEditColorizer.setTag: Instance of 'jEditColorizer' has no 'tagCount' member
-E1101:7846:jEditColorizer.setTag: Instance of 'jEditColorizer' has no 'tagCount' member
-W0222:8282:leoQtBaseTextWidget.tag_add: Signature differs from overridden method
-E0601:9092:leoQTextEditWidget.toPythonIndexRowCol: Using variable 'w' before assignment
-
-************* Module leo.plugins.toolbar
-E1103:520:ToolbarTkinterFrame.getIconButton:
-    Instance of 'tkIconBarClass' has no 'getButton' member
-    (but some types could not be inferred)
-E1103:604:ToolbarTkinterFrame.getIconWidgetFrame:
-    Instance of 'tkIconBarClass' has no 'getWidgetFrame' member
-    (but some types could not be inferred)
-
-************* Module leo.plugins.xemacs
-E0602:116:open_in_emacs: Undefined variable '_exemacs_cmd'
-#@nonl
-#@-node:ekr.20090522113545.5884:pylint plugins
-#@+node:ekr.20090512080015.5801:import-files-recursively command?
-How would the command specify settings?
-
-A line added to test bzr push.
-#@-node:ekr.20090512080015.5801:import-files-recursively command?
-#@-node:ekr.20090522161156.5884:Minor, easy
-#@+node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
-@nocolor-node
-
-- update leoPyRef.leo.
-- Create a "moved to leoPy.leo" section in unitTest.leo.
-- Unit tests for leoImport.py can be gathered together.
-#@nonl
-#@-node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
-#@-node:ekr.20090518072506.8310:To do first
-#@+node:ekr.20090430092048.1:Before 4.6 b2
-#@+node:ekr.20080922115725.1:Finish @shadow
-# Allow block comments in private shadow files.
-# Compute delims using the private shadow file, not the file extension!
-# Can @shadow mark externally changed nodes?
-#@nonl
-#@+node:ekr.20081004102201.2:Log file for @shadow
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
-#@nonl
-#@-node:ekr.20081004102201.2:Log file for @shadow
-#@+node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
-#@-node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
-#@+node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
-
-@color
-#@nonl
-#@+node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
-def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
-
-    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
-
-    We compare the old and new public lines, create diffs and
-    propagate the diffs to the new private lines, copying sentinels as well.
-
-    We have two invariants:
-    1. We *never* delete any sentinels.
-    2. Insertions that happen at the boundary between nodes will be put at
-       the end of a node.  However, insertions must always be done within sentinels.
-    '''
-
-    x = self ; trace = False ; verbose = True
-    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
-    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
-
-    << init vars >>
-    << define print_tags >>
-
-    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
-    prev_old_j = 0 ; prev_new_j = 0
-
-    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
-
-        << About this loop >>
-
-        # Verify that SequenceMatcher never leaves gaps.
-        if old_i != prev_old_j: # assert old_i == prev_old_j
-            x.error('can not happen: gap in old:',old_i,prev_old_j)
-        if new_i != prev_new_j: # assert new_i == prev_new_j
-            x.error('can not happen: gap in new:',new_i,prev_new_j)
-
-        << Handle the opcode >>
-
-        # Remember the ends of the previous tag ranges.
-        prev_old_j = old_j
-        prev_new_j = new_j
-
-    # Copy all unwritten sentinels.
-    self.copy_sentinels(
-        old_private_lines_rdr,new_private_lines_wtr,
-        marker, limit = old_private_lines_rdr.size())
-
-    # Get the result.
-    result = new_private_lines_wtr.getlines()
-    if 1:
-        << do final correctness check>>
-    return result
-#@+node:ekr.20080708094444.40:<< init vars >>
-new_private_lines_wtr = sourcewriter(self)
-# collects the contents of the new file.
-
-new_public_lines_rdr = sourcereader(self,new_public_lines)
-    # Contains the changed source code.
-
-old_public_lines_rdr = sourcereader(self,old_public_lines)
-    # this is compared to new_public_lines_rdr to find out the changes.
-
-old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
-    # This is the file which is currently produced by Leo, with sentinels.
-
-# Check that all ranges returned by get_opcodes() are contiguous
-old_old_j, old_i2_modified_lines = -1,-1
-
-tag = old_i = old_j = new_i = new_j = None
-#@nonl
-#@-node:ekr.20080708094444.40:<< init vars >>
-#@+node:ekr.20080708094444.39:<< define print_tags >>
-def print_tags(tag, old_i, old_j, new_i, new_j, message):
-
-    sep1 = '=' * 10 ; sep2 = '-' * 20
-
-    g.pr('\n',sep1,message,sep1,p and p.h)
-
-    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
-
-    g.pr('\n',sep2)
-
-    table = (
-        (old_private_lines_rdr,'old private lines'),
-        (old_public_lines_rdr,'old public lines'),
-        (new_public_lines_rdr,'new public lines'),
-        (new_private_lines_wtr,'new private lines'),
-    )
-
-    for f,tag in table:
-        f.dump(tag)
-        g.pr(sep2)
-
-
-#@-node:ekr.20080708094444.39:<< define print_tags >>
-#@+node:ekr.20080708192807.2:<< about this loop >>
-@
-
-This loop writes all output lines using a single writer: new_private_lines_wtr.
-
-The output lines come from two, and *only* two readers:
-
-1. old_private_lines_rdr delivers the complete original sources. All
-   sentinels and unchanged regular lines come from this reader.
-
-2. new_public_lines_rdr delivers the new, changed sources. All inserted or
-   replacement text comes from this reader.
-
-Each time through the loop, the following are true:
-
-- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
-
-- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
-
-At the start of the loop, the call to copy_sentinels effectively skips (deletes)
-all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
-is less than mapping[old_i].
-
-As a result, the opcode handlers do not need to delete elements from the
-old_private_lines_rdr explicitly. This explains why opcode handlers for the
-'insert' and 'delete' opcodes are identical.
-#@-node:ekr.20080708192807.2:<< about this loop >>
-#@+node:ekr.20080708192807.5:<< Handle the opcode >>
-# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
-# In this special case, we must do the insert before the sentinels.
-limit=mapping[old_i]
-
-if trace: g.trace(tag,'old_i',old_i,'limit',limit)
-
-if tag == 'insert' and limit >= old_private_lines_rdr.size():
-    pass
-else:
-    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
-    # Because of this, nothing has to be explicitly deleted below.
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-
-if tag == 'equal':
-    # Copy all lines (including sentinels) from the old private file to the new private file.
-    start = old_private_lines_rdr.index()
-    while old_private_lines_rdr.index() <= mapping[old_j-1]:
-        line = old_private_lines_rdr.get()
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
-
-    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
-    new_public_lines_rdr.sync(new_j)
-
-elif tag in ('insert','replace'):
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Copy lines from new_public_lines_rdr up to new_j.
-    start = new_public_lines_rdr.index()
-    while new_public_lines_rdr.index() < new_j:
-        line = new_public_lines_rdr.get()
-        if x.is_sentinel(line,marker):
-            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-
-elif tag=='delete':
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Leave new_public_lines_rdr unchanged.
-    pass
-
-else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
-
-if trace and verbose:
-    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
-#@nonl
-#@-node:ekr.20080708192807.5:<< Handle the opcode >>
-#@+node:ekr.20080708094444.45:<< do final correctness check >>
-t_sourcelines, t_sentinel_lines = self.separate_sentinels(
-    new_private_lines_wtr.lines, marker)
-
-self.check_the_final_output(
-    new_private_lines   = result,
-    new_public_lines    = new_public_lines,
-    sentinel_lines      = t_sentinel_lines,
-    marker              = marker)
-#@-node:ekr.20080708094444.45:<< do final correctness check >>
-#@-node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
-#@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
-#@+node:ekr.20081028060510.1:Fix @shadow crasher
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
-
-I think Leo crashes when attempting to load a shadow file that starts
-with a line feed character. [EKR: it's the missing file extension]
-
-Here's the stack trace:
-
-Traceback (most recent call last):
- File "/home/jesse/leo-editor/launchLeo.py", line 8, in <module>
-   leo.core.runLeo.run()
- File "/home/jesse/leo-editor/leo/core/runLeo.py", line 120, in run
-   c,frame = createFrame(fileName,relativeFileName,script)
- File "/home/jesse/leo-editor/leo/core/runLeo.py", line 156, in
-createFrame
-   ok, frame = g.openWithFileName(relativeFileName or fileName,None)
- File "/home/jesse/leo-editor/leo/core/leoGlobals.py", line 2211, in
-openWithFileName
-   readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
- File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 851,
-in open
-   silent=silent)
- File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 758,
-in getLeoFile
-   c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 535, in
-readAll
-   at.readOneAtShadowNode (fileName,p)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 684, in
-readOneAtShadowNode
-   at.writeOneAtShadowNode(p,toString=False,force=True)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2588, in
-writeOneAtShadowNode
-   at.writeOpenFile(root,nosentinels=not
-sentinels,toString=False,atAuto=False)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2842, in
-writeOpenFile
-   at.putBody(root,fromString=fromString)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2914, in
-putBody
-   at.putCodeLine(s,i)
- File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 3137, in
-putCodeLine
-   if g.match(s,k,self.startSentinelComment + '@'):
-TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
-#@nonl
-#@-node:ekr.20081028060510.1:Fix @shadow crasher
-#@+node:ekr.20090402072059.13:Create a general mechanism for aux (shadow, _db) files
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/4ec30df3f1db8db3
-
-On Sat, Mar 28, 2009 at 3:24 AM, VR <viktor.ransmayr@gmail.com> wrote:
-
-
-    When I tried to de-install Leo-4.6b1 I succeeded, but the program
-    reported that 5 directories
-    were not removed.
-
-    Three of the directories where
-
-    1) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\config
-    2) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\doc
-    3) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\plugins
-
-    [containing]
-
-
-    a) .leoSettings.leo_db
-    b) .leoDocs.leo_db
-    c) .leo_shadow
-    d) .leoPluginsRef.leo_db
-
-
-Thanks for this report. I think it is important, and needs a good solution.
-
-I dislike all these files being sprayed around the file system. I'd like to see
-these files placed somewhere the ~/.leo directory. Is there a reason why this
-would be a bad idea?
-
-Similarly, we might also prefer to have shadow files place in, say,
-~/.leo/shadow_files.
-
-In both cases, I think we want to create files that indicate their location.
-Either that, or mirror their location in (subdirectories) ~/.leo. In other
-words, this is a general problem, and it would be good to have a robust, general
-solution.
-#@nonl
-#@-node:ekr.20090402072059.13:Create a general mechanism for aux (shadow, _db) files
-#@-node:ekr.20080922115725.1:Finish @shadow
-#@+node:ekr.20090430092048.2:Urgent: Lost files with @shadow
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ff4c0be55b15ce7a
-
-Yesterday I imported some windows batch files to @file, changed them
-to @shadow, and used @path to shorten the node name. Today Leo has
-lost track of the shadow files (the body text is empty), and when I
-attempted to re-link one Leo zeroed out the target (overwrote an empty
-file). This is the procedure I followed (not as linear as written, I
-was experimenting):
-
-0. Opened H:\work.leo
-1. File > Import to @file: y:\scripts\xc-backup.bat
-2. Change heading '@file y:\scripts\xc-backup.bat' to '@shadow xc-
-backup.bat'
-3. Change body text:
-   - removed '@ignore'
-   + added '@path y:\scripts\'
-   + added and changed some other miscelaneous text
-4. Saved
-5. Verified contents xc-backup.bat is as expected with external
-editor.
-
-Repeated half a dozen times with other files.
-
-Today when I opened H:\work.leo the body text of all @shadow files
-were blank. This is the log:
-
-   reading: H:\work.leo
-   reading: @shadow xc-backup.bat
-   can not open @shadow H:\xc-backup.bat
-   created directory: H:\.leo_shadow
-   created:   H:\.leo_shadow\xxc-backup.bat
-   created:   H:\xc-backup.bat
-
-It's trying to read .leo_shadow from the the wrong location and
-creating a new one when it is not found. Thinking to re-establish the
-link I added '@path y:\scripts\' to '@shadow xc-backup.bat' heading
-and Saved, log:
-
-   @shadow xc-backup.bat not written:
-   no children and less than 10 characters (excluding directives)
-
-To make the body text longer than 10 characters I added '@language
-batch' and saved again:
-
-   errors writing: <string-file>
-   Orphan node:  @shadow xc-backup.bat
-   parent node: @shadow xc-backup.bat
-   not written:
-   wrote:     y:\scripts\.leo_shadow\xxc-backup.bat
-   wrote:     y:\scripts\xc-backup.bat
-
-   errors writing: <string-file>
-   Orphan node:  @shadow xc-backup.bat
-   parent node: @shadow xc-backup.bat
-
-(Note: I may not have split the log at the right points in the 3
-indented sections above.)
-
-**Big Mistake** as at this point the *pre-existing* shadow and real
-file were overwritten with *empty* content. Now in this particular
-instance I'm okay as I'm working on svn checked out files and only an
-hours worth of experimenting is lost, not real work. If this had
-happened a day earlier though I'd have been some sore as I'd
-previously been working without a net (no version control).
-
-So that covers what did happen, what I expected to happen is:
-
-1. H:\work.leo would remember the @path
-2. When [1] failed, re-establishing the @path link would cause Leo to
-discover that there was a pre-existing .leo_shadow copy of that node
-and a) automatically read y:\.leo_shadow\xxc-backup.bat and fill in
-the body text, b) present a merge or conflict dialog/message and offer
-instructions for how to reconcile, or c) warn the files already
-existed and confirm overwrite.
-
-It is now clear @path is not safe when the .leo file is in a different
-location from the shadow files, or perhaps not at all? I initially
-tried to put @path in a parent heading, but the child nodes ignored
-it:
-
--[]Scripts
-   @path y:\scripts
-   -[]@shadow xc-backup.bat
-      @language batch
-      rem A script to backup....
-      ...etc.
-
-Anyway, was my bumbling attempt to fix the broken link the problem, or
-the fact the link was broken in the first place? If the latter, why
-did it break and how to avoid it in future? is there a safe way to re-
-establish the links with the remaining 5 @shadow files or should I
-just start over and not use @path? Are there examples deomonstrating
-the proper use of @path?
-
-thanks,
-
--matt 
-#@nonl
-#@-node:ekr.20090430092048.2:Urgent: Lost files with @shadow
-#@+node:ekr.20090324100430.1:Major bug: deleting @chapter node doesn't work
-@nocolor-node
-_unlink: can not happen: bad child index: 4, len(children): 2
-_unlink: parent_v <vnode 82128560:'Completed 3-day bugs'> p.v <vnode 82152112:'@chapter problem with qt plugin'>
-_unlink: ** callsers: masterKeyHandler,masterCommand,doCommand,cutOutline,deleteOutline,removeChapterByName,deleteChapterNode,doDelete
-exception executing command
-Traceback (most recent call last):
-
-  File "C:\leo.repo\trunk\leo\core\leoCommands.py", line 358, in doCommand
-    val = command(event)
-
-  File "C:\leo.repo\trunk\leo\core\leoCommands.py", line 5641, in selectVisBack
-    if not c.canSelectVisBack(): return
-
-  File "C:\leo.repo\trunk\leo\core\leoCommands.py", line 6835, in canSelectVisBack
-    return p.visBack(c)
-
-  File "C:\leo.repo\trunk\leo\core\leoNodes.py", line 1467, in getVisBack
-    def getVisBack (self,c): return self.copy().moveToVisBack(c)
-
-  File "C:\leo.repo\trunk\leo\core\leoNodes.py", line 2857, in moveToVisBack
-    p.moveToThreadBack()
-
-  File "C:\leo.repo\trunk\leo\core\leoNodes.py", line 2796, in moveToThreadBack
-    p.moveToLastNode()
-
-  File "C:\leo.repo\trunk\leo\core\leoNodes.py", line 2720, in moveToLastNode
-    while p.hasChildren():
-
-  File "C:\leo.repo\trunk\leo\core\leoNodes.py", line 1440, in hasChildren
-    return len(p.v.t.children) > 0
-
-AttributeError: 'NoneType' object has no attribute 't'
-
-wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
-C:\leo.repo\trunk>
-#@nonl
-#@+node:ekr.20031218072017.1193:c.deleteOutline
-def deleteOutline (self,event=None,op_name="Delete Node"):
-
-    """Deletes the selected outline."""
-
-    c = self ; cc = c.chapterController ; u = c.undoer
-    p = c.p
-    if not p: return
-
-    c.endEditing() # Make sure we capture the headline for Undo.
-
-    if p.hasVisBack(c): newNode = p.visBack(c)
-    else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
-    if not newNode: return
-
-    if cc: # Special cases for @chapter and @chapters nodes.
-        chapter = '@chapter ' ; chapters = '@chapters ' 
-        h = p.h
-        if h.startswith(chapters):
-            if p.hasChildren():
-                return cc.error('Can not delete @chapters node with children.')
-        elif h.startswith(chapter):
-            name = h[len(chapter):].strip()
-            if name:
-                # Bug fix: 2009/3/23: Make sure the chapter exists!
-                # This might be an @chapter node outside of @chapters tree.
-                theChapter = cc.chaptersDict.get(name)
-                if theChapter:
-                    return cc.removeChapterByName(name)
-
-    undoData = u.beforeDeleteNode(p)
-    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-    p.doDelete(newNode)
-    c.setChanged(True)
-    u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
-    c.redraw(newNode)
-
-    c.validateOutline()
-#@-node:ekr.20031218072017.1193:c.deleteOutline
-#@+node:ekr.20090110073010.1:c.redraw
-def redraw (self,p=None,setFocus=False):
-    '''Redraw the screen immediately.'''
-
-    c = self
-    if not p: p = c.p or c.rootPosition()
-
-    c.expandAllAncestors(p)
-    c.frame.tree.redraw(p)
-    c.selectPosition(p)
-
-    if setFocus: c.treeFocusHelper()
-
-# Compatibility with old scripts
-force_redraw = redraw
-redraw_now = redraw
-#@-node:ekr.20090110073010.1:c.redraw
-#@+node:ekr.20070606075434:cc.removeChapterByName
-def removeChapterByName (self,name):
-
-    cc = self ; c = cc.c ; tt = cc.tt
-
-    theChapter = cc.chaptersDict.get(name)
-    if not theChapter: return
-
-    savedRoot = theChapter.root
-    bunch = cc.beforeRemoveChapter(c.p,name,savedRoot)
-    cc.deleteChapterNode(name)
-    del cc.chaptersDict[name] # Do this after calling deleteChapterNode.
-    if tt:tt.destroyTab(name)
-    cc.selectChapterByName('main')
-    cc.afterRemoveChapter(bunch,c.p)
-    c.redraw()
-#@-node:ekr.20070606075434:cc.removeChapterByName
-#@-node:ekr.20090324100430.1:Major bug: deleting @chapter node doesn't work
+#@+node:ekr.20090518072506.8310:Before b2
+#@+node:ekr.20090525113804.5776:Bugs
 #@+node:ekr.20090402072059.14:Investigate read crash
 @nocolor-node
 
@@ -1212,12 +611,614 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
     return sax_node
 #@-node:ekr.20060919110638.14:parse_leo_file
 #@-node:ekr.20090402072059.14:Investigate read crash
+#@+node:ekr.20090430092048.2:Urgent: Lost files with @shadow
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ff4c0be55b15ce7a
+
+Yesterday I imported some windows batch files to @file, changed them
+to @shadow, and used @path to shorten the node name. Today Leo has
+lost track of the shadow files (the body text is empty), and when I
+attempted to re-link one Leo zeroed out the target (overwrote an empty
+file). This is the procedure I followed (not as linear as written, I
+was experimenting):
+
+0. Opened H:\work.leo
+1. File > Import to @file: y:\scripts\xc-backup.bat
+2. Change heading '@file y:\scripts\xc-backup.bat' to '@shadow xc-
+backup.bat'
+3. Change body text:
+   - removed '@ignore'
+   + added '@path y:\scripts\'
+   + added and changed some other miscelaneous text
+4. Saved
+5. Verified contents xc-backup.bat is as expected with external
+editor.
+
+Repeated half a dozen times with other files.
+
+Today when I opened H:\work.leo the body text of all @shadow files
+were blank. This is the log:
+
+   reading: H:\work.leo
+   reading: @shadow xc-backup.bat
+   can not open @shadow H:\xc-backup.bat
+   created directory: H:\.leo_shadow
+   created:   H:\.leo_shadow\xxc-backup.bat
+   created:   H:\xc-backup.bat
+
+It's trying to read .leo_shadow from the the wrong location and
+creating a new one when it is not found. Thinking to re-establish the
+link I added '@path y:\scripts\' to '@shadow xc-backup.bat' heading
+and Saved, log:
+
+   @shadow xc-backup.bat not written:
+   no children and less than 10 characters (excluding directives)
+
+To make the body text longer than 10 characters I added '@language
+batch' and saved again:
+
+   errors writing: <string-file>
+   Orphan node:  @shadow xc-backup.bat
+   parent node: @shadow xc-backup.bat
+   not written:
+   wrote:     y:\scripts\.leo_shadow\xxc-backup.bat
+   wrote:     y:\scripts\xc-backup.bat
+
+   errors writing: <string-file>
+   Orphan node:  @shadow xc-backup.bat
+   parent node: @shadow xc-backup.bat
+
+(Note: I may not have split the log at the right points in the 3
+indented sections above.)
+
+**Big Mistake** as at this point the *pre-existing* shadow and real
+file were overwritten with *empty* content. Now in this particular
+instance I'm okay as I'm working on svn checked out files and only an
+hours worth of experimenting is lost, not real work. If this had
+happened a day earlier though I'd have been some sore as I'd
+previously been working without a net (no version control).
+
+So that covers what did happen, what I expected to happen is:
+
+1. H:\work.leo would remember the @path
+2. When [1] failed, re-establishing the @path link would cause Leo to
+discover that there was a pre-existing .leo_shadow copy of that node
+and a) automatically read y:\.leo_shadow\xxc-backup.bat and fill in
+the body text, b) present a merge or conflict dialog/message and offer
+instructions for how to reconcile, or c) warn the files already
+existed and confirm overwrite.
+
+It is now clear @path is not safe when the .leo file is in a different
+location from the shadow files, or perhaps not at all? I initially
+tried to put @path in a parent heading, but the child nodes ignored
+it:
+
+-[]Scripts
+   @path y:\scripts
+   -[]@shadow xc-backup.bat
+      @language batch
+      rem A script to backup....
+      ...etc.
+
+Anyway, was my bumbling attempt to fix the broken link the problem, or
+the fact the link was broken in the first place? If the latter, why
+did it break and how to avoid it in future? is there a safe way to re-
+establish the links with the remaining 5 @shadow files or should I
+just start over and not use @path? Are there examples deomonstrating
+the proper use of @path?
+
+thanks,
+
+-matt 
+#@nonl
+#@-node:ekr.20090430092048.2:Urgent: Lost files with @shadow
+#@+node:ekr.20090525113804.5781:Fix urgent @shadow bug
+@nocolor-node
+
+Has this been fixed???
+
+http://bugs.launchpad.net/leo-editor/+bug/378122
+
+When I create a @shadow node whose file extension is different to the @language
+I specify in the body the source file and it's x-equivalent are both created ok.
+However, when I close the leo file and then reopen it, the @shadow node does not
+reload.
+
+I get the error message in the log pane: Bad @+leo sentinel in:
+    C:\MyWork\.leo_shadow\xnoddy.erl
+
+I'm using Leo 4.5 final, build 1.244.
+#@nonl
+#@-node:ekr.20090525113804.5781:Fix urgent @shadow bug
+#@+node:ekr.20090324100430.1:Deleting @chapter node doesn't work
+@nocolor-node
+_unlink: can not happen: bad child index: 4, len(children): 2
+_unlink: parent_v <vnode 82128560:'Completed 3-day bugs'> p.v <vnode 82152112:'@chapter problem with qt plugin'>
+_unlink: ** callsers: masterKeyHandler,masterCommand,doCommand,cutOutline,deleteOutline,removeChapterByName,deleteChapterNode,doDelete
+exception executing command
+Traceback (most recent call last):
+
+  File "C:\leo.repo\trunk\leo\core\leoCommands.py", line 358, in doCommand
+    val = command(event)
+
+  File "C:\leo.repo\trunk\leo\core\leoCommands.py", line 5641, in selectVisBack
+    if not c.canSelectVisBack(): return
+
+  File "C:\leo.repo\trunk\leo\core\leoCommands.py", line 6835, in canSelectVisBack
+    return p.visBack(c)
+
+  File "C:\leo.repo\trunk\leo\core\leoNodes.py", line 1467, in getVisBack
+    def getVisBack (self,c): return self.copy().moveToVisBack(c)
+
+  File "C:\leo.repo\trunk\leo\core\leoNodes.py", line 2857, in moveToVisBack
+    p.moveToThreadBack()
+
+  File "C:\leo.repo\trunk\leo\core\leoNodes.py", line 2796, in moveToThreadBack
+    p.moveToLastNode()
+
+  File "C:\leo.repo\trunk\leo\core\leoNodes.py", line 2720, in moveToLastNode
+    while p.hasChildren():
+
+  File "C:\leo.repo\trunk\leo\core\leoNodes.py", line 1440, in hasChildren
+    return len(p.v.t.children) > 0
+
+AttributeError: 'NoneType' object has no attribute 't'
+
+wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
+C:\leo.repo\trunk>
+#@nonl
+#@+node:ekr.20031218072017.1193:c.deleteOutline
+def deleteOutline (self,event=None,op_name="Delete Node"):
+
+    """Deletes the selected outline."""
+
+    c = self ; cc = c.chapterController ; u = c.undoer
+    p = c.p
+    if not p: return
+
+    c.endEditing() # Make sure we capture the headline for Undo.
+
+    if p.hasVisBack(c): newNode = p.visBack(c)
+    else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
+    if not newNode: return
+
+    if cc: # Special cases for @chapter and @chapters nodes.
+        chapter = '@chapter ' ; chapters = '@chapters ' 
+        h = p.h
+        if h.startswith(chapters):
+            if p.hasChildren():
+                return cc.error('Can not delete @chapters node with children.')
+        elif h.startswith(chapter):
+            name = h[len(chapter):].strip()
+            if name:
+                # Bug fix: 2009/3/23: Make sure the chapter exists!
+                # This might be an @chapter node outside of @chapters tree.
+                theChapter = cc.chaptersDict.get(name)
+                if theChapter:
+                    return cc.removeChapterByName(name)
+
+    undoData = u.beforeDeleteNode(p)
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    p.doDelete(newNode)
+    c.setChanged(True)
+    u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
+    c.redraw(newNode)
+
+    c.validateOutline()
+#@-node:ekr.20031218072017.1193:c.deleteOutline
+#@+node:ekr.20090110073010.1:c.redraw
+def redraw (self,p=None,setFocus=False):
+    '''Redraw the screen immediately.'''
+
+    c = self
+    if not p: p = c.p or c.rootPosition()
+
+    c.expandAllAncestors(p)
+    c.frame.tree.redraw(p)
+    c.selectPosition(p)
+
+    if setFocus: c.treeFocusHelper()
+
+# Compatibility with old scripts
+force_redraw = redraw
+redraw_now = redraw
+#@-node:ekr.20090110073010.1:c.redraw
+#@+node:ekr.20070606075434:cc.removeChapterByName
+def removeChapterByName (self,name):
+
+    cc = self ; c = cc.c ; tt = cc.tt
+
+    theChapter = cc.chaptersDict.get(name)
+    if not theChapter: return
+
+    savedRoot = theChapter.root
+    bunch = cc.beforeRemoveChapter(c.p,name,savedRoot)
+    cc.deleteChapterNode(name)
+    del cc.chaptersDict[name] # Do this after calling deleteChapterNode.
+    if tt:tt.destroyTab(name)
+    cc.selectChapterByName('main')
+    cc.afterRemoveChapter(bunch,c.p)
+    c.redraw()
+#@-node:ekr.20070606075434:cc.removeChapterByName
+#@-node:ekr.20090324100430.1:Deleting @chapter node doesn't work
+#@+node:ekr.20080922115725.1:Finish @shadow
+# Allow block comments in private shadow files.
+# Compute delims using the private shadow file, not the file extension!
+# Can @shadow mark externally changed nodes?
+#@nonl
+#@+node:ekr.20081004102201.2:Log file for @shadow
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
+#@nonl
+#@-node:ekr.20081004102201.2:Log file for @shadow
+#@+node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
+#@-node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
+#@+node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
+
+@color
+#@nonl
+#@+node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    x = self ; trace = False ; verbose = True
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old:',old_i,prev_old_j)
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new:',new_i,prev_new_j)
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,new_private_lines_wtr,
+        marker, limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40:<< init vars >>
+new_private_lines_wtr = sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
+#@nonl
+#@-node:ekr.20080708094444.40:<< init vars >>
+#@+node:ekr.20080708094444.39:<< define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.h)
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@-node:ekr.20080708094444.39:<< define print_tags >>
+#@+node:ekr.20080708192807.2:<< about this loop >>
+@
+
+This loop writes all output lines using a single writer: new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips (deletes)
+all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
+is less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from the
+old_private_lines_rdr explicitly. This explains why opcode handlers for the
+'insert' and 'delete' opcodes are identical.
+#@-node:ekr.20080708192807.2:<< about this loop >>
+#@+node:ekr.20080708192807.5:<< Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace(tag,'old_i',old_i,'limit',limit)
+
+if tag == 'insert' and limit >= old_private_lines_rdr.size():
+    pass
+else:
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+if tag == 'equal':
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index()
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag in ('insert','replace'):
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index()
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if x.is_sentinel(line,marker):
+            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Leave new_public_lines_rdr unchanged.
+    pass
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@nonl
+#@-node:ekr.20080708192807.5:<< Handle the opcode >>
+#@+node:ekr.20080708094444.45:<< do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@-node:ekr.20080708094444.45:<< do final correctness check >>
+#@-node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
+#@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
+#@+node:ekr.20081028060510.1:Fix @shadow crasher
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/6cab5e676d4d75a0
+
+I think Leo crashes when attempting to load a shadow file that starts
+with a line feed character. [EKR: it's the missing file extension]
+
+Here's the stack trace:
+
+Traceback (most recent call last):
+ File "/home/jesse/leo-editor/launchLeo.py", line 8, in <module>
+   leo.core.runLeo.run()
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 120, in run
+   c,frame = createFrame(fileName,relativeFileName,script)
+ File "/home/jesse/leo-editor/leo/core/runLeo.py", line 156, in
+createFrame
+   ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+ File "/home/jesse/leo-editor/leo/core/leoGlobals.py", line 2211, in
+openWithFileName
+   readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 851,
+in open
+   silent=silent)
+ File "/home/jesse/leo-editor/leo/core/leoFileCommands.py", line 758,
+in getLeoFile
+   c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 535, in
+readAll
+   at.readOneAtShadowNode (fileName,p)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 684, in
+readOneAtShadowNode
+   at.writeOneAtShadowNode(p,toString=False,force=True)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2588, in
+writeOneAtShadowNode
+   at.writeOpenFile(root,nosentinels=not
+sentinels,toString=False,atAuto=False)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2842, in
+writeOpenFile
+   at.putBody(root,fromString=fromString)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 2914, in
+putBody
+   at.putCodeLine(s,i)
+ File "/home/jesse/leo-editor/leo/core/leoAtFile.py", line 3137, in
+putCodeLine
+   if g.match(s,k,self.startSentinelComment + '@'):
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'str'
+#@nonl
+#@-node:ekr.20081028060510.1:Fix @shadow crasher
+#@+node:ekr.20090402072059.13:Create a general mechanism for aux (shadow, _db) files
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/4ec30df3f1db8db3
+
+On Sat, Mar 28, 2009 at 3:24 AM, VR <viktor.ransmayr@gmail.com> wrote:
+
+
+    When I tried to de-install Leo-4.6b1 I succeeded, but the program
+    reported that 5 directories
+    were not removed.
+
+    Three of the directories where
+
+    1) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\config
+    2) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\doc
+    3) C:\Python26\Lib\site-packages\Leo-4-6-b1\leo\plugins
+
+    [containing]
+
+
+    a) .leoSettings.leo_db
+    b) .leoDocs.leo_db
+    c) .leo_shadow
+    d) .leoPluginsRef.leo_db
+
+
+Thanks for this report. I think it is important, and needs a good solution.
+
+I dislike all these files being sprayed around the file system. I'd like to see
+these files placed somewhere the ~/.leo directory. Is there a reason why this
+would be a bad idea?
+
+Similarly, we might also prefer to have shadow files place in, say,
+~/.leo/shadow_files.
+
+In both cases, I think we want to create files that indicate their location.
+Either that, or mirror their location in (subdirectories) ~/.leo. In other
+words, this is a general problem, and it would be good to have a robust, general
+solution.
+#@nonl
+#@-node:ekr.20090402072059.13:Create a general mechanism for aux (shadow, _db) files
+#@-node:ekr.20080922115725.1:Finish @shadow
+#@+node:ekr.20090525181522.5791:Minor
+#@+node:ekr.20090525144314.6524:Make @url nodes work with qt gui
+
+#@nonl
+#@-node:ekr.20090525144314.6524:Make @url nodes work with qt gui
+#@+node:ekr.20090525144314.6525:Tab appears in headlines if I type the tab character
+#@-node:ekr.20090525144314.6525:Tab appears in headlines if I type the tab character
+#@+node:ekr.20090525113804.5778:Fix lost anchor bug
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/363403
+
+qt gui, yesterdays leo, Ubuntu 8.10, python 2.5.2
+
+With a long body text you might place the cursor on a line, hold down Shift, and
+PgDn several pages to select a large block of text. The last PgDn may overshoot
+the range you want selected, so you should be able to use UpArrow to bring the
+bottom of the range back up to where you want it. However, on the first UpArrow
+the selection is lost and restarted from the current cursor position. I.e. you
+end up with just one line selected, instead of trimming one line of the
+selection of several pages, as intended.
+
+This may be hard to fix, without taking over the qt code's handling of page up/down.
+#@nonl
+#@-node:ekr.20090525113804.5778:Fix lost anchor bug
 #@+node:ekr.20090430092048.4:Fix all qt bugs
-# See qtGui.leo
 #@-node:ekr.20090430092048.4:Fix all qt bugs
+#@-node:ekr.20090525181522.5791:Minor
+#@-node:ekr.20090525113804.5776:Bugs
+#@+node:ekr.20090522161156.5884:Minor, easy
+#@+node:ekr.20090523070447.6476:Make sure rst3 command applied to @auto-rst node works
+#@-node:ekr.20090523070447.6476:Make sure rst3 command applied to @auto-rst node works
+#@+node:ekr.20090521064955.5945:Better message when checking syntax
+# The name of the offending node is not given, just the root node.
+#@nonl
+#@-node:ekr.20090521064955.5945:Better message when checking syntax
+#@+node:ekr.20090522113545.5884:pylint plugins
+@nocolor
+
+************* Module leo.plugins.qtGui
+W0101:996:leoQtBody.addEditor: Unreachable code
+E1101:1826:leoQtFrame.__init__: Class 'leoQtFrame' has no 'instances' member
+c:\Python25\lib\site-packages\logilab_common-0.39.0-py2.5.egg\logilab\common\modutils.py:136: DeprecationWarning: The wxPython compatibility
+ package is no longer automatically generated or actively maintained.  Please switch to the wx package as soon as possible.
+  module = load_module(curname, mp_file, mp_filename, mp_desc)
+E0602:5794:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
+E0602:5795:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
+E0602:5796:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
+E0602:5797:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
+E1103:7591:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastFunc' member (but some types could not be inferred)
+E1103:7591:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastMatch' member (but some types could not be inferred)
+E1103:7593:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastFlag' member (but some types could not be inferred)
+E1103:7612:jEditColorizer.recolor: Instance of 'Bunch' has no 'stateName' member (but some types could not be inferred)
+E1101:7837:jEditColorizer.setTag: Instance of 'jEditColorizer' has no 'tagCount' member
+E1101:7843:jEditColorizer.setTag: Instance of 'jEditColorizer' has no 'tagCount' member
+E1101:7846:jEditColorizer.setTag: Instance of 'jEditColorizer' has no 'tagCount' member
+W0222:8282:leoQtBaseTextWidget.tag_add: Signature differs from overridden method
+E0601:9092:leoQTextEditWidget.toPythonIndexRowCol: Using variable 'w' before assignment
+
+************* Module leo.plugins.toolbar
+E1103:520:ToolbarTkinterFrame.getIconButton:
+    Instance of 'tkIconBarClass' has no 'getButton' member
+    (but some types could not be inferred)
+E1103:604:ToolbarTkinterFrame.getIconWidgetFrame:
+    Instance of 'tkIconBarClass' has no 'getWidgetFrame' member
+    (but some types could not be inferred)
+
+************* Module leo.plugins.xemacs
+E0602:116:open_in_emacs: Undefined variable '_exemacs_cmd'
+#@nonl
+#@-node:ekr.20090522113545.5884:pylint plugins
+#@+node:ekr.20090512080015.5801:import-files-recursively command?
+How would the command specify settings?
+
+A line added to test bzr push.
+#@-node:ekr.20090512080015.5801:import-files-recursively command?
 #@+node:ekr.20090523070447.6475:Rewrite rst chapter
 #@-node:ekr.20090523070447.6475:Rewrite rst chapter
-#@-node:ekr.20090430092048.1:Before 4.6 b2
+#@+node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
+@nocolor-node
+
+- update leoPyRef.leo.
+- Create a "moved to leoPy.leo" section in unitTest.leo.
+- Unit tests for leoImport.py can be gathered together.
+#@nonl
+#@-node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
+#@-node:ekr.20090522161156.5884:Minor, easy
+#@-node:ekr.20090518072506.8310:Before b2
 #@+node:ekr.20090430092048.7:Before 4.6 final
 #@+node:ekr.20090430122648.1:Generate pdf versions of docs
 #@-node:ekr.20090430122648.1:Generate pdf versions of docs
@@ -1225,10 +1226,6 @@ def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
 #@nonl
 #@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-#@+node:ekr.20090430092048.5:Add new rst3 option
-# See leoPlugins.leo
-#@nonl
-#@-node:ekr.20090430092048.5:Add new rst3 option
 #@+node:ekr.20090430092048.3:Rewrite docs using stories
 #@+node:ekr.20090226080753.6:Finish the wiki intro
 #@-node:ekr.20090226080753.6:Finish the wiki intro
