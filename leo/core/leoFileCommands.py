@@ -713,9 +713,26 @@ class baseFileCommands:
     def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
 
         c = self.c
+
+        self.beforeRead(fileName, c)
+        ok = self.readLeoFile(fileName, theFile, silent, c)
+
+        self.handleDerivedFiles(ok, readAtFileNodesFlag, fileName, c)
+
+        self.afterReadingDerivedFiles(readAtFileNodesFlag, c)
+        return ok, self.ratio
+    #@nonl
+    #@+node:jesse.20090525201722.6856:before read
+    def beforeRead(self, fileName, c):
         c.setChanged(False) # May be set when reading @file nodes.
-        #@    << warn on read-only files >>
-        #@+node:ekr.20031218072017.1554:<< warn on read-only files >>
+        self.warnOnReadOnlyFiles(fileName)
+        self.checking = False
+        self.mFileName = c.mFileName
+        self.initReadIvars()
+        c.loading = True # disable c.changed
+    #@nonl
+    #@+node:jesse.20090525201722.6857:warn on read only files
+    def warnOnReadOnlyFiles(self, fileName):
         # os.access may not exist on all platforms.
 
         try:
@@ -727,28 +744,12 @@ class baseFileCommands:
 
         if self.read_only:
             g.es("read only:",fileName,color="red")
-        #@-node:ekr.20031218072017.1554:<< warn on read-only files >>
-        #@nl
-        self.checking = False
-        self.mFileName = c.mFileName
-        self.initReadIvars()
-        c.loading = True # disable c.changed
-
+    #@-node:jesse.20090525201722.6857:warn on read only files
+    #@-node:jesse.20090525201722.6856:before read
+    #@+node:jesse.20090525201722.6860:read leo file
+    def readLeoFile(self, fileName, theFile, silent, c):
         try:
-            ok = True
-            # t1 = time.clock()
-            v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
-            if v: # v is None for minimal .leo files.
-                c.setRootVnode(v)
-                self.rootVnode = v
-            else:
-                v = leoNodes.vnode(context=c)
-                v.setHeadString('created root node')
-                p = leoNodes.position(v)
-                p._linkAsRoot(oldRoot=None)
-                self.rootVnode = v
-                c.setRootPosition(p)
-                c.changed = False
+            ok = self.readTheFile(theFile, fileName, silent, c)
         except BadLeoFile:
             junk, message, junk = sys.exc_info()
             if not silent:
@@ -759,13 +760,39 @@ class baseFileCommands:
         # Do this before reading derived files.
         self.resolveTnodeLists()
 
+        return ok
+    #@+node:jesse.20090525201722.6861:read the file
+    def readTheFile(self, theFile, fileName, silent, c):
+        ok = True
+        # t1 = time.clock()
+        v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
+        if v: # v is None for minimal .leo files.
+            c.setRootVnode(v)
+            self.rootVnode = v
+        else:
+            v = leoNodes.vnode(context=c)
+            v.setHeadString('created root node')
+            p = leoNodes.position(v)
+            p._linkAsRoot(oldRoot=None)
+            self.rootVnode = v
+            c.setRootPosition(p)
+            c.changed = False
+
+        return ok
+    #@-node:jesse.20090525201722.6861:read the file
+    #@-node:jesse.20090525201722.6860:read leo file
+    #@+node:jesse.20090525201722.6863:handle derived files
+    def handleDerivedFiles(self, ok, readAtFileNodesFlag, fileName, c):    
         if ok and readAtFileNodesFlag:
             # Redraw before reading the @file nodes so the screen isn't blank.
             # This is important for big files like LeoPy.leo.
             c.redraw()
             c.setFileTimeStamp(fileName)
             c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
-
+    #@nonl
+    #@-node:jesse.20090525201722.6863:handle derived files
+    #@+node:jesse.20090525201722.6865:after read derived files
+    def afterReadingDerivedFiles(self, readAtFileNodesFlag, c):
         # Do this after reading derived files.
         if readAtFileNodesFlag:
             # The descendent nodes won't exist unless we have read the @thin nodes!
@@ -783,7 +810,8 @@ class baseFileCommands:
         c.loading = False # reenable c.changed
         c.setChanged(c.changed) # Refresh the changed marker.
         self.initReadIvars()
-        return ok, self.ratio
+    #@nonl
+    #@-node:jesse.20090525201722.6865:after read derived files
     #@-node:ekr.20031218072017.1553:getLeoFile
     #@+node:ekr.20080428055516.3:initAllParents
     def initAllParents(self):
