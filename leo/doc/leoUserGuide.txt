@@ -1089,12 +1089,15 @@ B has not been destroyed, but B is gone from @thin spam.py! So in this sense del
 #@-node:ekr.20060111192108:When is deleting a node dangerous?
 #@-node:ekr.20090501093330.2:@rst-option show-sections = False
 #@-node:ekr.20050830115714.1:Learning to use Leo
-#@+node:ekr.20050830115714.12:How should I use Leo with bzr?
-Using `@thin`_ trees can eliminate most problems with using Leo in cvs environments:
+#@+node:ekr.20050830115714.12:How should I use Leo with bzr/git/hg/svn/cvs?
+Using `@thin`_ trees can eliminate most problems with using Leo in VCS environments:
 
 -   Developers should use `@thin`_ trees to create derived files in any kind of cooperative environment.
 
--   The cvs repository contains "reference" .leo files.
+-   If sentinels are frowned upon in your development community, use `@auto`_ or `@shadow`_ instead
+    of ``@thin``.
+
+-   The VCS repository contains "reference" .leo files.
     These reference files should contain nothing but ``@thin`` nodes.
     Reference files will change only when new derived files get added to the project.
 
@@ -1106,13 +1109,16 @@ Using `@thin`_ trees can eliminate most problems with using Leo in cvs environme
     These two files have many ``@thin`` nodes.
     There is no reference file for ``test.leo`` even though it contains ``@thin leoTest.py``.
     It would be clumsy to use testRef.leo, and there is less need to do so.
+    Reference .leo files (or any .leo files) rarely need to be checked into VCS repository.
+    If you find yourself checking in a .leo file frequently, consider migrating valuable
+    content to `@thin`_ nodes.
 
 -   Developers will use local copies of reference files for their own work.
     For example, instead of using ``LeoPyRef.leo`` directly,
     I use a copy called ``LeoPy.leo``.
     My local copy can contain nodes other than ``@thin`` nodes.
 #@nonl
-#@-node:ekr.20050830115714.12:How should I use Leo with bzr?
+#@-node:ekr.20050830115714.12:How should I use Leo with bzr/git/hg/svn/cvs?
 #@+node:ekr.20050830115714.13:Using derived files
 #@+node:ekr.20090501093330.3:@rst-option show-sections = False
 #@+node:ekr.20050830115714.14:How do I inhibit sentinels in derived files?
@@ -1216,16 +1222,20 @@ Like this::
     $IFDEF LEOHEADER <-conditional compilation directive 
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@+leo-ver=4 <-these lines not compiled
+@verbatim
 @verbatim
 @verbatim
 #@verbatim
     #@+node:@file QParser005.INC
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@@first
+@verbatim
 @verbatim
 @verbatim
 #@verbatim
@@ -1967,6 +1977,7 @@ like this::
 
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@+leo-encoding=iso-8859-1.
 
@@ -2109,7 +2120,8 @@ please ask for help on Leo's help forum:
 .. _`associated .leo files with Leo`:   `How to associate Leo with .leo files on Windows`_
 #@-node:ekr.20050901110110:@rst-no-head links
 #@+node:edream.110203163054.49:System requirements
-Leo will work on any platform that supports Python 2.4 or later and Tk 8.4 or later.
+Leo will work on any platform that supports Python 2.5 or later and Tk 8.4 or later. For
+Qt ui, Qt 4.4 or newer (and compatible PyQt) is required.
 
 -   Download the latest version of Leo from `Leo's download page`_.
 
@@ -2627,15 +2639,18 @@ commands from the Outline menu:
 
 - Click the expansion box of nodes_ to show and hide their children.
 
-- The ``Insert Node`` command_ inserts a new headline into the outline.
+- The ``Insert Node`` command (``Ctrl+I``) inserts a new headline into the outline.
 
-- The ``Delete Node`` command_ deletes a headline and all its children.
+- The ``Cut Node`` command (``Ctrl+Shift+X``) deletes a headline and all its children, and copies the 
+  structure to clipboard - ready to paste with ``Paste Node`` command (``Ctrl+Shift+V``). Use
+  ``Copy Node`` command (``Ctrl+Shift+C``) to copy node to clipboard without deleting it 
+  from outline. Copy-paste command family works across different Leo documents.
 
-- The ``Move Up``, ``Move Down``, ``Move Left`` and ``Move Right`` commands_ move the currently selected node,
-  along with all its descendants. 
+- The ``Move Up`` (``Ctrl+U``), ``Move Down`` (``Ctrl+D``), ``Move Left`` (``Ctrl+L``) and ``Move Right`` (``Ctrl+R``)
+  commands move the currently selected node, along with all its descendants. 
 
-- The ``Promote`` command_ makes all the children_ of a headline siblings of the headline.
-  The ``Demote`` command_ makes all following siblings_ of a headline children of the headline.
+- The ``Promote`` (``Ctrl+}``) command makes all the children of a headline siblings of the headline.
+  The ``Demote`` (``Ctrl+{``) command makes all following siblings_ of a headline children of the headline.
 
 - You can cut, copy and paste entire nodes_ (including their descendants) with
   the Cut Node, Copy Node and Paste Node commands_.
@@ -2994,28 +3009,35 @@ some actual sentinel line for the derived file containing Python code::
 
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@+leo-ver=4-thin
+@verbatim
 @verbatim
 @verbatim
 #@verbatim
     #@+node:ekr.20031218072017.2794:@thin leoColor.py
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@@language python
+@verbatim
 @verbatim
 @verbatim
 #@verbatim
     #@@tabwidth -4
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@@pagewidth 80
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@-node:ekr.20031218072017.2794:@thin leoColor.py
+@verbatim
 @verbatim
 @verbatim
 #@verbatim
@@ -3989,6 +4011,7 @@ You can't mix encodings in a single external file.  For example::
 
 If the encoding used in an external file is not "utf-8" it is represented in the @+leo sentinel line, like this::
 
+@verbatim
 @verbatim
 @verbatim
 #@verbatim
@@ -15370,6 +15393,7 @@ Leo uses unicode internally for all strings.
     If the encoding used in a derived file is not "utf-8" it is represented in the ``@+leo`` sentinel line.
     For example::
 
+@verbatim
 @verbatim
 @verbatim
 #@verbatim
