@@ -707,36 +707,57 @@ class baseFileCommands:
         return True
     #@-node:ekr.20080410115129.1:checkPaste
     #@-node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
-    #@+node:ekr.20031218072017.1553:getLeoFile
+    #@+node:ekr.20031218072017.1553:getLeoFile & helpers
     # The caller should follow this with a call to c.redraw().
 
     def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
 
         c = self.c
         c.setChanged(False) # May be set when reading @file nodes.
-        #@    << warn on read-only files >>
-        #@+node:ekr.20031218072017.1554:<< warn on read-only files >>
-        # os.access may not exist on all platforms.
-
-        try:
-            self.read_only = not os.access(fileName,os.W_OK)
-        except AttributeError:
-            self.read_only = False
-        except UnicodeError:
-            self.read_only = False
-
-        if self.read_only:
-            g.es("read only:",fileName,color="red")
-        #@-node:ekr.20031218072017.1554:<< warn on read-only files >>
-        #@nl
+        self.warnOnReadOnlyFiles(fileName)
         self.checking = False
         self.mFileName = c.mFileName
         self.initReadIvars()
-        c.loading = True # disable c.changed
+
+        try:
+            c.loading = True # disable c.changed
+            ok = self.getLeoFileHelper(theFile,fileName,silent)
+
+            # Do this before reading derived files.
+            self.resolveTnodeLists()
+
+            if ok and readAtFileNodesFlag:
+                # Redraw before reading the @file nodes so the screen isn't blank.
+                # This is important for big files like LeoPy.leo.
+                c.redraw()
+                c.setFileTimeStamp(fileName)
+                c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+
+            # Do this after reading derived files.
+            if readAtFileNodesFlag:
+                # The descendent nodes won't exist unless we have read the @thin nodes!
+                self.restoreDescendentAttributes()
+
+            self.setPositionsFromVnodes()
+            c.selectVnode(c.p) # load body pane
+            self.initAllParents()
+            if c.config.getBool('check_outline_after_read'):
+                c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+        finally:
+            c.loading = False # reenable c.changed
+
+        c.setChanged(c.changed) # Refresh the changed marker.
+        self.initReadIvars()
+        return ok, self.ratio
+    #@+node:ekr.20090526081836.5841:getLeoFileHelper
+    def getLeoFileHelper(self,theFile,fileName,silent):
+
+        '''Read the .leo file and create the outline.'''
+
+        c = self.c
 
         try:
             ok = True
-            # t1 = time.clock()
             v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
             if v: # v is None for minimal .leo files.
                 c.setRootVnode(v)
@@ -756,35 +777,24 @@ class baseFileCommands:
                 g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
             ok = False
 
-        # Do this before reading derived files.
-        self.resolveTnodeLists()
+        return ok
+    #@-node:ekr.20090526081836.5841:getLeoFileHelper
+    #@+node:ekr.20031218072017.1554:warnOnReadOnlyFiles
+    def warnOnReadOnlyFiles (self,fileName):
 
-        if ok and readAtFileNodesFlag:
-            # Redraw before reading the @file nodes so the screen isn't blank.
-            # This is important for big files like LeoPy.leo.
-            c.redraw()
-            c.setFileTimeStamp(fileName)
-            c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+        # os.access may not exist on all platforms.
 
-        # Do this after reading derived files.
-        if readAtFileNodesFlag:
-            # The descendent nodes won't exist unless we have read the @thin nodes!
-            self.restoreDescendentAttributes()
+        try:
+            self.read_only = not os.access(fileName,os.W_OK)
+        except AttributeError:
+            self.read_only = False
+        except UnicodeError:
+            self.read_only = False
 
-        self.setPositionsFromVnodes()
-        c.selectVnode(c.p) # load body pane
-
-        self.initAllParents()
-
-        if c.config.getBool('check_outline_after_read'):
-            g.trace('@bool check_outline_after_read = True',color='blue')
-            c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-
-        c.loading = False # reenable c.changed
-        c.setChanged(c.changed) # Refresh the changed marker.
-        self.initReadIvars()
-        return ok, self.ratio
-    #@-node:ekr.20031218072017.1553:getLeoFile
+        if self.read_only:
+            g.es("read only:",fileName,color="red")
+    #@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
+    #@-node:ekr.20031218072017.1553:getLeoFile & helpers
     #@+node:ekr.20080428055516.3:initAllParents
     def initAllParents(self):
 
@@ -1027,6 +1037,8 @@ class baseFileCommands:
     # for i in range(32): print i,repr(chr(i))
     #@+node:ekr.20090525144314.6527:@test cleanSaxInputString
     if g.unitTesting:
+
+        c,p = g.getTestVars()
 
         s = 'test%cthis' % 27
 

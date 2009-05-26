@@ -7706,6 +7706,8 @@ def cleanSaxInputString(self,s):
 #@+node:ekr.20090525144314.6527:@test cleanSaxInputString
 if g.unitTesting:
 
+    c,p = g.getTestVars()
+
     s = 'test%cthis' % 27
 
     print c.fileCommands.cleanSaxInputString(s)
