@@ -74,8 +74,6 @@ To generate .pdf files, you would first convert test.html.txt to LaTeX::
 You can then use one of the LaTeX to .pdf converters to create the final .pdf
 file. See http://docutils.sourceforge.net/docs/user/latex.html#pdf-generation
 for details.
-
-#@nonl
 #@+node:ekr.20090401113141.2:@rst c:\prog\test\test.html
 @ @rst-options
 code_mode=False
@@ -1217,12 +1215,16 @@ So this would enable a basic compiler to "jump" over the "true" LEO-header-lines
 Like this::
 
     $IFDEF LEOHEADER <-conditional compilation directive 
+@verbatim
 #@verbatim
     #@+leo-ver=4 <-these lines not compiled
+@verbatim
 #@verbatim
     #@+node:@file QParser005.INC
+@verbatim
 #@verbatim
     #@@first
+@verbatim
 #@verbatim
     #@delims ' 
     '@@c
@@ -1961,6 +1963,7 @@ may see strange looking characters if your text editor is expecting a different
 encoding. The encoding used in any `derived file`_ is shown in the ``#@+leo`` `sentinel line`_
 like this::
 
+@verbatim
 #@verbatim
     #@+leo-encoding=iso-8859-1.
 
@@ -2989,18 +2992,25 @@ structure in special comments called **sentinel lines**. Sentinel lines are
 comment lines with '@' following the comment delimiter. For example, here are
 some actual sentinel line for the derived file containing Python code::
 
+@verbatim
 #@verbatim
     #@+leo-ver=4-thin
+@verbatim
 #@verbatim
     #@+node:ekr.20031218072017.2794:@thin leoColor.py
+@verbatim
 #@verbatim
     #@@language python
+@verbatim
 #@verbatim
     #@@tabwidth -4
+@verbatim
 #@verbatim
     #@@pagewidth 80
+@verbatim
 #@verbatim
     #@-node:ekr.20031218072017.2794:@thin leoColor.py
+@verbatim
 #@verbatim
     #@-leo
 
@@ -3972,6 +3982,7 @@ You can't mix encodings in a single external file.  For example::
 
 If the encoding used in an external file is not "utf-8" it is represented in the @+leo sentinel line, like this::
 
+@verbatim
 #@verbatim
     #@+leo-encoding=iso-8859-1.
 
@@ -13400,8 +13411,6 @@ Chapter 20: Unit testing with Leo
 This chapter describes how you can execute Python unit test from within Leo outlines.
 
 .. .. contents::
-
-#@nonl
 #@+node:ekr.20070628083442.2:@rst-no-head links
 .. Links
 #@-node:ekr.20070628083442.2:@rst-no-head links
@@ -14082,7 +14091,7 @@ And, as per instructions, pressing alt+I will launch a new Tk window with the
 plotted representation of the array!
 #@nonl
 #@-node:vivainio.20080318125834.2:Example use case: pylab
-#@+node:vivainio.20080302194307:Magic functions	
+#@+node:vivainio.20080302194307:Magic functions
 %mb
 ---
 
@@ -14117,7 +14126,7 @@ Opens the variable s for editing. Press alt+I to push the new value to IPython.
     lee hist   
 
 Opens IPython interactive history (both input and output) in Leo.
-#@-node:vivainio.20080302194307:Magic functions	
+#@-node:vivainio.20080302194307:Magic functions
 #@+node:vivainio.20080302174639.9:Acknowledgements and history
 This idea got started when I (Ville M. Vainio) saw this post by Edward Ream (the author of
 Leo) on IPython developer mailing list:
@@ -14219,8 +14228,6 @@ To run a given script in IPython::
 
     x = c.ipythonController
     if x and x.started(): x.pushToIPython(script=script)
-
-#@nonl
 #@-node:ekr.20080204100523.2:Scripting IPython from Leo
 #@+node:ekr.20080205080801:Scripting Leo from IPython
 The start-ipython command injects the leox object into IPython's
@@ -15345,6 +15352,7 @@ Leo uses unicode internally for all strings.
     If the encoding used in a derived file is not "utf-8" it is represented in the ``@+leo`` sentinel line.
     For example::
 
+@verbatim
 #@verbatim
         #@+leo-encoding=iso-8859-1.
 
@@ -17253,6 +17261,114 @@ Added new settings::
 #@-node:ekr.20060620094033.2:What's New in Leo 4.4
 #@-node:ekr.20060620094033:What's New...
 #@-node:ekr.20040414161647:Users Guide
+#@+node:ekr.20090526102407.10028:Important notes about Leo's code
+@language rest
+#@nonl
+#@+node:ekr.20090526102407.10029:How to profile Leo
+To gather statistics, do the following in a console window, not idle::
+
+    > python
+    >>> import leo
+    >>> import leo.core.runLeo as r
+    >>> r.prof()  (this runs leo)
+    load any .leo file from Leo
+    quit Leo
+
+Intermediate data is written to cwd.leoProfile.txt.
+The statistics are written to stdout.
+#@-node:ekr.20090526102407.10029:How to profile Leo
+#@+node:ekr.20090526102407.10030:High-level code notes
+I've often said that I don't remember many details about Leo. This documentation
+describes what I *do* remember about Leo's various modules. I hope this will be
+useful to potential readers, users and modifiers of Leo's code.
+
+In general, if you want to understand the code, read through it quickly, looking
+for pieces of code that are unexpected complex, or unexpectedly simple. Forget
+the details; remember the shape. Once you have the general shape in mind, you
+are ready to modify the code. No kidding. Besides, more reading won't help :-)
+#@nonl
+#@+node:ekr.20090526102407.10031:leoFileCommands.py and leoAtFile.py
+In general, write code is much simpler than read code,
+because reading requires parsing. There are a few exceptions below.
+
+leoFileCommands.py contains the code that reads and writes .leo files.
+
+- This file uses the sax parser to parse the xml in .leo files.
+- Complex code, driven by sax, turns sax nodes into Leo nodes.
+- The putVnode method is "interesting".  Take a look.
+  In the past, there have been significant, surprising bottlenecks in
+  putVnode and maybe putTnode as well.  No longer.
+
+leoAtFileCommands.py contains the code that reads and writes external files.
+
+- There are options to read and write strings.
+  These are useful for performance and for unit testing.
+- atFile.replaceTargetFileIfDifferent is an important optimization.
+- There are a lot of read/write commands for external files,
+  and this results in lots of options being passed around.
+
+Initing is tricky for both leoFileCommands.py and leoAtFileCommands.py.
+
+- The bizarre call to initReadIvars() at the end of getLeoFile is one
+  symptom of the difficulties.
+- Never change init code without careful thought and unit testing.
+#@nonl
+#@-node:ekr.20090526102407.10031:leoFileCommands.py and leoAtFile.py
+#@+node:ekr.20090526102407.10032:Leo's MVC architecture
+I. Background
+
+Leo has had a robust MVC (Model,View,Controller) architecture from day one.
+
+Leo's model are the classes in leoNodes.py. They are completely independent from
+the rest of Leo. Many parts of Leo *use* these classes, but not vice versa!
+
+Leo's controller is everything else in 'Code-->Core classes'. This code has *no*
+direct dependencies on Leo's gui code, as will be explained next.
+
+Leo's view has two parts:
+
+1. The classes in the tree 'Code-->Gui Base classes'.
+   These are part of Leo's core.
+
+2. The classes in the tree 'Code-->Gui Tkinter classes'.
+   These are essentailly a gui plugin.
+
+Leo's core consists of the Model, Controller and the gui base classes.
+
+
+II. Why Leo's core is gui-independent
+
+Leo uses a completely standard way of separating gui-dependent code from
+gui-independent code. Base gui classes (part 1 of the view) define an interface
+used by Leo's core. Subclasses (part 2 of the view) implement the interface for
+a particular gui.
+
+** Subclasses can change without affecting Leo's code in any way.**
+
+The essential design rule is: if gui-related code can be made gui- independent,
+it should be part of a base class. Otherwise it must be part of a subclass of a
+base gui class.
+
+The gui base classes are far more than do-nothing interfaces. Examples of
+complex code that reside in base classes:
+
+A. tree.select. I am proud that this method is gui-independent. Switching nodes
+is a very tricky business. Making it gui-independent is a big win.
+
+B. leoFind.py. Finds the next/previous matches, and dealing with an "idealized"
+find tab. Adapter classes exist in leoEditCommands.py.
+
+C. Autocompletion and minibuffer code in leoKeys.py. For comparison, look how
+simple leoTkinterKeys.py is.
+
+D. A generalized, gui-independent interface to Leo's body pane. The commands in
+leoEditCommands.py (part of the controller) use this interface (baseTextWidget)
+rather than calling Tk directly.
+
+**If you want to understand Leo's design, study Leo's base gui classes.**
+#@-node:ekr.20090526102407.10032:Leo's MVC architecture
+#@-node:ekr.20090526102407.10030:High-level code notes
+#@-node:ekr.20090526102407.10028:Important notes about Leo's code
 #@-all
 #@nonl
 #@-node:ville.20090521211406.6348:@thin leoUserGuide.txt
