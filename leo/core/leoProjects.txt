@@ -10813,6 +10813,131 @@ if g.unitTesting:
 #@-node:ekr.20090516135452.5777:g.ensureLeading/TrailingNewlines & tests
 #@-node:ekr.20090525095026.5763:New fixes
 #@-node:ekr.20090511055302.5784:Fixed rst import bug
+#@+node:ekr.20090402072059.14:Fixed crash when reading .zip files
+@nocolor-node
+
+The problem arose when reading a zipped file:
+
+ File "C:\Programme\Leo-4-6-b1\leo\core\leoFileCommands.py", line
+1265, in parse_leo_file
+   s = theFile.read()
+TypeError: read() takes at least 2 arguments (1 given)
+saved: [zipped] Dive-into-Python-3.leo
+
+The fix:
+
+- g.openLeoOrZipFile now returns a StringIO file when opening a .zip file.
+- No other changes were made.
+
+#@+node:ekr.20060919110638.3:readSaxFile
+def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
+
+    # Pass one: create the intermediate nodes.
+    saxRoot = self.parse_leo_file(theFile,fileName,
+        silent=silent,inClipboard=inClipboard,s=s)
+
+    # self.dumpSaxTree(saxRoot,dummy=True)
+
+    # Pass two: create the tree of vnodes and tnodes from the intermediate nodes.
+    if saxRoot:
+        children = self.createSaxVnodes(saxRoot,reassignIndices=reassignIndices)
+        # g.trace('children',children)
+        self.c.hiddenRootNode.t.children = children
+        v = children and children[0] or None
+        return v
+    else:
+        return None
+#@-node:ekr.20060919110638.3:readSaxFile
+#@+node:ekr.20060919110638.14:parse_leo_file
+def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
+
+    c = self.c
+    # g.trace('hiddenRootNode',c.hiddenRootNode)
+
+    try:
+        if g.isPython3:
+            if theFile:
+                pass # Just use the open binary file, opened by g.openLeoOrZipFile.
+            else:
+                theFile = StringIO(s)
+        else:
+            if theFile: s = theFile.read()
+            s = self.cleanSaxInputString(s)
+            theFile = cStringIO.StringIO(s)
+        parser = xml.sax.make_parser()
+        parser.setFeature(xml.sax.handler.feature_external_ges,1)
+            # Include external general entities, esp. xml-stylesheet lines.
+        if 0: # Expat does not read external features.
+            parser.setFeature(xml.sax.handler.feature_external_pes,1)
+                # Include all external parameter entities
+                # Hopefully the parser can figure out the encoding from the <?xml> element.
+        handler = saxContentHandler(c,inputFileName,silent,inClipboard)
+        parser.setContentHandler(handler)
+        parser.parse(theFile) # expat does not support parseString
+        # g.trace('parsing done')
+        sax_node = handler.getRootNode()
+    except xml.sax.SAXParseException:
+        g.es_print('error parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+    except Exception:
+        g.es_print('unexpected exception parsing',inputFileName,color='red')
+        g.es_exception()
+        sax_node = None
+
+    return sax_node
+#@-node:ekr.20060919110638.14:parse_leo_file
+#@+node:ekr.20070412082527:g.openLeoOrZipFile & tests
+# This is used in several places besides g.openWithFileName.
+
+def openLeoOrZipFile (fileName):
+
+    try:
+        isZipped = zipfile.is_zipfile(fileName)
+        if isZipped:
+            import StringIO
+            theFile = zipfile.ZipFile(fileName,'r')
+            if not theFile: return None,False
+            # New in Leo 4.6 b2: read the file into an StringIO file.
+            aList = theFile.namelist()
+            name = aList and len(aList) == 1 and aList[0]
+            if not name: return None,False
+            s = theFile.read(name)
+            theStringFile =  StringIO.StringIO(s)
+            return theStringFile,True
+        else:
+            # mode = g.choose(g.isPython3,'r','rb')
+            # 9/19/08: always use binary mode??
+            mode = 'rb'
+            theFile = open(fileName,mode)
+        return theFile,isZipped
+    except IOError:
+        # Do not use string + here: it will fail for non-ascii strings!
+        if not g.unitTesting:
+            g.es_print("can not open:",fileName,color="blue")
+        return None,False
+#@nonl
+#@+node:ekr.20090526083112.5838:@test g.openLeoOrZipFile
+if g.unitTesting:
+
+    import zipfile
+
+    # Create a zip file for testing.
+    s = 'this is a test file'
+    testDir = g.os_path_join(g.app.loadDir,'..','test')
+    assert g.os_path_exists(testDir)
+    path = g.os_path_finalize_join(testDir,'testzip.zip')
+    theFile = zipfile.ZipFile(path,'w')
+    theFile.writestr('leo-zip-file',s)
+    theFile.close()
+
+    # Open the file, and use read (with no args) to get the contents.
+    theFile,ok = g.openLeoOrZipFile(path)
+    assert ok
+    assert theFile.read() == s
+#@-node:ekr.20090526083112.5838:@test g.openLeoOrZipFile
+#@-node:ekr.20070412082527:g.openLeoOrZipFile & tests
+#@-node:ekr.20090402072059.14:Fixed crash when reading .zip files
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
@@ -11726,7 +11851,7 @@ print pl2
 #@nonl
 #@-node:ville.20090311193011.2:test select_h, select_b, find_h, find_b
 #@+node:ekr.20090520055433.5880:Refactored openWithFileName
-#@+node:ekr.20070412082527:g.openLeoOrZipFile
+#@+node:ekr.20070412082527:g.openLeoOrZipFile & tests
 # This is used in several places besides g.openWithFileName.
 
 def openLeoOrZipFile (fileName):
@@ -11734,8 +11859,16 @@ def openLeoOrZipFile (fileName):
     try:
         isZipped = zipfile.is_zipfile(fileName)
         if isZipped:
+            import StringIO
             theFile = zipfile.ZipFile(fileName,'r')
-            # g.trace('opened zip file',theFile)
+            if not theFile: return None,False
+            # New in Leo 4.6 b2: read the file into an StringIO file.
+            aList = theFile.namelist()
+            name = aList and len(aList) == 1 and aList[0]
+            if not name: return None,False
+            s = theFile.read(name)
+            theStringFile =  StringIO.StringIO(s)
+            return theStringFile,True
         else:
             # mode = g.choose(g.isPython3,'r','rb')
             # 9/19/08: always use binary mode??
@@ -11748,7 +11881,26 @@ def openLeoOrZipFile (fileName):
             g.es_print("can not open:",fileName,color="blue")
         return None,False
 #@nonl
-#@-node:ekr.20070412082527:g.openLeoOrZipFile
+#@+node:ekr.20090526083112.5838:@test g.openLeoOrZipFile
+if g.unitTesting:
+
+    import zipfile
+
+    # Create a zip file for testing.
+    s = 'this is a test file'
+    testDir = g.os_path_join(g.app.loadDir,'..','test')
+    assert g.os_path_exists(testDir)
+    path = g.os_path_finalize_join(testDir,'testzip.zip')
+    theFile = zipfile.ZipFile(path,'w')
+    theFile.writestr('leo-zip-file',s)
+    theFile.close()
+
+    # Open the file, and use read (with no args) to get the contents.
+    theFile,ok = g.openLeoOrZipFile(path)
+    assert ok
+    assert theFile.read() == s
+#@-node:ekr.20090526083112.5838:@test g.openLeoOrZipFile
+#@-node:ekr.20070412082527:g.openLeoOrZipFile & tests
 #@+node:ekr.20090520055433.5945:g.openWithFileName & helpers
 def openWithFileName(fileName,old_c,
     enableLog=True,gui=None,readAtFileNodesFlag=True):
@@ -11969,7 +12121,7 @@ Something like this::
 
 C:\Python26\python.exe "c:\leo.repo\trunk\launchLeo.py" --gui=qt %1 %2
 #@nonl
-#@+node:ekr.20070412082527:g.openLeoOrZipFile
+#@+node:ekr.20070412082527:g.openLeoOrZipFile & tests
 # This is used in several places besides g.openWithFileName.
 
 def openLeoOrZipFile (fileName):
@@ -11977,8 +12129,16 @@ def openLeoOrZipFile (fileName):
     try:
         isZipped = zipfile.is_zipfile(fileName)
         if isZipped:
+            import StringIO
             theFile = zipfile.ZipFile(fileName,'r')
-            # g.trace('opened zip file',theFile)
+            if not theFile: return None,False
+            # New in Leo 4.6 b2: read the file into an StringIO file.
+            aList = theFile.namelist()
+            name = aList and len(aList) == 1 and aList[0]
+            if not name: return None,False
+            s = theFile.read(name)
+            theStringFile =  StringIO.StringIO(s)
+            return theStringFile,True
         else:
             # mode = g.choose(g.isPython3,'r','rb')
             # 9/19/08: always use binary mode??
@@ -11991,7 +12151,26 @@ def openLeoOrZipFile (fileName):
             g.es_print("can not open:",fileName,color="blue")
         return None,False
 #@nonl
-#@-node:ekr.20070412082527:g.openLeoOrZipFile
+#@+node:ekr.20090526083112.5838:@test g.openLeoOrZipFile
+if g.unitTesting:
+
+    import zipfile
+
+    # Create a zip file for testing.
+    s = 'this is a test file'
+    testDir = g.os_path_join(g.app.loadDir,'..','test')
+    assert g.os_path_exists(testDir)
+    path = g.os_path_finalize_join(testDir,'testzip.zip')
+    theFile = zipfile.ZipFile(path,'w')
+    theFile.writestr('leo-zip-file',s)
+    theFile.close()
+
+    # Open the file, and use read (with no args) to get the contents.
+    theFile,ok = g.openLeoOrZipFile(path)
+    assert ok
+    assert theFile.read() == s
+#@-node:ekr.20090526083112.5838:@test g.openLeoOrZipFile
+#@-node:ekr.20070412082527:g.openLeoOrZipFile & tests
 #@+node:ekr.20090520055433.5945:g.openWithFileName & helpers
 def openWithFileName(fileName,old_c,
     enableLog=True,gui=None,readAtFileNodesFlag=True):
@@ -12569,6 +12748,96 @@ def shouldWriteAtAutoNode (self,p,exists,force):
 #@-node:ekr.20071019141745:shouldWriteAtAutoNode
 #@-node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
 #@-node:ekr.20090521064955.5903:Support @auto-rst
+#@+node:ekr.20090526005746.5840:Refactored getLeoFile
+#@+node:ekr.20031218072017.1553:getLeoFile & helpers
+# The caller should follow this with a call to c.redraw().
+
+def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
+
+    c = self.c
+    c.setChanged(False) # May be set when reading @file nodes.
+    self.warnOnReadOnlyFiles(fileName)
+    self.checking = False
+    self.mFileName = c.mFileName
+    self.initReadIvars()
+
+    try:
+        c.loading = True # disable c.changed
+        ok = self.getLeoFileHelper(theFile,fileName,silent)
+
+        # Do this before reading derived files.
+        self.resolveTnodeLists()
+
+        if ok and readAtFileNodesFlag:
+            # Redraw before reading the @file nodes so the screen isn't blank.
+            # This is important for big files like LeoPy.leo.
+            c.redraw()
+            c.setFileTimeStamp(fileName)
+            c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+
+        # Do this after reading derived files.
+        if readAtFileNodesFlag:
+            # The descendent nodes won't exist unless we have read the @thin nodes!
+            self.restoreDescendentAttributes()
+
+        self.setPositionsFromVnodes()
+        c.selectVnode(c.p) # load body pane
+        self.initAllParents()
+        if c.config.getBool('check_outline_after_read'):
+            c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+    finally:
+        c.loading = False # reenable c.changed
+
+    c.setChanged(c.changed) # Refresh the changed marker.
+    self.initReadIvars()
+    return ok, self.ratio
+#@+node:ekr.20090526081836.5841:getLeoFileHelper
+def getLeoFileHelper(self,theFile,fileName,silent):
+
+    '''Read the .leo file and create the outline.'''
+
+    c = self.c
+
+    try:
+        ok = True
+        v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
+        if v: # v is None for minimal .leo files.
+            c.setRootVnode(v)
+            self.rootVnode = v
+        else:
+            v = leoNodes.vnode(context=c)
+            v.setHeadString('created root node')
+            p = leoNodes.position(v)
+            p._linkAsRoot(oldRoot=None)
+            self.rootVnode = v
+            c.setRootPosition(p)
+            c.changed = False
+    except BadLeoFile:
+        junk, message, junk = sys.exc_info()
+        if not silent:
+            g.es_exception()
+            g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
+        ok = False
+
+    return ok
+#@-node:ekr.20090526081836.5841:getLeoFileHelper
+#@+node:ekr.20031218072017.1554:warnOnReadOnlyFiles
+def warnOnReadOnlyFiles (self,fileName):
+
+    # os.access may not exist on all platforms.
+
+    try:
+        self.read_only = not os.access(fileName,os.W_OK)
+    except AttributeError:
+        self.read_only = False
+    except UnicodeError:
+        self.read_only = False
+
+    if self.read_only:
+        g.es("read only:",fileName,color="red")
+#@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
+#@-node:ekr.20031218072017.1553:getLeoFile & helpers
+#@-node:ekr.20090526005746.5840:Refactored getLeoFile
 #@-node:ekr.20090401105902.3:Features
 #@-node:ekr.20080917153158.11:4.6 b2
 #@-all

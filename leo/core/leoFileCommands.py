@@ -1296,8 +1296,7 @@ class baseFileCommands:
                 else:
                     theFile = StringIO(s)
             else:
-                if theFile:
-                    s = theFile.read()
+                if theFile: s = theFile.read()
                 s = self.cleanSaxInputString(s)
                 theFile = cStringIO.StringIO(s)
             parser = xml.sax.make_parser()

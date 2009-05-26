@@ -2568,7 +2568,7 @@ def makePathRelativeTo (fullPath,basePath):
     else:
         return fullPath
 #@-node:ekr.20071114113736:g.makePathRelativeTo
-#@+node:ekr.20070412082527:g.openLeoOrZipFile
+#@+node:ekr.20070412082527:g.openLeoOrZipFile & tests
 # This is used in several places besides g.openWithFileName.
 
 def openLeoOrZipFile (fileName):
@@ -2576,8 +2576,16 @@ def openLeoOrZipFile (fileName):
     try:
         isZipped = zipfile.is_zipfile(fileName)
         if isZipped:
+            import StringIO
             theFile = zipfile.ZipFile(fileName,'r')
-            # g.trace('opened zip file',theFile)
+            if not theFile: return None,False
+            # New in Leo 4.6 b2: read the file into an StringIO file.
+            aList = theFile.namelist()
+            name = aList and len(aList) == 1 and aList[0]
+            if not name: return None,False
+            s = theFile.read(name)
+            theStringFile =  StringIO.StringIO(s)
+            return theStringFile,True
         else:
             # mode = g.choose(g.isPython3,'r','rb')
             # 9/19/08: always use binary mode??
@@ -2590,7 +2598,26 @@ def openLeoOrZipFile (fileName):
             g.es_print("can not open:",fileName,color="blue")
         return None,False
 #@nonl
-#@-node:ekr.20070412082527:g.openLeoOrZipFile
+#@+node:ekr.20090526083112.5838:@test g.openLeoOrZipFile
+if g.unitTesting:
+
+    import zipfile
+
+    # Create a zip file for testing.
+    s = 'this is a test file'
+    testDir = g.os_path_join(g.app.loadDir,'..','test')
+    assert g.os_path_exists(testDir)
+    path = g.os_path_finalize_join(testDir,'testzip.zip')
+    theFile = zipfile.ZipFile(path,'w')
+    theFile.writestr('leo-zip-file',s)
+    theFile.close()
+
+    # Open the file, and use read (with no args) to get the contents.
+    theFile,ok = g.openLeoOrZipFile(path)
+    assert ok
+    assert theFile.read() == s
+#@-node:ekr.20090526083112.5838:@test g.openLeoOrZipFile
+#@-node:ekr.20070412082527:g.openLeoOrZipFile & tests
 #@+node:ekr.20090520055433.5945:g.openWithFileName & helpers
 def openWithFileName(fileName,old_c,
     enableLog=True,gui=None,readAtFileNodesFlag=True):
