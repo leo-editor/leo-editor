@@ -390,6 +390,9 @@ def stripPathCruft (path):
 
     '''Strip cruft from a path name.'''
 
+    if not path:
+        return path # Retain empty paths for warnings.
+
     if len(path) > 2 and (
         (path[0]=='<' and path[-1] == '>') or
         (path[0]=='"' and path[-1] == '"') or
@@ -403,6 +406,8 @@ def stripPathCruft (path):
 if g.unitTesting:
 
     table =  (
+        (None,None), # Retain empty paths for warnings.
+        ('',''),
         (g.app.loadDir,g.app.loadDir),
         ('<abc>','abc'),
         ('"abc"','abc'),
@@ -904,29 +909,26 @@ def set_language(s,i,issue_errors_flag=False):
 #@-node:ekr.20031218072017.1384:g.set_language
 #@+node:ekr.20081001062423.9:g.setDefaultDirectory & helpers
 # This is a refactoring, used by leoImport.scanDefaultDirectory and
-# atFile.scanDefault directory
+# atFile.scanDefaultDirectory
 
 def setDefaultDirectory(c,p,importing=False):
 
     ''' Compute a default directory by scanning @path directives.
     Return (default_dir,error_message).'''
 
-    trace = False and not g.unitTesting
-
     if not p: return '',''
-    default_dir,error = g.getAbsPathFromNode(c,p)
+    default_dir,error = g.getAbsPathFromNode(c,p),''
 
     if not default_dir:
         default_dir,error = g.getPathFromDirectives(c,p)
 
-    if c and c.frame and not default_dir:
+    if c and c.frame and not default_dir and not error:
         default_dir = g.findDefaultDirectory(c)
 
-    if not default_dir and not importing:
+    if not default_dir and not importing and not error:
         # This should never happen: c.openDirectory should be a good last resort.
         error = "No absolute directory specified anywhere."
 
-    if trace: g.trace('returns',default_dir)
     return default_dir, error
 #@+node:ekr.20081001062423.10:g.getAbsPathFromNode & test
 # An absolute path in an @file node over-rides everything else.
@@ -934,28 +936,27 @@ def setDefaultDirectory(c,p,importing=False):
 
 def getAbsPathFromNode(c,p,name=''): # Name is for unit testing.
 
-    default_dir = '' ; error = ''
-    if p: name = p.anyAtFileNodeName()
+    default_dir = ''
+    if p:
+        name = p.anyAtFileNodeName()
 
-    theDir = g.choose(name,g.os_path_dirname(name),None)
+    if name:
+        theDir = g.os_path_dirname(name)
+        if theDir and g.os_path_isabs(theDir):
+            if g.os_path_exists(theDir):
+                default_dir = theDir
+            else:
+                default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
 
-    if theDir and g.os_path_isabs(theDir):
-        if g.os_path_exists(theDir):
-            default_dir = theDir
-        else:
-            default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
-            if not default_dir:
-                error = "Directory \"%s\" does not exist" % theDir
-
-    return default_dir,error
+    return default_dir
+#@nonl
 #@+node:ekr.20090527080219.5809:@test g.getAbsPathFromNode
 if g.unitTesting:
 
     c,p = g.getTestVars()
     path = g.os_path_finalize_join(g.app.loadDir,'whatever')
-    result,error = g.getAbsPathFromNode(c,p=None,name=path)
+    result = g.getAbsPathFromNode(c,p=None,name=path)
     expected = g.app.loadDir
-    assert error == ''
     assert expected == result,'expected %s, got %s' % (
         expected,result)
 #@nonl
@@ -970,27 +971,16 @@ def getPathFromDirectives(c,p):
     default_dir = '' ; error = ''
     if not p: return default_dir,error
     aList = g.get_directives_dict_list(p)
-    if trace: g.trace(aList)
     path = c.scanAtPathDirectives(aList)
-    if trace: g.trace('1',repr(path))
     if path:
-        path = g.stripPathCruft(path)
-        if trace: g.trace('2',repr(path))
-        if path:
-            base = g.getBaseDirectory(c) # returns "" on error.
-            path = c.os_path_finalize_join(base,path)
-            if trace: g.trace('3',repr(path))
-            if g.os_path_isabs(path):
-                if g.os_path_exists(path):
-                    default_dir = path
-                else:
-                    default_dir = g.makeAllNonExistentDirectories(path,c=c)
-                    if not default_dir:
-                        error = "invalid @path: %s" % path
-                    else:
-                        error = "ignoring bad @path: %s" % path
+        base = g.getBaseDirectory(c) # returns "" on error.
+        path = c.os_path_finalize_join(base,path)
+        if g.os_path_exists(path):
+            default_dir = path
         else:
-            error = "ignoring empty @path"
+            default_dir = g.makeAllNonExistentDirectories(path,c=c)
+            if not default_dir:
+                error = "invalid @path: %s" % path
 
     return default_dir,error
 #@+node:ekr.20090527080219.5826:@test g.getPathFromDirectives
@@ -998,11 +988,11 @@ if g.unitTesting:
 
     result,error = g.getPathFromDirectives(c,p)
     assert error==''
-    print result
+    assert result
 #@nonl
 #@-node:ekr.20090527080219.5826:@test g.getPathFromDirectives
 #@-node:ekr.20081001062423.11:g.getPathFromDirectives & test
-#@+node:ekr.20081001062423.12:g.findDefaultDirectory & test
+#@+node:ekr.20081001062423.12:g.findDefaultDirectory & test (major change)
 # This code is executed if no valid absolute path was specified in
 # the @file node or in an @path directive.
 
@@ -1011,25 +1001,44 @@ def findDefaultDirectory(c):
     '''Attempt to find a suitable default directory.'''
 
     default_dir = ''
-    base = g.getBaseDirectory(c) # returns "" on error.
-    table = (c.tangle_directory,c.frame.openDirectory,c.openDirectory)
-    for theDir in table:
-        if not theDir: continue
-        theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
-        if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+
+    # Check that c.openDirectory and c.frame.openDirectory are in synch.
+    if c.openDirectory != c.frame.openDirectory:
+        g.trace('***can not happen: c.openDirectory != c.frame.openDirectory')
+        g.trace('c.openDirectory',c.openDirectory)
+        g.trace('c.frame.openDirectory',c.frame.openDirectory)
+
+    if not g.os_path_isabs(c.openDirectory):
+        g.trace('*** can not happen: relative c.openDirectory',c.openDirectory)
+
+    for theDir in (c.openDirectory,g.getBaseDirectory(c)):
+        if theDir and g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
             if g.os_path_exists(theDir):
-                default_dir = theDir ; break
+                default_dir = theDir
             else:
                 default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
+            if default_dir: break
+
     return default_dir
 #@+node:ekr.20090526102407.10034:@test g.findDefaultDirectory
 if g.unitTesting:
 
     c,p = g.getTestVars()
     theDir = g.findDefaultDirectory(c)
-    assert theDir == c.frame.openDirectory
+    assert theDir == c.frame.openDirectory,theDir
 #@-node:ekr.20090526102407.10034:@test g.findDefaultDirectory
-#@-node:ekr.20081001062423.12:g.findDefaultDirectory & test
+#@-node:ekr.20081001062423.12:g.findDefaultDirectory & test (major change)
+#@+node:ekr.20090527121108.5845:@test g.setDefaultDirectory
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    result,error = g.setDefaultDirectory(c,p,importing=False)
+    assert error == ''
+    assert result == c.openDirectory,result
+
+
+#@-node:ekr.20090527121108.5845:@test g.setDefaultDirectory
 #@-node:ekr.20081001062423.9:g.setDefaultDirectory & helpers
 #@-node:ekr.20031218072017.1380:g.Directive utils...
 #@+node:ekr.20031218072017.3100:wrap_lines
@@ -2434,7 +2443,7 @@ def ensure_extension (name, ext):
     else:
         return name + ext
 #@-node:ekr.20031218072017.3118:g.ensure_extension
-#@+node:ekr.20031218072017.1264:g.getBaseDirectory (unchanged)
+#@+node:ekr.20031218072017.1264:g.getBaseDirectory
 # Handles the conventions applying to the "relative_path_base_directory" configuration option.
 
 def getBaseDirectory(c):
@@ -2446,8 +2455,7 @@ def getBaseDirectory(c):
     elif base and base == ".":
         base = c.openDirectory
 
-    # g.trace(base)
-    if base and len(base) > 0 and g.os_path_isabs(base):
+    if base and g.os_path_isabs(base):
         # Set c.chdir_to_relative_path as needed.
         if not hasattr(c,'chdir_to_relative_path'):
             c.chdir_to_relative_path = c.config.getBool('chdir_to_relative_path')
@@ -2457,7 +2465,7 @@ def getBaseDirectory(c):
         return base # base need not exist yet.
     else:
         return "" # No relative base given.
-#@-node:ekr.20031218072017.1264:g.getBaseDirectory (unchanged)
+#@-node:ekr.20031218072017.1264:g.getBaseDirectory
 #@+node:tbrown.20090219095555.61:g.handleUrlInUrlNode
 def handleUrlInUrlNode(url):
 
@@ -2779,7 +2787,9 @@ def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
                 z.c.config.setRecentFiles(g.app.config.recentFiles)
 
     # Bug fix in 4.4.
-    c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
+    ####
+    if not c.openDirectory:
+        c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
     return True
 #@nonl
