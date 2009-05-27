@@ -876,7 +876,9 @@ class baseFileCommands:
 
         # Set c.openDirectory
         theDir = g.os_path_dirname(fileName)
-        if theDir: c.openDirectory = theDir
+        if theDir:
+            #### 
+            c.openDirectory = c.frame.openDirectory = theDir
 
         ok, ratio = self.getLeoFile(
             theFile,fileName,
@@ -895,19 +897,20 @@ class baseFileCommands:
 
         #@    << Set the default directory >>
         #@+node:ekr.20071211134300:<< Set the default directory >>
-        #@+at 
-        #@nonl
+        #@+at
         # The most natural default directory is the directory containing the 
-        # .leo file that we are about to open.  If the user has specified the 
-        # "Default Directory" preference that will over-ride what we are about 
-        # to set.
+        # .leo file
+        # that we are about to open. If the user has specified the "Default 
+        # Directory"
+        # preference that will over-ride what we are about to set.
         #@-at
         #@@c
 
         theDir = g.os_path_dirname(fileName)
 
         if len(theDir) > 0:
-            c.openDirectory = theDir
+            #### 
+            c.openDirectory = c.frame.openDirectory = theDir
         #@-node:ekr.20071211134300:<< Set the default directory >>
         #@nl
         ok, ratio = self.getLeoFile(theFile,fileName,readAtFileNodesFlag=False)
@@ -2472,11 +2475,11 @@ class baseFileCommands:
 
         c = self.c
 
-        if not c.openDirectory or len(c.openDirectory) == 0:
+        if not c.openDirectory:
             theDir = g.os_path_dirname(fileName)
-
-            if len(theDir) > 0 and g.os_path_isabs(theDir) and g.os_path_exists(theDir):
-                c.openDirectory = theDir
+            if theDir and g.os_path_isabs(theDir) and g.os_path_exists(theDir):
+                #### 
+                c.openDirectory = c.frame.openDirectory = theDir
     #@-node:ekr.20031218072017.3045:setDefaultDirectoryForNewFiles
     #@+node:ekr.20080412172151.2:updateFixedStatus
     def updateFixedStatus (self):
