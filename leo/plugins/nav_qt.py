@@ -75,6 +75,7 @@ class pluginController:
 
     def makeButtons(self):
         ib_w = self.c.frame.iconBar.w
+        if not ib_w: return # EKR: can be None when unit testing.
         icon_l = ib_w.style().standardIcon(QtGui.QStyle.SP_ArrowLeft)
         icon_r = ib_w.style().standardIcon(QtGui.QStyle.SP_ArrowRight)
         act_l = QtGui.QAction(icon_l, 'prev', ib_w)           
