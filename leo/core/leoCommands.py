@@ -5927,13 +5927,17 @@ class baseCommands (object):
         }
     #@nonl
     #@-node:ekr.20080827175609.39:c.scanAllDirectives
-    #@+node:ekr.20080828103146.15:c.scanAtPathDirectives
-
+    #@+node:ekr.20080828103146.15:c.scanAtPathDirectives & test
     def scanAtPathDirectives(self,aList,force=False):
 
         '''Scan aList for @path directives.'''
 
-        c = self ; trace = False ; verbose = True
+        trace = False and not g.unitTesting
+        verbose = True
+
+        c = self
+
+        if trace and verbose: g.trace('**entry',g.callers(4))
 
         # Step 1: Compute the starting path.
         # The correct fallback directory is the absolute path to the base.
@@ -5944,7 +5948,9 @@ class baseCommands (object):
             if base and base == "!":    base = g.app.loadDir
             elif base and base == ".":  base = c.openDirectory
 
-        if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
+        if trace and verbose:
+            g.trace('base   ',base)
+            g.trace('loadDir',g.app.loadDir)
 
         absbase = c.os_path_finalize_join(g.app.loadDir,base)
 
@@ -5957,14 +5963,14 @@ class baseCommands (object):
             path = d.get('path')
             if path:
                 # Convert "path" or <path> to path.
-                path = g.computeRelativePath(path)
-                if path: paths.append(path)
+                path = g.stripPathCruft(path)
+                if path and not path in paths: paths.append(path)
 
         # Add absbase and reverse the list.
         paths.append(absbase)
         paths.reverse()
 
-        if trace and verbose: g.trace('paths',paths)
+        if trace and verbose: g.trace('paths  ',paths)
 
         # Step 3: Compute the full, effective, absolute path.
         if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
@@ -5982,7 +5988,16 @@ class baseCommands (object):
         if trace: g.trace('returns',path)
 
         return path
-    #@-node:ekr.20080828103146.15:c.scanAtPathDirectives
+    #@+node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        assert path
+    #@nonl
+    #@-node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
+    #@-node:ekr.20080828103146.15:c.scanAtPathDirectives & test
     #@+node:ekr.20080828103146.12:c.scanAtRootDirectives
     # Called only by scanColorDirectives.
 
