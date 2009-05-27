@@ -4644,7 +4644,7 @@ class atFile:
             "tabwidth"  : at.tab_width,
         }
     #@-node:ekr.20080923070954.4:atFile.scanAllDirectives
-    #@+node:ekr.20041005105605.236:atFile.scanDefaultDirectory
+    #@+node:ekr.20041005105605.236:scanDefaultDirectory (leoAtFile)
     def scanDefaultDirectory(self,p,importing=False):
 
         """Set the default_directory ivar by looking for @path directives."""
@@ -4654,7 +4654,7 @@ class atFile:
         at.default_directory,error = g.setDefaultDirectory(c,p,importing)
 
         if error: at.error(error)
-    #@-node:ekr.20041005105605.236:atFile.scanDefaultDirectory
+    #@-node:ekr.20041005105605.236:scanDefaultDirectory (leoAtFile)
     #@+node:ekr.20070529083836:cleanLines
     def cleanLines (self,p,s):
 
