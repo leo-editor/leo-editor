@@ -3047,6 +3047,7 @@ class nullIconBarClass:
 
         self.c = c
         self.parentFrame = parentFrame
+        self.w = g.nullObject()
     #@nonl
     #@-node:ekr.20070301164543.1: ctor
     #@+node:ekr.20070301164543.2:add
