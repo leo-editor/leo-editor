@@ -19,8 +19,9 @@ goto all
 
 :errors
 
-echo leoFileCommands.py
-call pylint.bat leo\core\leoFileCommands.py  --rcfile=leo\test\pylint-leo-rc.txt
+rem E0602:4528:isBytes: Undefined variable 'bytes'
+echo leoGlobals.py
+call pylint.bat leo\core\leoGlobals.py       --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 

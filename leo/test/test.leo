@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -357,10 +357,9 @@
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
 <v t="ekr.20090521070342.1907"><vh>@button show-rst</vh></v>
-<v t="ekr.20090521100748.1911" tnodeList="ekr.20090521100748.1911"><vh>@edit c:\prog\test\readme-new.rst</vh></v>
 <v t="ekr.20090525112253.1942"><vh>@url http://webpages.charter.net/edreamleo/front.html</vh></v>
-<v t="ekr.20090525151254.1894"><vh>dabbabrev test</vh></v>
-<v t="ekr.20090525162950.1896"><vh>test of illegal sax characters</vh></v>
+<v t="ekr.20090526124114.1898"><vh>@shadow mismatched-extension-bug.erl</vh></v>
+<v t="ekr.20090527100721.1895"><vh>@test minimal test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2732,21 +2731,6 @@ self.assertNotEqual(1,2)</t>
 <t tx="ekr.20090521070342.1907">g.app.gui.runScrolledMessageDialog(c=c,msg=u'rst:'+p.b)</t>
 <t tx="ekr.20090525090210.1940"></t>
 <t tx="ekr.20090525112253.1942"></t>
-<t tx="ekr.20090525151254.1894">@nocolor-node
-
-I have 'dabbrev-expands' bound to the F4 key. When I press F4 after
-the word "freq" in a body pane containing the word "frequency" then
-Leo 4.5.1 shows a hour-glass for a while before giving an empty
-dabbrev-expand: prompt in the minibuffer.
-
-If I back up one character, putting point between the e and q and then
-type F4, I get the expected behavior: the word "frequency" is inserted
-immediately.
-
-freq</t>
-<t tx="ekr.20090525162950.1896"># It should be possible to read this file after running this script.
-p.b = p.b + '\n#%c' % 27
-
-#</t>
+<t tx="ekr.20090527100721.1895">assert True</t>
 </tnodes>
 </leo_file>
