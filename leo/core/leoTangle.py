@@ -375,7 +375,6 @@ class baseTangleCommands:
         self.p = None # position being processed.
         self.output_file = None # The file descriptor of the output file.
         self.start_mode = "doc" # "code" or "doc".  Use "doc" for compatibility.
-        self.tangle_default_directory = None # Default directory set by scanAllDirectives.
         self.tangle_output = '' # For unit testing.
 
         #@+at 
