@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -358,7 +358,9 @@
 </v>
 <v t="ekr.20090521070342.1907"><vh>@button show-rst</vh></v>
 <v t="ekr.20090525112253.1942"><vh>@url http://webpages.charter.net/edreamleo/front.html</vh></v>
+<v t="ekr.20090527122538.1897" a="E"><vh>@path unittest</vh>
 <v t="ekr.20090526124114.1898"><vh>@shadow mismatched-extension-bug.erl</vh></v>
+</v>
 <v t="ekr.20090527100721.1895"><vh>@test minimal test</vh></v>
 </vnodes>
 <tnodes>
@@ -2732,5 +2734,6 @@ self.assertNotEqual(1,2)</t>
 <t tx="ekr.20090525090210.1940"></t>
 <t tx="ekr.20090525112253.1942"></t>
 <t tx="ekr.20090527100721.1895">assert True</t>
+<t tx="ekr.20090527122538.1897"></t>
 </tnodes>
 </leo_file>
