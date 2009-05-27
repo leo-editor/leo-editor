@@ -291,7 +291,6 @@ class baseCommands (object):
         self.untangle_batch_flag = False
 
         # Default Tangle options
-        self.tangle_directory = ""
         self.use_header_flag = False
         self.output_doc_flag = False
 
@@ -1009,7 +1008,8 @@ class baseCommands (object):
                 c.mFileName = g.ensure_extension(fileName, ".leo")
                 c.frame.title = c.mFileName
                 c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-                c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+                ####
+                c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
                 c.fileCommands.save(c.mFileName)
                 c.updateRecentFiles(c.mFileName)
                 g.chdir(c.mFileName)
@@ -1046,7 +1046,8 @@ class baseCommands (object):
             c.mFileName = g.ensure_extension(fileName, ".leo")
             c.frame.title = c.mFileName
             c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+            #### 
+            c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
             # Calls c.setChanged(False) if no error.
             c.fileCommands.saveAs(c.mFileName)
             c.updateRecentFiles(c.mFileName)
@@ -5930,7 +5931,8 @@ class baseCommands (object):
     #@+node:ekr.20080828103146.15:c.scanAtPathDirectives & test
     def scanAtPathDirectives(self,aList,force=False):
 
-        '''Scan aList for @path directives.'''
+        '''Scan aList for @path directives.
+        Return a reasonable default if no @path directive is found.'''
 
         trace = False and not g.unitTesting
         verbose = True
@@ -5961,10 +5963,11 @@ class baseCommands (object):
         for d in aList:
             # Look for @path directives.
             path = d.get('path')
-            if path:
+            if path is not None: # retain empty paths for warnings.
                 # Convert "path" or <path> to path.
                 path = g.stripPathCruft(path)
-                if path and not path in paths: paths.append(path)
+                if path and path not in paths: paths.append(path)
+                # We will silently ignore empty @path directives.
 
         # Add absbase and reverse the list.
         paths.append(absbase)
@@ -5994,7 +5997,7 @@ class baseCommands (object):
         c,p = g.getTestVars()
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
-        assert path
+        assert path and g.os_path_exists(path)
     #@nonl
     #@-node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
     #@-node:ekr.20080828103146.15:c.scanAtPathDirectives & test
