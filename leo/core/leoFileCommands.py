@@ -793,6 +793,19 @@ class baseFileCommands:
 
         if self.read_only:
             g.es("read only:",fileName,color="red")
+    #@+node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
+    if g.unitTesting:
+
+        import os
+        c,p = g.getTestVars()
+        fc = c.fileCommands
+
+        path = g.os_path_finalize_join(g.app.loadDir,'..','test','test-read-only.txt')
+        fc.warnOnReadOnlyFiles(path)
+
+        # This does pass when the file exists and is, in fact, read-only.
+        # assert fc.read_only
+    #@-node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
     #@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
     #@-node:ekr.20031218072017.1553:getLeoFile & helpers
     #@+node:ekr.20080428055516.3:initAllParents
