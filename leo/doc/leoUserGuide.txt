@@ -993,7 +993,7 @@ just look for the following common usage patterns:
 
 -   The (Projects) tree shows how to use clones to represent tasks.
 
--   Study ``@file leoNodes.py``.
+-   Study ``@thin leoNodes.py``.
     It shows how to define more than one class in single file.
 
 -   Most other files show how to use a single ``@others`` directive to define one class.
@@ -1008,25 +1008,24 @@ You will lose much of Leo's power if you don't use clones.
 See `Clones & views`_ for full details.
 #@nonl
 #@-node:ekr.20050830115714.4:Why should I use clones?
-#@+node:ekr.20050830115714.5:Which should I use: @root trees or @file trees?
-Use `@file`_ trees (including ``@thin`` trees) unless you are *sure* you must
-have the extra flexibility of `@root`_ trees.
-Indeed, `@file`_ trees are much easier to use than `@root`_ trees:
+#@+node:ekr.20050830115714.5:Which should I use: @root trees or @thin trees?
+Use `@thin`_ trees unless you are *sure* you must have the extra flexibility of `@root`_ trees.
+Indeed, @thin trees are much easier to use than @root trees:
 
-- `@file`_ trees use less markup than `@root`_ trees.
-  In particular, the `@others directive`_ is valid only within `@file`_ trees.
+- ``@thin`` trees use less markup than `@root`_ trees.
+  In particular, the `@others directive`_ is valid only within ``@thin`` trees.
 
 - You must explicitly tangle_ and untangle_ `@root`_ trees using the `Tangle and Untangle`_ commands.
 
-However, `@root`_ trees are more flexible than `@file`_ trees:
+However, `@root`_ trees are more flexible than ``@thin`` trees:
 
-- Sections_ may be defined anywhere within `@root`_ trees.
-  Moreover, the `@unit`_ directive_ expands the scope of section definitions in `@root`_ trees
-  so that a section may be referenced in several `@root`_ trees.
+- Sections_ may be defined anywhere within ``@root`` trees.
+  Moreover, the `@unit`_ directive_ expands the scope of section definitions in ``@root`` trees
+  so that a section may be referenced in several ``@root`` trees.
 
 - The meaning of section definitions in `@root`_ trees are independent of their position within the tree.
 #@nonl
-#@-node:ekr.20050830115714.5:Which should I use: @root trees or @file trees?
+#@-node:ekr.20050830115714.5:Which should I use: @root trees or @thin trees?
 #@+node:ekr.20050830115714.7:When is using a section better than using a method?
 Use methods for any code that is used (called or referenced) more than once.
 
@@ -1090,12 +1089,15 @@ B has not been destroyed, but B is gone from @thin spam.py! So in this sense del
 #@-node:ekr.20060111192108:When is deleting a node dangerous?
 #@-node:ekr.20090501093330.2:@rst-option show-sections = False
 #@-node:ekr.20050830115714.1:Learning to use Leo
-#@+node:ekr.20050830115714.12:How should I use Leo with bzr?
-Using `@thin`_ trees can eliminate most problems with using Leo in cvs environments:
+#@+node:ekr.20050830115714.12:How should I use Leo with bzr/git/hg/svn/cvs?
+Using `@thin`_ trees can eliminate most problems with using Leo in VCS environments:
 
 -   Developers should use `@thin`_ trees to create derived files in any kind of cooperative environment.
 
--   The cvs repository contains "reference" .leo files.
+-   If sentinels are frowned upon in your development community, use `@auto`_ or `@shadow`_ instead
+    of ``@thin``.
+
+-   The VCS repository contains "reference" .leo files.
     These reference files should contain nothing but ``@thin`` nodes.
     Reference files will change only when new derived files get added to the project.
 
@@ -1107,13 +1109,16 @@ Using `@thin`_ trees can eliminate most problems with using Leo in cvs environme
     These two files have many ``@thin`` nodes.
     There is no reference file for ``test.leo`` even though it contains ``@thin leoTest.py``.
     It would be clumsy to use testRef.leo, and there is less need to do so.
+    Reference .leo files (or any .leo files) rarely need to be checked into VCS repository.
+    If you find yourself checking in a .leo file frequently, consider migrating valuable
+    content to `@thin`_ nodes.
 
 -   Developers will use local copies of reference files for their own work.
     For example, instead of using ``LeoPyRef.leo`` directly,
     I use a copy called ``LeoPy.leo``.
     My local copy can contain nodes other than ``@thin`` nodes.
 #@nonl
-#@-node:ekr.20050830115714.12:How should I use Leo with bzr?
+#@-node:ekr.20050830115714.12:How should I use Leo with bzr/git/hg/svn/cvs?
 #@+node:ekr.20050830115714.13:Using derived files
 #@+node:ekr.20090501093330.3:@rst-option show-sections = False
 #@+node:ekr.20050830115714.14:How do I inhibit sentinels in derived files?
@@ -1122,7 +1127,7 @@ or not.
 
 -   Use `@nosent`_ trees.
     Files derived from ``@nosent`` trees contain no sentinels_.
-    However, Leo create the `derived file`_ just as in `@file`_ trees.
+    However, Leo create the `derived file`_ just as in `@thin`_ trees.
     In particular, Leo expands section references and understands the ``@others`` directive.
 
 -   Use `@asis`_ trees.
@@ -1157,7 +1162,7 @@ a CData section containing javascript. I can get the XML as I want it by using
 ``@language html``, but how can I get the tangling comments inside the CData
 section to be java-style comments rather than html ones?
 
-**Answer**: In `@file`_ trees you use the ``@delims`` directive_ to change comment delimiters.
+**Answer**: In `@thin`_ trees you use the ``@delims`` directive_ to change comment delimiters.
 For example::
 
     @delims /* */ 
@@ -1200,7 +1205,7 @@ or::
     @last ?>
 #@nonl
 #@-node:ekr.20050830115714.19:How can I disable PHP comments?
-#@+node:ekr.20050830115714.20:How can I use Leo with unsuppoorted languages?
+#@+node:ekr.20050830115714.20:How can I use Leo with unsupported languages?
 Here is a posting which might be helpful:
 http://sourceforge.net/forum/message.php?msg_id=2300457 The ``@first``
 directive_ is the key to output usable code in unsupported languages. For
@@ -1216,14 +1221,22 @@ Like this::
 
     $IFDEF LEOHEADER <-conditional compilation directive 
 @verbatim
+@verbatim
+@verbatim
 #@verbatim
     #@+leo-ver=4 <-these lines not compiled
+@verbatim
+@verbatim
 @verbatim
 #@verbatim
     #@+node:@file QParser005.INC
 @verbatim
+@verbatim
+@verbatim
 #@verbatim
     #@@first
+@verbatim
+@verbatim
 @verbatim
 #@verbatim
     #@delims ' 
@@ -1234,21 +1247,21 @@ Like this::
 This changes the comment symbol the apostrophe,
 making comments parseable by a BASIC (or other language.)
 #@nonl
-#@-node:ekr.20050830115714.20:How can I use Leo with unsuppoorted languages?
+#@-node:ekr.20050830115714.20:How can I use Leo with unsupported languages?
 #@+node:ekr.20050830115714.21:How do I make derived files start with a shebang line?
-Use the @first directive_ in `@file`_ trees or `@nosent`_ trees.
+Use the @first directive_ in `@thin`_ trees or `@nosent`_ trees.
 Use the @silent directive in `@root`_ trees.
 
-The ``@first`` directive puts lines at the very start of files derived from ``@file``.
-For example, the body text of ``@file spam.py`` might be::
+The ``@first`` directive puts lines at the very start of files derived from ``@thin``.
+For example, the body text of ``@thin spam.py`` might be::
 
     @first #! /usr/bin/env python
 
-The body text of ``@file foo.perl`` might be::
+The body text of ``@thin foo.pl`` might be::
 
     @first #/usr/bin/perl
 
-Leo recognizes the ``@first`` directive_ only at the start of the body text of `@file`_ nodes.
+Leo recognizes the ``@first`` directive_ only at the start of the body text of ``@thin`` nodes.
 No text may precede ``@first`` directives_.
 More than one ``@first`` directive may exist, like this::
 
@@ -1258,13 +1271,13 @@ More than one ``@first`` directive may exist, like this::
 #@-node:ekr.20050830115714.21:How do I make derived files start with a shebang line?
 #@+node:ekr.20050830115714.22:How do I use Leo to create CWEB files?
 Leo has good support for `CWEB`_.
-`@file`_ trees can organize any part of CWEB code using *noweb* sections.
+`@thin`_ trees can organize any part of CWEB code using *noweb* sections.
 You can also use `@asis`_, `@noref`_ or `@nosent`_ trees to create cweb files.
 See `CWEB mode`_ for full details.
 #@-node:ekr.20050830115714.22:How do I use Leo to create CWEB files?
 #@+node:ekr.20050830115714.24:Can @file trees contain material not in the derived file?
-No.  Everything in an `@file`_ trees must be part of the derived file: orphan and
-``@ignore`` nodes are invalid in ``@file`` trees. This restriction should not be
+No.  Everything in an `@thin`_ trees must be part of the derived file: orphan and
+``@ignore`` nodes are invalid in ``@thin`` trees. This restriction should not be
 troublesome. For example, you can organize your outline like this::
 
     + myClass
@@ -1272,7 +1285,7 @@ troublesome. For example, you can organize your outline like this::
     ..+ @file myClass
 
 (As usual, + denotes a headline.)
-So you simply create a new node_, called myClass, that holds your `@file`_ trees and stuff you don't want in the `@file`_ trees.
+So you simply create a new node_, called myClass, that holds your `@thin`_ trees and stuff you don't want in the `@thin`_ trees.
 #@nonl
 #@-node:ekr.20050830115714.24:Can @file trees contain material not in the derived file?
 #@+node:ekr.20050830115714.25:How can I use Leo with older C compilers
@@ -1298,12 +1311,11 @@ The C compiler is happy: the C preprocessor strips out the offending line before
 compiler gets it.
 #@nonl
 #@-node:ekr.20050830115714.25:How can I use Leo with older C compilers
-#@+node:ekr.20060529053407:Why can't I use @ignore directives in @thin and @file trees?
-@ignore can only be used in the root node of @file trees.  It tells Leo to ignore the tree.
+#@+node:ekr.20060529053407:Why can't I use @ignore directives in @thin trees?
+@ignore can only be used in the root node of ``@thin`` trees.  It tells Leo to ignore the tree.
 
-The @ignore directive can not be used elsewhere in @thin trees and @file trees
-because of the way Leo recreates outlines from derived files. This is an
-absolutely crucial restriction and will never go away.
+The @ignore directive can not be used elsewhere in @thin trees because of the way Leo recreates 
+outlines from derived files. This is an absolutely crucial restriction and will never go away.
 For a few more details, see `Leo 4.0: Eliminating error 'recovery'`_ in `Chapter 9: History of Leo`_.
 
 There are several workaround, as shown in LeoPy.leo:
@@ -1312,7 +1324,7 @@ There are several workaround, as shown in LeoPy.leo:
 
 - Use @all to gather notes in a derived file, as in done in @thin leoProjects.txt.
 #@nonl
-#@-node:ekr.20060529053407:Why can't I use @ignore directives in @thin and @file trees?
+#@-node:ekr.20060529053407:Why can't I use @ignore directives in @thin trees?
 #@+node:shadow.20080825171547.9:How can I avoid getting long lines in derived files?
 **Question**: I must follow a coding standard when writing source code. It
 includes a maximum line length restriction. How can I know the length of a
@@ -1850,7 +1862,7 @@ Used this way, g.trace shows you patterns that will be invisible using pdb.
 #@+node:ekr.20050830115714.17:I can't write Imported files.  What's going on?
 The import commands insert ``@ignore`` directives_ in the top-level node_.
 Leo does this so that you won't accidentally overwrite your files after importing them.
-Change the filename following ``@file`` or ``@root`` as desired,
+Change the filename following ``@thin`` or ``@root`` as desired,
 then remove the ``@ignore`` directive_.
 Saving the outline will then create the `derived file`_.
 #@nonl
@@ -1963,6 +1975,8 @@ may see strange looking characters if your text editor is expecting a different
 encoding. The encoding used in any `derived file`_ is shown in the ``#@+leo`` `sentinel line`_
 like this::
 
+@verbatim
+@verbatim
 @verbatim
 #@verbatim
     #@+leo-encoding=iso-8859-1.
@@ -2106,7 +2120,8 @@ please ask for help on Leo's help forum:
 .. _`associated .leo files with Leo`:   `How to associate Leo with .leo files on Windows`_
 #@-node:ekr.20050901110110:@rst-no-head links
 #@+node:edream.110203163054.49:System requirements
-Leo will work on any platform that supports Python 2.4 or later and Tk 8.4 or later.
+Leo will work on any platform that supports Python 2.5 or later and Tk 8.4 or later. For
+Qt ui, Qt 4.4 or newer (and compatible PyQt) is required.
 
 -   Download the latest version of Leo from `Leo's download page`_.
 
@@ -2624,15 +2639,18 @@ commands from the Outline menu:
 
 - Click the expansion box of nodes_ to show and hide their children.
 
-- The ``Insert Node`` command_ inserts a new headline into the outline.
+- The ``Insert Node`` command (``Ctrl+I``) inserts a new headline into the outline.
 
-- The ``Delete Node`` command_ deletes a headline and all its children.
+- The ``Cut Node`` command (``Ctrl+Shift+X``) deletes a headline and all its children, and copies the 
+  structure to clipboard - ready to paste with ``Paste Node`` command (``Ctrl+Shift+V``). Use
+  ``Copy Node`` command (``Ctrl+Shift+C``) to copy node to clipboard without deleting it 
+  from outline. Copy-paste command family works across different Leo documents.
 
-- The ``Move Up``, ``Move Down``, ``Move Left`` and ``Move Right`` commands_ move the currently selected node,
-  along with all its descendants. 
+- The ``Move Up`` (``Ctrl+U``), ``Move Down`` (``Ctrl+D``), ``Move Left`` (``Ctrl+L``) and ``Move Right`` (``Ctrl+R``)
+  commands move the currently selected node, along with all its descendants. 
 
-- The ``Promote`` command_ makes all the children_ of a headline siblings of the headline.
-  The ``Demote`` command_ makes all following siblings_ of a headline children of the headline.
+- The ``Promote`` (``Ctrl+}``) command makes all the children of a headline siblings of the headline.
+  The ``Demote`` (``Ctrl+{``) command makes all following siblings_ of a headline children of the headline.
 
 - You can cut, copy and paste entire nodes_ (including their descendants) with
   the Cut Node, Copy Node and Paste Node commands_.
@@ -2663,10 +2681,7 @@ The **@thin tree** (the ``@thin`` node and all its descendants) corresponds to t
 Leo writes a `derived file`_ corresponding to the ``@thin`` tree to your hard drive when Leo saves your outline (.leo file).
 When opening a .leo file, Leo reads all the `derived files`_ corresponding to ``@thin`` nodes in the outline_.
 
-**Note**: you can ``@file`` instead of ``@thin`` to create derived files.
-``@thin`` is more friendly to CVS and other Source Code Control Systems.
-This tutorial only discusses `@thin`_ nodes_.
-A good rule of thumb is to use `@thin`_ nodes_ unless you have a specific reason to do otherwise.
+A good rule of thumb is to use ``@thin`` nodes unless you have a specific reason to do otherwise.
 See `Chapter 4: Writing Programs in Leo`_ for a full discussions of the various ways of creating `derived files`_.
 
 **Important**:
@@ -2993,23 +3008,37 @@ comment lines with '@' following the comment delimiter. For example, here are
 some actual sentinel line for the derived file containing Python code::
 
 @verbatim
+@verbatim
+@verbatim
 #@verbatim
     #@+leo-ver=4-thin
+@verbatim
+@verbatim
 @verbatim
 #@verbatim
     #@+node:ekr.20031218072017.2794:@thin leoColor.py
 @verbatim
+@verbatim
+@verbatim
 #@verbatim
     #@@language python
+@verbatim
+@verbatim
 @verbatim
 #@verbatim
     #@@tabwidth -4
 @verbatim
+@verbatim
+@verbatim
 #@verbatim
     #@@pagewidth 80
 @verbatim
+@verbatim
+@verbatim
 #@verbatim
     #@-node:ekr.20031218072017.2794:@thin leoColor.py
+@verbatim
+@verbatim
 @verbatim
 #@verbatim
     #@-leo
@@ -3874,7 +3903,7 @@ The ``@nocolor-node`` directive completely disables coloring for that node only.
 Descedant nodes are not affected.
 
 The ``@killcolor`` directive completely disables the colorizer for that node.
-The result much faster syntax coloring of large body text.
+The result is much faster syntax coloring of large body text.
 As usual ``@killcolor`` may itself be overridden in descendant nodes.
 The differences between ``@killcolor`` and ``@nocolor``:
 
@@ -3983,6 +4012,8 @@ You can't mix encodings in a single external file.  For example::
 If the encoding used in an external file is not "utf-8" it is represented in the @+leo sentinel line, like this::
 
 @verbatim
+@verbatim
+@verbatim
 #@verbatim
     #@+leo-encoding=iso-8859-1.
 
@@ -3994,8 +4025,11 @@ Leo converts such characters to ``'?'`` and issues a warning.
 #@nonl
 #@-node:ekr.20050828061501.35:@encoding
 #@+node:ekr.20050828061501.51:\@file
-Creates an external file containing sentinels.
-Thin external files contain simpler sentinels than @thin.
+@file directive is deprecated - use `@thin`_ instead. @file trees can be converted to @thin trees by 
+replacing ``@file`` by ``@thin`` in outline.
+
+It creates an external file containing sentinels.
+External files contain sentinels different from @thin.
 The @file tree in the outline contains a copy of all information in the external file.
 #@-node:ekr.20050828061501.51:\@file
 #@+node:ekr.20050828061501.36:@first
@@ -4257,11 +4291,13 @@ Negative values cause Leo to convert tabs to blanks.
 #@-node:ekr.20050828210721.2:\@tabwidth
 #@+node:ekr.20080730212711.44:\@thin
 Creates an external file containing sentinels.
-Thin external files are more friendly to source code control systems such as bzr
-than external files created from ``@file`` trees.
+
 Thin exteral files contain all information needed to recreate the ``@thin`` tree in the outline.
 
 The ``@all`` directive is valid only in ``@thin`` trees, not ``@file`` trees.
+
+In a collaborative environment, where a version control system is utilized and everyone can use Leo
+for editing, ``@thin`` is the recommended way to hold most of the content.
 #@-node:ekr.20080730212711.44:\@thin
 #@+node:ekr.20080729064227.3:@unit
 The ``@unit`` directive expands the scope of section definitions in ``@root`` trees
@@ -4453,8 +4489,11 @@ gets written because no sentinels are written.
 #@nonl
 #@-node:ekr.20090307063422.7:\@edit
 #@+node:ekr.20050828061501.51:\@file
-Creates an external file containing sentinels.
-Thin external files contain simpler sentinels than @thin.
+@file directive is deprecated - use `@thin`_ instead. @file trees can be converted to @thin trees by 
+replacing ``@file`` by ``@thin`` in outline.
+
+It creates an external file containing sentinels.
+External files contain sentinels different from @thin.
 The @file tree in the outline contains a copy of all information in the external file.
 #@-node:ekr.20050828061501.51:\@file
 #@+node:ekr.20050828174453.1:\@nosent
@@ -4731,11 +4770,13 @@ make the change in the .leo file rather than the external files.
 #@-node:ekr.20050828061501.45:\@root reference
 #@+node:ekr.20080730212711.44:\@thin
 Creates an external file containing sentinels.
-Thin external files are more friendly to source code control systems such as bzr
-than external files created from ``@file`` trees.
+
 Thin exteral files contain all information needed to recreate the ``@thin`` tree in the outline.
 
 The ``@all`` directive is valid only in ``@thin`` trees, not ``@file`` trees.
+
+In a collaborative environment, where a version control system is utilized and everyone can use Leo
+for editing, ``@thin`` is the recommended way to hold most of the content.
 #@-node:ekr.20080730212711.44:\@thin
 #@+node:ekr.20080730212711.41:\@shadow
 When writing an @shadow tree, Leo writes *two* files, a **public** file without sentinels,
@@ -15352,6 +15393,8 @@ Leo uses unicode internally for all strings.
     If the encoding used in a derived file is not "utf-8" it is represented in the ``@+leo`` sentinel line.
     For example::
 
+@verbatim
+@verbatim
 @verbatim
 #@verbatim
         #@+leo-encoding=iso-8859-1.
