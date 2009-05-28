@@ -662,6 +662,22 @@ class shadowController:
             return marker + '@'
         else:
             return marker
+    #@+node:ekr.20090528072540.10004:@test x.marker_from_extension
+    if g.unitTesting:
+
+        # New in Leo 4.6, set_delims_from_language returns '' instead of None.
+        table = (
+            ('x.c',      '//@'),
+            ('x.html',   '#--unknown-language--@'),
+            ('x.py',     '#@'),
+            ('x.xxx',    '#--unknown-language--@'),
+        )
+
+        for fn, expected in table:
+            result = c.shadowController.marker_from_extension(fn,addAtSign=True)
+            assert result==expected,'fn %s expected %s, got %s' % (
+                fn,expected,result)
+    #@-node:ekr.20090528072540.10004:@test x.marker_from_extension
     #@-node:ekr.20080708094444.9:x.marker_from_extension
     #@+node:ekr.20080708094444.30:x.push_filter_mapping
     def push_filter_mapping (self,lines, marker):

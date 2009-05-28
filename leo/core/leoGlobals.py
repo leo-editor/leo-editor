@@ -359,13 +359,13 @@ def comment_delims_from_extension(filename):
 
     >>> import leo.core.leoGlobals as g
     >>> g.comment_delims_from_extension(".py")
-    ('#', None, None)
+    ('#', '', '')
 
     >>> g.comment_delims_from_extension(".c")
     ('//', '/*', '*/')
 
     >>> g.comment_delims_from_extension(".html")
-    (None, '<!--', '-->')
+    ('', '<!--', '-->')
 
     """
 
@@ -383,7 +383,23 @@ def comment_delims_from_extension(filename):
     else:
         g.trace("unknown extension: %s, filename: %s, root: %s" % (
             repr(ext),repr(filename),repr(root)))
-        return None,None,None
+        return '','',''
+#@+node:ekr.20090528072540.9983:@test g.comment_delims_from_extension
+if g.unitTesting:
+
+    # New in Leo 4.6, set_delims_from_language returns '' instead of None.
+    table = (
+        ('.c',      ('//','/*','*/')),
+        ('.html',   ('', '<!--', '-->')),
+        ('.py',     ('#','','')),
+        ('.xxx',    ('','','')),
+    )
+
+    for ext, expected in table:
+        result = g.comment_delims_from_extension(ext)
+        assert result==expected,'ext %s expected %s, got %s' % (
+            ext,expected,result)
+#@-node:ekr.20090528072540.9983:@test g.comment_delims_from_extension
 #@-node:EKR.20040504150046.4:g.comment_delims_from_extension
 #@+node:ekr.20071109165315:g.stripPathCruft & test
 def stripPathCruft (path):
@@ -834,11 +850,26 @@ def set_delims_from_language(language):
     if val:
         delim1,delim2,delim3 = g.set_delims_from_string(val)
         if delim2 and not delim3:
-            return None,delim1,delim2
+            return '',delim1,delim2
         else: # 0,1 or 3 params.
             return delim1,delim2,delim3
     else:
-        return None, None, None # Indicate that no change should be made
+        return '','','' # Indicate that no change should be made
+#@+node:ekr.20090528072540.9962:@test g.set_delims_from_language
+if g.unitTesting:
+
+    # New in Leo 4.6, set_delims_from_language returns '' instead of None.
+    table = (
+        ('c',       ('//','/*','*/')),
+        ('python',  ('#','','')),
+        ('xxxyyy',  ('','','')),
+    )
+
+    for language, expected in table:
+        result = g.set_delims_from_language(language)
+        assert result==expected,'language %s expected %s, got %s' % (
+            language,expected,result)
+#@-node:ekr.20090528072540.9962:@test g.set_delims_from_language
 #@-node:ekr.20031218072017.1382:g.set_delims_from_language
 #@+node:ekr.20031218072017.1383:g.set_delims_from_string
 def set_delims_from_string(s):
@@ -853,20 +884,20 @@ def set_delims_from_string(s):
     if g.match_word(s,i,tag):
         i += len(tag)
 
-    count = 0 ; delims = [None, None, None]
+    count = 0 ; delims = ['','','']
     while count < 3 and i < len(s):
         i = j = g.skip_ws(s,i)
         while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
             i += 1
         if j == i: break
-        delims[count] = s[j:i]
+        delims[count] = s[j:i] or ''
         count += 1
 
     # 'rr 09/25/02
     if count == 2: # delims[0] is always the single-line delim.
         delims[2] = delims[1]
         delims[1] = delims[0]
-        delims[0] = None
+        delims[0] = ''
 
     # 7/8/02: The "REM hack": replace underscores by blanks.
     # 9/25/02: The "perlpod hack": replace double underscores by newlines.
@@ -875,6 +906,24 @@ def set_delims_from_string(s):
             delims[i] = delims[i].replace("__",'\n').replace('_',' ')
 
     return delims[0], delims[1], delims[2]
+#@+node:ekr.20090528072540.9976:@test g.set_delims_from_string
+if g.unitTesting:
+
+    # New in Leo 4.6, set_delims_from_string returns '' instead of None.
+    table = (
+        ('c','@comment // /* */',   ('//','/*','*/')),
+        ('c','// /* */',            ('//','/*','*/')),
+        ('python','@comment #',     ('#','','')),
+        ('python','#',              ('#','','')),
+        ('xxxyyy','@comment a b c', ('a','b','c')),
+        ('xxxyyy','a b c',          ('a','b','c')),
+    )
+
+    for language,s,expected in table:
+        result = g.set_delims_from_string(s)
+        assert result==expected,'language %s expected %s, got %s' % (
+            language,expected,result)
+#@-node:ekr.20090528072540.9976:@test g.set_delims_from_string
 #@-node:ekr.20031218072017.1383:g.set_delims_from_string
 #@+node:ekr.20031218072017.1384:g.set_language
 def set_language(s,i,issue_errors_flag=False):
