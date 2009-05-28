@@ -791,7 +791,7 @@ class baseFileCommands:
         except UnicodeError:
             self.read_only = False
 
-        if self.read_only:
+        if self.read_only and not g.unitTesting:
             g.es("read only:",fileName,color="red")
     #@+node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
     if g.unitTesting:
