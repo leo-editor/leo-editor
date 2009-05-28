@@ -5963,12 +5963,13 @@ def onTextChanged (self):
     the entire selection process.'''
 
     trace = False and not g.unitTesting
-    verbose = False
+    verbose = True
     c = self.c ; p = c.currentPosition()
     tree = c.frame.tree ; w = self
 
-    if w.changingText:
-        if trace: g.trace('changing text')
+    # The linux events are different from xp events.
+    if w.changingText and not sys.platform.startswith('linux'):
+        if trace: g.trace('changing text',g.callers(5))
         return
     if tree.selecting:
         if trace and verbose: g.trace('selecting')
@@ -6701,6 +6702,85 @@ def char2tkName (self,ch):
     return val
 #@-node:ekr.20090407101640.10:char2tkName (new)
 #@-node:ekr.20090522102224.3883:Fixed bug: Ins key inserted "Ins" into text
+#@+node:ekr.20090528110734.3796:Fixed middle-button paste bug
+#@+node:ekr.20081121105001.536:onTextChanged (qtText)
+def onTextChanged (self):
+
+    '''Update Leo after the body has been changed.
+
+    self.selecting is guaranteed to be True during
+    the entire selection process.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+    c = self.c ; p = c.currentPosition()
+    tree = c.frame.tree ; w = self
+
+    # The linux events are different from xp events.
+    if w.changingText and not sys.platform.startswith('linux'):
+        if trace: g.trace('changing text',g.callers(5))
+        return
+    if tree.selecting:
+        if trace and verbose: g.trace('selecting')
+        return
+    if tree.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+    if not p:
+        return g.trace('*** no p')
+
+    newInsert = w.getInsertPoint()
+    newSel = w.getSelectionRange()
+    newText = w.getAllText() # Converts to unicode.
+
+    # Get the previous values from the tnode.
+    oldText = g.app.gui.toUnicode(p.v.t._bodyString)
+    if oldText == newText:
+        # This can happen as the result of undo.
+        # g.trace('*** unexpected non-change',color="red")
+        return
+
+    if trace and verbose:
+        g.trace(p.h,len(oldText),len(newText))
+
+    if trace: g.trace('***entry***',g.callers(4))
+
+    oldIns  = p.v.t.insertSpot
+    i,j = p.v.t.selectionStart,p.v.t.selectionLength
+    oldSel  = (i,j-i)
+    oldYview = None
+    undoType = 'Typing'
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,
+        oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+
+    # Update the tnode.
+    p.v.setBodyString(newText)
+    p.v.t.insertSpot = newInsert
+    i,j = newSel
+    i,j = self.toGuiIndex(i),self.toGuiIndex(j)
+    if i > j: i,j = j,i
+    p.v.t.selectionStart,p.v.t.selectionLength = (i,j-i)
+
+    # No need to redraw the screen.
+    if not self.useScintilla:
+        c.recolor()
+    if not c.changed and c.frame.initComplete:
+        c.setChanged(True)
+    c.frame.body.updateEditors()
+    # This will be called by onBodyChanged.
+    # c.frame.tree.updateIcon(p)
+
+    if 1: # This works, and is probably better.
+        # Set a hook for the colorer.
+        colorer = c.frame.body.colorizer.highlighter.colorer
+        colorer.initFlag = True
+    else:
+        # Allow incremental recoloring.
+        c.incrementalRecolorFlag = True
+        c.outerUpdate()
+#@-node:ekr.20081121105001.536:onTextChanged (qtText)
+#@-node:ekr.20090528110734.3796:Fixed middle-button paste bug
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@-node:ekr.20081208155215.12:Unused

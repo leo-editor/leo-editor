@@ -159,7 +159,8 @@ ivars = (
     'hoistStack','recentFiles',
     # Args...
     'output_doc_flag','page_width','tab_width',
-    'tangle_directory','tangle_errors','tangle_batch_flag','target_language',
+    # 'tangle_directory',
+    'tangle_errors','tangle_batch_flag','target_language',
     'untangle_batch_flag','use_header_flag',
     # Others...
     'mFileName',
@@ -247,7 +248,7 @@ for ivar in (
 #@-node:ekr.20090201135500.9:@test official g.app ivars
 #@-node:ekr.20090201135500.1:Check base classes & ivars
 #@+node:ekr.20090517020744.5918:Not valid in leoGlobals.py
-#@+node:ekr.20090517020744.5905:@test g.scanAtPathDirectives
+#@+node:ekr.20090517020744.5905:@@test g.scanAtPathDirectives
 if g.unitTesting:
 
     if 0:
@@ -272,7 +273,7 @@ if g.unitTesting:
         assert s.endswith(end),'for %s\nexpected to end with %s\ngot %s' % (
             h,repr(end),repr(s))
 #@nonl
-#@-node:ekr.20090517020744.5905:@test g.scanAtPathDirectives
+#@-node:ekr.20090517020744.5905:@@test g.scanAtPathDirectives
 #@+node:ekr.20090517020744.5908:@@test g.scanAtPathDirectives @path ../test @path unittest @file at-path-test3.py
 greatGrandChild = p.firstChild().firstChild().firstChild()
 aList = g.get_directives_dict_list(greatGrandChild)
