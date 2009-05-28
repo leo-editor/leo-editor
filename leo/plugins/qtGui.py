@@ -8128,12 +8128,13 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         the entire selection process.'''
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         c = self.c ; p = c.currentPosition()
         tree = c.frame.tree ; w = self
 
-        if w.changingText:
-            if trace: g.trace('changing text')
+        # The linux events are different from xp events.
+        if w.changingText and not sys.platform.startswith('linux'):
+            if trace: g.trace('changing text',g.callers(5))
             return
         if tree.selecting:
             if trace and verbose: g.trace('selecting')
