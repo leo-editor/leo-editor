@@ -349,7 +349,8 @@ def loadHandlers(tag):
     s = g.app.config.getEnabledPlugins()
     if not s: return
 
-    if not g.app.silentMode and not g.app.batchMode:
+    if tag == 'open0' and not g.app.silentMode and not g.app.batchMode:
+        # g.trace(tag,g.callers(4))
         pr('@enabled-plugins found in %s' % (
             g.app.config.enabledPluginsFileName),color='blue')
 
@@ -359,7 +360,7 @@ def loadHandlers(tag):
     if files and enabled_files:
         for theFile in enabled_files:
             if theFile in files:
-                loadOnePlugin(theFile)
+                loadOnePlugin(theFile,tag=tag)
 
     # Note: g.plugin_signon adds module names to g.app.loadedPlugins
     if 0:
@@ -381,7 +382,7 @@ def getEnabledFiles (s,plugins_path):
 #@-node:ekr.20070224082131:getEnabledFiles
 #@-node:ekr.20031218072017.3440:loadHandlers & helper
 #@+node:ekr.20041113113140:loadOnePlugin & test
-def loadOnePlugin (moduleOrFileName, verbose=False):
+def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
     # Prevent Leo from crashing if .leoID.txt does not exist.
     if g.app.config is None:
@@ -450,7 +451,8 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
         pass
     elif result is None:
         if warn_on_failure or (verbose and not g.app.initing): # or not g.app.unitTesting:
-            g.es_print('can not load enabled plugin:',moduleName,color="red")
+            if tag == 'open0':
+                g.es_print('can not load enabled plugin:',moduleName,color="red")
     elif verbose:
         g.es_print('loaded plugin:',moduleName,color="blue")
 

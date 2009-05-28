@@ -16682,14 +16682,13 @@ plugins_menu.py
 # cleo.py
 open_with.py
 mod_scripting.py
-#### rst3.py
 UNL.py
 nav_buttons.py
 hoist.py
 
 image.py
 leo_to_html.py
-threading_colorizer.py
+# threading_colorizer.py
 
 # Other plugins...
 

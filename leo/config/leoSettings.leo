@@ -6370,11 +6370,7 @@ This suggests that you refrain from putting @enabled-plugins nodes in any .leo f
 That way all your .leo files will use the same plugins.
 If you do put @enabled-plugins nodes in x.leo, be prepared for confusion from time to time. </t>
 <t tx="ekr.20070224073109.1"># Leo loads plugins in the order they appear here.
-#
-# The FIRST mention of a plugin controls whether the plugin is enable or not:
-# - If the plugin's name is commented out, it is disabled, otherwise it is enabled.
-# - Plugins not appearing here are disabled.
-# 
+
 # File names may be indented as desired.
 
 #Standard plugins enabled in official distributions.
@@ -6394,8 +6390,8 @@ UNL.py
 
 # Enabled by default in Leo 4.4.3. (order is important)
 # dtest.py
-nav_buttons.py
-nav_qt.py
+###nav_buttons.py
+###nav_qt.py
 
 
 hoist.py
@@ -6405,7 +6401,7 @@ leo_to_html.py
 #All other plugins.
 # Order is important for enabled plugins that add items to the icon area.
 
-threading_colorizer.py
+### threading_colorizer.py
 
 #ConceptualSort.py
 #EditAttributes.py

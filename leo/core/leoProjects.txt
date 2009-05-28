@@ -433,7 +433,7 @@ This hack prevents leo from crashing and allows the gui prompt for a
 leoID to come up.  I think this is a better solution than asking users
 to manually create the .leoID.txt file and figure out where it goes.
 #@+node:ekr.20041113113140:loadOnePlugin & test
-def loadOnePlugin (moduleOrFileName, verbose=False):
+def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
     # Prevent Leo from crashing if .leoID.txt does not exist.
     if g.app.config is None:
@@ -502,7 +502,8 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
         pass
     elif result is None:
         if warn_on_failure or (verbose and not g.app.initing): # or not g.app.unitTesting:
-            g.es_print('can not load enabled plugin:',moduleName,color="red")
+            if tag == 'open0':
+                g.es_print('can not load enabled plugin:',moduleName,color="red")
     elif verbose:
         g.es_print('loaded plugin:',moduleName,color="blue")
 
@@ -695,7 +696,7 @@ leoID='ekr'
 load 
 #@nonl
 #@+node:ekr.20041113113140:loadOnePlugin & test
-def loadOnePlugin (moduleOrFileName, verbose=False):
+def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
     # Prevent Leo from crashing if .leoID.txt does not exist.
     if g.app.config is None:
@@ -764,7 +765,8 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
         pass
     elif result is None:
         if warn_on_failure or (verbose and not g.app.initing): # or not g.app.unitTesting:
-            g.es_print('can not load enabled plugin:',moduleName,color="red")
+            if tag == 'open0':
+                g.es_print('can not load enabled plugin:',moduleName,color="red")
     elif verbose:
         g.es_print('loaded plugin:',moduleName,color="blue")
 
@@ -917,7 +919,8 @@ def loadHandlers(tag):
     s = g.app.config.getEnabledPlugins()
     if not s: return
 
-    if not g.app.silentMode and not g.app.batchMode:
+    if tag == 'open0' and not g.app.silentMode and not g.app.batchMode:
+        # g.trace(tag,g.callers(4))
         pr('@enabled-plugins found in %s' % (
             g.app.config.enabledPluginsFileName),color='blue')
 
@@ -927,7 +930,7 @@ def loadHandlers(tag):
     if files and enabled_files:
         for theFile in enabled_files:
             if theFile in files:
-                loadOnePlugin(theFile)
+                loadOnePlugin(theFile,tag=tag)
 
     # Note: g.plugin_signon adds module names to g.app.loadedPlugins
     if 0:
@@ -6881,7 +6884,7 @@ def readAll(self,root,partialFlag=False):
 #@-node:ekr.20090518072506.8311:Fixed @thin bug
 #@+node:ekr.20090521175848.5880:Fixed stubConfig problems
 #@+node:ekr.20041113113140:loadOnePlugin & test
-def loadOnePlugin (moduleOrFileName, verbose=False):
+def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
 
     # Prevent Leo from crashing if .leoID.txt does not exist.
     if g.app.config is None:
@@ -6950,7 +6953,8 @@ def loadOnePlugin (moduleOrFileName, verbose=False):
         pass
     elif result is None:
         if warn_on_failure or (verbose and not g.app.initing): # or not g.app.unitTesting:
-            g.es_print('can not load enabled plugin:',moduleName,color="red")
+            if tag == 'open0':
+                g.es_print('can not load enabled plugin:',moduleName,color="red")
     elif verbose:
         g.es_print('loaded plugin:',moduleName,color="blue")
 
@@ -11239,6 +11243,634 @@ def marker_from_extension (self,filename,addAtSign=True):
         return marker
 #@-node:ekr.20080708094444.9:x.marker_from_extension
 #@-node:ekr.20090525113804.5781:Investigated old @shadow bug
+#@+node:ekr.20090430092048.2:Investigated problem with lost files using @path with @shadow
+@nocolor-node
+
+**Important**: The fix will be to mark @<file> nodes dirty when @path nodes change
+
+One way to experience something similar is to change the @path directive so it
+specifies a non-existent directory.  Saving the .leo file will *not* save the
+@shadow files, and the next time Leo loads the .leo file nothing will be loaded.
+
+
+What I did:
+
+- Verified that @shadow does honor @path directive.
+
+- Leo's core now ensures that c.openDirectory and c.frame.openDirectory
+  are always in synch.  This could create subtle changes.
+
+- Removed c.tangle_directory.  This was used, improperly, by g.findDefaultDirectory.
+
+- Removed c.tangleCommands.tangle_default_directory. It was nowhere used.
+#@+node:ekr.20090527121108.5855:Reproducing the problem
+@nocolor-node
+
+> My **guess** about what happened is that somehow the paths specified
+> by the combination of @path and @shadow were somehow not identical to
+> the paths specified in the original @shadow files.  Chaos then
+> ensured.
+
+This guess was wrong.  I've been able to reconstruct something like
+what happened.
+
+The problem, in essence, is that changing and @path node does not mark
+any descendant nodes dirty.  Thus, saving the .leo file does *not*
+save any of the @shadow files.
+
+When I next open the .leo file, none of the "relocated" files exist,
+and we have basically the problem you describe.
+
+The solutions would have been to write the descendant @shadow nodes.
+But there is no easy way to do this.
+
+I have just verified that one way to recover the @shadow files is to
+specify the existing path to the files.  Saving the file will *not*
+change the files, because of the "insignificant text" rule, so the
+next time I reopened the .leo file the files reappeared.
+
+This is a bug, but not precisely in the @shadow logic.  I'll have to
+think about what to do... 
+#@nonl
+#@-node:ekr.20090527121108.5855:Reproducing the problem
+#@+node:ekr.20090527121108.5852:Report
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ff4c0be55b15ce7a
+
+Yesterday I imported some windows batch files to @file, changed them
+to @shadow, and used @path to shorten the node name. Today Leo has
+lost track of the shadow files (the body text is empty), and when I
+attempted to re-link one Leo zeroed out the target (overwrote an empty
+file). This is the procedure I followed (not as linear as written, I
+was experimenting):
+
+0. Opened H:\work.leo
+1. File > Import to @file: y:\scripts\xc-backup.bat
+2. Change heading '@file y:\scripts\xc-backup.bat' to '@shadow xc-
+backup.bat'
+3. Change body text:
+   - removed '@ignore'
+   + added '@path y:\scripts\'
+   + added and changed some other miscelaneous text
+4. Saved
+5. Verified contents xc-backup.bat is as expected with external
+editor.
+
+Repeated half a dozen times with other files.
+
+Today when I opened H:\work.leo the body text of all @shadow files
+were blank. This is the log:
+
+   reading: H:\work.leo
+   reading: @shadow xc-backup.bat
+   can not open @shadow H:\xc-backup.bat
+   created directory: H:\.leo_shadow
+   created:   H:\.leo_shadow\xxc-backup.bat
+   created:   H:\xc-backup.bat
+
+It's trying to read .leo_shadow from the the wrong location and
+creating a new one when it is not found. Thinking to re-establish the
+link I added '@path y:\scripts\' to '@shadow xc-backup.bat' heading
+and Saved, log:
+
+   @shadow xc-backup.bat not written:
+   no children and less than 10 characters (excluding directives)
+
+To make the body text longer than 10 characters I added '@language
+batch' and saved again:
+
+   errors writing: <string-file>
+   Orphan node:  @shadow xc-backup.bat
+   parent node: @shadow xc-backup.bat
+   not written:
+   wrote:     y:\scripts\.leo_shadow\xxc-backup.bat
+   wrote:     y:\scripts\xc-backup.bat
+
+   errors writing: <string-file>
+   Orphan node:  @shadow xc-backup.bat
+   parent node: @shadow xc-backup.bat
+
+(Note: I may not have split the log at the right points in the 3
+indented sections above.)
+
+**Big Mistake** as at this point the *pre-existing* shadow and real
+file were overwritten with *empty* content. Now in this particular
+instance I'm okay as I'm working on svn checked out files and only an
+hours worth of experimenting is lost, not real work. If this had
+happened a day earlier though I'd have been some sore as I'd
+previously been working without a net (no version control).
+
+So that covers what did happen, what I expected to happen is:
+
+1. H:\work.leo would remember the @path
+2. When [1] failed, re-establishing the @path link would cause Leo to
+discover that there was a pre-existing .leo_shadow copy of that node
+and a) automatically read y:\.leo_shadow\xxc-backup.bat and fill in
+the body text, b) present a merge or conflict dialog/message and offer
+instructions for how to reconcile, or c) warn the files already
+existed and confirm overwrite.
+
+It is now clear @path is not safe when the .leo file is in a different
+location from the shadow files, or perhaps not at all? I initially
+tried to put @path in a parent heading, but the child nodes ignored
+it:
+
+-[]Scripts
+   @path y:\scripts
+   -[]@shadow xc-backup.bat
+      @language batch
+      rem A script to backup....
+      ...etc.
+
+Anyway, was my bumbling attempt to fix the broken link the problem, or
+the fact the link was broken in the first place? If the latter, why
+did it break and how to avoid it in future? is there a safe way to re-
+establish the links with the remaining 5 @shadow files or should I
+just start over and not use @path? Are there examples deomonstrating
+the proper use of @path?
+
+thanks,
+
+-matt 
+#@nonl
+#@-node:ekr.20090527121108.5852:Report
+#@+node:ekr.20090527121108.5854:Directory stuff
+#@+node:ekr.20031218072017.1264:g.getBaseDirectory
+# Handles the conventions applying to the "relative_path_base_directory" configuration option.
+
+def getBaseDirectory(c):
+
+    base = app.config.relative_path_base_directory
+
+    if base and base == "!":
+        base = app.loadDir
+    elif base and base == ".":
+        base = c.openDirectory
+
+    if base and g.os_path_isabs(base):
+        # Set c.chdir_to_relative_path as needed.
+        if not hasattr(c,'chdir_to_relative_path'):
+            c.chdir_to_relative_path = c.config.getBool('chdir_to_relative_path')
+        # Call os.chdir if requested.
+        if c.chdir_to_relative_path:
+            os.chdir(base)
+        return base # base need not exist yet.
+    else:
+        return "" # No relative base given.
+#@-node:ekr.20031218072017.1264:g.getBaseDirectory
+#@+node:ekr.20080827175609.1:g.get_directives_dict_list (must be fast)
+def get_directives_dict_list(p1):
+
+    """Scans p and all its ancestors for directives.
+
+    Returns a list of dicts containing pointers to
+    the start of each directive"""
+
+    trace = False and not g.unitTesting
+
+    if trace: time1 = g.getTime()
+
+    result = [] ; p1 = p1.copy()
+
+    for p in p1.self_and_parents_iter():
+        if p.hasParent(): root = None
+        else:             root = [p.copy()]
+        result.append(g.get_directives_dict(p,root=root))
+
+    if trace:
+        n = len(p1.h) + len(p1.b)
+        g.trace('%4d %s' % (n,g.timeSince(time1)))
+
+    return result
+#@-node:ekr.20080827175609.1:g.get_directives_dict_list (must be fast)
+#@+node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+# The caller passes [root_node] or None as the second arg.
+# This allows us to distinguish between None and [None].
+
+g_noweb_root = re.compile('<'+'<'+'*'+'>'+'>'+'=',re.MULTILINE)
+
+def get_directives_dict(p,root=None):
+
+    """Scan p for @directives found in globalDirectiveList.
+
+    Returns a dict containing pointers to the start of each directive"""
+
+    trace = False and not g.unitTesting
+
+    if root: root_node = root[0]
+    d = {}
+
+    # Do this every time so plugins can add directives.
+    pat = g.compute_directives_re()
+    directives_pat = re.compile(pat,re.MULTILINE)
+
+    # The headline has higher precedence because it is more visible.
+    for kind,s in (('body',p.h),('head',p.b)):
+        anIter = directives_pat.finditer(s)
+        for m in anIter:
+            word = m.group(0)[1:] # Omit the @
+            i = m.start(0)
+            if word.strip() not in d:
+                j = i + 1 + len(word)
+                k = g.skip_line(s,j)
+                val = s[j:k].strip()
+                if trace: g.trace(word,repr(val))
+                d[word.strip()] = val
+
+    if root:
+        anIter = g_noweb_root.finditer(p.b)
+        for m in anIter:
+            if root_node:
+                d["root"]=0 # value not immportant
+            else:
+                g.es('%s= requires @root in the headline' % (
+                    g.angleBrackets('*')))
+            break
+
+    if trace: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers(5))
+    return d
+#@+node:ekr.20090214075058.10:compute_directives_re
+def compute_directives_re ():
+
+    '''Return an re pattern which will match all Leo directives.'''
+
+    global globalDirectiveList
+
+    aList = ['^@%s' % z for z in globalDirectiveList
+                if z != 'others']
+
+    # @others can have leading whitespace.
+    aList.append(r'^\s@others')
+
+    return '|'.join(aList)
+#@-node:ekr.20090214075058.10:compute_directives_re
+#@-node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+#@+node:ekr.20071109165315:g.stripPathCruft & test
+def stripPathCruft (path):
+
+    '''Strip cruft from a path name.'''
+
+    if not path:
+        return path # Retain empty paths for warnings.
+
+    if len(path) > 2 and (
+        (path[0]=='<' and path[-1] == '>') or
+        (path[0]=='"' and path[-1] == '"') or
+        (path[0]=="'" and path[-1] == "'")
+    ):
+        path = path[1:-1].strip()
+
+    # We want a *relative* path, not an absolute path.
+    return path
+#@+node:ekr.20090527080219.5866:@test g.stripPathCruft
+if g.unitTesting:
+
+    table =  (
+        (None,None), # Retain empty paths for warnings.
+        ('',''),
+        (g.app.loadDir,g.app.loadDir),
+        ('<abc>','abc'),
+        ('"abc"','abc'),
+        ("'abc'",'abc'),
+    )
+
+    for path,expected in table:
+        result = g.stripPathCruft(path)
+        assert result == expected
+#@nonl
+#@-node:ekr.20090527080219.5866:@test g.stripPathCruft
+#@-node:ekr.20071109165315:g.stripPathCruft & test
+#@+node:ekr.20080211085914:scanDefaultDirectory (leoImport)
+def scanDefaultDirectory(self,p):
+
+    """Set the default_directory ivar by looking for @path directives."""
+
+    c = self.c
+
+    self.default_directory, error = g.setDefaultDirectory(c,p,importing=False)
+
+    if error: self.error(error)
+#@-node:ekr.20080211085914:scanDefaultDirectory (leoImport)
+#@+node:ekr.20041005105605.236:scanDefaultDirectory (leoAtFile)
+def scanDefaultDirectory(self,p,importing=False):
+
+    """Set the default_directory ivar by looking for @path directives."""
+
+    at = self ; c = at.c
+
+    at.default_directory,error = g.setDefaultDirectory(c,p,importing)
+
+    if error: at.error(error)
+#@-node:ekr.20041005105605.236:scanDefaultDirectory (leoAtFile)
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives & test
+def scanAtPathDirectives(self,aList,force=False):
+
+    '''Scan aList for @path directives.
+    Return a reasonable default if no @path directive is found.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+
+    c = self
+
+    if trace and verbose: g.trace('**entry',g.callers(4))
+
+    # Step 1: Compute the starting path.
+    # The correct fallback directory is the absolute path to the base.
+    if c.openDirectory:  # Bug fix: 2008/9/18
+        base = c.openDirectory
+    else:
+        base = g.app.config.relative_path_base_directory
+        if base and base == "!":    base = g.app.loadDir
+        elif base and base == ".":  base = c.openDirectory
+
+    if trace and verbose:
+        g.trace('base   ',base)
+        g.trace('loadDir',g.app.loadDir)
+
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+    if trace and verbose: g.trace('absbase',absbase)
+
+    # Step 2: look for @path directives.
+    paths = [] ; fileName = None
+    for d in aList:
+        # Look for @path directives.
+        path = d.get('path')
+        if path is not None: # retain empty paths for warnings.
+            # Convert "path" or <path> to path.
+            path = g.stripPathCruft(path)
+            if path and path not in paths: paths.append(path)
+            # We will silently ignore empty @path directives.
+
+    # Add absbase and reverse the list.
+    paths.append(absbase)
+    paths.reverse()
+
+    if trace and verbose: g.trace('paths  ',paths)
+
+    # Step 3: Compute the full, effective, absolute path.
+    if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+    path = c.os_path_finalize_join(*paths)
+    if trace and verbose: g.trace('joined path:',path)
+
+    # Step 4: Make the path if necessary.
+    if path and not g.os_path_exists(path):
+        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
+        if not ok:
+            if force:
+                g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+            path = absbase # Bug fix: 2008/9/18
+
+    if trace: g.trace('returns',path)
+
+    return path
+#@+node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    assert path and g.os_path_exists(path)
+#@nonl
+#@-node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives & test
+#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+# This is a generalization of os.makedir.
+
+def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
+
+    """Attempt to make all non-existent directories"""
+
+    trace = False and not g.unitTesting
+
+    if c:
+        create = c.config.create_nonexistent_directories
+    else:
+        create = g.app.config.create_nonexistent_directories
+
+    if trace: g.trace('c exists: %s force: %s create: %s dir: %s' % (
+        c is not None,force,create,theDir))
+
+    if not force and not create:
+        return None
+
+    if c: theDir = g.os_path_expandExpression(theDir,c=c)
+
+    dir1 = theDir = g.os_path_normpath(theDir)
+
+    # Split theDir into all its component parts.
+    paths = []
+    while len(theDir) > 0:
+        head,tail=g.os_path_split(theDir)
+        if len(tail) == 0:
+            paths.append(head)
+            break
+        else:
+            paths.append(tail)
+            theDir = head
+    path = ""
+    paths.reverse()
+    for s in paths:
+        path = g.os_path_join(path,s)
+        if not g.os_path_exists(path):
+            try:
+                os.mkdir(path)
+                if verbose and not g.app.unitTesting:
+                    # g.trace('***callers***',g.callers(5))
+                    g.es_print("created directory:",path,color='red')
+            except Exception:
+                # g.trace(g.callers())
+                if verbose: g.es_print("exception creating directory:",path,color='red')
+                g.es_exception()
+                return None
+    return dir1 # All have been created.
+#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+#@+node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+def readOneAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c ; x = c.shadowController
+
+    if not fn == p.atShadowFileNodeName():
+        return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
+            fn, p.atShadowFileNodeName()))
+
+    at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
+
+    fn = c.os_path_finalize_join(at.default_directory,fn)
+    shadow_fn     = x.shadowPathName(fn)
+    shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+
+    if shadow_exists:
+        # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
+        at.read(p,thinFile=True,atShadow=True)
+    else:
+        if not g.unitTesting: g.es("reading:",p.h)
+        ok = at.importAtShadowNode(fn,p)
+        if ok:
+            # Create the private file automatically.
+            at.writeOneAtShadowNode(p,toString=False,force=True)
+#@+node:ekr.20080712080505.1:importAtShadowNode
+def importAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c  ; ic = c.importCommands
+    oldChanged = c.isChanged()
+
+    # Delete all the child nodes.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    # Import the outline, exactly as @auto does.
+    ic.createOutline(fn,parent=p.copy(),atAuto=True,atShadow=True)
+
+    if ic.errors:
+        g.es_print('errors inhibited read @shadow',fn,color='red')
+
+    if ic.errors or not g.os_path_exists(fn):
+        p.clearDirty()
+        c.setChanged(oldChanged)
+
+    # else: g.doHook('after-shadow', p = p)
+
+    return ic.errors == 0
+#@-node:ekr.20080712080505.1:importAtShadowNode
+#@-node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+#@+node:ekr.20081001062423.9:g.setDefaultDirectory & helpers
+# This is a refactoring, used by leoImport.scanDefaultDirectory and
+# atFile.scanDefaultDirectory
+
+def setDefaultDirectory(c,p,importing=False):
+
+    ''' Compute a default directory by scanning @path directives.
+    Return (default_dir,error_message).'''
+
+    if not p: return '',''
+    default_dir,error = g.getAbsPathFromNode(c,p),''
+
+    if not default_dir:
+        default_dir,error = g.getPathFromDirectives(c,p)
+
+    if c and c.frame and not default_dir and not error:
+        default_dir = g.findDefaultDirectory(c)
+
+    if not default_dir and not importing and not error:
+        # This should never happen: c.openDirectory should be a good last resort.
+        error = "No absolute directory specified anywhere."
+
+    return default_dir, error
+#@+node:ekr.20081001062423.10:g.getAbsPathFromNode & test
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+def getAbsPathFromNode(c,p,name=''): # Name is for unit testing.
+
+    default_dir = ''
+    if p:
+        name = p.anyAtFileNodeName()
+
+    if name:
+        theDir = g.os_path_dirname(name)
+        if theDir and g.os_path_isabs(theDir):
+            if g.os_path_exists(theDir):
+                default_dir = theDir
+            else:
+                default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
+
+    return default_dir
+#@nonl
+#@+node:ekr.20090527080219.5809:@test g.getAbsPathFromNode
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    path = g.os_path_finalize_join(g.app.loadDir,'whatever')
+    result = g.getAbsPathFromNode(c,p=None,name=path)
+    expected = g.app.loadDir
+    assert expected == result,'expected %s, got %s' % (
+        expected,result)
+#@nonl
+#@-node:ekr.20090527080219.5809:@test g.getAbsPathFromNode
+#@-node:ekr.20081001062423.10:g.getAbsPathFromNode & test
+#@+node:ekr.20081001062423.11:g.getPathFromDirectives & test
+def getPathFromDirectives(c,p):
+
+    '''Scan for @path directives.'''
+
+    trace = False and not g.unitTesting
+    default_dir = '' ; error = ''
+    if not p: return default_dir,error
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    if path:
+        base = g.getBaseDirectory(c) # returns "" on error.
+        path = c.os_path_finalize_join(base,path)
+        if g.os_path_exists(path):
+            default_dir = path
+        else:
+            default_dir = g.makeAllNonExistentDirectories(path,c=c)
+            if not default_dir:
+                error = "invalid @path: %s" % path
+
+    return default_dir,error
+#@+node:ekr.20090527080219.5826:@test g.getPathFromDirectives
+if g.unitTesting:
+
+    result,error = g.getPathFromDirectives(c,p)
+    assert error==''
+    assert result
+#@nonl
+#@-node:ekr.20090527080219.5826:@test g.getPathFromDirectives
+#@-node:ekr.20081001062423.11:g.getPathFromDirectives & test
+#@+node:ekr.20081001062423.12:g.findDefaultDirectory & test (major change)
+# This code is executed if no valid absolute path was specified in
+# the @file node or in an @path directive.
+
+def findDefaultDirectory(c):
+
+    '''Attempt to find a suitable default directory.'''
+
+    default_dir = ''
+
+    # Check that c.openDirectory and c.frame.openDirectory are in synch.
+    if c.openDirectory != c.frame.openDirectory:
+        g.trace('***can not happen: c.openDirectory != c.frame.openDirectory')
+        g.trace('c.openDirectory',c.openDirectory)
+        g.trace('c.frame.openDirectory',c.frame.openDirectory)
+
+    if not g.os_path_isabs(c.openDirectory):
+        g.trace('*** can not happen: relative c.openDirectory',c.openDirectory)
+
+    for theDir in (c.openDirectory,g.getBaseDirectory(c)):
+        if theDir and g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+            if g.os_path_exists(theDir):
+                default_dir = theDir
+            else:
+                default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
+            if default_dir: break
+
+    return default_dir
+#@+node:ekr.20090526102407.10034:@test g.findDefaultDirectory
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    theDir = g.findDefaultDirectory(c)
+    assert theDir == c.frame.openDirectory,theDir
+#@-node:ekr.20090526102407.10034:@test g.findDefaultDirectory
+#@-node:ekr.20081001062423.12:g.findDefaultDirectory & test (major change)
+#@+node:ekr.20090527121108.5845:@test g.setDefaultDirectory
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    result,error = g.setDefaultDirectory(c,p,importing=False)
+    assert error == ''
+    assert result == c.openDirectory,result
+
+
+#@-node:ekr.20090527121108.5845:@test g.setDefaultDirectory
+#@-node:ekr.20081001062423.9:g.setDefaultDirectory & helpers
+#@-node:ekr.20090527121108.5854:Directory stuff
+#@-node:ekr.20090430092048.2:Investigated problem with lost files using @path with @shadow
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
