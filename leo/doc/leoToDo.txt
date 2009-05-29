@@ -4,8 +4,6 @@
 #@+node:ekr.20080814103428.4:4.6 qt gui
 #@+node:ekr.20090525113804.5776:Bugs before b2
 #@+node:ekr.20090529154322.6008:First
-#@+node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
-#@-node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
 #@+node:ekr.20090528072540.5737:Mark @<file> nodes dirty when @path nodes change
 #@-node:ekr.20090528072540.5737:Mark @<file> nodes dirty when @path nodes change
 #@+node:ekr.20090529154322.6375:Support multiple body editors

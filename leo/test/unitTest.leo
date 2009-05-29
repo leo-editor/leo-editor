@@ -1990,8 +1990,8 @@
 <v t="ekr.20071113202452" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
-<v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
-<v t="ekr.20090529115704.4398"><vh>@shadow-tests</vh>
+<v t="ekr.20090529115704.4397" a="E"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
+<v t="ekr.20090529115704.4398" a="E"><vh>@shadow-tests</vh>
 <v t="ekr.20090529115704.4399"><vh>passed</vh></v>
 <v t="ekr.20090529115704.4400"><vh>@shadow-test change middle line</vh>
 <v t="ekr.20090529115704.4401"><vh>old</vh></v>
@@ -2153,7 +2153,7 @@
 <v t="ekr.20090529115704.4513"><vh>node 2</vh></v>
 </v>
 </v>
-<v t="ekr.20090529115704.4514"><vh>@shadow-test verbatim sentinels-delete verbatim line</vh>
+<v t="ekr.20090529115704.4514" a="E"><vh>@shadow-test verbatim sentinels-delete verbatim line</vh>
 <v t="ekr.20090529115704.4515"><vh>old</vh>
 <v t="ekr.20090529115704.4516"><vh>node 1</vh></v>
 <v t="ekr.20090529115704.4517"><vh>node 2</vh></v>
@@ -2205,7 +2205,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090529115704.4549" a="E"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20090529115704.4549"><vh>Other unit tests of shadowController</vh>
 <v t="ekr.20090529115704.4550"><vh>@test x.baseDirName</vh></v>
 <v t="ekr.20090529115704.4551"><vh>@test x.pathName</vh></v>
 <v t="ekr.20090529115704.4552"><vh>@test x.dirName</vh></v>
@@ -2219,7 +2219,7 @@
 <v t="ekr.20090529115704.4559"><vh>@test x.replaceFileWithString</vh></v>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 </v>
-<v t="ekr.20090529115704.4561" a="E"><vh>Unit tests for atFileCommands</vh>
+<v t="ekr.20090529115704.4561"><vh>Unit tests for atFileCommands</vh>
 <v t="ekr.20090529115704.4562"><vh>@test at.open/closeStringFile</vh></v>
 <v t="ekr.20090529115704.4563"><vh>@test at.openForWrite: not a shadow file</vh></v>
 <v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
@@ -18544,7 +18544,7 @@ class emptyClass:
     def spam():
 
         """docstring line 1
-\-4under-indented docstring line"""
+under-indented docstring line"""
         pass
 
 def followingDef(): # comment
