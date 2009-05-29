@@ -164,6 +164,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=[0], maxp=[None]):
     return False
 #@-node:tbrown.20070726135242:recursiveUNLSearch
 #@+node:rogererens.20041021091837:onUrl1
+import os
 def onUrl1 (tag,keywords):
     """Redefine the @url functionality of Leo Core: allows jumping to URL _and UNLs_.
     Spaces are now allowed in URLs."""
@@ -212,7 +213,11 @@ def onUrl1 (tag,keywords):
                 if hasattr(c.frame.top, 'update_idletasks'):
                     # this is Tk only - TNB
                     c.frame.top.update_idletasks() # Clear remaining events, so they don't interfere.
-                ok,frame = g.openWithFileName(urlTuple[2], c)
+                if os.path.isabs(urlTuple[2]):
+                    filename = urlTuple[2]
+                else:
+                    filename = os.path.join(os.path.dirname(c.mFileName),urlTuple[2])
+                ok,frame = g.openWithFileName(filename, c)
                 if ok:
                     #@                    << go to the node>>
                     #@+node:rogererens.20041125015212.1:<<go to the node>>
