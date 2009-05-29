@@ -2343,7 +2343,9 @@ class baseCommands (object):
                 fn = shadow_filename
                 lines = open(shadow_filename).readlines()
                 x.line_mapping = x.push_filter_mapping(
-                    lines, x.marker_from_extension(shadow_filename))
+                    lines,
+                    ### x.markerFromFileName(shadow_filename))
+                    x.markerFromFileLines(lines,shadow_filename))
             else:
                 # Just open the original file.  This is not an error!
                 fn = filename
