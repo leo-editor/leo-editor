@@ -871,7 +871,7 @@ if g.unitTesting:
             language,expected,result)
 #@-node:ekr.20090528072540.9962:@test g.set_delims_from_language
 #@-node:ekr.20031218072017.1382:g.set_delims_from_language
-#@+node:ekr.20031218072017.1383:g.set_delims_from_string
+#@+node:ekr.20031218072017.1383:g.set_delims_from_string & test
 def set_delims_from_string(s):
 
     """Returns (delim1, delim2, delim2), the delims following the @comment directive.
@@ -924,7 +924,7 @@ if g.unitTesting:
         assert result==expected,'language %s expected %s, got %s' % (
             language,expected,result)
 #@-node:ekr.20090528072540.9976:@test g.set_delims_from_string
-#@-node:ekr.20031218072017.1383:g.set_delims_from_string
+#@-node:ekr.20031218072017.1383:g.set_delims_from_string & test
 #@+node:ekr.20031218072017.1384:g.set_language
 def set_language(s,i,issue_errors_flag=False):
 
@@ -2836,7 +2836,6 @@ def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
                 z.c.config.setRecentFiles(g.app.config.recentFiles)
 
     # Bug fix in 4.4.
-    ####
     if not c.openDirectory:
         c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
@@ -6048,7 +6047,7 @@ bunch = Bunch
 
         # def __init__   (self,*args,**keys): pass
         # def __call__   (self,*args,**keys): return self
-        # # def __len__    (self): return 0 ###
+        # # def __len__    (self): return 0
         # def __repr__   (self): return "nullObject"
         # def __nonzero__ (self): return 0
 
