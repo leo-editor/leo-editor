@@ -3815,8 +3815,7 @@ class atFile:
             ok = self.checkPythonSyntax(root,s)
 
             # Syntax checking catches most indentation problems.
-            if False:
-                if ok: self.tabNannyNode(root,s)
+            if False and ok: self.tabNannyNode(root,s)
     #@nonl
     #@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
     def checkPythonSyntax (self,p,body):
@@ -3827,8 +3826,8 @@ class atFile:
             ok = True
             compiler.parse(body + '\n')
         except (parser.ParserError,SyntaxError):
-            self.syntaxError(p)
-            p.setMarked()
+            self.syntaxError(p,body)
+            # p.setMarked()
             ok = False
         except Exception:
             g.trace("unexpected exception")
@@ -3837,17 +3836,18 @@ class atFile:
 
         return ok
     #@+node:ekr.20090514111518.5666:syntaxError
-    def syntaxError(self,p):
-
-        import traceback
+    def syntaxError(self,p,body):
 
         g.es_print("Syntax error in: %s" % (p.h),color="red")
-
-        # Similar to g.es_exception(full=False)
         typ,val,tb = sys.exc_info()
-        lines = traceback.format_exception_only(typ,val)
-        for line in lines[1:]:
-            g.es_print(line)
+        lines = g.splitLines(body)
+        i = val.lineno-1
+        for j in range(max(0,i-3),min(i+3,len(lines)-1)):
+            g.es_print('%5s:%s %s' % (
+                j,g.choose(j==i,'*',' '),lines[j].rstrip()))
+            if j == i:
+                g.es_print(' '*(7+val.offset)+'^')
+    #@nonl
     #@-node:ekr.20090514111518.5666:syntaxError
     #@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
     #@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
