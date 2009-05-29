@@ -1808,7 +1808,7 @@ class atFile:
         p.v.t.setVisited() # Suppress warning about unvisited node.
         return p
     #@-node:ekr.20041005105605.119:createImportedNode
-    #@+node:ekr.20041005105605.120:parseLeoSentinel
+    #@+node:ekr.20041005105605.120:at.parseLeoSentinel
     def parseLeoSentinel (self,s):
 
         at = self ; c = at.c
@@ -1921,10 +1921,10 @@ class atFile:
         end = s[j:i]
         #@-node:ekr.20041005105605.126:<< set the closing comment delim >>
         #@nl
-        if not new_df:
+        if not new_df and not g.unitTesting:
             g.trace('not new_df(!)',repr(s))
         return valid,new_df,start,end,isThinDerivedFile
-    #@-node:ekr.20041005105605.120:parseLeoSentinel
+    #@-node:ekr.20041005105605.120:at.parseLeoSentinel
     #@+node:ekr.20041005105605.127:readError
     def readError(self,message):
 
@@ -1951,7 +1951,7 @@ class atFile:
         u = g.toUnicode(s,self.encoding)
         return u
     #@-node:ekr.20041005105605.128:readLine
-    #@+node:ekr.20041005105605.129:scanHeader
+    #@+node:ekr.20041005105605.129:at.scanHeader
     def scanHeader(self,theFile,fileName):
 
         """Scan the @+leo sentinel.
@@ -2010,7 +2010,7 @@ class atFile:
             at.error("No @+leo sentinel in: %s" % fileName)
         # g.trace("start,end",repr(at.startSentinelComment),repr(at.endSentinelComment))
         return firstLines,new_df,isThinDerivedFile
-    #@-node:ekr.20041005105605.129:scanHeader
+    #@-node:ekr.20041005105605.129:at.scanHeader
     #@+node:ekr.20041005105605.131:skipIndent
     # Skip past whitespace equivalent to width spaces.
 
@@ -2710,7 +2710,7 @@ class atFile:
 
         return found
     #@-node:ekr.20080711093251.4:writeAtShadowNodesHelper
-    #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+    #@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
     def writeOneAtShadowNode(self,p,toString,force):
 
         '''Write p, an @shadow node.
@@ -2744,14 +2744,10 @@ class atFile:
             forcePythonSentinels=True) # A hack to suppress an error message.
                 # The actual sentinels will be set below.
 
-        # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+        # Bug fix: Leo 4.5.1: use x.markerFromFileName to force the delim to match
         #                     what is used in x.propegate changes.
-        # Note: x.marker_from_extension takes the file name as the argument,
-        # not the extension itself
-        marker = x.marker_from_extension(fn,addAtSign=False)
-        # g.trace('write marker',marker)
-        at.startSentinelComment = marker
-        at.endSentinelComment = None
+        marker = x.markerFromFileName(fn)
+        at.startSentinelComment,at.endSentinelComment=marker.getDelims()
 
         if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
@@ -2774,11 +2770,6 @@ class atFile:
             assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
 
         if at.errors == 0 and not toString:
-            ### It may be better to compute the public file by removing sentinels from at.private_s
-            # by calling x.copy_file_removing_sentinels. This would ensure that the (dubious!!)
-            # x.isSentinel logic is used consistently by the @shadow read/write logic.
-            # OTOH, Leo's write logic should actually dominate x.isSentinel.
-
             # Write the public and private files.
             private_fn = x.shadowPathName(fn)
             x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
@@ -2860,7 +2851,7 @@ class atFile:
                 # An unknown language.
                 pass # Use the default language, **not** 'unknown_language'
     #@-node:ekr.20080819075811.13:adjustTargetLanguage
-    #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+    #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
     #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
     #@+node:ekr.20050506084734:writeFromString
     # This is at.write specialized for scripting.
