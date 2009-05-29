@@ -2,217 +2,9 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
-#@+node:ekr.20090518072506.8310:Before b2
-#@+node:ekr.20090525113804.5776:Bugs
-#@+node:ekr.20090528072540.5739:First: before b2
-#@+node:ekr.20080922115725.1:Finish @shadow
-#@+node:ekr.20090528072540.10032:Most important
-@nocolor-node
-
-- Allow block comments in private shadow files.
-  For example, we should use proper html comment delims,
-  **not** #--unknown-language
-
-- Compute delims using the private shadow file, not the file extension!
-#@nonl
-#@-node:ekr.20090528072540.10032:Most important
-#@+node:ekr.20090528072540.10033:Can @shadow mark externally changed nodes?
-#@-node:ekr.20090528072540.10033:Can @shadow mark externally changed nodes?
-#@+node:ekr.20081004102201.2:Create a log file for @shadow
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
-
-How about a shadow.log file which Leo told what it thought of the relationship
-between the node, file and shadow? It might provide useful clues.
-#@-node:ekr.20081004102201.2:Create a log file for @shadow
+#@+node:ekr.20090525113804.5776:Bugs before b2
 #@+node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
 #@-node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
-#@+node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
-@nocolor
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
-
-@color
-#@nonl
-#@+node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
-def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
-
-    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
-
-    We compare the old and new public lines, create diffs and
-    propagate the diffs to the new private lines, copying sentinels as well.
-
-    We have two invariants:
-    1. We *never* delete any sentinels.
-    2. Insertions that happen at the boundary between nodes will be put at
-       the end of a node.  However, insertions must always be done within sentinels.
-    '''
-
-    x = self ; trace = False ; verbose = True
-    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
-    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
-
-    << init vars >>
-    << define print_tags >>
-
-    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
-    prev_old_j = 0 ; prev_new_j = 0
-
-    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
-
-        << About this loop >>
-
-        # Verify that SequenceMatcher never leaves gaps.
-        if old_i != prev_old_j: # assert old_i == prev_old_j
-            x.error('can not happen: gap in old:',old_i,prev_old_j)
-        if new_i != prev_new_j: # assert new_i == prev_new_j
-            x.error('can not happen: gap in new:',new_i,prev_new_j)
-
-        << Handle the opcode >>
-
-        # Remember the ends of the previous tag ranges.
-        prev_old_j = old_j
-        prev_new_j = new_j
-
-    # Copy all unwritten sentinels.
-    self.copy_sentinels(
-        old_private_lines_rdr,new_private_lines_wtr,
-        marker, limit = old_private_lines_rdr.size())
-
-    # Get the result.
-    result = new_private_lines_wtr.getlines()
-    if 1:
-        << do final correctness check>>
-    return result
-#@+node:ekr.20080708094444.40:<< init vars >>
-new_private_lines_wtr = sourcewriter(self)
-# collects the contents of the new file.
-
-new_public_lines_rdr = sourcereader(self,new_public_lines)
-    # Contains the changed source code.
-
-old_public_lines_rdr = sourcereader(self,old_public_lines)
-    # this is compared to new_public_lines_rdr to find out the changes.
-
-old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
-    # This is the file which is currently produced by Leo, with sentinels.
-
-# Check that all ranges returned by get_opcodes() are contiguous
-old_old_j, old_i2_modified_lines = -1,-1
-
-tag = old_i = old_j = new_i = new_j = None
-#@nonl
-#@-node:ekr.20080708094444.40:<< init vars >>
-#@+node:ekr.20080708094444.39:<< define print_tags >>
-def print_tags(tag, old_i, old_j, new_i, new_j, message):
-
-    sep1 = '=' * 10 ; sep2 = '-' * 20
-
-    g.pr('\n',sep1,message,sep1,p and p.h)
-
-    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
-
-    g.pr('\n',sep2)
-
-    table = (
-        (old_private_lines_rdr,'old private lines'),
-        (old_public_lines_rdr,'old public lines'),
-        (new_public_lines_rdr,'new public lines'),
-        (new_private_lines_wtr,'new private lines'),
-    )
-
-    for f,tag in table:
-        f.dump(tag)
-        g.pr(sep2)
-
-
-#@-node:ekr.20080708094444.39:<< define print_tags >>
-#@+node:ekr.20080708192807.2:<< about this loop >>
-@
-
-This loop writes all output lines using a single writer: new_private_lines_wtr.
-
-The output lines come from two, and *only* two readers:
-
-1. old_private_lines_rdr delivers the complete original sources. All
-   sentinels and unchanged regular lines come from this reader.
-
-2. new_public_lines_rdr delivers the new, changed sources. All inserted or
-   replacement text comes from this reader.
-
-Each time through the loop, the following are true:
-
-- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
-
-- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
-
-At the start of the loop, the call to copy_sentinels effectively skips (deletes)
-all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
-is less than mapping[old_i].
-
-As a result, the opcode handlers do not need to delete elements from the
-old_private_lines_rdr explicitly. This explains why opcode handlers for the
-'insert' and 'delete' opcodes are identical.
-#@-node:ekr.20080708192807.2:<< about this loop >>
-#@+node:ekr.20080708192807.5:<< Handle the opcode >>
-# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
-# In this special case, we must do the insert before the sentinels.
-limit=mapping[old_i]
-
-if trace: g.trace(tag,'old_i',old_i,'limit',limit)
-
-if tag == 'insert' and limit >= old_private_lines_rdr.size():
-    pass
-else:
-    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
-    # Because of this, nothing has to be explicitly deleted below.
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-
-if tag == 'equal':
-    # Copy all lines (including sentinels) from the old private file to the new private file.
-    start = old_private_lines_rdr.index()
-    while old_private_lines_rdr.index() <= mapping[old_j-1]:
-        line = old_private_lines_rdr.get()
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
-
-    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
-    new_public_lines_rdr.sync(new_j)
-
-elif tag in ('insert','replace'):
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Copy lines from new_public_lines_rdr up to new_j.
-    start = new_public_lines_rdr.index()
-    while new_public_lines_rdr.index() < new_j:
-        line = new_public_lines_rdr.get()
-        if x.is_sentinel(line,marker):
-            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-
-elif tag=='delete':
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Leave new_public_lines_rdr unchanged.
-    pass
-
-else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
-
-if trace and verbose:
-    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
-#@nonl
-#@-node:ekr.20080708192807.5:<< Handle the opcode >>
-#@+node:ekr.20080708094444.45:<< do final correctness check >>
-t_sourcelines, t_sentinel_lines = self.separate_sentinels(
-    new_private_lines_wtr.lines, marker)
-
-self.check_the_final_output(
-    new_private_lines   = result,
-    new_public_lines    = new_public_lines,
-    sentinel_lines      = t_sentinel_lines,
-    marker              = marker)
-#@-node:ekr.20080708094444.45:<< do final correctness check >>
-#@-node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
-#@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
-#@-node:ekr.20080922115725.1:Finish @shadow
 #@+node:ekr.20090528072540.5737:Mark @<file> nodes dirty when @path nodes change
 #@-node:ekr.20090528072540.5737:Mark @<file> nodes dirty when @path nodes change
 #@+node:ekr.20090324100430.1:Deleting @chapter node doesn't work
@@ -348,8 +140,61 @@ This may be hard to fix, without taking over the qt code's handling of page up/d
 #@-node:ekr.20090525113804.5778:Fix lost anchor bug
 #@+node:ekr.20090430092048.4:Fix all qt bugs
 #@-node:ekr.20090430092048.4:Fix all qt bugs
-#@-node:ekr.20090528072540.5739:First: before b2
-#@+node:ekr.20090528072540.5740:Other
+#@+node:ekr.20090523070447.6475:Rewrite rst chapter
+#@-node:ekr.20090523070447.6475:Rewrite rst chapter
+#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+#@+node:ekr.20090522113545.5884:Fix pylint complaints about plugins
+@nocolor
+
+************* Module leo.plugins.qtGui
+W0101:996:leoQtBody.addEditor: Unreachable code
+E1101:1826:leoQtFrame.__init__: Class 'leoQtFrame' has no 'instances' member
+c:\Python25\lib\site-packages\logilab_common-0.39.0-py2.5.egg\logilab\common\modutils.py:136: DeprecationWarning: The wxPython compatibility
+ package is no longer automatically generated or actively maintained.  Please switch to the wx package as soon as possible.
+  module = load_module(curname, mp_file, mp_filename, mp_desc)
+E0602:5794:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
+E0602:5795:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
+E0602:5796:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
+E0602:5797:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
+E1103:7591:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastFunc' member (but some types could not be inferred)
+E1103:7591:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastMatch' member (but some types could not be inferred)
+E1103:7593:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastFlag' member (but some types could not be inferred)
+E1103:7612:jEditColorizer.recolor: Instance of 'Bunch' has no 'stateName' member (but some types could not be inferred)
+E1101:7837:jEditColorizer.setTag: Instance of 'jEditColorizer' has no 'tagCount' member
+E1101:7843:jEditColorizer.setTag: Instance of 'jEditColorizer' has no 'tagCount' member
+E1101:7846:jEditColorizer.setTag: Instance of 'jEditColorizer' has no 'tagCount' member
+W0222:8282:leoQtBaseTextWidget.tag_add: Signature differs from overridden method
+E0601:9092:leoQTextEditWidget.toPythonIndexRowCol: Using variable 'w' before assignment
+
+************* Module leo.plugins.toolbar
+E1103:520:ToolbarTkinterFrame.getIconButton:
+    Instance of 'tkIconBarClass' has no 'getButton' member
+    (but some types could not be inferred)
+E1103:604:ToolbarTkinterFrame.getIconWidgetFrame:
+    Instance of 'tkIconBarClass' has no 'getWidgetFrame' member
+    (but some types could not be inferred)
+
+************* Module leo.plugins.xemacs
+E0602:116:open_in_emacs: Undefined variable '_exemacs_cmd'
+#@nonl
+#@-node:ekr.20090522113545.5884:Fix pylint complaints about plugins
+#@-node:ekr.20090525113804.5776:Bugs before b2
+#@+node:ekr.20090430092048.7:Before 4.6 final
+#@+node:ekr.20090430122648.1:Generate pdf versions of docs
+#@-node:ekr.20090430122648.1:Generate pdf versions of docs
+#@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
+http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
+#@nonl
+#@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
+#@+node:ekr.20090430092048.3:Rewrite docs using stories
+#@+node:ekr.20090226080753.6:Finish the wiki intro
+#@-node:ekr.20090226080753.6:Finish the wiki intro
+#@-node:ekr.20090430092048.3:Rewrite docs using stories
+#@+node:ekr.20070615063616.1:Create Debian package
+#@-node:ekr.20070615063616.1:Create Debian package
+#@-node:ekr.20090430092048.7:Before 4.6 final
+#@+node:ekr.20090529125512.6121:Features (maybe)
 #@+node:ekr.20090528072540.9960:Improve config & plugins
 @nocolor-node
 
@@ -361,8 +206,6 @@ This may be hard to fix, without taking over the qt code's handling of page up/d
 
     - Create a way to unload a plugin.  This should be relatively easy.
 #@-node:ekr.20090528072540.9960:Improve config & plugins
-#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
-#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
 #@+node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
 @nocolor-node
 
@@ -373,6 +216,204 @@ This may be hard to fix, without taking over the qt code's handling of page up/d
 - Combine 3 "write dirty @x nodes" commands into a single "write dirty @<file> nodes" command. 
 #@nonl
 #@-node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
+#@+node:ekr.20080922115725.1:Minor @shadow stuff
+#@+node:ekr.20081004102201.2:Create a log file for @shadow?
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/5e7bd3af2d1fbf51
+
+How about a shadow.log file which Leo told what it thought of the relationship
+between the node, file and shadow? It might provide useful clues.
+#@-node:ekr.20081004102201.2:Create a log file for @shadow?
+#@+node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
+@nocolor
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c46eabe8a9fe6e8
+
+@color
+#@nonl
+#@+node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    x = self ; trace = False ; verbose = True
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    delim1,delim2 = marker.getDelims()
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old:',old_i,prev_old_j)
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new:',new_i,prev_new_j)
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,
+        new_private_lines_wtr,
+        marker,
+        limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40:<< init vars >>
+new_private_lines_wtr = self.sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = self.sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = self.sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = self.sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
+#@nonl
+#@-node:ekr.20080708094444.40:<< init vars >>
+#@+node:ekr.20080708094444.39:<< define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.h)
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@-node:ekr.20080708094444.39:<< define print_tags >>
+#@+node:ekr.20080708192807.2:<< about this loop >>
+@
+
+This loop writes all output lines using a single writer: new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips (deletes)
+all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
+is less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from the
+old_private_lines_rdr explicitly. This explains why opcode handlers for the
+'insert' and 'delete' opcodes are identical.
+#@-node:ekr.20080708192807.2:<< about this loop >>
+#@+node:ekr.20080708192807.5:<< Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace(tag,'old_i',old_i,'limit',limit)
+
+if tag == 'insert' and limit >= old_private_lines_rdr.size():
+    pass
+else:
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+if tag == 'equal':
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index()
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag in ('insert','replace'):
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index()
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if marker.isSentinel(line):
+            new_private_lines_wtr.put(
+                '%s@verbatim%s\n' % (delim1,delim2),
+                tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Leave new_public_lines_rdr unchanged.
+    pass
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@nonl
+#@-node:ekr.20080708192807.5:<< Handle the opcode >>
+#@+node:ekr.20080708094444.45:<< do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@-node:ekr.20080708094444.45:<< do final correctness check >>
+#@-node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
+#@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
 #@+node:ekr.20090402072059.13:Create a general mechanism for aux (shadow, _db) files
 @nocolor-node
 
@@ -415,81 +456,15 @@ words, this is a general problem, and it would be good to have a robust, general
 solution.
 #@nonl
 #@-node:ekr.20090402072059.13:Create a general mechanism for aux (shadow, _db) files
-#@-node:ekr.20090528072540.5740:Other
-#@-node:ekr.20090525113804.5776:Bugs
-#@+node:ekr.20090522161156.5884:Minor, easy
+#@-node:ekr.20080922115725.1:Minor @shadow stuff
 #@+node:ekr.20090523070447.6476:Make sure rst3 command applied to @auto-rst node works
 #@-node:ekr.20090523070447.6476:Make sure rst3 command applied to @auto-rst node works
-#@+node:ekr.20090521064955.5945:Better message when checking syntax
-# The name of the offending node is not given, just the root node.
-#@nonl
-#@-node:ekr.20090521064955.5945:Better message when checking syntax
-#@+node:ekr.20090522113545.5884:pylint plugins
-@nocolor
-
-************* Module leo.plugins.qtGui
-W0101:996:leoQtBody.addEditor: Unreachable code
-E1101:1826:leoQtFrame.__init__: Class 'leoQtFrame' has no 'instances' member
-c:\Python25\lib\site-packages\logilab_common-0.39.0-py2.5.egg\logilab\common\modutils.py:136: DeprecationWarning: The wxPython compatibility
- package is no longer automatically generated or actively maintained.  Please switch to the wx package as soon as possible.
-  module = load_module(curname, mp_file, mp_filename, mp_desc)
-E0602:5794:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
-E0602:5795:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
-E0602:5796:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
-E0602:5797:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
-E1103:7591:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastFunc' member (but some types could not be inferred)
-E1103:7591:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastMatch' member (but some types could not be inferred)
-E1103:7593:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastFlag' member (but some types could not be inferred)
-E1103:7612:jEditColorizer.recolor: Instance of 'Bunch' has no 'stateName' member (but some types could not be inferred)
-E1101:7837:jEditColorizer.setTag: Instance of 'jEditColorizer' has no 'tagCount' member
-E1101:7843:jEditColorizer.setTag: Instance of 'jEditColorizer' has no 'tagCount' member
-E1101:7846:jEditColorizer.setTag: Instance of 'jEditColorizer' has no 'tagCount' member
-W0222:8282:leoQtBaseTextWidget.tag_add: Signature differs from overridden method
-E0601:9092:leoQTextEditWidget.toPythonIndexRowCol: Using variable 'w' before assignment
-
-************* Module leo.plugins.toolbar
-E1103:520:ToolbarTkinterFrame.getIconButton:
-    Instance of 'tkIconBarClass' has no 'getButton' member
-    (but some types could not be inferred)
-E1103:604:ToolbarTkinterFrame.getIconWidgetFrame:
-    Instance of 'tkIconBarClass' has no 'getWidgetFrame' member
-    (but some types could not be inferred)
-
-************* Module leo.plugins.xemacs
-E0602:116:open_in_emacs: Undefined variable '_exemacs_cmd'
-#@nonl
-#@-node:ekr.20090522113545.5884:pylint plugins
 #@+node:ekr.20090512080015.5801:import-files-recursively command?
 How would the command specify settings?
 
 A line added to test bzr push.
 #@-node:ekr.20090512080015.5801:import-files-recursively command?
-#@+node:ekr.20090523070447.6475:Rewrite rst chapter
-#@-node:ekr.20090523070447.6475:Rewrite rst chapter
-#@+node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
-@nocolor-node
-
-- update leoPyRef.leo.
-- Create a "moved to leoPy.leo" section in unitTest.leo.
-- Unit tests for leoImport.py can be gathered together.
-#@nonl
-#@-node:ekr.20090518072506.8496:Move more unit tests into leoPy.leo
-#@-node:ekr.20090522161156.5884:Minor, easy
-#@-node:ekr.20090518072506.8310:Before b2
-#@+node:ekr.20090430092048.7:Before 4.6 final
-#@+node:ekr.20090430122648.1:Generate pdf versions of docs
-#@-node:ekr.20090430122648.1:Generate pdf versions of docs
-#@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
-#@nonl
-#@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-#@+node:ekr.20090430092048.3:Rewrite docs using stories
-#@+node:ekr.20090226080753.6:Finish the wiki intro
-#@-node:ekr.20090226080753.6:Finish the wiki intro
-#@-node:ekr.20090430092048.3:Rewrite docs using stories
-#@+node:ekr.20070615063616.1:Create Debian package
-#@-node:ekr.20070615063616.1:Create Debian package
-#@-node:ekr.20090430092048.7:Before 4.6 final
+#@-node:ekr.20090529125512.6121:Features (maybe)
 #@+node:ekr.20060306194040:Leo Video
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3615177
@@ -1033,7 +1008,9 @@ def goto_open (self,filename):
             fn = shadow_filename
             lines = open(shadow_filename).readlines()
             x.line_mapping = x.push_filter_mapping(
-                lines, x.marker_from_extension(shadow_filename))
+                lines,
+                ### x.markerFromFileName(shadow_filename))
+                x.markerFromFileLines(lines,shadow_filename))
         else:
             # Just open the original file.  This is not an error!
             fn = filename

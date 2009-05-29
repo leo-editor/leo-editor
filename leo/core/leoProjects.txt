@@ -91,6 +91,7 @@ def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=Non
     << init vars >>
     << define print_tags >>
 
+    delim1,delim2 = marker.getDelims()
     sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
     prev_old_j = 0 ; prev_new_j = 0
 
@@ -112,8 +113,10 @@ def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=Non
 
     # Copy all unwritten sentinels.
     self.copy_sentinels(
-        old_private_lines_rdr,new_private_lines_wtr,
-        marker, limit = old_private_lines_rdr.size())
+        old_private_lines_rdr,
+        new_private_lines_wtr,
+        marker,
+        limit = old_private_lines_rdr.size())
 
     # Get the result.
     result = new_private_lines_wtr.getlines()
@@ -121,16 +124,16 @@ def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=Non
         << do final correctness check>>
     return result
 #@+node:ekr.20080708094444.40:<< init vars >>
-new_private_lines_wtr = sourcewriter(self)
+new_private_lines_wtr = self.sourcewriter(self)
 # collects the contents of the new file.
 
-new_public_lines_rdr = sourcereader(self,new_public_lines)
+new_public_lines_rdr = self.sourcereader(self,new_public_lines)
     # Contains the changed source code.
 
-old_public_lines_rdr = sourcereader(self,old_public_lines)
+old_public_lines_rdr = self.sourcereader(self,old_public_lines)
     # this is compared to new_public_lines_rdr to find out the changes.
 
-old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
+old_private_lines_rdr = self.sourcereader(self,old_private_lines) # lines_with_sentinels)
     # This is the file which is currently produced by Leo, with sentinels.
 
 # Check that all ranges returned by get_opcodes() are contiguous
@@ -220,8 +223,10 @@ elif tag in ('insert','replace'):
     start = new_public_lines_rdr.index()
     while new_public_lines_rdr.index() < new_j:
         line = new_public_lines_rdr.get()
-        if x.is_sentinel(line,marker):
-            new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
+        if marker.isSentinel(line):
+            new_private_lines_wtr.put(
+                '%s@verbatim%s\n' % (delim1,delim2),
+                tag='%s %s:%s' % ('new sent',start,new_j))
         new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
 
 elif tag=='delete':
@@ -7076,7 +7081,6 @@ def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
                 z.c.config.setRecentFiles(g.app.config.recentFiles)
 
     # Bug fix in 4.4.
-    ####
     if not c.openDirectory:
         c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
@@ -11023,7 +11027,7 @@ def writeAtShadowNodesHelper(self,toString=False,writeDirtyOnly=True):
 
     return found
 #@-node:ekr.20080711093251.4:writeAtShadowNodesHelper
-#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
 def writeOneAtShadowNode(self,p,toString,force):
 
     '''Write p, an @shadow node.
@@ -11057,14 +11061,10 @@ def writeOneAtShadowNode(self,p,toString,force):
         forcePythonSentinels=True) # A hack to suppress an error message.
             # The actual sentinels will be set below.
 
-    # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+    # Bug fix: Leo 4.5.1: use x.markerFromFileName to force the delim to match
     #                     what is used in x.propegate changes.
-    # Note: x.marker_from_extension takes the file name as the argument,
-    # not the extension itself
-    marker = x.marker_from_extension(fn,addAtSign=False)
-    # g.trace('write marker',marker)
-    at.startSentinelComment = marker
-    at.endSentinelComment = None
+    marker = x.markerFromFileName(fn)
+    at.startSentinelComment,at.endSentinelComment=marker.getDelims()
 
     if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
@@ -11087,11 +11087,6 @@ def writeOneAtShadowNode(self,p,toString,force):
         assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
 
     if at.errors == 0 and not toString:
-        ### It may be better to compute the public file by removing sentinels from at.private_s
-        # by calling x.copy_file_removing_sentinels. This would ensure that the (dubious!!)
-        # x.isSentinel logic is used consistently by the @shadow read/write logic.
-        # OTOH, Leo's write logic should actually dominate x.isSentinel.
-
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
         x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
@@ -11164,7 +11159,7 @@ def adjustTargetLanguage (self,fn):
             # An unknown language.
             pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
-#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
 #@-node:ekr.20080711093251.3:writeAtShadowdNodes & writeDirtyAtShadowNodes (atFile) & helpers
 #@+node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
 def readOneAtShadowNode (self,fn,p):
@@ -11215,8 +11210,8 @@ def importAtShadowNode (self,fn,p):
     return ic.errors == 0
 #@-node:ekr.20080712080505.1:importAtShadowNode
 #@-node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
-#@+node:ekr.20080708094444.9:x.marker_from_extension
-def marker_from_extension (self,filename,addAtSign=True):
+#@+node:ekr.20080708094444.9:x.markerFromFileName
+def markerFromFileName (self,filename):
 
     '''Return the sentinel delimiter comment to be used for filename.'''
 
@@ -11227,37 +11222,34 @@ def marker_from_extension (self,filename,addAtSign=True):
         root, ext = os.path.splitext(root)
 
     delims = g.comment_delims_from_extension(filename)
-
-    # New in leo 4.5.1: require a single-line delim.
-    if delims[0]:
-        marker = delims[0]
-    else:
-        # Yes, we *can* use a special marker for unknown languages,
-        # provided we make it impossible to type by mistake,
-        # and provided no real language will be the prefix of the comment delim.
-        marker = g.app.language_delims_dict.get('unknown_language')
-
-    if addAtSign:
-        return marker + '@'
-    else:
-        return marker
-#@+node:ekr.20090528072540.10004:@test x.marker_from_extension
+    marker = self.markerClass(delims)
+    return marker
+#@+node:ekr.20090529061522.6613:@test x.markerFromFileName
 if g.unitTesting:
 
-    # New in Leo 4.6, set_delims_from_language returns '' instead of None.
+    c,p = g.getTestVars()
+
+    x = c.shadowController
+
     table = (
-        ('x.c',      '//@'),
-        ('x.html',   '#--unknown-language--@'),
-        ('x.py',     '#@'),
-        ('x.xxx',    '#--unknown-language--@'),
+        ('ini',';','',),
+        ('c','//',''),
+        ('h','//',''),
+        ('py','#',''),
+        ('xyzzy','#--unknown-language--',''),
     )
 
-    for fn, expected in table:
-        result = c.shadowController.marker_from_extension(fn,addAtSign=True)
-        assert result==expected,'fn %s expected %s, got %s' % (
-            fn,expected,result)
-#@-node:ekr.20090528072540.10004:@test x.marker_from_extension
-#@-node:ekr.20080708094444.9:x.marker_from_extension
+    for ext,delim1,delim2 in table:
+        filename = 'x.%s' % ext
+        marker = x.markerFromFileName(filename)
+        result1,result2 = marker.getDelims()
+        assert delim1==result1, 'ext=%s, got %s, expected %s' % (
+            ext,delim1,result1)
+        assert delim2==result2, 'ext=%s, got %s, expected %s' % (
+            ext,delim2,result2)
+#@nonl
+#@-node:ekr.20090529061522.6613:@test x.markerFromFileName
+#@-node:ekr.20080708094444.9:x.markerFromFileName
 #@-node:ekr.20090525113804.5781:Investigated old @shadow bug
 #@+node:ekr.20090430092048.2:Investigated problem with lost files using @path with @shadow
 @nocolor-node
@@ -12056,7 +12048,7 @@ if g.unitTesting:
             language,expected,result)
 #@-node:ekr.20090528072540.9962:@test g.set_delims_from_language
 #@-node:ekr.20031218072017.1382:g.set_delims_from_language
-#@+node:ekr.20031218072017.1383:g.set_delims_from_string
+#@+node:ekr.20031218072017.1383:g.set_delims_from_string & test
 def set_delims_from_string(s):
 
     """Returns (delim1, delim2, delim2), the delims following the @comment directive.
@@ -12109,7 +12101,7 @@ if g.unitTesting:
         assert result==expected,'language %s expected %s, got %s' % (
             language,expected,result)
 #@-node:ekr.20090528072540.9976:@test g.set_delims_from_string
-#@-node:ekr.20031218072017.1383:g.set_delims_from_string
+#@-node:ekr.20031218072017.1383:g.set_delims_from_string & test
 #@+node:ekr.20041005105605.106:readDirective (@@)
 def readDirective (self,s,i):
 
@@ -12186,7 +12178,7 @@ else:
     g.es("ignoring bad @comment sentinel:",line,color="red")
 #@-node:ekr.20041005105605.108:<< handle @comment >>
 #@-node:ekr.20041005105605.106:readDirective (@@)
-#@+node:ekr.20041005105605.129:scanHeader
+#@+node:ekr.20041005105605.129:at.scanHeader
 def scanHeader(self,theFile,fileName):
 
     """Scan the @+leo sentinel.
@@ -12238,8 +12230,8 @@ while len(s) > 0:
 n = len(s)
 valid = n > 0
 #@-node:ekr.20041005105605.130:<< skip any non @+leo lines >>
-#@-node:ekr.20041005105605.129:scanHeader
-#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+#@-node:ekr.20041005105605.129:at.scanHeader
+#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
 def writeOneAtShadowNode(self,p,toString,force):
 
     '''Write p, an @shadow node.
@@ -12273,14 +12265,10 @@ def writeOneAtShadowNode(self,p,toString,force):
         forcePythonSentinels=True) # A hack to suppress an error message.
             # The actual sentinels will be set below.
 
-    # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+    # Bug fix: Leo 4.5.1: use x.markerFromFileName to force the delim to match
     #                     what is used in x.propegate changes.
-    # Note: x.marker_from_extension takes the file name as the argument,
-    # not the extension itself
-    marker = x.marker_from_extension(fn,addAtSign=False)
-    # g.trace('write marker',marker)
-    at.startSentinelComment = marker
-    at.endSentinelComment = None
+    marker = x.markerFromFileName(fn)
+    at.startSentinelComment,at.endSentinelComment=marker.getDelims()
 
     if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
@@ -12303,11 +12291,6 @@ def writeOneAtShadowNode(self,p,toString,force):
         assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
 
     if at.errors == 0 and not toString:
-        ### It may be better to compute the public file by removing sentinels from at.private_s
-        # by calling x.copy_file_removing_sentinels. This would ensure that the (dubious!!)
-        # x.isSentinel logic is used consistently by the @shadow read/write logic.
-        # OTOH, Leo's write logic should actually dominate x.isSentinel.
-
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
         x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
@@ -12380,7 +12363,7 @@ def adjustTargetLanguage (self,fn):
             # An unknown language.
             pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
-#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
 #@+node:ekr.20041005105605.206:putDirective  (handles @delims,@comment,@language) 4.x
 @ It is important for PHP and other situations that @first and @last directives get translated to verbatim lines that do _not_ include what follows the @first & @last directives.
 @c
@@ -12587,8 +12570,8 @@ else: # Emergency!
 # g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
 #@-node:ekr.20080923070954.13:<< Set comment strings from delims >>
 #@-node:ekr.20080923070954.4:atFile.scanAllDirectives
-#@+node:ekr.20080708094444.9:x.marker_from_extension
-def marker_from_extension (self,filename,addAtSign=True):
+#@+node:ekr.20080708094444.9:x.markerFromFileName
+def markerFromFileName (self,filename):
 
     '''Return the sentinel delimiter comment to be used for filename.'''
 
@@ -12599,38 +12582,527 @@ def marker_from_extension (self,filename,addAtSign=True):
         root, ext = os.path.splitext(root)
 
     delims = g.comment_delims_from_extension(filename)
-
-    # New in leo 4.5.1: require a single-line delim.
-    if delims[0]:
-        marker = delims[0]
-    else:
-        # Yes, we *can* use a special marker for unknown languages,
-        # provided we make it impossible to type by mistake,
-        # and provided no real language will be the prefix of the comment delim.
-        marker = g.app.language_delims_dict.get('unknown_language')
-
-    if addAtSign:
-        return marker + '@'
-    else:
-        return marker
-#@+node:ekr.20090528072540.10004:@test x.marker_from_extension
+    marker = self.markerClass(delims)
+    return marker
+#@+node:ekr.20090529061522.6613:@test x.markerFromFileName
 if g.unitTesting:
 
-    # New in Leo 4.6, set_delims_from_language returns '' instead of None.
+    c,p = g.getTestVars()
+
+    x = c.shadowController
+
     table = (
-        ('x.c',      '//@'),
-        ('x.html',   '#--unknown-language--@'),
-        ('x.py',     '#@'),
-        ('x.xxx',    '#--unknown-language--@'),
+        ('ini',';','',),
+        ('c','//',''),
+        ('h','//',''),
+        ('py','#',''),
+        ('xyzzy','#--unknown-language--',''),
     )
 
-    for fn, expected in table:
-        result = c.shadowController.marker_from_extension(fn,addAtSign=True)
-        assert result==expected,'fn %s expected %s, got %s' % (
-            fn,expected,result)
-#@-node:ekr.20090528072540.10004:@test x.marker_from_extension
-#@-node:ekr.20080708094444.9:x.marker_from_extension
+    for ext,delim1,delim2 in table:
+        filename = 'x.%s' % ext
+        marker = x.markerFromFileName(filename)
+        result1,result2 = marker.getDelims()
+        assert delim1==result1, 'ext=%s, got %s, expected %s' % (
+            ext,delim1,result1)
+        assert delim2==result2, 'ext=%s, got %s, expected %s' % (
+            ext,delim2,result2)
+#@nonl
+#@-node:ekr.20090529061522.6613:@test x.markerFromFileName
+#@-node:ekr.20080708094444.9:x.markerFromFileName
 #@-node:ekr.20081028060510.1:Fixed @shadow crasher
+#@+node:ekr.20090529103821.6402:Compute delims from private shadow file as needed
+@nocolor-node
+
+Notes:
+
+- No change needed to at.writeOneAtShadowNode.
+  It will always use the delims for the file's extension.
+
+- goto_open and propagate_chnages now call x.markerFromFileLines.
+#@+node:ekr.20090529103821.9478:Calls to markerFromFileName
+#@+node:ekr.20080708094444.63:goto_open
+def goto_open (self,filename):
+    """
+    Open a file for "goto linenumber" command and check if a shadow file exists.
+    Construct a line mapping. This ivar is empty i no shadow file exists.
+    Otherwise it contains a mapping shadow file number -> real file number.
+    """
+
+    c = self ; x = c.shadowController
+
+    try:
+        shadow_filename = x.shadowPathName(filename)
+        if os.path.exists(shadow_filename):
+            fn = shadow_filename
+            lines = open(shadow_filename).readlines()
+            x.line_mapping = x.push_filter_mapping(
+                lines,
+                ### x.markerFromFileName(shadow_filename))
+                x.markerFromFileLines(lines,shadow_filename))
+        else:
+            # Just open the original file.  This is not an error!
+            fn = filename
+            c.line_mapping = []
+            lines = open(filename).readlines()
+    except Exception:
+        # Make sure failures to open a file generate clear messages.
+        g.es_print('can not open',fn,color='blue')
+        # g.es_exception()
+        lines = []
+
+    return lines
+#@-node:ekr.20080708094444.63:goto_open
+#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
+def writeOneAtShadowNode(self,p,toString,force):
+
+    '''Write p, an @shadow node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
+
+    fn = p.atShadowFileNodeName()
+    if not fn:
+        g.es_print('can not happen: not an @shadow node',p.h,color='red')
+        return False
+
+    # A hack to support unknown extensions.
+    self.adjustTargetLanguage(fn) # May set c.target_language.
+
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fn = c.os_path_finalize_join(at.default_directory,fn)
+    exists = g.os_path_exists(fn)
+
+    if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
+        return False
+
+    c.endEditing() # Capture the current headline.
+    at.initWriteIvars(root,targetFileName=None, # Not used.
+        atShadow=True,
+        nosentinels=None, # set below.  Affects only error messages (sometimes).
+        thinFile=True, # New in Leo 4.5 b2: private files are thin files.
+        scriptWrite=False,
+        toString=False, # True: create a fileLikeObject.  This is done below.
+        forcePythonSentinels=True) # A hack to suppress an error message.
+            # The actual sentinels will be set below.
+
+    # Bug fix: Leo 4.5.1: use x.markerFromFileName to force the delim to match
+    #                     what is used in x.propegate changes.
+    marker = x.markerFromFileName(fn)
+    at.startSentinelComment,at.endSentinelComment=marker.getDelims()
+
+    if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
+
+    # Write the public and private files to public_s and private_s strings.
+    data = []
+    for sentinels in (False,True):
+        theFile = at.openStringFile(fn)
+        at.sentinels = sentinels
+        at.writeOpenFile(root,
+            nosentinels=not sentinels,toString=False)
+            # nosentinels only affects error messages, and then only if atAuto is True.
+        s = at.closeStringFile(theFile)
+        data.append(s)
+
+    # Set these new ivars for unit tests.
+    at.public_s, at.private_s = data
+
+    if g.app.unitTesting:
+        exceptions = ('public_s','private_s','sentinels','stringOutput')
+        assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
+
+    if at.errors == 0 and not toString:
+        # Write the public and private files.
+        private_fn = x.shadowPathName(fn)
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        at.replaceFileWithString(private_fn,at.private_s)
+        at.replaceFileWithString(fn,at.public_s)
+
+    self.checkPythonCode(root,s=at.private_s,targetFn=fn)
+
+    if at.errors == 0:
+        root.clearOrphan()
+        root.clearDirty()
+    else:
+        g.es("not written:",at.outputFileName,color='red')
+        root.setDirty() # New in Leo 4.4.8.
+
+    return at.errors == 0
+#@+node:ekr.20080711093251.6:shouldWriteAtShadowNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @shadow x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @shadow node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @shadow file.
+- The explicit commands that read and write @shadow trees must always be honored.
+@c
+
+def shouldWriteAtShadowNode (self,p,exists,force,fn):
+
+    '''Return True if we should write the @shadow node at p.'''
+
+    at = self ; x = at.c.shadowController
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.h,'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @shadow tree is dirty and contains significant info.
+        return True
+#@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
+def adjustTargetLanguage (self,fn):
+
+    """Use the language implied by fn's extension if
+    there is a conflict between it and c.target_language."""
+
+    at = self ; c = at.c
+
+    if c.target_language:
+        junk,target_ext = g.os_path_splitext(fn)  
+    else:
+        target_ext = ''
+
+    junk,ext = g.os_path_splitext(fn)
+
+    if ext:
+        if ext.startswith('.'): ext = ext[1:]
+
+        language = g.app.extension_dict.get(ext)
+        if language:
+            c.target_language = language
+        else:
+            # An unknown language.
+            pass # Use the default language, **not** 'unknown_language'
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
+#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
+#@+node:ekr.20080708094444.36:x.propagate_changes
+def propagate_changes(self, old_public_file, old_private_file):
+
+    '''Propagate the changes from the public file (without_sentinels)
+    to the private file (with_sentinels)'''
+
+    x = self ; trace = False
+
+    old_public_lines  = open(old_public_file).readlines()
+    old_private_lines = open(old_private_file).readlines()
+    ### marker = x.markerFromFileName(old_public_file)
+    marker = x.markerFromFileLines(old_private_lines,old_private_file)
+
+    if trace:
+        g.trace(
+            'marker',marker,
+            '\npublic_file',old_public_file,
+            '\npublic lines...\n%s' %(g.listToString(old_public_lines)),
+            '\nprivate_file',old_private_file,
+            '\nprivate lines...\n%s\n' %(g.listToString(old_private_lines)))
+
+    new_private_lines = x.propagate_changed_lines(
+        old_public_lines,old_private_lines,marker)
+
+    # Important bug fix: Never create the private file here!
+    fn = old_private_file
+    copy = os.path.exists(fn) and new_private_lines != old_private_lines
+
+    if copy and x.errors == 0:
+        s = ''.join(new_private_lines)
+        ok = x.replaceFileWithString(fn,s)
+        # g.trace('ok',ok,'writing private file',fn)
+
+    return copy
+#@-node:ekr.20080708094444.36:x.propagate_changes
+#@-node:ekr.20090529103821.9478:Calls to markerFromFileName
+#@+node:ekr.20041005105605.129:at.scanHeader
+def scanHeader(self,theFile,fileName):
+
+    """Scan the @+leo sentinel.
+
+    Sets self.encoding, and self.start/endSentinelComment.
+
+    Returns (firstLines,new_df,isThinDerivedFile) where:
+    firstLines        contains all @first lines,
+    new_df            is True if we are reading a new-format derived file.
+    isThinDerivedFile is True if the file is an @thin file."""
+
+    trace = False
+    at = self
+    firstLines = [] # The lines before @+leo.
+    tag = "@+leo"
+    valid = True ; new_df = False ; isThinDerivedFile = False
+    << skip any non @+leo lines >>
+    if valid:
+        valid,new_df,start,end,isThinDerivedFile = at.parseLeoSentinel(s)
+    if valid:
+        at.startSentinelComment = start
+        at.endSentinelComment = end
+        # g.trace('start',repr(start),'end',repr(end))
+    else:
+        at.error("No @+leo sentinel in: %s" % fileName)
+    # g.trace("start,end",repr(at.startSentinelComment),repr(at.endSentinelComment))
+    return firstLines,new_df,isThinDerivedFile
+#@+node:ekr.20041005105605.130:<< skip any non @+leo lines >>
+@ Queue up the lines before the @+leo.
+
+These will be used to add as parameters to the @first directives, if any.
+Empty lines are ignored (because empty @first directives are ignored).
+NOTE: the function now returns a list of the lines before @+leo.
+
+We can not call sentinelKind here because that depends on
+the comment delimiters we set here.
+
+at-first lines are written "verbatim", so nothing more needs to be done!
+@c
+
+s = at.readLine(theFile)
+if trace: g.trace('first line',repr(s))
+while len(s) > 0:
+    j = s.find(tag)
+    if j != -1: break
+    firstLines.append(s) # Queue the line
+    s = at.readLine(theFile)
+
+n = len(s)
+valid = n > 0
+#@-node:ekr.20041005105605.130:<< skip any non @+leo lines >>
+#@-node:ekr.20041005105605.129:at.scanHeader
+#@+node:ekr.20041005105605.120:at.parseLeoSentinel
+def parseLeoSentinel (self,s):
+
+    at = self ; c = at.c
+    new_df = False ; valid = True ; n = len(s)
+    start = '' ; end = '' ; isThinDerivedFile = False
+    encoding_tag = "-encoding="
+    version_tag = "-ver="
+    tag = "@+leo"
+    thin_tag = "-thin"
+    << set the opening comment delim >>
+    << make sure we have @+leo >>
+    << read optional version param >>
+    << read optional thin param >>
+    << read optional encoding param >>
+    << set the closing comment delim >>
+    if not new_df and not g.unitTesting:
+        g.trace('not new_df(!)',repr(s))
+    return valid,new_df,start,end,isThinDerivedFile
+#@+node:ekr.20041005105605.121:<< set the opening comment delim >>
+# s contains the tag
+i = j = g.skip_ws(s,0)
+
+# The opening comment delim is the initial non-tag
+while i < n and not g.match(s,i,tag) and not g.is_nl(s,i):
+    i += 1
+
+if j < i:
+    start = s[j:i]
+else:
+    valid = False
+
+#@-node:ekr.20041005105605.121:<< set the opening comment delim >>
+#@+node:ekr.20041005105605.122:<< make sure we have @+leo >>
+@ REM hack: leading whitespace is significant before the @+leo.  We do this so that sentinelKind need not skip whitespace following self.startSentinelComment.  This is correct: we want to be as restrictive as possible about what is recognized as a sentinel.  This minimizes false matches.
+@c
+
+if 0: # Make leading whitespace significant.
+    i = g.skip_ws(s,i)
+
+if g.match(s,i,tag):
+    i += len(tag)
+else: valid = False
+#@-node:ekr.20041005105605.122:<< make sure we have @+leo >>
+#@+node:ekr.20041005105605.123:<< read optional version param >>
+new_df = g.match(s,i,version_tag)
+
+if new_df:
+    # Pre Leo 4.4.1: Skip to the next minus sign or end-of-line.
+    # Leo 4.4.1 +:   Skip to next minus sign, end-of-line, or non numeric character.
+    # This is required to handle trailing comment delims properly.
+    i += len(version_tag)
+    j = i
+    while i < len(s) and (s[i] == '.' or s[i].isdigit()):
+        i += 1
+
+    if j < i:
+        pass
+    else:
+        valid = False
+#@-node:ekr.20041005105605.123:<< read optional version param >>
+#@+node:ekr.20041005105605.124:<< read optional thin param >>
+if g.match(s,i,thin_tag):
+    i += len(tag)
+    isThinDerivedFile = True
+#@-node:ekr.20041005105605.124:<< read optional thin param >>
+#@+node:ekr.20041005105605.125:<< read optional encoding param >>
+# Set the default encoding
+at.encoding = c.config.default_derived_file_encoding
+
+if g.match(s,i,encoding_tag):
+    # Read optional encoding param, e.g., -encoding=utf-8,
+    i += len(encoding_tag)
+    # Skip to the next end of the field.
+    j = s.find(",.",i)
+    if j > -1:
+        # The encoding field was written by 4.2 or after:
+        encoding = s[i:j]
+        i = j + 2 # 6/8/04, 1/11/05 (was i = j + 1)
+    else:
+        # The encoding field was written before 4.2.
+        j = s.find('.',i)
+        if j > -1:
+            encoding = s[i:j]
+            i = j + 1 # 6/8/04
+        else:
+            encoding = None
+    # g.trace("encoding:",encoding)
+    if encoding:
+        if g.isValidEncoding(encoding):
+            at.encoding = encoding
+        else:
+            g.es_print("bad encoding in derived file:",encoding)
+    else:
+        valid = False
+#@-node:ekr.20041005105605.125:<< read optional encoding param >>
+#@+node:ekr.20041005105605.126:<< set the closing comment delim >>
+# The closing comment delim is the trailing non-whitespace.
+i = j = g.skip_ws(s,i)
+while i < n and not g.is_ws(s[i]) and not g.is_nl(s,i):
+    i += 1
+end = s[j:i]
+#@-node:ekr.20041005105605.126:<< set the closing comment delim >>
+#@-node:ekr.20041005105605.120:at.parseLeoSentinel
+#@+node:ekr.20080708094444.9:x.markerFromFileName
+def markerFromFileName (self,filename):
+
+    '''Return the sentinel delimiter comment to be used for filename.'''
+
+    x = self
+    if not filename: return None
+    root,ext = g.os_path_splitext(filename)
+    if ext=='.tmp':
+        root, ext = os.path.splitext(root)
+
+    delims = g.comment_delims_from_extension(filename)
+    marker = self.markerClass(delims)
+    return marker
+#@+node:ekr.20090529061522.6613:@test x.markerFromFileName
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    x = c.shadowController
+
+    table = (
+        ('ini',';','',),
+        ('c','//',''),
+        ('h','//',''),
+        ('py','#',''),
+        ('xyzzy','#--unknown-language--',''),
+    )
+
+    for ext,delim1,delim2 in table:
+        filename = 'x.%s' % ext
+        marker = x.markerFromFileName(filename)
+        result1,result2 = marker.getDelims()
+        assert delim1==result1, 'ext=%s, got %s, expected %s' % (
+            ext,delim1,result1)
+        assert delim2==result2, 'ext=%s, got %s, expected %s' % (
+            ext,delim2,result2)
+#@nonl
+#@-node:ekr.20090529061522.6613:@test x.markerFromFileName
+#@-node:ekr.20080708094444.9:x.markerFromFileName
+#@+node:ekr.20090529125512.6122:x.markerFromFileLines & helper & test
+def markerFromFileLines (self,lines,fn):  # fn used only for traces.
+
+    '''Return the sentinel delimiter comment to be used for filename.'''
+
+    trace = False and not g.unitTesting
+    x = self ; at = x.c.atFileCommands
+
+    s = x.findLeoLine(lines)
+    ok,junk,start,end,junk = at.parseLeoSentinel(s)
+    if end:
+        delims = '',start,end
+    else:
+        delims = start,'',''
+
+    if trace: g.trace('delim1 %s delim2 %s delim3 %s fn %s' % (
+        delims[0],delims[1],delims[2], fn))
+
+    marker = x.markerClass(delims)
+    return marker
+#@+node:ekr.20090529125512.6125:x.findLeoLine & test
+def findLeoLine (self,lines):
+
+    '''Return the @+leo line, or ''.'''
+
+    for line in lines:
+        i = line.find('@+leo')
+        if i != -1:
+            return line
+    else:
+        return ''
+#@+node:ekr.20090529125512.6126:@test x.findAtLeoLine
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    x = c.shadowController
+    table = (
+        ('c',('//@+leo','a'),                   '//@+leo'),
+        ('c',('//@first','//@+leo','b'),        '//@+leo'),
+        ('c',('/*@+leo*/','a'),                 '/*@+leo*/'),
+        ('c',('/*@first*/','/*@+leo*/','b'),    '/*@+leo*/'),
+        ('python',('#@+leo','a'),               '#@+leo'),
+        ('python',('#@first','#@+leo','b'),     '#@+leo'),
+        ('error',('',),''),
+        ('html',('<!--@+leo-->','a'),                '<!--@+leo-->'),
+        ('html',('<!--@first-->','<!--@+leo-->','b'),'<!--@+leo-->'),
+    )
+    for language,lines,expected in table:
+        result = x.findLeoLine(lines)
+        assert expected==result, 'language %s expected %s got %s lines %s' % (
+            language,expected,result,'\n'.join(lines))
+#@nonl
+#@-node:ekr.20090529125512.6126:@test x.findAtLeoLine
+#@-node:ekr.20090529125512.6125:x.findLeoLine & test
+#@+node:ekr.20090529125512.6128:@test x.markerFromFileLines
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    x = c.shadowController
+    # Add -ver=4 so at.parseLeoSentinel does not complain.
+    table = (
+        ('c',('//@+leo-ver=4','a'),                   '//',''),
+        ('c',('//@first','//@+leo-ver=4','b'),        '//',''),
+        ('c',('/*@+leo-ver=4*/','a'),                 '/*','*/'),
+        ('c',('/*@first*/','/*@+leo-ver=4*/','b'),    '/*','*/'),
+        ('python',('#@+leo-ver=4','a'),               '#',''),
+        ('python',('#@first','#@+leo-ver=4','b'),     '#',''),
+        ('error',('',),             '#--unknown-language--',''),
+        ('html',('<!--@+leo-ver=4-->','a'),                '<!--','-->'),
+        ('html',('<!--@first-->','<!--@+leo-ver=4-->','b'),'<!--','-->'),
+    )
+
+    for language,lines,delim1,delim2 in table:
+        s = x.findLeoLine(lines)
+        marker = x.markerFromFileLines(lines,'test-file-name')
+        result1,result2 = marker.getDelims()
+        assert delim1==result1, 'language %s expected1 %s got %s lines %s' % (
+            language,delim1,result1,'\n'.join(lines))
+        assert delim2==result2, 'language %s expected2 %s got %s lines %s' % (
+            language,delim1,result1,'\n'.join(lines))
+#@nonl
+#@-node:ekr.20090529125512.6128:@test x.markerFromFileLines
+#@-node:ekr.20090529125512.6122:x.markerFromFileLines & helper & test
+#@-node:ekr.20090529103821.6402:Compute delims from private shadow file as needed
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
@@ -13374,7 +13846,7 @@ if (
     g.es("correcting line endings in:",self.targetFileName,color="blue")
 #@-node:ekr.20041019090322:<< report if the files differ only in line endings >>
 #@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent
-#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
 def writeOneAtShadowNode(self,p,toString,force):
 
     '''Write p, an @shadow node.
@@ -13408,14 +13880,10 @@ def writeOneAtShadowNode(self,p,toString,force):
         forcePythonSentinels=True) # A hack to suppress an error message.
             # The actual sentinels will be set below.
 
-    # Bug fix: Leo 4.5.1: use x.markerFromExtension to force the delim to match
+    # Bug fix: Leo 4.5.1: use x.markerFromFileName to force the delim to match
     #                     what is used in x.propegate changes.
-    # Note: x.marker_from_extension takes the file name as the argument,
-    # not the extension itself
-    marker = x.marker_from_extension(fn,addAtSign=False)
-    # g.trace('write marker',marker)
-    at.startSentinelComment = marker
-    at.endSentinelComment = None
+    marker = x.markerFromFileName(fn)
+    at.startSentinelComment,at.endSentinelComment=marker.getDelims()
 
     if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
 
@@ -13438,11 +13906,6 @@ def writeOneAtShadowNode(self,p,toString,force):
         assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
 
     if at.errors == 0 and not toString:
-        ### It may be better to compute the public file by removing sentinels from at.private_s
-        # by calling x.copy_file_removing_sentinels. This would ensure that the (dubious!!)
-        # x.isSentinel logic is used consistently by the @shadow read/write logic.
-        # OTOH, Leo's write logic should actually dominate x.isSentinel.
-
         # Write the public and private files.
         private_fn = x.shadowPathName(fn)
         x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
@@ -13515,7 +13978,7 @@ def adjustTargetLanguage (self,fn):
             # An unknown language.
             pass # Use the default language, **not** 'unknown_language'
 #@-node:ekr.20080819075811.13:adjustTargetLanguage
-#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers
+#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
 #@-node:ekr.20090514111518.5659:test .py files when saving them
 #@+node:ville.20090311193011.2:test select_h, select_b, find_h, find_b
 @color
@@ -13693,7 +14156,6 @@ def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
                 z.c.config.setRecentFiles(g.app.config.recentFiles)
 
     # Bug fix in 4.4.
-    ####
     if not c.openDirectory:
         c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
@@ -13965,7 +14427,6 @@ def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
                 z.c.config.setRecentFiles(g.app.config.recentFiles)
 
     # Bug fix in 4.4.
-    ####
     if not c.openDirectory:
         c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
@@ -14641,6 +15102,368 @@ def tabNannyNode (self,p,body):
 #@-node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
 #@-node:ekr.20090514111518.5661:checkPythonCode (leoAtFile) & helpers
 #@-node:ekr.20090528072540.9961:Better reporting for syntax errors
+#@+node:ekr.20090528072540.10032:Allow block comments in private shadow files
+@nocolor-node
+
+Html files are a good test case.
+#@nonl
+#@+node:ekr.20090529061522.6213:Important changes
+#@+node:ekr.20080708094444.9:x.markerFromFileName
+def markerFromFileName (self,filename):
+
+    '''Return the sentinel delimiter comment to be used for filename.'''
+
+    x = self
+    if not filename: return None
+    root,ext = g.os_path_splitext(filename)
+    if ext=='.tmp':
+        root, ext = os.path.splitext(root)
+
+    delims = g.comment_delims_from_extension(filename)
+    marker = self.markerClass(delims)
+    return marker
+#@+node:ekr.20090529061522.6613:@test x.markerFromFileName
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    x = c.shadowController
+
+    table = (
+        ('ini',';','',),
+        ('c','//',''),
+        ('h','//',''),
+        ('py','#',''),
+        ('xyzzy','#--unknown-language--',''),
+    )
+
+    for ext,delim1,delim2 in table:
+        filename = 'x.%s' % ext
+        marker = x.markerFromFileName(filename)
+        result1,result2 = marker.getDelims()
+        assert delim1==result1, 'ext=%s, got %s, expected %s' % (
+            ext,delim1,result1)
+        assert delim2==result2, 'ext=%s, got %s, expected %s' % (
+            ext,delim2,result2)
+#@nonl
+#@-node:ekr.20090529061522.6613:@test x.markerFromFileName
+#@-node:ekr.20080708094444.9:x.markerFromFileName
+#@+node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
+def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
+
+    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
+
+    We compare the old and new public lines, create diffs and
+    propagate the diffs to the new private lines, copying sentinels as well.
+
+    We have two invariants:
+    1. We *never* delete any sentinels.
+    2. Insertions that happen at the boundary between nodes will be put at
+       the end of a node.  However, insertions must always be done within sentinels.
+    '''
+
+    x = self ; trace = False ; verbose = True
+    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
+    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
+
+    << init vars >>
+    << define print_tags >>
+
+    delim1,delim2 = marker.getDelims()
+    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
+    prev_old_j = 0 ; prev_new_j = 0
+
+    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
+
+        << About this loop >>
+
+        # Verify that SequenceMatcher never leaves gaps.
+        if old_i != prev_old_j: # assert old_i == prev_old_j
+            x.error('can not happen: gap in old:',old_i,prev_old_j)
+        if new_i != prev_new_j: # assert new_i == prev_new_j
+            x.error('can not happen: gap in new:',new_i,prev_new_j)
+
+        << Handle the opcode >>
+
+        # Remember the ends of the previous tag ranges.
+        prev_old_j = old_j
+        prev_new_j = new_j
+
+    # Copy all unwritten sentinels.
+    self.copy_sentinels(
+        old_private_lines_rdr,
+        new_private_lines_wtr,
+        marker,
+        limit = old_private_lines_rdr.size())
+
+    # Get the result.
+    result = new_private_lines_wtr.getlines()
+    if 1:
+        << do final correctness check>>
+    return result
+#@+node:ekr.20080708094444.40:<< init vars >>
+new_private_lines_wtr = self.sourcewriter(self)
+# collects the contents of the new file.
+
+new_public_lines_rdr = self.sourcereader(self,new_public_lines)
+    # Contains the changed source code.
+
+old_public_lines_rdr = self.sourcereader(self,old_public_lines)
+    # this is compared to new_public_lines_rdr to find out the changes.
+
+old_private_lines_rdr = self.sourcereader(self,old_private_lines) # lines_with_sentinels)
+    # This is the file which is currently produced by Leo, with sentinels.
+
+# Check that all ranges returned by get_opcodes() are contiguous
+old_old_j, old_i2_modified_lines = -1,-1
+
+tag = old_i = old_j = new_i = new_j = None
+#@nonl
+#@-node:ekr.20080708094444.40:<< init vars >>
+#@+node:ekr.20080708094444.39:<< define print_tags >>
+def print_tags(tag, old_i, old_j, new_i, new_j, message):
+
+    sep1 = '=' * 10 ; sep2 = '-' * 20
+
+    g.pr('\n',sep1,message,sep1,p and p.h)
+
+    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
+
+    g.pr('\n',sep2)
+
+    table = (
+        (old_private_lines_rdr,'old private lines'),
+        (old_public_lines_rdr,'old public lines'),
+        (new_public_lines_rdr,'new public lines'),
+        (new_private_lines_wtr,'new private lines'),
+    )
+
+    for f,tag in table:
+        f.dump(tag)
+        g.pr(sep2)
+
+
+#@-node:ekr.20080708094444.39:<< define print_tags >>
+#@+node:ekr.20080708192807.2:<< about this loop >>
+@
+
+This loop writes all output lines using a single writer: new_private_lines_wtr.
+
+The output lines come from two, and *only* two readers:
+
+1. old_private_lines_rdr delivers the complete original sources. All
+   sentinels and unchanged regular lines come from this reader.
+
+2. new_public_lines_rdr delivers the new, changed sources. All inserted or
+   replacement text comes from this reader.
+
+Each time through the loop, the following are true:
+
+- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
+
+- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
+
+At the start of the loop, the call to copy_sentinels effectively skips (deletes)
+all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
+is less than mapping[old_i].
+
+As a result, the opcode handlers do not need to delete elements from the
+old_private_lines_rdr explicitly. This explains why opcode handlers for the
+'insert' and 'delete' opcodes are identical.
+#@-node:ekr.20080708192807.2:<< about this loop >>
+#@+node:ekr.20080708192807.5:<< Handle the opcode >>
+# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
+# In this special case, we must do the insert before the sentinels.
+limit=mapping[old_i]
+
+if trace: g.trace(tag,'old_i',old_i,'limit',limit)
+
+if tag == 'insert' and limit >= old_private_lines_rdr.size():
+    pass
+else:
+    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
+    # Because of this, nothing has to be explicitly deleted below.
+    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
+
+if tag == 'equal':
+    # Copy all lines (including sentinels) from the old private file to the new private file.
+    start = old_private_lines_rdr.index()
+    while old_private_lines_rdr.index() <= mapping[old_j-1]:
+        line = old_private_lines_rdr.get()
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
+
+    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
+    new_public_lines_rdr.sync(new_j)
+
+elif tag in ('insert','replace'):
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Copy lines from new_public_lines_rdr up to new_j.
+    start = new_public_lines_rdr.index()
+    while new_public_lines_rdr.index() < new_j:
+        line = new_public_lines_rdr.get()
+        if marker.isSentinel(line):
+            new_private_lines_wtr.put(
+                '%s@verbatim%s\n' % (delim1,delim2),
+                tag='%s %s:%s' % ('new sent',start,new_j))
+        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
+
+elif tag=='delete':
+    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
+    # Leave new_public_lines_rdr unchanged.
+    pass
+
+else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
+
+if trace and verbose:
+    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
+#@nonl
+#@-node:ekr.20080708192807.5:<< Handle the opcode >>
+#@+node:ekr.20080708094444.45:<< do final correctness check >>
+t_sourcelines, t_sentinel_lines = self.separate_sentinels(
+    new_private_lines_wtr.lines, marker)
+
+self.check_the_final_output(
+    new_private_lines   = result,
+    new_public_lines    = new_public_lines,
+    sentinel_lines      = t_sentinel_lines,
+    marker              = marker)
+#@-node:ekr.20080708094444.45:<< do final correctness check >>
+#@-node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
+#@+node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
+def writeOneAtShadowNode(self,p,toString,force):
+
+    '''Write p, an @shadow node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
+
+    fn = p.atShadowFileNodeName()
+    if not fn:
+        g.es_print('can not happen: not an @shadow node',p.h,color='red')
+        return False
+
+    # A hack to support unknown extensions.
+    self.adjustTargetLanguage(fn) # May set c.target_language.
+
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fn = c.os_path_finalize_join(at.default_directory,fn)
+    exists = g.os_path_exists(fn)
+
+    if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
+        return False
+
+    c.endEditing() # Capture the current headline.
+    at.initWriteIvars(root,targetFileName=None, # Not used.
+        atShadow=True,
+        nosentinels=None, # set below.  Affects only error messages (sometimes).
+        thinFile=True, # New in Leo 4.5 b2: private files are thin files.
+        scriptWrite=False,
+        toString=False, # True: create a fileLikeObject.  This is done below.
+        forcePythonSentinels=True) # A hack to suppress an error message.
+            # The actual sentinels will be set below.
+
+    # Bug fix: Leo 4.5.1: use x.markerFromFileName to force the delim to match
+    #                     what is used in x.propegate changes.
+    marker = x.markerFromFileName(fn)
+    at.startSentinelComment,at.endSentinelComment=marker.getDelims()
+
+    if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
+
+    # Write the public and private files to public_s and private_s strings.
+    data = []
+    for sentinels in (False,True):
+        theFile = at.openStringFile(fn)
+        at.sentinels = sentinels
+        at.writeOpenFile(root,
+            nosentinels=not sentinels,toString=False)
+            # nosentinels only affects error messages, and then only if atAuto is True.
+        s = at.closeStringFile(theFile)
+        data.append(s)
+
+    # Set these new ivars for unit tests.
+    at.public_s, at.private_s = data
+
+    if g.app.unitTesting:
+        exceptions = ('public_s','private_s','sentinels','stringOutput')
+        assert g.checkUnchangedIvars(at,ivars_dict,exceptions)
+
+    if at.errors == 0 and not toString:
+        # Write the public and private files.
+        private_fn = x.shadowPathName(fn)
+        x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
+        at.replaceFileWithString(private_fn,at.private_s)
+        at.replaceFileWithString(fn,at.public_s)
+
+    self.checkPythonCode(root,s=at.private_s,targetFn=fn)
+
+    if at.errors == 0:
+        root.clearOrphan()
+        root.clearDirty()
+    else:
+        g.es("not written:",at.outputFileName,color='red')
+        root.setDirty() # New in Leo 4.4.8.
+
+    return at.errors == 0
+#@+node:ekr.20080711093251.6:shouldWriteAtShadowNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @shadow x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @shadow node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @shadow file.
+- The explicit commands that read and write @shadow trees must always be honored.
+@c
+
+def shouldWriteAtShadowNode (self,p,exists,force,fn):
+
+    '''Return True if we should write the @shadow node at p.'''
+
+    at = self ; x = at.c.shadowController
+
+    if force: # We are executing write-at-shadow-node or write-dirty-at-shadow-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.h,'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @shadow tree is dirty and contains significant info.
+        return True
+#@-node:ekr.20080711093251.6:shouldWriteAtShadowNode
+#@+node:ekr.20080819075811.13:adjustTargetLanguage
+def adjustTargetLanguage (self,fn):
+
+    """Use the language implied by fn's extension if
+    there is a conflict between it and c.target_language."""
+
+    at = self ; c = at.c
+
+    if c.target_language:
+        junk,target_ext = g.os_path_splitext(fn)  
+    else:
+        target_ext = ''
+
+    junk,ext = g.os_path_splitext(fn)
+
+    if ext:
+        if ext.startswith('.'): ext = ext[1:]
+
+        language = g.app.extension_dict.get(ext)
+        if language:
+            c.target_language = language
+        else:
+            # An unknown language.
+            pass # Use the default language, **not** 'unknown_language'
+#@-node:ekr.20080819075811.13:adjustTargetLanguage
+#@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
+#@-node:ekr.20090529061522.6213:Important changes
+#@-node:ekr.20090528072540.10032:Allow block comments in private shadow files
 #@-node:ekr.20090401105902.3:Features
 #@-node:ekr.20080917153158.11:4.6 b2
 #@-all
