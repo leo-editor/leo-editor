@@ -13230,8 +13230,7 @@ def checkPythonCode (self,root,s=None,targetFn=None):
         ok = self.checkPythonSyntax(root,s)
 
         # Syntax checking catches most indentation problems.
-        if False:
-            if ok: self.tabNannyNode(root,s)
+        if False and ok: self.tabNannyNode(root,s)
 #@nonl
 #@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
 def checkPythonSyntax (self,p,body):
@@ -13242,8 +13241,8 @@ def checkPythonSyntax (self,p,body):
         ok = True
         compiler.parse(body + '\n')
     except (parser.ParserError,SyntaxError):
-        self.syntaxError(p)
-        p.setMarked()
+        self.syntaxError(p,body)
+        # p.setMarked()
         ok = False
     except Exception:
         g.trace("unexpected exception")
@@ -13252,17 +13251,18 @@ def checkPythonSyntax (self,p,body):
 
     return ok
 #@+node:ekr.20090514111518.5666:syntaxError
-def syntaxError(self,p):
-
-    import traceback
+def syntaxError(self,p,body):
 
     g.es_print("Syntax error in: %s" % (p.h),color="red")
-
-    # Similar to g.es_exception(full=False)
     typ,val,tb = sys.exc_info()
-    lines = traceback.format_exception_only(typ,val)
-    for line in lines[1:]:
-        g.es_print(line)
+    lines = g.splitLines(body)
+    i = val.lineno-1
+    for j in range(max(0,i-3),min(i+3,len(lines)-1)):
+        g.es_print('%5s:%s %s' % (
+            j,g.choose(j==i,'*',' '),lines[j].rstrip()))
+        if j == i:
+            g.es_print(' '*(7+val.offset)+'^')
+#@nonl
 #@-node:ekr.20090514111518.5666:syntaxError
 #@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
 #@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
@@ -14535,19 +14535,112 @@ def warnOnReadOnlyFiles (self,fileName):
 #@+node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
 if g.unitTesting:
 
-    import os
+    import os,stat
     c,p = g.getTestVars()
     fc = c.fileCommands
 
     path = g.os_path_finalize_join(g.app.loadDir,'..','test','test-read-only.txt')
-    fc.warnOnReadOnlyFiles(path)
-
-    # This does pass when the file exists and is, in fact, read-only.
-    # assert fc.read_only
+    if os.path.exists(path):
+        os.chmod(path, stat.S_IREAD)
+        fc.warnOnReadOnlyFiles(path)
+        assert fc.read_only
+    else:
+        fc.warnOnReadOnlyFiles(path)
 #@-node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
 #@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
 #@-node:ekr.20031218072017.1553:getLeoFile & helpers
 #@-node:ekr.20090526005746.5840:Refactored fileCommands.getLeoFile
+#@+node:ekr.20090528072540.9961:Better reporting for syntax errors
+We need context lines.
+#@nonl
+#@+node:ekr.20090514111518.5661:checkPythonCode (leoAtFile) & helpers
+def checkPythonCode (self,root,s=None,targetFn=None):
+
+    c = self.c
+
+    if not targetFn: targetFn = self.targetFileName
+
+    if targetFn and targetFn.endswith('.py') and self.checkPythonCodeOnWrite:
+        try:
+            if not s: s = open(self.outputFileName).read()
+        except IOError:
+            g.trace('can not happen',g.callers(4))
+            return
+
+        # It's too slow to check each node separately.
+        ok = self.checkPythonSyntax(root,s)
+
+        # Syntax checking catches most indentation problems.
+        if False and ok: self.tabNannyNode(root,s)
+#@nonl
+#@+node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
+def checkPythonSyntax (self,p,body):
+
+    import compiler,parser
+
+    try:
+        ok = True
+        compiler.parse(body + '\n')
+    except (parser.ParserError,SyntaxError):
+        self.syntaxError(p,body)
+        # p.setMarked()
+        ok = False
+    except Exception:
+        g.trace("unexpected exception")
+        g.es_exception()
+        ok = False
+
+    return ok
+#@+node:ekr.20090514111518.5666:syntaxError
+def syntaxError(self,p,body):
+
+    g.es_print("Syntax error in: %s" % (p.h),color="red")
+    typ,val,tb = sys.exc_info()
+    lines = g.splitLines(body)
+    i = val.lineno-1
+    for j in range(max(0,i-3),min(i+3,len(lines)-1)):
+        g.es_print('%5s:%s %s' % (
+            j,g.choose(j==i,'*',' '),lines[j].rstrip()))
+        if j == i:
+            g.es_print(' '*(7+val.offset)+'^')
+#@nonl
+#@-node:ekr.20090514111518.5666:syntaxError
+#@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
+#@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
+def tabNannyNode (self,p,body):
+
+    import parser,tabnanny,tokenize
+
+    try:
+        readline = g.readLinesClass(body).next
+        tabnanny.process_tokens(tokenize.generate_tokens(readline))
+    except parser.ParserError:
+        junk, msg, junk = sys.exc_info()
+        g.es("ParserError in",p.h,color="red")
+        g.es('',str(msg))
+        p.setMarked()
+    except tokenize.TokenError:
+        junk, msg, junk = sys.exc_info()
+        g.es("TokenError in",p.h,color="red")
+        g.es('',str(msg))
+        p.setMarked()
+    except tabnanny.NannyNag:
+        junk, nag, junk = sys.exc_info()
+        badline = nag.get_lineno()
+        line    = nag.get_line()
+        message = nag.get_msg()
+        g.es("indentation error in",p.h,"line",badline,color="red")
+        g.es(message)
+        line2 = repr(str(line))[1:-1]
+        g.es("offending line:\n",line2)
+        p.setMarked()
+    except Exception:
+        g.trace("unexpected exception")
+        g.es_exception()
+#@nonl
+#@-node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
+#@-node:ekr.20090514111518.5661:checkPythonCode (leoAtFile) & helpers
+#@-node:ekr.20090528072540.9961:Better reporting for syntax errors
 #@-node:ekr.20090401105902.3:Features
 #@-node:ekr.20080917153158.11:4.6 b2
 #@-all
