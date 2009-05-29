@@ -5917,12 +5917,9 @@ at.updateWarningGiven = False
 at.endSentinelStack = [at.endLeo] # We have already handled the @+leo sentinel.
 at.out = [] ; at.outStack = []
 at.t = p.v.t ; at.tStack = []
-if 1: ### New code: always identify root @thin node with self.root:
-    at.lastThinNode = None
-    at.thinNodeStack = []
-else:
-    at.lastThinNode = p.v
-    at.thinNodeStack = [p.v]
+# New code: always identify root @thin node with self.root:
+at.lastThinNode = None
+at.thinNodeStack = []
 
 if 0: # Useful for debugging.
     if hasattr(p.v.t,"tnodeList"):
@@ -10259,15 +10256,14 @@ def writeHeadline (self,p):
 #@+node:ekr.20090502071837.84:writeHeadlineHelper
 def writeHeadlineHelper (self,p):
 
-    ### h = p.h.strip()
     h = p.h
     if not self.atAutoWrite:
         h = h.strip()
 
     # Remove any headline command before writing the headline.
-    i = g.skip_ws(h,0) ###
+    i = g.skip_ws(h,0)
     i = g.skip_id(h,0,chars='@-')
-    word = h [:i].strip() ###
+    word = h [:i].strip()
     if word:
         # Never generate a section for @rst-option or @rst-options or @rst-no-head.
         if word in (
@@ -12638,7 +12634,6 @@ def goto_open (self,filename):
             lines = open(shadow_filename).readlines()
             x.line_mapping = x.push_filter_mapping(
                 lines,
-                ### x.markerFromFileName(shadow_filename))
                 x.markerFromFileLines(lines,shadow_filename))
         else:
             # Just open the original file.  This is not an error!
@@ -12796,7 +12791,6 @@ def propagate_changes(self, old_public_file, old_private_file):
 
     old_public_lines  = open(old_public_file).readlines()
     old_private_lines = open(old_private_file).readlines()
-    ### marker = x.markerFromFileName(old_public_file)
     marker = x.markerFromFileLines(old_private_lines,old_private_file)
 
     if trace:

@@ -98,7 +98,7 @@ class nullObject:
 
     def __init__   (self,*args,**keys): pass
     def __call__   (self,*args,**keys): return self
-    # def __len__    (self): return 0 ###
+    # def __len__    (self): return 0 # Debatable.
     def __repr__   (self): return "nullObject"
     def __str__    (self): return "nullObject"
     def __nonzero__(self): return 0

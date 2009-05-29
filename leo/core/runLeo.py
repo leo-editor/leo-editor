@@ -364,7 +364,7 @@ def createFrame (fileName,relativeFileName,script):
         if ok: return frame.c,frame
 
     # Create a _new_ frame & indicate it is the startup window.
-    if not fileName: fileName = defaultFileName ###
+    if not fileName: fileName = defaultFileName
 
     c,frame = g.app.newLeoCommanderAndFrame(
         fileName=fileName,

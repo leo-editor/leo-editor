@@ -1008,8 +1008,8 @@ class baseCommands (object):
                 c.mFileName = g.ensure_extension(fileName, ".leo")
                 c.frame.title = c.mFileName
                 c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-                ####
-                c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+                c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
+                    # Bug fix in 4.4b2.
                 c.fileCommands.save(c.mFileName)
                 c.updateRecentFiles(c.mFileName)
                 g.chdir(c.mFileName)
@@ -1046,8 +1046,8 @@ class baseCommands (object):
             c.mFileName = g.ensure_extension(fileName, ".leo")
             c.frame.title = c.mFileName
             c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-            #### 
-            c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+            c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
+                # Bug fix in 4.4b2.
             # Calls c.setChanged(False) if no error.
             c.fileCommands.saveAs(c.mFileName)
             c.updateRecentFiles(c.mFileName)
@@ -2344,7 +2344,6 @@ class baseCommands (object):
                 lines = open(shadow_filename).readlines()
                 x.line_mapping = x.push_filter_mapping(
                     lines,
-                    ### x.markerFromFileName(shadow_filename))
                     x.markerFromFileLines(lines,shadow_filename))
             else:
                 # Just open the original file.  This is not an error!

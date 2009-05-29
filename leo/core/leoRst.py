@@ -1637,15 +1637,14 @@ class rstCommands:
     #@+node:ekr.20090502071837.84:writeHeadlineHelper
     def writeHeadlineHelper (self,p):
 
-        ### h = p.h.strip()
         h = p.h
         if not self.atAutoWrite:
             h = h.strip()
 
         # Remove any headline command before writing the headline.
-        i = g.skip_ws(h,0) ###
+        i = g.skip_ws(h,0)
         i = g.skip_id(h,0,chars='@-')
-        word = h [:i].strip() ###
+        word = h [:i].strip()
         if word:
             # Never generate a section for @rst-option or @rst-options or @rst-no-head.
             if word in (

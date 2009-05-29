@@ -1366,7 +1366,7 @@ class autoCompleterClass:
 
         try:
             # Add the the class definition to the present environment.
-            exec(s) ### Security violation!
+            exec(s) # Security violation!
 
             # Get the newly created object from the locals dict.
             theClass = locals().get(className)

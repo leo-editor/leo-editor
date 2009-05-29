@@ -152,7 +152,7 @@ if sys.platform != 'cli':
 
             attrs: an Attributes item passed to startElement.'''
 
-            ### if 0: # check for non-unicode attributes.
+            # if 0: # check for non-unicode attributes.
                 # for name in attrs.getNames():
                     # val = attrs.getValue(name)
                     # if type(val) != type(u''):
@@ -879,7 +879,6 @@ class baseFileCommands:
         # Set c.openDirectory
         theDir = g.os_path_dirname(fileName)
         if theDir:
-            #### 
             c.openDirectory = c.frame.openDirectory = theDir
 
         ok, ratio = self.getLeoFile(
@@ -911,7 +910,6 @@ class baseFileCommands:
         theDir = g.os_path_dirname(fileName)
 
         if len(theDir) > 0:
-            #### 
             c.openDirectory = c.frame.openDirectory = theDir
         #@-node:ekr.20071211134300:<< Set the default directory >>
         #@nl
@@ -2480,7 +2478,6 @@ class baseFileCommands:
         if not c.openDirectory:
             theDir = g.os_path_dirname(fileName)
             if theDir and g.os_path_isabs(theDir) and g.os_path_exists(theDir):
-                #### 
                 c.openDirectory = c.frame.openDirectory = theDir
     #@-node:ekr.20031218072017.3045:setDefaultDirectoryForNewFiles
     #@+node:ekr.20080412172151.2:updateFixedStatus

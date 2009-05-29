@@ -475,7 +475,7 @@ class leoMenu:
     def createHelpMenuFromTable (self):
 
         if sys.platform == 'darwin':
-            pass ### self.getMacHelpMenu(table)
+            pass # self.getMacHelpMenu(table)
         else:
             helpMenu = self.createNewMenu("&Help")
             self.createMenuEntries(helpMenu,self.helpMenuTable)

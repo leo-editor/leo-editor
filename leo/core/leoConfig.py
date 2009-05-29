@@ -1969,7 +1969,6 @@ class configClass:
         ok = frame.c.fileCommands.open(
             theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
         g.app.unlockLog()
-        ####
         c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
         g.app.gui = oldGui
         return ok and c

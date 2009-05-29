@@ -899,12 +899,9 @@ class atFile:
         at.endSentinelStack = [at.endLeo] # We have already handled the @+leo sentinel.
         at.out = [] ; at.outStack = []
         at.t = p.v.t ; at.tStack = []
-        if 1: ### New code: always identify root @thin node with self.root:
-            at.lastThinNode = None
-            at.thinNodeStack = []
-        else:
-            at.lastThinNode = p.v
-            at.thinNodeStack = [p.v]
+        # New code: always identify root @thin node with self.root:
+        at.lastThinNode = None
+        at.thinNodeStack = []
 
         if 0: # Useful for debugging.
             if hasattr(p.v.t,"tnodeList"):

@@ -3,10 +3,13 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
 #@+node:ekr.20090525113804.5776:Bugs before b2
+#@+node:ekr.20090529154322.6008:First
 #@+node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
 #@-node:ekr.20090109060626.1:Make sure @shadow and @auto can handle underindented lines
 #@+node:ekr.20090528072540.5737:Mark @<file> nodes dirty when @path nodes change
 #@-node:ekr.20090528072540.5737:Mark @<file> nodes dirty when @path nodes change
+#@+node:ekr.20090529154322.6375:Support multiple body editors
+#@-node:ekr.20090529154322.6375:Support multiple body editors
 #@+node:ekr.20090324100430.1:Deleting @chapter node doesn't work
 @nocolor-node
 _unlink: can not happen: bad child index: 4, len(children): 2
@@ -138,6 +141,10 @@ selection of several pages, as intended.
 This may be hard to fix, without taking over the qt code's handling of page up/down.
 #@nonl
 #@-node:ekr.20090525113804.5778:Fix lost anchor bug
+#@+node:ekr.20090523070447.6476:Make sure rst3 command applied to @auto-rst node works
+#@-node:ekr.20090523070447.6476:Make sure rst3 command applied to @auto-rst node works
+#@-node:ekr.20090529154322.6008:First
+#@+node:ekr.20090529154322.6009:Next
 #@+node:ekr.20090430092048.4:Fix all qt bugs
 #@-node:ekr.20090430092048.4:Fix all qt bugs
 #@+node:ekr.20090523070447.6475:Rewrite rst chapter
@@ -179,6 +186,7 @@ E1103:604:ToolbarTkinterFrame.getIconWidgetFrame:
 E0602:116:open_in_emacs: Undefined variable '_exemacs_cmd'
 #@nonl
 #@-node:ekr.20090522113545.5884:Fix pylint complaints about plugins
+#@-node:ekr.20090529154322.6009:Next
 #@-node:ekr.20090525113804.5776:Bugs before b2
 #@+node:ekr.20090430092048.7:Before 4.6 final
 #@+node:ekr.20090430122648.1:Generate pdf versions of docs
@@ -457,8 +465,6 @@ solution.
 #@nonl
 #@-node:ekr.20090402072059.13:Create a general mechanism for aux (shadow, _db) files
 #@-node:ekr.20080922115725.1:Minor @shadow stuff
-#@+node:ekr.20090523070447.6476:Make sure rst3 command applied to @auto-rst node works
-#@-node:ekr.20090523070447.6476:Make sure rst3 command applied to @auto-rst node works
 #@+node:ekr.20090512080015.5801:import-files-recursively command?
 How would the command specify settings?
 
@@ -1009,7 +1015,6 @@ def goto_open (self,filename):
             lines = open(shadow_filename).readlines()
             x.line_mapping = x.push_filter_mapping(
                 lines,
-                ### x.markerFromFileName(shadow_filename))
                 x.markerFromFileLines(lines,shadow_filename))
         else:
             # Just open the original file.  This is not an error!
@@ -6947,8 +6952,8 @@ def save (self,event=None):
             c.mFileName = g.ensure_extension(fileName, ".leo")
             c.frame.title = c.mFileName
             c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-            ####
-            c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+            c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
+                # Bug fix in 4.4b2.
             c.fileCommands.save(c.mFileName)
             c.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
@@ -6985,8 +6990,8 @@ def saveAs (self,event=None):
         c.mFileName = g.ensure_extension(fileName, ".leo")
         c.frame.title = c.mFileName
         c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-        #### 
-        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
+            # Bug fix in 4.4b2.
         # Calls c.setChanged(False) if no error.
         c.fileCommands.saveAs(c.mFileName)
         c.updateRecentFiles(c.mFileName)
