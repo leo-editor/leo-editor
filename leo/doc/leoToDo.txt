@@ -4,11 +4,7 @@
 #@+node:ekr.20080814103428.4:4.6 qt gui
 #@+node:ekr.20090518072506.8310:Before b2
 #@+node:ekr.20090525113804.5776:Bugs
-#@+node:ekr.20090528072540.5739:First
-#@+node:ekr.20090525144314.6525:Tab appears in headlines if I type the tab character
-#@-node:ekr.20090525144314.6525:Tab appears in headlines if I type the tab character
-#@+node:ekr.20090528072540.5737:Mark @<file> nodes dirty when @path nodes change
-#@-node:ekr.20090528072540.5737:Mark @<file> nodes dirty when @path nodes change
+#@+node:ekr.20090528072540.5739:First: before b2
 #@+node:ekr.20080922115725.1:Finish @shadow
 #@+node:ekr.20090528072540.10032:Most important
 @nocolor-node
@@ -217,21 +213,8 @@ self.check_the_final_output(
 #@-node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
 #@-node:ekr.20081001062423.1:Can @shadow mark externally changed nodes?
 #@-node:ekr.20080922115725.1:Finish @shadow
-#@-node:ekr.20090528072540.5739:First
-#@+node:ekr.20090528072540.5740:Next
-#@+node:ekr.20090528072540.9960:Improve config & plugins
-@nocolor-node
-
-- Don't repeat "can not load <plugin>" messages.
-
-- Unify print-plugins and print-plugins-info commands, and make them more informative.
-
-- Fix the plugin mess.
-
-    - Create a way to unload a plugin.  This should be relatively easy.
-#@-node:ekr.20090528072540.9960:Improve config & plugins
-#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
-#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+#@+node:ekr.20090528072540.5737:Mark @<file> nodes dirty when @path nodes change
+#@-node:ekr.20090528072540.5737:Mark @<file> nodes dirty when @path nodes change
 #@+node:ekr.20090324100430.1:Deleting @chapter node doesn't work
 @nocolor-node
 _unlink: can not happen: bad child index: 4, len(children): 2
@@ -343,6 +326,43 @@ def removeChapterByName (self,name):
     c.redraw()
 #@-node:ekr.20070606075434:cc.removeChapterByName
 #@-node:ekr.20090324100430.1:Deleting @chapter node doesn't work
+#@+node:ekr.20090525144314.6524:Make @url nodes work with qt gui
+#@-node:ekr.20090525144314.6524:Make @url nodes work with qt gui
+#@+node:ekr.20090525113804.5778:Fix lost anchor bug
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/363403
+
+qt gui, yesterdays leo, Ubuntu 8.10, python 2.5.2
+
+With a long body text you might place the cursor on a line, hold down Shift, and
+PgDn several pages to select a large block of text. The last PgDn may overshoot
+the range you want selected, so you should be able to use UpArrow to bring the
+bottom of the range back up to where you want it. However, on the first UpArrow
+the selection is lost and restarted from the current cursor position. I.e. you
+end up with just one line selected, instead of trimming one line of the
+selection of several pages, as intended.
+
+This may be hard to fix, without taking over the qt code's handling of page up/down.
+#@nonl
+#@-node:ekr.20090525113804.5778:Fix lost anchor bug
+#@+node:ekr.20090430092048.4:Fix all qt bugs
+#@-node:ekr.20090430092048.4:Fix all qt bugs
+#@-node:ekr.20090528072540.5739:First: before b2
+#@+node:ekr.20090528072540.5740:Other
+#@+node:ekr.20090528072540.9960:Improve config & plugins
+@nocolor-node
+
+- Don't repeat "can not load <plugin>" messages.
+
+- Unify print-plugins and print-plugins-info commands, and make them more informative.
+
+- Fix the plugin mess.
+
+    - Create a way to unload a plugin.  This should be relatively easy.
+#@-node:ekr.20090528072540.9960:Improve config & plugins
+#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
 #@+node:ekr.20090528072540.5738:Unify commands in File:Read/Write menu
 @nocolor-node
 
@@ -395,31 +415,7 @@ words, this is a general problem, and it would be good to have a robust, general
 solution.
 #@nonl
 #@-node:ekr.20090402072059.13:Create a general mechanism for aux (shadow, _db) files
-#@-node:ekr.20090528072540.5740:Next
-#@+node:ekr.20090525181522.5791:Minor
-#@+node:ekr.20090525144314.6524:Make @url nodes work with qt gui
-#@-node:ekr.20090525144314.6524:Make @url nodes work with qt gui
-#@+node:ekr.20090525113804.5778:Fix lost anchor bug
-@nocolor-node
-
-http://bugs.launchpad.net/leo-editor/+bug/363403
-
-qt gui, yesterdays leo, Ubuntu 8.10, python 2.5.2
-
-With a long body text you might place the cursor on a line, hold down Shift, and
-PgDn several pages to select a large block of text. The last PgDn may overshoot
-the range you want selected, so you should be able to use UpArrow to bring the
-bottom of the range back up to where you want it. However, on the first UpArrow
-the selection is lost and restarted from the current cursor position. I.e. you
-end up with just one line selected, instead of trimming one line of the
-selection of several pages, as intended.
-
-This may be hard to fix, without taking over the qt code's handling of page up/down.
-#@nonl
-#@-node:ekr.20090525113804.5778:Fix lost anchor bug
-#@+node:ekr.20090430092048.4:Fix all qt bugs
-#@-node:ekr.20090430092048.4:Fix all qt bugs
-#@-node:ekr.20090525181522.5791:Minor
+#@-node:ekr.20090528072540.5740:Other
 #@-node:ekr.20090525113804.5776:Bugs
 #@+node:ekr.20090522161156.5884:Minor, easy
 #@+node:ekr.20090523070447.6476:Make sure rst3 command applied to @auto-rst node works

@@ -4892,6 +4892,7 @@ class baseCommands (object):
         c = self ; u = c.undoer ; undoType = 'Mark Changed'
         current = c.p
 
+        c.endEditing()
         u.beforeChangeGroup(current,undoType)
         for p in c.all_positions_with_unique_vnodes_iter():
             if p.isDirty()and not p.isMarked():
@@ -4913,6 +4914,7 @@ class baseCommands (object):
         c = self ; u = c.undoer ; undoType = 'Mark Changed'
         current = c.p
 
+        c.endEditing()
         u.beforeChangeGroup(current,undoType)
         for p in c.all_positions_with_unique_vnodes_iter():
             if p.isDirty()and not p.isMarked():
@@ -4937,6 +4939,7 @@ class baseCommands (object):
 
         c = self ; p = c.rootPosition()
 
+        c.endEditing()
         while p:
             if p.isAtFileNode() and not p.isDirty():
                 p.setDirty()
@@ -4957,6 +4960,7 @@ class baseCommands (object):
         p = c.p
         if not p: return
 
+        c.endEditing()
         after = p.nodeAfterTree()
         while p and p != after:
             if p.isAtFileNode() and not p.isDirty():
@@ -4980,6 +4984,7 @@ class baseCommands (object):
             g.es('the current node is not a clone',color='blue')
             return
 
+        c.endEditing()
         u.beforeChangeGroup(current,undoType)
         dirtyVnodeList = []
         for p in c.all_positions_with_unique_vnodes_iter():
@@ -5003,6 +5008,7 @@ class baseCommands (object):
         c = self ; u = c.undoer ; p = c.p
         if not p: return
 
+        c.endEditing()
         undoType = g.choose(p.isMarked(),'Unmark','Mark')
         bunch = u.beforeMark(p,undoType)
         if p.isMarked():
@@ -5025,6 +5031,7 @@ class baseCommands (object):
         current = c.p
         if not current: return
 
+        c.endEditing()
         u.beforeChangeGroup(current,undoType)
         dirtyVnodeList = []
         for p in current.children_iter():
@@ -5049,6 +5056,7 @@ class baseCommands (object):
         current = c.p
         if not current: return
 
+        c.endEditing()
         u.beforeChangeGroup(current,undoType)
         changed = False
         for p in c.all_positions_with_unique_vnodes_iter():
