@@ -796,15 +796,17 @@ class baseFileCommands:
     #@+node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
     if g.unitTesting:
 
-        import os
+        import os,stat
         c,p = g.getTestVars()
         fc = c.fileCommands
 
         path = g.os_path_finalize_join(g.app.loadDir,'..','test','test-read-only.txt')
-        fc.warnOnReadOnlyFiles(path)
-
-        # This does pass when the file exists and is, in fact, read-only.
-        # assert fc.read_only
+        if os.path.exists(path):
+            os.chmod(path, stat.S_IREAD)
+            fc.warnOnReadOnlyFiles(path)
+            assert fc.read_only
+        else:
+            fc.warnOnReadOnlyFiles(path)
     #@-node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
     #@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
     #@-node:ekr.20031218072017.1553:getLeoFile & helpers
