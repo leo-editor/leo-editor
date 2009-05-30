@@ -2,356 +2,7 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090430102239.1:Before b2 8
-#@+node:ekr.20090223065019.11:Make Leo's page-up/page-down commands funtional
-# This will be needed for vim.
-
-# We need standard move-cursor-up/down-page commands so Leo
-# can track the anchor.
-
-if 0:
-    tree = c.frame.tree
-    hs,vs = tree.getScroll()
-    print hs,vs
-    tree.setVScroll(bs+10)
-
-if 1:
-    w = c.frame.body.bodyCtrl.widget
-    hScroll = w.horizontalScrollBar()
-    vScroll = w.verticalScrollBar()
-    hPos = hScroll.sliderPosition()
-    vPos = vScroll.sliderPosition()
-    print hPos,vPos
-    vScroll.setValue(vPos+10)
-#@nonl
-#@+node:ekr.20090430102239.3:Fix page up/down problem
-@
-
-At present, the qt gui sends PgUp and PgDn directly to the widget.
-
-That is, the plugin does not handle scrolling properly.
-
-This will become an issue for vim bindings.
-#@nonl
-#@+node:ekr.20090430102239.4:masterKeyHandler & helpers
-master_key_count = 0
-
-def masterKeyHandler (self,event,stroke=None):
-
-    '''This is the handler for almost all key bindings.'''
-
-    << define vars >>
-    trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
-    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-    verbose = True
-
-    if keysym in special_keys:
-        if trace and verbose: g.trace('keysym',keysym)
-        return None
-    if traceGC: g.printNewObjects('masterKey 1')
-    if trace:
-        g.trace('stroke:',repr(stroke),'keysym:',
-            repr(event.keysym),'ch:',repr(event.char),'state',state)
-        # g.trace('callers',g.callers(5))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
-
-    # if stroke == 'Return': g.pdb()
-
-    # Handle keyboard-quit first.
-    if k.abortAllModesKey and stroke == k.abortAllModesKey:
-        # g.trace('special case')
-        if c.macroCommands.recordingMacro:
-            c.macroCommands.endKbdMacro()
-            return 'break'
-        else:
-            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
-
-    if k.inState():
-        # This will return unless k.autoCompleterStateHandler
-        # (called from k.callStateFunction) returns 'do-standard-keys'
-        << handle mode bindings >>
-
-    if traceGC: g.printNewObjects('masterKey 2')
-
-    if stroke and isPlain:
-        << handle special cases for plain keys >>
-
-    << handle per-pane bindings >>
-
-    if traceGC: g.printNewObjects('masterKey 5')
-
-    return k.handleUnboundKeys(event,char,keysym,stroke)
-#@+node:ekr.20090430102239.5:<< define vars >>
-k = self ; c = k.c ; gui = g.app.gui
-
-if event:
-    # This is a leoGui base class event.
-    event = gui.leoKeyEvent(event,c,stroke=stroke)
-
-w = event.widget
-char = event.char
-keysym = event.keysym
-if stroke and not keysym:
-    event.keysym = keysym = stroke
-
-w_name = c.widget_name(w)
-state = k.state.kind
-
-special_keys = (
-    'Alt_L','Alt_R',
-    'Caps_Lock','Control_L','Control_R',
-    'Meta_L','Meta_R', # Meta support.
-    'Num_Lock',
-    'Shift_L','Shift_R',
-    'Win_L','Win_R',
-)
-
-self.master_key_count += 1
-
-isPlain =  k.isPlainKey(stroke)
-#@nonl
-#@-node:ekr.20090430102239.5:<< define vars >>
-#@+node:ekr.20090430102239.6:<< handle mode bindings >>
-# First, honor minibuffer bindings for all except user modes.
-
-if state in ('getArg','getFileName','full-command','auto-complete'):
-    if k.handleMiniBindings(event,state,stroke):
-        return 'break'
-
-# Second, honor general modes.
-if state == 'getArg':
-    return k.getArg(event,stroke=stroke)
-elif state == 'getFileName':
-    return k.getFileName(event)
-elif state in ('full-command','auto-complete'):
-    # Do the default state action.
-    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
-    val = k.callStateFunction(event) # Calls end-command.
-    if val != 'do-standard-keys': return 'break'
-
-# Third, pass keys to user modes.
-else:
-    d =  k.masterBindingsDict.get(state)
-    if d:
-        b = d.get(stroke)
-        if b:
-            if trace: g.trace('calling generalModeHandler',stroke)
-            k.generalModeHandler (event,
-                commandName=b.commandName,func=b.func,
-                modeName=state,nextMode=b.nextMode)
-            return 'break'
-        else:
-            # New in Leo 4.5: unbound keys end mode.
-            if trace: g.trace('unbound key ends mode',stroke,state)
-            k.endMode(event)
-    else:
-        # New in 4.4b4.
-        handler = k.getStateHandler()
-        if handler:
-            handler(event)
-        else:
-            g.trace('No state handler for %s' % state)
-        return 'break'
-#@-node:ekr.20090430102239.6:<< handle mode bindings >>
-#@+node:ekr.20090430102239.7:<< handle special cases for plain keys >>
-# g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
-
-# Important: only keys bound somewhere have a stroke.
-# All unbound plain keys will be handled by handleUnboundKeys.
-
-if k.unboundKeyAction in ('insert','overwrite'):
-
-    for key in (k.unboundKeyAction,'body','log','text','all'):
-        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
-        d = k.masterBindingsDict.get(key,{})
-        if d:
-            b = d.get(stroke)
-            if b and b.commandName == 'auto-complete':
-                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
-                k.masterCommand(event,b.func,b.stroke,b.commandName)
-                return 'break'
-
-    if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
-    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-    return 'break'
-
-# Bound   plain keys in command mode are by the per-pane logic.
-# Unbound plain keys in command mode are ignored by handleUnboundKeys.
-
-# This code ignores all command-state keys if we are not in a text widget.
-elif k.unboundKeyAction == 'command':
-    if not g.app.gui.isTextWidget(w):
-        c.onCanvasKey(event)
-        return 'break'
-#@nonl
-#@-node:ekr.20090430102239.7:<< handle special cases for plain keys >>
-#@+node:ekr.20090430102239.8:<< handle per-pane bindings >>
-keyStatesTuple = ('command','insert','overwrite')
-
-# g.trace('w_name',w_name,'stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
-
-for key,name in (
-    # Order here is similar to bindtags order.
-    ('command',None),
-    ('insert',None),
-    ('overwrite',None),
-    ('button',None),
-    ('body','body'),
-    ('text','head'), # Important: text bindings in head before tree bindings.
-    ('tree','head'),
-    ('tree','canvas'),
-    ('log', 'log'),
-    ('text','log'),
-    ('text',None),
-    ('all',None),
-):
-    if (
-        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
-        name and w_name.startswith(name) or
-        key in ('text','all') and g.app.gui.isTextWidget(w) or
-        key in ('button','all')
-    ):
-        d = k.masterBindingsDict.get(key,{})
-        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-        # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
-        if d:
-            b = d.get(stroke)
-            if b:
-                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                if traceGC: g.printNewObjects('masterKey 3')
-                return k.masterCommand(event,b.func,b.stroke,b.commandName)
-#@-node:ekr.20090430102239.8:<< handle per-pane bindings >>
-#@+node:ekr.20090430102239.9:callStateFunction
-def callStateFunction (self,event):
-
-    k = self ; val = None ; ch = g.app.gui.eventChar(event)
-
-    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
-
-    if k.state.kind:
-        if (
-            k.ignore_unbound_non_ascii_keys and
-            ch and ch not in ('\b','\n','\r','\t') and
-            (ord(ch) < 32 or ord(ch) > 128)
-        ):
-            # g.trace('non-ascii',ord(ch))
-            pass
-        elif k.state.handler:
-            val = k.state.handler(event)
-            if val != 'continue':
-                k.endCommand(event,k.commandName)
-        else:
-            g.es_print('no state function for',k.state.kind,color='red')
-
-    return val
-#@-node:ekr.20090430102239.9:callStateFunction
-#@+node:ekr.20090430102239.10:handleMiniBindings
-def handleMiniBindings (self,event,state,stroke):
-
-    k = self ; c = k.c
-    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
-
-    # Special case for bindings handled in k.getArg:
-    if state in ('getArg','full-command'):
-        if stroke in ('BackSpace','Return','Tab','Escape'):
-            return False
-
-    if not state.startswith('auto-'):
-        # New in Leo 4.5: ignore plain key binding in the minibuffer.
-        if not stroke or k.isPlainKey(stroke):
-            if trace: g.trace('plain key',stroke)
-            return False
-        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
-        # for all single-line editing commands.
-        for pane in ('mini','all','text'):
-            d = k.masterBindingsDict.get(pane)
-            if d:
-                b = d.get(stroke)
-                if b:
-                    if b.commandName == 'replace-string' and state == 'getArg':
-                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
-                        return False # Let getArg handle it.
-                    elif b.commandName not in k.singleLineCommandList:
-                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True)
-                    else:
-                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
-                        c.minibufferWantsFocusNow() # New in Leo 4.5.
-                    # Pass this on for macro recording.
-                    k.masterCommand(event,b.func,stroke,b.commandName)
-                    # Careful: the command could exit.
-                    if c.exists and not k.silentMode:
-                        c.minibufferWantsFocus()
-                    return True
-
-    return False
-#@-node:ekr.20090430102239.10:handleMiniBindings
-#@+node:ekr.20090430102239.11:k.handleUnboudKeys
-def handleUnboundKeys (self,event,char,keysym,stroke):
-
-    k = self ; c = k.c ; trace = False
-    modesTuple = ('insert','overwrite')
-
-    if trace:
-        # if stroke: g.trace('***unexpected stroke***')
-        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
-
-    if k.unboundKeyAction == 'command':
-        # Ignore all unbound characters in command mode.
-        w = g.app.gui.get_focus(c)
-        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
-            c.onCanvasKey(event)
-        return 'break'
-
-    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
-        # insert/overwrite normal character.  <Return> is *not* a normal character.
-        if trace: g.trace('plain key in insert mode',repr(stroke))
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-
-    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
-        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
-        if trace: g.trace('ignoring unbound non-ascii key')
-        return 'break'
-
-    elif keysym.find('Escape') != -1:
-        # Never insert escape characters.
-        return 'break'
-
-    else:
-        if trace: g.trace(repr(stroke),'no func')
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-#@-node:ekr.20090430102239.11:k.handleUnboudKeys
-#@-node:ekr.20090430102239.4:masterKeyHandler & helpers
-#@+node:ekr.20090430102239.12:scrollOutlineUp/Down/Line/Page
-def scrollOutlineDownLine (self,event=None):
-    '''Scroll the outline pane down one line.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if b < 1.0:
-        self.c.frame.tree.canvas.yview_scroll(1,"unit")
-
-def scrollOutlineDownPage (self,event=None):
-    '''Scroll the outline pane down one page.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if b < 1.0:
-        self.c.frame.tree.canvas.yview_scroll(1,"page")
-
-def scrollOutlineUpLine (self,event=None):
-    '''Scroll the outline pane up one line.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if a > 0.0:
-        self.c.frame.tree.canvas.yview_scroll(-1,"unit")
-
-def scrollOutlineUpPage (self,event=None):
-    '''Scroll the outline pane up one page.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if a > 0.0:
-        self.c.frame.tree.canvas.yview_scroll(-1,"page")
-#@-node:ekr.20090430102239.12:scrollOutlineUp/Down/Line/Page
-#@-node:ekr.20090430102239.3:Fix page up/down problem
-#@-node:ekr.20090223065019.11:Make Leo's page-up/page-down commands funtional
+#@+node:ekr.20090430102239.1:Before b2 6
 #@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
 http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
 #@nonl
@@ -2808,8 +2459,10 @@ def showProgressBar (self,count,size,total):
 #@-node:ekr.20081121105001.296:Gui-dependent commands
 #@+node:ekr.20081121105001.317:Qt bindings... (qtFrame)
 def bringToFront (self):
+    # g.trace()
     self.top.showNormal()
 def deiconify (self):
+    # g.trace()
     self.top.showNormal()
 def getFocus(self):
     return g.app.gui.get_focus() 
@@ -2818,20 +2471,22 @@ def get_window_info(self):
     topLeft = rect.topLeft()
     x,y = topLeft.x(),topLeft.y()
     w,h = rect.width(),rect.height()
+    # g.trace(w,h,x,y)
     return w,h,x,y
 def iconify(self):
-    g.trace()
+    # g.trace()
     self.top.showMinimized()
 def lift (self):
+    # g.trace()
     self.top.activateWindow()
 def update (self):
     pass
 def getTitle (self):
     return g.app.gui.toUnicode(self.top.windowTitle())
-
 def setTitle (self,s):
     self.top.setWindowTitle(s)
 def setTopGeometry(self,w,h,x,y,adjustSize=True):
+    # g.trace(x,y,w,y,g.callers(5))
     self.top.setGeometry(QtCore.QRect(x,y,w,h))
 #@-node:ekr.20081121105001.317:Qt bindings... (qtFrame)
 #@-node:ekr.20081121105001.249:class leoQtFrame
@@ -3852,8 +3507,6 @@ def toggleOption (self,ivar):
 #@-node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
 #@-node:ekr.20081121105001.235:class leoQtFindTab (findTab)
 #@-node:ekr.20090409055330.10:Make sure change-all honors node-only and suboutline-only settings
-#@+node:ekr.20090318091009.12:Script errors mess up syntax coloring
-#@-node:ekr.20090318091009.12:Script errors mess up syntax coloring
 #@+node:ekr.20090530055308.3791:How to remember pane split ratio?
 @nocolor-node
 
@@ -3870,7 +3523,7 @@ in myLeoSettings.leo.  However, whenever I start Leo, it is split 50/50.
 What's the settings (for Qt) to fix this?  Can we? 
 #@nonl
 #@-node:ekr.20090530055308.3791:How to remember pane split ratio?
-#@-node:ekr.20090430102239.1:Before b2 8
+#@-node:ekr.20090430102239.1:Before b2 6
 #@+node:ekr.20090430102239.13:Before 4.6 final
 #@+node:ekr.20090429101847.10:Support canvas widgets in all panes
 http://groups.google.com/group/leo-editor/browse_thread/thread/9ac06147e75fc042
@@ -7811,6 +7464,54 @@ def setSelectionRangeHelper(self,i,j,insert):
 #@nonl
 #@-node:ekr.20081121105001.558:setSelectionRangeHelper (leoQLineEdit)
 #@-node:ekr.20090430102239.2:Shift-arrow keys now work in headlines
+#@+node:ekr.20090530055308.3790:Unexpected leo window resize after maximizing it
+@nocolor-node
+
+Thread: Unexpected leo window resize after maximizing it
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c16e1e516c181be1
+
+> I don't see any window resizing code in the qt gui at all, and no gui code
+> gets executed on window activate events, so I suspect this is a qt issue,
+> not a Leo issue.
+
+I see many setGeometry calls in the qt code.
+
+EKR: I no longer see this bug.
+#@nonl
+#@+node:ekr.20081121105001.317:Qt bindings... (qtFrame)
+def bringToFront (self):
+    # g.trace()
+    self.top.showNormal()
+def deiconify (self):
+    # g.trace()
+    self.top.showNormal()
+def getFocus(self):
+    return g.app.gui.get_focus() 
+def get_window_info(self):
+    rect = self.top.geometry()
+    topLeft = rect.topLeft()
+    x,y = topLeft.x(),topLeft.y()
+    w,h = rect.width(),rect.height()
+    # g.trace(w,h,x,y)
+    return w,h,x,y
+def iconify(self):
+    # g.trace()
+    self.top.showMinimized()
+def lift (self):
+    # g.trace()
+    self.top.activateWindow()
+def update (self):
+    pass
+def getTitle (self):
+    return g.app.gui.toUnicode(self.top.windowTitle())
+def setTitle (self,s):
+    self.top.setWindowTitle(s)
+def setTopGeometry(self,w,h,x,y,adjustSize=True):
+    # g.trace(x,y,w,y,g.callers(5))
+    self.top.setGeometry(QtCore.QRect(x,y,w,h))
+#@-node:ekr.20081121105001.317:Qt bindings... (qtFrame)
+#@-node:ekr.20090530055308.3790:Unexpected leo window resize after maximizing it
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@-node:ekr.20081208155215.12:Unused

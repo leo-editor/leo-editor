@@ -2637,7 +2637,7 @@ class keyHandlerClass:
                 if k.mb_helpHandler: k.mb_helpHandler(commandName)
             else:
                 k.callAltXFunction(k.mb_event)
-        elif keysym == 'Tab':
+        elif keysym in ('Tab','\t'):
             if trace and verbose: g.trace('***Tab')
             k.doTabCompletion(c.commandsDict.keys())
             c.minibufferWantsFocus()
@@ -3130,7 +3130,7 @@ class keyHandlerClass:
             c.frame.log.deleteTab('Completion')
             trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
             if handler: handler(event)
-        elif keysym == 'Tab':
+        elif keysym in('Tab','\t'):
             k.doTabCompletion(k.argTabList,k.arg_completion)
         elif keysym == 'BackSpace':
             k.doBackSpace(k.argTabList,k.arg_completion)
@@ -3484,7 +3484,7 @@ class keyHandlerClass:
 
         # Special case for bindings handled in k.getArg:
         if state in ('getArg','full-command'):
-            if stroke in ('BackSpace','Return','Tab','Escape'):
+            if stroke in ('BackSpace','Return','Tab','\t','Escape'):
                 return False
 
         if not state.startswith('auto-'):
@@ -4190,7 +4190,7 @@ class keyHandlerClass:
             handler = k.getFileNameHandler
             c.frame.log.deleteTab(tabName)
             if handler: handler(event)
-        elif keysym == 'Tab':
+        elif keysym in ('Tab','\t'):
             k.doFileNameTab()
             c.minibufferWantsFocus()
         elif keysym == 'BackSpace':
@@ -4409,7 +4409,7 @@ class keyHandlerClass:
                 len(shortcut) == 1 or
                 len(k.guiBindNamesInverseDict.get(shortcut,'')) == 1 or
                 # A hack: allow Return to be bound to command.
-                shortcut == 'Tab'
+                shortcut in ('Tab','\t')
             )
 
             # g.trace(isPlain,repr(shortcut))

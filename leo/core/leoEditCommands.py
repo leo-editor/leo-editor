@@ -1425,6 +1425,8 @@ class editCommandsClass (baseEditCommandsClass):
             'back-to-home':                         self.backToHome,
             'back-char':                            self.backCharacter,
             'back-char-extend-selection':           self.backCharacterExtendSelection,
+            'back-page':                            self.backPage,
+            'back-page-extend-selection':           self.backPageExtendSelection,
             'back-paragraph':                       self.backwardParagraph,
             'back-paragraph-extend-selection':      self.backwardParagraphExtendSelection,
             'back-sentence':                        self.backSentence,
@@ -1499,6 +1501,8 @@ class editCommandsClass (baseEditCommandsClass):
             'focus-to-tree':                        self.focusToTree,
             'forward-char':                         self.forwardCharacter,
             'forward-char-extend-selection':        self.forwardCharacterExtendSelection,
+            'forward-page':                         self.forwardPage,
+            'forward-page-extend-selection':        self.forwardPageExtendSelection,
             'forward-paragraph':                    self.forwardParagraph,
             'forward-paragraph-extend-selection':   self.forwardParagraphExtendSelection,
             'forward-sentence':                     self.forwardSentence,
@@ -3491,6 +3495,15 @@ class editCommandsClass (baseEditCommandsClass):
         self.extendHelper(w,extend,spot,upOrDown=False)
     #@nonl
     #@-node:ekr.20051218122116:moveToHelper
+    #@+node:ekr.20090530181848.6035:movePageHelper
+    def movePageHelper(event,kind,extend):
+
+        # kind in ('back','forward')
+        # extend in (True,False)
+
+        g.trace('not ready yet')
+    #@nonl
+    #@-node:ekr.20090530181848.6035:movePageHelper
     #@+node:ekr.20051218171457:movePastCloseHelper
     def movePastCloseHelper (self,event,extend):
 
@@ -3946,6 +3959,25 @@ class editCommandsClass (baseEditCommandsClass):
         '''Extend the selection by moving the cursor past the closing parenthesis.'''
         self.movePastCloseHelper(event,extend=True)
     #@-node:ekr.20050920084036.140:movePastClose
+    #@+node:ekr.20090530181848.6034:pages (New in Leo 4.6)
+    def backPage (self,event):
+        '''Move the cursor back one page,
+        extending the selection if in extend mode.'''
+        self.movePageHelper(event,kind='back',extend=False)
+
+    def backPageExtendSelection (self,event):
+        '''Extend the selection by moving the cursor back one page.'''
+        self.movePageHelper(event,kind='back',extend=True)
+
+    def forwardPage (self,event):
+        '''Move the cursor forward one page,
+        extending the selection if in extend mode.'''
+        self.movePageHelper(event,kind='forward',extend=False)
+
+    def forwardPageExtendSelection (self,event):
+        '''Extend the selection by moving the cursor forward one page.'''
+        self.movePageHelper(event,kind='forward',extend=True)
+    #@-node:ekr.20090530181848.6034:pages (New in Leo 4.6)
     #@+node:ekr.20050920084036.102:paragraphs
     def backwardParagraph (self,event):
         '''Move the cursor to the previous paragraph.'''
@@ -4338,22 +4370,6 @@ class editCommandsClass (baseEditCommandsClass):
     #@-others
     #@-node:ekr.20050920084036.105:region...
     #@+node:ekr.20060309060654:scrolling...
-    #@+node:ekr.20050920084036.116:scrollUp/Down/extendSelection
-    def scrollDown (self,event):
-        '''Scroll the presently selected pane down one page.'''
-        self.scrollHelper(event,'down',extend=False)
-
-    def scrollDownExtendSelection (self,event):
-        '''Extend the text selection by scrolling the body text down one page.'''
-        self.scrollHelper(event,'down',extend=True)
-
-    def scrollUp (self,event):
-        '''Scroll the presently selected pane up one page.'''
-        self.scrollHelper(event,'up',extend=False)
-
-    def scrollUpExtendSelection (self,event):
-        '''Extend the text selection by scrolling the body text up one page.'''
-        self.scrollHelper(event,'up',extend=True)
     #@+node:ekr.20060113082917:scrollHelper
     def scrollHelper (self,event,direction,extend):
 
@@ -4381,6 +4397,22 @@ class editCommandsClass (baseEditCommandsClass):
             else:
                 self.scrollOutlineUpPage()
     #@-node:ekr.20060113082917:scrollHelper
+    #@+node:ekr.20050920084036.116:scrollUp/Down/extendSelection
+    def scrollDown (self,event):
+        '''Scroll the presently selected pane down one page.'''
+        self.scrollHelper(event,'down',extend=False)
+
+    def scrollDownExtendSelection (self,event):
+        '''Extend the text selection by scrolling the body text down one page.'''
+        self.scrollHelper(event,'down',extend=True)
+
+    def scrollUp (self,event):
+        '''Scroll the presently selected pane up one page.'''
+        self.scrollHelper(event,'up',extend=False)
+
+    def scrollUpExtendSelection (self,event):
+        '''Extend the text selection by scrolling the body text up one page.'''
+        self.scrollHelper(event,'up',extend=True)
     #@+node:ekr.20050920084036.147:measure
     def measure (self,w):
 

@@ -2952,8 +2952,10 @@ class leoQtFrame (leoFrame.leoFrame):
     #@-node:ekr.20081121105001.296:Gui-dependent commands
     #@+node:ekr.20081121105001.317:Qt bindings... (qtFrame)
     def bringToFront (self):
+        # g.trace()
         self.top.showNormal()
     def deiconify (self):
+        # g.trace()
         self.top.showNormal()
     def getFocus(self):
         return g.app.gui.get_focus() 
@@ -2962,20 +2964,22 @@ class leoQtFrame (leoFrame.leoFrame):
         topLeft = rect.topLeft()
         x,y = topLeft.x(),topLeft.y()
         w,h = rect.width(),rect.height()
+        # g.trace(w,h,x,y)
         return w,h,x,y
     def iconify(self):
-        g.trace()
+        # g.trace()
         self.top.showMinimized()
     def lift (self):
+        # g.trace()
         self.top.activateWindow()
     def update (self):
         pass
     def getTitle (self):
         return g.app.gui.toUnicode(self.top.windowTitle())
-
     def setTitle (self,s):
         self.top.setWindowTitle(s)
     def setTopGeometry(self,w,h,x,y,adjustSize=True):
+        # g.trace(x,y,w,y,g.callers(5))
         self.top.setGeometry(QtCore.QRect(x,y,w,h))
     #@-node:ekr.20081121105001.317:Qt bindings... (qtFrame)
     #@-others

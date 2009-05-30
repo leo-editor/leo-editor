@@ -3223,7 +3223,7 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
             if k.mb_helpHandler: k.mb_helpHandler(commandName)
         else:
             k.callAltXFunction(k.mb_event)
-    elif keysym == 'Tab':
+    elif keysym in ('Tab','\t'):
         if trace and verbose: g.trace('***Tab')
         k.doTabCompletion(c.commandsDict.keys())
         c.minibufferWantsFocus()
@@ -3702,7 +3702,7 @@ def getArg (self,event,
         c.frame.log.deleteTab('Completion')
         trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
         if handler: handler(event)
-    elif keysym == 'Tab':
+    elif keysym in('Tab','\t'):
         k.doTabCompletion(k.argTabList,k.arg_completion)
     elif keysym == 'BackSpace':
         k.doBackSpace(k.argTabList,k.arg_completion)
@@ -4065,7 +4065,7 @@ def handleMiniBindings (self,event,state,stroke):
 
     # Special case for bindings handled in k.getArg:
     if state in ('getArg','full-command'):
-        if stroke in ('BackSpace','Return','Tab','Escape'):
+        if stroke in ('BackSpace','Return','Tab','\t','Escape'):
             return False
 
     if not state.startswith('auto-'):
@@ -4758,7 +4758,7 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
         handler = k.getFileNameHandler
         c.frame.log.deleteTab(tabName)
         if handler: handler(event)
-    elif keysym == 'Tab':
+    elif keysym in ('Tab','\t'):
         k.doFileNameTab()
         c.minibufferWantsFocus()
     elif keysym == 'BackSpace':
@@ -4989,7 +4989,7 @@ def isPlainKey (self,shortcut):
             len(shortcut) == 1 or
             len(k.guiBindNamesInverseDict.get(shortcut,'')) == 1 or
             # A hack: allow Return to be bound to command.
-            shortcut == 'Tab'
+            shortcut in ('Tab','\t')
         )
 
         # g.trace(isPlain,repr(shortcut))
@@ -5662,7 +5662,7 @@ def handleMiniBindings (self,event,state,stroke):
 
     # Special case for bindings handled in k.getArg:
     if state in ('getArg','full-command'):
-        if stroke in ('BackSpace','Return','Tab','Escape'):
+        if stroke in ('BackSpace','Return','Tab','\t','Escape'):
             return False
 
     if not state.startswith('auto-'):
@@ -5801,7 +5801,7 @@ def isPlainKey (self,shortcut):
             len(shortcut) == 1 or
             len(k.guiBindNamesInverseDict.get(shortcut,'')) == 1 or
             # A hack: allow Return to be bound to command.
-            shortcut == 'Tab'
+            shortcut in ('Tab','\t')
         )
 
         # g.trace(isPlain,repr(shortcut))
@@ -14502,7 +14502,7 @@ def handleMiniBindings (self,event,state,stroke):
 
     # Special case for bindings handled in k.getArg:
     if state in ('getArg','full-command'):
-        if stroke in ('BackSpace','Return','Tab','Escape'):
+        if stroke in ('BackSpace','Return','Tab','\t','Escape'):
             return False
 
     if not state.startswith('auto-'):
@@ -14687,6 +14687,15 @@ def moveToHelper (self,event,spot,extend):
     self.extendHelper(w,extend,spot,upOrDown=False)
 #@nonl
 #@-node:ekr.20051218122116:moveToHelper
+#@+node:ekr.20090530181848.6035:movePageHelper
+def movePageHelper(event,kind,extend):
+
+    # kind in ('back','forward')
+    # extend in (True,False)
+
+    g.trace('not ready yet')
+#@nonl
+#@-node:ekr.20090530181848.6035:movePageHelper
 #@+node:ekr.20051218171457:movePastCloseHelper
 def movePastCloseHelper (self,event,extend):
 
@@ -15142,6 +15151,25 @@ def movePastCloseExtendSelection (self,event):
     '''Extend the selection by moving the cursor past the closing parenthesis.'''
     self.movePastCloseHelper(event,extend=True)
 #@-node:ekr.20050920084036.140:movePastClose
+#@+node:ekr.20090530181848.6034:pages (New in Leo 4.6)
+def backPage (self,event):
+    '''Move the cursor back one page,
+    extending the selection if in extend mode.'''
+    self.movePageHelper(event,kind='back',extend=False)
+
+def backPageExtendSelection (self,event):
+    '''Extend the selection by moving the cursor back one page.'''
+    self.movePageHelper(event,kind='back',extend=True)
+
+def forwardPage (self,event):
+    '''Move the cursor forward one page,
+    extending the selection if in extend mode.'''
+    self.movePageHelper(event,kind='forward',extend=False)
+
+def forwardPageExtendSelection (self,event):
+    '''Extend the selection by moving the cursor forward one page.'''
+    self.movePageHelper(event,kind='forward',extend=True)
+#@-node:ekr.20090530181848.6034:pages (New in Leo 4.6)
 #@+node:ekr.20050920084036.102:paragraphs
 def backwardParagraph (self,event):
     '''Move the cursor to the previous paragraph.'''
