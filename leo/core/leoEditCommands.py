@@ -3388,11 +3388,15 @@ class editCommandsClass (baseEditCommandsClass):
         extend: Clear the selection unless this is True.
         spot:   The *new* insert point.
         '''
+
+        trace = False and not g.unitTesting
         c = self.c ; p = c.p
         extend = extend or self.extendMode
         ins = w.getInsertPoint()
         i,j = w.getSelectionRange()
-        # g.trace('extend',extend,'ins',ins,'sel=',i,j,'spot=',spot,'moveSpot',self.moveSpot)
+        if trace: g.trace(
+            'extend',extend,'ins',ins,'sel=',i,j,
+            'spot=',spot,'moveSpot',self.moveSpot)
 
         # Reset the move spot if needed.
         if self.moveSpot is None or p.v.t != self.moveSpotNode:
@@ -3428,7 +3432,6 @@ class editCommandsClass (baseEditCommandsClass):
 
         w.seeInsertPoint()
         c.frame.updateStatusLine()
-    #@nonl
     #@-node:ekr.20060113130510:extendHelper
     #@+node:ekr.20060113105246.1:moveUpOrDownHelper
     def moveUpOrDownHelper (self,event,direction,extend):
@@ -3671,6 +3674,9 @@ class editCommandsClass (baseEditCommandsClass):
         self.moveSpot = i
         self.moveCol = col
         self.moveSpotNode = p.v.t
+
+        # g.trace('moveSpot',i)
+    #@nonl
     #@-node:ekr.20060209095101:setMoveCol
     #@-node:ekr.20051218170358: helpers
     #@+node:ekr.20081123102100.1:backToHome
