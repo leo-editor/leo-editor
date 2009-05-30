@@ -358,7 +358,7 @@
 </v>
 <v t="ekr.20090521070342.1907"><vh>@button show-rst</vh></v>
 <v t="ekr.20090527122538.1897" a="E"><vh>@path unittest</vh>
-<v t="ekr.20090526124114.1898"><vh>@shadow mismatched-extension-bug.py</vh></v>
+<v t="ekr.20090526124114.1898" a="E"><vh>@shadow mismatched-extension-bug.py</vh></v>
 </v>
 </vnodes>
 <tnodes>

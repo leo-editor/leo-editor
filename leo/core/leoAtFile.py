@@ -405,18 +405,22 @@ class atFile:
         if at.errors == 0:
             g.es_print('check-derived-file passed',color='blue')
     #@-node:ekr.20070919133659:checkDerivedFile (atFile)
-    #@+node:ekr.20041005105605.19:openFileForReading (atFile)
+    #@+node:ekr.20041005105605.19:openFileForReading (atFile) helper & test
     def openFileForReading(self,fn,fromString=False):
 
+        trace = False and not g.app.unitTesting
+        verbose = False
         at = self ; c = at.c
-        trace = False and not g.app.unitTesting ; verbose = False
 
         if fromString:
             if at.atShadow:
                 return at.error('can not call at.read from string for @shadow files')
             at.inputFile = g.fileLikeObject(fromString=fromString)
         else:
-            fn = c.os_path_finalize_join(at.default_directory,fn)
+            ### fn = c.os_path_finalize_join(at.default_directory,fn)
+            fn = at.fullPath(self.root) # Returns full path, including file name.
+            at.setPathUa(self.root,fn) # Remember the full path to this node.
+            if trace: g.trace(fn)
 
             if at.atShadow:
                 x = at.c.shadowController
@@ -442,7 +446,7 @@ class atFile:
                 fn = None
 
         return fn
-    #@-node:ekr.20041005105605.19:openFileForReading (atFile)
+    #@-node:ekr.20041005105605.19:openFileForReading (atFile) helper & test
     #@+node:ekr.20041005105605.21:read (atFile)
     def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
 
@@ -2362,7 +2366,9 @@ class atFile:
 
         """Write @file nodes in all or part of the outline"""
 
+        trace = False and not g.unitTesting
         at = self ; c = at.c
+        if trace: scanAtPathDirectivesCount = c.scanAtPathDirectivesCount
         writtenFiles = [] # Files that might be written again.
         mustAutoSave = False ; atOk = True
 
@@ -2395,7 +2401,19 @@ class atFile:
             if p.isAnyAtFileNode() or p.isAtIgnoreNode():
                 #@            << handle v's tree >>
                 #@+node:ekr.20041005105605.149:<< handle v's tree >>
-                if p.v.isDirty() or writeAtFileNodesFlag or p.v.t in writtenFiles:
+                if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
+                    pathChanged = False
+                else:
+                    oldPath = at.getPathUa(p)
+                    newPath = at.fullPath(p)
+                    # if trace: g.trace('p %s\noldPath %s\nnewPath %s' % (
+                        # p.h,repr(oldPath),repr(newPath)))
+                    pathChanged = oldPath and oldPath != newPath
+                    if pathChanged:
+                        at.setPathUa(p,newPath) # Remember that we have changed paths.
+                        g.es_print('path changed for',p.h,color='blue')
+
+                if p.v.isDirty() or pathChanged or writeAtFileNodesFlag or p.v.t in writtenFiles:
 
                     at.fileChangedFlag = False
                     autoSave = False
@@ -2419,7 +2437,7 @@ class atFile:
                         at.write(p,nosentinels=True,toString=toString)
                         writtenFiles.append(p.v.t) # No need for autosave
                     elif p.isAtShadowFileNode():
-                        at.writeOneAtShadowNode(p,toString=toString,force=False)
+                        at.writeOneAtShadowNode(p,toString=toString,force=False or pathChanged)
                         writtenFiles.append(p.v.t) ; autoSave = True # 2008/7/29
                     elif p.isAtThinFileNode():
                         at.write(p,thinFile=True,toString=toString)
@@ -2439,6 +2457,7 @@ class atFile:
                 p.moveToThreadNext()
 
         #@    << say the command is finished >>
+        #@+middle:ekr.20041005105605.149:<< handle v's tree >>
         #@+node:ekr.20041005105605.150:<< say the command is finished >>
         if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
             if len(writtenFiles) > 0:
@@ -2448,7 +2467,10 @@ class atFile:
             else:
                 g.es("no dirty @file nodes")
         #@-node:ekr.20041005105605.150:<< say the command is finished >>
+        #@-middle:ekr.20041005105605.149:<< handle v's tree >>
         #@nl
+        if trace: g.trace('%s calls to c.scanAtPathDirectives()' % (
+            c.scanAtPathDirectivesCount-scanAtPathDirectivesCount))
         return mustAutoSave,atOk
     #@-node:ekr.20041005105605.147:writeAll (atFile)
     #@+node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtAutoNodes (atFile) & helpers
@@ -2714,6 +2736,7 @@ class atFile:
 
         File indices *must* have already been assigned.'''
 
+        trace = False and not g.unitTesting
         at = self ; c = at.c ; root = p.copy() ; x = c.shadowController
 
         fn = p.atShadowFileNodeName()
@@ -2724,11 +2747,15 @@ class atFile:
         # A hack to support unknown extensions.
         self.adjustTargetLanguage(fn) # May set c.target_language.
 
-        at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        fn = c.os_path_finalize_join(at.default_directory,fn)
+        ### at.scanDefaultDirectory(p,importing=True) # Set default_directory
+        # fn = c.os_path_finalize_join(at.default_directory,fn)
+        fn = at.fullPath(p)
+        at.default_directory = g.os_path_dirname(fn)
         exists = g.os_path_exists(fn)
+        if trace: g.trace('exists %s fn %s' % (exists,fn))
 
         if not toString and not self.shouldWriteAtShadowNode(p,exists,force,fn):
+            if trace: g.trace('ignoring',fn)
             return False
 
         c.endEditing() # Capture the current headline.
@@ -4326,7 +4353,7 @@ class atFile:
                 if len(line)> 0:
                     self.putSentinel("@comment " + line)
     #@-node:ekr.20041005105605.211:putInitialComment
-    #@+node:ekr.20080712150045.1:replaceFileWithString
+    #@+node:ekr.20080712150045.1:replaceFileWithString (atFile)
     def replaceFileWithString (self,fn,s):
 
         '''Replace the file with s if s is different from theFile's contents.
@@ -4354,6 +4381,13 @@ class atFile:
                 if not testing: g.es('unchanged:',fn)
                 return False
 
+        # Issue warning if directory does not exist.
+        theDir = g.os_path_dirname(fn)
+        if theDir and not g.os_path_exists(theDir):
+            if not g.unitTesting:
+                g.es('not written: %s directory not found' % fn,color='red')
+            return False
+
         # Replace
         try:
             f = open(fn,'wb')
@@ -4370,7 +4404,17 @@ class atFile:
             at.error('unexpected exception writing file: %s' % (fn))
             g.es_exception()
             return False
-    #@-node:ekr.20080712150045.1:replaceFileWithString
+    #@+node:ekr.20090530055015.6873:@test at.replaceFileWithString
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+        at = c.atFileCommands
+
+        fn = 'does/not/exist'
+        assert not g.os_path_exists(fn)
+        assert not at.replaceFileWithString (fn,'abc')
+    #@-node:ekr.20090530055015.6873:@test at.replaceFileWithString
+    #@-node:ekr.20080712150045.1:replaceFileWithString (atFile)
     #@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent
     def replaceTargetFileIfDifferent (self,root):
 
@@ -4525,17 +4569,18 @@ class atFile:
 
         g.es_print_error(*args,**keys)
     #@-node:ekr.20041005105605.220:atFile.error & printError
-    #@+node:ekr.20080923070954.4:atFile.scanAllDirectives
+    #@+node:ekr.20080923070954.4:atFile.scanAllDirectives & test
     def scanAllDirectives(self,p,
         scripting=False,importing=False,
         reading=False,forcePythonSentinels=False,
+        createPath=True,
     ):
 
         '''Scan p and p's ancestors looking for directives,
         setting corresponding atFile ivars.'''
 
+        trace = False and not g.unitTesting
         at = self ; c = self.c
-
         #@    << set ivars >>
         #@+node:ekr.20080923070954.14:<< Set ivars >>
         self.page_width = self.c.page_width
@@ -4555,9 +4600,7 @@ class atFile:
         at.output_newline = g.getOutputNewline(c=self.c) # Init from config settings.
         #@-node:ekr.20080923070954.14:<< Set ivars >>
         #@nl
-
         lang_dict = {'language':at.language,'delims':delims,}
-
         table = (
             ('encoding',    at.encoding,    g.scanAtEncodingDirectives),
             ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
@@ -4623,7 +4666,7 @@ class atFile:
             #@nl
 
         # For unit testing.
-        return {
+        d = {
             "encoding"  : at.encoding,
             "language"  : at.language,
             "lineending": at.output_newline,
@@ -4631,18 +4674,16 @@ class atFile:
             "path"      : at.default_directory,
             "tabwidth"  : at.tab_width,
         }
-    #@-node:ekr.20080923070954.4:atFile.scanAllDirectives
-    #@+node:ekr.20041005105605.236:scanDefaultDirectory (leoAtFile)
-    def scanDefaultDirectory(self,p,importing=False):
+        if trace: g.trace(d)
+        return d
+    #@+node:ekr.20090530055015.6069:@test at.scanAllDirectives
+    if g.unitTesting:
 
-        """Set the default_directory ivar by looking for @path directives."""
-
-        at = self ; c = at.c
-
-        at.default_directory,error = g.setDefaultDirectory(c,p,importing)
-
-        if error: at.error(error)
-    #@-node:ekr.20041005105605.236:scanDefaultDirectory (leoAtFile)
+        c,p = g.getTestVars()
+        at = c.atFileCommands
+        d = at.scanAllDirectives(p)
+    #@-node:ekr.20090530055015.6069:@test at.scanAllDirectives
+    #@-node:ekr.20080923070954.4:atFile.scanAllDirectives & test
     #@+node:ekr.20070529083836:cleanLines
     def cleanLines (self,p,s):
 
@@ -4764,6 +4805,86 @@ class atFile:
         return g.utils_stat(fileName)
     #@-node:ekr.20050104132026:stat
     #@-node:ekr.20050104131929:file operations...
+    #@+node:ekr.20090530055015.6050:fullPath (leoAtFile) & test
+    def fullPath (self,p,simulate=False):
+
+        '''Return the full path (including fileName) in effect at p.
+
+        Neither the path nor the fileName will be created if it does not exist.
+        '''
+
+        at = self ; c = at.c
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList,createPath=False)
+        if simulate: # for unit tests.
+            fn = p.h
+        else:
+            fn = p.anyAtFileNodeName()
+        if fn:
+            path = g.os_path_finalize_join(path,fn)
+        else:
+            g.trace('can not happen: not an @<file> node:',g.callers(4))
+            for p2 in p.self_and_parents_iter():
+                g.trace(p2.h)
+            path = ''
+
+        # g.trace(p.h,repr(path))
+        return path
+    #@+node:ekr.20090530055015.6051:@test fullDirectoryPath
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+        at = c.atFileCommands
+
+        p2 = p.firstChild().firstChild()
+        path = at.fullPath(p2,simulate=True)
+        end = g.os_path_normpath('abc/xyz')
+        assert path.endswith(end),repr(path)
+
+    #@+node:ekr.20090530055015.6146:@path abc
+    #@+node:ekr.20090530055015.6147:xyz
+    #@-node:ekr.20090530055015.6147:xyz
+    #@-node:ekr.20090530055015.6146:@path abc
+    #@-node:ekr.20090530055015.6051:@test fullDirectoryPath
+    #@-node:ekr.20090530055015.6050:fullPath (leoAtFile) & test
+    #@+node:ekr.20090530055015.6023:get/setPathUa (leoAtFile) & tests
+    def getPathUa (self,p):
+
+        if hasattr(p.v.t,'tempAttributes'):
+            d = p.v.t.tempAttributes.get('read-path',{})
+            return d.get('path')
+        else:
+            return ''
+
+    def setPathUa (self,p,path):
+
+        if not hasattr(p.v.t,'tempAttributes'):
+            p.v.t.tempAttributes = {}
+
+        d = p.v.t.tempAttributes.get('read-path',{})
+        d['path'] = path
+        p.v.t.tempAttributes ['read-path'] = d
+    #@+node:ekr.20090530055015.6024:@test at.get/setPathUa
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+        at = c.atFileCommands
+
+        at.setPathUa(p,'abc')
+        d = p.v.t.tempAttributes
+        d2 = d.get('read-path')
+        val1 = d2.get('path')
+        val2 = at.getPathUa(p)
+
+        table = (
+            ('d2.get',val1),
+            ('at.getPathUa',val2),
+        )
+        for kind,val in table:
+            assert val == 'abc','kind %s expected %s got %s' % (
+                kind,'abc',val)
+    #@-node:ekr.20090530055015.6024:@test at.get/setPathUa
+    #@-node:ekr.20090530055015.6023:get/setPathUa (leoAtFile) & tests
     #@+node:ekr.20081216090156.4:parseUnderindentTag
     def parseUnderindentTag (self,s):
 
@@ -4781,6 +4902,17 @@ class atFile:
         else:
             return 0,s
     #@-node:ekr.20081216090156.4:parseUnderindentTag
+    #@+node:ekr.20041005105605.236:scanDefaultDirectory (leoAtFile)
+    def scanDefaultDirectory(self,p,importing=False):
+
+        """Set the default_directory ivar by looking for @path directives."""
+
+        at = self ; c = at.c
+
+        at.default_directory,error = g.setDefaultDirectory(c,p,importing)
+
+        if error: at.error(error)
+    #@-node:ekr.20041005105605.236:scanDefaultDirectory (leoAtFile)
     #@+node:ekr.20041005105605.242:scanForClonedSibs (reading & writing)
     def scanForClonedSibs (self,parent_v,v):
 

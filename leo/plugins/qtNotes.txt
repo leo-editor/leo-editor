@@ -13,6 +13,20 @@ Especially shift-arrow keys.
 http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
 #@nonl
 #@-node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
+#@+node:ekr.20090530055308.3790:Unexpected leo window resize after maximizing it
+@nocolor-node
+
+Thread: Unexpected leo window resize after maximizing it
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/c16e1e516c181be1
+
+> I don't see any window resizing code in the qt gui at all, and no gui code
+> gets executed on window activate events, so I suspect this is a qt issue,
+> not a Leo issue.
+
+I see many setGeometry calls in the qt code. 
+#@nonl
+#@-node:ekr.20090530055308.3790:Unexpected leo window resize after maximizing it
 #@+node:ekr.20081215162017.5:Support multiple body editors
 #@+node:ekr.20090318091009.13:Prototype code
 @color
@@ -3857,6 +3871,22 @@ def scrollOutlineUpPage (self,event=None):
 #@-node:ekr.20090223065019.11:Make Leo's page-up/page-down commands funtional
 #@+node:ekr.20090318091009.12:Script errors mess up syntax coloring
 #@-node:ekr.20090318091009.12:Script errors mess up syntax coloring
+#@+node:ekr.20090530055308.3791:How to remember pane split ratio?
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bc730708fa389bd7
+
+I have
+
+@string initial_split_orientation = horizontal
+@ratio initial_horizontal_ratio = 0.2
+@ratio initial_horizontal_secondary_ratio = 0.8
+
+in myLeoSettings.leo.  However, whenever I start Leo, it is split 50/50.
+
+What's the settings (for Qt) to fix this?  Can we? 
+#@nonl
+#@-node:ekr.20090530055308.3791:How to remember pane split ratio?
 #@-node:ekr.20090430102239.1:Before b2 8
 #@+node:ekr.20090430102239.13:Before 4.6 final
 #@+node:ekr.20090429101847.10:Support canvas widgets in all panes

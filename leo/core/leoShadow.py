@@ -139,7 +139,7 @@ class shadowController:
 
         return ok
     #@-node:ekr.20080711063656.2:x.rename
-    #@+node:ekr.20080713091247.1:x.replaceFileWithString
+    #@+node:ekr.20080713091247.1:x.replaceFileWithString & test
     def replaceFileWithString (self,fn,s):
 
         '''Replace the file with s if s is different from theFile's contents.
@@ -147,8 +147,8 @@ class shadowController:
         Return True if theFile was changed.
         '''
 
-        x = self ; testing = g.app.unitTesting ; trace = False
-
+        trace = False and not g.unitTesting
+        x = self
         exists = g.os_path_exists(fn)
 
         if exists: # Read the file.  Return if it is the same.
@@ -161,8 +161,15 @@ class shadowController:
                 g.es_exception()
                 return False
             if s == s2:
-                if not testing: g.es('unchanged:',fn)
+                if not g.unitTesting: g.es('unchanged:',fn)
                 return False
+
+        # Issue warning if directory does not exist.
+        theDir = g.os_path_dirname(fn)
+        if theDir and not g.os_path_exists(theDir):
+            if not g.unitTesting:
+                x.error('not written: %s directory not found' % fn)
+            return False
 
         # Replace the file.
         try:
@@ -181,7 +188,17 @@ class shadowController:
             x.error('unexpected exception writing file: %s' % (fn))
             g.es_exception()
             return False
-    #@-node:ekr.20080713091247.1:x.replaceFileWithString
+    #@+node:ekr.20090530055015.6862:@test x.replaceFileWithString
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+        x = c.shadowController
+
+        fn = 'does/not/exist'
+        assert not g.os_path_exists(fn)
+        assert not x.replaceFileWithString (fn,'abc')
+    #@-node:ekr.20090530055015.6862:@test x.replaceFileWithString
+    #@-node:ekr.20080713091247.1:x.replaceFileWithString & test
     #@+node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
     def shadowDirName (self,filename):
 

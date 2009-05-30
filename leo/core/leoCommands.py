@@ -5938,7 +5938,9 @@ class baseCommands (object):
     #@nonl
     #@-node:ekr.20080827175609.39:c.scanAllDirectives
     #@+node:ekr.20080828103146.15:c.scanAtPathDirectives & test
-    def scanAtPathDirectives(self,aList,force=False):
+    scanAtPathDirectivesCount = 0
+
+    def scanAtPathDirectives(self,aList,force=False,createPath=True):
 
         '''Scan aList for @path directives.
         Return a reasonable default if no @path directive is found.'''
@@ -5948,6 +5950,7 @@ class baseCommands (object):
 
         c = self
 
+        c.scanAtPathDirectivesCount += 1 # An important statistic.
         if trace and verbose: g.trace('**entry',g.callers(4))
 
         # Step 1: Compute the starting path.
@@ -5990,7 +5993,7 @@ class baseCommands (object):
         if trace and verbose: g.trace('joined path:',path)
 
         # Step 4: Make the path if necessary.
-        if path and not g.os_path_exists(path):
+        if path and createPath and not g.os_path_exists(path):
             ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
             if not ok:
                 if force:
@@ -6004,10 +6007,20 @@ class baseCommands (object):
     if g.unitTesting:
 
         c,p = g.getTestVars()
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        assert path and g.os_path_exists(path)
-    #@nonl
+        p2 = p.firstChild().firstChild().firstChild()
+
+        aList = g.get_directives_dict_list(p2)
+        path = c.scanAtPathDirectives(aList,createPath=False)
+        # print (path,p2.h)
+        endpath = g.os_path_normpath('one/two')
+        assert path and path.endswith(endpath),'expected ending %s got %s' % (
+            endpath,path)
+    #@+node:ekr.20090530055015.6121:@path one
+    #@+node:ekr.20090530055015.6073:@path two
+    #@+node:ekr.20090530055015.6074:xyz
+    #@-node:ekr.20090530055015.6074:xyz
+    #@-node:ekr.20090530055015.6073:@path two
+    #@-node:ekr.20090530055015.6121:@path one
     #@-node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
     #@-node:ekr.20080828103146.15:c.scanAtPathDirectives & test
     #@+node:ekr.20080828103146.12:c.scanAtRootDirectives

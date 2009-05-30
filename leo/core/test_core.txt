@@ -3898,6 +3898,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 line 1 line 3
@@ -3941,6 +3942,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 node 2 line 2
@@ -3972,6 +3974,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 line 1 line 3
@@ -3989,6 +3992,7 @@ node 2 line 3
 #@nonl
 #@+node:ekr.20090529061522.6586:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -4014,6 +4018,7 @@ node 2 line 3
 #@nonl
 #@+node:ekr.20090529061522.6590:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -4066,6 +4071,7 @@ node 2 line 2
 #@nonl
 #@+node:ekr.20090529061522.6600:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -4365,14 +4371,13 @@ try:
     # No need to remove this: it's in the unittest directory.
     # g.utils_remove(shadow_fn,verbose=True)
 finally:
-
     child.setHeadString('@@shadow unittest/test_1.py')
     c.setChanged(changed)
     # c.redraw_now()
 #@nonl
 #@+node:ekr.20090529061522.6622:@@shadow unittest/test_1.py
 # body of @shadow test node
-# The last line.
+# The last line. changed 2
 #@nonl
 #@-node:ekr.20090529061522.6622:@@shadow unittest/test_1.py
 #@-node:ekr.20090529061522.6621:@test at.writeOneAtShadowNode

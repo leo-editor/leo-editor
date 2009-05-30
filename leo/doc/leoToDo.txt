@@ -3,10 +3,6 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
 #@+node:ekr.20090525113804.5776:Before b2
-
-#@nonl
-#@+node:ekr.20090528072540.5737:Mark @<file> nodes dirty when @path nodes change
-#@-node:ekr.20090528072540.5737:Mark @<file> nodes dirty when @path nodes change
 #@+node:ekr.20090529154322.6375:Support multiple body editors
 #@-node:ekr.20090529154322.6375:Support multiple body editors
 #@+node:ekr.20090324100430.1:Deleting @chapter node doesn't work
@@ -140,10 +136,14 @@ This may be hard to fix, without taking over the qt code's handling of page up/d
 #@-node:ekr.20090525113804.5778:Fix lost anchor bug
 #@+node:ekr.20090430092048.4:Fix all qt bugs
 #@-node:ekr.20090430092048.4:Fix all qt bugs
-#@+node:ekr.20090523070447.6475:Rewrite rst chapter
-#@-node:ekr.20090523070447.6475:Rewrite rst chapter
+#@+node:ekr.20090523070447.6475:Rewrite rst documentation
+#@-node:ekr.20090523070447.6475:Rewrite rst documentation
 #@-node:ekr.20090525113804.5776:Before b2
 #@+node:ekr.20090430092048.7:Before 4.6 final
+#@+node:ekr.20090530055015.6018:Restore links into the FAQ
+The recent reorg broke some links.
+#@nonl
+#@-node:ekr.20090530055015.6018:Restore links into the FAQ
 #@+node:ekr.20090430122648.1:Generate pdf versions of docs
 #@-node:ekr.20090430122648.1:Generate pdf versions of docs
 #@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
