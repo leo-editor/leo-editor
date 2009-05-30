@@ -96,6 +96,7 @@ class baseCommands (object):
 
         # Debugging.
         self.command_count = 0
+        self.scanAtPathDirectivesCount = 0
         self.trace_focus_count = 0
 
         # Data.
@@ -5941,8 +5942,6 @@ class baseCommands (object):
     #@nonl
     #@-node:ekr.20080827175609.39:c.scanAllDirectives
     #@+node:ekr.20080828103146.15:c.scanAtPathDirectives & test
-    scanAtPathDirectivesCount = 0
-
     def scanAtPathDirectives(self,aList,force=False,createPath=True):
 
         '''Scan aList for @path directives.

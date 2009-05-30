@@ -1058,6 +1058,7 @@ def __init__(self,frame,fileName,relativeFileName=None):
 
     # Debugging.
     self.command_count = 0
+    self.scanAtPathDirectivesCount = 0
     self.trace_focus_count = 0
 
     # Data.
@@ -7344,8 +7345,6 @@ def computeStandardDirectories():
     g.app.user_xresources_path = g.os_path_join(g.app.homeDir,'.leo_xresources')
 #@-node:ekr.20050328133444:computeStandardDirectories
 #@+node:ekr.20080828103146.15:c.scanAtPathDirectives & test
-scanAtPathDirectivesCount = 0
-
 def scanAtPathDirectives(self,aList,force=False,createPath=True):
 
     '''Scan aList for @path directives.
@@ -11586,8 +11585,6 @@ def scanDefaultDirectory(self,p,importing=False):
     if error: at.error(error)
 #@-node:ekr.20041005105605.236:scanDefaultDirectory (leoAtFile)
 #@+node:ekr.20080828103146.15:c.scanAtPathDirectives & test
-scanAtPathDirectivesCount = 0
-
 def scanAtPathDirectives(self,aList,force=False,createPath=True):
 
     '''Scan aList for @path directives.
@@ -13267,8 +13264,6 @@ if g.unitTesting:
 - at.fullPath is a new helper that returns the full path.
 #@+node:ekr.20090530055015.7261:utils
 #@+node:ekr.20080828103146.15:c.scanAtPathDirectives & test
-scanAtPathDirectivesCount = 0
-
 def scanAtPathDirectives(self,aList,force=False,createPath=True):
 
     '''Scan aList for @path directives.
@@ -13849,7 +13844,7 @@ def replaceFileWithString (self,fn,s):
             '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
             '\ncallers',g.callers(4))
         f.close()
-        if not testing:
+        if not g.unitTesting:
             # g.trace('created:',fn,g.callers())
             if exists:  g.es('wrote:    ',fn)
             else:       g.es('created:  ',fn)
