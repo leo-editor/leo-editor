@@ -2,8 +2,9 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
-#@+node:ekr.20090525113804.5776:Bugs before b2
-#@+node:ekr.20090529154322.6008:First
+#@+node:ekr.20090525113804.5776:Before b2
+
+#@nonl
 #@+node:ekr.20090528072540.5737:Mark @<file> nodes dirty when @path nodes change
 #@-node:ekr.20090528072540.5737:Mark @<file> nodes dirty when @path nodes change
 #@+node:ekr.20090529154322.6375:Support multiple body editors
@@ -119,8 +120,6 @@ def removeChapterByName (self,name):
     c.redraw()
 #@-node:ekr.20070606075434:cc.removeChapterByName
 #@-node:ekr.20090324100430.1:Deleting @chapter node doesn't work
-#@+node:ekr.20090525144314.6524:Make @url nodes work with qt gui
-#@-node:ekr.20090525144314.6524:Make @url nodes work with qt gui
 #@+node:ekr.20090525113804.5778:Fix lost anchor bug
 @nocolor-node
 
@@ -139,14 +138,24 @@ selection of several pages, as intended.
 This may be hard to fix, without taking over the qt code's handling of page up/down.
 #@nonl
 #@-node:ekr.20090525113804.5778:Fix lost anchor bug
-#@+node:ekr.20090523070447.6476:Make sure rst3 command applied to @auto-rst node works
-#@-node:ekr.20090523070447.6476:Make sure rst3 command applied to @auto-rst node works
-#@-node:ekr.20090529154322.6008:First
-#@+node:ekr.20090529154322.6009:Next
 #@+node:ekr.20090430092048.4:Fix all qt bugs
 #@-node:ekr.20090430092048.4:Fix all qt bugs
 #@+node:ekr.20090523070447.6475:Rewrite rst chapter
 #@-node:ekr.20090523070447.6475:Rewrite rst chapter
+#@-node:ekr.20090525113804.5776:Before b2
+#@+node:ekr.20090430092048.7:Before 4.6 final
+#@+node:ekr.20090430122648.1:Generate pdf versions of docs
+#@-node:ekr.20090430122648.1:Generate pdf versions of docs
+#@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
+http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
+#@nonl
+#@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
+#@+node:ekr.20090430092048.3:Rewrite docs using stories
+#@+node:ekr.20090226080753.6:Finish the wiki intro
+#@-node:ekr.20090226080753.6:Finish the wiki intro
+#@-node:ekr.20090430092048.3:Rewrite docs using stories
+#@+node:ekr.20070615063616.1:Create Debian package
+#@-node:ekr.20070615063616.1:Create Debian package
 #@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
 #@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
 #@+node:ekr.20090522113545.5884:Fix pylint complaints about plugins
@@ -184,21 +193,6 @@ E1103:604:ToolbarTkinterFrame.getIconWidgetFrame:
 E0602:116:open_in_emacs: Undefined variable '_exemacs_cmd'
 #@nonl
 #@-node:ekr.20090522113545.5884:Fix pylint complaints about plugins
-#@-node:ekr.20090529154322.6009:Next
-#@-node:ekr.20090525113804.5776:Bugs before b2
-#@+node:ekr.20090430092048.7:Before 4.6 final
-#@+node:ekr.20090430122648.1:Generate pdf versions of docs
-#@-node:ekr.20090430122648.1:Generate pdf versions of docs
-#@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
-#@nonl
-#@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-#@+node:ekr.20090430092048.3:Rewrite docs using stories
-#@+node:ekr.20090226080753.6:Finish the wiki intro
-#@-node:ekr.20090226080753.6:Finish the wiki intro
-#@-node:ekr.20090430092048.3:Rewrite docs using stories
-#@+node:ekr.20070615063616.1:Create Debian package
-#@-node:ekr.20070615063616.1:Create Debian package
 #@-node:ekr.20090430092048.7:Before 4.6 final
 #@+node:ekr.20090529125512.6121:Features (maybe)
 #@+node:ekr.20090528072540.9960:Improve config & plugins

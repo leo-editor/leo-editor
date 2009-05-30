@@ -2,659 +2,17 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090430102239.1:Before b2
+#@+node:ekr.20090430102239.1:Before b2 8
+#@+node:ekr.20090529063119.3793:Tab keys show as "tab" in headlines
+#@-node:ekr.20090529063119.3793:Tab keys show as "tab" in headlines
 #@+node:ekr.20090430102239.2:Arrow keys do not work in headlines
 Especially shift-arrow keys.
 #@nonl
 #@-node:ekr.20090430102239.2:Arrow keys do not work in headlines
-#@+node:ekr.20090409055330.10:Make sure change-all honors node-only and suboutline-only settings
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/430287018f9d773d
-
-The following problem hits rev 1633, qt plugin (untested with tk plugin). The
-command Find --> Change All *always* acts on *every node*. It ignores the
-checkboxes selection made by the user. Even if you select the "Node Only"
-checkbox the changes are aplied to the whole tree (headline text and body text).
+#@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
+http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
 #@nonl
-#@+node:ekr.20081121105001.235:class leoQtFindTab (findTab)
-class leoQtFindTab (leoFind.findTab):
-
-    '''A subclass of the findTab class containing all Qt Gui code.'''
-
-    if 0: # We can use the base-class ctor.
-        def __init__ (self,c,parentFrame):
-            leoFind.findTab.__init__(self,c,parentFrame)
-                # Init the base class.
-                # Calls initGui, createFrame, createBindings & init(c), in that order.
-
-    # Define these to suppress oops messages.
-    def createBindings (self): pass
-    def createFindTab (self,c,parentFrame): pass
-    def createFrame (self,parentFrame): pass
-
-    @others
-#@+node:ekr.20081121105001.236: Birth: called from leoFind ctor
-# leoFind.__init__ calls initGui, createFrame, createBindings & init, in that order.
-#@+node:ekr.20081121105001.237:initGui
-def initGui (self):
-
-    owner = self
-
-    self.svarDict = {}
-        # Keys are ivar names, values are svar objects.
-
-    for ivar in self.intKeys:
-        self.svarDict[ivar] = self.svar(owner,ivar)
-
-    # Add a hack for 'entire_outline' radio button.
-    ivar = 'entire_outline'
-    self.svarDict[ivar] = self.svar(owner,ivar)
-
-    for ivar in self.newStringKeys:
-        # "radio-find-type", "radio-search-scope"
-        self.svarDict[ivar] = self.svar(owner,ivar)
-#@-node:ekr.20081121105001.237:initGui
-#@+node:ekr.20081121105001.238:init (qtFindTab) & helpers
-def init (self,c):
-
-    '''Init the widgets of the 'Find' tab.'''
-
-    # g.trace('leoQtFindTab.init')
-
-    self.createIvars()
-    self.initIvars()
-    self.initTextWidgets()
-    self.initCheckBoxes()
-    self.initRadioButtons()
-#@+node:ekr.20081121105001.239:createIvars
-def createIvars (self):
-
-    c = self.c ; w = c.frame.top.ui # A Window ui object.
-
-    # Bind boxes to Window objects.
-    self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
-    data = (
-        ('find_ctrl',       findTextWrapper(w.findPattern,'find-widget',c)),
-        ('change_ctrl',     findTextWrapper(w.findChange,'change-widget',c)),
-        ('whole_word',      w.checkBoxWholeWord),
-        ('ignore_case',     w.checkBoxIgnoreCase),
-        ('wrap',            w.checkBoxWrapAround),
-        ('reverse',         w.checkBoxReverse),
-        ('pattern_match',   w.checkBoxRegexp),
-        ('mark_finds',      w.checkBoxMarkFinds),
-        ('entire_outline',  w.checkBoxEntireOutline),
-        ('suboutline_only', w.checkBoxSubroutineOnly),  
-        ('node_only',       w.checkBoxNodeOnly),
-        ('search_headline', w.checkBoxSearchHeadline),
-        ('search_body',     w.checkBoxSearchBody),
-        ('mark_changes',    w.checkBoxMarkChanges),
-        ('batch', None),
-    )
-    for ivar,widget in data:
-        setattr(self,ivar,widget)
-        self.widgetsDict[ivar] = widget
-        # g.trace(ivar,widget)
-#@-node:ekr.20081121105001.239:createIvars
-#@+node:ekr.20081121105001.240:initIvars
-def initIvars(self):
-
-    c = self.c
-
-    # Separate c.ivars are much more convenient than a svarDict.
-    for ivar in self.intKeys:
-        # Get ivars from @settings.
-        val = c.config.getBool(ivar)
-        setattr(self,ivar,val)
-        val = g.choose(val,1,0)
-        svar = self.svarDict.get(ivar)
-        if svar:
-            svar.set(val)
-
-        # g.trace(ivar,val)
-#@-node:ekr.20081121105001.240:initIvars
-#@+node:ekr.20081121105001.241:initTextWidgets
-def initTextWidgets(self):
-
-    '''Init the find/change text areas.'''
-
-    c = self.c
-
-    table = (
-        (self.find_ctrl,    "find_text",    '<find pattern here>'),
-        (self.change_ctrl,  "change_text",  ''),
-    )
-
-    for w,setting,defaultText in table:
-        # w is a textWrapper object
-        w.setAllText(c.config.getString(setting) or defaultText)
-#@-node:ekr.20081121105001.241:initTextWidgets
-#@+node:ekr.20081121105001.242:initCheckBoxes
-def initCheckBoxes (self):
-
-    for ivar,key in (
-        ("pattern_match","pattern-search"),
-    ):
-        svar = self.svarDict[ivar].get()
-        if svar:
-            self.svarDict["radio-find-type"].set(key)
-            w = self.widgetsDict.get(key)
-            if w: w.setChecked(True)
-            break
-    else:
-        self.svarDict["radio-find-type"].set("plain-search")
-
-    aList = (
-        'ignore_case','mark_changes','mark_finds',
-        'pattern_match','reverse','search_body','search_headline',
-        'whole_word','wrap',
-        'node_only','suboutline_only','entire_outline',
-    )
-
-    for ivar in aList:
-        svar = self.svarDict.get(ivar)
-        if svar:
-            # w is a QCheckBox or a QRadioButton.
-            w = self.widgetsDict.get(ivar)
-            if w:
-                val = svar.get()
-                svar.setWidget(w)
-                svar.set(val)
-                if isinstance(w,QtGui.QCheckBox):
-                    def checkBoxCallback(val,svar=svar):
-                        svar.set(val)
-                    w.connect(w,
-                        QtCore.SIGNAL("stateChanged(int)"),
-                        checkBoxCallback)
-                else:
-                    def radioButtonCallback(val,svar=svar):
-                        svar.set(val)
-                    w.connect(w,
-                        QtCore.SIGNAL("clicked(bool)"),
-                        radioButtonCallback)
-            else: g.trace('*** no w',ivar)
-        else: g.trace('*** no svar',ivar)
-#@-node:ekr.20081121105001.242:initCheckBoxes
-#@+node:ekr.20081121105001.243:initRadioButtons
-def initRadioButtons (self):
-
-    scopeSvar = self.svarDict.get('radio-search-scope')
-
-    table = (
-        ("suboutline_only","suboutline-only"),
-        ("node_only","node-only"))
-
-    for ivar,key in table:
-        svar = self.svarDict.get(ivar)
-        if svar:
-            val = svar.get()
-            if val:
-                scopeSvar.init(key)
-                break
-    else:
-        scopeSvar.init('entire-outline')
-        self.svarDict.get('entire_outline').init(True)
-
-    w = self.widgetsDict.get(key)
-    if w: w.setChecked(True)
-
-    # g.trace(scopeSvar.get())
-#@-node:ekr.20081121105001.243:initRadioButtons
-#@-node:ekr.20081121105001.238:init (qtFindTab) & helpers
-#@-node:ekr.20081121105001.236: Birth: called from leoFind ctor
-#@+node:ekr.20081121105001.244:class svar
-class svar:
-    '''A class like Tk's IntVar and StringVar classes.'''
-
-    @others
-
-#@+node:ekr.20090427112929.10:svar.ctor
-def __init__(self,owner,ivar):
-
-    self.ivar = ivar
-    self.owner = owner
-    self.radioButtons = ['node_only','suboutline_only','entire_outline']
-    self.trace = False
-    self.val = None
-    self.w = None
-
-def __repr__(self):
-    return '<svar %s>' % self.ivar
-#@nonl
-#@-node:ekr.20090427112929.10:svar.ctor
-#@+node:ekr.20090427112929.12:get
-def get (self):
-    if self.w:
-        val = self.w.isChecked()
-        if self.trace: g.trace('qt svar %15s = %s' % (self.ivar,val))
-    else:
-        val = self.val
-    return val
-#@nonl
-#@-node:ekr.20090427112929.12:get
-#@+node:ekr.20090427112929.13:init
-def init (self,val):
-
-    '''Init the svar, but do *not* init radio buttons.
-    (This is called from initRadioButtons).'''
-
-    if val in (0,1):
-        self.val = bool(val)
-    else:
-        self.val = val # Don't contain the scope values!
-
-    if self.w:
-        self.w.setChecked(bool(val))
-
-    if self.trace: g.trace('qt svar %15s = %s' % (self.ivar,val))
-#@-node:ekr.20090427112929.13:init
-#@+node:ekr.20090427112929.17:set
-def set (self,val):
-
-    '''Init the svar and update the radio buttons.'''
-
-    self.init(val)
-
-    if self.ivar in self.radioButtons:
-        self.owner.initRadioButtons()
-    elif self.ivar == 'radio-search-scope':
-        self.setRadioScope(val)
-
-
-#@-node:ekr.20090427112929.17:set
-#@+node:ekr.20090427112929.18:setRadioScope
-def setRadioScope (self,val):
-
-    '''Update the svars corresponding to the scope value.'''
-
-    table = (
-        ("suboutline_only","suboutline-only"),
-        ("node_only","node-only"),
-        ("entire_outline","entire-outline"))
-
-    for ivar,val2 in table:
-        if val == val2:
-            svar = self.owner.svarDict.get(ivar)
-            val = svar.get()
-            svar.init(True)
-#@-node:ekr.20090427112929.18:setRadioScope
-#@+node:ekr.20090427112929.15:setWidget
-def setWidget(self,w):
-
-    self.w = w
-#@-node:ekr.20090427112929.15:setWidget
-#@-node:ekr.20081121105001.244:class svar
-#@+node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
-# This is the same as the Tk code because we simulate Tk svars.
-#@nonl
-#@+node:ekr.20081121105001.246:getOption
-def getOption (self,ivar):
-
-    var = self.svarDict.get(ivar)
-
-    if var:
-        val = var.get()
-        # g.trace('ivar %s = %s' % (ivar,val))
-        return val
-    else:
-        # g.trace('bad ivar name: %s' % ivar)
-        return None
-#@-node:ekr.20081121105001.246:getOption
-#@+node:ekr.20081121105001.247:setOption
-def setOption (self,ivar,val):
-
-    if ivar in self.intKeys:
-        if val is not None:
-            svar = self.svarDict.get(ivar)
-            svar.set(val)
-            # g.trace('ivar %s = %s' % (ivar,val))
-
-    elif not g.app.unitTesting:
-        g.trace('oops: bad find ivar %s' % ivar)
-#@-node:ekr.20081121105001.247:setOption
-#@+node:ekr.20081121105001.248:toggleOption
-def toggleOption (self,ivar):
-
-    if ivar in self.intKeys:
-        var = self.svarDict.get(ivar)
-        val = not var.get()
-        var.set(val)
-        # g.trace('%s = %s' % (ivar,val),var)
-    else:
-        g.trace('oops: bad find ivar %s' % ivar)
-#@-node:ekr.20081121105001.248:toggleOption
-#@-node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
-#@-node:ekr.20081121105001.235:class leoQtFindTab (findTab)
-#@-node:ekr.20090409055330.10:Make sure change-all honors node-only and suboutline-only settings
-#@+node:ekr.20090430102239.3:Fix page up/down problem
-@
-
-At present, the qt gui sends PgUp and PgDn directly to the widget.
-
-That is, the plugin does not handle scrolling properly.
-
-This will become an issue for vim bindings.
-#@nonl
-#@+node:ekr.20090430102239.4:masterKeyHandler & helpers
-master_key_count = 0
-
-def masterKeyHandler (self,event,stroke=None):
-
-    '''This is the handler for almost all key bindings.'''
-
-    << define vars >>
-    trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
-    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
-    verbose = True
-
-    if keysym in special_keys:
-        if trace and verbose: g.trace('keysym',keysym)
-        return None
-    if traceGC: g.printNewObjects('masterKey 1')
-    if trace:
-        g.trace('stroke:',repr(stroke),'keysym:',
-            repr(event.keysym),'ch:',repr(event.char),'state',state)
-        # g.trace('callers',g.callers(5))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
-
-    # if stroke == 'Return': g.pdb()
-
-    # Handle keyboard-quit first.
-    if k.abortAllModesKey and stroke == k.abortAllModesKey:
-        # g.trace('special case')
-        if c.macroCommands.recordingMacro:
-            c.macroCommands.endKbdMacro()
-            return 'break'
-        else:
-            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
-
-    if k.inState():
-        # This will return unless k.autoCompleterStateHandler
-        # (called from k.callStateFunction) returns 'do-standard-keys'
-        << handle mode bindings >>
-
-    if traceGC: g.printNewObjects('masterKey 2')
-
-    if stroke and isPlain:
-        << handle special cases for plain keys >>
-
-    << handle per-pane bindings >>
-
-    if traceGC: g.printNewObjects('masterKey 5')
-
-    return k.handleUnboundKeys(event,char,keysym,stroke)
-#@+node:ekr.20090430102239.5:<< define vars >>
-k = self ; c = k.c ; gui = g.app.gui
-
-if event:
-    # This is a leoGui base class event.
-    event = gui.leoKeyEvent(event,c,stroke=stroke)
-
-w = event.widget
-char = event.char
-keysym = event.keysym
-if stroke and not keysym:
-    event.keysym = keysym = stroke
-
-w_name = c.widget_name(w)
-state = k.state.kind
-
-special_keys = (
-    'Alt_L','Alt_R',
-    'Caps_Lock','Control_L','Control_R',
-    'Meta_L','Meta_R', # Meta support.
-    'Num_Lock',
-    'Shift_L','Shift_R',
-    'Win_L','Win_R',
-)
-
-self.master_key_count += 1
-
-isPlain =  k.isPlainKey(stroke)
-#@nonl
-#@-node:ekr.20090430102239.5:<< define vars >>
-#@+node:ekr.20090430102239.6:<< handle mode bindings >>
-# First, honor minibuffer bindings for all except user modes.
-
-if state in ('getArg','getFileName','full-command','auto-complete'):
-    if k.handleMiniBindings(event,state,stroke):
-        return 'break'
-
-# Second, honor general modes.
-if state == 'getArg':
-    return k.getArg(event,stroke=stroke)
-elif state == 'getFileName':
-    return k.getFileName(event)
-elif state in ('full-command','auto-complete'):
-    # Do the default state action.
-    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
-    val = k.callStateFunction(event) # Calls end-command.
-    if val != 'do-standard-keys': return 'break'
-
-# Third, pass keys to user modes.
-else:
-    d =  k.masterBindingsDict.get(state)
-    if d:
-        b = d.get(stroke)
-        if b:
-            if trace: g.trace('calling generalModeHandler',stroke)
-            k.generalModeHandler (event,
-                commandName=b.commandName,func=b.func,
-                modeName=state,nextMode=b.nextMode)
-            return 'break'
-        else:
-            # New in Leo 4.5: unbound keys end mode.
-            if trace: g.trace('unbound key ends mode',stroke,state)
-            k.endMode(event)
-    else:
-        # New in 4.4b4.
-        handler = k.getStateHandler()
-        if handler:
-            handler(event)
-        else:
-            g.trace('No state handler for %s' % state)
-        return 'break'
-#@-node:ekr.20090430102239.6:<< handle mode bindings >>
-#@+node:ekr.20090430102239.7:<< handle special cases for plain keys >>
-# g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
-
-# Important: only keys bound somewhere have a stroke.
-# All unbound plain keys will be handled by handleUnboundKeys.
-
-if k.unboundKeyAction in ('insert','overwrite'):
-
-    for key in (k.unboundKeyAction,'body','log','text','all'):
-        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
-        d = k.masterBindingsDict.get(key,{})
-        if d:
-            b = d.get(stroke)
-            if b and b.commandName == 'auto-complete':
-                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
-                k.masterCommand(event,b.func,b.stroke,b.commandName)
-                return 'break'
-
-    if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
-    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-    return 'break'
-
-# Bound   plain keys in command mode are by the per-pane logic.
-# Unbound plain keys in command mode are ignored by handleUnboundKeys.
-
-# This code ignores all command-state keys if we are not in a text widget.
-elif k.unboundKeyAction == 'command':
-    if not g.app.gui.isTextWidget(w):
-        c.onCanvasKey(event)
-        return 'break'
-#@nonl
-#@-node:ekr.20090430102239.7:<< handle special cases for plain keys >>
-#@+node:ekr.20090430102239.8:<< handle per-pane bindings >>
-keyStatesTuple = ('command','insert','overwrite')
-
-# g.trace('w_name',w_name,'stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
-
-for key,name in (
-    # Order here is similar to bindtags order.
-    ('command',None),
-    ('insert',None),
-    ('overwrite',None),
-    ('button',None),
-    ('body','body'),
-    ('text','head'), # Important: text bindings in head before tree bindings.
-    ('tree','head'),
-    ('tree','canvas'),
-    ('log', 'log'),
-    ('text','log'),
-    ('text',None),
-    ('all',None),
-):
-    if (
-        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
-        name and w_name.startswith(name) or
-        key in ('text','all') and g.app.gui.isTextWidget(w) or
-        key in ('button','all')
-    ):
-        d = k.masterBindingsDict.get(key,{})
-        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-        # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
-        if d:
-            b = d.get(stroke)
-            if b:
-                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
-                if traceGC: g.printNewObjects('masterKey 3')
-                return k.masterCommand(event,b.func,b.stroke,b.commandName)
-#@-node:ekr.20090430102239.8:<< handle per-pane bindings >>
-#@+node:ekr.20090430102239.9:callStateFunction
-def callStateFunction (self,event):
-
-    k = self ; val = None ; ch = g.app.gui.eventChar(event)
-
-    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
-
-    if k.state.kind:
-        if (
-            k.ignore_unbound_non_ascii_keys and
-            ch and ch not in ('\b','\n','\r','\t') and
-            (ord(ch) < 32 or ord(ch) > 128)
-        ):
-            # g.trace('non-ascii',ord(ch))
-            pass
-        elif k.state.handler:
-            val = k.state.handler(event)
-            if val != 'continue':
-                k.endCommand(event,k.commandName)
-        else:
-            g.es_print('no state function for',k.state.kind,color='red')
-
-    return val
-#@-node:ekr.20090430102239.9:callStateFunction
-#@+node:ekr.20090430102239.10:handleMiniBindings
-def handleMiniBindings (self,event,state,stroke):
-
-    k = self ; c = k.c
-    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
-
-    # Special case for bindings handled in k.getArg:
-    if state in ('getArg','full-command'):
-        if stroke in ('BackSpace','Return','Tab','Escape'):
-            return False
-
-    if not state.startswith('auto-'):
-        # New in Leo 4.5: ignore plain key binding in the minibuffer.
-        if not stroke or k.isPlainKey(stroke):
-            if trace: g.trace('plain key',stroke)
-            return False
-        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
-        # for all single-line editing commands.
-        for pane in ('mini','all','text'):
-            d = k.masterBindingsDict.get(pane)
-            if d:
-                b = d.get(stroke)
-                if b:
-                    if b.commandName == 'replace-string' and state == 'getArg':
-                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
-                        return False # Let getArg handle it.
-                    elif b.commandName not in k.singleLineCommandList:
-                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
-                        k.keyboardQuit(event,hideTabs=True)
-                    else:
-                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
-                        c.minibufferWantsFocusNow() # New in Leo 4.5.
-                    # Pass this on for macro recording.
-                    k.masterCommand(event,b.func,stroke,b.commandName)
-                    # Careful: the command could exit.
-                    if c.exists and not k.silentMode:
-                        c.minibufferWantsFocus()
-                    return True
-
-    return False
-#@-node:ekr.20090430102239.10:handleMiniBindings
-#@+node:ekr.20090430102239.11:k.handleUnboudKeys
-def handleUnboundKeys (self,event,char,keysym,stroke):
-
-    k = self ; c = k.c ; trace = False
-    modesTuple = ('insert','overwrite')
-
-    if trace:
-        # if stroke: g.trace('***unexpected stroke***')
-        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
-            # 'state.kind:',k.state.kind),'\n',g.callers())
-        # if (self.master_key_count % 100) == 0: g.printGcSummary()
-
-    if k.unboundKeyAction == 'command':
-        # Ignore all unbound characters in command mode.
-        w = g.app.gui.get_focus(c)
-        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
-            c.onCanvasKey(event)
-        return 'break'
-
-    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
-        # insert/overwrite normal character.  <Return> is *not* a normal character.
-        if trace: g.trace('plain key in insert mode',repr(stroke))
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-
-    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
-        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
-        if trace: g.trace('ignoring unbound non-ascii key')
-        return 'break'
-
-    elif keysym.find('Escape') != -1:
-        # Never insert escape characters.
-        return 'break'
-
-    else:
-        if trace: g.trace(repr(stroke),'no func')
-        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
-#@-node:ekr.20090430102239.11:k.handleUnboudKeys
-#@-node:ekr.20090430102239.4:masterKeyHandler & helpers
-#@+node:ekr.20090430102239.12:scrollOutlineUp/Down/Line/Page
-def scrollOutlineDownLine (self,event=None):
-    '''Scroll the outline pane down one line.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if b < 1.0:
-        self.c.frame.tree.canvas.yview_scroll(1,"unit")
-
-def scrollOutlineDownPage (self,event=None):
-    '''Scroll the outline pane down one page.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if b < 1.0:
-        self.c.frame.tree.canvas.yview_scroll(1,"page")
-
-def scrollOutlineUpLine (self,event=None):
-    '''Scroll the outline pane up one line.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if a > 0.0:
-        self.c.frame.tree.canvas.yview_scroll(-1,"unit")
-
-def scrollOutlineUpPage (self,event=None):
-    '''Scroll the outline pane up one page.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if a > 0.0:
-        self.c.frame.tree.canvas.yview_scroll(-1,"page")
-#@-node:ekr.20090430102239.12:scrollOutlineUp/Down/Line/Page
-#@-node:ekr.20090430102239.3:Fix page up/down problem
-#@+node:ekr.20090421121914.11:Urgent: fix the tkinter problem in Terry's code
-#@-node:ekr.20090421121914.11:Urgent: fix the tkinter problem in Terry's code
+#@-node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
 #@+node:ekr.20081215162017.5:Support multiple body editors
 #@+node:ekr.20090318091009.13:Prototype code
 @color
@@ -3830,12 +3188,327 @@ def selectLabel (self,w):
         # w.leo_label = None
 #@-node:ekr.20081121105001.222:select/unselectLabel
 #@-node:ekr.20081215162017.5:Support multiple body editors
-#@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
-http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
-#@nonl
-#@-node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
 #@+node:ekr.20090304084841.15:Complete open-with menu
 #@-node:ekr.20090304084841.15:Complete open-with menu
+#@+node:ekr.20090409055330.10:Make sure change-all honors node-only and suboutline-only settings
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/430287018f9d773d
+
+The following problem hits rev 1633, qt plugin (untested with tk plugin). The
+command Find --> Change All *always* acts on *every node*. It ignores the
+checkboxes selection made by the user. Even if you select the "Node Only"
+checkbox the changes are aplied to the whole tree (headline text and body text).
+#@nonl
+#@+node:ekr.20081121105001.235:class leoQtFindTab (findTab)
+class leoQtFindTab (leoFind.findTab):
+
+    '''A subclass of the findTab class containing all Qt Gui code.'''
+
+    if 0: # We can use the base-class ctor.
+        def __init__ (self,c,parentFrame):
+            leoFind.findTab.__init__(self,c,parentFrame)
+                # Init the base class.
+                # Calls initGui, createFrame, createBindings & init(c), in that order.
+
+    # Define these to suppress oops messages.
+    def createBindings (self): pass
+    def createFindTab (self,c,parentFrame): pass
+    def createFrame (self,parentFrame): pass
+
+    @others
+#@+node:ekr.20081121105001.236: Birth: called from leoFind ctor
+# leoFind.__init__ calls initGui, createFrame, createBindings & init, in that order.
+#@+node:ekr.20081121105001.237:initGui
+def initGui (self):
+
+    owner = self
+
+    self.svarDict = {}
+        # Keys are ivar names, values are svar objects.
+
+    for ivar in self.intKeys:
+        self.svarDict[ivar] = self.svar(owner,ivar)
+
+    # Add a hack for 'entire_outline' radio button.
+    ivar = 'entire_outline'
+    self.svarDict[ivar] = self.svar(owner,ivar)
+
+    for ivar in self.newStringKeys:
+        # "radio-find-type", "radio-search-scope"
+        self.svarDict[ivar] = self.svar(owner,ivar)
+#@-node:ekr.20081121105001.237:initGui
+#@+node:ekr.20081121105001.238:init (qtFindTab) & helpers
+def init (self,c):
+
+    '''Init the widgets of the 'Find' tab.'''
+
+    # g.trace('leoQtFindTab.init')
+
+    self.createIvars()
+    self.initIvars()
+    self.initTextWidgets()
+    self.initCheckBoxes()
+    self.initRadioButtons()
+#@+node:ekr.20081121105001.239:createIvars
+def createIvars (self):
+
+    c = self.c ; w = c.frame.top.ui # A Window ui object.
+
+    # Bind boxes to Window objects.
+    self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
+    data = (
+        ('find_ctrl',       findTextWrapper(w.findPattern,'find-widget',c)),
+        ('change_ctrl',     findTextWrapper(w.findChange,'change-widget',c)),
+        ('whole_word',      w.checkBoxWholeWord),
+        ('ignore_case',     w.checkBoxIgnoreCase),
+        ('wrap',            w.checkBoxWrapAround),
+        ('reverse',         w.checkBoxReverse),
+        ('pattern_match',   w.checkBoxRegexp),
+        ('mark_finds',      w.checkBoxMarkFinds),
+        ('entire_outline',  w.checkBoxEntireOutline),
+        ('suboutline_only', w.checkBoxSubroutineOnly),  
+        ('node_only',       w.checkBoxNodeOnly),
+        ('search_headline', w.checkBoxSearchHeadline),
+        ('search_body',     w.checkBoxSearchBody),
+        ('mark_changes',    w.checkBoxMarkChanges),
+        ('batch', None),
+    )
+    for ivar,widget in data:
+        setattr(self,ivar,widget)
+        self.widgetsDict[ivar] = widget
+        # g.trace(ivar,widget)
+#@-node:ekr.20081121105001.239:createIvars
+#@+node:ekr.20081121105001.240:initIvars
+def initIvars(self):
+
+    c = self.c
+
+    # Separate c.ivars are much more convenient than a svarDict.
+    for ivar in self.intKeys:
+        # Get ivars from @settings.
+        val = c.config.getBool(ivar)
+        setattr(self,ivar,val)
+        val = g.choose(val,1,0)
+        svar = self.svarDict.get(ivar)
+        if svar:
+            svar.set(val)
+
+        # g.trace(ivar,val)
+#@-node:ekr.20081121105001.240:initIvars
+#@+node:ekr.20081121105001.241:initTextWidgets
+def initTextWidgets(self):
+
+    '''Init the find/change text areas.'''
+
+    c = self.c
+
+    table = (
+        (self.find_ctrl,    "find_text",    '<find pattern here>'),
+        (self.change_ctrl,  "change_text",  ''),
+    )
+
+    for w,setting,defaultText in table:
+        # w is a textWrapper object
+        w.setAllText(c.config.getString(setting) or defaultText)
+#@-node:ekr.20081121105001.241:initTextWidgets
+#@+node:ekr.20081121105001.242:initCheckBoxes
+def initCheckBoxes (self):
+
+    for ivar,key in (
+        ("pattern_match","pattern-search"),
+    ):
+        svar = self.svarDict[ivar].get()
+        if svar:
+            self.svarDict["radio-find-type"].set(key)
+            w = self.widgetsDict.get(key)
+            if w: w.setChecked(True)
+            break
+    else:
+        self.svarDict["radio-find-type"].set("plain-search")
+
+    aList = (
+        'ignore_case','mark_changes','mark_finds',
+        'pattern_match','reverse','search_body','search_headline',
+        'whole_word','wrap',
+        'node_only','suboutline_only','entire_outline',
+    )
+
+    for ivar in aList:
+        svar = self.svarDict.get(ivar)
+        if svar:
+            # w is a QCheckBox or a QRadioButton.
+            w = self.widgetsDict.get(ivar)
+            if w:
+                val = svar.get()
+                svar.setWidget(w)
+                svar.set(val)
+                if isinstance(w,QtGui.QCheckBox):
+                    def checkBoxCallback(val,svar=svar):
+                        svar.set(val)
+                    w.connect(w,
+                        QtCore.SIGNAL("stateChanged(int)"),
+                        checkBoxCallback)
+                else:
+                    def radioButtonCallback(val,svar=svar):
+                        svar.set(val)
+                    w.connect(w,
+                        QtCore.SIGNAL("clicked(bool)"),
+                        radioButtonCallback)
+            else: g.trace('*** no w',ivar)
+        else: g.trace('*** no svar',ivar)
+#@-node:ekr.20081121105001.242:initCheckBoxes
+#@+node:ekr.20081121105001.243:initRadioButtons
+def initRadioButtons (self):
+
+    scopeSvar = self.svarDict.get('radio-search-scope')
+
+    table = (
+        ("suboutline_only","suboutline-only"),
+        ("node_only","node-only"))
+
+    for ivar,key in table:
+        svar = self.svarDict.get(ivar)
+        if svar:
+            val = svar.get()
+            if val:
+                scopeSvar.init(key)
+                break
+    else:
+        scopeSvar.init('entire-outline')
+        self.svarDict.get('entire_outline').init(True)
+
+    w = self.widgetsDict.get(key)
+    if w: w.setChecked(True)
+
+    # g.trace(scopeSvar.get())
+#@-node:ekr.20081121105001.243:initRadioButtons
+#@-node:ekr.20081121105001.238:init (qtFindTab) & helpers
+#@-node:ekr.20081121105001.236: Birth: called from leoFind ctor
+#@+node:ekr.20081121105001.244:class svar
+class svar:
+    '''A class like Tk's IntVar and StringVar classes.'''
+
+    @others
+
+#@+node:ekr.20090427112929.10:svar.ctor
+def __init__(self,owner,ivar):
+
+    self.ivar = ivar
+    self.owner = owner
+    self.radioButtons = ['node_only','suboutline_only','entire_outline']
+    self.trace = False
+    self.val = None
+    self.w = None
+
+def __repr__(self):
+    return '<svar %s>' % self.ivar
+#@nonl
+#@-node:ekr.20090427112929.10:svar.ctor
+#@+node:ekr.20090427112929.12:get
+def get (self):
+    if self.w:
+        val = self.w.isChecked()
+        if self.trace: g.trace('qt svar %15s = %s' % (self.ivar,val))
+    else:
+        val = self.val
+    return val
+#@nonl
+#@-node:ekr.20090427112929.12:get
+#@+node:ekr.20090427112929.13:init
+def init (self,val):
+
+    '''Init the svar, but do *not* init radio buttons.
+    (This is called from initRadioButtons).'''
+
+    if val in (0,1):
+        self.val = bool(val)
+    else:
+        self.val = val # Don't contain the scope values!
+
+    if self.w:
+        self.w.setChecked(bool(val))
+
+    if self.trace: g.trace('qt svar %15s = %s' % (self.ivar,val))
+#@-node:ekr.20090427112929.13:init
+#@+node:ekr.20090427112929.17:set
+def set (self,val):
+
+    '''Init the svar and update the radio buttons.'''
+
+    self.init(val)
+
+    if self.ivar in self.radioButtons:
+        self.owner.initRadioButtons()
+    elif self.ivar == 'radio-search-scope':
+        self.setRadioScope(val)
+
+
+#@-node:ekr.20090427112929.17:set
+#@+node:ekr.20090427112929.18:setRadioScope
+def setRadioScope (self,val):
+
+    '''Update the svars corresponding to the scope value.'''
+
+    table = (
+        ("suboutline_only","suboutline-only"),
+        ("node_only","node-only"),
+        ("entire_outline","entire-outline"))
+
+    for ivar,val2 in table:
+        if val == val2:
+            svar = self.owner.svarDict.get(ivar)
+            val = svar.get()
+            svar.init(True)
+#@-node:ekr.20090427112929.18:setRadioScope
+#@+node:ekr.20090427112929.15:setWidget
+def setWidget(self,w):
+
+    self.w = w
+#@-node:ekr.20090427112929.15:setWidget
+#@-node:ekr.20081121105001.244:class svar
+#@+node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
+# This is the same as the Tk code because we simulate Tk svars.
+#@nonl
+#@+node:ekr.20081121105001.246:getOption
+def getOption (self,ivar):
+
+    var = self.svarDict.get(ivar)
+
+    if var:
+        val = var.get()
+        # g.trace('ivar %s = %s' % (ivar,val))
+        return val
+    else:
+        # g.trace('bad ivar name: %s' % ivar)
+        return None
+#@-node:ekr.20081121105001.246:getOption
+#@+node:ekr.20081121105001.247:setOption
+def setOption (self,ivar,val):
+
+    if ivar in self.intKeys:
+        if val is not None:
+            svar = self.svarDict.get(ivar)
+            svar.set(val)
+            # g.trace('ivar %s = %s' % (ivar,val))
+
+    elif not g.app.unitTesting:
+        g.trace('oops: bad find ivar %s' % ivar)
+#@-node:ekr.20081121105001.247:setOption
+#@+node:ekr.20081121105001.248:toggleOption
+def toggleOption (self,ivar):
+
+    if ivar in self.intKeys:
+        var = self.svarDict.get(ivar)
+        val = not var.get()
+        var.set(val)
+        # g.trace('%s = %s' % (ivar,val),var)
+    else:
+        g.trace('oops: bad find ivar %s' % ivar)
+#@-node:ekr.20081121105001.248:toggleOption
+#@-node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
+#@-node:ekr.20081121105001.235:class leoQtFindTab (findTab)
+#@-node:ekr.20090409055330.10:Make sure change-all honors node-only and suboutline-only settings
 #@+node:ekr.20090223065019.11:Make Leo's page-up/page-down commands funtional
 # This will be needed for vim.
 
@@ -3854,10 +3527,337 @@ if 1:
     print hPos,vPos
     vScroll.setValue(vPos+10)
 #@nonl
+#@+node:ekr.20090430102239.3:Fix page up/down problem
+@
+
+At present, the qt gui sends PgUp and PgDn directly to the widget.
+
+That is, the plugin does not handle scrolling properly.
+
+This will become an issue for vim bindings.
+#@nonl
+#@+node:ekr.20090430102239.4:masterKeyHandler & helpers
+master_key_count = 0
+
+def masterKeyHandler (self,event,stroke=None):
+
+    '''This is the handler for almost all key bindings.'''
+
+    << define vars >>
+    trace = False and not g.app.unitTesting # or self.trace_masterKeyHandler)
+    traceGC = self.trace_masterKeyHandlerGC and not g.app.unitTesting
+    verbose = True
+
+    if keysym in special_keys:
+        if trace and verbose: g.trace('keysym',keysym)
+        return None
+    if traceGC: g.printNewObjects('masterKey 1')
+    if trace:
+        g.trace('stroke:',repr(stroke),'keysym:',
+            repr(event.keysym),'ch:',repr(event.char),'state',state)
+        # g.trace('callers',g.callers(5))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    # if stroke == 'Return': g.pdb()
+
+    # Handle keyboard-quit first.
+    if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        # g.trace('special case')
+        if c.macroCommands.recordingMacro:
+            c.macroCommands.endKbdMacro()
+            return 'break'
+        else:
+            return k.masterCommand(event,k.keyboardQuit,stroke,'keyboard-quit')
+
+    if k.inState():
+        # This will return unless k.autoCompleterStateHandler
+        # (called from k.callStateFunction) returns 'do-standard-keys'
+        << handle mode bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 2')
+
+    if stroke and isPlain:
+        << handle special cases for plain keys >>
+
+    << handle per-pane bindings >>
+
+    if traceGC: g.printNewObjects('masterKey 5')
+
+    return k.handleUnboundKeys(event,char,keysym,stroke)
+#@+node:ekr.20090430102239.5:<< define vars >>
+k = self ; c = k.c ; gui = g.app.gui
+
+if event:
+    # This is a leoGui base class event.
+    event = gui.leoKeyEvent(event,c,stroke=stroke)
+
+w = event.widget
+char = event.char
+keysym = event.keysym
+if stroke and not keysym:
+    event.keysym = keysym = stroke
+
+w_name = c.widget_name(w)
+state = k.state.kind
+
+special_keys = (
+    'Alt_L','Alt_R',
+    'Caps_Lock','Control_L','Control_R',
+    'Meta_L','Meta_R', # Meta support.
+    'Num_Lock',
+    'Shift_L','Shift_R',
+    'Win_L','Win_R',
+)
+
+self.master_key_count += 1
+
+isPlain =  k.isPlainKey(stroke)
+#@nonl
+#@-node:ekr.20090430102239.5:<< define vars >>
+#@+node:ekr.20090430102239.6:<< handle mode bindings >>
+# First, honor minibuffer bindings for all except user modes.
+
+if state in ('getArg','getFileName','full-command','auto-complete'):
+    if k.handleMiniBindings(event,state,stroke):
+        return 'break'
+
+# Second, honor general modes.
+if state == 'getArg':
+    return k.getArg(event,stroke=stroke)
+elif state == 'getFileName':
+    return k.getFileName(event)
+elif state in ('full-command','auto-complete'):
+    # Do the default state action.
+    if trace: g.trace('calling state function',k.state.kind) # k.state.handler)
+    val = k.callStateFunction(event) # Calls end-command.
+    if val != 'do-standard-keys': return 'break'
+
+# Third, pass keys to user modes.
+else:
+    d =  k.masterBindingsDict.get(state)
+    if d:
+        b = d.get(stroke)
+        if b:
+            if trace: g.trace('calling generalModeHandler',stroke)
+            k.generalModeHandler (event,
+                commandName=b.commandName,func=b.func,
+                modeName=state,nextMode=b.nextMode)
+            return 'break'
+        else:
+            # New in Leo 4.5: unbound keys end mode.
+            if trace: g.trace('unbound key ends mode',stroke,state)
+            k.endMode(event)
+    else:
+        # New in 4.4b4.
+        handler = k.getStateHandler()
+        if handler:
+            handler(event)
+        else:
+            g.trace('No state handler for %s' % state)
+        return 'break'
+#@-node:ekr.20090430102239.6:<< handle mode bindings >>
+#@+node:ekr.20090430102239.7:<< handle special cases for plain keys >>
+# g.trace('plain key','state',k.unboundKeyAction,'stroke',stroke)
+
+# Important: only keys bound somewhere have a stroke.
+# All unbound plain keys will be handled by handleUnboundKeys.
+
+if k.unboundKeyAction in ('insert','overwrite'):
+
+    for key in (k.unboundKeyAction,'body','log','text','all'):
+        # Ignore bindings for all plain keys in insert/overwrite mode *except* auto-complete.
+        d = k.masterBindingsDict.get(key,{})
+        if d:
+            b = d.get(stroke)
+            if b and b.commandName == 'auto-complete':
+                if trace: g.trace('%s: auto-complete key in %s mode' % (stroke,k.unboundKeyAction))
+                k.masterCommand(event,b.func,b.stroke,b.commandName)
+                return 'break'
+
+    if trace: g.trace('unbound key: %s in %s mode' % (stroke,k.unboundKeyAction))
+    k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+    return 'break'
+
+# Bound   plain keys in command mode are by the per-pane logic.
+# Unbound plain keys in command mode are ignored by handleUnboundKeys.
+
+# This code ignores all command-state keys if we are not in a text widget.
+elif k.unboundKeyAction == 'command':
+    if not g.app.gui.isTextWidget(w):
+        c.onCanvasKey(event)
+        return 'break'
+#@nonl
+#@-node:ekr.20090430102239.7:<< handle special cases for plain keys >>
+#@+node:ekr.20090430102239.8:<< handle per-pane bindings >>
+keyStatesTuple = ('command','insert','overwrite')
+
+# g.trace('w_name',w_name,'stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
+
+for key,name in (
+    # Order here is similar to bindtags order.
+    ('command',None),
+    ('insert',None),
+    ('overwrite',None),
+    ('button',None),
+    ('body','body'),
+    ('text','head'), # Important: text bindings in head before tree bindings.
+    ('tree','head'),
+    ('tree','canvas'),
+    ('log', 'log'),
+    ('text','log'),
+    ('text',None),
+    ('all',None),
+):
+    if (
+        # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
+        name and w_name.startswith(name) or
+        key in ('text','all') and g.app.gui.isTextWidget(w) or
+        key in ('button','all')
+    ):
+        d = k.masterBindingsDict.get(key,{})
+        # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+        # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
+        if d:
+            b = d.get(stroke)
+            if b:
+                if trace: g.trace('%s found %s = %s' % (key,repr(b.stroke),b.commandName))
+                if traceGC: g.printNewObjects('masterKey 3')
+                return k.masterCommand(event,b.func,b.stroke,b.commandName)
+#@-node:ekr.20090430102239.8:<< handle per-pane bindings >>
+#@+node:ekr.20090430102239.9:callStateFunction
+def callStateFunction (self,event):
+
+    k = self ; val = None ; ch = g.app.gui.eventChar(event)
+
+    # g.trace(k.state.kind,'ch',ch,'ignore-non-ascii',k.ignore_unbound_non_ascii_keys)
+
+    if k.state.kind:
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            ch and ch not in ('\b','\n','\r','\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            # g.trace('non-ascii',ord(ch))
+            pass
+        elif k.state.handler:
+            val = k.state.handler(event)
+            if val != 'continue':
+                k.endCommand(event,k.commandName)
+        else:
+            g.es_print('no state function for',k.state.kind,color='red')
+
+    return val
+#@-node:ekr.20090430102239.9:callStateFunction
+#@+node:ekr.20090430102239.10:handleMiniBindings
+def handleMiniBindings (self,event,state,stroke):
+
+    k = self ; c = k.c
+    trace = False or (self.trace_masterKeyHandler and not g.app.unitTesting)
+
+    # Special case for bindings handled in k.getArg:
+    if state in ('getArg','full-command'):
+        if stroke in ('BackSpace','Return','Tab','Escape'):
+            return False
+
+    if not state.startswith('auto-'):
+        # New in Leo 4.5: ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            if trace: g.trace('plain key',stroke)
+            return False
+        # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
+        # for all single-line editing commands.
+        for pane in ('mini','all','text'):
+            d = k.masterBindingsDict.get(pane)
+            if d:
+                b = d.get(stroke)
+                if b:
+                    if b.commandName == 'replace-string' and state == 'getArg':
+                        if trace: g.trace('%s binding for replace-string' % (pane),stroke)
+                        return False # Let getArg handle it.
+                    elif b.commandName not in k.singleLineCommandList:
+                        if trace: g.trace('%s binding terminates minibuffer' % (pane),b.commandName,stroke)
+                        k.keyboardQuit(event,hideTabs=True)
+                    else:
+                        if trace: g.trace(repr(stroke),'mini binding',b.commandName)
+                        c.minibufferWantsFocusNow() # New in Leo 4.5.
+                    # Pass this on for macro recording.
+                    k.masterCommand(event,b.func,stroke,b.commandName)
+                    # Careful: the command could exit.
+                    if c.exists and not k.silentMode:
+                        c.minibufferWantsFocus()
+                    return True
+
+    return False
+#@-node:ekr.20090430102239.10:handleMiniBindings
+#@+node:ekr.20090430102239.11:k.handleUnboudKeys
+def handleUnboundKeys (self,event,char,keysym,stroke):
+
+    k = self ; c = k.c ; trace = False
+    modesTuple = ('insert','overwrite')
+
+    if trace:
+        # if stroke: g.trace('***unexpected stroke***')
+        g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
+            # 'state.kind:',k.state.kind),'\n',g.callers())
+        # if (self.master_key_count % 100) == 0: g.printGcSummary()
+
+    if k.unboundKeyAction == 'command':
+        # Ignore all unbound characters in command mode.
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        return 'break'
+
+    elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
+        # insert/overwrite normal character.  <Return> is *not* a normal character.
+        if trace: g.trace('plain key in insert mode',repr(stroke))
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+
+    elif k.ignore_unbound_non_ascii_keys and len(char) > 1:
+        # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)):
+        if trace: g.trace('ignoring unbound non-ascii key')
+        return 'break'
+
+    elif keysym.find('Escape') != -1:
+        # Never insert escape characters.
+        return 'break'
+
+    else:
+        if trace: g.trace(repr(stroke),'no func')
+        return k.masterCommand(event,func=None,stroke=stroke,commandName=None)
+#@-node:ekr.20090430102239.11:k.handleUnboudKeys
+#@-node:ekr.20090430102239.4:masterKeyHandler & helpers
+#@+node:ekr.20090430102239.12:scrollOutlineUp/Down/Line/Page
+def scrollOutlineDownLine (self,event=None):
+    '''Scroll the outline pane down one line.'''
+    a,b = self.c.frame.canvas.leo_treeBar.get()
+    if b < 1.0:
+        self.c.frame.tree.canvas.yview_scroll(1,"unit")
+
+def scrollOutlineDownPage (self,event=None):
+    '''Scroll the outline pane down one page.'''
+    a,b = self.c.frame.canvas.leo_treeBar.get()
+    if b < 1.0:
+        self.c.frame.tree.canvas.yview_scroll(1,"page")
+
+def scrollOutlineUpLine (self,event=None):
+    '''Scroll the outline pane up one line.'''
+    a,b = self.c.frame.canvas.leo_treeBar.get()
+    if a > 0.0:
+        self.c.frame.tree.canvas.yview_scroll(-1,"unit")
+
+def scrollOutlineUpPage (self,event=None):
+    '''Scroll the outline pane up one page.'''
+    a,b = self.c.frame.canvas.leo_treeBar.get()
+    if a > 0.0:
+        self.c.frame.tree.canvas.yview_scroll(-1,"page")
+#@-node:ekr.20090430102239.12:scrollOutlineUp/Down/Line/Page
+#@-node:ekr.20090430102239.3:Fix page up/down problem
 #@-node:ekr.20090223065019.11:Make Leo's page-up/page-down commands funtional
 #@+node:ekr.20090318091009.12:Script errors mess up syntax coloring
 #@-node:ekr.20090318091009.12:Script errors mess up syntax coloring
-#@-node:ekr.20090430102239.1:Before b2
+#@-node:ekr.20090430102239.1:Before b2 8
 #@+node:ekr.20090430102239.13:Before 4.6 final
 #@+node:ekr.20090429101847.10:Support canvas widgets in all panes
 http://groups.google.com/group/leo-editor/browse_thread/thread/9ac06147e75fc042
@@ -4143,18 +4143,6 @@ I've been putting this off, I'll see if this more clever way will work soon.
 #@+node:ekr.20090401110027.1:Make sure qt plugin supports user icons
 #@-node:ekr.20090401110027.1:Make sure qt plugin supports user icons
 #@-node:ekr.20090304084841.11:Later
-#@+node:ekr.20090522102224.3882:To do First
-#@+node:ekr.20090430102239.2:Arrow keys do not work in headlines
-Especially shift-arrow keys.
-#@nonl
-#@-node:ekr.20090430102239.2:Arrow keys do not work in headlines
-#@+node:ekr.20090529063119.3793:Tab keys show as "tab" in headlines
-#@-node:ekr.20090529063119.3793:Tab keys show as "tab" in headlines
-#@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
-http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
-#@nonl
-#@-node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
-#@-node:ekr.20090522102224.3882:To do First
 #@-node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20081121105001.185:Scripts
 #@+node:ekr.20081121105001.186:Script to display Qt font database
@@ -6789,6 +6777,400 @@ def onTextChanged (self):
         c.outerUpdate()
 #@-node:ekr.20081121105001.536:onTextChanged (qtText)
 #@-node:ekr.20090528110734.3796:Fixed middle-button paste bug
+#@+node:ekr.20090529232213.3793:Got @url nodes to work with qt gui
+#@+node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
+def onItemDoubleClicked (self,item,col):
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item),g.callers(4))
+
+    try:
+        self.selecting = True
+
+        e = self.createTreeEditorForItem(item)
+        if not e: g.trace('*** no e')
+
+        p = self.item2position(item)
+        if p:
+            event = None
+            g.doHook("icondclick1",c=c,p=p,v=p,event=event)
+            c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+        else:
+            g.trace('*** no p')
+
+        c.outerUpdate()
+    finally:
+        self.selecting = False
+#@-node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
+#@+node:ekr.20090124174652.29:Event handlers... (nativeTree)
+#@+node:ekr.20090129062500.10:busy (nativeTree)
+def busy (self):
+
+    '''Return True (actually, a debugging string)
+    if any lockout is set.'''
+
+    trace = False
+    table = (
+        (self.contracting,  'contracting'),
+        (self.expanding,    'expanding'),
+        (self.redrawing,    'redrawing'),
+        (self.selecting,    'selecting'))
+
+    item = self.getCurrentItem()
+
+    aList = []
+    for ivar,kind in table:
+        if ivar:
+            aList.append(kind)
+    kinds = ','.join(aList)
+
+    if aList and trace:
+        g.trace(self.traceItem(item),kinds,g.callers(4))
+
+    return kinds # Return the string for debugging
+#@-node:ekr.20090129062500.10:busy (nativeTree)
+#@+node:ekr.20090124174652.30:Click Box... (nativeTree)
+#@+node:ekr.20090124174652.31:onClickBoxClick
+def onClickBoxClick (self,event,p=None):
+
+    if self.busy(): return
+
+    c = self.c
+
+    g.doHook("boxclick1",c=c,p=p,v=p,event=event)
+    g.doHook("boxclick2",c=c,p=p,v=p,event=event)
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.31:onClickBoxClick
+#@+node:ekr.20090124174652.32:onClickBoxRightClick
+def onClickBoxRightClick(self, event, p=None):
+
+    if self.busy(): return
+
+    c = self.c
+
+    g.doHook("boxrclick1",c=c,p=p,v=p,event=event)
+    g.doHook("boxrclick2",c=c,p=p,v=p,event=event)
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.32:onClickBoxRightClick
+#@+node:ekr.20090124174652.33:onPlusBoxRightClick
+def onPlusBoxRightClick (self,event,p=None):
+
+    if self.busy(): return
+
+    c = self.c
+
+    g.doHook('rclick-popup',c=c,p=p,event=event,context_menu='plusbox')
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.33:onPlusBoxRightClick
+#@-node:ekr.20090124174652.30:Click Box... (nativeTree)
+#@+node:ekr.20090124174652.35:Icon Box... (nativeTree)
+# For Qt, there seems to be no way to trigger these events.
+#@nonl
+#@+node:ekr.20090124174652.36:onIconBoxClick
+def onIconBoxClick (self,event,p=None):
+
+    if self.busy(): return
+
+    c = self.c
+
+    g.doHook("iconclick1",c=c,p=p,v=p,event=event)
+    g.doHook("iconclick2",c=c,p=p,v=p,event=event)
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.36:onIconBoxClick
+#@+node:ekr.20090124174652.37:onIconBoxRightClick
+def onIconBoxRightClick (self,event,p=None):
+
+    """Handle a right click in any outline widget."""
+
+    if self.busy(): return
+
+    c = self.c
+
+    g.doHook("iconrclick1",c=c,p=p,v=p,event=event)
+    g.doHook("iconrclick2",c=c,p=p,v=p,event=event)
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.37:onIconBoxRightClick
+#@+node:ekr.20090124174652.38:onIconBoxDoubleClick
+def onIconBoxDoubleClick (self,event,p=None):
+
+    if self.busy(): return
+
+    c = self.c
+
+    g.doHook("icondclick1",c=c,p=p,v=p,event=event)
+    g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.38:onIconBoxDoubleClick
+#@-node:ekr.20090124174652.35:Icon Box... (nativeTree)
+#@+node:ekr.20090124174652.40:onItemCollapsed (nativeTree)
+def onItemCollapsed (self,item):
+
+    trace = False
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+    if trace: g.trace(self.traceItem(item))
+    p = self.item2position(item)
+
+    if p:
+        # Important: do not set lockouts here.
+        # Only methods that actually generate events should set lockouts.
+        p.contract()
+        self.select(p) # Calls before/afterSelectHint.    
+    else:
+        self.error('no p')
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.40:onItemCollapsed (nativeTree)
+#@+node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
+def onItemDoubleClicked (self,item,col):
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item),g.callers(4))
+
+    try:
+        self.selecting = True
+
+        e = self.createTreeEditorForItem(item)
+        if not e: g.trace('*** no e')
+
+        p = self.item2position(item)
+        if p:
+            event = None
+            g.doHook("icondclick1",c=c,p=p,v=p,event=event)
+            c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+        else:
+            g.trace('*** no p')
+
+        c.outerUpdate()
+    finally:
+        self.selecting = False
+#@-node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
+#@+node:ekr.20090124174652.42:onItemExpanded (nativeTree)
+def onItemExpanded (self,item):
+
+    '''Handle and tree-expansion event.'''
+
+    trace = False
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+    if trace: g.trace(self.traceItem(item))
+    p = self.item2position(item)
+
+    if p:
+        # Important: do not set lockouts here.
+        # Only methods that actually generate events should set lockouts.
+        if not p.isExpanded():
+            p.expand()
+            self.select(p) # Calls before/afterSelectHint.
+            # Important: setting scroll=False here has no effect
+            # when a keystroke causes the expansion, but is a
+            # *big* improvement when clicking the outline.
+            self.full_redraw(scroll=False)
+        else:
+            self.select(p)
+    else:
+        self.error('no p')
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.42:onItemExpanded (nativeTree)
+#@+node:ekr.20090124174652.43:onTreeSelect (nativeTree)
+def onTreeSelect(self):
+
+    '''Select the proper position when a tree node is selected.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    item = self.getCurrentItem()
+    p = self.item2position(item)
+
+    if p:
+        # Important: do not set lockouts here.
+        # Only methods that actually generate events should set lockouts.
+        if trace: g.trace(self.traceItem(item))
+        self.select(p) # Calls before/afterSelectHint.
+    else:
+        self.error('no p for item: %s' % item,g.callers(4))
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.43:onTreeSelect (nativeTree)
+#@+node:ekr.20090124174652.45:tree.OnPopup & allies (nativeTree)
+def OnPopup (self,p,event):
+
+    """Handle right-clicks in the outline.
+
+    This is *not* an event handler: it is called from other event handlers."""
+
+    # Note: "headrclick" hooks handled by vnode callback routine.
+
+    if event != None:
+        c = self.c
+        c.setLog()
+
+        if not g.doHook("create-popup-menu",c=c,p=p,v=p,event=event):
+            self.createPopupMenu(event)
+        if not g.doHook("enable-popup-menu-items",c=c,p=p,v=p,event=event):
+            self.enablePopupMenuItems(p,event)
+        if not g.doHook("show-popup-menu",c=c,p=p,v=p,event=event):
+            self.showPopupMenu(event)
+
+    return "break"
+#@+node:ekr.20090124174652.46:OnPopupFocusLost
+@
+On Linux we must do something special to make the popup menu "unpost" if the
+mouse is clicked elsewhere. So we have to catch the <FocusOut> event and
+explicitly unpost. In order to process the <FocusOut> event, we need to be able
+to find the reference to the popup window again, so this needs to be an
+attribute of the tree object; hence, "self.popupMenu".
+
+Aside: though Qt tries to be muli-platform, the interaction with different
+window managers does cause small differences that will need to be compensated by
+system specific application code. :-(
+@c
+
+# 20-SEP-2002 DTHEIN: This event handler is only needed for Linux.
+
+def OnPopupFocusLost(self,event=None):
+
+    # self.popupMenu.unpost()
+    pass
+#@-node:ekr.20090124174652.46:OnPopupFocusLost
+#@+node:ekr.20090124174652.47:createPopupMenu
+def createPopupMenu (self,event):
+
+    c = self.c ; frame = c.frame
+
+    # self.popupMenu = menu = Qt.Menu(g.app.root, tearoff=0)
+
+    # # Add the Open With entries if they exist.
+    # if g.app.openWithTable:
+        # frame.menu.createOpenWithMenuItemsFromTable(menu,g.app.openWithTable)
+        # table = (("-",None,None),)
+        # frame.menu.createMenuEntries(menu,table)
+
+    << Create the menu table >>
+
+    # # New in 4.4.  There is no need for a dontBind argument because
+    # # Bindings from tables are ignored.
+    # frame.menu.createMenuEntries(menu,table)
+#@+node:ekr.20090124174652.48:<< Create the menu table >>
+# table = (
+    # ("&Read @file Nodes",c.readAtFileNodes),
+    # ("&Write @file Nodes",c.fileCommands.writeAtFileNodes),
+    # ("-",None),
+    # ("&Tangle",c.tangle),
+    # ("&Untangle",c.untangle),
+    # ("-",None),
+    # ("Toggle Angle &Brackets",c.toggleAngleBrackets),
+    # ("-",None),
+    # ("Cut Node",c.cutOutline),
+    # ("Copy Node",c.copyOutline),
+    # ("&Paste Node",c.pasteOutline),
+    # ("&Delete Node",c.deleteOutline),
+    # ("-",None),
+    # ("&Insert Node",c.insertHeadline),
+    # ("&Clone Node",c.clone),
+    # ("Sort C&hildren",c.sortChildren),
+    # ("&Sort Siblings",c.sortSiblings),
+    # ("-",None),
+    # ("Contract Parent",c.contractParent),
+# )
+#@-node:ekr.20090124174652.48:<< Create the menu table >>
+#@-node:ekr.20090124174652.47:createPopupMenu
+#@+node:ekr.20090124174652.49:enablePopupMenuItems
+def enablePopupMenuItems (self,v,event):
+
+    """Enable and disable items in the popup menu."""
+
+    c = self.c 
+
+    # menu = self.popupMenu
+
+    << set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
+    # isAtFile = g.choose(isAtFile,1,0)
+    # isAtRoot = g.choose(isAtRoot,1,0)
+    # canContract = v.parent() != None
+    # canContract = g.choose(canContract,1,0)
+
+    # enable = self.frame.menu.enableMenu
+
+    # for name in ("Read @file Nodes", "Write @file Nodes"):
+        # enable(menu,name,isAtFile)
+    # for name in ("Tangle", "Untangle"):
+        # enable(menu,name,isAtRoot)
+
+    # enable(menu,"Cut Node",c.canCutOutline())
+    # enable(menu,"Delete Node",c.canDeleteHeadline())
+    # enable(menu,"Paste Node",c.canPasteOutline())
+    # enable(menu,"Sort Children",c.canSortChildren())
+    # enable(menu,"Sort Siblings",c.canSortSiblings())
+    # enable(menu,"Contract Parent",c.canContractParent())
+#@+node:ekr.20090124174652.50:<< set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
+# isAtFile = False
+# isAtRoot = False
+
+# for v2 in v.self_and_subtree_iter():
+    # if isAtFile and isAtRoot:
+        # break
+    # if (v2.isAtFileNode() or
+        # v2.isAtNorefFileNode() or
+        # v2.isAtAsisFileNode() or
+        # v2.isAtNoSentFileNode()
+    # ):
+        # isAtFile = True
+
+    # isRoot,junk = g.is_special(v2.bodyString(),0,"@root")
+    # if isRoot:
+        # isAtRoot = True
+#@-node:ekr.20090124174652.50:<< set isAtRoot and isAtFile if v's tree contains @root or @file nodes >>
+#@-node:ekr.20090124174652.49:enablePopupMenuItems
+#@+node:ekr.20090124174652.51:showPopupMenu
+def showPopupMenu (self,event):
+
+    """Show a popup menu."""
+
+    # c = self.c ; menu = self.popupMenu
+
+    # g.app.gui.postPopupMenu(c, menu, event.x_root, event.y_root)
+
+    # self.popupMenu = None
+
+    # # Set the focus immediately so we know when we lose it.
+    # #c.widgetWantsFocus(menu)
+#@-node:ekr.20090124174652.51:showPopupMenu
+#@-node:ekr.20090124174652.45:tree.OnPopup & allies (nativeTree)
+#@-node:ekr.20090124174652.29:Event handlers... (nativeTree)
+#@-node:ekr.20090529232213.3793:Got @url nodes to work with qt gui
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@-node:ekr.20081208155215.12:Unused

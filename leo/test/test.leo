@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -357,11 +357,9 @@
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
 <v t="ekr.20090521070342.1907"><vh>@button show-rst</vh></v>
-<v t="ekr.20090525112253.1942"><vh>@url http://webpages.charter.net/edreamleo/front.html</vh></v>
-<v t="ekr.20090527122538.1897"><vh>@path unittest</vh>
+<v t="ekr.20090527122538.1897" a="E"><vh>@path unittest</vh>
 <v t="ekr.20090526124114.1898"><vh>@shadow mismatched-extension-bug.py</vh></v>
 </v>
-<v t="ekr.20090529102125.1801" a="E"><vh>@shadow html-shadow-test.html</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2734,7 +2732,6 @@ self.assertNotEqual(1,2)</t>
 <t tx="ekr.20090514103332.1929"></t>
 <t tx="ekr.20090521070342.1907">g.app.gui.runScrolledMessageDialog(c=c,msg=u'rst:'+p.b)</t>
 <t tx="ekr.20090525090210.1940"></t>
-<t tx="ekr.20090525112253.1942"></t>
 <t tx="ekr.20090527122538.1897"></t>
 </tnodes>
 </leo_file>

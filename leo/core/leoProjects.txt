@@ -13097,6 +13097,117 @@ if g.unitTesting:
 #@-node:ekr.20090529125512.6128:@test x.markerFromFileLines
 #@-node:ekr.20090529125512.6122:x.markerFromFileLines & helper & test
 #@-node:ekr.20090529103821.6402:Compute delims from private shadow file as needed
+#@+node:ekr.20090529205043.6026:Made @url nodes work with qt gui
+#@+node:tbrown.20090219095555.61:g.handleUrlInUrlNode
+def handleUrlInUrlNode(url):
+
+    # Note: the UNL plugin has its own notion of what a good url is.
+
+    # c = self.c
+    # g.trace(url)
+    << check the url; return if bad >>
+    << pass the url to the web browser >>
+#@+node:tbrown.20090219095555.62:<< check the url; return if bad >>
+@ A valid url is (according to D.T.Hein):
+
+3 or more lowercase alphas, followed by,
+one ':', followed by,
+one or more of: (excludes !"#;<>[\]^`|)
+  $%&'()*+,-./0-9:=?@A-Z_a-z{}~
+followed by one of: (same as above, except no minus sign or comma).
+  $%&'()*+/0-9:=?@A-Z_a-z}~
+@c
+
+urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+
+if not url or len(url) == 0:
+    g.es("no url following @url")
+    return
+
+# Add http:// if required.
+if not re.match('^([a-z]{3,}:)',url):
+    url = 'http://' + url
+if not re.match(urlPattern,url):
+    g.es("invalid url:",url)
+    return
+#@nonl
+#@-node:tbrown.20090219095555.62:<< check the url; return if bad >>
+#@+node:tbrown.20090219095555.63:<< pass the url to the web browser >>
+@ Most browsers should handle the following urls:
+  ftp://ftp.uu.net/public/whatever.
+  http://localhost/MySiteUnderDevelopment/index.html
+  file://home/me/todolist.html
+@c
+
+try:
+    import os
+    os.chdir(g.app.loadDir)
+    if g.match(url,0,"file:") and url[-4:]==".leo":
+        ok,frame = g.openWithFileName(url[5:],None)
+    else:
+        import webbrowser
+        # Mozilla throws a weird exception, then opens the file!
+        try: webbrowser.open(url)
+        except: pass
+except:
+    g.es("exception opening",url)
+    g.es_exception()
+#@-node:tbrown.20090219095555.63:<< pass the url to the web browser >>
+#@-node:tbrown.20090219095555.61:g.handleUrlInUrlNode
+#@+node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper & test
+def OnIconDoubleClick (self,p):
+
+    # Note: "icondclick" hooks handled by vnode callback routine.
+
+    c = self.c
+    s = p.h.strip()
+    if g.match_word(s,0,"@url"):
+        url = s[4:].strip()
+        if url.lstrip().startswith('--'):
+            # Get the url from the first body line.
+            lines = p.b.split('\n')
+            url = lines and lines[0] or ''
+        else:
+            << stop the url after any whitespace >>
+        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+            g.handleUrlInUrlNode(url)
+        g.doHook("@url2",c=c,p=p,v=p)
+
+    return 'break' # 11/19/06
+#@+node:ekr.20031218072017.2313:<< stop the url after any whitespace  >>
+# For safety, the URL string should end at the first whitespace, unless quoted.
+# This logic is also found in the UNL plugin so we don't have to change the 'unl1' hook.
+
+url = url.replace('\t',' ')
+
+# Strip quotes.
+i = -1
+if url and url[0] in ('"',"'"):
+    i = url.find(url[0],1)
+    if i > -1:
+        url = url[1:i]
+
+if i == -1:
+    # Not quoted or no matching quote.
+    i = url.find(' ')
+    if i > -1:
+        if 0: # No need for a warning.  Assume everything else is a comment.
+            z_url = url[i:]
+            g.es("ignoring characters after space in url:",z_url)
+            g.es("use %20 instead of spaces")
+        url = url[:i]
+#@-node:ekr.20031218072017.2313:<< stop the url after any whitespace  >>
+#@+node:ekr.20090529205043.6027:@test OnIconDoubleClick
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    c.frame.tree.OnIconDoubleClick(p.firstChild())
+#@+node:ekr.20060217111834:@@url http://docs.python.org/lib/re-syntax.html
+#@-node:ekr.20060217111834:@@url http://docs.python.org/lib/re-syntax.html
+#@-node:ekr.20090529205043.6027:@test OnIconDoubleClick
+#@-node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper & test
+#@-node:ekr.20090529205043.6026:Made @url nodes work with qt gui
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
