@@ -3,8 +3,6 @@
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20090430102239.1:Before b2 8
-#@+node:ekr.20090529063119.3793:Tab keys show as "tab" in headlines
-#@-node:ekr.20090529063119.3793:Tab keys show as "tab" in headlines
 #@+node:ekr.20090430102239.2:Arrow keys do not work in headlines
 Especially shift-arrow keys.
 #@nonl
@@ -5175,7 +5173,7 @@ def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
 def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
-    verbose = True
+    verbose = False
     traceEvent = False and not g.unitTesting
     traceFocus = False and not g.unitTesting
     c = self.c ; k = c.k
@@ -5580,7 +5578,7 @@ with Tk's key-event specifiers). It is also, I think, the least confusing set of
 rules.
 #@nonl
 #@-node:ekr.20081121105001.167:<< about internal bindings >>
-#@+node:ekr.20090407101640.10:char2tkName (new)
+#@+node:ekr.20090407101640.10:char2tkName
 char2tkNameDict = {
     # Part 1: same as k.guiBindNamesDict
     "&" : "ampersand",
@@ -5634,7 +5632,8 @@ char2tkNameDict = {
     'F10':'F10','F11':'F11','F12':'F12',
     'Home':'Home',
     'Return':'Return',
-    'Tab':'Tab',
+    # 'Tab':'Tab',
+    'Tab':'\t', # A hack for QLineEdit.
     # Unused: Break, Caps_Lock,Linefeed,Num_lock
 }
 
@@ -5642,12 +5641,12 @@ def char2tkName (self,ch):
     val = self.char2tkNameDict.get(ch)
     # g.trace(repr(ch),repr(val))
     return val
-#@-node:ekr.20090407101640.10:char2tkName (new)
+#@-node:ekr.20090407101640.10:char2tkName
 #@+node:ekr.20081121105001.168:eventFilter
 def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
-    verbose = True
+    verbose = False
     traceEvent = False and not g.unitTesting
     traceFocus = False and not g.unitTesting
     c = self.c ; k = c.k
@@ -5770,7 +5769,7 @@ def qtMods (self,event):
 
     return mods
 #@-node:ekr.20081121105001.173:qtMods
-#@+node:ekr.20081121105001.174:tkKey (changed)
+#@+node:ekr.20081121105001.174:tkKey
 def tkKey (self,event,mods,keynum,text,toString,ch):
 
     '''Carefully convert the Qt key to a 
@@ -5806,7 +5805,7 @@ def tkKey (self,event,mods,keynum,text,toString,ch):
     ignore = not ch # Essential
     ch = text or toString
     return tkKey,ch,ignore
-#@-node:ekr.20081121105001.174:tkKey (changed)
+#@-node:ekr.20081121105001.174:tkKey
 #@+node:ekr.20081121105001.169:toStroke
 def toStroke (self,tkKey,ch):
 
@@ -6332,7 +6331,7 @@ with Tk's key-event specifiers). It is also, I think, the least confusing set of
 rules.
 #@nonl
 #@-node:ekr.20081121105001.167:<< about internal bindings >>
-#@+node:ekr.20090407101640.10:char2tkName (new)
+#@+node:ekr.20090407101640.10:char2tkName
 char2tkNameDict = {
     # Part 1: same as k.guiBindNamesDict
     "&" : "ampersand",
@@ -6386,7 +6385,8 @@ char2tkNameDict = {
     'F10':'F10','F11':'F11','F12':'F12',
     'Home':'Home',
     'Return':'Return',
-    'Tab':'Tab',
+    # 'Tab':'Tab',
+    'Tab':'\t', # A hack for QLineEdit.
     # Unused: Break, Caps_Lock,Linefeed,Num_lock
 }
 
@@ -6394,12 +6394,12 @@ def char2tkName (self,ch):
     val = self.char2tkNameDict.get(ch)
     # g.trace(repr(ch),repr(val))
     return val
-#@-node:ekr.20090407101640.10:char2tkName (new)
+#@-node:ekr.20090407101640.10:char2tkName
 #@+node:ekr.20081121105001.168:eventFilter
 def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
-    verbose = True
+    verbose = False
     traceEvent = False and not g.unitTesting
     traceFocus = False and not g.unitTesting
     c = self.c ; k = c.k
@@ -6522,7 +6522,7 @@ def qtMods (self,event):
 
     return mods
 #@-node:ekr.20081121105001.173:qtMods
-#@+node:ekr.20081121105001.174:tkKey (changed)
+#@+node:ekr.20081121105001.174:tkKey
 def tkKey (self,event,mods,keynum,text,toString,ch):
 
     '''Carefully convert the Qt key to a 
@@ -6558,7 +6558,7 @@ def tkKey (self,event,mods,keynum,text,toString,ch):
     ignore = not ch # Essential
     ch = text or toString
     return tkKey,ch,ignore
-#@-node:ekr.20081121105001.174:tkKey (changed)
+#@-node:ekr.20081121105001.174:tkKey
 #@+node:ekr.20081121105001.169:toStroke
 def toStroke (self,tkKey,ch):
 
@@ -6664,7 +6664,7 @@ def traceFocuse (self,eventType,obj):
     # else: g.trace('unknown kind: %s' % eventType)
 #@-node:ekr.20090407080217.1:traceFocus
 #@-node:ekr.20081121105001.166:class leoQtEventFilter
-#@+node:ekr.20090407101640.10:char2tkName (new)
+#@+node:ekr.20090407101640.10:char2tkName
 char2tkNameDict = {
     # Part 1: same as k.guiBindNamesDict
     "&" : "ampersand",
@@ -6718,7 +6718,8 @@ char2tkNameDict = {
     'F10':'F10','F11':'F11','F12':'F12',
     'Home':'Home',
     'Return':'Return',
-    'Tab':'Tab',
+    # 'Tab':'Tab',
+    'Tab':'\t', # A hack for QLineEdit.
     # Unused: Break, Caps_Lock,Linefeed,Num_lock
 }
 
@@ -6726,7 +6727,7 @@ def char2tkName (self,ch):
     val = self.char2tkNameDict.get(ch)
     # g.trace(repr(ch),repr(val))
     return val
-#@-node:ekr.20090407101640.10:char2tkName (new)
+#@-node:ekr.20090407101640.10:char2tkName
 #@-node:ekr.20090522102224.3883:Fixed bug: Ins key inserted "Ins" into text
 #@+node:ekr.20090528110734.3796:Fixed middle-button paste bug
 #@+node:ekr.20081121105001.536:onTextChanged (qtText)

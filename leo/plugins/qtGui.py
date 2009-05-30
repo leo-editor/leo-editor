@@ -5485,7 +5485,7 @@ class leoQtEventFilter(QtCore.QObject):
 
 
     #@-node:ekr.20081121105001.180: ctor
-    #@+node:ekr.20090407101640.10:char2tkName (new)
+    #@+node:ekr.20090407101640.10:char2tkName
     char2tkNameDict = {
         # Part 1: same as k.guiBindNamesDict
         "&" : "ampersand",
@@ -5539,7 +5539,8 @@ class leoQtEventFilter(QtCore.QObject):
         'F10':'F10','F11':'F11','F12':'F12',
         'Home':'Home',
         'Return':'Return',
-        'Tab':'Tab',
+        # 'Tab':'Tab',
+        'Tab':'\t', # A hack for QLineEdit.
         # Unused: Break, Caps_Lock,Linefeed,Num_lock
     }
 
@@ -5547,12 +5548,12 @@ class leoQtEventFilter(QtCore.QObject):
         val = self.char2tkNameDict.get(ch)
         # g.trace(repr(ch),repr(val))
         return val
-    #@-node:ekr.20090407101640.10:char2tkName (new)
+    #@-node:ekr.20090407101640.10:char2tkName
     #@+node:ekr.20081121105001.168:eventFilter
     def eventFilter(self, obj, event):
 
         trace = False and not g.unitTesting
-        verbose = True
+        verbose = False
         traceEvent = False and not g.unitTesting
         traceFocus = False and not g.unitTesting
         c = self.c ; k = c.k
@@ -5675,7 +5676,7 @@ class leoQtEventFilter(QtCore.QObject):
 
         return mods
     #@-node:ekr.20081121105001.173:qtMods
-    #@+node:ekr.20081121105001.174:tkKey (changed)
+    #@+node:ekr.20081121105001.174:tkKey
     def tkKey (self,event,mods,keynum,text,toString,ch):
 
         '''Carefully convert the Qt key to a 
@@ -5711,7 +5712,7 @@ class leoQtEventFilter(QtCore.QObject):
         ignore = not ch # Essential
         ch = text or toString
         return tkKey,ch,ignore
-    #@-node:ekr.20081121105001.174:tkKey (changed)
+    #@-node:ekr.20081121105001.174:tkKey
     #@+node:ekr.20081121105001.169:toStroke
     def toStroke (self,tkKey,ch):
 
