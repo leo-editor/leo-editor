@@ -116,7 +116,7 @@ def removeChapterByName (self,name):
     c.redraw()
 #@-node:ekr.20070606075434:cc.removeChapterByName
 #@-node:ekr.20090324100430.1:Deleting @chapter node doesn't work
-#@+node:ekr.20090525113804.5778:Fix lost anchor bug
+#@+node:ekr.20090525113804.5778:Fix lost anchor bug page up/down
 @nocolor-node
 
 http://bugs.launchpad.net/leo-editor/+bug/363403
@@ -133,7 +133,7 @@ selection of several pages, as intended.
 
 This may be hard to fix, without taking over the qt code's handling of page up/down.
 #@nonl
-#@-node:ekr.20090525113804.5778:Fix lost anchor bug
+#@-node:ekr.20090525113804.5778:Fix lost anchor bug page up/down
 #@+node:ekr.20090430092048.4:Fix all qt bugs
 #@-node:ekr.20090430092048.4:Fix all qt bugs
 #@+node:ekr.20090523070447.6475:Rewrite rst documentation
@@ -1178,11 +1178,15 @@ def extendHelper (self,w,extend,spot,upOrDown=False):
     extend: Clear the selection unless this is True.
     spot:   The *new* insert point.
     '''
+
+    trace = False and not g.unitTesting
     c = self.c ; p = c.p
     extend = extend or self.extendMode
     ins = w.getInsertPoint()
     i,j = w.getSelectionRange()
-    # g.trace('extend',extend,'ins',ins,'sel=',i,j,'spot=',spot,'moveSpot',self.moveSpot)
+    if trace: g.trace(
+        'extend',extend,'ins',ins,'sel=',i,j,
+        'spot=',spot,'moveSpot',self.moveSpot)
 
     # Reset the move spot if needed.
     if self.moveSpot is None or p.v.t != self.moveSpotNode:
@@ -1218,7 +1222,6 @@ def extendHelper (self,w,extend,spot,upOrDown=False):
 
     w.seeInsertPoint()
     c.frame.updateStatusLine()
-#@nonl
 #@-node:ekr.20060113130510:extendHelper
 #@+node:ekr.20060113105246.1:moveUpOrDownHelper
 def moveUpOrDownHelper (self,event,direction,extend):
@@ -1461,6 +1464,9 @@ def setMoveCol (self,w,spot):
     self.moveSpot = i
     self.moveCol = col
     self.moveSpotNode = p.v.t
+
+    # g.trace('moveSpot',i)
+#@nonl
 #@-node:ekr.20060209095101:setMoveCol
 #@-node:ekr.20051218170358: helpers
 #@+node:ekr.20081123102100.1:backToHome
