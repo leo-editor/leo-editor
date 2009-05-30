@@ -5560,6 +5560,7 @@ class leoQtEventFilter(QtCore.QObject):
         eventType = event.type()
         ev = QtCore.QEvent
         gui = g.app.gui
+        aList = []
         kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
 
         if traceFocus: self.traceFocus(eventType,obj)
@@ -5603,16 +5604,14 @@ class leoQtEventFilter(QtCore.QObject):
         if self.keyIsActive:
             stroke = self.toStroke(tkKey,ch)
             if override:
-                if trace and not ignore: g.trace('bound',repr(stroke))
+                if trace and not ignore:
+                    g.trace('bound',repr(stroke)) # repr(aList))
                 w = self.w # Pass the wrapper class, not the wrapped widget.
                 leoEvent = leoKeyEvent(event,c,w,ch,tkKey,stroke)
                 ret = k.masterKeyHandler(leoEvent,stroke=stroke)
                 c.outerUpdate()
             else:
-                # if (stroke): # and not stroke.startswith('Alt+') and 
-                        # not stroke.startswith('Ctrl+') and
-                        # not stroke in ('PgDn','PgUp')):
-                if trace: g.trace(self.tag,'unbound',tkKey,stroke)
+                if trace and verbose: g.trace(self.tag,'unbound',tkKey,stroke)
 
         if traceEvent: self.traceEvent(obj,event,tkKey,override)
 
@@ -8093,7 +8092,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         insert = keys.get('insert')
         i,j = self.toGuiIndex(i),self.toGuiIndex(j)
-        if i > j: i,j = j,i
+
+        ### if i > j: i,j = j,i
 
         return self.setSelectionRangeHelper(i,j,insert)
     #@+node:ekr.20081121105001.534:setSelectionRangeHelper
@@ -8497,23 +8497,28 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         i = max(0,min(i,len(s)))
         w.setCursorPosition(i)
     #@-node:ekr.20081121105001.557:setInsertPoint
-    #@+node:ekr.20081121105001.558:setSelectionRangeHelper
+    #@+node:ekr.20081121105001.558:setSelectionRangeHelper (leoQLineEdit)
     def setSelectionRangeHelper(self,i,j,insert):
 
         w = self.widget
-
-        # g.trace('i',i,'j',j,'insert',insert,g.callers(4))
+        # g.trace(i,j,insert,w)
         if i > j: i,j = j,i
         s = w.text()
         s = g.app.gui.toUnicode(s)
-        i = max(0,min(i,len(s)))
-        j = max(0,min(j,len(s)))
-        k = max(0,min(j-i,len(s)))
+        n = len(s)
+        i = max(0,min(i,n))
+        j = max(0,min(j,n))
+        insert = max(0,min(insert,n))
         if i == j:
             w.setCursorPosition(i)
         else:
-            w.setSelection(i,k)
-    #@-node:ekr.20081121105001.558:setSelectionRangeHelper
+            length = j-i
+            if insert < j:
+                w.setSelection(j,-length)
+            else:
+                w.setSelection(i,length)
+    #@nonl
+    #@-node:ekr.20081121105001.558:setSelectionRangeHelper (leoQLineEdit)
     #@-node:ekr.20081121105001.550:Widget-specific overrides (QLineEdit)
     #@-others
 #@-node:ekr.20081121105001.544: class leoQLineEditWidget (leoQtBaseTextWidget)
