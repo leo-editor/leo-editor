@@ -59,7 +59,10 @@ try:
 except Exception:
     pass
 
-subprocess = g.importExtension('subprocess',None,verbose=False)
+try:
+    import subprocess
+except ImportError:
+    subprocess = g.importExtension('subprocess',None,verbose=False)
 
 # The following import _is_ used.
 import token    # for Check Python command
