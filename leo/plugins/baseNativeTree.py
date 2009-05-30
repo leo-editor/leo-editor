@@ -525,7 +525,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
     def onItemDoubleClicked (self,item,col):
 
-        trace = False
+        trace = False and not g.unitTesting
         verbose = False
 
         if self.busy(): return
@@ -544,6 +544,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if p:
                 event = None
                 g.doHook("icondclick1",c=c,p=p,v=p,event=event)
+                c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
                 g.doHook("icondclick2",c=c,p=p,v=p,event=event)
             else:
                 g.trace('*** no p')

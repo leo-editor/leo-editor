@@ -2553,7 +2553,7 @@ class leoTree:
             g.funcToMethod(f,leoNodes.position)
     #@nonl
     #@-node:ekr.20040803072955.21:tree.injectCallbacks
-    #@+node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper
+    #@+node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper & test
     def OnIconDoubleClick (self,p):
 
         # Note: "icondclick" hooks handled by vnode callback routine.
@@ -2597,8 +2597,16 @@ class leoTree:
             g.doHook("@url2",c=c,p=p,v=p)
 
         return 'break' # 11/19/06
-    #@nonl
-    #@-node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper
+    #@+node:ekr.20090529205043.6027:@test OnIconDoubleClick
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+
+        c.frame.tree.OnIconDoubleClick(p.firstChild())
+    #@+node:ekr.20060217111834:@@url http://docs.python.org/lib/re-syntax.html
+    #@-node:ekr.20060217111834:@@url http://docs.python.org/lib/re-syntax.html
+    #@-node:ekr.20090529205043.6027:@test OnIconDoubleClick
+    #@-node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper & test
     #@-node:ekr.20061109165848:Must be defined in base class
     #@+node:ekr.20081005065934.8:May be defined in subclasses
     # These are new in Leo 4.6.
