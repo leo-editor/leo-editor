@@ -3496,13 +3496,12 @@ class editCommandsClass (baseEditCommandsClass):
     #@nonl
     #@-node:ekr.20051218122116:moveToHelper
     #@+node:ekr.20090530181848.6035:movePageHelper
-    def movePageHelper(event,kind,extend):
+    def movePageHelper(self,event,kind,extend):
 
         # kind in ('back','forward')
         # extend in (True,False)
 
         g.trace('not ready yet')
-    #@nonl
     #@-node:ekr.20090530181848.6035:movePageHelper
     #@+node:ekr.20051218171457:movePastCloseHelper
     def movePastCloseHelper (self,event,extend):
