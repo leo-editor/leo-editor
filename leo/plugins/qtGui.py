@@ -360,7 +360,7 @@ class DynamicWindow(QtGui.QMainWindow):
         innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
 
         # Signals.
-        if False: # Ville's bug fix.
+        if False: # Ville's bug fix.  Crashes with or without this.
             QtCore.QObject.connect(treeWidget,
                 QtCore.SIGNAL("itemSelectionChanged()"),self.showNormal)
 
@@ -4486,7 +4486,8 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
             item.setText(0,s)
     #@-node:ekr.20090124174652.108:setItemText
     #@-node:ekr.20090124174652.115:Items
-    #@+node:ekr.20090124174652.122:Scroll bars
+    #@+node:ekr.20090124174652.122:Scroll bars (leoQtTree)
+    #@+node:ekr.20090531084925.3779:getSCroll
     def getScroll (self):
 
         '''Return the hPos,vPos for the tree's scrollbars.'''
@@ -4497,7 +4498,8 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         hPos = hScroll.sliderPosition()
         vPos = vScroll.sliderPosition()
         return hPos,vPos
-
+    #@-node:ekr.20090531084925.3779:getSCroll
+    #@+node:ekr.20090531084925.3780:setH/VScroll
     def setHScroll (self,hPos):
         w = self.treeWidget
         hScroll = w.horizontalScrollBar()
@@ -4509,7 +4511,32 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         vScroll = w.verticalScrollBar()
         vScroll.setValue(vPos)
     #@nonl
-    #@-node:ekr.20090124174652.122:Scroll bars
+    #@-node:ekr.20090531084925.3780:setH/VScroll
+    #@+node:ekr.20090531084925.3774:scrollDelegate (leoQtTree)
+    def scrollDelegate (self,kind):
+
+        '''Scroll a QTreeWidget up or down.
+        kind is in ('down-line','down-page','up-line','up-page')
+        '''
+        c = self.c ; w = self.treeWidget
+        vScroll = w.verticalScrollBar()
+        h = w.size().height()
+        lineSpacing = w.fontMetrics().lineSpacing()
+        n = h/lineSpacing
+        if   kind == 'down-half-page': delta = n/2
+        elif kind == 'down-line':      delta = 1
+        elif kind == 'down-page':      delta = n
+        elif kind == 'up-half-page':   delta = -n/2
+        elif kind == 'up-line':        delta = -1
+        elif kind == 'up-page':        delta = -n
+        else:
+            delta = 0 ; g.trace('bad kind:',kind)
+        val = vScroll.value()
+        # g.trace(kind,n,h,lineSpacing,delta,val)
+        vScroll.setValue(val+delta)
+        c.treeWantsFocus()
+    #@-node:ekr.20090531084925.3774:scrollDelegate (leoQtTree)
+    #@-node:ekr.20090124174652.122:Scroll bars (leoQtTree)
     #@-node:ekr.20090124174652.102:Widget-dependent helpers (leoQtTree)
     #@-others
 #@-node:ekr.20081121105001.400:class leoQtTree (baseNativeTree)
@@ -8938,6 +8965,49 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         return self.widget.textCursor().hasSelection()
     #@-node:ekr.20081121105001.584:hasSelection
+    #@+node:ekr.20090531084925.3773:scrolling (QTextEdit)
+    #@+node:ekr.20090531084925.3775:indexIsVisible and linesPerPage
+    # This is not used if linesPerPage exists.
+    def indexIsVisible (self,i):
+        return False
+
+    def linesPerPage (self):
+
+        '''Return the number of lines presently visible.'''
+
+        w = self.widget
+        h = w.size().height()
+        lineSpacing = w.fontMetrics().lineSpacing()
+        n = h/lineSpacing
+        # g.trace(n,h,lineSpacing)
+        return n
+    #@-node:ekr.20090531084925.3775:indexIsVisible and linesPerPage
+    #@+node:ekr.20090531084925.3776:scrollDelegate (QTextEdit)
+    def scrollDelegate(self,kind):
+
+        '''Scroll a QTextEdit up or down one page.
+        direction is in ('down-line','down-page','up-line','up-page')'''
+
+        c = self.c ; w = self.widget
+        vScroll = w.verticalScrollBar()
+        h = w.size().height()
+        lineSpacing = w.fontMetrics().lineSpacing()
+        n = h/lineSpacing
+        n = max(2,n-3)
+        if   kind == 'down-half-page': delta = n/2
+        elif kind == 'down-line':      delta = 1
+        elif kind == 'down-page':      delta = n
+        elif kind == 'up-half-page':   delta = -n/2
+        elif kind == 'up-line':        delta = -1
+        elif kind == 'up-page':        delta = -n
+        else:
+            delta = 0 ; g.trace('bad kind:',kind)
+        val = vScroll.value()
+        # g.trace(kind,n,h,lineSpacing,delta,val)
+        vScroll.setValue(val+(delta*lineSpacing))
+        c.bodyWantsFocus()
+    #@-node:ekr.20090531084925.3776:scrollDelegate (QTextEdit)
+    #@-node:ekr.20090531084925.3773:scrolling (QTextEdit)
     #@+node:ekr.20090205153624.12:insert (avoid call to setAllText)
     def insert(self,i,s):
 
