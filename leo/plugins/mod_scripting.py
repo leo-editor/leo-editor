@@ -124,8 +124,9 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGui as leoGui
 
-Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True)
+#Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
+if g.app.gui.guiName() == 'tkinter':
+    Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True)
 
 # import os
 import string

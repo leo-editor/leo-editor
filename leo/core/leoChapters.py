@@ -435,6 +435,7 @@ class chapterController:
 
         if state == 0:
             names = cc.chaptersDict.keys()
+            g.es('Chapters:\n' + '\n'.join(names))
             prefix = 'Select chapter: '
             k.setLabelBlue(prefix,protect=True)
             k.getArg(event,tag,1,self.selectChapter,prefix=prefix,tabList=names)
