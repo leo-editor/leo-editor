@@ -1705,19 +1705,25 @@ class leoQtFindTab (leoFind.findTab):
         #@-node:ekr.20090427112929.10:svar.ctor
         #@+node:ekr.20090427112929.12:get
         def get (self):
+
+            trace = False and not g.unitTesting
+
             if self.w:
                 val = self.w.isChecked()
-                if self.trace: g.trace('qt svar %15s = %s' % (self.ivar,val))
+                if trace:
+                    g.trace('qt svar %15s = %s' % (
+                        self.ivar,val),g.callers(5))        
             else:
                 val = self.val
             return val
-        #@nonl
         #@-node:ekr.20090427112929.12:get
         #@+node:ekr.20090427112929.13:init
         def init (self,val):
 
             '''Init the svar, but do *not* init radio buttons.
             (This is called from initRadioButtons).'''
+
+            trace = False and not g.unitTesting
 
             if val in (0,1):
                 self.val = bool(val)
@@ -1727,7 +1733,8 @@ class leoQtFindTab (leoFind.findTab):
             if self.w:
                 self.w.setChecked(bool(val))
 
-            if self.trace: g.trace('qt svar %15s = %s' % (self.ivar,val))
+            if trace: g.trace('qt svar %15s = %s' % (
+                self.ivar,val),g.callers(5))
         #@-node:ekr.20090427112929.13:init
         #@+node:ekr.20090427112929.17:set
         def set (self,val):
@@ -1786,11 +1793,14 @@ class leoQtFindTab (leoFind.findTab):
     #@+node:ekr.20081121105001.247:setOption
     def setOption (self,ivar,val):
 
+        trace = False and not g.unitTesting
+
         if ivar in self.intKeys:
             if val is not None:
                 svar = self.svarDict.get(ivar)
                 svar.set(val)
-                # g.trace('ivar %s = %s' % (ivar,val))
+                if trace: g.trace('qtFindTab: ivar %s = %s' % (
+                    ivar,val))
 
         elif not g.app.unitTesting:
             g.trace('oops: bad find ivar %s' % ivar)

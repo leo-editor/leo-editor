@@ -7284,7 +7284,7 @@ class minibufferFind (baseEditCommandsClass):
 
         k.extendLabel(s,select=True,protect=protect)
     #@-node:ekr.20060210164421:addFindStringToLabel
-    #@+node:ekr.20070105123800:changeAll
+    #@+node:ekr.20070105123800:changeAll (minibufferFind)
     def changeAll (self,event):
 
         k = self.k ; tag = 'change-all' ; state = k.getState(tag)
@@ -7292,7 +7292,9 @@ class minibufferFind (baseEditCommandsClass):
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if not w: return
-            self.setupArgs(forward=True,regexp=False,word=True)
+            # Bug fix: 2009-5-31.
+            # None denotes that we use the present value of the option.
+            self.setupArgs(forward=None,regexp=None,word=None)
             k.setLabelBlue('Change All From: ',protect=True)
             k.getArg(event,tag,1,self.changeAll)
         elif state == 1:
@@ -7306,8 +7308,8 @@ class minibufferFind (baseEditCommandsClass):
             self.updateChangeList(k.arg)
             self.lastStateHelper()
             self.generalChangeHelper(self._sString,k.arg,changeAll=True)
-
-    #@-node:ekr.20070105123800:changeAll
+    #@nonl
+    #@-node:ekr.20070105123800:changeAll (minibufferFind)
     #@+node:ekr.20060128080201:cloneFindAll
     def cloneFindAll (self,event):
 
@@ -7354,7 +7356,7 @@ class minibufferFind (baseEditCommandsClass):
             k.showStateAndMode()
             self.generalSearchHelper(k.arg,findAll=True)
     #@-node:ekr.20060209064140:findAll
-    #@+node:ekr.20060205105950.1:generalChangeHelper
+    #@+node:ekr.20060205105950.1:generalChangeHelper (minibufferFind)
     def generalChangeHelper (self,find_pattern,change_pattern,changeAll=False):
 
         # g.trace(repr(change_pattern))
@@ -7377,7 +7379,7 @@ class minibufferFind (baseEditCommandsClass):
         else:
             # This handles the reverse option.
             self.finder.findNextCommand()
-    #@-node:ekr.20060205105950.1:generalChangeHelper
+    #@-node:ekr.20060205105950.1:generalChangeHelper (minibufferFind)
     #@+node:ekr.20060124181213.4:generalSearchHelper
     def generalSearchHelper (self,pattern,cloneFindAll=False,findAll=False):
 

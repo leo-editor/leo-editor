@@ -516,10 +516,10 @@ class leoFind:
             self.initInHeadline()
             self.changeSelection()
     #@-node:ekr.20031218072017.3068:change
-    #@+node:ekr.20031218072017.3069:changeAll
+    #@+node:ekr.20031218072017.3069:changeAll (leoFind)
     def changeAll(self):
 
-        # g.trace(g.callers())
+        # g.trace('leoFind',g.callers())
 
         c = self.c ; u = c.undoer ; undoType = 'Change All'
         current = c.p
@@ -544,7 +544,7 @@ class leoFind:
         g.es("changed:",count,"instances")
         c.redraw(p)
         self.restore(saveData)
-    #@-node:ekr.20031218072017.3069:changeAll
+    #@-node:ekr.20031218072017.3069:changeAll (leoFind)
     #@+node:ekr.20031218072017.3070:changeSelection
     # Replace selection with self.change_text.
     # If no selection, insert self.change_text at the cursor.
@@ -774,9 +774,10 @@ class leoFind:
 
     def findNextMatch(self):
 
-        c = self.c ; trace = False or self.trace
+        trace = False and not g.unitTesting
+        c = self.c ; p = self.p
 
-        if trace: g.trace('entry','p',self.p,
+        if trace: g.trace('entry','p',p and p.h,
             'search_headline',self.search_headline,
             'search_body',self.search_body)
 
@@ -788,7 +789,7 @@ class leoFind:
             if trace: g.trace('no find text')
             return None, None
 
-        p = self.p ; self.errors = 0
+        self.errors = 0
         attempts = 0
         self.backwardAttempts = 0
 
@@ -807,7 +808,7 @@ class leoFind:
 
         while p:
             pos, newpos = self.search()
-            if trace: g.trace('attempt','pos',pos,'p',p.h)
+            if trace: g.trace('attempt','pos',pos,'p',p.h,'in_headline',self.in_headline)
             if pos is not None:
                 if self.mark_finds:
                     p.setMarked()
@@ -818,8 +819,14 @@ class leoFind:
                 g.trace('find errors')
                 return None,None # Abort the search.
             elif self.node_only:
-                if trace: g.trace('fail: node only')
-                return None,None # We are only searching one node.
+                # Bug fix: 2009-5-31.
+                # Attempt to switch from headline to body.
+                if self.in_headline:
+                    self.in_headline = False
+                    self.initNextText()
+                else: 
+                    if trace: g.trace('fail: node only')
+                    return None,None # We are only searching one node.
             else:
                 if trace: g.trace('failed attempt',p)
                 attempts += 1
@@ -842,17 +849,18 @@ class leoFind:
 
         Returns (pos, newpos) or (None,None)."""
 
-        c = self.c ; p = self.p ; w = self.s_ctrl ; trace = self.trace
+        trace = False and not g.unitTesting
+        c = self.c ; p = self.p ; w = self.s_ctrl
         index = w.getInsertPoint()
         s = w.getAllText()
 
-        # g.trace(index,repr(s[index:index+20]))
+        if trace: g.trace(index,repr(s[index:index+20]))
         stopindex = g.choose(self.reverse,0,len(s)) # 'end' doesn't work here.
         pos,newpos = self.searchHelper(s,index,stopindex,self.find_text,
             backwards=self.reverse,nocase=self.ignore_case,
             regexp=self.pattern_match,word=self.whole_word)
 
-        # g.trace('pos,newpos',pos,newpos)
+        if trace: g.trace('pos,newpos',pos,newpos)
         if pos == -1:
             if trace: g.trace('** pos is -1',pos,newpos)
             return None,None
@@ -1084,7 +1092,7 @@ class leoFind:
 
     def selectNextPosition(self):
 
-        trace = False
+        trace = False and not g.unitTesting
         c = self.c ; p = self.p
 
         # Start suboutline only searches.
@@ -1436,6 +1444,8 @@ class leoFind:
     def update_ivars (self):
 
         """Called just before doing a find to update ivars from the find panel."""
+
+        trace = False and not g.unitTesting
 
         self.p = self.c.p
         self.v = self.p.v
@@ -1866,11 +1876,13 @@ class nullFindTab (findTab):
     #@+node:ekr.20070302090616.18:setOption
     def setOption (self,ivar,val):
 
+        trace = False and not g.unitTesting
+
         if ivar in self.intKeys:
             if val is not None:
                 var = self.svarDict.get(ivar)
                 var.set(val)
-                # g.trace('%s = %s' % (ivar,val))
+                if trace: g.trace('nullFindTab: %s = %s' % (ivar,val))
 
         elif not g.app.unitTesting:
             g.trace('oops: bad find ivar %s' % ivar)
