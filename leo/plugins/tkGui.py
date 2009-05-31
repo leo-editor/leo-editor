@@ -9199,14 +9199,14 @@ class leoTkTextWidget (Tk.Text):
         i,j = w.getSelectionRange()
         return i != j
     #@-node:ekr.20081121110412.334:hasSelection
-    #@+node:ekr.20081121110412.335:indexIsVisible
+    #@+node:ekr.20081121110412.335:indexIsVisible (tk)
     def indexIsVisible (self,i):
 
         w = self
 
         return w.dlineinfo(i)
     #@nonl
-    #@-node:ekr.20081121110412.335:indexIsVisible
+    #@-node:ekr.20081121110412.335:indexIsVisible (tk)
     #@+node:ekr.20081121110412.336:insert
     # The signature is more restrictive than the Tk.Text.insert method.
 

@@ -4991,14 +4991,14 @@ class leoSwingTextWidget: ### (leoFrame.baseTextWidget):
         ### Tk.Text.insert(w,i,s)
 
     #@-node:ekr.20081121105001.890:insert
-    #@+node:ekr.20081121105001.891:indexIsVisible
+    #@+node:ekr.20081121105001.891:indexIsVisible (swing)
     def indexIsVisible (self,i):
 
         w = self
 
         return True ### return w.dlineinfo(i)
     #@nonl
-    #@-node:ekr.20081121105001.891:indexIsVisible
+    #@-node:ekr.20081121105001.891:indexIsVisible (swing)
     #@+node:ekr.20081121105001.892:mark_set NO LONGER USED
     # def mark_set(self,markName,i):
 
