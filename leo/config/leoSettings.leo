@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="2,15"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="8,3"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -24,7 +24,7 @@
 <v t="ekr.20090203131919.1"><vh>@button Check menu commands</vh></v>
 </v>
 </v>
-<v t="ekr.20041119035137" a="E"><vh>About this file</vh>
+<v t="ekr.20041119035137"><vh>About this file</vh>
 <v t="ekr.20041122163623"><vh>Note about canonicalized names</vh></v>
 <v t="ekr.20041119035704"><vh> Basic setting nodes: @type-name setting-name = value</vh>
 <v t="ekr.20041119042929"><vh>@bool</vh></v>
@@ -55,7 +55,7 @@
 <v t="ekr.20041119035704.3"><vh>\@type type-name: base-type = [list of valid values]</vh></v>
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
-<v t="ekr.20061011082224" a="E"><vh>Candidates for settings in myLeoSettings.leo</vh>
+<v t="ekr.20061011082224"><vh>Candidates for settings in myLeoSettings.leo</vh>
 <v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
 <v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
@@ -98,7 +98,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
@@ -395,9 +395,9 @@
 </v>
 <v t="ekr.20060117092249"><vh>About modes</vh></v>
 <v t="ekr.20060303075452"><vh>Commands for mouseless Leo</vh></v>
-<v t="ekr.20060104093101" a="E" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20060104093101" annotate="7d71002e"><vh>@ignore Unused key bindings</vh>
 <v t="ekr.20060122105527.4" annotate="7d71002e"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
-<v t="ekr.20060110141538" a="E" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
+<v t="ekr.20060110141538" annotate="7d71002e"><vh>@keys Default Emacs shortcuts</vh>
 <v t="ekr.20051007193321"><vh>@shortcuts Emacs: A-E</vh></v>
 <v t="ekr.20060112090844"><vh>@shortcuts Emacs: F-M</vh></v>
 <v t="ekr.20060112090844.1"><vh>@shortcuts Emads: N-Z</vh></v>
@@ -409,7 +409,7 @@
 <v t="ekr.20060112093227.2"><vh>@shortcuts No bindings: N-Z</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208" a="E"><vh>@keys EKR bindings</vh>
+<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
 <v t="ekr.20080513095644.1"><vh>@mode quick-command (q in vim bindings)</vh></v>
 <v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
 <v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
@@ -1418,7 +1418,8 @@
 <v t="TL.20090307074930.150"><vh>@mode vim-window-commands</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208"></v>
+<v t="ekr.20060603215208" a="E"></v>
+<v t="ekr.20080512082834.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4548,6 +4549,8 @@ auto-complete                       = None
 auto-complete-force                 = None
 back-char                           = None
 back-char-extend-selection          = None
+back-page                           = None
+back-page-extend-selection          = None
 back-paragraph                      = None
 back-paragraph-extend-selection     = None
 back-sentence                       = None
@@ -5021,11 +5024,12 @@ focus-to-body                       = None
 focus-to-log                        = None
 focus-to-minibuffer                 = None
 focus-to-tree                       = None
-# forward-char                      = None
 forward-char                        = None
 forward-char-extend-selection       = None
 forward-end-word                    = None
 forward-end-word-extend-selection   = None
+forward-page                        = None
+forward-page-extend-selection       = None
 forward-paragraph                   = None
 forward-paragraph-extend-selection  = None
 forward-sentence                    = None
@@ -7212,10 +7216,11 @@ back-to-home                        = Home
 beginning-of-line-extend-selection  = Shift-Home
 end-of-line                         = End
 end-of-line-extend-selection        = Shift-End
-scroll-down                         = PageDn 
-scroll-down-extend-selection        = Shift-PageDn
-scroll-up                           = PageUp
-scroll-up-extend-selection          = Shift-PageUp
+
+# scroll-down                         = PageDn 
+# scroll-down-extend-selection        = Shift-PageDn
+# scroll-up                           = PageUp
+# scroll-up-extend-selection          = Shift-PageUp
 </t>
 <t tx="ekr.20080510121331.16"># Must keep all these bindings for basic vim compatibility.
 
@@ -7365,9 +7370,15 @@ goto-prev-visible           = Alt-UpArrow
 move-outline-down           = Alt-Shift-DnArrow
 move-outline-left           = Alt-Shift-LtArrow
 move-outline-right          = Alt-Shift-RtArrow
-move-outline-up             = Alt-Shift-UpArrow    
+move-outline-up             = Alt-Shift-UpArrow
+  
 goto-first-visible-node     = Alt-Home
 goto-last-visible-node      = Alt-End
+
+back-page                       = PageUp
+back-page-extend-selection      = Shift-PageUp
+forward-page                    = PageDn
+forward-page-extend-selection   = Shift-PageDn
 </t>
 <t tx="ekr.20080513060549.1"></t>
 <t tx="ekr.20080513060549.3">@nocolor

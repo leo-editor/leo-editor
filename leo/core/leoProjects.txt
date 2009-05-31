@@ -14688,12 +14688,26 @@ def moveToHelper (self,event,spot,extend):
 #@nonl
 #@-node:ekr.20051218122116:moveToHelper
 #@+node:ekr.20090530181848.6035:movePageHelper
-def movePageHelper(self,event,kind,extend):
+def movePageHelper(self,event,kind,extend): # kind in back/forward.
 
-    # kind in ('back','forward')
-    # extend in (True,False)
+    '''Move the cursor up/down one page, possibly extending the selection.'''
 
-    g.trace('not ready yet')
+    trace = False and not g.unitTesting
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+    linesPerPage = 15 # To do.
+    ins = w.getInsertPoint()
+    s = w.getAllText()
+    lines = g.splitLines(s)
+    row,col = g.convertPythonIndexToRowCol(s,ins)
+    row2 = g.choose(kind=='back',
+        max(0,row-linesPerPage),
+        min(row+linesPerPage,len(lines)-1))
+    if row == row2: return
+    spot = g.convertRowColToPythonIndex(s,row2,col,lines=lines)
+    if trace: g.trace('spot',spot,'row2',row2)
+    self.extendHelper(w,extend,spot,upOrDown=True)
+#@nonl
 #@-node:ekr.20090530181848.6035:movePageHelper
 #@+node:ekr.20051218171457:movePastCloseHelper
 def movePastCloseHelper (self,event,extend):
@@ -15350,6 +15364,1049 @@ def setMoveCol (self,w,spot):
 #@nonl
 #@-node:ekr.20060209095101:setMoveCol
 #@-node:ekr.20090530162758.6033:Fixed Shift-Arrow in headlines
+#@+node:ekr.20090525113804.5778:Fixed lost anchor bug page up/down
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/363403
+
+qt gui, yesterdays leo, Ubuntu 8.10, python 2.5.2
+
+With a long body text you might place the cursor on a line, hold down Shift, and
+PgDn several pages to select a large block of text. The last PgDn may overshoot
+the range you want selected, so you should be able to use UpArrow to bring the
+bottom of the range back up to where you want it. However, on the first UpArrow
+the selection is lost and restarted from the current cursor position. I.e. you
+end up with just one line selected, instead of trimming one line of the
+selection of several pages, as intended.
+#@+node:ekr.20050920084036.55: getPublicCommands (editCommandsClass)
+def getPublicCommands (self):        
+
+    c = self.c
+
+    return {
+        'activate-cmds-menu':                   self.activateCmdsMenu,
+        'activate-edit-menu':                   self.activateEditMenu,
+        'activate-file-menu':                   self.activateFileMenu,
+        'activate-help-menu':                   self.activateHelpMenu,
+        'activate-outline-menu':                self.activateOutlineMenu,
+        'activate-plugins-menu':                self.activatePluginsMenu,
+        'activate-window-menu':                 self.activateWindowMenu,
+        'add-editor':                           c.frame.body and c.frame.body.addEditor,
+        'add-space-to-lines':                   self.addSpaceToLines,
+        'add-tab-to-lines':                     self.addTabToLines, 
+        'back-to-indentation':                  self.backToIndentation,
+        'back-to-home':                         self.backToHome,
+        'back-char':                            self.backCharacter,
+        'back-char-extend-selection':           self.backCharacterExtendSelection,
+        'back-page':                            self.backPage,
+        'back-page-extend-selection':           self.backPageExtendSelection,
+        'back-paragraph':                       self.backwardParagraph,
+        'back-paragraph-extend-selection':      self.backwardParagraphExtendSelection,
+        'back-sentence':                        self.backSentence,
+        'back-sentence-extend-selection':       self.backSentenceExtendSelection,
+        'back-word':                            self.backwardWord,
+        'back-word-extend-selection':           self.backwardWordExtendSelection,
+        'backward-delete-char':                 self.backwardDeleteCharacter,
+        'backward-kill-paragraph':              self.backwardKillParagraph,
+        'backward-find-character':              self.backwardFindCharacter,
+        'backward-find-character-extend-selection': self.backwardFindCharacterExtendSelection,
+        'beginning-of-buffer':                  self.beginningOfBuffer,
+        'beginning-of-buffer-extend-selection': self.beginningOfBufferExtendSelection,
+        'beginning-of-line':                    self.beginningOfLine,
+        'beginning-of-line-extend-selection':   self.beginningOfLineExtendSelection,
+        'capitalize-word':                      self.capitalizeWord,
+        'center-line':                          self.centerLine,
+        'center-region':                        self.centerRegion,
+        'clean-all-lines':                      self.cleanAllLines,
+        'clean-lines':                          self.cleanLines,
+        'clear-extend-mode':                    self.clearExtendMode,
+        'clear-selected-text':                  self.clearSelectedText,
+        'click-click-box':                      self.clickClickBox,
+        'click-headline':                       self.clickHeadline,
+        'click-icon-box':                       self.clickIconBox,
+        'contract-body-pane':                   c.frame.contractBodyPane,
+        'contract-log-pane':                    c.frame.contractLogPane,
+        'contract-outline-pane':                c.frame.contractOutlinePane,
+        'contract-pane':                        c.frame.contractPane,
+        'count-region':                         self.countRegion,
+        'cycle-focus':                          self.cycleFocus,
+        'cycle-all-focus':                      self.cycleAllFocus,
+        'cycle-editor-focus':                   c.frame.body.cycleEditorFocus,
+        # 'delete-all-icons':                   self.deleteAllIcons,
+        'delete-char':                          self.deleteNextChar,
+        'delete-editor':                        c.frame.body.deleteEditor,
+        'delete-first-icon':                    self.deleteFirstIcon,
+        'delete-indentation':                   self.deleteIndentation,
+        'delete-last-icon':                     self.deleteLastIcon,
+        'delete-node-icons':                    self.deleteNodeIcons,
+        'delete-spaces':                        self.deleteSpaces,
+        'do-nothing':                           self.doNothing,
+        'downcase-region':                      self.downCaseRegion,
+        'downcase-word':                        self.downCaseWord,
+        'double-click-headline':                self.doubleClickHeadline,
+        'double-click-icon-box':                self.doubleClickIconBox,
+        'end-of-buffer':                        self.endOfBuffer,
+        'end-of-buffer-extend-selection':       self.endOfBufferExtendSelection,
+        'end-of-line':                          self.endOfLine,
+        'end-of-line-extend-selection':         self.endOfLineExtendSelection,
+        'escape':                               self.watchEscape,
+        'eval-expression':                      self.evalExpression,
+        'exchange-point-mark':                  self.exchangePointMark,
+        'expand-body-pane':                     c.frame.expandBodyPane,
+        'expand-log-pane':                      c.frame.expandLogPane,
+        'expand-outline-pane':                  c.frame.expandOutlinePane,
+        'expand-pane':                          c.frame.expandPane,
+        'extend-to-line':                       self.extendToLine,
+        'extend-to-paragraph':                  self.extendToParagraph,
+        'extend-to-sentence':                   self.extendToSentence,
+        'extend-to-word':                       self.extendToWord,
+        'fill-paragraph':                       self.fillParagraph,
+        'fill-region':                          self.fillRegion,
+        'fill-region-as-paragraph':             self.fillRegionAsParagraph,
+        'find-character':                       self.findCharacter,
+        'find-character-extend-selection':      self.findCharacterExtendSelection,
+        'find-word':                            self.findWord,
+        'find-word-in-line':                    self.findWordInLine,
+        'flush-lines':                          self.flushLines,
+        'focus-to-body':                        self.focusToBody,
+        'focus-to-log':                         self.focusToLog,
+        'focus-to-minibuffer':                  self.focusToMinibuffer,
+        'focus-to-tree':                        self.focusToTree,
+        'forward-char':                         self.forwardCharacter,
+        'forward-char-extend-selection':        self.forwardCharacterExtendSelection,
+        'forward-page':                         self.forwardPage,
+        'forward-page-extend-selection':        self.forwardPageExtendSelection,
+        'forward-paragraph':                    self.forwardParagraph,
+        'forward-paragraph-extend-selection':   self.forwardParagraphExtendSelection,
+        'forward-sentence':                     self.forwardSentence,
+        'forward-sentence-extend-selection':    self.forwardSentenceExtendSelection,
+        'forward-end-word':                     self.forwardEndWord, # New in Leo 4.4.2.
+        'forward-end-word-extend-selection':    self.forwardEndWordExtendSelection, # New in Leo 4.4.2.
+        'forward-word':                         self.forwardWord,
+        'forward-word-extend-selection':        self.forwardWordExtendSelection,
+        'fully-expand-body-pane':               c.frame.fullyExpandBodyPane,
+        'fully-expand-log-pane':                c.frame.fullyExpandLogPane,
+        'fully-expand-pane':                    c.frame.fullyExpandPane,
+        'fully-expand-outline-pane':            c.frame.fullyExpandOutlinePane,
+        'goto-char':                            self.gotoCharacter,
+        'goto-global-line':                     self.gotoGlobalLine,
+        'goto-line':                            self.gotoLine,
+        'hide-body-pane':                       c.frame.hideBodyPane,
+        'hide-log-pane':                        c.frame.hideLogPane,
+        'hide-pane':                            c.frame.hidePane,
+        'hide-outline-pane':                    c.frame.hideOutlinePane,
+        'how-many':                             self.howMany,
+        # Use indentBody in leoCommands.py
+        'indent-relative':                      self.indentRelative,
+        'indent-rigidly':                       self.tabIndentRegion,
+        'indent-to-comment-column':             self.indentToCommentColumn,
+        'insert-icon':                          self.insertIcon,
+        'insert-newline':                       self.insertNewline,
+        'insert-parentheses':                   self.insertParentheses,
+        'keep-lines':                           self.keepLines,
+        'kill-paragraph':                       self.killParagraph,
+        'line-number':                          self.lineNumber,
+        'move-lines-down':                      self.moveLinesDown,
+        'move-lines-up':                        self.moveLinesUp,
+        'move-past-close':                      self.movePastClose,
+        'move-past-close-extend-selection':     self.movePastCloseExtendSelection,
+        'newline-and-indent':                   self.insertNewLineAndTab,
+        'next-line':                            self.nextLine,
+        'next-line-extend-selection':           self.nextLineExtendSelection,
+        'previous-line':                        self.prevLine,
+        'previous-line-extend-selection':       self.prevLineExtendSelection,
+        'remove-blank-lines':                   self.removeBlankLines,
+        'remove-space-from-lines':              self.removeSpaceFromLines,
+        'remove-tab-from-lines':                self.removeTabFromLines,
+        'reverse-region':                       self.reverseRegion,
+        'reverse-sort-lines':                   self.reverseSortLines,
+        'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,                 
+        'scroll-down':                          self.scrollDown,
+        'scroll-down-extend-selection':         self.scrollDownExtendSelection,
+        'scroll-outline-down-line':             self.scrollOutlineDownLine,
+        'scroll-outline-down-page':             self.scrollOutlineDownPage,
+        'scroll-outline-left':                  self.scrollOutlineLeft,
+        'scroll-outline-right':                 self.scrollOutlineRight,
+        'scroll-outline-up-line':               self.scrollOutlineUpLine,
+        'scroll-outline-up-page':               self.scrollOutlineUpPage,
+        'scroll-up':                            self.scrollUp,
+        'scroll-up-extend-selection':           self.scrollUpExtendSelection,
+        'select-all':                           self.selectAllText,
+        # Exists, but can not be executed via the minibuffer.
+        # 'self-insert-command':                self.selfInsertCommand,
+        'set-comment-column':                   self.setCommentColumn,
+        'set-extend-mode':                      self.setExtendMode,
+        'set-fill-column':                      self.setFillColumn,
+        'set-fill-prefix':                      self.setFillPrefix,
+        #'set-mark-command':                    self.setRegion,
+        'show-colors':                          self.showColors,
+        'show-fonts':                           self.showFonts,
+        'simulate-begin-drag':                  self.simulateBeginDrag,
+        'simulate-end-drag':                    self.simulateEndDrag,
+        'sort-columns':                         self.sortColumns,
+        'sort-fields':                          self.sortFields,
+        'sort-lines':                           self.sortLines,
+        'sort-lines-ignoring-case':             self.sortLinesIgnoringCase,
+        'split-line':                           self.splitLine,
+        'tabify':                               self.tabify,
+        'toggle-extend-mode':                   self.toggleExtendMode,
+        'transpose-chars':                      self.transposeCharacters,
+        'transpose-lines':                      self.transposeLines,
+        'transpose-words':                      self.transposeWords,
+        'untabify':                             self.untabify,
+        'upcase-region':                        self.upCaseRegion,
+        'upcase-word':                          self.upCaseWord,
+        'view-lossage':                         self.viewLossage,
+        'what-line':                            self.whatLine,
+    }
+#@-node:ekr.20050920084036.55: getPublicCommands (editCommandsClass)
+#@+node:ekr.20060309060654:scrolling...
+#@+node:ekr.20060113082917:scrollHelper
+def scrollHelper (self,event,direction,extend):
+
+    k = self.k ; c = k.c ; gui = g.app.gui
+    w = gui.eventWidget(event)
+    if not w: return #  This does **not** require a text widget.
+
+    if gui.isTextWidget(w):
+        c.widgetWantsFocusNow(w)
+        # Remember the original insert point.  This may become the moveSpot.
+        ins1 = w.getInsertPoint()
+        s = w.getAllText()
+        row,col = g.convertPythonIndexToRowCol(s,ins1)
+        # Compute the spot.
+        delta = self.measure(w)
+        row1 = g.choose(direction=='down',row+delta,row-delta)
+        row1 = max(0,row1)
+        spot = g.convertRowColToPythonIndex(s,row1,col)
+        # g.trace('spot',spot,'row1',row1)
+        self.extendHelper(w,extend,spot)
+        w.seeInsertPoint()
+    elif gui.widget_name(w).startswith('canvas'):
+        if direction=='down':
+            self.scrollOutlineDownPage()
+        else:
+            self.scrollOutlineUpPage()
+#@-node:ekr.20060113082917:scrollHelper
+#@+node:ekr.20050920084036.116:scrollUp/Down/extendSelection
+def scrollDown (self,event):
+    '''Scroll the presently selected pane down one page.'''
+    self.scrollHelper(event,'down',extend=False)
+
+def scrollDownExtendSelection (self,event):
+    '''Extend the text selection by scrolling the body text down one page.'''
+    self.scrollHelper(event,'down',extend=True)
+
+def scrollUp (self,event):
+    '''Scroll the presently selected pane up one page.'''
+    self.scrollHelper(event,'up',extend=False)
+
+def scrollUpExtendSelection (self,event):
+    '''Extend the text selection by scrolling the body text up one page.'''
+    self.scrollHelper(event,'up',extend=True)
+#@+node:ekr.20050920084036.147:measure
+def measure (self,w):
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    start, junk = g.convertPythonIndexToRowCol(s,ins)
+    start += 1 ; delta = 0
+
+    ustart = start - 1
+    while ustart >= 1 and w.indexIsVisible('%s.0' % ustart):
+        delta += 1 ; ustart -= 1
+
+    ustart = start + 1
+    while w.indexIsVisible('%s.0' % ustart):
+        delta += 1 ; ustart += 1
+
+    return delta
+#@-node:ekr.20050920084036.147:measure
+#@-node:ekr.20050920084036.116:scrollUp/Down/extendSelection
+#@+node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
+def scrollOutlineDownLine (self,event=None):
+    '''Scroll the outline pane down one line.'''
+    a,b = self.c.frame.canvas.leo_treeBar.get()
+    if b < 1.0:
+        self.c.frame.tree.canvas.yview_scroll(1,"unit")
+
+def scrollOutlineDownPage (self,event=None):
+    '''Scroll the outline pane down one page.'''
+    a,b = self.c.frame.canvas.leo_treeBar.get()
+    if b < 1.0:
+        self.c.frame.tree.canvas.yview_scroll(1,"page")
+
+def scrollOutlineUpLine (self,event=None):
+    '''Scroll the outline pane up one line.'''
+    a,b = self.c.frame.canvas.leo_treeBar.get()
+    if a > 0.0:
+        self.c.frame.tree.canvas.yview_scroll(-1,"unit")
+
+def scrollOutlineUpPage (self,event=None):
+    '''Scroll the outline pane up one page.'''
+    a,b = self.c.frame.canvas.leo_treeBar.get()
+    if a > 0.0:
+        self.c.frame.tree.canvas.yview_scroll(-1,"page")
+#@-node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
+#@+node:ekr.20060726154531:scrollOutlineLeftRight
+def scrollOutlineLeft (self,event=None):
+    '''Scroll the outline left.'''
+    self.c.frame.tree.canvas.xview_scroll(1,"unit")
+
+def scrollOutlineRight (self,event=None):
+    '''Scroll the outline left.'''
+    self.c.frame.tree.canvas.xview_scroll(-1,"unit")
+#@-node:ekr.20060726154531:scrollOutlineLeftRight
+#@-node:ekr.20060309060654:scrolling...
+#@+node:ekr.20050929114218:move cursor... (leoEditCommands)
+#@+node:ekr.20051218170358: helpers
+#@+node:ekr.20060113130510:extendHelper
+def extendHelper (self,w,extend,spot,upOrDown=False):
+    '''Handle the details of extending the selection.
+    This method is called for all cursor moves.
+
+    extend: Clear the selection unless this is True.
+    spot:   The *new* insert point.
+    '''
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = c.p
+    extend = extend or self.extendMode
+    ins = w.getInsertPoint()
+    i,j = w.getSelectionRange()
+    if trace: g.trace(
+        'extend',extend,'ins',ins,'sel=',i,j,
+        'spot=',spot,'moveSpot',self.moveSpot)
+
+    # Reset the move spot if needed.
+    if self.moveSpot is None or p.v.t != self.moveSpotNode:
+        # g.trace('no spot')
+        self.setMoveCol(w,g.choose(extend,ins,spot)) # sets self.moveSpot.
+    elif extend:
+        if i == j or self.moveSpot not in (i,j):
+            # g.trace('spot not in sel')
+            self.setMoveCol(w,ins) # sets self.moveSpot.
+    else:
+        if upOrDown:
+            s = w.getAllText()
+            i2,j2 = g.getLine(s,spot)
+            line = s[i2:j2]
+            row,col = g.convertPythonIndexToRowCol(s,spot)
+            if True: # was j2 < len(s)-1:
+                n = min(self.moveCol,max(0,len(line)-1))
+            else:
+                n = min(self.moveCol,max(0,len(line))) # A tricky boundary.
+            # g.trace('using moveCol',self.moveCol,'line',repr(line),'n',n)
+            spot = g.convertRowColToPythonIndex(s,row,n)
+        else:  # Plain move forward or back.
+            # g.trace('plain forward/back move')
+            self.setMoveCol(w,spot) # sets self.moveSpot.
+
+    if extend:
+        if spot < self.moveSpot:
+            w.setSelectionRange(spot,self.moveSpot,insert=spot)
+        else:
+            w.setSelectionRange(self.moveSpot,spot,insert=spot)
+    else:
+        w.setSelectionRange(spot,spot,insert=spot)
+
+    w.seeInsertPoint()
+    c.frame.updateStatusLine()
+#@-node:ekr.20060113130510:extendHelper
+#@+node:ekr.20060113105246.1:moveUpOrDownHelper
+def moveUpOrDownHelper (self,event,direction,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+    trace = False
+
+    ins = w.getInsertPoint()
+    s = w.getAllText()
+    w.seeInsertPoint()
+
+    # Find the start of the next/prev line.
+    row,col = g.convertPythonIndexToRowCol(s,ins)
+    if trace:
+        gui_ins = w.toGuiIndex(ins)
+        bbox = w.bbox(gui_ins)
+        if bbox:
+            x,y,width,height = bbox
+            # bbox: x,y,width,height;  dlineinfo: x,y,width,height,offset
+            g.trace('gui_ins',gui_ins,'dlineinfo',w.dlineinfo(gui_ins),'bbox',bbox)
+            g.trace('ins',ins,'row',row,'col',col,'event.x',event.x,'event.y',event.y)
+            g.trace('subtracting line height',w.index('@%s,%s' % (x,y-height)))
+            g.trace('adding      line height',w.index('@%s,%s' % (x,y+height)))
+    i,j = g.getLine(s,ins)
+    if direction == 'down':
+        i2,j2 = g.getLine(s,j)
+    else:
+        i2,j2 = g.getLine(s,i-1)
+
+    # The spot is the start of the line plus the column index.
+    n = max(0,j2-i2-1) # The length of the new line.
+    col2 = min(col,n)
+    spot = i2 + col2
+    if trace: g.trace('spot',spot,'n',n,'col',col,'line',repr(s[i2:j2]))
+
+    self.extendHelper(w,extend,spot,upOrDown=True)
+#@nonl
+#@-node:ekr.20060113105246.1:moveUpOrDownHelper
+#@+node:ekr.20051218122116:moveToHelper
+def moveToHelper (self,event,spot,extend):
+
+    '''Common helper method for commands the move the cursor
+    in a way that can be described by a Tk Text expression.'''
+
+    c = self.c ; k = c.k ; w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+
+    # Put the request in the proper range.
+    if c.widget_name(w).startswith('mini'):
+        i,j = k.getEditableTextRange()
+        if   spot < i: spot = i
+        elif spot > j: spot = j
+
+    self.extendHelper(w,extend,spot,upOrDown=False)
+#@nonl
+#@-node:ekr.20051218122116:moveToHelper
+#@+node:ekr.20090530181848.6035:movePageHelper
+def movePageHelper(self,event,kind,extend): # kind in back/forward.
+
+    '''Move the cursor up/down one page, possibly extending the selection.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+    linesPerPage = 15 # To do.
+    ins = w.getInsertPoint()
+    s = w.getAllText()
+    lines = g.splitLines(s)
+    row,col = g.convertPythonIndexToRowCol(s,ins)
+    row2 = g.choose(kind=='back',
+        max(0,row-linesPerPage),
+        min(row+linesPerPage,len(lines)-1))
+    if row == row2: return
+    spot = g.convertRowColToPythonIndex(s,row2,col,lines=lines)
+    if trace: g.trace('spot',spot,'row2',row2)
+    self.extendHelper(w,extend,spot,upOrDown=True)
+#@nonl
+#@-node:ekr.20090530181848.6035:movePageHelper
+#@+node:ekr.20051218171457:movePastCloseHelper
+def movePastCloseHelper (self,event,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    # Scan backwards for i,j.
+    i = ins
+    while i >= 0 and s[i] != '\n':
+        if s[i] == '(': break
+        i -= 1
+    else: return
+    j = ins
+    while j >= 0 and s[j] != '\n':
+        if s[j] == '(': break
+        j -= 1
+    if i < j: return
+    # Scan forward for i2,j2.
+    i2 = ins
+    while i2 < len(s) and s[i2] != '\n':
+        if s[i2] == ')': break
+        i2 += 1
+    else: return
+    j2 = ins
+    while j2 < len(s) and s[j2] != '\n':
+        if s[j2] == ')': break
+        j2 += 1
+    if i2 > j2: return
+
+    self.moveToHelper(event,i2+1,extend)
+#@-node:ekr.20051218171457:movePastCloseHelper
+#@+node:ekr.20051218121447:moveWordHelper
+def moveWordHelper (self,event,extend,forward,end=False):
+
+    '''Move the cursor to the next/previous word.
+    The cursor is placed at the start of the word unless end=True'''
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    s = w.getAllText() ; n = len(s)
+    i = w.getInsertPoint()
+
+    if forward:
+        # Unlike backward-word moves, there are two options...
+        if end:
+            while 0 <= i < n and not g.isWordChar(s[i]):
+                i += 1
+            while 0 <= i < n and g.isWordChar(s[i]):
+                i += 1
+        else:
+            while 0 <= i < n and g.isWordChar(s[i]):
+                i += 1
+            while 0 <= i < n and not g.isWordChar(s[i]):
+                i += 1
+    else:
+        i -= 1
+        while 0 <= i < n and not g.isWordChar(s[i]):
+            i -= 1
+        while 0 <= i < n and g.isWordChar(s[i]):
+            i -= 1
+        i += 1
+
+    self.moveToHelper(event,i,extend)
+#@nonl
+#@-node:ekr.20051218121447:moveWordHelper
+#@+node:ekr.20051213094517:backSentenceHelper
+def backSentenceHelper (self,event,extend):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    s = w.getAllText()
+    i = w.getInsertPoint()
+
+    while i >= 0:
+        if s[i] == '.': break
+        i -= 1
+    else: return
+
+    j = i-1
+    while j >= 0:
+        if s[j] == '.':
+            j += 1 ; break
+        j -= 1
+    else: j = 0
+
+    while j < i and s[j].isspace():
+        j += 1
+
+    if j < i:
+        self.moveToHelper(event,j,extend)
+#@-node:ekr.20051213094517:backSentenceHelper
+#@+node:ekr.20050920084036.137:forwardSentenceHelper
+def forwardSentenceHelper (self,event,extend):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i = s.find('.',ins) + 1
+    i = min(i,len(s))
+    self.moveToHelper(event,i,extend)
+#@-node:ekr.20050920084036.137:forwardSentenceHelper
+#@+node:ekr.20051218133207.1:forwardParagraphHelper
+def forwardParagraphHelper (self,event,extend):
+
+    w = self.editWidget(event)
+    if not w: return
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i,j = g.getLine(s,ins)
+    line = s[i:j]
+
+    if line.strip(): # Skip past the present paragraph.
+        self.selectParagraphHelper(w,i)
+        i,j = w.getSelectionRange()
+        j += 1
+
+    # Skip to the next non-blank line.
+    i = j
+    while j < len(s):
+        i,j = g.getLine(s,j)
+        line = s[i:j]
+        if line.strip(): break
+
+    w.setInsertPoint(ins) # Restore the original insert point.
+    self.moveToHelper(event,i,extend)
+#@-node:ekr.20051218133207.1:forwardParagraphHelper
+#@+node:ekr.20051218133207:backwardParagraphHelper
+def backwardParagraphHelper (self,event,extend):
+
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    i,j = w.getSelectionRange()
+    # A hack for wx gui: set the insertion point to the end of the selection range.
+    if g.app.unitTesting:
+        w.setInsertPoint(j)
+    i,j = g.getLine(s,j)
+    line = s[i:j]
+
+    if line.strip():
+        # Find the start of the present paragraph.
+        while i > 0:
+            i,j = g.getLine(s,i-1)
+            line = s[i:j]
+            if not line.strip(): break
+
+    # Find the end of the previous paragraph.
+    while i > 0:
+        i,j = g.getLine(s,i-1)
+        line = s[i:j]
+        if line.strip():
+            i = j-1 ; break
+
+    self.moveToHelper(event,i,extend)
+#@nonl
+#@-node:ekr.20051218133207:backwardParagraphHelper
+#@+node:ekr.20060209095101:setMoveCol
+def setMoveCol (self,w,spot):
+
+    '''Set the column to which an up or down arrow will attempt to move.'''
+
+    c = self.c ; p = c.p
+
+    i,row,col = w.toPythonIndexRowCol(spot)
+
+    self.moveSpot = i
+    self.moveCol = col
+    self.moveSpotNode = p.v.t
+
+    # g.trace('moveSpot',i)
+#@nonl
+#@-node:ekr.20060209095101:setMoveCol
+#@-node:ekr.20051218170358: helpers
+#@+node:ekr.20081123102100.1:backToHome
+def backToHome (self,event):
+
+    '''Smart home:
+    Position the point at the first non-blank character on the line,
+    or the start of the line if already there.'''
+
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    if ins == 0 or not(s): return
+
+    # Toggle back and forth between start of line and first-non-blank character.
+    i,j = g.getLine(s,ins)
+    i1 = i
+    while i < j and s[i] in (' \t'):
+        i += 1
+    if i == ins:
+        i = i1
+
+    self.moveToHelper(event,i,extend=False)
+#@-node:ekr.20081123102100.1:backToHome
+#@+node:ekr.20050920084036.75:backToIndentation
+def backToIndentation (self,event):
+
+    '''Position the point at the first non-blank character on the line.'''
+
+    w = self.editWidget(event)
+    if not w: return
+
+    # None of the other cursor move commands are undoable.
+    # self.beginCommand(undoType='back-to-indentation')
+
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i,j = g.getLine(s,ins)
+    while i < j and s[i] in (' \t'):
+        i += 1
+
+    self.moveToHelper(event,i,extend=False)
+
+    # self.endCommand(changed=True,setLabel=True)
+#@-node:ekr.20050920084036.75:backToIndentation
+#@+node:ekr.20050920084036.148:buffers
+def beginningOfBuffer (self,event):
+    '''Move the cursor to the start of the body text.'''
+    self.moveToHelper(event,0,extend=False)
+
+def beginningOfBufferExtendSelection (self,event):
+    '''Extend the text selection by moving the cursor to the start of the body text.'''
+    self.moveToHelper(event,0,extend=True)
+
+def endOfBuffer (self,event):
+    '''Move the cursor to the end of the body text.'''
+    w = self.editWidget(event)
+    s = w.getAllText()
+    self.moveToHelper(event,len(s),extend=False)
+
+def endOfBufferExtendSelection (self,event):
+    '''Extend the text selection by moving the cursor to the end of the body text.'''
+    w = self.editWidget(event)
+    s = w.getAllText()
+    self.moveToHelper(event,len(s),extend=True)
+#@-node:ekr.20050920084036.148:buffers
+#@+node:ekr.20051213080533:characters
+def backCharacter (self,event):
+    '''Move the cursor back one character, extending the selection if in extend mode.'''
+    w = self.editWidget(event)
+    i = w.getInsertPoint()
+    i = max(0,i-1)
+    self.moveToHelper(event,i,extend=False)
+
+def backCharacterExtendSelection (self,event):
+    '''Extend the selection by moving the cursor back one character.'''
+    w = self.editWidget(event)
+    i = w.getInsertPoint()
+    i = max(0,i-1)
+    self.moveToHelper(event,i,extend=True)
+
+def forwardCharacter (self,event):
+    '''Move the cursor forward one character, extending the selection if in extend mode.'''
+    w = self.editWidget(event)
+    s = w.getAllText()
+    i = w.getInsertPoint()
+    i = min(i+1,len(s))
+    self.moveToHelper(event,i,extend=False)
+
+def forwardCharacterExtendSelection (self,event):
+    '''Extend the selection by moving the cursor forward one character.'''
+    w = self.editWidget(event)
+    s = w.getAllText()
+    i = w.getInsertPoint()
+    i = min(i+1,len(s))
+    self.moveToHelper(event,i,extend=True)
+#@-node:ekr.20051213080533:characters
+#@+node:ekr.20051218174113:clear/set/ToggleExtendMode
+def clearExtendMode (self,event):
+    '''Turn off extend mode: cursor movement commands do not extend the selection.'''
+    self.extendModeHelper(event,False)
+
+def setExtendMode (self,event):
+    '''Turn on extend mode: cursor movement commands do extend the selection.'''
+    self.extendModeHelper(event,True)
+
+def toggleExtendMode (self,event):
+    '''Toggle extend mode, i.e., toggle whether cursor movement commands extend the selections.'''
+    self.extendModeHelper(event,not self.extendMode)
+
+def extendModeHelper (self,event,val):
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    self.extendMode = val
+    g.es('extend mode',g.choose(val,'on','off'),color='red')
+    c.widgetWantsFocusNow(w)
+#@-node:ekr.20051218174113:clear/set/ToggleExtendMode
+#@+node:ekr.20050920084036.136:exchangePointMark
+def exchangePointMark (self,event):
+
+    '''Exchange the point (insert point) with the mark (the other end of the selected text).'''
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    c.widgetWantsFocusNow(w)
+    i,j = w.getSelectionRange(sort=False)
+    if i == j: return
+
+    ins = w.getInsertPoint()
+    ins = g.choose(ins==i,j,i)
+    w.setInsertPoint(ins)
+    w.setSelectionRange(i,j,insert=None)
+#@-node:ekr.20050920084036.136:exchangePointMark
+#@+node:ekr.20061007082956:extend-to-line
+def extendToLine (self,event):
+
+    '''Select the line at the cursor.'''
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText() ; n = len(s)
+    i = w.getInsertPoint()
+
+    while 0 <= i < n and not s[i] == '\n':
+        i -= 1
+    i += 1 ; i1 = i
+    while 0 <= i < n and not s[i] == '\n':
+        i += 1
+
+    w.setSelectionRange(i1,i)
+#@-node:ekr.20061007082956:extend-to-line
+#@+node:ekr.20061007214835.4:extend-to-sentence
+def extendToSentence (self,event):
+
+    '''Select the line at the cursor.'''
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText() ; n = len(s)
+    i = w.getInsertPoint()
+
+    i2 = 1 + s.find('.',i)
+    if i2 == -1: i2 = n
+    i1 = 1 + s.rfind('.',0,i2-1)
+
+    w.setSelectionRange(i1,i2)
+#@nonl
+#@-node:ekr.20061007214835.4:extend-to-sentence
+#@+node:ekr.20060116074839.2:extend-to-word
+def extendToWord (self,event,direction='forward'):
+
+    '''Select the word at the cursor.'''
+
+    c = self.c
+    w = self.editWidget(event)
+    if not w: return
+
+    s = w.getAllText() ; n = len(s)
+    i = w.getInsertPoint()
+
+    if direction == 'forward':
+        while i < n and not g.isWordChar(s[i]):
+            i += 1
+    else:
+        while 0 <= i < n and not g.isWordChar(s[i]):
+            i -= 1
+
+    while 0 <= i < n and g.isWordChar(s[i]):
+        i -= 1
+    i += 1
+    i1 = i
+
+    # Move to the end of the word.
+    while 0 <= i < n and g.isWordChar(s[i]):
+        i += 1
+
+    w.setSelectionRange(i1,i)
+#@nonl
+#@-node:ekr.20060116074839.2:extend-to-word
+#@+node:ekr.20051218141237:lines
+def beginningOfLine (self,event):
+    '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
+    w = self.editWidget(event)
+    s = w.getAllText() ; ins = w.getInsertPoint()
+    i,junk = g.getLine(s,ins)
+    # if i > 0 and i == ins: i,junk = g.getLine(s,i-1)
+    self.moveToHelper(event,i,extend=False)
+
+def beginningOfLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the start of the line.'''
+    w = self.editWidget(event)
+    s = w.getAllText() ; ins = w.getInsertPoint()
+    i,junk = g.getLine(s,ins)
+    # if i > 0 and i == ins: i,junk = g.getLine(s,i-1)
+    self.moveToHelper(event,i,extend=True)
+
+def endOfLine (self,event): # passed
+    '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
+    w = self.editWidget(event)
+    s = w.getAllText() ; ins = w.getInsertPoint()
+    junk,i = g.getLine(s,ins)
+    # if ins == i-1: junk,i = g.getLine(s,i)
+    if g.match(s,i-1,'\n'): i -= 1
+    self.moveToHelper(event,i,extend=False)
+
+def endOfLineExtendSelection (self,event): # passed
+    '''Extend the selection by moving the cursor to the end of the line.'''
+    w = self.editWidget(event)
+    s = w.getAllText() ; ins = w.getInsertPoint()
+    junk,i = g.getLine(s,ins)
+    # if ins == i-1: junk,i = g.getLine(s,i)
+    if g.match(s,i-1,'\n'): i -= 1
+    self.moveToHelper(event,i,extend=True)
+
+def nextLine (self,event):
+    '''Move the cursor down, extending the selection if in extend mode.'''
+    self.moveUpOrDownHelper(event,'down',extend=False)
+
+def nextLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor down.'''
+    self.moveUpOrDownHelper(event,'down',extend=True)
+
+def prevLine (self,event):
+    '''Move the cursor up, extending the selection if in extend mode.'''
+    self.moveUpOrDownHelper(event,'up',extend=False)
+
+def prevLineExtendSelection (self,event):
+    '''Extend the selection by moving the cursor up.'''
+    self.moveUpOrDownHelper(event,'up',extend=True)
+#@-node:ekr.20051218141237:lines
+#@+node:ekr.20050920084036.140:movePastClose
+def movePastClose (self,event):
+    '''Move the cursor past the closing parenthesis.'''
+    self.movePastCloseHelper(event,extend=False)
+
+def movePastCloseExtendSelection (self,event):
+    '''Extend the selection by moving the cursor past the closing parenthesis.'''
+    self.movePastCloseHelper(event,extend=True)
+#@-node:ekr.20050920084036.140:movePastClose
+#@+node:ekr.20090530181848.6034:pages (New in Leo 4.6)
+def backPage (self,event):
+    '''Move the cursor back one page,
+    extending the selection if in extend mode.'''
+    self.movePageHelper(event,kind='back',extend=False)
+
+def backPageExtendSelection (self,event):
+    '''Extend the selection by moving the cursor back one page.'''
+    self.movePageHelper(event,kind='back',extend=True)
+
+def forwardPage (self,event):
+    '''Move the cursor forward one page,
+    extending the selection if in extend mode.'''
+    self.movePageHelper(event,kind='forward',extend=False)
+
+def forwardPageExtendSelection (self,event):
+    '''Extend the selection by moving the cursor forward one page.'''
+    self.movePageHelper(event,kind='forward',extend=True)
+#@-node:ekr.20090530181848.6034:pages (New in Leo 4.6)
+#@+node:ekr.20050920084036.102:paragraphs
+def backwardParagraph (self,event):
+    '''Move the cursor to the previous paragraph.'''
+    self.backwardParagraphHelper (event,extend=False)
+
+def backwardParagraphExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the previous paragraph.'''
+    self.backwardParagraphHelper (event,extend=True)
+
+def forwardParagraph (self,event):
+    '''Move the cursor to the next paragraph.'''
+    self.forwardParagraphHelper(event,extend=False)
+
+def forwardParagraphExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the next paragraph.'''
+    self.forwardParagraphHelper(event,extend=True)
+#@-node:ekr.20050920084036.102:paragraphs
+#@+node:ekr.20050920084036.131:sentences
+def backSentence (self,event):
+    '''Move the cursor to the previous sentence.'''
+    self.backSentenceHelper(event,extend=False)
+
+def backSentenceExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the previous sentence.'''
+    self.backSentenceHelper(event,extend=True)
+
+def forwardSentence (self,event):
+    '''Move the cursor to the next sentence.'''
+    self.forwardSentenceHelper(event,extend=False)
+
+def forwardSentenceExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the next sentence.'''
+    self.forwardSentenceHelper(event,extend=True)
+#@-node:ekr.20050920084036.131:sentences
+#@+node:ekr.20050920084036.149:words
+def backwardWord (self,event):
+    '''Move the cursor to the previous word.'''
+    self.moveWordHelper(event,extend=False,forward=False)
+
+def backwardWordExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the next word.'''
+    self.moveWordHelper(event,extend=True,forward=False)
+
+def forwardEndWord (self,event): # New in Leo 4.4.2
+    '''Move the cursor to the next word.'''
+    self.moveWordHelper(event,extend=False,forward=True,end=True)
+
+def forwardEndWordExtendSelection (self,event): # New in Leo 4.4.2
+    '''Extend the selection by moving the cursor to the previous word.'''
+    self.moveWordHelper(event,extend=True,forward=True,end=True)
+
+def forwardWord (self,event):
+    '''Move the cursor to the next word.'''
+    self.moveWordHelper(event,extend=False,forward=True)
+
+def forwardWordExtendSelection (self,event):
+    '''Extend the selection by moving the cursor to the previous word.'''
+    self.moveWordHelper(event,extend=True,forward=True)
+#@-node:ekr.20050920084036.149:words
+#@-node:ekr.20050929114218:move cursor... (leoEditCommands)
+#@+node:ekr.20090530181848.6034:pages (New in Leo 4.6)
+def backPage (self,event):
+    '''Move the cursor back one page,
+    extending the selection if in extend mode.'''
+    self.movePageHelper(event,kind='back',extend=False)
+
+def backPageExtendSelection (self,event):
+    '''Extend the selection by moving the cursor back one page.'''
+    self.movePageHelper(event,kind='back',extend=True)
+
+def forwardPage (self,event):
+    '''Move the cursor forward one page,
+    extending the selection if in extend mode.'''
+    self.movePageHelper(event,kind='forward',extend=False)
+
+def forwardPageExtendSelection (self,event):
+    '''Extend the selection by moving the cursor forward one page.'''
+    self.movePageHelper(event,kind='forward',extend=True)
+#@-node:ekr.20090530181848.6034:pages (New in Leo 4.6)
+#@+node:ekr.20060113105246.1:moveUpOrDownHelper
+def moveUpOrDownHelper (self,event,direction,extend):
+
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+    trace = False
+
+    ins = w.getInsertPoint()
+    s = w.getAllText()
+    w.seeInsertPoint()
+
+    # Find the start of the next/prev line.
+    row,col = g.convertPythonIndexToRowCol(s,ins)
+    if trace:
+        gui_ins = w.toGuiIndex(ins)
+        bbox = w.bbox(gui_ins)
+        if bbox:
+            x,y,width,height = bbox
+            # bbox: x,y,width,height;  dlineinfo: x,y,width,height,offset
+            g.trace('gui_ins',gui_ins,'dlineinfo',w.dlineinfo(gui_ins),'bbox',bbox)
+            g.trace('ins',ins,'row',row,'col',col,'event.x',event.x,'event.y',event.y)
+            g.trace('subtracting line height',w.index('@%s,%s' % (x,y-height)))
+            g.trace('adding      line height',w.index('@%s,%s' % (x,y+height)))
+    i,j = g.getLine(s,ins)
+    if direction == 'down':
+        i2,j2 = g.getLine(s,j)
+    else:
+        i2,j2 = g.getLine(s,i-1)
+
+    # The spot is the start of the line plus the column index.
+    n = max(0,j2-i2-1) # The length of the new line.
+    col2 = min(col,n)
+    spot = i2 + col2
+    if trace: g.trace('spot',spot,'n',n,'col',col,'line',repr(s[i2:j2]))
+
+    self.extendHelper(w,extend,spot,upOrDown=True)
+#@nonl
+#@-node:ekr.20060113105246.1:moveUpOrDownHelper
+#@+node:ekr.20090530181848.6035:movePageHelper
+def movePageHelper(self,event,kind,extend): # kind in back/forward.
+
+    '''Move the cursor up/down one page, possibly extending the selection.'''
+
+    trace = False and not g.unitTesting
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+    linesPerPage = 15 # To do.
+    ins = w.getInsertPoint()
+    s = w.getAllText()
+    lines = g.splitLines(s)
+    row,col = g.convertPythonIndexToRowCol(s,ins)
+    row2 = g.choose(kind=='back',
+        max(0,row-linesPerPage),
+        min(row+linesPerPage,len(lines)-1))
+    if row == row2: return
+    spot = g.convertRowColToPythonIndex(s,row2,col,lines=lines)
+    if trace: g.trace('spot',spot,'row2',row2)
+    self.extendHelper(w,extend,spot,upOrDown=True)
+#@nonl
+#@-node:ekr.20090530181848.6035:movePageHelper
+#@-node:ekr.20090525113804.5778:Fixed lost anchor bug page up/down
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all

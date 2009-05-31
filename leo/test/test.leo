@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -357,9 +357,10 @@
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
 <v t="ekr.20090521070342.1907"><vh>@button show-rst</vh></v>
-<v t="ekr.20090527122538.1897" a="E"><vh>@path unittest</vh>
+<v t="ekr.20090527122538.1897"><vh>@path unittest</vh>
 <v t="ekr.20090526124114.1898" a="E"><vh>@shadow mismatched-extension-bug.py</vh></v>
 </v>
+<v t="ekr.20090530185923.1800"><vh>movePageHelper</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2733,5 +2734,42 @@ self.assertNotEqual(1,2)</t>
 <t tx="ekr.20090521070342.1907">g.app.gui.runScrolledMessageDialog(c=c,msg=u'rst:'+p.b)</t>
 <t tx="ekr.20090525090210.1940"></t>
 <t tx="ekr.20090527122538.1897"></t>
+<t tx="ekr.20090530185923.1800">def movePageHelper(self,event,kind,extend): # kind in ('back','forward')
+
+    '''Move the cursor up/down one page, possibly extending the selection.'''
+
+    trace = True and not g.unitTesting
+    c = self.c ; w = self.editWidget(event)
+    if not w: return
+
+    ins = w.getInsertPoint()
+    s = w.getAllText()
+    lines = g.splitLines(s)
+    w.seeInsertPoint()
+
+    # Find the start of the next/prev line.
+    row,col = g.convertPythonIndexToRowCol(s,ins)
+    if trace: gui_ins = w.toGuiIndex(ins)
+
+    if kind == 'back':
+        row2 = max(0,row-10)
+    else:
+        row2 = min(row+10,len(lines)-1)
+
+    if row == row2:
+        if trace: g.trace('at %s line' % (
+            g.choose(kind=='back','first','last')))
+        return
+
+    spot = g.convertRowColToPythonIndex(row2,col)
+
+    # The spot is the start of the line plus the column index.
+    # n = max(0,j2-i2-1) # The length of the new line.
+    # col2 = min(col,n)
+    # spot = i2 + col2
+    if trace: g.trace('spot',spot,'row',row2,'col',col) ### (s[i2:j2]))
+
+    self.extendHelper(w,extend,spot,upOrDown=True)
+</t>
 </tnodes>
 </leo_file>
