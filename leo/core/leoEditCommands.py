@@ -3496,12 +3496,26 @@ class editCommandsClass (baseEditCommandsClass):
     #@nonl
     #@-node:ekr.20051218122116:moveToHelper
     #@+node:ekr.20090530181848.6035:movePageHelper
-    def movePageHelper(self,event,kind,extend):
+    def movePageHelper(self,event,kind,extend): # kind in back/forward.
 
-        # kind in ('back','forward')
-        # extend in (True,False)
+        '''Move the cursor up/down one page, possibly extending the selection.'''
 
-        g.trace('not ready yet')
+        trace = False and not g.unitTesting
+        c = self.c ; w = self.editWidget(event)
+        if not w: return
+        linesPerPage = 15 # To do.
+        ins = w.getInsertPoint()
+        s = w.getAllText()
+        lines = g.splitLines(s)
+        row,col = g.convertPythonIndexToRowCol(s,ins)
+        row2 = g.choose(kind=='back',
+            max(0,row-linesPerPage),
+            min(row+linesPerPage,len(lines)-1))
+        if row == row2: return
+        spot = g.convertRowColToPythonIndex(s,row2,col,lines=lines)
+        if trace: g.trace('spot',spot,'row2',row2)
+        self.extendHelper(w,extend,spot,upOrDown=True)
+    #@nonl
     #@-node:ekr.20090530181848.6035:movePageHelper
     #@+node:ekr.20051218171457:movePastCloseHelper
     def movePastCloseHelper (self,event,extend):
