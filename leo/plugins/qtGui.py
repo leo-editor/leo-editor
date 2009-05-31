@@ -5533,8 +5533,8 @@ class leoQtEventFilter(QtCore.QObject):
         'Ins':      'Return',
         # Comment these out to pass the key to the QTextWidget.
         # Use these to enable Leo's page-up/down commands.
-            # 'PgDown':    'Next',
-            # 'PgUp':      'Prior',
+        'PgDown':    'Next',
+        'PgUp':      'Prior',
         # New entries.  These simplify code.
         'Down':'Down','Left':'Left','Right':'Right','Up':'Up',
         'End':'End',
