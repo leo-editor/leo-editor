@@ -1156,11 +1156,12 @@ class leoMenu:
             's&croll-outline-up-line',
             'scr&oll-outline-up-page',
             '-',
-            'scroll-&down',
-            'scroll-&up',
-            '-',
-            'scroll-down-&extend-selection',
-            'scroll-up-e&xtend-selection',
+            'scroll-down-half-page',
+            'scroll-down-line',
+            'scroll-&down-page',
+            'scroll-up-half-page',
+            'scroll-up-line',
+            'scroll-&up-page',
         ]
     #@nonl
     #@-node:ekr.20060923060822.1:defineCmdsMenuScrollTable
