@@ -1547,17 +1547,19 @@ class editCommandsClass (baseEditCommandsClass):
             'remove-tab-from-lines':                self.removeTabFromLines,
             'reverse-region':                       self.reverseRegion,
             'reverse-sort-lines':                   self.reverseSortLines,
-            'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,                 
-            'scroll-down':                          self.scrollDown,
-            'scroll-down-extend-selection':         self.scrollDownExtendSelection,
+            'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,
+            'scroll-down-half-page':                self.scrollDownHalfPage,                
+            'scroll-down-line':                     self.scrollDownLine,
+            'scroll-down-page':                     self.scrollDownPage,
             'scroll-outline-down-line':             self.scrollOutlineDownLine,
             'scroll-outline-down-page':             self.scrollOutlineDownPage,
             'scroll-outline-left':                  self.scrollOutlineLeft,
             'scroll-outline-right':                 self.scrollOutlineRight,
             'scroll-outline-up-line':               self.scrollOutlineUpLine,
             'scroll-outline-up-page':               self.scrollOutlineUpPage,
-            'scroll-up':                            self.scrollUp,
-            'scroll-up-extend-selection':           self.scrollUpExtendSelection,
+            'scroll-up-half-page':                  self.scrollUpHalfPage,                        
+            'scroll-up-line':                       self.scrollUpLine,
+            'scroll-up-page':                       self.scrollUpPage,
             'select-all':                           self.selectAllText,
             # Exists, but can not be executed via the minibuffer.
             # 'self-insert-command':                self.selfInsertCommand,
@@ -4383,101 +4385,122 @@ class editCommandsClass (baseEditCommandsClass):
     #@-others
     #@-node:ekr.20050920084036.105:region...
     #@+node:ekr.20060309060654:scrolling...
-    #@+node:ekr.20060113082917:scrollHelper
-    def scrollHelper (self,event,direction,extend):
-
-        k = self.k ; c = k.c ; gui = g.app.gui
-        w = gui.eventWidget(event)
-        if not w: return #  This does **not** require a text widget.
-
-        if gui.isTextWidget(w):
-            c.widgetWantsFocusNow(w)
-            # Remember the original insert point.  This may become the moveSpot.
-            ins1 = w.getInsertPoint()
-            s = w.getAllText()
-            row,col = g.convertPythonIndexToRowCol(s,ins1)
-            # Compute the spot.
-            delta = self.measure(w)
-            row1 = g.choose(direction=='down',row+delta,row-delta)
-            row1 = max(0,row1)
-            spot = g.convertRowColToPythonIndex(s,row1,col)
-            # g.trace('spot',spot,'row1',row1)
-            self.extendHelper(w,extend,spot)
-            w.seeInsertPoint()
-        elif gui.widget_name(w).startswith('canvas'):
-            if direction=='down':
-                self.scrollOutlineDownPage()
-            else:
-                self.scrollOutlineUpPage()
-    #@-node:ekr.20060113082917:scrollHelper
-    #@+node:ekr.20050920084036.116:scrollUp/Down/extendSelection
-    def scrollDown (self,event):
-        '''Scroll the presently selected pane down one page.'''
-        self.scrollHelper(event,'down',extend=False)
-
-    def scrollDownExtendSelection (self,event):
-        '''Extend the text selection by scrolling the body text down one page.'''
-        self.scrollHelper(event,'down',extend=True)
-
-    def scrollUp (self,event):
-        '''Scroll the presently selected pane up one page.'''
-        self.scrollHelper(event,'up',extend=False)
-
-    def scrollUpExtendSelection (self,event):
-        '''Extend the text selection by scrolling the body text up one page.'''
-        self.scrollHelper(event,'up',extend=True)
     #@+node:ekr.20050920084036.147:measure
     def measure (self,w):
 
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        start, junk = g.convertPythonIndexToRowCol(s,ins)
-        start += 1 ; delta = 0
+        if hasattr(w,'linesPerPage'):
+            # Preferred.  Qt implements this.
+            n = w.linesPerPage()
+            return max(2,n-3)
+        else:
+            s = w.getAllText()
+            ins = w.getInsertPoint()
+            start, junk = g.convertPythonIndexToRowCol(s,ins)
+            start += 1 ; delta = 0
+            ustart = start - 1
+            while ustart >= 1 and w.indexIsVisible('%s.0' % ustart):
+                delta += 1 ; ustart -= 1
 
-        ustart = start - 1
-        while ustart >= 1 and w.indexIsVisible('%s.0' % ustart):
-            delta += 1 ; ustart -= 1
+            ustart = start + 1
+            while w.indexIsVisible('%s.0' % ustart):
+                delta += 1 ; ustart += 1
 
-        ustart = start + 1
-        while w.indexIsVisible('%s.0' % ustart):
-            delta += 1 ; ustart += 1
-
-        return delta
+            return delta
     #@-node:ekr.20050920084036.147:measure
-    #@-node:ekr.20050920084036.116:scrollUp/Down/extendSelection
+    #@+node:ekr.20050920084036.116:scrollUp/Down & helper
+    def scrollDownHalfPage (self,event):
+        '''Scroll the presently selected pane down one lline.'''
+        self.scrollHelper(event,'down-half-page')
+
+    def scrollDownLine (self,event):
+        '''Scroll the presently selected pane down one lline.'''
+        self.scrollHelper(event,'down-line')
+
+    def scrollDownPage (self,event):
+        '''Scroll the presently selected pane down one page.'''
+        self.scrollHelper(event,'down-page')
+
+    def scrollUpHalfPage (self,event):
+        '''Scroll the presently selected pane down one lline.'''
+        self.scrollHelper(event,'up-half-page')
+
+    def scrollUpLine (self,event):
+        '''Scroll the presently selected pane up one page.'''
+        self.scrollHelper(event,'up-line')
+
+    def scrollUpPage (self,event):
+        '''Scroll the presently selected pane up one page.'''
+        self.scrollHelper(event,'up-page')
+    #@+node:ekr.20060113082917:scrollHelper
+    def scrollHelper (self,event,kind):
+
+        '''Scroll the present pane up or down one page
+        kind is in ('up/down-half-page/line/page)'''
+
+        k = self.k ; c = k.c ; gui = g.app.gui
+        w = gui.eventWidget(event)
+
+        if not w: return
+
+        if hasattr(w,'scrollDelegate'):
+            w.scrollDelegate(kind)
+        else:
+            g.trace('scrolling not implemented')
+    #@-node:ekr.20060113082917:scrollHelper
+    #@-node:ekr.20050920084036.116:scrollUp/Down & helper
     #@+node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
     def scrollOutlineDownLine (self,event=None):
         '''Scroll the outline pane down one line.'''
-        a,b = self.c.frame.canvas.leo_treeBar.get()
-        if b < 1.0:
-            self.c.frame.tree.canvas.yview_scroll(1,"unit")
+        c = self.c ; tree = c.frame.tree
+        if hasattr(tree,'scrollDelegate'):
+            tree.scrollDelegate('down-line')
+        elif hasattr(tree.canvas,'leo_treeBar'):
+            a,b = tree.canvas.leo_treeBar.get()
+            if b < 1.0: tree.canvas.yview_scroll(1,"unit")
 
     def scrollOutlineDownPage (self,event=None):
         '''Scroll the outline pane down one page.'''
-        a,b = self.c.frame.canvas.leo_treeBar.get()
-        if b < 1.0:
-            self.c.frame.tree.canvas.yview_scroll(1,"page")
+        c = self.c ; tree = c.frame.tree
+        if hasattr(tree,'scrollDelegate'):
+            tree.scrollDelegate('down-page')
+        elif hasattr(tree.canvas,'leo_treeBar'):
+            a,b = tree.canvas.leo_treeBar.get()
+            if b < 1.0: tree.canvas.yview_scroll(1,"page")
 
     def scrollOutlineUpLine (self,event=None):
         '''Scroll the outline pane up one line.'''
-        a,b = self.c.frame.canvas.leo_treeBar.get()
-        if a > 0.0:
-            self.c.frame.tree.canvas.yview_scroll(-1,"unit")
+        c = self.c ; tree = c.frame.tree
+        if hasattr(tree,'scrollDelegate'):
+            tree.scrollDelegate('up-line')
+        elif hasattr(tree.canvas,'leo_treeBar'):
+            a,b = tree.canvas.leo_treeBar.get()
+            if a > 0.0: tree.canvas.yview_scroll(-1,"unit")
 
     def scrollOutlineUpPage (self,event=None):
         '''Scroll the outline pane up one page.'''
-        a,b = self.c.frame.canvas.leo_treeBar.get()
-        if a > 0.0:
-            self.c.frame.tree.canvas.yview_scroll(-1,"page")
+        c = self.c ; tree = c.frame.tree
+        if hasattr(tree,'scrollDelegate'):
+            tree.scrollDelegate('up-page')
+        elif hasattr(tree.canvas,'leo_treeBar'):
+            a,b = tree.canvas.leo_treeBar.get()
+            if a > 0.0: tree.canvas.yview_scroll(-1,"page")
     #@-node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
     #@+node:ekr.20060726154531:scrollOutlineLeftRight
     def scrollOutlineLeft (self,event=None):
         '''Scroll the outline left.'''
-        self.c.frame.tree.canvas.xview_scroll(1,"unit")
+        c = self.c ; tree = c.frame.tree
+        if hasattr(tree,'scrollDelegate'):
+            tree.scrollDelegate('left')
+        elif hasattr(tree.canvas,'xview_scroll'):
+            tree.canvas.xview_scroll(1,"unit")
 
     def scrollOutlineRight (self,event=None):
         '''Scroll the outline left.'''
-        self.c.frame.tree.canvas.xview_scroll(-1,"unit")
+        c = self.c ; tree = c.frame.tree
+        if hasattr(tree,'scrollDelegate'):
+            tree.scrollDelegate('right')
+        elif hasattr(tree.canvas,'xview_scroll'):
+            tree.canvas.xview_scroll(-1,"unit")
     #@-node:ekr.20060726154531:scrollOutlineLeftRight
     #@-node:ekr.20060309060654:scrolling...
     #@+node:ekr.20050920084036.117:sort...
