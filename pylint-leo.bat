@@ -19,11 +19,9 @@ goto all
 
 :errors
 
-echo leoCommands.py
-call pylint.bat leo\core\leoCommands.py      --rcfile=leo\test\pylint-leo-rc.txt
-
-echo leoShadow.py
-call pylint.bat leo\core\leoShadow.py       --rcfile=leo\test\pylint-leo-rc.txt
+echo leoEditCommands.py
+rem W0511:2380: FIXME lineYOffset is expected to be on a tnode in drawing code
+call pylint.bat leo\core\leoEditCommands.py  --disable-msg=W0511 --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 

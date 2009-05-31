@@ -2550,6 +2550,8 @@ def defineMultiLineCommands (self):
         # editCommandsClass
         'add-space-to-lines',
         'add-tab-to-lines',
+        'back-page',
+        'back-page-extend-selection',
         'back-paragraph',
         'back-paragraph-extend-selection',
         'back-sentence',
@@ -2570,6 +2572,8 @@ def defineMultiLineCommands (self):
         'fill-region',
         'fill-region-as-paragraph',
         'flush-lines',
+        'forward-page',
+        'forward-page-extend-selection',
         'forward-paragraph',
         'forward-paragraph-extend-selection',
         'forward-sentence',
@@ -2589,10 +2593,12 @@ def defineMultiLineCommands (self):
         'reverse-region',
         'reverse-sort-lines',
         'reverse-sort-lines-ignoring-case',
-        'scroll-down',
-        'scroll-down-extend-selection',
-        'scroll-outline-down-line',
-        'scroll-outline-down-page',
+        'scroll-down-half-page',
+        'scroll-down-line',
+        'scroll-down-page',
+        'scroll-up-half-page',
+        'scroll-up-line',
+        'scroll-up-page',
         'simulate-begin-drag',
         'simulate-end-drag',
         'sort-columns',
@@ -15520,17 +15526,19 @@ def getPublicCommands (self):
         'remove-tab-from-lines':                self.removeTabFromLines,
         'reverse-region':                       self.reverseRegion,
         'reverse-sort-lines':                   self.reverseSortLines,
-        'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,                 
-        'scroll-down':                          self.scrollDown,
-        'scroll-down-extend-selection':         self.scrollDownExtendSelection,
+        'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,
+        'scroll-down-half-page':                self.scrollDownHalfPage,                
+        'scroll-down-line':                     self.scrollDownLine,
+        'scroll-down-page':                     self.scrollDownPage,
         'scroll-outline-down-line':             self.scrollOutlineDownLine,
         'scroll-outline-down-page':             self.scrollOutlineDownPage,
         'scroll-outline-left':                  self.scrollOutlineLeft,
         'scroll-outline-right':                 self.scrollOutlineRight,
         'scroll-outline-up-line':               self.scrollOutlineUpLine,
         'scroll-outline-up-page':               self.scrollOutlineUpPage,
-        'scroll-up':                            self.scrollUp,
-        'scroll-up-extend-selection':           self.scrollUpExtendSelection,
+        'scroll-up-half-page':                  self.scrollUpHalfPage,                        
+        'scroll-up-line':                       self.scrollUpLine,
+        'scroll-up-page':                       self.scrollUpPage,
         'select-all':                           self.selectAllText,
         # Exists, but can not be executed via the minibuffer.
         # 'self-insert-command':                self.selfInsertCommand,
@@ -15560,104 +15568,6 @@ def getPublicCommands (self):
         'what-line':                            self.whatLine,
     }
 #@-node:ekr.20050920084036.55: getPublicCommands (editCommandsClass)
-#@+node:ekr.20060309060654:scrolling...
-#@+node:ekr.20060113082917:scrollHelper
-def scrollHelper (self,event,direction,extend):
-
-    k = self.k ; c = k.c ; gui = g.app.gui
-    w = gui.eventWidget(event)
-    if not w: return #  This does **not** require a text widget.
-
-    if gui.isTextWidget(w):
-        c.widgetWantsFocusNow(w)
-        # Remember the original insert point.  This may become the moveSpot.
-        ins1 = w.getInsertPoint()
-        s = w.getAllText()
-        row,col = g.convertPythonIndexToRowCol(s,ins1)
-        # Compute the spot.
-        delta = self.measure(w)
-        row1 = g.choose(direction=='down',row+delta,row-delta)
-        row1 = max(0,row1)
-        spot = g.convertRowColToPythonIndex(s,row1,col)
-        # g.trace('spot',spot,'row1',row1)
-        self.extendHelper(w,extend,spot)
-        w.seeInsertPoint()
-    elif gui.widget_name(w).startswith('canvas'):
-        if direction=='down':
-            self.scrollOutlineDownPage()
-        else:
-            self.scrollOutlineUpPage()
-#@-node:ekr.20060113082917:scrollHelper
-#@+node:ekr.20050920084036.116:scrollUp/Down/extendSelection
-def scrollDown (self,event):
-    '''Scroll the presently selected pane down one page.'''
-    self.scrollHelper(event,'down',extend=False)
-
-def scrollDownExtendSelection (self,event):
-    '''Extend the text selection by scrolling the body text down one page.'''
-    self.scrollHelper(event,'down',extend=True)
-
-def scrollUp (self,event):
-    '''Scroll the presently selected pane up one page.'''
-    self.scrollHelper(event,'up',extend=False)
-
-def scrollUpExtendSelection (self,event):
-    '''Extend the text selection by scrolling the body text up one page.'''
-    self.scrollHelper(event,'up',extend=True)
-#@+node:ekr.20050920084036.147:measure
-def measure (self,w):
-
-    s = w.getAllText()
-    ins = w.getInsertPoint()
-    start, junk = g.convertPythonIndexToRowCol(s,ins)
-    start += 1 ; delta = 0
-
-    ustart = start - 1
-    while ustart >= 1 and w.indexIsVisible('%s.0' % ustart):
-        delta += 1 ; ustart -= 1
-
-    ustart = start + 1
-    while w.indexIsVisible('%s.0' % ustart):
-        delta += 1 ; ustart += 1
-
-    return delta
-#@-node:ekr.20050920084036.147:measure
-#@-node:ekr.20050920084036.116:scrollUp/Down/extendSelection
-#@+node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
-def scrollOutlineDownLine (self,event=None):
-    '''Scroll the outline pane down one line.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if b < 1.0:
-        self.c.frame.tree.canvas.yview_scroll(1,"unit")
-
-def scrollOutlineDownPage (self,event=None):
-    '''Scroll the outline pane down one page.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if b < 1.0:
-        self.c.frame.tree.canvas.yview_scroll(1,"page")
-
-def scrollOutlineUpLine (self,event=None):
-    '''Scroll the outline pane up one line.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if a > 0.0:
-        self.c.frame.tree.canvas.yview_scroll(-1,"unit")
-
-def scrollOutlineUpPage (self,event=None):
-    '''Scroll the outline pane up one page.'''
-    a,b = self.c.frame.canvas.leo_treeBar.get()
-    if a > 0.0:
-        self.c.frame.tree.canvas.yview_scroll(-1,"page")
-#@-node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
-#@+node:ekr.20060726154531:scrollOutlineLeftRight
-def scrollOutlineLeft (self,event=None):
-    '''Scroll the outline left.'''
-    self.c.frame.tree.canvas.xview_scroll(1,"unit")
-
-def scrollOutlineRight (self,event=None):
-    '''Scroll the outline left.'''
-    self.c.frame.tree.canvas.xview_scroll(-1,"unit")
-#@-node:ekr.20060726154531:scrollOutlineLeftRight
-#@-node:ekr.20060309060654:scrolling...
 #@+node:ekr.20050929114218:move cursor... (leoEditCommands)
 #@+node:ekr.20051218170358: helpers
 #@+node:ekr.20060113130510:extendHelper
@@ -18778,6 +18688,311 @@ def adjustTargetLanguage (self,fn):
 #@-node:ekr.20080711093251.5:writeOneAtShadowNode & helpers & tests
 #@-node:ekr.20090529061522.6213:Important changes
 #@-node:ekr.20090528072540.10032:Allow block comments in private shadow files
+#@+node:ekr.20090531084727.6036:Scroll commands now affect only scrollbars
+#@+node:ekr.20050920084036.55: getPublicCommands (editCommandsClass)
+def getPublicCommands (self):        
+
+    c = self.c
+
+    return {
+        'activate-cmds-menu':                   self.activateCmdsMenu,
+        'activate-edit-menu':                   self.activateEditMenu,
+        'activate-file-menu':                   self.activateFileMenu,
+        'activate-help-menu':                   self.activateHelpMenu,
+        'activate-outline-menu':                self.activateOutlineMenu,
+        'activate-plugins-menu':                self.activatePluginsMenu,
+        'activate-window-menu':                 self.activateWindowMenu,
+        'add-editor':                           c.frame.body and c.frame.body.addEditor,
+        'add-space-to-lines':                   self.addSpaceToLines,
+        'add-tab-to-lines':                     self.addTabToLines, 
+        'back-to-indentation':                  self.backToIndentation,
+        'back-to-home':                         self.backToHome,
+        'back-char':                            self.backCharacter,
+        'back-char-extend-selection':           self.backCharacterExtendSelection,
+        'back-page':                            self.backPage,
+        'back-page-extend-selection':           self.backPageExtendSelection,
+        'back-paragraph':                       self.backwardParagraph,
+        'back-paragraph-extend-selection':      self.backwardParagraphExtendSelection,
+        'back-sentence':                        self.backSentence,
+        'back-sentence-extend-selection':       self.backSentenceExtendSelection,
+        'back-word':                            self.backwardWord,
+        'back-word-extend-selection':           self.backwardWordExtendSelection,
+        'backward-delete-char':                 self.backwardDeleteCharacter,
+        'backward-kill-paragraph':              self.backwardKillParagraph,
+        'backward-find-character':              self.backwardFindCharacter,
+        'backward-find-character-extend-selection': self.backwardFindCharacterExtendSelection,
+        'beginning-of-buffer':                  self.beginningOfBuffer,
+        'beginning-of-buffer-extend-selection': self.beginningOfBufferExtendSelection,
+        'beginning-of-line':                    self.beginningOfLine,
+        'beginning-of-line-extend-selection':   self.beginningOfLineExtendSelection,
+        'capitalize-word':                      self.capitalizeWord,
+        'center-line':                          self.centerLine,
+        'center-region':                        self.centerRegion,
+        'clean-all-lines':                      self.cleanAllLines,
+        'clean-lines':                          self.cleanLines,
+        'clear-extend-mode':                    self.clearExtendMode,
+        'clear-selected-text':                  self.clearSelectedText,
+        'click-click-box':                      self.clickClickBox,
+        'click-headline':                       self.clickHeadline,
+        'click-icon-box':                       self.clickIconBox,
+        'contract-body-pane':                   c.frame.contractBodyPane,
+        'contract-log-pane':                    c.frame.contractLogPane,
+        'contract-outline-pane':                c.frame.contractOutlinePane,
+        'contract-pane':                        c.frame.contractPane,
+        'count-region':                         self.countRegion,
+        'cycle-focus':                          self.cycleFocus,
+        'cycle-all-focus':                      self.cycleAllFocus,
+        'cycle-editor-focus':                   c.frame.body.cycleEditorFocus,
+        # 'delete-all-icons':                   self.deleteAllIcons,
+        'delete-char':                          self.deleteNextChar,
+        'delete-editor':                        c.frame.body.deleteEditor,
+        'delete-first-icon':                    self.deleteFirstIcon,
+        'delete-indentation':                   self.deleteIndentation,
+        'delete-last-icon':                     self.deleteLastIcon,
+        'delete-node-icons':                    self.deleteNodeIcons,
+        'delete-spaces':                        self.deleteSpaces,
+        'do-nothing':                           self.doNothing,
+        'downcase-region':                      self.downCaseRegion,
+        'downcase-word':                        self.downCaseWord,
+        'double-click-headline':                self.doubleClickHeadline,
+        'double-click-icon-box':                self.doubleClickIconBox,
+        'end-of-buffer':                        self.endOfBuffer,
+        'end-of-buffer-extend-selection':       self.endOfBufferExtendSelection,
+        'end-of-line':                          self.endOfLine,
+        'end-of-line-extend-selection':         self.endOfLineExtendSelection,
+        'escape':                               self.watchEscape,
+        'eval-expression':                      self.evalExpression,
+        'exchange-point-mark':                  self.exchangePointMark,
+        'expand-body-pane':                     c.frame.expandBodyPane,
+        'expand-log-pane':                      c.frame.expandLogPane,
+        'expand-outline-pane':                  c.frame.expandOutlinePane,
+        'expand-pane':                          c.frame.expandPane,
+        'extend-to-line':                       self.extendToLine,
+        'extend-to-paragraph':                  self.extendToParagraph,
+        'extend-to-sentence':                   self.extendToSentence,
+        'extend-to-word':                       self.extendToWord,
+        'fill-paragraph':                       self.fillParagraph,
+        'fill-region':                          self.fillRegion,
+        'fill-region-as-paragraph':             self.fillRegionAsParagraph,
+        'find-character':                       self.findCharacter,
+        'find-character-extend-selection':      self.findCharacterExtendSelection,
+        'find-word':                            self.findWord,
+        'find-word-in-line':                    self.findWordInLine,
+        'flush-lines':                          self.flushLines,
+        'focus-to-body':                        self.focusToBody,
+        'focus-to-log':                         self.focusToLog,
+        'focus-to-minibuffer':                  self.focusToMinibuffer,
+        'focus-to-tree':                        self.focusToTree,
+        'forward-char':                         self.forwardCharacter,
+        'forward-char-extend-selection':        self.forwardCharacterExtendSelection,
+        'forward-page':                         self.forwardPage,
+        'forward-page-extend-selection':        self.forwardPageExtendSelection,
+        'forward-paragraph':                    self.forwardParagraph,
+        'forward-paragraph-extend-selection':   self.forwardParagraphExtendSelection,
+        'forward-sentence':                     self.forwardSentence,
+        'forward-sentence-extend-selection':    self.forwardSentenceExtendSelection,
+        'forward-end-word':                     self.forwardEndWord, # New in Leo 4.4.2.
+        'forward-end-word-extend-selection':    self.forwardEndWordExtendSelection, # New in Leo 4.4.2.
+        'forward-word':                         self.forwardWord,
+        'forward-word-extend-selection':        self.forwardWordExtendSelection,
+        'fully-expand-body-pane':               c.frame.fullyExpandBodyPane,
+        'fully-expand-log-pane':                c.frame.fullyExpandLogPane,
+        'fully-expand-pane':                    c.frame.fullyExpandPane,
+        'fully-expand-outline-pane':            c.frame.fullyExpandOutlinePane,
+        'goto-char':                            self.gotoCharacter,
+        'goto-global-line':                     self.gotoGlobalLine,
+        'goto-line':                            self.gotoLine,
+        'hide-body-pane':                       c.frame.hideBodyPane,
+        'hide-log-pane':                        c.frame.hideLogPane,
+        'hide-pane':                            c.frame.hidePane,
+        'hide-outline-pane':                    c.frame.hideOutlinePane,
+        'how-many':                             self.howMany,
+        # Use indentBody in leoCommands.py
+        'indent-relative':                      self.indentRelative,
+        'indent-rigidly':                       self.tabIndentRegion,
+        'indent-to-comment-column':             self.indentToCommentColumn,
+        'insert-icon':                          self.insertIcon,
+        'insert-newline':                       self.insertNewline,
+        'insert-parentheses':                   self.insertParentheses,
+        'keep-lines':                           self.keepLines,
+        'kill-paragraph':                       self.killParagraph,
+        'line-number':                          self.lineNumber,
+        'move-lines-down':                      self.moveLinesDown,
+        'move-lines-up':                        self.moveLinesUp,
+        'move-past-close':                      self.movePastClose,
+        'move-past-close-extend-selection':     self.movePastCloseExtendSelection,
+        'newline-and-indent':                   self.insertNewLineAndTab,
+        'next-line':                            self.nextLine,
+        'next-line-extend-selection':           self.nextLineExtendSelection,
+        'previous-line':                        self.prevLine,
+        'previous-line-extend-selection':       self.prevLineExtendSelection,
+        'remove-blank-lines':                   self.removeBlankLines,
+        'remove-space-from-lines':              self.removeSpaceFromLines,
+        'remove-tab-from-lines':                self.removeTabFromLines,
+        'reverse-region':                       self.reverseRegion,
+        'reverse-sort-lines':                   self.reverseSortLines,
+        'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,
+        'scroll-down-half-page':                self.scrollDownHalfPage,                
+        'scroll-down-line':                     self.scrollDownLine,
+        'scroll-down-page':                     self.scrollDownPage,
+        'scroll-outline-down-line':             self.scrollOutlineDownLine,
+        'scroll-outline-down-page':             self.scrollOutlineDownPage,
+        'scroll-outline-left':                  self.scrollOutlineLeft,
+        'scroll-outline-right':                 self.scrollOutlineRight,
+        'scroll-outline-up-line':               self.scrollOutlineUpLine,
+        'scroll-outline-up-page':               self.scrollOutlineUpPage,
+        'scroll-up-half-page':                  self.scrollUpHalfPage,                        
+        'scroll-up-line':                       self.scrollUpLine,
+        'scroll-up-page':                       self.scrollUpPage,
+        'select-all':                           self.selectAllText,
+        # Exists, but can not be executed via the minibuffer.
+        # 'self-insert-command':                self.selfInsertCommand,
+        'set-comment-column':                   self.setCommentColumn,
+        'set-extend-mode':                      self.setExtendMode,
+        'set-fill-column':                      self.setFillColumn,
+        'set-fill-prefix':                      self.setFillPrefix,
+        #'set-mark-command':                    self.setRegion,
+        'show-colors':                          self.showColors,
+        'show-fonts':                           self.showFonts,
+        'simulate-begin-drag':                  self.simulateBeginDrag,
+        'simulate-end-drag':                    self.simulateEndDrag,
+        'sort-columns':                         self.sortColumns,
+        'sort-fields':                          self.sortFields,
+        'sort-lines':                           self.sortLines,
+        'sort-lines-ignoring-case':             self.sortLinesIgnoringCase,
+        'split-line':                           self.splitLine,
+        'tabify':                               self.tabify,
+        'toggle-extend-mode':                   self.toggleExtendMode,
+        'transpose-chars':                      self.transposeCharacters,
+        'transpose-lines':                      self.transposeLines,
+        'transpose-words':                      self.transposeWords,
+        'untabify':                             self.untabify,
+        'upcase-region':                        self.upCaseRegion,
+        'upcase-word':                          self.upCaseWord,
+        'view-lossage':                         self.viewLossage,
+        'what-line':                            self.whatLine,
+    }
+#@-node:ekr.20050920084036.55: getPublicCommands (editCommandsClass)
+#@+node:ekr.20060309060654:scrolling...
+#@+node:ekr.20050920084036.147:measure
+def measure (self,w):
+
+    if hasattr(w,'linesPerPage'):
+        # Preferred.  Qt implements this.
+        n = w.linesPerPage()
+        return max(2,n-3)
+    else:
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        start, junk = g.convertPythonIndexToRowCol(s,ins)
+        start += 1 ; delta = 0
+        ustart = start - 1
+        while ustart >= 1 and w.indexIsVisible('%s.0' % ustart):
+            delta += 1 ; ustart -= 1
+
+        ustart = start + 1
+        while w.indexIsVisible('%s.0' % ustart):
+            delta += 1 ; ustart += 1
+
+        return delta
+#@-node:ekr.20050920084036.147:measure
+#@+node:ekr.20050920084036.116:scrollUp/Down & helper
+def scrollDownHalfPage (self,event):
+    '''Scroll the presently selected pane down one lline.'''
+    self.scrollHelper(event,'down-half-page')
+
+def scrollDownLine (self,event):
+    '''Scroll the presently selected pane down one lline.'''
+    self.scrollHelper(event,'down-line')
+
+def scrollDownPage (self,event):
+    '''Scroll the presently selected pane down one page.'''
+    self.scrollHelper(event,'down-page')
+
+def scrollUpHalfPage (self,event):
+    '''Scroll the presently selected pane down one lline.'''
+    self.scrollHelper(event,'up-half-page')
+
+def scrollUpLine (self,event):
+    '''Scroll the presently selected pane up one page.'''
+    self.scrollHelper(event,'up-line')
+
+def scrollUpPage (self,event):
+    '''Scroll the presently selected pane up one page.'''
+    self.scrollHelper(event,'up-page')
+#@+node:ekr.20060113082917:scrollHelper
+def scrollHelper (self,event,kind):
+
+    '''Scroll the present pane up or down one page
+    kind is in ('up/down-half-page/line/page)'''
+
+    k = self.k ; c = k.c ; gui = g.app.gui
+    w = gui.eventWidget(event)
+
+    if not w: return
+
+    if hasattr(w,'scrollDelegate'):
+        w.scrollDelegate(kind)
+    else:
+        g.trace('scrolling not implemented')
+#@-node:ekr.20060113082917:scrollHelper
+#@-node:ekr.20050920084036.116:scrollUp/Down & helper
+#@+node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
+def scrollOutlineDownLine (self,event=None):
+    '''Scroll the outline pane down one line.'''
+    c = self.c ; tree = c.frame.tree
+    if hasattr(tree,'scrollDelegate'):
+        tree.scrollDelegate('down-line')
+    elif hasattr(tree.canvas,'leo_treeBar'):
+        a,b = tree.canvas.leo_treeBar.get()
+        if b < 1.0: tree.canvas.yview_scroll(1,"unit")
+
+def scrollOutlineDownPage (self,event=None):
+    '''Scroll the outline pane down one page.'''
+    c = self.c ; tree = c.frame.tree
+    if hasattr(tree,'scrollDelegate'):
+        tree.scrollDelegate('down-page')
+    elif hasattr(tree.canvas,'leo_treeBar'):
+        a,b = tree.canvas.leo_treeBar.get()
+        if b < 1.0: tree.canvas.yview_scroll(1,"page")
+
+def scrollOutlineUpLine (self,event=None):
+    '''Scroll the outline pane up one line.'''
+    c = self.c ; tree = c.frame.tree
+    if hasattr(tree,'scrollDelegate'):
+        tree.scrollDelegate('up-line')
+    elif hasattr(tree.canvas,'leo_treeBar'):
+        a,b = tree.canvas.leo_treeBar.get()
+        if a > 0.0: tree.canvas.yview_scroll(-1,"unit")
+
+def scrollOutlineUpPage (self,event=None):
+    '''Scroll the outline pane up one page.'''
+    c = self.c ; tree = c.frame.tree
+    if hasattr(tree,'scrollDelegate'):
+        tree.scrollDelegate('up-page')
+    elif hasattr(tree.canvas,'leo_treeBar'):
+        a,b = tree.canvas.leo_treeBar.get()
+        if a > 0.0: tree.canvas.yview_scroll(-1,"page")
+#@-node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
+#@+node:ekr.20060726154531:scrollOutlineLeftRight
+def scrollOutlineLeft (self,event=None):
+    '''Scroll the outline left.'''
+    c = self.c ; tree = c.frame.tree
+    if hasattr(tree,'scrollDelegate'):
+        tree.scrollDelegate('left')
+    elif hasattr(tree.canvas,'xview_scroll'):
+        tree.canvas.xview_scroll(1,"unit")
+
+def scrollOutlineRight (self,event=None):
+    '''Scroll the outline left.'''
+    c = self.c ; tree = c.frame.tree
+    if hasattr(tree,'scrollDelegate'):
+        tree.scrollDelegate('right')
+    elif hasattr(tree.canvas,'xview_scroll'):
+        tree.canvas.xview_scroll(-1,"unit")
+#@-node:ekr.20060726154531:scrollOutlineLeftRight
+#@-node:ekr.20060309060654:scrolling...
+#@-node:ekr.20090531084727.6036:Scroll commands now affect only scrollbars
 #@-node:ekr.20090401105902.3:Features
 #@-node:ekr.20080917153158.11:4.6 b2
 #@-all

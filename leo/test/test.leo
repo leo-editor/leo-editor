@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="64" left="447" height="925" width="655"/>
+	<global_window_position top="54" left="422" height="925" width="793"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -271,7 +271,7 @@
 <v t="ekr.20080917063615.1"><vh>getSettingSource</vh></v>
 <v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
 </v>
-<v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
+<v t="ekr.20080930114036.1" a="E"><vh>Icon stuff</vh>
 <v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
 <v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
 <v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
@@ -360,7 +360,7 @@
 <v t="ekr.20090527122538.1897"><vh>@path unittest</vh>
 <v t="ekr.20090526124114.1898" a="E"><vh>@shadow mismatched-extension-bug.py</vh></v>
 </v>
-<v t="ekr.20090530185923.1800"><vh>movePageHelper</vh></v>
+<v t="ekr.20090530185923.1800"><vh>movePageHelper (a test for scrolling)</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'

@@ -3,8 +3,10 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
 #@+node:ekr.20090525113804.5776:Before b2
-#@+node:ekr.20090529154322.6375:Support multiple body editors
-#@-node:ekr.20090529154322.6375:Support multiple body editors
+#@+node:ekr.20090430092048.4:Fix all qt bugs
+# Including supporting multiple body editors
+#@nonl
+#@-node:ekr.20090430092048.4:Fix all qt bugs
 #@+node:ekr.20090324100430.1:Deleting @chapter node doesn't work
 @nocolor-node
 _unlink: can not happen: bad child index: 4, len(children): 2
@@ -116,8 +118,6 @@ def removeChapterByName (self,name):
     c.redraw()
 #@-node:ekr.20070606075434:cc.removeChapterByName
 #@-node:ekr.20090324100430.1:Deleting @chapter node doesn't work
-#@+node:ekr.20090430092048.4:Fix all qt bugs
-#@-node:ekr.20090430092048.4:Fix all qt bugs
 #@+node:ekr.20090523070447.6475:Rewrite rst documentation
 #@-node:ekr.20090523070447.6475:Rewrite rst documentation
 #@-node:ekr.20090525113804.5776:Before b2

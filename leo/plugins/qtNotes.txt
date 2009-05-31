@@ -2,11 +2,7 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090430102239.1:Before b2 6
-#@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
-http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
-#@nonl
-#@-node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
+#@+node:ekr.20090430102239.1:Before b2 5
 #@+node:ekr.20081215162017.5:Support multiple body editors
 #@+node:ekr.20090318091009.13:Prototype code
 @color
@@ -272,6 +268,49 @@ def hasSelection(self):
 
     return self.widget.textCursor().hasSelection()
 #@-node:ekr.20081121105001.584:hasSelection
+#@+node:ekr.20090531084925.3773:scrolling (QTextEdit)
+#@+node:ekr.20090531084925.3775:indexIsVisible and linesPerPage
+# This is not used if linesPerPage exists.
+def indexIsVisible (self,i):
+    return False
+
+def linesPerPage (self):
+
+    '''Return the number of lines presently visible.'''
+
+    w = self.widget
+    h = w.size().height()
+    lineSpacing = w.fontMetrics().lineSpacing()
+    n = h/lineSpacing
+    # g.trace(n,h,lineSpacing)
+    return n
+#@-node:ekr.20090531084925.3775:indexIsVisible and linesPerPage
+#@+node:ekr.20090531084925.3776:scrollDelegate (QTextEdit)
+def scrollDelegate(self,kind):
+
+    '''Scroll a QTextEdit up or down one page.
+    direction is in ('down-line','down-page','up-line','up-page')'''
+
+    c = self.c ; w = self.widget
+    vScroll = w.verticalScrollBar()
+    h = w.size().height()
+    lineSpacing = w.fontMetrics().lineSpacing()
+    n = h/lineSpacing
+    n = max(2,n-3)
+    if   kind == 'down-half-page': delta = n/2
+    elif kind == 'down-line':      delta = 1
+    elif kind == 'down-page':      delta = n
+    elif kind == 'up-half-page':   delta = -n/2
+    elif kind == 'up-line':        delta = -1
+    elif kind == 'up-page':        delta = -n
+    else:
+        delta = 0 ; g.trace('bad kind:',kind)
+    val = vScroll.value()
+    # g.trace(kind,n,h,lineSpacing,delta,val)
+    vScroll.setValue(val+(delta*lineSpacing))
+    c.bodyWantsFocus()
+#@-node:ekr.20090531084925.3776:scrollDelegate (QTextEdit)
+#@-node:ekr.20090531084925.3773:scrolling (QTextEdit)
 #@+node:ekr.20090205153624.12:insert (avoid call to setAllText)
 def insert(self,i,s):
 
@@ -3186,6 +3225,10 @@ def selectLabel (self,w):
         # w.leo_label = None
 #@-node:ekr.20081121105001.222:select/unselectLabel
 #@-node:ekr.20081215162017.5:Support multiple body editors
+#@+node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
+http://groups.google.com/group/leo-editor/browse_thread/thread/b2af78fbb36d3590
+#@nonl
+#@-node:ekr.20081215074704.16:Mark finds doesn't work in Qt gui plugin
 #@+node:ekr.20090304084841.15:Complete open-with menu
 #@-node:ekr.20090304084841.15:Complete open-with menu
 #@+node:ekr.20090409055330.10:Make sure change-all honors node-only and suboutline-only settings
@@ -3507,7 +3550,7 @@ def toggleOption (self,ivar):
 #@-node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
 #@-node:ekr.20081121105001.235:class leoQtFindTab (findTab)
 #@-node:ekr.20090409055330.10:Make sure change-all honors node-only and suboutline-only settings
-#@+node:ekr.20090530055308.3791:How to remember pane split ratio?
+#@+node:ekr.20090530055308.3791:Remember pane split ratio
 @nocolor-node
 
 http://groups.google.com/group/leo-editor/browse_thread/thread/bc730708fa389bd7
@@ -3522,8 +3565,8 @@ in myLeoSettings.leo.  However, whenever I start Leo, it is split 50/50.
 
 What's the settings (for Qt) to fix this?  Can we? 
 #@nonl
-#@-node:ekr.20090530055308.3791:How to remember pane split ratio?
-#@-node:ekr.20090430102239.1:Before b2 6
+#@-node:ekr.20090530055308.3791:Remember pane split ratio
+#@-node:ekr.20090430102239.1:Before b2 5
 #@+node:ekr.20090430102239.13:Before 4.6 final
 #@+node:ekr.20090429101847.10:Support canvas widgets in all panes
 http://groups.google.com/group/leo-editor/browse_thread/thread/9ac06147e75fc042
@@ -7512,6 +7555,197 @@ def setTopGeometry(self,w,h,x,y,adjustSize=True):
     self.top.setGeometry(QtCore.QRect(x,y,w,h))
 #@-node:ekr.20081121105001.317:Qt bindings... (qtFrame)
 #@-node:ekr.20090530055308.3790:Unexpected leo window resize after maximizing it
+#@+node:ekr.20090223065019.11:Hooked up PageUp/Down keys
+#@+node:ekr.20090407101640.10:char2tkName
+char2tkNameDict = {
+    # Part 1: same as k.guiBindNamesDict
+    "&" : "ampersand",
+    "^" : "asciicircum",
+    "~" : "asciitilde",
+    "*" : "asterisk",
+    "@" : "at",
+    "\\": "backslash",
+    "|" : "bar",
+    "{" : "braceleft",
+    "}" : "braceright",
+    "[" : "bracketleft",
+    "]" : "bracketright",
+    ":" : "colon",  
+    "," : "comma",
+    "$" : "dollar",
+    "=" : "equal",
+    "!" : "exclam",
+    ">" : "greater",
+    "<" : "less",
+    "-" : "minus",
+    "#" : "numbersign",
+    '"' : "quotedbl",
+    "'" : "quoteright",
+    "(" : "parenleft",
+    ")" : "parenright", 
+    "%" : "percent",
+    "." : "period",     
+    "+" : "plus",
+    "?" : "question",
+    "`" : "quoteleft",
+    ";" : "semicolon",
+    "/" : "slash",
+    " " : "space",      
+    "_" : "underscore",
+    # Part 2: special Qt translations.
+    'Backspace':'BackSpace',
+    'Backtab':  'Tab', # The shift mod will convert to 'Shift+Tab',
+    'Esc':      'Escape',
+    'Del':      'Delete',
+    'Ins':      'Return',
+    # Comment these out to pass the key to the QTextWidget.
+    # Use these to enable Leo's page-up/down commands.
+    'PgDown':    'Next',
+    'PgUp':      'Prior',
+    # New entries.  These simplify code.
+    'Down':'Down','Left':'Left','Right':'Right','Up':'Up',
+    'End':'End',
+    'F1':'F1','F2':'F2','F3':'F3','F4':'F4','F5':'F5',
+    'F6':'F6','F7':'F7','F8':'F8','F9':'F9',
+    'F10':'F10','F11':'F11','F12':'F12',
+    'Home':'Home',
+    'Return':'Return',
+    # 'Tab':'Tab',
+    'Tab':'\t', # A hack for QLineEdit.
+    # Unused: Break, Caps_Lock,Linefeed,Num_lock
+}
+
+def char2tkName (self,ch):
+    val = self.char2tkNameDict.get(ch)
+    # g.trace(repr(ch),repr(val))
+    return val
+#@-node:ekr.20090407101640.10:char2tkName
+#@-node:ekr.20090223065019.11:Hooked up PageUp/Down keys
+#@+node:ekr.20090531061028.3768:Possible causes of hard crashes
+#@+node:ekr.20090424085523.47:createOutlinePane
+def createOutlinePane (self,parent):
+
+    # Create widgets.
+    treeFrame = self.createFrame(parent,'outlineFrame',
+        vPolicy = QtGui.QSizePolicy.Expanding)
+    innerFrame = self.createFrame(treeFrame,'outlineInnerFrame',
+        hPolicy = QtGui.QSizePolicy.Preferred)
+    treeWidget = self.createTreeWidget(innerFrame,'treeWidget')
+
+    # Pack.
+    grid = self.createGrid(treeFrame,'outlineGrid')
+    grid.addWidget(innerFrame, 0, 0, 1, 1)
+    innerGrid = self.createGrid(innerFrame,'outlineInnerGrid')
+    innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
+
+    # Signals.
+    if False: # Ville's bug fix.  Crashes with or without this.
+        QtCore.QObject.connect(treeWidget,
+            QtCore.SIGNAL("itemSelectionChanged()"),self.showNormal)
+
+    # Official ivars...
+    self.treeWidget = treeWidget
+    # self.leo_outline_frame = treeFrame
+    # self.leo_outline_grid = grid
+    # self.leo_outline_inner_frame = innerFrame
+#@-node:ekr.20090424085523.47:createOutlinePane
+#@-node:ekr.20090531061028.3768:Possible causes of hard crashes
+#@+node:ekr.20090531084925.3772:Supported scrolling commands
+#@+node:ekr.20090531084925.3773:scrolling (QTextEdit)
+#@+node:ekr.20090531084925.3775:indexIsVisible and linesPerPage
+# This is not used if linesPerPage exists.
+def indexIsVisible (self,i):
+    return False
+
+def linesPerPage (self):
+
+    '''Return the number of lines presently visible.'''
+
+    w = self.widget
+    h = w.size().height()
+    lineSpacing = w.fontMetrics().lineSpacing()
+    n = h/lineSpacing
+    # g.trace(n,h,lineSpacing)
+    return n
+#@-node:ekr.20090531084925.3775:indexIsVisible and linesPerPage
+#@+node:ekr.20090531084925.3776:scrollDelegate (QTextEdit)
+def scrollDelegate(self,kind):
+
+    '''Scroll a QTextEdit up or down one page.
+    direction is in ('down-line','down-page','up-line','up-page')'''
+
+    c = self.c ; w = self.widget
+    vScroll = w.verticalScrollBar()
+    h = w.size().height()
+    lineSpacing = w.fontMetrics().lineSpacing()
+    n = h/lineSpacing
+    n = max(2,n-3)
+    if   kind == 'down-half-page': delta = n/2
+    elif kind == 'down-line':      delta = 1
+    elif kind == 'down-page':      delta = n
+    elif kind == 'up-half-page':   delta = -n/2
+    elif kind == 'up-line':        delta = -1
+    elif kind == 'up-page':        delta = -n
+    else:
+        delta = 0 ; g.trace('bad kind:',kind)
+    val = vScroll.value()
+    # g.trace(kind,n,h,lineSpacing,delta,val)
+    vScroll.setValue(val+(delta*lineSpacing))
+    c.bodyWantsFocus()
+#@-node:ekr.20090531084925.3776:scrollDelegate (QTextEdit)
+#@-node:ekr.20090531084925.3773:scrolling (QTextEdit)
+#@+node:ekr.20090124174652.122:Scroll bars (leoQtTree)
+#@+node:ekr.20090531084925.3779:getSCroll
+def getScroll (self):
+
+    '''Return the hPos,vPos for the tree's scrollbars.'''
+
+    w = self.treeWidget
+    hScroll = w.horizontalScrollBar()
+    vScroll = w.verticalScrollBar()
+    hPos = hScroll.sliderPosition()
+    vPos = vScroll.sliderPosition()
+    return hPos,vPos
+#@-node:ekr.20090531084925.3779:getSCroll
+#@+node:ekr.20090531084925.3780:setH/VScroll
+def setHScroll (self,hPos):
+    w = self.treeWidget
+    hScroll = w.horizontalScrollBar()
+    hScroll.setValue(hPos)
+
+def setVScroll (self,vPos):
+    # g.trace(vPos)
+    w = self.treeWidget
+    vScroll = w.verticalScrollBar()
+    vScroll.setValue(vPos)
+#@nonl
+#@-node:ekr.20090531084925.3780:setH/VScroll
+#@+node:ekr.20090531084925.3774:scrollDelegate (leoQtTree)
+def scrollDelegate (self,kind):
+
+    '''Scroll a QTreeWidget up or down.
+    kind is in ('down-line','down-page','up-line','up-page')
+    '''
+    c = self.c ; w = self.treeWidget
+    vScroll = w.verticalScrollBar()
+    h = w.size().height()
+    lineSpacing = w.fontMetrics().lineSpacing()
+    n = h/lineSpacing
+    if   kind == 'down-half-page': delta = n/2
+    elif kind == 'down-line':      delta = 1
+    elif kind == 'down-page':      delta = n
+    elif kind == 'up-half-page':   delta = -n/2
+    elif kind == 'up-line':        delta = -1
+    elif kind == 'up-page':        delta = -n
+    else:
+        delta = 0 ; g.trace('bad kind:',kind)
+    val = vScroll.value()
+    # g.trace(kind,n,h,lineSpacing,delta,val)
+    vScroll.setValue(val+delta)
+    c.treeWantsFocus()
+#@-node:ekr.20090531084925.3774:scrollDelegate (leoQtTree)
+#@-node:ekr.20090124174652.122:Scroll bars (leoQtTree)
+#@-node:ekr.20090531084925.3772:Supported scrolling commands
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@-node:ekr.20081208155215.12:Unused

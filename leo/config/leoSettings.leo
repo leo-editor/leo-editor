@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="124" left="345" height="827" width="1111"/>
+	<global_window_position top="103" left="509" height="827" width="675"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="8,3"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -428,7 +428,7 @@
 </v>
 </v>
 <v t="ekr.20070925144552"><vh>Menus</vh>
-<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
+<v t="ekr.20070925144534"><vh>@menus</vh>
 <v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
@@ -494,7 +494,7 @@
 <v t="ekr.20070927051856"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.47"><vh>@item exit-leo</vh></v>
 </v>
-<v t="ekr.20070925144534.48" a="E"><vh>@menu &amp;Edit</vh>
+<v t="ekr.20070925144534.48"><vh>@menu &amp;Edit</vh>
 <v t="ekr.20070925144534.49"><vh>@item undo</vh></v>
 <v t="ekr.20070925144534.50"><vh>@item redo</vh></v>
 <v t="ekr.20070925144534.51"><vh>@item -</vh></v>
@@ -504,7 +504,7 @@
 <v t="ekr.20070925144534.55"><vh>@item backward-delete-char</vh></v>
 <v t="ekr.20070925144534.56"><vh>@item select-all</vh></v>
 <v t="ekr.20070925144534.57"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.58" a="E"><vh>@menu Edit &amp;Body...</vh>
+<v t="ekr.20070925144534.58"><vh>@menu Edit &amp;Body...</vh>
 <v t="ekr.20070925144534.59"><vh>@item *extract-&amp;section</vh></v>
 <v t="ekr.20070925144534.60"><vh>@item *extract-&amp;names</vh></v>
 <v t="ekr.20070925144534.61"><vh>@item *&amp;extract</vh></v>
@@ -814,11 +814,12 @@
 <v t="ekr.20070925144534.326"><vh>@item s&amp;croll-outline-up-line</vh></v>
 <v t="ekr.20070925144534.327"><vh>@item scr&amp;oll-outline-up-page</vh></v>
 <v t="ekr.20070925144534.328"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.329"><vh>@item scroll-&amp;down</vh></v>
-<v t="ekr.20070925144534.330"><vh>@item scroll-&amp;up</vh></v>
-<v t="ekr.20070925144534.331"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.332"><vh>@item scroll-down-&amp;extend-selection</vh></v>
-<v t="ekr.20070925144534.333"><vh>@item scroll-up-e&amp;xtend-selection</vh></v>
+<v t="ekr.20090531084727.10893"><vh>@item scroll-down-half-page</vh></v>
+<v t="ekr.20090531084727.10895"><vh>@item scroll-down-line</vh></v>
+<v t="ekr.20070925144534.329"><vh>@item scroll-&amp;down-page</vh></v>
+<v t="ekr.20090531084727.10894"><vh>@item scroll-up-half-page</vh></v>
+<v t="ekr.20090531084727.10896"><vh>@item scroll-up-line</vh></v>
+<v t="ekr.20070925144534.330"><vh>@item scroll-&amp;up-page</vh></v>
 </v>
 <v t="ekr.20070925144534.334"><vh>@menu Spell C&amp;heck...</vh>
 <v t="ekr.20070925144534.335"><vh>@item &amp;open-spell-tab</vh></v>
@@ -1418,7 +1419,7 @@
 <v t="TL.20090307074930.150"><vh>@mode vim-window-commands</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208" a="E"></v>
+<v t="ekr.20060603215208"></v>
 <v t="ekr.20080512082834.1"></v>
 </vnodes>
 <tnodes>
@@ -2058,7 +2059,7 @@ paste-text                       ! tree = p        #To paste a line before, firs
 
 #Scroll commands
 #--------------------------------
-scroll-outline-up-page           ! tree = Ctrl-b   #Should scroll full window
+scroll-outline-up-page           ! tree = Ctrl-b   #Scrolls full window
 scroll-outline-down-page         ! tree = Ctrl-f
 
 scroll-outline-up-line           ! tree = Ctrl-u   #Should scroll 1/2 window
@@ -2420,14 +2421,14 @@ enter-body-match-mode               ! body = %
 
 #Scroll commands
 #--------------------------------
-scroll-up                           ! body = Ctrl-b   #Scrolls full window
-scroll-down                         ! body = Ctrl-f
+scroll-up-page                      ! body = Ctrl-b   #Scrolls full window
+scroll-down-page                    ! body = Ctrl-f
 
-scroll-up                           ! body = Ctrl-u   #should scroll 1/2
-scroll-down                         ! body = Ctrl-d
+scroll-up-half-page                 ! body = Ctrl-u   #Scroll 1/2 window
+scroll-down-half-page               ! body = Ctrl-d
 
-scroll-up                           ! body = Ctrl-y   #should scroll 1 line
-scroll-down                         ! body = Ctrl-e
+scroll-up-line                      ! body = Ctrl-y   #Scroll 1 line
+scroll-down-line                    ! body = Ctrl-e
 
 #Find character commands
 #--------------------------------
@@ -4877,7 +4878,7 @@ outline-to-cweb                 = None
 outline-to-noweb                = None
 paste-node                      = Shift-Ctrl-V
 paste-retaining-clones          = None
-paste-text                      = None      # Ctrl-V conflicts with scroll-down
+paste-text                      = None      # Ctrl-V conflicts with scroll-down-page
 point-to-register               = None
 prepend-to-buffer               = None
 prepend-to-register             = None
@@ -4911,10 +4912,12 @@ save-buffers-kill-leo           = None # Should be Control-x Control-c
 save-file                       = None         # Ctrl-s conflicts with isearch-forward.
 save-file-as                    = Shift-Ctrl-S
 save-file-to                    = None
-scroll-down                     = Control-v
-scroll-down-extend-selection    = None
-scroll-up                       = Alt-v
-scroll-up-extend-selection      = None
+scroll-down-half-page           = None
+scroll-down-line                = None
+scroll-down-page                = Control-v
+scroll-up-half-page             = None
+scroll-up-line                  = None
+scroll-up-page                  = Alt-v
 search-again                    = None
 search-backward                 = None
 search-forward                  = None
@@ -4938,7 +4941,7 @@ shell-command-on-region         = Alt-bar
 show-colors                     = None
 show-fonts                      = None
 show-invisibles                 = Alt-V
-show-invisibles                 = None  # Alt-V conflicts with scroll-up .
+show-invisibles                 = None  # Alt-V conflicts with scroll-up-page .
 show-mini-buffer                = None
 sort-children                   = None
 sort-columns                    = None
@@ -5231,16 +5234,18 @@ save-file                           = None
 save-file-as                        = None
 save-file-to                        = None
 # scan-for-autocompleter            = None
-scroll-down                         = None
-scroll-down-extend-selection        = None
+scroll-down-half-page               = None
+scroll-down-line                    = None
+scroll-down-page                    = None
 scroll-outline-down-line            = None
 scroll-outline-down-page            = None
 scroll-outline-left                 = None
 scroll-outline-right                = None
 scroll-outline-up-line              = None
 scroll-outline-up-page              = None
-scroll-up                           = None
-scroll-up-extend-selection          = None
+scroll-up-half-page                 = None
+scroll-up-line                      = None
+scroll-up-page                      = None
 search-again                        = None
 search-backward                     = None
 search-forward                      = None
@@ -5761,10 +5766,11 @@ point-to-register
 prepend-to-buffer
 previous-line
 previous-line-extend-selection
-scroll-down
-scroll-down-extend-selection
-scroll-up
-scroll-up-extend-selection
+scroll-down-half-page
+scroll-down-line
+scroll-down-page
+scroll-up-line
+scroll-up-page
 yank
 yank-pop  
 zap-to-character
@@ -6885,9 +6891,6 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.328"></t>
 <t tx="ekr.20070925144534.329"></t>
 <t tx="ekr.20070925144534.330"></t>
-<t tx="ekr.20070925144534.331"></t>
-<t tx="ekr.20070925144534.332"></t>
-<t tx="ekr.20070925144534.333"></t>
 <t tx="ekr.20070925144534.334"></t>
 <t tx="ekr.20070925144534.335"></t>
 <t tx="ekr.20070925144534.336"></t>
@@ -7217,10 +7220,6 @@ beginning-of-line-extend-selection  = Shift-Home
 end-of-line                         = End
 end-of-line-extend-selection        = Shift-End
 
-# scroll-down                         = PageDn 
-# scroll-down-extend-selection        = Shift-PageDn
-# scroll-up                           = PageUp
-# scroll-up-extend-selection          = Shift-PageUp
 </t>
 <t tx="ekr.20080510121331.16"># Must keep all these bindings for basic vim compatibility.
 
@@ -7886,6 +7885,10 @@ A reasonable alternative would be:
     
 '\n.. class:: code\n..\n\n::\n'</t>
 <t tx="ekr.20090514111518.8379"></t>
+<t tx="ekr.20090531084727.10893"></t>
+<t tx="ekr.20090531084727.10894"></t>
+<t tx="ekr.20090531084727.10895"></t>
+<t tx="ekr.20090531084727.10896"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

@@ -1560,14 +1560,13 @@
 </v>
 <v t="ekr.20061104172236.1"><vh> Function tests</vh>
 <v t="ekr.20061104172236.3"><vh>@test capitalizeHelper</vh></v>
-<v t="ekr.20061104172236.7"><vh>@test crollHelper</vh></v>
+<v t="ekr.20061104172236.7"><vh>@test scrollHelper</vh></v>
 <v t="ekr.20061104172236.5"><vh>@test extendHelper</vh></v>
 <v t="ekr.20061104172236.2"><vh>@test findWordInLine</vh></v>
 <v t="ekr.20080408094623.1"><vh>@test findWord</vh></v>
 <v t="ekr.20071113145804.15"><vh>@test helpForMinibuffer</vh></v>
 <v t="ekr.20061104172236.6"><vh>@test moveToHelper</vh></v>
 <v t="ekr.20061110094226"><vh>@test moveUpOrDownHelper</vh></v>
-<v t="ekr.20071113145804.6"><vh>@test scrollHelper</vh></v>
 <v t="ekr.20061104172236.4"><vh>@test setMoveCol</vh></v>
 </v>
 <v t="ekr.20051107115231" annotate="7d71002e"><vh> Typing</vh>
@@ -13232,10 +13231,17 @@ for i,j,python in (
 </t>
 <t tx="ekr.20061104172236.7">ec = c.editCommands
 
-for direction,extend in (('up',False),('down',False),('up',True),('down',True),):
+table = (
+    'down-half-page',
+    'down-line',
+    'down-page',
+    'up-half-page',
+    'up-line',
+    'up-page',
+)
+for kind in table:
     event = g.Bunch(widget=c.frame.body.bodyCtrl)
-    ec.scrollHelper(event,direction,extend)
-
+    ec.scrollHelper(event,kind)
 </t>
 <t tx="ekr.20061104172236.11">s = 'abc xy_z5 pdq'
 i,j = g.getWord(s,5)
@@ -15538,13 +15544,6 @@ finally:
     c.recolor_now()
 
 ###abcdef</t>
-<t tx="ekr.20071113145804.6">ec = c.editCommands
-
-for direction,extend in (('up',False),('down',False),('up',True),('down',True),):
-    event = g.Bunch(widget=c.frame.body.bodyCtrl)
-    ec.scrollHelper(event,direction,extend)
-
-</t>
 <t tx="ekr.20071113145804.7">s1 = '#@+leo-ver=4-thin-encoding=utf-8,.'  # 4.2 format.
 s2 = '#@+leo-ver=4-thin-encoding=utf-8.' # pre-4.2 format.
 
