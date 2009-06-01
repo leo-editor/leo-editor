@@ -16890,6 +16890,40 @@ def replaceBackSlashes (self,s):
 #@-node:ekr.20060526081931:searchHelper & allies
 #@-node:ekr.20031218072017.3077:search & helpers
 #@-node:ekr.20090531121108.6412:Fixed problems with change-all command
+#@+node:ekr.20090531183852.6036:Investigated bug: File->Export->write failed due to incorrect path
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/377907
+
+My .leo file was saved to location /pa/xxx.leo in a linux environment using
+leo-editor revision 1853.
+
+I then proceeded to export the node to HTML.
+
+In both
+File->Export->Save Outline as HTML
+File->Export->Save Node as HTML
+the write failed due to each export function
+inserting an incorrect path.
+
+The correct path should have been: /pa/xxx.html
+
+The path appearing in the log was /pa/c:/xxx.html
+
+Notes:
+
+EKR: these menu items are created by the Leo2Html plugin.
+
+I'm going to mark this invalid, although the behavior is way too confusing.
+
+I added the following to the plugin's docstring:
+
+Configuration
+~~~~~~~~~~~~~
+
+At present, the file leo/plugins/leo_to_html.ini contains configuration settings.
+In particular, the default export path, "c:\" must be changed for *nix systems.
+#@-node:ekr.20090531183852.6036:Investigated bug: File->Export->write failed due to incorrect path
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all

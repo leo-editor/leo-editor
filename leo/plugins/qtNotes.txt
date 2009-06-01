@@ -6556,6 +6556,8 @@ def showPopupMenu (self,event):
 #@-node:ekr.20090124174652.51:showPopupMenu
 #@-node:ekr.20090124174652.45:tree.OnPopup & allies (nativeTree)
 #@-node:ekr.20090124174652.29:Event handlers... (nativeTree)
+#@+node:ekr.20090531183422.3756:@url http://bugs.launchpad.net/leo-editor/+bug/362044
+#@-node:ekr.20090531183422.3756:@url http://bugs.launchpad.net/leo-editor/+bug/362044
 #@-node:ekr.20090529232213.3793:Got @url nodes to work with qt gui
 #@+node:ekr.20090430102239.2:Shift-arrow keys now work in headlines
 #@+node:ekr.20081121105001.166:class leoQtEventFilter
