@@ -9297,6 +9297,10 @@ class leoQtHeadlineWidget (leoQLineEditWidget):
         # g.trace('leoTreeQLineEditWidget',self.widget,'exists',self.exists)
         if self.exists:
             g.app.gui.set_focus(self.c,self.widget)
+        else:
+            if 0: # This doesn't work
+                c = self.c ; tree = c.frame.tree
+                tree.editLabel(c.p,selectAll=False,selection=None)
 
     def __repr__ (self):
         return 'leoQtHeadlineWidget: %s' % id(self)

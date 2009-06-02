@@ -817,7 +817,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             if e:
                 # Create a wrapper widget for Leo's core.
                 w = self.getWrapper(e)
-                ### w = self.headlineWrapper(widget=e,name='head',c=c)
                 # if trace: g.trace(e,p and p.h)
                 return w
             else:

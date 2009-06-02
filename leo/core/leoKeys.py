@@ -2685,7 +2685,8 @@ class keyHandlerClass:
             if commandName != 'repeat-complex-command':
                 k.mb_history.insert(0,commandName)
             c.widgetWantsFocusNow(event.widget) # Important, so cut-text works, e.g.
-            func(event)
+            if c.get_focus() == event.widget:
+                func(event) # Focus can fail for headline operations.
             k.endCommand(event,commandName)
         else:
             if 1: # Useful.

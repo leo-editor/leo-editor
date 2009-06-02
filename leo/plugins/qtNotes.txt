@@ -2,7 +2,7 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090430102239.1:Before b2 3
+#@+node:ekr.20090430102239.1:Before b2 4
 m
 #@nonl
 #@+node:ekr.20081215162017.5:Support multiple body editors
@@ -3245,7 +3245,7 @@ in myLeoSettings.leo.  However, whenever I start Leo, it is split 50/50.
 What's the settings (for Qt) to fix this?  Can we? 
 #@nonl
 #@-node:ekr.20090530055308.3791:Remember pane split ratio
-#@+node:ekr.20090601163620.3758:Fix latest reported minor
+#@+node:ekr.20090601163620.3758:Fix latest reported minor bugs
 @nocolor-node
 
 I am using 4.6.b1
@@ -3271,31 +3271,8 @@ rather than expansion
 8. alt-q does not toggle active pane.  menu selection also does not
 toggle active pane
 #@nonl
-#@-node:ekr.20090601163620.3758:Fix latest reported minor
-#@+node:ekr.20090601163620.3762:Fix segfault bug
-@nocolor-node
-https://bugs.launchpad.net/leo-editor/+bug/382491
-
-Leo: trunk at time of bug report
-GUI: Qt
-OS: Ubuntu 9.04
-Python: 2.6
-
-The following "keystrokes" give me a seg. fault
-
-<ctrl-I>
-test
-<alt-x>
-insert-file
-<return>
-
-(i.e. type t,e,s,t, and i,n,s,...)
-
-If I had the common decency to press <return> after "test",
-this wouldn't happen, but that's not the point.
-#@nonl
-#@-node:ekr.20090601163620.3762:Fix segfault bug
-#@-node:ekr.20090430102239.1:Before b2 3
+#@-node:ekr.20090601163620.3758:Fix latest reported minor bugs
+#@-node:ekr.20090430102239.1:Before b2 4
 #@+node:ekr.20090430102239.13:Before 4.6 final
 #@+node:ekr.20090429101847.10:Support canvas widgets in all panes
 http://groups.google.com/group/leo-editor/browse_thread/thread/9ac06147e75fc042
@@ -7887,6 +7864,194 @@ def toggleOption (self,ivar):
 #@-node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
 #@-node:ekr.20081121105001.235:class leoQtFindTab (findTab)
 #@-node:ekr.20090409055330.10:Made sure change-all honors node-only and suboutline-only settings
+#@+node:ekr.20090601163620.3763:Fixed segFault when trying to re-edit a headline
+#@+node:ekr.20090602083443.3812:Unchanged
+#@+node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
+def onItemDoubleClicked (self,item,col):
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item),g.callers(4))
+
+    try:
+        self.selecting = True
+
+        e = self.createTreeEditorForItem(item)
+        if not e: g.trace('*** no e')
+
+        p = self.item2position(item)
+        if p:
+            event = None
+            g.doHook("icondclick1",c=c,p=p,v=p,event=event)
+            c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+        else:
+            g.trace('*** no p')
+
+        c.outerUpdate()
+    finally:
+        self.selecting = False
+#@-node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
+#@+node:ekr.20090124174652.104:createTreeEditorForItem (leoQtTree)
+def createTreeEditorForItem(self,item):
+
+    trace = False and not g.unitTesting
+
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+    e = w.itemWidget(item,0)
+    e.setObjectName('headline')
+    self.connectEditorWidget(e,item)
+
+    return e
+#@nonl
+#@-node:ekr.20090124174652.104:createTreeEditorForItem (leoQtTree)
+#@+node:ekr.20090124174652.106:getTreeEditorForItem (leoQtTree)
+def getTreeEditorForItem(self,item):
+
+    '''Return the edit widget if it exists.
+    Do *not* create one if it does not exist.'''
+
+    w = self.treeWidget
+    e = w.itemWidget(item,0)
+    return e
+#@-node:ekr.20090124174652.106:getTreeEditorForItem (leoQtTree)
+#@+node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
+def editLabelHelper (self,item,selectAll=False,selection=None):
+
+    '''Called by nativeTree.editLabel to do
+    gui-specific stuff.'''
+
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+        # Generates focus-in event that tree doesn't report.
+    e = w.itemWidget(item,0) # A QLineEdit.
+
+    if e:
+        s = e.text() ; len_s = len(s)
+        if selection:
+            i,j,ins = selection
+            start,n = i,abs(i-j)
+                # Not right for backward searches.
+        elif selectAll: start,n,ins = 0,len_s,len_s
+        else:           start,n,ins = len_s,0,len_s
+        e.setObjectName('headline')
+        e.setSelection(start,n)
+        # e.setCursorPosition(ins) # Does not work.
+        e.setFocus()
+        self.connectEditorWidget(e,item) # Hook up the widget.
+
+    return e
+#@-node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
+#@-node:ekr.20090602083443.3812:Unchanged
+#@+node:ekr.20090602083443.3816:Changed
+#@+node:ekr.20081121105001.592:class leoQtHeadlineWidget
+class leoQtHeadlineWidget (leoQLineEditWidget):
+
+    '''A wrapper class for QLineEdit widgets in QTreeWidget's.'''
+
+    def __init__ (self,widget,name,c=None):
+        # Init the base class.
+        # g.trace('leoQtHeadlineWidget',widget,g.callers(5))
+        leoQLineEditWidget.__init__(self,widget,name,c)
+        self.baseClassName='leoQtHeadlineWidget'
+        self.exists = True
+
+    def destroyed (self):
+        # g.trace('***',self)
+        self.exists = False
+
+    def setFocus (self):
+        # Do noting if self.widget has been deallocated.
+        # g.trace('leoTreeQLineEditWidget',self.widget,'exists',self.exists)
+        if self.exists:
+            g.app.gui.set_focus(self.c,self.widget)
+        else:
+            if 0: # This doesn't work
+                c = self.c ; tree = c.frame.tree
+                tree.editLabel(c.p,selectAll=False,selection=None)
+
+    def __repr__ (self):
+        return 'leoQtHeadlineWidget: %s' % id(self)
+#@-node:ekr.20081121105001.592:class leoQtHeadlineWidget
+#@+node:ekr.20090322190318.10:connectEditorWidget & helper
+def connectEditorWidget(self,e,item):
+
+    c = self.c ; w = self.treeWidget
+
+    if not e: return g.trace('can not happen: no e')
+
+    wrapper = self.getWrapper(e)
+
+    # Hook up the widget.
+    def editingFinishedCallback(e=e,item=item,self=self,wrapper=wrapper):
+        # g.trace(wrapper,g.callers(5))
+        c = self.c ; w = self.treeWidget
+        self.onHeadChanged(p=c.p,e=e)
+        w.setCurrentItem(item)
+        wrapper.destroyed() # Tell the wrapper that it's widget is gone.
+
+    e.connect(e,QtCore.SIGNAL(
+        "editingFinished()"),
+        editingFinishedCallback)
+
+    # e.connect(e,QtCore.SIGNAL(
+        # "textEdited(QTreeWidgetItem*,int)"),
+        # self.onHeadChanged)
+#@-node:ekr.20090322190318.10:connectEditorWidget & helper
+#@+node:ekr.20090602083443.3817:getWrapper (leoQtTree)
+def getWrapper (self,e):
+
+    '''Return healineWrapper that wraps e (a QLineEdit).'''
+
+    c = self.c
+
+    if e:
+        wrapper = self.editWidgetsDict.get(e)
+        if not wrapper:
+            wrapper = self.headlineWrapper(widget=e,name='head',c=c)
+            self.editWidgetsDict[e] = wrapper
+
+        return wrapper
+    else:
+        return None
+#@-node:ekr.20090602083443.3817:getWrapper (leoQtTree)
+#@+node:ekr.20090124174652.55:edit_widget (nativeTree)
+def edit_widget (self,p):
+
+    """Returns the edit widget for position p."""
+
+    trace = False and not g.unitTesting
+    verbose = True
+
+    c = self.c
+    item = self.position2item(p)
+    if item:
+        e = self.getTreeEditorForItem(item)
+        if e:
+            # Create a wrapper widget for Leo's core.
+            w = self.getWrapper(e)
+            # if trace: g.trace(e,p and p.h)
+            return w
+        else:
+            # This is not an error
+            # But warning: calling this method twice might not work!
+            if trace and verbose: g.trace('no e for %s' % (p))
+            return None
+    else:
+        if trace and verbose: self.error('no item for %s' % (p))
+        return None
+#@nonl
+#@-node:ekr.20090124174652.55:edit_widget (nativeTree)
+#@-node:ekr.20090602083443.3816:Changed
+#@-node:ekr.20090601163620.3763:Fixed segFault when trying to re-edit a headline
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@-node:ekr.20081208155215.12:Unused
