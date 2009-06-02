@@ -4739,7 +4739,7 @@ class leoQtGui(leoGui.leoGui):
         '''Put the focus in the body pane when the Leo window is
         activated, say as the result of an Alt-tab or click.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
 
         # This is called several times for each window activation.
         # We only need to set the focus once.
