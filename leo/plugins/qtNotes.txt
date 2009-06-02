@@ -3,6 +3,8 @@
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20090430102239.1:Before b2 3
+m
+#@nonl
 #@+node:ekr.20081215162017.5:Support multiple body editors
 #@+node:ekr.20090318091009.13:Prototype code
 @color
@@ -3243,6 +3245,56 @@ in myLeoSettings.leo.  However, whenever I start Leo, it is split 50/50.
 What's the settings (for Qt) to fix this?  Can we? 
 #@nonl
 #@-node:ekr.20090530055308.3791:Remember pane split ratio
+#@+node:ekr.20090601163620.3758:Fix latest reported minor
+@nocolor-node
+
+I am using 4.6.b1
+
+rclick stuff:
+
+    1.  right click context menu on headlines requires first a double left
+    click to select and then a right click.
+
+    2. context menu in 1. does not have heading controls like insert,
+    delete etc.
+
+    3. no context menu delete option for log pane.
+
+4. cannot clear text in log pane
+
+5. button color code ignored
+
+6. the only way to expand a node is to click on the + symbol.
+clicking adjacent to the heading name does not trigger selections
+rather than expansion
+
+8. alt-q does not toggle active pane.  menu selection also does not
+toggle active pane
+#@nonl
+#@-node:ekr.20090601163620.3758:Fix latest reported minor
+#@+node:ekr.20090601163620.3762:Fix segfault bug
+@nocolor-node
+https://bugs.launchpad.net/leo-editor/+bug/382491
+
+Leo: trunk at time of bug report
+GUI: Qt
+OS: Ubuntu 9.04
+Python: 2.6
+
+The following "keystrokes" give me a seg. fault
+
+<ctrl-I>
+test
+<alt-x>
+insert-file
+<return>
+
+(i.e. type t,e,s,t, and i,n,s,...)
+
+If I had the common decency to press <return> after "test",
+this wouldn't happen, but that's not the point.
+#@nonl
+#@-node:ekr.20090601163620.3762:Fix segfault bug
 #@-node:ekr.20090430102239.1:Before b2 3
 #@+node:ekr.20090430102239.13:Before 4.6 final
 #@+node:ekr.20090429101847.10:Support canvas widgets in all panes
@@ -4500,6 +4552,8 @@ def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
     self.widget = widget
     self.c = c or self.widget.c
 
+    # g.trace('leoQtBaseTextWidget',widget,g.callers(5))
+
     # Init the base class.
     leoFrame.baseTextWidget.__init__(
         self,c,baseClassName='leoQtBaseTextWidget',
@@ -5275,6 +5329,8 @@ def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
     self.widget = widget
     self.c = c or self.widget.c
 
+    # g.trace('leoQtBaseTextWidget',widget,g.callers(5))
+
     # Init the base class.
     leoFrame.baseTextWidget.__init__(
         self,c,baseClassName='leoQtBaseTextWidget',
@@ -5601,6 +5657,7 @@ def initData (self):
     self.item2vnodeDict = {}
     self.tnode2itemsDict = {}
     self.vnode2itemsDict = {}
+    self.editWidgetsDict = {}
 #@-node:ekr.20090124174652.22:initData
 #@+node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
 def rememberItem (self,p,item):
@@ -6963,7 +7020,7 @@ def __init__ (self,widget,name,c=None):
 
     self.baseClassName='leoQLineEditWidget'
 
-    # g.trace('leoQLineEditWidget',id(widget),g.callers(4))
+    # g.trace('leoQLineEditWidget',id(widget),g.callers(5))
 
     self.setConfig()
     self.setFontFromConfig()

@@ -4326,6 +4326,31 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
             w.closeEditor(e,QtGui.QAbstractItemDelegate.NoHint)
             w.setCurrentItem(item)
     #@-node:ekr.20090303095630.15:closeEditorHelper (leoQtTree)
+    #@+node:ekr.20090322190318.10:connectEditorWidget & helper
+    def connectEditorWidget(self,e,item):
+
+        c = self.c ; w = self.treeWidget
+
+        if not e: return g.trace('can not happen: no e')
+
+        wrapper = self.getWrapper(e)
+
+        # Hook up the widget.
+        def editingFinishedCallback(e=e,item=item,self=self,wrapper=wrapper):
+            # g.trace(wrapper,g.callers(5))
+            c = self.c ; w = self.treeWidget
+            self.onHeadChanged(p=c.p,e=e)
+            w.setCurrentItem(item)
+            wrapper.destroyed() # Tell the wrapper that it's widget is gone.
+
+        e.connect(e,QtCore.SIGNAL(
+            "editingFinished()"),
+            editingFinishedCallback)
+
+        # e.connect(e,QtCore.SIGNAL(
+            # "textEdited(QTreeWidgetItem*,int)"),
+            # self.onHeadChanged)
+    #@-node:ekr.20090322190318.10:connectEditorWidget & helper
     #@+node:ekr.20090124174652.18:contractItem & expandItem
     def contractItem (self,item):
 
@@ -4339,7 +4364,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         self.treeWidget.expandItem(item)
     #@-node:ekr.20090124174652.18:contractItem & expandItem
-    #@+node:ekr.20090124174652.104:createTreeEditorForItem
+    #@+node:ekr.20090124174652.104:createTreeEditorForItem (leoQtTree)
     def createTreeEditorForItem(self,item):
 
         trace = False and not g.unitTesting
@@ -4352,25 +4377,8 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         self.connectEditorWidget(e,item)
 
         return e
-    #@-node:ekr.20090124174652.104:createTreeEditorForItem
-    #@+node:ekr.20090322190318.10:connectEditorWidget
-    def connectEditorWidget (self,e,item):
-
-        # Hook up the widget.
-        def editingFinishedCallback(e=e,item=item,self=self):
-            w = self.treeWidget
-            self.onHeadChanged(p=self.c.p,e=e)
-            w.setCurrentItem(item)
-
-        e.connect(e,QtCore.SIGNAL(
-            "editingFinished()"),
-            editingFinishedCallback)
-
-        # e.connect(e,QtCore.SIGNAL(
-            # "textEdited(QTreeWidgetItem*,int)"),
-            # self.onHeadChanged)
     #@nonl
-    #@-node:ekr.20090322190318.10:connectEditorWidget
+    #@-node:ekr.20090124174652.104:createTreeEditorForItem (leoQtTree)
     #@+node:ekr.20090124174652.103:createTreeItem
     def createTreeItem(self,p,parent_item):
 
@@ -4399,7 +4407,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w.setCurrentItem(item) # Must do this first.
         w.editItem(item)
             # Generates focus-in event that tree doesn't report.
-        e = w.itemWidget(item,0) # A QLineEdit
+        e = w.itemWidget(item,0) # A QLineEdit.
 
         if e:
             s = e.text() ; len_s = len(s)
@@ -4423,12 +4431,6 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w = self.treeWidget
         return w.currentItem()
     #@-node:ekr.20090124174652.105:getCurrentItem
-    #@+node:ville.20090525205736.3927:getSelectedItems
-    def getSelectedItems(self):
-        w = self.treeWidget    
-        return w.selectedItems()
-    #@nonl
-    #@-node:ville.20090525205736.3927:getSelectedItems
     #@+node:ekr.20090126120517.22:getItemText
     def getItemText (self,item):
 
@@ -4446,7 +4448,13 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         return item and item.parent()
     #@nonl
     #@-node:ekr.20090126120517.19:getParentItem
-    #@+node:ekr.20090124174652.106:getTreeEditorForItem
+    #@+node:ville.20090525205736.3927:getSelectedItems
+    def getSelectedItems(self):
+        w = self.treeWidget    
+        return w.selectedItems()
+    #@nonl
+    #@-node:ville.20090525205736.3927:getSelectedItems
+    #@+node:ekr.20090124174652.106:getTreeEditorForItem (leoQtTree)
     def getTreeEditorForItem(self,item):
 
         '''Return the edit widget if it exists.
@@ -4455,7 +4463,24 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w = self.treeWidget
         e = w.itemWidget(item,0)
         return e
-    #@-node:ekr.20090124174652.106:getTreeEditorForItem
+    #@-node:ekr.20090124174652.106:getTreeEditorForItem (leoQtTree)
+    #@+node:ekr.20090602083443.3817:getWrapper (leoQtTree)
+    def getWrapper (self,e):
+
+        '''Return healineWrapper that wraps e (a QLineEdit).'''
+
+        c = self.c
+
+        if e:
+            wrapper = self.editWidgetsDict.get(e)
+            if not wrapper:
+                wrapper = self.headlineWrapper(widget=e,name='head',c=c)
+                self.editWidgetsDict[e] = wrapper
+
+            return wrapper
+        else:
+            return None
+    #@-node:ekr.20090602083443.3817:getWrapper (leoQtTree)
     #@+node:ekr.20090124174652.69:nthChildItem
     def nthChildItem (self,n,parent_item):
 
@@ -7904,7 +7929,7 @@ class jEditColorizer:
 #@-node:ekr.20081205131308.48:class jeditColorizer
 #@-node:ekr.20081204090029.1:Syntax coloring
 #@+node:ekr.20081121105001.515:Text widget classes
-#@+node:ekr.20081121105001.516: class leoQtBaseTextWidget
+#@+node:ekr.20081121105001.516:  class leoQtBaseTextWidget
 class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
     #@    @+others
@@ -7914,6 +7939,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         self.widget = widget
         self.c = c or self.widget.c
+
+        # g.trace('leoQtBaseTextWidget',widget,g.callers(5))
 
         # Init the base class.
         leoFrame.baseTextWidget.__init__(
@@ -8373,7 +8400,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def setInsertPoint(self,i):             self.oops()
     #@-node:ekr.20081121105001.543: Must be overridden in subclasses
     #@-others
-#@-node:ekr.20081121105001.516: class leoQtBaseTextWidget
+#@-node:ekr.20081121105001.516:  class leoQtBaseTextWidget
 #@+node:ekr.20081121105001.544: class leoQLineEditWidget (leoQtBaseTextWidget)
 class leoQLineEditWidget (leoQtBaseTextWidget):
 
@@ -8387,7 +8414,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
 
         self.baseClassName='leoQLineEditWidget'
 
-        # g.trace('leoQLineEditWidget',id(widget),g.callers(4))
+        # g.trace('leoQLineEditWidget',id(widget),g.callers(5))
 
         self.setConfig()
         self.setFontFromConfig()
@@ -9242,13 +9269,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@-node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
     #@-others
 #@-node:ekr.20081121105001.572: class leoQTextEditWidget
-#@+node:ekr.20081121105001.592:class leoQtHeadlineWidget
-class leoQtHeadlineWidget (leoQLineEditWidget):
-
-    def __repr__ (self):
-        return 'leoQLineEditWidget: %s' % id(self)
-#@nonl
-#@-node:ekr.20081121105001.592:class leoQtHeadlineWidget
 #@+node:ekr.20081121105001.593:class findTextWrapper
 class findTextWrapper (leoQLineEditWidget):
 
@@ -9256,6 +9276,31 @@ class findTextWrapper (leoQLineEditWidget):
 
     pass
 #@-node:ekr.20081121105001.593:class findTextWrapper
+#@+node:ekr.20081121105001.592:class leoQtHeadlineWidget
+class leoQtHeadlineWidget (leoQLineEditWidget):
+
+    '''A wrapper class for QLineEdit widgets in QTreeWidget's.'''
+
+    def __init__ (self,widget,name,c=None):
+        # Init the base class.
+        # g.trace('leoQtHeadlineWidget',widget,g.callers(5))
+        leoQLineEditWidget.__init__(self,widget,name,c)
+        self.baseClassName='leoQtHeadlineWidget'
+        self.exists = True
+
+    def destroyed (self):
+        # g.trace('***',self)
+        self.exists = False
+
+    def setFocus (self):
+        # Do noting if self.widget has been deallocated.
+        # g.trace('leoTreeQLineEditWidget',self.widget,'exists',self.exists)
+        if self.exists:
+            g.app.gui.set_focus(self.c,self.widget)
+
+    def __repr__ (self):
+        return 'leoQtHeadlineWidget: %s' % id(self)
+#@-node:ekr.20081121105001.592:class leoQtHeadlineWidget
 #@+node:ekr.20081121105001.594:class leoQtMinibuffer (leoQLineEditWidget)
 class leoQtMinibuffer (leoQLineEditWidget):
 

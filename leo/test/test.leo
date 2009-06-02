@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -361,6 +361,7 @@
 <v t="ekr.20090526124114.1898" a="E"><vh>@shadow mismatched-extension-bug.py</vh></v>
 </v>
 <v t="ekr.20090530185923.1800"><vh>movePageHelper (a test for scrolling)</vh></v>
+<v t="ekr.20090601093755.1802"><vh>Test of @g.command decorator</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2771,5 +2772,13 @@ self.assertNotEqual(1,2)</t>
 
     self.extendHelper(w,extend,spot,upOrDown=True)
 </t>
+<t tx="ekr.20090601093755.1802">bookmarks = []
+
+@g.command('bookmark')
+def bookmark(event):
+    c = event.get('c')
+    p = c.currentPosition()
+    bookmarks.append(p.gnx)
+    g.es('bookmarked') </t>
 </tnodes>
 </leo_file>

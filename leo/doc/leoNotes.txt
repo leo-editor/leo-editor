@@ -83,6 +83,10 @@ Call hierarchy tracing (using python 'trace' module)
 - Fuse (pyfuse) Leo as a file system.
   http://leo.zwiki.org/LeoAsAFileSystem
 
+- Google wave: 
+  http://wave.google.com/
+
+
 - Thread: Leo forum proof of concept:
   A few buttons turns Leo into a competitor for google groups :-)
   http://groups.google.com/group/leo-editor/browse_thread/thread/db6e75d82da4b41d
@@ -91,6 +95,10 @@ Call hierarchy tracing (using python 'trace' module)
   http://pypi.python.org/pypi/manuel/1.0.0a3
   Manuel parses documents, evaluates their contents,
   then formats the result of the evaluation.
+
+- pexpect: a Python module for spawning child applications and
+  controlling them automatically. 
+  http://pexpect.sourceforge.net/pexpect.html
 
 - Pyjamas: AJAX tool kit.
   http://pyjs.org/
@@ -108,6 +116,75 @@ Call hierarchy tracing (using python 'trace' module)
   http://projects.gnome.org/tomboy/index.html
   http://groups.google.com/group/leo-editor/browse_thread/thread/18d4af19686f2ead
 #@-node:ekr.20090502071837.103:Cool projects
+#@+node:ekr.20090601083544.6066:Cool plugins & Leo code
+These are plugins/projects that I'd like to investigate further.
+
+interact.py:  Add buttons so leo can interact with command line environments.
+
+g.commands decorator:
+http://groups.google.com/group/leo-editor/browse_thread/thread/a83082cec5ad3df8
+#@nonl
+#@+node:ekr.20090601083544.6068:@g.command decorator
+#@+node:ville.20090521164644.5924:g.command (decorator for creating global commands)
+class command:
+    """ Decorator to create global commands """
+    def __init__(self, name):
+        self.name = name
+
+    def __call__(self,func):
+        g.app.global_commands_dict[self.name] = func
+        return func
+
+#@-node:ville.20090521164644.5924:g.command (decorator for creating global commands)
+#@+node:ekr.20050920093543:c.finishCreate & helper
+def finishCreate (self,initEditCommanders=True):  # New in 4.4.
+
+    '''Finish creating the commander after frame.finishCreate.
+
+    Important: this is the last step in the startup process.'''
+
+    c = self ; p = c.p
+    c.miniBufferWidget = c.frame.miniBufferWidget
+    # print('Commands.finishCreate',c.fileName())
+
+    # Create a keyHandler even if there is no miniBuffer.
+    c.keyHandler = c.k = k = g.app.gui.createKeyHandlerClass(c,
+        useGlobalKillbuffer=True,
+        useGlobalRegisters=True)
+
+    if initEditCommanders:
+        # A 'real' .leo file.
+        import leo.core.leoEditCommands as leoEditCommands
+        c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
+        self.rstCommands.finishCreate()
+
+        # copy global commands to this controller    
+
+        for name,f in g.app.global_commands_dict.items():
+            k.registerCommand(name,shortcut = None, func = f, pane='all',verbose=False)        
+
+        k.finishCreate()
+    else:
+        # A leoSettings.leo file.
+        c.commandsDict = {}
+
+    c.frame.log.finishCreate()
+    c.bodyWantsFocusNow()
+#@+node:ekr.20051007143620:printCommandsDict
+def printCommandsDict (self):
+
+    c = self
+
+    print('Commands...')
+    for key in sorted(c.commandsDict):
+        command = c.commandsDict.get(key)
+        print('%30s = %s' % (
+            key,g.choose(command,command.__name__,'<None>')))
+    print('')
+#@-node:ekr.20051007143620:printCommandsDict
+#@-node:ekr.20050920093543:c.finishCreate & helper
+#@-node:ekr.20090601083544.6068:@g.command decorator
+#@-node:ekr.20090601083544.6066:Cool plugins & Leo code
 #@+node:ekr.20070614094933:EasyInstall installation notes--XP
 C:\prog>c:\python25\python ez_setup.py
 Downloading http://cheeseshop.python.org/packages/2.5/s/setuptools/setuptools-0.6c6-py2.5.egg
