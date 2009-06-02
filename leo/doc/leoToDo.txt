@@ -2,7 +2,7 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
-#@+node:ekr.20090525113804.5776:Before b2 4 + 4
+#@+node:ekr.20090525113804.5776:Before b2 4 qt + 3
 #@+node:ekr.20090324100430.1:Deleting @chapter node doesn't work
 @nocolor-node
 _unlink: can not happen: bad child index: 4, len(children): 2
@@ -143,17 +143,13 @@ Thanks for any suggestions.
 Tom 
 #@nonl
 #@-node:ekr.20090601083544.6065:Are messages about redefined keys backwards?
-#@+node:ekr.20090430092048.4:Fix all qt bugs (3)
+#@+node:ekr.20090430092048.4:Fix all qt bugs (4)
 # Including supporting multiple body editors
 #@nonl
-#@-node:ekr.20090430092048.4:Fix all qt bugs (3)
-#@+node:ekr.20090601083544.12721:Fix pr bug on Linux
-# Throws exceptions during unit tests on Ubuntu.
-#@nonl
-#@-node:ekr.20090601083544.12721:Fix pr bug on Linux
+#@-node:ekr.20090430092048.4:Fix all qt bugs (4)
 #@+node:ekr.20090523070447.6475:Rewrite rst documentation
 #@-node:ekr.20090523070447.6475:Rewrite rst documentation
-#@-node:ekr.20090525113804.5776:Before b2 4 + 4
+#@-node:ekr.20090525113804.5776:Before b2 4 qt + 3
 #@+node:ekr.20090430092048.7:Before 4.6 final
 #@+node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
 @nocolor-node
