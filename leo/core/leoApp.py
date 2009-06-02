@@ -698,6 +698,12 @@ class LeoApp:
         else:
             print('writeWaitingLog: still no log!')
     #@-node:ekr.20031218072017.2619:app.writeWaitingLog
+    #@+node:ville.20090602181814.6219:app.commanders
+    def commanders(self):
+        """ Return list of currently active controllers """
+
+        return [f.c for f in g.app.windowList]    
+    #@-node:ville.20090602181814.6219:app.commanders
     #@-others
 #@-node:ekr.20031218072017.2608:@thin leoApp.py
 #@-leo
