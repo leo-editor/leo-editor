@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="54" left="425" height="822" width="852"/>
+	<global_window_position top="81" left="429" height="822" width="852"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6,1,1,12"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -66,7 +66,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20051012104957"><vh>Docs</vh>
+<v t="ekr.20051012104957" a="E"><vh>Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
 <v t="ekr.20050618061835.1"><vh>Intro</vh>
@@ -696,7 +696,7 @@
 </v>
 </v>
 <v t="ekr.20070417092935.1"><vh>Scripts</vh>
-<v t="ekr.20080405085247.2"><vh>@ignore</vh>
+<v t="ekr.20080405085247.2" a="E"><vh>@ignore</vh>
 <v t="ekr.20070217065840"><vh>Scripts that make unit tests</vh>
 <v t="ekr.20070217065840.1"><vh>@@command make-test @key = Alt-5</vh></v>
 <v t="ekr.20070217065840.2"><vh>@@command do-before @key = Alt-6</vh>
@@ -719,17 +719,17 @@
 <v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
 </v>
 </v>
-<v t="ekr.20071113203234"><vh> Test files</vh>
+<v t="ekr.20071113203234" a="E"><vh> Test files</vh>
 <v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
 </v>
-<v t="ekr.20080703104536.1"><vh>Other tests</vh>
+<v t="ekr.20080703104536.1" a="E"><vh>Other tests</vh>
 <v t="ekr.20051104081502.108"></v>
 <v t="ekr.20051104081502.109"></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
 <v t="ekr.20040712101813"><vh>@@test checkAllPythonCode</vh></v>
 </v>
-<v t="ekr.20040712101754.2" annotate="7d71002e"><vh>Load tests for .leo files</vh>
+<v t="ekr.20040712101754.2" a="E" annotate="7d71002e"><vh>Load tests for .leo files</vh>
 <v t="ekr.20040712101754.3"><vh>@test test.leo</vh></v>
 <v t="ekr.20040803090901"><vh>@test leoDist.leo</vh></v>
 <v t="ekr.20081121164135.1"><vh>@test leoGuiPluginsRef.leo</vh></v>
@@ -740,7 +740,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20050120095423" annotate="7d71002e"><vh>Plugins</vh>
 <v t="ekr.20080309193654.1"><vh>@ignore</vh>
 <v t="ekr.20050120095423.21"><vh>print all loaded plugins</vh></v>
@@ -776,7 +776,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -838,7 +838,7 @@
 </v>
 <v t="ekr.20071113201736" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113193624"><vh>leoCommands</vh>
+<v t="ekr.20071113193624" a="E"><vh>leoCommands</vh>
 <v t="ekr.20050512084850" annotate="7d71002e"><vh> Check outline</vh>
 <v t="ekr.20040712101754.272"><vh>Startup</vh></v>
 <v t="ekr.20041019124050"><vh>Docs</vh>
@@ -976,6 +976,7 @@
 <v t="ekr.20070611105423.1"><vh>@test contract all</vh></v>
 <v t="ekr.20071113105654.1"><vh>@test hoist with no children</vh></v>
 <v t="ekr.20070611105728"><vh>@test illegal clone demote</vh></v>
+<v t="ville.20090602190735.4770"><vh>@test g.command decorator</vh></v>
 <v t="ekr.20071113201833" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 <v t="ville.20090313183551.2" a="M"><vh>@test c.db</vh></v>
 </v>
@@ -1572,7 +1573,7 @@
 <v t="ekr.20051107115231" annotate="7d71002e"><vh> Typing</vh>
 <v t="ekr.20051122095426" annotate="7d71002e"><vh>Doctests</vh></v>
 <v t="ekr.20051216171321" annotate="7d71002e"><vh>General</vh></v>
-<v t="ekr.20051107115231.13" annotate="7d71002e"><vh>Plugins</vh>
+<v t="ekr.20051107115231.13" a="E" annotate="7d71002e"><vh>Plugins</vh>
 <v t="ekr.20090128184952.3"><vh>Test headline abc</vh></v>
 <v t="ekr.20060208072415" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in body</vh></v>
 <v t="ekr.20051125170139" annotate="7d71002e"><vh>@test &lt;Delete&gt; key sticks in headline</vh></v>
@@ -1651,7 +1652,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080806211453.5"><vh>@@test round-trip-uAs for @shadow</vh>
+<v t="ekr.20080806211453.5" a="E"><vh>@@test round-trip-uAs for @shadow</vh>
 <v t="ekr.20080806211453.1" round-trip-u.uA="581e00000040736861646f772075415f746573745f736861646f775f66696c652e707971002e"><vh>@@shadow uA_test_shadow_file.py</vh>
 <v t="ekr.20080822160527.1" round-trip-u.uA="58060000006368696c643171002e"><vh>uA_test_shadow_file declarations</vh></v>
 </v>
@@ -1667,7 +1668,7 @@
 <v t="ekr.20060130151716.1"><vh>@test togle find options commands</vh></v>
 <v t="ekr.20071113202153" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424"><vh>leoFrame</vh>
+<v t="ekr.20071113194424" a="E"><vh>leoFrame</vh>
 <v t="ekr.20060912091510.1"><vh>@test Add &amp; Delete editor</vh></v>
 <v t="ekr.20060912091510.2"><vh>@test Add editor, Delete leftmost editor</vh></v>
 <v t="ekr.20061104172236.22"><vh>@test c.frame.pasteText</vh></v>
@@ -2240,7 +2241,7 @@
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
 <v t="ekr.20040712101754.37" a="E" annotate="7d71002e"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" a="E" annotate="7d71002e"><vh>editBodyTests</vh>
+<v t="ekr.20040712101754.38" annotate="7d71002e"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713" annotate="7d71002e"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
@@ -19261,5 +19262,22 @@ ltest = c.db.keys('leotest/*')
 assert len(ltest) == 0
 
      </t>
+<t tx="ville.20090602190735.4770">_foo = 0
+
+@g.command('my-test-command')
+def mytestcommand(event):
+    global _foo
+
+    _foo = 1
+
+c.k.simulateCommand('my-test-command')
+assert _foo == 1
+
+# bonus test: c.app.commanders()
+assert c in g.app.commanders()
+
+
+
+</t>
 </tnodes>
 </leo_file>
