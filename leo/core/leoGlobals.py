@@ -3593,11 +3593,23 @@ def plugin_signon(module_name,verbose=False):
 #@+node:ville.20090521164644.5924:g.command (decorator for creating global commands)
 class command:
     """ Decorator to create global commands """
-    def __init__(self, name):
+    def __init__(self, name, **kwargs):
+        """ Registration for command 'name'
+
+        kwargs reserved for future use (shortcut, button, ...?)
+
+        """
         self.name = name
+        self.args = kwargs
 
     def __call__(self,func):
+        # register command for all future commanders
         g.app.global_commands_dict[self.name] = func
+
+        # ditto for all current commanders
+        for co in g.app.commanders():
+            co.k.registerCommand(self.name,shortcut = None, func = func, pane='all',verbose=False)        
+
         return func
 
 
