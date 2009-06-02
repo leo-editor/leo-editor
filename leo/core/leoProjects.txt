@@ -2766,7 +2766,7 @@ if not modeFlag and self.warn_about_redefined_shortcuts:
             and not b2.pane.endswith('-mode')]
     for z in redefs:
         g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
-            shortcut,z,commandName,pane),color='red')
+            shortcut,commandName,z,pane),color='red')
         # g.es_print('redefining','shortcut %20s' % (shortcut),
             # 'from',z,'(%s)' % (pane),
             # 'to',commandName,'(%s)' % (pane),color='red')
@@ -17316,6 +17316,103 @@ def callAltXFunction (self,event):
 #@-node:ekr.20061031131434.112:callAltXFunction
 #@-node:ekr.20061031131434.111:fullCommand (alt-x) & helper
 #@-node:ekr.20090601083544.12724:Fixed seg-fault bug
+#@+node:ekr.20090601083544.6065:Reversed messages about redefined keys
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/a04dcefbb672078f
+
+I put the following lines into a @keys node in myLeoSettings.leo (Leo
+4.5.1 final, build 1.244 , September 14, 2008 running on XP)
+
+copy-node = Alt-Ctrl-C
+cut-node = Alt-Ctrl-X
+
+On restarting leo, the log window gives the message:
+redefining shortcut Alt+Ctrl+c from copy-node (all) to toggle-find-
+mark-changes-option (all)
+redefining shortcut Alt+Ctrl+x from cut-node (all) to toggle-find-
+regex-option (all)
+
+(which seems backwards) The Outline menu now shows Alt+Ctrl+c beside
+"Cut node", but neither the key combo nor clicking on the menu
+actually cuts the node.
+
+[The reason for redefining these keys is that I've left "caps lock" on
+a few times, so that Ctrl-x cuts the node instead of selected text!]
+
+Thanks for any suggestions.
+
+Tom 
+#@nonl
+#@+node:ekr.20061031131434.89:bindKey
+def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False):
+
+    '''Bind the indicated shortcut (a Tk keystroke) to the callback.
+
+    No actual gui bindings are made: only entries in k.masterBindingsDict.'''
+
+    k = self ; c = k.c
+
+    # g.trace(pane,shortcut,commandName)
+    if not shortcut:
+        # g.trace('No shortcut for %s' % commandName)
+        return False
+    << give warning and return if we try to bind to Enter or Leave >>
+    if pane.endswith('-mode'):
+        g.trace('oops: ignoring mode binding',shortcut,commandName,g.callers())
+        return False
+    bunchList = k.bindingsDict.get(shortcut,[])
+    << trace bindings >>
+    try:
+        k.bindKeyToDict(pane,shortcut,callback,commandName)
+        b = g.bunch(pane=pane,func=callback,commandName=commandName)
+        << remove previous conflicting definitions from bunchList >>
+        bunchList.append(b)
+        shortcut = g.stripBrackets(shortcut.strip())
+        k.bindingsDict [shortcut] = bunchList
+        return True
+    except Exception: # Could be a user error.
+        if not g.app.menuWarningsGiven:
+            g.es_print('exception binding',shortcut,'to',commandName)
+            g.es_exception()
+            g.app.menuWarningsGiven = True
+        return False
+
+bindShortcut = bindKey # For compatibility
+#@+node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
+if shortcut:
+    for s in ('enter','leave'):
+        if -1 != shortcut.lower().find(s):
+            g.es_print('ignoring invalid key binding:','%s = %s' % (
+                commandName,shortcut),color='blue')
+            return
+#@-node:ekr.20061031131434.90:<< give warning and return if we try to bind to Enter or Leave >>
+#@+node:ekr.20061031131434.91:<< trace bindings >>
+if c.config.getBool('trace_bindings_verbose'):
+    theFilter = c.config.getString('trace_bindings_filter') or ''
+    # g.trace(repr(theFilter))
+    if not theFilter or shortcut.find(theFilter) != -1:
+        pane_filter = c.config.getString('trace_bindings_pane_filter')
+        if not pane_filter or pane_filter.lower() == pane:
+            g.trace(pane,shortcut,commandName)
+#@-node:ekr.20061031131434.91:<< trace bindings >>
+#@+node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
+if not modeFlag and self.warn_about_redefined_shortcuts:
+    redefs = [str(b2.commandName) for b2 in bunchList
+        if b2.commandName != commandName and pane in ('button','all',b2.pane)
+            and not b2.pane.endswith('-mode')]
+    for z in redefs:
+        g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
+            shortcut,commandName,z,pane),color='red')
+        # g.es_print('redefining','shortcut %20s' % (shortcut),
+            # 'from',z,'(%s)' % (pane),
+            # 'to',commandName,'(%s)' % (pane),color='red')
+
+if not modeFlag:
+    bunchList = [b2 for b2 in bunchList if pane not in ('button','all',b2.pane)]
+#@-node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
+#@-node:ekr.20061031131434.89:bindKey
+#@-node:ekr.20090601083544.6065:Reversed messages about redefined keys
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all

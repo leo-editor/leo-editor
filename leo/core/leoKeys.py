@@ -2165,7 +2165,7 @@ class keyHandlerClass:
                         and not b2.pane.endswith('-mode')]
                 for z in redefs:
                     g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
-                        shortcut,z,commandName,pane),color='red')
+                        shortcut,commandName,z,pane),color='red')
                     # g.es_print('redefining','shortcut %20s' % (shortcut),
                         # 'from',z,'(%s)' % (pane),
                         # 'to',commandName,'(%s)' % (pane),color='red')
