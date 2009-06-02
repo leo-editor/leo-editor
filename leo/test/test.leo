@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
@@ -271,7 +271,7 @@
 <v t="ekr.20080917063615.1"><vh>getSettingSource</vh></v>
 <v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
 </v>
-<v t="ekr.20080930114036.1" a="E"><vh>Icon stuff</vh>
+<v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
 <v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
 <v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
 <v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
@@ -322,7 +322,7 @@
 <v t="ekr.20090430080001.1"><vh>@path c:\prog\test</vh>
 <v t="ekr.20090430080001.2"><vh>@rst test.html</vh>
 <v t="ekr.20090430124352.10"><vh>@rst-code</vh>
-<v t="ekr.20090430124352.9" a="E"><vh>&lt;&lt; section a &gt;&gt;</vh>
+<v t="ekr.20090430124352.9"><vh>&lt;&lt; section a &gt;&gt;</vh>
 <v t="ekr.20090430124352.11"><vh>&lt;&lt; section c &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20090430124352.5"><vh>&lt;&lt; section b&gt;&gt;</vh></v>
@@ -351,14 +351,14 @@
 <v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
 </v>
 </v>
-<v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
+<v t="ekr.20090514103332.1929" a="M"><vh>Unit tests</vh>
 <v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
 <v t="ekr.20090521070342.1907"><vh>@button show-rst</vh></v>
 <v t="ekr.20090527122538.1897"><vh>@path unittest</vh>
-<v t="ekr.20090526124114.1898" a="E"><vh>@shadow mismatched-extension-bug.py</vh></v>
+<v t="ekr.20090526124114.1898"><vh>@shadow mismatched-extension-bug.py</vh></v>
 </v>
 <v t="ekr.20090530185923.1800"><vh>movePageHelper (a test for scrolling)</vh></v>
 <v t="ekr.20090601093755.1802"><vh>Test of @g.command decorator</vh></v>

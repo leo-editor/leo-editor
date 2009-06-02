@@ -2113,6 +2113,9 @@ def OnDeactivateLeoEvent(self,event=None):
 #@+node:ekr.20081121105001.293:OnActivateTree
 def OnActivateTree (self,event=None):
 
+    trace = False and not g.unitTesting
+    if trace: g.trace()
+
     try:
         frame = self ; c = frame.c
         c.setLog()
@@ -3272,6 +3275,8 @@ rather than expansion
 toggle active pane
 #@nonl
 #@-node:ekr.20090601163620.3758:Fix latest reported minor bugs
+#@+node:ekr.20090602181418.3764:Unmark-all does not seem to be working.
+#@-node:ekr.20090602181418.3764:Unmark-all does not seem to be working.
 #@-node:ekr.20090430102239.1:Before b2 4
 #@+node:ekr.20090430102239.13:Before 4.6 final
 #@+node:ekr.20090429101847.10:Support canvas widgets in all panes
@@ -8052,6 +8057,51 @@ def edit_widget (self,p):
 #@-node:ekr.20090124174652.55:edit_widget (nativeTree)
 #@-node:ekr.20090602083443.3816:Changed
 #@-node:ekr.20090601163620.3763:Fixed segFault when trying to re-edit a headline
+#@+node:ekr.20090602175752.3763:Inhibit redraw of tree on onActivateTree
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/343699
+
+At least one person claims this redraw is irritating.
+Time will tell whether this change is justified.
+#@nonl
+#@+node:ekr.20090123150451.11:onActivateEvent (qtGui)
+def onActivateEvent (self,event,c,obj,tag):
+
+    '''Put the focus in the body pane when the Leo window is
+    activated, say as the result of an Alt-tab or click.'''
+
+    trace = True and not g.unitTesting
+
+    # This is called several times for each window activation.
+    # We only need to set the focus once.
+
+    if trace: g.trace(tag)
+
+    if c.exists and tag == 'body':
+        ### Possible bug fix.  Some claim that this redraw is irritating.
+        ### c.redraw_now()
+        c.bodyWantsFocusNow()
+        c.outerUpdate() # Required because this is an event handler.
+#@-node:ekr.20090123150451.11:onActivateEvent (qtGui)
+#@+node:ekr.20081121105001.293:OnActivateTree
+def OnActivateTree (self,event=None):
+
+    trace = False and not g.unitTesting
+    if trace: g.trace()
+
+    try:
+        frame = self ; c = frame.c
+        c.setLog()
+
+        if 0: # Do NOT do this here!
+            # OnActivateTree can get called when the tree gets DE-activated!!
+            c.bodyWantsFocus()
+
+    except:
+        g.es_event_exception("activate tree")
+#@-node:ekr.20081121105001.293:OnActivateTree
+#@-node:ekr.20090602175752.3763:Inhibit redraw of tree on onActivateTree
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@-node:ekr.20081208155215.12:Unused

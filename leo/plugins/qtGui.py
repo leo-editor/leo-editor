@@ -2571,6 +2571,9 @@ class leoQtFrame (leoFrame.leoFrame):
     #@+node:ekr.20081121105001.293:OnActivateTree
     def OnActivateTree (self,event=None):
 
+        trace = False and not g.unitTesting
+        if trace: g.trace()
+
         try:
             frame = self ; c = frame.c
             c.setLog()
@@ -4736,7 +4739,7 @@ class leoQtGui(leoGui.leoGui):
         '''Put the focus in the body pane when the Leo window is
         activated, say as the result of an Alt-tab or click.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
 
         # This is called several times for each window activation.
         # We only need to set the focus once.
@@ -4744,7 +4747,8 @@ class leoQtGui(leoGui.leoGui):
         if trace: g.trace(tag)
 
         if c.exists and tag == 'body':
-            c.redraw_now()
+            ### Possible bug fix.  Some claim that this redraw is irritating.
+            ### c.redraw_now()
             c.bodyWantsFocusNow()
             c.outerUpdate() # Required because this is an event handler.
     #@-node:ekr.20090123150451.11:onActivateEvent (qtGui)

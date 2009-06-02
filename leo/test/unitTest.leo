@@ -1024,7 +1024,7 @@
 <v t="ekr.20080907123324.4"><vh>Tests with @nosent as the root</vh>
 <v t="ekr.20080907123324.5"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20080905113550.4"><vh>General tests</vh>
+<v t="ekr.20080905113550.4" a="E"><vh>General tests</vh>
 <v t="ekr.20080905165432.1"><vh>Startup</vh></v>
 <v t="ekr.20080905165432.3"><vh>Docs</vh></v>
 <v t="ekr.20080904120258.2"><vh>Scripts</vh></v>
@@ -1893,7 +1893,7 @@
 </v>
 <v t="ekr.20040712101754.182"></v>
 </v>
-<v t="ekr.20040712101754.187" a="E" annotate="7d71002e"><vh> Position tests</vh>
+<v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
 <v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
 <v t="ekr.20040712101754.184"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
 <v t="ekr.20040712101754.208" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
@@ -1935,7 +1935,7 @@
 </v>
 <v t="ekr.20090102061858.2"><vh>@test c.positionExists</vh></v>
 <v t="ekr.20090102062037.2"><vh>@test c.positionExists for all nodes</vh></v>
-<v t="ekr.20040802071519" a="E" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
@@ -1945,7 +1945,7 @@
 <v t="ville.20090312195309.2"><vh>@test find_h / find_b / select_h / select_b</vh></v>
 </v>
 <v t="ekr.20090130133404.2"><vh>@test leoNodes properties</vh></v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>Startup</vh></v>
@@ -1979,7 +1979,7 @@
 <v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
 </v>
 </v>
-<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -1989,8 +1989,8 @@
 <v t="ekr.20071113202452" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
-<v t="ekr.20090529115704.4397" a="E"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
-<v t="ekr.20090529115704.4398" a="E"><vh>@shadow-tests</vh>
+<v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
+<v t="ekr.20090529115704.4398"><vh>@shadow-tests</vh>
 <v t="ekr.20090529115704.4399"><vh>passed</vh></v>
 <v t="ekr.20090529115704.4400"><vh>@shadow-test change middle line</vh>
 <v t="ekr.20090529115704.4401"><vh>old</vh></v>
@@ -2152,7 +2152,7 @@
 <v t="ekr.20090529115704.4513"><vh>node 2</vh></v>
 </v>
 </v>
-<v t="ekr.20090529115704.4514" a="E"><vh>@shadow-test verbatim sentinels-delete verbatim line</vh>
+<v t="ekr.20090529115704.4514"><vh>@shadow-test verbatim sentinels-delete verbatim line</vh>
 <v t="ekr.20090529115704.4515"><vh>old</vh>
 <v t="ekr.20090529115704.4516"><vh>node 1</vh></v>
 <v t="ekr.20090529115704.4517"><vh>node 2</vh></v>
@@ -2239,8 +2239,8 @@
 </v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37" a="E" annotate="7d71002e"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" a="E" annotate="7d71002e"><vh>editBodyTests</vh>
+<v t="ekr.20040712101754.37" annotate="7d71002e"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38" annotate="7d71002e"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713" annotate="7d71002e"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
