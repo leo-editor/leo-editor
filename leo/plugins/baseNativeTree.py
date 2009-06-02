@@ -60,6 +60,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.item2vnodeDict = {}
         self.tnode2itemsDict = {} # values are lists of items.
         self.vnode2itemsDict = {} # values are lists of items.
+        self.editWidgetsDict = {} # keys are native edit widgets, values are wrappers.
 
         self.setConfigIvars()
         self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
@@ -279,6 +280,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.item2vnodeDict = {}
         self.tnode2itemsDict = {}
         self.vnode2itemsDict = {}
+        self.editWidgetsDict = {}
     #@-node:ekr.20090124174652.22:initData
     #@+node:ekr.20090124174652.23:rememberItem & rememberVnodeItem
     def rememberItem (self,p,item):
@@ -814,7 +816,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             e = self.getTreeEditorForItem(item)
             if e:
                 # Create a wrapper widget for Leo's core.
-                w = self.headlineWrapper(widget=e,name='head',c=c)
+                w = self.getWrapper(e)
+                ### w = self.headlineWrapper(widget=e,name='head',c=c)
                 # if trace: g.trace(e,p and p.h)
                 return w
             else:
