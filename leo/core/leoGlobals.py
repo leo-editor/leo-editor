@@ -3843,13 +3843,14 @@ def pr(*args,**keys):
     s = g.translateArgs(args,d) # Translates everything to unicode.
 
     try: # We can't use any print keyword args in Python 2.x!
-        # print(s) # Not quite right.
         if d.get('newline'):
             sys.stdout.write(s+'\n')
         else:
             sys.stdout.write(s)
     except Exception:
         print('unexpected Exception in g.pr')
+        print('make sure your sitecustomize.py contains::')
+        print('    sys.setdefaultencoding("utf-8")')
         g.es_exception()
         g.trace(g.callers())
 #@-node:ekr.20080710101653.1:g.pr
@@ -3864,7 +3865,6 @@ def translateArgs(args,d):
         e = sys.getdefaultencoding()
         g.consoleEncoding = isValidEncoding(e) and e or 'utf-8'
         # print 'translateArgs',g.consoleEncoding
-
 
     result = [] ; n = 0 ; spaces = d.get('spaces')
     for arg in args:
