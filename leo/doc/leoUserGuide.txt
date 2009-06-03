@@ -1224,8 +1224,10 @@ Like this::
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@+leo-ver=4 <-these lines not compiled
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1236,8 +1238,10 @@ Like this::
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@@first
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1979,6 +1983,7 @@ may see strange looking characters if your text editor is expecting a different
 encoding. The encoding used in any `derived file`_ is shown in the ``#@+leo`` `sentinel line`_
 like this::
 
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -3016,8 +3021,10 @@ some actual sentinel line for the derived file containing Python code::
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@+leo-ver=4-thin
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -3028,8 +3035,10 @@ some actual sentinel line for the derived file containing Python code::
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@@language python
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -3040,14 +3049,17 @@ some actual sentinel line for the derived file containing Python code::
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@@pagewidth 80
 @verbatim
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@-node:ekr.20031218072017.2794:@thin leoColor.py
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -4023,6 +4035,7 @@ You can't mix encodings in a single external file.  For example::
 
 If the encoding used in an external file is not "utf-8" it is represented in the @+leo sentinel line, like this::
 
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -7507,14 +7520,14 @@ This example code just prints the value of k.arg and clears the input state.
 You can use the ``@g.command`` decorator to create new commands. This is an easy-to-use
 wrapper for ``c.k.registerCommand()``, with the following advantages over it:
 
-* The new command is automatically created for all Leo controllers (open Leo documents)
+* The new command is automatically created for all Leo controllers (open Leo documents).
 
 * The new command is also automatically available on all new Leo controllers 
-  (documents that will be opened in the future)
+  (documents that will be opened in the future).
 
-* Prettier syntax
+* Prettier syntax.
 
-Therefore, g.command can be naturally prototyped with execute-script (``Ctrl+b``) in leo node.
+Therefore, ``@g.command`` can be naturally prototyped with execute-script (``Ctrl+b``) in Leo node.
 
 As an example, you can execute this script to make command ``hello`` available::
 
@@ -7529,7 +7542,7 @@ If you want to create a plugin that only exposes new commands, this is basically
 There is no need to hook up for 'after-create-leo-frame' just to make your commands available.
 
 If you want to create a command in object oriented style (so that the commands deal with your own objects), 
-create them using closures like this (note how ``self`` is available inside command functions::
+create them using closures like this (note how ``self`` is available inside command functions)::
 
     class MyCommands:
         def create(self):        
@@ -7548,6 +7561,9 @@ create them using closures like this (note how ``self`` is available inside comm
     o = MyCommands()
     o.create()
 
+Note that running create() in this example in `after-create-leo-frame` is pointless - the
+newly created commands will override the commands in all previous controllers. You should consider 
+this in your plugin design, and create your commands only once per Leo session.
 #@nonl
 #@-node:ville.20090603183524.5672:Creating Leo commands - @g.command
 #@-node:ekr.20040403171740:@rst html\scripting.html
@@ -15456,6 +15472,7 @@ Leo uses unicode internally for all strings.
     If the encoding used in a derived file is not "utf-8" it is represented in the ``@+leo`` sentinel line.
     For example::
 
+@verbatim
 @verbatim
 @verbatim
 @verbatim
