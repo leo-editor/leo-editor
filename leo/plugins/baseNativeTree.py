@@ -816,7 +816,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             e = self.getTreeEditorForItem(item)
             if e:
                 # Create a wrapper widget for Leo's core.
-                w = self.getWrapper(e)
+                w = self.getWrapper(e,item)
                 # if trace: g.trace(e,p and p.h)
                 return w
             else:
@@ -1109,6 +1109,14 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         self.oops()
     #@-node:ekr.20090126120517.23:getParentItem
+    #@+node:ekr.20090603123442.3784:getWrapper
+    def getWrapper (self,e,item):
+
+        '''A do-nothing that can be over-ridden in subclasses.'''
+
+        return e
+    #@nonl
+    #@-node:ekr.20090603123442.3784:getWrapper
     #@+node:ekr.20090124174652.82:getTreeEditorForItem
     def getTreeEditorForItem(self,item):
 
