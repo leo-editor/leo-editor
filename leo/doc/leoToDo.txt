@@ -5,19 +5,11 @@
 #@+node:ekr.20090525113804.5776:Before b2 4 (qt) + 3
 # Only high-priority bugs must be fixed for b2.
 #@nonl
-#@+node:ekr.20090602183337.6045:Fix rst import annoyance
+#@+node:ekr.20090602183337.6046:Fix @chapters problems
 @nocolor-node
 
-https://bugs.launchpad.net/leo-editor/+bug/379089
-
-> This works for me, so I'm closing the bug. However, I still see one
-> blank line at the start of the body when the rst node is read back into
-> leo, but this is a less urgent concern. It is, at most, a distraction.
-
-I'm going to reopen this and put this on the list of things to do before
-b2. It's time to stamp on the distractions.
+https://bugs.launchpad.net/leo-editor/+bug/382221
 #@nonl
-#@-node:ekr.20090602183337.6045:Fix rst import annoyance
 #@+node:ekr.20090324100430.1:Deleting @chapter node doesn't work
 @nocolor-node
 _unlink: can not happen: bad child index: 4, len(children): 2
@@ -129,6 +121,22 @@ def removeChapterByName (self,name):
     c.redraw()
 #@-node:ekr.20070606075434:cc.removeChapterByName
 #@-node:ekr.20090324100430.1:Deleting @chapter node doesn't work
+#@-node:ekr.20090602183337.6046:Fix @chapters problems
+#@+node:ekr.20090602183337.6047:Make sure undo bug was not reverted
+#@-node:ekr.20090602183337.6047:Make sure undo bug was not reverted
+#@+node:ekr.20090602183337.6045:Fix rst import annoyance
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/379089
+
+> This works for me, so I'm closing the bug. However, I still see one
+> blank line at the start of the body when the rst node is read back into
+> leo, but this is a less urgent concern. It is, at most, a distraction.
+
+I'm going to reopen this and put this on the list of things to do before
+b2. It's time to stamp on the distractions.
+#@nonl
+#@-node:ekr.20090602183337.6045:Fix rst import annoyance
 #@+node:ekr.20090523070447.6475:Rewrite rst documentation
 #@-node:ekr.20090523070447.6475:Rewrite rst documentation
 #@+node:ekr.20090430092048.4:Fix all qt bugs (4)

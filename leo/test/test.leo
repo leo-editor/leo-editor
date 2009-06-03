@@ -351,7 +351,7 @@
 <v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
 </v>
 </v>
-<v t="ekr.20090514103332.1929" a="M"><vh>Unit tests</vh>
+<v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
 <v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>

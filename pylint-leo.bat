@@ -14,14 +14,18 @@ REM goto good_plugins
 REM goto bad_plugins
 
 REM goto essential_plugins
-REM goto errors
+goto errors
 goto all
 
 :errors
 
-echo leoEditCommands.py
-rem W0511:2380: FIXME lineYOffset is expected to be on a tnode in drawing code
-call pylint.bat leo\core\leoEditCommands.py  --disable-msg=W0511 --rcfile=leo\test\pylint-leo-rc.txt
+REM W0221 Arguments number differs from overridden method
+echo qtGui.py
+call pylint.bat leo\plugins\qtGui.py         --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
+
+echo baseNativeTree.py
+call pylint.bat leo\plugins\baseNativeTree.py            --rcfile=leo\test\pylint-leo-rc.txt
+
 
 goto done
 
@@ -75,6 +79,9 @@ call pylint.bat leo\core\leoNodes.py         --rcfile=leo\test\pylint-leo-rc.txt
 echo leoPlugins.py
 call pylint.bat leo\core\leoPlugins.py       --rcfile=leo\test\pylint-leo-rc.txt
 
+echo qtGui.py
+call pylint.bat leo\plugins\qtGui.py         --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
+
 echo leoShadow.py
 call pylint.bat leo\core\leoShadow.py       --rcfile=leo\test\pylint-leo-rc.txt
 
@@ -106,9 +113,6 @@ call pylint.bat leo\plugins\mod_scripting.py        --disable-msg=E0611 --rcfile
 
 echo open_with.py
 call pylint.bat leo\plugins\open_with.py            --rcfile=leo\test\pylint-leo-rc.txt
-
-echo qtGui.py
-call pylint.bat leo\plugins\qtGui.py                --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
 
 echo rst3.py
 call pylint.bat leo\plugins\rst3.py                 --rcfile=leo\test\pylint-leo-rc.txt

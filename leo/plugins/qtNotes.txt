@@ -5,6 +5,142 @@
 #@+node:ekr.20090430102239.1:Before b2 4
 m
 #@nonl
+#@+node:ekr.20090603073641.3772:Fix undo mess
+#@+node:ekr.20090603073641.3773:Notes
+@nocolor-node
+
+Not a reversion, but a bug in the setAllText logic appears to have
+permanently disabled onTextChanged after the first undo.  I shall have
+to revisit all aspects of the supposed "fix".
+
+    I don't know about the details, but hopefully onTextChanged (which
+    gets run all the time) does not do setAllText... it would be absolute
+    performance killer.
+
+
+That's not the problem. onTextChanged gets triggered *by*
+leoQTextEditWidget.setAllText, specifically, the call to setPlainText.
+
+Furthermore, onTextChanged very seldom is enabled. That is, the lockouts at the
+beginning almost always cause an immediate return.
+
+True, onTextChanged can be expensive when it does fire, but that almost
+never happens.
+
+This is going to be a trick to get right...And no, refactoring will not help :-)
+#@nonl
+#@-node:ekr.20090603073641.3773:Notes
+#@+node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
+def setAllText(self,s,insert=None):
+
+    '''Set the text of the widget.
+
+    If insert is None, the insert point, selection range and scrollbars are initied.
+    Otherwise, the scrollbars are preserved.'''
+
+    trace = False and not g.unitTesting
+    c,w = self.c,self.widget
+    colorizer = c.frame.body.colorizer
+    highlighter = colorizer.highlighter
+    colorer = highlighter.colorer
+
+    # Set a hook for the colorer.
+    colorer.initFlag = True
+
+    sb = w.verticalScrollBar()
+    if insert is None: i,pos = 0,0
+    else: i,pos = insert,sb.sliderPosition()
+
+    if trace: t1 = g.getTime()
+    try:
+        self.changingText = True
+        w.setPlainText(s)
+    finally:
+        self.changingText = False
+    if trace: g.trace(g.timeSince(t1))
+
+    self.setSelectionRange(i,i,insert=i)
+    sb.setSliderPosition(pos)
+#@nonl
+#@-node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
+#@+node:ekr.20081121105001.536:onTextChanged (qtText)
+def onTextChanged (self):
+
+    '''Update Leo after the body has been changed.
+
+    self.selecting is guaranteed to be True during
+    the entire selection process.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+    c = self.c ; p = c.currentPosition()
+    tree = c.frame.tree ; w = self
+
+    # The linux events are different from xp events.
+    if w.changingText and not sys.platform.startswith('linux'):
+        if trace: g.trace('changing text',g.callers(5))
+        return
+    if tree.selecting:
+        if trace and verbose: g.trace('selecting')
+        return
+    if tree.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+    if not p:
+        return g.trace('*** no p')
+
+    newInsert = w.getInsertPoint()
+    newSel = w.getSelectionRange()
+    newText = w.getAllText() # Converts to unicode.
+
+    # Get the previous values from the tnode.
+    oldText = g.app.gui.toUnicode(p.v.t._bodyString)
+    if oldText == newText:
+        # This can happen as the result of undo.
+        # g.trace('*** unexpected non-change',color="red")
+        return
+
+    if trace and verbose:
+        g.trace(p.h,len(oldText),len(newText))
+
+    if trace: g.trace('***entry***',g.callers(4))
+
+    oldIns  = p.v.t.insertSpot
+    i,j = p.v.t.selectionStart,p.v.t.selectionLength
+    oldSel  = (i,j-i)
+    oldYview = None
+    undoType = 'Typing'
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,
+        oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+
+    # Update the tnode.
+    p.v.setBodyString(newText)
+    p.v.t.insertSpot = newInsert
+    i,j = newSel
+    i,j = self.toGuiIndex(i),self.toGuiIndex(j)
+    if i > j: i,j = j,i
+    p.v.t.selectionStart,p.v.t.selectionLength = (i,j-i)
+
+    # No need to redraw the screen.
+    if not self.useScintilla:
+        c.recolor()
+    if not c.changed and c.frame.initComplete:
+        c.setChanged(True)
+    c.frame.body.updateEditors()
+    # This will be called by onBodyChanged.
+    # c.frame.tree.updateIcon(p)
+
+    if 1: # This works, and is probably better.
+        # Set a hook for the colorer.
+        colorer = c.frame.body.colorizer.highlighter.colorer
+        colorer.initFlag = True
+    else:
+        # Allow incremental recoloring.
+        c.incrementalRecolorFlag = True
+        c.outerUpdate()
+#@-node:ekr.20081121105001.536:onTextChanged (qtText)
+#@-node:ekr.20090603073641.3772:Fix undo mess
 #@+node:ekr.20081215162017.5:Support multiple body editors
 #@+node:ekr.20090318091009.13:Prototype code
 @color
@@ -374,7 +510,7 @@ def setAllText(self,s,insert=None):
         self.changingText = True
         w.setPlainText(s)
     finally:
-        self.chaningText = False
+        self.changingText = False
     if trace: g.trace(g.timeSince(t1))
 
     self.setSelectionRange(i,i,insert=i)
@@ -478,16 +614,17 @@ def toPythonIndex (self,index):
 
 toGuiIndex = toPythonIndex
 #@-node:ville.20090321082712.2:toPythonIndex
-#@+node:ville.20090321082712.3:toPythonIndexToRowCol
+#@+node:ville.20090321082712.3:toPythonIndexToRowCol (leoQTextEditWidget)
 def toPythonIndexRowCol(self,index):
     #print "use idx",index
+
+    w = self 
 
     if index == '1.0':
         return 0, 0, 0
     if index == 'end':
         index = w.getLastPosition()
 
-    w = self 
     te = self.widget
     #print te
     doc = te.document()
@@ -501,7 +638,7 @@ def toPythonIndexRowCol(self,index):
     #row,col = g.convertPythonIndexToRowCol(s,i)
     #print "idx",i,row,col
     return i,row,col
-#@-node:ville.20090321082712.3:toPythonIndexToRowCol
+#@-node:ville.20090321082712.3:toPythonIndexToRowCol (leoQTextEditWidget)
 #@-node:ville.20090321082712.1: PythonIndex
 #@+node:ville.20090324170325.63:get
 def get(self,i,j=None):
@@ -1381,7 +1518,7 @@ def __init__(self,title,gui):
 
     self.title = title
     self.initComplete = False # Set by initCompleteHint().
-    leoQtFrame.instances += 1
+    leoFrame.leoFrame.instances += 1 # Increment the class var.
 
     self.c = None # Set in finishCreate.
     self.iconBarClass = self.qtIconBarClass
@@ -3275,8 +3412,21 @@ rather than expansion
 toggle active pane
 #@nonl
 #@-node:ekr.20090601163620.3758:Fix latest reported minor bugs
-#@+node:ekr.20090602181418.3764:Unmark-all does not seem to be working.
-#@-node:ekr.20090602181418.3764:Unmark-all does not seem to be working.
+#@+node:ekr.20090603045408.3767:Fix pylint warnings
+@nocolor-node
+
+
+************* Module leo.plugins.qtGui
+W0101:997:leoQtBody.addEditor: Unreachable code
+
+# Use a class to eliminate this warning.
+E1103:7674:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastFunc' member (but some types could not be inferred)
+E1103:7674:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastMatch' member (but some types could not be inferred)
+E1103:7676:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastFlag' member (but some types could not be inferred)
+E1103:7695:jEditColorizer.recolor: Instance of 'Bunch' has no 'stateName' member (but some types could not be inferred)
+
+W0222:8367:leoQtBaseTextWidget.tag_add: Signature differs from overridden method
+#@-node:ekr.20090603045408.3767:Fix pylint warnings
 #@-node:ekr.20090430102239.1:Before b2 4
 #@+node:ekr.20090430102239.13:Before 4.6 final
 #@+node:ekr.20090429101847.10:Support canvas widgets in all panes
@@ -5284,7 +5434,9 @@ def traceEvent (self,obj,event,tkKey,override):
         g.trace('%3s:%s' % (eventType,'unknown'))
 #@-node:ekr.20081121105001.179:traceEvent
 #@+node:ekr.20090407080217.1:traceFocus
-def traceFocuse (self,eventType,obj):
+def traceFocus (self,eventType,obj):
+
+    ev = QtCore.QEvent
 
     table = (
         (ev.FocusIn,        'focus-in'),
@@ -5304,153 +5456,6 @@ def traceFocuse (self,eventType,obj):
 #@-node:ekr.20090407080217.1:traceFocus
 #@-node:ekr.20081121105001.166:class leoQtEventFilter
 #@-node:ekr.20090406071640.1:Removed keyboard-specific key code
-#@+node:ekr.20090518094128.3832:Fixed undo bug
-#@+node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
-def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
-
-    self.widget = widget
-    self.c = c or self.widget.c
-
-    # g.trace('leoQtBaseTextWidget',widget,g.callers(5))
-
-    # Init the base class.
-    leoFrame.baseTextWidget.__init__(
-        self,c,baseClassName='leoQtBaseTextWidget',
-        name=name,
-        widget=widget,
-        highLevelInterface=True)
-
-    # Init ivars.
-    self.changingText = False # A lockout for onTextChanged.
-    self.tags = {}
-    self.configDict = {} # Keys are tags, values are colors (names or values).
-    self.useScintilla = False # This is used!
-
-    if not c: return # Can happen.
-
-    # Hook up qt events.
-    self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
-    self.widget.installEventFilter(self.ev_filter)
-
-    self.widget.connect(self.widget,
-        QtCore.SIGNAL("textChanged()"),self.onTextChanged)
-
-    self.widget.connect(self.widget,
-        QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
-
-    self.injectIvars(c)
-#@-node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
-#@+node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
-def setAllText(self,s,insert=None):
-
-    '''Set the text of the widget.
-
-    If insert is None, the insert point, selection range and scrollbars are initied.
-    Otherwise, the scrollbars are preserved.'''
-
-    trace = False and not g.unitTesting
-    c,w = self.c,self.widget
-    colorizer = c.frame.body.colorizer
-    highlighter = colorizer.highlighter
-    colorer = highlighter.colorer
-
-    # Set a hook for the colorer.
-    colorer.initFlag = True
-
-    sb = w.verticalScrollBar()
-    if insert is None: i,pos = 0,0
-    else: i,pos = insert,sb.sliderPosition()
-
-    if trace: t1 = g.getTime()
-    try:
-        self.changingText = True
-        w.setPlainText(s)
-    finally:
-        self.chaningText = False
-    if trace: g.trace(g.timeSince(t1))
-
-    self.setSelectionRange(i,i,insert=i)
-    sb.setSliderPosition(pos)
-#@nonl
-#@-node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
-#@+node:ekr.20081121105001.536:onTextChanged (qtText)
-def onTextChanged (self):
-
-    '''Update Leo after the body has been changed.
-
-    self.selecting is guaranteed to be True during
-    the entire selection process.'''
-
-    trace = False and not g.unitTesting
-    verbose = True
-    c = self.c ; p = c.currentPosition()
-    tree = c.frame.tree ; w = self
-
-    # The linux events are different from xp events.
-    if w.changingText and not sys.platform.startswith('linux'):
-        if trace: g.trace('changing text',g.callers(5))
-        return
-    if tree.selecting:
-        if trace and verbose: g.trace('selecting')
-        return
-    if tree.redrawing:
-        if trace and verbose: g.trace('redrawing')
-        return
-    if not p:
-        return g.trace('*** no p')
-
-    newInsert = w.getInsertPoint()
-    newSel = w.getSelectionRange()
-    newText = w.getAllText() # Converts to unicode.
-
-    # Get the previous values from the tnode.
-    oldText = g.app.gui.toUnicode(p.v.t._bodyString)
-    if oldText == newText:
-        # This can happen as the result of undo.
-        # g.trace('*** unexpected non-change',color="red")
-        return
-
-    if trace and verbose:
-        g.trace(p.h,len(oldText),len(newText))
-
-    if trace: g.trace('***entry***',g.callers(4))
-
-    oldIns  = p.v.t.insertSpot
-    i,j = p.v.t.selectionStart,p.v.t.selectionLength
-    oldSel  = (i,j-i)
-    oldYview = None
-    undoType = 'Typing'
-    c.undoer.setUndoTypingParams(p,undoType,
-        oldText=oldText,newText=newText,
-        oldSel=oldSel,newSel=newSel,oldYview=oldYview)
-
-    # Update the tnode.
-    p.v.setBodyString(newText)
-    p.v.t.insertSpot = newInsert
-    i,j = newSel
-    i,j = self.toGuiIndex(i),self.toGuiIndex(j)
-    if i > j: i,j = j,i
-    p.v.t.selectionStart,p.v.t.selectionLength = (i,j-i)
-
-    # No need to redraw the screen.
-    if not self.useScintilla:
-        c.recolor()
-    if not c.changed and c.frame.initComplete:
-        c.setChanged(True)
-    c.frame.body.updateEditors()
-    # This will be called by onBodyChanged.
-    # c.frame.tree.updateIcon(p)
-
-    if 1: # This works, and is probably better.
-        # Set a hook for the colorer.
-        colorer = c.frame.body.colorizer.highlighter.colorer
-        colorer.initFlag = True
-    else:
-        # Allow incremental recoloring.
-        c.incrementalRecolorFlag = True
-        c.outerUpdate()
-#@-node:ekr.20081121105001.536:onTextChanged (qtText)
-#@-node:ekr.20090518094128.3832:Fixed undo bug
 #@+node:ekr.20090522074815.3893:Fixed jiggle when clicking in outline
 @nocolor-node
 
@@ -6039,7 +6044,9 @@ def traceEvent (self,obj,event,tkKey,override):
         g.trace('%3s:%s' % (eventType,'unknown'))
 #@-node:ekr.20081121105001.179:traceEvent
 #@+node:ekr.20090407080217.1:traceFocus
-def traceFocuse (self,eventType,obj):
+def traceFocus (self,eventType,obj):
+
+    ev = QtCore.QEvent
 
     table = (
         (ev.FocusIn,        'focus-in'),
@@ -6970,7 +6977,9 @@ def traceEvent (self,obj,event,tkKey,override):
         g.trace('%3s:%s' % (eventType,'unknown'))
 #@-node:ekr.20081121105001.179:traceEvent
 #@+node:ekr.20090407080217.1:traceFocus
-def traceFocuse (self,eventType,obj):
+def traceFocus (self,eventType,obj):
+
+    ev = QtCore.QEvent
 
     table = (
         (ev.FocusIn,        'focus-in'),
@@ -7869,194 +7878,6 @@ def toggleOption (self,ivar):
 #@-node:ekr.20081121105001.245:Support for minibufferFind class (qtFindTab)
 #@-node:ekr.20081121105001.235:class leoQtFindTab (findTab)
 #@-node:ekr.20090409055330.10:Made sure change-all honors node-only and suboutline-only settings
-#@+node:ekr.20090601163620.3763:Fixed segFault when trying to re-edit a headline
-#@+node:ekr.20090602083443.3812:Unchanged
-#@+node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
-def onItemDoubleClicked (self,item,col):
-
-    trace = False and not g.unitTesting
-    verbose = False
-
-    if self.busy(): return
-
-    c = self.c
-
-    if trace: g.trace(col,self.traceItem(item),g.callers(4))
-
-    try:
-        self.selecting = True
-
-        e = self.createTreeEditorForItem(item)
-        if not e: g.trace('*** no e')
-
-        p = self.item2position(item)
-        if p:
-            event = None
-            g.doHook("icondclick1",c=c,p=p,v=p,event=event)
-            c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
-            g.doHook("icondclick2",c=c,p=p,v=p,event=event)
-        else:
-            g.trace('*** no p')
-
-        c.outerUpdate()
-    finally:
-        self.selecting = False
-#@-node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
-#@+node:ekr.20090124174652.104:createTreeEditorForItem (leoQtTree)
-def createTreeEditorForItem(self,item):
-
-    trace = False and not g.unitTesting
-
-    w = self.treeWidget
-    w.setCurrentItem(item) # Must do this first.
-    w.editItem(item)
-    e = w.itemWidget(item,0)
-    e.setObjectName('headline')
-    self.connectEditorWidget(e,item)
-
-    return e
-#@nonl
-#@-node:ekr.20090124174652.104:createTreeEditorForItem (leoQtTree)
-#@+node:ekr.20090124174652.106:getTreeEditorForItem (leoQtTree)
-def getTreeEditorForItem(self,item):
-
-    '''Return the edit widget if it exists.
-    Do *not* create one if it does not exist.'''
-
-    w = self.treeWidget
-    e = w.itemWidget(item,0)
-    return e
-#@-node:ekr.20090124174652.106:getTreeEditorForItem (leoQtTree)
-#@+node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
-def editLabelHelper (self,item,selectAll=False,selection=None):
-
-    '''Called by nativeTree.editLabel to do
-    gui-specific stuff.'''
-
-    w = self.treeWidget
-    w.setCurrentItem(item) # Must do this first.
-    w.editItem(item)
-        # Generates focus-in event that tree doesn't report.
-    e = w.itemWidget(item,0) # A QLineEdit.
-
-    if e:
-        s = e.text() ; len_s = len(s)
-        if selection:
-            i,j,ins = selection
-            start,n = i,abs(i-j)
-                # Not right for backward searches.
-        elif selectAll: start,n,ins = 0,len_s,len_s
-        else:           start,n,ins = len_s,0,len_s
-        e.setObjectName('headline')
-        e.setSelection(start,n)
-        # e.setCursorPosition(ins) # Does not work.
-        e.setFocus()
-        self.connectEditorWidget(e,item) # Hook up the widget.
-
-    return e
-#@-node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
-#@-node:ekr.20090602083443.3812:Unchanged
-#@+node:ekr.20090602083443.3816:Changed
-#@+node:ekr.20081121105001.592:class leoQtHeadlineWidget
-class leoQtHeadlineWidget (leoQLineEditWidget):
-
-    '''A wrapper class for QLineEdit widgets in QTreeWidget's.'''
-
-    def __init__ (self,widget,name,c=None):
-        # Init the base class.
-        # g.trace('leoQtHeadlineWidget',widget,g.callers(5))
-        leoQLineEditWidget.__init__(self,widget,name,c)
-        self.baseClassName='leoQtHeadlineWidget'
-        self.exists = True
-
-    def destroyed (self):
-        # g.trace('***',self)
-        self.exists = False
-
-    def setFocus (self):
-        # Do noting if self.widget has been deallocated.
-        # g.trace('leoTreeQLineEditWidget',self.widget,'exists',self.exists)
-        if self.exists:
-            g.app.gui.set_focus(self.c,self.widget)
-        else:
-            if 0: # This doesn't work
-                c = self.c ; tree = c.frame.tree
-                tree.editLabel(c.p,selectAll=False,selection=None)
-
-    def __repr__ (self):
-        return 'leoQtHeadlineWidget: %s' % id(self)
-#@-node:ekr.20081121105001.592:class leoQtHeadlineWidget
-#@+node:ekr.20090322190318.10:connectEditorWidget & helper
-def connectEditorWidget(self,e,item):
-
-    c = self.c ; w = self.treeWidget
-
-    if not e: return g.trace('can not happen: no e')
-
-    wrapper = self.getWrapper(e)
-
-    # Hook up the widget.
-    def editingFinishedCallback(e=e,item=item,self=self,wrapper=wrapper):
-        # g.trace(wrapper,g.callers(5))
-        c = self.c ; w = self.treeWidget
-        self.onHeadChanged(p=c.p,e=e)
-        w.setCurrentItem(item)
-        wrapper.destroyed() # Tell the wrapper that it's widget is gone.
-
-    e.connect(e,QtCore.SIGNAL(
-        "editingFinished()"),
-        editingFinishedCallback)
-
-    # e.connect(e,QtCore.SIGNAL(
-        # "textEdited(QTreeWidgetItem*,int)"),
-        # self.onHeadChanged)
-#@-node:ekr.20090322190318.10:connectEditorWidget & helper
-#@+node:ekr.20090602083443.3817:getWrapper (leoQtTree)
-def getWrapper (self,e):
-
-    '''Return healineWrapper that wraps e (a QLineEdit).'''
-
-    c = self.c
-
-    if e:
-        wrapper = self.editWidgetsDict.get(e)
-        if not wrapper:
-            wrapper = self.headlineWrapper(widget=e,name='head',c=c)
-            self.editWidgetsDict[e] = wrapper
-
-        return wrapper
-    else:
-        return None
-#@-node:ekr.20090602083443.3817:getWrapper (leoQtTree)
-#@+node:ekr.20090124174652.55:edit_widget (nativeTree)
-def edit_widget (self,p):
-
-    """Returns the edit widget for position p."""
-
-    trace = False and not g.unitTesting
-    verbose = True
-
-    c = self.c
-    item = self.position2item(p)
-    if item:
-        e = self.getTreeEditorForItem(item)
-        if e:
-            # Create a wrapper widget for Leo's core.
-            w = self.getWrapper(e)
-            # if trace: g.trace(e,p and p.h)
-            return w
-        else:
-            # This is not an error
-            # But warning: calling this method twice might not work!
-            if trace and verbose: g.trace('no e for %s' % (p))
-            return None
-    else:
-        if trace and verbose: self.error('no item for %s' % (p))
-        return None
-#@nonl
-#@-node:ekr.20090124174652.55:edit_widget (nativeTree)
-#@-node:ekr.20090602083443.3816:Changed
-#@-node:ekr.20090601163620.3763:Fixed segFault when trying to re-edit a headline
 #@+node:ekr.20090602175752.3763:Inhibit redraw of tree on onActivateTree
 @nocolor-node
 
@@ -8102,6 +7923,392 @@ def OnActivateTree (self,event=None):
         g.es_event_exception("activate tree")
 #@-node:ekr.20081121105001.293:OnActivateTree
 #@-node:ekr.20090602175752.3763:Inhibit redraw of tree on onActivateTree
+#@+node:ekr.20090603045408.3766:Fixed potential crasher in leoQTextEditWidget.toPythonIndexRowCol
+# Found by pylint.
+#@nonl
+#@+node:ville.20090321082712.3:toPythonIndexToRowCol (leoQTextEditWidget)
+def toPythonIndexRowCol(self,index):
+    #print "use idx",index
+
+    w = self 
+
+    if index == '1.0':
+        return 0, 0, 0
+    if index == 'end':
+        index = w.getLastPosition()
+
+    te = self.widget
+    #print te
+    doc = te.document()
+    i = w.toPythonIndex(index)
+    bl = doc.findBlock(i)
+    row = bl.blockNumber()
+    col = i - bl.position()
+
+    #s = w.getAllText()
+    #i = w.toPythonIndex(index)
+    #row,col = g.convertPythonIndexToRowCol(s,i)
+    #print "idx",i,row,col
+    return i,row,col
+#@-node:ville.20090321082712.3:toPythonIndexToRowCol (leoQTextEditWidget)
+#@-node:ekr.20090603045408.3766:Fixed potential crasher in leoQTextEditWidget.toPythonIndexRowCol
+#@+node:ekr.20090601163620.3763:Fixed segFault when trying to re-edit a headline
+#@+node:ekr.20090603073641.3771:Notes
+@nocolor-node
+
+Yesterday's supposed fix of the hard crasher was a failure.  True, the
+code did prevent hard crashes, but it had the effect of prevent many
+of Leo's commands from working!  I've got to fix this mess today.
+
+The "fix" was this code in k.callAltXFunction::
+
+        widgets = [event.widget]
+        if hasattr(event.widget,'widget'):
+            widgets.append(event.widget.widget)
+        if c.get_focus() in widgets:
+            func(event) # Focus can fail for headline operations.
+        else:
+            g.trace('skipped',commandName,event.widget,c.get_focus())
+
+I knew very well when I wrote this code that it was the kind of code
+that should never be tolerated.  In effect, it tries to guess what
+kind of widget event.widget is, and then tries to "protect" the
+widget.  It was worth a try, but it was a long shot.
+
+I am now completely convinced that this code must be abandoned. The
+code **must not** test event.widget, but must instead just call func
+(event). This is what the old code did, and it can cause a hard crash
+if event.widget is:
+
+A. a leoQtHeadlineWidget (a wrapper for a QLineEdit widget that
+represents a headline) and
+B. the wrapped QLineEdit has been destroyed as the result of the
+QTreeWidget losing focus.
+
+Of course, underlying native widget *has* lost focus because
+callAltXFunction is called when the user types in the minibuffer.
+
+It's no good complaining that QTreeWidget should hold onto edit
+widgets permanently.  Some other way must be found.
+
+The solution is something I've been resisting because it's more work.
+The qt gui code must create "safe" wrappers for all QLineEdit widgets
+used as headlines.  These wrappers must be passed to Leo's core, so
+they must have the same interface as leoFrame.baseTextWidget.
+
+Thus, leoQtHeadlineWidget must contain overrides of all public methods
+of leoFrame.baseTextWidget. Each such overridden method will check
+that:
+
+1) the corresponding tree *item* still exists and
+2) the corresponding edit widget for the tree item still exists.
+
+All leoQtHeadlineWidget methods will silently do nothing if either of
+these safety checks fail. Or maybe this class can try to begin editing
+of the tree item again.  I'll try this, but it's not a huge loss if it
+doesn't work.  How often does one use <alt-x>back-char<return> when
+editing a headline? (!!) 
+#@nonl
+#@-node:ekr.20090603073641.3771:Notes
+#@+node:ekr.20090602083443.3812:Unchanged
+#@+node:ekr.20090124174652.104:createTreeEditorForItem (leoQtTree)
+def createTreeEditorForItem(self,item):
+
+    trace = False and not g.unitTesting
+
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+    e = w.itemWidget(item,0)
+    e.setObjectName('headline')
+    self.connectEditorWidget(e,item)
+
+    return e
+#@nonl
+#@-node:ekr.20090124174652.104:createTreeEditorForItem (leoQtTree)
+#@+node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
+def onItemDoubleClicked (self,item,col):
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+
+    if trace: g.trace(col,self.traceItem(item),g.callers(4))
+
+    try:
+        self.selecting = True
+
+        e = self.createTreeEditorForItem(item)
+        if not e: g.trace('*** no e')
+
+        p = self.item2position(item)
+        if p:
+            event = None
+            g.doHook("icondclick1",c=c,p=p,v=p,event=event)
+            c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
+            g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+        else:
+            g.trace('*** no p')
+
+        c.outerUpdate()
+    finally:
+        self.selecting = False
+#@-node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
+#@+node:ekr.20090124174652.106:getTreeEditorForItem (leoQtTree)
+def getTreeEditorForItem(self,item):
+
+    '''Return the edit widget if it exists.
+    Do *not* create one if it does not exist.'''
+
+    w = self.treeWidget
+    e = w.itemWidget(item,0)
+    return e
+#@-node:ekr.20090124174652.106:getTreeEditorForItem (leoQtTree)
+#@+node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
+def editLabelHelper (self,item,selectAll=False,selection=None):
+
+    '''Called by nativeTree.editLabel to do
+    gui-specific stuff.'''
+
+    w = self.treeWidget
+    w.setCurrentItem(item) # Must do this first.
+    w.editItem(item)
+        # Generates focus-in event that tree doesn't report.
+    e = w.itemWidget(item,0) # A QLineEdit.
+
+    if e:
+        s = e.text() ; len_s = len(s)
+        if selection:
+            i,j,ins = selection
+            start,n = i,abs(i-j)
+                # Not right for backward searches.
+        elif selectAll: start,n,ins = 0,len_s,len_s
+        else:           start,n,ins = len_s,0,len_s
+        e.setObjectName('headline')
+        e.setSelection(start,n)
+        # e.setCursorPosition(ins) # Does not work.
+        e.setFocus()
+        self.connectEditorWidget(e,item) # Hook up the widget.
+
+    return e
+#@-node:ekr.20090129062500.13:editLabelHelper (leoQtTree)
+#@-node:ekr.20090602083443.3812:Unchanged
+#@+node:ekr.20090602083443.3816:Changed
+#@+node:ekr.20081121105001.592:class leoQtHeadlineWidget
+class leoQtHeadlineWidget (leoQtBaseTextWidget): ### (leoQLineEditWidget):
+
+    '''A wrapper class for QLineEdit widgets in QTreeWidget's.
+
+    This wrapper must appear to be a leoFrame.baseTextWidget to Leo's core.
+    '''
+
+    @others
+#@nonl
+#@+node:ekr.20090603073641.3841:Birth
+def __init__ (self,c,item,name,widget):
+
+    # g.trace('leoQtHeadlineWidget',item,widget)
+
+    # Init the base class.
+    leoQtBaseTextWidget.__init__(self,widget,name,c)
+    self.item=item
+
+def __repr__ (self):
+    return 'leoQtHeadlineWidget: %s' % id(self)
+#@-node:ekr.20090603073641.3841:Birth
+#@+node:ekr.20090603073641.3851:Widget-specific overrides (leoQtHeadlineWidget)
+# These are safe versions of QLineEdit methods.
+#@+node:ekr.20090603073641.3861:check
+def check (self):
+
+    '''Return True if the tree item exists and it's edit widget exists.'''
+
+    trace = False and not g.unitTesting
+    tree = self.c.frame.tree
+    e = tree.treeWidget.itemWidget(self.item,0)
+    valid = tree.isValidItem(self.item)
+    result = valid and e == self.widget
+    if trace: g.trace('result %s self.widget %s itemWidget %s' % (
+        result,self.widget,e))
+
+    return result
+#@nonl
+#@-node:ekr.20090603073641.3861:check
+#@+node:ekr.20090603073641.3852:getAllText
+def getAllText(self):
+
+    if self.check():
+        w = self.widget
+        s = w.text()
+        return g.app.gui.toUnicode(s)
+    else:
+        return ''
+#@nonl
+#@-node:ekr.20090603073641.3852:getAllText
+#@+node:ekr.20090603073641.3853:getInsertPoint
+def getInsertPoint(self):
+
+    if self.check():
+        i = self.widget.cursorPosition()
+        return i
+    else:
+        return 0
+#@-node:ekr.20090603073641.3853:getInsertPoint
+#@+node:ekr.20090603073641.3854:getSelectionRange
+def getSelectionRange(self,sort=True):
+
+    w = self.widget
+
+    if self.check():
+        if w.hasSelectedText():
+            i = w.selectionStart()
+            s = w.selectedText()
+            s = g.app.gui.toUnicode(s)
+            j = i + len(s)
+        else:
+            i = j = w.cursorPosition()
+        return i,j
+    else:
+        return 0,0
+#@-node:ekr.20090603073641.3854:getSelectionRange
+#@+node:ekr.20090603073641.3855:hasSelection
+def hasSelection(self):
+
+    if self.check():
+        return self.widget.hasSelection()
+    else:
+        return False
+#@-node:ekr.20090603073641.3855:hasSelection
+#@+node:ekr.20090603073641.3856:see & seeInsertPoint
+def see(self,i):
+    pass
+
+def seeInsertPoint (self):
+    pass
+#@-node:ekr.20090603073641.3856:see & seeInsertPoint
+#@+node:ekr.20090603073641.3857:setAllText
+def setAllText(self,s,insert=None):
+
+    if not self.check(): return
+
+    w = self.widget
+    i = g.choose(insert is None,0,insert)
+    w.setText(s)
+    if insert is not None:
+        self.setSelectionRange(i,i,insert=i)
+#@-node:ekr.20090603073641.3857:setAllText
+#@+node:ekr.20090603073641.3862:setFocus
+def setFocus (self):
+
+    if self.check():
+        g.app.gui.set_focus(self.c,self.widget)
+#@-node:ekr.20090603073641.3862:setFocus
+#@+node:ekr.20090603073641.3858:setInsertPoint
+def setInsertPoint(self,i):
+
+    if not self.check(): return
+
+    w = self.widget
+    s = w.text()
+    s = g.app.gui.toUnicode(s)
+    i = max(0,min(i,len(s)))
+    w.setCursorPosition(i)
+#@-node:ekr.20090603073641.3858:setInsertPoint
+#@+node:ekr.20090603073641.3859:setSelectionRangeHelper (leoQLineEdit)
+def setSelectionRangeHelper(self,i,j,insert):
+
+    if not self.check(): return
+    w = self.widget
+    # g.trace(i,j,insert,w)
+    if i > j: i,j = j,i
+    s = w.text()
+    s = g.app.gui.toUnicode(s)
+    n = len(s)
+    i = max(0,min(i,n))
+    j = max(0,min(j,n))
+    insert = max(0,min(insert,n))
+    if i == j:
+        w.setCursorPosition(i)
+    else:
+        length = j-i
+        if insert < j:
+            w.setSelection(j,-length)
+        else:
+            w.setSelection(i,length)
+#@nonl
+#@-node:ekr.20090603073641.3859:setSelectionRangeHelper (leoQLineEdit)
+#@-node:ekr.20090603073641.3851:Widget-specific overrides (leoQtHeadlineWidget)
+#@-node:ekr.20081121105001.592:class leoQtHeadlineWidget
+#@+node:ekr.20090322190318.10:connectEditorWidget & helper
+def connectEditorWidget(self,e,item):
+
+    c = self.c ; w = self.treeWidget
+
+    if not e: return g.trace('can not happen: no e')
+
+    wrapper = self.getWrapper(e,item)
+
+    # Hook up the widget.
+    def editingFinishedCallback(e=e,item=item,self=self,wrapper=wrapper):
+        # g.trace(wrapper,g.callers(5))
+        c = self.c ; w = self.treeWidget
+        self.onHeadChanged(p=c.p,e=e)
+        w.setCurrentItem(item)
+
+    e.connect(e,QtCore.SIGNAL(
+        "editingFinished()"),
+        editingFinishedCallback)
+#@nonl
+#@-node:ekr.20090322190318.10:connectEditorWidget & helper
+#@+node:ekr.20090602083443.3817:getWrapper (leoQtTree)
+def getWrapper (self,e,item):
+
+    '''Return healineWrapper that wraps e (a QLineEdit).'''
+
+    c = self.c
+
+    if e:
+        wrapper = self.editWidgetsDict.get(e)
+        if not wrapper:
+            wrapper = self.headlineWrapper(c,item,name='head',widget=e)
+            self.editWidgetsDict[e] = wrapper
+
+        return wrapper
+    else:
+        return None
+#@-node:ekr.20090602083443.3817:getWrapper (leoQtTree)
+#@+node:ekr.20090124174652.55:edit_widget (nativeTree)
+def edit_widget (self,p):
+
+    """Returns the edit widget for position p."""
+
+    trace = False and not g.unitTesting
+    verbose = True
+
+    c = self.c
+    item = self.position2item(p)
+    if item:
+        e = self.getTreeEditorForItem(item)
+        if e:
+            # Create a wrapper widget for Leo's core.
+            w = self.getWrapper(e,item)
+            # if trace: g.trace(e,p and p.h)
+            return w
+        else:
+            # This is not an error
+            # But warning: calling this method twice might not work!
+            if trace and verbose: g.trace('no e for %s' % (p))
+            return None
+    else:
+        if trace and verbose: self.error('no item for %s' % (p))
+        return None
+#@nonl
+#@-node:ekr.20090124174652.55:edit_widget (nativeTree)
+#@-node:ekr.20090602083443.3816:Changed
+#@-node:ekr.20090601163620.3763:Fixed segFault when trying to re-edit a headline
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@-node:ekr.20081208155215.12:Unused
