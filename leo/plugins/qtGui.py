@@ -1834,7 +1834,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         self.title = title
         self.initComplete = False # Set by initCompleteHint().
-        leoQtFrame.instances += 1
+        leoFrame.leoFrame.instances += 1 # Increment the class var.
 
         self.c = None # Set in finishCreate.
         self.iconBarClass = self.qtIconBarClass
@@ -4336,7 +4336,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
 
         if not e: return g.trace('can not happen: no e')
 
-        wrapper = self.getWrapper(e)
+        wrapper = self.getWrapper(e,item)
 
         # Hook up the widget.
         def editingFinishedCallback(e=e,item=item,self=self,wrapper=wrapper):
@@ -4344,15 +4344,11 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
             c = self.c ; w = self.treeWidget
             self.onHeadChanged(p=c.p,e=e)
             w.setCurrentItem(item)
-            wrapper.destroyed() # Tell the wrapper that it's widget is gone.
 
         e.connect(e,QtCore.SIGNAL(
             "editingFinished()"),
             editingFinishedCallback)
-
-        # e.connect(e,QtCore.SIGNAL(
-            # "textEdited(QTreeWidgetItem*,int)"),
-            # self.onHeadChanged)
+    #@nonl
     #@-node:ekr.20090322190318.10:connectEditorWidget & helper
     #@+node:ekr.20090124174652.18:contractItem & expandItem
     def contractItem (self,item):
@@ -4468,7 +4464,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         return e
     #@-node:ekr.20090124174652.106:getTreeEditorForItem (leoQtTree)
     #@+node:ekr.20090602083443.3817:getWrapper (leoQtTree)
-    def getWrapper (self,e):
+    def getWrapper (self,e,item):
 
         '''Return healineWrapper that wraps e (a QLineEdit).'''
 
@@ -4477,7 +4473,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         if e:
             wrapper = self.editWidgetsDict.get(e)
             if not wrapper:
-                wrapper = self.headlineWrapper(widget=e,name='head',c=c)
+                wrapper = self.headlineWrapper(c,item,name='head',widget=e)
                 self.editWidgetsDict[e] = wrapper
 
             return wrapper
@@ -5868,7 +5864,9 @@ class leoQtEventFilter(QtCore.QObject):
             g.trace('%3s:%s' % (eventType,'unknown'))
     #@-node:ekr.20081121105001.179:traceEvent
     #@+node:ekr.20090407080217.1:traceFocus
-    def traceFocuse (self,eventType,obj):
+    def traceFocus (self,eventType,obj):
+
+        ev = QtCore.QEvent
 
         table = (
             (ev.FocusIn,        'focus-in'),
@@ -6275,6 +6273,7 @@ class jEditColorizer:
         # Debugging...
         self.count = 0 # For unit testing.
         self.allow_mark_prev = True # The new colorizer tolerates this nonsense :-)
+        self.tagCount = 0
         self.trace = False or c.config.getBool('trace_colorizer')
         self.trace_leo_matches = False
         self.trace_match_flag = False # (Useful) True: trace all matching methods.
@@ -7876,8 +7875,6 @@ class jEditColorizer:
         h.setCurrentBlockState(n)
     #@-node:ekr.20090211072718.3:setCurrentState
     #@+node:ekr.20081206062411.14:setTag
-    tagCount = 0
-
     def setTag (self,tag,s,i,j):
 
         trace = False and not g.unitTesting
@@ -9110,7 +9107,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
             self.changingText = True
             w.setPlainText(s)
         finally:
-            self.chaningText = False
+            self.changingText = False
         if trace: g.trace(g.timeSince(t1))
 
         self.setSelectionRange(i,i,insert=i)
@@ -9214,16 +9211,17 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
     toGuiIndex = toPythonIndex
     #@-node:ville.20090321082712.2:toPythonIndex
-    #@+node:ville.20090321082712.3:toPythonIndexToRowCol
+    #@+node:ville.20090321082712.3:toPythonIndexToRowCol (leoQTextEditWidget)
     def toPythonIndexRowCol(self,index):
         #print "use idx",index
+
+        w = self 
 
         if index == '1.0':
             return 0, 0, 0
         if index == 'end':
             index = w.getLastPosition()
 
-        w = self 
         te = self.widget
         #print te
         doc = te.document()
@@ -9237,7 +9235,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         #row,col = g.convertPythonIndexToRowCol(s,i)
         #print "idx",i,row,col
         return i,row,col
-    #@-node:ville.20090321082712.3:toPythonIndexToRowCol
+    #@-node:ville.20090321082712.3:toPythonIndexToRowCol (leoQTextEditWidget)
     #@-node:ville.20090321082712.1: PythonIndex
     #@+node:ville.20090324170325.63:get
     def get(self,i,j=None):
@@ -9281,33 +9279,150 @@ class findTextWrapper (leoQLineEditWidget):
     pass
 #@-node:ekr.20081121105001.593:class findTextWrapper
 #@+node:ekr.20081121105001.592:class leoQtHeadlineWidget
-class leoQtHeadlineWidget (leoQLineEditWidget):
+class leoQtHeadlineWidget (leoQtBaseTextWidget): ### (leoQLineEditWidget):
 
-    '''A wrapper class for QLineEdit widgets in QTreeWidget's.'''
+    '''A wrapper class for QLineEdit widgets in QTreeWidget's.
 
-    def __init__ (self,widget,name,c=None):
+    This wrapper must appear to be a leoFrame.baseTextWidget to Leo's core.
+    '''
+
+    #@    @+others
+    #@+node:ekr.20090603073641.3841:Birth
+    def __init__ (self,c,item,name,widget):
+
+        # g.trace('leoQtHeadlineWidget',item,widget)
+
         # Init the base class.
-        # g.trace('leoQtHeadlineWidget',widget,g.callers(5))
-        leoQLineEditWidget.__init__(self,widget,name,c)
-        self.baseClassName='leoQtHeadlineWidget'
-        self.exists = True
-
-    def destroyed (self):
-        # g.trace('***',self)
-        self.exists = False
-
-    def setFocus (self):
-        # Do noting if self.widget has been deallocated.
-        # g.trace('leoTreeQLineEditWidget',self.widget,'exists',self.exists)
-        if self.exists:
-            g.app.gui.set_focus(self.c,self.widget)
-        else:
-            if 0: # This doesn't work
-                c = self.c ; tree = c.frame.tree
-                tree.editLabel(c.p,selectAll=False,selection=None)
+        leoQtBaseTextWidget.__init__(self,widget,name,c)
+        self.item=item
 
     def __repr__ (self):
         return 'leoQtHeadlineWidget: %s' % id(self)
+    #@-node:ekr.20090603073641.3841:Birth
+    #@+node:ekr.20090603073641.3851:Widget-specific overrides (leoQtHeadlineWidget)
+    # These are safe versions of QLineEdit methods.
+    #@+node:ekr.20090603073641.3861:check
+    def check (self):
+
+        '''Return True if the tree item exists and it's edit widget exists.'''
+
+        trace = False and not g.unitTesting
+        tree = self.c.frame.tree
+        e = tree.treeWidget.itemWidget(self.item,0)
+        valid = tree.isValidItem(self.item)
+        result = valid and e == self.widget
+        if trace: g.trace('result %s self.widget %s itemWidget %s' % (
+            result,self.widget,e))
+
+        return result
+    #@nonl
+    #@-node:ekr.20090603073641.3861:check
+    #@+node:ekr.20090603073641.3852:getAllText
+    def getAllText(self):
+
+        if self.check():
+            w = self.widget
+            s = w.text()
+            return g.app.gui.toUnicode(s)
+        else:
+            return ''
+    #@nonl
+    #@-node:ekr.20090603073641.3852:getAllText
+    #@+node:ekr.20090603073641.3853:getInsertPoint
+    def getInsertPoint(self):
+
+        if self.check():
+            i = self.widget.cursorPosition()
+            return i
+        else:
+            return 0
+    #@-node:ekr.20090603073641.3853:getInsertPoint
+    #@+node:ekr.20090603073641.3854:getSelectionRange
+    def getSelectionRange(self,sort=True):
+
+        w = self.widget
+
+        if self.check():
+            if w.hasSelectedText():
+                i = w.selectionStart()
+                s = w.selectedText()
+                s = g.app.gui.toUnicode(s)
+                j = i + len(s)
+            else:
+                i = j = w.cursorPosition()
+            return i,j
+        else:
+            return 0,0
+    #@-node:ekr.20090603073641.3854:getSelectionRange
+    #@+node:ekr.20090603073641.3855:hasSelection
+    def hasSelection(self):
+
+        if self.check():
+            return self.widget.hasSelection()
+        else:
+            return False
+    #@-node:ekr.20090603073641.3855:hasSelection
+    #@+node:ekr.20090603073641.3856:see & seeInsertPoint
+    def see(self,i):
+        pass
+
+    def seeInsertPoint (self):
+        pass
+    #@-node:ekr.20090603073641.3856:see & seeInsertPoint
+    #@+node:ekr.20090603073641.3857:setAllText
+    def setAllText(self,s,insert=None):
+
+        if not self.check(): return
+
+        w = self.widget
+        i = g.choose(insert is None,0,insert)
+        w.setText(s)
+        if insert is not None:
+            self.setSelectionRange(i,i,insert=i)
+    #@-node:ekr.20090603073641.3857:setAllText
+    #@+node:ekr.20090603073641.3862:setFocus
+    def setFocus (self):
+
+        if self.check():
+            g.app.gui.set_focus(self.c,self.widget)
+    #@-node:ekr.20090603073641.3862:setFocus
+    #@+node:ekr.20090603073641.3858:setInsertPoint
+    def setInsertPoint(self,i):
+
+        if not self.check(): return
+
+        w = self.widget
+        s = w.text()
+        s = g.app.gui.toUnicode(s)
+        i = max(0,min(i,len(s)))
+        w.setCursorPosition(i)
+    #@-node:ekr.20090603073641.3858:setInsertPoint
+    #@+node:ekr.20090603073641.3859:setSelectionRangeHelper (leoQLineEdit)
+    def setSelectionRangeHelper(self,i,j,insert):
+
+        if not self.check(): return
+        w = self.widget
+        # g.trace(i,j,insert,w)
+        if i > j: i,j = j,i
+        s = w.text()
+        s = g.app.gui.toUnicode(s)
+        n = len(s)
+        i = max(0,min(i,n))
+        j = max(0,min(j,n))
+        insert = max(0,min(insert,n))
+        if i == j:
+            w.setCursorPosition(i)
+        else:
+            length = j-i
+            if insert < j:
+                w.setSelection(j,-length)
+            else:
+                w.setSelection(i,length)
+    #@nonl
+    #@-node:ekr.20090603073641.3859:setSelectionRangeHelper (leoQLineEdit)
+    #@-node:ekr.20090603073641.3851:Widget-specific overrides (leoQtHeadlineWidget)
+    #@-others
+#@nonl
 #@-node:ekr.20081121105001.592:class leoQtHeadlineWidget
 #@+node:ekr.20081121105001.594:class leoQtMinibuffer (leoQLineEditWidget)
 class leoQtMinibuffer (leoQLineEditWidget):
