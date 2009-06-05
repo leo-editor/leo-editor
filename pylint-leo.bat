@@ -2,6 +2,7 @@ echo off
 rem ekr pylint-leo.bat
 
 rem *** Most warnings are disabled in the .rc file.
+rem W0511 To do
 rem E0602 Undefined variable
 rem E1101 Instance of <class> has no x member
 
@@ -20,12 +21,12 @@ goto all
 :errors
 
 REM W0221 Arguments number differs from overridden method
+REM W0511 Todo
 echo qtGui.py
-call pylint.bat leo\plugins\qtGui.py         --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
+call pylint.bat leo\plugins\qtGui.py         --disable-msg=W0221,W0511 --rcfile=leo\test\pylint-leo-rc.txt
 
 echo baseNativeTree.py
-call pylint.bat leo\plugins\baseNativeTree.py            --rcfile=leo\test\pylint-leo-rc.txt
-
+call pylint.bat leo\plugins\baseNativeTree.py  --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 
@@ -65,7 +66,8 @@ echo leoGlobals.py
 call pylint.bat leo\core\leoGlobals.py       --rcfile=leo\test\pylint-leo-rc.txt
 
 echo leoGui.py
-call pylint.bat leo\core\leoGui.py           --rcfile=leo\test\pylint-leo-rc.txt
+rem W0511: to do
+call pylint.bat leo\core\leoGui.py           --disable-msg=W0511 --rcfile=leo\test\pylint-leo-rc.txt
 
 echo leoImport.py
 call pylint.bat leo\core\leoImport.py        --rcfile=leo\test\pylint-leo-rc.txt

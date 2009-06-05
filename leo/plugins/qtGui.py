@@ -1894,7 +1894,6 @@ class leoQtFrame (leoFrame.leoFrame):
         self.use_chapters      = c.config.getBool('use_chapters')
         self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
 
-        # xx todo
         f.top = DynamicWindow(c)
         g.app.gui.attachLeoIcon(f.top)
         f.top.setWindowTitle(self.title)
@@ -3717,14 +3716,16 @@ class leoQtMenu (leoMenu.leoMenu):
         if menu:
             menu.addSeparator()
     #@-node:ekr.20081121105001.363:add_separator
-    #@+node:ekr.20081121105001.364:delete
-    def delete (self,menu,realItemName):
+    #@+node:ekr.20081121105001.364:delete TODO
+    def delete (self,menu,realItemName='<no name>'):
 
         """Wrapper for the Tkinter delete menu method."""
 
+        # g.trace(menu)
+
         # if menu:
             # return menu.delete(realItemName)
-    #@-node:ekr.20081121105001.364:delete
+    #@-node:ekr.20081121105001.364:delete TODO
     #@+node:ekr.20081121105001.365:delete_range (leoQtMenu)
     def delete_range (self,menu,n1,n2):
 
@@ -3745,6 +3746,14 @@ class leoQtMenu (leoMenu.leoMenu):
         # if menu:
             # return menu.destroy()
     #@-node:ekr.20081121105001.366:destroy
+    #@+node:ekr.20090603123442.3785:index (leoQtMenu) TODO
+    def index (self,label):
+
+        '''Return the index of the menu with the given label.'''
+        # g.trace(label)
+
+        return 0 ###
+    #@-node:ekr.20090603123442.3785:index (leoQtMenu) TODO
     #@+node:ekr.20081121105001.367:insert
     def insert (self,menuName,position,label,command,underline=None):
 
@@ -3767,7 +3776,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         """Wrapper for the Tkinter insert_cascade menu method."""
 
-        g.trace(label,menu)
+        # g.trace(label,menu)
 
         menu.setTitle(label)
         menu.leo_label = label
@@ -3817,23 +3826,24 @@ class leoQtMenu (leoMenu.leoMenu):
 
         self.createMenusFromTables()
     #@-node:ekr.20081121105001.372:createMenuBar (Qtmenu)
-    #@+node:ekr.20081121105001.373:createOpenWithMenu
+    #@+node:ekr.20081121105001.373:createOpenWithMenu (QtMenu)
     def createOpenWithMenu(self,parent,label,index,amp_index):
 
-        '''Create a submenu.'''
+        '''Create the File:Open With submenu.
 
+        This is called from leoMenu.createOpenWithMenuFromTable.'''
+
+        trace = False and not g.unitTesting
         c = self.c ; leoFrame = c.frame
+        if trace: g.trace(parent,repr(label),repr(index),repr(amp_index))
 
-        g.trace()
+        menu = self.new_menu(parent,tearoff=False,label=label)
+            # Menu inherits from both QMenu and leoQtMenu.
+        if menu:
+            menu.insert_cascade(parent,index,label,menu,underline=amp_index)
 
-        # menu = qtMenuWrapper(c,leoFrame,parent)
-        # self.insert_cascade(parent,index,label,menu,underline=amp_index)
-
-        # menu = Tk.Menu(parent,tearoff=0)
-        # if menu:
-            # parent.insert_cascade(index,label=label,menu=menu,underline=amp_index)
-        # return menu
-    #@-node:ekr.20081121105001.373:createOpenWithMenu
+        return menu
+    #@-node:ekr.20081121105001.373:createOpenWithMenu (QtMenu)
     #@+node:ekr.20081121105001.374:disableMenu
     def disableMenu (self,menu,name):
 

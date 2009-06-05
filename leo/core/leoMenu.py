@@ -1511,10 +1511,12 @@ class leoMenu:
     If ext is not None, the temp file has the given extension.
     Otherwise, Leo computes an extension based on the @language directive in effect.'''
 
+        trace = False and not g.unitTesting
         c = self.c
         g.app.openWithTable = table # Override any previous table.
         # Delete the previous entry.
         parent = self.getMenu("File")
+        if trace: g.trace('parent',parent)
         if not parent:
             if not g.app.batchMode:
                 g.es('','createOpenWithMenuFromTable:','no File menu',color="red")
@@ -1530,9 +1532,16 @@ class leoMenu:
             try:
                 index = parent.index("Open With...")
                 parent.delete(index)
-            except: return
+            except:
+                if trace:
+                    g.trace('unexpected exception')
+                    g.es_exception()
+                return
         # Create the Open With menu.
         openWithMenu = self.createOpenWithMenu(parent,label,index,amp_index)
+        if not openWithMenu:
+            if trace: g.trace('openWithMenu returns None')
+            return
         self.setMenu("Open With...",openWithMenu)
         # Create the menu items in of the Open With menu.
         for entry in table:

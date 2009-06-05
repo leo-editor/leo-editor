@@ -6163,16 +6163,18 @@ class leoTkinterMenu (leoMenu.leoMenu):
         top.config(menu=topMenu) # Display the menu.
     #@nonl
     #@-node:ekr.20081121110412.428:createMenuBar (Tkmenu)
-    #@+node:ekr.20081121110412.429:createOpenWithMenu
+    #@+node:ekr.20081121110412.429:createOpenWithMenu (Tkmenu)
     def createOpenWithMenu(self,parent,label,index,amp_index):
 
         '''Create a submenu.'''
+
+        # g.trace(g.callers(5))
 
         menu = Tk.Menu(parent,tearoff=0)
         if menu:
             parent.insert_cascade(index,label=label,menu=menu,underline=amp_index)
         return menu
-    #@-node:ekr.20081121110412.429:createOpenWithMenu
+    #@-node:ekr.20081121110412.429:createOpenWithMenu (Tkmenu)
     #@+node:ekr.20081121110412.430:disableMenu
     def disableMenu (self,menu,name):
 
@@ -7493,7 +7495,7 @@ class leoTkinterTree (leoFrame.leoTree):
         return h,w
     #@-node:ekr.20081121110412.485:drawUserIcon
     #@-node:ekr.20081121110412.484:drawUserIcons & helper
-    #@+node:ekr.20081121110412.489:drawTopTree
+    #@+node:ekr.20081121110412.489:drawTopTree (tk)
     def drawTopTree (self):
 
         """Draws the top-level tree, taking into account the hoist state."""
@@ -7547,7 +7549,7 @@ class leoTkinterTree (leoFrame.leoTree):
         canvas.lift("plusBox")
         canvas.lift("userIcon")
         self.redrawing = False
-    #@-node:ekr.20081121110412.489:drawTopTree
+    #@-node:ekr.20081121110412.489:drawTopTree (tk)
     #@+node:ekr.20081121110412.490:drawTree
     def drawTree(self,p,x,y,h,level,hoistFlag=False):
 

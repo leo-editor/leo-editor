@@ -2861,7 +2861,8 @@ class position (object):
 
         """Move a position to the position of the previous visible node."""
 
-        p = self ; limit,limitIsVisible = c.visLimit() ; trace = False
+        trace = False and not g.unitTesting
+        p = self ; limit,limitIsVisible = c.visLimit()
 
         if trace: g.trace('limit',limit,'limitIsVisible',limitIsVisible)
 
@@ -2874,7 +2875,7 @@ class position (object):
                 elif limit.isAncestorOf(p):
                     return False,None
                 else:
-                    if trace: g.trace('outside limit tree')
+                    if trace: g.trace('outside limit tree',limit,p)
                     return True,None
             else:
                 return False,None

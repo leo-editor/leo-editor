@@ -4664,10 +4664,10 @@ class baseCommands (object):
 
         """Simulate the left Arrow Key in folder of Windows Explorer."""
 
+        trace = False and not g.unitTesting
         c = self ; p = c.p
-
         if p.hasChildren() and p.isExpanded():
-            # g.trace('contract',p.h)
+            if trace: g.trace('contract',p.h)
             c.contractNode()
         elif p.hasParent() and p.parent().isVisible(c):
             redraw = False
@@ -4676,7 +4676,7 @@ class baseCommands (object):
                     if child.isExpanded():
                         child.contract()
                         redraw = True
-            # g.trace('goto parent',p.h)
+            if trace: g.trace('goto parent',p.h)
             c.goToParent()
             if redraw: c.redraw()
 
@@ -5396,7 +5396,7 @@ class baseCommands (object):
         g.es(tag,'=',sparseMove,color='blue')
     #@-node:ekr.20071213185710:c.toggleSparseMove
     #@-node:ekr.20031218072017.1766:Move... (Commands)
-    #@+node:ekr.20031218072017.2913:Goto
+    #@+node:ekr.20031218072017.2913:Goto (Commands)
     #@+node:ekr.20031218072017.1628:goNextVisitedNode
     def goNextVisitedNode (self,event=None):
 
@@ -5624,6 +5624,8 @@ class baseCommands (object):
 
         c = self ; p = c.p
 
+        # g.trace(p.parent())
+
         c.treeSelectHelper(p and p.parent())
     #@-node:ekr.20031218072017.2920:goToParent
     #@+node:ekr.20031218072017.2921:goToPrevSibling
@@ -5713,7 +5715,7 @@ class baseCommands (object):
         c.treeFocusHelper()
     #@-node:ekr.20070226113916: treeSelectHelper
     #@-node:ekr.20070417112650:utils
-    #@-node:ekr.20031218072017.2913:Goto
+    #@-node:ekr.20031218072017.2913:Goto (Commands)
     #@-node:ekr.20031218072017.2894:Outline menu...
     #@+node:ekr.20031218072017.2931:Window Menu
     #@+node:ekr.20031218072017.2092:openCompareWindow

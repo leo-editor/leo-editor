@@ -17411,6 +17411,664 @@ if not modeFlag:
 #@-node:ekr.20061031131434.92:<< remove previous conflicting definitions from bunchList >>
 #@-node:ekr.20061031131434.89:bindKey
 #@-node:ekr.20090601083544.6065:Reversed messages about redefined keys
+#@+node:ekr.20090602183337.6046:Fixed hoist problems
+@nocolor-node
+
+Headline selection not redrawn properly after hoist.
+
+The problem was that position2item and item2position in the qt gui plugin fail
+spectacularly when a hoist is in effect. The solution was to remember positions.
+This works **provided** the tree is not drawn incrementally.
+#@nonl
+#@+node:ekr.20090604071037.6058:Report
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/382221
+
+Repro:
+
+- alt-x create-chapter
+- Chapter name: foo
+- Ctrl+I:
+
+ error: *** no item for <pos 180583916 childIndex: 1 lvl: 3 [3] NewHeadline>
+ runMainLoop,eventFilter,masterKeyHandler,masterCommand,doCommand,insertHeadline,redrawAndEdit,editLabel
+
+Ctrl+R:
+
+ http://pastebin.com/f7dca6714
+
+Etc etc. Probably completely broken.
+
+Switch away to main, come back: alt+arrow does not navigate around
+#@nonl
+#@-node:ekr.20090604071037.6058:Report
+#@+node:ekr.20040803072955.128:leoTree.select & helpers
+tree_select_lockout = False
+
+def select (self,p,scroll=True):
+
+    '''Select a node.
+    Never redraws outline, but may change coloring of individual headlines.
+    The scroll argument is used by tk to suppress scrolling while dragging.'''
+
+    if g.app.killed or self.tree_select_lockout: return None
+
+    try:
+        c = self.c ; old_p = c.p
+        val = 'break'
+        self.tree_select_lockout = True
+        c.frame.tree.beforeSelectHint(p,old_p)
+        val = self.selectHelper(p,scroll=scroll)
+    finally:
+        self.tree_select_lockout = False
+        c.frame.tree.afterSelectHint(p,old_p)
+
+    return val  # Don't put a return in a finally clause.
+#@+node:ekr.20070423101911:selectHelper
+#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+
+def selectHelper (self,p,scroll):
+
+    trace = False and not g.unitTesting
+    verbose = True
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.p
+
+    if not p:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    if trace:
+        if verbose: g.trace(
+            '\nold:',old_p and old_p.h,'\nnew:',p and p.h)
+        else: g.trace(p and p.h)
+
+    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        if old_p:
+            << unselect the old node >>
+
+    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        << select the new node >>
+        if p and p != old_p: # Suppress duplicate call.
+            try: # may fail during initialization.
+                # p is NOT c.p here!
+                if 0: # Interferes with new colorizer.
+                    self.canvas.update_idletasks()
+                    self.scrollTo(p)
+                if scroll and g.app.gui.guiName() == 'tkinter':
+                    def scrollCallback(self=self,p=p):
+                        self.scrollTo(p)
+                    self.canvas.after(100,scrollCallback)
+            except Exception: pass
+        c.nodeHistory.update(p) # Remember this position.
+    c.setCurrentPosition(p)
+    << set the current node >>
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    return 'break' # Supresses unwanted selection.
+#@+node:ekr.20040803072955.129:<< unselect the old node >>
+# Remember the position of the scrollbar before making any changes.
+if body:
+    yview = body.getYScrollPosition()
+    insertSpot = c.frame.body.getInsertPoint()
+else:
+    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+    yview,insertSpot = None,0
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+
+if old_p:
+    old_p.v.t.scrollBarSpot = yview
+    old_p.v.t.insertSpot = insertSpot
+#@-node:ekr.20040803072955.129:<< unselect the old node >>
+#@+node:ekr.20040803072955.130:<< select the new node >>
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.h
+frame.setWrap(p)
+self.setBodyTextAfterSelect(p,old_p)
+#@-node:ekr.20040803072955.130:<< select the new node >>
+#@+node:ekr.20040803072955.133:<< set the current node >>
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+if self.use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
+
+if self.stayInTree:
+    c.treeWantsFocus()
+else:
+    c.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20040803072955.133:<< set the current node >>
+#@-node:ekr.20070423101911:selectHelper
+#@+node:ekr.20090206153445.1:setBodyTextAfterSelect
+def setBodyTextAfterSelect (self,p,old_p):
+
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = g.toUnicode(p.v.t._bodyString,"utf-8")
+    old_s = w.getAllText()
+
+    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        pass
+    else:
+        # This destroys all color tags, so do a full recolor.
+        colorizer = c.frame.body.colorizer
+        if hasattr(colorizer,'setHighlighter'):
+            colorizer.setHighlighter(p)
+        w.setAllText(s)
+        self.frame.body.recolor(p)
+
+    if p.v and p.v.t.scrollBarSpot != None:
+        first,last = p.v.t.scrollBarSpot
+        w.setYScrollPosition(first)
+
+    if p.v and p.v.t.insertSpot != None:
+        spot = p.v.t.insertSpot
+        w.setInsertPoint(spot)
+        w.see(spot)
+    else:
+        w.setInsertPoint(0)
+#@nonl
+#@-node:ekr.20090206153445.1:setBodyTextAfterSelect
+#@-node:ekr.20040803072955.128:leoTree.select & helpers
+#@+node:ekr.20031218072017.2028:Hoist & dehoist
+def dehoist (self,event=None):
+
+    '''Undo a previous hoist of an outline.'''
+
+    c = self ; p = c.p
+    if p and c.canDehoist():
+        bunch = c.hoistStack.pop()
+        if bunch.expanded: p.expand()
+        else:              p.contract()
+        c.redraw()
+
+        c.frame.clearStatusLine()
+        if c.hoistStack:
+            bunch = c.hoistStack[-1]
+            c.frame.putStatusLine("Hoist: " + bunch.p.h)
+        else:
+            c.frame.putStatusLine("No hoist")
+        c.undoer.afterDehoist(p,'DeHoist')
+        g.doHook('hoist-changed',c=c)
+
+def hoist (self,event=None):
+
+    '''Make only the selected outline visible.'''
+
+    c = self ; p = c.p
+    if p and c.canHoist():
+        # Remember the expansion state.
+        bunch = g.Bunch(p=p.copy(),expanded=p.isExpanded())
+        c.hoistStack.append(bunch)
+        p.expand()
+        c.redraw(p)
+
+        c.frame.clearStatusLine()
+        c.frame.putStatusLine("Hoist: " + p.h)
+        c.undoer.afterHoist(p,'Hoist')
+        g.doHook('hoist-changed',c=c)
+#@-node:ekr.20031218072017.2028:Hoist & dehoist
+#@+node:ekr.20031218072017.2913:Goto (Commands)
+#@+node:ekr.20031218072017.1628:goNextVisitedNode
+def goNextVisitedNode (self,event=None):
+
+    '''Select the next visited node.'''
+
+    c = self
+
+    p = c.nodeHistory.goNext()
+
+    if p:
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+
+#@-node:ekr.20031218072017.1628:goNextVisitedNode
+#@+node:ekr.20031218072017.1627:goPrevVisitedNode
+def goPrevVisitedNode (self,event=None):
+
+    '''Select the previously visited node.'''
+
+    c = self
+
+    p = c.nodeHistory.goPrev()
+
+    if p:
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+#@-node:ekr.20031218072017.1627:goPrevVisitedNode
+#@+node:ekr.20031218072017.2914:goToFirstNode
+def goToFirstNode (self,event=None):
+
+    '''Select the first node of the entire outline.'''
+
+    c = self ; p = c.rootPosition()
+
+    c.treeSelectHelper(p)
+#@-node:ekr.20031218072017.2914:goToFirstNode
+#@+node:ekr.20051012092453:goToFirstSibling
+def goToFirstSibling (self,event=None):
+
+    '''Select the first sibling of the selected node.'''
+
+    c = self ; p = c.p
+
+    if p.hasBack():
+        while p.hasBack():
+            p.moveToBack()
+
+    c.treeSelectHelper(p)
+#@-node:ekr.20051012092453:goToFirstSibling
+#@+node:ekr.20070615070925:goToFirstVisibleNode
+def goToFirstVisibleNode (self,event=None):
+
+    '''Select the first visible node of the selected chapter or hoist.'''
+
+    c = self
+
+    p = c.firstVisible()
+    if p:
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+
+    c.treeSelectHelper(p)
+#@-node:ekr.20070615070925:goToFirstVisibleNode
+#@+node:ekr.20031218072017.2915:goToLastNode
+def goToLastNode (self,event=None):
+
+    '''Select the last node in the entire tree.'''
+
+    c = self ; p = c.rootPosition()
+    while p and p.hasThreadNext():
+        p.moveToThreadNext()
+
+    c.treeSelectHelper(p)
+#@-node:ekr.20031218072017.2915:goToLastNode
+#@+node:ekr.20051012092847.1:goToLastSibling
+def goToLastSibling (self,event=None):
+
+    '''Select the last sibling of the selected node.'''
+
+    c = self ; p = c.p
+
+    if p.hasNext():
+        while p.hasNext():
+            p.moveToNext()
+
+    c.treeSelectHelper(p)
+#@-node:ekr.20051012092847.1:goToLastSibling
+#@+node:ekr.20050711153537:c.goToLastVisibleNode
+def goToLastVisibleNode (self,event=None):
+
+    '''Select the last visible node of selected chapter or hoist.'''
+
+    c = self
+
+    p = c.lastVisible()
+    if p:
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+
+    c.treeSelectHelper(p)
+#@-node:ekr.20050711153537:c.goToLastVisibleNode
+#@+node:ekr.20031218072017.2916:goToNextClone
+def goToNextClone (self,event=None):
+
+    '''Select the next node that is a clone of the selected node.'''
+
+    c = self ; cc = c.chapterController ; p = c.p
+    if not p: return
+    if not p.isCloned():
+        g.es('not a clone:',p.h,color='blue')
+        return
+
+    t = p.v.t
+    p.moveToThreadNext()
+    wrapped = False
+    while 1:
+        if p and p.v.t == t:
+            break
+        elif p:
+            p.moveToThreadNext()
+        elif wrapped:
+            break
+        else:
+            wrapped = True
+            p = c.rootPosition()
+
+    if not p: g.es("done",color="blue")
+
+    if cc:
+        name = cc.findChapterNameForPosition(p)
+        cc.selectChapterByName(name)
+
+    c.selectPosition(p)
+    c.redraw_after_select(p)
+#@nonl
+#@-node:ekr.20031218072017.2916:goToNextClone
+#@+node:ekr.20071213123942:findNextClone
+def findNextClone (self,event=None):
+
+    '''Select the next cloned node.'''
+
+    c = self ; p = c.p ; flag = False
+    if not p: return
+
+    if p.isCloned():
+        p.moveToThreadNext()
+
+    while p:
+        if p.isCloned():
+            flag = True ; break
+        else:
+            p.moveToThreadNext()
+
+    if flag:
+        cc = c.chapterController
+        if cc:
+            name = cc.findChapterNameForPosition(p)
+            cc.selectChapterByName(name)
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+    else:
+        g.es('no more clones',color='blue')
+#@-node:ekr.20071213123942:findNextClone
+#@+node:ekr.20031218072017.2917:goToNextDirtyHeadline
+def goToNextDirtyHeadline (self,event=None):
+
+    '''Select the node that is marked as changed.'''
+
+    c = self ; p = c.p
+    if not p: return
+
+    p.moveToThreadNext()
+    wrapped = False
+    while 1:
+        if p and p.isDirty():
+            break
+        elif p:
+            p.moveToThreadNext()
+        elif wrapped:
+            break
+        else:
+            wrapped = True
+            p = c.rootPosition()
+
+    if not p: g.es("done",color="blue")
+    c.treeSelectHelper(p) # Sets focus.
+#@-node:ekr.20031218072017.2917:goToNextDirtyHeadline
+#@+node:ekr.20031218072017.2918:goToNextMarkedHeadline
+def goToNextMarkedHeadline (self,event=None):
+
+    '''Select the next marked node.'''
+
+    c = self ; p = c.p
+    if not p: return
+
+    p.moveToThreadNext()
+    wrapped = False
+    while 1:
+        if p and p.isMarked():
+            break
+        elif p:
+            p.moveToThreadNext()
+        elif wrapped:
+            break
+        else:
+            wrapped = True
+            p = c.rootPosition()
+
+    if not p: g.es("done",color="blue")
+    c.treeSelectHelper(p) # Sets focus.
+#@-node:ekr.20031218072017.2918:goToNextMarkedHeadline
+#@+node:ekr.20031218072017.2919:goToNextSibling
+def goToNextSibling (self,event=None):
+
+    '''Select the next sibling of the selected node.'''
+
+    c = self ; p = c.p
+
+    c.treeSelectHelper(p and p.next())
+#@-node:ekr.20031218072017.2919:goToNextSibling
+#@+node:ekr.20031218072017.2920:goToParent
+def goToParent (self,event=None):
+
+    '''Select the parent of the selected node.'''
+
+    c = self ; p = c.p
+
+    # g.trace(p.parent())
+
+    c.treeSelectHelper(p and p.parent())
+#@-node:ekr.20031218072017.2920:goToParent
+#@+node:ekr.20031218072017.2921:goToPrevSibling
+def goToPrevSibling (self,event=None):
+
+    '''Select the previous sibling of the selected node.'''
+
+    c = self ; p = c.p
+
+    c.treeSelectHelper(p and p.back())
+#@-node:ekr.20031218072017.2921:goToPrevSibling
+#@+node:ekr.20031218072017.2993:selectThreadBack
+def selectThreadBack (self,event=None):
+
+    '''Select the node preceding the selected node in outline order.'''
+
+    c = self ; p = c.p
+    if not p: return
+
+    p.moveToThreadBack()
+
+    c.treeSelectHelper(p)
+#@-node:ekr.20031218072017.2993:selectThreadBack
+#@+node:ekr.20031218072017.2994:selectThreadNext
+def selectThreadNext (self,event=None):
+
+    '''Select the node following the selected node in outline order.'''
+
+    c = self ; p = c.p
+    if not p: return
+
+    p.moveToThreadNext()
+
+    c.treeSelectHelper(p)
+#@nonl
+#@-node:ekr.20031218072017.2994:selectThreadNext
+#@+node:ekr.20031218072017.2995:selectVisBack
+# This has an up arrow for a control key.
+
+def selectVisBack (self,event=None):
+
+    '''Select the visible node preceding the presently selected node.'''
+
+    c = self ; p = c.p
+    if not p: return
+    if not c.canSelectVisBack(): return
+
+    p.moveToVisBack(c)
+    c.treeSelectHelper(p)
+#@-node:ekr.20031218072017.2995:selectVisBack
+#@+node:ekr.20031218072017.2996:selectVisNext
+def selectVisNext (self,event=None):
+
+    '''Select the visible node following the presently selected node.'''
+
+    c = self ; p = c.p
+    if not p: return
+    if not c.canSelectVisNext(): return
+
+    p.moveToVisNext(c)
+    c.treeSelectHelper(p)
+#@-node:ekr.20031218072017.2996:selectVisNext
+#@+node:ekr.20070417112650:utils
+#@+node:ekr.20070226121510: treeFocusHelper
+def treeFocusHelper (self):
+
+    c = self
+
+    if c.config.getBool('stayInTreeAfterSelect'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+#@nonl
+#@-node:ekr.20070226121510: treeFocusHelper
+#@+node:ekr.20070226113916: treeSelectHelper
+def treeSelectHelper (self,p):
+
+    c = self
+
+    if not p: p = c.p
+
+    if p:
+        # Do not call expandAllAncestors here.
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+
+    c.treeFocusHelper()
+#@-node:ekr.20070226113916: treeSelectHelper
+#@-node:ekr.20070417112650:utils
+#@-node:ekr.20031218072017.2913:Goto (Commands)
+#@+node:ekr.20031218072017.2995:selectVisBack
+# This has an up arrow for a control key.
+
+def selectVisBack (self,event=None):
+
+    '''Select the visible node preceding the presently selected node.'''
+
+    c = self ; p = c.p
+    if not p: return
+    if not c.canSelectVisBack(): return
+
+    p.moveToVisBack(c)
+    c.treeSelectHelper(p)
+#@-node:ekr.20031218072017.2995:selectVisBack
+#@+node:ekr.20080416161551.210:p.moveToVisBack
+def moveToVisBack (self,c):
+
+    """Move a position to the position of the previous visible node."""
+
+    trace = False and not g.unitTesting
+    p = self ; limit,limitIsVisible = c.visLimit()
+
+    if trace: g.trace('limit',limit,'limitIsVisible',limitIsVisible)
+
+    def checkLimit (p):
+        '''Return done, return-val'''
+        if limit:
+            if limit == p:
+                if trace: g.trace('at limit',p)
+                return True,g.choose(limitIsVisible and p.isVisible(c),p,None)
+            elif limit.isAncestorOf(p):
+                return False,None
+            else:
+                if trace: g.trace('outside limit tree',limit,p)
+                return True,None
+        else:
+            return False,None
+
+    while p:
+        # Short-circuit if possible.
+        back = p.back()
+        if trace: g.trace(
+            'back',back,'hasChildren',bool(back and back.hasChildren()),
+            'isExpanded',bool(back and back.isExpanded()))
+        if back and (not back.hasChildren() or not back.isExpanded()):
+            p.moveToBack()
+        else:
+            p.moveToThreadBack()
+        if p:
+            if trace: g.trace('*p',p.h)
+            done,val = checkLimit(p)
+            if done:
+                if trace: g.trace('done')
+                return val
+            if p.isVisible(c):
+                if trace: g.trace('isVisible')
+                return p
+    else:
+        # assert not p.
+        return p
+#@-node:ekr.20080416161551.210:p.moveToVisBack
+#@+node:ekr.20040930064232:contractNodeOrGoToParent
+def contractNodeOrGoToParent (self,event=None):
+
+    """Simulate the left Arrow Key in folder of Windows Explorer."""
+
+    trace = False and not g.unitTesting
+    c = self ; p = c.p
+    if p.hasChildren() and p.isExpanded():
+        if trace: g.trace('contract',p.h)
+        c.contractNode()
+    elif p.hasParent() and p.parent().isVisible(c):
+        redraw = False
+        if self.sparse_goto_parent:
+            for child in p.parent().children_iter():
+                if child.isExpanded():
+                    child.contract()
+                    redraw = True
+        if trace: g.trace('goto parent',p.h)
+        c.goToParent()
+        if redraw: c.redraw()
+
+    c.treeFocusHelper()
+#@nonl
+#@-node:ekr.20040930064232:contractNodeOrGoToParent
+#@+node:ekr.20031218072017.2901:contractNode
+def contractNode (self,event=None):
+
+    '''Contract the presently selected node.'''
+
+    c = self ; p = c.p
+
+    p.contract()
+    c.redraw_after_contract(p=p,setFocus=True)
+#@-node:ekr.20031218072017.2901:contractNode
+#@+node:ekr.20031218072017.2920:goToParent
+def goToParent (self,event=None):
+
+    '''Select the parent of the selected node.'''
+
+    c = self ; p = c.p
+
+    # g.trace(p.parent())
+
+    c.treeSelectHelper(p and p.parent())
+#@-node:ekr.20031218072017.2920:goToParent
+#@+node:ekr.20070226113916: treeSelectHelper
+def treeSelectHelper (self,p):
+
+    c = self
+
+    if not p: p = c.p
+
+    if p:
+        # Do not call expandAllAncestors here.
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+
+    c.treeFocusHelper()
+#@-node:ekr.20070226113916: treeSelectHelper
+#@-node:ekr.20090602183337.6046:Fixed hoist problems
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
