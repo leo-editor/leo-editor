@@ -1075,6 +1075,11 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.oops()
 
     #@-node:ekr.20090125063447.13:nthChildItem
+    #@+node:ekr.20090605075414.3821:closeEditorHelper
+    def closeEditorHelper (self,e,item):
+
+        self.oops()
+    #@-node:ekr.20090605075414.3821:closeEditorHelper
     #@+node:ekr.20090125063447.11:childItems
     def childItems (self,parent_item):
 
@@ -1119,6 +1124,12 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         self.oops()
     #@-node:ekr.20090126120517.23:getParentItem
+    #@+node:ekr.20090605075414.3823:getSelectedItems
+    def getSelectedItems(self):
+
+        self.oops()
+    #@nonl
+    #@-node:ekr.20090605075414.3823:getSelectedItems
     #@+node:ekr.20090603123442.3784:getWrapper
     def getWrapper (self,e,item):
 

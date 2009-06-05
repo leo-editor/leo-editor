@@ -9,13 +9,16 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
+<v t="ekr.20090605083941.1804" a="E"><vh>@chapter foo</vh>
+<v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
+</v>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
-<v t="ekr.20070603190944"><vh>@chapter xyz</vh>
+<v t="ekr.20070603190944" a="E"><vh>@chapter xyz</vh>
 <v t="ekr.20070603190944.1"><vh>xyz node 1</vh></v>
 <v t="ekr.20071206070207"></v>
 </v>
@@ -2780,5 +2783,7 @@ def bookmark(event):
     p = c.currentPosition()
     bookmarks.append(p.gnx)
     g.es('bookmarked') </t>
+<t tx="ekr.20090605083941.1804"></t>
+<t tx="ekr.20090605083941.1805"></t>
 </tnodes>
 </leo_file>

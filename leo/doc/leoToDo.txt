@@ -2,123 +2,9 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
-#@+node:ekr.20090525113804.5776:Before b2 3 (qt) + 3
+#@+node:ekr.20090525113804.5776:Before b2 3 (qt) + 2
 # Only high-priority bugs must be fixed for b2.
 #@nonl
-#@+node:ekr.20090324100430.1:Deleting @chapter node doesn't work
-@nocolor-node
-
-It's possible that the recent hoist fix will fix this.
-
-_unlink: can not happen: bad child index: 4, len(children): 2
-_unlink: parent_v <vnode 82128560:'Completed 3-day bugs'> p.v <vnode 82152112:'@chapter problem with qt plugin'>
-_unlink: ** callsers: masterKeyHandler,masterCommand,doCommand,cutOutline,deleteOutline,removeChapterByName,deleteChapterNode,doDelete
-exception executing command
-Traceback (most recent call last):
-
-  File "C:\leo.repo\trunk\leo\core\leoCommands.py", line 358, in doCommand
-    val = command(event)
-
-  File "C:\leo.repo\trunk\leo\core\leoCommands.py", line 5641, in selectVisBack
-    if not c.canSelectVisBack(): return
-
-  File "C:\leo.repo\trunk\leo\core\leoCommands.py", line 6835, in canSelectVisBack
-    return p.visBack(c)
-
-  File "C:\leo.repo\trunk\leo\core\leoNodes.py", line 1467, in getVisBack
-    def getVisBack (self,c): return self.copy().moveToVisBack(c)
-
-  File "C:\leo.repo\trunk\leo\core\leoNodes.py", line 2857, in moveToVisBack
-    p.moveToThreadBack()
-
-  File "C:\leo.repo\trunk\leo\core\leoNodes.py", line 2796, in moveToThreadBack
-    p.moveToLastNode()
-
-  File "C:\leo.repo\trunk\leo\core\leoNodes.py", line 2720, in moveToLastNode
-    while p.hasChildren():
-
-  File "C:\leo.repo\trunk\leo\core\leoNodes.py", line 1440, in hasChildren
-    return len(p.v.t.children) > 0
-
-AttributeError: 'NoneType' object has no attribute 't'
-
-wrote recent file: C:\Documents and Settings\HP_Administrator\My Documents\Edward\.leo\.leoRecentFiles.txt
-C:\leo.repo\trunk>
-#@nonl
-#@+node:ekr.20031218072017.1193:c.deleteOutline
-def deleteOutline (self,event=None,op_name="Delete Node"):
-
-    """Deletes the selected outline."""
-
-    c = self ; cc = c.chapterController ; u = c.undoer
-    p = c.p
-    if not p: return
-
-    c.endEditing() # Make sure we capture the headline for Undo.
-
-    if p.hasVisBack(c): newNode = p.visBack(c)
-    else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
-    if not newNode: return
-
-    if cc: # Special cases for @chapter and @chapters nodes.
-        chapter = '@chapter ' ; chapters = '@chapters ' 
-        h = p.h
-        if h.startswith(chapters):
-            if p.hasChildren():
-                return cc.error('Can not delete @chapters node with children.')
-        elif h.startswith(chapter):
-            name = h[len(chapter):].strip()
-            if name:
-                # Bug fix: 2009/3/23: Make sure the chapter exists!
-                # This might be an @chapter node outside of @chapters tree.
-                theChapter = cc.chaptersDict.get(name)
-                if theChapter:
-                    return cc.removeChapterByName(name)
-
-    undoData = u.beforeDeleteNode(p)
-    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-    p.doDelete(newNode)
-    c.setChanged(True)
-    u.afterDeleteNode(newNode,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
-    c.redraw(newNode)
-
-    c.validateOutline()
-#@-node:ekr.20031218072017.1193:c.deleteOutline
-#@+node:ekr.20090110073010.1:c.redraw
-def redraw (self,p=None,setFocus=False):
-    '''Redraw the screen immediately.'''
-
-    c = self
-    if not p: p = c.p or c.rootPosition()
-
-    c.expandAllAncestors(p)
-    c.frame.tree.redraw(p)
-    c.selectPosition(p)
-
-    if setFocus: c.treeFocusHelper()
-
-# Compatibility with old scripts
-force_redraw = redraw
-redraw_now = redraw
-#@-node:ekr.20090110073010.1:c.redraw
-#@+node:ekr.20070606075434:cc.removeChapterByName
-def removeChapterByName (self,name):
-
-    cc = self ; c = cc.c ; tt = cc.tt
-
-    theChapter = cc.chaptersDict.get(name)
-    if not theChapter: return
-
-    savedRoot = theChapter.root
-    bunch = cc.beforeRemoveChapter(c.p,name,savedRoot)
-    cc.deleteChapterNode(name)
-    del cc.chaptersDict[name] # Do this after calling deleteChapterNode.
-    if tt:tt.destroyTab(name)
-    cc.selectChapterByName('main')
-    cc.afterRemoveChapter(bunch,c.p)
-    c.redraw()
-#@-node:ekr.20070606075434:cc.removeChapterByName
-#@-node:ekr.20090324100430.1:Deleting @chapter node doesn't work
 #@+node:ekr.20090602183337.6045:Fix rst import annoyance
 @nocolor-node
 
@@ -236,7 +122,7 @@ else:
 #@-node:ekr.20031218072017.4116:createOpenWithMenuFromTable & helper
 #@-node:ekr.20090603131419.6428:Create qt open-with menu
 #@-node:ekr.20090430092048.4:Fix all qt bugs
-#@-node:ekr.20090525113804.5776:Before b2 3 (qt) + 3
+#@-node:ekr.20090525113804.5776:Before b2 3 (qt) + 2
 #@+node:ekr.20090430092048.7:Before 4.6 final
 #@+node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
 @nocolor-node
