@@ -31,6 +31,7 @@ import pickle
 import sys
 import types
 import zipfile
+import string
 # import re
 
 try:
@@ -1042,13 +1043,18 @@ class baseFileCommands:
     #@+node:ekr.20090525144314.6526:cleanSaxInputString & test
     def cleanSaxInputString(self,s):
 
-        result = []
+        from string import maketrans
 
-        for ch in s:
-            if ord(ch) >= 32 or ch in ('\t','\r','\n'):
-                result.append(ch)
+        badchars = [chr(ch) for ch in range(32)]
+        badchars.remove('\t')
+        badchars.remove('\r')
+        badchars.remove('\n')
 
-        return ''.join(result)
+        flatten = ''.join(badchars)
+
+        transtable = maketrans(flatten, ' ' * len(flatten))
+
+        return s.translate(transtable)
 
     # for i in range(32): print i,repr(chr(i))
     #@+node:ekr.20090525144314.6527:@test cleanSaxInputString
@@ -1058,7 +1064,7 @@ class baseFileCommands:
 
         s = 'test%cthis' % 27
 
-        assert c.fileCommands.cleanSaxInputString(s) == 'testthis'
+        assert c.fileCommands.cleanSaxInputString(s) == 'test this'
     #@-node:ekr.20090525144314.6527:@test cleanSaxInputString
     #@-node:ekr.20090525144314.6526:cleanSaxInputString & test
     #@+node:ekr.20060919110638.4:createSaxVnodes & helpers
