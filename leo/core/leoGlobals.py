@@ -6974,8 +6974,8 @@ def tree_at_position(p):
 def create_tree_at_position(p, tree):
     h,b,gnx,chi = tree
 
-    # special case: h is None => do not manipulate the root node, just add children
-    if h is not None:
+    # special case: b is None => do not manipulate the root node, just add children
+    if b is not None:
         p.h = h
         p.b = b
 

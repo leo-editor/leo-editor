@@ -26,6 +26,8 @@ import os
 import sys
 import time
 import hashlib
+import cPickle as pickle
+
 #@-node:ekr.20041005105605.2:<< imports >>
 #@nl
 
@@ -470,6 +472,7 @@ class atFile:
             return False
         #@-node:ekr.20041005105605.22:<< set fileName >>
         #@nl
+
         at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
         if at.errors: return False
         fileName = at.openFileForReading(fileName,fromString=fromString)
@@ -479,6 +482,19 @@ class atFile:
             return False
         if not g.unitTesting:
             g.es("reading:",root.h)
+
+        fileContent = open(fileName, "rb").read()
+        cachefile = self._contentHashFile(root, fileContent)
+
+        if cachefile in c.db:
+            g.trace("Generate from cache:", cachefile)
+            tree = c.db[cachefile]
+            import pprint
+            #pprint.pprint(tree)
+            g.create_tree_at_position(root, tree)
+            return
+
+
         root.clearVisitedInTree()
         at.scanAllDirectives(root,importing=at.importing,reading=True)
         at.readOpenFile(root,at.inputFile,fileName)
@@ -514,22 +530,22 @@ class atFile:
         #@nl
 
         # write out the cache version
-        self.writeCachedTree(root, fileName)
+        self.writeCachedTree(root, cachefile)
 
         return at.errors == 0
     #@-node:ekr.20041005105605.21:read (atFile)
     #@+node:ville.20090606131405.6362:writeCachedTree (atFile)
-    def writeCachedTree(self, pos, fileContent):
+    def writeCachedTree(self, pos, cachefile):
         c = self.c
 
-        #safeguard - do not write if cloned
+        #safeguard - do not write cache if cloned
 
         for po in pos.self_and_subtree_iter():
             if po.isCloned():
                 g.trace('has clones, no cache:',pos.h)
                 return False
 
-        cachefile = self._contentHashFile(pos, fileContent)
+        #cachefile = self._contentHashFile(pos, fileContent)
         if cachefile in c.db:
             g.es('Already cached')
         else:
