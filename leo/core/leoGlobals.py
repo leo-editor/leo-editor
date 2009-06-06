@@ -6965,6 +6965,23 @@ def init_zodb (pathToZodbStorage,verbose=True):
 #@nonl
 #@-node:ekr.20060913090832.1:g.init_zodb
 #@-node:ekr.20060913091602:ZODB support
+#@+node:ville.20090606103927.6472:tree operations (tree_at_position...)
+# manipulation of whole trees as recursive objects """
+
+def tree_at_position(p):
+    return [p.h, p.b, p.gnx, [tree_at_position(po) for po in p.children_iter()]]
+
+def create_tree_at_position(p, tree):
+    h,b,gnx,chi = tree
+
+    p.h = h
+    p.b = b
+    for el in chi:
+        chpos = p.insertAsLastChild().copy()
+        # recurse
+        create_tree_at_position(chpos, el)
+
+#@-node:ville.20090606103927.6472:tree operations (tree_at_position...)
 #@-others
 #@-node:ekr.20031218072017.3093:@thin leoGlobals.py
 #@-leo

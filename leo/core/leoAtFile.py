@@ -25,6 +25,7 @@ import os
 # import string
 import sys
 import time
+import hashlib
 #@-node:ekr.20041005105605.2:<< imports >>
 #@nl
 
@@ -511,8 +512,23 @@ class atFile:
                 delattr(t,"tempBodyString")
         #@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
         #@nl
+
+        # write out the cache version
+        self.writeCachedTree(root, fileName)
+
         return at.errors == 0
     #@-node:ekr.20041005105605.21:read (atFile)
+    #@+node:ville.20090606131405.6362:writeCachedTree (atFile)
+    def writeCachedTree(self, pos, filename):
+        c = self.c
+        m = hashlib.md5()
+        m.update(pos.h)
+        m.update(open(filename).read())
+        cachefile = 'fcache/' + m.hexdigest()
+        g.es('write cache to' + cachefile)
+        c.db[cachefile] = g.tree_at_position(pos)
+
+    #@-node:ville.20090606131405.6362:writeCachedTree (atFile)
     #@+node:ekr.20041005105605.26:readAll (atFile)
     def readAll(self,root,partialFlag=False):
 
