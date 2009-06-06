@@ -489,7 +489,7 @@ class atFile:
         if cachefile in c.db:
             g.trace("Generate from cache:", cachefile)
             tree = c.db[cachefile]
-            import pprint
+            #import pprint
             #pprint.pprint(tree)
             g.create_tree_at_position(root, tree)
             return
@@ -644,7 +644,20 @@ class atFile:
         while p.hasChildren():
             p.firstChild().doDelete()
 
+        fileContent = open(fileName, "rb").read()
+        cachefile = self._contentHashFile(p, fileContent)
+
+        if cachefile in c.db:
+            g.trace("Generate from cache:", cachefile)
+            tree = c.db[cachefile]
+            #import pprint
+            #pprint.pprint(tree)
+            g.create_tree_at_position(p, tree)
+            return
+
         ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+
 
         if ic.errors:
             g.es_print('errors inhibited read @auto',fileName,color='red')
@@ -654,6 +667,7 @@ class atFile:
             p.clearDirty()
             c.setChanged(oldChanged)
         else:
+            self.writeCachedTree(p, cachefile)
             g.doHook('after-auto', p = p)  # call after-auto callbacks
     #@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
     #@+node:ekr.20090225080846.3:readOneAtEditNode (atFile)
