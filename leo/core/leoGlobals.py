@@ -6974,8 +6974,11 @@ def tree_at_position(p):
 def create_tree_at_position(p, tree):
     h,b,gnx,chi = tree
 
-    p.h = h
-    p.b = b
+    # special case: h is None => do not manipulate the root node, just add children
+    if h is not None:
+        p.h = h
+        p.b = b
+
     for el in chi:
         chpos = p.insertAsLastChild().copy()
         # recurse

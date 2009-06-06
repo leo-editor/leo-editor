@@ -519,16 +519,42 @@ class atFile:
         return at.errors == 0
     #@-node:ekr.20041005105605.21:read (atFile)
     #@+node:ville.20090606131405.6362:writeCachedTree (atFile)
-    def writeCachedTree(self, pos, filename):
+    def writeCachedTree(self, pos, fileContent):
+        c = self.c
+
+        #safeguard - do not write if cloned
+
+        for po in pos.self_and_subtree_iter():
+            if po.isCloned():
+                g.trace('has clones, no cache:',pos.h)
+                return False
+
+        cachefile = self._contentHashFile(pos, fileContent)
+        if cachefile in c.db:
+            g.es('Already cached')
+        else:
+            g.es('write cache to' + cachefile)
+            tree = g.tree_at_position(pos)
+
+            # do not recreate the contents of root node from cache
+            tree[0] = None
+            tree[1] = None
+
+            c.db[cachefile] = tree
+        return True
+    #@-node:ville.20090606131405.6362:writeCachedTree (atFile)
+    #@+node:ville.20090606150238.6351:_contentHashFile (atFile)
+    def _contentHashFile(self, pos, content):
         c = self.c
         m = hashlib.md5()
         m.update(pos.h)
-        m.update(open(filename).read())
-        cachefile = 'fcache/' + m.hexdigest()
-        g.es('write cache to' + cachefile)
-        c.db[cachefile] = g.tree_at_position(pos)
+        m.update(content)
+        return "fcache/" + m.hexdigest()
 
-    #@-node:ville.20090606131405.6362:writeCachedTree (atFile)
+
+
+
+    #@-node:ville.20090606150238.6351:_contentHashFile (atFile)
     #@+node:ekr.20041005105605.26:readAll (atFile)
     def readAll(self,root,partialFlag=False):
 
