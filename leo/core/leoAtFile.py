@@ -642,7 +642,8 @@ class atFile:
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
         if not g.unitTesting:
-            g.es("reading:",p.h)
+            g.pr("reading:",p.h)
+            #g.es("reading:",p.h)
 
         # Delete all children.
         while p.hasChildren():
