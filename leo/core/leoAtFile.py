@@ -480,8 +480,12 @@ class atFile:
             c.setFileTimeStamp(fileName)
         else:
             return False
+
+
         if not g.unitTesting:
-            g.es("reading:",root.h)
+            #g.es("reading:",root.h)
+            # cheap opmization: avoid the slow g.es
+            g.pr('reading:', root.h)
 
         fileContent = open(fileName, "rb").read()
         cachefile = self._contentHashFile(root, fileContent)

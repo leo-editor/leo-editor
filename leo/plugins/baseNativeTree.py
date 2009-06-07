@@ -354,7 +354,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@-node:ekr.20090124174652.26:redraw_after_head_changed
     #@+node:ekr.20090124174652.27:redraw_after_icons_changed
     def redraw_after_icons_changed (self):
-        g.trace('icons' , g.callers())
+        #g.trace('icons' , g.callers())
+        print "icons!"
         return
 
         trace = False and not g.unitTesting
