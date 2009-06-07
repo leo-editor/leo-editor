@@ -1225,8 +1225,10 @@ Like this::
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@+leo-ver=4 <-these lines not compiled
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1239,8 +1241,10 @@ Like this::
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@@first
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -1988,6 +1992,7 @@ like this::
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@+leo-encoding=iso-8859-1.
 
@@ -2662,10 +2667,14 @@ commands from the Outline menu:
 - The ``Promote`` (``Ctrl+}``) command makes all the children of a headline siblings of the headline.
   The ``Demote`` (``Ctrl+{``) command makes all following siblings_ of a headline children of the headline.
 
-- You can cut, copy and paste entire nodes_ (including their descendants) with
-  the Cut Node, Copy Node and Paste Node commands_.
+- Move around the tree and expand/collapse nodes by pressing Alt + arrow keys. This also moves the focus 
+  to tree, so, after pressing Alt + arrow, you can move around by using arrow keys alone. Return the 
+  focus to the body control by pressing ``Enter``. 
 
-- We'll discuss the ``Clone Node`` command_ in the next section.
+- To edit the headline, use press ``Ctrl+H``. This works regardless of whether body or headline 
+  has focus.
+
+- We'll discuss the ``Clone Node`` command in the next section.
 
 You enter `body text`_ for any node by selecting the node's headline in the
 outline pane and then typing in the body pane. Leo has a full range of `editing
@@ -3022,8 +3031,10 @@ some actual sentinel line for the derived file containing Python code::
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@+leo-ver=4-thin
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -3036,8 +3047,10 @@ some actual sentinel line for the derived file containing Python code::
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@@language python
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -3050,6 +3063,7 @@ some actual sentinel line for the derived file containing Python code::
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@@pagewidth 80
 @verbatim
@@ -3057,8 +3071,10 @@ some actual sentinel line for the derived file containing Python code::
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
     #@-node:ekr.20031218072017.2794:@thin leoColor.py
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -3179,10 +3195,10 @@ wise to "know the rules before you break them."
 #@+node:ekr.20050822173420.5:Scripting Leo
 Leo is fully scriptable using the Python language.
 **Leo can execute any body text as a Python script**.
-To run the entire body text as a script, simply choose the node and execute the ``Execute Script`` command_.
-If text is selected, the ``Execute Script`` command_ will run just the selected text as the script.
+To run the entire body text as a script, simply choose the node and execute the ``Execute Script`` command (``Ctrl+B``).
+If text is selected, the ``Execute Script`` command will run just the selected text as the script.
 
-The ``Execute Script`` command_ **preprocesses** the script before executing it.
+The ``Execute Script`` command **preprocesses** the script before executing it.
 Leo preprocesses scripts in exactly the same way that Leo writes derived files.
 That is,
 **Leo expands section references and processes @others directives** before executing the script.
@@ -4035,6 +4051,7 @@ You can't mix encodings in a single external file.  For example::
 
 If the encoding used in an external file is not "utf-8" it is represented in the @+leo sentinel line, like this::
 
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -15472,6 +15489,7 @@ Leo uses unicode internally for all strings.
     If the encoding used in a derived file is not "utf-8" it is represented in the ``@+leo`` sentinel line.
     For example::
 
+@verbatim
 @verbatim
 @verbatim
 @verbatim
