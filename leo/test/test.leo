@@ -9,16 +9,16 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
-<v t="ekr.20090605083941.1804" a="E"><vh>@chapter foo</vh>
+<v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
 </v>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
 </v>
-<v t="ekr.20070603190944" a="E"><vh>@chapter xyz</vh>
+<v t="ekr.20070603190944"><vh>@chapter xyz</vh>
 <v t="ekr.20070603190944.1"><vh>xyz node 1</vh></v>
 <v t="ekr.20071206070207"></v>
 </v>
@@ -57,6 +57,7 @@
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
+<v t="ekr.20090521070342.1907"><vh>@button show-rst</vh></v>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
 <v t="ekr.20061030041356"><vh>@url c:\prog\IronPython-1.0.1\Doc\IronPythonApiReference.chm</vh></v>
 </v>
@@ -353,18 +354,15 @@
 </v>
 <v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
 </v>
+<v t="ekr.20090601093755.1802"><vh>Test of @g.command decorator</vh></v>
 </v>
 <v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
 <v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
-<v t="ekr.20090521070342.1907"><vh>@button show-rst</vh></v>
-<v t="ekr.20090527122538.1897"><vh>@path unittest</vh>
-<v t="ekr.20090526124114.1898"><vh>@shadow mismatched-extension-bug.py</vh></v>
-</v>
-<v t="ekr.20090530185923.1800"><vh>movePageHelper (a test for scrolling)</vh></v>
-<v t="ekr.20090601093755.1802"><vh>Test of @g.command decorator</vh></v>
+<v t="ekr.20090605111929.1805"><vh>add-editor</vh></v>
+<v t="ekr.20090605141212.1803"><vh>delete-editor</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2737,44 +2735,6 @@ self.assertNotEqual(1,2)</t>
 <t tx="ekr.20090514103332.1929"></t>
 <t tx="ekr.20090521070342.1907">g.app.gui.runScrolledMessageDialog(c=c,msg=u'rst:'+p.b)</t>
 <t tx="ekr.20090525090210.1940"></t>
-<t tx="ekr.20090527122538.1897"></t>
-<t tx="ekr.20090530185923.1800">def movePageHelper(self,event,kind,extend): # kind in ('back','forward')
-
-    '''Move the cursor up/down one page, possibly extending the selection.'''
-
-    trace = True and not g.unitTesting
-    c = self.c ; w = self.editWidget(event)
-    if not w: return
-
-    ins = w.getInsertPoint()
-    s = w.getAllText()
-    lines = g.splitLines(s)
-    w.seeInsertPoint()
-
-    # Find the start of the next/prev line.
-    row,col = g.convertPythonIndexToRowCol(s,ins)
-    if trace: gui_ins = w.toGuiIndex(ins)
-
-    if kind == 'back':
-        row2 = max(0,row-10)
-    else:
-        row2 = min(row+10,len(lines)-1)
-
-    if row == row2:
-        if trace: g.trace('at %s line' % (
-            g.choose(kind=='back','first','last')))
-        return
-
-    spot = g.convertRowColToPythonIndex(row2,col)
-
-    # The spot is the start of the line plus the column index.
-    # n = max(0,j2-i2-1) # The length of the new line.
-    # col2 = min(col,n)
-    # spot = i2 + col2
-    if trace: g.trace('spot',spot,'row',row2,'col',col) ### (s[i2:j2]))
-
-    self.extendHelper(w,extend,spot,upOrDown=True)
-</t>
 <t tx="ekr.20090601093755.1802">bookmarks = []
 
 @g.command('bookmark')
@@ -2785,5 +2745,8 @@ def bookmark(event):
     g.es('bookmarked') </t>
 <t tx="ekr.20090605083941.1804"></t>
 <t tx="ekr.20090605083941.1805"></t>
+<t tx="ekr.20090605111929.1805">c.frame.body.addEditor()
+</t>
+<t tx="ekr.20090605141212.1803">c.frame.body.deleteEditor()</t>
 </tnodes>
 </leo_file>

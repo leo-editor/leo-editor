@@ -2,9 +2,18 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
-#@+node:ekr.20090525113804.5776:Before b2 3 (qt) + 2
+#@+node:ekr.20090525113804.5776:Before b2 3 (qt) + 3
 # Only high-priority bugs must be fixed for b2.
 #@nonl
+#@+node:ekr.20090605075411.6436:Fix @root bug
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/383898
+
+Seems someone messed up the tangling of root nodes in the trunk for it
+always says "no root code..."
+#@nonl
+#@-node:ekr.20090605075411.6436:Fix @root bug
 #@+node:ekr.20090602183337.6045:Fix rst import annoyance
 @nocolor-node
 
@@ -122,7 +131,7 @@ else:
 #@-node:ekr.20031218072017.4116:createOpenWithMenuFromTable & helper
 #@-node:ekr.20090603131419.6428:Create qt open-with menu
 #@-node:ekr.20090430092048.4:Fix all qt bugs
-#@-node:ekr.20090525113804.5776:Before b2 3 (qt) + 2
+#@-node:ekr.20090525113804.5776:Before b2 3 (qt) + 3
 #@+node:ekr.20090430092048.7:Before 4.6 final
 #@+node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
 @nocolor-node

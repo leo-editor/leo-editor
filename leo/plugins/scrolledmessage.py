@@ -427,7 +427,6 @@ class ScrolledMessageDialog(object):
                 #@nl
                 self.setupUi(self)
 
-
             def chkBtnChanged(self):
                 self.leoParent.chkBtnChanged()
 

@@ -663,6 +663,7 @@ class leoBody:
         self.editorWidgets = {} # keys are pane names, values are text widgets
         self.forceFullRecolorFlag = False
         self.frame = frame
+        self.parentFrame = parentFrame # New in Leo 4.6.
         self.totalNumberOfEditors = 0
 
         # May be overridden in subclasses...
