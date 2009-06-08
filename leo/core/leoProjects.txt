@@ -20922,6 +20922,981 @@ def selectChapterByNameHelper (self,chapter):
 #@-node:ekr.20090306060344.2:selectChapterHelper
 #@-node:ekr.20070317130250:cc.selectChapterByName & helper
 #@-node:ekr.20090605075411.6058:Don't expand ancestors of @chapter node when selecting chapter
+#@+node:ekr.20090605075411.6437:Support multiple body editors
+#@+node:ekr.20090608081524.6108:Setting t._bodyString
+#@+node:ekr.20031218072017.1485:t.setBodyString & t.setHeadString
+def setBodyString (self,s,encoding="utf-8"):
+
+    trace = False and not g.unitTesting
+    t = self
+    if trace: g.trace('t %s -> %s %s' % (
+        len(t._bodyString),len(s),g.callers(5)))
+    t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
+
+initBodyString = setBodyString
+setTnodeText = setBodyString
+
+def setHeadString (self,s,encoding="utf-8"):
+
+    t = self
+    s = g.toUnicode(s,encoding,reportErrors=True)
+    t._headString = s
+
+initHeadString = setHeadString
+
+#@-node:ekr.20031218072017.1485:t.setBodyString & t.setHeadString
+#@+node:ekr.20040315032144:v .setBodyString & v.setHeadString
+def setBodyString (self,s,encoding="utf-8"):
+
+    trace = False and not g.unitTesting
+    v = self
+    if trace and v.t._bodyString != s:
+        g.trace('v %s %s -> %s %s\nold: %s\nnew: %s' % (
+            v.h, len(v.t._bodyString),len(s),g.callers(5),
+            v.t._bodyString,s))
+    v.t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
+
+def setHeadString (self,s,encoding="utf-8"):
+    v = self
+    v.t._headString = g.toUnicode(s,encoding,reportErrors=True)
+
+initBodyString = setBodyString
+initHeadString = setHeadString
+setHeadText = setHeadString
+setTnodeText = setBodyString
+#@-node:ekr.20040315032144:v .setBodyString & v.setHeadString
+#@-node:ekr.20090608081524.6108:Setting t._bodyString
+#@+node:ekr.20031218072017.3656:class leoBody
+class leoBody:
+
+    """The base class for the body pane in Leo windows."""
+
+    @others
+#@+node:ekr.20031218072017.3657:leoBody.__init__
+def __init__ (self,frame,parentFrame):
+
+    frame.body = self
+    self.c = c = frame.c
+    self.editorWidgets = {} # keys are pane names, values are text widgets
+    self.forceFullRecolorFlag = False
+    self.frame = frame
+    self.parentFrame = parentFrame # New in Leo 4.6.
+    self.totalNumberOfEditors = 0
+
+    # May be overridden in subclasses...
+    self.bodyCtrl = self.widget = None
+    self.numberOfEditors = 1
+    self.pb = None # paned body widget.
+
+    self.use_chapters = c.config.getBool('use_chapters')
+
+    # Must be overridden in subclasses...
+    self.colorizer = None
+#@+node:ekr.20081005065934.9:leoBody.mustBeDefined
+# List of methods that must be defined either in the base class or a subclass.
+
+mustBeDefined = (
+    'after_idle',
+    'forceFullRecolor', # The base-class method is usually good enough.
+    'initAfterLoad',
+
+    # These *are* used by various colorizers, not just in leoColor.py.
+    'tag_add',
+    'tag_bind',
+    'tag_config',
+    'tag_configure',
+    'tag_delete',
+    'tag_names',
+    'tag_remove',
+)
+#@-node:ekr.20081005065934.9:leoBody.mustBeDefined
+#@+node:ekr.20031218072017.3660:leoBody.mustBeDefinedInSubclasses
+mustBeDefinedInSubclasses = (
+    # Birth, death & config.
+    '__init__',
+    'createBindings',
+    'createControl',
+    'setColorFromConfig',
+    'setFontFromConfig'
+    # Editors
+    'createEditorLabel',
+    'setEditorColors',
+    # Events...
+    'scheduleIdleTimeRoutine',
+    # Low-level gui...(May be deleted)
+    'getBodyPaneHeight',
+    'getBodyPaneWidth',
+    'hasFocus',
+    'setFocus',
+)
+#@-node:ekr.20031218072017.3660:leoBody.mustBeDefinedInSubclasses
+#@+node:ekr.20061109102912:define leoBody.mustBeDefinedOnlyInBaseClass
+mustBeDefinedOnlyInBaseClass = (
+    'getAllText',
+    'getColorizer',
+    'getInsertLines',
+    'getInsertPoint',
+    'getSelectedText',
+    'getSelectionAreas',
+    'getSelectionLines',
+    'getYScrollPosition',
+    'hasTextSelection',
+    'oops',
+    'onBodyChanged',
+    'onClick',
+    'recolor',
+    'recolor_now',
+    'see',
+    'seeInsertPoint',
+    'selectAllText',
+    'setInsertPoint',
+    'setSelectionRange',
+    'setYScrollPosition',
+    'setSelectionAreas',
+    'setYScrollPosition',
+    'updateSyntaxColorer',
+    # Editors... (These may be overridden)
+    # 'addEditor',
+    # 'cycleEditorFocus',
+    # 'deleteEditor',
+    # 'selectEditor',
+    # 'selectLabel',
+    # 'unselectLabel',
+    # 'updateEditors',
+)
+#@-node:ekr.20061109102912:define leoBody.mustBeDefinedOnlyInBaseClass
+#@-node:ekr.20031218072017.3657:leoBody.__init__
+#@+node:ekr.20081005065934.5:leoBody.mustBeDefined
+# These are optional.
+def after_idle (self,idle_handler,thread_count):
+    pass
+
+def tag_add (self,tagName,index1,index2):
+    pass
+
+def tag_bind (self,tagName,event,callback):
+    pass
+
+def tag_config (self,colorName,**keys):
+    pass
+
+def tag_configure (self,colorName,**keys):
+    pass
+
+def tag_delete(self,tagName):
+    pass
+
+def tag_names(self,*args):
+    return []
+
+def tag_remove (self,tagName,index1,index2):
+    pass
+#@-node:ekr.20081005065934.5:leoBody.mustBeDefined
+#@+node:ekr.20061109173122:leoBody: must be defined in subclasses
+# Birth, death & config
+def createBindings (self,w=None):               self.oops()
+def createControl (self,parentFrame,p):         self.oops()
+def createTextWidget (self,parentFrame,p,name): self.oops() ; return None
+def setColorFromConfig (self,w=None):           self.oops()
+def setFontFromConfig (self,w=None):            self.oops()
+
+# Editor
+def createEditorFrame (self,w):             self.oops() ; return None
+def createEditorLabel (self,pane):          self.oops()
+def packEditorLabelWidget (self,w):         self.oops()
+def setEditorColors (self,bg,fg):           self.oops()
+
+# Events...
+def scheduleIdleTimeRoutine (self,function,*args,**keys): self.oops()
+#@-node:ekr.20061109173122:leoBody: must be defined in subclasses
+#@+node:ekr.20061109173021:leoBody: must be defined in the base class
+#@+node:ekr.20031218072017.3677:Coloring (leoBody)
+
+def getColorizer(self):
+
+    return self.colorizer
+
+def updateSyntaxColorer(self,p):
+
+    return self.colorizer.updateSyntaxColorer(p.copy())
+
+def recolor(self,p,incremental=False):
+
+    self.c.requestRecolorFlag = True
+    self.c.incrementalRecolorFlag = incremental
+
+recolor_now = recolor
+#@-node:ekr.20031218072017.3677:Coloring (leoBody)
+#@+node:ekr.20060528100747:Editors (leoBody)
+# This code uses self.pb, a paned body widget, created by tkBody.finishCreate.
+
+
+#@+node:ekr.20070424053629:entries
+#@+node:ekr.20060528100747.1:addEditor (leoBody)
+def addEditor (self,event=None):
+
+    '''Add another editor to the body pane.'''
+
+    c = self.c ; p = c.p
+
+    self.totalNumberOfEditors += 1
+    self.numberOfEditors += 1
+
+    if self.numberOfEditors == 2:
+        # Inject the ivars into the first editor.
+        # Bug fix: Leo 4.4.8 rc1: The name of the last editor need not be '1'
+        d = self.editorWidgets ; keys = d.keys()
+        if len(keys) == 1:
+            w_old = d.get(keys[0])
+            self.updateInjectedIvars(w_old,p)
+            self.selectLabel(w_old) # Immediately create the label in the old editor.
+        else:
+            g.trace('can not happen: unexpected editorWidgets',d)
+
+    name = '%d' % self.totalNumberOfEditors
+    pane = self.pb.add(name)
+    panes = self.pb.panes()
+    minSize = float(1.0/float(len(panes)))
+
+    f = self.createEditorFrame(pane)
+    << create text widget w >>
+    self.editorWidgets[name] = w
+
+    for pane in panes:
+        self.pb.configurepane(pane,size=minSize)
+
+    self.pb.updatelayout()
+    c.frame.body.bodyCtrl = w
+
+    self.updateInjectedIvars(w,p)
+    self.selectLabel(w)
+    self.selectEditor(w)
+    self.updateEditors()
+    c.bodyWantsFocusNow()
+#@+node:ekr.20060528110922:<< create text widget w >>
+w = self.createTextWidget(f,name=name,p=p)
+w.delete(0,'end')
+w.insert('end',p.b)
+w.see(0)
+
+self.setFontFromConfig(w=w)
+self.setColorFromConfig(w=w)
+self.createBindings(w=w)
+c.k.completeAllBindingsForWidget(w)
+
+self.recolorWidget(p,w)
+#@nonl
+#@-node:ekr.20060528110922:<< create text widget w >>
+#@-node:ekr.20060528100747.1:addEditor (leoBody)
+#@+node:ekr.20060528132829:assignPositionToEditor
+def assignPositionToEditor (self,p):
+
+    '''Called *only* from tree.select to select the present body editor.'''
+
+    c = self.c ; cc = c.chapterController ; w = c.frame.body.bodyCtrl
+
+    self.updateInjectedIvars(w,p)
+    self.selectLabel(w)
+
+    # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.h)
+#@-node:ekr.20060528132829:assignPositionToEditor
+#@+node:ekr.20060528170438:cycleEditorFocus
+def cycleEditorFocus (self,event=None):
+
+    '''Cycle keyboard focus between the body text editors.'''
+
+    c = self.c ; d = self.editorWidgets ; w = c.frame.body.bodyCtrl
+    values = d.values()
+    if len(values) > 1:
+        i = values.index(w) + 1
+        if i == len(values): i = 0
+        w2 = d.values()[i]
+        assert(w!=w2)
+        self.selectEditor(w2)
+        c.frame.body.bodyCtrl = w2
+        # g.pr('***',g.app.gui.widget_name(w2),id(w2))
+
+    return 'break'
+#@-node:ekr.20060528170438:cycleEditorFocus
+#@+node:ekr.20060528113806:deleteEditor
+def deleteEditor (self,event=None):
+
+    '''Delete the presently selected body text editor.'''
+
+    c = self.c ; w = c.frame.body.bodyCtrl ; d = self.editorWidgets
+
+    if len(d.keys()) == 1: return
+
+    name = w.leo_name
+
+    del d [name] 
+    self.pb.delete(name)
+    panes = self.pb.panes()
+    minSize = float(1.0/float(len(panes)))
+
+    for pane in panes:
+        self.pb.configurepane(pane,size=minSize)
+
+    # Select another editor.
+    w = d.values()[0]
+    # c.frame.body.bodyCtrl = w # Don't do this now?
+    self.numberOfEditors -= 1
+    self.selectEditor(w)
+#@-node:ekr.20060528113806:deleteEditor
+#@+node:ekr.20070425180705:findEditorForChapter (leoBody)
+def findEditorForChapter (self,chapter,p):
+
+    '''Return an editor to be assigned to chapter.'''
+
+    c = self.c ; d = self.editorWidgets ; values = d.values()
+
+    # First, try to match both the chapter and position.
+    if p:
+        for w in values:
+            if (
+                hasattr(w,'leo_chapter') and w.leo_chapter == chapter and
+                hasattr(w,'leo_p') and w.leo_p and w.leo_p == p
+            ):
+                # g.trace('***',id(w),'match chapter and p',p.h)
+                return w
+
+    # Next, try to match just the chapter.
+    for w in values:
+        if hasattr(w,'leo_chapter') and w.leo_chapter == chapter:
+            # g.trace('***',id(w),'match only chapter',p.h)
+            return w
+
+    # As a last resort, return the present editor widget.
+    # g.trace('***',id(self.bodyCtrl),'no match',p.h)
+    return c.frame.body.bodyCtrl
+#@-node:ekr.20070425180705:findEditorForChapter (leoBody)
+#@+node:ekr.20060530210057:select/unselectLabel
+def unselectLabel (self,w):
+
+    self.createChapterIvar(w)
+    self.packEditorLabelWidget(w)
+    s = self.computeLabel(w)
+    if hasattr(w,'leo_label') and w.leo_label:
+        w.leo_label.configure(text=s,bg='LightSteelBlue1')
+
+def selectLabel (self,w):
+
+    if self.numberOfEditors > 1:
+        self.createChapterIvar(w)
+        self.packEditorLabelWidget(w)
+        s = self.computeLabel(w)
+        # g.trace(s,g.callers())
+        if hasattr(w,'leo_label') and w.leo_label:
+            w.leo_label.configure(text=s,bg='white')
+    elif hasattr(w,'leo_label') and w.leo_label:
+        w.leo_label.pack_forget()
+        w.leo_label = None
+#@nonl
+#@-node:ekr.20060530210057:select/unselectLabel
+#@+node:ekr.20061017083312:selectEditor & helpers
+selectEditorLockout = False
+
+def selectEditor(self,w):
+
+    '''Select editor w and node w.leo_p.'''
+
+    #  Called by body.onClick and whenever w must be selected.
+    trace = False
+    c = self.c
+
+    if self.selectEditorLockout:
+        return
+
+    if w and w == self.c.frame.body.bodyCtrl:
+        if w.leo_p and w.leo_p != c.p:
+            c.selectPosition(w.leo_p)
+            c.bodyWantsFocusNow()
+        return
+
+    try:
+        val = None
+        self.selectEditorLockout = True
+        val = self.selectEditorHelper(w)
+    finally:
+        self.selectEditorLockout = False
+
+    return val # Don't put a return in a finally clause.
+#@+node:ekr.20070423102603:selectEditorHelper
+def selectEditorHelper (self,w):
+
+    c = self.c ; cc = c.chapterController ; d = self.editorWidgets
+
+    trace = False
+
+    if not w.leo_p:
+        g.trace('no w.leo_p') 
+        return 'break'
+
+    if trace:
+        g.trace('==1',id(w),
+            hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
+            hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
+
+    self.inactivateActiveEditor(w)
+
+    # The actual switch.
+    c.frame.body.bodyCtrl = w
+    w.leo_active = True
+
+    self.switchToChapter(w)
+    self.selectLabel(w)
+
+    if not self.ensurePositionExists(w):
+        g.trace('***** no position editor!')
+        return 'break'
+
+    if trace:
+        g.trace('==2',id(w),
+            hasattr(w,'leo_chapter') and w.leo_chapter and w.leo_chapter.name,
+            hasattr(w,'leo_p') and w.leo_p and w.leo_p.h)
+
+    # g.trace('expanding ancestors of ',w.leo_p.h,g.callers())
+    c.redraw(w.leo_p)
+    c.recolor()
+    << restore the selection, insertion point and the scrollbar >>
+    c.bodyWantsFocusNow()
+    return 'break'
+#@+node:ekr.20061017083312.1:<< restore the selection, insertion point and the scrollbar >>
+# g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
+
+if w.leo_insertSpot:
+    w.setInsertPoint(w.leo_insertSpot)
+else:
+    w.setInsertPoint(0)
+
+if w.leo_scrollBarSpot is not None:
+    first,last = w.leo_scrollBarSpot
+    w.yview('moveto',first)
+else:
+    w.seeInsertPoint()
+
+if w.leo_selection:
+    try:
+        start,end = w.leo_selection
+        w.setSelectionRange(start,end)
+    except Exception:
+        pass
+#@-node:ekr.20061017083312.1:<< restore the selection, insertion point and the scrollbar >>
+#@-node:ekr.20070423102603:selectEditorHelper
+#@-node:ekr.20061017083312:selectEditor & helpers
+#@+node:ekr.20060528131618:updateEditors
+# Called from addEditor and assignPositionToEditor
+
+def updateEditors (self):
+
+    c = self.c ; p = c.p
+    d = self.editorWidgets
+    if len(d.keys()) < 2: return # There is only the main widget.
+
+    for key in d:
+        w = d.get(key)
+        v = w.leo_v
+        if v and v == p.v and w != c.frame.body.bodyCtrl:
+            w.delete(0,'end')
+            w.insert('end',p.b)
+            # g.trace('update',w,v)
+            self.recolorWidget(p,w)
+    c.bodyWantsFocus()
+#@-node:ekr.20060528131618:updateEditors
+#@-node:ekr.20070424053629:entries
+#@+node:ekr.20070424053629.1:utils
+#@+node:ekr.20070422093128:computeLabel
+def computeLabel (self,w):
+
+    s = w.leo_label_s
+
+    if hasattr(w,'leo_chapter') and w.leo_chapter:
+        s = '%s: %s' % (w.leo_chapter.name,s)
+
+    return s
+#@-node:ekr.20070422093128:computeLabel
+#@+node:ekr.20070422094710:createChapterIvar
+def createChapterIvar (self,w):
+
+    c = self.c ; cc = c.chapterController
+
+    if not hasattr(w,'leo_chapter') or not w.leo_chapter:
+        if cc and self.use_chapters:
+            w.leo_chapter = cc.getSelectedChapter()
+        else:
+            w.leo_chapter = None
+#@-node:ekr.20070422094710:createChapterIvar
+#@+node:ekr.20070424084651:ensurePositionExists
+def ensurePositionExists(self,w):
+
+    '''Return True if w.leo_p exists or can be reconstituted.'''
+
+    c = self.c
+
+    if c.positionExists(w.leo_p):
+        return True
+    else:
+        g.trace('***** does not exist',w.leo_name)
+        for p2 in c.all_positions_with_unique_vnodes_iter():
+            if p2.v and p2.v == w.leo_v:
+                w.leo_p = p2.copy()
+                return True
+        else:
+             # This *can* happen when selecting a deleted node.
+            w.leo_p = c.p
+            return False
+#@-node:ekr.20070424084651:ensurePositionExists
+#@+node:ekr.20070424080640:inactivateActiveEditor
+def inactivateActiveEditor(self,w):
+
+    '''Inactivate the previously active editor.'''
+
+    d = self.editorWidgets
+
+    # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
+    for key in d:
+        w2 = d.get(key)
+        if w2 != w and w2.leo_active:
+            w2.leo_active = False
+            self.unselectLabel(w2)
+            w2.leo_scrollBarSpot = w2.yview()
+            w2.leo_insertSpot = w2.getInsertPoint()
+            w2.leo_selection = w2.getSelectionRange()
+            # g.trace('inactive:',id(w2),'scroll',w2.leo_scrollBarSpot,'ins',w2.leo_insertSpot)
+            # g.trace('inactivate',id(w2))
+            return
+#@-node:ekr.20070424080640:inactivateActiveEditor
+#@+node:ekr.20060530204135:recolorWidget
+def recolorWidget (self,p,w):
+
+    c = self.c ; old_w = c.frame.body.bodyCtrl
+
+    # g.trace('w',id(w),p.h,len(w.getAllText()))
+
+    # Save.
+    c.frame.body.bodyCtrl = w
+    try:
+        c.frame.body.colorizer.colorize(p,incremental=False,interruptable=False)
+    finally:
+        # Restore.
+        c.frame.body.bodyCtrl = old_w
+#@-node:ekr.20060530204135:recolorWidget
+#@+node:ekr.20070424084012:switchToChapter (leoBody)
+def switchToChapter (self,w):
+
+    '''select w.leo_chapter.'''
+
+    c = self.c ; cc = c.chapterController
+
+    if hasattr(w,'leo_chapter') and w.leo_chapter:
+        chapter = w.leo_chapter
+        name = chapter and chapter.name
+        oldChapter = cc.getSelectedChapter()
+        if chapter != oldChapter:
+            # g.trace('===','old',oldChapter.name,'new',name,w.leo_p)
+            cc.selectChapterByName(name)
+            c.bodyWantsFocusNow()
+#@-node:ekr.20070424084012:switchToChapter (leoBody)
+#@+node:ekr.20070424092855:updateInjectedIvars
+# Called from addEditor and assignPositionToEditor.
+
+def updateInjectedIvars (self,w,p):
+
+    c = self.c ; cc = c.chapterController
+
+    if cc and self.use_chapters:
+        w.leo_chapter = cc.getSelectedChapter()
+    else:
+        w.leo_chapter = None
+
+    w.leo_p = p.copy()
+    w.leo_v = w.leo_p.v
+    w.leo_label_s = p.h
+
+    # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.h)
+#@-node:ekr.20070424092855:updateInjectedIvars
+#@-node:ekr.20070424053629.1:utils
+#@-node:ekr.20060528100747:Editors (leoBody)
+#@+node:ekr.20031218072017.1329:onBodyChanged (leoBody)
+# This is the only key handler for the body pane.
+def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
+
+    '''Update Leo after the body has been changed.'''
+
+    trace = False and not g.unitTesting
+    body = self ; c = self.c
+    bodyCtrl = w = body.bodyCtrl
+    p = c.p
+    insert = w.getInsertPoint()
+    ch = g.choose(insert==0,'',w.get(insert-1))
+    ch = g.toUnicode(ch,g.app.tkEncoding)
+    newText = w.getAllText() # Note: getAllText converts to unicode.
+    newSel = w.getSelectionRange()
+    if not oldText:
+        oldText = p.b ; changed = True
+    else:
+        changed = oldText != newText
+    if trace: g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
+    if not changed: return
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+    p.v.setBodyString(newText)
+    p.v.t.insertSpot = body.getInsertPoint()
+    << recolor the body >>
+    if not c.changed: c.setChanged(True)
+    self.updateEditors()
+    << update icons if necessary >>
+#@+node:ekr.20051026083733.6:<< recolor the body >>
+body.colorizer.interrupt()
+c.frame.scanForTabWidth(p)
+body.recolor(p,incremental=not self.forceFullRecolorFlag)
+self.forceFullRecolorFlag = False
+
+if g.app.unitTesting:
+    g.app.unitTestDict['colorized'] = True
+#@-node:ekr.20051026083733.6:<< recolor the body >>
+#@+node:ekr.20051026083733.7:<< update icons if necessary >>
+
+redraw_flag = False
+# Update dirty bits.
+# p.setDirty() sets all cloned and @file dirty bits.
+if not p.isDirty() and p.setDirty():
+    redraw_flag = True
+
+# Update icons. p.v.iconVal may not exist during unit tests.
+val = p.computeIcon()
+# g.trace('new val:',val,'old val:',hasattr(p.v,'iconVal') and p.v.iconVal or '<None>')
+if not hasattr(p.v,"iconVal") or val != p.v.iconVal:
+    p.v.iconVal = val
+    redraw_flag = True
+
+if redraw_flag:
+    c.redraw_after_icons_changed()
+#@-node:ekr.20051026083733.7:<< update icons if necessary >>
+#@-node:ekr.20031218072017.1329:onBodyChanged (leoBody)
+#@+node:ekr.20061109095450.8:onClick
+def onClick (self,event):
+
+    c = self.c ; k = c.k ; w = event and event.widget
+    wname = c.widget_name(w)
+
+    if not c.p: return
+
+    if wname.startswith('body'):
+        # A hack to support middle-button pastes: remember the previous selection.
+        k.previousSelection = w.getSelectionRange()
+        x,y = g.app.gui.eventXY(event)
+        i = w.xyToPythonIndex(x,y)
+        # g.trace(x,y,repr(i))
+        w.setSelectionRange(i,i,insert=i)
+        c.editCommands.setMoveCol(w,i)
+        c.frame.updateStatusLine()
+        self.selectEditor(w)
+    else:
+        g.trace('can not happen')
+#@-node:ekr.20061109095450.8:onClick
+#@+node:ekr.20031218072017.3658:oops
+def oops (self):
+
+    g.trace("leoBody oops:", g.callers(4), "should be overridden in subclass")
+#@-node:ekr.20031218072017.3658:oops
+#@+node:ekr.20031218072017.4018:Text (leoBody)
+#@+node:ekr.20031218072017.4030:getInsertLines
+def getInsertLines (self):
+
+    """Return before,after where:
+
+    before is all the lines before the line containing the insert point.
+    sel is the line containing the insert point.
+    after is all the lines after the line containing the insert point.
+
+    All lines end in a newline, except possibly the last line."""
+
+    body = self ; w = body.bodyCtrl
+    s = w.getAllText()
+    insert = w.getInsertPoint()
+    i,j = g.getLine(s,insert)
+    before = s[0:i]
+    ins = s[i:j]
+    after = s[j:]
+
+    before = g.toUnicode(before,g.app.tkEncoding)
+    ins    = g.toUnicode(ins,   g.app.tkEncoding)
+    after  = g.toUnicode(after ,g.app.tkEncoding)
+
+    return before,ins,after
+#@-node:ekr.20031218072017.4030:getInsertLines
+#@+node:ekr.20031218072017.4031:getSelectionAreas
+def getSelectionAreas (self):
+
+    """Return before,sel,after where:
+
+    before is the text before the selected text
+    (or the text before the insert point if no selection)
+    sel is the selected text (or "" if no selection)
+    after is the text after the selected text
+    (or the text after the insert point if no selection)"""
+
+    body = self ; w = body.bodyCtrl
+    s = w.getAllText()
+    i,j = w.getSelectionRange()
+    if i == j: j = i + 1
+
+    before = s[0:i]
+    sel    = s[i:j]
+    after  = s[j:]
+
+    before = g.toUnicode(before,g.app.tkEncoding)
+    sel    = g.toUnicode(sel,   g.app.tkEncoding)
+    after  = g.toUnicode(after ,g.app.tkEncoding)
+    return before,sel,after
+#@nonl
+#@-node:ekr.20031218072017.4031:getSelectionAreas
+#@+node:ekr.20031218072017.2377:getSelectionLines
+def getSelectionLines (self):
+
+    """Return before,sel,after where:
+
+    before is the all lines before the selected text
+    (or the text before the insert point if no selection)
+    sel is the selected text (or "" if no selection)
+    after is all lines after the selected text
+    (or the text after the insert point if no selection)"""
+
+    c = self.c
+
+    if g.app.batchMode:
+        return '','',''
+
+    # At present, called only by c.getBodyLines.
+    body = self ; w = body.bodyCtrl
+    s = w.getAllText()
+    i,j = w.getSelectionRange()
+    if i == j:
+        i,j = g.getLine(s,i)
+    else:
+        i,junk = g.getLine(s,i)
+        junk,j = g.getLine(s,j)
+
+
+    before = g.toUnicode(s[0:i],g.app.tkEncoding)
+    sel    = g.toUnicode(s[i:j],g.app.tkEncoding)
+    after  = g.toUnicode(s[j:len(s)],g.app.tkEncoding)
+
+    # g.trace(i,j,'sel',repr(s[i:j]),'after',repr(after))
+    return before,sel,after # 3 strings.
+#@-node:ekr.20031218072017.2377:getSelectionLines
+#@+node:ekr.20031218072017.4037:setSelectionAreas
+def setSelectionAreas (self,before,sel,after):
+
+    """Replace the body text by before + sel + after and
+    set the selection so that the sel text is selected."""
+
+    body = self ; w = body.bodyCtrl
+    s = w.getAllText()
+    before = before or ''
+    sel = sel or ''
+    after = after or ''
+    w.delete(0,len(s))
+    w.insert(0,before+sel+after)
+    i = len(before)
+    j = max(i,len(before)+len(sel)-1)
+    # g.trace(i,j,repr(sel))
+    w.setSelectionRange(i,j,insert=j)
+    return i,j
+#@-node:ekr.20031218072017.4037:setSelectionAreas
+#@+node:ekr.20031218072017.4038:get/setYScrollPosition
+def getYScrollPosition (self):
+    return self.bodyCtrl.getYScrollPosition()
+
+def setYScrollPosition (self,scrollPosition):
+    if len(scrollPosition) == 2:
+        first,last = scrollPosition
+    else:
+        first = scrollPosition
+    self.bodyCtrl.setYScrollPosition(first)
+#@-node:ekr.20031218072017.4038:get/setYScrollPosition
+#@-node:ekr.20031218072017.4018:Text (leoBody)
+#@+node:ekr.20070228080627:Text Wrappers (base class)
+def getAllText (self):                  return self.bodyCtrl.getAllText()
+def getInsertPoint(self):               return self.bodyCtrl.getInsertPoint()
+def getSelectedText (self):             return self.bodyCtrl.getSelectedText()
+def getSelectionRange (self,sort=True): return self.bodyCtrl.getSelectionRange(sort)
+def hasTextSelection (self):            return self.bodyCtrl.hasSelection()
+# def scrollDown (self):                g.app.gui.yscroll(self.bodyCtrl,1,'units')
+# def scrollUp (self):                  g.app.gui.yscroll(self.bodyCtrl,-1,'units')
+def see (self,index):                   self.bodyCtrl.see(index)
+def seeInsertPoint (self):              self.bodyCtrl.seeInsertPoint()
+def selectAllText (self,event=None): # This is a command.
+    return self.bodyCtrl.selectAllText()
+    # w = g.app.gui.eventWidget(event) or self.bodyCtrl
+    # return w.selectAllText()
+def setInsertPoint (self,pos):          return self.bodyCtrl.setInsertPoint(pos) # was getInsertPoint.
+def setFocus(self):                     return self.bodyCtrl.setFocus()
+def setSelectionRange (self,sel):       i,j = sel ; self.bodyCtrl.setSelectionRange(i,j)
+#@-node:ekr.20070228080627:Text Wrappers (base class)
+#@-node:ekr.20061109173021:leoBody: must be defined in the base class
+#@+node:ekr.20081005065934.6:leoBody: may be defined in subclasses
+def forceFullRecolor (self):
+    self.forceFullRecolorFlag = True
+
+def initAfterLoad (self):
+    pass
+#@nonl
+#@-node:ekr.20081005065934.6:leoBody: may be defined in subclasses
+#@-node:ekr.20031218072017.3656:class leoBody
+#@+node:ekr.20040803072955.128:leoTree.select & helpers
+tree_select_lockout = False
+
+def select (self,p,scroll=True):
+
+    '''Select a node.
+    Never redraws outline, but may change coloring of individual headlines.
+    The scroll argument is used by tk to suppress scrolling while dragging.'''
+
+    if g.app.killed or self.tree_select_lockout: return None
+
+    try:
+        c = self.c ; old_p = c.p
+        val = 'break'
+        self.tree_select_lockout = True
+        c.frame.tree.beforeSelectHint(p,old_p)
+        val = self.selectHelper(p,scroll=scroll)
+    finally:
+        self.tree_select_lockout = False
+        c.frame.tree.afterSelectHint(p,old_p)
+
+    return val  # Don't put a return in a finally clause.
+#@+node:ekr.20070423101911:selectHelper
+#  Do **not** try to "optimize" this by returning if p==tree.currentPosition.
+
+def selectHelper (self,p,scroll):
+
+    trace = False and not g.unitTesting
+    verbose = True
+    c = self.c ; frame = c.frame
+    body = w = frame.body.bodyCtrl
+    if not w: return # Defensive.
+
+    old_p = c.p
+
+    if not p:
+        # Do *not* test c.positionExists(p) here.
+        # We may be in the process of changing roots.
+        return None # Not an error.
+
+    if trace:
+        if old_p:
+            g.trace('old: %s %s new: %s %s' % (
+                len(old_p.b),old_p.h,len(p.b),p.h))
+        else:
+            g.trace('old: <none> new: %s %s' % (len(p.b),p.h))
+
+    if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        if old_p:
+            << unselect the old node >>
+
+    g.doHook("unselect2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    if not g.doHook("select1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
+        << select the new node >>
+        if p and p != old_p: # Suppress duplicate call.
+            try: # may fail during initialization.
+                # p is NOT c.p here!
+                if 0: # Interferes with new colorizer.
+                    self.canvas.update_idletasks()
+                    self.scrollTo(p)
+                if scroll and g.app.gui.guiName() == 'tkinter':
+                    def scrollCallback(self=self,p=p):
+                        self.scrollTo(p)
+                    self.canvas.after(100,scrollCallback)
+            except Exception: pass
+        c.nodeHistory.update(p) # Remember this position.
+    c.setCurrentPosition(p)
+    << set the current node >>
+    c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
+    c.frame.updateStatusLine() # New in Leo 4.4.1.
+
+    if trace: g.trace('**** after old: %s new %s' % (
+        old_p and len(old_p.b),len(p.b)))
+
+    g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+    g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
+
+    return 'break' # Supresses unwanted selection.
+#@+node:ekr.20040803072955.129:<< unselect the old node >>
+# Remember the position of the scrollbar before making any changes.
+if body:
+    yview = body.getYScrollPosition()
+    insertSpot = c.frame.body.getInsertPoint()
+else:
+    g.trace('no body!','c.frame',c.frame,'old_p',old_p)
+    yview,insertSpot = None,0
+
+if old_p != p:
+    self.endEditLabel() # sets editPosition = None
+    self.setUnselectedLabelState(old_p)
+
+if old_p:
+    old_p.v.t.scrollBarSpot = yview
+    old_p.v.t.insertSpot = insertSpot
+#@-node:ekr.20040803072955.129:<< unselect the old node >>
+#@+node:ekr.20040803072955.130:<< select the new node >>
+# Bug fix: we must always set this, even if we never edit the node.
+self.revertHeadline = p.h
+frame.setWrap(p)
+self.setBodyTextAfterSelect(p,old_p)
+#@-node:ekr.20040803072955.130:<< select the new node >>
+#@+node:ekr.20040803072955.133:<< set the current node >>
+self.setSelectedLabelState(p)
+
+frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+
+if self.use_chapters:
+    cc = c.chapterController
+    theChapter = cc and cc.getSelectedChapter()
+    if theChapter:
+        theChapter.p = p.copy()
+        # g.trace('tkTree',theChapter.name,'v',id(p.v),p.h)
+
+if self.stayInTree:
+    c.treeWantsFocus()
+else:
+    c.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20040803072955.133:<< set the current node >>
+#@-node:ekr.20070423101911:selectHelper
+#@+node:ekr.20090608081524.6109:setBodyTextAfterSelect
+def setBodyTextAfterSelect (self,p,old_p):
+
+    # Always do this.  Otherwise there can be problems with trailing newlines.
+    c = self.c ; w = c.frame.body.bodyCtrl
+    s = g.toUnicode(p.v.t._bodyString,"utf-8")
+    old_s = w.getAllText()
+
+    if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        pass
+    else:
+        # w.setAllText destroys all color tags, so do a full recolor.
+        w.setAllText(s)
+        colorizer = c.frame.body.colorizer
+        if hasattr(colorizer,'setHighlighter'):
+            colorizer.setHighlighter(p)
+        self.frame.body.recolor(p)
+
+    if p.v and p.v.t.scrollBarSpot != None:
+        first,last = p.v.t.scrollBarSpot
+        w.setYScrollPosition(first)
+
+    if p.v and p.v.t.insertSpot != None:
+        spot = p.v.t.insertSpot
+        w.setInsertPoint(spot)
+        w.see(spot)
+    else:
+        w.setInsertPoint(0)
+#@-node:ekr.20090608081524.6109:setBodyTextAfterSelect
+#@-node:ekr.20040803072955.128:leoTree.select & helpers
+#@-node:ekr.20090605075411.6437:Support multiple body editors
 #@-node:ekr.20090401105902.3:Features
 #@-node:ekr.20080917153158.11:4.6 b2
 #@-all

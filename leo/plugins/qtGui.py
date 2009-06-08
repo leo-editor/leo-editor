@@ -2466,14 +2466,6 @@ class leoQtBody (leoFrame.leoBody):
         return self.widget.setYScrollPosition(i)
     #@-node:ekr.20081121105001.211:High-level interface to self.widget
     #@+node:ekr.20081121105001.212:Editors (qtBody)
-    #@@nocolor-node
-    #@+at
-    # 
-    # To do:
-    # 
-    # * Switch body editors correctly.
-    # - Hook up the QSyntaxHighlighter
-    #@-at
     #@+node:ekr.20081121105001.214:packEditorLabelWidget
     def packEditorLabelWidget (self,w):
 
