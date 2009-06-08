@@ -3122,10 +3122,9 @@ class leoTkinterBody (leoFrame.leoBody):
 
         # Inject ivars
         if name == '1':
-            w.leo_p = w.leo_v = None # Will be set when the second editor is created.
+            w.leo_p = None # Will be set when the second editor is created.
         else:
             w.leo_p = p.copy()
-            w.leo_v = w.leo_p.v
 
         w.leo_active = True
         # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.

@@ -150,9 +150,11 @@ if not g.unified_nodes:
         #@+node:ekr.20031218072017.1485:t.setBodyString & t.setHeadString
         def setBodyString (self,s,encoding="utf-8"):
 
+            trace = False and not g.unitTesting
             t = self
+            if trace: g.trace('t %s -> %s %s' % (
+                len(t._bodyString),len(s),g.callers(5)))
             t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
-            # g.trace('t',len(s),g.callers(5))
 
         initBodyString = setBodyString
         setTnodeText = setBodyString
@@ -864,9 +866,14 @@ class vnode (baseVnode):
     #@-node:ekr.20031218072017.3386: v.Status bits
     #@+node:ekr.20040315032144:v .setBodyString & v.setHeadString
     def setBodyString (self,s,encoding="utf-8"):
+
+        trace = False and not g.unitTesting
         v = self
+        if trace and v.t._bodyString != s:
+            g.trace('v %s %s -> %s %s\nold: %s\nnew: %s' % (
+                v.h, len(v.t._bodyString),len(s),g.callers(5),
+                v.t._bodyString,s))
         v.t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
-        # g.trace('v',len(s),g.callers(5))
 
     def setHeadString (self,s,encoding="utf-8"):
         v = self

@@ -363,6 +363,7 @@
 </v>
 <v t="ekr.20090605111929.1805"><vh>add-editor</vh></v>
 <v t="ekr.20090605141212.1803"><vh>delete-editor</vh></v>
+<v t="ekr.20090607151828.1805"><vh>pdb tests</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2748,5 +2749,6 @@ def bookmark(event):
 <t tx="ekr.20090605111929.1805">c.frame.body.addEditor()
 </t>
 <t tx="ekr.20090605141212.1803">c.frame.body.deleteEditor()</t>
+<t tx="ekr.20090607151828.1805">g.pdb()</t>
 </tnodes>
 </leo_file>

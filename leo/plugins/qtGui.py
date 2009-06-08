@@ -109,11 +109,9 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         w = self ; p = self.c.currentPosition()
 
         if name == '1':
-            w.leo_p = w.leo_v = None # Will be set when the second editor is created.
+            w.leo_p = None # Will be set when the second editor is created.
         else:
-
             w.leo_p = p.copy()
-            w.leo_v = w.leo_p.v
 
         w.leo_active = True
 
@@ -312,16 +310,20 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         return self.name
     #@-node:ekr.20081121105001.535:getName (baseTextWidget)
-    #@+node:ekr.20081208041503.499:onClick
-    def onClick(self):
+    #@+node:ekr.20081208041503.499:onClick (qtText)
+    def onClick(self,event=None):
+
+        trace = False and not g.unitTesting
 
         c = self.c
         name = c.widget_name(self)
 
+        if trace: g.trace(name,c.p.h,self)
+
         if name.startswith('body'):
             if hasattr(c.frame,'statusLine'):
                 c.frame.statusLine.update()
-    #@-node:ekr.20081208041503.499:onClick
+    #@-node:ekr.20081208041503.499:onClick (qtText)
     #@+node:ekr.20081121105001.536:onTextChanged (qtText)
     def onTextChanged (self):
 
@@ -331,13 +333,16 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         the entire selection process.'''
 
         trace = False and not g.unitTesting
-        verbose = True
-        c = self.c ; p = c.currentPosition()
+        verbose = False
+        c = self.c ; p = c.p
         tree = c.frame.tree ; w = self
 
         # The linux events are different from xp events.
         if w.changingText and not sys.platform.startswith('linux'):
-            if trace: g.trace('changing text',g.callers(5))
+            if trace and verbose: g.trace('already changing')
+            return
+        if tree.tree_select_lockout:
+            if trace and verbose: g.trace('selecting lockout')
             return
         if tree.selecting:
             if trace and verbose: g.trace('selecting')
@@ -359,10 +364,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # g.trace('*** unexpected non-change',color="red")
             return
 
-        if trace and verbose:
-            g.trace(p.h,len(oldText),len(newText))
-
-        if trace: g.trace('***entry***',g.callers(4))
+        if trace: g.trace('**',len(newText),p.h,'\n',g.callers(8))
 
         oldIns  = p.v.t.insertSpot
         i,j = p.v.t.selectionStart,p.v.t.selectionLength
@@ -398,6 +400,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             # Allow incremental recoloring.
             c.incrementalRecolorFlag = True
             c.outerUpdate()
+    #@nonl
     #@-node:ekr.20081121105001.536:onTextChanged (qtText)
     #@+node:ekr.20081121105001.537:indexWarning
     warningsDict = {}
@@ -1056,6 +1059,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         Otherwise, the scrollbars are preserved.'''
 
         trace = False and not g.unitTesting
+        verbose = False
         c,w = self.c,self.widget
         colorizer = c.frame.body.colorizer
         highlighter = colorizer.highlighter
@@ -1068,13 +1072,14 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         if insert is None: i,pos = 0,0
         else: i,pos = insert,sb.sliderPosition()
 
-        if trace: t1 = g.getTime()
+        if trace: g.trace(id(w),len(s),c.p.h)
+        if trace and verbose: t1 = g.getTime()
         try:
             self.changingText = True
             w.setPlainText(s)
         finally:
             self.changingText = False
-        if trace: g.trace(g.timeSince(t1))
+        if trace and verbose: g.trace(g.timeSince(t1))
 
         self.setSelectionRange(i,i,insert=i)
         sb.setSliderPosition(pos)
@@ -2315,6 +2320,7 @@ class leoQtBody (leoFrame.leoBody):
             qtWidget = top.ui.richTextEdit # A QTextEdit.
             sw.setCurrentIndex(1)
             self.widget = w = leoQTextEditWidget(
+            #self.widget = w = leoQBodyTextEditWidget(
                 qtWidget,name = 'body',c=c)
             self.bodyCtrl = w # The widget as seen from Leo's core.
 
@@ -2353,27 +2359,6 @@ class leoQtBody (leoFrame.leoBody):
         # if not w: w = self.widget
 
         # c.bind(w,'<Key>', k.masterKeyHandler)
-
-        # def onFocusOut(event,c=c):
-            # # This interferes with inserting new nodes.
-                # # c.k.setDefaultInputState()
-            # self.setEditorColors(
-                # bg=c.k.unselected_body_bg_color,
-                # fg=c.k.unselected_body_fg_color)
-            # # This is required, for example, when typing Alt-Shift-anyArrow in insert mode.
-            # # But we suppress coloring in the widget.
-            # oldState = k.unboundKeyAction
-            # k.unboundKeyAction = k.defaultUnboundKeyAction
-            # c.k.showStateAndMode(w=g.app.gui.get_focus(c))
-            # k.unboundKeyAction = oldState
-
-        # def onFocusIn(event,c=c):
-            # # g.trace('callback')
-            # c.k.setDefaultInputState()
-            # c.k.showStateAndMode()  # TNB - fix color when window manager returns focus to Leo
-
-        # c.bind(w,'<FocusOut>', onFocusOut)
-        # c.bind(w,'<FocusIn>', onFocusIn)
 
         # table = [
             # ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
@@ -2488,8 +2473,6 @@ class leoQtBody (leoFrame.leoBody):
     # 
     # * Switch body editors correctly.
     # - Hook up the QSyntaxHighlighter
-    # 
-    # 
     #@-at
     #@+node:ekr.20081121105001.214:packEditorLabelWidget
     def packEditorLabelWidget (self,w):
@@ -2505,116 +2488,74 @@ class leoQtBody (leoFrame.leoBody):
     #@nonl
     #@-node:ekr.20081121105001.214:packEditorLabelWidget
     #@+node:ekr.20081121105001.215:entries
-    #@+node:ekr.20081121105001.216:addEditor (command) & helpers (qtBody)
+    #@+node:ekr.20081121105001.216:addEditor & helper (qtBody)
     # An override of leoFrame.addEditor.
 
     def addEditor (self,event=None):
 
         '''Add another editor to the body pane.'''
 
-        return ### Not ready yet.
-
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         bodyCtrl = self.c.frame.body.bodyCtrl # A leoQTextEditWidget
         self.editorWidgets['1'] = bodyCtrl
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
+
+        name = '%d' % self.totalNumberOfEditors
+        f,wrapper = self.createEditor(name)
+        w = wrapper.widget
+        assert isinstance(wrapper,leoQTextEditWidget),wrapper
+        assert isinstance(w,QtGui.QTextEdit),w
+        assert isinstance(f,QtGui.QFrame),f
+        self.editorWidgets[name] = wrapper
+
+        if trace: g.trace('name %s wrapper %s w %s' % (
+            name,id(wrapper),id(w)))
 
         if self.numberOfEditors == 2:
             # Inject the ivars into the first editor.
             # The name of the last editor need not be '1'
             d = self.editorWidgets ; keys = d.keys()
-            if len(keys) == 1:
-                old_wrapper = d.get(keys[0])
-                self.updateInjectedIvars(old_wrapper.widget,p)
-                self.selectLabel(old_wrapper) # Immediately create the label in the old editor.
-            else:
-                g.trace('can not happen: unexpected editorWidgets',d)
-
-        name = '%d' % self.totalNumberOfEditors
-
-        f,wrapper = self.createEditorFrame()
-        assert isinstance(wrapper,leoQTextEditWidget),wrapper
-        w = wrapper.widget
-        assert isinstance(w,QtGui.QTextEdit),w
-        assert isinstance(f,QtGui.QFrame),f
-        self.createEditorWidget(f,name,p,wrapper)
-        self.editorWidgets[name] = wrapper
-        if trace: g.trace('name %s wrapper %s w %s' % (
-            name,id(wrapper),id(w)))
+            old_name = keys[0]
+            old_wrapper = d.get(old_name)
+            old_w = old_wrapper.widget
+            self.injectIvars(f,old_name,p,old_wrapper)
+            self.updateInjectedIvars (old_w,p)
+            self.selectLabel(old_wrapper) # Immediately create the label in the old editor.
 
         # Switch editors.
         c.frame.body.bodyCtrl = wrapper
-        self.updateInjectedIvars(wrapper.widget,p)
+        ##### self.updateInjectedIvars(w,p)
         self.selectLabel(wrapper)
         self.selectEditor(wrapper)
         self.updateEditors()
         c.bodyWantsFocusNow()
-    #@+node:ekr.20081121105001.213:createEditorFrame (qtBody)
-    def createEditorFrame (self):
+    #@+node:ekr.20081121105001.213:createEditor
+    def createEditor (self,name):
 
-        c = self.c
-        inner_f = c.frame.top.ui.leo_body_inner_frame
+        c = self.c ; p = c.p
+        f = c.frame.top.ui.leo_body_inner_frame
             # Valid regardless of qtGui.useUI
 
-        # The focus in/out handlers require the name be richTextEdit.
-        w = QtGui.QTextEdit(inner_f)
-        w.setObjectName('richTextEdit')
-
+        # Step 1: create the editor.
+        w = QtGui.QTextEdit(f)
+        w.setObjectName('richTextEdit') # Will be changed later.
         wrapper = leoQTextEditWidget(w,name='body',c=c)
+        f.layout().addWidget(w,0,self.numberOfEditors-1)
 
-        inner_f.layout().addWidget(w,0,self.numberOfEditors-1)
-        return inner_f,wrapper
-    #@-node:ekr.20081121105001.213:createEditorFrame (qtBody)
-    #@+node:ekr.20081121105001.217:createEditorWidget
-    def createEditorWidget (self,f,name,p,wrapper):
-
-        trace = True and not g.unitTesting
-        if trace: g.trace(id(wrapper))
-
-        c = self.c ; w = wrapper.widget
-        self.injectIvars(f,name,p,w)
+        # Step 2: inject ivars, set bindings, etc.
+        self.injectIvars(f,name,p,wrapper)
         self.updateInjectedIvars(w,p)
-        wrapper.setAllText(p.b) ###
+        wrapper.setAllText(p.b)
         wrapper.see(0)
-        ##self.setFontFromConfig(w=w)
-        ##self.setColorFromConfig(w=w)
         self.createBindings(w=wrapper)
         c.k.completeAllBindingsForWidget(wrapper)
         self.recolorWidget(p,wrapper)
 
-        return w
-    #@-node:ekr.20081121105001.217:createEditorWidget
-    #@+node:ekr.20090318091009.14:injectIvars
-    def injectIvars (self,parentFrame,name,p,w):
-
-        trace = True and not g.unitTesting
-        if trace: g.trace(id(w))
-
-        assert isinstance(w,QtGui.QTextEdit)
-
-        # Inject ivars
-        if name == '1':
-            w.leo_p = w.leo_v = None # Will be set when the second editor is created.
-        else:
-            w.leo_p = p.copy()
-            w.leo_v = w.leo_p.v
-
-        w.leo_active = True
-        # Inject the scrollbar items into the text widget.
-        w.leo_bodyBar = None
-        w.leo_bodyXBar = None
-        w.leo_chapter = None
-        w.leo_frame = parentFrame
-        w.leo_name = name
-        w.leo_label = None
-        w.leo_label_s = None
-        w.leo_scrollBarSpot = None
-        w.leo_insertSpot = None
-        w.leo_selection = None
-    #@-node:ekr.20090318091009.14:injectIvars
-    #@-node:ekr.20081121105001.216:addEditor (command) & helpers (qtBody)
+        return f,wrapper
+    #@-node:ekr.20081121105001.213:createEditor
+    #@-node:ekr.20081121105001.216:addEditor & helper (qtBody)
     #@+node:ekr.20081121105001.218:assignPositionToEditor
     def assignPositionToEditor (self,p):
 
@@ -2653,16 +2594,13 @@ class leoQtBody (leoFrame.leoBody):
 
         '''Delete the presently selected body text editor.'''
 
-        return ### Not ready yet.
-
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c ; d = self.editorWidgets
-        inner_f = c.frame.top.ui.leo_body_inner_frame
-        layout = inner_f.layout()
         wrapper = c.frame.body.bodyCtrl
         w = wrapper.widget
         name = w.leo_name
-        assert wrapper == d.get(name)
+        assert name
+        assert wrapper == d.get(name),'wrong wrapper'
         assert isinstance(wrapper,leoQTextEditWidget),wrapper
         assert isinstance(w,QtGui.QTextEdit),w
         if len(d.keys()) <= 1: return
@@ -2670,16 +2608,20 @@ class leoQtBody (leoFrame.leoBody):
         # Actually delete the widget.
         if trace: g.trace('**delete name %s id(wrapper) %s id(w) %s' % (
             name,id(wrapper),id(w)))
+
         del d [name]
+        f = c.frame.top.ui.leo_body_inner_frame
+        layout = f.layout()
         index = layout.indexOf(w)
         item = layout.itemAt(index)
         item.setGeometry(QtCore.QRect(0,0,0,0))
         layout.removeItem(item)
 
         # Select another editor.
-        wrapper = d.values()[0]
+        new_wrapper = d.values()[0]
+        if trace: g.trace(wrapper,new_wrapper)
         self.numberOfEditors -= 1
-        self.selectEditor(wrapper)
+        self.selectEditor(new_wrapper)
     #@-node:ekr.20081121105001.220:deleteEditor
     #@+node:ekr.20081121105001.221:findEditorForChapter (leoBody)
     def findEditorForChapter (self,chapter,p):
@@ -2746,25 +2688,30 @@ class leoQtBody (leoFrame.leoBody):
         '''Select editor w and node w.leo_p.'''
 
         #  Called by body.onClick and whenever w must be selected.
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
+        verbose = False
         c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
 
         if not wrapper: return bodyCtrl
-        if self.selectEditorLockout: return
+        if self.selectEditorLockout:
+            if trace: g.trace('**busy')
+            return
 
-        assert isinstance(wrapper,leoQTextEditWidget),wrapper
         w = wrapper.widget
+        assert isinstance(wrapper,leoQTextEditWidget),wrapper
         assert isinstance(w,QtGui.QTextEdit),w
 
-        if trace: g.trace('wrapper %s bodyCtrl %s c.p %s w.leo_p %s' % (
-            id(wrapper),id(bodyCtrl),c.p.h,w.leo_p.h))
+        def report(s):
+             g.trace('*** %9s wrapper %s w %s %s' % (
+                s,id(wrapper),id(w),c.p.h))
 
         if wrapper and wrapper == bodyCtrl:
-            if trace: g.trace('*** no change')
             self.deactivateEditors(wrapper)
             if hasattr(w,'leo_p') and w.leo_p and w.leo_p != c.p:
+                if trace: report('select')
                 c.selectPosition(w.leo_p)
                 c.bodyWantsFocusNow()
+            elif trace and verbose: report('no change')
             return
 
         try:
@@ -2778,7 +2725,7 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081121105001.224:selectEditorHelper
     def selectEditorHelper (self,wrapper):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c ; cc = c.chapterController
         d = self.editorWidgets
         assert isinstance(wrapper,leoQTextEditWidget),wrapper
@@ -2791,7 +2738,6 @@ class leoQtBody (leoFrame.leoBody):
 
         # The actual switch.
         self.deactivateEditors(wrapper)
-        w.setObjectName('selected-body-editor')
         c.frame.body.bodyCtrl = wrapper
         w.leo_active = True
 
@@ -2805,12 +2751,14 @@ class leoQtBody (leoFrame.leoBody):
         if not (hasattr(w,'leo_chapter') and w.leo_chapter.name):
             return g.trace('***** no w.leo_chapter',w)
 
-        if trace: g.trace('wrapper %s chapter %s p %s' % (
-            id(wrapper),w.leo_chapter.name,w.leo_p.h))
+        p = w.leo_p
+        assert p,p
 
-        wrapper.setAllText(w.leo_p.b)
-        c.expandAllAncestors(w.leo_p)
-        c.selectPosition(w.leo_p) # Calls assignPositionToEditor.
+        if trace: g.trace('wrapper %s chapter %s old %s p %s' % (
+            id(wrapper),w.leo_chapter.name,c.p.h,p.h))
+
+        c.expandAllAncestors(p)
+        c.selectPosition(p) # Calls assignPositionToEditor.
         c.redraw()
         c.recolor_now()
         #@    << restore the selection, insertion point and the scrollbar >>
@@ -2837,7 +2785,6 @@ class leoQtBody (leoFrame.leoBody):
         #@-node:ekr.20081121105001.225:<< restore the selection, insertion point and the scrollbar >>
         #@nl
         c.bodyWantsFocusNow()
-    #@nonl
     #@-node:ekr.20081121105001.224:selectEditorHelper
     #@-node:ekr.20081121105001.223:selectEditor & helpers
     #@+node:ekr.20081121105001.226:updateEditors
@@ -2845,14 +2792,14 @@ class leoQtBody (leoFrame.leoBody):
 
     def updateEditors (self):
 
-        c = self.c ; p = c.currentPosition()
+        c = self.c ; p = c.p
         d = self.editorWidgets
         if len(d.keys()) < 2: return # There is only the main widget.
 
         for key in d:
             wrapper = d.get(key)
             w = wrapper.widget
-            v = hasattr(w,'leo_v') and w.leo_v
+            v = hasattr(w,'leo_p') and w.leo_p.v
             if v and v == p.v and w != c.frame.body.bodyCtrl:
                 ### wrapper.setAllText(p.b)
                 self.recolorWidget(p,wrapper)
@@ -2883,32 +2830,12 @@ class leoQtBody (leoFrame.leoBody):
         else:
             w.leo_chapter = None
     #@-node:ekr.20081121105001.229:createChapterIvar
-    #@+node:ekr.20081121105001.230:ensurePositionExists
-    def ensurePositionExists(self,w):
-
-        '''Return True if w.leo_p exists or can be reconstituted.'''
-
-        c = self.c
-
-        if c.positionExists(w.leo_p):
-            return True
-        else:
-            g.trace('***** does not exist',w.leo_name)
-            for p2 in c.all_positions_with_unique_vnodes_iter():
-                if p2.v and p2.v == w.leo_v:
-                    w.leo_p = p2.copy()
-                    return True
-            else:
-                 # This *can* happen when selecting a deleted node.
-                w.leo_p = c.currentPosition()
-                return False
-    #@-node:ekr.20081121105001.230:ensurePositionExists
     #@+node:ekr.20081121105001.231:deactivateEditors
     def deactivateEditors(self,wrapper):
 
         '''Deactivate all editors except wrapper's editor.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         d = self.editorWidgets
 
         # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
@@ -2919,9 +2846,7 @@ class leoQtBody (leoFrame.leoBody):
                 active = w2.leo_active
             else:
                 active = True
-            # g.trace(id(wrapper2),active)
             if wrapper2 != wrapper and active:
-                w2.setObjectName('unselected-body-editor')
                 w2.leo_active = False
                 self.unselectLabel(wrapper2)
                 w2.leo_scrollBarSpot = wrapper2.getYScrollPosition()
@@ -2929,7 +2854,63 @@ class leoQtBody (leoFrame.leoBody):
                 w2.leo_selection = wrapper2.getSelectionRange()
                 if trace: g.trace('**deactivate wrapper %s w %s' % (
                     id(wrapper2),id(w2)))
+                self.onFocusOut(w2)
+    #@nonl
     #@-node:ekr.20081121105001.231:deactivateEditors
+    #@+node:ekr.20081121105001.230:ensurePositionExists
+    def ensurePositionExists(self,w):
+
+        '''Return True if w.leo_p exists or can be reconstituted.'''
+
+        trace = True and not g.unitTesting
+        c = self.c
+
+        if c.positionExists(w.leo_p):
+            return True
+        else:
+            if trace: g.trace('***** does not exist',w.leo_name)
+            for p2 in c.all_positions_with_unique_vnodes_iter():
+                if p2.v and p2.v == w.leo_p.v:
+                    if trace: g.trace(p2.h)
+                    w.leo_p = p2.copy()
+                    return True
+            else:
+                # This *can* happen when selecting a deleted node.
+                if trace: g.trace(p2.h)
+                w.leo_p = c.p.copy()
+                return False
+    #@-node:ekr.20081121105001.230:ensurePositionExists
+    #@+node:ekr.20090318091009.14:injectIvars
+    def injectIvars (self,parentFrame,name,p,wrapper):
+
+        trace = False and not g.unitTesting
+
+        w = wrapper.widget
+        assert isinstance(wrapper,leoQTextEditWidget),wrapper
+        assert isinstance(w,QtGui.QTextEdit),w
+
+        if trace: g.trace(name,id(w),p.h)
+
+        # Inject ivars
+        if name == '1':
+            w.leo_p = None # Will be set when the second editor is created.
+        else:
+            w.leo_p = p.copy()
+
+        w.leo_active = True
+        w.leo_bodyBar = None
+        w.leo_bodyXBar = None
+        w.leo_chapter = None
+        w.leo_frame = parentFrame
+        w.leo_insertSpot = None
+        w.leo_label = None
+        w.leo_label_s = None
+        w.leo_name = name
+        # w.leo_on_focus_in = onFocusInCallback
+        w.leo_scrollBarSpot = None
+        w.leo_selection = None
+        w.leo_wrapper = wrapper
+    #@-node:ekr.20090318091009.14:injectIvars
     #@+node:ekr.20081121105001.232:recolorWidget
     def recolorWidget (self,p,wrapper):
 
@@ -2953,6 +2934,7 @@ class leoQtBody (leoFrame.leoBody):
 
         '''select w.leo_chapter.'''
 
+        trace = True and not g.unitTesting
         c = self.c ; cc = c.chapterController
 
         if hasattr(w,'leo_chapter') and w.leo_chapter:
@@ -2960,18 +2942,19 @@ class leoQtBody (leoFrame.leoBody):
             name = chapter and chapter.name
             oldChapter = cc.getSelectedChapter()
             if chapter != oldChapter:
-                # g.trace('===','old',oldChapter.name,'new',name,w.leo_p)
+                if trace: g.trace('***old',oldChapter.name,'new',name,w.leo_p)
                 cc.selectChapterByName(name)
                 c.bodyWantsFocusNow()
     #@-node:ekr.20081121105001.233:switchToChapter (leoBody)
     #@+node:ekr.20081121105001.234:updateInjectedIvars
-    # Called from addEditor and assignPositionToEditor.
-
     def updateInjectedIvars (self,w,p):
 
-        c = self.c ; cc = c.chapterController
+        trace = False and not g.unitTesting
+        if trace: g.trace('w %s len(p.b) %s %s' % (
+            id(w),len(p.b),p.h),g.callers(5))
 
-        assert isinstance(w,QtGui.QTextEdit)
+        c = self.c ; cc = c.chapterController
+        assert isinstance(w,QtGui.QTextEdit),w
 
         if cc and self.use_chapters:
             w.leo_chapter = cc.getSelectedChapter()
@@ -2979,40 +2962,55 @@ class leoQtBody (leoFrame.leoBody):
             w.leo_chapter = None
 
         w.leo_p = p.copy()
-        w.leo_v = w.leo_p.v
         w.leo_label_s = p.h
-
-        # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.h)
+    #@nonl
     #@-node:ekr.20081121105001.234:updateInjectedIvars
     #@-node:ekr.20081121105001.227:utils
     #@-node:ekr.20081121105001.212:Editors (qtBody)
-    #@+node:ekr.20090406071640.13:Event handlers called from eventFilter
-    def onFocusIn (self):
-        self.onFocusHelper(self.selectedBackgroundColor)
+    #@+node:ekr.20090406071640.13:Event handlers called from eventFilter (qtBody)
+    def onFocusIn (self,obj):
 
-    def onFocusOut (self):
-        self.onFocusHelper(self.unselectedBackgroundColor)
+        '''Handle a focus-in event in the body pane.'''
 
+        if obj.objectName() == 'richTextEdit':
+            wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
+            if wrapper and wrapper != self.bodyCtrl:
+                self.selectEditor(wrapper)
+            self.onFocusColorHelper('focus-in',obj)
+            obj.setReadOnly(False)
+
+    def onFocusOut (self,obj):
+
+        '''Handle a focus-out event in the body pane.'''
+
+        if obj.objectName() == 'richTextEdit':
+            self.onFocusColorHelper('focus-out',obj)
+            obj.setReadOnly(True)
+    #@+node:ekr.20090608052916.3810:onFocusColorHelper
     badFocusColors = []
 
-    def onFocusHelper(self,colorName):
+    def onFocusColorHelper(self,kind,obj):
 
-        styleSheet = '''\
-    QTextEdit#richTextEdit { background-color: %s; }
-    QTextEdit#selected-body-editor { background-color: %s; }
-    QTextEdit#unselected-body-editor { background-color: %s; }
-    ''' % (colorName, self.selectedBackgroundColor, self.unselectedBackgroundColor)
+        trace = False and not g.unitTesting
 
-        w = self.widget.widget
+        colorName = g.choose(kind=='focus-in',
+            self.selectedBackgroundColor,
+            self.unselectedBackgroundColor)
+
         if not colorName: return
 
+        if trace: g.trace(id(obj),'%9s' % (kind),str(obj.objectName()))
+
+        styleSheet = 'QTextEdit#richTextEdit { background-color: %s; }' % (
+            colorName)
+
         if QtGui.QColor(colorName).isValid():
-            w.setStyleSheet(styleSheet)
-            # g.trace(colorName,id(w))
+            obj.setStyleSheet(styleSheet)
         elif colorName not in self.badFocusColors:
             self.badFocusColors.append(colorName)
             g.es_print('invalid body background color: %s' % (colorName),color='blue')
-    #@-node:ekr.20090406071640.13:Event handlers called from eventFilter
+    #@-node:ekr.20090608052916.3810:onFocusColorHelper
+    #@-node:ekr.20090406071640.13:Event handlers called from eventFilter (qtBody)
     #@-others
 #@-node:ekr.20081121105001.205:class leoQtBody (leoBody)
 #@+node:ekr.20081121105001.235:class leoQtFindTab (findTab)
@@ -7188,10 +7186,9 @@ class leoQtEventFilter(QtCore.QObject):
             override = False ; tkKey = '<no key>'
             if self.tag == 'body':
                 if eventType == ev.FocusIn:
-                    c.frame.body.onFocusIn()
+                    c.frame.body.onFocusIn(obj)
                 elif eventType == ev.FocusOut:
-                    c.frame.body.onFocusOut()
-
+                    c.frame.body.onFocusOut(obj)
         if self.keyIsActive:
             stroke = self.toStroke(tkKey,ch)
             if override:
@@ -7402,10 +7399,10 @@ class leoQtEventFilter(QtCore.QObject):
 
         for evKind,kind in table:
             if eventType == evKind:
-                g.trace('%11s %s %s' % (
+                g.trace('%11s %s %s %s' % (
                     (kind,id(obj),
                     # event.reason(),
-                    obj.objectName())))
+                    obj.objectName(),obj)))
                     # g.app.gui.widget_name(obj) or obj)))
 
         # else: g.trace('unknown kind: %s' % eventType)
@@ -7457,9 +7454,7 @@ class leoQtColorizer:
         '''The main colorizer entry point.'''
 
         trace = False and not g.unitTesting
-
-        if trace:
-            g.trace('*** incremental %s' % (incremental))
+        if trace: g.trace(p.h)
 
         self.count += 1 # For unit testing.
 
@@ -7731,22 +7726,30 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         '''Override base rehighlight method'''
 
         trace = False and not g.unitTesting
+        verbose = False
 
-        s = unicode(self.w.toPlainText())
+        c = self.c ; tree = c.frame.tree
+        self.w = c.frame.body.bodyCtrl.widget ###
+        ### s = unicode(self.w.toPlainText())
+        s = p.b ###
         self.colorer.init(p,s)
         n = self.colorer.recolorCount
-
-        if trace: g.trace('** enabled',self.colorizer.enabled)
+        if trace: g.trace(p.h)
 
         # Call the base class method, but *only*
         # if the crucial 'currentBlock' method exists.
         if self.colorizer.enabled and self.hasCurrentBlock:
-            QtGui.QSyntaxHighlighter.rehighlight(self)
+            # Lock out onTextChanged.
+            old_selecting = c.frame.tree.selecting
+            try:
+                c.frame.tree.selecting = True
+                QtGui.QSyntaxHighlighter.rehighlight(self)
+            finally:
+                c.frame.tree.selecting = old_selecting
 
-        if trace:
+        if trace and verbose:
             g.trace('%s calls to recolor' % (
                 self.colorer.recolorCount-n))
-    #@nonl
     #@-node:ekr.20081206062411.15:rehighlight
     #@-others
 #@-node:ekr.20081205131308.27:leoQtSyntaxHighlighter
