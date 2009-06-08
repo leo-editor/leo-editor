@@ -491,11 +491,12 @@ class atFile:
         cachefile = self._contentHashFile(root, fileContent)
 
         if cachefile in c.db:
-            g.trace("Generate from cache:", cachefile)
+            g.pr("Generate from cache:", cachefile)
             tree = c.db[cachefile]
             #import pprint
             #pprint.pprint(tree)
-            g.create_tree_at_position(root, tree)
+            g.create_tree_at_vnode(c, root.v, tree)
+            #g.create_tree_at_position(root, tree)
             return
 
 
@@ -543,11 +544,11 @@ class atFile:
         c = self.c
 
         #safeguard - do not write cache if cloned
-
-        for po in pos.self_and_subtree_iter():
-            if po.isCloned():
-                g.trace('has clones, no cache:',pos.h)
-                return False
+        if 0:
+            for po in pos.self_and_subtree_iter():
+                if po.isCloned():
+                    g.trace('has clones, no cache:',pos.h)
+                    return False
 
         #cachefile = self._contentHashFile(pos, fileContent)
         if cachefile in c.db:
@@ -653,11 +654,11 @@ class atFile:
         cachefile = self._contentHashFile(p, fileContent)
 
         if cachefile in c.db:
-            g.trace("Generate from cache:", cachefile)
+            #g.trace("Generate from cache:", cachefile)
             tree = c.db[cachefile]
             #import pprint
             #pprint.pprint(tree)
-            g.create_tree_at_position(p, tree)
+            g.create_tree_at_vnode(c, p.v, tree)
             return
 
         ic.createOutline(fileName,parent=p.copy(),atAuto=True)

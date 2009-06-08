@@ -7017,7 +7017,7 @@ def fast_add_last_child(c, parent_v, gnxString = None):
         is_clone = False
 
     else:
-        g.trace("Creating clone gnx",gnxString)
+        #g.trace("Creating clone gnx",gnxString)
         is_clone = True
 
     if g.unified_nodes:
@@ -7056,8 +7056,8 @@ def create_tree_at_vnode(c, v, tree):
     Clones will be automatically created by gnx, but *not* for the root node.
     """
 
-    import pprint
-    pprint.pprint(tree)
+    #import pprint
+    #pprint.pprint(tree)
     h,b,gnx,chi = tree
     if h is not None:
         t = v.t

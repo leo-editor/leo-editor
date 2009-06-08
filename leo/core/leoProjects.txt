@@ -19881,7 +19881,8 @@ def readOneAtAutoNode (self,fileName,p):
     fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
     if not g.unitTesting:
-        g.es("reading:",p.h)
+        g.pr("reading:",p.h)
+        #g.es("reading:",p.h)
 
     # Delete all children.
     while p.hasChildren():
@@ -19891,11 +19892,11 @@ def readOneAtAutoNode (self,fileName,p):
     cachefile = self._contentHashFile(p, fileContent)
 
     if cachefile in c.db:
-        g.trace("Generate from cache:", cachefile)
+        #g.trace("Generate from cache:", cachefile)
         tree = c.db[cachefile]
         #import pprint
         #pprint.pprint(tree)
-        g.create_tree_at_position(p, tree)
+        g.create_tree_at_vnode(c, p.v, tree)
         return
 
     ic.createOutline(fileName,parent=p.copy(),atAuto=True)
