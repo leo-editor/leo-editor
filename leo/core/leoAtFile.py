@@ -568,6 +568,7 @@ class atFile:
     def _contentHashFile(self, pos, content):
         c = self.c
         m = hashlib.md5()
+        # note that we also consider the headline in hash, to separate @auto foo.py from @thin foo.py
         m.update(pos.h)
         m.update(content)
         return "fcache/" + m.hexdigest()
