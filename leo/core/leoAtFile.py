@@ -650,14 +650,15 @@ class atFile:
         while p.hasChildren():
             p.firstChild().doDelete()
 
-        fileContent = open(fileName, "rb").read()
-        cachefile = self._contentHashFile(p, fileContent)
+        try:
+            fileContent = open(fileName, "rb").read()
+            cachefile = self._contentHashFile(p, fileContent)
+        except IOError:
+            cachefile = None
 
-        if cachefile in c.db:
-            #g.trace("Generate from cache:", cachefile)
+
+        if cachefile is not None and cachefile in c.db:        
             tree = c.db[cachefile]
-            #import pprint
-            #pprint.pprint(tree)
             g.create_tree_at_vnode(c, p.v, tree)
             return
 
