@@ -1,0 +1,14 @@
+Python list based description of trees ('objtrees')
+===================================================
+
+Positions and trees are objects that exists only within Leo instance. However, trees can have "serialized"
+representation in .leo xml files (where structure is described by xml hierarchy, or @thin nodes (where
+structure is described by sentinels).
+
+Sometimes, both formats are too heavyweight. Both xml and "flat" text files involve nontrivial callback-based
+(or worse) parsing. Luckily, trees can be represented naturally with python lists, which can be pickled and 
+passed around with almost zero cost in CPU consumption or code complexity.
+
+For the purposes of this discussion (and because of sheer narcissistic pleasure of inventing new terminology), I'm 
+calling these data structures `objtrees`.
+
