@@ -481,23 +481,22 @@ class atFile:
         else:
             return False
 
-
-        if not g.unitTesting:
-            #g.es("reading:",root.h)
-            # cheap opmization: avoid the slow g.es
-            g.pr('reading:', root.h)
-
         fileContent = open(fileName, "rb").read()
         cachefile = self._contentHashFile(root, fileContent)
 
         if cachefile in c.db:
-            g.pr("Generate from cache:", cachefile)
+            g.pr("Generate from cache:", root.h)
             tree = c.db[cachefile]
             #import pprint
             #pprint.pprint(tree)
             g.create_tree_at_vnode(c, root.v, tree)
             #g.create_tree_at_position(root, tree)
             return
+
+        if not g.unitTesting:
+            g.es("reading:",root.h)
+            # cheap opmization: avoid the slow g.es
+            #g.pr('reading:', root.h)
 
 
         root.clearVisitedInTree()
