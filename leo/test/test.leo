@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -364,6 +364,7 @@
 <v t="ekr.20090605111929.1805"><vh>add-editor</vh></v>
 <v t="ekr.20090605141212.1803"><vh>delete-editor</vh></v>
 <v t="ekr.20090607151828.1805"><vh>pdb tests</vh></v>
+<v t="ekr.20090609113634.1807"><vh>import matplotlib</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2750,5 +2751,7 @@ def bookmark(event):
 </t>
 <t tx="ekr.20090605141212.1803">c.frame.body.deleteEditor()</t>
 <t tx="ekr.20090607151828.1805">g.pdb()</t>
+<t tx="ekr.20090609113634.1807">import matplotlib
+print matplotlib</t>
 </tnodes>
 </leo_file>
