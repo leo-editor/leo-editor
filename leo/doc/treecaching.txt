@@ -11,7 +11,7 @@ passed around with almost zero cost in CPU consumption or code complexity. In th
 can be passed around in this fashion as well, but positions always have to exist in the tree (there
 is no concept of 'detached' position) and they can't be pickled or moved around outside the Leo instance.
 
-For the purposes of this discussion (and for the of sheer narcissistic pleasure of inventing new terminology), I'm 
+For the purposes of this discussion (and for the sheer narcissistic pleasure of inventing new terminology), I'm 
 calling these data structures `objtrees`.
 
 The structure of objtrees is a standard Python list of the form::
@@ -86,7 +86,7 @@ The `Leo database` (c.db)
 =========================
 
 Previous discussion omitted one fact - Leo doesn't actually operate on files directly, but 
-the `pickleshare` library (shipped with Leo) to access the cached pickles. In essence, the database is 
+uses the `pickleshare` library (shipped with Leo) to access the cached pickles. In essence, the database is 
 always associated with one specific Leo document, and is available through c.db. So, storing a tree is
 (in simplified form) about doing::
 
