@@ -9,6 +9,31 @@ Sometimes, both formats are too heavyweight. Both xml and "flat" text files invo
 (or worse) parsing. Luckily, trees can be represented naturally with python lists, which can be pickled and 
 passed around with almost zero cost in CPU consumption or code complexity.
 
-For the purposes of this discussion (and because of sheer narcissistic pleasure of inventing new terminology), I'm 
+For the purposes of this discussion (and for the of sheer narcissistic pleasure of inventing new terminology), I'm 
 calling these data structures `objtrees`.
+
+The structure of objtrees is a standard Python list of the form::
+
+    [headline, bodystring, gnx, [children...]]
+
+Where `children` is a recursive tree. Here's an example objtree (from ILeo session)::
+
+    ileo[~/hashcache]|11> g.tree_at_position(p)
+                     <11>
+    [u'root',
+     u'Root body',
+     'ville.20090601215420.1449',
+     [[u'ch1 head',
+       u'child 1 body',
+       'ville.20090609184451.5679',
+       [[u'ch1.1 head', u'ch1.1 body', 'ville.20090609184451.5680', []],
+        [u'ch1.2 head', u'ch1.2 body', 'ville.20090609184451.5681', []]]],
+      [u'ch2 head',
+       u'ch2 body',
+       'ville.20090609184451.5682',
+       [[u'ch2.1 head', u'', 'ville.20090609184451.5683', []]]]]]
+    
+Note that these trees are constructed using `g.tree_at_position(pos)`. These trees can be re-incorporated to 
+Leo document using `create_tree_at_vnode(c, v, tree)`, which rebuilds the structure at position p. The "vnode"
+is available as p.v attribute.
 
