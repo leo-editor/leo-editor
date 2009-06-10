@@ -13260,8 +13260,8 @@ if g.unitTesting:
     c,p = g.getTestVars()
 
     c.frame.tree.OnIconDoubleClick(p.firstChild())
-#@+node:ekr.20060217111834:@@url http://docs.python.org/lib/re-syntax.html
-#@-node:ekr.20060217111834:@@url http://docs.python.org/lib/re-syntax.html
+#@+node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
+#@-node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
 #@-node:ekr.20090529205043.6027:@test OnIconDoubleClick
 #@-node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper & test
 #@-node:ekr.20090529205043.6026:Made @url nodes work with qt gui
@@ -19885,8 +19885,7 @@ def readOneAtAutoNode (self,fileName,p):
     fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
     if not g.unitTesting:
-        g.pr("reading:",p.h)
-        #g.es("reading:",p.h)
+        g.es("reading:",p.h)
 
     # Delete all children.
     while p.hasChildren():
@@ -19898,7 +19897,6 @@ def readOneAtAutoNode (self,fileName,p):
     except IOError:
         cachefile = None
 
-
     if cachefile is not None and cachefile in c.db:        
         tree = c.db[cachefile]
         g.create_tree_at_vnode(c, p.v, tree)
@@ -19906,13 +19904,11 @@ def readOneAtAutoNode (self,fileName,p):
 
     ic.createOutline(fileName,parent=p.copy(),atAuto=True)
 
-
-
     if ic.errors:
         g.es_print('errors inhibited read @auto',fileName,color='red')
 
     if ic.errors or not g.os_path_exists(fileName):
-        #c.setBodyString(p,'')
+        # c.setBodyString(p,'')
         p.clearDirty()
         c.setChanged(oldChanged)
     else:

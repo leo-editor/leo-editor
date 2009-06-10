@@ -485,19 +485,14 @@ class atFile:
         cachefile = self._contentHashFile(root, fileContent)
 
         if cachefile in c.db:
-            g.pr("Generate from cache:", root.h)
+            if not g.unitTesting:
+                g.es('uncache:',root.h)
             tree = c.db[cachefile]
-            #import pprint
-            #pprint.pprint(tree)
             g.create_tree_at_vnode(c, root.v, tree)
-            #g.create_tree_at_position(root, tree)
             return
 
         if not g.unitTesting:
             g.es("reading:",root.h)
-            # cheap opmization: avoid the slow g.es
-            #g.pr('reading:', root.h)
-
 
         root.clearVisitedInTree()
         at.scanAllDirectives(root,importing=at.importing,reading=True)
@@ -542,26 +537,13 @@ class atFile:
     def writeCachedTree(self, pos, cachefile):
         c = self.c
 
-        #safeguard - do not write cache if cloned
-        if 0:
-            for po in pos.self_and_subtree_iter():
-                if po.isCloned():
-                    g.trace('has clones, no cache:',pos.h)
-                    return False
-
-        #cachefile = self._contentHashFile(pos, fileContent)
         if cachefile in c.db:
-            #g.trace('Already cached')
+            # g.trace('Already cached')
             pass
         else:
-            #g.trace('write cache to' + cachefile)
             tree = g.tree_at_position(pos)
-
-            # do not recreate the contents of root node from cache
-            #tree[0] = None
-            #tree[1] = None
-
             c.db[cachefile] = tree
+
         return True
     #@-node:ville.20090606131405.6362:writeCachedTree (atFile)
     #@+node:ville.20090606150238.6351:_contentHashFile (atFile)
@@ -644,8 +626,7 @@ class atFile:
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
         if not g.unitTesting:
-            g.pr("reading:",p.h)
-            #g.es("reading:",p.h)
+            g.es("reading:",p.h)
 
         # Delete all children.
         while p.hasChildren():
@@ -657,7 +638,6 @@ class atFile:
         except IOError:
             cachefile = None
 
-
         if cachefile is not None and cachefile in c.db:        
             tree = c.db[cachefile]
             g.create_tree_at_vnode(c, p.v, tree)
@@ -665,13 +645,11 @@ class atFile:
 
         ic.createOutline(fileName,parent=p.copy(),atAuto=True)
 
-
-
         if ic.errors:
             g.es_print('errors inhibited read @auto',fileName,color='red')
 
         if ic.errors or not g.os_path_exists(fileName):
-            #c.setBodyString(p,'')
+            # c.setBodyString(p,'')
             p.clearDirty()
             c.setChanged(oldChanged)
         else:
