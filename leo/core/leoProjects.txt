@@ -13260,8 +13260,8 @@ if g.unitTesting:
     c,p = g.getTestVars()
 
     c.frame.tree.OnIconDoubleClick(p.firstChild())
-#@+node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
-#@-node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
+#@+node:ekr.20060217111834:@@url http://docs.python.org/lib/re-syntax.html
+#@-node:ekr.20060217111834:@@url http://docs.python.org/lib/re-syntax.html
 #@-node:ekr.20090529205043.6027:@test OnIconDoubleClick
 #@-node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper & test
 #@-node:ekr.20090529205043.6026:Made @url nodes work with qt gui
@@ -19892,14 +19892,15 @@ def readOneAtAutoNode (self,fileName,p):
     while p.hasChildren():
         p.firstChild().doDelete()
 
-    fileContent = open(fileName, "rb").read()
-    cachefile = self._contentHashFile(p, fileContent)
+    try:
+        fileContent = open(fileName, "rb").read()
+        cachefile = self._contentHashFile(p, fileContent)
+    except IOError:
+        cachefile = None
 
-    if cachefile in c.db:
-        #g.trace("Generate from cache:", cachefile)
+
+    if cachefile is not None and cachefile in c.db:        
         tree = c.db[cachefile]
-        #import pprint
-        #pprint.pprint(tree)
         g.create_tree_at_vnode(c, p.v, tree)
         return
 
