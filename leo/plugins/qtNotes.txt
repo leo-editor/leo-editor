@@ -9331,6 +9331,55 @@ def updateInjectedIvars (self,w,p):
 #@-node:ekr.20081121105001.227:utils
 #@-node:ekr.20081121105001.212:Editors (qtBody)
 #@-node:ekr.20081215162017.5:Added support for multiple body editors
+#@+node:ekr.20090610120636.3628:Made g.es fast
+@nocolor-node
+
+> Faster way is to use what we use in body editor, i.e. QTextCursor /
+> insertHtml. I implemented it that way back in the day, but I think it
+> was reverted to current behaviour for some reason (I left putnl
+> unimplemented back then). But I don't remember the details.
+
+Ok.  I'll look at this again. If I run into problems I'll ask for help
+before concluding that the QTextCursor approach won't work.
+
+> > Various commands accumulate output so as to do a single g.es, but that's
+> not
+> > so easy if you don't know in advance what the complete output will be.
+
+> Yeah, and this would be a bad hack anyway. If we can't fix g.es to be
+> fast (due to having to support something special?), we should probably
+> add g.es_fast or somesuch ("I don't care how this works, as long as
+> it's fast!").
+
+:-)  I would much prefer just to make g.es fast.
+
+Edward 
+#@nonl
+#@+node:ekr.20081121105001.327:putnl
+def putnl (self,tabName='Log'):
+
+    if g.app.quitting:
+        return
+
+    if tabName:
+        self.selectTab(tabName)
+
+    w = self.logCtrl
+    if w:
+        sb = w.horizontalScrollBar()
+        pos = sb.sliderPosition()
+        # Not needed!
+            # contents = w.toHtml()
+            # w.setHtml(contents + '\n')
+        w.moveCursor(QtGui.QTextCursor.End)
+        sb.setSliderPosition(pos)
+        w.repaint() # Slow, but essential.
+    else:
+        # put s to logWaiting and print  a newline
+        g.app.logWaiting.append(('\n','black'),)
+#@nonl
+#@-node:ekr.20081121105001.327:putnl
+#@-node:ekr.20090610120636.3628:Made g.es fast
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@-node:ekr.20081208155215.12:Unused

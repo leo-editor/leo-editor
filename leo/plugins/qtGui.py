@@ -4673,14 +4673,16 @@ class leoQtLog (leoFrame.leoLog):
         if w:
             sb = w.horizontalScrollBar()
             pos = sb.sliderPosition()
-            contents = w.toHtml()
-            w.setHtml(contents + '\n')
+            # Not needed!
+                # contents = w.toHtml()
+                # w.setHtml(contents + '\n')
             w.moveCursor(QtGui.QTextCursor.End)
             sb.setSliderPosition(pos)
-            w.repaint()
+            w.repaint() # Slow, but essential.
         else:
             # put s to logWaiting and print  a newline
             g.app.logWaiting.append(('\n','black'),)
+    #@nonl
     #@-node:ekr.20081121105001.327:putnl
     #@-node:ekr.20081121105001.325:put & putnl (qtLog)
     #@+node:ekr.20081121105001.328:Tab (qtLog)
