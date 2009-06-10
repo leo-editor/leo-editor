@@ -5322,10 +5322,16 @@ def delete(self,i,j=None):
     sb = w.verticalScrollBar()
     pos = sb.sliderPosition()
     cursor = w.textCursor()
-    cursor.setPosition(i)
-    moveCount = abs(j-i)
-    cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
-    cursor.removeSelectedText()
+
+    try:
+        self.changingText = True # Disable onTextChanged
+        cursor.setPosition(i)
+        moveCount = abs(j-i)
+        cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
+        cursor.removeSelectedText()
+    finally:
+        self.changingText = False
+
     sb.setSliderPosition(pos)
 
     if trace:
@@ -5482,12 +5488,16 @@ def insert(self,i,s):
     colorer.initFlag = True
 
     i = self.toGuiIndex(i)
-
     sb = w.verticalScrollBar()
     pos = sb.sliderPosition()
     cursor = w.textCursor()
-    cursor.setPosition(i)
-    cursor.insertText(s) # This cause an incremental call to recolor.
+    try:
+        self.changingText = True # Disable onTextChanged.
+        cursor.setPosition(i)
+        cursor.insertText(s) # This cause an incremental call to recolor.
+    finally:
+        self.changingText = False
+
     sb.setSliderPosition(pos)
 
     if trace:
@@ -5530,7 +5540,7 @@ def setAllText(self,s,insert=None):
     if trace: g.trace(id(w),len(s),c.p.h)
     if trace and verbose: t1 = g.getTime()
     try:
-        self.changingText = True
+        self.changingText = True # Disable onTextChanged
         w.setPlainText(s)
     finally:
         self.changingText = False
@@ -8697,6 +8707,7 @@ def createOpenWithMenu(self,parent,label,index,amp_index):
             label,menu,underline=amp_index)
 
     return menu
+#@nonl
 #@-node:ekr.20081121105001.373:createOpenWithMenu (QtMenu)
 #@+node:ekr.20081121105001.469:class qtMenuWrapper (QMenu,leoQtMenu)
 class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
@@ -8932,6 +8943,7 @@ def createOpenWithMenu(self,parent,label,index,amp_index):
             label,menu,underline=amp_index)
 
     return menu
+#@nonl
 #@-node:ekr.20081121105001.373:createOpenWithMenu (QtMenu)
 #@+node:ekr.20081121105001.374:disableMenu
 def disableMenu (self,menu,name):

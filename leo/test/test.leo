@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -161,7 +161,7 @@
 </v>
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"></v>
-<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
+<v t="ekr.20070517160058.1" a="E"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
 <v t="ekr.20070929122956"><vh>Data trees</vh>
 <v t="ekr.20070929114617"><vh>@graph-target</vh></v>
@@ -363,6 +363,7 @@
 </v>
 <v t="ekr.20090605111929.1805"><vh>add-editor</vh></v>
 <v t="ekr.20090605141212.1803"><vh>delete-editor</vh></v>
+<v t="ekr.20090610181132.1806"><vh>test of undo</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2748,5 +2749,21 @@ def bookmark(event):
 <t tx="ekr.20090605111929.1805">c.frame.body.addEditor()
 </t>
 <t tx="ekr.20090605141212.1803">c.frame.body.deleteEditor()</t>
+<t tx="ekr.20090610181132.1806">@nocolor
+
+Calls to onTextChanged can really screw up undo.
+
+The following scripts convert between Leo trees and NetworkX graphs.
+
+- leo2graph:            convert a normal Leo tree to a NetworkX graph.
+- at-graph2graph:       convert an @graph tree to a Networkx graph.
+- at-networkx2graph:    convert an @networkx tree to a Networkx graph
+- at-networkx2at-graph: create an @graph tree from an @networkx tree.
+
+Not ready yet:
+
+- tree2pict: convert a Leo @graph tree to a picture of the corresponding graph.
+
+@color</t>
 </tnodes>
 </leo_file>

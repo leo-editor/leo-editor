@@ -867,10 +867,16 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
-        cursor.setPosition(i)
-        moveCount = abs(j-i)
-        cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
-        cursor.removeSelectedText()
+
+        try:
+            self.changingText = True # Disable onTextChanged
+            cursor.setPosition(i)
+            moveCount = abs(j-i)
+            cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
+            cursor.removeSelectedText()
+        finally:
+            self.changingText = False
+
         sb.setSliderPosition(pos)
 
         if trace:
@@ -1027,12 +1033,16 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         colorer.initFlag = True
 
         i = self.toGuiIndex(i)
-
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
-        cursor.setPosition(i)
-        cursor.insertText(s) # This cause an incremental call to recolor.
+        try:
+            self.changingText = True # Disable onTextChanged.
+            cursor.setPosition(i)
+            cursor.insertText(s) # This cause an incremental call to recolor.
+        finally:
+            self.changingText = False
+
         sb.setSliderPosition(pos)
 
         if trace:
@@ -1075,7 +1085,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         if trace: g.trace(id(w),len(s),c.p.h)
         if trace and verbose: t1 = g.getTime()
         try:
-            self.changingText = True
+            self.changingText = True # Disable onTextChanged
             w.setPlainText(s)
         finally:
             self.changingText = False
