@@ -318,7 +318,7 @@ class baseCommands (object):
         pth, bname = os.path.split(self.mFileName)
 
         if pth and bname:
-            dbdirname = g.app.homeLeoDir + "/db/" + bname + "_" + hashlib.md5(self.mFileName).hexdigest()
+            dbdirname = g.app.homeLeoDir + "/db/" + bname + "_" + hashlib.md5(self.mFileName.lower()).hexdigest()
             # use compressed pickles (handy for @thin caches)
             self.db = leo.external.pickleshare.PickleShareDB(dbdirname, protocol='picklez')
 
