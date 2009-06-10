@@ -551,9 +551,10 @@ class atFile:
 
         #cachefile = self._contentHashFile(pos, fileContent)
         if cachefile in c.db:
-            g.trace('Already cached')
+            #g.trace('Already cached')
+            pass
         else:
-            g.trace('write cache to' + cachefile)
+            #g.trace('write cache to' + cachefile)
             tree = g.tree_at_position(pos)
 
             # do not recreate the contents of root node from cache
