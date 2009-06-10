@@ -478,7 +478,7 @@ class chapterController:
 
             # New in Leo 4.6 b2: clean up.
             if chapter.name == 'main':
-                 for p in c.all_positions_with_unique_vnodes_iter():
+                for p in c.all_positions_with_unique_vnodes_iter():
                     p.contract()
 
             # New in Leo 4.6 b2: *do* call c.redraw.

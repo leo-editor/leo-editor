@@ -31,7 +31,7 @@ import pickle
 import sys
 import types
 import zipfile
-import string
+# import string
 # import re
 
 try:

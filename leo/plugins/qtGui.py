@@ -2694,7 +2694,7 @@ class leoQtBody (leoFrame.leoBody):
         assert isinstance(w,QtGui.QTextEdit),w
 
         def report(s):
-             g.trace('*** %9s wrapper %s w %s %s' % (
+            g.trace('*** %9s wrapper %s w %s %s' % (
                 s,id(wrapper),id(w),c.p.h))
 
         if wrapper and wrapper == bodyCtrl:

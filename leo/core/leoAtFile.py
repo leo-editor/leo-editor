@@ -26,7 +26,7 @@ import os
 import sys
 import time
 import hashlib
-import cPickle as pickle
+# import cPickle as pickle
 
 #@-node:ekr.20041005105605.2:<< imports >>
 #@nl
