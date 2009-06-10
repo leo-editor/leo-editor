@@ -112,7 +112,7 @@ class PickleShareDB(UserDict.DictMixin):
             return self.cache[fil][0]
         try:
             # The cached item has expired, need to read
-            obj = self.loader(fil.open())
+            obj = self.loader(fil.open("rb"))
         except:
             raise KeyError(key)
 
@@ -125,7 +125,7 @@ class PickleShareDB(UserDict.DictMixin):
         parent = fil.parent
         if parent and not parent.isdir():
             parent.makedirs()
-        pickled = self.dumper(value,fil.open('w'))
+        pickled = self.dumper(value,fil.open('wb'))
         try:
             self.cache[fil] = (value,fil.mtime)
         except OSError,e:
