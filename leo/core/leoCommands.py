@@ -319,7 +319,9 @@ class baseCommands (object):
 
         if pth and bname:
             dbdirname = g.app.homeLeoDir + "/db/" + bname + "_" + hashlib.md5(self.mFileName).hexdigest()
-            self.db = leo.external.pickleshare.PickleShareDB(dbdirname)
+            # use compressed pickles (handy for @thin caches)
+            self.db = leo.external.pickleshare.PickleShareDB(dbdirname, protocol='picklez')
+
         else:
             self.db = None
             # if not g.app.silentMode and not g.unitTesting:
@@ -421,7 +423,7 @@ class baseCommands (object):
 
     def getSignOnLine (self):
         c = self
-        return "Leo 4.6 pre-beta 2, build %s, March 24, 2009" % c.getBuildNumber()
+        return "Leo 4.6 beta 1, build %s, March 24, 2009" % c.getBuildNumber()
     #@-node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     #@+node:ekr.20040629121554.2:initVersion
     def initVersion (self):

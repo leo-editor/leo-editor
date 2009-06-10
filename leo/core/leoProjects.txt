@@ -7736,13 +7736,18 @@ that the characters were forbidden rather than required to be escaped?
 #@+node:ekr.20090525144314.6526:cleanSaxInputString & test
 def cleanSaxInputString(self,s):
 
-    result = []
+    from string import maketrans
 
-    for ch in s:
-        if ord(ch) >= 32 or ch in ('\t','\r','\n'):
-            result.append(ch)
+    badchars = [chr(ch) for ch in range(32)]
+    badchars.remove('\t')
+    badchars.remove('\r')
+    badchars.remove('\n')
 
-    return ''.join(result)
+    flatten = ''.join(badchars)
+
+    transtable = maketrans(flatten, ' ' * len(flatten))
+
+    return s.translate(transtable)
 
 # for i in range(32): print i,repr(chr(i))
 #@+node:ekr.20090525144314.6527:@test cleanSaxInputString
@@ -7752,7 +7757,7 @@ if g.unitTesting:
 
     s = 'test%cthis' % 27
 
-    assert c.fileCommands.cleanSaxInputString(s) == 'testthis'
+    assert c.fileCommands.cleanSaxInputString(s) == 'test this'
 #@-node:ekr.20090525144314.6527:@test cleanSaxInputString
 #@-node:ekr.20090525144314.6526:cleanSaxInputString & test
 #@-node:ekr.20090525113804.5779:Fixed file bug re unicode characters
@@ -13255,8 +13260,8 @@ if g.unitTesting:
     c,p = g.getTestVars()
 
     c.frame.tree.OnIconDoubleClick(p.firstChild())
-#@+node:ekr.20060217111834:@@url http://docs.python.org/lib/re-syntax.html
-#@-node:ekr.20060217111834:@@url http://docs.python.org/lib/re-syntax.html
+#@+node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
+#@-node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
 #@-node:ekr.20090529205043.6027:@test OnIconDoubleClick
 #@-node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper & test
 #@-node:ekr.20090529205043.6026:Made @url nodes work with qt gui
@@ -19880,13 +19885,27 @@ def readOneAtAutoNode (self,fileName,p):
     fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
     if not g.unitTesting:
-        g.es("reading:",p.h)
+        g.pr("reading:",p.h)
+        #g.es("reading:",p.h)
 
     # Delete all children.
     while p.hasChildren():
         p.firstChild().doDelete()
 
+    fileContent = open(fileName, "rb").read()
+    cachefile = self._contentHashFile(p, fileContent)
+
+    if cachefile in c.db:
+        #g.trace("Generate from cache:", cachefile)
+        tree = c.db[cachefile]
+        #import pprint
+        #pprint.pprint(tree)
+        g.create_tree_at_vnode(c, p.v, tree)
+        return
+
     ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+
 
     if ic.errors:
         g.es_print('errors inhibited read @auto',fileName,color='red')
@@ -19896,6 +19915,7 @@ def readOneAtAutoNode (self,fileName,p):
         p.clearDirty()
         c.setChanged(oldChanged)
     else:
+        self.writeCachedTree(p, cachefile)
         g.doHook('after-auto', p = p)  # call after-auto callbacks
 #@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
 #@+node:ekr.20040705201018:v.findAtFileName

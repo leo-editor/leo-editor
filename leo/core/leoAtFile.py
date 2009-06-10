@@ -25,6 +25,9 @@ import os
 # import string
 import sys
 import time
+import hashlib
+import cPickle as pickle
+
 #@-node:ekr.20041005105605.2:<< imports >>
 #@nl
 
@@ -469,6 +472,7 @@ class atFile:
             return False
         #@-node:ekr.20041005105605.22:<< set fileName >>
         #@nl
+
         at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
         if at.errors: return False
         fileName = at.openFileForReading(fileName,fromString=fromString)
@@ -476,8 +480,25 @@ class atFile:
             c.setFileTimeStamp(fileName)
         else:
             return False
+
+        fileContent = open(fileName, "rb").read()
+        cachefile = self._contentHashFile(root, fileContent)
+
+        if cachefile in c.db:
+            g.pr("Generate from cache:", root.h)
+            tree = c.db[cachefile]
+            #import pprint
+            #pprint.pprint(tree)
+            g.create_tree_at_vnode(c, root.v, tree)
+            #g.create_tree_at_position(root, tree)
+            return
+
         if not g.unitTesting:
             g.es("reading:",root.h)
+            # cheap opmization: avoid the slow g.es
+            #g.pr('reading:', root.h)
+
+
         root.clearVisitedInTree()
         at.scanAllDirectives(root,importing=at.importing,reading=True)
         at.readOpenFile(root,at.inputFile,fileName)
@@ -511,8 +532,51 @@ class atFile:
                 delattr(t,"tempBodyString")
         #@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
         #@nl
+
+        # write out the cache version
+        self.writeCachedTree(root, cachefile)
+
         return at.errors == 0
     #@-node:ekr.20041005105605.21:read (atFile)
+    #@+node:ville.20090606131405.6362:writeCachedTree (atFile)
+    def writeCachedTree(self, pos, cachefile):
+        c = self.c
+
+        #safeguard - do not write cache if cloned
+        if 0:
+            for po in pos.self_and_subtree_iter():
+                if po.isCloned():
+                    g.trace('has clones, no cache:',pos.h)
+                    return False
+
+        #cachefile = self._contentHashFile(pos, fileContent)
+        if cachefile in c.db:
+            #g.trace('Already cached')
+            pass
+        else:
+            #g.trace('write cache to' + cachefile)
+            tree = g.tree_at_position(pos)
+
+            # do not recreate the contents of root node from cache
+            #tree[0] = None
+            #tree[1] = None
+
+            c.db[cachefile] = tree
+        return True
+    #@-node:ville.20090606131405.6362:writeCachedTree (atFile)
+    #@+node:ville.20090606150238.6351:_contentHashFile (atFile)
+    def _contentHashFile(self, pos, content):
+        c = self.c
+        m = hashlib.md5()
+        # note that we also consider the headline in hash, to separate @auto foo.py from @thin foo.py
+        m.update(pos.h)
+        m.update(content)
+        return "fcache/" + m.hexdigest()
+
+
+
+
+    #@-node:ville.20090606150238.6351:_contentHashFile (atFile)
     #@+node:ekr.20041005105605.26:readAll (atFile)
     def readAll(self,root,partialFlag=False):
 
@@ -580,13 +644,28 @@ class atFile:
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
         if not g.unitTesting:
-            g.es("reading:",p.h)
+            g.pr("reading:",p.h)
+            #g.es("reading:",p.h)
 
         # Delete all children.
         while p.hasChildren():
             p.firstChild().doDelete()
 
+        try:
+            fileContent = open(fileName, "rb").read()
+            cachefile = self._contentHashFile(p, fileContent)
+        except IOError:
+            cachefile = None
+
+
+        if cachefile is not None and cachefile in c.db:        
+            tree = c.db[cachefile]
+            g.create_tree_at_vnode(c, p.v, tree)
+            return
+
         ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+
+
 
         if ic.errors:
             g.es_print('errors inhibited read @auto',fileName,color='red')
@@ -596,6 +675,7 @@ class atFile:
             p.clearDirty()
             c.setChanged(oldChanged)
         else:
+            self.writeCachedTree(p, cachefile)
             g.doHook('after-auto', p = p)  # call after-auto callbacks
     #@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
     #@+node:ekr.20090225080846.3:readOneAtEditNode (atFile)

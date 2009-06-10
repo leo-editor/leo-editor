@@ -11,7 +11,7 @@ Concurrency is possible because the values are stored in separate files. Hence
 the "database" is a directory where *all* files are governed by PickleShare.
 
 Example usage::
-    
+
     from pickleshare import *
     db = PickleShareDB('~/testpickleshare')
     db.clear()
@@ -48,15 +48,16 @@ class PickleShareDB(UserDict.DictMixin):
     """ The main 'connection' object for PickleShare database """
     def __init__(self,root, protocol = 'pickle'):
         """ Initialize a PickleShare object that will manage the specied directory
-        
+
         root: The directory that contains the data. Created if it doesn't exist.
-        
+
         protocol: one of 
-        
+
             * 'pickle' (universal, default) 
+            * 'picklez' (compressed pickle)         
             * 'marshal' (fast, limited type support)
             * 'json' : brief, human-readable, very limited type support
-        
+
         Protol 'json' requires installation of simplejson module
         """
         self.root = Path(root).expanduser().abspath()
@@ -64,14 +65,14 @@ class PickleShareDB(UserDict.DictMixin):
             self.root.makedirs()
         # cache has { 'key' : (obj, orig_mod_time) }
         self.cache = {}
-        
+
         # protocol:
         # self.dumper(value, fileobj)
         # self.loader(fileobj)
-        
+
         if protocol == 'pickle':
             import cPickle as pickle
-            
+
             self.loader = pickle.load
             self.dumper = pickle.dump
         elif protocol == 'marshal':
@@ -83,6 +84,22 @@ class PickleShareDB(UserDict.DictMixin):
             self.loader = simplejson.load
             self.dumper = simplejson.dump
 
+        elif protocol == 'picklez':
+
+            # import here, because not always available
+            import zlib
+            import cPickle as pickle
+
+            def loadz(fileobj):
+                val = pickle.loads(zlib.decompress(fileobj.read()))
+                return val
+
+            def dumpz(val, fileobj):
+                compressed = zlib.compress(pickle.dumps(val, pickle.HIGHEST_PROTOCOL))
+                fileobj.write(compressed)
+
+            self.loader = loadz
+            self.dumper = dumpz
     def __getitem__(self,key):
         """ db['key'] reading """
         fil = self.root / key
@@ -98,10 +115,10 @@ class PickleShareDB(UserDict.DictMixin):
             obj = self.loader(fil.open())
         except:
             raise KeyError(key)
-            
+
         self.cache[fil] = (obj,mtime)
         return obj
-    
+
     def __setitem__(self,key,value):
         """ db['key'] = 5 """
         fil = self.root / key
@@ -114,7 +131,7 @@ class PickleShareDB(UserDict.DictMixin):
         except OSError,e:
             if e.errno != 2:
                 raise
-    
+
     def hset(self, hashroot, key, value):
         """ hashed set """
         hroot = self.root / hashroot
@@ -125,25 +142,25 @@ class PickleShareDB(UserDict.DictMixin):
         d.update( {key : value})
         self[hfile] = d                
 
-    
-    
+
+
     def hget(self, hashroot, key, default = _sentinel, fast_only = True):
         """ hashed get """
         hroot = self.root / hashroot
         hfile = hroot / gethashfile(key)
-        
+
         d = self.get(hfile, _sentinel )
         #print "got dict",d,"from",hfile
         if d is _sentinel:
             if fast_only:
                 if default is _sentinel:
                     raise KeyError(key)
-                    
+
                 return default
-            
+
             # slow mode ok, works even after hcompress()
             d = self.hdict(hashroot)
-        
+
         return d.get(key, default)
 
     def hdict(self, hashroot):
@@ -154,9 +171,9 @@ class PickleShareDB(UserDict.DictMixin):
         if last.endswith('xx'):
             # print "using xx"
             hfiles = [last] + hfiles[:-1]
-            
+
         all = {}
-        
+
         for f in hfiles:
             # print "using",f
             try:
@@ -164,17 +181,17 @@ class PickleShareDB(UserDict.DictMixin):
             except KeyError:
                 print "Corrupt",f,"deleted - hset is not threadsafe!"
                 del self[f]
-                
+
             self.uncache(f)
-        
+
         return all
-    
+
     def hcompress(self, hashroot):
         """ Compress category 'hashroot', so hset is fast again
-        
+
         hget will fail if fast_only is True for compressed items (that were
         hset before hcompress).
-        
+
         """
         hfiles = self.keys(hashroot + "/*")
         all = {}
@@ -182,16 +199,16 @@ class PickleShareDB(UserDict.DictMixin):
             # print "using",f
             all.update(self[f])
             self.uncache(f)
-            
+
         self[hashroot + '/xx'] = all
         for f in hfiles:
             p = self.root / f
             if p.basename() == 'xx':
                 continue
             p.remove()
-            
-            
-        
+
+
+
     def __delitem__(self,key):
         """ del db["key"] """
         fil = self.root / key
@@ -202,14 +219,14 @@ class PickleShareDB(UserDict.DictMixin):
             # notfound and permission denied are ok - we
             # lost, the other process wins the conflict
             pass
-        
+
     def _normalized(self, p):
         """ Make a key suitable for user's eyes """
         return str(self.root.relpathto(p)).replace('\\','/')
-    
+
     def keys(self, globpat = None):
         """ All keys in DB, or all keys matching a glob"""
-        
+
         if globpat is None:
             files = self.root.walkfiles()
         else:
@@ -218,31 +235,31 @@ class PickleShareDB(UserDict.DictMixin):
 
     def uncache(self,*items):
         """ Removes all, or specified items from cache
-        
+
         Use this after reading a large amount of large objects
         to free up memory, when you won't be needing the objects
         for a while.
-         
+
         """
         if not items:
             self.cache = {}
         for it in items:
             self.cache.pop(it,None)
-            
+
     def waitget(self,key, maxwaittime = 60 ):
         """ Wait (poll) for a key to get a value
-        
+
         Will wait for `maxwaittime` seconds before raising a KeyError.
         The call exits normally if the `key` field in db gets a value
         within the timeout period.
-        
+
         Use this for synchronizing different processes or for ensuring
         that an unfortunately timed "db['key'] = newvalue" operation 
         in another process (which causes all 'get' operation to cause a 
         KeyError for the duration of pickling) won't screw up your program 
         logic. 
         """
-        
+
         wtimes = [0.2] * 3 + [0.5] * 2 + [1]
         tries = 0
         waited = 0
@@ -252,24 +269,24 @@ class PickleShareDB(UserDict.DictMixin):
                 return val
             except KeyError:
                 pass
-            
+
             if waited > maxwaittime:
                 raise KeyError(key)
-            
+
             time.sleep(wtimes[tries])
             waited+=wtimes[tries]
             if tries < len(wtimes) -1:
                 tries+=1
-    
+
     def getlink(self,folder):
         """ Get a convenient link for accessing items  """
         return PickleShareLink(self, folder)
-    
+
     def __repr__(self):
         return "PickleShareDB('%s')" % self.root
-        
-        
-                
+
+
+
 class PickleShareLink:
     """ A shortdand for accessing nested PickleShare data conveniently.
 
@@ -278,11 +295,11 @@ class PickleShareLink:
         lnk = db.getlink('myobjects/test')
         lnk.foo = 2
         lnk.bar = lnk.foo + 5
-    
+
     """
     def __init__(self, db, keydir ):    
         self.__dict__.update(locals())
-        
+
     def __getattr__(self,key):
         return self.__dict__['db'][self.__dict__['keydir']+'/' + key]
     def __setattr__(self,key,val):
@@ -293,8 +310,8 @@ class PickleShareLink:
         return "<PickleShareLink '%s': %s>" % (
             self.__dict__['keydir'],
             ";".join([Path(k).basename() for k in keys]))
-            
-        
+
+
 def test():
     db = PickleShareDB('~/testpickleshare')
     db.clear()
@@ -330,22 +347,22 @@ def stress():
 
             if j%33 == 0:
                 time.sleep(0.02)
-            
+
             db[str(j)] = db.get(str(j), []) + [(i,j,"proc %d" % os.getpid())]
             db.hset('hash',j, db.hget('hash',j,15) + 1 )
-            
+
         print i,
         sys.stdout.flush()
         if i % 10 == 0:
             db.uncache()
-    
+
 def main():
     import textwrap
     usage = textwrap.dedent("""\
     pickleshare - manage PickleShare databases 
-    
+
     Usage:
-        
+
         pickleshare dump /path/to/db > dump.txt
         pickleshare load /path/to/db < dump.txt
         pickleshare test /path/to/db
@@ -355,7 +372,7 @@ def main():
     if len(sys.argv) < 2:
         print usage
         return
-        
+
     cmd = sys.argv[1]
     args = sys.argv[2:]
     if cmd == 'dump':
@@ -377,8 +394,8 @@ def main():
     elif cmd == 'test':
         test()
         stress()
-    
+
 if __name__== "__main__":
     main()
-    
-    
+
+
