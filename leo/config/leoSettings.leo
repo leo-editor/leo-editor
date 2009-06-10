@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,0,0,0"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -98,9 +98,10 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
-<v t="ekr.20070926132045"><vh>Common @button nodes</vh>
-<v t="ekr.20070926082407"><vh>@buttons</vh>
+<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20070926132045" a="E"><vh>Common @button nodes</vh>
+<v t="ekr.20070926082407" a="E"><vh>@buttons</vh>
+<v t="ekr.20090610164636.8489"><vh>@button add-test @key=alt-9</vh></v>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
 <v t="ekr.20071009135515"><vh>@@button rst3</vh></v>
 </v>
@@ -7889,6 +7890,22 @@ A reasonable alternative would be:
 <t tx="ekr.20090531084727.10894"></t>
 <t tx="ekr.20090531084727.10895"></t>
 <t tx="ekr.20090531084727.10896"></t>
+<t tx="ekr.20090610164636.8489">u = c.undoer
+w = c.frame.body.bodyCtrl
+p2 = p.insertAsNthChild(0)
+c.setHeadString(p2,'@test xxx')
+s = '''\
+if g.unitTesting:
+    c,p = g.getTestVars()
+
+    '''
+c.setBodyString(p2,s)
+c.selectPosition(p2)
+c.redraw()
+w.setInsertPoint(len(s))
+c.bodyWantsFocus()
+c.outerUpdate()
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

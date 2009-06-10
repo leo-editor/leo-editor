@@ -1762,6 +1762,7 @@ class leoMenu:
     def getMenu (self,menuName):
 
         cmn = self.canonicalizeMenuName(menuName)
+        # if cmn == 'openwith': g.trace('leoMenu',g.dictToString(self.menus))
         return self.menus.get(cmn)
 
     def setMenu (self,menuName,menu):

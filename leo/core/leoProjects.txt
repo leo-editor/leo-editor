@@ -21915,6 +21915,133 @@ def setBodyTextAfterSelect (self,p,old_p):
 #@-node:ekr.20090608081524.6109:setBodyTextAfterSelect
 #@-node:ekr.20040803072955.128:leoTree.select & helpers
 #@-node:ekr.20090605075411.6437:Support multiple body editors
+#@+node:ekr.20090603131419.6428:Created qt open-with menu
+# Note: with the present code, the open-with menu *is* being
+# created at the bottom of the file menu.  Instead, it should replace the present menu.
+#@nonl
+#@+node:ekr.20031218072017.4116:createOpenWithMenuFromTable & helper
+def createOpenWithMenuFromTable (self,table):
+
+    '''Entries in the table passed to createOpenWithMenuFromTable are
+tuples of the form (commandName,shortcut,data).
+
+- command is one of "os.system", "os.startfile", "os.spawnl", "os.spawnv" or "exec".
+- shortcut is a string describing a shortcut, just as for createMenuItemsFromTable.
+- data is a tuple of the form (command,arg,ext).
+
+Leo executes command(arg+path) where path is the full path to the temp file.
+If ext is not None, the temp file has the given extension.
+Otherwise, Leo computes an extension based on the @language directive in effect.'''
+
+    trace = False and not g.unitTesting
+    c = self.c
+    g.app.openWithTable = table # Override any previous table.
+    # Delete the previous entry.
+    parent = self.getMenu("File")
+    if trace: g.trace('parent',parent)
+    if not parent:
+        if not g.app.batchMode:
+            g.es('','createOpenWithMenuFromTable:','no File menu',color="red")
+        return
+
+    label = self.getRealMenuName("Open &With...")
+    amp_index = label.find("&")
+    label = label.replace("&","")
+    try:
+        index = parent.index(label)
+        parent.delete(index)
+    except:
+        try:
+            index = parent.index("Open With...")
+            parent.delete(index)
+        except:
+            if trace:
+                g.trace('unexpected exception')
+                g.es_exception()
+            return
+    # Create the Open With menu.
+    openWithMenu = self.createOpenWithMenu(parent,label,index,amp_index)
+    if not openWithMenu:
+        if trace: g.trace('openWithMenu returns None')
+        return
+    self.setMenu("Open With...",openWithMenu)
+    # Create the menu items in of the Open With menu.
+    for entry in table:
+        if len(entry) != 3: # 6/22/03
+            g.es('','createOpenWithMenuFromTable:','invalid data',color="red")
+            return
+    self.createOpenWithMenuItemsFromTable(openWithMenu,table)
+    for entry in table:
+        name,shortcut,data = entry
+        c.k.bindOpenWith (shortcut,name,data)
+#@+node:ekr.20051022043608.1:createOpenWithMenuItemsFromTable
+def createOpenWithMenuItemsFromTable (self,menu,table):
+
+    '''Create an entry in the Open with Menu from the table.
+
+    Each entry should be a sequence with 2 or 3 elements.'''
+
+    c = self.c ; k = c.k
+
+    if g.app.unitTesting: return
+
+    for data in table:
+        << get label, accelerator & command or continue >>
+        # g.trace(label,accelerator)
+        realLabel = self.getRealMenuName(label)
+        underline=realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        callback = self.defineOpenWithMenuCallback(openWithData)
+
+        c.add_command(menu,label=realLabel,
+            accelerator=accelerator or '',
+            command=callback,underline=underline)
+#@+node:ekr.20051022043713.1:<< get label, accelerator & command or continue >>
+ok = (
+    type(data) in (type(()), type([])) and
+    len(data) in (2,3)
+)
+
+if ok:
+    if len(data) == 2:
+        label,openWithData = data ; accelerator = None
+    else:
+        label,accelerator,openWithData = data
+        accelerator = k.shortcutFromSetting(accelerator)
+        accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
+else:
+    g.trace('bad data in Open With table: %s' % repr(data))
+    continue # Ignore bad data
+#@-node:ekr.20051022043713.1:<< get label, accelerator & command or continue >>
+#@-node:ekr.20051022043608.1:createOpenWithMenuItemsFromTable
+#@-node:ekr.20031218072017.4116:createOpenWithMenuFromTable & helper
+#@+node:ekr.20031218072017.3807:getMenu, setMenu, destroyMenu
+def getMenu (self,menuName):
+
+    cmn = self.canonicalizeMenuName(menuName)
+    # if cmn == 'openwith': g.trace('leoMenu',g.dictToString(self.menus))
+    return self.menus.get(cmn)
+
+def setMenu (self,menuName,menu):
+
+    cmn = self.canonicalizeMenuName(menuName)
+    self.menus [cmn] = menu
+
+def destroyMenu (self,menuName):
+
+    cmn = self.canonicalizeMenuName(menuName)
+    del self.menus[cmn]
+#@-node:ekr.20031218072017.3807:getMenu, setMenu, destroyMenu
+#@+node:ekr.20031218072017.3783:canonicalizeMenuName & cononicalizeTranslatedMenuName
+def canonicalizeMenuName (self,name):
+
+    return ''.join([ch for ch in name.lower() if ch.isalnum()])
+
+def canonicalizeTranslatedMenuName (self,name):
+
+    return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
+#@-node:ekr.20031218072017.3783:canonicalizeMenuName & cononicalizeTranslatedMenuName
+#@-node:ekr.20090603131419.6428:Created qt open-with menu
 #@-node:ekr.20090401105902.3:Features
 #@-node:ekr.20080917153158.11:4.6 b2
 #@-all

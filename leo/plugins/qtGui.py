@@ -5121,45 +5121,6 @@ class leoQtMenu (leoMenu.leoMenu):
                 'menu_text_font_slant',  'menu_text_font_weight',
                 c.config.defaultMenuFontSize)
     #@-node:ekr.20081121105001.355:leoQtMenu.__init__
-    #@+node:ekr.20081121105001.356:Activate menu commands (to do)
-    #@+node:ekr.20081121105001.357:qtMenu.activateMenu
-    def activateMenu (self,menuName):
-
-        c = self.c ;  top = c.frame.top
-        # topx,topy = top.winfo_rootx(),top.winfo_rooty()
-        # menu = c.frame.menu.getMenu(menuName)
-
-        # if menu:
-            # d = self.computeMenuPositions()
-            # x = d.get(menuName)
-            # if x is None:
-                # x = 0 ; g.trace('oops, no menu offset: %s' % menuName)
-
-            # menu.tk_popup(topx+d.get(menuName,0),topy) # Fix by caugm.  Thanks!
-        # else:
-            # g.trace('oops, no menu: %s' % menuName)
-    #@-node:ekr.20081121105001.357:qtMenu.activateMenu
-    #@+node:ekr.20081121105001.358:qtMenu.computeMenuPositions
-    def computeMenuPositions (self):
-
-        # A hack.  It would be better to set this when creating the menus.
-        menus = ('File','Edit','Outline','Plugins','Cmds','Window','Help')
-
-        # Compute the *approximate* x offsets of each menu.
-        d = {}
-        n = 0
-        # for z in menus:
-            # menu = self.getMenu(z)
-            # fontName = menu.cget('font')
-            # font = tkFont.Font(font=fontName)
-            # # g.pr('%8s' % (z),menu.winfo_reqwidth(),menu.master,menu.winfo_x())
-            # d [z] = n
-            # # A total hack: sorta works on windows.
-            # n += font.measure(z+' '*4)+1
-
-        return d
-    #@-node:ekr.20081121105001.358:qtMenu.computeMenuPositions
-    #@-node:ekr.20081121105001.356:Activate menu commands (to do)
     #@+node:ekr.20081121105001.359:Tkinter menu bindings
     # See the Tk docs for what these routines are to do
     #@+node:ekr.20081121105001.360:Methods with Tk spellings
@@ -5222,7 +5183,7 @@ class leoQtMenu (leoMenu.leoMenu):
         if menu:
             menu.addSeparator()
     #@-node:ekr.20081121105001.363:add_separator
-    #@+node:ekr.20081121105001.364:delete TODO
+    #@+node:ekr.20081121105001.364:delete
     def delete (self,menu,realItemName='<no name>'):
 
         """Wrapper for the Tkinter delete menu method."""
@@ -5231,7 +5192,7 @@ class leoQtMenu (leoMenu.leoMenu):
 
         # if menu:
             # return menu.delete(realItemName)
-    #@-node:ekr.20081121105001.364:delete TODO
+    #@-node:ekr.20081121105001.364:delete
     #@+node:ekr.20081121105001.365:delete_range (leoQtMenu)
     def delete_range (self,menu,n1,n2):
 
@@ -5252,14 +5213,14 @@ class leoQtMenu (leoMenu.leoMenu):
         # if menu:
             # return menu.destroy()
     #@-node:ekr.20081121105001.366:destroy
-    #@+node:ekr.20090603123442.3785:index (leoQtMenu) TODO
+    #@+node:ekr.20090603123442.3785:index (leoQtMenu)
     def index (self,label):
 
         '''Return the index of the menu with the given label.'''
         # g.trace(label)
 
         return 0 ###
-    #@-node:ekr.20090603123442.3785:index (leoQtMenu) TODO
+    #@-node:ekr.20090603123442.3785:index (leoQtMenu)
     #@+node:ekr.20081121105001.367:insert
     def insert (self,menuName,position,label,command,underline=None):
 
@@ -5339,16 +5300,16 @@ class leoQtMenu (leoMenu.leoMenu):
 
         This is called from leoMenu.createOpenWithMenuFromTable.'''
 
-        trace = False and not g.unitTesting
-        c = self.c ; leoFrame = c.frame
-        if trace: g.trace(parent,repr(label),repr(index),repr(amp_index))
+        # Use the existing Open With menu if possible.
+        menu = self.getMenu('openwith')
 
-        menu = self.new_menu(parent,tearoff=False,label=label)
-            # Menu inherits from both QMenu and leoQtMenu.
-        if menu:
-            menu.insert_cascade(parent,index,label,menu,underline=amp_index)
+        if not menu:
+            menu = self.new_menu(parent,tearoff=False,label=label)
+            menu.insert_cascade(parent,index,
+                label,menu,underline=amp_index)
 
         return menu
+    #@nonl
     #@-node:ekr.20081121105001.373:createOpenWithMenu (QtMenu)
     #@+node:ekr.20081121105001.374:disableMenu
     def disableMenu (self,menu,name):
@@ -5431,6 +5392,21 @@ class leoQtMenu (leoMenu.leoMenu):
     #@-node:ekr.20081121105001.377:setMenuLabel
     #@-node:ekr.20081121105001.370:Methods with other spellings (Qtmenu)
     #@-node:ekr.20081121105001.359:Tkinter menu bindings
+    #@+node:ekr.20081121105001.356:Activate menu commands
+    def activateMenu (self,menuName):
+
+        '''Activate the menu with the given name'''
+
+        c = self.c
+        menu = self.getMenu(menuName)
+        if menu:
+            top = c.frame.top.ui
+            pos = menu.pos() # Doesn't do any good.
+            r = top.geometry()
+            pt = QtCore.QPoint(r.x()+pos.x(),r.y())
+            menu.exec_(pt)
+    #@nonl
+    #@-node:ekr.20081121105001.356:Activate menu commands
     #@+node:ekr.20081121105001.378:getMacHelpMenu
     def getMacHelpMenu (self,table):
 

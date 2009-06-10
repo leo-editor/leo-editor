@@ -997,6 +997,7 @@
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
 <v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
 <v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
+<v t="ekr.20080904102243.3"></v>
 </v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 <v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
@@ -2230,7 +2231,7 @@
 <v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
 </v>
 </v>
-<v t="ekr.20090529115704.4569"><vh>@test delete unittest shadow directory</vh></v>
+<v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 </v>
 <v t="ekr.20071113200638.1"><vh>leoTangle</vh>
 <v t="ekr.20071113090055.1"><vh>@test tangle.scanAllDirectives</vh></v>
@@ -2310,7 +2311,6 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
