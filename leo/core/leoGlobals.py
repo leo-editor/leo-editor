@@ -2522,6 +2522,7 @@ def handleUrlInUrlNode(url):
 
     # c = self.c
     # g.trace(url)
+    if g.unitTesting: return
     #@    << check the url; return if bad >>
     #@+node:tbrown.20090219095555.62:<< check the url; return if bad >>
     #@+at 

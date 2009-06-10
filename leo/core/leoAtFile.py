@@ -4852,6 +4852,7 @@ class atFile:
             if verbose:
                 self.error("exception removing: %s" % fileName)
                 g.es_exception()
+                g.trace(g.callers(5))
             return False
     #@-node:ekr.20050104132018:atFile.remove
     #@+node:ekr.20050104132026:stat
