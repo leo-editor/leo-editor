@@ -33,6 +33,9 @@ b2. It's time to stamp on the distractions.
 # Including supporting multiple body editors
 #@nonl
 #@+node:ekr.20090603131419.6428:Create qt open-with menu
+# Note: with the present code, the open-with menu *is* being
+# created at the bottom of the file menu.  Instead, it should replace the present menu.
+#@nonl
 #@+node:ekr.20031218072017.4116:createOpenWithMenuFromTable & helper
 def createOpenWithMenuFromTable (self,table):
 

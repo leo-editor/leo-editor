@@ -4470,11 +4470,9 @@ class leoQtFrame (leoFrame.leoFrame):
     #@-node:ekr.20081121105001.296:Gui-dependent commands
     #@+node:ekr.20081121105001.317:Qt bindings... (qtFrame)
     def bringToFront (self):
-        # g.trace()
-        self.top.showNormal()
+        self.lift()
     def deiconify (self):
-        # g.trace()
-        self.top.showNormal()
+        self.lift()
     def getFocus(self):
         return g.app.gui.get_focus() 
     def get_window_info(self):
@@ -4485,11 +4483,11 @@ class leoQtFrame (leoFrame.leoFrame):
         # g.trace(w,h,x,y)
         return w,h,x,y
     def iconify(self):
-        # g.trace()
         self.top.showMinimized()
     def lift (self):
-        # g.trace()
+        self.top.showNormal()
         self.top.activateWindow()
+        self.top.raise_()
     def update (self):
         pass
     def getTitle (self):
@@ -7721,9 +7719,8 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         verbose = False
 
         c = self.c ; tree = c.frame.tree
-        self.w = c.frame.body.bodyCtrl.widget ###
-        ### s = unicode(self.w.toPlainText())
-        s = p.b ###
+        self.w = c.frame.body.bodyCtrl.widget
+        s = p.b
         self.colorer.init(p,s)
         n = self.colorer.recolorCount
         if trace: g.trace(p.h)
