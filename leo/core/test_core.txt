@@ -3900,6 +3900,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 line 1 line 3
@@ -3945,6 +3946,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 node 2 line 2
@@ -3978,6 +3980,7 @@ node 1 line 1
 @verbatim
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@ should be handled by verbatim
 line 1 line 3
@@ -3995,6 +3998,7 @@ node 2 line 3
 #@nonl
 #@+node:ekr.20090529061522.6586:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -4022,6 +4026,7 @@ node 2 line 3
 #@nonl
 #@+node:ekr.20090529061522.6590:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -4076,6 +4081,7 @@ node 2 line 2
 #@nonl
 #@+node:ekr.20090529061522.6600:node 1
 node 1 line 1
+@verbatim
 @verbatim
 @verbatim
 @verbatim
