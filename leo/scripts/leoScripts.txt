@@ -337,7 +337,7 @@ for p in p.self_and_subtree_iter():
        g.es("File %s is now shadowed" % filename)
 #@nonl
 #@-node:ekr.20060824181946:@@button shadow
-#@+node:ville.20090508224531.9799:@@button git-dump
+#@+node:ville.20090508224531.9799:@button git-dump
 """ Dump nodes to ~/.leo/dump git repository.
 
 Before using this, you need to:
@@ -383,8 +383,8 @@ out = os.popen('git commit -m "Leo autocommit"').read()
 g.es("committed")
 g.es(out)
 g.es('Outline in ' + os.path.abspath(titlename))
-
-#@-node:ville.20090508224531.9799:@@button git-dump
+#@nonl
+#@-node:ville.20090508224531.9799:@button git-dump
 #@-node:ekr.20060531090036:Contributed @button nodes
 #@+node:ekr.20051110105946:Find scripts
 #@+node:ekr.20051110105027.159:Find and replace all functions in leoGlobals.py
@@ -5382,8 +5382,12 @@ import string
 @verbatim
 @verbatim
 @verbatim
+@verbatim
+@verbatim
 #@verbatim
 #@count 10000
+@verbatim
+@verbatim
 @verbatim
 @verbatim
 @verbatim

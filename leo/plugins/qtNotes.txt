@@ -2,8 +2,10 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090430102239.1:Before b2
-#@-node:ekr.20090430102239.1:Before b2
+#@+node:ekr.20090610183529.3630:Before b2
+#@+node:ekr.20090610183529.3631:Colorize multiple body editors
+#@-node:ekr.20090610183529.3631:Colorize multiple body editors
+#@-node:ekr.20090610183529.3630:Before b2
 #@+node:ekr.20090430102239.13:Before 4.6 final
 #@+node:ekr.20090530055308.3791:Remember pane split ratio
 @nocolor-node
@@ -9086,6 +9088,587 @@ def getMacHelpMenu (self,table):
 #@-node:ekr.20081121105001.378:getMacHelpMenu
 #@-node:ekr.20081121105001.354:class leoQtMenu (leoMenu)
 #@-node:ekr.20090304084841.15:Completed open-with menu
+#@+node:ekr.20090603073641.3772:Fixed undo (again)
+# Locked out onTextChanged in the leoQTextEdit.delete/insert methods.
+#@nonl
+#@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
+#@+node:ekr.20090205153624.11:delete (avoid call to setAllText)
+def delete(self,i,j=None):
+
+    trace = False and not g.unitTesting
+    c,w = self.c,self.widget
+    colorer = c.frame.body.colorizer.highlighter.colorer
+    n = colorer.recolorCount
+
+    i = self.toGuiIndex(i)
+    if j is None: j = i+1
+    j = self.toGuiIndex(j)
+
+    # Set a hook for the colorer.
+    colorer.initFlag = True
+
+    sb = w.verticalScrollBar()
+    pos = sb.sliderPosition()
+    cursor = w.textCursor()
+
+    try:
+        self.changingText = True # Disable onTextChanged
+        cursor.setPosition(i)
+        moveCount = abs(j-i)
+        cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
+        cursor.removeSelectedText()
+    finally:
+        self.changingText = False
+
+    sb.setSliderPosition(pos)
+
+    if trace:
+        g.trace('%s calls to recolor' % (
+            colorer.recolorCount-n))
+#@-node:ekr.20090205153624.11:delete (avoid call to setAllText)
+#@+node:ekr.20081121105001.579:flashCharacter (leoQTextEditWidget)
+def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+
+    # numbered color names don't work in Ubuntu 8.10, so...
+    if bg[-1].isdigit() and bg[0] != '#':
+        bg = bg[:-1]
+    if fg[-1].isdigit() and fg[0] != '#':
+        fg = fg[:-1]
+
+    # This might causes problems during unit tests.
+    # The selection point isn't restored in time.
+    if g.app.unitTesting: return
+
+    w = self.widget # A QTextEdit.
+    e = QtGui.QTextCursor
+
+    def after(func):
+        QtCore.QTimer.singleShot(delay,func)
+
+    def addFlashCallback(self=self,w=w):
+        n,i = self.flashCount,self.flashIndex
+
+        cursor = w.textCursor() # Must be the widget's cursor.
+        cursor.setPosition(i)
+        cursor.movePosition(e.Right,e.KeepAnchor,1)
+
+        extra = w.ExtraSelection()
+        extra.cursor = cursor
+        if self.flashBg: extra.format.setBackground(QtGui.QColor(self.flashBg))
+        if self.flashFg: extra.format.setForeground(QtGui.QColor(self.flashFg))
+        self.extraSelList = [extra] # keep the reference.
+        w.setExtraSelections(self.extraSelList)
+
+        self.flashCount -= 1
+        after(removeFlashCallback)
+
+    def removeFlashCallback(self=self,w=w):
+        w.setExtraSelections([])
+        if self.flashCount > 0:
+            after(addFlashCallback)
+        else:
+            w.setFocus()
+
+    # g.trace(flashes,fg,bg)
+    self.flashCount = flashes
+    self.flashIndex = i
+    self.flashBg = g.choose(bg.lower()=='same',None,bg)
+    self.flashFg = g.choose(fg.lower()=='same',None,fg)
+
+    addFlashCallback()
+#@-node:ekr.20081121105001.579:flashCharacter (leoQTextEditWidget)
+#@+node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
+def getAllText(self):
+
+    #g.trace("getAllText", g.callers(5))
+    w = self.widget
+    s = unicode(w.toPlainText())
+
+    # Doesn't work: gets only the line containing the cursor.
+    # s = unicode(w.textCursor().block().text())
+
+    # g.trace(repr(s))
+    return s
+#@nonl
+#@-node:ekr.20081121105001.580:getAllText (leoQTextEditWidget)
+#@+node:ekr.20081121105001.581:getInsertPoint
+def getInsertPoint(self):
+
+    return self.widget.textCursor().position()
+#@-node:ekr.20081121105001.581:getInsertPoint
+#@+node:ekr.20081121105001.582:getSelectionRange
+def getSelectionRange(self,sort=True):
+
+    w = self.widget
+    tc = w.textCursor()
+    i,j = tc.selectionStart(),tc.selectionEnd()
+    # g.trace(i,j,g.callers(4))
+    return i,j
+#@nonl
+#@-node:ekr.20081121105001.582:getSelectionRange
+#@+node:ekr.20081121105001.583:getYScrollPosition
+def getYScrollPosition(self):
+
+    w = self.widget
+    sb = w.verticalScrollBar()
+    i = sb.sliderPosition()
+
+    # Return a tuple, only the first of which is used.
+    return i,i 
+#@-node:ekr.20081121105001.583:getYScrollPosition
+#@+node:ekr.20081121105001.584:hasSelection
+def hasSelection(self):
+
+    return self.widget.textCursor().hasSelection()
+#@-node:ekr.20081121105001.584:hasSelection
+#@+node:ekr.20090531084925.3773:scrolling (QTextEdit)
+#@+node:ekr.20090531084925.3775:indexIsVisible and linesPerPage
+# This is not used if linesPerPage exists.
+def indexIsVisible (self,i):
+    return False
+
+def linesPerPage (self):
+
+    '''Return the number of lines presently visible.'''
+
+    w = self.widget
+    h = w.size().height()
+    lineSpacing = w.fontMetrics().lineSpacing()
+    n = h/lineSpacing
+    # g.trace(n,h,lineSpacing)
+    return n
+#@-node:ekr.20090531084925.3775:indexIsVisible and linesPerPage
+#@+node:ekr.20090531084925.3776:scrollDelegate (QTextEdit)
+def scrollDelegate(self,kind):
+
+    '''Scroll a QTextEdit up or down one page.
+    direction is in ('down-line','down-page','up-line','up-page')'''
+
+    c = self.c ; w = self.widget
+    vScroll = w.verticalScrollBar()
+    h = w.size().height()
+    lineSpacing = w.fontMetrics().lineSpacing()
+    n = h/lineSpacing
+    n = max(2,n-3)
+    if   kind == 'down-half-page': delta = n/2
+    elif kind == 'down-line':      delta = 1
+    elif kind == 'down-page':      delta = n
+    elif kind == 'up-half-page':   delta = -n/2
+    elif kind == 'up-line':        delta = -1
+    elif kind == 'up-page':        delta = -n
+    else:
+        delta = 0 ; g.trace('bad kind:',kind)
+    val = vScroll.value()
+    # g.trace(kind,n,h,lineSpacing,delta,val)
+    vScroll.setValue(val+(delta*lineSpacing))
+    c.bodyWantsFocus()
+#@-node:ekr.20090531084925.3776:scrollDelegate (QTextEdit)
+#@-node:ekr.20090531084925.3773:scrolling (QTextEdit)
+#@+node:ekr.20090205153624.12:insert (avoid call to setAllText)
+def insert(self,i,s):
+
+    trace = False and not g.unitTesting
+    c,w = self.c,self.widget
+    colorer = c.frame.body.colorizer.highlighter.colorer
+    n = colorer.recolorCount
+
+    # Set a hook for the colorer.
+    colorer.initFlag = True
+
+    i = self.toGuiIndex(i)
+    sb = w.verticalScrollBar()
+    pos = sb.sliderPosition()
+    cursor = w.textCursor()
+    try:
+        self.changingText = True # Disable onTextChanged.
+        cursor.setPosition(i)
+        cursor.insertText(s) # This cause an incremental call to recolor.
+    finally:
+        self.changingText = False
+
+    sb.setSliderPosition(pos)
+
+    if trace:
+        g.trace('%s calls to recolor' % (
+            colorer.recolorCount-n))
+#@-node:ekr.20090205153624.12:insert (avoid call to setAllText)
+#@+node:ekr.20081121105001.585:see
+def see(self,i):
+
+    self.widget.ensureCursorVisible()
+#@nonl
+#@-node:ekr.20081121105001.585:see
+#@+node:ekr.20081121105001.586:seeInsertPoint
+def seeInsertPoint (self):
+
+    self.widget.ensureCursorVisible()
+#@-node:ekr.20081121105001.586:seeInsertPoint
+#@+node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
+def setAllText(self,s,insert=None):
+
+    '''Set the text of the widget.
+
+    If insert is None, the insert point, selection range and scrollbars are initied.
+    Otherwise, the scrollbars are preserved.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c,w = self.c,self.widget
+    colorizer = c.frame.body.colorizer
+    highlighter = colorizer.highlighter
+    colorer = highlighter.colorer
+
+    # Set a hook for the colorer.
+    colorer.initFlag = True
+
+    sb = w.verticalScrollBar()
+    if insert is None: i,pos = 0,0
+    else: i,pos = insert,sb.sliderPosition()
+
+    if trace: g.trace(id(w),len(s),c.p.h)
+    if trace and verbose: t1 = g.getTime()
+    try:
+        self.changingText = True # Disable onTextChanged
+        w.setPlainText(s)
+    finally:
+        self.changingText = False
+    if trace and verbose: g.trace(g.timeSince(t1))
+
+    self.setSelectionRange(i,i,insert=i)
+    sb.setSliderPosition(pos)
+#@nonl
+#@-node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
+#@+node:ekr.20081121105001.588:setInsertPoint
+def setInsertPoint(self,i):
+
+    w = self.widget
+
+    s = w.toPlainText()
+    i = max(0,min(i,len(s)))
+    cursor = w.textCursor()
+
+    # block = cursor.block()
+    # i = max(0,min(i,block.length()))
+
+    cursor.setPosition(i)
+    w.setTextCursor(cursor)
+#@-node:ekr.20081121105001.588:setInsertPoint
+#@+node:ekr.20081121105001.589:setSelectionRangeHelper & helper
+def setSelectionRangeHelper(self,i,j,insert):
+
+    w = self.widget
+    # g.trace('i',i,'j',j,'insert',insert,g.callers(4))
+    e = QtGui.QTextCursor
+    if i > j: i,j = j,i
+    n = self.lengthHelper()
+    i = max(0,min(i,n))
+    j = max(0,min(j,n))
+    k = max(0,min(j-i,n))
+    cursor = w.textCursor()
+    if i == j:
+        cursor.setPosition(i)
+    elif insert in (j,None):
+        cursor.setPosition(i)
+        cursor.movePosition(e.Right,e.KeepAnchor,k)
+    else:
+        cursor.setPosition(j)
+        cursor.movePosition(e.Left,e.KeepAnchor,k)
+
+    w.setTextCursor(cursor)
+#@+node:ekr.20081121105001.590:lengthHelper
+def lengthHelper(self):
+
+    '''Return the length of the text.'''
+
+    w = self.widget
+    cursor = w.textCursor()
+    cursor.movePosition(QtGui.QTextCursor.End)
+    n = cursor.position()
+    return n
+
+#@-node:ekr.20081121105001.590:lengthHelper
+#@-node:ekr.20081121105001.589:setSelectionRangeHelper & helper
+#@+node:ekr.20081121105001.591:setYScrollPosition
+def setYScrollPosition(self,pos):
+
+    # g.trace('pos',pos)
+
+    w = self.widget
+    sb = w.verticalScrollBar()
+    if pos is None: pos = 0
+    elif type(pos) == types.TupleType:
+        pos = pos[0]
+    sb.setSliderPosition(pos)
+#@-node:ekr.20081121105001.591:setYScrollPosition
+#@+node:ville.20090321082712.1: PythonIndex
+#@+node:ville.20090321082712.2:toPythonIndex
+def toPythonIndex (self,index):
+
+    w = self
+    te = self.widget
+
+    if type(index) == type(99):
+        return index
+    elif index == '1.0':
+        return 0
+    elif index == 'end':
+        return w.getLastPosition()
+    else:
+        # g.trace(repr(index))
+        #s = w.getAllText()
+        doc = te.document()
+        data = index.split('.')
+        if len(data) == 2:
+            row,col = data
+            row,col = int(row),int(col)
+            bl = doc.findBlockByNumber(row-1)
+            return bl.position() + col
+
+
+            #i = g.convertRowColToPythonIndex(s,row-1,col)
+
+            # g.trace(index,row,col,i,g.callers(6))
+            #return i
+        else:
+            g.trace('bad string index: %s' % index)
+            return 0
+
+toGuiIndex = toPythonIndex
+#@-node:ville.20090321082712.2:toPythonIndex
+#@+node:ville.20090321082712.3:toPythonIndexToRowCol (leoQTextEditWidget)
+def toPythonIndexRowCol(self,index):
+    #print "use idx",index
+
+    w = self 
+
+    if index == '1.0':
+        return 0, 0, 0
+    if index == 'end':
+        index = w.getLastPosition()
+
+    te = self.widget
+    #print te
+    doc = te.document()
+    i = w.toPythonIndex(index)
+    bl = doc.findBlock(i)
+    row = bl.blockNumber()
+    col = i - bl.position()
+
+    #s = w.getAllText()
+    #i = w.toPythonIndex(index)
+    #row,col = g.convertPythonIndexToRowCol(s,i)
+    #print "idx",i,row,col
+    return i,row,col
+#@-node:ville.20090321082712.3:toPythonIndexToRowCol (leoQTextEditWidget)
+#@-node:ville.20090321082712.1: PythonIndex
+#@+node:ville.20090324170325.63:get
+def get(self,i,j=None):
+    i = self.toGuiIndex(i)
+    if j is None: 
+        j = i+1
+    else:
+        j = self.toGuiIndex(j)
+    te = self.widget
+    doc = te.document()
+    bl = doc.findBlock(i)
+    #row = bl.blockNumber()
+    #col = index - bl.position()
+
+    # common case, e.g. one character    
+    if bl.contains(j):
+        s = unicode(bl.text())
+        offset = i - bl.position()
+
+        ret = s[ offset : offset + (j-i)]
+        #print "fastget",ret
+        return ret
+
+    # the next implementation is much slower, but will have to do        
+
+    #g.trace('Slow get()', g.callers(5))
+    s = self.getAllText()
+    i = self.toGuiIndex(i)
+
+    j = self.toGuiIndex(j)
+    return s[i:j]
+#@-node:ville.20090324170325.63:get
+#@-node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
+#@+node:ekr.20090205153624.11:delete (avoid call to setAllText)
+def delete(self,i,j=None):
+
+    trace = False and not g.unitTesting
+    c,w = self.c,self.widget
+    colorer = c.frame.body.colorizer.highlighter.colorer
+    n = colorer.recolorCount
+
+    i = self.toGuiIndex(i)
+    if j is None: j = i+1
+    j = self.toGuiIndex(j)
+
+    # Set a hook for the colorer.
+    colorer.initFlag = True
+
+    sb = w.verticalScrollBar()
+    pos = sb.sliderPosition()
+    cursor = w.textCursor()
+
+    try:
+        self.changingText = True # Disable onTextChanged
+        cursor.setPosition(i)
+        moveCount = abs(j-i)
+        cursor.movePosition(cursor.Right,cursor.KeepAnchor,moveCount)
+        cursor.removeSelectedText()
+    finally:
+        self.changingText = False
+
+    sb.setSliderPosition(pos)
+
+    if trace:
+        g.trace('%s calls to recolor' % (
+            colorer.recolorCount-n))
+#@-node:ekr.20090205153624.11:delete (avoid call to setAllText)
+#@+node:ekr.20090205153624.12:insert (avoid call to setAllText)
+def insert(self,i,s):
+
+    trace = False and not g.unitTesting
+    c,w = self.c,self.widget
+    colorer = c.frame.body.colorizer.highlighter.colorer
+    n = colorer.recolorCount
+
+    # Set a hook for the colorer.
+    colorer.initFlag = True
+
+    i = self.toGuiIndex(i)
+    sb = w.verticalScrollBar()
+    pos = sb.sliderPosition()
+    cursor = w.textCursor()
+    try:
+        self.changingText = True # Disable onTextChanged.
+        cursor.setPosition(i)
+        cursor.insertText(s) # This cause an incremental call to recolor.
+    finally:
+        self.changingText = False
+
+    sb.setSliderPosition(pos)
+
+    if trace:
+        g.trace('%s calls to recolor' % (
+            colorer.recolorCount-n))
+#@-node:ekr.20090205153624.12:insert (avoid call to setAllText)
+#@+node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
+def setAllText(self,s,insert=None):
+
+    '''Set the text of the widget.
+
+    If insert is None, the insert point, selection range and scrollbars are initied.
+    Otherwise, the scrollbars are preserved.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c,w = self.c,self.widget
+    colorizer = c.frame.body.colorizer
+    highlighter = colorizer.highlighter
+    colorer = highlighter.colorer
+
+    # Set a hook for the colorer.
+    colorer.initFlag = True
+
+    sb = w.verticalScrollBar()
+    if insert is None: i,pos = 0,0
+    else: i,pos = insert,sb.sliderPosition()
+
+    if trace: g.trace(id(w),len(s),c.p.h)
+    if trace and verbose: t1 = g.getTime()
+    try:
+        self.changingText = True # Disable onTextChanged
+        w.setPlainText(s)
+    finally:
+        self.changingText = False
+    if trace and verbose: g.trace(g.timeSince(t1))
+
+    self.setSelectionRange(i,i,insert=i)
+    sb.setSliderPosition(pos)
+#@nonl
+#@-node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
+#@+node:ekr.20081121105001.536:onTextChanged (qtText)
+def onTextChanged (self):
+
+    '''Update Leo after the body has been changed.
+
+    self.selecting is guaranteed to be True during
+    the entire selection process.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; p = c.p
+    tree = c.frame.tree ; w = self
+
+    # The linux events are different from xp events.
+    if w.changingText and not sys.platform.startswith('linux'):
+        if trace and verbose: g.trace('already changing')
+        return
+    if tree.tree_select_lockout:
+        if trace and verbose: g.trace('selecting lockout')
+        return
+    if tree.selecting:
+        if trace and verbose: g.trace('selecting')
+        return
+    if tree.redrawing:
+        if trace and verbose: g.trace('redrawing')
+        return
+    if not p:
+        return g.trace('*** no p')
+
+    newInsert = w.getInsertPoint()
+    newSel = w.getSelectionRange()
+    newText = w.getAllText() # Converts to unicode.
+
+    # Get the previous values from the tnode.
+    oldText = g.app.gui.toUnicode(p.v.t._bodyString)
+    if oldText == newText:
+        # This can happen as the result of undo.
+        # g.trace('*** unexpected non-change',color="red")
+        return
+
+    if trace: g.trace('**',len(newText),p.h,'\n',g.callers(8))
+
+    oldIns  = p.v.t.insertSpot
+    i,j = p.v.t.selectionStart,p.v.t.selectionLength
+    oldSel  = (i,j-i)
+    oldYview = None
+    undoType = 'Typing'
+    c.undoer.setUndoTypingParams(p,undoType,
+        oldText=oldText,newText=newText,
+        oldSel=oldSel,newSel=newSel,oldYview=oldYview)
+
+    # Update the tnode.
+    p.v.setBodyString(newText)
+    p.v.t.insertSpot = newInsert
+    i,j = newSel
+    i,j = self.toGuiIndex(i),self.toGuiIndex(j)
+    if i > j: i,j = j,i
+    p.v.t.selectionStart,p.v.t.selectionLength = (i,j-i)
+
+    # No need to redraw the screen.
+    if not self.useScintilla:
+        c.recolor()
+    if not c.changed and c.frame.initComplete:
+        c.setChanged(True)
+    c.frame.body.updateEditors()
+    # This will be called by onBodyChanged.
+    # c.frame.tree.updateIcon(p)
+
+    if 1: # This works, and is probably better.
+        # Set a hook for the colorer.
+        colorer = c.frame.body.colorizer.highlighter.colorer
+        colorer.initFlag = True
+    else:
+        # Allow incremental recoloring.
+        c.incrementalRecolorFlag = True
+        c.outerUpdate()
+#@nonl
+#@-node:ekr.20081121105001.536:onTextChanged (qtText)
+#@-node:ekr.20090603073641.3772:Fixed undo (again)
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@-node:ekr.20081208155215.12:Unused
