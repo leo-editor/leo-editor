@@ -573,10 +573,22 @@ class atFile:
             c.endEditing() 
         anyRead = False
         p = root.copy()
-        if partialFlag: after = p.nodeAfterTree()
+
+        scanned_tnodes = set()
+
+        if partialFlag: after = p.nodeAfterTree()    
         else: after = c.nullPosition()
+
         while p and p != after:
+            gnx = p.gnx
             # g.trace(p.h)
+
+            #skip clones
+            if gnx in scanned_tnodes:
+                p.moveToNodeAfterTree()
+                continue
+            scanned_tnodes.add(gnx)
+
             if not p.h.startswith('@'):
                 p.moveToThreadNext()
             elif p.isAtIgnoreNode():
@@ -625,8 +637,6 @@ class atFile:
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
 
-        if not g.unitTesting:
-            g.es("reading:",p.h)
 
         # Delete all children.
         while p.hasChildren():
@@ -639,9 +649,13 @@ class atFile:
             cachefile = None
 
         if cachefile is not None and cachefile in c.db:        
+            g.es('uncache:',p.h)
             tree = c.db[cachefile]
             g.create_tree_at_vnode(c, p.v, tree)
             return
+
+        if not g.unitTesting:
+            g.es("reading:",p.h)
 
         ic.createOutline(fileName,parent=p.copy(),atAuto=True)
 
