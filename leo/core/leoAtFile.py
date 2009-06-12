@@ -485,8 +485,9 @@ class atFile:
         cachefile = self._contentHashFile(root, fileContent)
 
         if cachefile in c.db:
-            if not g.unitTesting:
-                g.es('uncache:',root.h)
+            # This isn't so useful.
+            # if not g.unitTesting:
+                # g.es('uncache:',root.h)
             tree = c.db[cachefile]
             g.create_tree_at_vnode(c, root.v, tree)
             return
@@ -649,7 +650,7 @@ class atFile:
             cachefile = None
 
         if cachefile is not None and cachefile in c.db:        
-            g.es('uncache:',p.h)
+            # g.es('uncache:',p.h)
             tree = c.db[cachefile]
             g.create_tree_at_vnode(c, p.v, tree)
             return

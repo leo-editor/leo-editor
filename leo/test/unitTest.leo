@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="6,1,6,1"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -740,7 +740,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
+<v t="ekr.20070114140212"><vh>All unit tests</vh>
 <v t="ekr.20050120095423" annotate="7d71002e"><vh>Plugins</vh>
 <v t="ekr.20080309193654.1"><vh>@ignore</vh>
 <v t="ekr.20050120095423.21"><vh>print all loaded plugins</vh></v>
@@ -776,7 +776,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
+<v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -997,6 +997,7 @@
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
 <v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
 <v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
+<v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
 </v>
@@ -1670,7 +1671,7 @@
 <v t="ekr.20060130151716.1"><vh>@test togle find options commands</vh></v>
 <v t="ekr.20071113202153" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194424" a="E"><vh>leoFrame</vh>
+<v t="ekr.20071113194424"><vh>leoFrame</vh>
 <v t="ekr.20060912091510.1"><vh>@@test add-editor</vh></v>
 <v t="ekr.20090608174319.4791"><vh>@@test delete-editor</vh></v>
 <v t="ekr.20061104172236.22"><vh>@test c.frame.pasteText</vh></v>
