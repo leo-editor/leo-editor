@@ -2794,19 +2794,23 @@ class leoQtBody (leoFrame.leoBody):
 
     def updateEditors (self):
 
-        c = self.c ; p = c.p
+        c = self.c ; p = c.p ; body = p.b
         d = self.editorWidgets
+        w0 = c.frame.body.bodyCtrl
+        i,j = w0.getSelectionRange()
+        ins = w0.getInsertPoint()
         if len(d.keys()) < 2: return # There is only the main widget.
 
         for key in d:
             wrapper = d.get(key)
             w = wrapper.widget
             v = hasattr(w,'leo_p') and w.leo_p.v
-            if v and v == p.v and w != c.frame.body.bodyCtrl:
-                ### wrapper.setAllText(p.b)
+            if v and v == p.v and w != w0:
+                wrapper.setAllText(body)
                 self.recolorWidget(p,wrapper)
 
         c.bodyWantsFocus()
+        w0.setSelectionRange(i,j,ins=ins)
     #@-node:ekr.20081121105001.226:updateEditors
     #@-node:ekr.20081121105001.215:entries
     #@+node:ekr.20081121105001.227:utils
@@ -2891,7 +2895,7 @@ class leoQtBody (leoFrame.leoBody):
         assert isinstance(wrapper,leoQTextEditWidget),wrapper
         assert isinstance(w,QtGui.QTextEdit),w
 
-        if trace: g.trace(name,id(w),p.h)
+        if trace: g.trace(w)
 
         # Inject ivars
         if name == '1':
@@ -2903,6 +2907,7 @@ class leoQtBody (leoFrame.leoBody):
         w.leo_bodyBar = None
         w.leo_bodyXBar = None
         w.leo_chapter = None
+        # w.leo_colorizer = None # Set in leoQtColorizer ctor.
         w.leo_frame = parentFrame
         w.leo_insertSpot = None
         w.leo_label = None
@@ -2916,14 +2921,22 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081121105001.232:recolorWidget
     def recolorWidget (self,p,wrapper):
 
-        return ###
-
-        c = self.c ; old_wrapper = c.frame.body.bodyCtrl
-
-        # g.trace('wrapper',id(wrapper),p.h,len(wrapper.getAllText()))
+        trace = False and not g.unitTesting
+        c = self.c
 
         # Save.
+        old_wrapper = c.frame.body.bodyCtrl
         c.frame.body.bodyCtrl = wrapper
+        w = wrapper.widget
+
+        if not hasattr(w,'leo_colorizer'):
+            if trace: g.trace('*** creating colorizer for',w)
+            leoQtColorizer(c,w) # injects w.leo_colorizer
+            assert hasattr(w,'leo_colorizer'),w
+
+        c.frame.body.colorizer = w.leo_colorizer
+        if trace: g.trace(w,c.frame.body.colorizer)
+
         try:
             # c.recolor_now(interruptable=False) # Force a complete recoloring.
             c.frame.body.colorizer.colorize(p,incremental=False,interruptable=False)
@@ -7405,7 +7418,7 @@ class leoQtColorizer:
     #@+node:ekr.20081205131308.16: ctor (leoQtColorizer)
     def __init__ (self,c,w):
 
-        # g.pr('leoQtColorizer.__init__',c,w,g.callers(4))
+        # g.trace('(leoQtColorizer)',w)
 
         self.c = c
         self.w = w
@@ -7421,6 +7434,7 @@ class leoQtColorizer:
         # Step 2: create the highlighter.
         self.highlighter = leoQtSyntaxHighlighter(c,w,colorizer=self)
         self.colorer = self.highlighter.colorer
+        w.leo_colorizer = self
 
         # Step 3: finish enabling.
         if self.enabled:
@@ -7711,7 +7725,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         s = p.b
         self.colorer.init(p,s)
         n = self.colorer.recolorCount
-        if trace: g.trace(p.h)
+        if trace: g.trace(self.w,p.h)
 
         # Call the base class method, but *only*
         # if the crucial 'currentBlock' method exists.

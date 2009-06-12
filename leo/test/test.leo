@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -161,7 +161,7 @@
 </v>
 </v>
 <v t="ekr.20071025193940" annotate="7d71002855087072696f7269747971015504393939397102550870726f67726573737103550071045509617263686574797065710568045502666771066804752e"></v>
-<v t="ekr.20070517160058.1" a="E"><vh>Prototypes</vh>
+<v t="ekr.20070517160058.1"><vh>Prototypes</vh>
 <v t="ekr.20070929062147"><vh>Prototype of networkx graph tools</vh>
 <v t="ekr.20070929122956"><vh>Data trees</vh>
 <v t="ekr.20070929114617"><vh>@graph-target</vh></v>
@@ -2746,9 +2746,11 @@ def bookmark(event):
     g.es('bookmarked') </t>
 <t tx="ekr.20090605083941.1804"></t>
 <t tx="ekr.20090605083941.1805"></t>
-<t tx="ekr.20090605111929.1805">c.frame.body.addEditor()
+<t tx="ekr.20090605111929.1805">#
+c.frame.body.addEditor()
 </t>
-<t tx="ekr.20090605141212.1803">c.frame.body.deleteEditor()</t>
+<t tx="ekr.20090605141212.1803">#
+c.frame.body.deleteEditor()</t>
 <t tx="ekr.20090610181132.1806">@nocolor
 
 Calls to onTextChanged can really screw up undo.
