@@ -18756,6 +18756,334 @@ def startPsyco ():
 #@-node:ekr.20040411081633:startPsyco
 #@-node:ekr.20090519143741.5917:doPostPluginsInit & helpers
 #@-node:ekr.20090612160307.6059:Fixed binding problem with notebook
+#@+node:ekr.20090613082719.6059:Fixed @edit bug
+# @nocolor now ends with a newline.
+#@nonl
+#@+node:ekr.20031218072017.2821:c.open & helper
+def open (self,event=None):
+
+    '''Open a Leo window containing the contents of a .leo file.'''
+
+    c = self
+    << Set closeFlag if the only open window is empty >>
+    table = [("All files","*"),("Leo files","*.leo"),
+        ("Python files","*.py"),]
+
+    fileName = ''.join(c.k.givenArgs) or g.app.gui.runOpenFileDialog(
+        title = "Open",filetypes = table,defaultextension = ".leo")
+    c.bringToFront()
+
+    ok = False
+    if fileName:
+        if fileName.endswith('.leo'):
+            ok, frame = g.openWithFileName(fileName,c)
+            if ok:
+                g.chdir(fileName)
+                g.setGlobalOpenDir(fileName)
+            if ok and closeFlag:
+                g.app.destroyWindow(c.frame)
+        else:
+            ok = c.createNodeFromExternalFile(fileName)
+
+    # openWithFileName sets focus if ok.
+    if not ok:
+        if c.config.getBool('outline_pane_has_initial_focus'):
+            c.treeWantsFocusNow()
+        else:
+            c.bodyWantsFocusNow()
+#@+node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+@ If this is the only open window was opened when the app started, and the window has never been written to or saved, then we will automatically close that window if this open command completes successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2822:<< Set closeFlag if the only open window is empty >>
+#@+node:ekr.20090212054250.9:c.createNodeFromExternalFile
+def createNodeFromExternalFile(self,fn):
+
+    '''Read the file into a node.
+    Return None, indicating that c.open should set focus.'''
+
+    c = self
+
+    f = None
+    try:
+        f = open(fn)
+        s = f.read()
+        f.close()
+    except IOError:
+        g.es('can not open %s' % fn)
+        return
+
+    head,ext = g.os_path_splitext(fn)
+    if ext.startswith('.'): ext = ext[1:]
+    language = g.app.extension_dict.get(ext)
+    if language:
+        prefix = '@color\n@language %s\n\n' % language
+    else:
+        prefix = '@killcolor\n\n'
+    p2 = c.insertHeadline(op_name='Open File', as_child=False)
+    p2.h = '@edit %s' % fn # g.shortFileName(fn)
+    p2.b = prefix + s
+    w = c.frame.body.bodyCtrl
+    if w: w.setInsertPoint(0)
+    c.redraw()
+    c.recolor()
+#@nonl
+#@-node:ekr.20090212054250.9:c.createNodeFromExternalFile
+#@-node:ekr.20031218072017.2821:c.open & helper
+#@+node:ekr.20090225080846.3:readOneAtEditNode (atFile)
+def readOneAtEditNode (self,fn,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fn = c.os_path_finalize_join(at.default_directory,fn)
+    junk,ext = g.os_path_splitext(fn)
+
+    if not g.unitTesting:
+        g.es("reading @edit:", g.shortFileName(fn))
+
+    # Read the file into s.
+    try:
+        s = open(fn).read()
+    except IOError:
+        g.es("can not open @edit ",fn,color='red')
+        leoTest.fail()
+        return
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    changed = c.isChanged()
+    head = ''
+    ext = ext.lower()
+    if ext in ('.html','.htm'):   head = '@language html\n'
+    elif ext in ('.txt','.text'): head = '@nocolor\n'
+    else:
+        language = ic.languageForExtension(ext)
+        if language and language != 'unknown_language':
+            head = '@language %s\n' % language
+        else:
+            head = '@nocolor\n'
+
+    p.b = head + s
+    if not changed: c.setChanged(False)
+    g.doHook('after-edit',p=p)
+#@-node:ekr.20090225080846.3:readOneAtEditNode (atFile)
+#@+node:ekr.20090520055433.5945:g.openWithFileName & helpers
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
+
+    """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    trace = False and not g.unitTesting
+
+    if not fileName: return False, None
+    isLeo,fn,relFn = g.mungeFileName(fileName)
+
+    # Return if the file is already open.
+    c = g.findOpenFile(fn)
+    if c: return True,c.frame
+
+    # Open the file.
+    if isLeo:
+        c,f = g.openWithFileNameHelper(old_c,gui,fn,relFn)
+    else:
+        c,f = g.openWrapperLeoFile(old_c,fn,gui),None
+    if not c: return False,None
+
+    # Init the open file.
+    assert c.frame and c.frame.c == c
+    c.frame.log.enable(enableLog)
+    g.app.writeWaitingLog()
+    ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
+    if not ok: return False,None
+    g.createMenu(c,fn)
+    g.finishOpen(c)
+    return True,c.frame
+#@+node:ekr.20090520055433.5951:g.createMenu
+def createMenu(c,fileName=None):
+
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+
+    if not g.doHook("menu1",c=c,p=c.p,v=c.p):
+        c.frame.menu.createMenuBar(c.frame)
+        c.updateRecentFiles(fileName)
+        g.doHook("menu2",c=c,p=c.p,v=c.p)
+        g.doHook("after-create-leo-frame",c=c)
+#@-node:ekr.20090520055433.5951:g.createMenu
+#@+node:ekr.20090520055433.5948:g.findOpenFile
+def findOpenFile(fileName):
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    for frame in g.app.windowList:
+        c = frame.c
+        if munge(fileName) == munge(c.mFileName):
+            frame.bringToFront()
+            c.setLog()
+            c.outerUpdate()
+            return c
+    return None
+#@-node:ekr.20090520055433.5948:g.findOpenFile
+#@+node:ekr.20090520055433.5952:g.finishOpen
+def finishOpen(c):
+
+    k = c.k
+    # New in Leo 4.6: provide an official way for very late initialization.
+    c.frame.tree.initAfterLoad()
+    c.initAfterLoad()
+    c.redraw()
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.chapterController:
+        c.chapterController.finishCreate()
+    if k:
+        k.setDefaultInputState()
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    if k:
+        k.showStateAndMode()
+    c.frame.initCompleteHint()
+    return True
+#@-node:ekr.20090520055433.5952:g.finishOpen
+#@+node:ekr.20090520055433.5950:g.handleOpenHooks
+def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
+
+    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+        c.setLog()
+        if theFile:
+            app.lockLog()
+            ok = c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            if not ok:
+                g.app.closeLeoWindow(c.frame)
+                return False
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+
+    # Bug fix in 4.4.
+    if not c.openDirectory:
+        c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
+    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+    return True
+#@nonl
+#@-node:ekr.20090520055433.5950:g.handleOpenHooks
+#@+node:ekr.20090520055433.5954:g.mungeFileName
+def mungeFileName(fileName):
+
+    '''Create a full, normalized, Unicode path name, preserving case.'''
+
+    relFn = g.os_path_normpath(fileName)
+    fn = g.os_path_finalize(fileName)
+
+    isZipped = fn and zipfile.is_zipfile(fn)
+    isLeo = isZipped or fn.endswith('.leo')
+
+    return isLeo,fn,relFn
+#@-node:ekr.20090520055433.5954:g.mungeFileName
+#@+node:ekr.20090520055433.5946:g.openWithFileNameHelper
+def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
+
+    if old_c: g.preRead(fileName)
+    g.doHook('open0')
+
+    # Open the file in binary mode to allow 0x1a in bodies & headlines.
+    theFile,isZipped = g.openLeoOrZipFile(fileName)
+    if not theFile:
+        return None,None
+
+    # This call will take 3/4 sec. to open a file from the leoBridge.
+    # This is due to imports in c.__init__
+    c,frame = app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        gui=gui)
+
+    c.isZipped = isZipped
+    return c,theFile
+#@+node:ekr.20090520055433.5949:preRead
+def preRead(fileName):
+
+    '''Read the file for the first time,
+    setting the setting for a later call to finishCreate.
+    '''
+
+    c = g.app.config.openSettingsFile(fileName)
+    if c:
+        g.app.config.updateSettings(c,localFlag=True)
+#@-node:ekr.20090520055433.5949:preRead
+#@-node:ekr.20090520055433.5946:g.openWithFileNameHelper
+#@+node:ekr.20080921154026.1:g.openWrapperLeoFile
+def openWrapperLeoFile (old_c,fileName,gui):
+
+    '''Open a wrapper .leo file for the given file,
+    and import the file into .leo file.'''
+
+    # This code is similar to c.new, but different enough to be separate.
+    if not g.os_path_exists(fileName):
+        if not g.unitTesting:
+            g.es_print("can not open:",fileName,color="blue")
+        return None
+
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=old_c,c=c,new_c=c)
+
+    # Use the config params to set the size and location of the window.
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+
+    if True: # Just read the file into the node.
+        try:
+            fileName = g.os_path_finalize(fileName)
+            f = open(fileName)
+            s = f.read()
+            f.close()
+        except IOError:
+            g.es_print("can not open: ",fileName,color='red')
+            return None
+        p = c.rootPosition()
+        if p:
+            p.setHeadString('@edit %s' % fileName)
+            p.setBodyString(s)
+            c.selectPosition(p)
+    else:  # Import the file into the new outline.
+        junk,ext = g.os_path_splitext(fileName)
+        p = c.p
+        p = c.importCommands.createOutline(fileName,parent=p,atAuto=False,ext=ext)
+        c.setCurrentPosition(p)
+        c.moveOutlineLeft()
+        p = c.p
+        c.setCurrentPosition(p.back())
+        c.deleteOutline(op_name=None)
+        p = c.p
+        p.expand()
+
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+
+    frame.c.setChanged(True) # Mark the outline dirty.
+    return c
+#@-node:ekr.20080921154026.1:g.openWrapperLeoFile
+#@-node:ekr.20090520055433.5945:g.openWithFileName & helpers
+#@-node:ekr.20090613082719.6059:Fixed @edit bug
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all

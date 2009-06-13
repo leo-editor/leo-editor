@@ -704,7 +704,7 @@ class atFile:
             if language and language != 'unknown_language':
                 head = '@language %s\n' % language
             else:
-                head = '@nocolor'
+                head = '@nocolor\n'
 
         p.b = head + s
         if not changed: c.setChanged(False)

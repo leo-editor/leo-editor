@@ -2578,18 +2578,18 @@ class leoQtBody (leoFrame.leoBody):
 
         '''Cycle keyboard focus between the body text editors.'''
 
-        # c = self.c ; d = self.editorWidgets ; w = c.frame.body.bodyCtrl
-        # values = d.values()
-        # if len(values) > 1:
-            # i = values.index(w) + 1
-            # if i == len(values): i = 0
-            # w2 = d.values()[i]
-            # assert(w!=w2)
-            # self.selectEditor(w2)
-            # c.frame.body.bodyCtrl = w2
-            # # g.pr('***',g.app.gui.widget_name(w2),id(w2))
-
-        # return 'break'
+        c = self.c ; d = self.editorWidgets
+        w = c.frame.body.bodyCtrl
+        values = d.values()
+        if len(values) > 1:
+            i = values.index(w) + 1
+            if i == len(values): i = 0
+            w2 = d.values()[i]
+            assert(w!=w2)
+            self.selectEditor(w2)
+            c.frame.body.bodyCtrl = w2
+            # g.trace('***',g.app.gui.widget_name(w2),id(w2))
+    #@nonl
     #@-node:ekr.20081121105001.219:cycleEditorFocus
     #@+node:ekr.20081121105001.220:deleteEditor
     def deleteEditor (self,event=None):
@@ -2809,7 +2809,7 @@ class leoQtBody (leoFrame.leoBody):
                 wrapper.setAllText(body)
                 self.recolorWidget(p,wrapper)
 
-        c.bodyWantsFocus()
+        c.bodyWantsFocusNow()
         w0.setSelectionRange(i,j,ins=ins)
     #@-node:ekr.20081121105001.226:updateEditors
     #@-node:ekr.20081121105001.215:entries
