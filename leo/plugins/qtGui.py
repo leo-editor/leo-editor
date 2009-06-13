@@ -2811,6 +2811,7 @@ class leoQtBody (leoFrame.leoBody):
 
         c.bodyWantsFocusNow()
         w0.setSelectionRange(i,j,ins=ins)
+    #@nonl
     #@-node:ekr.20081121105001.226:updateEditors
     #@-node:ekr.20081121105001.215:entries
     #@+node:ekr.20081121105001.227:utils
@@ -2993,6 +2994,7 @@ class leoQtBody (leoFrame.leoBody):
                 self.selectEditor(wrapper)
             self.onFocusColorHelper('focus-in',obj)
             obj.setReadOnly(False)
+            obj.setFocus() # Weird, but apparently necessary.
 
     def onFocusOut (self,obj):
 

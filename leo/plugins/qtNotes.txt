@@ -1098,6 +1098,7 @@ def updateEditors (self):
 
     c.bodyWantsFocusNow()
     w0.setSelectionRange(i,j,ins=ins)
+#@nonl
 #@-node:ekr.20081121105001.226:updateEditors
 #@-node:ekr.20081121105001.215:entries
 #@+node:ekr.20081121105001.227:utils
@@ -1280,6 +1281,7 @@ def onFocusIn (self,obj):
             self.selectEditor(wrapper)
         self.onFocusColorHelper('focus-in',obj)
         obj.setReadOnly(False)
+        obj.setFocus() # Weird, but apparently necessary.
 
 def onFocusOut (self,obj):
 
@@ -1428,6 +1430,7 @@ def onFocusIn (self,obj):
             self.selectEditor(wrapper)
         self.onFocusColorHelper('focus-in',obj)
         obj.setReadOnly(False)
+        obj.setFocus() # Weird, but apparently necessary.
 
 def onFocusOut (self,obj):
 
@@ -7399,6 +7402,7 @@ def updateEditors (self):
 
     c.bodyWantsFocusNow()
     w0.setSelectionRange(i,j,ins=ins)
+#@nonl
 #@-node:ekr.20081121105001.226:updateEditors
 #@-node:ekr.20081121105001.215:entries
 #@+node:ekr.20081121105001.227:utils
@@ -7581,6 +7585,7 @@ def onFocusIn (self,obj):
             self.selectEditor(wrapper)
         self.onFocusColorHelper('focus-in',obj)
         obj.setReadOnly(False)
+        obj.setFocus() # Weird, but apparently necessary.
 
 def onFocusOut (self,obj):
 
@@ -8138,6 +8143,7 @@ def onFocusIn (self,obj):
             self.selectEditor(wrapper)
         self.onFocusColorHelper('focus-in',obj)
         obj.setReadOnly(False)
+        obj.setFocus() # Weird, but apparently necessary.
 
 def onFocusOut (self,obj):
 
@@ -8506,6 +8512,7 @@ def updateEditors (self):
 
     c.bodyWantsFocusNow()
     w0.setSelectionRange(i,j,ins=ins)
+#@nonl
 #@-node:ekr.20081121105001.226:updateEditors
 #@-node:ekr.20081121105001.215:entries
 #@+node:ekr.20081121105001.227:utils
@@ -10042,6 +10049,7 @@ def updateEditors (self):
 
     c.bodyWantsFocusNow()
     w0.setSelectionRange(i,j,ins=ins)
+#@nonl
 #@-node:ekr.20081121105001.226:updateEditors
 #@-node:ekr.20081121105001.215:entries
 #@+node:ekr.20081121105001.227:utils
@@ -12316,6 +12324,7 @@ def updateEditors (self):
 
     c.bodyWantsFocusNow()
     w0.setSelectionRange(i,j,ins=ins)
+#@nonl
 #@-node:ekr.20081121105001.226:updateEditors
 #@+node:ekr.20081121105001.219:cycleEditorFocus
 def cycleEditorFocus (self,event=None):

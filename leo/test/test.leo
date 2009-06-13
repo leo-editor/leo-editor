@@ -363,7 +363,6 @@
 </v>
 <v t="ekr.20090605111929.1805"><vh>add-editor</vh></v>
 <v t="ekr.20090605141212.1803"><vh>delete-editor</vh></v>
-<v t="ekr.20090610181132.1806"><vh>test of undo</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2751,21 +2750,5 @@ c.frame.body.addEditor()
 </t>
 <t tx="ekr.20090605141212.1803">#
 c.frame.body.deleteEditor()</t>
-<t tx="ekr.20090610181132.1806">@nocolor
-
-Calls to onTextChanged can really screw up undo.
-
-The following scripts convert between Leo trees and NetworkX graphs.
-
-- leo2graph:            convert a normal Leo tree to a NetworkX graph.
-- at-graph2graph:       convert an @graph tree to a Networkx graph.
-- at-networkx2graph:    convert an @networkx tree to a Networkx graph
-- at-networkx2at-graph: create an @graph tree from an @networkx tree.
-
-Not ready yet:
-
-- tree2pict: convert a Leo @graph tree to a picture of the corresponding graph.
-
-@color</t>
 </tnodes>
 </leo_file>
