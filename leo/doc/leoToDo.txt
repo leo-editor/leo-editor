@@ -2,51 +2,7 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
-#@+node:ekr.20090525113804.5776:Before b2 5
-#@+node:ekr.20090613082719.6060:Fix add-editor problems
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/21bddd50f3400bdc?hl=en
-
-- If one switch from the i-th body editor to the j-th body editor (by
-clicking it with the mouse) then the head pane gets the blue frame
-saying it has the keyboard focus. Pressing a key in the keyboard moves
-the blue frame to the j-th editor but the pressed character is not
-displayed on the body editor. Only later characters are written.
-
-Fixed.
-
-- If one switch from the i-th body editor to the original body editor
-then the head pane gets the blue frame saying it has the keyboard
-focus. Pressing a key in the keyboard makes disappear the blue frame
-from the head pane but it doesn't appear in the original editor (so at
-'activation' time the original editor doesn't behave in the same way
-than the other editors). The pressed character is not displayed on the
-body editor. Only later characters are written.
-
-- The cycle editor-focus command doesn't work
-
-- Finally (not related with keyboard focus): new body editors do not
-have any title at top showing the node tied to them. This can make
-difficult to work with several body editors at the same time. The tk
-gui adds top titles to body editors, which improves usability *a lot*
-(and looks very nice :-)
-
-Due to all this focus indicator thing I've realized that when there is
-just one body editor the focus indicator behaves differentlly on it
-than on the rest of panes. One click on the headline pane  and a nice
-blue frame shows it has focus. One click on the log pane and the blue
-frame moves to it. One click on the body pane and the blue frame just
-disappears. Nothing (other than the text cursor) indicates that focus
-is on the body pane. I think it is inconsistent for several reasons:
-- from the gui dessign point of view (some of you may not agree with
-this, of course :-)
-- because not all body editors in the qt gui behaves in the same way
-- because the qt gui behaves differently than the tk gui. I like much
-more the tk gui way: every time a pane has focus the focus is
-explicitely indicated with a frame. 
-#@nonl
-#@-node:ekr.20090613082719.6060:Fix add-editor problems
+#@+node:ekr.20090525113804.5776:Before b2 4
 #@+node:ekr.20090605075411.6436:Fix @root bug
 @nocolor-node
 
@@ -56,8 +12,6 @@ Seems someone messed up the tangling of root nodes in the trunk for it
 always says "no root code..."
 #@nonl
 #@-node:ekr.20090605075411.6436:Fix @root bug
-#@+node:ekr.20090613055427.6055:Delete editor kills coloring
-#@-node:ekr.20090613055427.6055:Delete editor kills coloring
 #@+node:ekr.20090602183337.6045:Fix rst import annoyance
 @nocolor-node
 
@@ -71,9 +25,11 @@ I'm going to reopen this and put this on the list of things to do before
 b2. It's time to stamp on the distractions.
 #@nonl
 #@-node:ekr.20090602183337.6045:Fix rst import annoyance
+#@+node:ekr.20090613082719.6061:Add label widgets when using multiple editors
+#@-node:ekr.20090613082719.6061:Add label widgets when using multiple editors
 #@+node:ekr.20090523070447.6475:Rewrite rst documentation
 #@-node:ekr.20090523070447.6475:Rewrite rst documentation
-#@-node:ekr.20090525113804.5776:Before b2 5
+#@-node:ekr.20090525113804.5776:Before b2 4
 #@+node:ekr.20090430092048.7:Before 4.6 final
 #@+node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
 @nocolor-node

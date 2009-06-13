@@ -2,9 +2,7 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090610183529.3630:Before b2
-#@-node:ekr.20090610183529.3630:Before b2
-#@+node:ekr.20090430102239.13:Before 4.6 final
+#@+node:ekr.20090430102239.13:Before 4.6 b3
 #@+node:ekr.20090530055308.3791:Remember pane split ratio
 @nocolor-node
 
@@ -85,7 +83,7 @@ E1103:7695:jEditColorizer.recolor: Instance of 'Bunch' has no 'stateName' member
 
 W0222:8367:leoQtBaseTextWidget.tag_add: Signature differs from overridden method
 #@-node:ekr.20090603045408.3767:Fix pylint warnings
-#@-node:ekr.20090430102239.13:Before 4.6 final
+#@-node:ekr.20090430102239.13:Before 4.6 b3
 #@+node:ekr.20090304084841.11:Later
 #@+node:ekr.20081215074704.21:Add drag and drop
 #@-node:ekr.20081215074704.21:Add drag and drop
@@ -912,6 +910,7 @@ def deleteEditor (self,event=None):
     if trace: g.trace(wrapper,new_wrapper)
     self.numberOfEditors -= 1
     self.selectEditor(new_wrapper)
+#@nonl
 #@-node:ekr.20081121105001.220:deleteEditor
 #@+node:ekr.20081121105001.221:findEditorForChapter (leoBody)
 def findEditorForChapter (self,chapter,p):
@@ -1028,6 +1027,7 @@ def selectEditorHelper (self,wrapper):
 
     # The actual switch.
     self.deactivateEditors(wrapper)
+    self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
     c.frame.body.bodyCtrl = wrapper
     w.leo_active = True
 
@@ -7216,6 +7216,7 @@ def deleteEditor (self,event=None):
     if trace: g.trace(wrapper,new_wrapper)
     self.numberOfEditors -= 1
     self.selectEditor(new_wrapper)
+#@nonl
 #@-node:ekr.20081121105001.220:deleteEditor
 #@+node:ekr.20081121105001.221:findEditorForChapter (leoBody)
 def findEditorForChapter (self,chapter,p):
@@ -7332,6 +7333,7 @@ def selectEditorHelper (self,wrapper):
 
     # The actual switch.
     self.deactivateEditors(wrapper)
+    self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
     c.frame.body.bodyCtrl = wrapper
     w.leo_active = True
 
@@ -8326,6 +8328,7 @@ def deleteEditor (self,event=None):
     if trace: g.trace(wrapper,new_wrapper)
     self.numberOfEditors -= 1
     self.selectEditor(new_wrapper)
+#@nonl
 #@-node:ekr.20081121105001.220:deleteEditor
 #@+node:ekr.20081121105001.221:findEditorForChapter (leoBody)
 def findEditorForChapter (self,chapter,p):
@@ -8442,6 +8445,7 @@ def selectEditorHelper (self,wrapper):
 
     # The actual switch.
     self.deactivateEditors(wrapper)
+    self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
     c.frame.body.bodyCtrl = wrapper
     w.leo_active = True
 
@@ -9863,6 +9867,7 @@ def deleteEditor (self,event=None):
     if trace: g.trace(wrapper,new_wrapper)
     self.numberOfEditors -= 1
     self.selectEditor(new_wrapper)
+#@nonl
 #@-node:ekr.20081121105001.220:deleteEditor
 #@+node:ekr.20081121105001.221:findEditorForChapter (leoBody)
 def findEditorForChapter (self,chapter,p):
@@ -9979,6 +9984,7 @@ def selectEditorHelper (self,wrapper):
 
     # The actual switch.
     self.deactivateEditors(wrapper)
+    self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
     c.frame.body.bodyCtrl = wrapper
     w.leo_active = True
 
@@ -12345,6 +12351,115 @@ def cycleEditorFocus (self,event=None):
 #@nonl
 #@-node:ekr.20081121105001.219:cycleEditorFocus
 #@-node:ekr.20090610183529.3631:Multiple body editors
+#@+node:ekr.20090613110719.3626:Switch colorizers properly when deleting an editor
+#@+node:ekr.20081121105001.223:selectEditor & helpers
+selectEditorLockout = False
+
+def selectEditor(self,wrapper):
+
+    '''Select editor w and node w.leo_p.'''
+
+    #  Called by body.onClick and whenever w must be selected.
+    trace = True and not g.unitTesting
+    verbose = False
+    c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
+
+    if not wrapper: return bodyCtrl
+    if self.selectEditorLockout:
+        if trace: g.trace('**busy')
+        return
+
+    w = wrapper.widget
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    def report(s):
+        g.trace('*** %9s wrapper %s w %s %s' % (
+            s,id(wrapper),id(w),c.p.h))
+
+    if wrapper and wrapper == bodyCtrl:
+        self.deactivateEditors(wrapper)
+        if hasattr(w,'leo_p') and w.leo_p and w.leo_p != c.p:
+            if trace: report('select')
+            c.selectPosition(w.leo_p)
+            c.bodyWantsFocusNow()
+        elif trace and verbose: report('no change')
+        return
+
+    try:
+        val = None
+        self.selectEditorLockout = True
+        val = self.selectEditorHelper(wrapper)
+    finally:
+        self.selectEditorLockout = False
+
+    return val # Don't put a return in a finally clause.
+#@+node:ekr.20081121105001.224:selectEditorHelper
+def selectEditorHelper (self,wrapper):
+
+    trace = False and not g.unitTesting
+    c = self.c ; cc = c.chapterController
+    d = self.editorWidgets
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    w = wrapper.widget
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    if not w.leo_p:
+        g.trace('no w.leo_p') 
+        return 'break'
+
+    # The actual switch.
+    self.deactivateEditors(wrapper)
+    self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
+    c.frame.body.bodyCtrl = wrapper
+    w.leo_active = True
+
+    self.switchToChapter(wrapper)
+    self.selectLabel(wrapper)
+
+    if not self.ensurePositionExists(w):
+        return g.trace('***** no position editor!')
+    if not (hasattr(w,'leo_p') and w.leo_p):
+        return g.trace('***** no w.leo_p',w)
+    if not (hasattr(w,'leo_chapter') and w.leo_chapter.name):
+        return g.trace('***** no w.leo_chapter',w)
+
+    p = w.leo_p
+    assert p,p
+
+    if trace: g.trace('wrapper %s chapter %s old %s p %s' % (
+        id(wrapper),w.leo_chapter.name,c.p.h,p.h))
+
+    c.expandAllAncestors(p)
+    c.selectPosition(p) # Calls assignPositionToEditor.
+    c.redraw()
+    c.recolor_now()
+    << restore the selection, insertion point and the scrollbar >>
+    c.bodyWantsFocusNow()
+#@+node:ekr.20081121105001.225:<< restore the selection, insertion point and the scrollbar >>
+# g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
+
+if hasattr(w,'leo_insertSpot') and w.leo_insertSpot:
+    wrapper.setInsertPoint(w.leo_insertSpot)
+else:
+    wrapper.setInsertPoint(0)
+
+if hasattr(w,'leo_scrollBarSpot') and w.leo_scrollBarSpot is not None:
+    first,last = w.leo_scrollBarSpot
+    wrapper.see(first)
+else:
+    wrapper.seeInsertPoint()
+
+if hasattr(w,'leo_selection') and w.leo_selection:
+    try:
+        start,end = w.leo_selection
+        wrapper.setSelectionRange(start,end)
+    except Exception:
+        pass
+#@-node:ekr.20081121105001.225:<< restore the selection, insertion point and the scrollbar >>
+#@-node:ekr.20081121105001.224:selectEditorHelper
+#@-node:ekr.20081121105001.223:selectEditor & helpers
+#@-node:ekr.20090613110719.3626:Switch colorizers properly when deleting an editor
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
 #@-node:ekr.20081208155215.12:Unused

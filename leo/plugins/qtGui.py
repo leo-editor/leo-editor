@@ -2624,6 +2624,7 @@ class leoQtBody (leoFrame.leoBody):
         if trace: g.trace(wrapper,new_wrapper)
         self.numberOfEditors -= 1
         self.selectEditor(new_wrapper)
+    #@nonl
     #@-node:ekr.20081121105001.220:deleteEditor
     #@+node:ekr.20081121105001.221:findEditorForChapter (leoBody)
     def findEditorForChapter (self,chapter,p):
@@ -2740,6 +2741,7 @@ class leoQtBody (leoFrame.leoBody):
 
         # The actual switch.
         self.deactivateEditors(wrapper)
+        self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
         c.frame.body.bodyCtrl = wrapper
         w.leo_active = True
 
