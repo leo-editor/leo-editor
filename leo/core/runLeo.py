@@ -368,7 +368,7 @@ def createFrame (fileName,relativeFileName,script):
     # Call the 'new' hook for compatibility with plugins.
     g.doHook("new",old_c=None,c=c,new_c=c)
 
-    g.createMenu(c,fileName,relativeFileName)
+    g.createMenu(c,fileName)
     g.finishOpen(c) # Calls c.redraw.
 
     # Report the failure to open the file.

@@ -2766,17 +2766,17 @@ def openWithFileName(fileName,old_c,
     g.app.writeWaitingLog()
     ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
     if not ok: return False,None
-    g.createMenu(c,fn,relFn)
+    g.createMenu(c,fn)
     g.finishOpen(c)
     return True,c.frame
 #@+node:ekr.20090520055433.5951:g.createMenu
-def createMenu(c,fileName=None,relativeFileName=None):
+def createMenu(c,fileName=None):
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
 
     if not g.doHook("menu1",c=c,p=c.p,v=c.p):
         c.frame.menu.createMenuBar(c.frame)
-        c.updateRecentFiles(relativeFileName or fileName)
+        c.updateRecentFiles(fileName)
         g.doHook("menu2",c=c,p=c.p,v=c.p)
         g.doHook("after-create-leo-frame",c=c)
 #@-node:ekr.20090520055433.5951:g.createMenu

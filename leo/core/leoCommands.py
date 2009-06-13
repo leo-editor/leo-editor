@@ -1165,7 +1165,7 @@ class baseCommands (object):
         c.recentFiles = []
         g.app.config.recentFiles = [] # New in Leo 4.3.
         f.menu.createRecentFilesMenuItems()
-        c.updateRecentFiles(c.relativeFileName())
+        c.updateRecentFiles(c.fileName())
 
         g.app.config.appendToRecentFiles(c.recentFiles)
 
@@ -1185,12 +1185,12 @@ class baseCommands (object):
         c = self ; v = c.currentVnode()
         #@    << Set closeFlag if the only open window is empty >>
         #@+node:ekr.20031218072017.2082:<< Set closeFlag if the only open window is empty >>
-        #@+at 
-        #@nonl
+        #@+at
         # If this is the only open window was opened when the app started, and 
-        # the window has never been written to or saved, then we will 
-        # automatically close that window if this open command completes 
-        # successfully.
+        # the window
+        # has never been written to or saved, then we will automatically close 
+        # that window
+        # if this open command completes successfully.
         #@-at
         #@@c
 

@@ -445,10 +445,8 @@ def createChaptersNode (self):
     cc.chaptersNode = p.copy()
     t = p.v.t
 
-    ### t.fileIndex is now allocated immedately.
     if t.fileIndex:
         pass
-        ### self.error('***** t.fileIndex already exists')
     else:
         t.setFileIndex(g.app.nodeIndices.getNewIndex())
 
@@ -6792,17 +6790,17 @@ def openWithFileName(fileName,old_c,
     g.app.writeWaitingLog()
     ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
     if not ok: return False,None
-    g.createMenu(c,fn,relFn)
+    g.createMenu(c,fn)
     g.finishOpen(c)
     return True,c.frame
 #@+node:ekr.20090520055433.5951:g.createMenu
-def createMenu(c,fileName=None,relativeFileName=None):
+def createMenu(c,fileName=None):
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
 
     if not g.doHook("menu1",c=c,p=c.p,v=c.p):
         c.frame.menu.createMenuBar(c.frame)
-        c.updateRecentFiles(relativeFileName or fileName)
+        c.updateRecentFiles(fileName)
         g.doHook("menu2",c=c,p=c.p,v=c.p)
         g.doHook("after-create-leo-frame",c=c)
 #@-node:ekr.20090520055433.5951:g.createMenu
@@ -10842,8 +10840,6 @@ def writeOneAtShadowNode(self,p,toString,force):
     # A hack to support unknown extensions.
     self.adjustTargetLanguage(fn) # May set c.target_language.
 
-    ### at.scanDefaultDirectory(p,importing=True) # Set default_directory
-    # fn = c.os_path_finalize_join(at.default_directory,fn)
     fn = at.fullPath(p)
     at.default_directory = g.os_path_dirname(fn)
     exists = g.os_path_exists(fn)
@@ -12062,8 +12058,6 @@ def writeOneAtShadowNode(self,p,toString,force):
     # A hack to support unknown extensions.
     self.adjustTargetLanguage(fn) # May set c.target_language.
 
-    ### at.scanDefaultDirectory(p,importing=True) # Set default_directory
-    # fn = c.os_path_finalize_join(at.default_directory,fn)
     fn = at.fullPath(p)
     at.default_directory = g.os_path_dirname(fn)
     exists = g.os_path_exists(fn)
@@ -12496,8 +12490,6 @@ def writeOneAtShadowNode(self,p,toString,force):
     # A hack to support unknown extensions.
     self.adjustTargetLanguage(fn) # May set c.target_language.
 
-    ### at.scanDefaultDirectory(p,importing=True) # Set default_directory
-    # fn = c.os_path_finalize_join(at.default_directory,fn)
     fn = at.fullPath(p)
     at.default_directory = g.os_path_dirname(fn)
     exists = g.os_path_exists(fn)
@@ -13344,7 +13336,6 @@ def openFileForReading(self,fn,fromString=False):
             return at.error('can not call at.read from string for @shadow files')
         at.inputFile = g.fileLikeObject(fromString=fromString)
     else:
-        ### fn = c.os_path_finalize_join(at.default_directory,fn)
         fn = at.fullPath(self.root) # Returns full path, including file name.
         at.setPathUa(self.root,fn) # Remember the full path to this node.
         if trace: g.trace(fn)
@@ -13953,8 +13944,6 @@ def writeOneAtShadowNode(self,p,toString,force):
     # A hack to support unknown extensions.
     self.adjustTargetLanguage(fn) # May set c.target_language.
 
-    ### at.scanDefaultDirectory(p,importing=True) # Set default_directory
-    # fn = c.os_path_finalize_join(at.default_directory,fn)
     fn = at.fullPath(p)
     at.default_directory = g.os_path_dirname(fn)
     exists = g.os_path_exists(fn)
@@ -18463,17 +18452,17 @@ def openWithFileName(fileName,old_c,
     g.app.writeWaitingLog()
     ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
     if not ok: return False,None
-    g.createMenu(c,fn,relFn)
+    g.createMenu(c,fn)
     g.finishOpen(c)
     return True,c.frame
 #@+node:ekr.20090520055433.5951:g.createMenu
-def createMenu(c,fileName=None,relativeFileName=None):
+def createMenu(c,fileName=None):
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
 
     if not g.doHook("menu1",c=c,p=c.p,v=c.p):
         c.frame.menu.createMenuBar(c.frame)
-        c.updateRecentFiles(relativeFileName or fileName)
+        c.updateRecentFiles(fileName)
         g.doHook("menu2",c=c,p=c.p,v=c.p)
         g.doHook("after-create-leo-frame",c=c)
 #@-node:ekr.20090520055433.5951:g.createMenu
@@ -18708,7 +18697,7 @@ def createFrame (fileName,relativeFileName,script):
     # Call the 'new' hook for compatibility with plugins.
     g.doHook("new",old_c=None,c=c,new_c=c)
 
-    g.createMenu(c,fileName,relativeFileName)
+    g.createMenu(c,fileName)
     g.finishOpen(c) # Calls c.redraw.
 
     # Report the failure to open the file.
@@ -19528,8 +19517,6 @@ def writeOneAtShadowNode(self,p,toString,force):
     # A hack to support unknown extensions.
     self.adjustTargetLanguage(fn) # May set c.target_language.
 
-    ### at.scanDefaultDirectory(p,importing=True) # Set default_directory
-    # fn = c.os_path_finalize_join(at.default_directory,fn)
     fn = at.fullPath(p)
     at.default_directory = g.os_path_dirname(fn)
     exists = g.os_path_exists(fn)
@@ -19754,17 +19741,17 @@ def openWithFileName(fileName,old_c,
     g.app.writeWaitingLog()
     ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
     if not ok: return False,None
-    g.createMenu(c,fn,relFn)
+    g.createMenu(c,fn)
     g.finishOpen(c)
     return True,c.frame
 #@+node:ekr.20090520055433.5951:g.createMenu
-def createMenu(c,fileName=None,relativeFileName=None):
+def createMenu(c,fileName=None):
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
 
     if not g.doHook("menu1",c=c,p=c.p,v=c.p):
         c.frame.menu.createMenuBar(c.frame)
-        c.updateRecentFiles(relativeFileName or fileName)
+        c.updateRecentFiles(fileName)
         g.doHook("menu2",c=c,p=c.p,v=c.p)
         g.doHook("after-create-leo-frame",c=c)
 #@-node:ekr.20090520055433.5951:g.createMenu
@@ -20025,17 +20012,17 @@ def openWithFileName(fileName,old_c,
     g.app.writeWaitingLog()
     ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
     if not ok: return False,None
-    g.createMenu(c,fn,relFn)
+    g.createMenu(c,fn)
     g.finishOpen(c)
     return True,c.frame
 #@+node:ekr.20090520055433.5951:g.createMenu
-def createMenu(c,fileName=None,relativeFileName=None):
+def createMenu(c,fileName=None):
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
 
     if not g.doHook("menu1",c=c,p=c.p,v=c.p):
         c.frame.menu.createMenuBar(c.frame)
-        c.updateRecentFiles(relativeFileName or fileName)
+        c.updateRecentFiles(fileName)
         g.doHook("menu2",c=c,p=c.p,v=c.p)
         g.doHook("after-create-leo-frame",c=c)
 #@-node:ekr.20090520055433.5951:g.createMenu
@@ -21030,8 +21017,6 @@ def writeOneAtShadowNode(self,p,toString,force):
     # A hack to support unknown extensions.
     self.adjustTargetLanguage(fn) # May set c.target_language.
 
-    ### at.scanDefaultDirectory(p,importing=True) # Set default_directory
-    # fn = c.os_path_finalize_join(at.default_directory,fn)
     fn = at.fullPath(p)
     at.default_directory = g.os_path_dirname(fn)
     exists = g.os_path_exists(fn)
@@ -22618,6 +22603,424 @@ def canonicalizeTranslatedMenuName (self,name):
     return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
 #@-node:ekr.20031218072017.3783:canonicalizeMenuName & cononicalizeTranslatedMenuName
 #@-node:ekr.20090603131419.6428:Created qt open-with menu
+#@+node:ekr.20090613082719.6057:Entries in recent files menu now have absolute paths
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/383204
+
+What I did:
+
+- Removed relativeFileName keyword arg from g.createMenu.
+  Apparently, this was enough.
+#@+node:ekr.20090613082719.6058:Report
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/383204
+
+> Yes, we want to make all paths absolute, but we
+> want to display the paths in the Recent Files menu relative to
+> g.app.loadDir (or maybe c.loadDir) if possible.
+
+I don't. I want to see just the base name. If it's not unique, then I
+want to see just the base name with the full paths for each occurrence
+in a submenu. Leo already does this with
+
+@bool recent_files_group = True
+and
+@bool recent_files_group_always = False
+
+but anyway, leo *must* write absolute pathnames to recent files, it can
+adjust them to be relative to anything it wants after the fact. But as
+c.loadDir and g.app.loadDir change session to session, being relative
+to them in the stored path is useless.
+#@nonl
+#@-node:ekr.20090613082719.6058:Report
+#@+node:ekr.20090520055433.5951:g.createMenu
+def createMenu(c,fileName=None):
+
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+
+    if not g.doHook("menu1",c=c,p=c.p,v=c.p):
+        c.frame.menu.createMenuBar(c.frame)
+        c.updateRecentFiles(fileName)
+        g.doHook("menu2",c=c,p=c.p,v=c.p)
+        g.doHook("after-create-leo-frame",c=c)
+#@-node:ekr.20090520055433.5951:g.createMenu
+#@+node:ekr.20031218072017.2083:c.updateRecentFiles
+def updateRecentFiles (self,fileName):
+
+    """Create the RecentFiles menu.  May be called with Null fileName."""
+
+    c = self
+
+    if g.app.unitTesting: return
+
+    def munge(name):
+        return c.os_path_finalize(name or '').lower()
+    def munge2(name):
+        return c.os_path_finalize_join(g.app.loadDir,name or '')
+
+    # Update the recent files list in all windows.
+    if fileName:
+        compareFileName = munge(fileName)
+        # g.trace(fileName)
+        for frame in g.app.windowList:
+            c = frame.c
+            # Remove all versions of the file name.
+            for name in c.recentFiles:
+                if munge(fileName) == munge(name) or munge2(fileName) == munge2(name):
+                    c.recentFiles.remove(name)
+            c.recentFiles.insert(0,fileName)
+            # g.trace('adding',fileName)
+            # Recreate the Recent Files menu.
+            frame.menu.createRecentFilesMenuItems()
+    else:
+        for frame in g.app.windowList:
+            frame.menu.createRecentFilesMenuItems()
+#@-node:ekr.20031218072017.2083:c.updateRecentFiles
+#@+node:ekr.20031218072017.2079:Recent Files submenu & allies
+#@+node:ekr.20031218072017.2080:clearRecentFiles
+def clearRecentFiles (self,event=None):
+
+    """Clear the recent files list, then add the present file."""
+
+    c = self ; f = c.frame ; u = c.undoer
+
+    bunch = u.beforeClearRecentFiles()
+
+    recentFilesMenu = f.menu.getMenu("Recent Files...")
+    f.menu.deleteRecentFilesMenuItems(recentFilesMenu)
+
+    c.recentFiles = []
+    g.app.config.recentFiles = [] # New in Leo 4.3.
+    f.menu.createRecentFilesMenuItems()
+    c.updateRecentFiles(c.fileName())
+
+    g.app.config.appendToRecentFiles(c.recentFiles)
+
+    # g.trace(c.recentFiles)
+
+    u.afterClearRecentFiles(bunch)
+
+    # New in Leo 4.4.5: write the file immediately.
+    g.app.config.recentFileMessageWritten = False # Force the write message.
+    g.app.config.writeRecentFilesFile(c)
+#@-node:ekr.20031218072017.2080:clearRecentFiles
+#@+node:ekr.20031218072017.2081:openRecentFile
+def openRecentFile(self,name=None):
+
+    if not name: return
+
+    c = self ; v = c.currentVnode()
+    << Set closeFlag if the only open window is empty >>
+
+    fileName = name
+    if not g.doHook("recentfiles1",c=c,p=v,v=v,fileName=fileName,closeFlag=closeFlag):
+        ok, frame = g.openWithFileName(fileName,c)
+        if ok and closeFlag and frame != c.frame:
+            g.app.destroyWindow(c.frame) # 12/12/03
+            c = frame.c # Switch to the new commander so the "recentfiles2" hook doesn't crash.
+            c.setLog() # Sets the log stream for g.es
+
+    g.doHook("recentfiles2",c=c,p=v,v=v,fileName=fileName,closeFlag=closeFlag)
+#@+node:ekr.20031218072017.2082:<< Set closeFlag if the only open window is empty >>
+@
+If this is the only open window was opened when the app started, and the window
+has never been written to or saved, then we will automatically close that window
+if this open command completes successfully.
+@c
+
+closeFlag = (
+    c.frame.startupWindow and # The window was open on startup
+    not c.changed and not c.frame.saved and # The window has never been changed
+    g.app.numberOfWindows == 1) # Only one untitled window has ever been opened
+#@-node:ekr.20031218072017.2082:<< Set closeFlag if the only open window is empty >>
+#@-node:ekr.20031218072017.2081:openRecentFile
+#@+node:ekr.20031218072017.2083:c.updateRecentFiles
+def updateRecentFiles (self,fileName):
+
+    """Create the RecentFiles menu.  May be called with Null fileName."""
+
+    c = self
+
+    if g.app.unitTesting: return
+
+    def munge(name):
+        return c.os_path_finalize(name or '').lower()
+    def munge2(name):
+        return c.os_path_finalize_join(g.app.loadDir,name or '')
+
+    # Update the recent files list in all windows.
+    if fileName:
+        compareFileName = munge(fileName)
+        # g.trace(fileName)
+        for frame in g.app.windowList:
+            c = frame.c
+            # Remove all versions of the file name.
+            for name in c.recentFiles:
+                if munge(fileName) == munge(name) or munge2(fileName) == munge2(name):
+                    c.recentFiles.remove(name)
+            c.recentFiles.insert(0,fileName)
+            # g.trace('adding',fileName)
+            # Recreate the Recent Files menu.
+            frame.menu.createRecentFilesMenuItems()
+    else:
+        for frame in g.app.windowList:
+            frame.menu.createRecentFilesMenuItems()
+#@-node:ekr.20031218072017.2083:c.updateRecentFiles
+#@+node:tbrown.20080509212202.6:cleanRecentFiles
+def cleanRecentFiles(self,event=None):
+
+    c = self
+
+    dat = c.config.getData('path-demangle')
+    if not dat:
+        g.es('No @data path-demangle setting')
+        return
+
+    changes = []
+    replace = None
+    for line in dat:
+        text = line.strip()
+        if text.startswith('REPLACE: '):
+            replace = text.split(None, 1)[1].strip()
+        if text.startswith('WITH:') and replace is not None:
+            with_ = text[5:].strip()
+            changes.append((replace, with_))
+            g.es('%s -> %s' % changes[-1])
+
+    orig = [i for i in c.recentFiles if i.startswith("/")]
+    c.clearRecentFiles()
+
+    for i in orig:
+        t = i
+        for change in changes:
+            t = t.replace(*change)
+
+        c.updateRecentFiles(t)
+
+    # code below copied from clearRecentFiles
+    g.app.config.recentFiles = [] # New in Leo 4.3.
+    g.app.config.appendToRecentFiles(c.recentFiles)
+    g.app.config.recentFileMessageWritten = False # Force the write message.
+    g.app.config.writeRecentFilesFile(c)
+#@-node:tbrown.20080509212202.6:cleanRecentFiles
+#@+node:tbrown.20080509212202.8:sortRecentFiles
+def sortRecentFiles(self,event=None):
+
+    c = self
+
+    orig = c.recentFiles[:]
+    c.clearRecentFiles()
+    import os
+    orig.sort(cmp=lambda a,b:cmp(os.path.basename(b).lower(),     
+        os.path.basename(a).lower()))
+    for i in orig:
+        c.updateRecentFiles(i)
+
+    # code below copied from clearRecentFiles
+    g.app.config.recentFiles = [] # New in Leo 4.3.
+    g.app.config.appendToRecentFiles(c.recentFiles)
+    g.app.config.recentFileMessageWritten = False # Force the write message.
+    g.app.config.writeRecentFilesFile(c)
+#@-node:tbrown.20080509212202.8:sortRecentFiles
+#@-node:ekr.20031218072017.2079:Recent Files submenu & allies
+#@+node:ekr.20031218072017.1723:createMenuEntries
+def createMenuEntries (self,menu,table,dynamicMenu=False):
+
+    '''Create a menu entry from the table.
+    New in 4.4: this method shows the shortcut in the menu,
+    but this method **never** binds any shortcuts.'''
+
+    # g.trace('menu',menu)
+
+    c = self.c ; f = c.frame ; k = c.k ; trace = False
+    if g.app.unitTesting: return
+    for data in table:
+        << get label & command or continue >>
+        << compute commandName & accel from label & command >>
+        accelerator = stroke = k.shortcutFromSetting(accel,addKey=False) or ''
+        accelerator = accelerator and g.stripBrackets(k.prettyPrintKey(accelerator))
+        def masterMenuCallback (c=c,k=k,stroke=stroke,command=command,commandName=commandName,event=None):
+            #k.clearState()
+            #g.trace(stroke)
+            return k.masterMenuHandler(stroke,command,commandName)
+
+        realLabel = self.getRealMenuName(label)
+        amp_index = realLabel.find("&")
+        realLabel = realLabel.replace("&","")
+        if sys.platform == 'darwin':
+            << clear accelerator if it is a plain key >>
+
+        # c.add_command ensures that c.outerUpdate is called.
+        if menu:
+            c.add_command(menu,label=realLabel,
+                accelerator=accelerator,
+                command=masterMenuCallback,
+                underline=amp_index)
+#@+node:ekr.20051021091958:<< get label & command or continue >>
+if g.isString(data):
+    # New in Leo 4.4.2: Can use the same string for both the label and the command string.
+    ok = True
+    s = data
+    removeHyphens = s and s[0]=='*'
+    if removeHyphens: s = s[1:]
+    label = self.capitalizeMinibufferMenuName(s,removeHyphens)
+    command = s.replace('&','').lower()
+    if label == '-':
+        self.add_separator(menu)
+        continue # That's all.
+else:
+    ok = type(data) in (type(()), type([])) and len(data) in (2,3)
+    if ok:
+        if len(data) == 2:
+            # New in 4.4b2: command can be a minibuffer-command name (a string)
+            label,command = data
+        else:
+            # New in 4.4: we ignore shortcuts bound in menu tables.
+            label,junk,command = data
+
+        if label in (None,'-'):
+            self.add_separator(menu)
+            continue # That's all.
+    else:
+        g.trace('bad data in menu table: %s' % repr(data))
+        continue # Ignore bad data
+#@nonl
+#@-node:ekr.20051021091958:<< get label & command or continue >>
+#@+node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
+# New in 4.4b2: command can be a minibuffer-command name (a string)
+minibufferCommand = type(command) == type('')
+accel = None
+if minibufferCommand:
+    commandName = command 
+    command = c.commandsDict.get(commandName)
+    if command:
+        rawKey,bunchList = c.config.getShortcut(commandName)
+        # Pick the first entry that is not a mode.
+        for bunch in bunchList:
+            if not bunch.pane.endswith('-mode'):
+                if trace: g.trace('1','%20s' % (bunch.val),commandName)
+                accel = bunch and bunch.val
+                if bunch.pane  == 'text': break # New in Leo 4.4.2: prefer text bindings.
+    else:
+        if not g.app.unitTesting and not dynamicMenu:
+            # Don't warn during unit testing.
+            # This may come from a plugin that normally isn't enabled.
+            if trace: g.trace('No inverse for %s' % commandName)
+        continue # There is no way to make this menu entry.
+else:
+    # First, get the old-style name.
+    commandName = self.computeOldStyleShortcutKey(label)
+    rawKey,bunchList = c.config.getShortcut(commandName)
+    for bunch in bunchList:
+        if not bunch.pane.endswith('-mode'):
+            if trace: g.trace('2','%20s' % (bunch.val),commandName)
+            accel = bunch and bunch.val ; break
+    # Second, get new-style name.
+    if not accel:
+        << compute emacs_name >>
+            # Contains the not-so-horrible kludge.
+        if emacs_name:
+            commandName = emacs_name
+            rawKey,bunchList = c.config.getShortcut(emacs_name)
+            # Pick the first entry that is not a mode.
+            for bunch in bunchList:
+                if not bunch.pane.endswith('-mode'):
+                    accel = bunch.val
+                    if trace: g.trace('3','%20s' % (bunch.val),commandName)
+                    break
+        elif not dynamicMenu:
+            g.trace('No inverse for %s' % commandName)
+#@+node:ekr.20051021100806.1:<< compute emacs_name >>
+@ One not-so-horrible kludge remains.
+
+The cut/copy/paste commands in the menu tables are not the same as the methods
+actually bound to cut/copy/paste-text minibuffer commands, so we must do a bit
+of extra translation to discover whether the user has overridden their
+bindings.
+@c
+
+if command in (f.OnCutFromMenu,f.OnCopyFromMenu,f.OnPasteFromMenu):
+    emacs_name = '%s-text' % commandName
+else:
+    try: # User errors in the table can cause this.
+        emacs_name = k.inverseCommandsDict.get(command.__name__)
+    except Exception:
+        emacs_name = None
+#@-node:ekr.20051021100806.1:<< compute emacs_name >>
+#@-node:ekr.20031218072017.1725:<< compute commandName & accel from label & command >>
+#@+node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
+for z in ('Alt','Ctrl','Command'):
+    if accelerator.find(z) != -1:
+        break # Found.
+else:
+    accelerator = ''
+#@-node:ekr.20060216110502:<< clear accelerator if it is a plain key >>
+#@-node:ekr.20031218072017.1723:createMenuEntries
+#@+node:ekr.20031218072017.2078:createRecentFilesMenuItems (leoMenu)
+def createRecentFilesMenuItems (self):
+
+    c = self.c
+    recentFilesMenu = self.getMenu("Recent Files...")
+    if not recentFilesMenu:
+        g.trace('Recent Files Menu does not exist',g.callers())
+        return
+
+    # Delete all previous entries.
+    self.deleteRecentFilesMenuItems(recentFilesMenu)
+
+    # Create the static entries.
+    table = self.recentFilesStatic
+
+    self.createMenuEntries(recentFilesMenu,table)
+
+    # Create all the other entries (a maximum of 36).
+    accel_ch = string.digits + string.ascii_uppercase # Not a unicode problem.
+    i = 0
+    n = len(accel_ch)
+
+    # see if we're grouping when files occur in more than one place
+    rf_group = c.config.getBool("recent_files_group")
+    rf_always = c.config.getBool("recent_files_group_always")
+    groupedEntries = rf_group or rf_always
+
+    if groupedEntries:  # if so, make dict of groups
+        dirCount = {}
+        for fileName in c.recentFiles[:n]:
+            dirName, baseName = g.os_path_split(fileName)
+            if baseName not in dirCount:
+                dirCount[baseName] = {'dirs':[], 'entry': None}
+            dirCount[baseName]['dirs'].append(dirName)
+
+    for name in c.recentFiles[:n]:
+        if name.strip() == "": continue  # happens with empty list/new file
+        def recentFilesCallback (event=None,c=c,name=name):
+            c.openRecentFile(name)
+
+        if groupedEntries:
+            dirName, baseName = g.os_path_split(name)
+
+            entry = dirCount[baseName]
+
+            if len(entry['dirs']) > 1 or rf_always:  # sub menus
+                if entry['entry'] is None:
+                    entry['entry'] = self.createNewMenu(baseName, "Recent Files...")
+                    # acts as a flag for the need to create the menu
+                c.add_command(self.getMenu(baseName), label=dirName,
+                    command=recentFilesCallback, underline=0)
+            else:  # single occurence, no submenu
+                c.add_command(recentFilesMenu,label=baseName,command=recentFilesCallback,underline=0)
+        else:  # original behavior
+            label = "%s %s" % (accel_ch[i],g.computeWindowTitle(name))
+            c.add_command(recentFilesMenu,label=label,command=recentFilesCallback,underline=0)
+        i += 1
+
+    if groupedEntries:  # store so we can delete them later
+        self.groupedMenus = [i for i in dirCount
+                             if dirCount[i]['entry'] is not None]
+#@-node:ekr.20031218072017.2078:createRecentFilesMenuItems (leoMenu)
+#@-node:ekr.20090613082719.6057:Entries in recent files menu now have absolute paths
 #@-node:ekr.20090401105902.3:Features
 #@-node:ekr.20080917153158.11:4.6 b2
 #@-all

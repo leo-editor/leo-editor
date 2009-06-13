@@ -2146,7 +2146,7 @@ of the nodes would load from the file.
 #@+node:ekr.20031218072017.1577:putTnode
 def putTnode (self,t):
 
-    ### Could be eliminated.
+    # Could be eliminated.
     # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
     if not t.fileIndex:
         g.trace('can not happen: no index for tnode',t)

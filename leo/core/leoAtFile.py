@@ -420,7 +420,6 @@ class atFile:
                 return at.error('can not call at.read from string for @shadow files')
             at.inputFile = g.fileLikeObject(fromString=fromString)
         else:
-            ### fn = c.os_path_finalize_join(at.default_directory,fn)
             fn = at.fullPath(self.root) # Returns full path, including file name.
             at.setPathUa(self.root,fn) # Remember the full path to this node.
             if trace: g.trace(fn)
@@ -2820,8 +2819,6 @@ class atFile:
         # A hack to support unknown extensions.
         self.adjustTargetLanguage(fn) # May set c.target_language.
 
-        ### at.scanDefaultDirectory(p,importing=True) # Set default_directory
-        # fn = c.os_path_finalize_join(at.default_directory,fn)
         fn = at.fullPath(p)
         at.default_directory = g.os_path_dirname(fn)
         exists = g.os_path_exists(fn)
