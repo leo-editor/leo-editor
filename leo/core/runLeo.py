@@ -94,6 +94,28 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     # Phase 3: after loading plugins. Create a frame.
     ok = doPostPluginsInit(args,fn,relFn,script)
     if ok: g.app.gui.runMainLoop()
+#@+node:ekr.20090519143741.5915:doPrePluginsInit & helpers
+def doPrePluginsInit(fileName,pymacs):
+
+    '''Scan options, set directories and read settings.'''
+
+    g.computeStandardDirectories()
+    adjustSysPath()
+    fileName2,gui,script,windowFlag = scanOptions()
+    if fileName2: fileName = fileName2
+    # print ('runLeo.run: sys.argv %s' % sys.argv)
+    # print ('runLeo.run: fileName %s' % fileName)
+    if pymacs: script,windowFlag = None,False
+    verbose = script is None
+    initApp(verbose)
+    fileName,relativeFileName = getFileName(fileName,script)
+    reportDirectories(verbose)
+    # Read settings *after* setting g.app.config and *before* opening plugins.
+    # This means if-gui has effect only in per-file settings.
+    g.app.config.readSettingsFiles(fileName,verbose)
+    g.app.setEncoding()
+    createSpecialGui(gui,pymacs,script,windowFlag)
+    return fileName,relativeFileName,script
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
@@ -124,29 +146,6 @@ def createNullGuiWithScript (script):
     g.app.gui.setScript(script)
 #@-node:ekr.20031218072017.1938:createNullGuiWithScript
 #@-node:ekr.20080921060401.4:createSpecialGui & helper
-#@+node:ekr.20090519143741.5915:doPrePluginsInit & helpers
-def doPrePluginsInit(fileName,pymacs):
-
-    '''Scan options, set directories and read settings.'''
-
-    g.computeStandardDirectories()
-    adjustSysPath()
-    fileName2,gui,script,windowFlag = scanOptions()
-    if fileName2: fileName = fileName2
-    # print ('runLeo.run: sys.argv %s' % sys.argv)
-    # print ('runLeo.run: fileName %s' % fileName)
-    if pymacs: script,windowFlag = None,False
-    verbose = script is None
-    initApp(verbose)
-    fileName,relativeFileName = getFileName(fileName,script)
-    reportDirectories(verbose)
-    # Read settings *after* setting g.app.config and *before* opening plugins.
-    # This means if-gui has effect only in per-file settings.
-    g.app.config.readSettingsFiles(fileName,verbose)
-    g.app.setEncoding()
-    createSpecialGui(gui,pymacs,script,windowFlag)
-    return fileName,relativeFileName,script
-#@nonl
 #@+node:ekr.20070306085724:adjustSysPath
 def adjustSysPath ():
 
@@ -332,22 +331,10 @@ def doPostPluginsInit(args,fileName,relativeFileName,script):
         g.enableIdleTimeHook()
     initFocusAndDraw(c,fileName)
     return True
-#@+node:ekr.20031218072017.1624:createFrame
+#@+node:ekr.20031218072017.1624:createFrame (runLeo.py)
 def createFrame (fileName,relativeFileName,script):
 
     """Create a LeoFrame during Leo's startup process."""
-
-    # Only allow .zip and .leo files.
-    if False: # We can open *any* file using g.openWithFileName.
-        if fileName:
-            table = ('.leo','.zip',)
-            for ext in table:
-                if fileName.endswith(ext):
-                    break
-            else:
-                g.es_print('invalid Leo file extension: %s' % (
-                    relativeFileName))
-                fileName = relativeFileName = None
 
     # New in Leo 4.6: support for 'default_leo_file' setting.
     defaultFileName = None
@@ -370,6 +357,7 @@ def createFrame (fileName,relativeFileName,script):
         fileName=fileName,
         relativeFileName=relativeFileName,
         initEditCommanders=True)
+
     assert frame.c == c and c.frame == frame
     frame.setInitialWindowGeometry()
     frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
@@ -380,21 +368,15 @@ def createFrame (fileName,relativeFileName,script):
     # Call the 'new' hook for compatibility with plugins.
     g.doHook("new",old_c=None,c=c,new_c=c)
 
-    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.p
-    if not g.doHook("menu1",c=frame.c,p=p,v=p):
-        frame.menu.createMenuBar(frame)
-        c.updateRecentFiles(relativeFileName or fileName)
-        g.doHook("menu2",c=frame.c,p=p,v=p)
-        g.doHook("after-create-leo-frame",c=c)
+    g.createMenu(c,fileName,relativeFileName)
+    g.finishOpen(c) # Calls c.redraw.
 
     # Report the failure to open the file.
     if fileName:
         g.es_print("file not found:",fileName,color='red')
 
-    c.redraw()
     return c,frame
-#@-node:ekr.20031218072017.1624:createFrame
+#@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
 #@+node:ekr.20080921060401.5:finishInitApp
 def finishInitApp(c):
 

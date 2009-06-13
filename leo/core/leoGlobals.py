@@ -2769,7 +2769,7 @@ def openWithFileName(fileName,old_c,
     g.createMenu(c,fn,relFn)
     g.finishOpen(c)
     return True,c.frame
-#@+node:ekr.20090520055433.5951:createMenu
+#@+node:ekr.20090520055433.5951:g.createMenu
 def createMenu(c,fileName=None,relativeFileName=None):
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
@@ -2779,8 +2779,8 @@ def createMenu(c,fileName=None,relativeFileName=None):
         c.updateRecentFiles(relativeFileName or fileName)
         g.doHook("menu2",c=c,p=c.p,v=c.p)
         g.doHook("after-create-leo-frame",c=c)
-#@-node:ekr.20090520055433.5951:createMenu
-#@+node:ekr.20090520055433.5948:findOpenFile
+#@-node:ekr.20090520055433.5951:g.createMenu
+#@+node:ekr.20090520055433.5948:g.findOpenFile
 def findOpenFile(fileName):
 
     def munge(name):
@@ -2794,8 +2794,8 @@ def findOpenFile(fileName):
             c.outerUpdate()
             return c
     return None
-#@-node:ekr.20090520055433.5948:findOpenFile
-#@+node:ekr.20090520055433.5952:finishOpen
+#@-node:ekr.20090520055433.5948:g.findOpenFile
+#@+node:ekr.20090520055433.5952:g.finishOpen
 def finishOpen(c):
 
     k = c.k
@@ -2817,8 +2817,8 @@ def finishOpen(c):
         k.showStateAndMode()
     c.frame.initCompleteHint()
     return True
-#@-node:ekr.20090520055433.5952:finishOpen
-#@+node:ekr.20090520055433.5950:handleOpenHooks
+#@-node:ekr.20090520055433.5952:g.finishOpen
+#@+node:ekr.20090520055433.5950:g.handleOpenHooks
 def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
 
     if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
@@ -2842,8 +2842,8 @@ def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
     return True
 #@nonl
-#@-node:ekr.20090520055433.5950:handleOpenHooks
-#@+node:ekr.20090520055433.5954:mungeFileName
+#@-node:ekr.20090520055433.5950:g.handleOpenHooks
+#@+node:ekr.20090520055433.5954:g.mungeFileName
 def mungeFileName(fileName):
 
     '''Create a full, normalized, Unicode path name, preserving case.'''
@@ -2855,8 +2855,8 @@ def mungeFileName(fileName):
     isLeo = isZipped or fn.endswith('.leo')
 
     return isLeo,fn,relFn
-#@-node:ekr.20090520055433.5954:mungeFileName
-#@+node:ekr.20090520055433.5946:openWithFileNameHelper
+#@-node:ekr.20090520055433.5954:g.mungeFileName
+#@+node:ekr.20090520055433.5946:g.openWithFileNameHelper
 def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
 
     if old_c: g.preRead(fileName)
@@ -2887,8 +2887,8 @@ def preRead(fileName):
     if c:
         g.app.config.updateSettings(c,localFlag=True)
 #@-node:ekr.20090520055433.5949:preRead
-#@-node:ekr.20090520055433.5946:openWithFileNameHelper
-#@+node:ekr.20080921154026.1:openWrapperLeoFile
+#@-node:ekr.20090520055433.5946:g.openWithFileNameHelper
+#@+node:ekr.20080921154026.1:g.openWrapperLeoFile
 def openWrapperLeoFile (old_c,fileName,gui):
 
     '''Open a wrapper .leo file for the given file,
@@ -2945,7 +2945,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
 
     frame.c.setChanged(True) # Mark the outline dirty.
     return c
-#@-node:ekr.20080921154026.1:openWrapperLeoFile
+#@-node:ekr.20080921154026.1:g.openWrapperLeoFile
 #@-node:ekr.20090520055433.5945:g.openWithFileName & helpers
 #@+node:ekr.20031218072017.3120:g.readlineForceUnixNewline (Steven P. Schaefer)
 #@+at 

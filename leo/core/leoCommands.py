@@ -7690,6 +7690,7 @@ class configSettings:
     def __init__ (self,c):
 
         self.c = c
+        # g.trace('(configSettings)',c,g.callers(5))
 
         # Init these here to keep pylint happy.
         self.default_derived_file_encoding = None

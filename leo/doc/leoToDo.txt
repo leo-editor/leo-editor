@@ -12,8 +12,8 @@ Seems someone messed up the tangling of root nodes in the trunk for it
 always says "no root code..."
 #@nonl
 #@-node:ekr.20090605075411.6436:Fix @root bug
-#@+node:ekr.20090612160307.6059:Fix nonexistent write bug
-#@-node:ekr.20090612160307.6059:Fix nonexistent write bug
+#@+node:ekr.20090613055427.6055:Delete editor kills coloring
+#@-node:ekr.20090613055427.6055:Delete editor kills coloring
 #@+node:ekr.20090602183337.6045:Fix rst import annoyance
 @nocolor-node
 

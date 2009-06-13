@@ -1207,6 +1207,7 @@ class configClass:
     #@+node:ekr.20041117062717.2:ctor (configClass)
     def __init__ (self):
 
+        # g.trace('g.app.config')
         self.atCommonButtonsList = [] # List of info for common @buttons nodes.
         self.atCommonCommandsList = [] # List of info for common @commands nodes.
         self.buttonsFileName = ''
@@ -1823,7 +1824,7 @@ class configClass:
     #@-node:ekr.20041201080436:appendToRecentFiles (g.app.config)
     #@-node:ekr.20041118084146:Setters (g.app.config)
     #@+node:ekr.20041117093246:Scanning @settings (g.app.config)
-    #@+node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+    #@+node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
     def readSettingsFiles (self,fileName,verbose=True):
 
         seen = []
@@ -1868,7 +1869,7 @@ class configClass:
                 # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
             isZipped = path and zipfile.is_zipfile(path)
             isLeo = isZipped or (path and path.endswith('.leo'))
-            if isLeo and path and path.lower() not in seen:
+            if isLeo and path and path.lower() not in seen and g.os_path_exists(path):
                 seen.append(path.lower())
                 if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
                     s = 'reading settings in %s' % path
@@ -1888,7 +1889,7 @@ class configClass:
         # self.createMyLeoSettingsFile(myLocalConfigFile)
         self.inited = True
         self.setIvarsFromSettings(None)
-    #@+node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
+    #@+node:ekr.20080811174246.5:createMyLeoSettingsFile (not used)
     def createMyLeoSettingsFile (self,localConfigFile):
 
         '''Create home.myLeoSettings.leo if no other myLeoSettings.leo file exists.'''
@@ -1949,8 +1950,8 @@ class configClass:
                 g.pr(s)
                 g.app.logWaiting.append((s+'\n','red'),)
                 g.es_exception()
-    #@-node:ekr.20080811174246.5:g.app.config.createMyLeoSettingsFile (not used)
-    #@+node:ekr.20041117085625:g.app.config.openSettingsFile
+    #@-node:ekr.20080811174246.5:createMyLeoSettingsFile (not used)
+    #@+node:ekr.20041117085625:openSettingsFile
     def openSettingsFile (self,path):
 
         theFile,isZipped = g.openLeoOrZipFile(path)
@@ -1972,8 +1973,8 @@ class configClass:
         c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
         g.app.gui = oldGui
         return ok and c
-    #@-node:ekr.20041117085625:g.app.config.openSettingsFile
-    #@+node:ekr.20051013161232:g.app.config.updateSettings
+    #@-node:ekr.20041117085625:openSettingsFile
+    #@+node:ekr.20051013161232:updateSettings
     def updateSettings (self,c,localFlag):
 
         d = self.readSettings(c,localFlag)
@@ -1989,8 +1990,8 @@ class configClass:
             if localFlag:
                 g.trace(c.fileName())
                 g.trace(d and d.keys())
-    #@-node:ekr.20051013161232:g.app.config.updateSettings
-    #@-node:ekr.20041120064303:g.app.config.readSettingsFiles & helpers
+    #@-node:ekr.20051013161232:updateSettings
+    #@-node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
     #@+node:ekr.20041117083857.1:g.app.config.readSettings
     # Called to read all leoSettings.leo files.
     # Also called when opening an .leo file to read @settings tree.

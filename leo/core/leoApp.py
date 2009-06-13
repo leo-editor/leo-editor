@@ -499,10 +499,8 @@ class LeoApp:
         if not app.initing:
             g.doHook("before-create-leo-frame",c=c) # Was 'onCreate': too confusing.
 
-
         frame.finishCreate(c)
         c.finishCreate(initEditCommanders)
-
 
         # Finish initing the subcommanders.
         c.undoer.clearUndoState() # Menus must exist at this point.

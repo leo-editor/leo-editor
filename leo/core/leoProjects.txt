@@ -20,238 +20,6 @@
 
 #@+all
 #@+node:ekr.20080917153158.11:4.6 b2
-#@+node:ekr.20090410090554.1:Proof of @shadow theorems
-#@+node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
-def readOneAtShadowNode (self,fn,p):
-
-    at = self ; c = at.c ; x = c.shadowController
-
-    if not fn == p.atShadowFileNodeName():
-        return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
-            fn, p.atShadowFileNodeName()))
-
-    at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
-
-    fn = c.os_path_finalize_join(at.default_directory,fn)
-    shadow_fn     = x.shadowPathName(fn)
-    shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
-
-    if shadow_exists:
-        # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
-        at.read(p,thinFile=True,atShadow=True)
-    else:
-        if not g.unitTesting: g.es("reading:",p.h)
-        ok = at.importAtShadowNode(fn,p)
-        if ok:
-            # Create the private file automatically.
-            at.writeOneAtShadowNode(p,toString=False,force=True)
-#@+node:ekr.20080712080505.1:importAtShadowNode
-def importAtShadowNode (self,fn,p):
-
-    at = self ; c = at.c  ; ic = c.importCommands
-    oldChanged = c.isChanged()
-
-    # Delete all the child nodes.
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-    # Import the outline, exactly as @auto does.
-    ic.createOutline(fn,parent=p.copy(),atAuto=True,atShadow=True)
-
-    if ic.errors:
-        g.es_print('errors inhibited read @shadow',fn,color='red')
-
-    if ic.errors or not g.os_path_exists(fn):
-        p.clearDirty()
-        c.setChanged(oldChanged)
-
-    # else: g.doHook('after-shadow', p = p)
-
-    return ic.errors == 0
-#@-node:ekr.20080712080505.1:importAtShadowNode
-#@-node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
-#@+node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
-def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
-
-    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
-
-    We compare the old and new public lines, create diffs and
-    propagate the diffs to the new private lines, copying sentinels as well.
-
-    We have two invariants:
-    1. We *never* delete any sentinels.
-    2. Insertions that happen at the boundary between nodes will be put at
-       the end of a node.  However, insertions must always be done within sentinels.
-    '''
-
-    x = self ; trace = False ; verbose = True
-    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
-    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
-
-    << init vars >>
-    << define print_tags >>
-
-    delim1,delim2 = marker.getDelims()
-    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
-    prev_old_j = 0 ; prev_new_j = 0
-
-    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
-
-        << About this loop >>
-
-        # Verify that SequenceMatcher never leaves gaps.
-        if old_i != prev_old_j: # assert old_i == prev_old_j
-            x.error('can not happen: gap in old:',old_i,prev_old_j)
-        if new_i != prev_new_j: # assert new_i == prev_new_j
-            x.error('can not happen: gap in new:',new_i,prev_new_j)
-
-        << Handle the opcode >>
-
-        # Remember the ends of the previous tag ranges.
-        prev_old_j = old_j
-        prev_new_j = new_j
-
-    # Copy all unwritten sentinels.
-    self.copy_sentinels(
-        old_private_lines_rdr,
-        new_private_lines_wtr,
-        marker,
-        limit = old_private_lines_rdr.size())
-
-    # Get the result.
-    result = new_private_lines_wtr.getlines()
-    if 1:
-        << do final correctness check>>
-    return result
-#@+node:ekr.20080708094444.40:<< init vars >>
-new_private_lines_wtr = self.sourcewriter(self)
-# collects the contents of the new file.
-
-new_public_lines_rdr = self.sourcereader(self,new_public_lines)
-    # Contains the changed source code.
-
-old_public_lines_rdr = self.sourcereader(self,old_public_lines)
-    # this is compared to new_public_lines_rdr to find out the changes.
-
-old_private_lines_rdr = self.sourcereader(self,old_private_lines) # lines_with_sentinels)
-    # This is the file which is currently produced by Leo, with sentinels.
-
-# Check that all ranges returned by get_opcodes() are contiguous
-old_old_j, old_i2_modified_lines = -1,-1
-
-tag = old_i = old_j = new_i = new_j = None
-#@nonl
-#@-node:ekr.20080708094444.40:<< init vars >>
-#@+node:ekr.20080708094444.39:<< define print_tags >>
-def print_tags(tag, old_i, old_j, new_i, new_j, message):
-
-    sep1 = '=' * 10 ; sep2 = '-' * 20
-
-    g.pr('\n',sep1,message,sep1,p and p.h)
-
-    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
-
-    g.pr('\n',sep2)
-
-    table = (
-        (old_private_lines_rdr,'old private lines'),
-        (old_public_lines_rdr,'old public lines'),
-        (new_public_lines_rdr,'new public lines'),
-        (new_private_lines_wtr,'new private lines'),
-    )
-
-    for f,tag in table:
-        f.dump(tag)
-        g.pr(sep2)
-
-
-#@-node:ekr.20080708094444.39:<< define print_tags >>
-#@+node:ekr.20080708192807.2:<< about this loop >>
-@
-
-This loop writes all output lines using a single writer: new_private_lines_wtr.
-
-The output lines come from two, and *only* two readers:
-
-1. old_private_lines_rdr delivers the complete original sources. All
-   sentinels and unchanged regular lines come from this reader.
-
-2. new_public_lines_rdr delivers the new, changed sources. All inserted or
-   replacement text comes from this reader.
-
-Each time through the loop, the following are true:
-
-- old_i is the index into old_public_lines of the start of the present SequenceMatcher opcode.
-
-- mapping[old_i] is the index into old_private_lines of the start of the same opcode.
-
-At the start of the loop, the call to copy_sentinels effectively skips (deletes)
-all previously unwritten non-sentinel lines in old_private_lines_rdr whose index
-is less than mapping[old_i].
-
-As a result, the opcode handlers do not need to delete elements from the
-old_private_lines_rdr explicitly. This explains why opcode handlers for the
-'insert' and 'delete' opcodes are identical.
-#@-node:ekr.20080708192807.2:<< about this loop >>
-#@+node:ekr.20080708192807.5:<< Handle the opcode >>
-# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
-# In this special case, we must do the insert before the sentinels.
-limit=mapping[old_i]
-
-if trace: g.trace(tag,'old_i',old_i,'limit',limit)
-
-if tag == 'insert' and limit >= old_private_lines_rdr.size():
-    pass
-else:
-    # Ignore (delete) all unwritten lines of old_private_lines_rdr up to limit.
-    # Because of this, nothing has to be explicitly deleted below.
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-
-if tag == 'equal':
-    # Copy all lines (including sentinels) from the old private file to the new private file.
-    start = old_private_lines_rdr.index()
-    while old_private_lines_rdr.index() <= mapping[old_j-1]:
-        line = old_private_lines_rdr.get()
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,mapping[old_j-1]))
-
-    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
-    new_public_lines_rdr.sync(new_j)
-
-elif tag in ('insert','replace'):
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Copy lines from new_public_lines_rdr up to new_j.
-    start = new_public_lines_rdr.index()
-    while new_public_lines_rdr.index() < new_j:
-        line = new_public_lines_rdr.get()
-        if marker.isSentinel(line):
-            new_private_lines_wtr.put(
-                '%s@verbatim%s\n' % (delim1,delim2),
-                tag='%s %s:%s' % ('new sent',start,new_j))
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-
-elif tag=='delete':
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Leave new_public_lines_rdr unchanged.
-    pass
-
-else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
-
-if trace and verbose:
-    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
-#@nonl
-#@-node:ekr.20080708192807.5:<< Handle the opcode >>
-#@+node:ekr.20080708094444.45:<< do final correctness check >>
-t_sourcelines, t_sentinel_lines = self.separate_sentinels(
-    new_private_lines_wtr.lines, marker)
-
-self.check_the_final_output(
-    new_private_lines   = result,
-    new_public_lines    = new_public_lines,
-    sentinel_lines      = t_sentinel_lines,
-    marker              = marker)
-#@-node:ekr.20080708094444.45:<< do final correctness check >>
-#@-node:ekr.20080708094444.38:x.propagate_changed_lines (calls diff)
-#@-node:ekr.20090410090554.1:Proof of @shadow theorems
 #@+node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401093731.1:Fixed elisp importer problem
 #@+node:ekr.20070707073859:skipBlock
@@ -1015,10 +783,8 @@ def newLeoCommanderAndFrame(self,
     if not app.initing:
         g.doHook("before-create-leo-frame",c=c) # Was 'onCreate': too confusing.
 
-
     frame.finishCreate(c)
     c.finishCreate(initEditCommanders)
-
 
     # Finish initing the subcommanders.
     c.undoer.clearUndoState() # Menus must exist at this point.
@@ -7029,7 +6795,7 @@ def openWithFileName(fileName,old_c,
     g.createMenu(c,fn,relFn)
     g.finishOpen(c)
     return True,c.frame
-#@+node:ekr.20090520055433.5951:createMenu
+#@+node:ekr.20090520055433.5951:g.createMenu
 def createMenu(c,fileName=None,relativeFileName=None):
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
@@ -7039,8 +6805,8 @@ def createMenu(c,fileName=None,relativeFileName=None):
         c.updateRecentFiles(relativeFileName or fileName)
         g.doHook("menu2",c=c,p=c.p,v=c.p)
         g.doHook("after-create-leo-frame",c=c)
-#@-node:ekr.20090520055433.5951:createMenu
-#@+node:ekr.20090520055433.5948:findOpenFile
+#@-node:ekr.20090520055433.5951:g.createMenu
+#@+node:ekr.20090520055433.5948:g.findOpenFile
 def findOpenFile(fileName):
 
     def munge(name):
@@ -7054,8 +6820,8 @@ def findOpenFile(fileName):
             c.outerUpdate()
             return c
     return None
-#@-node:ekr.20090520055433.5948:findOpenFile
-#@+node:ekr.20090520055433.5952:finishOpen
+#@-node:ekr.20090520055433.5948:g.findOpenFile
+#@+node:ekr.20090520055433.5952:g.finishOpen
 def finishOpen(c):
 
     k = c.k
@@ -7077,8 +6843,8 @@ def finishOpen(c):
         k.showStateAndMode()
     c.frame.initCompleteHint()
     return True
-#@-node:ekr.20090520055433.5952:finishOpen
-#@+node:ekr.20090520055433.5950:handleOpenHooks
+#@-node:ekr.20090520055433.5952:g.finishOpen
+#@+node:ekr.20090520055433.5950:g.handleOpenHooks
 def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
 
     if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
@@ -7102,8 +6868,8 @@ def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
     return True
 #@nonl
-#@-node:ekr.20090520055433.5950:handleOpenHooks
-#@+node:ekr.20090520055433.5954:mungeFileName
+#@-node:ekr.20090520055433.5950:g.handleOpenHooks
+#@+node:ekr.20090520055433.5954:g.mungeFileName
 def mungeFileName(fileName):
 
     '''Create a full, normalized, Unicode path name, preserving case.'''
@@ -7115,8 +6881,8 @@ def mungeFileName(fileName):
     isLeo = isZipped or fn.endswith('.leo')
 
     return isLeo,fn,relFn
-#@-node:ekr.20090520055433.5954:mungeFileName
-#@+node:ekr.20090520055433.5946:openWithFileNameHelper
+#@-node:ekr.20090520055433.5954:g.mungeFileName
+#@+node:ekr.20090520055433.5946:g.openWithFileNameHelper
 def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
 
     if old_c: g.preRead(fileName)
@@ -7147,8 +6913,8 @@ def preRead(fileName):
     if c:
         g.app.config.updateSettings(c,localFlag=True)
 #@-node:ekr.20090520055433.5949:preRead
-#@-node:ekr.20090520055433.5946:openWithFileNameHelper
-#@+node:ekr.20080921154026.1:openWrapperLeoFile
+#@-node:ekr.20090520055433.5946:g.openWithFileNameHelper
+#@+node:ekr.20080921154026.1:g.openWrapperLeoFile
 def openWrapperLeoFile (old_c,fileName,gui):
 
     '''Open a wrapper .leo file for the given file,
@@ -7205,7 +6971,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
 
     frame.c.setChanged(True) # Mark the outline dirty.
     return c
-#@-node:ekr.20080921154026.1:openWrapperLeoFile
+#@-node:ekr.20080921154026.1:g.openWrapperLeoFile
 #@-node:ekr.20090520055433.5945:g.openWithFileName & helpers
 #@+node:ekr.20031218072017.1623:c.new
 def new (self,event=None,gui=None):
@@ -18411,6 +18177,596 @@ def create_tree_at_position(p, tree):
 
 #@-node:ville.20090606103927.6472:tree operations (tree_at_position...)
 #@-node:ekr.20090611064910.6052:Read clone bug
+#@+node:ekr.20090613055427.6054:Removed duplicate messages when opening non-existent .leo file
+readSettingsFiles now checks g.os_path_exists(path) first.
+#@nonl
+#@+node:ekr.20041117093246:Scanning @settings (g.app.config)
+#@+node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
+def readSettingsFiles (self,fileName,verbose=True):
+
+    seen = []
+    self.write_recent_files_as_needed = False # Will be set later.
+    << define localDirectory, localConfigFile & myLocalConfigFile >>
+
+    # g.trace(g.app.oneConfigFilename)
+    table = (
+        (self.globalConfigFile,False),
+        (self.homeFile,False),
+        (localConfigFile,False),
+        (self.myGlobalConfigFile,False),
+        (self.myHomeConfigFile,False),
+        (self.machineConfigFile,False),
+        (myLocalConfigFile,False),
+        # New in Leo 4.6: the -c file is in *addition* to other config files.
+        (g.app.oneConfigFilename,False),
+        (fileName,True),
+    )
+
+    # Init settings from leoSettings.leo and myLeoSettings.leo files.
+    for path,localFlag in table:
+        if path:
+            path = g.os_path_realpath(g.os_path_finalize(path))
+            # Bug fix: 6/3/08: make sure we mark files seen no matter how they are specified.
+        isZipped = path and zipfile.is_zipfile(path)
+        isLeo = isZipped or (path and path.endswith('.leo'))
+        if isLeo and path and path.lower() not in seen and g.os_path_exists(path):
+            seen.append(path.lower())
+            if verbose and not g.app.unitTesting and not self.silent and not g.app.batchMode:
+                s = 'reading settings in %s' % path
+                # This occurs early in startup, so use the following instead of g.es_print.
+                if not g.isPython3:
+                    s = g.toEncodedString(s,'ascii')
+                g.pr(s)
+                g.app.logWaiting.append((s+'\n','blue'),)
+
+            c = self.openSettingsFile(path)
+            if c:
+                self.updateSettings(c,localFlag)
+                g.app.destroyWindow(c.frame)
+                self.write_recent_files_as_needed = c.config.getBool('write_recent_files_as_needed')
+                self.setIvarsFromSettings(c)
+    self.readRecentFiles(localConfigFile)
+    # self.createMyLeoSettingsFile(myLocalConfigFile)
+    self.inited = True
+    self.setIvarsFromSettings(None)
+#@+node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+# This can't be done in initSettingsFiles because
+# the local directory does not yet exist.
+localDirectory = g.os_path_dirname(fileName)
+
+#  Set the local leoSettings.leo file.
+localConfigFile = g.os_path_join(localDirectory,'leoSettings.leo')
+if not g.os_path_exists(localConfigFile):
+    localConfigFile = None
+
+# Set the local myLeoSetting.leo file.
+myLocalConfigFile = g.os_path_join(localDirectory,'myLeoSettings.leo')
+if not g.os_path_exists(myLocalConfigFile):
+    myLocalConfigFile = None
+#@nonl
+#@-node:ekr.20061028082834:<< define localDirectory, localConfigFile & myLocalConfigFile >>
+#@+node:ekr.20080811174246.5:createMyLeoSettingsFile (not used)
+def createMyLeoSettingsFile (self,localConfigFile):
+
+    '''Create home.myLeoSettings.leo if no other myLeoSettings.leo file exists.'''
+
+    << define s, a minimalMyLeoSettings.leo string >>
+
+    for path in (
+        localConfigFile,
+        self.myGlobalConfigFile,
+        self.myHomeConfigFile
+    ):
+        # g.trace(path)
+        if path:
+            path = g.os_path_realpath(g.os_path_finalize(path))
+            if g.os_path_exists(path):
+                # g.trace('exists',path)
+                return
+
+    if g.app.homeDir:
+        path = g.os_path_finalize_join(g.app.homeDir,'myLeoSettings.leo')
+        try:
+            f = open(path,'wb')
+            f.write(s)
+            f.close()
+            self.myHomeConfigFile = path
+            # It's early in the startup: g.es does not work yet.
+            s = 'created: %s' % (self.myHomeConfigFile)
+            g.pr(s)
+            g.app.logWaiting.append((s+'\n','red'),)
+        except Exception:
+            s = 'can not create: %s' % (self.myHomeConfigFile)
+            g.pr(s)
+            g.app.logWaiting.append((s+'\n','red'),)
+            g.es_exception()
+#@+node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+s = '''<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet ekr_test?>
+<leo_file>
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5">
+	<global_window_position top="26" left="122" height="781" width="953"/>
+	<global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="ekr.20070411164127" str_leo_pos="0"><vh>@chapters</vh>
+<v t="ekr.20070411164127.1"><vh>@chapter trash</vh></v>
+</v>
+<v t="ekr.20070411164127.2"><vh>@settings</vh></v>
+</vnodes>
+<tnodes>
+<t tx="ekr.20070411164127"></t>
+<t tx="ekr.20070411164127.1">trash</t>
+<t tx="ekr.20070411164127.2"></t>
+</tnodes>
+</leo_file>
+'''
+#@-node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
+#@-node:ekr.20080811174246.5:createMyLeoSettingsFile (not used)
+#@+node:ekr.20041117085625:openSettingsFile
+def openSettingsFile (self,path):
+
+    theFile,isZipped = g.openLeoOrZipFile(path)
+    if not theFile: return None
+
+    # Similar to g.openWithFileName except it uses a null gui.
+    # Changing g.app.gui here is a major hack.
+    oldGui = g.app.gui
+    g.app.gui = leoGui.nullGui("nullGui")
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=path,relativeFileName=None,
+        initEditCommanders=False,updateRecentFiles=False)
+    frame.log.enable(False)
+    c.setLog()
+    g.app.lockLog()
+    ok = frame.c.fileCommands.open(
+        theFile,path,readAtFileNodesFlag=False,silent=True) # closes theFile.
+    g.app.unlockLog()
+    c.openDirectory = frame.openDirectory = g.os_path_dirname(path)
+    g.app.gui = oldGui
+    return ok and c
+#@-node:ekr.20041117085625:openSettingsFile
+#@+node:ekr.20051013161232:updateSettings
+def updateSettings (self,c,localFlag):
+
+    d = self.readSettings(c,localFlag)
+
+    if d:
+        d['_hash'] = theHash = c.hash()
+        if localFlag:
+            self.localOptionsDict[theHash] = d
+        else:
+            self.localOptionsList.insert(0,d)
+
+    if 0: # Good trace.
+        if localFlag:
+            g.trace(c.fileName())
+            g.trace(d and d.keys())
+#@-node:ekr.20051013161232:updateSettings
+#@-node:ekr.20041120064303:readSettingsFiles & helpers (g.app.config)
+#@+node:ekr.20041117083857.1:g.app.config.readSettings
+# Called to read all leoSettings.leo files.
+# Also called when opening an .leo file to read @settings tree.
+
+def readSettings (self,c,localFlag):
+
+    """Read settings from a file that may contain an @settings tree."""
+
+    # g.trace('=' * 20, c.fileName())
+
+    # Create a settings dict for c for set()
+    if c and self.localOptionsDict.get(c.hash()) is None:
+        self.localOptionsDict[c.hash()] = {}
+
+    parser = settingsTreeParser(c,localFlag)
+    d = parser.traverse()
+
+    return d
+#@-node:ekr.20041117083857.1:g.app.config.readSettings
+#@-node:ekr.20041117093246:Scanning @settings (g.app.config)
+#@-node:ekr.20090613055427.6054:Removed duplicate messages when opening non-existent .leo file
+#@+node:ekr.20090612160307.6059:Fixed binding problem with notebook
+@nocolor-node
+
+What I did:
+
+runLeo:createFraem now does::
+
+    g.createMenu(c,fileName,relativeFileName)
+    g.finishOpen(c)
+
+just as in g.openWithFileName and c.new.
+#@nonl
+#@+node:ekr.20090613075550.6079:Report
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/325857
+
+Leo: trunk at time of bug report
+GUI: Qt
+OS: Ubuntu 8.10
+Python: 2.5.2
+
+If if run leo with a command line `python launchLeo.py nonesuch.leo` where there
+is no file nonesuch.leo, key bindings in the tree panel *appear* to get fouled
+up. Ctrl-I etc. don't work. I doubt this is a key binding problem, more likely
+Ctrl-I etc. are operating on another invisible (no commander window) leo file,
+I'm thinking starting with a non-existent file in this way might be creating a
+ghost commander somewhere. This is just a hunch though. As soon as the file's
+created (saved) and reloaded everything's fine.
+
+===
+
+empty workbook is broken
+
+- Delete ~/.leo/workbook.leo (take a backup first though ;-)
+
+- lauchLeo.py --gui=qt
+
+- Note that leo behaves in broken fashion. It forgets body text, keyboard
+shortcuts do not work properly etc.
+
+E.g. press alt+down immediately, try pressing Enter to start editing the body,
+it doesn't work.
+
+Click on body, enter text, press alt + up, alt + down, note that the text is
+lost.
+#@nonl
+#@-node:ekr.20090613075550.6079:Report
+#@+node:ekr.20031218072017.1623:c.new
+def new (self,event=None,gui=None):
+
+    '''Create a new Leo window.'''
+
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=None,relativeFileName=None,gui=gui)
+
+    g.doHook("new",old_c=self,c=c,new_c=c)
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+    c.frame.createFirstTreeNode()
+    g.createMenu(c)
+    g.finishOpen(c)
+    c.redraw()
+    return c # For unit test.
+#@-node:ekr.20031218072017.1623:c.new
+#@+node:ekr.20090520055433.5945:g.openWithFileName & helpers
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
+
+    """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    trace = False and not g.unitTesting
+
+    if not fileName: return False, None
+    isLeo,fn,relFn = g.mungeFileName(fileName)
+
+    # Return if the file is already open.
+    c = g.findOpenFile(fn)
+    if c: return True,c.frame
+
+    # Open the file.
+    if isLeo:
+        c,f = g.openWithFileNameHelper(old_c,gui,fn,relFn)
+    else:
+        c,f = g.openWrapperLeoFile(old_c,fn,gui),None
+    if not c: return False,None
+
+    # Init the open file.
+    assert c.frame and c.frame.c == c
+    c.frame.log.enable(enableLog)
+    g.app.writeWaitingLog()
+    ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
+    if not ok: return False,None
+    g.createMenu(c,fn,relFn)
+    g.finishOpen(c)
+    return True,c.frame
+#@+node:ekr.20090520055433.5951:g.createMenu
+def createMenu(c,fileName=None,relativeFileName=None):
+
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+
+    if not g.doHook("menu1",c=c,p=c.p,v=c.p):
+        c.frame.menu.createMenuBar(c.frame)
+        c.updateRecentFiles(relativeFileName or fileName)
+        g.doHook("menu2",c=c,p=c.p,v=c.p)
+        g.doHook("after-create-leo-frame",c=c)
+#@-node:ekr.20090520055433.5951:g.createMenu
+#@+node:ekr.20090520055433.5948:g.findOpenFile
+def findOpenFile(fileName):
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    for frame in g.app.windowList:
+        c = frame.c
+        if munge(fileName) == munge(c.mFileName):
+            frame.bringToFront()
+            c.setLog()
+            c.outerUpdate()
+            return c
+    return None
+#@-node:ekr.20090520055433.5948:g.findOpenFile
+#@+node:ekr.20090520055433.5952:g.finishOpen
+def finishOpen(c):
+
+    k = c.k
+    # New in Leo 4.6: provide an official way for very late initialization.
+    c.frame.tree.initAfterLoad()
+    c.initAfterLoad()
+    c.redraw()
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.chapterController:
+        c.chapterController.finishCreate()
+    if k:
+        k.setDefaultInputState()
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    if k:
+        k.showStateAndMode()
+    c.frame.initCompleteHint()
+    return True
+#@-node:ekr.20090520055433.5952:g.finishOpen
+#@+node:ekr.20090520055433.5950:g.handleOpenHooks
+def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
+
+    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+        c.setLog()
+        if theFile:
+            app.lockLog()
+            ok = c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            if not ok:
+                g.app.closeLeoWindow(c.frame)
+                return False
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+
+    # Bug fix in 4.4.
+    if not c.openDirectory:
+        c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
+    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+    return True
+#@nonl
+#@-node:ekr.20090520055433.5950:g.handleOpenHooks
+#@+node:ekr.20090520055433.5954:g.mungeFileName
+def mungeFileName(fileName):
+
+    '''Create a full, normalized, Unicode path name, preserving case.'''
+
+    relFn = g.os_path_normpath(fileName)
+    fn = g.os_path_finalize(fileName)
+
+    isZipped = fn and zipfile.is_zipfile(fn)
+    isLeo = isZipped or fn.endswith('.leo')
+
+    return isLeo,fn,relFn
+#@-node:ekr.20090520055433.5954:g.mungeFileName
+#@+node:ekr.20090520055433.5946:g.openWithFileNameHelper
+def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
+
+    if old_c: g.preRead(fileName)
+    g.doHook('open0')
+
+    # Open the file in binary mode to allow 0x1a in bodies & headlines.
+    theFile,isZipped = g.openLeoOrZipFile(fileName)
+    if not theFile:
+        return None,None
+
+    # This call will take 3/4 sec. to open a file from the leoBridge.
+    # This is due to imports in c.__init__
+    c,frame = app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        gui=gui)
+
+    c.isZipped = isZipped
+    return c,theFile
+#@+node:ekr.20090520055433.5949:preRead
+def preRead(fileName):
+
+    '''Read the file for the first time,
+    setting the setting for a later call to finishCreate.
+    '''
+
+    c = g.app.config.openSettingsFile(fileName)
+    if c:
+        g.app.config.updateSettings(c,localFlag=True)
+#@-node:ekr.20090520055433.5949:preRead
+#@-node:ekr.20090520055433.5946:g.openWithFileNameHelper
+#@+node:ekr.20080921154026.1:g.openWrapperLeoFile
+def openWrapperLeoFile (old_c,fileName,gui):
+
+    '''Open a wrapper .leo file for the given file,
+    and import the file into .leo file.'''
+
+    # This code is similar to c.new, but different enough to be separate.
+    if not g.os_path_exists(fileName):
+        if not g.unitTesting:
+            g.es_print("can not open:",fileName,color="blue")
+        return None
+
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=None,relativeFileName=None,gui=gui)
+
+    # Needed for plugins.
+    g.doHook("new",old_c=old_c,c=c,new_c=c)
+
+    # Use the config params to set the size and location of the window.
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+
+    if True: # Just read the file into the node.
+        try:
+            fileName = g.os_path_finalize(fileName)
+            f = open(fileName)
+            s = f.read()
+            f.close()
+        except IOError:
+            g.es_print("can not open: ",fileName,color='red')
+            return None
+        p = c.rootPosition()
+        if p:
+            p.setHeadString('@edit %s' % fileName)
+            p.setBodyString(s)
+            c.selectPosition(p)
+    else:  # Import the file into the new outline.
+        junk,ext = g.os_path_splitext(fileName)
+        p = c.p
+        p = c.importCommands.createOutline(fileName,parent=p,atAuto=False,ext=ext)
+        c.setCurrentPosition(p)
+        c.moveOutlineLeft()
+        p = c.p
+        c.setCurrentPosition(p.back())
+        c.deleteOutline(op_name=None)
+        p = c.p
+        p.expand()
+
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+
+    frame.c.setChanged(True) # Mark the outline dirty.
+    return c
+#@-node:ekr.20080921154026.1:g.openWrapperLeoFile
+#@-node:ekr.20090520055433.5945:g.openWithFileName & helpers
+#@+node:ekr.20090519143741.5917:doPostPluginsInit & helpers
+def doPostPluginsInit(args,fileName,relativeFileName,script):
+
+    '''Return True if the frame was created properly.'''
+
+    if g.app.gui == None:
+        g.app.createTkGui() # Creates global windows.
+
+    g.init_sherlock(args)  # Init tracing and statistics.
+    if g.app and g.app.use_psyco: startPsyco()
+
+    # Clear g.app.initing _before_ creating the frame.
+    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+
+    # Create the main frame.  Show it and all queued messages.
+    c,frame = createFrame(fileName,relativeFileName,script)
+    if not frame: return False
+
+    # Do the final inits.
+    finishInitApp(c)
+    p = c.p
+    g.app.initComplete = True
+    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    if c.config.getBool('allow_idle_time_hook'):
+        g.enableIdleTimeHook()
+    initFocusAndDraw(c,fileName)
+    return True
+#@+node:ekr.20031218072017.1624:createFrame (runLeo.py)
+def createFrame (fileName,relativeFileName,script):
+
+    """Create a LeoFrame during Leo's startup process."""
+
+    # New in Leo 4.6: support for 'default_leo_file' setting.
+    defaultFileName = None
+    if not fileName and not script:
+        fileName = g.app.config.getString(c=None,setting='default_leo_file')
+        fileName = g.os_path_finalize(fileName)
+        if fileName and g.os_path_exists(fileName):
+            g.es_print('opening default_leo_file:',fileName,color='blue')
+            defaultFileName = fileName
+
+    # Try to create a frame for the file.
+    if fileName and g.os_path_exists(fileName):
+        ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+        if ok: return frame.c,frame
+
+    # Create a _new_ frame & indicate it is the startup window.
+    if not fileName: fileName = defaultFileName
+
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        initEditCommanders=True)
+
+    assert frame.c == c and c.frame == frame
+    frame.setInitialWindowGeometry()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+    frame.startupWindow = True
+    if c.chapterController:
+        c.chapterController.finishCreate()
+        c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+    # Call the 'new' hook for compatibility with plugins.
+    g.doHook("new",old_c=None,c=c,new_c=c)
+
+    g.createMenu(c,fileName,relativeFileName)
+    g.finishOpen(c) # Calls c.redraw.
+
+    # Report the failure to open the file.
+    if fileName:
+        g.es_print("file not found:",fileName,color='red')
+
+    return c,frame
+#@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
+#@+node:ekr.20080921060401.5:finishInitApp
+def finishInitApp(c):
+
+    g.app.trace_gc          = c.config.getBool('trace_gc')
+    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+
+    g.app.writeWaitingLog()
+
+    if g.app.disableSave:
+        g.es("disabling save commands",color="red")
+#@-node:ekr.20080921060401.5:finishInitApp
+#@+node:ekr.20080921060401.6:initFocusAndDraw
+def initFocusAndDraw(c,fileName):
+
+    w = g.app.gui.get_focus(c)
+
+    if not fileName:
+        c.redraw()
+
+    # Respect c's focus wishes if posssible.
+    if w != c.frame.body.bodyCtrl and w != c.frame.tree.canvas:
+        c.bodyWantsFocus()
+        c.k.showStateAndMode(w)
+
+    c.outerUpdate()
+#@-node:ekr.20080921060401.6:initFocusAndDraw
+#@+node:ekr.20040411081633:startPsyco
+def startPsyco ():
+
+    try:
+        import psyco
+        if 0:
+            theFile = r"c:\prog\test\psycoLog.txt"
+            g.es("psyco now logging to:",theFile,color="blue")
+            psyco.log(theFile)
+            psyco.profile()
+        psyco.full()
+        g.es("psyco now running",color="blue")
+
+    except ImportError:
+        g.app.use_psyco = False
+
+    except:
+        g.pr("unexpected exception importing psyco")
+        g.es_exception()
+        g.app.use_psyco = False
+#@-node:ekr.20040411081633:startPsyco
+#@-node:ekr.20090519143741.5917:doPostPluginsInit & helpers
+#@-node:ekr.20090612160307.6059:Fixed binding problem with notebook
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
@@ -19401,7 +19757,7 @@ def openWithFileName(fileName,old_c,
     g.createMenu(c,fn,relFn)
     g.finishOpen(c)
     return True,c.frame
-#@+node:ekr.20090520055433.5951:createMenu
+#@+node:ekr.20090520055433.5951:g.createMenu
 def createMenu(c,fileName=None,relativeFileName=None):
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
@@ -19411,8 +19767,8 @@ def createMenu(c,fileName=None,relativeFileName=None):
         c.updateRecentFiles(relativeFileName or fileName)
         g.doHook("menu2",c=c,p=c.p,v=c.p)
         g.doHook("after-create-leo-frame",c=c)
-#@-node:ekr.20090520055433.5951:createMenu
-#@+node:ekr.20090520055433.5948:findOpenFile
+#@-node:ekr.20090520055433.5951:g.createMenu
+#@+node:ekr.20090520055433.5948:g.findOpenFile
 def findOpenFile(fileName):
 
     def munge(name):
@@ -19426,8 +19782,8 @@ def findOpenFile(fileName):
             c.outerUpdate()
             return c
     return None
-#@-node:ekr.20090520055433.5948:findOpenFile
-#@+node:ekr.20090520055433.5952:finishOpen
+#@-node:ekr.20090520055433.5948:g.findOpenFile
+#@+node:ekr.20090520055433.5952:g.finishOpen
 def finishOpen(c):
 
     k = c.k
@@ -19449,8 +19805,8 @@ def finishOpen(c):
         k.showStateAndMode()
     c.frame.initCompleteHint()
     return True
-#@-node:ekr.20090520055433.5952:finishOpen
-#@+node:ekr.20090520055433.5950:handleOpenHooks
+#@-node:ekr.20090520055433.5952:g.finishOpen
+#@+node:ekr.20090520055433.5950:g.handleOpenHooks
 def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
 
     if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
@@ -19474,8 +19830,8 @@ def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
     return True
 #@nonl
-#@-node:ekr.20090520055433.5950:handleOpenHooks
-#@+node:ekr.20090520055433.5954:mungeFileName
+#@-node:ekr.20090520055433.5950:g.handleOpenHooks
+#@+node:ekr.20090520055433.5954:g.mungeFileName
 def mungeFileName(fileName):
 
     '''Create a full, normalized, Unicode path name, preserving case.'''
@@ -19487,8 +19843,8 @@ def mungeFileName(fileName):
     isLeo = isZipped or fn.endswith('.leo')
 
     return isLeo,fn,relFn
-#@-node:ekr.20090520055433.5954:mungeFileName
-#@+node:ekr.20090520055433.5946:openWithFileNameHelper
+#@-node:ekr.20090520055433.5954:g.mungeFileName
+#@+node:ekr.20090520055433.5946:g.openWithFileNameHelper
 def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
 
     if old_c: g.preRead(fileName)
@@ -19519,8 +19875,8 @@ def preRead(fileName):
     if c:
         g.app.config.updateSettings(c,localFlag=True)
 #@-node:ekr.20090520055433.5949:preRead
-#@-node:ekr.20090520055433.5946:openWithFileNameHelper
-#@+node:ekr.20080921154026.1:openWrapperLeoFile
+#@-node:ekr.20090520055433.5946:g.openWithFileNameHelper
+#@+node:ekr.20080921154026.1:g.openWrapperLeoFile
 def openWrapperLeoFile (old_c,fileName,gui):
 
     '''Open a wrapper .leo file for the given file,
@@ -19577,7 +19933,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
 
     frame.c.setChanged(True) # Mark the outline dirty.
     return c
-#@-node:ekr.20080921154026.1:openWrapperLeoFile
+#@-node:ekr.20080921154026.1:g.openWrapperLeoFile
 #@-node:ekr.20090520055433.5945:g.openWithFileName & helpers
 #@-node:ekr.20090520055433.5880:Refactored openWithFileName
 #@+node:ekr.20090520124051.5889:Allow Leo to open any file
@@ -19672,7 +20028,7 @@ def openWithFileName(fileName,old_c,
     g.createMenu(c,fn,relFn)
     g.finishOpen(c)
     return True,c.frame
-#@+node:ekr.20090520055433.5951:createMenu
+#@+node:ekr.20090520055433.5951:g.createMenu
 def createMenu(c,fileName=None,relativeFileName=None):
 
     # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
@@ -19682,8 +20038,8 @@ def createMenu(c,fileName=None,relativeFileName=None):
         c.updateRecentFiles(relativeFileName or fileName)
         g.doHook("menu2",c=c,p=c.p,v=c.p)
         g.doHook("after-create-leo-frame",c=c)
-#@-node:ekr.20090520055433.5951:createMenu
-#@+node:ekr.20090520055433.5948:findOpenFile
+#@-node:ekr.20090520055433.5951:g.createMenu
+#@+node:ekr.20090520055433.5948:g.findOpenFile
 def findOpenFile(fileName):
 
     def munge(name):
@@ -19697,8 +20053,8 @@ def findOpenFile(fileName):
             c.outerUpdate()
             return c
     return None
-#@-node:ekr.20090520055433.5948:findOpenFile
-#@+node:ekr.20090520055433.5952:finishOpen
+#@-node:ekr.20090520055433.5948:g.findOpenFile
+#@+node:ekr.20090520055433.5952:g.finishOpen
 def finishOpen(c):
 
     k = c.k
@@ -19720,8 +20076,8 @@ def finishOpen(c):
         k.showStateAndMode()
     c.frame.initCompleteHint()
     return True
-#@-node:ekr.20090520055433.5952:finishOpen
-#@+node:ekr.20090520055433.5950:handleOpenHooks
+#@-node:ekr.20090520055433.5952:g.finishOpen
+#@+node:ekr.20090520055433.5950:g.handleOpenHooks
 def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
 
     if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
@@ -19745,8 +20101,8 @@ def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
     g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
     return True
 #@nonl
-#@-node:ekr.20090520055433.5950:handleOpenHooks
-#@+node:ekr.20090520055433.5954:mungeFileName
+#@-node:ekr.20090520055433.5950:g.handleOpenHooks
+#@+node:ekr.20090520055433.5954:g.mungeFileName
 def mungeFileName(fileName):
 
     '''Create a full, normalized, Unicode path name, preserving case.'''
@@ -19758,8 +20114,8 @@ def mungeFileName(fileName):
     isLeo = isZipped or fn.endswith('.leo')
 
     return isLeo,fn,relFn
-#@-node:ekr.20090520055433.5954:mungeFileName
-#@+node:ekr.20090520055433.5946:openWithFileNameHelper
+#@-node:ekr.20090520055433.5954:g.mungeFileName
+#@+node:ekr.20090520055433.5946:g.openWithFileNameHelper
 def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
 
     if old_c: g.preRead(fileName)
@@ -19790,8 +20146,8 @@ def preRead(fileName):
     if c:
         g.app.config.updateSettings(c,localFlag=True)
 #@-node:ekr.20090520055433.5949:preRead
-#@-node:ekr.20090520055433.5946:openWithFileNameHelper
-#@+node:ekr.20080921154026.1:openWrapperLeoFile
+#@-node:ekr.20090520055433.5946:g.openWithFileNameHelper
+#@+node:ekr.20080921154026.1:g.openWrapperLeoFile
 def openWrapperLeoFile (old_c,fileName,gui):
 
     '''Open a wrapper .leo file for the given file,
@@ -19848,7 +20204,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
 
     frame.c.setChanged(True) # Mark the outline dirty.
     return c
-#@-node:ekr.20080921154026.1:openWrapperLeoFile
+#@-node:ekr.20080921154026.1:g.openWrapperLeoFile
 #@-node:ekr.20090520055433.5945:g.openWithFileName & helpers
 #@-node:ekr.20090520124051.5889:Allow Leo to open any file
 #@+node:ekr.20090521064955.5903:Support @auto-rst
