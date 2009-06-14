@@ -13068,43 +13068,7 @@ def setFontFromConfig (self):
 #@nonl
 #@-node:ekr.20090614134853.3713:setFontFromConfig
 #@-node:ekr.20090614134853.3696: Birth & init
-#@+node:ekr.20090614134853.3714:colorRangeWithTag
-def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
-
-    '''Actually colorize the selected range.
-
-    This is called whenever a pattern matcher succeed.'''
-
-    trace = False
-    if self.colorizer.killColorFlag or not self.colorizer.flag: return
-
-    if delegate:
-        if trace: g.trace('delegate',delegate,i,j,tag,g.callers(3))
-        self.modeStack.append(self.modeBunch)
-        self.init_mode(delegate)
-        # Color everything now, using the same indices as the caller.
-        while i < j:
-            progress = i
-            assert j >= 0,j
-            for f in self.rulesDict.get(s[i],[]):
-                n = f(self,s,i)
-                if n is None:
-                    g.trace('Can not happen: delegate matcher returns None')
-                elif n > 0:
-                    if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
-                    i += n ; break
-            else:
-                # New in Leo 4.6: Use the default chars for everything else.
-                self.setTag(tag,s,i,i+1)
-                i += 1
-            assert i > progress
-        bunch = self.modeStack.pop()
-        self.initModeFromBunch(bunch)
-    elif not exclude_match:
-        self.setTag(tag,s,i,j)
-#@nonl
-#@-node:ekr.20090614134853.3714:colorRangeWithTag
-#@+node:ekr.20090614134853.3715:pattern matchers (new)
+#@+node:ekr.20090614134853.3715: pattern matchers (new)
 #@+node:ekr.20090614134853.3816: About the pattern matchers
 @nocolor-node
 @
@@ -13654,7 +13618,7 @@ def match_span (self,s,i,
     else:
         j = self.match_span_helper(s,i+len(begin),end,no_escape,no_line_break,no_word_break=no_word_break)
         if j == -1:
-            j = i
+            j = i # Failure.
         else:
             i2 = i + len(begin) ; j2 = j + len(end)
             # g.trace(i,j,s[i:j2],kind)
@@ -13669,7 +13633,10 @@ def match_span (self,s,i,
             ### self.minimalMatch = begin
 
     self.trace_match(kind,s,i,j)
-    if j >= len(s):
+
+    if j == i: # New failure
+        self.clearState()
+    elif j > len(s):
         def boundRestartMatchSpan(s):
             return self.restart_match_span(s,
                 # Positional args, in alpha order
@@ -13700,7 +13667,7 @@ def match_span_helper (self,s,i,pattern,no_escape,no_line_break,no_word_break=Fa
             if no_line_break:
                 return -1
             else:
-                return len(s)
+                return len(s)+1
         elif no_word_break and j > 0 and s[j-1] in self.word_chars:
             return -1 # New in Leo 4.5.
         elif no_line_break and '\n' in s[i:j]:
@@ -13742,7 +13709,10 @@ def restart_match_span (self,s,
         j = j2
 
     self.trace_match(kind,s,i,j)
-    if j >= len(s):
+
+    if j == i: # New failure
+        self.clearState()
+    elif j > len(s):
         def boundRestartMatchSpan(s):
              return self.restart_match_span(s,
                 # Positional args, in alpha order
@@ -13756,7 +13726,7 @@ def restart_match_span (self,s,
             no_line_break=no_line_break,
             no_word_break=no_word_break)
 
-    return j - i
+    return j # Return the new i, *not* the length of the match.
 #@-node:ekr.20090614134853.3821:restart_match_span & helper
 #@-node:ekr.20090614134853.3737:match_span & helper (modified)
 #@+node:ekr.20090614134853.3739:match_span_regexp
@@ -13864,44 +13834,64 @@ def trace_match(self,kind,s,i,j):
         g.trace(kind,i,j,g.callers(2),self.dump(s[i:j]))
 #@nonl
 #@-node:ekr.20090614134853.3742:trace_match
-#@-node:ekr.20090614134853.3715:pattern matchers (new)
-#@+node:ekr.20090614134853.3753:recolor (new) & helpers
-def recolor (self,s):
+#@-node:ekr.20090614134853.3715: pattern matchers (new)
+#@+node:ekr.20090614134853.3828:clearState
+def clearState (self):
 
-    '''Recolor line s.'''
-
-    trace = False and not g.unitTesting
-
-    # Update the counts.
-    self.recolorCount += 1
-    self.totalChars += len(s)
-
-    # Get the previous state.
     h = self.highlighter
-    n = h.previousBlockState() # The state at the end of the previous line.
-    if trace and n != -1: g.trace(n,repr(s))
+    h.setCurrentBlockState(-1)
+#@-node:ekr.20090614134853.3828:clearState
+#@+node:ekr.20090614134853.3714:colorRangeWithTag
+def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
 
-    if s:
-        if n == -1: i = 0
-        else: i = self.restart(n,s)
-        self.mainLoop(s,i)
-    else:
-        h.setCurrentBlockState(n)
+    '''Actually colorize the selected range.
+
+    This is called whenever a pattern matcher succeed.'''
+
+    trace = False
+    if self.colorizer.killColorFlag or not self.colorizer.flag: return
+
+    if delegate:
+        if trace: g.trace('delegate',delegate,i,j,tag,g.callers(3))
+        self.modeStack.append(self.modeBunch)
+        self.init_mode(delegate)
+        # Color everything now, using the same indices as the caller.
+        while i < j:
+            progress = i
+            assert j >= 0,j
+            for f in self.rulesDict.get(s[i],[]):
+                n = f(self,s,i)
+                if n is None:
+                    g.trace('Can not happen: delegate matcher returns None')
+                elif n > 0:
+                    if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
+                    i += n ; break
+            else:
+                # New in Leo 4.6: Use the default chars for everything else.
+                self.setTag(tag,s,i,i+1)
+                i += 1
+            assert i > progress
+        bunch = self.modeStack.pop()
+        self.initModeFromBunch(bunch)
+    elif not exclude_match:
+        self.setTag(tag,s,i,j)
+#@nonl
+#@-node:ekr.20090614134853.3714:colorRangeWithTag
 #@+node:ekr.20090614134853.3754:mainLoop
 def mainLoop(self,s,i):
 
     '''Colorize string s[i:], starting in the default state.'''
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     traceMatch = True
     verbose = False
 
     # The main colorizing loop.
     self.prev = None ### Might change later.
     while i < len(s):
+        success = 0
         progress = i
         functions = self.rulesDict.get(s[i],[])
-        ### self.minimalMatch = ''
         for f in functions:
             n = f(self,s,i)
             if n is None:
@@ -13912,6 +13902,7 @@ def mainLoop(self,s,i):
                     g.trace('match: %20s %s' % (
                         f.__name__,repr(s[i:i+n])))
                 i += n
+                success = i
                 break # Stop searching the functions.
             elif n < 0: # Fail and skip n chars.
                 # match_keyword now sets n < 0 on first failure.
@@ -13920,23 +13911,57 @@ def mainLoop(self,s,i):
             else: # Fail.  Go on to the next f in functions.
                 pass # Do not break or change i!
         else:
-            i += 1 # Don't set lastMatch on failure!
+            i += 1
         assert i > progress
+
+        if success < len(s):
+            self.clearState()
 #@-node:ekr.20090614134853.3754:mainLoop
+#@+node:ekr.20090614134853.3753:recolor (new)
+def recolor (self,s):
+
+    '''Recolor line s.'''
+
+    trace = True and not g.unitTesting
+
+    # Update the counts.
+    self.recolorCount += 1
+    self.totalChars += len(s)
+
+    # Get the previous state.
+    h = self.highlighter
+    n = h.previousBlockState() # The state at the end of the previous line.
+    if trace: g.trace(n,repr(s))
+
+    if s:
+        if n == -1:
+            self.mainLoop(s,0)
+        else:
+            i = self.restart(n,s)
+            if i < len(s):
+                self.mainLoop(s,i)
+    else:
+        h.setCurrentBlockState(n)
+#@-node:ekr.20090614134853.3753:recolor (new)
 #@+node:ekr.20090614134853.3814:restart
 def restart (self,n,s):
 
     '''Colorize string s, starting in state n.'''
 
     f = self.restartDict.get(n)
-    if f:
-        i = f(s)
+    stateName = self.stateDict.get(n)
 
-    return 0
-#@nonl
+    if f:
+        assert stateName.startswith(f.__name__)
+        g.trace(n,stateName,repr(s))
+        i = f(s)
+    else:
+        g.trace('can not happen, no i')
+        i = 0
+
+    return i
 #@-node:ekr.20090614134853.3814:restart
-#@-node:ekr.20090614134853.3753:recolor (new) & helpers
-#@+node:ekr.20090614134853.3824:setRestart & helper
+#@+node:ekr.20090614134853.3824:setRestart & helpers
 def setRestart (self,f,**keys):
 
     h = self.highlighter
@@ -13997,7 +14022,7 @@ def stateNameToStateNumber (self,f,stateName):
 
     return n
 #@-node:ekr.20090614134853.3826:stateNameToStateNumber
-#@-node:ekr.20090614134853.3824:setRestart & helper
+#@-node:ekr.20090614134853.3824:setRestart & helpers
 #@+node:ekr.20090614134853.3813:setTag (new)
 def setTag (self,tag,s,i,j):
 

@@ -2759,6 +2759,10 @@ c.frame.body.deleteEditor()</t>
 
 '''docstring
 continued.
-'''</t>
+more and more.
+'''
+
+if a:
+    </t>
 </tnodes>
 </leo_file>
