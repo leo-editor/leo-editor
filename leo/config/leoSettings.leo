@@ -98,7 +98,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20090610164636.8489"><vh>@button add-test @key=alt-9</vh></v>
@@ -7768,6 +7768,17 @@ QLabel {
     font-size: 12px;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
+}
+
+/* Editor labels */
+QLineEdit#editorLabel {
+    background-color: #ffffec;
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+    border: 2px;
+    margin: 2px;
 }
 
 /* The mini-buffer */
