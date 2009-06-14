@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -363,6 +363,7 @@
 </v>
 <v t="ekr.20090605111929.1805"><vh>add-editor</vh></v>
 <v t="ekr.20090605141212.1803"><vh>delete-editor</vh></v>
+<v t="ekr.20090614142400.1806"><vh>syntax tests</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2750,5 +2751,14 @@ c.frame.body.addEditor()
 </t>
 <t tx="ekr.20090605141212.1803">#
 c.frame.body.deleteEditor()</t>
+<t tx="ekr.20090614142400.1806">@language python
+
+# comment.
+
+'string'
+
+'''docstring
+continued.
+'''</t>
 </tnodes>
 </leo_file>
