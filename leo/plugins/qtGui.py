@@ -2611,7 +2611,13 @@ class leoQtBody (leoFrame.leoBody):
         assert wrapper == d.get(name),'wrong wrapper'
         assert isinstance(wrapper,leoQTextEditWidget),wrapper
         assert isinstance(w,QtGui.QTextEdit),w
+
         if len(d.keys()) <= 1: return
+
+        # At present, can not delete the first column.
+        if name == '1':
+            g.es('can not delete leftmost editor',color='blue')
+            return
 
         # Actually delete the widget.
         if trace: g.trace('**delete name %s id(wrapper) %s id(w) %s' % (
@@ -2620,15 +2626,17 @@ class leoQtBody (leoFrame.leoBody):
         del d [name]
         f = c.frame.top.ui.leo_body_inner_frame
         layout = f.layout()
-        index = layout.indexOf(w)
-        item = layout.itemAt(index)
-        item.setGeometry(QtCore.QRect(0,0,0,0))
-        layout.removeItem(item)
+        for z in (w,w.leo_label):
+            self.unpackWidget(layout,z)
 
         # Select another editor.
         new_wrapper = d.values()[0]
         if trace: g.trace(wrapper,new_wrapper)
         self.numberOfEditors -= 1
+        if self.numberOfEditors == 1:
+            w = new_wrapper.widget
+            self.unpackWidget(layout,w.leo_label)
+
         self.selectEditor(new_wrapper)
     #@nonl
     #@-node:ekr.20081121105001.220:deleteEditor
@@ -3006,6 +3014,14 @@ class leoQtBody (leoFrame.leoBody):
         w.leo_p = p.copy()
     #@nonl
     #@-node:ekr.20081121105001.234:updateInjectedIvars
+    #@+node:ekr.20090614060655.3660:unpackWidget
+    def unpackWidget (self,layout,w):
+
+        index = layout.indexOf(w)
+        item = layout.itemAt(index)
+        item.setGeometry(QtCore.QRect(0,0,0,0))
+        layout.removeItem(item)
+    #@-node:ekr.20090614060655.3660:unpackWidget
     #@-node:ekr.20081121105001.227:utils
     #@-node:ekr.20081121105001.212:Editors (qtBody)
     #@+node:ekr.20090406071640.13:Event handlers called from eventFilter (qtBody)

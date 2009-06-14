@@ -1001,6 +1001,8 @@
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
 </v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 <v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
@@ -1673,7 +1675,7 @@
 <v t="ekr.20071113202153" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194424"><vh>leoFrame</vh>
-<v t="ekr.20060912091510.1"><vh>@@test add-editor</vh></v>
+<v t="ekr.20060912091510.1"><vh>@@test add-editor &amp; delete-editor</vh></v>
 <v t="ekr.20090608174319.4791"><vh>@@test delete-editor</vh></v>
 <v t="ekr.20061104172236.22"><vh>@test c.frame.pasteText</vh></v>
 <v t="ekr.20071113145804.33"><vh>@test c.frame.pasteText 2</vh></v>
@@ -11291,7 +11293,16 @@ assert s == result</t>
 /*@-node:root*/
 /*@-leo*/
 </t>
-<t tx="ekr.20060912091510.1">c.frame.body.addEditor()</t>
+<t tx="ekr.20060912091510.1">import time
+
+c.frame.body.addEditor()
+
+time.sleep(0.5)
+
+c.frame.body.deleteEditor()
+
+time.sleep(0.5)
+</t>
 <t tx="ekr.20060913084600">import leo.core.leoNodes as leoNodes
 
 if leoNodes.use_zodb:
