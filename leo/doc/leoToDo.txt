@@ -2,7 +2,7 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
-#@+node:ekr.20090525113804.5776:Before b2 4
+#@+node:ekr.20090525113804.5776:Before b2 3
 #@+node:ekr.20090605075411.6436:Fix @root bug
 @nocolor-node
 
@@ -25,11 +25,9 @@ I'm going to reopen this and put this on the list of things to do before
 b2. It's time to stamp on the distractions.
 #@nonl
 #@-node:ekr.20090602183337.6045:Fix rst import annoyance
-#@+node:ekr.20090613082719.6061:Add label widgets when using multiple editors
-#@-node:ekr.20090613082719.6061:Add label widgets when using multiple editors
 #@+node:ekr.20090523070447.6475:Rewrite rst documentation
 #@-node:ekr.20090523070447.6475:Rewrite rst documentation
-#@-node:ekr.20090525113804.5776:Before b2 4
+#@-node:ekr.20090525113804.5776:Before b2 3
 #@+node:ekr.20090430092048.7:Before 4.6 final
 #@+node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
 @nocolor-node

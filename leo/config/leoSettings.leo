@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,0,0,0"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="6,2"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -99,8 +99,8 @@
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
 <v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
-<v t="ekr.20070926132045" a="E"><vh>Common @button nodes</vh>
-<v t="ekr.20070926082407" a="E"><vh>@buttons</vh>
+<v t="ekr.20070926132045"><vh>Common @button nodes</vh>
+<v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20090610164636.8489"><vh>@button add-test @key=alt-9</vh></v>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
 <v t="ekr.20071009135515"><vh>@@button rst3</vh></v>
@@ -1246,7 +1246,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081018053140.11"></v>
+<v t="ekr.20081018053140.11" a="E"></v>
 <v t="TL.20090307074930.2"><vh>@keys Vim bindings</vh>
 <v t="TL.20090307074930.3"><vh>Vim User Documentation</vh></v>
 <v t="TL.20090307074930.4"><vh>Vim Developer Documentation</vh></v>
@@ -7758,6 +7758,13 @@ QTextEdit#richTextEdit {
     selection-background-color: lightgrey;
     font-family: DejaVu Sans Mono;
     /* font-family: Courier New; */
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+QLabel {
+    font-family: DejaVu Sans Mono;
     font-size: 12px;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */

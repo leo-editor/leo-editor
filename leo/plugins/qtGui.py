@@ -122,7 +122,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         w.leo_frame = None
         w.leo_name = name
         w.leo_label = None
-        w.leo_label_s = None
         w.leo_scrollBarSpot = None
         w.leo_insertSpot = None
         w.leo_selection = None
@@ -2481,13 +2480,14 @@ class leoQtBody (leoFrame.leoBody):
 
         '''Create a qt label widget.'''
 
+        pass # Not needed.
+
         # if not hasattr(w,'leo_label') or not w.leo_label:
             # # g.trace('w.leo_frame',id(w.leo_frame))
             # w.pack_forget()
             # w.leo_label = Tk.Label(w.leo_frame)
             # w.leo_label.pack(side='top')
             # w.pack(expand=1,fill='both')
-    #@nonl
     #@-node:ekr.20081121105001.214:packEditorLabelWidget
     #@+node:ekr.20081121105001.215:entries
     #@+node:ekr.20081121105001.216:addEditor & helper (qtBody)
@@ -2503,6 +2503,11 @@ class leoQtBody (leoFrame.leoBody):
         c = self.c ; p = c.p
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
+
+        if self.totalNumberOfEditors == 2:
+            # Pack the original body editor.
+            w = bodyCtrl.widget
+            self.packLabel(w,n=1)
 
         name = '%d' % self.totalNumberOfEditors
         f,wrapper = self.createEditor(name)
@@ -2539,12 +2544,13 @@ class leoQtBody (leoFrame.leoBody):
         c = self.c ; p = c.p
         f = c.frame.top.ui.leo_body_inner_frame
             # Valid regardless of qtGui.useUI
+        n = self.numberOfEditors
 
         # Step 1: create the editor.
         w = QtGui.QTextEdit(f)
         w.setObjectName('richTextEdit') # Will be changed later.
         wrapper = leoQTextEditWidget(w,name='body',c=c)
-        f.layout().addWidget(w,0,self.numberOfEditors-1)
+        self.packLabel(w)
 
         # Step 2: inject ivars, set bindings, etc.
         self.injectIvars(f,name,p,wrapper)
@@ -2659,29 +2665,19 @@ class leoQtBody (leoFrame.leoBody):
     def unselectLabel (self,wrapper):
 
         pass
-
         # self.createChapterIvar(wrapper)
-        # self.packEditorLabelWidget(wrapper)
-        # s = self.computeLabel(wrapper)
-        # w = wrapper.widget
-        # if hasattr(w,'leo_label') and w.leo_label:
-            # w.leo_label.configure(text=s,bg='LightSteelBlue1')
 
     def selectLabel (self,wrapper):
 
+        c = self.c
         w = wrapper.widget
+        lab = hasattr(w,'leo_label') and w.leo_label
 
-        # if self.numberOfEditors > 1:
-            # self.createChapterIvar(wrapper)
-            # self.packEditorLabelWidget(wrapper)
-            # s = self.computeLabel(wrapper)
-            # w = wrapper.widget
-            # # g.trace(s,g.callers())
-            # if hasattr(w,'leo_label') and w.leo_label:
-                # w.leo_label.configure(text=s,bg='white')
-        # elif hasattr(w,'leo_label') and w.leo_label:
-            # # w.leo_label.pack_forget()
-            # w.leo_label = None
+        if lab:
+            lab.setEnabled(True)
+            lab.setText(c.p.h)
+            lab.setEnabled(False)
+    #@nonl
     #@-node:ekr.20081121105001.222:select/unselectLabel (leoBody)
     #@+node:ekr.20081121105001.223:selectEditor & helpers
     selectEditorLockout = False
@@ -2820,7 +2816,10 @@ class leoQtBody (leoFrame.leoBody):
     #@+node:ekr.20081121105001.228:computeLabel
     def computeLabel (self,w):
 
-        s = w.leo_label_s
+        if hasattr(w,'leo_label'):
+            s = w.leo_label.text()
+        else:
+            s = ''
 
         if hasattr(w,'leo_chapter') and w.leo_chapter:
             s = '%s: %s' % (w.leo_chapter.name,s)
@@ -2913,14 +2912,39 @@ class leoQtBody (leoFrame.leoBody):
         # w.leo_colorizer = None # Set in leoQtColorizer ctor.
         w.leo_frame = parentFrame
         w.leo_insertSpot = None
-        w.leo_label = None
-        w.leo_label_s = None
+        # w.leo_label = None # Injected by packLabel.
         w.leo_name = name
         # w.leo_on_focus_in = onFocusInCallback
         w.leo_scrollBarSpot = None
         w.leo_selection = None
         w.leo_wrapper = wrapper
     #@-node:ekr.20090318091009.14:injectIvars
+    #@+node:ekr.20090613111747.3633:packLabel
+    def packLabel (self,w,n=None):
+
+        c = self.c
+        f = c.frame.top.ui.leo_body_inner_frame
+            # Valid regardless of qtGui.useUI
+
+        if n is None:n = self.numberOfEditors
+        layout = f.layout()
+        f.setObjectName('editorFrame')
+
+        # Create the text: to do: use stylesheet to set font, height.
+        lab = QtGui.QLineEdit(f)
+        lab.setObjectName('editorLabel')
+        lab.setText(c.p.h)
+
+        # Pack the label and the text widget.
+        # layout.setHorizontalSpacing(4)
+        layout.addWidget(lab,0,max(0,n-1),QtCore.Qt.AlignVCenter)
+        layout.addWidget(w,1,max(0,n-1))
+        layout.setRowStretch(0,0)
+        layout.setRowStretch(1,1) # Give row 1 as much as possible.
+
+        w.leo_label = lab # Inject the ivar.
+    #@nonl
+    #@-node:ekr.20090613111747.3633:packLabel
     #@+node:ekr.20081121105001.232:recolorWidget
     def recolorWidget (self,p,wrapper):
 
@@ -2980,7 +3004,6 @@ class leoQtBody (leoFrame.leoBody):
             w.leo_chapter = None
 
         w.leo_p = p.copy()
-        w.leo_label_s = p.h
     #@nonl
     #@-node:ekr.20081121105001.234:updateInjectedIvars
     #@-node:ekr.20081121105001.227:utils
