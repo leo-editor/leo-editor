@@ -2751,18 +2751,15 @@ c.frame.body.addEditor()
 </t>
 <t tx="ekr.20090605141212.1803">#
 c.frame.body.deleteEditor()</t>
-<t tx="ekr.20090614142400.1806">@killcolor
-
-# comment.
-
-'string'
+<t tx="ekr.20090614142400.1806">@ first line.
+line 1.
+@c
 
 '''docstring
 continued.
-more and more.
 '''
 
-if a:
+if a: pass
     </t>
 </tnodes>
 </leo_file>

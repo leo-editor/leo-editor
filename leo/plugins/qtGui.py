@@ -8507,43 +8507,42 @@ if newColoring:
             seq = '@color'
 
             # Only matches at start of line.
-            if i != 0 and s[i-1] != '\n': return 0
+            if i != 0: return 0
 
             if g.match_word(s,i,seq):
                 self.colorizer.flag = True # Enable coloring.
                 j = i + len(seq)
                 self.colorRangeWithTag(s,i,j,'leoKeyword')
+                self.clearState()
                 return j - i
             else:
                 return 0
         #@nonl
         #@-node:ekr.20090614134853.3718:match_at_color
-        #@+node:ekr.20090614134853.3719:match_at_nocolor
+        #@+node:ekr.20090614134853.3719:match_at_nocolor & restarter
         def match_at_nocolor (self,s,i):
 
             if self.trace_leo_matches: g.trace(i,repr(s))
 
             # Only matches at start of line.
-            if i != 0 and s[i-1] != '\n':
-                return 0
-            if g.match(s,i,'@nocolor-'):
-                return 0
-            if not g.match_word(s,i,'@nocolor'):
-                return 0
-
-            j = i + len('@nocolor')
-            k = s.find('\n@color',j)
-            if k == -1:
-                # No later @color: don't color the @nocolor directive.
-                self.colorizer.flag = False # Disable coloring.
-                return len(s) - j
+            if i == 0 and not g.match(s,i,'@nocolor-') and g.match_word(s,i,'@nocolor'):
+                self.setRestart(self.restartNoColor)
+                return len(s) # Match everything.
             else:
-                # A later @color: do color the @nocolor directive.
-                self.colorRangeWithTag(s,i,j,'leoKeyword')
-                self.colorizer.flag = False # Disable coloring.
-                return k+2-j
+                return 0
+        #@+node:ekr.20090614213243.3838:restartNoColor
+        def restartNoColor (self,s):
 
-        #@-node:ekr.20090614134853.3719:match_at_nocolor
+            if self.trace_leo_matches: g.trace(i,repr(s))
+
+            if g.match_word(s,0,'@color'):
+                self.clearState()
+            else:
+                self.setRestart(self.restartNoColor)
+
+            return len(s) # Always match everything.
+        #@-node:ekr.20090614213243.3838:restartNoColor
+        #@-node:ekr.20090614134853.3719:match_at_nocolor & restarter
         #@+node:ekr.20090614134853.3720:match_at_killcolor & restarter
         def match_at_killcolor (self,s,i):
 
@@ -8556,7 +8555,6 @@ if newColoring:
             tag = '@killcolor'
 
             if g.match_word(s,i,tag):
-                # g.trace('***match***')
                 self.setRestart(self.restartKillColor)
                 return len(s) # Match everything.
             else:
@@ -8565,14 +8563,11 @@ if newColoring:
         #@+node:ekr.20090614190437.3833:restartKillColor
         def restartKillColor(self,s):
 
-            # g.trace(repr(s))
-
             self.setRestart(self.restartKillColor)
-
             return len(s)+1
         #@-node:ekr.20090614190437.3833:restartKillColor
         #@-node:ekr.20090614134853.3720:match_at_killcolor & restarter
-        #@+node:ekr.20090614134853.3721:match_at_nocolor_node (NEW)
+        #@+node:ekr.20090614134853.3721:match_at_nocolor_node & restarter
         def match_at_nocolor_node (self,s,i):
 
             if self.trace_leo_matches: g.trace()
@@ -8584,14 +8579,17 @@ if newColoring:
             tag = '@nocolor-node'
 
             if g.match_word(s,i,tag):
-                j = i + len(tag)
-                self.colorizer.flag = False # Disable coloring.
-                self.colorizer.killColorFlag = True
-                self.minimalMatch = tag
-                return len(s) - j # Match everything.
+                self.setRestart(self.restartNoColorNode)
+                return len(s) # Match everything.
             else:
                 return 0
-        #@-node:ekr.20090614134853.3721:match_at_nocolor_node (NEW)
+        #@+node:ekr.20090614213243.3836:restartNoColorNode
+        def restartNoColorNode(self,s):
+
+            self.setRestart(self.restartNoColorNode)
+            return len(s)+1
+        #@-node:ekr.20090614213243.3836:restartNoColorNode
+        #@-node:ekr.20090614134853.3721:match_at_nocolor_node & restarter
         #@+node:ekr.20090614134853.3722:match_blanks
         def match_blanks (self,s,i):
 
@@ -8614,35 +8612,33 @@ if newColoring:
         def match_doc_part (self,s,i):
 
             # New in Leo 4.5: only matches at start of line.
-            if i != 0 and s[i-1] != '\n':
+            if i != 0:
                 return 0
-
-            if g.match_word(s,i,'@doc'):
-                j = i+4
-                self.minimalMatch = '@doc'
-                self.colorRangeWithTag(s,i,j,'leoKeyword')
+            elif g.match_word(s,i,'@doc'):
+                j = i + 4
             elif g.match(s,i,'@') and (i+1 >= len(s) or s[i+1] in (' ','\t','\n')):
                 j = i + 1
-                self.minimalMatch = '@'
-                self.colorRangeWithTag(s,i,j,'leoKeyword')
-            else: return 0
+            else:
+                return 0
 
-            i = j ; n = len(s)
-            while j < n:
-                k = s.find('@c',j)
-                if k == -1:
-                    # g.trace('i,len(s)',i,len(s))
-                    j = n+1 # Bug fix: 2007/12/14
-                    self.colorRangeWithTag(s,i,j,'docPart')
-                    return j - i
-                if s[k-1] == '\n' and (g.match_word(s,k,'@c') or g.match_word(s,k,'@code')):
-                    j = k
-                    self.colorRangeWithTag(s,i,j,'docPart')
-                    return j - i
-                else:
-                    j = k + 2
-            j = n - 1
-            return max(0,j - i) # Bug fix: 2008/2/10
+            self.colorRangeWithTag(s,i,j,'leoKeyword')
+            self.colorRangeWithTag(s,j,len(s),'docPart')
+            self.setRestart(self.restartDocPart)
+            return len(s)
+        #@+node:ekr.20090614213243.3837:restartDocPart
+        def restartDocPart (self,s):
+
+            for tag in ('@c','@code'):
+                if g.match_word(s,0,tag):
+                    j = len(tag)
+                    self.colorRangeWithTag(s,0,j,'docPart')
+                    self.clearState()
+                    return j
+            else:
+                self.colorRangeWithTag(s,0,len(s),'docPart')
+                self.setRestart(self.restartDocPart)
+                return len(s)
+        #@-node:ekr.20090614213243.3837:restartDocPart
         #@-node:ekr.20090614134853.3723:match_doc_part
         #@+node:ekr.20090614134853.3724:match_leo_keywords
         def match_leo_keywords(self,s,i):
@@ -9103,22 +9099,20 @@ if newColoring:
             i = 0
             j = self.match_span_helper(s,i,end,no_escape,no_line_break,no_word_break=no_word_break)
             if j == -1:
-                return 0
+                j2 = len(s)+1
             else:
                 j2 = j + len(end)
-                # g.trace(i,j,s[i:j2],kind)
-                if delegate:
-                    self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
-                    self.colorRangeWithTag(s,j,j2,kind,delegate=None,    exclude_match=exclude_match)
-                else: # avoid having to merge ranges in addTagsToList.
-                    self.colorRangeWithTag(s,i,j2,kind,delegate=None,exclude_match=exclude_match)
-                j = j2
+
+            if delegate:
+                self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
+                self.colorRangeWithTag(s,j,j2,kind,delegate=None,    exclude_match=exclude_match)
+            else: # avoid having to merge ranges in addTagsToList.
+                self.colorRangeWithTag(s,i,j2,kind,delegate=None,exclude_match=exclude_match)
+            j = j2
 
             self.trace_match(kind,s,i,j)
 
-            if j == i: # New failure
-                self.clearState()
-            elif j > len(s):
+            if j > len(s):
                 def boundRestartMatchSpan(s):
                      return self.restart_match_span(s,
                         # Positional args, in alpha order
@@ -9131,6 +9125,8 @@ if newColoring:
                     no_escape=no_escape,
                     no_line_break=no_line_break,
                     no_word_break=no_word_break)
+            else:
+                self.clearState()
 
             return j # Return the new i, *not* the length of the match.
         #@-node:ekr.20090614134853.3821:restart_match_span & helper
@@ -9324,6 +9320,7 @@ if newColoring:
 
                 if success < len(s):
                     self.clearState()
+        #@nonl
         #@-node:ekr.20090614134853.3754:mainLoop
         #@+node:ekr.20090614134853.3753:recolor (new)
         def recolor (self,s):
@@ -9348,7 +9345,7 @@ if newColoring:
                     i = self.restart(n,s)
                     self.mainLoop(s,i) # Don't shortcut this.
             else:
-                h.setCurrentBlockState(n)
+                h.setCurrentBlockState(n) # Required
         #@-node:ekr.20090614134853.3753:recolor (new)
         #@+node:ekr.20090614134853.3814:restart
         def restart (self,n,s):
