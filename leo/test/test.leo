@@ -2751,7 +2751,7 @@ c.frame.body.addEditor()
 </t>
 <t tx="ekr.20090605141212.1803">#
 c.frame.body.deleteEditor()</t>
-<t tx="ekr.20090614142400.1806">@language python
+<t tx="ekr.20090614142400.1806">@killcolor
 
 # comment.
 

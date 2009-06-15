@@ -7615,6 +7615,9 @@ class leoQtColorizer:
 
         """Return True unless p is unambiguously under the control of @nocolor."""
 
+        if newColoring:
+            return True #### Will be handled more efficiently later.
+
         if self.checkStartKillColor():
             return False
 
@@ -7815,10 +7818,7 @@ if newColoring:
             assert(w == self.c.frame.body.bodyCtrl)
 
             # Used by recolor and helpers...
-            # self.all_s = '' # The cached string to be colored.
             self.actualColorDict = {} # Used only by setTag.
-            # self.global_i,self.global_j = 0,0 # The global bounds of colorizing.
-            # self.global_offset = 0
             # self.hyperCount = 0
             self.initFlag = False # True if recolor must reload self.all_s.
             self.defaultState = u'default-state:' # The name of the default state.
@@ -8202,6 +8202,7 @@ if newColoring:
             self.nextState = 1 # Dont use 0.
             self.stateDict = {}
             self.stateNameDict = {}
+            self.restartDict = {}
             self.init_mode(self.colorizer.language)
 
             # Used by matchers.
@@ -8520,7 +8521,7 @@ if newColoring:
         #@+node:ekr.20090614134853.3719:match_at_nocolor
         def match_at_nocolor (self,s,i):
 
-            if self.trace_leo_matches: g.trace()
+            if self.trace_leo_matches: g.trace(i,repr(s))
 
             # Only matches at start of line.
             if i != 0 and s[i-1] != '\n':
@@ -8543,10 +8544,10 @@ if newColoring:
                 return k+2-j
 
         #@-node:ekr.20090614134853.3719:match_at_nocolor
-        #@+node:ekr.20090614134853.3720:match_at_killcolor (NEW)
+        #@+node:ekr.20090614134853.3720:match_at_killcolor & restarter
         def match_at_killcolor (self,s,i):
 
-            if self.trace_leo_matches: g.trace()
+            if self.trace_leo_matches: g.trace(i,repr(s))
 
             # Only matches at start of line.
             if i != 0 and s[i-1] != '\n':
@@ -8555,15 +8556,22 @@ if newColoring:
             tag = '@killcolor'
 
             if g.match_word(s,i,tag):
-                j = i + len(tag)
-                self.colorizer.flag = False # Disable coloring.
-                self.colorizer.killColorFlag = True
-                self.minimalMatch = tag
-                return len(s) - j # Match everything.
+                # g.trace('***match***')
+                self.setRestart(self.restartKillColor)
+                return len(s) # Match everything.
             else:
                 return 0
 
-        #@-node:ekr.20090614134853.3720:match_at_killcolor (NEW)
+        #@+node:ekr.20090614190437.3833:restartKillColor
+        def restartKillColor(self,s):
+
+            # g.trace(repr(s))
+
+            self.setRestart(self.restartKillColor)
+
+            return len(s)+1
+        #@-node:ekr.20090614190437.3833:restartKillColor
+        #@-node:ekr.20090614134853.3720:match_at_killcolor & restarter
         #@+node:ekr.20090614134853.3721:match_at_nocolor_node (NEW)
         def match_at_nocolor_node (self,s,i):
 
@@ -8664,6 +8672,7 @@ if newColoring:
                 self.prev = (i,j,kind)
                 result = j-i+1 # Bug fix: skip the last character.
                 self.trace_match(kind,s,i,j)
+                # g.trace('*** match',repr(s))
                 return result
             else:
                 return -(j-i+1) # An important optimization.
@@ -8744,16 +8753,17 @@ if newColoring:
             if at_whitespace_end and i != g.skip_ws(s,0): return 0
             if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
             if at_word_start and i + len(seq) + 1 < len(s) and s[i+len(seq)] in self.word_chars:
-                return 0 # 7/5/2008
+                return 0
 
             if g.match(s,i,seq):
-                #j = g.skip_line(s,i) # Include the newline so we don't get a flash at the end of the line.
+                # j = g.skip_line(s,i) # Include the newline so we don't get a flash at the end of the line.
                 j = self.skip_line(s,i)
                 self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
                 self.prev = (i,j,kind)
                 self.trace_match(kind,s,i,j)
-                self.minimalMatch = seq
-                return j - i
+                # self.minimalMatch = seq
+                ### return j - i
+                return len(s)-1
             else:
                 return 0
         #@-node:ekr.20090614134853.3728:match_eol_span
@@ -9301,6 +9311,8 @@ if newColoring:
                         success = i
                         break # Stop searching the functions.
                     elif n < 0: # Fail and skip n chars.
+                        if trace and verbose: g.trace('fail: %20s %s' % (
+                            f.__name__,repr(s[i:i+n])))
                         # match_keyword now sets n < 0 on first failure.
                         i += -n # Don't set lastMatch on failure!
                         break # Stop searching the functions.
@@ -9318,7 +9330,7 @@ if newColoring:
 
             '''Recolor line s.'''
 
-            trace = True and not g.unitTesting
+            trace = False and not g.unitTesting
 
             # Update the counts.
             self.recolorCount += 1
@@ -9334,8 +9346,7 @@ if newColoring:
                     self.mainLoop(s,0)
                 else:
                     i = self.restart(n,s)
-                    if i < len(s):
-                        self.mainLoop(s,i)
+                    self.mainLoop(s,i) # Don't shortcut this.
             else:
                 h.setCurrentBlockState(n)
         #@-node:ekr.20090614134853.3753:recolor (new)
@@ -9344,15 +9355,17 @@ if newColoring:
 
             '''Colorize string s, starting in state n.'''
 
+            trace = False and not g.unitTesting
+
             f = self.restartDict.get(n)
             stateName = self.stateDict.get(n)
 
             if f:
                 assert stateName.startswith(f.__name__)
-                g.trace(n,stateName,repr(s))
+                if trace: g.trace(n,stateName,repr(s))
                 i = f(s)
             else:
-                g.trace('can not happen, no i')
+                g.trace('can not happen, no f')
                 i = 0
 
             return i
@@ -9415,6 +9428,7 @@ if newColoring:
                 self.stateNameDict[stateName] = n
                 self.stateDict[n] = stateName
                 self.restartDict[n] = f
+                # g.trace(n,stateName)
 
             return n
         #@-node:ekr.20090614134853.3826:stateNameToStateNumber
@@ -9423,7 +9437,6 @@ if newColoring:
         def setTag (self,tag,s,i,j):
 
             trace = False and not g.unitTesting
-            verbose = False
 
             if i == j:
                 if trace: g.trace('empty range')
@@ -9432,10 +9445,11 @@ if newColoring:
             w = self.w
             colorName = w.configDict.get(tag)
 
-            if not self.colorizer.flag:
-                # We are under the influence of @nocolor
-                if trace: g.trace('in range of @nocolor',tag)
-                return
+            if False: ####
+                if not self.colorizer.flag:
+                    # We are under the influence of @nocolor
+                    if trace: g.trace('in range of @nocolor',tag)
+                    return
 
             # Munge the color name.
             if not colorName:
@@ -9458,11 +9472,8 @@ if newColoring:
 
             if trace:
                 self.tagCount += 1
-                if verbose:
-                    g.trace('%3s %11s %3s %3s %s' % (
-                        self.tagCount,tag,i,j,s[i:j])) # ,g.callers(4)
-                else:
-                    g.trace('%3s %11s %s' % (self.tagCount,tag,s[i:j]))
+                g.trace('%3s %11s %3s %3s %s' % (
+                    self.tagCount,tag,i,j,s[i:j]),g.callers(4))
 
             self.highlighter.setFormat(i,j-i,color)
         #@-node:ekr.20090614134853.3813:setTag (new)
