@@ -16,7 +16,7 @@ __qh = None # For quick headlines.
 # A switch telling whether to use qt_main.ui and qt_main.py.
 useUI = False # True: use qt_main.ui. False: use DynamicWindow.createMainWindow.
 
-newColoring = False # True: use new colorizing scheme.
+newColoring = True # True: use new colorizing scheme.
 
 #@<< qt imports >>
 #@+node:ekr.20081121105001.189: << qt imports >>
@@ -8199,10 +8199,10 @@ if newColoring:
             self.global_i,self.global_j = 0,0
             self.global_offset = 0
             self.initFlag = False
-            self.nextState = 1 # Dont use 0.
-            self.stateDict = {}
-            self.stateNameDict = {}
-            self.restartDict = {}
+            # self.nextState = 1 # Dont use 0.
+            # self.stateDict = {}
+            # self.stateNameDict = {}
+            # self.restartDict = {}
             self.init_mode(self.colorizer.language)
 
             # Used by matchers.
@@ -8608,7 +8608,7 @@ if newColoring:
             else:
                 return 0
         #@-node:ekr.20090614134853.3722:match_blanks
-        #@+node:ekr.20090614134853.3723:match_doc_part
+        #@+node:ekr.20090614134853.3723:match_doc_part & restarter
         def match_doc_part (self,s,i):
 
             # New in Leo 4.5: only matches at start of line.
@@ -8635,11 +8635,11 @@ if newColoring:
                     self.clearState()
                     return j
             else:
-                self.colorRangeWithTag(s,0,len(s),'docPart')
                 self.setRestart(self.restartDocPart)
+                self.colorRangeWithTag(s,0,len(s),'docPart')
                 return len(s)
         #@-node:ekr.20090614213243.3837:restartDocPart
-        #@-node:ekr.20090614134853.3723:match_doc_part
+        #@-node:ekr.20090614134853.3723:match_doc_part & restarter
         #@+node:ekr.20090614134853.3724:match_leo_keywords
         def match_leo_keywords(self,s,i):
 
@@ -8921,7 +8921,7 @@ if newColoring:
             trace = False
 
             try:
-                flags = re.MULTILINE
+                flags = re.MULTILINE ### this will always fail.
                 if self.ignore_case: flags|= re.IGNORECASE
                 re_obj = re.compile(pattern,flags)
             except Exception:
@@ -8985,7 +8985,7 @@ if newColoring:
 
             if at_line_start and i != 0 and s[i-1] != '\n': return 0
             if at_whitespace_end and i != g.skip_ws(s,0): return 0
-            if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+            if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0
 
             # g.trace('before')
             n = self.match_regexp_helper(s,i,regexp)
@@ -8998,7 +8998,7 @@ if newColoring:
             return j - i
         #@nonl
         #@-node:ekr.20090614134853.3736:match_seq_regexp
-        #@+node:ekr.20090614134853.3737:match_span & helper (modified)
+        #@+node:ekr.20090614134853.3737:match_span & helper & restarter
         def match_span (self,s,i,
             kind='',begin='',end='',
             at_line_start=False,at_whitespace_end=False,at_word_start=False,
@@ -9011,7 +9011,7 @@ if newColoring:
                 j = i
             elif at_whitespace_end and i != g.skip_ws(s,0):
                 j = i
-            elif at_word_start and i > 0 and s[i-1] in self.word_chars: # 7/5/2008
+            elif at_word_start and i > 0 and s[i-1] in self.word_chars:
                 j = i
             elif at_word_start and i + len(begin) + 1 < len(s) and s[i+len(begin)] in self.word_chars:
                 j = i
@@ -9023,23 +9023,29 @@ if newColoring:
                     j = i # Failure.
                 else:
                     i2 = i + len(begin) ; j2 = j + len(end)
-                    # g.trace(i,j,s[i:j2],kind)
                     if delegate:
                         self.colorRangeWithTag(s,i,i2,kind,delegate=None,    exclude_match=exclude_match)
                         self.colorRangeWithTag(s,i2,j,kind,delegate=delegate,exclude_match=exclude_match)
                         self.colorRangeWithTag(s,j,j2,kind,delegate=None,    exclude_match=exclude_match)
-                    else: # avoid having to merge ranges in addTagsToList.
+                    else:
                         self.colorRangeWithTag(s,i,j2,kind,delegate=None,exclude_match=exclude_match)
                     j = j2
-                    ### self.prev = (i,j,kind)
-                    ### self.minimalMatch = begin
+                    # self.prev = (i,j,kind)
 
             self.trace_match(kind,s,i,j)
 
             if j == i: # New failure
                 self.clearState()
             elif j > len(s):
-                def boundRestartMatchSpan(s):
+                def boundRestartMatchSpan(s,
+                    # Freeze the bindings.
+                        delegate=delegate,end=end,
+                        exclude_match=exclude_match,
+                        kind=kind,
+                        no_escape=no_escape,
+                        no_line_break=no_line_break,
+                        no_word_break=no_word_break
+                    ):
                     return self.restart_match_span(s,
                         # Positional args, in alpha order
                         delegate,end,exclude_match,kind,
@@ -9089,7 +9095,7 @@ if newColoring:
                     return j
         #@nonl
         #@-node:ekr.20090614134853.3738:match_span_helper
-        #@+node:ekr.20090614134853.3821:restart_match_span & helper
+        #@+node:ekr.20090614134853.3821:restart_match_span
         def restart_match_span (self,s,
             delegate,end,exclude_match,kind,
             no_escape,no_line_break,no_word_break):
@@ -9129,9 +9135,9 @@ if newColoring:
                 self.clearState()
 
             return j # Return the new i, *not* the length of the match.
-        #@-node:ekr.20090614134853.3821:restart_match_span & helper
-        #@-node:ekr.20090614134853.3737:match_span & helper (modified)
-        #@+node:ekr.20090614134853.3739:match_span_regexp
+        #@-node:ekr.20090614134853.3821:restart_match_span
+        #@-node:ekr.20090614134853.3737:match_span & helper & restarter
+        #@+node:ekr.20090614134853.3739:match_span_regexp (to do)
         def match_span_regexp (self,s,i,
             kind='',begin='',end='',
             at_line_start=False,at_whitespace_end=False,at_word_start=False,
@@ -9175,7 +9181,7 @@ if newColoring:
                 self.trace_match(kind,s,i,j2)
                 return j2 - i
             else: return 0
-        #@-node:ekr.20090614134853.3739:match_span_regexp
+        #@-node:ekr.20090614134853.3739:match_span_regexp (to do)
         #@+node:ekr.20090614134853.3740:match_word_and_regexp
         def match_word_and_regexp (self,s,i,
             kind1='',word='',
@@ -9191,7 +9197,7 @@ if newColoring:
 
             if at_line_start and i != 0 and s[i-1] != '\n': return 0
             if at_whitespace_end and i != g.skip_ws(s,0): return 0
-            if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0 # 7/5/2008
+            if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0
             if at_word_start and i + len(word) + 1 < len(s) and s[i+len(word)] in self.word_chars:
                 j = i # 7/5/2008
 
@@ -9258,7 +9264,7 @@ if newColoring:
                 self.modeStack.append(self.modeBunch)
                 self.init_mode(delegate)
                 # Color everything now, using the same indices as the caller.
-                while i < j:
+                while 0 < i < j and i < len(s):
                     progress = i
                     assert j >= 0,j
                     for f in self.rulesDict.get(s[i],[]):
@@ -9362,7 +9368,7 @@ if newColoring:
                 if trace: g.trace(n,stateName,repr(s))
                 i = f(s)
             else:
-                g.trace('can not happen, no f')
+                g.trace('*** no f',n,stateName,g.dictToString(self.stateDict))
                 i = 0
 
             return i
@@ -9420,11 +9426,11 @@ if newColoring:
 
             n = self.stateNameDict.get(stateName)
             if n is None:
-                self.nextState += 1
                 n = self.nextState
                 self.stateNameDict[stateName] = n
                 self.stateDict[n] = stateName
                 self.restartDict[n] = f
+                self.nextState += 1
                 # g.trace(n,stateName)
 
             return n

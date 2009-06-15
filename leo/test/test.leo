@@ -2755,7 +2755,7 @@ c.frame.body.deleteEditor()</t>
 line 1.
 @c
 
-'''docstring
+'''docstring. thi
 continued.
 '''
 
