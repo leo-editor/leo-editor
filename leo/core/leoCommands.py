@@ -5230,9 +5230,8 @@ class baseCommands (object):
         u.afterMoveNode(p,'Move Left',undoData,dirtyVnodeList)
         if sparseMove: # New in Leo 4.4.2
             parent.contract()
-        c.redraw(p,setFocus=True)
-        c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-    #@nonl
+        c.redraw_now(p,setFocus=True)
+        c.recolor_now() # Moving can change syntax coloring.
     #@-node:ekr.20031218072017.1770:moveOutlineLeft
     #@+node:ekr.20031218072017.1771:moveOutlineRight
     def moveOutlineRight (self,event=None):
@@ -5266,8 +5265,8 @@ class baseCommands (object):
         dirtyVnodeList.extend(dirtyVnodeList2)
         c.setChanged(True)
         u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
-        c.redraw(p,setFocus=True)
-        c.updateSyntaxColorer(p) # Moving can change syntax coloring.
+        c.redraw_now(p,setFocus=True)
+        c.recolor_now()
     #@-node:ekr.20031218072017.1771:moveOutlineRight
     #@+node:ekr.20031218072017.1772:moveOutlineUp
     def moveOutlineUp (self,event=None):

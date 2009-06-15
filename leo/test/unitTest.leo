@@ -1127,6 +1127,10 @@
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
 </v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 <v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
@@ -2440,7 +2444,6 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090615053403.4876"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor

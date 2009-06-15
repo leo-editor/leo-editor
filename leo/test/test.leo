@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -363,6 +363,7 @@
 </v>
 <v t="ekr.20090605111929.1805"><vh>add-editor</vh></v>
 <v t="ekr.20090605141212.1803"><vh>delete-editor</vh></v>
+<v t="ekr.20090615080843.1808"><vh>test of @nocolor</vh></v>
 <v t="ekr.20090614142400.1806"><vh>syntax tests</vh></v>
 </vnodes>
 <tnodes>
@@ -2755,11 +2756,14 @@ c.frame.body.deleteEditor()</t>
 line 1.
 @c
 
+# This is a test.
+
 '''docstring. thi
 continued.
 '''
 
 if a: pass
     </t>
+<t tx="ekr.20090615080843.1808">@nocolor</t>
 </tnodes>
 </leo_file>
