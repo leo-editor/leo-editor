@@ -365,6 +365,7 @@
 <v t="ekr.20090605141212.1803"><vh>delete-editor</vh></v>
 <v t="ekr.20090615080843.1808"><vh>test of @nocolor</vh></v>
 <v t="ekr.20090614142400.1806"><vh>syntax tests</vh></v>
+<v t="ekr.20090615145950.1810"><vh>c test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2758,12 +2759,16 @@ line 1.
 
 # This is a test.
 
-'''docstring. thi
+'''docstring
 continued.
 '''
 
 if a: pass
     </t>
 <t tx="ekr.20090615080843.1808">@nocolor</t>
+<t tx="ekr.20090615145950.1810">@language c
+
+#ifdef a
+</t>
 </tnodes>
 </leo_file>

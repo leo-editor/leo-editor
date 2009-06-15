@@ -7617,10 +7617,6 @@ class leoQtColorizer:
 
         """Return True unless p is unambiguously under the control of @nocolor."""
 
-        # We *must* set self.flag to handle ancestor @nocolor nodes.
-        # if newColoring:
-            # return True # Will be handled more efficiently later.
-
         if not newColoring:
             if self.checkStartKillColor():
                 return False
@@ -8999,13 +8995,11 @@ if newColoring:
                     else:
                         self.colorRangeWithTag(s,i,j2,kind,delegate=None,exclude_match=exclude_match)
                     j = j2
-                    # self.prev = (i,j,kind)
+                    self.prev = (i,j,kind)
 
             self.trace_match(kind,s,i,j)
 
-            if j == i: # New failure
-                self.clearState()
-            elif j > len(s):
+            if j > len(s):
                 def boundRestartMatchSpan(s):
                     # Note: bindings are frozen by this def.
                     return self.restart_match_span(s,
@@ -9217,17 +9211,19 @@ if newColoring:
 
             This is called whenever a pattern matcher succeed.'''
 
-            trace = False
+            trace = False and not g.unitTesting
+
+            # Pattern matcher may set the .flag ivar.
             if self.colorizer.killColorFlag or not self.colorizer.flag:
                 if trace: g.trace('disabled')
                 return
 
             if delegate:
-                if trace: g.trace('delegate',delegate,i,j,tag,g.callers(3))
+                if trace: g.trace('delegate',delegate,i,j,tag,g.callers(2))
                 self.modeStack.append(self.modeBunch)
                 self.init_mode(delegate)
                 # Color everything now, using the same indices as the caller.
-                while 0 < i < j and i < len(s):
+                while 0 <= i < j and i < len(s):
                     progress = i
                     assert j >= 0,j
                     for f in self.rulesDict.get(s[i],[]):
@@ -9254,11 +9250,8 @@ if newColoring:
             '''Colorize string s[i:], starting in the default state.'''
 
             trace = False and not g.unitTesting
-            traceMatch = True
-            verbose = False
+            traceMatch = True ; verbose = False
 
-            # The main colorizing loop.
-            self.prev = None ### Might change later.
             while i < len(s):
                 success = 0
                 progress = i
@@ -9278,10 +9271,9 @@ if newColoring:
                     elif n < 0: # Fail and skip n chars.
                         if trace and verbose: g.trace('fail: %20s %s' % (
                             f.__name__,repr(s[i:i+n])))
-                        # match_keyword now sets n < 0 on first failure.
-                        i += -n # Don't set lastMatch on failure!
+                        i += -n
                         break # Stop searching the functions.
-                    else: # Fail.  Go on to the next f in functions.
+                    else: # Fail. Try the next function.
                         pass # Do not break or change i!
                 else:
                     i += 1
@@ -9298,18 +9290,18 @@ if newColoring:
 
             trace = False and not g.unitTesting
 
+            # .killColorFlag prevents rehighlightBlock from being called.
+
             # Update the counts.
             self.recolorCount += 1
             self.totalChars += len(s)
-
-            h = self.highlighter
 
             # Get the previous state.
             h = self.highlighter
             n = h.previousBlockState() # The state at the end of the previous line.
             if trace:
                 stateName = self.stateDict.get(n,'plain-state')
-                g.trace('%5s %2s %-50s %s' % (self.colorizer.flag,n,stateName,repr(s)))
+                g.trace('%5s %2s %-50s %s' % (self.colorizer.flag,n,stateName,repr(s[:20])))
 
             if s:
                 if n == -1:
@@ -10870,8 +10862,8 @@ else:
 
             '''Recolor line s.'''
 
-            trace = False and not g.unitTesting
-            verbose = False ; traceMatch = False
+            trace = True and not g.unitTesting
+            verbose = False ; traceMatch = True
 
             # Reload all_s if the widget's text is known to have changed.
             if self.initFlag:
