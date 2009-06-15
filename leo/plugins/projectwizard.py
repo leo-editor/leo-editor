@@ -1,0 +1,132 @@
+#@+leo-ver=4-thin
+#@+node:ville.20090614224528.8135:@thin projectwizard.py
+#@<< docstring >>
+#@+node:ville.20090614224528.8136:<< docstring >>
+''' Simple @auto project wizard
+
+Open a file dialog and recursively creates @auto & @path nodes from the path where selected file is 
+(the selected file itself doesn't matter)
+'''
+#@-node:ville.20090614224528.8136:<< docstring >>
+#@nl
+
+__version__ = '0.0'
+#@<< version history >>
+#@+node:ville.20090614224528.8137:<< version history >>
+#@@killcolor
+#@+at
+# 
+# 0.1 First released version (VMV)
+#@-at
+#@nonl
+#@-node:ville.20090614224528.8137:<< version history >>
+#@nl
+
+#@<< imports >>
+#@+node:ville.20090614224528.8138:<< imports >>
+import leo.core.leoGlobals as g
+import leo.core.leoPlugins as leoPlugins
+
+# Whatever other imports your plugins uses.
+#@nonl
+#@-node:ville.20090614224528.8138:<< imports >>
+#@nl
+
+#@+others
+#@+node:ville.20090614224528.8139:init
+def init ():
+
+    ok = True # This might depend on imports, etc.
+
+    if ok:
+        g.plugin_signon(__name__)
+
+    return ok
+#@-node:ville.20090614224528.8139:init
+#@+node:ville.20090614224528.8141:auto_walk() and g.command('auto-walk')
+def auto_walk(c, directory, parent=None, isroot=True):
+    """ source: http://leo.zwiki.org/CreateShadows
+
+    (create @auto files instead)
+
+    """
+
+    from os import listdir
+    from os.path import join, abspath, basename, normpath, isfile
+    from fnmatch import fnmatch
+    import os
+
+    RELATIVE_PATHS = False
+
+    patterns_to_ignore = ['*.pyc', '*.leo', '*.gif', '*.png', '*.jpg', '*.json']
+    patterns_to_import = ['*.py','*.c', '*.cpp']
+    match = lambda s: any(fnmatch(s, p) for p in patterns_to_ignore)
+
+    is_ignorable = lambda s: any([ s.startswith('.'), match(s) ])
+
+    p = c.currentPosition()
+
+    if not RELATIVE_PATHS: directory = abspath(directory)
+    if isroot:
+        body = "@path %s" % normpath(directory)
+        c.setHeadString(p, body)
+    for name in listdir(directory):
+
+
+        if is_ignorable(name):
+            continue
+
+        path = join(directory, name)
+
+        if isfile(path) and not any(fnmatch(name, p) for p in patterns_to_import):           
+            continue
+
+        if isfile(path):
+            g.es('file:', path)
+            headline = '@auto %s' % basename(path)
+            if parent:
+                node = parent
+            else:
+                node = p
+            child = node.insertAsLastChild()
+            child.initHeadString(headline)
+        else:
+            g.es('dir:', path)
+            headline = basename(path)
+            body = "@path %s" % normpath(path)
+            if parent:
+                node = parent
+            else:
+                node = p
+            child = node.insertAsLastChild()
+            child.initHeadString(headline)
+            child.initBodyString(body)
+            auto_walk(c,path, parent=child, isroot=False)
+
+@g.command('project-wizard')
+def project_wizard(event):
+    """ Launch project wizard """
+    import os
+    c = event['c']
+    table = [("All files","*"),
+        ("Python files","*.py"),]
+
+    fname = g.app.gui.runOpenFileDialog(
+        title = "Open",filetypes = table,defaultextension = ".leo")
+
+    pth = os.path.dirname(os.path.abspath(fname))
+
+    g.es(pth)
+    tgt = c.currentPosition().insertAsLastChild()
+    c.selectPosition(tgt)
+    auto_walk(c, pth, tgt)
+    g.es('Import ok. Do read-at-auto-nodes to parse')
+    c.redraw()
+
+
+#project_wizard()    
+#@-node:ville.20090614224528.8141:auto_walk() and g.command('auto-walk')
+#@-others
+#@nonl
+#@-node:ville.20090614224528.8135:@thin projectwizard.py
+#@-leo
