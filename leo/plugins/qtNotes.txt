@@ -11269,7 +11269,7 @@ def recolor (self,s):
 
     '''Recolor line s.'''
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     verbose = False ; traceMatch = True
 
     # Reload all_s if the widget's text is known to have changed.
@@ -12975,7 +12975,7 @@ def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
 
     This is called whenever a pattern matcher succeed.'''
 
-    trace = False and not g.unitTesting
+    trace = True and not g.unitTesting
 
     # Pattern matcher may set the .flag ivar.
     if self.colorizer.killColorFlag or not self.colorizer.flag:

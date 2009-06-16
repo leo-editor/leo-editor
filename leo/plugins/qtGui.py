@@ -16,7 +16,7 @@ __qh = None # For quick headlines.
 # A switch telling whether to use qt_main.ui and qt_main.py.
 useUI = False # True: use qt_main.ui. False: use DynamicWindow.createMainWindow.
 
-newColoring = True # True: use new colorizing scheme.
+newColoring = False # True: use new colorizing scheme.
 
 #@<< qt imports >>
 #@+node:ekr.20081121105001.189: << qt imports >>
@@ -9211,7 +9211,7 @@ if newColoring:
 
             This is called whenever a pattern matcher succeed.'''
 
-            trace = False and not g.unitTesting
+            trace = True and not g.unitTesting
 
             # Pattern matcher may set the .flag ivar.
             if self.colorizer.killColorFlag or not self.colorizer.flag:
@@ -10862,7 +10862,7 @@ else:
 
             '''Recolor line s.'''
 
-            trace = True and not g.unitTesting
+            trace = False and not g.unitTesting
             verbose = False ; traceMatch = True
 
             # Reload all_s if the widget's text is known to have changed.

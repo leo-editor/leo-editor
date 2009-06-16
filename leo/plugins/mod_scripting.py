@@ -613,7 +613,7 @@ class scriptingController:
         name = h[len(tag):].strip()
         args = self.getArgs(h)
 
-        if self.atPluginNodes:
+        if self.atScriptNodes:
             g.es("executing script %s" % (name),color="blue")
             c.executeScript(arsg=args,p=p,useSelectedText=False,silent=True)
         else:
