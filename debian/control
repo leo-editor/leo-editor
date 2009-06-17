@@ -13,5 +13,16 @@ Depends: ${python:Depends}, ${misc:Depends}
 Conflicts: 
 Replaces: 
 Suggests: 
-Description: Literary editor and outliner 
- Leo blah blah
+Description: Literate Editor with Outlines
+
+Leo is:
+
+* A versatile data management platform.
+* An outlining editor for programmers.
+* A project manager.
+* A flexible browser for projects, programs, classes or any other data.
+
+* Leo supports optional noweb and CWEB markup.
+* Leo shows user-created relationships among any kind of data:
+  computer programs, web sites, etc.
+  Leo shows multiple views of data within a single outline.
