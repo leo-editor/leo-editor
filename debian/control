@@ -21,6 +21,3 @@ Description: Literate Editor with Outlines
  The whole DAG object model is exposed to the user through complete (python based)
  scripting API.
  Leo ships with both Qt and Tk based user interfaces.
-
- 
-

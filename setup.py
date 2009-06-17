@@ -18,7 +18,7 @@
 from distutils.core import setup
 from distutils.command.install_data import install_data
 from distutils.command.install import INSTALL_SCHEMES
-import os
+import os,fnmatch
 #@-node:ville.20090213231648.2:setup declarations
 #@+node:ville.20090213231648.3:fullsplit
 import sys
@@ -47,7 +47,7 @@ for scheme in INSTALL_SCHEMES.values():
 #@+node:ville.20090213233714.2:@url http://groups.google.com/group/comp.lang.python/browse_thread/thread/35ec7b2fed36eaec/2105ee4d9e8042cb
 #@-node:ville.20090213233714.2:@url http://groups.google.com/group/comp.lang.python/browse_thread/thread/35ec7b2fed36eaec/2105ee4d9e8042cb
 #@-node:ville.20090213231648.4:purelib hack
-#@+node:ville.20090213231648.5:collect files
+#@+node:ville.20090213231648.5:collect (and filter) files
 # Compile the list of packages available, because distutils doesn't have
 # an easy way to do this.
 packages, data_files = [], []
@@ -56,21 +56,44 @@ if root_dir != '':
     os.chdir(root_dir)
 leo_dir = 'leo'
 
+scrub_datafiles = ['leo/extensions', '_build']
+
 for dirpath, dirnames, filenames in os.walk(leo_dir):
     # Ignore dirnames that start with '.'
     for i, dirname in enumerate(dirnames):
         if dirname.startswith('.'): del dirnames[i]
     if '__init__.py' in filenames:
-        packages.append('.'.join(fullsplit(dirpath)))
+        fsplit = fullsplit(dirpath)
+        packages.append('.'.join(fsplit))
     elif filenames:
-        data_files.append([dirpath, [os.path.join(dirpath, f) for f in filenames]])
+        if not any(pat in dirpath for pat in scrub_datafiles):
+            data_files.append([dirpath, [os.path.join(dirpath, f) for f in filenames]])
 
 import pprint
 print "data files"
 pprint.pprint(data_files)
+print "packages (pre-cleanup)"
+pprint.pprint(packages)
+
+#cleanup unwanted packages
+
+# extensions should be provided through repos (packaging)
+packages = [pa for pa in packages if not pa.startswith('leo.extensions')]
+
+print "packages (post-cleanup)"
+pprint.pprint(packages)
+
+#cleanup unwanted data files
 
 
-#@-node:ville.20090213231648.5:collect files
+
+
+
+
+
+
+
+#@-node:ville.20090213231648.5:collect (and filter) files
 #@+node:ville.20090213231648.6:bdist_wininst hack
 # Small hack for working with bdist_wininst.
 # See http://mail.python.org/pipermail/distutils-sig/2004-August/004134.html
