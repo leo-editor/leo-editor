@@ -6868,8 +6868,11 @@ class leoQtGui(leoGui.leoGui):
         try:
             return unicode(s)
         except Exception:
-            return ''
-    #@nonl
+            g.trace('Warning - toUnicode does encoding (bugs possible)')
+            return unicode(s,encoding,errors='replace')
+
+
+
     #@-node:ekr.20081121105001.502:toUnicode (qtGui)
     #@+node:ekr.20081121105001.503:widget_name (qtGui)
     def widget_name (self,w):
