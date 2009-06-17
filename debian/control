@@ -14,15 +14,13 @@ Conflicts:
 Replaces: 
 Suggests: 
 Description: Literate Editor with Outlines
+ Leo is a tree-structured outliner with direct support for literate programming.
+ Apart from programming, Leo provides a rich interface for tasks involving visual
+ manipulation of hierarchical data (project management, mind mapping, concept
+ experimentation).
+ The whole DAG object model is exposed to the user through complete (python based)
+ scripting API.
+ Leo ships with both Qt and Tk based user interfaces.
 
-Leo is:
+ 
 
-* A versatile data management platform.
-* An outlining editor for programmers.
-* A project manager.
-* A flexible browser for projects, programs, classes or any other data.
-
-* Leo supports optional noweb and CWEB markup.
-* Leo shows user-created relationships among any kind of data:
-  computer programs, web sites, etc.
-  Leo shows multiple views of data within a single outline.
