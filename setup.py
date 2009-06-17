@@ -56,7 +56,8 @@ if root_dir != '':
     os.chdir(root_dir)
 leo_dir = 'leo'
 
-scrub_datafiles = ['leo/extensions', '_build']
+# stuff that breaks package (or is redundant)
+scrub_datafiles = ['leo/extensions', '_build', 'leo/test', 'leo/plugins/test', 'leo/doc/html']
 
 for dirpath, dirnames, filenames in os.walk(leo_dir):
     # Ignore dirnames that start with '.'
