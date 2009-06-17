@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="10,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -366,6 +366,9 @@
 <v t="ekr.20090615080843.1808"><vh>test of @nocolor</vh></v>
 <v t="ekr.20090614142400.1806"><vh>syntax tests</vh></v>
 <v t="ekr.20090615145950.1810"><vh>c test</vh></v>
+<v t="ekr.20090617083033.1814" a="E"><vh>Test of copy/paste of unicode</vh>
+<v t="ekr.20090617083033.1813"><vh>Unicode characters: La Peña תּ</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2737,7 +2740,7 @@ else:
 self.assertNotEqual(1,2)</t>
 <t tx="ekr.20090514103332.1929"></t>
 <t tx="ekr.20090521070342.1907">g.app.gui.runScrolledMessageDialog(c=c,msg=u'rst:'+p.b)</t>
-<t tx="ekr.20090525090210.1940"></t>
+<t tx="ekr.20090525090210.1940">La Peña</t>
 <t tx="ekr.20090601093755.1802">bookmarks = []
 
 @g.command('bookmark')
@@ -2770,5 +2773,8 @@ if a: pass
 
 #ifdef a
 </t>
+<t tx="ekr.20090617083033.1813">La Peña תּ
+</t>
+<t tx="ekr.20090617083033.1814"></t>
 </tnodes>
 </leo_file>

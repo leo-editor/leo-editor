@@ -19108,6 +19108,66 @@ body editor. Only later characters are written.
 - The cycle editor-focus command doesn't work
 #@nonl
 #@-node:ekr.20090613082719.6060:Fixed multiple-editor focus problems
+#@+node:ekr.20090616050818.6059:Fixed (worked around) tk chapters bug
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/981c27d5c24c90f8
+
+Hi, after using Leo for a few days on my ubuntu linux box, I get the
+following error which kills the editor:
+
+paul@dell-desktop:~$ leo&
+[1] 6537
+paul@dell-desktop:~$ reading settings in /home/paul/bin/Leo-4-6-b1/leo/
+config/leoSettings.leo
+/home/paul/bin/Leo-4-6-b1/leo/external/pickleshare.py:43:
+DeprecationWarning: the sets module is deprecated
+ from sets import Set as set
+Using menus from leoSettings.leo
+reading settings in /home/paul/.leo/myLeoSettings.leo
+Using menus from myLeoSettings.leo
+reading /home/paul/.leo/.leoRecentFiles.txt
+@enabled-plugins found in myLeoSettings.leo
+loaded plugin: tkGui
+opening default_leo_file: /home/paul/.leo/workbook.leo
+Traceback (most recent call last):
+ File "/home/paul/bin/Leo-4-6-b1/launchLeo.py", line 8, in <module>
+   leo.core.runLeo.run()
+ File "/home/paul/bin/Leo-4-6-b1/leo/core/runLeo.py", line 110, in
+run
+   c,frame = createFrame(fileName,relativeFileName,script)
+ File "/home/paul/bin/Leo-4-6-b1/leo/core/runLeo.py", line 158, in
+createFrame
+   ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+ File "/home/paul/bin/Leo-4-6-b1/leo/core/leoGlobals.py", line 2292,
+in openWithFileName
+   c.chapterController.finishCreate()
+ File "/home/paul/bin/Leo-4-6-b1/leo/core/leoChapters.py", line 64,
+in finishCreate
+   cc.chaptersDict[tabName] = chapter
+(c=c,chapterController=cc,name=tabName,root=p)
+ File "/home/paul/bin/Leo-4-6-b1/leo/core/leoChapters.py", line 873,
+in __init__
+   cc.tt.createTab(name)
+ File "/home/paul/bin/Leo-4-6-b1/leo/plugins/tkGui.py", line 8922, in
+createTab
+   tt.setNames()
+ File "/home/paul/bin/Leo-4-6-b1/leo/plugins/tkGui.py", line 8962, in
+setNames
+   tt.chapterMenu.setitems(names)
+ File "/usr/lib/python2.6/dist-packages/Pmw/Pmw_1_3/lib/
+PmwOptionMenu.py", line 67, in setitems
+   self._menu.delete(0, 'end')
+ File "/usr/lib/python2.6/lib-tk/Tkinter.py", line 2678, in delete
+   self.deletecommand(c)
+ File "/usr/lib/python2.6/lib-tk/Tkinter.py", line 361, in
+deletecommand
+   self.tk.deletecommand(name)
+_tkinter.TclError: can't delete Tcl command
+
+
+Can anyone suggest how to fix this?
+#@-node:ekr.20090616050818.6059:Fixed (worked around) tk chapters bug
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all

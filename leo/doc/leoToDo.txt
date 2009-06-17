@@ -2,7 +2,7 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
-#@+node:ekr.20090525113804.5776:Before b2 3
+#@+node:ekr.20090525113804.5776:Before b2 4
 #@+node:ekr.20090605075411.6436:Fix @root bug
 @nocolor-node
 
@@ -27,7 +27,11 @@ b2. It's time to stamp on the distractions.
 #@-node:ekr.20090602183337.6045:Fix rst import annoyance
 #@+node:ekr.20090523070447.6475:Rewrite rst documentation
 #@-node:ekr.20090523070447.6475:Rewrite rst documentation
-#@-node:ekr.20090525113804.5776:Before b2 3
+#@+node:ekr.20090617074804.6062:Fix reverted copy/paste bug
+http://groups.google.com/group/leo-editor/browse_thread/thread/28c5cab9c2a681f5
+#@nonl
+#@-node:ekr.20090617074804.6062:Fix reverted copy/paste bug
+#@-node:ekr.20090525113804.5776:Before b2 4
 #@+node:ekr.20090430092048.7:Before 4.6 final
 #@+node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
 @nocolor-node

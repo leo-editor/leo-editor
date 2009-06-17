@@ -8960,7 +8960,12 @@ class leoTkinterTreeTab (leoFrame.leoTreeTab):
         if 'main' in names: names.remove('main')
         names.sort()
         names.insert(0,'main')
-        tt.chapterMenu.setitems(names)
+
+        # This crashes on recent Ubuntu versions.
+        # It may be a Tk bug.
+        if not sys.platform.startswith('linux'):
+            tt.chapterMenu.setitems(names)
+    #@nonl
     #@-node:ekr.20081121110412.316:tt.setNames
     #@-node:ekr.20081121110412.311:Tabs...
     #@-others
