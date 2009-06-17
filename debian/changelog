@@ -1,7 +1,11 @@
+leo (4.6-2) unstable; urgency=low
+
+  * Prepare for 4.6 b2
+
+ -- Ville.M.Vainio <vivainio@gmail.com>  Wed, 17 Jun 2009 23:36:04 +0200
+	
 leo (4.6-1) unstable; urgency=low
 
-  [ Ville M. Vainio ]
   * First version
 
  -- Ville.M.Vainio <vivainio@gmail.com>  Sat, 7 Feb 2009 17:24:00 +0200
-
