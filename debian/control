@@ -13,5 +13,11 @@ Depends: ${python:Depends}, ${misc:Depends}
 Conflicts: 
 Replaces: 
 Suggests: 
-Description: Literary editor and outliner 
- Leo blah blah
+Description: Literate Editor with Outlines
+ Leo is a tree-structured outliner with direct support for literate 
+ programming. Apart from programming, Leo provides a rich interface for 
+ tasks involving visual manipulation of hierarchical data (project 
+ management, mind mapping, concept experimentation).
+ The whole DAG object model is exposed to the user through complete (Python 
+ based) scripting API.
+ Leo ships with both Qt and Tk based user interfaces.

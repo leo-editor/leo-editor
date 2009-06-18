@@ -634,11 +634,11 @@ if 0:
 #@nonl
 #@-node:ekr.20060513122450.38:GetDictKey (not used)
 #@+node:ekr.20060513122450.32:GetNodePath
-def GetNodePath(node,as="->"):
+def GetNodePath(node,xas="->"):
 
 	path = []
 	for p in node.parents_iter():
-		path.insert(0,p.h+as)
+		path.insert(0,p.h+xas)
 
 	path.append(node.h)
 	return ''.join(path)
@@ -4052,10 +4052,10 @@ class ToolbarClass(Tk.Frame):
         self.Spacer.insert('insert',"."+loc.FOUND_FILE_EXT)
         self.Spacer["state"] = 'disabled'
 
-        disp = ":: " ; as = ""
+        disp = ":: " ; xas = ""
         for c in loc.CLASS_LIST:
-            as += c+" :: "
-        disp += as	
+            xas += c+" :: "
+        disp += xas	
         off = 0
         if loc.CURRENT_RULE and loc.CURRENT_RULE != "class":
             off = len(disp)
@@ -5041,7 +5041,7 @@ class CppParserClass:
 
             Parser.FUNC_WRITER = wf
             proto = ""
-            as = "" #access specifier
+            xas = "" #access specifier
 
             if full == True:
                 proto = spec[0]+" "
@@ -5049,7 +5049,7 @@ class CppParserClass:
             else:
                 for n in Parser.CLASS_LIST:#if full == True, declared and defined at once, so no access specifier
                     if n != None:
-                        as = n+"::"+as
+                        xas = n+"::"+xas
 
                 #if this is not a full definition, must remove default parameter assignement
                 params = params[0].strip("()")
@@ -5062,7 +5062,7 @@ class CppParserClass:
                     else:
                         params += pa[0]
 
-            proto += ret[0]+" "+as+name[0]+"("+params+")"+ctors
+            proto += ret[0]+" "+xas+name[0]+"("+params+")"+ctors
             proto = proto.strip()
 
             push and Parser.PushTab()

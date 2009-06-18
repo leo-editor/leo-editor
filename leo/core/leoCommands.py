@@ -6390,7 +6390,7 @@ class baseCommands (object):
             c.frame.deiconify()
 
         if redrawFlag:
-            g.trace('****','tree.drag_p',c.frame.tree.drag_p)
+            if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
             # A hack: force the redraw, even if we are dragging.
             aList.append('*** redraw')
             c.frame.tree.redraw_now(forceDraw=True)

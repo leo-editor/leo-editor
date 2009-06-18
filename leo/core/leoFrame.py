@@ -2248,6 +2248,7 @@ class leoTree:
         self.redrawCount = 0
 
         # "public" ivars: correspond to setters & getters.
+        self.drag_p = None
         self._editPosition = None
         self.redrawCount = 0 # For traces
         self.revertHeadline = None
