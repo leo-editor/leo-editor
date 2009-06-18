@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="10,0"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -366,9 +366,10 @@
 <v t="ekr.20090615080843.1808"><vh>test of @nocolor</vh></v>
 <v t="ekr.20090614142400.1806"><vh>syntax tests</vh></v>
 <v t="ekr.20090615145950.1810"><vh>c test</vh></v>
-<v t="ekr.20090617083033.1814" a="E"><vh>Test of copy/paste of unicode</vh>
+<v t="ekr.20090617083033.1814"><vh>Test of copy/paste of unicode</vh>
 <v t="ekr.20090617083033.1813"><vh>Unicode characters: La Peña תּ</vh></v>
 </v>
+<v t="ekr.20090618102458.1816"><vh>Converting QString to unicode</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2776,5 +2777,19 @@ if a: pass
 <t tx="ekr.20090617083033.1813">La Peña תּ
 </t>
 <t tx="ekr.20090617083033.1814"></t>
+<t tx="ekr.20090618102458.1816">@first # -*- coding: utf-8 -*-
+
+import PyQt4.QtCore as QtCore
+
+s0 = unicode('La Peña','utf-8')
+print s0
+e = s0.encode('utf-8',"strict")
+print e,repr(e)
+s2 = QtCore.QString(s0)
+print s2,repr(s2)
+s3 = unicode(s2,'utf-8')
+print s3
+# s4 = QtCore.QString(e)
+# print s4</t>
 </tnodes>
 </leo_file>
