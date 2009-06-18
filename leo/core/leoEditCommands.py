@@ -355,11 +355,9 @@ class abbrevCommandsClass (baseEditCommandsClass):
         '''Insert the common prefix of all dynamic abbrev's matching the present word.
         This corresponds to C-M-/ in Emacs.'''
 
-        k = self.k
+        c = self.c ; k = c.k ; p = c.p ; u = c.undoer
         w = self.editWidget(event)
         if not w: return
-        if g.app.gui.guiName() != 'tkinter':
-            return g.es('command not ready yet',color='blue')
 
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -370,8 +368,13 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if rlist:
             prefix = reduce(g.longestCommonPrefix,rlist)
             if prefix:
+                b = c.undoer.beforeChangeNodeContents(c.p,oldBody=p.b,oldHead=p.h)
                 w.delete(i,j)
                 w.insert(i,prefix)
+                p.b = w.getAllText()
+                c.undoer.afterChangeNodeContents(p,
+                    command='dabbrev-completion',bunch=b,dirtyVnodeList=[]) 
+    #@nonl
     #@-node:ekr.20050920084036.60:dynamicCompletion
     #@+node:ekr.20050920084036.59:dynamicExpansion
     def dynamicExpansion (self,event=None):
@@ -380,11 +383,9 @@ class abbrevCommandsClass (baseEditCommandsClass):
         by searching in the buffer for words starting with that abbreviation (dabbrev-expand).
         This corresponds to M-/ in Emacs.'''
 
-        k = self.k
+        c = self.c ; k = c.k ; p = c.p ; u = c.undoer
         w = self.editWidget(event)
         if not w: return
-        if g.app.gui.guiName() not in ('null','tkinter'):
-            return g.es('command not ready yet',color='blue')
 
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -395,11 +396,15 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if not rlist: return
         prefix = reduce(g.longestCommonPrefix,rlist)
         if prefix and prefix != txt:
+            b = c.undoer.beforeChangeNodeContents(c.p,oldBody=p.b,oldHead=p.h)
             w.delete(i,j)
             w.insert(i,prefix)
+            p.b = w.getAllText()
+            c.undoer.afterChangeNodeContents(p,
+                command='dabbrev-expands',bunch=b,dirtyVnodeList=[])
         else:
             self.dynamicExpandHelper(prefix,rlist,w)
-    #@+node:ekr.20070605110441:dynamicExpandHelper
+    #@+node:ekr.20070605110441:dynamicExpandHelper & test
     def dynamicExpandHelper (self,prefix=None,rlist=None,w=None):
 
         k = self.k ; tag = 'dabbrev-expand'
@@ -421,8 +426,15 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 i,j = g.getWord(s,ins)
                 w.delete(i,j)
                 w.insert(i,k.arg)
-    #@nonl
-    #@-node:ekr.20070605110441:dynamicExpandHelper
+    #@+node:ekr.20090525144314.6511:@test dynamicExpandHelper
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+
+        # A totally wimpy test.
+        c.abbrevCommands.dynamicExpandHelper(prefix='',rlist=None,w=None)
+    #@-node:ekr.20090525144314.6511:@test dynamicExpandHelper
+    #@-node:ekr.20070605110441:dynamicExpandHelper & test
     #@-node:ekr.20050920084036.59:dynamicExpansion
     #@+node:ekr.20050920084036.61:getDynamicList (helper)
     def getDynamicList (self,w,txt,rlist):
@@ -1413,6 +1425,8 @@ class editCommandsClass (baseEditCommandsClass):
             'back-to-home':                         self.backToHome,
             'back-char':                            self.backCharacter,
             'back-char-extend-selection':           self.backCharacterExtendSelection,
+            'back-page':                            self.backPage,
+            'back-page-extend-selection':           self.backPageExtendSelection,
             'back-paragraph':                       self.backwardParagraph,
             'back-paragraph-extend-selection':      self.backwardParagraphExtendSelection,
             'back-sentence':                        self.backSentence,
@@ -1487,6 +1501,8 @@ class editCommandsClass (baseEditCommandsClass):
             'focus-to-tree':                        self.focusToTree,
             'forward-char':                         self.forwardCharacter,
             'forward-char-extend-selection':        self.forwardCharacterExtendSelection,
+            'forward-page':                         self.forwardPage,
+            'forward-page-extend-selection':        self.forwardPageExtendSelection,
             'forward-paragraph':                    self.forwardParagraph,
             'forward-paragraph-extend-selection':   self.forwardParagraphExtendSelection,
             'forward-sentence':                     self.forwardSentence,
@@ -1531,17 +1547,19 @@ class editCommandsClass (baseEditCommandsClass):
             'remove-tab-from-lines':                self.removeTabFromLines,
             'reverse-region':                       self.reverseRegion,
             'reverse-sort-lines':                   self.reverseSortLines,
-            'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,                 
-            'scroll-down':                          self.scrollDown,
-            'scroll-down-extend-selection':         self.scrollDownExtendSelection,
+            'reverse-sort-lines-ignoring-case':     self.reverseSortLinesIgnoringCase,
+            'scroll-down-half-page':                self.scrollDownHalfPage,                
+            'scroll-down-line':                     self.scrollDownLine,
+            'scroll-down-page':                     self.scrollDownPage,
             'scroll-outline-down-line':             self.scrollOutlineDownLine,
             'scroll-outline-down-page':             self.scrollOutlineDownPage,
             'scroll-outline-left':                  self.scrollOutlineLeft,
             'scroll-outline-right':                 self.scrollOutlineRight,
             'scroll-outline-up-line':               self.scrollOutlineUpLine,
             'scroll-outline-up-page':               self.scrollOutlineUpPage,
-            'scroll-up':                            self.scrollUp,
-            'scroll-up-extend-selection':           self.scrollUpExtendSelection,
+            'scroll-up-half-page':                  self.scrollUpHalfPage,                        
+            'scroll-up-line':                       self.scrollUpLine,
+            'scroll-up-page':                       self.scrollUpPage,
             'select-all':                           self.selectAllText,
             # Exists, but can not be executed via the minibuffer.
             # 'self-insert-command':                self.selfInsertCommand,
@@ -2991,7 +3009,6 @@ class editCommandsClass (baseEditCommandsClass):
             w.insert(i,ch)
             w.setInsertPoint(i+1)
             if inBrackets and self.flashMatchingBrackets:
-
                 self.flashMatchingBracketsHelper(w,i,ch)               
         else:
             return 'break' # This method *always* returns 'break'
@@ -3377,11 +3394,15 @@ class editCommandsClass (baseEditCommandsClass):
         extend: Clear the selection unless this is True.
         spot:   The *new* insert point.
         '''
+
+        trace = False and not g.unitTesting
         c = self.c ; p = c.p
         extend = extend or self.extendMode
         ins = w.getInsertPoint()
         i,j = w.getSelectionRange()
-        # g.trace('extend',extend,'ins',ins,'sel=',i,j,'spot=',spot,'moveSpot',self.moveSpot)
+        if trace: g.trace(
+            'extend',extend,'ins',ins,'sel=',i,j,
+            'spot=',spot,'moveSpot',self.moveSpot)
 
         # Reset the move spot if needed.
         if self.moveSpot is None or p.v.t != self.moveSpotNode:
@@ -3417,7 +3438,6 @@ class editCommandsClass (baseEditCommandsClass):
 
         w.seeInsertPoint()
         c.frame.updateStatusLine()
-    #@nonl
     #@-node:ekr.20060113130510:extendHelper
     #@+node:ekr.20060113105246.1:moveUpOrDownHelper
     def moveUpOrDownHelper (self,event,direction,extend):
@@ -3477,6 +3497,28 @@ class editCommandsClass (baseEditCommandsClass):
         self.extendHelper(w,extend,spot,upOrDown=False)
     #@nonl
     #@-node:ekr.20051218122116:moveToHelper
+    #@+node:ekr.20090530181848.6035:movePageHelper
+    def movePageHelper(self,event,kind,extend): # kind in back/forward.
+
+        '''Move the cursor up/down one page, possibly extending the selection.'''
+
+        trace = False and not g.unitTesting
+        c = self.c ; w = self.editWidget(event)
+        if not w: return
+        linesPerPage = 15 # To do.
+        ins = w.getInsertPoint()
+        s = w.getAllText()
+        lines = g.splitLines(s)
+        row,col = g.convertPythonIndexToRowCol(s,ins)
+        row2 = g.choose(kind=='back',
+            max(0,row-linesPerPage),
+            min(row+linesPerPage,len(lines)-1))
+        if row == row2: return
+        spot = g.convertRowColToPythonIndex(s,row2,col,lines=lines)
+        if trace: g.trace('spot',spot,'row2',row2)
+        self.extendHelper(w,extend,spot,upOrDown=True)
+    #@nonl
+    #@-node:ekr.20090530181848.6035:movePageHelper
     #@+node:ekr.20051218171457:movePastCloseHelper
     def movePastCloseHelper (self,event,extend):
 
@@ -3660,6 +3702,9 @@ class editCommandsClass (baseEditCommandsClass):
         self.moveSpot = i
         self.moveCol = col
         self.moveSpotNode = p.v.t
+
+        # g.trace('moveSpot',i)
+    #@nonl
     #@-node:ekr.20060209095101:setMoveCol
     #@-node:ekr.20051218170358: helpers
     #@+node:ekr.20081123102100.1:backToHome
@@ -3667,7 +3712,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Smart home:
         Position the point at the first non-blank character on the line,
-        or the start of the line if already there.''',
+        or the start of the line if already there.'''
 
         w = self.editWidget(event)
         if not w: return
@@ -3929,6 +3974,25 @@ class editCommandsClass (baseEditCommandsClass):
         '''Extend the selection by moving the cursor past the closing parenthesis.'''
         self.movePastCloseHelper(event,extend=True)
     #@-node:ekr.20050920084036.140:movePastClose
+    #@+node:ekr.20090530181848.6034:pages (New in Leo 4.6)
+    def backPage (self,event):
+        '''Move the cursor back one page,
+        extending the selection if in extend mode.'''
+        self.movePageHelper(event,kind='back',extend=False)
+
+    def backPageExtendSelection (self,event):
+        '''Extend the selection by moving the cursor back one page.'''
+        self.movePageHelper(event,kind='back',extend=True)
+
+    def forwardPage (self,event):
+        '''Move the cursor forward one page,
+        extending the selection if in extend mode.'''
+        self.movePageHelper(event,kind='forward',extend=False)
+
+    def forwardPageExtendSelection (self,event):
+        '''Extend the selection by moving the cursor forward one page.'''
+        self.movePageHelper(event,kind='forward',extend=True)
+    #@-node:ekr.20090530181848.6034:pages (New in Leo 4.6)
     #@+node:ekr.20050920084036.102:paragraphs
     def backwardParagraph (self,event):
         '''Move the cursor to the previous paragraph.'''
@@ -4321,101 +4385,122 @@ class editCommandsClass (baseEditCommandsClass):
     #@-others
     #@-node:ekr.20050920084036.105:region...
     #@+node:ekr.20060309060654:scrolling...
-    #@+node:ekr.20050920084036.116:scrollUp/Down/extendSelection
-    def scrollDown (self,event):
-        '''Scroll the presently selected pane down one page.'''
-        self.scrollHelper(event,'down',extend=False)
-
-    def scrollDownExtendSelection (self,event):
-        '''Extend the text selection by scrolling the body text down one page.'''
-        self.scrollHelper(event,'down',extend=True)
-
-    def scrollUp (self,event):
-        '''Scroll the presently selected pane up one page.'''
-        self.scrollHelper(event,'up',extend=False)
-
-    def scrollUpExtendSelection (self,event):
-        '''Extend the text selection by scrolling the body text up one page.'''
-        self.scrollHelper(event,'up',extend=True)
-    #@+node:ekr.20060113082917:scrollHelper
-    def scrollHelper (self,event,direction,extend):
-
-        k = self.k ; c = k.c ; gui = g.app.gui
-        w = gui.eventWidget(event)
-        if not w: return #  This does **not** require a text widget.
-
-        if gui.isTextWidget(w):
-            c.widgetWantsFocusNow(w)
-            # Remember the original insert point.  This may become the moveSpot.
-            ins1 = w.getInsertPoint()
-            s = w.getAllText()
-            row,col = g.convertPythonIndexToRowCol(s,ins1)
-            # Compute the spot.
-            delta = self.measure(w)
-            row1 = g.choose(direction=='down',row+delta,row-delta)
-            row1 = max(0,row1)
-            spot = g.convertRowColToPythonIndex(s,row1,col)
-            # g.trace('spot',spot,'row1',row1)
-            self.extendHelper(w,extend,spot)
-            w.seeInsertPoint()
-        elif gui.widget_name(w).startswith('canvas'):
-            if direction=='down':
-                self.scrollOutlineDownPage()
-            else:
-                self.scrollOutlineUpPage()
-    #@-node:ekr.20060113082917:scrollHelper
     #@+node:ekr.20050920084036.147:measure
     def measure (self,w):
 
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        start, junk = g.convertPythonIndexToRowCol(s,ins)
-        start += 1 ; delta = 0
+        if hasattr(w,'linesPerPage'):
+            # Preferred.  Qt implements this.
+            n = w.linesPerPage()
+            return max(2,n-3)
+        else:
+            s = w.getAllText()
+            ins = w.getInsertPoint()
+            start, junk = g.convertPythonIndexToRowCol(s,ins)
+            start += 1 ; delta = 0
+            ustart = start - 1
+            while ustart >= 1 and w.indexIsVisible('%s.0' % ustart):
+                delta += 1 ; ustart -= 1
 
-        ustart = start - 1
-        while ustart >= 1 and w.indexIsVisible('%s.0' % ustart):
-            delta += 1 ; ustart -= 1
+            ustart = start + 1
+            while w.indexIsVisible('%s.0' % ustart):
+                delta += 1 ; ustart += 1
 
-        ustart = start + 1
-        while w.indexIsVisible('%s.0' % ustart):
-            delta += 1 ; ustart += 1
-
-        return delta
+            return delta
     #@-node:ekr.20050920084036.147:measure
-    #@-node:ekr.20050920084036.116:scrollUp/Down/extendSelection
+    #@+node:ekr.20050920084036.116:scrollUp/Down & helper
+    def scrollDownHalfPage (self,event):
+        '''Scroll the presently selected pane down one lline.'''
+        self.scrollHelper(event,'down-half-page')
+
+    def scrollDownLine (self,event):
+        '''Scroll the presently selected pane down one lline.'''
+        self.scrollHelper(event,'down-line')
+
+    def scrollDownPage (self,event):
+        '''Scroll the presently selected pane down one page.'''
+        self.scrollHelper(event,'down-page')
+
+    def scrollUpHalfPage (self,event):
+        '''Scroll the presently selected pane down one lline.'''
+        self.scrollHelper(event,'up-half-page')
+
+    def scrollUpLine (self,event):
+        '''Scroll the presently selected pane up one page.'''
+        self.scrollHelper(event,'up-line')
+
+    def scrollUpPage (self,event):
+        '''Scroll the presently selected pane up one page.'''
+        self.scrollHelper(event,'up-page')
+    #@+node:ekr.20060113082917:scrollHelper
+    def scrollHelper (self,event,kind):
+
+        '''Scroll the present pane up or down one page
+        kind is in ('up/down-half-page/line/page)'''
+
+        k = self.k ; c = k.c ; gui = g.app.gui
+        w = gui.eventWidget(event)
+
+        if not w: return
+
+        if hasattr(w,'scrollDelegate'):
+            w.scrollDelegate(kind)
+        else:
+            g.trace('scrolling not implemented')
+    #@-node:ekr.20060113082917:scrollHelper
+    #@-node:ekr.20050920084036.116:scrollUp/Down & helper
     #@+node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
     def scrollOutlineDownLine (self,event=None):
         '''Scroll the outline pane down one line.'''
-        a,b = self.c.frame.canvas.leo_treeBar.get()
-        if b < 1.0:
-            self.c.frame.tree.canvas.yview_scroll(1,"unit")
+        c = self.c ; tree = c.frame.tree
+        if hasattr(tree,'scrollDelegate'):
+            tree.scrollDelegate('down-line')
+        elif hasattr(tree.canvas,'leo_treeBar'):
+            a,b = tree.canvas.leo_treeBar.get()
+            if b < 1.0: tree.canvas.yview_scroll(1,"unit")
 
     def scrollOutlineDownPage (self,event=None):
         '''Scroll the outline pane down one page.'''
-        a,b = self.c.frame.canvas.leo_treeBar.get()
-        if b < 1.0:
-            self.c.frame.tree.canvas.yview_scroll(1,"page")
+        c = self.c ; tree = c.frame.tree
+        if hasattr(tree,'scrollDelegate'):
+            tree.scrollDelegate('down-page')
+        elif hasattr(tree.canvas,'leo_treeBar'):
+            a,b = tree.canvas.leo_treeBar.get()
+            if b < 1.0: tree.canvas.yview_scroll(1,"page")
 
     def scrollOutlineUpLine (self,event=None):
         '''Scroll the outline pane up one line.'''
-        a,b = self.c.frame.canvas.leo_treeBar.get()
-        if a > 0.0:
-            self.c.frame.tree.canvas.yview_scroll(-1,"unit")
+        c = self.c ; tree = c.frame.tree
+        if hasattr(tree,'scrollDelegate'):
+            tree.scrollDelegate('up-line')
+        elif hasattr(tree.canvas,'leo_treeBar'):
+            a,b = tree.canvas.leo_treeBar.get()
+            if a > 0.0: tree.canvas.yview_scroll(-1,"unit")
 
     def scrollOutlineUpPage (self,event=None):
         '''Scroll the outline pane up one page.'''
-        a,b = self.c.frame.canvas.leo_treeBar.get()
-        if a > 0.0:
-            self.c.frame.tree.canvas.yview_scroll(-1,"page")
+        c = self.c ; tree = c.frame.tree
+        if hasattr(tree,'scrollDelegate'):
+            tree.scrollDelegate('up-page')
+        elif hasattr(tree.canvas,'leo_treeBar'):
+            a,b = tree.canvas.leo_treeBar.get()
+            if a > 0.0: tree.canvas.yview_scroll(-1,"page")
     #@-node:ekr.20060309060654.1:scrollOutlineUp/Down/Line/Page
     #@+node:ekr.20060726154531:scrollOutlineLeftRight
     def scrollOutlineLeft (self,event=None):
         '''Scroll the outline left.'''
-        self.c.frame.tree.canvas.xview_scroll(1,"unit")
+        c = self.c ; tree = c.frame.tree
+        if hasattr(tree,'scrollDelegate'):
+            tree.scrollDelegate('left')
+        elif hasattr(tree.canvas,'xview_scroll'):
+            tree.canvas.xview_scroll(1,"unit")
 
     def scrollOutlineRight (self,event=None):
         '''Scroll the outline left.'''
-        self.c.frame.tree.canvas.xview_scroll(-1,"unit")
+        c = self.c ; tree = c.frame.tree
+        if hasattr(tree,'scrollDelegate'):
+            tree.scrollDelegate('right')
+        elif hasattr(tree.canvas,'xview_scroll'):
+            tree.canvas.xview_scroll(-1,"unit")
     #@-node:ekr.20060726154531:scrollOutlineLeftRight
     #@-node:ekr.20060309060654:scrolling...
     #@+node:ekr.20050920084036.117:sort...
@@ -5807,13 +5892,12 @@ class killBufferCommandsClass (baseEditCommandsClass):
 
         w = self.editWidget(event)
         if not w: return
-        theRange = w.tag_ranges('sel')
-        if not theRange: return
-
-        s = w.get(theRange[0],theRange[-1])
+        i,j = w.getSelectionRange()
+        if i == j: return
+        s = w.getSelectedText()
         if deleteFlag:
             self.beginCommand(undoType='kill-region')
-            w.delete(theRange[0],theRange[-1])
+            w.delete(i,j)
             self.c.frame.body.forceFullRecolor()
             self.endCommand(changed=True,setLabel=True)
         self.addToKillBuffer(s)
@@ -7200,7 +7284,7 @@ class minibufferFind (baseEditCommandsClass):
 
         k.extendLabel(s,select=True,protect=protect)
     #@-node:ekr.20060210164421:addFindStringToLabel
-    #@+node:ekr.20070105123800:changeAll
+    #@+node:ekr.20070105123800:changeAll (minibufferFind)
     def changeAll (self,event):
 
         k = self.k ; tag = 'change-all' ; state = k.getState(tag)
@@ -7208,7 +7292,9 @@ class minibufferFind (baseEditCommandsClass):
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if not w: return
-            self.setupArgs(forward=True,regexp=False,word=True)
+            # Bug fix: 2009-5-31.
+            # None denotes that we use the present value of the option.
+            self.setupArgs(forward=None,regexp=None,word=None)
             k.setLabelBlue('Change All From: ',protect=True)
             k.getArg(event,tag,1,self.changeAll)
         elif state == 1:
@@ -7222,8 +7308,8 @@ class minibufferFind (baseEditCommandsClass):
             self.updateChangeList(k.arg)
             self.lastStateHelper()
             self.generalChangeHelper(self._sString,k.arg,changeAll=True)
-
-    #@-node:ekr.20070105123800:changeAll
+    #@nonl
+    #@-node:ekr.20070105123800:changeAll (minibufferFind)
     #@+node:ekr.20060128080201:cloneFindAll
     def cloneFindAll (self,event):
 
@@ -7270,7 +7356,7 @@ class minibufferFind (baseEditCommandsClass):
             k.showStateAndMode()
             self.generalSearchHelper(k.arg,findAll=True)
     #@-node:ekr.20060209064140:findAll
-    #@+node:ekr.20060205105950.1:generalChangeHelper
+    #@+node:ekr.20060205105950.1:generalChangeHelper (minibufferFind)
     def generalChangeHelper (self,find_pattern,change_pattern,changeAll=False):
 
         # g.trace(repr(change_pattern))
@@ -7293,7 +7379,7 @@ class minibufferFind (baseEditCommandsClass):
         else:
             # This handles the reverse option.
             self.finder.findNextCommand()
-    #@-node:ekr.20060205105950.1:generalChangeHelper
+    #@-node:ekr.20060205105950.1:generalChangeHelper (minibufferFind)
     #@+node:ekr.20060124181213.4:generalSearchHelper
     def generalSearchHelper (self,pattern,cloneFindAll=False,findAll=False):
 

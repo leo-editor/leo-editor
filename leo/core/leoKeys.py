@@ -1366,7 +1366,7 @@ class autoCompleterClass:
 
         try:
             # Add the the class definition to the present environment.
-            exec(s) ### Security violation!
+            exec(s) # Security violation!
 
             # Get the newly created object from the locals dict.
             theClass = locals().get(className)
@@ -1959,6 +1959,8 @@ class keyHandlerClass:
             # editCommandsClass
             'add-space-to-lines',
             'add-tab-to-lines',
+            'back-page',
+            'back-page-extend-selection',
             'back-paragraph',
             'back-paragraph-extend-selection',
             'back-sentence',
@@ -1979,6 +1981,8 @@ class keyHandlerClass:
             'fill-region',
             'fill-region-as-paragraph',
             'flush-lines',
+            'forward-page',
+            'forward-page-extend-selection',
             'forward-paragraph',
             'forward-paragraph-extend-selection',
             'forward-sentence',
@@ -1998,10 +2002,12 @@ class keyHandlerClass:
             'reverse-region',
             'reverse-sort-lines',
             'reverse-sort-lines-ignoring-case',
-            'scroll-down',
-            'scroll-down-extend-selection',
-            'scroll-outline-down-line',
-            'scroll-outline-down-page',
+            'scroll-down-half-page',
+            'scroll-down-line',
+            'scroll-down-page',
+            'scroll-up-half-page',
+            'scroll-up-line',
+            'scroll-up-page',
             'simulate-begin-drag',
             'simulate-end-drag',
             'sort-columns',
@@ -2159,7 +2165,7 @@ class keyHandlerClass:
                         and not b2.pane.endswith('-mode')]
                 for z in redefs:
                     g.es_print ('redefining shortcut %30s from %s to %s in %s' % (
-                        shortcut,z,commandName,pane),color='red')
+                        shortcut,commandName,z,pane),color='red')
                     # g.es_print('redefining','shortcut %20s' % (shortcut),
                         # 'from',z,'(%s)' % (pane),
                         # 'to',commandName,'(%s)' % (pane),color='red')
@@ -2637,7 +2643,7 @@ class keyHandlerClass:
                 if k.mb_helpHandler: k.mb_helpHandler(commandName)
             else:
                 k.callAltXFunction(k.mb_event)
-        elif keysym == 'Tab':
+        elif keysym in ('Tab','\t'):
             if trace and verbose: g.trace('***Tab')
             k.doTabCompletion(c.commandsDict.keys())
             c.minibufferWantsFocus()
@@ -3087,9 +3093,9 @@ class keyHandlerClass:
         '''
 
         k = self ; c = k.c ; gui  = g.app.gui
+        trace = (False or (c.config.getBool('trace_modes')) and not g.app.unitTesting)
         state = k.getState('getArg')
         keysym = gui.eventKeysym(event)
-        trace = False or (c.config.getBool('trace_modes') and not g.app.unitTesting)
         if trace: g.trace(
             'state',state,'keysym',keysym,'stroke',stroke,'escapes',k.getArgEscapes,
             'completion', state==0 and completion or state!=0 and k.arg_completion)
@@ -3130,7 +3136,7 @@ class keyHandlerClass:
             c.frame.log.deleteTab('Completion')
             trace and g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
             if handler: handler(event)
-        elif keysym == 'Tab':
+        elif keysym in('Tab','\t'):
             k.doTabCompletion(k.argTabList,k.arg_completion)
         elif keysym == 'BackSpace':
             k.doBackSpace(k.argTabList,k.arg_completion)
@@ -3314,11 +3320,6 @@ class keyHandlerClass:
         if trace:
             g.trace('stroke:',repr(stroke),'keysym:',
                 repr(event.keysym),'ch:',repr(event.char),'state',state)
-            # g.trace('callers',g.callers(5))
-                # 'state.kind:',k.state.kind),'\n',g.callers())
-            # if (self.master_key_count % 100) == 0: g.printGcSummary()
-
-        # if stroke == 'Return': g.pdb()
 
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
@@ -3489,7 +3490,7 @@ class keyHandlerClass:
 
         # Special case for bindings handled in k.getArg:
         if state in ('getArg','full-command'):
-            if stroke in ('BackSpace','Return','Tab','Escape'):
+            if stroke in ('BackSpace','Return','Tab','\t','Escape'):
                 return False
 
         if not state.startswith('auto-'):
@@ -3525,20 +3526,21 @@ class keyHandlerClass:
     #@+node:ekr.20080510095819.1:k.handleUnboudKeys
     def handleUnboundKeys (self,event,char,keysym,stroke):
 
-        k = self ; c = k.c ; trace = False
+        trace = False and not g.unitTesting
+        k = self ; c = k.c
         modesTuple = ('insert','overwrite')
 
-        if trace:
-            # if stroke: g.trace('***unexpected stroke***')
-            g.trace('keysym:',repr(event.keysym),'ch:',repr(event.char))
-                # 'state.kind:',k.state.kind),'\n',g.callers())
-            # if (self.master_key_count % 100) == 0: g.printGcSummary()
+        if trace: g.trace('ch: %s keysym: %s stroke %s' % (
+            repr(event.char),repr(event.keysym),repr(stroke)))
 
         if k.unboundKeyAction == 'command':
             # Ignore all unbound characters in command mode.
             w = g.app.gui.get_focus(c)
             if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
                 c.onCanvasKey(event)
+            return 'break'
+
+        elif k.isFKey(stroke):
             return 'break'
 
         elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
@@ -4194,7 +4196,7 @@ class keyHandlerClass:
             handler = k.getFileNameHandler
             c.frame.log.deleteTab(tabName)
             if handler: handler(event)
-        elif keysym == 'Tab':
+        elif keysym in ('Tab','\t'):
             k.doFileNameTab()
             c.minibufferWantsFocus()
         elif keysym == 'BackSpace':
@@ -4384,6 +4386,16 @@ class keyHandlerClass:
     #@-node:ekr.20061031131434.180:traceBinding
     #@-node:ekr.20061031131434.167:Shared helpers
     #@+node:ekr.20061031131434.181:Shortcuts (keyHandler)
+    #@+node:ekr.20090518072506.8494:isFKey
+    def isFKey (self,shortcut):
+
+
+        if not shortcut: return False
+
+        s = shortcut.lower()
+
+        return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
+    #@-node:ekr.20090518072506.8494:isFKey
     #@+node:ekr.20061031131434.182:isPlainKey
     def isPlainKey (self,shortcut):
 
@@ -4403,11 +4415,11 @@ class keyHandlerClass:
                 len(shortcut) == 1 or
                 len(k.guiBindNamesInverseDict.get(shortcut,'')) == 1 or
                 # A hack: allow Return to be bound to command.
-                shortcut == 'Tab'
+                shortcut in ('Tab','\t')
             )
 
             # g.trace(isPlain,repr(shortcut))
-            return isPlain
+            return isPlain and not self.isFKey(shortcut)
     #@-node:ekr.20061031131434.182:isPlainKey
     #@+node:ekr.20061031131434.184:shortcutFromSetting (uses k.guiBindNamesDict)
     def shortcutFromSetting (self,setting,addKey=True):

@@ -70,6 +70,10 @@ Getting Leo
 +++++++++++
 
 
+
+
+
+
 **Where can I get official releases of Leo?**
 
 You can get the latest official releases of Leo at
@@ -135,6 +139,10 @@ Installing Leo
 ++++++++++++++
 
 
+
+
+
+
 **Leo's installer failed, what do I do?**
 
 @nocolor
@@ -188,6 +196,10 @@ be used to install Leo because Leo is not a Python package.
 
 Learning to use Leo
 +++++++++++++++++++
+
+
+
+
 
 
 **What's the best way to learn to use Leo?**
@@ -325,6 +337,10 @@ Using `@thin`_ trees can eliminate most problems with using Leo in cvs environme
 
 Using derived files
 +++++++++++++++++++
+
+
+
+
 
 
 **How do I inhibit sentinels in derived files?**
@@ -545,6 +561,10 @@ Customizing Leo
 +++++++++++++++
 
 
+
+
+
+
 **How can I add support for a new language?**
 
 See the instructions are in ``LeoPy.leo`` in::
@@ -630,6 +650,10 @@ Leo uses g.app.use_psyco before processing configuration settings.
 
 Tips and techniques
 +++++++++++++++++++
+
+
+
+
 
 
 **What is an easy way to profile code?**
@@ -899,6 +923,10 @@ It's easier to *do* this than to *explain* it!
 
 Trouble shooting
 ++++++++++++++++
+
+
+
+
 
 
 **How do I get help?**
@@ -1192,6 +1220,10 @@ problem.
 
 Unicode issues
 ++++++++++++++
+
+
+
+
 
 
 **I can not enter non-ascii characters.  What can I do?**

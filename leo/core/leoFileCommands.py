@@ -31,6 +31,7 @@ import pickle
 import sys
 import types
 import zipfile
+# import string
 # import re
 
 try:
@@ -152,7 +153,7 @@ if sys.platform != 'cli':
 
             attrs: an Attributes item passed to startElement.'''
 
-            ### if 0: # check for non-unicode attributes.
+            # if 0: # check for non-unicode attributes.
                 # for name in attrs.getNames():
                     # val = attrs.getValue(name)
                     # if type(val) != type(u''):
@@ -674,7 +675,6 @@ class baseFileCommands:
 
         if reassignIndices:
             for p2 in p.self_and_subtree_iter():
-                ### p2.v.t.fileIndex = None
                 # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
                 p2.v.t.fileIndex = g.app.nodeIndices.getNewIndex()
 
@@ -707,36 +707,57 @@ class baseFileCommands:
         return True
     #@-node:ekr.20080410115129.1:checkPaste
     #@-node:ekr.20031218072017.1559:getLeoOutlineFromClipboard & helpers
-    #@+node:ekr.20031218072017.1553:getLeoFile
+    #@+node:ekr.20031218072017.1553:getLeoFile & helpers
     # The caller should follow this with a call to c.redraw().
 
     def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
 
         c = self.c
         c.setChanged(False) # May be set when reading @file nodes.
-        #@    << warn on read-only files >>
-        #@+node:ekr.20031218072017.1554:<< warn on read-only files >>
-        # os.access may not exist on all platforms.
-
-        try:
-            self.read_only = not os.access(fileName,os.W_OK)
-        except AttributeError:
-            self.read_only = False
-        except UnicodeError:
-            self.read_only = False
-
-        if self.read_only:
-            g.es("read only:",fileName,color="red")
-        #@-node:ekr.20031218072017.1554:<< warn on read-only files >>
-        #@nl
+        self.warnOnReadOnlyFiles(fileName)
         self.checking = False
         self.mFileName = c.mFileName
         self.initReadIvars()
-        c.loading = True # disable c.changed
+
+        try:
+            c.loading = True # disable c.changed
+            ok = self.getLeoFileHelper(theFile,fileName,silent)
+
+            # Do this before reading derived files.
+            self.resolveTnodeLists()
+
+            if ok and readAtFileNodesFlag:
+                # Redraw before reading the @file nodes so the screen isn't blank.
+                # This is important for big files like LeoPy.leo.
+                c.redraw()
+                c.setFileTimeStamp(fileName)
+                c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+
+            # Do this after reading derived files.
+            if readAtFileNodesFlag:
+                # The descendent nodes won't exist unless we have read the @thin nodes!
+                self.restoreDescendentAttributes()
+
+            self.setPositionsFromVnodes()
+            c.selectVnode(c.p) # load body pane
+            self.initAllParents()
+            if c.config.getBool('check_outline_after_read'):
+                c.checkOutline(event=None,verbose=True,unittest=False,full=True)
+        finally:
+            c.loading = False # reenable c.changed
+
+        c.setChanged(c.changed) # Refresh the changed marker.
+        self.initReadIvars()
+        return ok, self.ratio
+    #@+node:ekr.20090526081836.5841:getLeoFileHelper
+    def getLeoFileHelper(self,theFile,fileName,silent):
+
+        '''Read the .leo file and create the outline.'''
+
+        c = self.c
 
         try:
             ok = True
-            # t1 = time.clock()
             v = self.readSaxFile(theFile,fileName,silent,inClipboard=False,reassignIndices=False)
             if v: # v is None for minimal .leo files.
                 c.setRootVnode(v)
@@ -756,35 +777,39 @@ class baseFileCommands:
                 g.alert(self.mFileName + " is not a valid Leo file: " + str(message))
             ok = False
 
-        # Do this before reading derived files.
-        self.resolveTnodeLists()
+        return ok
+    #@-node:ekr.20090526081836.5841:getLeoFileHelper
+    #@+node:ekr.20031218072017.1554:warnOnReadOnlyFiles
+    def warnOnReadOnlyFiles (self,fileName):
 
-        if ok and readAtFileNodesFlag:
-            # Redraw before reading the @file nodes so the screen isn't blank.
-            # This is important for big files like LeoPy.leo.
-            c.redraw()
-            c.setFileTimeStamp(fileName)
-            c.atFileCommands.readAll(c.rootVnode(),partialFlag=False)
+        # os.access may not exist on all platforms.
 
-        # Do this after reading derived files.
-        if readAtFileNodesFlag:
-            # The descendent nodes won't exist unless we have read the @thin nodes!
-            self.restoreDescendentAttributes()
+        try:
+            self.read_only = not os.access(fileName,os.W_OK)
+        except AttributeError:
+            self.read_only = False
+        except UnicodeError:
+            self.read_only = False
 
-        self.setPositionsFromVnodes()
-        c.selectVnode(c.p) # load body pane
+        if self.read_only and not g.unitTesting:
+            g.es("read only:",fileName,color="red")
+    #@+node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
+    if g.unitTesting:
 
-        self.initAllParents()
+        import os,stat
+        c,p = g.getTestVars()
+        fc = c.fileCommands
 
-        if c.config.getBool('check_outline_after_read'):
-            g.trace('@bool check_outline_after_read = True',color='blue')
-            c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-
-        c.loading = False # reenable c.changed
-        c.setChanged(c.changed) # Refresh the changed marker.
-        self.initReadIvars()
-        return ok, self.ratio
-    #@-node:ekr.20031218072017.1553:getLeoFile
+        path = g.os_path_finalize_join(g.app.loadDir,'..','test','test-read-only.txt')
+        if os.path.exists(path):
+            os.chmod(path, stat.S_IREAD)
+            fc.warnOnReadOnlyFiles(path)
+            assert fc.read_only
+        else:
+            fc.warnOnReadOnlyFiles(path)
+    #@-node:ekr.20090526102407.10049:@test g.warnOnReadOnlyFile
+    #@-node:ekr.20031218072017.1554:warnOnReadOnlyFiles
+    #@-node:ekr.20031218072017.1553:getLeoFile & helpers
     #@+node:ekr.20080428055516.3:initAllParents
     def initAllParents(self):
 
@@ -838,6 +863,7 @@ class baseFileCommands:
 
         c = self.c ; p = c.p
 
+        c.endEditing()
         c.atFileCommands.readAll(p,partialFlag=True)
         c.redraw()
 
@@ -852,7 +878,8 @@ class baseFileCommands:
 
         # Set c.openDirectory
         theDir = g.os_path_dirname(fileName)
-        if theDir: c.openDirectory = theDir
+        if theDir:
+            c.openDirectory = c.frame.openDirectory = theDir
 
         ok, ratio = self.getLeoFile(
             theFile,fileName,
@@ -871,19 +898,19 @@ class baseFileCommands:
 
         #@    << Set the default directory >>
         #@+node:ekr.20071211134300:<< Set the default directory >>
-        #@+at 
-        #@nonl
+        #@+at
         # The most natural default directory is the directory containing the 
-        # .leo file that we are about to open.  If the user has specified the 
-        # "Default Directory" preference that will over-ride what we are about 
-        # to set.
+        # .leo file
+        # that we are about to open. If the user has specified the "Default 
+        # Directory"
+        # preference that will over-ride what we are about to set.
         #@-at
         #@@c
 
         theDir = g.os_path_dirname(fileName)
 
         if len(theDir) > 0:
-            c.openDirectory = theDir
+            c.openDirectory = c.frame.openDirectory = theDir
         #@-node:ekr.20071211134300:<< Set the default directory >>
         #@nl
         ok, ratio = self.getLeoFile(theFile,fileName,readAtFileNodesFlag=False)
@@ -1012,6 +1039,33 @@ class baseFileCommands:
     #@-node:EKR.20040627120120:restoreDescendentAttributes
     #@-node:ekr.20060919133249:Common
     #@+node:ekr.20060919104530:Sax (reading)
+    #@+node:ekr.20090525144314.6526:cleanSaxInputString & test
+    def cleanSaxInputString(self,s):
+
+        from string import maketrans
+
+        badchars = [chr(ch) for ch in range(32)]
+        badchars.remove('\t')
+        badchars.remove('\r')
+        badchars.remove('\n')
+
+        flatten = ''.join(badchars)
+
+        transtable = maketrans(flatten, ' ' * len(flatten))
+
+        return s.translate(transtable)
+
+    # for i in range(32): print i,repr(chr(i))
+    #@+node:ekr.20090525144314.6527:@test cleanSaxInputString
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+
+        s = 'test%cthis' % 27
+
+        assert c.fileCommands.cleanSaxInputString(s) == 'test this'
+    #@-node:ekr.20090525144314.6527:@test cleanSaxInputString
+    #@-node:ekr.20090525144314.6526:cleanSaxInputString & test
     #@+node:ekr.20060919110638.4:createSaxVnodes & helpers
     def createSaxVnodes (self,saxRoot,reassignIndices):
 
@@ -1263,8 +1317,8 @@ class baseFileCommands:
                 else:
                     theFile = StringIO(s)
             else:
-                if theFile:
-                    s = theFile.read()
+                if theFile: s = theFile.read()
+                s = self.cleanSaxInputString(s)
                 theFile = cStringIO.StringIO(s)
             parser = xml.sax.make_parser()
             parser.setFeature(xml.sax.handler.feature_external_ges,1)
@@ -1698,7 +1752,7 @@ class baseFileCommands:
     #@+node:ekr.20031218072017.1577:putTnode
     def putTnode (self,t):
 
-        ### Could be eliminated.
+        # Could be eliminated.
         # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
         if not t.fileIndex:
             g.trace('can not happen: no index for tnode',t)
@@ -1736,7 +1790,7 @@ class baseFileCommands:
         tnodes = {}
         nodeIndices = g.app.nodeIndices
         for p in theIter:
-            ### Could be eliminated. 
+            # Could be eliminated. 
             # New in Leo 4.4.8: assign file indices here.
             if not p.v.t.fileIndex:
                 p.v.t.fileIndex = nodeIndices.getNewIndex()
@@ -1763,20 +1817,22 @@ class baseFileCommands:
 
         fc = self ; c = fc.c ; v = p.v
         isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
+        isEdit = p.isAtEditNode() and p.atEditNodeName().strip()
         isShadow = p.isAtShadowFileNode()
         isThin = p.isAtThinFileNode()
         isOrphan = p.isOrphan()
         if not isIgnore: isIgnore = p.isAtIgnoreNode()
 
-        if isIgnore:   forceWrite = True      # Always write full @ignore trees.
+        if   isIgnore: forceWrite = True      # Always write full @ignore trees.
         elif isAuto:   forceWrite = False     # Never write non-ignored @auto trees.
+        elif isEdit:   forceWrite = False     # Never write non-ignored @edit trees.
         elif isShadow: forceWrite = False     # Never write non-ignored @shadow trees.
         elif isThin:   forceWrite = isOrphan  # Only write orphan @thin trees.
         else:          forceWrite = True      # Write all other @file trees.
 
         #@    << Set gnx = tnode index >>
         #@+node:ekr.20031218072017.1864:<< Set gnx = tnode index >>
-        ### Could be eliminated.
+        # Could be eliminated.
         # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
         if not v.t.fileIndex:
             v.t.fileIndex = g.app.nodeIndices.getNewIndex()
@@ -2275,7 +2331,7 @@ class baseFileCommands:
             if theList:
                 sList = []
                 for t in theList:
-                    ### Could be eliminated.
+                    # Could be eliminated.
                     # New in Leo 4.4.8.  Assign t.fileIndex here as needed.
                     if not t.fileIndex:
                         t.fileIndex = g.app.nodeIndices.getNewIndex()
@@ -2311,7 +2367,7 @@ class baseFileCommands:
         d = {}
         nodeIndices = g.app.nodeIndices
         for t,d2 in aList:
-            ### Could be eliminated.
+            # Could be eliminated.
             # New in Leo 4.4.8.  Assign v.t.fileIndex here as needed.
             if not t.fileIndex:
                 t.fileIndex = g.app.nodeIndices.getNewIndex()
@@ -2371,7 +2427,7 @@ class baseFileCommands:
         if tnodeList:
             # g.trace("%4d" % len(tnodeList),v)
             for t in tnodeList:
-                ### Can this be eliminated?
+                # Can this be eliminated?
                 try: # Will fail for None or any pre 4.1 file index.
                     junk,junk,junk = t.fileIndex
                 except Exception:
@@ -2424,11 +2480,10 @@ class baseFileCommands:
 
         c = self.c
 
-        if not c.openDirectory or len(c.openDirectory) == 0:
+        if not c.openDirectory:
             theDir = g.os_path_dirname(fileName)
-
-            if len(theDir) > 0 and g.os_path_isabs(theDir) and g.os_path_exists(theDir):
-                c.openDirectory = theDir
+            if theDir and g.os_path_isabs(theDir) and g.os_path_exists(theDir):
+                c.openDirectory = c.frame.openDirectory = theDir
     #@-node:ekr.20031218072017.3045:setDefaultDirectoryForNewFiles
     #@+node:ekr.20080412172151.2:updateFixedStatus
     def updateFixedStatus (self):

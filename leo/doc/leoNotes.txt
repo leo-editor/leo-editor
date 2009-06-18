@@ -8,6 +8,10 @@
 #@+node:ekr.20080917153158.10:Bzr notes
 @nocolor
 
+How to create launchpad key pairs:
+
+http://help.launchpad.net/YourAccount/CreatingAnSSHKeyPair
+
 How to create/use private branches
 
 ===== Do this first: creates a branch directly, **without** having to use launchpad.
@@ -48,7 +52,8 @@ Docs:
 
 Windows
 
-- Configuration file is .bazaar in XP C:\Documents and Settings\HP_Administrator\Application Data\bazaar\2.0
+- Configuration file is .bazaar in XP
+C:\Documents and Settings\HP_Administrator\Application Data\bazaar\2.0
 
 Linux:
 
@@ -66,16 +71,34 @@ for example, gutsy, hardy, intrepid.
 
 These are projects that3 I'd like to follow up on.
 
+Scripts-->@thin leoScripts.txt-->Others-->
+Call hierarchy tracing (using python 'trace' module)
+
 - Caliopy: integrate Leo with many scientific computing tools.
   http://www.caliopywork.org/
 
+- Clone digger: find similar code
+  http://clonedigger.sourceforge.net/
+
 - Fuse (pyfuse) Leo as a file system.
   http://leo.zwiki.org/LeoAsAFileSystem
+
+- Google wave: 
+  http://wave.google.com/
+
+
+- Thread: Leo forum proof of concept:
+  A few buttons turns Leo into a competitor for google groups :-)
+  http://groups.google.com/group/leo-editor/browse_thread/thread/db6e75d82da4b41d
 
 - Manuel: rST testing tool
   http://pypi.python.org/pypi/manuel/1.0.0a3
   Manuel parses documents, evaluates their contents,
   then formats the result of the evaluation.
+
+- pexpect: a Python module for spawning child applications and
+  controlling them automatically. 
+  http://pexpect.sourceforge.net/pexpect.html
 
 - Pyjamas: AJAX tool kit.
   http://pyjs.org/
@@ -91,8 +114,89 @@ These are projects that3 I'd like to follow up on.
 
 - Tomboy: wiki-like notes
   http://projects.gnome.org/tomboy/index.html
-
+  http://groups.google.com/group/leo-editor/browse_thread/thread/18d4af19686f2ead
 #@-node:ekr.20090502071837.103:Cool projects
+#@+node:ekr.20090601083544.6066:Cool plugins & Leo code
+These are plugins/projects that I'd like to investigate further.
+
+interact.py:  Add buttons so leo can interact with command line environments.
+
+g.command (class command) decorator:
+http://groups.google.com/group/leo-editor/browse_thread/thread/a83082cec5ad3df8
+#@+node:ekr.20090601083544.6068:@g.command decorator
+#@+node:ville.20090521164644.5924:g.command (decorator for creating global commands)
+class command:
+    """ Decorator to create global commands """
+    def __init__(self, name, **kwargs):
+        """ Registration for command 'name'
+
+        kwargs reserved for future use (shortcut, button, ...?)
+
+        """
+        self.name = name
+        self.args = kwargs
+
+    def __call__(self,func):
+        # register command for all future commanders
+        g.app.global_commands_dict[self.name] = func
+
+        # ditto for all current commanders
+        for co in g.app.commanders():
+            co.k.registerCommand(self.name,shortcut = None, func = func, pane='all',verbose=False)        
+
+        return func
+
+
+#@-node:ville.20090521164644.5924:g.command (decorator for creating global commands)
+#@+node:ekr.20050920093543:c.finishCreate & helper
+def finishCreate (self,initEditCommanders=True):  # New in 4.4.
+
+    '''Finish creating the commander after frame.finishCreate.
+
+    Important: this is the last step in the startup process.'''
+
+    c = self ; p = c.p
+    c.miniBufferWidget = c.frame.miniBufferWidget
+    # print('Commands.finishCreate',c.fileName())
+
+    # Create a keyHandler even if there is no miniBuffer.
+    c.keyHandler = c.k = k = g.app.gui.createKeyHandlerClass(c,
+        useGlobalKillbuffer=True,
+        useGlobalRegisters=True)
+
+    if initEditCommanders:
+        # A 'real' .leo file.
+        import leo.core.leoEditCommands as leoEditCommands
+        c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
+        self.rstCommands.finishCreate()
+
+        # copy global commands to this controller    
+
+        for name,f in g.app.global_commands_dict.items():
+            k.registerCommand(name,shortcut = None, func = f, pane='all',verbose=False)        
+
+        k.finishCreate()
+    else:
+        # A leoSettings.leo file.
+        c.commandsDict = {}
+
+    c.frame.log.finishCreate()
+    c.bodyWantsFocusNow()
+#@+node:ekr.20051007143620:printCommandsDict
+def printCommandsDict (self):
+
+    c = self
+
+    print('Commands...')
+    for key in sorted(c.commandsDict):
+        command = c.commandsDict.get(key)
+        print('%30s = %s' % (
+            key,g.choose(command,command.__name__,'<None>')))
+    print('')
+#@-node:ekr.20051007143620:printCommandsDict
+#@-node:ekr.20050920093543:c.finishCreate & helper
+#@-node:ekr.20090601083544.6068:@g.command decorator
+#@-node:ekr.20090601083544.6066:Cool plugins & Leo code
 #@+node:ekr.20070614094933:EasyInstall installation notes--XP
 C:\prog>c:\python25\python ez_setup.py
 Downloading http://cheeseshop.python.org/packages/2.5/s/setuptools/setuptools-0.6c6-py2.5.egg
@@ -3267,8 +3371,8 @@ paste-after-lws:    ^([ \t]+)           -->  \1x
 (?<=...)
     Matches if the current position in the string is preceded by a match for ... that ends at the current position. This is called a positive lookbehind assertion. The contained pattern must only match strings of some fixed length, meaning that abc or a|b are allowed, but a* and a{3,4} are not
 #@nonl
-#@+node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
-#@-node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
+#@+node:ekr.20060217111834:@@url http://docs.python.org/lib/re-syntax.html
+#@-node:ekr.20060217111834:@@url http://docs.python.org/lib/re-syntax.html
 #@-node:ekr.20090105132011.6:Regex notes
 #@+node:ekr.20090501095634.2:rst2leo.py
 # By Kent Tenney
@@ -4510,137 +4614,6 @@ if 0: # Set to 1 for lint-like testing.
 
     # return s
 #@-node:ekr.20050920084036.195:findFirstMatchFromList
-#@+node:ekr.20031218072017.1260:g.OLDget_directives_dict (very slow!) & helpers
-# The caller passes [root_node] or None as the second arg.  This allows us to distinguish between None and [None].
-
-# def get_directives_dict(p,root=None):
-
-    # """Scans root for @directives found in globalDirectiveList.
-
-    # Returns a dict containing pointers to the start of each directive"""
-
-    # trace = True
-    # global globalDirectiveList
-
-    # if root: root_node = root[0]
-    # d = {'_p':p.copy()}
-
-    # # The headline has higher precedence because it is more visible.
-    # for kind,s in (('body',p.h),('head',p.b)):
-        # i = 0 ; n = len(s)
-        # while i < n:
-            # if s[i] == '@' and i+1 < n:
-                # << set d for @ directives >>
-            # elif kind == 'body' and root and g.match(s,i,"<<"):
-                # << set d["root"] for noweb * chunks >>
-            # i = g.skip_line(s,i)
-
-    # if trace: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers())
-    # return d
-#@+node:ekr.20031218072017.1261:<< set d for @ directives >>
-# j = g.skip_id(s,i+1,chars='-')
-# word = s[i+1:j]
-
-# if word in globalDirectiveList:
-    # if d.get(word):
-        # # Ignore second value.
-        # pass
-        # # g.es("warning: conflicting values for",word,color="blue")
-    # else:
-        # k = g.skip_line(s,j)
-        # d[word] = s[j:k].strip()
-#@nonl
-#@-node:ekr.20031218072017.1261:<< set d for @ directives >>
-#@+node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
-@ The following looks for chunk definitions of the form < < * > > =.
-If found, we take this to be equivalent to @root filename
-if the headline has the form @root filename.
-@c
-
-# i = g.skip_ws(s,i+2)
-
-# if i < n and s[i] == '*' :
-    # i = g.skip_ws(s,i+1) # Skip the '*'
-    # if g.match(s,i,">>="):
-        # # < < * > > = implies that @root should appear in the headline.
-        # i += 3
-        # if root_node:
-            # d["root"]=0 # value not immportant
-        # else:
-            # g.es('',g.angleBrackets("*") + "= requires @root in the headline")
-#@-node:ekr.20031218072017.1262:<< set d["root"] for noweb * chunks >>
-#@-node:ekr.20031218072017.1260:g.OLDget_directives_dict (very slow!) & helpers
-#@+node:ekr.20070302160802:g.scanColorDirectives
-# def scanColorDirectives(c,p):
-
-    # '''Return the language in effect at position p.'''
-
-    # if c is None: return # c may be None for testing.
-
-    # language = c.target_language and c.target_language.lower() or 'python'
-
-    # p = p.copy()
-    # for p in p.self_and_parents_iter():
-        # d = g.get_directives_dict(p)
-        # z = d.get('language')
-        # if z is not None:
-            # language,junk,junk,junk = g.set_language(z,0)
-            # return language
-
-    # return language
-#@-node:ekr.20070302160802:g.scanColorDirectives
-#@+node:ekr.20090317090343.3:updateBackTab
-def updateBackTab (self,p,w):
-
-    c = self.c
-
-    if not w.hasSelection():
-        i = w.getInsertPoint()
-        s = w.getAllText()
-        i,j = g.getLine(s,i)
-        w.setSelectionRange(i,j,insert=i)
-
-    c.dedentBody()
-#@nonl
-#@-node:ekr.20090317090343.3:updateBackTab
-#@+node:ekr.20090501095634.52:scanHelper (rst importer)
-def scanHelper(self,s,i,end,parent,kind):
-
-    '''Common scanning code used by both scan and putClassHelper.'''
-
-    # g.trace(g.callers())
-    # g.trace('i',i,g.get_line(s,i))
-    assert kind in ('class','outer')
-    start = i ; putRef = False ; bodyIndent = None
-    while i < end:
-        progress = i
-        if s[i] in (' ','\t','\n'):
-            i += 1 # Prevent lookahead below, and speed up the scan.
-        # # # elif self.startsComment(s,i):
-            # # # i = self.skipComment(s,i)
-        # # # elif self.startsString(s,i):
-            # # # i = self.skipString(s,i)
-        # # # elif self.startsClass(s,i):  # Sets sigStart,sigEnd & codeEnd ivars.
-            # # # putRef = True
-            # # # if bodyIndent is None: bodyIndent = self.getIndent(s,i)
-            # # # end2 = self.codeEnd # putClass may change codeEnd ivar.
-            # # # self.putClass(s,i,self.sigEnd,self.codeEnd,start,parent)
-            # # # i = start = end2
-        elif self.startsFunction(s,i): # Sets sigStart,sigEnd & codeEnd ivars.
-            putRef = True
-            if bodyIndent is None: bodyIndent = self.getIndent(s,i)
-            self.putFunction(s,self.sigStart,self.codeEnd,start,parent)
-            i = start = self.codeEnd
-        # # # elif self.startsId(s,i):
-            # # # i = self.skipId(s,i)
-        # # # elif kind == 'outer' and g.match(s,i,self.outerBlockDelim1): # Do this after testing for classes.
-            # # # i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
-            # # # # Bug fix: 2007/11/8: do *not* set start: we are just skipping the block.
-        else: i += 1
-        assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
-
-    return start,putRef,bodyIndent
-#@-node:ekr.20090501095634.52:scanHelper (rst importer)
 #@+node:ekr.20090511055302.5787:command decorator
 class command(object):
 
@@ -4656,91 +4629,48 @@ class command(object):
         rstCommandsDict[self.name] = func
         return func
 #@-node:ekr.20090511055302.5787:command decorator
-#@+node:ekr.20090502071837.9:Module level (not used leoRst.py)
-if 0:
+#@+node:ekr.20051208100903.1:forceGnxOnPosition (leoImport)
+def forceGnxOnPosition (self,p):
 
-    @others
-#@nonl
-#@+node:ekr.20090502071837.10: init
-def init ():
+    pass
 
-    ok = docutils is not None # Ok for unit testing.
+    ### self._forcedGnxPositionList.append(p.v)
+#@-node:ekr.20051208100903.1:forceGnxOnPosition (leoImport)
+#@+node:ekr.20051219122720:atFile.forceGnxOnPosition
+def forceGnxOnPosition (self,p):
 
-    if ok:
-        leoPlugins.registerHandler('after-create-leo-frame', onCreate)
-        g.plugin_signon(__name__)
-    else:
-        s = 'rst3 plugin not loaded: can not load docutils'
-        g.es_print(s,color='red')
+    pass
 
-    return ok
-#@-node:ekr.20090502071837.10: init
-#@+node:ekr.20090502071837.11:onCreate
-def onCreate(tag, keywords):
+    # g.trace(p.h)
 
-    c = keywords.get('new_c') or keywords.get('c')
+    # self._forcedGnxPositionList.append(p.v)
+#@-node:ekr.20051219122720:atFile.forceGnxOnPosition
+#@+node:ekr.20080708094444.11:x.is_sentinel & is_verbatim (to be deleted)
+# def is_sentinel (self, line, marker):
 
-    # g.trace('(rst3 plugin)',c)
+    # '''Return true if the line is a sentinel.'''
 
-    if c:
-        global controllers
-        controllers[c] = rstClass(c)
+    # return line.lstrip().startswith(marker)
 
-        # Warning: Do not return anything but None here!
-        # Doing so suppresses the loadeing of other 'new' or 'open2' hooks!
-#@nonl
-#@-node:ekr.20090502071837.11:onCreate
-#@+node:ekr.20090502071837.13:runUnitTests
-def runUnitTests(c):
+# def is_verbatim (self,line,marker):
 
-    controller = rstClass(c)
-    p = g.findNodeAnywhere('UnitTests')
-    if p:
-        leoTest.doTests(c,p=p)
+    # return line.lstrip().startswith(marker+'verbatim')
+#@-node:ekr.20080708094444.11:x.is_sentinel & is_verbatim (to be deleted)
+#@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels (not used)
+def copy_file_removing_sentinels (self,source_fn,target_fn):
 
-#@-node:ekr.20090502071837.13:runUnitTests
-#@-node:ekr.20090502071837.9:Module level (not used leoRst.py)
-#@+node:ekr.20090512080015.5796:putFunction (rstScanner) NOT USED
-# def putFunction (self,s,sigStart,codeEnd,start,parent): # parent not used.
+    '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
 
-    # '''Create a node of parent for a function defintion.'''
+    x = self
+    marker = x.markerFromFileName(source_fn)
+    old_lines = open(source_fn).readlines()
+    new_lines, junk = x.separate_sentinels(old_lines,marker)
 
-    # trace = True and not g.unitTesting
-    # verbose = False
-
-    # # Enter a new function: save the old function info.
-    # oldStartSigIndent = self.startSigIndent
-
-    # if self.sigId:
-        # h = self.sigId
-    # else:
-        # g.trace('Can not happen: no sigId')
-        # h = 'unknown function'
-
-    # body1 = s[start:sigStart]
-    # # Adjust start backwards to get a better undent.
-    # if body1.strip():
-        # while start > 0 and s[start-1] in (' ','\t'):
-            # start -= 1
-
-    # body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
-
-    # body2 = self.undentBody(s[sigStart:codeEnd])
-    # body = body1 + body2
-    # if trace and verbose: g.trace('body\n%s' % body)
-
-    # tail = body[len(body.rstrip()):]
-    # if not '\n' in tail:
-        # self.warning(
-            # 'section %s does not end with a newline; one will be added\n%s' % (
-                # self.sigId,g.get_line(s,codeEnd)))
-
-    # parent = self.adjustParent(parent,h)
-    # self.lastParent = self.createFunctionNode(h,body,parent)
-
-    # # Exit the function: restore the function info.
-    # self.startSigIndent = oldStartSigIndent
-#@-node:ekr.20090512080015.5796:putFunction (rstScanner) NOT USED
+    copy = not os.path.exists(target_fn) or old_lines != new_lines
+    if copy:
+        s = ''.join(new_lines)
+        x.replaceFileWithString(target_fn,s)
+#@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels (not used)
 #@-node:ekr.20031218072017.434:Unused code
 #@+node:ekr.20090202064534.4:Your mission, should you choose to accept it
 @nocolor-node
@@ -4945,31 +4875,6 @@ Note: I plan to start work on this immediately.
 #@nonl
 #@-node:ekr.20090202064534.5:Checklist
 #@-node:ekr.20090202064534.4:Your mission, should you choose to accept it
-#@+node:ville.20090311193011.2:test select_h, select_b, find_h, find_b
-pl = c.find_h('@thin.*py').select_h('class.*')
-print "Direct classes in thin nodes:",[e.h for e in pl]
-pl = pl.select_b(r"\(object\)")
-print "Subclass object",[e.h for e in pl]
-
-
-
-
-print "\n\nAll classes"
-pl = c.find_b(r'^class\s+(\w+).*:')
-#print pl
-for p in pl:
-    print "Node:",p.h
-    for match in p.matchiter:
-        print match.group(1)
-
-# find this node
-
-pl = c.find_h('@thin.*leoNotes')
-pl2 = pl.select_h('test select.*')
-
-print pl2
-#@nonl
-#@-node:ville.20090311193011.2:test select_h, select_b, find_h, find_b
 #@-all
 #@nonl
 #@-node:ekr.20031218072017.329:@thin ../doc/leoNotes.txt

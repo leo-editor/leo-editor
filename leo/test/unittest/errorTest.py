@@ -10,7 +10,7 @@ def testIndexError():
 
     a = []
     b = a[2]
- 
+
 # The next line is used by @test c.checkFileTimeStamp.   
 # timestamp: 1231502468.77
 #@nonl

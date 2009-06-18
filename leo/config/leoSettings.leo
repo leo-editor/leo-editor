@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="84" left="155" height="827" width="1111"/>
+	<global_window_position top="103" left="509" height="827" width="675"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,0,0,1"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="6,2"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -98,9 +98,10 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
-<v t="ekr.20070926132045" a="E"><vh>Common @button nodes</vh>
-<v t="ekr.20070926082407" a="E"><vh>@buttons</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20070926132045"><vh>Common @button nodes</vh>
+<v t="ekr.20070926082407"><vh>@buttons</vh>
+<v t="ekr.20090610164636.8489"><vh>@button add-test @key=alt-9</vh></v>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
 <v t="ekr.20071009135515"><vh>@@button rst3</vh></v>
 </v>
@@ -325,6 +326,7 @@
 <v t="ekr.20061004150211"></v>
 <v t="ekr.20080921060401.3"><vh>@string default_leo_file = ~/.leo/workbook.leo</vh></v>
 </v>
+<v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
 <v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
 <v t="ekr.20061009190510"></v>
 <v t="tbrown.20081003103821.1"><vh>@bool recent_files_group = False</vh></v>
@@ -813,11 +815,12 @@
 <v t="ekr.20070925144534.326"><vh>@item s&amp;croll-outline-up-line</vh></v>
 <v t="ekr.20070925144534.327"><vh>@item scr&amp;oll-outline-up-page</vh></v>
 <v t="ekr.20070925144534.328"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.329"><vh>@item scroll-&amp;down</vh></v>
-<v t="ekr.20070925144534.330"><vh>@item scroll-&amp;up</vh></v>
-<v t="ekr.20070925144534.331"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.332"><vh>@item scroll-down-&amp;extend-selection</vh></v>
-<v t="ekr.20070925144534.333"><vh>@item scroll-up-e&amp;xtend-selection</vh></v>
+<v t="ekr.20090531084727.10893"><vh>@item scroll-down-half-page</vh></v>
+<v t="ekr.20090531084727.10895"><vh>@item scroll-down-line</vh></v>
+<v t="ekr.20070925144534.329"><vh>@item scroll-&amp;down-page</vh></v>
+<v t="ekr.20090531084727.10894"><vh>@item scroll-up-half-page</vh></v>
+<v t="ekr.20090531084727.10896"><vh>@item scroll-up-line</vh></v>
+<v t="ekr.20070925144534.330"><vh>@item scroll-&amp;up-page</vh></v>
 </v>
 <v t="ekr.20070925144534.334"><vh>@menu Spell C&amp;heck...</vh>
 <v t="ekr.20070925144534.335"><vh>@item &amp;open-spell-tab</vh></v>
@@ -1243,7 +1246,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081018053140.11"></v>
+<v t="ekr.20081018053140.11" a="E"></v>
 <v t="TL.20090307074930.2"><vh>@keys Vim bindings</vh>
 <v t="TL.20090307074930.3"><vh>Vim User Documentation</vh></v>
 <v t="TL.20090307074930.4"><vh>Vim Developer Documentation</vh></v>
@@ -1418,6 +1421,7 @@
 </v>
 </v>
 <v t="ekr.20060603215208"></v>
+<v t="ekr.20080512082834.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2056,7 +2060,7 @@ paste-text                       ! tree = p        #To paste a line before, firs
 
 #Scroll commands
 #--------------------------------
-scroll-outline-up-page           ! tree = Ctrl-b   #Should scroll full window
+scroll-outline-up-page           ! tree = Ctrl-b   #Scrolls full window
 scroll-outline-down-page         ! tree = Ctrl-f
 
 scroll-outline-up-line           ! tree = Ctrl-u   #Should scroll 1/2 window
@@ -2418,14 +2422,14 @@ enter-body-match-mode               ! body = %
 
 #Scroll commands
 #--------------------------------
-scroll-up                           ! body = Ctrl-b   #Scrolls full window
-scroll-down                         ! body = Ctrl-f
+scroll-up-page                      ! body = Ctrl-b   #Scrolls full window
+scroll-down-page                    ! body = Ctrl-f
 
-scroll-up                           ! body = Ctrl-u   #should scroll 1/2
-scroll-down                         ! body = Ctrl-d
+scroll-up-half-page                 ! body = Ctrl-u   #Scroll 1/2 window
+scroll-down-half-page               ! body = Ctrl-d
 
-scroll-up                           ! body = Ctrl-y   #should scroll 1 line
-scroll-down                         ! body = Ctrl-e
+scroll-up-line                      ! body = Ctrl-y   #Scroll 1 line
+scroll-down-line                    ! body = Ctrl-e
 
 #Find character commands
 #--------------------------------
@@ -3500,7 +3504,7 @@ slave-menu =
 vertical: body pane on the botton</t>
 <t tx="ekr.20041119034357.1">@nocolor
 
-The @settings tree contains all active settings.  Settings outside this tree have no effect.t</t>
+The @settings tree contains all active settings.  Settings outside this tree have no effect.</t>
 <t tx="ekr.20041119034357.5">False: Leo writes leoSettings.leo files.</t>
 <t tx="ekr.20041119034357.7"></t>
 <t tx="ekr.20041119034357.8">Example:
@@ -4547,6 +4551,8 @@ auto-complete                       = None
 auto-complete-force                 = None
 back-char                           = None
 back-char-extend-selection          = None
+back-page                           = None
+back-page-extend-selection          = None
 back-paragraph                      = None
 back-paragraph-extend-selection     = None
 back-sentence                       = None
@@ -4873,7 +4879,7 @@ outline-to-cweb                 = None
 outline-to-noweb                = None
 paste-node                      = Shift-Ctrl-V
 paste-retaining-clones          = None
-paste-text                      = None      # Ctrl-V conflicts with scroll-down
+paste-text                      = None      # Ctrl-V conflicts with scroll-down-page
 point-to-register               = None
 prepend-to-buffer               = None
 prepend-to-register             = None
@@ -4907,10 +4913,12 @@ save-buffers-kill-leo           = None # Should be Control-x Control-c
 save-file                       = None         # Ctrl-s conflicts with isearch-forward.
 save-file-as                    = Shift-Ctrl-S
 save-file-to                    = None
-scroll-down                     = Control-v
-scroll-down-extend-selection    = None
-scroll-up                       = Alt-v
-scroll-up-extend-selection      = None
+scroll-down-half-page           = None
+scroll-down-line                = None
+scroll-down-page                = Control-v
+scroll-up-half-page             = None
+scroll-up-line                  = None
+scroll-up-page                  = Alt-v
 search-again                    = None
 search-backward                 = None
 search-forward                  = None
@@ -4934,7 +4942,7 @@ shell-command-on-region         = Alt-bar
 show-colors                     = None
 show-fonts                      = None
 show-invisibles                 = Alt-V
-show-invisibles                 = None  # Alt-V conflicts with scroll-up .
+show-invisibles                 = None  # Alt-V conflicts with scroll-up-page .
 show-mini-buffer                = None
 sort-children                   = None
 sort-columns                    = None
@@ -5020,11 +5028,12 @@ focus-to-body                       = None
 focus-to-log                        = None
 focus-to-minibuffer                 = None
 focus-to-tree                       = None
-# forward-char                      = None
 forward-char                        = None
 forward-char-extend-selection       = None
 forward-end-word                    = None
 forward-end-word-extend-selection   = None
+forward-page                        = None
+forward-page-extend-selection       = None
 forward-paragraph                   = None
 forward-paragraph-extend-selection  = None
 forward-sentence                    = None
@@ -5226,16 +5235,18 @@ save-file                           = None
 save-file-as                        = None
 save-file-to                        = None
 # scan-for-autocompleter            = None
-scroll-down                         = None
-scroll-down-extend-selection        = None
+scroll-down-half-page               = None
+scroll-down-line                    = None
+scroll-down-page                    = None
 scroll-outline-down-line            = None
 scroll-outline-down-page            = None
 scroll-outline-left                 = None
 scroll-outline-right                = None
 scroll-outline-up-line              = None
 scroll-outline-up-page              = None
-scroll-up                           = None
-scroll-up-extend-selection          = None
+scroll-up-half-page                 = None
+scroll-up-line                      = None
+scroll-up-page                      = None
 search-again                        = None
 search-backward                     = None
 search-forward                      = None
@@ -5756,10 +5767,11 @@ point-to-register
 prepend-to-buffer
 previous-line
 previous-line-extend-selection
-scroll-down
-scroll-down-extend-selection
-scroll-up
-scroll-up-extend-selection
+scroll-down-half-page
+scroll-down-line
+scroll-down-page
+scroll-up-line
+scroll-up-page
 yank
 yank-pop  
 zap-to-character
@@ -6144,6 +6156,7 @@ contract-all                = Alt--
 edit-headline               = Ctrl-h
 delete-node                 = None
 demote                      = Ctrl-}
+demote                      = Ctrl-]
 expand-next-level           = None
 expand-node                 = Alt-]
 extract                     = Shift-Ctrl-D
@@ -6159,6 +6172,7 @@ move-outline-right          = Ctrl-R
 move-outline-up             = Ctrl-U
 paste-node                  = Shift-Ctrl-V
 promote                     = Ctrl-{
+promote                     = Ctrl-[
 remove-chapter              = None
 select-chapter              = None</t>
 <t tx="ekr.20060925060533.4">add-comments                        = Ctrl-parenleft
@@ -6170,13 +6184,11 @@ delete-char                         = Delete
 delete-comments                     = Ctrl-parenright
 delete-comments                     = Shift-Ctrl-0
 delete-spaces                       = None
-indent-region                       = Ctrl-]
 kill-line                           = Ctrl-k
 newline-and-indent                  = Ctrl-j
 paste-text                          = Ctrl-v
 reformat-paragraph                  = Shift-Ctrl-p
 split-line                          = None
-unindent-region                     = Ctrl-[
 unindent-region                     = Shift-tab
 yank                                = Ctrl-Y
 yank-pop                            = Alt-Y
@@ -6369,11 +6381,7 @@ This suggests that you refrain from putting @enabled-plugins nodes in any .leo f
 That way all your .leo files will use the same plugins.
 If you do put @enabled-plugins nodes in x.leo, be prepared for confusion from time to time. </t>
 <t tx="ekr.20070224073109.1"># Leo loads plugins in the order they appear here.
-#
-# The FIRST mention of a plugin controls whether the plugin is enable or not:
-# - If the plugin's name is commented out, it is disabled, otherwise it is enabled.
-# - Plugins not appearing here are disabled.
-# 
+
 # File names may be indented as desired.
 
 #Standard plugins enabled in official distributions.
@@ -6393,7 +6401,10 @@ UNL.py
 
 # Enabled by default in Leo 4.4.3. (order is important)
 # dtest.py
-nav_buttons.py
+###nav_buttons.py
+###nav_qt.py
+
+
 hoist.py
 image.py
 leo_to_html.py
@@ -6401,7 +6412,7 @@ leo_to_html.py
 #All other plugins.
 # Order is important for enabled plugins that add items to the icon area.
 
-threading_colorizer.py
+### threading_colorizer.py
 
 #ConceptualSort.py
 #EditAttributes.py
@@ -6473,7 +6484,11 @@ threading_colorizer.py
 #xcc_nodes.py
 #xemacs.py
 #xsltWithNodes.py
-#zodb.py</t>
+#zodb.py
+#quicksearch.py
+#tomboy_import.py
+#ctagscompleter.py
+#colorize_headlines.py</t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
 False: Chapter commands do not exists.</t>
 <t tx="ekr.20070326094544"></t>
@@ -6877,9 +6892,6 @@ button_text_font_weight = bold
 <t tx="ekr.20070925144534.328"></t>
 <t tx="ekr.20070925144534.329"></t>
 <t tx="ekr.20070925144534.330"></t>
-<t tx="ekr.20070925144534.331"></t>
-<t tx="ekr.20070925144534.332"></t>
-<t tx="ekr.20070925144534.333"></t>
 <t tx="ekr.20070925144534.334"></t>
 <t tx="ekr.20070925144534.335"></t>
 <t tx="ekr.20070925144534.336"></t>
@@ -7208,10 +7220,7 @@ back-to-home                        = Home
 beginning-of-line-extend-selection  = Shift-Home
 end-of-line                         = End
 end-of-line-extend-selection        = Shift-End
-scroll-down                         = PageDn 
-scroll-down-extend-selection        = Shift-PageDn
-scroll-up                           = PageUp
-scroll-up-extend-selection          = Shift-PageUp
+
 </t>
 <t tx="ekr.20080510121331.16"># Must keep all these bindings for basic vim compatibility.
 
@@ -7361,9 +7370,15 @@ goto-prev-visible           = Alt-UpArrow
 move-outline-down           = Alt-Shift-DnArrow
 move-outline-left           = Alt-Shift-LtArrow
 move-outline-right          = Alt-Shift-RtArrow
-move-outline-up             = Alt-Shift-UpArrow    
+move-outline-up             = Alt-Shift-UpArrow
+  
 goto-first-visible-node     = Alt-Home
 goto-last-visible-node      = Alt-End
+
+back-page                       = PageUp
+back-page-extend-selection      = Shift-PageUp
+forward-page                    = PageDn
+forward-page-extend-selection   = Shift-PageDn
 </t>
 <t tx="ekr.20080513060549.1"></t>
 <t tx="ekr.20080513060549.3">@nocolor
@@ -7748,6 +7763,24 @@ QTextEdit#richTextEdit {
     font-style: normal; /* normal,italic,oblique */
 }
 
+QLabel {
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
+/* Editor labels */
+QLineEdit#editorLabel {
+    background-color: #ffffec;
+    font-family: DejaVu Sans Mono;
+    font-size: 12px;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+    border: 2px;
+    margin: 2px;
+}
+
 /* The mini-buffer */
 QLineEdit#lineEdit {
     selection-color: white;
@@ -7870,6 +7903,27 @@ The default for all other languages is:
 A reasonable alternative would be:
     
 '\n.. class:: code\n..\n\n::\n'</t>
+<t tx="ekr.20090514111518.8379"></t>
+<t tx="ekr.20090531084727.10893"></t>
+<t tx="ekr.20090531084727.10894"></t>
+<t tx="ekr.20090531084727.10895"></t>
+<t tx="ekr.20090531084727.10896"></t>
+<t tx="ekr.20090610164636.8489">u = c.undoer
+w = c.frame.body.bodyCtrl
+p2 = p.insertAsNthChild(0)
+c.setHeadString(p2,'@test xxx')
+s = '''\
+if g.unitTesting:
+    c,p = g.getTestVars()
+
+    '''
+c.setBodyString(p2,s)
+c.selectPosition(p2)
+c.redraw()
+w.setInsertPoint(len(s))
+c.bodyWantsFocus()
+c.outerUpdate()
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename

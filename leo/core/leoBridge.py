@@ -369,9 +369,17 @@ class bridgeController:
 
         g = self.g
 
+        trace = False
+
         if fileName.strip():
             if g.os_path_exists(fileName):
+                if trace:
+                    import time ; t1 = time.time()
+                # This takes a long time due to imports in c.__init__
                 ok, frame = g.openWithFileName(fileName,None)
+                if trace:
+                    t2 = time.time()
+                    g.trace('g.openWithFileName: %0.2fsec' % (t2-t1))
                 if ok: return frame.c
             else:
                 g.es_print('file not found', fileName,'creating new window')

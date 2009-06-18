@@ -2,6 +2,7 @@ echo off
 rem ekr pylint-leo.bat
 
 rem *** Most warnings are disabled in the .rc file.
+rem W0511 To do
 rem E0602 Undefined variable
 rem E1101 Instance of <class> has no x member
 
@@ -13,27 +14,16 @@ REM tests that fail...
 REM goto good_plugins
 REM goto bad_plugins
 
-REM goto errors
+REM goto essential_plugins
+goto errors
 goto all
 
 :errors
 
-echo mod_scripting.py
-rem Harmless: E0611:489:scriptingController.runDebugScriptCommand: No name 'leoScriptModule' in module 'leo.core'
-REM call pylint.bat leo\plugins\mod_scripting.py        --disable-msg=E0611 --rcfile=leo\test\pylint-leo-rc.txt
-
-call pylint.bat leo\plugins\mod_scripting.py --rcfile=leo\test\pylint-leo-rc.txt
-
-goto done
-
-echo toolbar.py
-rem doesn't help: cd c:\leo.repo\trunk\leo\plugins
-rem call pylint.bat toolbar.py     --rcfile=c:\leo.repo\trunk\leo\test\pylint-leo-rc.txt
-rem cd c:\leo.repo\trunk
-rem Dangerous: many erroneous E1101 errors
-rem Harmless: W0221: Arguments number differs from overridden method
-rem Harmless: W0511: Fixme and to-do.
-call pylint.bat leo\plugins\toolbar.py     --disable-msg=E1101,W0221,W0511 --rcfile=leo\test\pylint-leo-rc.txt
+REM W0221 Arguments number differs from overridden method
+REM W0511 Todo
+echo qtGui.py
+call pylint.bat leo\plugins\qtGui.py         --disable-msg=W0221,W0511 --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 
@@ -73,7 +63,8 @@ echo leoGlobals.py
 call pylint.bat leo\core\leoGlobals.py       --rcfile=leo\test\pylint-leo-rc.txt
 
 echo leoGui.py
-call pylint.bat leo\core\leoGui.py           --rcfile=leo\test\pylint-leo-rc.txt
+rem W0511: to do
+call pylint.bat leo\core\leoGui.py           --disable-msg=W0511 --rcfile=leo\test\pylint-leo-rc.txt
 
 echo leoImport.py
 call pylint.bat leo\core\leoImport.py        --rcfile=leo\test\pylint-leo-rc.txt
@@ -86,6 +77,9 @@ call pylint.bat leo\core\leoNodes.py         --rcfile=leo\test\pylint-leo-rc.txt
 
 echo leoPlugins.py
 call pylint.bat leo\core\leoPlugins.py       --rcfile=leo\test\pylint-leo-rc.txt
+
+echo qtGui.py
+call pylint.bat leo\plugins\qtGui.py         --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
 
 echo leoShadow.py
 call pylint.bat leo\core\leoShadow.py       --rcfile=leo\test\pylint-leo-rc.txt
@@ -118,9 +112,6 @@ call pylint.bat leo\plugins\mod_scripting.py        --disable-msg=E0611 --rcfile
 
 echo open_with.py
 call pylint.bat leo\plugins\open_with.py            --rcfile=leo\test\pylint-leo-rc.txt
-
-echo qtGui.py
-call pylint.bat leo\plugins\qtGui.py                --disable-msg=W0221 --rcfile=leo\test\pylint-leo-rc.txt
 
 echo rst3.py
 call pylint.bat leo\plugins\rst3.py                 --rcfile=leo\test\pylint-leo-rc.txt

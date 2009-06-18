@@ -59,7 +59,10 @@ try:
 except Exception:
     pass
 
-subprocess = g.importExtension('subprocess',None,verbose=False)
+try:
+    import subprocess
+except ImportError:
+    subprocess = g.importExtension('subprocess',None,verbose=False)
 
 # The following import _is_ used.
 import token    # for Check Python command
@@ -75,21 +78,30 @@ class baseCommands (object):
     #@+node:ekr.20031218072017.2812:c.__init__
     def __init__(self,frame,fileName,relativeFileName=None):
 
-        c = self
+        trace = False
+        c = self ; tag = 'Commands.__init__'
 
         self.requestedFocusWidget = None
         self.requestRedrawFlag = False
         self.requestedIconify = '' # 'iconify','deiconify'
         self.requestRecolorFlag = False
 
-        # print('Commands.__init__')
+        if trace:
+            print(tag)
+            import time ; t1 = time.clock()
         self.exists = True # Indicate that this class exists and has not been destroyed.
             # Do this early in the startup process so we can call hooks.
 
         # Init ivars with self.x instead of c.x to keep pylint happy
+
+        # Debugging.
+        self.command_count = 0
+        self.scanAtPathDirectivesCount = 0
+        self.trace_focus_count = 0
+
+        # Data.
         self.chapterController = None
         self.frame = frame
-
         self.hiddenRootNode = leoNodes.vnode(context=c)
         self.hiddenRootNode.setHeadString('<hidden root vnode>')
         self.hiddenRootNode.t.vnodeList = [self.hiddenRootNode]
@@ -107,6 +119,7 @@ class baseCommands (object):
         # c.finishCreate creates the sub-commanders for edit commands.
 
         # Break circular import dependencies by importing here.
+        # These imports take almost 3/4 sec in the leoBridge.
         import leo.core.leoAtFile as leoAtFile
         import leo.core.leoEditCommands as leoEditCommands
         import leo.core.leoFileCommands as leoFileCommands
@@ -116,6 +129,8 @@ class baseCommands (object):
         import leo.core.leoTangle as leoTangle
         import leo.core.leoUndo as leoUndo
 
+        if trace: t2 = g.printDiffTime('%s: after imports' % (tag),t1)
+
         self.shadowController = leoShadow.shadowController(c)
         self.fileCommands   = leoFileCommands.fileCommands(c)
         self.atFileCommands = leoAtFile.atFile(c)
@@ -124,6 +139,8 @@ class baseCommands (object):
         self.tangleCommands = leoTangle.tangleCommands(c)
         leoEditCommands.createEditCommanders(c)
         self.rstCommands = leoRst.rstCommands(c)
+
+        if trace: t3 = g.printDiffTime('%s: after controllers created' % (tag),t2)
 
         if 0:
             g.pr("\n*** using Null undoer ***\n")
@@ -159,6 +176,12 @@ class baseCommands (object):
             import leo.core.leoEditCommands as leoEditCommands
             c.commandsDict = leoEditCommands.finishCreateEditCommanders(c)
             self.rstCommands.finishCreate()
+
+            # copy global commands to this controller    
+
+            for name,f in g.app.global_commands_dict.items():
+                k.registerCommand(name,shortcut = None, func = f, pane='all',verbose=False)        
+
             k.finishCreate()
         else:
             # A leoSettings.leo file.
@@ -272,7 +295,6 @@ class baseCommands (object):
         self.untangle_batch_flag = False
 
         # Default Tangle options
-        self.tangle_directory = ""
         self.use_header_flag = False
         self.output_doc_flag = False
 
@@ -296,12 +318,14 @@ class baseCommands (object):
         pth, bname = os.path.split(self.mFileName)
 
         if pth and bname:
-            dbdirname = g.app.homeLeoDir + "/db/" + bname + "_" + hashlib.md5(self.mFileName).hexdigest()
-            self.db = leo.external.pickleshare.PickleShareDB(dbdirname)
+            dbdirname = g.app.homeLeoDir + "/db/" + bname + "_" + hashlib.md5(self.mFileName.lower()).hexdigest()
+            # use compressed pickles (handy for @thin caches)
+            self.db = leo.external.pickleshare.PickleShareDB(dbdirname, protocol='picklez')
+
         else:
             self.db = None
-            if not g.app.silentMode and not g.unitTesting:
-                print("\n*** No file in controller, using c.db=None ***\n")
+            # if not g.app.silentMode and not g.unitTesting:
+                # print("\n*** No file in controller, using c.db=None ***\n")
         #@-node:ekr.20031218072017.2813:<< initialize ivars >> (commands)
         #@nl
         self.config = configSettings(c)
@@ -612,50 +636,16 @@ class baseCommands (object):
         c,frame = g.app.newLeoCommanderAndFrame(
             fileName=None,relativeFileName=None,gui=gui)
 
-        # Needed for plugins.
         g.doHook("new",old_c=self,c=c,new_c=c)
-        # Use the config params to set the size and location of the window.
         frame.setInitialWindowGeometry()
         frame.deiconify()
         frame.lift()
         frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
-        v = leoNodes.vnode(context=c)
-        p = leoNodes.position(v)
-        v.initHeadString("NewHeadline")
-        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-        p._linkAsRoot(oldRoot=None)
-        c.setRootVnode(v) # New in Leo 4.4.2.
-        c.selectPosition(p)
-        # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-        p = c.p
-        if not g.doHook("menu1",c=c,p=p,v=p):
-            frame.menu.createMenuBar(frame)
-            c.updateRecentFiles(fileName=None)
-            g.doHook("menu2",c=frame.c,p=p,v=p)
-            g.doHook("after-create-leo-frame",c=c)
-
-        # chapterController.finishCreate must be called after the first real redraw
-        # because it requires a valid value for c.rootPosition().
-        useChapters = c.config.getBool('use_chapters') and c.chapterController
-        if useChapters:
-            c.chapterController.finishCreate()
-            frame.c.setChanged(False)
-            # Clear the changed flag set when creating the @chapters node.
-        else:
-            c.redraw(p)
-        if c.config.getBool('outline_pane_has_initial_focus'):
-            c.treeWantsFocusNow()
-        else:
-            c.bodyWantsFocusNow()
-        # Force a call to c.outerUpdate.
-        # This is needed when we execute this command from a menu.
-        c.outerUpdate()
-        c.frame.tree.initAfterLoad()
-        c.initAfterLoad()
-        c.frame.initCompleteHint()
-
+        c.frame.createFirstTreeNode()
+        g.createMenu(c)
+        g.finishOpen(c)
+        c.redraw()
         return c # For unit test.
-    #@nonl
     #@-node:ekr.20031218072017.1623:c.new
     #@+node:ekr.20031218072017.2821:c.open & helper
     def open (self,event=None):
@@ -1024,7 +1014,8 @@ class baseCommands (object):
                 c.mFileName = g.ensure_extension(fileName, ".leo")
                 c.frame.title = c.mFileName
                 c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-                c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+                c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
+                    # Bug fix in 4.4b2.
                 c.fileCommands.save(c.mFileName)
                 c.updateRecentFiles(c.mFileName)
                 g.chdir(c.mFileName)
@@ -1061,7 +1052,8 @@ class baseCommands (object):
             c.mFileName = g.ensure_extension(fileName, ".leo")
             c.frame.title = c.mFileName
             c.frame.setTitle(g.computeWindowTitle(c.mFileName))
-            c.frame.openDirectory = g.os_path_dirname(c.mFileName) # Bug fix in 4.4b2.
+            c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
+                # Bug fix in 4.4b2.
             # Calls c.setChanged(False) if no error.
             c.fileCommands.saveAs(c.mFileName)
             c.updateRecentFiles(c.mFileName)
@@ -1173,7 +1165,7 @@ class baseCommands (object):
         c.recentFiles = []
         g.app.config.recentFiles = [] # New in Leo 4.3.
         f.menu.createRecentFilesMenuItems()
-        c.updateRecentFiles(c.relativeFileName())
+        c.updateRecentFiles(c.fileName())
 
         g.app.config.appendToRecentFiles(c.recentFiles)
 
@@ -1193,12 +1185,12 @@ class baseCommands (object):
         c = self ; v = c.currentVnode()
         #@    << Set closeFlag if the only open window is empty >>
         #@+node:ekr.20031218072017.2082:<< Set closeFlag if the only open window is empty >>
-        #@+at 
-        #@nonl
+        #@+at
         # If this is the only open window was opened when the app started, and 
-        # the window has never been written to or saved, then we will 
-        # automatically close that window if this open command completes 
-        # successfully.
+        # the window
+        # has never been written to or saved, then we will automatically close 
+        # that window
+        # if this open command completes successfully.
         #@-at
         #@@c
 
@@ -1314,6 +1306,9 @@ class baseCommands (object):
 
         '''Open a Leo outline from a .leo file, but do not read any derived files.'''
 
+        c = self
+        c.endEditing()
+
         fileName = g.app.gui.runOpenFileDialog(
             title="Read Outline Only",
             filetypes=[("Leo files", "*.leo"), ("All files", "*")],
@@ -1339,6 +1334,8 @@ class baseCommands (object):
         '''Read a file into a single node.'''
 
         c = self ; undoType = 'Read File Into Node'
+        c.endEditing()
+
         filetypes = [("All files", "*"),("Python files","*.py"),("Leo files", "*.leo"),]
         fileName = g.app.gui.runOpenFileDialog(
             title="Read File Into Node",filetypes=filetypes,defaultextension=None)
@@ -1364,6 +1361,7 @@ class baseCommands (object):
         '''Read all @auto nodes in the presently selected outline.'''
 
         c = self ; u = c.undoer ; p = c.p
+        c.endEditing()
 
         undoData = u.beforeChangeTree(p)
         c.importCommands.readAtAutoNodes()
@@ -1377,6 +1375,7 @@ class baseCommands (object):
 
         c = self ; u = c.undoer ; p = c.p
 
+        c.endEditing()
         undoData = u.beforeChangeTree(p)
         c.fileCommands.readAtFileNodes()
         u.afterChangeTree(p,'Read @file Nodes',undoData)
@@ -1389,6 +1388,7 @@ class baseCommands (object):
 
         c = self ; u = c.undoer ; p = c.p
 
+        c.endEditing()
         undoData = u.beforeChangeTree(p)
         c.atFileCommands.readAtShadowNodes(p)
         u.afterChangeTree(p,'Read @shadow Nodes',undoData)
@@ -1400,6 +1400,7 @@ class baseCommands (object):
         """Create a new outline from a 4.0 derived file."""
 
         c = self ; p = c.p
+        c.endEditing()
 
         types = [
             ("All files","*"),
@@ -1429,6 +1430,8 @@ class baseCommands (object):
         # Otherwise, prompt for a file name.
 
         c = self ; p = c.p
+        c.endEditing()
+
         h = p.h.rstrip()
         s = p.b
         tag = '@read-file-into-node'
@@ -2346,7 +2349,8 @@ class baseCommands (object):
                 fn = shadow_filename
                 lines = open(shadow_filename).readlines()
                 x.line_mapping = x.push_filter_mapping(
-                    lines, x.marker_from_extension(shadow_filename))
+                    lines,
+                    x.markerFromFileLines(lines,shadow_filename))
             else:
                 # Just open the original file.  This is not an error!
                 fn = filename
@@ -3759,6 +3763,8 @@ class baseCommands (object):
         if p is None: p = c.p
         if not p: return
 
+        c.endEditing()
+
         undoType = g.choose(sortChildren,'Sort Children','Sort Siblings')
         parent_v = p._parentVnode()
         parent = p.parent()
@@ -4009,7 +4015,9 @@ class baseCommands (object):
         return result
     #@-node:ekr.20040723094220.1:checkAllPythonCode
     #@+node:ekr.20040723094220.3:checkPythonCode
-    def checkPythonCode (self,event=None,unittest=False,ignoreAtIgnore=True,suppressErrors=False):
+    def checkPythonCode (self,event=None,
+        unittest=False,ignoreAtIgnore=True,
+        suppressErrors=False,checkOnSave=False):
 
         '''Check the selected tree for syntax and tab errors.'''
 
@@ -4021,7 +4029,7 @@ class baseCommands (object):
         for p in c.p.self_and_subtree_iter():
 
             count += 1
-            if not unittest:
+            if not unittest and not checkOnSave:
                 #@            << print dots >>
                 #@+node:ekr.20040723094220.4:<< print dots >>
                 if count % 100 == 0:
@@ -4060,6 +4068,7 @@ class baseCommands (object):
         if not body: return
 
         try:
+            import parser
             compiler.parse(body + '\n')
         except (parser.ParserError,SyntaxError):
             if not suppressErrors:
@@ -4069,6 +4078,9 @@ class baseCommands (object):
             else:
                 g.es_exception(full=False,color="black")
                 c.setMarked(p)
+        except Exception:
+            g.es_print('unexpected exception')
+            g.es_exception()
 
         c.tabNannyNode(p,h,body,unittest,suppressErrors)
     #@-node:ekr.20040723094220.5:checkPythonNode
@@ -4654,10 +4666,10 @@ class baseCommands (object):
 
         """Simulate the left Arrow Key in folder of Windows Explorer."""
 
+        trace = False and not g.unitTesting
         c = self ; p = c.p
-
         if p.hasChildren() and p.isExpanded():
-            # g.trace('contract',p.h)
+            if trace: g.trace('contract',p.h)
             c.contractNode()
         elif p.hasParent() and p.parent().isVisible(c):
             redraw = False
@@ -4666,7 +4678,7 @@ class baseCommands (object):
                     if child.isExpanded():
                         child.contract()
                         redraw = True
-            # g.trace('goto parent',p.h)
+            if trace: g.trace('goto parent',p.h)
             c.goToParent()
             if redraw: c.redraw()
 
@@ -4887,6 +4899,7 @@ class baseCommands (object):
         c = self ; u = c.undoer ; undoType = 'Mark Changed'
         current = c.p
 
+        c.endEditing()
         u.beforeChangeGroup(current,undoType)
         for p in c.all_positions_with_unique_vnodes_iter():
             if p.isDirty()and not p.isMarked():
@@ -4908,6 +4921,7 @@ class baseCommands (object):
         c = self ; u = c.undoer ; undoType = 'Mark Changed'
         current = c.p
 
+        c.endEditing()
         u.beforeChangeGroup(current,undoType)
         for p in c.all_positions_with_unique_vnodes_iter():
             if p.isDirty()and not p.isMarked():
@@ -4932,6 +4946,7 @@ class baseCommands (object):
 
         c = self ; p = c.rootPosition()
 
+        c.endEditing()
         while p:
             if p.isAtFileNode() and not p.isDirty():
                 p.setDirty()
@@ -4952,6 +4967,7 @@ class baseCommands (object):
         p = c.p
         if not p: return
 
+        c.endEditing()
         after = p.nodeAfterTree()
         while p and p != after:
             if p.isAtFileNode() and not p.isDirty():
@@ -4975,6 +4991,7 @@ class baseCommands (object):
             g.es('the current node is not a clone',color='blue')
             return
 
+        c.endEditing()
         u.beforeChangeGroup(current,undoType)
         dirtyVnodeList = []
         for p in c.all_positions_with_unique_vnodes_iter():
@@ -4998,6 +5015,7 @@ class baseCommands (object):
         c = self ; u = c.undoer ; p = c.p
         if not p: return
 
+        c.endEditing()
         undoType = g.choose(p.isMarked(),'Unmark','Mark')
         bunch = u.beforeMark(p,undoType)
         if p.isMarked():
@@ -5020,6 +5038,7 @@ class baseCommands (object):
         current = c.p
         if not current: return
 
+        c.endEditing()
         u.beforeChangeGroup(current,undoType)
         dirtyVnodeList = []
         for p in current.children_iter():
@@ -5044,6 +5063,7 @@ class baseCommands (object):
         current = c.p
         if not current: return
 
+        c.endEditing()
         u.beforeChangeGroup(current,undoType)
         changed = False
         for p in c.all_positions_with_unique_vnodes_iter():
@@ -5210,9 +5230,8 @@ class baseCommands (object):
         u.afterMoveNode(p,'Move Left',undoData,dirtyVnodeList)
         if sparseMove: # New in Leo 4.4.2
             parent.contract()
-        c.redraw(p,setFocus=True)
-        c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-    #@nonl
+        c.redraw_now(p,setFocus=True)
+        c.recolor_now() # Moving can change syntax coloring.
     #@-node:ekr.20031218072017.1770:moveOutlineLeft
     #@+node:ekr.20031218072017.1771:moveOutlineRight
     def moveOutlineRight (self,event=None):
@@ -5246,8 +5265,8 @@ class baseCommands (object):
         dirtyVnodeList.extend(dirtyVnodeList2)
         c.setChanged(True)
         u.afterMoveNode(p,'Move Right',undoData,dirtyVnodeList)
-        c.redraw(p,setFocus=True)
-        c.updateSyntaxColorer(p) # Moving can change syntax coloring.
+        c.redraw_now(p,setFocus=True)
+        c.recolor_now()
     #@-node:ekr.20031218072017.1771:moveOutlineRight
     #@+node:ekr.20031218072017.1772:moveOutlineUp
     def moveOutlineUp (self,event=None):
@@ -5378,7 +5397,7 @@ class baseCommands (object):
         g.es(tag,'=',sparseMove,color='blue')
     #@-node:ekr.20071213185710:c.toggleSparseMove
     #@-node:ekr.20031218072017.1766:Move... (Commands)
-    #@+node:ekr.20031218072017.2913:Goto
+    #@+node:ekr.20031218072017.2913:Goto (Commands)
     #@+node:ekr.20031218072017.1628:goNextVisitedNode
     def goNextVisitedNode (self,event=None):
 
@@ -5606,6 +5625,8 @@ class baseCommands (object):
 
         c = self ; p = c.p
 
+        # g.trace(p.parent())
+
         c.treeSelectHelper(p and p.parent())
     #@-node:ekr.20031218072017.2920:goToParent
     #@+node:ekr.20031218072017.2921:goToPrevSibling
@@ -5695,7 +5716,7 @@ class baseCommands (object):
         c.treeFocusHelper()
     #@-node:ekr.20070226113916: treeSelectHelper
     #@-node:ekr.20070417112650:utils
-    #@-node:ekr.20031218072017.2913:Goto
+    #@-node:ekr.20031218072017.2913:Goto (Commands)
     #@-node:ekr.20031218072017.2894:Outline menu...
     #@+node:ekr.20031218072017.2931:Window Menu
     #@+node:ekr.20031218072017.2092:openCompareWindow
@@ -5923,13 +5944,19 @@ class baseCommands (object):
         }
     #@nonl
     #@-node:ekr.20080827175609.39:c.scanAllDirectives
-    #@+node:ekr.20080828103146.15:c.scanAtPathDirectives
+    #@+node:ekr.20080828103146.15:c.scanAtPathDirectives & test
+    def scanAtPathDirectives(self,aList,force=False,createPath=True):
 
-    def scanAtPathDirectives(self,aList,force=False):
+        '''Scan aList for @path directives.
+        Return a reasonable default if no @path directive is found.'''
 
-        '''Scan aList for @path directives.'''
+        trace = False and not g.unitTesting
+        verbose = True
 
-        c = self ; trace = False ; verbose = True
+        c = self
+
+        c.scanAtPathDirectivesCount += 1 # An important statistic.
+        if trace and verbose: g.trace('**entry',g.callers(4))
 
         # Step 1: Compute the starting path.
         # The correct fallback directory is the absolute path to the base.
@@ -5940,7 +5967,9 @@ class baseCommands (object):
             if base and base == "!":    base = g.app.loadDir
             elif base and base == ".":  base = c.openDirectory
 
-        if trace and verbose: g.trace('base',base,'loadDir',g.app.loadDir)
+        if trace and verbose:
+            g.trace('base   ',base)
+            g.trace('loadDir',g.app.loadDir)
 
         absbase = c.os_path_finalize_join(g.app.loadDir,base)
 
@@ -5951,16 +5980,17 @@ class baseCommands (object):
         for d in aList:
             # Look for @path directives.
             path = d.get('path')
-            if path:
+            if path is not None: # retain empty paths for warnings.
                 # Convert "path" or <path> to path.
-                path = g.computeRelativePath(path)
-                if path: paths.append(path)
+                path = g.stripPathCruft(path)
+                if path and path not in paths: paths.append(path)
+                # We will silently ignore empty @path directives.
 
         # Add absbase and reverse the list.
         paths.append(absbase)
         paths.reverse()
 
-        if trace and verbose: g.trace('paths',paths)
+        if trace and verbose: g.trace('paths  ',paths)
 
         # Step 3: Compute the full, effective, absolute path.
         if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
@@ -5968,7 +5998,7 @@ class baseCommands (object):
         if trace and verbose: g.trace('joined path:',path)
 
         # Step 4: Make the path if necessary.
-        if path and not g.os_path_exists(path):
+        if path and createPath and not g.os_path_exists(path):
             ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
             if not ok:
                 if force:
@@ -5978,7 +6008,26 @@ class baseCommands (object):
         if trace: g.trace('returns',path)
 
         return path
-    #@-node:ekr.20080828103146.15:c.scanAtPathDirectives
+    #@+node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+        p2 = p.firstChild().firstChild().firstChild()
+
+        aList = g.get_directives_dict_list(p2)
+        path = c.scanAtPathDirectives(aList,createPath=False)
+        # print (path,p2.h)
+        endpath = g.os_path_normpath('one/two')
+        assert path and path.endswith(endpath),'expected ending %s got %s' % (
+            endpath,path)
+    #@+node:ekr.20090530055015.6121:@path one
+    #@+node:ekr.20090530055015.6073:@path two
+    #@+node:ekr.20090530055015.6074:xyz
+    #@-node:ekr.20090530055015.6074:xyz
+    #@-node:ekr.20090530055015.6073:@path two
+    #@-node:ekr.20090530055015.6121:@path one
+    #@-node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
+    #@-node:ekr.20080828103146.15:c.scanAtPathDirectives & test
     #@+node:ekr.20080828103146.12:c.scanAtRootDirectives
     # Called only by scanColorDirectives.
 
@@ -6484,8 +6533,6 @@ class baseCommands (object):
             incremental=incremental,interruptable=interruptable)
     #@-node:ekr.20080514131122.13:c.recolor_now
     #@+node:ekr.20080514131122.16:c.traceFocus
-    trace_focus_count = 0
-
     def traceFocus (self,w):
 
         c = self
@@ -7560,6 +7607,16 @@ class baseCommands (object):
     #@nonl
     #@-node:ekr.20061002095711:c.navHelper
     #@-node:ekr.20060923202156:c.onCanvasKey
+    #@+node:ville.20090525205736.12325:c.getSelectedPositions
+    def getSelectedPositions(self):
+        """ Get list (poslist) of currently selected positions
+
+        So far only makes sense on qt gui (which supports multiselection)
+        """
+        c = self
+        return c.frame.tree.getSelectedPositions()
+    #@nonl
+    #@-node:ville.20090525205736.12325:c.getSelectedPositions
     #@-node:ekr.20031218072017.2990:Selecting & Updating (commands)
     #@+node:ekr.20031218072017.2999:Syntax coloring interface
     #@+at 
@@ -7632,6 +7689,7 @@ class configSettings:
     def __init__ (self,c):
 
         self.c = c
+        # g.trace('(configSettings)',c,g.callers(5))
 
         # Init these here to keep pylint happy.
         self.default_derived_file_encoding = None

@@ -46,7 +46,6 @@ class leoImportCommands (scanUtility):
     def __init__ (self,c):
 
         self.c = c
-        self._forcedGnxPositionList = []
         self.default_directory = None # For @path logic.
         self.encoding = g.app.tkEncoding
         self.errors = 0
@@ -81,9 +80,9 @@ class leoImportCommands (scanUtility):
             '.pas':     self.scanPascalText,
             '.py':      self.scanPythonText,
             '.pyw':     self.scanPythonText,
-            '.txt':     self.scanRstText, # A reasonable default.
-            '.rest':    self.scanRstText,
-            '.rst':     self.scanRstText,
+            # '.txt':     self.scanRstText, # A reasonable default.
+            # '.rest':    self.scanRstText,
+            # '.rst':     self.scanRstText,
             '.xml':     self.scanXmlText,
         }
     #@-node:ekr.20080825131124.3:createImportDispatchDict
@@ -844,7 +843,11 @@ class leoImportCommands (scanUtility):
 
         self.rootLine = g.choose(self.treeType=="@file","","@root-code "+self.fileName+'\n')
 
-        func = self.importDispatchDict.get(ext)
+        if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
+            func = self.scanRstText
+        else:
+            func = self.importDispatchDict.get(ext)
+
         if func and not c.config.getBool('suppress_import_parsing',default=False):
             func(s,p,atAuto=atAuto)
         else:
@@ -919,7 +922,6 @@ class leoImportCommands (scanUtility):
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAfter()
             if isThin:
-                at.forceGnxOnPosition(p)
                 p.initHeadString("@thin " + fileName)
                 at.read(p,thinFile=True)
             else:
@@ -931,11 +933,6 @@ class leoImportCommands (scanUtility):
         c.setChanged(True)
         u.afterChangeGroup(p,command)
         c.redraw(current)
-    #@+node:ekr.20051208100903.1:forceGnxOnPosition
-    def forceGnxOnPosition (self,p):
-
-        self._forcedGnxPositionList.append(p.v)
-    #@-node:ekr.20051208100903.1:forceGnxOnPosition
     #@-node:ekr.20031218072017.1810:importDerivedFiles
     #@+node:ekr.20031218072017.3212:importFilesCommand
     def importFilesCommand (self,files=None,treeType=None):
@@ -1819,9 +1816,9 @@ class baseScannerClass (scanUtility):
         c = self.c ; at = c.atFileCommands
 
         if s1 is None and s2 is None:
-            if True and self.isRst: # Errors writing file at present...
+            if self.isRst: # Errors writing file at present...
                 outputFile = StringIO.StringIO()
-                c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile)
+                c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
                 s1,s2 = self.file_s,outputFile.getvalue()
             else:
                 at.write(self.root,
@@ -1850,7 +1847,7 @@ class baseScannerClass (scanUtility):
         for i in range(max(n1,n2)):
             ok = self.compareHelper(lines1,lines2,i,self.strict)
             if not ok:
-                bad_i = i + 1
+                bad_i = i
                 break
 
         if g.app.unitTesting:
@@ -1870,6 +1867,8 @@ class baseScannerClass (scanUtility):
 
         '''Compare lines1[i] and lines2[i].
         strict is True if leading whitespace is very significant.'''
+
+        trace = True and not g.unitTesting
 
         def pr(*args,**keys): #compareHelper
             g.es_print(color='blue',*args,**keys)
@@ -1919,6 +1918,11 @@ class baseScannerClass (scanUtility):
             s1,s2 = line1.lstrip(),line2.lstrip()
             messageKind = g.choose(s1==s2,'warning','error')
 
+        # if trace:
+            # g.es_print('original line: ',line1)
+            # g.es_print('generated line:',line2)
+            # return True # continue checking.
+
         if g.unitTesting:
             d ['actualMismatchLine'] = i+1
             ok = i+1 == expectedMismatch
@@ -1940,17 +1944,19 @@ class baseScannerClass (scanUtility):
                 self.warning('mismatch in leading whitespace')
                 pr_mismatch(i,line1,line2)
             return messageKind in ('comment','warning') # Only errors are invalid.
-    #@nonl
     #@+node:ekr.20090513073632.5735:compareRstUnderlines
     def compareRstUnderlines(self,s1,s2):
 
         s1,s2 = s1.rstrip(),s2.rstrip()
+        if s1 == s2:
+            return True # Don't worry about trailing whitespace.
+
         n1, n2 = len(s1),len(s2)
         ch1 = n1 and s1[0] or ''
         ch2 = n2 and s2[0] or ''
 
         val = (
-            n1 >= 4 and n2 >= 4 and # Underlinings must be at least 4 long.
+            n1 >= 2 and n2 >= 2 and # Underlinings must be at least 2 long.
             ch1 == ch2 and # The underlining characters must match.
             s1 == ch1 * n1 and # The line must consist only of underlining characters.
             s2 == ch2 * n2)
@@ -1972,29 +1978,63 @@ class baseScannerClass (scanUtility):
 
         return ok
     #@-node:ekr.20071110144948:checkLeadingWhitespace
-    #@+node:ekr.20070911110507:reportMismatch
+    #@+node:ekr.20070911110507:reportMismatch & test
     def reportMismatch (self,lines1,lines2,bad_i):
 
-        def pr(*args,**keys): # reportMismatch
-            g.es_print(color='blue',*args,**keys)
+        trace = True and not g.unitTesting
+        verbose = True
 
         kind = g.choose(self.atAuto,'@auto','import command')
 
-
+        x2 = max(0,min(bad_i,len(lines2)-1))
         self.error(
             '%s did not import %s perfectly\nfirst mismatched line: %d\n%s' % (
-                kind,self.root.h,bad_i,repr(lines2[max(0,bad_i-1)])))
+                kind,self.root.h,bad_i,repr(lines2[x2])))
 
-        if len(lines1) < 100:
-            pr('input...')
-            for i in range(len(lines1)):
-                pr('%3d %s' % (i,lines1[i]),newline=False)
-            pr('output...')
-            for i in range(len(lines2)):
-                pr('%3d %s' % (i,lines2[i]),newline=False)
+        maxlines = 200
+        if trace or len(lines1) < maxlines:
+            aList = []
+            if True: # intermix lines.
+                n1,n2 = len(lines1),len(lines2)
+                for i in range(min(maxlines,max(n1,n2))):
+                    if i < n1: line1 = repr(lines1[i])
+                    else:      line1 = '<eof>'
+                    if i < n2: line2 = repr(lines2[i])
+                    else:      line2 = '<eof>'
+                    if verbose or line1 != line2:
+                        aList.append('%3d %s' % (i,line1))
+                        aList.append('%3d %s' % (i,line2))
+            else:
+                aList.append('input...')
+                for i in range(len(lines1)):
+                    aList.append('%3d %s' % (i,repr(lines1[i])))
+                aList.append('output...')
+                for i in range(len(lines2)):
+                    aList.append('%3d %s' % (i,repr(lines2[i])))
+
+            if g.unitTesting:
+                assert '\n'.join(aList)
+            else:
+                g.es_print('\n'.join(aList),color='blue')
 
         return False
-    #@-node:ekr.20070911110507:reportMismatch
+    #@+node:ekr.20090517020744.5785:@test reportMismatch
+    if g.unitTesting:
+
+        import leo.core.leoImport as leoImport
+        c,p = g.getTestVars()
+
+        ic = c.importCommands
+        scanner = leoImport.rstScanner(importCommands=ic,atAuto=True)
+        scanner.root = p
+        s1 = ["abc",]
+        s2 = ["xyz",]
+
+        scanner.reportMismatch(s1,s2,1)
+
+        # Why is leoSettings.leo scanned twice in dynamicUnitTest.leo?
+    #@-node:ekr.20090517020744.5785:@test reportMismatch
+    #@-node:ekr.20070911110507:reportMismatch & test
     #@-node:ekr.20070808115837:Checking
     #@+node:ekr.20070706084535:Code generation
     #@+at 
@@ -2018,7 +2058,7 @@ class baseScannerClass (scanUtility):
 
         c = self.c
 
-        if self.isRst:
+        if self.isRst and not self.atAuto:
             return
 
         if self.treeType == '@file':
@@ -2054,16 +2094,16 @@ class baseScannerClass (scanUtility):
             while start > 0 and s[start-1] in (' ','\t'):
                 start -= 1
 
-        body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
-
         if self.isRst:
-            # Discard the entire signature.
-            body2 = self.undentBody(s[self.sigEnd+1:codeEnd])
+            # Never indent any text; discard the entire signature.
+            body1 = s[start:sigStart]
+            body2 = s[self.sigEnd+1:codeEnd]
         else:
+            body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
             body2 = self.undentBody(s[sigStart:codeEnd])
         body = body1 + body2
 
-        if trace and verbose: g.trace('body\n%s' % body)
+        # if trace: g.trace('body\n%s' % body)
 
         tail = body[len(body.rstrip()):]
         if not '\n' in tail:
@@ -2073,6 +2113,12 @@ class baseScannerClass (scanUtility):
 
         return body
 
+    #@+node:ekr.20090515065255.5678:@test
+    if g.app.unitTesting:
+
+        pass
+    #@nonl
+    #@-node:ekr.20090515065255.5678:@test
     #@-node:ekr.20090512153903.5806:computeBody (baseScannerClass)
     #@+node:ekr.20090513073632.5737:createDeclsNode
     def createDeclsNode (self,parent,s):
@@ -2311,7 +2357,7 @@ class baseScannerClass (scanUtility):
         trace = False and not g.unitTesting
         verbose = False
 
-        if trace: g.trace(parent.h)
+        # if trace: g.trace(start,sigStart,self.sigEnd,codeEnd)
 
         # Enter a new function: save the old function info.
         oldStartSigIndent = self.startSigIndent
@@ -2323,6 +2369,11 @@ class baseScannerClass (scanUtility):
             headline = 'unknown function'
 
         body = self.computeBody(s,start,sigStart,codeEnd)
+
+        if trace:
+            g.trace('parent',parent.h)
+            if verbose: g.trace('**body...\n',body)
+
         parent = self.adjustParent(parent,headline)
         self.lastParent = self.createFunctionNode(headline,body,parent)
 
@@ -2347,6 +2398,9 @@ class baseScannerClass (scanUtility):
         trace = False
         if trace: g.trace('before...\n',g.listToString(g.splitLines(s)))
 
+        if self.isRst:
+            return s # Never unindent rst code.
+
         # Copy an @code line as is.
         # i = 0
         # if g.match(s,i,'@code'):
@@ -2361,7 +2415,6 @@ class baseScannerClass (scanUtility):
             result = self.undentBy(s,undentVal)
             if trace: g.trace('after...\n',g.listToString(g.splitLines(result)))
             return result
-    #@nonl
     #@-node:ekr.20070703122141.88:undentBody
     #@+node:ekr.20081216090156.1:undentBy
     def undentBy (self,s,undentVal):
@@ -2369,11 +2422,11 @@ class baseScannerClass (scanUtility):
         '''Remove leading whitespace equivalent to undentVal from each line.
         add an underindentEscapeString for underindented line.'''
 
-        # return ''.join(
-            # [g.removeLeadingWhitespace(line,undentVal,self.tab_width)
-                # for line in g.splitLines(s)])
-
         trace = False and not g.app.unitTesting
+
+        if self.isRst:
+            return s # Never unindent rst code.
+
         tag = self.c.atFileCommands.underindentEscapeString
         result = [] ; tab_width = self.tab_width
         for line in g.splitlines(s):
@@ -3013,7 +3066,8 @@ class baseScannerClass (scanUtility):
 
         # Check for intermixed blanks and tabs.
         if self.strict or self.atAutoWarnsAboutLeadingWhitespace:
-            self.checkBlanksAndTabs(s)
+            if not self.isRst:
+                self.checkBlanksAndTabs(s)
 
         # Regularize leading whitespace for strict languages only.
         if self.strict: s = self.regularizeWhitespace(s) 
@@ -3786,7 +3840,7 @@ class rstScanner (baseScannerClass):
         self.lineCommentDelim = '..'
         self.outerBlockDelim1 = None
         self.sigFailTokens = []
-        self.strict = True # We want to preserve whitespace
+        self.strict = False # Mismatches in leading whitespace are irrelevant.
 
         # Ivars unique to rst scanning & code generation.
         self.lastParent = None # The previous parent.
@@ -3799,39 +3853,45 @@ class rstScanner (baseScannerClass):
     #@-node:ekr.20090501095634.42: __init__
     #@+node:ekr.20090512080015.5798:adjustParent
     def adjustParent (self,parent,headline):
-        # parent not used here (it is used by the base-class method).
-        # headline used only for traces.
 
         '''Return the proper parent of the new node.'''
 
         trace = False and not g.unitTesting
 
-        if not self.lastParent: self.lastParent = self.root
         level,lastLevel = self.sectionLevel,self.lastSectionLevel
         lastParent = self.lastParent
 
-        if level == 0:
-            parent = self.root
-        elif level <= lastLevel:
-            parent = lastParent.parent()
-            while level < lastLevel:
-                level += 1
-                parent = parent.parent()
-        else: # level > lastLevel.
-            level -= 1
-            parent = lastParent
-            while level > lastLevel:
+        if trace: g.trace('**entry level: %s lastLevel: %s lastParent: %s' % (
+            level,lastLevel,lastParent and lastParent.h or '<none>'))
+
+        if self.lastParent:
+
+            if level <= lastLevel:
+                parent = lastParent.parent()
+                while level < lastLevel:
+                    level += 1
+                    parent = parent.parent()
+            else: # level > lastLevel.
                 level -= 1
-                h2 = '@rst-no-head %s' % headline
-                body = ''
-                parent = self.createFunctionNode(h2,body,parent)
+                parent = lastParent
+                while level > lastLevel:
+                    level -= 1
+                    h2 = '@rst-no-head %s' % headline
+                    body = ''
+                    parent = self.createFunctionNode(h2,body,parent)
+
+        else:
+            assert self.root
+            self.lastParent = self.root
 
         if not parent: parent = self.root
 
         if trace: g.trace('level %s lastLevel %s %s returns %s' % (
             level,lastLevel,headline,parent.h))
 
-        return parent
+        #self.lastSectionLevel = self.sectionLevel
+        self.lastParent = parent.copy()
+        return parent.copy()
     #@-node:ekr.20090512080015.5798:adjustParent
     #@+node:ekr.20090512080015.5797:computeSectionLevel
     def computeSectionLevel (self,ch,kind):
@@ -3845,8 +3905,9 @@ class rstScanner (baseScannerClass):
         else:
             level = 1 + self.underlines1.index(ch)
 
-        # g.trace('kind: %s ch: %s under2: %s under1: %s' % (
-            # kind,ch,self.underlines2,self.underlines1))
+        if False:
+            g.trace('level: %s kind: %s ch: %s under2: %s under1: %s' % (
+                level,kind,ch,self.underlines2,self.underlines1))
 
         return level
     #@-node:ekr.20090512080015.5797:computeSectionLevel
@@ -3873,6 +3934,8 @@ class rstScanner (baseScannerClass):
             underlines2 = ''.join([str(z) for z in self.underlines2])
             d ['underlines1'] = underlines1
             d ['underlines2'] = underlines2
+            self.underlines1 = underlines1
+            self.underlines2 = underlines2
             # g.trace(repr(underlines1),repr(underlines2))
             p.v.u [tag] = d
 
@@ -3926,22 +3989,23 @@ class rstScanner (baseScannerClass):
         self.sectionLevel = self.computeSectionLevel(ch,kind)
         self.sigStart = g.find_line_start(s,i)
         self.sigEnd = next
-        self.sigId = name.strip()
+        self.sigId = name ##.strip()
         i = next + 1
+
+        if trace: g.trace('sigId',self.sigId,'next',next)
 
         while i < len(s):
             progress = i
             i,j = g.getLine(s,i)
-            # if trace: g.trace(repr(s[i:j]))
             kind,name,next,ch = self.startsSection(s,i)
+            if trace and verbose: g.trace(kind,repr(s[i:j]))
             if kind in ('over','under'):
-                self.codeEnd = i
                 break
             else:
                 i = j
             assert i > progress
-        else:
-            self.codeEnd = len(s)
+
+        self.codeEnd = i
 
         if trace:
             if verbose:
@@ -3949,7 +4013,6 @@ class rstScanner (baseScannerClass):
             else:
                 g.trace('level %s %s' % (self.sectionLevel,self.sigId))
         return True
-    #@nonl
     #@-node:ekr.20090501095634.45:startsHelper
     #@+node:ekr.20090501095634.47:startsSection
     def startsSection (self,s,i):
@@ -3985,7 +4048,7 @@ class rstScanner (baseScannerClass):
                 ch,kind = ch1,'over'
                 if ch1 not in self.underlines2:
                     self.underlines2.append(ch1)
-                    if trace: g.trace('underlines2',self.underlines2,name)
+                    # if trace: g.trace('underlines2',self.underlines2,name)
                 if trace: g.trace('\nline  %s\nname  %s\nline2 %s' % (
                     repr(line),repr(name),repr(line2)))
         else:
@@ -4011,7 +4074,7 @@ class rstScanner (baseScannerClass):
                 ch,kind = line2[0],'under'
                 if ch not in self.underlines1:
                     self.underlines1.append(ch)
-                    if trace: g.trace('underlines1',self.underlines1,name)
+                    # if trace: g.trace('underlines1',self.underlines1,name)
                 if trace: g.trace('\nname  %s\nline2 %s' % (
                     repr(name),repr(line2)))
         return kind,name,i,ch

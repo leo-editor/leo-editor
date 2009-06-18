@@ -603,6 +603,8 @@ Here are various miscellaneous minibuffer commands::
 The File Menu
 +++++++++++++
 
+
+
 Loading, Saving and Reverting Files
 ***********************************
 
@@ -781,6 +783,8 @@ saved.
 
 The Edit Menu
 +++++++++++++
+
+
 
 Undoing changes
 ***************
@@ -1082,6 +1086,8 @@ highlights the range of matched characters without changing the cursor.
 
 The Outline Menu
 ++++++++++++++++
+
+
 
 Checking outlines
 *****************

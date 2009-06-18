@@ -150,9 +150,11 @@ if not g.unified_nodes:
         #@+node:ekr.20031218072017.1485:t.setBodyString & t.setHeadString
         def setBodyString (self,s,encoding="utf-8"):
 
+            trace = False and not g.unitTesting
             t = self
+            if trace: g.trace('t %s -> %s %s' % (
+                len(t._bodyString),len(s),g.callers(5)))
             t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
-            # g.trace('t',len(s),g.callers(5))
 
         initBodyString = setBodyString
         setTnodeText = setBodyString
@@ -412,12 +414,13 @@ class vnode (baseVnode):
     #@-node:ekr.20031218072017.3342:v.Birth & death
     #@+node:ekr.20031218072017.3346:v.Comparisons
     #@+node:ekr.20040705201018:v.findAtFileName
-    def findAtFileName (self,names):
+    def findAtFileName (self,names,h=''):
 
         """Return the name following one of the names in nameList.
         Return an empty string."""
 
-        h = self.headString()
+        # Allow h argument for unit testing.
+        if not h: h = self.headString()
 
         if not g.match(h,0,'@'):
             return ""
@@ -426,7 +429,7 @@ class vnode (baseVnode):
         word = h[:i]
         if word in names and g.match_word(h,0,word):
             name = h[i:].strip()
-            # g.trace(word,name)
+            # g.trace(repr(word),repr(name))
             return name
         else:
             return ""
@@ -438,6 +441,7 @@ class vnode (baseVnode):
 
         names = (
             "@auto",
+            "@auto-rst",
             "@edit",
             "@file",
             "@thin",   "@file-thin",   "@thinfile",
@@ -448,16 +452,19 @@ class vnode (baseVnode):
 
         return self.findAtFileName(names)
     #@-node:ekr.20031218072017.3350:anyAtFileNodeName
-    #@+node:ekr.20031218072017.3348:at...FileNodeName
+    #@+node:ekr.20031218072017.3348:at...FileNodeName & tests
     # These return the filename following @xxx, in v.headString.
     # Return the the empty string if v is not an @xxx node.
 
-    def atAutoNodeName (self):
-        # h = self.headString() ; tag = '@auto'
+    def atAutoNodeName (self,h=None):
         # # Prevent conflicts with autotrees plugin: don't allow @auto-whatever to match.
         # return g.match_word(h,0,tag) and not g.match(h,0,tag+'-') and h[len(tag):].strip()
-        names = ("@auto",)
-        return self.findAtFileName(names)
+        names = ("@auto","@auto-rst",)
+        return self.findAtFileName(names,h=h)
+
+    def atAutoRstNodeName (self,h=None):
+        names = ("@auto-rst",)
+        return self.findAtFileName(names,h=h)
 
     def atEditNodeName (self):
         names = ("@edit",)
@@ -491,7 +498,26 @@ class vnode (baseVnode):
     atNoSentFileNodeName  = atNoSentinelsFileNodeName
     atNorefFileNodeName   = atRawFileNodeName
     atAsisFileNodeName    = atSilentFileNodeName
-    #@-node:ekr.20031218072017.3348:at...FileNodeName
+    #@+node:ekr.20090521064955.5905:@test v.atAutoNodeName & v.atAutoRstNodeName
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+
+        table = (
+            ('@auto-rst rst-file','rst-file','rst-file'),
+            ('@auto x','x',''),
+            ('xyz','',''),
+        )
+
+        for s,expected1,expected2 in table:
+            result1 = p.v.atAutoNodeName(h=s)
+            result2 = p.v.atAutoRstNodeName(h=s)
+            assert result1 == expected1,'fail1: given %s expected %s got %s' % (
+                repr(s),repr(expected1),repr(result1))
+            assert result2 == expected2,'fail2: given %s expected %s got %s' % (
+                repr(s),repr(expected2),repr(result2))
+    #@-node:ekr.20090521064955.5905:@test v.atAutoNodeName & v.atAutoRstNodeName
+    #@-node:ekr.20031218072017.3348:at...FileNodeName & tests
     #@+node:EKR.20040430152000:isAtAllNode
     def isAtAllNode (self):
 
@@ -514,6 +540,9 @@ class vnode (baseVnode):
     #@+node:ekr.20040325073709:isAt...FileNode (vnode)
     def isAtAutoNode (self):
         return g.choose(self.atAutoNodeName(),True,False)
+
+    def isAtAutoRstNode (self):
+        return g.choose(self.atAutoRstNodeName(),True,False)
 
     def isAtEditNode (self):
         return g.choose(self.atEditNodeName(),True,False)
@@ -837,9 +866,14 @@ class vnode (baseVnode):
     #@-node:ekr.20031218072017.3386: v.Status bits
     #@+node:ekr.20040315032144:v .setBodyString & v.setHeadString
     def setBodyString (self,s,encoding="utf-8"):
+
+        trace = False and not g.unitTesting
         v = self
+        if trace and v.t._bodyString != s:
+            g.trace('v %s %s -> %s %s\nold: %s\nnew: %s' % (
+                v.h, len(v.t._bodyString),len(s),g.callers(5),
+                v.t._bodyString,s))
         v.t._bodyString = g.toUnicode(s,encoding,reportErrors=True)
-        # g.trace('v',len(s),g.callers(5))
 
     def setHeadString (self,s,encoding="utf-8"):
         v = self
@@ -1383,6 +1417,7 @@ class position (object):
     def isAnyAtFileNode         (self): return self.v.isAnyAtFileNode()
     def isAtAllNode             (self): return self.v.isAtAllNode()
     def isAtAutoNode            (self): return self.v.isAtAutoNode()
+    def isAtAutoRstNode         (self): return self.v.isAtAutoRstNode()
     def isAtEditNode            (self): return self.v.isAtEditNode()
     def isAtFileNode            (self): return self.v.isAtFileNode()
     def isAtIgnoreNode          (self): return self.v.isAtIgnoreNode()
@@ -2833,7 +2868,8 @@ class position (object):
 
         """Move a position to the position of the previous visible node."""
 
-        p = self ; limit,limitIsVisible = c.visLimit() ; trace = False
+        trace = False and not g.unitTesting
+        p = self ; limit,limitIsVisible = c.visLimit()
 
         if trace: g.trace('limit',limit,'limitIsVisible',limitIsVisible)
 
@@ -2846,7 +2882,7 @@ class position (object):
                 elif limit.isAncestorOf(p):
                     return False,None
                 else:
-                    if trace: g.trace('outside limit tree')
+                    if trace: g.trace('outside limit tree',limit,p)
                     return True,None
             else:
                 return False,None

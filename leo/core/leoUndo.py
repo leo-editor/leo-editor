@@ -149,6 +149,8 @@ class undoer:
 
         u = self
 
+        # g.trace(g.callers(5))
+
         u.p = None # The position/node being operated upon for undo and redo.
 
         for ivar in u.optionalIvars:
@@ -1088,7 +1090,8 @@ class undoer:
         Do nothing when called from the undo/redo logic because the Undo and Redo commands merely reset the bead pointer.'''
 
         u = self ; c = u.c
-        trace = False # Can cause unit tests to fail.
+        trace = False and not g.unitTesting # Can cause unit tests to fail.
+        verbose = False
         #@    << return if there is nothing to do >>
         #@+node:ekr.20040324061854:<< return if there is nothing to do >>
         if u.redoing or u.undoing:
@@ -1108,7 +1111,7 @@ class undoer:
             return None
         #@-node:ekr.20040324061854:<< return if there is nothing to do >>
         #@nl
-        # g.trace(undo_type,g.callers(7))
+        if trace: g.trace(undo_type,oldSel,newSel,g.callers(5))
         #@    << init the undo params >>
         #@+node:ekr.20040324061854.1:<< init the undo params >>
         # Clear all optional params.
@@ -1176,7 +1179,7 @@ class undoer:
             new_newlines += 1
             i -= 1
 
-        if trace:
+        if trace and verbose:
             g.pr("lead,trail",leading,trailing)
             g.pr("old mid,nls:",len(old_middle_lines),old_newlines,oldText)
             g.pr("new mid,nls:",len(new_middle_lines),new_newlines,newText)
@@ -1225,7 +1228,7 @@ class undoer:
         #@nl
         #@    << save the selection and scrolling position >>
         #@+node:ekr.20040324061854.2:<< save the selection and scrolling position >>
-        #Remember the selection.
+        # Remember the selection.
         u.oldSel = oldSel
         u.newSel = newSel
 
@@ -1977,10 +1980,11 @@ class undoer:
         tag="undo", # "undo" or "redo"
         undoType=None):
 
-
         '''Handle text undo and redo: converts _new_ text into _old_ text.'''
 
         # newNewlines is unused, but it has symmetry.
+
+        trace = False and not g.unitTesting
 
         u = self ; c = u.c ; w = c.frame.body.bodyCtrl
 
@@ -2013,6 +2017,10 @@ class undoer:
         #@nl
         p.setBodyString(result)
         w.setAllText(result)
+        sel = g.choose(tag=='undo',u.oldSel,u.newSel)
+        if trace: g.trace(sel)
+        i,j = sel
+        w.setSelectionRange(i,j,insert=j)
         c.frame.body.recolor(p,incremental=False)
     #@-node:ekr.20031218072017.1493:undoRedoText
     #@+node:ekr.20050408100042:undoRedoTree

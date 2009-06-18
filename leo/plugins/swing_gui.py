@@ -2681,10 +2681,9 @@ class leoSwingBody (leoFrame.leoBody):
 
         # # Inject ivars
         if name == '1':
-            w.leo_p = w.leo_v = None # Will be set when the second editor is created.
+            w.leo_p = None # Will be set when the second editor is created.
         else:
             w.leo_p = p.copy()
-            w.leo_v = w.leo_p.v
                 # pychecker complains body.leo_p does not exist.
         w.leo_active = True
         w.leo_bodyBar = bodyBar
@@ -4991,14 +4990,14 @@ class leoSwingTextWidget: ### (leoFrame.baseTextWidget):
         ### Tk.Text.insert(w,i,s)
 
     #@-node:ekr.20081121105001.890:insert
-    #@+node:ekr.20081121105001.891:indexIsVisible
+    #@+node:ekr.20081121105001.891:indexIsVisible (swing)
     def indexIsVisible (self,i):
 
         w = self
 
         return True ### return w.dlineinfo(i)
     #@nonl
-    #@-node:ekr.20081121105001.891:indexIsVisible
+    #@-node:ekr.20081121105001.891:indexIsVisible (swing)
     #@+node:ekr.20081121105001.892:mark_set NO LONGER USED
     # def mark_set(self,markName,i):
 

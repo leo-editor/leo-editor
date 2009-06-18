@@ -483,6 +483,7 @@ class rstCommands:
         self.outputFile = None # The open file being written.
         self.path = '' # The path from any @path directive.
         self.source = None # The written source as a string.
+        self.trialWrite = False # True if doing a trialWrite.
         #@nonl
         #@-node:ekr.20090502071837.36:<< init ivars >>
         #@nl
@@ -949,7 +950,7 @@ class rstCommands:
         self.optionsDict [ivar] = val
     #@-node:ekr.20090502071837.57:setOption
     #@-node:ekr.20090502071837.41:options...
-    #@+node:ekr.20090502071837.58:write methods
+    #@+node:ekr.20090502071837.58:write methods (leoRst)
     #@+node:ekr.20090502071837.59: Top-level write code
     #@+node:ekr.20090502071837.60:initWrite
     def initWrite (self,p,encoding=None):
@@ -966,12 +967,13 @@ class rstCommands:
         # g.trace('path:',self.path)
     #@-node:ekr.20090502071837.60:initWrite
     #@+node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
-    def writeAtAutoFile (self,p,fileName,outputFile):
+    def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
 
         '''Write an @auto tree containing imported rST code.
         The caller will close the output file.'''
 
         try:
+            self.trialWrite = trialWrite
             self.atAutoWrite = True
             self.initAtAutoWrite(p,fileName,outputFile)
             self.topNode = p.copy() # Indicate the top of this tree.
@@ -1010,6 +1012,8 @@ class rstCommands:
                 g.trace('too many top-level underlines, using %s' % (
                     underlines2),color='blue')
             self.atAutoWriteUnderlines = underlines2 + underlines1
+            self.underlines1 = underlines1
+            self.underlines2 = underlines2
 
     #@-node:ekr.20090513073632.5733:setAtAutoWriteOptions
     #@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
@@ -1335,7 +1339,7 @@ class rstCommands:
     def writeBody (self,p):
 
         # remove trailing cruft and split into lines.
-        lines = p.b.rstrip().split('\n') 
+        lines = g.splitLines(p.b)
 
         if self.getOption('code_mode'):
             if not self.getOption('show_options_doc_parts'):
@@ -1368,10 +1372,17 @@ class rstCommands:
             if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
                 lines = self.replaceCodeBlockDirectives(lines)
 
-        s = '\n'.join(lines).strip()
-        if s:
-            self.write('%s\n\n' % s)
+        # Write the lines.
+        s = ''.join(lines)
+        if not self.trialWrite:
+            # A little fib.  We don't alter the text when doing a trial write,
+            # so the perfect-import comparison will pass.
+            # We *do* ensure 2 newlines when doing a "real" write.
+            s = g.ensureLeadingNewlines(s,1)
+            s = g.ensureTrailingNewlines(s,2)
+        self.write(s)
     #@nonl
+    #@-node:ekr.20090502071837.71:writeBody & helpers
     #@+node:ekr.20090502071837.72:handleCodeMode & helper
     def handleCodeMode (self,lines):
 
@@ -1597,7 +1608,6 @@ class rstCommands:
         return result
     #@nonl
     #@-node:ekr.20090502071837.82:replaceCodeBlockDirectives
-    #@-node:ekr.20090502071837.71:writeBody & helpers
     #@+node:ekr.20090502071837.83:writeHeadline & helper
     def writeHeadline (self,p):
 
@@ -1627,11 +1637,14 @@ class rstCommands:
     #@+node:ekr.20090502071837.84:writeHeadlineHelper
     def writeHeadlineHelper (self,p):
 
-        h = p.h.strip()
+        h = p.h
+        if not self.atAutoWrite:
+            h = h.strip()
 
         # Remove any headline command before writing the headline.
+        i = g.skip_ws(h,0)
         i = g.skip_id(h,0,chars='@-')
-        word = h [:i]
+        word = h [:i].strip()
         if word:
             # Never generate a section for @rst-option or @rst-options or @rst-no-head.
             if word in (
@@ -1658,12 +1671,12 @@ class rstCommands:
 
         if self.getOption('show_sections'):
             if self.getOption('generate_rst'):
-                # self.write('%s\n%s\n' % (h,self.underline(h,p)))
-                self.write(self.underline(h,p))
+                self.write(self.underline(h,p)) # Used by @auto-rst.
             else:
-                self.write('\n%s\n' % h)
+                self.write('\n%s\n\n' % h)
         else:
             self.write('\n**%s**\n\n' % h.replace('*',''))
+    #@nonl
     #@-node:ekr.20090502071837.84:writeHeadlineHelper
     #@-node:ekr.20090502071837.83:writeHeadline & helper
     #@+node:ekr.20090502071837.85:writeNode
@@ -1737,7 +1750,7 @@ class rstCommands:
         while p and p != after:
             self.writeNode(p) # Side effect: advances p.
     #@-node:ekr.20090502071837.87:writeTree
-    #@-node:ekr.20090502071837.58:write methods
+    #@-node:ekr.20090502071837.58:write methods (leoRst)
     #@+node:ekr.20090502071837.88:Utils
     #@+node:ekr.20090502071837.89:computeOutputFileName
     def computeOutputFileName (self,fileName):
@@ -1779,43 +1792,53 @@ class rstCommands:
         return '.. %s' % s
     #@nonl
     #@-node:ekr.20090502071837.92:rstComment
-    #@+node:ekr.20090502071837.93:underline
+    #@+node:ekr.20090502071837.93:underline (leoRst)
     def underline (self,s,p):
 
         '''Return the underlining string to be used at the given level for string s.
         This includes the headline, and possibly a leading overlining line.
         '''
 
+        trace = False and not g.unitTesting
+
         if self.atAutoWrite:
-            # We generate overlines for top-level sections.
+            # We *might* generate overlines for top-level sections.
             u = self.atAutoWriteUnderlines
-            level = max(0,p.level()-self.topLevel-1)
-            ch = u [level]
-            n = max(4,len(s))
-            # g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
-            if level == 0:
-                return '%s\n%s\n%s\n\n' % (ch*n,p.h,ch*n)
+            level = p.level()-self.topLevel
+
+            # This is tricky. The index n depends on several factors.
+            if self.underlines2:
+                level -= 1 # There *is* a double-underlined section.
+                n = level
             else:
-                return '%s\n%s\n\n' % (p.h,ch*n)
+                n = level-1
+            if 0 <= n < len(u): ch = u[n]
+            else: ch = u[-1]
+            n = max(4,len(s))
+            if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+            if level == 0:
+                return '%s\n%s\n%s\n' % (ch*n,p.h,ch*n)
+            else:
+                return '%s\n%s\n' % (p.h,ch*n)
         else:
             # The user is responsible for top-level overlining.
             u = self.getOption('underline_characters') #  '''#=+*^~"'`-:><_'''
             level = max(0,p.level()-self.topLevel)
             level = min(level+1,len(u)-1) # Reserve the first character for explicit titles.
             ch = u [level]
-            # g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
+            if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
             n = max(4,len(s))
-            ### return ch * n + '\n'
-            return '%s\n%s\n' % (p.h,ch*n) # Must be equivalent to old code.
-    #@-node:ekr.20090502071837.93:underline
-    #@+node:ekr.20090502071837.94:write
+            return '%s\n%s\n\n' % (p.h.strip(),ch*n)
+    #@-node:ekr.20090502071837.93:underline (leoRst)
+    #@+node:ekr.20090502071837.94:write (leoRst)
     def write (self,s):
 
         s = self.encode(s)
 
+        # g.trace(repr(s),g.callers(2))
+
         self.outputFile.write(s)
-    #@nonl
-    #@-node:ekr.20090502071837.94:write
+    #@-node:ekr.20090502071837.94:write (leoRst)
     #@-node:ekr.20090502071837.88:Utils
     #@+node:ekr.20090502071837.95:Support for http plugin
     #@+node:ekr.20090502071837.96:http_addNodeMarker

@@ -48,6 +48,8 @@ Notes:
 Body pane
 +++++++++
 
+
+
 arrows.py
 *********
 
@@ -155,6 +157,8 @@ Send output from the Execute Script command to the end of the body pane.
 
 Commands & directives
 +++++++++++++++++++++
+
+
 
 add_directives.py
 *****************
@@ -649,6 +653,8 @@ The Word Count... menu has a shortcut key of 'W'.
 Dialogs
 +++++++
 
+
+
 gtkDialogs
 **********
 
@@ -659,6 +665,8 @@ but it should work on on any system that support Gtk2 and pyGtk.
 
 Debugging &  testing
 ++++++++++++++++++++
+
+
 
 failed_import.py
 ****************
@@ -692,6 +700,8 @@ Trace the most common hooks, but not key, drag or idle hooks.
 
 External editors & Open With
 ++++++++++++++++++++++++++++
+
+
 
 mod_tempfname.py
 ****************
@@ -811,6 +821,8 @@ changes will appear in Leo.
 
 Files
 +++++
+
+
 
 empty_leo_file.py
 *****************
@@ -1019,6 +1031,8 @@ Here are the settings that control the format of .opml files. The default values
 Guis
 ++++
 
+
+
 __wx_alt_gui.py
 ***************
 
@@ -1034,6 +1048,8 @@ Work on this project has now halted in favor of a gtkLeo plugin.
 
 Icon and status areas
 +++++++++++++++++++++
+
+
 
 chapter_hoist.py
 ****************
@@ -1161,6 +1177,8 @@ papers that form the basis of this project.
 Menus & translations
 ++++++++++++++++++++
 
+
+
 chinese_menu.py
 ***************
 
@@ -1180,6 +1198,8 @@ Adds pie menus.  See http://www.piemenus.com/
 
 Nodes
 +++++
+
+
 
 at_folder.py
 ************
@@ -1429,6 +1449,8 @@ is under an ``@folder`` headline. Otherwise the path is relative to the Leo file
 Plugins manager & menu
 ++++++++++++++++++++++
 
+
+
 leoupdate.py
 ************
 
@@ -1473,6 +1495,8 @@ range is used internally for sorting alphabetically.
 Scripting
 +++++++++
 
+
+
 dyna_menu
 *********
 
@@ -1514,6 +1538,8 @@ to True in this plugin.
 Servers
 +++++++
 
+
+
 mod_http.py
 ***********
 
@@ -1540,6 +1566,8 @@ To enable this plugin put this into your file::
 Spell checking
 ++++++++++++++
 
+
+
 spellpyx.py
 ***********
 
@@ -1558,6 +1586,8 @@ Spelling...`` script button. LeoDocs.leo contains such a script button.
 
 Text formatting
 +++++++++++++++
+
+
 
 Leo to AsciiDoc
 ***************
@@ -1678,6 +1708,8 @@ Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 
 Windows
 +++++++
+
+
 
 cleo.py
 *******

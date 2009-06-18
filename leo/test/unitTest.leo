@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="54" left="425" height="822" width="852"/>
+	<global_window_position top="81" left="429" height="822" width="852"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,2,0"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -727,6 +727,7 @@
 <v t="ekr.20051104081502.108"></v>
 <v t="ekr.20051104081502.109"></v>
 <v t="ekr.20080821123427.2"><vh>Standard print test</vh></v>
+<v t="ekr.20040712101813"><vh>@@test checkAllPythonCode</vh></v>
 </v>
 <v t="ekr.20040712101754.2" annotate="7d71002e"><vh>Load tests for .leo files</vh>
 <v t="ekr.20040712101754.3"><vh>@test test.leo</vh></v>
@@ -740,28 +741,6 @@
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
 <v t="ekr.20070114140212"><vh>All unit tests</vh>
-<v t="ekr.20060205165937"><vh>Doctests</vh>
-<v t="ekr.20040712101754.274" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh></v>
-</v>
-<v t="ekr.20071113193438"><vh>General</vh>
-<v t="ekr.20061109172511"><vh>Check base classes &amp; ivars</vh>
-<v t="ekr.20061109172511.3"><vh>Startup</vh></v>
-<v t="ekr.20061109172511.1"><vh>Docs</vh></v>
-<v t="ekr.20061109210659"><vh>Scripts</vh></v>
-<v t="ekr.20061109172511.4"><vh> Test files</vh></v>
-<v t="ekr.20050105082500"><vh>Other tests</vh></v>
-<v t="ekr.20050105080048.1"><vh>Load tests for .leo files</vh></v>
-<v t="ekr.20050105084757"><vh>All unit tests</vh></v>
-<v t="ekr.20050105090632"><vh>@test official g.app ivars</vh></v>
-</v>
-<v t="ekr.20040712101754.186"><vh>@test batch mode</vh>
-<v t="ekr.20041012084201"><vh>removeFile</vh></v>
-</v>
-<v t="ekr.20040712101813"><vh>@@test checkAllPythonCode</vh></v>
-<v t="ekr.20060131101806"><vh>@test all commands have an event arg</vh></v>
-<v t="ekr.20071113145804.35"><vh>@test that all @test nodes in derived files start with if g.unitTesting</vh></v>
-<v t="ekr.20061115074956" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
-</v>
 <v t="ekr.20050120095423" annotate="7d71002e"><vh>Plugins</vh>
 <v t="ekr.20080309193654.1"><vh>@ignore</vh>
 <v t="ekr.20050120095423.21"><vh>print all loaded plugins</vh></v>
@@ -796,32 +775,8 @@
 <v t="ekr.20080701183239.3"><vh>quickConvertPythonIndexToRowCol</vh></v>
 </v>
 </v>
-<v t="ekr.20050120095423.6"><vh>@suite test syntax of all plugins</vh>
-<v t="ekr.20050120095423.7"><vh>class parseFileTestCase</vh>
-<v t="ekr.20050120095423.8"><vh>__init__</vh></v>
-<v t="ekr.20050120095423.9"><vh>runTest</vh></v>
-<v t="ekr.20050120095423.10"><vh>shortDescription</vh></v>
-</v>
-</v>
-<v t="ekr.20061106201509.4"><vh>@test rClick.py</vh></v>
-<v t="ekr.20061106201509.1"><vh>detect_urls.py</vh>
-<v t="ekr.20061106201509.2"><vh>Startup</vh></v>
-<v t="ekr.20061106201509.3"><vh>Docs</vh></v>
-</v>
-<v t="ekr.20061110112507"><vh>@test mnplugins.insertBodystamp</vh></v>
-<v t="ekr.20061110115517"><vh>@test macros.parameterize</vh></v>
-<v t="ekr.20060203201949" annotate="7d71002e"><vh>@test restore the screen</vh></v>
-<v t="ekr.20090429081126.3"><vh>@test rst3 handleMissingStyleSheetArgs</vh></v>
-<v t="ekr.20090201140204.1"><vh>gui plugins</vh>
-<v t="ekr.20090201140204.2"><vh>@test c.vnode2position</vh></v>
-<v t="ekr.20090201135611.3"><vh>@test position2Item</vh></v>
-<v t="ekr.20090201135611.4"><vh>@test item2position</vh></v>
-</v>
 </v>
 <v t="ekr.20071113194858"><vh>Organized by file</vh>
-<v t="ekr.20090131113752.2"><vh>leoApp</vh>
-<v t="ekr.20090131113752.3"><vh>@test consistency of leoApp tables</vh></v>
-</v>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -883,128 +838,125 @@
 </v>
 <v t="ekr.20071113201736" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071206124704"><vh>leoBridge</vh>
-<v t="ekr.20071206124704.1"><vh>@test leoBridge init logic</vh></v>
+<v t="ekr.20090615053403.4876"><vh>leoColor</vh>
+<v t="ekr.20090615053403.4877"><vh>@test @comment after @language plain</vh>
+<v t="ekr.20090615053403.4878"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20071113193438.1"><vh>leoColor</vh>
-<v t="ekr.20040712101754.116"><vh>@test @comment after @language plain</vh>
-<v t="ekr.20040712101754.117"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4879"><vh>@test colorizer Actionscript</vh>
+<v t="ekr.20090615053403.4880"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.118"><vh>@test colorizer Actionscript</vh>
-<v t="ekr.20040712101754.119"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4881" a="E"><vh>@test colorizer C</vh>
+<v t="ekr.20090615053403.4882"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.120"><vh>@test colorizer C</vh>
-<v t="ekr.20040712101754.121"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4883"><vh>@test colorizer C#</vh>
+<v t="ekr.20090615053403.4884"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.122"><vh>@test colorizer C#</vh>
-<v t="ekr.20040712101754.123"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4885"><vh>@test colorizer css</vh>
+<v t="ekr.20090615053403.4886"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.124"><vh>@test colorizer css</vh>
-<v t="ekr.20040712101754.125"><vh>Startup</vh></v>
-</v>
-<v t="ekr.20040712101754.126"><vh>@test colorizer CWEB</vh>
-<v t="ekr.20040712101754.127"><vh>Startup</vh>
-<v t="ekr.20040712101754.128"><vh>&lt;&lt; section ref &gt;&gt;</vh></v>
+<v t="ekr.20090615053403.4887"><vh>@test colorizer CWEB</vh>
+<v t="ekr.20090615053403.4888"><vh>Startup</vh>
+<v t="ekr.20090615053403.4889"><vh>&lt;&lt; section ref &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20040712101754.129"><vh>@test colorizer elisp</vh>
-<v t="ekr.20040712101754.130"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4890"><vh>@test colorizer elisp</vh>
+<v t="ekr.20090615053403.4891"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20060829092306"><vh>@test colorizer erlang</vh>
-<v t="ekr.20060829092306.1"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4892"><vh>@test colorizer erlang</vh>
+<v t="ekr.20090615053403.4893"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20041107105213"><vh>@test colorizer forth</vh>
-<v t="ekr.20080707101444.1"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4894"><vh>@test colorizer forth</vh>
+<v t="ekr.20090615053403.4895"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.131"><vh>@test colorizer HTML string bug</vh>
-<v t="ekr.20040712101754.132"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4896"><vh>@test colorizer HTML string bug</vh>
+<v t="ekr.20090615053403.4897"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.133"><vh>@test colorizer HTML1</vh>
-<v t="ekr.20040712101754.134"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4898"><vh>@test colorizer HTML1</vh>
+<v t="ekr.20090615053403.4899"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.135"><vh>@test colorizer HTML2</vh>
-<v t="ekr.20040712101754.136"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4900"><vh>@test colorizer HTML2</vh>
+<v t="ekr.20090615053403.4901"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20060829092306.2"><vh>@test colorizer Java</vh>
-<v t="ekr.20060829092306.3"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4902"><vh>@test colorizer Java</vh>
+<v t="ekr.20090615053403.4903"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.137"><vh>@test colorizer LaTex</vh>
-<v t="ekr.20040712101754.138"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4904"><vh>@test colorizer LaTex</vh>
+<v t="ekr.20090615053403.4905"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20071219172126"><vh>@test colorizer lisp</vh>
-<v t="ekr.20071219172126.1"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4906"><vh>@test colorizer lisp</vh>
+<v t="ekr.20090615053403.4907"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20071219170354"><vh>@test colorizer perl</vh>
-<v t="ekr.20071219170354.1"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4908"><vh>@test colorizer perl</vh>
+<v t="ekr.20090615053403.4909"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.141"><vh>@test colorizer PHP</vh>
-<v t="ekr.20040712101754.142"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4910"><vh>@test colorizer PHP</vh>
+<v t="ekr.20090615053403.4911"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20050618053006"><vh>@test colorizer plsql</vh>
-<v t="ekr.20050618053006.1"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4912"><vh>@test colorizer plsql</vh>
+<v t="ekr.20090615053403.4913"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.143"><vh>@test colorizer python.xml (jEdit)</vh>
-<v t="ekr.20040712101754.144"><vh>Startup</vh>
-<v t="ekr.20040712101754.145"><vh>&lt;&lt; remarks &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.146"><vh>&lt;&lt; comments &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.147"><vh>&lt;&lt; literals &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.148"><vh>&lt;&lt; operators &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.149"><vh>&lt;&lt; keywords &gt;&gt;</vh>
-<v t="ekr.20040712101754.150"><vh>&lt;&lt; reserved words &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.151"><vh>&lt;&lt; builtins &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.152"><vh>&lt;&lt; exceptions &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.153"><vh>&lt;&lt; types &gt;&gt;</vh></v>
+<v t="ekr.20090615053403.4914"><vh>@test colorizer python.xml (jEdit)</vh>
+<v t="ekr.20090615053403.4915"><vh>Startup</vh>
+<v t="ekr.20090615053403.4916"><vh>&lt;&lt; remarks &gt;&gt;</vh></v>
+<v t="ekr.20090615053403.4917"><vh>&lt;&lt; comments &gt;&gt;</vh></v>
+<v t="ekr.20090615053403.4918"><vh>&lt;&lt; literals &gt;&gt;</vh></v>
+<v t="ekr.20090615053403.4919"><vh>&lt;&lt; operators &gt;&gt;</vh></v>
+<v t="ekr.20090615053403.4920"><vh>&lt;&lt; keywords &gt;&gt;</vh>
+<v t="ekr.20090615053403.4921"><vh>&lt;&lt; reserved words &gt;&gt;</vh></v>
+<v t="ekr.20090615053403.4922"><vh>&lt;&lt; builtins &gt;&gt;</vh></v>
+<v t="ekr.20090615053403.4923"><vh>&lt;&lt; exceptions &gt;&gt;</vh></v>
+<v t="ekr.20090615053403.4924"><vh>&lt;&lt; types &gt;&gt;</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20040712101754.154"><vh>@test colorizer Python1</vh>
-<v t="ekr.20040712101754.155"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4925"><vh>@test colorizer Python1</vh>
+<v t="ekr.20090615053403.4926"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.156"><vh>@test colorizer Python2</vh>
-<v t="ekr.20040712101754.157"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4927"><vh>@test colorizer Python2</vh>
+<v t="ekr.20090615053403.4928"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20060829092306.4"><vh>@test colorizer r</vh>
-<v t="ekr.20060829092306.5"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4929"><vh>@test colorizer r</vh>
+<v t="ekr.20090615053403.4930"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.158"><vh>@test colorizer rapidq</vh>
-<v t="ekr.20040712101754.159"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4931"><vh>@test colorizer rapidq</vh>
+<v t="ekr.20090615053403.4932"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.160"><vh>@test colorizer Rebol</vh>
-<v t="ekr.20040712101754.161"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4933"><vh>@test colorizer Rebol</vh>
+<v t="ekr.20090615053403.4934"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20071219184852"><vh>@test colorizer rest</vh>
-<v t="ekr.20071219184847"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4935"><vh>@test colorizer rest</vh>
+<v t="ekr.20090615053403.4936"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.162"><vh>@test colorizer shell</vh>
-<v t="ekr.20040712101754.163"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4937"><vh>@test colorizer shell</vh>
+<v t="ekr.20090615053403.4938"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20071219172615"><vh>@test colorizer shellscript</vh>
-<v t="ekr.20071219172615.1"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4939"><vh>@test colorizer shellscript</vh>
+<v t="ekr.20090615053403.4940"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.164"><vh>@test colorizer tex.xml (jEdit)</vh>
-<v t="ekr.20040712101754.165"><vh>Startup</vh>
-<v t="ekr.20040712101754.166"><vh>&lt;&lt; general rules &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.167"><vh>&lt;&lt; math rules &gt;&gt;</vh></v>
+<v t="ekr.20090615053403.4941"><vh>@test colorizer tex.xml (jEdit)</vh>
+<v t="ekr.20090615053403.4942"><vh>Startup</vh>
+<v t="ekr.20090615053403.4943"><vh>&lt;&lt; general rules &gt;&gt;</vh></v>
+<v t="ekr.20090615053403.4944"><vh>&lt;&lt; math rules &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20040712101754.168"><vh>@test colorizer wikiTest1</vh>
-<v t="ekr.20040712101754.169"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4945"><vh>@test colorizer wikiTest1</vh>
+<v t="ekr.20090615053403.4946"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.170"><vh>@test colorizer wikiTest2</vh>
-<v t="ekr.20040712101754.171"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4947"><vh>@test colorizer wikiTest2</vh>
+<v t="ekr.20090615053403.4948"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20040712101754.172"><vh>@test colorizer wikiTest3</vh>
-<v t="ekr.20040712101754.173"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4949"><vh>@test colorizer wikiTest3</vh>
+<v t="ekr.20090615053403.4950"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20061106184118"><vh>@test leoColor.doNowebSecRef</vh>
-<v t="ekr.20061106184118.1"><vh>&lt;&lt; test defined &gt;&gt;</vh></v>
+<v t="ekr.20090615053403.4951"><vh>@test leoColor.doNowebSecRef</vh>
+<v t="ekr.20090615053403.4952"><vh>&lt;&lt; test defined &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20040712101754.176"><vh>@test python keywords (new colorizer)</vh></v>
-<v t="ekr.20071113090055.2"><vh>@test scanColorDirectives</vh></v>
-<v t="ekr.20060829092306.6"><vh>@test vbscript</vh>
-<v t="ekr.20060829092306.7"><vh>Startup</vh></v>
+<v t="ekr.20090615053403.4953"><vh>@test python keywords (new colorizer)</vh></v>
+<v t="ekr.20090615053403.4954"><vh>@test scanColorDirectives</vh></v>
+<v t="ekr.20090615053403.4955"><vh>@test vbscript</vh>
+<v t="ekr.20090615053403.4956"><vh>Startup</vh></v>
 </v>
-<v t="ekr.20061115103558" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+<v t="ekr.20090615053403.4957" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113193624"><vh>leoCommands</vh>
 <v t="ekr.20050512084850" annotate="7d71002e"><vh> Check outline</vh>
@@ -1144,6 +1096,7 @@
 <v t="ekr.20070611105423.1"><vh>@test contract all</vh></v>
 <v t="ekr.20071113105654.1"><vh>@test hoist with no children</vh></v>
 <v t="ekr.20070611105728"><vh>@test illegal clone demote</vh></v>
+<v t="ville.20090602190735.4770"><vh>@test g.command decorator</vh></v>
 <v t="ekr.20071113201833" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 <v t="ville.20090313183551.2" a="M"><vh>@test c.db</vh></v>
 </v>
@@ -1153,9 +1106,6 @@
 <v t="ekr.20060325071703.1"><vh>@test ifplatform</vh></v>
 <v t="ekr.20050203001146"><vh>@test local settings (c.page_width)</vh></v>
 <v t="ekr.20071113201854" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20071113194033.1"><vh>leoDialogs</vh>
-<v t="ekr.20050210085211"><vh>@test ctors for all dialogs</vh></v>
 </v>
 <v t="ekr.20071113192611"><vh>leoEditCommands</vh>
 <v t="ekr.20080904095020.1"><vh>goto-line-number tests</vh>
@@ -1167,6 +1117,21 @@
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
 <v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
 <v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
 </v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 <v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
@@ -1731,14 +1696,13 @@
 </v>
 <v t="ekr.20061104172236.1"><vh> Function tests</vh>
 <v t="ekr.20061104172236.3"><vh>@test capitalizeHelper</vh></v>
-<v t="ekr.20061104172236.7"><vh>@test crollHelper</vh></v>
+<v t="ekr.20061104172236.7"><vh>@test scrollHelper</vh></v>
 <v t="ekr.20061104172236.5"><vh>@test extendHelper</vh></v>
 <v t="ekr.20061104172236.2"><vh>@test findWordInLine</vh></v>
 <v t="ekr.20080408094623.1"><vh>@test findWord</vh></v>
 <v t="ekr.20071113145804.15"><vh>@test helpForMinibuffer</vh></v>
 <v t="ekr.20061104172236.6"><vh>@test moveToHelper</vh></v>
 <v t="ekr.20061110094226"><vh>@test moveUpOrDownHelper</vh></v>
-<v t="ekr.20071113145804.6"><vh>@test scrollHelper</vh></v>
 <v t="ekr.20061104172236.4"><vh>@test setMoveCol</vh></v>
 </v>
 <v t="ekr.20051107115231" annotate="7d71002e"><vh> Typing</vh>
@@ -1840,8 +1804,8 @@
 <v t="ekr.20071113202153" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20071113194424"><vh>leoFrame</vh>
-<v t="ekr.20060912091510.1"><vh>@test Add &amp; Delete editor</vh></v>
-<v t="ekr.20060912091510.2"><vh>@test Add editor, Delete leftmost editor</vh></v>
+<v t="ekr.20060912091510.1"><vh>@@test add-editor &amp; delete-editor</vh></v>
+<v t="ekr.20090608174319.4791"><vh>@@test delete-editor</vh></v>
 <v t="ekr.20061104172236.22"><vh>@test c.frame.pasteText</vh></v>
 <v t="ekr.20071113145804.33"><vh>@test c.frame.pasteText 2</vh></v>
 <v t="ekr.20061106201509.6"><vh>@test leoBody.getInsertLines</vh></v>
@@ -1849,6 +1813,145 @@
 <v t="ekr.20071113145804.32"><vh>@test leoBody.getSelectionAreas &amp; test</vh></v>
 <v t="ekr.20061104172236.23"><vh>@test tkBody.onClick</vh></v>
 <v t="ekr.20071113202153.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
+</v>
+<v t="ekr.20090529141856.4682"><vh>leoImport</vh>
+<v t="ekr.20090529141856.4684" annotate="7d71002e"><vh> Export tests</vh>
+<v t="ekr.20090529141856.4685" annotate="7d71002e"><vh>@suite Export tests</vh></v>
+<v t="ekr.20090529141856.4686" annotate="7d71002e"><vh>exportTests</vh>
+<v t="ekr.20090529141856.4687"><vh>tempNode</vh></v>
+<v t="ekr.20090529141856.4688"><vh>exportHeadlines</vh>
+<v t="ekr.20090529141856.4689"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4690"><vh>flattenOutline</vh>
+<v t="ekr.20090529141856.4691"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4692"><vh>weave</vh>
+<v t="ekr.20090529141856.4693"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4694"><vh>outlineToNoweb</vh>
+<v t="ekr.20090529141856.4695"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4696"><vh>outlineToCWEB</vh>
+<v t="ekr.20090529141856.4697"><vh>dialog</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20090529141856.4698"><vh> Import tests</vh>
+<v t="ekr.20090529141856.4699" annotate="7d71002e"><vh>@suite Import tests</vh></v>
+<v t="ekr.20090529141856.4700" annotate="7d71002e"><vh>importTests</vh>
+<v t="ekr.20090529141856.4701" annotate="7d71002e"><vh>tempNode</vh></v>
+<v t="ekr.20090529141856.4702" annotate="7d71002e"><vh>importAtRoot</vh>
+<v t="ekr.20090529141856.4703"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4704" annotate="7d71002e"><vh>importDerivedFile</vh>
+<v t="ekr.20090529141856.4705"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4706" annotate="7d71002e"><vh>importNowebFiles</vh>
+<v t="ekr.20090529141856.4707"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4708" annotate="7d71002e"><vh>importFlattenedOutline</vh>
+<v t="ekr.20090529141856.4709"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4710" annotate="7d71002e"><vh>importCWEBFiles</vh>
+<v t="ekr.20090529141856.4711"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4712" annotate="7d71002e"><vh>removeSentinels</vh>
+<v t="ekr.20090529141856.4713"><vh>dialog</vh></v>
+</v>
+<v t="ekr.20090529141856.4714" annotate="7d71002e"><vh>importAtFile</vh>
+<v t="ekr.20090529141856.4715"><vh>dialog</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20090529141856.4716"><vh> Tests of @auto</vh>
+<v t="ekr.20090529141856.4717"><vh>C tests</vh>
+<v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
+<v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
+<v t="ekr.20090529141856.4720"><vh>@test defaultImporter</vh></v>
+<v t="ekr.20090529141856.4721"><vh>@test c test--comment follows arg list</vh></v>
+<v t="ekr.20090529141856.4722"><vh>@test c test--comment follows block delim</vh></v>
+<v t="ekr.20090529141856.4723"><vh>@test c test--intermixed blanks and tabs</vh></v>
+<v t="ekr.20090529141856.4724"><vh>@test c old-style decl 1</vh></v>
+<v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
+<v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
+</v>
+<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
+<v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
+<v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
+</v>
+<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4732"><vh>@test elisp functions</vh></v>
+<v t="ekr.20090529141856.4733"><vh>@test elisp 2</vh></v>
+</v>
+<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
+</v>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20090529141856.4737"><vh>@@test nested class</vh></v>
+<v t="ekr.20090529141856.4738"><vh>@test comment after dict assign</vh></v>
+<v t="ekr.20090529141856.4739"><vh>@test decorator test</vh></v>
+<v t="ekr.20090529141856.4740"><vh>@test def inside def</vh></v>
+<v t="ekr.20090529141856.4741"><vh>@test docstring only</vh></v>
+<v t="ekr.20090529141856.4742"><vh>@test overindent def--no following def</vh></v>
+<v t="ekr.20090529141856.4743"><vh>@test overindent def--one following def</vh></v>
+<v t="ekr.20090529141856.4744"><vh>@test overindented def 3</vh></v>
+<v t="ekr.20090529141856.4745"><vh>@test python bad class test</vh></v>
+<v t="ekr.20090529141856.4746"><vh>@test python class test 2</vh></v>
+<v t="ekr.20090529141856.4747"><vh>@test python class tests 1</vh></v>
+<v t="ekr.20090529141856.4748"><vh>@test python decls test 1</vh></v>
+<v t="ekr.20090529141856.4749"><vh>@test python def test 1</vh></v>
+<v t="ekr.20090529141856.4750"><vh>@test python def test 2</vh></v>
+<v t="ekr.20090529141856.4751"><vh>@test python empty decls</vh></v>
+<v t="ekr.20090529141856.4752"><vh>@test python extra leading ws test</vh></v>
+<v t="ekr.20090529141856.4753"><vh>@test python indent decls</vh></v>
+<v t="ekr.20090529141856.4754"><vh>@test python minimal class 1</vh></v>
+<v t="ekr.20090529141856.4755"><vh>@test python minimal class 2</vh></v>
+<v t="ekr.20090529141856.4756"><vh>@test python minimal class 3</vh></v>
+<v t="ekr.20090529141856.4757"><vh>@test python underindent method</vh></v>
+<v t="ekr.20090529141856.4758"><vh>@test scanPythonText: leoImportNosent.py</vh></v>
+<v t="ekr.20090529141856.4759"><vh>@test string test: extra indent</vh></v>
+<v t="ekr.20090529141856.4760"><vh>@test string underindent lines</vh></v>
+<v t="ekr.20090529141856.4761"><vh>@test string underindent lines 2</vh></v>
+<v t="ekr.20090529141856.4762"><vh>@test trailing comment</vh></v>
+<v t="ekr.20090529141856.4763"><vh>@test trailing comment--outer levels</vh></v>
+<v t="ekr.20090529141856.4764"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
+<v t="ekr.20090529141856.4765"><vh>@test unindent in triple string does not end function</vh></v>
+</v>
+<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
+<v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
+<v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
+<v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
+<v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
+<v t="ekr.20090529141856.4772"><vh>Test BundleException.java</vh>
+<v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
+</v>
+</v>
+<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
+<v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
+<v t="ekr.20090529141856.4777"><vh>@test Javascript-2</vh></v>
+<v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
+<v t="ekr.20090529141856.4779"><vh>@@test javascript-test-js</vh></v>
+</v>
+<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
+<v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
+</v>
+<v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
+<v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
+</v>
+<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
+<v t="ekr.20090529141856.4786"><vh>@test rST import test (no double-underlines)</vh></v>
+<v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
+<v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
+<v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
+</v>
+<v t="ekr.20090529141856.4790"><vh> Test files</vh></v>
+<v t="ekr.20090529141856.4791"><vh>Other tests</vh></v>
+<v t="ekr.20090529141856.4792"><vh>Load tests for .leo files</vh></v>
+<v t="ekr.20090529141856.4793"><vh>@@test test imports for modes</vh></v>
 </v>
 <v t="ekr.20071113194033.3"><vh>leoGlobals</vh>
 <v t="ekr.20050208051418" annotate="7d71002e"><vh> Unicode tests</vh>
@@ -1919,154 +2022,6 @@
 </v>
 <v t="ekr.20071113202153.2" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113194258"><vh>leoGui</vh>
-<v t="ekr.20061104172236.20"><vh>@test w.toGui/PythonIndex</vh></v>
-<v t="ekr.20061127142311"><vh>@test w.toGuiIndex (test2)</vh></v>
-<v t="ekr.20061113154104"><vh>@test leoTextWidget</vh></v>
-<v t="ekr.20071113202321" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20071113193624.1"><vh>leoImport</vh>
-<v t="ekr.20040712101754.7" annotate="7d71002e"><vh> Export tests</vh>
-<v t="ekr.20040712101754.9" annotate="7d71002e"><vh>@suite Export tests</vh></v>
-<v t="ekr.20040712101754.24" annotate="7d71002e"><vh>exportTests</vh>
-<v t="ekr.20040712101754.25"><vh>tempNode</vh></v>
-<v t="ekr.20040712101754.26"><vh>exportHeadlines</vh>
-<v t="ekr.20040712101754.27"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20040712101754.28"><vh>flattenOutline</vh>
-<v t="ekr.20040712101754.29"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20040712101754.30"><vh>weave</vh>
-<v t="ekr.20040712101754.31"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20040712101754.32"><vh>outlineToNoweb</vh>
-<v t="ekr.20040712101754.33"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20040712101754.34"><vh>outlineToCWEB</vh>
-<v t="ekr.20040712101754.35"><vh>dialog</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20070711063849"><vh> Import tests</vh>
-<v t="ekr.20040712101754.8" annotate="7d71002e"><vh>@suite Import tests</vh></v>
-<v t="ekr.20040712101754.10" annotate="7d71002e"><vh>importTests</vh>
-<v t="ekr.20040712101754.11" annotate="7d71002e"><vh>tempNode</vh></v>
-<v t="ekr.20040712101754.12" annotate="7d71002e"><vh>importAtRoot</vh>
-<v t="ekr.20040712101754.13"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20040831095833" annotate="7d71002e"><vh>importDerivedFile</vh>
-<v t="ekr.20040831095833.1"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20040712101754.16" annotate="7d71002e"><vh>importNowebFiles</vh>
-<v t="ekr.20040712101754.17"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20040712101754.18" annotate="7d71002e"><vh>importFlattenedOutline</vh>
-<v t="ekr.20040712101754.19"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20040712101754.20" annotate="7d71002e"><vh>importCWEBFiles</vh>
-<v t="ekr.20040712101754.21"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20040712101754.22" annotate="7d71002e"><vh>removeSentinels</vh>
-<v t="ekr.20040712101754.23"><vh>dialog</vh></v>
-</v>
-<v t="ekr.20040712101754.14" annotate="7d71002e"><vh>importAtFile</vh>
-<v t="ekr.20040712101754.15"><vh>dialog</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20071020075538"><vh> Tests of @auto</vh>
-<v t="ekr.20071020075538.1"><vh>C tests</vh>
-<v t="ekr.20071020075538.2"><vh>@test c class 1</vh></v>
-<v t="ekr.20071020075538.3"><vh>@test c class--underindented line</vh></v>
-<v t="ekr.20071020075538.4"><vh>@test defaultImporter</vh></v>
-<v t="ekr.20071020075538.5"><vh>@test c test--comment follows arg list</vh></v>
-<v t="ekr.20071020075538.6"><vh>@test c test--comment follows block delim</vh></v>
-<v t="ekr.20071020075538.7"><vh>@test c test--intermixed blanks and tabs</vh></v>
-<v t="ekr.20071020075538.8"><vh>@test c old-style decl 1</vh></v>
-<v t="ekr.20071020075538.9"><vh>@test c old-style decl 2</vh></v>
-<v t="ekr.20071108082844"><vh>@test c extern</vh></v>
-</v>
-<v t="ekr.20071020075538.33"><vh>c# tests</vh>
-<v t="ekr.20071020075538.34"><vh>@test c# namespace indent</vh></v>
-<v t="ekr.20071020075538.50"><vh>@test c# namespace no indent</vh></v>
-<v t="ekr.20071020075538.63"><vh>@@test c# ref card</vh></v>
-</v>
-<v t="ekr.20090401102321.1"><vh>elisp tests</vh>
-<v t="ekr.20090401102321.2"><vh>@test elisp functions</vh></v>
-</v>
-<v t="ekr.20080211092326"><vh>Pascal tests</vh>
-<v t="ekr.20080211092326.1"><vh>@test pascal-to-delphi interface</vh></v>
-</v>
-<v t="ekr.20071020075538.10"><vh>Python tests</vh>
-<v t="ekr.20071020075538.31"><vh>@@test nested class</vh></v>
-<v t="ekr.20071020075538.30"><vh>@test comment after dict assign</vh></v>
-<v t="ekr.20071201071535"><vh>@test decorator test</vh></v>
-<v t="ekr.20071020075538.25"><vh>@test def inside def</vh></v>
-<v t="ekr.20080121080011"><vh>@test docstring only</vh></v>
-<v t="ekr.20071020075538.27"><vh>@test overindent def--no following def</vh></v>
-<v t="ekr.20071020075538.26"><vh>@test overindent def--one following def</vh></v>
-<v t="ekr.20071101074443"><vh>@test overindented def 3</vh></v>
-<v t="ekr.20071020075538.11"><vh>@test python bad class test</vh></v>
-<v t="ekr.20071020075538.14"><vh>@test python class test 2</vh></v>
-<v t="ekr.20071020075538.13"><vh>@test python class tests 1</vh></v>
-<v t="ekr.20071020075538.15"><vh>@test python decls test 1</vh></v>
-<v t="ekr.20071020075538.20"><vh>@test python def test 1</vh></v>
-<v t="ekr.20071020075538.21"><vh>@test python def test 2</vh></v>
-<v t="ekr.20071020075538.16"><vh>@test python empty decls</vh></v>
-<v t="ekr.20071020075538.12"><vh>@test python extra leading ws test</vh></v>
-<v t="ekr.20071107085755"><vh>@test python indent decls</vh></v>
-<v t="ekr.20071020075538.17"><vh>@test python minimal class 1</vh></v>
-<v t="ekr.20071020075538.18"><vh>@test python minimal class 2</vh></v>
-<v t="ekr.20071020075538.19"><vh>@test python minimal class 3</vh></v>
-<v t="ekr.20081216113655.2"><vh>@test python underindent method</vh></v>
-<v t="ekr.20071020075538.32"><vh>@test scanPythonText: leoImportNosent.py</vh></v>
-<v t="ekr.20071020075538.22"><vh>@test string test: extra indent</vh></v>
-<v t="ekr.20071020075538.23"><vh>@test string underindent lines</vh></v>
-<v t="ekr.20071020075538.24"><vh>@test string underindent lines 2</vh></v>
-<v t="ekr.20071020075538.28"><vh>@test trailing comment</vh></v>
-<v t="ekr.20071020075538.29"><vh>@test trailing comment--outer levels</vh></v>
-<v t="ekr.20080901083414.24"><vh>@test two functions (for comparison with unindent does not end function)</vh></v>
-<v t="ekr.20080901083414.1"><vh>@test unindent in triple string does not end function</vh></v>
-</v>
-<v t="ekr.20090501123949.2"><vh>rST tests</vh>
-<v t="ekr.20090501123949.3"><vh>@test rST import test</vh></v>
-</v>
-<v t="ekr.20071020075538.64"><vh>Java tests</vh>
-<v t="ekr.20071020075538.65"><vh>@test java interface test1</vh></v>
-<v t="ekr.20071020075538.66"><vh>@test java interface test2</vh></v>
-<v t="ekr.20071020075538.67"><vh>@@test constants.java</vh></v>
-<v t="ekr.20071020075538.77"><vh>@test from AdminPermission.java</vh></v>
-<v t="ekr.20071020075538.78"><vh>@@test AdminPermission.java</vh></v>
-<v t="ekr.20071030111427"><vh>Test BundleException.java</vh>
-<v t="ekr.20071030111256"><vh>@test from BundleException.java</vh></v>
-</v>
-</v>
-<v t="ekr.20071215121511"><vh>Javascript tests</vh>
-<v t="ekr.20071215135125"><vh>Problems</vh></v>
-<v t="ekr.20071215121835"><vh>@test Javascript-regex-1</vh></v>
-<v t="ekr.20071215121952"><vh>@test Javascript-2</vh></v>
-<v t="ekr.20071215123831"><vh>@test Javascript-3</vh></v>
-<v t="ekr.20071215134411"><vh>@@test javascript-test-js</vh></v>
-</v>
-<v t="ekr.20071214075605"><vh>xml tests</vh>
-<v t="ekr.20071214075605.1"><vh>@test xml 1</vh></v>
-</v>
-<v t="ekr.20071024102639"><vh>@test checkTrialWrite</vh></v>
-<v t="ekr.20071020075538.79"><vh>@test collapse-all</vh></v>
-</v>
-<v t="ekr.20071113145804.2"><vh> Test files</vh></v>
-<v t="ekr.20071113145804.3"><vh>Other tests</vh></v>
-<v t="ekr.20071119053439"><vh>Load tests for .leo files</vh></v>
-<v t="ekr.20080811180035.1"><vh>All unit tests</vh></v>
-<v t="ekr.20071113202321.1" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
-</v>
-<v t="ekr.20071113194033.2"><vh>leoKeys</vh>
-<v t="ekr.20071113145804.34"><vh>@test isPlainKey</vh></v>
-<v t="ekr.20061104172236.24"><vh>@test k.autoCompleterClass.calltip</vh></v>
-<v t="ekr.20060328091154"><vh>@test k.registerCommand</vh></v>
-<v t="ekr.20060203181203.2"><vh>@test strokeFromSetting</vh></v>
-<v t="ekr.20071113202410" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
-</v>
 <v t="ekr.20071113194424.1"><vh>leoNodes</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
@@ -2074,7 +2029,7 @@
 </v>
 <v t="ekr.20040712101754.182"></v>
 </v>
-<v t="ekr.20040712101754.187" a="E" annotate="7d71002e"><vh> Position tests</vh>
+<v t="ekr.20040712101754.187" annotate="7d71002e"><vh> Position tests</vh>
 <v t="ekr.20080418101332.1"><vh> Diabled tests</vh>
 <v t="ekr.20040712101754.184"><vh>@@test consistency of p.v.t.vnodeList &amp; v.parents for cloned nodes</vh></v>
 <v t="ekr.20040712101754.208" annotate="7d71002e"><vh>@@test consistency of tnodeListAndParents</vh></v>
@@ -2116,7 +2071,7 @@
 </v>
 <v t="ekr.20090102061858.2"><vh>@test c.positionExists</vh></v>
 <v t="ekr.20090102062037.2"><vh>@test c.positionExists for all nodes</vh></v>
-<v t="ekr.20040802071519" a="E" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
+<v t="ekr.20040802071519" annotate="7d71002e"><vh>@test p.setBodyStringOrPane</vh>
 <v t="ekr.20040802071519.1"><vh>Startup</vh></v>
 </v>
 <v t="ekr.20040712101754.175"><vh>@test p.t == p.v.t</vh></v>
@@ -2126,7 +2081,7 @@
 <v t="ville.20090312195309.2"><vh>@test find_h / find_b / select_h / select_b</vh></v>
 </v>
 <v t="ekr.20090130133404.2"><vh>@test leoNodes properties</vh></v>
-<v t="ekr.20080501121449.1" a="E"><vh>Fundamental node operations</vh>
+<v t="ekr.20080501121449.1"><vh>Fundamental node operations</vh>
 <v t="ekr.20080423110627.2"><vh>@test at most one vnode has str_leo_pos attribute</vh></v>
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503132221.1"><vh>Startup</vh></v>
@@ -2160,7 +2115,7 @@
 <v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
 </v>
 </v>
-<v t="ekr.20081001094920.2" a="E"><vh>tests for p.textOffset()</vh>
+<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
 <v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
 <v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
 <v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
@@ -2169,265 +2124,259 @@
 </v>
 <v t="ekr.20071113202452" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113200638.8" a="E"><vh>leoPlugins</vh>
-<v t="ekr.20071113145804.30"><vh>@test getHandlersForTag</vh></v>
+<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
+<v t="ekr.20090529115704.4398"><vh>@shadow-tests</vh>
+<v t="ekr.20090529115704.4399"><vh>passed</vh></v>
+<v t="ekr.20090529115704.4400"><vh>@shadow-test change middle line</vh>
+<v t="ekr.20090529115704.4401"><vh>old</vh></v>
+<v t="ekr.20090529115704.4402"><vh>new</vh></v>
 </v>
-<v t="ekr.20080729200342.1" a="E"><vh>leoShadow</vh>
-<v t="ekr.20080729200342.2"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh></v>
-<v t="ekr.20080729200342.3"><vh>@shadow-tests</vh>
-<v t="ekr.20080804124245.1"><vh>passed</vh></v>
-<v t="ekr.20080729200342.5"><vh>@shadow-test change middle line</vh>
-<v t="ekr.20080729200342.6"><vh>old</vh></v>
-<v t="ekr.20080729200342.7"><vh>new</vh></v>
+<v t="ekr.20090529115704.4403"><vh>@shadow-test change first line</vh>
+<v t="ekr.20090529115704.4404"><vh>old</vh></v>
+<v t="ekr.20090529115704.4405"><vh>new</vh></v>
 </v>
-<v t="ekr.20080729200342.8"><vh>@shadow-test change first line</vh>
-<v t="ekr.20080729200342.9"><vh>old</vh></v>
-<v t="ekr.20080729200342.10"><vh>new</vh></v>
+<v t="ekr.20090529115704.4406"><vh>@shadow-test change last line</vh>
+<v t="ekr.20090529115704.4407"><vh>old</vh></v>
+<v t="ekr.20090529115704.4408"><vh>new</vh></v>
 </v>
-<v t="ekr.20080729200342.11"><vh>@shadow-test change last line</vh>
-<v t="ekr.20080729200342.12"><vh>old</vh></v>
-<v t="ekr.20080729200342.13"><vh>new</vh></v>
+<v t="ekr.20090529115704.4409"><vh>@shadow-test delete first line</vh>
+<v t="ekr.20090529115704.4410"><vh>old</vh></v>
+<v t="ekr.20090529115704.4411"><vh>new</vh></v>
 </v>
-<v t="ekr.20080729200342.14"><vh>@shadow-test delete first line</vh>
-<v t="ekr.20080729200342.15"><vh>old</vh></v>
-<v t="ekr.20080729200342.16"><vh>new</vh></v>
+<v t="ekr.20090529115704.4412"><vh>@shadow-test delete middle line</vh>
+<v t="ekr.20090529115704.4413"><vh>old</vh></v>
+<v t="ekr.20090529115704.4414"><vh>new</vh></v>
 </v>
-<v t="ekr.20080729200342.17"><vh>@shadow-test delete middle line</vh>
-<v t="ekr.20080729200342.18"><vh>old</vh></v>
-<v t="ekr.20080729200342.19"><vh>new</vh></v>
+<v t="ekr.20090529115704.4415"><vh>@shadow-test delete last line</vh>
+<v t="ekr.20090529115704.4416"><vh>old</vh></v>
+<v t="ekr.20090529115704.4417"><vh>new</vh></v>
 </v>
-<v t="ekr.20080729200342.20"><vh>@shadow-test delete last line</vh>
-<v t="ekr.20080729200342.21"><vh>old</vh></v>
-<v t="ekr.20080729200342.22"><vh>new</vh></v>
+<v t="ekr.20090529115704.4418"><vh>@shadow-test insert before first line</vh>
+<v t="ekr.20090529115704.4419"><vh>old</vh></v>
+<v t="ekr.20090529115704.4420"><vh>new</vh></v>
 </v>
-<v t="ekr.20080729200342.23"><vh>@shadow-test insert before first line</vh>
-<v t="ekr.20080729200342.24"><vh>old</vh></v>
-<v t="ekr.20080729200342.25"><vh>new</vh></v>
+<v t="ekr.20090529115704.4421"><vh>@shadow-test insert after first line</vh>
+<v t="ekr.20090529115704.4422"><vh>old</vh></v>
+<v t="ekr.20090529115704.4423"><vh>new</vh></v>
 </v>
-<v t="ekr.20080729200342.26"><vh>@shadow-test insert after first line</vh>
-<v t="ekr.20080729200342.27"><vh>old</vh></v>
-<v t="ekr.20080729200342.28"><vh>new</vh></v>
+<v t="ekr.20090529115704.4424"><vh>@shadow-test insert before last line</vh>
+<v t="ekr.20090529115704.4425"><vh>old</vh></v>
+<v t="ekr.20090529115704.4426"><vh>new</vh></v>
 </v>
-<v t="ekr.20080729200342.29"><vh>@shadow-test insert before last line</vh>
-<v t="ekr.20080729200342.30"><vh>old</vh></v>
-<v t="ekr.20080729200342.31"><vh>new</vh></v>
+<v t="ekr.20090529115704.4427"><vh>@shadow-test insert after last line</vh>
+<v t="ekr.20090529115704.4428"><vh>old</vh></v>
+<v t="ekr.20090529115704.4429"><vh>new</vh></v>
 </v>
-<v t="ekr.20080729200342.32"><vh>@shadow-test insert after last line</vh>
-<v t="ekr.20080729200342.33"><vh>old</vh></v>
-<v t="ekr.20080729200342.34"><vh>new</vh></v>
+<v t="ekr.20090529115704.4430"><vh>@shadow-test-lax insert between nodes: at end of prev node</vh>
+<v t="ekr.20090529115704.4431"><vh>old</vh>
+<v t="ekr.20090529115704.4432"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4433"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.35"><vh>@shadow-test-lax insert between nodes: at end of prev node</vh>
-<v t="ekr.20080729200342.36"><vh>old</vh>
-<v t="ekr.20080729200342.37"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.38"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4434"><vh>new</vh>
+<v t="ekr.20090529115704.4435"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4436"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.39"><vh>new</vh>
-<v t="ekr.20080729200342.40"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.41"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4437"><vh>@shadow-test insert between nodes: at start of next node</vh>
+<v t="ekr.20090529115704.4438"><vh>old</vh>
+<v t="ekr.20090529115704.4439"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4440"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.42"><vh>@shadow-test insert between nodes: at start of next node</vh>
-<v t="ekr.20080729200342.43"><vh>old</vh>
-<v t="ekr.20080729200342.44"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.45"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4441"><vh>new</vh>
+<v t="ekr.20090529115704.4442"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4443"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.46"><vh>new</vh>
-<v t="ekr.20080729200342.47"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.48"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4444"><vh>@shadow-test delete between nodes: at end of prev node</vh>
+<v t="ekr.20090529115704.4445"><vh>old</vh>
+<v t="ekr.20090529115704.4446"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4447"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.49"><vh>@shadow-test delete between nodes: at end of prev node</vh>
-<v t="ekr.20080729200342.50"><vh>old</vh>
-<v t="ekr.20080729200342.51"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.52"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4448"><vh>new</vh>
+<v t="ekr.20090529115704.4449"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4450"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.53"><vh>new</vh>
-<v t="ekr.20080729200342.54"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.55"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4451"><vh>@shadow-test delete between nodes: at start of next node</vh>
+<v t="ekr.20090529115704.4452"><vh>old</vh>
+<v t="ekr.20090529115704.4453"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4454"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.56"><vh>@shadow-test delete between nodes: at start of next node</vh>
-<v t="ekr.20080729200342.57"><vh>old</vh>
-<v t="ekr.20080729200342.58"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.59"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4455"><vh>new</vh>
+<v t="ekr.20090529115704.4456"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4457"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.60"><vh>new</vh>
-<v t="ekr.20080729200342.61"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.62"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4458"><vh>@shadow-test change end of prev node</vh>
+<v t="ekr.20090529115704.4459"><vh>old</vh>
+<v t="ekr.20090529115704.4460"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4461"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.63"><vh>@shadow-test change end of prev node</vh>
-<v t="ekr.20080729200342.64"><vh>old</vh>
-<v t="ekr.20080729200342.65"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.66"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4462"><vh>new</vh>
+<v t="ekr.20090529115704.4463"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4464"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.67"><vh>new</vh>
-<v t="ekr.20080729200342.68"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.69"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4465"><vh>@shadow-test change start of next node</vh>
+<v t="ekr.20090529115704.4466"><vh>old</vh>
+<v t="ekr.20090529115704.4467"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4468"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.70"><vh>@shadow-test change start of next node</vh>
-<v t="ekr.20080729200342.71"><vh>old</vh>
-<v t="ekr.20080729200342.72"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.73"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4469"><vh>new</vh>
+<v t="ekr.20090529115704.4470"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4471"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.74"><vh>new</vh>
-<v t="ekr.20080729200342.75"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.76"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4472"><vh>@shadow-test-lax multiple-line insert between nodes: at end of prev node</vh>
+<v t="ekr.20090529115704.4473"><vh>old</vh>
+<v t="ekr.20090529115704.4474"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4475"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.77"><vh>@shadow-test-lax multiple-line insert between nodes: at end of prev node</vh>
-<v t="ekr.20080729200342.78"><vh>old</vh>
-<v t="ekr.20080729200342.79"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.80"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4476"><vh>new</vh>
+<v t="ekr.20090529115704.4477"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4478"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.81"><vh>new</vh>
-<v t="ekr.20080729200342.82"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.83"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4479"><vh>@shadow-test multiple-line insert between nodes: at start of next node</vh>
+<v t="ekr.20090529115704.4480"><vh>old</vh>
+<v t="ekr.20090529115704.4481"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4482"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.84"><vh>@shadow-test multiple-line insert between nodes: at start of next node</vh>
-<v t="ekr.20080729200342.85"><vh>old</vh>
-<v t="ekr.20080729200342.86"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.87"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4483"><vh>new</vh>
+<v t="ekr.20090529115704.4484"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4485"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.88"><vh>new</vh>
-<v t="ekr.20080729200342.89"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.90"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4486"><vh>@shadow-test multiple-line change end of prev node</vh>
+<v t="ekr.20090529115704.4487"><vh>old</vh>
+<v t="ekr.20090529115704.4488"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4489"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.91"><vh>@shadow-test multiple-line change end of prev node</vh>
-<v t="ekr.20080729200342.92"><vh>old</vh>
-<v t="ekr.20080729200342.93"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.94"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4490"><vh>new</vh>
+<v t="ekr.20090529115704.4491"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4492"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.95"><vh>new</vh>
-<v t="ekr.20080729200342.96"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.97"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4493"><vh>@shadow-test multiple-line change start of next node</vh>
+<v t="ekr.20090529115704.4494"><vh>old</vh>
+<v t="ekr.20090529115704.4495"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4496"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.98"><vh>@shadow-test multiple-line change start of next node</vh>
-<v t="ekr.20080729200342.99"><vh>old</vh>
-<v t="ekr.20080729200342.100"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.101"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4497"><vh>new</vh>
+<v t="ekr.20090529115704.4498"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4499"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.102"><vh>new</vh>
-<v t="ekr.20080729200342.103"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.104"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4500"><vh>@shadow-test multiple-line delete between nodes: at end of prev node</vh>
+<v t="ekr.20090529115704.4501"><vh>old</vh>
+<v t="ekr.20090529115704.4502"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4503"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.105"><vh>@shadow-test multiple-line delete between nodes: at end of prev node</vh>
-<v t="ekr.20080729200342.106"><vh>old</vh>
-<v t="ekr.20080729200342.107"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.108"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4504"><vh>new</vh>
+<v t="ekr.20090529115704.4505"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4506"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.109"><vh>new</vh>
-<v t="ekr.20080729200342.110"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.111"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4507"><vh>@shadow-test multiple-line delete between nodes: at start of next node</vh>
+<v t="ekr.20090529115704.4508"><vh>old</vh>
+<v t="ekr.20090529115704.4509"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4510"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.112"><vh>@shadow-test multiple-line delete between nodes: at start of next node</vh>
-<v t="ekr.20080729200342.113"><vh>old</vh>
-<v t="ekr.20080729200342.114"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.115"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4511"><vh>new</vh>
+<v t="ekr.20090529115704.4512"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4513"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080729200342.116"><vh>new</vh>
-<v t="ekr.20080729200342.117"><vh>node 1</vh></v>
-<v t="ekr.20080729200342.118"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4514"><vh>@shadow-test verbatim sentinels-delete verbatim line</vh>
+<v t="ekr.20090529115704.4515"><vh>old</vh>
+<v t="ekr.20090529115704.4516"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4517"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080804101159.1"><vh>@shadow-test verbatim sentinels-delete verbatim line</vh>
-<v t="ekr.20080804101159.2"><vh>old</vh>
-<v t="ekr.20080804101159.3"><vh>node 1</vh></v>
-<v t="ekr.20080804101159.4"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4518"><vh>new</vh>
+<v t="ekr.20090529115704.4519"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4520"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080804101159.5"><vh>new</vh>
-<v t="ekr.20080804101159.6"><vh>node 1</vh></v>
-<v t="ekr.20080804101159.7"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4521"><vh>@shadow-test verbatim sentinels-delete verbatim line: at start of node</vh>
+<v t="ekr.20090529115704.4522"><vh>old</vh>
+<v t="ekr.20090529115704.4523"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4524"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080804121540.1"><vh>@shadow-test verbatim sentinels-delete verbatim line: at start of node</vh>
-<v t="ekr.20080804121540.2"><vh>old</vh>
-<v t="ekr.20080804121540.4"><vh>node 1</vh></v>
-<v t="ekr.20080804121540.3"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4525"><vh>new</vh>
+<v t="ekr.20090529115704.4526"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4527"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080804121540.5"><vh>new</vh>
-<v t="ekr.20080804121540.7"><vh>node 1</vh></v>
-<v t="ekr.20080804121540.6"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4528"><vh>@shadow-test verbatim sentinels-no change</vh>
+<v t="ekr.20090529115704.4529"><vh>old</vh>
+<v t="ekr.20090529115704.4530"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4531"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080804100908.7"><vh>@shadow-test verbatim sentinels-no change</vh>
-<v t="ekr.20080804100908.1"><vh>old</vh>
-<v t="ekr.20080804100908.2"><vh>node 1</vh></v>
-<v t="ekr.20080804100908.3"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4532"><vh>new</vh>
+<v t="ekr.20090529115704.4533"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4534"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080804100908.8"><vh>new</vh>
-<v t="ekr.20080804100908.9"><vh>node 1</vh></v>
-<v t="ekr.20080804100908.10"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4535"><vh>@shadow-test verbatim sentinels-delete verbatim line: at end of node</vh>
+<v t="ekr.20090529115704.4536"><vh>old</vh>
+<v t="ekr.20090529115704.4537"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4538"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080804121540.8"><vh>@shadow-test verbatim sentinels-delete verbatim line: at end of node</vh>
-<v t="ekr.20080804121540.9"><vh>old</vh>
-<v t="ekr.20080804121540.10"><vh>node 1</vh></v>
-<v t="ekr.20080804121540.11"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4539"><vh>new</vh>
+<v t="ekr.20090529115704.4540"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4541"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080804121540.12"><vh>new</vh>
-<v t="ekr.20080804121540.13"><vh>node 1</vh></v>
-<v t="ekr.20080804121540.14"><vh>node 2</vh></v>
 </v>
+<v t="ekr.20090529115704.4542"><vh>@shadow-test verbatim sentinels-add verbatim line</vh>
+<v t="ekr.20090529115704.4543"><vh>old</vh>
+<v t="ekr.20090529115704.4544"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4545"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080804123400.1"><vh>@shadow-test verbatim sentinels-add verbatim line</vh>
-<v t="ekr.20080804123400.2"><vh>old</vh>
-<v t="ekr.20080804123400.3"><vh>node 1</vh></v>
-<v t="ekr.20080804123400.4"><vh>node 2</vh></v>
+<v t="ekr.20090529115704.4546"><vh>new</vh>
+<v t="ekr.20090529115704.4547"><vh>node 1</vh></v>
+<v t="ekr.20090529115704.4548"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20080804123400.5"><vh>new</vh>
-<v t="ekr.20080804123400.6"><vh>node 1</vh></v>
-<v t="ekr.20080804123400.7"><vh>node 2</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20080729200342.119" a="E"><vh>Other unit tests of shadowController</vh>
-<v t="ekr.20080729200342.120"><vh>@test x.baseDirName</vh></v>
-<v t="ekr.20080729200342.121"><vh>@test x.pathName</vh></v>
-<v t="ekr.20080729200342.122"><vh>@test x.dirName</vh></v>
-<v t="ekr.20080729200342.123"><vh>@test x.shadowPathName</vh></v>
-<v t="ekr.20080729200342.124"><vh>@test x.shadowDirName</vh></v>
-<v t="ekr.20080729200342.125"><vh>@test x.rename</vh></v>
-<v t="ekr.20080729200342.126"><vh>@test x.unlink</vh></v>
-<v t="ekr.20080729200342.127"><vh>@test x.makeShadowDirectory</vh>
-<v t="ekr.20080729200342.128"><vh>deleteShadowDir</vh></v>
+<v t="ekr.20090529115704.4549"><vh>Other unit tests of shadowController</vh>
+<v t="ekr.20090529115704.4550"><vh>@test x.baseDirName</vh></v>
+<v t="ekr.20090529115704.4551"><vh>@test x.pathName</vh></v>
+<v t="ekr.20090529115704.4552"><vh>@test x.dirName</vh></v>
+<v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
+<v t="ekr.20090529115704.4554"><vh>@test x.shadowDirName</vh></v>
+<v t="ekr.20090529115704.4555"><vh>@test x.rename</vh></v>
+<v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
+<v t="ekr.20090529115704.4557"><vh>@test x.makeShadowDirectory</vh>
+<v t="ekr.20090529115704.4558"><vh>deleteShadowDir</vh></v>
 </v>
-<v t="ekr.20080729200342.129"><vh>@test x.replaceFileWithString</vh></v>
-<v t="ekr.20080812114335.1"><vh>@test x.markerFromExtension</vh></v>
-<v t="ekr.20080822075239.1"><vh>@@test (minitest) x.show_error</vh></v>
+<v t="ekr.20090529115704.4559"><vh>@test x.replaceFileWithString</vh></v>
+<v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 </v>
-<v t="ekr.20080729200342.130" a="E"><vh>Unit tests for atFileCommands</vh>
-<v t="ekr.20080729200342.131"><vh>@test at.open/closeStringFile</vh></v>
-<v t="ekr.20080729200342.132"><vh>@test at.openForWrite: not a shadow file</vh></v>
-<v t="ekr.20080729200342.133"><vh>@test at.readOneAtShadowNode</vh>
-<v t="ekr.20080729200342.134"><vh>@@shadow unittest/read_test.py</vh></v>
+<v t="ekr.20090529115704.4561"><vh>Unit tests for atFileCommands</vh>
+<v t="ekr.20090529115704.4562"><vh>@test at.open/closeStringFile</vh></v>
+<v t="ekr.20090529115704.4563"><vh>@test at.openForWrite: not a shadow file</vh></v>
+<v t="ekr.20090529115704.4564"><vh>@test at.readOneAtShadowNode</vh>
+<v t="ekr.20090529115704.4565"><vh>@@shadow unittest/read_test.py</vh></v>
 </v>
-<v t="ekr.20080729200342.135"><vh>@test at.replaceFileWithString</vh></v>
-<v t="ekr.20080729200342.136"><vh>@test at.writeOneAtShadowNode</vh>
-<v t="ekr.20080729200342.137"><vh>@@shadow unittest/test_1.py</vh></v>
+<v t="ekr.20090529115704.4566"><vh>@test at.replaceFileWithString</vh></v>
+<v t="ekr.20090529115704.4567"><vh>@test at.writeOneAtShadowNode</vh>
+<v t="ekr.20090529115704.4568"><vh>@@shadow unittest/test_1.py</vh></v>
 </v>
 </v>
-<v t="ekr.20080729200342.138"><vh>@test delete unittest shadow directory</vh></v>
+<v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 </v>
-<v t="ekr.20071113200638.1" a="E"><vh>leoTangle</vh>
+<v t="ekr.20071113200638.1"><vh>leoTangle</vh>
 <v t="ekr.20071113090055.1"><vh>@test tangle.scanAllDirectives</vh></v>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
 <v t="ekr.20071127194743.1"><vh>#@root</vh></v>
 <v t="ekr.20071127194743.2"><vh>Output</vh></v>
 </v>
 </v>
-<v t="ekr.20071113200638.2" a="E"><vh>leoTest</vh>
-<v t="ekr.20071113145804.25"><vh>@test unit testing with embedded class</vh></v>
-</v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
-<v t="ekr.20040712101754.37" a="E" annotate="7d71002e"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38" a="E" annotate="7d71002e"><vh>editBodyTests</vh>
+<v t="ekr.20040712101754.37" annotate="7d71002e"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38" annotate="7d71002e"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
 <v t="ekr.20050417202713" annotate="7d71002e"><vh>addComments</vh>
 <v t="ekr.20050417202713.1"><vh>before</vh></v>
@@ -2492,11 +2441,11 @@
 </v>
 <v t="ekr.20071113202510" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
+<v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113193624.1"></v>
+<v t="ekr.20090615053403.4876" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2557,66 +2506,6 @@ leoTest.runLeoTest(c,path)
 path = g.os_path_join(g.app.loadDir,"..","doc","LeoDocs.leo")
 leoTest.runLeoTest(c,path)
 </t>
-<t tx="ekr.20040712101754.7">@language python
-@tabwidth -4</t>
-<t tx="ekr.20040712101754.8"># Create unit tests in g.app.scriptDict["suite"]
-
-import unittest
-import leo.core.leoTest as leoTest
-
-@others
-
-suite = leoTest.makeImportExportSuite(c,"importTests",doImport=True)
-
-g.app.scriptDict['suite'] = suite</t>
-<t tx="ekr.20040712101754.9"># Create unit tests in g.app.scriptDict["suite"]
-
-
-import unittest
-import leo.core.leoTest as leoTest
-
-@others
-
-suite = leoTest.makeImportExportSuite(c,"exportTests",doImport=False)
-
-g.app.scriptDict['suite'] = suite</t>
-<t tx="ekr.20040712101754.10">@language plain</t>
-<t tx="ekr.20040712101754.11"></t>
-<t tx="ekr.20040712101754.12"></t>
-<t tx="ekr.20040712101754.13">openFileDialog
-test\\unittest\\perfectImport\\formatter.py</t>
-<t tx="ekr.20040712101754.14"></t>
-<t tx="ekr.20040712101754.15">openFileDialog
-test\\unittest\\perfectImport\\formatter.py</t>
-<t tx="ekr.20040712101754.16"></t>
-<t tx="ekr.20040712101754.17">openFileDialog
-test\\unittest\\input\\noweave.nw.txt</t>
-<t tx="ekr.20040712101754.18"></t>
-<t tx="ekr.20040712101754.19">openFileDialog
-test\\unittest\\input\\flat.txt</t>
-<t tx="ekr.20040712101754.20"></t>
-<t tx="ekr.20040712101754.21">openFileDialog
-test\\unittest\\input\\cweave.w</t>
-<t tx="ekr.20040712101754.22"></t>
-<t tx="ekr.20040712101754.23">openFileDialog
-test\\unittest\\input\\testLeoAtFile.py</t>
-<t tx="ekr.20040712101754.24">@language plain</t>
-<t tx="ekr.20040712101754.25"></t>
-<t tx="ekr.20040712101754.26"></t>
-<t tx="ekr.20040712101754.27">saveFileDialog
-test\\unittest\\output\\exportHeadlines.txt</t>
-<t tx="ekr.20040712101754.28"></t>
-<t tx="ekr.20040712101754.29">saveFileDialog
-test\\unittest\\output\\flattenOutline.txt</t>
-<t tx="ekr.20040712101754.30"></t>
-<t tx="ekr.20040712101754.31">saveFileDialog
-test\\unittest\\output\\weave.txt</t>
-<t tx="ekr.20040712101754.32"></t>
-<t tx="ekr.20040712101754.33">saveFileDialog
-test\\unittest\\output\\outlineToNoweb.txt</t>
-<t tx="ekr.20040712101754.34"></t>
-<t tx="ekr.20040712101754.35">saveFileDialog
-test\\unittest\\output\\outlineToCweb.txt</t>
 <t tx="ekr.20040712101754.37"># Create unit tests in g.app.scriptDict["suite"]
 
 import leo.core.leoTest as leoTest
@@ -2730,1552 +2619,12 @@ Line 1
 #@-leo
 last line 1: two trailing newlines
 </t>
-<t tx="ekr.20040712101754.116">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.117">@language plain
-@comment # /* */
-
-This is plain text.
-
-# This is a comment.
-
-More plain text.
-
-/* A block comment
-continues */
-
-More plain text.</t>
-<t tx="ekr.20040712101754.118">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.119">@language actionscript
-
-break
-call, continue
-delete, do
-else
-false, for, function
-goto
-if, in
-new, null
-return
-true, typeof
-undefined
-var, void, while, with
-#include
-catch, constructor
-prototype
-this, try
-_parent, _root, __proto__
-// Jeeze hasn't anyone ever heard of namespaces??
-ASnative, abs, acos, appendChild, asfunction, asin, atan, atan2, attachMovie, attachSound, attributes
-BACKSPACE
-CAPSLOCK, CONTROL, ceil, charAt, charCodeAt, childNodes, chr, cloneNode, close, concat, connect, cos, createElement, createTextNode
-DELETEKEY, DOWN, docTypeDecl, duplicateMovieClip
-END, ENTER, ESCAPE, enterFrame, entry, equal, eval, evaluate, exp
-firstChild, floor, fromCharCode, fscommand, getAscii
-getBeginIndex, getBounds, getBytesLoaded, getBytesTotal, getCaretIndex, getCode, getDate, getDay, getEndIndex, getFocus, getFullYear, getHours, getMilliseconds, getMinutes, getMonth, getPan, getProperty, getRGB, getSeconds, getTime, getTimer, getTimezoneOffset, getTransform, getURL, getUTCDate, getUTCDay, getUTCFullYear, getUTCHours, getUTCMilliseconds, getUTCMinutes, getUTCMonth, getUTCSeconds, getVersion, getVolume, getYear, globalToLocal, gotoAndPlay, gotoAndStop
-HOME, haschildNodes, hide, hitTest
-INSERT, Infinity, ifFrameLoaded, ignoreWhite, indexOf, insertBefore, int, isDown, isFinite, isNaN, isToggled
-join
-keycode, keyDown, keyUp
-LEFT, LN10, LN2, LOG10E, LOG2E, lastChild, lastIndexOf, length, load, loaded, loadMovie, loadMovieNum, loadVariables, loadVariablesNum, localToGlobal, log
-MAX_VALUE, MIN_VALUE, max, maxscroll, mbchr, mblength, mbord, mbsubstring, min, 
-NEGATIVE_INFINITY, NaN, newline, nextFrame, nextScene, nextSibling, nodeName, nodeType, nodeValue
-on, onClipEvent, onClose, onConnect, onData, onLoad, onXML, ord
-PGDN, PGUP, PI, POSITIVE_INFINITY, parentNode, parseFloat, parseInt, parseXML, play, pop, pow, press, prevFrame, previousSibling, prevScene, print, printAsBitmap, printAsBitmapNum, printNum, push
-RIGHT, random, release, removeMovieClip, removeNode, reverse, round
-SPACE, SQRT1_2, SQRT2, scroll, send, sendAndLoad, set, setDate, setFocus, setFullYear, setHours, setMilliseconds, setMinutes, setMonth, setPan, setProperty, setRGB, setSeconds, setSelection, setTime, setTransform, setUTCDate, setUTCFullYear, setUTCHours, setUTCMilliseconds, setUTCMinutes, setUTCMonth, setUTCSeconds, setVolume, setYear, shift, show, sin, slice, sort, start, startDrag, status, stop, stopAllSounds, stopDrag, substr, substring, swapDepths, splice, split, sqrt
-TAB, tan, targetPath, tellTarget, toggleHighQuality, toLowerCase, toString, toUpperCase, trace
-UP, UTC, unescape, unloadMovie, unLoadMovieNum, unshift, updateAfterEvent
-valueOf
-xmlDecl, _alpha
-_currentframe
-_droptarget
-_focusrect, _framesloaded
-_height, _highquality
-_name
-_quality
-_rotation
-_soundbuftime
-_target, _totalframes
-_url
-_visible
-_width
-_x, _xmouse, _xscale
-_y, _ymouse, _yscale
-and, add, eq, ge, gt, le, lt, ne, not, or, Array, Boolean, Color, Date, Key, Math, MovieClip, Mouse, Number, Object, Selection, Sound, String, XML, XMLSocket</t>
-<t tx="ekr.20040712101754.120">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.121">@language c
-@comment /* */
-
-@
-@c
-
-#define WIPEOUT 0 /* 
-                   * Causes database card number &amp; flags to be set to zero. 
-                   * This is so I don't need an infinite supply of cards!
-                   */
-// Not colored (because of @language /* */)
-#include "equ.h"
-#include "cmn.h"
-#include "ramdef.h"
-#include "eeprom.h"
-#include &lt;hpc_ram.h&gt;
-#include &lt;rlydef.h&gt;</t>
-<t tx="ekr.20040712101754.122">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.123">@language csharp
-@ comment
-@c
-
-/* block
-comment */
-
-// test
-
-id // not a keyword
-
-abstract as 
-base bool break byte 
-case catch char checked class const continue 
-decimal default delegate do double 
-else enum event explicit extern 
-false finally fixed float for foreach 
-get goto 
-if implicit in int interface internal is 
-lock long 
-namespace new null 
-object operator out override 
-params partial private protected public 
-readonly ref return 
-sbyte sealed set short sizeof stackalloc 
-static string struct switch 
-this throw true try typeof 
-uint ulong unchecked unsafe ushort using 
-value virtual void volatile 
-where while
-yield</t>
-<t tx="ekr.20040712101754.124">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.125">@language css
-/* New in 4.2. */
-
-/*html tags*/
-address, applet, area, a, base, basefont,
-big, blockquote, body, br, b, caption, center,
-cite, code, dd, dfn, dir, div, dl, dt, em, font,
-form, h1, h2, h3, h4, h5, h6, head, hr, html, img,
-input, isindex, i, kbd, link, li, link, map, menu,
-meta, ol, option, param, pre, p, samp,
-select, small, span, strike, strong, style, sub, sup,
-table, td, textarea, th, title, tr, tt, ul, u, var,
-/*units*/
-mm, cm, in, pt, pc, em, ex, px,
-/*colors*/
-aqua, black, blue, fuchsia, gray, green, lime, maroon, navy, olive, purple, red, silver, teal, yellow, white,
-/*important directive*/
-!important,
-/*font rules*/
-font, font-family, font-style, font-variant, font-weight, font-size,
-/*font values*/
-cursive, fantasy, monospace, normal, italic, oblique, small-caps,
-bold, bolder, lighter, medium, larger, smaller,
-serif, sans-serif,
-/*background rules*/
-background, background-color, background-image, background-repeat, background-attachment, background-position,
-/*background values*/
-contained, none, top, center, bottom, left, right, scroll, fixed,
-repeat, repeat-x, repeat-y, no-repeat,
-/*text rules*/
-word-spacing, letter-spacing, text-decoration, vertical-align, text-transform, text-align, text-indent, text-transform, text-shadow, unicode-bidi, line-height,
-/*text values*/
-normal, none, underline, overline, blink, sub, super, middle, top, text-top, text-bottom,
-capitalize, uppercase, lowercase, none, left, right, center, justify,
-line-through,
-/*box rules*/
-margin, margin-top, margin-bottom, margin-left, margin-right,
-margin, padding-top, padding-bottom, padding-left, padding-right,
-border, border-width, border-style, border-top, border-top-width, border-top-style, border-bottom, border-bottom-width, border-bottom-style, border-left, border-left-width, border-left-style, border-right, border-right-width, border-right-style, border-color,
-/*box values*/
-width, height, float, clear,
-auto, thin, medium, thick, left, right, none, both,
-none, dotted, dashed, solid, double, groove, ridge, inset, outset,
-/*display rules*/
-display, white-space, 
-min-width, max-width, min-height, max-height,
-outline-color, outline-style, outline-width,
-/*display values*/
-run-in, inline-block, list-item, block, inline, none, normal, pre, nowrap, table-cell, table-row, table-row-group, table-header-group, inline-table, table-column, table-column-group, table-cell, table-caption
-/*list rules*/
-list-style, list-style-type, list-style-image, list-style-position,
-/*list values*/
-disc, circle, square, decimal, decimal-leading-zero, none,
-lower-roman, upper-roman, lower-alpha, upper-alpha, lower-latin, upper-latin,
-/*table rules*/
-border-collapse, caption-side,
-/*table-values*/
-empty-cells, table-layout,
-/*misc values/rules*/
-counter-increment, counter-reset,
-marker-offset, z-index,
-cursor, direction, marks, quotes,
-clip, content, orphans, overflow, visibility,
-/*aural rules*/
-pitch, range, pitch-during, cue-after, pause-after, cue-before, pause-before, speak-header, speak-numeral, speak-punctuation, speed-rate, play-during, voice-family,
-/*aural values*/
-stress, azimuth, elevation, pitch, richness, volume,
-page-break, page-after, page-inside</t>
-<t tx="ekr.20040712101754.126">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.127">@language cweb
-
-% This is limbo in cweb mode... It should be in \LaTeX mode, not \c mode.
-% The following should not be colorized: class,if,else.
-
-@* this is a _cweb_ comment.  Code is written in \c.
-"strings" should not be colorized.
-It should be colored in \LaTeX mode.
-The following are not keywords in latex mode: if, else, etc.
-Noweb section references are _valid_ in cweb comments!
-&lt;&lt; section ref &gt;&gt;
-&lt;&lt; missing ref &gt;&gt;
-@c
-
-and this is C code. // It is colored in \LaTeX mode by default.
-/* This is a C block comment.  It may also be colored in restricted \LaTeX mode. */
-
-// Section refs are valid in code too, of course.
-&lt;&lt; section ref &gt;&gt;
-&lt;&lt; missing ref &gt;&gt;
-
-\LaTeX and \c should not be colored.
-if else, while, do // C keywords.</t>
-<t tx="ekr.20040712101754.128">&lt;&lt; section def &gt;&gt;=
-
-    my \c code goes here // This is \LaTeX text
-    /* This is also \LaTeX text */</t>
-<t tx="ekr.20040712101754.129">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.130">@language elisp
-
-; Maybe...
-error princ 
-
-; More typical of other lisps...
-and apply
-car cdr cons cond
-defconst defun defvar 
-eq equal eval
-gt ge
-if 
-let le lt
-mapcar 
-ne nil 
-or not 
-prog progn 
-set setq 
-t type-of 
-unless 
-when while</t>
-<t tx="ekr.20040712101754.131">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.132">@language html
-
-b = "cd"
-d
-</t>
-<t tx="ekr.20040712101754.133">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.134">@language html
-
-&lt;HTML&gt;
-&lt;!-- Author: Edward K. Ream, edream@tds.net --&gt;
-&lt;HEAD&gt;
-  &lt;META NAME="GENERATOR" CONTENT="Microsoft FrontPage 4.0"&gt;
-  &lt;TITLE&gt; Leo's Home Page &lt;/TITLE&gt;
-  &lt;META NAME="description" CONTENT="This page describes Leo.
-Leo adds powerful outlines to the noweb and CWEB literate programming languages."&gt;
-  &lt;META NAME="keywords" CONTENT="LEO, LITERATE PROGRAMMING, OUTLINES, CWEB,
-NOWEB, OUTLINES, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE"&gt;
-&lt;/HEAD&gt;
-&lt;!-- Last Modified: May 12, 2002 --&gt;
-&lt;BODY BGCOLOR="#fffbdc"&gt;
-
-&lt;H1 ALIGN=CENTER&gt;&lt;a NAME="top"&gt;&lt;/a&gt;&lt;IMG SRC="Blank.gif" width=
-"32" height="32" ALIGN="BOTTOM" NATURALSIZEFLAG="3"&gt;&lt;IMG SRC="leo.gif" 
-WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" NATURALSIZEFLAG="3"&gt;&lt;a href="leo_TOC.html#top"&gt;&lt;IMG SRC=
-"arrow_rt.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" NATURALSIZEFLAG="3"&gt;&lt;/a&gt; &amp;nbsp;&lt;/H1&gt;
-
-&lt;H1 ALIGN=CENTER&gt; Leo's Home Page&lt;/H1&gt;
-
-&lt;p align="center"&gt;&lt;a href="http://www.python.org/"&gt;&lt;img border="0" src="PythonPowered.gif" width="110" height="44"&gt; &lt;/a&gt; &lt;A HREF="http://sourceforge.net/"&gt;&lt;IMG SRC="http://sourceforge.net/sflogo.php?group_id=3458&amp;type=1" NATURALSIZEFLAG="0" ALT="SourceForge Logo"&gt;&lt;/A&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;
-&lt;A HREF="http://sourceforge.net/project/?group_id=3458"&gt;Leo at SourceForge&lt;/A&gt;&amp;nbsp;&amp;nbsp;
-&lt;a href="icons.html"&gt;&lt;img border="0" src="LeoCodeGray.gif" width="77" height="42"&gt;&lt;/a&gt;&amp;nbsp;&amp;nbsp;
-&lt;a href="icons.html"&gt;&lt;img border="0" src="LeoProse.gif" width="81" height="42"&gt;&lt;/a&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
-
-&lt;H3&gt;&lt;A NAME="anchor127554"&gt;&lt;/A&gt;Summary&lt;/H3&gt;
-
-&lt;UL&gt;
-  &lt;LI&gt;Leo is a &lt;i&gt; programmer's editor&lt;/i&gt;  and a flexible &lt;i&gt;browser&lt;/i&gt; for
-    projects, programs, classes or data. Leo clarifies design, coding, debugging, testing
-  and maintenance.
-  &lt;LI&gt;Leo is an &lt;i&gt;outlining editor&lt;/i&gt;. Outlines clarify the big picture while
-    providing unlimited space for details.
-  &lt;LI&gt;Leo
-    is a &lt;a HREF="http://www.literateprogramming.com/"&gt;&lt;i&gt;literate
-    programming&lt;/i&gt;&lt;/a&gt; tool, compatible with &lt;A HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;noweb&lt;/A&gt;
-    and &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;CWEB&lt;/a&gt;.
-    Leo enhances any text-based
-programming language, from assembly language and C to Java, Python and XML.
-  &lt;LI&gt;Leo is also a &lt;i&gt;data organizer&lt;/i&gt;. A single Leo outline can generate complex
-    data spanning many different files.&amp;nbsp; Leo has been used to manage web sites.
-  &lt;LI&gt;Leo is a &lt;i&gt; project manager&lt;/i&gt;. Leo provides multiple views
-of a project within a single outline. Leo naturally represents tasks that remain
-    up-to-date.
-  &lt;LI&gt;Leo is fully &lt;i&gt; scriptable&lt;/i&gt; using &lt;A HREF="http://www.python.org/"&gt;Python&lt;/A&gt;
-  and saves its files in &lt;A HREF="http://www.w3.org/XML/"&gt;XML&lt;/A&gt; format.
-  &lt;LI&gt;Leo is &lt;i&gt;portable&lt;/i&gt;.&amp;nbsp; Leo.py is 100% pure Python and will run on
-    any platform supporting &lt;A HREF="http://www.python.org/"&gt;Python&lt;/A&gt;
-    and &lt;a href="http://tcl.activestate.com/"&gt;Tk/tcl&lt;/a&gt;, including Windows,
-    Linux and MacOS X.&amp;nbsp; Leo.exe runs on any Windows platform.
-  &lt;LI&gt;Leo is &lt;a href="http://www.opensource.org/"&gt; &lt;i&gt; Open Software&lt;/i&gt;&lt;/a&gt;, distributed under
-    the &lt;a href="http://www.python.org/doc/Copyright.html"&gt; Python License&lt;/a&gt;.
-&lt;/UL&gt;
-
-&lt;H3&gt;More Information and downloads&lt;/H3&gt;
-
-&lt;ul&gt;
-  &lt;LI&gt;An excellent &lt;a href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"&gt;online
-    tutorial&lt;/a&gt; and &lt;A HREF="http://www.jserv.com/jk_orr/xml/leo.htm"&gt;Leo resource
-  page&lt;/A&gt;, both written by &lt;a href="http://www.jserv.com/jk_orr"&gt;Joe Orr&lt;/a&gt;.
-  &lt;LI&gt;My brother's &lt;a href="SpeedReam.html"&gt;slashdot
-    article about Leo&lt;/a&gt;, the best description about why Leo is special.
-  &lt;LI&gt;&lt;A HREF="testimonials.html#anchor104391"&gt;What people are saying about Leo&lt;/A&gt;
-  &lt;LI&gt;&lt;A HREF="leo_TOC.html#anchor964914"&gt;Complete users guide&lt;/A&gt;
-    and
-    &lt;A HREF="intro.html#anchor887874"&gt;tutorial introduction&lt;/A&gt;  with
-  screen shots.
-  &lt;li&gt;&lt;a href="FAQ.html"&gt;FAQ&lt;/a&gt; and &lt;a href="http://sourceforge.net/forum/?group_id=3458"&gt;help and discussion
-    forums&lt;/a&gt;, preferable to &lt;A HREF="mailto:edream@tds.net"&gt;email&lt;/A&gt; so others may join
-    in.&lt;/li&gt;
-  &lt;li&gt;&lt;a href="icons.html"&gt;Icons&lt;/a&gt; for bragging about Leo.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458"&gt;Download
-    Leo&lt;/a&gt; from &lt;A HREF="http://sourceforge.net/project/?group_id=3458"&gt;Leo's SourceForge
-site&lt;/A&gt;.
-
-&lt;P ALIGN=left&gt;Leo's author is &lt;A HREF="http://personalpages.tds.net/~edream/index.html"&gt;Edward
-  K. Ream&lt;/A&gt; email: &lt;A HREF="mailto:edream@tds.net"&gt;edream@tds.net&lt;/A&gt; voice: (608) 231-0766
-
-&lt;HR ALIGN=LEFT&gt;
-
-&lt;p align="center"&gt;
-
-&lt;IMG SRC="Blank.gif" ALIGN="left" NATURALSIZEFLAG=
-"3" width="34" height="34"&gt;&lt;IMG SRC="leo.gif" ALIGN="left" NATURALSIZEFLAG=
-"3" width="32" height="32"&gt;&lt;a HREF="leo_TOC.html"&gt;&lt;IMG SRC="arrow_rt.gif" WIDTH="32"
-HEIGHT="32" ALIGN="left" NATURALSIZEFLAG="3"&gt;
-
-&lt;/BODY&gt;
-&lt;/HTML&gt;</t>
-<t tx="ekr.20040712101754.135">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.136">@language html
-
-&lt;? xml version="1.0"&gt;
-&lt;!-- test --&gt;
-&lt;project name="Converter" default="dist"&gt;
-&lt;/project&gt;"""</t>
-<t tx="ekr.20040712101754.137">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.138">@language latex
-
-% This is a \LaTeX mode comment.
-
-This is a test of \LaTeX mode.
-
-@ blah blah blah
-@c
-
-\c and \LaTeX are latex keywords.
-
-This is a keyword \% not the start of a comment.
-
-More keywords: \@ and \( and \) and \{ and \}
-
-The following should be colored:
-
-\documentclass{report}
-
-The following 2-letter words should be colored, regardless of what follows:
-
-\(\)\{\}\@
-\(abc\)abc\{abc\}abc\@abc</t>
-<t tx="ekr.20040712101754.141">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.142">@language php
-@ doc
-This is a doc part.
-@c
-
-and or
-array
-array()
-/* Multi-line comment
-*/
-this is a test.
-__CLASS__
-&lt;?php and or array() ?&gt;
-&lt;?PHP and or array() ?&gt;</t>
-<t tx="ekr.20040712101754.143">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.144">@language html
-
-&lt;?xml version="1.0"?&gt;
-
-&lt;!DOCTYPE MODE SYSTEM "xmode.dtd"&gt;
-&lt;&lt; remarks &gt;&gt;
-
-&lt;MODE&gt;
-    &lt;PROPS&gt;
-        &lt;PROPERTY NAME="indentPrevLine" VALUE="\s*.{3,}:\s*(#.*)?" /&gt;
-        &lt;PROPERTY NAME="lineComment" VALUE="#" /&gt;
-    &lt;/PROPS&gt;
-    &lt;RULES ESCAPE="\" IGNORE_CASE="FALSE" HIGHLIGHT_DIGITS="TRUE"&gt;
-        &lt;&lt; comments &gt;&gt;
-        &lt;&lt; literals &gt;&gt;
-        &lt;&lt; operators &gt;&gt;
-        &lt;MARK_PREVIOUS TYPE="FUNCTION" EXCLUDE_MATCH="TRUE"&gt;(&lt;/MARK_PREVIOUS&gt;
-        &lt;&lt; keywords &gt;&gt;
-    &lt;/RULES&gt;
-&lt;/MODE&gt;</t>
-<t tx="ekr.20040712101754.145">&lt;!-- Python mode, by Slava Pestov. Based on PythonTokenMarker by --&gt;
-&lt;!-- Jonathan Revusky --&gt;
-
-&lt;!-- Modified 19-Jul-00 by Ivan Frohne to: --&gt;
-&lt;!--  (a) implement 'indentOnEnter'; --&gt;
-&lt;!--  (b) indent next line automatically after control structures followed --&gt;
-&lt;!--	  by ':'; --&gt;
-&lt;!--  (c) make """ or ''' multiline quotes TYPE LITERAL2; --&gt;
-&lt;!--  (d) add TYPE FUNCTION identified by a following '(' --&gt;
-&lt;!--  (e) eliminate the '?' SEQ TYPE ('?' has no meaning in Python); --&gt;
-&lt;!--  (f) change the TYPE of 'and', 'or', and 'not' to KEYWORD1; and --&gt;
-&lt;!--  (g) add all builtin functions, builtin exceptions, --&gt;
-&lt;!--	  builtin type methods, File object methods, and special type --&gt;
-&lt;!--	  attributes as TYPE KEYWORD3. --&gt;</t>
-<t tx="ekr.20040712101754.146">&lt;!-- Comment --&gt;
-&lt;EOL_SPAN TYPE="COMMENT1"&gt;#&lt;/EOL_SPAN&gt;
-
-&lt;!-- Triple-quotes --&gt;
-&lt;SPAN TYPE="LITERAL2"&gt;
-    &lt;BEGIN&gt;"""&lt;/BEGIN&gt;
-    &lt;END&gt;"""&lt;/END&gt;
-&lt;/SPAN&gt;
-
-&lt;SPAN TYPE="LITERAL2"&gt;
-    &lt;BEGIN&gt;'''&lt;/BEGIN&gt;
-    &lt;END&gt;'''&lt;/END&gt;
-&lt;/SPAN&gt;</t>
-<t tx="ekr.20040712101754.147">&lt;!-- Standard literals --&gt;
-&lt;SPAN TYPE="LITERAL1"&gt;
-    &lt;BEGIN&gt;"&lt;/BEGIN&gt;
-    &lt;END&gt;"&lt;/END&gt;
-&lt;/SPAN&gt;
-
-&lt;SPAN TYPE="LITERAL1"&gt;
-    &lt;BEGIN&gt;'&lt;/BEGIN&gt;
-    &lt;END&gt;'&lt;/END&gt;
-&lt;/SPAN&gt;
-</t>
-<t tx="ekr.20040712101754.148">&lt;SEQ TYPE="OPERATOR"&gt;=&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;!&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;&amp;gt;=&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;&amp;lt;=&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;+&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;-&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;/&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;*&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;&amp;gt;&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;&amp;lt;&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;%&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;&amp;amp;&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;|&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;^&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;~&lt;/SEQ&gt;</t>
-<t tx="ekr.20040712101754.149">&lt;KEYWORDS&gt;
-    &lt;&lt; reserved words &gt;&gt;
-    &lt;&lt; builtins &gt;&gt;
-    &lt;&lt; exceptions &gt;&gt;
-    &lt;&lt; types &gt;&gt;
-&lt;/KEYWORDS&gt;</t>
-<t tx="ekr.20040712101754.150">&lt;!--  Reserved Words  --&gt;
-&lt;KEYWORD1&gt;and&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;as&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;assert&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;break&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;class&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;continue&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;def&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;del&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;elif&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;else&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;except&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;exec&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;finally&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;for&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;from&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;global&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;if&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;import&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;in&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;is&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;lambda&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;not&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;or&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;pass&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;print&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;raise&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;return&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;try&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;while&lt;/KEYWORD1&gt;
-&lt;KEYWORD1&gt;yield&lt;/KEYWORD1&gt;</t>
-<t tx="ekr.20040712101754.151">&lt;!-- builtins --&gt;
-&lt;KEYWORD2&gt;abs&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;apply&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;bool&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;buffer&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;callable&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;chr&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;classmethod&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;cmp&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;coerce&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;compile&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;complex&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;delattr&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;dict&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;dir&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;divmod&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;eval&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;execfile&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;file&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;filter&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;float&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;getattr&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;globals&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;hasattr&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;hash&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;hex&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;id&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;input&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;int&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;intern&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;isinstance&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;issubclass&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;iter&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;len&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;list&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;locals&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;long&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;map&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;max&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;min&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;object&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;oct&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;open&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;ord&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;pow&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;property&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;range&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;raw_input&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;reduce&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;reload&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;repr&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;round&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;setattr&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;slice&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;staticmethod&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;str&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;super&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;tuple&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;type&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;unichr&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;unicode&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;vars&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;xrange&lt;/KEYWORD2&gt;
-&lt;KEYWORD2&gt;zip&lt;/KEYWORD2&gt;</t>
-<t tx="ekr.20040712101754.152">&lt;!-- exceptions --&gt;
-&lt;KEYWORD3&gt;ArithmeticError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;AssertionError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;AttributeError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;DeprecationWarning&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;EOFError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;EnvironmentError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;Exception&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;FloatingPointError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;IOError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;ImportError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;IndentationError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;IndexError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;KeyError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;KeyboardInterrupt&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;LookupError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;MemoryError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;NameError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;NotImplemented&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;NotImplementedError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;OSError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;OverflowError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;OverflowWarning&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;ReferenceError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;RuntimeError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;RuntimeWarning&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;StandardError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;StopIteration&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;SyntaxError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;SyntaxWarning&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;SystemError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;SystemExit&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;TabError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;TypeError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;UnboundLocalError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;UnicodeError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;UserWarning&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;ValueError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;Warning&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;WindowsError&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;ZeroDivisionError&lt;/KEYWORD3&gt;</t>
-<t tx="ekr.20040712101754.153">&lt;!-- types (from types module) --&gt;
-&lt;KEYWORD3&gt;BufferType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;BuiltinFunctionType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;BuiltinMethodType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;ClassType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;CodeType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;ComplexType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;DictProxyType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;DictType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;DictionaryType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;EllipsisType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;FileType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;FloatType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;FrameType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;FunctionType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;GeneratorType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;InstanceType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;IntType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;LambdaType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;ListType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;LongType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;MethodType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;ModuleType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;NoneType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;ObjectType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;SliceType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;StringType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;StringTypes&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;TracebackType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;TupleType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;TypeType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;UnboundMethodType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;UnicodeType&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;XRangeType&lt;/KEYWORD3&gt;
-
-&lt;KEYWORD3&gt;False&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;None&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;True&lt;/KEYWORD3&gt;
-
-&lt;KEYWORD3&gt;__abs__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__add__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__all__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__author__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__bases__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__builtins__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__call__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__class__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__cmp__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__coerce__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__contains__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__debug__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__del__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__delattr__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__delitem__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__delslice__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__dict__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__div__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__divmod__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__doc__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__eq__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__file__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__float__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__floordiv__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__future__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__ge__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__getattr__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__getattribute__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__getitem__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__getslice__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__gt__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__hash__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__hex__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__iadd__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__import__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__imul__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__init__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__int__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__invert__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__iter__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__le__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__len__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__long__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__lshift__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__lt__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__members__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__metaclass__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__mod__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__mro__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__mul__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__name__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__ne__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__neg__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__new__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__nonzero__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__oct__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__or__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__path__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__pos__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__pow__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__radd__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__rdiv__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__rdivmod__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__reduce__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__repr__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__rfloordiv__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__rlshift__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__rmod__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__rmul__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__ror__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__rpow__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__rrshift__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__rsub__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__rtruediv__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__rxor__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__setattr__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__setitem__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__setslice__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__self__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__slots__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__str__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__sub__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__truediv__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__version__&lt;/KEYWORD3&gt;
-&lt;KEYWORD3&gt;__xor__&lt;/KEYWORD3&gt;</t>
-<t tx="ekr.20040712101754.154">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.155">@language plsql
-
-"a string"
--- reserved keywords
-abort
-accept,
-access,
-add,
-admin,
-after,
-all,
-allocate,
-alter,
-analyze,
-and,
-any,
-archive,
-archivelog,
-array,
-arraylen,
-as,
-asc,
-assert,
-assign,
-at,
-audit,
-authorization,
-avg,
-backup,
-base_table,
-become,
-before,
-begin,
-between,
-binary_integer,
-block,
-body,
-boolean,
-by,
-cache,
-cancel,
-cascade,
-case,
-change,
-char,
-char_base,
-character,
-check,
-checkpoint,
-close,
-cluster,
-clusters,
-cobol,
-colauth,
-column,
-columns,
-comment,
-commit,
-compile,
-compress,
-connect,
-constant,
-constraint,
-constraints,
-contents,
-continue,
-controlfile,
-count,
-crash,
-create,
-current,
-currval,
-cursor,
-cycle,
-data_base,
-database,
-datafile,
-date,
-dba,
-debugoff,
-debugon,
-dec,
-decimal,
-declare,
-default,
-definition,
-delay,
-delete,
-delta,
-desc,
-digits,
-disable,
-dismount,
-dispose,
-distinct,
-distinct,
-do,
-double,
-drop,
-drop,
-dump,
-each,
-else,
-else,
-elsif,
-enable,
-end,
-end,
-entry,
-escape,
-events,
-except,
-exception,
-exception_init,
-exceptions,
-exclusive,
-exec,
-execute,
-exists,
-exists,
-exit,
-explain,
-extent,
-externally,
-false,
-fetch,
-fetch,
-file,
-float,
-float,
-flush,
-for,
-for,
-force,
-foreign,
-form,
-fortran,
-found,
-freelist,
-freelists,
-from,
-from,
-function,
-generic,
-go,
-goto,
-grant,
-group,
-groups,
-having,
-identified,
-if,
-immediate,
-in,
-including,
-increment,
-index,
-indexes,
-indicator,
-initial,
-initrans,
-insert,
-instance,
-int,
-integer,
-intersect,
-into,
-is,
-key,
-language,
-layer,
-level,
-like,
-limited,
-link,
-lists,
-lock,
-logfile,
-long,
-loop,
-manage,
-manual,
-max,
-maxdatafiles,
-maxextents,
-maxinstances,
-maxlogfiles,
-maxloghistory,
-maxlogmembers,
-maxtrans,
-maxvalue,
-min,
-minextents,
-minus,
-minvalue,
-mlslabel,
-mod,
-mode,
-modify,
-module,
-mount,
-natural,
-new,
-new,
-next,
-nextval,
-noarchivelog,
-noaudit,
-nocache,
-nocompress,
-nocycle,
-nomaxvalue,
-nominvalue,
-none,
-noorder,
-noresetlogs,
-normal,
-nosort,
-not,
-notfound,
-nowait,
-null,
-number,
-number_base,
-numeric,
-of,
-off,
-offline,
-old,
-on,
-online,
-only,
-open,
-open,
-optimal,
-option,
-or,
-order,
-others,
-out,
-own,
-package,
-package,
-parallel,
-partition,
-pctfree,
-pctincrease,
-pctused,
-plan,
-pli,
-positive,
-pragma,
-precision,
-primary,
-prior,
-private,
-private,
-privileges,
-procedure,
-procedure,
-profile,
-public,
-quota,
-raise,
-range,
-raw,
-read,
-real,
-record,
-recover,
-references,
-referencing,
-release,
-remr,
-rename,
-resetlogs,
-resource,
-restricted,
-return,
-reuse,
-reverse,
-revoke,
-role,
-roles,
-rollback,
-row,
-rowid,
-rowlabel,
-rownum,
-rows,
-rowtype,
-run,
-savepoint,
-schema,
-scn,
-section,
-segment,
-select,
-select,
-separate,
-sequence,
-session,
-set,
-set,
-share,
-shared,
-size,
-size,
-smallint,
-smallint,
-snapshot,
-some,
-sort,
-space,
-sql,
-sqlbuf,
-sqlcode,
-sqlerrm,
-sqlerror,
-sqlstate,
-start,
-start,
-statement,
-statement_id,
-statistics,
-stddev,
-stop,
-storage,
-subtype,
-successful,
-sum,
-sum,
-switch,
-synonym,
-sysdate,
-system,
-tabauth,
-table,
-tables,
-tables,
-tablespace,
-task,
-temporary,
-terminate,
-then,
-thread,
-time,
-to,
-tracing,
-transaction,
-trigger,
-triggers,
-true,
-truncate,
-type,
-uid,
-under,
-union,
-unique,
-unlimited,
-until,
-update,
-use,
-user,
-using,
-validate,
-values,
-varchar,
-varchar2,
-variance,
-view,
-views,
-when,
-whenever,
-where,
-while,
-with,
-work,
-write,
-xor</t>
-<t tx="ekr.20040712101754.156">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.157">"""This creates a free-floating copy of v's tree for undo.
-The copied trees must use different tnodes than the original."""
-    
-def copyTree(self,root):
-
-    c = self
-    # Create the root vnode.
-    result = v = leoNodes.vnode(c,root.t)
-    # Copy the headline and icon values v.copyNode(root,v)
-    # Copy the rest of tree.
-    v.copyTree(root,v)
-    # Replace all tnodes in v by copies.
-    assert(v.nodeAfterTree() == None)
-    while v:
-        v.t = leoNodes.tnode(0, v.b)
-        v = v.threadNext()
-    return result</t>
-<t tx="ekr.20040712101754.158">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.159">' New in 4.2.
-@language rapidq
-' a comment.
-
-$APPTYPE,$DEFINE,$ELSE,$ENDIF,$ESCAPECHARS,$IFDEF,$IFNDEF,
-$INCLUDE,$MACRO,$OPTIMIZE,$OPTION,$RESOURCE,$TYPECHECK,$UNDEF,
-ABS,ACOS,ALIAS,AND,AS,ASC,ASIN,ATAN,ATN,BIN$,BIND,BYTE,
-CALL,CALLBACK,CALLFUNC,CASE,CEIL,CHDIR,CHDRIVE,CHR$,CINT,
-CLNG,CLS,CODEPTR,COMMAND$,COMMANDCOUNT,CONSOLE,CONST,CONSTRUCTOR,
-CONVBASE$,COS,CREATE,CSRLIN,CURDIR$,DATA,DATE$,DEC,DECLARE,
-DEFBYTE,DEFDBL,DEFDWORD,DEFINT,DEFLNG,DEFSHORT,DEFSNG,DEFSTR,
-DEFWORD,DELETE$,DIM,DIR$,DIREXISTS,DO,DOEVENTS,DOUBLE,DWORD,
-ELSE,ELSEIF,END,ENVIRON,ENVIRON$,EVENT,EXIT,EXP,EXTENDS,
-EXTRACTRESOURCE,FIELD$,FILEEXISTS,FIX,FLOOR,FOR,FORMAT$,FRAC,
-FUNCTION,FUNCTIONI,GET$,GOSUB,GOTO,HEX$,IF,INC,INITARRAY,
-INKEY$,INP,INPUT,INPUT$,INPUTHANDLE,INSERT$,INSTR,INT,INTEGER,
-INV,IS,ISCONSOLE,KILL,KILLMESSAGE,LBOUND,LCASE$,LEFT$,LEN,
-LFLUSH,LIB,LIBRARYINST,LOCATE,LOG,LONG,LOOP,LPRINT,LTRIM$,
-MEMCMP,MESSAGEBOX,MESSAGEDLG,MID$,MKDIR,MOD,MOUSEX,MOUSEY,
-NEXT,NOT,OFF,ON,OR,OUT,OUTPUTHANDLE,PARAMSTR$,PARAMSTRCOUNT,
-PARAMVAL,PARAMVALCOUNT,PCOPY,PEEK,PLAYWAV,POKE,POS,POSTMESSAGE,
-PRINT,PROPERTY,QUICKSORT,RANDOMIZE,REDIM,RENAME,REPLACE$,
-REPLACESUBSTR$,RESOURCE,RESOURCECOUNT,RESTORE,RESULT,RETURN,
-REVERSE$,RGB,RIGHT$,RINSTR,RMDIR,RND,ROUND,RTRIM$,RUN,
-SCREEN,SELECT,SENDER,SENDMESSAGE,SETCONSOLETITLE,SGN,SHELL,
-SHL,SHORT,SHOWMESSAGE,SHR,SIN,SINGLE,SIZEOF,SLEEP,SOUND,
-SPACE$,SQR,STACK,STATIC,STEP,STR$,STRF$,STRING,STRING$,
-SUB,SUBI,SWAP,TALLY,TAN,THEN,TIME$,TIMER,TO,TYPE,UBOUND,
-UCASE$,UNLOADLIBRARY,UNTIL,VAL,VARIANT,VARPTR,VARPTR$,VARTYPE,
-WEND,WHILE,WITH,WORD,XOR</t>
-<t tx="ekr.20040712101754.160">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.161">@language rebol
-
-; a comment
-about abs absolute add alert alias all alter and and~ any append arccosine arcsine arctangent array ask at  
-back bind boot-prefs break browse build-port build-tag  
-call caret-to-offset catch center-face change change-dir charset checksum choose clean-path clear clear-fields close comment complement compose compress confirm continue-post context copy cosine create-request crypt cvs-date cvs-version  
-debase decode-cgi decode-url decompress deflag-face dehex delete demo desktop detab dh-compute-key dh-generate-key dh-make-key difference dirize disarm dispatch divide do do-boot do-events do-face do-face-alt does dsa-generate-key dsa-make-key dsa-make-signature dsa-verify-signature  
-echo editor either else emailer enbase entab exclude exit exp extract 
-fifth find find-key-face find-window flag-face first flash focus for forall foreach forever form forskip fourth free func function  
-get get-modes get-net-info get-style  
-halt has head help hide hide-popup  
-if import-email in inform input insert insert-event-func intersect 
-join 
-last launch launch-thru layout license list-dir load load-image load-prefs load-thru log-10 log-2 log-e loop lowercase  
-make make-dir make-face max maximum maximum-of min minimum minimum-of mold multiply  
-negate net-error next not now  
-offset-to-caret open open-events or or~ 
-parse parse-email-addrs parse-header parse-header-date parse-xml path-thru pick poke power prin print probe protect protect-system  
-q query quit  
-random read read-io read-net read-thru reboot recycle reduce reform rejoin remainder remold remove remove-event-func rename repeat repend replace request request-color request-date request-download request-file request-list request-pass request-text resend return reverse rsa-encrypt rsa-generate-key rsa-make-key 
-save save-prefs save-user scroll-para second secure select send send-and-check set set-modes set-font set-net set-para set-style set-user set-user-name show show-popup sine size-text skip sort source split-path square-root stylize subtract switch  
-tail tangent textinfo third throw throw-on-error to to-binary to-bitset to-block to-char to-date to-decimal to-email to-event to-file to-get-word to-hash to-hex to-idate to-image to-integer to-issue to-list to-lit-path to-lit-word to-local-file to-logic to-money to-none to-pair to-paren to-path to-rebol-file to-refinement to-set-path to-set-word to-string to-tag to-time to-tuple to-url to-word trace trim try  
-unfocus union unique uninstall unprotect unset until unview update upgrade uppercase usage use  
-vbug view view-install view-prefs  
-wait what what-dir while write write-io  
-xor xor~  
-action! any-block! any-function! any-string! any-type! any-word!  
-binary! bitset! block!  
-char!  
-datatype! date! decimal! 
-email! error! event!  
-file! function!  
-get-word!  
-hash!  
-image! integer! issue!  
-library! list! lit-path! lit-word! logic!  
-money!  
-native! none! number!  
-object! op!  
-pair! paren! path! port!  
-refinement! routine!  
-series! set-path! set-word! string! struct! symbol!  
-tag! time! tuple!  
-unset! url!  
-word!  
-any-block? any-function? any-string? any-type? any-word?  
-binary? bitset? block?  
-char? connected? crypt-strength? 
-datatype? date? decimal? dir?  
-email? empty? equal? error? even? event? exists? exists-key?
-file? flag-face? found? function?  
-get-word? greater-or-equal? greater?  
-hash? head?  
-image? in-window? index? info? input? inside? integer? issue?  
-length? lesser-or-equal? lesser? library? link-app? link? list? lit-path? lit-word? logic?  
-modified? money?  
-native? negative? none? not-equal? number?  
-object? odd? offset? op? outside?  
-pair? paren? path? port? positive?  
-refinement? routine?  
-same? screen-offset? script? series? set-path? set-word? size? span? strict-equal? strict-not-equal? string? struct?  
-tag? tail? time? tuple? type?  
-unset? url?  
-value? view? 
-within? word?  
-zero?</t>
-<t tx="ekr.20040712101754.162">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.163"># New in 4.2.
-
-@language shell
-
-# comment
-$# not a comment
-break
-case,continue,
-do,done
-elif,else,esac
-fi,for
-if,in
-return,
-then
-until
-while,
-
-cd,chdir,eval,exec,
-exit,kill,newgrp,pwd,read,readonly,
-shift,test,trap,ulimit,
-umask,wait</t>
-<t tx="ekr.20040712101754.164">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.165">@language html
-
-&lt;!-- ekr uses the MARK_FOLLOWING to mark _anything_ after \ --&gt;
-
-&lt;?xml version="1.0"?&gt;
-
-&lt;!DOCTYPE MODE SYSTEM "xmode.dtd"&gt;
-
-&lt;MODE&gt;
-    &lt;PROPS&gt;
-        &lt;PROPERTY NAME="lineComment" VALUE="%" /&gt;
-    &lt;/PROPS&gt;
-
-    &lt;RULES&gt;
-        &lt;&lt; general rules &gt;&gt;
-    &lt;/RULES&gt;
-
-    &lt;RULES SET="MATH" DEFAULT="MARKUP"&gt;
-        &lt;&lt; math rules &gt;&gt;
-    &lt;/RULES&gt;
-&lt;/MODE&gt;</t>
-<t tx="ekr.20040712101754.166">&lt;!-- $$...$$ --&gt;
-&lt;SPAN TYPE="MARKUP" DELEGATE="MATH"&gt;
-    &lt;BEGIN&gt;$$&lt;/BEGIN&gt;
-    &lt;END&gt;$$&lt;/END&gt;
-&lt;/SPAN&gt;
-
-&lt;!-- $...$ --&gt;
-&lt;SPAN TYPE="MARKUP" DELEGATE="MATH"&gt;
-    &lt;BEGIN&gt;$&lt;/BEGIN&gt;
-    &lt;END&gt;$&lt;/END&gt;
-&lt;/SPAN&gt;
-
-&lt;!-- \[...\] (LaTeX math mode) --&gt;
-&lt;SPAN TYPE="MARKUP" DELEGATE="MATH"&gt;
-    &lt;BEGIN&gt;\[&lt;/BEGIN&gt;
-    &lt;END&gt;\]&lt;/END&gt;
-&lt;/SPAN&gt;
-
-&lt;!-- some commands must be handled specially --&gt;
-&lt;SEQ TYPE="KEYWORD1"&gt;\$&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD1"&gt;\\&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD1"&gt;\%&lt;/SEQ&gt;
-
-&lt;!-- \... commands --&gt;
-&lt;MARK_FOLLOWING TYPE="KEYWORD1"&gt;\&lt;/MARK_FOLLOWING&gt;
-
-&lt;!-- comments --&gt;
-&lt;EOL_SPAN TYPE="COMMENT1"&gt;%&lt;/EOL_SPAN&gt;
-
-&lt;!-- word separators --&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;{&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;}&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;[&lt;/SEQ&gt;
-&lt;SEQ TYPE="OPERATOR"&gt;]&lt;/SEQ&gt;</t>
-<t tx="ekr.20040712101754.167">&lt;!-- some commands must be handled specially --&gt;
-&lt;SEQ TYPE="KEYWORD3"&gt;\$&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD3"&gt;\\&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD3"&gt;\%&lt;/SEQ&gt;
-
-&lt;!-- \... commands --&gt;
-&lt;MARK_FOLLOWING TYPE="KEYWORD3"&gt;\&lt;/MARK_FOLLOWING&gt;
-
-&lt;!-- word separators --&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;)&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;(&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;{&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;}&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;[&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;]&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;=&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;!&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;+&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;-&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;/&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;*&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;&amp;gt;&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;&amp;lt;&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;&amp;amp;&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;|&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;^&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;~&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;.&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;,&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;;&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;?&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;:&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;'&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;"&lt;/SEQ&gt;
-&lt;SEQ TYPE="KEYWORD2"&gt;`&lt;/SEQ&gt;
-
-&lt;!-- comments --&gt;
-&lt;EOL_SPAN TYPE="COMMENT1"&gt;%&lt;/EOL_SPAN&gt;</t>
-<t tx="ekr.20040712101754.168">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.169"># both color_markup &amp; add_directives plugins must be enabled.
-
-@markup wiki
-@language python
-
-""" {picture file=../Icons/Leoapp.GIF}this """ # Problems with correct indexing following a graphic.
-
-""" {picture file=../Icons/Leoapp.GIF}this """ # two copies work.
-
-abc
-
-""" {picture file=../Icons/Leodoc.GIF} """ # xyz
-
-""" continued
-string"""
-
-@ ''ab'' __xxx__ ''wx'' __xyz__
-@c
-
-# /* ''ab'' __xxx__ ''wx'' __xyz__ */
-
-# Test
-
-""" ''' """ ''' """'''  # Leo handles the common cases correctly.
-
-''' ''ab'' __xxx__ ''wx'' __xyz__ ''' # No wiki markup in ''' strings.
-
-""" ''ab'' __xxx__ ''wx'' __xyz__ """
-
-# ''ab'' __xxx__ ''wx'' __xyz__
-
-""" ''y'' """
-
-""" text~~#ff00ff:some text~~more text"""
-
-if 1 and 2:
-    pass
-
-print g.app().loadDir</t>
-<t tx="ekr.20040712101754.170">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.171"># both color_markup &amp; add_directives plugins must be enabled.
-@markup wiki
-
-""" continued
-string"""
-
-@ ''ab'' __xxx__ ''wx'' __xyz__  __''bolditalic''__ and ''__italicbold__''
-@c
-
-# /* ''ab'' __xxx__ ''wx'' __xyz__ */
-
-__abc__ 
-
-# Test
-
-""" ''' """ ''' """'''  # Leo handles the __b__ common cases correctly.
-
-''' ''ab'' __xxx__ ''wx'' __xyz__ ''' # No wiki markup in ''' strings.
-
-""" ''ab'' __xxx__ ''wx'' __xyz__ """
-
-# ''ab'' __xxx__ ''wx'' __xyz__
-
-""" ''y'' """
-
-""" text~~#ee00ff:some text~~more text"""
-
-
-if 1 and 2:
-    pass
-
-print g.app().loadDir
-</t>
-<t tx="ekr.20040712101754.172">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20040712101754.173"># both color_markup &amp; add_directives plugins must be enabled.
-
-@markup wiki
-
-""" text~~red:some text~~more text"""
-
-""" text~~#ee0ff:some text~~more text"""
-
-if 1 and 2:
-    pass</t>
 <t tx="ekr.20040712101754.175">root = c.rootPosition()
 
 # NOTE: p.__getattr__ must be enabled for this test to work.
 
 for p in c.allNodes_iter():
     assert(p.t == p.v.t)</t>
-<t tx="ekr.20040712101754.176">try:
-    mode = c.frame.body.colorizer.modes.get('python')
-    mode.keywords['as'] = 1 # append the keyword, colorize with 'keyword1' tag.
-except AttributeError:
-    pass # modes only exists for new colorizer.</t>
 <t tx="ekr.20040712101754.177">p = p.firstChild()
 assert(p.h=="File Conversion")
 p.convertTreeToString()</t>
@@ -4370,39 +2719,6 @@ except AssertionError:
     print("vparents...")
     for parent in vparents: print(parent)
     raise # for unittest.</t>
-<t tx="ekr.20040712101754.186">import os
-import sys
-
-verbose = False
-
-python_interp = sys.executable
-test_path = g.os_path_join(g.app.loadDir,"..","test","unittest")
-src_path  = g.os_path_join(g.app.loadDir,"..","..")
-
-leo_file   = g.os_path_join(src_path,"launchLeo.py")
-batch_file = g.os_path_join(test_path,"batchTest.py")
-test_file  = g.os_path_join(test_path,"createdFile.txt")
-
-# Execute this command: python leo.py -script test\unittest\batchTest.py
-
-if 1:
-    command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
-else:
-    command = r"%s %s --script %s" % (python_interp,leo_file,batch_file)
-
-@others
-
-removeFile(test_file,verbose)
-os.system(command)
-
-try:
-    g.redirectStdout()
-    removeFile(test_file,verbose)
-    os.system(command)
-finally:
-    g.restoreStdout()
-    
-assert(g.os_path_exists(test_file))</t>
 <t tx="ekr.20040712101754.187"></t>
 <t tx="ekr.20040712101754.188">import leo.core.leoNodes as leoNodes
 
@@ -4832,33 +3148,6 @@ g.app.scriptDict['suite'] = suite</t>
 <t tx="ekr.20040712101754.272">errors = c.checkOutline(verbose=False,unittest=True,full=True) # Run full check.
 
 assert errors == 0, "Check Outline reported %d errors" % errors</t>
-<t tx="ekr.20040712101754.274">import unittest
-import leo.core.leoTest as leoTest
-
-import sys
-
-# DocTestSuite exists in Python 2.3 and above.
-
-if sys.platform.lower().startswith('win'):
-
-    version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
-    if g.CheckVersion(version, "2.3"):
-    
-        path = g.os_path_join(g.app.loadDir,"..","core")
-        modules = leoTest.importAllModulesInPath(path)
-        suite = leoTest.createUnitTestsFromDoctests(modules)
-                                 
-        if suite:
-            g.app.scriptDict['suite'] = suite
-            
-    else:
-        # Create an empty suite to suppress a warning.
-        g.app.scriptDict['suite'] = unittest.TestSuite()
-        print("\nCan't create unit tests from doctests")
-        print("doctest.DocTestSuite requires Python 2.3 or above.\n")
-        
-else:
-    pass # There are problems on Linux.</t>
 <t tx="ekr.20040712101813">result = c.checkAllPythonCode(unittest=True,ignoreAtIgnore=True)
 
 assert result=="ok", "checkPythonCode returns: %s" % result</t>
@@ -5011,9 +3300,6 @@ if 0: # This actually saves this file, so it is a bit dangerous.
     ### c.save()
     ok = g.app.unitTestDict.get("warning")
     assert ok, "putVnode failed to give warning"</t>
-<t tx="ekr.20040831095833"></t>
-<t tx="ekr.20040831095833.1">openFileDialog
-core\\runLeo.py</t>
 <t tx="ekr.20040831101747"># Apparently these file are fine when they are written.
 # The problem comes later in the distribution process.
 
@@ -5045,16 +3331,6 @@ import leoTest
 leoTest.doTests(c,all=False)
 c.selectPosition(p)</t>
 <t tx="ekr.20041001211817"></t>
-<t tx="ekr.20041012084201">def removeFile(path,verbose):
-
-    if os.path.exists(test_file):
-        if verbose:
-            print("@test batch mode: deleting",test_file)
-        os.remove(test_file)
-    else:
-        if verbose:
-            print("@test batch mode: not found:",test_file)
-</t>
 <t tx="ekr.20041013062906"># This hack is needed only for tkinter gui.
 if g.app.gui.guiName() == 'tkinter':
     p.OnHyperLinkControlClick(event=None)
@@ -5141,12 +3417,6 @@ last linesection line 1unnamed node line 1</t>
 last line</t>
 <t tx="ekr.20041021065903.1">section line 1</t>
 <t tx="ekr.20041021065903.2">unnamed node line 1</t>
-<t tx="ekr.20041107105213">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
 <t tx="ekr.20041121151002"></t>
 <t tx="ekr.20050104095950"># Switch EqualSizedPanes and ExecuteScript
 
@@ -5155,66 +3425,6 @@ assert val=="ok", "colorizer test failed: %s" % p.h
 # Exit = alt-ctrl-Z
 
 # paste-text = Alt-Ctrl-V</t>
-<t tx="ekr.20050105080048.1">f = c.frame
-assert(f.c==c)
-assert(c.frame==f)
-
-if g.app.gui.guiName() == 'tkinter':
-    ivars = (
-        'bar1','bar2',
-        'body',
-        #'bodyBar','bodyXBar', # 2007: 10/31: There are now injected in c.frame.body.bodyCtrl.
-        #'bodyCtrl', # 2007/10/27: this ivar is evil and has been removed.
-        'canvas',
-        'f1','f2',
-        'iconBar','iconFrame',
-        'log','outerFrame',
-        'statusLine','statusFrame','statusLabel','statusText',
-        'title','top','tree',
-        #'treeBar', # leo_treeBar is now injected into frame.canvas.
-    )
-else: ivars = ()
-
-for ivar in ivars:
-    assert hasattr(f,ivar), 'missing frame ivar: %s' % ivar
-    val = getattr(f,ivar)
-    assert val is not None,'null frame ivar: %s'% ivar
-    
-# These do not have to be initied.
-for ivar in ('findPanel',):
-    assert hasattr(f,ivar), 'missing frame ivar: %s' % ivar</t>
-<t tx="ekr.20050105082500">f = c.frame
-assert(f.c==c)
-assert(c.frame==f)
-
-ivars = (
-    # Subcommanders...
-    'atFileCommands','fileCommands','importCommands','tangleCommands','undoer',
-    # Positions...
-    '_currentPosition','_rootPosition','_topPosition',
-    # Data structures...
-    'hoistStack','recentFiles',
-    # Args...
-    'output_doc_flag','page_width','tab_width',
-    'tangle_directory','tangle_errors','tangle_batch_flag','target_language',
-    'untangle_batch_flag','use_header_flag',
-    # Others...
-    'mFileName',
-)
-
-for ivar in ivars:
-    assert hasattr(c,ivar), 'missing commander ivar: %s' % ivar
-    val = getattr(c,ivar)
-    assert val is not None,'null commander ivar: %s'% ivar</t>
-<t tx="ekr.20050105084757">ivars = ('extensionsDir','globalConfigDir','loadDir','testDir')
-
-for ivar in ivars:
-    assert hasattr(g.app,ivar), 'missing g.app directory: %s' % ivar
-    val = getattr(g.app,ivar)
-    assert val is not None, 'null g.app directory: %s'% ivar
-    assert g.os_path_exists(g.os_path_abspath(val)), 'non-existent g.app directory: %s' % ivar
-    
-assert hasattr(g.app,'homeDir') # May well be None.</t>
 <t tx="ekr.20050105084757.1">import os
 
 exists = g.os_path_exists
@@ -5233,34 +3443,6 @@ f.close()
 assert exists(path)
 assert g.utils_remove(path,verbose=True)
 assert not exists(path)</t>
-<t tx="ekr.20050105090632">
-ivars = (
-    # These are non-official and might be removed...
-        # 'afterHandler','count','positions',
-        # 'menuWarningsGiven','unicodeErrorGiven',
-    'batchMode','config',
-    'debug','debugSwitch','disableSave',
-    'gui','hasOpenWithMenu','hookError','hookFunction',
-    'idle_imported','idleTimeDelay','idleTimeHook','initing','killed',
-    'leoID','loadedPlugins','log','logIsLocked','logWaiting',
-    'nodeIndices','numberOfWindows',
-    'quitting','realMenuNameDict','searchDict','scriptDict',
-    'trace','tracePositions','trace_list','tkEncoding',
-    'unitTestDict','unitTesting','use_psyco','windowList',
-)
-
-for ivar in ivars:
-    assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar
-    val = getattr(g.app,ivar)
-    assert val is not None, 'null app ivar: %s'% ivar
-    
-# These do not have to be initied.
-for ivar in (
-    'commandName',
-    'openWithFiles','openWithFileNum','openWithTable',
-    'root',
-):
-    assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar</t>
 <t tx="ekr.20050105091547">import os
 
 exists = g.os_path_exists
@@ -5727,71 +3909,8 @@ else:
 
     result = ''.join(result)
     return result</t>
-<t tx="ekr.20050112095306.1"></t>
+<t tx="ekr.20050112095306.1"># 2 failures with Alt-5.</t>
 <t tx="ekr.20050120095423"></t>
-<t tx="ekr.20050120095423.6"># N.B.  We don't import the files: multiple imports might cause problems.
-import unittest
-import leo.core.leoTest as leoTest
-import sys
-
-@others
-
-if sys.platform.lower().startswith('win'):
-
-    print('@suite test syntax of all plugins')
-    
-    suite = unittest.makeSuite(unittest.TestCase)
-    
-    for path in leoTest.getAllPluginFilenames():
-    
-        f = file(path)
-        assert f, "File not found: %s" % path
-        # Do not test the syntax_error_plugin.
-        if path.find('syntax_error_plugin') == -1:
-            s = f.read() ; f.close()
-            test = parseFileTestCase(c,path,checkCompile=True,checkTabs=True)
-            suite.addTest(test)
-    
-    if suite:
-        g.app.scriptDict['suite'] = suite
-        
-else:
-    
-    pass # Only test these on Windows.</t>
-<t tx="ekr.20050120095423.7">class parseFileTestCase (unittest.TestCase):
-
-    @others</t>
-<t tx="ekr.20050120095423.8">def __init__ (self,c,path,checkCompile,checkTabs):
-
-    # Init the base class.
-    unittest.TestCase.__init__(self)
-
-    self.c = c
-    self.path = path
-    self.checkCompile = checkCompile
-    self.checkTabs = checkTabs
-    assert self.checkCompile or self.checkTabs, "not checking anything"</t>
-<t tx="ekr.20050120095423.9">def runTest(self):
-    
-    c = self.c ; path = self.path
-
-    s = file(path).read()
-
-    if self.checkCompile:
-        leoTest.checkFileSyntax(path,s)
-
-    if self.checkTabs:
-        leoTest.checkFileTabs(path,s)</t>
-<t tx="ekr.20050120095423.10">def shortDescription (self):
-    
-    fn = str(g.shortFileName(self.path))
-    
-    if self.checkCompile and self.checkTabs:
-        return "Test syntax and tabbing of %s plugin" % fn
-    elif self.checkCompile:
-        return "Test syntax of %s plugin" % fn
-    else:
-        return "Test tabbing of %s plugin" % fn</t>
 <t tx="ekr.20050120095423.11"># Create unit tests in g.app.scriptDict["suite"]
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoTest as leoTest
@@ -5928,7 +4047,10 @@ at.errors = 0
 s = u'La Pe\xf1a'
 s = u'La Peña'
 # s = u'Ă: U+0102: Latin Capital Letter A With Breve'
-at.printError('test of at.printError:',s)</t>
+at.printError('test of at.printError:',s)
+
+# important: this test will fail if sitecustomize.py
+# does not contain sys.setdefaultencoding('utf-8')</t>
 <t tx="ekr.20050208073718">import sys
 
 if sys.platform.startswith('win'):
@@ -5988,26 +4110,6 @@ for ivar in ('c','g','p'):
     assert ivar in dir()
 
 assert hasattr(g.app,'tkEncoding')</t>
-<t tx="ekr.20050210085211"># For some reason these don't select the dialog properly when run as a script.
-# However, the main reason for the tests is to make sure the ctors don't crash.
-# Also, for unit testing the value of c doesn't matter.
-
-oldGui = g.app.gui ; guis = [g.app.gui]
-
-import leo.core.leoGui as leoGui
-guis.append(leoGui.unitTestGui())
-
-for gui in guis:
-    gui.runAboutLeoDialog(c,'version','copyright','url','email')
-    gui.runAskLeoIDDialog()
-    gui.runAskOkDialog(c,'title','message')
-    gui.runAskOkCancelNumberDialog(c,'title','message')
-    gui.runAskOkCancelStringDialog(c,'title','message')
-    gui.runAskYesNoDialog(c,'title','message')
-    gui.runAskYesNoCancelDialog(c,'title','message')
-    # gui.runCompareDialog(c) # Removed.
-
-g.app.gui = oldGui</t>
 <t tx="ekr.20050218015346">import glob
 import inspect
 import unittest
@@ -6882,391 +4984,6 @@ after</t>
         sec line 2 indented
 sec line 3
 after</t>
-<t tx="ekr.20050618053006">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20050618053006.1">@language plsql
-
-"a string"
--- reserved keywords
-ABORT,
-abort,
-ACceSS,
-access,
-add,
-all,
-allocate,
-alter,
-analyze,
-and,
-any,
-archive,
-archivelog,
-array,
-arraylen,
-as,
-asc,
-assert,
-assign,
-at,
-audit,
-authorization,
-avg,
-backup,
-base_table,
-become,
-before,
-begin,
-between,
-binary_integer,
-block,
-body,
-boolean,
-by,
-cache,
-cancel,
-cascade,
-case,
-change,
-char,
-char_base,
-character,
-check,
-checkpoint,
-close,
-cluster,
-clusters,
-cobol,
-colauth,
-column,
-columns,
-comment,
-commit,
-compile,
-compress,
-connect,
-constant,
-constraint,
-constraints,
-contents,
-continue,
-controlfile,
-count,
-crash,
-create,
-current,
-currval,
-cursor,
-cycle,
-data_base,
-database,
-datafile,
-date,
-dba,
-debugoff,
-debugon,
-dec,
-decimal,
-declare,
-default,
-definition,
-delay,
-delete,
-delta,
-desc,
-digits,
-disable,
-dismount,
-dispose,
-distinct,
-distinct,
-do,
-double,
-drop,
-drop,
-dump,
-each,
-else,
-else,
-elsif,
-enable,
-end,
-end,
-entry,
-escape,
-events,
-except,
-exception,
-exception_init,
-exceptions,
-exclusive,
-exec,
-execute,
-exists,
-exists,
-exit,
-explain,
-extent,
-externally,
-false,
-fetch,
-fetch,
-file,
-float,
-float,
-flush,
-for,
-for,
-force,
-foreign,
-form,
-fortran,
-found,
-freelist,
-freelists,
-from,
-from,
-function,
-generic,
-go,
-goto,
-grant,
-group,
-groups,
-having,
-identified,
-if,
-immediate,
-in,
-including,
-increment,
-index,
-indexes,
-indicator,
-initial,
-initrans,
-insert,
-instance,
-int,
-integer,
-intersect,
-into,
-is,
-key,
-language,
-layer,
-level,
-like,
-limited,
-link,
-lists,
-lock,
-logfile,
-long,
-loop,
-manage,
-manual,
-max,
-maxdatafiles,
-maxextents,
-maxinstances,
-maxlogfiles,
-maxloghistory,
-maxlogmembers,
-maxtrans,
-maxvalue,
-min,
-minextents,
-minus,
-minvalue,
-mlslabel,
-mod,
-mode,
-modify,
-module,
-mount,
-natural,
-new,
-new,
-next,
-nextval,
-noarchivelog,
-noaudit,
-nocache,
-nocompress,
-nocycle,
-nomaxvalue,
-nominvalue,
-none,
-noorder,
-noresetlogs,
-normal,
-nosort,
-not,
-notfound,
-nowait,
-null,
-number,
-number_base,
-numeric,
-of,
-off,
-offline,
-old,
-on,
-online,
-only,
-open,
-open,
-optimal,
-option,
-or,
-order,
-others,
-out,
-own,
-package,
-package,
-parallel,
-partition,
-pctfree,
-pctincrease,
-pctused,
-plan,
-pli,
-positive,
-pragma,
-precision,
-primary,
-prior,
-private,
-private,
-privileges,
-procedure,
-procedure,
-profile,
-public,
-quota,
-raise,
-range,
-raw,
-read,
-real,
-record,
-recover,
-references,
-referencing,
-release,
-remr,
-rename,
-resetlogs,
-resource,
-restricted,
-return,
-reuse,
-reverse,
-revoke,
-role,
-roles,
-rollback,
-row,
-rowid,
-rowlabel,
-rownum,
-rows,
-rowtype,
-run,
-savepoint,
-schema,
-scn,
-section,
-segment,
-select,
-select,
-separate,
-sequence,
-session,
-set,
-set,
-share,
-shared,
-size,
-size,
-smallint,
-smallint,
-snapshot,
-some,
-sort,
-space,
-sql,
-sqlbuf,
-sqlcode,
-sqlerrm,
-sqlerror,
-sqlstate,
-start,
-start,
-statement,
-statement_id,
-statistics,
-stddev,
-stop,
-storage,
-subtype,
-successful,
-sum,
-sum,
-switch,
-synonym,
-sysdate,
-system,
-tabauth,
-table,
-tables,
-tables,
-tablespace,
-task,
-temporary,
-terminate,
-then,
-thread,
-time,
-to,
-tracing,
-transaction,
-trigger,
-triggers,
-true,
-truncate,
-type,
-uid,
-under,
-union,
-unique,
-unlimited,
-until,
-update,
-use,
-user,
-using,
-validate,
-values,
-varchar,
-varchar2,
-variance,
-view,
-views,
-when,
-whenever,
-where,
-while,
-with,
-work,
-write,
-xor</t>
 <t tx="ekr.20050618061835">@killcolor
 
 Here is a tutorial written by Roger Erens.
@@ -13441,60 +11158,7 @@ for command in table:
     c.k.simulateCommand(command)
     c.k.keyboardQuit(None)</t>
 <t tx="ekr.20060130151716.4">c.k.simulateCommand('show-find-options')</t>
-<t tx="ekr.20060131101806">import inspect
-
-d = c.commandsDict ; keys = d.keys() ; keys.sort()
-
-for key in keys:
-    f = d.get(key) ; name = f and f.__name__
-    args, varargs, varkw, defaults = data = inspect.getargspec(f)
-    # print('%-28s' % (name),data)
-    arg0 = len(args) &gt; 0 and args[0]
-    arg1 = len(args) &gt; 1 and args[1]
-    assert arg0 == 'self' and arg1 == 'event' or arg0 == 'event',\
-       'no event arg for %s, args: %s' % (name,data)</t>
 <t tx="ekr.20060131102450">print('\nEnd of typing and undo tests')</t>
-<t tx="ekr.20060203181203.2"># print('settingsNameDict',c.k.settingsNameDict)
-
-table = (
-    ('a','a'),
-    ('A','a'),
-    ('Alt-a','Alt+a'),
-    ('Alt-A','Alt+a'),
-    ('Alt-Shift-a','Alt+A'),
-    ('Alt-=','Alt+equal'),
-    ('Alt-+','Alt+plus'),
-    # We can no longer igtnore the shift.
-    # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
-    ('Alt--','Alt+minus'),
-    ('Shift-a','A'),
-    ('Shift-A','A'),
-    ('RtArrow','Right'),
-    ('Shift-RtArrow','Shift+Right'),
-    ('Ctrl-RtArrow','Ctrl+Right'),
-    ('Control-Right','Ctrl+Right'),
-    ('PageUp','Prior'), ('Prior','Prior'),('Shift-PageUp','Shift+Prior'),
-    ('PageDn','Next'),('Next','Next'),('Shift-Next','Shift+Next'),
-)
-for setting, result in table:
-    val = c.k.strokeFromSetting(setting)
-    assert val==result,'Expected %s, Got %s' % (result,val)</t>
-<t tx="ekr.20060203201949"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-import leo.core.leoTest as leoTest
-u = leoTest.testUtils(c) # This *is* used
-
-c.contractAllHeadlines()
-h = 'All unit tests'
-p = u.findNodeAnywhere(h)
-if p:
-    p.expand()
-    g.app.unitTestDict['restoreSelectedNode']=False
-    c.selectPosition(p)
-    c.redraw()
-        
-print('\nEnd of plugins unit tests')</t>
-<t tx="ekr.20060205165937"># Only run with windows--there are problems on Linux.</t>
 <t tx="ekr.20060208072307">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
 
 if c.k.defaultUnboundKeyAction == 'insert':
@@ -13708,23 +11372,6 @@ if guiname == 'wxWindows':
 <t tx="ekr.20060325072919.1"></t>
 <t tx="ekr.20060325072919.2"></t>
 <t tx="ekr.20060325072919.3"></t>
-<t tx="ekr.20060328091154">import leo.core.leoTest as leoTest ; u = leoTest.testUtils(c)
-k = c.k ; p = c.p ; w = c.edit_widget(p)
-commandName = 'test-registerCommand'
-
-def callback (event=None,c=c): # Must have an event param to pass later unit test.
-    g.app.unitTestDict[commandName] = True
-
-# Test 1
-g.app.unitTestDict[commandName] = False
-k.registerCommand(commandName,'Alt-Ctrl-Shift-z',callback,pane='all',verbose=True)
-k.simulateCommand(commandName)
-assert g.app.unitTestDict.get(commandName)
-
-if 0: # Test 2
-    g.app.unitTestDict[commandName] = False
-    k.manufactureKeyPressForCommandName(w,commandName)
-    assert g.app.unitTestDict.get(commandName)</t>
 <t tx="ekr.20060602195313">at = c.atFileCommands
 child = p.firstChild()
 child2 = child.next()
@@ -13776,73 +11423,16 @@ assert s == result</t>
 /*@-node:root*/
 /*@-leo*/
 </t>
-<t tx="ekr.20060829092306">p = c.p.firstChild()
+<t tx="ekr.20060912091510.1">import time
 
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
+c.frame.body.addEditor()
+
+time.sleep(0.5)
+
+c.frame.body.deleteEditor()
+
+time.sleep(0.5)
 </t>
-<t tx="ekr.20060829092306.1">@language erlang
-
-halt()
-
--module()</t>
-<t tx="ekr.20060829092306.2">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20060829092306.3">@ doc part
-@c
-
-@language java /* Colored by match_leo_keyword: tag = leoKeyword. */
-
-@whatever /* Colored by java match_following rule: tag = keyword4. */
-
-/** A javadoc: tag = comment3 */
-
-/** &lt;!-- comment --&gt; tag = comment1. */
-
-/** @see tag = label */</t>
-<t tx="ekr.20060829092306.4">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20060829092306.5">@language r
-
-x &lt;- rnorm(10) 
- 
-vv &lt;- function(z) return(z) 
- 
-def python_funct(uu): 
-return uu</t>
-<t tx="ekr.20060829092306.6">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20060829092306.7">@language vbscript
-
-if
-IF
-</t>
-<t tx="ekr.20060912091510.1">body = c.frame.body
-body.addEditor()
-body.deleteEditor()</t>
-<t tx="ekr.20060912091510.2">
-frame = c.frame ; body = frame.body
-body.addEditor()
-
-# Select the leftmost editor.
-w = body.editorWidgets.get('1')
-assert(w)
-body.selectEditor(w)
-body.bodyCtrl = frame.bodyCtrl = w
-body.deleteEditor()</t>
 <t tx="ekr.20060913084600">import leo.core.leoNodes as leoNodes
 
 if leoNodes.use_zodb:
@@ -13890,7 +11480,7 @@ s = fc.putUnknownAttributes (p.v)
 expected = ' unit_test="55046162636471002e"'
 assert s == expected, 'expected: %s, got: %s' % (repr(expected),repr(s))
 </t>
-<t tx="ekr.20061001114637"></t>
+<t tx="ekr.20061001114637"># 3 failures with Alt-5</t>
 <t tx="ekr.20061001124008">fc = c.fileCommands
 t = p.v.t
 child = p.firstChild()
@@ -15778,10 +13368,17 @@ for i,j,python in (
 </t>
 <t tx="ekr.20061104172236.7">ec = c.editCommands
 
-for direction,extend in (('up',False),('down',False),('up',True),('down',True),):
+table = (
+    'down-half-page',
+    'down-line',
+    'down-page',
+    'up-half-page',
+    'up-line',
+    'up-page',
+)
+for kind in table:
     event = g.Bunch(widget=c.frame.body.bodyCtrl)
-    ec.scrollHelper(event,direction,extend)
-
+    ec.scrollHelper(event,kind)
 </t>
 <t tx="ekr.20061104172236.11">s = 'abc xy_z5 pdq'
 i,j = g.getWord(s,5)
@@ -15837,14 +13434,6 @@ for i,result in (
 ):
     j,k = g.getLine(s,i)
     assert (j,k) == result, 'i: %d, expected %d,%d, got %d,%d' % (i,result[0],result[1],j,k)</t>
-<t tx="ekr.20061104172236.20">w = c.frame.body.bodyCtrl
-s = w.getAllText()
-
-for i in xrange(len(s)):
-    i2 = w.toGuiIndex(i)
-    i3 = w.toPythonIndex(i2)
-    assert(i3==i)
-</t>
 <t tx="ekr.20061104172236.22"># target.
 
 try:
@@ -15869,22 +13458,6 @@ for x in xrange(0,100,10):
     event = g.Bunch(c=c,x=x,y=y,widget=w)
     c.frame.body.onClick(event)
 </t>
-<t tx="ekr.20061104172236.24">try:
-    k = c.k ; ac = k.autoCompleter
-    w = c.frame.body.bodyCtrl
-    ac.widget = w
-    s = w.getAllText()
-    import string
-    # Just test that this doesn't crash.
-    for obj in (None,g,string,c,p):
-        w.setInsertPoint('end')
-        c.k.autoCompleter.calltip(obj=g)
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    c.recolor()
-
-# end:</t>
 <t tx="ekr.20061106112522">w = c.frame.body.bodyCtrl
 s = w.getAllText()
 
@@ -15923,36 +13496,6 @@ finally:
 
 
 # end:</t>
-<t tx="ekr.20061106184118">&lt;&lt; test defined &gt;&gt;</t>
-<t tx="ekr.20061106184118.1">pass</t>
-<t tx="ekr.20061106201509.1"></t>
-<t tx="ekr.20061106201509.2">import detect_urls
-
-w = c.frame.body.bodyCtrl
-s = w.getAllText()
-w.setInsertPoint(len(s))
-url = detect_urls.openURL(tag='test',keywords={'c':c})
-assert url == 'http://webpages.charter.net/edreamleo/front.html','Got:%s' % repr(url)
-
-@ The last line is the url
-http://webpages.charter.net/edreamleo/front.html</t>
-<t tx="ekr.20061106201509.3"># Only tk gui colorizers with tag_ranges.
-
-if g.app.gui.guiName() == 'tkinter':
-
-    import detect_urls
-    w = c.frame.body.bodyCtrl
-    s = w.getAllText()
-    detect_urls.colorizeURLs(tag='test',keywords={'c':c})
-    assert w.tag_ranges('URL'),'no URL tags'
-    
-@ The last line is the url
-http://webpages.charter.net/edreamleo/front.html</t>
-<t tx="ekr.20061106201509.4">if g.app.gui.guiName() == 'tkinter':
-
-    import rClick
-    rClick.init()
-</t>
 <t tx="ekr.20061106201509.6"># line 1
 # line 2
 # line 3
@@ -15981,131 +13524,6 @@ assert ins    == s[start:end],'Got %s' % repr(ins)
 assert after == s[end:]
 
 # end.</t>
-<t tx="ekr.20061109172511"></t>
-<t tx="ekr.20061109172511.1">if g.app.gui.guiName() == 'tkinter':
-    
-    import leo.core.leoPlugins as leoPlugins
-    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
-    
-    import leo.core.leoFrame as leoFrame
-    import inspect
-    
-    baseClass = leoFrame.leoFrame
-    subClasses  = (tkGui.leoTkinterFrame,leoFrame.nullFrame)
-    baseObject = c.frame
-    
-    methods = inspect.getmembers(baseClass,inspect.ismethod)
-    methodNames = [z[0] for z in methods]
-    
-    for name in baseObject.mustBeDefinedOnlyInBaseClass:
-        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
-    
-    for subClass in subClasses:
-        subclassName = subClass.__name__
-        for name in methodNames:
-            base_func = getattr(baseClass,name)
-            sub_func =  getattr(subClass,name)
-            if name in baseObject.mustBeDefinedOnlyInBaseClass:
-                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
-            if name in baseObject.mustBeDefinedInSubclasses:
-                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
-</t>
-<t tx="ekr.20061109172511.3">if g.app.gui.guiName() == 'tkinter':
-    
-    import leo.core.leoPlugins as leoPlugins
-    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
-    
-    import leo.core.leoFrame as leoFrame
-    import inspect,sys
-    
-    baseClass = leoFrame.leoBody
-    subClasses  = (tkGui.leoTkinterBody,leoFrame.nullBody)
-    baseObject = c.frame.body
-    
-    methods = inspect.getmembers(baseClass,inspect.ismethod)
-    methodNames = [z[0] for z in methods]
-    
-    for name in baseObject.mustBeDefinedOnlyInBaseClass:
-        try:
-            assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
-        except AssertionError:
-            exctype, value = sys.exc_info()[:2]
-            print(value)
-            raise
-    
-    for subClass in subClasses:
-        subclassName = subClass.__name__
-        for name in methodNames:
-            base_func = getattr(baseClass,name)
-            sub_func =  getattr(subClass,name)
-            try:
-                if name in baseObject.mustBeDefinedOnlyInBaseClass:
-                    assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
-                if name in baseObject.mustBeDefinedInSubclasses:
-                    assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
-            except AssertionError:
-                #raise
-                exctype, value = sys.exc_info()[:2]
-                print(value)</t>
-<t tx="ekr.20061109172511.4">if g.app.gui.guiName() == 'tkinter':
-    
-    import leo.core.leoPlugins as leoPlugins
-    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
-    
-    import leo.core.leoFrame as leoFrame
-    import inspect
-    
-    baseClass = leoFrame.leoTree
-    subClasses  = (tkGui.leoTkinterTree,leoFrame.nullTree)
-    baseObject = c.frame.tree
-    
-    methods = inspect.getmembers(baseClass,inspect.ismethod)
-    methodNames = [z[0] for z in methods]
-    
-    for name in baseObject.mustBeDefinedOnlyInBaseClass:
-        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
-    
-    for subClass in subClasses:
-        subclassName = subClass.__name__
-        for name in methodNames:
-            base_func = getattr(baseClass,name)
-            sub_func =  getattr(subClass,name)
-            if name in baseObject.mustBeDefinedOnlyInBaseClass:
-                assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
-            if name in baseObject.mustBeDefinedInSubclasses:
-                assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
-</t>
-<t tx="ekr.20061109210659">if g.app.gui.guiName() == 'tkinter':
-    
-    import leo.core.leoPlugins as leoPlugins
-    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
-    
-    import leo.core.leoGui as leoGui
-    import inspect
-    
-    baseClass = leoGui.leoGui
-    subClasses  = (tkGui.tkinterGui,) # nullGui can inherit almost all leoGui dummy methods.
-    baseObject = g.app.gui
-    
-    methods = inspect.getmembers(baseClass,inspect.ismethod)
-    methodNames = [z[0] for z in methods]
-    
-    for name in baseObject.mustBeDefinedOnlyInBaseClass:
-        assert name in methodNames, 'not defined in base class %s.%s' % (baseClass.__name__,name)
-    
-    for subClass in subClasses:
-        subclassName = subClass.__name__
-        for name in methodNames:
-            base_func = getattr(baseClass,name)
-            sub_func =  getattr(subClass,name)
-            try:
-                if name in baseObject.mustBeDefinedOnlyInBaseClass:
-                    assert base_func.im_func == sub_func.im_func, 'defined in subclass %s.%s' % (subclassName,name)
-                if name in baseObject.mustBeDefinedInSubclasses:
-                    assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
-            except AssertionError:
-                raise
-</t>
 <t tx="ekr.20061110094226">ec = c.editCommands ; w = c.frame.body.bodyCtrl
 
 for i,result,direction in (('5.8','4.8','up'),('5.8','6.8','down')):
@@ -16120,111 +13538,6 @@ for i,result,direction in (('5.8','4.8','up'),('5.8','6.8','down')):
         assert j==j2, 'Expected %s, got %s' % (repr(j),repr(j2))
         w.setSelectionRange(0,0,insert=None)
 </t>
-<t tx="ekr.20061110112507">import mnplugins
-
-w = c.frame.body.bodyCtrl
-s = w.getAllText()
-
-try:
-    w.setInsertPoint(len(s))
-    mnplugins.insertBodystamp(c,p)
-    s2 = w.getAllText()
-    assert s2.startswith(s)
-    assert len(s2) &gt; len(s) + 15
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    c.recolor()
-
-# end:</t>
-<t tx="ekr.20061110115517">import macros
-
-controller = macros.paramClass(c)
-controller.parameterize()
-    # Not much will happen because there are no children.
-    # However, this does test recent changes.</t>
-<t tx="ekr.20061113154104">if g.app.gui.guiName() == 'tkinter':
-    
-    import leo.core.leoPlugins as leoPlugins
-    tkGui = leoPlugins.loadOnePlugin ('tkGui',verbose=False)
-    import Tkinter as Tk
-    w = tkGui.leoTkTextWidget()
-    w.setAllText('abcdef\n')
-    s = w.getAllText()
-    assert s == 'abcdef\n'
-    s1 = w.get(0,len(s))
-    assert s1 == 'abcdef\n'
-    w.delete(0,len(s))
-    assert len(w.getAllText()) == 0
-    w.setAllText('')
-    w.insert(0,'abcdef\n')
-    s = w.getAllText()
-    assert s == 'abcdef\n','got: %s' % repr(s)
-    w.setInsertPoint(2)
-    i = w.getInsertPoint()
-    assert i == 2
-    w.setSelectionRange(2,4)
-    assert w.hasSelection()
-    i,j = w.getSelectionRange()
-    assert i==2 and j==4
-    s3 = w.getSelectedText()
-    assert s3 == 'cd'
-    w.deleteTextSelection()
-    s4 = w.getAllText()
-    assert s4 == 'abef\n'
-    w.selectAllText()
-    i,j = w.getSelectionRange()
-    assert i==0 and j==5,'getSelectionRange failed: i=%d,j=%d' % (i,j)
-    w.replace(0,3,'wxyz')
-    s5 = w.getAllText()
-    assert s5 == 'wxyzf\n','getAllText failed'
-    w.flashCharacter(3)
-    i = w.xyToGuiIndex(0,0)
-    assert i == '1.0','wxToGuiIndex failed'
-    i = w.xyToPythonIndex(0,0)
-    assert i == 0
-    w.mark_set('insert','1.3'),'xyToPythonIndex failed'
-    i = w.getInsertPoint()
-    assert i == 3
-    w.tag_add('test',4,6)
-    aTuple = w.tag_ranges('test')
-    assert aTuple == (4,6),'tag_add failed: %s' % aTuple
-</t>
-<t tx="ekr.20061115074956"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-    
-print('\nEnd of general unit tests')</t>
-<t tx="ekr.20061115103558"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-    
-print('\nEnd of leoColor tests')</t>
-<t tx="ekr.20061127142311">#ab
-#
-
-w = c.frame.body.bodyCtrl
-
-# This test applies only to tkinter indices.
-if g.app.gui.guiName() == 'tkinter':
-
-    table = (
-        (-1,'1.0'), # One too small.
-        (0,'1.0'),
-        (1,'1.1'),
-        (2,'1.2'),
-        (3,'1.3'), # The newline ends a row.
-        (4,'2.0'),
-        (5,'2.1'),
-    )
-    
-    for i,expected in table:
-        result = w.toGuiIndex(i)
-        assert result == expected,'toGuiIndex(i): %s, expected: %s, got: %s' % (i,expected,result)</t>
 <t tx="ekr.20061128082002">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20061128082002.1">first line
@@ -16307,7 +13620,9 @@ if not g.os_path_exists(s):
     g.pr('created chinese file')
     
 </t>
-<t tx="ekr.20070114140212"></t>
+<t tx="ekr.20070114140212"># Important: many unit tests are now in leoPy.leo.
+# All the following should pass when run locally (Alt-4).
+# All the following have errors when run externally (Alt-5).</t>
 <t tx="ekr.20070131162935">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20070131162935.1">first line
@@ -16668,14 +13983,13 @@ plugins_menu.py
 # cleo.py
 open_with.py
 mod_scripting.py
-#### rst3.py
 UNL.py
 nav_buttons.py
 hoist.py
 
 image.py
 leo_to_html.py
-threading_colorizer.py
+# threading_colorizer.py
 
 # Other plugins...
 
@@ -16897,7 +14211,6 @@ else:
     # Use a pristine environment.
     os.spawnve(os.P_NOWAIT, sys.executable, args, os.environ)
 </t>
-<t tx="ekr.20070711063849"></t>
 <t tx="ekr.20070807104632">import leoTest
 leoTest.doTests (c,all=False)</t>
 <t tx="ekr.20070926090757"></t>
@@ -17093,704 +14406,6 @@ StormReady communities are better prepared to save lives from the onslaught of
 severe weather through better planning, education, and awareness. No community
 is storm proof, but StormReady can help communities save lives. Does StormReady
 make a difference?</t>
-<t tx="ekr.20071020075538">@tabwidth -4
-@language python</t>
-<t tx="ekr.20071020075538.1"></t>
-<t tx="ekr.20071020075538.2">fileName = p.h
-
-s = '''\
-class cTestClass1 {
-
-    int foo (int a) {
-        a = 2 ;
-    }
-
-    char bar (float c) {
-        ;
-    }
-}
-'''
-
-c.importCommands.cUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.3">fileName = p.h
-
-s = '''\
-class cTestClass1 {
-
-    int foo (int a) {
-# an underindented line.
-        a = 2 ;
-    }
-    
-    # This should go with the next function.
-
-    char bar (float c) {
-        ;
-    }
-}
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 1
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.cUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.4">fileName = p.h
-
-s = '''\
-class cTestClass1 {
-
-    int foo (int a) {
-        a = 2 ;
-    }
-
-    char bar (float c) {
-        ;
-    }
-}
-'''
-
-c.importCommands.defaultImporterUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.5">fileName = p.h
-
-s = '''\
-void
-aaa::bbb::doit
-    (
-    awk* b
-    )
-{
-    assert(false);
-}
-
-bool
-aaa::bbb::dothat
-    (
-    xyz *b
-    ) //  &lt;---------------------problem
-{
-    return true;
-}
-'''
-
-c.importCommands.cUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.6">fileName = p.h
-
-s = '''\
-void
-aaa::bbb::doit
-    (
-    awk* b
-    )
-{
-    assert(false);
-}
-
-bool
-aaa::bbb::dothat
-    (
-    xyz *b
-    ) 
-{
-    return true;
-} //  &lt;---------------------problem
-'''
-
-c.importCommands.cUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.7">fileName = p.h
-
-s = '''
-void
-aaa::bbb::doit
-    (
-    awk* b  // leading blank
-    )
-{
-	assert(false); // leading tab
-}
-
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0 # Intermixed blanks and tabs are ok for C.
-
-c.importCommands.cUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.8">fileName = p.h
-
-s = '''\
-static void
-ReleaseCharSet(cset)
-    CharSet *cset;
-{
-    ckfree((char *)cset-&gt;chars);
-    if (cset-&gt;ranges) {
-    ckfree((char *)cset-&gt;ranges);
-    }
-}
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.cUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.9">fileName = p.h
-
-s = '''\
-Tcl_Obj *
-Tcl_NewLongObj(longValue)
-    register long longValue;	/* Long integer used to initialize the
-         * new object. */
-{
-    return Tcl_DbNewLongObj(longValue, "unknown", 0);
-}
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.cUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.10"># Warning: setting atAuto=True can wipe out unit tests.</t>
-<t tx="ekr.20071020075538.11">s = '''\
-class testClass1 # no colon
-    pass
-    
-def spam():
-    pass
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0 # Not really an error.
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.12">s = '''\
-
-class cls:
-     def fun(): # one extra space.
-        pass
-'''
-
-g.app.unitTestDict ['expectedErrors'] = None # No error unless we get an unexpected mismatch line.
-g.app.unitTestDict ['expectedMismatchLine'] = 3 # The error happens before any lines are checked.
-g.app.unitTestDict ['expectedErrorMessage'] = 'leading whitespace not consistent with @tabwidth -4'
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.13">s = '''\
-class testClass1:
-    """A docstring"""
-    def __init__ (self):
-        pass
-    def f1(self):
-        pass
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.14">s = '''\
-class testClass2:
-    pass
-'''
-
-tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071020075538.15">s = '''\
-import leo.core.leoGlobals as g
-
-a = 3
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071020075538.16">s = '''\
-import leo.core.leoGlobals as g
-
-a = 3
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071020075538.17">s = '''\
-
-class ItasException(Exception):
-
-    pass
-
-def gpRun(gp, cmd, args, log = None):
-
-    """Wrapper for making calls to the geoprocessor and reporting errors"""
-
-    if log:
-
-        log('gp: %s: %s\\n' % (cmd, str(args)))
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-
-
-</t>
-<t tx="ekr.20071020075538.18">s = '''\
-
-class emptyClass: pass
-
-def followingDef():
-    pass
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.19">s = '''\
-
-class emptyClass: pass # comment
-
-def followingDef(): # comment
-    pass
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.20">s = '''\
-
-class test:
-
-    def importFilesCommand (self,files=None,treeType=None,
-        perfectImport=True,testing=False,verbose=False):
-            # Not a command.  It must *not* have an event arg.
-
-        c = self.c
-        if c == None: return
-        p = c.currentPosition()
-
-    # Used by paste logic.
-
-    def convertMoreStringToOutlineAfter (self,s,firstVnode):
-        s = string.replace(s,"\\r","")
-        strings = string.split(s,"\\n")
-        return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.21">s = '''\
-
-class test:
-    def spam(b):
-        pass
-
-    # Used by paste logic.
-
-    def foo(a):
-        pass
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.22">s = '''\
-class baseScannerClass:
-
-        """The base class for all import scanner classes."""
-
-        def __init__ (self,importCommands,language):
-
-            self.c = ic.c
-
-        def createHeadline (self,parent,body,headline):
-            # g.trace("parent,headline:",parent,headline)
-            return p
-'''
-
-# We expect mismatches because the indentation does not match @tabwidth -4.
-g.app.unitTestDict ['expectedErrors'] = None # No error unless we get an unexpected mismatch line.
-g.app.unitTestDict ['expectedMismatchLine'] = 3
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.23">s = '''\
-class baseScannerClass:
-    def containsUnderindentedComment(self):
-        a = 2
-    # A true underindented comment.
-        b = 3
-    # This underindented comment should be placed with next function.
-    def empty(self):
-        pass
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.24">s = '''\
-class baseScannerClass:
-    def containsUnderindentedComment(self):
-        a = 2
-    #
-        b = 3
-        # This comment is part of the present function.
-
-    def empty(self):
-        pass
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.25">s = '''\
-class aClass:
-    def outerDef(self):
-        """docstring.
-        line two."""
-   
-        def pr(*args,**keys):
-            g.es_print(color='blue',*args,**keys)
-        
-        a = 3
-'''
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.26">s = '''\
-class aClass:
-    def def1(self):
-        pass
-        
-    if False or g.unitTesting:
-
-        def pr(*args,**keys): # reportMismatch test
-            g.es_print(color='blue',*args,**keys)
-    
-        pr('input...')
-        
-    def def2(self):
-        pass
-'''
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071020075538.27">s = '''\
-class aClass:
-    def def1(self):
-        pass
-        
-    if False or g.unitTesting:
-
-        def pr(*args,**keys): # reportMismatch test
-            g.es_print(color='blue',*args,**keys)
-    
-        pr('input...')
-'''
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071020075538.28">s = '''\
-class aClass: # trailing comment
-    
-    
-    def def1(self):             # trailing comment
-        pass
-'''
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071020075538.29">s = '''\
-
-xyz = 6 # trailing comment
-pass
-'''
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071020075538.30">s = '''\
-NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
-      's': 'http://www.w3.org/2000/svg',
-      'xlink' : 'http://www.w3.org/1999/xlink'}
-
-tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
-'''
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071020075538.31">s = '''\
-NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
-      's': 'http://www.w3.org/2000/svg',
-      'xlink' : 'http://www.w3.org/1999/xlink'}
-
-tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
-'''
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071020075538.32">@encoding utf-8
-# leoImport.py uses unicode characters, so *this* test must have the directive above.
-
-fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'leoImport.py'))
-
-f = file(fileName)
-s = f.read()
-f.close()
-
-g.app.unitTestDict['testingLeoImport.py'] = True
-
-c.importCommands.pythonUnitTest(p,s=None,fileName=fileName,showTree=False)</t>
-<t tx="ekr.20071020075538.33"></t>
-<t tx="ekr.20071020075538.34">s = '''\
-namespace {
-    class cTestClass1 {
-        ;
-    }
-}
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.cSharpUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.50">s = '''\
-namespace {
-class cTestClass1 {
-    ;
-}
-}
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.cSharpUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.63">import sys
-
-if sys.platform.lower().startswith('win'):
-
-    fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','big-c#-test.c#'))
-    
-    f = file(fileName)
-    s = f.read()
-    f.close()
-    
-    c.importCommands.cSharpUnitTest(p,s=s,fileName=fileName,showTree=False)</t>
-<t tx="ekr.20071020075538.64"></t>
-<t tx="ekr.20071020075538.65">s = '''\
-interface Bicycle {
-    void changeCadence(int newValue);
-    void changeGear(int newValue);
-}
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.javaUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.66">s = '''\
-interface Bicycle {
-void changeCadence(int newValue);
-void changeGear(int newValue);
-}
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.javaUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071020075538.67">import sys
-
-if sys.platform.lower().startswith('win'):
-
-    fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','constants.java'))
-    
-    f = file(fileName)
-    s = f.read()
-    f.close()
-    
-    c.importCommands.javaUnitTest(p,s=None,fileName=fileName,showTree=False)
-</t>
-<t tx="ekr.20071020075538.77">s = '''\
-/**
- * Indicates the caller's authority to perform lifecycle operations on
- */
-
-public final class AdminPermission extends BasicPermission
-{
-    /**
-     * Creates a new &lt;tt&gt;AdminPermission&lt;/tt&gt; object.
-     */
-    public AdminPermission()
-    {
-        super("AdminPermission");
-    }
-}
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.javaUnitTest(p,s=s,showTree=False)
-
-</t>
-<t tx="ekr.20071020075538.78">import sys
-
-if sys.platform.lower().startswith('win'):
-
-
-    fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','AdminPermission.java'))
-    
-    f = file(fileName)
-    s = f.read()
-    f.close()
-    
-    c.importCommands.javaUnitTest(p,s=s,fileName=fileName,showTree=False)</t>
-<t tx="ekr.20071020075538.79">c.contractAllHeadlines()</t>
-<t tx="ekr.20071024102639">@first # -*- coding: utf-8 -*-
-
-import leo.core.leoImport as leoImport
-ic = c.importCommands
-runner = leoImport.baseScannerClass(ic,atAuto=True,language='python')
-runner.root = p.copy()
-
-g.app.unitTestDict ['expectedMismatchLine'] = 1
-
-s1 = g.toUnicode('line Ä, ڱ,  궯, 奠 end',encoding='utf-8')
-s2 = g.toUnicode('line Ä, ڱ,  궯, 奠 x end',encoding='utf-8')
-
-ok = runner.checkTrialWrite(s1=s1,s2=s2)
-
-assert ok
-</t>
-<t tx="ekr.20071030111256">@language python
-
-s = '''\
-/*
- * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $
- * 
- * Copyright (c) OSGi Alliance (2000, 2005). All Rights Reserved.
- * 
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this 
- * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.
- */
-
-package org.osgi.framework;
-
-/**
- * A Framework exception used to indicate that a bundle lifecycle problem
- * occurred.
- * 
- * &lt;p&gt;
- * &lt;code&gt;BundleException&lt;/code&gt; object is created by the Framework to denote
- * an exception condition in the lifecycle of a bundle.
- * &lt;code&gt;BundleException&lt;/code&gt;s should not be created by bundle developers.
- * 
- * &lt;p&gt;
- * This exception is updated to conform to the general purpose exception
- * chaining mechanism.
- * 
- * @version $Revision: 1.247 $
- */
-
-public class BundleException extends Exception {
-	static final long	serialVersionUID	= 3571095144220455665L;
-	/**
-	 * Nested exception.
-	 */
-	private Throwable	cause;
-
-	/**
-	 * Creates a &lt;code&gt;BundleException&lt;/code&gt; that wraps another exception.
-	 * 
-	 * @param msg The associated message.
-	 * @param cause The cause of this exception.
-	 */
-	public BundleException(String msg, Throwable cause) {
-		super(msg);
-		this.cause = cause;
-	}
-}
-
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.javaUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071030111427">@tabwidth 8</t>
-<t tx="ekr.20071101074443">@language python
-
-# This caused PyParse.py not to be imported properly.
-
-s = '''\
-
-import re
-
-if 0: # Causes the 'overindent'
-   if 0:   # for throwaway debugging output
-      def dump(*stuff):
-        sys.__stdout__.write(" ".join(map(str, stuff)) + "\n")
-        
-for ch in "({[":
-   _tran[ord(ch)] = '('
-
-class testClass1:
-    pass
-# '''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071107085755">s = '''\
-
-class mammalProviderBase(object):
-    """Root class for content providers used by DWEtree.py"""
-    def __init__(self, params):
-        """store reference to parameters"""
-        self.params = params
-    def provide(self, what):
-        """default &lt;BASE&gt; value"""
-        if what == 'doctitle':
-            return ELE('base', href=self.params['/BASE/'])
-        return None
-
-    def imagePath(self, sppdat):
-        """return path to images and list of images for *species*"""
-        path = 'MNMammals/imglib/Mammalia'
-        for i in 'Order', 'Family', 'Genus', 'Species':
-            path = os.path.join(path, sppdat['%sName' % (i,)])
-        imglib = os.path.join('/var/www',path)
-        imglib = os.path.join(imglib, '*.[Jj][Pp][Gg]')
-        path = os.path.join('/',path)
-        lst = [os.path.split(i)[1] for i in glob.glob(imglib)]
-        lst.sort()
-        return path, lst
-
-class mainPages(mammalProviderBase):
-    """provide content for pages in 'main' folder"""
-    __parent = mammalProviderBase
-    def provide(self, what):
-        """add one layer to &lt;BASE&gt;"""
-        ans = self.__parent.provide(self, what)
-        if what == 'doctitle':
-            return ELE('base', href=self.params['/BASE/']+'main/')
-        return ans
-''' 
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071108082844">fileName = p.h
-
-s = '''\
-extern  "C"
-{
-#include "stuff.h"
-void    init(void);
-#include "that.h"
-}
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.cUnitTest(p,s=s,showTree=False)
-</t>
 <t tx="ekr.20071113081247">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20071113081247.1">z
@@ -17863,12 +14478,6 @@ assert d.get('language') == 'python'
 assert d.get('pagewidth') == 80
 assert d.get('path') == g.os_path_finalize_join(g.app.loadDir,'..','test')
 assert d.get('tabwidth') == -4
-</t>
-<t tx="ekr.20071113090055.2"># This will work regardless of where this method is.
-@language python
-
-language = g.findLanguageDirectives(c,p)
-assert language == 'python','got:%s' % language
 </t>
 <t tx="ekr.20071113090055.4"># This will work regardless of where this method is.
 @language python
@@ -19028,32 +15637,6 @@ assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii enco
 <t tx="ekr.20071113143844.9">assert g.CheckVersionToInt('12') == 12,'fail 1'
 assert g.CheckVersionToInt('2a5') == 2, 'fail 2'
 assert g.CheckVersionToInt('b2') == 0, 'fail 3'</t>
-<t tx="ekr.20071113145804.2">import leo.core.leoImport as leoImport
-ic = c.importCommands
-runner = leoImport.baseScannerClass(ic,atAuto=True,language='python')
-i = 0
-lines1 = ['abc',]
-lines2 = ['xyz',]
-
-g.app.unitTestDict ['expectedErrors'] = 1
-g.app.unitTestDict ['expectedMismatchLine'] = 1
-
-runner.compareHelper(lines1,lines2,i,strict=True)
-</t>
-<t tx="ekr.20071113145804.3">import leo.core.leoImport as leoImport
-ic = c.importCommands
-runner = leoImport.baseScannerClass(ic,atAuto=True,language='java')
-runner.tab_width = -4
-i = 0
-lines1 = ['abc',]
-lines2 = [' abc',]
-
-# g.unitTesting = False # force the warning.
-
-g.app.unitTestDict ['expectedErrors'] = 0
-g.app.unitTestDict ['expectedMismatchLine'] = 1
-
-runner.compareHelper(lines1,lines2,i,strict=False)</t>
 <t tx="ekr.20071113145804.4">@first # -*- coding: utf-8 -*-
 @language python
 
@@ -19098,13 +15681,6 @@ finally:
     c.recolor_now()
 
 ###abcdef</t>
-<t tx="ekr.20071113145804.6">ec = c.editCommands
-
-for direction,extend in (('up',False),('down',False),('up',True),('down',True),):
-    event = g.Bunch(widget=c.frame.body.bodyCtrl)
-    ec.scrollHelper(event,direction,extend)
-
-</t>
 <t tx="ekr.20071113145804.7">s1 = '#@+leo-ver=4-thin-encoding=utf-8,.'  # 4.2 format.
 s2 = '#@+leo-ver=4-thin-encoding=utf-8.' # pre-4.2 format.
 
@@ -19271,15 +15847,6 @@ for s,encoding in table:
         s2 = g.toUnicode(s,encoding)
         s3 = g.toEncodedString(s2,encoding)
         assert s3 == s, 'Round-trip two failed for %s' %s</t>
-<t tx="ekr.20071113145804.25">def sendEmail(self):
-    pass # g.trace('self2',self)
-
-class test:
-    pass
-
-X = test()
-sendEmail(X)
-</t>
 <t tx="ekr.20071113145804.26">s1 = 'abc\n\np\nxy'
 table1 = (
     (-1,(0,0)), # One too small.
@@ -19351,15 +15918,6 @@ assert script.find('\r\n') == -1, repr(script)
     assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
         repr(s),repr(expected),repr(result))
 </t>
-<t tx="ekr.20071113145804.30">import leo.core.leoPlugins as leoPlugins
-
-aList1 = leoPlugins.getHandlersForTag('select1')
-aList2 = leoPlugins.getHandlersForOneTag('select1')
-
-assert type(aList1) == type([])
-assert type(aList2) == type([])
-assert aList1 == aList2
-</t>
 <t tx="ekr.20071113145804.32"># line 1
 # line 2
 # line 3
@@ -19395,66 +15953,15 @@ finally:
     c.recolor()
 
 # end5targettargettargettargettargettargettargettargettargettargettargettargettargettargettargettarget</t>
-<t tx="ekr.20071113145804.34">import string
-
-k = c.k
-
-for ch in (string.printable):
-    if ch == '\n': continue # A special case.
-    assert k.isPlainKey(ch), 'wrong: not plain: %s' % (ch)
-
-special = (
-    'Return', # A special case.
-    'Begin','Break','Caps_Lock','Clear','Down','End','Escape',
-    'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
-    'KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',
-    'KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab',
-    'KP_F1','KP_F2','KP_F3','KP_F4',
-    'KP_0','KP_1','KP_2','KP_3','KP_4','KP_5','KP_6','KP_7','KP_8','KP_9',
-    'Home','Left','Linefeed','Next','Num_Lock',
-    'PageDn','PageUp','Pause','Prior','Right','Up',
-    'Sys_Req',
-)
-
-for ch in special:
-    assert not k.isPlainKey(ch), 'wrong: is plain: %s' % (ch)
+<t tx="ekr.20071113192611"># 24 failures, 2 errors with Alt-5
 </t>
-<t tx="ekr.20071113145804.35"># print('-' * 30)
-ok = True
-p = c.rootPosition()
-while p:
-    if p.isAnyAtFileNode():
-        h = p.h
-        if h.endswith('.py'):
-            # print('checking',p.h)
-            # Check all the descendant nodes.
-            for p2 in p.subtree_iter():
-                h = p2.h
-                for tag in ('@test','@suite'):
-                    if h.startswith(tag):
-                        s = p2.b
-                        lines = g.splitLines(s)
-                        for line in lines:
-                            # print('line',line)
-                            if not line.strip() or line.startswith('#'):
-                                continue
-                            elif line.startswith('if g.unitTesting:'):
-                                break
-                            else:
-                                print('in',p.h)
-                                print('missing "if g.unitTesting:"',h)
-                                ok = False ; break
-        p.moveToNodeAfterTree()
-    else:
-        p.moveToThreadNext()
-assert ok</t>
-<t tx="ekr.20071113192611"></t>
-<t tx="ekr.20071113193438"></t>
-<t tx="ekr.20071113193438.1"></t>
-<t tx="ekr.20071113193527"></t>
-<t tx="ekr.20071113193624"></t>
-<t tx="ekr.20071113193624.1"></t>
-<t tx="ekr.20071113193729">@ 
+<t tx="ekr.20071113193527"># 4 failures with Alt-5
+</t>
+<t tx="ekr.20071113193624"># 7 failures with Alt-5
+</t>
+<t tx="ekr.20071113193729">@
+
+9 failures with Alt-5.
 
 Any unit test that changes the structure of the outline should do the
 following:
@@ -19470,17 +15977,13 @@ after restoring the outline.
 u.rollBackToMark deletes all entries in the undo stack following the saved mark.
 This eliminates references to nodes that no longer exist in the present outline.</t>
 <t tx="ekr.20071113194033"></t>
-<t tx="ekr.20071113194033.1"></t>
-<t tx="ekr.20071113194033.2"></t>
-<t tx="ekr.20071113194033.3"></t>
-<t tx="ekr.20071113194216"></t>
-<t tx="ekr.20071113194258"></t>
-<t tx="ekr.20071113194424"></t>
-<t tx="ekr.20071113194424.1"></t>
-<t tx="ekr.20071113194858"></t>
-<t tx="ekr.20071113200638.1"></t>
-<t tx="ekr.20071113200638.2"></t>
-<t tx="ekr.20071113200638.8"></t>
+<t tx="ekr.20071113194033.3"># No failures with Alt-5 but warnings about no tnode lists.</t>
+<t tx="ekr.20071113194216"># 3 failurs with Alt-5
+</t>
+<t tx="ekr.20071113194424"># 3 failures with Alt-5</t>
+<t tx="ekr.20071113194424.1"># 4 failures with Alt-5</t>
+<t tx="ekr.20071113194858"># All the following files have problems when run with Alt-5.</t>
+<t tx="ekr.20071113200638.1"># 2 failures with Alt-5</t>
 <t tx="ekr.20071113201736"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -19530,27 +16033,6 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
     
 # print('\nEnd of leoGlobals tests.')</t>
-<t tx="ekr.20071113202321"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-    
-# print('\nEnd of leoGui tests.')</t>
-<t tx="ekr.20071113202321.1"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-    
-print('\nEnd of leoImport tests.')</t>
-<t tx="ekr.20071113202410"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-    
-# print('\nEnd of leoKeys tests.')</t>
 <t tx="ekr.20071113202452"># This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -19566,17 +16048,6 @@ g.app.unitTestDict['restoreSelectedNode']=False
     
 print('\nEnd of leoUndo tests.')</t>
 <t tx="ekr.20071113203234"></t>
-<t tx="ekr.20071119053439">s = '''\
-    a
-\tb
-'''
-
-import leo.core.leoImport as leoImport
-ic = c.importCommands
-runner = leoImport.pythonScanner(c.importCommands,atAuto=False)
-runner.tab_width = -4
-runner.regularizeWhitespace(s)
-assert runner.errors == 1</t>
 <t tx="ekr.20071127194743">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
@@ -19585,412 +16056,6 @@ leoTest.runAtFileTest(c,p)</t>
 # A totally simple test of @root.</t>
 <t tx="ekr.20071127194743.2"># A totally simple test of @root.
 </t>
-<t tx="ekr.20071201071535">s = '''\
-class Index:
-    """docstring"""
-    @cherrypy.nocolor
-    @cherrypy.expose
-    def index(self):
-        return "Hello world!"
-'''
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071206124704"></t>
-<t tx="ekr.20071206124704.1">import leo.core.leoBridge as leoBridge
-
-if 0: # This can not be run locally: it contains another Tk event loop.
-    controller = leoBridge.controller(gui='nullGui',verbose=False)
-    g = controller.globals()
-</t>
-<t tx="ekr.20071214075605"></t>
-<t tx="ekr.20071214075605.1">s = '''\
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;Bodystring&lt;/title&gt;
-&lt;/head&gt;
-&lt;body class='bodystring'&gt;
-&lt;div id='bodydisplay'&gt;&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.xmlUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20071215121511"></t>
-<t tx="ekr.20071215121835">s = '''\
-
-String.prototype.toJSONString = function()
-{
-    if(/["\\\\\\x00-\\x1f]/.test(this))
-		return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
-        
-	return '"' + this + '"';
-};
-
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071215121952">    s = '''\
-
-// Convert a string to it's JSON representation by encoding control characters, double quotes and backslash. See json.org
-String.prototype.toJSONString = function()
-{
-	var m = {
-		'\\b': '\\\\b',
-		'\\f': '\\\\f',
-		'\\n': '\\\\n',
-		'\\r': '\\\\r',
-		'\\t': '\\\\t',
-		'"' : '\\\\"',
-		'\\\\': '\\\\\\\\'
-		};
-	var replaceFn = function(a,b) {
-		var c = m[b];
-		if(c)
-			return c;
-		c = b.charCodeAt();
-		return '\\u00' + Math.floor(c / 16).toString(16) + (c % 16).toString(16);
-		};
-    if(/["\\\\\\x00-\\x1f]/.test(this))
-		return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
-        
-	return '"' + this + '"';
-};
-
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071215123831">s = '''\
-
-// Restarting
-function restart()
-{
-	invokeParamifier(params,"onstart");
-	if(story.isEmpty()) {
-		var tiddlers = store.filterTiddlers(store.getTiddlerText("DefaultTiddlers"));
-		for(var t=0; t&lt;tiddlers.length; t++) {
-			story.displayTiddler("bottom",tiddlers[t].title);
-		}
-	}
-	window.scrollTo(0,0);
-}
-
-'''
-
-# Double each backslash (they are in a docstring).
-# chars = [z for z in s]
-# s = []
-# for z in char:
-    # if z == '\\': s.append('\\\\')
-    # else: s.append(z)
-# s = s.join('')
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071215134411">f = file('test.js')
-s = f.read()
-f.close()
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20071215135125">@language javascript
-
-// regexps that look like section references.
-
-{
-	name: "macro",
-	match: "&lt;&lt;",
-	lookaheadRegExp: /&lt;&lt;([^&gt;\s]+)(?:\s*)((?:[^&gt;]|(?:&gt;(?!&gt;)))*)&gt;&gt;/mg,
-	handler: function(w)
-	{
-		this.lookaheadRegExp.lastIndex = w.matchStart;
-		var lookaheadMatch = this.lookaheadRegExp.exec(w.source);
-		if(lookaheadMatch &amp;&amp; lookaheadMatch.index == w.matchStart &amp;&amp; lookaheadMatch[1]) {
-			w.nextMatch = this.lookaheadRegExp.lastIndex;
-			invokeMacro(w.output,lookaheadMatch[1],lookaheadMatch[2],w,w.tiddler);
-		}
-	}
-},
-
-// Comments that look like section references.
-
-// &lt;&lt;gradient [[tiddler name]] vert|horiz rgb rgb rgb rgb... &gt;&gt;
-
-config.macros.gradient.handler = function(place,macroName,params,wikifier)
-{
-	var panel = wikifier ? createTiddlyElement(place,"div",null,"gradient") : place;
-	panel.style.position = "relative";
-	panel.style.overflow = "hidden";
-	panel.style.zIndex = "0";
-	if(wikifier) {
-		var styles = config.formatterHelpers.inlineCssHelper(wikifier);
-		config.formatterHelpers.applyCssHelper(panel,styles);
-	}
-	var colours = [];
-	for(var t=1; t&lt;params.length; t++) {
-		var c = new RGB(params[t]);
-		if(c)
-			colours.push(c);
-	}
-	drawGradient(panel,params[0] != "vert",colours);
-	if(wikifier)
-		wikifier.subWikify(panel,"&gt;&gt;");
-	if(document.all) {
-		panel.style.height = "100%";
-		panel.style.width = "100%";
-	}
-};
-
-// @Deprecated: Use &lt;br&gt; or &lt;br /&gt; instead of &lt;&lt;br&gt;&gt;
-config.macros.br = {};
-config.macros.br.handler = function(place)
-{
-	createTiddlyElement(place,"br");
-};
-</t>
-<t tx="ekr.20071219170354">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20071219170354.1">@language perl
-
-# From a perl tutorial.
-
-print 'Hello world.';		# Print a message
-
-$a = $b;	# Assign $b to $a
-
-@food  = ("apples", "pears", "eels");
-
-$grub = pop(@food);	# Now $grub = "eels"
-
-$#food
-
-@lines = &lt;INFO&gt;;
-
-#!/usr/local/bin/perl
-print "Password? ";		# Ask for input
-$a = &lt;STDIN&gt;;			# Get input
-chop $a;			# Remove the newline at end
-while ($a ne "fred")		# While input is wrong...
-{
-    print "sorry. Again? ";	# Ask again
-    $a = &lt;STDIN&gt;;		# Get input again
-    chop $a;			# Chop off newline again
-}
-
-if ($sentence =~ /under/)
-{
-	print "We're talking about rugby\\n";
-}
-
-$sentence =~ s/london/London/
-
-$_ = "Capes:Geoff::Shot putter:::Big Avenue";
-@personal = split(/:/);
-
-foreach $age (values %ages)
-{
-	print "Somebody is $age\\n";
-}
-
-&amp;mysubroutine;		# Call the subroutine
-&amp;mysubroutine($_);	# Call it with a parameter
-&amp;mysubroutine(1+2, $_);	# Call it with two parameters
-
-sub inside
-{
-	local($a, $b);			# Make local variables
-	($a, $b) = ($_[0], $_[1]);	# Assign values
-	$a =~ s/ //g;			# Strip spaces from
-	$b =~ s/ //g;			#   local variables
-	($a =~ /$b/ || $b =~ /$a/);	# Is $b inside $a
-					#   or $a inside $b?
-}</t>
-<t tx="ekr.20071219172126">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20071219172126.1">@language lisp
-
-; Maybe...
-error princ 
-
-; More typical of other lisps...
-and apply
-car cdr cons cond
-defconst defun defvar 
-eq equal eval
-gt ge
-if 
-let le lt
-mapcar 
-ne nil 
-or not 
-prog progn 
-set setq 
-t type-of 
-unless 
-when while</t>
-<t tx="ekr.20071219172615">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20071219172615.1">@language shellscript
-
-# comment
-$# not a comment
-break
-case,continue,
-do,done
-elif,else,esac
-fi,for
-if,in
-return,
-then
-until
-while,
-
-cd,chdir,eval,exec,
-exit,kill,newgrp,pwd,read,readonly,
-shift,test,trap,ulimit,
-umask,wait</t>
-<t tx="ekr.20071219184847">@language rest
-
-@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = False
-verbose=True
-@c
-
-. Links used in this document...
-
-.. _`Pmw`:                  http://pmw.sourceforge.net/
-.. _run:                    `Running Leo`_
-
-.. WARNING: image targets may not have upper case letters!
-
-.. |back| image:: arrow_lt.gif
-    :target: FAQ.html
-
-.. |leo| image:: leo.gif
-    :target: front.html
-
-.. |next| image:: arrow_rt.gif
-    :target: intro.html
-
-|back| |leo| |next|
-
-###########################
-Chapter 1: Installing Leo
-###########################
-
-This chapter tells how to install and run Leo.
-
-**Important**:
-    
-If you have *any* problems installing Leo,
-please ask for help on Leo's help forum:
-
-.. contents::
-
-**Windows**
-    If you have `associated .leo files with Leo`_ you may run Leo by double-clicking any .leo file.
-    You can also use a batch file.
-    Put the following .bat file in c:\\Windows::
-
-        cd c:\prog\LeoCVS\leo
-        c:\python22\python c:\prog\LeoCVS\leo\leo.py %1
-
--   Download the latest version of Leo from `Leo's download page`_.
-
--   In Windows 2K or XP, go to ``Start-&gt;Settings-&gt;Control panel``, open the ``Folder Options`` tab.
-    
-    **Warning**: When building Tcl on Linux, do **not** specify
-    "--enable-threads".
-    Only use Tcl with the default "threads not enabled" case.
-
--------------
-
-|back| |leo| |next|</t>
-<t tx="ekr.20071219184852">p = c.p.firstChild()
-
-c.selectPosition(p) # Sets body text.
-val = c.frame.body.colorizer.colorize(p,incremental=False)
-assert val=="ok", "colorizer test failed: %s" % p.h
-</t>
-<t tx="ekr.20080121080011">s = '''\
-"""A file consisting only of a docstring.
-"""
-'''
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20080211092326"></t>
-<t tx="ekr.20080211092326.1">s = '''
-unit Unit1;
-
-interface
-
-uses
-Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,
-Forms,
-Dialogs;
-
-type
-TForm1 = class(TForm)
-procedure FormCreate(Sender: TObject);
-private
-{ Private declarations }
-public
-{ Public declarations }
-end;
-
-var
-Form1: TForm1;
-
-implementation
-
-{$R *.dfm}
-
-procedure TForm1.FormCreate(Sender: TObject);
-var
-x,y: double;
-begin
-x:= 4;
-Y := x/2;
-end;
-
-end.
-'''
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.pascalUnitTest(p,s=s,showTree=False)</t>
 <t tx="ekr.20080309193654.1"></t>
 <t tx="ekr.20080310073711.1">gnx = g.app.nodeIndices.toString(None)
 assert(gnx not in (None,'None'))
@@ -20564,577 +16629,6 @@ assert col == expected_col,fail('col',expected_col,col)
 print('pass','len(s)',len(s),'total_count_chars',total_count_chars,'total_rfind_chars',total_rfind_chars)
 </t>
 <t tx="ekr.20080703104536.1"></t>
-<t tx="ekr.20080707101444.1">@language forth
-
-\ tiny demo of Leo forth syntax colouring
-
-: some-forth-word ( x1 x2 -- x3 ) \ blue :, black/bold some-forth-word
-   label: y  \ blue label:
-   asm[ s" some string" type ]asm cr
-   asm[ abc ]asm
-   a
-   s" abc "
-   s" abc"
-   a
-   tty" abc "
-   lcd2" abc "
-   until
-
-@ test
-@c
-
-{ abc }
-
-a b @ c
-
-asm[ abc ]asm
-
-.( ab ) \ a string
-   
-: foo [ .s ] ;
-
-   [ a b c
-   x y z]
-;</t>
-<t tx="ekr.20080729200342.1"></t>
-<t tx="ekr.20080729200342.2">import unittest
-
-if 1:
-    x = c.shadowController
-else:
-    import leo.core.leoShadow as leoShadow
-    x = leoShadow.shadowController(c,trace=False,trace_writers=False)
-
-suite = unittest.makeSuite(unittest.TestCase)
-root = g.findNodeAnywhere(c,'@shadow-tests')
-assert root, 'Node not found: @shadow-tests'
-
-trace = False ; vrbose = False
-for p in root.children_iter():
-    h = p.h.strip()
-    if h.startswith('@shadow-test-lax'):
-        test = x.atShadowTestCase(c,p,x,lax=True)
-    elif h.startswith('@shadow-test'):
-        test = x.atShadowTestCase(c,p,x,lax=False)
-    else:
-        test = None
-    if test:
-        if trace and verbose: print(h)
-        suite.addTest(test)
-if suite:
-    g.app.scriptDict['suite'] = suite
-</t>
-<t tx="ekr.20080729200342.3">@
-
-All the tags should be tested at least once (equal, replace, delete, insert).
-
-The replace, delete, insert operations should happen at least once:
-    1. At the beginning of a node.
-    2. In the middle of a node.
-    3. At the end of a node.
-
-For the delete and replace operators we must also test the case that the
-deletion or replacement spans more than one block.
-</t>
-<t tx="ekr.20080729200342.5"></t>
-<t tx="ekr.20080729200342.6">line 1
-line 2
-line 3</t>
-<t tx="ekr.20080729200342.7">line 1
-line 2 changed
-line 3</t>
-<t tx="ekr.20080729200342.8"></t>
-<t tx="ekr.20080729200342.9">line 1
-line 2
-line 3</t>
-<t tx="ekr.20080729200342.10">line 1 changed
-line 2
-line 3</t>
-<t tx="ekr.20080729200342.11"></t>
-<t tx="ekr.20080729200342.12">line 1
-line 2
-line 3</t>
-<t tx="ekr.20080729200342.13">line 1
-line 2
-line 3 changed</t>
-<t tx="ekr.20080729200342.14"></t>
-<t tx="ekr.20080729200342.15">line 1
-line 2
-line 3</t>
-<t tx="ekr.20080729200342.16">line 2
-line 3</t>
-<t tx="ekr.20080729200342.17"></t>
-<t tx="ekr.20080729200342.18">line 1
-line 2
-line 3</t>
-<t tx="ekr.20080729200342.19">line 1
-line 3</t>
-<t tx="ekr.20080729200342.20"></t>
-<t tx="ekr.20080729200342.21">line 1
-line 2
-line 3</t>
-<t tx="ekr.20080729200342.22">line 1
-line 2</t>
-<t tx="ekr.20080729200342.23"></t>
-<t tx="ekr.20080729200342.24">line 1
-line 2
-line 3</t>
-<t tx="ekr.20080729200342.25">inserted line
-line 1
-line 2
-line 3</t>
-<t tx="ekr.20080729200342.26"></t>
-<t tx="ekr.20080729200342.27">line 1
-line 2
-line 3</t>
-<t tx="ekr.20080729200342.28">line 1
-inserted line
-line 2
-line 3</t>
-<t tx="ekr.20080729200342.29"></t>
-<t tx="ekr.20080729200342.30">line 1
-line 2
-line 3</t>
-<t tx="ekr.20080729200342.31">line 1
-line 2
-inserted line
-line 3</t>
-<t tx="ekr.20080729200342.32"></t>
-<t tx="ekr.20080729200342.33">line 1
-line 2
-line 3</t>
-<t tx="ekr.20080729200342.34">line 1
-line 2
-line 3
-inserted line</t>
-<t tx="ekr.20080729200342.35"></t>
-<t tx="ekr.20080729200342.36">@others</t>
-<t tx="ekr.20080729200342.37">node 1 line 1</t>
-<t tx="ekr.20080729200342.38">node 2 line 1</t>
-<t tx="ekr.20080729200342.39">@others</t>
-<t tx="ekr.20080729200342.40">node 1 line 1
-inserted node at end of node 1</t>
-<t tx="ekr.20080729200342.41">node 2 line 1</t>
-<t tx="ekr.20080729200342.42"></t>
-<t tx="ekr.20080729200342.43">@others</t>
-<t tx="ekr.20080729200342.44">node 1 line 1</t>
-<t tx="ekr.20080729200342.45">node 2 line 1</t>
-<t tx="ekr.20080729200342.46">@others</t>
-<t tx="ekr.20080729200342.47">node 1 line 1</t>
-<t tx="ekr.20080729200342.48">inserted node at start of node 2
-node 2 line 1</t>
-<t tx="ekr.20080729200342.49"></t>
-<t tx="ekr.20080729200342.50">@others</t>
-<t tx="ekr.20080729200342.51">node 1 line 1
-node 1 line 2</t>
-<t tx="ekr.20080729200342.52">node 2 line 1
-node 2 line 2</t>
-<t tx="ekr.20080729200342.53">@others</t>
-<t tx="ekr.20080729200342.54">node 1 line 1</t>
-<t tx="ekr.20080729200342.55">node 2 line 1
-node 2 line 2</t>
-<t tx="ekr.20080729200342.56"></t>
-<t tx="ekr.20080729200342.57">@others</t>
-<t tx="ekr.20080729200342.58">node 1 line 1</t>
-<t tx="ekr.20080729200342.59">node 2 line 1
-node 2 line 2</t>
-<t tx="ekr.20080729200342.60">@others</t>
-<t tx="ekr.20080729200342.61">node 1 line 1</t>
-<t tx="ekr.20080729200342.62">node 2 line 2</t>
-<t tx="ekr.20080729200342.63"></t>
-<t tx="ekr.20080729200342.64">@others</t>
-<t tx="ekr.20080729200342.65">node 1 line 1
-node 1 line 2</t>
-<t tx="ekr.20080729200342.66">node 2 line 1
-node 2 line 2</t>
-<t tx="ekr.20080729200342.67">@others</t>
-<t tx="ekr.20080729200342.68">node 1 line 1
-node 1 line 1 changed</t>
-<t tx="ekr.20080729200342.69">node 2 line 1
-node 2 line 2</t>
-<t tx="ekr.20080729200342.70"></t>
-<t tx="ekr.20080729200342.71">@others</t>
-<t tx="ekr.20080729200342.72">node 1 line 1
-node 1 line 2</t>
-<t tx="ekr.20080729200342.73">node 2 line 1
-node 2 line 2</t>
-<t tx="ekr.20080729200342.74">@others</t>
-<t tx="ekr.20080729200342.75">node 1 line 1
-node 1 line 2</t>
-<t tx="ekr.20080729200342.76">node 2 line 1 changed
-node 2 line 2</t>
-<t tx="ekr.20080729200342.77"></t>
-<t tx="ekr.20080729200342.78">@others</t>
-<t tx="ekr.20080729200342.79">node 1 line 1</t>
-<t tx="ekr.20080729200342.80">node 2 line 1</t>
-<t tx="ekr.20080729200342.81">@others</t>
-<t tx="ekr.20080729200342.82">node 1 line 1
-inserted node 1 at end of node 1
-inserted node 2 at end of node 1</t>
-<t tx="ekr.20080729200342.83">node 2 line 1</t>
-<t tx="ekr.20080729200342.84"></t>
-<t tx="ekr.20080729200342.85">@others</t>
-<t tx="ekr.20080729200342.86">node 1 line 1</t>
-<t tx="ekr.20080729200342.87">node 2 line 1</t>
-<t tx="ekr.20080729200342.88">@others</t>
-<t tx="ekr.20080729200342.89">node 1 line 1</t>
-<t tx="ekr.20080729200342.90">inserted node 1 at start of node 2
-inserted node 2 at start of node 2
-node 2 line 1</t>
-<t tx="ekr.20080729200342.91"></t>
-<t tx="ekr.20080729200342.92">@others</t>
-<t tx="ekr.20080729200342.93">node 1 line 1
-node 1 line 2
-node 1 line 3</t>
-<t tx="ekr.20080729200342.94">node 2 line 1
-node 2 line 2</t>
-<t tx="ekr.20080729200342.95">@others</t>
-<t tx="ekr.20080729200342.96">node 1 line 1
-node 1 line 2 changed
-node 1 line 3 changed</t>
-<t tx="ekr.20080729200342.97">node 2 line 1
-node 2 line 2</t>
-<t tx="ekr.20080729200342.98"></t>
-<t tx="ekr.20080729200342.99">@others</t>
-<t tx="ekr.20080729200342.100">node 1 line 1
-node 1 line 2</t>
-<t tx="ekr.20080729200342.101">node 2 line 1
-node 2 line 2</t>
-<t tx="ekr.20080729200342.102">@others</t>
-<t tx="ekr.20080729200342.103">node 1 line 1
-node 1 line 2</t>
-<t tx="ekr.20080729200342.104">node 2 line 1 changed
-node 2 line 2 changed</t>
-<t tx="ekr.20080729200342.105"></t>
-<t tx="ekr.20080729200342.106">@others</t>
-<t tx="ekr.20080729200342.107">node 1 line 1
-node 1 line 2
-node 1 line 3</t>
-<t tx="ekr.20080729200342.108">node 2 line 1
-node 2 line 2</t>
-<t tx="ekr.20080729200342.109">@others</t>
-<t tx="ekr.20080729200342.110">node 1 line 1</t>
-<t tx="ekr.20080729200342.111">node 2 line 1
-node 2 line 2</t>
-<t tx="ekr.20080729200342.112"></t>
-<t tx="ekr.20080729200342.113">@others</t>
-<t tx="ekr.20080729200342.114">node 1 line 1</t>
-<t tx="ekr.20080729200342.115">node 2 line 1
-node 2 line 2
-node 2 line 3</t>
-<t tx="ekr.20080729200342.116">@others</t>
-<t tx="ekr.20080729200342.117">node 1 line 1</t>
-<t tx="ekr.20080729200342.118">node 2 line 3</t>
-<t tx="ekr.20080729200342.119"></t>
-<t tx="ekr.20080729200342.120">x = c.shadowController
-
-path = x.baseDirName()
-expected = g.os_path_dirname(g.os_path_abspath(g.os_path_join(c.fileName())))
-
-# print(path)
-# print(expected)
-
-assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
-<t tx="ekr.20080729200342.121">x = c.shadowController
-
-filename = 'xyzzy'
-
-path = x.pathName(filename)
-expected = g.os_path_abspath(g.os_path_join(x.baseDirName(),filename))
-
-# print(path)
-# print(expected)
-
-assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
-<t tx="ekr.20080729200342.122">x = c.shadowController
-
-filename = 'xyzzy'
-path = x.dirName(filename)
-expected = g.os_path_dirname(g.os_path_abspath(
-    g.os_path_join(g.os_path_dirname(c.fileName()),filename)))
-
-# print(path)
-# print(expected)
-
-assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
-<t tx="ekr.20080729200342.123">x = c.shadowController
-
-subdir = c.config.getString('shadow_subdir') or 'LeoFolder'
-prefix = c.config.getString('shadow_prefix') or ''
-
-# print('c.fileName',c.fileName())
-# print('c.relativeFileName',c.relativeFileName())
-
-filename = 'xyzzy'
-path = x.shadowPathName(filename)
-expected = g.os_path_abspath(g.os_path_join(
-    g.os_path_dirname(c.fileName()),subdir,prefix+filename))
-
-if 0:
-    print('prefix',prefix)
-    print(path)
-    print(expected)
-
-assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
-<t tx="ekr.20080729200342.124">x = c.shadowController
-
-subdir = c.config.getString('shadow_subdir') or 'LeoFolder'
-prefix = c.config.getString('shadow_prefix') or ''
-
-# print('c.fileName',c.fileName())
-# print('c.relativeFileName',c.relativeFileName())
-
-filename = 'xyzzy'
-path = x.shadowDirName(filename)
-expected = g.os_path_abspath(
-    g.os_path_join(g.os_path_dirname(c.fileName()),subdir))
-
-# print(path)
-# print(expected)
-
-assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
-<t tx="ekr.20080729200342.125">x = c.shadowController
-
-filename = x.pathName('xyzzy')
-assert not g.os_path_exists(filename)
-n = x.errors
-x.rename('xyzzy','xyzzy2',silent=True)
-assert x.errors == n+1
-assert x.last_error.startswith('can not rename')
-# print(x.last_error)</t>
-<t tx="ekr.20080729200342.126">x = c.shadowController
-
-filename = x.pathName('xyzzy')
-# print(filename)
-assert not g.os_path_exists(filename)
-n = x.errors
-x.unlink('xyzzy',silent=True)
-assert x.errors == n+1
-assert x.last_error.startswith('can not delete xyzzy')
-# print(x.last_error)</t>
-<t tx="ekr.20080729200342.127">import glob
-import os
-
-x = c.shadowController
-
-@others
-
-shadow_fn  = x.shadowPathName('unittest/xyzzy')
-shadow_dir = x.shadowDirName('unittest/xyzzy')
-
-if g.os_path_exists(shadow_fn):
-    g.utils_remove(shadow_fn,verbose=True)
-    assert not os.path.exists(shadow_fn),'still exists: %s' % shadow_fn
-
-deleteShadowDir(shadow_dir)
-
-x.makeShadowDirectory(shadow_dir)
-assert os.path.exists(shadow_dir)
-
-deleteShadowDir(shadow_dir)
-</t>
-<t tx="ekr.20080729200342.128">def deleteShadowDir(shadowDir):
-
-    if g.os_path_exists(shadow_dir):
-        files = g.os_path_abspath(g.os_path_join(shadow_dir,"*.*"))
-        files = glob.glob(files)
-        for z in files:
-            if z != shadow_dir:
-                os.unlink(z)
-        os.rmdir(shadow_dir)
-        assert not os.path.exists(shadow_dir),'still exists: %s' % shadow_dir</t>
-<t tx="ekr.20080729200342.129">x = c.shadowController
-s = 'abc'
-
-fn = '../test/unittest/replaceFileWithStringTestFile.py'
-path = g.os_path_abspath(g.os_path_join(g.app.loadDir,fn))
-
-x.replaceFileWithString(path,s)
-f = file(path)
-s2 = f.read()
-f.close()
-assert s == s2</t>
-<t tx="ekr.20080729200342.130"></t>
-<t tx="ekr.20080729200342.131">at = c.atFileCommands
-
-# at.toString is set by the execute-script command.
-
-f = at.openStringFile('abc')
-
-assert f.__class__.__name__ == 'fileLikeObject'
-
-s = 'abc'
-f.write(s)
-s2 = at.closeStringFile(f)
-
-assert s == s2
-
-# assert at.toString
-
-</t>
-<t tx="ekr.20080729200342.132">at = c.atFileCommands
-x = c.shadowController
-
-filename = x.pathName('xyzzy')
-assert not g.os_path_exists(filename)
-
-try:
-    kind,theFile = at.openForWrite(filename)
-    assert kind == 'check'
-    # print(repr(theFile))
-    if theFile: theFile.close()
-    
-finally:
-    if g.os_path_exists(filename):
-        x.unlink(filename)
-        assert not g.os_path_exists(filename)</t>
-<t tx="ekr.20080729200342.133">at = c.atFileCommands
-x = c.shadowController
-
-changed = c.changed
-child = p.firstChild()
-s = child.b
-
-try:
-    fn = 'unittest/read_test.py'
-    child.setHeadString('@shadow %s' % fn)
-    # shadow_fn = x.shadowPathName(fn)
-    at.writeOneAtShadowNode(child,toString=False,force=True)
-    at.readOneAtShadowNode(fn,child)
-finally:
-    child.setHeadString('@@shadow %s' % fn)
-    c.setChanged(changed)
-    # c.redraw_now()</t>
-<t tx="ekr.20080729200342.134">@language python
-@tabwidth -4
-@others
-# body of @shadow test node
-# The last line.
-</t>
-<t tx="ekr.20080729200342.135">import os
-s = 'abc'
-fn = 'unitTestFile.py'
-path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','unittest',fn))
-try:
-    c.atFileCommands.replaceFileWithString(path,s)
-    f = file(path)
-    s2 = f.read()
-    f.close()
-    assert s == s2
-finally:
-    if g.os_path_exists(path):
-        os.unlink(path)</t>
-<t tx="ekr.20080729200342.136">at = c.atFileCommands
-x = c.shadowController
-changed = c.changed
-child = p.firstChild()
-s = child.b
-
-try:
-    child.setHeadString('@shadow unittest/test_1.py')
-    fn = 'unittest/test_1.py'
-    shadow_fn = x.shadowPathName(fn)
-    shadow_dir = x.shadowDirName(fn)
-    x.makeShadowDirectory(shadow_dir)
-    if g.os_path_exists(shadow_fn):
-        g.utils_remove(shadow_fn,verbose=True)
-    at.writeOneAtShadowNode(child,toString=True,force=True)
-    assert at.startSentinelComment == '#',repr(at.startSentinelComment)
-    assert at.endSentinelComment == None,repr(at.endSentinelComment)
-    if 0:
-        print('public...\n',at.public_s)
-        print('private...\n',at.private_s)
-    at.writeOneAtShadowNode(child,toString=False,force=True)
-    # assert at.stringOutput == s,'got %s, expected %s' % (repr(at.stringOutput),repr(s))
-    assert g.os_path_exists(shadow_fn)
-    # No need to remove this: it's in the unittest directory.
-    # g.utils_remove(shadow_fn,verbose=True)
-finally:
-
-    child.setHeadString('@@shadow unittest/test_1.py')
-    c.setChanged(changed)
-    # c.redraw_now()</t>
-<t tx="ekr.20080729200342.137"># body of @shadow test node
-# The last line.</t>
-<t tx="ekr.20080729200342.138"># This unit test should come last.
-
-import glob
-import os
-
-x = c.shadowController
-
-shadow_dir = x.shadowDirName('unittest/xyzzy')
-
-if g.os_path_exists(shadow_dir):
-    files = g.os_path_abspath(g.os_path_join(shadow_dir,"*.*"))
-    files = glob.glob(files)
-    for z in files:
-        if z != shadow_dir:
-            os.unlink(z)
-    os.rmdir(shadow_dir)
-    assert not os.path.exists(shadow_dir)
-    # g.es_print('deleted directory',shadow_dir,color='red')
-</t>
-<t tx="ekr.20080804100908.1">@others</t>
-<t tx="ekr.20080804100908.2">node 1 line 1
-#@ should be handled by verbatim
-line 1 line 3</t>
-<t tx="ekr.20080804100908.3">node 2 line 1
-node 2 line 2
-node 2 line 3</t>
-<t tx="ekr.20080804100908.7"></t>
-<t tx="ekr.20080804100908.8">@others</t>
-<t tx="ekr.20080804100908.9">node 1 line 1
-#@ should be handled by verbatim
-line 1 line 3</t>
-<t tx="ekr.20080804100908.10">node 2 line 1
-node 2 line 2
-node 2 line 3</t>
-<t tx="ekr.20080804101159.1"></t>
-<t tx="ekr.20080804101159.2">@others</t>
-<t tx="ekr.20080804101159.3">node 1 line 1
-#@ should be handled by verbatim
-line 1 line 3</t>
-<t tx="ekr.20080804101159.4">node 2 line 1
-node 2 line 2
-node 2 line 3</t>
-<t tx="ekr.20080804101159.5">@others</t>
-<t tx="ekr.20080804101159.6">node 1 line 1
-line 1 line 3</t>
-<t tx="ekr.20080804101159.7">node 2 line 1
-node 2 line 2
-node 2 line 3</t>
-<t tx="ekr.20080804121540.1"></t>
-<t tx="ekr.20080804121540.2">@others</t>
-<t tx="ekr.20080804121540.3">#@ should be handled by verbatim
-node 2 line 2</t>
-<t tx="ekr.20080804121540.4">node 1 line 1</t>
-<t tx="ekr.20080804121540.5">@others</t>
-<t tx="ekr.20080804121540.6">node 2 line 2</t>
-<t tx="ekr.20080804121540.7">node 1 line 1</t>
-<t tx="ekr.20080804121540.8"></t>
-<t tx="ekr.20080804121540.9">@others</t>
-<t tx="ekr.20080804121540.10">node 1 line 1
-#@ should be handled by verbatim</t>
-<t tx="ekr.20080804121540.11">node 2 line 1
-node 2 line 2</t>
-<t tx="ekr.20080804121540.12">@others</t>
-<t tx="ekr.20080804121540.13">node 1 line 1</t>
-<t tx="ekr.20080804121540.14">node 2 line 1
-node 2 line 2</t>
-<t tx="ekr.20080804123400.1"></t>
-<t tx="ekr.20080804123400.2">@others</t>
-<t tx="ekr.20080804123400.3">node 1 line 1
-node 1 line 2</t>
-<t tx="ekr.20080804123400.4">node 2 line 1
-node 2 line 2</t>
-<t tx="ekr.20080804123400.5">@others</t>
-<t tx="ekr.20080804123400.6">node 1 line 1
-#@ should be handled by verbatim
-node 1 line 2</t>
-<t tx="ekr.20080804123400.7">node 2 line 1
-node 2 line 2</t>
-<t tx="ekr.20080804124245.1"></t>
 <t tx="ekr.20080805104144.1">fc = c.fileCommands
 child = p.firstChild()
 grandChild = child.firstChild()
@@ -21287,43 +16781,6 @@ else: # Test the uA's.
         d = {ttag: v.h}
         if trace: print(d)
         assert a == d, 'expected t.uA: "%s", got "%s"' % (d,a)</t>
-<t tx="ekr.20080811180035.1">d = g.app.extra_extension_dict
-
-for ext in g.app.extension_dict.keys():
-    language =  c.importCommands.languageForExtension(ext)
-    language2 = c.importCommands.languageForExtension('.'+ext)
-    assert language == language2
-    
-    # Now a many-one relationship.
-    if language:
-        # Do not test extensions that have 'none' as the value of d.get(ext)
-        # Otherwise, test only d.get(ext).
-        language2 = d.get(ext)
-        if language2 in ('None','none'):  continue
-        if language2: language = language2
-        # Made-up languages do not have mode files.
-        if not language.endswith('_language') and language not in ('autohotkey',):
-            path = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
-            assert g.os_path_exists(path), 'for ext=%s does not exist: %s' % (ext,path)
-        
-    if 0:
-        if language is None:
-            print('no language for ext=%s' % (ext))</t>
-<t tx="ekr.20080812114335.1">x = c.shadowController
-
-table = (
-    ('ini',';@'),
-    ('c','//@'),
-    ('h','//@'),
-    ('py','#@'),
-    ('xyzzy','#--unknown-language--@'),
-)
-
-for ext,result in table:
-    filename = 'x.%s' % ext
-    z = x.marker_from_extension(filename)
-    assert result == z, 'ext=%s, got %s, expected %s' % (ext,z,result)
-</t>
 <t tx="ekr.20080821123427.2">@first # -*- coding: utf-8 -*-
 
 import sys
@@ -21347,68 +16804,9 @@ for s in table:
         s = unicode(s,e)
     print      'print     ',s
     print      'repr(s)   ',repr(s)</t>
-<t tx="ekr.20080822075239.1">x = c.shadowController
-
-lines1 = ('a','b','c')
-lines2 = ('a','x','c')
-
-x.show_error(
-    lines1,lines2,
-    message = "Test of x.show_error",
-    lines1_message = "lines1",
-    lines2_message = "lines2")
-</t>
 <t tx="ekr.20080822160527.1">pass
 pass
 pass
-</t>
-<t tx="ekr.20080901083414.1">s = '''\
-
-def foo():
-    
-    error("""line1
-line2.
-""")
-
-    a = 5
-    
-def bar():
-    pass
-'''
-
-showTree = False
-keepTree = False
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.pythonUnitTest(p,s=s,showTree=showTree)
-
-if showTree:
-    try:
-        child = p.firstChild()
-        n = child.numberOfChildren()
-        assert n == 2, 'expected 2 children, got %s' % n
-    finally:
-        if keepTree:
-            h = child.h
-            print 'h',h
-            child.setHeadString('@'+h)
-        else:
-            while p.hasChildren():
-                p.firstChild().doDelete()
-        c.redraw(p)</t>
-<t tx="ekr.20080901083414.24">s = '''\
-
-def foo():
-    pass
-
-def bar():
-    pass
-'''
-
-g.app.unitTestDict ['expectedErrors'] = None
-g.app.unitTestDict ['expectedMismatchLine'] = None
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20080904095020.1">@ Notes
 
@@ -21946,22 +17344,6 @@ this is the last sentence.
 is the  sentence.  And
 this is the last sentence.
 </t>
-<t tx="ekr.20081216113655.2">s = '''\
-
-class emptyClass: 
-
-    def spam():
-        
-        """docstring line 1
-\-4under-indented docstring line"""
-        pass
-
-def followingDef(): # comment
-    pass
-'''
-
-c.importCommands.pythonUnitTest(p,s=s,showTree=False)
-</t>
 <t tx="ekr.20090102061858.2">child = p.insertAsLastChild()
 assert c.positionExists(child)
 child.doDelete()
@@ -22034,86 +17416,6 @@ for p in c.allNodes_iter():
     assert p.h == p.headString()
     assert p.v.h == p.v.headString()
     assert p.v.t.h == p.v.t.headString()</t>
-<t tx="ekr.20090131113752.2"></t>
-<t tx="ekr.20090131113752.3">@
-language_delims_dict 
-    # Keys are languages, values are 1,2 or 3-tuples of delims. 
-language_extension_dict
-    # Keys are languages, values are extensions.
-extension_dict = {
-    # Keys are extensions, values are languages.
-@c
-
-delims_d    = g.app.language_delims_dict
-lang_d      = g.app.language_extension_dict
-ext_d       = g.app.extension_dict
-
-for lang in lang_d:
-    ext = lang_d.get(lang)
-    assert lang in delims_d,'fail 1: %s' % lang
-    assert ext in ext_d,'fail 2: %s' % ext
-for ext in ext_d:
-    lang = ext_d.get(ext)
-    assert lang in lang_d,'fail 3: %s' % lang</t>
-<t tx="ekr.20090201135611.3">tree = c.frame.tree
-
-if hasattr(tree,'position2item'): # and hasattr(tree,'item2vnode'):
-    
-    c.redraw()
-
-    p = c.rootPosition()
-    while p:
-        item = tree.position2item(p)
-        # print item and id(item) or '**none**', p.headString()
-        v = tree.item2vnode(item)
-        assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
-        p.moveToVisNext(c)</t>
-<t tx="ekr.20090201135611.4">def test_sibs(parent_p,parent_item):
-
-    trace = False
-    tree = c.frame.tree
-    sib_items = tree.childItems(parent_item)
-    sibs = [z for z in parent_p.self_and_siblings_iter(copy=True)]
-
-    assert len(sib_items) == len(sibs),(
-        'child_items: %s, children: %s' % (
-            g.listToString(sib_items),g.listToString(sibs)))
-
-    for item,p in zip(sib_items,sibs):
-        p2 = tree.item2position(item)
-        if trace: print (id(item),p2 and p2.headString() or not p2 and '**None**')
-        assert p == p2, 'item: %s, p: %s, p2: %s' % (id(item),p,p2)
-
-        # Recursively test.
-        child = p.firstChild()
-        if child.isVisible(c):
-            test_sibs(child,parent_item=item)
- 
-if hasattr(c.frame.tree,'item2position'):
-
-    # print '='*10
-    c.redraw()
-    test_sibs(c.rootPosition(),None)
-</t>
-<t tx="ekr.20090201140204.1"></t>
-<t tx="ekr.20090201140204.2">trace = False
-
-if trace: print '=' * 20
-
-for p in c.allNodes_iter():
-
-    p2 = c.vnode2position(p.v)
-
-    if trace: print p2.level(), p2.headString()
-
-    # We can *not* assert that p == p2, only that
-    # p2.v == p.v and c.positionExists(p2)
-    assert p2
-    assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
-    assert c.positionExists(p2),'does not exist: %s' % p2
-
-# if True or trace: print 'passed'
-</t>
 <t tx="ekr.20090225102051.2">import leo.core.leoTest as leoTest
 
 leoTest.runAtFileTest(c,p)</t>
@@ -22126,29 +17428,6 @@ Last line: no newline</t>
 <t tx="ekr.20090306091634.1">tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
     print 'tree.redrawCount:',tree.redrawCount</t>
-<t tx="ekr.20090401102321.1"></t>
-<t tx="ekr.20090401102321.2">s = '''\
-;;; a.el --- Test
-
-;; some other verbose comment
-;; some other verbose comment
-;; some other verbose comment
-
-(defun abc (a1 a2)
-  "Return blah blah."
-  (+ 1 2))
-
-(defun fgh (a1 a2)
-  "Return blah blah."
-  (- 1 2))
-
-;;; a.el ends here
-'''
-
-g.app.unitTestDict ['expectedErrors'] = 0
-
-c.importCommands.elispUnitTest(p,s=s,showTree=False)
-</t>
 <t tx="ekr.20090427104851.7">import leo.core.leoTest as leoTest
 leoTest.runEditCommandTest(c,p)</t>
 <t tx="ekr.20090427104851.8">if a:
@@ -22173,17 +17452,1669 @@ leoTest.runEditCommandTest(c,p)</t>
     b = 'xyz'</t>
 <t tx="ekr.20090427104851.18">if a:
     b = 'xyz'</t>
-<t tx="ekr.20090429081126.3">import leo.plugins.rst3 as rst3
-x = rst3.rstClass(c)
+<t tx="ekr.20090507084947.5152">assert p.v.t.fileIndex == ('ekr', '20090507084947', 5152)
+</t>
+<t tx="ekr.20090529115704.4396"></t>
+<t tx="ekr.20090529115704.4397">import unittest
 
-assert x.handleMissingStyleSheetArgs(s=None) == {}
+if 1:
+    x = c.shadowController
+else:
+    import leo.core.leoShadow as leoShadow
+    x = leoShadow.shadowController(c,trace=False,trace_writers=False)
 
-s = '--language=ca,--use-latex-toc'
-assert x.handleMissingStyleSheetArgs(s=s) == {
-    '--language':'ca','--use-latex-toc':''}
-    </t>
-<t tx="ekr.20090501123949.2"></t>
-<t tx="ekr.20090501123949.3">s = '''\
+suite = unittest.makeSuite(unittest.TestCase)
+root = g.findNodeAnywhere(c,'@shadow-tests')
+assert root, 'Node not found: @shadow-tests'
+
+trace = False ; vrbose = False
+for p in root.children_iter():
+    h = p.h.strip()
+    if h.startswith('@shadow-test-lax'):
+        test = x.atShadowTestCase(c,p,x,lax=True)
+    elif h.startswith('@shadow-test'):
+        test = x.atShadowTestCase(c,p,x,lax=False)
+    else:
+        test = None
+    if test:
+        if trace and verbose: print(h)
+        suite.addTest(test)
+if suite:
+    g.app.scriptDict['suite'] = suite
+</t>
+<t tx="ekr.20090529115704.4398">@
+
+All the tags should be tested at least once (equal, replace, delete, insert).
+
+The replace, delete, insert operations should happen at least once:
+    1. At the beginning of a node.
+    2. In the middle of a node.
+    3. At the end of a node.
+
+For the delete and replace operators we must also test the case that the
+deletion or replacement spans more than one block.
+</t>
+<t tx="ekr.20090529115704.4399"></t>
+<t tx="ekr.20090529115704.4400"></t>
+<t tx="ekr.20090529115704.4401">line 1
+line 2
+line 3</t>
+<t tx="ekr.20090529115704.4402">line 1
+line 2 changed
+line 3</t>
+<t tx="ekr.20090529115704.4403"></t>
+<t tx="ekr.20090529115704.4404">line 1
+line 2
+line 3</t>
+<t tx="ekr.20090529115704.4405">line 1 changed
+line 2
+line 3</t>
+<t tx="ekr.20090529115704.4406"></t>
+<t tx="ekr.20090529115704.4407">line 1
+line 2
+line 3</t>
+<t tx="ekr.20090529115704.4408">line 1
+line 2
+line 3 changed</t>
+<t tx="ekr.20090529115704.4409"></t>
+<t tx="ekr.20090529115704.4410">line 1
+line 2
+line 3</t>
+<t tx="ekr.20090529115704.4411">line 2
+line 3</t>
+<t tx="ekr.20090529115704.4412"></t>
+<t tx="ekr.20090529115704.4413">line 1
+line 2
+line 3</t>
+<t tx="ekr.20090529115704.4414">line 1
+line 3</t>
+<t tx="ekr.20090529115704.4415"></t>
+<t tx="ekr.20090529115704.4416">line 1
+line 2
+line 3</t>
+<t tx="ekr.20090529115704.4417">line 1
+line 2</t>
+<t tx="ekr.20090529115704.4418"></t>
+<t tx="ekr.20090529115704.4419">line 1
+line 2
+line 3</t>
+<t tx="ekr.20090529115704.4420">inserted line
+line 1
+line 2
+line 3</t>
+<t tx="ekr.20090529115704.4421"></t>
+<t tx="ekr.20090529115704.4422">line 1
+line 2
+line 3</t>
+<t tx="ekr.20090529115704.4423">line 1
+inserted line
+line 2
+line 3</t>
+<t tx="ekr.20090529115704.4424"></t>
+<t tx="ekr.20090529115704.4425">line 1
+line 2
+line 3</t>
+<t tx="ekr.20090529115704.4426">line 1
+line 2
+inserted line
+line 3</t>
+<t tx="ekr.20090529115704.4427"></t>
+<t tx="ekr.20090529115704.4428">line 1
+line 2
+line 3</t>
+<t tx="ekr.20090529115704.4429">line 1
+line 2
+line 3
+inserted line</t>
+<t tx="ekr.20090529115704.4430"></t>
+<t tx="ekr.20090529115704.4431">@others</t>
+<t tx="ekr.20090529115704.4432">node 1 line 1</t>
+<t tx="ekr.20090529115704.4433">node 2 line 1</t>
+<t tx="ekr.20090529115704.4434">@others</t>
+<t tx="ekr.20090529115704.4435">node 1 line 1
+inserted node at end of node 1</t>
+<t tx="ekr.20090529115704.4436">node 2 line 1</t>
+<t tx="ekr.20090529115704.4437"></t>
+<t tx="ekr.20090529115704.4438">@others</t>
+<t tx="ekr.20090529115704.4439">node 1 line 1</t>
+<t tx="ekr.20090529115704.4440">node 2 line 1</t>
+<t tx="ekr.20090529115704.4441">@others</t>
+<t tx="ekr.20090529115704.4442">node 1 line 1</t>
+<t tx="ekr.20090529115704.4443">inserted node at start of node 2
+node 2 line 1</t>
+<t tx="ekr.20090529115704.4444"></t>
+<t tx="ekr.20090529115704.4445">@others</t>
+<t tx="ekr.20090529115704.4446">node 1 line 1
+node 1 line 2</t>
+<t tx="ekr.20090529115704.4447">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4448">@others</t>
+<t tx="ekr.20090529115704.4449">node 1 line 1</t>
+<t tx="ekr.20090529115704.4450">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4451"></t>
+<t tx="ekr.20090529115704.4452">@others</t>
+<t tx="ekr.20090529115704.4453">node 1 line 1</t>
+<t tx="ekr.20090529115704.4454">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4455">@others</t>
+<t tx="ekr.20090529115704.4456">node 1 line 1</t>
+<t tx="ekr.20090529115704.4457">node 2 line 2</t>
+<t tx="ekr.20090529115704.4458"></t>
+<t tx="ekr.20090529115704.4459">@others</t>
+<t tx="ekr.20090529115704.4460">node 1 line 1
+node 1 line 2</t>
+<t tx="ekr.20090529115704.4461">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4462">@others</t>
+<t tx="ekr.20090529115704.4463">node 1 line 1
+node 1 line 1 changed</t>
+<t tx="ekr.20090529115704.4464">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4465"></t>
+<t tx="ekr.20090529115704.4466">@others</t>
+<t tx="ekr.20090529115704.4467">node 1 line 1
+node 1 line 2</t>
+<t tx="ekr.20090529115704.4468">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4469">@others</t>
+<t tx="ekr.20090529115704.4470">node 1 line 1
+node 1 line 2</t>
+<t tx="ekr.20090529115704.4471">node 2 line 1 changed
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4472"></t>
+<t tx="ekr.20090529115704.4473">@others</t>
+<t tx="ekr.20090529115704.4474">node 1 line 1</t>
+<t tx="ekr.20090529115704.4475">node 2 line 1</t>
+<t tx="ekr.20090529115704.4476">@others</t>
+<t tx="ekr.20090529115704.4477">node 1 line 1
+inserted node 1 at end of node 1
+inserted node 2 at end of node 1</t>
+<t tx="ekr.20090529115704.4478">node 2 line 1</t>
+<t tx="ekr.20090529115704.4479"></t>
+<t tx="ekr.20090529115704.4480">@others</t>
+<t tx="ekr.20090529115704.4481">node 1 line 1</t>
+<t tx="ekr.20090529115704.4482">node 2 line 1</t>
+<t tx="ekr.20090529115704.4483">@others</t>
+<t tx="ekr.20090529115704.4484">node 1 line 1</t>
+<t tx="ekr.20090529115704.4485">inserted node 1 at start of node 2
+inserted node 2 at start of node 2
+node 2 line 1</t>
+<t tx="ekr.20090529115704.4486"></t>
+<t tx="ekr.20090529115704.4487">@others</t>
+<t tx="ekr.20090529115704.4488">node 1 line 1
+node 1 line 2
+node 1 line 3</t>
+<t tx="ekr.20090529115704.4489">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4490">@others</t>
+<t tx="ekr.20090529115704.4491">node 1 line 1
+node 1 line 2 changed
+node 1 line 3 changed</t>
+<t tx="ekr.20090529115704.4492">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4493"></t>
+<t tx="ekr.20090529115704.4494">@others</t>
+<t tx="ekr.20090529115704.4495">node 1 line 1
+node 1 line 2</t>
+<t tx="ekr.20090529115704.4496">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4497">@others</t>
+<t tx="ekr.20090529115704.4498">node 1 line 1
+node 1 line 2</t>
+<t tx="ekr.20090529115704.4499">node 2 line 1 changed
+node 2 line 2 changed</t>
+<t tx="ekr.20090529115704.4500"></t>
+<t tx="ekr.20090529115704.4501">@others</t>
+<t tx="ekr.20090529115704.4502">node 1 line 1
+node 1 line 2
+node 1 line 3</t>
+<t tx="ekr.20090529115704.4503">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4504">@others</t>
+<t tx="ekr.20090529115704.4505">node 1 line 1</t>
+<t tx="ekr.20090529115704.4506">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4507"></t>
+<t tx="ekr.20090529115704.4508">@others</t>
+<t tx="ekr.20090529115704.4509">node 1 line 1</t>
+<t tx="ekr.20090529115704.4510">node 2 line 1
+node 2 line 2
+node 2 line 3</t>
+<t tx="ekr.20090529115704.4511">@others</t>
+<t tx="ekr.20090529115704.4512">node 1 line 1</t>
+<t tx="ekr.20090529115704.4513">node 2 line 3</t>
+<t tx="ekr.20090529115704.4514"></t>
+<t tx="ekr.20090529115704.4515">@others</t>
+<t tx="ekr.20090529115704.4516">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+line 1 line 3</t>
+<t tx="ekr.20090529115704.4517">node 2 line 1
+node 2 line 2
+node 2 line 3</t>
+<t tx="ekr.20090529115704.4518">@others</t>
+<t tx="ekr.20090529115704.4519">node 1 line 1
+line 1 line 3</t>
+<t tx="ekr.20090529115704.4520">node 2 line 1
+node 2 line 2
+node 2 line 3</t>
+<t tx="ekr.20090529115704.4521"></t>
+<t tx="ekr.20090529115704.4522">@others</t>
+<t tx="ekr.20090529115704.4523">node 1 line 1</t>
+<t tx="ekr.20090529115704.4524">@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4525">@others</t>
+<t tx="ekr.20090529115704.4526">node 1 line 1</t>
+<t tx="ekr.20090529115704.4527">node 2 line 2</t>
+<t tx="ekr.20090529115704.4528"></t>
+<t tx="ekr.20090529115704.4529">@others</t>
+<t tx="ekr.20090529115704.4530">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+line 1 line 3</t>
+<t tx="ekr.20090529115704.4531">node 2 line 1
+node 2 line 2
+node 2 line 3</t>
+<t tx="ekr.20090529115704.4532">@others</t>
+<t tx="ekr.20090529115704.4533">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim
+line 1 line 3</t>
+<t tx="ekr.20090529115704.4534">node 2 line 1
+node 2 line 2
+node 2 line 3</t>
+<t tx="ekr.20090529115704.4535"></t>
+<t tx="ekr.20090529115704.4536">@others</t>
+<t tx="ekr.20090529115704.4537">node 1 line 1
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+#@ should be handled by verbatim</t>
+<t tx="ekr.20090529115704.4538">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4539">@others</t>
+<t tx="ekr.20090529115704.4540">node 1 line 1</t>
+<t tx="ekr.20090529115704.4541">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4542"># This fails because the @all read logic inserts a second verbatim, I think.</t>
+<t tx="ekr.20090529115704.4543">@others</t>
+<t tx="ekr.20090529115704.4544">node 1 line 1
+node 1 line 2</t>
+<t tx="ekr.20090529115704.4545">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4546">@others</t>
+<t tx="ekr.20090529115704.4547">node 1 line 1
+@verbatim
+#@ should be handled by verbatim
+node 1 line 2</t>
+<t tx="ekr.20090529115704.4548">node 2 line 1
+node 2 line 2</t>
+<t tx="ekr.20090529115704.4549"></t>
+<t tx="ekr.20090529115704.4550">x = c.shadowController
+
+path = x.baseDirName()
+expected = g.os_path_dirname(g.os_path_abspath(g.os_path_join(c.fileName())))
+
+# print(path)
+# print(expected)
+
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
+<t tx="ekr.20090529115704.4551">x = c.shadowController
+
+filename = 'xyzzy'
+
+path = x.pathName(filename)
+expected = g.os_path_abspath(g.os_path_join(x.baseDirName(),filename))
+
+# print(path)
+# print(expected)
+
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
+<t tx="ekr.20090529115704.4552">x = c.shadowController
+
+filename = 'xyzzy'
+path = x.dirName(filename)
+expected = g.os_path_dirname(g.os_path_abspath(
+    g.os_path_join(g.os_path_dirname(c.fileName()),filename)))
+
+# print(path)
+# print(expected)
+
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
+<t tx="ekr.20090529115704.4553">x = c.shadowController
+
+# print (c.config.getString('shadow_subdir'))
+
+subdir = c.config.getString('shadow_subdir') or '.leo_shadow'
+prefix = c.config.getString('shadow_prefix') or ''
+
+# print('c.fileName',c.fileName())
+# print('c.relativeFileName',c.relativeFileName())
+
+filename = 'xyzzy'
+path = x.shadowPathName(filename)
+expected = g.os_path_abspath(g.os_path_join(
+    g.os_path_dirname(c.fileName()),subdir,prefix+filename))
+
+if 0:
+    print('prefix',prefix)
+    print(path)
+    print(expected)
+
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
+<t tx="ekr.20090529115704.4554">x = c.shadowController
+
+subdir = c.config.getString('shadow_subdir') or '.leo_shadow'
+prefix = c.config.getString('shadow_prefix') or ''
+
+# print('c.fileName',c.fileName())
+# print('c.relativeFileName',c.relativeFileName())
+
+filename = 'xyzzy'
+path = x.shadowDirName(filename)
+expected = g.os_path_abspath(
+    g.os_path_join(g.os_path_dirname(c.fileName()),subdir))
+
+# print(path)
+# print(expected)
+
+assert path == expected,'\nexpected: %s\ngot     : %s' % (expected,path)</t>
+<t tx="ekr.20090529115704.4555">x = c.shadowController
+
+filename = x.pathName('xyzzy')
+assert not g.os_path_exists(filename)
+n = x.errors
+x.rename('xyzzy','xyzzy2',silent=True)
+assert x.errors == n+1
+assert x.last_error.startswith('can not rename')
+# print(x.last_error)</t>
+<t tx="ekr.20090529115704.4556">x = c.shadowController
+
+filename = x.pathName('xyzzy')
+# print(filename)
+assert not g.os_path_exists(filename)
+n = x.errors
+x.unlink('xyzzy',silent=True)
+assert x.errors == n+1
+assert x.last_error.startswith('can not delete xyzzy')
+# print(x.last_error)</t>
+<t tx="ekr.20090529115704.4557">import glob
+import os
+
+x = c.shadowController
+
+@others
+
+shadow_fn  = x.shadowPathName('unittest/xyzzy')
+shadow_dir = x.shadowDirName('unittest/xyzzy')
+
+if g.os_path_exists(shadow_fn):
+    g.utils_remove(shadow_fn,verbose=True)
+    assert not os.path.exists(shadow_fn),'still exists: %s' % shadow_fn
+
+deleteShadowDir(shadow_dir)
+
+x.makeShadowDirectory(shadow_dir)
+assert os.path.exists(shadow_dir)
+
+deleteShadowDir(shadow_dir)
+</t>
+<t tx="ekr.20090529115704.4558">def deleteShadowDir(shadowDir):
+
+    if g.os_path_exists(shadow_dir):
+        files = g.os_path_abspath(g.os_path_join(shadow_dir,"*.*"))
+        files = glob.glob(files)
+        for z in files:
+            if z != shadow_dir:
+                os.unlink(z)
+        os.rmdir(shadow_dir)
+        assert not os.path.exists(shadow_dir),'still exists: %s' % shadow_dir</t>
+<t tx="ekr.20090529115704.4559">x = c.shadowController
+s = 'abc'
+
+fn = '../test/unittest/replaceFileWithStringTestFile.py'
+path = g.os_path_abspath(g.os_path_join(g.app.loadDir,fn))
+
+x.replaceFileWithString(path,s)
+f = file(path)
+s2 = f.read()
+f.close()
+assert s == s2</t>
+<t tx="ekr.20090529115704.4560">x = c.shadowController
+
+lines1 = ('a','b','c')
+lines2 = ('a','x','c')
+
+x.show_error(
+    lines1,lines2,
+    message = "Test of x.show_error",
+    lines1_message = "lines1",
+    lines2_message = "lines2")
+</t>
+<t tx="ekr.20090529115704.4561"></t>
+<t tx="ekr.20090529115704.4562">at = c.atFileCommands
+
+# at.toString is set by the execute-script command.
+
+f = at.openStringFile('abc')
+
+assert f.__class__.__name__ == 'fileLikeObject'
+
+s = 'abc'
+f.write(s)
+s2 = at.closeStringFile(f)
+
+assert s == s2
+
+# assert at.toString
+
+</t>
+<t tx="ekr.20090529115704.4563">at = c.atFileCommands
+x = c.shadowController
+
+filename = x.pathName('xyzzy')
+assert not g.os_path_exists(filename)
+
+try:
+    kind,theFile = at.openForWrite(filename)
+    assert kind == 'check'
+    # print(repr(theFile))
+    if theFile: theFile.close()
+
+finally:
+    if g.os_path_exists(filename):
+        x.unlink(filename)
+        assert not g.os_path_exists(filename)</t>
+<t tx="ekr.20090529115704.4564">at = c.atFileCommands
+x = c.shadowController
+
+changed = c.changed
+child = p.firstChild()
+s = child.b
+
+try:
+    fn = 'unittest/read_test.py'
+    child.setHeadString('@shadow %s' % fn)
+    # shadow_fn = x.shadowPathName(fn)
+    at.writeOneAtShadowNode(child,toString=False,force=True)
+    at.readOneAtShadowNode(fn,child)
+finally:
+    child.setHeadString('@@shadow %s' % fn)
+    c.setChanged(changed)
+    # c.redraw_now()</t>
+<t tx="ekr.20090529115704.4565">@language python
+@tabwidth -4
+@others
+# body of @shadow test node
+# The last line.
+</t>
+<t tx="ekr.20090529115704.4566">import os
+s = 'abc'
+fn = 'unitTestFile.py'
+path = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','unittest',fn))
+try:
+    c.atFileCommands.replaceFileWithString(path,s)
+    f = file(path)
+    s2 = f.read()
+    f.close()
+    assert s == s2
+finally:
+    if g.os_path_exists(path):
+        os.unlink(path)</t>
+<t tx="ekr.20090529115704.4567">at = c.atFileCommands
+x = c.shadowController
+changed = c.changed
+child = p.firstChild()
+s = child.b
+
+try:
+    child.setHeadString('@shadow unittest/test_1.py')
+    fn = 'unittest/test_1.py'
+    shadow_fn = x.shadowPathName(fn)
+    shadow_dir = x.shadowDirName(fn)
+    x.makeShadowDirectory(shadow_dir)
+    if g.os_path_exists(shadow_fn):
+        g.utils_remove(shadow_fn,verbose=True)
+    at.writeOneAtShadowNode(child,toString=True,force=True)
+    assert at.startSentinelComment == '#','startSentinelComment: %s' % (
+        repr(at.startSentinelComment))
+    assert at.endSentinelComment == '','endSentinelComment: %s' % (
+        repr(at.endSentinelComment))
+    if 0:
+        print('public...\n',at.public_s)
+        print('private...\n',at.private_s)
+    at.writeOneAtShadowNode(child,toString=False,force=True)
+    assert g.os_path_exists(shadow_fn),'not found: %s' % shadow_fn
+    # No need to remove this: it's in the unittest directory.
+    # g.utils_remove(shadow_fn,verbose=True)
+finally:
+
+    child.setHeadString('@@shadow unittest/test_1.py')
+    c.setChanged(changed)
+    # c.redraw_now()</t>
+<t tx="ekr.20090529115704.4568"># body of @shadow test node
+# The last line.</t>
+<t tx="ekr.20090529115704.4569"># This unit test should come last.
+
+import glob
+import os
+
+x = c.shadowController
+
+shadow_dir = x.shadowDirName('unittest/xyzzy')
+
+if g.os_path_exists(shadow_dir):
+    files = g.os_path_abspath(g.os_path_join(shadow_dir,"*.*"))
+    files = glob.glob(files)
+    for z in files:
+        if z != shadow_dir:
+            os.unlink(z)
+    os.rmdir(shadow_dir)
+    assert not os.path.exists(shadow_dir)
+    # g.es_print('deleted directory',shadow_dir,color='red')
+</t>
+<t tx="ekr.20090529141856.4682"># These test are inconvenient to include in leoPy.leo
+# because they would need a @mark-for-unit-tests node,
+# and Alt-5 would execute all the tests.</t>
+<t tx="ekr.20090529141856.4684">@language python
+@tabwidth -4</t>
+<t tx="ekr.20090529141856.4685"># Create unit tests in g.app.scriptDict["suite"]
+
+
+import unittest
+import leo.core.leoTest as leoTest
+
+@others
+
+suite = leoTest.makeImportExportSuite(c,"exportTests",doImport=False)
+
+g.app.scriptDict['suite'] = suite</t>
+<t tx="ekr.20090529141856.4686">@language plain</t>
+<t tx="ekr.20090529141856.4687"></t>
+<t tx="ekr.20090529141856.4688"></t>
+<t tx="ekr.20090529141856.4689">saveFileDialog
+test\\unittest\\output\\exportHeadlines.txt</t>
+<t tx="ekr.20090529141856.4690"></t>
+<t tx="ekr.20090529141856.4691">saveFileDialog
+test\\unittest\\output\\flattenOutline.txt</t>
+<t tx="ekr.20090529141856.4692"></t>
+<t tx="ekr.20090529141856.4693">saveFileDialog
+test\\unittest\\output\\weave.txt</t>
+<t tx="ekr.20090529141856.4694"></t>
+<t tx="ekr.20090529141856.4695">saveFileDialog
+test\\unittest\\output\\outlineToNoweb.txt</t>
+<t tx="ekr.20090529141856.4696"></t>
+<t tx="ekr.20090529141856.4697">saveFileDialog
+test\\unittest\\output\\outlineToCweb.txt</t>
+<t tx="ekr.20090529141856.4698"></t>
+<t tx="ekr.20090529141856.4699"># Create unit tests in g.app.scriptDict["suite"]
+
+import unittest
+import leo.core.leoTest as leoTest
+
+@others
+
+suite = leoTest.makeImportExportSuite(c,"importTests",doImport=True)
+
+g.app.scriptDict['suite'] = suite</t>
+<t tx="ekr.20090529141856.4700">@language plain</t>
+<t tx="ekr.20090529141856.4701"></t>
+<t tx="ekr.20090529141856.4702"></t>
+<t tx="ekr.20090529141856.4703">openFileDialog
+test\\unittest\\perfectImport\\formatter.py</t>
+<t tx="ekr.20090529141856.4704"></t>
+<t tx="ekr.20090529141856.4705">openFileDialog
+core\\runLeo.py</t>
+<t tx="ekr.20090529141856.4706"></t>
+<t tx="ekr.20090529141856.4707">openFileDialog
+test\\unittest\\input\\noweave.nw.txt</t>
+<t tx="ekr.20090529141856.4708"></t>
+<t tx="ekr.20090529141856.4709">openFileDialog
+test\\unittest\\input\\flat.txt</t>
+<t tx="ekr.20090529141856.4710"></t>
+<t tx="ekr.20090529141856.4711">openFileDialog
+test\\unittest\\input\\cweave.w</t>
+<t tx="ekr.20090529141856.4712"></t>
+<t tx="ekr.20090529141856.4713">openFileDialog
+test\\unittest\\input\\testLeoAtFile.py</t>
+<t tx="ekr.20090529141856.4714"></t>
+<t tx="ekr.20090529141856.4715">openFileDialog
+test\\unittest\\perfectImport\\formatter.py</t>
+<t tx="ekr.20090529141856.4716">@tabwidth -4
+@language python</t>
+<t tx="ekr.20090529141856.4717"></t>
+<t tx="ekr.20090529141856.4718">fileName = p.h
+
+s = '''\
+class cTestClass1 {
+
+    int foo (int a) {
+        a = 2 ;
+    }
+
+    char bar (float c) {
+        ;
+    }
+}
+'''
+
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4719">fileName = p.h
+
+s = '''\
+class cTestClass1 {
+
+    int foo (int a) {
+# an underindented line.
+        a = 2 ;
+    }
+
+    # This should go with the next function.
+
+    char bar (float c) {
+        ;
+    }
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 1
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4720">fileName = p.h
+
+s = '''\
+class cTestClass1 {
+
+    int foo (int a) {
+        a = 2 ;
+    }
+
+    char bar (float c) {
+        ;
+    }
+}
+'''
+
+c.importCommands.defaultImporterUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4721">fileName = p.h
+
+s = '''\
+void
+aaa::bbb::doit
+    (
+    awk* b
+    )
+{
+    assert(false);
+}
+
+bool
+aaa::bbb::dothat
+    (
+    xyz *b
+    ) //  &lt;---------------------problem
+{
+    return true;
+}
+'''
+
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4722">fileName = p.h
+
+s = '''\
+void
+aaa::bbb::doit
+    (
+    awk* b
+    )
+{
+    assert(false);
+}
+
+bool
+aaa::bbb::dothat
+    (
+    xyz *b
+    ) 
+{
+    return true;
+} //  &lt;---------------------problem
+'''
+
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4723">fileName = p.h
+
+s = '''
+void
+aaa::bbb::doit
+    (
+    awk* b  // leading blank
+    )
+{
+	assert(false); // leading tab
+}
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0 # Intermixed blanks and tabs are ok for C.
+
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4724">fileName = p.h
+
+s = '''\
+static void
+ReleaseCharSet(cset)
+    CharSet *cset;
+{
+    ckfree((char *)cset-&gt;chars);
+    if (cset-&gt;ranges) {
+    ckfree((char *)cset-&gt;ranges);
+    }
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4725">fileName = p.h
+
+s = '''\
+Tcl_Obj *
+Tcl_NewLongObj(longValue)
+    register long longValue;	/* Long integer used to initialize the
+         * new object. */
+{
+    return Tcl_DbNewLongObj(longValue, "unknown", 0);
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4726">fileName = p.h
+
+s = '''\
+extern  "C"
+{
+#include "stuff.h"
+void    init(void);
+#include "that.h"
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.cUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4727"></t>
+<t tx="ekr.20090529141856.4728">s = '''\
+namespace {
+    class cTestClass1 {
+        ;
+    }
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.cSharpUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4729">s = '''\
+namespace {
+class cTestClass1 {
+    ;
+}
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.cSharpUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4730">import sys
+
+if sys.platform.lower().startswith('win'):
+
+    fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','big-c#-test.c#'))
+
+    f = file(fileName)
+    s = f.read()
+    f.close()
+
+    c.importCommands.cSharpUnitTest(p,s=s,fileName=fileName,showTree=False)</t>
+<t tx="ekr.20090529141856.4731"></t>
+<t tx="ekr.20090529141856.4732">s = '''\
+;;; a.el --- Test
+
+;; some other verbose comment
+;; some other verbose comment
+;; some other verbose comment
+
+(defun abc (a1 a2)
+  "Return blah blah."
+  (+ 1 2))
+
+(defun fgh (a1 a2)
+  "Return blah blah."
+  (- 1 2))
+
+;;; a.el ends here
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.elispUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4733">s = '''\
+;;; comment
+;;; continue
+;;;
+
+(defun abc (a b)
+   (+ 1 2 3))
+
+; comm
+(defun cde (a b)
+   (+ 1 2 3))
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.elispUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4734"></t>
+<t tx="ekr.20090529141856.4735">s = '''
+unit Unit1;
+
+interface
+
+uses
+Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,
+Forms,
+Dialogs;
+
+type
+TForm1 = class(TForm)
+procedure FormCreate(Sender: TObject);
+private
+{ Private declarations }
+public
+{ Public declarations }
+end;
+
+var
+Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+x,y: double;
+begin
+x:= 4;
+Y := x/2;
+end;
+
+end.
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pascalUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4736"># Warning: setting atAuto=True can wipe out unit tests.</t>
+<t tx="ekr.20090529141856.4737">s = '''\
+NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
+      's': 'http://www.w3.org/2000/svg',
+      'xlink' : 'http://www.w3.org/1999/xlink'}
+
+tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4738">s = '''\
+NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
+      's': 'http://www.w3.org/2000/svg',
+      'xlink' : 'http://www.w3.org/1999/xlink'}
+
+tabLevels = 4  # number of defined tablevels, FIXME, could derive from template?
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4739">s = '''\
+class Index:
+    """docstring"""
+    @cherrypy.nocolor
+    @cherrypy.expose
+    def index(self):
+        return "Hello world!"
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4740">s = '''\
+class aClass:
+    def outerDef(self):
+        """docstring.
+        line two."""
+
+        def pr(*args,**keys):
+            g.es_print(color='blue',*args,**keys)
+
+        a = 3
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4741">s = '''\
+"""A file consisting only of a docstring.
+"""
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4742">s = '''\
+class aClass:
+    def def1(self):
+        pass
+
+    if False or g.unitTesting:
+
+        def pr(*args,**keys): # reportMismatch test
+            g.es_print(color='blue',*args,**keys)
+
+        pr('input...')
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4743">s = '''\
+class aClass:
+    def def1(self):
+        pass
+
+    if False or g.unitTesting:
+
+        def pr(*args,**keys): # reportMismatch test
+            g.es_print(color='blue',*args,**keys)
+
+        pr('input...')
+
+    def def2(self):
+        pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4744">@language python
+
+# This caused PyParse.py not to be imported properly.
+
+s = '''\
+
+import re
+
+if 0: # Causes the 'overindent'
+   if 0:   # for throwaway debugging output
+      def dump(*stuff):
+        sys.__stdout__.write(" ".join(map(str, stuff)) + "\n")
+
+for ch in "({[":
+   _tran[ord(ch)] = '('
+
+class testClass1:
+    pass
+# '''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4745">s = '''\
+class testClass1 # no colon
+    pass
+
+def spam():
+    pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0 # Not really an error.
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4746">s = '''\
+class testClass2:
+    pass
+'''
+
+tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4747">s = '''\
+class testClass1:
+    """A docstring"""
+    def __init__ (self):
+        pass
+    def f1(self):
+        pass
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4748">s = '''\
+import leo.core.leoGlobals as g
+
+a = 3
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4749">s = '''\
+
+class test:
+
+    def importFilesCommand (self,files=None,treeType=None,
+        perfectImport=True,testing=False,verbose=False):
+            # Not a command.  It must *not* have an event arg.
+
+        c = self.c
+        if c == None: return
+        p = c.currentPosition()
+
+    # Used by paste logic.
+
+    def convertMoreStringToOutlineAfter (self,s,firstVnode):
+        s = string.replace(s,"\\r","")
+        strings = string.split(s,"\\n")
+        return self.convertMoreStringsToOutlineAfter(strings,firstVnode)
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4750">s = '''\
+
+class test:
+    def spam(b):
+        pass
+
+    # Used by paste logic.
+
+    def foo(a):
+        pass
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4751">s = '''\
+import leo.core.leoGlobals as g
+
+a = 3
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4752">s = '''\
+
+class cls:
+     def fun(): # one extra space.
+        pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None # No error unless we get an unexpected mismatch line.
+g.app.unitTestDict ['expectedMismatchLine'] = 3 # The error happens before any lines are checked.
+g.app.unitTestDict ['expectedErrorMessage'] = 'leading whitespace not consistent with @tabwidth -4'
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4753">s = '''\
+
+class mammalProviderBase(object):
+    """Root class for content providers used by DWEtree.py"""
+    def __init__(self, params):
+        """store reference to parameters"""
+        self.params = params
+    def provide(self, what):
+        """default &lt;BASE&gt; value"""
+        if what == 'doctitle':
+            return ELE('base', href=self.params['/BASE/'])
+        return None
+
+    def imagePath(self, sppdat):
+        """return path to images and list of images for *species*"""
+        path = 'MNMammals/imglib/Mammalia'
+        for i in 'Order', 'Family', 'Genus', 'Species':
+            path = os.path.join(path, sppdat['%sName' % (i,)])
+        imglib = os.path.join('/var/www',path)
+        imglib = os.path.join(imglib, '*.[Jj][Pp][Gg]')
+        path = os.path.join('/',path)
+        lst = [os.path.split(i)[1] for i in glob.glob(imglib)]
+        lst.sort()
+        return path, lst
+
+class mainPages(mammalProviderBase):
+    """provide content for pages in 'main' folder"""
+    __parent = mammalProviderBase
+    def provide(self, what):
+        """add one layer to &lt;BASE&gt;"""
+        ans = self.__parent.provide(self, what)
+        if what == 'doctitle':
+            return ELE('base', href=self.params['/BASE/']+'main/')
+        return ans
+''' 
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4754">s = '''\
+
+class ItasException(Exception):
+
+    pass
+
+def gpRun(gp, cmd, args, log = None):
+
+    """Wrapper for making calls to the geoprocessor and reporting errors"""
+
+    if log:
+
+        log('gp: %s: %s\\n' % (cmd, str(args)))
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+
+
+</t>
+<t tx="ekr.20090529141856.4755">s = '''\
+
+class emptyClass: pass
+
+def followingDef():
+    pass
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4756">s = '''\
+
+class emptyClass: pass # comment
+
+def followingDef(): # comment
+    pass
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4757">s = '''\
+
+class emptyClass: 
+
+    def spam():
+
+        """docstring line 1
+under-indented docstring line"""
+        pass
+
+def followingDef(): # comment
+    pass
+'''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4758">@encoding utf-8
+# leoImport.py uses unicode characters, so *this* test must have the directive above.
+
+fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'leoImport.py'))
+
+f = file(fileName)
+s = f.read()
+f.close()
+
+g.app.unitTestDict['testingLeoImport.py'] = True
+
+c.importCommands.pythonUnitTest(p,s=None,fileName=fileName,showTree=False)</t>
+<t tx="ekr.20090529141856.4759">s = '''\
+class baseScannerClass:
+
+        """The base class for all import scanner classes."""
+
+        def __init__ (self,importCommands,language):
+
+            self.c = ic.c
+
+        def createHeadline (self,parent,body,headline):
+            # g.trace("parent,headline:",parent,headline)
+            return p
+'''
+
+# We expect mismatches because the indentation does not match @tabwidth -4.
+g.app.unitTestDict ['expectedErrors'] = None # No error unless we get an unexpected mismatch line.
+g.app.unitTestDict ['expectedMismatchLine'] = 3
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4760">s = '''\
+class baseScannerClass:
+    def containsUnderindentedComment(self):
+        a = 2
+    # A true underindented comment.
+        b = 3
+    # This underindented comment should be placed with next function.
+    def empty(self):
+        pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4761">s = '''\
+class baseScannerClass:
+    def containsUnderindentedComment(self):
+        a = 2
+    #
+        b = 3
+        # This comment is part of the present function.
+
+    def empty(self):
+        pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0 # underindented comments are no longer an error.
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4762">s = '''\
+class aClass: # trailing comment
+
+
+    def def1(self):             # trailing comment
+        pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4763">s = '''\
+
+xyz = 6 # trailing comment
+pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4764">s = '''\
+
+def foo():
+    pass
+
+def bar():
+    pass
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4765">s = '''\
+
+def foo():
+
+    error("""line1
+line2.
+""")
+
+    a = 5
+
+def bar():
+    pass
+'''
+
+showTree = False
+keepTree = False
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.pythonUnitTest(p,s=s,showTree=showTree)
+
+if showTree:
+    try:
+        child = p.firstChild()
+        n = child.numberOfChildren()
+        assert n == 2, 'expected 2 children, got %s' % n
+    finally:
+        if keepTree:
+            h = child.h
+            print 'h',h
+            child.setHeadString('@'+h)
+        else:
+            while p.hasChildren():
+                p.firstChild().doDelete()
+        c.redraw(p)</t>
+<t tx="ekr.20090529141856.4766"></t>
+<t tx="ekr.20090529141856.4767">s = '''\
+interface Bicycle {
+    void changeCadence(int newValue);
+    void changeGear(int newValue);
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4768">s = '''\
+interface Bicycle {
+void changeCadence(int newValue);
+void changeGear(int newValue);
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4769">import sys
+
+if sys.platform.lower().startswith('win'):
+
+    fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','constants.java'))
+
+    f = file(fileName)
+    s = f.read()
+    f.close()
+
+    c.importCommands.javaUnitTest(p,s=None,fileName=fileName,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4770">s = '''\
+/**
+ * Indicates the caller's authority to perform lifecycle operations on
+ */
+
+public final class AdminPermission extends BasicPermission
+{
+    /**
+     * Creates a new &lt;tt&gt;AdminPermission&lt;/tt&gt; object.
+     */
+    public AdminPermission()
+    {
+        super("AdminPermission");
+    }
+}
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaUnitTest(p,s=s,showTree=False)
+
+</t>
+<t tx="ekr.20090529141856.4771">import sys
+
+if sys.platform.lower().startswith('win'):
+
+
+    fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','test','AdminPermission.java'))
+
+    f = file(fileName)
+    s = f.read()
+    f.close()
+
+    c.importCommands.javaUnitTest(p,s=s,fileName=fileName,showTree=False)</t>
+<t tx="ekr.20090529141856.4772">@tabwidth 8</t>
+<t tx="ekr.20090529141856.4773">@language python
+
+s = '''\
+/*
+ * $Header: /cvs/leo/test/unitTest.leo,v 1.247 2008/02/14 14:59:04 edream Exp $
+ * 
+ * Copyright (c) OSGi Alliance (2000, 2005). All Rights Reserved.
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this 
+ * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html.
+ */
+
+package org.osgi.framework;
+
+/**
+ * A Framework exception used to indicate that a bundle lifecycle problem
+ * occurred.
+ * 
+ * &lt;p&gt;
+ * &lt;code&gt;BundleException&lt;/code&gt; object is created by the Framework to denote
+ * an exception condition in the lifecycle of a bundle.
+ * &lt;code&gt;BundleException&lt;/code&gt;s should not be created by bundle developers.
+ * 
+ * &lt;p&gt;
+ * This exception is updated to conform to the general purpose exception
+ * chaining mechanism.
+ * 
+ * @version $Revision: 1.247 $
+ */
+
+public class BundleException extends Exception {
+	static final long	serialVersionUID	= 3571095144220455665L;
+	/**
+	 * Nested exception.
+	 */
+	private Throwable	cause;
+
+	/**
+	 * Creates a &lt;code&gt;BundleException&lt;/code&gt; that wraps another exception.
+	 * 
+	 * @param msg The associated message.
+	 * @param cause The cause of this exception.
+	 */
+	public BundleException(String msg, Throwable cause) {
+		super(msg);
+		this.cause = cause;
+	}
+}
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4774"></t>
+<t tx="ekr.20090529141856.4775">@language javascript
+
+// regexps that look like section references.
+
+{
+	name: "macro",
+	match: "&lt;&lt;",
+	lookaheadRegExp: /&lt;&lt;([^&gt;\s]+)(?:\s*)((?:[^&gt;]|(?:&gt;(?!&gt;)))*)&gt;&gt;/mg,
+	handler: function(w)
+	{
+		this.lookaheadRegExp.lastIndex = w.matchStart;
+		var lookaheadMatch = this.lookaheadRegExp.exec(w.source);
+		if(lookaheadMatch &amp;&amp; lookaheadMatch.index == w.matchStart &amp;&amp; lookaheadMatch[1]) {
+			w.nextMatch = this.lookaheadRegExp.lastIndex;
+			invokeMacro(w.output,lookaheadMatch[1],lookaheadMatch[2],w,w.tiddler);
+		}
+	}
+},
+
+// Comments that look like section references.
+
+// &lt;&lt;gradient [[tiddler name]] vert|horiz rgb rgb rgb rgb... &gt;&gt;
+
+config.macros.gradient.handler = function(place,macroName,params,wikifier)
+{
+	var panel = wikifier ? createTiddlyElement(place,"div",null,"gradient") : place;
+	panel.style.position = "relative";
+	panel.style.overflow = "hidden";
+	panel.style.zIndex = "0";
+	if(wikifier) {
+		var styles = config.formatterHelpers.inlineCssHelper(wikifier);
+		config.formatterHelpers.applyCssHelper(panel,styles);
+	}
+	var colours = [];
+	for(var t=1; t&lt;params.length; t++) {
+		var c = new RGB(params[t]);
+		if(c)
+			colours.push(c);
+	}
+	drawGradient(panel,params[0] != "vert",colours);
+	if(wikifier)
+		wikifier.subWikify(panel,"&gt;&gt;");
+	if(document.all) {
+		panel.style.height = "100%";
+		panel.style.width = "100%";
+	}
+};
+
+// @Deprecated: Use &lt;br&gt; or &lt;br /&gt; instead of &lt;&lt;br&gt;&gt;
+config.macros.br = {};
+config.macros.br.handler = function(place)
+{
+	createTiddlyElement(place,"br");
+};
+</t>
+<t tx="ekr.20090529141856.4776">s = '''\
+
+String.prototype.toJSONString = function()
+{
+    if(/["\\\\\\x00-\\x1f]/.test(this))
+		return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
+
+	return '"' + this + '"';
+};
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4777">    s = '''\
+
+// Convert a string to it's JSON representation by encoding control characters, double quotes and backslash. See json.org
+String.prototype.toJSONString = function()
+{
+	var m = {
+		'\\b': '\\\\b',
+		'\\f': '\\\\f',
+		'\\n': '\\\\n',
+		'\\r': '\\\\r',
+		'\\t': '\\\\t',
+		'"' : '\\\\"',
+		'\\\\': '\\\\\\\\'
+		};
+	var replaceFn = function(a,b) {
+		var c = m[b];
+		if(c)
+			return c;
+		c = b.charCodeAt();
+		return '\\u00' + Math.floor(c / 16).toString(16) + (c % 16).toString(16);
+		};
+    if(/["\\\\\\x00-\\x1f]/.test(this))
+		return '"' + this.replace(/([\\x00-\\x1f\\"])/g,replaceFn) + '"';
+
+	return '"' + this + '"';
+};
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4778">s = '''\
+
+// Restarting
+function restart()
+{
+	invokeParamifier(params,"onstart");
+	if(story.isEmpty()) {
+		var tiddlers = store.filterTiddlers(store.getTiddlerText("DefaultTiddlers"));
+		for(var t=0; t&lt;tiddlers.length; t++) {
+			story.displayTiddler("bottom",tiddlers[t].title);
+		}
+	}
+	window.scrollTo(0,0);
+}
+
+'''
+
+# Double each backslash (they are in a docstring).
+# chars = [z for z in s]
+# s = []
+# for z in char:
+    # if z == '\\': s.append('\\\\')
+    # else: s.append(z)
+# s = s.join('')
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4779">f = file('test.js')
+s = f.read()
+f.close()
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4780"></t>
+<t tx="ekr.20090529141856.4781">s = '''\
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Bodystring&lt;/title&gt;
+&lt;/head&gt;
+&lt;body class='bodystring'&gt;
+&lt;div id='bodydisplay'&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.xmlUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4782">@first # -*- coding: utf-8 -*-
+
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+runner = leoImport.baseScannerClass(ic,atAuto=True,language='python')
+runner.root = p.copy()
+
+g.app.unitTestDict ['expectedMismatchLine'] = 1
+
+s1 = g.toUnicode('line Ä, ڱ,  궯, 奠 end',encoding='utf-8')
+s2 = g.toUnicode('line Ä, ڱ,  궯, 奠 x end',encoding='utf-8')
+
+ok = runner.checkTrialWrite(s1=s1,s2=s2)
+
+assert ok
+</t>
+<t tx="ekr.20090529141856.4783">c.contractAllHeadlines()</t>
+<t tx="ekr.20090529141856.4784"></t>
+<t tx="ekr.20090529141856.4785">s = '''\
 .. toc
 
 ====
@@ -22228,8 +19159,2371 @@ section 3.1.1, line 1
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)</t>
-<t tx="ekr.20090507084947.5152">assert p.v.t.fileIndex == ('ekr', '20090507084947', 5152)
+<t tx="ekr.20090529141856.4786">s = '''\
+.. toc
+
+top
+====
+
+The top section
+
+section 1
+---------
+
+section 1, line 1
+--
+selction 1, line 2
+
+section 2
+---------
+
+section 2, line 1
+
+section 2.1
+~~~~~~~~~~~
+
+section 2.1, line 1
+
+section 2.1.1
+.............
+
+section 2.2.1 line 1
+
+section 3
+---------
+
+section 3, line 1
+
+section 3.1.1
+.............
+
+section 3.1.1, line 1
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4787">s = '''\
+.. toc
+
+top
+-------------
+
+The top section
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4788">s = '''\
+.. toc
+
+======
+top
+======
+
+The top section
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4789">s = '''\
+.. toc
+
+.. The section name contains trailing whitespace.
+
+======
+top 
+======
+
+The top section.
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)</t>
+<t tx="ekr.20090529141856.4790">import leo.core.leoImport as leoImport
+ic = c.importCommands
+runner = leoImport.baseScannerClass(ic,atAuto=True,language='python')
+i = 0
+lines1 = ['abc',]
+lines2 = ['xyz',]
+
+g.app.unitTestDict ['expectedErrors'] = 1
+g.app.unitTestDict ['expectedMismatchLine'] = 1
+
+runner.compareHelper(lines1,lines2,i,strict=True)
 </t>
+<t tx="ekr.20090529141856.4791">import leo.core.leoImport as leoImport
+ic = c.importCommands
+runner = leoImport.baseScannerClass(ic,atAuto=True,language='java')
+runner.tab_width = -4
+i = 0
+lines1 = ['abc',]
+lines2 = [' abc',]
+
+# g.unitTesting = False # force the warning.
+
+g.app.unitTestDict ['expectedErrors'] = 0
+g.app.unitTestDict ['expectedMismatchLine'] = 1
+
+runner.compareHelper(lines1,lines2,i,strict=False)</t>
+<t tx="ekr.20090529141856.4792">s = '''\
+    a
+\tb
+'''
+
+import leo.core.leoImport as leoImport
+ic = c.importCommands
+runner = leoImport.pythonScanner(c.importCommands,atAuto=False)
+runner.tab_width = -4
+runner.regularizeWhitespace(s)
+assert runner.errors == 1</t>
+<t tx="ekr.20090529141856.4793">d = g.app.extra_extension_dict
+
+for ext in g.app.extension_dict.keys():
+    language =  c.importCommands.languageForExtension(ext)
+    language2 = c.importCommands.languageForExtension('.'+ext)
+    assert language == language2
+
+    # Now a many-one relationship.
+    if language:
+        # Do not test extensions that have 'none' as the value of d.get(ext)
+        # Otherwise, test only d.get(ext).
+        language2 = d.get(ext)
+        if language2 in ('None','none'):  continue
+        if language2: language = language2
+        # Made-up languages do not have mode files.
+        if not language.endswith('_language') and language not in ('autohotkey','rest',):
+            path = g.os_path_join(g.app.loadDir,'..','modes','%s.py' % (language))
+            assert g.os_path_exists(path), 'for ext=%s does not exist: %s' % (ext,path)
+
+    if 0:
+        if language is None:
+            print('no language for ext=%s' % (ext))
+</t>
+<t tx="ekr.20090608174319.4791"># This causes trouble if executed quickly after the add-editor command.
+# Presumably this is a timing condition that will never happen in practice.
+
+if 0:
+    c.frame.body.deleteEditor()</t>
+<t tx="ekr.20090615053403.4876"></t>
+<t tx="ekr.20090615053403.4877">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4878">@language plain
+@comment # /* */
+
+This is plain text.
+
+# This is a comment.
+
+More plain text.
+
+/* A block comment
+continues */
+
+More plain text.</t>
+<t tx="ekr.20090615053403.4879">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4880">@language actionscript
+
+break
+call, continue
+delete, do
+else
+false, for, function
+goto
+if, in
+new, null
+return
+true, typeof
+undefined
+var, void, while, with
+#include
+catch, constructor
+prototype
+this, try
+_parent, _root, __proto__
+// Jeeze hasn't anyone ever heard of namespaces??
+ASnative, abs, acos, appendChild, asfunction, asin, atan, atan2, attachMovie, attachSound, attributes
+BACKSPACE
+CAPSLOCK, CONTROL, ceil, charAt, charCodeAt, childNodes, chr, cloneNode, close, concat, connect, cos, createElement, createTextNode
+DELETEKEY, DOWN, docTypeDecl, duplicateMovieClip
+END, ENTER, ESCAPE, enterFrame, entry, equal, eval, evaluate, exp
+firstChild, floor, fromCharCode, fscommand, getAscii
+getBeginIndex, getBounds, getBytesLoaded, getBytesTotal, getCaretIndex, getCode, getDate, getDay, getEndIndex, getFocus, getFullYear, getHours, getMilliseconds, getMinutes, getMonth, getPan, getProperty, getRGB, getSeconds, getTime, getTimer, getTimezoneOffset, getTransform, getURL, getUTCDate, getUTCDay, getUTCFullYear, getUTCHours, getUTCMilliseconds, getUTCMinutes, getUTCMonth, getUTCSeconds, getVersion, getVolume, getYear, globalToLocal, gotoAndPlay, gotoAndStop
+HOME, haschildNodes, hide, hitTest
+INSERT, Infinity, ifFrameLoaded, ignoreWhite, indexOf, insertBefore, int, isDown, isFinite, isNaN, isToggled
+join
+keycode, keyDown, keyUp
+LEFT, LN10, LN2, LOG10E, LOG2E, lastChild, lastIndexOf, length, load, loaded, loadMovie, loadMovieNum, loadVariables, loadVariablesNum, localToGlobal, log
+MAX_VALUE, MIN_VALUE, max, maxscroll, mbchr, mblength, mbord, mbsubstring, min, 
+NEGATIVE_INFINITY, NaN, newline, nextFrame, nextScene, nextSibling, nodeName, nodeType, nodeValue
+on, onClipEvent, onClose, onConnect, onData, onLoad, onXML, ord
+PGDN, PGUP, PI, POSITIVE_INFINITY, parentNode, parseFloat, parseInt, parseXML, play, pop, pow, press, prevFrame, previousSibling, prevScene, print, printAsBitmap, printAsBitmapNum, printNum, push
+RIGHT, random, release, removeMovieClip, removeNode, reverse, round
+SPACE, SQRT1_2, SQRT2, scroll, send, sendAndLoad, set, setDate, setFocus, setFullYear, setHours, setMilliseconds, setMinutes, setMonth, setPan, setProperty, setRGB, setSeconds, setSelection, setTime, setTransform, setUTCDate, setUTCFullYear, setUTCHours, setUTCMilliseconds, setUTCMinutes, setUTCMonth, setUTCSeconds, setVolume, setYear, shift, show, sin, slice, sort, start, startDrag, status, stop, stopAllSounds, stopDrag, substr, substring, swapDepths, splice, split, sqrt
+TAB, tan, targetPath, tellTarget, toggleHighQuality, toLowerCase, toString, toUpperCase, trace
+UP, UTC, unescape, unloadMovie, unLoadMovieNum, unshift, updateAfterEvent
+valueOf
+xmlDecl, _alpha
+_currentframe
+_droptarget
+_focusrect, _framesloaded
+_height, _highquality
+_name
+_quality
+_rotation
+_soundbuftime
+_target, _totalframes
+_url
+_visible
+_width
+_x, _xmouse, _xscale
+_y, _ymouse, _yscale
+and, add, eq, ge, gt, le, lt, ne, not, or, Array, Boolean, Color, Date, Key, Math, MovieClip, Mouse, Number, Object, Selection, Sound, String, XML, XMLSocket</t>
+<t tx="ekr.20090615053403.4881">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4882">@language c
+@comment /* */
+
+@
+@c
+
+#define WIPEOUT 0 /* 
+                   * Causes database card number &amp; flags to be set to zero. 
+                   * This is so I don't need an infinite supply of cards!
+                   */
+// Not colored (because of @language /* */)
+#include "equ.h"
+#include "cmn.h"
+#include "ramdef.h"
+#include "eeprom.h"
+#include &lt;hpc_ram.h&gt;
+#include &lt;rlydef.h&gt;</t>
+<t tx="ekr.20090615053403.4883">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4884">@language csharp
+@ comment
+@c
+
+/* block
+comment */
+
+// test
+
+id // not a keyword
+
+abstract as 
+base bool break byte 
+case catch char checked class const continue 
+decimal default delegate do double 
+else enum event explicit extern 
+false finally fixed float for foreach 
+get goto 
+if implicit in int interface internal is 
+lock long 
+namespace new null 
+object operator out override 
+params partial private protected public 
+readonly ref return 
+sbyte sealed set short sizeof stackalloc 
+static string struct switch 
+this throw true try typeof 
+uint ulong unchecked unsafe ushort using 
+value virtual void volatile 
+where while
+yield</t>
+<t tx="ekr.20090615053403.4885">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4886">@language css
+/* New in 4.2. */
+
+/*html tags*/
+address, applet, area, a, base, basefont,
+big, blockquote, body, br, b, caption, center,
+cite, code, dd, dfn, dir, div, dl, dt, em, font,
+form, h1, h2, h3, h4, h5, h6, head, hr, html, img,
+input, isindex, i, kbd, link, li, link, map, menu,
+meta, ol, option, param, pre, p, samp,
+select, small, span, strike, strong, style, sub, sup,
+table, td, textarea, th, title, tr, tt, ul, u, var,
+/*units*/
+mm, cm, in, pt, pc, em, ex, px,
+/*colors*/
+aqua, black, blue, fuchsia, gray, green, lime, maroon, navy, olive, purple, red, silver, teal, yellow, white,
+/*important directive*/
+!important,
+/*font rules*/
+font, font-family, font-style, font-variant, font-weight, font-size,
+/*font values*/
+cursive, fantasy, monospace, normal, italic, oblique, small-caps,
+bold, bolder, lighter, medium, larger, smaller,
+serif, sans-serif,
+/*background rules*/
+background, background-color, background-image, background-repeat, background-attachment, background-position,
+/*background values*/
+contained, none, top, center, bottom, left, right, scroll, fixed,
+repeat, repeat-x, repeat-y, no-repeat,
+/*text rules*/
+word-spacing, letter-spacing, text-decoration, vertical-align, text-transform, text-align, text-indent, text-transform, text-shadow, unicode-bidi, line-height,
+/*text values*/
+normal, none, underline, overline, blink, sub, super, middle, top, text-top, text-bottom,
+capitalize, uppercase, lowercase, none, left, right, center, justify,
+line-through,
+/*box rules*/
+margin, margin-top, margin-bottom, margin-left, margin-right,
+margin, padding-top, padding-bottom, padding-left, padding-right,
+border, border-width, border-style, border-top, border-top-width, border-top-style, border-bottom, border-bottom-width, border-bottom-style, border-left, border-left-width, border-left-style, border-right, border-right-width, border-right-style, border-color,
+/*box values*/
+width, height, float, clear,
+auto, thin, medium, thick, left, right, none, both,
+none, dotted, dashed, solid, double, groove, ridge, inset, outset,
+/*display rules*/
+display, white-space, 
+min-width, max-width, min-height, max-height,
+outline-color, outline-style, outline-width,
+/*display values*/
+run-in, inline-block, list-item, block, inline, none, normal, pre, nowrap, table-cell, table-row, table-row-group, table-header-group, inline-table, table-column, table-column-group, table-cell, table-caption
+/*list rules*/
+list-style, list-style-type, list-style-image, list-style-position,
+/*list values*/
+disc, circle, square, decimal, decimal-leading-zero, none,
+lower-roman, upper-roman, lower-alpha, upper-alpha, lower-latin, upper-latin,
+/*table rules*/
+border-collapse, caption-side,
+/*table-values*/
+empty-cells, table-layout,
+/*misc values/rules*/
+counter-increment, counter-reset,
+marker-offset, z-index,
+cursor, direction, marks, quotes,
+clip, content, orphans, overflow, visibility,
+/*aural rules*/
+pitch, range, pitch-during, cue-after, pause-after, cue-before, pause-before, speak-header, speak-numeral, speak-punctuation, speed-rate, play-during, voice-family,
+/*aural values*/
+stress, azimuth, elevation, pitch, richness, volume,
+page-break, page-after, page-inside</t>
+<t tx="ekr.20090615053403.4887">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4888">@language cweb
+
+% This is limbo in cweb mode... It should be in \LaTeX mode, not \c mode.
+% The following should not be colorized: class,if,else.
+
+@* this is a _cweb_ comment.  Code is written in \c.
+"strings" should not be colorized.
+It should be colored in \LaTeX mode.
+The following are not keywords in latex mode: if, else, etc.
+Noweb section references are _valid_ in cweb comments!
+&lt;&lt; section ref &gt;&gt;
+&lt;&lt; missing ref &gt;&gt;
+@c
+
+and this is C code. // It is colored in \LaTeX mode by default.
+/* This is a C block comment.  It may also be colored in restricted \LaTeX mode. */
+
+// Section refs are valid in code too, of course.
+&lt;&lt; section ref &gt;&gt;
+&lt;&lt; missing ref &gt;&gt;
+
+\LaTeX and \c should not be colored.
+if else, while, do // C keywords.</t>
+<t tx="ekr.20090615053403.4889">&lt;&lt; section def &gt;&gt;=
+
+    my \c code goes here // This is \LaTeX text
+    /* This is also \LaTeX text */</t>
+<t tx="ekr.20090615053403.4890">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4891">@language elisp
+
+; Maybe...
+error princ 
+
+; More typical of other lisps...
+and apply
+car cdr cons cond
+defconst defun defvar 
+eq equal eval
+gt ge
+if 
+let le lt
+mapcar 
+ne nil 
+or not 
+prog progn 
+set setq 
+t type-of 
+unless 
+when while</t>
+<t tx="ekr.20090615053403.4892">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4893">@language erlang
+
+halt()
+
+-module()</t>
+<t tx="ekr.20090615053403.4894">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4895">@language forth
+
+\ tiny demo of Leo forth syntax colouring
+
+: some-forth-word ( x1 x2 -- x3 ) \ blue :, black/bold some-forth-word
+   label: y  \ blue label:
+   asm[ s" some string" type ]asm cr
+   asm[ abc ]asm
+   a
+   s" abc "
+   s" abc"
+   a
+   tty" abc "
+   lcd2" abc "
+   until
+
+@ test
+@c
+
+{ abc }
+
+a b @ c
+
+asm[ abc ]asm
+
+.( ab ) \ a string
+
+: foo [ .s ] ;
+
+   [ a b c
+   x y z]
+;</t>
+<t tx="ekr.20090615053403.4896">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4897">@language html
+
+b = "cd"
+d
+</t>
+<t tx="ekr.20090615053403.4898">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4899">@language html
+
+&lt;HTML&gt;
+&lt;!-- Author: Edward K. Ream, edream@tds.net --&gt;
+&lt;HEAD&gt;
+  &lt;META NAME="GENERATOR" CONTENT="Microsoft FrontPage 4.0"&gt;
+  &lt;TITLE&gt; Leo's Home Page &lt;/TITLE&gt;
+  &lt;META NAME="description" CONTENT="This page describes Leo.
+Leo adds powerful outlines to the noweb and CWEB literate programming languages."&gt;
+  &lt;META NAME="keywords" CONTENT="LEO, LITERATE PROGRAMMING, OUTLINES, CWEB,
+NOWEB, OUTLINES, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE"&gt;
+&lt;/HEAD&gt;
+&lt;!-- Last Modified: May 12, 2002 --&gt;
+&lt;BODY BGCOLOR="#fffbdc"&gt;
+
+&lt;H1 ALIGN=CENTER&gt;&lt;a NAME="top"&gt;&lt;/a&gt;&lt;IMG SRC="Blank.gif" width=
+"32" height="32" ALIGN="BOTTOM" NATURALSIZEFLAG="3"&gt;&lt;IMG SRC="leo.gif" 
+WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" NATURALSIZEFLAG="3"&gt;&lt;a href="leo_TOC.html#top"&gt;&lt;IMG SRC=
+"arrow_rt.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" NATURALSIZEFLAG="3"&gt;&lt;/a&gt; &amp;nbsp;&lt;/H1&gt;
+
+&lt;H1 ALIGN=CENTER&gt; Leo's Home Page&lt;/H1&gt;
+
+&lt;p align="center"&gt;&lt;a href="http://www.python.org/"&gt;&lt;img border="0" src="PythonPowered.gif" width="110" height="44"&gt; &lt;/a&gt; &lt;A HREF="http://sourceforge.net/"&gt;&lt;IMG SRC="http://sourceforge.net/sflogo.php?group_id=3458&amp;type=1" NATURALSIZEFLAG="0" ALT="SourceForge Logo"&gt;&lt;/A&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+&lt;A HREF="http://sourceforge.net/project/?group_id=3458"&gt;Leo at SourceForge&lt;/A&gt;&amp;nbsp;&amp;nbsp;
+&lt;a href="icons.html"&gt;&lt;img border="0" src="LeoCodeGray.gif" width="77" height="42"&gt;&lt;/a&gt;&amp;nbsp;&amp;nbsp;
+&lt;a href="icons.html"&gt;&lt;img border="0" src="LeoProse.gif" width="81" height="42"&gt;&lt;/a&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+
+&lt;H3&gt;&lt;A NAME="anchor127554"&gt;&lt;/A&gt;Summary&lt;/H3&gt;
+
+&lt;UL&gt;
+  &lt;LI&gt;Leo is a &lt;i&gt; programmer's editor&lt;/i&gt;  and a flexible &lt;i&gt;browser&lt;/i&gt; for
+    projects, programs, classes or data. Leo clarifies design, coding, debugging, testing
+  and maintenance.
+  &lt;LI&gt;Leo is an &lt;i&gt;outlining editor&lt;/i&gt;. Outlines clarify the big picture while
+    providing unlimited space for details.
+  &lt;LI&gt;Leo
+    is a &lt;a HREF="http://www.literateprogramming.com/"&gt;&lt;i&gt;literate
+    programming&lt;/i&gt;&lt;/a&gt; tool, compatible with &lt;A HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;noweb&lt;/A&gt;
+    and &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;CWEB&lt;/a&gt;.
+    Leo enhances any text-based
+programming language, from assembly language and C to Java, Python and XML.
+  &lt;LI&gt;Leo is also a &lt;i&gt;data organizer&lt;/i&gt;. A single Leo outline can generate complex
+    data spanning many different files.&amp;nbsp; Leo has been used to manage web sites.
+  &lt;LI&gt;Leo is a &lt;i&gt; project manager&lt;/i&gt;. Leo provides multiple views
+of a project within a single outline. Leo naturally represents tasks that remain
+    up-to-date.
+  &lt;LI&gt;Leo is fully &lt;i&gt; scriptable&lt;/i&gt; using &lt;A HREF="http://www.python.org/"&gt;Python&lt;/A&gt;
+  and saves its files in &lt;A HREF="http://www.w3.org/XML/"&gt;XML&lt;/A&gt; format.
+  &lt;LI&gt;Leo is &lt;i&gt;portable&lt;/i&gt;.&amp;nbsp; Leo.py is 100% pure Python and will run on
+    any platform supporting &lt;A HREF="http://www.python.org/"&gt;Python&lt;/A&gt;
+    and &lt;a href="http://tcl.activestate.com/"&gt;Tk/tcl&lt;/a&gt;, including Windows,
+    Linux and MacOS X.&amp;nbsp; Leo.exe runs on any Windows platform.
+  &lt;LI&gt;Leo is &lt;a href="http://www.opensource.org/"&gt; &lt;i&gt; Open Software&lt;/i&gt;&lt;/a&gt;, distributed under
+    the &lt;a href="http://www.python.org/doc/Copyright.html"&gt; Python License&lt;/a&gt;.
+&lt;/UL&gt;
+
+&lt;H3&gt;More Information and downloads&lt;/H3&gt;
+
+&lt;ul&gt;
+  &lt;LI&gt;An excellent &lt;a href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"&gt;online
+    tutorial&lt;/a&gt; and &lt;A HREF="http://www.jserv.com/jk_orr/xml/leo.htm"&gt;Leo resource
+  page&lt;/A&gt;, both written by &lt;a href="http://www.jserv.com/jk_orr"&gt;Joe Orr&lt;/a&gt;.
+  &lt;LI&gt;My brother's &lt;a href="SpeedReam.html"&gt;slashdot
+    article about Leo&lt;/a&gt;, the best description about why Leo is special.
+  &lt;LI&gt;&lt;A HREF="testimonials.html#anchor104391"&gt;What people are saying about Leo&lt;/A&gt;
+  &lt;LI&gt;&lt;A HREF="leo_TOC.html#anchor964914"&gt;Complete users guide&lt;/A&gt;
+    and
+    &lt;A HREF="intro.html#anchor887874"&gt;tutorial introduction&lt;/A&gt;  with
+  screen shots.
+  &lt;li&gt;&lt;a href="FAQ.html"&gt;FAQ&lt;/a&gt; and &lt;a href="http://sourceforge.net/forum/?group_id=3458"&gt;help and discussion
+    forums&lt;/a&gt;, preferable to &lt;A HREF="mailto:edream@tds.net"&gt;email&lt;/A&gt; so others may join
+    in.&lt;/li&gt;
+  &lt;li&gt;&lt;a href="icons.html"&gt;Icons&lt;/a&gt; for bragging about Leo.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458"&gt;Download
+    Leo&lt;/a&gt; from &lt;A HREF="http://sourceforge.net/project/?group_id=3458"&gt;Leo's SourceForge
+site&lt;/A&gt;.
+
+&lt;P ALIGN=left&gt;Leo's author is &lt;A HREF="http://personalpages.tds.net/~edream/index.html"&gt;Edward
+  K. Ream&lt;/A&gt; email: &lt;A HREF="mailto:edream@tds.net"&gt;edream@tds.net&lt;/A&gt; voice: (608) 231-0766
+
+&lt;HR ALIGN=LEFT&gt;
+
+&lt;p align="center"&gt;
+
+&lt;IMG SRC="Blank.gif" ALIGN="left" NATURALSIZEFLAG=
+"3" width="34" height="34"&gt;&lt;IMG SRC="leo.gif" ALIGN="left" NATURALSIZEFLAG=
+"3" width="32" height="32"&gt;&lt;a HREF="leo_TOC.html"&gt;&lt;IMG SRC="arrow_rt.gif" WIDTH="32"
+HEIGHT="32" ALIGN="left" NATURALSIZEFLAG="3"&gt;
+
+&lt;/BODY&gt;
+&lt;/HTML&gt;</t>
+<t tx="ekr.20090615053403.4900">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4901">@language html
+
+&lt;? xml version="1.0"&gt;
+&lt;!-- test --&gt;
+&lt;project name="Converter" default="dist"&gt;
+&lt;/project&gt;"""</t>
+<t tx="ekr.20090615053403.4902">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4903">@ doc part
+@c
+
+@language java /* Colored by match_leo_keyword: tag = leoKeyword. */
+
+@whatever /* Colored by java match_following rule: tag = keyword4. */
+
+/** A javadoc: tag = comment3 */
+
+/** &lt;!-- comment --&gt; tag = comment1. */
+
+/** @see tag = label */</t>
+<t tx="ekr.20090615053403.4904">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4905">@language latex
+
+% This is a \LaTeX mode comment.
+
+This is a test of \LaTeX mode.
+
+@ blah blah blah
+@c
+
+\c and \LaTeX are latex keywords.
+
+This is a keyword \% not the start of a comment.
+
+More keywords: \@ and \( and \) and \{ and \}
+
+The following should be colored:
+
+\documentclass{report}
+
+The following 2-letter words should be colored, regardless of what follows:
+
+\(\)\{\}\@
+\(abc\)abc\{abc\}abc\@abc</t>
+<t tx="ekr.20090615053403.4906">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4907">@language lisp
+
+; Maybe...
+error princ 
+
+; More typical of other lisps...
+and apply
+car cdr cons cond
+defconst defun defvar 
+eq equal eval
+gt ge
+if 
+let le lt
+mapcar 
+ne nil 
+or not 
+prog progn 
+set setq 
+t type-of 
+unless 
+when while</t>
+<t tx="ekr.20090615053403.4908">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4909">@language perl
+
+# From a perl tutorial.
+
+print 'Hello world.';		# Print a message
+
+$a = $b;	# Assign $b to $a
+
+@food  = ("apples", "pears", "eels");
+
+$grub = pop(@food);	# Now $grub = "eels"
+
+$#food
+
+@lines = &lt;INFO&gt;;
+
+#!/usr/local/bin/perl
+print "Password? ";		# Ask for input
+$a = &lt;STDIN&gt;;			# Get input
+chop $a;			# Remove the newline at end
+while ($a ne "fred")		# While input is wrong...
+{
+    print "sorry. Again? ";	# Ask again
+    $a = &lt;STDIN&gt;;		# Get input again
+    chop $a;			# Chop off newline again
+}
+
+if ($sentence =~ /under/)
+{
+	print "We're talking about rugby\\n";
+}
+
+$sentence =~ s/london/London/
+
+$_ = "Capes:Geoff::Shot putter:::Big Avenue";
+@personal = split(/:/);
+
+foreach $age (values %ages)
+{
+	print "Somebody is $age\\n";
+}
+
+&amp;mysubroutine;		# Call the subroutine
+&amp;mysubroutine($_);	# Call it with a parameter
+&amp;mysubroutine(1+2, $_);	# Call it with two parameters
+
+sub inside
+{
+	local($a, $b);			# Make local variables
+	($a, $b) = ($_[0], $_[1]);	# Assign values
+	$a =~ s/ //g;			# Strip spaces from
+	$b =~ s/ //g;			#   local variables
+	($a =~ /$b/ || $b =~ /$a/);	# Is $b inside $a
+					#   or $a inside $b?
+}</t>
+<t tx="ekr.20090615053403.4910">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4911">@language php
+@ doc
+This is a doc part.
+@c
+
+and or
+array
+array()
+/* Multi-line comment
+*/
+this is a test.
+__CLASS__
+&lt;?php and or array() ?&gt;
+&lt;?PHP and or array() ?&gt;</t>
+<t tx="ekr.20090615053403.4912">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4913">@language plsql
+
+"a string"
+-- reserved keywords
+ABORT,
+abort,
+ACceSS,
+access,
+add,
+all,
+allocate,
+alter,
+analyze,
+and,
+any,
+archive,
+archivelog,
+array,
+arraylen,
+as,
+asc,
+assert,
+assign,
+at,
+audit,
+authorization,
+avg,
+backup,
+base_table,
+become,
+before,
+begin,
+between,
+binary_integer,
+block,
+body,
+boolean,
+by,
+cache,
+cancel,
+cascade,
+case,
+change,
+char,
+char_base,
+character,
+check,
+checkpoint,
+close,
+cluster,
+clusters,
+cobol,
+colauth,
+column,
+columns,
+comment,
+commit,
+compile,
+compress,
+connect,
+constant,
+constraint,
+constraints,
+contents,
+continue,
+controlfile,
+count,
+crash,
+create,
+current,
+currval,
+cursor,
+cycle,
+data_base,
+database,
+datafile,
+date,
+dba,
+debugoff,
+debugon,
+dec,
+decimal,
+declare,
+default,
+definition,
+delay,
+delete,
+delta,
+desc,
+digits,
+disable,
+dismount,
+dispose,
+distinct,
+distinct,
+do,
+double,
+drop,
+drop,
+dump,
+each,
+else,
+else,
+elsif,
+enable,
+end,
+end,
+entry,
+escape,
+events,
+except,
+exception,
+exception_init,
+exceptions,
+exclusive,
+exec,
+execute,
+exists,
+exists,
+exit,
+explain,
+extent,
+externally,
+false,
+fetch,
+fetch,
+file,
+float,
+float,
+flush,
+for,
+for,
+force,
+foreign,
+form,
+fortran,
+found,
+freelist,
+freelists,
+from,
+from,
+function,
+generic,
+go,
+goto,
+grant,
+group,
+groups,
+having,
+identified,
+if,
+immediate,
+in,
+including,
+increment,
+index,
+indexes,
+indicator,
+initial,
+initrans,
+insert,
+instance,
+int,
+integer,
+intersect,
+into,
+is,
+key,
+language,
+layer,
+level,
+like,
+limited,
+link,
+lists,
+lock,
+logfile,
+long,
+loop,
+manage,
+manual,
+max,
+maxdatafiles,
+maxextents,
+maxinstances,
+maxlogfiles,
+maxloghistory,
+maxlogmembers,
+maxtrans,
+maxvalue,
+min,
+minextents,
+minus,
+minvalue,
+mlslabel,
+mod,
+mode,
+modify,
+module,
+mount,
+natural,
+new,
+new,
+next,
+nextval,
+noarchivelog,
+noaudit,
+nocache,
+nocompress,
+nocycle,
+nomaxvalue,
+nominvalue,
+none,
+noorder,
+noresetlogs,
+normal,
+nosort,
+not,
+notfound,
+nowait,
+null,
+number,
+number_base,
+numeric,
+of,
+off,
+offline,
+old,
+on,
+online,
+only,
+open,
+open,
+optimal,
+option,
+or,
+order,
+others,
+out,
+own,
+package,
+package,
+parallel,
+partition,
+pctfree,
+pctincrease,
+pctused,
+plan,
+pli,
+positive,
+pragma,
+precision,
+primary,
+prior,
+private,
+private,
+privileges,
+procedure,
+procedure,
+profile,
+public,
+quota,
+raise,
+range,
+raw,
+read,
+real,
+record,
+recover,
+references,
+referencing,
+release,
+remr,
+rename,
+resetlogs,
+resource,
+restricted,
+return,
+reuse,
+reverse,
+revoke,
+role,
+roles,
+rollback,
+row,
+rowid,
+rowlabel,
+rownum,
+rows,
+rowtype,
+run,
+savepoint,
+schema,
+scn,
+section,
+segment,
+select,
+select,
+separate,
+sequence,
+session,
+set,
+set,
+share,
+shared,
+size,
+size,
+smallint,
+smallint,
+snapshot,
+some,
+sort,
+space,
+sql,
+sqlbuf,
+sqlcode,
+sqlerrm,
+sqlerror,
+sqlstate,
+start,
+start,
+statement,
+statement_id,
+statistics,
+stddev,
+stop,
+storage,
+subtype,
+successful,
+sum,
+sum,
+switch,
+synonym,
+sysdate,
+system,
+tabauth,
+table,
+tables,
+tables,
+tablespace,
+task,
+temporary,
+terminate,
+then,
+thread,
+time,
+to,
+tracing,
+transaction,
+trigger,
+triggers,
+true,
+truncate,
+type,
+uid,
+under,
+union,
+unique,
+unlimited,
+until,
+update,
+use,
+user,
+using,
+validate,
+values,
+varchar,
+varchar2,
+variance,
+view,
+views,
+when,
+whenever,
+where,
+while,
+with,
+work,
+write,
+xor</t>
+<t tx="ekr.20090615053403.4914">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4915">@language html
+
+&lt;?xml version="1.0"?&gt;
+
+&lt;!DOCTYPE MODE SYSTEM "xmode.dtd"&gt;
+&lt;&lt; remarks &gt;&gt;
+
+&lt;MODE&gt;
+    &lt;PROPS&gt;
+        &lt;PROPERTY NAME="indentPrevLine" VALUE="\s*.{3,}:\s*(#.*)?" /&gt;
+        &lt;PROPERTY NAME="lineComment" VALUE="#" /&gt;
+    &lt;/PROPS&gt;
+    &lt;RULES ESCAPE="\" IGNORE_CASE="FALSE" HIGHLIGHT_DIGITS="TRUE"&gt;
+        &lt;&lt; comments &gt;&gt;
+        &lt;&lt; literals &gt;&gt;
+        &lt;&lt; operators &gt;&gt;
+        &lt;MARK_PREVIOUS TYPE="FUNCTION" EXCLUDE_MATCH="TRUE"&gt;(&lt;/MARK_PREVIOUS&gt;
+        &lt;&lt; keywords &gt;&gt;
+    &lt;/RULES&gt;
+&lt;/MODE&gt;</t>
+<t tx="ekr.20090615053403.4916">&lt;!-- Python mode, by Slava Pestov. Based on PythonTokenMarker by --&gt;
+&lt;!-- Jonathan Revusky --&gt;
+
+&lt;!-- Modified 19-Jul-00 by Ivan Frohne to: --&gt;
+&lt;!--  (a) implement 'indentOnEnter'; --&gt;
+&lt;!--  (b) indent next line automatically after control structures followed --&gt;
+&lt;!--	  by ':'; --&gt;
+&lt;!--  (c) make """ or ''' multiline quotes TYPE LITERAL2; --&gt;
+&lt;!--  (d) add TYPE FUNCTION identified by a following '(' --&gt;
+&lt;!--  (e) eliminate the '?' SEQ TYPE ('?' has no meaning in Python); --&gt;
+&lt;!--  (f) change the TYPE of 'and', 'or', and 'not' to KEYWORD1; and --&gt;
+&lt;!--  (g) add all builtin functions, builtin exceptions, --&gt;
+&lt;!--	  builtin type methods, File object methods, and special type --&gt;
+&lt;!--	  attributes as TYPE KEYWORD3. --&gt;</t>
+<t tx="ekr.20090615053403.4917">&lt;!-- Comment --&gt;
+&lt;EOL_SPAN TYPE="COMMENT1"&gt;#&lt;/EOL_SPAN&gt;
+
+&lt;!-- Triple-quotes --&gt;
+&lt;SPAN TYPE="LITERAL2"&gt;
+    &lt;BEGIN&gt;"""&lt;/BEGIN&gt;
+    &lt;END&gt;"""&lt;/END&gt;
+&lt;/SPAN&gt;
+
+&lt;SPAN TYPE="LITERAL2"&gt;
+    &lt;BEGIN&gt;'''&lt;/BEGIN&gt;
+    &lt;END&gt;'''&lt;/END&gt;
+&lt;/SPAN&gt;</t>
+<t tx="ekr.20090615053403.4918">&lt;!-- Standard literals --&gt;
+&lt;SPAN TYPE="LITERAL1"&gt;
+    &lt;BEGIN&gt;"&lt;/BEGIN&gt;
+    &lt;END&gt;"&lt;/END&gt;
+&lt;/SPAN&gt;
+
+&lt;SPAN TYPE="LITERAL1"&gt;
+    &lt;BEGIN&gt;'&lt;/BEGIN&gt;
+    &lt;END&gt;'&lt;/END&gt;
+&lt;/SPAN&gt;
+</t>
+<t tx="ekr.20090615053403.4919">&lt;SEQ TYPE="OPERATOR"&gt;=&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;!&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;&amp;gt;=&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;&amp;lt;=&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;+&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;-&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;/&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;*&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;&amp;gt;&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;&amp;lt;&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;%&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;&amp;amp;&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;|&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;^&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;~&lt;/SEQ&gt;</t>
+<t tx="ekr.20090615053403.4920">&lt;KEYWORDS&gt;
+    &lt;&lt; reserved words &gt;&gt;
+    &lt;&lt; builtins &gt;&gt;
+    &lt;&lt; exceptions &gt;&gt;
+    &lt;&lt; types &gt;&gt;
+&lt;/KEYWORDS&gt;</t>
+<t tx="ekr.20090615053403.4921">&lt;!--  Reserved Words  --&gt;
+&lt;KEYWORD1&gt;and&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;as&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;assert&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;break&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;class&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;continue&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;def&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;del&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;elif&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;else&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;except&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;exec&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;finally&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;for&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;from&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;global&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;if&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;import&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;in&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;is&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;lambda&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;not&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;or&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;pass&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;print&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;raise&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;return&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;try&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;while&lt;/KEYWORD1&gt;
+&lt;KEYWORD1&gt;yield&lt;/KEYWORD1&gt;</t>
+<t tx="ekr.20090615053403.4922">&lt;!-- builtins --&gt;
+&lt;KEYWORD2&gt;abs&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;apply&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;bool&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;buffer&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;callable&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;chr&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;classmethod&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;cmp&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;coerce&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;compile&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;complex&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;delattr&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;dict&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;dir&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;divmod&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;eval&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;execfile&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;file&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;filter&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;float&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;getattr&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;globals&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;hasattr&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;hash&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;hex&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;id&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;input&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;int&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;intern&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;isinstance&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;issubclass&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;iter&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;len&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;list&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;locals&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;long&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;map&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;max&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;min&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;object&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;oct&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;open&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;ord&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;pow&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;property&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;range&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;raw_input&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;reduce&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;reload&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;repr&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;round&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;setattr&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;slice&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;staticmethod&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;str&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;super&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;tuple&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;type&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;unichr&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;unicode&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;vars&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;xrange&lt;/KEYWORD2&gt;
+&lt;KEYWORD2&gt;zip&lt;/KEYWORD2&gt;</t>
+<t tx="ekr.20090615053403.4923">&lt;!-- exceptions --&gt;
+&lt;KEYWORD3&gt;ArithmeticError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;AssertionError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;AttributeError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;DeprecationWarning&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;EOFError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;EnvironmentError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;Exception&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;FloatingPointError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;IOError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;ImportError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;IndentationError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;IndexError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;KeyError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;KeyboardInterrupt&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;LookupError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;MemoryError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;NameError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;NotImplemented&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;NotImplementedError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;OSError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;OverflowError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;OverflowWarning&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;ReferenceError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;RuntimeError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;RuntimeWarning&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;StandardError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;StopIteration&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;SyntaxError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;SyntaxWarning&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;SystemError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;SystemExit&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;TabError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;TypeError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;UnboundLocalError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;UnicodeError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;UserWarning&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;ValueError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;Warning&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;WindowsError&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;ZeroDivisionError&lt;/KEYWORD3&gt;</t>
+<t tx="ekr.20090615053403.4924">&lt;!-- types (from types module) --&gt;
+&lt;KEYWORD3&gt;BufferType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;BuiltinFunctionType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;BuiltinMethodType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;ClassType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;CodeType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;ComplexType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;DictProxyType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;DictType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;DictionaryType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;EllipsisType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;FileType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;FloatType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;FrameType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;FunctionType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;GeneratorType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;InstanceType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;IntType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;LambdaType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;ListType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;LongType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;MethodType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;ModuleType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;NoneType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;ObjectType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;SliceType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;StringType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;StringTypes&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;TracebackType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;TupleType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;TypeType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;UnboundMethodType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;UnicodeType&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;XRangeType&lt;/KEYWORD3&gt;
+
+&lt;KEYWORD3&gt;False&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;None&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;True&lt;/KEYWORD3&gt;
+
+&lt;KEYWORD3&gt;__abs__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__add__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__all__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__author__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__bases__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__builtins__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__call__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__class__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__cmp__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__coerce__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__contains__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__debug__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__del__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__delattr__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__delitem__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__delslice__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__dict__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__div__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__divmod__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__doc__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__eq__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__file__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__float__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__floordiv__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__future__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__ge__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__getattr__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__getattribute__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__getitem__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__getslice__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__gt__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__hash__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__hex__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__iadd__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__import__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__imul__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__init__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__int__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__invert__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__iter__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__le__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__len__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__long__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__lshift__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__lt__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__members__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__metaclass__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__mod__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__mro__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__mul__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__name__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__ne__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__neg__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__new__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__nonzero__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__oct__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__or__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__path__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__pos__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__pow__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__radd__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__rdiv__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__rdivmod__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__reduce__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__repr__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__rfloordiv__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__rlshift__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__rmod__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__rmul__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__ror__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__rpow__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__rrshift__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__rsub__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__rtruediv__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__rxor__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__setattr__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__setitem__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__setslice__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__self__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__slots__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__str__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__sub__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__truediv__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__version__&lt;/KEYWORD3&gt;
+&lt;KEYWORD3&gt;__xor__&lt;/KEYWORD3&gt;</t>
+<t tx="ekr.20090615053403.4925">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4926">@language plsql
+
+"a string"
+-- reserved keywords
+abort
+accept,
+access,
+add,
+admin,
+after,
+all,
+allocate,
+alter,
+analyze,
+and,
+any,
+archive,
+archivelog,
+array,
+arraylen,
+as,
+asc,
+assert,
+assign,
+at,
+audit,
+authorization,
+avg,
+backup,
+base_table,
+become,
+before,
+begin,
+between,
+binary_integer,
+block,
+body,
+boolean,
+by,
+cache,
+cancel,
+cascade,
+case,
+change,
+char,
+char_base,
+character,
+check,
+checkpoint,
+close,
+cluster,
+clusters,
+cobol,
+colauth,
+column,
+columns,
+comment,
+commit,
+compile,
+compress,
+connect,
+constant,
+constraint,
+constraints,
+contents,
+continue,
+controlfile,
+count,
+crash,
+create,
+current,
+currval,
+cursor,
+cycle,
+data_base,
+database,
+datafile,
+date,
+dba,
+debugoff,
+debugon,
+dec,
+decimal,
+declare,
+default,
+definition,
+delay,
+delete,
+delta,
+desc,
+digits,
+disable,
+dismount,
+dispose,
+distinct,
+distinct,
+do,
+double,
+drop,
+drop,
+dump,
+each,
+else,
+else,
+elsif,
+enable,
+end,
+end,
+entry,
+escape,
+events,
+except,
+exception,
+exception_init,
+exceptions,
+exclusive,
+exec,
+execute,
+exists,
+exists,
+exit,
+explain,
+extent,
+externally,
+false,
+fetch,
+fetch,
+file,
+float,
+float,
+flush,
+for,
+for,
+force,
+foreign,
+form,
+fortran,
+found,
+freelist,
+freelists,
+from,
+from,
+function,
+generic,
+go,
+goto,
+grant,
+group,
+groups,
+having,
+identified,
+if,
+immediate,
+in,
+including,
+increment,
+index,
+indexes,
+indicator,
+initial,
+initrans,
+insert,
+instance,
+int,
+integer,
+intersect,
+into,
+is,
+key,
+language,
+layer,
+level,
+like,
+limited,
+link,
+lists,
+lock,
+logfile,
+long,
+loop,
+manage,
+manual,
+max,
+maxdatafiles,
+maxextents,
+maxinstances,
+maxlogfiles,
+maxloghistory,
+maxlogmembers,
+maxtrans,
+maxvalue,
+min,
+minextents,
+minus,
+minvalue,
+mlslabel,
+mod,
+mode,
+modify,
+module,
+mount,
+natural,
+new,
+new,
+next,
+nextval,
+noarchivelog,
+noaudit,
+nocache,
+nocompress,
+nocycle,
+nomaxvalue,
+nominvalue,
+none,
+noorder,
+noresetlogs,
+normal,
+nosort,
+not,
+notfound,
+nowait,
+null,
+number,
+number_base,
+numeric,
+of,
+off,
+offline,
+old,
+on,
+online,
+only,
+open,
+open,
+optimal,
+option,
+or,
+order,
+others,
+out,
+own,
+package,
+package,
+parallel,
+partition,
+pctfree,
+pctincrease,
+pctused,
+plan,
+pli,
+positive,
+pragma,
+precision,
+primary,
+prior,
+private,
+private,
+privileges,
+procedure,
+procedure,
+profile,
+public,
+quota,
+raise,
+range,
+raw,
+read,
+real,
+record,
+recover,
+references,
+referencing,
+release,
+remr,
+rename,
+resetlogs,
+resource,
+restricted,
+return,
+reuse,
+reverse,
+revoke,
+role,
+roles,
+rollback,
+row,
+rowid,
+rowlabel,
+rownum,
+rows,
+rowtype,
+run,
+savepoint,
+schema,
+scn,
+section,
+segment,
+select,
+select,
+separate,
+sequence,
+session,
+set,
+set,
+share,
+shared,
+size,
+size,
+smallint,
+smallint,
+snapshot,
+some,
+sort,
+space,
+sql,
+sqlbuf,
+sqlcode,
+sqlerrm,
+sqlerror,
+sqlstate,
+start,
+start,
+statement,
+statement_id,
+statistics,
+stddev,
+stop,
+storage,
+subtype,
+successful,
+sum,
+sum,
+switch,
+synonym,
+sysdate,
+system,
+tabauth,
+table,
+tables,
+tables,
+tablespace,
+task,
+temporary,
+terminate,
+then,
+thread,
+time,
+to,
+tracing,
+transaction,
+trigger,
+triggers,
+true,
+truncate,
+type,
+uid,
+under,
+union,
+unique,
+unlimited,
+until,
+update,
+use,
+user,
+using,
+validate,
+values,
+varchar,
+varchar2,
+variance,
+view,
+views,
+when,
+whenever,
+where,
+while,
+with,
+work,
+write,
+xor</t>
+<t tx="ekr.20090615053403.4927">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4928">"""This creates a free-floating copy of v's tree for undo.
+The copied trees must use different tnodes than the original."""
+
+def copyTree(self,root):
+
+    c = self
+    # Create the root vnode.
+    result = v = leoNodes.vnode(c,root.t)
+    # Copy the headline and icon values v.copyNode(root,v)
+    # Copy the rest of tree.
+    v.copyTree(root,v)
+    # Replace all tnodes in v by copies.
+    assert(v.nodeAfterTree() == None)
+    while v:
+        v.t = leoNodes.tnode(0, v.b)
+        v = v.threadNext()
+    return result</t>
+<t tx="ekr.20090615053403.4929">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4930">@language r
+
+x &lt;- rnorm(10) 
+
+vv &lt;- function(z) return(z) 
+
+def python_funct(uu): 
+return uu</t>
+<t tx="ekr.20090615053403.4931">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4932">' New in 4.2.
+@language rapidq
+' a comment.
+
+$APPTYPE,$DEFINE,$ELSE,$ENDIF,$ESCAPECHARS,$IFDEF,$IFNDEF,
+$INCLUDE,$MACRO,$OPTIMIZE,$OPTION,$RESOURCE,$TYPECHECK,$UNDEF,
+ABS,ACOS,ALIAS,AND,AS,ASC,ASIN,ATAN,ATN,BIN$,BIND,BYTE,
+CALL,CALLBACK,CALLFUNC,CASE,CEIL,CHDIR,CHDRIVE,CHR$,CINT,
+CLNG,CLS,CODEPTR,COMMAND$,COMMANDCOUNT,CONSOLE,CONST,CONSTRUCTOR,
+CONVBASE$,COS,CREATE,CSRLIN,CURDIR$,DATA,DATE$,DEC,DECLARE,
+DEFBYTE,DEFDBL,DEFDWORD,DEFINT,DEFLNG,DEFSHORT,DEFSNG,DEFSTR,
+DEFWORD,DELETE$,DIM,DIR$,DIREXISTS,DO,DOEVENTS,DOUBLE,DWORD,
+ELSE,ELSEIF,END,ENVIRON,ENVIRON$,EVENT,EXIT,EXP,EXTENDS,
+EXTRACTRESOURCE,FIELD$,FILEEXISTS,FIX,FLOOR,FOR,FORMAT$,FRAC,
+FUNCTION,FUNCTIONI,GET$,GOSUB,GOTO,HEX$,IF,INC,INITARRAY,
+INKEY$,INP,INPUT,INPUT$,INPUTHANDLE,INSERT$,INSTR,INT,INTEGER,
+INV,IS,ISCONSOLE,KILL,KILLMESSAGE,LBOUND,LCASE$,LEFT$,LEN,
+LFLUSH,LIB,LIBRARYINST,LOCATE,LOG,LONG,LOOP,LPRINT,LTRIM$,
+MEMCMP,MESSAGEBOX,MESSAGEDLG,MID$,MKDIR,MOD,MOUSEX,MOUSEY,
+NEXT,NOT,OFF,ON,OR,OUT,OUTPUTHANDLE,PARAMSTR$,PARAMSTRCOUNT,
+PARAMVAL,PARAMVALCOUNT,PCOPY,PEEK,PLAYWAV,POKE,POS,POSTMESSAGE,
+PRINT,PROPERTY,QUICKSORT,RANDOMIZE,REDIM,RENAME,REPLACE$,
+REPLACESUBSTR$,RESOURCE,RESOURCECOUNT,RESTORE,RESULT,RETURN,
+REVERSE$,RGB,RIGHT$,RINSTR,RMDIR,RND,ROUND,RTRIM$,RUN,
+SCREEN,SELECT,SENDER,SENDMESSAGE,SETCONSOLETITLE,SGN,SHELL,
+SHL,SHORT,SHOWMESSAGE,SHR,SIN,SINGLE,SIZEOF,SLEEP,SOUND,
+SPACE$,SQR,STACK,STATIC,STEP,STR$,STRF$,STRING,STRING$,
+SUB,SUBI,SWAP,TALLY,TAN,THEN,TIME$,TIMER,TO,TYPE,UBOUND,
+UCASE$,UNLOADLIBRARY,UNTIL,VAL,VARIANT,VARPTR,VARPTR$,VARTYPE,
+WEND,WHILE,WITH,WORD,XOR</t>
+<t tx="ekr.20090615053403.4933">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4934">@language rebol
+
+; a comment
+about abs absolute add alert alias all alter and and~ any append arccosine arcsine arctangent array ask at  
+back bind boot-prefs break browse build-port build-tag  
+call caret-to-offset catch center-face change change-dir charset checksum choose clean-path clear clear-fields close comment complement compose compress confirm continue-post context copy cosine create-request crypt cvs-date cvs-version  
+debase decode-cgi decode-url decompress deflag-face dehex delete demo desktop detab dh-compute-key dh-generate-key dh-make-key difference dirize disarm dispatch divide do do-boot do-events do-face do-face-alt does dsa-generate-key dsa-make-key dsa-make-signature dsa-verify-signature  
+echo editor either else emailer enbase entab exclude exit exp extract 
+fifth find find-key-face find-window flag-face first flash focus for forall foreach forever form forskip fourth free func function  
+get get-modes get-net-info get-style  
+halt has head help hide hide-popup  
+if import-email in inform input insert insert-event-func intersect 
+join 
+last launch launch-thru layout license list-dir load load-image load-prefs load-thru log-10 log-2 log-e loop lowercase  
+make make-dir make-face max maximum maximum-of min minimum minimum-of mold multiply  
+negate net-error next not now  
+offset-to-caret open open-events or or~ 
+parse parse-email-addrs parse-header parse-header-date parse-xml path-thru pick poke power prin print probe protect protect-system  
+q query quit  
+random read read-io read-net read-thru reboot recycle reduce reform rejoin remainder remold remove remove-event-func rename repeat repend replace request request-color request-date request-download request-file request-list request-pass request-text resend return reverse rsa-encrypt rsa-generate-key rsa-make-key 
+save save-prefs save-user scroll-para second secure select send send-and-check set set-modes set-font set-net set-para set-style set-user set-user-name show show-popup sine size-text skip sort source split-path square-root stylize subtract switch  
+tail tangent textinfo third throw throw-on-error to to-binary to-bitset to-block to-char to-date to-decimal to-email to-event to-file to-get-word to-hash to-hex to-idate to-image to-integer to-issue to-list to-lit-path to-lit-word to-local-file to-logic to-money to-none to-pair to-paren to-path to-rebol-file to-refinement to-set-path to-set-word to-string to-tag to-time to-tuple to-url to-word trace trim try  
+unfocus union unique uninstall unprotect unset until unview update upgrade uppercase usage use  
+vbug view view-install view-prefs  
+wait what what-dir while write write-io  
+xor xor~  
+action! any-block! any-function! any-string! any-type! any-word!  
+binary! bitset! block!  
+char!  
+datatype! date! decimal! 
+email! error! event!  
+file! function!  
+get-word!  
+hash!  
+image! integer! issue!  
+library! list! lit-path! lit-word! logic!  
+money!  
+native! none! number!  
+object! op!  
+pair! paren! path! port!  
+refinement! routine!  
+series! set-path! set-word! string! struct! symbol!  
+tag! time! tuple!  
+unset! url!  
+word!  
+any-block? any-function? any-string? any-type? any-word?  
+binary? bitset? block?  
+char? connected? crypt-strength? 
+datatype? date? decimal? dir?  
+email? empty? equal? error? even? event? exists? exists-key?
+file? flag-face? found? function?  
+get-word? greater-or-equal? greater?  
+hash? head?  
+image? in-window? index? info? input? inside? integer? issue?  
+length? lesser-or-equal? lesser? library? link-app? link? list? lit-path? lit-word? logic?  
+modified? money?  
+native? negative? none? not-equal? number?  
+object? odd? offset? op? outside?  
+pair? paren? path? port? positive?  
+refinement? routine?  
+same? screen-offset? script? series? set-path? set-word? size? span? strict-equal? strict-not-equal? string? struct?  
+tag? tail? time? tuple? type?  
+unset? url?  
+value? view? 
+within? word?  
+zero?</t>
+<t tx="ekr.20090615053403.4935">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4936">@language rest
+
+@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = False
+verbose=True
+@c
+
+. Links used in this document...
+
+.. _`Pmw`:                  http://pmw.sourceforge.net/
+.. _run:                    `Running Leo`_
+
+.. WARNING: image targets may not have upper case letters!
+
+.. |back| image:: arrow_lt.gif
+    :target: FAQ.html
+
+.. |leo| image:: leo.gif
+    :target: front.html
+
+.. |next| image:: arrow_rt.gif
+    :target: intro.html
+
+|back| |leo| |next|
+
+###########################
+Chapter 1: Installing Leo
+###########################
+
+This chapter tells how to install and run Leo.
+
+**Important**:
+
+If you have *any* problems installing Leo,
+please ask for help on Leo's help forum:
+
+.. contents::
+
+**Windows**
+    If you have `associated .leo files with Leo`_ you may run Leo by double-clicking any .leo file.
+    You can also use a batch file.
+    Put the following .bat file in c:\\Windows::
+
+        cd c:\prog\LeoCVS\leo
+        c:\python22\python c:\prog\LeoCVS\leo\leo.py %1
+
+-   Download the latest version of Leo from `Leo's download page`_.
+
+-   In Windows 2K or XP, go to ``Start-&gt;Settings-&gt;Control panel``, open the ``Folder Options`` tab.
+
+    **Warning**: When building Tcl on Linux, do **not** specify
+    "--enable-threads".
+    Only use Tcl with the default "threads not enabled" case.
+
+-------------
+
+|back| |leo| |next|</t>
+<t tx="ekr.20090615053403.4937">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4938"># New in 4.2.
+
+@language shell
+
+# comment
+$# not a comment
+break
+case,continue,
+do,done
+elif,else,esac
+fi,for
+if,in
+return,
+then
+until
+while,
+
+cd,chdir,eval,exec,
+exit,kill,newgrp,pwd,read,readonly,
+shift,test,trap,ulimit,
+umask,wait</t>
+<t tx="ekr.20090615053403.4939">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4940">@language shellscript
+
+# comment
+$# not a comment
+break
+case,continue,
+do,done
+elif,else,esac
+fi,for
+if,in
+return,
+then
+until
+while,
+
+cd,chdir,eval,exec,
+exit,kill,newgrp,pwd,read,readonly,
+shift,test,trap,ulimit,
+umask,wait</t>
+<t tx="ekr.20090615053403.4941">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4942">@language html
+
+&lt;!-- ekr uses the MARK_FOLLOWING to mark _anything_ after \ --&gt;
+
+&lt;?xml version="1.0"?&gt;
+
+&lt;!DOCTYPE MODE SYSTEM "xmode.dtd"&gt;
+
+&lt;MODE&gt;
+    &lt;PROPS&gt;
+        &lt;PROPERTY NAME="lineComment" VALUE="%" /&gt;
+    &lt;/PROPS&gt;
+
+    &lt;RULES&gt;
+        &lt;&lt; general rules &gt;&gt;
+    &lt;/RULES&gt;
+
+    &lt;RULES SET="MATH" DEFAULT="MARKUP"&gt;
+        &lt;&lt; math rules &gt;&gt;
+    &lt;/RULES&gt;
+&lt;/MODE&gt;</t>
+<t tx="ekr.20090615053403.4943">&lt;!-- $$...$$ --&gt;
+&lt;SPAN TYPE="MARKUP" DELEGATE="MATH"&gt;
+    &lt;BEGIN&gt;$$&lt;/BEGIN&gt;
+    &lt;END&gt;$$&lt;/END&gt;
+&lt;/SPAN&gt;
+
+&lt;!-- $...$ --&gt;
+&lt;SPAN TYPE="MARKUP" DELEGATE="MATH"&gt;
+    &lt;BEGIN&gt;$&lt;/BEGIN&gt;
+    &lt;END&gt;$&lt;/END&gt;
+&lt;/SPAN&gt;
+
+&lt;!-- \[...\] (LaTeX math mode) --&gt;
+&lt;SPAN TYPE="MARKUP" DELEGATE="MATH"&gt;
+    &lt;BEGIN&gt;\[&lt;/BEGIN&gt;
+    &lt;END&gt;\]&lt;/END&gt;
+&lt;/SPAN&gt;
+
+&lt;!-- some commands must be handled specially --&gt;
+&lt;SEQ TYPE="KEYWORD1"&gt;\$&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD1"&gt;\\&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD1"&gt;\%&lt;/SEQ&gt;
+
+&lt;!-- \... commands --&gt;
+&lt;MARK_FOLLOWING TYPE="KEYWORD1"&gt;\&lt;/MARK_FOLLOWING&gt;
+
+&lt;!-- comments --&gt;
+&lt;EOL_SPAN TYPE="COMMENT1"&gt;%&lt;/EOL_SPAN&gt;
+
+&lt;!-- word separators --&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;{&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;}&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;[&lt;/SEQ&gt;
+&lt;SEQ TYPE="OPERATOR"&gt;]&lt;/SEQ&gt;</t>
+<t tx="ekr.20090615053403.4944">&lt;!-- some commands must be handled specially --&gt;
+&lt;SEQ TYPE="KEYWORD3"&gt;\$&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD3"&gt;\\&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD3"&gt;\%&lt;/SEQ&gt;
+
+&lt;!-- \... commands --&gt;
+&lt;MARK_FOLLOWING TYPE="KEYWORD3"&gt;\&lt;/MARK_FOLLOWING&gt;
+
+&lt;!-- word separators --&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;)&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;(&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;{&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;}&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;[&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;]&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;=&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;!&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;+&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;-&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;/&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;*&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;&amp;gt;&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;&amp;lt;&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;&amp;amp;&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;|&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;^&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;~&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;.&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;,&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;;&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;?&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;:&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;'&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;"&lt;/SEQ&gt;
+&lt;SEQ TYPE="KEYWORD2"&gt;`&lt;/SEQ&gt;
+
+&lt;!-- comments --&gt;
+&lt;EOL_SPAN TYPE="COMMENT1"&gt;%&lt;/EOL_SPAN&gt;</t>
+<t tx="ekr.20090615053403.4945">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4946"># both color_markup &amp; add_directives plugins must be enabled.
+
+@markup wiki
+@language python
+
+""" {picture file=../Icons/Leoapp.GIF}this """ # Problems with correct indexing following a graphic.
+
+""" {picture file=../Icons/Leoapp.GIF}this """ # two copies work.
+
+abc
+
+""" {picture file=../Icons/Leodoc.GIF} """ # xyz
+
+""" continued
+string"""
+
+@ ''ab'' __xxx__ ''wx'' __xyz__
+@c
+
+# /* ''ab'' __xxx__ ''wx'' __xyz__ */
+
+# Test
+
+""" ''' """ ''' """'''  # Leo handles the common cases correctly.
+
+''' ''ab'' __xxx__ ''wx'' __xyz__ ''' # No wiki markup in ''' strings.
+
+""" ''ab'' __xxx__ ''wx'' __xyz__ """
+
+# ''ab'' __xxx__ ''wx'' __xyz__
+
+""" ''y'' """
+
+""" text~~#ff00ff:some text~~more text"""
+
+if 1 and 2:
+    pass
+
+print g.app().loadDir</t>
+<t tx="ekr.20090615053403.4947">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4948"># both color_markup &amp; add_directives plugins must be enabled.
+@markup wiki
+
+""" continued
+string"""
+
+@ ''ab'' __xxx__ ''wx'' __xyz__  __''bolditalic''__ and ''__italicbold__''
+@c
+
+# /* ''ab'' __xxx__ ''wx'' __xyz__ */
+
+__abc__ 
+
+# Test
+
+""" ''' """ ''' """'''  # Leo handles the __b__ common cases correctly.
+
+''' ''ab'' __xxx__ ''wx'' __xyz__ ''' # No wiki markup in ''' strings.
+
+""" ''ab'' __xxx__ ''wx'' __xyz__ """
+
+# ''ab'' __xxx__ ''wx'' __xyz__
+
+""" ''y'' """
+
+""" text~~#ee00ff:some text~~more text"""
+
+
+if 1 and 2:
+    pass
+
+print g.app().loadDir
+</t>
+<t tx="ekr.20090615053403.4949">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4950"># both color_markup &amp; add_directives plugins must be enabled.
+
+@markup wiki
+
+""" text~~red:some text~~more text"""
+
+""" text~~#ee0ff:some text~~more text"""
+
+if 1 and 2:
+    pass</t>
+<t tx="ekr.20090615053403.4951">&lt;&lt; test defined &gt;&gt;</t>
+<t tx="ekr.20090615053403.4952">pass</t>
+<t tx="ekr.20090615053403.4953">try:
+    mode = c.frame.body.colorizer.modes.get('python')
+    mode.keywords['as'] = 1 # append the keyword, colorize with 'keyword1' tag.
+except AttributeError:
+    pass # modes only exists for new colorizer.</t>
+<t tx="ekr.20090615053403.4954"># This will work regardless of where this method is.
+@language python
+
+language = g.findLanguageDirectives(c,p)
+assert language == 'python','got:%s' % language
+</t>
+<t tx="ekr.20090615053403.4955">p = c.p.firstChild()
+
+c.selectPosition(p) # Sets body text.
+val = c.frame.body.colorizer.colorize(p,incremental=False)
+assert val=="ok", "colorizer test failed: %s" % p.h
+</t>
+<t tx="ekr.20090615053403.4956">@language vbscript
+
+if
+IF
+</t>
+<t tx="ekr.20090615053403.4957"># This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+print('\nEnd of leoColor tests')</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
 import random,fnmatch
 
@@ -22325,5 +21619,22 @@ ltest = c.db.keys('leotest/*')
 assert len(ltest) == 0
 
      </t>
+<t tx="ville.20090602190735.4770">_foo = 0
+
+@g.command('my-test-command')
+def mytestcommand(event):
+    global _foo
+
+    _foo = 1
+
+c.k.simulateCommand('my-test-command')
+assert _foo == 1
+
+# bonus test: c.app.commanders()
+assert c in g.app.commanders()
+
+
+
+</t>
 </tnodes>
 </leo_file>

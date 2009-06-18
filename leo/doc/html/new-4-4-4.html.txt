@@ -68,6 +68,8 @@ they were general graphs. It is still early days for this exciting plugin.
 Added support for @auto files
 +++++++++++++++++++++++++++++
 
+
+
 What @auto does
 ***************
 
@@ -210,6 +212,8 @@ window). It then creates clones of all inserted, deleted and changed nodes.
 
 New kinds of settings trees
 +++++++++++++++++++++++++++
+
+
 
 @buttons trees
 **************

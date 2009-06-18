@@ -139,7 +139,7 @@ class shadowController:
 
         return ok
     #@-node:ekr.20080711063656.2:x.rename
-    #@+node:ekr.20080713091247.1:x.replaceFileWithString
+    #@+node:ekr.20080713091247.1:x.replaceFileWithString & test
     def replaceFileWithString (self,fn,s):
 
         '''Replace the file with s if s is different from theFile's contents.
@@ -147,8 +147,8 @@ class shadowController:
         Return True if theFile was changed.
         '''
 
-        x = self ; testing = g.app.unitTesting ; trace = False
-
+        trace = False and not g.unitTesting
+        x = self
         exists = g.os_path_exists(fn)
 
         if exists: # Read the file.  Return if it is the same.
@@ -161,8 +161,15 @@ class shadowController:
                 g.es_exception()
                 return False
             if s == s2:
-                if not testing: g.es('unchanged:',fn)
+                if not g.unitTesting: g.es('unchanged:',fn)
                 return False
+
+        # Issue warning if directory does not exist.
+        theDir = g.os_path_dirname(fn)
+        if theDir and not g.os_path_exists(theDir):
+            if not g.unitTesting:
+                x.error('not written: %s directory not found' % fn)
+            return False
 
         # Replace the file.
         try:
@@ -172,7 +179,7 @@ class shadowController:
                 '\nlines...\n%s' %(g.listToString(g.splitLines(s))),
                 '\ncallers',g.callers(4))
             f.close()
-            if not testing:
+            if not g.unitTesting:
                 # g.trace('created:',fn,g.callers())
                 if exists:  g.es('wrote:    ',fn)
                 else:       g.es('created:  ',fn)
@@ -181,7 +188,17 @@ class shadowController:
             x.error('unexpected exception writing file: %s' % (fn))
             g.es_exception()
             return False
-    #@-node:ekr.20080713091247.1:x.replaceFileWithString
+    #@+node:ekr.20090530055015.6862:@test x.replaceFileWithString
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+        x = c.shadowController
+
+        fn = 'does/not/exist'
+        assert not g.os_path_exists(fn)
+        assert not x.replaceFileWithString (fn,'abc')
+    #@-node:ekr.20090530055015.6862:@test x.replaceFileWithString
+    #@-node:ekr.20080713091247.1:x.replaceFileWithString & test
     #@+node:ekr.20080711063656.6:x.shadowDirName and shadowPathName
     def shadowDirName (self,filename):
 
@@ -276,12 +293,8 @@ class shadowController:
         start = reader.index()
         while reader.index() < limit:
             line = reader.get()
-            if x.is_sentinel(line, marker):
-                if x.is_verbatim(line,marker):
-                    # # if reader.index() < limit:
-                        # # # We are *copying* the @verbatim sentinel.
-                        # # line = reader.get()
-                        # # writer.put(line,tag='copy sent %s:%s' % (start,limit))
+            if marker.isSentinel(line):
+                if marker.isVerbatimSentinel(line):
                     # We are *deleting* non-sentinel lines, so we must delete @verbatim sentinels!
                     # We must **extend** the limit to get the next line.
                     if reader.index() < limit + 1:
@@ -315,16 +328,16 @@ class shadowController:
 
         #@    << init vars >>
         #@+node:ekr.20080708094444.40:<< init vars >>
-        new_private_lines_wtr = sourcewriter(self)
+        new_private_lines_wtr = self.sourcewriter(self)
         # collects the contents of the new file.
 
-        new_public_lines_rdr = sourcereader(self,new_public_lines)
+        new_public_lines_rdr = self.sourcereader(self,new_public_lines)
             # Contains the changed source code.
 
-        old_public_lines_rdr = sourcereader(self,old_public_lines)
+        old_public_lines_rdr = self.sourcereader(self,old_public_lines)
             # this is compared to new_public_lines_rdr to find out the changes.
 
-        old_private_lines_rdr = sourcereader(self,old_private_lines) # lines_with_sentinels)
+        old_private_lines_rdr = self.sourcereader(self,old_private_lines) # lines_with_sentinels)
             # This is the file which is currently produced by Leo, with sentinels.
 
         # Check that all ranges returned by get_opcodes() are contiguous
@@ -361,6 +374,7 @@ class shadowController:
         #@-node:ekr.20080708094444.39:<< define print_tags >>
         #@nl
 
+        delim1,delim2 = marker.getDelims()
         sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
         prev_old_j = 0 ; prev_new_j = 0
 
@@ -443,8 +457,10 @@ class shadowController:
                 start = new_public_lines_rdr.index()
                 while new_public_lines_rdr.index() < new_j:
                     line = new_public_lines_rdr.get()
-                    if x.is_sentinel(line,marker):
-                        new_private_lines_wtr.put('%sverbatim\n' % (marker),tag='%s %s:%s' % ('new sent',start,new_j))
+                    if marker.isSentinel(line):
+                        new_private_lines_wtr.put(
+                            '%s@verbatim%s\n' % (delim1,delim2),
+                            tag='%s %s:%s' % ('new sent',start,new_j))
                     new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
 
             elif tag=='delete':
@@ -466,8 +482,10 @@ class shadowController:
 
         # Copy all unwritten sentinels.
         self.copy_sentinels(
-            old_private_lines_rdr,new_private_lines_wtr,
-            marker, limit = old_private_lines_rdr.size())
+            old_private_lines_rdr,
+            new_private_lines_wtr,
+            marker,
+            limit = old_private_lines_rdr.size())
 
         # Get the result.
         result = new_private_lines_wtr.getlines()
@@ -496,7 +514,7 @@ class shadowController:
 
         old_public_lines  = open(old_public_file).readlines()
         old_private_lines = open(old_private_file).readlines()
-        marker = x.marker_from_extension(old_public_file)
+        marker = x.markerFromFileLines(old_private_lines,old_private_file)
 
         if trace:
             g.trace(
@@ -505,9 +523,6 @@ class shadowController:
                 '\npublic lines...\n%s' %(g.listToString(old_public_lines)),
                 '\nprivate_file',old_private_file,
                 '\nprivate lines...\n%s\n' %(g.listToString(old_private_lines)))
-
-        if not marker:
-            return False
 
         new_private_lines = x.propagate_changed_lines(
             old_public_lines,old_private_lines,marker)
@@ -539,8 +554,8 @@ class shadowController:
         mapping = [] ; results = [] ; i = 0 ; n = len(lines)
         while i < n:
             line = lines[i]
-            if x.is_sentinel(line,marker):
-                if x.is_verbatim(line,marker):
+            if marker.isSentinel(line):
+                if marker.isVerbatimSentinel(line):
                     i += 1
                     if i < n:
                         # Not a sentinel, whatever it looks like.
@@ -574,31 +589,12 @@ class shadowController:
             # Update the private shadow file from the public file.
             written = x.propagate_changes(fn,shadow_fn)
             if written: x.message("updated private %s from public %s" % (shadow_fn, fn))
-        else:
+        # else:
             # Don't write *anything*.
-            if 0: # This causes considerable problems.
-                # Create the public file from the private shadow file.
-                x.copy_file_removing_sentinels(shadow_fn,fn)
-                x.message("created public %s from private %s " % (fn, shadow_fn))
-    #@+node:ekr.20080708094444.27:x.copy_file_removing_sentinels
-    def copy_file_removing_sentinels (self,source_fn,target_fn):
-
-        '''Copies sourcefilename to targetfilename, removing sentinel lines.'''
-
-        x = self
-
-        marker = x.marker_from_extension(source_fn)
-        if not marker:
-            return
-
-        old_lines = open(source_fn).readlines()
-        new_lines, junk = x.separate_sentinels(old_lines,marker)
-
-        copy = not os.path.exists(target_fn) or old_lines != new_lines
-        if copy:
-            s = ''.join(new_lines)
-            x.replaceFileWithString(target_fn,s)
-    #@-node:ekr.20080708094444.27:x.copy_file_removing_sentinels
+            # if 0: # This causes considerable problems.
+                # # Create the public file from the private shadow file.
+                # x.copy_file_removing_sentinels(shadow_fn,fn)
+                # x.message("created public %s from private %s " % (fn, shadow_fn))
     #@-node:bwmulder.20041231170726:x.updatePublicAndPrivateFiles
     #@-node:ekr.20080708192807.1:x.Propagation
     #@+node:ekr.20080708094444.89:x.Utils...
@@ -625,19 +621,91 @@ class shadowController:
         x.error('file syntax error: nothing follows verbatim sentinel')
         g.trace(g.callers())
     #@-node:ekr.20080708094444.85:x.error & message & verbatim_error
-    #@+node:ekr.20080708094444.11:x.is_sentinel & is_verbatim
-    def is_sentinel (self, line, marker):
+    #@+node:ekr.20090529125512.6122:x.markerFromFileLines & helper & test
+    def markerFromFileLines (self,lines,fn):  # fn used only for traces.
 
-        '''Return true if the line is a sentinel.'''
+        '''Return the sentinel delimiter comment to be used for filename.'''
 
-        return line.lstrip().startswith(marker)
+        trace = False and not g.unitTesting
+        x = self ; at = x.c.atFileCommands
 
-    def is_verbatim (self,line,marker):
+        s = x.findLeoLine(lines)
+        ok,junk,start,end,junk = at.parseLeoSentinel(s)
+        if end:
+            delims = '',start,end
+        else:
+            delims = start,'',''
 
-        return line.lstrip().startswith(marker+'verbatim')
-    #@-node:ekr.20080708094444.11:x.is_sentinel & is_verbatim
-    #@+node:ekr.20080708094444.9:x.marker_from_extension
-    def marker_from_extension (self,filename,addAtSign=True):
+        if trace: g.trace('delim1 %s delim2 %s delim3 %s fn %s' % (
+            delims[0],delims[1],delims[2], fn))
+
+        marker = x.markerClass(delims)
+        return marker
+    #@+node:ekr.20090529125512.6125:x.findLeoLine & test
+    def findLeoLine (self,lines):
+
+        '''Return the @+leo line, or ''.'''
+
+        for line in lines:
+            i = line.find('@+leo')
+            if i != -1:
+                return line
+        else:
+            return ''
+    #@+node:ekr.20090529125512.6126:@test x.findAtLeoLine
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+        x = c.shadowController
+        table = (
+            ('c',('//@+leo','a'),                   '//@+leo'),
+            ('c',('//@first','//@+leo','b'),        '//@+leo'),
+            ('c',('/*@+leo*/','a'),                 '/*@+leo*/'),
+            ('c',('/*@first*/','/*@+leo*/','b'),    '/*@+leo*/'),
+            ('python',('#@+leo','a'),               '#@+leo'),
+            ('python',('#@first','#@+leo','b'),     '#@+leo'),
+            ('error',('',),''),
+            ('html',('<!--@+leo-->','a'),                '<!--@+leo-->'),
+            ('html',('<!--@first-->','<!--@+leo-->','b'),'<!--@+leo-->'),
+        )
+        for language,lines,expected in table:
+            result = x.findLeoLine(lines)
+            assert expected==result, 'language %s expected %s got %s lines %s' % (
+                language,expected,result,'\n'.join(lines))
+    #@nonl
+    #@-node:ekr.20090529125512.6126:@test x.findAtLeoLine
+    #@-node:ekr.20090529125512.6125:x.findLeoLine & test
+    #@+node:ekr.20090529125512.6128:@test x.markerFromFileLines
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+        x = c.shadowController
+        # Add -ver=4 so at.parseLeoSentinel does not complain.
+        table = (
+            ('c',('//@+leo-ver=4','a'),                   '//',''),
+            ('c',('//@first','//@+leo-ver=4','b'),        '//',''),
+            ('c',('/*@+leo-ver=4*/','a'),                 '/*','*/'),
+            ('c',('/*@first*/','/*@+leo-ver=4*/','b'),    '/*','*/'),
+            ('python',('#@+leo-ver=4','a'),               '#',''),
+            ('python',('#@first','#@+leo-ver=4','b'),     '#',''),
+            ('error',('',),             '#--unknown-language--',''),
+            ('html',('<!--@+leo-ver=4-->','a'),                '<!--','-->'),
+            ('html',('<!--@first-->','<!--@+leo-ver=4-->','b'),'<!--','-->'),
+        )
+
+        for language,lines,delim1,delim2 in table:
+            s = x.findLeoLine(lines)
+            marker = x.markerFromFileLines(lines,'test-file-name')
+            result1,result2 = marker.getDelims()
+            assert delim1==result1, 'language %s expected1 %s got %s lines %s' % (
+                language,delim1,result1,'\n'.join(lines))
+            assert delim2==result2, 'language %s expected2 %s got %s lines %s' % (
+                language,delim1,result1,'\n'.join(lines))
+    #@nonl
+    #@-node:ekr.20090529125512.6128:@test x.markerFromFileLines
+    #@-node:ekr.20090529125512.6122:x.markerFromFileLines & helper & test
+    #@+node:ekr.20080708094444.9:x.markerFromFileName
+    def markerFromFileName (self,filename):
 
         '''Return the sentinel delimiter comment to be used for filename.'''
 
@@ -648,21 +716,34 @@ class shadowController:
             root, ext = os.path.splitext(root)
 
         delims = g.comment_delims_from_extension(filename)
+        marker = self.markerClass(delims)
+        return marker
+    #@+node:ekr.20090529061522.6613:@test x.markerFromFileName
+    if g.unitTesting:
 
-        # New in leo 4.5.1: require a single-line delim.
-        if delims[0]:
-            marker = delims[0]
-        else:
-            # Yes, we *can* use a special marker for unknown languages,
-            # provided we make it impossible to type by mistake,
-            # and provided no real language will be the prefix of the comment delim.
-            marker = g.app.language_delims_dict.get('unknown_language')
+        c,p = g.getTestVars()
 
-        if addAtSign:
-            return marker + '@'
-        else:
-            return marker
-    #@-node:ekr.20080708094444.9:x.marker_from_extension
+        x = c.shadowController
+
+        table = (
+            ('ini',';','',),
+            ('c','//',''),
+            ('h','//',''),
+            ('py','#',''),
+            ('xyzzy','#--unknown-language--',''),
+        )
+
+        for ext,delim1,delim2 in table:
+            filename = 'x.%s' % ext
+            marker = x.markerFromFileName(filename)
+            result1,result2 = marker.getDelims()
+            assert delim1==result1, 'ext=%s, got %s, expected %s' % (
+                ext,delim1,result1)
+            assert delim2==result2, 'ext=%s, got %s, expected %s' % (
+                ext,delim2,result2)
+    #@nonl
+    #@-node:ekr.20090529061522.6613:@test x.markerFromFileName
+    #@-node:ekr.20080708094444.9:x.markerFromFileName
     #@+node:ekr.20080708094444.30:x.push_filter_mapping
     def push_filter_mapping (self,lines, marker):
         """
@@ -680,8 +761,8 @@ class shadowController:
         i = 0 ; n = len(lines)
         while i < n:
             line = lines[i]
-            if x.is_sentinel(line,marker):
-                if x.is_verbatim(line,marker):
+            if marker.isSentinel(line):
+                if marker.isVerbatimSentinel(line):
                     i += 1
                     if i < n:
                         mapping.append(i+1)
@@ -690,10 +771,6 @@ class shadowController:
             else:
                 mapping.append(i+1)
             i += 1
-
-        # for i, line in enumerate(filelines):
-            # if not self.is_sentinel(line,marker):
-                # mapping.append(i+1)
 
         return mapping 
     #@-node:ekr.20080708094444.30:x.push_filter_mapping
@@ -711,9 +788,9 @@ class shadowController:
         i = 0 ; n = len(lines)
         while i < len(lines):
             line = lines[i]
-            if x.is_sentinel(line,marker):
+            if marker.isSentinel(line):
                 sentinel_lines.append(line)
-                if x.is_verbatim(line,marker):
+                if marker.isVerbatimSentinel(line):
                     i += 1
                     if i < len(lines):
                         line = lines[i]
@@ -785,7 +862,8 @@ class shadowController:
             self.shadowController=shadowController
 
             # Hard value for now.
-            self.marker = '#@'
+            delims = '#','',''
+            self.marker = shadowController.markerClass(delims)
 
             # For teardown...
             self.ok = True
@@ -860,8 +938,6 @@ class shadowController:
 
             lines,mapping = x.strip_sentinels_with_map(lines,self.marker)
 
-            # g.trace(lines)
-
             return lines
         #@-node:ekr.20080709062932.22:makePublicLines
         #@+node:ekr.20080709062932.23:mungePrivateLines
@@ -871,20 +947,17 @@ class shadowController:
 
             i = 0 ; n = len(lines) ; results = []
             while i < n:
-            # for line in lines:
                 line = lines[i]
-                if x.is_sentinel(line,self.marker):
+                if marker.isSentinel(line):
                     new_line = line.replace(find,replace)
                     results.append(new_line)
-                    if x.is_verbatim(line,marker):
+                    if marker.isVerbatimSentinel(line):
                         i += 1
                         if i < len(lines):
                             line = lines[i]
                             results.append(line)
                         else:
                             x.verbatim_error()
-
-                    # if line != new_line: g.trace(new_line)
                 else:
                     results.append(line)
                 i += 1
@@ -908,7 +981,7 @@ class shadowController:
             results = x.propagate_changed_lines(
                 self.new_public_lines,
                 self.old_private_lines,
-                marker="#@",
+                marker = self.marker,
                 p = self.p.copy())
 
             if not self.lax and results != self.expected_private_lines:
@@ -934,134 +1007,251 @@ class shadowController:
         #@-others
 
     #@-node:ekr.20080709062932.2:atShadowTestCase
+    #@+node:ekr.20090529061522.5727:class marker & tests
+    class markerClass:
+
+        '''A class representing comment delims in @shadow files.'''
+
+        #@    @+others
+        #@+node:ekr.20090529061522.6257:markerClass.ctor
+        def __init__(self,delims):
+
+            delim1,delim2,delim3 = delims
+            self.delim1 = delim1 # Single-line comment delim.
+            self.delim2 = delim2 # Block comment starting delim.
+            self.delim3 = delim3 # Block comment ending delim.
+            if not delim1 and not delim2:
+                self.delim1 = g.app.language_delims_dict.get('unknown_language')
+        #@-node:ekr.20090529061522.6257:markerClass.ctor
+        #@+node:ekr.20090529061522.6258:getDelims
+        def getDelims(self):
+
+            if self.delim1:
+                return self.delim1,''
+            else:
+                return self.delim2,self.delim3
+        #@+node:ekr.20090529061522.6235:@test class markerClass.getDelims
+        if g.unitTesting:
+            c,p = g.getTestVars()
+            x = c.shadowController
+            table = (
+                ('python','#',''),
+                ('c','//',''),
+                ('html','<!--','-->'),
+                ('xxxx','#--unknown-language--',''),
+            )
+            for language,delim1,delim2 in table:
+                delims = g.set_delims_from_language(language)
+                marker = x.markerClass(delims)
+                result = marker.getDelims()
+                expected = delim1,delim2
+                assert result==expected,'language %s expected %s got %s' % (
+                    language,expected,result)
+        #@nonl
+        #@-node:ekr.20090529061522.6235:@test class markerClass.getDelims
+        #@-node:ekr.20090529061522.6258:getDelims
+        #@+node:ekr.20090529061522.6259:isSentinel & test
+        def isSentinel(self,s,suffix=''):
+            '''Return True is line s contains a valid sentinel comment.'''
+
+            s = s.strip()
+            if self.delim1 and s.startswith(self.delim1):
+                return s.startswith(self.delim1+'@'+suffix)
+            elif self.delim2:
+                return s.startswith(self.delim2+'@'+suffix) and s.endswith(self.delim3)
+            else:
+                return False
+        #@+node:ekr.20090529061522.5728:@test class markerClass.isSentinel
+        if g.unitTesting:
+            c,p = g.getTestVars()
+            x = c.shadowController
+            table = (
+                ('python','abc',False),
+                ('python','#abc',False),
+                ('python','#@abc',True),
+                ('python','@abc#',False),
+                ('c','abc',False),
+                ('c','//@',True),
+                ('c','// @abc',False),
+                ('c','/*@ abc */',True),
+                ('c','/*@ abc',False),
+                ('html','#@abc',False),
+                ('html','<!--abc-->',False),
+                ('html','<!--@ abc -->',True),
+                ('html','<!--@ abc ->',False),
+                ('xxxx','#--unknown-language--@',True)
+            )
+            for language,s,expected in table:
+                delims = g.set_delims_from_language(language)
+                marker = x.markerClass(delims)
+                result = marker.isSentinel(s)
+                assert result==expected,'language %s s: %s expected %s got %s' % (
+                    language,s,expected,result)
+        #@nonl
+        #@-node:ekr.20090529061522.5728:@test class markerClass.isSentinel
+        #@-node:ekr.20090529061522.6259:isSentinel & test
+        #@+node:ekr.20090529061522.6260:isVerbatimSentinel & test
+        def isVerbatimSentinel(self,s):
+
+            return self.isSentinel(s,suffix='verbatim')
+        #@nonl
+        #@+node:ekr.20090529061522.6215:@test class markerClass.isVerbatimSentinel
+        if g.unitTesting:
+            c,p = g.getTestVars()
+            x = c.shadowController
+            table = (
+                ('python','abc',False),
+                ('python','#abc',False),
+                ('python','#verbatim',False),
+                ('python','#@verbatim',True),
+                ('c','abc',False),
+                ('c','//@',False),
+                ('c','//@verbatim',True),
+                ('html','#@abc',False),
+                ('html','<!--abc-->',False),
+                ('html','<!--@verbatim -->',True),
+                ('xxxx','#--unknown-language--@verbatim',True)
+            )
+            for language,s,expected in table:
+                delims = g.set_delims_from_language(language)
+                marker = x.markerClass(delims)
+                result = marker.isVerbatimSentinel(s)
+                assert result==expected,'language %s s: %s expected %s got %s' % (
+                    language,s,expected,result)
+        #@nonl
+        #@-node:ekr.20090529061522.6215:@test class markerClass.isVerbatimSentinel
+        #@-node:ekr.20090529061522.6260:isVerbatimSentinel & test
+        #@-others
+
+    #@-node:ekr.20090529061522.5727:class marker & tests
+    #@+node:ekr.20080708094444.12:class sourcereader
+    class sourcereader:
+        """
+        A class to read lines sequentially.
+
+        The class keeps an internal index, so that each
+        call to get returns the next line.
+
+        Index returns the internal index, and sync
+        advances the index to the the desired line.
+
+        The index is the *next* line to be returned.
+
+        The line numbering starts from 0.
+        """
+        #@    @+others
+        #@+node:ekr.20080708094444.13:__init__
+        def __init__ (self,shadowController,lines):
+
+            self.lines = lines 
+            self.length = len(self.lines)
+            self.i = 0
+            self.shadowController=shadowController
+        #@nonl
+        #@-node:ekr.20080708094444.13:__init__
+        #@+node:ekr.20080708094444.14:index
+        def index (self):
+            return self.i
+        #@-node:ekr.20080708094444.14:index
+        #@+node:ekr.20080708094444.15:get
+        def get (self):
+
+            trace = False and not g.unitTesting
+
+            result = self.lines[self.i]
+            self.i+=1
+
+            if trace: g.trace(repr(result))
+            return result 
+        #@-node:ekr.20080708094444.15:get
+        #@+node:ekr.20080708094444.16:sync
+        def sync (self,i):
+            self.i = i 
+        #@-node:ekr.20080708094444.16:sync
+        #@+node:ekr.20080708094444.17:size
+        def size (self):
+            return self.length 
+        #@-node:ekr.20080708094444.17:size
+        #@+node:ekr.20080708094444.18:atEnd
+        def atEnd (self):
+            return self.index>=self.length 
+        #@-node:ekr.20080708094444.18:atEnd
+        #@+node:ekr.20080708094444.19:clone
+        def clone(self):
+            sr = self.shadowController.sourcereader(shadowController,self.lines)
+            sr.i = self.i
+            return sr
+        #@nonl
+        #@-node:ekr.20080708094444.19:clone
+        #@+node:ekr.20080708094444.20:dump
+        def dump(self, title):
+
+            g.pr(title)
+            # g.pr('self.i',self.i)
+            for i, line in enumerate(self.lines):
+                marker = g.choose(i==self.i,'**','  ')
+                g.pr("%s %3s:%s" % (marker, i, line),)
+        #@nonl
+        #@-node:ekr.20080708094444.20:dump
+        #@-others
+    #@-node:ekr.20080708094444.12:class sourcereader
+    #@+node:ekr.20080708094444.21:class sourcewriter
+    class sourcewriter:
+        """
+        Convenience class to capture output to a file.
+
+        Similar to class sourcereader.
+        """
+        #@	@+others
+        #@+node:ekr.20080708094444.22:__init__
+        def __init__ (self,shadowController):
+
+            self.i = 0
+            self.lines =[]
+            self.shadowController=shadowController
+            self.trace = False or self.shadowController.trace_writers
+        #@-node:ekr.20080708094444.22:__init__
+        #@+node:ekr.20080708094444.23:put
+        def put(self, line, tag=''):
+
+            trace = (False or self.trace) and not g.unitTesting
+
+            # An important hack.  Make sure *all* lines end with a newline.
+            # This will cause a mismatch later in check_the_final_output,
+            # and a special case has been inserted to forgive this newline.
+            if not line.endswith('\n'):
+                if trace: g.trace('adding newline',repr(line))
+                line = line + '\n'
+
+            self.lines.append(line)
+            self.i+=1
+
+            if trace: g.trace('%16s %s' % (tag,repr(line)))
+        #@-node:ekr.20080708094444.23:put
+        #@+node:ekr.20080708094444.24:index
+        def index (self):
+
+            return self.i 
+        #@-node:ekr.20080708094444.24:index
+        #@+node:ekr.20080708094444.25:getlines
+        def getlines (self):
+
+            return self.lines 
+        #@-node:ekr.20080708094444.25:getlines
+        #@+node:ekr.20080708094444.26:dump
+        def dump(self, title):
+
+            '''Dump lines for debugging.'''
+
+            g.pr(title)
+            for i, line in enumerate(self.lines):
+                marker = '  '
+                g.es("%s %3s:%s" % (marker, i, line),newline=False)
+        #@-node:ekr.20080708094444.26:dump
+        #@-others
+    #@-node:ekr.20080708094444.21:class sourcewriter
     #@-others
 #@-node:ekr.20080708094444.80:class shadowController
-#@+node:ekr.20080708094444.12:class sourcereader
-class sourcereader:
-    """
-    A class to read lines sequentially.
-
-    The class keeps an internal index, so that each
-    call to get returns the next line.
-
-    Index returns the internal index, and sync
-    advances the index to the the desired line.
-
-    The index is the *next* line to be returned.
-
-    The line numbering starts from 0.
-    """
-    #@    @+others
-    #@+node:ekr.20080708094444.13:__init__
-    def __init__ (self,shadowController,lines):
-
-        self.lines = lines 
-        self.length = len(self.lines)
-        self.i = 0
-        self.shadowController=shadowController
-    #@nonl
-    #@-node:ekr.20080708094444.13:__init__
-    #@+node:ekr.20080708094444.14:index
-    def index (self):
-        return self.i
-    #@-node:ekr.20080708094444.14:index
-    #@+node:ekr.20080708094444.15:get
-    def get (self):
-
-        trace = False and not g.unitTesting
-
-        result = self.lines[self.i]
-        self.i+=1
-
-        if trace: g.trace(repr(result))
-        return result 
-    #@-node:ekr.20080708094444.15:get
-    #@+node:ekr.20080708094444.16:sync
-    def sync (self,i):
-        self.i = i 
-    #@-node:ekr.20080708094444.16:sync
-    #@+node:ekr.20080708094444.17:size
-    def size (self):
-        return self.length 
-    #@-node:ekr.20080708094444.17:size
-    #@+node:ekr.20080708094444.18:atEnd
-    def atEnd (self):
-        return self.index>=self.length 
-    #@-node:ekr.20080708094444.18:atEnd
-    #@+node:ekr.20080708094444.19:clone
-    def clone(self):
-        sr = sourcereader(self.lines)
-        sr.i = self.i
-        return sr
-    #@nonl
-    #@-node:ekr.20080708094444.19:clone
-    #@+node:ekr.20080708094444.20:dump
-    def dump(self, title):
-
-        g.pr(title)
-        # g.pr('self.i',self.i)
-        for i, line in enumerate(self.lines):
-            marker = g.choose(i==self.i,'**','  ')
-            g.pr("%s %3s:%s" % (marker, i, line),)
-    #@nonl
-    #@-node:ekr.20080708094444.20:dump
-    #@-others
-#@-node:ekr.20080708094444.12:class sourcereader
-#@+node:ekr.20080708094444.21:class sourcewriter
-class sourcewriter:
-    """
-    Convenience class to capture output to a file.
-
-    Similar to class sourcereader.
-    """
-    #@	@+others
-    #@+node:ekr.20080708094444.22:__init__
-    def __init__ (self,shadowController):
-
-        self.i = 0
-        self.lines =[]
-        self.shadowController=shadowController
-        self.trace = False or self.shadowController.trace_writers
-    #@-node:ekr.20080708094444.22:__init__
-    #@+node:ekr.20080708094444.23:put
-    def put(self, line, tag=''):
-
-        trace = (False or self.trace) and not g.unitTesting
-
-        # An important hack.  Make sure *all* lines end with a newline.
-        # This will cause a mismatch later in check_the_final_output,
-        # and a special case has been inserted to forgive this newline.
-        if not line.endswith('\n'):
-            if trace: g.trace('adding newline',repr(line))
-            line = line + '\n'
-
-        self.lines.append(line)
-        self.i+=1
-
-        if trace: g.trace('%16s %s' % (tag,repr(line)))
-    #@-node:ekr.20080708094444.23:put
-    #@+node:ekr.20080708094444.24:index
-    def index (self):
-
-        return self.i 
-    #@-node:ekr.20080708094444.24:index
-    #@+node:ekr.20080708094444.25:getlines
-    def getlines (self):
-
-        return self.lines 
-    #@-node:ekr.20080708094444.25:getlines
-    #@+node:ekr.20080708094444.26:dump
-    def dump(self, title):
-
-        '''Dump lines for debugging.'''
-
-        g.pr(title)
-        for i, line in enumerate(self.lines):
-            marker = '  '
-            g.es("%s %3s:%s" % (marker, i, line),newline=False)
-    #@-node:ekr.20080708094444.26:dump
-    #@-others
-#@-node:ekr.20080708094444.21:class sourcewriter
 #@-others
 #@-node:ekr.20080708094444.1:@thin leoShadow.py
 #@-leo

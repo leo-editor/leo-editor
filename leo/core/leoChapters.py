@@ -435,6 +435,7 @@ class chapterController:
 
         if state == 0:
             names = cc.chaptersDict.keys()
+            g.es('Chapters:\n' + '\n'.join(names))
             prefix = 'Select chapter: '
             k.setLabelBlue(prefix,protect=True)
             k.getArg(event,tag,1,self.selectChapter,prefix=prefix,tabList=names)
@@ -475,7 +476,13 @@ class chapterController:
             c.setCurrentPosition(chapter.p)
             cc.selectedChapter = chapter
 
-            # Do not call c.redraw here!
+            # New in Leo 4.6 b2: clean up.
+            if chapter.name == 'main':
+                for p in c.all_positions_with_unique_vnodes_iter():
+                    p.contract()
+
+            # New in Leo 4.6 b2: *do* call c.redraw.
+            c.redraw()
     #@-node:ekr.20090306060344.2:selectChapterHelper
     #@-node:ekr.20070317130250:cc.selectChapterByName & helper
     #@-node:ekr.20070317085437.30:Commands (chapters)
@@ -495,10 +502,8 @@ class chapterController:
         cc.chaptersNode = p.copy()
         t = p.v.t
 
-        ### t.fileIndex is now allocated immedately.
         if t.fileIndex:
             pass
-            ### self.error('***** t.fileIndex already exists')
         else:
             t.setFileIndex(g.app.nodeIndices.getNewIndex())
 

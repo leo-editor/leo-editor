@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="105" left="439" height="832" width="1237"/>
+	<global_window_position top="130" left="280" height="832" width="869"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070615131954" str_leo_pos="1,0"><vh>Startup</vh>
+<v t="ekr.20070615131954" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070427110751"><vh>@chapters</vh></v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20051020124457"><vh>Disabled buttons</vh>
@@ -31,10 +31,9 @@
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
 </v>
 </v>
-<v t="ekr.20061008055616" a="E"><vh>Scripts</vh>
-<v t="ekr.20051110111150" a="EM"
-marks="ekr.20071104221525.1,ekr.20040901065642,"
-expanded="ekr.20051110105946,"><vh>@thin leoScripts.txt</vh></v>
+<v t="ekr.20061008055616"><vh>Scripts</vh>
+<v t="ekr.20051110111150" a="M"
+marks="ekr.20071104221525.1,ekr.20040901065642,"><vh>@thin leoScripts.txt</vh></v>
 </v>
 <v t="ekr.20060824111500"><vh>jEdit2Py</vh>
 <v t="ekr.20060824111500.1"><vh>Colorizing test scripts</vh>
@@ -338,6 +337,7 @@ expanded="ekr.20051110105946,"><vh>@thin leoScripts.txt</vh></v>
 </v>
 </v>
 </v>
+<v t="ville.20090508224531.9799"><vh>@button git-dump</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081226095234.1">'''Analyze external calls in lisp files.'''
@@ -6928,5 +6928,50 @@ def endElementNS(self,name,qname):
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
 <t tx="ekr.20070615131954"></t>
+<t tx="ville.20090508224531.9799">""" Dump nodes to ~/.leo/dump git repository.
+
+Before using this, you need to:
+    mkdir ~/.leo/dump; cd ~/.leo/dump; git init
+
+"""
+
+import os, codecs, hashlib
+flatroot = os.path.expanduser('~/.leo/dump')
+assert os.path.isdir(flatroot)
+
+hl = []
+
+def dump_nodes():
+    for p in c.all_positions_with_unique_tnodes_iter():
+        name, date, num = p.t.fileIndex
+        gnx = '%s%s%s' % (name, date, num)
+        hl.append('&lt;a href="%s"&gt;%s%s&lt;/a&gt;&lt;br/&gt;' % (gnx, '-' * p.level(), p.h))
+        fname = gnx
+        codecs.open(fname,'w', encoding='utf-8').write(p.b)
+        print "wrote", fname
+
+os.chdir(flatroot)
+
+dump_nodes()
+lis = "\n".join(hl)
+
+html = "&lt;body&gt;\n&lt;tt&gt;\n" + lis + "\n&lt;/tt&gt;&lt;/body&gt;"
+
+#titlename = c.frame.getTitle() + '.html'
+pth, bname = os.path.split(c.mFileName)
+
+if pth and bname:
+    dbdirname = bname + "_" + hashlib.md5(c.mFileName).hexdigest()    
+
+titlename = dbdirname + '.html'
+codecs.open(titlename,'w', encoding='utf-8').write(html)
+
+g.es("committing to " + flatroot)
+
+os.system('git add *')
+out = os.popen('git commit -m "Leo autocommit"').read()
+g.es("committed")
+g.es(out)
+g.es('Outline in ' + os.path.abspath(titlename))</t>
 </tnodes>
 </leo_file>

@@ -130,6 +130,12 @@ browser_command:
     Default:
         empty string
 
+Configuration
+~~~~~~~~~~~~~
+
+At present, the file leo/plugins/leo_to_html.ini contains configuration settings.
+In particular, the default export path, "c:\" must be changed for *nix systems.
+
 '''
 #@-node:danr7.20060902215215.2:<< docstring >>
 #@nl
@@ -192,7 +198,6 @@ import os
 #@-node:danr7.20060902215215.4:<< imports >>
 #@nl
 
-
 __version__ = '2.3'
 
 #@+others
@@ -221,8 +226,9 @@ def safe(s):
 #@+node:bob.20080110210953:abspath
 def abspath(*args):
     """Join the arguments and convert to an absolute file path."""
-    return g.os_path_abspath(g.os_path_join(*args))
-#@nonl
+    # return g.os_path_abspath(g.os_path_join(*args))
+
+    return g.os_path_finalize_join(*args)
 #@-node:bob.20080110210953:abspath
 #@+node:bob.20080107154936.3:onCreate
 def onCreate (tag, keys):
@@ -496,7 +502,7 @@ class Leo_to_HTML(object):
     #@-node:bob.20080107165629:doItemBulletList
     #@+node:bob.20080107154746.5:doHeadline
     def doHeadline(self, p, level=None):
-        """Append wrapped headstring to ouput stream."""
+        """Append wrapped headstring to output stream."""
 
         headline = safe(p.h).replace(' ', '&nbsp;')
 
@@ -601,15 +607,12 @@ class Leo_to_HTML(object):
 
         def config(s):
             s = configParser.get("Main", s)
-            #g.trace(s)
-            if not s:
-                s = ''
+            if not s: s = ''
             return s.strip()
 
         def flag(s):
             ss = config(s)
-            if ss:
-                return ss.lower()[0] in ('y', 't', '1')
+            if ss: return ss.lower()[0] in ('y', 't', '1')
 
         #g.trace(g.app.loadDir,"..","plugins","leo_to_html.ini")
         fileName = abspath(g.app.loadDir,"..","plugins","leo_to_html.ini")
@@ -726,13 +729,13 @@ class Leo_to_HTML(object):
 
         """
 
-        tempdir = g.os_path_join(g.os_path_abspath(tempfile.gettempdir()), 'leo_show')
+        tempdir = g.os_path_finalize_join(tempfile.gettempdir(),'leo_show')
 
         if not g.os_path_exists(tempdir):
             os.mkdir(tempdir)
 
         filename = g.sanitize_filename(self.myFileName)  
-        filepath = g.os_path_join(tempdir, filename + '.html')
+        filepath = g.os_path_finalize_join(tempdir, filename + '.html')
 
         self.write(filepath, self.xhtml, basedir='', path='')
 
@@ -786,7 +789,9 @@ class Leo_to_HTML(object):
         if path is None:
             path = self.path
 
-        filepath = abspath(basedir, path , name)
+        filepath = abspath(basedir,path,name)
+
+        # g.trace('basedir',basedir,'path',path,'name',name)
 
         try:
             f = open(filepath, 'wb')
@@ -803,9 +808,8 @@ class Leo_to_HTML(object):
             except IOError:
                 ok = False
 
-
         if ok:
-            self.announce('ouput file - %s' % filepath, color=self.fileColor)
+            self.announce('output file: %s' % filepath, color=self.fileColor)
             return True
 
         self.announce_fail('failed writing to %s' % filepath)

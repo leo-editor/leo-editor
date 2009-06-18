@@ -663,6 +663,7 @@ class leoBody:
         self.editorWidgets = {} # keys are pane names, values are text widgets
         self.forceFullRecolorFlag = False
         self.frame = frame
+        self.parentFrame = parentFrame # New in Leo 4.6.
         self.totalNumberOfEditors = 0
 
         # May be overridden in subclasses...
@@ -2243,6 +2244,9 @@ class leoTree:
             # New in 3.12: keys vnodes, values are edit_widget (Tk.Text widgets)
             # New in 4.2: keys are vnodes, values are pairs (p,Tk.Text).
 
+        # Debugging.
+        self.redrawCount = 0
+
         # "public" ivars: correspond to setters & getters.
         self._editPosition = None
         self.redrawCount = 0 # For traces
@@ -2550,7 +2554,7 @@ class leoTree:
             g.funcToMethod(f,leoNodes.position)
     #@nonl
     #@-node:ekr.20040803072955.21:tree.injectCallbacks
-    #@+node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper
+    #@+node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper & test
     def OnIconDoubleClick (self,p):
 
         # Note: "icondclick" hooks handled by vnode callback routine.
@@ -2594,8 +2598,16 @@ class leoTree:
             g.doHook("@url2",c=c,p=p,v=p)
 
         return 'break' # 11/19/06
-    #@nonl
-    #@-node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper
+    #@+node:ekr.20090529205043.6027:@test OnIconDoubleClick
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+
+        c.frame.tree.OnIconDoubleClick(p.firstChild())
+    #@+node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
+    #@-node:ekr.20060217111834:@url http://docs.python.org/lib/re-syntax.html
+    #@-node:ekr.20090529205043.6027:@test OnIconDoubleClick
+    #@-node:ekr.20031218072017.2312:tree.OnIconDoubleClick (@url) & helper & test
     #@-node:ekr.20061109165848:Must be defined in base class
     #@+node:ekr.20081005065934.8:May be defined in subclasses
     # These are new in Leo 4.6.
@@ -2662,9 +2674,11 @@ class leoTree:
             return None # Not an error.
 
         if trace:
-            if verbose: g.trace(
-                '\nold:',old_p and old_p.h,'\nnew:',p and p.h)
-            else: g.trace(p and p.h)
+            if old_p:
+                g.trace('old: %s %s new: %s %s' % (
+                    len(old_p.b),old_p.h,len(p.b),p.h))
+            else:
+                g.trace('old: <none> new: %s %s' % (len(p.b),p.h))
 
         if not g.doHook("unselect1",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p):
             if old_p:
@@ -2735,12 +2749,15 @@ class leoTree:
         c.frame.body.assignPositionToEditor(p) # New in Leo 4.4.1.
         c.frame.updateStatusLine() # New in Leo 4.4.1.
 
+        if trace: g.trace('**** after old: %s new %s' % (
+            old_p and len(old_p.b),len(p.b)))
+
         g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
         g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
 
         return 'break' # Supresses unwanted selection.
     #@-node:ekr.20070423101911:selectHelper
-    #@+node:ekr.20090206153445.1:setBodyTextAfterSelect
+    #@+node:ekr.20090608081524.6109:setBodyTextAfterSelect
     def setBodyTextAfterSelect (self,p,old_p):
 
         # Always do this.  Otherwise there can be problems with trailing newlines.
@@ -2751,11 +2768,11 @@ class leoTree:
         if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
             pass
         else:
-            # This destroys all color tags, so do a full recolor.
+            # w.setAllText destroys all color tags, so do a full recolor.
+            w.setAllText(s)
             colorizer = c.frame.body.colorizer
             if hasattr(colorizer,'setHighlighter'):
                 colorizer.setHighlighter(p)
-            w.setAllText(s)
             self.frame.body.recolor(p)
 
         if p.v and p.v.t.scrollBarSpot != None:
@@ -2768,8 +2785,7 @@ class leoTree:
             w.see(spot)
         else:
             w.setInsertPoint(0)
-    #@nonl
-    #@-node:ekr.20090206153445.1:setBodyTextAfterSelect
+    #@-node:ekr.20090608081524.6109:setBodyTextAfterSelect
     #@-node:ekr.20040803072955.128:leoTree.select & helpers
     #@+node:ekr.20031218072017.3718:oops
     def oops(self):
@@ -3044,6 +3060,7 @@ class nullIconBarClass:
 
         self.c = c
         self.parentFrame = parentFrame
+        self.w = g.nullObject()
     #@nonl
     #@-node:ekr.20070301164543.1: ctor
     #@+node:ekr.20070301164543.2:add
@@ -3129,6 +3146,7 @@ class nullLog (leoLog):
         leoLog.__init__(self,frame,parentFrame)
 
         self.isNull = True
+        self.logNumber = 0
         self.logCtrl = self.createControl(parentFrame)
     #@-node:ekr.20041012083237:nullLog.__init__
     #@+node:ekr.20041012083237.1:createControl
@@ -3250,6 +3268,7 @@ class nullTree (leoTree):
         self.font = None
         self.fontName = None
         self.canvas = None
+        self.redrawCount = 0
         self.stayInTree = True
         self.trace_edit = False
         self.trace_select = False

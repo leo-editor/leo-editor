@@ -88,8 +88,28 @@ globalDirectiveList = [
 #@nonl
 #@-node:EKR.20040610094819:<< define global data structures >>
 #@nl
+#@<< define the nullObject class >>
+#@+node:ekr.20090521175848.5881:<< define the nullObject class >>
+# From the Python cookbook, recipe 5.23
 
-g = None # Set by startup logic to this module.
+class nullObject:
+
+    """An object that does nothing, and does it very well."""
+
+    def __init__   (self,*args,**keys): pass
+    def __call__   (self,*args,**keys): return self
+    # def __len__    (self): return 0 # Debatable.
+    def __repr__   (self): return "nullObject"
+    def __str__    (self): return "nullObject"
+    def __nonzero__(self): return 0
+    def __delattr__(self,attr):     return self
+    def __getattr__(self,attr):     return self
+    def __setattr__(self,attr,val): return self
+
+#@-node:ekr.20090521175848.5881:<< define the nullObject class >>
+#@nl
+
+g = nullObject() # Set later by startup logic to this module.
 app = None # The singleton app object.
 unitTesting = False # A synonym for app.unitTesting.
 isPython3 = sys.version_info >= (3,0,0)
@@ -339,13 +359,13 @@ def comment_delims_from_extension(filename):
 
     >>> import leo.core.leoGlobals as g
     >>> g.comment_delims_from_extension(".py")
-    ('#', None, None)
+    ('#', '', '')
 
     >>> g.comment_delims_from_extension(".c")
     ('//', '/*', '*/')
 
     >>> g.comment_delims_from_extension(".html")
-    (None, '<!--', '-->')
+    ('', '<!--', '-->')
 
     """
 
@@ -363,10 +383,31 @@ def comment_delims_from_extension(filename):
     else:
         g.trace("unknown extension: %s, filename: %s, root: %s" % (
             repr(ext),repr(filename),repr(root)))
-        return None,None,None
+        return '','',''
+#@+node:ekr.20090528072540.9983:@test g.comment_delims_from_extension
+if g.unitTesting:
+
+    # New in Leo 4.6, set_delims_from_language returns '' instead of None.
+    table = (
+        ('.c',      ('//','/*','*/')),
+        ('.html',   ('', '<!--', '-->')),
+        ('.py',     ('#','','')),
+        ('.xxx',    ('','','')),
+    )
+
+    for ext, expected in table:
+        result = g.comment_delims_from_extension(ext)
+        assert result==expected,'ext %s expected %s, got %s' % (
+            ext,expected,result)
+#@-node:ekr.20090528072540.9983:@test g.comment_delims_from_extension
 #@-node:EKR.20040504150046.4:g.comment_delims_from_extension
-#@+node:ekr.20071109165315:g.computeRelativePath
-def computeRelativePath (path):
+#@+node:ekr.20071109165315:g.stripPathCruft & test
+def stripPathCruft (path):
+
+    '''Strip cruft from a path name.'''
+
+    if not path:
+        return path # Retain empty paths for warnings.
 
     if len(path) > 2 and (
         (path[0]=='<' and path[-1] == '>') or
@@ -377,7 +418,24 @@ def computeRelativePath (path):
 
     # We want a *relative* path, not an absolute path.
     return path
-#@-node:ekr.20071109165315:g.computeRelativePath
+#@+node:ekr.20090527080219.5866:@test g.stripPathCruft
+if g.unitTesting:
+
+    table =  (
+        (None,None), # Retain empty paths for warnings.
+        ('',''),
+        (g.app.loadDir,g.app.loadDir),
+        ('<abc>','abc'),
+        ('"abc"','abc'),
+        ("'abc'",'abc'),
+    )
+
+    for path,expected in table:
+        result = g.stripPathCruft(path)
+        assert result == expected
+#@nonl
+#@-node:ekr.20090527080219.5866:@test g.stripPathCruft
+#@-node:ekr.20071109165315:g.stripPathCruft & test
 #@+node:ekr.20090214075058.8:g.findAtTabWidthDirectives (must be fast)
 g_tabwidth_pat = re.compile(r'(^@tabwidth)',re.MULTILINE)
 
@@ -792,13 +850,28 @@ def set_delims_from_language(language):
     if val:
         delim1,delim2,delim3 = g.set_delims_from_string(val)
         if delim2 and not delim3:
-            return None,delim1,delim2
+            return '',delim1,delim2
         else: # 0,1 or 3 params.
             return delim1,delim2,delim3
     else:
-        return None, None, None # Indicate that no change should be made
+        return '','','' # Indicate that no change should be made
+#@+node:ekr.20090528072540.9962:@test g.set_delims_from_language
+if g.unitTesting:
+
+    # New in Leo 4.6, set_delims_from_language returns '' instead of None.
+    table = (
+        ('c',       ('//','/*','*/')),
+        ('python',  ('#','','')),
+        ('xxxyyy',  ('','','')),
+    )
+
+    for language, expected in table:
+        result = g.set_delims_from_language(language)
+        assert result==expected,'language %s expected %s, got %s' % (
+            language,expected,result)
+#@-node:ekr.20090528072540.9962:@test g.set_delims_from_language
 #@-node:ekr.20031218072017.1382:g.set_delims_from_language
-#@+node:ekr.20031218072017.1383:g.set_delims_from_string
+#@+node:ekr.20031218072017.1383:g.set_delims_from_string & test
 def set_delims_from_string(s):
 
     """Returns (delim1, delim2, delim2), the delims following the @comment directive.
@@ -811,20 +884,20 @@ def set_delims_from_string(s):
     if g.match_word(s,i,tag):
         i += len(tag)
 
-    count = 0 ; delims = [None, None, None]
+    count = 0 ; delims = ['','','']
     while count < 3 and i < len(s):
         i = j = g.skip_ws(s,i)
         while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
             i += 1
         if j == i: break
-        delims[count] = s[j:i]
+        delims[count] = s[j:i] or ''
         count += 1
 
     # 'rr 09/25/02
     if count == 2: # delims[0] is always the single-line delim.
         delims[2] = delims[1]
         delims[1] = delims[0]
-        delims[0] = None
+        delims[0] = ''
 
     # 7/8/02: The "REM hack": replace underscores by blanks.
     # 9/25/02: The "perlpod hack": replace double underscores by newlines.
@@ -833,7 +906,25 @@ def set_delims_from_string(s):
             delims[i] = delims[i].replace("__",'\n').replace('_',' ')
 
     return delims[0], delims[1], delims[2]
-#@-node:ekr.20031218072017.1383:g.set_delims_from_string
+#@+node:ekr.20090528072540.9976:@test g.set_delims_from_string
+if g.unitTesting:
+
+    # New in Leo 4.6, set_delims_from_string returns '' instead of None.
+    table = (
+        ('c','@comment // /* */',   ('//','/*','*/')),
+        ('c','// /* */',            ('//','/*','*/')),
+        ('python','@comment #',     ('#','','')),
+        ('python','#',              ('#','','')),
+        ('xxxyyy','@comment a b c', ('a','b','c')),
+        ('xxxyyy','a b c',          ('a','b','c')),
+    )
+
+    for language,s,expected in table:
+        result = g.set_delims_from_string(s)
+        assert result==expected,'language %s expected %s, got %s' % (
+            language,expected,result)
+#@-node:ekr.20090528072540.9976:@test g.set_delims_from_string
+#@-node:ekr.20031218072017.1383:g.set_delims_from_string & test
 #@+node:ekr.20031218072017.1384:g.set_language
 def set_language(s,i,issue_errors_flag=False):
 
@@ -865,90 +956,139 @@ def set_language(s,i,issue_errors_flag=False):
 
     return None, None, None, None,
 #@-node:ekr.20031218072017.1384:g.set_language
-#@+node:ekr.20081001062423.9:g.setDefaultDirectory
+#@+node:ekr.20081001062423.9:g.setDefaultDirectory & helpers
 # This is a refactoring, used by leoImport.scanDefaultDirectory and
-# atFile.scanDefault directory
+# atFile.scanDefaultDirectory
 
 def setDefaultDirectory(c,p,importing=False):
 
-    '''Set default_directory by scanning @path directives.
-    Return (default_directory,error_message).'''
+    ''' Compute a default directory by scanning @path directives.
+    Return (default_dir,error_message).'''
 
-    default_directory = '' ; error = ''
-    if not p: return default_directory,error
+    if not p: return '',''
+    default_dir,error = g.getAbsPathFromNode(c,p),''
 
-    #@    << Set path from @file node >>
-    #@+node:ekr.20081001062423.10:<< Set path from @file node >>
-    # An absolute path in an @file node over-rides everything else.
-    # A relative path gets appended to the relative path by the open logic.
+    if not default_dir:
+        default_dir,error = g.getPathFromDirectives(c,p)
 
-    name = p.anyAtFileNodeName()
-    theDir = g.choose(name,g.os_path_dirname(name),None)
+    if c and c.frame and not default_dir and not error:
+        default_dir = g.findDefaultDirectory(c)
 
-    if theDir and g.os_path_isabs(theDir):
-        if g.os_path_exists(theDir):
-            default_directory = theDir
-        else:
-            default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-            if not default_directory:
-                error = "Directory \"%s\" does not exist" % theDir
-    #@-node:ekr.20081001062423.10:<< Set path from @file node >>
-    #@nl
-
-    if not default_directory:
-        # Scan for @path directives.
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        if path:
-            #@            << handle @path >>
-            #@+node:ekr.20081001062423.11:<< handle @path >>
-            path = g.computeRelativePath (path)
-
-            if path:
-                base = g.getBaseDirectory(c) # returns "" on error.
-                path = c.os_path_finalize_join(base,path)
-
-                if g.os_path_isabs(path):
-                    if g.os_path_exists(path):
-                        default_directory = path
-                    else:
-                        default_directory = g.makeAllNonExistentDirectories(path,c=c)
-                        if not default_directory:
-                            error = "invalid @path: %s" % path
-                        else:
-                            error = "ignoring bad @path: %s" % path
-            else:
-                error = "ignoring empty @path"
-            #@-node:ekr.20081001062423.11:<< handle @path >>
-            #@nl
-
-    if not default_directory:
-        #@        << Set current directory >>
-        #@+node:ekr.20081001062423.12:<< Set current directory >>
-        # This code is executed if no valid absolute path was specified in the @file node or in an @path directive.
-
-        assert(not default_directory)
-
-        if c.frame:
-            base = g.getBaseDirectory(c) # returns "" on error.
-            for theDir in (c.tangle_directory,c.frame.openDirectory,c.openDirectory):
-                if theDir and len(theDir) > 0:
-                    theDir = c.os_path_finalize_join(base,theDir) # Bug fix: 2008/9/23
-                    if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
-                        if g.os_path_exists(theDir):
-                            default_directory = theDir ; break
-                        else:
-                            default_directory = g.makeAllNonExistentDirectories(theDir,c=c)
-        #@-node:ekr.20081001062423.12:<< Set current directory >>
-        #@nl
-
-    if not default_directory and not importing:
+    if not default_dir and not importing and not error:
         # This should never happen: c.openDirectory should be a good last resort.
         error = "No absolute directory specified anywhere."
 
-    # g.trace('returns',default_directory)
-    return default_directory, error
-#@-node:ekr.20081001062423.9:g.setDefaultDirectory
+    return default_dir, error
+#@+node:ekr.20081001062423.10:g.getAbsPathFromNode & test
+# An absolute path in an @file node over-rides everything else.
+# A relative path gets appended to the relative path by the open logic.
+
+def getAbsPathFromNode(c,p,name=''): # Name is for unit testing.
+
+    default_dir = ''
+    if p:
+        name = p.anyAtFileNodeName()
+
+    if name:
+        theDir = g.os_path_dirname(name)
+        if theDir and g.os_path_isabs(theDir):
+            if g.os_path_exists(theDir):
+                default_dir = theDir
+            else:
+                default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
+
+    return default_dir
+#@nonl
+#@+node:ekr.20090527080219.5809:@test g.getAbsPathFromNode
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    path = g.os_path_finalize_join(g.app.loadDir,'whatever')
+    result = g.getAbsPathFromNode(c,p=None,name=path)
+    expected = g.app.loadDir
+    assert expected == result,'expected %s, got %s' % (
+        expected,result)
+#@nonl
+#@-node:ekr.20090527080219.5809:@test g.getAbsPathFromNode
+#@-node:ekr.20081001062423.10:g.getAbsPathFromNode & test
+#@+node:ekr.20081001062423.11:g.getPathFromDirectives & test
+def getPathFromDirectives(c,p):
+
+    '''Scan for @path directives.'''
+
+    trace = False and not g.unitTesting
+    default_dir = '' ; error = ''
+    if not p: return default_dir,error
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    if path:
+        base = g.getBaseDirectory(c) # returns "" on error.
+        path = c.os_path_finalize_join(base,path)
+        if g.os_path_exists(path):
+            default_dir = path
+        else:
+            default_dir = g.makeAllNonExistentDirectories(path,c=c)
+            if not default_dir:
+                error = "invalid @path: %s" % path
+
+    return default_dir,error
+#@+node:ekr.20090527080219.5826:@test g.getPathFromDirectives
+if g.unitTesting:
+
+    result,error = g.getPathFromDirectives(c,p)
+    assert error==''
+    assert result
+#@nonl
+#@-node:ekr.20090527080219.5826:@test g.getPathFromDirectives
+#@-node:ekr.20081001062423.11:g.getPathFromDirectives & test
+#@+node:ekr.20081001062423.12:g.findDefaultDirectory & test (major change)
+# This code is executed if no valid absolute path was specified in
+# the @file node or in an @path directive.
+
+def findDefaultDirectory(c):
+
+    '''Attempt to find a suitable default directory.'''
+
+    default_dir = ''
+
+    # Check that c.openDirectory and c.frame.openDirectory are in synch.
+    if c.openDirectory != c.frame.openDirectory:
+        g.trace('***can not happen: c.openDirectory != c.frame.openDirectory')
+        g.trace('c.openDirectory',c.openDirectory)
+        g.trace('c.frame.openDirectory',c.frame.openDirectory)
+
+    if not g.os_path_isabs(c.openDirectory):
+        g.trace('*** can not happen: relative c.openDirectory',c.openDirectory)
+
+    for theDir in (c.openDirectory,g.getBaseDirectory(c)):
+        if theDir and g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+            if g.os_path_exists(theDir):
+                default_dir = theDir
+            else:
+                default_dir = g.makeAllNonExistentDirectories(theDir,c=c)
+            if default_dir: break
+
+    return default_dir
+#@+node:ekr.20090526102407.10034:@test g.findDefaultDirectory
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    theDir = g.findDefaultDirectory(c)
+    assert theDir == c.frame.openDirectory,theDir
+#@-node:ekr.20090526102407.10034:@test g.findDefaultDirectory
+#@-node:ekr.20081001062423.12:g.findDefaultDirectory & test (major change)
+#@+node:ekr.20090527121108.5845:@test g.setDefaultDirectory
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    result,error = g.setDefaultDirectory(c,p,importing=False)
+    assert error == ''
+    assert result == c.openDirectory,result
+
+
+#@-node:ekr.20090527121108.5845:@test g.setDefaultDirectory
+#@-node:ekr.20081001062423.9:g.setDefaultDirectory & helpers
 #@-node:ekr.20031218072017.1380:g.Directive utils...
 #@+node:ekr.20031218072017.3100:wrap_lines
 #@+at 
@@ -1027,6 +1167,213 @@ def wrap_lines (lines,pageWidth,firstLineWidth=None):
     # g.trace(result)
     return result
 #@-node:ekr.20031218072017.3100:wrap_lines
+#@+node:ekr.20090517020744.5889:unit tests for new directives
+if g.unitTesting:
+
+    #@    @+others
+    #@+node:ekr.20090517020744.5890:@test c.scanAllDirectives
+    #@@language python
+    #@@comment a b c
+        # @comment must follow @language
+    #@@tabwidth -4
+    #@@pagewidth 72
+    #@@encoding utf-8
+    #@@lineending crlf
+
+    c,p = g.getTestVars()
+    d = c.scanAllDirectives(p)
+    # print g.dictToString(d)
+
+    table = (
+        ('delims', ('a','b','c'),),
+        ('encoding','utf-8'),
+        ('language','python'),
+        ('lineending','\r\n'),
+        ('pagewidth',72),
+        ('tabwidth',-4),
+    )
+
+    for kind,expected in table:
+        got = d.get(kind)
+        assert got == expected, 'kind: %s, expected %s, got %s' % (
+            kind,repr(expected),repr(got))
+    #@-node:ekr.20090517020744.5890:@test c.scanAllDirectives
+    #@+node:ekr.20090517020744.5891:@test c.scanAtRootDirectives root-code
+    #@@root-code
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    s = c.scanAtRootDirectives(aList)
+
+    assert s == 'code',repr(s)
+    #@nonl
+    #@-node:ekr.20090517020744.5891:@test c.scanAtRootDirectives root-code
+    #@+node:ekr.20090517020744.5892:@test c.scanAtRootDirectives root-doc
+    #@@root-doc
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    s = c.scanAtRootDirectives(aList)
+
+    assert s == 'doc',repr(s)
+    #@nonl
+    #@-node:ekr.20090517020744.5892:@test c.scanAtRootDirectives root-doc
+    #@+node:ekr.20090517020744.5893:@test g.get_directives_dict
+    #@@language python
+    #@@comment a b c
+        # @comment must follow @language.
+    #@@tabwidth -8
+    #@@pagewidth 72
+    #@@encoding utf-8
+
+    # @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
+
+    c,p = g.getTestVars()
+    d = g.get_directives_dict(p)
+
+    # assert d.get('_p') == p # Never used, and a bad idea.
+    assert d.get('language') == 'python'
+    assert d.get('tabwidth') == '-8'
+    assert d.get('pagewidth') == '72'
+    assert d.get('encoding') == 'utf-8'
+    assert d.get('comment') == 'a b c'
+    # assert d.get('path').endswith('xyzzy')
+    #@-node:ekr.20090517020744.5893:@test g.get_directives_dict
+    #@+node:ekr.20090517020744.5894:@test g.scanAtHeaderDirectives header
+    #@@header
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    g.scanAtHeaderDirectives(aList)
+    #@-node:ekr.20090517020744.5894:@test g.scanAtHeaderDirectives header
+    #@+node:ekr.20090517020744.5895:@test g.scanAtHeaderDirectives noheader
+    #@@noheader
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    g.scanAtHeaderDirectives(aList)
+    #@-node:ekr.20090517020744.5895:@test g.scanAtHeaderDirectives noheader
+    #@+node:ekr.20090517020744.5896:@test g.scanAtLineendingDirectives cr
+    #@@lineending cr
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    s = g.scanAtLineendingDirectives(aList)
+
+    assert s == '\r'
+    #@-node:ekr.20090517020744.5896:@test g.scanAtLineendingDirectives cr
+    #@+node:ekr.20090517020744.5897:@test g.scanAtLineendingDirectives crlf
+    #@@lineending crlf
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    s = g.scanAtLineendingDirectives(aList)
+    # print ('@lineending: %s'%repr(s))
+
+    assert s == '\r\n'
+    #@-node:ekr.20090517020744.5897:@test g.scanAtLineendingDirectives crlf
+    #@+node:ekr.20090517020744.5898:@test g.scanAtLineendingDirectives lf
+    #@@lineending lf
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    s = g.scanAtLineendingDirectives(aList)
+
+    assert s == '\n'
+    #@-node:ekr.20090517020744.5898:@test g.scanAtLineendingDirectives lf
+    #@+node:ekr.20090517020744.5899:@test g.scanAtLineendingDirectives nl
+    #@@lineending nl
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    s = g.scanAtLineendingDirectives(aList)
+
+    assert s == '\n'
+    #@-node:ekr.20090517020744.5899:@test g.scanAtLineendingDirectives nl
+    #@+node:ekr.20090517020744.5900:@test g.scanAtLineendingDirectives platform
+    #@@lineending platform
+
+    import sys
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    s = g.scanAtLineendingDirectives(aList)
+
+    if sys.platform.startswith('win'):
+        assert s == '\r\n'
+    else:
+        assert s == '\n'
+    #@-node:ekr.20090517020744.5900:@test g.scanAtLineendingDirectives platform
+    #@+node:ekr.20090517020744.5901:@test g.scanAtPagewidthDirectives -40
+    #@@pagewidth -40
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    n = g.scanAtPagewidthDirectives(aList)
+
+    assert n is None
+    #@nonl
+    #@-node:ekr.20090517020744.5901:@test g.scanAtPagewidthDirectives -40
+    #@+node:ekr.20090517020744.5902:@test g.scanAtPagewidthDirectives 40
+    #@@pagewidth 40
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    n = g.scanAtPagewidthDirectives(aList)
+
+    assert n == 40
+    #@nonl
+    #@-node:ekr.20090517020744.5902:@test g.scanAtPagewidthDirectives 40
+    #@+node:ekr.20090517020744.5912:@test g.scanAtTabwidthDirectives +6
+    #@@tabwidth 6
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    n = g.scanAtTabwidthDirectives(aList)
+
+    assert n == 6,repr(n)
+    #@nonl
+    #@-node:ekr.20090517020744.5912:@test g.scanAtTabwidthDirectives +6
+    #@+node:ekr.20090517020744.5913:@test g.scanAtTabwidthDirectives -6
+    #@@tabwidth -6
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    n = g.scanAtTabwidthDirectives(aList)
+
+    assert n == -6
+    #@nonl
+    #@-node:ekr.20090517020744.5913:@test g.scanAtTabwidthDirectives -6
+    #@+node:ekr.20090517020744.5914:@test g.scanAtWrapDirectives nowrap
+    #@@nowrap
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    s = g.scanAtWrapDirectives(aList)
+
+    assert s is False,repr(s)
+    #@nonl
+    #@-node:ekr.20090517020744.5914:@test g.scanAtWrapDirectives nowrap
+    #@+node:ekr.20090517020744.5915:@test g.scanAtWrapDirectives wrap
+    #@@wrap
+
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    s = g.scanAtWrapDirectives(aList)
+
+    assert s is True,repr(s)
+    #@nonl
+    #@-node:ekr.20090517020744.5915:@test g.scanAtWrapDirectives wrap
+    #@+node:ekr.20090517020744.5916:@test g.scanAtWrapDirectives wrap
+    c,p = g.getTestVars()
+    aList = g.get_directives_dict_list(p)
+    s = g.scanAtWrapDirectives(aList)
+
+    assert s is None,repr(s)
+    #@nonl
+    #@-node:ekr.20090517020744.5916:@test g.scanAtWrapDirectives wrap
+    #@-others
+#@-node:ekr.20090517020744.5889:unit tests for new directives
 #@-node:ekr.20031218072017.3099:Commands & Directives
 #@+node:ekr.20031218072017.3104:Debugging, Dumping, Timing, Tracing & Sherlock
 #@+node:ekr.20031218072017.3105:alert
@@ -1077,7 +1424,7 @@ def _callerName (n=1,files=False):
         return '' # "<no caller name>"
 #@-node:ekr.20031218072017.3107:_callerName
 #@-node:ekr.20051023083258:callers & _callerName
-#@+node:ekr.20041105091148:g.pdb
+#@+node:ekr.20041105091148:g.pdb & test
 def pdb (message=''):
 
     """Fall into pdb."""
@@ -1087,7 +1434,39 @@ def pdb (message=''):
     if message:
         print message
     pdb.set_trace()
-#@-node:ekr.20041105091148:g.pdb
+#@+node:ekr.20090517020744.5880:@test g.pdb
+if g.unitTesting:
+
+    import sys
+
+    c,p = g.getTestVars()
+
+    # Not a good unit test; it probably will never fail.
+    def aFunction(): pass
+    assert type(g.pdb)==type(aFunction), 'wrong type for g.pdb: %s' % type(g.pdb)
+
+    class myStdout:
+        def write(self,s):
+            pass # g.es('From pdb:',s)
+
+    class myStdin:
+        def readline (self):
+            return 'c' # Return 'c' (continue) for all requests for input.
+
+    def restore():
+        sys.stdout,sys.stdin = sys.__stdout__,sys.__stdin__
+
+    try:
+        sys.stdin = myStdin() # Essential
+        sys.stdout=myStdout() # Optional
+        g.pdb()
+        restore()
+        # assert False,'test of reraising'
+    except Exception:
+        restore()
+        raise
+#@-node:ekr.20090517020744.5880:@test g.pdb
+#@-node:ekr.20041105091148:g.pdb & test
 #@+node:ekr.20031218072017.3108:Dumps
 #@+node:ekr.20031218072017.3109:dump
 def dump(s):
@@ -1160,7 +1539,7 @@ def es_event_exception (eventName,full=False):
     if not g.stdErrIsRedirected(): # 2/16/04
         traceback.print_exc()
 #@-node:ekr.20031218072017.3111:es_event_exception
-#@+node:ekr.20031218072017.3112:es_exception
+#@+node:ekr.20031218072017.3112:es_exception & test
 def es_exception (full=True,c=None,color="red"):
 
     typ,val,tb = sys.exc_info()
@@ -1187,7 +1566,33 @@ def es_exception (full=True,c=None,color="red"):
         pdb.set_trace()
 
     return fileName,n
-#@-node:ekr.20031218072017.3112:es_exception
+#@+node:ekr.20090517020744.5874:@test g.es_exception
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    if c.config.redirect_execute_script_output_to_log_pane:
+        pass # Test doesn't work when redirection is on.
+    else:
+        try:
+            import sys
+            # Catch the output of g.es_exception.
+            # We catch the AssertionError, so nothing gets written to stderr.
+            sys.stdout = fo = g.fileLikeObject()
+            try: # Create an exception to catch.
+                assert False, 'Assert False in test_g_es_exception'
+            except AssertionError:
+                g.es_exception(color='suppress')
+                result = fo.get()
+                s1 = 'Traceback (most recent call last):'
+                s2 = 'AssertionError: Assert False in test_g_es_exception'
+                assert result.find(s1) > -1, 'No traceback line: %s' % repr(result)
+                assert result.find(s2) > -1, 'No AssertionError line: %s' % repr(result)
+        finally:
+            # Not needed unless we execute this script as selected text.
+            sys.stdout = sys.__stdout__
+#@-node:ekr.20090517020744.5874:@test g.es_exception
+#@-node:ekr.20031218072017.3112:es_exception & test
 #@+node:ekr.20061015090538:es_exception_type
 def es_exception_type (c=None,color="red"):
 
@@ -2035,7 +2440,7 @@ def chdir (path):
     if g.os_path_isdir(path) and g.os_path_exists(path):
         os.chdir(path)
 #@-node:ekr.20080606074139.2:g.chdir
-#@+node:ekr.20031218072017.3117:g.create_temp_file
+#@+node:ekr.20031218072017.3117:g.create_temp_file & test
 def create_temp_file (textMode=False):
     '''Return a tuple (theFile,theFileName)
 
@@ -2064,7 +2469,18 @@ def create_temp_file (textMode=False):
         theFile,theFileName = None,''
 
     return theFile,theFileName
-#@-node:ekr.20031218072017.3117:g.create_temp_file
+#@+node:ekr.20090517020744.5873:@test g.create_temp_file
+if g.unitTesting:
+
+    import types
+
+    c,p = g.getTestVars()
+    theFile,theFileName = g.create_temp_file()
+
+    assert type(theFile) == types.FileType, 'not file type'
+    assert type(theFileName) in (types.StringType, types.UnicodeType), 'not string type'
+#@-node:ekr.20090517020744.5873:@test g.create_temp_file
+#@-node:ekr.20031218072017.3117:g.create_temp_file & test
 #@+node:ekr.20031218072017.3118:g.ensure_extension
 def ensure_extension (name, ext):
 
@@ -2076,7 +2492,7 @@ def ensure_extension (name, ext):
     else:
         return name + ext
 #@-node:ekr.20031218072017.3118:g.ensure_extension
-#@+node:ekr.20031218072017.1264:g.getBaseDirectory (unchanged)
+#@+node:ekr.20031218072017.1264:g.getBaseDirectory
 # Handles the conventions applying to the "relative_path_base_directory" configuration option.
 
 def getBaseDirectory(c):
@@ -2088,8 +2504,7 @@ def getBaseDirectory(c):
     elif base and base == ".":
         base = c.openDirectory
 
-    # g.trace(base)
-    if base and len(base) > 0 and g.os_path_isabs(base):
+    if base and g.os_path_isabs(base):
         # Set c.chdir_to_relative_path as needed.
         if not hasattr(c,'chdir_to_relative_path'):
             c.chdir_to_relative_path = c.config.getBool('chdir_to_relative_path')
@@ -2099,7 +2514,72 @@ def getBaseDirectory(c):
         return base # base need not exist yet.
     else:
         return "" # No relative base given.
-#@-node:ekr.20031218072017.1264:g.getBaseDirectory (unchanged)
+#@-node:ekr.20031218072017.1264:g.getBaseDirectory
+#@+node:tbrown.20090219095555.61:g.handleUrlInUrlNode
+def handleUrlInUrlNode(url):
+
+    # Note: the UNL plugin has its own notion of what a good url is.
+
+    # c = self.c
+    # g.trace(url)
+    if g.unitTesting: return
+    #@    << check the url; return if bad >>
+    #@+node:tbrown.20090219095555.62:<< check the url; return if bad >>
+    #@+at 
+    #@nonl
+    # A valid url is (according to D.T.Hein):
+    # 
+    # 3 or more lowercase alphas, followed by,
+    # one ':', followed by,
+    # one or more of: (excludes !"#;<>[\]^`|)
+    #   $%&'()*+,-./0-9:=?@A-Z_a-z{}~
+    # followed by one of: (same as above, except no minus sign or comma).
+    #   $%&'()*+/0-9:=?@A-Z_a-z}~
+    #@-at
+    #@@c
+
+    urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
+
+    if not url or len(url) == 0:
+        g.es("no url following @url")
+        return
+
+    # Add http:// if required.
+    if not re.match('^([a-z]{3,}:)',url):
+        url = 'http://' + url
+    if not re.match(urlPattern,url):
+        g.es("invalid url:",url)
+        return
+    #@nonl
+    #@-node:tbrown.20090219095555.62:<< check the url; return if bad >>
+    #@nl
+    #@    << pass the url to the web browser >>
+    #@+node:tbrown.20090219095555.63:<< pass the url to the web browser >>
+    #@+at 
+    #@nonl
+    # Most browsers should handle the following urls:
+    #   ftp://ftp.uu.net/public/whatever.
+    #   http://localhost/MySiteUnderDevelopment/index.html
+    #   file://home/me/todolist.html
+    #@-at
+    #@@c
+
+    try:
+        import os
+        os.chdir(g.app.loadDir)
+        if g.match(url,0,"file:") and url[-4:]==".leo":
+            ok,frame = g.openWithFileName(url[5:],None)
+        else:
+            import webbrowser
+            # Mozilla throws a weird exception, then opens the file!
+            try: webbrowser.open(url)
+            except: pass
+    except:
+        g.es("exception opening",url)
+        g.es_exception()
+    #@-node:tbrown.20090219095555.63:<< pass the url to the web browser >>
+    #@nl
+#@-node:tbrown.20090219095555.61:g.handleUrlInUrlNode
 #@+node:EKR.20040504154039:g.is_sentinel
 def is_sentinel (line,delims):
 
@@ -2146,17 +2626,6 @@ def is_sentinel (line,delims):
         g.trace("can't happen. delims: %s" % repr(delims),color="red")
         return False
 #@-node:EKR.20040504154039:g.is_sentinel
-#@+node:ekr.20071114113736:g.makePathRelativeTo
-def makePathRelativeTo (fullPath,basePath):
-
-    if fullPath.startswith(basePath):
-        s = fullPath[len(basePath):]
-        if s.startswith(os.path.sep):
-            s = s[len(os.path.sep):]
-        return s
-    else:
-        return fullPath
-#@-node:ekr.20071114113736:g.makePathRelativeTo
 #@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
 # This is a generalization of os.makedir.
 
@@ -2164,17 +2633,20 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
 
     """Attempt to make all non-existent directories"""
 
-    # g.trace('theDir',theDir,c.config.create_nonexistent_directories,g.callers())
-
-    if not force:
-        if c:
-            if not c.config.create_nonexistent_directories:
-                return None
-        elif not app.config.create_nonexistent_directories:
-            return None
+    trace = False and not g.unitTesting
 
     if c:
-        theDir = g.os_path_expandExpression(theDir,c=c)
+        create = c.config.create_nonexistent_directories
+    else:
+        create = g.app.config.create_nonexistent_directories
+
+    if trace: g.trace('c exists: %s force: %s create: %s dir: %s' % (
+        c is not None,force,create,theDir))
+
+    if not force and not create:
+        return None
+
+    if c: theDir = g.os_path_expandExpression(theDir,c=c)
 
     dir1 = theDir = g.os_path_normpath(theDir)
 
@@ -2205,113 +2677,35 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
                 return None
     return dir1 # All have been created.
 #@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
-#@+node:ekr.20031218072017.2052:g.openWithFileName
-def openWithFileName(fileName,old_c,
-    enableLog=True,gui=None,readAtFileNodesFlag=True):
+#@+node:ekr.20071114113736:g.makePathRelativeTo
+def makePathRelativeTo (fullPath,basePath):
 
-    """Create a Leo Frame for the indicated fileName if the file exists."""
-
-    if not fileName or len(fileName) == 0:
-        return False, None
-
-    def munge(name):
-        return g.os_path_normpath(name or '').lower()
-
-    # Create a full, normalized, Unicode path name, preserving case.
-    relativeFileName = g.os_path_normpath(fileName)
-    fileName = g.os_path_finalize(fileName)
-    isZipped = fileName and zipfile.is_zipfile(fileName)
-    isLeo = isZipped or fileName.endswith('.leo')
-    # g.trace(relativeFileName,'-->',fileName)
-
-    # If the file is already open just bring its window to the front.
-    if isLeo:
-        theList = app.windowList
-        for frame in theList:
-            if munge(fileName) == munge(frame.c.mFileName):
-                frame.bringToFront()
-                frame.c.setLog()
-                frame.c.outerUpdate()
-                return True, frame
-        if old_c:
-            # New in 4.4: We must read the file *twice*.
-            # The first time sets settings for the later call to c.finishCreate.
-            # g.trace('***** prereading',fileName)
-            c2 = g.app.config.openSettingsFile(fileName)
-            if c2: g.app.config.updateSettings(c2,localFlag=True)
-            g.doHook('open0')
-
-        # Open the file in binary mode to allow 0x1a in bodies & headlines.
-        theFile,isZipped = g.openLeoOrZipFile(fileName)
-        if not theFile: return False, None
-        c,frame = app.newLeoCommanderAndFrame(
-            fileName=fileName,
-            relativeFileName=relativeFileName,
-            gui=gui)
+    if fullPath.startswith(basePath):
+        s = fullPath[len(basePath):]
+        if s.startswith(os.path.sep):
+            s = s[len(os.path.sep):]
+        return s
     else:
-        c,frame = g.openWrapperLeoFile(old_c,fileName,gui)
-        if not c: return False,None
+        return fullPath
+#@-node:ekr.20071114113736:g.makePathRelativeTo
+#@+node:ekr.20070412082527:g.openLeoOrZipFile & tests
+# This is used in several places besides g.openWithFileName.
 
-    assert frame.c == c and c.frame == frame
-    c.isZipped = isZipped
-    frame.log.enable(enableLog)
-    g.app.writeWaitingLog() # New in 4.3: write queued log first.
-    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
-        c.setLog()
-        if isLeo:
-            app.lockLog()
-            ok = frame.c.fileCommands.open(
-                theFile,fileName,
-                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
-            app.unlockLog()
-            if not ok:
-                g.app.closeLeoWindow(frame)
-                return False,frame
-            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
-                # The recent files list has been updated by c.updateRecentFiles.
-                z.c.config.setRecentFiles(g.app.config.recentFiles)
-    # Bug fix in 4.4.
-    frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
-    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
-    p = c.p
-    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    if not g.doHook("menu1",c=c,p=p,v=p):
-        frame.menu.createMenuBar(frame)
-        c.updateRecentFiles(relativeFileName or fileName)
-        g.doHook("menu2",c=frame.c,p=p,v=p)
-        g.doHook("after-create-leo-frame",c=c)
-    # New in Leo 4.6: provide an official way for very late initialization.
-    c.frame.tree.initAfterLoad()
-    c.initAfterLoad()
-    c.redraw()
-    assert frame.c == c and c.frame == frame
-    # chapterController.finishCreate must be called after the first real redraw
-    # because it requires a valid value for c.rootPosition().
-    # g.trace('c.chapterController',c.chapterController)
-    if c.chapterController:
-        c.chapterController.finishCreate()
-    k = c.k
-    if k:
-        k.setDefaultInputState()
-    if c.config.getBool('outline_pane_has_initial_focus'):
-        c.treeWantsFocusNow()
-    else:
-        c.bodyWantsFocusNow()
-    if k:
-        k.showStateAndMode()
-
-    c.frame.initCompleteHint()
-
-    return True, frame
-#@-node:ekr.20031218072017.2052:g.openWithFileName
-#@+node:ekr.20070412082527:g.openLeoOrZipFile
 def openLeoOrZipFile (fileName):
 
     try:
         isZipped = zipfile.is_zipfile(fileName)
         if isZipped:
+            import StringIO
             theFile = zipfile.ZipFile(fileName,'r')
-            # g.trace('opened zip file',theFile)
+            if not theFile: return None,False
+            # New in Leo 4.6 b2: read the file into an StringIO file.
+            aList = theFile.namelist()
+            name = aList and len(aList) == 1 and aList[0]
+            if not name: return None,False
+            s = theFile.read(name)
+            theStringFile =  StringIO.StringIO(s)
+            return theStringFile,True
         else:
             # mode = g.choose(g.isPython3,'r','rb')
             # 9/19/08: always use binary mode??
@@ -2324,7 +2718,176 @@ def openLeoOrZipFile (fileName):
             g.es_print("can not open:",fileName,color="blue")
         return None,False
 #@nonl
-#@-node:ekr.20070412082527:g.openLeoOrZipFile
+#@+node:ekr.20090526083112.5838:@test g.openLeoOrZipFile
+if g.unitTesting:
+
+    import zipfile
+
+    # Create a zip file for testing.
+    s = 'this is a test file'
+    testDir = g.os_path_join(g.app.loadDir,'..','test')
+    assert g.os_path_exists(testDir)
+    path = g.os_path_finalize_join(testDir,'testzip.zip')
+    theFile = zipfile.ZipFile(path,'w')
+    theFile.writestr('leo-zip-file',s)
+    theFile.close()
+
+    # Open the file, and use read (with no args) to get the contents.
+    theFile,ok = g.openLeoOrZipFile(path)
+    assert ok
+    assert theFile.read() == s
+#@-node:ekr.20090526083112.5838:@test g.openLeoOrZipFile
+#@-node:ekr.20070412082527:g.openLeoOrZipFile & tests
+#@+node:ekr.20090520055433.5945:g.openWithFileName & helpers
+def openWithFileName(fileName,old_c,
+    enableLog=True,gui=None,readAtFileNodesFlag=True):
+
+    """Create a Leo Frame for the indicated fileName if the file exists."""
+
+    trace = False and not g.unitTesting
+
+    if not fileName: return False, None
+    isLeo,fn,relFn = g.mungeFileName(fileName)
+
+    # Return if the file is already open.
+    c = g.findOpenFile(fn)
+    if c: return True,c.frame
+
+    # Open the file.
+    if isLeo:
+        c,f = g.openWithFileNameHelper(old_c,gui,fn,relFn)
+    else:
+        c,f = g.openWrapperLeoFile(old_c,fn,gui),None
+    if not c: return False,None
+
+    # Init the open file.
+    assert c.frame and c.frame.c == c
+    c.frame.log.enable(enableLog)
+    g.app.writeWaitingLog()
+    ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
+    if not ok: return False,None
+    g.createMenu(c,fn)
+    g.finishOpen(c)
+    return True,c.frame
+#@+node:ekr.20090520055433.5951:g.createMenu
+def createMenu(c,fileName=None):
+
+    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
+
+    if not g.doHook("menu1",c=c,p=c.p,v=c.p):
+        c.frame.menu.createMenuBar(c.frame)
+        c.updateRecentFiles(fileName)
+        g.doHook("menu2",c=c,p=c.p,v=c.p)
+        g.doHook("after-create-leo-frame",c=c)
+#@-node:ekr.20090520055433.5951:g.createMenu
+#@+node:ekr.20090520055433.5948:g.findOpenFile
+def findOpenFile(fileName):
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    for frame in g.app.windowList:
+        c = frame.c
+        if munge(fileName) == munge(c.mFileName):
+            frame.bringToFront()
+            c.setLog()
+            c.outerUpdate()
+            return c
+    return None
+#@-node:ekr.20090520055433.5948:g.findOpenFile
+#@+node:ekr.20090520055433.5952:g.finishOpen
+def finishOpen(c):
+
+    k = c.k
+    # New in Leo 4.6: provide an official way for very late initialization.
+    c.frame.tree.initAfterLoad()
+    c.initAfterLoad()
+    c.redraw()
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.chapterController:
+        c.chapterController.finishCreate()
+    if k:
+        k.setDefaultInputState()
+    if c.config.getBool('outline_pane_has_initial_focus'):
+        c.treeWantsFocusNow()
+    else:
+        c.bodyWantsFocusNow()
+    if k:
+        k.showStateAndMode()
+    c.frame.initCompleteHint()
+    return True
+#@-node:ekr.20090520055433.5952:g.finishOpen
+#@+node:ekr.20090520055433.5950:g.handleOpenHooks
+def handleOpenHooks(c,old_c,gui,fileName,theFile,readAtFileNodesFlag):
+
+    if not g.doHook("open1",old_c=old_c,c=c,new_c=c,fileName=fileName):
+        c.setLog()
+        if theFile:
+            app.lockLog()
+            ok = c.fileCommands.open(
+                theFile,fileName,
+                readAtFileNodesFlag=readAtFileNodesFlag) # closes file.
+            app.unlockLog()
+            if not ok:
+                g.app.closeLeoWindow(c.frame)
+                return False
+            for z in g.app.windowList: # Bug fix: 2007/12/07: don't change frame var.
+                # The recent files list has been updated by c.updateRecentFiles.
+                z.c.config.setRecentFiles(g.app.config.recentFiles)
+
+    # Bug fix in 4.4.
+    if not c.openDirectory:
+        c.openDirectory = c.frame.openDirectory = c.os_path_finalize(g.os_path_dirname(fileName))
+    g.doHook("open2",old_c=old_c,c=c,new_c=c,fileName=fileName)
+    return True
+#@nonl
+#@-node:ekr.20090520055433.5950:g.handleOpenHooks
+#@+node:ekr.20090520055433.5954:g.mungeFileName
+def mungeFileName(fileName):
+
+    '''Create a full, normalized, Unicode path name, preserving case.'''
+
+    relFn = g.os_path_normpath(fileName)
+    fn = g.os_path_finalize(fileName)
+
+    isZipped = fn and zipfile.is_zipfile(fn)
+    isLeo = isZipped or fn.endswith('.leo')
+
+    return isLeo,fn,relFn
+#@-node:ekr.20090520055433.5954:g.mungeFileName
+#@+node:ekr.20090520055433.5946:g.openWithFileNameHelper
+def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
+
+    if old_c: g.preRead(fileName)
+    g.doHook('open0')
+
+    # Open the file in binary mode to allow 0x1a in bodies & headlines.
+    theFile,isZipped = g.openLeoOrZipFile(fileName)
+    if not theFile:
+        return None,None
+
+    # This call will take 3/4 sec. to open a file from the leoBridge.
+    # This is due to imports in c.__init__
+    c,frame = app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        gui=gui)
+
+    c.isZipped = isZipped
+    return c,theFile
+#@+node:ekr.20090520055433.5949:preRead
+def preRead(fileName):
+
+    '''Read the file for the first time,
+    setting the setting for a later call to finishCreate.
+    '''
+
+    c = g.app.config.openSettingsFile(fileName)
+    if c:
+        g.app.config.updateSettings(c,localFlag=True)
+#@-node:ekr.20090520055433.5949:preRead
+#@-node:ekr.20090520055433.5946:g.openWithFileNameHelper
 #@+node:ekr.20080921154026.1:g.openWrapperLeoFile
 def openWrapperLeoFile (old_c,fileName,gui):
 
@@ -2335,7 +2898,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
     if not g.os_path_exists(fileName):
         if not g.unitTesting:
             g.es_print("can not open:",fileName,color="blue")
-        return None,None
+        return None
 
     c,frame = g.app.newLeoCommanderAndFrame(
         fileName=None,relativeFileName=None,gui=gui)
@@ -2349,7 +2912,7 @@ def openWrapperLeoFile (old_c,fileName,gui):
     frame.lift()
     frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
 
-    if 1: # Just read the file into the node.
+    if True: # Just read the file into the node.
         try:
             fileName = g.os_path_finalize(fileName)
             f = open(fileName)
@@ -2357,11 +2920,12 @@ def openWrapperLeoFile (old_c,fileName,gui):
             f.close()
         except IOError:
             g.es_print("can not open: ",fileName,color='red')
-            return None,None
-        p = c.p
+            return None
+        p = c.rootPosition()
         if p:
-            p.setHeadString(fileName)
+            p.setHeadString('@edit %s' % fileName)
             p.setBodyString(s)
+            c.selectPosition(p)
     else:  # Import the file into the new outline.
         junk,ext = g.os_path_splitext(fileName)
         p = c.p
@@ -2379,16 +2943,10 @@ def openWrapperLeoFile (old_c,fileName,gui):
     if c.config.getBool('use_chapters') and c.chapterController:
         c.chapterController.finishCreate()
 
-    frame.c.setChanged(True) # Unlike new, we the outline should be marked changed.
-
-    if c.config.getBool('outline_pane_has_initial_focus'):
-        c.treeWantsFocusNow()
-    else:
-        c.bodyWantsFocusNow()
-
-    # c.redraw() # Only needed by menu commands.
-    return c,frame
+    frame.c.setChanged(True) # Mark the outline dirty.
+    return c
 #@-node:ekr.20080921154026.1:g.openWrapperLeoFile
+#@-node:ekr.20090520055433.5945:g.openWithFileName & helpers
 #@+node:ekr.20031218072017.3120:g.readlineForceUnixNewline (Steven P. Schaefer)
 #@+at 
 #@nonl
@@ -2447,70 +3005,6 @@ def shortFileName (fileName):
 
 shortFilename = shortFileName
 #@-node:ekr.20031218072017.3125:g.shortFileName & shortFilename
-#@+node:tbrown.20090219095555.61:g.handleUrlInUrlNode
-def handleUrlInUrlNode(url):
-
-    # Note: the UNL plugin has its own notion of what a good url is.
-
-    # c = self.c
-    # g.trace(url)
-    #@    << check the url; return if bad >>
-    #@+node:tbrown.20090219095555.62:<< check the url; return if bad >>
-    #@+at 
-    #@nonl
-    # A valid url is (according to D.T.Hein):
-    # 
-    # 3 or more lowercase alphas, followed by,
-    # one ':', followed by,
-    # one or more of: (excludes !"#;<>[\]^`|)
-    #   $%&'()*+,-./0-9:=?@A-Z_a-z{}~
-    # followed by one of: (same as above, except no minus sign or comma).
-    #   $%&'()*+/0-9:=?@A-Z_a-z}~
-    #@-at
-    #@@c
-
-    urlPattern = "[a-z]{3,}:[\$-:=?-Z_a-z{}~]+[\$-+\/-:=?-Z_a-z}~]"
-
-    if not url or len(url) == 0:
-        g.es("no url following @url")
-        return
-
-    # Add http:// if required.
-    if not re.match('^([a-z]{3,}:)',url):
-        url = 'http://' + url
-    if not re.match(urlPattern,url):
-        g.es("invalid url:",url)
-        return
-    #@nonl
-    #@-node:tbrown.20090219095555.62:<< check the url; return if bad >>
-    #@nl
-    #@    << pass the url to the web browser >>
-    #@+node:tbrown.20090219095555.63:<< pass the url to the web browser >>
-    #@+at 
-    #@nonl
-    # Most browsers should handle the following urls:
-    #   ftp://ftp.uu.net/public/whatever.
-    #   http://localhost/MySiteUnderDevelopment/index.html
-    #   file://home/me/todolist.html
-    #@-at
-    #@@c
-
-    try:
-        import os
-        os.chdir(g.app.loadDir)
-        if g.match(url,0,"file:") and url[-4:]==".leo":
-            ok,frame = g.openWithFileName(url[5:],None)
-        else:
-            import webbrowser
-            # Mozilla throws a weird exception, then opens the file!
-            try: webbrowser.open(url)
-            except: pass
-    except:
-        g.es("exception opening",url)
-        g.es_exception()
-    #@-node:tbrown.20090219095555.63:<< pass the url to the web browser >>
-    #@nl
-#@-node:tbrown.20090219095555.61:g.handleUrlInUrlNode
 #@+node:ekr.20050104135720:Used by tangle code & leoFileCommands
 #@+node:ekr.20031218072017.1241:g.update_file_if_changed
 # This is part of the tangle code.
@@ -2540,7 +3034,7 @@ def update_file_if_changed(c,file_name,temp_name):
         g.es("rename failed: no file created!",color="red")
         g.es('',file_name," may be read-only or in use")
 #@-node:ekr.20031218072017.1241:g.update_file_if_changed
-#@+node:ekr.20050104123726.3:g.utils_remove
+#@+node:ekr.20050104123726.3:g.utils_remove & test
 def utils_remove (fileName,verbose=True):
 
     try:
@@ -2551,8 +3045,31 @@ def utils_remove (fileName,verbose=True):
             g.es("exception removing:",fileName)
             g.es_exception()
         return False
-#@-node:ekr.20050104123726.3:g.utils_remove
-#@+node:ekr.20031218072017.1263:g.utils_rename
+#@+node:ekr.20090517020744.5886:@test g.utils_remove
+if g.unitTesting:
+
+    import os
+
+    c,p = g.getTestVars()
+    exists = g.os_path_exists
+
+    path = g.os_path_join(g.app.testDir,'xyzzy')
+    if exists(path):
+        os.remove(path)
+
+    assert not exists(path)
+    assert not g.utils_remove(path,verbose=False)
+
+    f = file(path,'w')
+    f.write('test')
+    f.close()
+
+    assert exists(path)
+    assert g.utils_remove(path,verbose=True)
+    assert not exists(path)
+#@-node:ekr.20090517020744.5886:@test g.utils_remove
+#@-node:ekr.20050104123726.3:g.utils_remove & test
+#@+node:ekr.20031218072017.1263:g.utils_rename & test
 #@<< about os.rename >>
 #@+node:ekr.20050104123726.1:<< about os.rename >>
 #@+at 
@@ -2612,7 +3129,37 @@ def utils_rename (c,src,dst,mode=None,verbose=True):
             g.es('exception renaming',src,'to',dst,color='red')
             g.es_exception(full=False)
         return False
-#@-node:ekr.20031218072017.1263:g.utils_rename
+#@+node:ekr.20090517020744.5887:@test g.utils_rename
+if g.unitTesting:
+
+    import os
+
+    c,p = g.getTestVars()
+    exists = g.os_path_exists
+    path = g.os_path_join(g.app.testDir,'xyzzy')
+    path2 = g.os_path_join(g.app.testDir,'xyzzy2')
+
+    # Create both paths.
+    for p in (path,path2):
+        if exists(p):
+            os.remove(p)
+        assert not exists(p)
+        f = file(p,'w')
+        f.write('test %s' % p)
+        f.close()
+        assert exists(p)
+
+    assert g.utils_rename(c,path,path2,verbose=True)
+    assert exists(path2)
+    f = file(path2)
+    s = f.read()
+    f.close()
+    # print('Contents of %s: %s' % (path2,s))
+    assert s == 'test %s' % path
+    os.remove(path2)
+    assert not exists(path)
+#@-node:ekr.20090517020744.5887:@test g.utils_rename
+#@-node:ekr.20031218072017.1263:g.utils_rename & test
 #@+node:ekr.20050104124903:g.utils_chmod
 def utils_chmod (fileName,mode,verbose=True):
 
@@ -3044,6 +3591,30 @@ def plugin_signon(module_name,verbose=False):
 
     app.loadedPlugins.append(module_name)
 #@-node:ekr.20031218072017.1318:g.plugin_signon
+#@+node:ville.20090521164644.5924:g.command (decorator for creating global commands)
+class command:
+    """ Decorator to create global commands """
+    def __init__(self, name, **kwargs):
+        """ Registration for command 'name'
+
+        kwargs reserved for future use (shortcut, button, ...?)
+
+        """
+        self.name = name
+        self.args = kwargs
+
+    def __call__(self,func):
+        # register command for all future commanders
+        g.app.global_commands_dict[self.name] = func
+
+        # ditto for all current commanders
+        for co in g.app.commanders():
+            co.k.registerCommand(self.name,shortcut = None, func = func, pane='all',verbose=False)        
+
+        return func
+
+
+#@-node:ville.20090521164644.5924:g.command (decorator for creating global commands)
 #@-node:ekr.20031218072017.3139:Hooks & plugins (leoGlobals)
 #@+node:ekr.20031218072017.3145:Most common functions...
 # These are guaranteed always to exist for scripts.
@@ -3168,7 +3739,7 @@ def es_print(*args,**keys):
     if not g.app.unitTesting:
         g.es(*args,**keys)
 #@-node:ekr.20050707064040:g.es_print
-#@+node:ekr.20050707065530:g.es_trace
+#@+node:ekr.20050707065530:g.es_trace & test
 def es_trace(*args,**keys):
 
     if args:
@@ -3179,12 +3750,22 @@ def es_trace(*args,**keys):
             pass
 
     g.es(*args,**keys)
-#@-node:ekr.20050707065530:g.es_trace
+#@+node:ekr.20090517020744.5875:@test g.es_trace
+#@@first
+
+if g.unitTesting:
+
+    if 0: # Not usually enabled.
+        g.es_trace('\ntest of es_trace: Ă',color='red')
+#@-node:ekr.20090517020744.5875:@test g.es_trace
+#@-node:ekr.20050707065530:g.es_trace & test
 #@+node:ekr.20090128083459.82:g.posList
 class posList(list):
     #@    << docstring for posList >>
     #@+node:ekr.20090130114732.2:<< docstring for posList >>
     '''A subclass of list for creating and selecting lists of positions.
+
+        This is deprecated, use leoNodes.poslist instead!
 
         aList = g.posList(c)
             # Creates a posList containing all positions in c.
@@ -3263,13 +3844,14 @@ def pr(*args,**keys):
     s = g.translateArgs(args,d) # Translates everything to unicode.
 
     try: # We can't use any print keyword args in Python 2.x!
-        # print(s) # Not quite right.
         if d.get('newline'):
             sys.stdout.write(s+'\n')
         else:
             sys.stdout.write(s)
     except Exception:
         print('unexpected Exception in g.pr')
+        print('make sure your sitecustomize.py contains::')
+        print('    sys.setdefaultencoding("utf-8")')
         g.es_exception()
         g.trace(g.callers())
 #@-node:ekr.20080710101653.1:g.pr
@@ -3284,7 +3866,6 @@ def translateArgs(args,d):
         e = sys.getdefaultencoding()
         g.consoleEncoding = isValidEncoding(e) and e or 'utf-8'
         # print 'translateArgs',g.consoleEncoding
-
 
     result = [] ; n = 0 ; spaces = d.get('spaces')
     for arg in args:
@@ -3397,6 +3978,8 @@ def os_path_expandExpression (s,**keys):
     if not c:
         g.trace('can not happen: no c',g.callers())
         return s
+
+    if not s: return ''
 
     i = s.find('{{')
     j = s.find('}}')
@@ -4184,7 +4767,7 @@ def skip_id(s,i,chars=None):
     return i
 #@nonl
 #@-node:ekr.20040705195048:skip_id
-#@+node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line
+#@+node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line & tests
 #@+at 
 #@nonl
 # These methods skip to the next newline, regardless of whether the newline 
@@ -4216,7 +4799,62 @@ def skip_to_start_of_line (s,i):
     i = s.rfind('\n',0,i) # Don't find s[i], so it doesn't matter if s[i] is a newline.
     if i == -1: return 0
     else:       return i + 1
-#@-node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line
+#@+node:ekr.20090517020744.5883:@test g.skip_line
+if g.unitTesting:
+
+    # This is a crucial unit test.
+
+    s = 'a\n\nc'
+
+    for i,result in (
+        (-1,2), # One too few.
+        (0,2),(1,2),
+        (2,3),
+        (3,4),
+        (4,4), # One too many.
+    ):
+        j = g.skip_line(s,i)
+        assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
+#@-node:ekr.20090517020744.5883:@test g.skip_line
+#@+node:ekr.20090517020744.5884:@test g.skip_to_end_of_line
+if g.unitTesting:
+
+    # This is a crucial unit test.
+
+    s = 'a\n\nc'
+
+    for i,result in (
+        (-1,1), # One too few.
+        (0,1),(1,1),
+        (2,2),
+        (3,4),
+        (4,4), # One too many.
+    ):
+        j = g.skip_to_end_of_line(s,i)
+        assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
+#@-node:ekr.20090517020744.5884:@test g.skip_to_end_of_line
+#@+node:ekr.20090517020744.5885:@test g.skip_to_start_of_line
+if g.unitTesting:
+
+    # This is a crucial unit tests.
+
+    s1 = 'a\n\nc'
+    table1 = (
+        (-1,0), # One too few.
+        (0,0),(1,0),
+        (2,2),
+        (3,3),
+        (4,4), # One too many.
+    )
+    s2 = 'a\n'
+    table2 = ((1,0),(2,2)) # A special case at end.
+
+    for s,table in ((s1,table1),(s2,table2)):
+        for i,result in table:
+            j = g.skip_to_start_of_line(s,i)
+            assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
+#@-node:ekr.20090517020744.5885:@test g.skip_to_start_of_line
+#@-node:ekr.20031218072017.3187:skip_line, skip_to_start/end_of_line & tests
 #@+node:ekr.20031218072017.3188:skip_long
 def skip_long(s,i):
 
@@ -4361,6 +4999,167 @@ joinlines = joinLines
 #@-node:ekr.20031218072017.3195:splitLines & joinLines
 #@-node:ekr.20031218072017.3151:Scanning... (leoGlobals.py)
 #@+node:ekr.20040327103735.2:Script Tools (leoGlobals.py)
+#@+node:ekr.20050503112513.7:g.executeFile
+def executeFile(filename, options= ''):
+
+    if not os.access(filename, os.R_OK): return
+
+    subprocess = g.importExtension('subprocess',None,verbose=False)
+
+    cwd = os.getcwdu()
+    fdir, fname = g.os_path_split(filename)
+
+    if subprocess: # Only exists in Python 2.4.
+        #@        << define subprocess_wrapper >>
+        #@+node:ekr.20050503112513.8:<< define subprocess_wrapper >>
+        def subprocess_wrapper(cmdlst):
+
+            # g.trace(cmdlst, fdir)
+            # g.trace(subprocess.list2cmdline([cmdlst]))
+
+            p = subprocess.Popen(cmdlst, cwd=fdir,
+                universal_newlines=True,
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            stdo, stde = p.communicate()
+            return p.wait(), stdo, stde
+        #@-node:ekr.20050503112513.8:<< define subprocess_wrapper >>
+        #@nl
+        rc, so, se = subprocess_wrapper('%s %s %s'%(sys.executable, fname, options))
+        if rc:
+            g.pr('return code', rc)
+        g.pr(so, se)
+    else:
+        if fdir: os.chdir(fdir)
+        d = {'__name__': '__main__'}
+        execfile(fname, d)  #, globals()
+        os.system('%s %s' % (sys.executable, fname))
+        if fdir: os.chdir(cwd)
+#@-node:ekr.20050503112513.7:g.executeFile
+#@+node:ekr.20040321065415:g.findNode... &,findTopLevelNode
+def findNodeInChildren(c,p,headline):
+
+    """Search for a node in v's tree matching the given headline."""
+
+    for p in p.children_iter():
+        if p.h.strip() == headline.strip():
+            return p.copy()
+    return c.nullPosition()
+
+def findNodeInTree(c,p,headline):
+
+    """Search for a node in v's tree matching the given headline."""
+
+    for p in p.subtree_iter():
+        if p.h.strip() == headline.strip():
+            return p.copy()
+    return c.nullPosition()
+
+def findNodeAnywhere(c,headline):
+
+    for p in c.all_positions_with_unique_tnodes_iter():
+        if p.h.strip() == headline.strip():
+            return p.copy()
+    return c.nullPosition()
+
+def findTopLevelNode(c,headline):
+
+    for p in c.rootPosition().self_and_siblings_iter():
+        if p.h.strip() == headline.strip():
+            return p.copy()
+    return c.nullPosition()
+#@-node:ekr.20040321065415:g.findNode... &,findTopLevelNode
+#@+node:EKR.20040614071102.1:g.getScript & test
+def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=True):
+
+    '''Return the expansion of the selected text of node p.
+    Return the expansion of all of node p's body text if there
+    is p is not the current node or if there is no text selection.'''
+
+    # New in Leo 4.6 b2: use a pristine atFile handler
+    # so there can be no conflict with c.atFileCommands.
+    # at = c.atFileCommands
+    import leo.core.leoAtFile as leoAtFile
+    at = leoAtFile.atFile(c)
+
+    w = c.frame.body.bodyCtrl
+    p1 = p and p.copy()
+    if not p:
+        p = c.p
+    try:
+        if g.app.inBridge:
+            s = p.b
+        elif p1:
+            s = p.b # Bug fix: Leo 8.8.4.
+        elif p == c.p:
+            if useSelectedText and w.hasSelection():
+                s = w.getSelectedText()
+            else:
+                s = w.getAllText()
+        else:
+            s = p.b
+        # Remove extra leading whitespace so the user may execute indented code.
+        s = g.removeExtraLws(s,c.tab_width)
+        if s.strip():
+            g.app.scriptDict["script1"]=s
+            # Important: converts unicode to utf-8 encoded strings.
+            script = at.writeFromString(p.copy(),s,
+                forcePythonSentinels=forcePythonSentinels,
+                useSentinels=useSentinels)
+            script = script.replace("\r\n","\n") # Use brute force.
+            # Important, the script is an **encoded string**, not a unicode string.
+            g.app.scriptDict["script2"]=script
+        else: script = ''
+    except Exception:
+        g.es_print("unexpected exception in g.getScript")
+        g.es_exception()
+        script = ''
+
+    # g.trace(type(script),repr(script))
+    return script
+#@+node:ekr.20090517020744.5878:@test g.getScript strips crlf
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    script = g.getScript(c,p) # This will get the text of this node.
+    assert script.find('\r\n') == -1, repr(script)
+#@-node:ekr.20090517020744.5878:@test g.getScript strips crlf
+#@-node:EKR.20040614071102.1:g.getScript & test
+#@+node:ekr.20060624085200:g.handleScriptException
+def handleScriptException (c,p,script,script1):
+
+    g.es("exception executing script",color='blue')
+
+    full = c.config.getBool('show_full_tracebacks_in_scripts')
+
+    fileName, n = g.es_exception(full=full)
+
+    if p and not script1 and fileName == "<string>":
+        c.goToScriptLineNumber(p,script,n)
+
+    #@    << dump the lines near the error >>
+    #@+node:EKR.20040612215018:<< dump the lines near the error >>
+    if g.os_path_exists(fileName):
+        f = open(fileName)
+        lines = f.readlines()
+        f.close()
+    else:
+        lines = g.splitLines(script)
+
+    s = '-' * 20
+    g.es_print('',s)
+
+    # Print surrounding lines.
+    i = max(0,n-2)
+    j = min(n+2,len(lines))
+    while i < j:
+        ch = g.choose(i==n-1,'*',' ')
+        s = "%s line %d: %s" % (ch,i+1,lines[i])
+        g.es('',s,newline=False)
+        i += 1
+    #@-node:EKR.20040612215018:<< dump the lines near the error >>
+    #@nl
+#@-node:ekr.20060624085200:g.handleScriptException
 #@+node:ekr.20031218072017.2418:g.initScriptFind (set up dialog)
 def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
     script_search=True,script_change=True):
@@ -4401,113 +5200,156 @@ def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
     c.frame.findPanel.init(c)
     c.showFindPanel()
 #@-node:ekr.20031218072017.2418:g.initScriptFind (set up dialog)
-#@+node:ekr.20040321065415:g.findNode... &,findTopLevelNode
-def findNodeInChildren(c,p,headline):
+#@+node:ekr.20090517020744.5888:@test pre-definition of g in scripts
+if g.unitTesting:
 
-    """Search for a node in v's tree matching the given headline."""
+    # print(g.listToString(dir()))
 
-    for p in p.children_iter():
-        if p.h.strip() == headline.strip():
-            return p.copy()
-    return c.nullPosition()
+    for ivar in ('c','g','p'):
+        assert ivar in dir()
 
-def findNodeInTree(c,p,headline):
-
-    """Search for a node in v's tree matching the given headline."""
-
-    for p in p.subtree_iter():
-        if p.h.strip() == headline.strip():
-            return p.copy()
-    return c.nullPosition()
-
-def findNodeAnywhere(c,headline):
-
-    for p in c.all_positions_with_unique_tnodes_iter():
-        if p.h.strip() == headline.strip():
-            return p.copy()
-    return c.nullPosition()
-
-def findTopLevelNode(c,headline):
-
-    for p in c.rootPosition().self_and_siblings_iter():
-        if p.h.strip() == headline.strip():
-            return p.copy()
-    return c.nullPosition()
-#@-node:ekr.20040321065415:g.findNode... &,findTopLevelNode
-#@+node:ekr.20060624085200:g.handleScriptException
-def handleScriptException (c,p,script,script1):
-
-    g.es("exception executing script",color='blue')
-
-    full = c.config.getBool('show_full_tracebacks_in_scripts')
-
-    fileName, n = g.es_exception(full=full)
-
-    if p and not script1 and fileName == "<string>":
-        c.goToScriptLineNumber(p,script,n)
-
-    #@    << dump the lines near the error >>
-    #@+node:EKR.20040612215018:<< dump the lines near the error >>
-    if g.os_path_exists(fileName):
-        f = open(fileName)
-        lines = f.readlines()
-        f.close()
-    else:
-        lines = g.splitLines(script)
-
-    s = '-' * 20
-    g.es_print('',s)
-
-    # Print surrounding lines.
-    i = max(0,n-2)
-    j = min(n+2,len(lines))
-    while i < j:
-        ch = g.choose(i==n-1,'*',' ')
-        s = "%s line %d: %s" % (ch,i+1,lines[i])
-        g.es('',s,newline=False)
-        i += 1
-    #@-node:EKR.20040612215018:<< dump the lines near the error >>
-    #@nl
-#@-node:ekr.20060624085200:g.handleScriptException
-#@+node:ekr.20050503112513.7:g.executeFile
-def executeFile(filename, options= ''):
-
-    if not os.access(filename, os.R_OK): return
-
-    subprocess = g.importExtension('subprocess',None,verbose=False)
-
-    cwd = os.getcwdu()
-    fdir, fname = g.os_path_split(filename)
-
-    if subprocess: # Only exists in Python 2.4.
-        #@        << define subprocess_wrapper >>
-        #@+node:ekr.20050503112513.8:<< define subprocess_wrapper >>
-        def subprocess_wrapper(cmdlst):
-
-            # g.trace(cmdlst, fdir)
-            # g.trace(subprocess.list2cmdline([cmdlst]))
-
-            p = subprocess.Popen(cmdlst, cwd=fdir,
-                universal_newlines=True,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-            stdo, stde = p.communicate()
-            return p.wait(), stdo, stde
-        #@-node:ekr.20050503112513.8:<< define subprocess_wrapper >>
-        #@nl
-        rc, so, se = subprocess_wrapper('%s %s %s'%(sys.executable, fname, options))
-        if rc:
-            g.pr('return code', rc)
-        g.pr(so, se)
-    else:
-        if fdir: os.chdir(fdir)
-        d = {'__name__': '__main__'}
-        execfile(fname, d)  #, globals()
-        os.system('%s %s' % (sys.executable, fname))
-        if fdir: os.chdir(cwd)
-#@-node:ekr.20050503112513.7:g.executeFile
+    assert hasattr(g.app,'tkEncoding')
+#@nonl
+#@-node:ekr.20090517020744.5888:@test pre-definition of g in scripts
 #@-node:ekr.20040327103735.2:Script Tools (leoGlobals.py)
 #@+node:ekr.20031218072017.1498:Unicode utils...
+#@+node:ekr.20090517020744.5859: Unicode tests
+#@+node:ekr.20090517020744.5860:@test open non-existent non-ascii directory
+#@@first
+
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    file = u'Ỗ'
+    path = g.os_path_join('Ỗ','Ỗ')
+    # print(g.toEncodedString(file,'utf-8'))
+
+    ok,frame = g.openWithFileName(path,c)
+
+    assert not ok and not frame
+#@-node:ekr.20090517020744.5860:@test open non-existent non-ascii directory
+#@+node:ekr.20090517020744.5861:@test can't open message in g.openWithFileName
+#@@first
+
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    old_c = c
+    filename = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
+    ok,frame = g.openWithFileName(filename,old_c)
+    assert(not ok)
+#@-node:ekr.20090517020744.5861:@test can't open message in g.openWithFileName
+#@+node:ekr.20090517020744.5862:@test atFile.printError
+#@@first
+
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    at = c.atFileCommands
+    at.errors = 0
+
+    s = u'La Pe\xf1a'
+    s = u'La Peña'
+    # s = u'Ă: U+0102: Latin Capital Letter A With Breve'
+    at.printError('test of at.printError:',s)
+#@-node:ekr.20090517020744.5862:@test atFile.printError
+#@+node:ekr.20090517020744.5863:@test % operator with unicode
+#@@first
+
+if g.unitTesting:
+
+    s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
+
+    s2 = 'test: %s' % s
+#@-node:ekr.20090517020744.5863:@test % operator with unicode
+#@+node:ekr.20090517020744.5864:@test failure to convert unicode characters to ascii
+#@@first
+
+if g.unitTesting:
+
+    encoding = 'ascii'
+
+    s = '炰'
+
+    s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+    assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
+
+    s = u'炰'
+    s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
+    assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
+#@-node:ekr.20090517020744.5864:@test failure to convert unicode characters to ascii
+#@+node:ekr.20090517020744.5865:@test of round-tripping toUnicode & toEncodedString
+#@@first
+
+if g.unitTesting:
+
+    for s,encoding in (
+        ('a',    'utf-8'),
+        ('a',    'ascii'),
+        ('äöü',  'utf-8'),
+        ('äöü',  'mbcs'),
+        ('炰',    'utf-8'),
+        ('炰',    'mbcs'),
+    ):
+        if g.isValidEncoding(encoding):
+            s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+            assert ok, 'toUnicodeWithErrorCode fails for %s' %s
+            s3,ok = g.toEncodedStringWithErrorCode(s2,encoding)
+            assert ok, 'toEncodedStringWithErrorCode fails for %s' % s2
+            assert s3 == s, 'Round-trip one fails for %s' %s
+
+            s2 = g.toUnicode(s,encoding)
+            s3 = g.toEncodedString(s2,encoding)
+            assert s3 == s, 'Round-trip two fails for %s' %s
+#@-node:ekr.20090517020744.5865:@test of round-tripping toUnicode & toEncodedString
+#@+node:ekr.20090517020744.5866:@test failure with ascii encodings
+#@@first
+
+if g.unitTesting:
+
+    encoding = 'ascii'
+
+    s = '炰'
+    s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+    assert not ok, 'toUnicodeWithErrorCode returns True for %s with ascii encoding' % s
+
+    s = u'炰'
+    s3,ok = g.toEncodedStringWithErrorCode(s,encoding)
+    assert not ok, 'toEncodedStringWithErrorCode returns True for %s with ascii encoding' % s
+#@-node:ekr.20090517020744.5866:@test failure with ascii encodings
+#@+node:ekr.20090517020744.5867:@test round trip toUnicode toEncodedString
+#@@first
+
+if g.unitTesting:
+
+    table = [
+        ('a',    'utf-8'),
+        ('a',    'ascii'),
+        ('äöü',  'utf-8'),
+        ('äöü',  'mbcs'),
+        ('炰',   'utf-8'),
+    ]
+
+    # __pychecker__ = '--no-reimport'
+    import sys
+
+    if sys.platform.startswith('win'):
+        data = '炰','mbcs'
+        table.append(data)
+
+    for s,encoding in table:
+        if g.isValidEncoding(encoding):
+            s2,ok = g.toUnicodeWithErrorCode(s,encoding)
+            assert ok, 'toUnicodeWithErrorCode fails for %s' %s
+            s3,ok = g.toEncodedStringWithErrorCode(s2,encoding)
+            assert ok, 'toEncodedStringWithErrorCode fails for %s' % s2
+            assert s3 == s, 'Round-trip one failed for %s' %s
+
+            s2 = g.toUnicode(s,encoding)
+            s3 = g.toEncodedString(s2,encoding)
+            assert s3 == s, 'Round-trip two failed for %s' %s
+#@-node:ekr.20090517020744.5867:@test round trip toUnicode toEncodedString
+#@-node:ekr.20090517020744.5859: Unicode tests
 #@+node:ekr.20081204091750.2:g.emptyString
 def emptyString():
 
@@ -4646,7 +5488,7 @@ def isValidEncoding (encoding):
         return False
 #@nonl
 #@-node:ekr.20031218072017.1500:isValidEncoding
-#@+node:ekr.20031218072017.1501:reportBadChars
+#@+node:ekr.20031218072017.1501:reportBadChars & test
 def reportBadChars (s,encoding):
 
     if g.isPython3:  ### To do
@@ -4695,7 +5537,26 @@ def reportBadChars (s,encoding):
                     encoding.encode('ascii','replace'))
                 if not g.unitTesting:
                     g.es(s2,color='red')
-#@-node:ekr.20031218072017.1501:reportBadChars
+#@+node:ekr.20090517020744.5882:@test g.reportBadChars
+#@@first
+
+if g.unitTesting:
+
+    for s,encoding in (
+        ('aĂbĂ',  'ascii'),
+        (u'aĂbĂ', 'ascii'),
+        ('炰',    'ascii'),
+        (u'炰',   'ascii'),
+
+        ('aĂbĂ',  'utf-8'),
+        (u'aĂbĂ', 'utf-8'),
+        ('炰',    'utf-8'),
+        (u'炰',   'utf-8'),
+    ):
+
+        g.reportBadChars(s,encoding)
+#@-node:ekr.20090517020744.5882:@test g.reportBadChars
+#@-node:ekr.20031218072017.1501:reportBadChars & test
 #@+node:ekr.20031218072017.1502:toUnicode & toEncodedString (and tests)
 #@+node:ekr.20050208093800:g.toEncodedString
 def toEncodedString (s,encoding,reportErrors=False):
@@ -4798,8 +5659,8 @@ def getTestVars ():
 #@-node:ekr.20070619173330:g.getTestVars
 #@-node:ekr.20070524083513:Unit testing (leoGlobals.py)
 #@+node:EKR.20040612114220:Utility classes, functions & objects...
-#@+node:ekr.20050315073003: Index utilities... (leoGlobals) (passed)
-#@+node:ekr.20050314140957:g.convertPythonIndexToRowCol
+#@+node:ekr.20050315073003: Index utilities... (leoGlobals)
+#@+node:ekr.20050314140957:g.convertPythonIndexToRowCol & test
 def convertPythonIndexToRowCol (s,i):
 
     '''Convert index i into string s into zero-based row/col indices.'''
@@ -4817,8 +5678,47 @@ def convertPythonIndexToRowCol (s,i):
         prevNL = s.rfind('\n',0,i) # Don't include i
         # g.trace('prevNL',prevNL,'i',i,g.callers())
         return row,i-prevNL-1
-#@-node:ekr.20050314140957:g.convertPythonIndexToRowCol
-#@+node:ekr.20050315071727:g.convertRowColToPythonIndex
+#@+node:ekr.20090517020744.5871:@test g.convertPythonIndexToRowCol
+if g.unitTesting:
+
+    s1 = 'abc\n\np\nxy'
+    table1 = (
+        (-1,(0,0)), # One too small.
+        (0,(0,0)),
+        (1,(0,1)),
+        (2,(0,2)),
+        (3,(0,3)), # The newline ends a row.
+        (4,(1,0)),
+        (5,(2,0)),
+        (6,(2,1)),
+        (7,(3,0)),
+        (8,(3,1)),
+        (9,(3,2)), # One too many.
+        (10,(3,2)), # Two too many.
+    )
+    s2 = 'abc\n\np\nxy\n'
+    table2 = (
+        (9,(3,2)),
+        (10,(4,0)), # One too many.
+        (11,(4,0)), # Two too many.
+    )
+    s3 = 'ab' # Test special case.  This was the cause of off-by-one problems.
+    table3 = (
+        (-1,(0,0)), # One too small.
+        (0,(0,0)),
+        (1,(0,1)),
+        (2,(0,2)), # One too many.
+        (3,(0,3)), # Two too many.
+    )
+
+    for s,table in ((s1,table1),(s2,table2)):
+        for i,result in table:
+            row,col = g.convertPythonIndexToRowCol(s,i)
+            assert row == result[0], 'i: %d, expected row %d, got %d' % (i,result[0],row)
+            assert col == result[1], 'i: %d, expected col %d, got %d' % (i,result[1],col)
+#@-node:ekr.20090517020744.5871:@test g.convertPythonIndexToRowCol
+#@-node:ekr.20050314140957:g.convertPythonIndexToRowCol & test
+#@+node:ekr.20050315071727:g.convertRowColToPythonIndex & test
 def convertRowColToPythonIndex (s,row,col,lines=None):
 
     '''Convert zero-based row/col indices into a python index into string s.'''
@@ -4839,8 +5739,36 @@ def convertRowColToPythonIndex (s,row,col,lines=None):
         prev += len(line)
 
     return prev + col
-#@-node:ekr.20050315071727:g.convertRowColToPythonIndex
-#@-node:ekr.20050315073003: Index utilities... (leoGlobals) (passed)
+#@+node:ekr.20090517020744.5872:@test g.convertRowColToPythonIndex
+if g.unitTesting:
+
+    s1 = 'abc\n\np\nxy'
+    s2 = 'abc\n\np\nxy\n'
+    table1 = (
+        (0,(-1,0)), # One too small.
+        (0,(0,0)),
+        (1,(0,1)),
+        (2,(0,2)),
+        (3,(0,3)), # The newline ends a row.
+        (4,(1,0)),
+        (5,(2,0)),
+        (6,(2,1)),
+        (7,(3,0)),
+        (8,(3,1)),
+        (9,(3,2)), # One too large.
+    )
+    table2 = (
+        (9,(3,2)),
+        (10,(4,0)), # One two many.
+    )
+    for s,table in ((s1,table1),(s2,table2)):
+        for i,data in table:
+            row,col = data
+            result = g.convertRowColToPythonIndex(s,row,col)
+            assert i == result, 'row: %d, col: %d, expected: %d, got: %s' % (row,col,i,result)
+#@-node:ekr.20090517020744.5872:@test g.convertRowColToPythonIndex
+#@-node:ekr.20050315071727:g.convertRowColToPythonIndex & test
+#@-node:ekr.20050315073003: Index utilities... (leoGlobals)
 #@+node:ekr.20031218072017.3140: List utilities...
 #@+node:ekr.20031218072017.3141:appendToList
 def appendToList(out, s):
@@ -4927,6 +5855,21 @@ def CheckVersionToInt (s):
             return 0
 #@nonl
 #@-node:ekr.20070120123930:CheckVersionToInt
+#@+node:ekr.20090517020744.5870:@test g.checkVersion
+if g.unitTesting:
+
+    for v1,condition,v2 in (
+        ('8.4.12','>','8.4.3'),
+        ('1','==','1.0'),
+        ('2','>','1'),
+        ('1.2','>','1'),
+        ('2','>','1.2.3'),
+        ('1.2.3','<','2'),
+        ('1','<','1.1'),
+    ):
+        assert g.CheckVersion(v1,v2,condition=condition,trace=False)
+#@nonl
+#@-node:ekr.20090517020744.5870:@test g.checkVersion
 #@-node:ekr.20060921100435:CheckVersion, helper
 #@+node:ekr.20060921100435.1:oldCheckVersion (Dave Hein)
 #@+at
@@ -5039,6 +5982,13 @@ def oldCheckVersion( version, againstVersion, condition=">=", stringCompare="0.0
     raise EnvironmentError("condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
 #@nonl
 #@-node:ekr.20060921100435.1:oldCheckVersion (Dave Hein)
+#@+node:ekr.20090517020744.5868:@test CheckVersionToInt
+if g.unitTesting:
+
+    assert g.CheckVersionToInt('12') == 12,'fail 1'
+    assert g.CheckVersionToInt('2a5') == 2, 'fail 2'
+    assert g.CheckVersionToInt('b2') == 0, 'fail 3'
+#@-node:ekr.20090517020744.5868:@test CheckVersionToInt
 #@-node:ekr.20031218072017.3097:CheckVersion
 #@+node:ekr.20031218072017.3098:class Bunch (object)
 #@+at 
@@ -5102,19 +6052,21 @@ bunch = Bunch
 #@+node:ekr.20031219074948.1:class nullObject
 # From the Python cookbook, recipe 5.23
 
-class nullObject:
+# This is now defined at the start of this file.
 
-    """An object that does nothing, and does it very well."""
+    # class nullObject:
 
-    def __init__   (self,*args,**keys): pass
-    def __call__   (self,*args,**keys): return self
-    # def __len__    (self): return 0 ###
-    def __repr__   (self): return "nullObject"
-    def __nonzero__ (self): return 0
+        # """An object that does nothing, and does it very well."""
 
-    def __delattr__(self,attr):     return self
-    def __getattr__(self,attr):     return self
-    def __setattr__(self,attr,val): return self
+        # def __init__   (self,*args,**keys): pass
+        # def __call__   (self,*args,**keys): return self
+        # # def __len__    (self): return 0
+        # def __repr__   (self): return "nullObject"
+        # def __nonzero__ (self): return 0
+
+        # def __delattr__(self,attr):     return self
+        # def __getattr__(self,attr):     return self
+        # def __setattr__(self,attr,val): return self
 #@-node:ekr.20031219074948.1:class nullObject
 #@+node:ekr.20031218072017.3103:g.computeWindowTitle
 def computeWindowTitle (fileName):
@@ -5129,6 +6081,43 @@ def computeWindowTitle (fileName):
             title = fn
         return title
 #@-node:ekr.20031218072017.3103:g.computeWindowTitle
+#@+node:ekr.20090516135452.5777:g.ensureLeading/TrailingNewlines & tests
+def ensureLeadingNewlines (s,n):
+
+    s = g.removeLeading(s,'\t\n\r ')
+    return ('\n' * n) + s
+
+def ensureTrailingNewlines (s,n):
+
+    s = g.removeTrailing(s,'\t\n\r ')
+    return s + '\n' * n
+
+
+#@+node:ekr.20090516135452.5778:@test ensureLeadingNewlines
+if g.unitTesting:
+
+    s = ' \n \n\t\naa bc'
+    s2 = 'aa bc'
+
+    for i in range(3):
+        result = g.ensureLeadingNewlines(s,i)
+        val = ('\n' * i) + s2
+        assert result == val, 'expected %s, got %s' % (
+            repr(val),repr(result))
+#@-node:ekr.20090516135452.5778:@test ensureLeadingNewlines
+#@+node:ekr.20090525164505.5791:@test ensureTrailingNewlines
+if g.unitTesting:
+
+    s = 'aa bc \n \n\t\n'
+    s2 = 'aa bc'
+
+    for i in range(3):
+        result = g.ensureTrailingNewlines(s,i)
+        val = s2 + ('\n' * i)
+        assert result == val, 'expected %s, got %s' % (
+            repr(val),repr(result))
+#@-node:ekr.20090525164505.5791:@test ensureTrailingNewlines
+#@-node:ekr.20090516135452.5777:g.ensureLeading/TrailingNewlines & tests
 #@+node:ekr.20031218072017.3138:g.executeScript
 def executeScript (name):
 
@@ -5253,49 +6242,6 @@ def funcToMethod(f,theClass,name=None):
     setattr(theClass,name or f.__name__,f)
     # g.trace(name)
 #@-node:ekr.20031218072017.3126:g.funcToMethod
-#@+node:EKR.20040614071102.1:g.getScript
-def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=True):
-
-    '''Return the expansion of the selected text of node p.
-    Return the expansion of all of node p's body text if there
-    is p is not the current node or if there is no text selection.'''
-
-    at = c.atFileCommands ; w = c.frame.body.bodyCtrl
-    p1 = p and p.copy()
-    if not p:
-        p = c.p
-    try:
-        if g.app.inBridge:
-            s = p.b
-        elif p1:
-            s = p.b # Bug fix: Leo 8.8.4.
-        elif p == c.p:
-            if useSelectedText and w.hasSelection():
-                s = w.getSelectedText()
-            else:
-                s = w.getAllText()
-        else:
-            s = p.b
-        # Remove extra leading whitespace so the user may execute indented code.
-        s = g.removeExtraLws(s,c.tab_width)
-        if s.strip():
-            g.app.scriptDict["script1"]=s
-            # Important: converts unicode to utf-8 encoded strings.
-            script = at.writeFromString(p.copy(),s,
-                forcePythonSentinels=forcePythonSentinels,
-                useSentinels=useSentinels)
-            script = script.replace("\r\n","\n") # Use brute force.
-            # Important, the script is an **encoded string**, not a unicode string.
-            g.app.scriptDict["script2"]=script
-        else: script = ''
-    except Exception:
-        g.es_print("unexpected exception in g.getScript")
-        g.es_exception()
-        script = ''
-
-    # g.trace(type(script),repr(script))
-    return script
-#@-node:EKR.20040614071102.1:g.getScript
 #@+node:ekr.20050920084036.4:g.longestCommonPrefix & g.itemsMatchingPrefixInList
 def longestCommonPrefix (s1,s2):
 
@@ -5359,6 +6305,43 @@ def prettyPrintType (obj):
         if theType.endswith("'>"): theType = theType[:-2]
         return theType
 #@-node:ekr.20060221083356:g.prettyPrintType
+#@+node:ekr.20090516135452.5776:g.removeLeading/Trailing & tests
+# Warning: g.removeTrailingWs already exists.
+# Do not change it!
+
+def removeLeading (s,chars):
+
+    '''Remove all characters in chars from the front of s.'''
+
+    i = 0
+    while i < len(s) and s[i] in chars:
+        i += 1
+    return s[i:]
+
+def removeTrailing (s,chars):
+
+    '''Remove all characters in chars from the end of s.'''
+
+    i = len(s)-1
+    while i >= 0 and s[i] in chars:
+        i -= 1
+    i += 1
+    return s[:i]
+#@+node:ekr.20090516135452.5779:@test removeTrailing
+if g.unitTesting:
+
+    s = 'aa bc \n \n\t\n'
+    table = (
+        ('\t\n ','aa bc'),
+        ('abc\t\n ',''),
+        ('c\t\n ','aa b'),
+    )
+
+    for arg,val in table:
+        result = g.removeTrailing(s,arg)
+        assert result == val, 'expected %s, got %s' % (val,result)
+#@-node:ekr.20090516135452.5779:@test removeTrailing
+#@-node:ekr.20090516135452.5776:g.removeLeading/Trailing & tests
 #@+node:ekr.20060410112600:g.stripBrackets
 def stripBrackets (s):
 
@@ -5370,7 +6353,7 @@ def stripBrackets (s):
         s = s[:-1]
     return s
 #@-node:ekr.20060410112600:g.stripBrackets
-#@+node:ekr.20061031102333.2:g.getWord & getLine
+#@+node:ekr.20061031102333.2:g.getWord & getLine & tests
 def getWord (s,i):
 
     '''Return i,j such that s[i:j] is the word surrounding s[i].'''
@@ -5405,7 +6388,30 @@ def getLine (s,i):
     # g.trace('i,j,k',i,j,k,repr(s[j:k]))
     return j,k
 #@nonl
-#@-node:ekr.20061031102333.2:g.getWord & getLine
+#@+node:ekr.20090517020744.5877:@test g.getLine
+if g.unitTesting:
+
+    s = 'a\ncd\n\ne'
+
+    for i,result in (
+        (-1,(0,2)), # One too few.
+        (0,(0,2)),(1,(0,2)),
+        (2,(2,5)),(3,(2,5)),(4,(2,5)),
+        (5,(5,6)),
+        (6,(6,7)),
+        (7,(6,7)), # One too many.
+    ):
+        j,k = g.getLine(s,i)
+        assert (j,k) == result, 'i: %d, expected %d,%d, got %d,%d' % (i,result[0],result[1],j,k)
+#@-node:ekr.20090517020744.5877:@test g.getLine
+#@+node:ekr.20090517020744.5879:@test g.getWord
+if g.unitTesting:
+
+    s = 'abc xy_z5 pdq'
+    i,j = g.getWord(s,5)
+    assert s[i:j] == 'xy_z5','got %s' % s[i:j]
+#@-node:ekr.20090517020744.5879:@test g.getWord
+#@-node:ekr.20061031102333.2:g.getWord & getLine & tests
 #@+node:ekr.20041219095213:import wrappers
 #@+at 
 #@nonl
@@ -5415,7 +6421,7 @@ def getLine (s,i):
 # The solutions is easy: simply return sys.modules.get(moduleName) if 
 # moduleName is in sys.modules!
 #@-at
-#@+node:ekr.20040917061619:g.cantImport
+#@+node:ekr.20040917061619:g.cantImport & test
 def cantImport (moduleName,pluginName=None,verbose=True):
 
     """Print a "Can't Import" message and return None."""
@@ -5432,7 +6438,12 @@ def cantImport (moduleName,pluginName=None,verbose=True):
     else:
         g.es_print('',s,color="blue")
 
-#@-node:ekr.20040917061619:g.cantImport
+#@+node:ekr.20090517020744.5869:@test g.cantImport returns None
+if g.unitTesting:
+
+    assert(g.cantImport("xyzzy","during unit testing") is None)
+#@-node:ekr.20090517020744.5869:@test g.cantImport returns None
+#@-node:ekr.20040917061619:g.cantImport & test
 #@+node:ekr.20041219095213.1:g.importModule
 def importModule (moduleName,pluginName=None,verbose=False):
 
@@ -5788,7 +6799,7 @@ def removeLeadingWhitespace (s,first_ws,tab_width):
         s = s[j:]
     return s
 #@-node:ekr.20031218072017.3202:removeLeadingWhitespace
-#@+node:ekr.20050211120242.2:g.removeExtraLws
+#@+node:ekr.20050211120242.2:g.removeExtraLws & test
 def removeExtraLws (s,tab_width):
 
     '''Remove extra indentation from one or more lines.
@@ -5816,8 +6827,21 @@ def removeExtraLws (s,tab_width):
             g.pr(repr(line))
 
     return result
-#@-node:ekr.20050211120242.2:g.removeExtraLws
-#@+node:ekr.20031218072017.3203:removeTrailingWs
+#@+node:ekr.20090517020744.5881:@test g.removeExtraLws
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    for s,expected in (
+        (' a\n b\n c', 'a\nb\nc'),
+        (' \n  A\n    B\n  C\n', '\nA\n  B\nC\n'),
+    ):
+        result = g.removeExtraLws(s,c.tab_width)
+        assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
+            repr(s),repr(expected),repr(result))
+#@-node:ekr.20090517020744.5881:@test g.removeExtraLws
+#@-node:ekr.20050211120242.2:g.removeExtraLws & test
+#@+node:ekr.20031218072017.3203:removeTrailingWs & test
 # Warning: string.rstrip also removes newlines!
 
 def removeTrailingWs(s):
@@ -5826,7 +6850,21 @@ def removeTrailingWs(s):
     while j >= 0 and (s[j] == ' ' or s[j] == '\t'):
         j -= 1
     return s[:j+1]
-#@-node:ekr.20031218072017.3203:removeTrailingWs
+#@+node:ekr.20090516135452.5856:@test removeTrailingWs
+if g.unitTesting:
+
+    table = (
+        ('a a\t','a a'),
+        ('a a\t\n','a a\t\n'),
+        ('a a ','a a'),
+    )
+
+    for s,val in table:
+        result = g.removeTrailingWs(s)
+        assert result == val, 'expected %s, got %s' % (
+            repr(val),repr(result))
+#@-node:ekr.20090516135452.5856:@test removeTrailingWs
+#@-node:ekr.20031218072017.3203:removeTrailingWs & test
 #@+node:ekr.20031218072017.3204:skip_leading_ws
 # Skips leading up to width leading whitespace.
 
@@ -5928,6 +6966,129 @@ def init_zodb (pathToZodbStorage,verbose=True):
 #@nonl
 #@-node:ekr.20060913090832.1:g.init_zodb
 #@-node:ekr.20060913091602:ZODB support
+#@+node:ville.20090606103927.6472:tree operations (tree_at_position...)
+# manipulation of whole trees as recursive objects """
+
+def tree_at_position(p):
+    return [p.h, p.b, p.gnx, [tree_at_position(po) for po in p.children_iter()]]
+
+
+def fast_add_last_child(c, parent_v, gnxString = None):
+    """ Create new vnode as last child of parent_v.
+
+    If the gnx exists already, create a clone instead of new vnode.
+
+    Returns vnode, or None if this was clone. After calling this function, fill in the vnode asap
+    as in this example::
+
+        child = fast_add_last_child(c, p.v, 'ville.20090321214352.375')
+        if child is not Note:
+            t = v.t
+            t._headString = u"Heading (note unicode)"
+            t._bodyString = u"Body content"
+
+    Stolen from createThinChild4. 
+
+    The main purpose of this function is allow fast tree population with automatic clone
+    creation (which is very slow using positions alone)   
+    """
+
+    # xxx avoid circular import?
+    from leo.core import leoNodes
+
+    indices = g.app.nodeIndices
+    tnodesDict = c.fileCommands.tnodesDict
+    if gnxString is not None:
+        t = tnodesDict.get(gnxString)
+    else:
+        t = None
+
+    if t is None:
+        # not clone, create
+        if g.unified_nodes: 
+            t = leoNodes.vnode(context=c)
+        else:               
+            t = leoNodes.tnode()
+
+        if gnxString is not None:
+            gnx = indices.scanGnx(gnxString,0)
+            t.fileIndex = gnx
+
+        tnodesDict[gnxString] = t
+        is_clone = False
+
+    else:
+        #g.trace("Creating clone gnx",gnxString)
+        is_clone = True
+
+    if g.unified_nodes:
+        child = t
+
+    else:
+        child = leoNodes.vnode(context=c,t=t)
+
+    if child not in t.vnodeList:
+        t.vnodeList.append(child)
+    child._linkAsNthChild(parent_v,parent_v.numberOfChildren())
+
+    child.t.setVisited() # Supress warning/deletion of unvisited nodes.
+    if is_clone:
+        return None
+
+    return child
+
+def create_tree_at_vnode(c, v, tree):
+    """ Create outline structure from tree
+
+    Tree is recursive list structure with [h, b, gnx, [children...]
+
+    Example tree::
+
+        [u'many tests',
+         u'',
+         'ville.20090321214352.375',
+         [[u'o', u'1/0', 'ville.20090321185223.2', []],
+          [u'@test aoaaosuccess', u'print "ok"', 'ville.20090321205114.1', []],
+          [u'@test other failure',
+           u"\ns = 'test%cthis' % 27\n\nassert c.fileCommands.cleanSaxInputString(s) == 'test this'",
+           'ville.20090321214352.376',
+           []]]]
+
+    Clones will be automatically created by gnx, but *not* for the root node.
+    """
+
+    #import pprint
+    #pprint.pprint(tree)
+    h,b,gnx,chi = tree
+    if h is not None:
+        t = v.t
+        t._headString = h    
+        t._bodyString = b
+
+    for el in chi:
+        # gnx prefilled, rest done by create_tree_at_vnode
+        child = fast_add_last_child(c, v, el[2])
+        # recurse
+        if child is not None:
+            create_tree_at_vnode(c,child, el)
+
+
+def create_tree_at_position(p, tree):
+    """ Like create_tree_at_vnode, but slower, simpler, without clone/gnx support
+    """
+    h,b,gnx,chi = tree
+
+    # special case: b is None => do not manipulate the root node, just add children
+    if b is not None:
+        p.h = h
+        p.b = b
+
+    for el in chi:
+        chpos = p.insertAsLastChild().copy()
+        # recurse
+        create_tree_at_position(chpos, el)
+
+#@-node:ville.20090606103927.6472:tree operations (tree_at_position...)
 #@-others
 #@-node:ekr.20031218072017.3093:@thin leoGlobals.py
 #@-leo

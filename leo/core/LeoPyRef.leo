@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="37" left="323" height="977" width="950"/>
+	<global_window_position top="34" left="217" height="977" width="1029"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -11,6 +11,7 @@
 <vnodes>
 <v t="ekr.20051031040240" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
+<v t="ekr.20090514093345.6054"><vh>Disabled buttons</vh>
 <v t="ekr.20070628175250"><vh>@@button Add if g.unitTesting @key=f6</vh></v>
 <v t="ekr.20071004062031"><vh>@@button print -----</vh></v>
 <v t="ekr.20071001054335"><vh>@@button split-defs</vh></v>
@@ -44,6 +45,7 @@
 <v t="ekr.20060910141935.2"><vh>@@button zodb-write</vh></v>
 </v>
 </v>
+</v>
 <v t="ekr.20080312060129.6"><vh>Commands</vh>
 <v t="ekr.20060531093331"><vh>@@command clones-tab</vh>
 <v t="ekr.20060531093331.1"><vh>class cloneNavigator</vh>
@@ -68,22 +70,35 @@
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
 <v t="ekr.20060217111834"><vh>@url http://docs.python.org/lib/re-syntax.html</vh></v>
-<v t="ekr.20060908104329"><vh>@url file:c:/prog/tigris-cvs/leo/doc/leoDocs.leo#Users Guide</vh></v>
 <v t="ekr.20031218072017.329"><vh>@thin ../doc/leoNotes.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.3"><vh>Projects</vh>
-<v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d71002855013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c68067573550a302e302e352e31382e30710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@thin leoProjects.txt</vh></v>
-</v>
-<v t="ekr.20090113083258.3"><vh>Unit tests</vh>
-<v t="ekr.20090113083258.1"><vh>@thin test_core.txt</vh></v>
+<v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c68067573732e"
+marks="ekr.20090529061522.6613,"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20040117181936"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
+<v t="ekr.20090113083258.3"><vh>Unit tests &amp; helper files</vh>
+<v t="ekr.20090514093345.6053"><vh>@button run-all-core-tests @key = Alt-7</vh></v>
+<v t="ekr.20090517102212.5874"><vh>Helper files</vh>
+<v t="ekr.20090517102548.5889"><vh>@@@mark-for-unit-tests</vh>
+<v t="ekr.20090517020744.5906"><vh>@path ../test/unittest</vh>
+<v t="ekr.20090517020744.5907"><vh>@@thin at-path-test2.py</vh></v>
+</v>
+<v t="ekr.20090517020744.5909"><vh>@path ../test</vh>
+<v t="ekr.20090517020744.5910"><vh>@path unittest</vh>
+<v t="ekr.20090517020744.5911"><vh>@@thin at-path-test3.py</vh></v>
+</v>
+</v>
+<v t="ekr.20090517020744.5904"><vh>@@thin ../test/unittest/at-path-test1.py</vh></v>
+</v>
+</v>
+<v t="ekr.20090113083258.1" descendentVnodeUnknownAttributes="7d7100285508302e312e332e333571017d71025808000000616e6e6f7461746571037d710473550d302e312e382e302e312e312e3771057d71065808000000616e6e6f7461746571077d7108735507302e312e362e3371097d710a5808000000616e6e6f74617465710b7d710c735509302e312e382e302e30710d7d710e5808000000616e6e6f74617465710f7d711073550d302e312e382e302e312e312e3171117d71125808000000616e6e6f7461746571137d7114735507302e302e312e3071157d71165808000000616e6e6f7461746571177d711873550d302e312e382e302e312e312e3471197d711a5808000000616e6e6f74617465711b7d711c735507302e312e372e34711d7d711e5808000000616e6e6f74617465711f7d712073550d302e312e382e302e312e312e3071217d71225808000000616e6e6f7461746571237d712473550b302e312e382e302e302e3171257d71265808000000616e6e6f7461746571277d712873550b302e312e382e302e302e3071297d712a5808000000616e6e6f74617465712b7d712c735507302e312e302e35712d7d712e5808000000616e6e6f74617465712f7d713073550d302e312e382e302e312e312e3671317d71325808000000616e6e6f7461746571337d713473550d302e312e382e302e312e312e3571357d71365808000000616e6e6f7461746571377d713873550b302e312e382e302e312e3171397d713a5808000000616e6e6f74617465713b7d713c73550b302e312e382e302e312e30713d7d713e5808000000616e6e6f74617465713f7d714073550d302e312e382e302e312e312e3271417d71425808000000616e6e6f7461746571437d714473550d302e312e382e302e312e312e3371457d71465808000000616e6e6f7461746571477d714873752e"
+expanded="ekr.20090529103821.7725,ekr.20090529103821.7727,ekr.20090529103821.7729,ekr.20090529103821.7731,ekr.20090529103821.7733,ekr.20090529103821.7735,ekr.20090529103821.7738,ekr.20090529103821.7740,ekr.20090529103821.7742,ekr.20090529103821.7744,ekr.20090529103821.7746,ekr.20090529103821.7748,ekr.20090529103821.7750,ekr.20090529103821.7752,ekr.20090529103821.7754,ekr.20090529103821.7756,ekr.20090529103821.7758,ekr.20090529103821.7760,ekr.20090529103821.7762,ekr.20090529103821.7773,ekr.20090529103821.7775,ekr.20090529103821.7777,ekr.20090529103821.7779,ekr.20090529103821.7781,ekr.20090529103821.7783,ekr.20090529103821.7785,ekr.20090529103821.7787,ekr.20090529103821.7789,ekr.20090529103821.7793,ekr.20090529103821.7795,ekr.20090529103821.7797,ekr.20090529103821.7803,ekr.20090529061522.6596,ekr.20090529061522.6599,"><vh>@thin test_core.txt</vh></v>
+</v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
-<v t="ekr.20090128070032.1"><vh>  How to profile Leo</vh></v>
-<v t="ekr.20081013084332.1"><vh>  Leo's MVC architecture</vh></v>
 <v t="ekr.20040629121554.1"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@thin leoApp.py</vh></v>
@@ -95,12 +110,15 @@
 <v t="ekr.20041117062700"><vh>@thin leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@thin leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093"><vh>@thin leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31352e3071017d71025808000000616e6e6f7461746571037d710473732e"
+expanded="ekr.20031218072017.3099,ekr.20090517020744.5889,ekr.20031218072017.1498,ekr.20090517020744.5859,"><vh>@thin leoGlobals.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@thin leoImport.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@thin leoNodes.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@thin leoPlugins.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@thin leoPymacs.py</vh></v>
-<v t="ekr.20080708094444.1"><vh>@thin leoShadow.py</vh></v>
+<v t="ekr.20090502071837.3"><vh>@thin leoRst.py</vh></v>
+<v t="ekr.20080708094444.1"
+marks="ekr.20090529061522.6613,"><vh>@thin leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@thin leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@thin leoUndo.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
@@ -133,22 +151,25 @@ This section contains all the source code of leo.py.
 
 Leo's code uses the following conventions throughout:
 
-c:  a commander
-ch: a character
+c:  a commander.
+ch: a character.
 d:  a dialog orf a dict.
+f:  an open file.
+fn: a file name.
 g:  the leoGlobal module.
-i, j, k: indices into a string
+i, j, k: indices into a string.
 p:  a position.
-s:  a string
+s:  a string.
 t:  a tnode or a text widget.
-u:  an undoer
+u:  an undoer.
+w:  a gui widget.
 v:  a vnode
 z:  a local temp.
 
 The following are 'official' ivars that will always exist:
 
 c.frame                 The frame containing the log,body,tree, etc.
-c.frame.body            The body pane
+c.frame.body            The body pane.
 c.frame.body.bodyCtrl   The body widget.
 c.frame.iconBar         The icon bar.
 c.frame.log             The log pane.
@@ -289,7 +310,6 @@ def gotoSelectedPosition(event,lb=self.lb,c=c,positions=clones):
     c.selectPosition(p)
     return
 self.lb.bind(g.angleBrackets("ListboxSelect"), gotoSelectedPosition)</t>
-<t tx="ekr.20060908104329"></t>
 <t tx="ekr.20060910141935"></t>
 <t tx="ekr.20060910141935.1"># c.k.simulateCommand('read-zodb-file')
 
@@ -737,76 +757,26 @@ self.statements.append("g.es_print('','%s %s',color='red')" % ('-'*20,h))</t>
 <t tx="ekr.20080412053100.4"></t>
 <t tx="ekr.20080412053100.5"></t>
 <t tx="ekr.20080730161153.8"></t>
-<t tx="ekr.20081013084332.1">@nocolor-node
+<t tx="ekr.20090113083258.3"># These should all pass with Alt-5 or Alt-6.
+# They will pass with Alt-4 only if the code has not been changed.</t>
+<t tx="ekr.20090514093345.6053">'''
+Run all the unit tests in the .leo file given by the path.
+The path is relative to the leo\test directory.
+'''
 
-I. Background
+import leo.core.leoTest as leoTest
 
-Leo has had a robust MVC (Model,View,Controller) architecture from day one.
+leoTest.runUnitTestLeoFile(gui='nullGui',path='../core/leoPy.leo')
 
-Leo's model are the classes in leoNodes.py. They are completely independent from
-the rest of Leo. Many parts of Leo *use* these classes, but not vice versa!
-
-Leo's controller is everything else in 'Code--&gt;Core classes'. This code has *no*
-direct dependencies on Leo's gui code, as will be explained next.
-
-Leo's view has two parts:
-
-1. The classes in the tree 'Code--&gt;Gui Base classes'.
-   These are part of Leo's core.
-
-2. The classes in the tree 'Code--&gt;Gui Tkinter classes'.
-   These are essentailly a gui plugin.
-
-Leo's core consists of the Model, Controller and the gui base classes.
-
-
-II. Why Leo's core is gui-independent
-
-Leo uses a completely standard way of separating gui-dependent code from
-gui-independent code. Base gui classes (part 1 of the view) define an interface
-used by Leo's core. Subclasses (part 2 of the view) implement the interface for
-a particular gui.
-
-** Subclasses can change without affecting Leo's code in any way.**
-
-The essential design rule is: if gui-related code can be made gui- independent,
-it should be part of a base class. Otherwise it must be part of a subclass of a
-base gui class.
-
-The gui base classes are far more than do-nothing interfaces. Examples of
-complex code that reside in base classes:
-
-A. tree.select. I am proud that this method is gui-independent. Switching nodes
-is a very tricky business. Making it gui-independent is a big win.
-
-B. leoFind.py. Finds the next/previous matches, and dealing with an "idealized"
-find tab. Adapter classes exist in leoEditCommands.py.
-
-C. Autocompletion and minibuffer code in leoKeys.py. For comparison, look how
-simple leoTkinterKeys.py is.
-
-D. A generalized, gui-independent interface to Leo's body pane. The commands in
-leoEditCommands.py (part of the controller) use this interface (baseTextWidget)
-rather than calling Tk directly.
-
-**If you want to understand Leo's design, study Leo's base gui classes.**
-</t>
-<t tx="ekr.20090113083258.3">@nocolor-node
-</t>
-<t tx="ekr.20090128070032.1">@
-@nocolor-node
-
-To gather statistics, do the following in a console window, not idle:
-
-    &gt; python
-    &gt;&gt;&gt; import leo
-    &gt;&gt;&gt; import leo.core.runLeo as r
-    &gt;&gt;&gt; r.prof()  (this runs leo)
-    load any .leo file from Leo
-    quit Leo
-
-Intermediate data is written to cwd.leoProfile.txt.
-The statistics are written to stdout.
-</t>
+g.es_print('unit tests done',color='blue')</t>
+<t tx="ekr.20090514093345.6054"></t>
+<t tx="ekr.20090517020744.5904"></t>
+<t tx="ekr.20090517020744.5906"></t>
+<t tx="ekr.20090517020744.5907"></t>
+<t tx="ekr.20090517020744.5909"></t>
+<t tx="ekr.20090517020744.5910"></t>
+<t tx="ekr.20090517020744.5911"></t>
+<t tx="ekr.20090517102212.5874"></t>
+<t tx="ekr.20090517102548.5889"># Add the nodes in the following tree to external unit tests.</t>
 </tnodes>
 </leo_file>

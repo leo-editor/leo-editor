@@ -475,7 +475,7 @@ class leoMenu:
     def createHelpMenuFromTable (self):
 
         if sys.platform == 'darwin':
-            pass ### self.getMacHelpMenu(table)
+            pass # self.getMacHelpMenu(table)
         else:
             helpMenu = self.createNewMenu("&Help")
             self.createMenuEntries(helpMenu,self.helpMenuTable)
@@ -1156,11 +1156,12 @@ class leoMenu:
             's&croll-outline-up-line',
             'scr&oll-outline-up-page',
             '-',
-            'scroll-&down',
-            'scroll-&up',
-            '-',
-            'scroll-down-&extend-selection',
-            'scroll-up-e&xtend-selection',
+            'scroll-down-half-page',
+            'scroll-down-line',
+            'scroll-&down-page',
+            'scroll-up-half-page',
+            'scroll-up-line',
+            'scroll-&up-page',
         ]
     #@nonl
     #@-node:ekr.20060923060822.1:defineCmdsMenuScrollTable
@@ -1510,10 +1511,12 @@ class leoMenu:
     If ext is not None, the temp file has the given extension.
     Otherwise, Leo computes an extension based on the @language directive in effect.'''
 
+        trace = False and not g.unitTesting
         c = self.c
         g.app.openWithTable = table # Override any previous table.
         # Delete the previous entry.
         parent = self.getMenu("File")
+        if trace: g.trace('parent',parent)
         if not parent:
             if not g.app.batchMode:
                 g.es('','createOpenWithMenuFromTable:','no File menu',color="red")
@@ -1529,9 +1532,16 @@ class leoMenu:
             try:
                 index = parent.index("Open With...")
                 parent.delete(index)
-            except: return
+            except:
+                if trace:
+                    g.trace('unexpected exception')
+                    g.es_exception()
+                return
         # Create the Open With menu.
         openWithMenu = self.createOpenWithMenu(parent,label,index,amp_index)
+        if not openWithMenu:
+            if trace: g.trace('openWithMenu returns None')
+            return
         self.setMenu("Open With...",openWithMenu)
         # Create the menu items in of the Open With menu.
         for entry in table:
@@ -1752,6 +1762,7 @@ class leoMenu:
     def getMenu (self,menuName):
 
         cmn = self.canonicalizeMenuName(menuName)
+        # if cmn == 'openwith': g.trace('leoMenu',g.dictToString(self.menus))
         return self.menus.get(cmn)
 
     def setMenu (self,menuName,menu):

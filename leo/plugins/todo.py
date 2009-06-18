@@ -174,7 +174,7 @@ class todoController:
 
     todo_priorities = 1,2,3,4,5,6,7,8,9,10,19
     #@-node:tbrown.20090119215428.10:priority table
-    #@+node:tbrown.20090119215428.11:birth
+    #@+node:tbrown.20090119215428.11:__init__
     def __init__ (self,c):
 
         self.c = c
@@ -203,21 +203,28 @@ class todoController:
         #@-node:tbrown.20090119215428.12:<< set / read default values >>
         #@nl
 
-        self.handlers = [("close-frame",self.close)]
+        self.handlers = [
+           ("close-frame",self.close),
+           ('select3', self.updateUI),
+           ('save2', self.loadAllIcons),
+        ]
 
         # chdir so the Icons can be located
         owd = os.getcwd()
         os.chdir(os.path.split(__file__)[0])
         self.ui = cleoQtUI(self)
         os.chdir(owd)
-        leoPlugins.registerHandler('select3', self.updateUI)
-        leoPlugins.registerHandler('save2', self.loadAllIcons)
 
         for i in self.handlers:
             leoPlugins.registerHandler(i[0], i[1])
 
         self.loadAllIcons()
-    #@-node:tbrown.20090119215428.11:birth
+    #@-node:tbrown.20090119215428.11:__init__
+    #@+node:tbrown.20090522142657.7894:__del__
+    def __del__(self):
+        for i in self.handlers:
+            leoPlugins.unregisterHandler(i[0], i[1])
+    #@-node:tbrown.20090522142657.7894:__del__
     #@+node:tbrown.20090119215428.13:redrawer
     def redrawer(fn):
         """decorator for methods which create the need for a redraw"""

@@ -337,7 +337,7 @@ for p in p.self_and_subtree_iter():
        g.es("File %s is now shadowed" % filename)
 #@nonl
 #@-node:ekr.20060824181946:@@button shadow
-#@+node:ville.20090508224531.9799:@@button git-dump
+#@+node:ville.20090508224531.9799:@button git-dump
 """ Dump nodes to ~/.leo/dump git repository.
 
 Before using this, you need to:
@@ -345,7 +345,7 @@ Before using this, you need to:
 
 """
 
-import os
+import os, codecs, hashlib
 flatroot = os.path.expanduser('~/.leo/dump')
 assert os.path.isdir(flatroot)
 
@@ -357,7 +357,7 @@ def dump_nodes():
         gnx = '%s%s%s' % (name, date, num)
         hl.append('<a href="%s">%s%s</a><br/>' % (gnx, '-' * p.level(), p.h))
         fname = gnx
-        open(fname,'w').write(p.b)
+        codecs.open(fname,'w', encoding='utf-8').write(p.b)
         print "wrote", fname
 
 os.chdir(flatroot)
@@ -368,16 +368,23 @@ lis = "\n".join(hl)
 html = "<body>\n<tt>\n" + lis + "\n</tt></body>"
 
 #titlename = c.frame.getTitle() + '.html'
-titlename = 'index.html'
-open(titlename,'w').write(html)
+pth, bname = os.path.split(c.mFileName)
+
+if pth and bname:
+    dbdirname = bname + "_" + hashlib.md5(c.mFileName).hexdigest()    
+
+titlename = dbdirname + '.html'
+codecs.open(titlename,'w', encoding='utf-8').write(html)
 
 g.es("committing to " + flatroot)
 
 os.system('git add *')
-os.system('git commit -m "Leo autocommit"')
+out = os.popen('git commit -m "Leo autocommit"').read()
 g.es("committed")
-
-#@-node:ville.20090508224531.9799:@@button git-dump
+g.es(out)
+g.es('Outline in ' + os.path.abspath(titlename))
+#@nonl
+#@-node:ville.20090508224531.9799:@button git-dump
 #@-node:ekr.20060531090036:Contributed @button nodes
 #@+node:ekr.20051110105946:Find scripts
 #@+node:ekr.20051110105027.159:Find and replace all functions in leoGlobals.py
@@ -5372,8 +5379,18 @@ import string
 @verbatim
 @verbatim
 @verbatim
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+@verbatim
 #@verbatim
 #@count 10000
+@verbatim
+@verbatim
+@verbatim
+@verbatim
+@verbatim
 @verbatim
 @verbatim
 @verbatim
@@ -15076,6 +15093,41 @@ for line in lines:
 f.close()
 print '%d records' % n
 #@-node:ekr.20061018084920:munge-db
+#@+node:ville.20090522185354.16487:Call hierarchy tracing (using python 'trace' module)
+"""
+Analyzing program flow.
+
+Run (ctrl+b) this script after 
+
+cd ~/leo-editor
+python -m trace --trackcalls launchLeo.py --gui=qt >trace.txt
+
+"""
+
+tracefile = '~/leo-editor/trace.txt'
+
+import os
+
+
+tr = open(os.path.expanduser(tracefile))
+print tr
+top = p.insertAsLastChild().copy()
+top.h = 'trace session'
+cur = None
+no = None
+for l in tr:
+    if l.startswith('***'):
+        cur = top.insertAsLastChild().copy()
+        cur.h = os.path.basename(l.split()[1])
+    elif l.startswith('  -->'):
+        no = cur.insertAsLastChild().copy()
+        no.h = os.path.basename(l.split()[1].strip())
+    else:
+        if no:
+            no.b += l.strip() + '\n'
+
+    print ".",
+#@-node:ville.20090522185354.16487:Call hierarchy tracing (using python 'trace' module)
 #@-node:ekr.20051104082605:Others
 #@+node:ekr.20041126132604:Prototypes
 #@+node:ekr.20051011211253:Debugger canvas

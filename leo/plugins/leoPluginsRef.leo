@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="196" left="60" height="794" width="1174"/>
+	<global_window_position top="211" left="372" height="794" width="1174"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -33,8 +33,8 @@
 </v>
 <v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
-<v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
-<v t="ekr.20041114102139" a="E"><vh>Notes</vh>
+<v t="ekr.20050303051035" a="E"><vh> Templates: these show recommended ways of defining plugins.</vh>
+<v t="ekr.20041114102139"><vh>Notes</vh>
 <v t="ekr.20041114103913"><vh>About comments in the style guide</vh></v>
 <v t="ekr.20041114102139.1"><vh>About the root node</vh></v>
 <v t="ekr.20041114103913.1"><vh>About defining functions in separate nodes</vh></v>
@@ -54,7 +54,7 @@
 <v t="ekr.20050303051035.5"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20050303051101"><vh>init</vh></v>
 <v t="ekr.20050303051150"><vh>onCreate</vh></v>
-<v t="ekr.20050303051222"><vh>class pluginController</vh>
+<v t="ekr.20050303051222" a="E"><vh>class pluginController</vh>
 <v t="ekr.20050303051222.1"><vh>__init__</vh></v>
 </v>
 </v>
@@ -317,11 +317,14 @@
 <v t="ekr.20071004090250"><vh>@thin graphed.py</vh></v>
 </v>
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh></v>
-<v t="ekr.20040722135402"><vh>Icon and status areas</vh>
+<v t="ekr.20040722135402" a="E"><vh>Icon and status areas</vh>
 <v t="ekr.20060328125925"><vh>@thin chapter_hoist.py</vh></v>
 <v t="ekr.20040331072607"><vh>@thin hoist.py</vh></v>
 <v t="edream.110203113231.758"><vh>@thin nav_buttons.py</vh></v>
-<v t="pap.20051010170720"><vh>@thin newButtons.py</vh></v>
+<v t="ville.20090518182905.5419" a="M"
+expanded="ville.20090518182905.5425,"><vh>@thin nav_qt.py</vh></v>
+<v t="pap.20051010170720"
+expanded="ekr.20060107123625,pap.20051010171746,"><vh>@thin newButtons.py</vh></v>
 <v t="ekr.20040108062655"><vh>@thin nodenavigator.py</vh></v>
 <v t="ekr.20040108095351"><vh>@thin rowcol.py</vh></v>
 <v t="ekr.20040107092135.2"><vh>@thin searchbox.py</vh></v>
@@ -703,7 +706,7 @@
 </v>
 <v t="ekr.20041001210557" a="E"><vh>Scripting</vh>
 <v t="ekr.20060328125248"><vh>@thin mod_scripting.py</vh></v>
-<v t="tbrown.20090513125417.5244"><vh>@auto interact.py</vh></v>
+<v t="tbrown.20090513125417.5244"><vh>@thin interact.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
 <v t="EKR.20040517080250.1"><vh>@thin mod_http.py</vh></v>
@@ -961,7 +964,7 @@
 </v>
 <v t="rogererens.20041013082304"><vh>@thin UNL.py</vh></v>
 </v>
-<v t="ekr.20040915073259"><vh>Windows</vh>
+<v t="ekr.20040915073259" a="E"><vh>Windows</vh>
 <v t="tbrown.20090322083202.1"><vh>NOTE: todo.py is qt verion of cleo.py (which is tk)</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@thin todo.py</vh></v>
 <v t="ekr.20050227071948" a="E" annotate="5404010000376437313030323835353038373037323639366637323639373437393731303132383633363136653665366637343631373436353061353436623530363936333662366336353536363137323061373130323666373130333464306632373632353530343665366636343635373130353238363830323666373130363535303734363635363137343735373236353731303736323535303236323637373130383238363830323666373130393535303037313061363235353039363137323633363836353734373937303635373130623238363830323666373130633638306136323535303236363637373130643238363830323666373130653638306136323735326571002e"><vh> cleo</vh>
@@ -1012,11 +1015,12 @@
 <v t="mork.20041022155742.1"><vh>@thin nodebar.py</vh></v>
 <v t="edream.110203113231.924"><vh>@thin redirect_to_log.py</vh></v>
 <v t="ekr.20040915075530"><vh>@thin UASearch.py</vh></v>
-<v t="ekr.20040831122004"><vh>@thin UniversalScrolling.py</vh></v>
-<v t="ekr.20040831115238"><vh>@thin URLloader.py</vh></v>
+<v t="ekr.20040831122004" a="E"><vh>@thin UniversalScrolling.py</vh></v>
+<v t="ekr.20040831115238" a="E"><vh>@thin URLloader.py</vh></v>
 <v t="ekr.20060506070443.1"></v>
-<v t="ville.20090310191936.10"><vh>@thin colorize_headlines.py</vh></v>
-<v t="ville.20090314215508.4"><vh>@thin quicksearch.py</vh></v>
+<v t="ville.20090310191936.10" a="E"><vh>@thin colorize_headlines.py</vh></v>
+<v t="ville.20090314215508.4" a="E"
+expanded="ville.20090314215508.2,"><vh>@thin quicksearch.py</vh></v>
 </v>
 </v>
 </vnodes>

@@ -1,5 +1,6 @@
 .. rst3: filename: html\scripting.html
 
+
 ####################################
 Chapter 7: Scripting Leo with Python
 ####################################

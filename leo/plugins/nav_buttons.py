@@ -93,13 +93,18 @@ rClick menu generator commands
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
-import leo.plugins.tkGui as tkGui
-leoTkinterDialog = tkGui.leoTkinterDialog
-tkinterListBoxDialog = tkGui.tkinterListBoxDialog
+if g.app.gui.guiName() == 'tkinter':
 
-try:
-    import Tkinter as Tk
-except ImportError:
+    import leo.plugins.tkGui as tkGui
+    leoTkinterDialog = tkGui.leoTkinterDialog
+    tkinterListBoxDialog = tkGui.tkinterListBoxDialog
+
+    try:
+        import Tkinter as Tk
+    except ImportError:
+        Tk = None
+else:
+    class tkinterListBoxDialog: pass
     Tk = None
 
 import os

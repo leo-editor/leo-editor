@@ -74,6 +74,7 @@ def doTests(c,all=None,p=None,verbosity=1):
     p1 = p.copy()
 
     try:
+        found = False
         g.unitTesting = g.app.unitTesting = True
         g.app.unitTestDict["fail"] = False
         g.app.unitTestDict['c'] = c
@@ -93,25 +94,28 @@ def doTests(c,all=None,p=None,verbosity=1):
                 p.moveToNodeAfterTree()
             elif isTestNode(p): # @test
                 test = makeTestCase(c,p)
-                if test: suite.addTest(test)
+                if test:
+                    suite.addTest(test) ; found = True
                 p.moveToThreadNext()
             elif isSuiteNode(p): # @suite
                 # g.trace(p.h)
                 test = makeTestSuite(c,p)
-                if test: suite.addTest(test)
+                if test:
+                    suite.addTest(test) ; found = True
                 p.moveToThreadNext()
             else:
                 p.moveToThreadNext()
 
         # Verbosity: 1: print just dots.
-        res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
-        # put info to db as well
-
-        key = 'unittest/cur/fail'
-        archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
-        c.db[key] = archive
-
-        #g.pdb()
+        if found:
+            res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
+            # put info to db as well
+            key = 'unittest/cur/fail'
+            archive = [(t.p.gnx, trace) for (t, trace) in res.errors]
+            c.db[key] = archive
+        else:
+            g.es_print('no @test or @suite nodes in %s outline' % (
+                g.choose(all,'entire','selected')),color='red')
     finally:
         c.setChanged(changed) # Restore changed state.
         if g.app.unitTestDict.get('restoreSelectedNode',True):
@@ -683,6 +687,26 @@ def runLeoTest(c,path,verbose=False,full=False):
             g.app.closeLeoWindow(frame)
         c.frame.update() # Restored in Leo 4.4.8.
 #@-node:ekr.20051104075904.42:runLeoTest
+#@+node:ekr.20090514072254.5746:runUnitTestLeoFile
+def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
+
+    '''Run all unit tests in path (a .leo file) in a pristine environment.'''
+
+    # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test',path)
+    leo  = g.os_path_finalize_join(g.app.loadDir,'..','core','leoDynamicTest.py')
+
+    if sys.platform.startswith('win'): 
+        if ' ' in leo: leo = '"' + leo + '"'
+        if ' ' in path: path = '"' + path + '"'
+
+    guiArg = '--gui=%s' % gui
+    pathArg = '--path=%s' % path
+    args = [sys.executable,leo,path,guiArg,pathArg]
+    if silent: args.append('--silent')
+
+    os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
+#@-node:ekr.20090514072254.5746:runUnitTestLeoFile
 #@+node:ekr.20070627135407:runTestsExternally & helper class
 def runTestsExternally (c,all):
 
@@ -719,8 +743,12 @@ def runTestsExternally (c,all):
         #@+node:ekr.20070627135336.9:createOutline & helpers
         def createOutline (self,c2):
 
-            '''Create a unit test ouline containing all @test and @suite nodes in p's outline.'''
+            '''Create a unit test ouline containing
 
+            - all children of any @mark-for-unit-tests node anywhere in the outline.
+            - all @test and @suite nodes in p's outline.'''
+
+            trace = False
             c = self.c ; markTag = '@mark-for-unit-tests'
             self.copyRoot = c2.rootPosition()
             self.copyRoot.initHeadString('All unit tests')
@@ -751,6 +779,8 @@ def runTestsExternally (c,all):
                 (p1,limit1,lookForMark1,lookForNodes1),
                 (p2,limit2,lookForMark2,lookForNodes2),
             ):
+                if trace: g.trace('look for: mark %s nodes %s\nroot %s\nlimit %s' % (
+                    lookForMark,lookForNodes,p.h,limit and limit.h or '<none>'))
                 while p and p != limit:
                     h = p.h
                     if p.v.t in self.seen:
@@ -767,13 +797,13 @@ def runTestsExternally (c,all):
         #@+node:ekr.20070705080413:addMarkTree
         def addMarkTree (self,p):
 
-            # g.trace(len(self.seen),p.h)
+            # Add the entire @mark-for-unit-tests tree.
+            self.addNode(p)
 
-            self.seen.append(p.v.t)
-
-            for p in p.subtree_iter():
-                if self.isUnitTestNode(p) and not p.v.t in self.seen:
-                    self.addNode(p)
+            # for p in p.subtree_iter():
+                # # if self.isUnitTestNode(p) and not p.v.t in self.seen:
+                # if not p.v.t in self.seen: # Add *all* nodes.
+                    # self.addNode(p)
         #@-node:ekr.20070705080413:addMarkTree
         #@+node:ekr.20070705065154.1:addNode
         def addNode(self,p):
@@ -782,12 +812,13 @@ def runTestsExternally (c,all):
             Add an @test, @suite or an @unit-tests tree as the last child of self.copyRoot.
             '''
 
-            # g.trace(len(self.seen),p.h)
+            # g.trace(p.h)
 
             p2 = p.copyTreeAfter()
             p2.moveToLastChildOf(self.copyRoot)
 
-            self.seen.append(p.v.t)
+            for p2 in p.self_and_subtree_iter():
+                self.seen.append(p2.v.t)
         #@-node:ekr.20070705065154.1:addNode
         #@+node:ekr.20070705075604.3:isUnitTestNode
         def isUnitTestNode (self,p):
@@ -801,60 +832,34 @@ def runTestsExternally (c,all):
         #@-node:ekr.20070705075604.3:isUnitTestNode
         #@-node:ekr.20070627135336.9:createOutline & helpers
         #@+node:ekr.20070627140344.2:runTests
-        def runTests (self):
+        def runTests (self,gui='nullGui',trace=False):
 
             '''
-            Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo in a separate process.
+            Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
+            in a separate process.
             '''
 
-            trace = False
-            if trace: import time
-            kind = g.choose(self.all,'all ','')
-            g.es('running',kind,'unit tests',color='blue')
-            g.pr('creating: %s' % (self.fileName))
+            trace = False or trace
+            import time
+            kind = g.choose(self.all,'all ','selected')
             c = self.c ; p = c.p
-            if trace: t1 = time.time()
+            t1 = time.time()
             found = self.searchOutline(p.copy())
-            if trace:
-                 t2 = time.time() ; g.pr('find:  %0.2f' % (t2-t1))
             if found:
-                gui = leoGui.nullGui("nullGui")
-                c2 = c.new(gui=gui)
-                if trace:
-                    t3 = time.time() ; g.pr('gui:   %0.2f' % (t3-t2))
+                theGui = leoGui.nullGui("nullGui")
+                c2 = c.new(gui=theGui)
                 found = self.createOutline(c2)
-                if trace:
-                    t4 = time.time() ; g.pr('copy:  %0.2f' % (t4-t3))
                 self.createFileFromOutline(c2)
-                if trace:
-                    t5 = time.time() ; g.pr('write: %0.2f' % (t5-t4))
-                self.runLeoDynamicTest()
-                if trace:
-                    t6 = time.time() ; g.pr('run:   %0.2f' % (t6-t5))
+                t2 = time.time()
+                print('created %s unit tests in %0.2fsec in %s' % (
+                    kind,t2-t1,self.fileName))
+                g.es('created %s unit tests' % (kind),color='blue')
+                runUnitTestLeoFile(gui=gui,path='dynamicUnitTest.leo',silent=True)
                 c.selectPosition(p.copy())
             else:
-                g.es_print('no @test or @suite nodes in selected outline')
+                g.es_print('no @test or @suite nodes in %s outline' % (
+                    g.choose(self.all,'entire','selected')),color='red')
         #@-node:ekr.20070627140344.2:runTests
-        #@+node:ekr.20070627135336.11:runLeoDynamicTest
-        def runLeoDynamicTest (self,gui='nullGui'):
-
-            '''Run test/leoDynamicTest.py in a pristine environment.'''
-
-            # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
-            path = g.os_path_finalize_join(
-                g.app.loadDir,'leoDynamicTest.py')
-
-            if ' ' in path and sys.platform.startswith('win'): 
-                path = '"' + path + '"'
-
-            args = [sys.executable, path, '--silent' '--gui=%s' % (gui)]  
-
-            # srcDir = g.os_path_finalize_join(g.app.loadDir,'..','src')
-            # srcDir = g.os_path_finalize_join(g.app.loadDir,'..')
-            # os.chdir(srcDir)
-
-            os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
-        #@-node:ekr.20070627135336.11:runLeoDynamicTest
         #@+node:ekr.20070627135336.8:searchOutline
         def searchOutline (self,p):
 
@@ -935,15 +940,15 @@ def runAtFileTest(c,p):
     except AssertionError:
         #@        << dump result and expected >>
         #@+node:ekr.20051104075904.45:<< dump result and expected >>
-        g.pr('\n','-' * 20)
-        g.pr("result...")
+        print('\n','-' * 20)
+        print("result...")
         for line in g.splitLines(result):
-            g.pr("%3d" % len(line),repr(line))
-        g.pr('-' * 20)
-        g.pr("expected...")
+            print("%3d" % len(line),repr(line))
+        print('-' * 20)
+        print("expected...")
         for line in g.splitLines(expected):
-            g.pr("%3d" % len(line),repr(line))
-        g.pr('-' * 20)
+            print("%3d" % len(line),repr(line))
+        print('-' * 20)
         #@-node:ekr.20051104075904.45:<< dump result and expected >>
         #@nl
         raise

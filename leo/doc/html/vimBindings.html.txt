@@ -13,6 +13,8 @@ This chapter describes Leo's vim-like bindings, including how to install them.
 Vim bindings
 ++++++++++++
 
+
+
 Installing vim bindings
 ***********************
 

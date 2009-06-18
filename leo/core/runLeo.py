@@ -81,7 +81,24 @@ def run(fileName=None,pymacs=None,*args,**keywords):
 
     trace = False and not g.unitTesting
     if trace: print ('runLeo.run: sys.argv %s' % sys.argv)
+
+    # Phase 1: before loading plugins.
+    # Scan options, set directories and read settings.
     if not isValidPython(): return
+    fn,relFn,script = doPrePluginsInit(fileName,pymacs)
+
+    # Phase 2: load plugins.
+    g.doHook("start1") # Plugins may create a gui.
+    if g.app.killed: return
+
+    # Phase 3: after loading plugins. Create a frame.
+    ok = doPostPluginsInit(args,fn,relFn,script)
+    if ok: g.app.gui.runMainLoop()
+#@+node:ekr.20090519143741.5915:doPrePluginsInit & helpers
+def doPrePluginsInit(fileName,pymacs):
+
+    '''Scan options, set directories and read settings.'''
+
     g.computeStandardDirectories()
     adjustSysPath()
     fileName2,gui,script,windowFlag = scanOptions()
@@ -98,96 +115,7 @@ def run(fileName=None,pymacs=None,*args,**keywords):
     g.app.config.readSettingsFiles(fileName,verbose)
     g.app.setEncoding()
     createSpecialGui(gui,pymacs,script,windowFlag)
-    g.doHook("start1") # Load plugins. Plugins may create g.app.gui.
-    if g.app.killed: return # Support for g.app.forceShutdown.
-    # g.trace('g.app.gui after plugins loaded',g.app.gui)
-    if g.app.gui == None: g.app.createTkGui() # Creates global windows.
-    g.init_sherlock(args)  # Init tracing and statistics.
-    if g.app and g.app.use_psyco: startPsyco()
-    # Clear g.app.initing _before_ creating the frame.
-    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
-    # Create the main frame.  Show it and all queued messages.
-    c,frame = createFrame(fileName,relativeFileName,script)
-    if not frame: return
-    finishInitApp(c)
-    p = c.p
-    g.app.initComplete = True
-    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
-    if c.config.getBool('allow_idle_time_hook'): g.enableIdleTimeHook()
-    initFocusAndDraw(c,fileName)
-    g.app.gui.runMainLoop()
-#@+node:ekr.20070306085724:adjustSysPath
-def adjustSysPath ():
-
-    '''Adjust sys.path to enable imports as usual with Leo.'''
-
-    #g.trace('loadDir',g.app.loadDir)
-
-    leoDirs = ('config','doc','extensions','modes','plugins','core','test')
-
-    for theDir in leoDirs:
-        path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
-        if path not in sys.path:
-            sys.path.append(path)
-#@-node:ekr.20070306085724:adjustSysPath
-#@+node:ekr.20031218072017.1624:createFrame (runLeo.py)
-def createFrame (fileName,relativeFileName,script):
-
-    """Create a LeoFrame during Leo's startup process."""
-
-    # Only allow .zip and .leo files.
-    if fileName:
-        table = ('.leo','.zip',)
-        for ext in table:
-            if fileName.endswith(ext):
-                break
-        else:
-            g.es_print('invalid Leo file extension: %s' % (
-                relativeFileName))
-            fileName = relativeFileName = None
-
-    # New in Leo 4.6: support for 'default_leo_file' setting.
-    if not fileName and not script:
-        fileName = g.app.config.getString(c=None,setting='default_leo_file')
-        fileName = g.os_path_finalize(fileName)
-        if fileName and g.os_path_exists(fileName):
-            g.es_print('opening default_leo_file:',fileName,color='blue')
-
-    # Try to create a frame for the file.
-    if fileName and g.os_path_exists(fileName):
-        ok, frame = g.openWithFileName(relativeFileName or fileName,None)
-        if ok: return frame.c,frame
-
-    # Create a _new_ frame & indicate it is the startup window.
-    c,frame = g.app.newLeoCommanderAndFrame(
-        fileName=fileName,
-        relativeFileName=relativeFileName,
-        initEditCommanders=True)
-    assert frame.c == c and c.frame == frame
-    frame.setInitialWindowGeometry()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
-    frame.startupWindow = True
-    if c.chapterController:
-        c.chapterController.finishCreate()
-        c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
-    # Call the 'new' hook for compatibility with plugins.
-    g.doHook("new",old_c=None,c=c,new_c=c)
-
-    # New in Leo 4.4.8: create the menu as late as possible so it can use user commands.
-    p = c.p
-    if not g.doHook("menu1",c=frame.c,p=p,v=p):
-        frame.menu.createMenuBar(frame)
-        c.updateRecentFiles(relativeFileName or fileName)
-        g.doHook("menu2",c=frame.c,p=p,v=p)
-        g.doHook("after-create-leo-frame",c=c)
-
-    # Report the failure to open the file.
-    if fileName:
-        g.es_print("file not found:",fileName,color='red')
-
-    c.redraw()
-    return c,frame
-#@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
+    return fileName,relativeFileName,script
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
@@ -218,18 +146,20 @@ def createNullGuiWithScript (script):
     g.app.gui.setScript(script)
 #@-node:ekr.20031218072017.1938:createNullGuiWithScript
 #@-node:ekr.20080921060401.4:createSpecialGui & helper
-#@+node:ekr.20080921060401.5:finishInitApp
-def finishInitApp(c):
+#@+node:ekr.20070306085724:adjustSysPath
+def adjustSysPath ():
 
-    g.app.trace_gc          = c.config.getBool('trace_gc')
-    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
-    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+    '''Adjust sys.path to enable imports as usual with Leo.'''
 
-    g.app.writeWaitingLog()
+    #g.trace('loadDir',g.app.loadDir)
 
-    if g.app.disableSave:
-        g.es("disabling save commands",color="red")
-#@-node:ekr.20080921060401.5:finishInitApp
+    leoDirs = ('config','doc','extensions','modes','plugins','core','test')
+
+    for theDir in leoDirs:
+        path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
+        if path not in sys.path:
+            sys.path.append(path)
+#@-node:ekr.20070306085724:adjustSysPath
 #@+node:ekr.20071117060958:getFileName & helper
 def getFileName (fileName,script):
 
@@ -287,6 +217,178 @@ def initApp (verbose):
     g.app.config = leoConfig.configClass()
     g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
 #@-node:ekr.20080921091311.2:initApp
+#@+node:ekr.20041130093254:reportDirectories
+def reportDirectories(verbose):
+
+    if verbose:
+        for kind,theDir in (
+            ("load",g.app.loadDir),
+            ("global config",g.app.globalConfigDir),
+            ("home",g.app.homeDir),
+        ):
+            g.es("%s dir:" % (kind),theDir,color="blue")
+#@-node:ekr.20041130093254:reportDirectories
+#@+node:ekr.20080521132317.2:scanOptions
+def scanOptions():
+
+    '''Handle all options and remove them from sys.argv.'''
+
+    parser = optparse.OptionParser()
+    parser.add_option('-c', '--config', dest="one_config_path")
+    parser.add_option('-f', '--file',   dest="fileName")
+    parser.add_option('--gui',          dest="gui")
+    parser.add_option('--silent',       action="store_true",dest="silent")
+    parser.add_option('--script',       dest="script")
+    parser.add_option('--script-window',dest="script_window")
+    parser.add_option('--ipython',      action="store_true",dest="use_ipython")
+
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
+    # g.trace(sys.argv)
+
+    # Handle the args...
+
+    # -c or --config
+    path = options.one_config_path
+    if path:
+        path = g.os_path_finalize_join(os.getcwd(),path)
+        if g.os_path_exists(path):
+            g.app.oneConfigFilename = path
+        else:
+            g.es_print('Invalid -c option: file not found:',path,color='red')
+
+    # -f or --file
+    fileName = options.fileName
+
+    # -- gui
+    gui = options.gui
+    if gui:
+        gui = gui.lower()
+        if gui not in ('tk','qt','wx'):
+            g.trace('unknown gui: %s' % gui)
+            gui = None
+
+    # --script
+    script_path = options.script
+    script_path_w = options.script_window
+    if script_path and script_path_w:
+        parser.error("--script and script-window are mutually exclusive")
+
+    script_name = script_path or script_path_w
+    if script_name:
+        script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
+        try:
+            f = None
+            try:
+                f = open(script_name,'r')
+                script = f.read()
+                # g.trace("script",script)
+            except IOError:
+                g.es_print("can not open script file:",script_name, color="red")
+                script = None
+        finally:
+            if f: f.close()
+    else:
+        script = None
+
+    # --silent
+    g.app.silentMode = options.silent
+    # g.trace('silentMode',g.app.silentMode)
+
+    # --ipython
+    g.app.useIpython = options.use_ipython
+
+    # Compute the return values.
+    windowFlag = script and script_path_w
+    return fileName, gui, script, windowFlag
+#@-node:ekr.20080521132317.2:scanOptions
+#@-node:ekr.20090519143741.5915:doPrePluginsInit & helpers
+#@+node:ekr.20090519143741.5917:doPostPluginsInit & helpers
+def doPostPluginsInit(args,fileName,relativeFileName,script):
+
+    '''Return True if the frame was created properly.'''
+
+    if g.app.gui == None:
+        g.app.createTkGui() # Creates global windows.
+
+    g.init_sherlock(args)  # Init tracing and statistics.
+    if g.app and g.app.use_psyco: startPsyco()
+
+    # Clear g.app.initing _before_ creating the frame.
+    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+
+    # Create the main frame.  Show it and all queued messages.
+    c,frame = createFrame(fileName,relativeFileName,script)
+    if not frame: return False
+
+    # Do the final inits.
+    finishInitApp(c)
+    p = c.p
+    g.app.initComplete = True
+    g.doHook("start2",c=c,p=p,v=p,fileName=fileName)
+    if c.config.getBool('allow_idle_time_hook'):
+        g.enableIdleTimeHook()
+    initFocusAndDraw(c,fileName)
+    return True
+#@+node:ekr.20031218072017.1624:createFrame (runLeo.py)
+def createFrame (fileName,relativeFileName,script):
+
+    """Create a LeoFrame during Leo's startup process."""
+
+    # New in Leo 4.6: support for 'default_leo_file' setting.
+    defaultFileName = None
+    if not fileName and not script:
+        fileName = g.app.config.getString(c=None,setting='default_leo_file')
+        fileName = g.os_path_finalize(fileName)
+        if fileName and g.os_path_exists(fileName):
+            g.es_print('opening default_leo_file:',fileName,color='blue')
+            defaultFileName = fileName
+
+    # Try to create a frame for the file.
+    if fileName and g.os_path_exists(fileName):
+        ok, frame = g.openWithFileName(relativeFileName or fileName,None)
+        if ok: return frame.c,frame
+
+    # Create a _new_ frame & indicate it is the startup window.
+    if not fileName: fileName = defaultFileName
+
+    c,frame = g.app.newLeoCommanderAndFrame(
+        fileName=fileName,
+        relativeFileName=relativeFileName,
+        initEditCommanders=True)
+
+    assert frame.c == c and c.frame == frame
+    frame.setInitialWindowGeometry()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+    frame.startupWindow = True
+    if c.chapterController:
+        c.chapterController.finishCreate()
+        c.setChanged(False) # Clear the changed flag set when creating the @chapters node.
+    # Call the 'new' hook for compatibility with plugins.
+    g.doHook("new",old_c=None,c=c,new_c=c)
+
+    g.createMenu(c,fileName)
+    g.finishOpen(c) # Calls c.redraw.
+
+    # Report the failure to open the file.
+    if fileName:
+        g.es_print("file not found:",fileName,color='red')
+
+    return c,frame
+#@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
+#@+node:ekr.20080921060401.5:finishInitApp
+def finishInitApp(c):
+
+    g.app.trace_gc          = c.config.getBool('trace_gc')
+    g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
+    g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
+
+    g.app.writeWaitingLog()
+
+    if g.app.disableSave:
+        g.es("disabling save commands",color="red")
+#@-node:ekr.20080921060401.5:finishInitApp
 #@+node:ekr.20080921060401.6:initFocusAndDraw
 def initFocusAndDraw(c,fileName):
 
@@ -302,6 +404,28 @@ def initFocusAndDraw(c,fileName):
 
     c.outerUpdate()
 #@-node:ekr.20080921060401.6:initFocusAndDraw
+#@+node:ekr.20040411081633:startPsyco
+def startPsyco ():
+
+    try:
+        import psyco
+        if 0:
+            theFile = r"c:\prog\test\psycoLog.txt"
+            g.es("psyco now logging to:",theFile,color="blue")
+            psyco.log(theFile)
+            psyco.profile()
+        psyco.full()
+        g.es("psyco now running",color="blue")
+
+    except ImportError:
+        g.app.use_psyco = False
+
+    except:
+        g.pr("unexpected exception importing psyco")
+        g.es_exception()
+        g.app.use_psyco = False
+#@-node:ekr.20040411081633:startPsyco
+#@-node:ekr.20090519143741.5917:doPostPluginsInit & helpers
 #@+node:ekr.20031218072017.1936:isValidPython
 def isValidPython():
 
@@ -439,6 +563,7 @@ http://python.org/download/
         traceback.print_exc()
         return 0
 #@-node:ekr.20031218072017.1936:isValidPython
+#@-node:ekr.20031218072017.1934:run & helpers
 #@+node:ekr.20031218072017.2607:profile_leo
 #@+at 
 #@nonl
@@ -477,114 +602,6 @@ def profile_leo ():
 
 prof = profile_leo
 #@-node:ekr.20031218072017.2607:profile_leo
-#@+node:ekr.20041130093254:reportDirectories
-def reportDirectories(verbose):
-
-    if verbose:
-        for kind,theDir in (
-            ("load",g.app.loadDir),
-            ("global config",g.app.globalConfigDir),
-            ("home",g.app.homeDir),
-        ):
-            g.es("%s dir:" % (kind),theDir,color="blue")
-#@-node:ekr.20041130093254:reportDirectories
-#@+node:ekr.20080521132317.2:scanOptions
-def scanOptions():
-
-    '''Handle all options and remove them from sys.argv.'''
-
-    parser = optparse.OptionParser()
-    parser.add_option('-c', '--config', dest="one_config_path")
-    parser.add_option('-f', '--file',   dest="fileName")
-    parser.add_option('--gui',          dest="gui")
-    parser.add_option('--silent',       action="store_true",dest="silent")
-    parser.add_option('--script',       dest="script")
-    parser.add_option('--script-window',dest="script_window")
-    parser.add_option('--ipython',      action="store_true",dest="use_ipython")
-
-    # Parse the options, and remove them from sys.argv.
-    options, args = parser.parse_args()
-    sys.argv = [sys.argv[0]] ; sys.argv.extend(args)
-    # g.trace(sys.argv)
-
-    # Handle the args...
-
-    # -c or --config
-    path = options.one_config_path
-    if path:
-        path = g.os_path_finalize_join(os.getcwd(),path)
-        if g.os_path_exists(path):
-            g.app.oneConfigFilename = path
-        else:
-            g.es_print('Invalid -c option: file not found:',path,color='red')
-
-    # -f or --file
-    fileName = options.fileName
-
-    # -- gui
-    gui = options.gui
-    if gui:
-        gui = gui.lower()
-        if gui not in ('tk','qt','wx'):
-            g.trace('unknown gui: %s' % gui)
-            gui = None
-
-    # --script
-    script_path = options.script
-    script_path_w = options.script_window
-    if script_path and script_path_w:
-        parser.error("--script and script-window are mutually exclusive")
-
-    script_name = script_path or script_path_w
-    if script_name:
-        script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
-        try:
-            f = None
-            try:
-                f = open(script_name,'r')
-                script = f.read()
-                # g.trace("script",script)
-            except IOError:
-                g.es_print("can not open script file:",script_name, color="red")
-                script = None
-        finally:
-            if f: f.close()
-    else:
-        script = None
-
-    # --silent
-    g.app.silentMode = options.silent
-    # g.trace('silentMode',g.app.silentMode)
-
-    # --ipython
-
-    g.app.useIpython = options.use_ipython
-    # Compute the return values.
-    windowFlag = script and script_path_w
-    return fileName, gui, script, windowFlag
-#@-node:ekr.20080521132317.2:scanOptions
-#@+node:ekr.20040411081633:startPsyco
-def startPsyco ():
-
-    try:
-        import psyco
-        if 0:
-            theFile = r"c:\prog\test\psycoLog.txt"
-            g.es("psyco now logging to:",theFile,color="blue")
-            psyco.log(theFile)
-            psyco.profile()
-        psyco.full()
-        g.es("psyco now running",color="blue")
-
-    except ImportError:
-        g.app.use_psyco = False
-
-    except:
-        g.pr("unexpected exception importing psyco")
-        g.es_exception()
-        g.app.use_psyco = False
-#@-node:ekr.20040411081633:startPsyco
-#@-node:ekr.20031218072017.1934:run & helpers
 #@-others
 
 if __name__ == "__main__":

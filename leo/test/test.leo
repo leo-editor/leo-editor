@@ -3,14 +3,17 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="85" left="333" height="954" width="882"/>
+	<global_window_position top="54" left="422" height="925" width="793"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
+<v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
+<v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
+</v>
 <v t="ekr.20070529173219"><vh>@chapter abc</vh>
 <v t="ekr.20070529173219.1"><vh>abc node 1</vh></v>
 <v t="ekr.20071206070207"><vh>cross-chapter-clone-test</vh></v>
@@ -22,7 +25,6 @@
 </v>
 <v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
-<v t="ekr.20070504080933"><vh>@bool create_nonexistent_directories = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
@@ -55,6 +57,7 @@
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
 </v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
+<v t="ekr.20090521070342.1907"><vh>@button show-rst</vh></v>
 <v t="ekr.20061030041450"><vh>Run Iron Python scripts</vh>
 <v t="ekr.20061030041356"><vh>@url c:\prog\IronPython-1.0.1\Doc\IronPythonApiReference.chm</vh></v>
 </v>
@@ -241,18 +244,7 @@
 <v t="ekr.20080806145258.32"><vh>print_leo_dot_js</vh></v>
 <v t="ekr.20080806145258.33"><vh>print_tree</vh></v>
 </v>
-<v t="ekr.20080806145258.1"><vh>@@thin cgi-bin/leo.js</vh>
-<v t="ekr.20080806145258.2"><vh>getElementbyClass</vh></v>
-<v t="ekr.20080806145258.3"><vh>contractcontent</vh></v>
-<v t="ekr.20080806145258.4"><vh>expandcontent</vh></v>
-<v t="ekr.20080806145258.5"><vh>revivecontent</vh></v>
-<v t="ekr.20080806145258.6"><vh>get_cookie</vh></v>
-<v t="ekr.20080806145258.7"><vh>getselectedItem</vh></v>
-<v t="ekr.20080806145258.8"><vh>saveswitchstate</vh></v>
-<v t="ekr.20080806145258.9"><vh>do_onload</vh></v>
-<v t="ekr.20080806145258.10"><vh>format</vh></v>
-<v t="ekr.20080806145258.11"><vh>formatText</vh></v>
-</v>
+<v t="ekr.20080806145258.1"><vh>@@thin cgi-bin/leo.js</vh></v>
 <v t="ekr.20080806145258.34"><vh>@@thin jqueryTest.html</vh></v>
 </v>
 <v t="ekr.20080811113441.2"><vh>Running body text as a windows script</vh>
@@ -264,6 +256,7 @@
 <v t="ekr.20080807115344.4"><vh>RunCode</vh></v>
 </v>
 </v>
+<v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
 </v>
 <v t="ekr.20071105085941"><vh>Tests</vh>
 <v t="ekr.20090309064612.1"><vh> Future features/bug fixes (do not delete)</vh>
@@ -324,14 +317,29 @@
 <v t="ekr.20081001110047.3"><vh>eggs</vh></v>
 </v>
 </v>
+<v t="ekr.20081003094737.1"><vh>Unicode tests</vh>
+<v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
+<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
+<v t="ekr.20090525090210.1940"><vh>Unicode characters: La Peña</vh></v>
+</v>
+<v t="ekr.20090507082111.1904"><vh>test creation of gnx's</vh></v>
+<v t="ekr.20090430080001.1"><vh>@path c:\prog\test</vh>
+<v t="ekr.20090430080001.2"><vh>@rst test.html</vh>
+<v t="ekr.20090430124352.10"><vh>@rst-code</vh>
+<v t="ekr.20090430124352.9"><vh>&lt;&lt; section a &gt;&gt;</vh>
+<v t="ekr.20090430124352.11"><vh>&lt;&lt; section c &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20090430124352.5"><vh>&lt;&lt; section b&gt;&gt;</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20090309064612.3"><vh>Tests of new features</vh>
-<v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090309064612.4"><vh>Decorator tests</vh>
 <v t="ekr.20080628094340.1"><vh>Decorator test</vh></v>
 <v t="edward.20081221145716.1"><vh>decorator test 2</vh></v>
 </v>
 <v t="ekr.20090201162523.1"><vh>Macro test</vh>
-<v t="ekr.20090201192257.1"><vh>@test macro ab</vh></v>
+<v t="ekr.20090201192257.1"><vh>@@test macro ab</vh></v>
 </v>
 <v t="ekr.20090128131130.1"><vh>posList tests</vh></v>
 <v t="ekr.20090128112453.1" key="550378797a71002e"><vh>Property tests</vh></v>
@@ -346,32 +354,18 @@
 </v>
 <v t="ekr.20080531080812.1"><vh>tracer tests</vh></v>
 </v>
-<v t="ekr.20081003094737.1"><vh>Unicode tests</vh>
-<v t="ekr.20080701101740.1"><vh>locale tests</vh></v>
-<v t="ekr.20080821111715.1"><vh>Standard print test (only works for Latin-1 and ascii)</vh></v>
+<v t="ekr.20090601093755.1802"><vh>Test of @g.command decorator</vh></v>
 </v>
-<v t="ekr.20090507082111.1904"><vh>test creation of gnx's</vh></v>
-<v t="ekr.20090430080001.1"><vh>@path c:\prog\test</vh>
-<v t="ekr.20090430080001.2"><vh>@rst test.html</vh>
-<v t="ekr.20090430124352.10"><vh>@rst-code</vh>
-<v t="ekr.20090430124352.9" a="E"><vh>&lt;&lt; section a &gt;&gt;</vh>
-<v t="ekr.20090430124352.11"><vh>&lt;&lt; section c &gt;&gt;</vh></v>
+<v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
+<v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
+<v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
+<v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
-<v t="ekr.20090430124352.5"><vh>&lt;&lt; section b&gt;&gt;</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20090510080933.1908"><vh>Rst stuff</vh>
-<v t="ekr.20090501105822.1"><vh>import rst</vh>
-<v t="ekr.20090501105822.2"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
-</v>
-</v>
-<v t="ekr.20090501110438.1"><vh>import</vh></v>
-<v t="ekr.20090507082535.1906"><vh>Get my email</vh></v>
-<v t="ekr.20090513115300.1919"><vh>underline_characters</vh></v>
-<v t="ekr.20090513154754.1912"><vh>@rst-no-head rst-test declarations</vh></v>
-<v t="ekr.20090512121208.1908" a="E" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355033d2b2a7104752e"><vh>@auto rst-test.txt</vh></v>
+<v t="ekr.20090605111929.1805"><vh>add-editor</vh></v>
+<v t="ekr.20090605141212.1803"><vh>delete-editor</vh></v>
+<v t="ekr.20090615080843.1808"><vh>test of @nocolor</vh></v>
+<v t="ekr.20090614142400.1806"><vh>syntax tests</vh></v>
+<v t="ekr.20090615145950.1810"><vh>c test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -869,10 +863,6 @@ g.es("done",color="blue")
 <t tx="ekr.20070410063214"></t>
 <t tx="ekr.20070416075121"></t>
 <t tx="ekr.20070503085527"></t>
-<t tx="ekr.20070504080933">This option applies to directories specified in filenames in all kinds of @file trees, and to filenames specified in the @path directive.
-
-True:  Leo attempts to create directories if they do not exist.
-False: Leo never attempts to create directories.</t>
 <t tx="ekr.20070515073111">g.pr('=' * 50)</t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -1487,21 +1477,24 @@ plugins_menu.py
 quicksearch.py
 ipython.py
 open_with.py
-rClick.py
-toolbar.py
+scrolledmessage.py
 
 # add_directives.py # scan-directives hook not ready.
 # color_markup.py # Does not work with threading colorizer.
-#### rst3.py
 UNL.py
-
 mod_scripting.py
-nav_buttons.py
+
 nodenavigator.py
-image.py
-#### leo_to_html.py
+
+# leo_to_html.py
 vim.py
-#### xemacs.py
+# xemacs.py
+
+# Tk plugins.
+# image.py
+# nav_buttons.py
+# rClick.py
+# toolbar.py
 </t>
 <t tx="ekr.20071026102420.2"></t>
 <t tx="ekr.20071026102420.3"></t>
@@ -1889,140 +1882,7 @@ for z in aList:
 </t>
 <t tx="ekr.20080803120643.1">def spam():
     pass</t>
-<t tx="ekr.20080806145258.1">@language javascript
-
-/**********************************************
-* Contractible Headers script- © Dynamic Drive (www.dynamicdrive.com)
-* This notice must stay intact for legal use. Last updated Mar 23rd, 2004.
-* Visit http://www.dynamicdrive.com/ for full source code
-***********************************************/
-
-// alert("start");
-
-var enablepersist="on" //Enable saving state of content structure using session cookies? (on/off)
-var collapseprevious="no" //Collapse previously open content when opening present? (yes/no)
-
-if (document.getElementById){
-    document.write('&lt;style type="text/css"&gt;')
-    document.write('.switchcontent{display:none;}')
-    document.write('&lt;\/style&gt;')
-}
-
-@others</t>
-<t tx="ekr.20080806145258.2">function getElementbyClass(classname){
-    ccollect=new Array()
-    var inc=0
-    var alltags=document.all? document.all : document.getElementsByTagName("*")
-    for (i=0; i&lt;alltags.length; i++){
-        if (alltags[i].className==classname)
-            ccollect[inc++]=alltags[i]
-    }
-}
-
-</t>
-<t tx="ekr.20080806145258.3">function contractcontent(omit){
-    var inc=0
-    while (ccollect[inc]){
-        if (ccollect[inc].id!=omit)
-        ccollect[inc].style.display="none"
-        inc++
-    }
-}
-</t>
-<t tx="ekr.20080806145258.4">function expandcontent(cid){
-    if (typeof ccollect!="undefined"){
-        if (collapseprevious=="yes")
-            contractcontent(cid)
-        document.getElementById(cid).style.display=(document.getElementById(cid).style.display!="block")? "block" : "none"
-    }
-}
-</t>
-<t tx="ekr.20080806145258.5">function revivecontent(){
-    contractcontent("omitnothing")
-    selectedItem=getselectedItem()
-    selectedComponents=selectedItem.split("|")
-    for (i=0; i&lt;selectedComponents.length-1; i++)
-        document.getElementById(selectedComponents[i]).style.display="block"
-}
-
-</t>
-<t tx="ekr.20080806145258.6">function get_cookie(Name) { 
-    var search = Name + "="
-    var returnvalue = "";
-    if (document.cookie.length &gt; 0) {
-        offset = document.cookie.indexOf(search)
-        if (offset != -1) { 
-            offset += search.length
-            end = document.cookie.indexOf(";", offset);
-            if (end == -1) end = document.cookie.length;
-            returnvalue=unescape(document.cookie.substring(offset, end))
-        }
-    }
-    return returnvalue;
-}
-
-</t>
-<t tx="ekr.20080806145258.7">function getselectedItem(){
-    if (get_cookie(window.location.pathname) != ""){
-        selectedItem=get_cookie(window.location.pathname)
-        return selectedItem
-    }
-    else
-        return ""
-}
-
-</t>
-<t tx="ekr.20080806145258.8">function saveswitchstate(){
-    var inc=0, selectedItem=""
-    while (ccollect[inc]){
-        if (ccollect[inc].style.display=="block")
-            selectedItem+=ccollect[inc].id+"|"
-        inc++
-    }
-    document.cookie=window.location.pathname+"="+selectedItem
-}
-
-</t>
-<t tx="ekr.20080806145258.9">function do_onload(){
-    // alert("do_onload");
-    uniqueidn=window.location.pathname+"firsttimeload"
-    getElementbyClass("switchcontent")
-    if (enablepersist=="on" &amp;&amp; typeof ccollect!="undefined"){
-        document.cookie=(get_cookie(uniqueidn)=="")? uniqueidn+"=1" : uniqueidn+"=0" 
-        firsttimeload=(get_cookie(uniqueidn)==1)? 1 : 0 //check if this is 1st page load
-        if (!firsttimeload)
-        revivecontent()
-    }
-}
-
-if (window.addEventListener)
-    window.addEventListener("load", do_onload, false)
-else if (window.attachEvent)
-    window.attachEvent("onload", do_onload)
-else if (document.getElementById)
-    window.onload=do_onload
-
-if (enablepersist=="on" &amp;&amp; document.getElementById)
-    window.onunload=saveswitchstate
-
-</t>
-<t tx="ekr.20080806145258.10">function format() {
-
-    return;
-
-    // var sections = document.getElementsByTagName("pre");  // EKR: was span.
-    // //alert("format:" + sections.length + "sections")
-    // for(i=0; i &lt; sections.length; i++) {
-        // formatText(sections[i]);
-    // }
-}
-</t>
-<t tx="ekr.20080806145258.11">function formatText(item) {
-
-    ;
-    // alert(item);
-}
-</t>
+<t tx="ekr.20080806145258.1"></t>
 <t tx="ekr.20080806145258.12">@nocolor
 
 Notes:
@@ -2744,6 +2604,7 @@ try:
     f = open(fn)
     m.loadMacros(f)
     macro = m.namedMacros.get('ab')
+    assert macro
     m.executeMacro(macro)
 finally:
     assert p.b =='ab' + b,p.b
@@ -2755,8 +2616,7 @@ g.es ('total characters: %s, keywords: %s, leo_keywords: %s' % (
     colorer.totalKeywordsCalls,
     colorer.totalLeoKeywordsCalls))</t>
 <t tx="ekr.20090218112656.1"># 'self' is now defined in @test and @suite nodes.
-a,b = 1,2
-self.assertEqual(a,b)</t>
+self.assertEqual(1,1)</t>
 <t tx="ekr.20090309064612.1"></t>
 <t tx="ekr.20090309064612.2"></t>
 <t tx="ekr.20090309064612.3"></t>
@@ -2822,64 +2682,6 @@ code_block_string =\n.. class:: code\n..\n\n::\n
 section c, line 1
 section c, line 2
     section c, line 3</t>
-<t tx="ekr.20090501105822.1">@tabwidth -4
-
-x = c.importCommands
-parent = g.findTopLevelNode(c,'import')
-&lt;&lt; define s &gt;&gt;
-try:
-    x.createOutline(fileName='test.rst',parent=parent,s=s)
-finally:
-    child = parent.firstChild()
-    if child:
-        child.expand()
-        c.redraw(child)
-    else:
-        c.redraw(parent)</t>
-<t tx="ekr.20090501105822.2">s = '''
-
-.. toc
-
-=====
-top
-=====
-
-The top section
-
-section 1
----------
-
-section 1, line 1
---
-section 1, line 2
-
-section 2
----------
-
-section 2, line 1
-
-section 2.1
-~~~~~~~~~~~
-
-section 2.1, line 1
-
-section 2.1.1
-.............
-
-section 2.2.1 line 1
-
-section 3
----------
-
-section 3, line 1
-
-section 3.1.1
-.............
-
-section 3.1.1, line 1
-'''
-</t>
-<t tx="ekr.20090501110438.1"></t>
 <t tx="ekr.20090507082111.1904">print "---- inserting ----"
 p2 = p.insertAsLastChild().copy()
 p3 = p.insertAsLastChild().copy()
@@ -2921,16 +2723,52 @@ print 'done'
 M.close()
 M.logout()
 c.redraw()</t>
-<t tx="ekr.20090510080933.1908">for z in dir(c.rstCommands):
-    print z
+<t tx="ekr.20090514073218.1923">import leo.core.leoTest as leoTest
+
+if False:
+    # Run tests locally.
+    leoTest.doTests(c,all=True)
+else:
+    # Run tests externally.
+    path = 'test.leo' # path is relative to leo\test directory
+    leoTest.runUnitTestLeoFile(gui='nullGui',path=path,silent=False)
 </t>
-<t tx="ekr.20090513115300.1919">@ @rst-options
-underline_characters=#=+*^~"\'`-:&gt;&lt;_
-@c</t>
-<t tx="ekr.20090513154754.1912">..changed 4
+<t tx="ekr.20090514101216.1927"># 'self' is now defined in @test and @suite nodes.
+self.assertNotEqual(1,2)</t>
+<t tx="ekr.20090514103332.1929"></t>
+<t tx="ekr.20090521070342.1907">g.app.gui.runScrolledMessageDialog(c=c,msg=u'rst:'+p.b)</t>
+<t tx="ekr.20090525090210.1940"></t>
+<t tx="ekr.20090601093755.1802">bookmarks = []
 
-.. toc
+@g.command('bookmark')
+def bookmark(event):
+    c = event.get('c')
+    p = c.currentPosition()
+    bookmarks.append(p.gnx)
+    g.es('bookmarked') </t>
+<t tx="ekr.20090605083941.1804"></t>
+<t tx="ekr.20090605083941.1805"></t>
+<t tx="ekr.20090605111929.1805">#
+c.frame.body.addEditor()
+</t>
+<t tx="ekr.20090605141212.1803">#
+c.frame.body.deleteEditor()</t>
+<t tx="ekr.20090614142400.1806">@ first line.
+line 1.
+@c
 
+# This is a test.
+
+'''docstring
+continued.
+'''
+
+if a: pass
+    </t>
+<t tx="ekr.20090615080843.1808">@nocolor</t>
+<t tx="ekr.20090615145950.1810">@language c
+
+#ifdef a
 </t>
 </tnodes>
 </leo_file>

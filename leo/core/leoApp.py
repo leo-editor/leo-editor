@@ -86,6 +86,7 @@ class LeoApp:
         self.unicodeErrorGiven = True # True: suppres unicode tracebacks.
         self.unitTestDict = {} # For communication between unit tests and code.
         self.unitTesting = False # True if unit testing.
+        self.useIpython = False
         self.use_psyco = False # Can't be a config param because it is used before config module can be inited.
         self.user_xresources_path = None # Resource file for Tk/tcl.
         self.windowList = [] # Global list of all frames.  Does not include hidden root window.
@@ -138,14 +139,15 @@ class LeoApp:
             "python"        : "#",
             "rapidq"        : "'", # fil 2004-march-11
             "rebol"         : ";",  # jason 2003-07-03
-            "rest"          : "..",
-            "rst"           : "..",
+            "rest"          : ".._",
+            "rst"           : ".._",
             "ruby"          : "#",  # thyrsus 2008-11-05
             "shell"         : "#",  # shell scripts
             "tcltk"         : "#",
             "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
             "unknown"       : "#", # Set when @comment is seen.
             "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+            "vim"           : "\"",
             "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
             "xml"           : "<!-- -->",
             "xslt"          : "<!-- -->",
@@ -189,6 +191,7 @@ class LeoApp:
             "tex"           : "tex",
             "tcltk"         : "tcl",
             "unknown"       : "txt", # Set when @comment is seen.
+            "vim"           : "vim",
             "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
             "xml"           : "xml",
             "xslt"          : "xsl",
@@ -231,6 +234,7 @@ class LeoApp:
             "tex"   : "tex",
             "txt"   : "plain",
             "tcl"   : "tcltk",
+            "vim"   : "vim",
             "w"     : "cweb",
             "xml"   : "xml",
             "xsl"   : "xslt",
@@ -259,7 +263,8 @@ class LeoApp:
             'unknown_language': 'none',
             'w'     : 'none', # cweb
         }
-        #@nonl
+
+        self.global_commands_dict = {}
         #@-node:ekr.20031218072017.368:<< define global data structures >> (leoApp.py)
         #@nl
     #@-node:ekr.20031218072017.1416:app.__init__
@@ -491,6 +496,7 @@ class LeoApp:
         frame = gui.createLeoFrame(title)
 
         # Create the commander and its subcommanders.
+        # This takes about 3/4 sec when called by the leoBridge module.
         c = leoCommands.Commands(frame,fileName,relativeFileName=relativeFileName)
 
         if not app.initing:
@@ -501,9 +507,6 @@ class LeoApp:
 
         # Finish initing the subcommanders.
         c.undoer.clearUndoState() # Menus must exist at this point.
-
-        # if not g.app.initing:
-            # g.doHook("after-create-leo-frame",c=c)
 
         return c,frame
     #@-node:ekr.20031218072017.2188:app.newLeoCommanderAndFrame
@@ -696,6 +699,12 @@ class LeoApp:
         else:
             print('writeWaitingLog: still no log!')
     #@-node:ekr.20031218072017.2619:app.writeWaitingLog
+    #@+node:ville.20090602181814.6219:app.commanders
+    def commanders(self):
+        """ Return list of currently active controllers """
+
+        return [f.c for f in g.app.windowList]    
+    #@-node:ville.20090602181814.6219:app.commanders
     #@-others
 #@-node:ekr.20031218072017.2608:@thin leoApp.py
 #@-leo

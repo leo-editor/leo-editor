@@ -6,6 +6,9 @@
 
 Just load the plugin, activate "Nav" tab, enter search text and press enter.
 
+The pattern to search for is a case insensitive fnmatch pattern, because they are typically easier to type than regexps. 
+If you want to search for a regexp, use 'r:' prefix, e.g. r:foo.*bar
+
 
 '''
 #@-node:ville.20090314215508.5:<< docstring >>
@@ -17,9 +20,9 @@ __version__ = '0.0'
 #@@killcolor
 #@+at
 # 
-# Put notes about each version here.
+# 0.1 Ville M. Vainio <vivainio@gmail.com>: Fully functional version,
+# 
 #@-at
-#@nonl
 #@-node:ville.20090314215508.6:<< version history >>
 #@nl
 
@@ -27,10 +30,13 @@ __version__ = '0.0'
 #@+node:ville.20090314215508.7:<< imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
+from leo.core import leoNodes
 
 from PyQt4.QtGui import QListWidget, QListWidgetItem
 from PyQt4 import QtCore
 from PyQt4 import QtGui
+
+import fnmatch
 
 # Whatever other imports your plugins uses.
 #@nonl
@@ -107,12 +113,19 @@ def install_qt_quicksearch_tab(c):
         c.frame.log.selectTab('Nav')
         wdg.ui.listWidget.setFocus()
 
+    def nodehistory(event):
+        c.frame.log.selectTab('Nav')
+        wdg.scon.doNodeHistory()
+
     c.k.registerCommand(
             'find-quick','Ctrl-Shift-f',focus_quicksearch_entry)
     c.k.registerCommand(
             'focus-to-nav', None,focus_to_nav)
     c.k.registerCommand(
             'find-quick-test-failures', None,show_unittest_failures)
+    c.k.registerCommand(
+            'history', None, nodehistory)
+
 
     c.frame.nav = wdg            
 
@@ -218,11 +231,23 @@ class QuickSearchController:
 
     def doSearch(self, pat):
         self.clear()
-        hm = self.c.find_h(pat)
+        if not pat.startswith('r:'):
+            hpat = fnmatch.translate('*'+ pat + '*')
+            bpat = fnmatch.translate(pat).rstrip('$')
+        else:
+            hpat = pat[2:]
+            bpat = pat[2:]
+
+        hm = self.c.find_h(hpat)
         self.addHeadlineMatches(hm)
-        bm = self.c.find_b(pat)
+        bm = self.c.find_b(bpat)
         self.addBodyMatches(bm)
 
+    def doNodeHistory(self):
+        nh = leoNodes.poslist(po[0] for po in self.c.nodeHistory.beadList)
+        nh.reverse()
+        self.clear()
+        self.addHeadlineMatches(nh)
 #@-node:ville.20090314215508.12:QuickSearchController
 #@-others
 #@nonl
