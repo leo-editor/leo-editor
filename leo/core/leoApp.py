@@ -139,14 +139,15 @@ class LeoApp:
             "python"        : "#",
             "rapidq"        : "'", # fil 2004-march-11
             "rebol"         : ";",  # jason 2003-07-03
-            "rest"          : "..",
-            "rst"           : "..",
+            "rest"          : ".._",
+            "rst"           : ".._",
             "ruby"          : "#",  # thyrsus 2008-11-05
             "shell"         : "#",  # shell scripts
             "tcltk"         : "#",
             "tex"           : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
             "unknown"       : "#", # Set when @comment is seen.
             "unknown_language" : '#--unknown-language--', # For unknown extensions in @shadow files.
+            "vim"           : "\"",
             "vimoutline"    : "#",  #TL 8/25/08 Vim's outline plugin
             "xml"           : "<!-- -->",
             "xslt"          : "<!-- -->",
@@ -190,6 +191,7 @@ class LeoApp:
             "tex"           : "tex",
             "tcltk"         : "tcl",
             "unknown"       : "txt", # Set when @comment is seen.
+            "vim"           : "vim",
             "vimoutline"    : "otl",  #TL 8/25/08 Vim's outline plugin
             "xml"           : "xml",
             "xslt"          : "xsl",
@@ -232,6 +234,7 @@ class LeoApp:
             "tex"   : "tex",
             "txt"   : "plain",
             "tcl"   : "tcltk",
+            "vim"   : "vim",
             "w"     : "cweb",
             "xml"   : "xml",
             "xsl"   : "xslt",
