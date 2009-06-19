@@ -119,6 +119,8 @@ def doPrePluginsInit(fileName,pymacs):
 #@+node:ekr.20080921060401.4:createSpecialGui & helper
 def createSpecialGui(gui,pymacs,script,windowFlag):
 
+    tag = ''
+
     if False and g.isPython3:
         # Create the curses gui.
         leoPlugins.loadOnePlugin ('cursesGui',verbose=True)
@@ -129,14 +131,14 @@ def createSpecialGui(gui,pymacs,script,windowFlag):
         # g.app.gui = leoSwingGui.swingGui()
     elif script:
         if windowFlag:
-            g.app.createTkGui() # Creates global windows.
+            g.app.createTkGui(tag) # Creates global windows.
             g.app.gui.setScript(script)
             sys.args = []
         else:
             createNullGuiWithScript(script)
-    elif gui == 'qt':   g.app.createQtGui()
-    elif gui == 'tk':   g.app.createTkGui()
-    elif gui == 'wx':   g.app.createWxGui()
+    elif gui == 'qt':   g.app.createQtGui(tag)
+    elif gui == 'tk':   g.app.createTkGui(tag)
+    elif gui == 'wx':   g.app.createWxGui(tag)
 #@nonl
 #@+node:ekr.20031218072017.1938:createNullGuiWithScript
 def createNullGuiWithScript (script):
@@ -310,7 +312,7 @@ def doPostPluginsInit(args,fileName,relativeFileName,script):
     '''Return True if the frame was created properly.'''
 
     if g.app.gui == None:
-        g.app.createTkGui() # Creates global windows.
+        g.app.createQtGui(fileName='core')
 
     g.init_sherlock(args)  # Init tracing and statistics.
     if g.app and g.app.use_psyco: startPsyco()

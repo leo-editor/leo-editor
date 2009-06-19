@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="11"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -28,7 +28,7 @@
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
-<v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20071025193940"><vh>@@enabled-plugins</vh></v>
 <v t="ekr.20080529111617.1"><vh>plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
@@ -1459,45 +1459,34 @@ leoTest.doTests (c,all=False)</t>
 # tkGui.py
 
 plugins_menu.py
+open_with.py
 
-# leoOPML.py
-# graphed.py
-
-# not normally enabled by default.  Recently changed.
-# EditAttributes.py
-# UASearch.py
-# active_path.py
-# cleo.py
-# datenodes.py
-# mod_labels.py
-# newButtons.py
-# searchbox.py
-
-# This works only with tk.  It is not needed for qt.
-# threading_colorizer.py
-
-# open_shell.py
-# dtest.py
 quicksearch.py
 ipython.py
-open_with.py
+
 scrolledmessage.py
 
-# add_directives.py # scan-directives hook not ready.
-# color_markup.py # Does not work with threading colorizer.
 UNL.py
 mod_scripting.py
 
 nodenavigator.py
 
-# leo_to_html.py
+
 vim.py
 # xemacs.py
 
-# Tk plugins.
+# Other interesting plugins
+# leo_to_html.py
+# leoOPML.py
+# graphed.py
+
+# Tk plugins...
+# cleo.py
+# color_markup.py # Does not work with threading colorizer.
 # image.py
 # nav_buttons.py
 # rClick.py
+# threading_colorizer.py
 # toolbar.py
 </t>
 <t tx="ekr.20071026102420.2"></t>

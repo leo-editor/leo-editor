@@ -323,42 +323,43 @@ class LeoApp:
         g.app.gui = leoGui.nullGui("nullGui")
     #@nonl
     #@-node:ekr.20090202191501.5:app.createNullGui
+    #@+node:ekr.20090619065122.8593:app.createDefaultGui
+    def createDefaultGui (self,fileName):
+
+        """A convenience routines for plugins to create the default gui class."""
+
+        self.createQtGui(fileName)
+    #@-node:ekr.20090619065122.8593:app.createDefaultGui
     #@+node:ekr.20090202191501.1:app.createQtGui
-    def createQtGui (self,fileName=None):
+    def createQtGui (self,fileName):
 
         # Do NOT omit fileName param: it is used in plugin code.
 
         """A convenience routines for plugins to create the Qt gui class."""
 
         leoPlugins.loadOnePlugin ('qtGui',verbose=True)
+
+        if fileName: print ('qtGui created in %s' % fileName)
     #@-node:ekr.20090202191501.1:app.createQtGui
     #@+node:ekr.20031218072017.2610:app.createTkGui
-    def createTkGui (self,fileName=None):
-
-        # Do NOT omit fileName param: it is used in plugin code.
+    def createTkGui (self,fileName):
 
         """A convenience routines for plugins to create the default Tk gui class."""
 
         leoPlugins.loadOnePlugin ('tkGui',verbose=True)
 
-        # Old code.
-            # import leo.core.leoTkinterGui as leoTkinterGui # Do this import after app module is fully imported.
-
-            # g.app.gui = leoTkinterGui.tkinterGui()
-            # g.app.root = g.app.gui.createRootWindow()
-
-            # # Show a dialog and exit immediately if Pmw can not be imported.
-            # g.importExtension("Pmw",pluginName="Leo's core",verbose=False,required=True)
-            # g.app.gui.finishCreate()
+        if fileName: print ('tkGui created in %s' % fileName)
     #@-node:ekr.20031218072017.2610:app.createTkGui
     #@+node:ekr.20090126063121.3:app.createWxGui
-    def createWxGui (self,fileName=None):
+    def createWxGui (self,fileName):
 
         # Do NOT omit fileName param: it is used in plugin code.
 
         """A convenience routines for plugins to create the wx gui class."""
 
         leoPlugins.loadOnePlugin ('wxGui',verbose=True)
+
+        if fileName: print ('wxGui created in %s' % fileName)
     #@-node:ekr.20090126063121.3:app.createWxGui
     #@+node:ekr.20031218072017.2612:app.destroyAllOpenWithFiles
     def destroyAllOpenWithFiles (self):

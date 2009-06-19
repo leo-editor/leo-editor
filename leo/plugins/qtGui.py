@@ -1622,15 +1622,6 @@ def init():
             pdb.set_trace()
         g.pdb = qtPdb
 
-        # if False: # This will be done, if at all, in leoQtBody.
-            # def qtHandleDefaultChar(self,event,stroke):
-                # # This is an error.
-                # g.trace(stroke,g.callers())
-                # return False
-            # if safe_mode: # Override handleDefaultChar method.
-                # h = leoKeys.keyHandlerClass
-                # g.funcToMethod(qtHandleDefaultChar,h,"handleDefaultChar")
-
         g.app.gui.finishCreate()
         g.plugin_signon(__name__)
         return True

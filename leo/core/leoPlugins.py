@@ -454,7 +454,8 @@ def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
             if tag == 'open0':
                 g.es_print('can not load enabled plugin:',moduleName,color="red")
     elif verbose:
-        g.es_print('loaded plugin:',moduleName,color="blue")
+        g.es_print('loaded plugin:',moduleName,
+            g.callers(6),color="blue")
 
     return result
 #@+node:ekr.20090522161156.5886:@test class StubConfig

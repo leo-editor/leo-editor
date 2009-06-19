@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="103" left="509" height="827" width="675"/>
+	<global_window_position top="103" left="509" height="827" width="765"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="6,2"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1246,7 +1246,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081018053140.11" a="E"></v>
+<v t="ekr.20081018053140.11"></v>
 <v t="TL.20090307074930.2"><vh>@keys Vim bindings</vh>
 <v t="TL.20090307074930.3"><vh>Vim User Documentation</vh></v>
 <v t="TL.20090307074930.4"><vh>Vim Developer Documentation</vh></v>
@@ -6381,114 +6381,110 @@ This suggests that you refrain from putting @enabled-plugins nodes in any .leo f
 That way all your .leo files will use the same plugins.
 If you do put @enabled-plugins nodes in x.leo, be prepared for confusion from time to time. </t>
 <t tx="ekr.20070224073109.1"># Leo loads plugins in the order they appear here.
-
 # File names may be indented as desired.
 
-#Standard plugins enabled in official distributions.
+# Standard plugins enabled in official distributions....
 
-# This plugin creates the Plugins menu.
 plugins_menu.py
-
-# The plugins manager plugin is too confusing at present:
-# It doesn't understand @enabled-plugins nodes.
-# plugin_manager.py
-
-# cleo.py
 open_with.py
+leo_to_html.py
 mod_scripting.py
-# rst3.py
 UNL.py
 
-# Enabled by default in Leo 4.4.3. (order is important)
-# dtest.py
-###nav_buttons.py
-###nav_qt.py
+# The plugins manager plugin does not
+# understand @enabled-plugins nodes.
+# plugin_manager.py
 
+# The rst3 plugin is no longer needed.
+# It's code has been moved to Leo's core
+# rst3.py
 
-hoist.py
-image.py
-leo_to_html.py
+# These plugins used to be enabled when using the tk plugin.
+# cleo.py
+# hoist.py
+# image.py
+# nav_buttons.py
+# threading_colorizer.py
 
-#All other plugins.
-# Order is important for enabled plugins that add items to the icon area.
+# All other plugins.
+# Order is important for enabled plugins that
+# add items to the icon area.
 
-### threading_colorizer.py
+# ConceptualSort.py
+# EditAttributes.py
+# FileActions.py
+# Library.py
+# nodeActions.py
+# UASearch.py
+# URLloader.py
+# UniversalScrolling.py
 
-#ConceptualSort.py
-#EditAttributes.py
-#FileActions.py
-#Library.py
-#nodeActions.py
-#UASearch.py
-#URLloader.py
-#UniversalScrolling.py
-
-#add_directives.py
-#arrows.py
-#at_folder.py
-#at_view.py
-#autotrees.py
-#base64Packager.py
-#bibtex.py
-#chapter_hoist.py
-#cleo.py
-#color_markup.py
-#datenodes.py
-#detect_urls.py
-#dyna_menu.py
-#fastGotoNode.py
-#footprints.py
-#groupOperations.py
-#hoist.py
-#image.py
-#import_cisco_config.py
-#ipython.py
-#keybindings.py
-#leoOPML.py
-#leo_to_html.py
-#leo_to_rtf.py
-#leoupdate.py
-#macros.py
-#mod_autosave.py
-#mod_http.py
-#mod_labels.py
-#mod_read_dir_outline.py
-#mod_shadow.py
-#multifile.py
-#nav_buttons.py
-#newButtons.py
-#niceNosent.py
-#nodebar.py
-#nodenavigator.py
-#open_shell.py
-#paste_as_headlines.py
-#pie_menus.py
-#pretty_print.py
-#print_cp.py
-#quickMove.py
-#rClick.py
-#read_only_nodes.py
-#rowcol.py
-#run_nodes.py
-#s_menu.py
-#scheduler.py
-#searchbox.py
-#shortcut_button.py
-#slideshow.py
-#table.py
-#templates.py
-#trace_tags.py
-#vim.py
-#word_count.py
-#word_export.py
-#xcc_nodes.py
-#xemacs.py
-#xsltWithNodes.py
-#zodb.py
-#quicksearch.py
-#tomboy_import.py
-#ctagscompleter.py
-#colorize_headlines.py</t>
+# add_directives.py
+# arrows.py
+# at_folder.py
+# at_view.py
+# autotrees.py
+# base64Packager.py
+# bibtex.py
+# chapter_hoist.py
+# cleo.py
+# color_markup.py
+# datenodes.py
+# detect_urls.py
+# dyna_menu.py
+# fastGotoNode.py
+# footprints.py
+# groupOperations.py
+# hoist.py
+# image.py
+# import_cisco_config.py
+# ipython.py
+# keybindings.py
+# leoOPML.py
+# leo_to_html.py
+# leo_to_rtf.py
+# leoupdate.py
+# macros.py
+# mod_autosave.py
+# mod_http.py
+# mod_labels.py
+# mod_read_dir_outline.py
+# mod_shadow.py
+# multifile.py
+# nav_buttons.py
+# newButtons.py
+# niceNosent.py
+# nodebar.py
+# nodenavigator.py
+# open_shell.py
+# paste_as_headlines.py
+# pie_menus.py
+# pretty_print.py
+# print_cp.py
+# quickMove.py
+# rClick.py
+# read_only_nodes.py
+# rowcol.py
+# run_nodes.py
+# s_menu.py
+# scheduler.py
+# searchbox.py
+# shortcut_button.py
+# slideshow.py
+# table.py
+# templates.py
+# trace_tags.py
+# vim.py
+# word_count.py
+# word_export.py
+# xcc_nodes.py
+# xemacs.py
+# xsltWithNodes.py
+# zodb.py
+# quicksearch.py
+# tomboy_import.py
+# ctagscompleter.py
+# colorize_headlines.py</t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
 False: Chapter commands do not exists.</t>
 <t tx="ekr.20070326094544"></t>

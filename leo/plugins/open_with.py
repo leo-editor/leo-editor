@@ -58,22 +58,18 @@ __version__ = '1.13'
 #@+node:ekr.20050311090939.8:init
 def init():
 
-    gui = g.app.gui.guiName
+    if not g.app.gui:
+        g.app.createDefaultGui(__file__)
 
-    if gui() is None:
+    if g.app.gui and g.app.gui.guiName() not in ('tkinter','qt'):
+        return False
 
-        if Tk:
-            g.app.createTkGui(__file__)
-        else:
-            return False
-
-    if gui() is not None:
-        g.app.hasOpenWithMenu = True
-        g.enableIdleTimeHook(idleTimeDelay=1000) # Check every second.
-        leoPlugins.registerHandler("idle", on_idle)
-        # leoPlugins.registerHandler(('new','open2'), create_open_with_menu)
-        leoPlugins.registerHandler('menu2', create_open_with_menu)
-        g.plugin_signon(__name__)
+    g.app.hasOpenWithMenu = True
+    g.enableIdleTimeHook(idleTimeDelay=1000) # Check every second.
+    leoPlugins.registerHandler("idle", on_idle)
+    # leoPlugins.registerHandler(('new','open2'), create_open_with_menu)
+    leoPlugins.registerHandler('menu2', create_open_with_menu)
+    g.plugin_signon(__name__)
 
     return True
 #@-node:ekr.20050311090939.8:init

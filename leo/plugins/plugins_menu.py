@@ -240,19 +240,16 @@ def createPluginsMenu (tag,keywords):
 #@+node:ekr.20070302175530:init
 def init ():
 
-
-
     if g.app.unitTesting: return None
 
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
+    if not g.app.gui:
+        g.app.createDefaultGui()
 
-        if g.app.gui.guiName() != "tkinter":
-            return False
+    if g.app.gui.guiName() not in ("tkinter",'qt'):
+        return False
 
     leoPlugins.registerHandler("create-optional-menus",createPluginsMenu)
     g.plugin_signon(__name__)
-
 
     if g.app.gui.guiName() == 'tkinter':
         g.app.gui.runPropertiesDialog = runPropertiesDialog

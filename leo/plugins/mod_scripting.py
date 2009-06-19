@@ -124,9 +124,8 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoGui as leoGui
 
-#Tk  = g.importExtension('Tkinter',pluginName=__name__,verbose=True)
-if g.app.gui.guiName() == 'tkinter':
-    Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True)
+# May be set in init
+Pmw = None
 
 # import os
 import string
@@ -164,13 +163,17 @@ __version__ = '2.5'
 def init ():
 
     if g.app.gui is None:
-        g.app.createTkGui(__file__)
+        # g.app.createTkGui(__file__)
+        g.app.createQtGui(__file__)
+    else:
+        if g.app.gui.guiName() == 'tkinter':
+            global Pmw
+            Pmw = g.importExtension('Pmw',pluginName=__name__,verbose=True)
 
     # This plugin is now gui-independent.            
-    ok = g.app.gui.guiName() in ('qt','tkinter','wxPython','nullGui')
+    ok = g.app.gui and g.app.gui.guiName() in ('qt','tkinter','wxPython','nullGui')
 
     if ok:
-
         sc = 'ScriptingControllerClass'
         if (not hasattr(g.app.gui, sc)
             or getattr(g.app.gui, sc) is leoGui.nullScriptingControllerClass):
@@ -182,7 +185,6 @@ def init ():
         g.plugin_signon(__name__)
 
     return ok
-#@nonl
 #@-node:ekr.20060328125248.4:init
 #@+node:ekr.20060328125248.5:onCreate
 def onCreate (tag, keys):
