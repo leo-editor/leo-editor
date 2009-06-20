@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="4,2"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4,2,2"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -61,7 +61,7 @@
 <v t="ekr.20080916084557.1" a="E"><vh>Make stuff</vh>
 <v t="ekr.20080916084557.2"><vh>&lt;&lt; make version &gt;&gt;</vh></v>
 <v t="ekr.20080913110741.1"><vh>@thin leo-post-install-script.py</vh></v>
-<v t="ekr.20080826091039.1"><vh>@button make</vh>
+<v t="ekr.20080826091039.1" a="E"><vh>@button make</vh>
 <v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20080916084557.2"></v>
 <v t="ekr.20080913110741.8"><vh>make</vh></v>
@@ -1016,17 +1016,19 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
     for z in commands:
         print ('command: %s' % z)
         os.system(z)
-        
+
     if createExeFile:
         x = createExe(exeFile,pre_install_script,post_install_script,zipFile2,version=version)
         x.create_exe()
-        unlink(zipFile2)
+    
+    unlink(zipFile2)
 
     for z in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
         path= abspath(join(top,z))
         if exists(z): unlink(z)
 
-    os.system('dir %s' % (top))</t>
+    os.system('dir %s' % (top))
+</t>
 <t tx="ekr.20080916084557.1"></t>
 <t tx="ekr.20080916084557.2">version = '4-6-b2'</t>
 <t tx="ekr.20090325065530.1">Leo 4.6 b1 is now available at:
