@@ -6870,7 +6870,7 @@ class leoQtGui(leoGui.leoGui):
         try:
             return unicode(s)
         except Exception:
-            g.trace('Warning - toUnicode does encoding (bugs possible)')
+            # g.trace('Warning - toUnicode does encoding (bugs possible)')
             return unicode(s,encoding,errors='replace')
 
 
