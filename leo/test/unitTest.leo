@@ -1162,6 +1162,7 @@
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
 </v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 <v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
@@ -13649,8 +13650,7 @@ if not g.os_path_exists(s):
     g.pr('created chinese file')
     
 </t>
-<t tx="ekr.20070114140212">
-# Important: many unit tests are now in leoPy.leo.
+<t tx="ekr.20070114140212"># Important: many unit tests are now in leoPy.leo.
 # All the following should pass when run locally (Alt-4).
 # All the following have errors when run externally (Alt-5).</t>
 <t tx="ekr.20070131162935">import leo.core.leoTest as leoTest

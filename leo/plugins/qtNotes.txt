@@ -2,7 +2,7 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090430102239.13:Before 4.6 b3
+#@+node:ekr.20090430102239.13:To do before 4.6 b3 6
 #@+node:ekr.20090614134853.3635:New syntax coloring
 @nocolor-node
 
@@ -6096,7 +6096,7 @@ E1103:7695:jEditColorizer.recolor: Instance of 'Bunch' has no 'stateName' member
 
 W0222:8367:leoQtBaseTextWidget.tag_add: Signature differs from overridden method
 #@-node:ekr.20090603045408.3767:Fix pylint warnings
-#@-node:ekr.20090430102239.13:Before 4.6 b3
+#@-node:ekr.20090430102239.13:To do before 4.6 b3 6
 #@+node:ekr.20090304084841.11:Later
 #@+node:ekr.20081215074704.21:Add drag and drop
 #@-node:ekr.20081215074704.21:Add drag and drop

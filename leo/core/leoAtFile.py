@@ -3935,12 +3935,18 @@ class atFile:
             ok = False
 
         return ok
-    #@+node:ekr.20090514111518.5666:syntaxError
+    #@+node:ekr.20090514111518.5666:syntaxError & test
     def syntaxError(self,p,body):
 
         g.es_print("Syntax error in: %s" % (p.h),color="red")
         typ,val,tb = sys.exc_info()
+        message = hasattr(val,'message') and val.message
+        if message: g.es_print(message)
         lines = g.splitLines(body)
+        n = val.lineno
+        if n is None:
+            # for z in dir(val): print z,repr(getattr(val,z))
+            return
         i = val.lineno-1
         for j in range(max(0,i-3),min(i+3,len(lines)-1)):
             g.es_print('%5s:%s %s' % (
@@ -3948,7 +3954,15 @@ class atFile:
             if j == i:
                 g.es_print(' '*(7+val.offset)+'^')
     #@nonl
-    #@-node:ekr.20090514111518.5666:syntaxError
+    #@+node:ekr.20090620121836.6073:syntaxErrorTest
+    def syntaxErrorTest():
+
+        '''Used to test Leo's handling of the following syntax error'''
+
+        # g.app.gui.toUnicode(c=None,'whatever')
+    #@nonl
+    #@-node:ekr.20090620121836.6073:syntaxErrorTest
+    #@-node:ekr.20090514111518.5666:syntaxError & test
     #@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
     #@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
     def tabNannyNode (self,p,body):

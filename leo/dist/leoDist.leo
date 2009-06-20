@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="3"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -34,6 +34,7 @@
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
 <v t="ekr.20090325065530.1"><vh>ANN: Leo 4.6 b1</vh></v>
+<v t="ekr.20090620122333.1392"><vh>ANN: Leo 4.6 b2</vh></v>
 <v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20080807093308.2"><vh>4.5</vh>
 <v t="ekr.20080628062747.73"><vh>ANN: Leo 4.5 b1</vh></v>
@@ -325,7 +326,7 @@ Description: Leo is an outline-oriented editor written in 100% pure Python.
 		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.6 beta 2                                      June 20, 2009
+<t tx="EKR.20040519090846.9">Leo 4.6 beta 2                                  June 20, 2009
 
 Leo 4.6 b2 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
@@ -336,6 +337,7 @@ http://webpages.charter.net/edreamleo/intro.html
 The highlights of Leo 4.6:
 --------------------------
 
+- Cached external files *greatly* reduces the time to load .leo files.
 - Leo now features a modern Qt interface by default.
   Leo's legacy Tk interface can also be used.
 - New --config --file and --gui command-line options.
@@ -1124,5 +1126,35 @@ One way to do this is adding something like the following to python/Lib/sitecust
 
 Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
 </t>
+<t tx="ekr.20090620122333.1392">Leo 4.6 beta 2                                  June 20, 2009
+
+Leo 4.6 b2 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.6:
+--------------------------
+
+- Cached external files *greatly* reduces the time to load .leo files.
+- Leo now features a modern Qt interface by default.
+  Leo's legacy Tk interface can also be used.
+- New --config --file and --gui command-line options.
+- Leo tests syntax of .py files when saving them.
+- Leo can now open any kind of file into @edit nodes.
+- @auto-rst nodes support "round-tripping" of reStructuredText files.
+- Properties of commanders, positions and nodes simplify programming.
+- Improved Leo's unit testing framework.
+- Leo now requires Python 2.4 or later.
+- Dozens of small improvements and bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 </tnodes>
 </leo_file>

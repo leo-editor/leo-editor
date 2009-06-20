@@ -1,30 +1,6 @@
 #@+leo-ver=4-thin
 #@+node:ville.20090521211406.6348:@thin leoUserGuide.txt
 #@+all
-#@+node:ekr.20040414161647:Users Guide
-@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-@language rest
-@tabwidth -4
-
-These are the sources for the html version of Leo's users guide,
-as well as the documentation for the rst3 plugin used to create the actual html files.
-
-These sources contain reStructuredText_ (rST) markup that is easy to read.
-See http://docutils.sourceforge.net/docs/user/rst/quickstart.html for an introduction to rST.
-
-See the node "How to generate Leo's Sphinx docs" for details about making these docs.
-#@nonl
 #@+node:ekr.20090428101858.1:How to generate Leo's Sphinx docs
 @nocolor-node
 
@@ -98,6 +74,30 @@ This is section 1
 #@-node:ekr.20090401113141.4:section 1
 #@-node:ekr.20090401113141.2:@rst c:\prog\test\test.html
 #@-node:ekr.20090401113141.1:How to generate odt/rtf/pdf files
+#@+node:ekr.20040414161647:Users Guide
+@ @rst-options
+code_mode=False
+generate_rst=True
+http_server_support = False
+show_organizer_nodes=True
+show_headlines=True
+show_leo_directives=True
+stylesheet_path=..\doc
+write_intermediate_file = True
+verbose=True
+@c
+
+@language rest
+@tabwidth -4
+
+These are the sources for the html version of Leo's users guide,
+as well as the documentation for the rst3 plugin used to create the actual html files.
+
+These sources contain reStructuredText_ (rST) markup that is easy to read.
+See http://docutils.sourceforge.net/docs/user/rst/quickstart.html for an introduction to rST.
+
+See the node "How to generate Leo's Sphinx docs" for details about making these docs.
+#@nonl
 #@+node:ekr.20050831184021.3:Front matter
 @language rest
 #@nonl
@@ -4864,8 +4864,8 @@ The following commands affect the minibuffer:
   full command name, then hit <Return> to execute the command. Tab completion
   works, but not yet for file names.
 
-- **quick-command-mode**: (default shortcut: Alt-x) Like Emacs Control-C. This mode is
-  defined in leoSettings.leo. It is useful for commonly-used commands.
+.. - **quick-command-mode**: (default shortcut: Alt-x) Like Emacs Control-C. This mode is
+..   defined in leoSettings.leo. It is useful for commonly-used commands.
 
 - **universal-argument**: (default shortcut: Alt-u) Like Emacs Ctrl-u. Adds a repeat
   count for later command. Ctrl-u 999 a adds 999 a's.

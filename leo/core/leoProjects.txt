@@ -19784,6 +19784,60 @@ def closeWriteFile (self):
         return None
 #@-node:ekr.20041005105605.135:closeWriteFile
 #@-node:ekr.20090620085000.6067:Fixed bug that caused opened file to remain open
+#@+node:ekr.20090620112052.6540:Fixed rare syntax-error bug
+@nocolor-node
+
+This happened when a non-keyword followed a keyword:
+
+    e = g.app.config(c=None,'whatever')
+
+This looks like a Python bug: there is no indication of the line number!
+
+Syntax error in: @thin qtGui.py
+exception writing: C:\leo.repo\trunk\leo\plugins\qtGui.py
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoAtFile.py", line 2401, in write
+    at.replaceTargetFileIfDifferent(root)
+  File "C:\leo.repo\trunk\leo\core\leoAtFile.py", line 4544, in replaceTargetFileIfDifferent
+    self.checkPythonCode(root)
+  File "C:\leo.repo\trunk\leo\core\leoAtFile.py", line 3915, in checkPythonCode
+    ok = self.checkPythonSyntax(root,s)
+  File "C:\leo.repo\trunk\leo\core\leoAtFile.py", line 3929, in checkPythonSyntax
+    self.syntaxError(p,body)
+  File "C:\leo.repo\trunk\leo\core\leoAtFile.py", line 3944, in syntaxError
+    i = val.lineno-1
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
+saved: leoGuiP
+#@nonl
+#@+node:ekr.20090514111518.5666:syntaxError & test
+def syntaxError(self,p,body):
+
+    g.es_print("Syntax error in: %s" % (p.h),color="red")
+    typ,val,tb = sys.exc_info()
+    message = hasattr(val,'message') and val.message
+    if message: g.es_print(message)
+    lines = g.splitLines(body)
+    n = val.lineno
+    if n is None:
+        # for z in dir(val): print z,repr(getattr(val,z))
+        return
+    i = val.lineno-1
+    for j in range(max(0,i-3),min(i+3,len(lines)-1)):
+        g.es_print('%5s:%s %s' % (
+            j,g.choose(j==i,'*',' '),lines[j].rstrip()))
+        if j == i:
+            g.es_print(' '*(7+val.offset)+'^')
+#@nonl
+#@+node:ekr.20090620121836.6073:syntaxErrorTest
+def syntaxErrorTest():
+
+    '''Used to test Leo's handling of the following syntax error'''
+
+    # g.app.gui.toUnicode(c=None,'whatever')
+#@nonl
+#@-node:ekr.20090620121836.6073:syntaxErrorTest
+#@-node:ekr.20090514111518.5666:syntaxError & test
+#@-node:ekr.20090620112052.6540:Fixed rare syntax-error bug
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
@@ -20403,12 +20457,18 @@ def checkPythonSyntax (self,p,body):
         ok = False
 
     return ok
-#@+node:ekr.20090514111518.5666:syntaxError
+#@+node:ekr.20090514111518.5666:syntaxError & test
 def syntaxError(self,p,body):
 
     g.es_print("Syntax error in: %s" % (p.h),color="red")
     typ,val,tb = sys.exc_info()
+    message = hasattr(val,'message') and val.message
+    if message: g.es_print(message)
     lines = g.splitLines(body)
+    n = val.lineno
+    if n is None:
+        # for z in dir(val): print z,repr(getattr(val,z))
+        return
     i = val.lineno-1
     for j in range(max(0,i-3),min(i+3,len(lines)-1)):
         g.es_print('%5s:%s %s' % (
@@ -20416,7 +20476,15 @@ def syntaxError(self,p,body):
         if j == i:
             g.es_print(' '*(7+val.offset)+'^')
 #@nonl
-#@-node:ekr.20090514111518.5666:syntaxError
+#@+node:ekr.20090620121836.6073:syntaxErrorTest
+def syntaxErrorTest():
+
+    '''Used to test Leo's handling of the following syntax error'''
+
+    # g.app.gui.toUnicode(c=None,'whatever')
+#@nonl
+#@-node:ekr.20090620121836.6073:syntaxErrorTest
+#@-node:ekr.20090514111518.5666:syntaxError & test
 #@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
 #@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
 def tabNannyNode (self,p,body):
@@ -21753,12 +21821,18 @@ def checkPythonSyntax (self,p,body):
         ok = False
 
     return ok
-#@+node:ekr.20090514111518.5666:syntaxError
+#@+node:ekr.20090514111518.5666:syntaxError & test
 def syntaxError(self,p,body):
 
     g.es_print("Syntax error in: %s" % (p.h),color="red")
     typ,val,tb = sys.exc_info()
+    message = hasattr(val,'message') and val.message
+    if message: g.es_print(message)
     lines = g.splitLines(body)
+    n = val.lineno
+    if n is None:
+        # for z in dir(val): print z,repr(getattr(val,z))
+        return
     i = val.lineno-1
     for j in range(max(0,i-3),min(i+3,len(lines)-1)):
         g.es_print('%5s:%s %s' % (
@@ -21766,7 +21840,15 @@ def syntaxError(self,p,body):
         if j == i:
             g.es_print(' '*(7+val.offset)+'^')
 #@nonl
-#@-node:ekr.20090514111518.5666:syntaxError
+#@+node:ekr.20090620121836.6073:syntaxErrorTest
+def syntaxErrorTest():
+
+    '''Used to test Leo's handling of the following syntax error'''
+
+    # g.app.gui.toUnicode(c=None,'whatever')
+#@nonl
+#@-node:ekr.20090620121836.6073:syntaxErrorTest
+#@-node:ekr.20090514111518.5666:syntaxError & test
 #@-node:ekr.20090514111518.5663:checkPythonSyntax (leoAtFile)
 #@+node:ekr.20090514111518.5665:tabNannyNode (leoAtFile)
 def tabNannyNode (self,p,body):

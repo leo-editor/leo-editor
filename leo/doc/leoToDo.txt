@@ -2,7 +2,7 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
-#@+node:ekr.20090620052003.6068:Before b3 3
+#@+node:ekr.20090620052003.6068:Before b3 1 + docs
 #@+node:ekr.20090602183337.6045:First: Fix rst import annoyance
 @nocolor-node
 
@@ -16,83 +16,18 @@ I'm going to reopen this and put this on the list of things to do before
 b2. It's time to stamp on the distractions.
 #@nonl
 #@-node:ekr.20090602183337.6045:First: Fix rst import annoyance
-#@+node:ekr.20090620112052.6540:Fix rare syntax-error bug
-@nocolor-node
-
-This happened when a non-keyword followed a keyword:
-
-    e = g.app.config(c=None,'whatever')
-
-Syntax error in: @thin qtGui.py
-exception writing: C:\leo.repo\trunk\leo\plugins\qtGui.py
-Traceback (most recent call last):
-  File "C:\leo.repo\trunk\leo\core\leoAtFile.py", line 2401, in write
-    at.replaceTargetFileIfDifferent(root)
-  File "C:\leo.repo\trunk\leo\core\leoAtFile.py", line 4544, in replaceTargetFileIfDifferent
-    self.checkPythonCode(root)
-  File "C:\leo.repo\trunk\leo\core\leoAtFile.py", line 3915, in checkPythonCode
-    ok = self.checkPythonSyntax(root,s)
-  File "C:\leo.repo\trunk\leo\core\leoAtFile.py", line 3929, in checkPythonSyntax
-    self.syntaxError(p,body)
-  File "C:\leo.repo\trunk\leo\core\leoAtFile.py", line 3944, in syntaxError
-    i = val.lineno-1
-TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
-saved: leoGuiP
-#@nonl
-#@-node:ekr.20090620112052.6540:Fix rare syntax-error bug
 #@+node:ekr.20090523070447.6475:Rewrite rst documentation
 #@-node:ekr.20090523070447.6475:Rewrite rst documentation
-#@-node:ekr.20090620052003.6068:Before b3 3
-#@+node:ekr.20090620060448.6065:Asap
-#@+node:ekr.20090620060448.6066:get plugins working with qt plugin
-#@-node:ekr.20090620060448.6066:get plugins working with qt plugin
-#@+node:ekr.20090522113545.5884:Fix pylint complaints about plugins
-@nocolor
-
-************* Module leo.plugins.qtGui
-W0101:996:leoQtBody.addEditor: Unreachable code
-E1101:1826:leoQtFrame.__init__: Class 'leoQtFrame' has no 'instances' member
-c:\Python25\lib\site-packages\logilab_common-0.39.0-py2.5.egg\logilab\common\modutils.py:136: DeprecationWarning: The wxPython compatibility
- package is no longer automatically generated or actively maintained.  Please switch to the wx package as soon as possible.
-  module = load_module(curname, mp_file, mp_filename, mp_desc)
-E0602:5794:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
-E0602:5795:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
-E0602:5796:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
-E0602:5797:leoQtEventFilter.traceFocuse: Undefined variable 'ev'
-E1103:7591:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastFunc' member (but some types could not be inferred)
-E1103:7591:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastMatch' member (but some types could not be inferred)
-E1103:7593:jEditColorizer.recolor: Instance of 'Bunch' has no 'lastFlag' member (but some types could not be inferred)
-E1103:7612:jEditColorizer.recolor: Instance of 'Bunch' has no 'stateName' member (but some types could not be inferred)
-E1101:7837:jEditColorizer.setTag: Instance of 'jEditColorizer' has no 'tagCount' member
-E1101:7843:jEditColorizer.setTag: Instance of 'jEditColorizer' has no 'tagCount' member
-E1101:7846:jEditColorizer.setTag: Instance of 'jEditColorizer' has no 'tagCount' member
-W0222:8282:leoQtBaseTextWidget.tag_add: Signature differs from overridden method
-E0601:9092:leoQTextEditWidget.toPythonIndexRowCol: Using variable 'w' before assignment
-
-************* Module leo.plugins.toolbar
-E1103:520:ToolbarTkinterFrame.getIconButton:
-    Instance of 'tkIconBarClass' has no 'getButton' member
-    (but some types could not be inferred)
-E1103:604:ToolbarTkinterFrame.getIconWidgetFrame:
-    Instance of 'tkIconBarClass' has no 'getWidgetFrame' member
-    (but some types could not be inferred)
-
-************* Module leo.plugins.xemacs
-E0602:116:open_in_emacs: Undefined variable '_exemacs_cmd'
-#@nonl
-#@-node:ekr.20090522113545.5884:Fix pylint complaints about plugins
-#@+node:ekr.20090430092048.3:Rewrite docs using stories
-#@+node:ekr.20090226080753.6:Finish the wiki intro
-#@-node:ekr.20090226080753.6:Finish the wiki intro
-#@-node:ekr.20090430092048.3:Rewrite docs using stories
 #@+node:ekr.20090430122648.1:Generate pdf versions of docs
 #@-node:ekr.20090430122648.1:Generate pdf versions of docs
 #@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
 http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
 #@nonl
 #@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-#@-node:ekr.20090620060448.6065:Asap
+#@-node:ekr.20090620052003.6068:Before b3 1 + docs
 #@+node:ekr.20090430092048.7:Before 4.6 final
+#@+node:ekr.20090430092048.3:Rewrite docs using stories
+#@-node:ekr.20090430092048.3:Rewrite docs using stories
 #@-node:ekr.20090430092048.7:Before 4.6 final
 #@+node:ekr.20090529125512.6121:Features (maybe)
 #@+node:ekr.20090528072540.9960:Improve config & plugins

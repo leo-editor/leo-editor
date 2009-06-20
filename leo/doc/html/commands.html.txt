@@ -1,5 +1,6 @@
 .. rst3: filename: html\commands.html
 
+
 ##########################################
 Chapter 5: Using Leo's Commands
 ##########################################
@@ -9,6 +10,7 @@ It starts with a discussion of the Emacs-like minibuffer,
 then continues with a discussion of commands in each of Leo's menus.
 
 .. .. contents::
+
 
 .. External links...
 .. _CWEB:       http://www-cs-faculty.stanford.edu/~knuth/cweb.html
@@ -25,6 +27,7 @@ then continues with a discussion of commands in each of Leo's menus.
 The minibuffer
 ++++++++++++++
 
+
 The mini-buffer is a text area at the bottom of the body pane.
 You use it like the Emacs mini-buffer to invoke commands by their so-called *long name*.
 The following commands affect the minibuffer:
@@ -33,8 +36,8 @@ The following commands affect the minibuffer:
   full command name, then hit <Return> to execute the command. Tab completion
   works, but not yet for file names.
 
-- **quick-command-mode**: (default shortcut: Alt-x) Like Emacs Control-C. This mode is
-  defined in leoSettings.leo. It is useful for commonly-used commands.
+.. - **quick-command-mode**: (default shortcut: Alt-x) Like Emacs Control-C. This mode is
+..   defined in leoSettings.leo. It is useful for commonly-used commands.
 
 - **universal-argument**: (default shortcut: Alt-u) Like Emacs Ctrl-u. Adds a repeat
   count for later command. Ctrl-u 999 a adds 999 a's.
@@ -50,6 +53,7 @@ See `Chapter 8: Customizing Leo`_ for full details.
 
 Basic editing commands
 **********************
+
 
 The following basic editing commands are typically bound to key strokes::
 
@@ -105,6 +109,7 @@ The following basic editing commands are typically bound to key strokes::
 Debugging commands
 ******************
 
+
 These commands are for debugging Leo itself::
 
     collect-garbage
@@ -122,6 +127,7 @@ These commands are for debugging Leo itself::
 
 Emacs commands
 **************
+
 
 The following commands work just like their Emacs counterparts.
 Use the help-for-command command for further details::
@@ -260,6 +266,7 @@ Use the help-for-command command for further details::
 Find commands
 *************
 
+
 Here is a list of all of Leo's find commands.
 The apropos-find-commands command will print a detailed
 help message discussing these commands::
@@ -304,6 +311,7 @@ help message discussing these commands::
 
 Gui commands
 ************
+
 
 The following commands simulate mouse clicks, double-clicks or drags::
 
@@ -382,6 +390,7 @@ The following commands simulate mouse clicks, double-clicks or drags::
 Help commands
 *************
 
+
 The following commands print various helpful messages.
 Apropos commands print longer discussions of specific topics.
 The help-for-command command prompts for a command name
@@ -401,23 +410,24 @@ and then prints a brief description of that command::
 Mode commands
 *************
 
+
 These commands put Leo into various kinds of modes.
 
 - The ``enter-*-mode`` commands enter modes defined by @mode nodes in leoSettings.leo
   (or in other .leo files).
- 
+
 - The set-command-state, set-insert-state, set-overwrite-state commands
   determine how treats unbound plain keys. Leo ignores such keys in command
   state, inserts them into the body pane in insert state, and overwrites the
   character at the cursor position in overwrite state.
-  
+
 - Other commands determine whether autocompletion or calltips are in effect.
 
 - When extend mode is effect, basic editing commands that move the cursor also
   extend the selected text.
   For example, in extend mode the ``back-char`` command works the same as the
   ``back-char-extend-selection`` command.
-  
+
 Here is the full list of mode-related commands::
 
     auto-complete
@@ -455,6 +465,7 @@ Here is the full list of mode-related commands::
 
 Outline commands
 ****************
+
 
 The following commands invoke Leo's outline commands::
 
@@ -523,6 +534,7 @@ The following commands invoke Leo's outline commands::
 
 Miscellaneous commands
 **********************
+
 
 Here are various miscellaneous minibuffer commands::
 
@@ -608,6 +620,7 @@ The File Menu
 Loading, Saving and Reverting Files
 ***********************************
 
+
 -   The ``New`` command creates a new Leo main window.
 
 -   The ``Open`` command opens an existing Leo file and shows it in a main window.
@@ -618,7 +631,7 @@ Loading, Saving and Reverting Files
 -   The ``Save``, ``Save As`` and ``Save To`` commands save the Leo window to a file.
     The ``Save As`` command changes the name of the outline being edited;
     the ``Save To`` command does not.
-    
+
     The ``Save File As Zipped`` command is the same as the
     ``Save As`` command except that the resulting .leo file is compressed with Python's zipfile module.
     Similarly, the ``Save File As Unzipped`` command is the same as the ``Save As`` command
@@ -661,6 +674,7 @@ The following commands are located in the ``Read/Write`` menu, part of the
 Communicating with external editors
 ***********************************
 
+
 The ``Open With`` command allows you to communicate with external editor. When
 you select this command Leo creates a temporary file and invokes an external
 program. Leo periodically checks whether this temporary file has changed; Leo
@@ -672,6 +686,7 @@ of handling the ``Open With`` menu.
 
 Tangling an outline: Producing Derived Files
 ********************************************
+
 
 The ``Tangle``, ``Tangle All`` and ``Tangle Marked`` commands create derived
 files from portions of an outline. These commands indent and format the derived
@@ -696,6 +711,7 @@ more details, see: `Tangling @root trees with the Tangle commands`_
 
 Untangling: updating an outline
 *******************************
+
 
 The ``Untangle``, ``Untangle All`` and ``Untangle Marked`` commands are the
 reverse of the corresponding ``Tangle`` commands. They update an outline based
@@ -735,6 +751,7 @@ derived files.
 Importing Files into Leo Outlines
 *********************************
 
+
 The ``Import`` commands do not attempt to do perfect translations; they merely automate the bulk of the drudgery:
 
 -   The ``Import to @file`` command creates an ``@file`` node from a file.
@@ -763,6 +780,7 @@ backslash.
 Exporting Files from Leo Outlines
 *********************************
 
+
 -   The ``Outline To CWEB`` command creates a `CWEB`_ file from the selected outline.
 
 -   The ``Outline TO noweb`` command creates a `noweb`_ file from the selected outline.
@@ -777,6 +795,7 @@ Exporting Files from Leo Outlines
 Quitting Leo
 ************
 
+
 The ``Quit`` command causes Leo to exit. You may also exit Leo by closing the
 main window. You will be prompted to save any file that has been altered but not
 saved.
@@ -789,6 +808,7 @@ The Edit Menu
 Undoing changes
 ***************
 
+
 Leo supports unlimited undo and redo. Think of actions that may be undone or
 redone as a string of beads. A "bead pointer" points to the present bead.
 Performing an operation creates a new bead after the present bead and removes
@@ -800,12 +820,14 @@ command is disabled when the bead pointer points to the last bead.
 Cutting, pasting and selecting text
 ***********************************
 
+
 Leo supports the standard editing commands: ``Cut``, ``Copy``, ``Paste``,
 ``Clear`` and ``Select All``. These commands work with either headline or body
 text.
 
 Shifting body text
 ******************
+
 
 The ``Shift Left`` and ``Shift Right`` commands shift selected lines in the body
 text left or right one tab position. These commands shift the entire line if any
@@ -814,6 +836,7 @@ characters in that line are selected.
 Adding and deleting comments in body text
 *****************************************
 
+
 -   The ``Add Comments`` command puts comments around a block of code.
     This command uses single-line comments if possible.
 
@@ -821,6 +844,7 @@ Adding and deleting comments in body text
 
 Creating nodes from body text
 *****************************
+
 
 The Extract, Extract Section and Extract Section Names commands create child nodes whose headline is the first line of the selected body text.
 
@@ -840,6 +864,7 @@ The Extract, Extract Section and Extract Section Names commands create child nod
 Converting leading blanks and tabs in body text
 ***********************************************
 
+
 -   The Convert Tabs command converts leading tabs to blanks in a single node.
 -   The Convert Blanks command converts blanks to tabs in a single node.
 -   The Convert All Tabs converts leading tabs to blanks throughout the selected tree.
@@ -849,6 +874,7 @@ All these commands convert between tabs and blanks using the tab width presently
 
 Executing Python scripts in body text
 *************************************
+
 
 The ``Execute Script`` command executes body text as a Python script. Leo
 execute the selected text, or the entire body text if no text is selected. The
@@ -873,6 +899,7 @@ app.scriptDict as they please.
 Finding and changing text
 *************************
 
+
 The following check boxes options appear in the search dialog and control the operations of the find and change commands.
 
 Clone Find All
@@ -891,7 +918,7 @@ Mark Matches
 
 Pattern Match
     When checked, the ``Find and Change`` commands treat several characters specially in the find pattern.
-    
+
     - '*'  matches any sequence of zero or more characters.
     - '.'  matches any single character.
     - '^'  matches a newline at the start of a pattern.
@@ -932,6 +959,7 @@ Wrap Around
 
 Script search
 *************
+
 
 **Important**: Script buttons are easier to use than the script-oriented
 find/change commands described next. I recommend using script buttons whenever
@@ -1011,12 +1039,12 @@ Presto! Leo is ready for a script search. **Note**: you could also consider crea
 script button to set up complex find/change scripts.
 
 Here are some ideas for using script find/change.
-	
+
 -   Find and change scripts may use Python's re module.  For
     example, the find script could set ``g.app.searchDict["m"]`` to the match object
     returned by re's match method.  The change script would then compute the
     result, change the text and set the undo info as usual.
-    
+
 -   Find and change scripts may operate on data outside any Leo outline.
     For example, script-find scripts could traverse your file system.
     Scripts could even pull data from the file system
@@ -1026,10 +1054,12 @@ Here are some ideas for using script find/change.
 Go To Line Number
 *****************
 
+
 The ``Go To Line Number`` command selects the locations in your outlines corresponding to a line in a derived file.
 
 Inserting the date and time
 ***************************
+
 
 The ``Insert Body Time/Date`` and ``Insert Headline Time/Date`` commands insert
 formatted time and date into body or headline text. You must be editing a
@@ -1046,6 +1076,7 @@ format like::
 
 Reformatting paragraphs in body text
 ************************************
+
 
 The Reformat Paragraph command rearranges the words in a text paragraph to fill
 each line as full as possible, up to the ``@pagewidth`` setting. A paragraph is
@@ -1071,6 +1102,7 @@ numbered lists, such as::
 Matching brackets and parenthesis
 *********************************
 
+
 The ``Match Brackets`` command is enabled if the cursor is next to one of the
 following characters in the body pane:
 
@@ -1092,6 +1124,7 @@ The Outline Menu
 Checking outlines
 *****************
 
+
 -   The ``Check Outline`` command checks the outline for consistency.
 
 -   The ``Check All Python Code`` and ``Check Python Code`` commands report any syntax errors or tabnanny errors.
@@ -1102,12 +1135,13 @@ Checking outlines
 
 -   The ``Check Python Code`` and ``Pretty Print Python Code`` pretty print body text.
     You can customize this code by overriding the following methods of class ``prettyPrinter`` in ``leoCommands.py``::
-    
+
         putOperator:      puts whitespace around operators.
         putNormalToken:   puts whitespace around everything else.
 
 Creating & cloning nodes
 ************************
+
 
 -   The ``Insert Headline`` command inserts a new headline after the presently selected headline,
     either as the next sibling or the first child of the presently selected headline
@@ -1118,6 +1152,7 @@ Creating & cloning nodes
 
 Cutting, pasting and deleting nodes
 ***********************************
+
 
 -   The ``Cut Outline`` and ``Copy Outline`` commands copy a text
     representation of the outline to the clipboard. This representation is the same
@@ -1134,6 +1169,7 @@ Cutting, pasting and deleting nodes
 Expanding and contracting nodes
 *******************************
 
+
 -   The ``Expand`` command expands the currently selected node so that all its children are visible.
 -   The ``Expand All Subheads`` command expands the currently selected node so that all its offspring are visible.
 -   The ``Expand All`` command expands all the nodes of the entire tree.
@@ -1141,6 +1177,7 @@ Expanding and contracting nodes
 
 Marking nodes
 *************
+
 
 -   The ``Mark Headline`` command marks a headline with a red marker  near the leader characters.
 -   The ``Unmark Headline`` command removes such a mark.
@@ -1153,6 +1190,7 @@ Marking nodes
 
 Moving, sorting and reorganizing nodes
 **************************************
+
 
 -   The ``Move Up``, ``Move Down``, ``Move Left`` and ``Move Right`` commands move the currently selected node.
 
@@ -1167,6 +1205,7 @@ Moving, sorting and reorganizing nodes
 Hoisting & De-hoisting nodes
 ****************************
 
+
 -   The ``Hoist`` command redraws the screen so presently selected tree becomes the only visible part of the outline.
     Hoist commands may be nested.  
 
@@ -1174,6 +1213,7 @@ Hoisting & De-hoisting nodes
 
 The Window Menu
 +++++++++++++++
+
 
 -   The ``Equal Sized Panes`` command adjusts the sizes of the outline and body
     panes so that they are the same height.
@@ -1192,6 +1232,7 @@ The Window Menu
 
 The Help Menu
 +++++++++++++
+
 
 -   The ``About Leo`` command puts up a dialog box showing the version of Leo.
 -   The ``Online Home Page`` command opens Leo's home page at http://webpages.charter.net/edreamleo/front.html.
