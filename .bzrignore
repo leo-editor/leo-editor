@@ -32,6 +32,7 @@ leo/doc/html/_static
 leo/plugins/leoPlugins.leo
 leo/plugins/temacs_ext/
 
+leo/test/at_ignore_test.txt
 leo/test/dynamicUnitTest.leo
 leo/test/clean
 leo/test/clean/*.*
@@ -41,8 +42,11 @@ leo/test/.leo
 leo/test/ropeProject/*.*
 leo/test/scriptFile.py
 leo/test/leoProfile.txt
+leo/test/testzip.zip
+
 leo/test/unittest/createdFile.txt
-leo/test/at_ignore_test.txt
+leo/test/unittest/input/testLeoAtFile.py.txt
+
 leo/core/scriptFile.py
 leoGuiPlugins.leo
 leo/doc/html/ed.hup
