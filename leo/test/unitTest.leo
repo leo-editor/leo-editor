@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="81" left="429" height="822" width="852"/>
+	<global_window_position top="108" left="433" height="822" width="1023"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7,1,2,15"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -741,7 +741,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20050120095423" annotate="7d71002e"><vh>Plugins</vh>
 <v t="ekr.20080309193654.1"><vh>@ignore</vh>
 <v t="ekr.20050120095423.21"><vh>print all loaded plugins</vh></v>
@@ -777,7 +777,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="E"><vh>Organized by file</vh>
 <v t="ekr.20050112095306.1" annotate="7d71002e"><vh>leoAtFile</vh>
 <v t="ekr.20040803091512"><vh>@@test bogus tnodeList doesn't corrupt @thin nodes</vh></v>
 <v t="ekr.20041021065844"><vh>@test @asis</vh>
@@ -959,7 +959,7 @@
 </v>
 <v t="ekr.20090615053403.4957" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20071113193624"><vh>leoCommands</vh>
+<v t="ekr.20071113193624" a="E"><vh>leoCommands</vh>
 <v t="ekr.20050512084850" annotate="7d71002e"><vh> Check outline</vh>
 <v t="ekr.20040712101754.272"><vh>Startup</vh></v>
 <v t="ekr.20041019124050"><vh>Docs</vh>
@@ -1100,6 +1100,7 @@
 <v t="ville.20090602190735.4770"><vh>@test g.command decorator</vh></v>
 <v t="ekr.20071113201833" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 <v t="ville.20090313183551.2" a="M"><vh>@test c.db</vh></v>
+<v t="ville.20090620134122.4937"><vh>@test g.app.db</vh></v>
 </v>
 <v t="ekr.20071113194216"><vh>leoConfig</vh>
 <v t="ekr.20060325071703.2"><vh>@@test ifgui</vh></v>
@@ -1118,6 +1119,22 @@
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
 <v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
 <v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
@@ -21640,5 +21657,18 @@ assert c in g.app.commanders()
 
 
 </t>
+<t tx="ville.20090620134122.4937"># test the controller-specific pickleshare db
+v = [1212,121131313, { 'hello' : (121,'world')} ]
+
+db = g.app.db
+
+db['leo_utest'] = v
+db['leo_utest2'] = 1
+db['leotest/foo'] = 2
+db['leotest/bar'] = 3
+db['leo_utest'] == v
+db['leo_utest2'] == 1
+db['leotest/foo'] == 2
+db['leotest/bar'] == 3</t>
 </tnodes>
 </leo_file>
