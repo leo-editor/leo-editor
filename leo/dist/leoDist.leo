@@ -1021,8 +1021,8 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
         x = createExe(exeFile,pre_install_script,post_install_script,zipFile2,version=version)
         x.create_exe()
     
+    # Unlink temp files.
     unlink(zipFile2)
-
     for z in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
         path= abspath(join(top,z))
         if exists(z): unlink(z)

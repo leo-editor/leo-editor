@@ -325,14 +325,14 @@ class LeoApp:
     #@nonl
     #@-node:ekr.20090202191501.5:app.createNullGui
     #@+node:ekr.20090619065122.8593:app.createDefaultGui
-    def createDefaultGui (self,fileName):
+    def createDefaultGui (self,fileName=''):
 
         """A convenience routines for plugins to create the default gui class."""
 
         self.createQtGui(fileName)
     #@-node:ekr.20090619065122.8593:app.createDefaultGui
     #@+node:ekr.20090202191501.1:app.createQtGui
-    def createQtGui (self,fileName):
+    def createQtGui (self,fileName=''):
 
         # Do NOT omit fileName param: it is used in plugin code.
 
@@ -343,7 +343,7 @@ class LeoApp:
         if fileName: print ('qtGui created in %s' % fileName)
     #@-node:ekr.20090202191501.1:app.createQtGui
     #@+node:ekr.20031218072017.2610:app.createTkGui
-    def createTkGui (self,fileName):
+    def createTkGui (self,fileName=''):
 
         """A convenience routines for plugins to create the default Tk gui class."""
 
@@ -352,7 +352,7 @@ class LeoApp:
         if fileName: print ('tkGui created in %s' % fileName)
     #@-node:ekr.20031218072017.2610:app.createTkGui
     #@+node:ekr.20090126063121.3:app.createWxGui
-    def createWxGui (self,fileName):
+    def createWxGui (self,fileName=''):
 
         # Do NOT omit fileName param: it is used in plugin code.
 

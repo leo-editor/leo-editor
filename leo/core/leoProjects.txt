@@ -23570,7 +23570,7 @@ def createRecentFilesMenuItems (self):
 #@-node:ekr.20090613082719.6057:Entries in recent files menu now have absolute paths
 #@+node:ekr.20090619065122.6066:Made qt gui the default
 #@+node:ekr.20090202191501.1:app.createQtGui
-def createQtGui (self,fileName):
+def createQtGui (self,fileName=''):
 
     # Do NOT omit fileName param: it is used in plugin code.
 
