@@ -11,6 +11,7 @@ import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import os
 import sys
+import leo.external.pickleshare
 
 class LeoApp:
 
@@ -670,6 +671,20 @@ class LeoApp:
         #@-node:ekr.20031218072017.1982:<< attempt to create leoID.txt >>
         #@nl
     #@-node:ekr.20031218072017.1978:app.setLeoID
+    #@+node:ville.20090620122043.6275:app.setGlobalDb
+    def setGlobalDb(self):
+        """ Create global pickleshare db
+
+        Usable by::
+
+            g.app.db['hello'] = [1,2,5]
+
+        """
+        dbdirname = self.homeLeoDir + "/db/global"
+        self.db = leo.external.pickleshare.PickleShareDB(dbdirname, protocol='picklez')
+
+
+    #@-node:ville.20090620122043.6275:app.setGlobalDb
     #@+node:ekr.20031218072017.1847:app.setLog, lockLog, unlocklog
     def setLog (self,log):
 

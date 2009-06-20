@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20051031040240" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20090620052003.8505"><vh>@button add-test @key=alt-9</vh></v>
 <v t="ekr.20090514093345.6054"><vh>Disabled buttons</vh>
@@ -76,8 +76,7 @@
 <v t="EKR.20040429143933" annotate="7d71002855046e6f6465710155007102550262677103680255087072696f72697479710455043939393971055502666771066802550870726f677265737371076802550961726368657479706571086802752e" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f7461746571037d71042855046e6f6465710555007106550262677107680655087072696f726974797108550439393939710955026667710a6806550870726f6772657373710b68065509617263686574797065710c68067573732e"><vh>@thin leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20040117181936"
-expanded="ekr.20090620052003.6068,"><vh>@thin ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20040117181936"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20060207133601"><vh>@thin ../doc/leoToDoLater.txt</vh></v>
 </v>
 <v t="ekr.20090113083258.3"><vh>Unit tests &amp; helper files</vh>
@@ -118,8 +117,7 @@ expanded="ekr.20090620052003.6068,"><vh>@thin ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20080708094444.1"><vh>@thin leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@thin leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@thin leoUndo.py</vh></v>
-<v t="ekr.20031218072017.2605"
-expanded="ekr.20031218072017.1934,ekr.20090519143741.5915,"><vh>@thin runLeo.py </vh></v>
+<v t="ekr.20031218072017.2605"><vh>@thin runLeo.py </vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui Base classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>

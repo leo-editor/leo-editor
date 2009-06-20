@@ -115,6 +115,7 @@ def doPrePluginsInit(fileName,pymacs):
     # This means if-gui has effect only in per-file settings.
     g.app.config.readSettingsFiles(fileName,verbose)
     g.app.setEncoding()
+    g.app.setGlobalDb()
     createSpecialGui(gui,pymacs,script,windowFlag)
     return fileName,relativeFileName,script
 #@+node:ekr.20080921060401.4:createSpecialGui & helper

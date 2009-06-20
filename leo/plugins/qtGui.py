@@ -56,13 +56,16 @@ try:
 except ImportError:
     QtCore = None
     print('\nqtGui.py: can not import Qt\n')
-try:
-    from PyQt4 import Qsci
-except ImportError:
-    QtCore = None
-    print('\nqtGui.py: can not import scintilla for Qt')
-    print('\nqtGui.py: qt-scintilla may be a separate package on your system')
-    print('\nqtGui.py: e.g. "python-qscintilla2" or similar\n')
+
+# remove scintilla dep for now    
+if 0:    
+    try:
+        from PyQt4 import Qsci
+    except ImportError:
+        QtCore = None
+        print('\nqtGui.py: can not import scintilla for Qt')
+        print('\nqtGui.py: qt-scintilla may be a separate package on your system')
+        print('\nqtGui.py: e.g. "python-qscintilla2" or similar\n')
 
 #@-node:ekr.20081121105001.189: << qt imports >>
 #@nl
