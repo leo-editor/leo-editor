@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="50" left="370" height="936" width="908"/>
+	<global_window_position top="71" left="374" height="936" width="1216"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20081121105001.1076" str_leo_pos="3"><vh>Startup</vh>
+<v t="ekr.20081121105001.1076" str_leo_pos="3,2,0"><vh>Startup</vh>
 <v t="ekr.20081121105001.1077"><vh>@chapters</vh></v>
 <v t="ekr.20081121105001.1078"><vh>@settings</vh>
 <v t="ekr.20081121105001.1079"><vh>@page http plugin</vh>
@@ -28,10 +28,10 @@
 <v t="ekr.20081121105001.1089"><vh>regex: replace w.bind by c.bind(w...)</vh></v>
 <v t="ekr.20081121105001.1090"><vh>@@button change leo imports</vh></v>
 </v>
-<v t="ekr.20081121105001.1108"><vh>Notes</vh>
-<v t="ekr.20081121105001.147"
+<v t="ekr.20081121105001.1108" a="E"><vh>Notes</vh>
+<v t="ekr.20081121105001.147" a="E"
 marks="ekr.20081121105001.264,"
-expanded="ekr.20081121105001.572,"><vh>@thin qtNotes.txt</vh></v>
+expanded="ekr.20090124101344.1,ekr.20081215074704.20,ekr.20081121105001.203,ekr.20081215162017.5,ekr.20090605075414.3828,ekr.20081121105001.205,ekr.20081121105001.206,"><vh>@thin qtNotes.txt</vh></v>
 </v>
 <v t="ekr.20081121105001.1110"><vh>Other guis</vh>
 <v t="ekr.20081121105001.12"><vh>@thin cursesGui.py</vh></v>
@@ -40,18 +40,18 @@ expanded="ekr.20081121105001.572,"><vh>@thin qtNotes.txt</vh></v>
 <v t="ekr.20081121110412.2"><vh>@thin tkGui.py</vh></v>
 <v t="ekr.20090126093408.1"><vh>@thin wxGui.py</vh></v>
 </v>
-<v t="ekr.20081121105001.1092"><vh>Qt gui</vh>
-<v t="ekr.20081121105001.1093"><vh>QDesigner files</vh>
+<v t="ekr.20081121105001.1092" a="E"><vh>Qt gui</vh>
+<v t="ekr.20081121105001.1093" a="E"><vh>QDesigner files</vh>
 <v t="ekr.20081121105001.1094"><vh>@auto ../test/qtui_generate.py</vh></v>
-<v t="ekr.20081121105001.1095"><vh>@auto qt_main.py</vh></v>
+<v t="ekr.20081121105001.1095" a="E"><vh>@auto qt_main.py</vh></v>
 <v t="ekr.20081121105001.1096"><vh>@auto qt_main.ui</vh></v>
 <v t="ekr.20081121105001.1097"><vh>@auto qt_quicksearch.py</vh></v>
 <v t="ekr.20081121105001.1098"><vh>@auto qt_quicksearch.ui</vh></v>
 </v>
 <v t="ekr.20090124174652.7"><vh>@thin baseNativeTree.py</vh></v>
-<v t="ekr.20081121105001.188"
+<v t="ekr.20081121105001.188" a="E"
 marks="ekr.20081121105001.264,"
-expanded="ekr.20081121105001.473,ekr.20081121105001.521,ekr.20081121105001.572,"><vh>@thin qtGui.py</vh></v>
+expanded="ekr.20081121105001.515,ekr.20081121105001.560,ekr.20081121105001.206,"><vh>@thin qtGui.py</vh></v>
 <v t="leohag.20081204085551.1"><vh>@thin scrolledmessage.py</vh></v>
 </v>
 </vnodes>
