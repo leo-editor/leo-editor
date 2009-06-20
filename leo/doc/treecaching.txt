@@ -82,8 +82,8 @@ In brief,
   ~/.leo/db/LeoDocs.leo/fcache/8095e2dabbfe90b349066209fb090df6
 - Now, on the next startup, Leo *will* find the cached pickle, read it in and execute `g.create_tree_at_vnode`
 
-The `Leo database` (c.db)
-=========================
+The `Leo database` (c.db, g.app.db)
+===================================
 
 Previous discussion omitted one fact - Leo doesn't actually operate on files directly, but 
 uses the `pickleshare` library (shipped with Leo) to access the cached pickles. In essence, the database is 
@@ -104,4 +104,13 @@ Note that c.db is available to all plugins and scripts, and in no way limited to
 specific caching purpose. In practice, it's useful for data you want to persist
 through Leo sessions, but not added to .leo document (which is what unknownAttributes
 are used for).
+
+In addition to c.db, there is g.app.db that can be used for global (non-document specific)
+persisted data. E.g.::
+
+    g.app.db['foo'] = [1,2,3]  
+ 
+The underlying files for c.db are at under ~/.leo/db/somedocument.leo_somehash.
+
+Files for g.app.db are at ~/.leo/db/global.
 
