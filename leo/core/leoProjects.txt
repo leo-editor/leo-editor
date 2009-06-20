@@ -19292,6 +19292,17 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
     return dir1 # All have been created.
 #@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
 #@-node:ekr.20090618102243.6064:Fixed startup problem
+#@+node:ekr.20090605075411.6436:Investigated @root bug
+@nocolor-node
+
+http://bugs.launchpad.net/leo-editor/+bug/383898
+
+Seems someone messed up the tangling of root nodes in the trunk for it
+always says "no root code..."
+
+Invalid.
+#@nonl
+#@-node:ekr.20090605075411.6436:Investigated @root bug
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all

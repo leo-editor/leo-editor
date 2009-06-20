@@ -2,18 +2,11 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
-#@+node:ekr.20090525113804.5776:Before b2 1
-#@+node:ekr.20090605075411.6436:Fix @root bug
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/383898
-
-Seems someone messed up the tangling of root nodes in the trunk for it
-always says "no root code..."
-#@nonl
-#@-node:ekr.20090605075411.6436:Fix @root bug
-#@-node:ekr.20090525113804.5776:Before b2 1
 #@+node:ekr.20090620052003.6068:Before b3 3
+#@+node:ekr.20090617074804.6062:Fully resolve unicode issues
+http://groups.google.com/group/leo-editor/browse_thread/thread/28c5cab9c2a681fH
+#@nonl
+#@-node:ekr.20090617074804.6062:Fully resolve unicode issues
 #@+node:ekr.20090602183337.6045:Fix rst import annoyance
 @nocolor-node
 
@@ -29,110 +22,16 @@ b2. It's time to stamp on the distractions.
 #@-node:ekr.20090602183337.6045:Fix rst import annoyance
 #@+node:ekr.20090523070447.6475:Rewrite rst documentation
 #@-node:ekr.20090523070447.6475:Rewrite rst documentation
-#@+node:ekr.20090617074804.6062:Fully resolve unicode issues
-http://groups.google.com/group/leo-editor/browse_thread/thread/28c5cab9c2a681fH
-#@nonl
-#@-node:ekr.20090617074804.6062:Fully resolve unicode issues
-#@-node:ekr.20090620052003.6068:Before b3 3
-#@+node:ekr.20090430092048.7:Before 4.6 final
-#@+node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
-
-> What would work for me is if named sections in a @rst subtree
-> would work exactly as they work for other derived files: they
-> get inserted at the place where they are referenced.
-
-- Add support for the following options:
-    - expand_noweb_references: default False for compatibility.
-    - ignore_noweb definitions: default False for compatibility.
-
-- When expand_noweb_references is True, definitions (typically clones)
-  must be descendants of the referencing node (in the @rst tree)
-#@+node:ekr.20090601083544.6052:post
-@nocolor-node
-
-I want to write the documentation for the source program in a @rst3 subtree. In
-this @rst3 subtree I want to refer to fragments of the program, like:
-
-In the following code fragment::
-
-  <<code fragment>>
-
-Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
-get to this work, I should have <<code fragment>> under the @rst3 subtree as
-well, but this is then also treated as @rst3 input (which in this case, is not
-what I want).
-#@nonl
-#@-node:ekr.20090601083544.6052:post
-#@+node:ekr.20090502071837.71:writeBody & helpers
-def writeBody (self,p):
-
-    # remove trailing cruft and split into lines.
-    lines = g.splitLines(p.b)
-
-    if self.getOption('code_mode'):
-        if not self.getOption('show_options_doc_parts'):
-            lines = self.handleSpecialDocParts(lines,'@rst-options',
-                retainContents=False)
-        if not self.getOption('show_markup_doc_parts'):
-            lines = self.handleSpecialDocParts(lines,'@rst-markup',
-                retainContents=False)
-        if not self.getOption('show_leo_directives'):
-            lines = self.removeLeoDirectives(lines)
-        lines = self.handleCodeMode(lines)
-    elif self.getOption('doc_only_mode'):
-        # New in version 1.15
-        lines = self.handleDocOnlyMode(p,lines)
-    else:
-        lines = self.handleSpecialDocParts(lines,'@rst-options',
-            retainContents=False)
-        lines = self.handleSpecialDocParts(lines,'@rst-markup',
-            retainContents=self.getOption('generate_rst'))
-        if self.getOption('show_doc_parts_in_rst_mode') is True:
-            pass  # original behaviour, treat as plain text
-        elif self.getOption('show_doc_parts_in_rst_mode'):
-            # use value as class for content
-            lines = self.handleSpecialDocParts(lines,None,
-                retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
-        else:  # option evaluates to false, cut them out
-            lines = self.handleSpecialDocParts(lines,None,
-                retainContents=False)
-        lines = self.removeLeoDirectives(lines)
-        if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
-            lines = self.replaceCodeBlockDirectives(lines)
-
-    # Write the lines.
-    s = ''.join(lines)
-    if not self.trialWrite:
-        # A little fib.  We don't alter the text when doing a trial write,
-        # so the perfect-import comparison will pass.
-        # We *do* ensure 2 newlines when doing a "real" write.
-        s = g.ensureLeadingNewlines(s,1)
-        s = g.ensureTrailingNewlines(s,2)
-    self.write(s)
-#@nonl
-#@-node:ekr.20090502071837.71:writeBody & helpers
-#@-node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
 #@+node:ekr.20090530055015.6018:Restore links into the FAQ
 The recent reorg broke some links.
 #@nonl
 #@-node:ekr.20090530055015.6018:Restore links into the FAQ
-#@+node:ekr.20090430122648.1:Generate pdf versions of docs
-#@-node:ekr.20090430122648.1:Generate pdf versions of docs
-#@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
-#@nonl
-#@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-#@+node:ekr.20090430092048.3:Rewrite docs using stories
-#@+node:ekr.20090226080753.6:Finish the wiki intro
-#@-node:ekr.20090226080753.6:Finish the wiki intro
-#@-node:ekr.20090430092048.3:Rewrite docs using stories
-#@+node:ekr.20070615063616.1:Create Debian package
-#@-node:ekr.20070615063616.1:Create Debian package
-#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
-#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+#@+node:ekr.20090605075043.6092:Doc bug: Alt-x is stated to be the start of quick command
+#@-node:ekr.20090605075043.6092:Doc bug: Alt-x is stated to be the start of quick command
+#@-node:ekr.20090620052003.6068:Before b3 3
+#@+node:ekr.20090620060448.6065:Asap
+#@+node:ekr.20090620060448.6066:get plugins working with qt plugin
+#@-node:ekr.20090620060448.6066:get plugins working with qt plugin
 #@+node:ekr.20090522113545.5884:Fix pylint complaints about plugins
 @nocolor
 
@@ -168,8 +67,18 @@ E1103:604:ToolbarTkinterFrame.getIconWidgetFrame:
 E0602:116:open_in_emacs: Undefined variable '_exemacs_cmd'
 #@nonl
 #@-node:ekr.20090522113545.5884:Fix pylint complaints about plugins
-#@+node:ekr.20090605075043.6092:Doc bug: Alt-x is stated to be the start of quick command
-#@-node:ekr.20090605075043.6092:Doc bug: Alt-x is stated to be the start of quick command
+#@+node:ekr.20090430092048.3:Rewrite docs using stories
+#@+node:ekr.20090226080753.6:Finish the wiki intro
+#@-node:ekr.20090226080753.6:Finish the wiki intro
+#@-node:ekr.20090430092048.3:Rewrite docs using stories
+#@+node:ekr.20090430122648.1:Generate pdf versions of docs
+#@-node:ekr.20090430122648.1:Generate pdf versions of docs
+#@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
+http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
+#@nonl
+#@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
+#@-node:ekr.20090620060448.6065:Asap
+#@+node:ekr.20090430092048.7:Before 4.6 final
 #@-node:ekr.20090430092048.7:Before 4.6 final
 #@+node:ekr.20090529125512.6121:Features (maybe)
 #@+node:ekr.20090528072540.9960:Improve config & plugins
@@ -2370,32 +2279,86 @@ def bookmark(event):
 QQQ
 #@nonl
 #@-node:ekr.20090601083544.6067:Make all commands available to all commanders
-#@+node:ekr.20090316072136.8:Defer loading of files?
+#@+node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
 @nocolor-node
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/b07a4963fcea2b86
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
 
-> +1
->
-> I hesitate to open them on my slower machine, because it takes so
-> long.  If I have some serious objective, sure, I'll wait 20-30 seconds,
-> but if I just want to check something, sometimes it's easier not to
-> bother.
+> What would work for me is if named sections in a @rst subtree
+> would work exactly as they work for other derived files: they
+> get inserted at the place where they are referenced.
 
-If someone can change the @thin / @auto parse code to return data
-structures instead of creating the nodes directly, we can use the
-md5sum based caching scheme I have presented previously instead of
-lazy open.
+- Add support for the following options:
+    - expand_noweb_references: default False for compatibility.
+    - ignore_noweb definitions: default False for compatibility.
 
-This will make leoPyRef.leo and the likes open in few seconds.
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
+#@+node:ekr.20090601083544.6052:post
+@nocolor-node
 
-I'd do this completely myself, but I don't have the time ATM.
+I want to write the documentation for the source program in a @rst3 subtree. In
+this @rst3 subtree I want to refer to fragments of the program, like:
 
-The scheme was explained here:
+In the following code fragment::
 
-http://groups.google.com/group/leo-editor/browse_thread/thread/27c3eb49b87ca335/3641e900388db356
+  <<code fragment>>
 
-#@-node:ekr.20090316072136.8:Defer loading of files?
+Unfortunately, <<code fragment>> will not be expanded. Furthermore, in order to
+get to this work, I should have <<code fragment>> under the @rst3 subtree as
+well, but this is then also treated as @rst3 input (which in this case, is not
+what I want).
+#@nonl
+#@-node:ekr.20090601083544.6052:post
+#@+node:ekr.20090502071837.71:writeBody & helpers
+def writeBody (self,p):
+
+    # remove trailing cruft and split into lines.
+    lines = g.splitLines(p.b)
+
+    if self.getOption('code_mode'):
+        if not self.getOption('show_options_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-options',
+                retainContents=False)
+        if not self.getOption('show_markup_doc_parts'):
+            lines = self.handleSpecialDocParts(lines,'@rst-markup',
+                retainContents=False)
+        if not self.getOption('show_leo_directives'):
+            lines = self.removeLeoDirectives(lines)
+        lines = self.handleCodeMode(lines)
+    elif self.getOption('doc_only_mode'):
+        # New in version 1.15
+        lines = self.handleDocOnlyMode(p,lines)
+    else:
+        lines = self.handleSpecialDocParts(lines,'@rst-options',
+            retainContents=False)
+        lines = self.handleSpecialDocParts(lines,'@rst-markup',
+            retainContents=self.getOption('generate_rst'))
+        if self.getOption('show_doc_parts_in_rst_mode') is True:
+            pass  # original behaviour, treat as plain text
+        elif self.getOption('show_doc_parts_in_rst_mode'):
+            # use value as class for content
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=True, asClass=self.getOption('show_doc_parts_in_rst_mode'))
+        else:  # option evaluates to false, cut them out
+            lines = self.handleSpecialDocParts(lines,None,
+                retainContents=False)
+        lines = self.removeLeoDirectives(lines)
+        if self.getOption('generate_rst') and self.getOption('use_alternate_code_block'):
+            lines = self.replaceCodeBlockDirectives(lines)
+
+    # Write the lines.
+    s = ''.join(lines)
+    if not self.trialWrite:
+        # A little fib.  We don't alter the text when doing a trial write,
+        # so the perfect-import comparison will pass.
+        # We *do* ensure 2 newlines when doing a "real" write.
+        s = g.ensureLeadingNewlines(s,1)
+        s = g.ensureTrailingNewlines(s,2)
+    self.write(s)
+#@nonl
+#@-node:ekr.20090502071837.71:writeBody & helpers
+#@-node:ekr.20090601083544.6051:Add expand_noweb_references for rst3 plugin
 #@+node:ekr.20090131200406.14:autocompletion
 #@+node:ekr.20081005065934.12:Links from Ville re Scintilla
 @nocolor-node
@@ -6583,6 +6546,8 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/663e1f9d8e2d1c24
 #@-node:ekr.20080421140032.1:Fix multiple controllers problem in all plugins
 #@-node:ekr.20080730212711.7:Improve plugins
 #@+node:ekr.20090131200406.15:File features
+#@+node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
+#@-node:ekr.20090526102407.10033:Can Leo delete empty resurrected nodes?
 #@+node:ekr.20080311135649.2:Allow different .leo formats
 @nocolor
 
@@ -7208,17 +7173,6 @@ No big deal.
 #@-node:ekr.20090218115025.3:Why are attributes pickled by default?
 #@-node:ekr.20090131200406.15:File features
 #@+node:ekr.20090210093316.1:Features
-#@+node:ekr.20090402072059.23:Round-tripping rST files
-@nocolor-node
-
-- Create Leo directive corresponding to underline_characters option
-    default: '''#=+*^~"'`-:><_'''
-#@nonl
-#@-node:ekr.20090402072059.23:Round-tripping rST files
-#@+node:ekr.20090421121858.1:bzr branch for link nodes
-t
-#@nonl
-#@-node:ekr.20090421121858.1:bzr branch for link nodes
 #@+node:ekr.20090201122309.5:Improve macro commands
 @nocolor-node
 

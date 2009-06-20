@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="3,1"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4,2"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -27,7 +27,7 @@
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
 <v t="ekr.20090325065530.1"><vh>ANN: Leo 4.6 b1</vh></v>
-<v t="EKR.20040519091259.30" a="E"><vh>Previous announcements</vh>
+<v t="EKR.20040519091259.30"><vh>Previous announcements</vh>
 <v t="ekr.20080807093308.2"><vh>4.5</vh>
 <v t="ekr.20080628062747.73"><vh>ANN: Leo 4.5 b1</vh></v>
 <v t="ekr.20080807093308.1"><vh>ANN: Leo 4.5 b2</vh></v>
@@ -40,8 +40,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20080628065201.2"><vh>Distribution checklist</vh></v>
-<v t="EKR.20040519090846" a="E"><vh>Distribution files</vh>
+<v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="EKR.20040519090846.2"><vh>@asis ../doc/INSTALL.TXT</vh>
 <v t="EKR.20040519090846.3"><vh>System requirements</vh></v>
 <v t="ekr.20080825083632.262"><vh>Leo's HOME directory</vh></v>
@@ -53,11 +52,12 @@
 <v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
-<v t="EKR.20040519082027.32" a="E"><vh>Linux install/uninstall scripts</vh>
+<v t="EKR.20040519082027.32"><vh>Linux install/uninstall scripts</vh>
 <v t="EKR.20040519082027.33"><vh>@@file-thin ../../install</vh></v>
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
+<v t="ekr.20090620072519.1389"><vh>Distribution checklist</vh></v>
 <v t="ekr.20080916084557.1" a="E"><vh>Make stuff</vh>
 <v t="ekr.20080916084557.2"><vh>&lt;&lt; make version &gt;&gt;</vh></v>
 <v t="ekr.20080913110741.1"><vh>@thin leo-post-install-script.py</vh></v>
@@ -70,7 +70,7 @@
 <v t="ekr.20080826091039.6"><vh>create_exe</vh></v>
 <v t="ekr.20080826091039.7"><vh>escape</vh></v>
 <v t="ekr.20080826091039.8"><vh>get_exe_bytes</vh></v>
-<v t="ekr.20080826091039.9" a="E"><vh>get_inidata</vh>
+<v t="ekr.20080826091039.9"><vh>get_inidata</vh>
 <v t="ekr.20080826091039.10"><vh>get_metaData</vh></v>
 <v t="ekr.20080826091039.11"><vh>get_setup</vh></v>
 </v>
@@ -162,7 +162,7 @@ rm -f  $LEO_RUN_SCRIPT_OUTPUT
 
 Do a search and replace on this suffix.
 
-Latest suffix:  -b1
+Latest suffix:  -b2
 
 
 </t>
@@ -312,7 +312,7 @@ Thanks to Randall Voth for these instructions.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.6-b1
+Version: 4.6-b2
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://webpages.charter.net/edreamleo/front.html
 Author: Edward K. Ream
@@ -477,46 +477,6 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
-<t tx="ekr.20080628065201.2">Testing:
-    - Run all unit tests.
-    - Run pylint-leo.bat.
-LeoDocs.leo:
-    ** Update version on home page.
-    - Remove top-level clones.
-    - Select the readme node.
-LeoPlugins.leo:
-    - Remove top-level clones.
-LeoPy.leo:
-    - Update version numbers.
-LeoDist.leo:
-    - Update version numbers.
-    - Update announcement.
-    - Update readme.txt
-Create a cvs tag:
-    - bzr tag leo-x-y
-    - bzr commit --unchanged -m "added tag"
-    - bzr push
-Create distribution files using @button make in leoDist.leo
-Test files
-	- Test created leosetup.exe file.
-	- test the files created in c:\Python\Lib\site-packages\leo-x-y folder
-    ** Open unitTest.leo: does it open without errors?
-    ** Open leoPlugins.leo: does it open without errors?
-
-@color
-# **** Scan all folders &amp; files before uploading.
-@nocolor
-
-Create Release on SourceForge: https://frs.sourceforge.net/webupload
-
-Announcements
-- Update version number on Leo's wikipedia site: http://en.wikipedia.org/wiki/Leo_(editor)
-    - Edit with the 'Edit this page' *tab* (not a link)
-- Update version number on web site.
-- Announce to SourceForge itself.
-- Announce to leo-editor.
-- Announce to comp.lang.python
-- Register Leo at http://www.python.org/pypi?:action=submit_form</t>
 <t tx="ekr.20080807093308.1">Leo 4.5 beta 2                      August 7, 2008
 
 Leo 4.5 beta 2 is now available at:
@@ -674,7 +634,10 @@ See: http://docs.python.org/dist/postinstallation-script.html'''
 &lt;&lt; make version &gt;&gt;
 @others
 
-assert sys.version_info &gt;= (2,5,0) and sys.version_info &lt; (2,6,0) # Require Python 2.5.
+createExeFile = False # True: create installer .exe file.
+
+if createExeFile:
+    assert sys.version_info &gt;= (2,5,0) and sys.version_info &lt; (2,6,0) # Require Python 2.5.
 
 abspath,exists,join = g.os_path_abspath,g.os_path_exists,g.os_path_join
 
@@ -1053,10 +1016,11 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
     for z in commands:
         print ('command: %s' % z)
         os.system(z)
-
-    x = createExe(exeFile,pre_install_script,post_install_script,zipFile2,version=version)
-    x.create_exe()
-    unlink(zipFile2)
+        
+    if createExeFile:
+        x = createExe(exeFile,pre_install_script,post_install_script,zipFile2,version=version)
+        x.create_exe()
+        unlink(zipFile2)
 
     for z in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
         path= abspath(join(top,z))
@@ -1064,7 +1028,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 
     os.system('dir %s' % (top))</t>
 <t tx="ekr.20080916084557.1"></t>
-<t tx="ekr.20080916084557.2">version = '4-6-b1'</t>
+<t tx="ekr.20080916084557.2">version = '4-6-b2'</t>
 <t tx="ekr.20090325065530.1">Leo 4.6 b1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
@@ -1086,5 +1050,44 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/project/showfiles.php?group_id=3458
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
+<t tx="ekr.20090620072519.1389">Testing:
+    - Run all unit tests.
+    - Run pylint-leo.bat.
+LeoDocs.leo:
+    ** Update version on home page.
+    - Remove top-level clones.
+    - Select the readme node.
+LeoPlugins.leo:
+    - Remove top-level clones.
+LeoPy.leo:
+    - Update version numbers.
+LeoDist.leo:
+    - Update version numbers.
+    - Update announcement.
+    - Update readme.txt
+Create a bzr tag:
+    - bzr tag leo-x-y
+    - bzr commit --unchanged -m "added tag"
+    - bzr push
+Create distribution files using @button make in leoDist.leo
+Test files
+	- test the files created in c:\Python\Lib\site-packages\leo-x-y folder
+    ** Open unitTest.leo: does it open without errors?
+    ** Open leoPlugins.leo: does it open without errors?
+
+@color
+# **** Scan all folders &amp; files before uploading.
+@nocolor
+
+Create Release on SourceForge: https://frs.sourceforge.net/webupload
+
+Announcements
+- Update version number on Leo's wikipedia site: http://en.wikipedia.org/wiki/Leo_(editor)
+    - Edit with the 'Edit this page' *tab* (not a link)
+- Update version number on web site.
+- Announce to SourceForge itself.
+- Announce to leo-editor.
+- Announce to comp.lang.python
+- Register Leo at http://www.python.org/pypi?:action=submit_form</t>
 </tnodes>
 </leo_file>
