@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="6,6"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -1247,7 +1247,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20081018053140.11"></v>
+<v t="ekr.20081018053140.11" a="E"></v>
 <v t="TL.20090307074930.2"><vh>@keys Vim bindings</vh>
 <v t="TL.20090307074930.3"><vh>Vim User Documentation</vh></v>
 <v t="TL.20090307074930.4"><vh>Vim Developer Documentation</vh></v>
@@ -7921,7 +7921,11 @@ w.setInsertPoint(len(s))
 c.bodyWantsFocus()
 c.outerUpdate()
 </t>
-<t tx="ekr.20090620112052.9070"></t>
+<t tx="ekr.20090620112052.9070">@nocolor
+
+The encoding assumed for strings used by the Qt plugin.
+UTF-8 is a reasonable default.
+Change to your Python's default encoding if you have unicode problems.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
