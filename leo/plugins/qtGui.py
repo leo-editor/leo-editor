@@ -6283,6 +6283,8 @@ class leoQtGui(leoGui.leoGui):
         self.iconimages = {} # Image cache set by getIconImage().
 
         self.mGuiName = 'qt'
+
+        self.defaultEncoding = None # Set by toUnicode as needed.
     #@-node:ekr.20081121105001.474: qtGui.__init__
     #@+node:ekr.20081121105001.475:createKeyHandlerClass (qtGui)
     def createKeyHandlerClass (self,c,useGlobalKillbuffer=True,useGlobalRegisters=True):
@@ -6865,7 +6867,23 @@ class leoQtGui(leoGui.leoGui):
     #@-node:ekr.20090406111739.12:setWidgetColor (qtGui)
     #@-node:ekr.20090406111739.14:Style Sheets
     #@+node:ekr.20081121105001.502:toUnicode (qtGui)
-    def toUnicode (self,s,encoding='utf-8',reportErrors=True):
+    def toUnicode (self,s,encoding=None,reportErrors=True):
+
+        # These tests will usually be very fast.
+        if encoding is None:
+            encoding = self.defaultEncoding
+        elif not g.isValidEncoding(encoding):
+            encoding = None
+
+        if not encoding:
+            e = g.app.config.getString(c=None,setting='qtdefaultencoding')
+            if e and g.isValidEncoding(e):
+                encoding = e
+            else:
+                encoding = 'utf-8'
+            self.defaultEncoding = encoding
+
+        # g.trace(encoding)
 
         try:
             return unicode(s)

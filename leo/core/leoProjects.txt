@@ -24140,6 +24140,8 @@ def scanOptions():
     return fileName, gui, script, windowFlag
 #@-node:ekr.20080521132317.2:scanOptions
 #@-node:ekr.20090619065122.6066:Made qt gui the default
+#@+node:ekr.20090617074804.6062:Added support for @string qt-default-encoding
+#@-node:ekr.20090617074804.6062:Added support for @string qt-default-encoding
 #@-node:ekr.20090401105902.3:Features
 #@-node:ekr.20080917153158.11:4.6 b2
 #@-all

@@ -3,7 +3,7 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
 #@+node:ekr.20090620052003.6068:Before b3 3
-#@+node:ekr.20090602183337.6045:Urgent: Fix rst import annoyance
+#@+node:ekr.20090602183337.6045:First: Fix rst import annoyance
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/379089
@@ -15,11 +15,31 @@ https://bugs.launchpad.net/leo-editor/+bug/379089
 I'm going to reopen this and put this on the list of things to do before
 b2. It's time to stamp on the distractions.
 #@nonl
-#@-node:ekr.20090602183337.6045:Urgent: Fix rst import annoyance
-#@+node:ekr.20090617074804.6062:Urgent: Fully resolve unicode issues
-http://groups.google.com/group/leo-editor/browse_thread/thread/28c5cab9c2a681fH
+#@-node:ekr.20090602183337.6045:First: Fix rst import annoyance
+#@+node:ekr.20090620112052.6540:Fix rare syntax-error bug
+@nocolor-node
+
+This happened when a non-keyword followed a keyword:
+
+    e = g.app.config(c=None,'whatever')
+
+Syntax error in: @thin qtGui.py
+exception writing: C:\leo.repo\trunk\leo\plugins\qtGui.py
+Traceback (most recent call last):
+  File "C:\leo.repo\trunk\leo\core\leoAtFile.py", line 2401, in write
+    at.replaceTargetFileIfDifferent(root)
+  File "C:\leo.repo\trunk\leo\core\leoAtFile.py", line 4544, in replaceTargetFileIfDifferent
+    self.checkPythonCode(root)
+  File "C:\leo.repo\trunk\leo\core\leoAtFile.py", line 3915, in checkPythonCode
+    ok = self.checkPythonSyntax(root,s)
+  File "C:\leo.repo\trunk\leo\core\leoAtFile.py", line 3929, in checkPythonSyntax
+    self.syntaxError(p,body)
+  File "C:\leo.repo\trunk\leo\core\leoAtFile.py", line 3944, in syntaxError
+    i = val.lineno-1
+TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
+saved: leoGuiP
 #@nonl
-#@-node:ekr.20090617074804.6062:Urgent: Fully resolve unicode issues
+#@-node:ekr.20090620112052.6540:Fix rare syntax-error bug
 #@+node:ekr.20090523070447.6475:Rewrite rst documentation
 #@-node:ekr.20090523070447.6475:Rewrite rst documentation
 #@-node:ekr.20090620052003.6068:Before b3 3
