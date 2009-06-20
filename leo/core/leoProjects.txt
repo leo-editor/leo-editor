@@ -7054,10 +7054,13 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
 
     trace = False and not g.unitTesting
 
-    if c:
-        create = c.config.create_nonexistent_directories
+    if force:
+        create = True # Bug fix: g.app.config will not exist during startup.
+    elif c:
+        create = c.config and c.config.create_nonexistent_directories
     else:
-        create = g.app.config.create_nonexistent_directories
+        create = (g.app and g.app.config and
+            g.app.config.create_nonexistent_directories)
 
     if trace: g.trace('c exists: %s force: %s create: %s dir: %s' % (
         c is not None,force,create,theDir))
@@ -11465,10 +11468,13 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
 
     trace = False and not g.unitTesting
 
-    if c:
-        create = c.config.create_nonexistent_directories
+    if force:
+        create = True # Bug fix: g.app.config will not exist during startup.
+    elif c:
+        create = c.config and c.config.create_nonexistent_directories
     else:
-        create = g.app.config.create_nonexistent_directories
+        create = (g.app and g.app.config and
+            g.app.config.create_nonexistent_directories)
 
     if trace: g.trace('c exists: %s force: %s create: %s dir: %s' % (
         c is not None,force,create,theDir))
@@ -19171,6 +19177,121 @@ _tkinter.TclError: can't delete Tcl command
 
 Can anyone suggest how to fix this?
 #@-node:ekr.20090616050818.6059:Fixed (worked around) tk chapters bug
+#@+node:ekr.20090618102243.6064:Fixed startup problem
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/606277d73b193037
+
+> Clean install on jaunty of current trunk and getting this error:
+
+~/leo-editor$ python launchLeo.py --gui=qt
+Traceback (most recent call last):
+  File "launchLeo.py", line 8, in <module>
+    leo.core.runLeo.run()
+  File "/home/slzatz/leo-editor/leo/core/runLeo.py", line 88, in run
+    fn,relFn,script = doPrePluginsInit(fileName,pymacs)
+  File "/home/slzatz/leo-editor/leo/core/runLeo.py", line 102, in
+doPrePluginsInit
+    g.computeStandardDirectories()
+  File "/home/slzatz/leo-editor/leo/core/leoGlobals.py", line 321, in
+computeStandardDirectories
+    g.makeAllNonExistentDirectories(homeLeoDir,force=True)
+  File "/home/slzatz/leo-editor/leo/core/leoGlobals.py", line 2641, in
+makeAllNonExistentDirectories
+    create = g.app.config.create_nonexistent_directories
+AttributeError: 'NoneType' object has no attribute
+'create_nonexistent_directories' 
+
+> If I create an empty .leo file in my home directory, this problem goes away.
+#@nonl
+#@+node:ekr.20050328133444:computeStandardDirectories
+def computeStandardDirectories():
+
+    '''Set g.app.loadDir, g.app.homeDir, g.app.homeLeoDir and g.app.globalConfigDir.'''
+
+    if 0:
+        import sys
+        for s in sys.path: g.trace(s)
+
+    g.app.loadDir = g.computeLoadDir()
+        # Depends on g.app.tkEncoding: uses utf-8 for now.
+
+    g.app.leoDir = g.computeLeoDir()
+
+    g.app.homeDir = g.computeHomeDir()
+
+    # New in Leo 4.5 b4: create homeLeoDir if needed.
+    g.app.homeLeoDir = homeLeoDir = g.os_path_finalize(
+        g.os_path_join(g.app.homeDir,'.leo'))
+
+    if not g.os_path_exists(homeLeoDir):
+        g.makeAllNonExistentDirectories(homeLeoDir,force=True)
+
+    g.app.extensionsDir = g.os_path_finalize(
+        g.os_path_join(g.app.loadDir,'..','extensions'))
+
+    g.app.globalConfigDir = g.computeGlobalConfigDir()
+
+    g.app.testDir = g.os_path_finalize(
+        g.os_path_join(g.app.loadDir,'..','test'))
+
+    g.app.user_xresources_path = g.os_path_join(g.app.homeDir,'.leo_xresources')
+#@-node:ekr.20050328133444:computeStandardDirectories
+#@+node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+# This is a generalization of os.makedir.
+
+def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
+
+    """Attempt to make all non-existent directories"""
+
+    trace = False and not g.unitTesting
+
+    if force:
+        create = True # Bug fix: g.app.config will not exist during startup.
+    elif c:
+        create = c.config and c.config.create_nonexistent_directories
+    else:
+        create = (g.app and g.app.config and
+            g.app.config.create_nonexistent_directories)
+
+    if trace: g.trace('c exists: %s force: %s create: %s dir: %s' % (
+        c is not None,force,create,theDir))
+
+    if not force and not create:
+        return None
+
+    if c: theDir = g.os_path_expandExpression(theDir,c=c)
+
+    dir1 = theDir = g.os_path_normpath(theDir)
+
+    # Split theDir into all its component parts.
+    paths = []
+    while len(theDir) > 0:
+        head,tail=g.os_path_split(theDir)
+        if len(tail) == 0:
+            paths.append(head)
+            break
+        else:
+            paths.append(tail)
+            theDir = head
+    path = ""
+    paths.reverse()
+    for s in paths:
+        path = g.os_path_join(path,s)
+        if not g.os_path_exists(path):
+            try:
+                os.mkdir(path)
+                if verbose and not g.app.unitTesting:
+                    # g.trace('***callers***',g.callers(5))
+                    g.es_print("created directory:",path,color='red')
+            except Exception:
+                # g.trace(g.callers())
+                if verbose: g.es_print("exception creating directory:",path,color='red')
+                g.es_exception()
+                return None
+    return dir1 # All have been created.
+#@-node:ekr.20031218072017.3119:g.makeAllNonExistentDirectories
+#@-node:ekr.20090618102243.6064:Fixed startup problem
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all

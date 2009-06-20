@@ -1453,7 +1453,7 @@ def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
 
     This is called whenever a pattern matcher succeed.'''
 
-    trace = False
+    trace = False and not g.unitTesting
     if self.colorizer.killColorFlag or not self.colorizer.flag: return
 
     if delegate:
@@ -3899,7 +3899,7 @@ def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
 
     This is called whenever a pattern matcher succeed.'''
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
 
     # Pattern matcher may set the .flag ivar.
     if self.colorizer.killColorFlag or not self.colorizer.flag:
@@ -5550,7 +5550,7 @@ def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
 
     This is called whenever a pattern matcher succeed.'''
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
 
     # Pattern matcher may set the .flag ivar.
     if self.colorizer.killColorFlag or not self.colorizer.flag:
@@ -5785,7 +5785,7 @@ def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
 
     This is called whenever a pattern matcher succeed.'''
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
 
     # Pattern matcher may set the .flag ivar.
     if self.colorizer.killColorFlag or not self.colorizer.flag:
@@ -10422,7 +10422,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 #@+node:ekr.20081121105001.574:ctor
 def __init__ (self,widget,name,c=None):
 
-    # widget is a QTextEdit.
+    # widget is a QTextEdit (or QTextBrowser).
     # g.trace('leoQTextEditWidget',widget)
 
     # Init the base class.
@@ -12131,10 +12131,10 @@ def __init__ (self,frame,parentFrame):
     else:
         top = c.frame.top
         sw = top.ui.stackedWidget
-        qtWidget = top.ui.richTextEdit # A QTextEdit.
+        qtWidget = top.ui.richTextEdit # A QTextEdit or QTextBrowser.
+        # g.trace(qtWidget)
         sw.setCurrentIndex(1)
         self.widget = w = leoQTextEditWidget(
-        #self.widget = w = leoQBodyTextEditWidget(
             qtWidget,name = 'body',c=c)
         self.bodyCtrl = w # The widget as seen from Leo's core.
 
@@ -12352,7 +12352,8 @@ def createEditor (self,name):
     n = self.numberOfEditors
 
     # Step 1: create the editor.
-    w = QtGui.QTextEdit(f)
+    # w = QtGui.QTextEdit(f)
+    w = QtGui.QTextBrowser(f)
     w.setObjectName('richTextEdit') # Will be changed later.
     wrapper = leoQTextEditWidget(w,name='body',c=c)
     self.packLabel(w)
@@ -13493,7 +13494,8 @@ def createEditor (self,name):
     n = self.numberOfEditors
 
     # Step 1: create the editor.
-    w = QtGui.QTextEdit(f)
+    # w = QtGui.QTextEdit(f)
+    w = QtGui.QTextBrowser(f)
     w.setObjectName('richTextEdit') # Will be changed later.
     wrapper = leoQTextEditWidget(w,name='body',c=c)
     self.packLabel(w)
@@ -15071,7 +15073,8 @@ def createEditor (self,name):
     n = self.numberOfEditors
 
     # Step 1: create the editor.
-    w = QtGui.QTextEdit(f)
+    # w = QtGui.QTextEdit(f)
+    w = QtGui.QTextBrowser(f)
     w.setObjectName('richTextEdit') # Will be changed later.
     wrapper = leoQTextEditWidget(w,name='body',c=c)
     self.packLabel(w)
@@ -16542,7 +16545,7 @@ def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
 
     This is called whenever a pattern matcher succeed.'''
 
-    trace = False
+    trace = False and not g.unitTesting
     if self.colorizer.killColorFlag or not self.colorizer.flag: return
 
     if delegate:
@@ -18988,7 +18991,7 @@ def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
 
     This is called whenever a pattern matcher succeed.'''
 
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
 
     # Pattern matcher may set the .flag ivar.
     if self.colorizer.killColorFlag or not self.colorizer.flag:
@@ -19513,7 +19516,8 @@ def createEditor (self,name):
     n = self.numberOfEditors
 
     # Step 1: create the editor.
-    w = QtGui.QTextEdit(f)
+    # w = QtGui.QTextEdit(f)
+    w = QtGui.QTextBrowser(f)
     w.setObjectName('richTextEdit') # Will be changed later.
     wrapper = leoQTextEditWidget(w,name='body',c=c)
     self.packLabel(w)
@@ -20094,7 +20098,8 @@ def createEditor (self,name):
     n = self.numberOfEditors
 
     # Step 1: create the editor.
-    w = QtGui.QTextEdit(f)
+    # w = QtGui.QTextEdit(f)
+    w = QtGui.QTextBrowser(f)
     w.setObjectName('richTextEdit') # Will be changed later.
     wrapper = leoQTextEditWidget(w,name='body',c=c)
     self.packLabel(w)

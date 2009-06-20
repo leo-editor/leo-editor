@@ -15,8 +15,14 @@ __qh = None # For quick headlines.
 
 # A switch telling whether to use qt_main.ui and qt_main.py.
 useUI = False # True: use qt_main.ui. False: use DynamicWindow.createMainWindow.
+#@<< define newColoring >>
+#@+node:ekr.20090619104255.3849:<< define newColoring >>
+# Use a section so this can be cloned.
 
 newColoring = False # True: use new colorizing scheme.
+#@nonl
+#@-node:ekr.20090619104255.3849:<< define newColoring >>
+#@nl
 
 #@<< qt imports >>
 #@+node:ekr.20081121105001.189: << qt imports >>
@@ -740,7 +746,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     #@+node:ekr.20081121105001.574:ctor
     def __init__ (self,widget,name,c=None):
 
-        # widget is a QTextEdit.
+        # widget is a QTextEdit (or QTextBrowser).
         # g.trace('leoQTextEditWidget',widget)
 
         # Init the base class.
@@ -2034,7 +2040,8 @@ class DynamicWindow(QtGui.QMainWindow):
         shape = QtGui.QFrame.NoFrame,
     ):
 
-        w = QtGui.QTextEdit(parent)
+        # w = QtGui.QTextEdit(parent)
+        w = QtGui.QTextBrowser(parent)
         # self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         w.setFrameShape(shape)
         w.setFrameShadow(shadow)
@@ -2319,10 +2326,10 @@ class leoQtBody (leoFrame.leoBody):
         else:
             top = c.frame.top
             sw = top.ui.stackedWidget
-            qtWidget = top.ui.richTextEdit # A QTextEdit.
+            qtWidget = top.ui.richTextEdit # A QTextEdit or QTextBrowser.
+            # g.trace(qtWidget)
             sw.setCurrentIndex(1)
             self.widget = w = leoQTextEditWidget(
-            #self.widget = w = leoQBodyTextEditWidget(
                 qtWidget,name = 'body',c=c)
             self.bodyCtrl = w # The widget as seen from Leo's core.
 
@@ -2540,7 +2547,8 @@ class leoQtBody (leoFrame.leoBody):
         n = self.numberOfEditors
 
         # Step 1: create the editor.
-        w = QtGui.QTextEdit(f)
+        # w = QtGui.QTextEdit(f)
+        w = QtGui.QTextBrowser(f)
         w.setObjectName('richTextEdit') # Will be changed later.
         wrapper = leoQTextEditWidget(w,name='body',c=c)
         self.packLabel(w)
@@ -9205,7 +9213,7 @@ if newColoring:
 
             This is called whenever a pattern matcher succeed.'''
 
-            trace = True and not g.unitTesting
+            trace = False and not g.unitTesting
 
             # Pattern matcher may set the .flag ivar.
             if self.colorizer.killColorFlag or not self.colorizer.flag:
@@ -10106,7 +10114,7 @@ else:
 
             This is called whenever a pattern matcher succeed.'''
 
-            trace = False
+            trace = False and not g.unitTesting
             if self.colorizer.killColorFlag or not self.colorizer.flag: return
 
             if delegate:

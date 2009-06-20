@@ -101,7 +101,7 @@
 <v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
-<v t="ekr.20090610164636.8489"><vh>@button add-test @key=alt-9</vh></v>
+<v t="ekr.20090610164636.8489"><vh>@@button add-test @key=alt-9</vh></v>
 <v t="ekr.20070926082256.1"><vh>@@button Beautify</vh></v>
 <v t="ekr.20071009135515"><vh>@@button rst3</vh></v>
 </v>

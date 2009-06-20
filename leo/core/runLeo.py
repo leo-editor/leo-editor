@@ -97,7 +97,8 @@ def run(fileName=None,pymacs=None,*args,**keywords):
 #@+node:ekr.20090519143741.5915:doPrePluginsInit & helpers
 def doPrePluginsInit(fileName,pymacs):
 
-    '''Scan options, set directories and read settings.'''
+    '''
+    Scan options, set directories and read settings.'''
 
     g.computeStandardDirectories()
     adjustSysPath()

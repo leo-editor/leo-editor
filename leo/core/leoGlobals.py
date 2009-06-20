@@ -2635,10 +2635,13 @@ def makeAllNonExistentDirectories (theDir,c=None,force=False,verbose=True):
 
     trace = False and not g.unitTesting
 
-    if c:
-        create = c.config.create_nonexistent_directories
+    if force:
+        create = True # Bug fix: g.app.config will not exist during startup.
+    elif c:
+        create = c.config and c.config.create_nonexistent_directories
     else:
-        create = g.app.config.create_nonexistent_directories
+        create = (g.app and g.app.config and
+            g.app.config.create_nonexistent_directories)
 
     if trace: g.trace('c exists: %s force: %s create: %s dir: %s' % (
         c is not None,force,create,theDir))

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="12"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -370,6 +370,10 @@
 <v t="ekr.20090617083033.1813"><vh>Unicode characters: La Peña תּ</vh></v>
 </v>
 <v t="ekr.20090618102458.1816"><vh>Converting QString to unicode</vh></v>
+<v t="ekr.20090619103402.1818"><vh>@button render-as-html</vh></v>
+<v t="ekr.20090619103402.1821"><vh>@button render-as-text</vh></v>
+<v t="ekr.20090619103402.1824"><vh>Leo's home page</vh></v>
+<v t="ekr.20090619103402.1826"><vh>Leo's home page (copy)</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2780,5 +2784,384 @@ s3 = unicode(s2,'utf-8')
 print s3
 # s4 = QtCore.QString(e)
 # print s4</t>
+<t tx="ekr.20090619103402.1818"># Warning: this *replaces* the text.
+
+bodyCtrl = c.frame.body.bodyCtrl
+w = bodyCtrl.widget # A QTextEdit
+s = bodyCtrl.getAllText()
+w.setHtml(s)
+
+try:
+    # Lock out onTextChanged
+    w.changingText = True
+    w.setHtml(s)
+finally:
+    w.changingText = False</t>
+<t tx="ekr.20090619103402.1821">bodyCtrl = c.frame.body.bodyCtrl
+w = bodyCtrl.widget # A QTextEdit
+s = bodyCtrl.getAllText()
+w.setPlainText(s)</t>
+<t tx="ekr.20090619103402.1824">@language html
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;!--@+leo-ver=4-thin--&gt;
+&lt;!--@+node:ekr.20080301071818.1:@thin html/front.html--&gt;
+&lt;!--@@first--&gt;
+
+&lt;!--@@language html--&gt;
+&lt;!--@@tabwidth -4--&gt;
+
+&lt;!-- Last Modified: July 31, 2008 --&gt;
+&lt;!-- Author: Edward K. Ream, edreamleo@gmail.com --&gt;
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;!--@&lt;&lt;head&gt;&gt;--&gt;
+&lt;!--@+node:ekr.20080301075734.1:&lt;&lt;head&gt;&gt;--&gt;
+&lt;title&gt;Leo's Home Page&lt;/title&gt;
+
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/&gt;
+
+&lt;meta name="description" content="This page describes Leo, a programmer's outliner." /&gt;
+
+&lt;meta name="keywords" content="LEO, LITERATE PROGRAMMING, OUTLINES, CWEB,
+NOWEB, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE" /&gt;
+
+&lt;!-- for GeoUrl --&gt;
+&lt;meta name="ICBM" content="43.0713768, -89.4188004" /&gt;
+&lt;meta name="DC.title" content="Leo's Home Page" /&gt;
+&lt;!--@-node:ekr.20080301075734.1:&lt;&lt;head&gt;&gt;--&gt;
+&lt;!--@nl--&gt;
+&lt;/head&gt;
+
+&lt;body bgcolor="#fffbdc"&gt;
+&lt;!--@&lt;&lt; main table &gt;&gt;--&gt;
+&lt;!--@+node:ekr.20080301075734.4:&lt;&lt; main table &gt;&gt;--&gt;
+
+&lt;table border="0" bgcolor="#FFFBDC"&gt;
+    &lt;tr&gt;
+        &lt;td width="22%" height="21" align="center" bgcolor="#FFFBDC" valign="middle"&gt;
+            &lt;b&gt;&lt;font size="4"&gt;Leo's Home&lt;/font&gt;&lt;/b&gt;
+        &lt;/td&gt;
+
+        &lt;td bgcolor="#F0E68C" width="78%" height="21" align="center"&gt;
+            &lt;!--@            &lt;&lt; upper table &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20080301080758:&lt;&lt; upper table&gt;&gt;--&gt;
+
+            &lt;table border="0" width="100%"&gt;
+                &lt;tr&gt;
+                    &lt;td width="25%" align="center"&gt;
+                        &lt;a href="http://www.python.org/"&gt;
+                            &lt;img border="0" src="PythonPowered.gif" width="110" height="44" /&gt;&lt;/a&gt;
+                    &lt;/td&gt;
+
+                    &lt;td width="50%" align="center"&gt;
+                        &lt;a href="http://groups.google.com/group/leo-editor"&gt;Leo at Google Groups&lt;/a&gt;
+
+                    &lt;/td&gt;
+
+                    &lt;td width="25%" align="center"&gt;
+                        &lt;a href="http://www.mind-mapping.org/"&gt;mind-mapping.org&lt;/a&gt;
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+            &lt;/table&gt;
+            &lt;!--@nonl--&gt;
+            &lt;!--@-node:ekr.20080301080758:&lt;&lt; upper table&gt;&gt;--&gt;
+
+            &lt;!--@nl--&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr&gt;
+        &lt;td bgcolor="#F0E68C" width="22%" height="143" valign="top"&gt;
+            &lt;!--@            &lt;&lt; left table &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20080301075734.6:&lt;&lt; left table &gt;&gt;--&gt;
+            &lt;table border="0" width="100%"&gt;
+
+                &lt;tr&gt;&lt;td width="50%" bgcolor="#DAA520"&gt;&lt;b&gt;Documentation&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;
+                        &lt;a href="http://sourceforge.net/project/screenshots.php?group_id=3458"&gt;Screen Shots&lt;/a&gt;
+                &lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="intro.html"&gt;Beginners Guide&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="leo_toc.html"&gt;Users Guide&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="FAQ.html"&gt;FAQ&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+
+                &lt;tr&gt;&lt;td width="50%"&gt;
+                    &lt;a href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"&gt;Online tutorial&lt;/a&gt;
+                &lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="testimonials.html"&gt;Quotes&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%" bgcolor="#DAA520"&gt;&lt;b&gt;Links&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;
+                    &lt;!--@        &lt;&lt; download ref &gt;&gt;--&gt;
+
+                    &lt;!--@+node:ekr.20080306071848:&lt;&lt; download ref &gt;&gt; (contains version number)--&gt;
+                    &lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
+                        Download Leo[4.6 beta 1]&lt;/a&gt;
+                    &lt;!--@nonl--&gt;
+                    &lt;!--@-node:ekr.20080306071848:&lt;&lt; download ref &gt;&gt; (contains version number)--&gt;
+                    &lt;!--@nl--&gt;
+                &lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://sourceforge.net/project/?group_id=3458"&gt; Leo at SourceForge&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://groups.google.com/group/leo-editor"&gt;Leo at Google Groups&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://launchpad.net/leo-editor"&gt;Leo at launchpad&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;!-- &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://leo.tigris.org/source/browse/leo/"&gt;Leo's cvs repository&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt; --&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;Leo's &lt;a href="http://leo.zwiki.org"&gt;Wiki&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;Leo's &lt;a href="http://www.greygreen.org/leo/"&gt;Daily snapshots&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="leoLinks.html"&gt;More links&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+
+                &lt;tr&gt;&lt;td width="50%" bgcolor="#DAA520"&gt;&lt;b&gt;Edward K. Ream&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="ekr.html"&gt;Home&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="mailto:edreamleo@gmail.com"&gt;Contact&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+            &lt;/table&gt;
+            &lt;!--@-node:ekr.20080301075734.6:&lt;&lt; left table &gt;&gt;--&gt;
+            &lt;!--@nl--&gt;
+        &lt;/td&gt;
+
+        &lt;td width="78%" height="143" bgcolor="#FFFBDC"&gt;
+            &lt;!--@            &lt;&lt; center area &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20080301082848:&lt;&lt; center area &gt;&gt;--&gt;
+            &lt;h2&gt; Leo is...&lt;/h2&gt;
+
+            &lt;ul&gt;
+            &lt;!--@&lt;&lt; what is Leo list &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20080301083325:&lt;&lt; what is Leo list &gt;&gt;--&gt;
+
+            &lt;li&gt;
+                A &lt;i&gt;versatile data management platform&lt;/i&gt;.&lt;br/&gt;
+                Leo shows &lt;b&gt;user-created&lt;/b&gt; relationships among any kind of data:&lt;br /&gt;
+                computer programs, web sites, etc.&lt;br /&gt;
+                Leo shows multiple views of data within a single outline.&lt;/li&gt;
+
+            &lt;li&gt;
+                An &lt;i&gt;outlining editor for programmers&lt;/i&gt;.&lt;br /&gt;
+                Leo supports &lt;i&gt;optional&lt;/i&gt; &lt;a HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;noweb&lt;/a&gt;
+                and &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;CWEB&lt;/a&gt; markup.&lt;/li&gt;
+
+            &lt;li&gt;A flexible &lt;i&gt;browser&lt;/i&gt; for projects, programs, classes or any other data.&lt;/li&gt;
+            &lt;li&gt;A &lt;i&gt;project manager&lt;/i&gt;.&lt;/li&gt;
+            &lt;li&gt;&lt;i&gt;Portable&lt;/i&gt;. Leo runs on Windows, Linux and MacOS X.&lt;/li&gt;
+            &lt;li&gt;&lt;i&gt;100% pure&lt;/i&gt; &lt;a HREF="http://www.python.org/"&gt;&lt;i&gt;Python&lt;/i&gt;&lt;/a&gt;.&lt;/li&gt;
+
+            &lt;li&gt;&lt;i&gt;Fully scriptable using &lt;/i&gt;&lt;a HREF="http://www.python.org/"&gt;&lt;i&gt;Python&lt;/i&gt;&lt;/a&gt;.&lt;/li&gt;
+            &lt;li&gt;Leo's outline files are &lt;a HREF="http://www.w3.org/XML/"&gt;XML&lt;/a&gt; format.&lt;/li&gt;
+            &lt;li&gt;
+                &lt;a href="http://www.opensource.org/"&gt;&lt;i&gt;Open Software&lt;/i&gt;&lt;/a&gt;,
+                distributed under the
+                &lt;a href="http://www.opensource.org/licenses/mit-license.php/"&gt;
+
+                MIT License
+                &lt;/a&gt;.
+            &lt;/li&gt;
+            &lt;!--@nonl--&gt;
+            &lt;!--@-node:ekr.20080301083325:&lt;&lt; what is Leo list &gt;&gt;--&gt;
+            &lt;!--@nl--&gt;
+            &lt;/ul&gt;
+
+            &lt;p&gt;
+            Please use &lt;a href="http://groups.google.com/group/leo-editor"&gt;leo-editor&lt;/a&gt;
+
+            to ask questions and make suggestions.
+            &lt;/p&gt;
+
+            &lt;p&gt;
+            Leo's author is &lt;a HREF="index.html"&gt;Edward K. Ream&lt;/a&gt;
+            &lt;/p&gt;
+            &lt;!--@nonl--&gt;
+            &lt;!--@-node:ekr.20080301082848:&lt;&lt; center area &gt;&gt;--&gt;
+            &lt;!--@nl--&gt;
+
+        &lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+&lt;!--@-node:ekr.20080301075734.4:&lt;&lt; main table &gt;&gt;--&gt;
+&lt;!--@nl--&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+&lt;!--@-node:ekr.20080301071818.1:@thin html/front.html--&gt;
+&lt;!--@-leo--&gt;
+</t>
+<t tx="ekr.20090619103402.1826">@language html
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;!--@+leo-ver=4-thin--&gt;
+&lt;!--@+node:ekr.20080301071818.1:@thin html/front.html--&gt;
+&lt;!--@@first--&gt;
+
+&lt;!--@@language html--&gt;
+&lt;!--@@tabwidth -4--&gt;
+
+&lt;!-- Last Modified: July 31, 2008 --&gt;
+&lt;!-- Author: Edward K. Ream, edreamleo@gmail.com --&gt;
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;!--@&lt;&lt;head&gt;&gt;--&gt;
+&lt;!--@+node:ekr.20080301075734.1:&lt;&lt;head&gt;&gt;--&gt;
+&lt;title&gt;Leo's Home Page&lt;/title&gt;
+
+&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/&gt;
+
+&lt;meta name="description" content="This page describes Leo, a programmer's outliner." /&gt;
+
+&lt;meta name="keywords" content="LEO, LITERATE PROGRAMMING, OUTLINES, CWEB,
+NOWEB, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE" /&gt;
+
+&lt;!-- for GeoUrl --&gt;
+&lt;meta name="ICBM" content="43.0713768, -89.4188004" /&gt;
+&lt;meta name="DC.title" content="Leo's Home Page" /&gt;
+&lt;!--@-node:ekr.20080301075734.1:&lt;&lt;head&gt;&gt;--&gt;
+&lt;!--@nl--&gt;
+&lt;/head&gt;
+
+&lt;body bgcolor="#fffbdc"&gt;
+&lt;!--@&lt;&lt; main table &gt;&gt;--&gt;
+&lt;!--@+node:ekr.20080301075734.4:&lt;&lt; main table &gt;&gt;--&gt;
+
+&lt;table border="0" bgcolor="#FFFBDC"&gt;
+    &lt;tr&gt;
+        &lt;td width="22%" height="21" align="center" bgcolor="#FFFBDC" valign="middle"&gt;
+            &lt;b&gt;&lt;font size="4"&gt;Leo's Home&lt;/font&gt;&lt;/b&gt;
+        &lt;/td&gt;
+
+        &lt;td bgcolor="#F0E68C" width="78%" height="21" align="center"&gt;
+            &lt;!--@            &lt;&lt; upper table &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20080301080758:&lt;&lt; upper table&gt;&gt;--&gt;
+
+            &lt;table border="0" width="100%"&gt;
+                &lt;tr&gt;
+                    &lt;td width="25%" align="center"&gt;
+                        &lt;a href="http://www.python.org/"&gt;
+                            &lt;img border="0" src="PythonPowered.gif" width="110" height="44" /&gt;&lt;/a&gt;
+                    &lt;/td&gt;
+
+                    &lt;td width="50%" align="center"&gt;
+                        &lt;a href="http://groups.google.com/group/leo-editor"&gt;Leo at Google Groups&lt;/a&gt;
+
+                    &lt;/td&gt;
+
+                    &lt;td width="25%" align="center"&gt;
+                        &lt;a href="http://www.mind-mapping.org/"&gt;mind-mapping.org&lt;/a&gt;
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+            &lt;/table&gt;
+            &lt;!--@nonl--&gt;
+            &lt;!--@-node:ekr.20080301080758:&lt;&lt; upper table&gt;&gt;--&gt;
+
+            &lt;!--@nl--&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr&gt;
+        &lt;td bgcolor="#F0E68C" width="22%" height="143" valign="top"&gt;
+            &lt;!--@            &lt;&lt; left table &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20080301075734.6:&lt;&lt; left table &gt;&gt;--&gt;
+            &lt;table border="0" width="100%"&gt;
+
+                &lt;tr&gt;&lt;td width="50%" bgcolor="#DAA520"&gt;&lt;b&gt;Documentation&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;
+                        &lt;a href="http://sourceforge.net/project/screenshots.php?group_id=3458"&gt;Screen Shots&lt;/a&gt;
+                &lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="intro.html"&gt;Beginners Guide&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="leo_toc.html"&gt;Users Guide&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="FAQ.html"&gt;FAQ&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+
+                &lt;tr&gt;&lt;td width="50%"&gt;
+                    &lt;a href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"&gt;Online tutorial&lt;/a&gt;
+                &lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="testimonials.html"&gt;Quotes&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%" bgcolor="#DAA520"&gt;&lt;b&gt;Links&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;
+                    &lt;!--@        &lt;&lt; download ref &gt;&gt;--&gt;
+
+                    &lt;!--@+node:ekr.20080306071848:&lt;&lt; download ref &gt;&gt; (contains version number)--&gt;
+                    &lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
+                        Download Leo[4.6 beta 1]&lt;/a&gt;
+                    &lt;!--@nonl--&gt;
+                    &lt;!--@-node:ekr.20080306071848:&lt;&lt; download ref &gt;&gt; (contains version number)--&gt;
+                    &lt;!--@nl--&gt;
+                &lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://sourceforge.net/project/?group_id=3458"&gt; Leo at SourceForge&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://groups.google.com/group/leo-editor"&gt;Leo at Google Groups&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://launchpad.net/leo-editor"&gt;Leo at launchpad&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;!-- &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="http://leo.tigris.org/source/browse/leo/"&gt;Leo's cvs repository&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt; --&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;Leo's &lt;a href="http://leo.zwiki.org"&gt;Wiki&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;Leo's &lt;a href="http://www.greygreen.org/leo/"&gt;Daily snapshots&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="leoLinks.html"&gt;More links&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+
+                &lt;tr&gt;&lt;td width="50%" bgcolor="#DAA520"&gt;&lt;b&gt;Edward K. Ream&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="ekr.html"&gt;Home&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td width="50%"&gt;&lt;a href="mailto:edreamleo@gmail.com"&gt;Contact&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+            &lt;/table&gt;
+            &lt;!--@-node:ekr.20080301075734.6:&lt;&lt; left table &gt;&gt;--&gt;
+            &lt;!--@nl--&gt;
+        &lt;/td&gt;
+
+        &lt;td width="78%" height="143" bgcolor="#FFFBDC"&gt;
+            &lt;!--@            &lt;&lt; center area &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20080301082848:&lt;&lt; center area &gt;&gt;--&gt;
+            &lt;h2&gt; Leo is...&lt;/h2&gt;
+
+            &lt;ul&gt;
+            &lt;!--@&lt;&lt; what is Leo list &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20080301083325:&lt;&lt; what is Leo list &gt;&gt;--&gt;
+
+            &lt;li&gt;
+                A &lt;i&gt;versatile data management platform&lt;/i&gt;.&lt;br/&gt;
+                Leo shows &lt;b&gt;user-created&lt;/b&gt; relationships among any kind of data:&lt;br /&gt;
+                computer programs, web sites, etc.&lt;br /&gt;
+                Leo shows multiple views of data within a single outline.&lt;/li&gt;
+
+            &lt;li&gt;
+                An &lt;i&gt;outlining editor for programmers&lt;/i&gt;.&lt;br /&gt;
+                Leo supports &lt;i&gt;optional&lt;/i&gt; &lt;a HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;noweb&lt;/a&gt;
+                and &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;CWEB&lt;/a&gt; markup.&lt;/li&gt;
+
+            &lt;li&gt;A flexible &lt;i&gt;browser&lt;/i&gt; for projects, programs, classes or any other data.&lt;/li&gt;
+            &lt;li&gt;A &lt;i&gt;project manager&lt;/i&gt;.&lt;/li&gt;
+            &lt;li&gt;&lt;i&gt;Portable&lt;/i&gt;. Leo runs on Windows, Linux and MacOS X.&lt;/li&gt;
+            &lt;li&gt;&lt;i&gt;100% pure&lt;/i&gt; &lt;a HREF="http://www.python.org/"&gt;&lt;i&gt;Python&lt;/i&gt;&lt;/a&gt;.&lt;/li&gt;
+
+            &lt;li&gt;&lt;i&gt;Fully scriptable using &lt;/i&gt;&lt;a HREF="http://www.python.org/"&gt;&lt;i&gt;Python&lt;/i&gt;&lt;/a&gt;.&lt;/li&gt;
+            &lt;li&gt;Leo's outline files are &lt;a HREF="http://www.w3.org/XML/"&gt;XML&lt;/a&gt; format.&lt;/li&gt;
+            &lt;li&gt;
+                &lt;a href="http://www.opensource.org/"&gt;&lt;i&gt;Open Software&lt;/i&gt;&lt;/a&gt;,
+                distributed under the
+                &lt;a href="http://www.opensource.org/licenses/mit-license.php/"&gt;
+
+                MIT License
+                &lt;/a&gt;.
+            &lt;/li&gt;
+            &lt;!--@nonl--&gt;
+            &lt;!--@-node:ekr.20080301083325:&lt;&lt; what is Leo list &gt;&gt;--&gt;
+            &lt;!--@nl--&gt;
+            &lt;/ul&gt;
+
+            &lt;p&gt;
+            Please use &lt;a href="http://groups.google.com/group/leo-editor"&gt;leo-editor&lt;/a&gt;
+
+            to ask questions and make suggestions.
+            &lt;/p&gt;
+
+            &lt;p&gt;
+            Leo's author is &lt;a HREF="index.html"&gt;Edward K. Ream&lt;/a&gt;
+            &lt;/p&gt;
+            &lt;!--@nonl--&gt;
+            &lt;!--@-node:ekr.20080301082848:&lt;&lt; center area &gt;&gt;--&gt;
+            &lt;!--@nl--&gt;
+
+        &lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+&lt;!--@-node:ekr.20080301075734.4:&lt;&lt; main table &gt;&gt;--&gt;
+&lt;!--@nl--&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+&lt;!--@-node:ekr.20080301071818.1:@thin html/front.html--&gt;
+&lt;!--@-leo--&gt;
+</t>
 </tnodes>
 </leo_file>
