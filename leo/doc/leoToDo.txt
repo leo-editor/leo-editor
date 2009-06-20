@@ -3,11 +3,7 @@
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
 #@+node:ekr.20090620052003.6068:Before b3 3
-#@+node:ekr.20090617074804.6062:Fully resolve unicode issues
-http://groups.google.com/group/leo-editor/browse_thread/thread/28c5cab9c2a681fH
-#@nonl
-#@-node:ekr.20090617074804.6062:Fully resolve unicode issues
-#@+node:ekr.20090602183337.6045:Fix rst import annoyance
+#@+node:ekr.20090602183337.6045:Urgent: Fix rst import annoyance
 @nocolor-node
 
 https://bugs.launchpad.net/leo-editor/+bug/379089
@@ -19,15 +15,13 @@ https://bugs.launchpad.net/leo-editor/+bug/379089
 I'm going to reopen this and put this on the list of things to do before
 b2. It's time to stamp on the distractions.
 #@nonl
-#@-node:ekr.20090602183337.6045:Fix rst import annoyance
+#@-node:ekr.20090602183337.6045:Urgent: Fix rst import annoyance
+#@+node:ekr.20090617074804.6062:Urgent: Fully resolve unicode issues
+http://groups.google.com/group/leo-editor/browse_thread/thread/28c5cab9c2a681fH
+#@nonl
+#@-node:ekr.20090617074804.6062:Urgent: Fully resolve unicode issues
 #@+node:ekr.20090523070447.6475:Rewrite rst documentation
 #@-node:ekr.20090523070447.6475:Rewrite rst documentation
-#@+node:ekr.20090530055015.6018:Restore links into the FAQ
-The recent reorg broke some links.
-#@nonl
-#@-node:ekr.20090530055015.6018:Restore links into the FAQ
-#@+node:ekr.20090605075043.6092:Doc bug: Alt-x is stated to be the start of quick command
-#@-node:ekr.20090605075043.6092:Doc bug: Alt-x is stated to be the start of quick command
 #@-node:ekr.20090620052003.6068:Before b3 3
 #@+node:ekr.20090620060448.6065:Asap
 #@+node:ekr.20090620060448.6066:get plugins working with qt plugin

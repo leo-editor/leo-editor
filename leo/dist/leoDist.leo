@@ -9,9 +9,16 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="4,2,2"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
+</v>
+<v t="ekr.20090620084709.1387"><vh>No longer used</vh>
+<v t="ekr.20090620084709.1389"><vh>Windows installation (old)</vh></v>
+<v t="EKR.20040519082027.32"><vh>Linux install/uninstall scripts</vh>
+<v t="EKR.20040519082027.33"><vh>@@file-thin ../../install</vh></v>
+<v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
+</v>
 </v>
 <v t="EKR.20040519091259"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
@@ -52,16 +59,12 @@
 <v t="EKR.20040519090846.1"><vh>@asis ../doc/LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../doc/PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../doc/README.TXT</vh></v>
-<v t="EKR.20040519082027.32"><vh>Linux install/uninstall scripts</vh>
-<v t="EKR.20040519082027.33"><vh>@@file-thin ../../install</vh></v>
-<v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
-</v>
 </v>
 <v t="ekr.20090620072519.1389"><vh>Distribution checklist</vh></v>
-<v t="ekr.20080916084557.1" a="E"><vh>Make stuff</vh>
+<v t="ekr.20080916084557.1"><vh>Make stuff</vh>
 <v t="ekr.20080916084557.2"><vh>&lt;&lt; make version &gt;&gt;</vh></v>
 <v t="ekr.20080913110741.1"><vh>@thin leo-post-install-script.py</vh></v>
-<v t="ekr.20080826091039.1" a="E"><vh>@button make</vh>
+<v t="ekr.20080826091039.1"><vh>@button make</vh>
 <v t="ekr.20080826091039.2"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20080916084557.2"></v>
 <v t="ekr.20080913110741.8"><vh>make</vh></v>
@@ -194,7 +197,7 @@ DAMAGES.</t>
 <t tx="EKR.20040519090846.3">System requirements for leo.py
 ------------------------------
 
-leo.py requires Python 2.2.1 or above and tcl/tk 8.4 or above.
+leo.py requires Python 2.4 or above and tcl/tk 8.4 or above.
 
 	Download Python from http://python.org/ 
 	Download tcl/Tk from http://tcl.activestate.com/software/tcltk/
@@ -220,17 +223,7 @@ You can add  ~/leo-4-5 to your path, or you can create an alias that executes::
 Installing the leo.py on Windows
 --------------------------------
 
-Leo is distributed either as an executable installer (.exe) file or as a .zip file.
-
-To install Leo using the executable installer:
-
-    1. Download the latest version of Leo's installer from:    
-       http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-       The installer will be called something like LeoSetup-4-4-3.exe.
-
-    2. Run the installer.
-       By default, the install will install Leo in your 'Program Files' directory.
-
+Leo is distributed as a .zip file.
 To install Leo from the .zip file:
 
     1. Download the latest version of Leo (a .zip file) from:    
@@ -332,7 +325,9 @@ Description: Leo is an outline-oriented editor written in 100% pure Python.
 		Download tkIcon from http://www.effbot.org/downloads/#tkIcon
 Platform: Windows, Linux, Macintosh
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.6 b1 is now available at:
+<t tx="EKR.20040519090846.9">Leo 4.6 beta 2                                      June 20, 2009
+
+Leo 4.6 b2 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
@@ -341,9 +336,15 @@ http://webpages.charter.net/edreamleo/intro.html
 The highlights of Leo 4.6:
 --------------------------
 
-- Leo now requires Python 2.4 or later.
-- A new qt gui plugin, supporting Qt's look and feel.
+- Leo now features a modern Qt interface by default.
+  Leo's legacy Tk interface can also be used.
 - New --config --file and --gui command-line options.
+- Leo tests syntax of .py files when saving them.
+- Leo can now open any kind of file into @edit nodes.
+- @auto-rst nodes support "round-tripping" of reStructuredText files.
+- Properties of commanders, positions and nodes simplify programming.
+- Improved Leo's unit testing framework.
+- Leo now requires Python 2.4 or later.
 - Dozens of small improvements and bug fixes.
 
 Links:
@@ -1091,5 +1092,37 @@ Announcements
 - Announce to leo-editor.
 - Announce to comp.lang.python
 - Register Leo at http://www.python.org/pypi?:action=submit_form</t>
+<t tx="ekr.20090620084709.1387"></t>
+<t tx="ekr.20090620084709.1389">
+Installing the leo.py on Windows
+--------------------------------
+
+Leo is distributed either as an executable installer (.exe) file or as a .zip file.
+
+To install Leo using the executable installer:
+
+    1. Download the latest version of Leo's installer from:    
+       http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+       The installer will be called something like LeoSetup-4-4-3.exe.
+
+    2. Run the installer.
+       By default, the install will install Leo in your 'Program Files' directory.
+
+To install Leo from the .zip file:
+
+    1. Download the latest version of Leo (a .zip file) from:    
+       http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+    2. Unzip the .zip file and place the unpacked leo folder in 
+       the 'Program Files' folder or any convenient location.
+
+After you have installed Leo, you should add the location of your leo/core folder to your python path.
+One way to do this is adding something like the following to python/Lib/sitecustomize.py:
+
+    import sys
+    sys.path.append(r'&lt;path-to-leo&gt;leo\core')
+
+Another way is to append &lt;path-to-leo&gt; to the Windows PYTHONPATH environment variable.
+</t>
 </tnodes>
 </leo_file>

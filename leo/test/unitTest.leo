@@ -837,6 +837,7 @@
 </v>
 <v t="ekr.20060602195914"><vh>Result</vh></v>
 </v>
+<v t="ekr.20090620110118.5829"><vh>@test verbatim sentinel</vh></v>
 <v t="ekr.20071113201736" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
 <v t="ekr.20090615053403.4876"><vh>leoColor</vh>
@@ -1119,6 +1120,10 @@
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
 <v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
 <v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
@@ -21549,6 +21554,17 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoColor tests')</t>
+<t tx="ekr.20090620110118.5829">@language rest
+
+@
+Here is something that should generate a verbtim sentinel::
+
+    #@+leo-encoding=iso-8859-1.
+    
+The length of this node should remain constant.
+@c
+
+assert len(p.b) == 199,len(p.b)</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
 import random,fnmatch
 

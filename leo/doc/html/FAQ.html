@@ -363,7 +363,7 @@ Spend 5 or 10 minutes browsing through the outline. Don't worry about details;
 just look for the following common usage patterns:</p>
 <ul class="simple">
 <li>The (Projects) tree shows how to use clones to represent tasks.</li>
-<li>Study <tt class="docutils literal"><span class="pre">&#64;file</span> <span class="pre">leoNodes.py</span></tt>.
+<li>Study <tt class="docutils literal"><span class="pre">&#64;thin</span> <span class="pre">leoNodes.py</span></tt>.
 It shows how to define more than one class in single file.</li>
 <li>Most other files show how to use a single <tt class="docutils literal"><span class="pre">&#64;others</span></tt> directive to define one class.</li>
 <li>Most methods are defined using <tt class="docutils literal"><span class="pre">&#64;others</span></tt>, <em>not</em> section definition nodes.</li>
@@ -371,20 +371,19 @@ It shows how to define more than one class in single file.</li>
 <p><strong>Why should I use clones?</strong></p>
 <p>You will lose much of Leo's power if you don't use clones.
 See <a class="reference external" href="intro.html#clones-views">Clones &amp; views</a> for full details.</p>
-<p><strong>Which should I use: &#64;root trees or &#64;file trees?</strong></p>
-<p>Use <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees (including <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees) unless you are <em>sure</em> you must
-have the extra flexibility of <a class="reference external" href="glossary.html#root">&#64;root</a> trees.
-Indeed, <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees are much easier to use than <a class="reference external" href="glossary.html#root">&#64;root</a> trees:</p>
+<p><strong>Which should I use: &#64;root trees or &#64;thin trees?</strong></p>
+<p>Use <a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> trees unless you are <em>sure</em> you must have the extra flexibility of <a class="reference external" href="glossary.html#root">&#64;root</a> trees.
+Indeed, &#64;thin trees are much easier to use than &#64;root trees:</p>
 <ul class="simple">
-<li><a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees use less markup than <a class="reference external" href="glossary.html#root">&#64;root</a> trees.
-In particular, the <a class="reference external" href="glossary.html#others">&#64;others directive</a> is valid only within <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees.</li>
+<li><tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees use less markup than <a class="reference external" href="glossary.html#root">&#64;root</a> trees.
+In particular, the <a class="reference external" href="glossary.html#others">&#64;others directive</a> is valid only within <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees.</li>
 <li>You must explicitly <a class="reference external" href="glossary.html#tangle">tangle</a> and <a class="reference external" href="glossary.html#untangle">untangle</a> <a class="reference external" href="glossary.html#root">&#64;root</a> trees using the <a class="reference external" href="commands.html#tangling-an-outline-producing-derived-files">Tangle and Untangle</a> commands.</li>
 </ul>
-<p>However, <a class="reference external" href="glossary.html#root">&#64;root</a> trees are more flexible than <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees:</p>
+<p>However, <a class="reference external" href="glossary.html#root">&#64;root</a> trees are more flexible than <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees:</p>
 <ul class="simple">
-<li><a class="reference external" href="glossary.html#sections">Sections</a> may be defined anywhere within <a class="reference external" href="glossary.html#root">&#64;root</a> trees.
-Moreover, the <a class="reference external" href="glossary.html#unit">&#64;unit</a> <a class="reference external" href="glossary.html#directive">directive</a> expands the scope of section definitions in <a class="reference external" href="glossary.html#root">&#64;root</a> trees
-so that a section may be referenced in several <a class="reference external" href="glossary.html#root">&#64;root</a> trees.</li>
+<li><a class="reference external" href="glossary.html#sections">Sections</a> may be defined anywhere within <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.
+Moreover, the <a class="reference external" href="glossary.html#unit">&#64;unit</a> <a class="reference external" href="glossary.html#directive">directive</a> expands the scope of section definitions in <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees
+so that a section may be referenced in several <tt class="docutils literal"><span class="pre">&#64;root</span></tt> trees.</li>
 <li>The meaning of section definitions in <a class="reference external" href="glossary.html#root">&#64;root</a> trees are independent of their position within the tree.</li>
 </ul>
 <p><strong>When is using a section better than using a method?</strong></p>
@@ -446,13 +445,16 @@ Deleting a cloned node is *never* dangerous.
 </pre>
 <p>B has not been destroyed, but B is gone from &#64;thin spam.py! So in this sense deleting a clone node can also be called dangerous.</p>
 </div>
-<div class="section" id="how-should-i-use-leo-with-bzr">
-<h1>How should I use Leo with bzr?</h1>
-<p>Using <a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> trees can eliminate most problems with using Leo in cvs environments:</p>
+<div class="section" id="how-should-i-use-leo-with-bzr-git-hg-svn-cvs">
+<h1>How should I use Leo with bzr/git/hg/svn/cvs?</h1>
+<p>Using <a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> trees can eliminate most problems with using Leo in VCS environments:</p>
 <ul>
 <li><p class="first">Developers should use <a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> trees to create derived files in any kind of cooperative environment.</p>
 </li>
-<li><p class="first">The cvs repository contains &quot;reference&quot; .leo files.
+<li><p class="first">If sentinels are frowned upon in your development community, use <a href="#id6"><span class="problematic" id="id7">`&#64;auto`_</span></a> or <a href="#id8"><span class="problematic" id="id9">`&#64;shadow`_</span></a> instead
+of <tt class="docutils literal"><span class="pre">&#64;thin</span></tt>.</p>
+</li>
+<li><p class="first">The VCS repository contains &quot;reference&quot; .leo files.
 These reference files should contain nothing but <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> nodes.
 Reference files will change only when new derived files get added to the project.</p>
 <p><strong>Important</strong>:
@@ -462,7 +464,10 @@ However,  Leo's distributions contain the <em>non-reference</em> versions of tho
 <tt class="docutils literal"><span class="pre">LeoPy.leo</span></tt> and <tt class="docutils literal"><span class="pre">LeoPlugins.leo</span></tt>.
 These two files have many <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> nodes.
 There is no reference file for <tt class="docutils literal"><span class="pre">test.leo</span></tt> even though it contains <tt class="docutils literal"><span class="pre">&#64;thin</span> <span class="pre">leoTest.py</span></tt>.
-It would be clumsy to use testRef.leo, and there is less need to do so.</p>
+It would be clumsy to use testRef.leo, and there is less need to do so.
+Reference .leo files (or any .leo files) rarely need to be checked into VCS repository.
+If you find yourself checking in a .leo file frequently, consider migrating valuable
+content to <a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> nodes.</p>
 </li>
 <li><p class="first">Developers will use local copies of reference files for their own work.
 For example, instead of using <tt class="docutils literal"><span class="pre">LeoPyRef.leo</span></tt> directly,
@@ -479,7 +484,7 @@ or not.</p>
 <ul class="simple">
 <li>Use <a class="reference external" href="glossary.html#nosent">&#64;nosent</a> trees.
 Files derived from <tt class="docutils literal"><span class="pre">&#64;nosent</span></tt> trees contain no <a class="reference external" href="glossary.html#sentinels">sentinels</a>.
-However, Leo create the <a class="reference external" href="glossary.html#derived-file">derived file</a> just as in <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees.
+However, Leo create the <a class="reference external" href="glossary.html#derived-file">derived file</a> just as in <a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> trees.
 In particular, Leo expands section references and understands the <tt class="docutils literal"><span class="pre">&#64;others</span></tt> directive.</li>
 <li>Use <a class="reference external" href="glossary.html#asis-trees">&#64;asis</a> trees.
 Files derived from <tt class="docutils literal"><span class="pre">&#64;asis</span></tt> trees contain no <a class="reference external" href="glossary.html#sentinels">sentinels</a>.
@@ -509,7 +514,7 @@ so Leo does not update <tt class="docutils literal"><span class="pre">&#64;asis<
 a CData section containing javascript. I can get the XML as I want it by using
 <tt class="docutils literal"><span class="pre">&#64;language</span> <span class="pre">html</span></tt>, but how can I get the tangling comments inside the CData
 section to be java-style comments rather than html ones?</p>
-<p><strong>Answer</strong>: In <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees you use the <tt class="docutils literal"><span class="pre">&#64;delims</span></tt> <a class="reference external" href="glossary.html#directive">directive</a> to change comment delimiters.
+<p><strong>Answer</strong>: In <a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> trees you use the <tt class="docutils literal"><span class="pre">&#64;delims</span></tt> <a class="reference external" href="glossary.html#directive">directive</a> to change comment delimiters.
 For example:</p>
 <pre class="literal-block">
 &#64;delims /* */
@@ -548,7 +553,7 @@ echo &quot;hi&quot;;
 &#64;delims /* */
 &#64;last ?&gt;
 </pre>
-<p><strong>How can I use Leo with unsuppoorted languages?</strong></p>
+<p><strong>How can I use Leo with unsupported languages?</strong></p>
 <p>Here is a posting which might be helpful:
 <a class="reference external" href="http://sourceforge.net/forum/message.php?msg_id=2300457">http://sourceforge.net/forum/message.php?msg_id=2300457</a> The <tt class="docutils literal"><span class="pre">&#64;first</span></tt>
 <a class="reference external" href="glossary.html#directive">directive</a> is the key to output usable code in unsupported languages. For
@@ -563,29 +568,85 @@ $ENDIF
 Like this:</p>
 <pre class="literal-block">
 $IFDEF LEOHEADER &lt;-conditional compilation directive
-#&#64;+leo-ver=4 &lt;-these lines not compiled
-#&#64;+node:&#64;file QParser005.INC
-#&#64;&#64;first
-#&#64;delims '
+</pre>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">&lt;string&gt;</tt>, line 475)</p>
+Literal block ends without a blank line; unexpected unindent.</div>
+<p>&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim</p>
+<div class="system-message">
+<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 482)</p>
+Unexpected indentation.</div>
+<blockquote>
+<a class="reference external" href="mailto:#&#64;+leo-ver=4">#&#64;+leo-ver=4</a> &lt;-these lines not compiled</blockquote>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">&lt;string&gt;</tt>, line 483)</p>
+Block quote ends without a blank line; unexpected unindent.</div>
+<p>&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim</p>
+<div class="system-message">
+<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 490)</p>
+Unexpected indentation.</div>
+<blockquote>
+<a class="reference external" href="mailto:#&#64;+node">#&#64;+node</a>:&#64;file QParser005.INC</blockquote>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">&lt;string&gt;</tt>, line 491)</p>
+Block quote ends without a blank line; unexpected unindent.</div>
+<p>&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim</p>
+<div class="system-message">
+<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 498)</p>
+Unexpected indentation.</div>
+<blockquote>
+#&#64;&#64;first</blockquote>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">&lt;string&gt;</tt>, line 499)</p>
+Block quote ends without a blank line; unexpected unindent.</div>
+<p>&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim</p>
+<div class="system-message">
+<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 506)</p>
+Unexpected indentation.</div>
+<blockquote>
+<a class="reference external" href="mailto:#&#64;delims">#&#64;delims</a> '
 '&#64;&#64;c
 $ENDIF &lt;-... Until here!
-&lt;rest of derived code file ... &gt;
-</pre>
+&lt;rest of derived code file ... &gt;</blockquote>
 <p>This changes the comment symbol the apostrophe,
 making comments parseable by a BASIC (or other language.)</p>
 <p><strong>How do I make derived files start with a shebang line?</strong></p>
-<p>Use the &#64;first <a class="reference external" href="glossary.html#directive">directive</a> in <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees or <a class="reference external" href="glossary.html#nosent">&#64;nosent</a> trees.
+<p>Use the &#64;first <a class="reference external" href="glossary.html#directive">directive</a> in <a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> trees or <a class="reference external" href="glossary.html#nosent">&#64;nosent</a> trees.
 Use the &#64;silent directive in <a class="reference external" href="glossary.html#root">&#64;root</a> trees.</p>
-<p>The <tt class="docutils literal"><span class="pre">&#64;first</span></tt> directive puts lines at the very start of files derived from <tt class="docutils literal"><span class="pre">&#64;file</span></tt>.
-For example, the body text of <tt class="docutils literal"><span class="pre">&#64;file</span> <span class="pre">spam.py</span></tt> might be:</p>
+<p>The <tt class="docutils literal"><span class="pre">&#64;first</span></tt> directive puts lines at the very start of files derived from <tt class="docutils literal"><span class="pre">&#64;thin</span></tt>.
+For example, the body text of <tt class="docutils literal"><span class="pre">&#64;thin</span> <span class="pre">spam.py</span></tt> might be:</p>
 <pre class="literal-block">
 &#64;first #! /usr/bin/env python
 </pre>
-<p>The body text of <tt class="docutils literal"><span class="pre">&#64;file</span> <span class="pre">foo.perl</span></tt> might be:</p>
+<p>The body text of <tt class="docutils literal"><span class="pre">&#64;thin</span> <span class="pre">foo.pl</span></tt> might be:</p>
 <pre class="literal-block">
 &#64;first #/usr/bin/perl
 </pre>
-<p>Leo recognizes the <tt class="docutils literal"><span class="pre">&#64;first</span></tt> <a class="reference external" href="glossary.html#directive">directive</a> only at the start of the body text of <a class="reference external" href="glossary.html#file-trees">&#64;file</a> nodes.
+<p>Leo recognizes the <tt class="docutils literal"><span class="pre">&#64;first</span></tt> <a class="reference external" href="glossary.html#directive">directive</a> only at the start of the body text of <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> nodes.
 No text may precede <tt class="docutils literal"><span class="pre">&#64;first</span></tt> <a class="reference external" href="glossary.html#directives">directives</a>.
 More than one <tt class="docutils literal"><span class="pre">&#64;first</span></tt> directive may exist, like this:</p>
 <pre class="literal-block">
@@ -594,12 +655,12 @@ More than one <tt class="docutils literal"><span class="pre">&#64;first</span></
 </pre>
 <p><strong>How do I use Leo to create CWEB files?</strong></p>
 <p>Leo has good support for <a class="reference external" href="glossary.html#cweb">CWEB</a>.
-<a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees can organize any part of CWEB code using <em>noweb</em> sections.
+<a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> trees can organize any part of CWEB code using <em>noweb</em> sections.
 You can also use <a class="reference external" href="glossary.html#asis-trees">&#64;asis</a>, <a class="reference external" href="glossary.html#noref">&#64;noref</a> or <a class="reference external" href="glossary.html#nosent">&#64;nosent</a> trees to create cweb files.
 See <a class="reference external" href="directives.html#cweb-mode">CWEB mode</a> for full details.</p>
 <p><strong>Can &#64;file trees contain material not in the derived file?</strong></p>
-<p>No.  Everything in an <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees must be part of the derived file: orphan and
-<tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> nodes are invalid in <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees. This restriction should not be
+<p>No.  Everything in an <a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> trees must be part of the derived file: orphan and
+<tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> nodes are invalid in <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees. This restriction should not be
 troublesome. For example, you can organize your outline like this:</p>
 <pre class="literal-block">
 + myClass
@@ -607,7 +668,7 @@ troublesome. For example, you can organize your outline like this:</p>
 ..+ &#64;file myClass
 </pre>
 <p>(As usual, + denotes a headline.)
-So you simply create a new <a class="reference external" href="glossary.html#node">node</a>, called myClass, that holds your <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees and stuff you don't want in the <a class="reference external" href="glossary.html#file-trees">&#64;file</a> trees.</p>
+So you simply create a new <a class="reference external" href="glossary.html#node">node</a>, called myClass, that holds your <a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> trees and stuff you don't want in the <a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> trees.</p>
 <p><strong>How can I use Leo with older C compilers</strong></p>
 <p>By Rich Ries.
 Some older C compilers don't understand the &quot;//&quot; comment symbol, so using <tt class="docutils literal"><span class="pre">&#64;language</span> <span class="pre">C</span></tt> won't work.
@@ -629,11 +690,10 @@ The solution is to use:</p>
 <p>Leo is happy: it recognizes the <tt class="docutils literal"><span class="pre">&#64;comment</span></tt> <a class="reference external" href="glossary.html#directive">directive</a>.
 The C compiler is happy: the C preprocessor strips out the offending line before the C
 compiler gets it.</p>
-<p><strong>Why can't I use &#64;ignore directives in &#64;thin and &#64;file trees?</strong></p>
-<p>&#64;ignore can only be used in the root node of &#64;file trees.  It tells Leo to ignore the tree.</p>
-<p>The &#64;ignore directive can not be used elsewhere in &#64;thin trees and &#64;file trees
-because of the way Leo recreates outlines from derived files. This is an
-absolutely crucial restriction and will never go away.
+<p><strong>Why can't I use &#64;ignore directives in &#64;thin trees?</strong></p>
+<p>&#64;ignore can only be used in the root node of <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees.  It tells Leo to ignore the tree.</p>
+<p>The &#64;ignore directive can not be used elsewhere in &#64;thin trees because of the way Leo recreates
+outlines from derived files. This is an absolutely crucial restriction and will never go away.
 For a few more details, see <a class="reference external" href="history.html#leo-4-0-eliminating-error-recovery">Leo 4.0: Eliminating error 'recovery'</a> in <a class="reference external" href="history.html">Chapter 9: History of Leo</a>.</p>
 <p>There are several workaround, as shown in LeoPy.leo:</p>
 <ul class="simple">
@@ -1107,7 +1167,7 @@ g.trace(x,g.callers(5))
 <p><strong>I can't write Imported files.  What's going on?</strong></p>
 <p>The import commands insert <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> <a class="reference external" href="glossary.html#directives">directives</a> in the top-level <a class="reference external" href="glossary.html#node">node</a>.
 Leo does this so that you won't accidentally overwrite your files after importing them.
-Change the filename following <tt class="docutils literal"><span class="pre">&#64;file</span></tt> or <tt class="docutils literal"><span class="pre">&#64;root</span></tt> as desired,
+Change the filename following <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> or <tt class="docutils literal"><span class="pre">&#64;root</span></tt> as desired,
 then remove the <tt class="docutils literal"><span class="pre">&#64;ignore</span></tt> <a class="reference external" href="glossary.html#directive">directive</a>.
 Saving the outline will then create the <a class="reference external" href="glossary.html#derived-file">derived file</a>.</p>
 <p><strong>I don't see the Leo icon in Leo windows</strong></p>
@@ -1195,8 +1255,19 @@ may see strange looking characters if your text editor is expecting a different
 encoding. The encoding used in any <a class="reference external" href="glossary.html#derived-file">derived file</a> is shown in the <tt class="docutils literal"><span class="pre">#&#64;+leo</span></tt> <a class="reference external" href="glossary.html#sentinel">sentinel line</a>
 like this:</p>
 <pre class="literal-block">
-#&#64;+leo-encoding=iso-8859-1.
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
+&#64;verbatim
 </pre>
+<div class="system-message">
+<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 1341)</p>
+Unexpected indentation.</div>
+<blockquote>
+<a class="reference external" href="mailto:#&#64;+leo-encoding=iso-8859-1">#&#64;+leo-encoding=iso-8859-1</a>.</blockquote>
 <p><strong>Exception</strong>: the encoding is <tt class="docutils literal"><span class="pre">UTF-8</span></tt> if no <tt class="docutils literal"><span class="pre">-encoding=</span></tt> field exists.
 You can also use the <tt class="docutils literal"><span class="pre">&#64;encoding</span></tt> <a class="reference external" href="glossary.html#directive">directive</a> to set the encoding for individual <a class="reference external" href="glossary.html#derived-files">derived files</a>.
 If no <tt class="docutils literal"><span class="pre">&#64;encoding</span></tt> <a class="reference external" href="glossary.html#directive">directive</a> is in effect,
@@ -1308,8 +1379,14 @@ for s in table:
 <div class="system-messages section">
 <h1>Docutils System Messages</h1>
 <div class="system-message" id="id1">
-<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 32); <em>backlinks: <a href="#id2">1</a>, <a href="#id3">2</a>, <a href="#id4">3</a>, <a href="#id5">4</a></em></p>
+<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 34); <em>backlinks: <a href="#id2">1</a>, <a href="#id3">2</a>, <a href="#id4">3</a>, <a href="#id5">4</a></em></p>
 Indirect hyperlink target &quot;run leo from a console window&quot; (id=&quot;run-leo-from-a-console-window&quot;) refers to target &quot;how can i run leo from a console window?&quot;, which does not exist.</div>
+<div class="system-message" id="id6">
+<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 334); <em><a href="#id7">backlink</a></em></p>
+Unknown target name: &quot;&#64;auto&quot;.</div>
+<div class="system-message" id="id8">
+<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 334); <em><a href="#id9">backlink</a></em></p>
+Unknown target name: &quot;&#64;shadow&quot;.</div>
 </div>
 </div>
 </body>

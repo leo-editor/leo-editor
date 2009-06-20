@@ -255,19 +255,52 @@ hr { /* EKR */
 <!-- .. contents:: -->
 <!-- Links used in this document. -->
 <!-- .. _`Chapter 23`:           atShadow.html -->
+<div class="section" id="improved-unit-testing">
+<h1>Improved unit testing</h1>
+<ul class="simple">
+<li>leoDynamicTest.py now supports a --path argument giving the .leo file.
+This is so useful!</li>
+<li>leoDynamicTest.py now honors the --silent argument.</li>
+<li>leoTest.runUnitTestLeoFile runs all unit tests in a given .leo file
+in a separate process.</li>
+<li>leoTest.runTestsExternally calls runUnitTestLeoFile after creating
+dynamicUnitTest.leo.</li>
+<li>When reporting that no unit tests were found, all unit tests commands tell
+whether the entire outline or just the selected outline was searched.
+This fixes sometimes-misleading error messages.</li>
+<li>test.leo contains a 'run-test.leo-tests' button.</li>
+<li>leoPy.leo contains a 'run-all-core-tests' button.</li>
+</ul>
+</div>
 <div class="section" id="improved-file-handling">
 <h1>Improved file handling</h1>
-<ul class="simple">
-<li>Leo opens a default .leo file if no other is specified,
-using the &#64;string default_leo_file setting.
-The default for this setting is <tt class="docutils literal"><span class="pre">~/.leo/workbook.leo</span></tt></li>
-<li>Added escapes for underindented lines.
-The escape is specified by the &#64;string underindent-escape-string setting.
-By default, this escape is <tt class="docutils literal"><span class="pre">\-</span></tt>
-If a line starts with -N, Leo will write the line with N fewer spaces than expected.</li>
-<li>Leo now warns when attempting to write a file that has been changed outside of Leo.
-This prevents bzr reversions.</li>
+<ul>
+<li><p class="first">Leo opens a default .leo file if no other is specified, using the &#64;string
+default_leo_file setting. The default for this setting is
+<tt class="docutils literal"><span class="pre">~/.leo/workbook.leo</span></tt></p>
+</li>
+<li><p class="first">Added escapes for underindented lines. The escape is specified by the &#64;string
+underindent-escape-string setting. By default, this escape is <tt class="docutils literal"><span class="pre">\-</span></tt> If a line
+starts with -N, Leo will write the line with N fewer spaces than expected.</p>
+</li>
+<li><p class="first">Leo now warns when attempting to write a file that has been changed outside of
+Leo. This prevents bzr reversions.</p>
+</li>
+<li><p class="first">Leo tests syntax of .py files when saving them.</p>
+</li>
+<li><p class="first">Leo can now open any file into an &#64;edit node. This allows Leo to be associated
+with the edit action of .py files. Like this:</p>
+<pre class="literal-block">
+C:\Python26\python.exe &quot;c:\leo.repo\trunk\launchLeo.py&quot; --gui=qt %1 %2
+</pre>
+</li>
 </ul>
+</div>
+<div class="section" id="improved-handling-of-rst-files">
+<h1>Improved handling of rST files</h1>
+<p>Added support for &#64;auto-rst nodes. These import reStructuredText (rST) files
+so that the files can be &quot;round-tripped&quot; without introducing extraneous changes.
+This makes Leo a superb environment for using rST.</p>
 </div>
 <div class="section" id="new-code-features">
 <h1>New code features</h1>
@@ -284,6 +317,7 @@ See <a class="reference external" href="http://groups.google.com/group/leo-edito
 <dd><ul class="first last simple">
 <li>p.b, t.b and v.b return the body string of the position or node.</li>
 <li>p.h, t.h and v.h return the head string of the position or node.</li>
+<li>t.u and v.u return the uA of the node.</li>
 <li>p.gnx, t.gnx and v.gnx return the gnx of the position or node.</li>
 </ul>
 </dd>
@@ -318,7 +352,7 @@ See <a class="reference external" href="http://groups.google.com/group/leo-edito
 <li>The --file=fileName command-line option load a file.
 Only .zip and .leo extensions are allowed at present.</li>
 <li>The --gui=name command-line option specifies the gui to use.
-The valid values are --gui=qt, --gui=tk and</li>
+The valid values are --gui=qt, --gui=tk</li>
 </ul>
 </div>
 <div class="section" id="new-commands">
@@ -337,7 +371,8 @@ This works, but stops Leo in the middle of the command-handling logic.
 You may get the commander c by stepping out into
 k.masterKeyHandler or k.masterCommandHandler.
 Using c, you can then get all other info.</li>
-<li>Improved the isearch commands</li>
+<li>Improved the isearch commands.</li>
+<li>find-clone-all is a synonym for clone-find-all.</li>
 </ul>
 </div>
 <div class="section" id="new-and-improved-directives">
@@ -355,6 +390,7 @@ Using c, you can then get all other info.</li>
 <li>&#64;int icon_bar_widgets_per_row</li>
 <li>Added support for meta keys.
 <a class="reference external" href="http://groups.google.com/group/leo-editor/browse_thread/thread/b6a39ed672a28c65?pli=1">http://groups.google.com/group/leo-editor/browse_thread/thread/b6a39ed672a28c65?pli=1</a></li>
+<li>The qt gui is now the default.</li>
 </ul>
 </div>
 <div class="section" id="plugins">

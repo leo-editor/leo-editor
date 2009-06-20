@@ -1,7 +1,7 @@
 System requirements for leo.py
 ------------------------------
 
-leo.py requires Python 2.2.1 or above and tcl/tk 8.4 or above.
+leo.py requires Python 2.4 or above and tcl/tk 8.4 or above.
 
 	Download Python from http://python.org/ 
 	Download tcl/Tk from http://tcl.activestate.com/software/tcltk/
@@ -31,17 +31,7 @@ You can add  ~/leo-4-5 to your path, or you can create an alias that executes::
 Installing the leo.py on Windows
 --------------------------------
 
-Leo is distributed either as an executable installer (.exe) file or as a .zip file.
-
-To install Leo using the executable installer:
-
-    1. Download the latest version of Leo's installer from:    
-       http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
-       The installer will be called something like LeoSetup-4-4-3.exe.
-
-    2. Run the installer.
-       By default, the install will install Leo in your 'Program Files' directory.
-
+Leo is distributed as a .zip file.
 To install Leo from the .zip file:
 
     1. Download the latest version of Leo (a .zip file) from:    

@@ -6366,8 +6366,23 @@ def readVerbatim (self,s,i):
     # Append the next line to the text.
     s = at.readLine(at.inputFile) 
     i = at.skipIndent(s,0,at.indent)
-    at.out.append("@verbatim\n")
+    # Do **not** insert the verbatim line itself!
+        # at.out.append("@verbatim\n")
     at.out.append(s[i:])
+#@+node:ekr.20090620101138.6072:@test verbatim sentinel
+if g.unitTesting:
+    c,p = g.getTestVars()
+
+    # Here is something that should generate a verbtim sentinel::
+
+#@verbatim
+    #@+leo-encoding=iso-8859-1.
+
+    # The length of this node should remain constant.
+
+    assert len(p.b) == 235,len(p.b)
+#@nonl
+#@-node:ekr.20090620101138.6072:@test verbatim sentinel
 #@-node:ekr.20041005105605.112:readVerbatim
 #@-node:ekr.20041005105605.100:Unpaired sentinels
 #@+node:ekr.20041005105605.113:badEndSentinel, popSentinelStack
@@ -13728,7 +13743,7 @@ def openForWrite (self, filename, wb='wb'):
 
     '''Open a file for writes, handling shadow files.'''
 
-    trace = False # or x.trace
+    trace = False and not g.unitTesting
     at = self ; c = at.c ; x = c.shadowController
 
     try:
@@ -13738,7 +13753,7 @@ def openForWrite (self, filename, wb='wb'):
         self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
 
         if self.writing_to_shadow_directory:
-            if trace and not g.app.unitTesting: g.trace(filename,shadow_filename)
+            if trace: g.trace(filename,shadow_filename)
             x.message('writing %s' % shadow_filename)
             return 'shadow',open(open_file_name,wb)
         else:
@@ -13765,6 +13780,7 @@ def replaceTargetFileIfDifferent (self,root):
     Return True if the original file was changed.
     '''
 
+    trace = False and not g.unitTesting
     c = self.c
 
     assert(self.outputFile is None)
@@ -13778,6 +13794,8 @@ def replaceTargetFileIfDifferent (self,root):
         # The default: may be changed later.
         root.clearOrphan()
         root.clearDirty()
+
+    if trace: g.trace(self.outputFileName,self.targetFileName)
 
     if g.os_path_exists(self.targetFileName):
         if self.compareFiles(self.outputFileName,self.targetFileName,not self.explicitLineEnding):
@@ -17991,10 +18009,10 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
 
     if cachefile in c.db:
         # This isn't so useful.
-        # if not g.unitTesting:
-            # g.es('uncache:',root.h)
+        # if not g.unitTesting: # g.es('uncache:',root.h)
         tree = c.db[cachefile]
         g.create_tree_at_vnode(c, root.v, tree)
+        at.inputFile.close() # Bug fix.
         return
 
     if not g.unitTesting:
@@ -19303,6 +19321,469 @@ always says "no root code..."
 Invalid.
 #@nonl
 #@-node:ekr.20090605075411.6436:Investigated @root bug
+#@+node:ekr.20090620094329.6069:Fixed bad @verbatim bug
+@nocolor-node
+
+The @verbatim was being inserted into the outline.
+
+This shows up in FAQ.html.txt.
+#@nonl
+#@+node:ekr.20041005105605.112:readVerbatim
+def readVerbatim (self,s,i):
+
+    """Read an @verbatim sentinel."""
+
+    at = self
+    assert g.match(s,i,"verbatim"),'missing verbatim sentinel'
+
+    # Append the next line to the text.
+    s = at.readLine(at.inputFile) 
+    i = at.skipIndent(s,0,at.indent)
+    # Do **not** insert the verbatim line itself!
+        # at.out.append("@verbatim\n")
+    at.out.append(s[i:])
+#@+node:ekr.20090620101138.6072:@test verbatim sentinel
+if g.unitTesting:
+    c,p = g.getTestVars()
+
+    # Here is something that should generate a verbtim sentinel::
+
+#@verbatim
+    #@+leo-encoding=iso-8859-1.
+
+    # The length of this node should remain constant.
+
+    assert len(p.b) == 235,len(p.b)
+#@nonl
+#@-node:ekr.20090620101138.6072:@test verbatim sentinel
+#@-node:ekr.20041005105605.112:readVerbatim
+#@-node:ekr.20090620094329.6069:Fixed bad @verbatim bug
+#@+node:ekr.20090620085000.6067:Fixed bug that caused opened file to remain open
+This caused a later write to fail.
+#@+node:ekr.20050104132018:atFile.remove
+def remove (self,fileName,verbose=True):
+
+    try:
+        os.remove(fileName)
+        return True
+    except Exception:
+        if verbose:
+            self.error("exception removing: %s" % fileName)
+            g.es_exception()
+            g.trace(g.callers(5))
+        return False
+#@-node:ekr.20050104132018:atFile.remove
+#@+node:ekr.20041005105605.21:read (atFile)
+def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
+
+    """Read any @thin, @file and @noref trees."""
+
+    at = self ; c = at.c
+    << set fileName >>
+
+    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
+    if at.errors: return False
+    fileName = at.openFileForReading(fileName,fromString=fromString)
+    if at.inputFile:
+        c.setFileTimeStamp(fileName)
+    else:
+        return False
+
+    fileContent = open(fileName, "rb").read()
+    cachefile = self._contentHashFile(root, fileContent)
+
+    if cachefile in c.db:
+        # This isn't so useful.
+        # if not g.unitTesting: # g.es('uncache:',root.h)
+        tree = c.db[cachefile]
+        g.create_tree_at_vnode(c, root.v, tree)
+        at.inputFile.close() # Bug fix.
+        return
+
+    if not g.unitTesting:
+        g.es("reading:",root.h)
+
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+    at.readOpenFile(root,at.inputFile,fileName)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        << advise user to delete all unvisited nodes >>
+    if at.errors == 0 and not at.importing:
+        # Package this as a method for use by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+
+    << delete all tempBodyStrings >>
+
+    # write out the cache version
+    self.writeCachedTree(root, cachefile)
+
+    return at.errors == 0
+#@+node:ekr.20041005105605.22:<< set fileName >>
+if fromString:
+    fileName = "<string-file>"
+elif importFileName:
+    fileName = importFileName
+elif root.isAnyAtFileNode():
+    fileName = root.anyAtFileNodeName()
+else:
+    fileName = None
+
+if not fileName:
+    at.error("Missing file name.  Restoring @file tree from .leo file.")
+    return False
+#@-node:ekr.20041005105605.22:<< set fileName >>
+#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+resurrected = 0
+for p in root.self_and_subtree_iter():
+
+    if not p.v.t.isVisited():
+        g.es('resurrected node:',p.h,color='blue')
+        g.es('in file:',fileName,color='blue')
+        resurrected += 1
+
+if resurrected:
+    g.es('you may want to delete ressurected nodes')
+
+#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+#@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+for t in c.all_unique_tnodes_iter():
+
+    if hasattr(t,"tempBodyString"):
+        delattr(t,"tempBodyString")
+#@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+#@-node:ekr.20041005105605.21:read (atFile)
+#@+node:ekr.20041005105605.144:write & helper
+# This is the entry point to the write code.  root should be an @file vnode.
+
+def write (self,root,
+    nosentinels = False,
+    thinFile = False,
+    scriptWrite = False,
+    toString = False,
+):
+
+    """Write a 4.x derived file."""
+
+    at = self ; c = at.c
+    c.endEditing() # Capture the current headline.
+
+    # g.trace(root.h)
+
+    if hasattr(root.v.t,'tnodeList'):# 2008/10/3
+        has_list,old_list = True,root.v.t.tnodeList[:]
+    else:
+        has_list,old_list = False,[]
+
+    << set at.targetFileName >>
+    at.initWriteIvars(root,at.targetFileName,
+        nosentinels = nosentinels, thinFile = thinFile,
+        scriptWrite = scriptWrite, toString = toString)
+
+    if nosentinels and not scriptWrite and not toString:
+        fileName = c.os_path_finalize_join(at.default_directory,at.targetFileName)
+        # g.trace('fileName',fileName,'at.targetFileName',at.targetFileName)
+        exists = g.os_path_exists(fileName)
+        if not self.shouldWriteAtNosentNode(root,exists):
+            return
+
+    if not at.openFileForWriting(root,at.targetFileName,toString):
+        # openFileForWriting calls root.setDirty() if there are errors.
+        return
+
+    try:
+        at.writeOpenFile(root,nosentinels=nosentinels,toString=toString)
+        if toString:
+            at.closeWriteFile() # sets self.stringOutput
+            # Major bug: failure to clear this wipes out headlines!
+            # Minor bug: sometimes this causes slight problems...
+            at.root.v.t.tnodeList = []
+            at.root.v.t._p_changed = True
+        else:
+            at.closeWriteFile()
+            if at.errors > 0 or at.root.isOrphan():
+                << set dirty and orphan bits >>
+                g.es("not written:",at.outputFileName)
+            else:
+                at.replaceTargetFileIfDifferent(root)
+                    # Sets/clears dirty and orphan bits.
+            if has_list: root.v.t.tnodeList = old_list # 2008/10/3
+    except Exception:
+        if toString:
+            at.exception("exception preprocessing script")
+            at.root.v.t.tnodeList = []
+            at.root.v.t._p_changed = True
+        else:
+            at.writeException() # Sets dirty and orphan bits.
+            if has_list: root.v.t.tnodeList = old_list # 2008/10/3
+#@+node:ekr.20041005105605.145:<< set at.targetFileName >>
+if toString:
+    at.targetFileName = "<string-file>"
+elif nosentinels:
+    at.targetFileName = root.atNoSentFileNodeName()
+elif thinFile:
+    at.targetFileName = root.atThinFileNodeName()
+else:
+    at.targetFileName = root.atFileNodeName()
+#@-node:ekr.20041005105605.145:<< set at.targetFileName >>
+#@+node:ekr.20041005105605.146:<< set dirty and orphan bits >>
+# Setting the orphan and dirty flags tells Leo to write the tree..
+root.setOrphan()
+root.setDirty()
+# Delete the temp file.
+self.remove(at.outputFileName) 
+
+#@-node:ekr.20041005105605.146:<< set dirty and orphan bits >>
+#@+node:ekr.20080620095343.1:shouldWriteAtNosentNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.That ' s too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @auto x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @auto node which will be populated the next time the.leo file is opened.
+- We don ' t want minor import imperfections to be written to the @auto file.
+- The explicit commands that read and write @auto trees must always be honored.
+@c
+
+def shouldWriteAtNosentNode (self,p,exists):
+
+    '''Return True if we should write the @auto node at p.'''
+
+    if not exists: # We can write a non-existent file without danger.
+        return True
+    elif self.isSignificantTree(p):
+        return True # Assume the tree contains what should be written.
+    else:
+        g.es_print(p.h,'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='blue')
+        return False
+#@-node:ekr.20080620095343.1:shouldWriteAtNosentNode
+#@-node:ekr.20041005105605.144:write & helper
+#@+node:ekr.20041005105605.157:writeOpenFile
+# New in 4.3: must be inited before calling this method.
+# New in 4.3 b2: support for writing from a string.
+
+def writeOpenFile(self,root,
+    nosentinels=False,toString=False,fromString=''):
+
+    """Do all writes except asis writes."""
+
+    at = self ; s = g.choose(fromString,fromString,root.v.t._bodyString)
+
+    root.clearAllVisitedInTree() # Clear both vnode and tnode bits.
+    root.clearVisitedInTree()
+
+    at.putAtFirstLines(s)
+    at.putOpenLeoSentinel("@+leo-ver=4")
+    at.putInitialComment()
+    at.putOpenNodeSentinel(root)
+    at.putBody(root,fromString=fromString)
+    at.putCloseNodeSentinel(root)
+    at.putSentinel("@-leo")
+    root.setVisited()
+    at.putAtLastLines(s)
+
+    if self.atAuto or (not toString and not nosentinels):
+        at.warnAboutOrphandAndIgnoredNodes()
+#@-node:ekr.20041005105605.157:writeOpenFile
+#@+node:ekr.20041005105605.212:replaceTargetFileIfDifferent
+def replaceTargetFileIfDifferent (self,root):
+
+    '''Create target file as follows:
+    1. If target file does not exist, rename output file to target file.
+    2. If target file is identical to output file, remove the output file.
+    3. If target file is different from output file,
+       remove target file, then rename output file to be target file.
+
+    Return True if the original file was changed.
+    '''
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    assert(self.outputFile is None)
+
+    if self.toString:
+        # Do *not* change the actual file or set any dirty flag.
+        self.fileChangedFlag = False
+        return False
+
+    if root:
+        # The default: may be changed later.
+        root.clearOrphan()
+        root.clearDirty()
+
+    if trace: g.trace(self.outputFileName,self.targetFileName)
+
+    if g.os_path_exists(self.targetFileName):
+        if self.compareFiles(self.outputFileName,self.targetFileName,not self.explicitLineEnding):
+            # Files are identical.
+            ok = self.remove(self.outputFileName)
+            g.es('unchanged:',self.shortFileName)
+            if not ok:
+                # self.remove gives the error.
+                if root: root.setDirty() # New in 4.4.8.
+            self.fileChangedFlag = False
+            return False
+        else:
+            self.checkPythonCode(root)
+            << report if the files differ only in line endings >>
+            mode = self.stat(self.targetFileName)
+            ok = self.rename(self.outputFileName,self.targetFileName,mode)
+            if ok:
+                c.setFileTimeStamp(self.targetFileName)
+                g.es('wrote:    ',self.shortFileName)
+            else:
+                # self.rename gives the error.
+                g.es('unchanged:',self.shortFileName)
+                if root: root.setDirty() # New in 4.4.8.
+
+            self.fileChangedFlag = ok
+            return ok
+    else:
+        # Rename the output file.
+        ok = self.rename(self.outputFileName,self.targetFileName)
+        if ok:
+            c.setFileTimeStamp(self.targetFileName)
+            g.es('created:  ',self.targetFileName)
+        else:
+            # self.rename gives the error.
+            if root: root.setDirty() # New in 4.4.8.
+
+        # No original file to change. Return value tested by a unit test.
+        self.fileChangedFlag = False 
+        return False
+#@+node:ekr.20041019090322:<< report if the files differ only in line endings >>
+if (
+    self.explicitLineEnding and
+    self.compareFiles(
+        self.outputFileName,
+        self.targetFileName,
+        ignoreLineEndings=True)):
+
+    g.es("correcting line endings in:",self.targetFileName,color="blue")
+#@-node:ekr.20041019090322:<< report if the files differ only in line endings >>
+#@-node:ekr.20041005105605.212:replaceTargetFileIfDifferent
+#@+node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
+def openFileForWriting (self,root,fileName,toString):
+
+    at = self
+    at.outputFile = None
+
+    if toString:
+        at.shortFileName = g.shortFileName(fileName)
+        at.outputFileName = "<string: %s>" % at.shortFileName
+        at.outputFile = g.fileLikeObject()
+    else:
+        ok = at.openFileForWritingHelper(fileName)
+
+        # New in Leo 4.4.8: set dirty bit if there are errors.
+        if not ok: at.outputFile = None
+
+    # New in 4.3 b2: root may be none when writing from a string.
+    if root:
+        if at.outputFile:
+            root.clearOrphan()
+        else:
+            root.setOrphan()
+            root.setDirty()
+
+    return at.outputFile is not None
+#@+node:ekr.20041005105605.143:openFileForWritingHelper & helper
+def openFileForWritingHelper (self,fileName):
+
+    '''Open the file and return True if all went well.'''
+
+    at = self ; c = at.c
+
+    try:
+        at.shortFileName = g.shortFileName(fileName)
+        at.targetFileName = c.os_path_finalize_join(at.default_directory,fileName)
+        path = g.os_path_dirname(at.targetFileName)
+        if not path or not g.os_path_exists(path):
+            if path:
+                path = g.makeAllNonExistentDirectories(path,c=c)
+            if not path or not g.os_path_exists(path):
+                path = g.os_path_dirname(at.targetFileName)
+                at.writeError("path does not exist: " + path)
+                return False
+    except Exception:
+        at.exception("exception creating path: %s" % repr(path))
+        g.es_exception()
+        return False
+
+    if g.os_path_exists(at.targetFileName):
+        try:
+            if not os.access(at.targetFileName,os.W_OK):
+                at.writeError("can not open: read only: " + at.targetFileName)
+                return False
+        except AttributeError:
+            pass # os.access() may not exist on all platforms.
+
+    try:
+        at.outputFileName = at.targetFileName + ".tmp"
+        kind,at.outputFile = self.openForWrite(at.outputFileName,'wb')
+        if not at.outputFile:
+            kind = g.choose(kind=='check',
+                'did not overwrite','can not create')
+            at.writeError("%s %s" % (kind,at.outputFileName))
+            return False
+    except Exception:
+        at.exception("exception creating:" + at.outputFileName)
+        return False
+
+    return True
+#@+node:bwmulder.20050101094804:openForWrite (atFile)
+def openForWrite (self, filename, wb='wb'):
+
+    '''Open a file for writes, handling shadow files.'''
+
+    trace = False and not g.unitTesting
+    at = self ; c = at.c ; x = c.shadowController
+
+    try:
+        shadow_filename = x.shadowPathName(filename)
+        self.writing_to_shadow_directory = os.path.exists(shadow_filename)
+        open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
+        self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
+
+        if self.writing_to_shadow_directory:
+            if trace: g.trace(filename,shadow_filename)
+            x.message('writing %s' % shadow_filename)
+            return 'shadow',open(open_file_name,wb)
+        else:
+            ok = c.checkFileTimeStamp(at.targetFileName)
+            return 'check',ok and open(open_file_name,wb)
+
+    except IOError:
+        if not g.app.unitTesting:
+            g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
+            g.es_exception()
+        return 'error',None
+#@-node:bwmulder.20050101094804:openForWrite (atFile)
+#@-node:ekr.20041005105605.143:openFileForWritingHelper & helper
+#@-node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
+#@+node:ekr.20041005105605.135:closeWriteFile
+# 4.0: Don't use newline-pending logic.
+
+def closeWriteFile (self):
+
+    at = self
+
+    if at.outputFile:
+        # g.trace('**closing',at.outputFileName,at.outputFile)
+        at.outputFile.flush()
+        if at.toString:
+            at.stringOutput = self.outputFile.get()
+        at.outputFile.close()
+        at.outputFile = None
+        return at.stringOutput
+    else:
+        return None
+#@-node:ekr.20041005105605.135:closeWriteFile
+#@-node:ekr.20090620085000.6067:Fixed bug that caused opened file to remain open
 #@-node:ekr.20090401105902.2:Bugs
 #@+node:ekr.20090401105902.3:Features
 #@+node:ekr.20090307063422.2:find-clone-all as synonym for clone-find-all
@@ -19983,6 +20464,7 @@ def replaceTargetFileIfDifferent (self,root):
     Return True if the original file was changed.
     '''
 
+    trace = False and not g.unitTesting
     c = self.c
 
     assert(self.outputFile is None)
@@ -19996,6 +20478,8 @@ def replaceTargetFileIfDifferent (self,root):
         # The default: may be changed later.
         root.clearOrphan()
         root.clearDirty()
+
+    if trace: g.trace(self.outputFileName,self.targetFileName)
 
     if g.os_path_exists(self.targetFileName):
         if self.compareFiles(self.outputFileName,self.targetFileName,not self.explicitLineEnding):

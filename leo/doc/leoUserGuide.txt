@@ -44,7 +44,6 @@ including the name of the master toctree document, leo_toc.html.txt.
 - make latex
 - cd _build/latex
 - make all-pdf
-#@nonl
 #@-node:ekr.20090428101858.1:How to generate Leo's Sphinx docs
 #@+node:ekr.20090401113141.1:How to generate odt/rtf/pdf files
 @language rest
@@ -1220,36 +1219,12 @@ So this would enable a basic compiler to "jump" over the "true" LEO-header-lines
 Like this::
 
     $IFDEF LEOHEADER <-conditional compilation directive 
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
     #@+leo-ver=4 <-these lines not compiled
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
     #@+node:@file QParser005.INC
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
     #@@first
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
     #@delims ' 
     '@@c
@@ -1987,12 +1962,6 @@ may see strange looking characters if your text editor is expecting a different
 encoding. The encoding used in any `derived file`_ is shown in the ``#@+leo`` `sentinel line`_
 like this::
 
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
     #@+leo-encoding=iso-8859-1.
 
@@ -3026,60 +2995,18 @@ structure in special comments called **sentinel lines**. Sentinel lines are
 comment lines with '@' following the comment delimiter. For example, here are
 some actual sentinel line for the derived file containing Python code::
 
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
     #@+leo-ver=4-thin
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
     #@+node:ekr.20031218072017.2794:@thin leoColor.py
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
     #@@language python
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
     #@@tabwidth -4
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
     #@@pagewidth 80
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
     #@-node:ekr.20031218072017.2794:@thin leoColor.py
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
     #@-leo
 
@@ -4051,12 +3978,6 @@ You can't mix encodings in a single external file.  For example::
 
 If the encoding used in an external file is not "utf-8" it is represented in the @+leo sentinel line, like this::
 
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
     #@+leo-encoding=iso-8859-1.
 
@@ -15489,12 +15410,6 @@ Leo uses unicode internally for all strings.
     If the encoding used in a derived file is not "utf-8" it is represented in the ``@+leo`` sentinel line.
     For example::
 
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
         #@+leo-encoding=iso-8859-1.
 
@@ -16071,19 +15986,52 @@ What's New in Leo 4.6
 .. Links used in this document.
 .. .. _`Chapter 23`:           atShadow.html
 #@-node:ekr.20090324145450.22:@rst-no-head links
+#@+node:ekr.20090620073906.12095:Improved unit testing
+- leoDynamicTest.py now supports a --path argument giving the .leo file.
+  This is so useful!
+
+- leoDynamicTest.py now honors the --silent argument.
+
+- leoTest.runUnitTestLeoFile runs all unit tests in a given .leo file
+  in a separate process.
+
+- leoTest.runTestsExternally calls runUnitTestLeoFile after creating
+  dynamicUnitTest.leo.
+
+- When reporting that no unit tests were found, all unit tests commands tell
+  whether the entire outline or just the selected outline was searched.
+  This fixes sometimes-misleading error messages.
+
+- test.leo contains a 'run-test.leo-tests' button.
+
+- leoPy.leo contains a 'run-all-core-tests' button.
+#@nonl
+#@-node:ekr.20090620073906.12095:Improved unit testing
 #@+node:ekr.20090324145450.23:Improved file handling
-- Leo opens a default .leo file if no other is specified,
-  using the @string default_leo_file setting.
-  The default for this setting is ``~/.leo/workbook.leo``
+- Leo opens a default .leo file if no other is specified, using the @string
+  default_leo_file setting. The default for this setting is
+  ``~/.leo/workbook.leo``
 
-- Added escapes for underindented lines.
-  The escape is specified by the @string underindent-escape-string setting.
-  By default, this escape is ``\-``
-  If a line starts with \-N, Leo will write the line with N fewer spaces than expected.
+- Added escapes for underindented lines. The escape is specified by the @string
+  underindent-escape-string setting. By default, this escape is ``\-`` If a line
+  starts with \-N, Leo will write the line with N fewer spaces than expected.
 
-- Leo now warns when attempting to write a file that has been changed outside of Leo.
-  This prevents bzr reversions.
+- Leo now warns when attempting to write a file that has been changed outside of
+  Leo. This prevents bzr reversions.
+
+- Leo tests syntax of .py files when saving them.
+
+- Leo can now open any file into an @edit node. This allows Leo to be associated
+  with the edit action of .py files. Like this::
+
+    C:\Python26\python.exe "c:\leo.repo\trunk\launchLeo.py" --gui=qt %1 %2
+
 #@-node:ekr.20090324145450.23:Improved file handling
+#@+node:ekr.20090620082840.5608:Improved handling of rST files
+Added support for @auto-rst nodes. These import reStructuredText (rST) files
+so that the files can be "round-tripped" without introducing extraneous changes.
+This makes Leo a superb environment for using rST.
+#@-node:ekr.20090620082840.5608:Improved handling of rST files
 #@+node:ekr.20090324145450.27:New code features
 - Added autoCompleter.getExternalCompletions.
   See http://groups.google.com/group/leo-editor/browse_thread/thread/4ad91984a6d0acac
@@ -16095,6 +16043,7 @@ What's New in Leo 4.6
 - Added the following properties:
     - p.b, t.b and v.b return the body string of the position or node.
     - p.h, t.h and v.h return the head string of the position or node.
+    - t.u and v.u return the uA of the node.
     - p.gnx, t.gnx and v.gnx return the gnx of the position or node.
 
 - Added script to leoSettings.leo to ensure all menu items are valid.
@@ -16111,7 +16060,6 @@ What's New in Leo 4.6
 
 - Added c.getNodePath and c.getNodeFileName.
   See http://groups.google.com/group/leo-editor/browse_thread/thread/3b5f1232ecc6bba7
-#@nonl
 #@-node:ekr.20090324145450.27:New code features
 #@+node:ekr.20090324145450.36:New command-line options
 - The --config command-line option specifies a single config (.leo) file
@@ -16122,8 +16070,7 @@ What's New in Leo 4.6
   Only .zip and .leo extensions are allowed at present.
 
 - The --gui=name command-line option specifies the gui to use.
-  The valid values are --gui=qt, --gui=tk and
-#@nonl
+  The valid values are --gui=qt, --gui=tk
 #@-node:ekr.20090324145450.36:New command-line options
 #@+node:ekr.20090324145450.40:New commands
 - Added smart home (back-to-home) command.
@@ -16143,14 +16090,14 @@ What's New in Leo 4.6
   k.masterKeyHandler or k.masterCommandHandler.
   Using c, you can then get all other info.
 
-- Improved the isearch commands
-#@nonl
+- Improved the isearch commands.
+
+- find-clone-all is a synonym for clone-find-all.
 #@-node:ekr.20090324145450.40:New commands
 #@+node:ekr.20090324145450.46:New and improved directives
 - Added @nocolor-node directive.
 
 - Improved @path handling.
-#@nonl
 #@-node:ekr.20090324145450.46:New and improved directives
 #@+node:ekr.20090324145450.49:New settings
 - @string default_leo_file = ~/.leo/workbook.leo
@@ -16161,13 +16108,15 @@ What's New in Leo 4.6
 
 - Added support for meta keys.
   http://groups.google.com/group/leo-editor/browse_thread/thread/b6a39ed672a28c65?pli=1
-#@nonl
+
+- The qt gui is now the default.
 #@-node:ekr.20090324145450.49:New settings
 #@+node:ekr.20090324145450.54:Plugins
 - Improved nav_buttons plugin and corresponding nodeHistory class.
+
 - Created qtGui and tkGui plugins.
+
 - Created leoGuiPluginsRef.leo.
-#@nonl
 #@-node:ekr.20090324145450.54:Plugins
 #@-node:ekr.20090324145450.21:@rst html\new-4-6.html
 #@-node:ekr.20090324145450.20:What's New in Leo 4.6

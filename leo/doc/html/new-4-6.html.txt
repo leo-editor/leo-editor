@@ -1,35 +1,76 @@
 .. rst3: filename: html\new-4-6.html
 
+
 #######################################
 What's New in Leo 4.6
 #######################################
 
 .. .. contents::
 
+
 .. Links used in this document.
 .. .. _`Chapter 23`:           atShadow.html
+
+Improved unit testing
++++++++++++++++++++++
+
+
+- leoDynamicTest.py now supports a --path argument giving the .leo file.
+  This is so useful!
+
+- leoDynamicTest.py now honors the --silent argument.
+
+- leoTest.runUnitTestLeoFile runs all unit tests in a given .leo file
+  in a separate process.
+
+- leoTest.runTestsExternally calls runUnitTestLeoFile after creating
+  dynamicUnitTest.leo.
+
+- When reporting that no unit tests were found, all unit tests commands tell
+  whether the entire outline or just the selected outline was searched.
+  This fixes sometimes-misleading error messages.
+
+- test.leo contains a 'run-test.leo-tests' button.
+
+- leoPy.leo contains a 'run-all-core-tests' button.
 
 Improved file handling
 ++++++++++++++++++++++
 
-- Leo opens a default .leo file if no other is specified,
-  using the @string default_leo_file setting.
-  The default for this setting is ``~/.leo/workbook.leo``
 
-- Added escapes for underindented lines.
-  The escape is specified by the @string underindent-escape-string setting.
-  By default, this escape is ``\-``
-  If a line starts with \-N, Leo will write the line with N fewer spaces than expected.
+- Leo opens a default .leo file if no other is specified, using the @string
+  default_leo_file setting. The default for this setting is
+  ``~/.leo/workbook.leo``
 
-- Leo now warns when attempting to write a file that has been changed outside of Leo.
-  This prevents bzr reversions.
+- Added escapes for underindented lines. The escape is specified by the @string
+  underindent-escape-string setting. By default, this escape is ``\-`` If a line
+  starts with \-N, Leo will write the line with N fewer spaces than expected.
+
+- Leo now warns when attempting to write a file that has been changed outside of
+  Leo. This prevents bzr reversions.
+  
+- Leo tests syntax of .py files when saving them.
+  
+- Leo can now open any file into an @edit node. This allows Leo to be associated
+  with the edit action of .py files. Like this::
+
+    C:\Python26\python.exe "c:\leo.repo\trunk\launchLeo.py" --gui=qt %1 %2
+
+Improved handling of rST files
+++++++++++++++++++++++++++++++
+
+
+Added support for @auto-rst nodes. These import reStructuredText (rST) files
+so that the files can be "round-tripped" without introducing extraneous changes.
+This makes Leo a superb environment for using rST.
 
 New code features
 +++++++++++++++++
 
+
 - Added autoCompleter.getExternalCompletions.
   See http://groups.google.com/group/leo-editor/browse_thread/thread/4ad91984a6d0acac
-  
+
 - Added g.posList.
 
 - c.config.doEnabledPlugins sets g.app.config.enabledPluginsFileName
@@ -37,6 +78,7 @@ New code features
 - Added the following properties:
     - p.b, t.b and v.b return the body string of the position or node.
     - p.h, t.h and v.h return the head string of the position or node.
+    - t.u and v.u return the uA of the node.
     - p.gnx, t.gnx and v.gnx return the gnx of the position or node.
 
 - Added script to leoSettings.leo to ensure all menu items are valid.
@@ -57,6 +99,7 @@ New code features
 New command-line options
 ++++++++++++++++++++++++
 
+
 - The --config command-line option specifies a single config (.leo) file
   to use for configuration.
   See http://groups.google.com/group/leo-editor/browse_thread/thread/f3f95d93bcd93b94
@@ -65,13 +108,14 @@ New command-line options
   Only .zip and .leo extensions are allowed at present.
 
 - The --gui=name command-line option specifies the gui to use.
-  The valid values are --gui=qt, --gui=tk and
+  The valid values are --gui=qt, --gui=tk
 
 New commands
 ++++++++++++
 
+
 - Added smart home (back-to-home) command.
- 
+
 - Added support for standard behavior of Tab and Shift-Tab keys.
   The tab key indents the text selection, if there is one;
   otherwise, the tab key insert a tab or blanks, depending on the @tabwidth setting.
@@ -87,10 +131,13 @@ New commands
   k.masterKeyHandler or k.masterCommandHandler.
   Using c, you can then get all other info.
 
-- Improved the isearch commands
+- Improved the isearch commands.
+
+- find-clone-all is a synonym for clone-find-all.
 
 New and improved directives
 +++++++++++++++++++++++++++
+
 
 - Added @nocolor-node directive.
 
@@ -98,6 +145,7 @@ New and improved directives
 
 New settings
 ++++++++++++
+
 
 - @string default_leo_file = ~/.leo/workbook.leo
 
@@ -107,11 +155,16 @@ New settings
 
 - Added support for meta keys.
   http://groups.google.com/group/leo-editor/browse_thread/thread/b6a39ed672a28c65?pli=1
+  
+- The qt gui is now the default.
 
 Plugins
 +++++++
 
+
 - Improved nav_buttons plugin and corresponding nodeHistory class.
+
 - Created qtGui and tkGui plugins.
+
 - Created leoGuiPluginsRef.leo.
 

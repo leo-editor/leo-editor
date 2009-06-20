@@ -485,10 +485,10 @@ class atFile:
 
         if cachefile in c.db:
             # This isn't so useful.
-            # if not g.unitTesting:
-                # g.es('uncache:',root.h)
+            # if not g.unitTesting: # g.es('uncache:',root.h)
             tree = c.db[cachefile]
             g.create_tree_at_vnode(c, root.v, tree)
+            at.inputFile.close() # Bug fix.
             return
 
         if not g.unitTesting:
@@ -1688,8 +1688,23 @@ class atFile:
         # Append the next line to the text.
         s = at.readLine(at.inputFile) 
         i = at.skipIndent(s,0,at.indent)
-        at.out.append("@verbatim\n")
+        # Do **not** insert the verbatim line itself!
+            # at.out.append("@verbatim\n")
         at.out.append(s[i:])
+    #@+node:ekr.20090620101138.6072:@test verbatim sentinel
+    if g.unitTesting:
+        c,p = g.getTestVars()
+
+        # Here is something that should generate a verbtim sentinel::
+
+    #@verbatim
+        #@+leo-encoding=iso-8859-1.
+
+        # The length of this node should remain constant.
+
+        assert len(p.b) == 235,len(p.b)
+    #@nonl
+    #@-node:ekr.20090620101138.6072:@test verbatim sentinel
     #@-node:ekr.20041005105605.112:readVerbatim
     #@-node:ekr.20041005105605.100:Unpaired sentinels
     #@+node:ekr.20041005105605.113:badEndSentinel, popSentinelStack
@@ -2286,7 +2301,7 @@ class atFile:
 
         '''Open a file for writes, handling shadow files.'''
 
-        trace = False # or x.trace
+        trace = False and not g.unitTesting
         at = self ; c = at.c ; x = c.shadowController
 
         try:
@@ -2296,7 +2311,7 @@ class atFile:
             self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
 
             if self.writing_to_shadow_directory:
-                if trace and not g.app.unitTesting: g.trace(filename,shadow_filename)
+                if trace: g.trace(filename,shadow_filename)
                 x.message('writing %s' % shadow_filename)
                 return 'shadow',open(open_file_name,wb)
             else:
@@ -4000,6 +4015,7 @@ class atFile:
         at = self
 
         if at.outputFile:
+            # g.trace('**closing',at.outputFileName,at.outputFile)
             at.outputFile.flush()
             if at.toString:
                 at.stringOutput = self.outputFile.get()
@@ -4497,6 +4513,7 @@ class atFile:
         Return True if the original file was changed.
         '''
 
+        trace = False and not g.unitTesting
         c = self.c
 
         assert(self.outputFile is None)
@@ -4510,6 +4527,8 @@ class atFile:
             # The default: may be changed later.
             root.clearOrphan()
             root.clearDirty()
+
+        if trace: g.trace(self.outputFileName,self.targetFileName)
 
         if g.os_path_exists(self.targetFileName):
             if self.compareFiles(self.outputFileName,self.targetFileName,not self.explicitLineEnding):
