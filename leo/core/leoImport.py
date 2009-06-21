@@ -2098,12 +2098,13 @@ class baseScannerClass (scanUtility):
             # Never indent any text; discard the entire signature.
             body1 = s[start:sigStart]
             body2 = s[self.sigEnd+1:codeEnd]
+            if trace: g.trace('body1: %s body2: %s' % (repr(body1),repr(body2)))
         else:
             body1 = self.undentBody(s[start:sigStart],ignoreComments=False)
             body2 = self.undentBody(s[sigStart:codeEnd])
         body = body1 + body2
 
-        # if trace: g.trace('body\n%s' % body)
+        if trace: g.trace('body: %s' % repr(body))
 
         tail = body[len(body.rstrip()):]
         if not '\n' in tail:
@@ -2112,13 +2113,7 @@ class baseScannerClass (scanUtility):
                 self.functionSpelling,self.sigId,g.get_line(s,codeEnd)))
 
         return body
-
-    #@+node:ekr.20090515065255.5678:@test
-    if g.app.unitTesting:
-
-        pass
     #@nonl
-    #@-node:ekr.20090515065255.5678:@test
     #@-node:ekr.20090512153903.5806:computeBody (baseScannerClass)
     #@+node:ekr.20090513073632.5737:createDeclsNode
     def createDeclsNode (self,parent,s):
@@ -4044,7 +4039,9 @@ class rstScanner (baseScannerClass):
             ok = (self.isUnderLine(line2) and
                 n1 >= n2 and n2 > 0 and n3 >= n2 and ch1 == ch3)
             if ok:
-                i += n3 # bug fix.
+                i += n3
+                # Eliminate the need for the "little fib" in writeBody.
+                if i < len(s) and s[i] == '\n': i += 1
                 ch,kind = ch1,'over'
                 if ch1 not in self.underlines2:
                     self.underlines2.append(ch1)
@@ -4070,7 +4067,9 @@ class rstScanner (baseScannerClass):
             ok = (not overline and self.isUnderLine(line2) and
                 n1 > 0 and n2 >= n1)
             if ok:
-                i += n2 # Bug fix.
+                i += n2
+                # Eliminate the need for the "little fib" in writeBody.
+                if i < len(s) and s[i] == '\n': i += 1
                 ch,kind = line2[0],'under'
                 if ch not in self.underlines1:
                     self.underlines1.append(ch)
