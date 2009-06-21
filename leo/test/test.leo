@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -324,6 +324,11 @@
 <v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
+</v>
+<v t="ekr.20090620183227.1755" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e65733171036802752e"><vh>@@auto-rst round-trip-test.txt</vh>
+<v t="ekr.20090620194509.1757" a="E"><vh>h1</vh>
+<v t="ekr.20090620194509.1758"><vh>h2</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -2620,5 +2625,18 @@ w = bodyCtrl.widget # A QTextEdit
 s = bodyCtrl.getAllText()
 w.setPlainText(s)</t>
 <t tx="ekr.20090620063706.1826"></t>
+<t tx="ekr.20090620183227.1755">@language rest
+@tabwidth -4
+@others
+
+.. Warning: this node is ignored when writing this file.
+.. However, @ @rst-options are recognized in this node.
+</t>
+<t tx="ekr.20090620194509.1757">h1 body 1. changed 3.
+
+</t>
+<t tx="ekr.20090620194509.1758">h2 body 1.
+
+</t>
 </tnodes>
 </leo_file>

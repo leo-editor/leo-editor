@@ -36,7 +36,11 @@ To tell the rst3 plugin to generate an intermediate file, do::
 After you create the intermediate file, in this case, test.html.txt,
 You can create an odt file as follows::
 
-    python rst2odt.py test.html.txt test.odt
+    python <path-to-python>/scripts/rst2odt.py test.html.txt test.odt
+
+I a batch file, rst2odt.bat, like this:
+
+    rst2odt test
 
 Note that rst3odt.py is in the tools directory of the DocUtils distribution.
 
@@ -46,9 +50,37 @@ To generate .pdf files, you would first convert test.html.txt to LaTeX::
 
     python rst2newlatex.py test.html.txt test.tex
 
+    -- OR --
+
+    cd leo\docs\html
+    make latex
+
 You can then use one of the LaTeX to .pdf converters to create the final .pdf
 file. See http://docutils.sourceforge.net/docs/user/latex.html#pdf-generation
 for details.
+#@+node:ekr.20090620131445.5595:Post from ville
+I just tweaked conf.py a bit to enable pdf generation.
+
+Howto:
+
+QQQ
+
+4. To create pdf (probably easiest on Linux, with necessary latex
+packages installed):
+
+- make latex
+- cd _build/latex
+- make all-pdf
+
+QQQ
+
+There were several errors in the pdf generation process. Notably,
+there are probably lots of unicode errors (and toc doesn't appear).
+Nevertheless, you can steal a peek at the doc here:
+
+http://vvtools.googlecode.com/files/Leodocumentation.pdf 
+#@nonl
+#@-node:ekr.20090620131445.5595:Post from ville
 #@+node:ekr.20090401113141.2:@rst c:\prog\test\test.html
 @ @rst-options
 code_mode=False

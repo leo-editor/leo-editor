@@ -2,7 +2,11 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090430102239.13:To do before 4.6 b3 6
+#@+node:ekr.20090430102239.13:To do before 4.6 b3 5
+#@+node:ekr.20090620182554.3852:add-canvas
+Like add-editor, but it creates a canvas area, not a text area.
+#@nonl
+#@-node:ekr.20090620182554.3852:add-canvas
 #@+node:ekr.20090614134853.3635:New syntax coloring
 @nocolor-node
 
@@ -6032,10 +6036,6 @@ in myLeoSettings.leo.  However, whenever I start Leo, it is split 50/50.
 What's the settings (for Qt) to fix this?  Can we? 
 #@nonl
 #@-node:ekr.20090530055308.3791:Remember pane split ratio
-#@+node:ekr.20090429101847.10:Support canvas widgets in all panes
-http://groups.google.com/group/leo-editor/browse_thread/thread/9ac06147e75fc042
-#@nonl
-#@-node:ekr.20090429101847.10:Support canvas widgets in all panes
 #@+node:ekr.20090128083504.1:Fix rclick
 @nocolor-node
 
@@ -6096,8 +6096,12 @@ E1103:7695:jEditColorizer.recolor: Instance of 'Bunch' has no 'stateName' member
 
 W0222:8367:leoQtBaseTextWidget.tag_add: Signature differs from overridden method
 #@-node:ekr.20090603045408.3767:Fix pylint warnings
-#@-node:ekr.20090430102239.13:To do before 4.6 b3 6
+#@-node:ekr.20090430102239.13:To do before 4.6 b3 5
 #@+node:ekr.20090304084841.11:Later
+#@+node:ekr.20090429101847.10:Support canvas widgets in all panes
+http://groups.google.com/group/leo-editor/browse_thread/thread/9ac06147e75fc042
+#@nonl
+#@-node:ekr.20090429101847.10:Support canvas widgets in all panes
 #@+node:ekr.20081215074704.21:Add drag and drop
 #@-node:ekr.20081215074704.21:Add drag and drop
 #@+node:ekr.20090418064921.12:Qt, vim bindings

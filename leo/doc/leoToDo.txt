@@ -2,29 +2,14 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
-#@+node:ekr.20090620052003.6068:Before b3 1 + docs
-#@+node:ekr.20090602183337.6045:First: Fix rst import annoyance
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/379089
-
-> This works for me, so I'm closing the bug. However, I still see one
-> blank line at the start of the body when the rst node is read back into
-> leo, but this is a less urgent concern. It is, at most, a distraction.
-
-I'm going to reopen this and put this on the list of things to do before
-b2. It's time to stamp on the distractions.
-#@nonl
-#@-node:ekr.20090602183337.6045:First: Fix rst import annoyance
-#@+node:ekr.20090523070447.6475:Rewrite rst documentation
-#@-node:ekr.20090523070447.6475:Rewrite rst documentation
-#@+node:ekr.20090430122648.1:Generate pdf versions of docs
-#@-node:ekr.20090430122648.1:Generate pdf versions of docs
+#@+node:ekr.20090620052003.6068:Before b3 (docs)
 #@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
 http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
 #@nonl
 #@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-#@-node:ekr.20090620052003.6068:Before b3 1 + docs
+#@+node:ekr.20090523070447.6475:Rewrite rst documentation
+#@-node:ekr.20090523070447.6475:Rewrite rst documentation
+#@-node:ekr.20090620052003.6068:Before b3 (docs)
 #@+node:ekr.20090430092048.7:Before 4.6 final
 #@+node:ekr.20090430092048.3:Rewrite docs using stories
 #@-node:ekr.20090430092048.3:Rewrite docs using stories
@@ -2298,7 +2283,7 @@ def writeBody (self,p):
 
     # Write the lines.
     s = ''.join(lines)
-    if not self.trialWrite:
+    if True: #### not self.trialWrite:
         # A little fib.  We don't alter the text when doing a trial write,
         # so the perfect-import comparison will pass.
         # We *do* ensure 2 newlines when doing a "real" write.
