@@ -1,3 +1,9 @@
+leo (4.6b2-1ubuntu1) jaunty; urgency=low
+
+  * Final 4.6 b2 release (tag leo-4-6-b2)
+
+ -- Ville M. Vainio <vivainio@gmail.com>  Mon, 22 Jun 2009 19:28:52 +0300
+
 leo (4.6b2-1) jaunty; urgency=low
 
   * Prepare for 4.6 b2
