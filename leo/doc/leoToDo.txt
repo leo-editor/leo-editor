@@ -2,7 +2,24 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
-#@+node:ekr.20090529125512.6121:Features (maybe for 4.7)
+@nocolor-node
+
+Before b3 (or rc1)
+
+- Fix all high and medium bugs
+
+- Rewrite more docs using stories
+#@-node:ekr.20080814103428.4:4.6 qt gui
+#@+node:ekr.20071211093011:4.7 flexibility
+@nocolor-node
+
+- Support for Python 3.x.
+- autocompleter
+- Code completion.
+- Refactoring: rope, etc.
+- Flexitble file format.
+#@nonl
+#@+node:ekr.20090529125512.6121:Features (first)
 #@+node:ekr.20090622020908.6058:Add lite sentinels
 http://groups.google.com/group/leo-editor/browse_thread/thread/c4f2cf250600e4a9
 #@nonl
@@ -274,118 +291,7 @@ How would the command specify settings?
 
 A line added to test bzr push.
 #@-node:ekr.20090512080015.5801:import-files-recursively command?
-#@-node:ekr.20090529125512.6121:Features (maybe for 4.7)
-#@+node:ekr.20090430092048.7:Before 4.6 final
-#@+node:ekr.20090430092048.3:Rewrite docs using stories
-#@-node:ekr.20090430092048.3:Rewrite docs using stories
-#@-node:ekr.20090430092048.7:Before 4.6 final
-#@+node:ekr.20060306194040:Leo Video
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3615177
-By: ktenney
-
-High on my ToLearn list is vnc2swf
-http://www.unixuser.org/~euske/vnc2swf/
-
-
-http://sourceforge.net/forum/message.php?msg_id=3615278
-By: James
-
-A lot of people are now using Wink for demonstrations
-(http://www.debugmode.com/wink/), it's is free and seems to work well.
-
-Check out http://murl.se/11332
-At the bottom they talk about tools and techniques.
-http://showmedo.com seems like it would be a good
-place to host vids also.
-
-I've listened/watched a fair number of things like this;
-my recomendation is to get a good microphone and
-pre-amp to record your voice, and prepare the audio
-track carefully. It is so aggravating when
-it's hard to discern the words being spoken.
-
-Thanks,
-Kent
-#@nonl
-#@+node:ekr.20060531134434:Tutorials
-http://sourceforge.net/forum/message.php?msg_id=3758271
-
-From: Rich
-
-Tutorials would be great. I use Liberty BASIC, (http://libertybasic.conforums.com)
-and it has a very good tutorial -- leads the beginner by the hand through much
-of the language. Also the help file has working code snippets
-to cut-n-paste-n-play-with. I'd like to see something like:
-
-[Buttons]
-...[What are Buttons good for?]
-...[How do I make my own buttons?]
-......[Some commands you can use with buttons]
-......[Where to find button commands]
-#@nonl
-#@-node:ekr.20060531134434:Tutorials
-#@+node:ekr.20060531134434.1:Screencasts
-@nocolor
-http://sourceforge.net/forum/message.php?msg_id=3758303
-By: ktenney
-
-My sense is that documentation/screencasts has the
-greatest potential for expanding Leo's mindshare.
-
-I really like those produced by the good folks
-at Dabo;
-http://leafe.com/screencasts/
-http://leafe.com/screencasts/populategrid.html
-
-The TurboGears people have taken this to the extreme;
-http://www.turbogears.org/ultimate.html
-
-Leo is different enough that it warrants a 
-demonstration of it's advantages.
-
--------------------
-
-https://sourceforge.net/forum/message.php?msg_id=4396251
-By: ktenney
-
-2 good screencasts on making screencasts;
-
-http://murl.se/26296
-#@-node:ekr.20060531134434.1:Screencasts
-#@+node:ekr.20060829103523:Render Leo slideshows
-@nocolor
-
-http://sourceforge.net/forum/message.php?msg_id=3889246
-By: terry_n_brown
-
-Three packages that might be candidates for "rendering" slides authored in Leo:
-
-MagicPoint: http://member.wide.ad.jp/wg/mgp/
-
-  uses a text file format that leo could produce
-
-Slidy: http://www.w3.org/Talks/Tools/Slidy/
-
-  uses XHTML / canned Java script
-
-S5: http://meyerweb.com/eric/tools/s5/
-
-  Similar to Slidy I think, haven't looked at it
-#@nonl
-#@-node:ekr.20060829103523:Render Leo slideshows
-#@-node:ekr.20060306194040:Leo Video
-#@-node:ekr.20080814103428.4:4.6 qt gui
-#@+node:ekr.20071211093011:4.7 flexibility
-@nocolor-node
-
-Flexibility:
-
-- Flexitble file format
-- Better bindings
-- autocompleter
-- Support for Python 3.x.
-#@nonl
+#@-node:ekr.20090529125512.6121:Features (first)
 #@+node:ekr.20090131200406.9:Bugs
 #@+node:ekr.20081215070651.4:Minor bugs 7
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
@@ -8598,13 +8504,103 @@ P.S.  I think it would be good style to append "Class" to the name of each comma
 #@-node:ekr.20080628095358.1:Make each Leo command a class
 #@-node:ekr.20071211091355:Other features
 #@-node:ekr.20071211093011:4.7 flexibility
+#@+node:ekr.20060306194040:Leo Video
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3615177
+By: ktenney
+
+High on my ToLearn list is vnc2swf
+http://www.unixuser.org/~euske/vnc2swf/
+
+
+http://sourceforge.net/forum/message.php?msg_id=3615278
+By: James
+
+A lot of people are now using Wink for demonstrations
+(http://www.debugmode.com/wink/), it's is free and seems to work well.
+
+Check out http://murl.se/11332
+At the bottom they talk about tools and techniques.
+http://showmedo.com seems like it would be a good
+place to host vids also.
+
+I've listened/watched a fair number of things like this;
+my recomendation is to get a good microphone and
+pre-amp to record your voice, and prepare the audio
+track carefully. It is so aggravating when
+it's hard to discern the words being spoken.
+
+Thanks,
+Kent
+#@nonl
+#@+node:ekr.20060531134434:Tutorials
+http://sourceforge.net/forum/message.php?msg_id=3758271
+
+From: Rich
+
+Tutorials would be great. I use Liberty BASIC, (http://libertybasic.conforums.com)
+and it has a very good tutorial -- leads the beginner by the hand through much
+of the language. Also the help file has working code snippets
+to cut-n-paste-n-play-with. I'd like to see something like:
+
+[Buttons]
+...[What are Buttons good for?]
+...[How do I make my own buttons?]
+......[Some commands you can use with buttons]
+......[Where to find button commands]
+#@nonl
+#@-node:ekr.20060531134434:Tutorials
+#@+node:ekr.20060531134434.1:Screencasts
+@nocolor
+http://sourceforge.net/forum/message.php?msg_id=3758303
+By: ktenney
+
+My sense is that documentation/screencasts has the
+greatest potential for expanding Leo's mindshare.
+
+I really like those produced by the good folks
+at Dabo;
+http://leafe.com/screencasts/
+http://leafe.com/screencasts/populategrid.html
+
+The TurboGears people have taken this to the extreme;
+http://www.turbogears.org/ultimate.html
+
+Leo is different enough that it warrants a 
+demonstration of it's advantages.
+
+-------------------
+
+https://sourceforge.net/forum/message.php?msg_id=4396251
+By: ktenney
+
+2 good screencasts on making screencasts;
+
+http://murl.se/26296
+#@-node:ekr.20060531134434.1:Screencasts
+#@+node:ekr.20060829103523:Render Leo slideshows
+@nocolor
+
+http://sourceforge.net/forum/message.php?msg_id=3889246
+By: terry_n_brown
+
+Three packages that might be candidates for "rendering" slides authored in Leo:
+
+MagicPoint: http://member.wide.ad.jp/wg/mgp/
+
+  uses a text file format that leo could produce
+
+Slidy: http://www.w3.org/Talks/Tools/Slidy/
+
+  uses XHTML / canned Java script
+
+S5: http://meyerweb.com/eric/tools/s5/
+
+  Similar to Slidy I think, haven't looked at it
+#@nonl
+#@-node:ekr.20060829103523:Render Leo slideshows
+#@-node:ekr.20060306194040:Leo Video
 #@-all
-
-Major projects:
-
-- Unit tests: pythoscope.
-- Code completion.
-- Refactoring: rope, etc.
 #@nonl
 #@-node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@-leo
