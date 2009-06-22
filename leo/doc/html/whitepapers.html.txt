@@ -1,5 +1,6 @@
 .. rst3: filename: html\whitepapers.html
 
+
 ##########################
 Chapter 11: White Papers
 ##########################
@@ -9,6 +10,7 @@ The conclusions in these papers have remained largely unchanged.
 I wrote the third in November 2004, and rewrote it in February 2006.
 
 .. .. contents::
+
 
 .. External links...
 .. _pychecker:              http://pychecker.sourceforge.net/
@@ -23,6 +25,7 @@ I wrote the third in November 2004, and rewrote it in February 2006.
 
 Tk is the future of Leo
 +++++++++++++++++++++++
+
 
 The more I look at Tk, the more convinced I am that Python + Tk (aka Tkinter)
 is, by far, the best way to go with Leo. I now have Open Source code for tree
@@ -58,6 +61,7 @@ Edward K. Ream, November 4, 2001
 Why I like Python
 +++++++++++++++++
 
+
 I've known for a while that Python was interesting; I attended a Python
 conference last year and added Python support to Leo. But last week I got that
 Python is something truly remarkable. I wanted to convert Leo from wxWindows to
@@ -69,6 +73,7 @@ difference.
 
 Clarity
 *******
+
 
 What struck me first as I converted C++ code to Python is how much less blah,
 blah, blah there is in Python. No braces, no stupid semicolons and most
@@ -94,6 +99,7 @@ by compilers. See `pychecker`_ for details.
 Power
 *****
 
+
 Python is much more powerful than C++, not because Python has more features, but
 because Python needs *less* features. Some examples:
 
@@ -113,6 +119,7 @@ because Python needs *less* features. Some examples:
 
 Safety
 ******
+
 
 Before using Python I never fully realized how difficult and dangerous memory allocation is in C++.
 Try doing::
@@ -134,6 +141,7 @@ keep right on going even after a crash!
 Speed
 *****
 
+
 Python has almost all the speed of C. Other interpretive environments such as
 icon and Smalltalk have clarity, power and safety similar to Python. What makes
 Python unique is its seamless way of making C code look like Python code.
@@ -148,6 +156,7 @@ at the same time raising the level of the code.
 
 Conclusions
 ***********
+
 
 Little of Python is completely new. What stands out is the superb engineering
 judgment evident in Python's design. Python is extremely powerful, yet small,
@@ -166,6 +175,7 @@ not possibly be what it is today without Python.
 Allocating storage using lifetimes
 ++++++++++++++++++++++++++++++++++
 
+
 This white paper describes the storage allocation used in a commercial
 optimizing C compiler written for Tuple, Inc. ca. 1993. The last section
 discusses tantalizing possibilities for the pypy project. These possibilities
@@ -183,6 +193,7 @@ huge difference.
 
 Lifetime allocation
 *******************
+
 
 CC2 allocated objects one-at-a-time (simple allocation), in blocks of
 fixed-sized objects (block allocation) or in blocks of variable-sized objects
@@ -203,17 +214,17 @@ lifetime-based allocation is that **the proper time to specify when an object
 will be deallocated is when the object is created**.
 
 Lifetime-based allocation is a superb invention:
-    
+
 - It becomes an effective design tool. Thinking of objects in terms of their
   lifetimes often shows the essence of a design problem.
-  
+
 - It can be used for any kind of object, regardless of its size or type.
-    
+
 - It reduces the number of calls to calloc and free by one or two orders of
   magnitude over naive schemes. Furthermore, it typically requests
   standard-sized blocks (say 8K or more) from calloc, further easing the burden
   on calloc and free.
-  
+
 - CC2 could allocate objects with a particular lifetime using small, extremely fast, macros.
   The macros expanded to C code something like this::
 
@@ -233,12 +244,13 @@ is optimal: it could not be improved even if coded in assembly language.
 Typical lifetimes
 *****************
 
+
 What makes lifetime-based allocation so powerful is that so few lifetimes are
 typically required. Indeed, CC2 had only the following lifetimes:
-    
+
 - Permanent: These objects were never deallocated. Examples were list pointers
   held in cons cells and other kinds of application-wide objects.
-  
+
 - Tokenizer: Tokenizing in C is complex due to C's various preprocessing
   directives and macro expansion. Objects with tokenizer lifetime are
   deallocated before the parser starts.
@@ -251,7 +263,7 @@ typically required. Indeed, CC2 had only the following lifetimes:
 
 That's all. Similarly, if Leo were recast as a C program only the following
 lifetimes would be needed:
-    
+
 - Permanent: application-wide objects.
 
 - Window/outline: All data associated with a single Leo outline. This is a
@@ -268,6 +280,7 @@ can, in fact, be assigned static lifetimes.
 
 Implications for pypy
 *********************
+
 
 Lifetime allocation isn't used in Java, Python, etc. because these languages
 have no way of knowing (in general) what the lifetime of any object will be.

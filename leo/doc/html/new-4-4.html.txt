@@ -1,5 +1,6 @@
 .. rst3: filename: html\new-4-4.html
 
+
 ##########################################
 What's New in Leo 4.4
 ##########################################
@@ -28,10 +29,12 @@ The main features of Leo 4.4 are:
 
 .. .. contents::
 
+
 .. Links used in this document.
 
 New commands
 ++++++++++++
+
 
 ::
 
@@ -133,6 +136,7 @@ New commands
 New features
 ++++++++++++
 
+
 - Added script to update new copies of leoSetttings.leo from previous copies.
 - Made all edit command undoable.
 - Improved registerCommand.
@@ -175,6 +179,7 @@ New features
 Added new convenience methods for scripts and plugins
 +++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+
 The c.frame.logcreateCanvas convenience method create a canvas tab in the log pane.
 Here is a sample script:
 
@@ -189,6 +194,7 @@ log.selectTab(tag)
 
 New and improved plugins
 ++++++++++++++++++++++++
+
 
 - Changed path to stylesheet in the rst3 plugin.
 - Fixed crasher in Word (and other) plugins.
@@ -215,8 +221,9 @@ New and improved plugins
 New and improved settings
 +++++++++++++++++++++++++
 
+
 Added new settings::
-    
+
     @bool allow_idle_time_hook
     @bool autocomplete-brackets.
     @bool gc_before_redraw
@@ -255,11 +262,11 @@ Added new settings::
     @int max_undo_stack_size,
     @string trace_bindings_filter
     @string trace_bindings_pane_filter
-    
+
 - Added @shortcuts nodes.
 - Leo now supports per-pane bindings of the form::
 
     command-name ! pane = shortcut
-    
+
 - The spelling settings replace the settings in spellpyx.ini.
 

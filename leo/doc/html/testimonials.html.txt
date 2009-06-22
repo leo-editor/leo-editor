@@ -1,10 +1,12 @@
 .. rst3: filename: html\testimonials.html
 
+
 ###################################
 What People Are Saying About Leo
 ###################################
 
 .. .. contents::
+
 
 .. Relative links...
 
@@ -13,6 +15,7 @@ What People Are Saying About Leo
 
 Leo is revolutionary
 ++++++++++++++++++++
+
 
 "I am using Leo since a few weeks and I brim over with enthusiasm for it.
 I think it is the most amazing software since the invention of the spreadsheet."
@@ -44,6 +47,7 @@ in code manipulation since VI and Emacs. -- David McNab
 Leo is a showcase Python/Tkinter application
 ++++++++++++++++++++++++++++++++++++++++++++
 
+
 "Thanks for a wonderful program – everybody should be using it! It blows the
 socks off that Java Mind mapping software that won project of the month a while
 back on sourceforge!" -- Derick van Niekerk.
@@ -62,6 +66,7 @@ why can't other Open Source projects change the way I think?" -- Anon
 Leo is fun, even addicting
 ++++++++++++++++++++++++++
 
+
 "When first I opened Leo, it was out of curiosity. But having used it...I'll never go back.  They'll have to pry Leo out of my cold, dead fingers!  Seriously, it should be renamed 'Crack Cocaine' because it's that addictive. I'm ready to start a 12-Step group." -- Travers A. Hough
 
 "I feel addicted to programming again...in fact [Leo] has resurrected a dead project of mine :) The Outline has proven most liberating in terms of testing ideas out." -- Anon
@@ -74,6 +79,7 @@ Leo has simplified updating and creating new scripts and .bats keeping similar i
 
 Leo is a flexible, powerful IDE
 +++++++++++++++++++++++++++++++
+
 
 "[Leo] should either replace or greatly augment the development tools that I use." -- Zak Greant
 
@@ -91,6 +97,7 @@ I think you're really showing what open source can do and your current trajector
 
 Leo is a superb outliner
 ++++++++++++++++++++++++
+
 
 "Word outlines are very useful. But Leo makes Word look like a clunky toy."
 --Joe Orr
@@ -125,6 +132,7 @@ Amazing! Leo directly supports the way I work!" -- F. Geiger
 Leo is an excellent PIM
 +++++++++++++++++++++++
 
+
 "Another day, another breakthrough using Leo--now I realize Leo is the best URL bookmark manager there is. No more bookmarks menus or favorites lists inside the browser for me. With the @url directive I can just double click on the URL to open it in my browser. Leo lets me arrange the URLs in a hierarchy (or multiple hierarchies), attach notes to them, save clippings of things I read on the sites. It's sooo much better than anything the browsers have built in and it lets me easily use different browsers on different platforms and different machines (try that with the browsers' built-in bookmark managers)." -- Dan Winkler
 
 "I am an amateur photographer. I use plain old 35mm. film for my pictures. Over the weekend, I used Leo to organize my lists of pictures. It is quite helpful--I can have separate nodes for pictures I have enlarged, as well as pictures I have submitted to our local camera club. Thanks!" -- Rich Reis
@@ -133,6 +141,7 @@ Leo is an excellent PIM
 
 Leo extends, completes and simplifies literate programming
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 "I've tried Literate Programming tools off and on for more than 10 years, mainly because the promise was so great. I've abandoned them every time because working with the various Cweb-like tools was so awkward. Leo changes all that. The most important benefits promised by Literate Programming are realized by using Leo, without the awkwardness of the other tools." -- Dave Hein
 
@@ -143,6 +152,7 @@ I wanted to thank you for the effort you've put into Leo.  It looks fantastic.  
 Leo is a superb documentation tool
 ++++++++++++++++++++++++++++++++++
 
+
 "I've written documentation in WordPerfert, Ventura, Word, PageMaker, and FrameMaker and even though they create wonderfully looking and useful documents, they've never been able to do what I've been looking for. HTML, compiled help files, and later PDF came closer, but still not there...I think I've found it in LEO, a way to make a "living" document. A document built out of discrete parts that can be re-organized on the fly to meet the needs of a varying audience...I've already started converting the IT Procedures manual from Open Office to LEO because I know it's going to be much more useful to me and anyone else...just the possibility of keeping system maintenance scripts in the IT manual is mind boggling." -- David Nichols
 
 "With the help of the rst2 plugin, [Leo is] the best outliner I have yet encountered for writing the early stages of academic papers."
@@ -151,6 +161,7 @@ Leo is a superb documentation tool
 
 Leo simplifies the understanding of complex systems
 +++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 "Just as structured programming reveals and disciplines the flow control of a program, [Leo] allows the designer to reveal and discipline structure at many layers simultaneously: data structures, object structure, entity-relationship structure, client-server structure, design pattern structure, temporal structure, project management structure, and any other structure relevant to the system." -- Steven P. Schaefer
 
@@ -166,6 +177,7 @@ She said: 'You'd need a bulldozer to start refactoring it.' That was my cue to w
 
 Leo is stable, well designed and well supported
 +++++++++++++++++++++++++++++++++++++++++++++++
+
 
 "I am extremely impressed at how stable and useful Leo appears to be." -- Marcus A. Martin
 
@@ -188,6 +200,7 @@ Longer quotes...
 
 Speed Ream's slashdot article
 *****************************
+
 
 September 3, 2002
 
@@ -217,6 +230,7 @@ Enough of this commentary, I just looked at the clock. Best wishes to anyone wil
 
 Joe Orr
 *******
+
 
 The Word outlines are very useful. But Leo makes Word look like a clunky toy.
 
@@ -261,6 +275,7 @@ into Leo using Python scripting, for example.
 Dan Winkler
 ***********
 
+
 First of all, kudos to you for the excellent progress you've been making with Leo.  I upgraded today after about three months of using and older version and I was thrilled to see all the great improvements that have happened so fast.  I especially love the ability to go to next clone.  I think you're really showing what open source can do and your current trajectory puts you on track to kick Emacs into the dustbin of computing history.
 
 So today I copied all my data (personal information manager and project management stuff) out of my old outliner (ThoughtManager, which syncs with and runs on the Palm) and put it into Leo.  It took me hours to do it and then to rearrange it the way I really wanted it.  But having the ability to make clones and have different ways to view my data is, as you know, fabulous.  In my case, for personal information and project management things, I used the flexibility of clones to allow me to see my data in several different views: 1) by project, the logical hierarchical breakdown by topic, 2) by person, so whenever I'm talking to someone I can easily see all the pending items related to them which may be spread over multiple projects, 3) by priority, so I can see what needs to get done sooner and what can wait for later and, 4) a special case of priority called "Today" for the things I'm going to focus on in the coming hours.
@@ -275,6 +290,7 @@ You're my hero!  Thank you so much.
 
 Dan Winkler 2
 *************
+
 
 Another day, another breakthrough using Leo -- now I realize Leo is the 
 best URL bookmark manager there is.  No more bookmarks menus or 
@@ -313,6 +329,7 @@ difference between the pick axe and the steam shovel for me.
 
 Dan Winkler 3
 *************
+
 
 This year my accountant is getting a beautiful printout generated by 
 LaTeX and Leo.  I have a complicated tax situation this year, but I got 

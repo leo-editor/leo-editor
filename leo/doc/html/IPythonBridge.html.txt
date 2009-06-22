@@ -1,5 +1,6 @@
 .. rst3: filename: html\IPythonBridge.html
 
+
 ############################################################
 Chapter 21: IPython and Leo
 ############################################################
@@ -43,6 +44,7 @@ painless and powerful.
 
 .. .. contents::
 
+
 .. Links
 .. _discussions:            http://sourceforge.net/forum/forum.php?thread_id=1911662&forum_id=10226
 .. _ipython:                http://ipython.scipy.org/
@@ -54,6 +56,7 @@ painless and powerful.
 
 Introduction
 ++++++++++++
+
 
 ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
 and IPython. The level of integration is much deeper than conventional
@@ -76,6 +79,7 @@ really want to, of course!)
 
 Installation and startup
 ++++++++++++++++++++++++
+
 
 You need at least Leo 4.4.8, and IPython 0.8.3
 
@@ -107,13 +111,14 @@ You need to enable the 'ipython.py' plugin in Leo:
   IPython that the new commands should target the new document. IPython session
   will not be restarted, only the leo commander object is updated in the
   existing session.
-  
+
 - If you want to specify command line arguments to IPython (e.g. to choose a
   profile, or to start in 'pylab' mode), add this to your @settings:
   '@string ipython_argv = ipython -pylab' (where -pylab is the command line argument)
 
 Accessing IPython from Leo
 ++++++++++++++++++++++++++
+
 
 IPython code
 ------------
@@ -134,10 +139,10 @@ Suppose that a node had the following contents::
     1+2
     print "hello"
     3+4
-    
+
     def f(x):
         return x.upper()
-    
+
     f('hello world')
 
 If you press alt+I on that node, you will see the following in Leo log window (IPython tab)::
@@ -166,6 +171,7 @@ nodes.
 Accessing Leo nodes from IPython
 ++++++++++++++++++++++++++++++++
 
+
 The real fun starts when you start entering text to leo nodes, and are using
 that as data (input/output) for your IPython work.
 
@@ -184,7 +190,7 @@ You can see what nodes are accessible be entering (in IPython) wb.<TAB>. Example
     wb.bar         wb.Docs        wb.strlist     wb.csvr    
     [C:leo/core]|12> wb.tempfile
                 <12> <ipy_leo.LeoNode object at 0x044B6D90>
-    
+
 So here, we meet the 'LeoNode' class that is your key to manipulating Leo
 content from IPython!
 
@@ -199,7 +205,7 @@ we can access it from IPython (or from scripts entered into other Leo nodes!) by
 
     C:leo/core]|19> wb.spam.v
                <19> ['12', 2254]
-    
+
 'v' attribute stands for 'value', which means the node contents will be run
 through 'eval' and everything you would be able to enter into IPython prompt
 will be converted to objects. This mechanism can be extended far beyond direct
@@ -275,6 +281,7 @@ LeoNodes are iterable, so to see the headlines of all the children of 'spam' do:
 @cl definitions
 +++++++++++++++
 
+
 If the first line in the body text is of the form '@cl sometext', IPython will
 evaluate 'sometext' and call the result with the rest of the body when you do
 'wb.foo.v' or press alt+I on the node. An example is in place here. Suppose that we have defined a class (I
@@ -282,12 +289,12 @@ use the term class in a non-python sense here)::
 
     def rfile(body,node):
         """ @cl rfile 
-    
+
         produces a StringIO (file like obj) of the rest of the body """
-    
+
         import StringIO
         return StringIO.StringIO(body)
-    
+
 (note that node is ignored here - but it could be used to access headline,
 children etc.),
 
@@ -348,6 +355,7 @@ Press alt+I on the node to run it. The output will be written to
 Special node types
 ++++++++++++++++++
 
+
 @ipy-startup
 ------------
 
@@ -384,6 +392,7 @@ to access the same object.
 Launching ILeo from IPython
 +++++++++++++++++++++++++++
 
+
 Sometimes you may decide to launch Leo when an IPython session is already
 running. This is typically the case when IPython is launched from/as another
 application (Turbogears/Django shell, Sage, etc.), or you only decide later on
@@ -406,7 +415,7 @@ macro 'embleo' for later use (so that we don't have to repeat these steps)::
     ... Leo is starting at this point, but IPython prompt returns ...
 
     [c:leo/leo.repo/trunk]|6> macro embleo 2-5
-   
+
     [c:leo/leo.repo/trunk]|7> store embleo
     Stored 'embleo' (Macro)
 
@@ -417,6 +426,7 @@ be automatically used by ILeo.
 
 Declaring custom push-to-ipython handlers
 +++++++++++++++++++++++++++++++++++++++++
+
 
 Sometimes, you might want to configure what alt+I on a node does. You can do
 that by creating your own push function and expose it using
@@ -432,15 +442,16 @@ with U (yes, this is completely useless!)::
         if not node.h.endswith('U'):
             raise TryNext
         print node.b.upper()
-    
+
     ipy_leo.expose_ileo_push(push_upcase, 12)
-    
+
 (the priority should be between 0-100, with 0 being the highest (first one to
 try) - typically, you don't need to care about it and can usually omit the
 argument altogether)
 
 Example code snippets
 +++++++++++++++++++++
+
 
 Get list of all headlines of all the nodes in leo::
 
@@ -473,6 +484,7 @@ IPython, you can sort a node 'foo' in-place by doing ``sort_node(wb.foo)``)::
 Example use case: pylab
 +++++++++++++++++++++++
 
+
 If you install matplotlib and numpy, you can use ILeo to interactively edit and
 view your data. This is convenient for storing potentially valuable information
 in Leo document, and yields an interactive system that is comparable in
@@ -489,7 +501,7 @@ to install numpy and matplotlib::
 
     easy_install numpy
     easy_install matplotlib
-    
+
 Finally, you need to start up IPython with '-pylab' option. You can accomplish
 this by having the following under some @settings node::
 
@@ -513,16 +525,16 @@ Let's generate a simple array and edit it::
 This (the magic command %lee, or 'leo edit') will open variable 'a' for editing
 in Leo, in a convenient pretty-printed format. You can press alt+I on the node
 to push it back to IPython.
-    
+
 If you want to store the variable in a node with a different name (myarr), you can do::
 
     [c:/ipython]|54> wb.myarr.v = a
-        
+
 Then, you can always get the value of this array with wb.myarr.v. E.g. you could
 have a node that plots the array, with content::
 
     # press alt+i here to plot testarr
-    
+
     plot(wb.myarr.v)
 
 And, as per instructions, pressing alt+I will launch a new Tk window with the
@@ -531,13 +543,14 @@ plotted representation of the array!
 Magic functions
 +++++++++++++++
 
+
 %mb
 ---
 
 Execute leo minibuffer command. Tab completion works. Example::
 
     mb open-outline
-    
+
 %lee
 ----
 
@@ -557,17 +570,18 @@ Opens the macro MyMacro for editing. Press alt-I to push the edited macro back t
 
   s = 'hello word'
   lee s
-  
+
 Opens the variable s for editing. Press alt+I to push the new value to IPython.
 
 ::
 
     lee hist   
-    
+
 Opens IPython interactive history (both input and output) in Leo.
 
 Acknowledgements and history
 ++++++++++++++++++++++++++++
+
 
 This idea got started when I (Ville M. Vainio) saw this post by Edward Ream (the author of
 Leo) on IPython developer mailing list:

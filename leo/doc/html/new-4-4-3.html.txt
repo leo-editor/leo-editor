@@ -1,11 +1,12 @@
 .. rst3: filename: html\new-4-4-3.html
 
+
 ##########################################
 What's New in Leo 4.4.3
 ##########################################
 
 The highlights of Leo 4.4.3:
-    
+
 - @test and @suite nodes may now be embedded directly in derived files.
 - Added support for chapters in Leo's core.
 - Added support for zipped .leo files.
@@ -18,6 +19,7 @@ The highlights of Leo 4.4.3:
 
 .. .. contents::
 
+
 .. Links used in this document.
 .. _`leoBridge chapter`:    leoBridge.html
 .. _`debugging with Leo`:   debuggers.html
@@ -25,33 +27,34 @@ The highlights of Leo 4.4.3:
 Important new features
 **********************
 
+
 - @test and @suite nodes may now be embedded in derived files.
 - Added support for chapters to Leo's core
 
   Chapters are regions of a Leo outline whose root is an @chapter node. @chapter
   nodes may appear anywhere in an outline, but the create-chapter command (see
   below) creates @chapter nodes as children of a single @chapters node.
-  
+
   Selecting a chapter shows the nodes in the selected chapter; in this
   respect, chapters are like hoists. The main chapter represents the entire
   outline and can not be deleted by name. When chapters are in effect, Leo
   creates a hidden @chapters node containing one @chapter node for every chapter
   except the 'main' chapter.
-  
+
   Associated settings:
-      
+
   - The @bool use_chapters setting determines whether chapters are enabled.
   - The @bool use_chapter_tabs setting determines whether the chapters
     pop-up menu appears in the icon area. Choosing a chapter name from this list selects a chapter.
 
   When chapters are enabled, the Cmds:Chapters menu shows all available chapter commands:
-      
+
   - The create-chapter command creates an @chapter node and with a single node.
   - The delete-chapter command deletes the presently selected chapter.
   - The select-chapter command makes only the nodes of the selected chapter visible.
   - The move-node-to-chapter, clone-node-to-chapter and copy-node-to-chapter commands
     add a node (and its descendants) to another chapter.
-  
+
 - Added support for compressed .leo files
 
   Leo now has save-file-as-zipped and save-file-as-unzipped commands, and
@@ -71,17 +74,18 @@ Important new features
   other program to expand the .leo file contained within. I've only tested this
   on XP, but it should work everywhere...At present the code uses Python's
   zipfile module to read and write zipped files.
-    
+
 - Added leoBridge module.
   See the `leoBridge chapter`_ for full details.
-  
+
 - Removed all (or almost all) gui-independent from Leo's core.
-    
+
 - Improved support for the winpdb debugger.
   See the `debugging with Leo`_ chapter for full details.
 
 New commands
 ************
+
 
 ::
 
@@ -103,8 +107,9 @@ New commands
 New settings
 ************
 
+
 ::
-    
+
     @openwith nodes
     @enabled-plugins nodes 
     @bool center_selected_tree_node
@@ -121,9 +126,10 @@ For details of these new settings, see leoSettings.leo
 Plugins
 *******
 
+
 - The __wx_gui.py plugin is now minimally functional. Alas, some problems
   remain. See the bug list in the plugin for details.
-    
+
 - Changed bindings in the UniversalScrolling plugin.
 
 - Registered the write-restructured-text command in rst3 plugin.
@@ -131,11 +137,12 @@ Plugins
 Minor improvements
 ******************
 
+
 - See the release notes for a list of the many bugs fixed in Leo 4.4.3.
-    
+
 - Warn on dubious section brackets.
   For details, see http://sourceforge.net/forum/message.php?msg_id=4162357
-    
+
 - Added Find and Spell tabs to log pane on startup.
   The spell tab is only shown if Aspell was properly imported.
 

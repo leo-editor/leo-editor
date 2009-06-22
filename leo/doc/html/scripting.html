@@ -405,6 +405,8 @@ for f in windows:
     g.es(c)
     g.es(c.rootPosition())
 </pre>
+<p>There is also g.app.commandrs() method, that gives the list of all active
+commanders directly.</p>
 </div>
 <div class="section" id="getting-and-setting-headline-and-body-text">
 <h1>Getting and setting headline and body text</h1>
@@ -1804,6 +1806,52 @@ else:
 </pre>
 <p>k.arg is the value returned by k.getArg.
 This example code just prints the value of k.arg and clears the input state.</p>
+</div>
+<div class="section" id="creating-leo-commands-g-command">
+<h1>Creating Leo commands - &#64;g.command</h1>
+<p>You can use the <tt class="docutils literal"><span class="pre">&#64;g.command</span></tt> decorator to create new commands. This is an easy-to-use
+wrapper for <tt class="docutils literal"><span class="pre">c.k.registerCommand()</span></tt>, with the following advantages over it:</p>
+<ul class="simple">
+<li>The new command is automatically created for all Leo controllers (open Leo documents).</li>
+<li>The new command is also automatically available on all new Leo controllers
+(documents that will be opened in the future).</li>
+<li>Prettier syntax.</li>
+</ul>
+<p>Therefore, <tt class="docutils literal"><span class="pre">&#64;g.command</span></tt> can be naturally prototyped with execute-script (<tt class="docutils literal"><span class="pre">Ctrl+b</span></tt>) in Leo node.</p>
+<p>As an example, you can execute this script to make command <tt class="docutils literal"><span class="pre">hello</span></tt> available:</p>
+<pre class="literal-block">
+&#64;g.command('hello')
+def hello_f(event):
+    # use even['c'] to access controller
+    c = event['c']
+    pos = c.currentPosition()
+    g.es('hello from', pos.h)
+</pre>
+<p>If you want to create a plugin that only exposes new commands, this is basically all you need in the plugins .py file.
+There is no need to hook up for 'after-create-leo-frame' just to make your commands available.</p>
+<p>If you want to create a command in object oriented style (so that the commands deal with your own objects),
+create them using closures like this (note how <tt class="docutils literal"><span class="pre">self</span></tt> is available inside command functions):</p>
+<pre class="literal-block">
+class MyCommands:
+    def create(self):
+        &#64;g.command('foo1')
+        def foo1_f(event):
+           self.foo = 1
+
+        &#64;g.command('foo2')
+        def foo2_f(event):
+           self.foo = 2
+
+        &#64;g.command('foo-print')
+        def foo_print_f(event):
+           g.es('foo is', self.foo)
+
+o = MyCommands()
+o.create()
+</pre>
+<p>Note that running create() in this example in <cite>after-create-leo-frame</cite> is pointless - the
+newly created commands will override the commands in all previous controllers. You should consider
+this in your plugin design, and create your commands only once per Leo session.</p>
 </div>
 </div>
 </body>

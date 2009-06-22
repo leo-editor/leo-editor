@@ -324,15 +324,21 @@ let's see how to use Leo as a simple outliner.</p>
 commands from the Outline menu:</p>
 <ul class="simple">
 <li>Click the expansion box of <a class="reference external" href="glossary.html#nodes">nodes</a> to show and hide their children.</li>
-<li>The <tt class="docutils literal"><span class="pre">Insert</span> <span class="pre">Node</span></tt> <a class="reference external" href="commands.html">command</a> inserts a new headline into the outline.</li>
-<li>The <tt class="docutils literal"><span class="pre">Delete</span> <span class="pre">Node</span></tt> <a class="reference external" href="commands.html">command</a> deletes a headline and all its children.</li>
-<li>The <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Up</span></tt>, <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Down</span></tt>, <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Left</span></tt> and <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Right</span></tt> <a class="reference external" href="commands.html">commands</a> move the currently selected node,
-along with all its descendants.</li>
-<li>The <tt class="docutils literal"><span class="pre">Promote</span></tt> <a class="reference external" href="commands.html">command</a> makes all the <a class="reference external" href="glossary.html#child">children</a> of a headline siblings of the headline.
-The <tt class="docutils literal"><span class="pre">Demote</span></tt> <a class="reference external" href="commands.html">command</a> makes all following <a class="reference external" href="glossary.html#siblings">siblings</a> of a headline children of the headline.</li>
-<li>You can cut, copy and paste entire <a class="reference external" href="glossary.html#nodes">nodes</a> (including their descendants) with
-the Cut Node, Copy Node and Paste Node <a class="reference external" href="commands.html">commands</a>.</li>
-<li>We'll discuss the <tt class="docutils literal"><span class="pre">Clone</span> <span class="pre">Node</span></tt> <a class="reference external" href="commands.html">command</a> in the next section.</li>
+<li>The <tt class="docutils literal"><span class="pre">Insert</span> <span class="pre">Node</span></tt> command (<tt class="docutils literal"><span class="pre">Ctrl+I</span></tt>) inserts a new headline into the outline.</li>
+<li>The <tt class="docutils literal"><span class="pre">Cut</span> <span class="pre">Node</span></tt> command (<tt class="docutils literal"><span class="pre">Ctrl+Shift+X</span></tt>) deletes a headline and all its children, and copies the
+structure to clipboard - ready to paste with <tt class="docutils literal"><span class="pre">Paste</span> <span class="pre">Node</span></tt> command (<tt class="docutils literal"><span class="pre">Ctrl+Shift+V</span></tt>). Use
+<tt class="docutils literal"><span class="pre">Copy</span> <span class="pre">Node</span></tt> command (<tt class="docutils literal"><span class="pre">Ctrl+Shift+C</span></tt>) to copy node to clipboard without deleting it
+from outline. Copy-paste command family works across different Leo documents.</li>
+<li>The <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Up</span></tt> (<tt class="docutils literal"><span class="pre">Ctrl+U</span></tt>), <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Down</span></tt> (<tt class="docutils literal"><span class="pre">Ctrl+D</span></tt>), <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Left</span></tt> (<tt class="docutils literal"><span class="pre">Ctrl+L</span></tt>) and <tt class="docutils literal"><span class="pre">Move</span> <span class="pre">Right</span></tt> (<tt class="docutils literal"><span class="pre">Ctrl+R</span></tt>)
+commands move the currently selected node, along with all its descendants.</li>
+<li>The <tt class="docutils literal"><span class="pre">Promote</span></tt> (<tt class="docutils literal"><span class="pre">Ctrl+}</span></tt>) command makes all the children of a headline siblings of the headline.
+The <tt class="docutils literal"><span class="pre">Demote</span></tt> (<tt class="docutils literal"><span class="pre">Ctrl+{</span></tt>) command makes all following <a class="reference external" href="glossary.html#siblings">siblings</a> of a headline children of the headline.</li>
+<li>Move around the tree and expand/collapse nodes by pressing Alt + arrow keys. This also moves the focus
+to tree, so, after pressing Alt + arrow, you can move around by using arrow keys alone. Return the
+focus to the body control by pressing <tt class="docutils literal"><span class="pre">Enter</span></tt>.</li>
+<li>To edit the headline, use press <tt class="docutils literal"><span class="pre">Ctrl+H</span></tt>. This works regardless of whether body or headline
+has focus.</li>
+<li>We'll discuss the <tt class="docutils literal"><span class="pre">Clone</span> <span class="pre">Node</span></tt> command in the next section.</li>
 </ul>
 <p>You enter <a class="reference external" href="glossary.html#body-text">body text</a> for any node by selecting the node's headline in the
 outline pane and then typing in the body pane. Leo has a full range of <a class="reference external" href="commands.html#the-edit-menu">editing
@@ -356,10 +362,7 @@ That creates an <strong>&#64;thin node</strong>.
 The <strong>&#64;thin tree</strong> (the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> node and all its descendants) corresponds to the derived file <em>filename</em>.
 Leo writes a <a class="reference internal" href="#derived-files">derived file</a> corresponding to the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> tree to your hard drive when Leo saves your outline (.leo file).
 When opening a .leo file, Leo reads all the <a class="reference internal" href="#derived-files">derived files</a> corresponding to <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> nodes in the <a class="reference internal" href="#leo-s-main-window">outline</a>.</p>
-<p><strong>Note</strong>: you can <tt class="docutils literal"><span class="pre">&#64;file</span></tt> instead of <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> to create derived files.
-<tt class="docutils literal"><span class="pre">&#64;thin</span></tt> is more friendly to CVS and other Source Code Control Systems.
-This tutorial only discusses <a class="reference external" href="glossary.html#thin">&#64;thin</a> <a class="reference external" href="glossary.html#nodes">nodes</a>.
-A good rule of thumb is to use <a class="reference external" href="glossary.html#thin">&#64;thin</a> <a class="reference external" href="glossary.html#nodes">nodes</a> unless you have a specific reason to do otherwise.
+<p>A good rule of thumb is to use <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> nodes unless you have a specific reason to do otherwise.
 See <a class="reference external" href="directives.html">Chapter 4: Writing Programs in Leo</a> for a full discussions of the various ways of creating <a class="reference internal" href="#derived-files">derived files</a>.</p>
 <p><strong>Important</strong>:
 You must tell Leo the order in which to write data from the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> tree to the <a class="reference internal" href="#derived-files">derived file</a>.
@@ -782,9 +785,9 @@ wise to &quot;know the rules before you break them.&quot;</p>
 <h2>Scripting Leo</h2>
 <p>Leo is fully scriptable using the Python language.
 <strong>Leo can execute any body text as a Python script</strong>.
-To run the entire body text as a script, simply choose the node and execute the <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> <a class="reference external" href="commands.html">command</a>.
-If text is selected, the <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> <a class="reference external" href="commands.html">command</a> will run just the selected text as the script.</p>
-<p>The <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> <a class="reference external" href="commands.html">command</a> <strong>preprocesses</strong> the script before executing it.
+To run the entire body text as a script, simply choose the node and execute the <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> command (<tt class="docutils literal"><span class="pre">Ctrl+B</span></tt>).
+If text is selected, the <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> command will run just the selected text as the script.</p>
+<p>The <tt class="docutils literal"><span class="pre">Execute</span> <span class="pre">Script</span></tt> command <strong>preprocesses</strong> the script before executing it.
 Leo preprocesses scripts in exactly the same way that Leo writes derived files.
 That is,
 <strong>Leo expands section references and processes &#64;others directives</strong> before executing the script.

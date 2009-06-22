@@ -1,12 +1,14 @@
 .. rst3: filename: html\new-4-4-6.html
 
+
 ##########################################
 What's New in Leo 4.4.6
 ##########################################
 
 Leo 4.4.6 fixes all known bugs and adds a few new features.
-    
+
 .. .. contents::
+
 
 .. Links used in this document.
 .. _`leoBridge chapter`:    leoBridge.html
@@ -14,6 +16,7 @@ Leo 4.4.6 fixes all known bugs and adds a few new features.
 
 New commands
 ++++++++++++
+
 
 ::
 
@@ -25,12 +28,14 @@ Replaced the delete-all-icons command with a script in scripts.leo.  This comman
 New features
 ++++++++++++
 
+
 - Added support for @auto xml and @auto javascript.
   Use @data import_xml_tags setting to specify the xml tags that act as organizers.
   Javascript regexps that look like section references cause problems, but that can not be helped.
 
 New settings
 ++++++++++++
+
 
 - Added support for @data nodes in settings files.
 

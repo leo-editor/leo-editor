@@ -1,5 +1,6 @@
 .. rst3: filename: html\plugins.html
 
+
 ##########################
 Chapter 12: Plugins
 ##########################
@@ -14,6 +15,7 @@ script buttons`_. Script buttons are extraordinarily useful. Try them, you'll be
 instantly hooked.
 
 .. .. contents::
+
 
 .. External links...
 .. _docutils:             http://docutils.sourceforge.net
@@ -30,18 +32,19 @@ instantly hooked.
 Enabling plugins
 ++++++++++++++++
 
+
 You enable or disable plugins using @enabled-plugins nodes in leoSettings files (leoSettings.leo, myLeoSettings.leo or the .leo file being loaded).  See `Specifying settings`_ for full details of settings files.
-    
+
 The body text of the @enabled-plugins node contains a list of enabled plugins.
 Notes:
-    
+
 - Leo attempts to load all plugins every time an @enabled-plugins node is seen.
    If the plugin has already been loaded, Leo silently ignores the request to
    re-enable the plugin. Leo never attempts to disable a plugin while processing
    enabled plugin strings. Thus, plugins enabled in an @enabled-plugins node in
    leoSettings.leo *will* be enabled regardless of the contents of any other
    @enabled-plugins node.
-   
+
 - g.app.gui.getEnabledPlugins contains the last value last processed
    @enabled-plugins node.
 
@@ -53,10 +56,12 @@ Body pane
 arrows.py
 *********
 
+
 Rebinds up/down arrow keys.
 
 image.py
 ********
+
 
 Handles images in body text. Based on work by Gil Shwartz. Brent Burley provided
 many important insights. See:
@@ -64,6 +69,7 @@ http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/52264
 
 rClick.py
 *********
+
 
 This plugin provides a simple but powerful and flexible system of managing
 scriptable context menus.
@@ -80,6 +86,7 @@ Many executable howto's, demos and examples can be found in::
 
 autocompleter.py
 ****************
+
 
 Autocompletion and calltips plugin.
 
@@ -121,6 +128,7 @@ autocompletion and calltip information between .leo files/sessions.
 color_markup.py
 ***************
 
+
 Handle coloring for markup in doc parts and Python triple-double-quoted strings.
 
 **Important**:
@@ -137,7 +145,7 @@ The currently supported markups are::
     {picture file=<filename>}   # load the picture indicated by <filename>
     http://url                  # URL support: double clicking on the url will open it in the default browser.
     https://url                 # URL support: double clicking on the url will open it in the default browser.
-    
+
 -   Note 1: italics and bold markups can be nested, e.g.,::
 
         ''__text__''            # write text in italics and bold
@@ -153,6 +161,7 @@ Invisibles" from the Edit menu.
 script_io_to_body.py
 ********************
 
+
 Send output from the Execute Script command to the end of the body pane.
 
 Commands & directives
@@ -163,10 +172,12 @@ Commands & directives
 add_directives.py
 *****************
 
+
 Supports new Leo directives.
 
 bibtex.py
 *********
+
 
 This plugin manages BibTeX files with Leo. Create a bibliographic database by
 putting ``@bibtex filename`` in a headline. Entries are added as nodes, with
@@ -202,13 +213,13 @@ outline::
      +@string
       j2 = {Journal2}
       j3 = {Journal3}
-    
+
 Will be written as::
 
     @string{j1 = {Journal1}}
     @string{j2 = {Journal2}}
     @string{j3 = {Journal3}}
-    
+
     @article{AUj1,
     author = {A. Uthor},
     journal = j1}
@@ -223,6 +234,7 @@ valid BibTeX file.
 
 ConceptualSort.py
 *****************
+
 
 This plugin is enhances the EditAttributes.py plugin. It puts a command in
 Outline called ConceptualSort. This will prompt you for a concept to sort by.
@@ -250,6 +262,7 @@ since indentation is added at compile time.
 datenodes.py
 ************
 
+
 This plugin adds **date nodes** (nodes with dates as their headlines) to the
 current outline. Date nodes may be added one at a time, a month's-worth at a
 time, or a year's-worth at a time. The format of the headlines is
@@ -257,6 +270,7 @@ configurable in the ini file.
 
 FileActions.py
 **************
+
 
 Leo plugin that permits the definition of actions for double-clicking on file
 nodes. Double-clicking in a ``@file`` node writes out the file if changes have
@@ -285,6 +299,7 @@ file actions, Leo does not do anything with or to such files.
 groupOperations.py
 ******************
 
+
 A Leo Plugin that adds Group commands functionality.  Restrictions currently apply to using Leo with a Tk front end.
 There are several commands in this plugin:
 
@@ -304,6 +319,7 @@ There are several commands in this plugin:
 import_cisco_config.py
 **********************
 
+
 This plugin adds a menu item under the File->Import menu to import
 Cisco configuration files.
 The plugin will:
@@ -321,14 +337,15 @@ The plugin will:
     NOT put keywords that are followed by indented blocks (these are taken care of by
     point 2 above). The negated form of the keywords (for example, if the keyword is
     'service', the negated form is 'no service') is also included in the sections.
-    
-    
+
+
 4)  Not display consecutive empty comment lines (lines with only a '!').
 
 All created sections are alphabetically ordered.
 
 Library.py
 **********
+
 
 A plugin to store Leo trees in anydbm files. Note: there isn't such a thing as an
 anydbm file: it's whatever the anydbm module uses.
@@ -348,16 +365,19 @@ accessible.
 macros.py
 *********
 
+
 Creates new nodes containing parameterized section references.
 
 mod_autosave.py
 ***************
+
 
 Autosave the Leo document every so often. The time between saves is given in
 seconds in autosave.ini.
 
 mod_read_dir_outline.py
 ***********************
+
 
 This plugin allows Leo to read a complete directory's outline into a Leo's
 Outline. Directories are converted into headlines and files names are listed
@@ -366,10 +386,12 @@ into the bodies.
 mod_timestamp.py
 ****************
 
+
 Timestamp all save operations to show when they occur.
 
 nodeActions.py
 **************
+
 
 A Leo plugin that permits the "easy" assignment of scripts to be performed on
 double-clicked nodes based on pattern matching.
@@ -474,10 +496,10 @@ Directives:
       shell-style pattern syntax.
 
       For example, the following patterns will match the same headline string::
-      
+
          Unix shell-style pattern:
             @files *.py
-         
+
          Regular Expression patern:
             ^@files .*\.py$ [X]
 
@@ -504,7 +526,7 @@ Directives:
       passed to other plugins.
       The ">" represents a right arrow that
       symbolizes the passing of the event to the next plugin.
-      
+
       If the headline matched more than one headline,
       the double-click event will be passed to the next plugin if the
       directive is associated with any of the matched patterns.
@@ -512,7 +534,7 @@ Directives:
    The directive(s) for a pattern must be contained within a single set of
    brackets, separated from the pattern by a space, with or without a comma
    separator.  For example, the following specifies all three directives::
-   
+
       ^@files .*\.py$ [X,V>]
 
 Configurations:
@@ -520,7 +542,7 @@ Configurations:
    Leo's support for setting global variables within an @settings node's
    sub-nodes in the leoSettings.leo, myLeoSettings.leo, and the project Leo
    file:
-   
+
    @bool nodeActions_save_atFile_nodes = False
 
       :True:
@@ -537,7 +559,7 @@ Configurations:
       Specifies the type of messages to be sent to the log pane.  Specifying a
       higher message level will display that level and all lower levels.
       The following integer values are supported:
-      
+
       :0: no messages
       :1: Plugin triggered and the patterns that were matched (default)
       :2: Double-click event passed or not to next plugin
@@ -560,16 +582,18 @@ Script examples:
 
       The following script can be placed in the body of a pattern's node to
       execute a command in the first line of the body of a double-clicked node::
-      
+
          g.os.system('"Start /b ' + pClicked.bodyString() + '"')
 
 outline_export.py
 *****************
 
+
 Modify the way exported outlines are displayed.
 
 paste_as_headlines.py
 *********************
+
 
 This plug-in takes any text is stored in the clipboard and creates new headlines
 for each line of text. The paste routine checks to make sure the line of text is not
@@ -582,6 +606,7 @@ the Edit menu directly under the existing Paste option.
 pretty_print.py
 ***************
 
+
 A plugin that helps customize pretty printing. It creates a do-nothing subclass
 of the default pretty printer. To customize, simply override in this file the
 methods of the base prettyPrinter class in leoCommands.py. You would typically
@@ -592,6 +617,7 @@ method.
 
 scheduler.py
 ************
+
 
 A plugin to schedule commands for later execution. It's provides the ability to
 issue commands at a future time and to write messages that will be displayed at
@@ -609,6 +635,7 @@ There is also the option to Cancel out any scheduled commands/messages.
 table.py
 ********
 
+
 This plugin puts the View Table command in the Outline menu. This command checks
 the current node using the csv (comma separated values) mods Sniffer. It tries
 to determine the format that is in the nodes data. If you had excel data in it,
@@ -618,6 +645,7 @@ tktable widget at http://sourceforge.net/projects/tktable.
 
 templates.py
 ************
+
 
 This plugin lets you add customizable templates to an outline. Templates are
 like any other node except that the plugin replaces %s in the body text by
@@ -644,6 +672,7 @@ sessions.
 word_cound.py
 *************
 
+
 This plugin displays a message box with information about the body text of the current node 
 such as number of: characters, words, lines, and paragraphs. It adds a "Word Count..." option
 to the bottom of the Edit menu that will activate the message box.
@@ -658,6 +687,7 @@ Dialogs
 gtkDialogs
 **********
 
+
 gtkDialogs replaces Tk's file dialogs with Gtk file chooser dialogs.
 
 The plugin is aimed mainly at Linux users with pyGtk installed on their systems,
@@ -671,30 +701,36 @@ Debugging &  testing
 failed_import.py
 ****************
 
+
 A plugin to test import problems.
 
 dump_globals.py
 ***************
+
 
 Dump Python globals at startup.
 
 enable_gc.py
 ************
 
+
 Enable debugging and tracing for Python's garbage collector.
 
 trace_gc.py
 ***********
+
 
 Trace changes to Leo's objects at idle time.
 
 trace_keys.py
 *************
 
+
 Trace keystrokes in the outline and body panes.
 
 trace_tags.py
 *************
+
 
 Trace the most common hooks, but not key, drag or idle hooks.
 
@@ -706,6 +742,7 @@ External editors & Open With
 mod_tempfname.py
 ****************
 
+
 Replaces ``Commands.openWithTempFilePath`` so Leo opens temporary
 files with a filename that begins with the headline text, and
 located in a ``username_Leo`` subdirectory of the temporary
@@ -715,6 +752,7 @@ see which temporary file is related to which outline node.
 open_shell.py
 *************
 
+
 Creates an 'extensions' menu with commands to open either an xterm on Linux
 or a cmd windows/explorer window on win32 in the directory of the current ``@file`` node.
 This allows quick navigation to facilitate testing and navigating large systems
@@ -722,6 +760,7 @@ with complex directories.
 
 open_with.py
 ************
+
 
 This plugin creates menu items in the File:Open With menu.
 
@@ -731,7 +770,7 @@ plugin must be active for these settings to have any effect.
 The headline of an @openwith node has the form::
 
     @openwith name = shortcut
-    
+
 name is name of the menu item. shortcut specifies the shortcut used to invoke
 the menu item. shortcut may be None.
 
@@ -740,29 +779,29 @@ The body text @openwith nodes should contain a single line contain a tuple of th
     command,arg,ext
 
 For example::
-    
+
     'subprocess.Popen',['pythonw','C:/Python24/Lib/idlelib/idle.pyw'],'.py'
-    
+
 When the user selects this menu item Leo executes command(arg+path) where path
 is the full path to the temp file. The ext argument specifies the extension of
 the temp file.
-    
+
 Notes:
 
 - command is a string.  Valid values are::
-    
+
   'subprocess.Popen'
   'os.system'
   'os.startfile'
   'os.spawnl'
   'os.spawnv'
   'exec'
-  
+
 - arg is either a single string or a list of strings.
 
 - ext is a string or None. If None, Leo computes a file extension base on what
   @language directive is in effect.
-  
+
 - If the .leo file being loaded contains  @openwith nodes, the File:Open With menu contains only the items created by those nodes.  Similarly, @openwith nodes in myLeoSettings.leo override entries in leoSettings.leo.
 
 - If no @openwith nodes are found anywhere the openWith plugin uses hard-coded tables in the plugin itself.
@@ -773,18 +812,19 @@ subprocess.py in Leo's extensions folder if necessary.
 
 For Windows systems you can install Python's subprocess module in Python 2.2 or
 2.3 as follows:
-    
+
 - Go to http://www.effbot.org/downloads/#subprocess
 
 - Download and execute one of the following installers, depending on your version of Python::
 
     subprocess-0.1-20041012.win32-py2.3.exe 
     subprocess-0.1-20041012.win32-py2.2.exe
-        
+
 This installer installs the subprocess sources and also _subprocess.pyd in Python's site-packages folder.
 
 temacs.py & usetemacs.py
 ************************
+
 
 ``temacs`` is a binding module for the Tkinter Text widget.
 ``usetemacs`` is a Leo plugin that patches the temacs modules Emacs emulation
@@ -793,8 +833,9 @@ into the standard Leo Tkinter Text editor.
 vim.py
 ******
 
+
 A plugin that communicates with VIM:
-    
+
 When properly installed, this plugin does the following:
 
 - Double clicking on a node's icon opens that node in VIM.
@@ -808,11 +849,13 @@ When properly installed, this plugin does the following:
 word_export.py
 **************
 
+
 Use commands in the ``Plugins:Word Export:Export`` menu to formats and export
 the selected outline to a Word document, starting Word if necessary.
 
 xemacs.py
 *********
+
 
 This plugin allows you to edit nodes in emacs/xemacs.
 Depending on your preference, selecting or double-clicking a node will pass the
@@ -827,10 +870,12 @@ Files
 empty_leo_file.py
 *****************
 
+
 Opens any empty file as a minimal .leo file.
 
 leoOPML.py
 **********
+
 
 .. _OPML:                   http://en.wikipedia.org/wiki/OPML
 .. _`OPML 2.0 standard`:    http://www.opml.org
@@ -845,9 +890,9 @@ The write-opml-file command writes the present Leo outline to an .opml file.
 Various settings control what gets written to .opml files, and in what format.
 As usual, you specify settings for the OPML plugin using leoSettings.leo.
 The settings for the OPML are found in the node::
-    
+
     @settings-->Plugins-->opml plugin
-    
+
 Here are the settings that control the format of .opml files.
 The default values are shown.
 
@@ -859,7 +904,7 @@ The default values are shown.
 
   The namespace urn for the xmlns attribute of ``<opml>`` elements.
   This value typically is not used, but it should refer to Leo in some way.
-    
+
 - ``@bool opml_use_outline_elements = True``
 
   If True, Leo writes body text to ``<:body>`` elements nested in ``<outline>`` elements.
@@ -877,7 +922,7 @@ The default values are shown.
 - ``@bool opml_write_body_text = True``
 
   If True, Leo writes body text to the OPML file.
-  
+
 - ``@bool opml_write_derived_files = True``
 
   If True, Leo writes derived files when writing .opml files.
@@ -894,7 +939,7 @@ The default values are shown.
 
   If True, Leo writes `body_outline_ratio`` and ``global_window_position``
   attributes to the ``<head>`` element of the .opml file.
-  
+
 - ``@bool opml_write_uAs = True``
 
   If True, Leo writes unknown attributes (uA's) in <:uA> sub-elements of <outline> elements.
@@ -902,20 +947,22 @@ The default values are shown.
 lineNumbers.py
 **************
 
+
 Adds #line directives in perl and perlpod programs.
 Currently supports only perl and perlpod.
 
 multifile.py
 ************
 
+
 Multipath enables the ability to write a file to multiple locations. It acts as
 a post-write mechanism, a file must be written to the file system for it to work.
 At this point it is not a replacement for ``@path`` or an absolute path, it works in
 tandem with them. To use, place ``@multipath`` at the start of a line in the root
 node or an ancestor of the node. The format is (On Unix systems)::
-    
+
     @multipath /machine/unit/:/machine/robot/:/machine/
-    
+
 It will place a copy of the written file in each of these directories.
 
 There is an additional directive that simplifies common paths, it is called
@@ -940,12 +987,14 @@ directives must at the beginning of the line and by themselves.
 niceNosent.py
 *************
 
+
 Preprocess ``@file-nosent`` nodes: make sure each subnode ends
 with exactly one newline, replace all tabs with spaces, and
 add a newline before class and functions in the derived file.
 
 leoToRTF
 ********
+
 
 This plugin takes an outline stored in LEO and outputs it as a numbered list to
 an RTF file. The RTF file can be loaded into Microsoft Word and formatted as a
@@ -963,6 +1012,7 @@ you may need to modify it depending on your system.
 
 leoToHTML
 *********
+
 
 This plugin takes an outline stored in LEO and converts it to html which is
 then either saved in a file or shown in a browser.
@@ -985,6 +1035,7 @@ properties dialog.
 
 leoOPML
 *******
+
 
 This plugin reads and writes Leo outlines in .opml (http://en.wikipedia.org/wiki/OPML) format.
 
@@ -1036,6 +1087,7 @@ Guis
 __wx_alt_gui.py
 ***************
 
+
 This plugin allows wxPython to be used as leo's gui instead of TK.
 
 It is a prototype under development and so does not have all the features of Tk
@@ -1054,6 +1106,7 @@ Icon and status areas
 chapter_hoist.py
 ****************
 
+
 This plugin puts two buttons in the icon area.
 The 'Save Hoist' button hoists the presently selected node and creates a button
 which can later rehoist the same node.
@@ -1064,25 +1117,36 @@ This plugin replaces the old chapters plugin.
 nav_buttons.py
 **************
 
-Adds navigation buttons to icon bar.
+
+Adds navigation buttons to icon bar. Tk only.
+
+nav_qt.py
+*********
+
+
+Qt version of nav_buttons.py (history navigation)
 
 newButtons.py
 *************
+
 
 Automatically add nodes for common tasks.
 
 hoist.py
 ********
 
+
 Add Hoist/De-Hoist buttons to the toolbar.
 
 nodenavigator.py
 ****************
 
+
 Adds "Recent" and "Marks" pulldown buttons to the toolbar.
 
 searchbox.py
 ************
+
 
 Adds a quick search to Leo's toolbar, along with a "GO" button to do quick
 searches right from the main Leo window. All the current search options are
@@ -1096,12 +1160,14 @@ original search mode is used.
 shortcut_button.py
 ******************
 
+
 Creates a 'Shortcut' button in the icon area.
 Pressing the Shortcut button creates *another* button which when pressed will
 select the presently selected node at the time the button was created.
 
 toolbar.py
 **********
+
 
 A plugin that enhances Leo's iconBar and script buttons.
 
@@ -1123,6 +1189,7 @@ see test/testAtPopup.leo for examples of enhanced buttons
 
 UNL.py
 ******
+
 
 This plugin supports Uniform Node Locators (UNL's). UNL's specify nodes within
 Leo files. UNL's are not limited to nodes within the present Leo file; you can
@@ -1148,7 +1215,7 @@ refer to a node specified in <path> For example, double clicking the following
 headline will take you to Chapter 8 of Leo's Users Guide::
 
     @url file:c:/prog/leoCvs/leo/doc/leoDocs.leo#Users Guide-->Chapter 8: Customizing Leo
-    
+
 For example, suppose you want to email someone with comments about a Leo file.
 Create a comments.leo file containing ``@url UNL`` nodes. That is, headlines are
 ``@url`` followed by a UNL. The body text contains your comments about the nodes in
@@ -1167,8 +1234,27 @@ navigate to the nodes 'by hand' by following the arrows in the UNL.
 
 - You don't have to replace spaces in URL's or UNL's by '%20'.
 
+quicksearch.py
+**************
+
+
+This plugin adds a fast-to-use search widget, in the style of "Find in files" feature of many editors.
+
+Just load the plugin, activate "Nav" tab, enter search text and press enter.
+
+colorize_headlines.py
+*********************
+
+
+A plugin that manipulates appearance of individual tree widget items.
+
+This plugin is mostly an example of how to change appearance of headlines - as
+such, it does a relatively mundane chore of highlighting @thin, @auto, @shadow
+nodes in bold.
+
 LeoN
 ++++
+
 
 LeoN is Leo over the Network. LeoN is Collaborative Leo. This is an important
 project for Leo's long-term development. See leo/doc/LeoN for important research
@@ -1182,6 +1268,7 @@ Menus & translations
 chinese_menu.py
 ***************
 
+
 Translate a few menu items into Simplified Chinese
 本插件将部分Leo菜单翻译成简体中文
 By Zhang Le <ejoy@xinhuanet.com>
@@ -1189,10 +1276,12 @@ By Zhang Le <ejoy@xinhuanet.com>
 french_fm.py
 ************
 
+
 Traduit les menus en Français.
 
 pie_menus.py
 ************
+
 
 Adds pie menus.  See http://www.piemenus.com/
 
@@ -1203,6 +1292,7 @@ Nodes
 
 at_folder.py
 ************
+
 
 Synchronizes ``@folder`` nodes with folders. If a node is named ``@folder
 path_to_folder``, the content (filenames) of the folder and the children of that
@@ -1216,6 +1306,7 @@ groups), while keep every files in a flat/single directory on your computer.
 
 at_produce.py
 *************
+
 
 Executes commands in nodes whose body text starts with ``@produce``.
 To use, put in the body text of a node::
@@ -1236,6 +1327,7 @@ will hang Leo.
 at_view.py
 **********
 
+
 A plugin that supports ``@clip``, ``@view`` and ``@strip`` nodes.
 
 -   Selecting a headline containing ``@clip`` appends the contents of the clipboard to
@@ -1251,6 +1343,7 @@ This plugin also accumulates the effect of all ``@path`` nodes.
 
 autotrees.py
 ************
+
 
 The AutoTrees plugin is a helper plugin designed to make it very easy to write
 "handler" plugins to manage dynamic content in Leo outlines. AutoTrees provides:
@@ -1285,6 +1378,7 @@ You can do this as a standard plugin, but as an AutoTrees handler you,
 base64Packager.py
 *****************
 
+
 This plugin allows the user to import binary data and store it in Leo as a
 base64 string. This plugin adds ``Import base64`` and ``Export base64`` commands
 to the Import menu and adds the 'View base64' command to the outline menu. The
@@ -1307,10 +1401,11 @@ icon will require scrolling to find. Id like to change this in the future.
 fastGotoNode.py
 ***************
 
+
 A Leo plugin that adds quick utility commands through a pop-up menu.
 To summon Menu, type control-space.
 To unsummon, Right Click.
-    
+
 1. Movement. If a node has ancestors,siblings or children a menu option will
 appear offering the user the ability to jump to the node from the current node.
 This is an improvement over moving one node at a time with the keyboard
@@ -1325,6 +1420,7 @@ parent's parent or after a sibling, if they exist.
 
 mod_labels.py
 *************
+
 
 This plugin allows you to associate information with nodes. This information is
 organized around "labels", which is are just strings and freely chosen by the
@@ -1346,6 +1442,7 @@ previous content is available under the label "before change:"
 
 read_only_nodes.py
 ******************
+
 
 A plugin to create and update ``@read-only`` nodes. I wanted to have the ability to
 import files in "read-only" mode, that is, in a mode where files could only be
@@ -1385,6 +1482,7 @@ If FTP authentication (username/password) is required, it can be specified as fo
 run_nodes.py
 ************
 
+
 Runs a program and interface Leo through its input/output/error streams.
 Double clicking the icon box whose headlines are ``@run 'cmd args'`` will execute
 the command. There are several other features, including ``@arg`` and ``@input`` nodes.
@@ -1420,13 +1518,14 @@ Terminates the argument list. ``@run # <comment>`` is also valid.
 slideshow.py
 ************
 
+
 This plugin supports slideshows in Leo outlines.
 
 It defines four new commands:
 
 - next-slide-show:  move to the start of the next slide show,
   or the first slide show if no slide show has been seen yet.
-  
+
 - prev-slide-show:  move to the start of the previous slide show,
   or the first slide show if no slide show has been seen yet.
 
@@ -1442,6 +1541,7 @@ All these commands ignore @ignore trees.
 startfile.py
 ************
 
+
 Launches (starts) a file given by a headline when double-clicking the icon.
 Ignores headlines starting with an '@'. Uses the ``@folder`` path if the headline
 is under an ``@folder`` headline. Otherwise the path is relative to the Leo file.
@@ -1454,6 +1554,7 @@ Plugins manager & menu
 leoupdate.py
 ************
 
+
 A plugin to automatically update Leo from the current CVS version
 of the code stored on the SourceForge site. You can view individual
 files and update your entire Leo installation directly without needing
@@ -1461,6 +1562,7 @@ a CVS client.
 
 plugin_manager.py
 *****************
+
 
 A plugin to manage Leo's Plugins:
 
@@ -1471,6 +1573,7 @@ A plugin to manage Leo's Plugins:
 
 plugins_menu.py
 ***************
+
 
 Create a Plugins menu and adds an item to the plugin menu for each active
 plugin. Selecting this menu item will bring up a short About dialog with the
@@ -1500,12 +1603,14 @@ Scripting
 dyna_menu
 *********
 
+
 The dyna_menu plugin is a remarkable body of work by 'e'.
 This plugin creates a dyna_menu menu from which you can execute commands.
 You may download the latest version at: http://rclick.netfirms.com/dyna_menu.py.html
 
 mod_scripting
 *************
+
 
 A plugin to create script buttons and ``@button``, ``@plugin`` and ``@script`` nodes.
 This plugin puts two buttons in the icon area: a button called ``run Script`` and
@@ -1543,6 +1648,7 @@ Servers
 mod_http.py
 ***********
 
+
 A minimal http plugin for LEO, based on AsyncHttpServer.py.
 Use this plugin is as follows:
 
@@ -1571,6 +1677,7 @@ Spell checking
 spellpyx.py
 ***********
 
+
 aspell.pyx: Leo's new spell checking plugin that uses aspell.exe. It is much
 faster than the old mod_spelling plugin, but requires Python 2.3 or above and a
 recent version of Aspell. When properly installed and enabled, this plugin adds
@@ -1591,6 +1698,7 @@ Text formatting
 
 Leo to AsciiDoc
 ***************
+
 
 Leo2AsciiDoc is a small Python program which has been built to be used as a
 plugin module for the Leo outlining editor.
@@ -1616,6 +1724,7 @@ tested on Linux
 
 rst3.py
 *******
+
 
 The rst3 plugin creates output files from Leo outlines containing rST
 (reStructuredText_) markup. rst3 options control most aspects of this plugin's
@@ -1693,9 +1802,10 @@ Notes:
 xsltWithNodes.py
 ****************
 
+
 Adds XSLT-Node Command submenu item to the Outline menu.
 This menu contains the following items:
-    
+
 ``Set StyleSheet Node``
     Selects the current node as the xsl stylesheet the plugin will use.
 
@@ -1714,6 +1824,7 @@ Windows
 cleo.py
 *******
 
+
 Cleo allows you to annotate or colour leo outlines based on priority, code
 archetype, node types or some arbitrary criteria. The annotations and colour
 coding can play a similar role like that of syntax highlighting. Right-click on
@@ -1722,11 +1833,13 @@ the icon area to popup its menu to play with it.
 footprints.py
 *************
 
+
 A plugin to leave footprints! This colors the Leo nodes so that the ones you
 have visited most and most recently will stand out.
 
 EditAttributes.py
 *****************
+
 
 A plugin that lets the user to associate text with a specific node.
 Summon it by pressing button-2 or button-3 on an icon Box in the outline. This
@@ -1737,10 +1850,12 @@ attributes of one another.
 maximizeNewWindows.py
 *********************
 
+
 Maximizes all new windows.
 
 nodebar.py
 **********
+
 
 The nodebar plugin adds buttons at the bottom of the tree canvas. The buttons
 correspond to commands found in the Outline commands. It is intended to speed up
@@ -1750,10 +1865,12 @@ being able to quickly execute commands they do not use very often.
 redirect_to_log.py
 ******************
 
+
 Send all output to the log pane.
 
 TabbedLog.py
 ************
+
 
 Turns the log into a tabbed component.  Other plugins may add tabs.
 To get a new tab in TabbedLog::
@@ -1768,10 +1885,12 @@ To get a new tab in TabbedLog::
 UASearch.py
 ***********
 
+
 A plugin for searching unknownAttributes (uA's).
 
 UniversalScrolling.py
 *********************
+
 
 A plugin that enables the user to scroll down with a left mouse click and hold,
 and to scroll up with a right mouse click and hold. Scrolling continues until
@@ -1781,6 +1900,7 @@ that there is little work a user has to do to scroll except to press a button.
 
 URLloader.py
 ************
+
 
 This plugin uses Python's urllib module to download files and import them into Leo.
 It requires the TabbedLog plugin.

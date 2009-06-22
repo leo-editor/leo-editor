@@ -1,5 +1,6 @@
 .. rst3: filename: html\design.html
 
+
 ##########################################
 Chapter 6: Leo and Literate Programming
 ##########################################
@@ -7,6 +8,7 @@ Chapter 6: Leo and Literate Programming
 This chapter discusses Leo's relationship with traditional `literate programming`_.
 
 .. .. contents::
+
 
 .. Relative links...
 .. _`Chapter 5\: Using Leo's Commands`:             commands.html
@@ -40,6 +42,7 @@ This chapter discusses Leo's relationship with traditional `literate programming
 
 Why I like Literate Programming
 +++++++++++++++++++++++++++++++
+
 
 The following paragraphs discuss the main benefits of traditional `literate programming`_.
 **Note**: none of these benefits depends on printed output.
@@ -132,6 +135,7 @@ working in this new design space.
 How Leo Improves Literate Programming
 +++++++++++++++++++++++++++++++++++++
 
+
 Outlines_ add something brand new to traditional `literate programming`_, namely an
 explicit mechanism for expressing structure at any level of detail, from largest
 overall view to smallest detail. The following paragraphs elaborate on this theme.
@@ -184,6 +188,7 @@ is an important convenience.
 
 How Leo Changes the Notion of Literate Programming
 ++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 Leo changes the theory and practice of literate programming as follows:
 

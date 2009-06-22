@@ -1,5 +1,6 @@
 .. rst3: filename: html\outlines.html
 
+
 ##########################################
 Chapter 3: Using Outlines
 ##########################################
@@ -8,12 +9,14 @@ This chapter tells how to use Leo's outlines.
 
 .. .. contents::
 
+
 .. _`Chapter 2\: A Tutorial Introduction to Leo`:   intro.html
 .. _`Chapter 4\: Writing Programs in Leo`:          directives.html
 .. _`Clones and views`:                             intro.html#clones-views
 
 Autocompletion and calltips
 +++++++++++++++++++++++++++
+
 
 Typing a period when @language python is in effect starts autocompletion. Typing
 '(' during autocompletion shows the calltip. Typing Return or Control-g
@@ -72,6 +75,7 @@ disable-auto-completer-command and disable-calltips-command.
 Cloning nodes
 +++++++++++++
 
+
 A cloned node is a copy of a node that changes when the original changes. Not
 only are changes maintained across all the the clones of a node, changes to its
 offspring (children, grandchildren, etc). are simultaneously made to the
@@ -85,11 +89,13 @@ alternate views of a program. See `Clones and views`_ for full details.
 Creating and destroying nodes
 +++++++++++++++++++++++++++++
 
+
 The ``Insert Node`` command inserts a new node into the outline. The
 ``Delete Node`` command deletes a node and all its children.
 
 Creating and destroying multiple body editors
 +++++++++++++++++++++++++++++++++++++++++++++
+
 
 Three commands in the Cmds:Body Editors menu allow to create and destroy separate editors in the body pane.
 The Add Body Editor (add-editor) command adds a new editor in the body pane.
@@ -98,6 +104,7 @@ The Change Body Editor (cycle-editor-focus) command cycles focus between editors
 
 Cutting, pasting and deleting nodes
 +++++++++++++++++++++++++++++++++++
+
 
 The ``Cut Outline``, ``Paste Outline``, ``Copy Outline`` and ``Delete Outline``
 commands work on nodes rather than text. For example, to delete a node,
@@ -118,6 +125,7 @@ an outline, then delete all clones.
 Dragging nodes
 ++++++++++++++
 
+
 You may drag an node (including all its descendants) from one place to another
 in an outline. To start a drag, press the main (left) mouse button while the
 cursor is over the icon for a node. The cursor will change to a hand icon. If
@@ -129,6 +137,7 @@ to continue scrolling you must keep moving the mouse.
 
 Editing body text
 +++++++++++++++++
+
 
 Leo auto indents unless ``@nocolor`` is in effect. Typing a newline
 automatically inserts the same leading whitespace present on the previous line.
@@ -145,22 +154,22 @@ behaviors have been changed because they conflict with other Leo features.
     underneath the mouse cursor, sets the input focus to this widget, and clears any
     selection in the widget. Dragging with mouse button 1 strokes out a selection
     between the insertion cursor and the character under the mouse. 
-    
+
 -   Double-clicking mouse button 1 selects the word under the mouse and
     positions the insertion cursor at the end of the word.
-    
+
 -   The ends of the selection can be adjusted by dragging with mouse button 1 while
     the Shift key is down; this will adjust the end of the selection that was
     nearest to the mouse cursor when button 1 was pressed. 
-    
+
 -   Clicking mouse button 1 with the ``Control`` key down will reposition the insertion
     cursor without affecting the selection. 
-    
+
 -   Normal printing characters are inserted at the point of the insertion cursor. 
-    
+
 -   If the mouse is dragged out of the body pane while button 1 is pressed, the
     entry will automatically scroll to make more text visible.
-    
+
 -   ``Left Arrow`` and ``Right Arrow`` move the cursor one
     character to the left or right and clear any selection in the text.
 
@@ -169,7 +178,7 @@ behaviors have been changed because they conflict with other Leo features.
 -   ``Control-Left`` and ``Control-Right`` move the insertion cursor by words,
     and ``Control-Shift-Left`` and ``Control-Shift-Right`` move the insertion
     cursor by words and also extend the selection.
-    
+
 -   ``Up Arrow`` and ``Down Arrow`` move the insertion cursor one line up or down and
     clear any selection in the text. 
 
@@ -181,65 +190,66 @@ behaviors have been changed because they conflict with other Leo features.
     paragraphs and extend the selection. ``Control-p`` and ``Control-n`` behave
     the same as ``Up`` and ``Down``, respectively. **Note**: by default, Leo
     binds ``Control-p`` and ``control-n`` to commands.
-    
+
 -   ``Next`` (``Page Down``) and ``Prior`` (``Page Up``) keys move the
     insertion cursor one screen and clear any text selection.
 
 -   ``Shift Next`` and ``Shift Prior`` move the cursor one screen and extend the selection.
-    
+
 -   Line movement is by text lines terminated by hard returns (newlines), not by
     displayed lines; if a text line is long and wraps across more than one display
     line, then the ``Up`` and ``Down`` movement will skip the extra wrapped display lines.
-    
+
 -   ``Home`` moves the insertion cursor to the beginning of its line and clears any
     selection in the widget.
 
 -   ``Shift-Home`` moves the insertion cursor to the beginning of the line and extends the selection. 
-    
+
 -   ``End`` moves the insertion cursor to the end of the line and clear any selection in
     the widget.
 
 -   ``Shift-End moves`` the cursor to the end of the line and extends the selection. 
-    
+
 -   ``Control-Home`` moves the insertion cursor to the beginning of the text and clears
     any selection in the widget.
 
 -   ``Control-Shift-Home`` moves the insertion cursor to the beginning of the text and extends the selection. 
-    
+
 -   ``Control-End`` moves the insertion cursor to the end of the text and clears any
     selection.
 
 -   ``Control-Shift-End`` moves the cursor to the end of the text and extends the selection. 
-    
+
 -   ``Select`` and ``Control-Space`` set the selection anchor to the position of the
     insertion cursor. They don't affect the current selection.
 
 -   ``Shift-Select`` and ``Control-Shift-Space`` adjust the selection to the current position of the
     insertion cursor, selecting from the anchor to the insertion cursor if there was
     no previous selection. 
-    
+
 -   ``Control-/`` selects the entire contents of the widget. 
-    
+
 -   ``Control-\`` clears any selection in the widget. 
-    
+
 -   ``F16``  (``Copy`` on many Sun workstations) or ``Control-c`` copies the
     selection in the widget to the clipboard, if there is a selection.
-    
+
 -   ``F20`` (``Cut`` on many Sun workstations) or ``Control-x`` copies the
     selection in the widget to the clipboard and deletes the selection.
     These keys have no effect if no text is selected.
-    
+
 -   ``F18`` (``Paste`` on many Sun workstations) or ``Control-v`` inserts the
     contents of the clipboard at the position of the insertion cursor.
-    
+
 -   ``Delete`` deletes the text selection, or the character to the right of the cursor
     if there is no text selection.
-    
+
 -   ``Backspace`` deletes the selection, or character to the left of the cursor
     if there is no text selection.
 
 Expanding & contracting nodes
 +++++++++++++++++++++++++++++
+
 
 You can expand or contract a node by clicking in the standard Windows Tree
 View icon to the left of the status icon. Expanding a node shows its immediate
@@ -249,6 +259,7 @@ command expands all of a nodes offspring (children, grandchildren, etc.)
 Indenting body text automatically
 +++++++++++++++++++++++++++++++++
 
+
 Leo auto indents body text following colons when ``@language Python`` is in
 effect. When the ``smart_auto_indent`` setting is True, Leo uses Emacs-style
 auto-indentation instead. This style of auto-indent aligns newly created lines
@@ -256,6 +267,7 @@ with unmatched ``(`` ``[`` or ``{`` brackets in the previous line.
 
 Marking nodes
 +++++++++++++
+
 
 You can mark nodes in several ways:
 
@@ -270,6 +282,7 @@ The ``Mark`` command unmarks the selected headline if it is already marked.
 
 Moving & Reorganizing nodes
 +++++++++++++++++++++++++++
+
 
 The ``Move Up``, ``Move Down``, ``Move Left`` and ``Move Right`` commands move the currently
 selected node. The ``Promote`` command makes all the children of a node
@@ -293,6 +306,7 @@ an outline, then delete all clones.
 Navigating through the outline
 ++++++++++++++++++++++++++++++
 
+
 Leo has many commands that select nodes in the outline. These commands can be
 found in the Outline:Go To menu.
 
@@ -306,15 +320,16 @@ visible (expanding its ancestors) if the node was not visible.
 When keystrokes (in the outline pane) are typed 'close' together in time Leo
 first looks for prefix + ch, where ch is the character just typed and prefix is
 the previous match. The term 'close together' is defined by the setting: 
- 
+
 @float outline_nav_extend_delay = 2.0 
- 
+
 The outline nav search reverts to a single-character search if the extended
 search fails, so in fact the delay is not too significant. In practice
 everything works well without thinking about what is happening.
 
 Opening URL's automatically
 +++++++++++++++++++++++++++
+
 
 Double-clicking the icon box of a node whose headline has the form::
 
@@ -336,12 +351,14 @@ type of url that your browser supports: http, mailto, ftp, file, etc.
 Resizing panes
 ++++++++++++++
 
+
 You can change the relative sizes of the outline and body panes by dragging the
 splitter bar. The ``Equal Sized Panes`` command resizes the panes so that each
 fills half of the main window.
 
 Undoing operations
 ++++++++++++++++++
+
 
 Leo supports unlimited undo for all typing and all commands. The
 'undo_granularity' setting controls the granularity of undo. There are four
@@ -371,6 +388,7 @@ code for ``recognizeStartOfTypingWord`` for more details.
 Using chapters
 ++++++++++++++
 
+
 Chapters are regions of a Leo outline whose root is an @chapter node. @chapter
 nodes may appear anywhere in an outline, but the create-chapter command (see
 below) creates @chapter nodes as children of the first @chapters node in the outline.
@@ -382,13 +400,13 @@ creates a hidden @chapters node containing one @chapter node for every chapter
 except the 'main' chapter.
 
 Associated settings:
-  
+
 - The @bool use_chapters setting determines whether chapters are enabled.
 - The @bool use_chapter_tabs setting determines whether the chapters
   pop-up menu appears in the icon area. Choosing a chapter name from this list selects a chapter.
 
 When chapters are enabled, the Cmds:Chapters menu shows all available chapter commands:
-  
+
 - The create-chapter command creates an @chapter node and with a single node.
 - The delete-chapter command deletes the presently selected chapter.
 - The select-chapter command makes only the nodes of the selected chapter visible.

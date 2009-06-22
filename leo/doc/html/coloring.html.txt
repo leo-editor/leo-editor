@@ -1,5 +1,6 @@
 .. rst3: filename: html\coloring.html
 
+
 #########################################
 Chapter 15: Controlling Syntax Coloring
 #########################################
@@ -19,6 +20,7 @@ in this chapter.
 
 .. .. contents::
 
+
 .. External links...
 .. _jEdit:                      http://www.jedit.org/
 .. _`jEdit's documentation`:    http://www.jedit.org/42docs/users-guide/writing-modes-part.html
@@ -29,6 +31,7 @@ in this chapter.
 
 Files
 +++++
+
 
 The jEdit_ editor drives its syntax colorer using xml **language description files.**
 `jEdit's documentation`_ contain a complete description of these xml files.
@@ -73,6 +76,7 @@ Using Python colorer control files has the following advantages:
 The colorizer's inner loop
 ++++++++++++++++++++++++++
 
+
 When Leo's syntax colorer sees the ``'@language x'`` directive,
 it will import ``x.py`` from Leo's ``modes`` folder.
 The colorer can then access any module-level object ``obj`` in ``x.py`` as ``x.obj``.
@@ -108,10 +112,12 @@ Rules methods (and functions) return n > 0 if they match, and n == 0 if they fai
 Format of colorizer control files
 +++++++++++++++++++++++++++++++++
 
+
 The following sections describe the top-level data in ``x.py``.
 
 Ruleset names
 *************
+
 
 A **ruleset name** is a Python string having the form ``'x_setname'``,
 where ``setname`` is the value of the ``SET`` attribute of the ``<RULES>`` element in ``x.xml``.
@@ -137,6 +143,7 @@ are the **only** names that the colorizer needs to know in order to access all i
 x.properties
 ************
 
+
 **x.properties** is a Python dictionary corresponding to the <PROPS> element in ``x.xml``.
 Keys are property names; values are strings, namely the contents of ``<PROPERTY>`` elements in ``x.xml``.
 ``x.properties`` contains properties for the entire mode.
@@ -154,6 +161,7 @@ For example, here is ``x.properties`` in ``php.py``::
 
 Attribute dictionaries and x.attributesDictDict
 ***********************************************
+
 
 ``x.py`` contains a **attribute dictionary** for each ruleset in ``x.xml``.
 Keys are attribute names, values strings representing the values of the attributes.
@@ -205,6 +213,7 @@ Leo's colorer never uses the actual names of attribute dictionaries.
 
 Keyword dictionaries and x.keywordsDictDict
 *******************************************
+
 
 ``x.py`` contains a **keyword dictionary** for each ruleset in ``x.xml``.
 ``x.py`` contains an empty keywords dictionary if a ruleset contains no ``<KEYWORDS>`` element.
@@ -260,7 +269,7 @@ Here is ``keywordsDictDict`` for php.py::
         "php_tags": php_tags_keywords_dict,
         "php_tags_literal": php_tags_literal_keywords_dict,
     }
-    
+
 The colorizer can get the keywords dictionary for a ruleset as follows::
 
     keywordsDict = x.keywordsDictDict(rulesetName)
@@ -272,6 +281,7 @@ Leo's colorer never uses the actual names of keywords dictionaries such as ``php
 
 Rules, rules dictionaries and x.rulesDictDict
 *********************************************
+
 
 ``x.py`` contains one **rule function** for every rule in every ruleset (``<RULES>`` element) in ``x.xml``.
 These rules have names ``rule1`` through  ``ruleN``,
@@ -293,7 +303,7 @@ and the corresponding rule function is::
             at_line_start=False, at_whitespace_end=False, at_word_start=False,
             delegate="PHP",exclude_match=False,
             no_escape=False, no_line_break=False, no_word_break=False)
-    
+
 
 ``php_rule0`` calls ``colorer.match_span`` because the corresponding xml rule is a ``<SPAN>`` element.
 
@@ -367,6 +377,7 @@ and Leo's colorer never uses the actual names of rules functions such as ``rule6
 x.importDict and imported versus delegated rulesets
 ***************************************************
 
+
 ``x.importDict`` is a Python dictionary.
 Keys are ruleset names; values are a list of ruleset names.
 For example::
@@ -408,6 +419,7 @@ In short:
 Rule methods
 ++++++++++++
 
+
 This section describes each rules method in Leo's new colorizer.
 Rules methods are called by rules functions in colorizer control file;
 they correspond directly to rules elements in jEdit's language description files.
@@ -418,6 +430,7 @@ These methods all return True if the match succeeds.
 
 Arguments to rule methods
 *************************
+
 
 All rule methods take three required arguments and zero or more optional keyword arguments.
 
@@ -464,12 +477,13 @@ Here is a list of all optional keyword arguments and their meaning:
 
 - **no_word_break**:
   If ``True``, the match will not cross word breaks.
-  
+
 New in Leo 4.4.1 final: the regular expression rule matchers no longer get a ``hash_char`` argument
 because such matchers are called only if the present search pattern starts with ``hash_char``.
 
 match_eol_span
 **************
+
 
 ::
 
@@ -490,6 +504,7 @@ The ``delegate`` argument, if present, specifies the ruleset to color the colore
 
 match_eol_span_regexp
 *********************
+
 
 ::
 
@@ -513,6 +528,7 @@ The ``delegate`` argument, if present, specifies the ruleset to color the colore
 match_keywords
 **************
 
+
 ::
 
     def match_keywords (self,s,i):
@@ -525,6 +541,7 @@ Instead, the keyword is colored as specified by ``d.get(theKeyword)``.
 
 match_mark_following
 ********************
+
 
 ::
 
@@ -544,6 +561,7 @@ If the ``exclude_match`` argument is ``True``, only the text after the matched t
 match_mark_previous
 *******************
 
+
 ::
 
     def match_mark_previous (self,s,i,kind,pattern,
@@ -562,6 +580,7 @@ If the ``exclude_match`` argument is ``True``, only the text before the matched 
 match_seq
 *********
 
+
 ::
 
     def match_seq (self,s,i,kind,seq,
@@ -579,6 +598,7 @@ The ``delegate`` argument, if present, specifies the ruleset to color the colore
 
 match_seq_regexp
 ****************
+
 
 ::
 
@@ -600,6 +620,7 @@ The ``delegate`` argument, if present, specifies the ruleset to color the colore
 
 match_span
 **********
+
 
 ::
 
@@ -625,6 +646,7 @@ The ``delegate`` argument, if present, specifies the ruleset to color the colore
 
 match_span_regexp
 *****************
+
 
 ::
 
@@ -655,6 +677,7 @@ The ``delegate`` argument, if present, specifies the ruleset to color the colore
 match_terminate
 ***************
 
+
 ::
 
     def match_terminate (self,s,i,kind,at_char):
@@ -666,6 +689,7 @@ with the color specified by ``kind``.
 
 Syntax coloring settings
 ++++++++++++++++++++++++
+
 
 This section discusses only those settings that affect syntax coloring.
 See `Chapter 8`_ for a general discussion of Leo's settings.
@@ -685,7 +709,7 @@ The settings for the new colorizer are all of the above (except keyword_font) pl
     keyword1_font, keyword2_font, keyword3_font, keyword4_font, label_font,
     literal1_font, literal2_font, literal3_font, literal4_font, markup_font,
     null_font, and operator_font.
-    
+
 To specify a font, say for keyword_font, to be used as the default font for **all** languages,
 put the following in the body text of an @font node in leoSettings.leo::
 
@@ -695,7 +719,7 @@ put the following in the body text of an @font node in leoSettings.leo::
         # roman, italic
     keyword_font_weight = bold
         # normal, bold
-        
+
 Comments are allowed and undefined settings are set to reasonable defaults. 
 At present, comments can not follow a setting: comments must start a line.
 
@@ -712,6 +736,7 @@ For example, to specify a font for php (only), put the following in the body tex
 
 The threading_colorizer plugin
 ++++++++++++++++++++++++++++++
+
 
 This section contains code-level notes for the threading colorizer. You do not
 need to understand this material in order to use the threading colorizer.

@@ -1,5 +1,6 @@
 .. rst3: filename: html\intro.html
 
+
 ##########################################
 Chapter 2: A Tutorial Introduction to Leo
 ##########################################
@@ -16,6 +17,7 @@ The section `Scripting Leo`_ is an introduction to scripting Leo with Python.
 For full details, see `Chapter 7: Scripting Leo with Python`_.
 
 .. .. contents::
+
 
 .. Links used in this document...
 
@@ -104,6 +106,7 @@ For full details, see `Chapter 7: Scripting Leo with Python`_.
 Introduction
 ++++++++++++
 
+
 **Important**: please `install Leo`_ before reading this tutorial,
 If you have any problem, please do ask for help on `Leo's help forum`_.
 
@@ -115,6 +118,7 @@ You should see Leo's main window, something like this:
 
 Leo's main window
 *****************
+
 
 The main window represents an entire project and is stored in a single **Leo file**,
 a file with a .leo extension.
@@ -165,25 +169,33 @@ let's see how to use Leo as a simple outliner.
 Using Leo as an outliner
 ************************
 
+
 You can use Leo as fairly typical outliner. Play around with some of the
 commands from the Outline menu:
 
 - Click the expansion box of nodes_ to show and hide their children.
 
-- The ``Insert Node`` command_ inserts a new headline into the outline.
+- The ``Insert Node`` command (``Ctrl+I``) inserts a new headline into the outline.
 
-- The ``Delete Node`` command_ deletes a headline and all its children.
+- The ``Cut Node`` command (``Ctrl+Shift+X``) deletes a headline and all its children, and copies the 
+  structure to clipboard - ready to paste with ``Paste Node`` command (``Ctrl+Shift+V``). Use
+  ``Copy Node`` command (``Ctrl+Shift+C``) to copy node to clipboard without deleting it 
+  from outline. Copy-paste command family works across different Leo documents.
 
-- The ``Move Up``, ``Move Down``, ``Move Left`` and ``Move Right`` commands_ move the currently selected node,
-  along with all its descendants. 
+- The ``Move Up`` (``Ctrl+U``), ``Move Down`` (``Ctrl+D``), ``Move Left`` (``Ctrl+L``) and ``Move Right`` (``Ctrl+R``)
+  commands move the currently selected node, along with all its descendants. 
 
-- The ``Promote`` command_ makes all the children_ of a headline siblings of the headline.
-  The ``Demote`` command_ makes all following siblings_ of a headline children of the headline.
+- The ``Promote`` (``Ctrl+}``) command makes all the children of a headline siblings of the headline.
+  The ``Demote`` (``Ctrl+{``) command makes all following siblings_ of a headline children of the headline.
 
-- You can cut, copy and paste entire nodes_ (including their descendants) with
-  the Cut Node, Copy Node and Paste Node commands_.
+- Move around the tree and expand/collapse nodes by pressing Alt + arrow keys. This also moves the focus 
+  to tree, so, after pressing Alt + arrow, you can move around by using arrow keys alone. Return the 
+  focus to the body control by pressing ``Enter``. 
 
-- We'll discuss the ``Clone Node`` command_ in the next section.
+- To edit the headline, use press ``Ctrl+H``. This works regardless of whether body or headline 
+  has focus.
+
+- We'll discuss the ``Clone Node`` command in the next section.
 
 You enter `body text`_ for any node by selecting the node's headline in the
 outline pane and then typing in the body pane. Leo has a full range of `editing
@@ -192,11 +204,13 @@ commands`_ that apply to the body pane.
 Unique features of Leo
 ++++++++++++++++++++++
 
+
 So far we have discussed features that Leo shares with other editors and outliners.
 The following sections explain what makes Leo unique.
 
 Derived files
 *************
+
 
 You don't have to store all outline data in Leo (.leo) files.
 Leo allows you to store outline data in external files called **derived files**.
@@ -212,10 +226,7 @@ The **@thin tree** (the ``@thin`` node and all its descendants) corresponds to t
 Leo writes a `derived file`_ corresponding to the ``@thin`` tree to your hard drive when Leo saves your outline (.leo file).
 When opening a .leo file, Leo reads all the `derived files`_ corresponding to ``@thin`` nodes in the outline_.
 
-**Note**: you can ``@file`` instead of ``@thin`` to create derived files.
-``@thin`` is more friendly to CVS and other Source Code Control Systems.
-This tutorial only discusses `@thin`_ nodes_.
-A good rule of thumb is to use `@thin`_ nodes_ unless you have a specific reason to do otherwise.
+A good rule of thumb is to use ``@thin`` nodes unless you have a specific reason to do otherwise.
 See `Chapter 4: Writing Programs in Leo`_ for a full discussions of the various ways of creating `derived files`_.
 
 **Important**:
@@ -238,6 +249,7 @@ Usually, headlines_ describe what's in the node.
 
 Clones & views
 **************
+
 
 A **cloned node** is a copy of a node_ that changes when the original changes.
 Changes to the children_, grandchildren_, etc. of a node are simultaneously made
@@ -295,6 +307,7 @@ ability to create multiple views of a project is most helpful.
 Outline structure is significant everywhere
 *******************************************
 
+
 So far we have been focusing on Leo's outline pane: creating and cloning_ nodes_.
 In fact, *outline structure affects all aspects of Leo*.
 For example:
@@ -315,6 +328,7 @@ For example:
 Leo directives
 **************
 
+
 Leo directives control such things as syntax coloring, line wrapping within the body pane and the width of tabs.
 Leo directives may appear in headlines or body text.
 Leo directives start with '@' in the leftmost column, followed by the name of the directive.  Some examples::
@@ -331,7 +345,7 @@ The following directives are useful for non-programmers;
 `Directives for programming`_ lists the directives used for computer programming.
 
 - **\@color**, **\@nocolor** and **\@killcolor** control syntax coloring.
- 
+
 - **\@language** sets the language used for syntax coloring.
 
 - **\@tabwidth** sets the width of tabs.
@@ -348,6 +362,7 @@ only if the ancestor node contains exactly one ``@color`` or ``@nocolor`` direct
 Leo for Programmers
 +++++++++++++++++++
 
+
 The previous sections have discussed the basics of Leo.
 *Non-programmers can stop reading this tutorial now*!
 
@@ -359,6 +374,7 @@ manuals, please read the following short `Quick start for programmers`_ section.
 
 Quick start for programmers
 ***************************
+
 
 `@thin trees`_ (parts of the outline whose *headline* starts with @thin)
 create `derived files`_ containing your program.
@@ -401,7 +417,7 @@ they don't have to be complete functions or methods.
 
     The `derived file`_ will contain the docstring, followed by the imports, followed by the
     the body text of all other nodes in the ``@file`` tree, in `outline order`_.
-    
+
 - A `derived file`_ may contain multiple ``@others`` directives_: Each
   ``@others`` directive expands to the body text of all descendant_ nodes_,
   excluding any nodes (and *their* descendants) that contain other ``@others``
@@ -426,12 +442,14 @@ Leo imports such derived files every time Leo reads the .leo file.
 Beginner`s reference guide
 **************************
 
+
 This section covers all the details of programming with Leo that beginners are likely to need.
 `Chapter 4: Writing Programs in Leo`_ is the full reference guide.
 I recommend avoiding that chapter until you have been programming with Leo for some time.
 
 Syntax of section names
 ^^^^^^^^^^^^^^^^^^^^^^^
+
 
 A section name has the form::
 
@@ -465,6 +483,7 @@ but it has turned out to be one of the best design decisions I ever made.
 Code and doc parts
 ^^^^^^^^^^^^^^^^^^
 
+
 **Doc parts** are blocks of text that Leo treats as comments.
 Leo syntax colors doc parts as comments,
 and Leo converts doc parts into comments in derived files.
@@ -493,7 +512,7 @@ The ``@pagewidth`` directive specifies the width of those lines.
   However, ``@`` and ``@c`` are preferred.
 
 - A doc part of the form::
-	
+
     @ %def identifiers
 
 declares that the preceding code part contains the list of identifiers.
@@ -504,6 +523,7 @@ official noweb_ system.
 
 Directives for programming
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
 The following directives are commonly used by Leo programmers.
 See `Chapter 4: Writing Programs in Leo`_ for full details.
@@ -517,7 +537,7 @@ See `Chapter 4: Writing Programs in Leo`_ for full details.
 - **@encoding** Sets the Unicode encoding used in derived files.
 
 - **@first** Forces lines to appear before the first sentinel of a derived file.
-   
+
 - **@language** Sets the language used for syntax coloring **and** sets the comment delimiters 
   used in sentinel lines and in doc parts.
 
@@ -538,6 +558,7 @@ In particular, Leo will output Python decorators correctly, provided the name of
 Orphan nodes
 ^^^^^^^^^^^^
 
+
 An **orphan node** is a descendant of an `@thin`_ node_ that will not be copied
 to the `derived file`_. Orphan nodes can arise because an `@thin`_ tree has no
 ``@others`` or ``@all`` directives. Sections that are defined but not used also
@@ -549,6 +570,7 @@ opens the .leo file.
 
 Sentinel lines
 ^^^^^^^^^^^^^^
+
 
 When writing `derived files`_, Leo stores information about the outline
 structure in special comments called **sentinel lines**. Sentinel lines are
@@ -588,6 +610,7 @@ Just use ``@thin`` to create your `derived files`_.
 Leo and literate programming
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+
 Leo can support a style of programming similar to `Literate Programming`_ (LP).
 LP has a bad reputation in some quarters. That's too bad; Leo fixes all the
 problems with traditional LP. See `Chapter 6: Leo and Literate Programming`_ in
@@ -597,6 +620,7 @@ mistake, and a big one.
 
 Good style and bad:  sections vs. @others
 *****************************************
+
 
 Newcomers to Leo frequently ask when to use the `@others`_ directive_ and when
 to use sections_. It is good style to use `section references`_ only when the
@@ -676,12 +700,13 @@ wise to "know the rules before you break them."
 Scripting Leo
 *************
 
+
 Leo is fully scriptable using the Python language.
 **Leo can execute any body text as a Python script**.
-To run the entire body text as a script, simply choose the node and execute the ``Execute Script`` command_.
-If text is selected, the ``Execute Script`` command_ will run just the selected text as the script.
+To run the entire body text as a script, simply choose the node and execute the ``Execute Script`` command (``Ctrl+B``).
+If text is selected, the ``Execute Script`` command will run just the selected text as the script.
 
-The ``Execute Script`` command_ **preprocesses** the script before executing it.
+The ``Execute Script`` command **preprocesses** the script before executing it.
 Leo preprocesses scripts in exactly the same way that Leo writes derived files.
 That is,
 **Leo expands section references and processes @others directives** before executing the script.
@@ -701,6 +726,7 @@ See `Chapter 7: Scripting Leo with Python`_ for a complete discussion of scripti
 Plugins & settings
 ******************
 
+
 **Plugins** are Python modules that change how Leo works, yet are not part of Leo's core code. 
 Leo's user have contributed dozens of plugins that have extended Leo's capabilities in many new directions.
 The file ``leoPlugins.leo`` contains all plugins that are included in Leo distributions.
@@ -714,6 +740,7 @@ any further support from Leo's core code. For a full discussion of
 
 Further study
 *************
+
 
 ``LeoPyRef.leo`` (in the core subdirectory of the leo folder) contains almost all of Leo's source code.
 It provides hundreds of examples of everything discussed here.

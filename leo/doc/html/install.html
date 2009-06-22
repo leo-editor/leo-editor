@@ -311,6 +311,66 @@ sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.5/site-packages/
 </pre>
 <p>Now you are ready to <a class="reference internal" href="#running-leo">run Leo</a>.</p>
 </div>
+<div class="section" id="installing-leo-on-macos-x">
+<h1>Installing Leo on MacOS X</h1>
+<p>Installing Leo on MacOS 10.5 (Leopard) is straightforward.</p>
+<ol class="arabic">
+<li><p class="first">MacOS 10.5 comes with Python pre-installed.
+See <a class="reference external" href="http://www.python.org/download/mac/">http://www.python.org/download/mac/</a> and
+<a class="reference external" href="http://wiki.python.org/moin/MacPython/Leopard">http://wiki.python.org/moin/MacPython/Leopard</a>
+for information about using the latest version of Python.</p>
+</li>
+<li><p class="first">Download and install bzr:</p>
+<ul class="simple">
+<li>Download bzr from <a class="reference external" href="http://bazaar-vcs.org/Download">http://bazaar-vcs.org/Download</a></li>
+<li>Install bzr using the file just downloaded.</li>
+</ul>
+</li>
+<li><p class="first">Get Leo's sources from Leo's trunk:</p>
+<pre class="literal-block">
+cd ~
+mkdir leo.repo
+cd leo.repo
+bzr init
+bzr branch lp:leo-editor
+cd leo-editor
+</pre>
+</li>
+<li><p class="first">You can run the tk version of Leo as follows:</p>
+<pre class="literal-block">
+python launchLeo.py --gui=tk
+</pre>
+</li>
+<li><p class="first">If you already have Qt and PyQt installed, you can run the qt version of Leo as follows:</p>
+<pre class="literal-block">
+python launchLeo.py --gui=qt
+</pre>
+</li>
+<li><dl class="first docutils">
+<dt>If you don't have Qt or PyQt installed, you will have to install Qt and PyQt</dt>
+<dd><p class="first">from sources. There does not seem to be any pre-built binaries.</p>
+<dl class="docutils">
+<dt>A: You may need to install XCode from <a class="reference external" href="http://developer.apple.com/mac/">http://developer.apple.com/mac/</a></dt>
+<dd><p class="first last">in order to get a development environment.</p>
+</dd>
+<dt>B: Download and install the sip package, following the direction at</dt>
+<dd><p class="first last"><a class="reference external" href="http://www.riverbankcomputing.co.uk/software/sip/download">http://www.riverbankcomputing.co.uk/software/sip/download</a></p>
+</dd>
+<dt>C: Download the OpenSource Qt libraries for Mac from</dt>
+<dd><p class="first last"><a class="reference external" href="http://www.qtsoftware.com/downloads">http://www.qtsoftware.com/downloads</a></p>
+</dd>
+</dl>
+<p>D: At various points along the way you will need to build the sources:</p>
+<pre class="last literal-block">
+python configure.py
+make
+sudo make install
+</pre>
+</dd>
+</dl>
+</li>
+</ol>
+</div>
 <div class="section" id="installing-leo-on-windows">
 <h1>Installing Leo on Windows</h1>
 <p>Leo is distributed at present only as a .zip file.</p>
@@ -373,93 +433,6 @@ Any call to pythonw -i will cause pythonw.exe to exit immediately.</p>
 <p>The first  line opens Leo files with no console window.
 The second line opens Leo files with a console window and leaves the window open after Leo exits.
 You should now be able to double click on a leo file in explorer with Leo.</p>
-</div>
-</div>
-<div class="section" id="installing-leo-on-macos-x">
-<h1>Installing Leo on MacOS X</h1>
-<p>By Randall Voth:
-Leo works reliably only on MacOS X 10.3 (Panther) and above.
-To run Leo on Macintosh OS X 10:</p>
-<ol class="arabic simple">
-<li>Download and install <tt class="docutils literal"><span class="pre">MacPython</span> <span class="pre">2.3</span> <span class="pre">for</span> <span class="pre">Panther</span> <span class="pre">addons</span></tt>.
-Python is already included in OS X 10.3 so only the addons are necessary at
-<a class="reference external" href="http://www.cwi.nl/~jack/macpython.html">http://www.cwi.nl/~jack/macpython.html</a></li>
-<li>Download and install TclTkAqua from <a class="reference external" href="http://tcltkaqua.sourceforge.net/">http://tcltkaqua.sourceforge.net/</a></li>
-<li>Run the PackageManager found in <tt class="docutils literal"><span class="pre">/Applications/MacPython-2.3</span></tt> and
-install <tt class="docutils literal"><span class="pre">_tkinter-2.3-binary</span></tt> by clicking on the package in the list
-and clicking the [Install:] button with <tt class="docutils literal"><span class="pre">Install</span> <span class="pre">dependencies</span></tt> checked.</li>
-<li>Download Leo (platform independent source.zip) from <a class="reference external" href="http://leo.sourceforge.net/">http://leo.sourceforge.net/</a></li>
-<li>Unzip the contents into a directory by double-clicking the downloaded file.
-Typically you would put the Leo folder into the <tt class="docutils literal"><span class="pre">Applications</span></tt> directory.</li>
-<li>Control-click on <tt class="docutils literal"><span class="pre">/path_to_unzipped_dir/leo/core/leo.py</span></tt> and open with <tt class="docutils literal"><span class="pre">PythonLauncher</span></tt>.</li>
-<li>It is a good idea to set <tt class="docutils literal"><span class="pre">PythonLauncher</span></tt> as the default program to
-open python scripts by clicking on <tt class="docutils literal"><span class="pre">leo.py</span></tt>, choosing Get Info from the
-Finder's File menu, and selecting &quot;PythonLauncher&quot; as the default
-program to <tt class="docutils literal"><span class="pre">Open</span> <span class="pre">With:</span></tt>
-By clicking the <tt class="docutils literal"><span class="pre">Change</span> <span class="pre">All...</span></tt> button, all python scripts will be
-opened with <tt class="docutils literal"><span class="pre">PythonLauncher</span></tt>.</li>
-<li>Download <tt class="docutils literal"><span class="pre">Pmw</span></tt> from <a class="reference external" href="http://pmw.sourceforge.net/">http://pmw.sourceforge.net/</a>
-<tt class="docutils literal"><span class="pre">Pmw</span></tt> must be installed in order to use the Settings panel.
-Drag the downloaded gzip file into
-<tt class="docutils literal"><span class="pre">/System/Library/Frameworks/Python.framework/Versions/2.3/lib/python2.3/site-packages</span></tt>
-Double click on it to unzip and untar the file into a folder to make it available to Python</li>
-</ol>
-<div class="section" id="how-to-use-platypus-to-create-a-mac-launcher-for-leo">
-<h2>How to use Platypus to create a Mac launcher for Leo</h2>
-<p>This documents how I used Platypus 3.0 to create MacLeo, the MacOS X launcher
-for Leo. You don't need Platypus to _use_ MacLeo, but you do need Platypus to
-<em>create</em> MacLeo. You may download Platypus 3.0 from <a class="reference external" href="http://sveinbjorn.vefsyn.is/platypus">http://sveinbjorn.vefsyn.is/platypus</a>
-Platypus creates something called an &quot;application bundle,&quot; essentially a wrapper
-for the shell script called openLeoScript.sh.</p>
-<p>At present this script contains just:</p>
-<pre class="literal-block">
-#!/bin/sh
-# $2 only works if .leo is one of the extensions.
-/usr/bin/pythonw ~/leo/core/leo.py $2
-</pre>
-<p>In detail, here is how I created MacLeo:</p>
-<ol class="arabic">
-<li><p class="first">Open Platypus.</p>
-</li>
-<li><p class="first">Set the Platypus settings:</p>
-<pre class="literal-block">
-- Name: MacLeo
-- Script type: shell
-- Icon: Python Icon
-        - Using the standard Leo outline doesn't work, but one could be created…
-- Script Path: /Users/edream/dist/Platypus 3.0/openLeoScript.sh
-- Is droppable checkbox (checked)
-        - Edit Types:  .leo only, not *, not folders.
-        - N.B.  There MUST be a period in front of .leo!  Otherwise $2 will be empty in the script.
-- Output: None (progress bar and text window appear to be essentially useless)
-</pre>
-</li>
-<li><p class="first">Hit the create button to create MacLeo.</p>
-</li>
-</ol>
-</div>
-<div class="section" id="how-to-create-macos-x-pkg-files">
-<h2>How to create MacOS X .pkg files</h2>
-<p>This tells how I created <tt class="docutils literal"><span class="pre">leo-4-3-a3.pkg</span></tt> using <tt class="docutils literal"><span class="pre">PackageMaker</span></tt>.</p>
-<p><tt class="docutils literal"><span class="pre">PackageMaker</span></tt> is included in the <tt class="docutils literal"><span class="pre">Xtools</span></tt> disk that comes with MacOS X. Installing
-<tt class="docutils literal"><span class="pre">PackageMaker</span></tt> was easy, but I don't remember the details.</p>
-<ol class="arabic simple">
-<li>Make sure <tt class="docutils literal"><span class="pre">~/dist/make-leo-dist</span></tt> contains a folder called <tt class="docutils literal"><span class="pre">leo-(version)</span></tt>.
-The <tt class="docutils literal"><span class="pre">~/dist/make-leo-dist/leo-(version)</span></tt> folder should contain a <em>folder</em> called just <tt class="docutils literal"><span class="pre">leo</span></tt>.
-This is the folder that should have the files to be distributed.
-I got this folder by downloading <tt class="docutils literal"><span class="pre">leo-4-3-a3.zip</span></tt>, the official a3 distribution.</li>
-<li>Open <tt class="docutils literal"><span class="pre">PackageMaker</span></tt> by double-clicking the file <tt class="docutils literal"><span class="pre">~/dist/LeoPackage.pmsp</span></tt>
-I originally created this .pmsp file in <tt class="docutils literal"><span class="pre">PackageMaker</span></tt>.
-It will be included in the next official release.  I'll also add it to cvs.
-<tt class="docutils literal"><span class="pre">LeoPackage.pmsp</span></tt> contains most of the information needed to create the .pkg file,
-but even without the .pmsp file using <tt class="docutils literal"><span class="pre">PackageMaker</span></tt> is pretty self-explanatory</li>
-<li>Update the description in the <tt class="docutils literal"><span class="pre">PackageMaker</span></tt> dialog.
-This should be similar to the readme file.</li>
-<li>Browse to <tt class="docutils literal"><span class="pre">~/dist/make-leo-dist/leo-(version)</span></tt> in the <tt class="docutils literal"><span class="pre">Files</span></tt> tab in the <tt class="docutils literal"><span class="pre">PackageMaker</span></tt> dialog.</li>
-<li>Choose <tt class="docutils literal"><span class="pre">Make</span> <span class="pre">Package</span></tt> from the <tt class="docutils literal"><span class="pre">PackageMaker</span> <span class="pre">File</span></tt> menu.
-If necessary, set the file name to <tt class="docutils literal"><span class="pre">Leo.pkg</span></tt>.  This will create <tt class="docutils literal"><span class="pre">Leo.pkg</span></tt>.</li>
-<li>Quit <tt class="docutils literal"><span class="pre">PackageMaker</span></tt>.  Choose 'yes' when prompted to save <tt class="docutils literal"><span class="pre">LeoPackage.pmsp</span></tt>.</li>
-</ol>
 </div>
 </div>
 <div class="section" id="tracking-the-development-version">

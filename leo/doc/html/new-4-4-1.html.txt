@@ -1,5 +1,6 @@
 .. rst3: filename: html\new-4-4-1.html
 
+
 ##########################################
 What's New in Leo 4.4.1
 ##########################################
@@ -20,13 +21,15 @@ The main features of Leo 4.4.1 are:
 
 .. .. contents::
 
+
 .. Links used in this document.
 
 New commands
 ++++++++++++
 
+
 ::
-    
+
     cycle-focus
     debug
     find-character
@@ -42,6 +45,7 @@ New commands
 
 New features
 ++++++++++++
+
 
 - Removed warning about changed node.
 - Added scroll-outline-left/right commands.
@@ -67,6 +71,7 @@ New features
 New and improved plugins
 ++++++++++++++++++++++++
 
+
 - The slideshow plugin
 - The mod_scripting plugin now creates a press-x-button command for every button 'x'.
   You can specify settings for such commands using @shortcuts nodes.
@@ -77,6 +82,7 @@ New and improved plugins
 
 New settings
 ++++++++++++
+
 
 ::
 
@@ -96,6 +102,7 @@ New settings
 Improved settings
 +++++++++++++++++
 
+
 - Added @font menu font setting.
 - Added support for commands to be executed on entry to a mode.
 - Added support for bindings that are active only in command, enter and insert key states.
@@ -106,6 +113,7 @@ Improved settings
 
 Minor improvements
 ++++++++++++++++++
+
 
 - The print-bindings command now properly sorts bindings.
 - The help-for-command command now works for almost all commands.

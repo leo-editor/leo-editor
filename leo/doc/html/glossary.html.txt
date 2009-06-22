@@ -1,8 +1,10 @@
 .. rst3: filename: html\glossary.html
 
+
 ############
 Glossary
 ############
+
 
 .. Links used in this document.
 
@@ -39,6 +41,7 @@ Glossary
 .. _`quick start for programmers`:  intro.html#quick-start-for-programmers
 .. _`sentinels lines`:              intro.html#sentinel-lines
 
+
 **Important**: We often refer to outline_ nodes_ by the directives_ they contain.
 For example, an `@root node`_ is a node containing an @root directive_, etc.
 **Exception**: An `@file node`_ is a node whose *headline* starts with ``@file``.
@@ -61,6 +64,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
 .. _`@thin tree`:
 .. _`@root tree`:
 .. _`@file trees`:
+.. _`@shadow trees`:
 .. _`@thin trees`:
 .. _`@root trees`:
 
@@ -77,7 +81,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
 
     For more information, see the documentation for `@asis`_, `@auto`_, `@file`_, `@noref`_, `@nosent`_ and `@thin`_
     in Leo's `programming reference`_ chapter.
-    
+
     \@auto trees allow you to edit derived files that contain no sentinels.
     Leo will import the @auto files when reading .leo files.  Be careful when first creating the @auto node.
     *Before* saving the .leo file containing the new @auto node,
@@ -263,7 +267,7 @@ For example, an `@root node`_ is a node containing an @root directive_, etc.
     **Leo1** denotes all versions of Leo that write version 1 .leo files, that is,
     all Windows version of Leo prior to version 2.0.
     The last version of Leo1, version 1.15, understands enough about Leo2 to issue a warning when opening version 2 files.
-    
+
     **Leo2** denotes all versions of Leo that write version 2 .leo files, that is,
     all versions of leo.py and all Windows versions with version number 2.0 and above.
     Only Leo2 can generate `derived files`_ from `@file trees`_.

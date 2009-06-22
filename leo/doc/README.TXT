@@ -1,4 +1,4 @@
-Leo 4.6 beta 2                                  June 20, 2009
+Leo 4.6 beta 2                                  June 22, 2009
 
 Leo 4.6 b2 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
@@ -12,7 +12,7 @@ The highlights of Leo 4.6:
 - Cached external files *greatly* reduces the time to load .leo files.
 - Leo now features a modern Qt interface by default.
   Leo's legacy Tk interface can also be used.
-- New --config --file and --gui command-line options.
+- New --config, --file and --gui command-line options.
 - Leo tests syntax of .py files when saving them.
 - Leo can now open any kind of file into @edit nodes.
 - @auto-rst nodes support "round-tripping" of reStructuredText files.

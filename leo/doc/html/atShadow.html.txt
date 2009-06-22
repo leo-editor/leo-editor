@@ -1,5 +1,6 @@
 .. rst3: filename: html\atShadow.html
 
+
 ############################################################
 Chapter 23: Eliminating sentinel lines with @shadow
 ############################################################
@@ -10,21 +11,23 @@ These trees combine the benefits of @auto, @thin, @file and @nosent trees:
 - The (public) files created by @shadow trees contain no sentinels, but
 - Leo is able to update @shadow trees in the Leo outline based on changes made
   to public files outside of Leo.
-  
+
 @shadow trees are often useful for studying or editing source files from projects that don't use Leo. 
 In such situations, it is convenient to import the @shadow tree from the (public) sources.
 As discussed below, Leo can import @shadow trees automatically,
 using the same algorithms used by `@auto trees`_.
-  
+
 The crucial ideas and algorithms underlying @shadow trees are the invention of Bernhard Mulder.
 
 .. .. contents::
+
 
 .. Links
 .. _`@auto trees`:          directives.html#auto
 
 Overview
 ++++++++
+
 
 Using @shadow trees is the best choice when you want to have the full power of
 Leo's outlines, but wish to retain the source files in their original format,
@@ -56,6 +59,7 @@ That's *almost* all there is to it.  The following sections discuss important de
 Creating @shadow trees
 ++++++++++++++++++++++
 
+
 The first step in creating an @shadow tree is to create a node whose headline is
 @shadow *<filename>*. This is always safe, even if *<filename>* already
 exists: Leo writes the @shadow tree to the public and private files only if the
@@ -80,6 +84,7 @@ the @shadow node is under the influence of an @ignore directive.
 
 What the update algorithm does
 ++++++++++++++++++++++++++++++
+
 
 Suppose our @shadow tree is @shadow a.py. When Leo writes this tree it creates a
 public file, a.py, and a private file, .leo_shadow/xa.p (or just xa.p for
@@ -110,6 +115,7 @@ heavily commented.
 Aha: boundary cases don't matter
 ++++++++++++++++++++++++++++++++
 
+
 There is one boundary case that the update algorithm can not resolve.
 If a line is inserted at the boundary between nodes,
 the updated algorithm can not determine whether the line should be inserted
@@ -135,6 +141,6 @@ these two cases **does not matter**, for three very important reasons:
    algorithm because the line has not been changed externally. The location of
    the line (on the boundary) will be completely determined and it will never
    need to be moved across the boundary.
-   
+
 Understanding these three reasons finally convinced me that @shadow could be made to work reliably.
 

@@ -1,5 +1,6 @@
 .. rst3: filename: html\vimBindings.html
 
+
 ############################################################
 Chapter 22: Using Vim Bindings with Leo
 ############################################################
@@ -7,6 +8,7 @@ Chapter 22: Using Vim Bindings with Leo
 This chapter describes Leo's vim-like bindings, including how to install them.
 
 .. .. contents::
+
 
 .. Links
 
@@ -17,6 +19,7 @@ Vim bindings
 
 Installing vim bindings
 ***********************
+
 
 Place a copy of the "@keys Vim bindings" node and its sub-nodes,
 located in the leoSettings.leo file, under the "@settings" node
@@ -30,6 +33,7 @@ them from being overwritten when updating to a new version.
 
 General commands
 ****************
+
 
 The following commands are always available.
 
@@ -66,7 +70,7 @@ Search options::
                             (only supported with 'Alt-/', 'Alt-p')
                     r   Toggle regex matches
                         ('/' key turns off regex. 'n' key uses regex if turned on)
-    
+
     Note: Whether a search is limited to node's body or the node's sub-outline
           is determined by which pane has focus when search text specified.
           (See "Find text commands:" sub-sections in Outline/Body Pane sections)
@@ -80,6 +84,7 @@ Miscellaneous commands::
 
 Body pane commands
 ******************
+
 
 Move cursor commands::
 
@@ -271,6 +276,7 @@ Node commands::
 Outline commands
 ****************
 
+
 The following commands are supported when in a headline's command mode.
 
 State change commands::
@@ -333,7 +339,7 @@ Find text commands::
     N           Find next (same scope, other direction)
 
     Note: See "Search options" section above to change options using 'Ctrl-/'
-    
+
 Replace [and find next] commands::
 
     Commands that use Paste buffer (clipboard)
@@ -410,6 +416,7 @@ Outline scroll commands::
 Commands not supported
 **********************
 
+
 Notable missing editing commands::
 
     t<char>     Move cursor to character before specified character
@@ -431,6 +438,7 @@ Notable missing body pane commands::
 
 Avoiding changes to 'tag' files
 +++++++++++++++++++++++++++++++
+
 
 If you use the open-with plugin to open node text in Vim and your Vim's "tag"
 file refers to derived files then there is a risk that a derived file that is

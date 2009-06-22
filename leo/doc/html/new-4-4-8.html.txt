@@ -1,10 +1,12 @@
 .. rst3: filename: html\new-4-4-8.html
 
+
 #######################################
 What's New in Leo 4.4.7 and Leo 4.4.8
 #######################################
 
 .. .. contents::
+
 
 .. Links used in this document.
 .. _`leoBridge chapter`:    leoBridge.html
@@ -13,6 +15,7 @@ What's New in Leo 4.4.7 and Leo 4.4.8
 
 New features
 ++++++++++++
+
 
 - Better support for unicode in \@auto trees.
 
@@ -26,19 +29,21 @@ New features
   arguments untranslated. Keyword arguments, color, newline, etc. are never
   translated. g.translateString does the actual translation using Python's
   `gettext`_ module.
-  
+
 - \@menu items may not refer to commands created by @button and @command nodes.
 
 New and improved plugins
 ++++++++++++++++++++++++
 
+
 - The ipython plugin creates a simple, powerful, effective bridge between IPython and Leo.
   See http://webpages.charter.net/edreamleo/IPythonBridge.html
-  
+
 - Improved marks/recent buttons plugin.
 
 New settings
 ++++++++++++
+
 
 - Added support for @commands trees in leoSettings files.
 

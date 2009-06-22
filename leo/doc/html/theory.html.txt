@@ -1,5 +1,6 @@
 .. rst3: filename: html\theory.html
 
+
 ##########################################
 Chapter 10: Theory of Operation
 ##########################################
@@ -10,11 +11,13 @@ This chapter will be of use primarily to those wanting to change Leo's code.
 
 .. .. contents::
 
+
 .. _`Chapter 9\: History of Leo`:   history.html
 .. _`Chapter 11\: White Papers`:    whitepapers.html
 
 Overview
 ++++++++
+
 
 All versions of Leo are organized as a collection of classes. The general
 organization of Leo has remained remarkably stable throughout all versions of
@@ -69,6 +72,7 @@ These classes are defined in ``leoNodes.py``.
 Nodes
 +++++
 
+
 The vnode and tnode classes represent most of the data contained in the outline.
 These classes are Leo's fundamental Model classes. A **vnode** (visual node)
 represents a headline at a particular location on the screen. When a headline is
@@ -104,6 +108,7 @@ do not change once a node has created. This reduces cvs conflicts.
 
 Drawing and events
 ++++++++++++++++++
+
 
 Leo must redraw the outline pane when commands are executed and as the result of mouse and keyboard events.
 The main challenges are eliminating flicker and handling events properly.
@@ -171,6 +176,7 @@ the outline pane is redrawn only when needed.
 Clones
 ++++++
 
+
 Since version 4.2, Leo represents clones by sharing tnodes. Cloned vnodes share
 the same tnode. This shared tnode represents the entire shared subtree of both
 clones. Thus, the ``_firstChild`` link must reside in *tnodes*, not *vnodes*.
@@ -188,6 +194,7 @@ new scheme a vnode v is cloned if and only if ``len(v.t.vnodeList) > 1``.
 
 Find and change commands
 ++++++++++++++++++++++++
+
 
 The find and change commands are tricky; there are many details that must be
 handled properly. The following principles govern the LeoFind class:
@@ -233,6 +240,7 @@ and sel attributes.
 
 Tangle and untangle commands
 ++++++++++++++++++++++++++++
+
 
 This section describes Leo's explicit ``Tangle`` and ``Untangle`` commands. Such
 commands operate only on ``@root`` and ``@unit`` trees. The previous chapter discusses
@@ -334,6 +342,7 @@ update that definition.
 Unicode
 +++++++
 
+
 Leo uses unicode objects in vnodes and tnodes to denote headline and body text.
 Note that unicode strings have no encoding; only plain strings have encodings.
 This means that once an (encoded) plain string has been converted to a unicode
@@ -361,6 +370,7 @@ that:
 Unlimited undo
 ++++++++++++++
 
+
 Unlimited undo is straightforward; it merely requires that all commands that
 affect the outline or body text must be undoable. In other words, everything
 that affects the outline or body text must be remembered. We may think of all
@@ -385,7 +395,6 @@ Key bindings
 ++++++++++++
 
 
-
 leoKeys.py handles key bindings.
 There are two kinds of bindings, gui bindings and pane bindings.
 
@@ -398,10 +407,10 @@ This is a significant hole in Tkinter's event mechanism.
 
 At present Leo makes gui bindings in several places, all equivalent.
 Bindings are made to callbacks, all of which have this form::
-    
+
      def callback(event=None,k=k,stroke=stroke):
         return k.masterKeyHandler(event,stroke)
-        
+
 As a result, changing gui bindings actually has no effect whatever.
 It would be clearer to have a single place to make these bindings...
 
@@ -430,7 +439,7 @@ Here are the dictionaries that k.masterKeyHandler uses:
 - k.masterBindingsDict:
   Keys are pane names: 'all','text',etc. or mode names.
   Values are dicts:  keys are strokes; values are g.Bunch(commandName,func,pane,stroke).
-  
+
 - k.modeWidgetsDict:
   Keys are mode names; values are lists of widgets to which bindings have been made.
 

@@ -1,5 +1,6 @@
 .. rst3: filename: html\history.html
 
+
 ##########################################
 Chapter 9: History of Leo
 ##########################################
@@ -8,6 +9,7 @@ This chapter discusses the history of Leo and tells the essential features of ea
 Here are the most important dates in Leo's history:
 
 .. .. contents::
+
 
 .. Relative links...
 .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
@@ -27,6 +29,7 @@ Here are the most important dates in Leo's history:
 Beginnings
 ++++++++++
 
+
 Leo grew out of my efforts to use Donald Knuth's "CWEB system of Structured
 documentation." I had known of literate programming since the mid 1980's, but I
 never understood how to make it work for me. In November 1995 I started thinking
@@ -38,6 +41,7 @@ programming, but many details remained obscure.
 
 Breakthrough
 ++++++++++++
+
 
 March 5, 1996, is the most important date in Leo's history. While returning from
 a day of skiing, I discussed my thoughts with Rebecca. During that conversation
@@ -59,6 +63,7 @@ language.
 Apple and YellowBox
 +++++++++++++++++++
 
+
 Throughout 1996 I created a version of Leo on the Macintosh in plain C and the
 native Mac Toolbox. This was a poor choice; I wasted a huge amount of time
 programming with these primitive tools. However, this effort convinced me that
@@ -76,6 +81,7 @@ Apple broke its promises to Apple developers. I had to start again.
 Borland C++
 +++++++++++
 
+
 I rewrote Leo for Borland C++ starting in May 1999. Borland C++ was much better
 than CodeWarrior C, but it was still C++. This version of Leo was the first
 version to use xml as the format of .leo files. The last version of Borland Leo,
@@ -83,6 +89,7 @@ version to use xml as the format of .leo files. The last version of Borland Leo,
 
 Discovering Python
 ++++++++++++++++++
+
 
 I attended the Python conference in early 2001. In May of 2000 I began work on
 an wxWindows version of Leo. This did not work out, but something good did come
@@ -100,12 +107,14 @@ Leo. The first functional version of Leo in Python was 0.05 alpha, December 17,
 SourceForge
 +++++++++++
 
+
 I registered the Leo project on SourceForge on March 10, 2003. It is certainly
 no accident that Leo started a new life shortly thereafter. Prior to SourceForge
 my interest in Leo had been waning.
 
 Allowing sentinel lines in derived files
 ++++++++++++++++++++++++++++++++++++++++
+
 
 In the summer of 2001 I began to consider using sentinel lines in derived files.
 Previously I had thought that outline structure must be 'protected' by remaining
@@ -119,6 +128,7 @@ and untangling.
 Untangling @file is easy!
 +++++++++++++++++++++++++
 
+
 The biggest surprise in Leo's history was the realization it is **much** easier
 to untangle files derived from ``@file``. Indeed, ``@root`` creates all sorts of
 problems that just disappear when using ``@file``. The new Python version of Leo
@@ -128,6 +138,7 @@ escape sequences made Leo's read code much more robust.
 
 Leo 3.x: Continuous improvement
 +++++++++++++++++++++++++++++++
+
 
 I spent 2002 taking advantages of Python's tremendous power and safety.
 Many improvements were at last easy enough to do:
@@ -146,6 +157,7 @@ Many improvements were at last easy enough to do:
 Leo 4.0: Eliminating error 'recovery'
 +++++++++++++++++++++++++++++++++++++
 
+
 In late 2002 and throughout 2003 I worked on an entirely new file format.
 4.0 final went out the door October 17, 2003 after almost a year intense
 design work trying to improve error recovery scheme used while reading
@@ -159,6 +171,7 @@ was on a completely firm foundation.
 Leo 4.1: The debut of gnx's
 +++++++++++++++++++++++++++
 
+
 Leo first used gnx's (global node indices) as a foolproof way of associating
 nodes in .leo files with nodes in derived files. At the time, there was
 still intense discussions about protecting the logical consistency of
@@ -167,6 +180,7 @@ that then.
 
 Leo 4.2: Complete at last
 +++++++++++++++++++++++++
+
 
 Leo 4.2 Final went out the door September 20, 2004.
 This surely is one of the most significant dates in Leo's history:
@@ -201,6 +215,7 @@ what life with Leo was like before it.
 Leo 4.3 Settings
 ++++++++++++++++
 
+
 Leo 4.3 corrected many problems with ``leoConfig.txt``. Instead, Leo gets
 settings from one or more ``leoSettings.leo files``. This version also
 introduced a way to changed settings using a settings dialog.  However,
@@ -210,6 +225,7 @@ the settings dialog was retired in Leo 4.4.
 Leo 4.4 The minibuffer and key bindings
 +++++++++++++++++++++++++++++++++++++++
 
+
 Leo 4.4 was a year-long effort to incorporate an Emacs-style minibuffer and
 related commands into Leo. Thinking in terms of minibuffer commands frees my
 thinking. Leo 4.4 also featured many improvements in how keys are bound to
@@ -217,7 +233,7 @@ commands, including per-pane bindings and user-defined key-binding modes.
 
 Development on long-delayed projects accelerated after 4.4 final went out the door.
 Recent projects include:
-    
+
 - Controlling syntax coloring with jEdit's xml language-description files.
   See Chapter 15.
 - Support for debugging scripts using external debuggers.
@@ -234,11 +250,13 @@ Recent projects include:
 Leo 4.4.4 Improvements
 ++++++++++++++++++++++
 
+
 Leo 4.4.1 through 4.4.8 contained many incremental improvements,
 as documented in Chapters 15 through 21 of this Users Guide.
 
 Leo 4.4.1
 *********
+
 
 - Supported multiple editors in body pane.
 - Added the jEdit_colorizer plugin. See `Chapter 15: Controlling Syntax Coloring`_.
@@ -246,6 +264,7 @@ Leo 4.4.1
 
 Leo 4.4.2
 *********
+
 
 - Added support for myLeoSettings.leo
 - The 'Big Reorg' made Leo's vnodes and tnode classes independent of the rest of Leo.
@@ -260,6 +279,7 @@ Leo 4.4.2
 Leo 4.4.3
 *********
 
+
 - Added support for chapters in Leo's core.
 - Added support for zipped .leo files.
 - Added the leoBridge module. See `Chapter 19: Embedding Leo with the leoBridge Module`_.
@@ -269,6 +289,7 @@ Leo 4.4.3
 
 Leo 4.4.4
 *********
+
 
 - The Great Graph Aha: Outlines don't have to *be* graphs to *represent* graphs.
   This Aha meant that there is no need for a separate 'graph world'.  
@@ -282,11 +303,13 @@ Leo 4.4.4
 Leo 4.4.5
 *********
 
+
 - Leo now recognizes directives in headlines.
 - Added support for @rst-preformat nodes to the rst3 plugin.
 
 Leo 4.4.7 and Leo 4.4.8
 ***********************
+
 
 - Added the ILeo, the IPython bridge. See `Chapter 21: ILeo - the IPython bridge`_.
 - Added support for translating messages to Leo's log.

@@ -81,6 +81,58 @@ You can, instead, add the following link::
 
 Now you are ready to `run Leo`_.
 
+Installing Leo on MacOS X
++++++++++++++++++++++++++
+
+
+Installing Leo on MacOS 10.5 (Leopard) is straightforward.
+
+1. MacOS 10.5 comes with Python pre-installed.
+   See http://www.python.org/download/mac/ and
+   http://wiki.python.org/moin/MacPython/Leopard
+   for information about using the latest version of Python.
+   
+2. Download and install bzr:
+   
+   - Download bzr from http://bazaar-vcs.org/Download
+   
+   - Install bzr using the file just downloaded.
+   
+3. Get Leo's sources from Leo's trunk::
+    
+    cd ~
+    mkdir leo.repo
+    cd leo.repo
+    bzr init
+    bzr branch lp:leo-editor
+    cd leo-editor
+    
+4. You can run the tk version of Leo as follows::
+
+    python launchLeo.py --gui=tk
+   
+5. If you already have Qt and PyQt installed, you can run the qt version of Leo as follows::
+
+    python launchLeo.py --gui=qt
+    
+6. If you don't have Qt or PyQt installed, you will have to install Qt and PyQt
+    from sources. There does not seem to be any pre-built binaries.
+
+    A: You may need to install XCode from http://developer.apple.com/mac/
+       in order to get a development environment.
+       
+    B: Download and install the sip package, following the direction at
+       http://www.riverbankcomputing.co.uk/software/sip/download
+    
+    C: Download the OpenSource Qt libraries for Mac from
+       http://www.qtsoftware.com/downloads
+       
+    D: At various points along the way you will need to build the sources::
+    
+         python configure.py 
+         make
+         sudo make install
+
 Installing Leo on Windows
 +++++++++++++++++++++++++
 
@@ -154,108 +206,6 @@ Any call to pythonw -i will cause pythonw.exe to exit immediately.
 The first  line opens Leo files with no console window.
 The second line opens Leo files with a console window and leaves the window open after Leo exits.
 You should now be able to double click on a leo file in explorer with Leo.
-
-Installing Leo on MacOS X
-+++++++++++++++++++++++++
-
-
-By Randall Voth:
-Leo works reliably only on MacOS X 10.3 (Panther) and above.
-To run Leo on Macintosh OS X 10:
-
-1.  Download and install ``MacPython 2.3 for Panther addons``.
-    Python is already included in OS X 10.3 so only the addons are necessary at
-    http://www.cwi.nl/~jack/macpython.html
-
-2.  Download and install TclTkAqua from http://tcltkaqua.sourceforge.net/
-
-3.  Run the PackageManager found in ``/Applications/MacPython-2.3`` and  
-    install ``_tkinter-2.3-binary`` by clicking on the package in the list  
-    and clicking the [Install:] button with ``Install dependencies`` checked.
-
-4.  Download Leo (platform independent source.zip) from http://leo.sourceforge.net/
-
-5.  Unzip the contents into a directory by double-clicking the downloaded file.
-    Typically you would put the Leo folder into the ``Applications`` directory.
-
-6.  Control-click on ``/path_to_unzipped_dir/leo/core/leo.py`` and open with ``PythonLauncher``.
-
-7.  It is a good idea to set ``PythonLauncher`` as the default program to  
-    open python scripts by clicking on ``leo.py``, choosing Get Info from the  
-    Finder's File menu, and selecting "PythonLauncher" as the default  
-    program to ``Open With:``
-    By clicking the ``Change All...`` button, all python scripts will be  
-    opened with ``PythonLauncher``.
-
-8.  Download ``Pmw`` from http://pmw.sourceforge.net/
-    ``Pmw`` must be installed in order to use the Settings panel.
-    Drag the downloaded gzip file into
-    ``/System/Library/Frameworks/Python.framework/Versions/2.3/lib/python2.3/site-packages``
-    Double click on it to unzip and untar the file into a folder to make it available to Python
-
-How to use Platypus to create a Mac launcher for Leo
-****************************************************
-
-
-This documents how I used Platypus 3.0 to create MacLeo, the MacOS X launcher
-for Leo. You don't need Platypus to _use_ MacLeo, but you do need Platypus to
-*create* MacLeo. You may download Platypus 3.0 from http://sveinbjorn.vefsyn.is/platypus
-Platypus creates something called an "application bundle," essentially a wrapper
-for the shell script called openLeoScript.sh.
-
-At present this script contains just::
-
-    #!/bin/sh
-    # $2 only works if .leo is one of the extensions.
-    /usr/bin/pythonw ~/leo/core/leo.py $2
-
-In detail, here is how I created MacLeo:
-
-1.  Open Platypus.
-
-2.  Set the Platypus settings::
-
-	- Name: MacLeo
-	- Script type: shell
-	- Icon: Python Icon
-		- Using the standard Leo outline doesn't work, but one could be created…
-	- Script Path: /Users/edream/dist/Platypus 3.0/openLeoScript.sh
-	- Is droppable checkbox (checked)
-		- Edit Types:  .leo only, not *, not folders.
-		- N.B.  There MUST be a period in front of .leo!  Otherwise $2 will be empty in the script.
-	- Output: None (progress bar and text window appear to be essentially useless)
-
-3.  Hit the create button to create MacLeo.
-
-How to create MacOS X .pkg files
-********************************
-
-
-This tells how I created ``leo-4-3-a3.pkg`` using ``PackageMaker``.
-
-``PackageMaker`` is included in the ``Xtools`` disk that comes with MacOS X. Installing
-``PackageMaker`` was easy, but I don't remember the details.
-
-1.  Make sure ``~/dist/make-leo-dist`` contains a folder called ``leo-(version)``.
-    The ``~/dist/make-leo-dist/leo-(version)`` folder should contain a *folder* called just ``leo``.
-    This is the folder that should have the files to be distributed.
-    I got this folder by downloading ``leo-4-3-a3.zip``, the official a3 distribution.
-
-2.  Open ``PackageMaker`` by double-clicking the file ``~/dist/LeoPackage.pmsp``
-    I originally created this .pmsp file in ``PackageMaker``.
-    It will be included in the next official release.  I'll also add it to cvs.
-    ``LeoPackage.pmsp`` contains most of the information needed to create the .pkg file,
-    but even without the .pmsp file using ``PackageMaker`` is pretty self-explanatory
-
-3.  Update the description in the ``PackageMaker`` dialog.
-    This should be similar to the readme file.
-
-4. Browse to ``~/dist/make-leo-dist/leo-(version)`` in the ``Files`` tab in the ``PackageMaker`` dialog.
-
-5.  Choose ``Make Package`` from the ``PackageMaker File`` menu.
-    If necessary, set the file name to ``Leo.pkg``.  This will create ``Leo.pkg``.
-
-6.  Quit ``PackageMaker``.  Choose 'yes' when prompted to save ``LeoPackage.pmsp``.
 
 Tracking the development version
 ++++++++++++++++++++++++++++++++

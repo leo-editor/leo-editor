@@ -1,5 +1,6 @@
 .. rst3: filename: html\new-4-4-2.html
 
+
 ##########################################
 What's New in Leo 4.4.2
 ##########################################
@@ -9,6 +10,7 @@ For full details see the release notes section in LeoDocs.leo.
 
 .. .. contents::
 
+
 .. Links used in this document.
 .. _Emacs:                          http://www.xemacs.org/
 .. _pymacs:                         http://pymacs.progiciels-bpi.ca/index.html
@@ -17,14 +19,16 @@ For full details see the release notes section in LeoDocs.leo.
 A major code reorg
 ++++++++++++++++++
 
+
 Leo's vnode and tnode classes are now completely independent of the rest of Leo.
 Some api's have been changed.  This 'big reorg' and may affect scripts and plugins.
 
 New commands
 ++++++++++++
 
+
 ::
-    
+
     extend-to-line
     extend-to-paragraph
     extend-to-sentence
@@ -33,6 +37,7 @@ New commands
 
 New features
 ++++++++++++
+
 
 - Added support for controlling Leo from Emacs_ with pymacs_.
   See `Chapter 18: Leo and Emacs`_ for full details.
@@ -71,7 +76,7 @@ New features
 - Many new minibuffer commands now appear in the Cmds menu.
 
 Further improved outline navigation:
-    
+
 - Generalized navigation in outline pane to ignore @file, @thin, etc prefixes.
 - Made outline navigation cumulative.
   When keystrokes in the outline pane are typed 'close' together Leo first tries to look
@@ -83,6 +88,7 @@ Further improved outline navigation:
 
 New and improved plugins
 ++++++++++++++++++++++++
+
 
 - Improved the mod_scripting plugin. Every button created by the plugin creates
   a corresponding command. The command name is the 'cleaned' version of the
@@ -107,6 +113,7 @@ Improved the mod_scripting plugin:
 Settings
 ++++++++
 
+
 - Removed .leoRecentFiles.txt from the distribution and cvs and added @bool
   write_recent_files_as_needed. The presence or absence of .leoRecentFiles.txt
   no longer controls whether Leo creates and updates .leoRecentFiles.txt.
@@ -126,13 +133,14 @@ Settings
   This is slower than using Leo's legacy xml parser, but may solve some unicode problems.
 
 Changed default settings::
-    
+
     focus-to-body = Alt-D
     focus-to-tree = Alt-T
     toggle-extend-mode = Alt-3
 
 ZODB scripting
 ++++++++++++++
+
 
 Leo's vnode and tnode classes can optionally be compatible with ZODB databases,
 i.e., they can optionally derive from ZODB.Persistence.Persistent.

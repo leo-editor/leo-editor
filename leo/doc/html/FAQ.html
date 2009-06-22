@@ -258,6 +258,7 @@ hr { /* EKR */
 <!-- Links used in this document... -->
 <!-- - - - - - External links. -->
 <!-- - - - - - Relative links into Leo's documentation. -->
+<!-- .. _`Run Leo from a console window`:            `How can I run Leo from a console window?`_ -->
 <!-- - - - - - References to the glossary: the glossary now contains references to the tutorial. -->
 <div class="section" id="getting-leo">
 <h1>Getting Leo</h1>
@@ -335,7 +336,7 @@ python launchLeo.py --gui=qt leo\core\leoPyRef.leo
 If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file
 as described at <a class="reference external" href="install.html#how-to-install-leo-on-windows">How to install Leo on Windows</a>.
 However you are installing Leo,
-be sure to <a href="#id1"><span class="problematic" id="id2">`run Leo from a console window`_</span></a>
+be sure to run Leo from a console window.
 because as a last resort Leo prints error messages to the console.</p>
 <p><strong>Leo is hanging on my Linux box.  What should I do?</strong></p>
 <p>From: <a class="reference external" href="http://sourceforge.net/forum/message.php?msg_id=1685399">http://sourceforge.net/forum/message.php?msg_id=1685399</a></p>
@@ -451,7 +452,7 @@ Deleting a cloned node is *never* dangerous.
 <ul>
 <li><p class="first">Developers should use <a class="reference external" href="glossary.html#thin-trees">&#64;thin</a> trees to create derived files in any kind of cooperative environment.</p>
 </li>
-<li><p class="first">If sentinels are frowned upon in your development community, use <a href="#id6"><span class="problematic" id="id7">`&#64;auto`_</span></a> or <a href="#id8"><span class="problematic" id="id9">`&#64;shadow`_</span></a> instead
+<li><p class="first">If sentinels are frowned upon in your development community, use <a class="reference external" href="glossary.html#auto-trees">&#64;auto</a> or <a class="reference external" href="glossary.html#shadow-trees">&#64;shadow</a> instead
 of <tt class="docutils literal"><span class="pre">&#64;thin</span></tt>.</p>
 </li>
 <li><p class="first">The VCS repository contains &quot;reference&quot; .leo files.
@@ -568,70 +569,14 @@ $ENDIF
 Like this:</p>
 <pre class="literal-block">
 $IFDEF LEOHEADER &lt;-conditional compilation directive
-</pre>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">&lt;string&gt;</tt>, line 475)</p>
-Literal block ends without a blank line; unexpected unindent.</div>
-<p>&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim</p>
-<div class="system-message">
-<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 482)</p>
-Unexpected indentation.</div>
-<blockquote>
-<a class="reference external" href="mailto:#&#64;+leo-ver=4">#&#64;+leo-ver=4</a> &lt;-these lines not compiled</blockquote>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">&lt;string&gt;</tt>, line 483)</p>
-Block quote ends without a blank line; unexpected unindent.</div>
-<p>&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim</p>
-<div class="system-message">
-<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 490)</p>
-Unexpected indentation.</div>
-<blockquote>
-<a class="reference external" href="mailto:#&#64;+node">#&#64;+node</a>:&#64;file QParser005.INC</blockquote>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">&lt;string&gt;</tt>, line 491)</p>
-Block quote ends without a blank line; unexpected unindent.</div>
-<p>&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim</p>
-<div class="system-message">
-<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 498)</p>
-Unexpected indentation.</div>
-<blockquote>
-#&#64;&#64;first</blockquote>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">&lt;string&gt;</tt>, line 499)</p>
-Block quote ends without a blank line; unexpected unindent.</div>
-<p>&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim</p>
-<div class="system-message">
-<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 506)</p>
-Unexpected indentation.</div>
-<blockquote>
-<a class="reference external" href="mailto:#&#64;delims">#&#64;delims</a> '
+#&#64;+leo-ver=4 &lt;-these lines not compiled
+#&#64;+node:&#64;file QParser005.INC
+#&#64;&#64;first
+#&#64;delims '
 '&#64;&#64;c
 $ENDIF &lt;-... Until here!
-&lt;rest of derived code file ... &gt;</blockquote>
+&lt;rest of derived code file ... &gt;
+</pre>
 <p>This changes the comment symbol the apostrophe,
 making comments parseable by a BASIC (or other language.)</p>
 <p><strong>How do I make derived files start with a shebang line?</strong></p>
@@ -1089,8 +1034,8 @@ conflicts with xdb). But I'm working on that as well.</p>
 <p><strong>Error messages from the rst3 plugin aren't helpful. What can I do?</strong></p>
 <p>For the most part, <a class="reference external" href="http://docutils.sourceforge.net/">docutils</a> does a good job of reporting errors. <a class="reference external" href="http://docutils.sourceforge.net/">docutils</a> prints
 a message to the console and inserts an unmistakable error message in the
-generated .html file. <strong>Important</strong>: On Windows it is helpful to <a href="#id1"><span class="problematic" id="id3">`Run Leo from a
-console window`_</span></a>.</p>
+generated .html file. <strong>Important</strong>: On Windows it is helpful to run Leo from a
+console window.</p>
 <p>However, in some cases, <a class="reference external" href="http://docutils.sourceforge.net/">docutils</a> crashes instead of properly reporting the
 problem. There are several workarounds:</p>
 <ol class="arabic">
@@ -1128,7 +1073,7 @@ import traceback ; traceback.print_exc()
 <p>This will cause a traceback whenever <a class="reference external" href="http://docutils.sourceforge.net/">docutils</a> crashes. I have found that
 such tracebacks are generally enough to locate the general area of the
 problem. <strong>Note</strong>: These tracebacks go to the console window, so you should
-<a href="#id1"><span class="problematic" id="id4">`Run Leo from a console window`_</span></a>.</p>
+run Leo from a console window.</p>
 </li>
 <li><p class="first">As a last resort, you can isolate syntax errors by reducing your input files
 until they work again, then adding sections until you get a crash. This is
@@ -1200,7 +1145,7 @@ Only use Tcl with the default &quot;threads not enabled&quot; case.</p>
 If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file
 as described at <a class="reference external" href="install.html#how-to-install-leo-on-windows">How to install Leo on Windows</a>.
 However you are installing Leo,
-be sure to <a href="#id1"><span class="problematic" id="id5">`run Leo from a console window`_</span></a>
+be sure to run Leo from a console window.
 because as a last resort Leo prints error messages to the console.</p>
 <p><strong>The new Python decorator syntax causes problems.  What can I do?</strong></p>
 <p>Python's <a class="reference external" href="http://www.python.org/peps/pep-0318.html">decorator</a> syntax is ill-conceived.
@@ -1255,19 +1200,8 @@ may see strange looking characters if your text editor is expecting a different
 encoding. The encoding used in any <a class="reference external" href="glossary.html#derived-file">derived file</a> is shown in the <tt class="docutils literal"><span class="pre">#&#64;+leo</span></tt> <a class="reference external" href="glossary.html#sentinel">sentinel line</a>
 like this:</p>
 <pre class="literal-block">
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
-&#64;verbatim
+#&#64;+leo-encoding=iso-8859-1.
 </pre>
-<div class="system-message">
-<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 1341)</p>
-Unexpected indentation.</div>
-<blockquote>
-<a class="reference external" href="mailto:#&#64;+leo-encoding=iso-8859-1">#&#64;+leo-encoding=iso-8859-1</a>.</blockquote>
 <p><strong>Exception</strong>: the encoding is <tt class="docutils literal"><span class="pre">UTF-8</span></tt> if no <tt class="docutils literal"><span class="pre">-encoding=</span></tt> field exists.
 You can also use the <tt class="docutils literal"><span class="pre">&#64;encoding</span></tt> <a class="reference external" href="glossary.html#directive">directive</a> to set the encoding for individual <a class="reference external" href="glossary.html#derived-files">derived files</a>.
 If no <tt class="docutils literal"><span class="pre">&#64;encoding</span></tt> <a class="reference external" href="glossary.html#directive">directive</a> is in effect,
@@ -1375,18 +1309,6 @@ for s in table:
 </pre>
 <p>For still more details, see:
 <a class="reference external" href="http://www.diveintopython.org/xml_processing/unicode.html">http://www.diveintopython.org/xml_processing/unicode.html</a></p>
-</div>
-<div class="system-messages section">
-<h1>Docutils System Messages</h1>
-<div class="system-message" id="id1">
-<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 34); <em>backlinks: <a href="#id2">1</a>, <a href="#id3">2</a>, <a href="#id4">3</a>, <a href="#id5">4</a></em></p>
-Indirect hyperlink target &quot;run leo from a console window&quot; (id=&quot;run-leo-from-a-console-window&quot;) refers to target &quot;how can i run leo from a console window?&quot;, which does not exist.</div>
-<div class="system-message" id="id6">
-<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 334); <em><a href="#id7">backlink</a></em></p>
-Unknown target name: &quot;&#64;auto&quot;.</div>
-<div class="system-message" id="id8">
-<p class="system-message-title">System Message: ERROR/3 (<tt class="docutils">&lt;string&gt;</tt>, line 334); <em><a href="#id9">backlink</a></em></p>
-Unknown target name: &quot;&#64;shadow&quot;.</div>
 </div>
 </div>
 </body>

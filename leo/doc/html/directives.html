@@ -311,7 +311,7 @@ My advice is to avoid using <tt class="docutils literal"><span class="pre">&#64;
 <dt>&#64;shadow</dt>
 <dd>This directive writes <em>two</em> external files, a <strong>public</strong> file without sentinels,
 and a <strong>private</strong> file (by default in the .leo_shadow subfolder) containing sentinels.
-This allows Leo to get the benefits of &#64;thin or &#64;file trees,
+This allows Leo to get the benefits of <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> or <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees,
 without having sentinels in the public files that people care about.</dd>
 </dl>
 <p>To complicate matters further,
@@ -350,7 +350,7 @@ Reads an external file into a single node.</li>
 Sets the Unicode encoding used in external files.</li>
 <li><strong>&#64;file</strong>
 Creates an external file containing sentinels.
-Thin external files contains simpler sentinels than &#64;thin.
+Thin external files contains simpler sentinels than <tt class="docutils literal"><span class="pre">&#64;thin</span></tt>.
 The &#64;file tree in the outline contains a copy of all information in the external file.</li>
 <li><strong>&#64;first</strong>
 Forces lines to appear before the first sentinel of an external file.</li>
@@ -507,7 +507,7 @@ never affect the coloring of their offspring.</p>
 <p>The <tt class="docutils literal"><span class="pre">&#64;nocolor-node</span></tt> directive completely disables coloring for that node only.
 Descedant nodes are not affected.</p>
 <p>The <tt class="docutils literal"><span class="pre">&#64;killcolor</span></tt> directive completely disables the colorizer for that node.
-The result much faster syntax coloring of large body text.
+The result is much faster syntax coloring of large body text.
 As usual <tt class="docutils literal"><span class="pre">&#64;killcolor</span></tt> may itself be overridden in descendant nodes.
 The differences between <tt class="docutils literal"><span class="pre">&#64;killcolor</span></tt> and <tt class="docutils literal"><span class="pre">&#64;nocolor</span></tt>:</p>
 <ul class="simple">
@@ -627,9 +627,12 @@ Leo converts such characters to <tt class="docutils literal"><span class="pre">'
 </div>
 <div class="section" id="file">
 <h2>&#64;file</h2>
-<p>Creates an external file containing sentinels.
-Thin external files contain simpler sentinels than &#64;thin.
-The &#64;file tree in the outline contains a copy of all information in the external file.</p>
+<p>The <tt class="docutils literal"><span class="pre">&#64;file</span></tt> directive is deprecated - use <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> instead. <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees
+can be converted to <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees by replacing <tt class="docutils literal"><span class="pre">&#64;file</span></tt> by <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> in
+outline.</p>
+<p>The <tt class="docutils literal"><span class="pre">&#64;file</span></tt> directive creates an external file containing sentinels.
+External files contain sentinels different from <tt class="docutils literal"><span class="pre">&#64;thin</span></tt>.
+The <tt class="docutils literal"><span class="pre">&#64;file</span></tt> tree in the outline contains a copy of all information in the external file.</p>
 </div>
 <div class="section" id="first">
 <h2>&#64;first</h2>
@@ -891,11 +894,11 @@ For example:</p>
 </div>
 <div class="section" id="thin">
 <h2>&#64;thin</h2>
-<p>Creates an external file containing sentinels.
-Thin external files are more friendly to source code control systems such as bzr
-than external files created from <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.
-Thin exteral files contain all information needed to recreate the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> tree in the outline.</p>
+<p>Creates an external file containing sentinels.</p>
+<p>Thin exteral files contain all information needed to recreate the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> tree in the outline.</p>
 <p>The <tt class="docutils literal"><span class="pre">&#64;all</span></tt> directive is valid only in <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees, not <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.</p>
+<p>In a collaborative environment, where a version control system is utilized and everyone can use Leo
+for editing, <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> is the recommended way to hold most of the content.</p>
 </div>
 <div class="section" id="unit">
 <h2>&#64;unit</h2>
@@ -1111,9 +1114,12 @@ gets written because no sentinels are written.</p>
 </div>
 <div class="section" id="id3">
 <h2>&#64;file</h2>
-<p>Creates an external file containing sentinels.
-Thin external files contain simpler sentinels than &#64;thin.
-The &#64;file tree in the outline contains a copy of all information in the external file.</p>
+<p>The <tt class="docutils literal"><span class="pre">&#64;file</span></tt> directive is deprecated - use <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> instead. <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees
+can be converted to <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees by replacing <tt class="docutils literal"><span class="pre">&#64;file</span></tt> by <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> in
+outline.</p>
+<p>The <tt class="docutils literal"><span class="pre">&#64;file</span></tt> directive creates an external file containing sentinels.
+External files contain sentinels different from <tt class="docutils literal"><span class="pre">&#64;thin</span></tt>.
+The <tt class="docutils literal"><span class="pre">&#64;file</span></tt> tree in the outline contains a copy of all information in the external file.</p>
 </div>
 <div class="section" id="id4">
 <h2>&#64;nosent</h2>
@@ -1364,11 +1370,11 @@ make the change in the .leo file rather than the external files.</p>
 </div>
 <div class="section" id="id7">
 <h2>&#64;thin</h2>
-<p>Creates an external file containing sentinels.
-Thin external files are more friendly to source code control systems such as bzr
-than external files created from <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.
-Thin exteral files contain all information needed to recreate the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> tree in the outline.</p>
+<p>Creates an external file containing sentinels.</p>
+<p>Thin exteral files contain all information needed to recreate the <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> tree in the outline.</p>
 <p>The <tt class="docutils literal"><span class="pre">&#64;all</span></tt> directive is valid only in <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> trees, not <tt class="docutils literal"><span class="pre">&#64;file</span></tt> trees.</p>
+<p>In a collaborative environment, where a version control system is utilized and everyone can use Leo
+for editing, <tt class="docutils literal"><span class="pre">&#64;thin</span></tt> is the recommended way to hold most of the content.</p>
 </div>
 <div class="section" id="id8">
 <h2>&#64;shadow</h2>

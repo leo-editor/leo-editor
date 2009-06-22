@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20051031040240" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20051031040240" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20080312060129.5"><vh>Buttons</vh>
 <v t="ekr.20090620052003.8505"><vh>@button add-test @key=alt-9</vh></v>
 <v t="ekr.20090514093345.6054"><vh>Disabled buttons</vh>
@@ -97,14 +97,15 @@
 <v t="ekr.20090113083258.1" descendentVnodeUnknownAttributes="7d7100285507302e302e312e3071017d71025808000000616e6e6f7461746571037d7104735507302e312e302e3571057d71065808000000616e6e6f7461746571077d7108735507302e312e362e3371097d710a5808000000616e6e6f74617465710b7d710c735507302e312e372e34710d7d710e5808000000616e6e6f74617465710f7d7110735508302e312e332e333571117d71125808000000616e6e6f7461746571137d711473752e"><vh>@thin test_core.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
-<v t="ekr.20040629121554.1"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
+<v t="ekr.20040629121554.1" a="M"><vh>getSignOnLine (Contains hard-coded version info)</vh></v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@thin leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@thin leoAtFile.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@thin leoBridge.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@thin leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@thin leoColor.py</vh></v>
-<v t="ekr.20031218072017.2810"><vh>@thin leoCommands.py</vh></v>
+<v t="ekr.20031218072017.2810"
+marks="ekr.20040629121554.1,"><vh>@thin leoCommands.py</vh></v>
 <v t="ekr.20041117062700"><vh>@thin leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@thin leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@thin leoFileCommands.py</vh></v>
@@ -178,7 +179,7 @@ c.frame.tree            The tree pane.
 
 def getSignOnLine (self):
     c = self
-    return "Leo 4.6 beta 1, build %s, March 24, 2009" % c.getBuildNumber()
+    return "Leo 4.6 beta 2, build %s, June 22, 2009" % c.getBuildNumber()
 </t>
 <t tx="ekr.20050721093241">@nocolor
 

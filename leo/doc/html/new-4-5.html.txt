@@ -1,10 +1,12 @@
 .. rst3: filename: html\new-4-5.html
 
+
 #######################################
 What's New in Leo 4.5
 #######################################
 
 .. .. contents::
+
 
 .. Links used in this document.
 .. _`Chapter 23`:           atShadow.html
@@ -12,10 +14,11 @@ What's New in Leo 4.5
 Major new features
 ++++++++++++++++++
 
+
 - Added support for @shadow files.
   This is a major breakthrough.
   See `Chapter 23`_ for full details.
-  
+
 - Added much improved support for vim bindings.
 
 - Allow v.uA's in @thin and @shadow nodes.
@@ -24,40 +27,42 @@ Major new features
 Major code reorganizations
 ++++++++++++++++++++++++++
 
+
 - Leo now uses a sax-based parser to read .leo files.
   This makes it possible to extend Leo's file format without invalidating previous versions of Leo.
-  
+
 - Leo now supports the so-called 'Graph World'.
   When g.unified_nodes is True, Leo moves all information from tnodes into vnodes.
-  
+
 - Leo now uses a new key binding scheme.
   This allows substantially simpler key bindings. Indeed, most per-pane bindings
   have been eliminated.
   Added support for kill bindings.
-  
+
 - Leo is now an installable package.
   To make this work, Leo adds os.curdir to sys.path if needed on startup.
-  
+
 - Reorganized Leo's drawing and focus code.
   As a result, calls to c.beginUpdate and c.endUpdate are no longer needed.
-  
+
 - Leo is now ready for Python 3.x:
   Change most print statements to calls to g.pr.
 
 Minor new features
 ++++++++++++++++++
 
+
 - Added g.Tracer class.  This is a Python 'debugger' that computes a call graph.
   To trace a function and its callers, put the following at the function's start::
 
     g.startTracer()
-  
+
 - The find-character command now finds characters across line boundaries.
 
 - Set cwd in read/write commands. This affect the following commands:
   open, save, save-as, save-to, read-outline-only, read-file-into-node,
   write-file-from-node and all the import/export commands.
-  
+
 - Leo creates the .leo folder in the user's HOME directory, and puts several configuration files there.
   Leo looks for myLeoSettings.leo in HOME/.leo.
   Leo uses os.path.expanduser("~") if there is no home setting.
@@ -65,10 +70,11 @@ Minor new features
 New settings
 ++++++++++++
 
+
 - The default settings for @shadow files are now located in leoSettings.leo in the node::
 
     @settings-->File options-->Shadow files
-    
+
   The defaults for these settings are::
 
     @string shadow_prefix = x
@@ -78,7 +84,7 @@ New settings
   state, orphan bits and current position bits when writing fixed .leo files. As
   a result, all nodes will be collapsed and the root node will always be
   selected when Leo opens a fixed .leo file.
-  
+
   You can optionally specify the size and position on the screen of fixed .leo
   files by putting an '@data fixedWindowPosition' node in the
   @settings tree of myLeoSettings.leo or leoSettings.leo.  You should
@@ -90,7 +96,7 @@ New settings
 
     # Must be four entries: width,height,left,top.
     # Put this in myLeoSettings.leo, **not** in individual .leo files.
-    
+
     1200
     800
     50

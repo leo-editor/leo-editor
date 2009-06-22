@@ -1,5 +1,6 @@
 .. rst3: filename: html\customizing.html
 
+
 #############################################
 Chapter 8: Customizing Leo
 #############################################
@@ -9,6 +10,7 @@ See `Specifying settings`_ for a description of how to change Leo's settings.
 
 .. .. contents::
 
+
 .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
 .. _`Chapter 9\: History of Leo`:               history.html
 .. _`rst3 plugin`:                              glossary.html#rst3-plugin
@@ -16,6 +18,7 @@ See `Specifying settings`_ for a description of how to change Leo's settings.
 
 Specifying settings
 +++++++++++++++++++
+
 
 Leo stores options in **@settings trees**, outlines whose headline is
 @settings. When opening a .leo file, Leo looks for @settings trees not only
@@ -28,7 +31,7 @@ This scheme allows for the following kinds of settings:
 - Per-file settings.
 
 There are four kinds of settings files:
-    
+
 1. **Default settings files**, named **leoSettings.leo**.
    Although they can be used in other ways, they typically contain default settings.
 
@@ -53,6 +56,7 @@ The following sections describe the kinds of nodes in @settings trees.
 Configuration directories
 *************************
 
+
 Settings files can be found in the following directories:
 
 - **homeDir**, the HOME/.leo directory. HOME is given by Python's HOME
@@ -72,6 +76,7 @@ In addition, Leo's -c command-line option can specify any .leo file anywhere.
 
 Search order for settings files
 *******************************
+
 
 When reading a .leo file, Leo looks for settings in default settings
 files first, then settings in personal settings files, and finally
@@ -94,7 +99,7 @@ settings in local settings files.  The exact search order is:
 
    a. The file specified by the -c command-line option.
    b. The file being loaded.
-   
+
 Settings that appear later in this list override settings that
 appear earlier in this list.  This happens on a setting-by-setting
 basis, *not* on a file-by-file basis.  In other words, each individual
@@ -108,7 +113,7 @@ settings when reading another .leo file.
 **Caution**: This search order offers almost too much flexibilty. This can be
 confusing, even for power users. It's important to choose the "simplest
 configuration scheme that could possibly work".  Something like:
-    
+
 - Use a single leoSettings.leo file for installation-wide defaults.
 - Use a single myLeoSettings.leo files for personal defaults.
 - Use local settings sparingly.
@@ -118,6 +123,7 @@ myLeoSettings.leo to those settings that differ from default settings.
 
 Safe rules for local settings
 *****************************
+
 
 You should use special care when placing default or personal settings files in
 **local** directories, that is, directories other than homeDir, configDir or
@@ -141,11 +147,13 @@ personal settings files. Ignore this principle at your peril.
 Organizer nodes
 ***************
 
+
 Organizer nodes have headlines that do no start with @.
 Organizer nodes may be inserted freely without changing the meaning of an @setting tree.
 
 \@ignore and \@if nodes
 ***********************
+
 
 Leo ignores any subtree of an ``@settings`` tree whose headline starts with ``@ignore``.
 
@@ -169,6 +177,7 @@ You can use several other kinds of nodes to cause Leo to ignore parts of  an ``@
 
 Simple settings nodes
 *********************
+
 
 Simple settings nodes have headlines of the form::
 
@@ -206,12 +215,13 @@ set the value of ``name`` to ``val``, with the indicated type.
 Complex settings nodes
 **********************
 
+
 Complex settings nodes have headlines of the form::
 
     @<type> description
-    
+
 The type may be one of the following:
-    
+
 =================== =====================================================================
 <type>              Valid values 
 ------------------- ---------------------------------------------------------------------
@@ -233,6 +243,7 @@ See the following sections for details.
 \@button
 ^^^^^^^^
 
+
 An @buttons tree in a settings file defines global buttons that
 are created in the icon area of all .leo files.
 All @button nodes in the @commands tree create global buttons.
@@ -241,6 +252,7 @@ All @button nodes outside the commands tree create buttons local to the settings
 \@commands
 ^^^^^^^^^^
 
+
 An @commands tree in a settings file defines global commands.
 All @command nodes in the @commands tree create global commands.
 All @command nodes outside the commands tree create commands local to the settings file.
@@ -248,11 +260,13 @@ All @command nodes outside the commands tree create commands local to the settin
 \@data
 ^^^^^^
 
+
 The body text contains a list of strings, one per line.
 Lines starting with '#' are ignored.
 
 \@enabled-plugins
 ^^^^^^^^^^^^^^^^^
+
 
 The body text of the @enabled plugins node contains a list of enabled plugins,
 one per line. Comment lines starting with '#' are ignored. Leo loads plugins in
@@ -288,6 +302,7 @@ A's @enabled-plugin node. The safe rule for plugins is::
 \@font
 ^^^^^^
 
+
 The body text contains a list of settings for a font.  For example::
 
     body_text_font_family = Courier New
@@ -300,8 +315,9 @@ The body text contains a list of settings for a font.  For example::
 \@menuat
 ^^^^^^^^
 
+
 The form of this node is::
-    
+
     @menuat *<path>* *<action>* *[clipboard]*
 
 The @menuat setting has 2-3 parameters in its head text, its children are @menu and
@@ -340,7 +356,7 @@ There are 5 available actions:
 
 - **copy**: The target menu or item will be copied and saved to
   an internal clipboard.  Descendants of the @menuat setting are ignored.
-  
+
 The optional **clipboard** argument modifies the action of the before, after,
 and append actions. By default these actions insert the menus and items supplied
 as descendants of the @menuat setting. If you specify "clipboard" (without the
@@ -349,6 +365,7 @@ action will be used instead. This parameter is optional and can be left blank.
 
 \@menus
 ^^^^^^^
+
 
 Leo creates its menus from the @menu, @item and @popup nodes in the @menus tree.
 Within @menus trees, @menu nodes create menus and @item nodes create menu items. 
@@ -373,8 +390,9 @@ The children of this node should be @menu and @item nodes, used as with
 \@mode
 ^^^^^^
 
+
 The form of this node is::
-    
+
     @mode *<mode name>*
 
 The body text contains a list of shortcut specifiers. ``@mode`` nodes work just
@@ -384,6 +402,7 @@ the ``enter-<mode name>-mode`` command.
 \@recentfiles
 ^^^^^^^^^^^^^
 
+
 The body text contains a list of paths of recently opened files, one path per
 line. Leo writes the list of recent files to ``.leoRecentFiles.txt`` in Leo's
 ``config`` directory, again one file per line.
@@ -391,10 +410,12 @@ line. Leo writes the list of recent files to ``.leoRecentFiles.txt`` in Leo's
 \@shortcuts
 ^^^^^^^^^^^
 
+
 The body text contains a list of shortcut specifiers.
 
 Input modes
 +++++++++++
+
 
 Leo now allows you to specify input modes. You enter mode ``x`` with the
 ``enter-x-mode`` command. The purpose of a mode is to create different bindings
@@ -433,6 +454,7 @@ With all these options it should be possible to emulate the keyboard behavior of
 Adding extensible attributes to nodes and .leo files
 ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+
 Leo's .leo file format is extensible. The basis for extending .leo files are the
 ``t.unknownAttributes`` and ``v.unknownAttributes`` ivars of tnodes and vnodes,
 or uA's for short. Leo translates between uA's and xml attributes in the
@@ -445,21 +467,21 @@ Attribute ivars must be Python dictionaries, whose keys are names of plugins and
 whose values are *other* dictionaries, called **inner dictionaries**, for
 exclusive use of each plugin. For example, a plugin named 'xyzzy' would set
 ``t.unknownAttributes`` as follows::
-    
+
     # Create the uA if necessary.
     if not hasattr(p.v.t,'unknownAttributes'):
         p.v.t.unknownAttributes = {}
-    
+
     # Get the inner dictionary for the 'xyzzy' plugin, creating it if necessary.
     d = p.v.t.unknownAttributes.get('xyzzy',{})
-    
+
     # Set some values. These values must be picklable.
     d ['duration'] = 5
     d ['notes'] = "This is a note."
-    
+
     # Update the uA.
     p.v.t.unknownAttributes ['xyzzy'] = d
-    
+
     if hasattr(p.v.t,"unknownAttributes"):
         d = p.v.t.unknownAttributes.get("xyzzy",{})
         g.es(d['duration'])
@@ -504,7 +526,7 @@ Here are the details about how Leo associates uA's with ``<v>`` and ``<t>`` elem
 
 - When reading a .leo file, Leo will create ``t.unknownAttributes`` or ``v.unknownAttributes`` ivars for
   any ``tnode`` or ``vnode`` whose corresponding ``<v>`` or ``<t>`` element contains a foreign xml attribute.
- 
+
 - When writing a file, Leo will write foreign xml attributes in ``<v>`` or ``<t>`` elements
   if the corresponding  vnode or tnode contains an ``unknownAttributes`` ivar.
 
@@ -513,12 +535,14 @@ Here are the details about how Leo associates uA's with ``<v>`` and ``<t>`` elem
 Specifying Tk options using .leo_xresources
 +++++++++++++++++++++++++++++++++++++++++++
 
+
 Leo looks for a file called ``.leo_xresources`` in the users home directory. If
 found, Leo will pass that file to Tk's ``option_readfile`` method for the top
 widget. This allows users to set Tk options.
 
 Translating Leo's menus and messages
 ++++++++++++++++++++++++++++++++++++
+
 
 .. _gettext: http://docs.python.org/lib/module-gettext.html
 

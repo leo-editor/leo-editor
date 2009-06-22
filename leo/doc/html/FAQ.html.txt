@@ -31,7 +31,7 @@ This is Leo's Frequently Asked Questions document.
 .. _commands:                                   commands.html
 .. _`quick start for programmers`:              intro.html#quick-start-for-programmers
 .. _`rst3 plugin`:                              rstplugin3.html
-.. _`Run Leo from a console window`:            `How can I run Leo from a console window?`_
+.. .. _`Run Leo from a console window`:            `How can I run Leo from a console window?`_
 .. _`Tangle and Untangle`:                      commands.html#tangling-an-outline-producing-derived-files
 .. _tutorial:                                   intro.html
 .. _`Leo 4.0: Eliminating error 'recovery'`:    history.html#leo-4-0-eliminating-error-recovery
@@ -39,11 +39,13 @@ This is Leo's Frequently Asked Questions document.
 
 .. ----- References to the glossary: the glossary now contains references to the tutorial.
 .. _`@asis`:                glossary.html#asis-trees
+.. _`@auto`:                glossary.html#auto-trees
 .. _`@file`:                glossary.html#file-trees
 .. _`@others directive`:    glossary.html#others
 .. _`@noref`:               glossary.html#noref
 .. _`@nosent`:              glossary.html#nosent
 .. _`@root`:                glossary.html#root
+.. _`@shadow`:              glossary.html#shadow-trees
 .. _`@thin`:                glossary.html#thin-trees
 .. _`@unit`:                glossary.html#unit
 .. _`body text`:            glossary.html#body-text
@@ -176,7 +178,7 @@ Missing modules can cause installation problems.
 If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file
 as described at `How to install Leo on Windows`_.
 However you are installing Leo,
-be sure to `run Leo from a console window`_
+be sure to run Leo from a console window.
 because as a last resort Leo prints error messages to the console.
 
 
@@ -472,37 +474,9 @@ So this would enable a basic compiler to "jump" over the "true" LEO-header-lines
 Like this::
 
     $IFDEF LEOHEADER <-conditional compilation directive 
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
     #@+leo-ver=4 <-these lines not compiled
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
     #@+node:@file QParser005.INC
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
     #@@first
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
     #@delims ' 
     '@@c
     $ENDIF <-... Until here!
@@ -1104,8 +1078,8 @@ conflicts with xdb). But I'm working on that as well.
 
 For the most part, docutils_ does a good job of reporting errors. docutils_ prints
 a message to the console and inserts an unmistakable error message in the
-generated .html file. **Important**: On Windows it is helpful to `Run Leo from a
-console window`_.
+generated .html file. **Important**: On Windows it is helpful to run Leo from a
+console window.
 
 However, in some cases, docutils_ crashes instead of properly reporting the
 problem. There are several workarounds:
@@ -1142,7 +1116,7 @@ problem. There are several workarounds:
     This will cause a traceback whenever docutils_ crashes. I have found that
     such tracebacks are generally enough to locate the general area of the
     problem. **Note**: These tracebacks go to the console window, so you should
-    `Run Leo from a console window`_.
+    run Leo from a console window.
 
 3.  As a last resort, you can isolate syntax errors by reducing your input files
     until they work again, then adding sections until you get a crash. This is
@@ -1246,7 +1220,7 @@ Missing modules can cause installation problems.
 If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file
 as described at `How to install Leo on Windows`_.
 However you are installing Leo,
-be sure to `run Leo from a console window`_
+be sure to run Leo from a console window.
 because as a last resort Leo prints error messages to the console.
 
 
@@ -1331,13 +1305,6 @@ may see strange looking characters if your text editor is expecting a different
 encoding. The encoding used in any `derived file`_ is shown in the ``#@+leo`` `sentinel line`_
 like this::
 
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
     #@+leo-encoding=iso-8859-1.
 
 **Exception**: the encoding is ``UTF-8`` if no ``-encoding=`` field exists.
