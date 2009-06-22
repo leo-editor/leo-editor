@@ -259,7 +259,8 @@ please ask for help on Leo's help forum:</p>
 <!-- Links used in this document... -->
 <div class="section" id="system-requirements">
 <h1>System requirements</h1>
-<p>Leo will work on any platform that supports Python 2.4 or later and Tk 8.4 or later.</p>
+<p>Leo will work on any platform that supports Python 2.4 or later and Tk 8.4 or later. For
+Qt ui, Qt 4.4 or newer (and compatible PyQt) is required.</p>
 <ul>
 <li><p class="first">Download the latest version of Leo from <a class="reference external" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.</p>
 </li>
@@ -312,35 +313,27 @@ sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.5/site-packages/
 </div>
 <div class="section" id="installing-leo-on-windows">
 <h1>Installing Leo on Windows</h1>
-<p>Leo is distributed either as an executable installer (.exe) file or as a .zip file.</p>
-<p>To install Leo using the executable installer:</p>
-<blockquote>
-<ol class="arabic simple">
-<li>Download the latest version of Leo's installer from <a class="reference external" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.
-The installer will be called something like LeoSetup-4-5.exe.</li>
-<li>Run the installer.
-By default, the install will install Leo an <strong>unpacked folder</strong> called something like Leo-4-5 in your <tt class="docutils literal"><span class="pre">Python\Lib\site-packages</span></tt> directory.</li>
-</ol>
-</blockquote>
-<p>To install Leo from the .zip file:</p>
-<blockquote>
-<ol class="arabic">
-<li><p class="first">Download the latest version of Leo (a .zip file) from <a class="reference external" href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106">Leo's download page</a>.</p>
-</li>
-<li><p class="first">Unzip the .zip file.  The <strong>unpacked folder</strong> will have a name like Leo-x-y,
-where x and y are version numbers.  For example, Leo-4-5 or Leo-4-5-b3.</p>
-</li>
-<li><p class="first">Place the unpacked folder in the 'Program Files' folder or any convenient location.</p>
-</li>
-<li><p class="first">Place the location of the unpacked folder to your python path.
-One way to do this is adding something like the following to python/Lib/sitecustomize.py:</p>
-<pre class="literal-block">
-import sys
-sys.path.append(r'c:\Program Files\Leo-4-5')
-</pre>
-</li>
-</ol>
-</blockquote>
+<p>Leo is distributed at present only as a .zip file.</p>
+<!-- To install Leo using the executable installer: -->
+<!-- 1. Download the latest version of Leo's installer from `Leo's download page`_. -->
+<!-- The installer will be called something like LeoSetup-4-5.exe. -->
+<!-- 2. Run the installer. -->
+<!-- By default, the install will install Leo an **unpacked folder** -->
+<!-- called something like Leo-4-5 in your ``Python\Lib\site-packages`` directory. -->
+<!-- To install Leo from the .zip file:
+
+1. Download the latest version of Leo (a .zip file) from `Leo's download page`_.
+
+2. Unzip the .zip file.  The **unpacked folder** will have a name like Leo-x-y,
+   where x and y are version numbers.  For example, Leo-4-5 or Leo-4-5-b3.
+
+3. Place the unpacked folder in the 'Program Files' folder or any convenient location.
+
+4. Place the location of the unpacked folder to your python path.
+   One way to do this is adding something like the following to python/Lib/sitecustomize.py::
+
+    import sys
+    sys.path.append(r'c:\Program Files\Leo-4-5') -->
 <p>Another way is to append the path to the unpacked folder to the Windows PYTHONPATH environment variable.</p>
 <p>Now that you have installed Leo and told Python where to find Leo,
 you are ready to <a class="reference internal" href="#running-leo">run Leo</a>.</p>

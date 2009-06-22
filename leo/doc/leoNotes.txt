@@ -86,7 +86,6 @@ Call hierarchy tracing (using python 'trace' module)
 - Google wave: 
   http://wave.google.com/
 
-
 - Thread: Leo forum proof of concept:
   A few buttons turns Leo into a competitor for google groups :-)
   http://groups.google.com/group/leo-editor/browse_thread/thread/db6e75d82da4b41d
@@ -95,6 +94,9 @@ Call hierarchy tracing (using python 'trace' module)
   http://pypi.python.org/pypi/manuel/1.0.0a3
   Manuel parses documents, evaluates their contents,
   then formats the result of the evaluation.
+
+- objtrees: object trees for unit testing
+  http://groups.google.com/group/leo-editor/browse_thread/thread/32c3a295d2dae35b
 
 - pexpect: a Python module for spawning child applications and
   controlling them automatically. 
@@ -111,6 +113,9 @@ Call hierarchy tracing (using python 'trace' module)
 
 - rope: Python refactoring library.
   http://rope.sourceforge.net/
+
+- rst2a: a web service that converts reStructuredText to pdf or other formats.
+  http://rst2a.com/
 
 - Tomboy: wiki-like notes
   http://projects.gnome.org/tomboy/index.html

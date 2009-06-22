@@ -2136,7 +2136,7 @@ please ask for help on Leo's help forum:
 .. _`associated .leo files with Leo`:   `How to associate Leo with .leo files on Windows`_
 #@-node:ekr.20050901110110:@rst-no-head links
 #@+node:edream.110203163054.49:System requirements
-Leo will work on any platform that supports Python 2.5 or later and Tk 8.4 or later. For
+Leo will work on any platform that supports Python 2.4 or later and Tk 8.4 or later. For
 Qt ui, Qt 4.4 or newer (and compatible PyQt) is required.
 
 -   Download the latest version of Leo from `Leo's download page`_.
@@ -2190,17 +2190,18 @@ You can, instead, add the following link::
 Now you are ready to `run Leo`_.
 #@-node:edream.110203163054.50:How to install Leo on Linux
 #@+node:ekr.20070622141457:Installing Leo on Windows
-Leo is distributed either as an executable installer (.exe) file or as a .zip file.
+Leo is distributed at present only as a .zip file.
 
-To install Leo using the executable installer:
+..  To install Leo using the executable installer:
 
-    1. Download the latest version of Leo's installer from `Leo's download page`_.
-       The installer will be called something like LeoSetup-4-5.exe.
+..      1. Download the latest version of Leo's installer from `Leo's download page`_.
+..         The installer will be called something like LeoSetup-4-5.exe.
 
-    2. Run the installer.
-       By default, the install will install Leo an **unpacked folder** called something like Leo-4-5 in your ``Python\Lib\site-packages`` directory.
+..      2. Run the installer.
+..         By default, the install will install Leo an **unpacked folder**
+..         called something like Leo-4-5 in your ``Python\Lib\site-packages`` directory.
 
-To install Leo from the .zip file:
+.. To install Leo from the .zip file:
 
     1. Download the latest version of Leo (a .zip file) from `Leo's download page`_.  
 
@@ -11468,15 +11469,15 @@ Translates names of menus and menu items into another language.  For example::
 #@-node:ekr.20071021101506:@rst-ignore menu convenience routines
 #@-node:ekr.20060612103240:@rst html\writingPlugins.html
 #@-node:ekr.20060612102055:Chapter 13: Writing Plugins
-#@+node:ekr.20050831184021.1:Chapter 14: Using the rst3 plugin
+#@+node:ekr.20050831184021.1:Chapter 14: Leo and reStructuredText
 @language rest
 #@nonl
 #@+node:ekr.20050818163826:@rst html\rstplugin3.html
 .. publish_argv_for_missing_stylesheets = --language=de,--documentclass=report,--use-latex-toc
 
-####################################
-Chapter 14: Using the rst3 plugin
-####################################
+######################################
+Chapter 14: Leo and ReStructuredText
+######################################
 
 .. .. contents::
 #@+node:ekr.20050818163826.1:@rst-no-head links
@@ -12083,7 +12084,7 @@ Edward K. Ream designed and wrote the rst3 plugin.
 #@nonl
 #@-node:ekr.20050818163826.16:Acknowledgements
 #@-node:ekr.20050818163826:@rst html\rstplugin3.html
-#@-node:ekr.20050831184021.1:Chapter 14: Using the rst3 plugin
+#@-node:ekr.20050831184021.1:Chapter 14: Leo and reStructuredText
 #@+node:ekr.20060430221745:Chapter 15: Controlling syntax coloring
 @language rest
 #@nonl

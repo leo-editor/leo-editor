@@ -2,19 +2,11 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:4.6 qt gui
-#@+node:ekr.20090620052003.6068:Before b3 (docs)
-#@+node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-http://groups.google.com/group/leo-editor/browse_thread/thread/225316664a918f2c
+#@+node:ekr.20090529125512.6121:Features (maybe for 4.7)
+#@+node:ekr.20090622020908.6058:Add lite sentinels
+http://groups.google.com/group/leo-editor/browse_thread/thread/c4f2cf250600e4a9
 #@nonl
-#@-node:ekr.20090210093316.4:Better install instructions for MacOS Leopard
-#@+node:ekr.20090523070447.6475:Rewrite rst documentation
-#@-node:ekr.20090523070447.6475:Rewrite rst documentation
-#@-node:ekr.20090620052003.6068:Before b3 (docs)
-#@+node:ekr.20090430092048.7:Before 4.6 final
-#@+node:ekr.20090430092048.3:Rewrite docs using stories
-#@-node:ekr.20090430092048.3:Rewrite docs using stories
-#@-node:ekr.20090430092048.7:Before 4.6 final
-#@+node:ekr.20090529125512.6121:Features (maybe)
+#@-node:ekr.20090622020908.6058:Add lite sentinels
 #@+node:ekr.20090528072540.9960:Improve config & plugins
 @nocolor-node
 
@@ -282,7 +274,11 @@ How would the command specify settings?
 
 A line added to test bzr push.
 #@-node:ekr.20090512080015.5801:import-files-recursively command?
-#@-node:ekr.20090529125512.6121:Features (maybe)
+#@-node:ekr.20090529125512.6121:Features (maybe for 4.7)
+#@+node:ekr.20090430092048.7:Before 4.6 final
+#@+node:ekr.20090430092048.3:Rewrite docs using stories
+#@-node:ekr.20090430092048.3:Rewrite docs using stories
+#@-node:ekr.20090430092048.7:Before 4.6 final
 #@+node:ekr.20060306194040:Leo Video
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3615177
