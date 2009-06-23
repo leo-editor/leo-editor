@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="108" left="433" height="822" width="1023"/>
+	<global_window_position top="117" left="509" height="822" width="762"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1164,6 +1164,8 @@
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
 </v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 <v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
@@ -1973,7 +1975,7 @@
 <v t="ekr.20090529141856.4782"><vh>@test checkTrialWrite</vh></v>
 <v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
 </v>
-<v t="ekr.20090529141856.4784" a="E"><vh> Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
 <v t="ekr.20090529141856.4786"><vh>@test rST import test (no double-underlines)</vh></v>
 <v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
@@ -16084,8 +16086,17 @@ print('\nEnd of leoUndo tests.')</t>
 leoTest.runAtFileTest(c,p)</t>
 <t tx="ekr.20071127194743.1">@root 'root-test'
 
-# A totally simple test of @root.</t>
-<t tx="ekr.20071127194743.2"># A totally simple test of @root.
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="ekr.20071127194743.2"># A simple test of @root.
+
+# &lt;&lt; secref &gt;&gt;
+abc
+# -- end -- &lt;&lt; secref &gt;&gt;
 </t>
 <t tx="ekr.20080309193654.1"></t>
 <t tx="ekr.20080310073711.1">gnx = g.app.nodeIndices.toString(None)

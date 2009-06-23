@@ -91,44 +91,44 @@ Installing Leo on MacOS 10.5 (Leopard) is straightforward.
    See http://www.python.org/download/mac/ and
    http://wiki.python.org/moin/MacPython/Leopard
    for information about using the latest version of Python.
-   
+
 2. Download and install bzr:
-   
+
    - Download bzr from http://bazaar-vcs.org/Download
-   
+
    - Install bzr using the file just downloaded.
-   
+
 3. Get Leo's sources from Leo's trunk::
-    
+
     cd ~
     mkdir leo.repo
     cd leo.repo
     bzr init
     bzr branch lp:leo-editor
     cd leo-editor
-    
+
 4. You can run the tk version of Leo as follows::
 
     python launchLeo.py --gui=tk
-   
+
 5. If you already have Qt and PyQt installed, you can run the qt version of Leo as follows::
 
     python launchLeo.py --gui=qt
-    
+
 6. If you don't have Qt or PyQt installed, you will have to install Qt and PyQt
     from sources. There does not seem to be any pre-built binaries.
 
     A: You may need to install XCode from http://developer.apple.com/mac/
        in order to get a development environment.
-       
+
     B: Download and install the sip package, following the direction at
        http://www.riverbankcomputing.co.uk/software/sip/download
-    
+
     C: Download the OpenSource Qt libraries for Mac from
        http://www.qtsoftware.com/downloads
-       
+
     D: At various points along the way you will need to build the sources::
-    
+
          python configure.py 
          make
          sudo make install
@@ -172,6 +172,13 @@ you are ready to `run Leo`_.
 If you haven't already created a HOME environment variable, it would be good to
 define home to be "%USERPROFILE%\My Documents".  You can check whether HOME exists
 by typing 'echo %HOME%' (without the quotes) in a console window.
+
+Installing Qt on Windows
+************************
+
+
+For Windows, install PyQt using the binary installer at
+http://www.riverbankcomputing.co.uk/software/pyqt/download
 
 How to associate Leo with .leo files on Windows
 ***********************************************

@@ -2014,7 +2014,6 @@ class baseTangleCommands:
 
         """Enters names and their associated code and doc parts into the given symbol table."""
 
-        # g.trace(name)
         section = self.st_lookup(name,is_root_flag)
         assert(section)
         if doc:
@@ -3390,7 +3389,7 @@ class baseTangleCommands:
 
         # Convert to lowercase.
         # Convert whitespace to a single space.
-        name = name.lower().name.replace('\t',' ').replace('  ',' ')
+        name = name.lower().replace('\t',' ').replace('  ',' ')
 
         # Remove leading '<'
         i = 0 ; n = len(name)
