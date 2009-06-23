@@ -19,7 +19,7 @@ useUI = False # True: use qt_main.ui. False: use DynamicWindow.createMainWindow.
 #@+node:ekr.20090619104255.3849:<< define newColoring >>
 # Use a section so this can be cloned.
 
-newColoring = False # True: use new colorizing scheme.
+newColoring = True # True: use new colorizing scheme.
 #@nonl
 #@-node:ekr.20090619104255.3849:<< define newColoring >>
 #@nl
@@ -8195,17 +8195,20 @@ if newColoring:
             if p: self.p = p.copy()
             self.all_s = s or ''
 
-            if trace: g.trace('***',p and p.h,len(self.all_s),g.callers(4))
+            if trace: g.trace('='*20,self.colorizer.language) #,g.callers(4))
 
             # State info.
             self.all_s = s
             self.global_i,self.global_j = 0,0
             self.global_offset = 0
-            # self.nextState = 1 # Dont use 0.
-            # self.stateDict = {}
-            # self.stateNameDict = {}
-            # self.restartDict = {}
+
+            # These *must* be recomputed.
+            self.nextState = 1 # Dont use 0.
+            self.stateDict = {}
+            self.stateNameDict = {}
+            self.restartDict = {}
             self.init_mode(self.colorizer.language)
+            self.clearState()
 
             # Used by matchers.
             self.prev = None
@@ -8219,12 +8222,12 @@ if newColoring:
             '''Name may be a language name or a delegate name.'''
 
             trace = False and not g.unitTesting
-
             if not name: return False
+            h = self.highlighter
             language,rulesetName = self.nameToRulesetName(name)
             bunch = self.modes.get(rulesetName)
             if bunch:
-                if trace: g.trace('found',language,rulesetName)
+                if trace: g.trace('found',language,rulesetName,g.callers(2))
                 self.initModeFromBunch(bunch)
                 return True
             else:
@@ -8250,8 +8253,16 @@ if newColoring:
                         mode            = mode,
                         properties      = {},
                         rulesDict       = {},
-                        rulesetName     = rulesetName)
+                        rulesetName     = rulesetName,
+                        # State stuff.
+                        # currentState    = -1,
+                        # nextState       = 1,
+                        # restartDict     = {},
+                        # stateDict       = {},
+                        # stateNameDict   = {},
+                    )
                     # g.trace('No colorizer file: %s.py' % language)
+                    self.rulesetName = rulesetName
                     return False
                 self.colorizer.language = language
                 self.rulesetName = rulesetName
@@ -8273,10 +8284,25 @@ if newColoring:
                     mode            = self.mode,
                     properties      = self.properties,
                     rulesDict       = self.rulesDict,
-                    rulesetName     = self.rulesetName)
+                    rulesetName     = self.rulesetName,
+                    # State stuff.
+                    # currentState    = h.currentBlockState(),
+                    # nextState       = self.nextState,
+                    # restartDict     = self.restartDict,
+                    # stateDict       = self.stateDict,
+                    # stateNameDict   = self.stateNameDict,
+                )
                 # Do this after 'officially' initing the mode, to limit recursion.
                 self.addImportedRules(mode,self.rulesDict,rulesetName)
                 self.updateDelimsTables()
+
+                # Init the new state.
+                # h.setCurrentBlockState(-1)
+                # self.nextState = 1
+                # self.restartDict = {}
+                # self.stateDict = {}
+                # self.stateNameDict = {}
+                # self.clearState()
 
                 initialDelegate = self.properties.get('initialModeDelegate')
                 if initialDelegate:
@@ -8383,8 +8409,18 @@ if newColoring:
             self.rulesDict      = bunch.rulesDict
             self.rulesetName    = bunch.rulesetName
 
+            # State stuff.
+            # h = self.highlighter
+            # h.setCurrentBlockState(bunch.currentState)
+            # self.nextState      = bunch.nextState
+            # self.restartDict    = bunch.restartDict
+            # self.stateDict      = bunch.stateDict
+            # self.stateNameDict  = bunch.stateNameDict
+
+            # self.clearState()
+
             # g.trace(self.rulesetName)
-        #@nonl
+
         #@-node:ekr.20090614134853.3710:initModeFromBunch
         #@+node:ekr.20090614134853.3711:updateDelimsTables
         def updateDelimsTables (self):
@@ -8737,7 +8773,7 @@ if newColoring:
         #@nonl
         #@-node:ekr.20090614134853.3727:match_tabs
         #@-node:ekr.20090614134853.3717:Leo rule functions
-        #@+node:ekr.20090614134853.3728:match_eol_span (no change)
+        #@+node:ekr.20090614134853.3728:match_eol_span
         def match_eol_span (self,s,i,
             kind=None,seq='',
             at_line_start=False,at_whitespace_end=False,at_word_start=False,
@@ -8758,10 +8794,10 @@ if newColoring:
                 self.colorRangeWithTag(s,i,j,kind,delegate=delegate,exclude_match=exclude_match)
                 self.prev = (i,j,kind)
                 self.trace_match(kind,s,i,j)
-                return len(s)-1
+                return j ### (was j-1) With a delegate, this could clear state.
             else:
                 return 0
-        #@-node:ekr.20090614134853.3728:match_eol_span (no change)
+        #@-node:ekr.20090614134853.3728:match_eol_span
         #@+node:ekr.20090614134853.3729:match_eol_span_regexp (no change)
         def match_eol_span_regexp (self,s,i,
             kind='',regexp='',
@@ -8868,7 +8904,7 @@ if newColoring:
         #@nonl
         #@-node:ekr.20090614134853.3732:getNextToken
         #@-node:ekr.20090614134853.3731:match_mark_following & getNextToken
-        #@+node:ekr.20090614134853.3733:match_mark_previous (no change)
+        #@+node:ekr.20090614134853.3733:match_mark_previous (Revise?  Eliminate?)
         def match_mark_previous (self,s,i,
             kind='',pattern='',
             at_line_start=False,at_whitespace_end=False,at_word_start=False,
@@ -8879,6 +8915,9 @@ if newColoring:
             'at_line_start':    True: sequence must start the line.
             'at_whitespace_end':True: sequence must be first non-whitespace text of the line.
             'at_word_start':    True: sequence must start a word.'''
+
+            # This match was causing most of the syntax-color problems.
+            return 0 # Bug fix: 2009/6/23
 
             if not self.allow_mark_prev: return 0
 
@@ -8904,7 +8943,7 @@ if newColoring:
                 return j - i
             else:
                 return 0
-        #@-node:ekr.20090614134853.3733:match_mark_previous (no change)
+        #@-node:ekr.20090614134853.3733:match_mark_previous (Revise?  Eliminate?)
         #@+node:ekr.20090614134853.3734:match_regexp_helper (Revise??)
         def match_regexp_helper (self,s,i,pattern):
 
@@ -8995,6 +9034,11 @@ if newColoring:
 
             '''Succeed if s[i:] starts with 'begin' and contains a following 'end'.'''
 
+            trace = False and not g.unitTesting
+            if i >= len(s): return 0
+
+            # g.trace(begin,end,no_escape,no_line_break,no_word_break)
+
             if at_line_start and i != 0 and s[i-1] != '\n':
                 j = i
             elif at_whitespace_end and i != g.skip_ws(s,0):
@@ -9006,10 +9050,14 @@ if newColoring:
             elif not g.match(s,i,begin):
                 j = i
             else:
-                j = self.match_span_helper(s,i+len(begin),end,no_escape,no_line_break,no_word_break=no_word_break)
+                # We have matched the start of the span.
+                j = self.match_span_helper(s,i+len(begin),end,
+                    no_escape,no_line_break,no_word_break=no_word_break)
+                # g.trace('** helper returns',j,len(s))
                 if j == -1:
-                    j = i # Failure.
+                    j = i # A real failure.
                 else:
+                    # No match, but can continue.
                     i2 = i + len(begin) ; j2 = j + len(end)
                     if delegate:
                         self.colorRangeWithTag(s,i,i2,kind,delegate=None,    exclude_match=exclude_match)
@@ -9023,6 +9071,7 @@ if newColoring:
             self.trace_match(kind,s,i,j)
 
             if j > len(s):
+                j = len(s) + 1
                 def boundRestartMatchSpan(s):
                     # Note: bindings are frozen by this def.
                     return self.restart_match_span(s,
@@ -9039,9 +9088,14 @@ if newColoring:
                     no_line_break=no_line_break,
                     no_word_break=no_word_break)
 
-            return j - i
+                if trace: g.trace('***Continuing',kind,i,j,len(s))
+            elif j != i:
+                if trace: g.trace('***Ending',kind,i,j,len(s),s)
+                self.clearState()
+
+            return j - i # Correct, whatever j is.
         #@+node:ekr.20090614134853.3738:match_span_helper
-        def match_span_helper (self,s,i,pattern,no_escape,no_line_break,no_word_break=False):
+        def match_span_helper (self,s,i,pattern,no_escape,no_line_break,no_word_break):
 
             '''Return n >= 0 if s[i] ends with a non-escaped 'end' string.'''
 
@@ -9049,6 +9103,7 @@ if newColoring:
 
             while 1:
                 j = s.find(pattern,i)
+                # g.trace(no_line_break,j,len(s))
                 if j == -1:
                     # Match to end of text if not found and no_line_break is False
                     if no_line_break:
@@ -9072,19 +9127,22 @@ if newColoring:
                         return j
                 else:
                     return j
-        #@nonl
         #@-node:ekr.20090614134853.3738:match_span_helper
         #@+node:ekr.20090614134853.3821:restart_match_span
         def restart_match_span (self,s,
             delegate,end,exclude_match,kind,
             no_escape,no_line_break,no_word_break):
 
-            '''Succeed if s[i:] contains a following 'end'.'''
+            '''Remain in this state until 'end' is seen.'''
+
+            trace = False and not g.unitTesting
 
             i = 0
-            j = self.match_span_helper(s,i,end,no_escape,no_line_break,no_word_break=no_word_break)
+            j = self.match_span_helper(s,i,end,no_escape,no_line_break,no_word_break)
             if j == -1:
                 j2 = len(s)+1
+            elif j > len(s):
+                j2 = j
             else:
                 j2 = j + len(end)
 
@@ -9110,7 +9168,10 @@ if newColoring:
                     no_escape=no_escape,
                     no_line_break=no_line_break,
                     no_word_break=no_word_break)
+
+                if trace: g.trace('***Re-continuing',i,j,len(s),s)
             else:
+                if trace: g.trace('***ending',i,j,len(s),s)
                 self.clearState()
 
             return j # Return the new i, *not* the length of the match.
@@ -9224,8 +9285,12 @@ if newColoring:
         #@+node:ekr.20090614134853.3828:clearState
         def clearState (self):
 
+            # g.trace(g.callers(4))
             h = self.highlighter
             h.setCurrentBlockState(-1)
+
+            ### This is a hack, that is not guaranteed always to work.
+            self.restartDict={}
         #@-node:ekr.20090614134853.3828:clearState
         #@+node:ekr.20090614134853.3714:colorRangeWithTag
         def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
@@ -9242,7 +9307,7 @@ if newColoring:
                 return
 
             if delegate:
-                if trace: g.trace('delegate',delegate,i,j,tag,g.callers(2))
+                if trace: g.trace('delegate %-12s %3s %3s %10s' % (delegate,i,j,tag),g.callers(2))
                 self.modeStack.append(self.modeBunch)
                 self.init_mode(delegate)
                 # Color everything now, using the same indices as the caller.
@@ -9254,7 +9319,7 @@ if newColoring:
                         if n is None:
                             g.trace('Can not happen: delegate matcher returns None')
                         elif n > 0:
-                            if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
+                            # if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
                             i += n ; break
                     else:
                         # New in Leo 4.6: Use the default chars for everything else.
@@ -9276,20 +9341,20 @@ if newColoring:
             traceMatch = True ; verbose = False
 
             while i < len(s):
-                success = 0
+                # success = 0
                 progress = i
                 functions = self.rulesDict.get(s[i],[])
                 for f in functions:
                     n = f(self,s,i)
                     if n is None:
-                        g.trace('Can not happen' % (repr(n),repr(f)))
+                        g.trace('Can not happen: n is None',repr(f))
                         break
                     elif n > 0: # Success.
-                        if trace and traceMatch:
+                        if trace and traceMatch and f.__name__!='match_blanks':
                             g.trace('match: %20s %s' % (
                                 f.__name__,repr(s[i:i+n])))
                         i += n
-                        success = i
+                        # success = i
                         break # Stop searching the functions.
                     elif n < 0: # Fail and skip n chars.
                         if trace and verbose: g.trace('fail: %20s %s' % (
@@ -9302,9 +9367,9 @@ if newColoring:
                     i += 1
                 assert i > progress
 
-                if success < len(s):
-                    self.clearState()
-        #@nonl
+                # if success < len(s):
+                    # if trace and success > 0: g.trace('** clearing',success,len(s))
+                    # self.clearState()
         #@-node:ekr.20090614134853.3754:mainLoop
         #@+node:ekr.20090614134853.3753:recolor
         def recolor (self,s):
@@ -9350,7 +9415,10 @@ if newColoring:
                 if trace: g.trace('%2s %-50s %s' % (n,stateName,repr(s)))
                 i = f(s)
             else:
-                g.trace('*** no f',n,stateName,g.dictToString(self.stateDict))
+                ### This may be an error, but for now it kinda works.
+                if 0:
+                    g.trace('*** no f',n,stateName,
+                        g.dictToString(self.stateDict),g.callers(4))
                 i = 0
 
             return i
@@ -9358,6 +9426,7 @@ if newColoring:
         #@+node:ekr.20090614134853.3824:setRestart & helpers
         def setRestart (self,f,**keys):
 
+            # g.trace(f,keys)
             h = self.highlighter
             n = self.computeState(f,keys)
             h.setCurrentBlockState(n)
@@ -9379,7 +9448,10 @@ if newColoring:
                 'no_line_break':'no-brk',
                 'no_word_break':'no-word-brk',
             }
-            result = [f.__name__]
+            result = [
+                f.__name__,
+                self.colorizer.language,
+                self.rulesetName]
             for key in keys:
                 keyVal = keys.get(key)
                 val = d.get(key)
@@ -9395,7 +9467,6 @@ if newColoring:
             state = ';'.join(result)
 
             n = self.stateNameToStateNumber(f,state)
-            # g.trace(n,repr(state))
             return n
 
         #@-node:ekr.20090614134853.3825:computeState
@@ -9413,7 +9484,7 @@ if newColoring:
                 self.stateDict[n] = stateName
                 self.restartDict[n] = f
                 self.nextState += 1
-                # g.trace(n,stateName)
+                # g.trace('========',n,stateName)
 
             return n
         #@-node:ekr.20090614134853.3826:stateNameToStateNumber
@@ -9452,12 +9523,14 @@ if newColoring:
                 else:
                     return g.trace('unknown color name',colorName)
 
-            j = min(j,len(s))
+            # if j > len(s)+1: j = len(s)+1
+            # if j >= len(s)-1: j = len(s)
 
             if trace:
                 self.tagCount += 1
-                g.trace('%3s %11s %3s %3s %s' % (
-                    self.tagCount,tag,i,j,s[i:j]),g.callers(4))
+                g.trace(
+                    '%3s %3s %3s' % (i,j,len(s)),colorName,
+                    '%-10s %-25s' % (tag,s[i:j]),g.callers(4)) # 3,2))
 
             self.highlighter.setFormat(i,j-i,color)
         #@-node:ekr.20090614134853.3813:setTag

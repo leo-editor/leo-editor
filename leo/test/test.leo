@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="54" left="422" height="925" width="793"/>
+	<global_window_position top="61" left="374" height="925" width="889"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5,2"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -319,16 +319,24 @@
 </v>
 <v t="ekr.20090618102458.1816"><vh>Converting QString to unicode</vh></v>
 </v>
+<v t="ekr.20090620183227.1755" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e65733171036802752e"><vh>@@auto-rst round-trip-test.txt</vh>
+<v t="ekr.20090620194509.1757"><vh>h1</vh>
+<v t="ekr.20090620194509.1758"><vh>h2</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
 <v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
-<v t="ekr.20090620183227.1755" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e65733171036802752e"><vh>@@auto-rst round-trip-test.txt</vh>
-<v t="ekr.20090620194509.1757" a="E"><vh>h1</vh>
-<v t="ekr.20090620194509.1758"><vh>h2</vh></v>
-</v>
+<v t="ekr.20090623090418.1765" a="E"><vh>known syntax coloring bugs</vh>
+<v t="ekr.20090623090418.1766"><vh>Bug 1</vh></v>
+<v t="ekr.20090623090418.1767"><vh>Bug 2 (from mod_scripting)</vh></v>
+<v t="ekr.20090623090418.1768"><vh>Bug 3 (from unitTest.py)</vh></v>
+<v t="ekr.20090623095616.1769"><vh>New bug</vh></v>
+<v t="ekr.20090623101016.1772"><vh>New bug 2</vh></v>
+<v t="ekr.20090623120149.1773"><vh>@button print-sep</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2638,5 +2646,46 @@ w.setPlainText(s)</t>
 <t tx="ekr.20090620194509.1758">h2 body 1.
 
 </t>
+<t tx="ekr.20090623090418.1765"></t>
+<t tx="ekr.20090623090418.1766">@ Here's an example node that gets colored wrong with trunk:
+
+Qt gui--&gt;@thin qtGui.py--&gt;Syntax coloring--&gt;class jeditColorizer--&gt;&lt;&lt;
+new jeditColorizer &gt;&gt;--&gt; Birth &amp; init--&gt;addLeoRules
+@c
+
+
+   table = (
+       # Rules added at front are added in **reverse** order.
+       ('@',  self.match_leo_keywords,True), # Called after all other
+Leo matchers.
+           # Debatable: Leo keywords override langauge keywords.
+       ('@',  self.match_at_color,    True),
+       ('@',  self.match_at_killcolor,True),
+
+match_at_color is with comment color, while match_at_killcolor is ok (black).</t>
+<t tx="ekr.20090623090418.1767">def handleAtScriptNode (self,p):
+    g.es("executing script %s" % (name),color="blue")
+    c.executeScript(arsg=args,p=p,useSelectedText=False,silent=True)</t>
+<t tx="ekr.20090623090418.1768">@language c
+
+#define WIPEOUT 0 /* 
+                   * Causes database card number &amp; flags to be set to zero. 
+                   * This is so I don't need an infinite supply of cards!
+                   */
+#include "eeprom.h"
+#include &lt;rlydef.h&gt;
+</t>
+<t tx="ekr.20090623095616.1769">def match_regexp_helper (self,s,i,pattern):
+
+    '''Return the length of the matching text if seq (a regular expression)
+     matches the present position.'''
+    ddd
+</t>
+<t tx="ekr.20090623101016.1772">def match_regexp_helper (self,s,i,pattern):
+
+    '''Return present position.'''
+    ddd
+</t>
+<t tx="ekr.20090623120149.1773">print ; print '=========' ; print</t>
 </tnodes>
 </leo_file>

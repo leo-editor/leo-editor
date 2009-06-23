@@ -1383,7 +1383,7 @@ def alert(message):
     g.app.gui.alert(message)
 #@-node:ekr.20031218072017.3105:alert
 #@+node:ekr.20051023083258:callers & _callerName
-def callers (n=8,excludeCaller=True,files=False):
+def callers (n=8,count=0,excludeCaller=True,files=False):
 
     '''Return a list containing the callers of the function that called g.callerList.
 
@@ -1405,6 +1405,7 @@ def callers (n=8,excludeCaller=True,files=False):
         i += 1
 
     result.reverse()
+    if count > 0: result = result[:count]
     sep = g.choose(files,'\n',',')
     return sep.join(result)
 #@+node:ekr.20031218072017.3107:_callerName
