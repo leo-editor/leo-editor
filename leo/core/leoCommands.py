@@ -1886,8 +1886,7 @@ class baseCommands (object):
             path = c.os_path_finalize_join(*allParts)
         else:
             path = c.os_path_finalize_join(
-                g.app.homeLeoDir,'scriptFile.py')            
-            g.es('saving script to',path)
+                g.app.homeLeoDir,'scriptFile.py')                    
 
         # Write the file.
         try:
