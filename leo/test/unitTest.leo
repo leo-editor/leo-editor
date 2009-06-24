@@ -1166,6 +1166,11 @@
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
 </v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 <v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
@@ -2402,10 +2407,15 @@
 <v t="ekr.20090529115704.4569"><vh>@@test delete unittest shadow directory</vh></v>
 </v>
 <v t="ekr.20071113200638.1"><vh>leoTangle</vh>
-<v t="ekr.20071113090055.1"><vh>@test tangle.scanAllDirectives</vh></v>
+<v t="ekr.20090624125638.4963"><vh>@test c.tangleCommands.scanAllDirectives</vh></v>
+<v t="ekr.20071113090055.1"><vh>@test c.tangleCommands.scanAllDirectives 2</vh></v>
 <v t="ekr.20071127194743"><vh>@test @root</vh>
 <v t="ekr.20071127194743.1"><vh>#@root</vh></v>
 <v t="ekr.20071127194743.2"><vh>Output</vh></v>
+</v>
+<v t="ekr.20090624125638.4967"><vh>@test @root with @silent</vh>
+<v t="ekr.20090624125638.4968"><vh>#@root</vh></v>
+<v t="ekr.20090624125638.4969"><vh>Output</vh></v>
 </v>
 </v>
 <v t="ekr.20071113193729"><vh>leoUndo</vh>
@@ -14502,6 +14512,7 @@ A
 <t tx="ekr.20071113090055.1"># This will work regardless of where this method is.
 @language python
 @tabwidth -4
+@silent
 
 d = c.tangleCommands.scanAllDirectives(
     p,require_path_flag=False,issue_error_flag=False)
@@ -14511,6 +14522,8 @@ assert d.get('language') == 'python'
 assert d.get('pagewidth') == 80
 assert d.get('path') == g.os_path_finalize_join(g.app.loadDir,'..','test')
 assert d.get('tabwidth') == -4
+
+assert c.tangleCommands.print_mode=='silent',c.tangleCommands.print_mode
 </t>
 <t tx="ekr.20071113090055.4"># This will work regardless of where this method is.
 @language python
@@ -21577,6 +21590,54 @@ The length of this node should remain constant.
 @c
 
 assert len(p.b) == 199,len(p.b)</t>
+<t tx="ekr.20090624125638.4963">@language python
+@comment a b c
+    # @comment must follow @language
+@tabwidth -4
+@pagewidth 72
+@encoding utf-8
+@lineending crlf
+@silent
+
+d = c.tangleCommands.scanAllDirectives(p,
+    require_path_flag=False,issue_error_flag=False)
+
+# print g.dictToString(d)
+
+assert c.tangleCommands.print_mode=='silent',c.tangleCommands.print_mode
+
+table = (
+    # ('delims', ('a','b','c'),),
+    ('encoding','utf-8'),
+    ('language','python'),
+    ('lineending','\r\n'),
+    ('pagewidth',72),
+    ('tabwidth',-4),
+)
+
+for kind,expected in table:
+    got = d.get(kind)
+    assert got == expected, 'kind: %s, expected %s, got %s' % (
+        kind,repr(expected),repr(got))
+</t>
+<t tx="ekr.20090624125638.4967">import leo.core.leoTest as leoTest
+
+leoTest.runAtFileTest(c,p)</t>
+<t tx="ekr.20090624125638.4968">@silent
+@root 'root-test'
+
+# A simple test of @root.
+
+&lt;&lt; secref &gt;&gt;
+
+&lt;&lt; secref &gt;&gt;=
+abc</t>
+<t tx="ekr.20090624125638.4969"># A simple test of @root.
+
+abc
+
+
+</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
 import random,fnmatch
 

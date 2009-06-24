@@ -7809,6 +7809,68 @@ if newColoring:
         from the threading_colorizer plugin, adapted for
         use with QSyntaxHighlighter.'''
 
+        #@    << about the line-oriented jEdit colorizer >>
+        #@+node:ekr.20090624080405.3856:<< about the line-oriented jEdit colorizer >>
+        #@@nocolor-node
+        #@+at
+        # 
+        # The aha behind the line-oriented jEdit colorizer is that we can 
+        # define one or
+        # more *restarter* methods for each pattern matcher that could 
+        # possibly match
+        # across line boundaries. I say "one or more" because we need a 
+        # separate restarter
+        # method for all combinations of arguments that can be passed to the 
+        # jEdit pattern
+        # matchers. In effect, these restarters are lambda bindings for the 
+        # generic
+        # restarter methods.
+        # 
+        # We only create restarters as needed. In actuality, very few 
+        # restarters are
+        # needed. For example, for Python, we need restarters for that look 
+        # for continued
+        # strings, and both flavors of continued triple-quoted strings. For 
+        # python, these
+        # turn out to be three separate lambda bindings for 
+        # restart_match_span.
+        # 
+        # When a jEdit pattern matcher partially succeeds, it creates the 
+        # lambda binding
+        # for its restarter and calls setRestart to set the ending state of 
+        # the present
+        # line to an integer representing the bound restarter. setRestart 
+        # calls
+        # computeState to create a *string* representing the lambda binding of 
+        # the
+        # restarter. setRestart then calls stateNameToStateNumber to convert 
+        # that string
+        # to an integer state number that then gets passed to Qt's 
+        # setCurrentBlockState.
+        # The string is useful for debugging; Qt only uses the corresponding 
+        # number.
+        # 
+        # stateNameToStateNumber creates new state numbers only if the string 
+        # representing
+        # the state does not exist in the stateNameDict. Because the lambda 
+        # binding is
+        # complete, you would think that there would never be any need to 
+        # clear this dict.
+        # Alas, there are complications. You could say that the puzzle is 
+        # figuring out how
+        # *not* to clear this dict!
+        # 
+        # For languages, like Python, that do not use jEdit "delegate" 
+        # colorizers, the new
+        # code is a complete and total success. It is simple, clean and fast. 
+        # The
+        # restarter methods were straightforward to create and test. They just 
+        # work.
+        #@-at
+        #@nonl
+        #@-node:ekr.20090624080405.3856:<< about the line-oriented jEdit colorizer >>
+        #@nl
+
         #@    @+others
         #@+node:ekr.20090614134853.3696: Birth & init
         #@+node:ekr.20090614134853.3697:__init__ (jeditColorizer)
@@ -8949,8 +9011,9 @@ if newColoring:
 
             '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
 
-            trace = True and not g.unitTesting
-            if trace: g.trace('%-10s %-20s %s' % (self.colorizer.language,pattern,s)) # g.callers(1)
+            trace = False and not g.unitTesting
+            if trace: g.trace('%-10s %-20s %s' % (
+                self.colorizer.language,pattern,s)) # g.callers(1)
 
             try:
                 flags = re.MULTILINE ### this will always fail.
@@ -10694,8 +10757,8 @@ else:
 
             '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
 
-            if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]),'pattern',pattern)
-            trace = False
+            trace = False and not g.unitTesting
+            if trace: g.trace(g.callers(1),i,repr(s[i:i+20]),'pattern',pattern)
 
             try:
                 flags = re.MULTILINE
@@ -10707,9 +10770,7 @@ else:
                 return 0
 
             # Match succeeds or fails more quickly than search.
-            # g.trace('before')
             self.match_obj = mo = re_obj.match(s,i) # re_obj.search(s,i) 
-            # g.trace('after')
 
             if mo is None:
                 return 0

@@ -82,6 +82,411 @@ def standardize_name (self,name):
     return name
 #@-node:ekr.20031218072017.3598:standardize_name
 #@-node:ekr.20090623072844.10383:Fixed Tangle bug
+#@+node:ekr.20090624081006.8407:Restored print_mode init in tangle.scanAllDirectives
+@nocolor-node
+
+Except that now I am getting structure comments appearing in my
+tangled code even with the @silent directive before my @root directive
+
+eg: I now see amongst my tangled code
+
+# << Rebol Header >> (1 of 3)
+
+I didn't see this with 4.5.1 final which is what I have been using.
+
+===
+
+I rewrote scanAllDirectives, and the init of print_mode got deleted. 
+#@nonl
+#@+node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+# The caller passes [root_node] or None as the second arg.
+# This allows us to distinguish between None and [None].
+
+g_noweb_root = re.compile('<'+'<'+'*'+'>'+'>'+'=',re.MULTILINE)
+
+def get_directives_dict(p,root=None):
+
+    """Scan p for @directives found in globalDirectiveList.
+
+    Returns a dict containing pointers to the start of each directive"""
+
+    trace = False and not g.unitTesting
+
+    if root: root_node = root[0]
+    d = {}
+
+    # Do this every time so plugins can add directives.
+    pat = g.compute_directives_re()
+    directives_pat = re.compile(pat,re.MULTILINE)
+
+    # The headline has higher precedence because it is more visible.
+    for kind,s in (('body',p.h),('head',p.b)):
+        anIter = directives_pat.finditer(s)
+        for m in anIter:
+            word = m.group(0)[1:] # Omit the @
+            i = m.start(0)
+            if word.strip() not in d:
+                j = i + 1 + len(word)
+                k = g.skip_line(s,j)
+                val = s[j:k].strip()
+                if trace: g.trace(word,repr(val))
+                d[word.strip()] = val
+
+    if root:
+        anIter = g_noweb_root.finditer(p.b)
+        for m in anIter:
+            if root_node:
+                d["root"]=0 # value not immportant
+            else:
+                g.es('%s= requires @root in the headline' % (
+                    g.angleBrackets('*')))
+            break
+
+    if trace: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers(5))
+    return d
+#@+node:ekr.20090214075058.10:compute_directives_re
+def compute_directives_re ():
+
+    '''Return an re pattern which will match all Leo directives.'''
+
+    global globalDirectiveList
+
+    aList = ['^@%s' % z for z in globalDirectiveList
+                if z != 'others']
+
+    # @others can have leading whitespace.
+    aList.append(r'^\s@others')
+
+    return '|'.join(aList)
+#@-node:ekr.20090214075058.10:compute_directives_re
+#@-node:ekr.20090214075058.9:g.get_directives_dict (must be fast)
+#@+node:ekr.20090624081006.8422:tangle.scanAllDirectives (Leo 4.5.1)
+@ Once a directive is seen, related directives in ancesors have no effect.  For example, if an @color directive is seen in node x, no @color or @nocolor directives are examined in any ancestor of x.
+@c
+
+def scanAllDirectives(self,p,require_path_flag,issue_error_flag):
+
+    """Scan vnode p and p's ancestors looking for directives,
+    setting corresponding tangle ivars and globals.
+    """
+
+    # __pychecker__ = 'maxlines=500 maxbranches=100'
+
+    c = self.c
+    # g.trace(p)
+    old = {} ; print_mode_changed = False
+    self.init_directive_ivars()
+    if p:
+        s = p.bodyString()
+        << Collect @first attributes >>
+    for p in p.self_and_parents_iter():
+        theDict = g.get_directives_dict(p)
+        << Test for @comment and @language >>
+        << Test for @encoding >>
+        << Test for @lineending >>
+        << Test for print modes directives >>
+        << Test for @path >>
+        << Test for @pagewidth >>
+        << Test for @root >>
+        << Test for @tabwidth >>
+        << Test for @header and @noheader >>
+        old.update(theDict)
+    << Set self.tangle_directory >>
+    # For unit testing.
+    return {
+        "encoding"  : self.encoding,
+        "language"  : self.language,
+        "lineending": self.output_newline,
+        "pagewidth" : self.page_width,
+        "path"      : self.tangle_directory,
+        "tabwidth"  : self.tab_width,
+    }
+#@+node:ekr.20090624081006.8423:<< Collect @first attributes >>
+@ Stephen P. Schaefer 9/13/2002: Add support for @first.
+Unlike other root attributes, does *NOT* inherit from parent nodes.
+@c
+tag = "@first"
+sizeString = len(s) # DTHEIN 13-OCT-2002: use to detect end-of-string
+i = 0
+while 1:
+    # DTHEIN 13-OCT-2002: directives must start at beginning of a line
+    if not g.match_word(s,i,tag):
+        i = g.skip_line(s,i)
+    else:
+        i = i + len(tag)
+        j = i = g.skip_ws(s,i)
+        i = g.skip_to_end_of_line(s,i)
+        if i>j:
+            self.first_lines += s[j:i] + '\n'
+        i = g.skip_nl(s,i)
+    if i >= sizeString:  # DTHEIN 13-OCT-2002: get out when end of string reached
+        break
+#@-node:ekr.20090624081006.8423:<< Collect @first attributes >>
+#@+node:ekr.20090624081006.8424:<< Test for @comment and @language >>
+if old.has_key("comment") or old.has_key("language"):
+    pass # Do nothing more.
+
+elif theDict.has_key("comment"):
+
+    z = theDict["comment"]
+    delim1,delim2,delim3 = g.set_delims_from_string(z)
+    if delim1 or delim2:
+        self.single_comment_string = delim1
+        self.start_comment_string = delim2
+        self.end_comment_string = delim3
+        # @comment effectively disables Untangle.
+        self.language = "unknown"
+    else:
+        if issue_error_flag:
+            g.es("ignoring: @comment",z)
+
+elif theDict.has_key("language"):
+
+    z = theDict["language"]
+    language,delim1,delim2,delim3 = g.set_language(z,0)
+    self.language = language
+    self.single_comment_string = delim1
+    self.start_comment_string = delim2
+    self.end_comment_string = delim3
+    if 0:
+        g.trace(self.single_comment_string,
+            self.start_comment_string,
+            self.end_comment_string)
+
+    # 10/30/02: These ivars must be updated here!
+    # g.trace(self.language)
+    self.use_noweb_flag = True
+    self.use_cweb_flag = False # Only raw cweb mode is ever used.
+    self.raw_cweb_flag = self.language == "cweb" # A new ivar.
+#@-node:ekr.20090624081006.8424:<< Test for @comment and @language >>
+#@+node:ekr.20090624081006.8425:<< Test for @encoding >>
+if not old.has_key("encoding") and theDict.has_key("encoding"):
+
+    e = g.scanAtEncodingDirective(theDict)
+    if e:
+        self.encoding = e
+#@-node:ekr.20090624081006.8425:<< Test for @encoding >>
+#@+node:ekr.20090624081006.8426:<< Test for @lineending >>
+if not old.has_key("lineending") and theDict.has_key("lineending"):
+
+    lineending = g.scanAtLineendingDirective(theDict)
+    if lineending:
+        self.output_newline = lineending
+#@-node:ekr.20090624081006.8426:<< Test for @lineending >>
+#@+node:ekr.20090624081006.8427:<< Test for print modes directives >>
+@ It is valid to have more than one of these directives in the same body text: the more verbose directive takes precedence.
+@c
+
+if not print_mode_changed:
+    for name in ("verbose","terse","quiet","silent"):
+        if theDict.has_key(name):
+            self.print_mode = name
+            print_mode_changed = True
+            break
+#@-node:ekr.20090624081006.8427:<< Test for print modes directives >>
+#@+node:ekr.20090624081006.8428:<< Test for @path >> (tangle.scanAllDirectives)
+if require_path_flag and not old.has_key("path") and theDict.has_key("path"):
+
+    path = theDict["path"]
+    theDir = relative_path = g.computeRelativePath(path)
+
+    if len(theDir) > 0:
+        base = g.getBaseDirectory(c=c) # May return "".
+        if theDir and len(theDir) > 0:
+            theDir = g.os_path_join(base,theDir)
+            if g.os_path_isabs(theDir):
+                << handle absolute @path >>
+            elif issue_error_flag and not self.path_warning_given:
+                self.path_warning_given = True # supress future warnings
+                self.error("ignoring relative path in @path:" + theDir)
+    elif issue_error_flag and not self.path_warning_given:
+        self.path_warning_given = True # supress future warnings
+        self.error("ignoring empty @path")
+#@+node:ekr.20090624081006.8429:<< handle absolute @path >>
+if g.os_path_exists(theDir):
+    self.tangle_directory = theDir
+else: # 11/19/02
+    self.tangle_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+    if not self.tangle_directory:
+        if issue_error_flag and not self.path_warning_given:
+            self.path_warning_given = True # supress future warnings
+            self.error("@path directory does not exist: " + theDir)
+            if base and len(base) > 0:
+                g.es("relative_path_base_directory:",base)
+            if relative_path and len(relative_path) > 0:
+                g.es("relative path in @path directive:",relative_path)
+#@-node:ekr.20090624081006.8429:<< handle absolute @path >>
+#@-node:ekr.20090624081006.8428:<< Test for @path >> (tangle.scanAllDirectives)
+#@+node:ekr.20090624081006.8430:<< Test for @pagewidth >>
+if not old.has_key("pagewidth") and theDict.has_key("pagewidth"):
+
+    w = g.scanAtPagewidthDirective(theDict,issue_error_flag)
+    if w and w > 0:
+        self.page_width = w
+#@-node:ekr.20090624081006.8430:<< Test for @pagewidth >>
+#@+node:ekr.20090624081006.8431:<< Test for @root >>
+@ 10/27/02: new code:  self.root may not be defined here, so any relative directory specified in the @root node will have no effect unless we have this code.
+
+@c
+if self.root_name == None and theDict.has_key("root"):
+    z = theDict["root"]
+    self.setRootFromText(z,issue_error_flag)
+#@-node:ekr.20090624081006.8431:<< Test for @root >>
+#@+node:ekr.20090624081006.8432:<< Test for @tabwidth >>
+if not old.has_key("tabwidth") and theDict.has_key("tabwidth"):
+
+    w = g.scanAtTabwidthDirective(theDict,issue_error_flag)
+    if w and w != 0:
+        self.tab_width = w
+#@-node:ekr.20090624081006.8432:<< Test for @tabwidth >>
+#@+node:ekr.20090624081006.8433:<< Test for @header and @noheader >>
+if old.has_key("header") or old.has_key("noheader"):
+    pass # Do nothing more.
+
+elif theDict.has_key("header") and theDict.has_key("noheader"):
+    if issue_error_flag:
+        g.es("conflicting @header and @noheader directives")
+
+elif theDict.has_key("header"):
+    self.use_header_flag = True
+
+elif theDict.has_key("noheader"):
+    self.use_header_flag = False
+#@-node:ekr.20090624081006.8433:<< Test for @header and @noheader >>
+#@+node:ekr.20090624081006.8434:<< Set self.tangle_directory >>
+@ This code sets self.tangle_directory if it has not already been set by an @path directive.
+
+An absolute file name in an @root directive will override the directory set here.
+A relative file name gets appended later to the default directory.
+That is, the final file name will be g.os_path_join(self.tangle_directory,fileName)
+@c
+
+if c.frame and require_path_flag and not self.tangle_directory:
+    if self.root_name and len(self.root_name) > 0:
+        root_dir = g.os_path_dirname(self.root_name)
+    else:
+        root_dir = None
+    # g.pr("root_dir:", root_dir)
+
+    table = ( # This is a precedence table.
+        (root_dir,"@root"), 
+        (c.tangle_directory,"default tangle"), # Probably should be eliminated.
+        (c.frame.openDirectory,"open"))
+
+    base = g.getBaseDirectory(c=c) # May return ""
+
+    for dir2, kind in table:
+        if dir2 and len(dir2) > 0:
+            # g.pr("base,theDir:",base,theDir)
+            theDir = g.os_path_join(base,dir2)
+            if g.os_path_isabs(theDir): # Errors may result in relative or invalid path.
+                << handle absolute path >>
+
+if not self.tangle_directory and require_path_flag: # issue_error_flag:
+    self.pathError("No absolute directory specified by @root, @path or Preferences.")
+#@+node:ekr.20090624081006.8435:<< handle absolute path >>
+if g.os_path_exists(theDir):
+    if kind == "@root" and not g.os_path_isabs(root_dir):
+        self.tangle_directory = base
+    else:
+        self.tangle_directory = theDir 
+    break
+else: # 9/25/02
+    self.tangle_directory = g.makeAllNonExistentDirectories(theDir,c=c)
+    if not self.tangle_directory:
+        # 10/27/02: It is an error for this not to exist now.
+        self.error("@root directory does not exist:" + theDir)
+        if base and len(base) > 0:
+            g.es("relative_path_base_directory:",base)
+        if dir2 and len(dir2) > 0:
+            g.es('',kind,"directory:",dir2)
+#@-node:ekr.20090624081006.8435:<< handle absolute path >>
+#@-node:ekr.20090624081006.8434:<< Set self.tangle_directory >>
+#@-node:ekr.20090624081006.8422:tangle.scanAllDirectives (Leo 4.5.1)
+#@+node:ekr.20080923124254.16:tangle.scanAllDirectives
+def scanAllDirectives(self,p,require_path_flag,issue_error_flag):
+
+    """Scan vnode p and p's ancestors looking for directives,
+    setting corresponding tangle ivars and globals.
+    """
+
+    c = self.c
+    self.init_directive_ivars()
+    if p:
+        s = p.b
+        << Collect @first attributes >>
+
+    # delims = (self.single_comment_string,self.start_comment_string,self.end_comment_string)
+    lang_dict = {'language':self.language,'delims':None,} # Delims not used
+
+    table = (
+        ('encoding',    self.encoding,  g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives), 
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process.
+    lang_dict       = d.get('lang-dict')
+    lineending      = d.get('lineending')
+    if lineending:
+        self.output_newline = lineending
+    self.encoding             = d.get('encoding')
+    self.language             = lang_dict.get('language')
+    self.page_width           = d.get('pagewidth')
+    self.default_directory    = d.get('path')
+    self.tab_width            = d.get('tabwidth')
+
+    # Handle the print-mode directives.
+    self.print_mode = None
+    for d in aList:
+        for key in ('verbose','terse','quiet','silent'):
+            if d.get(key) is not None:
+                self.print_mode = key ; break
+        if self.print_mode: break
+    if not self.print_mode: self.print_mode = 'verbose'
+
+    # For unit testing.
+    return {
+        "encoding"  : self.encoding,
+        "language"  : self.language,
+        "lineending": self.output_newline,
+        "pagewidth" : self.page_width,
+        "path"      : self.default_directory,
+        "tabwidth"  : self.tab_width,
+    }
+#@+node:ekr.20080923124254.17:<< Collect @first attributes >>
+@ Stephen P. Schaefer 9/13/2002: Add support for @first.
+Unlike other root attributes, does *NOT* inherit from parent nodes.
+@c
+tag = "@first"
+sizeString = len(s) # DTHEIN 13-OCT-2002: use to detect end-of-string
+i = 0
+while 1:
+    # DTHEIN 13-OCT-2002: directives must start at beginning of a line
+    if not g.match_word(s,i,tag):
+        i = g.skip_line(s,i)
+    else:
+        i = i + len(tag)
+        j = i = g.skip_ws(s,i)
+        i = g.skip_to_end_of_line(s,i)
+        if i>j:
+            self.first_lines += s[j:i] + '\n'
+        i = g.skip_nl(s,i)
+    if i >= sizeString:  # DTHEIN 13-OCT-2002: get out when end of string reached
+        break
+#@-node:ekr.20080923124254.17:<< Collect @first attributes >>
+#@-node:ekr.20080923124254.16:tangle.scanAllDirectives
+#@-node:ekr.20090624081006.8407:Restored print_mode init in tangle.scanAllDirectives
 #@-node:ekr.20090623072844.10386:Bugs
 #@-node:ekr.20090623072844.10385:4.6 rc1
 #@-all

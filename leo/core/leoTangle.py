@@ -3412,7 +3412,6 @@ class baseTangleCommands:
         """
 
         c = self.c
-        print_mode_changed = False
         self.init_directive_ivars()
         if p:
             s = p.b
@@ -3452,7 +3451,7 @@ class baseTangleCommands:
             ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
             ('lineending',  None,           g.scanAtLineendingDirectives),
             ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-            ('path',        None,           c.scanAtPathDirectives),
+            ('path',        None,           c.scanAtPathDirectives), 
             ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
         )
 
@@ -3474,6 +3473,15 @@ class baseTangleCommands:
         self.default_directory    = d.get('path')
         self.tab_width            = d.get('tabwidth')
 
+        # Handle the print-mode directives.
+        self.print_mode = None
+        for d in aList:
+            for key in ('verbose','terse','quiet','silent'):
+                if d.get(key) is not None:
+                    self.print_mode = key ; break
+            if self.print_mode: break
+        if not self.print_mode: self.print_mode = 'verbose'
+
         # For unit testing.
         return {
             "encoding"  : self.encoding,
@@ -3483,7 +3491,6 @@ class baseTangleCommands:
             "path"      : self.default_directory,
             "tabwidth"  : self.tab_width,
         }
-
     #@-node:ekr.20080923124254.16:tangle.scanAllDirectives
     #@+node:ekr.20031218072017.3599:token_type
     def token_type(self,s,i,err_flag):
