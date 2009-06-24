@@ -1877,6 +1877,7 @@ class baseCommands (object):
             isAbsPath = os.path.isabs(path)
             driveSpec, path = os.path.splitdrive(path)
             parts = path.split('/')
+            # xxx bad idea, loadDir is often read only!
             path = g.app.loadDir
             if isAbsPath:
                 # make the first element absolute
@@ -1885,7 +1886,8 @@ class baseCommands (object):
             path = c.os_path_finalize_join(*allParts)
         else:
             path = c.os_path_finalize_join(
-                g.app.loadDir,'..','test','scriptFile.py')
+                g.app.homeLeoDir,'scriptFile.py')            
+            g.es('saving script to',path)
 
         # Write the file.
         try:
