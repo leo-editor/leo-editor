@@ -565,7 +565,10 @@ class todoController:
 
             if time_done != None:  # some work done
                 # can't round derived progress without getting bad results form show_times
-                pr = float(time_done) / float(time_totl) * 100.
+                if time_totl == 0:
+                    pr = 0.
+                else:
+                    pr = float(time_done) / float(time_totl) * 100.
                 self.setat(v, 'progress', pr)
             else:
                 self.setat(v, 'progress', 0)
