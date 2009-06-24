@@ -9289,7 +9289,7 @@ if newColoring:
             h = self.highlighter
             h.setCurrentBlockState(-1)
 
-            ### This is a hack, that is not guaranteed always to work.
+            ### This is a hack that is not guaranteed always to work.
             self.restartDict={}
         #@-node:ekr.20090614134853.3828:clearState
         #@+node:ekr.20090614134853.3714:colorRangeWithTag
@@ -9307,7 +9307,8 @@ if newColoring:
                 return
 
             if delegate:
-                if trace: g.trace('delegate %-12s %3s %3s %10s' % (delegate,i,j,tag),g.callers(2))
+                if trace: g.trace('delegate %-12s %3s %3s %10s' % (
+                    delegate,i,j,tag),g.callers(2))
                 self.modeStack.append(self.modeBunch)
                 self.init_mode(delegate)
                 # Color everything now, using the same indices as the caller.
