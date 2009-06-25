@@ -8122,7 +8122,11 @@ if newColoring:
         #@+node:ekr.20090614134853.3703:configure_tags
         def configure_tags (self):
 
-            c = self.c ; w = self.w ; trace = False
+            trace = False and not g.unitTesting
+            verbose = False
+            c = self.c ; w = self.w
+
+            if trace: g.trace(g.callers(4))
 
             if w and hasattr(w,'start_tag_configure'):
                 w.start_tag_configure()
@@ -8144,7 +8148,7 @@ if newColoring:
                 for name in ('%s_%s' % (self.colorizer.language,option_name),(option_name)):
                     font = self.fonts.get(name)
                     if font:
-                        if trace: g.trace('found',name,id(font))
+                        if trace and verbose: g.trace('found',name,id(font))
                         w.tag_config(key,font=font)
                         break
                     else:
@@ -8160,12 +8164,12 @@ if newColoring:
                             font = g.app.gui.getFontFromParams(family,size,slant,weight)
                             # Save a reference to the font so it 'sticks'.
                             self.fonts[name] = font 
-                            if trace: g.trace(key,name,family,size,slant,weight,id(font))
+                            if trace and verbose: g.trace(key,name,family,size,slant,weight,id(font))
                             w.tag_config(key,font=font)
                             break
                 else: # Neither the general setting nor the language-specific setting exists.
                     if self.fonts.keys(): # Restore the default font.
-                        if trace: g.trace('default',key)
+                        if trace and verbose: g.trace('default',key)
                         w.tag_config(key,font=defaultBodyfont)
 
             keys = self.default_colors_dict.keys() ; keys.sort()
@@ -8176,7 +8180,7 @@ if newColoring:
                     c.config.getColor(option_name) or
                     default_color
                 )
-                if trace: g.trace(option_name,color)
+                if trace and verbose: g.trace(option_name,color)
 
                 # Must use foreground, not fg.
                 try:
@@ -8274,9 +8278,7 @@ if newColoring:
 
             # Used by matchers.
             self.prev = None
-
-            ####
-            # self.configure_tags() # Must do this every time to support multiple editors.
+            self.configure_tags() # Must do this every time to support multiple editors.
         #@-node:ekr.20090614134853.3705:init (jeditColorizer)
         #@+node:ekr.20090614134853.3706:init_mode & helpers
         def init_mode (self,name):
@@ -8979,32 +8981,32 @@ if newColoring:
             'at_word_start':    True: sequence must start a word.'''
 
             # This match was causing most of the syntax-color problems.
-            return 0 # Bug fix: 2009/6/23
+            return 0 # 2009/6/23
 
-            if not self.allow_mark_prev: return 0
+            # if not self.allow_mark_prev: return 0
 
-            if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]))
+            # if self.verbose: g.trace(g.callers(1),i,repr(s[i:i+20]))
 
-            if at_line_start and i != 0 and s[i-1] != '\n': return 0
-            if at_whitespace_end and i != g.skip_ws(s,0): return 0
-            if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0
-            if at_word_start and i + len(pattern) + 1 < len(s) and s[i+len(pattern)] in self.word_chars:
-                return 0
+            # if at_line_start and i != 0 and s[i-1] != '\n': return 0
+            # if at_whitespace_end and i != g.skip_ws(s,0): return 0
+            # if at_word_start and i > 0 and s[i-1] in self.word_chars: return 0
+            # if at_word_start and i + len(pattern) + 1 < len(s) and s[i+len(pattern)] in self.word_chars:
+                # return 0
 
-            if g.match(s,i,pattern):
-                j = i + len(pattern)
-                # Color the previous token.
-                if self.prev:
-                    i2,j2,kind2 = self.prev
-                    # g.trace(i2,j2,kind2)
-                    self.colorRangeWithTag(s,i2,j2,kind2,exclude_match=False)
-                if not exclude_match:
-                    self.colorRangeWithTag(s,i,j,kind)
-                self.prev = (i,j,kind)
-                self.trace_match(kind,s,i,j)
-                return j - i
-            else:
-                return 0
+            # if g.match(s,i,pattern):
+                # j = i + len(pattern)
+                # # Color the previous token.
+                # if self.prev:
+                    # i2,j2,kind2 = self.prev
+                    # # g.trace(i2,j2,kind2)
+                    # self.colorRangeWithTag(s,i2,j2,kind2,exclude_match=False)
+                # if not exclude_match:
+                    # self.colorRangeWithTag(s,i,j,kind)
+                # self.prev = (i,j,kind)
+                # self.trace_match(kind,s,i,j)
+                # return j - i
+            # else:
+                # return 0
         #@-node:ekr.20090614134853.3733:match_mark_previous (Revise?  Eliminate?)
         #@+node:ekr.20090614134853.3734:match_regexp_helper (Revise??)
         def match_regexp_helper (self,s,i,pattern):
@@ -9233,7 +9235,6 @@ if newColoring:
                     no_word_break=no_word_break)
 
                 if trace: g.trace('***Re-continuing',i,j,len(s),s,g.callers(5))
-                self.setState
             else:
                 if trace: g.trace('***ending',i,j,len(s),s)
                 self.clearState()
