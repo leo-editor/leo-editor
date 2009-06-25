@@ -506,13 +506,17 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         sb.setSliderPosition(pos)
     #@-node:ekr.20081121105001.542:colorSelection
     #@+node:ekr.20081124102726.10:tag_add
-    def tag_add(self,tag,x1,x2):
+    # This appears never to be called.
 
-        g.trace(tag)
+    def tag_add(self,tagName,i,j=None,*args):
 
-        val = self.configDict.get(tag)
+        if j is None: j = i+1
+
+        g.trace(tagName,i,j)
+
+        val = self.configDict.get(tagName)
         if val:
-            self.colorSelection(x1,x2,val)
+            self.colorSelection(i,j,val)
     #@-node:ekr.20081124102726.10:tag_add
     #@+node:ekr.20081124102726.11:tag_config & tag_configure
     def tag_config (self,*args,**keys):

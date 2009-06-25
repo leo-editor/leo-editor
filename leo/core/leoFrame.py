@@ -754,7 +754,7 @@ class leoBody:
     def after_idle (self,idle_handler,thread_count):
         pass
 
-    def tag_add (self,tagName,index1,index2):
+    def tag_add(self,tagName,i,j=None,*args):
         pass
 
     def tag_bind (self,tagName,event,callback):
