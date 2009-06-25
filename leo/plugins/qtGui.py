@@ -8555,7 +8555,7 @@ if newColoring:
         #@nonl
         #@-node:ekr.20090614134853.3713:setFontFromConfig
         #@-node:ekr.20090614134853.3696: Birth & init
-        #@+node:ekr.20090614134853.3715: pattern matchers (new)
+        #@+node:ekr.20090614134853.3715: Pattern matchers (new)
         #@+node:ekr.20090614134853.3816: About the pattern matchers
         #@@nocolor-node
         #@+at
@@ -9232,7 +9232,8 @@ if newColoring:
                     no_line_break=no_line_break,
                     no_word_break=no_word_break)
 
-                if trace: g.trace('***Re-continuing',i,j,len(s),s)
+                if trace: g.trace('***Re-continuing',i,j,len(s),s,g.callers(5))
+                self.setState
             else:
                 if trace: g.trace('***ending',i,j,len(s),s)
                 self.clearState()
@@ -9344,17 +9345,119 @@ if newColoring:
                 g.trace(kind,i,j,g.callers(2),self.dump(s[i:j]))
         #@nonl
         #@-node:ekr.20090614134853.3742:trace_match
-        #@-node:ekr.20090614134853.3715: pattern matchers (new)
-        #@+node:ekr.20090614134853.3828:clearState
+        #@-node:ekr.20090614134853.3715: Pattern matchers (new)
+        #@+node:ekr.20090614134853.3828: State methods
+        #@+node:ekr.20090625061310.3860:clearState
         def clearState (self):
 
-            # g.trace(g.callers(4))
-            h = self.highlighter
-            h.setCurrentBlockState(-1)
+            self.setState(-1)
+        #@nonl
+        #@-node:ekr.20090625061310.3860:clearState
+        #@+node:ekr.20090614134853.3825:computeState
+        def computeState (self,f,keys):
 
-            ### This is a hack that is not guaranteed always to work.
-            self.restartDict={}
-        #@-node:ekr.20090614134853.3828:clearState
+            '''Compute the state name associated with f and all the keys.
+
+            Return a unique int n representing that state.'''
+
+            # Abbreviate arg names.
+            d = {
+                'delegate':'del:',
+                'end':'end',
+                'at_line_start':'line-start',
+                'at_whitespace_end':'ws-end',
+                'exclude_match':'exc-match',
+                'no_escape':'no-esc',
+                'no_line_break':'no-brk',
+                'no_word_break':'no-word-brk',
+            }
+            result = [
+                f.__name__,
+                self.colorizer.language,
+                self.rulesetName]
+            for key in keys:
+                keyVal = keys.get(key)
+                val = d.get(key)
+                if val is None:
+                    val = keys.get(key)
+                    result.append('%s=%s' % (key,val))
+                elif keyVal is True:
+                    result.append('%s' % val)
+                elif keyVal is False:
+                    pass
+                elif keyVal not in (None,''):
+                    result.append('%s=%s' % (key,keyVal))
+            state = ';'.join(result)
+
+            n = self.stateNameToStateNumber(f,state)
+            return n
+        #@nonl
+        #@-node:ekr.20090614134853.3825:computeState
+        #@+node:ekr.20090625061310.3863:currentState and prevState
+        def currentState(self):
+
+            return self.highlighter.currentBlockState()
+
+        def prevState(self):
+
+            return self.highlighter.previousBlockState()
+        #@-node:ekr.20090625061310.3863:currentState and prevState
+        #@+node:ekr.20090614134853.3824:setRestart
+        def setRestart (self,f,**keys):
+
+            n = self.computeState(f,keys)
+            self.setState(n)
+        #@nonl
+        #@-node:ekr.20090614134853.3824:setRestart
+        #@+node:ekr.20090625061310.3861:setState
+        def setState (self,n):
+
+            trace = False and not g.unitTesting
+
+            self.highlighter.setCurrentBlockState(n)
+
+            if trace:
+                stateName = self.showState(n)
+                g.trace(stateName,g.callers(4))
+        #@nonl
+        #@-node:ekr.20090625061310.3861:setState
+        #@+node:ekr.20090625061310.3862:showState & showCurrentState
+        def showState (self,n):
+
+            if n == -1: 
+                return 'default-state'
+            else:
+                return self.stateDict.get(n,'<no state>')
+
+        def showCurrentState(self):
+
+            n = self.currentState()
+            return self.showState(n)
+
+        def showPrevState(self):
+
+            n = self.prevState()
+            return self.showState(n)
+        #@-node:ekr.20090625061310.3862:showState & showCurrentState
+        #@+node:ekr.20090614134853.3826:stateNameToStateNumber
+        def stateNameToStateNumber (self,f,stateName):
+
+            # stateDict:     Keys are state numbers, values state names.
+            # stateNameDict: Keys are state names, values are state numbers.
+            # restartDict:   Keys are state numbers, values are restart functions
+
+            n = self.stateNameDict.get(stateName)
+            if n is None:
+                n = self.nextState
+                self.stateNameDict[stateName] = n
+                self.stateDict[n] = stateName
+                self.restartDict[n] = f
+                self.nextState += 1
+                # g.trace('========',n,stateName)
+
+            return n
+        #@-node:ekr.20090614134853.3826:stateNameToStateNumber
+        #@-node:ekr.20090614134853.3828: State methods
         #@+node:ekr.20090614134853.3714:colorRangeWithTag
         def colorRangeWithTag (self,s,i,j,tag,delegate='',exclude_match=False):
 
@@ -9396,16 +9499,23 @@ if newColoring:
                 self.setTag(tag,s,i,j)
         #@nonl
         #@-node:ekr.20090614134853.3714:colorRangeWithTag
-        #@+node:ekr.20090614134853.3754:mainLoop
-        def mainLoop(self,s,i):
+        #@+node:ekr.20090614134853.3754:mainLoop & restart
+        def mainLoop(self,n,s):
 
-            '''Colorize string s[i:], starting in the default state.'''
+            '''Colorize string s, starting in state n.'''
 
             trace = False and not g.unitTesting
-            traceMatch = True ; verbose = False
+            traceMatch = True ; traceState = True ; verbose = True
+
+            if trace and traceState: g.trace('** start',self.showState(n),s)
+
+            i = 0
+            if n > -1:
+                i = self.restart(n,s,trace and traceMatch)
+            if i == 0:
+                self.setState(self.prevState())
 
             while i < len(s):
-                # success = 0
                 progress = i
                 functions = self.rulesDict.get(s[i],[])
                 for f in functions:
@@ -9416,13 +9526,13 @@ if newColoring:
                     elif n > 0: # Success.
                         if trace and traceMatch and f.__name__!='match_blanks':
                             g.trace('match: %20s %s' % (
-                                f.__name__,repr(s[i:i+n])))
+                                f.__name__,s[i:i+n]))
                         i += n
-                        # success = i
                         break # Stop searching the functions.
                     elif n < 0: # Fail and skip n chars.
-                        if trace and verbose: g.trace('fail: %20s %s' % (
-                            f.__name__,repr(s[i:i+n])))
+                        if trace and traceMatch and verbose:
+                            g.trace('fail: %20s %s' % (
+                                f.__name__,s[i:i+n]))
                         i += -n
                         break # Stop searching the functions.
                     else: # Fail. Try the next function.
@@ -9431,10 +9541,30 @@ if newColoring:
                     i += 1
                 assert i > progress
 
-                # if success < len(s):
-                    # if trace and success > 0: g.trace('** clearing',success,len(s))
-                    # self.clearState()
-        #@-node:ekr.20090614134853.3754:mainLoop
+            # Don't even *think* about clearing state here.
+            # We remain in the starting state unless a match happens.
+            if trace and traceState:
+                g.trace('** end',self.showCurrentState(),s)
+        #@+node:ekr.20090625061310.3864:restart
+        def restart (self,n,s,traceMatch):
+
+            f = self.restartDict.get(n)
+            if f:
+                i = f(s)
+                fname = f.__name__
+                if traceMatch:
+                    if i > 0:
+                        g.trace('** restart match',fname,s[:i])
+                    else:
+                        g.trace('** restart fail',fname,s)
+            else:
+                g.trace('**** no restart f')
+                i = 0
+
+            return i
+        #@nonl
+        #@-node:ekr.20090625061310.3864:restart
+        #@-node:ekr.20090614134853.3754:mainLoop & restart
         #@+node:ekr.20090614134853.3753:recolor
         def recolor (self,s):
 
@@ -9449,110 +9579,15 @@ if newColoring:
             self.totalChars += len(s)
 
             # Get the previous state.
-            h = self.highlighter
-            n = h.previousBlockState() # The state at the end of the previous line.
-            if trace:
-                stateName = self.stateDict.get(n,'plain-state')
-                g.trace('%5s %2s %-50s %s' % (self.colorizer.flag,n,stateName,repr(s[:20])))
+            n = self.prevState() # The state at the end of the previous line.
+            if trace: g.trace('%5s %2s %-50s %s' % (
+                self.colorizer.flag,n,self.showState(n),s))
 
-            if s:
-                if n == -1:
-                    self.mainLoop(s,0)
-                else:
-                    i = self.restart(n,s)
-                    self.mainLoop(s,i) # Don't shortcut this.
+            if s.strip():
+                self.mainLoop(n,s)
             else:
-                h.setCurrentBlockState(n) # Required
+                self.setState(n) # Required
         #@-node:ekr.20090614134853.3753:recolor
-        #@+node:ekr.20090614134853.3814:restart
-        def restart (self,n,s):
-
-            '''Colorize string s, starting in state n.'''
-
-            trace = False and not g.unitTesting
-
-            f = self.restartDict.get(n)
-            stateName = self.stateDict.get(n)
-
-            if f:
-                assert stateName.startswith(f.__name__)
-                if trace: g.trace('%2s %-50s %s' % (n,stateName,repr(s)))
-                i = f(s)
-            else:
-                ### This may be an error, but for now it kinda works.
-                if 0:
-                    g.trace('*** no f',n,stateName,
-                        g.dictToString(self.stateDict),g.callers(4))
-                i = 0
-
-            return i
-        #@-node:ekr.20090614134853.3814:restart
-        #@+node:ekr.20090614134853.3824:setRestart & helpers
-        def setRestart (self,f,**keys):
-
-            # g.trace(f,keys)
-            h = self.highlighter
-            n = self.computeState(f,keys)
-            h.setCurrentBlockState(n)
-        #@+node:ekr.20090614134853.3825:computeState
-        def computeState (self,f,keys):
-
-            '''Compute the state name associated with f and all the keys.
-
-            Return a unique int n representing that state.'''
-
-            # Abbreviate arg names.
-            d = {
-                'delegate':'del:',
-                'end':'end',
-                'at_line_start':'line-start',
-                'at_whitespace_end':'ws-end',
-                'exclude_match':'exc-match',
-                'no_escape':'no-esc',
-                'no_line_break':'no-brk',
-                'no_word_break':'no-word-brk',
-            }
-            result = [
-                f.__name__,
-                self.colorizer.language,
-                self.rulesetName]
-            for key in keys:
-                keyVal = keys.get(key)
-                val = d.get(key)
-                if val is None:
-                    val = keys.get(key)
-                    result.append('%s=%s' % (key,val))
-                elif keyVal is True:
-                    result.append('%s' % val)
-                elif keyVal is False:
-                    pass
-                elif keyVal not in (None,''):
-                    result.append('%s=%s' % (key,keyVal))
-            state = ';'.join(result)
-
-            n = self.stateNameToStateNumber(f,state)
-            return n
-
-        #@-node:ekr.20090614134853.3825:computeState
-        #@+node:ekr.20090614134853.3826:stateNameToStateNumber
-        def stateNameToStateNumber (self,f,stateName):
-
-            # stateDict:     Keys are state numbers, values state names.
-            # stateNameDict: Keys are state names, values are state numbers.
-            # restartDict:   Keys are state numbers, values are restart functions
-
-            n = self.stateNameDict.get(stateName)
-            if n is None:
-                n = self.nextState
-                self.stateNameDict[stateName] = n
-                self.stateDict[n] = stateName
-                self.restartDict[n] = f
-                self.nextState += 1
-                # g.trace('========',n,stateName)
-
-            return n
-        #@-node:ekr.20090614134853.3826:stateNameToStateNumber
-        #@-node:ekr.20090614134853.3824:setRestart & helpers
         #@+node:ekr.20090614134853.3813:setTag
         def setTag (self,tag,s,i,j):
 

@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="61" left="374" height="925" width="889"/>
+	<global_window_position top="53" left="592" height="925" width="659"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5,2"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5,5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -336,6 +336,7 @@
 <v t="ekr.20090623090418.1768"><vh>Bug 3 (from unitTest.py)</vh></v>
 <v t="ekr.20090623095616.1769"><vh>New bug</vh></v>
 <v t="ekr.20090623101016.1772"><vh>New bug 2</vh></v>
+<v t="ekr.20090625082029.1775"><vh>strings</vh></v>
 <v t="ekr.20090623120149.1773"><vh>@button print-sep</vh></v>
 </v>
 </vnodes>
@@ -2687,5 +2688,8 @@ match_at_color is with comment color, while match_at_killcolor is ok (black).</t
     ddd
 </t>
 <t tx="ekr.20090623120149.1773">print ; print '=========' ; print</t>
+<t tx="ekr.20090625082029.1775">'''abc'''
+
+abc</t>
 </tnodes>
 </leo_file>

@@ -11299,6 +11299,29 @@ def toUnicode (self,s,encoding=None,reportErrors=True):
 #@-node:ekr.20090620113734.3701:Added support for @string qt-default-encoding
 #@-node:ekr.20090124101344.1:Recent
 #@+node:ekr.20081208155215.12:Unused
+#@+node:ekr.20090614134853.3814:restart (NO LONGER USED)
+# def restart (self,n,s):
+
+    # '''Colorize string s, starting in state n.'''
+
+    # trace = True and not g.unitTesting
+
+    # f = self.restartDict.get(n)
+    # stateName = self.stateDict.get(n)
+
+    # if f:
+        # assert stateName.startswith(f.__name__)
+        # if trace: g.trace('%2s %-50s %s' % (n,stateName,repr(s)))
+        # i = f(s)
+    # else:
+        # ### This may be an error, but for now it kinda works.
+        # if 0:
+            # g.trace('*** no f',n,stateName,
+                # g.dictToString(self.stateDict),g.callers(4))
+        # i = 0
+
+    # return i
+#@-node:ekr.20090614134853.3814:restart (NO LONGER USED)
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl
