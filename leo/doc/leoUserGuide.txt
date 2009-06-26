@@ -13872,6 +13872,8 @@ You need to enable the 'ipython.py' plugin in Leo:
 
 - Restart Leo. Be sure that you have the console window open (start leo.py from console, or double-click leo.py on windows)
 
+- When using the Qt ui, add --ipython argument to command line (e.g. launchLeo.py --ipython).
+
 - Press alt+shift+i OR alt-x start-ipython to launch IPython in the console that
   started leo. You can start entering IPython commands normally, and Leo will keep
   running at the same time.
