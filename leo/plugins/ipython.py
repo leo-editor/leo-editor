@@ -224,7 +224,13 @@ class ipythonController:
                 gIP = ses.IP.getapi()
 
                 if g.app.gui.guiName() == 'qt' and not g.app.useIpython:
-                    import ipy_qt.qtipywidget
+                    try:
+                        import ipy_qt.qtipywidget
+                    except:
+                        g.es('IPython launch failed. Start Leo with argument "--ipython" on command line!')
+                        raise
+
+
                     import textwrap
                     self.qtwidget = ipy_qt.qtipywidget.IPythonWidget()
                     self.qtwidget.set_ipython_session(gIP)
