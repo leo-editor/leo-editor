@@ -426,7 +426,7 @@ bracketright: ']'
 #@nonl
 #@-node:ekr.20081121105001.187:dump guiBindNamesInverseDict
 #@-node:ekr.20081121105001.185:Scripts
-#@+node:ekr.20090124101344.1:Recent
+#@+node:ekr.20090124101344.1:4.6 b2 projects
 #@+node:edward.20090330082228.1:Made idle-time hook functional in Qt
 #@+node:ekr.20081121105001.474: qtGui.__init__
 def __init__ (self):
@@ -10976,6 +10976,11 @@ def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
     weight_val = d.get(weight.lower(),QtGui.QFont.Normal)
     italic = slant == 'italic'
 
+    if not family:
+        family = g.app.config.defaultFontFamily
+    if not family:
+        family = 'DejaVu Sans Mono'
+
     try:
         font = QtGui.QFont(family,size,weight_val,italic)
         # g.trace(family,size,slant,weight,'returns',font)
@@ -11292,6 +11297,8 @@ def toUnicode (self,s,encoding=None,reportErrors=True):
 
 #@-node:ekr.20081121105001.502:toUnicode (qtGui)
 #@-node:ekr.20090620113734.3701:Added support for @string qt-default-encoding
+#@-node:ekr.20090124101344.1:4.6 b2 projects
+#@+node:ekr.20090626070207.3713:4.6 rc1 projects
 #@+node:ekr.20090614134853.3635:New syntax coloring
 @nocolor-node
 
@@ -11879,7 +11886,10 @@ def __init__(self,c,colorizer,highlighter,w):
 
     # New in Leo 4.6: configure tags only once here.
     # Some changes will be needed for multiple body editors.
-    self.configure_tags() # Must do this every time to support multiple editors.
+    if 0: # This is reported to be too slow.
+        # Must do this every time to support multiple editors.
+        self.configure_tags()
+#@nonl
 #@+node:ekr.20090614134853.3698:<< define leoKeywordsDict >>
 self.leoKeywordsDict = {}
 
@@ -14107,7 +14117,7 @@ def setTag (self,tag,s,i,j):
     self.highlighter.setFormat(i,j-i,color)
 #@-node:ekr.20090614134853.3813:setTag
 #@-node:ekr.20090614134853.3635:New syntax coloring
-#@-node:ekr.20090124101344.1:Recent
+#@-node:ekr.20090626070207.3713:4.6 rc1 projects
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20090614134853.3814:restart (NO LONGER USED)
 # def restart (self,n,s):

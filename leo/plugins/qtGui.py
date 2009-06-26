@@ -6713,6 +6713,11 @@ class leoQtGui(leoGui.leoGui):
         weight_val = d.get(weight.lower(),QtGui.QFont.Normal)
         italic = slant == 'italic'
 
+        if not family:
+            family = g.app.config.defaultFontFamily
+        if not family:
+            family = 'DejaVu Sans Mono'
+
         try:
             font = QtGui.QFont(family,size,weight_val,italic)
             # g.trace(family,size,slant,weight,'returns',font)
@@ -8054,7 +8059,10 @@ if newColoring:
 
             # New in Leo 4.6: configure tags only once here.
             # Some changes will be needed for multiple body editors.
-            self.configure_tags() # Must do this every time to support multiple editors.
+            if 0: # This is reported to be too slow.
+                # Must do this every time to support multiple editors.
+                self.configure_tags()
+        #@nonl
         #@-node:ekr.20090614134853.3697:__init__ (jeditColorizer)
         #@+node:ekr.20090614134853.3701:addImportedRules
         def addImportedRules (self,mode,rulesDict,rulesetName):

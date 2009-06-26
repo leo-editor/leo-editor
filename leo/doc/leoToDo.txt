@@ -1,10 +1,10 @@
 #@+leo-ver=4-thin
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
-#@+node:ekr.20080814103428.4:To do before 4.6 rc1 (docs)
+#@+node:ekr.20080814103428.4:To do before 4.6 rc1 (bug tracker, docs)
 @nocolor-node
 
-- Fix all high and medium bugs
+*** Fix all high and medium bugs
     - Including bugs in leoGuiPlugins.leo
 
 - Create FAQ entry telling how to use Leo in shared environments.
@@ -13,7 +13,7 @@
 
 - Rewrite more docs using stories.
 #@nonl
-#@-node:ekr.20080814103428.4:To do before 4.6 rc1 (docs)
+#@-node:ekr.20080814103428.4:To do before 4.6 rc1 (bug tracker, docs)
 #@+node:ekr.20071211093011:4.7 flexibility
 @nocolor-node
 
