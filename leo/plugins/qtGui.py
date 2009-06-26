@@ -348,7 +348,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         tree = c.frame.tree ; w = self
 
         # The linux events are different from xp events.
-        if w.changingText and not sys.platform.startswith('linux'):
+        if w.changingText: ### and not sys.platform.startswith('linux'):
             if trace and verbose: g.trace('already changing')
             return
         if tree.tree_select_lockout:
@@ -599,55 +599,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
         '''Set the font in the widget w (a body editor).'''
 
         return
-
-        # c = self.c
-        # if w is None: w = self.widget
-
-        # bg = c.config.getColor("body_text_background_color") or 'white'
-        # try:
-            # pass ### w.configure(bg=bg)
-        # except:
-            # g.es("exception setting body text background color")
-            # g.es_exception()
-
-        # fg = c.config.getColor("body_text_foreground_color") or 'black'
-        # try:
-            # pass ### w.configure(fg=fg)
-        # except:
-            # g.es("exception setting body textforeground color")
-            # g.es_exception()
-
-        # bg = c.config.getColor("body_insertion_cursor_color")
-        # if bg:
-            # try:
-                # pass ### w.configure(insertbackground=bg)
-            # except:
-                # g.es("exception setting body pane cursor color")
-                # g.es_exception()
-
-        # sel_bg = c.config.getColor('body_text_selection_background_color') or 'Gray80'
-        # try:
-            # pass ### w.configure(selectbackground=sel_bg)
-        # except Exception:
-            # g.es("exception setting body pane text selection background color")
-            # g.es_exception()
-
-        # sel_fg = c.config.getColor('body_text_selection_foreground_color') or 'white'
-        # try:
-            # pass ### w.configure(selectforeground=sel_fg)
-        # except Exception:
-            # g.es("exception setting body pane text selection foreground color")
-            # g.es_exception()
-
-        # # if sys.platform != "win32": # Maybe a Windows bug.
-            # # fg = c.config.getColor("body_cursor_foreground_color")
-            # # bg = c.config.getColor("body_cursor_background_color")
-            # # if fg and bg:
-                # # cursor="xterm" + " " + fg + " " + bg
-                # # try:
-                    # # pass ### w.configure(cursor=cursor)
-                # # except:
-                    # # import traceback ; traceback.print_exc()
+    #@nonl
     #@-node:ekr.20081121105001.548:setColorFromConfig
     #@+node:ekr.20081121105001.549:setConfig
     def setConfig (self):
@@ -790,54 +742,44 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         '''Set the font in the widget w (a body editor).'''
 
-        c = self.c
-        if w is None: w = self.widget
+        # c = self.c
+        # if w is None: w = self.widget
 
-        bg = c.config.getColor("body_text_background_color") or 'white'
-        try:
-            pass ### w.configure(bg=bg)
-        except:
-            g.es("exception setting body text background color")
-            g.es_exception()
+        # bg = c.config.getColor("body_text_background_color") or 'white'
+        # try:
+            # pass ### w.configure(bg=bg)
+        # except:
+            # g.es("exception setting body text background color")
+            # g.es_exception()
 
-        fg = c.config.getColor("body_text_foreground_color") or 'black'
-        try:
-            pass ### w.configure(fg=fg)
-        except:
-            g.es("exception setting body textforeground color")
-            g.es_exception()
+        # fg = c.config.getColor("body_text_foreground_color") or 'black'
+        # try:
+            # pass ### w.configure(fg=fg)
+        # except:
+            # g.es("exception setting body textforeground color")
+            # g.es_exception()
 
-        bg = c.config.getColor("body_insertion_cursor_color")
-        if bg:
-            try:
-                pass ### w.configure(insertbackground=bg)
-            except:
-                g.es("exception setting body pane cursor color")
-                g.es_exception()
+        # bg = c.config.getColor("body_insertion_cursor_color")
+        # if bg:
+            # try:
+                # pass ### w.configure(insertbackground=bg)
+            # except:
+                # g.es("exception setting body pane cursor color")
+                # g.es_exception()
 
-        sel_bg = c.config.getColor('body_text_selection_background_color') or 'Gray80'
-        try:
-            pass ### w.configure(selectbackground=sel_bg)
-        except Exception:
-            g.es("exception setting body pane text selection background color")
-            g.es_exception()
+        # sel_bg = c.config.getColor('body_text_selection_background_color') or 'Gray80'
+        # try:
+            # pass ### w.configure(selectbackground=sel_bg)
+        # except Exception:
+            # g.es("exception setting body pane text selection background color")
+            # g.es_exception()
 
-        sel_fg = c.config.getColor('body_text_selection_foreground_color') or 'white'
-        try:
-            pass ### w.configure(selectforeground=sel_fg)
-        except Exception:
-            g.es("exception setting body pane text selection foreground color")
-            g.es_exception()
-
-        # if sys.platform != "win32": # Maybe a Windows bug.
-            # fg = c.config.getColor("body_cursor_foreground_color")
-            # bg = c.config.getColor("body_cursor_background_color")
-            # if fg and bg:
-                # cursor="xterm" + " " + fg + " " + bg
-                # try:
-                    # pass ### w.configure(cursor=cursor)
-                # except:
-                    # import traceback ; traceback.print_exc()
+        # sel_fg = c.config.getColor('body_text_selection_foreground_color') or 'white'
+        # try:
+            # pass ### w.configure(selectforeground=sel_fg)
+        # except Exception:
+            # g.es("exception setting body pane text selection foreground color")
+            # g.es_exception()
     #@-node:ekr.20081121105001.576:setColorFromConfig
     #@+node:ekr.20081121105001.577:setConfig
     def setConfig (self):
@@ -858,8 +800,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
 
         # tab stop in pixels - no config for this (yet)        
         w.setTabStopWidth(24)
-
-
     #@-node:ekr.20081121105001.577:setConfig
     #@-node:ekr.20081121105001.573:Birth
     #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
@@ -4468,21 +4408,7 @@ class leoQtFrame (leoFrame.leoFrame):
         '''Resize the Leo window so it fill the entire screen.'''
 
         top = self.top
-
-        # w = top.winfo_screenwidth()
-        # h = top.winfo_screenheight()
-
-        # if sys.platform.startswith('win'):
-            # top.state('zoomed')
-        # elif sys.platform == 'darwin':
-            # # Must leave room to get at very small resizing area.
-            # geom = "%dx%d%+d%+d" % (w-20,h-55,10,25)
-            # top.geometry(geom)
-        # else:
-            # # Fill almost the entire screen.
-            # # Works on Windows. YMMV for other platforms.
-            # geom = "%dx%d%+d%+d" % (w-8,h-46,0,0)
-            # top.geometry(geom)
+    #@nonl
     #@-node:ekr.20081121105001.312:resizeToScreen
     #@-node:ekr.20081121105001.304:Window Menu...
     #@+node:ekr.20081121105001.313:Help Menu...
@@ -4643,29 +4569,6 @@ class leoQtLog (leoFrame.leoLog):
     #@-node:ekr.20081121105001.321:qtLog.finishCreate
     #@-node:ekr.20081121105001.319:qtLog Birth
     #@+node:ekr.20081121105001.322:Do nothings
-    # def createCanvas (self,tabName=None): pass
-
-    # def getSelectedTab (self): return self.tabName
-
-    # def lowerTab (self,tabName):
-        # self.c.invalidateFocus()
-        # self.c.bodyWantsFocus()
-
-    # def makeTabMenu (self,tabName=None,allowRename=True): pass
-
-    # def onLogTextRightClick(self, event):
-        # g.doHook('rclick-popup',c=self.c,event=event, context_menu='log')
-
-    # def raiseTab (self,tabName):
-        # self.c.invalidateFocus()
-        # self.c.bodyWantsFocus()
-
-    # def renameTab (self,oldName,newName): pass
-
-    # def setCanvasTabBindings (self,tabName,menu): pass
-
-    # def setTabBindings (self,tabName): pass
-
     #@+node:ekr.20081121105001.323:Config
     # These will probably be replaced by style sheets.
 

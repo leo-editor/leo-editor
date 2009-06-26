@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5,5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -330,7 +330,7 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
-<v t="ekr.20090623090418.1765" a="E"><vh>known syntax coloring bugs</vh>
+<v t="ekr.20090623090418.1765"><vh>known syntax coloring bugs</vh>
 <v t="ekr.20090623090418.1766"><vh>Bug 1</vh></v>
 <v t="ekr.20090623090418.1767"><vh>Bug 2 (from mod_scripting)</vh></v>
 <v t="ekr.20090623090418.1768"><vh>Bug 3 (from unitTest.py)</vh></v>
@@ -339,6 +339,7 @@
 <v t="ekr.20090625082029.1775"><vh>strings</vh></v>
 <v t="ekr.20090623120149.1773"><vh>@button print-sep</vh></v>
 </v>
+<v t="ekr.20090626100758.1777"><vh>Undo test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2691,5 +2692,15 @@ match_at_color is with comment color, while match_at_killcolor is ok (black).</t
 <t tx="ekr.20090625082029.1775">'''abc'''
 
 abc</t>
+<t tx="ekr.20090626100758.1777">This is a regular line, repeated.
+This is a regular line, repeated.
+This is a regular line, repeated.
+This is a regular line, repeated.
+This is a regular line, repeated.
+This is a regular line, repeated.
+This is a regular line, repeated.
+This is a regular line, repeated.
+This is a regular line, repeated.
+</t>
 </tnodes>
 </leo_file>

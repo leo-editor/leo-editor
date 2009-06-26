@@ -2012,7 +2012,7 @@ def onTextChanged (self):
     tree = c.frame.tree ; w = self
 
     # The linux events are different from xp events.
-    if w.changingText and not sys.platform.startswith('linux'):
+    if w.changingText: ### and not sys.platform.startswith('linux'):
         if trace and verbose: g.trace('already changing')
         return
     if tree.tree_select_lockout:
@@ -2912,55 +2912,7 @@ def setColorFromConfig (self,w=None):
     '''Set the font in the widget w (a body editor).'''
 
     return
-
-    # c = self.c
-    # if w is None: w = self.widget
-
-    # bg = c.config.getColor("body_text_background_color") or 'white'
-    # try:
-        # pass ### w.configure(bg=bg)
-    # except:
-        # g.es("exception setting body text background color")
-        # g.es_exception()
-
-    # fg = c.config.getColor("body_text_foreground_color") or 'black'
-    # try:
-        # pass ### w.configure(fg=fg)
-    # except:
-        # g.es("exception setting body textforeground color")
-        # g.es_exception()
-
-    # bg = c.config.getColor("body_insertion_cursor_color")
-    # if bg:
-        # try:
-            # pass ### w.configure(insertbackground=bg)
-        # except:
-            # g.es("exception setting body pane cursor color")
-            # g.es_exception()
-
-    # sel_bg = c.config.getColor('body_text_selection_background_color') or 'Gray80'
-    # try:
-        # pass ### w.configure(selectbackground=sel_bg)
-    # except Exception:
-        # g.es("exception setting body pane text selection background color")
-        # g.es_exception()
-
-    # sel_fg = c.config.getColor('body_text_selection_foreground_color') or 'white'
-    # try:
-        # pass ### w.configure(selectforeground=sel_fg)
-    # except Exception:
-        # g.es("exception setting body pane text selection foreground color")
-        # g.es_exception()
-
-    # # if sys.platform != "win32": # Maybe a Windows bug.
-        # # fg = c.config.getColor("body_cursor_foreground_color")
-        # # bg = c.config.getColor("body_cursor_background_color")
-        # # if fg and bg:
-            # # cursor="xterm" + " " + fg + " " + bg
-            # # try:
-                # # pass ### w.configure(cursor=cursor)
-            # # except:
-                # # import traceback ; traceback.print_exc()
+#@nonl
 #@-node:ekr.20081121105001.548:setColorFromConfig
 #@+node:ekr.20081121105001.549:setConfig
 def setConfig (self):
@@ -4286,7 +4238,7 @@ def onTextChanged (self):
     tree = c.frame.tree ; w = self
 
     # The linux events are different from xp events.
-    if w.changingText and not sys.platform.startswith('linux'):
+    if w.changingText: ### and not sys.platform.startswith('linux'):
         if trace and verbose: g.trace('already changing')
         return
     if tree.tree_select_lockout:
@@ -4447,54 +4399,44 @@ def setColorFromConfig (self,w=None):
 
     '''Set the font in the widget w (a body editor).'''
 
-    c = self.c
-    if w is None: w = self.widget
+    # c = self.c
+    # if w is None: w = self.widget
 
-    bg = c.config.getColor("body_text_background_color") or 'white'
-    try:
-        pass ### w.configure(bg=bg)
-    except:
-        g.es("exception setting body text background color")
-        g.es_exception()
+    # bg = c.config.getColor("body_text_background_color") or 'white'
+    # try:
+        # pass ### w.configure(bg=bg)
+    # except:
+        # g.es("exception setting body text background color")
+        # g.es_exception()
 
-    fg = c.config.getColor("body_text_foreground_color") or 'black'
-    try:
-        pass ### w.configure(fg=fg)
-    except:
-        g.es("exception setting body textforeground color")
-        g.es_exception()
+    # fg = c.config.getColor("body_text_foreground_color") or 'black'
+    # try:
+        # pass ### w.configure(fg=fg)
+    # except:
+        # g.es("exception setting body textforeground color")
+        # g.es_exception()
 
-    bg = c.config.getColor("body_insertion_cursor_color")
-    if bg:
-        try:
-            pass ### w.configure(insertbackground=bg)
-        except:
-            g.es("exception setting body pane cursor color")
-            g.es_exception()
+    # bg = c.config.getColor("body_insertion_cursor_color")
+    # if bg:
+        # try:
+            # pass ### w.configure(insertbackground=bg)
+        # except:
+            # g.es("exception setting body pane cursor color")
+            # g.es_exception()
 
-    sel_bg = c.config.getColor('body_text_selection_background_color') or 'Gray80'
-    try:
-        pass ### w.configure(selectbackground=sel_bg)
-    except Exception:
-        g.es("exception setting body pane text selection background color")
-        g.es_exception()
+    # sel_bg = c.config.getColor('body_text_selection_background_color') or 'Gray80'
+    # try:
+        # pass ### w.configure(selectbackground=sel_bg)
+    # except Exception:
+        # g.es("exception setting body pane text selection background color")
+        # g.es_exception()
 
-    sel_fg = c.config.getColor('body_text_selection_foreground_color') or 'white'
-    try:
-        pass ### w.configure(selectforeground=sel_fg)
-    except Exception:
-        g.es("exception setting body pane text selection foreground color")
-        g.es_exception()
-
-    # if sys.platform != "win32": # Maybe a Windows bug.
-        # fg = c.config.getColor("body_cursor_foreground_color")
-        # bg = c.config.getColor("body_cursor_background_color")
-        # if fg and bg:
-            # cursor="xterm" + " " + fg + " " + bg
-            # try:
-                # pass ### w.configure(cursor=cursor)
-            # except:
-                # import traceback ; traceback.print_exc()
+    # sel_fg = c.config.getColor('body_text_selection_foreground_color') or 'white'
+    # try:
+        # pass ### w.configure(selectforeground=sel_fg)
+    # except Exception:
+        # g.es("exception setting body pane text selection foreground color")
+        # g.es_exception()
 #@-node:ekr.20081121105001.576:setColorFromConfig
 #@+node:ekr.20081121105001.577:setConfig
 def setConfig (self):
@@ -4515,8 +4457,6 @@ def setConfig (self):
 
     # tab stop in pixels - no config for this (yet)        
     w.setTabStopWidth(24)
-
-
 #@-node:ekr.20081121105001.577:setConfig
 #@-node:ekr.20081121105001.573:Birth
 #@+node:ekr.20081121105001.578:Widget-specific overrides (QTextEdit)
@@ -5984,21 +5924,7 @@ def resizeToScreen (self,event=None):
     '''Resize the Leo window so it fill the entire screen.'''
 
     top = self.top
-
-    # w = top.winfo_screenwidth()
-    # h = top.winfo_screenheight()
-
-    # if sys.platform.startswith('win'):
-        # top.state('zoomed')
-    # elif sys.platform == 'darwin':
-        # # Must leave room to get at very small resizing area.
-        # geom = "%dx%d%+d%+d" % (w-20,h-55,10,25)
-        # top.geometry(geom)
-    # else:
-        # # Fill almost the entire screen.
-        # # Works on Windows. YMMV for other platforms.
-        # geom = "%dx%d%+d%+d" % (w-8,h-46,0,0)
-        # top.geometry(geom)
+#@nonl
 #@-node:ekr.20081121105001.312:resizeToScreen
 #@-node:ekr.20081121105001.304:Window Menu...
 #@+node:ekr.20081121105001.313:Help Menu...
@@ -8922,7 +8848,7 @@ def onTextChanged (self):
     tree = c.frame.tree ; w = self
 
     # The linux events are different from xp events.
-    if w.changingText and not sys.platform.startswith('linux'):
+    if w.changingText: ### and not sys.platform.startswith('linux'):
         if trace and verbose: g.trace('already changing')
         return
     if tree.tree_select_lockout:
@@ -14117,6 +14043,148 @@ def setTag (self,tag,s,i,j):
     self.highlighter.setFormat(i,j-i,color)
 #@-node:ekr.20090614134853.3813:setTag
 #@-node:ekr.20090614134853.3635:New syntax coloring
+#@+node:ekr.20090625125729.3709:Fixed exception in configure_tags
+#@+node:ekr.20081121105001.493:qtGui.getFontFromParams
+def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
+
+    try: size = int(size)
+    except Exception: size = 0
+    if size < 1: size = defaultSize
+
+    d = {
+        'black':QtGui.QFont.Black,
+        'bold':QtGui.QFont.Bold,
+        'demibold':QtGui.QFont.DemiBold,
+        'light':QtGui.QFont.Light,
+        'normal':QtGui.QFont.Normal,
+    }
+    weight_val = d.get(weight.lower(),QtGui.QFont.Normal)
+    italic = slant == 'italic'
+
+    if not family:
+        family = g.app.config.defaultFontFamily
+    if not family:
+        family = 'DejaVu Sans Mono'
+
+    try:
+        font = QtGui.QFont(family,size,weight_val,italic)
+        # g.trace(family,size,slant,weight,'returns',font)
+        return font
+    except:
+        g.es("exception setting font",g.callers(4))
+        g.es("","family,size,slant,weight:","",family,"",size,"",slant,"",weight)
+        # g.es_exception() # This just confuses people.
+        return g.app.config.defaultFont
+#@-node:ekr.20081121105001.493:qtGui.getFontFromParams
+#@+node:ekr.20090614134853.3703:configure_tags
+def configure_tags (self):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; w = self.w
+
+    if trace: g.trace(g.callers(4))
+
+    if w and hasattr(w,'start_tag_configure'):
+        w.start_tag_configure()
+
+    # Get the default body font.
+    defaultBodyfont = self.fonts.get('default_body_font')
+    if not defaultBodyfont:
+        defaultBodyfont = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant",  "body_text_font_weight",
+            c.config.defaultBodyFontSize)
+        self.fonts['default_body_font'] = defaultBodyfont
+
+    # Configure fonts.
+    keys = self.default_font_dict.keys() ; keys.sort()
+    for key in keys:
+        option_name = self.default_font_dict[key]
+        # First, look for the language-specific setting, then the general setting.
+        for name in ('%s_%s' % (self.colorizer.language,option_name),(option_name)):
+            font = self.fonts.get(name)
+            if font:
+                if trace and verbose: g.trace('found',name,id(font))
+                w.tag_config(key,font=font)
+                break
+            else:
+                family = c.config.get(name + '_family','family')
+                size   = c.config.get(name + '_size',  'size')   
+                slant  = c.config.get(name + '_slant', 'slant')
+                weight = c.config.get(name + '_weight','weight')
+                if family or slant or weight or size:
+                    family = family or g.app.config.defaultFontFamily
+                    size   = size or c.config.defaultBodyFontSize
+                    slant  = slant or 'roman'
+                    weight = weight or 'normal'
+                    font = g.app.gui.getFontFromParams(family,size,slant,weight)
+                    # Save a reference to the font so it 'sticks'.
+                    self.fonts[name] = font 
+                    if trace and verbose: g.trace(key,name,family,size,slant,weight,id(font))
+                    w.tag_config(key,font=font)
+                    break
+        else: # Neither the general setting nor the language-specific setting exists.
+            if self.fonts.keys(): # Restore the default font.
+                if trace and verbose: g.trace('default',key)
+                w.tag_config(key,font=defaultBodyfont)
+
+    keys = self.default_colors_dict.keys() ; keys.sort()
+    for name in keys:
+        option_name,default_color = self.default_colors_dict[name]
+        color = (
+            c.config.getColor('%s_%s' % (self.colorizer.language,option_name)) or
+            c.config.getColor(option_name) or
+            default_color
+        )
+        if trace and verbose: g.trace(option_name,color)
+
+        # Must use foreground, not fg.
+        try:
+            w.tag_configure(name, foreground=color)
+        except: # Recover after a user error.
+            g.es_exception()
+            w.tag_configure(name, foreground=default_color)
+
+    # underline=var doesn't seem to work.
+    if 0: # self.use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
+        w.tag_configure("link",underline=1) # defined
+        w.tag_configure("name",underline=0) # undefined
+    else:
+        w.tag_configure("link",underline=0)
+        if self.underline_undefined:
+            w.tag_configure("name",underline=1)
+        else:
+            w.tag_configure("name",underline=0)
+
+    self.configure_variable_tags()
+
+    # Colors for latex characters.  Should be user options...
+
+    if 1: # Alas, the selection doesn't show if a background color is specified.
+        w.tag_configure("latexModeBackground",foreground="black")
+        w.tag_configure("latexModeKeyword",foreground="blue")
+        w.tag_configure("latexBackground",foreground="black")
+        w.tag_configure("latexKeyword",foreground="blue")
+    else: # Looks cool, and good for debugging.
+        w.tag_configure("latexModeBackground",foreground="black",background="seashell1")
+        w.tag_configure("latexModeKeyword",foreground="blue",background="seashell1")
+        w.tag_configure("latexBackground",foreground="black",background="white")
+        w.tag_configure("latexKeyword",foreground="blue",background="white")
+
+    # Tags for wiki coloring.
+    w.tag_configure("bold",font=self.bold_font)
+    w.tag_configure("italic",font=self.italic_font)
+    w.tag_configure("bolditalic",font=self.bolditalic_font)
+    for name in self.color_tags_list:
+        w.tag_configure(name,foreground=name)
+
+    try:
+        w.end_tag_configure()
+    except AttributeError:
+        pass
+#@-node:ekr.20090614134853.3703:configure_tags
+#@-node:ekr.20090625125729.3709:Fixed exception in configure_tags
 #@-node:ekr.20090626070207.3713:4.6 rc1 projects
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20090614134853.3814:restart (NO LONGER USED)
