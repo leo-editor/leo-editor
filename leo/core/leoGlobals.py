@@ -2176,7 +2176,7 @@ def trace (*args,**keys):
     # Munge *args into s.
     # print ('g.trace:args...')
     # for z in args: print (g.isString(z),repr(z))
-    result = []
+    result = [name]
     for arg in args:
         if g.isString(arg):
             pass
