@@ -2282,7 +2282,7 @@ class leoQtBody (leoFrame.leoBody):
 
             # Hook up the QSyntaxHighlighter
             self.colorizer = leoQtColorizer(c,w.widget)
-            w.acceptRichText = False
+            qtWidget.setAcceptRichText(False)
 
         # Config stuff.
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')

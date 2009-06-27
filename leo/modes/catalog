@@ -119,6 +119,9 @@
 <MODE NAME="fortran"		FILE="fortran.xml"
 				FILE_NAME_GLOB="*.{f,for,fort,f77,f90}" />
 
+<MODE NAME="fortran90"		FILE="fortran90.xml"
+				FILE_NAME_GLOB="*.{f,for,fort,f90}" />
+
 <MODE NAME="foxpro"		FILE="foxpro.xml"
 				FILE_NAME_GLOB="*.prg" />
 

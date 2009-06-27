@@ -6054,7 +6054,7 @@ def __init__ (self,frame,parentFrame):
 
         # Hook up the QSyntaxHighlighter
         self.colorizer = leoQtColorizer(c,w.widget)
-        w.acceptRichText = False
+        w.setAcceptRichText(false)
 
     # Config stuff.
     self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')

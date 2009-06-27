@@ -168,7 +168,7 @@ class LeoApp:
             "elisp"         : "el",
             "forth"         : "forth",
             "fortran"       : "f",
-            "fortran90"     : "f",
+            "fortran90"     : "f90",
             "html"          : "html",
             "ini"           : "ini",
             "java"          : "java",
@@ -212,7 +212,8 @@ class LeoApp:
             "css"   : "css",
             "el"    : "elisp",
             "forth" : "forth",
-            "f"     : "fortran90", # or fortran ?
+            "f"     : "fortran",
+            "f90"   : "fortran90",
             "h"     : "c",
             "html"  : "html",
             "ini"   : "ini",
@@ -255,7 +256,7 @@ class LeoApp:
             'cfg'   : 'none', # Leo 4.5.1
             'cpp'   : 'c',
             'el'    : 'lisp',
-            'f'     : 'fortran',
+            'f'     : 'fortran90',
             'ksh'   : 'none', # Leo 4.5.1
             'nw'    : 'none', # noweb.
             'otl'   : 'none', # vimoutline.
