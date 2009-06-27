@@ -2447,7 +2447,8 @@ class keyHandlerClass:
         All commands and keystrokes pass through here.'''
 
         k = self ; c = k.c ; gui = g.app.gui
-        trace = False or k.traceMasterCommand ; verbose = False
+        trace = (False or k.traceMasterCommand) and not g.unitTesting
+        verbose = False
         traceGC = False
         if traceGC: g.printNewObjects('masterCom 1')
 
@@ -2602,10 +2603,22 @@ class keyHandlerClass:
             if not stroke: # Not exactly right, but it seems to be good enough.
                 c.onCanvasKey(event) # New in Leo 4.4.2
             return 'break'
+        elif name.startswith('log'):
+            if g.app.gui.guiName() == 'tkinter':
+                return None
+            else:
+                if trace: g.trace(w)
+                i = w.logCtrl.getInsertPoint()
+                if stroke.lower() == 'return': stroke = '\n'
+                elif stroke.lower() == 'tab': stroke = '\t'
+                elif stroke.lower() == 'backspace': stroke = '\b'
+                w.logCtrl.insert(i,stroke)
+                return None
         else:
             # Let the widget handle the event.
-            # ch = event and event.char ; g.trace('to tk:',name,repr(ch))
+            # ch = event and event.char ; g.trace('to tk:',name,repr(stroke))
             return None
+    #@nonl
     #@-node:ekr.20061031131434.110:k.handleDefaultChar
     #@-node:ekr.20061031131434.105:masterCommand & helpers
     #@+node:ekr.20061031131434.111:fullCommand (alt-x) & helper
@@ -3420,7 +3433,8 @@ class keyHandlerClass:
         #@+node:ekr.20061031131434.150:<< handle per-pane bindings >>
         keyStatesTuple = ('command','insert','overwrite')
 
-        # g.trace('w_name',w_name,'stroke',stroke,'w',w,'isTextWidget(w)',g.app.gui.isTextWidget(w))
+        if True and trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
+            'isTextWidget(w)',g.app.gui.isTextWidget(w))
 
         for key,name in (
             # Order here is similar to bindtags order.
@@ -3444,7 +3458,7 @@ class keyHandlerClass:
                 key in ('button','all')
             ):
                 d = k.masterBindingsDict.get(key,{})
-                # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
+                if trace: g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
                 # g.trace(key,'keys',g.listToString(d.keys(),sort=True)) # [:5])
                 if d:
                     b = d.get(stroke)
