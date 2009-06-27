@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5,0"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -324,13 +324,7 @@
 <v t="ekr.20090620194509.1758"><vh>h2</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
-<v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
-<v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
-<v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
-</v>
-<v t="ekr.20090623090418.1765"><vh>known syntax coloring bugs</vh>
+<v t="ekr.20090623090418.1765"><vh>Previous syntax coloring bugs</vh>
 <v t="ekr.20090623090418.1766"><vh>Bug 1</vh></v>
 <v t="ekr.20090623090418.1767"><vh>Bug 2 (from mod_scripting)</vh></v>
 <v t="ekr.20090623090418.1768"><vh>Bug 3 (from unitTest.py)</vh></v>
@@ -339,9 +333,13 @@
 <v t="ekr.20090625082029.1775"><vh>strings</vh></v>
 <v t="ekr.20090623120149.1773"><vh>@button print-sep</vh></v>
 </v>
-<v t="ekr.20090626132849.1779"><vh>g.consoleEncoding</vh></v>
-<v t="ekr.20090626125154.1779"><vh>Spelling with unicode</vh></v>
-<v t="ekr.20090626134248.1781"><vh>Selling with unicode, short</vh></v>
+</v>
+<v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
+<v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
+<v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
+<v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
+</v>
+<v t="ekr.20090627063835.1783" a="E"><vh>@auto line-number-test.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2694,20 +2692,5 @@ match_at_color is with comment color, while match_at_killcolor is ok (black).</t
 <t tx="ekr.20090625082029.1775">'''abc'''
 
 abc</t>
-<t tx="ekr.20090626125154.1779">@first # -*- coding: utf-8 -*-
-
-print '-' * 10
-print type('relevé'),'relevé'
-print type(u'relevé'),u'relevé'
-print c.frame.body.getAllText()</t>
-<t tx="ekr.20090626132849.1779">@first # -*- coding: utf-8 -*-
-
-print g.consoleEncoding</t>
-<t tx="ekr.20090626134248.1781">@first # -*- coding: utf-8 -*-
-# relevé
-print '=' * 20
-print c.frame.body.bodyCtrl.getAllText()
-print '*' * 20
-g.trace(c.frame.body.bodyCtrl.getAllText())</t>
 </tnodes>
 </leo_file>

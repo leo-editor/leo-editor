@@ -787,6 +787,20 @@
 </v>
 <v t="ekr.20041021065844.1"><vh>Output</vh></v>
 </v>
+<v t="ekr.20090627070131.4971"><vh>@test @auto (newlines at end of nodes)</vh>
+<v t="ekr.20090627070131.4975"><vh>#@auto</vh>
+<v t="ekr.20090627070131.4976"><vh>spam</vh></v>
+<v t="ekr.20090627070131.4977"><vh>cheese</vh></v>
+</v>
+<v t="ekr.20090627070131.4978"><vh>Output</vh></v>
+</v>
+<v t="ekr.20090627071704.4986"><vh>@test @auto (no newlines at end of nodes)</vh>
+<v t="ekr.20090627071704.4987"><vh>#@auto</vh>
+<v t="ekr.20090627071704.4988"><vh>spam</vh></v>
+<v t="ekr.20090627071704.4989"><vh>cheese</vh></v>
+</v>
+<v t="ekr.20090627071704.4990"><vh>Output</vh></v>
+</v>
 <v t="ekr.20090225102051.2"><vh>@test @edit</vh>
 <v t="ekr.20090225102051.3"><vh>#@edit</vh></v>
 <v t="ekr.20090225102051.4"><vh>Output</vh></v>
@@ -1120,6 +1134,12 @@
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
 <v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
 <v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
 <v t="ekr.20080904102243.3"></v>
@@ -2492,7 +2512,6 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090615053403.4876"></v>
 <v t="ekr.20090615053403.4910"></v>
 </vnodes>
 <tnodes>
@@ -21642,6 +21661,60 @@ abc</t>
 abc
 
 
+</t>
+<t tx="ekr.20090627070131.4971">import leo.core.leoTest as leoTest
+
+leoTest.runAtFileTest(c,p)</t>
+<t tx="ekr.20090627070131.4975">@language python
+@tabwidth -4
+@others
+#end
+</t>
+<t tx="ekr.20090627070131.4976"># Test of goto-global-line command
+
+def spam(cheese):
+
+    print cheese
+</t>
+<t tx="ekr.20090627070131.4977">def cheese():
+
+    pass
+</t>
+<t tx="ekr.20090627070131.4978"># Test of goto-global-line command
+
+def spam(cheese):
+
+    print cheese
+def cheese():
+
+    pass
+#end
+</t>
+<t tx="ekr.20090627071704.4986">import leo.core.leoTest as leoTest
+
+leoTest.runAtFileTest(c,p)</t>
+<t tx="ekr.20090627071704.4987">@language python
+@tabwidth -4
+@others
+#end
+</t>
+<t tx="ekr.20090627071704.4988"># Test of goto-global-line command
+
+def spam(cheese):
+
+    print cheese</t>
+<t tx="ekr.20090627071704.4989">def cheese():
+
+    pass</t>
+<t tx="ekr.20090627071704.4990"># Test of goto-global-line command
+
+def spam(cheese):
+
+    print cheese
+def cheese():
+
+    pass
+#end
 </t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
 import random,fnmatch

@@ -1908,11 +1908,13 @@ class baseCommands (object):
         '''Place the cursor on the n'th line of a derived file or script.
         When present scriptData is a dict with 'root' and 'lines' keys.'''
 
+        trace = False and not g.unitTesting
         c = self
         delim = None ; gnx = None ; vnodeName = None
         if n < 0: return
 
         fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
+        if trace: g.trace(fileName,ignoreSentinels,n)
 
         if n==1:
             p = root ; n2 = 1 ; found = True
