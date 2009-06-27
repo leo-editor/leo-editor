@@ -4606,7 +4606,7 @@ class leoQtLog (leoFrame.leoLog):
     def onActivateLog (self,event=None):    pass
     def hasFocus (self):                    return None
     def forceLogUpdate (self,s):            pass
-    def set_focus(w):                       pass
+    def set_focus(self):                  pass
     setFocus = set_focus
     #@nonl
     #@-node:ekr.20081121105001.324:Focus & update
@@ -4725,8 +4725,9 @@ class leoQtLog (leoFrame.leoLog):
             self.contentsDict[tabName] = widget
             w.addTab(widget,tabName)
         else:
-            if trace: g.trace('** using',tabNamewidget)
-            self.contentsDict[tabName] = widget
+            contents = widget
+            if trace: g.trace('** using',tabName,contents)
+            self.contentsDict[tabName] = contents
             w.addTab(contents,tabName)
 
         return contents
