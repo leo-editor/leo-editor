@@ -1912,13 +1912,14 @@ class baseCommands (object):
         c = self
         delim = None ; gnx = None ; vnodeName = None
         if n < 0: return
+        if n == 0: n = 1
 
         fileName,ignoreSentinels,isRaw,lines,n,root = c.goto_setup(n,p,scriptData)
-        if trace: g.trace(fileName,ignoreSentinels,n)
+        if trace: g.trace(isRaw,g.listToString(lines,sort=False))
 
-        if n==1:
+        if n==1 and not isRaw:
             p = root ; n2 = 1 ; found = True
-        elif n >= len(lines):
+        elif n > len(lines): # was >=
             p = root ; n2 = root.b.count('\n') ; found = False
         elif isRaw:
             p,n2,found = c.goto_countLines(root,n)
@@ -1957,25 +1958,31 @@ class baseCommands (object):
         Return (p,n2,found) where p is the found node,
         n2 is the actural line found, and found is True if the line was found.'''
 
+        trace = False and not g.unitTesting
         p = lastv = root
         prev = 0 ; found = False
         isNosent = root.isAtNoSentFileNode()
         isAuto = root.isAtAutoNode()
 
+        if trace: g.trace('=' * 10)
         for p in p.self_and_subtree_iter():
             lastv = p.copy()
             s = p.b
             if isNosent or isAuto:
-                s = ''.join([z for z in g.splitLines(s) if not z.startswith('@')])
-            n_lines = s.count('\n')
-            if len(s) > 0 and s[-1] != '\n': n_lines += 1
-            # g.trace(n,prev,n_lines,p.h)
+                lines = [z for z in g.splitLines(s) if not z.startswith('@')]
+                s = ''.join(lines)
+            else:
+                lines = g.splitLines(s)
+            n_lines = len(lines)
+            if trace: g.trace('prev: %3s node: %s lines...\n%s' % (
+                prev,p.h,g.listToString(lines)))
             if prev + n_lines >= n:
+                if trace: g.trace('***found',n-prev)
                 found = True ; break
             prev += n_lines
 
         p = lastv
-        n2 = max(1,n-prev)
+        n2 = max(0,n-prev)
 
         return p,n2,found
     #@-node:ekr.20080904071003.12:goto_countLines
