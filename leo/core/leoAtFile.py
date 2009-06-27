@@ -292,6 +292,7 @@ class atFile:
     #@+node:ekr.20041005105605.15:initWriteIvars
     def initWriteIvars(self,root,targetFileName,
         atAuto=False,
+        atEdit=False,
         atShadow=False,
         nosentinels=False,
         thinFile=False,
@@ -316,6 +317,7 @@ class atFile:
         self.explicitLineEnding = False # True: an @lineending directive specifies the ending.
         self.fileChangedFlag = False # True: the file has actually been updated.
         self.atAuto = atAuto
+        self.atEdit = atEdit
         self.atShadow = atShadow
         self.shortFileName = "" # short version of file name used for messages.
         self.thinFile = False
@@ -2611,7 +2613,7 @@ class atFile:
         at = self ; c = at.c ; root = p.copy()
 
         fileName = p.atAutoNodeName()
-        if not fileName: return False
+        if not fileName and not toString: return False
 
         at.scanDefaultDirectory(p,importing=True) # Set default_directory
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
@@ -2713,6 +2715,7 @@ class atFile:
         at.targetFileName = g.choose(toString,"<string-file>",fn)
         at.initWriteIvars(root,at.targetFileName,
             atAuto=True,
+            atEdit=True,
             nosentinels=True,thinFile=False,scriptWrite=False,
             toString=toString)
 
@@ -3234,8 +3237,13 @@ class atFile:
             i = next_i
         if not inCode:
             at.putEndDocLine()
-        if at.sentinels and not trailingNewlineFlag:
-            at.putSentinel("@nonl")
+        if not trailingNewlineFlag:
+            if at.sentinels:
+                at.putSentinel("@nonl")
+            elif at.atAuto and not at.atEdit:
+                # New in Leo 4.6 rc1: ensure all @auto nodes end in a newline!
+                at.onl()
+
     #@-node:ekr.20041005105605.161:putBody
     #@+node:ekr.20041005105605.164:writing code lines...
     #@+node:ekr.20041005105605.165:@all
