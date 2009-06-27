@@ -102,15 +102,17 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         if not c: return # Can happen.
 
-        # Hook up qt events.
-        self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
-        self.widget.installEventFilter(self.ev_filter)
+        ### ONLY FOR THE BODY
+        if name == 'body':
+            # Hook up qt events.
+            self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
+            self.widget.installEventFilter(self.ev_filter)
 
-        self.widget.connect(self.widget,
-            QtCore.SIGNAL("textChanged()"),self.onTextChanged)
+            self.widget.connect(self.widget,
+                QtCore.SIGNAL("textChanged()"),self.onTextChanged)
 
-        self.widget.connect(self.widget,
-            QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
+            self.widget.connect(self.widget,
+                QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
 
         self.injectIvars(c)
     #@-node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
@@ -1988,6 +1990,7 @@ class DynamicWindow(QtGui.QMainWindow):
     ):
 
         # w = QtGui.QTextEdit(parent)
+        # g.trace(g.callers(5))
         w = QtGui.QTextBrowser(parent)
         # self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         w.setFrameShape(shape)
@@ -2304,7 +2307,6 @@ class leoQtBody (leoFrame.leoBody):
         self.totalNumberOfEditors = 1
 
         if trace: print('qtBody.__init__ %s' % self.widget)
-    #@-node:ekr.20081121105001.207: ctor (qtBody)
     #@+node:ekr.20081121105001.208:createBindings (qtBody)
     def createBindings (self,w=None):
 
@@ -2342,6 +2344,7 @@ class leoQtBody (leoFrame.leoBody):
 
         return 'body-widget'
     #@-node:ekr.20081121105001.209:get_name
+    #@-node:ekr.20081121105001.207: ctor (qtBody)
     #@-node:ekr.20081121105001.206: Birth
     #@+node:ekr.20081121105001.210:Do-nothings
 
@@ -4518,6 +4521,7 @@ class leoQtLog (leoFrame.leoLog):
         self.logCtrl = None # The text area for log messages.
 
         self.contentsDict = {} # Keys are tab names.  Values are widgets.
+        self.eventFilters = [] # Apparently needed to make filters work!
         self.logDict = {} # Keys are tab names text widgets.  Values are the widgets.
         self.menu = None # A menu that pops up on right clicks in the hull or in tabs.
 
@@ -4555,18 +4559,22 @@ class leoQtLog (leoFrame.leoLog):
                 break
 
         # Create the log tab as the leftmost tab.
-        log.selectTab('Log')
-
+        # log.selectTab('Log')
+        log.createTab('Log')
         logWidget = self.contentsDict.get('Log')
         for i in range(w.count()):
             if w.tabText(i) == 'Log':
                 w.removeTab(i)
-                w.insertTab(0,logWidget,'Log')
-                break
+        w.insertTab(0,logWidget,'Log')
 
         c.searchCommands.openFindTab(show=False)
         c.spellCommands.openSpellTab()
     #@-node:ekr.20081121105001.321:qtLog.finishCreate
+    #@+node:ekr.20090627090950.3716:qtLog.getName
+    def getName (self):
+        return 'log' # Required for proper pane bindings.
+    #@nonl
+    #@-node:ekr.20090627090950.3716:qtLog.getName
     #@-node:ekr.20081121105001.319:qtLog Birth
     #@+node:ekr.20081121105001.322:Do nothings
     #@+node:ekr.20081121105001.323:Config
@@ -4598,8 +4606,25 @@ class leoQtLog (leoFrame.leoLog):
     def onActivateLog (self,event=None):    pass
     def hasFocus (self):                    return None
     def forceLogUpdate (self,s):            pass
+    def set_focus(w):                       pass
+    setFocus = set_focus
+    #@nonl
     #@-node:ekr.20081121105001.324:Focus & update
     #@-node:ekr.20081121105001.322:Do nothings
+    #@+node:ekr.20090627090950.3717:Redirection to logCtrl
+    def delete(self,i,j=None):          self.logCtrl.delete(i,j)
+    def insert(self,i,s):               self.logCtrl.insert(i,s)
+    def getAllText(self):               return self.logCtrl.getAllText()
+    def getInsertPoint(self):           return self.logCtrl.getInsertPoint()
+    def getSelectionRange (self):       return self.logCtrl.getSelectionRange()
+    def hasSelection(self):             return self.logCtrl.hasSelection()
+    def see(self,i):                    self.logCtrl.see(i)
+    def seeInsertPoint (self):          self.logCtrl.seeInsertPoint()
+    def setAllText (self,s):            self.logCtrl.setAllText(s)
+    def setSelectionRange(self,*args,**keys):
+        self.logCtrl.setSelectionRange(*args,**keys)
+    #@nonl
+    #@-node:ekr.20090627090950.3717:Redirection to logCtrl
     #@+node:ekr.20081121105001.325:put & putnl (qtLog)
     #@+node:ekr.20081121105001.326:put
     # All output to the log stream eventually comes here.
@@ -4616,7 +4641,7 @@ class leoQtLog (leoFrame.leoLog):
         # print('qtLog.put',tabName,'%3s' % (len(s)),self.logCtrl)
 
         # Note: this must be done after the call to selectTab.
-        w = self.logCtrl # w is a QTextBrowser
+        w = self.logCtrl.widget # w is a QTextBrowser
         if w:
             if s.endswith('\n'): s = s[:-1]
             s=s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
@@ -4645,7 +4670,7 @@ class leoQtLog (leoFrame.leoLog):
         if tabName:
             self.selectTab(tabName)
 
-        w = self.logCtrl
+        w = self.logCtrl.widget
         if w:
             sb = w.horizontalScrollBar()
             pos = sb.sliderPosition()
@@ -4676,22 +4701,35 @@ class leoQtLog (leoFrame.leoLog):
         if widget is None, Create a QTextBrowser,
         suitable for log functionality.
         """
+
+        trace = False and not g.unitTesting
         c = self.c ; w = self.tabWidget
 
+        # Important. Not called during startup.
+
         if widget is None:
-            contents = QtGui.QTextBrowser()
-            contents.setWordWrapMode(QtGui.QTextOption.NoWrap)
-            self.logDict[tabName] = contents
-            if tabName == 'Log': self.logCtrl = contents
-            theFilter = leoQtEventFilter(c,w=contents,tag='tab')
-            contents.installEventFilter(theFilter)
+            # contents = QtGui.QTextEdit()
+            widget = QtGui.QTextBrowser()
+            contents = leoQTextEditWidget(widget=widget,name='log',c=c)
+            widget.leo_log_wrapper = contents # Inject an ivar.
+            if trace: g.trace('** creating',tabName,contents,widget)
+            widget.setWordWrapMode(QtGui.QTextOption.NoWrap)
+            widget.setReadOnly(False) # Allow edits.
+            self.logDict[tabName] = widget
+            if tabName == 'Log':
+                self.logCtrl = contents
+                widget.setObjectName('log-widget')
+                theFilter = leoQtEventFilter(c,w=self,tag='log')
+                self.eventFilters.append(theFilter) # Needed!
+                widget.installEventFilter(theFilter)
+            self.contentsDict[tabName] = widget
+            w.addTab(widget,tabName)
         else:
-            contents = widget
+            if trace: g.trace('** using',tabNamewidget)
+            self.contentsDict[tabName] = widget
+            w.addTab(contents,tabName)
 
-        self.contentsDict[tabName] = contents
-        w.addTab(contents,tabName)
         return contents
-
     #@-node:ekr.20081121105001.330:createTab
     #@+node:ekr.20081121105001.331:cycleTabFocus (to do)
     def cycleTabFocus (self,event=None,stop_w = None):
@@ -4708,7 +4746,7 @@ class leoQtLog (leoFrame.leoLog):
         tabName = w.tabText(i)
         w.setCurrentIndex(i)
         log = self.logDict.get(tabName)
-        if log: self.logCtrl = log
+        if log: self.logCtrl = log.leo_log_wrapper
 
     #@-node:ekr.20081121105001.331:cycleTabFocus (to do)
     #@+node:ekr.20081121105001.332:deleteTab
@@ -4758,7 +4796,8 @@ class leoQtLog (leoFrame.leoLog):
             if tabName == w.tabText(i):
                 w.setCurrentIndex(i)
                 if createText and tabName not in ('Spell','Find',):
-                    self.logCtrl = w.widget(i)
+                    self.logCtrl = w.widget(i).leo_log_wrapper
+                    # g.trace('**setting',self.logCtrl)
                 if tabName == 'Spell':
                     # the base class uses this as a flag to see if
                     # the spell system needs initing
@@ -6740,11 +6779,16 @@ class leoQtGui(leoGui.leoGui):
 
         if not w: return False
 
-        return (
+        val = (
             isinstance(w,leoFrame.baseTextWidget) or
             isinstance(w,leoQtBody) or
+            isinstance(w,leoQtLog) or
             isinstance(w,leoQtBaseTextWidget)
         )
+
+        # g.trace(val,w)
+
+        return val
 
     #@-node:ekr.20081121105001.501:isTextWidget
     #@+node:ekr.20090406111739.14:Style Sheets
@@ -7026,6 +7070,8 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081121105001.180: ctor
     def __init__(self,c,w,tag=''):
 
+        # g.trace('leoQtEventFilter',tag,w)
+
         # Init the base class.
         QtCore.QObject.__init__(self)
 
@@ -7112,14 +7158,15 @@ class leoQtEventFilter(QtCore.QObject):
 
         trace = False and not g.unitTesting
         verbose = False
-        traceEvent = False
-        traceKey = False
-        traceFocus = True
+        traceEvent = True
+        traceKey = True
+        traceFocus = False
         c = self.c ; k = c.k
         eventType = event.type()
         ev = QtCore.QEvent
         gui = g.app.gui
         aList = []
+
         kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
 
         if trace and traceFocus: self.traceFocus(eventType,obj)
@@ -7317,8 +7364,10 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20081121105001.179:traceEvent
     def traceEvent (self,obj,event,tkKey,override):
 
-        c = self.c ; e = QtCore.QEvent
+        if g.unitTesting: return
 
+        c = self.c ; e = QtCore.QEvent
+        traceAll = True
         eventType = event.type()
 
         if 0: # Show focus events.
@@ -7334,25 +7383,38 @@ class leoQtEventFilter(QtCore.QObject):
             )
 
         ignore = (
-            e.ToolTip,
-            e.FocusIn,e.FocusOut,e.Enter,e.Leave,
+            1,16,67,70,
+            e.ChildPolished,
+            e.DeferredDelete,
+            e.DynamicPropertyChange,
+            e.Enter,e.Leave,
+            e.FocusIn,e.FocusOut,
+            e.FontChange,
+            e.Hide,e.HideToParent,
+            e.HoverEnter,e.HoverLeave,e.HoverMove,
+            e.LayoutRequest,
             e.MetaCall,e.Move,e.Paint,e.Resize,
+            e.MouseMove,e.MouseButtonPress,e.MouseButtonRelease,
+            e.PaletteChange,
+            e.ParentChange,
             e.Polish,e.PolishRequest,
+            e.Show,e.ShowToParent,
+            e.StyleChange,
+            e.ToolTip,
+            e.WindowActivate,e.WindowDeactivate,
+            e.WindowBlocked,e.WindowUnblocked,
+            e.ZOrderChange,
         )
 
         for val,kind in show:
             if eventType == val:
                 if override:
                     g.trace(
-                        'tag: %s, kind: %s, in-state: %s, key: %s, override: %s' % (
+                        '%5s %18s in-state: %5s key: %s override: %s' % (
                         self.tag,kind,repr(c.k.inState()),tkKey,override))
                 return
 
-        # if trace: g.trace(self.tag,
-            # 'bound in state: %s, key: %s, returns: %s' % (
-            # k.getState(),tkKey,ret))
-
-        if False and eventType not in ignore:
+        if traceAll and eventType not in ignore:
             g.trace('%3s:%s' % (eventType,'unknown'))
     #@-node:ekr.20081121105001.179:traceEvent
     #@+node:ekr.20090407080217.1:traceFocus

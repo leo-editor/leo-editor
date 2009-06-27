@@ -3,6 +3,22 @@
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20090430102239.13:To do before 4.6 rc1
+#@+node:ekr.20090601163620.3758:Fix latest reported minor bugs
+@nocolor-node
+
+I am using 4.6.b1
+
+- cannot clear text in log pane
+
+- button color code ignored
+
+- the only way to expand a node is to click on the + symbol.
+clicking adjacent to the heading name does not trigger selections
+rather than expansion
+
+- toggle-active-pane does not work
+#@nonl
+#@-node:ekr.20090601163620.3758:Fix latest reported minor bugs
 #@+node:ekr.20090530055308.3791:Remember pane split ratio
 @nocolor-node
 
@@ -48,22 +64,6 @@ rclick stuff:
     3. no context menu delete option for log pane.
 #@nonl
 #@-node:ekr.20090128083504.1:Fix rclick
-#@+node:ekr.20090601163620.3758:Fix latest reported minor bugs
-@nocolor-node
-
-I am using 4.6.b1
-
-- cannot clear text in log pane
-
-- button color code ignored
-
-- the only way to expand a node is to click on the + symbol.
-clicking adjacent to the heading name does not trigger selections
-rather than expansion
-
-- toggle-active-pane does not worke
-#@nonl
-#@-node:ekr.20090601163620.3758:Fix latest reported minor bugs
 #@-node:ekr.20090430102239.13:To do before 4.6 rc1
 #@+node:ekr.20090304084841.11:Later
 #@+node:ekr.20090429101847.10:Support canvas widgets in all panes
@@ -605,15 +605,17 @@ def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
 
     if not c: return # Can happen.
 
-    # Hook up qt events.
-    self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
-    self.widget.installEventFilter(self.ev_filter)
+    ### ONLY FOR THE BODY
+    if name == 'body':
+        # Hook up qt events.
+        self.ev_filter = leoQtEventFilter(c,w=self,tag='body')
+        self.widget.installEventFilter(self.ev_filter)
 
-    self.widget.connect(self.widget,
-        QtCore.SIGNAL("textChanged()"),self.onTextChanged)
+        self.widget.connect(self.widget,
+            QtCore.SIGNAL("textChanged()"),self.onTextChanged)
 
-    self.widget.connect(self.widget,
-        QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
+        self.widget.connect(self.widget,
+            QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
 
     self.injectIvars(c)
 #@-node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
@@ -933,6 +935,8 @@ class leoQtEventFilter(QtCore.QObject):
 #@+node:ekr.20081121105001.180: ctor
 def __init__(self,c,w,tag=''):
 
+    # g.trace('leoQtEventFilter',tag,w)
+
     # Init the base class.
     QtCore.QObject.__init__(self)
 
@@ -1051,14 +1055,15 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = False
-    traceEvent = False
-    traceKey = False
-    traceFocus = True
+    traceEvent = True
+    traceKey = True
+    traceFocus = False
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
     gui = g.app.gui
     aList = []
+
     kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
 
     if trace and traceFocus: self.traceFocus(eventType,obj)
@@ -1256,8 +1261,10 @@ def toTkKey (self,event):
 #@+node:ekr.20081121105001.179:traceEvent
 def traceEvent (self,obj,event,tkKey,override):
 
-    c = self.c ; e = QtCore.QEvent
+    if g.unitTesting: return
 
+    c = self.c ; e = QtCore.QEvent
+    traceAll = True
     eventType = event.type()
 
     if 0: # Show focus events.
@@ -1273,25 +1280,38 @@ def traceEvent (self,obj,event,tkKey,override):
         )
 
     ignore = (
-        e.ToolTip,
-        e.FocusIn,e.FocusOut,e.Enter,e.Leave,
+        1,16,67,70,
+        e.ChildPolished,
+        e.DeferredDelete,
+        e.DynamicPropertyChange,
+        e.Enter,e.Leave,
+        e.FocusIn,e.FocusOut,
+        e.FontChange,
+        e.Hide,e.HideToParent,
+        e.HoverEnter,e.HoverLeave,e.HoverMove,
+        e.LayoutRequest,
         e.MetaCall,e.Move,e.Paint,e.Resize,
+        e.MouseMove,e.MouseButtonPress,e.MouseButtonRelease,
+        e.PaletteChange,
+        e.ParentChange,
         e.Polish,e.PolishRequest,
+        e.Show,e.ShowToParent,
+        e.StyleChange,
+        e.ToolTip,
+        e.WindowActivate,e.WindowDeactivate,
+        e.WindowBlocked,e.WindowUnblocked,
+        e.ZOrderChange,
     )
 
     for val,kind in show:
         if eventType == val:
             if override:
                 g.trace(
-                    'tag: %s, kind: %s, in-state: %s, key: %s, override: %s' % (
+                    '%5s %18s in-state: %5s key: %s override: %s' % (
                     self.tag,kind,repr(c.k.inState()),tkKey,override))
             return
 
-    # if trace: g.trace(self.tag,
-        # 'bound in state: %s, key: %s, returns: %s' % (
-        # k.getState(),tkKey,ret))
-
-    if False and eventType not in ignore:
+    if traceAll and eventType not in ignore:
         g.trace('%3s:%s' % (eventType,'unknown'))
 #@-node:ekr.20081121105001.179:traceEvent
 #@+node:ekr.20090407080217.1:traceFocus
@@ -1548,6 +1568,8 @@ class leoQtEventFilter(QtCore.QObject):
 #@+node:ekr.20081121105001.180: ctor
 def __init__(self,c,w,tag=''):
 
+    # g.trace('leoQtEventFilter',tag,w)
+
     # Init the base class.
     QtCore.QObject.__init__(self)
 
@@ -1666,14 +1688,15 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = False
-    traceEvent = False
-    traceKey = False
-    traceFocus = True
+    traceEvent = True
+    traceKey = True
+    traceFocus = False
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
     gui = g.app.gui
     aList = []
+
     kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
 
     if trace and traceFocus: self.traceFocus(eventType,obj)
@@ -1871,8 +1894,10 @@ def toTkKey (self,event):
 #@+node:ekr.20081121105001.179:traceEvent
 def traceEvent (self,obj,event,tkKey,override):
 
-    c = self.c ; e = QtCore.QEvent
+    if g.unitTesting: return
 
+    c = self.c ; e = QtCore.QEvent
+    traceAll = True
     eventType = event.type()
 
     if 0: # Show focus events.
@@ -1888,25 +1913,38 @@ def traceEvent (self,obj,event,tkKey,override):
         )
 
     ignore = (
-        e.ToolTip,
-        e.FocusIn,e.FocusOut,e.Enter,e.Leave,
+        1,16,67,70,
+        e.ChildPolished,
+        e.DeferredDelete,
+        e.DynamicPropertyChange,
+        e.Enter,e.Leave,
+        e.FocusIn,e.FocusOut,
+        e.FontChange,
+        e.Hide,e.HideToParent,
+        e.HoverEnter,e.HoverLeave,e.HoverMove,
+        e.LayoutRequest,
         e.MetaCall,e.Move,e.Paint,e.Resize,
+        e.MouseMove,e.MouseButtonPress,e.MouseButtonRelease,
+        e.PaletteChange,
+        e.ParentChange,
         e.Polish,e.PolishRequest,
+        e.Show,e.ShowToParent,
+        e.StyleChange,
+        e.ToolTip,
+        e.WindowActivate,e.WindowDeactivate,
+        e.WindowBlocked,e.WindowUnblocked,
+        e.ZOrderChange,
     )
 
     for val,kind in show:
         if eventType == val:
             if override:
                 g.trace(
-                    'tag: %s, kind: %s, in-state: %s, key: %s, override: %s' % (
+                    '%5s %18s in-state: %5s key: %s override: %s' % (
                     self.tag,kind,repr(c.k.inState()),tkKey,override))
             return
 
-    # if trace: g.trace(self.tag,
-        # 'bound in state: %s, key: %s, returns: %s' % (
-        # k.getState(),tkKey,ret))
-
-    if False and eventType not in ignore:
+    if traceAll and eventType not in ignore:
         g.trace('%3s:%s' % (eventType,'unknown'))
 #@-node:ekr.20081121105001.179:traceEvent
 #@+node:ekr.20090407080217.1:traceFocus
@@ -2483,6 +2521,8 @@ class leoQtEventFilter(QtCore.QObject):
 #@+node:ekr.20081121105001.180: ctor
 def __init__(self,c,w,tag=''):
 
+    # g.trace('leoQtEventFilter',tag,w)
+
     # Init the base class.
     QtCore.QObject.__init__(self)
 
@@ -2601,14 +2641,15 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = False
-    traceEvent = False
-    traceKey = False
-    traceFocus = True
+    traceEvent = True
+    traceKey = True
+    traceFocus = False
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
     gui = g.app.gui
     aList = []
+
     kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
 
     if trace and traceFocus: self.traceFocus(eventType,obj)
@@ -2806,8 +2847,10 @@ def toTkKey (self,event):
 #@+node:ekr.20081121105001.179:traceEvent
 def traceEvent (self,obj,event,tkKey,override):
 
-    c = self.c ; e = QtCore.QEvent
+    if g.unitTesting: return
 
+    c = self.c ; e = QtCore.QEvent
+    traceAll = True
     eventType = event.type()
 
     if 0: # Show focus events.
@@ -2823,25 +2866,38 @@ def traceEvent (self,obj,event,tkKey,override):
         )
 
     ignore = (
-        e.ToolTip,
-        e.FocusIn,e.FocusOut,e.Enter,e.Leave,
+        1,16,67,70,
+        e.ChildPolished,
+        e.DeferredDelete,
+        e.DynamicPropertyChange,
+        e.Enter,e.Leave,
+        e.FocusIn,e.FocusOut,
+        e.FontChange,
+        e.Hide,e.HideToParent,
+        e.HoverEnter,e.HoverLeave,e.HoverMove,
+        e.LayoutRequest,
         e.MetaCall,e.Move,e.Paint,e.Resize,
+        e.MouseMove,e.MouseButtonPress,e.MouseButtonRelease,
+        e.PaletteChange,
+        e.ParentChange,
         e.Polish,e.PolishRequest,
+        e.Show,e.ShowToParent,
+        e.StyleChange,
+        e.ToolTip,
+        e.WindowActivate,e.WindowDeactivate,
+        e.WindowBlocked,e.WindowUnblocked,
+        e.ZOrderChange,
     )
 
     for val,kind in show:
         if eventType == val:
             if override:
                 g.trace(
-                    'tag: %s, kind: %s, in-state: %s, key: %s, override: %s' % (
+                    '%5s %18s in-state: %5s key: %s override: %s' % (
                     self.tag,kind,repr(c.k.inState()),tkKey,override))
             return
 
-    # if trace: g.trace(self.tag,
-        # 'bound in state: %s, key: %s, returns: %s' % (
-        # k.getState(),tkKey,ret))
-
-    if False and eventType not in ignore:
+    if traceAll and eventType not in ignore:
         g.trace('%3s:%s' % (eventType,'unknown'))
 #@-node:ekr.20081121105001.179:traceEvent
 #@+node:ekr.20090407080217.1:traceFocus
@@ -6054,7 +6110,7 @@ def __init__ (self,frame,parentFrame):
 
         # Hook up the QSyntaxHighlighter
         self.colorizer = leoQtColorizer(c,w.widget)
-        w.setAcceptRichText(false)
+        qtWidget.setAcceptRichText(False)
 
     # Config stuff.
     self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
@@ -6076,7 +6132,6 @@ def __init__ (self,frame,parentFrame):
     self.totalNumberOfEditors = 1
 
     if trace: print('qtBody.__init__ %s' % self.widget)
-#@-node:ekr.20081121105001.207: ctor (qtBody)
 #@+node:ekr.20081121105001.208:createBindings (qtBody)
 def createBindings (self,w=None):
 
@@ -6114,6 +6169,7 @@ def getName (self):
 
     return 'body-widget'
 #@-node:ekr.20081121105001.209:get_name
+#@-node:ekr.20081121105001.207: ctor (qtBody)
 #@-node:ekr.20081121105001.206: Birth
 #@+node:ekr.20081121105001.210:Do-nothings
 
@@ -6815,6 +6871,8 @@ class leoQtEventFilter(QtCore.QObject):
 #@+node:ekr.20081121105001.180: ctor
 def __init__(self,c,w,tag=''):
 
+    # g.trace('leoQtEventFilter',tag,w)
+
     # Init the base class.
     QtCore.QObject.__init__(self)
 
@@ -6933,14 +6991,15 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = False
-    traceEvent = False
-    traceKey = False
-    traceFocus = True
+    traceEvent = True
+    traceKey = True
+    traceFocus = False
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
     gui = g.app.gui
     aList = []
+
     kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
 
     if trace and traceFocus: self.traceFocus(eventType,obj)
@@ -7138,8 +7197,10 @@ def toTkKey (self,event):
 #@+node:ekr.20081121105001.179:traceEvent
 def traceEvent (self,obj,event,tkKey,override):
 
-    c = self.c ; e = QtCore.QEvent
+    if g.unitTesting: return
 
+    c = self.c ; e = QtCore.QEvent
+    traceAll = True
     eventType = event.type()
 
     if 0: # Show focus events.
@@ -7155,25 +7216,38 @@ def traceEvent (self,obj,event,tkKey,override):
         )
 
     ignore = (
-        e.ToolTip,
-        e.FocusIn,e.FocusOut,e.Enter,e.Leave,
+        1,16,67,70,
+        e.ChildPolished,
+        e.DeferredDelete,
+        e.DynamicPropertyChange,
+        e.Enter,e.Leave,
+        e.FocusIn,e.FocusOut,
+        e.FontChange,
+        e.Hide,e.HideToParent,
+        e.HoverEnter,e.HoverLeave,e.HoverMove,
+        e.LayoutRequest,
         e.MetaCall,e.Move,e.Paint,e.Resize,
+        e.MouseMove,e.MouseButtonPress,e.MouseButtonRelease,
+        e.PaletteChange,
+        e.ParentChange,
         e.Polish,e.PolishRequest,
+        e.Show,e.ShowToParent,
+        e.StyleChange,
+        e.ToolTip,
+        e.WindowActivate,e.WindowDeactivate,
+        e.WindowBlocked,e.WindowUnblocked,
+        e.ZOrderChange,
     )
 
     for val,kind in show:
         if eventType == val:
             if override:
                 g.trace(
-                    'tag: %s, kind: %s, in-state: %s, key: %s, override: %s' % (
+                    '%5s %18s in-state: %5s key: %s override: %s' % (
                     self.tag,kind,repr(c.k.inState()),tkKey,override))
             return
 
-    # if trace: g.trace(self.tag,
-        # 'bound in state: %s, key: %s, returns: %s' % (
-        # k.getState(),tkKey,ret))
-
-    if False and eventType not in ignore:
+    if traceAll and eventType not in ignore:
         g.trace('%3s:%s' % (eventType,'unknown'))
 #@-node:ekr.20081121105001.179:traceEvent
 #@+node:ekr.20090407080217.1:traceFocus
@@ -7204,14 +7278,15 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = False
-    traceEvent = False
-    traceKey = False
-    traceFocus = True
+    traceEvent = True
+    traceKey = True
+    traceFocus = False
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
     gui = g.app.gui
     aList = []
+
     kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
 
     if trace and traceFocus: self.traceFocus(eventType,obj)
@@ -7918,7 +7993,7 @@ def putnl (self,tabName='Log'):
     if tabName:
         self.selectTab(tabName)
 
-    w = self.logCtrl
+    w = self.logCtrl.widget
     if w:
         sb = w.horizontalScrollBar()
         pos = sb.sliderPosition()
@@ -11026,11 +11101,16 @@ def isTextWidget (self,w):
 
     if not w: return False
 
-    return (
+    val = (
         isinstance(w,leoFrame.baseTextWidget) or
         isinstance(w,leoQtBody) or
+        isinstance(w,leoQtLog) or
         isinstance(w,leoQtBaseTextWidget)
     )
+
+    # g.trace(val,w)
+
+    return val
 
 #@-node:ekr.20081121105001.501:isTextWidget
 #@+node:ekr.20090406111739.14:Style Sheets
@@ -11225,6 +11305,187 @@ def toUnicode (self,s,encoding=None,reportErrors=True):
 #@-node:ekr.20090620113734.3701:Added support for @string qt-default-encoding
 #@-node:ekr.20090124101344.1:4.6 b2 projects
 #@+node:ekr.20090626070207.3713:4.6 rc1 projects
+#@+node:ekr.20090627090950.3714:Bugs
+#@+node:ekr.20090625125729.3709:Fixed exception in configure_tags
+#@+node:ekr.20081121105001.493:qtGui.getFontFromParams
+def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
+
+    try: size = int(size)
+    except Exception: size = 0
+    if size < 1: size = defaultSize
+
+    d = {
+        'black':QtGui.QFont.Black,
+        'bold':QtGui.QFont.Bold,
+        'demibold':QtGui.QFont.DemiBold,
+        'light':QtGui.QFont.Light,
+        'normal':QtGui.QFont.Normal,
+    }
+    weight_val = d.get(weight.lower(),QtGui.QFont.Normal)
+    italic = slant == 'italic'
+
+    if not family:
+        family = g.app.config.defaultFontFamily
+    if not family:
+        family = 'DejaVu Sans Mono'
+
+    try:
+        font = QtGui.QFont(family,size,weight_val,italic)
+        # g.trace(family,size,slant,weight,'returns',font)
+        return font
+    except:
+        g.es("exception setting font",g.callers(4))
+        g.es("","family,size,slant,weight:","",family,"",size,"",slant,"",weight)
+        # g.es_exception() # This just confuses people.
+        return g.app.config.defaultFont
+#@-node:ekr.20081121105001.493:qtGui.getFontFromParams
+#@+node:ekr.20090614134853.3703:configure_tags
+def configure_tags (self):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; w = self.w
+
+    if trace: g.trace(g.callers(4))
+
+    if w and hasattr(w,'start_tag_configure'):
+        w.start_tag_configure()
+
+    # Get the default body font.
+    defaultBodyfont = self.fonts.get('default_body_font')
+    if not defaultBodyfont:
+        defaultBodyfont = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant",  "body_text_font_weight",
+            c.config.defaultBodyFontSize)
+        self.fonts['default_body_font'] = defaultBodyfont
+
+    # Configure fonts.
+    keys = self.default_font_dict.keys() ; keys.sort()
+    for key in keys:
+        option_name = self.default_font_dict[key]
+        # First, look for the language-specific setting, then the general setting.
+        for name in ('%s_%s' % (self.colorizer.language,option_name),(option_name)):
+            font = self.fonts.get(name)
+            if font:
+                if trace and verbose: g.trace('found',name,id(font))
+                w.tag_config(key,font=font)
+                break
+            else:
+                family = c.config.get(name + '_family','family')
+                size   = c.config.get(name + '_size',  'size')   
+                slant  = c.config.get(name + '_slant', 'slant')
+                weight = c.config.get(name + '_weight','weight')
+                if family or slant or weight or size:
+                    family = family or g.app.config.defaultFontFamily
+                    size   = size or c.config.defaultBodyFontSize
+                    slant  = slant or 'roman'
+                    weight = weight or 'normal'
+                    font = g.app.gui.getFontFromParams(family,size,slant,weight)
+                    # Save a reference to the font so it 'sticks'.
+                    self.fonts[name] = font 
+                    if trace and verbose: g.trace(key,name,family,size,slant,weight,id(font))
+                    w.tag_config(key,font=font)
+                    break
+        else: # Neither the general setting nor the language-specific setting exists.
+            if self.fonts.keys(): # Restore the default font.
+                if trace and verbose: g.trace('default',key)
+                w.tag_config(key,font=defaultBodyfont)
+
+    keys = self.default_colors_dict.keys() ; keys.sort()
+    for name in keys:
+        option_name,default_color = self.default_colors_dict[name]
+        color = (
+            c.config.getColor('%s_%s' % (self.colorizer.language,option_name)) or
+            c.config.getColor(option_name) or
+            default_color
+        )
+        if trace and verbose: g.trace(option_name,color)
+
+        # Must use foreground, not fg.
+        try:
+            w.tag_configure(name, foreground=color)
+        except: # Recover after a user error.
+            g.es_exception()
+            w.tag_configure(name, foreground=default_color)
+
+    # underline=var doesn't seem to work.
+    if 0: # self.use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
+        w.tag_configure("link",underline=1) # defined
+        w.tag_configure("name",underline=0) # undefined
+    else:
+        w.tag_configure("link",underline=0)
+        if self.underline_undefined:
+            w.tag_configure("name",underline=1)
+        else:
+            w.tag_configure("name",underline=0)
+
+    self.configure_variable_tags()
+
+    # Colors for latex characters.  Should be user options...
+
+    if 1: # Alas, the selection doesn't show if a background color is specified.
+        w.tag_configure("latexModeBackground",foreground="black")
+        w.tag_configure("latexModeKeyword",foreground="blue")
+        w.tag_configure("latexBackground",foreground="black")
+        w.tag_configure("latexKeyword",foreground="blue")
+    else: # Looks cool, and good for debugging.
+        w.tag_configure("latexModeBackground",foreground="black",background="seashell1")
+        w.tag_configure("latexModeKeyword",foreground="blue",background="seashell1")
+        w.tag_configure("latexBackground",foreground="black",background="white")
+        w.tag_configure("latexKeyword",foreground="blue",background="white")
+
+    # Tags for wiki coloring.
+    w.tag_configure("bold",font=self.bold_font)
+    w.tag_configure("italic",font=self.italic_font)
+    w.tag_configure("bolditalic",font=self.bolditalic_font)
+    for name in self.color_tags_list:
+        w.tag_configure(name,foreground=name)
+
+    try:
+        w.end_tag_configure()
+    except AttributeError:
+        pass
+#@-node:ekr.20090614134853.3703:configure_tags
+#@-node:ekr.20090625125729.3709:Fixed exception in configure_tags
+#@+node:ekr.20090626131328.3711:Fixed unicode error with spell checking
+#@+node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
+def setAllText(self,s,insert=None):
+
+    '''Set the text of the widget.
+
+    If insert is None, the insert point, selection range and scrollbars are initied.
+    Otherwise, the scrollbars are preserved.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c,w = self.c,self.widget
+    colorizer = c.frame.body.colorizer
+    highlighter = colorizer.highlighter
+    colorer = highlighter.colorer
+
+    # Set a hook for the colorer.
+    colorer.initFlag = True
+
+    sb = w.verticalScrollBar()
+    if insert is None: i,pos = 0,0
+    else: i,pos = insert,sb.sliderPosition()
+
+    if trace: g.trace(id(w),len(s),c.p.h)
+    if trace and verbose: t1 = g.getTime()
+    try:
+        self.changingText = True # Disable onTextChanged
+        w.setPlainText(s)
+    finally:
+        self.changingText = False
+    if trace and verbose: g.trace(g.timeSince(t1))
+
+    self.setSelectionRange(i,i,insert=i)
+    sb.setSliderPosition(pos)
+#@nonl
+#@-node:ekr.20081121105001.587:setAllText (leoQTextEditWidget)
+#@-node:ekr.20090626131328.3711:Fixed unicode error with spell checking
+#@-node:ekr.20090627090950.3714:Bugs
 #@+node:ekr.20090614134853.3635:New syntax coloring
 @nocolor-node
 
@@ -14043,148 +14304,6 @@ def setTag (self,tag,s,i,j):
     self.highlighter.setFormat(i,j-i,color)
 #@-node:ekr.20090614134853.3813:setTag
 #@-node:ekr.20090614134853.3635:New syntax coloring
-#@+node:ekr.20090625125729.3709:Fixed exception in configure_tags
-#@+node:ekr.20081121105001.493:qtGui.getFontFromParams
-def getFontFromParams(self,family,size,slant,weight,defaultSize=12):
-
-    try: size = int(size)
-    except Exception: size = 0
-    if size < 1: size = defaultSize
-
-    d = {
-        'black':QtGui.QFont.Black,
-        'bold':QtGui.QFont.Bold,
-        'demibold':QtGui.QFont.DemiBold,
-        'light':QtGui.QFont.Light,
-        'normal':QtGui.QFont.Normal,
-    }
-    weight_val = d.get(weight.lower(),QtGui.QFont.Normal)
-    italic = slant == 'italic'
-
-    if not family:
-        family = g.app.config.defaultFontFamily
-    if not family:
-        family = 'DejaVu Sans Mono'
-
-    try:
-        font = QtGui.QFont(family,size,weight_val,italic)
-        # g.trace(family,size,slant,weight,'returns',font)
-        return font
-    except:
-        g.es("exception setting font",g.callers(4))
-        g.es("","family,size,slant,weight:","",family,"",size,"",slant,"",weight)
-        # g.es_exception() # This just confuses people.
-        return g.app.config.defaultFont
-#@-node:ekr.20081121105001.493:qtGui.getFontFromParams
-#@+node:ekr.20090614134853.3703:configure_tags
-def configure_tags (self):
-
-    trace = False and not g.unitTesting
-    verbose = False
-    c = self.c ; w = self.w
-
-    if trace: g.trace(g.callers(4))
-
-    if w and hasattr(w,'start_tag_configure'):
-        w.start_tag_configure()
-
-    # Get the default body font.
-    defaultBodyfont = self.fonts.get('default_body_font')
-    if not defaultBodyfont:
-        defaultBodyfont = c.config.getFontFromParams(
-            "body_text_font_family", "body_text_font_size",
-            "body_text_font_slant",  "body_text_font_weight",
-            c.config.defaultBodyFontSize)
-        self.fonts['default_body_font'] = defaultBodyfont
-
-    # Configure fonts.
-    keys = self.default_font_dict.keys() ; keys.sort()
-    for key in keys:
-        option_name = self.default_font_dict[key]
-        # First, look for the language-specific setting, then the general setting.
-        for name in ('%s_%s' % (self.colorizer.language,option_name),(option_name)):
-            font = self.fonts.get(name)
-            if font:
-                if trace and verbose: g.trace('found',name,id(font))
-                w.tag_config(key,font=font)
-                break
-            else:
-                family = c.config.get(name + '_family','family')
-                size   = c.config.get(name + '_size',  'size')   
-                slant  = c.config.get(name + '_slant', 'slant')
-                weight = c.config.get(name + '_weight','weight')
-                if family or slant or weight or size:
-                    family = family or g.app.config.defaultFontFamily
-                    size   = size or c.config.defaultBodyFontSize
-                    slant  = slant or 'roman'
-                    weight = weight or 'normal'
-                    font = g.app.gui.getFontFromParams(family,size,slant,weight)
-                    # Save a reference to the font so it 'sticks'.
-                    self.fonts[name] = font 
-                    if trace and verbose: g.trace(key,name,family,size,slant,weight,id(font))
-                    w.tag_config(key,font=font)
-                    break
-        else: # Neither the general setting nor the language-specific setting exists.
-            if self.fonts.keys(): # Restore the default font.
-                if trace and verbose: g.trace('default',key)
-                w.tag_config(key,font=defaultBodyfont)
-
-    keys = self.default_colors_dict.keys() ; keys.sort()
-    for name in keys:
-        option_name,default_color = self.default_colors_dict[name]
-        color = (
-            c.config.getColor('%s_%s' % (self.colorizer.language,option_name)) or
-            c.config.getColor(option_name) or
-            default_color
-        )
-        if trace and verbose: g.trace(option_name,color)
-
-        # Must use foreground, not fg.
-        try:
-            w.tag_configure(name, foreground=color)
-        except: # Recover after a user error.
-            g.es_exception()
-            w.tag_configure(name, foreground=default_color)
-
-    # underline=var doesn't seem to work.
-    if 0: # self.use_hyperlinks: # Use the same coloring, even when hyperlinks are in effect.
-        w.tag_configure("link",underline=1) # defined
-        w.tag_configure("name",underline=0) # undefined
-    else:
-        w.tag_configure("link",underline=0)
-        if self.underline_undefined:
-            w.tag_configure("name",underline=1)
-        else:
-            w.tag_configure("name",underline=0)
-
-    self.configure_variable_tags()
-
-    # Colors for latex characters.  Should be user options...
-
-    if 1: # Alas, the selection doesn't show if a background color is specified.
-        w.tag_configure("latexModeBackground",foreground="black")
-        w.tag_configure("latexModeKeyword",foreground="blue")
-        w.tag_configure("latexBackground",foreground="black")
-        w.tag_configure("latexKeyword",foreground="blue")
-    else: # Looks cool, and good for debugging.
-        w.tag_configure("latexModeBackground",foreground="black",background="seashell1")
-        w.tag_configure("latexModeKeyword",foreground="blue",background="seashell1")
-        w.tag_configure("latexBackground",foreground="black",background="white")
-        w.tag_configure("latexKeyword",foreground="blue",background="white")
-
-    # Tags for wiki coloring.
-    w.tag_configure("bold",font=self.bold_font)
-    w.tag_configure("italic",font=self.italic_font)
-    w.tag_configure("bolditalic",font=self.bolditalic_font)
-    for name in self.color_tags_list:
-        w.tag_configure(name,foreground=name)
-
-    try:
-        w.end_tag_configure()
-    except AttributeError:
-        pass
-#@-node:ekr.20090614134853.3703:configure_tags
-#@-node:ekr.20090625125729.3709:Fixed exception in configure_tags
 #@-node:ekr.20090626070207.3713:4.6 rc1 projects
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20090614134853.3814:restart (NO LONGER USED)
