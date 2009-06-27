@@ -2146,7 +2146,7 @@ def init_trace(args,echo=1):
         else:
             g.pr("ignoring:", prefix + arg)
 #@-node:ekr.20031218072017.3132:init_trace
-#@+node:ekr.20031218072017.2317:g.trace
+#@+node:ekr.20031218072017.2317:g.trace (revised)
 # Convert all args to strings.
 
 def trace (*args,**keys):
@@ -2189,13 +2189,12 @@ def trace (*args,**keys):
         else:
             result.append(arg)
     s = ''.join(result)
-    try:
-        g.pr('%s: %s' % (name,s),newline=newline)
-    except Exception:
-        s = g.toEncodedString(s,'ascii')
-        g.pr('%s: %s' % (name,s),newline=newline)
 
-#@-node:ekr.20031218072017.2317:g.trace
+    # Not valid syntax in Python 3.x.
+    # print s,
+    # if newline: print
+    g.pr(s,newline=newline)
+#@-node:ekr.20031218072017.2317:g.trace (revised)
 #@+node:ekr.20031218072017.2318:trace_tag
 # Convert all args to strings.
 # Print if tracing for name has been enabled.
@@ -3848,6 +3847,7 @@ def pr(*args,**keys):
     s = g.translateArgs(args,d) # Translates everything to unicode.
 
     try: # We can't use any print keyword args in Python 2.x!
+        s = g.toEncodedString(s,sys.stdout.encoding)
         if d.get('newline'):
             sys.stdout.write(s+'\n')
         else:
@@ -3874,6 +3874,8 @@ def translateArgs(args,d):
     result = [] ; n = 0 ; spaces = d.get('spaces')
     for arg in args:
         n += 1
+
+        # print('g.translateArgs: arg',arg,type(arg),g.isString(arg),'will trans',(n%2)==1)
 
         # First, convert to unicode.
         if type(arg) == type('a'):

@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -339,7 +339,9 @@
 <v t="ekr.20090625082029.1775"><vh>strings</vh></v>
 <v t="ekr.20090623120149.1773"><vh>@button print-sep</vh></v>
 </v>
-<v t="ekr.20090626100758.1777"><vh>Undo test</vh></v>
+<v t="ekr.20090626132849.1779"><vh>g.consoleEncoding</vh></v>
+<v t="ekr.20090626125154.1779"><vh>Spelling with unicode</vh></v>
+<v t="ekr.20090626134248.1781"><vh>Selling with unicode, short</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2692,15 +2694,20 @@ match_at_color is with comment color, while match_at_killcolor is ok (black).</t
 <t tx="ekr.20090625082029.1775">'''abc'''
 
 abc</t>
-<t tx="ekr.20090626100758.1777">This is a regular line, repeated.
-This is a regular line, repeated.
-This is a regular line, repeated.
-This is a regular line, repeated.
-This is a regular line, repeated.
-This is a regular line, repeated.
-This is a regular line, repeated.
-This is a regular line, repeated.
-This is a regular line, repeated.
-</t>
+<t tx="ekr.20090626125154.1779">@first # -*- coding: utf-8 -*-
+
+print '-' * 10
+print type('relevé'),'relevé'
+print type(u'relevé'),u'relevé'
+print c.frame.body.getAllText()</t>
+<t tx="ekr.20090626132849.1779">@first # -*- coding: utf-8 -*-
+
+print g.consoleEncoding</t>
+<t tx="ekr.20090626134248.1781">@first # -*- coding: utf-8 -*-
+# relevé
+print '=' * 20
+print c.frame.body.bodyCtrl.getAllText()
+print '*' * 20
+g.trace(c.frame.body.bodyCtrl.getAllText())</t>
 </tnodes>
 </leo_file>

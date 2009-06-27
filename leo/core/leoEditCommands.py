@@ -8487,7 +8487,8 @@ class spellTabHandler (leoFind.leoFind):
     def findNextWord(self,p):
         """Scan for the next word, leaving the result in the work widget"""
 
-        c = self.c ; p = p.copy() ; trace = False
+        trace = False and not g.unitTesting
+        c = self.c ; p = p.copy()
         while 1:
             s = self.workCtrl.getAllText()
             i = self.workCtrl.getInsertPoint()
@@ -8713,7 +8714,7 @@ class AspellClass:
             g.es_print(message,color='blue')
     #@-node:ekr.20071111153009:report
     #@-node:ekr.20051025071455.7:Birth & death
-    #@+node:ekr.20051025071455.10:processWord
+    #@+node:ekr.20051025071455.10:processWord AspellClass
     def processWord(self, word):
         """Pass a word to aspell and return the list of alternatives.
         OK: 
@@ -8731,6 +8732,8 @@ class AspellClass:
             g.trace('aspell not installed')
             return None
         elif ctypes:
+            # g.trace(type(word),word)
+            word = g.toEncodedString(word,'utf-8')
             if self.check(self.spell_checker,word,len(word)):
                 return None
             else:
@@ -8740,7 +8743,7 @@ class AspellClass:
                 return None
             else:
                 return self.sc.suggest(word)
-    #@-node:ekr.20051025071455.10:processWord
+    #@-node:ekr.20051025071455.10:processWord AspellClass
     #@+node:ekr.20061018101455.4:suggestions
     def suggestions(self,word):
 
