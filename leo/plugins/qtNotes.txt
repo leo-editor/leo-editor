@@ -3,32 +3,8 @@
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20090430102239.13:To do before 4.6 rc1
-#@+node:ekr.20090601163620.3758:Fix latest reported minor bugs
-@nocolor-node
-
-- (won't fix) the only way to expand a node is to click on the + symbol.
-  clicking adjacent to the heading name does not trigger selections rather than
-  expansion
-
-- toggle-active-pane does not work
-#@nonl
-#@-node:ekr.20090601163620.3758:Fix latest reported minor bugs
-#@+node:ekr.20090530055308.3791:Remember pane split ratio
-@nocolor-node
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/bc730708fa389bd7
-
-I have
-
-@string initial_split_orientation = horizontal
-@ratio initial_horizontal_ratio = 0.2
-@ratio initial_horizontal_secondary_ratio = 0.8
-
-in myLeoSettings.leo.  However, whenever I start Leo, it is split 50/50.
-
-What's the settings (for Qt) to fix this?  Can we? 
-#@nonl
-#@-node:ekr.20090530055308.3791:Remember pane split ratio
+#@+node:ekr.20090601163620.3758:Fix toggle-active-pane
+#@-node:ekr.20090601163620.3758:Fix toggle-active-pane
 #@+node:ekr.20090128083504.1:Fix rclick
 @nocolor-node
 
@@ -5002,11 +4978,7 @@ def finishCreate (self,c):
     f.top.setWindowTitle(self.title)
     f.top.show()
 
-    # This must be done after creating the commander.
-    f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
-    # # f.createOuterFrames()
     f.createIconBar() # A base class method.
-    # # f.createLeoSplitters(f.outerFrame)
     f.createSplitterComponents()
     f.createStatusLine() # A base class method.
     f.createFirstTreeNode() # Call the base-class method.
@@ -5029,35 +5001,8 @@ def createSplitterComponents (self):
     if f.use_chapters:
         c.chapterController = cc = leoChapters.chapterController(c)
 
-    # # Create the canvas, tree, log and body.
-    # if f.use_chapters:
-        # c.chapterController = cc = leoChapters.chapterController(c)
-
-    # # split1.pane1 is the secondary splitter.
-
-    # if self.bigTree: # Put outline in the main splitter.
-        # if self.use_chapters and self.use_chapter_tabs:
-            # cc.tt = leoQtTreeTab(c,f.split1Pane2,cc)
-        # f.canvas = f.createCanvas(f.split1Pane1)
-        # f.tree  = leoQtTree(c,f,f.canvas)
-        # f.log   = leoQtLog(f,f.split2Pane2)
-        # f.body  = leoQtBody(f,f.split2Pane1)
-    # else:
-        # if self.use_chapters and self.use_chapter_tabs:
-            # cc.tt = leoQtTreeTab(c,f.split2Pane1,cc)
-        # f.canvas = f.createCanvas(f.split2Pane1)
-        # f.tree   = leoQtTree(c,f,f.canvas)
-        # f.log    = leoQtLog(f,f.split2Pane2)
-        # f.body   = leoQtBody(f,f.split1Pane2)
-
-    # # Yes, this an "official" ivar: this is a kludge.
-    # # f.bodyCtrl = f.body.bodyCtrl
-
-    # # Configure.
-    # f.setTabWidth(c.tab_width)
-    # f.reconfigurePanes()
-    # f.body.setFontFromConfig()
-    # f.body.setColorFromConfig()
+    f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
+    f.resizePanesToRatio(f.ratio,f.secondary_ratio)
 #@-node:ekr.20081121105001.255:createSplitterComponents (qtFrame)
 #@-node:ekr.20081121105001.254:qtFrame.finishCreate & helpers
 #@+node:ekr.20081121105001.256:initCompleteHint
@@ -5535,28 +5480,32 @@ def setWrap (self,p):
         # w.leo_bodyXBar.pack(side="bottom", fill="x") # 2007/10/31
         # w.pack(expand=1,fill="both")  # 2007/10/25
 #@-node:ekr.20081121105001.285:setWrap (qtFrame)
-#@+node:ekr.20081121105001.286:reconfigurePanes (use config bar_width) (qtFrame)
+#@+node:ekr.20081121105001.286:reconfigurePanes (qtFrame)
 def reconfigurePanes (self):
 
-    return
+    f = self ; c = f.c
 
-    # c = self.c
+    if f.splitVerticalFlag:
+        r = c.config.getRatio("initial_vertical_ratio")
+        if r == None or r < 0.0 or r > 1.0: r = 0.5
+        r2 = c.config.getRatio("initial_vertical_secondary_ratio")
+        if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
+    else:
+        r = c.config.getRatio("initial_horizontal_ratio")
+        if r == None or r < 0.0 or r > 1.0: r = 0.3
+        r2 = c.config.getRatio("initial_horizontal_secondary_ratio")
+        if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
 
-    # border = c.config.getInt('additional_body_text_border')
-    # if border == None: border = 0
-
-    # # The body pane needs a _much_ bigger border when tiling horizontally.
-    # border = g.choose(self.splitVerticalFlag,2+border,6+border)
-    # self.body.bodyCtrl.configure(bd=border) # 2007/10/25
-
-    # # The log pane needs a slightly bigger border when tiling vertically.
-    # border = g.choose(self.splitVerticalFlag,4,2) 
-    # self.log.configureBorder(border)
-#@-node:ekr.20081121105001.286:reconfigurePanes (use config bar_width) (qtFrame)
+    f.ratio,f.secondary_ratio = r,r2
+    f.resizePanesToRatio(r,r2)
+#@-node:ekr.20081121105001.286:reconfigurePanes (qtFrame)
 #@+node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
 def resizePanesToRatio(self,ratio,ratio2):
 
-    #g.trace(ratio,ratio2,g.callers())
+    trace = False and not g.unitTesting
+
+    if trace: g.trace('%5s, %0.2f %0.2f' % (
+        self.splitVerticalFlag,ratio,ratio2),g.callers(4))
 
     self.divideLeoSplitter(self.splitVerticalFlag,ratio)
     self.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
@@ -5564,6 +5513,8 @@ def resizePanesToRatio(self,ratio,ratio2):
 #@+node:leohag.20081208130321.12:divideLeoSplitter
 # Divides the main or secondary splitter, using the key invariant.
 def divideLeoSplitter (self, verticalFlag, frac):
+
+    # g.trace(verticalFlag,frac)
 
     if self.splitVerticalFlag == verticalFlag:
         self.divideLeoSplitter1(frac,verticalFlag)
@@ -5585,7 +5536,7 @@ def divideLeoSplitter2 (self, frac, verticalFlag):
 # This is the general-purpose placer for splitters.
 # It is the only general-purpose splitter code in Leo.
 
-def divideAnySplitter (self, frac, splitter ):#verticalFlag, bar, pane1, pane2):
+def divideAnySplitter (self,frac,splitter):
 
     sizes = splitter.sizes()
 
@@ -5601,21 +5552,6 @@ def divideAnySplitter (self, frac, splitter ):#verticalFlag, bar, pane1, pane2):
     s2 = s - s1 
 
     splitter.setSizes([s1,s2])
-
-@
-    # if self.bigTree:
-        # pane1,pane2 = pane2,pane1
-
-    if verticalFlag:
-        # Panes arranged vertically; horizontal splitter bar
-        bar.place(rely=frac)
-        pane1.place(relheight=frac)
-        pane2.place(relheight=1-frac)
-    else:
-        # Panes arranged horizontally; vertical splitter bar
-        bar.place(relx=frac)
-        pane1.place(relwidth=frac)
-        pane2.place(relwidth=1-frac)
 #@-node:leohag.20081208130321.13:divideAnySplitter
 #@-node:ekr.20081121105001.279:Configuration (qtFrame)
 #@+node:ekr.20081121105001.288:Event handlers (qtFrame)
@@ -5945,41 +5881,22 @@ def minimize(self,frame):
         # frame.top.iconify()
 #@-node:ekr.20081121105001.309:minimizeAll
 #@+node:ekr.20081121105001.310:toggleSplitDirection (qtFrame)
-# The key invariant: self.splitVerticalFlag tells the alignment of the main splitter.
-
 def toggleSplitDirection (self,event=None):
 
     '''Toggle the split direction in the present Leo window.'''
 
-    frame = self ; top = frame.top
+    f = self ; top = f.top
 
     for w in (top.splitter,top.splitter_2):
         w.setOrientation(
             g.choose(w.orientation() == QtCore.Qt.Horizontal,
                 QtCore.Qt.Vertical,QtCore.Qt.Horizontal))
-#@nonl
-#@+node:ekr.20081121105001.311:toggleQtSplitDirection
-def toggleQtSplitDirection (self,verticalFlag):
 
-    # Abbreviations.
-    frame = self
-    # bar1 = self.bar1 ; bar2 = self.bar2
-    # split1Pane1,split1Pane2 = self.split1Pane1,self.split1Pane2
-    # split2Pane1,split2Pane2 = self.split2Pane1,self.split2Pane2
-    # # Reconfigure the bars.
-    # bar1.place_forget()
-    # bar2.place_forget()
-    # self.configureBar(bar1,verticalFlag)
-    # self.configureBar(bar2,not verticalFlag)
-    # # Make the initial placements again.
-    # self.placeSplitter(bar1,split1Pane1,split1Pane2,verticalFlag)
-    # self.placeSplitter(bar2,split2Pane1,split2Pane2,not verticalFlag)
-    # # Adjust the log and body panes to give more room around the bars.
-    # self.reconfigurePanes()
-    # # Redraw with an appropriate ratio.
-    # vflag,ratio,secondary_ratio = frame.initialRatios()
-    # self.resizePanesToRatio(ratio,secondary_ratio)
-#@-node:ekr.20081121105001.311:toggleQtSplitDirection
+    # The key invariant: self.splitVerticalFlag
+    # tells the alignment of the main splitter.
+    f.splitVerticalFlag = not f.splitVerticalFlag
+    f.reconfigurePanes()
+#@nonl
 #@-node:ekr.20081121105001.310:toggleSplitDirection (qtFrame)
 #@+node:ekr.20081121105001.312:resizeToScreen
 def resizeToScreen (self,event=None):
@@ -11747,6 +11664,290 @@ def setWidgetColor (self,w,widgetKind,selector,colorName):
             colorName,widgetKind),color='blue')
 #@-node:ekr.20090406111739.12:setWidgetColor (qtGui)
 #@-node:ekr.20090628104044.3807:Support button colors
+#@+node:ekr.20090530055308.3791:Honor pane split ratio
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bc730708fa389bd7
+
+I have
+
+@string initial_split_orientation = horizontal
+@ratio initial_horizontal_ratio = 0.2
+@ratio initial_horizontal_secondary_ratio = 0.8
+
+in myLeoSettings.leo.  However, whenever I start Leo, it is split 50/50.
+
+What's the settings (for Qt) to fix this?  Can we? 
+#@nonl
+#@+node:ekr.20081121105001.310:toggleSplitDirection (qtFrame)
+def toggleSplitDirection (self,event=None):
+
+    '''Toggle the split direction in the present Leo window.'''
+
+    f = self ; top = f.top
+
+    for w in (top.splitter,top.splitter_2):
+        w.setOrientation(
+            g.choose(w.orientation() == QtCore.Qt.Horizontal,
+                QtCore.Qt.Vertical,QtCore.Qt.Horizontal))
+
+    # The key invariant: self.splitVerticalFlag
+    # tells the alignment of the main splitter.
+    f.splitVerticalFlag = not f.splitVerticalFlag
+    f.reconfigurePanes()
+#@nonl
+#@-node:ekr.20081121105001.310:toggleSplitDirection (qtFrame)
+#@+node:ekr.20081121105001.254:qtFrame.finishCreate & helpers
+def finishCreate (self,c):
+
+    f = self ; f.c = c
+
+    # g.trace('***qtFrame')
+
+    self.bigTree           = c.config.getBool('big_outline_pane')
+    self.trace_status_line = c.config.getBool('trace_status_line')
+    self.use_chapters      = c.config.getBool('use_chapters')
+    self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
+
+    f.top = DynamicWindow(c)
+    g.app.gui.attachLeoIcon(f.top)
+    f.top.setWindowTitle(self.title)
+    f.top.show()
+
+    f.createIconBar() # A base class method.
+    f.createSplitterComponents()
+    f.createStatusLine() # A base class method.
+    f.createFirstTreeNode() # Call the base-class method.
+    f.menu = leoQtMenu(f)
+    c.setLog()
+    g.app.windowList.append(f)
+    c.initVersion()
+    c.signOnWithVersion()
+    f.miniBufferWidget = leoQtMinibuffer(c)
+    c.bodyWantsFocusNow()
+#@+node:ekr.20081121105001.255:createSplitterComponents (qtFrame)
+def createSplitterComponents (self):
+
+    f = self ; c = f.c
+
+    f.tree  = leoQtTree(c,f)
+    f.log   = leoQtLog(f,None)
+    f.body  = leoQtBody(f,None)
+
+    if f.use_chapters:
+        c.chapterController = cc = leoChapters.chapterController(c)
+
+    f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
+    f.resizePanesToRatio(f.ratio,f.secondary_ratio)
+#@-node:ekr.20081121105001.255:createSplitterComponents (qtFrame)
+#@-node:ekr.20081121105001.254:qtFrame.finishCreate & helpers
+#@+node:ekr.20081121105001.279:Configuration (qtFrame)
+#@+node:ekr.20081121105001.280:configureBar (qtFrame)
+def configureBar (self,bar,verticalFlag):
+
+    c = self.c
+
+    # Get configuration settings.
+    w = c.config.getInt("split_bar_width")
+    if not w or w < 1: w = 7
+    relief = c.config.get("split_bar_relief","relief")
+    if not relief: relief = "flat"
+    color = c.config.getColor("split_bar_color")
+    if not color: color = "LightSteelBlue2"
+
+    try:
+        if verticalFlag:
+            # Panes arranged vertically; horizontal splitter bar
+            bar.configure(relief=relief,height=w,bg=color,cursor="sb_v_double_arrow")
+        else:
+            # Panes arranged horizontally; vertical splitter bar
+            bar.configure(relief=relief,width=w,bg=color,cursor="sb_h_double_arrow")
+    except: # Could be a user error. Use all defaults
+        g.es("exception in user configuration for splitbar")
+        g.es_exception()
+        if verticalFlag:
+            # Panes arranged vertically; horizontal splitter bar
+            bar.configure(height=7,cursor="sb_v_double_arrow")
+        else:
+            # Panes arranged horizontally; vertical splitter bar
+            bar.configure(width=7,cursor="sb_h_double_arrow")
+#@-node:ekr.20081121105001.280:configureBar (qtFrame)
+#@+node:ekr.20081121105001.281:configureBarsFromConfig (qtFrame)
+def configureBarsFromConfig (self):
+
+    c = self.c
+
+    w = c.config.getInt("split_bar_width")
+    if not w or w < 1: w = 7
+
+    relief = c.config.get("split_bar_relief","relief")
+    if not relief or relief == "": relief = "flat"
+
+    color = c.config.getColor("split_bar_color")
+    if not color or color == "": color = "LightSteelBlue2"
+
+    if self.splitVerticalFlag:
+        bar1,bar2=self.bar1,self.bar2
+    else:
+        bar1,bar2=self.bar2,self.bar1
+
+    try:
+        bar1.configure(relief=relief,height=w,bg=color)
+        bar2.configure(relief=relief,width=w,bg=color)
+    except: # Could be a user error.
+        g.es("exception in user configuration for splitbar")
+        g.es_exception()
+#@-node:ekr.20081121105001.281:configureBarsFromConfig (qtFrame)
+#@+node:ekr.20081121105001.282:reconfigureFromConfig (qtFrame)
+def reconfigureFromConfig (self):
+
+    frame = self ; c = frame.c
+
+    frame.tree.setFontFromConfig()
+    frame.configureBarsFromConfig()
+
+    frame.body.setFontFromConfig()
+    frame.body.setColorFromConfig()
+
+    frame.setTabWidth(c.tab_width)
+    frame.log.setFontFromConfig()
+    frame.log.setColorFromConfig()
+
+    c.redraw()
+#@-node:ekr.20081121105001.282:reconfigureFromConfig (qtFrame)
+#@+node:ekr.20081121105001.283:setInitialWindowGeometry (qtFrame)
+def setInitialWindowGeometry(self):
+
+    """Set the position and size of the frame to config params."""
+
+    c = self.c
+
+    h = c.config.getInt("initial_window_height") or 500
+    w = c.config.getInt("initial_window_width") or 600
+    x = c.config.getInt("initial_window_left") or 10
+    y = c.config.getInt("initial_window_top") or 10
+
+    if h and w and x and y:
+        self.setTopGeometry(w,h,x,y)
+#@-node:ekr.20081121105001.283:setInitialWindowGeometry (qtFrame)
+#@+node:ekr.20081121105001.284:setTabWidth (qtFrame)
+def setTabWidth (self, w):
+
+    return
+
+    # try: # This can fail when called from scripts
+        # # Use the present font for computations.
+        # font = self.body.bodyCtrl.cget("font") # 2007/10/27
+        # root = g.app.root # 4/3/03: must specify root so idle window will work properly.
+        # font = tkFont.Font(root=root,font=font)
+        # tabw = font.measure(" " * abs(w)) # 7/2/02
+        # self.body.bodyCtrl.configure(tabs=tabw)
+        # self.tab_width = w
+        # # g.trace(w,tabw)
+    # except:
+        # g.es_exception()
+#@-node:ekr.20081121105001.284:setTabWidth (qtFrame)
+#@+node:ekr.20081121105001.285:setWrap (qtFrame)
+def setWrap (self,p):
+
+    c = self.c
+    theDict = c.scanAllDirectives(p)
+    if not theDict: return
+
+    return
+
+    # wrap = theDict.get("wrap")
+    # if self.body.wrapState == wrap: return
+
+    # self.body.wrapState = wrap
+    # w = self.body.bodyCtrl
+
+    # # g.trace(wrap)
+    # if wrap:
+        # w.configure(wrap="word") # 2007/10/25
+        # w.leo_bodyXBar.pack_forget() # 2007/10/31
+    # else:
+        # w.configure(wrap="none")
+        # # Bug fix: 3/10/05: We must unpack the text area to make the scrollbar visible.
+        # w.pack_forget()  # 2007/10/25
+        # w.leo_bodyXBar.pack(side="bottom", fill="x") # 2007/10/31
+        # w.pack(expand=1,fill="both")  # 2007/10/25
+#@-node:ekr.20081121105001.285:setWrap (qtFrame)
+#@+node:ekr.20081121105001.286:reconfigurePanes (qtFrame)
+def reconfigurePanes (self):
+
+    f = self ; c = f.c
+
+    if f.splitVerticalFlag:
+        r = c.config.getRatio("initial_vertical_ratio")
+        if r == None or r < 0.0 or r > 1.0: r = 0.5
+        r2 = c.config.getRatio("initial_vertical_secondary_ratio")
+        if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
+    else:
+        r = c.config.getRatio("initial_horizontal_ratio")
+        if r == None or r < 0.0 or r > 1.0: r = 0.3
+        r2 = c.config.getRatio("initial_horizontal_secondary_ratio")
+        if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
+
+    f.ratio,f.secondary_ratio = r,r2
+    f.resizePanesToRatio(r,r2)
+#@-node:ekr.20081121105001.286:reconfigurePanes (qtFrame)
+#@+node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
+def resizePanesToRatio(self,ratio,ratio2):
+
+    trace = False and not g.unitTesting
+
+    if trace: g.trace('%5s, %0.2f %0.2f' % (
+        self.splitVerticalFlag,ratio,ratio2),g.callers(4))
+
+    self.divideLeoSplitter(self.splitVerticalFlag,ratio)
+    self.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
+#@-node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
+#@+node:leohag.20081208130321.12:divideLeoSplitter
+# Divides the main or secondary splitter, using the key invariant.
+def divideLeoSplitter (self, verticalFlag, frac):
+
+    # g.trace(verticalFlag,frac)
+
+    if self.splitVerticalFlag == verticalFlag:
+        self.divideLeoSplitter1(frac,verticalFlag)
+        self.ratio = frac # Ratio of body pane to tree pane.
+    else:
+        self.divideLeoSplitter2(frac,verticalFlag)
+        self.secondary_ratio = frac # Ratio of tree pane to log pane.
+
+# Divides the main splitter.
+def divideLeoSplitter1 (self, frac, verticalFlag): 
+    self.divideAnySplitter(frac, self.top.splitter_2 )
+
+# Divides the secondary splitter.
+def divideLeoSplitter2 (self, frac, verticalFlag): 
+    self.divideAnySplitter (frac, self.top.ui.splitter)
+
+#@-node:leohag.20081208130321.12:divideLeoSplitter
+#@+node:leohag.20081208130321.13:divideAnySplitter
+# This is the general-purpose placer for splitters.
+# It is the only general-purpose splitter code in Leo.
+
+def divideAnySplitter (self,frac,splitter):
+
+    sizes = splitter.sizes()
+
+    if len(sizes)!=2:
+        g.trace('there must be two and only two widgets in the splitter')
+
+    if frac > 1 or frac < 0:
+        g.trace('split ratio [%s] out of range 0 <= frac <= 1'%frac)
+
+    s1, s2 = sizes
+    s = s1+s2
+    s1 = int(s * frac + 0.5)
+    s2 = s - s1 
+
+    splitter.setSizes([s1,s2])
+#@-node:leohag.20081208130321.13:divideAnySplitter
+#@-node:ekr.20081121105001.279:Configuration (qtFrame)
+#@-node:ekr.20090530055308.3791:Honor pane split ratio
 #@-node:ekr.20090627090950.3714:Bugs
 #@+node:ekr.20090614134853.3635:New syntax coloring
 @nocolor-node
@@ -15660,11 +15861,7 @@ def finishCreate (self,c):
     f.top.setWindowTitle(self.title)
     f.top.show()
 
-    # This must be done after creating the commander.
-    f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
-    # # f.createOuterFrames()
     f.createIconBar() # A base class method.
-    # # f.createLeoSplitters(f.outerFrame)
     f.createSplitterComponents()
     f.createStatusLine() # A base class method.
     f.createFirstTreeNode() # Call the base-class method.
@@ -15687,35 +15884,8 @@ def createSplitterComponents (self):
     if f.use_chapters:
         c.chapterController = cc = leoChapters.chapterController(c)
 
-    # # Create the canvas, tree, log and body.
-    # if f.use_chapters:
-        # c.chapterController = cc = leoChapters.chapterController(c)
-
-    # # split1.pane1 is the secondary splitter.
-
-    # if self.bigTree: # Put outline in the main splitter.
-        # if self.use_chapters and self.use_chapter_tabs:
-            # cc.tt = leoQtTreeTab(c,f.split1Pane2,cc)
-        # f.canvas = f.createCanvas(f.split1Pane1)
-        # f.tree  = leoQtTree(c,f,f.canvas)
-        # f.log   = leoQtLog(f,f.split2Pane2)
-        # f.body  = leoQtBody(f,f.split2Pane1)
-    # else:
-        # if self.use_chapters and self.use_chapter_tabs:
-            # cc.tt = leoQtTreeTab(c,f.split2Pane1,cc)
-        # f.canvas = f.createCanvas(f.split2Pane1)
-        # f.tree   = leoQtTree(c,f,f.canvas)
-        # f.log    = leoQtLog(f,f.split2Pane2)
-        # f.body   = leoQtBody(f,f.split1Pane2)
-
-    # # Yes, this an "official" ivar: this is a kludge.
-    # # f.bodyCtrl = f.body.bodyCtrl
-
-    # # Configure.
-    # f.setTabWidth(c.tab_width)
-    # f.reconfigurePanes()
-    # f.body.setFontFromConfig()
-    # f.body.setColorFromConfig()
+    f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
+    f.resizePanesToRatio(f.ratio,f.secondary_ratio)
 #@-node:ekr.20081121105001.255:createSplitterComponents (qtFrame)
 #@-node:ekr.20081121105001.254:qtFrame.finishCreate & helpers
 #@+node:ekr.20081121105001.321:qtLog.finishCreate

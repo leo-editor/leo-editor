@@ -2771,28 +2771,6 @@ class wxLeoFrame(leoFrame.leoFrame):
         w.Bind(wx.EVT_MENU_OPEN,self.updateAllMenus) 
     #@-node:ekr.20090126093408.212:setEventHandlers
     #@-node:ekr.20090126093408.210:finishCreate (wxLeoFrame)
-    #@+node:ekr.20090126093408.213:initialRatios
-    def initialRatios (self):
-
-        config = g.app.config
-        s = config.getWindowPref("initial_splitter_orientation")
-        verticalFlag = s == None or (s != "h" and s != "horizontal")
-
-        # Tweaked for tk.  Other tweaks may be best for wx.
-        if verticalFlag:
-            r = config.getFloatWindowPref("initial_vertical_ratio")
-            if r == None or r < 0.0 or r > 1.0: r = 0.5
-            r2 = config.getFloatWindowPref("initial_vertical_secondary_ratio")
-            if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
-        else:
-            r = config.getFloatWindowPref("initial_horizontal_ratio")
-            if r == None or r < 0.0 or r > 1.0: r = 0.3
-            r2 = config.getFloatWindowPref("initial_horizontal_secondary_ratio")
-            if r2 == None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
-
-        return verticalFlag,r,r2
-    #@nonl
-    #@-node:ekr.20090126093408.213:initialRatios
     #@+node:ekr.20090126093408.214:injectCallbacks
     def injectCallbacks(self):
 

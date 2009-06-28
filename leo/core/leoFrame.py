@@ -1587,7 +1587,7 @@ class leoFrame:
     #@-node:ekr.20051009045404:createFirstTreeNode
     #@-node:ekr.20031218072017.3679:  leoFrame.__init__
     #@+node:ekr.20061109125528.1:Must be defined in base class
-    #@+node:ekr.20031218072017.3689:initialRatios
+    #@+node:ekr.20031218072017.3689:initialRatios (leoFrame)
     def initialRatios (self):
 
         c = self.c
@@ -1608,7 +1608,7 @@ class leoFrame:
 
         # g.trace(r,r2)
         return verticalFlag,r,r2
-    #@-node:ekr.20031218072017.3689:initialRatios
+    #@-node:ekr.20031218072017.3689:initialRatios (leoFrame)
     #@+node:ekr.20031218072017.3690:longFileName & shortFileName
     def longFileName (self):
 
