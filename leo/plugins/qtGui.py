@@ -4266,8 +4266,11 @@ class leoQtFrame (leoFrame.leoFrame):
         '''Toggle the focus between the outline and body panes.'''
 
         frame = self ; c = frame.c
+        w = c.get_focus()
 
-        if c.get_focus() == frame.body.bodyCtrl: # 2007/10/25
+        # g.trace(w,c.frame.body.bodyCtrl.widget)
+
+        if w == frame.body.bodyCtrl.widget:
             c.treeWantsFocusNow()
         else:
             c.endEditing()

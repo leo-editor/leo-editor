@@ -3,8 +3,6 @@
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20090430102239.13:To do before 4.6 rc1
-#@+node:ekr.20090601163620.3758:Fix toggle-active-pane
-#@-node:ekr.20090601163620.3758:Fix toggle-active-pane
 #@+node:ekr.20090128083504.1:Fix rclick
 @nocolor-node
 
@@ -5816,8 +5814,11 @@ def toggleActivePane (self,event=None):
     '''Toggle the focus between the outline and body panes.'''
 
     frame = self ; c = frame.c
+    w = c.get_focus()
 
-    if c.get_focus() == frame.body.bodyCtrl: # 2007/10/25
+    # g.trace(w,c.frame.body.bodyCtrl.widget)
+
+    if w == frame.body.bodyCtrl.widget:
         c.treeWantsFocusNow()
     else:
         c.endEditing()
@@ -11948,6 +11949,24 @@ def divideAnySplitter (self,frac,splitter):
 #@-node:leohag.20081208130321.13:divideAnySplitter
 #@-node:ekr.20081121105001.279:Configuration (qtFrame)
 #@-node:ekr.20090530055308.3791:Honor pane split ratio
+#@+node:ekr.20090601163620.3758:Fixed toggle-active-pane
+#@+node:ekr.20081121105001.305:toggleActivePane (qtFrame)
+def toggleActivePane (self,event=None):
+
+    '''Toggle the focus between the outline and body panes.'''
+
+    frame = self ; c = frame.c
+    w = c.get_focus()
+
+    # g.trace(w,c.frame.body.bodyCtrl.widget)
+
+    if w == frame.body.bodyCtrl.widget:
+        c.treeWantsFocusNow()
+    else:
+        c.endEditing()
+        c.bodyWantsFocusNow()
+#@-node:ekr.20081121105001.305:toggleActivePane (qtFrame)
+#@-node:ekr.20090601163620.3758:Fixed toggle-active-pane
 #@-node:ekr.20090627090950.3714:Bugs
 #@+node:ekr.20090614134853.3635:New syntax coloring
 @nocolor-node
