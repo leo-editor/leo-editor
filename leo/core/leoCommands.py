@@ -5864,6 +5864,18 @@ class baseCommands (object):
 
         g.es('not found:', ', '.join(names))
     #@-node:ekr.20050130152008:leoPlugins
+    #@+node:ekr.20090628075121.5994:leoQuickStart
+    def leoQuickStart (self,event=None):
+
+        '''Open quickstart.leo in a new Leo window.'''
+
+        c = self ; name = "quickstart.leo"
+
+        fileName = g.os_path_join(g.app.loadDir,"..","doc",name)
+        ok,frame = g.openWithFileName(fileName,c)
+        if not ok:
+            g.es("not found:",name)
+    #@-node:ekr.20090628075121.5994:leoQuickStart
     #@+node:ekr.20031218072017.2942:leoTutorial (version number)
     def leoTutorial (self,event=None):
 

@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="113" left="20" height="827" width="977"/>
+	<global_window_position top="113" left="465" height="827" width="802"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,5,1"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,13,0,6,9"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -264,7 +264,7 @@
 <v t="ekr.20041119043902.15"><vh>@bool print_trailing_lines = True</vh></v>
 </v>
 </v>
-<v t="ekr.20060524151415" a="E"><vh>Debugger</vh>
+<v t="ekr.20060524151415"><vh>Debugger</vh>
 <v t="ekr.20070115134125"><vh>@bool write_script_file = True</vh></v>
 <v t="ekr.20070115134125.1"><vh>@@string script_file_path = ../test/scriptFile.py</vh></v>
 <v t="ekr.20060524151415.1"><vh>@string debugger_kind = winpdb</vh></v>
@@ -428,8 +428,8 @@
 <v t="ekr.20090408091222.1"><vh>@shortcuts duplicate bindings for Qt</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552"><vh>Menus</vh>
-<v t="ekr.20070925144534"><vh>@menus</vh>
+<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
+<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
 <v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
@@ -914,7 +914,7 @@
 <v t="ekr.20070925144534.404"><vh>@item *open-compare-window</vh></v>
 <v t="ekr.20070925144534.405"><vh>@item *open-python-&amp;window</vh></v>
 </v>
-<v t="ekr.20070925144534.406"><vh>@menu &amp;Help</vh>
+<v t="ekr.20070925144534.406" a="E"><vh>@menu &amp;Help</vh>
 <v t="ekr.20070925144534.407"><vh>@item about-leo</vh></v>
 <v t="ekr.20070925144534.408"><vh>@item open-online-home</vh></v>
 <v t="ekr.20070925144534.409"><vh>@item *open-online-&amp;tutorial</vh></v>
@@ -924,6 +924,7 @@
 <v t="ekr.20070925144534.413"><vh>@item open-leoPlugins-leo</vh></v>
 <v t="ekr.20070925144534.414"><vh>@item open-leoSettings-leo</vh></v>
 <v t="ekr.20070925144534.415"><vh>@item open-myLeoSettings-leo</vh></v>
+<v t="ekr.20090628075121.8432"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20070925144534.416"><vh>@item open-scripts-leo</vh></v>
 <v t="ekr.20070925144534.417"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.418"><vh>@item *he&amp;lp-for-minibuffer</vh></v>
@@ -7928,6 +7929,7 @@ c.outerUpdate()
 The encoding assumed for strings used by the Qt plugin.
 UTF-8 is a reasonable default.
 Change to your Python's default encoding if you have unicode problems.</t>
+<t tx="ekr.20090628075121.8432">Open &amp;quickstart.leo</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
