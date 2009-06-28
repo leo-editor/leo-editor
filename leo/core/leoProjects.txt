@@ -4131,6 +4131,103 @@ def handleDefaultChar(self,event,stroke):
 #@-node:ekr.20061031131434.110:k.handleDefaultChar
 #@-node:ekr.20061031131434.105:masterCommand & helpers
 #@-node:ekr.20090627143802.6007:Allow bindings in log pane
+#@+node:ekr.20090628094153.5995:Investigated check-derived-file bug
+# The check-derived-file command appears to work properly.
+#@nonl
+#@+node:ekr.20090628094153.5996:Report
+@nocolor-node
+
+To reproduce (in the latest bzr version, qt-plugin enabled):
+
+create a node "@thin a_directory/a_file" where a_file has some text in it but no
+sentinels/leo-specific data.
+
+Select File-> read/write -> check derived file. The log window shows:
+
+Bad @+leo sentinel in: check-derived-file
+can not open: '@file /home/user/a_directory/check-derived-file'
+
+Clearly the file is not named 'check-derived-file', so there is a bug somewhere.
+#@nonl
+#@-node:ekr.20090628094153.5996:Report
+#@+node:ekr.20070919133659:checkDerivedFile (atFile)
+def checkDerivedFile (self, event=None):
+
+    at = self ; c = at.c ; p = c.p
+
+    if not p.isAtFileNode() and not p.isAtThinFileNode():
+        return g.es('Please select an @thin or @file node',color='red')
+
+    fn = p.anyAtFileNodeName()
+    path = g.os_path_dirname(c.mFileName)
+    fn = g.os_path_finalize_join(g.app.loadDir,path,fn)
+    if not g.os_path_exists(fn):
+        return g.es_print('file not found: %s' % (fn),color='red')
+
+    try:
+        s = open(fn,'r').read()
+    except IOError:
+        return g.es_print('can not open %s' % (fn),color='red')
+
+    # Create a dummy, unconnected, vnode as the root.
+    root_v = leoNodes.vnode(context=c)
+    root = leoNodes.position(root_v)
+    theFile = g.fileLikeObject(fromString=s)
+    thinFile = at.scanHeaderForThin (theFile,fn)
+    at.initReadIvars(root,fn,thinFile=thinFile)
+    if at.errors: return
+    at.openFileForReading(fn,fromString=s)
+    if not at.inputFile: return
+    at.readOpenFile(root,at.inputFile,fn)
+    at.inputFile.close()
+    if at.errors == 0:
+        g.es_print('check-derived-file passed',color='blue')
+#@-node:ekr.20070919133659:checkDerivedFile (atFile)
+#@+node:ekr.20041005105605.27:readOpenFile
+def readOpenFile(self,root,theFile,fileName):
+
+    '''Read an open derived file.
+
+    Leo 4.5 and later can only read 4.x derived files.'''
+
+    at = self ; ok = True
+
+    firstLines,read_new,junk = at.scanHeader(theFile,fileName)
+
+    if read_new:
+        lastLines = at.scanText4(theFile,fileName,root)
+    else:
+        firstLines = [] ; lastLines = []
+        ok = False
+        if at.atShadow:
+            g.trace(g.callers())
+            g.trace('invalid @shadow private file',fileName)
+            at.error('invalid @shadow private file',fileName)
+        else:
+            at.error('can not read 3.x derived file',fileName)
+            g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
+            g.trace('root',root and root.h,fileName)
+
+    if root:
+        root.v.t.setVisited() # Disable warning about set nodes.
+
+    << handle first and last lines >>
+
+    return ok
+#@+node:ekr.20041005105605.28:<< handle first and last lines >>
+try:
+    body = root.v.t.tempBodyString
+except Exception:
+    body = ""
+
+lines = body.split('\n')
+at.completeFirstDirectives(lines,firstLines)
+at.completeLastDirectives(lines,lastLines)
+s = '\n'.join(lines).replace('\r', '')
+root.v.t.tempBodyString = s
+#@-node:ekr.20041005105605.28:<< handle first and last lines >>
+#@-node:ekr.20041005105605.27:readOpenFile
+#@-node:ekr.20090628094153.5995:Investigated check-derived-file bug
 #@-node:ekr.20090623072844.10386:Bugs
 #@+node:ekr.20090628075121.8434:Features
 #@+node:ekr.20090628075121.8433:Added open-quickstart-leo
