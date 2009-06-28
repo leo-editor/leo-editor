@@ -3690,6 +3690,7 @@ class leoQtFrame (leoFrame.leoFrame):
             if not text and not qaction:
                 g.es('bad toolbar item')
 
+            bg = keys.get('bg') or self.toolbar.buttonColor
 
             # imagefile = keys.get('imagefile')
             # image = keys.get('image')
@@ -3701,11 +3702,12 @@ class leoQtFrame (leoFrame.leoFrame):
                     self.text = text
                     self.toolbar = toolbar
                 def createWidget (self,parent):
+                    # g.trace('leoIconBarButton',self.toolbar.buttonColor)
                     self.button = b = QtGui.QPushButton(self.text,parent)
                     g.app.gui.setWidgetColor(b,
                         widgetKind='QPushButton',
                         selector='background-color',
-                        colorName = self.toolbar.buttonColor)
+                        colorName = bg)
                     return b
 
             if qaction is None:
@@ -6815,9 +6817,18 @@ class leoQtGui(leoGui.leoGui):
 
         if not colorName: return
 
-        if QtGui.QColor(colorName).isValid():
+        # g.trace(widgetKind,selector,colorName,g.callers(4))
+
+        # A bit of a hack: Qt color names do not end with a digit.
+        # Remove them to avoid annoying qt color warnings.
+        if colorName[-1].isdigit():
+            colorName = colorName[:-1]
+
+        if colorName in self.badWidgetColors:
+            pass
+        elif QtGui.QColor(colorName).isValid():
             g.app.gui.setStyleSetting(w,widgetKind,selector,colorName)
-        elif colorName not in self.badWidgetColors:
+        else:
             self.badWidgetColors.append(colorName)
             g.es_print('bad widget color %s for %s' % (
                 colorName,widgetKind),color='blue')
