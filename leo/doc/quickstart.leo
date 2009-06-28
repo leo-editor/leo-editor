@@ -40,7 +40,8 @@
 </v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20090628091852.6030">This node contains settings and other "machinery" that you can usually ignore.</t>
+<t tx="ekr.20090628091852.6030">This node contains settings and other "machinery" that you
+can usually ignore.</t>
 <t tx="ekr.20090628091852.6031"></t>
 <t tx="ekr.20090628091852.8471"></t>
 <t tx="ekr.20090628092246.4267">The page width for wrapping doc parts in derived files.
