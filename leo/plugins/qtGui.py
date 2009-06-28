@@ -387,11 +387,10 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         if not c.changed and c.frame.initComplete:
             c.setChanged(True)
         c.frame.body.updateEditors()
-        # This will be called by onBodyChanged.
-        # c.frame.tree.updateIcon(p)
+        c.frame.tree.updateIcon(p)
 
         if 1: # This works, and is probably better.
-            # Set a hook for the colorer.
+            # Set a hook for the old jEdit colorer.
             colorer = c.frame.body.colorizer.highlighter.colorer
             colorer.initFlag = True
         else:
