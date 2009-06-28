@@ -565,32 +565,15 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
     def setFontFromConfig (self,w=None):
 
         '''Set the font in the widget w (a body editor).'''
-
-        return
-
-        # c = self.c
-        # if not w: w = self.widget
-
-        # font = c.config.getFontFromParams(
-            # "head_text_font_family", "head_text_font_size",
-            # "head_text_font_slant",  "head_text_font_weight",
-            # c.config.defaultBodyFontSize)
-
-        # self.fontRef = font # ESSENTIAL: retain a link to font.
-        # # w.configure(font=font)
-
-        # # g.trace("BODY",body.cget("font"),font.cget("family"),font.cget("weight"))
     #@-node:ekr.20081121105001.547:setFontFromConfig
     #@+node:ekr.20081121105001.548:setColorFromConfig
     def setColorFromConfig (self,w=None):
 
         '''Set the font in the widget w (a body editor).'''
-
-        return
-    #@nonl
     #@-node:ekr.20081121105001.548:setColorFromConfig
     #@+node:ekr.20081121105001.549:setConfig
     def setConfig (self):
+
         pass
     #@nonl
     #@-node:ekr.20081121105001.549:setConfig
@@ -1385,6 +1368,11 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
         # Init the base class.
         leoQtBaseTextWidget.__init__(self,widget,name,c)
         self.item=item
+
+        # Works, but it's probably best to use nativeTree.onHeadChanged.
+        # self.widget.connect(self.widget,
+            # QtCore.SIGNAL("textChanged(const QString&)"),
+                # self.onTextChanged)
 
     def __repr__ (self):
         return 'leoQtHeadlineWidget: %s' % id(self)

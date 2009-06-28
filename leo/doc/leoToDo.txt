@@ -3,10 +3,6 @@
 #@+all
 #@+node:ekr.20080814103428.4:To do before 4.6 rc1 (bug tracker, docs)
 #@+node:ekr.20090626123815.5988:Fix all high and medium bug tracker docs
-@nocolor-node
-
-Including bugs in leoGuiPlugins.leo
-#@nonl
 #@-node:ekr.20090626123815.5988:Fix all high and medium bug tracker docs
 #@+node:ekr.20090626123815.5987:Docs
 @nocolor-node

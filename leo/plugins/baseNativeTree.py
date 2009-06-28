@@ -906,6 +906,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             return
 
         s = unicode(e.text())
+
+        if g.doHook("headkey1",c=c,p=c.p,v=c.p,s=s):
+            return
+
         self.closeEditorHelper(e,item)
         oldHead = p.h
         changed = s != oldHead
@@ -921,6 +925,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             dirtyVnodeList = p.setDirty()
             u.afterChangeNodeContents(p,undoType,undoData,
                 dirtyVnodeList=dirtyVnodeList)
+
+        g.doHook("headkey2",c=c,p=c.p,v=c.p,s=s)
 
         # This is a crucial shortcut.
         if g.unitTesting: return

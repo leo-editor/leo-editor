@@ -3,6 +3,19 @@
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20090430102239.13:To do before 4.6 rc1
+#@+node:ekr.20090628173250.3714:Remaining minor mouse bugs
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/382578
+
+The following items remain:
+
+2. context menu in 1. does not have heading controls like insert,
+delete etc.
+
+3. no context menu delete option for log pane
+#@nonl
+#@-node:ekr.20090628173250.3714:Remaining minor mouse bugs
 #@+node:ekr.20090128083504.1:Fix rclick plugin
 @nocolor-node
 
@@ -2929,32 +2942,15 @@ def __init__ (self,widget,name,c=None):
 def setFontFromConfig (self,w=None):
 
     '''Set the font in the widget w (a body editor).'''
-
-    return
-
-    # c = self.c
-    # if not w: w = self.widget
-
-    # font = c.config.getFontFromParams(
-        # "head_text_font_family", "head_text_font_size",
-        # "head_text_font_slant",  "head_text_font_weight",
-        # c.config.defaultBodyFontSize)
-
-    # self.fontRef = font # ESSENTIAL: retain a link to font.
-    # # w.configure(font=font)
-
-    # # g.trace("BODY",body.cget("font"),font.cget("family"),font.cget("weight"))
 #@-node:ekr.20081121105001.547:setFontFromConfig
 #@+node:ekr.20081121105001.548:setColorFromConfig
 def setColorFromConfig (self,w=None):
 
     '''Set the font in the widget w (a body editor).'''
-
-    return
-#@nonl
 #@-node:ekr.20081121105001.548:setColorFromConfig
 #@+node:ekr.20081121105001.549:setConfig
 def setConfig (self):
+
     pass
 #@nonl
 #@-node:ekr.20081121105001.549:setConfig
@@ -3866,6 +3862,11 @@ def __init__ (self,c,item,name,widget):
     # Init the base class.
     leoQtBaseTextWidget.__init__(self,widget,name,c)
     self.item=item
+
+    # Works, but it's probably best to use nativeTree.onHeadChanged.
+    # self.widget.connect(self.widget,
+        # QtCore.SIGNAL("textChanged(const QString&)"),
+            # self.onTextChanged)
 
 def __repr__ (self):
     return 'leoQtHeadlineWidget: %s' % id(self)
@@ -12439,6 +12440,10 @@ def onHeadChanged (self,p,undoType='Typing',s=None,e=None):
         return
 
     s = unicode(e.text())
+
+    if g.doHook("headkey1",c=c,p=c.p,v=c.p,s=s):
+        return
+
     self.closeEditorHelper(e,item)
     oldHead = p.h
     changed = s != oldHead
@@ -12454,6 +12459,8 @@ def onHeadChanged (self,p,undoType='Typing',s=None,e=None):
         dirtyVnodeList = p.setDirty()
         u.afterChangeNodeContents(p,undoType,undoData,
             dirtyVnodeList=dirtyVnodeList)
+
+    g.doHook("headkey2",c=c,p=c.p,v=c.p,s=s)
 
     # This is a crucial shortcut.
     if g.unitTesting: return
@@ -16939,32 +16946,15 @@ def __init__ (self,widget,name,c=None):
 def setFontFromConfig (self,w=None):
 
     '''Set the font in the widget w (a body editor).'''
-
-    return
-
-    # c = self.c
-    # if not w: w = self.widget
-
-    # font = c.config.getFontFromParams(
-        # "head_text_font_family", "head_text_font_size",
-        # "head_text_font_slant",  "head_text_font_weight",
-        # c.config.defaultBodyFontSize)
-
-    # self.fontRef = font # ESSENTIAL: retain a link to font.
-    # # w.configure(font=font)
-
-    # # g.trace("BODY",body.cget("font"),font.cget("family"),font.cget("weight"))
 #@-node:ekr.20081121105001.547:setFontFromConfig
 #@+node:ekr.20081121105001.548:setColorFromConfig
 def setColorFromConfig (self,w=None):
 
     '''Set the font in the widget w (a body editor).'''
-
-    return
-#@nonl
 #@-node:ekr.20081121105001.548:setColorFromConfig
 #@+node:ekr.20081121105001.549:setConfig
 def setConfig (self):
+
     pass
 #@nonl
 #@-node:ekr.20081121105001.549:setConfig
@@ -17751,6 +17741,11 @@ def __init__ (self,c,item,name,widget):
     leoQtBaseTextWidget.__init__(self,widget,name,c)
     self.item=item
 
+    # Works, but it's probably best to use nativeTree.onHeadChanged.
+    # self.widget.connect(self.widget,
+        # QtCore.SIGNAL("textChanged(const QString&)"),
+            # self.onTextChanged)
+
 def __repr__ (self):
     return 'leoQtHeadlineWidget: %s' % id(self)
 #@-node:ekr.20090603073641.3841:Birth
@@ -17954,6 +17949,230 @@ def createTab (self,tabName,widget=None,wrap='none'):
     return contents
 #@-node:ekr.20081121105001.330:createTab
 #@-node:ekr.20090627090950.3715:Improved log
+#@+node:ekr.20090628173250.3715:Added headkey1/2 hooks
+@nocolor-node
+
+It would be possible to define an textChaanged signal handler in
+leoQtHeadlineWidget, as shown by the commented-out code in the ctor.
+
+Instead, baseNativeTree.onHeadChanged calls the "headkey1" and "headkey2" hooks.
+Note that the hooks pass "s" arguments instead of "ch" arguments.
+
+I can make some changes to these hooks if desired, but I can't change the
+information that Qt supplies to the textChanged signals.
+#@nonl
+#@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None,e=None):
+
+    '''Officially change a headline.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    c = self.c ; u = c.undoer
+    if not p:
+        if trace: g.trace('** no p')
+        return
+
+    item = self.getCurrentItem()
+    if not item:
+        if trace and verbose: g.trace('** no item')
+        return
+    if not e:
+        e = self.getTreeEditorForItem(item)
+    if not e:
+        if trace and verbose: g.trace('** not editing')
+        return
+
+    s = unicode(e.text())
+
+    if g.doHook("headkey1",c=c,p=c.p,v=c.p,s=s):
+        return
+
+    self.closeEditorHelper(e,item)
+    oldHead = p.h
+    changed = s != oldHead
+    if changed:
+        if trace: g.trace('new',repr(s),'old',p.h,g.callers())
+        p.initHeadString(s)
+        item.setText(0,s) # Required to avoid full redraw.
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+
+    g.doHook("headkey2",c=c,p=c.p,v=c.p,s=s)
+
+    # This is a crucial shortcut.
+    if g.unitTesting: return
+
+    if changed:
+        self.redraw_after_head_changed()
+
+    if 0: # Don't do this: it interferes with clicks, and is not needed.
+        if self.stayInTree:
+            c.treeWantsFocus()
+        else:
+            c.bodyWantsFocus()
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+#@+node:ekr.20081121105001.592:class leoQtHeadlineWidget
+class leoQtHeadlineWidget (leoQtBaseTextWidget):
+    '''A wrapper class for QLineEdit widgets in QTreeWidget's.
+
+    This wrapper must appear to be a leoFrame.baseTextWidget to Leo's core.
+    '''
+
+    @others
+#@nonl
+#@+node:ekr.20090603073641.3841:Birth
+def __init__ (self,c,item,name,widget):
+
+    # g.trace('leoQtHeadlineWidget',item,widget)
+
+    # Init the base class.
+    leoQtBaseTextWidget.__init__(self,widget,name,c)
+    self.item=item
+
+    # Works, but it's probably best to use nativeTree.onHeadChanged.
+    # self.widget.connect(self.widget,
+        # QtCore.SIGNAL("textChanged(const QString&)"),
+            # self.onTextChanged)
+
+def __repr__ (self):
+    return 'leoQtHeadlineWidget: %s' % id(self)
+#@-node:ekr.20090603073641.3841:Birth
+#@+node:ekr.20090603073641.3851:Widget-specific overrides (leoQtHeadlineWidget)
+# These are safe versions of QLineEdit methods.
+#@+node:ekr.20090603073641.3861:check
+def check (self):
+
+    '''Return True if the tree item exists and it's edit widget exists.'''
+
+    trace = False and not g.unitTesting
+    tree = self.c.frame.tree
+    e = tree.treeWidget.itemWidget(self.item,0)
+    valid = tree.isValidItem(self.item)
+    result = valid and e == self.widget
+    if trace: g.trace('result %s self.widget %s itemWidget %s' % (
+        result,self.widget,e))
+
+    return result
+#@nonl
+#@-node:ekr.20090603073641.3861:check
+#@+node:ekr.20090603073641.3852:getAllText
+def getAllText(self):
+
+    if self.check():
+        w = self.widget
+        s = w.text()
+        return g.app.gui.toUnicode(s)
+    else:
+        return ''
+#@nonl
+#@-node:ekr.20090603073641.3852:getAllText
+#@+node:ekr.20090603073641.3853:getInsertPoint
+def getInsertPoint(self):
+
+    if self.check():
+        i = self.widget.cursorPosition()
+        return i
+    else:
+        return 0
+#@-node:ekr.20090603073641.3853:getInsertPoint
+#@+node:ekr.20090603073641.3854:getSelectionRange
+def getSelectionRange(self,sort=True):
+
+    w = self.widget
+
+    if self.check():
+        if w.hasSelectedText():
+            i = w.selectionStart()
+            s = w.selectedText()
+            s = g.app.gui.toUnicode(s)
+            j = i + len(s)
+        else:
+            i = j = w.cursorPosition()
+        return i,j
+    else:
+        return 0,0
+#@-node:ekr.20090603073641.3854:getSelectionRange
+#@+node:ekr.20090603073641.3855:hasSelection
+def hasSelection(self):
+
+    if self.check():
+        return self.widget.hasSelection()
+    else:
+        return False
+#@-node:ekr.20090603073641.3855:hasSelection
+#@+node:ekr.20090603073641.3856:see & seeInsertPoint
+def see(self,i):
+    pass
+
+def seeInsertPoint (self):
+    pass
+#@-node:ekr.20090603073641.3856:see & seeInsertPoint
+#@+node:ekr.20090603073641.3857:setAllText
+def setAllText(self,s,insert=None):
+
+    if not self.check(): return
+
+    w = self.widget
+    i = g.choose(insert is None,0,insert)
+    w.setText(s)
+    if insert is not None:
+        self.setSelectionRange(i,i,insert=i)
+#@-node:ekr.20090603073641.3857:setAllText
+#@+node:ekr.20090603073641.3862:setFocus
+def setFocus (self):
+
+    if self.check():
+        g.app.gui.set_focus(self.c,self.widget)
+#@-node:ekr.20090603073641.3862:setFocus
+#@+node:ekr.20090603073641.3858:setInsertPoint
+def setInsertPoint(self,i):
+
+    if not self.check(): return
+
+    w = self.widget
+    s = w.text()
+    s = g.app.gui.toUnicode(s)
+    i = max(0,min(i,len(s)))
+    w.setCursorPosition(i)
+#@-node:ekr.20090603073641.3858:setInsertPoint
+#@+node:ekr.20090603073641.3859:setSelectionRangeHelper (leoQLineEdit)
+def setSelectionRangeHelper(self,i,j,insert):
+
+    if not self.check(): return
+    w = self.widget
+    # g.trace(i,j,insert,w)
+    if i > j: i,j = j,i
+    s = w.text()
+    s = g.app.gui.toUnicode(s)
+    n = len(s)
+    i = max(0,min(i,n))
+    j = max(0,min(j,n))
+    insert = max(0,min(insert,n))
+    if i == j:
+        w.setCursorPosition(i)
+    else:
+        length = j-i
+        if insert < j:
+            w.setSelection(j,-length)
+        else:
+            w.setSelection(i,length)
+#@nonl
+#@-node:ekr.20090603073641.3859:setSelectionRangeHelper (leoQLineEdit)
+#@-node:ekr.20090603073641.3851:Widget-specific overrides (leoQtHeadlineWidget)
+#@-node:ekr.20081121105001.592:class leoQtHeadlineWidget
+#@-node:ekr.20090628173250.3715:Added headkey1/2 hooks
 #@-node:ekr.20090626070207.3713:4.6 rc1 projects
 #@+node:ekr.20081208155215.12:Unused
 #@+node:ekr.20081208041503.499:onClick (qtText)
