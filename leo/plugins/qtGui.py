@@ -111,8 +111,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             self.widget.connect(self.widget,
                 QtCore.SIGNAL("textChanged()"),self.onTextChanged)
 
-            self.widget.connect(self.widget,
-                QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
+            # self.widget.connect(self.widget,
+                # QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
 
         self.injectIvars(c)
     #@-node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
@@ -322,20 +322,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         return self.name
     #@-node:ekr.20081121105001.535:getName (baseTextWidget)
-    #@+node:ekr.20081208041503.499:onClick (qtText)
-    def onClick(self,event=None):
-
-        trace = False and not g.unitTesting
-
-        c = self.c
-        name = c.widget_name(self)
-
-        if trace: g.trace(name,c.p.h,self)
-
-        if name.startswith('body'):
-            if hasattr(c.frame,'statusLine'):
-                c.frame.statusLine.update()
-    #@-node:ekr.20081208041503.499:onClick (qtText)
     #@+node:ekr.20081121105001.536:onTextChanged (qtText)
     def onTextChanged (self):
 
@@ -2645,8 +2631,7 @@ class leoQtBody (leoFrame.leoBody):
 
         '''Select editor w and node w.leo_p.'''
 
-        #  Called by body.onClick and whenever w must be selected.
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = False
         c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
 
@@ -2979,6 +2964,10 @@ class leoQtBody (leoFrame.leoBody):
     def onFocusIn (self,obj):
 
         '''Handle a focus-in event in the body pane.'''
+
+        trace = False and not g.unitTesting
+
+        if trace: g.trace(obj,obj.objectName())
 
         if obj.objectName() == 'richTextEdit':
             wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
@@ -7114,9 +7103,9 @@ class leoQtEventFilter(QtCore.QObject):
 
         trace = False and not g.unitTesting
         verbose = False
-        traceEvent = True
-        traceKey = True
-        traceFocus = False
+        traceEvent = False
+        traceKey = False
+        traceFocus = True
         c = self.c ; k = c.k
         eventType = event.type()
         ev = QtCore.QEvent
@@ -7329,7 +7318,7 @@ class leoQtEventFilter(QtCore.QObject):
         if 0: # Show focus events.
             show = (
                 (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
-                (e.Enter,'enter'),(e.Leave,'leave'),
+                # (e.Enter,'enter'),(e.Leave,'leave'),
             )
 
         else:

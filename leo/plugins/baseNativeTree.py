@@ -925,12 +925,15 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # This is a crucial shortcut.
         if g.unitTesting: return
 
-        self.redraw_after_head_changed()
+        if changed:
+            self.redraw_after_head_changed()
 
-        if self.stayInTree:
-            c.treeWantsFocus()
-        else:
-            c.bodyWantsFocus()
+        if 0: # Don't do this: it interferes with clicks, and is not needed.
+            if self.stayInTree:
+                c.treeWantsFocus()
+            else:
+                c.bodyWantsFocus()
+
         c.outerUpdate()
     #@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
     #@+node:ekr.20090124174652.44:setItemForCurrentPosition (nativeTree)

@@ -3,7 +3,7 @@
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20090430102239.13:To do before 4.6 rc1
-#@+node:ekr.20090128083504.1:Fix rclick
+#@+node:ekr.20090128083504.1:Fix rclick plugin
 @nocolor-node
 
 rClick
@@ -31,7 +31,7 @@ rclick stuff:
 
     3. no context menu delete option for log pane.
 #@nonl
-#@-node:ekr.20090128083504.1:Fix rclick
+#@-node:ekr.20090128083504.1:Fix rclick plugin
 #@-node:ekr.20090430102239.13:To do before 4.6 rc1
 #@+node:ekr.20090304084841.11:Later
 #@+node:ekr.20090429101847.10:Support canvas widgets in all panes
@@ -593,8 +593,8 @@ def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
         self.widget.connect(self.widget,
             QtCore.SIGNAL("textChanged()"),self.onTextChanged)
 
-        self.widget.connect(self.widget,
-            QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
+        # self.widget.connect(self.widget,
+            # QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
 
     self.injectIvars(c)
 #@-node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
@@ -602,6 +602,10 @@ def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
 def onFocusIn (self,obj):
 
     '''Handle a focus-in event in the body pane.'''
+
+    trace = False and not g.unitTesting
+
+    if trace: g.trace(obj,obj.objectName())
 
     if obj.objectName() == 'richTextEdit':
         wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
@@ -1034,9 +1038,9 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = False
-    traceEvent = True
-    traceKey = True
-    traceFocus = False
+    traceEvent = False
+    traceKey = False
+    traceFocus = True
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
@@ -1249,7 +1253,7 @@ def traceEvent (self,obj,event,tkKey,override):
     if 0: # Show focus events.
         show = (
             (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
-            (e.Enter,'enter'),(e.Leave,'leave'),
+            # (e.Enter,'enter'),(e.Leave,'leave'),
         )
 
     else:
@@ -1667,9 +1671,9 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = False
-    traceEvent = True
-    traceKey = True
-    traceFocus = False
+    traceEvent = False
+    traceKey = False
+    traceFocus = True
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
@@ -1882,7 +1886,7 @@ def traceEvent (self,obj,event,tkKey,override):
     if 0: # Show focus events.
         show = (
             (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
-            (e.Enter,'enter'),(e.Leave,'leave'),
+            # (e.Enter,'enter'),(e.Leave,'leave'),
         )
 
     else:
@@ -2620,9 +2624,9 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = False
-    traceEvent = True
-    traceKey = True
-    traceFocus = False
+    traceEvent = False
+    traceKey = False
+    traceFocus = True
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
@@ -2835,7 +2839,7 @@ def traceEvent (self,obj,event,tkKey,override):
     if 0: # Show focus events.
         show = (
             (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
-            (e.Enter,'enter'),(e.Leave,'leave'),
+            # (e.Enter,'enter'),(e.Leave,'leave'),
         )
 
     else:
@@ -6394,8 +6398,7 @@ def selectEditor(self,wrapper):
 
     '''Select editor w and node w.leo_p.'''
 
-    #  Called by body.onClick and whenever w must be selected.
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     verbose = False
     c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
 
@@ -6728,6 +6731,10 @@ def onFocusIn (self,obj):
 
     '''Handle a focus-in event in the body pane.'''
 
+    trace = False and not g.unitTesting
+
+    if trace: g.trace(obj,obj.objectName())
+
     if obj.objectName() == 'richTextEdit':
         wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
         if wrapper and wrapper != self.bodyCtrl:
@@ -6916,9 +6923,9 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = False
-    traceEvent = True
-    traceKey = True
-    traceFocus = False
+    traceEvent = False
+    traceKey = False
+    traceFocus = True
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
@@ -7131,7 +7138,7 @@ def traceEvent (self,obj,event,tkKey,override):
     if 0: # Show focus events.
         show = (
             (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
-            (e.Enter,'enter'),(e.Leave,'leave'),
+            # (e.Enter,'enter'),(e.Leave,'leave'),
         )
 
     else:
@@ -7203,9 +7210,9 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = False
-    traceEvent = True
-    traceKey = True
-    traceFocus = False
+    traceEvent = False
+    traceKey = False
+    traceFocus = True
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
@@ -7294,6 +7301,10 @@ def traceFocus (self,eventType,obj):
 def onFocusIn (self,obj):
 
     '''Handle a focus-in event in the body pane.'''
+
+    trace = False and not g.unitTesting
+
+    if trace: g.trace(obj,obj.objectName())
 
     if obj.objectName() == 'richTextEdit':
         wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
@@ -7555,8 +7566,7 @@ def selectEditor(self,wrapper):
 
     '''Select editor w and node w.leo_p.'''
 
-    #  Called by body.onClick and whenever w must be selected.
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     verbose = False
     c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
 
@@ -9134,8 +9144,7 @@ def selectEditor(self,wrapper):
 
     '''Select editor w and node w.leo_p.'''
 
-    #  Called by body.onClick and whenever w must be selected.
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     verbose = False
     c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
 
@@ -9565,8 +9574,7 @@ def selectEditor(self,wrapper):
 
     '''Select editor w and node w.leo_p.'''
 
-    #  Called by body.onClick and whenever w must be selected.
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     verbose = False
     c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
 
@@ -9905,8 +9913,7 @@ def selectEditor(self,wrapper):
 
     '''Select editor w and node w.leo_p.'''
 
-    #  Called by body.onClick and whenever w must be selected.
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     verbose = False
     c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
 
@@ -11967,6 +11974,502 @@ def toggleActivePane (self,event=None):
         c.bodyWantsFocusNow()
 #@-node:ekr.20081121105001.305:toggleActivePane (qtFrame)
 #@-node:ekr.20090601163620.3758:Fixed toggle-active-pane
+#@+node:ekr.20090628113747.3718:Fixed bug: click on body makes it active
+@nocolor-node
+
+Even if we were editing a headline.
+The fix was to disable the focus code in nativeTreeWidget.onHeadChanged.
+#@nonl
+#@+node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
+def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
+
+    self.widget = widget
+    self.c = c or self.widget.c
+
+    # g.trace('leoQtBaseTextWidget',name) # widget,g.callers(5))
+
+    # Init the base class.
+    leoFrame.baseTextWidget.__init__(
+        self,c,baseClassName='leoQtBaseTextWidget',
+        name=name,
+        widget=widget,
+        highLevelInterface=True)
+
+    # Init ivars.
+    self.changingText = False # A lockout for onTextChanged.
+    self.tags = {}
+    self.configDict = {} # Keys are tags, values are colors (names or values).
+    self.useScintilla = False # This is used!
+
+    if not c: return # Can happen.
+
+    if name == 'body' or name.startswith('head'):
+        # Hook up qt events.
+        self.ev_filter = leoQtEventFilter(c,w=self,tag=name)
+        self.widget.installEventFilter(self.ev_filter)
+
+    if name == 'body':
+        self.widget.connect(self.widget,
+            QtCore.SIGNAL("textChanged()"),self.onTextChanged)
+
+        # self.widget.connect(self.widget,
+            # QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
+
+    self.injectIvars(c)
+#@-node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
+#@+node:ekr.20081121105001.207: ctor (qtBody)
+def __init__ (self,frame,parentFrame):
+
+    trace = False and not g.unitTesting
+
+    # Call the base class constructor.
+    leoFrame.leoBody.__init__(self,frame,parentFrame)
+
+    c = self.c
+    assert c.frame == frame and frame.c == c
+
+    self.useScintilla = c.config.getBool('qt-use-scintilla')
+    self.selectedBackgroundColor = c.config.getString('selected-background-color')
+    self.unselectedBackgroundColor = c.config.getString('unselected-background-color')
+
+    # Set the actual gui widget.
+    if self.useScintilla:
+        self.widget = w = leoQScintillaWidget(
+            c.frame.top.textEdit,
+            name='body',c=c)
+        self.bodyCtrl = w # The widget as seen from Leo's core.
+        self.colorizer = leoColor.nullColorizer(c)
+    else:
+        top = c.frame.top
+        sw = top.ui.stackedWidget
+        qtWidget = top.ui.richTextEdit # A QTextEdit or QTextBrowser.
+        # g.trace(qtWidget)
+        sw.setCurrentIndex(1)
+        self.widget = w = leoQTextEditWidget(
+            qtWidget,name = 'body',c=c)
+        self.bodyCtrl = w # The widget as seen from Leo's core.
+
+        # Hook up the QSyntaxHighlighter
+        self.colorizer = leoQtColorizer(c,w.widget)
+        qtWidget.setAcceptRichText(False)
+
+    # Config stuff.
+    self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
+    wrap = c.config.getBool('body_pane_wraps')
+    # g.trace('wrap',wrap,self.widget.widget)
+    if self.useScintilla:
+        pass
+    else:
+        self.widget.widget.setWordWrapMode(g.choose(wrap,
+            QtGui.QTextOption.WordWrap,
+            QtGui.QTextOption.NoWrap))
+    wrap = g.choose(wrap,"word","none")
+    self.wrapState = wrap
+
+    # For multiple body editors.
+    self.editor_name = None
+    self.editor_v = None
+    self.numberOfEditors = 1
+    self.totalNumberOfEditors = 1
+
+    if trace: print('qtBody.__init__ %s' % self.widget)
+#@+node:ekr.20081121105001.208:createBindings (qtBody)
+def createBindings (self,w=None):
+
+    '''(qtBody) Create gui-dependent bindings.
+    These are *not* made in nullBody instances.'''
+
+    # frame = self.frame ; c = self.c ; k = c.k
+    # if not w: w = self.widget
+
+    # c.bind(w,'<Key>', k.masterKeyHandler)
+
+    # table = [
+        # ('<Button-1>',  frame.OnBodyClick,          k.masterClickHandler),
+        # ('<Button-3>',  frame.OnBodyRClick,         k.masterClick3Handler),
+        # ('<Double-1>',  frame.OnBodyDoubleClick,    k.masterDoubleClickHandler),
+        # ('<Double-3>',  None,                       k.masterDoubleClick3Handler),
+        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    # ]
+
+    # table2 = (
+        # ('<Button-2>',  frame.OnPaste,              k.masterClickHandler),
+    # )
+
+    # if c.config.getBool('allow_middle_button_paste'):
+        # table.extend(table2)
+
+    # for kind,func,handler in table:
+        # def bodyClickCallback(event,handler=handler,func=func):
+            # return handler(event,func)
+
+        # c.bind(w,kind,bodyClickCallback)
+#@-node:ekr.20081121105001.208:createBindings (qtBody)
+#@+node:ekr.20081121105001.209:get_name
+def getName (self):
+
+    return 'body-widget'
+#@-node:ekr.20081121105001.209:get_name
+#@-node:ekr.20081121105001.207: ctor (qtBody)
+#@+node:ekr.20081121105001.223:selectEditor & helpers
+selectEditorLockout = False
+
+def selectEditor(self,wrapper):
+
+    '''Select editor w and node w.leo_p.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c ; bodyCtrl = c.frame.body.bodyCtrl
+
+    if not wrapper: return bodyCtrl
+    if self.selectEditorLockout:
+        if trace: g.trace('**busy')
+        return
+
+    w = wrapper.widget
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    def report(s):
+        g.trace('*** %9s wrapper %s w %s %s' % (
+            s,id(wrapper),id(w),c.p.h))
+
+    if wrapper and wrapper == bodyCtrl:
+        self.deactivateEditors(wrapper)
+        if hasattr(w,'leo_p') and w.leo_p and w.leo_p != c.p:
+            if trace: report('select')
+            c.selectPosition(w.leo_p)
+            c.bodyWantsFocusNow()
+        elif trace and verbose: report('no change')
+        return
+
+    try:
+        val = None
+        self.selectEditorLockout = True
+        val = self.selectEditorHelper(wrapper)
+    finally:
+        self.selectEditorLockout = False
+
+    return val # Don't put a return in a finally clause.
+#@+node:ekr.20081121105001.224:selectEditorHelper
+def selectEditorHelper (self,wrapper):
+
+    trace = False and not g.unitTesting
+    c = self.c ; cc = c.chapterController
+    d = self.editorWidgets
+    assert isinstance(wrapper,leoQTextEditWidget),wrapper
+    w = wrapper.widget
+    assert isinstance(w,QtGui.QTextEdit),w
+
+    if not w.leo_p:
+        g.trace('no w.leo_p') 
+        return 'break'
+
+    # The actual switch.
+    self.deactivateEditors(wrapper)
+    self.recolorWidget (w.leo_p,wrapper) # switches colorizers.
+    c.frame.body.bodyCtrl = wrapper
+    w.leo_active = True
+
+    self.switchToChapter(wrapper)
+    self.selectLabel(wrapper)
+
+    if not self.ensurePositionExists(w):
+        return g.trace('***** no position editor!')
+    if not (hasattr(w,'leo_p') and w.leo_p):
+        return g.trace('***** no w.leo_p',w)
+    if not (hasattr(w,'leo_chapter') and w.leo_chapter.name):
+        return g.trace('***** no w.leo_chapter',w)
+
+    p = w.leo_p
+    assert p,p
+
+    if trace: g.trace('wrapper %s chapter %s old %s p %s' % (
+        id(wrapper),w.leo_chapter.name,c.p.h,p.h))
+
+    c.expandAllAncestors(p)
+    c.selectPosition(p) # Calls assignPositionToEditor.
+    c.redraw()
+    c.recolor_now()
+    << restore the selection, insertion point and the scrollbar >>
+    c.bodyWantsFocusNow()
+#@+node:ekr.20081121105001.225:<< restore the selection, insertion point and the scrollbar >>
+# g.trace('active:',id(w),'scroll',w.leo_scrollBarSpot,'ins',w.leo_insertSpot)
+
+if hasattr(w,'leo_insertSpot') and w.leo_insertSpot:
+    wrapper.setInsertPoint(w.leo_insertSpot)
+else:
+    wrapper.setInsertPoint(0)
+
+if hasattr(w,'leo_scrollBarSpot') and w.leo_scrollBarSpot is not None:
+    first,last = w.leo_scrollBarSpot
+    wrapper.see(first)
+else:
+    wrapper.seeInsertPoint()
+
+if hasattr(w,'leo_selection') and w.leo_selection:
+    try:
+        start,end = w.leo_selection
+        wrapper.setSelectionRange(start,end)
+    except Exception:
+        pass
+#@-node:ekr.20081121105001.225:<< restore the selection, insertion point and the scrollbar >>
+#@-node:ekr.20081121105001.224:selectEditorHelper
+#@-node:ekr.20081121105001.223:selectEditor & helpers
+#@+node:ekr.20081121105001.168:eventFilter
+def eventFilter(self, obj, event):
+
+    trace = False and not g.unitTesting
+    verbose = False
+    traceEvent = False
+    traceKey = False
+    traceFocus = True
+    c = self.c ; k = c.k
+    eventType = event.type()
+    ev = QtCore.QEvent
+    gui = g.app.gui
+    aList = []
+
+    kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
+
+    if trace and traceFocus: self.traceFocus(eventType,obj)
+
+    # A hack. QLineEdit generates ev.KeyRelease only.
+    if eventType in (ev.KeyPress,ev.KeyRelease):
+        p = c.currentPosition()
+        isEditWidget = obj == c.frame.tree.edit_widget(p)
+        self.keyIsActive = g.choose(
+            isEditWidget,
+            eventType == ev.KeyRelease,
+            eventType == ev.KeyPress)
+    else:
+        self.keyIsActive = False
+
+    if eventType == ev.WindowActivate:
+        gui.onActivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    elif eventType == ev.WindowDeactivate:
+        gui.onDeactivateEvent(event,c,obj,self.tag)
+        override = False ; tkKey = None
+    elif eventType in kinds:
+        tkKey,ch,ignore = self.toTkKey(event)
+        aList = c.k.masterGuiBindingsDict.get('<%s>' %tkKey,[])
+        if ignore:
+            override = False
+        elif self.isSpecialOverride(tkKey,ch):
+            override = True
+        elif k.inState():
+            override = not ignore # allow all keystrokes.
+        else:
+            override = len(aList) > 0
+    else:
+        override = False ; tkKey = '<no key>'
+        if self.tag == 'body':
+            if eventType == ev.FocusIn:
+                c.frame.body.onFocusIn(obj)
+            elif eventType == ev.FocusOut:
+                c.frame.body.onFocusOut(obj)
+    if self.keyIsActive:
+        stroke = self.toStroke(tkKey,ch)
+        if override:
+            if trace and traceKey and not ignore:
+                g.trace('bound',repr(stroke)) # repr(aList))
+            w = self.w # Pass the wrapper class, not the wrapped widget.
+            leoEvent = leoKeyEvent(event,c,w,ch,tkKey,stroke)
+            ret = k.masterKeyHandler(leoEvent,stroke=stroke)
+            c.outerUpdate()
+        else:
+            if trace and traceKey and verbose: g.trace(self.tag,'unbound',tkKey,stroke)
+
+    if trace and traceEvent: self.traceEvent(obj,event,tkKey,override)
+
+    return override
+#@-node:ekr.20081121105001.168:eventFilter
+#@+node:ekr.20081121105001.179:traceEvent
+def traceEvent (self,obj,event,tkKey,override):
+
+    if g.unitTesting: return
+
+    c = self.c ; e = QtCore.QEvent
+    traceAll = True
+    eventType = event.type()
+
+    if 0: # Show focus events.
+        show = (
+            (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
+            # (e.Enter,'enter'),(e.Leave,'leave'),
+        )
+
+    else:
+        show = (
+            (e.KeyPress,'key-press'),(e.KeyRelease,'key-release'),
+            (e.ShortcutOverride,'shortcut-override'),
+        )
+
+    ignore = (
+        1,16,67,70,
+        e.ChildPolished,
+        e.DeferredDelete,
+        e.DynamicPropertyChange,
+        e.Enter,e.Leave,
+        e.FocusIn,e.FocusOut,
+        e.FontChange,
+        e.Hide,e.HideToParent,
+        e.HoverEnter,e.HoverLeave,e.HoverMove,
+        e.LayoutRequest,
+        e.MetaCall,e.Move,e.Paint,e.Resize,
+        e.MouseMove,e.MouseButtonPress,e.MouseButtonRelease,
+        e.PaletteChange,
+        e.ParentChange,
+        e.Polish,e.PolishRequest,
+        e.Show,e.ShowToParent,
+        e.StyleChange,
+        e.ToolTip,
+        e.WindowActivate,e.WindowDeactivate,
+        e.WindowBlocked,e.WindowUnblocked,
+        e.ZOrderChange,
+    )
+
+    for val,kind in show:
+        if eventType == val:
+            if override:
+                g.trace(
+                    '%5s %18s in-state: %5s key: %s override: %s' % (
+                    self.tag,kind,repr(c.k.inState()),tkKey,override))
+            return
+
+    if traceAll and eventType not in ignore:
+        g.trace('%3s:%s' % (eventType,'unknown'))
+#@-node:ekr.20081121105001.179:traceEvent
+#@+node:ekr.20090407080217.1:traceFocus
+def traceFocus (self,eventType,obj):
+
+    ev = QtCore.QEvent
+
+    table = (
+        (ev.FocusIn,        'focus-in'),
+        (ev.FocusOut,       'focus-out'),
+        (ev.WindowActivate, 'activate'),
+        (ev.WindowDeactivate,'deactivate'),
+    )
+
+    for evKind,kind in table:
+        if eventType == evKind:
+            g.trace('%11s %s %s %s' % (
+                (kind,id(obj),
+                # event.reason(),
+                obj.objectName(),obj)))
+                # g.app.gui.widget_name(obj) or obj)))
+
+    # else: g.trace('unknown kind: %s' % eventType)
+#@-node:ekr.20090407080217.1:traceFocus
+#@+node:ekr.20090406071640.13:Event handlers called from eventFilter (qtBody)
+def onFocusIn (self,obj):
+
+    '''Handle a focus-in event in the body pane.'''
+
+    trace = False and not g.unitTesting
+
+    if trace: g.trace(obj,obj.objectName())
+
+    if obj.objectName() == 'richTextEdit':
+        wrapper = hasattr(obj,'leo_wrapper') and obj.leo_wrapper
+        if wrapper and wrapper != self.bodyCtrl:
+            self.selectEditor(wrapper)
+        self.onFocusColorHelper('focus-in',obj)
+        obj.setReadOnly(False)
+        obj.setFocus() # Weird, but apparently necessary.
+
+def onFocusOut (self,obj):
+
+    '''Handle a focus-out event in the body pane.'''
+
+    if obj.objectName() == 'richTextEdit':
+        self.onFocusColorHelper('focus-out',obj)
+        obj.setReadOnly(True)
+#@+node:ekr.20090608052916.3810:onFocusColorHelper
+badFocusColors = []
+
+def onFocusColorHelper(self,kind,obj):
+
+    trace = False and not g.unitTesting
+
+    colorName = g.choose(kind=='focus-in',
+        self.selectedBackgroundColor,
+        self.unselectedBackgroundColor)
+
+    if not colorName: return
+
+    if trace: g.trace(id(obj),'%9s' % (kind),str(obj.objectName()))
+
+    styleSheet = 'QTextEdit#richTextEdit { background-color: %s; }' % (
+        colorName)
+
+    if QtGui.QColor(colorName).isValid():
+        obj.setStyleSheet(styleSheet)
+    elif colorName not in self.badFocusColors:
+        self.badFocusColors.append(colorName)
+        g.es_print('invalid body background color: %s' % (colorName),color='blue')
+#@-node:ekr.20090608052916.3810:onFocusColorHelper
+#@-node:ekr.20090406071640.13:Event handlers called from eventFilter (qtBody)
+#@+node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged (self,p,undoType='Typing',s=None,e=None):
+
+    '''Officially change a headline.'''
+
+    trace = False and not g.unitTesting
+    verbose = False
+
+    c = self.c ; u = c.undoer
+    if not p:
+        if trace: g.trace('** no p')
+        return
+
+    item = self.getCurrentItem()
+    if not item:
+        if trace and verbose: g.trace('** no item')
+        return
+    if not e:
+        e = self.getTreeEditorForItem(item)
+    if not e:
+        if trace and verbose: g.trace('** not editing')
+        return
+
+    s = unicode(e.text())
+    self.closeEditorHelper(e,item)
+    oldHead = p.h
+    changed = s != oldHead
+    if changed:
+        if trace: g.trace('new',repr(s),'old',p.h,g.callers())
+        p.initHeadString(s)
+        item.setText(0,s) # Required to avoid full redraw.
+        undoData = u.beforeChangeNodeContents(p,oldHead=oldHead)
+        if not c.changed: c.setChanged(True)
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.body.recolor(p,incremental=True)
+        dirtyVnodeList = p.setDirty()
+        u.afterChangeNodeContents(p,undoType,undoData,
+            dirtyVnodeList=dirtyVnodeList)
+
+    # This is a crucial shortcut.
+    if g.unitTesting: return
+
+    if changed:
+        self.redraw_after_head_changed()
+
+    if 0: # Don't do this: it interferes with clicks, and is not needed.
+        if self.stayInTree:
+            c.treeWantsFocus()
+        else:
+            c.bodyWantsFocus()
+
+    c.outerUpdate()
+#@-node:ekr.20090124174652.59:onHeadChanged (nativeTree)
+#@-node:ekr.20090628113747.3718:Fixed bug: click on body makes it active
 #@-node:ekr.20090627090950.3714:Bugs
 #@+node:ekr.20090614134853.3635:New syntax coloring
 @nocolor-node
@@ -14920,9 +15423,9 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = False
-    traceEvent = True
-    traceKey = True
-    traceFocus = False
+    traceEvent = False
+    traceKey = False
+    traceFocus = True
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
@@ -15135,7 +15638,7 @@ def traceEvent (self,obj,event,tkKey,override):
     if 0: # Show focus events.
         show = (
             (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
-            (e.Enter,'enter'),(e.Leave,'leave'),
+            # (e.Enter,'enter'),(e.Leave,'leave'),
         )
 
     else:
@@ -15799,9 +16302,9 @@ def eventFilter(self, obj, event):
 
     trace = False and not g.unitTesting
     verbose = False
-    traceEvent = True
-    traceKey = True
-    traceFocus = False
+    traceEvent = False
+    traceKey = False
+    traceFocus = True
     c = self.c ; k = c.k
     eventType = event.type()
     ev = QtCore.QEvent
@@ -15986,8 +16489,8 @@ def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
         self.widget.connect(self.widget,
             QtCore.SIGNAL("textChanged()"),self.onTextChanged)
 
-        self.widget.connect(self.widget,
-            QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
+        # self.widget.connect(self.widget,
+            # QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
 
     self.injectIvars(c)
 #@-node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
@@ -16197,20 +16700,6 @@ def getName (self):
 
     return self.name
 #@-node:ekr.20081121105001.535:getName (baseTextWidget)
-#@+node:ekr.20081208041503.499:onClick (qtText)
-def onClick(self,event=None):
-
-    trace = False and not g.unitTesting
-
-    c = self.c
-    name = c.widget_name(self)
-
-    if trace: g.trace(name,c.p.h,self)
-
-    if name.startswith('body'):
-        if hasattr(c.frame,'statusLine'):
-            c.frame.statusLine.update()
-#@-node:ekr.20081208041503.499:onClick (qtText)
 #@+node:ekr.20081121105001.536:onTextChanged (qtText)
 def onTextChanged (self):
 
@@ -17467,6 +17956,20 @@ def createTab (self,tabName,widget=None,wrap='none'):
 #@-node:ekr.20090627090950.3715:Improved log
 #@-node:ekr.20090626070207.3713:4.6 rc1 projects
 #@+node:ekr.20081208155215.12:Unused
+#@+node:ekr.20081208041503.499:onClick (qtText)
+def onClick(self,event=None):
+
+    trace = True and not g.unitTesting
+
+    c = self.c
+    name = c.widget_name(self)
+
+    if trace: g.trace(self,name,g.callers(5))
+
+    if name.startswith('body'):
+        if hasattr(c.frame,'statusLine'):
+            c.frame.statusLine.update()
+#@-node:ekr.20081208041503.499:onClick (qtText)
 #@-node:ekr.20081208155215.12:Unused
 #@-all
 #@nonl
