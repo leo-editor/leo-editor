@@ -3606,6 +3606,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
             self.c = c
             self.parentFrame = parentFrame
+            self.toolbar = self
             self.w = c.frame.top.iconBar # A QToolBar.
             self.actions = []
 
@@ -3680,10 +3681,10 @@ class leoQtFrame (leoFrame.leoFrame):
 
             if command:
                 def button_callback(c=c,command=command):
-                    g.trace('command',command.__name__)
+                    # g.trace('command',command.__name__)
                     val = command()
                     if c.exists:
-                        c.bodyWantsFocus()
+                        # c.bodyWantsFocus()
                         c.outerUpdate()
                     return val
 

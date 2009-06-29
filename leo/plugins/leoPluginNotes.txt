@@ -1929,6 +1929,115 @@ def createDefaultOptionsDict(self):
 #@-node:ekr.20050808064245:createDefaultOptionsDict
 #@-node:ekr.20090430075506.2:Added support for generate_rst_header_comment option
 #@-node:ekr.20090430075506.5:4.6 b2 projects
+#@+node:ekr.20090629080139.5277:4.6 rc1 projects
+#@+node:ekr.20090628104247.5272:Support different colors of icon buttons
+#@+node:ekr.20060328125248.24:createAtButtonHelper & callback
+def createAtButtonHelper (self,p,h,statusLine,shortcut,bg='LightSteelBlue1',verbose=True):
+
+    '''Create a button from an @button node.
+
+    - Calls createIconButton to do all standard button creation tasks.
+    - Binds button presses to a callback that executes the script in node p.
+    '''
+    c = self.c ; k = c.k
+    buttonText = self.cleanButtonText(h)
+
+    # We must define the callback *after* defining b, so set both command and shortcut to None here.
+    b = self.createIconButton(text=h,command=None,shortcut=None,statusLine=statusLine,bg=bg)
+    if not b: return None
+
+    # Now that b is defined we can define the callback.
+    # Yes, executeScriptFromButton *does* use b (to delete b if requested by the script).
+    def atButtonCallback (event=None,self=self,p=p.copy(),b=b,c=c,buttonText=buttonText):
+        self.executeScriptFromButton (p,b,buttonText)
+        if c.exists: c.outerUpdate()
+
+    self.iconBar.setCommandForButton(b,atButtonCallback)
+
+    # At last we can define the command and use the shortcut.
+    k.registerCommand(buttonText.lower(),
+        shortcut=shortcut,func=atButtonCallback,
+        pane='button',verbose=verbose)
+
+    return b
+#@+node:ekr.20060328125248.28:executeScriptFromButton (mod_scripting)
+def executeScriptFromButton (self,p,b,buttonText):
+
+    '''Called from callbacks to execute the script in node p.'''
+
+    c = self.c
+
+    if c.disableCommandsMessage:
+        g.es(c.disableCommandsMessage,color='blue')
+    else:
+        g.app.scriptDict = {}
+        h = p.h
+        args = self.getArgs(h)
+        c.executeScript(args=args,p=p,silent=True)
+        # Remove the button if the script asks to be removed.
+        if g.app.scriptDict.get('removeMe'):
+            g.es("Removing '%s' button at its request" % buttonText)
+            self.deleteButton(b)
+
+    if 0: # Do *not* set focus here: the script may have changed the focus.
+        c.frame.bodyWantsFocus()
+#@nonl
+#@-node:ekr.20060328125248.28:executeScriptFromButton (mod_scripting)
+#@-node:ekr.20060328125248.24:createAtButtonHelper & callback
+#@+node:ekr.20060328125248.17:createIconButton
+def createIconButton (self,text,command,shortcut,statusLine,bg):
+
+    '''Create an icon button.  All icon buttons get created using this utility.
+
+    - Creates the actual button and its balloon.
+    - Adds the button to buttonsDict.
+    - Registers command with the shortcut.
+    - Creates x amd delete-x-button commands, where x is the cleaned button name.
+    - Binds a right-click in the button to a callback that deletes the button.'''
+
+    c = self.c ; k = c.k
+
+    # Create the button and add it to the buttons dict.
+    commandName = self.cleanButtonText(text).lower()
+
+    # Truncate only the text of the button, not the command name.
+    truncatedText = self.truncateButtonText(commandName)
+    if not truncatedText.strip():
+        g.es_print('%s ignored: no cleaned text' % (text.strip() or ''),color='red')
+        return None
+
+    # Command may be None.
+    b = self.iconBar.add(text=truncatedText,command=command,bg=bg)
+    if not b: return None
+
+    self.buttonsDict[b] = truncatedText
+
+    if statusLine:
+        self.createBalloon(b,statusLine)
+
+    # Register the command name if it exists.
+    if command:
+        k.registerCommand(commandName,shortcut=shortcut,func=command,pane='button',verbose=shortcut)
+
+    # Define the callback used to delete the button.
+    def deleteButtonCallback(event=None,self=self,b=b):
+        self.deleteButton(b, event=event)
+
+    if self.gui.guiName() == 'tkinter':
+        # Bind right-clicks to deleteButton.
+        c.bind(b,'<3>',deleteButtonCallback)
+
+    # Register the delete-x-button command.
+    deleteCommandName= 'delete-%s-button' % commandName
+    k.registerCommand(deleteCommandName,shortcut=None,
+        func=deleteButtonCallback,pane='button',verbose=False)
+        # Reporting this command is way too annoying.
+
+    return b
+#@nonl
+#@-node:ekr.20060328125248.17:createIconButton
+#@-node:ekr.20090628104247.5272:Support different colors of icon buttons
+#@-node:ekr.20090629080139.5277:4.6 rc1 projects
 #@-all
 #@nonl
 #@-node:ekr.20090430075506.3:@thin leoPluginNotes.txt

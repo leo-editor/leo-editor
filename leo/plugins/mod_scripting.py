@@ -683,7 +683,6 @@ class scriptingController:
             pane='button',verbose=verbose)
 
         return b
-    #@nonl
     #@+node:ekr.20060328125248.28:executeScriptFromButton (mod_scripting)
     def executeScriptFromButton (self,p,b,buttonText):
 

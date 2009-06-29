@@ -14,13 +14,14 @@ will be available. The buttons use the icon specified in the active Qt style
 #@-node:ville.20090518182905.5420:<< docstring >>
 #@nl
 
-__version__ = '0.0'
+__version__ = '0.2'
 #@<< version history >>
 #@+node:ville.20090518182905.5421:<< version history >>
 #@@killcolor
 #@+at
 # 
 # 0.1 Functionally complete version
+# 0.2 EKR: check p before calling c.selectPosition(p)
 #@-at
 #@-node:ville.20090518182905.5421:<< version history >>
 #@nl
@@ -72,7 +73,6 @@ class pluginController:
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
     #@-node:ville.20090518182905.5426:__init__
     #@+node:ville.20090518182905.5427:makeButtons
-
     def makeButtons(self):
         ib_w = self.c.frame.iconBar.w
         if not ib_w: return # EKR: can be None when unit testing.
@@ -80,7 +80,6 @@ class pluginController:
         icon_r = ib_w.style().standardIcon(QtGui.QStyle.SP_ArrowRight)
         act_l = QtGui.QAction(icon_l, 'prev', ib_w)           
         act_r = QtGui.QAction(icon_r, 'next', ib_w)           
-
         self.c.frame.iconBar.add(qaction = act_l, command = self.clickPrev)
         self.c.frame.iconBar.add(qaction = act_r, command = self.clickNext)
 
@@ -89,13 +88,17 @@ class pluginController:
     #@+node:ville.20090518182905.7867:clickPrev
     def clickPrev(self):
         c = self.c
-        c.selectPosition(c.nodeHistory.goPrev())
+        p = c.nodeHistory.goPrev()
+        # g.trace(p)
+        if p: c.selectPosition(p)
 
     #@-node:ville.20090518182905.7867:clickPrev
     #@+node:ville.20090518182905.7868:clickNext
     def clickNext(self):
         c = self.c
-        c.selectPosition(c.nodeHistory.goNext())
+        p = c.nodeHistory.goNext()
+        # g.trace(p)
+        if p: c.selectPosition(p)
     #@-node:ville.20090518182905.7868:clickNext
     #@-others
 #@-node:ville.20090518182905.5425:class pluginController

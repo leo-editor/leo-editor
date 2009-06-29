@@ -120,6 +120,7 @@ def __init__ (self,c,parentFrame):
 
     self.c = c
     self.parentFrame = parentFrame
+    self.toolbar = self
     self.w = c.frame.top.iconBar # A QToolBar.
     self.actions = []
 
@@ -194,10 +195,10 @@ def add(self,*args,**keys):
 
     if command:
         def button_callback(c=c,command=command):
-            g.trace('command',command.__name__)
+            # g.trace('command',command.__name__)
             val = command()
             if c.exists:
-                c.bodyWantsFocus()
+                # c.bodyWantsFocus()
                 c.outerUpdate()
             return val
 
@@ -5185,6 +5186,7 @@ def __init__ (self,c,parentFrame):
 
     self.c = c
     self.parentFrame = parentFrame
+    self.toolbar = self
     self.w = c.frame.top.iconBar # A QToolBar.
     self.actions = []
 
@@ -5259,10 +5261,10 @@ def add(self,*args,**keys):
 
     if command:
         def button_callback(c=c,command=command):
-            g.trace('command',command.__name__)
+            # g.trace('command',command.__name__)
             val = command()
             if c.exists:
-                c.bodyWantsFocus()
+                # c.bodyWantsFocus()
                 c.outerUpdate()
             return val
 
@@ -11501,10 +11503,10 @@ def add(self,*args,**keys):
 
     if command:
         def button_callback(c=c,command=command):
-            g.trace('command',command.__name__)
+            # g.trace('command',command.__name__)
             val = command()
             if c.exists:
-                c.bodyWantsFocus()
+                # c.bodyWantsFocus()
                 c.outerUpdate()
             return val
 
@@ -11525,6 +11527,7 @@ def __init__ (self,c,parentFrame):
 
     self.c = c
     self.parentFrame = parentFrame
+    self.toolbar = self
     self.w = c.frame.top.iconBar # A QToolBar.
     self.actions = []
 
@@ -11599,10 +11602,10 @@ def add(self,*args,**keys):
 
     if command:
         def button_callback(c=c,command=command):
-            g.trace('command',command.__name__)
+            # g.trace('command',command.__name__)
             val = command()
             if c.exists:
-                c.bodyWantsFocus()
+                # c.bodyWantsFocus()
                 c.outerUpdate()
             return val
 
