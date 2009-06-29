@@ -5902,7 +5902,7 @@ class baseCommands (object):
         c = self
 
         theFile = c.os_path_finalize_join(
-            g.app.loadDir,'..','doc','html','leo_TOC.html')
+            g.app.loadDir,'..','doc','html','_build','html','leo_toc.html')
 
         url = 'file:%s' % theFile
 
