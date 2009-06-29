@@ -6676,7 +6676,8 @@ class rectangleCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20050920084036.232:stringRectangle
     def stringRectangle (self,event):
 
-        '''Prompt for a string, then replace the contents of a rectangle with a string on each line.'''
+        '''Prompt for a string, then replace the contents of a rectangle
+        with a string on each line.'''
 
         c = self.c ; k = self.k ; state = k.getState('string-rect')
         if g.app.unitTesting:
@@ -6696,10 +6697,23 @@ class rectangleCommandsClass (baseEditCommandsClass):
             w = self.w
             self.beginCommand('string-rectangle')
             r1, r2, r3, r4 = self.stringRect
+
+            #g.trace(self.stringRect)
+            s = w.getAllText()
             for r in range(r1,r3+1):
-                w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
-                w.insert('%s.%s' % (r,r2),k.arg)
-            w.setSelectionRange('%d.%d' % (r1,r2),'%d.%d' % (r3,r2+len(k.arg)))
+                i = g.convertRowColToPythonIndex(s,r-1,r2)
+                j = g.convertRowColToPythonIndex(s,r-1,r4)
+                s = s[:i] + k.arg + s[j:]
+            w.setAllText(s)
+            i = g.convertRowColToPythonIndex(s,r1-1,r2)
+            j = g.convertRowColToPythonIndex(s,r3-1,r2+len(k.arg))
+            w.setSelectionRange(i,j)
+
+            # Can be very slow.
+            # for r in range(r1,r3+1):
+                # w.delete('%s.%s' % (r,r2),'%s.%s' % (r,r4))
+                # w.insert('%s.%s' % (r,r2),k.arg)
+            # w.setSelectionRange('%d.%d' % (r1,r2),'%d.%d' % (r3,r2+len(k.arg)))
 
             self.endCommand()
     #@nonl
