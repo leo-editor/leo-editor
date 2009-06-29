@@ -3853,7 +3853,6 @@ def pr(*args,**keys):
     s = g.translateArgs(args,d) # Translates everything to unicode.
 
     try: # We can't use any print keyword args in Python 2.x!
-
         s2 = g.toEncodedString(s,encoding)
         sys.stdout.write(s2+nl)
     except Exception:

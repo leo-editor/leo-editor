@@ -7064,9 +7064,9 @@ class leoQtEventFilter(QtCore.QObject):
 
         trace = False and not g.unitTesting
         verbose = False
-        traceEvent = False
+        traceEvent = True
         traceKey = False
-        traceFocus = True
+        traceFocus = False
         c = self.c ; k = c.k
         eventType = event.type()
         ev = QtCore.QEvent
@@ -7273,20 +7273,24 @@ class leoQtEventFilter(QtCore.QObject):
         if g.unitTesting: return
 
         c = self.c ; e = QtCore.QEvent
-        traceAll = True
+        keys = True ; traceAll = True 
         eventType = event.type()
 
-        if 0: # Show focus events.
-            show = (
-                (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
-                # (e.Enter,'enter'),(e.Leave,'leave'),
-            )
+        show = [
+            # (e.Enter,'enter'),(e.Leave,'leave'),
+            (e.FocusIn,'focus-in'),(e.FocusOut,'focus-out'),
+            # (e.MouseMove,'mouse-move'),
+            (e.MouseButtonPress,'mouse-dn'),
+            (e.MouseButtonRelease,'mouse-up'),
+        ]
 
-        else:
-            show = (
-                (e.KeyPress,'key-press'),(e.KeyRelease,'key-release'),
+        if keys:
+            show2 = [
+                (e.KeyPress,'key-press'),
+                (e.KeyRelease,'key-release'),
                 (e.ShortcutOverride,'shortcut-override'),
-            )
+            ]
+            show.extend(show2)
 
         ignore = (
             1,16,67,70,
@@ -7300,7 +7304,7 @@ class leoQtEventFilter(QtCore.QObject):
             e.HoverEnter,e.HoverLeave,e.HoverMove,
             e.LayoutRequest,
             e.MetaCall,e.Move,e.Paint,e.Resize,
-            e.MouseMove,e.MouseButtonPress,e.MouseButtonRelease,
+            # e.MouseMove,e.MouseButtonPress,e.MouseButtonRelease,
             e.PaletteChange,
             e.ParentChange,
             e.Polish,e.PolishRequest,
@@ -7314,10 +7318,9 @@ class leoQtEventFilter(QtCore.QObject):
 
         for val,kind in show:
             if eventType == val:
-                if override:
-                    g.trace(
-                        '%5s %18s in-state: %5s key: %s override: %s' % (
-                        self.tag,kind,repr(c.k.inState()),tkKey,override))
+                g.trace(
+                    '%5s %18s in-state: %5s key: %s override: %s' % (
+                    self.tag,kind,repr(c.k.inState()),tkKey,override))
                 return
 
         if traceAll and eventType not in ignore:
