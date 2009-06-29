@@ -2,14 +2,12 @@
 #@+node:ekr.20040117181936:@thin ../doc/leoToDo.txt
 #@+all
 #@+node:ekr.20080814103428.4:To do before 4.6 rc1 (bug tracker, docs)
-#@+node:ekr.20090628190015.6002:Make sure new jEdit colorizer handles PHP correctly
-#@-node:ekr.20090628190015.6002:Make sure new jEdit colorizer handles PHP correctly
 #@+node:ekr.20090628190015.6003:Review vim problems
 # Can any be easily fixed?
 #@nonl
 #@-node:ekr.20090628190015.6003:Review vim problems
-#@+node:ekr.20090626123815.5988:Fix all high and medium bug tracker docs
-#@-node:ekr.20090626123815.5988:Fix all high and medium bug tracker docs
+#@+node:ekr.20090626123815.5988:Fix all bug tracker bugs
+#@-node:ekr.20090626123815.5988:Fix all bug tracker bugs
 #@+node:ekr.20090626123815.5987:Docs
 @nocolor-node
 

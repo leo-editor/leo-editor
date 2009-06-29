@@ -331,7 +331,7 @@ class tkinterGui(leoGui.leoGui):
     #@+node:ekr.20081121110412.371:tkGui panels
     def createComparePanel(self,c):
         """Create a Tkinter color picker panel."""
-        return leoTkinterComparePanel.leoTkinterComparePanel(c)
+        return leoTkinterComparePanel(c)
 
     # def createFindPanel(self,c):
         # """Create a hidden Tkinter find panel."""
