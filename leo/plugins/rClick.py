@@ -716,16 +716,12 @@ requiredIvars = (
 def init ():
     """Initialize and register plugin."""
 
-    if not Tk:
-        return False
-
     if g.app.gui is None:
-        g.app.createTkGui(__file__)
+        g.app.createDefaultGui(__file__)
 
-    ok = g.app.gui.guiName() == "tkinter"
+    ok = g.app.gui.guiName() in ("tkinter","qt")
 
     if ok:
-
         leoPlugins.registerHandler('after-create-leo-frame',onCreate)
         leoPlugins.registerHandler('close-frame',onClose)
 
@@ -1966,6 +1962,8 @@ class pluginController(baseClasses.basePluginController):
         k = c.k 
 
         event = keywords.get('event')
+
+        g.trace(event)
 
         if not event and not g.app.unitTesting:
             return

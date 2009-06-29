@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" a="E" str_leo_pos="0,1,4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -23,12 +23,12 @@
 <v t="ekr.20071206070207"></v>
 </v>
 </v>
-<v t="ekr.20070224123943" a="E"><vh>@settings</vh>
+<v t="ekr.20070224123943"><vh>@settings</vh>
 <v t="ekr.20080922164255.1"><vh>@string test = c:\leo.repo\trunk\leo\test</vh></v>
+<v t="ekr.20090629105832.1790"><vh>@@bool big_outline_pane = True</vh></v>
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
-<v t="ekr.20090628190625.1786"><vh>@bool big_outline_pane = True</vh></v>
 <v t="ekr.20071025193940"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20080529111617.1"><vh>plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
@@ -346,6 +346,7 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
+<v t="ekr.20090629121502.1792"><vh>test of rclick plugin</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -1447,14 +1448,13 @@ mod_scripting.py
 
 nodenavigator.py
 
-
 vim.py
 # xemacs.py
 
 # Other interesting plugins
 # leo_to_html.py
 # leoOPML.py
-nav_qt.py
+# nav_qt.py
 # graphed.py
 
 # Tk plugins...
@@ -1462,7 +1462,7 @@ nav_qt.py
 # color_markup.py # Does not work with threading colorizer.
 # image.py
 # nav_buttons.py
-# rClick.py
+rClick.py
 # threading_colorizer.py
 # toolbar.py
 </t>
@@ -2299,7 +2299,7 @@ g.es('done: %s files written' %(n))</t>
 # Important: see http://webpages.charter.net/edreamleo/FAQ.html#unicode-issues
 
 import sys
-        
+
 print '=' * 40
 
 e = sys.getdefaultencoding()
@@ -2320,7 +2320,8 @@ for s in table:
     if type(s) != type(u'a'):
         s = unicode(s,e)
     print      'print     ',s
-    print      'repr(s)   ',repr(s)</t>
+    print      'repr(s)   ',repr(s)
+</t>
 <t tx="ekr.20080822153619.1"></t>
 <t tx="ekr.20080823154546.1">p2 = p.insertAfter()
 p2.setHeadString('inserted node')
@@ -2714,7 +2715,6 @@ def spam(cheese):
     pass
 </t>
 <t tx="ekr.20090628095136.1786"># This is a test.</t>
-<t tx="ekr.20090628190625.1786"></t>
 <t tx="ekr.20090628221657.1790"># -*- coding: utf-8 -*-
 #@+leo-ver=4-thin
 #@+node:ekr.20041005105605.1:@thin leoAtFile.py
@@ -7820,5 +7820,7 @@ class atFile:
 #@-node:ekr.20041005105605.1:@thin leoAtFile.py
 #@-leo
 </t>
+<t tx="ekr.20090629105832.1790"></t>
+<t tx="ekr.20090629121502.1792">c.frame.OnBodyRClick(event=None)</t>
 </tnodes>
 </leo_file>

@@ -2798,6 +2798,8 @@ def trace (*args,**keys):
 #@+node:ekr.20080710101653.1:g.pr
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
+pr_warning_given = False
+
 def pr(*args,**keys):
 
     '''Print all non-keyword args, and put them to the log pane.
@@ -2808,6 +2810,10 @@ def pr(*args,**keys):
     # Compute the effective args.
     d = {'commas':False,'newline':True,'spaces':True}
     d = g.doKeywordArgs(keys,d)
+    newline = d.get('newline')
+    nl = g.choose(newline,'\n','')
+    encoding = g.choose(hasattr(sys.stdout,'encoding'),
+        sys.stdout.encoding,'utf-8')
 
     # Important:  Python's print statement *can* handle unicode.
     # However, the following must appear in Python\Lib\sitecustomize.py:
@@ -2815,17 +2821,20 @@ def pr(*args,**keys):
     s = g.translateArgs(args,d) # Translates everything to unicode.
 
     try: # We can't use any print keyword args in Python 2.x!
-        s = g.toEncodedString(s,sys.stdout.encoding)
-        if d.get('newline'):
-            sys.stdout.write(s+'\n')
-        else:
-            sys.stdout.write(s)
+
+        s2 = g.toEncodedString(s,encoding)
+        sys.stdout.write(s2+nl)
     except Exception:
-        print('unexpected Exception in g.pr')
-        print('make sure your sitecustomize.py contains::')
-        print('    sys.setdefaultencoding("utf-8")')
-        g.es_exception()
-        g.trace(g.callers())
+        if not g.pr_warning_given:
+            g.pr_warning_given = True
+            print('unexpected Exception in g.pr')
+            print('make sure your sitecustomize.py contains::')
+            print('    sys.setdefaultencoding("utf-8")')
+            g.es_exception()
+            g.trace(g.callers())
+        s2 = s.encode('ascii',"replace")
+        sys.stdout.write(s2+nl)
+#@nonl
 #@-node:ekr.20080710101653.1:g.pr
 #@+node:ekr.20080220111323:g.translateArgs
 def translateArgs(args,d):

@@ -711,45 +711,6 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
     def setColorFromConfig (self,w=None):
 
         '''Set the font in the widget w (a body editor).'''
-
-        # c = self.c
-        # if w is None: w = self.widget
-
-        # bg = c.config.getColor("body_text_background_color") or 'white'
-        # try:
-            # pass ### w.configure(bg=bg)
-        # except:
-            # g.es("exception setting body text background color")
-            # g.es_exception()
-
-        # fg = c.config.getColor("body_text_foreground_color") or 'black'
-        # try:
-            # pass ### w.configure(fg=fg)
-        # except:
-            # g.es("exception setting body textforeground color")
-            # g.es_exception()
-
-        # bg = c.config.getColor("body_insertion_cursor_color")
-        # if bg:
-            # try:
-                # pass ### w.configure(insertbackground=bg)
-            # except:
-                # g.es("exception setting body pane cursor color")
-                # g.es_exception()
-
-        # sel_bg = c.config.getColor('body_text_selection_background_color') or 'Gray80'
-        # try:
-            # pass ### w.configure(selectbackground=sel_bg)
-        # except Exception:
-            # g.es("exception setting body pane text selection background color")
-            # g.es_exception()
-
-        # sel_fg = c.config.getColor('body_text_selection_foreground_color') or 'white'
-        # try:
-            # pass ### w.configure(selectforeground=sel_fg)
-        # except Exception:
-            # g.es("exception setting body pane text selection foreground color")
-            # g.es_exception()
     #@-node:ekr.20081121105001.576:setColorFromConfig
     #@+node:ekr.20081121105001.577:setConfig
     def setConfig (self):
