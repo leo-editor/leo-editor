@@ -3927,11 +3927,15 @@ class leoQtFrame (leoFrame.leoFrame):
 
         trace = False and not g.unitTesting
 
+        f = self
+
         if trace: g.trace('%5s, %0.2f %0.2f' % (
             self.splitVerticalFlag,ratio,ratio2),g.callers(4))
 
-        self.divideLeoSplitter(self.splitVerticalFlag,ratio)
-        self.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
+        if f.bigTree: ratio = f.ratio = 1.0
+
+        f.divideLeoSplitter(self.splitVerticalFlag,ratio)
+        f.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
     #@-node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
     #@+node:leohag.20081208130321.12:divideLeoSplitter
     # Divides the main or secondary splitter, using the key invariant.

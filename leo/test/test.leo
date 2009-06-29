@@ -28,6 +28,7 @@
 <v t="ekr.20080412082246.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20070604100125"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070503085527"><vh>@bool use_chapters = True</vh></v>
+<v t="ekr.20090628190625.1786"><vh>@@bool big_outline_pane = False</vh></v>
 <v t="ekr.20071025193940"><vh>@@enabled-plugins</vh></v>
 <v t="ekr.20080529111617.1"><vh>plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
@@ -2711,5 +2712,6 @@ def spam(cheese):
     pass
 </t>
 <t tx="ekr.20090628095136.1786"># This is a test.</t>
+<t tx="ekr.20090628190625.1786"></t>
 </tnodes>
 </leo_file>
