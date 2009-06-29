@@ -3844,8 +3844,10 @@ def pr(*args,**keys):
     d = g.doKeywordArgs(keys,d)
     newline = d.get('newline')
     nl = g.choose(newline,'\n','')
-    encoding = g.choose(hasattr(sys.stdout,'encoding'),
-        sys.stdout.encoding,'utf-8')
+    if hasattr(sys.stdout,'encoding') and sys.stdout.encoding:
+        encoding = sys.stdout.encoding
+    else:
+        encoding = 'utf-8'
 
     # Important:  Python's print statement *can* handle unicode.
     # However, the following must appear in Python\Lib\sitecustomize.py:
