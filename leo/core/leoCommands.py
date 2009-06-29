@@ -960,10 +960,9 @@ class baseCommands (object):
 
         """Return the path to the temp file corresponding to p and ext."""
 
-        name = "LeoTemp_%s_%s%s" % (
-            str(id(p.v.t)),
-            g.sanitize_filename(p.h),
-            ext)
+        name = "%s_LeoTemp_%s%s" % (
+            g.sanitize_filename(p.headString()),
+            str(id(p.v.t)),ext)
 
         name = g.toUnicode(name,g.app.tkEncoding)
 
