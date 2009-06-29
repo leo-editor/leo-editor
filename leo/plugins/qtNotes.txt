@@ -4972,7 +4972,7 @@ def finishCreate (self,c):
 
     # g.trace('***qtFrame')
 
-    self.bigTree           = c.config.getBool('big_outline_pane')
+    # self.bigTree         = c.config.getBool('big_outline_pane')
     self.trace_status_line = c.config.getBool('trace_status_line')
     self.use_chapters      = c.config.getBool('use_chapters')
     self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
@@ -5514,8 +5514,6 @@ def resizePanesToRatio(self,ratio,ratio2):
     if trace: g.trace('%5s, %0.2f %0.2f' % (
         self.splitVerticalFlag,ratio,ratio2),g.callers(4))
 
-    if f.bigTree: ratio = f.ratio = 1.0
-
     f.divideLeoSplitter(self.splitVerticalFlag,ratio)
     f.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
 #@-node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
@@ -5550,7 +5548,7 @@ def divideAnySplitter (self,frac,splitter):
     sizes = splitter.sizes()
 
     if len(sizes)!=2:
-        g.trace('there must be two and only two widgets in the splitter')
+        g.trace('%s widget(s) in %s' % (len(sizes),id(splitter)))
 
     if frac > 1 or frac < 0:
         g.trace('split ratio [%s] out of range 0 <= frac <= 1'%frac)
@@ -11727,7 +11725,7 @@ def finishCreate (self,c):
 
     # g.trace('***qtFrame')
 
-    self.bigTree           = c.config.getBool('big_outline_pane')
+    # self.bigTree         = c.config.getBool('big_outline_pane')
     self.trace_status_line = c.config.getBool('trace_status_line')
     self.use_chapters      = c.config.getBool('use_chapters')
     self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
@@ -11925,8 +11923,6 @@ def resizePanesToRatio(self,ratio,ratio2):
     if trace: g.trace('%5s, %0.2f %0.2f' % (
         self.splitVerticalFlag,ratio,ratio2),g.callers(4))
 
-    if f.bigTree: ratio = f.ratio = 1.0
-
     f.divideLeoSplitter(self.splitVerticalFlag,ratio)
     f.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
 #@-node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
@@ -11961,7 +11957,7 @@ def divideAnySplitter (self,frac,splitter):
     sizes = splitter.sizes()
 
     if len(sizes)!=2:
-        g.trace('there must be two and only two widgets in the splitter')
+        g.trace('%s widget(s) in %s' % (len(sizes),id(splitter)))
 
     if frac > 1 or frac < 0:
         g.trace('split ratio [%s] out of range 0 <= frac <= 1'%frac)
@@ -12596,67 +12592,6 @@ def redraw_after_icons_changed (self):
         self.redrawing = False
 #@-node:ekr.20090124174652.27:redraw_after_icons_changed
 #@-node:ekr.20090628184822.3717:Update icons after middle-button paste
-#@+node:ekr.20090628184822.3718:Honor big_outline_pane setting
-#@+node:ekr.20081121105001.254:qtFrame.finishCreate & helpers
-def finishCreate (self,c):
-
-    f = self ; f.c = c
-
-    # g.trace('***qtFrame')
-
-    self.bigTree           = c.config.getBool('big_outline_pane')
-    self.trace_status_line = c.config.getBool('trace_status_line')
-    self.use_chapters      = c.config.getBool('use_chapters')
-    self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
-
-    f.top = DynamicWindow(c)
-    g.app.gui.attachLeoIcon(f.top)
-    f.top.setWindowTitle(self.title)
-    f.top.show()
-
-    f.createIconBar() # A base class method.
-    f.createSplitterComponents()
-    f.createStatusLine() # A base class method.
-    f.createFirstTreeNode() # Call the base-class method.
-    f.menu = leoQtMenu(f)
-    c.setLog()
-    g.app.windowList.append(f)
-    c.initVersion()
-    c.signOnWithVersion()
-    f.miniBufferWidget = leoQtMinibuffer(c)
-    c.bodyWantsFocusNow()
-#@+node:ekr.20081121105001.255:createSplitterComponents (qtFrame)
-def createSplitterComponents (self):
-
-    f = self ; c = f.c
-
-    f.tree  = leoQtTree(c,f)
-    f.log   = leoQtLog(f,None)
-    f.body  = leoQtBody(f,None)
-
-    if f.use_chapters:
-        c.chapterController = cc = leoChapters.chapterController(c)
-
-    f.splitVerticalFlag,f.ratio,f.secondary_ratio = f.initialRatios()
-    f.resizePanesToRatio(f.ratio,f.secondary_ratio)
-#@-node:ekr.20081121105001.255:createSplitterComponents (qtFrame)
-#@-node:ekr.20081121105001.254:qtFrame.finishCreate & helpers
-#@+node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
-def resizePanesToRatio(self,ratio,ratio2):
-
-    trace = False and not g.unitTesting
-
-    f = self
-
-    if trace: g.trace('%5s, %0.2f %0.2f' % (
-        self.splitVerticalFlag,ratio,ratio2),g.callers(4))
-
-    if f.bigTree: ratio = f.ratio = 1.0
-
-    f.divideLeoSplitter(self.splitVerticalFlag,ratio)
-    f.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
-#@-node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
-#@-node:ekr.20090628184822.3718:Honor big_outline_pane setting
 #@+node:ekr.20090627090950.3715:Improved log
 @nocolor-node
 
@@ -13741,7 +13676,7 @@ def finishCreate (self,c):
 
     # g.trace('***qtFrame')
 
-    self.bigTree           = c.config.getBool('big_outline_pane')
+    # self.bigTree         = c.config.getBool('big_outline_pane')
     self.trace_status_line = c.config.getBool('trace_status_line')
     self.use_chapters      = c.config.getBool('use_chapters')
     self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')

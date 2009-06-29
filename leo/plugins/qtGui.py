@@ -1594,6 +1594,8 @@ class DynamicWindow(QtGui.QMainWindow):
 
         QtGui.QMainWindow.__init__(self,parent)
 
+        self.bigTree = c.config.getBool('big_outline_pane')
+
         if useUI:  
             self.ui = uic.loadUi(ui_description_file, self)
         else:
@@ -1640,9 +1642,16 @@ class DynamicWindow(QtGui.QMainWindow):
         self.createCentralWidget()
         self.createMainLayout(self.centralwidget)
             # Creates .verticalLayout, .splitter and .splitter_2.
-        self.createOutlinePane(self.splitter)
-        self.createLogPane(self.splitter)
-        self.createBodyPane(self.splitter_2)
+        if self.bigTree:
+            self.createBodyPane(self.splitter)
+            self.createLogPane(self.splitter)
+            treeFrame = self.createOutlinePane(self.splitter_2)
+            self.splitter_2.addWidget(treeFrame)
+            self.splitter_2.addWidget(self.splitter)
+        else:
+            self.createOutlinePane(self.splitter)
+            self.createLogPane(self.splitter)
+            self.createBodyPane(self.splitter_2)
         self.createMiniBuffer(self.centralwidget)
         self.createMenuBar()
         self.createStatusBar(MainWindow)
@@ -1738,6 +1747,7 @@ class DynamicWindow(QtGui.QMainWindow):
 
         vLayout = self.createVLayout(parent,'mainVLayout',margin=3)
 
+        # Splitter two is the "main" splitter, containing splitter.
         splitter2 = QtGui.QSplitter(parent)
         splitter2.setOrientation(QtCore.Qt.Vertical)
         splitter2.setObjectName("splitter_2")
@@ -1746,14 +1756,15 @@ class DynamicWindow(QtGui.QMainWindow):
         splitter.setOrientation(QtCore.Qt.Horizontal)
         splitter.setObjectName("splitter")
 
-        self.setSizePolicy(splitter)
-        vLayout.addWidget(splitter2)
+        # g.trace('splitter %s splitter2 %s' % (id(splitter),id(splitter2)))
 
         # Official ivars
         self.verticalLayout = vLayout
         self.splitter = splitter
         self.splitter_2 = splitter2
 
+        self.setSizePolicy(self.splitter)
+        self.verticalLayout.addWidget(self.splitter_2)
     #@-node:ekr.20090424085523.41:createMainLayout (DynamicWindow)
     #@+node:ekr.20090424085523.45:createMenuBar
     def createMenuBar (self):
@@ -1802,24 +1813,21 @@ class DynamicWindow(QtGui.QMainWindow):
             vPolicy = QtGui.QSizePolicy.Expanding)
         innerFrame = self.createFrame(treeFrame,'outlineInnerFrame',
             hPolicy = QtGui.QSizePolicy.Preferred)
+
         treeWidget = self.createTreeWidget(innerFrame,'treeWidget')
 
-        # Pack.
         grid = self.createGrid(treeFrame,'outlineGrid')
         grid.addWidget(innerFrame, 0, 0, 1, 1)
         innerGrid = self.createGrid(innerFrame,'outlineInnerGrid')
         innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
-
-        # Signals.
-        if False: # Ville's bug fix.  Crashes with or without this.
-            QtCore.QObject.connect(treeWidget,
-                QtCore.SIGNAL("itemSelectionChanged()"),self.showNormal)
 
         # Official ivars...
         self.treeWidget = treeWidget
         # self.leo_outline_frame = treeFrame
         # self.leo_outline_grid = grid
         # self.leo_outline_inner_frame = innerFrame
+
+        return treeFrame
     #@-node:ekr.20090424085523.47:createOutlinePane
     #@+node:ekr.20090424085523.46:createStatusBar
     def createStatusBar (self,parent):
@@ -3390,7 +3398,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
         # g.trace('***qtFrame')
 
-        self.bigTree           = c.config.getBool('big_outline_pane')
+        # self.bigTree         = c.config.getBool('big_outline_pane')
         self.trace_status_line = c.config.getBool('trace_status_line')
         self.use_chapters      = c.config.getBool('use_chapters')
         self.use_chapter_tabs  = c.config.getBool('use_chapter_tabs')
@@ -3935,8 +3943,6 @@ class leoQtFrame (leoFrame.leoFrame):
         if trace: g.trace('%5s, %0.2f %0.2f' % (
             self.splitVerticalFlag,ratio,ratio2),g.callers(4))
 
-        if f.bigTree: ratio = f.ratio = 1.0
-
         f.divideLeoSplitter(self.splitVerticalFlag,ratio)
         f.divideLeoSplitter(not self.splitVerticalFlag,ratio2)
     #@-node:ekr.20081121105001.287:resizePanesToRatio (qtFrame)
@@ -3971,7 +3977,7 @@ class leoQtFrame (leoFrame.leoFrame):
         sizes = splitter.sizes()
 
         if len(sizes)!=2:
-            g.trace('there must be two and only two widgets in the splitter')
+            g.trace('%s widget(s) in %s' % (len(sizes),id(splitter)))
 
         if frac > 1 or frac < 0:
             g.trace('split ratio [%s] out of range 0 <= frac <= 1'%frac)

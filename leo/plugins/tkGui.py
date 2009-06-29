@@ -3429,7 +3429,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         f.outerFrame.pack(expand=1,fill="both")
     #@nonl
     #@-node:ekr.20081121110412.153:createOuterFrames
-    #@+node:ekr.20081121110412.154:createSplitterComponents (tkFrame) (removed frame.bodyCtrl ivar)
+    #@+node:ekr.20081121110412.154:createSplitterComponents (tkFrame)
     def createSplitterComponents (self):
 
         f = self ; c = f.c
@@ -3463,7 +3463,7 @@ class leoTkinterFrame (leoFrame.leoFrame):
         f.reconfigurePanes()
         f.body.setFontFromConfig()
         f.body.setColorFromConfig()
-    #@-node:ekr.20081121110412.154:createSplitterComponents (tkFrame) (removed frame.bodyCtrl ivar)
+    #@-node:ekr.20081121110412.154:createSplitterComponents (tkFrame)
     #@+node:ekr.20081121110412.155:f.enableTclTraces
     def enableTclTraces (self):
 
