@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -346,7 +346,6 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
-<v t="ekr.20090629121502.1792"><vh>test of rclick plugin</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -7821,6 +7820,5 @@ class atFile:
 #@-leo
 </t>
 <t tx="ekr.20090629105832.1790"></t>
-<t tx="ekr.20090629121502.1792">c.frame.OnBodyRClick(event=None)</t>
 </tnodes>
 </leo_file>

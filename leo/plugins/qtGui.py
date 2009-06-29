@@ -73,6 +73,57 @@ if 0:
 #@+node:ekr.20081121105001.515: << define text widget classes >>
 # Order matters when defining base classes.
 
+#@<< define QTextBrowserSubclass >>
+#@+node:ekr.20090629160050.3739: << define QTextBrowserSubclass >>
+class QTextBrowserSubclass (QtGui.QTextBrowser):
+
+    '''A subclass of QTextBrowser that overrides the mouse event handlers.'''
+
+    def __init__(self,parent,c):
+        self.leo_c = c
+        QtGui.QTextBrowser.__init__(self,parent)
+
+    def leo_dumpButton(self,event,tag):
+        trace = False and not g.unitTesting
+        button = event.button()
+        table = (
+            (QtCore.Qt.NoButton,'no button'),
+            (QtCore.Qt.LeftButton,'left-button'),
+            (QtCore.Qt.RightButton,'right-button'),
+            (QtCore.Qt.MidButton,'middle-button'),
+        )
+        for val,s in table:
+            if button == val:
+                kind = s; break
+        else: kind = 'unknown: %s' % repr(button)
+        if trace: g.trace(tag,kind)
+        return kind
+
+    def mousePressEvent (self,event):
+        if 1:
+            QtGui.QTextBrowser.mousePressEvent(self,event)
+        else: # Not ready yet
+            kind = self.leo_dumpButton(event,'press')
+            if kind == 'right-button':
+                event.leo_widget = self # inject the widget.
+                result = self.leo_c.frame.OnBodyRClick(event=event)
+                # g.trace('result of OnBodyRClick',repr(result))
+                if result != 'break':
+                    QtGui.QTextBrowser.mousePressEvent(self,event)
+            elif kind == 'left-button':
+                event.leo_widget = self # inject the widget.
+                result = self.leo_c.frame.OnBodyClick(event=event)
+                # g.trace('result of OnBodyClick',repr(result))
+                if result != 'break':
+                    QtGui.QTextBrowser.mousePressEvent(self,event)
+            else:
+                QtGui.QTextBrowser.mousePressEvent(self,event)
+
+    # def mouseReleaseEvent(self,event):
+        # kind = self.leo_dumpButton(event,'release')
+        # QtGui.QTextBrowser.mouseReleaseEvent(self,event)
+#@-node:ekr.20090629160050.3739: << define QTextBrowserSubclass >>
+#@nl
 #@<< define leoQtBaseTextWidget class >>
 #@+node:ekr.20081121105001.516: << define leoQtBaseTextWidget class >>
 class leoQtBaseTextWidget (leoFrame.baseTextWidget):
@@ -115,6 +166,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 # QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
 
         self.injectIvars(c)
+    #@nonl
     #@-node:ekr.20081121105001.518:ctor (leoQtBaseTextWidget)
     #@+node:ekr.20081121105001.519:injectIvars
     def injectIvars (self,name='1',parentFrame=None):
@@ -146,6 +198,10 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     def bind (self,stroke,command,**keys):
         pass # eventFilter handles all keys.
     #@-node:ekr.20081121105001.520: Do nothings
+    #@+node:ekr.20090629160050.3737:Mouse events
+    # These are overrides of the base-class events.
+
+    #@-node:ekr.20090629160050.3737:Mouse events
     #@+node:ekr.20081121105001.521: Must be defined in base class
     #@+node:ekr.20081121105001.522: Focus
     def getFocus(self):
@@ -1934,9 +1990,9 @@ class DynamicWindow(QtGui.QMainWindow):
         shape = QtGui.QFrame.NoFrame,
     ):
 
-        # w = QtGui.QTextEdit(parent)
-        # g.trace(g.callers(5))
-        w = QtGui.QTextBrowser(parent)
+        # w = QtGui.QTextBrowser(parent)
+        c = self.c
+        w = QTextBrowserSubclass(parent,c)
         # self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         w.setFrameShape(shape)
         w.setFrameShadow(shadow)
@@ -2442,8 +2498,8 @@ class leoQtBody (leoFrame.leoBody):
         n = self.numberOfEditors
 
         # Step 1: create the editor.
-        # w = QtGui.QTextEdit(f)
-        w = QtGui.QTextBrowser(f)
+        # w = QtGui.QTextBrowser(f)
+        w = QTextBrowserSubclass(f,c)
         w.setObjectName('richTextEdit') # Will be changed later.
         wrapper = leoQTextEditWidget(w,name='body',c=c)
         self.packLabel(w)
@@ -4019,24 +4075,35 @@ class leoQtFrame (leoFrame.leoFrame):
             g.es_event_exception("activate tree")
     #@-node:ekr.20081121105001.293:OnActivateTree
     #@+node:ekr.20081121105001.294:OnBodyClick, OnBodyRClick (Events)
+    # At present, these are not called,
+    # but they could be called by QTextBrowserSubclass.
+
     def OnBodyClick (self,event=None):
 
         try:
             c = self.c ; p = c.currentPosition()
-            if not g.doHook("bodyclick1",c=c,p=p,v=p,event=event):
+            if g.doHook("bodyclick1",c=c,p=p,v=p,event=event):
+                g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
+                return 'break'
+            else:
                 self.OnActivateBody(event=event)
                 c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
-            g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
+                g.doHook("bodyclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("bodyclick")
 
     def OnBodyRClick(self,event=None):
 
+        # g.trace(event,self.c)
+
         try:
             c = self.c ; p = c.currentPosition()
-            if not g.doHook("bodyrclick1",c=c,p=p,v=p,event=event):
+            if g.doHook("bodyrclick1",c=c,p=p,v=p,event=event):
+                g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
+                return 'break'
+            else:
                 c.k.showStateAndMode(w=c.frame.body.bodyCtrl)
-            g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
+                g.doHook("bodyrclick2",c=c,p=p,v=p,event=event)
         except:
             g.es_event_exception("iconrclick")
     #@-node:ekr.20081121105001.294:OnBodyClick, OnBodyRClick (Events)
@@ -4604,8 +4671,8 @@ class leoQtLog (leoFrame.leoLog):
         # Important. Not called during startup.
 
         if widget is None:
-            # contents = QtGui.QTextEdit()
-            widget = QtGui.QTextBrowser()
+            # widget = QtGui.QTextBrowser()
+            widget = QTextBrowserSubclass(parent=None,c=c)
             contents = leoQTextEditWidget(widget=widget,name='log',c=c)
             widget.leo_log_wrapper = contents # Inject an ivar.
             if trace: g.trace('** creating',tabName,contents,widget)

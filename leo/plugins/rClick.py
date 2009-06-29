@@ -625,6 +625,7 @@ __plugin_name__ = 'Right Click Menus'
 #     - remove base classes to a seperate file so toolbar can be independant 
 # of rClick
 #     - modify menu config to remove rClick load order sensitivity
+# 1.38 EKR: preliminary support for qt gui.  But it's not ready yet.
 # 
 # 
 # 
@@ -678,7 +679,6 @@ import rClickBasePluginClasses as baseClasses
 controllers = {}
 default_context_menus = {}
 
-
 SCAN_URL_RE = """(http|https|ftp)://([^/?#\s'"]*)([^?#\s"']*)(\\?([^#\s"']*))?(#(.*))?"""
 
 #@<< required ivars >>
@@ -719,7 +719,8 @@ def init ():
     if g.app.gui is None:
         g.app.createDefaultGui(__file__)
 
-    ok = g.app.gui.guiName() in ("tkinter","qt")
+    # Support for qt gui is not ready yet.
+    ok = g.app.gui.guiName() in ("tkinter") # ,"qt")
 
     if ok:
         leoPlugins.registerHandler('after-create-leo-frame',onCreate)
@@ -1957,55 +1958,43 @@ class pluginController(baseClasses.basePluginController):
         g.app.gui.killPopupMenu()
 
         self.radio_vars = {}
-
-        c = self.c
-        k = c.k 
-
+        c = self.c ; k = c.k
         event = keywords.get('event')
+        if not event: return
 
-        g.trace(event)
-
-        if not event and not g.app.unitTesting:
+        if hasattr(event,'widget'):
+            widget = event.widget
+        elif hasattr(event,'leo_widget'):
+            # injected by QTextBrowserSubclass
+            widget = event.leo_widget
+        else:
             return
 
-        if event:
-            widget = event.widget
-            if not widget:
-                return
+        name = c.widget_name(widget)
+        c.widgetWantsFocusNow(widget)
+        # g.pdb()
+        #@    << hack selections for text widgets >>
+        #@+node:bobjack.20080516105903.54:<< hack selections for text widgets >>
+        isText = g.app.gui.isTextWidget(widget)
+        if isText:
+            try:
+                widget.setSelectionRange(*c.k.previousSelection)
+            except TypeError:
+                #g.trace('no previous selection')
+                pass
 
-            name = c.widget_name(widget)
-
-            c.widgetWantsFocusNow(widget)
-
-            #@        << hack selections for text widgets >>
-            #@+node:bobjack.20080516105903.54:<< hack selections for text widgets >>
-            isText = g.app.gui.isTextWidget(widget)
-            if isText:
-                try:
-                    widget.setSelectionRange(*c.k.previousSelection)
-                except TypeError:
-                    #g.trace('no previous selection')
-                    pass
-
-                if not name.startswith('body'):
-                    k.previousSelection = (s1,s2) = widget.getSelectionRange()
-                    x,y = g.app.gui.eventXY(event)
-                    i = widget.xyToPythonIndex(x,y)
-
-                    widget.setSelectionRange(s1,s2,insert=i)
-            #@nonl
-            #@-node:bobjack.20080516105903.54:<< hack selections for text widgets >>
-            #@nl
-
+            if not name.startswith('body'):
+                k.previousSelection = (s1,s2) = widget.getSelectionRange()
+                x,y = g.app.gui.eventXY(event)
+                i = widget.xyToPythonIndex(x,y)
+                widget.setSelectionRange(s1,s2,insert=i)
+        #@nonl
+        #@-node:bobjack.20080516105903.54:<< hack selections for text widgets >>
+        #@nl
         top_menu_table = []
-
         #@    << context menu => top_menu_table >>
         #@+node:bobjack.20080516105903.55:<< context menu => top_menu_table >>
-        #@+at
-        # the canvas should not have an explicit context menu set.
-        # 
-        #@-at
-        #@@c
+        # The canvas should not have an explicit context menu set.
 
         context_menu = keywords.get('context_menu')
 
@@ -2014,13 +2003,11 @@ class pluginController(baseClasses.basePluginController):
             context_menu = widget.context_menu
 
         if context_menu:
-
             key = context_menu
             if isinstance(key, list):
                 top_menu_table = context_menu[:]
             elif isinstance(key, basestring):
                 top_menu_table = c.context_menus.get(key, [])[:]
-
         else:
 
             # if no context_menu has been found then choose one based
@@ -2032,7 +2019,6 @@ class pluginController(baseClasses.basePluginController):
                     break
         #@-node:bobjack.20080516105903.55:<< context menu => top_menu_table >>
         #@nl
-
         #@    << def table_to_menu >>
         #@+node:bobjack.20080516105903.56:<< def table_to_menu >>
         def table_to_menu(parent, menu_table, level=0):
@@ -2046,18 +2032,12 @@ class pluginController(baseClasses.basePluginController):
 
             rmenu = Tk.Menu(parent,
                  tearoff=0,takefocus=0)
-
             rmenu.rc_columnbreak = 0
 
             while menu_table:
-
                 txt, cmd = menu_table.pop(0)
-
                 #g.trace(txt, '[', cmd, ']')
-
                 txt, item_data = self.split_cmd(txt)
-
-
                 for k, v in (
                     ('rc_rmenu', rmenu),
                     ('rc_menu_table', menu_table),
@@ -2066,7 +2046,6 @@ class pluginController(baseClasses.basePluginController):
                     ('rc_phase', 'generate'),
                 ):
                     keywords[k] = v
-
 
                 if txt == '*':
                     #@            << call a menu generator >>
@@ -2091,33 +2070,20 @@ class pluginController(baseClasses.basePluginController):
 
                     self.mb_keywords = keywords
                     self.mb_retval = None
-
                     try:
-
                         try:
                             if isinstance(cmd, basestring):
                                 c.executeMinibufferCommand(cmd) 
                             elif cmd:
                                 self.mb_retval = cmd(keywords)
-
                         except Exception:
                             self.mb_retval = None
-
                     finally:
                         self.mb_keywords = None
-
-
-
-
-
-
-
-
-
+                    #@nonl
                     #@-node:bobjack.20080516105903.57:<< call a menu generator >>
                     #@nl
                     continue
-
                 elif txt == '-':
                     #@            << add a separator >>
                     #@+node:bobjack.20080516105903.58:<< add a separator >>
@@ -2125,10 +2091,8 @@ class pluginController(baseClasses.basePluginController):
                     #@nonl
                     #@-node:bobjack.20080516105903.58:<< add a separator >>
                     #@nl
-
                 elif txt in ('', '"'):
                     continue
-
                 elif txt == '&':
                     #@            << include a menu chunk >>
                     #@+node:bobjack.20080516105903.59:<< include a menu chunk >>
@@ -2179,7 +2143,6 @@ class pluginController(baseClasses.basePluginController):
                         self.add_menu_item(rmenu, txt, invokeMinibufferMenuCommand, keywords)
                         #@-node:bobjack.20080516105903.61:<< minibuffer command item >>
                         #@nl
-
                     elif isinstance(cmd, list):
                         #@    << cascade item >>
                         #@+node:bobjack.20080516105903.62:<< cascade item >>
@@ -2197,7 +2160,6 @@ class pluginController(baseClasses.basePluginController):
                             continue # to avoid reseting columnbreak
                         #@-node:bobjack.20080516105903.62:<< cascade item >>
                         #@nl
-
                     else:
                         #@    << function command item >>
                         #@+node:bobjack.20080516105903.63:<< function command item >>
@@ -2216,26 +2178,23 @@ class pluginController(baseClasses.basePluginController):
                         #@nl
                     #@-node:bobjack.20080516105903.60:<< add a named item >>
                     #@nl
-
                 else:
                     continue
-
                 rmenu.rc_columnbreak = 0
 
             if self.mb_retval is None:
                 return rmenu
 
             rmenu.destroy()
-
+        #@nonl
         #@-node:bobjack.20080516105903.56:<< def table_to_menu >>
         #@nl
-
-        top_menu = m = table_to_menu(c.frame.top, top_menu_table)
-
-        if m and event:
-            g.app.gui.postPopupMenu(c, m,
-                event.x_root-23, event.y_root+13)
-            return 'break'
+        top_menu = m = table_to_menu(c.frame.top,top_menu_table)
+        if not m: return
+        g.app.gui.postPopupMenu(c, m,
+            event.x_root-23, event.y_root+13)
+        return 'break'
+    #@nonl
     #@-node:bobjack.20080516105903.53:rClicker
     #@-node:bobjack.20080516105903.47:rClick Event Handler
     #@+node:bobjack.20080516105903.64:Invocation Minibuffer Commands
