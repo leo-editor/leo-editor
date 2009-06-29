@@ -1010,9 +1010,11 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         if trace and verbose: t1 = g.getTime()
         try:
             self.changingText = True # Disable onTextChanged
+            colorizer.changingText = True
             w.setPlainText(s)
         finally:
             self.changingText = False
+            colorizer.changingText = False
         if trace and verbose: g.trace(g.timeSince(t1))
 
         self.setSelectionRange(i,i,insert=i)
@@ -7401,12 +7403,14 @@ class leoQtColorizer:
         self.w = w
 
         # Step 1: create the ivars.
+        self.changingText = False
         self.count = 0 # For unit testing.
         self.enabled = c.config.getBool('use_syntax_coloring')
         self.error = False # Set if there is an error in jeditColorizer.recolor
         self.flag = True # Per-node enable/disable flag.
         self.killColorFlag = False
         self.language = 'python' # set by scanColorDirectives.
+        self.max_chars_to_colorize = 10000
 
         # Step 2: create the highlighter.
         self.highlighter = leoQtSyntaxHighlighter(c,w,colorizer=self)
@@ -7426,7 +7430,9 @@ class leoQtColorizer:
 
         self.count += 1 # For unit testing.
 
-        if self.enabled:
+        if len(p.b) > self.max_chars_to_colorize:
+            self.flag = False
+        elif self.enabled:
             oldLanguage = self.language
             oldFlag = self.flag
             self.updateSyntaxColorer(p) # sets self.flag.
@@ -7538,11 +7544,14 @@ class leoQtColorizer:
         trace = False and not g.unitTesting
         p = p.copy()
 
-        # self.flag is True unless an unambiguous @nocolor is seen.
-        self.flag = self.useSyntaxColoring(p)
-        self.scanColorDirectives(p)
+        if len(p.b) > self.max_chars_to_colorize:
+            self.flag = False
+        else:
+            # self.flag is True unless an unambiguous @nocolor is seen.
+            self.flag = self.useSyntaxColoring(p)
+            self.scanColorDirectives(p)
 
-        if trace: g.trace(self.flag,self.language,p.h)
+        if trace: g.trace(self.flag,len(p.b),self.language,p.h,g.callers(5))
         return self.flag
     #@-node:ekr.20081205131308.24:updateSyntaxColorer
     #@+node:ekr.20081205131308.23:useSyntaxColoring & helper
@@ -7680,14 +7689,12 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         '''Override base rehighlight method'''
 
         trace = False and not g.unitTesting
-        verbose = False
-
         c = self.c ; tree = c.frame.tree
         self.w = c.frame.body.bodyCtrl.widget
         s = p.b
         self.colorer.init(p,s)
         n = self.colorer.recolorCount
-        if trace: g.trace(self.w,p.h)
+        if trace: g.trace(p.h)
 
         # Call the base class method, but *only*
         # if the crucial 'currentBlock' method exists.
@@ -7700,7 +7707,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
             finally:
                 c.frame.tree.selecting = old_selecting
 
-        if trace and verbose:
+        if trace:
             g.trace('%s calls to recolor' % (
                 self.colorer.recolorCount-n))
     #@-node:ekr.20081206062411.15:rehighlight
@@ -7960,7 +7967,7 @@ if newColoring:
 
             # New in Leo 4.6: configure tags only once here.
             # Some changes will be needed for multiple body editors.
-            if 0: # This is reported to be too slow.
+            if 1: # This is reported to be too slow.
                 # Must do this every time to support multiple editors.
                 self.configure_tags()
         #@nonl
@@ -8191,7 +8198,10 @@ if newColoring:
 
             # Used by matchers.
             self.prev = None
-            self.configure_tags() # Must do this every time to support multiple editors.
+            if 0: # Too slow.
+                # Must do this every time to support multiple editors.
+                self.configure_tags()
+        #@nonl
         #@-node:ekr.20090614134853.3705:init (jeditColorizer)
         #@+node:ekr.20090614134853.3706:init_mode & helpers
         def init_mode (self,name):
@@ -9485,17 +9495,25 @@ if newColoring:
             '''Recolor line s.'''
 
             trace = False and not g.unitTesting
-
-            # .killColorFlag prevents rehighlightBlock from being called.
+            callers = False ; line = True ; state = False
 
             # Update the counts.
             self.recolorCount += 1
             self.totalChars += len(s)
 
+            if self.colorizer.changingText:
+                return
+            if not self.colorizer.flag:
+                return
+
             # Get the previous state.
             n = self.prevState() # The state at the end of the previous line.
-            if trace: g.trace('%5s %2s %-50s %s' % (
-                self.colorizer.flag,n,self.showState(n),s))
+            if trace:
+                if line and state:
+                    g.trace('%2s %-50s %s' % (n,self.showState(n),s))
+                elif line:
+                    g.trace('%2s %s' % (n,s))
+                if callers: g.trace(g.callers())
 
             if s.strip():
                 self.mainLoop(n,s)
