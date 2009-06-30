@@ -16921,6 +16921,169 @@ def createSplitterComponents (self):
     f.resizePanesToRatio(f.ratio,f.secondary_ratio)
 #@-node:ekr.20081121105001.255:createSplitterComponents (qtFrame)
 #@-node:ekr.20090628184822.3718:Honor big_outline_pane setting
+#@+node:ekr.20090630121732.3723:Focus issues
+# Cut/paste did not work from the menu!
+#@+node:ekr.20090629160050.3739: << define QTextBrowserSubclass >>
+class QTextBrowserSubclass (QtGui.QTextBrowser):
+
+    '''A subclass of QTextBrowser that overrides the mouse event handlers.'''
+
+    def __init__(self,parent,c,wrapper):
+        for attr in ('leo_c','leo_wrapper',):
+            assert not hasattr(QtGui.QTextBrowser,attr),attr
+        self.leo_c = c
+        self.leo_wrapper = wrapper
+        QtGui.QTextBrowser.__init__(self,parent)
+
+    def leo_dumpButton(self,event,tag):
+        trace = False and not g.unitTesting
+        button = event.button()
+        table = (
+            (QtCore.Qt.NoButton,'no button'),
+            (QtCore.Qt.LeftButton,'left-button'),
+            (QtCore.Qt.RightButton,'right-button'),
+            (QtCore.Qt.MidButton,'middle-button'),
+        )
+        for val,s in table:
+            if button == val:
+                kind = s; break
+        else: kind = 'unknown: %s' % repr(button)
+        if trace: g.trace(tag,kind)
+        return kind
+
+    def mousePressEvent (self,event):
+        if 1:
+            QtGui.QTextBrowser.mousePressEvent(self,event)
+        else: # Not ready yet
+            kind = self.leo_dumpButton(event,'press')
+            if kind == 'right-button':
+                event.leo_widget = self # inject the widget.
+                result = self.leo_c.frame.OnBodyRClick(event=event)
+                # g.trace('result of OnBodyRClick',repr(result))
+                if result != 'break':
+                    QtGui.QTextBrowser.mousePressEvent(self,event)
+            elif kind == 'left-button':
+                event.leo_widget = self # inject the widget.
+                result = self.leo_c.frame.OnBodyClick(event=event)
+                # g.trace('result of OnBodyClick',repr(result))
+                if result != 'break':
+                    QtGui.QTextBrowser.mousePressEvent(self,event)
+            else:
+                QtGui.QTextBrowser.mousePressEvent(self,event)
+
+    # def mouseReleaseEvent(self,event):
+        # kind = self.leo_dumpButton(event,'release')
+        # QtGui.QTextBrowser.mouseReleaseEvent(self,event)
+#@-node:ekr.20090629160050.3739: << define QTextBrowserSubclass >>
+#@+node:ekr.20081121105001.501:isTextWidget
+def isTextWidget (self,w):
+
+    '''Return True if w is a Text widget suitable for text-oriented commands.'''
+
+    if not w: return False
+
+    val = (
+        isinstance(w,leoFrame.baseTextWidget) or
+        isinstance(w,leoQtBody) or
+        isinstance(w,leoQtLog) or
+        isinstance(w,leoQtBaseTextWidget)
+    )
+
+    # g.trace(val,w)
+
+    return val
+
+#@-node:ekr.20081121105001.501:isTextWidget
+#@+node:ekr.20081121105001.317:Qt bindings... (qtFrame)
+def bringToFront (self):
+    self.lift()
+def deiconify (self):
+    self.lift()
+def getFocus(self):
+    return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
+def get_window_info(self):
+    rect = self.top.geometry()
+    topLeft = rect.topLeft()
+    x,y = topLeft.x(),topLeft.y()
+    w,h = rect.width(),rect.height()
+    # g.trace(w,h,x,y)
+    return w,h,x,y
+def iconify(self):
+    self.top.showMinimized()
+def lift (self):
+    self.top.showNormal()
+    self.top.activateWindow()
+    self.top.raise_()
+def update (self):
+    pass
+def getTitle (self):
+    return g.app.gui.toUnicode(self.top.windowTitle())
+def setTitle (self,s):
+    self.top.setWindowTitle(s)
+def setTopGeometry(self,w,h,x,y,adjustSize=True):
+    # g.trace(x,y,w,y,g.callers(5))
+    self.top.setGeometry(QtCore.QRect(x,y,w,h))
+#@-node:ekr.20081121105001.317:Qt bindings... (qtFrame)
+#@+node:ekr.20081121105001.491:Focus (qtGui)
+def get_focus(self,c=None):
+
+    """Returns the widget that has focus."""
+
+    w = QtGui.QApplication.focusWidget()
+    if isinstance(w,QTextBrowserSubclass):
+        w = w.leo_wrapper
+        if c and not w:
+            # Kludge: DynamicWindow creates the body pane
+            # with wrapper = None, so return the leoQtBody.
+            w = c.frame.body
+    # g.trace('leoQtGui',w,c,g.callers(5))
+    return w
+
+def set_focus(self,c,w):
+
+    """Put the focus on the widget."""
+
+    trace = False and not g.unitTesting
+
+    if w:
+        if trace: g.trace('leoQtGui',w,g.callers(4))
+        w.setFocus()
+#@-node:ekr.20081121105001.491:Focus (qtGui)
+#@+node:ekr.20090124174652.71:Focus (nativeTree)
+def getFocus(self):
+
+    return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30
+
+findFocus = getFocus
+
+def hasFocus (self):
+
+    return g.app.gui.get_focus(self.c)
+
+def setFocus (self):
+
+    g.app.gui.set_focus(self.c,self.treeWidget)
+#@-node:ekr.20090124174652.71:Focus (nativeTree)
+#@+node:ekr.20081121105001.522: Focus (leoQtBaseTextWidget)
+def getFocus(self):
+
+    # g.trace('leoQtBody',self.widget,g.callers(4))
+    return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30
+
+findFocus = getFocus
+
+def hasFocus (self):
+
+    val = self.widget == g.app.gui.get_focus(self.c)
+    # g.trace('leoQtBody returns',val,self.widget,g.callers(4))
+    return val
+
+def setFocus (self):
+
+    # g.trace('leoQtBody',self.widget,g.callers(4))
+    g.app.gui.set_focus(self.c,self.widget)
+#@-node:ekr.20081121105001.522: Focus (leoQtBaseTextWidget)
+#@-node:ekr.20090630121732.3723:Focus issues
 #@-node:ekr.20090627090950.3714:Bugs
 #@+node:ekr.20090614134853.3635:New syntax coloring
 @nocolor-node
