@@ -6,6 +6,8 @@
 
 - Fix all problems reported by check-bindings script.
 
+- Test PHP coloring.
+
 Docs:
 
 ** Create FAQ entry telling how to use Leo in shared environments.

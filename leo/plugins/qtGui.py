@@ -4577,6 +4577,7 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20090627090950.3717:Redirection to logCtrl
     def delete(self,i,j=None):          self.logCtrl.delete(i,j)
     def insert(self,i,s):               self.logCtrl.insert(i,s)
+    def get(self,i,j):                  return self.logCtrl.get(i,j)
     def getAllText(self):               return self.logCtrl.getAllText()
     def getInsertPoint(self):           return self.logCtrl.getInsertPoint()
     def getSelectionRange (self):       return self.logCtrl.getSelectionRange()
