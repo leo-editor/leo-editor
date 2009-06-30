@@ -544,8 +544,8 @@ def printPluginsInfo (c):
     c.frame.log.selectTab(tabName)
 
     data = []
-    for z in g.app.loadedPlugins:
-        print (z, d.get(z))
+    # for z in g.app.loadedPlugins:
+        # print (z, d.get(z))
 
     data = [] ; n = 4
     for moduleName in d:

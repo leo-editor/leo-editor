@@ -979,7 +979,7 @@ class controlCommandsClass (baseEditCommandsClass):
             'keyboard-quit':                k and k.keyboardQuit,
             'save-buffers-kill-leo':        self.saveBuffersKillLeo,
             'set-silent-mode':              self.setSilentMode,
-            'print-plugins':                self.printPlugins,
+            # 'print-plugins':                self.printPlugins,
             'print-plugin-handlers':        self.printPluginHandlers,
             'print-plugins-info':           self.printPluginsInfo,
             'shell-command':                self.shellCommand,

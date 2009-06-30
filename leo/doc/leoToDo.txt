@@ -4,8 +4,6 @@
 #@+node:ekr.20080814103428.4:To do before 4.6 rc1
 @nocolor-node
 
-- Remove loaded plugin: qtGui message.
-
 - Fix all problems reported by check-bindings script.
 
 Docs:

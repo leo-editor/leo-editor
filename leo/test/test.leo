@@ -1444,8 +1444,8 @@ ipython.py
 scrolledmessage.py
 UNL.py
 mod_scripting.py
-nodenavigator.py
-vim.py
+# nodenavigator.py
+# vim.py
 # xemacs.py
 
 # test of @bool warn_when_plugins_fail_to_load
@@ -1462,7 +1462,7 @@ vim.py
 # color_markup.py # Does not work with threading colorizer.
 # image.py
 # nav_buttons.py
-rClick.py
+# rClick.py
 # threading_colorizer.py
 # toolbar.py
 </t>

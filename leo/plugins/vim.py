@@ -229,7 +229,7 @@ def init ():
     ok = not g.app.unitTesting # Don't conflict with xemacs plugin.
 
     if ok:
-        print ('vim.py enabled')
+        # print ('vim.py enabled')
         # Register the handlers...
         if useDoubleClick:
             # Open on double click

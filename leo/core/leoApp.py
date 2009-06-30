@@ -326,42 +326,42 @@ class LeoApp:
     #@nonl
     #@-node:ekr.20090202191501.5:app.createNullGui
     #@+node:ekr.20090619065122.8593:app.createDefaultGui
-    def createDefaultGui (self,fileName=''):
+    def createDefaultGui (self,fileName='',verbose=False):
 
         """A convenience routines for plugins to create the default gui class."""
 
-        self.createQtGui(fileName)
+        self.createQtGui(fileName,verbose=verbose)
     #@-node:ekr.20090619065122.8593:app.createDefaultGui
     #@+node:ekr.20090202191501.1:app.createQtGui
-    def createQtGui (self,fileName=''):
+    def createQtGui (self,fileName='',verbose=False):
 
         # Do NOT omit fileName param: it is used in plugin code.
 
         """A convenience routines for plugins to create the Qt gui class."""
 
-        leoPlugins.loadOnePlugin ('qtGui',verbose=True)
+        leoPlugins.loadOnePlugin ('qtGui',verbose=verbose)
 
-        if fileName: print ('qtGui created in %s' % fileName)
+        if fileName and verbose: print('qtGui created in %s' % fileName)
     #@-node:ekr.20090202191501.1:app.createQtGui
     #@+node:ekr.20031218072017.2610:app.createTkGui
-    def createTkGui (self,fileName=''):
+    def createTkGui (self,fileName='',verbose=False):
 
         """A convenience routines for plugins to create the default Tk gui class."""
 
-        leoPlugins.loadOnePlugin ('tkGui',verbose=True)
+        leoPlugins.loadOnePlugin ('tkGui',verbose=verbose)
 
-        if fileName: print ('tkGui created in %s' % fileName)
+        if fileName and verbose: print('tkGui created in %s' % fileName)
     #@-node:ekr.20031218072017.2610:app.createTkGui
     #@+node:ekr.20090126063121.3:app.createWxGui
-    def createWxGui (self,fileName=''):
+    def createWxGui (self,fileName='',verbose=False):
 
         # Do NOT omit fileName param: it is used in plugin code.
 
         """A convenience routines for plugins to create the wx gui class."""
 
-        leoPlugins.loadOnePlugin ('wxGui',verbose=True)
+        leoPlugins.loadOnePlugin ('wxGui',verbose=verbose)
 
-        if fileName: print ('wxGui created in %s' % fileName)
+        if fileName and verbose: print('wxGui created in %s' % fileName)
     #@-node:ekr.20090126063121.3:app.createWxGui
     #@+node:ekr.20031218072017.2612:app.destroyAllOpenWithFiles
     def destroyAllOpenWithFiles (self):
