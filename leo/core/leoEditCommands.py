@@ -6121,7 +6121,6 @@ class leoCommandsClass (baseEditCommandsClass):
             'goto-last-node':               c.goToLastNode,
             'goto-last-sibling':            c.goToLastSibling,
             'goto-last-visible-node':       c.goToLastVisibleNode,
-            # 'goto-line-number':           c.goToLineNumber,
             'goto-next-changed':            c.goToNextDirtyHeadline,
             'goto-next-clone':              c.goToNextClone,
             'goto-next-marked':             c.goToNextMarkedHeadline,

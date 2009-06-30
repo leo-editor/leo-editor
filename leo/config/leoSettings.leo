@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5,12,3,2,1"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -98,7 +98,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1" a="E" annotate="7d71002e"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" annotate="7d71002e"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20090610164636.8489"><vh>@@button add-test @key=alt-9</vh></v>
@@ -428,8 +428,8 @@
 <v t="ekr.20090408091222.1"><vh>@shortcuts duplicate bindings for Qt</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552" a="E"><vh>Menus</vh>
-<v t="ekr.20070925144534" a="E"><vh>@menus</vh>
+<v t="ekr.20070925144552"><vh>Menus</vh>
+<v t="ekr.20070925144534"><vh>@menus</vh>
 <v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
@@ -914,7 +914,7 @@
 <v t="ekr.20070925144534.404"><vh>@item *open-compare-window</vh></v>
 <v t="ekr.20070925144534.405"><vh>@item *open-python-&amp;window</vh></v>
 </v>
-<v t="ekr.20070925144534.406" a="E"><vh>@menu &amp;Help</vh>
+<v t="ekr.20070925144534.406"><vh>@menu &amp;Help</vh>
 <v t="ekr.20070925144534.407"><vh>@item about-leo</vh></v>
 <v t="ekr.20070925144534.408"><vh>@item open-online-home</vh></v>
 <v t="ekr.20070925144534.409"><vh>@item *open-online-&amp;tutorial</vh></v>
@@ -4574,7 +4574,7 @@ beginning-of-buffer                 = None
 beginning-of-buffer-extend-selection= None
 beginning-of-line                   = None
 beginning-of-line-extend-selection  = None
-call-last-keyboard-macro            = None
+call-last-kbd-macro                 = None
 capitalize-word                     = None
 cascade-windows                     = None
 center-line                         = None
@@ -4658,7 +4658,7 @@ enable-autocompleter                = None
 enable-calltips                     = None
 enable-gc-trace                     = None
 end-edit-headline                   = None
-end-kbd-macro                       = None
+# end-kbd-macro                     = None
 end-of-buffer                       = None
 end-of-buffer-extend-selection      = None
 end-of-line                         = None
@@ -5106,7 +5106,7 @@ insert-child                        = None
 insert-icon                         = None
 insert-file                         = None
 insert-headline-time                = None
-insert-keyboard-macro               = None
+# insert-kbd-macro                  = None
 insert-newline                      = None
 insert-node                         = None
 insert-parentheses                  = None

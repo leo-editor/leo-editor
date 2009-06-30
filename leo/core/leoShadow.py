@@ -73,7 +73,7 @@ class shadowController:
         self.errors = 0
         self.last_error  = '' # The last error message, regardless of whether it was actually shown.
 
-        # Support for goto-line-number.
+        # Support for goto-line.
         self.line_mapping = []
     #@-node:ekr.20080708094444.79: x.ctor
     #@+node:ekr.20080711063656.1:x.File utils

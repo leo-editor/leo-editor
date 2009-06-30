@@ -366,11 +366,11 @@ zap-to-character
 #@nonl
 #@-node:ekr.20051202102752.2:killBufferCommandsClass
 #@+node:ekr.20051202102752.3:macroCommandsClass
-call-last-keyboard-macro
+call-last-kbd-macro
 end-kbd-macro
 name-last-kbd-macro
 load-file
-insert-keyboard-macro 
+insert-kbd-macro 
 start-kbd-macro
 #@nonl
 #@-node:ekr.20051202102752.3:macroCommandsClass
@@ -782,36 +782,45 @@ As an example:
 # 5 
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+leo 
+@verbatim
 @verbatim
 @verbatim
 #@verbatim
 #@+node:0::@file /tmp/firstcheck.py 
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@+body 
 @verbatim
 @verbatim
-#@verbatim
-#@@first 
-@verbatim
 @verbatim
 #@verbatim
 #@@first 
 @verbatim
-@verbatim
-#@verbatim
-#@@first 
 @verbatim
 @verbatim
 #@verbatim
 #@@first 
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@@first 
+@verbatim
+@verbatim
+@verbatim
+#@verbatim
+#@@first 
+@verbatim
+@verbatim
+@verbatim
+#@verbatim
+#@@first 
+@verbatim
 @verbatim
 @verbatim
 #@verbatim
@@ -821,8 +830,10 @@ As an example:
 
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-doc 
+@verbatim
 @verbatim
 @verbatim
 #@verbatim
@@ -830,12 +841,15 @@ As an example:
 Start code. 
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-body 
 @verbatim
 @verbatim
+@verbatim
 #@verbatim
 #@-node:0::@file /tmp/firstcheck.py 
+@verbatim
 @verbatim
 @verbatim
 #@verbatim

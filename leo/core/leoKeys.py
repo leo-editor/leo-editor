@@ -1930,7 +1930,7 @@ class keyHandlerClass:
             'copy-text',
             'paste-text',
             # macroCommandsClass
-            'call-last-keyboard-macro',
+            'call-last-kbd-macro',
             # search commands
             # 'replace-string', # A special case so Shift-Ctrl-r will work after Ctrl-f.
             'toggle-find-collapses_nodes',

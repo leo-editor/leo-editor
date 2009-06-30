@@ -1072,11 +1072,11 @@ class leoMenu:
             '&load-file',
             '-',
             '&start-kbd-macro',
-            '&end-kbd-macro',
+            # '&end-kbd-macro',
             '&name-last-kbd-macro',
             '-',
-            '&call-last-keyboard-macro',
-            '&insert-keyboard-macro',
+            '&call-last-kbd-macro',
+            # '&insert-kbd-macro',
         ]
     #@-node:ekr.20060117114315:defineCmdsMenuMacroTable
     #@+node:ekr.20061011084101.1:defineCmdsMenuMinibufferTable
