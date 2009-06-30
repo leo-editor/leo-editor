@@ -6047,6 +6047,21 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         c.treeWantsFocus()
     #@-node:ekr.20090531084925.3774:scrollDelegate (leoQtTree)
     #@-node:ekr.20090124174652.122:Scroll bars (leoQtTree)
+    #@+node:ville.20090630151546.3969:onContextMenu (nativeTree)
+    def onContextMenu(self, point):
+        w = self.treeWidget
+        menu = QtGui.QMenu()
+        menuPos = w.mapToGlobal(point)
+
+        menu.addAction("Menu1")
+        menu.addAction("Menu2")
+        a = menu.exec_(menuPos)
+
+
+
+
+
+    #@-node:ville.20090630151546.3969:onContextMenu (nativeTree)
     #@-node:ekr.20090124174652.102:Widget-dependent helpers (leoQtTree)
     #@-others
 #@-node:ekr.20081121105001.400:class leoQtTree (baseNativeTree)
