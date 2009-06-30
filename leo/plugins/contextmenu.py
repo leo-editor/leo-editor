@@ -82,10 +82,43 @@ def openwith_rclick(c,p, menu):
     action = menu.addAction("Edit " + bname + " in external editor (%s)" % path)
     action.connect(action, QtCore.SIGNAL("triggered()"), openwith_rclick_cb)
 #@-node:ville.20090630210947.5465:openwith_rclick
+#@+node:ville.20090630221949.5462:refresh_rclick
+def refresh_rclick(c,p, menu):
+    h = p.h
+    split = h.split(None,1)
+    if len(split) < 2:
+        return
+
+    typ = split[0]        
+    if typ not in ['@auto', '@thin', '@shadow']:
+        return
+
+    action = menu.addAction("Refresh from disk")
+
+    def refresh_rclick_cb():
+        if typ =='@auto':
+            c.readAtAutoNodes()
+        if typ =='@thin':
+            c.readAtFileNodes()
+        if typ =='@shadow':
+            c.readAtShadowNodes()
+
+        # UNSUPPORTED            
+        #if typ =='@edit':
+        #    c.readAtEditNodes()
+
+
+
+    action.connect(action, QtCore.SIGNAL("triggered()"), refresh_rclick_cb)
+
+
+
+
+#@-node:ville.20090630221949.5462:refresh_rclick
 #@+node:ville.20090630210947.10189:install_handlers
 def install_handlers():
     """ Install all the wanted handlers (menu creators) """
-    hnd = [openwith_rclick]
+    hnd = [openwith_rclick, refresh_rclick]
     g.tree_popup_handlers.extend(hnd)
 #@nonl
 #@-node:ville.20090630210947.10189:install_handlers
