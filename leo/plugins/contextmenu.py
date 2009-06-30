@@ -44,8 +44,6 @@ inited = False
 def openwith_rclick(c,p, menu):
     """ Show "Open with" in context menu for external file root nodes (@thin, @auto...) 
 
-    Currently 
-
     """
 
     h = p.h
