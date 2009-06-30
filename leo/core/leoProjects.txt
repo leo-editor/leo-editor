@@ -4616,6 +4616,148 @@ def masterMenuHandler (self,stroke,func,commandName):
         return k.masterCommand(event,func,stroke,commandName)
 #@-node:ekr.20061031131434.155:masterMenuHandler
 #@-node:ekr.20090630115919.6059:Fixed major focus problems
+#@+node:ekr.20090630145606.5996:Fixed problem with read-at-file/shadow-nodes
+#@+node:ekr.20090630145606.5997:Changed
+#@+node:ekr.20041005105605.21:read (atFile)
+def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
+
+    """Read any @thin, @file and @noref trees."""
+
+    at = self ; c = at.c
+    << set fileName >>
+
+    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
+    if at.errors: return False
+    fileName = at.openFileForReading(fileName,fromString=fromString)
+    if at.inputFile:
+        c.setFileTimeStamp(fileName)
+    else:
+        return False
+
+    fileContent = open(fileName, "rb").read()
+    cachefile = self._contentHashFile(root, fileContent)
+
+    if cachefile in c.db:
+        # This isn't so useful.
+        # if not g.unitTesting: # g.es('uncache:',root.h)
+        tree = c.db[cachefile]
+        g.create_tree_at_vnode(c, root.v, tree)
+        at.inputFile.close() # Bug fix.
+        return
+
+    if not g.unitTesting:
+        g.es("reading:",root.h)
+
+    # Delete all children.
+    while root.hasChildren():
+        root.firstChild().doDelete()
+
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+    at.readOpenFile(root,at.inputFile,fileName)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        << advise user to delete all unvisited nodes >>
+    if at.errors == 0 and not at.importing:
+        # Package this as a method for use by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+
+    << delete all tempBodyStrings >>
+
+    # write out the cache version
+    self.writeCachedTree(root, cachefile)
+
+    return at.errors == 0
+#@+node:ekr.20041005105605.22:<< set fileName >>
+if fromString:
+    fileName = "<string-file>"
+elif importFileName:
+    fileName = importFileName
+elif root.isAnyAtFileNode():
+    fileName = root.anyAtFileNodeName()
+else:
+    fileName = None
+
+if not fileName:
+    at.error("Missing file name.  Restoring @file tree from .leo file.")
+    return False
+#@-node:ekr.20041005105605.22:<< set fileName >>
+#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+resurrected = 0
+for p in root.self_and_subtree_iter():
+
+    if not p.v.t.isVisited():
+        g.es('resurrected node:',p.h,color='blue')
+        g.es('in file:',fileName,color='blue')
+        resurrected += 1
+
+if resurrected:
+    g.es('you may want to delete ressurected nodes')
+
+#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+#@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+for t in c.all_unique_tnodes_iter():
+
+    if hasattr(t,"tempBodyString"):
+        delattr(t,"tempBodyString")
+#@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+#@-node:ekr.20041005105605.21:read (atFile)
+#@+node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+def readOneAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c ; x = c.shadowController
+
+    if not fn == p.atShadowFileNodeName():
+        return at.error('can not happen: fn: %s != atShadowNodeName: %s' % (
+            fn, p.atShadowFileNodeName()))
+
+    at.scanDefaultDirectory(p,importing=True) # Sets at.default_directory
+
+    fn = c.os_path_finalize_join(at.default_directory,fn)
+    shadow_fn     = x.shadowPathName(fn)
+    shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    if shadow_exists:
+        # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
+        at.read(p,thinFile=True,atShadow=True)
+    else:
+        if not g.unitTesting: g.es("reading:",p.h)
+        ok = at.importAtShadowNode(fn,p)
+        if ok:
+            # Create the private file automatically.
+            at.writeOneAtShadowNode(p,toString=False,force=True)
+#@+node:ekr.20080712080505.1:importAtShadowNode
+def importAtShadowNode (self,fn,p):
+
+    at = self ; c = at.c  ; ic = c.importCommands
+    oldChanged = c.isChanged()
+
+    # Delete all the child nodes.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    # Import the outline, exactly as @auto does.
+    ic.createOutline(fn,parent=p.copy(),atAuto=True,atShadow=True)
+
+    if ic.errors:
+        g.es_print('errors inhibited read @shadow',fn,color='red')
+
+    if ic.errors or not g.os_path_exists(fn):
+        p.clearDirty()
+        c.setChanged(oldChanged)
+
+    # else: g.doHook('after-shadow', p = p)
+
+    return ic.errors == 0
+#@-node:ekr.20080712080505.1:importAtShadowNode
+#@-node:ekr.20080711093251.7:readOneAtShadowNode (atFile) & helper
+#@-node:ekr.20090630145606.5997:Changed
+#@-node:ekr.20090630145606.5996:Fixed problem with read-at-file/shadow-nodes
 #@-node:ekr.20090623072844.10386:Bugs
 #@+node:ekr.20090628075121.8434:Features
 #@+node:ekr.20090628075121.8433:Added open-quickstart-leo

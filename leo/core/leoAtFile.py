@@ -496,6 +496,10 @@ class atFile:
         if not g.unitTesting:
             g.es("reading:",root.h)
 
+        # Delete all children.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+
         root.clearVisitedInTree()
         at.scanAllDirectives(root,importing=at.importing,reading=True)
         at.readOpenFile(root,at.inputFile,fileName)
@@ -802,6 +806,10 @@ class atFile:
         fn = c.os_path_finalize_join(at.default_directory,fn)
         shadow_fn     = x.shadowPathName(fn)
         shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
+
+        # Delete all children.
+        while p.hasChildren():
+            p.firstChild().doDelete()
 
         if shadow_exists:
             # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
