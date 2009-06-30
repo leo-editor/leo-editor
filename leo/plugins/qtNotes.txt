@@ -3,47 +3,10 @@
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
 #@+node:ekr.20090430102239.13:To do before 4.6 rc1
-#@+node:ekr.20090628173250.3714:Remaining minor mouse bugs
 @nocolor-node
 
-https://bugs.launchpad.net/leo-editor/+bug/382578
-
-The following items remain:
-
-- No context menu for tree itself: it would be good to have insert, delete, clone items...
-
-- no context menu delete option for log pane
+- Do page-up/down commands for the tree if possible.
 #@nonl
-#@-node:ekr.20090628173250.3714:Remaining minor mouse bugs
-#@+node:ekr.20090128083504.1:Fix rclick plugin
-@nocolor-node
-
-rClick
-
-
-After the qt-plugin merge (rev 1251 ), the image plugin no longer works. I
-couldn't find any mention of gsimage in the diff.
-
- # Erase image if it was previously displayed
-             a = g.app ; c = keywords.get("c")
-
--            if a.gsimage:
-+            if getattr(a, 'gsimage', None):
-                 try:
-                     c.frame.body.bodyCtrl.delete(a.gsimage)
-                 except:
-
-rclick stuff:
-
-    1.  right click context menu on headlines requires first a double left
-    click to select and then a right click.
-
-    2. context menu in 1. does not have heading controls like insert,
-    delete etc.
-
-    3. no context menu delete option for log pane.
-#@nonl
-#@-node:ekr.20090128083504.1:Fix rclick plugin
 #@-node:ekr.20090430102239.13:To do before 4.6 rc1
 #@+node:ekr.20090304084841.11:Later
 #@+node:ekr.20090429101847.10:Support canvas widgets in all panes
