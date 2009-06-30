@@ -8,8 +8,6 @@
 
 - Test PHP coloring.
 
-- Ensure that wrappers implement all expected methods.
-
 Docs:
 
 ** Create FAQ entry telling how to use Leo in shared environments.

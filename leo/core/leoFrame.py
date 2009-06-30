@@ -2067,8 +2067,7 @@ class leoLog:
         self.logNumber = 0 # To create unique name fields for text widgets.
         self.newTabCount = 0 # Number of new tabs created.
         self.textDict = {}  # Keys are page names. Values are logCtrl's (text widgets).
-
-
+    #@nonl
     #@-node:ekr.20031218072017.3695: ctor (leoLog)
     #@+node:ekr.20070302101344:Must be defined in the base class
     def onActivateLog (self,event=None):

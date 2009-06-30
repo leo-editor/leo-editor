@@ -1168,6 +1168,9 @@ def wrap_lines (lines,pageWidth,firstLineWidth=None):
     return result
 #@-node:ekr.20031218072017.3100:wrap_lines
 #@+node:ekr.20090517020744.5889:unit tests for new directives
+# Use this as a default for the test for @pagewidth -40
+#@@pagewidth 80
+
 if g.unitTesting:
 
     #@    @+others
@@ -1311,7 +1314,9 @@ if g.unitTesting:
     aList = g.get_directives_dict_list(p)
     n = g.scanAtPagewidthDirectives(aList)
 
-    assert n is None
+    # The @pagewidth directive in the parent should control.
+    # Depending on how this test is run, the result could be 80 or None.
+    assert n in (None,80),repr(n)
     #@nonl
     #@-node:ekr.20090517020744.5901:@test g.scanAtPagewidthDirectives -40
     #@+node:ekr.20090517020744.5902:@test g.scanAtPagewidthDirectives 40
@@ -1321,7 +1326,7 @@ if g.unitTesting:
     aList = g.get_directives_dict_list(p)
     n = g.scanAtPagewidthDirectives(aList)
 
-    assert n == 40
+    assert n == 40,n
     #@nonl
     #@-node:ekr.20090517020744.5902:@test g.scanAtPagewidthDirectives 40
     #@+node:ekr.20090517020744.5912:@test g.scanAtTabwidthDirectives +6

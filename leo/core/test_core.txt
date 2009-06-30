@@ -16,6 +16,7 @@
 #@+all
 #@+node:ekr.20090529103821.6840:General
 #@+node:ekr.20090201135500.1:Check base classes & ivars
+#@+node:ekr.20090630093812.6013:Tk gui tests
 #@+node:ekr.20090201135500.2:@test leoBody is subset of leoTkBody
 if g.app.gui.guiName() == 'tkinter':
 
@@ -146,6 +147,15 @@ if g.app.gui.guiName() == 'tkinter':
             if name in baseObject.mustBeDefinedInSubclasses:
                 assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
 #@-node:ekr.20090201135500.5:@test leoTree is subset of leoTkTree
+#@-node:ekr.20090630093812.6013:Tk gui tests
+#@+node:ekr.20090630091825.5993:@test that leoQtLog implements high-level interface
+if g.app.gui.guiName() == 'qt':
+    log = c.frame.log
+    mustBeDefined = log.logCtrl.mustBeDefinedInHighLevelSubclasses
+    for z in mustBeDefined:
+        assert hasattr(log,z),z
+#@nonl
+#@-node:ekr.20090630091825.5993:@test that leoQtLog implements high-level interface
 #@+node:ekr.20090201135500.6:@test official commander ivars
 f = c.frame
 assert(f.c==c)
@@ -3892,15 +3902,6 @@ node 2 line 3
 #@nonl
 #@+node:ekr.20090529061522.6569:node 1
 node 1 line 1
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
 #@ should be handled by verbatim
 line 1 line 3
@@ -3938,15 +3939,6 @@ node 1 line 1
 #@nonl
 #@-node:ekr.20090529061522.6576:node 1
 #@+node:ekr.20090529061522.6577:node 2
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
 #@ should be handled by verbatim
 node 2 line 2
@@ -3972,15 +3964,6 @@ node 2 line 2
 #@nonl
 #@+node:ekr.20090529061522.6583:node 1
 node 1 line 1
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
 #@ should be handled by verbatim
 line 1 line 3
@@ -3998,15 +3981,6 @@ node 2 line 3
 #@nonl
 #@+node:ekr.20090529061522.6586:node 1
 node 1 line 1
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
 #@ should be handled by verbatim
 line 1 line 3
@@ -4026,15 +4000,6 @@ node 2 line 3
 #@nonl
 #@+node:ekr.20090529061522.6590:node 1
 node 1 line 1
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
 #@ should be handled by verbatim
 #@nonl
@@ -4081,13 +4046,6 @@ node 2 line 2
 #@nonl
 #@+node:ekr.20090529061522.6600:node 1
 node 1 line 1
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
-@verbatim
 #@verbatim
 #@ should be handled by verbatim
 node 1 line 2

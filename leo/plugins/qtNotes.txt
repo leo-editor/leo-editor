@@ -13068,18 +13068,29 @@ setFocus = set_focus
 #@-node:ekr.20081121105001.324:Focus & update
 #@-node:ekr.20081121105001.322:Do nothings
 #@+node:ekr.20090627090950.3717:Redirection to logCtrl
+def appendText(self,s):             self.logCtrl.appendText(s)
 def delete(self,i,j=None):          self.logCtrl.delete(i,j)
 def insert(self,i,s):               self.logCtrl.insert(i,s)
 def get(self,i,j):                  return self.logCtrl.get(i,j)
 def getAllText(self):               return self.logCtrl.getAllText()
+def getFocus(self):                 return self.logCtrl.getFocus()
 def getInsertPoint(self):           return self.logCtrl.getInsertPoint()
+def getSelectedText(self):          return self.logCtrl.getSelectedText()
 def getSelectionRange (self):       return self.logCtrl.getSelectionRange()
+def getYScrollPosition (self):      return self.logCtrl.getYScrollPosition()
 def hasSelection(self):             return self.logCtrl.hasSelection()
+def insert(self,i,s):               self.logCtrl.insert(i,s)
+def scrollLines(self,n):            self.logCtrl.scrollLines(n)
 def see(self,i):                    self.logCtrl.see(i)
 def seeInsertPoint (self):          self.logCtrl.seeInsertPoint()
 def setAllText (self,s):            self.logCtrl.setAllText(s)
+def setBackgroundColor(self,color): self.logCtrl.setBackgroundColor(color)
+def setFocus(self):                 self.logCtrl.setFocus()
+def setForegroundColor(self,color): self.logCtrl.setForegroundColor(color)
+def setInsertPoint(self,pos):       self.logCtrl.setInsertPoint(color)
 def setSelectionRange(self,*args,**keys):
     self.logCtrl.setSelectionRange(*args,**keys)
+def setYScrollPosition (self,i):    self.logCtrl.setYScrollPosition(i)
 #@nonl
 #@-node:ekr.20090627090950.3717:Redirection to logCtrl
 #@+node:ekr.20081121105001.325:put & putnl (qtLog)
