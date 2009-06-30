@@ -25,7 +25,7 @@ For full documentation see:
 #@<< imports >>
 #@+node:tbrown.20090119215428.4:<< imports >>
 import leo.core.leoGlobals as g
-
+import re
 if g.app.gui.guiName() == "qt":
     import leo.core.leoPlugins as leoPlugins
     import os
@@ -61,7 +61,7 @@ def init():
     leoPlugins.registerHandler('after-create-leo-frame',onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
-
+    g.tree_popup_handlers.append(popup_entry)
     return True
 
 #@-node:tbrown.20090119215428.6:init
@@ -72,18 +72,23 @@ def onCreate (tag,key):
 
     todoController(c)
 #@-node:tbrown.20090119215428.7:onCreate
+#@+node:tbrown.20090630144958.5318:popup_entry
+def popup_entry(c,p,menu):
+    c.cleo.addPopupMenu(c,p,menu)
+#@-node:tbrown.20090630144958.5318:popup_entry
 #@+node:tbrown.20090119215428.8:class todoQtUI
 if g.app.gui.guiName() == "qt":
     class cleoQtUI(QtGui.QWidget):
 
-        def __init__(self, owner):
+        def __init__(self, owner, logTab=True):
 
             self.owner = owner
 
             QtGui.QWidget.__init__(self)
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
             form_class, base_class = uic.loadUiType(uiPath)
-            self.owner.c.frame.log.createTab('Task', widget = self) 
+            if logTab:
+                self.owner.c.frame.log.createTab('Task', widget = self) 
             self.UI = form_class()
             self.UI.setupUi(self)
 
@@ -91,23 +96,8 @@ if g.app.gui.guiName() == "qt":
             o = self.owner
 
             self.menu = QtGui.QMenu()
-            self.menu.addAction('Find next ToDo', o.find_todo)
-            m = self.menu.addMenu("Priority")
-            m.addAction('Sort', o.priSort)
-            m.addAction('Mark children todo', o.childrenTodo)
-            m.addAction('Show distribution', o.showDist)
-            m.addAction('Redistribute', o.reclassify)
-            m = self.menu.addMenu("Time")
-            m.addAction('Show times', lambda:o.show_times(show=True))
-            m.addAction('Hide times', lambda:o.show_times(show=False))
-            m.addAction('Re-calc. derived times', o.local_recalc)
-            m.addAction('Clear derived times', o.local_clear)
-            m = self.menu.addMenu("Misc.")
-            m.addAction('Clear all todo icons', lambda:o.loadAllIcons(clear=True))
-            m.addAction('Show all todo icons', o.loadAllIcons)
-            m.addAction('Clear todo from node', o.clear_all)
-            m.addAction('Clear todo from subtree', lambda:o.clear_all(recurse=True))
-            m.addAction('Clear todo from all', lambda:o.clear_all(all=True))
+            self.populateMenu(self.menu, o)
+
             u.butMenu.setMenu(self.menu)
 
             self.connect(u.butHelp, QtCore.SIGNAL("clicked()"), o.showHelp)
@@ -144,6 +134,26 @@ if g.app.gui.guiName() == "qt":
             self.UI.spinTime.blockSignals(True)
             self.UI.spinTime.setValue(timeReq)
             self.UI.spinTime.blockSignals(False)
+
+        @staticmethod
+        def populateMenu(menu,o): 
+            menu.addAction('Find next ToDo', o.find_todo)
+            m = menu.addMenu("Priority")
+            m.addAction('Sort', o.priSort)
+            m.addAction('Mark children todo', o.childrenTodo)
+            m.addAction('Show distribution', o.showDist)
+            m.addAction('Redistribute', o.reclassify)
+            m = menu.addMenu("Time")
+            m.addAction('Show times', lambda:o.show_times(show=True))
+            m.addAction('Hide times', lambda:o.show_times(show=False))
+            m.addAction('Re-calc. derived times', o.local_recalc)
+            m.addAction('Clear derived times', o.local_clear)
+            m = menu.addMenu("Misc.")
+            m.addAction('Clear all todo icons', lambda:o.loadAllIcons(clear=True))
+            m.addAction('Show all todo icons', o.loadAllIcons)
+            m.addAction('Clear todo from node', o.clear_all)
+            m.addAction('Clear todo from subtree', lambda:o.clear_all(recurse=True))
+            m.addAction('Clear todo from all', lambda:o.clear_all(all=True))
 #@-node:tbrown.20090119215428.8:class todoQtUI
 #@+node:tbrown.20090119215428.9:class todoController
 class todoController:
@@ -180,6 +190,8 @@ class todoController:
         self.c = c
         c.cleo = self
         self.donePriority = 100
+        self.menuicons = {}  # menu icon cache
+        self.recentIcons = []
         #X self.smiley = None
         self.redrawLevels = 0
 
@@ -225,6 +237,76 @@ class todoController:
         for i in self.handlers:
             leoPlugins.unregisterHandler(i[0], i[1])
     #@-node:tbrown.20090522142657.7894:__del__
+    #@+node:tbrown.20090630144958.5319:addPopupMenu
+    def addPopupMenu(self,c,p,menu):
+
+        def rnd(x): return re.sub('.0$', '', '%.1f' % x)
+
+        taskmenu = menu.addMenu("Task")
+
+        submenu = taskmenu.addMenu("Icon")
+
+        iconlist = [(menu, i) for i in self.recentIcons]
+        iconlist.extend([(submenu, i) for i in self.priorities])
+
+        for m,i in iconlist:
+            icon = self.menuicon(i)
+            a = m.addAction(icon, self.priorities[i]["long"])
+            def func(pri=i):
+                self.setPri(pri)
+            a.connect(a, QtCore.SIGNAL("triggered()"), func)
+
+        submenu = taskmenu.addMenu("Progress")
+        for i in range(11):
+            icon = self.menuicon(10*i, progress=True)
+            a = submenu.addAction(icon, "%d%%" % (i*10))
+            def func(prog=i):
+                self.set_progress(val=10*prog)
+            a.connect(a, QtCore.SIGNAL("triggered()"), func)
+
+        prog = self.getat(p.v, 'progress')
+        if isinstance(prog,int):
+            a = taskmenu.addAction("(%d%% complete)"%prog)
+            a.enabled = False
+
+        time_ = self.getat(p.v, 'time_req')
+        if isinstance(time_,float):
+            if isinstance(prog,int):
+                f = prog/100.
+                a = taskmenu.addAction("(%s+%s=%s %s)"%(rnd(f*time_),
+                    rnd((1.-f)*time_),rnd(time_), self.time_name))
+            else:
+                a = taskmenu.addAction("(%s %s)"%(rnd(time_), self.time_name))
+            a.enabled = False
+
+
+        cleoQtUI.populateMenu(taskmenu, self)
+    #@-node:tbrown.20090630144958.5319:addPopupMenu
+    #@+node:tbrown.20090630144958.5320:menuicon
+    def menuicon(self, pri, progress=False):
+        """return icon from cache, placing it there if needed"""
+
+        if progress:
+            prog = pri
+            pri = 'prog-%d'%pri
+
+        if pri not in self.menuicons:
+
+            if progress:
+                fn = 'prg%03d.png' % prog
+            else:
+                fn = self.priorities[pri]["icon"]
+
+            iconDir = g.os_path_abspath(
+              g.os_path_normpath(
+                g.os_path_join(g.app.loadDir,"..","Icons")))
+
+            fn = g.os_path_join(iconDir,'cleo',fn)
+
+            self.menuicons[pri] = QtGui.QIcon(fn)
+
+        return self.menuicons[pri]
+    #@-node:tbrown.20090630144958.5320:menuicon
     #@+node:tbrown.20090119215428.13:redrawer
     def redrawer(fn):
         """decorator for methods which create the need for a redraw"""
@@ -319,7 +401,7 @@ class todoController:
     #@-node:tbrown.20090119215428.17:close
     #@+node:tbrown.20090119215428.18:showHelp
     def showHelp(self):
-        g.es('Check the Plugins menu todo entry')
+        g.es('Check the Plugins menu Todo entry')
     #@nonl
     #@-node:tbrown.20090119215428.18:showHelp
     #@+node:tbrown.20090119215428.19:attributes...
@@ -501,8 +583,6 @@ class todoController:
     #@+node:tbrown.20090119215428.34:show_times
     @redrawer
     def show_times(self, p=None, show=False):
-
-        import re
 
         def rnd(x): return re.sub('.0$', '', '%.1f' % x)
 
@@ -759,6 +839,12 @@ class todoController:
     #@+node:tbrown.20090119215428.47:setPri
     @redrawer
     def setPri(self,pri):
+
+        if pri in self.recentIcons:
+            self.recentIcons.remove(pri)
+        self.recentIcons.insert(0, pri)
+        self.recentIcons = self.recentIcons[:3]
+
         p = self.c.currentPosition()
         self.setat(p.v, 'priority', pri)
         self.loadIcons(p)
