@@ -147,12 +147,42 @@ class baseTextWidget:
     #@nonl
     #@-node:ekr.20081031074455.4:baseTextWidget: must be defined in subclasses
     #@+node:ekr.20081031074455.5:baseTextWidget: mustBeDefined
-
     mustBeDefined = (
         'bind',
         'flashCharacter',
         'deleteTextSelection',
+        # These can be do-nothings
+        'getWidth',
+        'indexIsVisible',
+        'mark_set',
+        'setWidth',
+        'tag_add',
+        'tag_config',
+        'tag_configure',
+        'tag_delete',
+        'tag_names',
+        'tag_ranges',
+        'tag_remove',
+        'update',
+        'update_idletasks',
+        'xyToPythonIndex',
+        'yview',
+        # mayBeDefinedInSubclasses.
+        'delete',
+        'deleteTextSelection',
+        'event_generate',
+    #     'getName()
+    #     'GetName()
+        'hasSelection',
+        'replace',
+        'rowColToGuiIndex',
+        'selectAllText',
+        'toGuiIndex',
+        'toPythonIndex',
+        'toPythonIndexRowCol',
+        # 'xyzzy', # to make test fail.
     )
+    #@nonl
     #@-node:ekr.20081031074455.5:baseTextWidget: mustBeDefined
     #@-node:ekr.20070228074312.1:Birth & special methods (baseText)
     #@+node:ekr.20081031074455.6:must be defined in base class

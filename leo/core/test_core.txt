@@ -150,11 +150,31 @@ if g.app.gui.guiName() == 'tkinter':
 #@-node:ekr.20090630093812.6013:Tk gui tests
 #@+node:ekr.20090630091825.5993:@test that leoQtLog implements high-level interface
 if g.app.gui.guiName() == 'qt':
-    log = c.frame.log
-    mustBeDefined = log.logCtrl.mustBeDefinedInHighLevelSubclasses
-    for z in mustBeDefined:
-        assert hasattr(log,z),z
-#@nonl
+
+    logCtrl = c.frame.log.logCtrl
+
+    table = (
+        ('mustBeDefinedInSubclasses',logCtrl.mustBeDefinedInHighLevelSubclasses),
+        ('mustBeDefinedInBaseClass',logCtrl.mustBeDefinedOnlyInBaseClass),
+        ('mustBeDefined',logCtrl.mustBeDefined),
+    )
+
+    # Check existence.
+    for tag,aList in table:
+        for z in aList:
+            assert hasattr(c.frame.log,z),'%s %s' % (tag,z)
+
+    # Check signatures.
+    import inspect
+    for tag,aList in table:
+        for z in aList:
+            func = getattr(c.frame.body.bodyCtrl,z)
+            func2 = getattr(c.frame.log.logCtrl,z)
+            assert func,z
+            assert func2,z
+            d1 = inspect.getargspec(func)
+            d2 = inspect.getargspec(func2)
+            assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 #@-node:ekr.20090630091825.5993:@test that leoQtLog implements high-level interface
 #@+node:ekr.20090201135500.6:@test official commander ivars
 f = c.frame
