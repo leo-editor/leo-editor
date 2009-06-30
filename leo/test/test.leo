@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -346,10 +346,6 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
-<v t="ekr.20090629193234.6122"><vh>docutils error test</vh>
-<v t="ekr.20090629193234.1790"><vh>@rst rst-error-test.html</vh></v>
-</v>
-<v t="ekr.20090630111256.1798"><vh>@test that leoQtLog implements high-level interface</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -7822,23 +7818,5 @@ class atFile:
 #@-leo
 </t>
 <t tx="ekr.20090629105832.1790"></t>
-<t tx="ekr.20090629193234.1790">This is a undefinedReference_.
-
-</t>
-<t tx="ekr.20090629193234.6122">@language rest
-</t>
-<t tx="ekr.20090630111256.1798">if g.app.gui.guiName() == 'qt':
-    log = c.frame.log ; logCtrl = log.logCtrl
-
-    table = (
-        ('mustBeDefinedInSubclasses',logCtrl.mustBeDefinedInHighLevelSubclasses),
-        ('mustBeDefinedInBaseClass',logCtrl.mustBeDefinedOnlyInBaseClass),
-        ('mustBeDefined',logCtrl.mustBeDefined),
-    )
-
-    for tag,aList in table:
-        for z in aList:
-            assert hasattr(log,z),'%s %s' % (tag,z)
-</t>
 </tnodes>
 </leo_file>

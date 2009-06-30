@@ -886,6 +886,10 @@ class leoImportCommands (scanUtility):
 
         c = self.c
 
+        # Delete all children.
+        while p.hasChildren():
+            p.firstChild().doDelete()
+
         self.createOutline(
             fileName=p.atAutoNodeName(),
             parent=p.copy(),

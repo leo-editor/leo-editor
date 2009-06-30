@@ -2,8 +2,6 @@
 #@+node:ekr.20081121105001.147:@thin qtNotes.txt
 #@+all
 #@+node:ekr.20081121105001.148: qt To do
-#@+node:ekr.20090430102239.13:To do before 4.6 rc1
-#@-node:ekr.20090430102239.13:To do before 4.6 rc1
 #@+node:ekr.20090304084841.11:Later
 #@+node:ekr.20090429101847.10:Support canvas widgets in all panes
 @nocolor-node
