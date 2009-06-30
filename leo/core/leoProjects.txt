@@ -5038,6 +5038,81 @@ def getEnabledFiles (s,plugins_path):
 #@-node:ekr.20070224082131:getEnabledFiles
 #@-node:ekr.20031218072017.3440:loadHandlers & helper
 #@-node:ekr.20090629192235.5985:Issue error message re non-existent plugins
+#@+node:ekr.20090630154627.6009:Expanded Alt-lt/rt arrows
+#@+node:ekr.20040930064232:contractNodeOrGoToParent
+def contractNodeOrGoToParent (self,event=None):
+
+    """Simulate the left Arrow Key in folder of Windows Explorer."""
+
+    trace = False and not g.unitTesting
+    c = self ; p = c.p
+    if p.hasChildren() and p.isExpanded():
+        if trace: g.trace('contract',p.h)
+        c.contractNode()
+    elif p.hasParent() and p.parent().isVisible(c):
+        redraw = False
+        if self.sparse_goto_parent:
+            for child in p.parent().children_iter():
+                if child.isExpanded():
+                    child.contract()
+                    redraw = True
+        if trace: g.trace('goto parent',p.h)
+        c.goToParent()
+        if redraw: c.redraw()
+    # New in Leo 4.6 rc1.
+    elif p.hasBack():
+        c.contractNode()
+        c.goToPrevSibling()
+
+    c.treeFocusHelper()
+#@nonl
+#@-node:ekr.20040930064232:contractNodeOrGoToParent
+#@+node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+def expandNodeAndGoToFirstChild (self,event=None):
+
+    """If a node has children, expand it if needed and go to the first child."""
+
+    c = self ; p = c.p
+
+    # New code.
+    # Important: automatically collapsing nodes is
+    # way too confusing.  And it's a bit illogical.
+    if p.hasChildren():
+        if p.isExpanded():
+            p.moveToFirstChild()
+            c.selectPosition(p)
+        else:
+            c.expandNode() # Calls redraw_after_expand.
+    elif p.hasNext():
+        c.goToNextSibling()
+    else:
+        while p.hasParent():
+            p.moveToParent()
+            if p.hasNext():
+                p.moveToNext()
+                break
+        c.selectPosition(p)
+    c.treeFocusHelper()
+
+    # Old code.
+    # if not p.hasChildren():
+        # c.treeFocusHelper()
+        # return
+    # if not p.isExpanded():
+        # c.expandNode() # Calls redraw_after_expand.
+
+def expandNodeOrGoToFirstChild (self,event=None):
+
+    """Simulate the Right Arrow Key in folder of Windows Explorer."""
+
+    c = self ; p = c.p
+    if p.hasChildren():
+        if not p.isExpanded():
+            c.expandNode() # Calls redraw_after_expand.
+        else:
+            c.redraw_after_expand(p.firstChild(),setFocus=True)
+#@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
+#@-node:ekr.20090630154627.6009:Expanded Alt-lt/rt arrows
 #@-node:ekr.20090628075121.8434:Features
 #@-node:ekr.20090623072844.10385:4.6 rc1
 #@-all

@@ -4832,8 +4832,8 @@ class baseCommands (object):
                 p.moveToParent()
                 if p.hasNext():
                     p.moveToNext()
-                    c.selectPosition(p)
                     break
+            c.selectPosition(p)
         c.treeFocusHelper()
 
         # Old code.
