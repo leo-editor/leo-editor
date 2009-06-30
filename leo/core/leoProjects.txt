@@ -4637,6 +4637,10 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     fileContent = open(fileName, "rb").read()
     cachefile = self._contentHashFile(root, fileContent)
 
+    # Delete all children.
+    while root.hasChildren():
+        root.firstChild().doDelete()
+
     if cachefile in c.db:
         # This isn't so useful.
         # if not g.unitTesting: # g.es('uncache:',root.h)
@@ -4647,10 +4651,6 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
 
     if not g.unitTesting:
         g.es("reading:",root.h)
-
-    # Delete all children.
-    while root.hasChildren():
-        root.firstChild().doDelete()
 
     root.clearVisitedInTree()
     at.scanAllDirectives(root,importing=at.importing,reading=True)

@@ -485,6 +485,10 @@ class atFile:
         fileContent = open(fileName, "rb").read()
         cachefile = self._contentHashFile(root, fileContent)
 
+        # Delete all children.
+        while root.hasChildren():
+            root.firstChild().doDelete()
+
         if cachefile in c.db:
             # This isn't so useful.
             # if not g.unitTesting: # g.es('uncache:',root.h)
@@ -495,10 +499,6 @@ class atFile:
 
         if not g.unitTesting:
             g.es("reading:",root.h)
-
-        # Delete all children.
-        while root.hasChildren():
-            root.firstChild().doDelete()
 
         root.clearVisitedInTree()
         at.scanAllDirectives(root,importing=at.importing,reading=True)
