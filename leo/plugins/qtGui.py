@@ -2007,6 +2007,7 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setSizePolicy(w)
         w.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         w.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        w.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         w.setHeaderHidden(False)
         self.setName(w,name)
         return w
@@ -5686,6 +5687,10 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
                 "itemExpanded(QTreeWidgetItem*)"),
             self.onItemExpanded)
 
+        w.connect(self.treeWidget, QtCore.SIGNAL(
+                "customContextMenuRequested(QPoint)"),
+            self.onContextMenu)    
+
         self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
         tw.installEventFilter(self.ev_filter)
 
@@ -6054,6 +6059,32 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         c.treeWantsFocus()
     #@-node:ekr.20090531084925.3774:scrollDelegate (leoQtTree)
     #@-node:ekr.20090124174652.122:Scroll bars (leoQtTree)
+    #@+node:ville.20090630151546.3969:onContextMenu (nativeTree)
+    def onContextMenu(self, point):
+        c = self.c
+        w = self.treeWidget
+        handlers = g.tree_popup_handlers    
+        menu = QtGui.QMenu()
+        menuPos = w.mapToGlobal(point)
+        if not handlers:
+            menu.addAction("No popup handlers")
+
+        p = c.currentPosition().copy()
+        done = set()
+        for h in handlers:
+            # every handler has to add it's QActions by itself
+            if h in done:
+                # do not run the same handler twice
+                continue
+            h(c,p,menu)
+
+        a = menu.exec_(menuPos)
+
+
+
+
+
+    #@-node:ville.20090630151546.3969:onContextMenu (nativeTree)
     #@-node:ekr.20090124174652.102:Widget-dependent helpers (leoQtTree)
     #@-others
 #@-node:ekr.20081121105001.400:class leoQtTree (baseNativeTree)
