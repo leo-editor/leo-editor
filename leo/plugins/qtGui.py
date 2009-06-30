@@ -6049,12 +6049,23 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
     #@-node:ekr.20090124174652.122:Scroll bars (leoQtTree)
     #@+node:ville.20090630151546.3969:onContextMenu (nativeTree)
     def onContextMenu(self, point):
+        c = self.c
         w = self.treeWidget
+        handlers = g.tree_popup_handlers    
         menu = QtGui.QMenu()
         menuPos = w.mapToGlobal(point)
+        if not handlers:
+            menu.addAction("No popup handlers")
 
-        menu.addAction("Menu1")
-        menu.addAction("Menu2")
+        p = c.currentPosition().copy()
+        done = set()
+        for h in handlers:
+            # every handler has to add it's QActions by itself
+            if h in done:
+                # do not run the same handler twice
+                continue
+            h(c,p,menu)
+
         a = menu.exec_(menuPos)
 
 
