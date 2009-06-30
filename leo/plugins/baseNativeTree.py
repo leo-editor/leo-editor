@@ -1338,7 +1338,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         g.app.gui.set_focus(self.c,self.treeWidget)
     #@-node:ekr.20090124174652.71:Focus (nativeTree)
-    #@+node:ekr.20090124174652.72:Icons
+    #@+node:ekr.20090124174652.72:Icons (nativeTree)
     #@+node:ekr.20090124174652.73:drawItemIcon
     def drawItemIcon (self,p,item):
 
@@ -1367,7 +1367,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20090124174652.76:setItemIcon (nativeTree)
     def setItemIcon (self,item,icon):
 
-        trace = False
+        trace = False and not g.unitTesting
 
         valid = item and self.isValidItem(item)
 
@@ -1388,6 +1388,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         '''Update p's icon.'''
 
+        trace = False and not g.unitTesting
         if not p: return
 
         val = p.v.computeIcon()
@@ -1401,6 +1402,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         icon = self.getIconImage(val)
         # Update all cloned/joined items.
         items = self.tnode2items(p.v.t)
+        if trace: g.trace(icon,items)
         for item in items:
             self.setItemIcon(item,icon)
     #@nonl
@@ -1417,7 +1419,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             for child in p.children_iter():
                 self.updateVisibleIcons(child)
     #@-node:ekr.20090124174652.114:updateVisibleIcons
-    #@-node:ekr.20090124174652.72:Icons
+    #@-node:ekr.20090124174652.72:Icons (nativeTree)
     #@+node:ekr.20090124174652.77:oops
     def oops(self):
 

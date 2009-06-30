@@ -5799,6 +5799,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
     def setItemIconHelper (self,item,icon):
 
         # Generates an item-changed event.
+        # g.trace(id(icon))
         if item:
             item.setIcon(0,icon)
     #@-node:ekr.20090124174652.112:setItemIconHelper (qtTree)

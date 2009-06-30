@@ -4690,6 +4690,10 @@ class baseCommands (object):
             if trace: g.trace('goto parent',p.h)
             c.goToParent()
             if redraw: c.redraw()
+        # New in Leo 4.6 rc1.
+        elif p.hasBack():
+            c.contractNode()
+            c.goToPrevSibling()
 
         c.treeFocusHelper()
     #@nonl
@@ -4811,12 +4815,33 @@ class baseCommands (object):
         """If a node has children, expand it if needed and go to the first child."""
 
         c = self ; p = c.p
-        if not p.hasChildren():
-            c.treeFocusHelper()
-            return
 
-        if not p.isExpanded():
-            c.expandNode() # Calls redraw_after_expand.
+        # New code.
+        # Important: automatically collapsing nodes is
+        # way too confusing.  And it's a bit illogical.
+        if p.hasChildren():
+            if p.isExpanded():
+                p.moveToFirstChild()
+                c.selectPosition(p)
+            else:
+                c.expandNode() # Calls redraw_after_expand.
+        elif p.hasNext():
+            c.goToNextSibling()
+        else:
+            while p.hasParent():
+                p.moveToParent()
+                if p.hasNext():
+                    p.moveToNext()
+                    c.selectPosition(p)
+                    break
+        c.treeFocusHelper()
+
+        # Old code.
+        # if not p.hasChildren():
+            # c.treeFocusHelper()
+            # return
+        # if not p.isExpanded():
+            # c.expandNode() # Calls redraw_after_expand.
 
     def expandNodeOrGoToFirstChild (self,event=None):
 
@@ -4828,7 +4853,6 @@ class baseCommands (object):
                 c.expandNode() # Calls redraw_after_expand.
             else:
                 c.redraw_after_expand(p.firstChild(),setFocus=True)
-    #@nonl
     #@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
     #@+node:ekr.20060928062431:expandOnlyAncestorsOfNode
     def expandOnlyAncestorsOfNode (self,event=None):
