@@ -4517,6 +4517,105 @@ def handleMissingStyleSheetArgs (self,s=None):
 #@-node:ekr.20090502071837.66:handleMissingStyleSheetArgs
 #@-node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
 #@-node:ekr.20090629192235.5984:Investigated rst report bug
+#@+node:ekr.20090630115919.5992:Fixed read-at-auto-nodes bug
+#@+node:ekr.20070806105721.1:readAtAutoNodes (commands)
+def readAtAutoNodes (self,event=None):
+
+    '''Read all @auto nodes in the presently selected outline.'''
+
+    c = self ; u = c.undoer ; p = c.p
+    c.endEditing()
+
+    undoData = u.beforeChangeTree(p)
+    c.importCommands.readAtAutoNodes()
+    u.afterChangeTree(p,'Read @auto Nodes',undoData)
+    c.redraw()
+#@-node:ekr.20070806105721.1:readAtAutoNodes (commands)
+#@+node:ekr.20070806111212:readAtAutoNodes (importCommands) & helper
+def readAtAutoNodes (self):
+
+    c = self.c
+    p = c.p ; after = p.nodeAfterTree()
+
+    found = False
+    while p and p != after:
+        if p.isAtAutoNode():
+            if p.isAtIgnoreNode():
+                g.es_print('ignoring',p.h,color='blue')
+                p.moveToThreadNext()
+            else:
+                self.readOneAtAutoNode(p)
+                found = True
+                p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+    message = g.choose(found,'finished','no @auto nodes in the selected tree')
+    g.es(message,color='blue')
+    c.redraw()
+
+#@+node:ekr.20070807084545:readOneAtAutoNode (leoImport)
+def readOneAtAutoNode(self,p):
+
+    '''Read the @auto node at p'''
+
+    c = self.c
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    self.createOutline(
+        fileName=p.atAutoNodeName(),
+        parent=p.copy(),
+        atAuto=True)
+
+    # Force an update of the body pane.
+    self.setBodyString(p,p.b)
+    c.frame.body.onBodyChanged(undoType=None)
+#@-node:ekr.20070807084545:readOneAtAutoNode (leoImport)
+#@-node:ekr.20070806111212:readAtAutoNodes (importCommands) & helper
+#@-node:ekr.20090630115919.5992:Fixed read-at-auto-nodes bug
+#@+node:ekr.20090630115919.6059:Fixed major focus problems
+@nocolor-node
+
+Various get-focus methods must translate from wrapped widget to wrapper widget.
+This happens in g.app.gui.get_focus, which needs a c arg to work properly in some cases!
+#@nonl
+#@+node:ekr.20070130115927.5:copyText
+def copyText (self,event=None):
+
+    '''Copy the selected text from the widget to the clipboard.'''
+
+    f = self ; c = f.c ; w = event and event.widget
+    # g.trace(w,g.callers(5))
+    if not w or not g.app.gui.isTextWidget(w): return
+
+    # Set the clipboard text.
+    i,j = w.getSelectionRange()
+    if i != j:
+        s = w.get(i,j)
+        g.app.gui.replaceClipboardWith(s)
+
+OnCopyFromMenu = copyText
+#@-node:ekr.20070130115927.5:copyText
+#@+node:ekr.20061031131434.155:masterMenuHandler
+def masterMenuHandler (self,stroke,func,commandName):
+
+    k = self ; c = k.c
+    w = c.frame.getFocus()
+
+    # g.trace('focus',w)
+    # g.trace('stroke',stroke,'func',func and func.__name__,commandName,g.callers())
+
+    # Create a minimal event for commands that require them.
+    event = g.Bunch(c=c,char='',keysym='',widget=w)
+
+    if stroke:
+        return k.masterKeyHandler(event,stroke=stroke)
+    else:
+        return k.masterCommand(event,func,stroke,commandName)
+#@-node:ekr.20061031131434.155:masterMenuHandler
+#@-node:ekr.20090630115919.6059:Fixed major focus problems
 #@-node:ekr.20090623072844.10386:Bugs
 #@+node:ekr.20090628075121.8434:Features
 #@+node:ekr.20090628075121.8433:Added open-quickstart-leo

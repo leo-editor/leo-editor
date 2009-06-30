@@ -79,8 +79,11 @@ class QTextBrowserSubclass (QtGui.QTextBrowser):
 
     '''A subclass of QTextBrowser that overrides the mouse event handlers.'''
 
-    def __init__(self,parent,c):
+    def __init__(self,parent,c,wrapper):
+        for attr in ('leo_c','leo_wrapper',):
+            assert not hasattr(QtGui.QTextBrowser,attr),attr
         self.leo_c = c
+        self.leo_wrapper = wrapper
         QtGui.QTextBrowser.__init__(self,parent)
 
     def leo_dumpButton(self,event,tag):
@@ -203,11 +206,11 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
     #@-node:ekr.20090629160050.3737:Mouse events
     #@+node:ekr.20081121105001.521: Must be defined in base class
-    #@+node:ekr.20081121105001.522: Focus
+    #@+node:ekr.20081121105001.522: Focus (leoQtBaseTextWidget)
     def getFocus(self):
 
-        g.trace('leoQtBody',self.widget,g.callers(4))
-        return g.app.gui.get_focus()
+        # g.trace('leoQtBody',self.widget,g.callers(4))
+        return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30
 
     findFocus = getFocus
 
@@ -221,7 +224,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
         # g.trace('leoQtBody',self.widget,g.callers(4))
         g.app.gui.set_focus(self.c,self.widget)
-    #@-node:ekr.20081121105001.522: Focus
+    #@-node:ekr.20081121105001.522: Focus (leoQtBaseTextWidget)
     #@+node:ekr.20081121105001.523: Indices
     #@+node:ekr.20090320101733.13:toPythonIndex
     def toPythonIndex (self,index):
@@ -1992,7 +1995,7 @@ class DynamicWindow(QtGui.QMainWindow):
 
         # w = QtGui.QTextBrowser(parent)
         c = self.c
-        w = QTextBrowserSubclass(parent,c)
+        w = QTextBrowserSubclass(parent,c,None)
         # self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         w.setFrameShape(shape)
         w.setFrameShadow(shadow)
@@ -2500,7 +2503,7 @@ class leoQtBody (leoFrame.leoBody):
 
         # Step 1: create the editor.
         # w = QtGui.QTextBrowser(f)
-        w = QTextBrowserSubclass(f,c)
+        w = QTextBrowserSubclass(f,c,self)
         w.setObjectName('richTextEdit') # Will be changed later.
         wrapper = leoQTextEditWidget(w,name='body',c=c)
         self.packLabel(w)
@@ -4440,7 +4443,7 @@ class leoQtFrame (leoFrame.leoFrame):
     def deiconify (self):
         self.lift()
     def getFocus(self):
-        return g.app.gui.get_focus() 
+        return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30.
     def get_window_info(self):
         rect = self.top.geometry()
         topLeft = rect.topLeft()
@@ -4726,7 +4729,7 @@ class leoQtLog (leoFrame.leoLog):
 
         if widget is None:
             # widget = QtGui.QTextBrowser()
-            widget = QTextBrowserSubclass(parent=None,c=c)
+            widget = QTextBrowserSubclass(parent=None,c=c,wrapper=self)
             contents = leoQTextEditWidget(widget=widget,name='log',c=c)
             widget.leo_log_wrapper = contents # Inject an ivar.
             if trace: g.trace('** creating',tabName,contents,widget)
@@ -6672,7 +6675,13 @@ class leoQtGui(leoGui.leoGui):
         """Returns the widget that has focus."""
 
         w = QtGui.QApplication.focusWidget()
-        # g.trace('leoQtGui',w)
+        if isinstance(w,QTextBrowserSubclass):
+            w = w.leo_wrapper
+            if c and not w:
+                # Kludge: DynamicWindow creates the body pane
+                # with wrapper = None, so return the leoQtBody.
+                w = c.frame.body
+        # g.trace('leoQtGui',w,c,g.callers(5))
         return w
 
     def set_focus(self,c,w):

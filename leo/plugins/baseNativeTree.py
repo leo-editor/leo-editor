@@ -1323,10 +1323,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         # return item
     #@-node:ekr.20090124174652.70:position2item (baseNativeTree) (no longer used)
     #@-node:ekr.20090124174652.63:Associating items and positions
-    #@+node:ekr.20090124174652.71:Focus
+    #@+node:ekr.20090124174652.71:Focus (nativeTree)
     def getFocus(self):
 
-        return g.app.gui.get_focus()
+        return g.app.gui.get_focus(self.c) # Bug fix: 2009/6/30
 
     findFocus = getFocus
 
@@ -1337,7 +1337,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def setFocus (self):
 
         g.app.gui.set_focus(self.c,self.treeWidget)
-    #@-node:ekr.20090124174652.71:Focus
+    #@-node:ekr.20090124174652.71:Focus (nativeTree)
     #@+node:ekr.20090124174652.72:Icons
     #@+node:ekr.20090124174652.73:drawItemIcon
     def drawItemIcon (self,p,item):
