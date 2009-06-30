@@ -4,13 +4,15 @@
 #@+node:ekr.20080814103428.4:To do before 4.6 rc1
 @nocolor-node
 
-- Fix all bug tracker bugs.
+- Fix all medium or high priority bug tracker bugs.
+
+- Fix all problems reported by check-bindings script.
 
 Docs:
 
-- Create FAQ entry telling how to use Leo in shared environments.
+** Create FAQ entry telling how to use Leo in shared environments.
 
-- Update link for 'Run from console window'.
+* Update link for 'Run from console window'.
 
 - Rewrite more docs using stories.
 #@nonl
