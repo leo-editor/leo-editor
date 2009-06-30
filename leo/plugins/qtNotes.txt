@@ -13044,35 +13044,19 @@ def getName (self):
 #@+node:ekr.20081121105001.323:Config
 # These will probably be replaced by style sheets.
 
-def configureBorder(self,border):   pass
-def configureFont(self,font):       pass
-def getFontConfig (self):           pass
-
-def setColorFromConfig (self):
-    c = self.c
-    # bg = c.config.getColor("log_pane_background_color") or 'white'
-
-def SetWidgetFontFromConfig (self,logCtrl=None):
-    c = self.c
-    # font = c.config.getFontFromParams(
-        # "log_text_font_family", "log_text_font_size",
-        # "log_text_font_slant", "log_text_font_weight",
-        # c.config.defaultLogFontSize)
-
-def saveAllState (self):
-    '''Return a dict containing all data needed to recreate the log in another widget.'''
-    # Save text and colors
-def restoreAllState (self,d):
-    '''Restore the log from a dict created by saveAllState.'''
-    # Restore text and colors.
+def configureBorder(self,border):               pass
+def configureFont(self,font):                   pass
+def getFontConfig (self):                       pass
+def setColorFromConfig (self):                  pass
+def SetWidgetFontFromConfig (self,logCtrl=None): pass
+def saveAllState (self):                        pass
+def restoreAllState (self,d):                   pass
+#@nonl
 #@-node:ekr.20081121105001.323:Config
 #@+node:ekr.20081121105001.324:Focus & update
 def onActivateLog (self,event=None):    pass
 def hasFocus (self):                    return None
 def forceLogUpdate (self,s):            pass
-def set_focus(self):                  pass
-setFocus = set_focus
-#@nonl
 #@-node:ekr.20081121105001.324:Focus & update
 #@-node:ekr.20081121105001.322:Do nothings
 #@+node:ekr.20090627090950.3717:Redirection to logCtrl
@@ -13088,15 +13072,15 @@ def getSelectedText(self):          return self.logCtrl.getSelectedText()
 def getSelectionRange (self):       return self.logCtrl.getSelectionRange()
 def getYScrollPosition (self):      return self.logCtrl.getYScrollPosition()
 def hasSelection(self):             return self.logCtrl.hasSelection()
-def insert(self,i,s):               self.logCtrl.insert(i,s)
 def scrollLines(self,n):            self.logCtrl.scrollLines(n)
 def see(self,i):                    self.logCtrl.see(i)
 def seeInsertPoint (self):          self.logCtrl.seeInsertPoint()
 def setAllText (self,s):            self.logCtrl.setAllText(s)
 def setBackgroundColor(self,color): self.logCtrl.setBackgroundColor(color)
 def setFocus(self):                 self.logCtrl.setFocus()
+set_focus = setFocus
 def setForegroundColor(self,color): self.logCtrl.setForegroundColor(color)
-def setInsertPoint(self,pos):       self.logCtrl.setInsertPoint(color)
+def setInsertPoint(self,pos):       self.logCtrl.setInsertPoint(pos)
 def setSelectionRange(self,*args,**keys):
     self.logCtrl.setSelectionRange(*args,**keys)
 def setYScrollPosition (self,i):    self.logCtrl.setYScrollPosition(i)
@@ -13128,12 +13112,10 @@ def yview (self,*args):                     return 0,0
 tag_config = tag_configure
 
 # Part 4: corresponding to mayBeDefinedInSubclasses.
-def delete(self,i,j=None):              self.logCtrl.delete(i,j)
 def deleteTextSelection (self):         self.logCtrl.deleteTextSelection ()
 def event_generate(self,stroke):        pass
 # def getName()
 # def GetName()
-def hasSelection (self):                return self.logCtrl.hasSelection()
 def replace (self,i,j,s):               self.logCtrl.replace (i,j,s)
 def rowColToGuiIndex (self,s,row,col):  return self.logCtrl.rowColToGuiIndex(s,row,col)
 def selectAllText (self,insert=None):   self.logCtrl.selectAllText(insert)
