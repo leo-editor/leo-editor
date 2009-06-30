@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -346,7 +346,7 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
-<v t="ekr.20090629193234.6122" a="E"><vh>docutils error test</vh>
+<v t="ekr.20090629193234.6122"><vh>docutils error test</vh>
 <v t="ekr.20090629193234.1790"><vh>@rst rst-error-test.html</vh></v>
 </v>
 </vnodes>
@@ -1439,19 +1439,17 @@ leoTest.doTests (c,all=False)</t>
 
 plugins_menu.py
 open_with.py
-
 quicksearch.py
 ipython.py
-
 scrolledmessage.py
-
 UNL.py
 mod_scripting.py
-
 nodenavigator.py
-
 vim.py
 # xemacs.py
+
+# test of @bool warn_when_plugins_fail_to_load
+# xyzzy.py 
 
 # Other interesting plugins
 # leo_to_html.py

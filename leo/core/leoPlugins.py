@@ -338,6 +338,8 @@ def loadHandlers(tag):
 
     """Load all enabled plugins from the plugins directory"""
 
+    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
     def pr (*args,**keys):
         if not g.app.unitTesting:
             g.es_print(*args,**keys)
@@ -362,6 +364,13 @@ def loadHandlers(tag):
             if theFile in files:
                 loadOnePlugin(theFile,tag=tag)
 
+    # Warn about any non-existent enabled file.
+    if warn_on_failure and tag == 'open0':
+        for z in enabled_files:
+            if z not in files:
+                g.es_print('plugin does not exist:',
+                    g.shortFileName(z),color="red")
+
     # Note: g.plugin_signon adds module names to g.app.loadedPlugins
     if 0:
         if g.app.loadedPlugins:
@@ -383,6 +392,8 @@ def getEnabledFiles (s,plugins_path):
 #@-node:ekr.20031218072017.3440:loadHandlers & helper
 #@+node:ekr.20041113113140:loadOnePlugin & test
 def loadOnePlugin (moduleOrFileName,tag='open0',verbose=False):
+
+    # g.trace(tag,moduleOrFileName)
 
     # Prevent Leo from crashing if .leoID.txt does not exist.
     if g.app.config is None:

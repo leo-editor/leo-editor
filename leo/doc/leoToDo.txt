@@ -4,7 +4,7 @@
 #@+node:ekr.20080814103428.4:To do before 4.6 rc1
 @nocolor-node
 
-- Fix all medium or high priority bug tracker bugs.
+- Remove loaded plugin: qtGui message.
 
 - Fix all problems reported by check-bindings script.
 
@@ -16,24 +16,6 @@ Docs:
 
 - Rewrite more docs using stories.
 #@nonl
-#@+node:ekr.20090629192235.5985:Issue error message re non-existent plugins
-@nocolor-node
-
-leo doesn't print any error message when @enabled-plugins node contains a plugin
-that does not exist.
-
-Having an error message would make sense at least when trace_plugins = True.
-This shall be useful in situations when a new plugin was added to the wrong leo
-directory, the plugin line from @enabled-plugins contains a typo etc. The
-described behaviour was tested for both global leoSettings.leo and
-~/.leo/myLeoSettings.leo.
-
-For reference:
-http://groups.google.com/group/leo-editor/browse_thread/thread/be8563dc2c5db3fb/0c086be1937e67f4
-#@nonl
-#@-node:ekr.20090629192235.5985:Issue error message re non-existent plugins
-#@+node:ekr.20090629192235.5987:Remove loaded plugin: qtGui message
-#@-node:ekr.20090629192235.5987:Remove loaded plugin: qtGui message
 #@-node:ekr.20080814103428.4:To do before 4.6 rc1
 #@+node:ekr.20071211093011:4.7 flexibility
 @nocolor-node

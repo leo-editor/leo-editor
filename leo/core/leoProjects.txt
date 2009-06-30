@@ -4734,6 +4734,70 @@ scroll-down-page        ! tree = PageDn
 scroll-up-half-page     ! tree = Shift-PageUp
 scroll-up-page          ! tree = PageUp         
 #@-node:ekr.20090629192235.5986:Added tree bindings for page-up/down commands
+#@+node:ekr.20090629192235.5985:Issue error message re non-existent plugins
+@nocolor-node
+
+leo now prints an error message when @enabled-plugins node contains a plugin
+that does not exist.
+#@nonl
+#@+node:ekr.20031218072017.3440:loadHandlers & helper
+def loadHandlers(tag):
+
+    """Load all enabled plugins from the plugins directory"""
+
+    warn_on_failure = g.app.config.getBool(c=None,setting='warn_when_plugins_fail_to_load')
+
+    def pr (*args,**keys):
+        if not g.app.unitTesting:
+            g.es_print(*args,**keys)
+
+    plugins_path = g.os_path_finalize_join(g.app.loadDir,"..","plugins")
+    files = glob.glob(g.os_path_join(plugins_path,"*.py"))
+    files = [g.os_path_finalize(theFile) for theFile in files]
+
+    s = g.app.config.getEnabledPlugins()
+    if not s: return
+
+    if tag == 'open0' and not g.app.silentMode and not g.app.batchMode:
+        # g.trace(tag,g.callers(4))
+        pr('@enabled-plugins found in %s' % (
+            g.app.config.enabledPluginsFileName),color='blue')
+
+    enabled_files = getEnabledFiles(s,plugins_path)
+
+    # Load plugins in the order they appear in the enabled_files list.
+    if files and enabled_files:
+        for theFile in enabled_files:
+            if theFile in files:
+                loadOnePlugin(theFile,tag=tag)
+
+    # Warn about any non-existent enabled file.
+    if warn_on_failure and tag == 'open0':
+        for z in enabled_files:
+            if z not in files:
+                g.es_print('plugin does not exist:',
+                    g.shortFileName(z),color="red")
+
+    # Note: g.plugin_signon adds module names to g.app.loadedPlugins
+    if 0:
+        if g.app.loadedPlugins:
+            pr("%d plugins loaded" % (len(g.app.loadedPlugins)), color="blue")
+#@+node:ekr.20070224082131:getEnabledFiles
+def getEnabledFiles (s,plugins_path):
+
+    '''Return a list of plugins mentioned in non-comment lines of s.'''
+
+    enabled_files = []
+    for s in g.splitLines(s):
+        s = s.strip()
+        if s and not s.startswith('#'):
+            path = g.os_path_finalize_join(plugins_path,s)
+            enabled_files.append(path)
+
+    return enabled_files
+#@-node:ekr.20070224082131:getEnabledFiles
+#@-node:ekr.20031218072017.3440:loadHandlers & helper
+#@-node:ekr.20090629192235.5985:Issue error message re non-existent plugins
 #@-node:ekr.20090628075121.8434:Features
 #@-node:ekr.20090623072844.10385:4.6 rc1
 #@-all
