@@ -4402,6 +4402,121 @@ def stringRectangle (self,event):
 #@nonl
 #@-node:ekr.20050920084036.232:stringRectangle
 #@-node:ekr.20090628192135.6006:Rewrote string-rectangle for speed
+#@+node:ekr.20090629192235.5984:Investigated rst report bug
+@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/336864
+
+Leo: trunk as of today
+GUI: qt
+OS: Ubuntu 8.10 (up to date as of today)
+Python: 2.5.2
+
+The rst error reporting from rev. 1361
+
+a) breaks rst writing on Ubuntu if the shell from which leo is launched is closed. I.e.
+  stdout/err don't exist any more, and this doesn't seem to bother leo (shouldn't, either)
+  but is breaking docutils.
+
+b) doesn't work on Ubuntu even when the shell isn't closed
+#@nonl
+#@+node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
+def writeToDocutils (self,s):
+
+    '''Send s to docutils using the writer implied by self.ext and return the result.'''
+
+    openDirectory = self.c.frame.openDirectory
+    overrides = {'output_encoding': self.encoding }
+
+    # Compute the args list if the stylesheet path does not exist.
+    styleSheetArgsDict = self.handleMissingStyleSheetArgs()
+
+    for ext,writer in (
+        ('.html','html'),
+        ('.htm','html'),
+        ('.tex','latex'),
+        ('.pdf','leo_pdf'),
+    ):
+        if self.ext == ext:
+            break
+    else:
+        g.es_print('unknown docutils extension: %s' % (self.ext),color='red')
+        return ''
+
+    # Make the stylesheet path relative to the directory containing the output file.
+    rel_stylesheet_path = self.getOption('stylesheet_path') or ''
+
+    # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
+    stylesheet_path = g.os_path_finalize_join(
+        self.c.frame.openDirectory,rel_stylesheet_path)
+
+    path = g.os_path_finalize_join(
+        stylesheet_path,self.getOption('stylesheet_name'))
+
+    res = ""
+    if g.os_path_exists(path):
+        if self.ext != '.pdf':
+            overrides['stylesheet'] = path
+            overrides['stylesheet_path'] = None
+    elif styleSheetArgsDict:
+        g.es_print('using publish_argv_for_missing_stylesheets',
+            styleSheetArgsDict)
+        overrides.update(styleSheetArgsDict)
+            # MWC add args to settings
+    elif rel_stylesheet_path == stylesheet_path:
+        g.es_print('stylesheet not found: %s' % (path),color='red')
+    else:
+        g.es_print('stylesheet not found\n',path,color='red')
+        if self.path:g.es_print('@path:', self.path)
+        g.es_print('open path:',self.c.frame.openDirectory)
+        if rel_stylesheet_path:
+            g.es_print('relative path:', rel_stylesheet_path)
+    try:
+        # All paths now come through here.
+        result = docutils.core.publish_string(source=s,
+                reader_name='standalone',
+                parser_name='restructuredtext',
+                writer_name=writer,
+                settings_overrides=overrides)
+    except docutils.ApplicationError, error:
+        g.es_print('Error (%s): %s' % (error.__class__.__name__, error))
+    except Exception:
+        g.es_print('Unexpected docutils exception')
+        g.es_exception()
+    return result
+#@+node:ekr.20090502071837.66:handleMissingStyleSheetArgs
+def handleMissingStyleSheetArgs (self,s=None):
+
+    '''Parse the publish_argv_for_missing_stylesheets option,
+    returning a dict containing the parsed args.'''
+
+    d = {}
+    if not s:
+        s = self.getOption('publish_argv_for_missing_stylesheets')
+    if not s: return d
+
+    args = s.strip()
+    if args.find(',') == -1:
+        args = [args]
+    else:
+        args = args.split(',')
+
+    for arg in args:
+        data = arg.split('=')
+        if len(data) == 1:
+            key = data[0]
+            d[str(key)] = ""
+        elif len(data) == 2:
+            key,value = data
+            d[str(key)] = str(value)
+        else:
+            g.es_print('bad option: %s' % s,color='red')
+            break
+
+    return d
+#@-node:ekr.20090502071837.66:handleMissingStyleSheetArgs
+#@-node:ekr.20090502071837.65:writeToDocutils (sets argv) & helper
+#@-node:ekr.20090629192235.5984:Investigated rst report bug
 #@-node:ekr.20090623072844.10386:Bugs
 #@+node:ekr.20090628075121.8434:Features
 #@+node:ekr.20090628075121.8433:Added open-quickstart-leo
@@ -4599,6 +4714,26 @@ d = {
 }
 #@-node:ekr.20050920084036.189:<< define dictionary d of names and Leo commands >>
 #@-node:ekr.20090628075121.8433:Added open-quickstart-leo
+#@+node:ekr.20090629192235.5986:Added tree bindings for page-up/down commands
+@nocolor
+
+This was a binding issue. Leo has a full range of scrolling commands. They work.
+
+The old bindings bound the PageUp/Down keys to back/forward page commands, and
+these commands work only for text.
+
+The new default bindings in leoSettings.leo: @keys EKR bindings are:
+
+back-page                       ! text = PageUp
+back-page-extend-selection      ! text = Shift-PageUp
+forward-page                    ! text = PageDn
+forward-page-extend-selection   ! text = Shift-PageDn
+
+scroll-down-half-page   ! tree = Shift-PageDn
+scroll-down-page        ! tree = PageDn
+scroll-up-half-page     ! tree = Shift-PageUp
+scroll-up-page          ! tree = PageUp         
+#@-node:ekr.20090629192235.5986:Added tree bindings for page-up/down commands
 #@-node:ekr.20090628075121.8434:Features
 #@-node:ekr.20090623072844.10385:4.6 rc1
 #@-all

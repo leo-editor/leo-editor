@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="5"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913" annotate="7d71002e"><vh>@@button Save</vh></v>
@@ -7375,10 +7375,15 @@ move-outline-up             = Alt-Shift-UpArrow
 goto-first-visible-node     = Alt-Home
 goto-last-visible-node      = Alt-End
 
-back-page                       = PageUp
-back-page-extend-selection      = Shift-PageUp
-forward-page                    = PageDn
-forward-page-extend-selection   = Shift-PageDn
+back-page                       ! text = PageUp
+back-page-extend-selection      ! text = Shift-PageUp
+forward-page                    ! text = PageDn
+forward-page-extend-selection   ! text = Shift-PageDn
+
+scroll-down-half-page   ! tree = Shift-PageDn
+scroll-down-page        ! tree = PageDn
+scroll-up-half-page     ! tree = Shift-PageUp
+scroll-up-page          ! tree = PageUp         
 </t>
 <t tx="ekr.20080513060549.1"></t>
 <t tx="ekr.20080513060549.3">@nocolor
