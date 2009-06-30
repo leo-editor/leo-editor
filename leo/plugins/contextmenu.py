@@ -42,7 +42,11 @@ inited = False
 #@-node:ville.20090630210947.10190:globals
 #@+node:ville.20090630210947.5465:openwith_rclick
 def openwith_rclick(c,p, menu):
-    """ Open with $EDITOR """
+    """ Show "Open with" in context menu for external file root nodes (@thin, @auto...) 
+
+    Currently 
+
+    """
 
     h = p.h
     parts = h.split(None, 1)
@@ -56,6 +60,10 @@ def openwith_rclick(c,p, menu):
         fname = p.atThinFileNodeName()
     elif head == '@auto':
         fname = p.atAutoNodeName()        
+    elif head == '@edit':
+        fname = p.atEditNodeName()        
+    elif head == '@shadow':
+        fname = p.atShadowFileNodeName()        
 
     if fname is None:
         return
