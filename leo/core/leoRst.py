@@ -899,14 +899,17 @@ class rstCommands:
                 g.es_print('relative path:', rel_stylesheet_path)
         try:
             # All paths now come through here.
-            res = docutils.core.publish_string(source=s,
+            result = docutils.core.publish_string(source=s,
                     reader_name='standalone',
                     parser_name='restructuredtext',
                     writer_name=writer,
                     settings_overrides=overrides)
         except docutils.ApplicationError, error:
             g.es_print('Error (%s): %s' % (error.__class__.__name__, error))
-        return res
+        except Exception:
+            g.es_print('Unexpected docutils exception')
+            g.es_exception()
+        return result
     #@+node:ekr.20090502071837.66:handleMissingStyleSheetArgs
     def handleMissingStyleSheetArgs (self,s=None):
 
