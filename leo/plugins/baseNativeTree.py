@@ -528,6 +528,11 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         c.outerUpdate()
     #@-node:ekr.20090124174652.40:onItemCollapsed (nativeTree)
+    #@+node:ville.20090630163538.3906:onContextMenu (nativeTree)
+    def onContextMenu(*args):
+        print args
+    #@nonl
+    #@-node:ville.20090630163538.3906:onContextMenu (nativeTree)
     #@+node:ekr.20090124174652.41:onItemDoubleClicked (nativeTree)
     def onItemDoubleClicked (self,item,col):
 

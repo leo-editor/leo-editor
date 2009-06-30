@@ -2007,6 +2007,7 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setSizePolicy(w)
         w.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         w.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        w.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         w.setHeaderHidden(False)
         self.setName(w,name)
         return w
@@ -5673,6 +5674,10 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w.connect(self.treeWidget,QtCore.SIGNAL(
                 "itemExpanded(QTreeWidgetItem*)"),
             self.onItemExpanded)
+
+        w.connect(self.treeWidget, QtCore.SIGNAL(
+                "customContextMenuRequested(QPoint)"),
+            self.onContextMenu)    
 
         self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
         tw.installEventFilter(self.ev_filter)
