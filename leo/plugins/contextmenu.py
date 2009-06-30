@@ -65,7 +65,7 @@ def openwith_rclick(c,p, menu):
     def openwith_rclick_cb():
         print "Editing", path, fname
         editor = os.environ["EDITOR"]
-        absp = os.path.join(path, fname)
+        absp = g.os_path_finalize_join(path, fname)
         cmd = '%s "%s"' % (editor, absp)
         print ">", cmd
         p = subprocess.Popen(cmd, shell=True)
