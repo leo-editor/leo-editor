@@ -4,7 +4,17 @@
 #@+node:ekr.20080814103428.4:To do before 4.6 rc1
 @nocolor-node
 
+- Fix crasher: leoQtLog.toPythonIndexRowCol
+
 - Fix all problems reported by check-bindings script.
+
+    duplicate shortcut p in set Vim bindings: previous command: paste-text
+    duplicate shortcut Shift-p in set Vim bindings: previous command: paste-text
+    duplicate paste-text in set Vim bindings
+    Undefined command name: call-last-keyboard-macro
+    Undefined command name: end-kbd-macro
+    Undefined command name: goto-line-number
+    Undefined command name: insert-keyboard-macro
 
 - Test PHP coloring.
 

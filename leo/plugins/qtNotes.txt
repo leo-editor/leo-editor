@@ -13068,6 +13068,7 @@ setFocus = set_focus
 #@-node:ekr.20081121105001.324:Focus & update
 #@-node:ekr.20081121105001.322:Do nothings
 #@+node:ekr.20090627090950.3717:Redirection to logCtrl
+# Part 1: Corresponding to mustBeDefinedInSubclasses.
 def appendText(self,s):             self.logCtrl.appendText(s)
 def delete(self,i,j=None):          self.logCtrl.delete(i,j)
 def insert(self,i,s):               self.logCtrl.insert(i,s)
@@ -13091,6 +13092,46 @@ def setInsertPoint(self,pos):       self.logCtrl.setInsertPoint(color)
 def setSelectionRange(self,*args,**keys):
     self.logCtrl.setSelectionRange(*args,**keys)
 def setYScrollPosition (self,i):    self.logCtrl.setYScrollPosition(i)
+
+# Part 2: corresponding to mustBeDefinedInBaseClass.
+def clipboard_append(self,s):       self.logCtrl.clipboard_append(s)
+def clipboard_clear (self):         self.logCtrl.clipboard_clear()
+def onChar (self,event):            self.logCtrl.onChar(event)
+
+# Part 3: do-nothings in mayBeDefinedInSubclasses.
+def bind (self,kind,*args,**keys):          pass
+def getWidth (self):                        return 0
+def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
+    pass
+def indexIsVisible (self,i):                return False
+    # Code will loop if this returns True forever.
+def mark_set(self,markName,i):              pass
+def setWidth (self,width):                  pass
+def tag_add(self,tagName,i,j=None,*args):   pass
+def tag_configure (self,colorName,**keys):  pass
+def tag_delete (self,tagName,*args,**keys): pass
+def tag_names (self, *args):                return []
+def tag_ranges(self,tagName):               return tuple()
+def tag_remove(self,tagName,i,j=None,*args):pass
+def update (self,*args,**keys):             pass
+def update_idletasks (self,*args,**keys):   pass
+def xyToPythonIndex (self,x,y):             return 0
+def yview (self,*args):                     return 0,0
+tag_config = tag_configure
+
+# Part 4: corresponding to mayBeDefinedInSubclasses.
+def delete(self,i,j=None):              self.logCtrl.delete(i,j)
+def deleteTextSelection (self):         self.logCtrl.deleteTextSelection ()
+def event_generate(self,stroke):        pass
+# def getName()
+# def GetName()
+def hasSelection (self):                return self.logCtrl.hasSelection()
+def replace (self,i,j,s):               self.logCtrl.replace (i,j,s)
+def rowColToGuiIndex (self,s,row,col):  return self.logCtrl.rowColToGuiIndex(s,row,col)
+def selectAllText (self,insert=None):   self.logCtrl.selectAllText(insert)
+def toPythonIndex (self,index):         return self.logCtrl.toPythonIndex(index)
+toGuiIndex = toPythonIndex
+def toPythonIndexRowCol(self,index):    return self.logCtrl.toPythonIndexRowCol(index)
 #@nonl
 #@-node:ekr.20090627090950.3717:Redirection to logCtrl
 #@+node:ekr.20081121105001.325:put & putnl (qtLog)
