@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="5"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -346,6 +346,7 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
+<v t="ekr.20090630141519.1793"><vh>rClick proto script</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -7818,5 +7819,36 @@ class atFile:
 #@-leo
 </t>
 <t tx="ekr.20090629105832.1790"></t>
+<t tx="ekr.20090630141519.1793">#Example popup handler
+from PyQt4 import QtCore
+
+def test_acts(c,p,menu):
+
+   # 'menu' is QMenu instance that was jsut created
+   a1 = menu.addAction("Display " + p.h)
+   a2 = menu.addAction("Es " + p.h)
+
+   def a1_func():
+       g.es("a1 from " + p.h)
+
+   def a2_func():
+       g.es("a2 from " + p.h)
+
+   a1.connect(a1, QtCore.SIGNAL("triggered()"), a1_func)
+   a2.connect(a2, QtCore.SIGNAL("triggered()"), a2_func)
+
+def test_acts_handler2(c, p, menu):
+   a = menu.addAction("Hello from handler 2")
+   def f():
+       g.es("Hello: " + p.h)
+
+   a.connect(a, QtCore.SIGNAL("triggered()"), f)
+
+def register():
+   # the idea is just to append to the normal list g.tree_popup_handlers
+   g.tree_popup_handlers.append(test_acts)
+   g.tree_popup_handlers.append(test_acts_handler2)
+
+register()</t>
 </tnodes>
 </leo_file>
