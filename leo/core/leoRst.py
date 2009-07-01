@@ -685,8 +685,11 @@ class rstCommands:
             self.atAutoWriteUnderlines = underlines
         else:
             d = p.v.u.get('rst-import',{})
-            underlines2 = d.get('underlines2','#')
-            underlines1 = d.get('underlines1','=+*^~"\'`-:><_') # The standard defaults.
+            underlines2 = d.get('underlines2')
+            if not underlines2: underlines2 = '#'
+            underlines1 = d.get('underlines1')
+            if not underlines2: underlines2 = '=+*^~"\'`-:><_'
+                # The standard defaults.
             if len(underlines2) > 1:
                 underlines2 = underlines2[0]
                 g.trace('too many top-level underlines, using %s' % (
@@ -1496,7 +1499,11 @@ class rstCommands:
             else:
                 n = level-1
             if 0 <= n < len(u): ch = u[n]
-            else: ch = u[-1]
+            elif u:
+                ch = u[-1]
+            else:
+                g.trace('can not happen: no u')
+                ch = '#'
             n = max(4,len(s))
             if trace: g.trace(self.topLevel,p.level(),level,repr(ch),p.h)
             if level == 0:
