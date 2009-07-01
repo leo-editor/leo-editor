@@ -44,6 +44,8 @@ inited = False
 def openwith_rclick(c,p, menu):
     """ Show "Open with" in context menu for external file root nodes (@thin, @auto...) 
 
+    This looks like "Edit contextmenu.py in scite"
+
     """
 
     h = p.h
@@ -56,7 +58,7 @@ def openwith_rclick(c,p, menu):
     head, bname = parts
     if head == '@thin':
         fname = p.atThinFileNodeName()
-    elif head == '@auto':
+    elif head.startswith('@auto'):
         fname = p.atAutoNodeName()        
     elif head == '@edit':
         fname = p.atEditNodeName()        
@@ -90,33 +92,28 @@ def refresh_rclick(c,p, menu):
         return
 
     typ = split[0]        
-    if typ not in ['@auto', '@thin', '@shadow']:
+    if not (typ.startswith('@auto') or typ in ['@thin', '@shadow', '@auto-rst']):
         return
 
     action = menu.addAction("Refresh from disk")
 
     def refresh_rclick_cb():
-        if typ =='@auto':
+        if typ.startswith('@auto'):
             c.readAtAutoNodes()
-        if typ =='@thin':
+        elif typ =='@thin':
             c.readAtFileNodes()
-        if typ =='@shadow':
+        elif typ =='@shadow':
             c.readAtShadowNodes()
 
         # UNSUPPORTED            
         #if typ =='@edit':
         #    c.readAtEditNodes()
 
-
-
     action.connect(action, QtCore.SIGNAL("triggered()"), refresh_rclick_cb)
-
-
-
-
 #@-node:ville.20090630221949.5462:refresh_rclick
 #@+node:ville.20090701110830.10215:editnode_rclick
 def editnode_rclick(c,p, menu):
+    """ Provide "edit in EDITOR context menu item """
 
     editor = g.guessExternalEditor()
     if not editor:
