@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ville.20090701142447.5460:@thin contextmenu.py
+#@+node:ekr.20090701111504.5294:@thin contextmenu.py
 #@<< docstring >>
 #@+node:ville.20090630210947.5460:<< docstring >>
 ''' Define some useful actions for context menus
@@ -36,7 +36,7 @@ import subprocess, os
 
 #@+others
 #@+node:ville.20090630210947.10190:globals
-print "Importing contextmenu"
+# print "Importing contextmenu"
 inited = False
 #@nonl
 #@-node:ville.20090630210947.10190:globals
@@ -234,5 +234,5 @@ def init ():
 #@-node:ville.20090630210947.5463:init
 #@-others
 #@nonl
-#@-node:ville.20090701142447.5460:@thin contextmenu.py
+#@-node:ekr.20090701111504.5294:@thin contextmenu.py
 #@-leo
