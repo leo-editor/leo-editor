@@ -135,7 +135,32 @@ def install_handlers():
     hnd = [openwith_rclick, refresh_rclick, editnode_rclick]
     g.tree_popup_handlers.extend(hnd)
     leoPlugins.registerHandler("idle", editnode_on_idle)
-#@nonl
+
+    # just for kicks, the @commands
+
+    #@    << Add commands >>
+    #@+node:ville.20090701224704.9805:<< Add commands >>
+    # cm is 'contextmenu' prefix
+    @g.command('cm-external-editor')
+    def cm_external_editor_f(event):    
+        c = event['c']
+        pos = c.currentPosition()
+        editor = g.guessExternalEditor()
+        c.openWith(data = ['subprocess.Popen', editor, None])
+
+
+
+
+
+
+
+
+
+
+    #@-node:ville.20090701224704.9805:<< Add commands >>
+    #@nl
+
+
 #@-node:ville.20090630210947.10189:install_handlers
 #@+node:ville.20090701142447.5473:editnode_on_idle
 # frame.OnOpenWith creates the dict with the following entries:
