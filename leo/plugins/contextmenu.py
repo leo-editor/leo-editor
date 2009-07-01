@@ -67,17 +67,19 @@ def openwith_rclick(c,p, menu):
         return
 
     path, err = g.getPathFromDirectives(c,p)
+    editor = g.guessExternalEditor()
 
     def openwith_rclick_cb():
-        print "Editing", path, fname
-        editor = os.environ["EDITOR"]
+        #print "Editing", path, fname        
+        if not editor:
+            return
         absp = g.os_path_finalize_join(path, fname)
         cmd = '%s "%s"' % (editor, absp)
-        print ">", cmd
+        g.es('Edit: %s' % cmd)
         p = subprocess.Popen(cmd, shell=True)
 
 
-    action = menu.addAction("Edit " + bname + " in external editor (%s)" % path)
+    action = menu.addAction("Edit " + bname + " in %s (%s)" % (os.path.basename(editor), path))
     action.connect(action, QtCore.SIGNAL("triggered()"), openwith_rclick_cb)
 #@-node:ville.20090630210947.5465:openwith_rclick
 #@+node:ville.20090630221949.5462:refresh_rclick
@@ -116,7 +118,9 @@ def refresh_rclick(c,p, menu):
 #@+node:ville.20090701110830.10215:editnode_rclick
 def editnode_rclick(c,p, menu):
 
-    editor = os.environ["EDITOR"]
+    editor = g.guessExternalEditor()
+    if not editor:
+        return
     action = menu.addAction("Edit in " + editor)
 
     def editnode_rclick_cb():
