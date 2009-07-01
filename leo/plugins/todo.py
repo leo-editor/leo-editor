@@ -149,11 +149,11 @@ if g.app.gui.guiName() == "qt":
             m.addAction('Re-calc. derived times', o.local_recalc)
             m.addAction('Clear derived times', o.local_clear)
             m = menu.addMenu("Misc.")
-            m.addAction('Clear all todo icons', lambda:o.loadAllIcons(clear=True))
-            m.addAction('Show all todo icons', o.loadAllIcons)
-            m.addAction('Clear todo from node', o.clear_all)
-            m.addAction('Clear todo from subtree', lambda:o.clear_all(recurse=True))
-            m.addAction('Clear todo from all', lambda:o.clear_all(all=True))
+            m.addAction('Hide all Todo icons', lambda:o.loadAllIcons(clear=True))
+            m.addAction('Show all Todo icons', o.loadAllIcons)
+            m.addAction('Delete Todo from node', o.clear_all)
+            m.addAction('Delete Todo from subtree', lambda:o.clear_all(recurse=True))
+            m.addAction('Delete Todo from all', lambda:o.clear_all(all=True))
 #@-node:tbrown.20090119215428.8:class todoQtUI
 #@+node:tbrown.20090119215428.9:class todoController
 class todoController:
