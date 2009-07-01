@@ -201,7 +201,7 @@ class todoController:
         if c.config.getString('todo_time_name'):
             self.time_name = c.config.getString('todo_time_name')
 
-        self.icon_location = 'beforeIcon'
+        self.icon_location = 'beforeHeadline'
         if c.config.getString('todo_icon_location'):
             self.icon_location = c.config.getString('todo_icon_location')
 
