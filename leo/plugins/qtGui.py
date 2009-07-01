@@ -5728,7 +5728,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w.repaint()
     #@nonl
     #@-node:ekr.20090126120517.11:Drawing
-    #@+node:ekr.20090124174652.109:Icons
+    #@+node:ekr.20090124174652.109:Icons (qtTree)
     #@+node:ekr.20090124174652.110:drawIcon
     def drawIcon (self,p):
 
@@ -5741,21 +5741,20 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         self.setItemIcon(item,icon)
 
     #@-node:ekr.20090124174652.110:drawIcon
-    #@+node:ekr.20090124174652.111:getIcon
+    #@+node:ekr.20090124174652.111:getIcon & helper (qtTree)
     def getIcon(self,p):
 
         '''Return the proper icon for position p.'''
 
         p.v.iconVal = val = p.v.computeIcon()
         return self.getCompositeIconImage(p, val)
-
+    #@+node:ekr.20090701122113.3736:getCompositeIconImage
     def getCompositeIconImage(self, p, val):
 
+        trace = False and not g.unitTesting
         userIcons = self.c.editCommands.getIconList(p)
-        statusIcon = self.getIconImage(val)
-
         if not userIcons:
-            return statusIcon
+            return self.getStatusIconImage(p)
 
         hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
         hash.append(str(val))
@@ -5763,7 +5762,9 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         hash = ':'.join(hash)
 
         if hash in g.app.gui.iconimages:
-            return g.app.gui.iconimages[hash]
+            icon = g.app.gui.iconimages[hash]
+            if trace: g.trace('cached %s' % (icon))
+            return icon
 
         images = [g.app.gui.getImageImage(i['file']) for i in userIcons
                  if i['where'] == 'beforeIcon']
@@ -5783,10 +5784,12 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
             x += i.width()
         painter.end()
 
-        g.app.gui.iconimages[hash] = QtGui.QIcon(pix)
-
-        return g.app.gui.iconimages[hash]
-    #@-node:ekr.20090124174652.111:getIcon
+        icon = QtGui.QIcon(pix)
+        g.app.gui.iconimages[hash] = icon
+        if trace: g.trace('new %s' % (icon))
+        return icon
+    #@-node:ekr.20090701122113.3736:getCompositeIconImage
+    #@-node:ekr.20090124174652.111:getIcon & helper (qtTree)
     #@+node:ekr.20090124174652.112:setItemIconHelper (qtTree)
     def setItemIconHelper (self,item,icon):
 
@@ -5795,7 +5798,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         if item:
             item.setIcon(0,icon)
     #@-node:ekr.20090124174652.112:setItemIconHelper (qtTree)
-    #@-node:ekr.20090124174652.109:Icons
+    #@-node:ekr.20090124174652.109:Icons (qtTree)
     #@+node:ekr.20090124174652.115:Items
     #@+node:ekr.20090124174652.67:childIndexOfItem
     def childIndexOfItem (self,item):
@@ -6715,7 +6718,7 @@ class leoQtGui(leoGui.leoGui):
         return 'qt %s' % (qtLevel)
     #@-node:ekr.20081121105001.494:getFullVersion
     #@+node:ekr.20081121105001.495:Icons
-    #@+node:ekr.20081121105001.496:attachLeoIcon
+    #@+node:ekr.20081121105001.496:attachLeoIcon (qtGui)
     def attachLeoIcon (self,window):
 
         """Attach a Leo icon to the window."""
@@ -6723,15 +6726,19 @@ class leoQtGui(leoGui.leoGui):
         icon = self.getIconImage('leoApp.ico')
 
         window.setWindowIcon(icon)
-    #@-node:ekr.20081121105001.496:attachLeoIcon
-    #@+node:ekr.20081121105001.497:getIconImage
+    #@-node:ekr.20081121105001.496:attachLeoIcon (qtGui)
+    #@+node:ekr.20081121105001.497:getIconImage (qtGui)
     def getIconImage (self,name):
 
         '''Load the icon and return it.'''
 
+        trace = False and not g.unitTesting
+
         # Return the image from the cache if possible.
         if name in self.iconimages:
-            return self.iconimages.get(name)
+            image = self.iconimages.get(name)
+            if trace: g.trace('in iconimages',image,name)
+            return image
         try:
             fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
 
@@ -6743,13 +6750,14 @@ class leoQtGui(leoGui.leoGui):
                 image = QtGui.QIcon(fullname)
 
             self.iconimages[name] = image
+            if trace: g.trace('new image',image,name)
             return image
 
         except Exception:
             g.es("exception loading:",fullname)
             g.es_exception()
             return None
-    #@-node:ekr.20081121105001.497:getIconImage
+    #@-node:ekr.20081121105001.497:getIconImage (qtGui)
     #@+node:tbrown.20081229204443.10:getImageImage
     def getImageImage (self,name):
 

@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="60" left="207" height="925" width="808"/>
+	<global_window_position top="50" left="597" height="925" width="655"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -281,6 +281,12 @@
 <v t="ekr.20080917063615.1"><vh>getSettingSource</vh></v>
 <v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
 </v>
+<v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
+<v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
+<v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
+<v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
+<v t="ekr.20080930085514.1"><vh>clear icon bar</vh></v>
+</v>
 <v t="ekr.20090205070715.1"><vh>print colorer stats</vh></v>
 <v t="ekr.20090614142400.1806"><vh>syntax tests</vh></v>
 <v t="ekr.20090309064612.3"><vh>Tests of new features</vh>
@@ -316,18 +322,14 @@
 <v t="ekr.20090618102458.1816"><vh>Converting QString to unicode</vh></v>
 </v>
 </v>
-<v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
-<v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
-<v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
-<v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
-<v t="ekr.20080930085514.1"><vh>clear icon bar</vh></v>
-</v>
 <v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
 <v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
 <v t="ekr.20090701062041.1798"><vh>PHP test</vh></v>
+<v t="ekr.20090701125834.1765"><vh>@button insert-icon</vh></v>
+<v t="ekr.20090701133940.1767"><vh>print icons</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -854,7 +856,7 @@ if 0: # This can not be run locally: leoBridge.controller starts a Tk event loop
         n += 1
     g.pr('%d nodes in %s' % (n,path))
     # g.app.closeLeoWindow(c.frame)</t>
-<t tx="ekr.20070517160058.1"></t>
+<t tx="ekr.20070517160058.1" lineYOffset="4b032e" icons="5d71007d71012855026f6e71025505746e6f646571035504747970657104550466696c6571055507796f666673657471064b0068055828000000433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c6c656f5f696e73742e69636f710755047870616471084b01550577686572657109550e6265666f7265486561646c696e65710a5507786f6666736574710b4b02550772656c50617468710c580c0000006c656f5f696e73742e69636f710d75612e"></t>
 <t tx="ekr.20070528111805"># FrontWindowCapture.pyw
 # Version 0.1
 # Date    20070526
@@ -2668,5 +2670,20 @@ this is a test.
 __CLASS__
 &lt;?php and or array() ?&gt;
 &lt;?PHP and or array() ?&gt;</t>
+<t tx="ekr.20090701125834.1765">fn = g.os_path_finalize_join(g.app.loadDir,'..','Icons','leo_inst.ico')
+assert g.os_path_exists(fn)
+c.editCommands.insertIconFromFile(path=fn)
+c.bodyWantsFocusNow()</t>
+<t tx="ekr.20090701133940.1767">for p in c.allNodes_iter():
+    v = p.v ; t = p.v.t
+    # if v.u: print(v,v.u)
+    # if t.u: print(t,t.u)
+    icons = t.u and t.u.get('icons')
+    if icons:
+        for d in icons:
+            fn = d.get('file')
+            icon = g.app.gui.getIconImage(fn)
+            print('t %s icon %s %s' % (id(t),id(icon),fn))
+print('done')</t>
 </tnodes>
 </leo_file>

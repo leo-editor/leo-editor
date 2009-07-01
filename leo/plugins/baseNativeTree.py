@@ -1350,19 +1350,25 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@nonl
     #@-node:ekr.20090124174652.73:drawItemIcon
     #@+node:ekr.20090124174652.74:getIconImage
-    def getIconImage(self,val):
+    def getIconImage(self,p):
+
+        # User icons are not supported in the base class.
+        return self.getStatusIconImage(p)
+    #@-node:ekr.20090124174652.74:getIconImage
+    #@+node:ekr.20090701122113.3737:getStatusIconImage
+    def getStatusIconImage (self,p):
+
+        val = p.v.computeIcon()
 
         return g.app.gui.getIconImage(
             "box%02d.GIF" % val)
-    #@nonl
-    #@-node:ekr.20090124174652.74:getIconImage
+    #@-node:ekr.20090701122113.3737:getStatusIconImage
     #@+node:ekr.20090124174652.75:getVnodeIcon
     def getVnodeIcon(self,p):
 
         '''Return the proper icon for position p.'''
 
-        p.v.iconVal = val = p.v.computeIcon()
-        return self.getIconImage(val)
+        return self.getIcon(p)
     #@-node:ekr.20090124174652.75:getVnodeIcon
     #@+node:ekr.20090124174652.76:setItemIcon (nativeTree)
     def setItemIcon (self,item,icon):
@@ -1383,7 +1389,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                     item and id(item) or '<no item>',valid,icon),
                     g.callers(4))
     #@-node:ekr.20090124174652.76:setItemIcon (nativeTree)
-    #@+node:ekr.20090124174652.113:updateIcon
+    #@+node:ekr.20090124174652.113:updateIcon (nativeTree)
     def updateIcon (self,p,force=False):
 
         '''Update p's icon.'''
@@ -1398,15 +1404,14 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if p.v.iconVal == val and not force:
             return
 
-        p.v.iconVal = val
-        icon = self.getIconImage(val)
+        icon = self.getIcon(p) # sets p.v.iconVal
+
         # Update all cloned/joined items.
         items = self.tnode2items(p.v.t)
-        if trace: g.trace(icon,items)
         for item in items:
             self.setItemIcon(item,icon)
     #@nonl
-    #@-node:ekr.20090124174652.113:updateIcon
+    #@-node:ekr.20090124174652.113:updateIcon (nativeTree)
     #@+node:ekr.20090124174652.114:updateVisibleIcons
     def updateVisibleIcons (self,p):
 

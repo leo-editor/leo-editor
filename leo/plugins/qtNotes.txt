@@ -10898,7 +10898,7 @@ def getFullVersion (self,c):
     return 'qt %s' % (qtLevel)
 #@-node:ekr.20081121105001.494:getFullVersion
 #@+node:ekr.20081121105001.495:Icons
-#@+node:ekr.20081121105001.496:attachLeoIcon
+#@+node:ekr.20081121105001.496:attachLeoIcon (qtGui)
 def attachLeoIcon (self,window):
 
     """Attach a Leo icon to the window."""
@@ -10906,15 +10906,19 @@ def attachLeoIcon (self,window):
     icon = self.getIconImage('leoApp.ico')
 
     window.setWindowIcon(icon)
-#@-node:ekr.20081121105001.496:attachLeoIcon
-#@+node:ekr.20081121105001.497:getIconImage
+#@-node:ekr.20081121105001.496:attachLeoIcon (qtGui)
+#@+node:ekr.20081121105001.497:getIconImage (qtGui)
 def getIconImage (self,name):
 
     '''Load the icon and return it.'''
 
+    trace = False and not g.unitTesting
+
     # Return the image from the cache if possible.
     if name in self.iconimages:
-        return self.iconimages.get(name)
+        image = self.iconimages.get(name)
+        if trace: g.trace('in iconimages',image,name)
+        return image
     try:
         fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
 
@@ -10926,13 +10930,14 @@ def getIconImage (self,name):
             image = QtGui.QIcon(fullname)
 
         self.iconimages[name] = image
+        if trace: g.trace('new image',image,name)
         return image
 
     except Exception:
         g.es("exception loading:",fullname)
         g.es_exception()
         return None
-#@-node:ekr.20081121105001.497:getIconImage
+#@-node:ekr.20081121105001.497:getIconImage (qtGui)
 #@+node:tbrown.20081229204443.10:getImageImage
 def getImageImage (self,name):
 

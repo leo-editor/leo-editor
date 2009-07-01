@@ -2334,6 +2334,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20080108091349:appendImageDictToList
     def appendImageDictToList(self,aList,iconDir,path,xoffset,**kargs):
 
+        trace = False and not g.unitTesting
         c = self.c
         path = c.os_path_finalize_join(iconDir,path)
         relPath = g.makePathRelativeTo(path,iconDir)
@@ -2363,6 +2364,11 @@ class editCommandsClass (baseEditCommandsClass):
 
         return xoffset
     #@-node:ekr.20080108091349:appendImageDictToList
+    #@+node:ekr.20090701125429.6013:dHash
+    def dHash(self, d):
+        """Hash a dictionary"""
+        return ''.join(['%s%s' % (str(k),str(d[k])) for k in sorted(d)])
+    #@-node:ekr.20090701125429.6013:dHash
     #@+node:tbrown.20080119085249:getIconList
     def getIconList(self, p):
         """Return list of icons for position p, call setIconList to apply changes"""
@@ -2383,7 +2389,30 @@ class editCommandsClass (baseEditCommandsClass):
         return fromVnode
     #@nonl
     #@-node:tbrown.20080119085249:getIconList
-    #@+node:tbrown.20080119085249.1:setIconList
+    #@+node:tbrown.20080119085249.1:setIconList & helpers
+    def setIconList(self, p, l):
+        """Set list of icons for position p to l"""
+
+        trace = False and not g.unitTesting
+
+        current = self.getIconList(p)
+        if not l and not current: return  # nothing to do
+        lHash = ''.join([self.dHash(i) for i in l])
+        cHash = ''.join([self.dHash(i) for i in current])
+        # if trace: g.trace('lHash:',lHash)
+        # if trace: g.trace('cHash:',cHash)
+        if lHash == cHash:
+            # no difference between original and current list of dictionaries
+            return
+
+        if trace: g.trace(l)
+
+        subl = [i for i in l if i.get('on') != 'vnode']
+        self._setIconListHelper(p, subl, p.v.t)
+
+        subl = [i for i in l if i.get('on') == 'vnode']
+        self._setIconListHelper(p, subl, p.v)
+    #@+node:ekr.20090701125429.6012:_setIconListHelper
     def _setIconListHelper(self, p, subl, uaLoc):
         """icon setting code common between v and t nodes
 
@@ -2391,9 +2420,10 @@ class editCommandsClass (baseEditCommandsClass):
         subl - list of icons for the v or t node
         uaLoc - the v or t node"""
 
-        # FIXME lineYOffset is expected to be on a tnode in drawing code
+        trace = False and not g.unitTesting
 
-        if subl:
+        # FIXME lineYOffset is expected to be on a tnode in drawing code
+        if subl: # Update the uA.
             if not hasattr(uaLoc,'unknownAttributes'):
                 uaLoc.unknownAttributes = {}
             uaLoc.unknownAttributes['icons'] = list(subl)
@@ -2401,36 +2431,17 @@ class editCommandsClass (baseEditCommandsClass):
             uaLoc.unknownAttributes["lineYOffset"] = 3
             uaLoc._p_changed = 1
             p.setDirty()
-        else:
+            if trace: g.trace('uA',uaLoc.u,uaLoc)
+        else: # delete the uA.
             if hasattr(uaLoc,'unknownAttributes'):
                 if 'icons' in uaLoc.unknownAttributes:
                     del uaLoc.unknownAttributes['icons']
                     uaLoc.unknownAttributes["lineYOffset"] = 0
                     uaLoc._p_changed = 1
                     p.setDirty()
-
-    def dHash(self, d):
-        """Hash a dictionary"""
-        return ''.join(['%s%s' % (str(k),str(d[k])) for k in sorted(d)])
-
-    def setIconList(self, p, l):
-        """Set list of icons for position p to l"""
-
-        current = self.getIconList(p)
-        if not l and not current: return  # nothing to do
-        lHash = ''.join([self.dHash(i) for i in l])
-        cHash = ''.join([self.dHash(i) for i in current])
-        if lHash == cHash:
-            # no difference between original and current list of dictionaries
-            return
-
-
-        subl = [i for i in l if i.get('on') != 'vnode']
-        self._setIconListHelper(p, subl, p.v.t)
-
-        subl = [i for i in l if i.get('on') == 'vnode']
-        self._setIconListHelper(p, subl, p.v)
-    #@-node:tbrown.20080119085249.1:setIconList
+            if trace: g.trace('del uA[icons]',uaLoc)
+    #@-node:ekr.20090701125429.6012:_setIconListHelper
+    #@-node:tbrown.20080119085249.1:setIconList & helpers
     #@-node:ekr.20080108092811: Helpers
     #@+node:ekr.20071114082418:deleteFirstIcon
     def deleteFirstIcon (self,event=None):
@@ -2506,6 +2517,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20071114081313.1:insertIcon
     def insertIcon (self,event=None):
 
+        trace = False and not g.unitTesting
         c = self.c ; p = c.p
 
         iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
@@ -2532,8 +2544,9 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20080108090719:insertIconFromFile
     def insertIconFromFile (self,path,p=None,pos=None,**kargs):
 
+        trace = False and not g.unitTesting
         c = self.c
-        if p is None: p = c.p
+        if not p: p = c.p
 
         iconDir = c.os_path_finalize_join(g.app.loadDir,"..","Icons")
         os.chdir(iconDir)
@@ -2547,6 +2560,7 @@ class editCommandsClass (baseEditCommandsClass):
         self.setIconList(p, aList2)
         c.setChanged(True)
         c.redraw_after_icons_changed()
+        # c.redraw()
     #@-node:ekr.20080108090719:insertIconFromFile
     #@-node:ekr.20071114081313:icons...
     #@+node:ekr.20050920084036.74:indent...
