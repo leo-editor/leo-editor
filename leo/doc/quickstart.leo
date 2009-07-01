@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20090628091852.6030" str_leo_pos="3,0,2"><vh>Startup</vh>
+<v t="ekr.20090628091852.6030" str_leo_pos="1"><vh>Startup</vh>
 <v t="ville.20090627211608.5783"><vh>@chapters</vh></v>
 <v t="ekr.20090628091852.6031"><vh>@settings</vh>
 <v t="ekr.20090628091852.8471"><vh>@string target_language = rest</vh></v>
@@ -19,8 +19,8 @@
 </v>
 <v t="ville.20090627211608.5782"><vh>Welcome to Leo!</vh></v>
 <v t="ville.20090627211608.5784"><vh>Tree manipulation basics</vh></v>
-<v t="ville.20090630234425.12394" a="E"><vh>Programming</vh>
-<v t="ville.20090627211608.10118" a="E"><vh>External files</vh>
+<v t="ville.20090630234425.12394"><vh>Programming</vh>
+<v t="ville.20090627211608.10118"><vh>External files</vh>
 <v t="ville.20090627211608.10116"><vh>Thin nodes (explanation &amp; excercise)</vh>
 <v t="ville.20090627211608.10119" a="E"><vh>@path ~</vh>
 <v t="ville.20090627211608.10117"><vh>@@thin myfile_thin.py</vh>
@@ -37,7 +37,7 @@
 </v>
 </v>
 <v t="ville.20090627211608.10129"><vh>Auto nodes</vh>
-<v t="ville.20090630145410.1517" a="E"><vh>@path ~</vh>
+<v t="ville.20090630145410.1517"><vh>@path ~</vh>
 <v t="ville.20090630145410.1509"><vh>@@auto myfile_auto.py</vh>
 <v t="ville.20090630145410.1510"><vh>imports &amp; setup routines</vh>
 <v t="ville.20090630145410.1512"><vh>imports</vh></v>
@@ -53,7 +53,7 @@
 </v>
 <v t="ville.20090701175849.1532"><vh>Shadow nodes</vh>
 <v t="ville.20090701175849.1542" a="E"><vh>@path ~</vh>
-<v t="ville.20090701175849.1543"><vh>@@shadow myfile_shadow.py</vh>
+<v t="ville.20090701175849.1543" a="E"><vh>@@shadow myfile_shadow.py</vh>
 <v t="ville.20090701175849.1544"><vh>imports &amp; setup routines</vh>
 <v t="ville.20090701175849.1545"><vh>imports</vh></v>
 <v t="ville.20090701175849.1546"><vh>init1, init2</vh></v>
@@ -154,8 +154,9 @@ preserve the tree structure in the external files. They
 allow your tree structure to survive, even when someone else
 edits the source (or you edit it yourself in an external
 editor).</t>
-<t tx="ville.20090627211608.10117">@others
-@language python</t>
+<t tx="ville.20090627211608.10117">@language python
+@others
+</t>
 <t tx="ville.20090627211608.10118">"External file" means a file that resides on your file
 system - if you are programming, these are the files you
 eventually want to create to get something useful out of Leo
@@ -205,8 +206,9 @@ Do the same thing you did with @@thin - i.e.,
   this document), you'll note that  the outline structure was lost, 
   and the "parsed" structure is created instead. This is the cost
   of using @auto nodes.</t>
-<t tx="ville.20090630145410.1509">@others
-@language python</t>
+<t tx="ville.20090630145410.1509">@language python
+@others
+</t>
 <t tx="ville.20090630145410.1510"></t>
 <t tx="ville.20090630145410.1511">def init1():
     print "init1"
@@ -376,8 +378,9 @@ the changes from the external file to the tree structure.
 Experiment by editing the external file outside Leo and doing Right click
 -&gt; refresh from disk on the @shadow node. </t>
 <t tx="ville.20090701175849.1542"></t>
-<t tx="ville.20090701175849.1543">@others
-@language python</t>
+<t tx="ville.20090701175849.1543">@language python
+@others
+</t>
 <t tx="ville.20090701175849.1544"></t>
 <t tx="ville.20090701175849.1545">import os
 import sys
