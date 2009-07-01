@@ -3336,7 +3336,7 @@ def openWith(self,event=None,data=None):
     try:
         openType,arg,ext=data
         if not g.doHook("openwith1",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
-            g.enableIdleTimeHook(idleTimeDelay=100)
+            g.enableIdleTimeHook(idleTimeDelay=500)
             << set ext based on the present language >>
             << create or reopen temp file, testing for conflicting changes >>
             << execute a command to open path in external editor >>

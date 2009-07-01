@@ -3470,7 +3470,7 @@ def printGcVerbose(tag=''):
 #@-at
 #@@c
 
-def enableIdleTimeHook(idleTimeDelay=100):
+def enableIdleTimeHook(idleTimeDelay=500):
 
     if not g.app.idleTimeHook:
         # g.trace('start idle-time hook: %d msec.' % idleTimeDelay)
