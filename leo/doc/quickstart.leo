@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20090628091852.6030" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20090628091852.6030" str_leo_pos="3,0,3,0,0,1"><vh>Startup</vh>
 <v t="ville.20090627211608.5783"><vh>@chapters</vh></v>
 <v t="ekr.20090628091852.6031"><vh>@settings</vh>
 <v t="ekr.20090628091852.8471"><vh>@string target_language = rest</vh></v>
@@ -19,12 +19,12 @@
 </v>
 <v t="ville.20090627211608.5782"><vh>Welcome to Leo!</vh></v>
 <v t="ville.20090627211608.5784"><vh>Tree manipulation basics</vh></v>
-<v t="ville.20090630234425.12394"><vh>Programming</vh>
-<v t="ville.20090627211608.10118"><vh>External files</vh>
-<v t="ville.20090627211608.10116" a="E"><vh>Thin nodes (explanation &amp; excercise)</vh>
+<v t="ville.20090630234425.12394" a="E"><vh>Programming</vh>
+<v t="ville.20090627211608.10118" a="E"><vh>External files</vh>
+<v t="ville.20090627211608.10116"><vh>Thin nodes (explanation &amp; excercise)</vh>
 <v t="ville.20090627211608.10119"><vh>@path ~</vh>
 <v t="ville.20090627211608.10117"><vh>@@thin myfile_thin.py</vh>
-<v t="ville.20090627211608.10120" a="E"><vh>imports &amp; setup routines</vh>
+<v t="ville.20090627211608.10120"><vh>imports &amp; setup routines</vh>
 <v t="ville.20090627211608.10127"><vh>imports</vh></v>
 <v t="ville.20090627211608.10128"><vh>init1, init2</vh></v>
 </v>
@@ -37,7 +37,7 @@
 </v>
 </v>
 <v t="ville.20090627211608.10129"><vh>Auto nodes</vh>
-<v t="ville.20090630145410.1517" a="E"><vh>@path ~</vh>
+<v t="ville.20090630145410.1517"><vh>@path ~</vh>
 <v t="ville.20090630145410.1509"><vh>@@auto myfile_auto.py</vh>
 <v t="ville.20090630145410.1510"><vh>imports &amp; setup routines</vh>
 <v t="ville.20090630145410.1512"><vh>imports</vh></v>
@@ -51,14 +51,39 @@
 </v>
 </v>
 </v>
+<v t="ville.20090701175849.1532"><vh>Shadow nodes</vh>
+<v t="ville.20090701175849.1542"><vh>@path ~</vh>
+<v t="ville.20090701175849.1543"><vh>@@shadow myfile_shadow.py</vh>
+<v t="ville.20090701175849.1544"><vh>imports &amp; setup routines</vh>
+<v t="ville.20090701175849.1545"><vh>imports</vh></v>
+<v t="ville.20090701175849.1546"><vh>init1, init2</vh></v>
+</v>
+<v t="ville.20090701175849.1547"><vh>class Foo</vh>
+<v t="ville.20090701175849.1548"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ville.20090701175849.1549"><vh>spam</vh></v>
+<v t="ville.20090701175849.1550"><vh>eggs</vh></v>
 </v>
 </v>
-<v t="ville.20090630234425.12395" a="E"><vh>Configuration (enabling plugins etc.)</vh>
+</v>
+</v>
+<v t="ville.20090701184416.1554" a="E"><vh>reStructuredText (@auto-rst)</vh>
+<v t="ville.20090701184416.1555" a="E"><vh>@path ~</vh>
+<v t="ville.20090701184416.1556" a="E" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e65733171036802752e"><vh>@@auto-rst myfile_rst.txt</vh>
+<v t="ville.20090701184416.1557"><vh>Main headline</vh></v>
+<v t="ville.20090701184416.1558"><vh>h2</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+<v t="ville.20090630234425.12395"><vh>Configuration (enabling plugins etc.)</vh>
 <v t="ville.20090630234425.14847"><vh>Find out your ~/.leo directory (script)</vh></v>
-<v t="ville.20090630234425.12396" a="E"><vh>@@settings</vh>
+<v t="ville.20090630234425.12396"><vh>@@settings</vh>
 <v t="ville.20090630234425.14842"><vh>@enabled-plugins</vh></v>
 </v>
 </v>
+<v t="ville.20090701182804.1550"><vh>Search and replace</vh></v>
+<v t="ville.20090701182804.1551"><vh>Minibuffer</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20090628091852.6030">This node contains settings and other "machinery" that you
@@ -77,7 +102,14 @@ functionality. Click around and experiment.
 
 Note that you probably want to save your own "working copy"
 of this file before proceeding further. Do that by "File -&gt;
-Save as".</t>
+Save as".
+
+This guide is intentionally quite brief and minimal -
+therefore, it merely scratches the surface of what Leo can
+do. You can begin leveraging Leo for mindmapping-like tasks
+by just reading the node "Tree manipulation basics", and
+moving on to other topics after acquiring some basic
+familiarity. </t>
 <t tx="ville.20090627211608.5783"></t>
 <t tx="ville.20090627211608.5784">You can use Leo as fairly typical outliner. Play around with
 some of the commands from the Outline menu:
@@ -94,7 +126,7 @@ some of the commands from the Outline menu:
   (``Ctrl+Shift+V``). Use ``Copy Node`` command
   (``Ctrl+Shift+C``) to copy node to clipboard without
   deleting it from outline. Copy-paste command family works
-  across different Leo documents.
+  across different Leo documents and processes.
 
 - The ``Move Up`` (``Ctrl+U``), ``Move Down`` (``Ctrl+D``),
   ``Move Left`` (``Ctrl+L``) and ``Move Right`` (``Ctrl+R``)
@@ -115,19 +147,17 @@ some of the commands from the Outline menu:
 - To edit the headline, use press ``Ctrl+H``. This works
   regardless of whether body or headline has focus.
 
-- We'll discuss the ``Clone Node`` command in the next
-  section.
-
-You enter `body text`_ for any node by selecting the node's
+You enter `body text` for any node by selecting the node's
 headline in the outline pane and then typing in the body
-pane. Leo has a full range of `editing commands`_ that apply
+pane. Leo has a full range of `editing commands` that apply
 to the body pane.
 
-See Chapter 2 of Leo's documentation for more.</t>
+See Leo's documentation for more detailed discussion.</t>
 <t tx="ville.20090627211608.10116">Remove the first @ from @thin in the subtree below and save
 (ctrl+s) to create an "external" file which is directly
 usable outside leo - try opening the resulting myfile.py in
-a normal text editor to see what it looks like.
+a normal text editor (e.g. from right-click menu on the @thin node) 
+to see what it looks like.
 
 Note the @others directive, and the the lines that look like
 
@@ -138,8 +168,9 @@ preserve the tree structure in the external files. They
 allow your tree structure to survive, even when someone else
 edits the source (or you edit it yourself in an external
 editor).</t>
-<t tx="ville.20090627211608.10117">@others
-@language python</t>
+<t tx="ville.20090627211608.10117">@language python
+@others
+</t>
 <t tx="ville.20090627211608.10118">"External file" means a file that resides on your file
 system - if you are programming, these are the files you
 eventually want to create to get something useful out of Leo
@@ -185,11 +216,13 @@ Do the same thing you did with @@thin - i.e.,
 - Check the resulting file (`/myfile_auto.py) and observe that it has 
   no sentinels.   
 - There is no "magic" involved. If you execute 'File -&gt; Read auto nodes" 
-  (or reopen this document), you'll note that  the outline structure was lost, 
+  (or right click on @auto node and choose "Refresh from disk", or reopen 
+  this document), you'll note that  the outline structure was lost, 
   and the "parsed" structure is created instead. This is the cost
   of using @auto nodes.</t>
-<t tx="ville.20090630145410.1509">@others
-@language python</t>
+<t tx="ville.20090630145410.1509">@language python
+@others
+</t>
 <t tx="ville.20090630145410.1510"></t>
 <t tx="ville.20090630145410.1511">def init1():
     print "init1"
@@ -245,6 +278,7 @@ leo_to_html.py
 mod_scripting.py
 quicksearch.py
 UNL.py
+contextmenu.py
 
 # The plugins manager plugin does not
 # understand @enabled-plugins nodes.
@@ -345,6 +379,81 @@ UNL.py
 
 g.es('Homedir is at ',g.app.homeLeoDir)
 
+</t>
+<t tx="ville.20090701175849.1532">In this tree, you can experiment with @shadow. It combines the benefits
+of @thin and @auto - namely, it publishes a file without sentinels, but
+still allows the tree structure to survive, even if the external file
+is edited outside Leo.
+
+The cost is complexity - @shadow relies on a "shadow file" that remembers
+the structure, and a sophisticated diff/patch algorithm that merges
+the changes from the external file to the tree structure.
+
+Experiment by editing the external file outside Leo and doing Right click
+-&gt; refresh from disk on the @shadow node. </t>
+<t tx="ville.20090701175849.1542"></t>
+<t tx="ville.20090701175849.1543">@language python
+@others
+</t>
+<t tx="ville.20090701175849.1544"></t>
+<t tx="ville.20090701175849.1545">import os
+import sys
+
+</t>
+<t tx="ville.20090701175849.1546">def init1():
+    print "init1"
+
+def init2():
+    print "init2"</t>
+<t tx="ville.20090701175849.1547">class Foo:
+    &lt;&lt; docstring &gt;&gt;
+    @others
+
+
+</t>
+<t tx="ville.20090701175849.1548">""" Some sort of useful class """
+
+</t>
+<t tx="ville.20090701175849.1549">def spam(self):
+    pass
+
+</t>
+<t tx="ville.20090701175849.1550">def eggs(self):
+    pass</t>
+<t tx="ville.20090701182804.1550">Press ctrl + F to enter "minibuffer find" mode. Press F3 to
+"find again".
+
+For large scale searches (classic "find in files"
+functionality for the whole tree), look for the "Nav" tab in
+the log pane (in upper right of the screen). Enter your
+search string and press enter, then click on the matches.
+
+</t>
+<t tx="ville.20090701182804.1551">Minibuffer is the text input area at the bottom of the
+screen, familiar from emacs and vi. Press alt-x to enter a
+minibuffer command (e.g. alt-x fill-paragraph). Press ctrl+p
+(repeat-complex-command) folowed by Enter to re-run a
+previous minibuffer command.</t>
+<t tx="ville.20090701184416.1554">reStructuredText (http://docutils.sourceforge.net/rst.html)
+is an efficient way of authoring documentation as plain text.
+Leo provides first-class support for RST authoring, including 
+the unique feature of representing RST outline structure
+as Leo tree. You can find an example in the tree below - again,
+just remove the first @ character from @@auto-rst and save,
+opening the external file afterwards.
+</t>
+<t tx="ville.20090701184416.1555"></t>
+<t tx="ville.20090701184416.1556">@language rest
+@tabwidth -4
+@others
+
+.. Warning: this node is ignored when writing this file.
+.. However, @ @rst-options are recognized in this node.
+
+</t>
+<t tx="ville.20090701184416.1557">Text
+</t>
+<t tx="ville.20090701184416.1558">ao
 </t>
 </tnodes>
 </leo_file>
