@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20090628091852.6030" str_leo_pos="1"><vh>Startup</vh>
+<v t="ekr.20090628091852.6030" str_leo_pos="3,0,3,0,0,1"><vh>Startup</vh>
 <v t="ville.20090627211608.5783"><vh>@chapters</vh></v>
 <v t="ekr.20090628091852.6031"><vh>@settings</vh>
 <v t="ekr.20090628091852.8471"><vh>@string target_language = rest</vh></v>
@@ -19,10 +19,10 @@
 </v>
 <v t="ville.20090627211608.5782"><vh>Welcome to Leo!</vh></v>
 <v t="ville.20090627211608.5784"><vh>Tree manipulation basics</vh></v>
-<v t="ville.20090630234425.12394"><vh>Programming</vh>
-<v t="ville.20090627211608.10118"><vh>External files</vh>
+<v t="ville.20090630234425.12394" a="E"><vh>Programming</vh>
+<v t="ville.20090627211608.10118" a="E"><vh>External files</vh>
 <v t="ville.20090627211608.10116"><vh>Thin nodes (explanation &amp; excercise)</vh>
-<v t="ville.20090627211608.10119" a="E"><vh>@path ~</vh>
+<v t="ville.20090627211608.10119"><vh>@path ~</vh>
 <v t="ville.20090627211608.10117"><vh>@@thin myfile_thin.py</vh>
 <v t="ville.20090627211608.10120"><vh>imports &amp; setup routines</vh>
 <v t="ville.20090627211608.10127"><vh>imports</vh></v>
@@ -52,7 +52,7 @@
 </v>
 </v>
 <v t="ville.20090701175849.1532"><vh>Shadow nodes</vh>
-<v t="ville.20090701175849.1542" a="E"><vh>@path ~</vh>
+<v t="ville.20090701175849.1542"><vh>@path ~</vh>
 <v t="ville.20090701175849.1543"><vh>@@shadow myfile_shadow.py</vh>
 <v t="ville.20090701175849.1544"><vh>imports &amp; setup routines</vh>
 <v t="ville.20090701175849.1545"><vh>imports</vh></v>
@@ -63,6 +63,14 @@
 <v t="ville.20090701175849.1549"><vh>spam</vh></v>
 <v t="ville.20090701175849.1550"><vh>eggs</vh></v>
 </v>
+</v>
+</v>
+</v>
+<v t="ville.20090701184416.1554" a="E"><vh>reStructuredText (@auto-rst)</vh>
+<v t="ville.20090701184416.1555" a="E"><vh>@path ~</vh>
+<v t="ville.20090701184416.1556" a="E" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e65733171036802752e"><vh>@@auto-rst myfile_rst.txt</vh>
+<v t="ville.20090701184416.1557"><vh>Main headline</vh></v>
+<v t="ville.20090701184416.1558"><vh>h2</vh></v>
 </v>
 </v>
 </v>
@@ -426,5 +434,26 @@ screen, familiar from emacs and vi. Press alt-x to enter a
 minibuffer command (e.g. alt-x fill-paragraph). Press ctrl+p
 (repeat-complex-command) folowed by Enter to re-run a
 previous minibuffer command.</t>
+<t tx="ville.20090701184416.1554">reStructuredText (http://docutils.sourceforge.net/rst.html)
+is an efficient way of authoring documentation as plain text.
+Leo provides first-class support for RST authoring, including 
+the unique feature of representing RST outline structure
+as Leo tree. You can find an example in the tree below - again,
+just remove the first @ character from @@auto-rst and save,
+opening the external file afterwards.
+</t>
+<t tx="ville.20090701184416.1555"></t>
+<t tx="ville.20090701184416.1556">@language rest
+@tabwidth -4
+@others
+
+.. Warning: this node is ignored when writing this file.
+.. However, @ @rst-options are recognized in this node.
+
+</t>
+<t tx="ville.20090701184416.1557">Text
+</t>
+<t tx="ville.20090701184416.1558">ao
+</t>
 </tnodes>
 </leo_file>
