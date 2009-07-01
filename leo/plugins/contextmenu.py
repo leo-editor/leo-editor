@@ -113,10 +113,25 @@ def refresh_rclick(c,p, menu):
 
 
 #@-node:ville.20090630221949.5462:refresh_rclick
+#@+node:ville.20090701110830.10215:editnode_rclick
+def editnode_rclick(c,p, menu):
+
+    editor = os.environ["EDITOR"]
+    action = menu.addAction("Edit in " + editor)
+
+    def editnode_rclick_cb():
+        c.openWith(data = ['subprocess.Popen', editor, None])
+
+    action.connect(action, QtCore.SIGNAL("triggered()"), editnode_rclick_cb)
+
+
+
+
+#@-node:ville.20090701110830.10215:editnode_rclick
 #@+node:ville.20090630210947.10189:install_handlers
 def install_handlers():
     """ Install all the wanted handlers (menu creators) """
-    hnd = [openwith_rclick, refresh_rclick]
+    hnd = [openwith_rclick, refresh_rclick, editnode_rclick]
     g.tree_popup_handlers.extend(hnd)
 #@nonl
 #@-node:ville.20090630210947.10189:install_handlers
