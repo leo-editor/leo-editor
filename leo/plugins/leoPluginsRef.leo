@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20041211035618" str_leo_pos="2,2,4,7"><vh>Startup</vh>
+<v t="ekr.20041211035618" str_leo_pos="2,2,1"><vh>Startup</vh>
 <v t="ekr.20070718131416"><vh>@chapters</vh></v>
 <v t="ekr.20050217093214"><vh>@settings</vh>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
@@ -61,15 +61,14 @@
 </v>
 <v t="ekr.20040722135402.1" a="E"><vh>Body pane</vh>
 <v t="edream.110403140857.8"><vh>@thin color_markup.py</vh></v>
+<v t="ekr.20090701111504.5294"><vh>@thin contextmenu.py</vh></v>
 <v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
 <v t="edream.110203113231.753"><vh>@thin image.py</vh></v>
+<v t="edream.110203113231.925"><vh>@thin script_io_to_body.py</vh></v>
 <v t="ekr.20080619090226.4"><vh>rClick plugin</vh>
-<v t="bobjack.20080321133958.6" a="E"><vh>@thin rClick.py</vh></v>
+<v t="bobjack.20080321133958.6"><vh>@thin rClick.py</vh></v>
 <v t="bobjack.20080619110105.2"><vh>@thin rClickBasePluginClasses.py</vh></v>
 </v>
-<v t="ville.20090701142447.5460" a="E"
-expanded="ville.20090701142447.5473,"><vh>@thin contextmenu.py</vh></v>
-<v t="edream.110203113231.925"><vh>@thin script_io_to_body.py</vh></v>
 </v>
 <v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
 <v t="edream.110203113231.668"><vh> Importing Cisco configuration files</vh>
@@ -291,10 +290,10 @@ expanded="ville.20090701142447.5473,"><vh>@thin contextmenu.py</vh></v>
 <v t="ekr.20040722134535"><vh>Experimental</vh>
 <v t="ekr.20040918165427.4"><vh>Autocompletion dictionary files</vh></v>
 </v>
-<v t="EKR.20040517075715" a="E"><vh>External editors &amp; Open With</vh>
+<v t="EKR.20040517075715"><vh>External editors &amp; Open With</vh>
 <v t="EKR.20040517075715.1"><vh>@thin mod_tempfname.py</vh></v>
 <v t="EKR.20040517080049.4"><vh>@thin open_shell.py</vh></v>
-<v t="bob.20071218121513" a="E"><vh>@thin open_with.py</vh></v>
+<v t="bob.20071218121513"><vh>@thin open_with.py</vh></v>
 <v t="EKR.20040517075715.10"><vh>@thin vim.py</vh></v>
 <v t="EKR.20040517075715.12"><vh>@thin xemacs.py</vh></v>
 <v t="EKR.20040517075715.13"><vh>Word export</vh>
