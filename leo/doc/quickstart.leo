@@ -53,7 +53,7 @@
 </v>
 <v t="ville.20090701175849.1532"><vh>Shadow nodes</vh>
 <v t="ville.20090701175849.1542" a="E"><vh>@path ~</vh>
-<v t="ville.20090701175849.1543" a="E"><vh>@@shadow myfile_shadow.py</vh>
+<v t="ville.20090701175849.1543"><vh>@@shadow myfile_shadow.py</vh>
 <v t="ville.20090701175849.1544"><vh>imports &amp; setup routines</vh>
 <v t="ville.20090701175849.1545"><vh>imports</vh></v>
 <v t="ville.20090701175849.1546"><vh>init1, init2</vh></v>
@@ -74,6 +74,8 @@
 <v t="ville.20090630234425.14842"><vh>@enabled-plugins</vh></v>
 </v>
 </v>
+<v t="ville.20090701182804.1550"><vh>Search and replace</vh></v>
+<v t="ville.20090701182804.1551"><vh>Minibuffer</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20090628091852.6030">This node contains settings and other "machinery" that you
@@ -92,7 +94,14 @@ functionality. Click around and experiment.
 
 Note that you probably want to save your own "working copy"
 of this file before proceeding further. Do that by "File -&gt;
-Save as".</t>
+Save as".
+
+This guide is intentionally quite brief and minimal -
+therefore, it merely scratches the surface of what Leo can
+do. You can begin leveraging Leo for mindmapping-like tasks
+by just reading the node "Tree manipulation basics", and
+moving on to other topics after acquiring some basic
+familiarity. </t>
 <t tx="ville.20090627211608.5783"></t>
 <t tx="ville.20090627211608.5784">You can use Leo as fairly typical outliner. Play around with
 some of the commands from the Outline menu:
@@ -109,7 +118,7 @@ some of the commands from the Outline menu:
   (``Ctrl+Shift+V``). Use ``Copy Node`` command
   (``Ctrl+Shift+C``) to copy node to clipboard without
   deleting it from outline. Copy-paste command family works
-  across different Leo documents.
+  across different Leo documents and processes.
 
 - The ``Move Up`` (``Ctrl+U``), ``Move Down`` (``Ctrl+D``),
   ``Move Left`` (``Ctrl+L``) and ``Move Right`` (``Ctrl+R``)
@@ -130,15 +139,12 @@ some of the commands from the Outline menu:
 - To edit the headline, use press ``Ctrl+H``. This works
   regardless of whether body or headline has focus.
 
-- We'll discuss the ``Clone Node`` command in the next
-  section.
-
-You enter `body text`_ for any node by selecting the node's
+You enter `body text` for any node by selecting the node's
 headline in the outline pane and then typing in the body
-pane. Leo has a full range of `editing commands`_ that apply
+pane. Leo has a full range of `editing commands` that apply
 to the body pane.
 
-See Chapter 2 of Leo's documentation for more.</t>
+See Leo's documentation for more detailed discussion.</t>
 <t tx="ville.20090627211608.10116">Remove the first @ from @thin in the subtree below and save
 (ctrl+s) to create an "external" file which is directly
 usable outside leo - try opening the resulting myfile.py in
@@ -406,5 +412,19 @@ def init2():
 </t>
 <t tx="ville.20090701175849.1550">def eggs(self):
     pass</t>
+<t tx="ville.20090701182804.1550">Press ctrl + F to enter "minibuffer find" mode. Press F3 to
+"find again".
+
+For large scale searches (classic "find in files"
+functionality for the whole tree), look for the "Nav" tab in
+the log pane (in upper right of the screen). Enter your
+search string and press enter, then click on the matches.
+
+</t>
+<t tx="ville.20090701182804.1551">Minibuffer is the text input area at the bottom of the
+screen, familiar from emacs and vi. Press alt-x to enter a
+minibuffer command (e.g. alt-x fill-paragraph). Press ctrl+p
+(repeat-complex-command) folowed by Enter to re-run a
+previous minibuffer command.</t>
 </tnodes>
 </leo_file>
