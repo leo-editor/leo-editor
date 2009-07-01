@@ -3212,8 +3212,13 @@ class colorizer:
 
     def tag (self,name,i,j):
 
+        # if False and not g.unitTesting:
+            # x = g.convertRowColToPythonIndex(
+                # self.allBodyText,self.line_index-1,0)
+            # g.trace('%3s %3s %3s %12s %s' % (
+                # x,i,j,name,repr(self.allBodyText[x+i:x+j])))
+
         self.c.frame.body.tag_add(name,self.index(i),self.index(j))
-    #@nonl
     #@-node:ekr.20031218072017.1609:index & tag (leoColor)
     #@+node:ekr.20031218072017.2807:setFirstLineState
     def setFirstLineState (self):

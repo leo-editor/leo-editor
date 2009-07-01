@@ -1439,7 +1439,7 @@ class colorizer:
 
         '''Add an item to the globalAddList if colorizing is enabled.'''
 
-        trace = False
+        trace = False and not g.unitTesting
 
         if self.killFlag:
             if self.trace and self.verbose: g.trace('*** killed',self.threadCount)
@@ -1448,7 +1448,9 @@ class colorizer:
         if not self.flag: return
 
         if delegate:
-            if trace: g.trace('delegate',delegate,i,j,tag,g.callers(3))
+            if trace and tag != 'match_blanks':
+                g.trace('delegate %s %3s %3s %s %s' % (
+                    delegate,i,j,tag,s[i:j]),g.callers(3))
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
             # Color everything at once, using the same indices as the caller.
@@ -1460,8 +1462,9 @@ class colorizer:
                     if n is None:
                         g.trace('Can not happen: delegate matcher returns None')
                     elif n > 0:
-                        # if f.__name__ != 'match_blanks': g.trace(delegate,i,f.__name__)
-                        if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
+                        if trace and f.__name__ != 'match_blanks':
+                            g.trace('--- %3s %3s %s %s' % (
+                                i,n,f.__name__,s[i:i+n]))
                         i += n ; break
                 else:
                     # New in Leo 4.6: Use the default chars for everything else.
@@ -1483,7 +1486,7 @@ class colorizer:
 
         '''Fully recolor s.'''
 
-        trace = False or self.trace and self.verbose
+        trace = False and not g.unitTesting
         if trace: g.trace(self.language,'thread',self.threadCount,'len(s)',len(s))
         i = 0
         while i < len(s):
@@ -1496,7 +1499,8 @@ class colorizer:
                 return
             functions = self.rulesDict.get(s[i],[])
             for f in functions:
-                if trace: g.trace('i',i,'f',f)
+                if trace and f.__name__ != 'match_blanks':
+                     g.trace(i,f.__name__)
                 n = f(self,s,i)
                 if n is None or n < 0:
                     g.trace('Can not happen: matcher returns: %s f = %s' % (repr(n),repr(f)))
