@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20090628091852.6030" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20090628091852.6030" str_leo_pos="3,0,2"><vh>Startup</vh>
 <v t="ville.20090627211608.5783"><vh>@chapters</vh></v>
 <v t="ekr.20090628091852.6031"><vh>@settings</vh>
 <v t="ekr.20090628091852.8471"><vh>@string target_language = rest</vh></v>
@@ -19,12 +19,12 @@
 </v>
 <v t="ville.20090627211608.5782"><vh>Welcome to Leo!</vh></v>
 <v t="ville.20090627211608.5784"><vh>Tree manipulation basics</vh></v>
-<v t="ville.20090630234425.12394"><vh>Programming</vh>
-<v t="ville.20090627211608.10118"><vh>External files</vh>
-<v t="ville.20090627211608.10116" a="E"><vh>Thin nodes (explanation &amp; excercise)</vh>
-<v t="ville.20090627211608.10119"><vh>@path ~</vh>
+<v t="ville.20090630234425.12394" a="E"><vh>Programming</vh>
+<v t="ville.20090627211608.10118" a="E"><vh>External files</vh>
+<v t="ville.20090627211608.10116"><vh>Thin nodes (explanation &amp; excercise)</vh>
+<v t="ville.20090627211608.10119" a="E"><vh>@path ~</vh>
 <v t="ville.20090627211608.10117"><vh>@@thin myfile_thin.py</vh>
-<v t="ville.20090627211608.10120" a="E"><vh>imports &amp; setup routines</vh>
+<v t="ville.20090627211608.10120"><vh>imports &amp; setup routines</vh>
 <v t="ville.20090627211608.10127"><vh>imports</vh></v>
 <v t="ville.20090627211608.10128"><vh>init1, init2</vh></v>
 </v>
@@ -51,11 +51,26 @@
 </v>
 </v>
 </v>
+<v t="ville.20090701175849.1532"><vh>Shadow nodes</vh>
+<v t="ville.20090701175849.1542" a="E"><vh>@path ~</vh>
+<v t="ville.20090701175849.1543"><vh>@@shadow myfile_shadow.py</vh>
+<v t="ville.20090701175849.1544"><vh>imports &amp; setup routines</vh>
+<v t="ville.20090701175849.1545"><vh>imports</vh></v>
+<v t="ville.20090701175849.1546"><vh>init1, init2</vh></v>
+</v>
+<v t="ville.20090701175849.1547"><vh>class Foo</vh>
+<v t="ville.20090701175849.1548"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ville.20090701175849.1549"><vh>spam</vh></v>
+<v t="ville.20090701175849.1550"><vh>eggs</vh></v>
 </v>
 </v>
-<v t="ville.20090630234425.12395" a="E"><vh>Configuration (enabling plugins etc.)</vh>
+</v>
+</v>
+</v>
+</v>
+<v t="ville.20090630234425.12395"><vh>Configuration (enabling plugins etc.)</vh>
 <v t="ville.20090630234425.14847"><vh>Find out your ~/.leo directory (script)</vh></v>
-<v t="ville.20090630234425.12396" a="E"><vh>@@settings</vh>
+<v t="ville.20090630234425.12396"><vh>@@settings</vh>
 <v t="ville.20090630234425.14842"><vh>@enabled-plugins</vh></v>
 </v>
 </v>
@@ -127,7 +142,8 @@ See Chapter 2 of Leo's documentation for more.</t>
 <t tx="ville.20090627211608.10116">Remove the first @ from @thin in the subtree below and save
 (ctrl+s) to create an "external" file which is directly
 usable outside leo - try opening the resulting myfile.py in
-a normal text editor to see what it looks like.
+a normal text editor (e.g. from right-click menu on the @thin node) 
+to see what it looks like.
 
 Note the @others directive, and the the lines that look like
 
@@ -185,7 +201,8 @@ Do the same thing you did with @@thin - i.e.,
 - Check the resulting file (`/myfile_auto.py) and observe that it has 
   no sentinels.   
 - There is no "magic" involved. If you execute 'File -&gt; Read auto nodes" 
-  (or reopen this document), you'll note that  the outline structure was lost, 
+  (or right click on @auto node and choose "Refresh from disk", or reopen 
+  this document), you'll note that  the outline structure was lost, 
   and the "parsed" structure is created instead. This is the cost
   of using @auto nodes.</t>
 <t tx="ville.20090630145410.1509">@others
@@ -245,6 +262,7 @@ leo_to_html.py
 mod_scripting.py
 quicksearch.py
 UNL.py
+contextmenu.py
 
 # The plugins manager plugin does not
 # understand @enabled-plugins nodes.
@@ -346,5 +364,44 @@ UNL.py
 g.es('Homedir is at ',g.app.homeLeoDir)
 
 </t>
+<t tx="ville.20090701175849.1532">In this tree, you can experiment with @shadow. It combines the benefits
+of @thin and @auto - namely, it publishes a file without sentinels, but
+still allows the tree structure to survive, even if the external file
+is edited outside Leo.
+
+The cost is complexity - @shadow relies on a "shadow file" that remembers
+the structure, and a sophisticated diff/patch algorithm that merges
+the changes from the external file to the tree structure.
+
+Experiment by editing the external file outside Leo and doing Right click
+-&gt; refresh from disk on the @shadow node. </t>
+<t tx="ville.20090701175849.1542"></t>
+<t tx="ville.20090701175849.1543">@others
+@language python</t>
+<t tx="ville.20090701175849.1544"></t>
+<t tx="ville.20090701175849.1545">import os
+import sys
+
+</t>
+<t tx="ville.20090701175849.1546">def init1():
+    print "init1"
+
+def init2():
+    print "init2"</t>
+<t tx="ville.20090701175849.1547">class Foo:
+    &lt;&lt; docstring &gt;&gt;
+    @others
+
+
+</t>
+<t tx="ville.20090701175849.1548">""" Some sort of useful class """
+
+</t>
+<t tx="ville.20090701175849.1549">def spam(self):
+    pass
+
+</t>
+<t tx="ville.20090701175849.1550">def eggs(self):
+    pass</t>
 </tnodes>
 </leo_file>
