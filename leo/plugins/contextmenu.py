@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ville.20090630210947.5459:@thin contextmenu.py
+#@+node:ville.20090701142447.5460:@thin contextmenu.py
 #@<< docstring >>
 #@+node:ville.20090630210947.5460:<< docstring >>
 ''' Define some useful actions for context menus
@@ -67,17 +67,19 @@ def openwith_rclick(c,p, menu):
         return
 
     path, err = g.getPathFromDirectives(c,p)
+    editor = g.guessExternalEditor()
 
     def openwith_rclick_cb():
-        print "Editing", path, fname
-        editor = os.environ["EDITOR"]
+        #print "Editing", path, fname        
+        if not editor:
+            return
         absp = g.os_path_finalize_join(path, fname)
         cmd = '%s "%s"' % (editor, absp)
-        print ">", cmd
+        g.es('Edit: %s' % cmd)
         p = subprocess.Popen(cmd, shell=True)
 
 
-    action = menu.addAction("Edit " + bname + " in external editor (%s)" % path)
+    action = menu.addAction("Edit " + bname + " in %s (%s)" % (os.path.basename(editor), path))
     action.connect(action, QtCore.SIGNAL("triggered()"), openwith_rclick_cb)
 #@-node:ville.20090630210947.5465:openwith_rclick
 #@+node:ville.20090630221949.5462:refresh_rclick
@@ -113,13 +115,107 @@ def refresh_rclick(c,p, menu):
 
 
 #@-node:ville.20090630221949.5462:refresh_rclick
+#@+node:ville.20090701110830.10215:editnode_rclick
+def editnode_rclick(c,p, menu):
+
+    editor = g.guessExternalEditor()
+    if not editor:
+        return
+    action = menu.addAction("Edit in " + editor)
+
+    def editnode_rclick_cb():
+        c.openWith(data = ['subprocess.Popen', editor, None])
+
+    action.connect(action, QtCore.SIGNAL("triggered()"), editnode_rclick_cb)
+
+
+
+
+#@-node:ville.20090701110830.10215:editnode_rclick
 #@+node:ville.20090630210947.10189:install_handlers
 def install_handlers():
     """ Install all the wanted handlers (menu creators) """
-    hnd = [openwith_rclick, refresh_rclick]
+    hnd = [openwith_rclick, refresh_rclick, editnode_rclick]
     g.tree_popup_handlers.extend(hnd)
+    leoPlugins.registerHandler("idle", editnode_on_idle)
 #@nonl
 #@-node:ville.20090630210947.10189:install_handlers
+#@+node:ville.20090701142447.5473:editnode_on_idle
+# frame.OnOpenWith creates the dict with the following entries:
+# "body", "c", "encoding", "f", "path", "time" and "p".
+
+def editnode_on_idle (tag,keywords):
+
+    #g.trace(tag,keywords)
+
+    import os
+    a = g.app
+    if a.killed: return
+    # g.trace('open with plugin')
+    for dict in a.openWithFiles:
+        path = dict.get("path")
+        c = dict.get("c")
+        encoding = dict.get("encoding",None)
+        p = dict.get("p")
+        old_body = dict.get("body")
+        if path and os.path.exists(path):
+            try:
+                time = os.path.getmtime(path)
+                # g.trace(path,time,dict.get('time'))
+                if time and time != dict.get("time"):
+                    dict["time"] = time # inhibit endless dialog loop.
+                    # The file has changed.
+                    #@                    << set s to the file text >>
+                    #@+node:ville.20090701142447.5474:<< set s to the file text >>
+                    try:
+                        # Update v from the changed temp file.
+                        f=open(path)
+                        s=f.read()
+                        f.close()
+                    except:
+                        g.es("can not open " + g.shortFileName(path))
+                        break
+                    #@-node:ville.20090701142447.5474:<< set s to the file text >>
+                    #@nl
+                    #@                    << update p's body text >>
+                    #@+node:ville.20090701142447.5475:<< update p's body text >>
+                    # Convert body and s to whatever encoding is in effect.
+                    body = p.b
+                    body = g.toEncodedString(body,encoding,reportErrors=True)
+                    s = g.toEncodedString(s,encoding,reportErrors=True)
+
+                    conflict = body != old_body and body != s
+
+                    # Set update if we should update the outline from the file.
+                    if conflict:
+                        # See how the user wants to resolve the conflict.
+                        g.es("conflict in " + g.shortFileName(path),color="red")
+                        message = "Replace changed outline with external changes?"
+                        result = g.app.gui.runAskYesNoDialog(c,"Conflict!",message)
+                        update = result.lower() == "yes"
+                    else:
+                        update = s != body
+
+                    if update:
+                        g.es("updated from: " + g.shortFileName(path),color="blue")
+                        c.setBodyString(p,s,encoding)
+                        #TL - 7/2/08 Converted to configurable 'goto node...'
+                        if c.config.getBool('open_with_goto_node_on_update'):
+                            c.selectPosition(p)
+                        dict["body"] = s
+                        # A patch by Terry Brown.
+                        if c.config.getBool('open_with_save_on_update'):
+                            c.save()
+                    elif conflict:
+                        g.es("not updated from: " + g.shortFileName(path),color="blue")
+                    #@nonl
+                    #@-node:ville.20090701142447.5475:<< update p's body text >>
+                    #@nl
+            except Exception:
+                # g.es_exception()
+                pass
+#@nonl
+#@-node:ville.20090701142447.5473:editnode_on_idle
 #@+node:ville.20090630210947.5463:init
 def init ():
     global inited
@@ -138,5 +234,5 @@ def init ():
 #@-node:ville.20090630210947.5463:init
 #@-others
 #@nonl
-#@-node:ville.20090630210947.5459:@thin contextmenu.py
+#@-node:ville.20090701142447.5460:@thin contextmenu.py
 #@-leo

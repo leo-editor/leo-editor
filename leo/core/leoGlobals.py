@@ -3013,6 +3013,26 @@ def shortFileName (fileName):
 
 shortFilename = shortFileName
 #@-node:ekr.20031218072017.3125:g.shortFileName & shortFilename
+#@+node:ville.20090701144325.14942:g.guessExternalEditor
+def guessExternalEditor():
+    """ Return a 'sensible' external editor """
+
+    editor = os.environ.get("LEO_EDITOR") or os.environ.get("EDITOR") or g.app.db.get("LEO_EDITOR")
+    if editor:
+        return editor
+
+    g.es("No editor set! Please set LEO_EDITOR or EDITOR environment variable, or do g.app.db['LEO_EDITOR'] = 'gvim'")
+
+    # fallbacks
+    if sys.platform == 'win32':
+        return "notepad"
+
+    # linux still has no default editor, one that would work without terminal at least ;-)
+    return None
+
+
+
+#@-node:ville.20090701144325.14942:g.guessExternalEditor
 #@+node:ekr.20050104135720:Used by tangle code & leoFileCommands
 #@+node:ekr.20031218072017.1241:g.update_file_if_changed
 # This is part of the tangle code.
@@ -3470,7 +3490,7 @@ def printGcVerbose(tag=''):
 #@-at
 #@@c
 
-def enableIdleTimeHook(idleTimeDelay=100):
+def enableIdleTimeHook(idleTimeDelay=500):
 
     if not g.app.idleTimeHook:
         # g.trace('start idle-time hook: %d msec.' % idleTimeDelay)

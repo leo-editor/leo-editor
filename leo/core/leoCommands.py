@@ -751,7 +751,7 @@ class baseCommands (object):
         try:
             openType,arg,ext=data
             if not g.doHook("openwith1",c=c,p=p,v=p.v,openType=openType,arg=arg,ext=ext):
-                g.enableIdleTimeHook(idleTimeDelay=100)
+                g.enableIdleTimeHook(idleTimeDelay=500)
                 #@            << set ext based on the present language >>
                 #@+node:ekr.20031218072017.2824:<< set ext based on the present language >>
                 if not ext:
@@ -886,7 +886,7 @@ class baseCommands (object):
                         command = "subprocess.Popen(%s)" % repr(vtuple)
                         if subprocess:
                             try:
-                                subprocess.Popen(vtuple)
+                                subprocess.Popen(vtuple, shell=True)
                             except OSError:
                                 g.es_print("vtuple",repr(vtuple))
                                 g.es_exception()
