@@ -610,6 +610,7 @@ class baseCommands (object):
                     cm.mb_keywords = None
                     cm.mb_retval = retval
 
+        minibufferCallback.__doc__ = function.__doc__
         return minibufferCallback
 
     #fix bobjacks spelling error
