@@ -219,7 +219,7 @@ def editnode_on_idle (tag,keywords):
 #@+node:ville.20090630210947.5463:init
 def init ():
     global inited
-    print "contextmenu init()"
+    # print "contextmenu init()"
     if g.app.gui.guiName() != "qt":
         return False
 
