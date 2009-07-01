@@ -143,6 +143,10 @@ def install_handlers():
     # cm is 'contextmenu' prefix
     @g.command('cm-external-editor')
     def cm_external_editor_f(event):    
+        """ Open node in external editor 
+
+        Set LEO_EDITOR/EDITOR environment variable to get the editor you want.
+        """
         c = event['c']
         pos = c.currentPosition()
         editor = g.guessExternalEditor()
