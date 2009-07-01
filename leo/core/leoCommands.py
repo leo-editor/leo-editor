@@ -886,7 +886,7 @@ class baseCommands (object):
                         command = "subprocess.Popen(%s)" % repr(vtuple)
                         if subprocess:
                             try:
-                                subprocess.Popen(vtuple)
+                                subprocess.Popen(vtuple, shell=True)
                             except OSError:
                                 g.es_print("vtuple",repr(vtuple))
                                 g.es_exception()
