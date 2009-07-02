@@ -318,13 +318,11 @@ def open_in_vim (tag,keywords,val=None):
         if subprocess:
             # New code by Jim Sizemore (TL: added support for gVim tabs).
             data = ["subprocess.Popen",vim_exe + " --servername LEO --remote"+ useTabs + "-silent " + Lnum, None]
-            print data
             c.openWith(data=data)
         else:
             # Works, but gives weird error message on first open of Vim.
             # note the space after --remote.
-            data = "os.spawnv", [vim_exe,"--servername LEO ","--remote "], None
-            print data
+            data = "os.spawnv", [vim_exe,"--servername LEO ","--remote "], None            
             c.openWith(data=data)
     else:
         # Reopen the old temp file.
