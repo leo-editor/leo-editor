@@ -129,10 +129,27 @@ def editnode_rclick(c,p, menu):
 
 
 #@-node:ville.20090701110830.10215:editnode_rclick
+#@+node:ville.20090702171015.5480:nextclone_rclick
+def nextclone_rclick(c,p, menu):
+    """ Go to next clone """
+
+    if not p.isCloned():
+        return
+
+    def nextclone_rclick_cb():
+        c.goToNextClone()
+
+    action = menu.addAction("Go to clone")
+    action.connect(action, QtCore.SIGNAL("triggered()"), nextclone_rclick_cb)
+
+
+
+
+#@-node:ville.20090702171015.5480:nextclone_rclick
 #@+node:ville.20090630210947.10189:install_handlers
 def install_handlers():
     """ Install all the wanted handlers (menu creators) """
-    hnd = [openwith_rclick, refresh_rclick, editnode_rclick]
+    hnd = [openwith_rclick, refresh_rclick, editnode_rclick, nextclone_rclick]
     g.tree_popup_handlers.extend(hnd)
     leoPlugins.registerHandler("idle", editnode_on_idle)
 
