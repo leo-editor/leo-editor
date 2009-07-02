@@ -278,7 +278,7 @@ def open_in_vim (tag,keywords,val=None):
 
     #Cursor positioning
     Lnum = ""
-    if c.config.getBool('vim_plugin_positions_cursor'):
+    if c.config.getBool('vim_plugin_positions_cursor'):    
         #Line number - start at same line as Leo cursor
         #  get node's body text
         bodyCtrl = c.frame.body.bodyCtrl
@@ -291,7 +291,8 @@ def open_in_vim (tag,keywords,val=None):
 
     #Vim's tab card stack
     useTabs = ""
-    if c.config.getBool('vim_plugin_uses_tab_feature'):
+
+    if c.config.getBool('vim_plugin_uses_tab_feature'):    
         useTabs = "-tab"
 
     # Search g.app.openWithFiles for a file corresponding to v.
@@ -316,8 +317,7 @@ def open_in_vim (tag,keywords,val=None):
         v.OpenWithOldBody=v.b # Remember the previous contents.
         if subprocess:
             # New code by Jim Sizemore (TL: added support for gVim tabs).
-            #data = "subprocess.Popen",[vim_exe + " --servername LEO --remote " + useTabs + " -silent"+ Lnum], None
-            data = ["subprocess.Popen",vim_exe + " --servername LEO --remote"+ Lnum, None]
+            data = ["subprocess.Popen",vim_exe + " --servername LEO --remote"+ useTabs + "-silent " + Lnum, None]
             print data
             c.openWith(data=data)
         else:
