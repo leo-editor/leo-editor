@@ -664,7 +664,7 @@ class rstCommands:
                 self.writeNode(p) # side effect: advances p
         finally:
             self.atAutoWrite = False
-    #@+node:ekr.20090513073632.5733:setAtAutoWriteOptions
+    #@+node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
     def initAtAutoWrite(self,p,fileName,outputFile):
 
         # Set up for a standard write.
@@ -688,7 +688,7 @@ class rstCommands:
             underlines2 = d.get('underlines2')
             if not underlines2: underlines2 = '#'
             underlines1 = d.get('underlines1')
-            if not underlines2: underlines2 = '=+*^~"\'`-:><_'
+            if not underlines1: underlines1 = '=+*^~"\'`-:><_'
                 # The standard defaults.
             if len(underlines2) > 1:
                 underlines2 = underlines2[0]
@@ -698,7 +698,26 @@ class rstCommands:
             self.underlines1 = underlines1
             self.underlines2 = underlines2
 
-    #@-node:ekr.20090513073632.5733:setAtAutoWriteOptions
+    #@+node:ekr.20090702084917.6033:@test initAtAutoWrite
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+
+        rst = c.rstCommands
+        rst.initAtAutoWrite(p,fileName='<test file>',outputFile=None)
+
+        # Ensure we are actually testing the default logic.
+        d = p.v.u.get('rst-import',{})
+        underlines = d.get('underline_characters')
+        assert underlines is None,underlines
+        assert d == {},d
+        # Now test the logic.
+        assert rst.underlines2 == '#',rst.underlines2
+        assert rst.underlines1 == '=+*^~"\'`-:><_',rst.underlines1
+        assert rst.atAutoWriteUnderlines == '#=+*^~"\'`-:><_',\
+            rst.atAutoWriteUnderlines
+    #@-node:ekr.20090702084917.6033:@test initAtAutoWrite
+    #@-node:ekr.20090513073632.5733:initAtAutoWrite (rstCommands)
     #@-node:ekr.20090512153903.5803:writeAtAutoFile (rstCommands)
     #@+node:ekr.20090502071837.61:writeNormalTree
     def writeNormalTree (self,p,toString=False):
