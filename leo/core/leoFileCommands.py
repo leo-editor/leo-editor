@@ -421,23 +421,38 @@ if sys.platform != 'cli':
         #@+node:ekr.20060919110638.42:tnodeAttributes
         def tnodeAttributes (self,attrs):
 
-            # The tnode must have a tx attribute to associate content with the proper node.
+            # The tnode must have a tx attribute to associate content
+            # with the proper node.
 
+            trace = False and not g.unitTesting
+            verbose = False
             node = self.node
             self.nodeList = []
 
+            # Step one: find the tx attribute
             for bunch in self.attrsToList(attrs):
                 name = bunch.name ; val = bunch.val
                 if name == 'tx':
                     self.nodeList = self.tnxToListDict.get(val,[])
-                    if not self.nodeList:
-                        self.error('Bad leo file: no node for <t tx=%s>' % (val))
-                else:
-                    node.tnodeAttributes[name] = val
+                    if trace and verbose: g.trace('tx',self.nodeList)
+                    break
 
             if not self.nodeList:
-                self.error('Bad leo file: no tx attribute for tnode')
-        #@nonl
+                self.error('Bad leo file: no node for <t tx=%s>' % (val))
+                return
+
+            # Step two: find all the other attributes:
+            for bunch in self.attrsToList(attrs):
+                name = bunch.name ; val = bunch.val
+                if name != 'tx':
+                    ### Huge bug fix: 2009/7/1
+                    ### The old code used just node = self.node!
+                    for node in self.nodeList:
+                        if trace: g.trace('%s %s=%s...' % (node,name,val[:20]))
+                        node.tnodeAttributes[name] = val
+
+            # if not self.nodeList:
+                # self.error('Bad leo file: no tx attribute for tnode')
         #@-node:ekr.20060919110638.42:tnodeAttributes
         #@-node:ekr.20060919110638.41:startTnode
         #@+node:ekr.20060919110638.43:startVnode
@@ -1154,18 +1169,22 @@ class baseFileCommands:
     #@+node:ekr.20060919110638.8:handleTnodeSaxAttributes
     def handleTnodeSaxAttributes (self,sax_node,t):
 
+        trace = False and not g.unitTesting
+        ### Huge bug fix. 2009/7/1.
+        ### d = sax_node.attributes
         d = sax_node.tnodeAttributes
+        if trace and d: g.trace(sax_node,d.keys())
 
         aDict = {}
         for key in d:
             val = d.get(key)
             val2 = self.getSaxUa(key,val)
+            # g.trace(key,val,val2)
             aDict[key] = val2
 
         if aDict:
-            g.trace('uA',aDict)
+            if trace: g.trace('uA',t,aDict.keys())
             t.unknownAttributes = aDict
-    #@nonl
     #@-node:ekr.20060919110638.8:handleTnodeSaxAttributes
     #@+node:ekr.20061004053644:handleVnodeSaxAttributes
     # The native attributes of <v> elements are a, t, vtag, tnodeList,
@@ -1174,7 +1193,10 @@ class baseFileCommands:
 
     def handleVnodeSaxAttributes (self,sax_node,v):
 
+        trace = False and not g.unitTesting
         d = sax_node.attributes
+        # if trace and d: g.trace(d)
+
         s = d.get('a')
         if s:
             # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
@@ -1223,14 +1245,15 @@ class baseFileCommands:
         aDict = {}
         for key in d:
             if key in self.nativeVnodeAttributes:
-                if 0: g.trace('****ignoring***',key,d.get(key))
+                if False and trace: g.trace(
+                    '****ignoring***',key,d.get(key))
             else:
                 val = d.get(key)
                 val2 = self.getSaxUa(key,val)
                 aDict[key] = val2
                 # g.trace(key,val,val2)
         if aDict:
-            # g.trace('uA',aDict)
+            if trace: g.trace('uA',v,aDict)
             v.unknownAttributes = aDict
     #@-node:ekr.20061004053644:handleVnodeSaxAttributes
     #@-node:ekr.20060919110638.7:createSaxVnode & helpers
@@ -1293,7 +1316,8 @@ class baseFileCommands:
             binString = binascii.unhexlify(val) # Throws a TypeError if val is not a hex string.
         except TypeError:
             # Assume that Leo 4.1 wrote the attribute.
-            g.trace('can not unhexlify',val)
+            g.trace('can not unhexlify %s=%s' % (
+                attr,val),g.callers(3))
             return val
         try:
             # No change needed to support protocols.
@@ -1301,7 +1325,8 @@ class baseFileCommands:
             # g.trace('v.3 val:',val2)
             return val2
         except (pickle.UnpicklingError,ImportError,AttributeError):
-            g.trace('can not unpickle',val)
+            g.trace('can not unpickle %s=%s' % (
+                attr,val),g.callers(3))
             return val
     #@-node:ekr.20061003093021:getSaxUa
     #@+node:ekr.20060919110638.14:parse_leo_file

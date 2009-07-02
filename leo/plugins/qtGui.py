@@ -5747,9 +5747,9 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         '''Return the proper icon for position p.'''
 
         p.v.iconVal = val = p.v.computeIcon()
-        return self.getCompositeIconImage(p, val)
+        return self.getCompositeIconImage(p,val)
     #@+node:ekr.20090701122113.3736:getCompositeIconImage
-    def getCompositeIconImage(self, p, val):
+    def getCompositeIconImage(self,p,val):
 
         trace = False and not g.unitTesting
         userIcons = self.c.editCommands.getIconList(p)
@@ -6737,7 +6737,8 @@ class leoQtGui(leoGui.leoGui):
         # Return the image from the cache if possible.
         if name in self.iconimages:
             image = self.iconimages.get(name)
-            if trace: g.trace('in iconimages',image,name)
+            if trace and not name.startswith('box'):
+                g.trace('cached',id(image),name)
             return image
         try:
             fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
@@ -6750,7 +6751,7 @@ class leoQtGui(leoGui.leoGui):
                 image = QtGui.QIcon(fullname)
 
             self.iconimages[name] = image
-            if trace: g.trace('new image',image,name)
+            if trace: g.trace('new',id(image),name)
             return image
 
         except Exception:

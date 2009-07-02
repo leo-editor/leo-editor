@@ -2373,21 +2373,30 @@ class editCommandsClass (baseEditCommandsClass):
     def getIconList(self, p):
         """Return list of icons for position p, call setIconList to apply changes"""
 
+        trace = False and not g.unitTesting
+        if trace:
+            if p == self.c.rootPosition(): g.trace('='*40)
+            g.trace(p.h)
         fromTnode = []
         if hasattr(p.v.t,'unknownAttributes'):
-            fromTnode = [dict(i) for i in p.v.t.unknownAttributes.get('icons',[])]
+            if trace: g.trace(p.v.t.u)
+            fromTnode = [dict(i) for i in p.v.t.u.get('icons',[])]
             for i in fromTnode: i['on'] = 'tnode'
+
+        if trace and fromTnode: g.trace('fromTnode',fromTnode,p.h)
 
         fromVnode = []
         if hasattr(p.v,'unknownAttributes'):
-            fromVnode = [dict(i) for i in p.v.unknownAttributes.get('icons',[])]
+            if trace: g.trace(p.v.u)
+            fromVnode = [dict(i) for i in p.v.u.get('icons',[])]
             for i in fromVnode: i['on'] = 'vnode'
+
+        if trace and fromVnode: g.trace('fromVnode',fromVnode,p.h)
 
         # if vnode icons are rendered to left of tnode icons
         # it makes sense to extend fromVnode with fromTnode
         fromVnode.extend(fromTnode)
         return fromVnode
-    #@nonl
     #@-node:tbrown.20080119085249:getIconList
     #@+node:tbrown.20080119085249.1:setIconList & helpers
     def setIconList(self, p, l):

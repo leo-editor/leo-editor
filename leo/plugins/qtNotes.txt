@@ -10917,7 +10917,8 @@ def getIconImage (self,name):
     # Return the image from the cache if possible.
     if name in self.iconimages:
         image = self.iconimages.get(name)
-        if trace: g.trace('in iconimages',image,name)
+        if trace and not name.startswith('box'):
+            g.trace('cached',id(image),name)
         return image
     try:
         fullname = g.os_path_finalize_join(g.app.loadDir,"..","Icons",name)
@@ -10930,7 +10931,7 @@ def getIconImage (self,name):
             image = QtGui.QIcon(fullname)
 
         self.iconimages[name] = image
-        if trace: g.trace('new image',image,name)
+        if trace: g.trace('new',id(image),name)
         return image
 
     except Exception:
