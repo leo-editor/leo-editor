@@ -1621,6 +1621,7 @@ class DynamicWindow(QtGui.QMainWindow):
         orientation = c.config.getString('initial_split_orientation')
         self.setSplitDirection(orientation)
         self.setStyleSheets()
+        self.setLeoWindowIcon()
     #@-node:ekr.20081121105001.201: ctor (DynamicWindow)
     #@+node:ekr.20081121105001.202:closeEvent (DynanicWindow)
     def closeEvent (self,event):
@@ -2238,6 +2239,12 @@ class DynamicWindow(QtGui.QMainWindow):
     '''
     #@-node:ekr.20081121105001.204:defaultStyleSheet
     #@-node:ekr.20081121105001.203:setStyleSheets & helper
+    #@+node:ville.20090702214819.4211:setLeoWindowIcon
+    def setLeoWindowIcon(self):
+        """ Set icon visible in title bar and task bar """
+        self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/LeoWin.gif"))
+    #@nonl
+    #@-node:ville.20090702214819.4211:setLeoWindowIcon
     #@-others
 
 #@-node:ekr.20081121105001.200:class  DynamicWindow (QtGui.QMainWindow)
