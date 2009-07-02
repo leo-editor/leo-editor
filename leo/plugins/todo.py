@@ -532,13 +532,13 @@ class todoController:
     def clear_all(self, recurse=False, all=False):
 
         if all:
-            what = self.c.allNodes_iter
+            what = self.c.allNodes_iter()
         elif recurse:
-            what = self.c.currentPosition().self_and_subtree_iter
+            what = self.c.currentPosition().self_and_subtree_iter()
         else:
             what = iter([self.c.currentPosition()])
 
-        for p in what():
+        for p in what:
             self.delUD(p.v)
             self.loadIcons(p)
             self.show_times(p)
