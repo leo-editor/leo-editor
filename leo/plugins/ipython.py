@@ -109,8 +109,12 @@ def init ():
 
     # This plugin depends on the properties of the Tk event loop.
     # It may work for other gui's, but this is not guaranteed.
-    if g.app.gui is None:
-        g.app.createTkGui(__file__)
+    #if g.app.gui is None:
+    #    g.app.createTkGui(__file__)
+
+    if g.app.gui.guiName() == 'qt' and not g.app.useIpython:
+        g.pr('ipython.py plugin disabled ("leo --ipython" enables it)')
+        return False
 
     ok = g.app.gui.guiName() in ("tkinter","qt")
     if ok:
@@ -223,12 +227,16 @@ class ipythonController:
                 ses = api.make_session()
                 gIP = ses.IP.getapi()
 
-                if g.app.gui.guiName() == 'qt' and not g.app.useIpython:
-                    try:
-                        import ipy_qt.qtipywidget
-                    except:
-                        g.es('IPython launch failed. Start Leo with argument "--ipython" on command line!')
-                        raise
+                #if g.app.gui.guiName() == 'qt' and not g.app.useIpython:
+                if 0:
+                    # disable this code for now - --ipython is the one recommended way of using qt + ipython
+                    g.es('IPython launch failed. Start Leo with argument "--ipython" on command line!')
+                    return
+                    #try:
+                    #    import ipy_qt.qtipywidget
+                    #except:
+                    #    g.es('IPython launch failed. Start Leo with argument "--ipython" on command line!')
+                    #    raise
 
 
                     import textwrap
