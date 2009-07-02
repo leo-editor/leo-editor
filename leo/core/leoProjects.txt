@@ -5345,7 +5345,7 @@ def tnodeAttributes (self,attrs):
         name = bunch.name ; val = bunch.val
         if name == 'tx':
             if g.unitTesting:
-                self.nodeList = [g.bunch(tnodeAttributes={})]
+                self.nodeList = [saxNodeClass()] # For pylint.
             else:
                 self.nodeList = self.tnxToListDict.get(val,[])
             if trace and verbose: g.trace('tx',self.nodeList)
@@ -5687,6 +5687,136 @@ def underline (self,s,p):
         return '%s\n%s\n\n' % (p.h.strip(),ch*n)
 #@-node:ekr.20090502071837.93:underline (leoRst)
 #@-node:ekr.20090701112406.6011:Fixed rst bug
+#@+node:ekr.20090702084917.9508:Fixed pylint complaint
+#@+node:ekr.20060919110638.23:attrsToList
+def attrsToList (self,attrs):
+
+    '''Convert the attributes to a list of g.Bunches.
+
+    attrs: an Attributes item passed to startElement.'''
+
+    # if 0: # check for non-unicode attributes.
+        # for name in attrs.getNames():
+            # val = attrs.getValue(name)
+            # if type(val) != type(u''):
+            #    g.trace('Non-unicode attribute',name,val)
+
+    # g.trace(g.listToString([repr(z) for z in attrs.getNames()]))
+
+    return [
+        g.Bunch(name=name,val=attrs.getValue(name))
+            for name in attrs.getNames()]
+#@nonl
+#@-node:ekr.20060919110638.23:attrsToList
+#@+node:ekr.20060919110638.15:class saxNodeClass
+class saxNodeClass:
+
+    '''A class representing one <v> element.
+
+    Use getters to access the attributes, properties and rules of this mode.'''
+
+    @others
+#@nonl
+#@+node:ekr.20060919110638.16: node.__init__
+def __init__ (self):
+
+    self.attributes = {}
+    self.bodyString = ''
+    self.headString = ''
+    self.children = []
+    self.tnodeAttributes = {}
+    self.tnodeList = []
+    self.tnx = None
+#@nonl
+#@-node:ekr.20060919110638.16: node.__init__
+#@+node:ekr.20060919110638.17: node.__str__ & __repr__
+def __str__ (self):
+
+    return '<v: %s>' % self.headString
+
+__repr__ = __str__
+#@nonl
+#@-node:ekr.20060919110638.17: node.__str__ & __repr__
+#@+node:ekr.20060919110638.18:node.dump
+def dump (self):
+
+    g.pr('\nnode: tnx: %s len(body): %d %s' % (
+        self.tnx,len(self.bodyString),self.headString))
+    g.pr('children:',g.listToString(self.children))
+    g.pr('attrs:',self.attributes.values())
+#@nonl
+#@-node:ekr.20060919110638.18:node.dump
+#@-node:ekr.20060919110638.15:class saxNodeClass
+#@+node:ekr.20060919110638.42:tnodeAttributes
+def tnodeAttributes (self,attrs):
+
+    # The tnode must have a tx attribute to associate content
+    # with the proper node.
+
+    trace = False and not g.unitTesting
+    verbose = False
+    node = self.node
+    self.nodeList = []
+    val = None
+
+    # Step one: find the tx attribute
+    for bunch in self.attrsToList(attrs):
+        name = bunch.name ; val = bunch.val
+        if name == 'tx':
+            if g.unitTesting:
+                self.nodeList = [saxNodeClass()] # For pylint.
+            else:
+                self.nodeList = self.tnxToListDict.get(val,[])
+            if trace and verbose: g.trace('tx',self.nodeList)
+            break
+
+    if not self.nodeList:
+        self.error('Bad leo file: no node for <t tx=%s>' % (val))
+        return
+
+    # Step two: find all the other attributes:
+    for bunch in self.attrsToList(attrs):
+        name = bunch.name ; val = bunch.val
+        if name != 'tx':
+            ### Huge bug fix: 2009/7/1
+            ### The old code used just node = self.node!
+            for node in self.nodeList:
+                if trace: g.trace('%s %s=%s...' % (node,name,val[:20]))
+                node.tnodeAttributes[name] = val
+
+    # if not self.nodeList:
+        # self.error('Bad leo file: no tx attribute for tnode')
+#@+node:ekr.20090702072557.6449:@test tnodeAttributes
+if g.unitTesting:
+
+    import leo.core.leoFileCommands as leoFileCommands
+    c,p = g.getTestVars()
+
+    class saxAttrsClass:
+        '''Simulating sax attributes'''
+        def __init__(self):
+            self.attrs = {
+                'tx':'ekr.123','testAttr':'abc',
+            }
+        def getNames(self):
+            return self.attrs.keys()
+        def getValue(self,key):
+            return self.attrs.get(key)
+
+    handler = leoFileCommands.saxContentHandler(
+        c,fileName='<test file>',
+        silent=True,inClipboard=False)
+    attributes = saxAttrsClass()
+    handler.tnodeAttributes(attributes)
+    aList = handler.nodeList
+    assert len(aList) == 1,len(aList)
+    b = aList[0]
+    d = b.tnodeAttributes
+    assert d.get('testAttr')=='abc',d.get('testAttr')
+#@nonl
+#@-node:ekr.20090702072557.6449:@test tnodeAttributes
+#@-node:ekr.20060919110638.42:tnodeAttributes
+#@-node:ekr.20090702084917.9508:Fixed pylint complaint
 #@-node:ekr.20090623072844.10386:Bugs
 #@+node:ekr.20090628075121.8434:Features
 #@+node:ekr.20090628075121.8433:Added open-quickstart-leo

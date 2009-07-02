@@ -435,7 +435,7 @@ if sys.platform != 'cli':
                 name = bunch.name ; val = bunch.val
                 if name == 'tx':
                     if g.unitTesting:
-                        self.nodeList = [g.bunch(tnodeAttributes={})]
+                        self.nodeList = [saxNodeClass()] # For pylint.
                     else:
                         self.nodeList = self.tnxToListDict.get(val,[])
                     if trace and verbose: g.trace('tx',self.nodeList)

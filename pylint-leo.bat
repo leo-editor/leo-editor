@@ -15,15 +15,16 @@ REM goto good_plugins
 REM goto bad_plugins
 
 REM goto essential_plugins
-goto errors
+REM goto errors
 goto all
 
 :errors
 
 REM W0221 Arguments number differs from overridden method
 REM W0511 Todo
-echo qtGui.py
-call pylint.bat leo\plugins\qtGui.py         --disable-msg=W0221,W0511 --rcfile=leo\test\pylint-leo-rc.txt
+
+echo leoFileCommands.py
+call pylint.bat leo\core\leoFileCommands.py  --rcfile=leo\test\pylint-leo-rc.txt
 
 goto done
 

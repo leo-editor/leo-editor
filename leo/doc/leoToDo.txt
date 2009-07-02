@@ -4,6 +4,8 @@
 #@+node:ekr.20080814103428.4:To do before 4.6 rc1
 @nocolor-node
 
+** Alt-6 is not running all unit tests!
+
 - Test PHP coloring.
 
 Docs:
