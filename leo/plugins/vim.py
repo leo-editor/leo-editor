@@ -243,6 +243,16 @@ def init ():
         if 0:
             os.system(_vim_cmd)
 
+        @g.command('vim-open')
+        def vim_open_f(event):
+            """ Open current node in (g)vim
+
+            Provied by vim.py plugin
+            """
+            c = event['c']
+            kw = { 'c': c , 'p': c.p }
+            open_in_vim('dummy', kw)
+
         g.plugin_signon(__name__)
 
     return ok
