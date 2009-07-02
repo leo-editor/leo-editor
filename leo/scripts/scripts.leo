@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070615131954" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070615131954" str_leo_pos="1,0,0,3"><vh>Startup</vh>
 <v t="ekr.20070427110751"><vh>@chapters</vh></v>
 <v t="ekr.20041001211817"><vh>Buttons</vh>
 <v t="ekr.20051020124457"><vh>Disabled buttons</vh>
@@ -31,9 +31,9 @@
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
 </v>
 </v>
-<v t="ekr.20061008055616"><vh>Scripts</vh>
-<v t="ekr.20051110111150" a="M"
-marks="ekr.20071104221525.1,ekr.20040901065642,"><vh>@thin leoScripts.txt</vh></v>
+<v t="ekr.20061008055616" a="E"><vh>Scripts</vh>
+<v t="ekr.20051110111150" a="E"
+expanded="ekr.20051110110853,"><vh>@thin leoScripts.txt</vh></v>
 </v>
 <v t="ekr.20060824111500"><vh>jEdit2Py</vh>
 <v t="ekr.20060824111500.1"><vh>Colorizing test scripts</vh>

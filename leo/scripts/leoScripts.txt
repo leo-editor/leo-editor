@@ -53,16 +53,14 @@ if 0: # This is usually a very bad idea.
 #@+node:ekr.20040318091620:Clear all uAs (unknown attributes)
 put = g.es_print
 for p in c.allNodes_iter():
-    if hasattr(p.v,"unknownAttributes"):
-        put("deleting v.unknownAttributes:",
-            p.h,
-            g.listToString(p.v.unknownAttributes.keys()))
-        delattr(p.v,"unknownAttributes")
-    if hasattr(p.v.t,"unknownAttributes"):
-        put("deleting t.unknownAttributes:",
-            p.h,
-            g.listToString(p.v.t.unknownAttributes.keys()))
-        delattr(p.v.t,"unknownAttributes")
+    if p.v.u:
+        put("deleting v.u:",p.h,
+            g.listToString(p.v.u.keys()))
+        p.v.u = None
+    if p.v.t.u:
+        put("deleting t.u:",p.h,
+            g.listToString(p.v.t.u.keys()))
+        p.v.t.u = None
 put('done') 
 c.redraw()
 #@nonl
