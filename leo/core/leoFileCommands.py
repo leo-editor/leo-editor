@@ -428,12 +428,16 @@ if sys.platform != 'cli':
             verbose = False
             node = self.node
             self.nodeList = []
+            val = None
 
             # Step one: find the tx attribute
             for bunch in self.attrsToList(attrs):
                 name = bunch.name ; val = bunch.val
                 if name == 'tx':
-                    self.nodeList = self.tnxToListDict.get(val,[])
+                    if g.unitTesting:
+                        self.nodeList = [g.bunch(tnodeAttributes={})]
+                    else:
+                        self.nodeList = self.tnxToListDict.get(val,[])
                     if trace and verbose: g.trace('tx',self.nodeList)
                     break
 
@@ -453,6 +457,35 @@ if sys.platform != 'cli':
 
             # if not self.nodeList:
                 # self.error('Bad leo file: no tx attribute for tnode')
+        #@+node:ekr.20090702072557.6449:@test tnodeAttributes
+        if g.unitTesting:
+
+            import leo.core.leoFileCommands as leoFileCommands
+            c,p = g.getTestVars()
+
+            class saxAttrsClass:
+                '''Simulating sax attributes'''
+                def __init__(self):
+                    self.attrs = {
+                        'tx':'ekr.123','testAttr':'abc',
+                    }
+                def getNames(self):
+                    return self.attrs.keys()
+                def getValue(self,key):
+                    return self.attrs.get(key)
+
+            handler = leoFileCommands.saxContentHandler(
+                c,fileName='<test file>',
+                silent=True,inClipboard=False)
+            attributes = saxAttrsClass()
+            handler.tnodeAttributes(attributes)
+            aList = handler.nodeList
+            assert len(aList) == 1,len(aList)
+            b = aList[0]
+            d = b.tnodeAttributes
+            assert d.get('testAttr')=='abc',d.get('testAttr')
+        #@nonl
+        #@-node:ekr.20090702072557.6449:@test tnodeAttributes
         #@-node:ekr.20060919110638.42:tnodeAttributes
         #@-node:ekr.20060919110638.41:startTnode
         #@+node:ekr.20060919110638.43:startVnode
@@ -1185,6 +1218,47 @@ class baseFileCommands:
         if aDict:
             if trace: g.trace('uA',t,aDict.keys())
             t.unknownAttributes = aDict
+    #@+node:ekr.20090702070510.6028:@test handleTnodeSaxAttributes
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+
+        sax_node = g.bunch(
+            tnodeAttributes={
+    # The 'tx' attribute is handled by contentHandler.tnodeAttributes.
+    # 'tx':"ekr.20090701133940.1767",
+    'lineYOffset':"4b032e",
+    # A real icon attribute, see the tests below for what we expect
+    'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
+    70657104550466696c6571055507796f666673657471064b006805583700000\
+    0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
+    676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
+    471084b01550577686572657109550e6265666f7265486561646c696e65710a\
+    5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
+    e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
+    55026f6e710f68035504747970657110550466696c6571115507796f6666736\
+    57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
+    656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
+    4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
+    65666f7265486561646c696e6571165507786f666673657471174b025507726\
+    56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
+    5c626f74746f6d2e706e67711975652e"
+    })
+        try:
+            p2 = p.insertAsLastChild()
+            v = p2.v
+            c.fileCommands.handleTnodeSaxAttributes(sax_node,v)
+            # print v,v.u
+            d = v.u
+            for attr in ('lineYOffset','icons'):
+                assert d.get(attr),attr
+            for attr in ('tx','a'):
+                assert d.get(attr) is None,attr # A known attribute.
+        finally:
+            if 1:
+                while p.hasChildren():
+                    p.firstChild().doDelete()
+    #@-node:ekr.20090702070510.6028:@test handleTnodeSaxAttributes
     #@-node:ekr.20060919110638.8:handleTnodeSaxAttributes
     #@+node:ekr.20061004053644:handleVnodeSaxAttributes
     # The native attributes of <v> elements are a, t, vtag, tnodeList,
@@ -1255,6 +1329,52 @@ class baseFileCommands:
         if aDict:
             if trace: g.trace('uA',v,aDict)
             v.unknownAttributes = aDict
+    #@+node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+        sax_node = g.bunch(
+            attributes={
+    'a':'M',
+    'lineYOffset':"4b032e",
+    # A real icon attribute, see the tests below for what we expect
+    'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
+    70657104550466696c6571055507796f666673657471064b006805583700000\
+    0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
+    676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
+    471084b01550577686572657109550e6265666f7265486561646c696e65710a\
+    5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
+    e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
+    55026f6e710f68035504747970657110550466696c6571115507796f6666736\
+    57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
+    656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
+    4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
+    65666f7265486561646c696e6571165507786f666673657471174b025507726\
+    56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
+    5c626f74746f6d2e706e67711975652e"
+        })
+        try:
+            p2 = p.insertAsLastChild()
+            v = p2.v
+            c.fileCommands.handleVnodeSaxAttributes(sax_node,v)
+            # print v,v.u
+            d = v.u
+            for attr in ('lineYOffset','icons'):
+                assert d.get(attr) is not None,attr
+            # The a:M attribute should mark the node.
+            assert d.get('a') is None
+            assert v.isMarked()
+            aList = d.get('icons')
+            assert aList
+            assert len(aList) == 2
+            for d2 in aList:
+                for key in ('on','where','yoffset','file'):
+                    assert d2.get(key) is not None,key
+        finally:
+            if 1:
+                while p.hasChildren():
+                    p.firstChild().doDelete()
+    #@-node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
     #@-node:ekr.20061004053644:handleVnodeSaxAttributes
     #@-node:ekr.20060919110638.7:createSaxVnode & helpers
     #@+node:ekr.20060919110638.9:p._linkParentAndChildren
@@ -1287,7 +1407,7 @@ class baseFileCommands:
     #@nonl
     #@-node:ekr.20060919110638.2:dumpSaxTree
     #@+node:ekr.20061003093021:getSaxUa
-    def getSaxUa(self,attr,val):
+    def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
 
         """Parse an unknown attribute in a <v> or <t> element.
         The unknown tag has been pickled and hexlify'd.
@@ -1316,8 +1436,11 @@ class baseFileCommands:
             binString = binascii.unhexlify(val) # Throws a TypeError if val is not a hex string.
         except TypeError:
             # Assume that Leo 4.1 wrote the attribute.
-            g.trace('can not unhexlify %s=%s' % (
-                attr,val),g.callers(3))
+            if g.unitTesting:
+                assert kind == 'raw','unit test failed: kind=' % repr(kind)
+            else:
+                g.trace('can not unhexlify %s=%s' % (
+                    attr,val),g.callers(3))
             return val
         try:
             # No change needed to support protocols.
@@ -1328,6 +1451,59 @@ class baseFileCommands:
             g.trace('can not unpickle %s=%s' % (
                 attr,val),g.callers(3))
             return val
+    #@+node:ekr.20090702072557.6495:@test getSaxUa
+    if g.unitTesting:
+
+        c,p = g.getTestVars()
+
+        expectedIconDictList = [
+        {
+            'on': 'tnode',
+            'where': 'beforeHeadline',
+            'yoffset': 0,
+            'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\add.png',
+            'xpad': 1,
+            'type': 'file',
+            'xoffset': 2,
+            'relPath': u'Tango\\16x16\\actions\\add.png',
+        },
+        {
+            'on': 'tnode',
+            'where': 'beforeHeadline',
+            'yoffset': 0,
+            'file': u'C:\\leo.repo\\trunk\\leo\\Icons\\Tango\\16x16\\actions\\bottom.png',
+            'xpad': 1,
+            'type': 'file',
+            'xoffset': 2,
+            'relPath': u'Tango\\16x16\\actions\\bottom.png',
+        }]
+        table = (
+    ('tx','raw',None,"ekr.20090701133940.1767"),
+    ('lineYOffset',None,3,"4b032e"),
+    # A real icon
+    ('icons',None,expectedIconDictList,
+    "5d7100287d71012855026f6e71025505746e6f6465710355047479\
+    70657104550466696c6571055507796f666673657471064b006805583700000\
+    0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
+    676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
+    471084b01550577686572657109550e6265666f7265486561646c696e65710a\
+    5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
+    e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
+    55026f6e710f68035504747970657110550466696c6571115507796f6666736\
+    57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
+    656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
+    4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
+    65666f7265486561646c696e6571165507786f666673657471174b025507726\
+    56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
+    5c626f74746f6d2e706e67711975652e"),
+    )
+        for attr,kind,expected,val in table:
+            result = c.fileCommands.getSaxUa(attr,val,kind=kind)
+            if expected is None: expected = val
+            assert expected==result,'expected %s got %s' % (
+                expected,result)
+    #@nonl
+    #@-node:ekr.20090702072557.6495:@test getSaxUa
     #@-node:ekr.20061003093021:getSaxUa
     #@+node:ekr.20060919110638.14:parse_leo_file
     def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
