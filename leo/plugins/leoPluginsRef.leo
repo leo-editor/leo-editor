@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="134" left="245" height="794" width="1019"/>
+	<global_window_position top="73" left="10" height="794" width="1019"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20041211035618" str_leo_pos="2"><vh>Startup</vh>
+<v t="ekr.20041211035618" str_leo_pos="2,2,1,0"><vh>Startup</vh>
 <v t="ekr.20070718131416"><vh>@chapters</vh></v>
 <v t="ekr.20050217093214"><vh>@settings</vh>
 <v t="ekr.20050328101812"><vh>@page http plugin</vh>
@@ -31,7 +31,7 @@
 <v t="ekr.20090430075506.4"><vh>Notes &amp; to-do</vh>
 <v t="ekr.20090430075506.3"><vh>@thin leoPluginNotes.txt</vh></v>
 </v>
-<v t="edream.110203113231.618"><vh>Plugins</vh>
+<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh> Templates: these show recommended ways of defining plugins.</vh>
 <v t="ekr.20041114102139"><vh>Notes</vh>
@@ -59,11 +59,11 @@
 </v>
 </v>
 </v>
-<v t="ekr.20040722135402.1"><vh>Body pane</vh>
+<v t="ekr.20040722135402.1" a="E"><vh>Body pane</vh>
 <v t="edream.110403140857.8"><vh>@thin color_markup.py</vh></v>
-<v t="ekr.20090701111504.5294"><vh>@thin contextmenu.py</vh></v>
-<v t="ekr.20060506070443.1"><vh>@thin detect_urls.py</vh></v>
-<v t="edream.110203113231.753"><vh>@thin image.py</vh></v>
+<v t="ekr.20090701111504.5294" a="E"><vh>@thin contextmenu.py</vh></v>
+<v t="ekr.20060506070443.1" a="E"><vh>@thin detect_urls.py</vh></v>
+<v t="edream.110203113231.753" a="E"><vh>@thin image.py</vh></v>
 <v t="edream.110203113231.925"><vh>@thin script_io_to_body.py</vh></v>
 <v t="ekr.20080619090226.4"><vh>rClick plugin</vh>
 <v t="bobjack.20080321133958.6"><vh>@thin rClick.py</vh></v>
@@ -290,11 +290,11 @@
 <v t="ekr.20040722134535"><vh>Experimental</vh>
 <v t="ekr.20040918165427.4"><vh>Autocompletion dictionary files</vh></v>
 </v>
-<v t="EKR.20040517075715"><vh>External editors &amp; Open With</vh>
+<v t="EKR.20040517075715" a="E"><vh>External editors &amp; Open With</vh>
 <v t="EKR.20040517075715.1"><vh>@thin mod_tempfname.py</vh></v>
 <v t="EKR.20040517080049.4"><vh>@thin open_shell.py</vh></v>
 <v t="bob.20071218121513"><vh>@thin open_with.py</vh></v>
-<v t="EKR.20040517075715.10"><vh>@thin vim.py</vh></v>
+<v t="EKR.20040517075715.10" a="E"><vh>@thin vim.py</vh></v>
 <v t="EKR.20040517075715.12"><vh>@thin xemacs.py</vh></v>
 <v t="EKR.20040517075715.13"><vh>Word export</vh>
 <v t="EKR.20040517075715.14"><vh>@thin word_export.py</vh></v>
