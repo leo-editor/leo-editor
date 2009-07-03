@@ -6411,6 +6411,31 @@ def safeImportModule (fileName):
         return None
 #@-node:ekr.20051104075904.103:safeImportModule
 #@-node:ekr.20090703053325.6011:Made alt-6 run all unit tests
+#@+node:ekr.20090703101031.6028:Look for Users Guide in two places
+#@+node:ekr.20060613082924:leoUsersGuide
+def leoUsersGuide (self,event=None):
+
+    '''Open Leo's users guide in a web browser.'''
+
+    import webbrowser
+
+    c = self
+
+    theFile = c.os_path_finalize_join(
+        g.app.loadDir,'..','doc','html','_build','html','leo_toc.html')
+
+    table = (
+        'file:%s' % theFile,
+        'http://webpages.charter.net/edreamleo/leo_toc.html')
+
+    for url in table:
+        try:
+            webbrowser.open_new(url)
+            return
+        except:
+            g.es("not found:",url)
+#@-node:ekr.20060613082924:leoUsersGuide
+#@-node:ekr.20090703101031.6028:Look for Users Guide in two places
 #@-node:ekr.20090623072844.10386:Bugs
 #@+node:ekr.20090628075121.8434:Features
 #@+node:ekr.20090628075121.8433:Added open-quickstart-leo

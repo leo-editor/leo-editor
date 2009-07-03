@@ -5928,12 +5928,16 @@ class baseCommands (object):
         theFile = c.os_path_finalize_join(
             g.app.loadDir,'..','doc','html','_build','html','leo_toc.html')
 
-        url = 'file:%s' % theFile
+        table = (
+            'file:%s' % theFile,
+            'http://webpages.charter.net/edreamleo/leo_toc.html')
 
-        try:
-            webbrowser.open_new(url)
-        except:
-            g.es("not found:",url)
+        for url in table:
+            try:
+                webbrowser.open_new(url)
+                return
+            except:
+                g.es("not found:",url)
     #@-node:ekr.20060613082924:leoUsersGuide
     #@-node:ekr.20031218072017.2938:Help Menu
     #@-node:ekr.20031218072017.2818:Command handlers...
