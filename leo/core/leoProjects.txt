@@ -6436,6 +6436,41 @@ def leoUsersGuide (self,event=None):
             g.es("not found:",url)
 #@-node:ekr.20060613082924:leoUsersGuide
 #@-node:ekr.20090703101031.6028:Look for Users Guide in two places
+#@+node:ekr.20090703114238.6031:Fixed crasher in dynamicExpanderHelper
+#@+node:ekr.20070605110441:dynamicExpandHelper & test
+def dynamicExpandHelper (self,prefix=None,rlist=None,w=None):
+
+    k = self.k ; tag = 'dabbrev-expand'
+    state = k.getState(tag)
+
+    if state == 0:
+        self.w = w
+        if w:
+            names = rlist ; event = None
+            prefix2 = 'dabbrev-expand: '
+            k.setLabelBlue(prefix2+prefix,protect=True)
+            k.getArg(event,tag,1,self.dynamicExpandHelper,prefix=prefix2,tabList=names)
+    else:
+        k.clearState()
+        k.resetLabel()
+        if k.arg:
+            w = self.w
+            s = w.getAllText()
+            ins = w.getInsertPoint()
+            i,j = g.getWord(s,ins)
+            w.delete(i,j)
+            w.insert(i,k.arg)
+#@nonl
+#@+node:ekr.20090525144314.6511:@test dynamicExpandHelper
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+
+    # A totally wimpy test.
+    c.abbrevCommands.dynamicExpandHelper(prefix='',rlist=None,w=None)
+#@-node:ekr.20090525144314.6511:@test dynamicExpandHelper
+#@-node:ekr.20070605110441:dynamicExpandHelper & test
+#@-node:ekr.20090703114238.6031:Fixed crasher in dynamicExpanderHelper
 #@-node:ekr.20090623072844.10386:Bugs
 #@+node:ekr.20090628075121.8434:Features
 #@+node:ekr.20090628075121.8433:Added open-quickstart-leo

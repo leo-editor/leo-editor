@@ -160,6 +160,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if p is None:   p = c.currentPosition()
         else:           c.setCurrentPosition(p)
 
+        # if trace: g.trace(p.isExpanded(),p.h)
+
         self.redrawCount += 1
         if trace: t1 = g.getTime()
         self.initData()

@@ -791,7 +791,7 @@ class vnode (baseVnode):
     #@+node:ekr.20031218072017.3395:v.contract & expand & initExpandedBit
     def contract(self):
 
-        # g.trace(self,g.callers(4))
+        # if self.context.p.v == self: g.trace(self,g.callers(4))
 
         self.statusBits &= ~ self.expandedBit
 

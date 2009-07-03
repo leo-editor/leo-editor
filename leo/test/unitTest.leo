@@ -742,7 +742,7 @@
 <v t="ekr.20040730181610"><vh>@test minimalLeoFile2.leo</vh></v>
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
-<v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20070114140212" a="E"><vh>All unit tests</vh>
 <v t="ekr.20090703080553.5000" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh>
 <v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
 </v>
@@ -1136,9 +1136,7 @@
 </v>
 <v t="ekr.20080905112230.3"><vh>goto-line-number tests: original files</vh>
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
-<v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
-<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
-</v>
+<v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh></v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 <v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
 <v t="ekr.20080907123324.2"><vh>@nosent unittest/at-nosent-line-number-test.py</vh>
@@ -1146,7 +1144,7 @@
 </v>
 </v>
 <v t="ekr.20080905112230.4"><vh>goto-line-number tests: clones</vh>
-<v t="ekr.20080904102243.3"></v>
+<v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
 <v t="ekr.20080905130723.4"><vh>at-thin-child</vh></v>
 <v t="ekr.20080907123324.3"></v>
 </v>

@@ -412,10 +412,11 @@ class abbrevCommandsClass (baseEditCommandsClass):
 
         if state == 0:
             self.w = w
-            names = rlist ; event = None
-            prefix2 = 'dabbrev-expand: '
-            k.setLabelBlue(prefix2+prefix,protect=True)
-            k.getArg(event,tag,1,self.dynamicExpandHelper,prefix=prefix2,tabList=names)
+            if w:
+                names = rlist ; event = None
+                prefix2 = 'dabbrev-expand: '
+                k.setLabelBlue(prefix2+prefix,protect=True)
+                k.getArg(event,tag,1,self.dynamicExpandHelper,prefix=prefix2,tabList=names)
         else:
             k.clearState()
             k.resetLabel()
@@ -426,6 +427,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 i,j = g.getWord(s,ins)
                 w.delete(i,j)
                 w.insert(i,k.arg)
+    #@nonl
     #@+node:ekr.20090525144314.6511:@test dynamicExpandHelper
     if g.unitTesting:
 

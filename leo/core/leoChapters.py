@@ -67,7 +67,7 @@ class chapterController:
         if c.positionExists(p):
             name = cc.findChapterNameForPosition(p) or 'main'
             # g.trace('chapterController',name,c.p)
-            cc.selectChapterByName(name)
+            cc.selectChapterByName(name,collapse=False)
         else:
             cc.selectChapterByName('main')
     #@-node:ekr.20070325104904:cc.finishCreate
@@ -446,26 +446,27 @@ class chapterController:
                 cc.selectChapterByName(k.arg)
     #@-node:ekr.20070604165126:cc.selectChapter
     #@+node:ekr.20070317130250:cc.selectChapterByName & helper
-    def selectChapterByName (self,name):
+    def selectChapterByName (self,name,collapse=True):
 
         '''Select a chapter.  Return True if a redraw is needed.'''
 
         cc = self ; c = cc.c
 
+        # g.trace(g.callers(5))
+
         chapter = cc.chaptersDict.get(name)
 
         if chapter:
-            self.selectChapterByNameHelper(chapter)
+            self.selectChapterByNameHelper(chapter,collapse=collapse)
         else:
             cc.error('cc.selectChapter: no such chapter: %s' % name)
             chapter = cc.chaptersDict.get('main')
             if chapter:
-                self.selectChapterByNameHelper(chapter)
+                self.selectChapterByNameHelper(chapter,collapse=collapse)
             else:
                 cc.error('no main chapter!')
-    #@nonl
     #@+node:ekr.20090306060344.2:selectChapterHelper
-    def selectChapterByNameHelper (self,chapter):
+    def selectChapterByNameHelper (self,chapter,collapse=True):
 
         cc = self ; c = cc.c
 
@@ -476,10 +477,11 @@ class chapterController:
             c.setCurrentPosition(chapter.p)
             cc.selectedChapter = chapter
 
-            # New in Leo 4.6 b2: clean up.
-            if chapter.name == 'main':
+            # New in Leo 4.6 b2: clean up, but not initially.
+            if collapse and chapter.name == 'main':
                 for p in c.all_positions_with_unique_vnodes_iter():
-                    p.contract()
+                    if p != c.p:
+                        p.contract()
 
             # New in Leo 4.6 b2: *do* call c.redraw.
             c.redraw()
