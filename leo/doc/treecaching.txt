@@ -1,5 +1,6 @@
+###################################################
 Python list based description of trees ('objtrees')
-===================================================
+###################################################
 
 Positions and trees are objects that exists only within Leo instance. However, trees can have "serialized"
 representation in .leo xml files (where structure is described by xml hierarchy), or @thin nodes (where
@@ -61,8 +62,9 @@ if it created a clone (i.e. a node with same gnx was already found in the docume
 This is a conscious design choice, as it prevents you from accidentally manipulating
 the tree of the clone (since it already has a tree of its own!).
 
+##########################
 Using objtrees for caching
-==========================
+##########################
 
 Objtrees are not without real life applications. They are used to implement the content hash 
 based node cache that radically speeds up Leo's startup (effectively eliminating the delay
@@ -82,8 +84,9 @@ In brief,
   ~/.leo/db/LeoDocs.leo/fcache/8095e2dabbfe90b349066209fb090df6
 - Now, on the next startup, Leo *will* find the cached pickle, read it in and execute `g.create_tree_at_vnode`
 
+###################################
 The `Leo database` (c.db, g.app.db)
-===================================
+###################################
 
 Previous discussion omitted one fact - Leo doesn't actually operate on files directly, but 
 uses the `pickleshare` library (shipped with Leo) to access the cached pickles. In essence, the database is 
