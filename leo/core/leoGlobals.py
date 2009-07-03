@@ -2876,8 +2876,6 @@ def mungeFileName(fileName):
 #@+node:ekr.20090520055433.5946:g.openWithFileNameHelper
 def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
 
-    g.trace(fileName)
-
     if old_c: g.preRead(fileName)
     g.doHook('open0')
 

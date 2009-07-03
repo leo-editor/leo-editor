@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:ville.20090614224528.8135:@thin projectwizard.py
+#@+node:ekr.20090622063842.5264:@thin projectwizard.py
 #@<< docstring >>
 #@+node:ville.20090614224528.8136:<< docstring >>
 ''' Simple @auto project wizard
@@ -128,5 +128,5 @@ def project_wizard(event):
 #@-node:ville.20090614224528.8141:auto_walk() and g.command('auto-walk')
 #@-others
 #@nonl
-#@-node:ville.20090614224528.8135:@thin projectwizard.py
+#@-node:ekr.20090622063842.5264:@thin projectwizard.py
 #@-leo
