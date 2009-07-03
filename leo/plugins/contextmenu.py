@@ -2,9 +2,15 @@
 #@+node:ekr.20090701111504.5294:@thin contextmenu.py
 #@<< docstring >>
 #@+node:ville.20090630210947.5460:<< docstring >>
-''' Define some useful actions for context menus
+''' Define various useful actions for context menus (for Qt ui)
 
-Qt only
+Examples are:
+
+- Edit in $EDITOR
+- Edit @thin node in $EDITOR (remember to do "refresh" after this!)
+- Refresh @thin node from disk (e.g. after editing it in external editor)
+- Go to clone
+
 '''
 #@-node:ville.20090630210947.5460:<< docstring >>
 #@nl
@@ -266,6 +272,7 @@ def init ():
     if g.app.gui.guiName() != "qt":
         return False
 
+    g.plugin_signon(__name__)
     # just run once
     if inited:
         return True
