@@ -14,6 +14,75 @@
 #@@c
 
 #@+all
+#@+node:ekr.20090703094259.6028:@suite run all doctests (windows only)
+import unittest
+import leo.core.leoTest as leoTest
+
+import sys
+
+# DocTestSuite exists in Python 2.3 and above.
+# WARNING: this causes strange problems when run externally.
+
+if sys.platform.lower().startswith('win'):
+
+    version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
+    if g.CheckVersion(version, "2.3"):
+        path = g.os_path_join(g.app.loadDir,"..","core")
+        if 0:
+            << define exclude >>
+        else:
+            exclude = []
+        modules = leoTest.importAllModulesInPath(path,exclude=exclude)
+        suite = leoTest.createUnitTestsFromDoctests(modules)
+        if suite: g.app.scriptDict['suite'] = suite
+    else:
+        # Create an empty suite to suppress a warning.
+        g.app.scriptDict['suite'] = unittest.TestSuite()
+        print("\nCan't create unit tests from doctests")
+        print("doctest.DocTestSuite requires Python 2.3 or above.\n")
+
+else:
+    pass # There are problems on Linux.
+#@nonl
+#@+node:ekr.20090703094259.6029:<< define exclude >>
+exclude = [
+    # These cause no problems, but will not have unit tests.
+    'leo_Debugger.py',
+    'leo_FileList.py',
+    'leo_RemoteDebugger.py',
+    'leo_run.py',
+    'leo_Shell.py',
+    'leoDynamicTest.py',
+    'leoBridge.py',
+    'leoBridgeTest.py',
+    # 'leoApp.py','leoChapters.py',
+    # 'leoAtFile.py',
+    # 'leoColor.py',
+    # 'leoCommands.py',
+    # 'leoCompare.py',
+    # 'leoConfig.py',
+    # 'leoDebugger.py',
+    # 'leoEditCommands.py',
+    ####'leoFileCommands.py', # Causes problems!
+    # 'leoFind.py',
+    # 'leoFrame.py',
+    # 'leoGlobals.py',
+    # 'leoGui.py',
+    # 'leoImport.py',
+    # 'leoKeys.py',
+    # 'leoMenu.py',
+    # 'leoNodes.py',
+    # 'leoPlugins.py',
+    # 'leoPymacs.py',
+    # 'leoRst.py',
+    # 'leoShadow.py',
+    # 'leoTangle.py',
+    # 'leoTest.py',
+    # 'leoUndo.py',
+]
+#@nonl
+#@-node:ekr.20090703094259.6029:<< define exclude >>
+#@-node:ekr.20090703094259.6028:@suite run all doctests (windows only)
 #@+node:ekr.20090529103821.6840:General
 #@+node:ekr.20090201135500.1:Check base classes & ivars
 #@+node:ekr.20090630093812.6013:Tk gui tests
@@ -278,40 +347,6 @@ for ivar in (
 #@nonl
 #@-node:ekr.20090201135500.9:@test official g.app ivars
 #@-node:ekr.20090201135500.1:Check base classes & ivars
-#@+node:ekr.20090529103821.6585:Doctests
-# Only run with windows--there are problems on Linux.
-#@nonl
-#@+node:ekr.20090529103821.6586:@suite run all doctests (windows only)
-import unittest
-import leo.core.leoTest as leoTest
-
-import sys
-
-# DocTestSuite exists in Python 2.3 and above.
-
-if sys.platform.lower().startswith('win'):
-
-    version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
-    if g.CheckVersion(version, "2.3"):
-
-        path = g.os_path_join(g.app.loadDir,"..","core")
-        modules = leoTest.importAllModulesInPath(path)
-        suite = leoTest.createUnitTestsFromDoctests(modules)
-
-        if suite:
-            g.app.scriptDict['suite'] = suite
-
-    else:
-        # Create an empty suite to suppress a warning.
-        g.app.scriptDict['suite'] = unittest.TestSuite()
-        print("\nCan't create unit tests from doctests")
-        print("doctest.DocTestSuite requires Python 2.3 or above.\n")
-
-else:
-    pass # There are problems on Linux.
-#@nonl
-#@-node:ekr.20090529103821.6586:@suite run all doctests (windows only)
-#@-node:ekr.20090529103821.6585:Doctests
 #@+node:ekr.20090529103821.7095:@test batch mode
 import os
 import sys

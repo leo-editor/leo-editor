@@ -1257,6 +1257,7 @@ class baseFileCommands:
         finally:
             if 1:
                 while p.hasChildren():
+                    # print('deleting',p.firstChild())
                     p.firstChild().doDelete()
     #@-node:ekr.20090702070510.6028:@test handleTnodeSaxAttributes
     #@-node:ekr.20060919110638.8:handleTnodeSaxAttributes
@@ -1373,6 +1374,7 @@ class baseFileCommands:
         finally:
             if 1:
                 while p.hasChildren():
+                    # print('deleting',p.firstChild())
                     p.firstChild().doDelete()
     #@-node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
     #@-node:ekr.20061004053644:handleVnodeSaxAttributes

@@ -743,6 +743,9 @@
 <v t="ekr.20040831104758"><vh>@test minimalLeoFile3.leo</vh></v>
 </v>
 <v t="ekr.20070114140212"><vh>All unit tests</vh>
+<v t="ekr.20090703080553.5000" annotate="7d71002e"><vh>@suite run all doctests (windows only)</vh>
+<v t="ekr.20090703093925.5003"><vh>&lt;&lt; define exclude &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20050120095423" annotate="7d71002e"><vh>Plugins</vh>
 <v t="ekr.20080309193654.1"><vh>@ignore</vh>
 <v t="ekr.20050120095423.21"><vh>print all loaded plugins</vh></v>
@@ -1135,70 +1138,6 @@
 <v t="ekr.20080904084223.1"><vh>@auto unittest/at-auto-line-number-test.py</vh></v>
 <v t="ekr.20080904102243.2" tnodeList="ekr.20080904102243.2,ekr.20080904102243.3"><vh>@file unittest/at-file-line-number-test.py</vh>
 <v t="ekr.20080904102243.3"><vh>at-file-child</vh></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
-<v t="ekr.20080904102243.3"></v>
 </v>
 <v t="ekr.20080905130723.3"><vh>@thin unittest/at-thin-line-number-test.py</vh></v>
 <v t="ekr.20080907122804.1"><vh>@shadow unittest/at-shadow-line-number-test.py</vh></v>
@@ -21721,6 +21660,69 @@ def cheese():
 #end
 </t>
 <t tx="ekr.20090629104856.4992"></t>
+<t tx="ekr.20090703080553.5000">import unittest
+import leo.core.leoTest as leoTest
+
+import sys
+
+# DocTestSuite exists in Python 2.3 and above.
+# WARNING: this causes strange problems when run externally.
+
+if True and sys.platform.lower().startswith('win'):
+
+    version = '.'.join([str(sys.version_info[i]) for i in (0,1,2)])
+    if g.CheckVersion(version, "2.3"):
+        path = g.os_path_join(g.app.loadDir,"..","core")
+        if 0:
+            &lt;&lt; define exclude &gt;&gt;
+        else:
+            exclude = []
+        modules = leoTest.importAllModulesInPath(path,exclude=exclude)
+        suite = leoTest.createUnitTestsFromDoctests(modules)
+        if suite: g.app.scriptDict['suite'] = suite
+    else:
+        # Create an empty suite to suppress a warning.
+        # g.app.scriptDict['suite'] = unittest.TestSuite()
+        print("\nCan't create unit tests from doctests")
+        print("doctest.DocTestSuite requires Python 2.3 or above.\n")
+
+else:
+    pass # There are problems on Linux.</t>
+<t tx="ekr.20090703093925.5003">exclude = [
+    # These cause no problems, but will not have unit tests.
+    'leo_Debugger.py',
+    'leo_FileList.py',
+    'leo_RemoteDebugger.py',
+    'leo_run.py',
+    'leo_Shell.py',
+    'leoDynamicTest.py',
+    'leoBridge.py',
+    'leoBridgeTest.py',
+    # 'leoApp.py','leoChapters.py',
+    # 'leoAtFile.py',
+    # 'leoColor.py',
+    # 'leoCommands.py',
+    # 'leoCompare.py',
+    # 'leoConfig.py',
+    # 'leoDebugger.py',
+    # 'leoEditCommands.py',
+    ####'leoFileCommands.py', # Causes problems!
+    # 'leoFind.py',
+    # 'leoFrame.py',
+    # 'leoGlobals.py',
+    # 'leoGui.py',
+    # 'leoImport.py',
+    # 'leoKeys.py',
+    # 'leoMenu.py',
+    # 'leoNodes.py',
+    # 'leoPlugins.py',
+    # 'leoPymacs.py',
+    # 'leoRst.py',
+    # 'leoShadow.py',
+    # 'leoTangle.py',
+    # 'leoTest.py',
+    # 'leoUndo.py',
+]</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
 import random,fnmatch
 

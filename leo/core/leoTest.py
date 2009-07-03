@@ -65,16 +65,15 @@ def isTestNode (p):
 #@+node:ekr.20051104075904.4:doTests...
 def doTests(c,all=None,p=None,verbosity=1):
 
-    if p:
-        pass
-    elif all:
+    trace = False
+    if all:
         p = c.rootPosition()
-    else:
+    elif not p:
         p = c.p
     p1 = p.copy()
 
     try:
-        found = False
+        found = False ; verbose = True
         g.unitTesting = g.app.unitTesting = True
         g.app.unitTestDict["fail"] = False
         g.app.unitTestDict['c'] = c
@@ -88,22 +87,25 @@ def doTests(c,all=None,p=None,verbosity=1):
         # New in Leo 4.4.8: ignore everything in @ignore trees.
         if all: last = None
         else:   last = p.nodeAfterTree()
+        if trace: g.trace('all',all,'root',p.h)
         while p and p != last:
-            h = p.h
-            if g.match_word(h,0,'@ignore'):
+            if g.match_word(p.h,0,'@ignore'):
+                if trace: g.trace('ignoring',p.h)
                 p.moveToNodeAfterTree()
             elif isTestNode(p): # @test
+                if trace: g.trace('adding',p.h)
                 test = makeTestCase(c,p)
                 if test:
                     suite.addTest(test) ; found = True
                 p.moveToThreadNext()
             elif isSuiteNode(p): # @suite
-                # g.trace(p.h)
+                if trace: g.trace('adding',p.h)
                 test = makeTestSuite(c,p)
                 if test:
                     suite.addTest(test) ; found = True
                 p.moveToThreadNext()
             else:
+                if trace and verbose: g.trace('skipping',p.h)
                 p.moveToThreadNext()
 
         # Verbosity: 1: print just dots.
@@ -224,20 +226,19 @@ def makeTestSuite (c,p):
     # import leo.core.leoGlobals as g
     p = p.copy()
 
-    h = p.h
     script = g.getScript(c,p).strip()
     if not script:
-        g.pr("no script in %s" % h)
+        print("no script in %s" % h)
         return None
-
     try:
+        # g.trace(script)
         exec(script + '\n',{'c':c,'g':g,'p':p})
         suite = g.app.scriptDict.get("suite")
         if not suite:
-            g.pr("%s script did not set g.app.scriptDict" % h)
+            print("makeTestSuite: %s script did not set g.app.scriptDict" % p.h)
         return suite
     except Exception:
-        g.trace('Exception creating test cases for %s' % p.h)
+        print('makeTestSuite: exception creating test cases for %s' % p.h)
         g.es_exception()
         return None
 #@-node:ekr.20051104075904.12:makeTestSuite
@@ -693,6 +694,7 @@ def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
     '''Run all unit tests in path (a .leo file) in a pristine environment.'''
 
     # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
+    trace = False
     path = g.os_path_finalize_join(g.app.loadDir,'..','test',path)
     leo  = g.os_path_finalize_join(g.app.loadDir,'..','core','leoDynamicTest.py')
 
@@ -704,6 +706,7 @@ def runUnitTestLeoFile (gui='qt',path='unitTest.leo',silent=True):
     pathArg = '--path=%s' % path
     args = [sys.executable,leo,path,guiArg,pathArg]
     if silent: args.append('--silent')
+    if trace: g.trace(args)
 
     os.spawnve(os.P_NOWAIT,sys.executable,args,os.environ)
 #@-node:ekr.20090514072254.5746:runUnitTestLeoFile
@@ -748,7 +751,7 @@ def runTestsExternally (c,all):
             - all children of any @mark-for-unit-tests node anywhere in the outline.
             - all @test and @suite nodes in p's outline.'''
 
-            trace = False
+            trace = False ; verbose = False
             c = self.c ; markTag = '@mark-for-unit-tests'
             self.copyRoot = c2.rootPosition()
             self.copyRoot.initHeadString('All unit tests')
@@ -774,24 +777,31 @@ def runTestsExternally (c,all):
             #@-node:ekr.20070705065154:<< set p1/2,limit1/2,lookForMark1/2,lookForNodes1/2 >>
             #@nl
 
+            if trace: g.trace('all',self.all)
             self.copyRoot.expand()
-            for p,limit,lookForMark,lookForNodes in (
-                (p1,limit1,lookForMark1,lookForNodes1),
-                (p2,limit2,lookForMark2,lookForNodes2),
+            for n,p,limit,lookForMark,lookForNodes in (
+                (1,p1,limit1,lookForMark1,lookForNodes1),
+                (2,p2,limit2,lookForMark2,lookForNodes2),
             ):
-                if trace: g.trace('look for: mark %s nodes %s\nroot %s\nlimit %s' % (
-                    lookForMark,lookForNodes,p.h,limit and limit.h or '<none>'))
+                if n == 2 and self.all: return
+                if trace: g.trace('===== pass %s: look for: mark %s nodes %s root %s limit %s' % (
+                    n,lookForMark,lookForNodes,
+                    p and p.h or '<none>',
+                    limit and limit.h or '<none>'))
                 while p and p != limit:
-                    h = p.h
                     if p.v.t in self.seen:
+                        if trace: g.trace('seen',p.h)
                         p.moveToNodeAfterTree()
-                    elif lookForMark and h.startswith(markTag):
+                    elif lookForMark and p.h.startswith(markTag):
+                        if trace: g.trace('add mark tree',p.h)
                         self.addMarkTree(p)
                         p.moveToNodeAfterTree()
                     elif lookForNodes and self.isUnitTestNode(p):
+                        if trace: g.trace('add node',p.h)
                         self.addNode(p)
                         p.moveToNodeAfterTree()
                     else:
+                        if trace and verbose: g.trace('skip',p.h)
                         p.moveToThreadNext()
         #@nonl
         #@+node:ekr.20070705080413:addMarkTree
@@ -823,9 +833,8 @@ def runTestsExternally (c,all):
         #@+node:ekr.20070705075604.3:isUnitTestNode
         def isUnitTestNode (self,p):
 
-            h = p.h
             for tag in self.tags:
-                if h.startswith(tag):
+                if p.h.startswith(tag):
                     return True
             else:
                 return False
@@ -868,18 +877,16 @@ def runTestsExternally (c,all):
 
             # First, look down the tree.
             for p in iter():
-                h = p.h
                 for s in self.tags:
-                    if h.startswith(s):
+                    if p.h.startswith(s):
                         self.root = c.p
                         return True
 
             # Next, look up the tree.
             if not self.all:   
                 for p in c.p.parents_iter():
-                    h = p.h
                     for s in self.tags:
-                        if h.startswith(s):
+                        if p.h.startswith(s):
                             c.selectPosition(p)
                             self.root = p.copy()
                             return True
@@ -1767,7 +1774,7 @@ def importAllModulesInPathList(paths):
     return modules
 #@-node:ekr.20051104075904.101:importAllModulesInPathList
 #@+node:ekr.20051104075904.102:importAllModulesInPath
-def importAllModulesInPath (path):
+def importAllModulesInPath (path,exclude=[]):
 
     path = g.os_path_finalize(path)
 
@@ -1777,10 +1784,16 @@ def importAllModulesInPath (path):
 
     path2 = g.os_path_join(path,"leo*.py")
     files = glob.glob(path2)
-
+    files2 = []
+    for theFile in files:
+        for z in exclude:
+            if theFile.endswith(z):
+                break
+        else:
+            files2.append(theFile)
     modules = []
 
-    for theFile in files:
+    for theFile in files2:
         module = safeImportModule(theFile)
         if module:
             modules.append(module)
@@ -1803,10 +1816,18 @@ def safeImportModule (fileName):
     fileName = g.os_path_finalize(fileName)
     head,tail = g.os_path_split(fileName)
     moduleName,ext = g.os_path_splitext(tail)
+    oldUnitTesting = g.unitTesting
 
     if ext == ".py":
         try:
-            return __import__(moduleName)
+            # g.trace(moduleName)
+            g.unitTesting = False # Disable @test nodes!
+            g.app.unitTesting = False
+            try:
+                return __import__(moduleName)
+            finally:
+                g.unitTesting = oldUnitTesting
+                g.app.unitTesting = oldUnitTesting
         except Exception: # leoScriptModule.py, for example, can throw other exceptions.
             return None
     else:
