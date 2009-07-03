@@ -3,6 +3,7 @@
 *.tmp
 *.py[co]
 *.leo_db
+*Thumbs.db
 
 ./*.zip
 ./*.exe
@@ -17,6 +18,7 @@ leo/*.zip
 
 leo/core/LeoPy.leo
 leo/core/leoPy.leo
+leo/core/unittest
 
 leo/dist/*.zip
 leo/dist/*.exe
