@@ -230,6 +230,7 @@ def computeLeoDir ():
     loadDir = g.app.loadDir
     theDir = g.os_path_dirname(loadDir)
 
+    # xxx remove this, we don't want to have this in sys.path
     if theDir not in sys.path:
         sys.path.append(theDir)
 
@@ -253,6 +254,14 @@ def computeLoadDir():
         # __file__ is randomly upper or lower case!
         # The made for an ugly recent files list.
         path = g.__file__ # was leo.__file__
+        #@        << resolve symlinks >>
+        #@+node:ville.20090703102253.6160:<< resolve symlinks >>
+        if path.endswith('pyc'):
+            srcfile = path[:-1]
+            if os.path.islink(srcfile):
+                path = os.path.realpath(srcfile)    
+        #@-node:ville.20090703102253.6160:<< resolve symlinks >>
+        #@nl
         if sys.platform=='win32':
             if len(path) > 2 and path[1]==':':
                 # Convert the drive name to upper case.

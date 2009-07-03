@@ -2145,16 +2145,15 @@ Add the following to the start of your scripts::
 
 Without this line, constructs such as::
 
-    u = u'a-é-賢-z'
-    u = 'a-é-賢-z'
+    u = u'a-(2 unicode characters here)-z'
+    u = 'a-(2 unicode characters here)-z'
 
 will not work when executed with Leo's execute script command.
 Indeed, the Execute Script command creates the script by writing the tree
 containing the script to a string. This is done using Leo's write logic, and
 this logic converts the unicode input to a utf-8 encoded string. So *all
-non-ascii characters* (including both the é and 賢 characters) get converted to
-their equivalent in the utf-8 encoding. Call these encoding <e1> and <e2>. In
-effect the script becomes::
+non-ascii characters* get converted to their equivalent in the utf-8 encoding. 
+Call these encoding <e1> and <e2>. In effect the script becomes::
 
     u = u'a-<e1>-<e2>-z'
     u = 'a-<e2>-<e>-z'
@@ -2650,7 +2649,7 @@ For full details, see `Chapter 7: Scripting Leo with Python`_.
 .. _`section references`:       glossary.html#section-references
 .. _siblings:                   glossary.html#siblings
 
-.. |leoMainWindow| image:: PCWindow.gif
+.. |leoMainWindow| image:: PCWindow.png
 .. @-node:ekr.20050816073814:@rst-no-head links
 .. @+node:ekr.20050816073412.1:Introduction
 **Important**: please `install Leo`_ before reading this tutorial,
@@ -10680,12 +10679,12 @@ papers that form the basis of this project.
 .. @+node:ekr.20050912125735.2826:Menus & translations
 .. @+node:ekr.20050912125735.2828:chinese_menu.py
 Translate a few menu items into Simplified Chinese
-本插件将部分Leo菜单翻译成简体中文
+
 By Zhang Le <ejoy@xinhuanet.com>
 .. @nonl
 .. @-node:ekr.20050912125735.2828:chinese_menu.py
 .. @+node:ekr.20050912125735.2836:french_fm.py
-Traduit les menus en Français.
+Translate menus to French
 .. @nonl
 .. @-node:ekr.20050912125735.2836:french_fm.py
 .. @+node:ekr.20050912125735.2844:pie_menus.py

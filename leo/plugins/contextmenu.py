@@ -121,7 +121,7 @@ def editnode_rclick(c,p, menu):
     action = menu.addAction("Edit in " + editor)
 
     def editnode_rclick_cb():
-        c.openWith(data = ['subprocess.Popen', editor, None])
+        c.openWith(data = ('subprocess.Popen', editor, None))
 
     action.connect(action, QtCore.SIGNAL("triggered()"), editnode_rclick_cb)
 
@@ -167,7 +167,7 @@ def install_handlers():
         c = event['c']
         pos = c.currentPosition()
         editor = g.guessExternalEditor()
-        c.openWith(data = ['subprocess.Popen', editor, None])
+        c.openWith(data = ('subprocess.Popen', editor, None))
 
 
 
