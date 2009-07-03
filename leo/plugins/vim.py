@@ -4,7 +4,9 @@
 #@+node:ekr.20050226184411:<< docstring >>
 '''A plugin that communicates with VIM.
 
-*** The open_with plugin must be enabled for this plugin to work properly!***
+It's recommended that you have gvim installed - basic console vim is not recommended.
+
+***On Tk ui, the open_with plugin must be enabled for this plugin to work properly!***
 
 When properly installed, this plugin does the following:
 
@@ -18,31 +20,13 @@ When properly installed, this plugin does the following:
 
 To install this plugin do the following:
 
-1. Make sure to enable open_with plugin.
+1. Make sure to enable open_with plugin (if you are using Tk ui).
 
-2. Set the vim_cmd and vim_exe settings to the path to vim or gvim as shown in leoSettings.leo.
+2. On Windows, set the vim_cmd and vim_exe settings to the path to vim or gvim as shown in leoSettings.leo.
+   Alternatively, you can ensure that gvim.exe is on your PATH.
 
 3. If you are using Python 2.4 or above, that's all you need to do. Jim Sizelove's new code will start vim automatically using Python's subprocess module. The subprocess module comes standard with Python 2.4. For Linux systems, Leo will use subprocess.py in Leo's extensions folder if necessary.
 
-On Windows, you can install Python's subprocess module in Python 2.2 or 2.3 as follows:
-
-    - Go to http://www.effbot.org/downloads/#subprocess
-
-    - Download and execute one of the following installers, depending on your verions of Python:
-        subprocess-0.1-20041012.win32-py2.3.exe 
-        subprocess-0.1-20041012.win32-py2.2.exe
-
-This installer installs the subprocess sources and also _subprocess.pyd in Python's site-packages folder.
-
-4. If you **don't** have Python's subprocess module available you must start the vim server in one of two ways:
-
-- **Manually**, from a console::
-
-    vim --servername "LEO" # The name of the server *must* be LEO.
-
-- **Automatically**, when Leo starts up.  Uncomment the following line in the init function::
-
-    os.system(_vim_cmd) # Don't do this if using Python 2.4 or above!
 '''
 #@-node:ekr.20050226184411:<< docstring >>
 #@nl
@@ -98,6 +82,10 @@ __version__ = "1.17"
 #     - support file open in gVim at same line number as Leo cursor location
 #     - support file open in a gVim tab (see also mod_tempfname.py)
 # 1.17 EKR: Give a location message to help with settings.
+# 1.18 VMV:
+#     - Use gvim on Linux too, emergency default on Windows doesn't have 
+# explicit path
+#     - Works when subprocess.Popen(shell=True)
 #@-at
 #@nonl
 #@-node:ekr.20050226184411.1:<< version history >>
@@ -208,9 +196,9 @@ useDoubleClick = True # True: double-click opens VIM.  False: single-click opens
 # leoSettings.leo or individual .leo files.
 
 if sys.platform == 'win32':
-    # Works on XP with vim in the folder indicated.
-    _vim_cmd = r"c:\Program Files\vim\vim63\gvim --servername LEO"
-    _vim_exe = r"c:\Program Files\vim\vim63\gvim"
+    # Works on XP if you have gvim on PATH
+    _vim_cmd = r"gvim --servername LEO"
+    _vim_exe = r"gvim"
 elif sys.platform == 'darwin':
     _vim_cmd = "/Applications/gvim.app/Contents/MacOS/gvim --servername LEO"
     _vim_exe = "gvim"
