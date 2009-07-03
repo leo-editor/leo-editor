@@ -4,10 +4,6 @@
 #@+node:ekr.20080814103428.4:To do before 4.6 rc1
 @nocolor-node
 
-Bugs:
-
-* Don't collapse selected node automatically!
-
 Docs:
 
 ** Create FAQ entry telling how to use Leo in shared environments.
