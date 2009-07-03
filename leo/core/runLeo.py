@@ -208,9 +208,13 @@ def completeFileName (fileName):
     junk,ext = g.os_path_splitext(fileName)
 
     # Bug fix: don't add .leo to existing files.
-    if not ext and not g.os_path_exists(fileName):
+    if g.os_path_exists(fileName):
+        pass # use the fileName as is.
+    elif ext != '.leo':
         fileName = fileName + ".leo"
         relativeFileName = relativeFileName + ".leo"
+
+    # g.trace(fileName)
 
     return fileName,relativeFileName
 #@-node:ekr.20041124083125:completeFileName
