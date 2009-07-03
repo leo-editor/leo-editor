@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="186" left="316" height="759" width="1233"/>
+	<global_window_position top="73" left="10" height="759" width="1233"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20090628091852.6030" str_leo_pos="3,0,3,0,0,1"><vh>Startup</vh>
+<v t="ekr.20090628091852.6030" str_leo_pos="1"><vh>Startup</vh>
 <v t="ville.20090627211608.5783"><vh>@chapters</vh></v>
 <v t="ekr.20090628091852.6031"><vh>@settings</vh>
 <v t="ekr.20090628091852.8471"><vh>@string target_language = rest</vh></v>
@@ -19,8 +19,8 @@
 </v>
 <v t="ville.20090627211608.5782"><vh>Welcome to Leo!</vh></v>
 <v t="ville.20090627211608.5784"><vh>Tree manipulation basics</vh></v>
-<v t="ville.20090630234425.12394" a="E"><vh>Programming</vh>
-<v t="ville.20090627211608.10118" a="E"><vh>External files</vh>
+<v t="ville.20090630234425.12394"><vh>Programming</vh>
+<v t="ville.20090627211608.10118"><vh>External files</vh>
 <v t="ville.20090627211608.10116"><vh>Thin nodes (explanation &amp; excercise)</vh>
 <v t="ville.20090627211608.10119"><vh>@path ~</vh>
 <v t="ville.20090627211608.10117"><vh>@@thin myfile_thin.py</vh>
@@ -66,11 +66,13 @@
 </v>
 </v>
 </v>
-<v t="ville.20090701184416.1554" a="E"><vh>reStructuredText (@auto-rst)</vh>
-<v t="ville.20090701184416.1555" a="E"><vh>@path ~</vh>
-<v t="ville.20090701184416.1556" a="E" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e65733171036802752e"><vh>@@auto-rst myfile_rst.txt</vh>
-<v t="ville.20090701184416.1557"><vh>Main headline</vh></v>
-<v t="ville.20090701184416.1558"><vh>h2</vh></v>
+<v t="ville.20090701184416.1554"><vh>reStructuredText (@auto-rst)</vh>
+<v t="ville.20090701184416.1555"><vh>@path ~</vh>
+<v t="ville.20090701184416.1556" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e65733171036802752e"><vh>@@auto-rst myfile_rst.txt</vh>
+<v t="ville.20090701184416.1557"><vh>Main heading</vh>
+<v t="ville.20090701184416.1558"><vh>subheading 1</vh></v>
+<v t="ville.20090703222440.1472"><vh>subheading 2</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -428,6 +430,16 @@ functionality for the whole tree), look for the "Nav" tab in
 the log pane (in upper right of the screen). Enter your
 search string and press enter, then click on the matches.
 
+To perform find-and replace, press ctrl-f, enter the text
+to search, then press ctrl+shift+r, and enter the text to replace
+the matches with, and press Enter.
+
+To limit the replace operations to particular external file,
+you can use your external editor. That is, right click on
+the @thin node (say, @thin myfile.py), choose "Edit
+myfile.py in MYEDITOR", and perform the necessary operations.
+After that, right click on the node and choose "Refresh from 
+disk".
 </t>
 <t tx="ville.20090701182804.1551">Minibuffer is the text input area at the bottom of the
 screen, familiar from emacs and vi. Press alt-x to enter a
@@ -451,9 +463,10 @@ opening the external file afterwards.
 .. However, @ @rst-options are recognized in this node.
 
 </t>
-<t tx="ville.20090701184416.1557">Text
+<t tx="ville.20090701184416.1557">Observe the underlining style of the headings.
 </t>
-<t tx="ville.20090701184416.1558">ao
+<t tx="ville.20090701184416.1558">Some text in first other chapter.
 </t>
+<t tx="ville.20090703222440.1472">More text in other chapter.</t>
 </tnodes>
 </leo_file>
