@@ -87,13 +87,6 @@ pprint.pprint(packages)
 #cleanup unwanted data files
 
 
-
-
-
-
-
-
-
 #@-node:ville.20090213231648.5:collect (and filter) files
 #@+node:ville.20090213231648.6:bdist_wininst hack
 # Small hack for working with bdist_wininst.
@@ -106,7 +99,7 @@ if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
 
 
 # Note than only *.ui matches now - add asterisks as needed/valid
-datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '.leo', '.def', '.svg', '.ini', '.six', '.bat', '.cat', '.pro', '.sh', '.xsl', '.bmp', '.js', '*.ui', '.rix', '.pmsp',  '.pyd', '.png', '.alg', '.php',  '.css', '.ico', '.txt', '.html',  '.iix',  '.w']
+datapats = ['.tix', '.GIF', '.dbm', '.conf', '.TXT', '.xml', '.gif', '.leo', '.def', '.svg', '*.ini', '.six', '.bat', '.cat', '.pro', '.sh', '.xsl', '.bmp', '.js', '*.ui', '.rix', '.pmsp',  '.pyd', '.png', '.alg', '.php',  '.css', '.ico', '*.txt', '.html',  '.iix',  '.w']
 #print data_files
 
 setup(
