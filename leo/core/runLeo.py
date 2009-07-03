@@ -206,7 +206,9 @@ def completeFileName (fileName):
     fileName = g.os_path_finalize(fileName)
 
     junk,ext = g.os_path_splitext(fileName)
-    if not ext:
+
+    # Bug fix: don't add .leo to existing files.
+    if not ext and not g.os_path_exists(fileName):
         fileName = fileName + ".leo"
         relativeFileName = relativeFileName + ".leo"
 

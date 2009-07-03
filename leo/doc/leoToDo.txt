@@ -11,25 +11,6 @@ Docs:
 * Update link for 'Run from console window'.
 
 
-#@+node:ekr.20090703114238.6029:Standard buttons can be doubled
-@nocolor-node
-
-https://bugs.launchpad.net/leo-editor/+bug/394965
-
-ubuntu 9.04 python 2.6.2 leo 2177 qt
-
-leo labels.aux
-
-to invoke leo with an @edit node on labels.aux, a boring 8 byte file.
-
-Works as intended in that the file is loaded into an @edit node, BUT the buttons in leo, left to right,
-are [run-script] [script-button] [run-script] [script-button].
-
-Only in the leo somefile.foo invocation do I see this button doubling.
-
-'leo' above is a script that is equivalent to python /part/to/trunk/launchLeo.py
-#@nonl
-#@-node:ekr.20090703114238.6029:Standard buttons can be doubled
 #@-node:ekr.20080814103428.4:To do before 4.6 rc1
 #@+node:ekr.20090703114238.6030:To do after 4.6 rc1
 @nocolor-node

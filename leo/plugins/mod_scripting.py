@@ -275,6 +275,9 @@ class scriptingController:
         c = self.c
 
         buttons = c.config.getButtons()
+
+        # g.trace(buttons,c,g.callers(11))
+
         if buttons:
             for z in buttons:
                 h,script = z

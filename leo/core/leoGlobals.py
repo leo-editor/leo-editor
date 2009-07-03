@@ -2761,7 +2761,7 @@ def openWithFileName(fileName,old_c,
 
     """Create a Leo Frame for the indicated fileName if the file exists."""
 
-    trace = False and not g.unitTesting
+    trace = True and not g.unitTesting
 
     if not fileName: return False, None
     isLeo,fn,relFn = g.mungeFileName(fileName)
@@ -2876,6 +2876,8 @@ def mungeFileName(fileName):
 #@+node:ekr.20090520055433.5946:g.openWithFileNameHelper
 def openWithFileNameHelper(old_c,gui,fileName,relativeFileName):
 
+    g.trace(fileName)
+
     if old_c: g.preRead(fileName)
     g.doHook('open0')
 
@@ -2921,7 +2923,8 @@ def openWrapperLeoFile (old_c,fileName,gui):
         fileName=None,relativeFileName=None,gui=gui)
 
     # Needed for plugins.
-    g.doHook("new",old_c=old_c,c=c,new_c=c)
+    if 0: # This causes duplicate common buttons.
+        g.doHook("new",old_c=old_c,c=c,new_c=c)
 
     # Use the config params to set the size and location of the window.
     frame.setInitialWindowGeometry()
