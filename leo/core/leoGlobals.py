@@ -5706,6 +5706,9 @@ def getTestVars ():
     d = g.app.unitTestDict
     c = d.get('c')
     p = d.get('p')
+    # Indicate that getTestVars has run.
+    # This is an indirect test that some unit test has run.
+    d['getTestVars'] = True
     return c,p and p.copy()
 #@-node:ekr.20070619173330:g.getTestVars
 #@-node:ekr.20070524083513:Unit testing (leoGlobals.py)

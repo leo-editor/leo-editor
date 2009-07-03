@@ -6380,7 +6380,7 @@ def isUnitTestNode (self,p):
         return False
 #@-node:ekr.20070705075604.3:isUnitTestNode
 #@-node:ekr.20070627135336.9:createOutline & helpers
-#@+node:ekr.20051104075904.103:safeImportModule
+#@+node:ekr.20051104075904.103:safeImportModule & test
 @ Warning: do NOT use g.importFromPath here!
 
 g.importFromPath uses imp.load_module, and that is equivalent to reload!
@@ -6409,7 +6409,25 @@ def safeImportModule (fileName):
     else:
         g.pr("Not a .py file:",fileName)
         return None
-#@-node:ekr.20051104075904.103:safeImportModule
+#@+node:ekr.20090703155133.6418:@test safeImportModule
+if g.unitTesting:
+
+    d = g.app.unitTestDict
+    c,p = g.getTestVars()
+    assert d.get('getTestVars') is True
+    d['getTestVars'] = False
+
+    # Do lots of imports.
+    import leo.core.leoTest as leoTest
+    path = g.os_path_join(g.app.loadDir,"..","core")
+    modules = leoTest.importAllModulesInPath(path)
+
+    # Assert that g.getTestVars has not been called.
+    val = d.get('getTestVars')
+    assert val is False, val
+
+#@-node:ekr.20090703155133.6418:@test safeImportModule
+#@-node:ekr.20051104075904.103:safeImportModule & test
 #@-node:ekr.20090703053325.6011:Made alt-6 run all unit tests
 #@+node:ekr.20090703101031.6028:Look for Users Guide in two places
 #@+node:ekr.20060613082924:leoUsersGuide
