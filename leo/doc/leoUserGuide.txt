@@ -2145,8 +2145,8 @@ Add the following to the start of your scripts::
 
 Without this line, constructs such as::
 
-    u = u'a-(unicode characters here)-z'
-    u = 'a-(yet more unicode characters here)-z'
+    u = u'a-(2 unicode characters here)-z'
+    u = 'a-(2 unicode characters here)-z'
 
 will not work when executed with Leo's execute script command.
 Indeed, the Execute Script command creates the script by writing the tree
@@ -2649,7 +2649,7 @@ For full details, see `Chapter 7: Scripting Leo with Python`_.
 .. _`section references`:       glossary.html#section-references
 .. _siblings:                   glossary.html#siblings
 
-.. |leoMainWindow| image:: PCWindow.gif
+.. |leoMainWindow| image:: PCWindow.png
 .. @-node:ekr.20050816073814:@rst-no-head links
 .. @+node:ekr.20050816073412.1:Introduction
 **Important**: please `install Leo`_ before reading this tutorial,
