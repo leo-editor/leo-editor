@@ -2242,7 +2242,7 @@ class DynamicWindow(QtGui.QMainWindow):
     #@+node:ville.20090702214819.4211:setLeoWindowIcon
     def setLeoWindowIcon(self):
         """ Set icon visible in title bar and task bar """
-        self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/LeoWin.gif"))
+        self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     #@nonl
     #@-node:ville.20090702214819.4211:setLeoWindowIcon
     #@-others
