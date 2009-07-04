@@ -61,7 +61,9 @@ def init():
     if not g.app.gui:
         g.app.createDefaultGui(__file__)
 
-    if g.app.gui and g.app.gui.guiName() not in ('tkinter','qt'):
+    # Only tkinter needs this plugin. Note that equivalent functionality comes
+    # with contextmenu.py on qt ui. 
+    if g.app.gui and g.app.gui.guiName() != 'tkinter':
         return False
 
     g.app.hasOpenWithMenu = True
