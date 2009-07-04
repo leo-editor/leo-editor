@@ -11,6 +11,30 @@ Examples are:
 - Refresh @thin node from disk (e.g. after editing it in external editor)
 - Go to clone
 
+Here's an example on how to implement your own context menu items 
+in your plugins::
+
+    def nextclone_rclick(c,p, menu):
+        """ Go to next clone """
+
+        # only show the item if you are on a clone
+        # this is what makes this "context sensitive"
+        if not p.isCloned():
+            return    
+
+        def nextclone_rclick_cb():
+            c.goToNextClone()
+
+        # 'menu' is a QMenu instance that was created by Leo 
+        # in response to right click on tree item
+
+        action = menu.addAction("Go to clone")
+        action.connect(action, QtCore.SIGNAL("triggered()"), nextclone_rclick_cb)
+
+And call this in your plugin *once*::
+
+    g.tree_popup_handlers.append(nextclone_rclick)    
+
 '''
 #@-node:ville.20090630210947.5460:<< docstring >>
 #@nl
