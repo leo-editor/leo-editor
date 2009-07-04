@@ -485,7 +485,7 @@ class atFile:
         fileContent = open(fileName, "rb").read()
         cachefile = self._contentHashFile(root, fileContent)
 
-        # Delete all children, but **not** for @file nodes!
+        # Delete all children, but **not** for @file and @nosent nodes!
         if thinFile or atShadow:
             while root.hasChildren():
                 root.firstChild().doDelete()

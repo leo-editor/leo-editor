@@ -4639,7 +4639,7 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     fileContent = open(fileName, "rb").read()
     cachefile = self._contentHashFile(root, fileContent)
 
-    # Delete all children, but **not** for @file nodes!
+    # Delete all children, but **not** for @file and @nosent nodes!
     if thinFile or atShadow:
         while root.hasChildren():
             root.firstChild().doDelete()
@@ -7429,6 +7429,241 @@ if g.unitTesting:
 #@-node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
 #@-node:ekr.20080828103146.15:c.scanAtPathDirectives & test
 #@-node:ekr.20090704085327.6044:Fixed problem tangling
+#@+node:ekr.20090704020843.6035:Fixed critical @file data-loss problem
+@nocolor-node
+
+The culprit was the code in atFile.read
+that deleted all children.
+
+Added several important new unit tests.
+#@nonl
+#@+node:ekr.20041005105605.21:read (atFile)
+def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=False):
+
+    """Read any @thin, @file and @noref trees."""
+
+    at = self ; c = at.c
+    << set fileName >>
+
+    at.initReadIvars(root,fileName,importFileName=importFileName,thinFile=thinFile,atShadow=atShadow)
+    if at.errors: return False
+    fileName = at.openFileForReading(fileName,fromString=fromString)
+    if at.inputFile:
+        c.setFileTimeStamp(fileName)
+    else:
+        return False
+
+    fileContent = open(fileName, "rb").read()
+    cachefile = self._contentHashFile(root, fileContent)
+
+    # Delete all children, but **not** for @file and @nosent nodes!
+    if thinFile or atShadow:
+        while root.hasChildren():
+            root.firstChild().doDelete()
+
+    if cachefile in c.db:
+        # This isn't so useful.
+        # if not g.unitTesting: # g.es('uncache:',root.h)
+        tree = c.db[cachefile]
+        g.create_tree_at_vnode(c, root.v, tree)
+        at.inputFile.close() # Bug fix.
+        return
+
+    if not g.unitTesting:
+        g.es("reading:",root.h)
+
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root,importing=at.importing,reading=True)
+    at.readOpenFile(root,at.inputFile,fileName)
+    at.inputFile.close()
+    root.clearDirty() # May be set dirty below.
+    if at.errors == 0:
+        << advise user to delete all unvisited nodes >>
+    if at.errors == 0 and not at.importing:
+        # Package this as a method for use by mod_labels plugin.
+        self.copyAllTempBodyStringsToTnodes(root,thinFile)
+
+    << delete all tempBodyStrings >>
+
+    # write out the cache version
+    self.writeCachedTree(root, cachefile)
+
+    return at.errors == 0
+#@+node:ekr.20041005105605.22:<< set fileName >>
+if fromString:
+    fileName = "<string-file>"
+elif importFileName:
+    fileName = importFileName
+elif root.isAnyAtFileNode():
+    fileName = root.anyAtFileNodeName()
+else:
+    fileName = None
+
+if not fileName:
+    at.error("Missing file name.  Restoring @file tree from .leo file.")
+    return False
+#@-node:ekr.20041005105605.22:<< set fileName >>
+#@+node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+resurrected = 0
+for p in root.self_and_subtree_iter():
+
+    if not p.v.t.isVisited():
+        g.es('resurrected node:',p.h,color='blue')
+        g.es('in file:',fileName,color='blue')
+        resurrected += 1
+
+if resurrected:
+    g.es('you may want to delete ressurected nodes')
+
+#@-node:ekr.20071105164407:<< advise user to delete all unvisited nodes >>
+#@+node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+for t in c.all_unique_tnodes_iter():
+
+    if hasattr(t,"tempBodyString"):
+        delattr(t,"tempBodyString")
+#@-node:ekr.20041005105605.25:<< delete all tempBodyStrings >>
+#@-node:ekr.20041005105605.21:read (atFile)
+#@+node:ekr.20061004053644:handleVnodeSaxAttributes
+# The native attributes of <v> elements are a, t, vtag, tnodeList,
+# marks, expanded, and descendentTnodeUnknownAttributes.
+# New in Leo 4.5: added descendentVnodeUnknownAttributes to native attributes.
+
+def handleVnodeSaxAttributes (self,sax_node,v):
+
+    trace = False and not g.unitTesting
+    d = sax_node.attributes
+    # if trace and d: g.trace(d)
+
+    s = d.get('a')
+    if s:
+        # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
+        # 'C' (clone) and 'D' bits are not used.
+        if 'M' in s: v.setMarked()
+        if 'E' in s: v.expand()
+        if 'O' in s: v.setOrphan()
+        # if 'T' in s: self.topVnode = v
+        if 'V' in s:
+            # g.trace('setting currentVnode',v,color='red')
+            self.currentVnode = v
+
+    s = d.get('tnodeList','')
+    tnodeList = s and s.split(',')
+    if tnodeList:
+        # This tnode list will be resolved later.
+        if trace: g.trace('found tnodeList',v.headString(),tnodeList)
+        v.tempTnodeList = tnodeList
+
+    s = d.get('descendentTnodeUnknownAttributes')
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s)
+        if aDict:
+            # g.trace('descendentTnodeUaDictList',aDict)
+            self.descendentTnodeUaDictList.append(aDict)
+
+    s = d.get('descendentVnodeUnknownAttributes')
+    if s: 
+        aDict = self.getDescendentUnknownAttributes(s)
+        if aDict:
+            # g.trace('descendentVnodeUaDictList',aDict)
+            self.descendentVnodeUaDictList.append((v,aDict),)
+
+    s = d.get('expanded')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="expanded")
+        # g.trace('expanded list',len(aList))
+        self.descendentExpandedList.extend(aList)
+
+    s = d.get('marks')
+    if s:
+        aList = self.getDescendentAttributes(s,tag="marks")
+        # g.trace('marks list',len(aList))
+        self.descendentMarksList.extend(aList)
+
+    aDict = {}
+    for key in d:
+        if key in self.nativeVnodeAttributes:
+            # This is not a bug.
+            if False and trace: g.trace(
+                '****ignoring***',key,d.get(key))
+        else:
+            val = d.get(key)
+            val2 = self.getSaxUa(key,val)
+            aDict[key] = val2
+            # g.trace(key,val,val2)
+    if aDict:
+        # if trace: g.trace('uA',v,aDict)
+        v.unknownAttributes = aDict
+#@+node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    sax_node = g.bunch(
+        attributes={
+'a':'M',
+'lineYOffset':"4b032e",
+# A real icon attribute, see the tests below for what we expect
+'icons':"5d7100287d71012855026f6e71025505746e6f6465710355047479\
+70657104550466696c6571055507796f666673657471064b006805583700000\
+0433a5c6c656f2e7265706f5c7472756e6b5c6c656f5c49636f6e735c54616e\
+676f5c31367831365c616374696f6e735c6164642e706e67710755047870616\
+471084b01550577686572657109550e6265666f7265486561646c696e65710a\
+5507786f6666736574710b4b02550772656c50617468710c581b00000054616\
+e676f5c31367831365c616374696f6e735c6164642e706e67710d757d710e28\
+55026f6e710f68035504747970657110550466696c6571115507796f6666736\
+57471124b006811583a000000433a5c6c656f2e7265706f5c7472756e6b5c6c\
+656f5c49636f6e735c54616e676f5c31367831365c616374696f6e735c626f7\
+4746f6d2e706e67711355047870616471144b01550577686572657115550e62\
+65666f7265486561646c696e6571165507786f666673657471174b025507726\
+56c506174687118581e00000054616e676f5c31367831365c616374696f6e73\
+5c626f74746f6d2e706e67711975652e"
+    })
+    try:
+        p2 = p.insertAsLastChild()
+        v = p2.v
+        c.fileCommands.handleVnodeSaxAttributes(sax_node,v)
+        # print v,v.u
+        d = v.u
+        for attr in ('lineYOffset','icons'):
+            assert d.get(attr) is not None,attr
+        # The a:M attribute should mark the node.
+        assert d.get('a') is None
+        assert v.isMarked()
+        aList = d.get('icons')
+        assert aList
+        assert len(aList) == 2
+        for d2 in aList:
+            for key in ('on','where','yoffset','file'):
+                assert d2.get(key) is not None,key
+    finally:
+        if 1:
+            while p.hasChildren():
+                # print('deleting',p.firstChild())
+                p.firstChild().doDelete()
+#@-node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
+#@-node:ekr.20061004053644:handleVnodeSaxAttributes
+#@+node:ekr.20060919110638.11:resolveTnodeLists
+def resolveTnodeLists (self):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    for p in c.all_positions_with_unique_vnodes_iter():
+        if hasattr(p.v,'tempTnodeList'):
+            # g.trace(p.v.headString())
+            result = []
+            for tnx in p.v.tempTnodeList:
+                index = self.canonicalTnodeIndex(tnx)
+                t = self.tnodesDict.get(index)
+                if t:
+                    if trace: g.trace(tnx,t)
+                    result.append(t)
+                else:
+                    g.trace('*** No tnode for %s' % tnx)
+            p.v.t.tnodeList = result
+            delattr(p.v,'tempTnodeList')
+#@nonl
+#@-node:ekr.20060919110638.11:resolveTnodeLists
+#@-node:ekr.20090704020843.6035:Fixed critical @file data-loss problem
 #@-node:ekr.20090623072844.10386:Bugs
 #@+node:ekr.20090628075121.8434:Features
 #@+node:ekr.20090628075121.8433:Added open-quickstart-leo
