@@ -1288,7 +1288,7 @@ class baseFileCommands:
         tnodeList = s and s.split(',')
         if tnodeList:
             # This tnode list will be resolved later.
-            # g.trace('found tnodeList',v.headString(),tnodeList)
+            if trace: g.trace('found tnodeList',v.headString(),tnodeList)
             v.tempTnodeList = tnodeList
 
         s = d.get('descendentTnodeUnknownAttributes')
@@ -1320,6 +1320,7 @@ class baseFileCommands:
         aDict = {}
         for key in d:
             if key in self.nativeVnodeAttributes:
+                # This is not a bug.
                 if False and trace: g.trace(
                     '****ignoring***',key,d.get(key))
             else:
@@ -1328,7 +1329,7 @@ class baseFileCommands:
                 aDict[key] = val2
                 # g.trace(key,val,val2)
         if aDict:
-            if trace: g.trace('uA',v,aDict)
+            # if trace: g.trace('uA',v,aDict)
             v.unknownAttributes = aDict
     #@+node:ekr.20090702072557.6420:@test handleVnodeSaxAttributes
     if g.unitTesting:
@@ -1568,6 +1569,7 @@ class baseFileCommands:
     #@+node:ekr.20060919110638.11:resolveTnodeLists
     def resolveTnodeLists (self):
 
+        trace = False and not g.unitTesting
         c = self.c
 
         for p in c.all_positions_with_unique_vnodes_iter():
@@ -1578,9 +1580,10 @@ class baseFileCommands:
                     index = self.canonicalTnodeIndex(tnx)
                     t = self.tnodesDict.get(index)
                     if t:
-                        # g.trace(tnx,t)
+                        if trace: g.trace(tnx,t)
                         result.append(t)
-                    # else: g.trace('No tnode for %s' % tnx)
+                    else:
+                        g.trace('*** No tnode for %s' % tnx)
                 p.v.t.tnodeList = result
                 delattr(p.v,'tempTnodeList')
     #@nonl

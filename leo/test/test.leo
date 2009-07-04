@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9,1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -322,7 +322,7 @@
 <v t="ekr.20090618102458.1816"><vh>Converting QString to unicode</vh></v>
 </v>
 </v>
-<v t="ekr.20090514103332.1929" a="E"><vh>Unit tests</vh>
+<v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
 <v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
@@ -331,6 +331,10 @@
 <v t="ekr.20090701125834.1765"><vh>@@button insert-inst-icon</vh></v>
 <v t="ekr.20090701133940.1767"><vh>print icons</vh></v>
 <v t="ekr.20090702090940.1771"><vh>@auto-rst create-from-scratch.txt</vh></v>
+<v t="ekr.20090704024632.1774" a="E" tnodeList="ekr.20090704024632.1774,ekr.20090704024632.1775,ekr.20090704024632.1776"><vh>@file tnodeList.py</vh>
+<v t="ekr.20090704024632.1775"><vh>spam</vh></v>
+<v t="ekr.20090704024632.1776"><vh>eggs</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2686,5 +2690,10 @@ c.bodyWantsFocusNow()</t>
             icon = g.app.gui.getIconImage(fn)
             print('t %s icon %s %s' % (id(t),id(icon),fn))
 print('done')</t>
+<t tx="ekr.20090704024632.1774">@others</t>
+<t tx="ekr.20090704024632.1775">def spam():
+    pass</t>
+<t tx="ekr.20090704024632.1776">def eggs():
+    pass</t>
 </tnodes>
 </leo_file>
