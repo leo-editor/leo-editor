@@ -485,18 +485,23 @@ class atFile:
         fileContent = open(fileName, "rb").read()
         cachefile = self._contentHashFile(root, fileContent)
 
+        if cachefile in c.db:
+            # This message isn't so useful.
+            # if not g.unitTesting: # g.es('uncache:',root.h)
+
+            # Delete the previous tree, regardless of the @<file> type.
+            while root.hasChildren():
+                root.firstChild().doDelete()
+            tree = c.db[cachefile]
+            g.create_tree_at_vnode(c, root.v, tree)
+            at.inputFile.close() # Bug fix.
+            root.clearDirty() # Bug fix.
+            return
+
         # Delete all children, but **not** for @file and @nosent nodes!
         if thinFile or atShadow:
             while root.hasChildren():
                 root.firstChild().doDelete()
-
-        if cachefile in c.db:
-            # This isn't so useful.
-            # if not g.unitTesting: # g.es('uncache:',root.h)
-            tree = c.db[cachefile]
-            g.create_tree_at_vnode(c, root.v, tree)
-            at.inputFile.close() # Bug fix.
-            return
 
         if not g.unitTesting:
             g.es("reading:",root.h)

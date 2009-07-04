@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="9,1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="6,1"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -282,6 +282,8 @@
 <v t="ekr.20081205104320.1"><vh>run bash script</vh></v>
 </v>
 <v t="ekr.20080930114036.1"><vh>Icon stuff</vh>
+<v t="ekr.20090701133940.1767"><vh>print icons</vh></v>
+<v t="ekr.20090701125834.1765"><vh>@@button insert-inst-icon</vh></v>
 <v t="ekr.20080930080501.1"><vh>Add icon row</vh></v>
 <v t="ekr.20080930083052.1"><vh>hide icon rows</vh></v>
 <v t="ekr.20080930083052.2"><vh>show icon rows</vh></v>
@@ -327,13 +329,12 @@
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
-<v t="ekr.20090701062041.1798"><vh>PHP test</vh></v>
-<v t="ekr.20090701125834.1765"><vh>@@button insert-inst-icon</vh></v>
-<v t="ekr.20090701133940.1767"><vh>print icons</vh></v>
-<v t="ekr.20090702090940.1771"><vh>@auto-rst create-from-scratch.txt</vh></v>
-<v t="ekr.20090704024632.1774" a="E" tnodeList="ekr.20090704024632.1774,ekr.20090704024632.1775,ekr.20090704024632.1776"><vh>@file tnodeList.py</vh>
-<v t="ekr.20090704024632.1775"><vh>spam</vh></v>
-<v t="ekr.20090704024632.1776"><vh>eggs</vh></v>
+<v t="ekr.20090701062041.1798"><vh>PHP test</vh>
+<v t="ekr.20090704133634.1780"><vh>Inner php</vh></v>
+</v>
+<v t="ekr.20090704151652.1778" a="E" tnodeList="ekr.20090704151652.1778,ekr.20090704151652.1779,ekr.20090704151652.1780"><vh>@file tnodeList.py</vh>
+<v t="ekr.20090704151652.1779"><vh>spam</vh></v>
+<v t="ekr.20090704151652.1780"><vh>eggs</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2666,15 +2667,11 @@ register()</t>
 This is a doc part.
 @c
 
-and or
-array
-array()
-/* Multi-line comment
-*/
-this is a test.
-__CLASS__
-&lt;?php and or array() ?&gt;
-&lt;?PHP and or array() ?&gt;</t>
+@language php
+&lt;?php
+@others
+?&gt;
+</t>
 <t tx="ekr.20090701125834.1765">fn = g.os_path_finalize_join(g.app.loadDir,'..','Icons','leo_inst.ico')
 assert g.os_path_exists(fn)
 c.editCommands.insertIconFromFile(path=fn)
@@ -2690,10 +2687,16 @@ c.bodyWantsFocusNow()</t>
             icon = g.app.gui.getIconImage(fn)
             print('t %s icon %s %s' % (id(t),id(icon),fn))
 print('done')</t>
-<t tx="ekr.20090704024632.1774">@others</t>
-<t tx="ekr.20090704024632.1775">def spam():
+<t tx="ekr.20090704133634.1780">@language phpsection
+
+&lt;body&gt;
+&lt;/body&gt;
+</t>
+<t tx="ekr.20090704151652.1778">@others
+# changed 5.</t>
+<t tx="ekr.20090704151652.1779">def spam():
     pass</t>
-<t tx="ekr.20090704024632.1776">def eggs():
+<t tx="ekr.20090704151652.1780">def eggs():
     pass</t>
 </tnodes>
 </leo_file>
