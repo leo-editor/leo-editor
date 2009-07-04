@@ -486,6 +486,7 @@ class atFile:
         cachefile = self._contentHashFile(root, fileContent)
 
         # Delete all children, but **not** for @file nodes!
+        # What about noref???
         if thinFile or atShadow:
             while root.hasChildren():
                 root.firstChild().doDelete()
@@ -813,7 +814,6 @@ class atFile:
             p.firstChild().doDelete()
 
         if shadow_exists:
-            # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
             at.read(p,thinFile=True,atShadow=True)
         else:
             if not g.unitTesting: g.es("reading:",p.h)
