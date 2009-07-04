@@ -1437,7 +1437,12 @@ class baseTangleCommands:
                 self.tangle_output = self.output_file.get()
             self.output_file.close()
             self.output_file = None
-            if not g.unitTesting:
+            if g.unitTesting:
+                assert self.errors == 0
+                g.app.unitTestDict ['tangle'] = True
+                g.app.unitTestDict ['tangle_directory'] = self.tangle_directory
+                g.app.unitTestDict ['tangle_output_fn'] = file_name
+            else:
                 if self.errors + g.app.scanErrors == 0:
                     g.update_file_if_changed(c,file_name,temp_name)
                 else:
@@ -3470,7 +3475,7 @@ class baseTangleCommands:
         self.encoding             = d.get('encoding')
         self.language             = lang_dict.get('language')
         self.page_width           = d.get('pagewidth')
-        self.default_directory    = d.get('path')
+        self.tangle_directory     = d.get('path')
         self.tab_width            = d.get('tabwidth')
 
         # Handle the print-mode directives.
@@ -3482,13 +3487,15 @@ class baseTangleCommands:
             if self.print_mode: break
         if not self.print_mode: self.print_mode = 'verbose'
 
+        # g.trace(self.tangle_directory)
+
         # For unit testing.
         return {
             "encoding"  : self.encoding,
             "language"  : self.language,
             "lineending": self.output_newline,
             "pagewidth" : self.page_width,
-            "path"      : self.default_directory,
+            "path"      : self.tangle_directory,
             "tabwidth"  : self.tab_width,
         }
     #@-node:ekr.20080923124254.16:tangle.scanAllDirectives
