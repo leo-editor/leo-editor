@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -722,8 +722,55 @@
 </v>
 </v>
 <v t="ekr.20071113203234"><vh> Test files</vh>
-<v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
+<v t="ekr.20090704085350.5028"><vh>@asis ../test/unittest/at-asis-test.py</vh>
+<v t="ekr.20090704085350.5029"><vh>spam</vh></v>
+<v t="ekr.20090704085350.5030"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20090704085350.5056"><vh>@auto ../test/unittest/at-auto-test.py</vh></v>
+<v t="ekr.20090704085350.5007" tnodeList="ekr.20090704085350.5007,ekr.20090704085350.5008,ekr.20090704085350.5009"><vh>@file ../test/unittest/at-file-test.py</vh>
+<v t="ekr.20090704085350.5008"><vh>spam</vh></v>
+<v t="ekr.20090704085350.5009"><vh>eggs</vh></v>
+<v t="ekr.20090704085350.5008"></v>
+<v t="ekr.20090704085350.5009"></v>
+<v t="ekr.20090704085350.5008"></v>
+<v t="ekr.20090704085350.5009"></v>
+<v t="ekr.20090704085350.5008"></v>
+<v t="ekr.20090704085350.5009"></v>
+<v t="ekr.20090704085350.5008"></v>
+<v t="ekr.20090704085350.5009"></v>
+<v t="ekr.20090704085350.5008"></v>
+<v t="ekr.20090704085350.5009"></v>
+<v t="ekr.20090704085350.5008"></v>
+<v t="ekr.20090704085350.5009"></v>
+</v>
+<v t="ekr.20090704085350.5040" tnodeList="ekr.20090704085350.5040,ekr.20090704085350.5041,ekr.20090704085350.5042"><vh>@noref ../test/unittest/at-noref-test.py</vh>
+<v t="ekr.20090704085350.5041"><vh>spam</vh></v>
+<v t="ekr.20090704085350.5042"><vh>eggs</vh></v>
+<v t="ekr.20090704085350.5041"></v>
+<v t="ekr.20090704085350.5042"></v>
+<v t="ekr.20090704085350.5041"></v>
+<v t="ekr.20090704085350.5042"></v>
+<v t="ekr.20090704085350.5041"></v>
+<v t="ekr.20090704085350.5042"></v>
+<v t="ekr.20090704085350.5041"></v>
+<v t="ekr.20090704085350.5042"></v>
+<v t="ekr.20090704085350.5041"></v>
+<v t="ekr.20090704085350.5042"></v>
+<v t="ekr.20090704085350.5041"></v>
+<v t="ekr.20090704085350.5042"></v>
+</v>
+<v t="ekr.20090704085350.5034" tnodeList="ekr.20090704085350.5034,ekr.20090704085350.5035,ekr.20090704085350.5036"><vh>@nosent ../test/unittest/at-nosent-test.py</vh>
+<v t="ekr.20090704085350.5035"><vh>spam</vh></v>
+<v t="ekr.20090704085350.5036"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20090704085350.5062"><vh>@root ../test/unittest/at-root-test.py</vh>
+<v t="ekr.20090704085350.5063"><vh>spam</vh></v>
+<v t="ekr.20090704085350.5064"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20090704085350.5014"><vh>@shadow ../test/unittest/at-shadow-test.py</vh></v>
+<v t="ekr.20090704085350.5022"><vh>@thin ../test/unittest/at-thin-test.py</vh></v>
 <v t="ekr.20070627082044.811"><vh>@thin ../test/unittest/batchTest.py</vh></v>
+<v t="ekr.20070627082044.808"><vh>@thin ../test/unittest/errorTest.py</vh></v>
 </v>
 <v t="ekr.20080703104536.1"><vh>Other tests</vh>
 <v t="ekr.20051104081502.108"></v>
@@ -809,6 +856,15 @@
 <v t="ekr.20090225102051.3"><vh>#@edit</vh></v>
 <v t="ekr.20090225102051.4"><vh>Output</vh></v>
 </v>
+<v t="ekr.20090704085350.5044"><vh>@test @asis: shape of tree</vh></v>
+<v t="ekr.20090704085350.5052"><vh>@test @auto: shape of tree</vh></v>
+<v t="ekr.20090704085350.5010"><vh>@test @file: shape of tree</vh></v>
+<v t="ekr.20090704085350.5048"><vh>@test @noref: shape of tree</vh></v>
+<v t="ekr.20090704085350.5050"><vh>@test @nosent: shape of tree</vh></v>
+<v t="ekr.20090704093658.5061"><vh>@test @root: shape of tree</vh></v>
+<v t="ekr.20090704093658.5062"><vh>@test @root: tangle works</vh></v>
+<v t="ekr.20090704085350.5046"><vh>@test @thin: shape of tree</vh></v>
+<v t="ekr.20090704085350.5018"><vh>@test @shadow: shape of tree</vh></v>
 <v t="ekr.20040712101754.103"><vh>@test @file no newline</vh>
 <v t="ekr.20040712101754.104"><vh>#@file</vh></v>
 <v t="ekr.20040712101754.105"><vh>Output</vh></v>
@@ -2454,6 +2510,8 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 <v t="ekr.20081111150402.11" annotate="7d71002e"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20050112095306.1"></v>
+<v t="ekr.20061001114637"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -21721,6 +21779,154 @@ else:
     # 'leoTest.py',
     # 'leoUndo.py',
 ]</t>
+<t tx="ekr.20090704085350.5007">@language python
+@others</t>
+<t tx="ekr.20090704085350.5008">def spam():
+    pass</t>
+<t tx="ekr.20090704085350.5009">def eggs():
+    pass</t>
+<t tx="ekr.20090704085350.5010">h = '@file ../test/unittest/at-file-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p
+
+table = (
+    (p.firstChild(),'spam'),
+    (p.firstChild().next(),'eggs')
+)
+
+for p2,h2 in table:
+    assert p2.h == h2
+    assert p2.b &gt; 10</t>
+<t tx="ekr.20090704085350.5018">h = '@shadow ../test/unittest/at-shadow-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p
+
+table = (
+    (p.firstChild(),'spam'),
+    (p.firstChild().next(),'eggs')
+)
+
+for p2,h2 in table:
+    assert p2.h == h2</t>
+<t tx="ekr.20090704085350.5028">@language python
+@others</t>
+<t tx="ekr.20090704085350.5029">def spam():
+    pass</t>
+<t tx="ekr.20090704085350.5030">def eggs():
+    pass</t>
+<t tx="ekr.20090704085350.5034">@language python
+@others</t>
+<t tx="ekr.20090704085350.5035">def spam():
+    pass</t>
+<t tx="ekr.20090704085350.5036">def eggs():
+    pass</t>
+<t tx="ekr.20090704085350.5040">@language python
+@others</t>
+<t tx="ekr.20090704085350.5041">def spam():
+    pass</t>
+<t tx="ekr.20090704085350.5042">def eggs():
+    pass</t>
+<t tx="ekr.20090704085350.5044">h = '@asis ../test/unittest/at-asis-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p
+
+table = (
+    (p.firstChild(),'spam'),
+    (p.firstChild().next(),'eggs')
+)
+
+for p2,h2 in table:
+    assert p2.h == h2
+    assert p2.b &gt; 10</t>
+<t tx="ekr.20090704085350.5046">h = '@thin ../test/unittest/at-thin-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p
+
+table = (
+    (p.firstChild(),'spam'),
+    (p.firstChild().next(),'eggs')
+)
+
+for p2,h2 in table:
+    assert p2.h == h2
+    assert p2.b &gt; 10</t>
+<t tx="ekr.20090704085350.5048">h = '@noref ../test/unittest/at-noref-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p
+
+table = (
+    (p.firstChild(),'spam'),
+    (p.firstChild().next(),'eggs')
+)
+
+for p2,h2 in table:
+    assert p2.h == h2
+    assert p2.b &gt; 10</t>
+<t tx="ekr.20090704085350.5050">h = '@nosent ../test/unittest/at-nosent-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p
+
+table = (
+    (p.firstChild(),'spam'),
+    (p.firstChild().next(),'eggs')
+)
+
+for p2,h2 in table:
+    assert p2.h == h2
+    assert p2.b &gt; 10</t>
+<t tx="ekr.20090704085350.5052">h = '@auto ../test/unittest/at-auto-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p
+
+table = (
+    (p.firstChild(),'spam'),
+    (p.firstChild().next(),'eggs')
+)
+
+for p2,h2 in table:
+    assert p2.h == h2
+    assert p2.b &gt; 10</t>
+<t tx="ekr.20090704085350.5062">@language python
+@root ../test/unittest/at-root-test.py
+@others</t>
+<t tx="ekr.20090704085350.5063">def spam():
+    pass</t>
+<t tx="ekr.20090704085350.5064">def eggs():
+    pass</t>
+<t tx="ekr.20090704093658.5061">h = '@root ../test/unittest/at-root-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p
+
+table = (
+    (p.firstChild(),'spam'),
+    (p.firstChild().next(),'eggs')
+)
+
+for p2,h2 in table:
+    assert p2.h == h2
+    assert p2.b &gt; 10</t>
+<t tx="ekr.20090704093658.5062">h = '@root ../test/unittest/at-root-test.py'
+p = g.findNodeAnywhere(c,h)
+assert p
+
+c.selectPosition(p)
+c.tangleCommands.tangle()
+
+expectedDir = g.os_path_finalize_join(g.app.loadDir,
+    '..','test')
+expectedFn = g.os_path_finalize_join(g.app.loadDir,
+    '..','test','unittest','at-root-test.py')
+
+d = g.app.unitTestDict
+assert d.get('tangle') is True
+
+tangle_dir = d.get('tangle_directory')
+assert  tangle_dir == expectedDir,'expected: %s got: %s' % (
+    expectedDir,tangle_dir)
+
+tangle_fn = d.get('tangle_output_fn')
+assert expectedFn == tangle_fn,'expected: %s got: %s' % (
+    expectedFn,tangle_fn)</t>
 <t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo, adjust accordingly
 import random,fnmatch
 
