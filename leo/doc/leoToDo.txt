@@ -16,6 +16,11 @@ Docs:
 @nocolor-node
 
 - Test PHP coloring.
+    - Is there a mode for use in
+        @language php
+        <?php
+        @others
+        ?>
 
 - Rewrite more docs using stories.
 #@nonl

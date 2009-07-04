@@ -443,7 +443,7 @@ def scanAllDirectives(self,p,require_path_flag,issue_error_flag):
     self.encoding             = d.get('encoding')
     self.language             = lang_dict.get('language')
     self.page_width           = d.get('pagewidth')
-    self.default_directory    = d.get('path')
+    self.tangle_directory     = d.get('path')
     self.tab_width            = d.get('tabwidth')
 
     # Handle the print-mode directives.
@@ -455,13 +455,15 @@ def scanAllDirectives(self,p,require_path_flag,issue_error_flag):
         if self.print_mode: break
     if not self.print_mode: self.print_mode = 'verbose'
 
+    # g.trace(self.tangle_directory)
+
     # For unit testing.
     return {
         "encoding"  : self.encoding,
         "language"  : self.language,
         "lineending": self.output_newline,
         "pagewidth" : self.page_width,
-        "path"      : self.default_directory,
+        "path"      : self.tangle_directory,
         "tabwidth"  : self.tab_width,
     }
 #@+node:ekr.20080923124254.17:<< Collect @first attributes >>
@@ -4638,6 +4640,7 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     cachefile = self._contentHashFile(root, fileContent)
 
     # Delete all children, but **not** for @file nodes!
+    # What about noref???
     if thinFile or atShadow:
         while root.hasChildren():
             root.firstChild().doDelete()
@@ -4724,7 +4727,6 @@ def readOneAtShadowNode (self,fn,p):
         p.firstChild().doDelete()
 
     if shadow_exists:
-        # at.read (via at.openFileForReading) calls x.updatePublicAndPrivateFiles.
         at.read(p,thinFile=True,atShadow=True)
     else:
         if not g.unitTesting: g.es("reading:",p.h)
