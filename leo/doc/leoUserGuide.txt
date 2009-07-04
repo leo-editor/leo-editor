@@ -10691,6 +10691,41 @@ Translate menus to French
 Adds pie menus.  See http://www.piemenus.com/
 .. @nonl
 .. @-node:ekr.20050912125735.2844:pie_menus.py
+.. @+node:ville.20090704073251.9442:contextmenu.py
+Define various useful actions for context menus (for Qt ui)
+
+Examples are:
+
+- Edit in $EDITOR
+- Edit @thin node in $EDITOR (remember to do "refresh" after this!)
+- Refresh @thin node from disk (e.g. after editing it in external editor)
+- Go to clone
+
+Here's an example on how to implement your own context menu items 
+in your plugins::
+
+    def nextclone_rclick(c,p, menu):
+        """ Go to next clone """
+
+        # only show the item if you are on a clone
+        # this is what makes this "context sensitive"
+        if not p.isCloned():
+            return    
+
+        def nextclone_rclick_cb():
+            c.goToNextClone()
+
+        # 'menu' is a QMenu instance that was created by Leo 
+        # in response to right click on tree item
+
+        action = menu.addAction("Go to clone")
+        action.connect(action, QtCore.SIGNAL("triggered()"), nextclone_rclick_cb)
+
+And call this in your plugin *once*::
+
+    g.tree_popup_handlers.append(nextclone_rclick)    
+.. @nonl
+.. @-node:ville.20090704073251.9442:contextmenu.py
 .. @-node:ekr.20050912125735.2826:Menus & translations
 .. @+node:ekr.20050912125735.525:Nodes
 .. @+node:ekr.20050912125735.526:at_folder.py
