@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070417092935" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20041001211817" annotate="7d71002e"><vh>Buttons</vh>
 <v t="ekr.20070926090757"><vh>Disabled buttons</vh>
 <v t="ekr.20051025070722"><vh>@@button Beautify</vh></v>
@@ -734,26 +734,10 @@
 <v t="ekr.20090704085350.5009"></v>
 <v t="ekr.20090704085350.5008"></v>
 <v t="ekr.20090704085350.5009"></v>
-<v t="ekr.20090704085350.5008"></v>
-<v t="ekr.20090704085350.5009"></v>
-<v t="ekr.20090704085350.5008"></v>
-<v t="ekr.20090704085350.5009"></v>
-<v t="ekr.20090704085350.5008"></v>
-<v t="ekr.20090704085350.5009"></v>
-<v t="ekr.20090704085350.5008"></v>
-<v t="ekr.20090704085350.5009"></v>
 </v>
 <v t="ekr.20090704085350.5040" tnodeList="ekr.20090704085350.5040,ekr.20090704085350.5041,ekr.20090704085350.5042"><vh>@noref ../test/unittest/at-noref-test.py</vh>
 <v t="ekr.20090704085350.5041"><vh>spam</vh></v>
 <v t="ekr.20090704085350.5042"><vh>eggs</vh></v>
-<v t="ekr.20090704085350.5041"></v>
-<v t="ekr.20090704085350.5042"></v>
-<v t="ekr.20090704085350.5041"></v>
-<v t="ekr.20090704085350.5042"></v>
-<v t="ekr.20090704085350.5041"></v>
-<v t="ekr.20090704085350.5042"></v>
-<v t="ekr.20090704085350.5041"></v>
-<v t="ekr.20090704085350.5042"></v>
 <v t="ekr.20090704085350.5041"></v>
 <v t="ekr.20090704085350.5042"></v>
 <v t="ekr.20090704085350.5041"></v>
@@ -21794,6 +21778,8 @@ table = (
     (p.firstChild().next(),'eggs')
 )
 
+assert not p.isDirty(),p.h # Do not ignore this failure!
+
 for p2,h2 in table:
     assert p2.h == h2
     assert p2.b &gt; 10</t>
@@ -21805,6 +21791,8 @@ table = (
     (p.firstChild(),'spam'),
     (p.firstChild().next(),'eggs')
 )
+
+assert not p.isDirty(),p.h # Do not ignore this failure!
 
 for p2,h2 in table:
     assert p2.h == h2</t>
@@ -21835,6 +21823,8 @@ table = (
     (p.firstChild().next(),'eggs')
 )
 
+assert not p.isDirty(),p.h # Do not ignore this failure!
+
 for p2,h2 in table:
     assert p2.h == h2
     assert p2.b &gt; 10</t>
@@ -21846,6 +21836,8 @@ table = (
     (p.firstChild(),'spam'),
     (p.firstChild().next(),'eggs')
 )
+
+assert not p.isDirty(),p.h # Do not ignore this failure!
 
 for p2,h2 in table:
     assert p2.h == h2
@@ -21859,6 +21851,8 @@ table = (
     (p.firstChild().next(),'eggs')
 )
 
+assert not p.isDirty(),p.h # Do not ignore this failure!
+
 for p2,h2 in table:
     assert p2.h == h2
     assert p2.b &gt; 10</t>
@@ -21871,6 +21865,8 @@ table = (
     (p.firstChild().next(),'eggs')
 )
 
+assert not p.isDirty(),p.h # Do not ignore this failure!
+
 for p2,h2 in table:
     assert p2.h == h2
     assert p2.b &gt; 10</t>
@@ -21882,6 +21878,8 @@ table = (
     (p.firstChild(),'spam'),
     (p.firstChild().next(),'eggs')
 )
+
+assert not p.isDirty(),p.h # Do not ignore this failure!
 
 for p2,h2 in table:
     assert p2.h == h2
@@ -21901,6 +21899,8 @@ table = (
     (p.firstChild(),'spam'),
     (p.firstChild().next(),'eggs')
 )
+
+assert not p.isDirty(),p.h # Do not ignore this failure!
 
 for p2,h2 in table:
     assert p2.h == h2

@@ -486,7 +486,6 @@ class atFile:
         cachefile = self._contentHashFile(root, fileContent)
 
         # Delete all children, but **not** for @file nodes!
-        # What about noref???
         if thinFile or atShadow:
             while root.hasChildren():
                 root.firstChild().doDelete()

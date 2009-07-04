@@ -4640,7 +4640,6 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     cachefile = self._contentHashFile(root, fileContent)
 
     # Delete all children, but **not** for @file nodes!
-    # What about noref???
     if thinFile or atShadow:
         while root.hasChildren():
             root.firstChild().doDelete()
@@ -7081,6 +7080,355 @@ def openWrapperLeoFile (old_c,fileName,gui):
 #@-node:ekr.20080921154026.1:g.openWrapperLeoFile
 #@-node:ekr.20090520055433.5945:g.openWithFileName & helpers
 #@-node:ekr.20090703114238.6029:Fixed bug: don't duplicate standard buttons
+#@+node:ekr.20090704085327.6044:Fixed problem tangling
+@nocolor-node
+
+Changed .default_directory to .tangle_directory throughout leoTangle.py.
+#@nonl
+#@+node:ekr.20031218072017.1263:g.utils_rename & test
+<< about os.rename >>
+
+def utils_rename (c,src,dst,mode=None,verbose=True):
+
+    '''Platform independent rename.'''
+
+    head, tail = g.os_path_split(dst)
+    if head and len(head) > 0:
+        g.makeAllNonExistentDirectories(head,c=c)
+
+    if g.os_path_exists(dst):
+        if not g.utils_remove(dst):
+            return False
+    try:
+        # New in Leo 4.4b1: try using shutil first.
+        try:
+            import shutil # shutil is new in Python 2.3
+            shutil.move(src,dst)
+        except ImportError:
+            if sys.platform == "win32":
+                os.rename(src,dst)
+            else:
+                try:
+                    # Alas, distutils.file_util may not exist.
+                    from distutils.file_util import move_file
+                    move_file(src,dst)
+                except ImportError:
+                    # Desperation: may give: 'Invalid cross-device link'
+                    os.rename(src,dst)
+        if mode:
+            g.utils_chmod(dst,mode,verbose)
+        return True
+    except Exception:
+        if verbose:
+            g.es('exception renaming',src,'to',dst,color='red')
+            g.es_exception(full=False)
+        return False
+#@+node:ekr.20050104123726.1:<< about os.rename >>
+@ Here is the Python 2.4 documentation for rename (same as Python 2.3)
+
+Rename the file or directory src to dst.  If dst is a directory, OSError will be raised.
+
+On Unix, if dst exists and is a file, it will be removed silently if the user
+has permission. The operation may fail on some Unix flavors if src and dst are
+on different filesystems. If successful, the renaming will be an atomic
+operation (this is a POSIX requirement).
+
+On Windows, if dst already exists, OSError will be raised even if it is a file;
+there may be no way to implement an atomic rename when dst names an existing
+file.
+#@-node:ekr.20050104123726.1:<< about os.rename >>
+#@+node:ekr.20090517020744.5887:@test g.utils_rename
+if g.unitTesting:
+
+    import os
+
+    c,p = g.getTestVars()
+    exists = g.os_path_exists
+    path = g.os_path_join(g.app.testDir,'xyzzy')
+    path2 = g.os_path_join(g.app.testDir,'xyzzy2')
+
+    # Create both paths.
+    for p in (path,path2):
+        if exists(p):
+            os.remove(p)
+        assert not exists(p)
+        f = file(p,'w')
+        f.write('test %s' % p)
+        f.close()
+        assert exists(p)
+
+    assert g.utils_rename(c,path,path2,verbose=True)
+    assert exists(path2)
+    f = file(path2)
+    s = f.read()
+    f.close()
+    # print('Contents of %s: %s' % (path2,s))
+    assert s == 'test %s' % path
+    os.remove(path2)
+    assert not exists(path)
+#@-node:ekr.20090517020744.5887:@test g.utils_rename
+#@-node:ekr.20031218072017.1263:g.utils_rename & test
+#@+node:ekr.20031218072017.1151:tangle.put_all_roots
+@
+This is the top level method of the second pass. It creates a separate C file
+for each @root directive in the outline. The file is actually written only if
+the new version of the file is different from the old version,or if the file did
+not exist previously. If changed_only_flag FLAG is True only changed roots are
+actually written.
+@c
+
+def put_all_roots(self):
+
+    c = self.c ; outline_name = c.mFileName
+
+    for section in self.root_list:
+
+        # g.trace(section.name)
+        file_name = c.os_path_finalize_join(self.tangle_directory,section.name)
+        mode = c.config.output_newline
+        textMode = mode == 'platform'
+        if g.unitTesting:
+            self.output_file = g.fileLikeObject()
+            temp_name = 'temp-file'
+        else:
+            self.output_file,temp_name = g.create_temp_file(textMode=textMode)
+        if not temp_name:
+            g.es("can not create temp file")
+            break
+        <<Get root specific attributes>>
+        <<Put @first lines>>
+        if self.use_header_flag and self.print_mode == "verbose":
+            << Write a banner at the start of the output file >>
+        for part in section.parts:
+            if part.is_root:
+                self.tangle_indent = 0 # Initialize global.
+                self.put_part_node(part,False) # output first lws
+        self.onl() # Make sure the file ends with a cr/lf
+        if g.unitTesting:
+            self.tangle_output = self.output_file.get()
+        self.output_file.close()
+        self.output_file = None
+        if g.unitTesting:
+            assert self.errors == 0
+            g.app.unitTestDict ['tangle'] = True
+            g.app.unitTestDict ['tangle_directory'] = self.tangle_directory
+            g.app.unitTestDict ['tangle_output_fn'] = file_name
+        else:
+            if self.errors + g.app.scanErrors == 0:
+                g.update_file_if_changed(c,file_name,temp_name)
+            else:
+                g.es("unchanged:",file_name)
+                << Erase the temporary file >>
+#@nonl
+#@+node:ekr.20031218072017.1152:<<Get root specific attributes>>
+# Stephen Schaefer, 9/2/02
+# Retrieve the full complement of state for the root node
+self.language = section.root_attributes.language
+self.single_comment_string = section.root_attributes.single_comment_string
+self.start_comment_string = section.root_attributes.start_comment_string
+self.end_comment_string = section.root_attributes.end_comment_string
+self.use_header_flag = section.root_attributes.use_header_flag
+self.print_mode = section.root_attributes.print_mode
+self.path = section.root_attributes.path
+self.page_width = section.root_attributes.page_width
+self.tab_width = section.root_attributes.tab_width
+# Stephen P. Schaefer, 9/13/2002
+self.first_lines = section.root_attributes.first_lines
+#@-node:ekr.20031218072017.1152:<<Get root specific attributes>>
+#@+node:ekr.20031218072017.1153:<<Put @first lines>>
+# Stephen P. Schaefer 9/13/2002
+if self.first_lines:
+    self.os(self.first_lines)
+#@-node:ekr.20031218072017.1153:<<Put @first lines>>
+#@+node:ekr.20031218072017.1154:<<Write a banner at the start of the output file>>
+if self.single_comment_string:
+    self.os(self.single_comment_string)
+    self.os(" Created by Leo from: ")
+    self.os(outline_name)
+    self.onl() ; self.onl()
+elif self.start_comment_string and self.end_comment_string:
+    self.os(self.start_comment_string)
+    self.os(" Created by Leo from: ")
+    self.os(outline_name)
+    self.oblank() ; self.os(self.end_comment_string)
+    self.onl() ; self.onl()
+#@-node:ekr.20031218072017.1154:<<Write a banner at the start of the output file>>
+#@+node:ekr.20031218072017.1155:<< Erase the temporary file >>
+try: # Just delete the temp file.
+    os.remove(temp_name)
+except: pass
+#@-node:ekr.20031218072017.1155:<< Erase the temporary file >>
+#@-node:ekr.20031218072017.1151:tangle.put_all_roots
+#@+node:ekr.20080923124254.16:tangle.scanAllDirectives
+def scanAllDirectives(self,p,require_path_flag,issue_error_flag):
+
+    """Scan vnode p and p's ancestors looking for directives,
+    setting corresponding tangle ivars and globals.
+    """
+
+    c = self.c
+    self.init_directive_ivars()
+    if p:
+        s = p.b
+        << Collect @first attributes >>
+
+    # delims = (self.single_comment_string,self.start_comment_string,self.end_comment_string)
+    lang_dict = {'language':self.language,'delims':None,} # Delims not used
+
+    table = (
+        ('encoding',    self.encoding,  g.scanAtEncodingDirectives),
+        ('lang-dict',   lang_dict,      g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives), 
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+    )
+
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d = {}
+    for key,default,func in table:
+        val = func(aList)
+        d[key] = g.choose(val is None,default,val)
+
+    # Post process.
+    lang_dict       = d.get('lang-dict')
+    lineending      = d.get('lineending')
+    if lineending:
+        self.output_newline = lineending
+    self.encoding             = d.get('encoding')
+    self.language             = lang_dict.get('language')
+    self.page_width           = d.get('pagewidth')
+    self.tangle_directory     = d.get('path')
+    self.tab_width            = d.get('tabwidth')
+
+    # Handle the print-mode directives.
+    self.print_mode = None
+    for d in aList:
+        for key in ('verbose','terse','quiet','silent'):
+            if d.get(key) is not None:
+                self.print_mode = key ; break
+        if self.print_mode: break
+    if not self.print_mode: self.print_mode = 'verbose'
+
+    # g.trace(self.tangle_directory)
+
+    # For unit testing.
+    return {
+        "encoding"  : self.encoding,
+        "language"  : self.language,
+        "lineending": self.output_newline,
+        "pagewidth" : self.page_width,
+        "path"      : self.tangle_directory,
+        "tabwidth"  : self.tab_width,
+    }
+#@+node:ekr.20080923124254.17:<< Collect @first attributes >>
+@ Stephen P. Schaefer 9/13/2002: Add support for @first.
+Unlike other root attributes, does *NOT* inherit from parent nodes.
+@c
+tag = "@first"
+sizeString = len(s) # DTHEIN 13-OCT-2002: use to detect end-of-string
+i = 0
+while 1:
+    # DTHEIN 13-OCT-2002: directives must start at beginning of a line
+    if not g.match_word(s,i,tag):
+        i = g.skip_line(s,i)
+    else:
+        i = i + len(tag)
+        j = i = g.skip_ws(s,i)
+        i = g.skip_to_end_of_line(s,i)
+        if i>j:
+            self.first_lines += s[j:i] + '\n'
+        i = g.skip_nl(s,i)
+    if i >= sizeString:  # DTHEIN 13-OCT-2002: get out when end of string reached
+        break
+#@-node:ekr.20080923124254.17:<< Collect @first attributes >>
+#@-node:ekr.20080923124254.16:tangle.scanAllDirectives
+#@+node:ekr.20080828103146.15:c.scanAtPathDirectives & test
+def scanAtPathDirectives(self,aList,force=False,createPath=True):
+
+    '''Scan aList for @path directives.
+    Return a reasonable default if no @path directive is found.'''
+
+    trace = False and not g.unitTesting
+    verbose = True
+
+    c = self
+
+    c.scanAtPathDirectivesCount += 1 # An important statistic.
+    if trace and verbose: g.trace('**entry',g.callers(4))
+
+    # Step 1: Compute the starting path.
+    # The correct fallback directory is the absolute path to the base.
+    if c.openDirectory:  # Bug fix: 2008/9/18
+        base = c.openDirectory
+    else:
+        base = g.app.config.relative_path_base_directory
+        if base and base == "!":    base = g.app.loadDir
+        elif base and base == ".":  base = c.openDirectory
+
+    if trace and verbose:
+        g.trace('base   ',base)
+        g.trace('loadDir',g.app.loadDir)
+
+    absbase = c.os_path_finalize_join(g.app.loadDir,base)
+
+    if trace and verbose: g.trace('absbase',absbase)
+
+    # Step 2: look for @path directives.
+    paths = [] ; fileName = None
+    for d in aList:
+        # Look for @path directives.
+        path = d.get('path')
+        if path is not None: # retain empty paths for warnings.
+            # Convert "path" or <path> to path.
+            path = g.stripPathCruft(path)
+            if path and path not in paths: paths.append(path)
+            # We will silently ignore empty @path directives.
+
+    # Add absbase and reverse the list.
+    paths.append(absbase)
+    paths.reverse()
+
+    if trace and verbose: g.trace('paths  ',paths)
+
+    # Step 3: Compute the full, effective, absolute path.
+    if trace and verbose: g.printList(paths,tag='c.scanAtPathDirectives: raw paths')
+    path = c.os_path_finalize_join(*paths)
+    if trace and verbose: g.trace('joined path:',path)
+
+    # Step 4: Make the path if necessary.
+    if path and createPath and not g.os_path_exists(path):
+        ok = g.makeAllNonExistentDirectories(path,c=c,force=force)
+        if not ok:
+            if force:
+                g.es_print('c.scanAtPathDirectives: invalid @path: %s' % (path),color='red')
+            path = absbase # Bug fix: 2008/9/18
+
+    if trace: g.trace('returns',path)
+
+    return path
+#@+node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
+if g.unitTesting:
+
+    c,p = g.getTestVars()
+    p2 = p.firstChild().firstChild().firstChild()
+
+    aList = g.get_directives_dict_list(p2)
+    path = c.scanAtPathDirectives(aList,createPath=False)
+    # print (path,p2.h)
+    endpath = g.os_path_normpath('one/two')
+    assert path and path.endswith(endpath),'expected ending %s got %s' % (
+        endpath,path)
+#@+node:ekr.20090530055015.6121:@path one
+#@+node:ekr.20090530055015.6073:@path two
+#@+node:ekr.20090530055015.6074:xyz
+#@-node:ekr.20090530055015.6074:xyz
+#@-node:ekr.20090530055015.6073:@path two
+#@-node:ekr.20090530055015.6121:@path one
+#@-node:ekr.20090527080219.5870:@test c.scanAtPathDirectives
+#@-node:ekr.20080828103146.15:c.scanAtPathDirectives & test
+#@-node:ekr.20090704085327.6044:Fixed problem tangling
 #@-node:ekr.20090623072844.10386:Bugs
 #@+node:ekr.20090628075121.8434:Features
 #@+node:ekr.20090628075121.8433:Added open-quickstart-leo
