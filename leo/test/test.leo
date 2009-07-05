@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="6,1"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -332,9 +332,12 @@
 <v t="ekr.20090701062041.1798"><vh>PHP test</vh>
 <v t="ekr.20090704133634.1780"><vh>Inner php</vh></v>
 </v>
-<v t="ekr.20090704151652.1778" a="E" tnodeList="ekr.20090704151652.1778,ekr.20090704151652.1779,ekr.20090704151652.1780"><vh>@file tnodeList.py</vh>
+<v t="ekr.20090704151652.1778" tnodeList="ekr.20090704151652.1778,ekr.20090704151652.1779,ekr.20090704151652.1780"><vh>@file tnodeList.py</vh>
 <v t="ekr.20090704151652.1779"><vh>spam</vh></v>
 <v t="ekr.20090704151652.1780"><vh>eggs</vh></v>
+</v>
+<v t="ekr.20090705063023.1780" a="E"><vh>@root at-root-test.py</vh>
+<v t="ekr.20090705063023.1781"><vh>abc</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2698,5 +2701,8 @@ print('done')</t>
     pass</t>
 <t tx="ekr.20090704151652.1780">def eggs():
     pass</t>
+<t tx="ekr.20090705063023.1780">@root at-root-test.py
+@others</t>
+<t tx="ekr.20090705063023.1781"># abc line 1</t>
 </tnodes>
 </leo_file>

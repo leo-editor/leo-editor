@@ -7,10 +7,6 @@
 Docs:
 
 ** Create FAQ entry telling how to use Leo in shared environments.
-
-* Update link for 'Run from console window'.
-
-
 #@-node:ekr.20080814103428.4:To do before 4.6 rc1
 #@+node:ekr.20090703114238.6030:To do after 4.6 rc1
 @nocolor-node
@@ -308,6 +304,8 @@ A line added to test bzr push.
 #@-node:ekr.20090512080015.5801:import-files-recursively command?
 #@-node:ekr.20090529125512.6121:Features (first)
 #@+node:ekr.20090131200406.9:Bugs
+#@+node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
+#@-node:ekr.20090705062946.6037:Make all parts of find panel usable with mouse
 #@+node:ekr.20081215070651.4:Minor bugs 7
 #@+node:ekr.20080812072419.1:Fix bug: goto-line doesn't work for @nosent & @auto files
 @nocolor

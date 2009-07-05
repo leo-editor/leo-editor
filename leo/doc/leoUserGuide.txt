@@ -966,11 +966,15 @@ This is Leo's Frequently Asked Questions document.
 .. _commands:                                   commands.html
 .. _`quick start for programmers`:              intro.html#quick-start-for-programmers
 .. _`rst3 plugin`:                              rstplugin3.html
-.. .. _`Run Leo from a console window`:            `How can I run Leo from a console window?`_
+
 .. _`Tangle and Untangle`:                      commands.html#tangling-an-outline-producing-derived-files
 .. _tutorial:                                   intro.html
 .. _`Leo 4.0: Eliminating error 'recovery'`:    history.html#leo-4-0-eliminating-error-recovery
 .. _`Chapter 9: History of Leo`:                history.html
+.. .. _`Run Leo in a console window`:            `How can I run Leo from a console window?`_
+.. _`Run Leo in a console window`:              install.html#running-leo-from-a-console-window
+.. _`run Leo in a console window`:              install.html#running-leo-from-a-console-window
+.. _`console window`:                           install.html#running-leo-from-a-console-window
 
 .. ----- References to the glossary: the glossary now contains references to the tutorial.
 .. _`@asis`:                glossary.html#asis-trees
@@ -1071,12 +1075,10 @@ Daily snapshots are available at http://www.greygreen.org/leo/
 .. @+node:ekr.20070623145346:Installing Leo
 .. @+node:ekr.20090501093330.1:@rst-option show-sections = False
 .. @+node:ekr.20090202191501.7:Leo's installer failed, what do I do?
-@nocolor
-
 You can simply unpack Leo anywhere and run from there.  You don't need the
 installer.
 
-From a console window, cd to the top-level leo folder.  Run Leo as follows::
+From a `console window`_, cd to the top-level leo folder.  Run Leo as follows::
 
     python launchLeo.py
 
@@ -1094,7 +1096,7 @@ Missing modules can cause installation problems.
 If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file
 as described at `How to install Leo on Windows`_.
 However you are installing Leo,
-be sure to run Leo from a console window.
+be sure to `run Leo in a console window`_.
 because as a last resort Leo prints error messages to the console.
 .. @nonl
 .. @-node:ekr.20060329101442:Nothing (or almost nothing) happens when I start Leo.  What should I do?
@@ -1633,7 +1635,7 @@ That's all. Python will recompile any changed .py files in the new copy of Leo.
 "edit-reload-test" cycle is just:
 
 1. Control-S (in ``LeoPy.leo``: saves the .leo file)
-2. t         (in a console window: runs test.leo, compiling all changed .py files as a side effect)
+2. t         (in a `console window`_: runs test.leo, compiling all changed .py files as a side effect)
 3. Control-E (in test.leo: runs the test script)
 
 The benefits of the new workflow:
@@ -1841,7 +1843,7 @@ Bugs in previous versions of Leo permitted these bad charactgers to appear.
 The sax parser complains that these characters are not valid in .xml files.
 Remove these invalid characters as follows:
 
-1. Run Leo from a console, and load the .leo file.
+1. `run Leo in a console window`_, and load the .leo file.
    Near the bottom of the error message you will see a line like::
 
     SAXParseException: <unknown>:123:25: not well-formed (invalid token)
@@ -1901,8 +1903,8 @@ conflicts with xdb). But I'm working on that as well.
 .. @+node:ekr.20050830115714.115:Error messages from the rst3 plugin aren't helpful. What can I do?
 For the most part, docutils_ does a good job of reporting errors. docutils_ prints
 a message to the console and inserts an unmistakable error message in the
-generated .html file. **Important**: On Windows it is helpful to run Leo from a
-console window.
+generated .html file.
+**Important**: On Windows it is helpful to `run Leo in a console window`_.
 
 However, in some cases, docutils_ crashes instead of properly reporting the
 problem. There are several workarounds:
@@ -1939,7 +1941,7 @@ problem. There are several workarounds:
     This will cause a traceback whenever docutils_ crashes. I have found that
     such tracebacks are generally enough to locate the general area of the
     problem. **Note**: These tracebacks go to the console window, so you should
-    run Leo from a console window.
+    `run Leo in a console window`_.
 
 3.  As a last resort, you can isolate syntax errors by reducing your input files
     until they work again, then adding sections until you get a crash. This is
@@ -1957,7 +1959,7 @@ to do this, see `Associating Leo with .leo Files`_.
 .. @nonl
 .. @-node:ekr.20050906090012:How can I run Leo from a console window?
 .. @+node:ekr.20050830115714.77:How can I use Python's pdb debugger with Leo?
-Just run Leo in a console window. At the point you want to drop into the
+Just `run Leo in a console window`_. At the point you want to drop into the
 debugger, execute this line::
 
     g.pdb()
@@ -2024,7 +2026,7 @@ Missing modules can cause installation problems.
 If the installer doesn't work (or puts up a dialog containing no text), you may install Leo from the .zip file
 as described at `How to install Leo on Windows`_.
 However you are installing Leo,
-be sure to run Leo from a console window.
+be sure to `run Leo in a console window`_.
 because as a last resort Leo prints error messages to the console.
 .. @nonl
 .. @-node:ekr.20060329101442:Nothing (or almost nothing) happens when I start Leo.  What should I do?
@@ -2233,6 +2235,7 @@ please ask for help on Leo's help forum:
 .. _run:                    `Running Leo`_
 .. _`run Leo`:              `Running Leo`_
 .. _`Leo's download page`:  http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
+.. _`associating leo with .leo files`:   `How to associate Leo with .leo files on Windows`_
 .. _`associated .leo files with Leo`:   `How to associate Leo with .leo files on Windows`_
 .. @-node:ekr.20050901110110:@rst-no-head links
 .. @+node:edream.110203163054.49:System requirements
@@ -2501,6 +2504,15 @@ finally in Leo's core directory. You can change this identifier at any time by
 editing ``.leoID.txt``.
 .. @nonl
 .. @-node:ekr.20050901174937:Running Leo
+.. @+node:ekr.20090705111443.10370:Running Leo from a console window
+Leo sends more detailed error messages to ``stderr``,
+the output stream that goes to the console window. In Linux and MacOS
+environments, python programs normally execute with the console window visible.
+On Windows, can run Leo with the console window visible by associating .leo
+files with ``python.exe`` *not* ``pythonw.exe``. For full instructions about how
+to do this, see `Associating Leo with .leo Files`_.
+.. @nonl
+.. @-node:ekr.20090705111443.10370:Running Leo from a console window
 .. @+node:ekr.20070629130418:Running Leo in batch mode
 On startup, Leo looks for two arguments of the form::
 
@@ -12981,16 +12993,21 @@ general scripts do not.
 .. _pdb:                        http://docs.python.org/lib/module-pdb.html
 .. _winpdb:                     http://www.digitalpeers.com/pythondebugger/
 .. _`the FAQ`:                  http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-use-python-s-pdb-debugger-with-leo
-.. _`running Leo in a console`: http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-run-leo-from-a-console-window
 .. _`embedded winpdb`:          http://www.digitalpeers.com/pythondebugger/embedded.htm
 .. _`Leo's forums`:             http://sourceforge.net/forum/?group_id=3458
 .. _`work flow`:                http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
+
+.. .. _`running Leo in a console`: http://webpages.charter.net/edreamleo/FAQ.html#how-can-i-run-leo-from-a-console-window
+.. _`running Leo from a console window`:    install.html#running-leo-from-a-console-window
+.. _`run Leo in a console window`:          install.html#running-leo-from-a-console-window
+.. _`console window`:                       install.html#running-leo-from-a-console-window
+.. @nonl
 .. @-node:ekr.20060527105804:@rst-no-head links
 .. @+node:ekr.20070116062405:Using g.trace and g.pdb
 Inserting g.trace statements in my Python code is usually my first debugging
 choice. The g.trace statement prints the name of the function in which the call
 to g.trace occurs, followed by the value of its arguments. The output of the
-g.trace goes to the console, so you must be `running Leo in a console`_ to use
+g.trace goes to the console, so you must `run Leo in a console window`_ to use
 g.trace.
 
 Inserting and deleting g.trace statements is fast, provided that your `work
@@ -13000,8 +13017,8 @@ advantage that (disabled) tracepoints remain in the source code for future use.
 You will find many examples of using g.trace throughout Leo's source code.
 
 My second choice is using g.pdb to set breakpoints for the pdb_ debugger. Pdb
-uses the console for all interaction, so you must be `running Leo in a
-console`_. See `the FAQ`_ for a discussion of both g.trace and g.pdb.
+uses the console for all interaction, so you must `run Leo in a console window`_.
+See `the FAQ`_ for a discussion of both g.trace and g.pdb.
 .. @-node:ekr.20070116062405:Using g.trace and g.pdb
 .. @+node:ekr.20060527112801:Settings for winpdb
 The following settings in leoSettings.leo control debugger operation.
@@ -13647,6 +13664,9 @@ This chapter describes how you can execute Python unit test from within Leo outl
 .. .. contents::
 .. @+node:ekr.20070628083442.2:@rst-no-head links
 .. Links
+
+.. _`run Leo in a console window`:      install.html#running-leo-from-a-console-window
+.. @nonl
 .. @-node:ekr.20070628083442.2:@rst-no-head links
 .. @+node:ekr.20070704074747:Overview
 Leo's **unit test commands** run the unit tests
@@ -13655,8 +13675,8 @@ run all unit tests in the presently selected part of the Leo outline;
 run-all-unit-tests and run-all-unit-tests-locally run all unit
 tests in the entire Leo outline.
 
-**You must be running Leo from a console to see the output the unit tests**. Leo's
-unit test commands run all the unit tests using the standard unittest text test
+Important: you must `run Leo in a console window`_ to see the output the unit tests.
+Leo's unit test commands run all the unit tests using the standard unittest text test
 runner, and the output of the unit tests appears in the console.
 
 test/unitTest.leo contains many examples of using @test and @suite nodes.
@@ -13816,9 +13836,11 @@ runProfileOnNode runs the Python profiler on the script in the selected node, th
 Chapter 21: IPython and Leo
 ############################################################
 
+.. _`run Leo in a console window`: install.html#running-leo-from-a-console-window
+
 Leo's ipython plugin provides two-way communication (a bridge) between Leo and
 IPython: you can run Leo scripts from IPython, and IPython scripts from Leo. To
-use this plugin, you must run Leo from a console window. When this plugin is
+use this plugin, you must `run Leo in a console window`_. When this plugin is
 enabled, Leo's start-ipython command starts IPython_ in this console.
 
 Remarkably, Leo and IPython run simultaneously in the same process,
@@ -13864,6 +13886,9 @@ painless and powerful.
 .. _extensionAPI:           http://ipython.scipy.org/moin/IpythonExtensionApi
 .. _`The Ipython Extension API`: extensionAPI_
 .. _`Chapter 7\: Scripting Leo with Python`:    scripting.html
+
+.. _`run Leo in a console window`:  install.html#running-leo-from-a-console-window
+.. _`console window`:               install.html#running-leo-from-a-console-window
 .. @-node:ekr.20080203101507.2:@rst-no-head links
 .. @+node:vivainio.20080302174639.1:Introduction
 ILeo, or leo-ipython bridge, creates a two-way communication channel between Leo
@@ -13904,7 +13929,8 @@ You need to enable the 'ipython.py' plugin in Leo:
 
 - Alternatively, you can add @settings-->@enabled-plugins with body ipython.py to your leo document.
 
-- Restart Leo. Be sure that you have the console window open (start leo.py from console, or double-click leo.py on windows)
+- Restart Leo. Be sure that you have the console window open
+  (`run Leo in a console window`_, or double-click leo.py on windows)
 
 - When using the Qt ui, add --ipython argument to command line (e.g. launchLeo.py --ipython).
 
