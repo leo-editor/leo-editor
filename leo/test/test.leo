@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="7"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -336,9 +336,10 @@
 <v t="ekr.20090704151652.1779"><vh>spam</vh></v>
 <v t="ekr.20090704151652.1780"><vh>eggs</vh></v>
 </v>
-<v t="ekr.20090705063023.1780" a="E"><vh>@root at-root-test.py</vh>
+<v t="ekr.20090705063023.1780"><vh>@root at-root-test.py</vh>
 <v t="ekr.20090705063023.1781"><vh>abc</vh></v>
 </v>
+<v t="ekr.20090706044257.1784"><vh>@auto ../../install</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'

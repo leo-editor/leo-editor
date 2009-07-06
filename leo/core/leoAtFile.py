@@ -663,12 +663,14 @@ class atFile:
             # g.es('uncache:',p.h)
             tree = c.db[cachefile]
             g.create_tree_at_vnode(c, p.v, tree)
+            p.v.at_auto_read = True # Create the attribute
             return
 
         if not g.unitTesting:
             g.es("reading:",p.h)
 
         ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+        p.v.at_auto_read = True # Create the attribute
 
         if ic.errors:
             g.es_print('errors inhibited read @auto',fileName,color='red')
@@ -2635,6 +2637,15 @@ class atFile:
         if not toString and not self.shouldWriteAtAutoNode(p,exists,force):
             return False
 
+        # Prompt if writing a new @auto node would overwrite an existing file.
+        if not hasattr(p.v,'at_auto_read') and g.os_path_exists(fileName):
+            ok = self.promptForAtAutoRead(fileName)
+            if ok:
+                p.v.at_auto_read = True # Create the attribute
+            else:
+                g.es("not written:",fileName)
+                return False
+
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
         at.targetFileName = g.choose(toString,"<string-file>",fileName)
@@ -2699,6 +2710,27 @@ class atFile:
         else: # The @auto tree is dirty and contains significant info.
             return True
     #@-node:ekr.20071019141745:shouldWriteAtAutoNode
+    #@+node:ekr.20090706042206.6039:promptForAtAutoRead
+    def promptForAtAutoRead (self,fileName):
+
+        c = self.c
+
+        if g.app.unitTesting:
+            val = g.app.unitTestDict.get('promptForAtAutoRead')
+            return val in (None,True)
+
+        # g.trace(timeStamp, timeStamp2)
+        message = '@auto %s\n%s\n%s' % (
+            fileName,
+            g.tr('already exists.'),
+            g.tr('Overwrite this file?'))
+
+        ok = g.app.gui.runAskYesNoCancelDialog(c,
+            title = 'Overwrite existing file?',
+            message = message)
+
+        return ok == 'yes'
+    #@-node:ekr.20090706042206.6039:promptForAtAutoRead
     #@-node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
     #@-node:ekr.20070806105859:writeAtAutoNodes & writeDirtyAtAutoNodes (atFile) & helpers
     #@+node:ekr.20090225080846.5:writeOneAtEditNode
