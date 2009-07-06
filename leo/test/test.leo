@@ -339,7 +339,7 @@
 <v t="ekr.20090705063023.1780"><vh>@root at-root-test.py</vh>
 <v t="ekr.20090705063023.1781"><vh>abc</vh></v>
 </v>
-<v t="ekr.20090706044257.1784"><vh>@auto ../../install</vh></v>
+<v t="ekr.20090706044257.1784"><vh>@@auto ../../install</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2705,5 +2705,8 @@ print('done')</t>
 <t tx="ekr.20090705063023.1780">@root at-root-test.py
 @others</t>
 <t tx="ekr.20090705063023.1781"># abc line 1</t>
+<t tx="ekr.20090706044257.1784">@language plain
+
+# ................. more than 10 characters.</t>
 </tnodes>
 </leo_file>
