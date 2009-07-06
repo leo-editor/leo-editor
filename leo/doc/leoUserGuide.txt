@@ -2269,6 +2269,10 @@ Leo puts several files in your HOME/.leo directory:
 
 .. @-node:ekr.20080408060320.784:Leo's HOME directory
 .. @+node:edream.110203163054.50:How to install Leo on Linux
+If you are using Debian/Ubuntu, find and install the debian package. This
+provides the best integration with your desktop (file associations, icons, launcher
+item). Failing that, follow the instructions below.
+
 Download the latest version of Leo (a .zip file) from `Leo's download page`_.
 
 Unzip the downloaded .zip file into the **unpacked folder** in your home directory.
@@ -2284,6 +2288,7 @@ You now have two choices:
     cd ~/leo-4-4-3-final
     chmod u+x install
     sudo ./install
+
 
 The install script will instruct you to add /usr/local/bin to your path.
 You can, instead, add the following link::
