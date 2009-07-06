@@ -66,7 +66,7 @@ def openWithTempFilePath (self,v,ext):
                 for ch in hs:
                     if ch in g.string.whitespace: #Convert tabs to spaces
                         hsClean += ' '
-                    elif ch in ('\\','/',':','|','<','>','*'): #Not allowed in Dos/Windows
+                    elif ch in ('\\','/',':','|','<','>','*', '"'): #Not allowed in Dos/Windows
                         hsClean += '_'
                     elif ch in ('"'): #Leo code can't handle the "
                         hsClean += '\''   #replace with '
@@ -108,6 +108,7 @@ def openWithTempFilePath (self,v,ext):
         name = g.sanitize_filename(v.h) + '_' + str(id(v.t)) + ext
 
     path = os.path.join(td,name)
+    path = path.replace(' ', '\\ ')
     return path
 
 #@-node:EKR.20040517075715.3:openWithTempFilePath
