@@ -108,7 +108,7 @@ def openWithTempFilePath (self,v,ext):
         name = g.sanitize_filename(v.h) + '_' + str(id(v.t)) + ext
 
     path = os.path.join(td,name)
-    path = path.replace(' ', '\\ ')
+
     return path
 
 #@-node:EKR.20040517075715.3:openWithTempFilePath
