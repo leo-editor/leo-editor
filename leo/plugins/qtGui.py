@@ -2350,84 +2350,84 @@ class leoQtBody (leoFrame.leoBody):
     #@-node:ekr.20081121105001.209:get_name
     #@-node:ekr.20081121105001.207: ctor (qtBody)
     #@-node:ekr.20081121105001.206: Birth
-    #@+node:ekr.20081121105001.210:Do-nothings
-
-    # Configuration will be handled by style sheets.
-    def cget(self,*args,**keys):        return None
-    def configure (self,*args,**keys):  pass
-    def setEditorColors (self,bg,fg):   pass
-
+    #@+node:ekr.20081121105001.210:Do-nothings (qtBody)
     def oops (self):
         g.trace('qtBody',g.callers(3))
-    #@-node:ekr.20081121105001.210:Do-nothings
-    #@+node:ekr.20081121105001.211:High-level interface to self.widget
-    def appendText (self,s):
-        return self.widget.appendText(s)
 
-    def bind (self,kind,*args,**keys):
-        return self.widget.bind(kind,*args,**keys)
+    # Configuration will be handled by style sheets.
+    def cget(self,*args,**keys):                return None
+    def configure (self,*args,**keys):          pass
+    #@-node:ekr.20081121105001.210:Do-nothings (qtBody)
+    #@+node:ekr.20081121105001.211:High-level interface (qtBody)
+    # Part 1: Corresponding to mustBeDefinedInSubclasses.
+    def appendText (self,s):            return self.widget.appendText(s)
+    def delete(self,i,j=None):          self.widget.delete(i,j)
+    def insert(self,i,s):               return self.widget.insert(i,s)
+    def get(self,i,j=None):             return self.widget.get(i,j)
+    def getAllText (self):              return self.widget.getAllText()
+    def getFocus (self):                return self.widget.getFocus()
+    def getInsertPoint(self):           return self.widget.getInsertPoint()
+    def getSelectedText (self):         return self.widget.getSelectedText()
+    def getSelectionRange(self):        return self.widget.getSelectionRange()
+    def getYScrollPosition (self):      return self.widget.getYScrollPosition()
+    def hasSelection (self):            return self.widget.hasSelection()
+    def scrollLines (self,n):           return self.widget.scrollLines(n)
+    def see(self,index):                return self.widget.see(index)
+    def seeInsertPoint(self):           return self.widget.seeInsertPoint()
+    def setAllText (self,s):            return self.widget.setAllText(s)
+    def setBackgroundColor (self,color):return self.widget.setBackgroundColor(color)
+    def setFocus (self):                return self.widget.setFocus()
+    set_focus = setFocus
+    def setForegroundColor (self,color):return self.widget.setForegroundColor(color)
+    def setInsertPoint (self,pos):      return self.widget.setInsertPoint(pos)
+    def setSelectionRange(self,*args,**keys):
+        self.widget.setSelectionRange(*args,**keys)
+    def setYScrollPosition (self,i):    return self.widget.setYScrollPosition(i)
 
-    def deleteTextSelection (self):
-        return self.widget.deleteTextSelection()
+    # Part 2: corresponding to mustBeDefinedInBaseClass.
+    # All three new: 2009/7/8
+    def clipboard_append(self,s):   return self.widget.clipboard_append(s)
+    def clipboard_clear(self):      return self.widget.clipboard_append()
+    def onChar (self, event):       return self.widget.onChar(event)
+
+    # Part 3: do-nothings in mayBeDefinedInSubclasses.
+
+    def bind (self,kind,*args,**keys):          return self.widget.bind(kind,*args,**keys)
+    def event_generate(self,stroke):            pass
+    def getWidth (self):                        return 0
+    def mark_set(self,markName,i):              pass
+    def setEditorColors (self,bg,fg):           pass
+    def setWidth (self,width):                  pass
+    def tag_add(self,tagName,i,j=None,*args):   pass
+    def tag_config (self,colorName,**keys):     pass
+    def tag_configure (self,colorName,**keys):  pass
+    def tag_delete (self,tagName,*args,**keys): pass
+    def tag_names (self, *args):                return []
+    def tag_ranges(self,tagName):               return tuple()
+    def tag_remove(self,tagName,i,j=None,*args):pass
+    def update (self,*args,**keys):             pass
+    def update_idletasks (self,*args,**keys):   pass
+    def xyToPythonIndex (self,x,y):             return 0
+    def yview (self,*args):                     return 0,0
+
+    # Part 4: corresponding to mayBeDefinedInSubclasses.
+
+    def deleteTextSelection (self): return self.widget.deleteTextSelection()
+
+    def indexIsVisible(self,i):  # Added: 2009/7/9.
+        return self.widget.indexIsVisible(i)
 
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
         return self.widget(i,bg,fg,flashes,delay)
 
-    def get(self,i,j=None):
-        return self.widget.get(i,j)
-
-    def getAllText (self):
-        return self.widget.getAllText()
-
-    def getFocus (self):
-        return self.widget.getFocus()
-
-    def getInsertPoint(self):
-        return self.widget.getInsertPoint()
-
-    def getSelectedText (self):
-        return self.widget.getSelectedText()
-
-    def getSelectionRange (self,sort=True):
-        return self.widget.getSelectionRange(sort)
-
-    def getYScrollPosition (self):
-        return self.widget.getYScrollPosition()
-
-    def insert(self,i,s):
-        return self.widget.insert(i,s)
-
-    def scrollLines (self,n):
-        return self.widget.scrollLines(n)
-
-    def see(self,index):
-        return self.widget.see(index)
-
-    def seeInsertPoint(self):
-        return self.widget.seeInsertPoint()
-
-    def setAllText (self,s):
-        return self.widget.setAllText(s)
-
-    def setBackgroundColor (self,color):
-        return self.widget.setBackgroundColor(color)
-
-    def setFocus (self):
-        return self.widget.setFocus()
-
-    def setForegroundColor (self,color):
-        return self.widget.setForegroundColor(color)
-
-    def setInsertPoint (self,pos):
-        return self.widget.setInsertPoint(pos)
-
-    def setSelectionRange (self,sel):
-        i,j = sel
-        return self.widget.setSelectionRange(i,j)
-
-    def setYScrollPosition (self,i):
-        return self.widget.setYScrollPosition(i)
-    #@-node:ekr.20081121105001.211:High-level interface to self.widget
+    def replace (self,i,j,s):               self.widget.replace (i,j,s)
+    def rowColToGuiIndex (self,s,row,col):  return self.widget.rowColToGuiIndex(s,row,col)
+    def selectAllText (self,insert=None):   self.widget.selectAllText(insert)
+    def toPythonIndex (self,index):         return self.widget.toPythonIndex(index)
+    toGuiIndex = toPythonIndex
+    def toPythonIndexRowCol(self,index):    return self.widget.toPythonIndexRowCol(index)
+    #@nonl
+    #@-node:ekr.20081121105001.211:High-level interface (qtBody)
     #@+node:ekr.20081121105001.212:Editors (qtBody)
     #@+node:ekr.20081121105001.214:packEditorLabelWidget
     def packEditorLabelWidget (self,w):
@@ -4542,7 +4542,7 @@ class leoQtLog (leoFrame.leoLog):
     #@nonl
     #@-node:ekr.20090627090950.3716:qtLog.getName
     #@-node:ekr.20081121105001.319:qtLog Birth
-    #@+node:ekr.20081121105001.322:Do nothings
+    #@+node:ekr.20081121105001.322:Do nothings (logCtrl)
     #@+node:ekr.20081121105001.323:Config
     # These will probably be replaced by style sheets.
 
@@ -4560,8 +4560,8 @@ class leoQtLog (leoFrame.leoLog):
     def hasFocus (self):                    return None
     def forceLogUpdate (self,s):            pass
     #@-node:ekr.20081121105001.324:Focus & update
-    #@-node:ekr.20081121105001.322:Do nothings
-    #@+node:ekr.20090627090950.3717:Redirection to logCtrl
+    #@-node:ekr.20081121105001.322:Do nothings (logCtrl)
+    #@+node:ekr.20090627090950.3717:High-level interface (qtLog)
     # Part 1: Corresponding to mustBeDefinedInSubclasses.
     def appendText(self,s):             self.logCtrl.appendText(s)
     def delete(self,i,j=None):          self.logCtrl.delete(i,j)
@@ -4602,6 +4602,7 @@ class leoQtLog (leoFrame.leoLog):
     def mark_set(self,markName,i):              pass
     def setWidth (self,width):                  pass
     def tag_add(self,tagName,i,j=None,*args):   pass
+    def tag_config (self,colorName,**keys):     pass
     def tag_configure (self,colorName,**keys):  pass
     def tag_delete (self,tagName,*args,**keys): pass
     def tag_names (self, *args):                return []
@@ -4611,7 +4612,6 @@ class leoQtLog (leoFrame.leoLog):
     def update_idletasks (self,*args,**keys):   pass
     def xyToPythonIndex (self,x,y):             return 0
     def yview (self,*args):                     return 0,0
-    tag_config = tag_configure
 
     # Part 4: corresponding to mayBeDefinedInSubclasses.
     def deleteTextSelection (self):         self.logCtrl.deleteTextSelection ()
@@ -4625,7 +4625,7 @@ class leoQtLog (leoFrame.leoLog):
     toGuiIndex = toPythonIndex
     def toPythonIndexRowCol(self,index):    return self.logCtrl.toPythonIndexRowCol(index)
     #@nonl
-    #@-node:ekr.20090627090950.3717:Redirection to logCtrl
+    #@-node:ekr.20090627090950.3717:High-level interface (qtLog)
     #@+node:ekr.20081121105001.325:put & putnl (qtLog)
     #@+node:ekr.20081121105001.326:put
     # All output to the log stream eventually comes here.

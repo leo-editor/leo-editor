@@ -1258,6 +1258,8 @@ Using `@thin`_ trees can eliminate most problems with using Leo in VCS environme
     My local copy can contain nodes other than ``@thin`` nodes.
 .. @nonl
 .. @-node:ekr.20050830115714.12:How should I use Leo with bzr/git/hg/svn/cvs?
+.. @+node:ekr.20090706042206.14718:How can I use Leo cooperatively without sentinels?
+.. @-node:ekr.20090706042206.14718:How can I use Leo cooperatively without sentinels?
 .. @+node:ekr.20050830115714.13:Using derived files
 .. @+node:ekr.20090501093330.3:@rst-option show-sections = False
 .. @+node:ekr.20050830115714.14:How do I inhibit sentinels in derived files?

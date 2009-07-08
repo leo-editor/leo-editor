@@ -6481,16 +6481,16 @@ def leoUsersGuide (self,event=None):
     theFile = c.os_path_finalize_join(
         g.app.loadDir,'..','doc','html','_build','html','leo_toc.html')
 
-    if os.path.isfile(theFile):
-        url = 'file:%s' % theFile
-        webbrowser.open_new(url)
-        return
+    table = (
+        'file:%s' % theFile,
+        'http://webpages.charter.net/edreamleo/leo_toc.html')
 
-    g.es('Local manual not found, open from internet')        
-    url = 'http://webpages.charter.net/edreamleo/leo_toc.html'
-    webbrowser.open_new(url)
-
-#@nonl
+    for url in table:
+        try:
+            webbrowser.open_new(url)
+            return
+        except:
+            g.es("not found:",url)
 #@-node:ekr.20060613082924:leoUsersGuide
 #@-node:ekr.20090703101031.6028:Look for Users Guide in two places
 #@+node:ekr.20090703114238.6031:Fixed crasher in dynamicExpanderHelper
@@ -7704,6 +7704,132 @@ def resolveTnodeLists (self):
 #@nonl
 #@-node:ekr.20060919110638.11:resolveTnodeLists
 #@-node:ekr.20090704020843.6035:Fixed critical @file data-loss problem
+#@+node:ekr.20090708055816.6044:Added hasSelection to leoQtBody
+# Also added test for leoQtBody to existing test.
+#@nonl
+#@+node:ekr.20070228074312.1:Birth & special methods (baseText)
+def __init__ (self,c,baseClassName,name,widget,highLevelInterface=False):
+
+    self.baseClassName = baseClassName
+    self.c = c
+    self.highLevelInterface = highLevelInterface
+    self.name = name
+    self.virtualInsertPoint = None
+    self.widget = widget # Not used at present.
+
+    # For unit testing.
+    aList = g.choose(highLevelInterface,
+        self.mustBeDefinedInHighLevelSubclasses,
+        self.mustBeDefinedInLowLevelSubclasses)
+    self.mustBeDefinedInSubclasses.extend(aList)
+    # g.trace(g.listToString(self.mustBeDefinedInSubclasses))
+
+def __repr__(self):
+    return '%s: %s' % (self.baseClassName,id(self))
+#@+node:ekr.20081031074455.3:baseTextWidget: must be defined in base class
+mustBeDefinedOnlyInBaseClass = (
+    'clipboard_append', # uses g.app.gui method.
+    'clipboard_clear', # usesg.app.gui method.
+    'onChar',
+)
+#@nonl
+#@-node:ekr.20081031074455.3:baseTextWidget: must be defined in base class
+#@+node:ekr.20081031074455.4:baseTextWidget: must be defined in subclasses
+@
+The subclass must implement all high-level wrappers or all low-level wrappers,
+depending on the highLevelWrapper ivar. The ctor extends .mustBeDefinedInSubclasses
+by one of the following lists:
+@c
+
+mustBeDefinedInSubclasses = [
+]
+
+mustBeDefinedInHighLevelSubclasses = (
+    'appendText',
+    'get',
+    'getAllText',
+    'getFocus',
+    'getInsertPoint',
+    'getSelectedText',
+    'getSelectionRange',
+    'getYScrollPosition',
+    'insert',
+    'scrollLines',
+    'see',
+    'seeInsertPoint',
+    'setAllText',
+    'setBackgroundColor',
+    'setForegroundColor',
+    'setFocus',
+    'setInsertPoint',
+    'setSelectionRange',
+    'setYScrollPosition',
+)
+
+mustBeDefinedInLowLevelSubclasses = (
+    '_appendText',
+    '_get',
+    '_getAllText',
+    '_getFocus',
+    '_getInsertPoint',
+    '_getLastPosition',
+    '_getSelectedText',
+    '_getSelectionRange',
+    '_getYScrollPosition',
+    '_hitTest',
+    '_insertText',
+    '_scrollLines',
+    '_see',
+    '_setAllText',
+    '_setBackgroundColor',
+    '_setFocus',
+    '_setForegroundColor',
+    '_setInsertPoint',
+    '_setSelectionRange',
+    '_setYScrollPosition',
+)
+#@nonl
+#@-node:ekr.20081031074455.4:baseTextWidget: must be defined in subclasses
+#@+node:ekr.20081031074455.5:baseTextWidget: mustBeDefined
+mustBeDefined = (
+    'bind',
+    'flashCharacter',
+    'deleteTextSelection',
+    # These can be do-nothings
+    'getWidth',
+    'indexIsVisible',
+    'mark_set',
+    'setWidth',
+    'tag_add',
+    'tag_config',
+    'tag_configure',
+    'tag_delete',
+    'tag_names',
+    'tag_ranges',
+    'tag_remove',
+    'update',
+    'update_idletasks',
+    'xyToPythonIndex',
+    'yview',
+    # mayBeDefinedInSubclasses.
+    'delete',
+    'deleteTextSelection',
+    'event_generate',
+#     'getName()
+#     'GetName()
+    'hasSelection',
+    'replace',
+    'rowColToGuiIndex',
+    'selectAllText',
+    'toGuiIndex',
+    'toPythonIndex',
+    'toPythonIndexRowCol',
+    # 'xyzzy', # to make test fail.
+)
+#@nonl
+#@-node:ekr.20081031074455.5:baseTextWidget: mustBeDefined
+#@-node:ekr.20070228074312.1:Birth & special methods (baseText)
+#@-node:ekr.20090708055816.6044:Added hasSelection to leoQtBody
 #@-node:ekr.20090623072844.10386:Bugs
 #@+node:ekr.20090628075121.8434:Features
 #@+node:ekr.20090628075121.8433:Added open-quickstart-leo
@@ -8059,6 +8185,189 @@ def expandNodeOrGoToFirstChild (self,event=None):
             c.redraw_after_expand(p.firstChild(),setFocus=True)
 #@-node:ekr.20040930064232.1:expandNodeAnd/OrGoToFirstChild
 #@-node:ekr.20090630154627.6009:Expanded Alt-lt/rt arrows
+#@+node:ekr.20090706042206.6038:Issue warning if @auto file exists and has not been read
+# Warn if the file exists and has never been read.
+#@nonl
+#@+node:ekr.20090103070824.11:c.checkFileTimeStamp
+def checkFileTimeStamp (self,fn):
+
+    '''
+    Return True if the file given by fn has not been changed
+    since Leo read it or if the user agrees to overwrite it.
+    '''
+
+    c = self
+    timeStamp = c.timeStampDict.get(fn)
+    if not timeStamp:
+        # g.trace('no stamp for %s' % (fn))
+        return True
+
+    timeStamp2 = os.path.getmtime(fn)
+    if timeStamp == timeStamp2:
+        return True
+
+    if g.app.unitTesting:
+        return False
+
+    # g.trace(timeStamp, timeStamp2)
+    message = '%s\n%s\n%s' % (
+        fn,
+        g.tr('has been modified outside of Leo.'),
+        g.tr('Overwrite this file?'))
+    ok = g.app.gui.runAskYesNoCancelDialog(c,
+        title = 'Overwrite modified file?',
+        message = message)
+    return ok == 'yes'
+#@-node:ekr.20090103070824.11:c.checkFileTimeStamp
+#@+node:ekr.20070909100252:readOneAtAutoNode (atFile)
+def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    try:
+        fileContent = open(fileName, "rb").read()
+        cachefile = self._contentHashFile(p, fileContent)
+    except IOError:
+        cachefile = None
+
+    if cachefile is not None and cachefile in c.db:        
+        # g.es('uncache:',p.h)
+        tree = c.db[cachefile]
+        g.create_tree_at_vnode(c, p.v, tree)
+        p.v.at_auto_read = True # Create the attribute
+        return
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+    p.v.at_auto_read = True # Create the attribute
+
+    if ic.errors:
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        # c.setBodyString(p,'')
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        self.writeCachedTree(p, cachefile)
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+#@-node:ekr.20070909100252:readOneAtAutoNode (atFile)
+#@+node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
+def writeOneAtAutoNode(self,p,toString,force):
+
+    '''Write p, an @auto node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy()
+
+    fileName = p.atAutoNodeName()
+    if not fileName and not toString: return False
+
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+    exists = g.os_path_exists(fileName)
+
+    if not toString and not self.shouldWriteAtAutoNode(p,exists,force):
+        return False
+
+    # Prompt if writing a new @auto node would overwrite an existing file.
+    if not hasattr(p.v,'at_auto_read') and g.os_path_exists(fileName):
+        ok = self.promptForAtAutoRead(fileName)
+        if ok:
+            p.v.at_auto_read = True # Create the attribute
+        else:
+            g.es("not written:",fileName)
+            return False
+
+    # This code is similar to code in at.write.
+    c.endEditing() # Capture the current headline.
+    at.targetFileName = g.choose(toString,"<string-file>",fileName)
+    at.initWriteIvars(root,at.targetFileName,
+        atAuto=True,
+        nosentinels=True,thinFile=False,scriptWrite=False,
+        toString=toString)
+
+    ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
+    if ok:
+        if root.isAtAutoRstNode():
+            c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
+        else:
+            at.writeOpenFile(root,nosentinels=True,toString=toString)
+        at.closeWriteFile() # Sets stringOutput if toString is True.
+        if at.errors == 0:
+            at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+        else:
+            g.es("not written:",at.outputFileName)
+            root.setDirty() # New in Leo 4.4.8.
+
+    elif not toString:
+        root.setDirty() # Make _sure_ we try to rewrite this file.
+        g.es("not written:",at.outputFileName)
+
+    return ok
+#@+node:ekr.20071019141745:shouldWriteAtAutoNode
+@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @auto x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @auto node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @auto file.
+- The explicit commands that read and write @auto trees must always be honored.
+@c
+
+def shouldWriteAtAutoNode (self,p,exists,force):
+
+    '''Return True if we should write the @auto node at p.'''
+
+    if force: # We are executing write-at-auto-node or write-dirty-at-auto-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.h,'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @auto tree is dirty and contains significant info.
+        return True
+#@-node:ekr.20071019141745:shouldWriteAtAutoNode
+#@+node:ekr.20090706042206.6039:promptForAtAutoRead
+def promptForAtAutoRead (self,fileName):
+
+    c = self.c
+
+    if g.app.unitTesting:
+        val = g.app.unitTestDict.get('promptForAtAutoRead')
+        return val in (None,True)
+
+    # g.trace(timeStamp, timeStamp2)
+    message = '@auto %s\n%s\n%s' % (
+        fileName,
+        g.tr('already exists.'),
+        g.tr('Overwrite this file?'))
+
+    ok = g.app.gui.runAskYesNoCancelDialog(c,
+        title = 'Overwrite existing file?',
+        message = message)
+
+    return ok == 'yes'
+#@-node:ekr.20090706042206.6039:promptForAtAutoRead
+#@-node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
+#@-node:ekr.20090706042206.6038:Issue warning if @auto file exists and has not been read
 #@-node:ekr.20090628075121.8434:Features
 #@-node:ekr.20090623072844.10385:4.6 rc1
 #@-all

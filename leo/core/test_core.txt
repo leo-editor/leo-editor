@@ -217,7 +217,7 @@ if g.app.gui.guiName() == 'tkinter':
                 assert base_func.im_func != sub_func.im_func, 'not defined in subclass %s.%s' % (subclassName,name)
 #@-node:ekr.20090201135500.5:@test leoTree is subset of leoTkTree
 #@-node:ekr.20090630093812.6013:Tk gui tests
-#@+node:ekr.20090630091825.5993:@test that leoQtLog implements high-level interface
+#@+node:ekr.20090630091825.5993:@test that leoQtLog/Body implements high-level interface
 if g.app.gui.guiName() == 'qt':
 
     logCtrl = c.frame.log.logCtrl
@@ -232,6 +232,7 @@ if g.app.gui.guiName() == 'qt':
     for tag,aList in table:
         for z in aList:
             assert hasattr(c.frame.log,z),'%s %s' % (tag,z)
+            assert hasattr(c.frame.body,z),'%s %s' % (tag,z)
 
     # Check signatures.
     import inspect
@@ -244,7 +245,7 @@ if g.app.gui.guiName() == 'qt':
             d1 = inspect.getargspec(func)
             d2 = inspect.getargspec(func2)
             assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
-#@-node:ekr.20090630091825.5993:@test that leoQtLog implements high-level interface
+#@-node:ekr.20090630091825.5993:@test that leoQtLog/Body implements high-level interface
 #@+node:ekr.20090201135500.6:@test official commander ivars
 f = c.frame
 assert(f.c==c)
