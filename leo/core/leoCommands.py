@@ -880,7 +880,10 @@ class baseCommands (object):
                     # This clause by Jim Sizelove.
                     elif openType == "subprocess.Popen":
                         if isinstance(arg, basestring):
-                            vtuple = arg + " " + path
+                            if " " in path:
+                                vtuple = arg + ' "%s"' % path
+                            else:
+                                vtuple = arg + " " + path
                         elif isinstance(arg, (list, tuple)):
                             vtuple = arg[:]
                             vtuple.append(path)
@@ -5936,8 +5939,6 @@ class baseCommands (object):
         g.es('Local manual not found, open from internet')        
         url = 'http://webpages.charter.net/edreamleo/leo_toc.html'
         webbrowser.open_new(url)
-
-    #@nonl
     #@-node:ekr.20060613082924:leoUsersGuide
     #@-node:ekr.20031218072017.2938:Help Menu
     #@-node:ekr.20031218072017.2818:Command handlers...
