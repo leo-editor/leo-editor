@@ -157,8 +157,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             self.widget.connect(self.widget,
                 QtCore.SIGNAL("textChanged()"),self.onTextChanged)
 
-            # self.widget.connect(self.widget,
-                # QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
+            self.widget.connect(self.widget,
+                QtCore.SIGNAL("cursorPositionChanged()"),self.onClick)
 
         self.injectIvars(c)
     #@nonl
@@ -196,6 +196,20 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20090629160050.3737:Mouse events
     # These are overrides of the base-class events.
 
+    #@+node:ekr.20081208041503.499:onClick (qtText)
+    def onClick(self,event=None):
+
+        trace = False and not g.unitTesting
+
+        c = self.c
+        name = c.widget_name(self)
+
+        if trace: g.trace(self,name,g.callers(5))
+
+        if name.startswith('body'):
+            if hasattr(c.frame,'statusLine'):
+                c.frame.statusLine.update()
+    #@-node:ekr.20081208041503.499:onClick (qtText)
     #@-node:ekr.20090629160050.3737:Mouse events
     #@+node:ekr.20081121105001.521: Must be defined in base class
     #@+node:ekr.20081121105001.522: Focus (leoQtBaseTextWidget)
