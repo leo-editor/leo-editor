@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="33" left="427" height="981" width="827"/>
+	<global_window_position top="33" left="248" height="981" width="1006"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="7,1,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -245,7 +245,7 @@ expanded="ekr.20090501093330.1,ekr.20090501093330.3,"><vh>@thin leoUserGuide.txt
 </v>
 <v t="ville.20090609182215.5676" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355007104752e"><vh>@auto-rst treecaching.txt</vh></v>
 </v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -2128,6 +2128,43 @@ expanded="ekr.20090501093330.1,ekr.20090501093330.3,"><vh>@thin leoUserGuide.txt
 <v t="ekr.20090620073906.11898"><vh>Leo tests syntax of .py files when saving them</vh></v>
 <v t="ekr.20090620073906.12061"><vh>Made qt gui the default</vh></v>
 <v t="ekr.20090620073906.11935"><vh>Support @auto-rst</vh></v>
+</v>
+</v>
+<v t="ekr.20090709084001.5944"><vh>4.6 rc1</vh>
+<v t="ekr.20090709084001.5945"><vh>Bugs</vh>
+<v t="ekr.20090709084001.5946"><vh>Fixed Tangle bugs</vh></v>
+<v t="ekr.20090709084001.5968"><vh>Fixed unicode problem with spell checker</vh></v>
+<v t="ekr.20090709084001.6086"><vh>Ensure newline at end of each @auto node</vh></v>
+<v t="ekr.20090709084001.6096"><vh>Fixed bugs with goto-global-line and @auto</vh></v>
+<v t="ekr.20090709084001.6119"><vh>Added key bindings in log pane</vh></v>
+<v t="ekr.20090709084001.6138"><vh>Honor split ratios</vh></v>
+<v t="ekr.20090709084001.6140"><vh>Click in body after editing activates body</vh></v>
+<v t="ekr.20090709084001.6144"><vh>Rewrote string-rectangle command for speed</vh></v>
+<v t="ekr.20090709084001.6149"><vh>Fixed read-at-auto-nodes bug</vh></v>
+<v t="ekr.20090709084001.6153"><vh>Fixed major focus problems</vh></v>
+<v t="ekr.20090709084001.6156"><vh>Fixed problem with read-at-file/shadow-nodes</vh></v>
+<v t="ekr.20090709084001.6164"><vh>Fixed major icon/t.uA bug</vh></v>
+<v t="ekr.20090709084001.6192"><vh>Fixed rst bug</vh></v>
+<v t="ekr.20090709084001.6204"><vh>Made alt-6 run all unit tests</vh></v>
+<v t="ekr.20090709084001.6238"><vh>Fixed crasher in dynamicExpanderHelper</vh></v>
+<v t="ekr.20090709084001.6241"><vh>Don't collapse initial node automatically</vh></v>
+<v t="ekr.20090709084001.6254"><vh>Fixed bug: don't duplicate standard buttons</vh></v>
+<v t="ekr.20090709084001.6283"><vh>Fixed critical @file data-loss problem</vh></v>
+<v t="ekr.20090709084001.6291"><vh>Added hasSelection to leoQtBody</vh></v>
+</v>
+<v t="ekr.20090709084001.6296"><vh>Features</vh>
+<v t="ekr.20090709084001.6297"><vh>Added open-quickstart-leo command</vh></v>
+<v t="ekr.20090709084001.6300"><vh>Added tree bindings for page-up/down commands</vh></v>
+<v t="ekr.20090709084001.6301"><vh>Issue error message re non-existent plugins</vh></v>
+<v t="ekr.20090709084001.6304"><vh>Expanded Alt-lt/rt arrows</vh></v>
+<v t="ekr.20090709084001.6307"><vh>Added important @auto warning</vh>
+<v t="ekr.20090709084001.6308"><vh>c.checkFileTimeStamp</vh></v>
+<v t="ekr.20090709084001.6309"><vh>readOneAtAutoNode (atFile)</vh></v>
+<v t="ekr.20090709084001.6310"><vh>writeOneAtAutoNode &amp; helpers (atFile)</vh>
+<v t="ekr.20090709084001.6311"><vh>shouldWriteAtAutoNode</vh></v>
+<v t="ekr.20090709084001.6312"><vh>promptForAtAutoRead</vh></v>
+</v>
+</v>
 </v>
 </v>
 </v>
@@ -15845,7 +15882,10 @@ What's New in Leo 4.6
   with the edit action of .py files. Like this::
 
     C:\Python26\python.exe "c:\leo.repo\trunk\launchLeo.py" --gui=qt %1 %2
-
+    
+- Leo now warns if when writing an @auto node if the the file exists and the
+  node has not been read previously.  This prevents a newly-created
+  @auto node from overwriting an existing file.
 </t>
 <t tx="ekr.20090324145450.27">- Added autoCompleter.getExternalCompletions.
   See http://groups.google.com/group/leo-editor/browse_thread/thread/4ad91984a6d0acac
@@ -15905,6 +15945,12 @@ What's New in Leo 4.6
 - Improved the isearch commands.
 
 - find-clone-all is a synonym for clone-find-all.
+
+- open-quickstart-leo command opens leo/doc/quickstart.leo.
+
+- The Alt-Right and Alt-Left keys (expand-and-go-right and contract-or-go-left
+  commands) now move to the previous or next node if now left/right movement is
+  possible.
 </t>
 <t tx="ekr.20090324145450.46">- Added @nocolor-node directive.
 
@@ -15920,13 +15966,30 @@ What's New in Leo 4.6
   http://groups.google.com/group/leo-editor/browse_thread/thread/b6a39ed672a28c65?pli=1
 
 - The qt gui is now the default.
+
+- The old bindings bound the PageUp/Down keys to back/forward page commands, and
+  these commands work only for text.
+
+  The new default bindings in leoSettings.leo: @keys EKR bindings are::
+
+    back-page                       ! text = PageUp
+    back-page-extend-selection      ! text = Shift-PageUp
+    forward-page                    ! text = PageDn
+    forward-page-extend-selection   ! text = Shift-PageDn
+    
+    scroll-down-half-page   ! tree = Shift-PageDn
+    scroll-down-page        ! tree = PageDn
+    scroll-up-half-page     ! tree = Shift-PageUp
+    scroll-up-page          ! tree = PageUp         
 </t>
 <t tx="ekr.20090324145450.54">- Improved nav_buttons plugin and corresponding nodeHistory class.
 
 - Created qtGui and tkGui plugins.
 
 - Created leoGuiPluginsRef.leo.
-</t>
+
+- Leo issues an error message if a non-existent plugin appears
+  in an @enabled-plugin node.</t>
 <t tx="ekr.20090429074754.1"></t>
 <t tx="ekr.20090429074754.2">@ @rst-options
 code_mode=False
@@ -16161,6 +16224,254 @@ This makes Leo a superb environment for using rST.
 <t tx="ekr.20090620103431.5601">The @verbatim was being inserted into the outline.
 </t>
 <t tx="ekr.20090706042206.14718"></t>
+<t tx="ekr.20090709084001.5944"></t>
+<t tx="ekr.20090709084001.5945"></t>
+<t tx="ekr.20090709084001.5946">- There was a blunder in standardize_name.
+- Inited print_mode in tangle.scanAllDirectives.
+- Changed .default_directory to .tangle_directory throughout leoTangle.py.
+
+</t>
+<t tx="ekr.20090709084001.5968"></t>
+<t tx="ekr.20090709084001.6086"></t>
+<t tx="ekr.20090709084001.6096"></t>
+<t tx="ekr.20090709084001.6119"></t>
+<t tx="ekr.20090709084001.6138"></t>
+<t tx="ekr.20090709084001.6140"></t>
+<t tx="ekr.20090709084001.6144"></t>
+<t tx="ekr.20090709084001.6149"></t>
+<t tx="ekr.20090709084001.6153">Various get-focus methods must translate from wrapped widget to wrapper widget.
+This happens in g.app.gui.get_focus, which needs a c arg to work properly in some cases!</t>
+<t tx="ekr.20090709084001.6156"></t>
+<t tx="ekr.20090709084001.6164">https://bugs.launchpad.net/leo-editor/+bug/345917</t>
+<t tx="ekr.20090709084001.6192">Exact repro steps (using trunk):
+
+Help -&gt; open quickstart.leo
+
+Go to Programming--&gt;External files--&gt;reStructuredText (@auto-
+rst)--&gt;@path ~--&gt;@@auto-rst myfile_rst.txt
+
+Remove first @ from @auto-rst
+
+Save =&gt; exception occurs.</t>
+<t tx="ekr.20090709084001.6204">@test nodes in the generated file were being run when modules were imported.
+
+The fix was to set g.unitTesting = False while importing in safeImportModule.</t>
+<t tx="ekr.20090709084001.6238"></t>
+<t tx="ekr.20090709084001.6241"></t>
+<t tx="ekr.20090709084001.6254">@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/394965
+
+Several changes:
+
+- Fixed bug in runLeo.py.completeFileName.
+  Do not add ".leo" suffix if the file exists without it!
+
+- Fixed (???) the bug by not calling g.doHook("new"...) in g.openWrapperFile.
+  This **might** be a perfect fix, but maybe not.
+  But if a bug remains, it might be less bad than the duplicated buttons bug :-)</t>
+<t tx="ekr.20090709084001.6283">The culprit was the code in atFile.read that deleted all children.
+
+Added several important new unit tests.</t>
+<t tx="ekr.20090709084001.6291">Also added test for leoQtBody to existing test.</t>
+<t tx="ekr.20090709084001.6296"></t>
+<t tx="ekr.20090709084001.6297"></t>
+<t tx="ekr.20090709084001.6300">This was a binding issue. Leo has a full range of scrolling commands. They work.
+
+The old bindings bound the PageUp/Down keys to back/forward page commands, and
+these commands work only for text.
+
+The new default bindings in leoSettings.leo: @keys EKR bindings are:
+
+back-page                       ! text = PageUp
+back-page-extend-selection      ! text = Shift-PageUp
+forward-page                    ! text = PageDn
+forward-page-extend-selection   ! text = Shift-PageDn
+
+scroll-down-half-page   ! tree = Shift-PageDn
+scroll-down-page        ! tree = PageDn
+scroll-up-half-page     ! tree = Shift-PageUp
+scroll-up-page          ! tree = PageUp         
+</t>
+<t tx="ekr.20090709084001.6301">Leo now prints an error message when @enabled-plugins node contains a plugin
+that does not exist.</t>
+<t tx="ekr.20090709084001.6304"></t>
+<t tx="ekr.20090709084001.6307">Warn if the file exists and has never been read. This prevents a newly-created
+@auto node from overwriting an existing file.</t>
+<t tx="ekr.20090709084001.6308">def checkFileTimeStamp (self,fn):
+
+    '''
+    Return True if the file given by fn has not been changed
+    since Leo read it or if the user agrees to overwrite it.
+    '''
+
+    c = self
+    timeStamp = c.timeStampDict.get(fn)
+    if not timeStamp:
+        # g.trace('no stamp for %s' % (fn))
+        return True
+
+    timeStamp2 = os.path.getmtime(fn)
+    if timeStamp == timeStamp2:
+        return True
+
+    if g.app.unitTesting:
+        return False
+
+    # g.trace(timeStamp, timeStamp2)
+    message = '%s\n%s\n%s' % (
+        fn,
+        g.tr('has been modified outside of Leo.'),
+        g.tr('Overwrite this file?'))
+    ok = g.app.gui.runAskYesNoCancelDialog(c,
+        title = 'Overwrite modified file?',
+        message = message)
+    return ok == 'yes'
+</t>
+<t tx="ekr.20090709084001.6309">def readOneAtAutoNode (self,fileName,p):
+
+    at = self ; c = at.c ; ic = c.importCommands
+
+    oldChanged = c.isChanged()
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+
+    # Delete all children.
+    while p.hasChildren():
+        p.firstChild().doDelete()
+
+    try:
+        fileContent = open(fileName, "rb").read()
+        cachefile = self._contentHashFile(p, fileContent)
+    except IOError:
+        cachefile = None
+
+    if cachefile is not None and cachefile in c.db:        
+        # g.es('uncache:',p.h)
+        tree = c.db[cachefile]
+        g.create_tree_at_vnode(c, p.v, tree)
+        p.v.at_auto_read = True # Create the attribute
+        return
+
+    if not g.unitTesting:
+        g.es("reading:",p.h)
+
+    ic.createOutline(fileName,parent=p.copy(),atAuto=True)
+    p.v.at_auto_read = True # Create the attribute
+
+    if ic.errors:
+        g.es_print('errors inhibited read @auto',fileName,color='red')
+
+    if ic.errors or not g.os_path_exists(fileName):
+        # c.setBodyString(p,'')
+        p.clearDirty()
+        c.setChanged(oldChanged)
+    else:
+        self.writeCachedTree(p, cachefile)
+        g.doHook('after-auto', p = p)  # call after-auto callbacks
+</t>
+<t tx="ekr.20090709084001.6310">def writeOneAtAutoNode(self,p,toString,force):
+
+    '''Write p, an @auto node.
+
+    File indices *must* have already been assigned.'''
+
+    at = self ; c = at.c ; root = p.copy()
+
+    fileName = p.atAutoNodeName()
+    if not fileName and not toString: return False
+
+    at.scanDefaultDirectory(p,importing=True) # Set default_directory
+    fileName = c.os_path_finalize_join(at.default_directory,fileName)
+    exists = g.os_path_exists(fileName)
+
+    if not toString and not self.shouldWriteAtAutoNode(p,exists,force):
+        return False
+
+    # Prompt if writing a new @auto node would overwrite an existing file.
+    if not hasattr(p.v,'at_auto_read') and g.os_path_exists(fileName):
+        ok = self.promptForAtAutoRead(fileName)
+        if ok:
+            p.v.at_auto_read = True # Create the attribute
+        else:
+            g.es("not written:",fileName)
+            return False
+
+    # This code is similar to code in at.write.
+    c.endEditing() # Capture the current headline.
+    at.targetFileName = g.choose(toString,"&lt;string-file&gt;",fileName)
+    at.initWriteIvars(root,at.targetFileName,
+        atAuto=True,
+        nosentinels=True,thinFile=False,scriptWrite=False,
+        toString=toString)
+
+    ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
+    if ok:
+        if root.isAtAutoRstNode():
+            c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
+        else:
+            at.writeOpenFile(root,nosentinels=True,toString=toString)
+        at.closeWriteFile() # Sets stringOutput if toString is True.
+        if at.errors == 0:
+            at.replaceTargetFileIfDifferent(root) # Sets/clears dirty and orphan bits.
+        else:
+            g.es("not written:",at.outputFileName)
+            root.setDirty() # New in Leo 4.4.8.
+
+    elif not toString:
+        root.setDirty() # Make _sure_ we try to rewrite this file.
+        g.es("not written:",at.outputFileName)
+
+    return ok
+</t>
+<t tx="ekr.20090709084001.6311">@ Much thought went into this decision tree:
+
+- We do not want decisions to depend on past history.  That's too confusing.
+- We must ensure that the file will be written if the user does significant work.
+- We must ensure that the user can create an @auto x node at any time
+  without risk of of replacing x with empty or insignificant information.
+- We want the user to be able to create an @auto node which will be populated the next time the .leo file is opened.
+- We don't want minor import imperfections to be written to the @auto file.
+- The explicit commands that read and write @auto trees must always be honored.
+@c
+
+def shouldWriteAtAutoNode (self,p,exists,force):
+
+    '''Return True if we should write the @auto node at p.'''
+
+    if force: # We are executing write-at-auto-node or write-dirty-at-auto-nodes.
+        return True
+    elif not exists: # We can write a non-existent file without danger.
+        return True
+    elif not p.isDirty(): # There is nothing new to write.
+        return False
+    elif not self.isSignificantTree(p): # There is noting of value to write.
+        g.es_print(p.h,'not written:',color='red')
+        g.es_print('no children and less than 10 characters (excluding directives)',color='red')
+        return False
+    else: # The @auto tree is dirty and contains significant info.
+        return True
+</t>
+<t tx="ekr.20090709084001.6312">def promptForAtAutoRead (self,fileName):
+
+    c = self.c
+
+    if g.app.unitTesting:
+        val = g.app.unitTestDict.get('promptForAtAutoRead')
+        return val in (None,True)
+
+    # g.trace(timeStamp, timeStamp2)
+    message = '@auto %s\n%s\n%s' % (
+        fileName,
+        g.tr('already exists.'),
+        g.tr('Overwrite this file?'))
+
+    ok = g.app.gui.runAskYesNoCancelDialog(c,
+        title = 'Overwrite existing file?',
+        message = message)
+
+    return ok == 'yes'
+</t>
 <t tx="ville.20090520232034.6345">g.app.gui.runScrolledMessageDialog(c=c, msg = u'rst:' + p.b)</t>
 <t tx="ville.20090705224948.5734">import os
 pos = c.find_h("@thin leoUserGuide.txt")[0]

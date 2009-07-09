@@ -16237,6 +16237,9 @@ What's New in Leo 4.6
 
     C:\Python26\python.exe "c:\leo.repo\trunk\launchLeo.py" --gui=qt %1 %2
 
+- Leo now warns if when writing an @auto node if the the file exists and the
+  node has not been read previously.  This prevents a newly-created
+  @auto node from overwriting an existing file.
 .. @-node:ekr.20090324145450.23:Improved file handling
 .. @+node:ekr.20090620082840.5608:Improved handling of rST files
 Added support for @auto-rst nodes. These import reStructuredText (rST) files
@@ -16304,6 +16307,12 @@ This makes Leo a superb environment for using rST.
 - Improved the isearch commands.
 
 - find-clone-all is a synonym for clone-find-all.
+
+- open-quickstart-leo command opens leo/doc/quickstart.leo.
+
+- The Alt-Right and Alt-Left keys (expand-and-go-right and contract-or-go-left
+  commands) now move to the previous or next node if now left/right movement is
+  possible.
 .. @-node:ekr.20090324145450.40:New commands
 .. @+node:ekr.20090324145450.46:New and improved directives
 - Added @nocolor-node directive.
@@ -16321,6 +16330,21 @@ This makes Leo a superb environment for using rST.
   http://groups.google.com/group/leo-editor/browse_thread/thread/b6a39ed672a28c65?pli=1
 
 - The qt gui is now the default.
+
+- The old bindings bound the PageUp/Down keys to back/forward page commands, and
+  these commands work only for text.
+
+  The new default bindings in leoSettings.leo: @keys EKR bindings are::
+
+    back-page                       ! text = PageUp
+    back-page-extend-selection      ! text = Shift-PageUp
+    forward-page                    ! text = PageDn
+    forward-page-extend-selection   ! text = Shift-PageDn
+
+    scroll-down-half-page   ! tree = Shift-PageDn
+    scroll-down-page        ! tree = PageDn
+    scroll-up-half-page     ! tree = Shift-PageUp
+    scroll-up-page          ! tree = PageUp         
 .. @-node:ekr.20090324145450.49:New settings
 .. @+node:ekr.20090324145450.54:Plugins
 - Improved nav_buttons plugin and corresponding nodeHistory class.
@@ -16328,6 +16352,10 @@ This makes Leo a superb environment for using rST.
 - Created qtGui and tkGui plugins.
 
 - Created leoGuiPluginsRef.leo.
+
+- Leo issues an error message if a non-existent plugin appears
+  in an @enabled-plugin node.
+.. @nonl
 .. @-node:ekr.20090324145450.54:Plugins
 .. @-node:ekr.20090324145450.21:@rst html\new-4-6.html
 .. @-node:ekr.20090324145450.20:What's New in Leo 4.6
