@@ -787,7 +787,7 @@
 </v>
 </v>
 <v t="ekr.20050817132814"><vh>rst3</vh>
-<v t="ekr.20050817120850.1"><vh>@@file leo_pdf.py</vh></v>
+<v t="ekr.20090704103932.5160"><vh>@thin leo_pdf.py</vh></v>
 <v t="ekr.20050805162550"><vh>@thin rst3.py</vh></v>
 </v>
 <v t="ekr.20070119094733.1"><vh>@thin dtest.py</vh></v>
@@ -5855,28 +5855,6 @@ Todo
 
 </t>
 <t tx="ekr.20050724100334">c.prettyPrintPythonNode()</t>
-<t tx="ekr.20050817120850.1">@first #! /usr/bin/env python
-
-&lt;&lt; docstring &gt;&gt;
-
-# Note: you must copy this file to the Python/Lib/site-packages/docutils/writers folder.
-
-@language python
-@tabwidth -4
-
-&lt;&lt; about this code &gt;&gt;
-&lt;&lt; copyright &gt;&gt;
-&lt;&lt; version history &gt;&gt;
-&lt;&lt; to do &gt;&gt;
-
-__version__ = '0.5'
-__docformat__ = 'reStructuredText'
-&lt;&lt; imports &gt;&gt;
-
-@others
-
-if docutils:
-    &lt;&lt; define subclasses of docutils classes &gt;&gt;</t>
 <t tx="ekr.20050817132814">@nocolor
 
 To activate the rst3 plugin, do the following:

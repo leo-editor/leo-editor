@@ -1229,36 +1229,49 @@ B has not been destroyed, but B is gone from @thin spam.py! So in this sense del
 .. @-node:ekr.20090501093330.2:@rst-option show-sections = False
 .. @-node:ekr.20050830115714.1:Learning to use Leo
 .. @+node:ekr.20050830115714.12:How should I use Leo with bzr/git/hg/svn/cvs?
-Using `@thin`_ trees can eliminate most problems with using Leo in VCS environments:
+Using `@thin`_ trees can eliminate most problems with using Leo in cooperative
+(SCCS) environments:
 
--   Developers should use `@thin`_ trees to create derived files in any kind of cooperative environment.
+- Developers should use `@thin`_ trees to create derived files in any kind of
+  cooperative environment.
 
--   If sentinels are frowned upon in your development community, use `@auto`_ or `@shadow`_ instead
-    of ``@thin``.
+- If sentinels are frowned upon in your development community, use `@auto`_ or
+  `@shadow`_ instead of ``@thin``.
 
--   The VCS repository contains "reference" .leo files.
-    These reference files should contain nothing but ``@thin`` nodes.
-    Reference files will change only when new derived files get added to the project.
+- The repository contains "reference" .leo files. These reference files
+  should contain nothing but ``@thin`` nodes. Reference files will change only
+  when new derived files get added to the project.
 
-    **Important**:
-    Leo's `bzr repository`_ contains the *reference* versions of the following .leo files:
-    ``LeoPyRef.leo`` and ``LeoPluginsRef.leo``.
-    However,  Leo's distributions contain the *non-reference* versions of those files:
-    ``LeoPy.leo`` and ``LeoPlugins.leo``.
-    These two files have many ``@thin`` nodes.
-    There is no reference file for ``test.leo`` even though it contains ``@thin leoTest.py``.
-    It would be clumsy to use testRef.leo, and there is less need to do so.
-    Reference .leo files (or any .leo files) rarely need to be checked into VCS repository.
-    If you find yourself checking in a .leo file frequently, consider migrating valuable
-    content to `@thin`_ nodes.
+  **Important**: Leo's `bzr repository`_ contains the *reference* versions of
+  the following .leo files: ``LeoPyRef.leo`` and ``LeoPluginsRef.leo``. However,
+  Leo's distributions contain the *non-reference* versions of those files:
+  ``LeoPy.leo`` and ``LeoPlugins.leo``. These two files have many ``@thin``
+  nodes. There is no reference file for ``test.leo`` even though it contains
+  ``@thin leoTest.py``. It would be clumsy to use testRef.leo, and there is less
+  need to do so. Reference .leo files (or any .leo files) rarely need to be
+  checked into the repository. If you find yourself checking in a .leo file
+  frequently, consider migrating valuable content to `@thin`_ nodes.
 
--   Developers will use local copies of reference files for their own work.
-    For example, instead of using ``LeoPyRef.leo`` directly,
-    I use a copy called ``LeoPy.leo``.
-    My local copy can contain nodes other than ``@thin`` nodes.
+- Developers will use local copies of reference files for their own work. For
+  example, instead of using ``LeoPyRef.leo`` directly, I use a copy called
+  ``LeoPy.leo``. My local copy can contain nodes other than ``@thin`` nodes.
 .. @nonl
 .. @-node:ekr.20050830115714.12:How should I use Leo with bzr/git/hg/svn/cvs?
 .. @+node:ekr.20090706042206.14718:How can I use Leo cooperatively without sentinels?
+Leo's sentinels add outline structure to source files.
+However, those sentinels annoy some people who don't use Leo.
+
+You can use @auto, @shadow or @nosent trees to edit
+files that are shared with those who don't want to see sentinel comments.
+
+- ``@auto`` is best for files whose imported outline structure often changes. In
+  most cases, this will be the best option. The drawback of @auto files are a)
+  you can't use clones and b) you can't add your own organizer nodes.
+
+- ``@shadow`` will work for files whose outline structure seldom changes.
+  The advantage of ``@shadow`` is that you can add your own structure.
+
+- ``@nosent`` is appropriate only for files that you alone modify.
 .. @-node:ekr.20090706042206.14718:How can I use Leo cooperatively without sentinels?
 .. @+node:ekr.20050830115714.13:Using derived files
 .. @+node:ekr.20090501093330.3:@rst-option show-sections = False

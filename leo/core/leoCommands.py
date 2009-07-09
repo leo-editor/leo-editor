@@ -423,7 +423,7 @@ class baseCommands (object):
 
     def getSignOnLine (self):
         c = self
-        return "Leo 4.6 beta 2, build %s, June 22, 2009" % c.getBuildNumber()
+        return "Leo 4.6 release candidate 1, build %s, July 9, 2009" % c.getBuildNumber()
     #@-node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     #@+node:ekr.20040629121554.2:initVersion
     def initVersion (self):
@@ -880,10 +880,7 @@ class baseCommands (object):
                     # This clause by Jim Sizelove.
                     elif openType == "subprocess.Popen":
                         if isinstance(arg, basestring):
-                            if " " in path:
-                                vtuple = arg + ' "%s"' % path
-                            else:
-                                vtuple = arg + " " + path
+                            vtuple = arg + " " + path
                         elif isinstance(arg, (list, tuple)):
                             vtuple = arg[:]
                             vtuple.append(path)
@@ -5931,14 +5928,16 @@ class baseCommands (object):
         theFile = c.os_path_finalize_join(
             g.app.loadDir,'..','doc','html','_build','html','leo_toc.html')
 
-        if os.path.isfile(theFile):
-            url = 'file:%s' % theFile
-            webbrowser.open_new(url)
-            return
+        table = (
+            'file:%s' % theFile,
+            'http://webpages.charter.net/edreamleo/leo_toc.html')
 
-        g.es('Local manual not found, open from internet')        
-        url = 'http://webpages.charter.net/edreamleo/leo_toc.html'
-        webbrowser.open_new(url)
+        for url in table:
+            try:
+                webbrowser.open_new(url)
+                return
+            except:
+                g.es("not found:",url)
     #@-node:ekr.20060613082924:leoUsersGuide
     #@-node:ekr.20031218072017.2938:Help Menu
     #@-node:ekr.20031218072017.2818:Command handlers...
