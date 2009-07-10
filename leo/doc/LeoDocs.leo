@@ -16024,7 +16024,7 @@ The highlights of Leo 4.6:
 - @auto-rst nodes support "round-tripping" of reStructuredText files.
 - Properties of commanders, positions and nodes simplify programming.
 - Improved Leo's unit testing framework.
-- Leo now requires Python 2.4 or later.
+- Leo now requires Python 2.5 or later.
 - Dozens of small improvements and bug fixes.
 
 Links:
@@ -16243,7 +16243,7 @@ The highlights of Leo 4.6:
 - @auto-rst nodes allow easy editing of reStructuredText files.
 - Properties of commanders, positions and nodes simplify programming.
 - Improved Leo's unit testing framework.
-- Leo now requires Python 2.4 or later.
+- Leo now requires Python 2.5 or later.
 - Dozens of small improvements and bug fixes.
 
 Links:

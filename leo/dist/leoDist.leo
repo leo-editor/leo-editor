@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20050315084904" str_leo_pos="5,0"><vh>Startup</vh>
+<v t="ekr.20050315084904" str_leo_pos="2,4"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
 <v t="ekr.20050315084922"><vh>@button Spell</vh></v>
 </v>
@@ -20,7 +20,7 @@
 <v t="EKR.20040519082027.34"><vh>@@file-thin ../../uninstall</vh></v>
 </v>
 </v>
-<v t="EKR.20040519091259"><vh>Annoucements</vh>
+<v t="EKR.20040519091259" a="E"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
@@ -348,7 +348,7 @@ The highlights of Leo 4.6:
 - @auto-rst nodes allow easy editing of reStructuredText files.
 - Properties of commanders, positions and nodes simplify programming.
 - Improved Leo's unit testing framework.
-- Leo now requires Python 2.4 or later.
+- Leo now requires Python 2.5 or later.
 - Dozens of small improvements and bug fixes.
 
 Links:
@@ -1025,7 +1025,7 @@ Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
     if createExeFile:
         x = createExe(exeFile,pre_install_script,post_install_script,zipFile2,version=version)
         x.create_exe()
-    
+
     # Unlink temp files.
     unlink(zipFile2)
     for z in ('PKG-INFO.TXT','INSTALL.TXT','README.TXT',):
@@ -1178,7 +1178,7 @@ The highlights of Leo 4.6:
 - @auto-rst nodes allow easy editing of reStructuredText files.
 - Properties of commanders, positions and nodes simplify programming.
 - Improved Leo's unit testing framework.
-- Leo now requires Python 2.4 or later.
+- Leo now requires Python 2.5 or later.
 - Dozens of small improvements and bug fixes.
 
 Links:

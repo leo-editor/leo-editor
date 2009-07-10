@@ -2254,7 +2254,7 @@ please ask for help on Leo's help forum:
 .. _`associated .leo files with Leo`:   `How to associate Leo with .leo files on Windows`_
 .. @-node:ekr.20050901110110:@rst-no-head links
 .. @+node:edream.110203163054.49:System requirements
-Leo will work on any platform that supports Python 2.4 or later and Tk 8.4 or later. For
+Leo will work on any platform that supports Python 2.5 or later and Tk 8.4 or later. For
 Qt ui, Qt 4.4 or newer (and compatible PyQt) is required.
 
 -   Download the latest version of Leo from `Leo's download page`_.
@@ -2564,15 +2564,7 @@ You must install the Aspell package if you want to use Leo's Spell tab.
 1.  Download and install the Aspell package from http://aspell.sourceforge.net/
     Typically this will create a directory called Aspell/bin
 
-2.  If you are using Python 2.3 or Python 2.4 you must copy a dll
-    from Leo's extensions folder to the Aspell/bin directory.
-    This step is *not* needed if you are using Python 2.5 or later.
-    Leo's extensions folder comes with two dll's: aspell23.pyd and aspell24.pyd,
-    for Python 2.3 and 2.4 respectively.
-    Make a copy of the appropriate dll, **rename it** to be aspell.pyd,
-    and copy the renamed aspell.pyd file to Aspell/bin.
-
-3.  Specify the location of the Aspell and Aspell/bin directories using
+2.  Specify the location of the Aspell and Aspell/bin directories using
     the aspell_dir and aspell_bin_dir settings in LeoSettings.leo.
 .. @-node:ekr.20060105145125:How to install the Aspell spell checker
 .. @-node:edream.110203163054.48:@rst html\install.html
@@ -10313,25 +10305,12 @@ Notes:
 - ext is a string or None. If None, Leo computes a file extension base on what
   @language directive is in effect.
 
-- If the .leo file being loaded contains  @openwith nodes, the File:Open With menu contains only the items created by those nodes.  Similarly, @openwith nodes in myLeoSettings.leo override entries in leoSettings.leo.
+- If the .leo file being loaded contains @openwith nodes, the File:Open With
+  menu contains only the items created by those nodes. Similarly, @openwith
+  nodes in myLeoSettings.leo override entries in leoSettings.leo.
 
-- If no @openwith nodes are found anywhere the openWith plugin uses hard-coded tables in the plugin itself.
-
-This plugin will use Python's new subprocess module if it is present. This
-module comes standard with Python 2.4. For Linux systems, Leo will use
-subprocess.py in Leo's extensions folder if necessary.
-
-For Windows systems you can install Python's subprocess module in Python 2.2 or
-2.3 as follows:
-
-- Go to http://www.effbot.org/downloads/#subprocess
-
-- Download and execute one of the following installers, depending on your version of Python::
-
-    subprocess-0.1-20041012.win32-py2.3.exe 
-    subprocess-0.1-20041012.win32-py2.2.exe
-
-This installer installs the subprocess sources and also _subprocess.pyd in Python's site-packages folder.
+- If no @openwith nodes are found anywhere the openWith plugin uses hard-coded
+  tables in the plugin itself.
 .. @nonl
 .. @-node:ekr.20050912125735.2726:open_with.py
 .. @+node:ekr.20050912125735.3209:temacs.py & usetemacs.py
@@ -13614,8 +13593,8 @@ This following is adapted from Terry Brown's entry in Leo's wiki.
 
 You can not just run leoBridge from Leo, because the leoBridge module is design
 to run a separate copy of Leo. However, it is possible to run leoBridge from a
-subprocess. That turned out to be more, um, interesting than anticipated, so I'm
-recording the results here.
+separate process. That turned out to be more, um, interesting than anticipated,
+so I'm recording the results here.
 
 The idea is that script A running in Leo (i.e. in a regular GUI Leo session)
 calls script B through subprocess.Popen(), script B uses LeoBridge to do
@@ -13666,7 +13645,7 @@ at the end of script B, and back in script A, after you've rebuilt
 
     g.app.gui.replaceClipboardWith(response)
     c.pasteOutline()
-
+.. @nonl
 .. @-node:ekr.20071210094621:Running leoBridge from within Leo
 .. @-node:ekr.20070317033759.1:@rst html\leoBridge.html
 .. @-node:ekr.20070317033759:Chapter 19: Embedding Leo with the leoBridge module
