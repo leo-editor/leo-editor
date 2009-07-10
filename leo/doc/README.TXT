@@ -1,6 +1,6 @@
-Leo 4.6 beta 2                                  June 22, 2009
+Leo 4.6 release candidate 1                             July 9, 2009
 
-Leo 4.6 b2 is now available at:
+Leo 4.6 rc1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
@@ -15,7 +15,7 @@ The highlights of Leo 4.6:
 - New --config, --file and --gui command-line options.
 - Leo tests syntax of .py files when saving them.
 - Leo can now open any kind of file into @edit nodes.
-- @auto-rst nodes support "round-tripping" of reStructuredText files.
+- @auto-rst nodes allow easy editing of reStructuredText files.
 - Properties of commanders, positions and nodes simplify programming.
 - Improved Leo's unit testing framework.
 - Leo now requires Python 2.4 or later.
