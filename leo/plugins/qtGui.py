@@ -6121,7 +6121,8 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
                 continue
             h(c,p,menu)
 
-        a = menu.exec_(menuPos)
+        a = menu.popup(menuPos)
+        self._contextmenu = menu
 
 
 
