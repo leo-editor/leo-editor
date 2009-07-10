@@ -70,7 +70,7 @@ class leoImportCommands (scanUtility):
             '.c':       self.scanCText,
             '.cpp':     self.scanCText,
             '.cxx':     self.scanCText,
-            '.c#':      self.scanCSharpText,
+            '.cs':      self.scanCSharpText,
             '.el':      self.scanElispText,
             '.htm':     self.scanXmlText,
             '.html':    self.scanXmlText,
