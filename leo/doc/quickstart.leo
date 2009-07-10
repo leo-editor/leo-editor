@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="73" left="10" height="759" width="1233"/>
+	<global_window_position top="211" left="72" height="759" width="1233"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -80,8 +80,9 @@
 </v>
 <v t="ville.20090630234425.12395"><vh>Configuration (enabling plugins etc.)</vh>
 <v t="ville.20090630234425.14847"><vh>Find out your ~/.leo directory (script)</vh></v>
-<v t="ville.20090630234425.12396"><vh>@@settings</vh>
-<v t="ville.20090630234425.14842"><vh>@enabled-plugins</vh></v>
+<v t="ville.20090630234425.12396" a="E"><vh>@@settings</vh>
+<v t="ville.20090708192943.3926"><vh>@enabled-plugins</vh></v>
+<v t="ville.20090708172716.16846"><vh>@@string initial_split_orientation = horizontal</vh></v>
 </v>
 </v>
 <v t="ville.20090701182804.1550"><vh>Search and replace</vh></v>
@@ -269,114 +270,6 @@ import sys
 - Now, you should be all set. Verify that it worked by Help-&gt;open myLeoSettings.leo
 </t>
 <t tx="ville.20090630234425.12396"></t>
-<t tx="ville.20090630234425.14842"># Leo loads plugins in the order they appear here.
-# File names may be indented as desired.
-
-# Standard plugins enabled in official distributions....
-
-plugins_menu.py
-open_with.py
-leo_to_html.py
-mod_scripting.py
-quicksearch.py
-UNL.py
-contextmenu.py
-
-# The plugins manager plugin does not
-# understand @enabled-plugins nodes.
-# plugin_manager.py
-
-# The rst3 plugin is no longer needed.
-# It's code has been moved to Leo's core
-# rst3.py
-
-# These plugins used to be enabled when using the tk plugin.
-# cleo.py
-# hoist.py
-# image.py
-# nav_buttons.py
-# threading_colorizer.py
-
-# All other plugins.
-# Order is important for enabled plugins that
-# add items to the icon area.
-
-# ConceptualSort.py
-# EditAttributes.py
-# FileActions.py
-# Library.py
-# nodeActions.py
-# UASearch.py
-# URLloader.py
-# UniversalScrolling.py
-
-# add_directives.py
-# arrows.py
-# at_folder.py
-# at_view.py
-# autotrees.py
-# base64Packager.py
-# bibtex.py
-# chapter_hoist.py
-# cleo.py
-# color_markup.py
-# datenodes.py
-# detect_urls.py
-# dyna_menu.py
-# fastGotoNode.py
-# footprints.py
-# groupOperations.py
-# hoist.py
-# image.py
-# import_cisco_config.py
-# ipython.py
-# keybindings.py
-# leoOPML.py
-# leo_to_html.py
-# leo_to_rtf.py
-# leoupdate.py
-# macros.py
-# mod_autosave.py
-# mod_http.py
-# mod_labels.py
-# mod_read_dir_outline.py
-# mod_shadow.py
-# multifile.py
-# nav_buttons.py
-# newButtons.py
-# niceNosent.py
-# nodebar.py
-# nodenavigator.py
-# open_shell.py
-# paste_as_headlines.py
-# pie_menus.py
-# pretty_print.py
-# print_cp.py
-# quickMove.py
-# rClick.py
-# read_only_nodes.py
-# rowcol.py
-# run_nodes.py
-# s_menu.py
-# scheduler.py
-# searchbox.py
-# shortcut_button.py
-# slideshow.py
-# table.py
-# templates.py
-# trace_tags.py
-# vim.py
-# word_count.py
-# word_export.py
-# xcc_nodes.py
-# xemacs.py
-# xsltWithNodes.py
-# zodb.py
-# quicksearch.py
-# tomboy_import.py
-# ctagscompleter.py
-# colorize_headlines.py
-# contextmenu.py</t>
 <t tx="ville.20090630234425.14847"># execute this script by ctrl+b to find out where your ~/.leo is
 
 g.es('Homedir is at ',g.app.homeLeoDir)
@@ -468,5 +361,116 @@ opening the external file afterwards.
 <t tx="ville.20090701184416.1558">Some text in first other chapter.
 </t>
 <t tx="ville.20090703222440.1472">More text in other chapter.</t>
+<t tx="ville.20090708172716.16846">horizontal: body pane to the left
+vertical: body pane on the botton
+
+vertical is the default; you may prefer horizontal for small but wide screens (e.g. on laptops)</t>
+<t tx="ville.20090708192943.3926"># Leo loads plugins in the order they appear here.
+# File names may be indented as desired.
+
+# Standard plugins enabled in official distributions....
+
+plugins_menu.py
+leo_to_html.py
+mod_scripting.py
+quicksearch.py
+UNL.py
+contextmenu.py
+
+# The plugins manager plugin does not
+# understand @enabled-plugins nodes.
+# plugin_manager.py
+
+# The rst3 plugin is no longer needed.
+# It's code has been moved to Leo's core
+# rst3.py
+
+# These plugins used to be enabled when using the tk plugin.
+# cleo.py
+# hoist.py
+# image.py
+# nav_buttons.py
+# threading_colorizer.py
+
+# All other plugins.
+# Order is important for enabled plugins that
+# add items to the icon area.
+
+# ConceptualSort.py
+# EditAttributes.py
+# FileActions.py
+# Library.py
+# nodeActions.py
+# UASearch.py
+# URLloader.py
+# UniversalScrolling.py
+
+# add_directives.py
+# arrows.py
+# at_folder.py
+# at_view.py
+# autotrees.py
+# base64Packager.py
+# bibtex.py
+# chapter_hoist.py
+# cleo.py
+# color_markup.py
+# datenodes.py
+# detect_urls.py
+# dyna_menu.py
+# fastGotoNode.py
+# footprints.py
+# groupOperations.py
+# hoist.py
+# image.py
+# import_cisco_config.py
+# ipython.py
+# keybindings.py
+# leoOPML.py
+# leo_to_html.py
+# leo_to_rtf.py
+# leoupdate.py
+# macros.py
+# mod_autosave.py
+# mod_http.py
+# mod_labels.py
+# mod_read_dir_outline.py
+# mod_shadow.py
+# multifile.py
+# nav_buttons.py
+# newButtons.py
+# niceNosent.py
+# nodebar.py
+# nodenavigator.py
+# open_shell.py
+# open_with.py
+# paste_as_headlines.py
+# pie_menus.py
+# pretty_print.py
+# print_cp.py
+# quickMove.py
+# rClick.py
+# read_only_nodes.py
+# rowcol.py
+# run_nodes.py
+# s_menu.py
+# scheduler.py
+# searchbox.py
+# shortcut_button.py
+# slideshow.py
+# table.py
+# templates.py
+# trace_tags.py
+# vim.py
+# word_count.py
+# word_export.py
+# xcc_nodes.py
+# xemacs.py
+# xsltWithNodes.py
+# zodb.py
+# quicksearch.py
+# tomboy_import.py
+# ctagscompleter.py
+# colorize_headlines.py</t>
 </tnodes>
 </leo_file>
