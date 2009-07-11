@@ -3,7 +3,7 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="211" left="72" height="759" width="1233"/>
+	<global_window_position top="218" left="759" height="759" width="1233"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -19,9 +19,9 @@
 </v>
 <v t="ville.20090627211608.5782"><vh>Welcome to Leo!</vh></v>
 <v t="ville.20090627211608.5784"><vh>Tree manipulation basics</vh></v>
-<v t="ville.20090630234425.12394"><vh>Programming</vh>
-<v t="ville.20090627211608.10118"><vh>External files</vh>
-<v t="ville.20090627211608.10116"><vh>Thin nodes (explanation &amp; excercise)</vh>
+<v t="ville.20090630234425.12394" a="E"><vh>Programming</vh>
+<v t="ville.20090627211608.10118" a="E"><vh>External files</vh>
+<v t="ville.20090627211608.10116"><vh>Thin nodes (explanation &amp; exercise)</vh>
 <v t="ville.20090627211608.10119"><vh>@path ~</vh>
 <v t="ville.20090627211608.10117"><vh>@@thin myfile_thin.py</vh>
 <v t="ville.20090627211608.10120"><vh>imports &amp; setup routines</vh>
@@ -36,7 +36,7 @@
 </v>
 </v>
 </v>
-<v t="ville.20090627211608.10129"><vh>Auto nodes</vh>
+<v t="ville.20090627211608.10129" a="E"><vh>Auto nodes</vh>
 <v t="ville.20090630145410.1517"><vh>@path ~</vh>
 <v t="ville.20090630145410.1509"><vh>@@auto myfile_auto.py</vh>
 <v t="ville.20090630145410.1510"><vh>imports &amp; setup routines</vh>
@@ -51,8 +51,8 @@
 </v>
 </v>
 </v>
-<v t="ville.20090701175849.1532"><vh>Shadow nodes</vh>
-<v t="ville.20090701175849.1542"><vh>@path ~</vh>
+<v t="ville.20090701175849.1532" a="E"><vh>Shadow nodes</vh>
+<v t="ville.20090701175849.1542" a="E"><vh>@path ~</vh>
 <v t="ville.20090701175849.1543"><vh>@@shadow myfile_shadow.py</vh>
 <v t="ville.20090701175849.1544"><vh>imports &amp; setup routines</vh>
 <v t="ville.20090701175849.1545"><vh>imports</vh></v>
@@ -66,7 +66,7 @@
 </v>
 </v>
 </v>
-<v t="ville.20090701184416.1554"><vh>reStructuredText (@auto-rst)</vh>
+<v t="ville.20090701184416.1554" a="E"><vh>reStructuredText (@auto-rst)</vh>
 <v t="ville.20090701184416.1555"><vh>@path ~</vh>
 <v t="ville.20090701184416.1556" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e65733171036802752e"><vh>@@auto-rst myfile_rst.txt</vh>
 <v t="ville.20090701184416.1557"><vh>Main heading</vh>
