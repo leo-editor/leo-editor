@@ -12,7 +12,7 @@ import sys
 #@nl
 #@<< make version >>
 #@+node:ekr.20080916084557.2:<< make version >>
-version = '4-6-b1'
+version = '4-6-rc1'
 #@nonl
 #@-node:ekr.20080916084557.2:<< make version >>
 #@nl
