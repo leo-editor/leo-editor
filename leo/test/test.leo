@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="8"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="9"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -340,6 +340,9 @@
 <v t="ekr.20090705063023.1781"><vh>abc</vh></v>
 </v>
 <v t="ekr.20090706044257.1784"><vh>@@auto ../../install</vh></v>
+<v t="ekr.20090711095555.1786" a="E"><vh>Test undefined references</vh>
+<v t="ekr.20090711095804.1788"><vh>&lt;&lt; secref &gt;&gt;</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2708,5 +2711,7 @@ print('done')</t>
 <t tx="ekr.20090706044257.1784">@language plain
 
 # ................. more than 10 characters.</t>
+<t tx="ekr.20090711095555.1786">&lt;&lt; secref &gt;&gt;</t>
+<t tx="ekr.20090711095804.1788"></t>
 </tnodes>
 </leo_file>

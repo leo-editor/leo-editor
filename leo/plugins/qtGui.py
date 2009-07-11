@@ -144,6 +144,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.changingText = False # A lockout for onTextChanged.
         self.tags = {}
         self.configDict = {} # Keys are tags, values are colors (names or values).
+        self.configUnderlineDict = {} # Keys are tags, values are True
         self.useScintilla = False # This is used!
 
         if not c: return # Can happen.
@@ -570,21 +571,27 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         if val:
             self.colorSelection(i,j,val)
     #@-node:ekr.20081124102726.10:tag_add
-    #@+node:ekr.20081124102726.11:tag_config & tag_configure
+    #@+node:ekr.20081124102726.11:tag_config & tag_configure (baseTextWidget)
     def tag_config (self,*args,**keys):
+
+        trace = False and not g.unitTesting
+        if trace: g.trace(self,args,keys)
 
         if len(args) == 1:
             key = args[0]
             self.tags[key] = keys
             val = keys.get('foreground')
+            underline = keys.get('underline')
             if val:
-                # g.trace(key,val)
+                # if trace: g.trace(key,val)
                 self.configDict [key] = val
+            if underline:
+                self.configUnderlineDict [key] = True
         else:
             g.trace('oops',args,keys)
 
     tag_configure = tag_config
-    #@-node:ekr.20081124102726.11:tag_config & tag_configure
+    #@-node:ekr.20081124102726.11:tag_config & tag_configure (baseTextWidget)
     #@-node:ekr.20081121105001.541:Coloring (baseTextWidget)
     #@-node:ekr.20081121105001.538: May be overridden in subclasses
     #@+node:ekr.20081121105001.543: Must be overridden in subclasses
@@ -8140,7 +8147,7 @@ class jEditColorizer:
         verbose = False
         c = self.c ; w = self.w
 
-        if trace: g.trace(g.callers(4))
+        if trace: g.trace(w,g.callers(4))
 
         if w and hasattr(w,'start_tag_configure'):
             w.start_tag_configure()
@@ -8574,7 +8581,7 @@ class jEditColorizer:
     #@nonl
     #@-node:ekr.20090614134853.3713:setFontFromConfig
     #@-node:ekr.20090614134853.3696: Birth & init
-    #@+node:ekr.20090614134853.3715: Pattern matchers (new)
+    #@+node:ekr.20090614134853.3715: Pattern matchers
     #@+node:ekr.20090614134853.3816: About the pattern matchers
     #@@nocolor-node
     #@+at
@@ -9363,7 +9370,7 @@ class jEditColorizer:
             g.trace(kind,i,j,g.callers(2),self.dump(s[i:j]))
     #@nonl
     #@-node:ekr.20090614134853.3742:trace_match
-    #@-node:ekr.20090614134853.3715: Pattern matchers (new)
+    #@-node:ekr.20090614134853.3715: Pattern matchers
     #@+node:ekr.20090614134853.3828: State methods
     #@+node:ekr.20090625061310.3860:clearState
     def clearState (self):
@@ -9626,11 +9633,6 @@ class jEditColorizer:
         w = self.w
         colorName = w.configDict.get(tag)
 
-        # if not self.colorizer.flag:
-            # # We are under the influence of @nocolor
-            # if trace: g.trace('in range of @nocolor',tag)
-            # return
-
         # Munge the color name.
         if not colorName:
             if trace: g.trace('no color for %s' % tag)
@@ -9648,16 +9650,20 @@ class jEditColorizer:
             else:
                 return g.trace('unknown color name',colorName)
 
-        # if j > len(s)+1: j = len(s)+1
-        # if j >= len(s)-1: j = len(s)
-
         if trace:
             self.tagCount += 1
             g.trace(
                 '%3s %3s %3s' % (i,j,len(s)),colorName,
-                '%-10s %-25s' % (tag,s[i:j]),g.callers(4)) # 3,2))
+                '%-10s %-25s' % (tag,s[i:j]),g.callers(4))
 
-        self.highlighter.setFormat(i,j-i,color)
+        underline = w.configUnderlineDict.get(tag)
+        if underline:
+            format = QtGui.QTextCharFormat()
+            format.setForeground(color)
+            format.setFontUnderline(True)
+            self.highlighter.setFormat (i,j-i,format)
+        else:
+            self.highlighter.setFormat(i,j-i,color)
     #@-node:ekr.20090614134853.3813:setTag
     #@-others
 #@-node:ekr.20090614134853.3637:class jeditColorizer
