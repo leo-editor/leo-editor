@@ -9,9 +9,10 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="3,0"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="8,1,3,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
+<v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
 <v t="ekr.20050812090111"><vh>@@button rst3</vh></v>
 <v t="ekr.20050901054622"><vh>@@button Save</vh></v>
@@ -27,6 +28,7 @@
 <v t="ekr.20060525110135"><vh>@@button rst-&gt;pdf</vh></v>
 <v t="ekr.20060525110135.1"><vh>@@button rst-&gt;tex</vh></v>
 <v t="ekr.20060525110217"><vh>@@button rst-&gt;rst</vh></v>
+</v>
 <v t="ville.20090705224948.5734"><vh>@button generate-userguide</vh>
 <v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
 <v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
@@ -61,7 +63,7 @@
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
 </v>
-<v t="ekr.20090711120622.10446" a="E"><vh>Screen shots page</vh>
+<v t="ekr.20090711120622.10446"><vh>Screen shots page</vh>
 <v t="ekr.20090711120622.10447" tnodeList="ekr.20090711120622.10447"><vh>@edit screen-shots.html</vh></v>
 </v>
 <v t="ekr.20090428133936.2" tnodeList="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
@@ -249,7 +251,7 @@ expanded="ekr.20050830115714,ekr.20090212054250.5,ekr.20090501091345.2,ekr.20090
 </v>
 <v t="ville.20090609182215.5676" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355007104752e"><vh>@auto-rst treecaching.txt</vh></v>
 </v>
-<v t="edream.110203163054.46"><vh>Release Notes</vh>
+<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -2065,7 +2067,7 @@ expanded="ekr.20050830115714,ekr.20090212054250.5,ekr.20090501091345.2,ekr.20090
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63"><vh>Latest version</vh>
+<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
 <v t="ekr.20090324145450.20"><vh>What's New in Leo 4.6</vh>
 <v t="ekr.20090324145450.21"><vh>@rst html\new-4-6.html</vh>
 <v t="ekr.20090324145450.22"><vh>@rst-no-head links</vh></v>
@@ -2170,6 +2172,9 @@ expanded="ekr.20050830115714,ekr.20090212054250.5,ekr.20090501091345.2,ekr.20090
 </v>
 </v>
 </v>
+</v>
+<v t="ekr.20090712122931.10455" a="E"><vh>4.6 final</vh>
+<v t="ekr.20090712122931.10454"><vh>New features</vh></v>
 </v>
 </v>
 </v>
@@ -16507,6 +16512,38 @@ def shouldWriteAtAutoNode (self,p,exists,force):
 
 http://leo-editor.googlegroups.com/web/625-leo-window.png?gda=Fjn-hkQAAACaem1_7XPo9S1KnEkCtDqka_lw8qfHa3YHzOgIlt5IjVd5eKdLdCg0nUt3E6wDF75V6u9SiETdg0Q2ffAyHU-dzc4BZkLnSFWX59nr5BxGqA
 </t>
+<t tx="ekr.20090712122931.10453"></t>
+<t tx="ekr.20090712122931.10454">Leo now warns on dangerous writes to @thin and @file nodes.</t>
+<t tx="ekr.20090712122931.10455">Leo 4.6 final                             July 12, 2009
+
+Leo 4.6 rc1 is now available at:
+http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+
+Leo is a text editor, data organizer, project manager and much more. See:
+http://webpages.charter.net/edreamleo/intro.html
+
+The highlights of Leo 4.6:
+--------------------------
+
+- Cached external files *greatly* reduces the time to load .leo files.
+- Leo now features a modern Qt interface by default.
+  Leo's legacy Tk interface can also be used.
+- New --config, --file and --gui command-line options.
+- Leo tests syntax of .py files when saving them.
+- Leo can now open any kind of file into @edit nodes.
+- @auto-rst nodes allow easy editing of reStructuredText files.
+- Properties of commanders, positions and nodes simplify programming.
+- Improved Leo's unit testing framework.
+- Leo now requires Python 2.5 or later.
+- Dozens of small improvements and bug fixes.
+
+Links:
+------
+Leo:      http://webpages.charter.net/edreamleo/front.html
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/project/showfiles.php?group_id=3458
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://webpages.charter.net/edreamleo/testimonials.html</t>
 <t tx="ville.20090520232034.6345">g.app.gui.runScrolledMessageDialog(c=c, msg = u'rst:' + p.b)</t>
 <t tx="ville.20090705224948.5734">import os
 pos = c.find_h("@thin leoUserGuide.txt")[0]

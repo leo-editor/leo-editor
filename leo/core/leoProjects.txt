@@ -8347,7 +8347,7 @@ def shouldWriteAtAutoNode (self,p,exists,force):
 #@-node:ekr.20090706042206.6038:Issue warning if @auto file exists and has not been read
 #@-node:ekr.20090628075121.8434:Features
 #@-node:ekr.20090623072844.10385:4.6 rc1
-#@+node:ekr.20090712085342.6447:4.7 projects
+#@+node:ekr.20090712085342.6447:4.6 final
 #@+node:ekr.20090712081853.6044:Warn on dangerous writes
 #@+node:ekr.20090712050729.6017:promptForDangerousWrite
 def promptForDangerousWrite (self,fileName,kind):
@@ -8720,107 +8720,8 @@ def shouldWriteAtAutoNode (self,p,exists,force):
 #@+node:ekr.20090706042206.6039:promptForAtAutoRead
 #@-node:ekr.20090706042206.6039:promptForAtAutoRead
 #@-node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
-#@+node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
-def openFileForWriting (self,root,fileName,toString):
-
-    at = self
-    at.outputFile = None
-
-    if toString:
-        at.shortFileName = g.shortFileName(fileName)
-        at.outputFileName = "<string: %s>" % at.shortFileName
-        at.outputFile = g.fileLikeObject()
-    else:
-        ok = at.openFileForWritingHelper(fileName)
-
-        # New in Leo 4.4.8: set dirty bit if there are errors.
-        if not ok: at.outputFile = None
-
-    # New in 4.3 b2: root may be none when writing from a string.
-    if root:
-        if at.outputFile:
-            root.clearOrphan()
-        else:
-            root.setOrphan()
-            root.setDirty()
-
-    return at.outputFile is not None
-#@+node:ekr.20041005105605.143:openFileForWritingHelper & helper
-def openFileForWritingHelper (self,fileName):
-
-    '''Open the file and return True if all went well.'''
-
-    at = self ; c = at.c
-
-    try:
-        at.shortFileName = g.shortFileName(fileName)
-        at.targetFileName = c.os_path_finalize_join(at.default_directory,fileName)
-        path = g.os_path_dirname(at.targetFileName)
-        if not path or not g.os_path_exists(path):
-            if path:
-                path = g.makeAllNonExistentDirectories(path,c=c)
-            if not path or not g.os_path_exists(path):
-                path = g.os_path_dirname(at.targetFileName)
-                at.writeError("path does not exist: " + path)
-                return False
-    except Exception:
-        at.exception("exception creating path: %s" % repr(path))
-        g.es_exception()
-        return False
-
-    if g.os_path_exists(at.targetFileName):
-        try:
-            if not os.access(at.targetFileName,os.W_OK):
-                at.writeError("can not open: read only: " + at.targetFileName)
-                return False
-        except AttributeError:
-            pass # os.access() may not exist on all platforms.
-
-    try:
-        at.outputFileName = at.targetFileName + ".tmp"
-        kind,at.outputFile = self.openForWrite(at.outputFileName,'wb')
-        if not at.outputFile:
-            kind = g.choose(kind=='check',
-                'did not overwrite','can not create')
-            at.writeError("%s %s" % (kind,at.outputFileName))
-            return False
-    except Exception:
-        at.exception("exception creating:" + at.outputFileName)
-        return False
-
-    return True
-#@+node:bwmulder.20050101094804:openForWrite (atFile)
-def openForWrite (self, filename, wb='wb'):
-
-    '''Open a file for writes, handling shadow files.'''
-
-    trace = False and not g.unitTesting
-    at = self ; c = at.c ; x = c.shadowController
-
-    try:
-        shadow_filename = x.shadowPathName(filename)
-        self.writing_to_shadow_directory = os.path.exists(shadow_filename)
-        open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
-        self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
-
-        if self.writing_to_shadow_directory:
-            if trace: g.trace(filename,shadow_filename)
-            x.message('writing %s' % shadow_filename)
-            return 'shadow',open(open_file_name,wb)
-        else:
-            ok = c.checkFileTimeStamp(at.targetFileName)
-            return 'check',ok and open(open_file_name,wb)
-
-    except IOError:
-        if not g.app.unitTesting:
-            g.es_print('openForWrite: exception opening file: %s' % (open_file_name),color='red')
-            g.es_exception()
-        return 'error',None
-#@-node:bwmulder.20050101094804:openForWrite (atFile)
-#@-node:ekr.20041005105605.143:openFileForWritingHelper & helper
-#@-node:ekr.20041005105605.142:openFileForWriting & openFileForWritingHelper
 #@-node:ekr.20090712081853.6044:Warn on dangerous writes
-#@-node:ekr.20090712085342.6447:4.7 projects
+#@-node:ekr.20090712085342.6447:4.6 final
 #@-all
 #@nonl
 #@-node:EKR.20040429143933:@thin leoProjects.txt
