@@ -345,7 +345,7 @@
 <v t="ekr.20090712081157.1790"><vh>@@file promt-for-dangerous-writes.py</vh>
 <v t="ekr.20090712081157.1791"><vh>spam</vh></v>
 </v>
-<v t="ekr.20090706044257.1784"><vh>@auto ../../install</vh></v>
+<v t="ekr.20090706044257.1784"><vh>@@auto ../../install</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2711,6 +2711,65 @@ print('done')</t>
 <t tx="ekr.20090705063023.1780">@root at-root-test.py
 @others</t>
 <t tx="ekr.20090705063023.1781"># abc line 1</t>
+<t tx="ekr.20090706044257.1784">@language unknown_language
+#!/bin/sh
+#@+leo-ver=4-thin
+#@+node:EKR.20040519082027.33:@file-thin ../../install
+#@@first
+
+# This script installs Leo on *nix.
+# Initial version by by Frank Merenda (fmerenda@yahoo.com)
+
+# Variables...
+LEO_PREFIX=${LEO_PREFIX:-/usr/local}
+LEO_RUN_SCRIPT_OUTPUT="${LEO_PREFIX}/bin/leo"
+
+# Bug fix: 2008/4/8: replace /lib/leo by /lib.
+LEO_LIB_DIR="${LEO_PREFIX}/lib"
+
+echo ""
+echo "Prefix directory set to \"$LEO_PREFIX\""
+
+# Make the directory structure
+if [ ! -d $LEO_LIB_DIR ] ; then
+    echo ""
+    echo Making directory structure $LEO_LIB_DIR
+
+    RESULTS=`mkdir -p -m755 $LEO_LIB_DIR 2&gt;&amp;1`
+    if [ $? -ne 0 ]; then
+        echo Failure making directory $LEO_LIB_DIR!
+        exit 1;
+    fi
+fi
+
+if [ ! -d $LEO_PREFIX/bin ] ; then
+    echo ""
+    echo Making directory structure $LEO_PREFIX/bin
+    RESULTS=`mkdir -p -m755 $LEO_PREFIX/bin 2&gt;&amp;1`
+    if [ $? -ne 0 ]; then
+        echo Failure making directory $LEO_PREFIX/bin!
+        exit 1;
+    fi
+fi
+
+# Copy the files
+cp -rp leo $LEO_LIB_DIR
+chown -R root:root $LEO_LIB_DIR
+
+echo "PYTHONPATH=${LEO_PREFIX}/lib python ${LEO_PREFIX}/lib/leo/core/runLeo.py \"\$@\"" &gt; $LEO_RUN_SCRIPT_OUTPUT
+
+RESULTS=`chmod 755 $LEO_RUN_SCRIPT_OUTPUT`   
+
+echo ""
+echo "Leo installed successfully"
+echo "Make sure ${LEO_PREFIX}/bin is in your path then"
+echo "type 'leo filename.leo' to use it."   
+echo ""
+
+exit 0;
+#@-node:EKR.20040519082027.33:@file-thin ../../install
+#@-leo
+</t>
 <t tx="ekr.20090711095555.1786">&lt;&lt; secref &gt;&gt;</t>
 <t tx="ekr.20090711095804.1788"></t>
 <t tx="ekr.20090712081157.1790">@language python

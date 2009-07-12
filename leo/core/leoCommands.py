@@ -879,28 +879,20 @@ class baseCommands (object):
                         os.spawnv(os.P_NOWAIT,arg[0],vtuple)
                     # This clause by Jim Sizelove.
                     elif openType == "subprocess.Popen":
-                        use_shell = True
                         if isinstance(arg, basestring):
                             vtuple = arg + " " + path
                         elif isinstance(arg, (list, tuple)):
                             vtuple = arg[:]
                             vtuple.append(path)
-                            use_shell = False
                         command = "subprocess.Popen(%s)" % repr(vtuple)
                         if subprocess:
                             try:
-                                subprocess.Popen(vtuple, shell=use_shell)
+                                subprocess.Popen(vtuple, shell=True)
                             except OSError:
                                 g.es_print("vtuple",repr(vtuple))
                                 g.es_exception()
                         else:
                             g.trace('Can not import subprocess.  Skipping: "%s"' % command)
-                    elif callable(openType):
-                        # Invoke openWith like this:
-                        # c.openWith(data=[f,None,None])
-                        # f will be called with one arg, the filename
-                        openType(shortPath)
-
                     else:
                         command="bad command:"+str(openType)
                         g.trace(command)
@@ -5930,22 +5922,22 @@ class baseCommands (object):
         '''Open Leo's users guide in a web browser.'''
 
         import webbrowser
-
         c = self
 
         theFile = c.os_path_finalize_join(
             g.app.loadDir,'..','doc','html','_build','html','leo_toc.html')
 
-        table = (
-            'file:%s' % theFile,
-            'http://webpages.charter.net/edreamleo/leo_toc.html')
+        if os.path.isfile(theFile):
+            url = 'file:%s' % theFile
+            webbrowser.open_new(url)
+            return
 
-        for url in table:
-            try:
-                webbrowser.open_new(url)
-                return
-            except:
-                g.es("not found:",url)
+        try:
+            url = 'http://webpages.charter.net/edreamleo/leo_toc.html'
+            webbrowser.open_new(url)
+            return
+        except:
+            g.es("not found:",url)
     #@-node:ekr.20060613082924:leoUsersGuide
     #@-node:ekr.20031218072017.2938:Help Menu
     #@-node:ekr.20031218072017.2818:Command handlers...
