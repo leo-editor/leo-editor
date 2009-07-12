@@ -896,8 +896,10 @@ class baseCommands (object):
                         else:
                             g.trace('Can not import subprocess.  Skipping: "%s"' % command)
                     elif callable(openType):
+                        # Invoke openWith like this:
+                        # c.openWith(data=[f,None,None])
+                        # f will be called with one arg, the filename
                         openType(shortPath)
-                        pass
 
                     else:
                         command="bad command:"+str(openType)
