@@ -2920,8 +2920,10 @@ def writeOneAtAutoNode(self,p,toString,force):
         return False
 
     # Prompt if writing a new @auto node would overwrite an existing file.
-    if not hasattr(p.v,'at_auto_read') and g.os_path_exists(fileName):
-        ok = self.promptForAtAutoRead(fileName)
+    if (not toString and not hasattr(p.v,'at_auto_read') and
+        g.os_path_exists(fileName)
+    ):
+        ok = self.promptForDangerousWrite(fileName,kind='@auto')
         if ok:
             p.v.at_auto_read = True # Create the attribute
         else:
@@ -2984,25 +2986,6 @@ def shouldWriteAtAutoNode (self,p,exists,force):
         return True
 #@-node:ekr.20071019141745:shouldWriteAtAutoNode
 #@+node:ekr.20090706042206.6039:promptForAtAutoRead
-def promptForAtAutoRead (self,fileName):
-
-    c = self.c
-
-    if g.app.unitTesting:
-        val = g.app.unitTestDict.get('promptForAtAutoRead')
-        return val in (None,True)
-
-    # g.trace(timeStamp, timeStamp2)
-    message = '@auto %s\n%s\n%s' % (
-        fileName,
-        g.tr('already exists.'),
-        g.tr('Overwrite this file?'))
-
-    ok = g.app.gui.runAskYesNoCancelDialog(c,
-        title = 'Overwrite existing file?',
-        message = message)
-
-    return ok == 'yes'
 #@-node:ekr.20090706042206.6039:promptForAtAutoRead
 #@-node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
 #@+node:ekr.20041005105605.157:writeOpenFile
@@ -4669,6 +4652,9 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     fileContent = open(fileName, "rb").read()
     cachefile = self._contentHashFile(root, fileContent)
 
+    # Remember that we have read this file.
+    root.v.at_read = True # Create the attribute.
+
     if cachefile in c.db:
         # This message isn't so useful.
         # if not g.unitTesting: # g.es('uncache:',root.h)
@@ -4684,6 +4670,7 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
 
     # Delete all children, but **not** for @file and @nosent nodes!
     if thinFile or atShadow:
+        root.v.at_read = True # Create the attribute
         while root.hasChildren():
             root.firstChild().doDelete()
 
@@ -7491,6 +7478,9 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
     fileContent = open(fileName, "rb").read()
     cachefile = self._contentHashFile(root, fileContent)
 
+    # Remember that we have read this file.
+    root.v.at_read = True # Create the attribute.
+
     if cachefile in c.db:
         # This message isn't so useful.
         # if not g.unitTesting: # g.es('uncache:',root.h)
@@ -7506,6 +7496,7 @@ def read(self,root,importFileName=None,thinFile=False,fromString=None,atShadow=F
 
     # Delete all children, but **not** for @file and @nosent nodes!
     if thinFile or atShadow:
+        root.v.at_read = True # Create the attribute
         while root.hasChildren():
             root.firstChild().doDelete()
 
@@ -8238,20 +8229,23 @@ def readOneAtAutoNode (self,fileName,p):
     except IOError:
         cachefile = None
 
+    # Remember that we have read this file.
+    p.v.at_auto_read = True # Create the attribute
+
     if cachefile is not None and cachefile in c.db:        
         # g.es('uncache:',p.h)
         tree = c.db[cachefile]
         g.create_tree_at_vnode(c, p.v, tree)
-        p.v.at_auto_read = True # Create the attribute
         return
 
     if not g.unitTesting:
         g.es("reading:",p.h)
 
     ic.createOutline(fileName,parent=p.copy(),atAuto=True)
-    p.v.at_auto_read = True # Create the attribute
 
     if ic.errors:
+        # Note: the file contains an @ignore,
+        # so no unintended write can happen.
         g.es_print('errors inhibited read @auto',fileName,color='red')
 
     if ic.errors or not g.os_path_exists(fileName):
@@ -8282,8 +8276,10 @@ def writeOneAtAutoNode(self,p,toString,force):
         return False
 
     # Prompt if writing a new @auto node would overwrite an existing file.
-    if not hasattr(p.v,'at_auto_read') and g.os_path_exists(fileName):
-        ok = self.promptForAtAutoRead(fileName)
+    if (not toString and not hasattr(p.v,'at_auto_read') and
+        g.os_path_exists(fileName)
+    ):
+        ok = self.promptForDangerousWrite(fileName,kind='@auto')
         if ok:
             p.v.at_auto_read = True # Create the attribute
         else:
@@ -8346,25 +8342,6 @@ def shouldWriteAtAutoNode (self,p,exists,force):
         return True
 #@-node:ekr.20071019141745:shouldWriteAtAutoNode
 #@+node:ekr.20090706042206.6039:promptForAtAutoRead
-def promptForAtAutoRead (self,fileName):
-
-    c = self.c
-
-    if g.app.unitTesting:
-        val = g.app.unitTestDict.get('promptForAtAutoRead')
-        return val in (None,True)
-
-    # g.trace(timeStamp, timeStamp2)
-    message = '@auto %s\n%s\n%s' % (
-        fileName,
-        g.tr('already exists.'),
-        g.tr('Overwrite this file?'))
-
-    ok = g.app.gui.runAskYesNoCancelDialog(c,
-        title = 'Overwrite existing file?',
-        message = message)
-
-    return ok == 'yes'
 #@-node:ekr.20090706042206.6039:promptForAtAutoRead
 #@-node:ekr.20070806141607:writeOneAtAutoNode & helpers (atFile)
 #@-node:ekr.20090706042206.6038:Issue warning if @auto file exists and has not been read
