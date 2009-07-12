@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070416075121" str_leo_pos="10"><vh>Startup</vh>
+<v t="ekr.20070416075121" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070529172620"><vh>@chapters</vh>
 <v t="ekr.20090605083941.1804"><vh>@chapter foo</vh>
 <v t="ekr.20090605083941.1805"><vh>foo node 1</vh></v>
@@ -323,29 +323,22 @@
 </v>
 <v t="ekr.20090618102458.1816"><vh>Converting QString to unicode</vh></v>
 </v>
+<v t="ekr.20090705063023.1780"><vh>@@root at-root-test.py</vh>
+<v t="ekr.20090705063023.1781"><vh>abc</vh></v>
+</v>
+<v t="ekr.20090712081157.1790"><vh>@@file prompt-for-dangerous-writes.py</vh>
+<v t="ekr.20090712081157.1791"><vh>spam</vh></v>
+</v>
+<v t="ekr.20090706044257.1784"><vh>@@auto ../../install</vh></v>
+<v t="ekr.20090701062041.1798"><vh>PHP test</vh>
+<v t="ekr.20090704133634.1780"><vh>Inner php</vh></v>
+</v>
 </v>
 <v t="ekr.20090514103332.1929"><vh>Unit tests</vh>
 <v t="ekr.20090514073218.1923"><vh>@button run test.leo tests @key = alt-7</vh></v>
 <v t="ekr.20090218112656.1"><vh>@test self.assertEqual</vh></v>
 <v t="ekr.20090514101216.1927"><vh>@test self.assertNotEqual</vh></v>
 </v>
-<v t="ekr.20090701062041.1798"><vh>PHP test</vh>
-<v t="ekr.20090704133634.1780"><vh>Inner php</vh></v>
-</v>
-<v t="ekr.20090704151652.1778" tnodeList="ekr.20090704151652.1778,ekr.20090704151652.1779,ekr.20090704151652.1780"><vh>@file tnodeList.py</vh>
-<v t="ekr.20090704151652.1779"><vh>spam</vh></v>
-<v t="ekr.20090704151652.1780"><vh>eggs</vh></v>
-</v>
-<v t="ekr.20090705063023.1780"><vh>@root at-root-test.py</vh>
-<v t="ekr.20090705063023.1781"><vh>abc</vh></v>
-</v>
-<v t="ekr.20090711095555.1786"><vh>Test undefined references</vh>
-<v t="ekr.20090711095804.1788"><vh>&lt;&lt; secref &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20090712081157.1790"><vh>@@file promt-for-dangerous-writes.py</vh>
-<v t="ekr.20090712081157.1791"><vh>spam</vh></v>
-</v>
-<v t="ekr.20090706044257.1784"><vh>@@auto ../../install</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.2">wordsep = u'., -+\n\r[]{}&lt;&gt;=-+*&amp;%$#@!"\'?/\\|^()~`:;'
@@ -2702,12 +2695,6 @@ print('done')</t>
 &lt;body&gt;
 &lt;/body&gt;
 </t>
-<t tx="ekr.20090704151652.1778">@others
-# changed 5.</t>
-<t tx="ekr.20090704151652.1779">def spam():
-    pass</t>
-<t tx="ekr.20090704151652.1780">def eggs():
-    pass</t>
 <t tx="ekr.20090705063023.1780">@root at-root-test.py
 @others</t>
 <t tx="ekr.20090705063023.1781"># abc line 1</t>
@@ -2770,8 +2757,6 @@ exit 0;
 #@-node:EKR.20040519082027.33:@file-thin ../../install
 #@-leo
 </t>
-<t tx="ekr.20090711095555.1786">&lt;&lt; secref &gt;&gt;</t>
-<t tx="ekr.20090711095804.1788"></t>
 <t tx="ekr.20090712081157.1790">@language python
 
 @others</t>
