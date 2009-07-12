@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="7,1,2"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="3,0"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20041226081019"><vh>@@button Spell</vh></v>
@@ -60,6 +60,9 @@
 <v t="ekr.20080301071818"><vh>Home page</vh>
 <v t="ekr.20080306071848"><vh>&lt;&lt; download ref &gt;&gt; (contains version number)</vh></v>
 <v t="ekr.20080301071818.1"><vh>@thin html/front.html</vh></v>
+</v>
+<v t="ekr.20090711120622.10446" a="E"><vh>Screen shots page</vh>
+<v t="ekr.20090711120622.10447" tnodeList="ekr.20090711120622.10447"><vh>@edit screen-shots.html</vh></v>
 </v>
 <v t="ekr.20090428133936.2" tnodeList="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 <v t="ekr.20090428102353.1" tnodeList="ekr.20090428102353.1" rst-import="7d710028550b756e6465726c696e657332710155007102550b756e6465726c696e657331710355013d7104752e"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -246,7 +249,7 @@ expanded="ekr.20050830115714,ekr.20090212054250.5,ekr.20090501091345.2,ekr.20090
 </v>
 <v t="ville.20090609182215.5676" rst-import="7d710028550b756e6465726c696e65733271015501237102550b756e6465726c696e657331710355007104752e"><vh>@auto-rst treecaching.txt</vh></v>
 </v>
-<v t="edream.110203163054.46" a="E"><vh>Release Notes</vh>
+<v t="edream.110203163054.46"><vh>Release Notes</vh>
 <v t="edream.110203163054.117"><vh>Previous versions...</vh>
 <v t="ekr.20050210102358"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="edream.110203163054.66"><vh>4.0.1 through 4.0.4</vh></v>
@@ -2062,7 +2065,7 @@ expanded="ekr.20050830115714,ekr.20090212054250.5,ekr.20090501091345.2,ekr.20090
 </v>
 </v>
 </v>
-<v t="edream.110203163054.63" a="E"><vh>Latest version</vh>
+<v t="edream.110203163054.63"><vh>Latest version</vh>
 <v t="ekr.20090324145450.20"><vh>What's New in Leo 4.6</vh>
 <v t="ekr.20090324145450.21"><vh>@rst html\new-4-6.html</vh>
 <v t="ekr.20090324145450.22"><vh>@rst-no-head links</vh></v>
@@ -16499,6 +16502,10 @@ def shouldWriteAtAutoNode (self,p,exists,force):
         message = message)
 
     return ok == 'yes'
+</t>
+<t tx="ekr.20090711120622.10446">
+
+http://leo-editor.googlegroups.com/web/625-leo-window.png?gda=Fjn-hkQAAACaem1_7XPo9S1KnEkCtDqka_lw8qfHa3YHzOgIlt5IjVd5eKdLdCg0nUt3E6wDF75V6u9SiETdg0Q2ffAyHU-dzc4BZkLnSFWX59nr5BxGqA
 </t>
 <t tx="ville.20090520232034.6345">g.app.gui.runScrolledMessageDialog(c=c, msg = u'rst:' + p.b)</t>
 <t tx="ville.20090705224948.5734">import os
