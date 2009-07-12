@@ -1,5 +1,5 @@
 #@+leo-ver=4-thin
-#@+node:EKR.20040517075715.1:@thin mod_tempfname.py
+#@+node:ville.20090711235451.1353:@thin ~/leo-editor/leo/plugins/mod_tempfname.py
 """Replace Commands.openWithTempFilePath to create alternate temporary
 directory paths.  Two alternates are supported.  Default method creates temporary
 files with a filename that begins with the headline text, and
@@ -61,7 +61,8 @@ def openWithTempFilePath (self,v,ext):
                             ext = atFileExt #use it
 
             #Remove unsupported directory & file name characters
-            if(os.name == "dos" or os.name == "nt"):
+            #if(os.name == "dos" or os.name == "nt"):
+            if 1:
                 hsClean = ""
                 for ch in hs:
                     if ch in g.string.whitespace: #Convert tabs to spaces
@@ -122,5 +123,5 @@ if not g.app.unitTesting: # Not Ok for unit testing: it changes Leo's core.
     __version__ = "1.3"
     g.plugin_signon(__name__)
 #@nonl
-#@-node:EKR.20040517075715.1:@thin mod_tempfname.py
+#@-node:ville.20090711235451.1353:@thin ~/leo-editor/leo/plugins/mod_tempfname.py
 #@-leo

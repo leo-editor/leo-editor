@@ -143,7 +143,7 @@ def refresh_rclick(c,p, menu):
 #@-node:ville.20090630221949.5462:refresh_rclick
 #@+node:ville.20090701110830.10215:editnode_rclick
 def editnode_rclick(c,p, menu):
-    """ Provide "edit in EDITOR context menu item """
+    """ Provide "edit in EDITOR" context menu item """
 
     editor = g.guessExternalEditor()
     if not editor:
@@ -151,7 +151,7 @@ def editnode_rclick(c,p, menu):
     action = menu.addAction("Edit in " + editor)
 
     def editnode_rclick_cb():
-        c.openWith(data = ('subprocess.Popen', editor, None))
+        c.openWith(data = ('subprocess.Popen', [editor], None))
 
     action.connect(action, QtCore.SIGNAL("triggered()"), editnode_rclick_cb)
 
