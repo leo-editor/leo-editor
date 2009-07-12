@@ -315,7 +315,11 @@ def open_in_vim (tag,keywords,val=None):
         v.OpenWithOldBody=v.b # Remember the previous contents.
         if subprocess:
             # New code by Jim Sizemore (TL: added support for gVim tabs).
-            data = ("subprocess.Popen", '"%s" --servername LEO --remote%s-silent %s' % (vim_exe, useTabs, Lnum), None)
+            data = "subprocess.Popen",[vim_exe, "--servername", "LEO" \
+                  ,"--remote" + useTabs + "-silent", Lnum], None
+
+            # the approach below fails when spaces in filename
+            #data = ("subprocess.Popen", '"%s" --servername LEO --remote%s-silent %s' % (vim_exe, useTabs, Lnum), None)
             c.openWith(data=data)
         else:
             # Works, but gives weird error message on first open of Vim.

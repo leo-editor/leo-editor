@@ -423,7 +423,7 @@ class baseCommands (object):
 
     def getSignOnLine (self):
         c = self
-        return "Leo 4.6 release candidate 1, build %s, July 9, 2009" % c.getBuildNumber()
+        return "Leo 4.6 beta 2, build %s, June 22, 2009" % c.getBuildNumber()
     #@-node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     #@+node:ekr.20040629121554.2:initVersion
     def initVersion (self):
@@ -879,20 +879,26 @@ class baseCommands (object):
                         os.spawnv(os.P_NOWAIT,arg[0],vtuple)
                     # This clause by Jim Sizelove.
                     elif openType == "subprocess.Popen":
+                        use_shell = True
                         if isinstance(arg, basestring):
                             vtuple = arg + " " + path
                         elif isinstance(arg, (list, tuple)):
                             vtuple = arg[:]
                             vtuple.append(path)
+                            use_shell = False
                         command = "subprocess.Popen(%s)" % repr(vtuple)
                         if subprocess:
                             try:
-                                subprocess.Popen(vtuple, shell=True)
+                                subprocess.Popen(vtuple, shell=use_shell)
                             except OSError:
                                 g.es_print("vtuple",repr(vtuple))
                                 g.es_exception()
                         else:
                             g.trace('Can not import subprocess.  Skipping: "%s"' % command)
+                    elif callable(openType):
+                        openType(shortPath)
+                        pass
+
                     else:
                         command="bad command:"+str(openType)
                         g.trace(command)
