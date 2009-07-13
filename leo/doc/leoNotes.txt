@@ -59,6 +59,60 @@ Linux:
 
 - Configuration file is bazaar.conf in ~/.bazaar directory
 #@-node:ekr.20080917153158.10:Bzr notes
+#@+node:ekr.20090713080429.6042:Bzr workflow notes
+@nocolor-node
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bd3e06a8a34a1938
+
+This is the first time we have done this ("stable" branch + trunk),
+so it might be good to bring this up:
+
+- When doing a bugfix/improvement, always do it in the oldest branch that will
+  receive it.
+
+- Only after that, merge it to trunk
+
+This prevents "manual" merges, and accidental incorporation of unwanted fixes.
+It also gives us clean merge history.
+
+I think this is the process python-the-project will use with mercurial. If they
+find a bug in python 2.6.whatever, they fix it in that branch first, then merge
+from that branch to trunk (so python 2.7 will receive it).
+
+===================
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3f24628c7f735c42
+
+> I'll probably open a branch (based on the 4-6-final branch) to
+  attempt a fix for an rst bug.
+
+You don't need to create the branch on launchpad to do little fixes. The local
+branch you create with "bzr branch" is a full-blown branch.
+
+Here's how I do all my commits to trunk:
+
+I have ~/leotrunk. I always keep this up to date with "bzr pull", but never
+develop here.  (But I merge from leo-editor, as shown below.)
+EKR: I call this main-trunk.
+
+I have ~/leo-editor, also created from trunk. I develop here normally.
+Occasionally, I just "bzr push", but often it fails because "branches have
+diverged". I resist the temptation to "bzr merge" here, because it screws up
+history. Rather, I:
+
+- cd ~/leotrunk
+- bzr pull (this always succeeds)
+- bzr merge ~/leo-editor
+- (investigate diffs)
+- bzr qcommit (select the files I really want to commit--usually .py files)
+- bzr push
+
+Then, to get my ~/leo-editor up to date again:
+
+cd ~/leo-editor
+bzr pull 
+#@nonl
+#@-node:ekr.20090713080429.6042:Bzr workflow notes
 #@+node:ekr.20081113095540.1:Bzr/ubuntu notes
 /etc/apt/sources.list.d is a directory
 It contains, on my machine, files called edgy-universe.list.x
