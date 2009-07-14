@@ -879,20 +879,28 @@ class baseCommands (object):
                         os.spawnv(os.P_NOWAIT,arg[0],vtuple)
                     # This clause by Jim Sizelove.
                     elif openType == "subprocess.Popen":
+                        use_shell = True
                         if isinstance(arg, basestring):
                             vtuple = arg + " " + path
                         elif isinstance(arg, (list, tuple)):
                             vtuple = arg[:]
                             vtuple.append(path)
+                            use_shell = False
                         command = "subprocess.Popen(%s)" % repr(vtuple)
                         if subprocess:
                             try:
-                                subprocess.Popen(vtuple, shell=True)
+                                subprocess.Popen(vtuple, shell=use_shell)
                             except OSError:
                                 g.es_print("vtuple",repr(vtuple))
                                 g.es_exception()
                         else:
                             g.trace('Can not import subprocess.  Skipping: "%s"' % command)
+                    elif callable(openType):
+                        # Invoke openWith like this:
+                        # c.openWith(data=[f,None,None])
+                        # f will be called with one arg, the filename
+                        openType(shortPath)
+
                     else:
                         command="bad command:"+str(openType)
                         g.trace(command)
