@@ -344,13 +344,16 @@ class rstCommands:
 
         # g.trace('language',language,'language.title()',language.title(),p.h)
 
+        # Note: lines that end with '\n\n' are a signal to handleCodeMode.
         s = self.getOption('code_block_string')
         if s:
             self.code_block_string = s.replace('\\n','\n')
         elif syntax and language in ('python','ruby','perl','c'):
-            self.code_block_string = '**code**:\n\n.. code-block:: %s\n' % language.title()
+            self.code_block_string = '**code**:\n\n.. code-block:: %s\n\n' % (
+                language.title())
         else:
-            self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n'
+            self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n\n'
+    #@nonl
     #@-node:ekr.20090502071837.45:initCodeBlockString
     #@+node:ekr.20090502071837.46:preprocessTree & helpers
     def preprocessTree (self,root):
@@ -1043,6 +1046,8 @@ class rstCommands:
     #@+node:ekr.20090502071837.71:writeBody & helpers
     def writeBody (self,p):
 
+        # g.trace(p.h,p.b)
+
         # remove trailing cruft and split into lines.
         lines = g.splitLines(p.b)
 
@@ -1079,14 +1084,9 @@ class rstCommands:
 
         # Write the lines.
         s = ''.join(lines)
-        if True: #### not self.trialWrite:
-            # A little fib.  We don't alter the text when doing a trial write,
-            # so the perfect-import comparison will pass.
-            # We *do* ensure 2 newlines when doing a "real" write.
-            s = g.ensureLeadingNewlines(s,1)
-            s = g.ensureTrailingNewlines(s,2)
+        s = g.ensureLeadingNewlines(s,1)
+        s = g.ensureTrailingNewlines(s,2)
         self.write(s)
-    #@nonl
     #@-node:ekr.20090502071837.71:writeBody & helpers
     #@+node:ekr.20090502071837.72:handleCodeMode & helper
     def handleCodeMode (self,lines):
@@ -1122,8 +1122,18 @@ class rstCommands:
         if code:
             self.finishCodePart(result,code)
             code = []
-        return self.rstripList(result)
-    #@nonl
+
+        # Munge the result so as to keep docutils happy.
+        # Don't use self.rstripList: it's not the same.
+        # g.trace(result)
+        result2 = []
+        for z in result:
+            if z == '': result2.append('\n\n')
+            elif not z.rstrip(): pass
+            elif z.endswith('\n\n'): result2.append(z) # Leave alone.
+            else: result2.append('%s\n' % z.rstrip())
+
+        return result2
     #@+node:ekr.20090502071837.73:formatCodeModeLine
     def formatCodeModeLine (self,s,n,numberOption):
 
@@ -1142,7 +1152,6 @@ class rstCommands:
 
         s = '\n'.join(theList).rstrip()
         return s.split('\n')
-    #@nonl
     #@-node:ekr.20090502071837.74:rstripList
     #@+node:ekr.20090502071837.75:finishCodePart
     def finishCodePart (self,result,code):
