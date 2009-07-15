@@ -11,6 +11,8 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20090714085914.5990:First
+#@+node:ekr.20090715082137.5989:Add leoVersion.py
+#@-node:ekr.20090715082137.5989:Add leoVersion.py
 #@+node:ekr.20090714085914.5992:Fix @auto-rst code-loss bug
 @nocolor-node
 
