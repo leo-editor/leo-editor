@@ -4474,7 +4474,8 @@ class leoQtFrame (leoFrame.leoFrame):
     def iconify(self):
         self.top.showMinimized()
     def lift (self):
-        self.top.showNormal()
+        if self.top.isMinimized(): # Bug 379141
+            self.top.showNormal()
         self.top.activateWindow()
         self.top.raise_()
     def update (self):
