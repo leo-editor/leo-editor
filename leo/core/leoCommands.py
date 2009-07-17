@@ -5807,7 +5807,8 @@ class baseCommands (object):
 
         # Don't use triple-quoted strings or continued strings here.
         # Doing so would add unwanted leading tabs.
-        version = c.getSignOnLine() + "\n\n"
+        # version = c.getSignOnLine() + "\n\n"
+        version = g.app.signon + '\n\n'
         theCopyright = (
             "Copyright 1999-2009 by Edward K. Ream\n" +
             "All Rights Reserved\n" +
