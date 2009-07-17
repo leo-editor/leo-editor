@@ -5,16 +5,10 @@
 #@@language python
 #@@tabwidth -4
 
-#@+others
-#@+node:ekr.20090717092906.12766:leoVersion.getVersion
-def getVersion():
-
-    return (
-        "Leo 4.7 devel", # Version number.
-        "July 17, 2009" # Date.
-    )
-#@-node:ekr.20090717092906.12766:leoVersion.getVersion
-#@-others
-
+buildString = "$Revision: 4.7.0$" # sccs updates this.
+buildNumber = buildString[10:-1] # Strip off $Revision and training $
+date = "July 17, 2009"
+version = "4.7 devel"
+#@nonl
 #@-node:ekr.20090717092906.12765:@thin leoVersion.py
 #@-leo
