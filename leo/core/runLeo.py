@@ -390,20 +390,17 @@ def createFrame (fileName,relativeFileName,script):
 
     return c,frame
 #@-node:ekr.20031218072017.1624:createFrame (runLeo.py)
-#@+node:ekr.20080921060401.5:finishInitApp
+#@+node:ekr.20080921060401.5:finishInitApp (runLeo.py)
 def finishInitApp(c):
 
     g.app.trace_gc          = c.config.getBool('trace_gc')
     g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
     g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
 
-    # Ensure that the signons are printed first.
-    #### g.app.writeWaitingLog(c)
-
     if g.app.disableSave:
         g.es("disabling save commands",color="red")
 
-#@-node:ekr.20080921060401.5:finishInitApp
+#@-node:ekr.20080921060401.5:finishInitApp (runLeo.py)
 #@+node:ekr.20080921060401.6:initFocusAndDraw
 def initFocusAndDraw(c,fileName):
 
