@@ -9,6 +9,7 @@
 
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
+import leo.core.leoVersion as leoVersion
 import os
 import sys
 import leo.external.pickleshare
@@ -703,16 +704,50 @@ class LeoApp:
         """Enable changes to the log"""
         self.logIsLocked = False
     #@-node:ekr.20031218072017.1847:app.setLog, lockLog, unlocklog
-    #@+node:ekr.20031218072017.2619:app.writeWaitingLog
-    def writeWaitingLog (self):
+    #@+node:ekr.20090717112235.6007:app.signon
+    def signon (self):
 
-        # g.trace(g.app.gui,self.log)
+        app = self
+        buildNumber = leoVersion.buildNumber
+        date        = leoVersion.date
+        guiVersion  = app.gui.getFullVersion()
+        leoVer      = leoVersion.version
+        n1,n2,n3,junk,junk=sys.version_info
+
+        if sys.platform.startswith('win'):
+            sysVersion = 'Windows '
+            try:
+                v = os.sys.getwindowsversion()
+                sysVersion += ', '.join([str(z) for z in v])
+            except Exception:
+                pass
+
+        else: sysVersion = sys.platform
+
+        app.signon = 'Leo %s build %s, %s' % (
+            leoVer,buildNumber,date)
+        app.signon2 = 'python %s.%s.%s, %s\n%s' % (
+            n1,n2,n3,guiVersion,sysVersion)
+
+        if not g.unitTesting:
+            print(app.signon)
+            print(app.signon2)
+    #@-node:ekr.20090717112235.6007:app.signon
+    #@+node:ekr.20031218072017.2619:app.writeWaitingLog
+    def writeWaitingLog (self,c):
+
+        g.trace(c,g.callers(5))
 
         if self.log:
-            if 1: # not self.log.isNull: # The test for isNull would probably interfere with batch mode.
-                for s,color in self.logWaiting:
-                    g.es('',s,color=color,newline=0) # The caller must write the newlines.
-                self.logWaiting = []
+            # Put the signon lines at the start.
+            self.logWaiting.insert(0,(g.app.signon2+'\n','black'),)
+            self.logWaiting.insert(0,(g.app.signon+'\n','black'),)
+            self.logWaiting.insert(0,('Leo Log Window\n','red'),)
+
+            # The test for isNull would probably interfere with batch mode.
+            for s,color in self.logWaiting:
+                g.es('',s,color=color,newline=0) # The caller must write the newlines.
+            self.logWaiting = []
         else:
             print('writeWaitingLog: still no log!')
     #@-node:ekr.20031218072017.2619:app.writeWaitingLog

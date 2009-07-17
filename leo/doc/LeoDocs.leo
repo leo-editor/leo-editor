@@ -9,7 +9,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070610174018" str_leo_pos="6"><vh>Startup</vh>
+<v t="ekr.20070610174018" str_leo_pos="4"><vh>Startup</vh>
 <v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050404094627"><vh>Buttons</vh>
 <v t="ekr.20090712122931.10453"><vh>Disabled buttons</vh>

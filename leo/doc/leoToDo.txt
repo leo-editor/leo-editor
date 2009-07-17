@@ -11,8 +11,6 @@
 - Flexitble file format.
 #@nonl
 #@+node:ekr.20090714085914.5990:To do first
-#@+node:ekr.20090715082137.5989:Add leoVersion.py
-#@-node:ekr.20090715082137.5989:Add leoVersion.py
 #@+node:ekr.20090717083356.5991:Add screen shot page linked to Leo's home page
 http://leo-editor.googlegroups.com/web/625-leo-window.png?gda=Fjn-hkQAAACaem1_7XPo9S1KnEkCtDqka_lw8qfHa3YHzOgIlt5IjVd5eKdLdCg0nUt3E6wDF75V6u9SiETdg0Q2ffAyHU-dzc4BZkLnSFWX59nr5BxGqA
 #@nonl
@@ -2888,6 +2886,7 @@ def new (self,event=None,gui=None):
     c.frame.createFirstTreeNode()
     g.createMenu(c)
     g.finishOpen(c)
+    g.app.writeWaitingLog(c)
     c.redraw()
     return c # For unit test.
 #@-node:ekr.20031218072017.1623:c.new

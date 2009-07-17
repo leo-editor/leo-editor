@@ -581,13 +581,14 @@ class tkinterGui(leoGui.leoGui):
             return g.app.config.defaultFont
     #@-node:ekr.20081121110412.386:tkGui.getFontFromParams
     #@-node:ekr.20081121110412.385:Font
-    #@+node:ekr.20081121110412.387:getFullVersion
-    def getFullVersion (self,c):
+    #@+node:ekr.20081121110412.387:getFullVersion (tkGui)
+    def getFullVersion (self):
 
-        tkLevel = c.frame.top.getvar("tk_patchLevel")
+        # tkLevel = c.frame.top.getvar("tk_patchLevel")
+        tkLevel = Tk.TkVersion
 
         return 'Tk %s, Pmw %s' % (tkLevel,Pmw.version())
-    #@-node:ekr.20081121110412.387:getFullVersion
+    #@-node:ekr.20081121110412.387:getFullVersion (tkGui)
     #@+node:ekr.20081121110412.388:Icons
     #@+node:ekr.20081121110412.389:attachLeoIcon & createLeoIcon
     def attachLeoIcon (self,w):
@@ -3395,8 +3396,8 @@ class leoTkinterFrame (leoFrame.leoFrame):
             # c.finishCreate calls f.createMenuBar later.
         c.setLog()
         g.app.windowList.append(f)
-        c.initVersion()
-        c.signOnWithVersion()
+        # c.initVersion()
+        # c.signOnWithVersion()
         f.miniBufferWidget = f.createMiniBufferWidget()
         c.bodyWantsFocusNow()
 

@@ -414,47 +414,51 @@ class baseCommands (object):
     #@-node:ekr.20031218072017.2817: doCommand
     #@+node:ekr.20031218072017.2582: version & signon stuff
     #@+node:ekr.20040629121554:getBuildNumber
-    def getBuildNumber(self):
-        c = self
-        return c.ver[10:-1] # Strip off "(dollar)Revision" and the trailing "$"
+    # def getBuildNumber(self):
+        # c = self
+        # return c.ver[10:-1] # Strip off "(dollar)Revision" and the trailing "$"
     #@-node:ekr.20040629121554:getBuildNumber
     #@+node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
-    # Leo 4.5.1 final: September 14, 2008
+    # # Leo 4.5.1 final: September 14, 2008
 
-    def getSignOnLine (self):
-        c = self
-        return "Leo 4.7 devel, build %s, July 17, 2009" % c.getBuildNumber()
+    # def getSignOnLine (self):
+        # c = self
+        # import leo.core.leoVersion as leoVersion
+        # return leoVersion.getVersion()
     #@-node:ekr.20040629121554.1:getSignOnLine (Contains hard-coded version info)
     #@+node:ekr.20040629121554.2:initVersion
-    def initVersion (self):
-        c = self
-        c.ver = "$Revision: 1.244 $" # CVS updates this.
+    # def initVersion (self):
+        # c = self
+        # c.ver = "$Revision: 1.244 $" # CVS updates this.
     #@-node:ekr.20040629121554.2:initVersion
     #@+node:ekr.20040629121554.3:c.signOnWithVersion
-    def signOnWithVersion (self):
+    # def signOnWithVersion (self):
 
-        c = self
-        color = c.config.getColor("log_error_color")
-        signon = c.getSignOnLine()
-        n1,n2,n3,junk,junk=sys.version_info
+        # # g.trace(self,'\n',g.callers(9))
 
-        if sys.platform.startswith('win'):
-            version = 'Windows '
-            try:
-                v = os.sys.getwindowsversion()
-                version += ', '.join([str(z) for z in v])
-            except Exception:
-                pass
+        # c = self
+        # color = c.config.getColor("log_error_color")
+        # signon = c.getSignOnLine()
+        # n1,n2,n3,junk,junk=sys.version_info
 
-        else: version = sys.platform
+        # if sys.platform.startswith('win'):
+            # version = 'Windows '
+            # try:
+                # v = os.sys.getwindowsversion()
+                # version += ', '.join([str(z) for z in v])
+            # except Exception:
+                # pass
 
-        if not g.unitTesting:
-            g.es("Leo Log Window...",color=color)
-            g.es(signon)
-            g.es('',"python %s.%s.%s, %s\n%s" % (n1,n2,n3,g.app.gui.getFullVersion(c),version))
-            g.enl()
-            if c.fixed:
-                g.es_print('This is a fixed window',color='red')
+        # else: version = sys.platform
+
+        # if not g.unitTesting:
+            # g.es("Leo Log Window...",color=color)
+            # g.es_print(signon)
+            # g.es_print('',"python %s.%s.%s, %s\n%s" % (
+                # n1,n2,n3,g.app.gui.getFullVersion(c),version))
+            # g.enl()
+            # if c.fixed:
+                # g.es_print('This is a fixed window',color='red')
     #@-node:ekr.20040629121554.3:c.signOnWithVersion
     #@-node:ekr.20031218072017.2582: version & signon stuff
     #@+node:ekr.20040312090934:c.iterators
@@ -645,6 +649,7 @@ class baseCommands (object):
         c.frame.createFirstTreeNode()
         g.createMenu(c)
         g.finishOpen(c)
+        g.app.writeWaitingLog(c)
         c.redraw()
         return c # For unit test.
     #@-node:ekr.20031218072017.1623:c.new

@@ -3,13 +3,13 @@
 <leo_file>
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.5">
-	<global_window_position top="89" left="454" height="827" width="603"/>
+	<global_window_position top="89" left="250" height="827" width="980"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070622214401" str_leo_pos="9"><vh>Startup</vh>
+<v t="ekr.20070622214401" str_leo_pos="5,7,9"><vh>Startup</vh>
 <v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Buttons</vh>
 <v t="ekr.20051010093913"><vh>@@button Save</vh></v>
@@ -98,7 +98,7 @@
 <v t="ekr.20080514065934.1"><vh>About vim-like bindings</vh></v>
 <v t="ekr.20080513060549.3"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
 </v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
 <v t="ekr.20090703122042.7463"><vh>@@button a-common-button</vh></v>
@@ -320,7 +320,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20061003173413"><vh>File options</vh>
+<v t="ekr.20061003173413" a="E"><vh>File options</vh>
 <v t="ekr.20041119034357.7"><vh>.leo file options</vh>
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = ekr_test</vh></v>

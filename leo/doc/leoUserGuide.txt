@@ -1925,9 +1925,6 @@ new_leo_file_encoding
         <?xml version="1.0" encoding="UTF-8">
 
     The default is ``UTF-8`` (upper case for compatibility for old versions of Leo).
-    **Important**: once a .leo file is created the ``<?xml...">`` line can only be changed by hand.
-    This may cause unicode errors the next time the .leo file is loaded,
-    so you should change the ``<?xml...">`` line by hand only when first creating a .leo file.
 
 tk_encoding
     The encoding that Leo uses to communicate with Tk text widgets.

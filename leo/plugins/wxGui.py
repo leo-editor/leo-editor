@@ -2728,8 +2728,8 @@ class wxLeoFrame(leoFrame.leoFrame):
 
         self.setEventHandlers()
         self.colorizer = self.body.colorizer
-        c.initVersion()
-        self.signOnWithVersion()
+        # c.initVersion()
+        # self.signOnWithVersion()
         self.injectCallbacks()
         g.app.windowList.append(self)
         self.tree.redraw()

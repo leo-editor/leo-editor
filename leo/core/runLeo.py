@@ -322,6 +322,10 @@ def doPostPluginsInit(args,fileName,relativeFileName,script):
     if g.app.gui == None:
         g.app.createQtGui(fileName='core')
 
+    g.app.signon()
+        # Print a signon message to stdout.
+        # Also sets app ivars for c.signOnWithVersion
+
     g.init_sherlock(args)  # Init tracing and statistics.
     if g.app and g.app.use_psyco: startPsyco()
 
@@ -394,10 +398,12 @@ def finishInitApp(c):
     g.app.trace_gc_calls    = c.config.getBool('trace_gc_calls')
     g.app.trace_gc_verbose  = c.config.getBool('trace_gc_verbose')
 
-    g.app.writeWaitingLog()
+    # Ensure that the signons are printed first.
+    #### g.app.writeWaitingLog(c)
 
     if g.app.disableSave:
         g.es("disabling save commands",color="red")
+
 #@-node:ekr.20080921060401.5:finishInitApp
 #@+node:ekr.20080921060401.6:initFocusAndDraw
 def initFocusAndDraw(c,fileName):

@@ -1003,8 +1003,8 @@ class leoSwingFrame (leoFrame.leoFrame):
             # c.finishCreate calls f.createMenuBar later.
         c.setLog()
         g.app.windowList.append(f)
-        c.initVersion()
-        c.signOnWithVersion()
+        # c.initVersion()
+        # c.signOnWithVersion()
         f.miniBufferWidget = f.createMiniBufferWidget()
         c.bodyWantsFocusNow()
     #@+node:ekr.20081121105001.657:createOuterFrames
@@ -8013,10 +8013,9 @@ class swingGui(leoGui.leoGui):
     #@-node:ekr.20081121105001.1058:swingGui.getFontFromParams
     #@-node:ekr.20081121105001.1057:Font
     #@+node:ekr.20081121105001.1059:getFullVersion
-    def getFullVersion (self,c):
+    def getFullVersion (self):
 
-        swingLevel = '<swingLevel>' ### c.frame.top.getvar("tk_patchLevel")
-
+        swingLevel = '<swingLevel>'
         return 'swing %s' % (swingLevel)
     #@-node:ekr.20081121105001.1059:getFullVersion
     #@+node:ekr.20081121105001.1060:Icons

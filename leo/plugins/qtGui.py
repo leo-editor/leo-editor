@@ -3456,8 +3456,8 @@ class leoQtFrame (leoFrame.leoFrame):
         f.menu = leoQtMenu(f)
         c.setLog()
         g.app.windowList.append(f)
-        c.initVersion()
-        c.signOnWithVersion()
+        # c.initVersion()
+        # c.signOnWithVersion()
         f.miniBufferWidget = leoQtMinibuffer(c)
         c.bodyWantsFocusNow()
     #@+node:ekr.20081121105001.255:createSplitterComponents (qtFrame)
@@ -4658,13 +4658,15 @@ class leoQtLog (leoFrame.leoLog):
             return
 
         if color:
-            color = leoColor.getColor(color, 'black')
+            color = leoColor.getColor(color,'black')
 
         self.selectTab(tabName or 'Log')
         # print('qtLog.put',tabName,'%3s' % (len(s)),self.logCtrl)
 
         # Note: this must be done after the call to selectTab.
         w = self.logCtrl.widget # w is a QTextBrowser
+
+        # g.trace(repr(color),w)
         if w:
             if s.endswith('\n'): s = s[:-1]
             s=s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
@@ -4674,6 +4676,7 @@ class leoQtLog (leoFrame.leoLog):
             s = s.replace('\n','<br>')
             sb = w.horizontalScrollBar()
             pos = sb.sliderPosition()
+            # g.trace(s)
             w.append(s)
             w.moveCursor(QtGui.QTextCursor.End)
             sb.setSliderPosition(pos)
@@ -4686,6 +4689,8 @@ class leoQtLog (leoFrame.leoLog):
     #@-node:ekr.20081121105001.326:put
     #@+node:ekr.20081121105001.327:putnl
     def putnl (self,tabName='Log'):
+
+        return ###
 
         if g.app.quitting:
             return
@@ -4706,7 +4711,6 @@ class leoQtLog (leoFrame.leoLog):
         else:
             # put s to logWaiting and print  a newline
             g.app.logWaiting.append(('\n','black'),)
-    #@nonl
     #@-node:ekr.20081121105001.327:putnl
     #@-node:ekr.20081121105001.325:put & putnl (qtLog)
     #@+node:ekr.20081121105001.328:Tab (qtLog)
@@ -4735,7 +4739,7 @@ class leoQtLog (leoFrame.leoLog):
             widget = QTextBrowserSubclass(parent=None,c=c,wrapper=self)
             contents = leoQTextEditWidget(widget=widget,name='log',c=c)
             widget.leo_log_wrapper = contents # Inject an ivar.
-            if trace: g.trace('** creating',tabName,contents,widget)
+            if trace: g.trace('** creating',tabName,contents,widget,'\n',g.callers(9))
             widget.setWordWrapMode(QtGui.QTextOption.NoWrap)
             widget.setReadOnly(False) # Allow edits.
             self.logDict[tabName] = widget
@@ -4749,7 +4753,7 @@ class leoQtLog (leoFrame.leoLog):
             w.addTab(widget,tabName)
         else:
             contents = widget
-            if trace: g.trace('** using',tabName,contents)
+            # if trace: g.trace('** using',tabName,contents)
             self.contentsDict[tabName] = contents
             w.addTab(contents,tabName)
 
@@ -6737,7 +6741,7 @@ class leoQtGui(leoGui.leoGui):
     #@-node:ekr.20081121105001.493:qtGui.getFontFromParams
     #@-node:ekr.20081121105001.492:Font
     #@+node:ekr.20081121105001.494:getFullVersion
-    def getFullVersion (self,c):
+    def getFullVersion (self):
 
         try:
             qtLevel = 'version %s' % QtCore.QT_VERSION
