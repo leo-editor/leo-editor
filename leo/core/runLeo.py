@@ -322,9 +322,8 @@ def doPostPluginsInit(args,fileName,relativeFileName,script):
     if g.app.gui == None:
         g.app.createQtGui(fileName='core')
 
-    g.app.signon()
-        # Print a signon message to stdout.
-        # Also sets app ivars for c.signOnWithVersion
+    # We can't print the signon until we know the gui.
+    g.app.computeSignon() # Set app.signon/signon2 for commanders.
 
     g.init_sherlock(args)  # Init tracing and statistics.
     if g.app and g.app.use_psyco: startPsyco()

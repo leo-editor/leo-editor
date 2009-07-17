@@ -704,8 +704,8 @@ class LeoApp:
         """Enable changes to the log"""
         self.logIsLocked = False
     #@-node:ekr.20031218072017.1847:app.setLog, lockLog, unlocklog
-    #@+node:ekr.20090717112235.6007:app.signon
-    def signon (self):
+    #@+node:ekr.20090717112235.6007:app.computeSignon
+    def computeSignon (self):
 
         app = self
         buildNumber = leoVersion.buildNumber
@@ -729,14 +729,14 @@ class LeoApp:
         app.signon2 = 'python %s.%s.%s, %s\n%s' % (
             n1,n2,n3,guiVersion,sysVersion)
 
-        if not g.unitTesting:
+        if False and not g.unitTesting:
             print(app.signon)
             print(app.signon2)
-    #@-node:ekr.20090717112235.6007:app.signon
+    #@-node:ekr.20090717112235.6007:app.computeSignon
     #@+node:ekr.20031218072017.2619:app.writeWaitingLog
     def writeWaitingLog (self,c):
 
-        g.trace(c,g.callers(5))
+        # g.trace(c,g.callers(5))
 
         if self.log:
             # Put the signon lines at the start.
