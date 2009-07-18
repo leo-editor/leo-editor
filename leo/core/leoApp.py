@@ -58,6 +58,7 @@ class LeoApp:
         self.loadDir = None # The directory from which Leo was loaded.
         self.loadedPlugins = [] # List of loaded plugins that have signed on.
         self.log = None # The LeoFrame containing the present log.
+        self.logInited = False # False: all log message go to logWaiting list.
         self.logIsLocked = False # True: no changes to log are allowed.
         self.logWaiting = [] # List of messages waiting to go to a log.
         self.menuWarningsGiven = False # True: supress warnings in menu code.
@@ -68,6 +69,7 @@ class LeoApp:
         self.openWithFileNum = 0 # Used to generate temp file names for Open With command.
         self.openWithTable = None # The table passed to createOpenWithMenuFromTable.
         self.positions = 0 # Count of the number of positions generated.
+        self.printWaiting = [] # Queue of messages to be sent to the printer.
         self.quitting = False # True if quitting.  Locks out some events.
         self.realMenuNameDict = {} # Contains translations of menu names and menu item names.
         self.root = None # The hidden main window. Set later.
@@ -608,7 +610,8 @@ class LeoApp:
                         # Bug fix: 2008/3/15: periods in the id field of a gnx will corrupt the .leo file!
                         g.app.leoID = g.app.leoID.replace('.','-')
                         if verbose and not g.app.silentMode and not g.app.unitTesting:
-                            g.es('leoID=',g.app.leoID,' (in ',theDir,')',spaces=False,color="red")
+                            g.es('leoID=',g.app.leoID,' (in ',theDir,')',
+                                spaces=False,color="red")
                         return
                     elif verbose and not g.app.unitTesting:
                         g.es('empty ',tag,' (in ',theDir,')',spaces=False,color = "red")
@@ -728,28 +731,38 @@ class LeoApp:
             # leoVer,buildNumber,date)
         app.signon = 'Leo %s, %s' % (
             leoVer,date)
-        app.signon2 = 'python %s.%s.%s, %s\n%s' % (
+        app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
             n1,n2,n3,guiVersion,sysVersion)
-
-        if False and not g.unitTesting:
-            print(app.signon)
-            print(app.signon2)
+    #@nonl
     #@-node:ekr.20090717112235.6007:app.computeSignon
     #@+node:ekr.20031218072017.2619:app.writeWaitingLog
     def writeWaitingLog (self,c):
 
-        # g.trace(c,g.callers(5))
+        app = self
+        # Do not call g.es, g.es_print, g.pr or g.trace here!
+        # print 'writeWaitingLog',c,g.callers(4)
+        table = [
+            ('Leo Log Window','red'),
+            (app.signon,'black'),
+            (app.signon2,'black'),
+        ]
+        table.reverse()
 
-        if self.log:
-            # Put the signon lines at the start.
-            self.logWaiting.insert(0,(g.app.signon2+'\n','black'),)
-            self.logWaiting.insert(0,(g.app.signon+'\n','black'),)
-            self.logWaiting.insert(0,('Leo Log Window\n','red'),)
-
+        if app.log:
+            if not app.logInited:
+                app.logInited = True # Prevent recursive call.
+                print app.signon
+                print app.signon2
+                for s,color in table:
+                    app.logWaiting.insert(0,(s+'\n',color),)
             # The test for isNull would probably interfere with batch mode.
-            for s,color in self.logWaiting:
-                g.es('',s,color=color,newline=0) # The caller must write the newlines.
-            self.logWaiting = []
+            for s in app.printWaiting:
+                print s
+            app.printWaiting = []
+            for s,color in app.logWaiting:
+                g.es('',s,color=color,newline=0)
+                    # The caller must write the newlines.
+            app.logWaiting = []
         else:
             print('writeWaitingLog: still no log!')
     #@-node:ekr.20031218072017.2619:app.writeWaitingLog

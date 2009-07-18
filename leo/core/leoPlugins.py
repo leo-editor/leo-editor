@@ -353,9 +353,9 @@ def loadHandlers(tag):
     if not s: return
 
     if tag == 'open0' and not g.app.silentMode and not g.app.batchMode:
-        # g.trace(tag,g.callers(4))
-        pr('@enabled-plugins found in %s' % (
-            g.app.config.enabledPluginsFileName),color='blue')
+        s2 = '@enabled-plugins found in %s' % (
+            g.app.config.enabledPluginsFileName)
+        g.es_print(s2,color='blue')
 
     enabled_files = getEnabledFiles(s,plugins_path)
 

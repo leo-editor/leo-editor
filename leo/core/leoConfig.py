@@ -393,14 +393,6 @@ class parserBaseClass:
         while p and p != after:
             self.debug_count += 1
             h = p.h
-            # if trace:
-                # if p.h==after.h:
-                    # val = p != after
-                    # g.trace('*' * 10, 'terminating via headString',p,after)
-                    # return
-                # g.trace('***',self.debug_count,p.h)
-                # if self.debug_count >= 1000:
-                    # g.trace('*'*10,'terminating!') ; return
             if g.match_word(h,0,tag):
                 name = h[len(tag):].strip()
                 if name:
@@ -424,7 +416,8 @@ class parserBaseClass:
             self.set(p,kind='menus',name='menus',val=aList)
         else:
             if not g.app.unitTesting and not g.app.silentMode:
-                g.es_print('Using menus from',c.shortFileName(),color='blue')
+                s = 'using menus from: %s' % c.shortFileName()
+                g.es_print(s,color='blue')
             g.app.config.menusList = aList
             g.app.config.menusFileName = c and c.shortFileName() or '<no settings file>'
     #@+node:ekr.20070926141716:doItems
@@ -1876,9 +1869,7 @@ class configClass:
                     # This occurs early in startup, so use the following instead of g.es_print.
                     if not g.isPython3:
                         s = g.toEncodedString(s,'ascii')
-                    g.pr(s)
-                    g.app.logWaiting.append((s+'\n','blue'),)
-
+                    g.es_print(s,color='blue')
                 c = self.openSettingsFile(path)
                 if c:
                     self.updateSettings(c,localFlag)
@@ -1889,68 +1880,6 @@ class configClass:
         # self.createMyLeoSettingsFile(myLocalConfigFile)
         self.inited = True
         self.setIvarsFromSettings(None)
-    #@+node:ekr.20080811174246.5:createMyLeoSettingsFile (not used)
-    def createMyLeoSettingsFile (self,localConfigFile):
-
-        '''Create home.myLeoSettings.leo if no other myLeoSettings.leo file exists.'''
-
-        #@    << define s, a minimalMyLeoSettings.leo string >>
-        #@+node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
-        s = '''<?xml version="1.0" encoding="utf-8"?>
-        <?xml-stylesheet ekr_test?>
-        <leo_file>
-        <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-        <globals body_outline_ratio="0.5">
-        	<global_window_position top="26" left="122" height="781" width="953"/>
-        	<global_log_window_position top="0" left="0" height="0" width="0"/>
-        </globals>
-        <preferences/>
-        <find_panel_settings/>
-        <vnodes>
-        <v t="ekr.20070411164127" str_leo_pos="0"><vh>@chapters</vh>
-        <v t="ekr.20070411164127.1"><vh>@chapter trash</vh></v>
-        </v>
-        <v t="ekr.20070411164127.2"><vh>@settings</vh></v>
-        </vnodes>
-        <tnodes>
-        <t tx="ekr.20070411164127"></t>
-        <t tx="ekr.20070411164127.1">trash</t>
-        <t tx="ekr.20070411164127.2"></t>
-        </tnodes>
-        </leo_file>
-        '''
-        #@-node:ekr.20080811174246.6:<< define s, a minimalMyLeoSettings.leo string >>
-        #@nl
-
-        for path in (
-            localConfigFile,
-            self.myGlobalConfigFile,
-            self.myHomeConfigFile
-        ):
-            # g.trace(path)
-            if path:
-                path = g.os_path_realpath(g.os_path_finalize(path))
-                if g.os_path_exists(path):
-                    # g.trace('exists',path)
-                    return
-
-        if g.app.homeDir:
-            path = g.os_path_finalize_join(g.app.homeDir,'myLeoSettings.leo')
-            try:
-                f = open(path,'wb')
-                f.write(s)
-                f.close()
-                self.myHomeConfigFile = path
-                # It's early in the startup: g.es does not work yet.
-                s = 'created: %s' % (self.myHomeConfigFile)
-                g.pr(s)
-                g.app.logWaiting.append((s+'\n','red'),)
-            except Exception:
-                s = 'can not create: %s' % (self.myHomeConfigFile)
-                g.pr(s)
-                g.app.logWaiting.append((s+'\n','red'),)
-                g.es_exception()
-    #@-node:ekr.20080811174246.5:createMyLeoSettingsFile (not used)
     #@+node:ekr.20041117085625:openSettingsFile
     def openSettingsFile (self,path):
 

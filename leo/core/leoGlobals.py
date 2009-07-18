@@ -3709,8 +3709,8 @@ def es(*args,**keys):
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
 
+    if not app or app.killed: return
     log = app.log
-    if app.killed: return
 
     # Compute the effective args.
     d = {'color':'black','commas':False,'newline':True,'spaces':True,'tabName':'Log'}
@@ -3720,6 +3720,7 @@ def es(*args,**keys):
     tabName = d.get('tabName') or 'Log'
     newline = d.get('newline')
     s = g.translateArgs(args,d)
+    # print app,s,g.callers(5)
 
     if app.batchMode:
         if app.log:
@@ -3731,9 +3732,9 @@ def es(*args,**keys):
             # s = g.toEncodedString(s,'ascii')
             g.pr(s,newline=newline)
     else:
-        if log and log.isNull:
+        if log and log.isNull and app.logInited:
             pass
-        elif log:
+        elif log and app.logInited:
             log.put(s,color=color,tabName=tabName)
             for ch in s:
                 if ch == '\n': log.newlines += 1
@@ -3888,21 +3889,23 @@ def pr(*args,**keys):
     # However, the following must appear in Python\Lib\sitecustomize.py:
     #    sys.setdefaultencoding('utf-8')
     s = g.translateArgs(args,d) # Translates everything to unicode.
+    s2 = g.toEncodedString(s,encoding)
 
-    try: # We can't use any print keyword args in Python 2.x!
-        s2 = g.toEncodedString(s,encoding)
-        sys.stdout.write(s2+nl)
-    except Exception:
-        if not g.pr_warning_given:
-            g.pr_warning_given = True
-            print('unexpected Exception in g.pr')
-            print('make sure your sitecustomize.py contains::')
-            print('    sys.setdefaultencoding("utf-8")')
-            g.es_exception()
-            g.trace(g.callers())
-        s2 = s.encode('ascii',"replace")
-        sys.stdout.write(s2+nl)
-#@nonl
+    if app.logInited:
+        try: # We can't use any print keyword args in Python 2.x!
+            sys.stdout.write(s2+nl)
+        except Exception:
+            if not g.pr_warning_given:
+                g.pr_warning_given = True
+                print('unexpected Exception in g.pr')
+                print('make sure your sitecustomize.py contains::')
+                print('    sys.setdefaultencoding("utf-8")')
+                g.es_exception()
+                g.trace(g.callers())
+            s2 = s.encode('ascii',"replace")
+            sys.stdout.write(s2+nl)
+    else:
+        app.printWaiting.append(s2)
 #@-node:ekr.20080710101653.1:g.pr
 #@+node:ekr.20080220111323:g.translateArgs
 def translateArgs(args,d):
