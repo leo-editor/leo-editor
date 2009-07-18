@@ -596,11 +596,12 @@ class baseCommands (object):
         frame.setInitialWindowGeometry()
         frame.deiconify()
         frame.lift()
-        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+        frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+            # Resize the _new_ frame.
         c.frame.createFirstTreeNode()
         g.createMenu(c)
         g.finishOpen(c)
-        g.app.writeWaitingLog(c)
+        g.app.writeWaitingLog(c,forceLog=True) # Force a new signon message.
         c.redraw()
         return c # For unit test.
     #@-node:ekr.20031218072017.1623:c.new

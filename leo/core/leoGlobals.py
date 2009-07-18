@@ -2780,7 +2780,7 @@ def openWithFileName(fileName,old_c,
     # Init the open file.
     assert c.frame and c.frame.c == c
     c.frame.log.enable(enableLog)
-    g.app.writeWaitingLog(c)
+    g.app.writeWaitingLog(c,forceLog=not g.app.initing)
     ok = g.handleOpenHooks(c,old_c,gui,fn,f,readAtFileNodesFlag)
     if not ok: return False,None
     g.createMenu(c,fn)

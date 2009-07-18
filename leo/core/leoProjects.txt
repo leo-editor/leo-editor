@@ -491,7 +491,7 @@ def computeSignon (self):
 #@nonl
 #@-node:ekr.20090717112235.6007:app.computeSignon
 #@+node:ekr.20031218072017.2619:app.writeWaitingLog
-def writeWaitingLog (self,c):
+def writeWaitingLog (self,c,forceLog=False):
 
     app = self
     # Do not call g.es, g.es_print, g.pr or g.trace here!
@@ -508,6 +508,9 @@ def writeWaitingLog (self,c):
             app.logInited = True # Prevent recursive call.
             print app.signon
             print app.signon2
+            for s,color in table:
+                app.logWaiting.insert(0,(s+'\n',color),)
+        elif forceLog:
             for s,color in table:
                 app.logWaiting.insert(0,(s+'\n',color),)
         # The test for isNull would probably interfere with batch mode.
@@ -533,11 +536,12 @@ def new (self,event=None,gui=None):
     frame.setInitialWindowGeometry()
     frame.deiconify()
     frame.lift()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio) # Resize the _new_ frame.
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
+        # Resize the _new_ frame.
     c.frame.createFirstTreeNode()
     g.createMenu(c)
     g.finishOpen(c)
-    g.app.writeWaitingLog(c)
+    g.app.writeWaitingLog(c,forceLog=True) # Force a new signon message.
     c.redraw()
     return c # For unit test.
 #@-node:ekr.20031218072017.1623:c.new

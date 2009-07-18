@@ -736,7 +736,7 @@ class LeoApp:
     #@nonl
     #@-node:ekr.20090717112235.6007:app.computeSignon
     #@+node:ekr.20031218072017.2619:app.writeWaitingLog
-    def writeWaitingLog (self,c):
+    def writeWaitingLog (self,c,forceLog=False):
 
         app = self
         # Do not call g.es, g.es_print, g.pr or g.trace here!
@@ -753,6 +753,9 @@ class LeoApp:
                 app.logInited = True # Prevent recursive call.
                 print app.signon
                 print app.signon2
+                for s,color in table:
+                    app.logWaiting.insert(0,(s+'\n',color),)
+            elif forceLog:
                 for s,color in table:
                     app.logWaiting.insert(0,(s+'\n',color),)
             # The test for isNull would probably interfere with batch mode.
